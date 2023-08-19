@@ -1,128 +1,115 @@
-Return-Path: <bpf+bounces-8125-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8126-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F2A9781A2A
-	for <lists+bpf@lfdr.de>; Sat, 19 Aug 2023 16:35:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E8B7781B74
+	for <lists+bpf@lfdr.de>; Sun, 20 Aug 2023 02:13:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5628A1C20A65
-	for <lists+bpf@lfdr.de>; Sat, 19 Aug 2023 14:35:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49144281113
+	for <lists+bpf@lfdr.de>; Sun, 20 Aug 2023 00:13:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8907B11C98;
-	Sat, 19 Aug 2023 14:35:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B592629;
+	Sun, 20 Aug 2023 00:13:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508AB46BC;
-	Sat, 19 Aug 2023 14:35:41 +0000 (UTC)
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2461FD39;
-	Sat, 19 Aug 2023 07:35:35 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-76d9a79e2fdso40392885a.1;
-        Sat, 19 Aug 2023 07:35:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692455734; x=1693060534;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FuDrenDtPLv9suOFUYr8VZtzBqfanUGuWEDfBaaD+9s=;
-        b=KorI84h9e6x/55Ewd65XgG4WaBgoBzHkVmxHXKImA14LLKP9VfaBDNG+SDJe4etsB5
-         Ztbz1r4KetxZ8Q4N1J1gYf2gTXXlNVsPLqdG8YywaCrUrQcrtoGIPNcgTN1a7QgKH3Na
-         OIv+kxE3ysav/goa23ceSCnMu1f1725ixXDtsqdw44qGEGnJak/GEEDfeScfQhIOBgOI
-         86ca9Osxo09eCKYI5qqvxYy5y2raDLB9nXO+ZkQzucILF/ba/No2ntzGvyL/a0YJ5N8m
-         4mpDcMdNGh0y9HiOHmKyWxJ/6iBLVaWcGG31+deVga0Y03rDIKFop063O+rr708+J3h5
-         dmJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692455734; x=1693060534;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FuDrenDtPLv9suOFUYr8VZtzBqfanUGuWEDfBaaD+9s=;
-        b=I0D9PdSPLlb5ud+gUd3I5POwcq39gD+gpuSkil9EFi8w7o25SQAJ89oXtEerKwSGn1
-         kpEPHVsmq2A9cx4VVyHdiPywdy/ZR+TdhMen8C2s/C4ZDRyNzn/1u1KKw2152TPDPJ4A
-         1knmqvAysLwGYv+AViMI7htpXMUXnTdjeMyQB5TtVSfDzgAmljTdWjjBRvQw9PVQ/WMV
-         MD+mhhS8CY54X28SneWwZwWp+h5cNezbwxRO0Ks4DSWYxg9haWqz6Ym8CPq+QHZ/BYJS
-         IbBl61Si5sR2XmCpSd3HpfTyXSJUhlWAVtZ41CnNk43DeAdO1BCJKhrEWVtpFyhloBYw
-         wn9A==
-X-Gm-Message-State: AOJu0Yz2CkYHIZsC/pwf/C/s9pUcG6l9uRe5JovZ4CSLSFpjX5P75h8M
-	NB7c3IowbzQtcN3Ir+53j44=
-X-Google-Smtp-Source: AGHT+IHUfCRk72PwjeVuBOWBcFXHgymftEe/Hdt5hXm5EXRD1gYwRSCuak1cCc7S+MkscDQB/OWxUg==
-X-Received: by 2002:a05:620a:1999:b0:76d:25b5:6e9b with SMTP id bm25-20020a05620a199900b0076d25b56e9bmr2954283qkb.23.1692455734229;
-        Sat, 19 Aug 2023 07:35:34 -0700 (PDT)
-Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
-        by smtp.gmail.com with ESMTPSA id g16-20020a05620a109000b0076ceb5eb309sm1210424qkk.74.2023.08.19.07.35.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Aug 2023 07:35:33 -0700 (PDT)
-Date: Sat, 19 Aug 2023 10:35:33 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Breno Leitao <leitao@debian.org>, 
- sdf@google.com, 
- axboe@kernel.dk, 
- asml.silence@gmail.com, 
- willemdebruijn.kernel@gmail.com, 
- martin.lau@linux.dev, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>
-Cc: bpf@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org, 
- io-uring@vger.kernel.org, 
- krisman@suse.de
-Message-ID: <64e0d3359f90d_3119e32942c@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20230817145554.892543-4-leitao@debian.org>
-References: <20230817145554.892543-1-leitao@debian.org>
- <20230817145554.892543-4-leitao@debian.org>
-Subject: Re: [PATCH v3 3/9] net/socket: Break down __sys_setsockopt
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4263173
+	for <bpf@vger.kernel.org>; Sun, 20 Aug 2023 00:12:59 +0000 (UTC)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E9EC48D7;
+	Sat, 19 Aug 2023 14:01:42 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 81DC4616B2CF;
+	Sat, 19 Aug 2023 23:01:28 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id R-xTUNX53BfU; Sat, 19 Aug 2023 23:01:27 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id DC29761989EF;
+	Sat, 19 Aug 2023 23:01:27 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id XlOXJxBLBgRp; Sat, 19 Aug 2023 23:01:27 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id B585963DB7EA;
+	Sat, 19 Aug 2023 23:01:27 +0200 (CEST)
+Date: Sat, 19 Aug 2023 23:01:27 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Minjie Du <duminjie@vivo.com>
+Cc: anton ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, 
+	Stephen Rothwell <sfr@canb.auug.org.au>, 
+	linux-um <linux-um@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, 
+	opensource kernel <opensource.kernel@vivo.com>
+Message-ID: <888265629.6490567.1692478887611.JavaMail.zimbra@nod.at>
+In-Reply-To: <20230706013911.695-1-duminjie@vivo.com>
+References: <20230706013911.695-1-duminjie@vivo.com>
+Subject: Re: [PATCH v4] um: vector: Fix exception handling in
+ vector_eth_configure()
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: vector: Fix exception handling in vector_eth_configure()
+Thread-Index: 4vytQNC34nzS2LWCFohj3c7c7cYvzA==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
+	SPF_HELO_NONE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Breno Leitao wrote:
-> Split __sys_setsockopt() into two functions by removing the core
-> logic into a sub-function (do_sock_setsockopt()). This will avoid
-> code duplication when doing the same operation in other callers, for
-> instance.
-> 
-> do_sock_setsockopt() will be called by io_uring setsockopt() command
-> operation in the following patch.
-> 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-
-Reviewed-by: Willem de Bruijn <willemb@google.com>
+----- Urspr=C3=BCngliche Mail -----
+> The resource cleanup was incomplete in the implementation
+> of the function "vector_eth_configure".
+> Thus replace the jump target
+> "out_undo_user_init" by "out_free_netdev".
+> Delate the orphan function "out_undo_user_init"
+>=20
+> PATCH v1-v3: Modify the patch format.
+>=20
+> Signed-off-by: Minjie Du <duminjie@vivo.com>
 > ---
->  include/net/sock.h |  2 ++
->  net/socket.c       | 39 +++++++++++++++++++++++++--------------
->  2 files changed, 27 insertions(+), 14 deletions(-)
-> 
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index 2eb916d1ff64..2a0324275347 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -1853,6 +1853,8 @@ int sk_setsockopt(struct sock *sk, int level, int optname,
->  		  sockptr_t optval, unsigned int optlen);
->  int sock_setsockopt(struct socket *sock, int level, int op,
->  		    sockptr_t optval, unsigned int optlen);
-> +int do_sock_setsockopt(struct socket *sock, bool compat, int level,
-> +		       int optname, sockptr_t optval, int optlen);
+> arch/um/drivers/vector_kern.c | 4 +---
+> 1 file changed, 1 insertion(+), 3 deletions(-)
+>=20
+> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.=
+c
+> index 131b7cb29..7ae6ab8df 100644
+> --- a/arch/um/drivers/vector_kern.c
+> +++ b/arch/um/drivers/vector_kern.c
+> @@ -1646,7 +1646,7 @@ static void vector_eth_configure(
+> =09err =3D register_netdevice(dev);
+> =09rtnl_unlock();
+> =09if (err)
+> -=09=09goto out_undo_user_init;
+> +=09=09goto out_free_netdev;
+>=20
+> =09spin_lock(&vector_devices_lock);
+> =09list_add(&device->list, &vector_devices);
+> @@ -1654,8 +1654,6 @@ static void vector_eth_configure(
+>=20
+> =09return;
+>=20
+> -out_undo_user_init:
+> -=09return;
 
-Somewhat surprising that optlen type differs between __sys_setsockopt
-and sock_setsockopt. But agreed that this code should follow
-__sys_setsockopt.
+I don't think this is correct.
+vector_eth_configure() cannot communicate the failure since it is of type v=
+oid.
+So, vector_remove() will run and will call unregister_netdev(). That can ca=
+use a double-free.
+
+Thanks,
+//richard
 
