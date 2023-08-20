@@ -1,38 +1,38 @@
-Return-Path: <bpf+bounces-8131-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8132-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3FE3781C52
-	for <lists+bpf@lfdr.de>; Sun, 20 Aug 2023 06:08:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DD24781C8B
+	for <lists+bpf@lfdr.de>; Sun, 20 Aug 2023 07:58:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6AD01C208A8
-	for <lists+bpf@lfdr.de>; Sun, 20 Aug 2023 04:08:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 113F2281080
+	for <lists+bpf@lfdr.de>; Sun, 20 Aug 2023 05:58:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC692EC5;
-	Sun, 20 Aug 2023 04:07:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6829210F0;
+	Sun, 20 Aug 2023 05:58:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA26EA5A
-	for <bpf@vger.kernel.org>; Sun, 20 Aug 2023 04:07:55 +0000 (UTC)
-Received: from out-23.mta1.migadu.com (out-23.mta1.migadu.com [95.215.58.23])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 475413AB5
-	for <bpf@vger.kernel.org>; Sat, 19 Aug 2023 21:04:58 -0700 (PDT)
-Message-ID: <5b54fb06-3ce5-4219-a591-1a2d8ee77656@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B1E010E1
+	for <bpf@vger.kernel.org>; Sun, 20 Aug 2023 05:58:13 +0000 (UTC)
+Received: from out-28.mta1.migadu.com (out-28.mta1.migadu.com [95.215.58.28])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D941559C4
+	for <bpf@vger.kernel.org>; Sat, 19 Aug 2023 21:16:31 -0700 (PDT)
+Message-ID: <a637d0d2-6ef7-3a16-5ea0-61936a2e3e4c@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692504294; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	t=1692504990; h=from:from:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bcP4cyjX3nWXKOBVhR0tXDN3xFPIvFr5cYYzdEgXx9A=;
-	b=Gi0q0zyKvNL/ndZWe4N27+I3s8sRiAiNtIo70VDXc3whLKRjlUr/XFx7nuNSVBQHmr35wi
-	a5/jnBg3c4H+NpCVb+zOyVCnGQSwd1XmXYWSlJ8pzFc5HULcxqEhND4rQ++Si3e6Kz3oaL
-	92PnR+o0Cc9nI2MC9viGENJYSNvdAU8=
-Date: Sat, 19 Aug 2023 21:04:50 -0700
+	bh=eVRdEbN1uy+zEl8UtLy6NNgLWmtIsiFuDOxJaGzoCAk=;
+	b=D6jWYsYMr2Zjjuslm7EUo2nWlrUIjY1lozk1A4zB2oWCc13QcYJB4jk9wU2TBS8brjGKbp
+	VPIeT883fR8KjTbgL4DRHZodZ4QEmTn6EI7LI61u/BEyRYrCO7iCpOcwnFKpWGrm/bsy3V
+	RxFltMCsHQP3YZq25JvlJqNfwKjZwx0=
+Date: Sat, 19 Aug 2023 21:16:26 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -40,19 +40,19 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Reply-To: yonghong.song@linux.dev
-Subject: Re: [PATCH bpf-next 03/15] bpf: Add alloc/xchg/direct_access support
- for local percpu kptr
+Subject: Re: [PATCH bpf-next 04/15] bpf: Add bpf_this_cpu_ptr/bpf_per_cpu_ptr
+ support for allocated percpu obj
 Content-Language: en-US
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
  Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
  kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
 References: <20230814172809.1361446-1-yonghong.song@linux.dev>
- <20230814172825.1363378-1-yonghong.song@linux.dev>
- <CAP01T756RSWSveq_SqfhFWJguT+gpwYU7iRtMGCgSFNf-x+JLQ@mail.gmail.com>
+ <20230814172830.1363918-1-yonghong.song@linux.dev>
+ <20230819010112.j7yxcihjuj2ylo4x@macbook-pro-8.dhcp.thefacebook.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAP01T756RSWSveq_SqfhFWJguT+gpwYU7iRtMGCgSFNf-x+JLQ@mail.gmail.com>
+In-Reply-To: <20230819010112.j7yxcihjuj2ylo4x@macbook-pro-8.dhcp.thefacebook.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
@@ -64,263 +64,175 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 
 
-On 8/18/23 6:24 PM, Kumar Kartikeya Dwivedi wrote:
-> On Mon, 14 Aug 2023 at 22:59, Yonghong Song <yonghong.song@linux.dev> wrote:
+On 8/18/23 6:01 PM, Alexei Starovoitov wrote:
+> On Mon, Aug 14, 2023 at 10:28:30AM -0700, Yonghong Song wrote:
+>> The bpf helpers bpf_this_cpu_ptr() and bpf_per_cpu_ptr() are re-purposed
+>> for allocated percpu objects. For an allocated percpu obj,
+>> the reg type is 'PTR_TO_BTF_ID | MEM_PERCPU | MEM_RCU'.
 >>
->> Add two new kfunc's, bpf_percpu_obj_new_impl() and
->> bpf_percpu_obj_drop_impl(), to allocate a percpu obj.
->> Two functions are very similar to bpf_obj_new_impl()
->> and bpf_obj_drop_impl(). The major difference is related
->> to percpu handling.
+>> The return type for these two re-purposed helpera is
+>> 'PTR_TO_MEM | MEM_RCU | MEM_ALLOC'.
+>> The MEM_ALLOC allows that the per-cpu data can be read and written.
 >>
->>      bpf_rcu_read_lock()
->>      struct val_t __percpu *v = map_val->percpu_data;
->>      ...
->>      bpf_rcu_read_unlock()
->>
->> For a percpu data map_val like above 'v', the reg->type
->> is set as
->>          PTR_TO_BTF_ID | MEM_PERCPU | MEM_RCU
->> if inside rcu critical section.
->>
->> MEM_RCU marking here is similar to NON_OWN_REF as 'v'
->> is not a owning referenace. But NON_OWN_REF is
-> 
-> typo: reference
-
-Ack.
-
-> 
->> trusted and typically inside the spinlock while
->> MEM_RCU is under rcu read lock. RCU is preferred here
->> since percpu data structures mean potential concurrent
->> access into its contents.
->>
->> Also, bpf_percpu_obj_new_impl() is restricted to only accept
->> scalar struct which means nested kptr's are not allowed
->> but some other special field, e.g., bpf_list_head, bpf_spin_lock, etc.
->> could be nested (nested 'struct'). Later patch will improve verifier to
->> handle such nested special fields.
+>> Since the memory allocator bpf_mem_alloc() returns
+>> a ptr to a percpu ptr for percpu data, the first argument
+>> of bpf_this_cpu_ptr() and bpf_per_cpu_ptr() is patched
+>> with a dereference before passing to the helper func.
 >>
 >> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 >> ---
->>   include/linux/bpf.h   |  3 +-
->>   kernel/bpf/helpers.c  | 49 +++++++++++++++++++++++
->>   kernel/bpf/syscall.c  | 21 +++++++---
->>   kernel/bpf/verifier.c | 90 ++++++++++++++++++++++++++++++++++---------
->>   4 files changed, 137 insertions(+), 26 deletions(-)
+>>   include/linux/bpf_verifier.h |  1 +
+>>   kernel/bpf/verifier.c        | 51 ++++++++++++++++++++++++++++++------
+>>   2 files changed, 44 insertions(+), 8 deletions(-)
 >>
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index e6348fd0a785..a2cb380c43c7 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -197,7 +197,8 @@ struct btf_field_kptr {
->>          struct btf *btf;
->>          struct module *module;
->>          /* dtor used if btf_is_kernel(btf), otherwise the type is
->> -        * program-allocated, dtor is NULL,  and __bpf_obj_drop_impl is used
->> +        * program-allocated, dtor is NULL,  and __bpf_obj_drop_impl
->> +        * or __bpf_percpu_drop_impl is used
->>           */
->>          btf_dtor_kfunc_t dtor;
->>          u32 btf_id;
->> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index eb91cae0612a..dd14cb7da4af 100644
->> --- a/kernel/bpf/helpers.c
->> +++ b/kernel/bpf/helpers.c
->> @@ -1900,6 +1900,29 @@ __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
->>          return p;
->>   }
->>
->> +__bpf_kfunc void *bpf_percpu_obj_new_impl(u64 local_type_id__k, void *meta__ign)
->> +{
->> +       struct btf_struct_meta *meta = meta__ign;
->> +       const struct btf_record *rec;
->> +       u64 size = local_type_id__k;
->> +       void __percpu *pptr;
->> +       void *p;
->> +       int cpu;
->> +
->> +       p = bpf_mem_alloc(&bpf_global_percpu_ma, size);
->> +       if (!p)
->> +               return NULL;
->> +       if (meta) {
->> +               pptr = *((void __percpu **)p);
->> +               rec = meta->record;
->> +               for_each_possible_cpu(cpu) {
->> +                       bpf_obj_init(rec, per_cpu_ptr(pptr, cpu));
->> +               }
->> +       }
->> +
->> +       return p;
->> +}
->> +
->>   /* Must be called under migrate_disable(), as required by bpf_mem_free */
->>   void __bpf_obj_drop_impl(void *p, const struct btf_record *rec)
->>   {
->> @@ -1924,6 +1947,30 @@ __bpf_kfunc void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
->>          __bpf_obj_drop_impl(p, meta ? meta->record : NULL);
->>   }
->>
->> +/* Must be called under migrate_disable(), as required by bpf_mem_free_rcu */
->> +void __bpf_percpu_obj_drop_impl(void *p, const struct btf_record *rec)
->> +{
->> +       void __percpu *pptr;
->> +       int cpu;
->> +
->> +       if (rec) {
->> +               pptr = *((void __percpu **)p);
->> +               for_each_possible_cpu(cpu) {
->> +                       bpf_obj_free_fields(rec, per_cpu_ptr(pptr, cpu));
-> 
-> Should this loop be done after we have waited for the RCU grace period?
-> Otherwise any other CPU can reinitialize a field after this is done,
-> move objects into lists/rbtree, and leak memory.
-> Please correct me if I'm mistaken.
-
-Thanks for spotting this. I think you are correct. The above scenario is
-indeed possible. one cpu takes a direct reference of __percpu_kptr and
-do a bunch of stuff, and the other cpu is doing a bpf_kptr_xchg to
-get the __percpu_kptr and drops it. We should really drop the 
-__percpu_kptr itself and the fields in its record after a rcu
-grace period so the exist direct reference operation won't be
-affected.
-
-Will fix it in the v2.
-
-> 
->> +               }
->> +       }
->> +
->> +       bpf_mem_free_rcu(&bpf_global_percpu_ma, p);
->> +}
->> +
->> +__bpf_kfunc void bpf_percpu_obj_drop_impl(void *p__alloc, void *meta__ign)
->> +{
->> +       struct btf_struct_meta *meta = meta__ign;
->> +       void *p = p__alloc;
->> +
->> +       __bpf_percpu_obj_drop_impl(p, meta ? meta->record : NULL);
->> +}
->> +
->>   __bpf_kfunc void *bpf_refcount_acquire_impl(void *p__refcounted_kptr, void *meta__ign)
->>   {
->>          struct btf_struct_meta *meta = meta__ign;
->> @@ -2436,7 +2483,9 @@ BTF_SET8_START(generic_btf_ids)
->>   BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
->>   #endif
->>   BTF_ID_FLAGS(func, bpf_obj_new_impl, KF_ACQUIRE | KF_RET_NULL)
->> +BTF_ID_FLAGS(func, bpf_percpu_obj_new_impl, KF_ACQUIRE | KF_RET_NULL)
->>   BTF_ID_FLAGS(func, bpf_obj_drop_impl, KF_RELEASE)
->> +BTF_ID_FLAGS(func, bpf_percpu_obj_drop_impl, KF_RELEASE)
->>   BTF_ID_FLAGS(func, bpf_refcount_acquire_impl, KF_ACQUIRE | KF_RET_NULL)
->>   BTF_ID_FLAGS(func, bpf_list_push_front_impl)
->>   BTF_ID_FLAGS(func, bpf_list_push_back_impl)
->> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index 1c30b6ee84d4..9ceb6fd9a0e2 100644
->> --- a/kernel/bpf/syscall.c
->> +++ b/kernel/bpf/syscall.c
->> @@ -627,6 +627,7 @@ void bpf_obj_free_timer(const struct btf_record *rec, void *obj)
->>   }
->>
->>   extern void __bpf_obj_drop_impl(void *p, const struct btf_record *rec);
->> +extern void __bpf_percpu_obj_drop_impl(void *p, const struct btf_record *rec);
->>
->>   void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
->>   {
->> @@ -660,13 +661,21 @@ void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
->>                          if (!btf_is_kernel(field->kptr.btf)) {
->>                                  pointee_struct_meta = btf_find_struct_meta(field->kptr.btf,
->>                                                                             field->kptr.btf_id);
->> -                               if (field->type != BPF_KPTR_PERCPU_REF)
->> +
->> +                               if (field->type == BPF_KPTR_PERCPU_REF) {
->> +                                       migrate_disable();
->> +                                       __bpf_percpu_obj_drop_impl(xchgd_field, pointee_struct_meta ?
->> +                                                                               pointee_struct_meta->record :
->> +                                                                               NULL);
->> +                                       migrate_enable();
->> +                               } else {
->>                                          WARN_ON_ONCE(!pointee_struct_meta);
->> -                               migrate_disable();
->> -                               __bpf_obj_drop_impl(xchgd_field, pointee_struct_meta ?
->> -                                                                pointee_struct_meta->record :
->> -                                                                NULL);
->> -                               migrate_enable();
->> +                                       migrate_disable();
->> +                                       __bpf_obj_drop_impl(xchgd_field, pointee_struct_meta ?
->> +                                                                        pointee_struct_meta->record :
->> +                                                                        NULL);
->> +                                       migrate_enable();
->> +                               }
->>                          } else {
->>                                  field->kptr.dtor(xchgd_field);
->>                          }
+>> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+>> index f70f9ac884d2..e23480db37ec 100644
+>> --- a/include/linux/bpf_verifier.h
+>> +++ b/include/linux/bpf_verifier.h
+>> @@ -480,6 +480,7 @@ struct bpf_insn_aux_data {
+>>   	bool zext_dst; /* this insn zero extends dst reg */
+>>   	bool storage_get_func_atomic; /* bpf_*_storage_get() with atomic memory alloc */
+>>   	bool is_iter_next; /* bpf_iter_<type>_next() kfunc call */
+>> +	bool percpu_ptr_prog_alloc; /* {this,per}_cpu_ptr() with prog alloc */
+>>   	u8 alu_state; /* used in combination with alu_limit */
+>>   
+>>   	/* below fields are initialized once */
 >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 4ccca1f6c998..a985fbf18a11 100644
+>> index a985fbf18a11..6fc200cb68b6 100644
 >> --- a/kernel/bpf/verifier.c
 >> +++ b/kernel/bpf/verifier.c
->> @@ -304,7 +304,7 @@ struct bpf_kfunc_call_arg_meta {
->>          /* arg_{btf,btf_id,owning_ref} are used by kfunc-specific handling,
->>           * generally to pass info about user-defined local kptr types to later
->>           * verification logic
->> -        *   bpf_obj_drop
->> +        *   bpf_obj_drop/bpf_percpu_obj_drop
->>           *     Record the local kptr type to be drop'd
->>           *   bpf_refcount_acquire (via KF_ARG_PTR_TO_REFCOUNTED_KPTR arg type)
->>           *     Record the local kptr type to be refcount_incr'd and use
->> @@ -4997,13 +4997,20 @@ static int map_kptr_match_type(struct bpf_verifier_env *env,
->>          if (kptr_field->type == BPF_KPTR_UNREF)
->>                  perm_flags |= PTR_UNTRUSTED;
->>
->> +       if (kptr_field->type == BPF_KPTR_PERCPU_REF)
->> +               perm_flags |= MEM_PERCPU | MEM_ALLOC;
+>> @@ -6221,7 +6221,7 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+>>   		}
+>>   
+>>   		if (type_is_alloc(reg->type) && !type_is_non_owning_ref(reg->type) &&
+>> -		    !reg->ref_obj_id) {
+>> +		    !(reg->type & MEM_RCU) && !reg->ref_obj_id) {
+>>   			verbose(env, "verifier internal error: ref_obj_id for allocated object must be non-zero\n");
+>>   			return -EFAULT;
+>>   		}
+>> @@ -7765,6 +7765,7 @@ static const struct bpf_reg_types btf_ptr_types = {
+>>   static const struct bpf_reg_types percpu_btf_ptr_types = {
+>>   	.types = {
+>>   		PTR_TO_BTF_ID | MEM_PERCPU,
+>> +		PTR_TO_BTF_ID | MEM_PERCPU | MEM_RCU,
+>>   		PTR_TO_BTF_ID | MEM_PERCPU | PTR_TRUSTED,
+>>   	}
+>>   };
+>> @@ -7945,6 +7946,7 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+>>   			return -EACCES;
+>>   		break;
+>>   	case PTR_TO_BTF_ID | MEM_PERCPU:
+>> +	case PTR_TO_BTF_ID | MEM_PERCPU | MEM_RCU:
+>>   	case PTR_TO_BTF_ID | MEM_PERCPU | PTR_TRUSTED:
+>>   		/* Handled by helper specific checks */
+>>   		break;
+>> @@ -8287,6 +8289,16 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>>   			verbose(env, "Helper has invalid btf_id in R%d\n", regno);
+>>   			return -EACCES;
+>>   		}
+>> +		if (reg->type & MEM_RCU) {
+>> +			const struct btf_type *type = btf_type_by_id(reg->btf, reg->btf_id);
 >> +
+>> +			if (!type || !btf_type_is_struct(type)) {
+>> +				verbose(env, "Helper has invalid btf/btf_id in R%d\n", regno);
+>> +				return -EFAULT;
+>> +			}
+>> +			env->insn_aux_data[insn_idx].percpu_ptr_prog_alloc = true;
+>> +		}
 > 
-> I think just this would permit PTR_TO_BTF_ID | MEM_ALLOC for percpu kptr?
-> It would probably be good to include negative selftests for kptr_xchg
-> type matching with percpu_kptr to prevent things like these.
-> 
-> Alexei already said map_kptr_match_type is not being invoked for
-> MEM_ALLOC kptr_xchg, so that is also an existing bug.
+> Let's move this check out of check_func_arg() and do it in check_helper_call() after the loop.
+> meta has what we need.
+> Also I would do it only for specific helpers like:
+> case BPF_FUNC_per_cpu_ptr:
+> case BPF_FUNC_this_cpu_ptr:
+>     if (reg[R1]->type & MEM_RCU) {
+>        const struct btf_type *type = btf_type_by_id(meta->ret_btf, ...)
+>        ...
+>        returns_cpu_specific_alloc_ptr = true;
+>        insn_aux_datap[].call_with_percpu_alloc_ptr = ture;
+>      }
 
-I will fix that bug first and this part of change probably not
-needed any more.
+This is more explicit and easier to understand. Will use the above
+in v2.
 
-> 
->>          if (base_type(reg->type) != PTR_TO_BTF_ID || (type_flag(reg->type) & ~perm_flags))
->>                  goto bad_type;
->>
->> [...]
->>          /* We need to verify reg->type and reg->btf, before accessing reg->btf */
->>          reg_name = btf_type_name(reg->btf, reg->btf_id);
->>
->> @@ -5084,7 +5091,17 @@ static bool rcu_safe_kptr(const struct btf_field *field)
->>   {
->>          const struct btf_field_kptr *kptr = &field->kptr;
->>
->> -       return field->type == BPF_KPTR_REF && rcu_protected_object(kptr->btf, kptr->btf_id);
->> +       return field->type == BPF_KPTR_PERCPU_REF ||
->> +              (field->type == BPF_KPTR_REF && rcu_protected_object(kptr->btf, kptr->btf_id));
->> +}
 >> +
->> +static u32 btf_ld_kptr_type(struct bpf_verifier_env *env, struct btf_field *kptr_field)
->> +{
->> +       if (!rcu_safe_kptr(kptr_field) || !in_rcu_cs(env))
->> +               return PTR_MAYBE_NULL | PTR_UNTRUSTED;
->> +       if (kptr_field->type != BPF_KPTR_PERCPU_REF)
->> +               return PTR_MAYBE_NULL | MEM_RCU;
->> +       return PTR_MAYBE_NULL | MEM_RCU | MEM_PERCPU;
+>>   		meta->ret_btf = reg->btf;
+>>   		meta->ret_btf_id = reg->btf_id;
+>>   		break;
+>> @@ -9888,14 +9900,18 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>>   			regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
+>>   			regs[BPF_REG_0].mem_size = tsize;
+>>   		} else {
+>> -			/* MEM_RDONLY may be carried from ret_flag, but it
+>> -			 * doesn't apply on PTR_TO_BTF_ID. Fold it, otherwise
+>> -			 * it will confuse the check of PTR_TO_BTF_ID in
+>> -			 * check_mem_access().
+>> -			 */
+>> -			ret_flag &= ~MEM_RDONLY;
+>> +			if (env->insn_aux_data[insn_idx].percpu_ptr_prog_alloc) {
 > 
-> The inverted conditions are a bit hard to follow. Maybe better to
-> explicitly check for both RCU cases, and default to untrusted
-> otherwise?
+> and here I would only check the local bool returns_percpu_alloc_ptr.
+> 
+> Because returns_cpu_specific_alloc_ptr is not the same as call_with_percpu_alloc_ptr.
+> 
+> Like this_cpu_read() is a call_with_percpu_alloc_ptr, but it doesn't return cpu specific pointer.
+> It derefs cpu specific pointer and returns the value.
+> Of course, we don't have such helper today, but worth thinking ahead.
 
-Okay. Will do.
+Agree. percpu_ptr_prog_alloc is a bad name. I actually spent some time
+on how to name it but did not come with a good one. Will use
+returns_cpu_specific_alloc_ptr as you suggested.
 
 > 
->>   }
+>> +				regs[BPF_REG_0].type = PTR_TO_BTF_ID | MEM_ALLOC | MEM_RCU;
+>> +			} else {
+>> +				/* MEM_RDONLY may be carried from ret_flag, but it
+>> +				 * doesn't apply on PTR_TO_BTF_ID. Fold it, otherwise
+>> +				 * it will confuse the check of PTR_TO_BTF_ID in
+>> +				 * check_mem_access().
+>> +				 */
+>> +				ret_flag &= ~MEM_RDONLY;
+>> +				regs[BPF_REG_0].type = PTR_TO_BTF_ID | ret_flag;
+>> +			}
+>>   
+>> -			regs[BPF_REG_0].type = PTR_TO_BTF_ID | ret_flag;
+>>   			regs[BPF_REG_0].btf = meta.ret_btf;
+>>   			regs[BPF_REG_0].btf_id = meta.ret_btf_id;
+>>   		}
+>> @@ -18646,6 +18662,25 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+>>   			goto patch_call_imm;
+>>   		}
+>>   
+>> +		/* bpf_per_cpu_ptr() and bpf_this_cpu_ptr() */
+>> +		if (env->insn_aux_data[i + delta].percpu_ptr_prog_alloc) {
+> 
+> call_with_percpu_alloc_ptr
+> 
+>> +			/* patch with 'r1 = *(u64 *)(r1 + 0)' since for percpu data,
+>> +			 * bpf_mem_alloc() returns a ptr to the percpu data ptr.
+>> +			 */
+>> +			insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0);
+> 
+> here R1 is no longer a concern, since we check R1 only in check_helper_call.
+> 
+>> +			insn_buf[1] = *insn;
+>> +			cnt = 2;
+>> +
+>> +			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
+>> +			if (!new_prog)
+>> +				return -ENOMEM;
+>> +
+>> +			delta += cnt - 1;
+>> +			env->prog = prog = new_prog;
+>> +			insn = new_prog->insnsi + i + delta;
+>> +			goto patch_call_imm;
+>> +		}
+>> +
+>>   		/* BPF_EMIT_CALL() assumptions in some of the map_gen_lookup
+>>   		 * and other inlining handlers are currently limited to 64 bit
+>>   		 * only.
+>> -- 
+>> 2.34.1
 >>
->> [...]
->>
+> 
 
