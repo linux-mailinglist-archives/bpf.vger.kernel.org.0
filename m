@@ -1,115 +1,86 @@
-Return-Path: <bpf+bounces-8126-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8127-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E8B7781B74
-	for <lists+bpf@lfdr.de>; Sun, 20 Aug 2023 02:13:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 078E6781C22
+	for <lists+bpf@lfdr.de>; Sun, 20 Aug 2023 04:43:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49144281113
-	for <lists+bpf@lfdr.de>; Sun, 20 Aug 2023 00:13:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC9D21C208A8
+	for <lists+bpf@lfdr.de>; Sun, 20 Aug 2023 02:43:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B592629;
-	Sun, 20 Aug 2023 00:13:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A1C0A51;
+	Sun, 20 Aug 2023 02:43:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4263173
-	for <bpf@vger.kernel.org>; Sun, 20 Aug 2023 00:12:59 +0000 (UTC)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E9EC48D7;
-	Sat, 19 Aug 2023 14:01:42 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 81DC4616B2CF;
-	Sat, 19 Aug 2023 23:01:28 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id R-xTUNX53BfU; Sat, 19 Aug 2023 23:01:27 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id DC29761989EF;
-	Sat, 19 Aug 2023 23:01:27 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id XlOXJxBLBgRp; Sat, 19 Aug 2023 23:01:27 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id B585963DB7EA;
-	Sat, 19 Aug 2023 23:01:27 +0200 (CEST)
-Date: Sat, 19 Aug 2023 23:01:27 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Minjie Du <duminjie@vivo.com>
-Cc: anton ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, 
-	Stephen Rothwell <sfr@canb.auug.org.au>, 
-	linux-um <linux-um@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, 
-	opensource kernel <opensource.kernel@vivo.com>
-Message-ID: <888265629.6490567.1692478887611.JavaMail.zimbra@nod.at>
-In-Reply-To: <20230706013911.695-1-duminjie@vivo.com>
-References: <20230706013911.695-1-duminjie@vivo.com>
-Subject: Re: [PATCH v4] um: vector: Fix exception handling in
- vector_eth_configure()
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6C6368
+	for <bpf@vger.kernel.org>; Sun, 20 Aug 2023 02:43:22 +0000 (UTC)
+Received: from out-32.mta0.migadu.com (out-32.mta0.migadu.com [IPv6:2001:41d0:1004:224b::20])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13D91D771
+	for <bpf@vger.kernel.org>; Sat, 19 Aug 2023 18:41:41 -0700 (PDT)
+Message-ID: <79d3c797-17ba-bc9e-b1f9-44ad024b576f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1692495699; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+	bh=UyzMdkJUGGZImIIDV3kVx4Vupk9R5T81wame5f6pg+g=;
+	b=bfq7wcPoIr+AlO+wZMmA357dkf02WW3xG7gm5KcYTJ0puQ4Zn+6ZFsueEo0F05l+6cGFfU
+	GJ+74naanA5VBc1PCpCDjdwLBXx9sL555riZNLfOyR17FHBam7+Ucbh9G6xWEv8grJ+ZI5
+	rWREhPF/1sOR26zlKDcXv460PKGzu2c=
+Date: Sat, 19 Aug 2023 18:41:30 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: vector: Fix exception handling in vector_eth_configure()
-Thread-Index: 4vytQNC34nzS2LWCFohj3c7c7cYvzA==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-	SPF_HELO_NONE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
-	version=3.4.6
+Reply-To: yonghong.song@linux.dev
+Content-Language: en-US
+To: Shubham Bansal <illusionist.neo@gmail.com>,
+ Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+ Paul Burton <paulburton@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Luke Nelson <luke.r.nels@gmail.com>,
+ Xi Wang <xi.wang@gmail.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Ilya Leoshkevich <iii@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ "David S. Miller" <davem@davemloft.net>, Wang YanQing <udknight@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: bpf: Request to add -mcpu=v4 support for
+ ARM/MIPS/NFP/POWERPC/RISCV/S390/SPARC/X86_32
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
------ Urspr=C3=BCngliche Mail -----
-> The resource cleanup was incomplete in the implementation
-> of the function "vector_eth_configure".
-> Thus replace the jump target
-> "out_undo_user_init" by "out_free_netdev".
-> Delate the orphan function "out_undo_user_init"
->=20
-> PATCH v1-v3: Modify the patch format.
->=20
-> Signed-off-by: Minjie Du <duminjie@vivo.com>
-> ---
-> arch/um/drivers/vector_kern.c | 4 +---
-> 1 file changed, 1 insertion(+), 3 deletions(-)
->=20
-> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.=
-c
-> index 131b7cb29..7ae6ab8df 100644
-> --- a/arch/um/drivers/vector_kern.c
-> +++ b/arch/um/drivers/vector_kern.c
-> @@ -1646,7 +1646,7 @@ static void vector_eth_configure(
-> =09err =3D register_netdevice(dev);
-> =09rtnl_unlock();
-> =09if (err)
-> -=09=09goto out_undo_user_init;
-> +=09=09goto out_free_netdev;
->=20
-> =09spin_lock(&vector_devices_lock);
-> =09list_add(&device->list, &vector_devices);
-> @@ -1654,8 +1654,6 @@ static void vector_eth_configure(
->=20
-> =09return;
->=20
-> -out_undo_user_init:
-> -=09return;
+Hi,
 
-I don't think this is correct.
-vector_eth_configure() cannot communicate the failure since it is of type v=
-oid.
-So, vector_remove() will run and will call unregister_netdev(). That can ca=
-use a double-free.
+A new set of bpf insns have been recently added in llvm with flag
+[-mcpu=v4](https://reviews.llvm.org/D144829). In the kernel,
+x86_64 and arm64 have implemented -mcpu=v4 support:
+   x86_64: 
+https://lore.kernel.org/all/20230728011143.3710005-1-yonghong.song@linux.dev/
+   arm64: 
+https://lore.kernel.org/bpf/20230815154158.717901-1-xukuohai@huaweicloud.com/
 
-Thanks,
-//richard
+The following arch's do not have -mcpu=v4 support yet:
+   arm, mips, nfp, powerpc, riscv, sc90, sparc and x86_32
+
+If you have a chance, could you take a look at what
+x86_64/arm64 does and add support to the above arch'es?
+
+Thanks!
+
+Yonghong
 
