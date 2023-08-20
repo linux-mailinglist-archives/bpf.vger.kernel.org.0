@@ -1,148 +1,111 @@
-Return-Path: <bpf+bounces-8133-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8134-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BFA9781C8C
-	for <lists+bpf@lfdr.de>; Sun, 20 Aug 2023 07:58:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC164781F40
+	for <lists+bpf@lfdr.de>; Sun, 20 Aug 2023 20:22:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4C06281095
-	for <lists+bpf@lfdr.de>; Sun, 20 Aug 2023 05:58:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D72341C2083E
+	for <lists+bpf@lfdr.de>; Sun, 20 Aug 2023 18:22:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B91210F0;
-	Sun, 20 Aug 2023 05:58:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB3663DE;
+	Sun, 20 Aug 2023 18:22:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 568EC10E1
-	for <bpf@vger.kernel.org>; Sun, 20 Aug 2023 05:58:26 +0000 (UTC)
-Received: from out-27.mta1.migadu.com (out-27.mta1.migadu.com [IPv6:2001:41d0:203:375::1b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE285FC4
-	for <bpf@vger.kernel.org>; Sat, 19 Aug 2023 21:20:05 -0700 (PDT)
-Message-ID: <e9e1fcb5-3c09-b269-8f28-3808d827c2f0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692505203; h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hlXDz1+tN+G7M+eYjOpKPWr6j4YKli9xnctkaxcLTII=;
-	b=YxHep5HB5VamjjR+AzsylPZEhKEIZKh22cHzlDouka1eL60rENMZnqBFgKOuKt+krZahc6
-	zjlB+6rHXE0NBnOzeZ55QQflESG2kkruyN0V3QNXrQQrl2P35SjKmNsKbqV8UtE6gMUwmQ
-	sl+7wxH0n51/qPM1SFsreiIYoaUx4F8=
-Date: Sat, 19 Aug 2023 21:19:59 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B28763CB
+	for <bpf@vger.kernel.org>; Sun, 20 Aug 2023 18:22:17 +0000 (UTC)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735004211
+	for <bpf@vger.kernel.org>; Sun, 20 Aug 2023 11:19:28 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-997c4107d62so344125666b.0
+        for <bpf@vger.kernel.org>; Sun, 20 Aug 2023 11:19:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1692555567; x=1693160367;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=jyjIIEtgE5oaHbyAm5gzVWUG+dED/JrA1tkaaPTN1yw=;
+        b=r7PqpouSPColuKBU492aC7DKgWRAdZR7x1/uIudEygQVWH2M7CpnK+XcPe3m0EvifL
+         wWkZHZxhQ+EJQ17juZ8HPfmYVtGq4nG765pbNdV14uT4Zya1QXr7XxnAWiuO402MLGq7
+         wwD8TKRX/hoS4qgc+eUc1xnm5hM1kHzwqrsjQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692555567; x=1693160367;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jyjIIEtgE5oaHbyAm5gzVWUG+dED/JrA1tkaaPTN1yw=;
+        b=JbOR26RNwi25DJVHpkS/zNZmuL1KiyLhq6vtu+xwEXw7TL77jG6BU2BsfaKoh1Glaa
+         atplAU1lKIQJxbGb/7Hhbj5FSTFY8bBWgLRJpEk9dBfoIOYewJNptNc4ftXKnOfMou4p
+         874gUjK8gGZKziMDtjomdxuVgu7kTnEYvFvWbxN4ugfLBG4qvH2cvVWOM9+6DZ7vkpYR
+         FQUbQMm8ztale5e4b3Hn41pRZNhPdLDiNFtLn5BvMQwhDXbiJmyTskeh7myenmlZ95G4
+         +ZKqjwYLPVfXPwiR1tSY3aEW/iwLXDK5N1pzXE5cI86d0hcnYVrWY0bW/BUd4pzXS8Co
+         jC2w==
+X-Gm-Message-State: AOJu0YyPimPxnzOhvqimw1PHUWkM+RKlu6DU8crRX7s8ROE8GO8dbz8v
+	f46gzgPLz71V+JzRIEO2LgNkrQ==
+X-Google-Smtp-Source: AGHT+IGAquWWtN82VfNoF84xCUuFd/x9j8gYXEjQB2zwVE1e2rOyG+YEoKnNq4tjJMphJQ59b1tliQ==
+X-Received: by 2002:a17:906:8446:b0:99d:dc87:5f29 with SMTP id e6-20020a170906844600b0099ddc875f29mr3802580ejy.12.1692555566879;
+        Sun, 20 Aug 2023 11:19:26 -0700 (PDT)
+Received: from cloudflare.com (79.184.134.65.ipv4.supernova.orange.pl. [79.184.134.65])
+        by smtp.gmail.com with ESMTPSA id jw11-20020a17090776ab00b0099d0a8ccb5fsm5023453ejc.152.2023.08.20.11.19.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Aug 2023 11:19:26 -0700 (PDT)
+References: <20230811093237.3024459-1-liujian56@huawei.com>
+ <20230811093237.3024459-2-liujian56@huawei.com>
+ <64ddba9e1df57_32c0720898@john.notmuch>
+User-agent: mu4e 1.6.10; emacs 28.2
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+ kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, dsahern@kernel.org, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, liujian56@huawei.com
+Subject: Re: [PATCH bpf-next v2 1/7] bpf, sockmap: add BPF_F_PERMANENTLY
+ flag for skmsg redirect
+Date: Sun, 20 Aug 2023 20:03:11 +0200
+In-reply-to: <64ddba9e1df57_32c0720898@john.notmuch>
+Message-ID: <877cpp7f0y.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: [PATCH bpf-next 09/15] bpf: Mark OBJ_RELEASE argument as MEM_RCU
- when possible
-Content-Language: en-US
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20230814172809.1361446-1-yonghong.song@linux.dev>
- <20230814172857.1366162-1-yonghong.song@linux.dev>
- <CAP01T76BxK=OR8es4_GByNpZn_WVBDDQQELgSgkJwUh0=q_CYg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAP01T76BxK=OR8es4_GByNpZn_WVBDDQQELgSgkJwUh0=q_CYg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Wed, Aug 16, 2023 at 11:13 PM -07, John Fastabend wrote:
+> Liu Jian wrote:
+>> If the sockmap msg redirection function is used only to forward packets
+>> and no other operation, the execution result of the BPF_SK_MSG_VERDICT
+>> program is the same each time. In this case, the BPF program only needs to
+>> be run once. Add BPF_F_PERMANENTLY flag to bpf_msg_redirect_map() and
+>> bpf_msg_redirect_hash() to implement this ability.
+>> 
+>
+> I like the use case. Did you consider using
+>
+>  long bpf_msg_apply_bytes(struct sk_msg_buff *msg, u32 bytes)
+>
+> This could be set to UINT32_MAX and then the BPF prog would only be run
+> every 0xfffffff bytes.
 
+It would be great to have the permanent redirect feature implemented
+also for BPF_SK_SKB_STREAM_VERDICT and BPF_SK_SKB_VERDICT. I don't think
+there are any obstacles to support it for both input configurations.
 
-On 8/18/23 6:44 PM, Kumar Kartikeya Dwivedi wrote:
-> On Mon, 14 Aug 2023 at 23:00, Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->> In previous selftests/bpf patch, we have
->>    p = bpf_percpu_obj_new(struct val_t);
->>    if (!p)
->>            goto out;
->>
->>    p1 = bpf_kptr_xchg(&e->pc, p);
->>    if (p1) {
->>            /* race condition */
->>            bpf_percpu_obj_drop(p1);
->>    }
->>
->>    p = e->pc;
->>    if (!p)
->>            goto out;
->>
->> After bpf_kptr_xchg(), we need to re-read e->pc into 'p'.
->> This is due to that the second argument of bpf_kptr_xchg() is marked
->> OBJ_RELEASE and it will be marked as invalid after the call.
->> So after bpf_kptr_xchg(), 'p' is an unknown scalar,
->> and the bpf program needs to reread from the map value.
->>
->> This patch checks if the 'p' has type MEM_ALLOC and MEM_PERCPU,
->> and if 'p' is RCU protected. If this is the case, 'p' can be marked
->> as MEM_RCU. MEM_ALLOC needs to be removed since 'p' is not
->> an owning reference any more. Such a change makes re-read
->> from the map value unnecessary.
->>
->> Note that re-reading 'e->pc' after bpf_kptr_xchg() might get
->> a different value from 'p' if immediately before 'p = e->pc',
->> another cpu may do another bpf_kptr_xchg() and swap in another value
->> into 'e->pc'. If this is the case, then 'p = e->pc' may
->> get either 'p' or another value, and race condition already exists.
->> So removing direct re-reading seems fine too.
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   kernel/bpf/verifier.c | 11 +++++++++--
->>   1 file changed, 9 insertions(+), 2 deletions(-)
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 6fc200cb68b6..6fa458e13bfc 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -8854,8 +8854,15 @@ static int release_reference(struct bpf_verifier_env *env,
->>                  return err;
->>
->>          bpf_for_each_reg_in_vstate(env->cur_state, state, reg, ({
->> -               if (reg->ref_obj_id == ref_obj_id)
->> -                       mark_reg_invalid(env, reg);
->> +               if (reg->ref_obj_id == ref_obj_id) {
->> +                       if (in_rcu_cs(env) && (reg->type & MEM_ALLOC) && (reg->type & MEM_PERCPU)) {
-> 
-> Wouldn't this check also be true in case of bpf_percpu_obj_drop(p)
-> inside RCU CS/non-sleepable prog?
-> Do we want to permit access to p after drop in that case? I think it
-> will be a bit unintuitive.
-> I think we should preserve normal behavior for everything except for
-> kptr_xchg of a percpu_kptr.
+But in SK_SKB verdict prog we don't have apply_bytes. So we couldn't
+keep the API the same without introducing a helper.
 
-You are correct. Above condition also applies to bpf_percpu_obj_drop()
-and we should should change MEM_ALLOC to MEM_RCU only for
-bpf_percpu_obj_new(). Will fix.
+That's why I'd go with the flag.
 
-> 
->> +                               reg->ref_obj_id = 0;
->> +                               reg->type &= ~MEM_ALLOC;
->> +                               reg->type |= MEM_RCU;
->> +                       } else {
->> +                               mark_reg_invalid(env, reg);
->> +                       }
->> +               }
->>          }));
->>
->>          return 0;
->> --
->> 2.34.1
->>
->>
+[...]
 
