@@ -1,112 +1,127 @@
-Return-Path: <bpf+bounces-8161-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8160-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00C83782CF5
-	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 17:10:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5F68782CF4
+	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 17:09:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B92F9280EC9
-	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 15:10:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A736E280EE8
+	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 15:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BE88846F;
-	Mon, 21 Aug 2023 15:10:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B55DF846F;
+	Mon, 21 Aug 2023 15:09:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6800879F7
-	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 15:10:06 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA87F1
-	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 08:10:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1692630601;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=9YOqEsz0E9i9rWLFPxwqu5HEnoteHVcXSEYvs1ICBUo=;
-	b=JStcUJ3aSLZkETvhJTjRg8Yewgw1RE0maKmYChgUJH28ZR/hACLj+tpW2eHDP9eLPGFne7
-	u2Z3nhsxYDWp90Ol6OYHVBtBPFlrfzhw3Po37/1MYh2vX4+ZbyNfOXs71b1KIzhLZqCbjS
-	QZ/LfruXj0mJoGPB7toSPUR502j3Qxc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-287-F2Ba5-b2OiGty_I1OAzrqw-1; Mon, 21 Aug 2023 11:09:57 -0400
-X-MC-Unique: F2Ba5-b2OiGty_I1OAzrqw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E50808DC66D;
-	Mon, 21 Aug 2023 15:09:56 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.99])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 2C9A11121314;
-	Mon, 21 Aug 2023 15:09:54 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Mon, 21 Aug 2023 17:09:11 +0200 (CEST)
-Date: Mon, 21 Aug 2023 17:09:09 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Yonghong Song <yhs@fb.com>, Kui-Feng Lee <kuifeng@fb.com>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
-	Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf: task_group_seq_get_next: cleanup the usage of
- next_thread()
-Message-ID: <20230821150909.GA2431@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DE7D79F7
+	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 15:09:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9624EC433C8;
+	Mon, 21 Aug 2023 15:09:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1692630583;
+	bh=FI4K6BFk3RcP+iLGylJ5QutVzletJNgfqF0MXLNwUf0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=dCKmpbvy7HJWTMFrBCj2/oKy5v78TCPMMm8WyuM+OEI+vYqq5+RaH3CnWLF7Y+df2
+	 Okr8hYkNswmMkxJOH1vIFrT9YnSkvPJk818OI6D6uno1ZVz+PZpRYGoL3S+dQV+yHv
+	 nWXIUNBh4HZf28mqMmWviX9yTVPJDCQbxl+YN5Pk/AasnLeNmY/RUsIEzxrq9SIuoJ
+	 BR9kDsPsuhDTWQUq6DVp5JPiZC0iHOiuGCHvrNczDwBTEpEe47c9w849ea2lIbyrD9
+	 GkeedOeN6HapZAa2Bcdna2Lvakkw3i1BUzBw/ZdEJ6Ec3nWSSnvWcVuhg01AozFdyz
+	 dGHAukZZPMMMw==
+Date: Tue, 22 Aug 2023 00:09:39 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org, Steven
+ Rostedt <rostedt@goodmis.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH v5 0/9] tracing: Improbe BTF support on probe events
+Message-Id: <20230822000939.81897c0c904934bfb9156a59@kernel.org>
+In-Reply-To: <169137686814.271367.11218568219311636206.stgit@devnote2>
+References: <169137686814.271367.11218568219311636206.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-	autolearn=unavailable autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-1. find_pid_ns() + get_pid_task() under rcu_read_lock() guarantees that we
-   can safely iterate the task->thread_group list. Even if this task exits
-   right after get_pid_task() (or goto retry) and pid_alive() returns 0.
+Hi Steve,
 
-   Kill the unnecessary pid_alive() check.
+Can you review this series?
+I would like to push this to for-next.
 
-2. next_thread() simply can't return NULL, kill the bogus "if (!next_task)"
-   check.
+Thank you,
 
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- kernel/bpf/task_iter.c | 7 -------
- 1 file changed, 7 deletions(-)
+On Mon,  7 Aug 2023 11:54:28 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 
-diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-index c4ab9d6cdbe9..4d1125108014 100644
---- a/kernel/bpf/task_iter.c
-+++ b/kernel/bpf/task_iter.c
-@@ -75,15 +75,8 @@ static struct task_struct *task_group_seq_get_next(struct bpf_iter_seq_task_comm
- 		return NULL;
- 
- retry:
--	if (!pid_alive(task)) {
--		put_task_struct(task);
--		return NULL;
--	}
--
- 	next_task = next_thread(task);
- 	put_task_struct(task);
--	if (!next_task)
--		return NULL;
- 
- 	saved_tid = *tid;
- 	*tid = __task_pid_nr_ns(next_task, PIDTYPE_PID, common->ns);
+> Hi,
+> 
+> Here is the 5th version of series to improve the BTF support on probe events.
+> The previous series is here:
+> 
+> https://lore.kernel.org/all/169078860386.173706.3091034523220945605.stgit@devnote2/
+> 
+> This version introduces kernel/trace/trace_btf.c to separate the btf generic
+> functions. These functions will be moved to btf.c next merge window.
+> This fixes the member-search function to return the bit-offset of the
+> parent anonymous union/structure. Thus the caller can calculate the real
+> bit-offset from the root data structure.
+> This also fixes the ftrace selftest issue which fails if the kernel
+> supports only BTF args but not support field access.
+> 
+> This series can be applied on top of "probes/core" branch of
+> https://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git/
+> 
+> You can also get this series from:
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git topic/fprobe-event-ext
+> 
+> Thank you,
+> 
+> ---
+> 
+> Masami Hiramatsu (Google) (9):
+>       tracing/probes: Support BTF argument on module functions
+>       tracing/probes: Move finding func-proto API and getting func-param API to trace_btf
+>       tracing/probes: Add a function to search a member of a struct/union
+>       tracing/probes: Support BTF based data structure field access
+>       tracing/probes: Support BTF field access from $retval
+>       tracing/probes: Add string type check with BTF
+>       tracing/fprobe-event: Assume fprobe is a return event by $retval
+>       selftests/ftrace: Add BTF fields access testcases
+>       Documentation: tracing: Update fprobe event example with BTF field
+> 
+> 
+>  Documentation/trace/fprobetrace.rst                |   64 ++-
+>  include/linux/btf.h                                |    1 
+>  kernel/bpf/btf.c                                   |    2 
+>  kernel/trace/Makefile                              |    1 
+>  kernel/trace/trace.c                               |    3 
+>  kernel/trace/trace_btf.c                           |  109 ++++
+>  kernel/trace/trace_btf.h                           |   11 
+>  kernel/trace/trace_eprobe.c                        |    4 
+>  kernel/trace/trace_fprobe.c                        |   59 ++
+>  kernel/trace/trace_kprobe.c                        |    1 
+>  kernel/trace/trace_probe.c                         |  499 +++++++++++++++-----
+>  kernel/trace/trace_probe.h                         |   27 +
+>  kernel/trace/trace_uprobe.c                        |    1 
+>  .../ftrace/test.d/dynevent/add_remove_btfarg.tc    |   20 +
+>  .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |   10 
+>  15 files changed, 637 insertions(+), 175 deletions(-)
+>  create mode 100644 kernel/trace/trace_btf.c
+>  create mode 100644 kernel/trace/trace_btf.h
+> 
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+
 -- 
-2.25.1.362.g51ebf55
-
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
