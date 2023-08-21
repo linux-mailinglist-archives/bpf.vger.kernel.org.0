@@ -1,262 +1,136 @@
-Return-Path: <bpf+bounces-8167-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8168-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D208C782F83
-	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 19:35:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73998782FBD
+	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 19:56:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D461280EAC
-	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 17:35:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 800841C20936
+	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 17:56:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 903B98F44;
-	Mon, 21 Aug 2023 17:35:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5029D312;
+	Mon, 21 Aug 2023 17:56:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D5BB8C16
-	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 17:35:02 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D84114
-	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 10:34:57 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37LGS8si002201
-	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 10:34:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=bCen6zmSioX3EuaMKsc3zqIezrOBODd4ABsAZsebbOE=;
- b=Hgvok7g3jGH1uc4cst1M5exNgCuS1VCj5aaQHUvY6krrCF45vtfkPfXFKZUuQvJojzrT
- IPY6qqiJJDz5eVtu0ES5fn2/1OticOm1vq2DIKdvBHADHd9QqhLnzcnjbUw+7SS8wqYw
- B+S0lJLoA5OHji2KlLOPzi2GoXmsE6gV8LI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3smbfc0mm9-5
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 10:34:57 -0700
-Received: from twshared34392.14.frc2.facebook.com (2620:10d:c0a8:1b::30) by
- mail.thefacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 21 Aug 2023 10:34:28 -0700
-Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-	id DDCE82300E6EA; Mon, 21 Aug 2023 10:34:17 -0700 (PDT)
-From: Dave Marchevsky <davemarchevsky@fb.com>
-To: <bpf@vger.kernel.org>
-CC: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
-	<daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau
-	<martin.lau@kernel.org>,
-        Kernel Team <kernel-team@fb.com>, <yonghong.song@linux.dev>,
-        <sdf@google.com>, Dave Marchevsky
-	<davemarchevsky@fb.com>
-Subject: [PATCH v2 bpf-next 3/3] selftests/bpf: Add tests for open-coded task_vma iter
-Date: Mon, 21 Aug 2023 10:34:15 -0700
-Message-ID: <20230821173415.1970776-4-davemarchevsky@fb.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230821173415.1970776-1-davemarchevsky@fb.com>
-References: <20230821173415.1970776-1-davemarchevsky@fb.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 997088F4E
+	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 17:56:04 +0000 (UTC)
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906F4114;
+	Mon, 21 Aug 2023 10:56:01 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-579de633419so42713807b3.3;
+        Mon, 21 Aug 2023 10:56:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692640561; x=1693245361;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1IL6PsZ9OIW8CBBVXv2ehcLQIm+WWtIFnIzb/l+zpLk=;
+        b=TWX7lffBPct1qvlfW3qU9Ap9Fg+KRhbsxXOv7jRclmTBu71TCxzsEsYYbjQjJA4Ss4
+         vn1V1eHrwyaARc2LpByLVKfJgL5I+fCN/NybF/u0YkAKX/vKR31O3ontvFJHl7dfID+5
+         LWDlgKai40GlUrsrnYpn2TzJZ7xBkIvRxkBOWAGQuIignlF81HU7qzipy2/86MeWWxyc
+         yeJao7ezJh5JmqPdxyfpgJuEmMHJnwDHPM982ScwWsXgtHy6cJKsGJ1bshzRBoDpxpQ7
+         R9B1DvxlEjG2gDp1BerJrsZtjBgyE0kwmeMLSnDBV+RnMHJ9Dp5FjAEY0isgktZj/FaQ
+         xBBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692640561; x=1693245361;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1IL6PsZ9OIW8CBBVXv2ehcLQIm+WWtIFnIzb/l+zpLk=;
+        b=ZXdtvZ9TG8E2t34d1k2qkkwDwOb4biv29j638/BKVJ6/hU8+Wu8uHVZVRdtBNfDM94
+         X7prhiJBidQsH5u0rZNn5RfQFp/TBvv0nppVHauTUbzKtUsyS8Ab46DpdTsNqUMevBa/
+         bF1ydHldJFIudk0itK5pc0SPm8sCZBxJqrD0YrSMXS3ImqUcvhayAZpvadjsqqMwYWDB
+         5rP4kHz88oEO7AEqCbt4NNjvOnjXQHsOv3JpQCc54BJdPiW/6Fp9sdACc2NXRZLrQShy
+         vYBnbrtCJ0FF/mkS5edldBLn8FZdUB4Ed44CBhfV2pmyRf5Ft3uCe8CXtNflszt/Ehs+
+         KYrw==
+X-Gm-Message-State: AOJu0Yy4CcDJDR5JsO1R6hlXreyimoZUDAerh6xMPhPRlZc8XZ5KJg05
+	+adFuaBR+mJqUCgIyNfa8DE=
+X-Google-Smtp-Source: AGHT+IGEBqzSbRI4exsGEK9v4MJmiN2lyZ9CEzVrmeK5vIqQRgEDCF/LuTfgi61qPIk74i3RmrApcw==
+X-Received: by 2002:a0d:ea91:0:b0:57a:6a2c:f4dd with SMTP id t139-20020a0dea91000000b0057a6a2cf4ddmr7888075ywe.36.1692640560176;
+        Mon, 21 Aug 2023 10:56:00 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:62f2:baa4:a7c0:4986? ([2600:1700:6cf8:1240:62f2:baa4:a7c0:4986])
+        by smtp.gmail.com with ESMTPSA id h129-20020a0dc587000000b00589f4021f84sm2370008ywd.37.2023.08.21.10.55.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 10:55:59 -0700 (PDT)
+Message-ID: <e0c71c5c-09e6-d94e-6db3-3acf3ee502d6@gmail.com>
+Date: Mon, 21 Aug 2023 10:55:58 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: UifQGwhAfAwGYaZQuBzyKkSfnG5Vc_Fc
-X-Proofpoint-ORIG-GUID: UifQGwhAfAwGYaZQuBzyKkSfnG5Vc_Fc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-21_06,2023-08-18_01,2023-05-22_02
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] bpf: task_group_seq_get_next: cleanup the usage of
+ next_thread()
+To: Oleg Nesterov <oleg@redhat.com>, Yonghong Song <yhs@fb.com>,
+ Kui-Feng Lee <kuifeng@fb.com>, Andrii Nakryiko <andrii@kernel.org>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20230821150909.GA2431@redhat.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20230821150909.GA2431@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-The open-coded task_vma iter added earlier in this series allows for
-natural iteration over a task's vmas using existing open-coded iter
-infrastructure, specifically bpf_for_each.
 
-This patch adds a test demonstrating this pattern and validating
-correctness. The vma->vm_start and vma->vm_end addresses of the first
-1000 vmas are recorded and compared to /proc/PID/maps output. As
-expected, both see the same vmas and addresses - with the exception of
-the [vsyscall] vma - which is explained in a comment in the prog_tests
-program.
 
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
----
- .../testing/selftests/bpf/prog_tests/iters.c  | 71 +++++++++++++++++++
- .../selftests/bpf/progs/iters_task_vma.c      | 56 +++++++++++++++
- 2 files changed, 127 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/iters_task_vma.c
+On 8/21/23 08:09, Oleg Nesterov wrote:
+> 1. find_pid_ns() + get_pid_task() under rcu_read_lock() guarantees that we
+>     can safely iterate the task->thread_group list. Even if this task exits
+>     right after get_pid_task() (or goto retry) and pid_alive() returns 0 >
+>     Kill the unnecessary pid_alive() check.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/iters.c b/tools/testi=
-ng/selftests/bpf/prog_tests/iters.c
-index 10804ae5ae97..f91f4a49066a 100644
---- a/tools/testing/selftests/bpf/prog_tests/iters.c
-+++ b/tools/testing/selftests/bpf/prog_tests/iters.c
-@@ -8,6 +8,7 @@
- #include "iters_looping.skel.h"
- #include "iters_num.skel.h"
- #include "iters_testmod_seq.skel.h"
-+#include "iters_task_vma.skel.h"
-=20
- static void subtest_num_iters(void)
- {
-@@ -90,6 +91,74 @@ static void subtest_testmod_seq_iters(void)
- 	iters_testmod_seq__destroy(skel);
- }
-=20
-+static void subtest_task_vma_iters(void)
-+{
-+	unsigned long start, end, bpf_iter_start, bpf_iter_end;
-+	struct iters_task_vma *skel;
-+	char rest_of_line[1000];
-+	unsigned int seen;
-+	int err;
-+	FILE *f;
-+
-+	skel =3D iters_task_vma__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	bpf_program__set_autoload(skel->progs.iter_task_vma_for_each, true);
-+
-+	err =3D iters_task_vma__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto cleanup;
-+
-+	skel->bss->target_pid =3D getpid();
-+
-+	err =3D iters_task_vma__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto cleanup;
-+
-+	iters_task_vma__detach(skel);
-+	getpgid(skel->bss->target_pid);
-+
-+	if (!ASSERT_GT(skel->bss->vmas_seen, 0, "vmas_seen_gt_zero"))
-+		goto cleanup;
-+
-+	f =3D fopen("/proc/self/maps", "r");
-+	if (!ASSERT_OK_PTR(f, "proc_maps_fopen"))
-+		goto cleanup;
-+
-+	seen =3D 0;
-+	while (fscanf(f, "%lx-%lx %[^\n]\n", &start, &end, rest_of_line) =3D=3D=
- 3) {
-+		/* [vsyscall] vma isn't _really_ part of task->mm vmas.
-+		 * /proc/PID/maps returns it when out of vmas - see get_gate_vma
-+		 * calls in fs/proc/task_mmu.c
-+		 */
-+		if (strstr(rest_of_line, "[vsyscall]"))
-+			continue;
-+
-+		err =3D bpf_map_lookup_elem(bpf_map__fd(skel->maps.vm_start),
-+					  &seen, &bpf_iter_start);
-+		if (!ASSERT_OK(err, "vm_start map_lookup_elem"))
-+			goto cleanup;
-+
-+		err =3D bpf_map_lookup_elem(bpf_map__fd(skel->maps.vm_end),
-+					  &seen, &bpf_iter_end);
-+		if (!ASSERT_OK(err, "vm_end map_lookup_elem"))
-+			goto cleanup;
-+
-+		ASSERT_EQ(bpf_iter_start, start, "vma->vm_start match");
-+		ASSERT_EQ(bpf_iter_end, end, "vma->vm_end match");
-+		seen++;
-+	}
-+
-+	fclose(f);
-+
-+	if (!ASSERT_EQ(skel->bss->vmas_seen, seen, "vmas_seen_eq"))
-+		goto cleanup;
-+
-+cleanup:
-+	iters_task_vma__destroy(skel);
-+}
-+
- void test_iters(void)
- {
- 	RUN_TESTS(iters_state_safety);
-@@ -103,4 +172,6 @@ void test_iters(void)
- 		subtest_num_iters();
- 	if (test__start_subtest("testmod_seq"))
- 		subtest_testmod_seq_iters();
-+	if (test__start_subtest("task_vma"))
-+		subtest_task_vma_iters();
- }
-diff --git a/tools/testing/selftests/bpf/progs/iters_task_vma.c b/tools/t=
-esting/selftests/bpf/progs/iters_task_vma.c
-new file mode 100644
-index 000000000000..b961d0a12223
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/iters_task_vma.c
-@@ -0,0 +1,56 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+
-+#include <limits.h>
-+#include <linux/errno.h>
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+pid_t target_pid =3D 0;
-+unsigned int vmas_seen =3D 0;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1000);
-+	__type(key, int);
-+	__type(value, unsigned long);
-+} vm_start SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1000);
-+	__type(key, int);
-+	__type(value, unsigned long);
-+} vm_end SEC(".maps");
-+
-+SEC("?raw_tp/sys_enter")
-+int iter_task_vma_for_each(const void *ctx)
-+{
-+	struct task_struct *task =3D bpf_get_current_task_btf();
-+	struct vm_area_struct *vma;
-+	unsigned long *start, *end;
-+
-+	if (task->pid !=3D target_pid)
-+		return 0;
-+
-+	bpf_for_each(task_vma, vma, task, 0) {
-+		if (vmas_seen >=3D 1000)
-+			break;
-+
-+		start =3D bpf_map_lookup_elem(&vm_start, &vmas_seen);
-+		if (!start)
-+			break;
-+		*start =3D vma->vm_start;
-+
-+		end =3D bpf_map_lookup_elem(&vm_end, &vmas_seen);
-+		if (!end)
-+			break;
-+		*end =3D vma->vm_end;
-+
-+		vmas_seen++;
-+	}
-+	return 0;
-+}
-+
-+char _license[] SEC("license") =3D "GPL";
---=20
-2.34.1
+This function will return next_task holding a refcount, and release the
+refcount until the next time calling the same function. Meanwhile,
+the returned task A may be killed, and its next task B may be
+killed after A as well, before calling this function again.
+However, even task B is destroyed (free), A's next is still pointing to
+task B. When this function is called again for the same iterator,
+it doesn't promise that B is still there.
 
+Does that make sense to you?
+
+> 
+> 2. next_thread() simply can't return NULL, kill the bogus "if (!next_task)"
+>     check.
+> 
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> ---
+>   kernel/bpf/task_iter.c | 7 -------
+>   1 file changed, 7 deletions(-)
+> 
+> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> index c4ab9d6cdbe9..4d1125108014 100644
+> --- a/kernel/bpf/task_iter.c
+> +++ b/kernel/bpf/task_iter.c
+> @@ -75,15 +75,8 @@ static struct task_struct *task_group_seq_get_next(struct bpf_iter_seq_task_comm
+>   		return NULL;
+>   
+>   retry:
+> -	if (!pid_alive(task)) {
+> -		put_task_struct(task);
+> -		return NULL;
+> -	}
+> -
+>   	next_task = next_thread(task);
+>   	put_task_struct(task);
+> -	if (!next_task)
+> -		return NULL;
+>   
+>   	saved_tid = *tid;
+>   	*tid = __task_pid_nr_ns(next_task, PIDTYPE_PID, common->ns);
 
