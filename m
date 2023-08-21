@@ -1,117 +1,94 @@
-Return-Path: <bpf+bounces-8140-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8141-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6613878214D
-	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 04:03:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E88B78215B
+	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 04:24:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2098E280EFF
-	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 02:03:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E33E21C204F3
+	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 02:23:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A30EEBB;
-	Mon, 21 Aug 2023 02:03:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FC09EDD;
+	Mon, 21 Aug 2023 02:23:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA08CEA1
-	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 02:03:47 +0000 (UTC)
-Received: from out203-205-251-84.mail.qq.com (unknown [203.205.251.84])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E589C;
-	Sun, 20 Aug 2023 19:03:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1692583424;
-	bh=tev9vFwzr3CByXx+8306FXg78Anw1TmvVUAj6prq2Zg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=WkT54Y2p9MnNLhSIx6DcYvg9g0G1Sn0DZXRFYTRBcqG7GcniodBoQz4zHH+nhtGl3
-	 kcDrkCPQ5q+NguvdszpPp5TuBkJaSqT6bsc7Urzveb8P8dVPDsgXzw/YdJ5elmamQf
-	 nyykN6cWtOv8Z/ozaDOZbyOnBdR/usxgXNfUFcOs=
-Received: from localhost.localdomain ([39.156.73.12])
-	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-	id E692A2B; Mon, 21 Aug 2023 10:03:38 +0800
-X-QQ-mid: xmsmtpt1692583418tyfo4egzn
-Message-ID: <tencent_ADC403037821ABAC8ECB6F15C6D7A3510507@qq.com>
-X-QQ-XMAILINFO: OaoBA5NOFC/jOVj7yUQgbw3QstZL4g20mKVHyjXoPuKpolkCmC5AfK22VR8nC8
-	 alfmaQIRUsQC3wyEFWgCxncjTVdteAXHrgkkHARUsfxEYTXOrkmkXxKas5ocAh7QOSe/TD1IRqLb
-	 etN2iFQ5cWcKXMwoFS5zhUBXZSXHqDMGPGZ6r+xV6SP8Bz0HlneWhZp8p1RsRmjf1XA7LCt8wpre
-	 9DQjcWldehO7Edn4s87tIr89ZduY+6MKlC+MQOPwPWifLYaig0u3O+cu4ovNw5f91nmHy3qxMnXO
-	 RwrsHTB4p7uQK7eN2sdrJ3WKIsQYEVr7VxbVDjriiqSABXzX02qMNERo/46jGatEKwSwZvSq1i9f
-	 xKkws1ljzTZGXw0LwJw945og7SLn0i6OR9+VRXnxB4klMsKexMMEljDSP807+217HKGIUgSKcLjS
-	 3CFGC/jBoO7naSnjglCiOoKQshU1JtIKHnlE83tlHdFJVJfXMdG3t7QKz8xWq4xcZBg4ee7BCE5X
-	 D//ogdjjuQWagITmQYnZrNJjVhRWILcJBTm+f/vCtzkuP+iQ2OZ6nxuMUaMV4S+Q7Za+pqUcwKhV
-	 Hp5glHpwA1koUumSD4YD9okcwJdYxJwPOsaLzFkl1jgotTlzZAjf8GfZb1uah7UN0afu6NY4Q8We
-	 cL9Depgl7FtPlutwN1+g88xblLiaRHdQEYyDdNu9PFkopPCZqcuuBL5gHmvE8z5wdrlXcD0O8Be/
-	 bHLS0oEr2+MGmO5cIFREE8RstWicLJlgxiQ+brwV3M9S8hwPRN56fgjMEIHONHkrqvMAkEeVIW6l
-	 HSL91KCwgFH9lV7D4sv0gUCPx8NR+6i8C6wfj32k7kLw5KvTnsyOOk32n2crzUmvHrjBjnIB0iLG
-	 oPJZKiDeFlhJYRQh3bU5BCiAkl/v9M0NTsts4CW9a6qMz4XuWddLvEocpmnDpxp0JeMvJz/mH63N
-	 SfpKG+ffNtF6Qx1palfZeirWx/K9KuDoTFdceo2Jqzw8sDn4ErOQ==
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From: Rong Tao <rtoax@foxmail.com>
-To: yonghong.song@linux.dev
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	martin.lau@linux.dev,
-	mykolal@fb.com,
-	olsajiri@gmail.com,
-	rongtao@cestc.cn,
-	rtoax@foxmail.com,
-	sdf@google.com,
-	shuah@kernel.org,
-	song@kernel.org
-Subject: Re: [PATCH bpf-next v5] selftests/bpf: trace_helpers.c: optimize kallsyms cache
-Date: Mon, 21 Aug 2023 10:03:38 +0800
-X-OQ-MSGID: <20230821020338.94266-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <817af9ec-0ba3-fab0-6d8a-4529ede337b5@linux.dev>
-References: <817af9ec-0ba3-fab0-6d8a-4529ede337b5@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05F8AEA1
+	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 02:23:50 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1174B9C
+	for <bpf@vger.kernel.org>; Sun, 20 Aug 2023 19:23:49 -0700 (PDT)
+Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.55])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RTbpg4w6zzrSSR;
+	Mon, 21 Aug 2023 10:22:19 +0800 (CST)
+Received: from [10.67.109.184] (10.67.109.184) by
+ kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 21 Aug 2023 10:23:45 +0800
+Message-ID: <13f54b2a-0f52-325a-d138-981fc4896908@huawei.com>
+Date: Mon, 21 Aug 2023 10:23:45 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: bpf: Request to add -mcpu=v4 support for
+ ARM/MIPS/NFP/POWERPC/RISCV/S390/SPARC/X86_32
+Content-Language: en-US
+To: <yonghong.song@linux.dev>, Shubham Bansal <illusionist.neo@gmail.com>,
+	Johan Almbladh <johan.almbladh@anyfinetworks.com>, Paul Burton
+	<paulburton@kernel.org>, Jakub Kicinski <kuba@kernel.org>, "Naveen N. Rao"
+	<naveen.n.rao@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Luke
+ Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Ilya Leoshkevich
+	<iii@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
+	<gor@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, Wang YanQing
+	<udknight@gmail.com>
+CC: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	<daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+	<martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>
+References: <79d3c797-17ba-bc9e-b1f9-44ad024b576f@linux.dev>
+From: Pu Lehui <pulehui@huawei.com>
+In-Reply-To: <79d3c797-17ba-bc9e-b1f9-44ad024b576f@linux.dev>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.109.184]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemi500020.china.huawei.com (7.221.188.8)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Sorry Song, I did not state clear.
+Alright, riscv64 is already being adapted, will be sent soon.
 
-libbpf_ensure_mem() is declared in libbpf_internal.h, we want to use 
-libbpf_ensure_mem() in trace_helpers.c, Unforturnately, we could only include
-the headers 'install_headers:' defined in tools/lib/bpf/Makefile, the
-'install_headers:' target does not include libbpf_internal.h, like:
-
-	tools/testing/selftests/bpf/trace_helpers.c:17:10:
-	fatal error: libbpf_internal.h: No such file or directory
-	   17 | #include "libbpf_internal.h"
-	      |          ^~~~~~~~~~~~~~~~~~~
-
-	tools/testing/selftests/bpf/trace_helpers.c:17:10:
-	fatal error: bpf/libbpf_internal.h: No such file or directory
-	   17 | #include "bpf/libbpf_internal.h"
-	      |          ^~~~~~~~~~~~~~~~~~~~~~~
-
-How about
-
-1. dup-declare libbpf_ensure_mem() in trace_helpers.c
-2. move libbpf_ensure_mem() declare into libbpf_common.h
-
-Which one do you like best.
-
-Best wishes,
-Rong Tao
-
+On 2023/8/20 9:41, Yonghong Song wrote:
+> Hi,
+> 
+> A new set of bpf insns have been recently added in llvm with flag
+> [-mcpu=v4](https://reviews.llvm.org/D144829). In the kernel,
+> x86_64 and arm64 have implemented -mcpu=v4 support:
+>    x86_64: 
+> https://lore.kernel.org/all/20230728011143.3710005-1-yonghong.song@linux.dev/
+>    arm64: 
+> https://lore.kernel.org/bpf/20230815154158.717901-1-xukuohai@huaweicloud.com/
+> 
+> The following arch's do not have -mcpu=v4 support yet:
+>    arm, mips, nfp, powerpc, riscv, sc90, sparc and x86_32
+> 
+> If you have a chance, could you take a look at what
+> x86_64/arm64 does and add support to the above arch'es?
+> 
+> Thanks!
+> 
+> Yonghong
+> 
 
