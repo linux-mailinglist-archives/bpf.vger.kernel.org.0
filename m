@@ -1,28 +1,28 @@
-Return-Path: <bpf+bounces-8138-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8139-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E5307820C3
-	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 02:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 798017820C4
+	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 02:03:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1DCE1C204F3
-	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 00:02:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB4BE1C20844
+	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 00:03:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 490291C39;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80A023D7C;
 	Mon, 21 Aug 2023 00:02:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02DBD1849
-	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 00:02:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 535B220FC
+	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 00:02:48 +0000 (UTC)
 Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674F6AA
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD6AAC
 	for <bpf@vger.kernel.org>; Sun, 20 Aug 2023 17:02:45 -0700 (PDT)
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 2AC10251CEEEB; Sun, 20 Aug 2023 17:02:30 -0700 (PDT)
+	id 17F88251CEF1C; Sun, 20 Aug 2023 17:02:35 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -30,10 +30,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf 1/2] bpf: Fix a bpf_kptr_xchg() issue with local kptr
-Date: Sun, 20 Aug 2023 17:02:30 -0700
-Message-Id: <20230821000230.3108635-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf 2/2] selftests/bpf: Add a failure test for bpf_kptr_xchg() with local kptr
+Date: Sun, 20 Aug 2023 17:02:35 -0700
+Message-Id: <20230821000235.3109245-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230821000230.3108635-1-yonghong.song@linux.dev>
+References: <20230821000230.3108635-1-yonghong.song@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -47,49 +49,128 @@ X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,RDNS_DYNAMIC,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-When reviewing local percpu kptr support, Alexei discovered a bug
-wherea bpf_kptr_xchg() may succeed even if the map value kptr type and
-locally allocated obj type do not match ([1]). Missed struct btf_id
-comparison is the reason for the bug. This patch added such struct btf_id
-comparison and will flag verification failure if types do not match.
+For a bpf_kptr_xchg() with local kptr, if the map value kptr type and
+allocated local obj type does not match, with the previous patch,
+the below verifier error message will be logged:
+  R2 is of type <allocated local obj type> but <map value kptr type> is e=
+xpected
 
-  [1] https://lore.kernel.org/bpf/20230819002907.io3iphmnuk43xblu@macbook=
--pro-8.dhcp.thefacebook.com/#t
+Without the previous patch, the test will have unexpected success.
 
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Fixes: 738c96d5e2e3 ("bpf: Allow local kptrs to be exchanged via bpf_kptr=
-_xchg")
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- kernel/bpf/verifier.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ .../bpf/prog_tests/local_kptr_stash.c         | 10 ++-
+ .../bpf/progs/local_kptr_stash_fail.c         | 65 +++++++++++++++++++
+ 2 files changed, 74 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/local_kptr_stash_fa=
+il.c
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 02a021c524ab..4e1ecd4b8497 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7745,7 +7745,18 @@ static int check_reg_type(struct bpf_verifier_env =
-*env, u32 regno,
- 			verbose(env, "verifier internal error: unimplemented handling of MEM_=
-ALLOC\n");
- 			return -EFAULT;
- 		}
--		/* Handled by helper specific checks */
-+		if (meta->func_id =3D=3D BPF_FUNC_kptr_xchg) {
-+			struct btf_field *kptr_field =3D meta->kptr_field;
+diff --git a/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c b/=
+tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
+index 76f1da877f81..158616c94658 100644
+--- a/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
++++ b/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
+@@ -5,6 +5,7 @@
+ #include <network_helpers.h>
+=20
+ #include "local_kptr_stash.skel.h"
++#include "local_kptr_stash_fail.skel.h"
+ static void test_local_kptr_stash_simple(void)
+ {
+ 	LIBBPF_OPTS(bpf_test_run_opts, opts,
+@@ -51,10 +52,17 @@ static void test_local_kptr_stash_unstash(void)
+ 	local_kptr_stash__destroy(skel);
+ }
+=20
+-void test_local_kptr_stash_success(void)
++static void test_local_kptr_stash_fail(void)
++{
++	RUN_TESTS(local_kptr_stash_fail);
++}
 +
-+			if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
-+						  kptr_field->kptr.btf, kptr_field->kptr.btf_id,
-+						  true)) {
-+				verbose(env, "R%d is of type %s but %s is expected\n",
-+					regno, btf_type_name(reg->btf, reg->btf_id),
-+					btf_type_name(kptr_field->kptr.btf, kptr_field->kptr.btf_id));
-+				return -EACCES;
-+			}
-+		}
- 		break;
- 	case PTR_TO_BTF_ID | MEM_PERCPU:
- 	case PTR_TO_BTF_ID | MEM_PERCPU | PTR_TRUSTED:
++void test_local_kptr_stash(void)
+ {
+ 	if (test__start_subtest("local_kptr_stash_simple"))
+ 		test_local_kptr_stash_simple();
+ 	if (test__start_subtest("local_kptr_stash_unstash"))
+ 		test_local_kptr_stash_unstash();
++	if (test__start_subtest("local_kptr_stash_fail"))
++		test_local_kptr_stash_fail();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/local_kptr_stash_fail.c b/=
+tools/testing/selftests/bpf/progs/local_kptr_stash_fail.c
+new file mode 100644
+index 000000000000..ebb5f0208b41
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/local_kptr_stash_fail.c
+@@ -0,0 +1,65 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
++
++#include <vmlinux.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_core_read.h>
++#include "../bpf_experimental.h"
++#include "bpf_misc.h"
++
++struct node_data {
++	long key;
++	long data;
++	struct bpf_rb_node node;
++};
++
++struct map_value {
++	struct node_data __kptr *node;
++};
++
++struct node_data2 {
++	long key[4];
++};
++
++/* This is necessary so that LLVM generates BTF for node_data struct
++ * If it's not included, a fwd reference for node_data will be generated=
+ but
++ * no struct. Example BTF of "node" field in map_value when not included=
+:
++ *
++ * [10] PTR '(anon)' type_id=3D35
++ * [34] FWD 'node_data' fwd_kind=3Dstruct
++ * [35] TYPE_TAG 'kptr_ref' type_id=3D34
++ */
++struct node_data *just_here_because_btf_bug;
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__type(key, int);
++	__type(value, struct map_value);
++	__uint(max_entries, 2);
++} some_nodes SEC(".maps");
++
++SEC("tc")
++__failure __msg("R2 is of type node_data2 but node_data is expected")
++long stash_rb_nodes(void *ctx)
++{
++	struct map_value *mapval;
++	struct node_data2 *res;
++	int idx =3D 0;
++
++	mapval =3D bpf_map_lookup_elem(&some_nodes, &idx);
++	if (!mapval)
++		return 1;
++
++	res =3D bpf_obj_new(typeof(*res));
++	if (!res)
++		return 1;
++	res->key[0] =3D 40;
++
++	res =3D bpf_kptr_xchg(&mapval->node, res);
++	if (res)
++		bpf_obj_drop(res);
++	return 0;
++}
++
++char _license[] SEC("license") =3D "GPL";
 --=20
 2.34.1
 
