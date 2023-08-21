@@ -1,177 +1,117 @@
-Return-Path: <bpf+bounces-8139-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8140-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 798017820C4
-	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 02:03:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6613878214D
+	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 04:03:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB4BE1C20844
-	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 00:03:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2098E280EFF
+	for <lists+bpf@lfdr.de>; Mon, 21 Aug 2023 02:03:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80A023D7C;
-	Mon, 21 Aug 2023 00:02:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A30EEBB;
+	Mon, 21 Aug 2023 02:03:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 535B220FC
-	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 00:02:48 +0000 (UTC)
-Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD6AAC
-	for <bpf@vger.kernel.org>; Sun, 20 Aug 2023 17:02:45 -0700 (PDT)
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 17F88251CEF1C; Sun, 20 Aug 2023 17:02:35 -0700 (PDT)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf 2/2] selftests/bpf: Add a failure test for bpf_kptr_xchg() with local kptr
-Date: Sun, 20 Aug 2023 17:02:35 -0700
-Message-Id: <20230821000235.3109245-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230821000230.3108635-1-yonghong.song@linux.dev>
-References: <20230821000230.3108635-1-yonghong.song@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA08CEA1
+	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 02:03:47 +0000 (UTC)
+Received: from out203-205-251-84.mail.qq.com (unknown [203.205.251.84])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E589C;
+	Sun, 20 Aug 2023 19:03:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1692583424;
+	bh=tev9vFwzr3CByXx+8306FXg78Anw1TmvVUAj6prq2Zg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=WkT54Y2p9MnNLhSIx6DcYvg9g0G1Sn0DZXRFYTRBcqG7GcniodBoQz4zHH+nhtGl3
+	 kcDrkCPQ5q+NguvdszpPp5TuBkJaSqT6bsc7Urzveb8P8dVPDsgXzw/YdJ5elmamQf
+	 nyykN6cWtOv8Z/ozaDOZbyOnBdR/usxgXNfUFcOs=
+Received: from localhost.localdomain ([39.156.73.12])
+	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
+	id E692A2B; Mon, 21 Aug 2023 10:03:38 +0800
+X-QQ-mid: xmsmtpt1692583418tyfo4egzn
+Message-ID: <tencent_ADC403037821ABAC8ECB6F15C6D7A3510507@qq.com>
+X-QQ-XMAILINFO: OaoBA5NOFC/jOVj7yUQgbw3QstZL4g20mKVHyjXoPuKpolkCmC5AfK22VR8nC8
+	 alfmaQIRUsQC3wyEFWgCxncjTVdteAXHrgkkHARUsfxEYTXOrkmkXxKas5ocAh7QOSe/TD1IRqLb
+	 etN2iFQ5cWcKXMwoFS5zhUBXZSXHqDMGPGZ6r+xV6SP8Bz0HlneWhZp8p1RsRmjf1XA7LCt8wpre
+	 9DQjcWldehO7Edn4s87tIr89ZduY+6MKlC+MQOPwPWifLYaig0u3O+cu4ovNw5f91nmHy3qxMnXO
+	 RwrsHTB4p7uQK7eN2sdrJ3WKIsQYEVr7VxbVDjriiqSABXzX02qMNERo/46jGatEKwSwZvSq1i9f
+	 xKkws1ljzTZGXw0LwJw945og7SLn0i6OR9+VRXnxB4klMsKexMMEljDSP807+217HKGIUgSKcLjS
+	 3CFGC/jBoO7naSnjglCiOoKQshU1JtIKHnlE83tlHdFJVJfXMdG3t7QKz8xWq4xcZBg4ee7BCE5X
+	 D//ogdjjuQWagITmQYnZrNJjVhRWILcJBTm+f/vCtzkuP+iQ2OZ6nxuMUaMV4S+Q7Za+pqUcwKhV
+	 Hp5glHpwA1koUumSD4YD9okcwJdYxJwPOsaLzFkl1jgotTlzZAjf8GfZb1uah7UN0afu6NY4Q8We
+	 cL9Depgl7FtPlutwN1+g88xblLiaRHdQEYyDdNu9PFkopPCZqcuuBL5gHmvE8z5wdrlXcD0O8Be/
+	 bHLS0oEr2+MGmO5cIFREE8RstWicLJlgxiQ+brwV3M9S8hwPRN56fgjMEIHONHkrqvMAkEeVIW6l
+	 HSL91KCwgFH9lV7D4sv0gUCPx8NR+6i8C6wfj32k7kLw5KvTnsyOOk32n2crzUmvHrjBjnIB0iLG
+	 oPJZKiDeFlhJYRQh3bU5BCiAkl/v9M0NTsts4CW9a6qMz4XuWddLvEocpmnDpxp0JeMvJz/mH63N
+	 SfpKG+ffNtF6Qx1palfZeirWx/K9KuDoTFdceo2Jqzw8sDn4ErOQ==
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Rong Tao <rtoax@foxmail.com>
+To: yonghong.song@linux.dev
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	martin.lau@linux.dev,
+	mykolal@fb.com,
+	olsajiri@gmail.com,
+	rongtao@cestc.cn,
+	rtoax@foxmail.com,
+	sdf@google.com,
+	shuah@kernel.org,
+	song@kernel.org
+Subject: Re: [PATCH bpf-next v5] selftests/bpf: trace_helpers.c: optimize kallsyms cache
+Date: Mon, 21 Aug 2023 10:03:38 +0800
+X-OQ-MSGID: <20230821020338.94266-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <817af9ec-0ba3-fab0-6d8a-4529ede337b5@linux.dev>
+References: <817af9ec-0ba3-fab0-6d8a-4529ede337b5@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,RDNS_DYNAMIC,
-	SPF_HELO_PASS,SPF_SOFTFAIL,TVD_RCVD_IP autolearn=no autolearn_force=no
-	version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-For a bpf_kptr_xchg() with local kptr, if the map value kptr type and
-allocated local obj type does not match, with the previous patch,
-the below verifier error message will be logged:
-  R2 is of type <allocated local obj type> but <map value kptr type> is e=
-xpected
+Sorry Song, I did not state clear.
 
-Without the previous patch, the test will have unexpected success.
+libbpf_ensure_mem() is declared in libbpf_internal.h, we want to use 
+libbpf_ensure_mem() in trace_helpers.c, Unforturnately, we could only include
+the headers 'install_headers:' defined in tools/lib/bpf/Makefile, the
+'install_headers:' target does not include libbpf_internal.h, like:
 
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- .../bpf/prog_tests/local_kptr_stash.c         | 10 ++-
- .../bpf/progs/local_kptr_stash_fail.c         | 65 +++++++++++++++++++
- 2 files changed, 74 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/local_kptr_stash_fa=
-il.c
+	tools/testing/selftests/bpf/trace_helpers.c:17:10:
+	fatal error: libbpf_internal.h: No such file or directory
+	   17 | #include "libbpf_internal.h"
+	      |          ^~~~~~~~~~~~~~~~~~~
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c b/=
-tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
-index 76f1da877f81..158616c94658 100644
---- a/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
-+++ b/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
-@@ -5,6 +5,7 @@
- #include <network_helpers.h>
-=20
- #include "local_kptr_stash.skel.h"
-+#include "local_kptr_stash_fail.skel.h"
- static void test_local_kptr_stash_simple(void)
- {
- 	LIBBPF_OPTS(bpf_test_run_opts, opts,
-@@ -51,10 +52,17 @@ static void test_local_kptr_stash_unstash(void)
- 	local_kptr_stash__destroy(skel);
- }
-=20
--void test_local_kptr_stash_success(void)
-+static void test_local_kptr_stash_fail(void)
-+{
-+	RUN_TESTS(local_kptr_stash_fail);
-+}
-+
-+void test_local_kptr_stash(void)
- {
- 	if (test__start_subtest("local_kptr_stash_simple"))
- 		test_local_kptr_stash_simple();
- 	if (test__start_subtest("local_kptr_stash_unstash"))
- 		test_local_kptr_stash_unstash();
-+	if (test__start_subtest("local_kptr_stash_fail"))
-+		test_local_kptr_stash_fail();
- }
-diff --git a/tools/testing/selftests/bpf/progs/local_kptr_stash_fail.c b/=
-tools/testing/selftests/bpf/progs/local_kptr_stash_fail.c
-new file mode 100644
-index 000000000000..ebb5f0208b41
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/local_kptr_stash_fail.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+#include "../bpf_experimental.h"
-+#include "bpf_misc.h"
-+
-+struct node_data {
-+	long key;
-+	long data;
-+	struct bpf_rb_node node;
-+};
-+
-+struct map_value {
-+	struct node_data __kptr *node;
-+};
-+
-+struct node_data2 {
-+	long key[4];
-+};
-+
-+/* This is necessary so that LLVM generates BTF for node_data struct
-+ * If it's not included, a fwd reference for node_data will be generated=
- but
-+ * no struct. Example BTF of "node" field in map_value when not included=
-:
-+ *
-+ * [10] PTR '(anon)' type_id=3D35
-+ * [34] FWD 'node_data' fwd_kind=3Dstruct
-+ * [35] TYPE_TAG 'kptr_ref' type_id=3D34
-+ */
-+struct node_data *just_here_because_btf_bug;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, int);
-+	__type(value, struct map_value);
-+	__uint(max_entries, 2);
-+} some_nodes SEC(".maps");
-+
-+SEC("tc")
-+__failure __msg("R2 is of type node_data2 but node_data is expected")
-+long stash_rb_nodes(void *ctx)
-+{
-+	struct map_value *mapval;
-+	struct node_data2 *res;
-+	int idx =3D 0;
-+
-+	mapval =3D bpf_map_lookup_elem(&some_nodes, &idx);
-+	if (!mapval)
-+		return 1;
-+
-+	res =3D bpf_obj_new(typeof(*res));
-+	if (!res)
-+		return 1;
-+	res->key[0] =3D 40;
-+
-+	res =3D bpf_kptr_xchg(&mapval->node, res);
-+	if (res)
-+		bpf_obj_drop(res);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") =3D "GPL";
---=20
-2.34.1
+	tools/testing/selftests/bpf/trace_helpers.c:17:10:
+	fatal error: bpf/libbpf_internal.h: No such file or directory
+	   17 | #include "bpf/libbpf_internal.h"
+	      |          ^~~~~~~~~~~~~~~~~~~~~~~
+
+How about
+
+1. dup-declare libbpf_ensure_mem() in trace_helpers.c
+2. move libbpf_ensure_mem() declare into libbpf_common.h
+
+Which one do you like best.
+
+Best wishes,
+Rong Tao
 
 
