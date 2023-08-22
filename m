@@ -1,160 +1,179 @@
-Return-Path: <bpf+bounces-8223-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8224-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87993783923
-	for <lists+bpf@lfdr.de>; Tue, 22 Aug 2023 07:15:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50F92783925
+	for <lists+bpf@lfdr.de>; Tue, 22 Aug 2023 07:16:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE5B31C209F6
-	for <lists+bpf@lfdr.de>; Tue, 22 Aug 2023 05:15:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0748B280F01
+	for <lists+bpf@lfdr.de>; Tue, 22 Aug 2023 05:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21AD31FD7;
-	Tue, 22 Aug 2023 05:15:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C9F1FD9;
+	Tue, 22 Aug 2023 05:16:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2AB11861
-	for <bpf@vger.kernel.org>; Tue, 22 Aug 2023 05:15:17 +0000 (UTC)
-Received: from out-24.mta0.migadu.com (out-24.mta0.migadu.com [IPv6:2001:41d0:1004:224b::18])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCADCDB
-	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 22:15:15 -0700 (PDT)
-Message-ID: <c7ce55e7-b462-5d02-768c-f817212d0194@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692681313;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mg0mEb4QvWGBtKw6lCdrSQjdodUcti7YvNXeGY5ZbbM=;
-	b=UQKisKffWILKung15AOq7BpNIMDs9ZH6S0RPJECr1eX4Ug8Oyamm0Dl91JR+zu6kBMmTV2
-	zMgwJOk7wekBeSqffHYmrQVB7a0fHd3Bma8TLvG5WJBrGYsPvcCo0hjepYmKNX4s5FRCtP
-	4vTBMP+NCHFZO9pwgD8wG/ts4eeDoe0=
-Date: Tue, 22 Aug 2023 01:15:08 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D481FA1
+	for <bpf@vger.kernel.org>; Tue, 22 Aug 2023 05:16:01 +0000 (UTC)
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BCDDB
+	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 22:15:59 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50079d148aeso3228216e87.3
+        for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 22:15:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692681358; x=1693286158;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=igC1dQAIIzPzYds1gpe+w5vkYCOQIxb9+V+C3FfP0gY=;
+        b=swdrUCoxtIbJ/UgiOcV1KYs6Sa74rHVijN/bC4JtbuX9OSj5uIi9TL46CI/sWksYtT
+         xre2UYVz7zn7LSm0XWtMukPrbLpLHBcdGrP0IOy1ADogg5Ag/42gYPZMcmBIFmK2PqSG
+         BeHf5xYomKdGyaoFmDjCc+xEZVt6wULz2O5a3jpERYzjbgIcGLxxoTHsrqwjQZ3Cb8FB
+         9puOfxnHw6DlBVMc/oSh/T/koBbjpLqhj6cd9OLBiQfKRIOLJiNqXnT7Vjo1XeMxE+lk
+         kZ7Zayqdt/QSX/Gnla0VvgW4UC+NtnedpENyLEyqzU6pryXEYkrtR4IFZ0Vd87YcA77/
+         SmFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692681358; x=1693286158;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=igC1dQAIIzPzYds1gpe+w5vkYCOQIxb9+V+C3FfP0gY=;
+        b=kWxjuLH92N18qQ4sbuxgeXXXO8BRaFpEKE1x46CJKzIBGGtB7bVQbJims77Qpv2nHZ
+         xDoERapYXwd7kgCYiqjX8rYKkPWA/1/YWPzzFrK5FW20cZRE4Guk61mRKFC1C66orSr3
+         0k2FBOwX4Bc5vnUPPLl8O4Uqi1wuFsk4y0QTuX8pw97zgUC6BSE2BocpdHGNIJlNQint
+         S+8paIjfW5r5hfXpwhLuk5D5B/wx4XjJxFAbd7TjP2zrx9wT7pruR/AXdFKSj3yFkRCh
+         sDpcBRKK7Lx2QqbF/0YrAgreS/w/dMbvekTGNYMyqZFPyL3Kh/YDBf/iuBql5KPvmxE3
+         jzrA==
+X-Gm-Message-State: AOJu0Yzg3UQe2W/8+jmtvE3GHs68R2XTyxr6zdR84oqW65SMJBN5l8v0
+	qev4KCTSJyj+oZXJ+JAGyTGMMNy+egUsoLGEmGHqQc9ahS8=
+X-Google-Smtp-Source: AGHT+IHpPSVYbvHFZN1MDLh53k9DPl8RpNOc826i2d/Ks+9I/fUsimpQGzU1ufkk2pH52vSZnkanIBPzoShGyfvjy3c=
+X-Received: by 2002:a05:6512:ad1:b0:4f8:e4e9:499e with SMTP id
+ n17-20020a0565120ad100b004f8e4e9499emr6447525lfu.12.1692681357802; Mon, 21
+ Aug 2023 22:15:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf 1/2] bpf: Fix a bpf_kptr_xchg() issue with local kptr
-Content-Language: en-US
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Yonghong Song <yonghong.song@linux.dev>,
- Dave Marchevsky <davemarchevsky@fb.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20230821000230.3108635-1-yonghong.song@linux.dev>
- <CAP01T76hm=FBU3f9EePUsV525g=RFw0KPvSRn5BjHo=QGD_qEQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: David Marchevsky <david.marchevsky@linux.dev>
-In-Reply-To: <CAP01T76hm=FBU3f9EePUsV525g=RFw0KPvSRn5BjHo=QGD_qEQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20230724132404.1280848-1-awerner32@gmail.com>
+In-Reply-To: <20230724132404.1280848-1-awerner32@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 21 Aug 2023 22:15:45 -0700
+Message-ID: <CAEf4BzZQQ=fz+NqFHhJcqKoVAvh4=XbH7HWaHKjUg5OOzi-PTw@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: handle producer position overflow
+To: Andrew Werner <awerner32@gmail.com>
+Cc: bpf@vger.kernel.org, kernel-team@dataexmachina.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 8/21/23 4:36 AM, Kumar Kartikeya Dwivedi wrote:
-> On Mon, 21 Aug 2023 at 05:33, Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->> When reviewing local percpu kptr support, Alexei discovered a bug
->> wherea bpf_kptr_xchg() may succeed even if the map value kptr type and
->> locally allocated obj type do not match ([1]). Missed struct btf_id
->> comparison is the reason for the bug. This patch added such struct btf_id
->> comparison and will flag verification failure if types do not match.
->>
->>   [1] https://lore.kernel.org/bpf/20230819002907.io3iphmnuk43xblu@macbook-pro-8.dhcp.thefacebook.com/#t
->>
->> Reported-by: Alexei Starovoitov <ast@kernel.org>
->> Fixes: 738c96d5e2e3 ("bpf: Allow local kptrs to be exchanged via bpf_kptr_xchg")
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
-> 
-> Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> 
-> But some comments below...
-> 
->>  kernel/bpf/verifier.c | 13 ++++++++++++-
->>  1 file changed, 12 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 02a021c524ab..4e1ecd4b8497 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -7745,7 +7745,18 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
->>                         verbose(env, "verifier internal error: unimplemented handling of MEM_ALLOC\n");
->>                         return -EFAULT;
->>                 }
->> -               /* Handled by helper specific checks */
->> +               if (meta->func_id == BPF_FUNC_kptr_xchg) {
->> +                       struct btf_field *kptr_field = meta->kptr_field;
->> +
->> +                       if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
->> +                                                 kptr_field->kptr.btf, kptr_field->kptr.btf_id,
->> +                                                 true)) {
->> +                               verbose(env, "R%d is of type %s but %s is expected\n",
->> +                                       regno, btf_type_name(reg->btf, reg->btf_id),
->> +                                       btf_type_name(kptr_field->kptr.btf, kptr_field->kptr.btf_id));
->> +                               return -EACCES;
->> +                       }
->> +               }
-> 
-> The fix on its own looks ok to me, but any reason you'd not like to
-> delegate to map_kptr_match_type?
-> Just to collect kptr related type matching logic in its own place.  It
-> doesn't matter too much though.
-> 
-> While looking at the code, I noticed one more problem.
-> 
-> I don't think the current code is enforcing that 'reg->off is zero'
-> assumption when releasing MEM_ALLOC types. We are only saved because
-> you passed strict=true which makes passing non-zero reg->off a noop
-> and returns false.
-> The hunk was added to check_func_arg_reg_off in
-> 6a3cd3318ff6 ("bpf: Migrate release_on_unlock logic to non-owning ref
-> semantics")
-> which bypasses in case type is MEM_ALLOC and offset points to some
-> graph root or node.
-> 
-> I am not sure why this check exists, IIUC rbtree release helpers are
-> not tagged KF_RELEASE, and no release helper can type match on them
-> either. Dave, can you confirm? I think it might be an accidental
-> leftover of some refactoring.
+On Mon, Jul 24, 2023 at 6:24=E2=80=AFAM Andrew Werner <awerner32@gmail.com>=
+ wrote:
+>
+> Before this patch, the producer position could overflow `unsigned
+> long`, in which case libbpf would forever stop processing new writes to
+> the ringbuf. This patch addresses that bug by avoiding ordered
+> comparison between the consumer and producer position. If the consumer
+> position is greater than the producer position, the assumption is that
+> the producer has overflowed.
+>
+> A more defensive check could be to ensure that the delta is within
+> the allowed range, but such defensive checks are neither present in
+> the kernel side code nor in libbpf. The overflow that this patch
+> handles can occur while the producer and consumer follow a correct
+> protocol.
 
-I think you're correct, that's probably leftover from when
-helpers were tagged KF_RELEASE in earlier rbtree impl revisions.
+Yep, great find!
 
-I also think it's reasonable to delete the hunk as you've done
-in attached patches.
+>
+> A selftest was written to demonstrate the bug, and indeed this patch
+> allows the test to continue to make progress past the overflow.
+> However, the author was unable to create a testing environment on a
+> 32-bit machine, and the test requires substantial memory and over 4
 
-> 
-> In fact, it seems bpf_obj_drop is already broken because reg->off
-> assumption is violated.
-> For node_data type:
-> 
-> bpf_obj_drop(&res->data);
-> returns
-> R1 must have zero offset when passed to release func
-> No graph node or root found at R1 type:node_data off:8
-> 
-> but bpf_obj_drop(&res->node);
-> passes verifier.
-> 
-> 15: (bf) r1 = r0                      ;
-> R0_w=ptr_node_data(ref_obj_id=3,off=16,imm=0)
-> R1_w=ptr_node_data(ref_obj_id=3,off=16,imm=0) refs=3
-> 16: (b7) r2 = 0                       ; R2_w=0 refs=3
-> 17: (85) call bpf_obj_drop_impl#74867      ;
-> safe
-> 
-> I have attached a tentative fix and selftest to this patch, let me
-> know what you think.
+2GB of memory for ringbuf, right? Perhaps it would be good to just
+outline the repro, even if we won't have it implemented in selftests.
+Something along the lines of: a) set up ringbuf of 2GB size and
+reserve+commit maximum-sized record (UMAX/4) constantly as fast as
+possible. With 1 million records per second repro time should be about
+4.7 hours. Can you please update the commit with something like that
+instead of a vague "there is repro, but I won't show it ;)" ? Thanks!
+
+> hours to hit the overflow point on a 64-bit machine. Thus, the test
+> is not included in this patch because of the impracticality of running
+> it.
+>
+> Additionally, this patch adds commentary around a separate point to note
+> that the modular arithmetic is valid in the face of overflows, as that
+> fact may not be obvious to future readers.
+>
+> Signed-off-by: Andrew Werner <awerner32@gmail.com>
+> ---
+>  tools/lib/bpf/ringbuf.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+> index 02199364db13..6271757bc3d2 100644
+> --- a/tools/lib/bpf/ringbuf.c
+> +++ b/tools/lib/bpf/ringbuf.c
+> @@ -237,7 +237,11 @@ static int64_t ringbuf_process_ring(struct ring *r)
+>         do {
+>                 got_new_data =3D false;
+>                 prod_pos =3D smp_load_acquire(r->producer_pos);
+> -               while (cons_pos < prod_pos) {
+> +
+> +               /* Avoid signed comparisons between the positions; the pr=
+oducer
+
+"signed comparisons" is confusing and invalid, as cons_pos and
+prod_pos are unsigned and comparison here is unsigned. What you meant
+is inequality comparison, which is invalid when done naively (like it
+is done in libbpf right now, sigh...), if counters can wrap around.
+
+> +                * position can overflow before the consumer position.
+> +                */
+> +               while (cons_pos !=3D prod_pos) {
+
+I'm wondering if we should preserve the "consumer pos is before
+producer pos" check just for clarity's sake (with a comment about
+wrapping around of counters, of course) like:
+
+if ((long)(cons_pos - prod_pos) < 0) ?
+
+BTW, I think kernel code needs fixing as well in
+__bpf_user_ringbuf_peek (we should compare consumer/producer positions
+directly, only through subtraction and casting to signed long as
+above), would you be able to fix it at the same time with libbpf?
+Would be good to also double-check the rest of kernel/bpf/ringbuf.c to
+make sure we don't directly compare positions anywhere else.
+
+>                         len_ptr =3D r->data + (cons_pos & r->mask);
+>                         len =3D smp_load_acquire(len_ptr);
+>
+> @@ -498,6 +502,11 @@ void *user_ring_buffer__reserve(struct user_ring_buf=
+fer *rb, __u32 size)
+>         prod_pos =3D smp_load_acquire(rb->producer_pos);
+>
+>         max_size =3D rb->mask + 1;
+> +
+> +       /* Note that this formulation in the face of overflow of prod_pos
+> +        * so long as the delta between prod_pos and cons_pos remains no
+> +        * greater than max_size.
+> +        */
+>         avail_size =3D max_size - (prod_pos - cons_pos);
+>         /* Round up total size to a multiple of 8. */
+>         total_size =3D (size + BPF_RINGBUF_HDR_SZ + 7) / 8 * 8;
+> --
+> 2.39.2
+>
+>
 
