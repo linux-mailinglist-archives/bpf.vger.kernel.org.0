@@ -1,199 +1,200 @@
-Return-Path: <bpf+bounces-8226-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8227-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F067783975
-	for <lists+bpf@lfdr.de>; Tue, 22 Aug 2023 07:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E7EBF783A3E
+	for <lists+bpf@lfdr.de>; Tue, 22 Aug 2023 08:59:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D10581C20A2B
-	for <lists+bpf@lfdr.de>; Tue, 22 Aug 2023 05:47:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24D6C1C20A55
+	for <lists+bpf@lfdr.de>; Tue, 22 Aug 2023 06:59:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90990290C;
-	Tue, 22 Aug 2023 05:47:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC6B96FAC;
+	Tue, 22 Aug 2023 06:59:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8681FA1
-	for <bpf@vger.kernel.org>; Tue, 22 Aug 2023 05:47:13 +0000 (UTC)
-Received: from out-13.mta1.migadu.com (out-13.mta1.migadu.com [95.215.58.13])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA085D7
-	for <bpf@vger.kernel.org>; Mon, 21 Aug 2023 22:47:10 -0700 (PDT)
-Message-ID: <21f00803-d20f-e584-6512-67e5107e3865@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692683227;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Xxr13pPfjkqiq/V6WW0yrGhbJUtOYjc/LI04ekneqUo=;
-	b=KUbLoX9qg3tRiFX4spF5t6SUDTAyPjttJi1E8lQNNtVep6pw+GuqrwUhKyKns6mnYh+4sn
-	+CCptdA+LwjnRPPQ/aXQpIGhAC7W6SoONIZjx6MydybvVHXXsJbUEnOn9JT8Kk1avxT6/E
-	sM16JwgBbqYb9xtRa4XUAbTp0qohxA0=
-Date: Tue, 22 Aug 2023 01:47:01 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85241EA8;
+	Tue, 22 Aug 2023 06:59:40 +0000 (UTC)
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2050.outbound.protection.outlook.com [40.107.241.50])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2EE4FB;
+	Mon, 21 Aug 2023 23:59:38 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l4H7RjfyKaux4OwL4ihI5JnxCNZ0A/yePEuCELTFFymw1S+PtsA5/LEqTPinJIe1R9kJ5JNNt96eg2T66sydOdMJfymjpjDIaifKU5FPVLmf9RyXXMOw9ZP7pZELXc3fkTY20CrGEET7WS8Ro5dtNUyx8D2E4uF+YLuqBafC9QH1ySA3ZcUahseoPCLH6od7aSIADyfiKAXqxb4s/picHiwR+bKN/MYks8hu1fRQ0PKejUK0XVh0QivNiQrj76Am11pJhW6jo8/xhcyQ8gebKDEouSmy4S5ea8GwC0P2FvW7ROpU4f80b12jWch7bsepzQ2eb1KIU8m9dGuAMZoyzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SRuG5l/zhL4RCt1bbDKhOij7D8TxoAagdBhXfGStpG4=;
+ b=MBnU9YX+gdR1Fb+KdYLqoOzZhlafYLzVfMPwmkokFuGS6XE6StjEv4bM3U719tnKNgS3n6GFfwrZyUOob2DZnXhR510Kd1W1nYUmOEOItctlsUhzRNKhHRq94znsryUFS8nXHpCzX1r6LH7OiLBXA6gh+Y3hCtHqdHHBy6ZIi+HUYn+mxWgSGdXT/bfeD6g1Y5N9dkY5j5nQYKJo9NoN/i+j/c1Q3/ggpJC5llJB51KfO9OGGQsZMeJQ09wY0Xz8Fen/vp+DuVZz78VSv516mJ8oO1M7Gd75fzZblkgvKYCVbQlrenjirry6LW+rcJXTJrwxJ+8VTBBS9psd88imYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SRuG5l/zhL4RCt1bbDKhOij7D8TxoAagdBhXfGStpG4=;
+ b=B0SFC88drPwkpg06553iuy6jPQoteFhFLw6RidpoodFCmI2yHS134noB3OX87byCcjkxZCtV01THUKB2J/o+9vOszgKkPGQD8Fg+aFevKmM5BR2zBoNvePKJft3tgapkpDmcZC5fqaH/U+fqz99tg18Qa6XFO3+0KDfBFVAoB30=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
+ by PA4PR04MB8046.eurprd04.prod.outlook.com (2603:10a6:102:ba::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20; Tue, 22 Aug
+ 2023 06:59:36 +0000
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e]) by AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e%4]) with mapi id 15.20.6699.022; Tue, 22 Aug 2023
+ 06:59:35 +0000
+From: Wei Fang <wei.fang@nxp.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	shenwei.wang@nxp.com,
+	xiaoning.wang@nxp.com,
+	netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-imx@nxp.com
+Subject: [PATCH net-next] net: fec: add exception tracing for XDP
+Date: Tue, 22 Aug 2023 14:52:55 +0800
+Message-Id: <20230822065255.606739-1-wei.fang@nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2P153CA0003.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:140::20) To AM5PR04MB3139.eurprd04.prod.outlook.com
+ (2603:10a6:206:8::20)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 bpf-next 5/7] bpf: Consider non-owning refs to
- refcounted nodes RCU protected
-Content-Language: en-US
-To: yonghong.song@linux.dev, Dave Marchevsky <davemarchevsky@fb.com>,
- bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>
-References: <20230821193311.3290257-1-davemarchevsky@fb.com>
- <20230821193311.3290257-6-davemarchevsky@fb.com>
- <fafb9664-2473-1993-ea0d-4e4228f32c7b@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: David Marchevsky <david.marchevsky@linux.dev>
-In-Reply-To: <fafb9664-2473-1993-ea0d-4e4228f32c7b@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM5PR04MB3139:EE_|PA4PR04MB8046:EE_
+X-MS-Office365-Filtering-Correlation-Id: 66454c26-b517-4dda-d18c-08dba2dd5831
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	MSOAvzeHwIYOyvwfwKcfQuQ5h4TSSED8UZbDEUvLndu34y4alPPVdZyZbsKh8p4ngMlvzyMkpkY/ksBryId/RlCDkr7JKfy86Tqg0FzrfLehDuTbmp3EpakARZHrFPJ/tszwknOSkb+BAcy2uuS1+V8O7xLv05soaKJFbEuTv34IlXmytzu643KJe8Akl7TJMO0Ytv6t0wE7dSWpxUV++5sP1AmOaV/raGrnKxUMUco4UDJ7MgloIDeu7y5O/8FqS1GbUepKdHBYWkU451eA074SdNldIgZ9VLFptsrvi+vOyXttZTXMGx4Q0I5SFJhM2Tz+re5ckfJTb1DaN3ZbTWZl/KQ38Eoro8uWk9wDYekDr1/MbwqLRWeMj5EjdyG/AI/IfvDtfufL3rZF3y2N1bsXWw666w1wthqTDR+dNdWI2Z2fZYSNr6wdQBn93Xbg7CuVML7eVqKqhncWpUxWeIgYx8/yG22zFZrKgBD/ExNUnYmxiCJ1/qfgfAdpOutXFlABKvzIifQJIc6zcnSJEwf5AcC8PuV3mavbMsGMChoFd4Vnmy1cy72ym6ApH9GgbAgJsa4W5sFg3+1hX8xqq7wLn4+K43MHITp6pobOdqjaaNVwhogHW0Q3TMeugKq1YsdSPYZu5TCCBeCBvgejQA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(396003)(136003)(366004)(346002)(186009)(1800799009)(451199024)(1076003)(2616005)(26005)(6512007)(38350700002)(921005)(86362001)(38100700002)(36756003)(83380400001)(41300700001)(316002)(8936002)(8676002)(66946007)(66476007)(66556008)(2906002)(5660300002)(4326008)(44832011)(7416002)(6666004)(6486002)(6506007)(52116002)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?9zDI7ADpp4Fa3XY2jUy0jD9GtXPneZ8EEZpj9MTTqTCco83PAmYBU0vgvEjo?=
+ =?us-ascii?Q?NKrNWeR3SVjzLCra/C/GABWGAK4DSGDmCJyR4oSxzPk2KKtzlsQy4nlWJCxT?=
+ =?us-ascii?Q?ce2zC+GmkoSwOA06Vvf1NGfYPlRt5d89j3GED7hDQWwjn4jd256WJQJ9uEx6?=
+ =?us-ascii?Q?uvp6OiecBO/5WoP+CiGB7MP5pWJnsF4Ax2vtHDKKWseSYWo6sTOMgmPNAFU5?=
+ =?us-ascii?Q?eNcALB9awa7ZIz6wysaB6SXwtJ7pRYDRa354dhmuAQP+G8HlHmdjKP2CopiH?=
+ =?us-ascii?Q?gH+7pCjfnKJAmMztU0cpPVttASeDXTRwiR3x+hTiK8obMtyFz1XcsMzHQMxe?=
+ =?us-ascii?Q?MCuXUKjigYhTqhrFCxpObJL3v4u+FBdgPYfvGeCf0hR/ALQNo1nkK/bDCIVk?=
+ =?us-ascii?Q?7csogfmIaOckMaW+8I9CIZFLgdUvXJ+EXm0VuqGTTIcNOnHTR76RfubD0UV1?=
+ =?us-ascii?Q?aRHcWKq6gE3W5wqEgsEqwSD1T7tdw5BAzLSVt5ZtO73uGPN1nKlz3DpOoGWY?=
+ =?us-ascii?Q?1RoRwPuLDk1rMAG8tPnOxVZrqSrpc8LaL00+YCcFTfNvkWJ3fHzeivR4v1Yj?=
+ =?us-ascii?Q?0RdFksSRhcbVK2X6D7ouhfXOzaMMFCMtvF9E1zyF9edROPx7CKhYfKxgQwvM?=
+ =?us-ascii?Q?lh85N9e33LE8oOxiCgiXRWvfFIBQywfy0uwOdYMjim65E8a+ygP50AvCJsOl?=
+ =?us-ascii?Q?D+3GhnmyJyfqhPE6y2NJnD8b2bRqcx1FePiy7GLkmpzQydftPKcanDYu588l?=
+ =?us-ascii?Q?gDk6Sq6evjOrWeMFmUZu9NZYfIzwTaQQ3tjd6G6IgX+E2hrHwafVWdnVakOc?=
+ =?us-ascii?Q?WznfbslZoVbmzgXJLDudjriVXjYnv668mBfzlxU0GDV1GE4j8YnfZNNfrY1H?=
+ =?us-ascii?Q?jqfsaWLHfS9JgYUUv7IZePlhORC8BytgnMK9Wprdf0WiIueospHE6CN2/LrX?=
+ =?us-ascii?Q?lJRBsMh+nR8FJTtviEyh97IK2zwS7sR784gJRXWbI5zDcmEfoFLxs59AlwkI?=
+ =?us-ascii?Q?TxuBgXS8HLU6gM0DbhcXOoE4OwiwLRMIifjdn+OTw4s3bU41k4/m+cX8zJA/?=
+ =?us-ascii?Q?HmDO/A1C4AAuN7MmPVMW8N0BB1OMvNhjHFF1tBZ1NVs9C/rCO1EeJHH8HKeG?=
+ =?us-ascii?Q?8KgzMW7cqIirAMWYf9qOnx+VqVSJOp+kB86O9p7sNsYL9kw2g26kZ+xLcp+1?=
+ =?us-ascii?Q?ll9fT6M9C6qt6dyW+wTp54GaSP3jfzvdPVq1CK7SoqQI5lJm5HmdkkbQ6cQF?=
+ =?us-ascii?Q?UYC9cPMHibTJmdZuDm2EKGsfKS9ZeFXOmpTidU1nQ/WFh3rB0QbyEc3iVcrX?=
+ =?us-ascii?Q?5TWnC2NJ33OixVTIqZ/YbOZjKUIra9OFz9NRD1cytGP5nrvV15lTVpPNUSkI?=
+ =?us-ascii?Q?VrYjGX0Njf8n3BeNlKPTimpXtI9svGuXbkvdOdSNugLE2FaUYLkk4JxMDUed?=
+ =?us-ascii?Q?Nsw/B4QvgYkR2EI4rFjr2dY38o65WDqR1WgoujzJpD1jGMj7Htyq53mH+8XY?=
+ =?us-ascii?Q?CM4P7zp+GgSZmi6RZ0t6dPudXUjifKdhhSnUFsTP/t2ZRcgBT77E6o/oJsu6?=
+ =?us-ascii?Q?hKXZTPNIWIWC/Rf/tQGmjBhhp9ZsTUUpvloEYZOR?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 66454c26-b517-4dda-d18c-08dba2dd5831
+X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Aug 2023 06:59:35.6389
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8UYaZODOijlp7RFESgh9CEcRnT4qS9r9W9fF07PsTngUd1e4Yoe/UYmnEhqUxGrkJ3FKC9X0ZfFc2HQ1DJTkIg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB8046
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+	RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 8/21/23 10:37 PM, Yonghong Song wrote:
-> 
-> 
-> On 8/21/23 12:33 PM, Dave Marchevsky wrote:
->> An earlier patch in the series ensures that the underlying memory of
->> nodes with bpf_refcount - which can have multiple owners - is not reused
->> until RCU grace period has elapsed. This prevents
->> use-after-free with non-owning references that may point to
->> recently-freed memory. While RCU read lock is held, it's safe to
->> dereference such a non-owning ref, as by definition RCU GP couldn't have
->> elapsed and therefore underlying memory couldn't have been reused.
->>
->>  From the perspective of verifier "trustedness" non-owning refs to
->> refcounted nodes are now trusted only in RCU CS and therefore should no
->> longer pass is_trusted_reg, but rather is_rcu_reg. Let's mark them
->> MEM_RCU in order to reflect this new state.
->>
->> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
->> ---
->>   include/linux/bpf.h   |  3 ++-
->>   kernel/bpf/verifier.c | 13 ++++++++++++-
->>   2 files changed, 14 insertions(+), 2 deletions(-)
->>
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index eced6400f778..12596af59c00 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -653,7 +653,8 @@ enum bpf_type_flag {
->>       MEM_RCU            = BIT(13 + BPF_BASE_TYPE_BITS),
->>         /* Used to tag PTR_TO_BTF_ID | MEM_ALLOC references which are non-owning.
->> -     * Currently only valid for linked-list and rbtree nodes.
->> +     * Currently only valid for linked-list and rbtree nodes. If the nodes
->> +     * have a bpf_refcount_field, they must be tagged MEM_RCU as well.
->>        */
->>       NON_OWN_REF        = BIT(14 + BPF_BASE_TYPE_BITS),
->>   diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 8db0afa5985c..55607ab30522 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -8013,6 +8013,7 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
->>       case PTR_TO_BTF_ID | PTR_TRUSTED:
->>       case PTR_TO_BTF_ID | MEM_RCU:
->>       case PTR_TO_BTF_ID | MEM_ALLOC | NON_OWN_REF:
->> +    case PTR_TO_BTF_ID | MEM_ALLOC | NON_OWN_REF | MEM_RCU:
->>           /* When referenced PTR_TO_BTF_ID is passed to release function,
->>            * its fixed offset must be 0. In the other cases, fixed offset
->>            * can be non-zero. This was already checked above. So pass
->> @@ -10479,6 +10480,7 @@ static int process_kf_arg_ptr_to_btf_id(struct bpf_verifier_env *env,
->>   static int ref_set_non_owning(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
->>   {
->>       struct bpf_verifier_state *state = env->cur_state;
->> +    struct btf_record *rec = reg_btf_record(reg);
->>         if (!state->active_lock.ptr) {
->>           verbose(env, "verifier internal error: ref_set_non_owning w/o active lock\n");
->> @@ -10491,6 +10493,9 @@ static int ref_set_non_owning(struct bpf_verifier_env *env, struct bpf_reg_state
->>       }
->>         reg->type |= NON_OWN_REF;
->> +    if (rec->refcount_off >= 0)
->> +        reg->type |= MEM_RCU;
-> 
-> Should the above MEM_RCU marking be done unless reg access is in
-> rcu critical section?
+As we already added the exception tracing for XDP_TX, I think it is
+necessary to add the exception tracing for other XDP actions, such
+as XDP_REDIRECT, XDP_ABORTED and unknown error actions.
 
-I think it is fine, since non-owning references currently exist only within
-spin_lock CS. Based on Alexei's comments on v1 of this series [0], preemption
-disabled + spin_lock CS should imply RCU CS.
+Signed-off-by: Wei Fang <wei.fang@nxp.com>
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+---
+ drivers/net/ethernet/freescale/fec_main.c | 26 ++++++++++-------------
+ 1 file changed, 11 insertions(+), 15 deletions(-)
 
-  [0]: https://lore.kernel.org/bpf/20230802230715.3ltalexaczbomvbu@MacBook-Pro-8.local/
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+index e23a55977183..8909899e9a31 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -1583,25 +1583,18 @@ fec_enet_run_xdp(struct fec_enet_private *fep, struct bpf_prog *prog,
+ 	case XDP_REDIRECT:
+ 		rxq->stats[RX_XDP_REDIRECT]++;
+ 		err = xdp_do_redirect(fep->netdev, xdp, prog);
+-		if (!err) {
+-			ret = FEC_ENET_XDP_REDIR;
+-		} else {
+-			ret = FEC_ENET_XDP_CONSUMED;
+-			page = virt_to_head_page(xdp->data);
+-			page_pool_put_page(rxq->page_pool, page, sync, true);
+-		}
++		if (unlikely(err))
++			goto xdp_err;
++
++		ret = FEC_ENET_XDP_REDIR;
+ 		break;
+ 
+ 	case XDP_TX:
+ 		err = fec_enet_xdp_tx_xmit(fep, cpu, xdp, sync);
+-		if (unlikely(err)) {
+-			ret = FEC_ENET_XDP_CONSUMED;
+-			page = virt_to_head_page(xdp->data);
+-			page_pool_put_page(rxq->page_pool, page, sync, true);
+-			trace_xdp_exception(fep->netdev, prog, act);
+-		} else {
+-			ret = FEC_ENET_XDP_TX;
+-		}
++		if (unlikely(err))
++			goto xdp_err;
++
++		ret = FEC_ENET_XDP_TX;
+ 		break;
+ 
+ 	default:
+@@ -1613,9 +1606,12 @@ fec_enet_run_xdp(struct fec_enet_private *fep, struct bpf_prog *prog,
+ 
+ 	case XDP_DROP:
+ 		rxq->stats[RX_XDP_DROP]++;
++xdp_err:
+ 		ret = FEC_ENET_XDP_CONSUMED;
+ 		page = virt_to_head_page(xdp->data);
+ 		page_pool_put_page(rxq->page_pool, page, sync, true);
++		if (act != XDP_DROP)
++			trace_xdp_exception(fep->netdev, prog, act);
+ 		break;
+ 	}
+ 
+-- 
+2.25.1
 
-> 
-> I think we still have issues for state resetting
-> with bpf_spin_unlock() and bpf_rcu_read_unlock(), both of which
-> will try to convert the reg state to PTR_UNTRUSTED.
-> 
-> Let us say reg state is
->   PTR_TO_BTF_ID | MEM_ALLOC | NON_OWN_REF | MEM_RCU
-> 
-> (1). If hitting bpf_spin_unlock(), since MEM_RCU is in
-> the reg state, the state should become
->   PTR_TO_BTF_ID | MEM_ALLOC | MEM_RCU
-> some additional code might be needed so we wont have
-> verifier complaints about ref_obj_id == 0.
-> 
-> (2). If hitting bpf_rcu_read_unlock(), the state should become
->   PTR_TO_BTF_ID | MEM_ALLOC | NON_OWN_REF
-> since register access still in bpf_spin_lock() region.
-
-I agree w/ your comment in side reply stating that this
-case isn't possible since bpf_rcu_read_{lock,unlock} in spin_lock CS
-is currently not allowed.
-
-> 
-> Does this make sense?
-> 
-
-
-IIUC the specific reg state flow you're recommending is based on the convos
-we've had over the past few weeks re: getting rid of special non-owning ref
-lifetime rules, instead using RCU as much as possible. Specifically, this
-recommended change would remove non-owning ref clobbering, instead just removing
-NON_OWN_REF flag on bpf_spin_unlock so that such nodes can no longer be passed
-to collection kfuncs (refcount_acquire, etc).
-
-I agree that in general we'll be able to loosen the lifetime logic for
-non-owning refs, and your specific suggestion sounds reasonable. IMO it's
-better to ship that as a separate series, though, as this series was meant
-to be the minimum changes necessary to re-enable bpf_refcount_acquire, and
-it's expanded a bit past that already. Easier to reason about the rest
-of this series' changes without having to account for clobbering changes.
-
->> +
->>       return 0;
->>   }
->>   @@ -11328,6 +11333,11 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->>           struct bpf_func_state *state;
->>           struct bpf_reg_state *reg;
->>   +        if (in_rbtree_lock_required_cb(env) && (rcu_lock || rcu_unlock)) {
->> +            verbose(env, "Calling bpf_rcu_read_{lock,unlock} in unnecessary rbtree callback\n");
->> +            return -EACCES;
->> +        }
->> +
->>           if (rcu_lock) {
->>               verbose(env, "nested rcu read lock (kernel function %s)\n", func_name);
->>               return -EINVAL;
->> @@ -16689,7 +16699,8 @@ static int do_check(struct bpf_verifier_env *env)
->>                       return -EINVAL;
->>                   }
->>   -                if (env->cur_state->active_rcu_lock) {
->> +                if (env->cur_state->active_rcu_lock &&
->> +                    !in_rbtree_lock_required_cb(env)) {
->>                       verbose(env, "bpf_rcu_read_unlock is missing\n");
->>                       return -EINVAL;
->>                   }
 
