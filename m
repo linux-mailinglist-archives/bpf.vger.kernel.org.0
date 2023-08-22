@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-8269-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8270-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBDBD784750
-	for <lists+bpf@lfdr.de>; Tue, 22 Aug 2023 18:26:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE7EA784777
+	for <lists+bpf@lfdr.de>; Tue, 22 Aug 2023 18:26:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DED1B1C20B0B
-	for <lists+bpf@lfdr.de>; Tue, 22 Aug 2023 16:26:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78A3D281136
+	for <lists+bpf@lfdr.de>; Tue, 22 Aug 2023 16:26:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 693201DDD8;
-	Tue, 22 Aug 2023 16:25:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDABA1DDDF;
+	Tue, 22 Aug 2023 16:26:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AEA01D2E6
-	for <bpf@vger.kernel.org>; Tue, 22 Aug 2023 16:25:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16352C433C7;
-	Tue, 22 Aug 2023 16:25:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D65E1D2E6
+	for <bpf@vger.kernel.org>; Tue, 22 Aug 2023 16:26:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37C10C433C8;
+	Tue, 22 Aug 2023 16:26:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692721557;
-	bh=Z8G/Q1ZOJmJqXnVe9PMMB8lk/cxt+JLjfH3zVdKl+Wo=;
+	s=k20201202; t=1692721567;
+	bh=M0yvt9XhZlKteG4rq6911+5kqkZiiyrV8Vdh/k3iy5w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jV9RagfIbe5jpmghdKO5v/LxIjt8GwWpCGuprl30MODYyHZ9vhUVvdfq0fpNfyX0S
-	 f7Wt7gUCxdvnGrwpjABhStXo4kuNJCNG0lYvuaX9DiiacLm59lZC+QhAWaL7H3gXZ0
-	 zK41jytaNaBFmJ8wq5ZcKK4oWvIlRwi4evHSJ7OIIW/4HdhFg5nsJ5jOPlOl0MKbem
-	 MicKjo2yqBggA2t8+a+dwvZ7OBfbCv4oCPbfGaA7N3KtonyryHd/nw4q5Cq5q+Esxt
-	 MCTgpqrzJhBMx7jCl9UfUb3UTeZeHJm4HKSIW3TfZ2cei38Bqk4vA225oIcwxzbR/i
-	 J5so7XhsZ5jBQ==
+	b=Cnr1S/Sy+0F8FIgeXlSiDjs0zBxioLjRU8WEycgszF7j8sH3oAV19R6G/LCSqP5MX
+	 bq0bNyiiZInyYvTzj5cbMQ358j/IzLo6XaImnUW71BV0tyknHqFTG8NTczk9gwr7hH
+	 QZKVkYVzg5dHAySTy6lpfkkb1gtqYhEA2eo8UoggUwy8+4LuQ8x647hWn+EyMG9iIp
+	 AWql+EFY8AmMU2NM520W3qAfpzxcnnu+jM8h5mGqkS0DuGNpXjNoOIDfJbSd2iawVB
+	 ee8y5q1hQQKAJlnLtP6wKxsjVzsUnhnesHIO8WwFm+etWOrfhyMGrY+9VmsFiUajZM
+	 ShenasIwP0G7g==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: linux-trace-kernel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -39,9 +39,9 @@ Cc: linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	Sven Schnelle <svens@linux.ibm.com>,
 	Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH v6 2/9] tracing/probes: Move finding func-proto API and getting func-param API to trace_btf
-Date: Wed, 23 Aug 2023 01:25:52 +0900
-Message-Id: <169272155255.160970.719426926348706349.stgit@devnote2>
+Subject: [PATCH v6 3/9] tracing/probes: Add a function to search a member of a struct/union
+Date: Wed, 23 Aug 2023 01:26:02 +0900
+Message-Id: <169272156248.160970.8868479822371129043.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <169272153143.160970.15584603734373446082.stgit@devnote2>
 References: <169272153143.160970.15584603734373446082.stgit@devnote2>
@@ -57,215 +57,127 @@ Content-Transfer-Encoding: 8bit
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Move generic function-proto find API and getting function parameter API
-to BTF library code from trace_probe.c. This will avoid redundant efforts
-on different feature.
+Add btf_find_struct_member() API to search a member of a given data structure
+or union from the member's name.
 
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
  Changes in v3:
-  - Remove perameter check.
-  - Fix a typo.
-  - Add a type check for btf_get_func_param() and add comment for that.
-  - Use bpf_find_btf_id() and add bpf_put().
-  - Move the code before btf_show() related code.
+  - Remove simple input check.
+  - Fix unneeded IS_ERR_OR_NULL() check for btf_type_by_id().
+  - Move the code next to btf_get_func_param().
+  - Use for_each_member() macro instead of for-loop.
+  - Use btf_type_skip_modifiers() instead of btf_type_by_id().
+ Changes in v4:
+  - Use a stack for searching in anonymous members instead of nested call.
  Changes in v5:
   - Move the generic functions into a new file, trace_btf.c, for avoiding
     tree-merge conflict.
+  - Return anon_offset for calculating correct offset from root struct.
  Changes in v6:
-  - Fix SPDX tag.
+  - Allocate anon_stack from heap instead of stack.
 ---
- kernel/trace/Makefile      |    1 +
- kernel/trace/trace_btf.c   |   53 ++++++++++++++++++++++++++++++++++++++++++++
- kernel/trace/trace_btf.h   |    7 ++++++
- kernel/trace/trace_probe.c |   51 +++++++++---------------------------------
- 4 files changed, 72 insertions(+), 40 deletions(-)
- create mode 100644 kernel/trace/trace_btf.c
- create mode 100644 kernel/trace/trace_btf.h
+ kernel/trace/trace_btf.c |   69 ++++++++++++++++++++++++++++++++++++++++++++++
+ kernel/trace/trace_btf.h |    4 +++
+ 2 files changed, 73 insertions(+)
 
-diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
-index 64b61f67a403..057cd975d014 100644
---- a/kernel/trace/Makefile
-+++ b/kernel/trace/Makefile
-@@ -99,6 +99,7 @@ obj-$(CONFIG_KGDB_KDB) += trace_kdb.o
- endif
- obj-$(CONFIG_DYNAMIC_EVENTS) += trace_dynevent.o
- obj-$(CONFIG_PROBE_EVENTS) += trace_probe.o
-+obj-$(CONFIG_PROBE_EVENTS_BTF_ARGS) += trace_btf.o
- obj-$(CONFIG_UPROBE_EVENTS) += trace_uprobe.o
- obj-$(CONFIG_BOOTTIME_TRACING) += trace_boot.o
- obj-$(CONFIG_FTRACE_RECORD_RECURSION) += trace_recursion_record.o
 diff --git a/kernel/trace/trace_btf.c b/kernel/trace/trace_btf.c
-new file mode 100644
-index 000000000000..d70b8ee9af37
---- /dev/null
+index d70b8ee9af37..ca224d53bfdc 100644
+--- a/kernel/trace/trace_btf.c
 +++ b/kernel/trace/trace_btf.c
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/btf.h>
-+#include <linux/kernel.h>
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <linux/btf.h>
+ #include <linux/kernel.h>
++#include <linux/slab.h>
+ 
+ #include "trace_btf.h"
+ 
+@@ -51,3 +52,71 @@ const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s3
+ 		return NULL;
+ }
+ 
++#define BTF_ANON_STACK_MAX	16
 +
-+#include "trace_btf.h"
-+
-+/*
-+ * Find a function proto type by name, and return the btf_type with its btf
-+ * in *@btf_p. Return NULL if not found.
-+ * Note that caller has to call btf_put(*@btf_p) after using the btf_type.
-+ */
-+const struct btf_type *btf_find_func_proto(const char *func_name, struct btf **btf_p)
-+{
-+	const struct btf_type *t;
-+	s32 id;
-+
-+	id = bpf_find_btf_id(func_name, BTF_KIND_FUNC, btf_p);
-+	if (id < 0)
-+		return NULL;
-+
-+	/* Get BTF_KIND_FUNC type */
-+	t = btf_type_by_id(*btf_p, id);
-+	if (!t || !btf_type_is_func(t))
-+		goto err;
-+
-+	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
-+	t = btf_type_by_id(*btf_p, t->type);
-+	if (!t || !btf_type_is_func_proto(t))
-+		goto err;
-+
-+	return t;
-+err:
-+	btf_put(*btf_p);
-+	return NULL;
-+}
++struct btf_anon_stack {
++	u32 tid;
++	u32 offset;
++};
 +
 +/*
-+ * Get function parameter with the number of parameters.
-+ * This can return NULL if the function has no parameters.
-+ * It can return -EINVAL if the @func_proto is not a function proto type.
++ * Find a member of data structure/union by name and return it.
++ * Return NULL if not found, or -EINVAL if parameter is invalid.
++ * If the member is an member of anonymous union/structure, the offset
++ * of that anonymous union/structure is stored into @anon_offset. Caller
++ * can calculate the correct offset from the root data structure by
++ * adding anon_offset to the member's offset.
 + */
-+const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s32 *nr)
++const struct btf_member *btf_find_struct_member(struct btf *btf,
++						const struct btf_type *type,
++						const char *member_name,
++						u32 *anon_offset)
 +{
-+	if (!btf_type_is_func_proto(func_proto))
-+		return ERR_PTR(-EINVAL);
++	struct btf_anon_stack *anon_stack;
++	const struct btf_member *member;
++	u32 tid, cur_offset = 0;
++	const char *name;
++	int i, top = 0;
 +
-+	*nr = btf_type_vlen(func_proto);
-+	if (*nr > 0)
-+		return (const struct btf_param *)(func_proto + 1);
-+	else
-+		return NULL;
++	anon_stack = kcalloc(BTF_ANON_STACK_MAX, sizeof(*anon_stack), GFP_KERNEL);
++	if (!anon_stack)
++		return ERR_PTR(-ENOMEM);
++
++retry:
++	if (!btf_type_is_struct(type)) {
++		member = ERR_PTR(-EINVAL);
++		goto out;
++	}
++
++	for_each_member(i, type, member) {
++		if (!member->name_off) {
++			/* Anonymous union/struct: push it for later use */
++			type = btf_type_skip_modifiers(btf, member->type, &tid);
++			if (type && top < BTF_ANON_STACK_MAX) {
++				anon_stack[top].tid = tid;
++				anon_stack[top++].offset =
++					cur_offset + member->offset;
++			}
++		} else {
++			name = btf_name_by_offset(btf, member->name_off);
++			if (name && !strcmp(member_name, name)) {
++				if (anon_offset)
++					*anon_offset = cur_offset;
++				goto out;
++			}
++		}
++	}
++	if (top > 0) {
++		/* Pop from the anonymous stack and retry */
++		tid = anon_stack[--top].tid;
++		cur_offset = anon_stack[top].offset;
++		type = btf_type_by_id(btf, tid);
++		goto retry;
++	}
++	member = NULL;
++
++out:
++	kfree(anon_stack);
++	return member;
 +}
 +
 diff --git a/kernel/trace/trace_btf.h b/kernel/trace/trace_btf.h
-new file mode 100644
-index 000000000000..98685e9a556c
---- /dev/null
+index 98685e9a556c..4bc44bc261e6 100644
+--- a/kernel/trace/trace_btf.h
 +++ b/kernel/trace/trace_btf.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#include <linux/btf.h>
-+
-+const struct btf_type *btf_find_func_proto(const char *func_name,
-+					   struct btf **btf_p);
-+const struct btf_param *btf_get_func_param(const struct btf_type *func_proto,
-+					   s32 *nr);
-diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-index ecbe28f8d676..c3ac5698e80b 100644
---- a/kernel/trace/trace_probe.c
-+++ b/kernel/trace/trace_probe.c
-@@ -12,6 +12,7 @@
- #define pr_fmt(fmt)	"trace_probe: " fmt
- 
- #include <linux/bpf.h>
-+#include "trace_btf.h"
- 
- #include "trace_probe.h"
- 
-@@ -361,38 +362,6 @@ static const char *type_from_btf_id(struct btf *btf, s32 id)
- 	return NULL;
- }
- 
--static const struct btf_type *find_btf_func_proto(const char *funcname,
--						  struct btf **btf_p)
--{
--	const struct btf_type *t;
--	struct btf *btf = NULL;
--	s32 id;
--
--	if (!funcname)
--		return ERR_PTR(-EINVAL);
--
--	id = bpf_find_btf_id(funcname, BTF_KIND_FUNC, &btf);
--	if (id <= 0)
--		return ERR_PTR(-ENOENT);
--
--	/* Get BTF_KIND_FUNC type */
--	t = btf_type_by_id(btf, id);
--	if (!t || !btf_type_is_func(t))
--		goto err;
--
--	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
--	t = btf_type_by_id(btf, t->type);
--	if (!t || !btf_type_is_func_proto(t))
--		goto err;
--
--	*btf_p = btf;
--	return t;
--
--err:
--	btf_put(btf);
--	return ERR_PTR(-ENOENT);
--}
--
- static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
- 						   struct btf **btf_p, bool tracepoint)
- {
-@@ -403,12 +372,13 @@ static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr
- 	if (!funcname || !nr)
- 		return ERR_PTR(-EINVAL);
- 
--	t = find_btf_func_proto(funcname, &btf);
--	if (IS_ERR(t))
-+	t = btf_find_func_proto(funcname, &btf);
-+	if (!t)
- 		return (const struct btf_param *)t;
- 
--	*nr = btf_type_vlen(t);
--	param = (const struct btf_param *)(t + 1);
-+	param = btf_get_func_param(t, nr);
-+	if (IS_ERR_OR_NULL(param))
-+		goto err;
- 
- 	/* Hide the first 'data' argument of tracepoint */
- 	if (tracepoint) {
-@@ -421,6 +391,7 @@ static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr
- 		return param;
- 	}
- 
-+err:
- 	btf_put(btf);
- 	return NULL;
- }
-@@ -496,8 +467,8 @@ static const struct fetch_type *parse_btf_retval_type(
- 
- 	if (ctx->funcname) {
- 		/* Do not use ctx->btf, because it must be used with ctx->param */
--		t = find_btf_func_proto(ctx->funcname, &btf);
--		if (!IS_ERR(t)) {
-+		t = btf_find_func_proto(ctx->funcname, &btf);
-+		if (t) {
- 			typestr = type_from_btf_id(btf, t->type);
- 			btf_put(btf);
- 		}
-@@ -512,8 +483,8 @@ static bool is_btf_retval_void(const char *funcname)
- 	struct btf *btf;
- 	bool ret;
- 
--	t = find_btf_func_proto(funcname, &btf);
--	if (IS_ERR(t))
-+	t = btf_find_func_proto(funcname, &btf);
-+	if (!t)
- 		return false;
- 
- 	ret = (t->type == 0);
+@@ -5,3 +5,7 @@ const struct btf_type *btf_find_func_proto(const char *func_name,
+ 					   struct btf **btf_p);
+ const struct btf_param *btf_get_func_param(const struct btf_type *func_proto,
+ 					   s32 *nr);
++const struct btf_member *btf_find_struct_member(struct btf *btf,
++						const struct btf_type *type,
++						const char *member_name,
++						u32 *anon_offset);
 
 
