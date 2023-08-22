@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-8286-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8287-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C5327848B4
-	for <lists+bpf@lfdr.de>; Tue, 22 Aug 2023 19:52:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C4047848B7
+	for <lists+bpf@lfdr.de>; Tue, 22 Aug 2023 19:52:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DD4228113E
-	for <lists+bpf@lfdr.de>; Tue, 22 Aug 2023 17:52:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15FCC281168
+	for <lists+bpf@lfdr.de>; Tue, 22 Aug 2023 17:52:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97A171DA54;
-	Tue, 22 Aug 2023 17:51:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EDA91DDC0;
+	Tue, 22 Aug 2023 17:51:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5094379CF
-	for <bpf@vger.kernel.org>; Tue, 22 Aug 2023 17:51:49 +0000 (UTC)
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC6D10F
-	for <bpf@vger.kernel.org>; Tue, 22 Aug 2023 10:51:48 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id d9443c01a7336-1bf7423ef3eso17567045ad.3
-        for <bpf@vger.kernel.org>; Tue, 22 Aug 2023 10:51:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FD2179CF
+	for <bpf@vger.kernel.org>; Tue, 22 Aug 2023 17:51:53 +0000 (UTC)
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE52CEF
+	for <bpf@vger.kernel.org>; Tue, 22 Aug 2023 10:51:51 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id d2e1a72fcca58-68a6cd7c6a6so871384b3a.1
+        for <bpf@vger.kernel.org>; Tue, 22 Aug 2023 10:51:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692726707; x=1693331507;
+        d=gmail.com; s=20221208; t=1692726710; x=1693331510;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bgyZzA4g13/NiqRVMehNHrHirG6uJMZnw8LcxOTPnkE=;
-        b=pQYYm1PYHHLwx1sJ8s1tVjIR50CmnO9GmlBSotdr46dMj/VrWUVbZjuroJT16I+299
-         dB9V07LReGHPlm2vKeOdFpKuariFDTCsXY/P2nGk1gG+n0lMXv8W3Z2IG39cLXExdaHR
-         cLwExMle2ntTzZ/TvOvccg28D+sQ4bl5qX7oqd6FaH06heeURVGzIK+5138QkKVXpK5T
-         yLZHGBCz3G8gi1xfpgN8KjbDeKJfQ6gSO8m8X7xjq1UoLIeVbeTC6OofwhjmCsMPk2s/
-         0VzEkhwNfFMquZ/wKP1vcYeQ1URazKpxmHOAbrN7Kor4N0RE46LzMcHwnwyAzKtQCDdP
-         WhCg==
+        bh=RMQ9h7kf4eznjMgNFpxxScKtpArHTspf3R2UQPNlXrM=;
+        b=dv3pRrl36tIbwsg3O3rc0yXC5hQ7tp9vSa+S3tAq9ZSgS+YzxGbdxjNCajEKetqFJp
+         Wg/TEX6S8IolIk6CUJ4W/sRN4dX0rkHIWmEdC0l7iM1TjgK8/odQxWxV21H6WBHcD6ba
+         TqPA7KhkjvEhKiu8xU7U3/FJRg+6VpvZN35zCWEzhc+mejYY5yTbsJTeSxKW5Hp1kmS0
+         wFtQk2yUg/SFaO16DVScMOUKk3ko0d/KGxeKsumvvAfX8esGLC4q6dT3UmQxrN9QF6Oj
+         o5zdHuBKhbFxSxDpLsIt29RnLQekpDQQC3aHpVE0aLKhbF0zJ4bkKtGFRZN6wpRzGbnV
+         zP2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692726707; x=1693331507;
+        d=1e100.net; s=20221208; t=1692726710; x=1693331510;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bgyZzA4g13/NiqRVMehNHrHirG6uJMZnw8LcxOTPnkE=;
-        b=A79hKotj3yfFV773SLyhUrx69L/5Da4XVTUDk2anwANZUMkdW7tbzMkVnsghuKEqez
-         YeJ1afvMvcpYZ1TTZMXnUC209T9rY8boh8NGosWFF3zv7+sB6KtkNJIBBCa63qiAkPoX
-         Snzjct7Dw1KP5R9OsefadjJ4xz31IqPhMXGSMit/jA0T8ZswL8vDUtK9TnZ7dAIy/9T3
-         oX/4/8Sg/P2WpoaKzSnwk/CKkJTfK7wH+JgTm9w3XeUZ/qXBVpQQ8nKB8z4FwrOei317
-         Aq0wktNZUPKb0M3RLQbkXvAXHWKY/1WAM2hBgXwLR0jY4WG57H02uqBFtbC9OPbyk2IP
-         mNWw==
-X-Gm-Message-State: AOJu0Yw8PIytrfiehdI2Q+aN1Mm0ip81XyS6bI0eaIMSIkjQwmH0lHIn
-	VUk6Zh/a81q0Kni7alvwy8G3k2Xy254VRI0s
-X-Google-Smtp-Source: AGHT+IEGafQA+un9H9OxJIrRbXuzAF1q2djqEZarqY2flZGS1O4BNwiNpTWX3tn8Drrsdu7VzJq8gw==
-X-Received: by 2002:a17:903:2286:b0:1b3:b3c5:1d1f with SMTP id b6-20020a170903228600b001b3b3c51d1fmr10370595plh.8.1692726706967;
-        Tue, 22 Aug 2023 10:51:46 -0700 (PDT)
+        bh=RMQ9h7kf4eznjMgNFpxxScKtpArHTspf3R2UQPNlXrM=;
+        b=O1ogaZohfaJdAraHOh1JyjFf1/rv3cgmkcvrLitwqszxDYBKz4UPmFsGbe+CeNhlxz
+         vsoqgmtZcW7WLaCuO/XLkpcxtSbV2qOLV1CmipFUVWj3JapEebX3oVef8hB2D/2Rgm8u
+         nRc0dZkyVNdWq9JDaAv4NgMcBK8PvzXbupBVon5K8+7K5DH2+VL1vO5Vv8HOFdM9Cypu
+         H+XvSeTmMGodY3yVa9LQAGm6giw1ubT5vs9RMoifVe2e4rmmGHIPzydKdms/49EXOMyD
+         NqHuicelByZv6OosPoFGDaAh3yoqf3NiO40fCL5huvkGzyfWT8TEXRMfv9maK/2OFQyz
+         SU6g==
+X-Gm-Message-State: AOJu0Yxi81FN4iXFbIJwhMUt1UzWps111/k1CXevd6UGAsC4JHcjqPDj
+	SqXYc3JdbNuXv0HUjG3KhvsoGjrVrcortcmp
+X-Google-Smtp-Source: AGHT+IHF2ewJ+HnWzorFyjBNGQPP2ewa438wlLGSijFHBgfMbM/EZPf1CZ92pt7k1JaIandQ5t5VQA==
+X-Received: by 2002:a05:6a20:7d8e:b0:140:730b:4b3f with SMTP id v14-20020a056a207d8e00b00140730b4b3fmr10460025pzj.1.1692726710468;
+        Tue, 22 Aug 2023 10:51:50 -0700 (PDT)
 Received: from localhost ([2405:201:6014:dae3:46af:61ea:5ce:65e2])
-        by smtp.gmail.com with ESMTPSA id jm10-20020a17090304ca00b001bdd68b3f52sm9257746plb.302.2023.08.22.10.51.45
+        by smtp.gmail.com with ESMTPSA id x52-20020a056a000bf400b006870ff20254sm7992949pfu.125.2023.08.22.10.51.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 10:51:46 -0700 (PDT)
+        Tue, 22 Aug 2023 10:51:49 -0700 (PDT)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -63,9 +63,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
 	Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH bpf-next v1 1/2] bpf: Fix check_func_arg_reg_off bug for graph root/node
-Date: Tue, 22 Aug 2023 23:21:39 +0530
-Message-ID: <20230822175140.1317749-2-memxor@gmail.com>
+Subject: [PATCH bpf-next v1 2/2] selftests/bpf: Add test for bpf_obj_drop with bad reg->off
+Date: Tue, 22 Aug 2023 23:21:40 +0530
+Message-ID: <20230822175140.1317749-3-memxor@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230822175140.1317749-1-memxor@gmail.com>
 References: <20230822175140.1317749-1-memxor@gmail.com>
@@ -75,7 +75,7 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2194; i=memxor@gmail.com; h=from:subject; bh=PDj3b0mIO+vAnEI9jXQ/p0CSY9gD8SHyzMySjBF1oEw=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBk5PV1NOdNZpNfrwLvMVxQ4IWUtpxgmKE/Y77vu Fv2HIuO7mqJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZOT1dQAKCRBM4MiGSL8R yop9EAC2bG39RzFzX2S+/p767ly8wa1yUmwBx1YYV+jLWvu+VKd+l3ZGXAIQLtaXduTM0fOjiE6 hKNEppzEWJw7KH4ewyjR26ulAdLOclHod+puY0ObzQD5QJa5EN7CUp+scyhQE84hjVR5NjbvjN7 Dyu5+q5WxzsvQ3Ikrassjtc4QxLrbGb9oJittD3Vxqfttz2ggFQMZOt8jxeYAMOaI9UAnI/ROON kH+BmhNqi5A9vyv3+bZgHI0uGc6Fexh2Qe7zVck4qFY/H1l32ffoLvYyOTaeizqqZZbmNCk/BNd bdxG8Fv8NNQps/amH/C1kc1yNd5y59EpoBeqNkCNO9cen+Ms1Sap/s83B3gAFlkW+/nzbvD+xZY PfnUUVKcaUZn0fUEOxxK7bLCEgyoQ02GZGirboN6jLxo7Vpfz2qkZsmh4KPk5sa/RR/lzgj8zkk xLghV238JWNuowAwUykgDYsQWEzsKl4BdTRListhHO/Qasc59qLfxkiA003uGY+0NW3DGeXPzdS 07f4AkzqBHdeX1g4hqWhlc7926sPPfd/mJw7gIIi1qPICgHo6EICus/iA5jDnQXypSWLU8z5WMa nuCakFETSqP8rU6jF47D27BMVy67iu/3mQvusFvNQJ2iczroi3uALTQOZdHH7yCer0WxWjOFYKZ MqdBCWMZDY6I+ug==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1330; i=memxor@gmail.com; h=from:subject; bh=lkT+Pch/nDc8SY6j9kuwYs1NLcSw25lzZch0x35xrU8=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBk5PV1ZH4RjCNPBeCJg5RX5u9lfn8+13N0eZIwT hcSUOfp+5WJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZOT1dQAKCRBM4MiGSL8R ypm8D/0T5pQTOdhqs5myvF256gTCaVejqk8EcpUAr6atdhqwu13ZL6QkTuSClf6y0lObOPwigsv 8HFUA6ZCv3Jh0nuO1lAYCHKNIw240nj45ykaQ6fg6RIXJaBlxVNrZ7b3iPN4iom6a/jdM3qZxnh 5S57Am6IbYMtb/l65GNECl7LtCAfELVbIFbtJPbtGqjUCNGdjBYN5YfczpMlm6t9U+/IUNQFp3t x/YO17j4IU4hbn2YGiJTeld26RbZmZN2fgjiCtW+e1vlG7OVGky7UIrtHrJ3XNnKU2V29Rf1/nX 0i1NQvNWI9w/uOBPw4zv4Kjh5yZ2Gkh4vpwNr1coR5cYXxNT8krcqnQOJwOiqP3uZzWhwyXL9ZP sg9i2bBWg8aZ+kZ1m0hWXLoqR7kU7TC369UqIhDQA9VTSXrCgSydUVhjlIwU1wscPsEMDnxtyZc UjnaMcDw4T9riDNh5EYOi1JF6zypeuhh4amw3kYCigxjpX0V23kCEk8rWh54sF51fUTHrDwF++D PBhsjo2n3j8kVAY7grN6vKMxpfPtdkGr+nFAHrPq8kKv5WCV6jFpg7qTdblPBb/qIE6wzCvX+zW OGgzaoAd4JMs74Uuqfx2ML5pvI6kuf5quXF/fIaRPul/rMQxlKephvvwndcW/ZvQ+9njDDfHQ4L e9RK/KK2bx+DHvA==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -85,64 +85,45 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-The commit being fixed introduced a hunk into check_func_arg_reg_off
-that bypasses reg->off == 0 enforcement when offset points to a graph
-node or root. This might possibly be done for treating bpf_rbtree_remove
-and others as KF_RELEASE and then later check correct reg->off in helper
-argument checks.
+Add a selftest for the fix provided in the previous commit. Without the
+fix, the selftest passes the verifier while it should fail. The special
+logic for detecting graph root or node for reg->off and bypassing
+reg->off == 0 guarantee for release helpers/kfuncs has been dropped.
 
-But this is not the case, those helpers are already not KF_RELEASE and
-permit non-zero reg->off and verify it later to match the subobject in
-BTF type.
-
-However, this logic leads to bpf_obj_drop permitting free of register
-arguments with non-zero offset when they point to a graph root or node
-within them, which is not ok.
-
-For instance:
-
-struct foo {
-	int i;
-	int j;
-	struct bpf_rb_node node;
-};
-
-struct foo *f = bpf_obj_new(typeof(*f));
-if (!f) ...
-bpf_obj_drop(f); // OK
-bpf_obj_drop(&f->i); // still ok from verifier PoV
-bpf_obj_drop(&f->node); // Not OK, but permitted right now
-
-Fix this by dropping the whole part of code altogether.
-
-Fixes: 6a3cd3318ff6 ("bpf: Migrate release_on_unlock logic to non-owning ref semantics")
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/verifier.c | 11 -----------
- 1 file changed, 11 deletions(-)
+ .../bpf/progs/local_kptr_stash_fail.c         | 20 +++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 3a91bfd7b9cc..3d51c737a034 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7973,17 +7973,6 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
- 		if (arg_type_is_dynptr(arg_type) && type == PTR_TO_STACK)
- 			return 0;
+diff --git a/tools/testing/selftests/bpf/progs/local_kptr_stash_fail.c b/tools/testing/selftests/bpf/progs/local_kptr_stash_fail.c
+index 5484d1e9801d..fcf7a7567da2 100644
+--- a/tools/testing/selftests/bpf/progs/local_kptr_stash_fail.c
++++ b/tools/testing/selftests/bpf/progs/local_kptr_stash_fail.c
+@@ -62,4 +62,24 @@ long stash_rb_nodes(void *ctx)
+ 	return 0;
+ }
  
--		if ((type_is_ptr_alloc_obj(type) || type_is_non_owning_ref(type)) && reg->off) {
--			if (reg_find_field_offset(reg, reg->off, BPF_GRAPH_NODE_OR_ROOT))
--				return __check_ptr_off_reg(env, reg, regno, true);
--
--			verbose(env, "R%d must have zero offset when passed to release func\n",
--				regno);
--			verbose(env, "No graph node or root found at R%d type:%s off:%d\n", regno,
--				btf_type_name(reg->btf, reg->btf_id), reg->off);
--			return -EINVAL;
--		}
--
- 		/* Doing check_ptr_off_reg check for the offset will catch this
- 		 * because fixed_off_ok is false, but checking here allows us
- 		 * to give the user a better error message.
++SEC("tc")
++__failure __msg("R1 must have zero offset when passed to release func")
++long drop_rb_node_off(void *ctx)
++{
++	struct map_value *mapval;
++	struct node_data *res;
++	int idx = 0;
++
++	mapval = bpf_map_lookup_elem(&some_nodes, &idx);
++	if (!mapval)
++		return 1;
++
++	res = bpf_obj_new(typeof(*res));
++	if (!res)
++		return 1;
++	/* Try releasing with graph node offset */
++	bpf_obj_drop(&res->node);
++	return 0;
++}
++
+ char _license[] SEC("license") = "GPL";
 -- 
 2.41.0
 
