@@ -1,125 +1,96 @@
-Return-Path: <bpf+bounces-8400-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8401-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCE39785F5D
-	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 20:14:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A407785F60
+	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 20:14:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0141281328
-	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 18:14:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B2B21C20323
+	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 18:14:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8401F1F93A;
-	Wed, 23 Aug 2023 18:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 411401F196;
+	Wed, 23 Aug 2023 18:14:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 425DE1F923
-	for <bpf@vger.kernel.org>; Wed, 23 Aug 2023 18:13:25 +0000 (UTC)
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1480CCE6
-	for <bpf@vger.kernel.org>; Wed, 23 Aug 2023 11:13:24 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5236b2b4cdbso7693227a12.3
-        for <bpf@vger.kernel.org>; Wed, 23 Aug 2023 11:13:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692814402; x=1693419202;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J4MDqlgXVmxAmtSxftRbMxV5grolyOFXeFh6MuMlBxw=;
-        b=ditEhH424KjM+AwFNvytz6PCnh+WkMosjjZnhhJFTfElIoenSGlqPgps8XWhPUPnUg
-         FBBXimxSUQvfFSPbKI2d4rZEmEuz5ZFeubCn+pHiwt/Hc+UgwDf5H6mV7gA51//C9XEt
-         /hziyVmo5XBPYYHaUAl65NxgclShlR0isiSLNc0wOnhDoQH1XDQMwDtJXQdMwLCKv92J
-         A5u2+BZmPpnbToY2I4dTe0i7dsxrg3hJbicOqNkRJvGbGvaHNst/h71P6ZsxPV8O+pal
-         J9lvnqmJc82nFriwQmLcsjb5JdXygrlSrOUdwSyGoOxCIkmcDmsT3pede8UCPFtOozPg
-         lVtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692814402; x=1693419202;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J4MDqlgXVmxAmtSxftRbMxV5grolyOFXeFh6MuMlBxw=;
-        b=BcXkOVI9LyHh3S8imFHqJgH6kPlWzl1Wcu83hzqscRJmKqZUjdCQlf4tiCxyfmDARD
-         GDQaXnpTQ0Re7rQldo/SgR75jTHNJB8BkLp6ozNXCiTbY/+R4jng9tTw0OFQcaz6lXkb
-         8L+Fksj/3/J2/cCQPZ1tyxNkOXdtXP+zVZ2YAw0qJZwRVf7yKophiSNo2qgsHoy2TdCj
-         FnTExYp4gIAglt3BrQrHvOsOsrGb2g6kxqYPjI/CNbBf9CBr0zxDH68y7FkMHRK+4mC+
-         6GOTvm/J2dytuOBRjgr+aZV+4x490+VmqaN9Ws1rPfSj4iz241U8vaZ6hfxzJQG2FlWZ
-         LmwA==
-X-Gm-Message-State: AOJu0YzIZ0o5nMuENuYwoylSx2ogUp6ZGzLOtnEpIqemrOVXkkkjakRB
-	6P2Lekvq9DJK/y4puy6HaoLnUqY12Q7ZEY5LLiw=
-X-Google-Smtp-Source: AGHT+IHOKJl5d8EMpRZZYmmSzUlbnjHup5uvD6obXNbnamFGmCSd1ARst+l0tuK32fy0cq9vuxAvxpXVIjA/lXllXto=
-X-Received: by 2002:a05:6402:74f:b0:514:9ab4:3524 with SMTP id
- p15-20020a056402074f00b005149ab43524mr9901483edy.7.1692814402246; Wed, 23 Aug
- 2023 11:13:22 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65A421F931;
+	Wed, 23 Aug 2023 18:14:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A293FC433C8;
+	Wed, 23 Aug 2023 18:14:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1692814451;
+	bh=6WYbdQvbaUTU7jAYsOoRLczdc6WiEmOJqx1owqQdczY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=jnp9OnkqCFGBj/h9OTMFiamfq/+P0dMbhMG2wym3WRwS3We453QbP6a6Naa6WA/55
+	 d4lxewnPO9sJ/eOFdW8Id7q+oLH+qu5WfYDQfCvEZsEqA4fHS1ZXjl/MCVrHUqcm2V
+	 rQnTACprz2PN91Wy6YquXbrmyxgR7JTtwCnIMQ5ArUm5o9SmwEW1AslQAiAZraDgQF
+	 h2tDxxbMKoaqy+zaiPzYbMLAi/oaijp+DPUTHk158fgQD2Ywb/PZFPbzgyDYkg8qH9
+	 1W3Xw4IOX9qUdj1RLfiTo/cEPzNfdE8Ln2S04DCPkN4s+5vlwAgONpQFbmC2McakrT
+	 EjkJ7PP63sJqw==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Pu Lehui <pulehui@huaweicloud.com>, linux-riscv@lists.infradead.org,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, John
+ Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri
+ Olsa <jolsa@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, Xu Kuohai
+ <xukuohai@huawei.com>, Puranjay Mohan <puranjay12@gmail.com>, Pu Lehui
+ <pulehui@huawei.com>, Pu Lehui <pulehui@huaweicloud.com>
+Subject: Re: [PATCH bpf-next 3/7] riscv, bpf: Support sign-extension mov insns
+In-Reply-To: <20230823231059.3363698-4-pulehui@huaweicloud.com>
+References: <20230823231059.3363698-1-pulehui@huaweicloud.com>
+ <20230823231059.3363698-4-pulehui@huaweicloud.com>
+Date: Wed, 23 Aug 2023 20:14:07 +0200
+Message-ID: <87pm3dlj80.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230822050558.2937659-1-davemarchevsky@fb.com>
- <20230822050558.2937659-3-davemarchevsky@fb.com> <CAEf4BzZouNbzP7xOPxnU_Xzof2-L0fNE4CcjCcUJpJjAdyPJSw@mail.gmail.com>
- <36463876-1370-71d6-78f3-2350278f61c7@linux.dev> <CAADnVQK4LVKS7QUYbVOzHFLj1zv9_vieOVAqcoCULZorQ4wjMA@mail.gmail.com>
- <CAEf4BzbU=Qp3YoYGQJSOQ=WJBZbJsTHSaODnxtK0ydxK5+mUiw@mail.gmail.com> <CAADnVQJ_4H6yiW6KNcBheUzeqeYOYF4rSOMHWs30HJHobb7FFg@mail.gmail.com>
-In-Reply-To: <CAADnVQJ_4H6yiW6KNcBheUzeqeYOYF4rSOMHWs30HJHobb7FFg@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 23 Aug 2023 11:13:09 -0700
-Message-ID: <CAEf4BzbLGdGLckTKQdz-txxTNk+i=APQBT7FPqF5=hDmz2oESw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 2/3] bpf: Introduce task_vma open-coded
- iterator kfuncs
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: David Marchevsky <david.marchevsky@linux.dev>, Dave Marchevsky <davemarchevsky@fb.com>, 
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Stanislav Fomichev <sdf@google.com>, 
-	Nathan Slingerland <slinger@meta.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-On Wed, Aug 23, 2023 at 10:53=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Aug 23, 2023 at 10:14=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > > Long term we need to think how to extend bpf ISA with alloca.
-> >
-> > To be frank, I'm not following how alloca is relevant here. We don't
-> > have anything dynamically sized on the stack.
-> >
-> > Unless you envision protocol where we have a separate function to get
-> > size of iter struct, then alloca enough space, then pass that to
-> > bpf_iter_xxx_new()? Not sure whether this is statically verifiable,
-> > but given it's long-term, we can put it on backburner for now.
->
-> With alloca bpf_for_each() macro can allocate whatever stack necessary.
->
-> In other words:
->
-> struct bpf_iter_task_vma *it;
->
-> it =3D bpf_alloca(bpf_core_type_size(struct bpf_iter_task_vma));
-> bpf_for_each2(task_vma, it, ...) { .. }
+Pu Lehui <pulehui@huaweicloud.com> writes:
 
-ah, I see, not a dedicated kfunc, just CO-RE relocation. Makes sense.
-
+> From: Pu Lehui <pulehui@huawei.com>
 >
-> While struct bpf_iter_task_vma can come from vmlinux.h
+> Add support sign-extension mov instructions for RV64.
 >
-> size of kern data struct is CO-RE-able, so no worries about increase
-> in size due to maple tree or lockdep on/off.
-> And no concern of failing allocation at run-time.
-> (the verifier would reject big stack alloc at load time).
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> ---
+>  arch/riscv/net/bpf_jit_comp64.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
+p64.c
+> index fd36cb17101a..d1497182cacf 100644
+> --- a/arch/riscv/net/bpf_jit_comp64.c
+> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> @@ -1047,7 +1047,19 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn,=
+ struct rv_jit_context *ctx,
+>  			emit_zext_32(rd, ctx);
+>  			break;
+>  		}
+> -		emit_mv(rd, rs, ctx);
+> +		switch (insn->off) {
+> +		case 0:
+> +			emit_mv(rd, rs, ctx);
+> +			break;
+> +		case 8:
+> +		case 16:
+> +			emit_slli(rs, rs, 64 - insn->off, ctx);
+> +			emit_srai(rd, rs, 64 - insn->off, ctx);
 
-yep, makes sense, the size will be statically known to the verifier. I
-was overcomplicating this in my mind with extra kfunc.
+You're clobbering the source register (rs) here, which is correct.
+
+(Side note: Maybe it's time to add Zbb support to the JIT soon! ;-))
+
+
+Bj=C3=B6rn
 
