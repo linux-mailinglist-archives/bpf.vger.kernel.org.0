@@ -1,50 +1,50 @@
-Return-Path: <bpf+bounces-8342-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8343-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 063FF785043
-	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 07:58:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1779F785044
+	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 07:58:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0A5F281282
-	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 05:57:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6A7A2812ED
+	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 05:58:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A96F20F1;
-	Wed, 23 Aug 2023 05:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E8C6AA8;
+	Wed, 23 Aug 2023 05:57:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBCD51FA5
-	for <bpf@vger.kernel.org>; Wed, 23 Aug 2023 05:57:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65DA11FA5
+	for <bpf@vger.kernel.org>; Wed, 23 Aug 2023 05:57:53 +0000 (UTC)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7909A1;
-	Tue, 22 Aug 2023 22:57:47 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F23CA1;
+	Tue, 22 Aug 2023 22:57:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692770267; x=1724306267;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=tXspCGGhfWZ9eYIgTV/JCqA8WbgbtQL3v61LQqkLziQ=;
-  b=P625QIS6Ek8CTPlBkoOzJzYJ59GGDahD7h0+TITphbX9w0W3n2gMJ7yv
-   efmHm0Aq8/GZCvq4/yvKMBtd9QtJ4f1MRkXutT8bQksxOQ67suPAkFCq6
-   4IhuJBAf8PUY9d9Dxq9aA9aFPV7spEZkrYzJIZkX488z2VKN5HxUSoDS1
-   QIGWrFCiBHVVfm8uNR5tRm4sKZjk0cJL35p9dSp4WEmuqPZaH9Zd1zWJV
-   YYCjUsgLNoTuNn/lyFUUANwk3U8qR+snujs+IN5SAKcGtkcXtzKclBf+B
-   VR6KsE4l4txPofPqVNrm2pbXHuwnjv77yH9wX7U6bQ1IZvLK7+QFsI7DX
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="438009715"
+  t=1692770272; x=1724306272;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=T6zbNh99vqUgCHNp+Zme9ID2vkev0Ls+UC8FQ+p7DB0=;
+  b=Gmsy/5HzmD8B2BZXiUFdwlSDrLXP4Q/L71sy2e+S6pSd9ku2jM7uRQ6T
+   gJACnhUZ0JuXiqiBbYruE1f9I/4kBbR7ySck9efShS8Fx6kjphfBnbnMN
+   sISXvDsom5xFVFLQw6NBJcEdV8eXdXHsf8+tr7FQg9c0F1hH8t//UY3Ru
+   YWc0cbQ76rhuAveTgjH7Gleyb33u9LXhYgZGcf7FTglxKlZTW7nj8nRX8
+   JlI7thvT8ODdcY7VFU6whbXOvTCy9xqmeczEPb15RoZ/gtWHi4hu2+nLs
+   +ltX2jS7kMnBBsKvfkMiKM6S8qWS/NUF11adEuHVZkK7QzrKol6ZArOfn
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="438009755"
 X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="438009715"
+   d="scan'208";a="438009755"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 22:57:47 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 22:57:51 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="983140550"
+X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="983140554"
 X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="983140550"
+   d="scan'208";a="983140554"
 Received: from ebold-mobl1.ger.corp.intel.com (HELO tkristo-desk.bb.dnainternet.fi) ([10.251.213.156])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 22:57:42 -0700
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 22:57:47 -0700
 From: Tero Kristo <tero.kristo@linux.intel.com>
 To: dave.hansen@linux.intel.com,
 	tglx@linutronix.de,
@@ -63,11 +63,14 @@ Cc: artem.bityutskiy@linux.intel.com,
 	jolsa@kernel.org,
 	adrian.hunter@intel.com,
 	alexander.shishkin@linux.intel.com,
-	peterz@infradead.org
-Subject: [PATCH 0/2] perf/x86: Package residency counter improvements
-Date: Wed, 23 Aug 2023 08:56:51 +0300
-Message-Id: <20230823055653.2964237-1-tero.kristo@linux.intel.com>
+	peterz@infradead.org,
+	Kan Liang <kan.liang@intel.com>
+Subject: [PATCH 1/2] perf/x86/cstate: Allow reading the package statistics from local CPU
+Date: Wed, 23 Aug 2023 08:56:52 +0300
+Message-Id: <20230823055653.2964237-2-tero.kristo@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230823055653.2964237-1-tero.kristo@linux.intel.com>
+References: <20230823055653.2964237-1-tero.kristo@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,27 +85,32 @@ X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello,
+The MSR registers for reading the package residency counters are
+available on every CPU of the package. To avoid doing unnecessary SMP
+calls to read the values for these from the various CPUs inside a
+package, allow reading them from any CPU of the package.
 
-Following two patches address a couple of different issues with Intel
-C-state package residency counters, which are used to track power saving
-state usage on Intel chips. The patches don't have any dependencies to
-each other and can be applied separately.
+Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
+Suggested-by: Kan Liang <kan.liang@intel.com>
+---
+ arch/x86/events/intel/cstate.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-1) The residency counters are always read from the first CPU of the
-   package via an SMP call, even if they are available from any CPU.
-   This causes extra latency. Patch #1 fixes this issue by flagging
-   the perf event properly and allowing to execute it on any CPU of
-   the package.
-2) The residency counters are completely impossible to read from a BPF
-   program running on any other than the first CPU of the package, as the
-   SMP call is not available in this context. Patch #2 addresses this
-   issue by allowing the read of the perf event from the local CPU,
-   similar to what is done in perf_read_event(). This patch also allows
-   reading any other package scope perf events (RAPL/UNCORE) from
-   arbitrary CPUs on a package via BPF.
-
--Tero
-
+diff --git a/arch/x86/events/intel/cstate.c b/arch/x86/events/intel/cstate.c
+index 835862c548cc..5cfe021edc65 100644
+--- a/arch/x86/events/intel/cstate.c
++++ b/arch/x86/events/intel/cstate.c
+@@ -336,6 +336,9 @@ static int cstate_pmu_event_init(struct perf_event *event)
+ 		cfg = array_index_nospec((unsigned long)cfg, PERF_CSTATE_PKG_EVENT_MAX);
+ 		if (!(pkg_msr_mask & (1 << cfg)))
+ 			return -EINVAL;
++
++		event->event_caps |= PERF_EV_CAP_READ_ACTIVE_PKG;
++
+ 		event->hw.event_base = pkg_msr[cfg].msr;
+ 		cpu = cpumask_any_and(&cstate_pkg_cpu_mask,
+ 				      topology_die_cpumask(event->cpu));
+-- 
+2.25.1
 
 
