@@ -1,180 +1,251 @@
-Return-Path: <bpf+bounces-8333-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8334-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A58A4784E67
-	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 03:49:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0916784E68
+	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 03:49:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FA8C281235
-	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 01:49:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0F591C20BCF
+	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 01:49:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588F415AE;
-	Wed, 23 Aug 2023 01:49:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6F8815AE;
+	Wed, 23 Aug 2023 01:49:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08E1915A4
-	for <bpf@vger.kernel.org>; Wed, 23 Aug 2023 01:49:10 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07E7E5E
-	for <bpf@vger.kernel.org>; Tue, 22 Aug 2023 18:49:06 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RVpzJ3FDqz4f3lwY
-	for <bpf@vger.kernel.org>; Wed, 23 Aug 2023 09:49:00 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgBnPqGLZeVk1U9yBQ--.32982S2;
-	Wed, 23 Aug 2023 09:49:02 +0800 (CST)
-Subject: Re: [PATCH] libbpf: handle producer position overflow
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Andrew Werner <awerner32@gmail.com>
-Cc: bpf@vger.kernel.org, kernel-team@dataexmachina.dev
-References: <20230724132404.1280848-1-awerner32@gmail.com>
- <CAEf4BzZQQ=fz+NqFHhJcqKoVAvh4=XbH7HWaHKjUg5OOzi-PTw@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <b226284c-ad1f-ffe8-b10e-94bbf7a00bc7@huaweicloud.com>
-Date: Wed, 23 Aug 2023 09:48:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 858B810E9
+	for <bpf@vger.kernel.org>; Wed, 23 Aug 2023 01:49:23 +0000 (UTC)
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE46E4A
+	for <bpf@vger.kernel.org>; Tue, 22 Aug 2023 18:49:22 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3a7d7e5fb03so3809301b6e.3
+        for <bpf@vger.kernel.org>; Tue, 22 Aug 2023 18:49:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692755361; x=1693360161;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PFjBWXc5tEiko6dBAVxG34VqpCO7h9/tnBwKfk0Qjys=;
+        b=D2hMvkD9C4nfy+Ez7a4Fq6sOu0/gtOp4I/w/edDuGpfo+xGKzHmoASfjCxhgkcMftB
+         6ObBLBvyHOK5pBPylR1h/55z2wbKtBeAQMboE8JBcjumEbjBW2co2qeYMrZkoGs5guyb
+         7pz9FuSugvSozTBA9ZLh3jwb6l/v7+lXT1yMMON104bsTXk6BdPVNMG+xPduawFEmXHe
+         xPBZSSW0SZwMuO9ow81BixASYEn5zhFS+BbTgTJINTPkuK1ITibKfkq/i3jusZcra4a5
+         iPtUK+UEtUjlQcBvsgsJpY38L4dUhgkTvIa5GM0L3wQpOxy4kK3ZZLA+BhL30y9gCD9r
+         KVWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692755361; x=1693360161;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PFjBWXc5tEiko6dBAVxG34VqpCO7h9/tnBwKfk0Qjys=;
+        b=IfEl715nYhgR6chOn40lq0EdvGBNOy0JKTMUuIGZXOK729dLlqjM0lDIWjCLVMk9cB
+         dOahh4avEIJ+xOYcRLeM+KiS/LNEa/rg1lv4oyOThNbfSrTfLVNExgjXjg3DvglP4jKv
+         pEG7a8O+z1xFxvSXUXCgut3AiRdUBPh78ueKDir+RpkwDq9rHE1/tGME4Iu7WbiOXnmR
+         Gai8y1tYg8Q2i87NGSFa6rHb2yvtCkExSpO/YxnXiTd+E8ER/MnLE3HL10l96DFSXds4
+         Mo7R2sf6oacHcEecE9SU9pqjVxmqYYtO51uO/62r8nHkQ+hK0APtiyLvbeTh/5DE0mRU
+         coeA==
+X-Gm-Message-State: AOJu0YwiQiHyvTwp3WD/SAOkZrX/mQ1SRegSb4bEFgFvhMdpTAj3Lj2f
+	/lek1LfN0fc0T6qLNoS1BUE=
+X-Google-Smtp-Source: AGHT+IEUndEWUaXch4blLtAsvtbI3f8rJ1WMrxSPjqLe1qCJB0XfyO9ekxJKJg2LgXde4MXpF6MN5w==
+X-Received: by 2002:aca:674d:0:b0:3a4:67b6:454e with SMTP id b13-20020aca674d000000b003a467b6454emr12609490oiy.6.1692755361241;
+        Tue, 22 Aug 2023 18:49:21 -0700 (PDT)
+Received: from [10.22.68.146] ([122.11.166.8])
+        by smtp.gmail.com with ESMTPSA id i188-20020a639dc5000000b005657495b03bsm8504948pgd.38.2023.08.22.18.49.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 18:49:20 -0700 (PDT)
+Message-ID: <cf022625-7c99-4595-0dd5-46d1f6b73ad9@gmail.com>
+Date: Wed, 23 Aug 2023 09:49:17 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzZQQ=fz+NqFHhJcqKoVAvh4=XbH7HWaHKjUg5OOzi-PTw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [RFC PATCH bpf-next v2 1/2] bpf, x64: Fix tailcall infinite loop
 Content-Language: en-US
-X-CM-TRANSID:gCh0CgBnPqGLZeVk1U9yBQ--.32982S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCFyxAr1fZryxJr4DCr13XFb_yoWrtrW5pF
-	45K3WFkrsFqrySv34xZw48ZFyFka1kJw45Jr93Jry8Awn0qF4SyFyxKrWa9rWfZr9Y9r1F
-	vrZ0g3srCryUZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-	MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham
-	autolearn_force=no version=3.4.6
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+ Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20230818151216.7686-1-hffilwlqm@gmail.com>
+ <20230818151216.7686-2-hffilwlqm@gmail.com>
+ <CAADnVQJQqp0WwGoWdsao8hrmmgyc0Me=Mi3gA=FG-i1GFwOozg@mail.gmail.com>
+ <3778408b-8f79-5139-0662-55b5d7ca463c@gmail.com>
+ <CAADnVQ+znCeeCw+fJizb2Kg-+2Zj8ETR5Bpw4kwZw+MrCq9k3w@mail.gmail.com>
+From: Leon Hwang <hffilwlqm@gmail.com>
+In-Reply-To: <CAADnVQ+znCeeCw+fJizb2Kg-+2Zj8ETR5Bpw4kwZw+MrCq9k3w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+	HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
 
-On 8/22/2023 1:15 PM, Andrii Nakryiko wrote:
-> On Mon, Jul 24, 2023 at 6:24 AM Andrew Werner <awerner32@gmail.com> wrote:
->> Before this patch, the producer position could overflow `unsigned
->> long`, in which case libbpf would forever stop processing new writes to
->> the ringbuf. This patch addresses that bug by avoiding ordered
->> comparison between the consumer and producer position. If the consumer
->> position is greater than the producer position, the assumption is that
->> the producer has overflowed.
->>
->> A more defensive check could be to ensure that the delta is within
->> the allowed range, but such defensive checks are neither present in
->> the kernel side code nor in libbpf. The overflow that this patch
->> handles can occur while the producer and consumer follow a correct
->> protocol.
-> Yep, great find!
->
->> A selftest was written to demonstrate the bug, and indeed this patch
->> allows the test to continue to make progress past the overflow.
->> However, the author was unable to create a testing environment on a
->> 32-bit machine, and the test requires substantial memory and over 4
-> 2GB of memory for ringbuf, right? Perhaps it would be good to just
-> outline the repro, even if we won't have it implemented in selftests.
-> Something along the lines of: a) set up ringbuf of 2GB size and
-> reserve+commit maximum-sized record (UMAX/4) constantly as fast as
-> possible. With 1 million records per second repro time should be about
-> 4.7 hours. Can you please update the commit with something like that
-> instead of a vague "there is repro, but I won't show it ;)" ? Thanks!
 
-I think it would be great that the commit message can elaborate about
-the repo. Andrew had already posted an external link to the reproducer
-in v2 [0]: https://github.com/ajwerner/bpf/commit/85e1240e7713
+On 23/8/23 05:29, Alexei Starovoitov wrote:
+> On Mon, Aug 21, 2023 at 8:17 PM Leon Hwang <hffilwlqm@gmail.com> wrote:
+>>
+>>
+>>
+>> On 22/8/23 06:33, Alexei Starovoitov wrote:
+>>> On Fri, Aug 18, 2023 at 8:12 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
+>>>>
 
-[0]:
-https://lore.kernel.org/bpf/20230724132543.1282645-1-awerner32@gmail.com/
->> hours to hit the overflow point on a 64-bit machine. Thus, the test
->> is not included in this patch because of the impracticality of running
->> it.
->>
->> Additionally, this patch adds commentary around a separate point to note
->> that the modular arithmetic is valid in the face of overflows, as that
->> fact may not be obvious to future readers.
->>
->> Signed-off-by: Andrew Werner <awerner32@gmail.com>
->> ---
->>  tools/lib/bpf/ringbuf.c | 11 ++++++++++-
->>  1 file changed, 10 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
->> index 02199364db13..6271757bc3d2 100644
->> --- a/tools/lib/bpf/ringbuf.c
->> +++ b/tools/lib/bpf/ringbuf.c
->> @@ -237,7 +237,11 @@ static int64_t ringbuf_process_ring(struct ring *r)
->>         do {
->>                 got_new_data = false;
->>                 prod_pos = smp_load_acquire(r->producer_pos);
->> -               while (cons_pos < prod_pos) {
->> +
->> +               /* Avoid signed comparisons between the positions; the producer
-> "signed comparisons" is confusing and invalid, as cons_pos and
-> prod_pos are unsigned and comparison here is unsigned. What you meant
-> is inequality comparison, which is invalid when done naively (like it
-> is done in libbpf right now, sigh...), if counters can wrap around.
->
->> +                * position can overflow before the consumer position.
->> +                */
->> +               while (cons_pos != prod_pos) {
-> I'm wondering if we should preserve the "consumer pos is before
-> producer pos" check just for clarity's sake (with a comment about
-> wrapping around of counters, of course) like:
->
-> if ((long)(cons_pos - prod_pos) < 0) ?
->
-> BTW, I think kernel code needs fixing as well in
-> __bpf_user_ringbuf_peek (we should compare consumer/producer positions
-> directly, only through subtraction and casting to signed long as
-> above), would you be able to fix it at the same time with libbpf?
-> Would be good to also double-check the rest of kernel/bpf/ringbuf.c to
-> make sure we don't directly compare positions anywhere else.
+[SNIP]
 
-I missed __bpf_user_ringbuf_peek() when reviewed the patch. I also can
-help to double-check kernel/bpf/ringbuf.c.
->
->>                         len_ptr = r->data + (cons_pos & r->mask);
->>                         len = smp_load_acquire(len_ptr);
+>>>>   * sub rsp, 16                     // space for skb and dev
+>>>> - * push rbx                        // temp regs to pass start time
+>>>> + * mov qword ptr [rbp - 40], rbx   // temp regs to pass start time
+>>>> + * mov rax, 2                      // cache number of argument to rax
+>>>
+>>> What does it mean?
 >>
->> @@ -498,6 +502,11 @@ void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size)
->>         prod_pos = smp_load_acquire(rb->producer_pos);
+>> I think it's the corresponding instruction to the following code snippet
+>> in arch_prepare_bpf_trampoline().
 >>
->>         max_size = rb->mask + 1;
->> +
->> +       /* Note that this formulation in the face of overflow of prod_pos
->> +        * so long as the delta between prod_pos and cons_pos remains no
->> +        * greater than max_size.
->> +        */
->>         avail_size = max_size - (prod_pos - cons_pos);
->>         /* Round up total size to a multiple of 8. */
->>         total_size = (size + BPF_RINGBUF_HDR_SZ + 7) / 8 * 8;
->> --
->> 2.39.2
->>
->>
-> .
+>>         /* Store number of argument registers of the traced function:
+>>          *   mov rax, nr_regs
+>>          *   mov QWORD PTR [rbp - nregs_off], rax
+>>          */
+>>         emit_mov_imm64(&prog, BPF_REG_0, 0, (u32) nr_regs);
+>>         emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -nregs_off);
+> 
+> Ahh. I see.
+> The comment on top of arch_prepare_bpf_trampoline() is hopelessly obsolete.
+> Don't touch it in this patch set. We probably should delete it at some point
+> or take an effort to update it thoroughly.
 
+Got it.
+
+> Earlier recommendation to you was to update this comment:
+> /* Generated trampoline stack layout:
+> 
+>>>
+>>>> + * mov qword ptr [rbp - 32], rax   // save number of argument to stack
+>>>
+>>> Here // is ok since it's inside /* */
+>>
+>> Got it.
+>>
+>>>
+>>>>   * mov qword ptr [rbp - 16], rdi   // save skb pointer to stack
+>>>>   * mov qword ptr [rbp - 8], rsi    // save dev pointer to stack
+>>>>   * call __bpf_prog_enter           // rcu_read_lock and preempt_disable
+>>>> @@ -2323,7 +2331,9 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
+>>>>   * push rbp
+>>>>   * mov rbp, rsp
+>>>>   * sub rsp, 24                     // space for skb, dev, return value
+>>>> - * push rbx                        // temp regs to pass start time
+>>>> + * mov qword ptr [rbp - 40], rbx   // temp regs to pass start time
+>>>> + * mov rax, 2                      // cache number of argument to rax
+>>>> + * mov qword ptr [rbp - 32], rax   // save number of argument to stack
+>>>>   * mov qword ptr [rbp - 24], rdi   // save skb pointer to stack
+>>>>   * mov qword ptr [rbp - 16], rsi   // save dev pointer to stack
+>>>>   * call __bpf_prog_enter           // rcu_read_lock and preempt_disable
+>>>> @@ -2400,6 +2410,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>>>>          *                     [ ...        ]
+>>>>          *                     [ stack_arg2 ]
+>>>>          * RBP - arg_stack_off [ stack_arg1 ]
+>>>> +        * RSP                 [ tail_call_cnt ] BPF_TRAMP_F_TAIL_CALL_CTX
+>>>>          */
+>>>>
+>>>>         /* room for return value of orig_call or fentry prog */
+>>>> @@ -2464,6 +2475,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>>>>         else
+>>>>                 /* sub rsp, stack_size */
+>>>>                 EMIT4(0x48, 0x83, 0xEC, stack_size);
+>>>> +       if (flags & BPF_TRAMP_F_TAIL_CALL_CTX)
+>>>> +               EMIT1(0x50);            /* push rax */
+>>>>         /* mov QWORD PTR [rbp - rbx_off], rbx */
+>>>>         emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_6, -rbx_off);
+>>>>
+>>>> @@ -2516,9 +2529,15 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>>>>                 restore_regs(m, &prog, regs_off);
+>>>>                 save_args(m, &prog, arg_stack_off, true);
+>>>>
+>>>> +               if (flags & BPF_TRAMP_F_TAIL_CALL_CTX)
+>>>> +                       /* Before calling the original function, restore the
+>>>> +                        * tail_call_cnt from stack to rax.
+>>>> +                        */
+>>>> +                       RESTORE_TAIL_CALL_CNT(stack_size);
+>>>> +
+>>>>                 if (flags & BPF_TRAMP_F_ORIG_STACK) {
+>>>> -                       emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, 8);
+>>>> -                       EMIT2(0xff, 0xd0); /* call *rax */
+>>>> +                       emit_ldx(&prog, BPF_DW, BPF_REG_6, BPF_REG_FP, 8);
+>>>> +                       EMIT2(0xff, 0xd3); /* call *rbx */ // FIXME: Confirm 0xd3?
+>>>
+>>> please no FIXME like comments.
+>>> You have to be confident in the code you're submitting.
+>>> llvm-mc -triple=x86_64 -show-encoding -x86-asm-syntax=intel
+>>> -output-asm-variant=1 <<< 'call rbx'
+>>
+>> Got it. Thanks for the guide.
+>>
+>>>
+>>>>                 } else {
+>>>>                         /* call original function */
+>>>>                         if (emit_rsb_call(&prog, orig_call, prog)) {
+
+[SNIP]
+
+>>>>
+>>>>         if (prog->type == BPF_PROG_TYPE_SYSCALL) {
+>>>> @@ -19629,6 +19640,12 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+>>>>         if (!tr)
+>>>>                 return -ENOMEM;
+>>>>
+>>>> +       if (tgt_prog && tgt_prog->aux->tail_call_reachable) {
+>>>> +               subprog = find_subprog_index(tgt_prog, btf_id);
+>>>> +               tr->flags = subprog > 0 && tgt_prog->aux->func[subprog]->is_func ?
+>>>> +                           BPF_TRAMP_F_TAIL_CALL_CTX : 0;
+>>>
+>>> If prog has subprogs all of them will 'is_func', no?
+>>> What's the point of the search ?
+>>> Just tgt_prog->aux->tail_call_reachable and func_cnt > 0 would be enough?
+>>
+>> tgt_prog->aux->tail_call_reachable and subprog > 0 would be enough?
+>> It has to confirm that the attaching target is a subprog of tgt_prog instead of
+>> tgt_prog itself.
+>>
+>> In tail call context, when 'call' a func, tail_call_cnt will be restored to rax.
+>>
+>> static int do_jit() {
+>>                         /* call */
+>>                 case BPF_JMP | BPF_CALL: {
+>>                         int offs;
+>>
+>>                         func = (u8 *) __bpf_call_base + imm32;
+>>                         if (tail_call_reachable) {
+>>                                 /* mov rax, qword ptr [rbp - rounded_stack_depth - 8] */
+>>                                 EMIT3_off32(0x48, 0x8B, 0x85,
+>>                                             -round_up(bpf_prog->aux->stack_depth, 8) - 8);
+>>                                 /* ... */
+>>                         }
+>> }
+>>
+>> As a result, when 'call' a subprog, tail_call_cnt will be transferred by rax.
+>> Do all of subprogs run by 'call', including not-'is_func' subprogs?
+> 
+> Let me ask again. Do you see a subprog that has is_func==0 ?
+
+Oh, I get it.
+
+In jit_subprogs(), all of subprogs are 'is_func'.
+
+So, it's unnecessary to check tgt_prog->aux->func[subprog]->is_func.
+
+I'll submit a new RFC PATCH later.
+
+Thanks,
+Leon
 
