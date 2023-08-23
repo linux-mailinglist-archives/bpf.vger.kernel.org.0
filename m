@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-8405-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8406-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC32A785F7F
-	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 20:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7020C785F85
+	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 20:25:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66D52281365
-	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 18:23:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B93C281294
+	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 18:25:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60B6F1F942;
-	Wed, 23 Aug 2023 18:23:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD3E1F946;
+	Wed, 23 Aug 2023 18:24:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4A811F92D;
-	Wed, 23 Aug 2023 18:23:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7909C433C7;
-	Wed, 23 Aug 2023 18:23:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F76F1ED47;
+	Wed, 23 Aug 2023 18:24:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81D36C433C8;
+	Wed, 23 Aug 2023 18:24:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692815002;
-	bh=WzID2EzMEfCohyHPts0WT9PJhyOAL8gtNo0yNFo222k=;
+	s=k20201202; t=1692815091;
+	bh=Wz+ssdWTwoTiSo2ITnOaFFeZ1XRrz+F/5qzgicEYcis=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=nHi74GSArPCX6tsrvWUvjB6bIqFXo56oNWG46oEQIguTa42473eow8AYx7hdnLvvz
-	 6wkMif+2Xs1k9wtF3muFezXeM1aXN/klDkoYhtoFQQrP5Xbs/zzZfNWwZ/0euLBPIP
-	 xcYLtreVYPmiG9wOnISvAybxdBXVVv+V+U7t9d3iLJq7fwD7TMr3tNDJH1SUEb8sfR
-	 JzJQR6Gp1gOefz5soSbZF+oawVPwPrYVLU7KS7QM9w/kwXeeUDppyXN1N8+W0v6NaQ
-	 vt7kh3IuFW5sFg0IfXGj9QBTQ/4oI3EBEl4nTKUlJwGUfLeFAEzUFJ9h5VB/wUN3uo
-	 Z20EFbMgkiW2g==
+	b=htwvCHPej4Jwnp2UFIBuXIpTeJKk276AumCa8WcFRh4NFFKbauNDVSOpWZC3VBxIl
+	 v3n6If3I9FIk/nGZKOfO4IdtpKZ6BxYyUxzAF/vY6w/LExx9uNt30ncKwFMyvMVsmu
+	 paeH2C9AMXeRpPfE5YAEjrANcq/0BvLv1rPocJVDJEqny38oz/Z+x6WJVRQh3mHOlh
+	 au0NcRUkck+nJnf00QqNJKrZLNs4tZpuFc/161Dsdb1ulHCnW9BLKcnhDfGQnXJzc2
+	 oE7d4ZhIL+DoKQsVmoMnjAtvZS/mxW/7IWMim91jFwShUAM2LRNpw7vvpPU2943QWS
+	 18mMp4Yydhbpw==
 From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
 To: Pu Lehui <pulehui@huaweicloud.com>, linux-riscv@lists.infradead.org,
  bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
@@ -41,12 +41,12 @@ Cc: Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
  Olsa <jolsa@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, Xu Kuohai
  <xukuohai@huawei.com>, Puranjay Mohan <puranjay12@gmail.com>, Pu Lehui
  <pulehui@huawei.com>, Pu Lehui <pulehui@huaweicloud.com>
-Subject: Re: [PATCH bpf-next 5/7] riscv, bpf: Support signed div/mod insns
-In-Reply-To: <20230823231059.3363698-6-pulehui@huaweicloud.com>
+Subject: Re: [PATCH bpf-next 6/7] riscv, bpf: Support unconditional bswap insn
+In-Reply-To: <20230823231059.3363698-7-pulehui@huaweicloud.com>
 References: <20230823231059.3363698-1-pulehui@huaweicloud.com>
- <20230823231059.3363698-6-pulehui@huaweicloud.com>
-Date: Wed, 23 Aug 2023 20:23:19 +0200
-Message-ID: <878ra1liso.fsf@all.your.base.are.belong.to.us>
+ <20230823231059.3363698-7-pulehui@huaweicloud.com>
+Date: Wed, 23 Aug 2023 20:24:47 +0200
+Message-ID: <875y55liq8.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,7 +60,9 @@ Pu Lehui <pulehui@huaweicloud.com> writes:
 
 > From: Pu Lehui <pulehui@huawei.com>
 >
-> Add support signed div/mod instructions for RV64.
+> Add support unconditional bswap instruction. Since riscv is always
+> little-endian, just treat the unconditional scenario the same as
+> big-endian conversion.
 >
 > Signed-off-by: Pu Lehui <pulehui@huawei.com>
 
