@@ -1,150 +1,155 @@
-Return-Path: <bpf+bounces-8344-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8345-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A458785045
-	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 07:58:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5198B78509F
+	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 08:26:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3543C281282
-	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 05:58:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EAB01C20C7E
+	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 06:26:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58FA86FBF;
-	Wed, 23 Aug 2023 05:57:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64BE179FA;
+	Wed, 23 Aug 2023 06:26:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 135EC6D24
-	for <bpf@vger.kernel.org>; Wed, 23 Aug 2023 05:57:58 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E77AA1;
-	Tue, 22 Aug 2023 22:57:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692770276; x=1724306276;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=PKQknWrLrf78uQf9GH3dL4JsbgZGq50+lfliSCkg8zA=;
-  b=S1eMAawR1CuhekvdXBA8ICsq3Tw7WOPyTHCxiptBOJZXebBP9zH4dhD4
-   mM/PHAAVfrzXSg1iMQa3VZdAo09aEp5lHbjDnLM1cLYJK/IdzHoRok4xh
-   1724o3zm+T2eCl+ZVX0m6Ux2LH/UJVS4qTxTSBkTPjPGP0UuQVSasv0gs
-   Br6U0epYiMPa27LpHiOfdrK1LirkyzZ/IbRZd/DwpVRJDpqhNaauAyXyV
-   DI0InLpBu7hbpc9nav1J+yyz53qx9Gt7GqDyyBeEeiuTVzX7RMh6MpNJ0
-   fBgNr5yZtwwNQtD3bU8QzBGMH/19OKvdQppAd56L9OldvqAXVqMm9MR3J
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="438009784"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="438009784"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 22:57:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="983140557"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
-   d="scan'208";a="983140557"
-Received: from ebold-mobl1.ger.corp.intel.com (HELO tkristo-desk.bb.dnainternet.fi) ([10.251.213.156])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 22:57:51 -0700
-From: Tero Kristo <tero.kristo@linux.intel.com>
-To: dave.hansen@linux.intel.com,
-	tglx@linutronix.de,
-	x86@kernel.org,
-	bp@alien8.de
-Cc: artem.bityutskiy@linux.intel.com,
-	acme@kernel.org,
-	bpf@vger.kernel.org,
-	namhyung@kernel.org,
-	mingo@redhat.com,
-	linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	irogers@google.com,
-	hpa@zytor.com,
-	mark.rutland@arm.com,
-	jolsa@kernel.org,
-	adrian.hunter@intel.com,
-	alexander.shishkin@linux.intel.com,
-	peterz@infradead.org
-Subject: [PATCH 2/2] perf/core: Allow reading package events from perf_event_read_local
-Date: Wed, 23 Aug 2023 08:56:53 +0300
-Message-Id: <20230823055653.2964237-3-tero.kristo@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230823055653.2964237-1-tero.kristo@linux.intel.com>
-References: <20230823055653.2964237-1-tero.kristo@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3182A1FB8
+	for <bpf@vger.kernel.org>; Wed, 23 Aug 2023 06:26:39 +0000 (UTC)
+Received: from out-20.mta1.migadu.com (out-20.mta1.migadu.com [IPv6:2001:41d0:203:375::14])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C44E5E76
+	for <bpf@vger.kernel.org>; Tue, 22 Aug 2023 23:26:12 -0700 (PDT)
+Message-ID: <01367775-1be4-a344-60d7-6b2b1e48b77e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1692771971; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y4Tii/M6TrKlCWaEg7sZuVjf8d4+l2duPZfUJItXifs=;
+	b=Dlpecxa0CYBZloxTDhbzk+/gfUWFtFtlSMrk5ZUpCYXSVxQiplIYqk2k8Twg3OngKUfWmD
+	VsW22WyXI3hXxkIrxo/PQgLAwXdTLnaiKJccljjmrlZ+KZLBn4E8pKu0aPHc4WwvROcquJ
+	24LMAlByDazC3UzVKFJ8eD3JTlvajhc=
+Date: Tue, 22 Aug 2023 23:26:02 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Reply-To: yonghong.song@linux.dev
+Subject: Re: [PATCH v2 bpf-next 3/7] bpf: Use bpf_mem_free_rcu when
+ bpf_obj_dropping refcounted nodes
+Content-Language: en-US
+To: Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>
+References: <20230821193311.3290257-1-davemarchevsky@fb.com>
+ <20230821193311.3290257-4-davemarchevsky@fb.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20230821193311.3290257-4-davemarchevsky@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Per-package perf events are typically registered with a single CPU only,
-however they can be read across all the CPUs within the package.
-Currently perf_event_read maps the event CPU according to the topology
-information to avoid an unnecessary SMP call, however
-perf_event_read_local deals with hard values and rejects a read with a
-failure if the CPU is not the one exactly registered. Allow similar
-mapping within the perf_event_read_local if the perf event in question
-can support this.
 
-This allows users like BPF code to read the package perf events properly
-across different CPUs within a package.
 
-Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
----
- kernel/events/core.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+On 8/21/23 12:33 PM, Dave Marchevsky wrote:
+> This is the final fix for the use-after-free scenario described in
+> commit 7793fc3babe9 ("bpf: Make bpf_refcount_acquire fallible for
+> non-owning refs"). That commit, by virtue of changing
+> bpf_refcount_acquire's refcount_inc to a refcount_inc_not_zero, fixed
+> the "refcount incr on 0" splat. The not_zero check in
+> refcount_inc_not_zero, though, still occurs on memory that could have
+> been free'd and reused, so the commit didn't properly fix the root
+> cause.
+> 
+> This patch actually fixes the issue by free'ing using the recently-added
+> bpf_mem_free_rcu, which ensures that the memory is not reused until
+> RCU grace period has elapsed. If that has happened then
+> there are no non-owning references alive that point to the
+> recently-free'd memory, so it can be safely reused.
+> 
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>   kernel/bpf/helpers.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index eb91cae0612a..945a85e25ac5 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -1913,7 +1913,11 @@ void __bpf_obj_drop_impl(void *p, const struct btf_record *rec)
+>   
+>   	if (rec)
+>   		bpf_obj_free_fields(rec, p);
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 78ae7b6f90fd..37db7c003b79 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -4528,6 +4528,7 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
- {
- 	unsigned long flags;
- 	int ret = 0;
-+	int event_cpu;
+During reviewing my percpu kptr patch with link
  
- 	/*
- 	 * Disabling interrupts avoids all counter scheduling (context
-@@ -4551,15 +4552,19 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
- 		goto out;
- 	}
- 
-+	/* Allow reading a per-package perf-event from local CPU also */
-+	event_cpu = READ_ONCE(event->oncpu);
-+	event_cpu = __perf_event_read_cpu(event, event_cpu);
-+
- 	/* If this is a per-CPU event, it must be for this CPU */
- 	if (!(event->attach_state & PERF_ATTACH_TASK) &&
--	    event->cpu != smp_processor_id()) {
-+	    event_cpu != smp_processor_id()) {
- 		ret = -EINVAL;
- 		goto out;
- 	}
- 
- 	/* If this is a pinned event it must be running on this CPU */
--	if (event->attr.pinned && event->oncpu != smp_processor_id()) {
-+	if (event->attr.pinned && event_cpu != smp_processor_id()) {
- 		ret = -EBUSY;
- 		goto out;
- 	}
-@@ -4569,7 +4574,7 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
- 	 * or local to this CPU. Furthermore it means its ACTIVE (otherwise
- 	 * oncpu == -1).
- 	 */
--	if (event->oncpu == smp_processor_id())
-+	if (event_cpu == smp_processor_id())
- 		event->pmu->read(event);
- 
- 	*value = local64_read(&event->count);
--- 
-2.25.1
+https://lore.kernel.org/bpf/20230814172809.1361446-1-yonghong.song@linux.dev/T/#m2f7631b8047e9f5da60a0a9cd8717fceaf1adbb7
+Kumar mentioned although percpu memory itself is freed under rcu.
+But its record fields are freed immediately. This will cause
+the problem since there may be some active uses of these fields
+within rcu cs and after bpf_obj_free_fields(), some fields may
+be re-initialized with new memory but they do not have chances
+to free any more.
 
+Do we have problem here as well?
+
+I am thinking whether I could create another flavor of bpf_mem_free_rcu
+with a pre_free_callback function, something like
+   bpf_mem_free_rcu_cb2(struct bpf_mem_alloc *ma, void *ptr,
+       void (*cb)(void *, void *), void *arg1, void *arg2)
+
+The cb(arg1, arg2) will be called right before the real free of "ptr".
+
+For example, for this patch, the callback function can be
+
+static bpf_obj_free_fields_cb(void *rec, void *p)
+{
+	if (rec)
+		bpf_obj_free_fields(rec, p);
+		/* we need to ensure recursive freeing fields free
+		 * needs to be done immediately, which means we will
+		 * add a parameter to __bpf_obj_drop_impl() to
+		 * indicate whether bpf_mem_free or bpf_mem_free_rcu
+		 * should be called.
+		 */
+}
+
+bpf_mem_free_rcu_cb2(&bpf_global_ma, p, bpf_obj_free_fields_cb, rec, p);
+
+In __bpf_obj_drop_impl,
+we need to ensure recursive freeing fields free
+needs to be done immediately, which means we will
+add a parameter to __bpf_obj_drop_impl() to
+indicate whether bpf_mem_free or bpf_mem_free_rcu
+should be called. If __bpf_obj_drop_impl is called
+from bpf_obj_drop_impl(), __rcu version should be used.
+Otherwise, non rcu version should be used.
+
+Is this something we need to worry about here as well?
+What do you think the above interface?
+
+
+> -	bpf_mem_free(&bpf_global_ma, p);
+> +
+> +	if (rec && rec->refcount_off >= 0)
+> +		bpf_mem_free_rcu(&bpf_global_ma, p);
+> +	else
+> +		bpf_mem_free(&bpf_global_ma, p);
+>   }
+>   
+>   __bpf_kfunc void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
 
