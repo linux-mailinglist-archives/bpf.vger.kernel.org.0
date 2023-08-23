@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-8401-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8402-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A407785F60
-	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 20:14:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50E18785F63
+	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 20:16:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B2B21C20323
-	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 18:14:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 812481C20C9F
+	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 18:16:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 411401F196;
-	Wed, 23 Aug 2023 18:14:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 528FD1F938;
+	Wed, 23 Aug 2023 18:16:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65A421F931;
-	Wed, 23 Aug 2023 18:14:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A293FC433C8;
-	Wed, 23 Aug 2023 18:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B90BD1ED47;
+	Wed, 23 Aug 2023 18:16:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A67A7C433C8;
+	Wed, 23 Aug 2023 18:16:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692814451;
-	bh=6WYbdQvbaUTU7jAYsOoRLczdc6WiEmOJqx1owqQdczY=;
+	s=k20201202; t=1692814562;
+	bh=oVc34mgV3FCHCFRuWZIFh7s3iqRrh+uYOxu0gKgphbc=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=jnp9OnkqCFGBj/h9OTMFiamfq/+P0dMbhMG2wym3WRwS3We453QbP6a6Naa6WA/55
-	 d4lxewnPO9sJ/eOFdW8Id7q+oLH+qu5WfYDQfCvEZsEqA4fHS1ZXjl/MCVrHUqcm2V
-	 rQnTACprz2PN91Wy6YquXbrmyxgR7JTtwCnIMQ5ArUm5o9SmwEW1AslQAiAZraDgQF
-	 h2tDxxbMKoaqy+zaiPzYbMLAi/oaijp+DPUTHk158fgQD2Ywb/PZFPbzgyDYkg8qH9
-	 1W3Xw4IOX9qUdj1RLfiTo/cEPzNfdE8Ln2S04DCPkN4s+5vlwAgONpQFbmC2McakrT
-	 EjkJ7PP63sJqw==
+	b=r5Q9iOc7paWBMTd6d4sHPKiBmJKkQtfoh6WNHvNWSzcrVTLJC3Wln7HnApaVjAQk+
+	 hPGJRg3a8cy0azKL+FneFOwDjEScBTtiDi2w8f3sdUX/z1H9bE0iqSAzXJhBo5Mi25
+	 AOJVM7UtZ9JAHCOmgBBi/vQ09HtCfmL5QUCmRykvbjVYW/m2TVN7L2+63AaCwMPYwr
+	 U89IPkmFAV9alCqPyUTH51k/+CmczIi3fDNfn64GEKuuZxN/DJE9WiSxbxFxt+wt36
+	 FBPy6ccTyZUFqOaFVV8VG1r6Z7DX6K4ybwkgay6jMopX1KhB4woIAR8htOsz41sO5D
+	 oAidvoV1GhD0Q==
 From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
 To: Pu Lehui <pulehui@huaweicloud.com>, linux-riscv@lists.infradead.org,
  bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
@@ -41,12 +41,12 @@ Cc: Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
  Olsa <jolsa@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, Xu Kuohai
  <xukuohai@huawei.com>, Puranjay Mohan <puranjay12@gmail.com>, Pu Lehui
  <pulehui@huawei.com>, Pu Lehui <pulehui@huaweicloud.com>
-Subject: Re: [PATCH bpf-next 3/7] riscv, bpf: Support sign-extension mov insns
-In-Reply-To: <20230823231059.3363698-4-pulehui@huaweicloud.com>
+Subject: Re: [PATCH bpf-next 2/7] riscv, bpf: Support sign-extension load insns
+In-Reply-To: <20230823231059.3363698-3-pulehui@huaweicloud.com>
 References: <20230823231059.3363698-1-pulehui@huaweicloud.com>
- <20230823231059.3363698-4-pulehui@huaweicloud.com>
-Date: Wed, 23 Aug 2023 20:14:07 +0200
-Message-ID: <87pm3dlj80.fsf@all.your.base.are.belong.to.us>
+ <20230823231059.3363698-3-pulehui@huaweicloud.com>
+Date: Wed, 23 Aug 2023 20:15:59 +0200
+Message-ID: <87lee1lj4w.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,37 +60,9 @@ Pu Lehui <pulehui@huaweicloud.com> writes:
 
 > From: Pu Lehui <pulehui@huawei.com>
 >
-> Add support sign-extension mov instructions for RV64.
+> Add Support sign-extension load instructions for RV64.
 >
 > Signed-off-by: Pu Lehui <pulehui@huawei.com>
-> ---
->  arch/riscv/net/bpf_jit_comp64.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
-p64.c
-> index fd36cb17101a..d1497182cacf 100644
-> --- a/arch/riscv/net/bpf_jit_comp64.c
-> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> @@ -1047,7 +1047,19 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn,=
- struct rv_jit_context *ctx,
->  			emit_zext_32(rd, ctx);
->  			break;
->  		}
-> -		emit_mv(rd, rs, ctx);
-> +		switch (insn->off) {
-> +		case 0:
-> +			emit_mv(rd, rs, ctx);
-> +			break;
-> +		case 8:
-> +		case 16:
-> +			emit_slli(rs, rs, 64 - insn->off, ctx);
-> +			emit_srai(rd, rs, 64 - insn->off, ctx);
 
-You're clobbering the source register (rs) here, which is correct.
-
-(Side note: Maybe it's time to add Zbb support to the JIT soon! ;-))
-
-
-Bj=C3=B6rn
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
 
