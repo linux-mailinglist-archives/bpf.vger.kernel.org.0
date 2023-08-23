@@ -1,107 +1,175 @@
-Return-Path: <bpf+bounces-8409-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8410-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79135785F9D
-	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 20:29:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 145AF786005
+	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 20:43:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9B6E1C20CB8
-	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 18:29:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3717E1C20CB8
+	for <lists+bpf@lfdr.de>; Wed, 23 Aug 2023 18:43:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 896261F951;
-	Wed, 23 Aug 2023 18:28:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 982441F943;
+	Wed, 23 Aug 2023 18:43:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 570011F928;
-	Wed, 23 Aug 2023 18:28:45 +0000 (UTC)
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0840A1A5;
-	Wed, 23 Aug 2023 11:28:44 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bcb89b4767so57611711fa.3;
-        Wed, 23 Aug 2023 11:28:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692815322; x=1693420122;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tnJCtNUR93TcyXIKIwrBGhxaKICGrUKMujSweQQ4+cw=;
-        b=JEoBukpGk8amJeqXXiXewlkD4OGiFSWHQ4bha4VTX2dOaFrHzPF9FTv4UPKFznAuf/
-         Hntavtc33kXxu16cnQmHRVy12ONkF/wqeKPdkEfgh8eXzVK+cBq0hlBoZ6mnvFvwrG7T
-         xkWbwg/ZjpHKngq1ikL6jJWfknvFRkQirSLRDUCKaJuFMhyPspm5KHDqjz5/WE9bZTV0
-         JG5B4xBQ1XPjbarQgW83swSe0zeNgYhEdKi35DSNODkz76a6dRwtAklf28TGF8FF1eJ+
-         C2JCXfns6tc7g6Y0m8oWugCySPK8kS9OyRyqhtSocmg6AnVIdQlW8/Pl7FEGt7IX5Gj6
-         MERQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692815322; x=1693420122;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tnJCtNUR93TcyXIKIwrBGhxaKICGrUKMujSweQQ4+cw=;
-        b=iYU7pi8ua68Hy2V+VqLv9/lYY+CQ4YKh+5eAGVP/y45yqSoBNuq0F5ewpNV8XBCzyJ
-         MpxKHeKTtARCWwKiglax8p3Y/MhLnywuN7IzoJXdMJ2UgXV4i434Ep4IMKwvTbdq3gN2
-         MUQgPbyLemcNbJw+bcuGZ4vEcmKg69uaImO9cKC4apeOil38LEY/ZW/znZuXnaNmcf/8
-         TU0+ntnKZ19YCZ4PA5OG6Fx/eXZhuN3omWrUMsQK4WEMri+7wxhRF9+FaPyGDnsoYiL5
-         YemlG8jRrLUsnzpW1yo4w8iZaCF1rXCi4b1C6Tk7tNe8YFemC8N6cwvz4AkxEmKFU7gR
-         SoQw==
-X-Gm-Message-State: AOJu0YylSclh7+aPN+5uFCjqUKrWZIxPR8jVItq9lb0Eezt6APXiTgnJ
-	y9ee0wnV/ZDk7bsQNfA2jmHw5xQ5b53KxZOodak=
-X-Google-Smtp-Source: AGHT+IF3kB6l7zcwpTYQASbxiqszHAQx1UTOgfwuyKWrwopfUZlC/RAnfkjkfe5oCDX7bkD55tuujrmsTx+zSfQcC4k=
-X-Received: by 2002:a2e:8791:0:b0:2b7:2ea:33c3 with SMTP id
- n17-20020a2e8791000000b002b702ea33c3mr11602391lji.22.1692815321818; Wed, 23
- Aug 2023 11:28:41 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5725B1FAA
+	for <bpf@vger.kernel.org>; Wed, 23 Aug 2023 18:43:23 +0000 (UTC)
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A100E6C;
+	Wed, 23 Aug 2023 11:43:21 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id 5720D5C018F;
+	Wed, 23 Aug 2023 14:43:18 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 23 Aug 2023 14:43:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+	1692816198; x=1692902598; bh=Lf0TK4b0kz3ZTddMClnpqPUYI5onbONBpkw
+	ylHQPOO4=; b=LDEVsRp1ZoH3vtP4T0b4mspjoxXr4rKZcOOmCkQIPI0QD66pBGq
+	DUS6hEZLZBcl0tCKOX6orUIFChH/Aw9QN8CCe4Sc/wphnQW9fzfDzSrtA0MpcRA5
+	J9tah14JVB5f/hLoz51f4glFoZ2rWZWjJVTgRHzhZTquGXaMFq1Qx1ug64/j0Zbx
+	BFYrwy7LLlm5czknV3nhoajeD3HedZlmFbafDyfi1t/IIe09bL+SRmjGAXSbccH2
+	MvbIuH/uSKYD78N3Fn/V/ONkTRaklhx6DcTljq/S9vnOD+GCFg9DkEXa/wFseR53
+	qHzSvX4KET+wmaSivfx0oFE+vZ8nDGeJjSQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1692816198; x=1692902598; bh=Lf0TK4b0kz3ZTddMClnpqPUYI5onbONBpkw
+	ylHQPOO4=; b=k92Rj8m8RayyoWyKyft2/QjhXz6D6zvA5fDHuLXoVe0SFKfAFdi
+	4ZWCfbdxJFXbeZvSz9oXpJEpOPqhLZmIrUluzIUVWIEDMjz2Hq2vxZHw2y1iVEUk
+	Byzw5MdHCPVG7epa7pAdRV6wMb/Pgp7Xjik/+XIAKVc87CFa9ekpoR1+uaiUuEiE
+	S4WAC0FruCBoUvE7ofZMH+2AwlJvWIFLWEk+amqW9O8RS/I0vt3V5NbbtuXDz3TR
+	LVKPAprmn9IKqQPOYViNpTIwzrTlrlYCg73nJgbyrg8ewchXrLvelBSD0Q15ON+v
+	pLeka/MWhupL8wC00vaK+DuYvh/pUBD2xAA==
+X-ME-Sender: <xms:RVPmZHtr7Jg-axTKrwq7C3M5O-_eU43ceAAIAXZmHIxF4encS3DDXQ>
+    <xme:RVPmZIdhlIzG5zwcNBivUg1QFQtnFi_C3oOMq05v4nONOB8Oxd_JCM070fWjS1piW
+    gwrOUp5QPo4jRf0pw>
+X-ME-Received: <xmr:RVPmZKwooRwDEs6wtBxayeP9G_zVIIfqf5drFzg_16b-mXUdIfDDZglTKKpYtfh51g6ZeXx0OSnsxGY2E-zg7NFwQJ3agAgwrncSlT0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddvgedguddviecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
+    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
+    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
+    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:RlPmZGNFnOaMDbTDjSOABTeMWu_Xt6pG2KgYUN5YyIsmUKBv_vBr1w>
+    <xmx:RlPmZH9BaKRH_k11aS6oNB5pLM93vv7cKUxFjlEU5xzD94AofHT7tw>
+    <xmx:RlPmZGWZNq88WGFK0R46JTvTl-YTK1TypB2i6JOCrWU8mg74cgBbbA>
+    <xmx:RlPmZKWPSK-iiIPVWhwnp8V0nJnb54D-U7cpE2wGhSJLxuqiyNuGTw>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 23 Aug 2023 14:43:16 -0400 (EDT)
+Date: Wed, 23 Aug 2023 12:43:15 -0600
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, 
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com, 
+	jolsa@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next] libbpf: Add bpf_object__unpin()
+Message-ID: <gu4eynktnim7l2oln4i4sgmziluhdfmzgcbbukfebv5bo57g5r@5kxyfar7tlzv>
+References: <aeb83832ae61bbf463e1b2e39c1e30c3b227f5a5.1692769396.git.dxu@dxuuu.xyz>
+ <CAEf4BzbGhhOyeWLuP95K20344aZnQ61TjiQ=scd5TKz_fiP_AQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230823231059.3363698-1-pulehui@huaweicloud.com>
- <20230823231059.3363698-8-pulehui@huaweicloud.com> <87zg2hk44i.fsf@all.your.base.are.belong.to.us>
-In-Reply-To: <87zg2hk44i.fsf@all.your.base.are.belong.to.us>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 23 Aug 2023 11:28:30 -0700
-Message-ID: <CAADnVQLu5twbe_UpiJrD0wKq1YyHzZbfzYhsW-mte7vDmyna5g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 7/7] selftests/bpf: Enable cpu v4 tests for RV64
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: Pu Lehui <pulehui@huaweicloud.com>, linux-riscv <linux-riscv@lists.infradead.org>, 
-	bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Yonghong Song <yhs@fb.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Xu Kuohai <xukuohai@huawei.com>, 
-	Puranjay Mohan <puranjay12@gmail.com>, Pu Lehui <pulehui@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzbGhhOyeWLuP95K20344aZnQ61TjiQ=scd5TKz_fiP_AQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Aug 23, 2023 at 11:25=E2=80=AFAM Bj=C3=B6rn T=C3=B6pel <bjorn@kerne=
-l.org> wrote:
->
-> Pu Lehui <pulehui@huaweicloud.com> writes:
->
-> > From: Pu Lehui <pulehui@huawei.com>
+On Wed, Aug 23, 2023 at 10:19:10AM -0700, Andrii Nakryiko wrote:
+> On Tue, Aug 22, 2023 at 10:44 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
 > >
-> > Enable cpu v4 tests for RV64, and the relevant tests have passed.
+> > For bpf_object__pin_programs() there is bpf_object__unpin_programs().
+> > Likewise bpf_object__unpin_maps() for bpf_object__pin_maps().
 > >
-> > Signed-off-by: Pu Lehui <pulehui@huawei.com>
->
-> Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
+> > But no bpf_object__unpin() for bpf_object__pin(). Adding the former adds
+> > symmetry to the API.
+> >
+> > It's also convenient for cleanup in application code. It's an API I
+> > would've used if it was available for a repro I was writing earlier.
+> >
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > ---
+> >  tools/lib/bpf/libbpf.c   | 15 +++++++++++++++
+> >  tools/lib/bpf/libbpf.h   |  1 +
+> >  tools/lib/bpf/libbpf.map |  1 +
+> >  3 files changed, 17 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 4c3967d94b6d..96ff1aa4bf6a 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -8376,6 +8376,21 @@ int bpf_object__pin(struct bpf_object *obj, const char *path)
+> >         return 0;
+> >  }
+> >
+> > +int bpf_object__unpin(struct bpf_object *obj, const char *path)
+> > +{
+> > +       int err;
+> > +
+> > +       err = bpf_object__unpin_programs(obj, path);
+> > +       if (err)
+> > +               return libbpf_err(err);
+> > +
+> > +       err = bpf_object__unpin_maps(obj, path);
+> > +       if (err)
+> > +               return libbpf_err(err);
+> > +
+> > +       return 0;
+> > +}
+> > +
+> 
+> pin APIs predate me, and I barely ever use them, but I wonder if
+> people feel fine with the fact that if any single unpin fails, all the
+> other programs/maps will not be unpinned? I also wonder if the best
+> effort unpinning of everything (while propagating first/last error) is
+> more practical? Looking at bpf_object__pin_programs, we try unpin
+> everything, even if some unpins fail.
+> 
+> Any thoughts or preferences?
 
-Bjorn,
+Yeah, I noticed bpf_object__pin_programs() tries to simulate some
+transactionality. However, bpf_object__unpin_programs() and
+bpf_object__unpin_maps() both do not try rollbacks and have already been
+exposed as public API. So I thought it would be best to stay consistent.
 
-Thanks a lot for the quick review!
-Could you give it a spin as well and hopefully add Tested-by ?
+I also figured it's unlikely only a single unpin() fails. For pin(), you
+could have name collisions. But not for unpin(). I suppose the main
+error case is if some 3rd party (or yourself) comes in and messes with
+your objects in bpffs.
 
-We still have time to get it into bpf-next for the upcoming merge window.
+In general, though, there are other places where transactionality would
+be a nice property. For example, if I have a TC prog that I want to
+attach to, say, _all_ ethernet interfaces, I have to be careful about
+rollbacks in the event of failure on a single iface.
+
+It would be really nice if the kernel  had a general way to provide
+atomicity w.r.t. multiple operations. But I suppose that's a hard
+problem.
+
+[...]
+
+Thanks,
+Daniel
 
