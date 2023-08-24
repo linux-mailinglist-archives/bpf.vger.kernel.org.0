@@ -1,269 +1,162 @@
-Return-Path: <bpf+bounces-8522-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8523-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A19EF78792C
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 22:14:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E820078797B
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 22:41:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56BCC280E94
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 20:14:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AAAD1C20EB8
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 20:41:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B965818022;
-	Thu, 24 Aug 2023 20:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E9145666;
+	Thu, 24 Aug 2023 20:41:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE4417FF0
-	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 20:14:33 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC021BF6
-	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 13:14:06 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 37OHdWhj029463
-	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 13:14:06 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by m0089730.ppops.net (PPS) with ESMTPS id 3spb6jssgd-7
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 13:14:05 -0700
-Received: from twshared18891.17.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Thu, 24 Aug 2023 13:14:02 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 83EFA36CAED63; Thu, 24 Aug 2023 13:13:59 -0700 (PDT)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH v2 bpf-next] libbpf: add basic BTF sanity validation
-Date: Thu, 24 Aug 2023 13:13:58 -0700
-Message-ID: <20230824201358.1395122-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: LehQ4u0e-LK4HAgNcxqQPAg48zlk7xoT
-X-Proofpoint-GUID: LehQ4u0e-LK4HAgNcxqQPAg48zlk7xoT
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39E3E7F
+	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 20:41:19 +0000 (UTC)
+X-Greylist: delayed 501 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 24 Aug 2023 13:41:18 PDT
+Received: from serv108.segi.ulg.ac.be (serv108.segi.ulg.ac.be [139.165.32.111])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A3810E0
+	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 13:41:18 -0700 (PDT)
+Received: from [192.168.1.33] (125.179-65-87.adsl-dyn.isp.belgacom.be [87.65.179.125])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by serv108.segi.ulg.ac.be (Postfix) with ESMTPSA id 5AB72200C27F;
+	Thu, 24 Aug 2023 22:32:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 serv108.segi.ulg.ac.be 5AB72200C27F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uliege.be;
+	s=ulg20190529; t=1692909174;
+	bh=xuG4RB5tWho+FbiXmtQLG7wgRJFfDr4pLgSp6JuDUEI=;
+	h=Date:To:From:Subject:Cc:From;
+	b=y4UbK0bkYA+Wbs56VCd4yPgP5UrztDkTJGZZ7QQLyaeBYBeMI+6+V08GfQfq98Hev
+	 I+cqKIpXruIY9/57uvVEZHYtj9fUWFdg+sFXnS57iagms3d8VCKGBn7xJJdrI21aYv
+	 J5hcmpcv+jUe2577JzRYLkVDdaxt3w00wX0BxY2gVIqKSBCaw9W7PcXTQZWpb8HBuo
+	 Psyl+7jHWq1ABp00E9bfxmRDs9QR4yle6McM/2Txe1tv1+o/mplwArNlXJmd66GvED
+	 74vbWZzZd3PsRkE4KdVAv4u7KfGT7V5XW3LjOcx4W6a+5oJMyFiOQaWBk2lTsIc/8n
+	 b1Gs/RRYAWEVw==
+Message-ID: <e3783201-3b28-3661-eee3-3b5fecad0964@uliege.be>
+Date: Thu, 24 Aug 2023 22:32:53 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-24_16,2023-08-24_01,2023-05-22_02
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
-	autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+To: bpf@vger.kernel.org
+Content-Language: en-US
+From: Justin Iurman <justin.iurman@uliege.be>
+Subject: [QUESTION] bpf/tc verifier error: invalid access to map value, min
+ value is outside of the allowed memory range
+Cc: justin.iurman@uliege.be
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Implement a simple and straightforward BTF sanity check when parsing BTF
-data. Right now it's very basic and just validates that all the string
-offsets and type IDs are within valid range. But even with such simple
-checks it fixes a bunch of crashes found by OSS fuzzer ([0]-[5]) and
-will allow fuzzer to make further progress.
+Hello,
 
-Some other invariants will be checked in follow up patches (like
-ensuring there is no infinite type loops), but this seems like a good
-start already.
+I'm facing a verifier error and don't know how to make it happy (already 
+tried lots of checks). First, here is my env:
+  - OS: Ubuntu 22.04.3 LTS
+  - kernel: 5.15.0-79-generic x86_64 (CONFIG_DEBUG_INFO_BTF=y)
+  - clang version: 14.0.0-1ubuntu1.1
+  - iproute2-5.15.0 with libbpf 0.5.0
 
-v1->v2:
-  - fix array index_type vs type copy/paste error (Eduard);
-  - add type ID check in FUNC_PROTO validation (Eduard);
-  - move sanity check to btf parsing time (Martin).
+And here is a simplified example of my program (basically, it will 
+insert in packets some bytes defined inside a map):
 
-  [0] https://github.com/libbpf/libbpf/issues/482
-  [1] https://github.com/libbpf/libbpf/issues/483
-  [2] https://github.com/libbpf/libbpf/issues/485
-  [3] https://github.com/libbpf/libbpf/issues/613
-  [4] https://github.com/libbpf/libbpf/issues/618
-  [5] https://github.com/libbpf/libbpf/issues/619
+#include "vmlinux.h"
+#include <bpf/bpf_endian.h>
+#include <bpf/bpf_helpers.h>
 
-Closes: https://github.com/libbpf/libbpf/issues/617
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/btf.c | 148 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 148 insertions(+)
+#define MAX_BYTES 2048
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 8484b563b53d..28905539f045 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -448,6 +448,153 @@ static int btf_parse_type_sec(struct btf *btf)
- 	return 0;
- }
-=20
-+static int btf_validate_str(const struct btf *btf, __u32 str_off, const ch=
-ar *what, __u32 type_id)
-+{
-+	const char *s;
-+
-+	s =3D btf__str_by_offset(btf, str_off);
-+	if (!s) {
-+		pr_warn("btf: type [%u]: invalid %s (string offset %u)\n", type_id, what=
-, str_off);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int btf_validate_id(const struct btf *btf, __u32 id, __u32 ctx_id)
-+{
-+	const struct btf_type *t;
-+
-+	t =3D btf__type_by_id(btf, id);
-+	if (!t) {
-+		pr_warn("btf: type [%u]: invalid referenced type ID %u\n", ctx_id, id);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int btf_validate_type(const struct btf *btf, const struct btf_type =
-*t, __u32 id)
-+{
-+	__u32 kind =3D btf_kind(t);
-+	int err, i, n;
-+
-+	err =3D btf_validate_str(btf, t->name_off, "type name", id);
-+	if (err)
-+		return err;
-+
-+	switch (kind) {
-+	case BTF_KIND_UNKN:
-+	case BTF_KIND_INT:
-+	case BTF_KIND_FWD:
-+	case BTF_KIND_FLOAT:
-+		break;
-+	case BTF_KIND_PTR:
-+	case BTF_KIND_TYPEDEF:
-+	case BTF_KIND_VOLATILE:
-+	case BTF_KIND_CONST:
-+	case BTF_KIND_RESTRICT:
-+	case BTF_KIND_FUNC:
-+	case BTF_KIND_VAR:
-+	case BTF_KIND_DECL_TAG:
-+	case BTF_KIND_TYPE_TAG:
-+		err =3D btf_validate_id(btf, t->type, id);
-+		if (err)
-+			return err;
-+		break;
-+	case BTF_KIND_ARRAY: {
-+		const struct btf_array *a =3D btf_array(t);
-+
-+		err =3D btf_validate_id(btf, a->type, id);
-+		err =3D err ?: btf_validate_id(btf, a->index_type, id);
-+		if (err)
-+			return err;
-+		break;
-+	}
-+	case BTF_KIND_STRUCT:
-+	case BTF_KIND_UNION: {
-+		const struct btf_member *m =3D btf_members(t);
-+
-+		n =3D btf_vlen(t);
-+		for (i =3D 0; i < n; i++, m++) {
-+			err =3D btf_validate_str(btf, m->name_off, "field name", id);
-+			err =3D err ?: btf_validate_id(btf, m->type, id);
-+			if (err)
-+				return err;
-+		}
-+		break;
-+	}
-+	case BTF_KIND_ENUM: {
-+		const struct btf_enum *m =3D btf_enum(t);
-+
-+		n =3D btf_vlen(t);
-+		for (i =3D 0; i < n; i++, m++) {
-+			err =3D btf_validate_str(btf, m->name_off, "enum name", id);
-+			if (err)
-+				return err;
-+		}
-+		break;
-+	}
-+	case BTF_KIND_ENUM64: {
-+		const struct btf_enum64 *m =3D btf_enum64(t);
-+
-+		n =3D btf_vlen(t);
-+		for (i =3D 0; i < n; i++, m++) {
-+			err =3D btf_validate_str(btf, m->name_off, "enum name", id);
-+			if (err)
-+				return err;
-+		}
-+		break;
-+	}
-+	case BTF_KIND_FUNC_PROTO: {
-+		const struct btf_param *m =3D btf_params(t);
-+
-+		n =3D btf_vlen(t);
-+		for (i =3D 0; i < n; i++, m++) {
-+			err =3D btf_validate_str(btf, m->name_off, "param name", id);
-+			err =3D err ?: btf_validate_id(btf, m->type, id);
-+			if (err)
-+				return err;
-+		}
-+		break;
-+	}
-+	case BTF_KIND_DATASEC: {
-+		const struct btf_var_secinfo *m =3D btf_var_secinfos(t);
-+
-+		n =3D btf_vlen(t);
-+		for (i =3D 0; i < n; i++, m++) {
-+			err =3D btf_validate_id(btf, m->type, id);
-+			if (err)
-+				return err;
-+		}
-+		break;
-+	}
-+	default:
-+		pr_warn("btf: type [%u]: unrecognized kind %u\n", id, kind);
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
-+/* Validate basic sanity of BTF. It's intentionally less thorough than
-+ * kernel's validation and validates only properties of BTF that libbpf re=
-lies
-+ * on to be correct (e.g., valid type IDs, valid string offsets, etc)
-+ */
-+static int btf_sanity_check(const struct btf *btf)
-+{
-+	const struct btf_type *t;
-+	__u32 i, n =3D btf__type_cnt(btf);
-+	int err;
-+
-+	for (i =3D 1; i < n; i++) {
-+		t =3D btf_type_by_id(btf, i);
-+		err =3D btf_validate_type(btf, t, i);
-+		if (err)
-+			return err;
-+	}
-+	return 0;
-+}
-+
- __u32 btf__type_cnt(const struct btf *btf)
- {
- 	return btf->start_id + btf->nr_types;
-@@ -902,6 +1049,7 @@ static struct btf *btf_new(const void *data, __u32 siz=
-e, struct btf *base_btf)
-=20
- 	err =3D btf_parse_str_sec(btf);
- 	err =3D err ?: btf_parse_type_sec(btf);
-+	err =3D err ?: btf_sanity_check(btf);
- 	if (err)
- 		goto done;
-=20
---=20
-2.34.1
+struct xxx_t {
+	__u32 bytes_len;
+	__u8 bytes[MAX_BYTES];
+};
 
+struct {
+	__uint(type, BPF_MAP_TYPE_ARRAY);
+	__uint(max_entries, 1);
+	__type(key, __u32);
+	__type(value, struct xxx_t);
+	__uint(pinning, LIBBPF_PIN_BY_NAME);
+} my_map SEC(".maps");
+
+char _license[] SEC("license") = "GPL";
+
+SEC("egress")
+int egress_handler(struct __sk_buff *skb)
+{
+	void *data_end = (void *)(long)skb->data_end;
+	void *data = (void *)(long)skb->data;
+	struct ethhdr *eth = data;
+	struct ipv6hdr *ip6;
+	struct xxx_t *x;
+	__u32 offset;
+	__u32 idx = 0;
+
+	offset = sizeof(*eth) + sizeof(*ip6);
+	if (data + offset > data_end)
+		return TC_ACT_OK;
+
+	if (bpf_ntohs(eth->h_proto) != ETH_P_IPV6)
+		return TC_ACT_OK;
+
+	x = bpf_map_lookup_elem(&my_map, &idx);
+	if (!x)
+		return TC_ACT_OK;
+
+	if (x->bytes_len == 0 || x->bytes_len > MAX_BYTES)
+		return TC_ACT_OK;
+
+	if (bpf_skb_adjust_room(skb, x->bytes_len, BPF_ADJ_ROOM_NET, 0))
+		return TC_ACT_OK;
+
+	if (bpf_skb_store_bytes(skb, offset, x->bytes, 8/*x->bytes_len*/, 
+BPF_F_RECOMPUTE_CSUM))
+		return TC_ACT_SHOT;
+
+	/* blah blah blah... */
+
+	return TC_ACT_OK;
+}
+
+Let's focus on the line where bpf_skb_store_bytes is called. As is, with 
+a constant length (i.e., 8 for instance), the verifier is happy. 
+However, as soon as I try to use a map value as the length, it fails:
+
+[...]
+; if (bpf_skb_store_bytes(skb, offset, x->bytes, x->bytes_len,
+34: (bf) r1 = r7
+35: (b7) r2 = 54
+36: (bf) r3 = r8
+37: (b7) r5 = 1
+38: (85) call bpf_skb_store_bytes#9
+  R0=inv0 R1_w=ctx(id=0,off=0,imm=0) R2_w=inv54 
+R3_w=map_value(id=0,off=4,ks=4,vs=2052,imm=0) 
+R4_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R5_w=inv1 
+R6_w=inv1 R7=ctx(id=0,off=0,imm=0) 
+R8_w=map_value(id=0,off=4,ks=4,vs=2052,imm=0) R10=fp0 fp-8=mmmm????
+invalid access to map value, value_size=2052 off=4 size=0
+R3 min value is outside of the allowed memory range
+
+I guess "size=0" is the problem here, but don't understand why. What 
+bothers me is that it looks like it's about R3 (i.e., x->bytes), not R4. 
+Anyway, I already tried to add a bunch of checks for both, but did not 
+succeed. Any idea?
+
+Thanks,
+Justin
 
