@@ -1,208 +1,340 @@
-Return-Path: <bpf+bounces-8535-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8536-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2A41787B9D
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 00:46:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B2A6787BC3
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 01:02:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E1522816E4
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 22:46:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 434DE1C20F2D
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 23:02:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F456BA38;
-	Thu, 24 Aug 2023 22:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFE8EBE78;
+	Thu, 24 Aug 2023 23:02:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C777E
-	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 22:46:09 +0000 (UTC)
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245A81BF1
-	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 15:46:05 -0700 (PDT)
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-64a8826dde2so2071676d6.1
-        for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 15:46:05 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B32DC7E
+	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 23:02:04 +0000 (UTC)
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B321BD8
+	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 16:01:59 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-500a398cda5so498062e87.0
+        for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 16:01:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692918117; x=1693522917;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4+B/qUi+5/cWmRV9wSP5rQC3KhX1nJUoLwuDJoiectM=;
+        b=ipHw13OqZoFOpMBFGfcIyiwTvoH3JIY5JBcJq1eSKuZFOUmFDXRhi7Vsl+7U27wxrC
+         CBES9vIfFymwrdBWIPeuv2ced8QNpeNQPOwMxZkDkpZySiLU4Rzf8peXKJZrmyQMKXaB
+         2jj7Ii5riiU+hQjXF5HcGE2HKRcTqnOopAUx6PG4G3zK3xX92VTJIeSX8ARndAYqK3P2
+         og5Nciteve9Gl4cteQWJ74uaE71+7PcIj3KQWYl5btfe3rzVLgBuY+vX0uB6vUm23OMW
+         zkCRddnyy8S1oH4ho9dwPaiB3ZpBcMt83xR6at3QRG4dC3GT98qU02BSjykjM40ttvZ5
+         fY9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692917164; x=1693521964;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UHeNcMMb6l7Z5f713mg1tv3XPXcQmXrAcI8oExdyRvg=;
-        b=EUGg6qB+Rx3gsA2+MGsnDfJLqLqIcoT9FaQjOEopebvb30iSVf/Hi2IomFsjntRJOs
-         3PWRVhs9CAO46UanBYb5L6SUzoTJBgKVcj15PsiMxCnQYVSztHNrYXpd9Lxul5uotN/a
-         ZMLky+fiG4BaG7Tty+yLLOAcyEZBy1mWYhnxOuae44i8yiQTeJHgV2OLf340ZVLo6mVe
-         gtSLtsb3c0W//68ADkmikEVgv+PzrTwKDqNijDJTxKuMcgvIiV6Fr5Jlkka6CGKRwMmx
-         N3bnOyA9IH7gr8g9jN0zNlSEPZNKMtpoQM0BN6g3OZOm1xA6HzHfUuW0cJuUnzwsUIZC
-         O45w==
-X-Gm-Message-State: AOJu0YxWHwekvZN8R1LWEUwV935KqFTgfKWge5DKX9STvtxq5EG/TNH1
-	J+8WGzz+Y2jPrYhL4BT37ZM=
-X-Google-Smtp-Source: AGHT+IFb6zChmSra76B8/Z6zmciJLxcKLdmUti50tYzJsyr1VDPDdsSoi03UZIWVCeJ77zjn1GbOdw==
-X-Received: by 2002:a05:6214:4807:b0:641:894e:90fe with SMTP id pa7-20020a056214480700b00641894e90femr17040085qvb.61.1692917164151;
-        Thu, 24 Aug 2023 15:46:04 -0700 (PDT)
-Received: from maniforge ([2620:10d:c091:400::5:1df8])
-        by smtp.gmail.com with ESMTPSA id e4-20020a0ce3c4000000b006262de12a8csm114176qvl.65.2023.08.24.15.46.03
+        d=1e100.net; s=20221208; t=1692918117; x=1693522917;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4+B/qUi+5/cWmRV9wSP5rQC3KhX1nJUoLwuDJoiectM=;
+        b=HKmeT0qQhGzkfJS28GHk1GD5gjeXOQ4lusbrc7J48fx1o59W+vMqG0JH3IwzDZ8XJZ
+         wnw7ToxjeMnQ5nnHhs1O+b3QGBGrwJx5+D/IP+UAEgkWNl/kmsTsPtGWYHvosvWw51Sm
+         Lr1ktU0OhameyZRtN9O3wB30Z13i4k3iadW003St38zqCCKPlWi1iQ+CIW63VMxT8Gjo
+         jwPuDkNMq/U1qMPEyGdrf/birMyXvdeBIGmd4dfdhv6aviYu0ywLcqgmsnD7cQq3izyq
+         P/gUcjJ5TSh4HMS3NXYOeaVcIHBC1UJtTKw9906MsvQG34Uqb7iuY5Ud5CdVxfg5AxC1
+         /zNw==
+X-Gm-Message-State: AOJu0YxEtMy1+fIlNTnUHlg5YFsaEGPv717T1o6gULfMAsqDy++gXFNM
+	Uxkg2B/aVpDchiM+ebw4Xy5I9CJJw+U=
+X-Google-Smtp-Source: AGHT+IEgodOETktFBRsw6pwzdhWM7ZJjKPhAP/onbPzGnKRLdz9wll9RNUyy2ZFxH1ljCcz+sP8/7A==
+X-Received: by 2002:a05:6512:3191:b0:4fb:9f93:365f with SMTP id i17-20020a056512319100b004fb9f93365fmr16087551lfe.38.1692918116909;
+        Thu, 24 Aug 2023 16:01:56 -0700 (PDT)
+Received: from bigfoot.. (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id jx13-20020a170906ca4d00b00992d122af63sm178297ejb.89.2023.08.24.16.01.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 15:46:03 -0700 (PDT)
-Date: Thu, 24 Aug 2023 17:46:01 -0500
-From: David Vernet <void@manifault.com>
-To: Andrew Werner <awerner32@gmail.com>
-Cc: bpf@vger.kernel.org, kernel-team@dataexmachina.dev,
-	alexei.starovoitov@gmail.com, andrii@kernel.org, olsajiri@gmail.com,
-	houtao@huaweicloud.com
-Subject: Re: [PATCH bpf-next v3] libbpf: handle producer position overflow
-Message-ID: <20230824224601.GC11642@maniforge>
-References: <20230824220907.1172808-1-awerner32@gmail.com>
+        Thu, 24 Aug 2023 16:01:56 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org
+Cc: andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next] docs/bpf: Add description for CO-RE relocations
+Date: Fri, 25 Aug 2023 02:01:02 +0300
+Message-ID: <20230824230102.2117902-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230824220907.1172808-1-awerner32@gmail.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Aug 24, 2023 at 06:09:08PM -0400, Andrew Werner wrote:
-> Before this patch, the producer position could overflow `unsigned
-> long`, in which case libbpf would forever stop processing new writes to
-> the ringbuf. Similarly, overflows of the producer position could result
-> in __bpf_user_ringbuf_peek not discovering available data. This patch
-> addresses that bug by computing using the signed delta between the
-> consumer and producer position to determine if data is available; the
-> delta computation is robust to overflow.
-> 
-> A more defensive check could be to ensure that the delta is within
-> the allowed range, but such defensive checks are neither present in
-> the kernel side code nor in libbpf. The overflow that this patch
-> handles can occur while the producer and consumer follow a correct
-> protocol.
-> 
-> Secondarily, the type used to represent the positions in the
-> user_ring_buffer functions in both libbpf and the kernel has been
-> changed from u64 to unsigned long to match the type used in the
-> kernel's representation of the structure. The change occurs in the
-> same patch because it's required to align the data availability
-> calculations between the userspace producing ringbuf and the bpf
-> producing ringbuf.
-> 
-> Not included in this patch, a selftest was written to demonstrate the
-> bug, and indeed this patch allows the test to continue to make progress
-> past the overflow. The shape of the self test was as follows:
-> 
->  a) Set up ringbuf of 2GB size (the maximum permitted size).
->  b) reserve+commit maximum-sized records (ULONG_MAX/4) constantly as
->     fast as possible.
-> 
-> With 1 million records per second repro time should be about 4.7 hours.
-> Such a test duration is impractical to run, hence the omission.
-> 
-> Additionally, this patch adds commentary around a separate point to note
-> that the modular arithmetic is valid in the face of overflows, as that
-> fact may not be obvious to future readers.
-> 
-> v2->v3:
->   - Changed the representation of the consumer and producer positions
->     from u64 to unsigned long in user_ring_buffer functions. 
->   - Addressed overflow in __bpf_user_ringbuf_peek.
->   - Changed data availability computations to use the signed delta
->     between the consumer and producer positions rather than merely
->     checking whether their values were unequal.
-> v1->v2:
->   - Fixed comment grammar.
->   - Properly formatted subject line.
-> 
-> Signed-off-by: Andrew Werner <awerner32@gmail.com>
+Add a section on CO-RE relocations to llvm_relo.rst.
+Describe relevant .BTF.ext structure, `enum bpf_core_relo_kind`
+and `struct bpf_core_relo` in some detail.
+Description is based on doc-string from include/uapi/linux/bpf.h.
 
-Hey Andrew,
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ Documentation/bpf/btf.rst        |  27 ++++-
+ Documentation/bpf/llvm_reloc.rst | 178 +++++++++++++++++++++++++++++++
+ 2 files changed, 201 insertions(+), 4 deletions(-)
 
-This LGTM, thanks for finding and fixing this. I left a comment below
-about the cast >= vs. equality comparison, but I won't block on it given
-that it's already been discussed on another thread. Here's my tag:
+diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
+index f32db1f44ae9..c0530211c3c1 100644
+--- a/Documentation/bpf/btf.rst
++++ b/Documentation/bpf/btf.rst
+@@ -726,8 +726,8 @@ same as the one describe in :ref:`BTF_Type_String`.
+ 4.2 .BTF.ext section
+ --------------------
+ 
+-The .BTF.ext section encodes func_info and line_info which needs loader
+-manipulation before loading into the kernel.
++The .BTF.ext section encodes func_info, line_info and CO-RE relocations
++which needs loader manipulation before loading into the kernel.
+ 
+ The specification for .BTF.ext section is defined at ``tools/lib/bpf/btf.h``
+ and ``tools/lib/bpf/btf.c``.
+@@ -745,11 +745,16 @@ The current header of .BTF.ext section::
+         __u32   func_info_len;
+         __u32   line_info_off;
+         __u32   line_info_len;
++
++        /* optional part of .BTF.ext header */
++        __u32   core_relo_off;
++        __u32   core_relo_len;
+     };
+ 
+ It is very similar to .BTF section. Instead of type/string section, it
+-contains func_info and line_info section. See :ref:`BPF_Prog_Load` for details
+-about func_info and line_info record format.
++contains func_info, line_info and core_relo sub-sections.
++See :ref:`BPF_Prog_Load` for details about func_info and line_info
++record format.
+ 
+ The func_info is organized as below.::
+ 
+@@ -787,6 +792,20 @@ kernel API, the ``insn_off`` is the instruction offset in the unit of ``struct
+ bpf_insn``. For ELF API, the ``insn_off`` is the byte offset from the
+ beginning of section (``btf_ext_info_sec->sec_name_off``).
+ 
++The core_relo is organized as below.::
++
++     core_relo_rec_size
++     btf_ext_info_sec for section #1 /* core_relo for section #1 */
++     btf_ext_info_sec for section #2 /* core_relo for section #2 */
++
++``core_relo_rec_size`` specifies the size of ``bpf_core_relo``
++structure when .BTF.ext is generated. All ``bpf_core_relo`` structures
++within a single ``btf_ext_info_sec`` describe relocations applied to
++section named by ``btf_ext_info_sec::sec_name_off``.
++
++See :ref:`Documentation/bpf/llvm_reloc <btf-co-re-relocations>`
++for more information on CO-RE relocations.
++
+ 4.2 .BTF_ids section
+ --------------------
+ 
+diff --git a/Documentation/bpf/llvm_reloc.rst b/Documentation/bpf/llvm_reloc.rst
+index 450e6403fe3d..efe0b6ea4921 100644
+--- a/Documentation/bpf/llvm_reloc.rst
++++ b/Documentation/bpf/llvm_reloc.rst
+@@ -240,3 +240,181 @@ The .BTF/.BTF.ext sections has R_BPF_64_NODYLD32 relocations::
+       Offset             Info             Type               Symbol's Value  Symbol's Name
+   000000000000002c  0000000200000004 R_BPF_64_NODYLD32      0000000000000000 .text
+   0000000000000040  0000000200000004 R_BPF_64_NODYLD32      0000000000000000 .text
++
++.. _btf-co-re-relocations:
++
++=================
++CO-RE Relocations
++=================
++
++From object file point of view CO-RE mechanism is implemented as a set
++of CO-RE specific relocation records. These relocation records are not
++related to ELF relocations and are encoded in .BTF.ext section.
++See :ref:`Documentation/bpf/btf <BTF_Ext_Section>` for more
++information on .BTF.ext structure.
++
++
++CO-RE relocations are applied to BPF instructions to update immediate
++or offset fields of the instruction at load time with information
++relevant for target kernel.
++
++Relocation kinds
++================
++
++There are several kinds of CO-RE relocations that could be split in
++three groups:
++
++* Field-based - patch instruction with field related information, e.g.
++  change offset field of the BPF_LD instruction to reflect offset
++  of a specific structure field in the target kernel.
++
++* Type-based - patch instruction with type related information, e.g.
++  change immediate field of the BPF_MOV instruction to 0 or 1 to
++  reflect if specific type is present in the target kernel.
++
++* Enum-based - patch instruction with enum related information, e.g.
++  change immediate field of the BPF_MOV instruction to reflect value
++  of a specific enum literal in the target kernel.
++
++The complete list of relocation kinds is represented by the following enum:
++
++.. code-block:: c
++
++ enum bpf_core_relo_kind {
++	BPF_CORE_FIELD_BYTE_OFFSET = 0,  /* field byte offset */
++	BPF_CORE_FIELD_BYTE_SIZE   = 1,  /* field size in bytes */
++	BPF_CORE_FIELD_EXISTS      = 2,  /* field existence in target kernel */
++	BPF_CORE_FIELD_SIGNED      = 3,  /* field signedness (0 - unsigned, 1 - signed) */
++	BPF_CORE_FIELD_LSHIFT_U64  = 4,  /* bitfield-specific left bitshift */
++	BPF_CORE_FIELD_RSHIFT_U64  = 5,  /* bitfield-specific right bitshift */
++	BPF_CORE_TYPE_ID_LOCAL     = 6,  /* type ID in local BPF object */
++	BPF_CORE_TYPE_ID_TARGET    = 7,  /* type ID in target kernel */
++	BPF_CORE_TYPE_EXISTS       = 8,  /* type existence in target kernel */
++	BPF_CORE_TYPE_SIZE         = 9,  /* type size in bytes */
++	BPF_CORE_ENUMVAL_EXISTS    = 10, /* enum value existence in target kernel */
++	BPF_CORE_ENUMVAL_VALUE     = 11, /* enum value integer value */
++	BPF_CORE_TYPE_MATCHES      = 12, /* type match in target kernel */
++ };
++
++CO-RE Relocation Record
++=======================
++
++Relocation record is encoded as the following structure:
++
++.. code-block:: c
++
++ struct bpf_core_relo {
++	__u32 insn_off;
++	__u32 type_id;
++	__u32 access_str_off;
++	enum bpf_core_relo_kind kind;
++ };
++
++* ``insn_off`` - instruction offset (in bytes) within a code section
++  associated with this relocation;
++
++* ``type_id`` - BTF type ID of the "root" (containing) entity of a
++  relocatable type or field;
++
++* ``access_str_off`` - offset into corresponding .BTF string section.
++  String interpretation depends on specific relocation kind:
++
++  * for field-based relocations, string encodes an accessed field using
++    a sequence of field and array indices, separated by colon (:). It's
++    conceptually very close to LLVM's `getelementptr <GEP_>`_ instruction's
++    arguments for identifying offset to a field. For example, consider the
++    following C code:
++
++    .. code-block:: c
++
++       struct sample {
++           int a;
++           int b;
++           struct { int c[10]; };
++       } __attribute__((preserve_access_index));
++       struct sample *s;
++
++    * Access to ``s[0].a`` would be encoded as ``0:0``:
++
++      * ``0``: first element of ``s`` (as if ``s`` is an array);
++      * ``0``: index of field ``a`` in ``struct sample``.
++
++    * Access to ``s->a`` would be encoded as ``0:0`` as well.
++    * Access to ``s->b`` would be encoded as ``0:1``:
++
++      * ``0``: first element of ``s``;
++      * ``1``: index of field ``b`` in ``struct sample``.
++
++    * Access to ``s[1].c[5]`` would be encoded as ``1:2:0:5``:
++
++      * ``1``: second element of ``s``;
++      * ``2``: index of anonymous structure field in ``struct sample``;
++      * ``0``: index of field ``b`` in anonymous structure;
++      * ``5``: access to array element #5.
++
++  * for type-based relocations, string is expected to be just "0";
++
++  * for enum value-based relocations, string contains an index of enum
++     value within its enum type;
++
++* ``kind`` - one of ``enum bpf_core_relo_kind``.
++
++.. _GEP: https://llvm.org/docs/LangRef.html#getelementptr-instruction
++
++.. _btf_co_re_relocation_examples:
++
++CO-RE Relocation Examples
++=========================
++
++For the following C code:
++
++.. code-block:: c
++
++ struct foo {
++     int a;
++     int b;
++ } __attribute__((preserve_access_index));
++
++ enum bar { U, V };
++
++ void buz(struct foo *s, volatile unsigned long *g) {
++   s->a = 1;
++   *g = __builtin_preserve_field_info(s->b, 1);
++   *g = __builtin_preserve_type_info(*s, 1);
++   *g = __builtin_preserve_enum_value(*(enum bar *)V, 1);
++ }
++
++With the following BTF definititions:
++
++.. code-block::
++
++ ...
++ [2] STRUCT 'foo' size=8 vlen=2
++ 	'a' type_id=3 bits_offset=0
++ 	'b' type_id=3 bits_offset=32
++ [3] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
++ ...
++ [9] ENUM 'bar' encoding=UNSIGNED size=4 vlen=2
++ 	'U' val=0
++ 	'V' val=1
++
++The following relocation entries would be generated:
++
++.. code-block:: c
++
++   <buz>:
++       0:	*(u32 *)(r1 + 0x0) = 0x1
++		00:  CO-RE <byte_off> [2] struct foo::a (0:0)
++       1:	r1 = 0x4
++		08:  CO-RE <byte_sz> [2] struct foo::b (0:1)
++       2:	*(u64 *)(r2 + 0x0) = r1
++       3:	r1 = 0x8
++		18:  CO-RE <type_size> [2] struct foo
++       4:	*(u64 *)(r2 + 0x0) = r1
++       5:	r1 = 0x1 ll
++		28:  CO-RE <enumval_value> [9] enum bar::V = 1
++       7:	*(u64 *)(r2 + 0x0) = r1
++       8:	exit
++
++Note: modifications for llvm-objdump to show these relocation entries
++are currently work in progress.
+-- 
+2.41.0
 
-Reviewed-by: David Vernet<void@manifault.com>
-
-> ---
->  kernel/bpf/ringbuf.c    | 11 ++++++++---
->  tools/lib/bpf/ringbuf.c | 16 +++++++++++++---
->  2 files changed, 21 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-> index f045fde632e5..0c48673520fb 100644
-> --- a/kernel/bpf/ringbuf.c
-> +++ b/kernel/bpf/ringbuf.c
-> @@ -658,7 +658,7 @@ static int __bpf_user_ringbuf_peek(struct bpf_ringbuf *rb, void **sample, u32 *s
->  {
->  	int err;
->  	u32 hdr_len, sample_len, total_len, flags, *hdr;
-> -	u64 cons_pos, prod_pos;
-> +	unsigned long cons_pos, prod_pos;
->  
->  	/* Synchronizes with smp_store_release() in user-space producer. */
->  	prod_pos = smp_load_acquire(&rb->producer_pos);
-> @@ -667,7 +667,12 @@ static int __bpf_user_ringbuf_peek(struct bpf_ringbuf *rb, void **sample, u32 *s
->  
->  	/* Synchronizes with smp_store_release() in __bpf_user_ringbuf_sample_release() */
->  	cons_pos = smp_load_acquire(&rb->consumer_pos);
-> -	if (cons_pos >= prod_pos)
-> +
-> +	/* Check if there's data available by computing the signed delta between
-> +	 * cons_pos and prod_pos; a negative delta indicates that the consumer has
-> +	 * not caught up. This formulation is robust to prod_pos wrapping around.
-> +	 */
-> +	if ((long)(cons_pos - prod_pos) >= 0)
-
-I see that Andrii suggested doing it this way in [0] so I won't insist
-on changing it, but IMO this is much less readable and more confusing
-than just doing an if (cond_pos == prod_pos) with a comment. The way
-it's written this way, it makes it look like there could be a situation
-where cond_pos could be ahead of prod_pos, whereas that would actually
-just be a bug elsewhere that we'd be papering over. I guess this is more
-defensive. In any case, I won't insit on it needing to change.
-
-[0]: https://lore.kernel.org/all/CAEf4BzZQQ=fz+NqFHhJcqKoVAvh4=XbH7HWaHKjUg5OOzi-PTw@mail.gmail.com/
-
->  		return -ENODATA;
->  
->  	hdr = (u32 *)((uintptr_t)rb->data + (uintptr_t)(cons_pos & rb->mask));
-> @@ -711,7 +716,7 @@ static int __bpf_user_ringbuf_peek(struct bpf_ringbuf *rb, void **sample, u32 *s
->  
->  static void __bpf_user_ringbuf_sample_release(struct bpf_ringbuf *rb, size_t size, u64 flags)
->  {
-> -	u64 consumer_pos;
-> +	unsigned long consumer_pos;
->  	u32 rounded_size = round_up(size + BPF_RINGBUF_HDR_SZ, 8);
->  
->  	/* Using smp_load_acquire() is unnecessary here, as the busy-bit
-> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-> index 02199364db13..141030a89370 100644
-> --- a/tools/lib/bpf/ringbuf.c
-> +++ b/tools/lib/bpf/ringbuf.c
-> @@ -237,7 +237,13 @@ static int64_t ringbuf_process_ring(struct ring *r)
->  	do {
->  		got_new_data = false;
->  		prod_pos = smp_load_acquire(r->producer_pos);
-> -		while (cons_pos < prod_pos) {
-> +
-> +		/* Check if there's data available by computing the signed delta
-> +		 * between cons_pos and prod_pos; a negative delta indicates that the
-> +		 * consumer has not caught up. This formulation is robust to prod_pos
-> +		 * wrapping around.
-> +		 */
-> +		while ((long)(cons_pos - prod_pos) < 0) {
-
-Same here. Doing a != is much more clear, in my opinion. Not a blocker
-though.
-
-[...]
-
-Thanks,
-David
 
