@@ -1,92 +1,90 @@
-Return-Path: <bpf+bounces-8453-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8454-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73C57786C17
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 11:36:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D56F786CAC
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 12:23:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A575E1C20E25
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 09:36:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EC501C20DEA
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 10:23:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2031ADDB5;
-	Thu, 24 Aug 2023 09:36:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88E66DDD2;
+	Thu, 24 Aug 2023 10:23:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEDE6D505
-	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 09:36:18 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC77010DA
-	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 02:36:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526D4D505
+	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 10:23:04 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F09199C
+	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 03:23:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1692869776;
+	s=mimecast20190719; t=1692872580;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NX+QXvbm6o1xuDF+PITGRa+gLIR9xHN+Dppdwu9QlPY=;
-	b=jH8im2io9BCOCBiMTz0y/PK58TmNDvPdQG1DOpURojjNMx3EHj6JOZoLxZt6IRgYN/GOuq
-	X3dRlzZmeFU6BmUoGGfBny99YLSYYVnIGkIFLtboUzmcQ9ORy+iAMAibWLRVPxlIJMAZP9
-	PApHDS9OCt0+5FuR3xEN7/FqRilbCQQ=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=T6b4rpOjVfEQK0kxx9ILs6ZtJF+x9z2oq0vowMV7tZk=;
+	b=eLmRpAXv0SbCs5MT7DccKdbujJmJcYvHL0ADtrpJ7qIIV5jHfpBDyYNeE4Z0Yu8/zp3rQz
+	y453CVAYyXPb4Lhjp8lk6Rpcfwr+VTz0VJKEi2MaSQjnZgjwhzZI24XVJmDZb2DivGIARh
+	j8ZcwJUzh5EjCCTbZxexXSs4NJpiAbg=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-612-2u_xllnhOZ-wBTzaQ41OFg-1; Thu, 24 Aug 2023 05:36:15 -0400
-X-MC-Unique: 2u_xllnhOZ-wBTzaQ41OFg-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-99c0bd2ca23so462603866b.2
-        for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 02:36:14 -0700 (PDT)
+ us-mta-329-Z_AauJbPNrq0ehswVFDsAQ-1; Thu, 24 Aug 2023 06:22:59 -0400
+X-MC-Unique: Z_AauJbPNrq0ehswVFDsAQ-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-99bebfada8cso496372566b.1
+        for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 03:22:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692869774; x=1693474574;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NX+QXvbm6o1xuDF+PITGRa+gLIR9xHN+Dppdwu9QlPY=;
-        b=Pg05no95dl97abHE2Tf/QUEah8LOrsr+8PDfd4zu4duD60IKqn3vbEMuRFb6xTCOhZ
-         DkQKuQTXBXwBb+Bv+vUW2EYgUick4ezBYqD8ZUdeXZaMIyXMS93TXSYePHZUhT/bfnY8
-         fh/jdyPlGnbQb/xBnDvd/2ihh85Y+c2DXi8qddyIOOrd7dUg2hZ5SPB58gh2iY6izxV4
-         IOnn1njRzgyYC49QptkUqzSzxmzC4NEzP7i/umPJNyacBG1eSN1jhmEHTWhwuNME5JIY
-         OzwDff9BEDD079bv/H7z/1Bh9tCJkSOtaK81MyFe6Z4amrfURcXonfmaHWOJYHILrVrB
-         sqog==
-X-Gm-Message-State: AOJu0YyUv6C2sj4f4D1nX7s0rVSETBym70xgRCpL1uO5ARV5GmlGzEiL
-	7bHNmALQVioHIG9sdsYZudlRPIr7nnrNekgKC3zy2NBnTKJLD6NnCeW6s6o0cKY2qzda9JKY9Zf
-	rq4vqGX8GnlRb
-X-Received: by 2002:a17:906:844a:b0:99b:f645:224 with SMTP id e10-20020a170906844a00b0099bf6450224mr11570364ejy.9.1692869774003;
-        Thu, 24 Aug 2023 02:36:14 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHuAHAZBhbYNKhhHuiNRIsDCk+cT8jXOgqDiueF5S5yXVYSZXx0PlwrD3beG0bJg4oWYh+TRw==
-X-Received: by 2002:a17:906:844a:b0:99b:f645:224 with SMTP id e10-20020a170906844a00b0099bf6450224mr11570343ejy.9.1692869773593;
-        Thu, 24 Aug 2023 02:36:13 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id t4-20020a1709064f0400b009920e9a3a73sm10707377eju.115.2023.08.24.02.36.12
+        d=1e100.net; s=20221208; t=1692872578; x=1693477378;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T6b4rpOjVfEQK0kxx9ILs6ZtJF+x9z2oq0vowMV7tZk=;
+        b=QiwTt48Wp0vHPmy4iALFWZvGbL63Hz9z+m2G4poTGbit+uec3tFCpDA6UqmvWVX7PJ
+         PS8vPsMEA05bGKKWMc5JS6drP813yLsb8qZ4slRt/wvuZmfDV/rYAJYfqI1aGNm7EsbJ
+         l+FOMXYIufhwyRYkHs++01xFW/J8RQ3zTD8p5l2r17+lFyOhHTZzrzGCUeTNtBqXVMo2
+         OwyLujqoJATVnUbAzuM8gCEylWwddDpLDjr3JNSqINE4QPqwUACIlubq+tMDR+QnGVNi
+         odmEs3ZlwsK4ncbx0bJ5aXvC82Yt7f06/pOJEkvBwaIbCoq1DVylhzf8EzaubUTcV2Up
+         oHzA==
+X-Gm-Message-State: AOJu0YwmTplmwTrLfIHmnA9imNX4rmKwAu8tMypJmRd4/1BTRJi5vsZP
+	RT5MD4qxfHEf1aTQLYVjYXFfxaAQJeVrM4+utny6noi9NIvRwbNxtm60EyBQ+elYIvzNNtOWCwE
+	VzNejoCiGCzBA
+X-Received: by 2002:a17:906:9be8:b0:99d:6ca6:7a8c with SMTP id de40-20020a1709069be800b0099d6ca67a8cmr12054305ejc.63.1692872578288;
+        Thu, 24 Aug 2023 03:22:58 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFyYJqIJBLFGi9gN/Io1cNAHYXbpxYAK8AMKDXSFnaJIGihwtZeaJYwMgaHOnO+zJttTwZgDg==
+X-Received: by 2002:a17:906:9be8:b0:99d:6ca6:7a8c with SMTP id de40-20020a1709069be800b0099d6ca67a8cmr12054285ejc.63.1692872577855;
+        Thu, 24 Aug 2023 03:22:57 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id bv24-20020a170906b1d800b0099b8234a9fesm10688853ejb.1.2023.08.24.03.22.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 02:36:13 -0700 (PDT)
+        Thu, 24 Aug 2023 03:22:57 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 8D070D3D06C; Thu, 24 Aug 2023 11:36:12 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, Jakub
- Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, John
- Fastabend <john.fastabend@gmail.com>, Network Development
- <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v2 0/6] samples/bpf: Remove unmaintained XDP
- sample utilities
-In-Reply-To: <CAADnVQ+rD5S_k81fM82yaK9EEG3yWtEenpA15y9ujvJZVk2n6A@mail.gmail.com>
-References: <20230823145346.1462819-1-toke@redhat.com>
- <CAADnVQ+rD5S_k81fM82yaK9EEG3yWtEenpA15y9ujvJZVk2n6A@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Thu, 24 Aug 2023 11:36:12 +0200
-Message-ID: <87y1i093zn.fsf@toke.dk>
+	id F1191D3D099; Thu, 24 Aug 2023 12:22:56 +0200 (CEST)
+From: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>
+Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/7] samples/bpf: Remove unmaintained XDP sample utilities
+Date: Thu, 24 Aug 2023 12:22:43 +0200
+Message-ID: <20230824102255.1561885-1-toke@redhat.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
 	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
@@ -94,26 +92,97 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+The samples/bpf directory in the kernel tree started out as a way of showcasing
+different aspects of BPF functionality by writing small utility programs for
+each feature. However, as the BPF subsystem has matured, the preferred way of
+including userspace code with a feature has become the BPF selftests, which also
+have the benefit of being consistently run as part of the BPF CI system.
 
-> On Wed, Aug 23, 2023 at 7:54=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen =
-<toke@redhat.com> wrote:
->>
->> The samples/bpf directory in the kernel tree started out as a way of sho=
-wcasing
->> different aspects of BPF functionality by writing small utility programs=
- for
->> each feature. However, as the BPF subsystem has matured, the preferred w=
-ay of
->> including userspace code with a feature has become the BPF selftests, wh=
-ich also
->> have the benefit of being consistently run as part of the BPF CI system.
->
-> Did you miss my previous email?
+As a result of this shift, the utilities in samples/bpf have seen little love,
+and have slowly bitrotted. There have been sporadic cleanup patches over the
+years, but it's clear that the utilities are far from maintained.
 
-Ah, yeah, totally missed that, sorry! Will respin with an update to the
-README...
+For XDP in particular, some of the utilities have been used as benchmarking aids
+when implementing new kernel features, which seems to be the main reason they
+have stuck around; any updates the utilities have seen have been targeted at
+this use case. However, as the BPF subsystem as a whole has moved on, it has
+become increasingly difficult to incorporate new features into these utilities
+because they predate most of the modern BPF features (such as kfuncs and BTF).
 
--Toke
+Rather than try to update these utilities and keep maintaining them in the
+kernel tree, we have ported the useful features of the utilities to the
+xdp-tools package. In the porting process we also updated the utilities to take
+advantage of modern BPF features, integrated them with libxdp, and polished the
+user interface.
+
+As these utilities are standalone tools, maintaining them out of tree is
+simpler, and we plan to keep maintaining them in the xdp-tools repo. To direct
+users of these utilities to the right place, this series removes the utilities
+from samples/bpf, leaving in place only a couple of utilities whose
+functionality have not yet been ported to xdp-tools.
+
+The xdp-tools repository is located on Github at the following URL:
+
+https://github.com/xdp-project/xdp-tools
+
+The commits in the series removes one utility each, explaining how the
+equivalent functionality can be obtained with xdp-tools.
+
+v2:
+- Add equivalent xdp-tools commands for each removed utility
+v3:
+- Add link to xdp-tools in the README
+
+Toke Høiland-Jørgensen (7):
+  samples/bpf: Remove the xdp_monitor utility
+  samples/bpf: Remove the xdp_redirect* utilities
+  samples/bpf: Remove the xdp_rxq_info utility
+  samples/bpf: Remove the xdp1 and xdp2 utilities
+  samples/bpf: Remove the xdp_sample_pkts utility
+  samples/bpf: Cleanup .gitignore
+  samples/bpf: Add note to README about the XDP utilities moved to
+    xdp-tools
+
+ samples/bpf/.gitignore                    |  12 -
+ samples/bpf/Makefile                      |  48 +-
+ samples/bpf/README.rst                    |   6 +
+ samples/bpf/xdp1_kern.c                   | 100 ----
+ samples/bpf/xdp1_user.c                   | 166 ------
+ samples/bpf/xdp2_kern.c                   | 125 -----
+ samples/bpf/xdp_monitor.bpf.c             |   8 -
+ samples/bpf/xdp_monitor_user.c            | 118 -----
+ samples/bpf/xdp_redirect.bpf.c            |  49 --
+ samples/bpf/xdp_redirect_cpu.bpf.c        | 539 -------------------
+ samples/bpf/xdp_redirect_cpu_user.c       | 559 --------------------
+ samples/bpf/xdp_redirect_map.bpf.c        |  97 ----
+ samples/bpf/xdp_redirect_map_multi.bpf.c  |  77 ---
+ samples/bpf/xdp_redirect_map_multi_user.c | 232 --------
+ samples/bpf/xdp_redirect_map_user.c       | 228 --------
+ samples/bpf/xdp_redirect_user.c           | 172 ------
+ samples/bpf/xdp_rxq_info_kern.c           | 140 -----
+ samples/bpf/xdp_rxq_info_user.c           | 614 ----------------------
+ samples/bpf/xdp_sample_pkts_kern.c        |  57 --
+ samples/bpf/xdp_sample_pkts_user.c        | 196 -------
+ 20 files changed, 7 insertions(+), 3536 deletions(-)
+ delete mode 100644 samples/bpf/xdp1_kern.c
+ delete mode 100644 samples/bpf/xdp1_user.c
+ delete mode 100644 samples/bpf/xdp2_kern.c
+ delete mode 100644 samples/bpf/xdp_monitor.bpf.c
+ delete mode 100644 samples/bpf/xdp_monitor_user.c
+ delete mode 100644 samples/bpf/xdp_redirect.bpf.c
+ delete mode 100644 samples/bpf/xdp_redirect_cpu.bpf.c
+ delete mode 100644 samples/bpf/xdp_redirect_cpu_user.c
+ delete mode 100644 samples/bpf/xdp_redirect_map.bpf.c
+ delete mode 100644 samples/bpf/xdp_redirect_map_multi.bpf.c
+ delete mode 100644 samples/bpf/xdp_redirect_map_multi_user.c
+ delete mode 100644 samples/bpf/xdp_redirect_map_user.c
+ delete mode 100644 samples/bpf/xdp_redirect_user.c
+ delete mode 100644 samples/bpf/xdp_rxq_info_kern.c
+ delete mode 100644 samples/bpf/xdp_rxq_info_user.c
+ delete mode 100644 samples/bpf/xdp_sample_pkts_kern.c
+ delete mode 100644 samples/bpf/xdp_sample_pkts_user.c
+
+-- 
+2.41.0
 
 
