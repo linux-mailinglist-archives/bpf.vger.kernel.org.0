@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-8505-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8506-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E57778789E
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 21:37:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19B537878A4
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 21:38:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37A2F2816BE
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 19:37:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EA051C20DED
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 19:38:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAA551938C;
-	Thu, 24 Aug 2023 19:34:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA17E1939A;
+	Thu, 24 Aug 2023 19:34:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70CC519383;
-	Thu, 24 Aug 2023 19:34:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7861819383;
+	Thu, 24 Aug 2023 19:34:16 +0000 (UTC)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704311BE9;
-	Thu, 24 Aug 2023 12:34:11 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F881BF8;
+	Thu, 24 Aug 2023 12:34:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692905651; x=1724441651;
+  t=1692905653; x=1724441653;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=1RYLOwVkxSCjQ5uYzeQgvLA4lhYTRStRpWhCmp/yNFE=;
-  b=FtsydkQrRPzKosG3FyqH3MWY+LL7w6USb6lucbppn5eg2B5xTv4OCDEt
-   YlK+ATrRxuyk+ryWhyYvkg2nUU5W/+BPAmuucP2bR2jReezzmuCFVdL6Y
-   CYkzrAxtIIbsLf+eVOUYW2yj9CISBhHyjVO02qe5N1yH8ngY5WhLQk3x9
-   zQx9wsAGaXw5xJ1LpaTRktMvT7J2wJ0aDl9onS6fnYHpBNhRknPi2ZLq4
-   nPyMvH2a2iyJpDbbwHmCjqpFZsZROEZ9/4hMqnPP42XBu1ZYNOx/avpyo
-   sN2uD3Xhh3ZGNnX3Qddc5PFQenV4ZZ0h50TFPHdZJo9IY9lEzCrV7PFLy
+  bh=j4ddcEFEZzVRA1Vx82zjB/0dlsJ/iPuv6roie3F4TwY=;
+  b=Ll7ck1BmDttaDwuUlXiv4xbm/NCbhp5H6/7aCnMX1EJf6+K0gRG5n5uf
+   atDsgVUe+YcNKBIpX+QHzbV3QzJPRmBBDBrbEd5noWDV+22v6j03kGaWO
+   n2uWxR4Sl2a9Jkg46VR4lFwhrwUQw7zovvw8G0uecJYB6uvvzEQLbSF2r
+   QbAvCYAY50Yhn8XaifcM9F2k12e6CRCz0QdG+olJkHLFvLbj52zBt/16H
+   eHCsFvHk9DiSWqGU5J7biOt5UOEUExb0UtNS2M/UIUTcbULdQwC1k8KeH
+   /u3iLZtWaiZ22UrXvE5eLwnZfsyJWY9CUvqGDxGrG0JDils0AdhAMxYvy
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="374516714"
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="374516736"
 X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="374516714"
+   d="scan'208";a="374516736"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 12:34:10 -0700
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 12:34:12 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="802667438"
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="802667444"
 X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="802667438"
+   d="scan'208";a="802667444"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by fmsmga008.fm.intel.com with ESMTP; 24 Aug 2023 12:34:05 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 24 Aug 2023 12:34:06 -0700
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id D0055340D5;
-	Thu, 24 Aug 2023 20:34:02 +0100 (IST)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id DD6793491F;
+	Thu, 24 Aug 2023 20:34:04 +0100 (IST)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: bpf@vger.kernel.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -77,9 +77,9 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	Simon Horman <simon.horman@corigine.com>,
 	Tariq Toukan <tariqt@mellanox.com>,
 	Saeed Mahameed <saeedm@mellanox.com>
-Subject: [RFC bpf-next 08/23] ice: Support XDP hints in AF_XDP ZC mode
-Date: Thu, 24 Aug 2023 21:26:47 +0200
-Message-ID: <20230824192703.712881-9-larysa.zaremba@intel.com>
+Subject: [RFC bpf-next 09/23] xdp: Add VLAN tag hint
+Date: Thu, 24 Aug 2023 21:26:48 +0200
+Message-ID: <20230824192703.712881-10-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230824192703.712881-1-larysa.zaremba@intel.com>
 References: <20230824192703.712881-1-larysa.zaremba@intel.com>
@@ -97,60 +97,116 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-In AF_XDP ZC, xdp_buff is not stored on ring,
-instead it is provided by xsk_pool.
-Space for metadata sources right after such buffers was already reserved
-in commit 94ecc5ca4dbf ("xsk: Add cb area to struct xdp_buff_xsk").
-This makes the implementation rather straightforward.
-
-Update AF_XDP ZC packet processing to support XDP hints.
+Implement functionality that enables drivers to expose VLAN tag
+to XDP code.
 
 Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 ---
- drivers/net/ethernet/intel/ice/ice_xsk.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ Documentation/networking/xdp-rx-metadata.rst |  8 ++++-
+ include/net/xdp.h                            |  4 +++
+ kernel/bpf/offload.c                         |  2 ++
+ net/core/xdp.c                               | 34 ++++++++++++++++++++
+ 4 files changed, 47 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index ef778b8e6d1b..fdeddad9b639 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -758,16 +758,25 @@ static int ice_xmit_xdp_tx_zc(struct xdp_buff *xdp,
-  * @xdp: xdp_buff used as input to the XDP program
-  * @xdp_prog: XDP program to run
-  * @xdp_ring: ring to be used for XDP_TX action
-+ * @rx_desc: packet descriptor
-  *
-  * Returns any of ICE_XDP_{PASS, CONSUMED, TX, REDIR}
-  */
- static int
- ice_run_xdp_zc(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
--	       struct bpf_prog *xdp_prog, struct ice_tx_ring *xdp_ring)
-+	       struct bpf_prog *xdp_prog, struct ice_tx_ring *xdp_ring,
-+	       union ice_32b_rx_flex_desc *rx_desc)
- {
- 	int err, result = ICE_XDP_PASS;
- 	u32 act;
+diff --git a/Documentation/networking/xdp-rx-metadata.rst b/Documentation/networking/xdp-rx-metadata.rst
+index 25ce72af81c2..ea6dd79a21d3 100644
+--- a/Documentation/networking/xdp-rx-metadata.rst
++++ b/Documentation/networking/xdp-rx-metadata.rst
+@@ -18,7 +18,13 @@ Currently, the following kfuncs are supported. In the future, as more
+ metadata is supported, this set will grow:
  
-+	/* We can safely convert xdp_buff_xsk to ice_xdp_buff,
-+	 * because there are XSK_PRIV_MAX bytes reserved in xdp_buff_xsk
-+	 * right after xdp_buff, for our private use.
-+	 * Macro insures we do not go above the limit.
-+	 */
-+	XSK_CHECK_PRIV_TYPE(struct ice_xdp_buff);
-+	ice_xdp_meta_set_desc(xdp, rx_desc);
- 	act = bpf_prog_run_xdp(xdp_prog, xdp);
+ .. kernel-doc:: net/core/xdp.c
+-   :identifiers: bpf_xdp_metadata_rx_timestamp bpf_xdp_metadata_rx_hash
++   :identifiers: bpf_xdp_metadata_rx_timestamp
++
++.. kernel-doc:: net/core/xdp.c
++   :identifiers: bpf_xdp_metadata_rx_hash
++
++.. kernel-doc:: net/core/xdp.c
++   :identifiers: bpf_xdp_metadata_rx_vlan_tag
  
- 	if (likely(act == XDP_REDIRECT)) {
-@@ -907,7 +916,8 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
- 		if (ice_is_non_eop(rx_ring, rx_desc))
- 			continue;
+ An XDP program can use these kfuncs to read the metadata into stack
+ variables for its own consumption. Or, to pass the metadata on to other
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index 1e9870d5f025..8bb64fc76498 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -388,6 +388,8 @@ void xdp_attachment_setup(struct xdp_attachment_info *info,
+ 			   bpf_xdp_metadata_rx_timestamp) \
+ 	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_HASH, \
+ 			   bpf_xdp_metadata_rx_hash) \
++	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_VLAN_TAG, \
++			   bpf_xdp_metadata_rx_vlan_tag) \
  
--		xdp_res = ice_run_xdp_zc(rx_ring, first, xdp_prog, xdp_ring);
-+		xdp_res = ice_run_xdp_zc(rx_ring, xdp, xdp_prog, xdp_ring,
-+					 rx_desc);
- 		if (likely(xdp_res & (ICE_XDP_TX | ICE_XDP_REDIR))) {
- 			xdp_xmit |= xdp_res;
- 		} else if (xdp_res == ICE_XDP_EXIT) {
+ enum {
+ #define XDP_METADATA_KFUNC(name, _) name,
+@@ -449,6 +451,8 @@ struct xdp_metadata_ops {
+ 	int	(*xmo_rx_timestamp)(const struct xdp_md *ctx, u64 *timestamp);
+ 	int	(*xmo_rx_hash)(const struct xdp_md *ctx, u32 *hash,
+ 			       enum xdp_rss_hash_type *rss_type);
++	int	(*xmo_rx_vlan_tag)(const struct xdp_md *ctx, u16 *vlan_tci,
++				   __be16 *vlan_proto);
+ };
+ 
+ #ifdef CONFIG_NET
+diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
+index 3e4f2ec1af06..8be340cf06f9 100644
+--- a/kernel/bpf/offload.c
++++ b/kernel/bpf/offload.c
+@@ -849,6 +849,8 @@ void *bpf_dev_bound_resolve_kfunc(struct bpf_prog *prog, u32 func_id)
+ 		p = ops->xmo_rx_timestamp;
+ 	else if (func_id == bpf_xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_HASH))
+ 		p = ops->xmo_rx_hash;
++	else if (func_id == bpf_xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_VLAN_TAG))
++		p = ops->xmo_rx_vlan_tag;
+ out:
+ 	up_read(&bpf_devs_lock);
+ 
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index a70670fe9a2d..856e02bb4ce6 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -738,6 +738,40 @@ __bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32 *hash,
+ 	return -EOPNOTSUPP;
+ }
+ 
++/**
++ * bpf_xdp_metadata_rx_vlan_tag - Get XDP packet outermost VLAN tag
++ * @ctx: XDP context pointer.
++ * @vlan_tci: Destination pointer for VLAN TCI (VID + DEI + PCP)
++ * @vlan_proto: Destination pointer for VLAN Tag protocol identifier (TPID).
++ *
++ * In case of success, ``vlan_proto`` contains *Tag protocol identifier (TPID)*,
++ * usually ``ETH_P_8021Q`` or ``ETH_P_8021AD``, but some networks can use
++ * custom TPIDs. ``vlan_proto`` is stored in **network byte order (BE)**
++ * and should be used as follows:
++ * ``if (vlan_proto == bpf_htons(ETH_P_8021Q)) do_something();``
++ *
++ * ``vlan_tci`` contains the remaining 16 bits of a VLAN tag.
++ * Driver is expected to provide those in **host byte order (usually LE)**,
++ * so the bpf program should not perform byte conversion.
++ * According to 802.1Q standard, *VLAN TCI (Tag control information)*
++ * is a bit field that contains:
++ * *VLAN identifier (VID)* that can be read with ``vlan_tci & 0xfff``,
++ * *Drop eligible indicator (DEI)* - 1 bit,
++ * *Priority code point (PCP)* - 3 bits.
++ * For detailed meaning of DEI and PCP, please refer to other sources.
++ *
++ * Return:
++ * * Returns 0 on success or ``-errno`` on error.
++ * * ``-EOPNOTSUPP`` : device driver doesn't implement kfunc
++ * * ``-ENODATA``    : VLAN tag was not stripped or is not available
++ */
++__bpf_kfunc int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx,
++					     u16 *vlan_tci,
++					     __be16 *vlan_proto)
++{
++	return -EOPNOTSUPP;
++}
++
+ __diag_pop();
+ 
+ BTF_SET8_START(xdp_metadata_kfunc_ids)
 -- 
 2.41.0
 
