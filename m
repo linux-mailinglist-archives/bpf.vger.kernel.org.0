@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-8464-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8465-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DB3C786F09
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 14:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2561C786F0E
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 14:31:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B3411C20E21
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 12:30:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56D551C2037D
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 12:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1FD31119D;
-	Thu, 24 Aug 2023 12:29:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F138C11CB0;
+	Thu, 24 Aug 2023 12:29:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A2410793;
-	Thu, 24 Aug 2023 12:29:37 +0000 (UTC)
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2F819AE;
-	Thu, 24 Aug 2023 05:29:36 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b73261babdso17088421fa.1;
-        Thu, 24 Aug 2023 05:29:35 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EFD4111B2;
+	Thu, 24 Aug 2023 12:29:40 +0000 (UTC)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC7C171A;
+	Thu, 24 Aug 2023 05:29:38 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fef3c3277fso6884095e9.1;
+        Thu, 24 Aug 2023 05:29:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692880174; x=1693484974;
+        d=gmail.com; s=20221208; t=1692880177; x=1693484977;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=PSGRjY4gaWoRxNJIciCZYxevRMLIXBsP8ao9oiijR9w=;
-        b=NRnXZIoW/fJxCdBGcYV67b/DZ3O8oawUkfclu21SarrAbdshrsEVnfRISQl/YRigow
-         qD4ZzbZHG184WJlcTGtcArZfPje1BgyftoZfxeUPena/bWiTwGJVptS3IvcDjBYXW5xI
-         /hXSqw49zmsBcGn2mt7HLOgnOPsUtrVCXLM3o+OpJ9aYl/NIjTjz3wA2rFlq6ZQBHJjg
-         dny1N08kZ5PYtVBTFseDV9Da7MJvaHapIx2k74dPG2Ye+buJ0oTTD5DrL8BLKcEJxL9s
-         PzBkWpEP9IANklKpoUCOTk3GhixELb4TVTrf1v1Z64U0LJRYPkFQN12G1DosbY3vX53i
-         cwTg==
+        bh=cKocKVkqUz9oK7Yr55YQegYi48PRT/ogXdoEf9SUJ3I=;
+        b=RgevClVxwkFpH6h5OoO49A1seLVngXkdLP29ThKaJDDKcj17iKwsQyqTg4NUbwQQBR
+         MN7qRQIUxKhz2KZkBw5FJsQCV0c3/q3sM56XC/w/UZOvIm1FmhMrdUr56j8SHobHBphK
+         QEAzrIeltg7F6dE/y13pf9RzgDTZhpZycWvFhxXTvE/9UmswMJB69gWReCGx9BPsAkv5
+         B1q+0DAUm/GsW9+JCuTjEsYPgieswpI1GA5HLuwiR3pfCDIYwYRKw7AZ2uC7IK/ekXbi
+         WhJT4/dMnPp9MQbQNi8Rk70yQmVTDOdMBXw09KfrDBG5fPTAt6vLGlvQZRkAdoOPHY1V
+         vBnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692880174; x=1693484974;
+        d=1e100.net; s=20221208; t=1692880177; x=1693484977;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PSGRjY4gaWoRxNJIciCZYxevRMLIXBsP8ao9oiijR9w=;
-        b=hn8I8ka330k+jmk7d52t0KJOQm8mnIMf6eQSLVvuHVK6E1YxvpIxcfAZnU8qq+vbqV
-         ujfdAavCCdW6fPXasbBIKMENFxDuIQBz7IynjK0/aOLZ9YkULUoUs0mBjHe+OuOg+OjX
-         JK3W2zIzYdBOO4m3pHD0OEXyZK7n0XsCFo7yBXVflG3i4L1nNmIeuLlCz2tte77B0Zaw
-         qasLUOTuPGV9qhCreVuVTTXVQK/9ImZZtStPgCDXlKqH1G80nC9cl1rSwDgNXI2Zub8W
-         EPF2mRw12kqMFlmBbiL/LEW1vB7U3pY2D3eWEcJOHOf6oC5NS2Jw+LiPsSpLXThzS5GS
-         U2JQ==
-X-Gm-Message-State: AOJu0YzaGzy0oaEyQktVQMnbVBOC4KU2cySgEPlT8Udig1sYpiQ8kk8A
-	9GyvTcZT4xRp8BJDI/TjRCw=
-X-Google-Smtp-Source: AGHT+IFy/RfMOaAF33tuMrkJoQFOGo59jOlJ9VataWBVN1eesDw6U+0wqMfzbSoH4IXI4gmQ+oN2Og==
-X-Received: by 2002:a2e:aaa8:0:b0:2b6:120a:af65 with SMTP id bj40-20020a2eaaa8000000b002b6120aaf65mr8908800ljb.3.1692880174069;
-        Thu, 24 Aug 2023 05:29:34 -0700 (PDT)
+        bh=cKocKVkqUz9oK7Yr55YQegYi48PRT/ogXdoEf9SUJ3I=;
+        b=UuE3O9oS53AE5c4GzZU+YTL/FHo1puxxD82eQ05nXlmCkCHmt2s/rDv7gplP53KCow
+         EMz5NNLRWLF3f/+ZKQ+g1hZIfxqZQ2P525x+DOHmYvbRq5hfXzHtvhfzZvJ7f3Du7ohq
+         ubA5lM9eK30/3TmP5cBpxQkJ4khOGdpPfdAJUFQiEbU9Wph4WelEWds2J0gNp6R8NUrk
+         yz/snNuX9LdvDTsUnycVD7Rhyel050X2FmgtBPt1hb16RFnSTImnBcrRQ/JznlOmflv0
+         jW/ogkZWRFhdwIoheF1LRVEja/16o7C8WXx58Qq9RQRZ8t/ogIMPjeEU6QuZLzYAUx/c
+         fllQ==
+X-Gm-Message-State: AOJu0YxkVBzLGwXq+hdthjdICaDVHDh41rIt7Nsm/8S4mj4cM6jl/c5l
+	VDpBaHdZZvn/GrIF0mPTGiY=
+X-Google-Smtp-Source: AGHT+IE/uFdZJLd3X08AYF5XS554ubNq/QFLcVZ+i6eSdDgEBV6QOK24UEm3vekR4BxpsUylghYPnQ==
+X-Received: by 2002:a05:600c:4511:b0:401:b0f8:c26a with SMTP id t17-20020a05600c451100b00401b0f8c26amr683481wmo.4.1692880176462;
+        Thu, 24 Aug 2023 05:29:36 -0700 (PDT)
 Received: from localhost.localdomain ([94.234.116.52])
-        by smtp.gmail.com with ESMTPSA id hn1-20020a05600ca38100b003fbe4cecc3bsm2523776wmb.16.2023.08.24.05.29.31
+        by smtp.gmail.com with ESMTPSA id hn1-20020a05600ca38100b003fbe4cecc3bsm2523776wmb.16.2023.08.24.05.29.34
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 24 Aug 2023 05:29:33 -0700 (PDT)
+        Thu, 24 Aug 2023 05:29:36 -0700 (PDT)
 From: Magnus Karlsson <magnus.karlsson@gmail.com>
 To: magnus.karlsson@intel.com,
 	bjorn@kernel.org,
@@ -74,9 +74,9 @@ To: magnus.karlsson@intel.com,
 	haoluo@google.com,
 	jolsa@kernel.org,
 	przemyslaw.kitszel@intel.com
-Subject: [PATCH bpf-next v2 01/11] selftests/xsk: print per packet info in verbose mode
-Date: Thu, 24 Aug 2023 14:28:43 +0200
-Message-Id: <20230824122853.3494-2-magnus.karlsson@gmail.com>
+Subject: [PATCH bpf-next v2 02/11] selftests/xsk: add timeout for Tx thread
+Date: Thu, 24 Aug 2023 14:28:44 +0200
+Message-Id: <20230824122853.3494-3-magnus.karlsson@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230824122853.3494-1-magnus.karlsson@gmail.com>
 References: <20230824122853.3494-1-magnus.karlsson@gmail.com>
@@ -96,80 +96,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Print info about every packet in verbose mode, both for Tx and
-Rx. This is useful to have when a test fails or to validate that a
-test is really doing what it was designed to do. Info on what is
-supposed to be received and sent is also printed for the custom packet
-streams since they differ from the base line. Here is an example:
-
-Tx addr: 37e0 len: 64 options: 0 pkt_nb: 8
-Tx addr: 4000 len: 64 options: 0 pkt_nb: 9
-Rx: addr: 100 len: 64 options: 0 pkt_nb: 0 valid: 1
-Rx: addr: 1100 len: 64 options: 0 pkt_nb: 1 valid: 1
-Rx: addr: 2100 len: 64 options: 0 pkt_nb: 4 valid: 1
-Rx: addr: 3100 len: 64 options: 0 pkt_nb: 8 valid: 1
-Rx: addr: 4100 len: 64 options: 0 pkt_nb: 9 valid: 1
-
-One pointless verbose print statement is also deleted and another one
-is made clearer.
+Add a timeout for the transmission thread. If packets are not
+completed properly, for some reason, the test harness would previously
+get stuck forever in a while loop. But with this patch, this timeout
+will trigger, flag the test as a failure, and continue with the next
+test.
 
 Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
 ---
- tools/testing/selftests/bpf/xskxceiver.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ tools/testing/selftests/bpf/xskxceiver.c | 26 ++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index 2827f2d7cf30..c595c0b65417 100644
+index c595c0b65417..514fe994e02b 100644
 --- a/tools/testing/selftests/bpf/xskxceiver.c
 +++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -747,6 +747,9 @@ static struct pkt_stream *__pkt_stream_generate_custom(struct ifobject *ifobj, s
- 			len = 0;
- 		}
+@@ -1216,10 +1216,29 @@ static int __send_pkts(struct ifobject *ifobject, struct pollfd *fds, bool timeo
+ 	return TEST_CONTINUE;
+ }
  
-+		print_verbose("offset: %d len: %u valid: %u options: %u pkt_nb: %u\n",
-+			      pkt->offset, pkt->len, pkt->valid, pkt->options, pkt->pkt_nb);
+-static void wait_for_tx_completion(struct xsk_socket_info *xsk)
++static int wait_for_tx_completion(struct xsk_socket_info *xsk)
+ {
+-	while (xsk->outstanding_tx)
++	struct timeval tv_end, tv_now, tv_timeout = {THREAD_TMOUT, 0};
++	int ret;
 +
- 		if (pkt->valid && pkt->len > pkt_stream->max_pkt_len)
- 			pkt_stream->max_pkt_len = pkt->len;
- 		pkt_nb++;
-@@ -1042,6 +1045,9 @@ static int receive_pkts(struct test_spec *test, struct pollfd *fds)
- 				return TEST_FAILURE;
- 			}
++	ret = gettimeofday(&tv_now, NULL);
++	if (ret)
++		exit_with_error(errno);
++	timeradd(&tv_now, &tv_timeout, &tv_end);
++
++	while (xsk->outstanding_tx) {
++		ret = gettimeofday(&tv_now, NULL);
++		if (ret)
++			exit_with_error(errno);
++		if (timercmp(&tv_now, &tv_end, >)) {
++			ksft_print_msg("ERROR: [%s] Transmission loop timed out\n", __func__);
++			return TEST_FAILURE;
++		}
++
+ 		complete_pkts(xsk, BATCH_SIZE);
++	}
++
++	return TEST_PASS;
+ }
  
-+			print_verbose("Rx: addr: %lx len: %u options: %u pkt_nb: %u valid: %u\n",
-+				      addr, desc->len, desc->options, pkt->pkt_nb, pkt->valid);
-+
- 			if (!is_frag_valid(umem, addr, desc->len, pkt->pkt_nb, pkt_len) ||
- 			    !is_offset_correct(umem, pkt, addr) ||
- 			    (ifobj->use_metadata && !is_metadata_correct(pkt, umem->buffer, addr)))
-@@ -1165,6 +1171,9 @@ static int __send_pkts(struct ifobject *ifobject, struct pollfd *fds, bool timeo
- 					     bytes_written);
- 			bytes_written += tx_desc->len;
- 
-+			print_verbose("Tx addr: %llx len: %u options: %u pkt_nb: %u\n",
-+				      tx_desc->addr, tx_desc->len, tx_desc->options, pkt->pkt_nb);
-+
- 			if (nb_frags_left) {
- 				i++;
- 				if (pkt_stream->verbatim)
-@@ -1475,8 +1484,6 @@ static void *worker_testapp_validate_tx(void *arg)
- 			thread_common_ops_tx(test, ifobject);
+ static int send_pkts(struct test_spec *test, struct ifobject *ifobject)
+@@ -1242,8 +1261,7 @@ static int send_pkts(struct test_spec *test, struct ifobject *ifobject)
+ 			return ret;
  	}
  
--	print_verbose("Sending %d packets on interface %s\n", ifobject->pkt_stream->nb_pkts,
--		      ifobject->ifname);
- 	err = send_pkts(test, ifobject);
+-	wait_for_tx_completion(ifobject->xsk);
+-	return TEST_PASS;
++	return wait_for_tx_completion(ifobject->xsk);
+ }
  
- 	if (!err && ifobject->validation_func)
-@@ -1715,7 +1722,7 @@ static int testapp_bidi(struct test_spec *test)
- 	if (testapp_validate_traffic(test))
- 		return TEST_FAILURE;
- 
--	print_verbose("Switching Tx/Rx vectors\n");
-+	print_verbose("Switching Tx/Rx direction\n");
- 	swap_directions(&test->ifobj_rx, &test->ifobj_tx);
- 	res = __testapp_validate_traffic(test, test->ifobj_rx, test->ifobj_tx);
- 
+ static int get_xsk_stats(struct xsk_socket *xsk, struct xdp_statistics *stats)
 -- 
 2.34.1
 
