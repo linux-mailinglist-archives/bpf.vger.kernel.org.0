@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-8515-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8516-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1270C7878D7
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 21:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AE83F7878D9
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 21:43:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 435631C20D24
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 19:42:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF6701C2033D
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 19:43:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7224D1E538;
-	Thu, 24 Aug 2023 19:34:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9D261EA77;
+	Thu, 24 Aug 2023 19:34:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0111E506;
-	Thu, 24 Aug 2023 19:34:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78D651EA6E;
+	Thu, 24 Aug 2023 19:34:33 +0000 (UTC)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 392541B0;
-	Thu, 24 Aug 2023 12:34:30 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A706C1B0;
+	Thu, 24 Aug 2023 12:34:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692905670; x=1724441670;
+  t=1692905672; x=1724441672;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=CUxxhqkl+Ex1qgH0qus/XMXsPO/e1+lJ9YTcuZMfzCQ=;
-  b=k2MlM0lLJ4HqtMEZVasCgULlXLODpD3xZna31yXfXtwJYMkts8u+lnsJ
-   XKJ5QHHeyvFe0hvMhyniRwyMHcLQ3R7UV1s0GFEk62nWaJnmraNeNGZg0
-   jMraOWWkJoEBCqDUjLp76519UizUWJceMXCV6deAQtFixTcNgL2Kqo2Wa
-   75lsrGIOElvDYWZfUhHwxJ+4F5hY7eE2IeU0qz5W+USPioW+VU2fM9Q4m
-   yRMpf/YyVAF5mp/dlpcK6f3deCbnQmtxKXYOqxUAzb1XXBzpn/YBp2l7v
-   EBWQVmvdeqw84pJVfaYc6WcIAQbAp733q88T0zPFhwr8+oTzSxVJoTiww
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="354865424"
+  bh=D/l4ImFgQY9C8qg58vokr2tT+bEZqAhep1YO4JisYsQ=;
+  b=C+0VMhrXs03hPx+Y2kubPrVfCHqUBAP2kx064UtlBu6vLeIBIMxVjP7R
+   IRECiCwUhICk/Jd2mh0WI85sIA+G9wNMqJuGF0do2YPAFGFcG4qwCSCXM
+   NufMdSZDr0EgA4KA/2Y5pj/2WjeM8sWsbR+NyFa5ikkeW+/Wm8mnTkaql
+   yY+k0ta293T8+6DUmZQQTZSnuz1Bf/K962yL3/fLacC8S94VE+Sd6VL5H
+   2ZuyzIC2uuOciwOalawWnsq566A+2xC8yNpyMJ5gMunMrLsahyKZgANMx
+   ZrWbHpInskX1gc2ox0MWIZu5UDZoE3kypHn3NosBvkI5XvPCu8upkNW3n
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="354865449"
 X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="354865424"
+   d="scan'208";a="354865449"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 12:34:29 -0700
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 12:34:32 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="860830560"
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="860830565"
 X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="860830560"
+   d="scan'208";a="860830565"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by orsmga004.jf.intel.com with ESMTP; 24 Aug 2023 12:34:23 -0700
+  by orsmga004.jf.intel.com with ESMTP; 24 Aug 2023 12:34:26 -0700
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id 37B3A33EAF;
-	Thu, 24 Aug 2023 20:34:22 +0100 (IST)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 685BF340C6;
+	Thu, 24 Aug 2023 20:34:24 +0100 (IST)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: bpf@vger.kernel.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -76,10 +76,11 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Simon Horman <simon.horman@corigine.com>,
 	Tariq Toukan <tariqt@mellanox.com>,
-	Saeed Mahameed <saeedm@mellanox.com>
-Subject: [RFC bpf-next 17/23] veth: Implement VLAN tag and checksum XDP hint
-Date: Thu, 24 Aug 2023 21:26:56 +0200
-Message-ID: <20230824192703.712881-18-larysa.zaremba@intel.com>
+	Saeed Mahameed <saeedm@mellanox.com>,
+	Jesper Dangaard Brouer <jbrouer@redhat.com>
+Subject: [RFC bpf-next 18/23] net: make vlan_get_tag() return -ENODATA instead of -EINVAL
+Date: Thu, 24 Aug 2023 21:26:57 +0200
+Message-ID: <20230824192703.712881-19-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230824192703.712881-1-larysa.zaremba@intel.com>
 References: <20230824192703.712881-1-larysa.zaremba@intel.com>
@@ -97,74 +98,47 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-In order to test VLAN tag and checksum XDP hints in hardware-independent
-selftests, implement newly added XDP hints in veth driver.
+__vlan_hwaccel_get_tag() is used in veth XDP hints implementation,
+its return value (-EINVAL if skb is not VLAN tagged) is passed to bpf code,
+but XDP hints specification requires drivers to return -ENODATA, if a hint
+cannot be provided for a particular packet.
 
+Solve this inconsistency by changing error return value of
+__vlan_hwaccel_get_tag() from -EINVAL to -ENODATA, do the same thing to
+__vlan_get_tag(), because this function is supposed to follow the same
+convention. This, in turn, makes -ENODATA the only non-zero value
+vlan_get_tag() can return. We can do this with no side effects, because
+none of the users of the 3 above-mentioned functions rely on the exact
+value.
+
+Suggested-by: Jesper Dangaard Brouer <jbrouer@redhat.com>
 Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 ---
- drivers/net/veth.c | 42 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ include/linux/if_vlan.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 953f6d8f8db0..f3ee85aa5edf 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -1732,6 +1732,46 @@ static int veth_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash,
+diff --git a/include/linux/if_vlan.h b/include/linux/if_vlan.h
+index 3028af87716e..c1645c86eed9 100644
+--- a/include/linux/if_vlan.h
++++ b/include/linux/if_vlan.h
+@@ -540,7 +540,7 @@ static inline int __vlan_get_tag(const struct sk_buff *skb, u16 *vlan_tci)
+ 	struct vlan_ethhdr *veth = skb_vlan_eth_hdr(skb);
+ 
+ 	if (!eth_type_vlan(veth->h_vlan_proto))
+-		return -EINVAL;
++		return -ENODATA;
+ 
+ 	*vlan_tci = ntohs(veth->h_vlan_TCI);
  	return 0;
+@@ -561,7 +561,7 @@ static inline int __vlan_hwaccel_get_tag(const struct sk_buff *skb,
+ 		return 0;
+ 	} else {
+ 		*vlan_tci = 0;
+-		return -EINVAL;
++		return -ENODATA;
+ 	}
  }
  
-+static int veth_xdp_rx_vlan_tag(const struct xdp_md *ctx, u16 *vlan_tci,
-+				__be16 *vlan_proto)
-+{
-+	struct veth_xdp_buff *_ctx = (void *)ctx;
-+	struct sk_buff *skb = _ctx->skb;
-+	int err;
-+
-+	if (!skb)
-+		return -ENODATA;
-+
-+	err = __vlan_hwaccel_get_tag(skb, vlan_tci);
-+	if (err)
-+		return err;
-+
-+	*vlan_proto = skb->vlan_proto;
-+	return err;
-+}
-+
-+static int veth_xdp_rx_csum(const struct xdp_md *ctx,
-+			    enum xdp_csum_status *csum_status,
-+			    __wsum *csum)
-+{
-+	struct veth_xdp_buff *_ctx = (void *)ctx;
-+	struct sk_buff *skb = _ctx->skb;
-+
-+	if (!skb)
-+		return -ENODATA;
-+
-+	if (skb->ip_summed == CHECKSUM_UNNECESSARY) {
-+		*csum_status = XDP_CHECKSUM_VERIFIED;
-+	} else if (skb->ip_summed == CHECKSUM_COMPLETE) {
-+		*csum_status = XDP_CHECKSUM_COMPLETE;
-+		*csum = skb->csum;
-+	} else {
-+		return -ENODATA;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct net_device_ops veth_netdev_ops = {
- 	.ndo_init            = veth_dev_init,
- 	.ndo_open            = veth_open,
-@@ -1756,6 +1796,8 @@ static const struct net_device_ops veth_netdev_ops = {
- static const struct xdp_metadata_ops veth_xdp_metadata_ops = {
- 	.xmo_rx_timestamp		= veth_xdp_rx_timestamp,
- 	.xmo_rx_hash			= veth_xdp_rx_hash,
-+	.xmo_rx_vlan_tag		= veth_xdp_rx_vlan_tag,
-+	.xmo_rx_csum			= veth_xdp_rx_csum,
- };
- 
- #define VETH_FEATURES (NETIF_F_SG | NETIF_F_FRAGLIST | NETIF_F_HW_CSUM | \
 -- 
 2.41.0
 
