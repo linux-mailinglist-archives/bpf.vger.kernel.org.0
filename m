@@ -1,60 +1,61 @@
-Return-Path: <bpf+bounces-8463-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8464-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 366E2786F07
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 14:29:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DB3C786F09
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 14:30:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 684A71C20DAB
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 12:29:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B3411C20E21
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 12:30:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4806100CD;
-	Thu, 24 Aug 2023 12:29:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1FD31119D;
+	Thu, 24 Aug 2023 12:29:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68C702454A;
-	Thu, 24 Aug 2023 12:29:35 +0000 (UTC)
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE4C3171A;
-	Thu, 24 Aug 2023 05:29:33 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2bcd48725dbso8445501fa.1;
-        Thu, 24 Aug 2023 05:29:33 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A2410793;
+	Thu, 24 Aug 2023 12:29:37 +0000 (UTC)
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2F819AE;
+	Thu, 24 Aug 2023 05:29:36 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b73261babdso17088421fa.1;
+        Thu, 24 Aug 2023 05:29:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692880172; x=1693484972;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=y2mgCQ/4l+k/Mag95Sx358RqULbNRiRP9ljR5yjStBE=;
-        b=fTk+U4prYgdxxC8dBxPpV4RHuyO5HXHf0kIcwnod9WJ8XTaPpJfBgDBZ/Ygl+QvT1N
-         pUJts8aLHKWcSOL8bJAzjn+H/t2MCLFoztOrxGl4v+1rZCvFflOidJtDdoosauoXD866
-         i17bjppGFnXrDkSHi6T5qRVlb+VTcYr3ptpQK8AsPRQwcOcp62xxLx6WuuCPZDA7e9mU
-         yB9u33RTVZxIwlpLoEm9+NIVvvvxg8+aJg08MpznKZaywEv/HnUCbKPZ8i7ZMV5ryU6D
-         MH/5rTwSRY5km8IJKe5jA124A3ApUrkt+CSuMF+v2Gc3HcicrnQnzU+3ZGnybAEz63WE
-         F6eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692880172; x=1693484972;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20221208; t=1692880174; x=1693484974;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=y2mgCQ/4l+k/Mag95Sx358RqULbNRiRP9ljR5yjStBE=;
-        b=KGfZ3w4s6x12hV6n3QhELkhI1WrZMD/80ReB/ZMJJohS5YEr8xSN1GiA/WD1tQQrJm
-         0f0F9+SWIFp8F9voEM2Yl1idB1ZRtc2uFr6kWJcLbUYeH+pE6PI96oYRfZr6Lsz6Wtmw
-         OG0HZbCRDxSmKrgRHcHgsSszbpPia5Q5LqHpPyb+mR3tclK7a7DK2pKoa6CbNZ5wHh4k
-         HNkEfSqghoIZq9pkw9C72dUgSalwPX0MxW0/KQjT9jQaz4LX4YX1kliYm/CJdj+1xnMY
-         M2Npdcure1s7u0a8Y/eYtyuXlIabntQYebAAmohFEwcGzcFS2vw0I0WZDk3YPkrOtTfm
-         +D/g==
-X-Gm-Message-State: AOJu0YwTSzguGQdxMea7KXblrlVxwyEn3ZfGCzq8tZM+/GmVDQKMH9xL
-	ki0ADzTBo97fVUg/vmOp/hM=
-X-Google-Smtp-Source: AGHT+IEDzwcaHZ1bipIA5p/ef6LPOB9RXACD1TKIBgsJGIUKHiJNJAy2pQfiJmau059npsz/UEGE/g==
-X-Received: by 2002:a2e:b5aa:0:b0:2bc:e36a:9e32 with SMTP id f10-20020a2eb5aa000000b002bce36a9e32mr1335530ljn.5.1692880171701;
-        Thu, 24 Aug 2023 05:29:31 -0700 (PDT)
+        bh=PSGRjY4gaWoRxNJIciCZYxevRMLIXBsP8ao9oiijR9w=;
+        b=NRnXZIoW/fJxCdBGcYV67b/DZ3O8oawUkfclu21SarrAbdshrsEVnfRISQl/YRigow
+         qD4ZzbZHG184WJlcTGtcArZfPje1BgyftoZfxeUPena/bWiTwGJVptS3IvcDjBYXW5xI
+         /hXSqw49zmsBcGn2mt7HLOgnOPsUtrVCXLM3o+OpJ9aYl/NIjTjz3wA2rFlq6ZQBHJjg
+         dny1N08kZ5PYtVBTFseDV9Da7MJvaHapIx2k74dPG2Ye+buJ0oTTD5DrL8BLKcEJxL9s
+         PzBkWpEP9IANklKpoUCOTk3GhixELb4TVTrf1v1Z64U0LJRYPkFQN12G1DosbY3vX53i
+         cwTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692880174; x=1693484974;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PSGRjY4gaWoRxNJIciCZYxevRMLIXBsP8ao9oiijR9w=;
+        b=hn8I8ka330k+jmk7d52t0KJOQm8mnIMf6eQSLVvuHVK6E1YxvpIxcfAZnU8qq+vbqV
+         ujfdAavCCdW6fPXasbBIKMENFxDuIQBz7IynjK0/aOLZ9YkULUoUs0mBjHe+OuOg+OjX
+         JK3W2zIzYdBOO4m3pHD0OEXyZK7n0XsCFo7yBXVflG3i4L1nNmIeuLlCz2tte77B0Zaw
+         qasLUOTuPGV9qhCreVuVTTXVQK/9ImZZtStPgCDXlKqH1G80nC9cl1rSwDgNXI2Zub8W
+         EPF2mRw12kqMFlmBbiL/LEW1vB7U3pY2D3eWEcJOHOf6oC5NS2Jw+LiPsSpLXThzS5GS
+         U2JQ==
+X-Gm-Message-State: AOJu0YzaGzy0oaEyQktVQMnbVBOC4KU2cySgEPlT8Udig1sYpiQ8kk8A
+	9GyvTcZT4xRp8BJDI/TjRCw=
+X-Google-Smtp-Source: AGHT+IFy/RfMOaAF33tuMrkJoQFOGo59jOlJ9VataWBVN1eesDw6U+0wqMfzbSoH4IXI4gmQ+oN2Og==
+X-Received: by 2002:a2e:aaa8:0:b0:2b6:120a:af65 with SMTP id bj40-20020a2eaaa8000000b002b6120aaf65mr8908800ljb.3.1692880174069;
+        Thu, 24 Aug 2023 05:29:34 -0700 (PDT)
 Received: from localhost.localdomain ([94.234.116.52])
-        by smtp.gmail.com with ESMTPSA id hn1-20020a05600ca38100b003fbe4cecc3bsm2523776wmb.16.2023.08.24.05.29.29
+        by smtp.gmail.com with ESMTPSA id hn1-20020a05600ca38100b003fbe4cecc3bsm2523776wmb.16.2023.08.24.05.29.31
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 24 Aug 2023 05:29:31 -0700 (PDT)
+        Thu, 24 Aug 2023 05:29:33 -0700 (PDT)
 From: Magnus Karlsson <magnus.karlsson@gmail.com>
 To: magnus.karlsson@intel.com,
 	bjorn@kernel.org,
@@ -73,11 +74,12 @@ To: magnus.karlsson@intel.com,
 	haoluo@google.com,
 	jolsa@kernel.org,
 	przemyslaw.kitszel@intel.com
-Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
-Subject: [PATCH bpf-next v2 00/11] seltests/xsk: various improvements to xskxceiver
-Date: Thu, 24 Aug 2023 14:28:42 +0200
-Message-Id: <20230824122853.3494-1-magnus.karlsson@gmail.com>
+Subject: [PATCH bpf-next v2 01/11] selftests/xsk: print per packet info in verbose mode
+Date: Thu, 24 Aug 2023 14:28:43 +0200
+Message-Id: <20230824122853.3494-2-magnus.karlsson@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230824122853.3494-1-magnus.karlsson@gmail.com>
+References: <20230824122853.3494-1-magnus.karlsson@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,81 +94,83 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This patch set implements several improvements to the xsk selftests
-test suite that I thought were useful while debugging the xsk
-multi-buffer code and tests. The largest new feature is the ability to
-be able to execute a single test instead of the whole test suite. This
-required some surgery on the current code, details below.
+From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Anatomy of the path set:
+Print info about every packet in verbose mode, both for Tx and
+Rx. This is useful to have when a test fails or to validate that a
+test is really doing what it was designed to do. Info on what is
+supposed to be received and sent is also printed for the custom packet
+streams since they differ from the base line. Here is an example:
 
-1: Print useful info on a per packet basis with the option -v
+Tx addr: 37e0 len: 64 options: 0 pkt_nb: 8
+Tx addr: 4000 len: 64 options: 0 pkt_nb: 9
+Rx: addr: 100 len: 64 options: 0 pkt_nb: 0 valid: 1
+Rx: addr: 1100 len: 64 options: 0 pkt_nb: 1 valid: 1
+Rx: addr: 2100 len: 64 options: 0 pkt_nb: 4 valid: 1
+Rx: addr: 3100 len: 64 options: 0 pkt_nb: 8 valid: 1
+Rx: addr: 4100 len: 64 options: 0 pkt_nb: 9 valid: 1
 
-2: Add a timeout in the transmission loop too. We only used to have
-   one for the Rx thread, but Tx can lock up too waiting for
-   completions.
+One pointless verbose print statement is also deleted and another one
+is made clearer.
 
-3: Add an option (-m) to only run the tests (or a single test with a
-   later patch) in a single mode: skb, drv, or zc (zero-copy).
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+---
+ tools/testing/selftests/bpf/xskxceiver.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-4-5: Preparatory patches to be able to specify a test to run. Need to
-     define the test names in a single structure and their entry
-     points, so we can use this when wanting to run a specific test.
-
-6: Adds a command line option (-l) that lists all the tests.
-
-7: Adds a command line option (-t) that runs a specific test instead
-   of the whole test suite. Can be combined with -m to specify a
-   single mode too.
-
-8: Use ksft_print_msg() uniformly throughout the tests. It was a mix
-   of printf() and ksft_print_msg() before.
-
-9: In some places, we failed the whole test suite instead of a single
-   test in certain circumstances. Fix this so only the test in
-   question is failed and the rest of the test suite continues.
-
-10: Display the available command line options with -h
-
-11: Introduce the environment variable XSKTEST_ETH to be able to set
-    the network interface to be used.
-
-v1 -> v2:
-
-* Introduce XSKTEST_MODE env variable to be able to set the mode to
-  use [Przemyslaw]
-* Introduce XSKTEST_ETH env variable to be able to set the ethernet
-  interface to use by introducing a new patch (#11) [Magnus]
-* Fixed spelling error in patch #5 [Przemyslaw, Maciej]
-* Fixed confusing documentation in patch #10  [Przemyslaw]
-* The -l option can now be used without being root [Magnus, Maciej]
-* Fixed documentation error in patch #7 [Maciej]
-* Added error handling to the -t option [Maciej]
-* -h now displayed as an option [Maciej]
-
-Thanks: Magnus
-
-Magnus Karlsson (11):
-  selftests/xsk: print per packet info in verbose mode
-  selftests/xsk: add timeout for Tx thread
-  selftests/xsk: add option to only run tests in a single mode
-  selftests/xsk: move all tests to separate functions
-  selftests/xsk: declare test names in struct
-  selftests/xsk: add option that lists all tests
-  selftests/xsk: add option to run single test
-  selftests/xsk: use ksft_print_msg uniformly
-  selftests/xsk: fail single test instead of all tests
-  selftests/xsk: display command line options with -h
-  selftests/xsk: introduce XSKTEST_ETH environment variable
-
- tools/testing/selftests/bpf/test_xsk.sh    |  60 ++-
- tools/testing/selftests/bpf/xsk_prereqs.sh |  10 +-
- tools/testing/selftests/bpf/xskxceiver.c   | 536 ++++++++++++---------
- tools/testing/selftests/bpf/xskxceiver.h   |  44 +-
- 4 files changed, 377 insertions(+), 273 deletions(-)
-
-
-base-commit: f3bdb54f09ab4cdbca48bf7befa8997cadd8d6a1
---
+diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
+index 2827f2d7cf30..c595c0b65417 100644
+--- a/tools/testing/selftests/bpf/xskxceiver.c
++++ b/tools/testing/selftests/bpf/xskxceiver.c
+@@ -747,6 +747,9 @@ static struct pkt_stream *__pkt_stream_generate_custom(struct ifobject *ifobj, s
+ 			len = 0;
+ 		}
+ 
++		print_verbose("offset: %d len: %u valid: %u options: %u pkt_nb: %u\n",
++			      pkt->offset, pkt->len, pkt->valid, pkt->options, pkt->pkt_nb);
++
+ 		if (pkt->valid && pkt->len > pkt_stream->max_pkt_len)
+ 			pkt_stream->max_pkt_len = pkt->len;
+ 		pkt_nb++;
+@@ -1042,6 +1045,9 @@ static int receive_pkts(struct test_spec *test, struct pollfd *fds)
+ 				return TEST_FAILURE;
+ 			}
+ 
++			print_verbose("Rx: addr: %lx len: %u options: %u pkt_nb: %u valid: %u\n",
++				      addr, desc->len, desc->options, pkt->pkt_nb, pkt->valid);
++
+ 			if (!is_frag_valid(umem, addr, desc->len, pkt->pkt_nb, pkt_len) ||
+ 			    !is_offset_correct(umem, pkt, addr) ||
+ 			    (ifobj->use_metadata && !is_metadata_correct(pkt, umem->buffer, addr)))
+@@ -1165,6 +1171,9 @@ static int __send_pkts(struct ifobject *ifobject, struct pollfd *fds, bool timeo
+ 					     bytes_written);
+ 			bytes_written += tx_desc->len;
+ 
++			print_verbose("Tx addr: %llx len: %u options: %u pkt_nb: %u\n",
++				      tx_desc->addr, tx_desc->len, tx_desc->options, pkt->pkt_nb);
++
+ 			if (nb_frags_left) {
+ 				i++;
+ 				if (pkt_stream->verbatim)
+@@ -1475,8 +1484,6 @@ static void *worker_testapp_validate_tx(void *arg)
+ 			thread_common_ops_tx(test, ifobject);
+ 	}
+ 
+-	print_verbose("Sending %d packets on interface %s\n", ifobject->pkt_stream->nb_pkts,
+-		      ifobject->ifname);
+ 	err = send_pkts(test, ifobject);
+ 
+ 	if (!err && ifobject->validation_func)
+@@ -1715,7 +1722,7 @@ static int testapp_bidi(struct test_spec *test)
+ 	if (testapp_validate_traffic(test))
+ 		return TEST_FAILURE;
+ 
+-	print_verbose("Switching Tx/Rx vectors\n");
++	print_verbose("Switching Tx/Rx direction\n");
+ 	swap_directions(&test->ifobj_rx, &test->ifobj_tx);
+ 	res = __testapp_validate_traffic(test, test->ifobj_rx, test->ifobj_tx);
+ 
+-- 
 2.34.1
+
 
