@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-8466-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8467-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20C43786F10
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 14:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E2D8786F1E
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 14:32:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43E741C20E45
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 12:31:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F2E91C20E21
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 12:32:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C50712B6A;
-	Thu, 24 Aug 2023 12:29:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9AD1134BB;
+	Thu, 24 Aug 2023 12:29:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4990125B1;
-	Thu, 24 Aug 2023 12:29:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C8FFC1F;
+	Thu, 24 Aug 2023 12:29:46 +0000 (UTC)
 Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F6519AC;
-	Thu, 24 Aug 2023 05:29:40 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fef244772bso8790345e9.1;
-        Thu, 24 Aug 2023 05:29:40 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA9510D7;
+	Thu, 24 Aug 2023 05:29:43 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fef6cee938so5161075e9.0;
+        Thu, 24 Aug 2023 05:29:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692880179; x=1693484979;
+        d=gmail.com; s=20221208; t=1692880181; x=1693484981;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Nq9HC5xtoW5L3fzV5f5SQ1zv2vYzduxNQ5l0XN5JAgA=;
-        b=Dc4j0HP7ACE5uuaqYZ6K1FJPq00PmbiDeWVyqQTvmcomFMQd0+3KJEap8aAHKVUwg2
-         t5DGIdYWkhSdnjFAdgEY2Ckr+CsWnTyCCxh8Em6MXdbw6BFzdJgBVuKBfVWE28LTjoWI
-         ESvGYAPUagEeEsG/6F9/4II8lFSB6PjwKfTHnzIgvGFimJheauQ7a+tNRnlfQlonOTup
-         rYOSVu5KcSKqdtCLkQ5aKcAz1gjwsDdWI7Hx0UfiOLGv/yiOVb9aAkGB4bf7+aJas0r0
-         wm6DO82nxJV7i/zffRlPy1aat8/h3WiqUxYJ9gcWhuAwsgw905f8XTzc8jAdoO382AdI
-         EyHw==
+        bh=vs/37ewuzXSf2VGFA8hiMCklDqaQzdfvpndzqtLbP0g=;
+        b=Lm2fqA5lhd/08taq9EcwVgDGpWNIWhXEj7+lrPVtObRUUPq5IHNGOBMitab3hHDVFp
+         OWpTHl41XNFpNbNTGhSy0QUXMNNbJPPWDP5ftTP/ZvgJhZ3JoE5MOuwtgWUwq/JTnbn9
+         x8A940UPpP6I1uGPA7wk8xMCrxz3shZ4XY/O7n/D6e388vK8dGmPhHUN4+9QPi1UOO6g
+         qj5YQkCEtVvoQCynSR9n9G8hGNgTro4aX+ZaNTpomhJWRhcFzzfPmg7tIhEmIhwPzmZX
+         hfhvWiJ5o6swDEKPs9YXVtPPBv5JnJEFtWkAxeMVdwrSFK0/VqG4PW5R6UtbLv0Eb6OH
+         6T7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692880179; x=1693484979;
+        d=1e100.net; s=20221208; t=1692880181; x=1693484981;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Nq9HC5xtoW5L3fzV5f5SQ1zv2vYzduxNQ5l0XN5JAgA=;
-        b=cRDPybjgL8Aq2CFyG0VQfNJh694iWijhgQC0RaerNaOr+2NLWizSH9SQRwYLNze4eD
-         VcyUDzLnNWAvpuK/pgZDU013GUdePBXFCyQNob9h6Az/K9YpeumqzbnflicDgwt4CV12
-         1xsT4CQi5Ne+POfrzmGLC+J8U5OSCZH/7n3d3iagtn7VwifL30bhKCjwWvA5YGahtCk5
-         U3RnrYVp+Lmn73GCwHqSnpacDYOkeRhR4pBE2l7g7KRjws1VkJzauSnaGgQE8ziCLJdh
-         ADbgW/NeLTV5sq2EEwK1Uux/YbqJuRcK6p/BrT1jidOT4SXzchC2aDXCpgUStAv3aBq2
-         baYA==
-X-Gm-Message-State: AOJu0Yx4Tk7Jfg1gy+NVuesipLLxHBh5CgfuEOeqc7poGigL4ByTVNq2
-	+gKeXHn665WltTW5S++xZZo=
-X-Google-Smtp-Source: AGHT+IGkstmLkJ+piuAl1doQ2N0I55quuEAcvsV9aIZzHY/yZFdt8ZG/WoEA3MdOrDuxVI6NQQHTNQ==
-X-Received: by 2002:a05:600c:3d1a:b0:3fe:4d2d:f79b with SMTP id bh26-20020a05600c3d1a00b003fe4d2df79bmr12680632wmb.4.1692880178728;
-        Thu, 24 Aug 2023 05:29:38 -0700 (PDT)
+        bh=vs/37ewuzXSf2VGFA8hiMCklDqaQzdfvpndzqtLbP0g=;
+        b=R5eNM1VfSo+OZ3wuRXGc9BvFzmn5AF2leLs9l3Q9d+pvc0IWtLWKWnRmVeFsUN6Ep+
+         JZzMWIly4/gXLxYxy/F8QbCW3g7BOvLmkpBJNKwr753OEszN+jgstmxWmOcGv7aF2fgy
+         aF2wGBVTWQ/rNVyTs2agHi627b+4tWk4Fl4YGUP5rleGsmWPwMAT9Pxlu3r1/G45HkJC
+         sx5k9tYa8wTrwgeyNq3eoZN+qHN/Sf13MWwwqEq7UEo+7wSjS6KgGTDq3+2AfWE+DDnG
+         XgJXQchdixmLdoG7c71Ft3O1YzdCfSSUifNcn8RomCtaGz5uEnFeT39Vw+6V79Cp2257
+         9S9A==
+X-Gm-Message-State: AOJu0YzPetH5sbuVeywX1/z75V7XurzzNUJODbE4xdt6Lx4PtxySD9RQ
+	3+rkkIhYpoXo6F1rQIwhuDg=
+X-Google-Smtp-Source: AGHT+IG+dRj4G6TWlkCF9Aso687Q3JSOMAChrWd94/sDtIOeweE3ro+FT4pizyL4S1PDFdm+F0LJ5A==
+X-Received: by 2002:a05:600c:1c8d:b0:3ff:8617:672b with SMTP id k13-20020a05600c1c8d00b003ff8617672bmr3423336wms.2.1692880181132;
+        Thu, 24 Aug 2023 05:29:41 -0700 (PDT)
 Received: from localhost.localdomain ([94.234.116.52])
-        by smtp.gmail.com with ESMTPSA id hn1-20020a05600ca38100b003fbe4cecc3bsm2523776wmb.16.2023.08.24.05.29.36
+        by smtp.gmail.com with ESMTPSA id hn1-20020a05600ca38100b003fbe4cecc3bsm2523776wmb.16.2023.08.24.05.29.38
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 24 Aug 2023 05:29:38 -0700 (PDT)
+        Thu, 24 Aug 2023 05:29:40 -0700 (PDT)
 From: Magnus Karlsson <magnus.karlsson@gmail.com>
 To: magnus.karlsson@intel.com,
 	bjorn@kernel.org,
@@ -74,9 +74,9 @@ To: magnus.karlsson@intel.com,
 	haoluo@google.com,
 	jolsa@kernel.org,
 	przemyslaw.kitszel@intel.com
-Subject: [PATCH bpf-next v2 03/11] selftests/xsk: add option to only run tests in a single mode
-Date: Thu, 24 Aug 2023 14:28:45 +0200
-Message-Id: <20230824122853.3494-4-magnus.karlsson@gmail.com>
+Subject: [PATCH bpf-next v2 04/11] selftests/xsk: move all tests to separate functions
+Date: Thu, 24 Aug 2023 14:28:46 +0200
+Message-Id: <20230824122853.3494-5-magnus.karlsson@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230824122853.3494-1-magnus.karlsson@gmail.com>
 References: <20230824122853.3494-1-magnus.karlsson@gmail.com>
@@ -96,165 +96,264 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Add an option -m on the command line that allows the user to run the
-tests in a single mode instead of all of them. Valid modes are skb,
-drv, and zc (zero-copy). An example:
+Prepare for the capability to be able to run a single test by moving
+all the tests to their own functions. This function can then be called
+to execute that test in the next commit.
 
-To run test suite in drv mode only:
-
-./test_xsk.sh -m drv
+Also, the tests named RUN_TO_COMPLETION_* were not named well, so
+change them to SEND_RECEIVE_* as it is just a basic send and receive
+test of 4K packets.
 
 Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
 ---
- tools/testing/selftests/bpf/test_xsk.sh  | 10 ++++++-
- tools/testing/selftests/bpf/xskxceiver.c | 34 +++++++++++++++++++++---
- tools/testing/selftests/bpf/xskxceiver.h |  4 +--
- 3 files changed, 40 insertions(+), 8 deletions(-)
+ tools/testing/selftests/bpf/xskxceiver.c | 170 +++++++++++++++--------
+ 1 file changed, 115 insertions(+), 55 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_xsk.sh b/tools/testing/selftests/bpf/test_xsk.sh
-index 2aa5a3445056..5ae2b3c27e21 100755
---- a/tools/testing/selftests/bpf/test_xsk.sh
-+++ b/tools/testing/selftests/bpf/test_xsk.sh
-@@ -73,17 +73,21 @@
- #
- # Run test suite for physical device in loopback mode
- #   sudo ./test_xsk.sh -i IFACE
-+#
-+# Run test suite in a specific mode only [skb,drv,zc]
-+#   sudo ./test_xsk.sh -m MODE
- 
- . xsk_prereqs.sh
- 
- ETH=""
- 
--while getopts "vi:d" flag
-+while getopts "vi:dm:" flag
- do
- 	case "${flag}" in
- 		v) verbose=1;;
- 		d) debug=1;;
- 		i) ETH=${OPTARG};;
-+		m) XSKTEST_MODE=${OPTARG};;
- 	esac
- done
- 
-@@ -153,6 +157,10 @@ if [[ $verbose -eq 1 ]]; then
- 	ARGS+="-v "
- fi
- 
-+if [ -n "$XSKTEST_MODE" ]; then
-+	ARGS+="-m ${XSKTEST_MODE} "
-+fi
-+
- retval=$?
- test_status $retval "${TEST_NAME}"
- 
 diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index 514fe994e02b..9f79c2b6aa97 100644
+index 9f79c2b6aa97..ee72bb0a8978 100644
 --- a/tools/testing/selftests/bpf/xskxceiver.c
 +++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -107,6 +107,9 @@
- static const char *MAC1 = "\x00\x0A\x56\x9E\xEE\x62";
- static const char *MAC2 = "\x00\x0A\x56\x9E\xEE\x61";
- 
-+static bool opt_verbose;
-+static enum test_mode opt_mode = TEST_MODE_ALL;
-+
- static void __exit_with_error(int error, const char *file, const char *func, int line)
+@@ -1875,13 +1875,14 @@ static int testapp_single_pkt(struct test_spec *test)
  {
- 	ksft_test_result_fail("[%s:%s:%i]: ERROR: %d/\"%s\"\n", file, func, line, error,
-@@ -310,17 +313,19 @@ static struct option long_options[] = {
- 	{"interface", required_argument, 0, 'i'},
- 	{"busy-poll", no_argument, 0, 'b'},
- 	{"verbose", no_argument, 0, 'v'},
-+	{"mode", required_argument, 0, 'm'},
- 	{0, 0, 0, 0}
- };
+ 	struct pkt pkts[] = {{0, MIN_PKT_SIZE, 0, true}};
  
- static void usage(const char *prog)
- {
- 	const char *str =
--		"  Usage: %s [OPTIONS]\n"
-+		"  Usage: xskxceiver [OPTIONS]\n"
- 		"  Options:\n"
- 		"  -i, --interface      Use interface\n"
- 		"  -v, --verbose        Verbose output\n"
--		"  -b, --busy-poll      Enable busy poll\n";
-+		"  -b, --busy-poll      Enable busy poll\n"
-+		"  -m, --mode           Run only mode skb, drv, or zc\n";
- 
- 	ksft_print_msg(str, prog);
++	test_spec_set_name(test, "SEND_RECEIVE_SINGLE_PKT");
+ 	pkt_stream_generate_custom(test, pkts, ARRAY_SIZE(pkts));
+ 	return testapp_validate_traffic(test);
  }
-@@ -342,7 +347,7 @@ static void parse_command_line(struct ifobject *ifobj_tx, struct ifobject *ifobj
- 	opterr = 0;
  
- 	for (;;) {
--		c = getopt_long(argc, argv, "i:vb", long_options, &option_index);
-+		c = getopt_long(argc, argv, "i:vbm:", long_options, &option_index);
- 		if (c == -1)
- 			break;
+ static int testapp_multi_buffer(struct test_spec *test)
+ {
+-	test_spec_set_name(test, "RUN_TO_COMPLETION_9K_PACKETS");
++	test_spec_set_name(test, "SEND_RECEIVE_9K_PACKETS");
+ 	test->mtu = MAX_ETH_JUMBO_SIZE;
+ 	pkt_stream_replace(test, DEFAULT_PKT_CNT, MAX_ETH_JUMBO_SIZE);
  
-@@ -371,6 +376,21 @@ static void parse_command_line(struct ifobject *ifobj_tx, struct ifobject *ifobj
- 			ifobj_tx->busy_poll = true;
- 			ifobj_rx->busy_poll = true;
- 			break;
-+		case 'm':
-+			if (!strncmp("skb", optarg, min_t(size_t, strlen(optarg),
-+							  strlen("skb")))) {
-+				opt_mode = TEST_MODE_SKB;
-+			} else if (!strncmp("drv", optarg, min_t(size_t, strlen(optarg),
-+								 strlen("drv")))) {
-+				opt_mode = TEST_MODE_DRV;
-+			} else if (!strncmp("zc", optarg, min_t(size_t, strlen(optarg),
-+								strlen("zc")))) {
-+				opt_mode = TEST_MODE_ZC;
-+			} else {
-+				usage(basename(argv[0]));
-+				ksft_exit_xfail();
-+			}
-+			break;
- 		default:
- 			usage(basename(argv[0]));
- 			ksft_exit_xfail();
-@@ -2365,9 +2385,15 @@ int main(int argc, char **argv)
- 	test.tx_pkt_stream_default = tx_pkt_stream_default;
- 	test.rx_pkt_stream_default = rx_pkt_stream_default;
+@@ -1986,7 +1987,7 @@ static int testapp_xdp_drop(struct test_spec *test)
+ 	return testapp_validate_traffic(test);
+ }
  
--	ksft_set_plan(modes * TEST_TYPE_MAX);
-+	if (opt_mode == TEST_MODE_ALL)
-+		ksft_set_plan(modes * TEST_TYPE_MAX);
-+	else
-+		ksft_set_plan(TEST_TYPE_MAX);
+-static int testapp_xdp_metadata_count(struct test_spec *test)
++static int testapp_xdp_metadata_copy(struct test_spec *test)
+ {
+ 	struct xsk_xdp_progs *skel_rx = test->ifobj_rx->xdp_progs;
+ 	struct xsk_xdp_progs *skel_tx = test->ifobj_tx->xdp_progs;
+@@ -2136,6 +2137,105 @@ static void init_iface(struct ifobject *ifobj, const char *dst_mac, const char *
+ 	}
+ }
  
- 	for (i = 0; i < modes; i++) {
-+		if (opt_mode != TEST_MODE_ALL && i != opt_mode)
-+			continue;
++static int testapp_send_receive(struct test_spec *test)
++{
++	test_spec_set_name(test, "SEND_RECEIVE");
++	return testapp_validate_traffic(test);
++}
 +
- 		for (j = 0; j < TEST_TYPE_MAX; j++) {
- 			test_spec_init(&test, ifobj_tx, ifobj_rx, i);
- 			run_pkt_test(&test, i, j);
-diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-index 233b66cef64a..1412492e9618 100644
---- a/tools/testing/selftests/bpf/xskxceiver.h
-+++ b/tools/testing/selftests/bpf/xskxceiver.h
-@@ -63,7 +63,7 @@ enum test_mode {
- 	TEST_MODE_SKB,
- 	TEST_MODE_DRV,
- 	TEST_MODE_ZC,
--	TEST_MODE_MAX
-+	TEST_MODE_ALL
- };
- 
- enum test_type {
-@@ -98,8 +98,6 @@ enum test_type {
- 	TEST_TYPE_MAX
- };
- 
--static bool opt_verbose;
++static int testapp_send_receive_2k_frame(struct test_spec *test)
++{
++	test_spec_set_name(test, "SEND_RECEIVE_2K_FRAME_SIZE");
++	test->ifobj_tx->umem->frame_size = 2048;
++	test->ifobj_rx->umem->frame_size = 2048;
++	pkt_stream_replace(test, DEFAULT_PKT_CNT, MIN_PKT_SIZE);
++	return testapp_validate_traffic(test);
++}
++
++static int testapp_poll_rx(struct test_spec *test)
++{
++	test->ifobj_rx->use_poll = true;
++	test_spec_set_name(test, "POLL_RX");
++	return testapp_validate_traffic(test);
++}
++
++static int testapp_poll_tx(struct test_spec *test)
++{
++	test->ifobj_tx->use_poll = true;
++	test_spec_set_name(test, "POLL_TX");
++	return testapp_validate_traffic(test);
++}
++
++static int testapp_aligned_inv_desc(struct test_spec *test)
++{
++	test_spec_set_name(test, "ALIGNED_INV_DESC");
++	return testapp_invalid_desc(test);
++}
++
++static int testapp_aligned_inv_desc_2k_frame(struct test_spec *test)
++{
++	test_spec_set_name(test, "ALIGNED_INV_DESC_2K_FRAME_SIZE");
++	test->ifobj_tx->umem->frame_size = 2048;
++	test->ifobj_rx->umem->frame_size = 2048;
++	return testapp_invalid_desc(test);
++}
++
++static int testapp_unaligned_inv_desc(struct test_spec *test)
++{
++	test_spec_set_name(test, "UNALIGNED_INV_DESC");
++	test->ifobj_tx->umem->unaligned_mode = true;
++	test->ifobj_rx->umem->unaligned_mode = true;
++	return testapp_invalid_desc(test);
++}
++
++static int testapp_unaligned_inv_desc_4001_frame(struct test_spec *test)
++{
++	u64 page_size, umem_size;
++
++	test_spec_set_name(test, "UNALIGNED_INV_DESC_4K1_FRAME_SIZE");
++	/* Odd frame size so the UMEM doesn't end near a page boundary. */
++	test->ifobj_tx->umem->frame_size = 4001;
++	test->ifobj_rx->umem->frame_size = 4001;
++	test->ifobj_tx->umem->unaligned_mode = true;
++	test->ifobj_rx->umem->unaligned_mode = true;
++	/* This test exists to test descriptors that staddle the end of
++	 * the UMEM but not a page.
++	 */
++	page_size = sysconf(_SC_PAGESIZE);
++	umem_size = test->ifobj_tx->umem->num_frames * test->ifobj_tx->umem->frame_size;
++	assert(umem_size % page_size > MIN_PKT_SIZE);
++	assert(umem_size % page_size < page_size - MIN_PKT_SIZE);
++
++	return testapp_invalid_desc(test);
++}
++
++static int testapp_aligned_inv_desc_mb(struct test_spec *test)
++{
++	test_spec_set_name(test, "ALIGNED_INV_DESC_MULTI_BUFF");
++	return testapp_invalid_desc_mb(test);
++}
++
++static int testapp_unaligned_inv_desc_mb(struct test_spec *test)
++{
++	test_spec_set_name(test, "UNALIGNED_INV_DESC_MULTI_BUFF");
++	test->ifobj_tx->umem->unaligned_mode = true;
++	test->ifobj_rx->umem->unaligned_mode = true;
++	return testapp_invalid_desc_mb(test);
++}
++
++static int testapp_xdp_metadata(struct test_spec *test)
++{
++	test_spec_set_name(test, "XDP_METADATA_COPY");
++	return testapp_xdp_metadata_copy(test);
++}
++
++static int testapp_xdp_metadata_mb(struct test_spec *test)
++{
++	test_spec_set_name(test, "XDP_METADATA_COPY_MULTI_BUFF");
++	test->mtu = MAX_ETH_JUMBO_SIZE;
++	return testapp_xdp_metadata_copy(test);
++}
++
+ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_type type)
+ {
+ 	int ret = TEST_SKIP;
+@@ -2163,32 +2263,22 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
+ 		ret = testapp_bpf_res(test);
+ 		break;
+ 	case TEST_TYPE_RUN_TO_COMPLETION:
+-		test_spec_set_name(test, "RUN_TO_COMPLETION");
+-		ret = testapp_validate_traffic(test);
++		ret = testapp_send_receive(test);
+ 		break;
+ 	case TEST_TYPE_RUN_TO_COMPLETION_MB:
+ 		ret = testapp_multi_buffer(test);
+ 		break;
+ 	case TEST_TYPE_RUN_TO_COMPLETION_SINGLE_PKT:
+-		test_spec_set_name(test, "RUN_TO_COMPLETION_SINGLE_PKT");
+ 		ret = testapp_single_pkt(test);
+ 		break;
+ 	case TEST_TYPE_RUN_TO_COMPLETION_2K_FRAME:
+-		test_spec_set_name(test, "RUN_TO_COMPLETION_2K_FRAME_SIZE");
+-		test->ifobj_tx->umem->frame_size = 2048;
+-		test->ifobj_rx->umem->frame_size = 2048;
+-		pkt_stream_replace(test, DEFAULT_PKT_CNT, MIN_PKT_SIZE);
+-		ret = testapp_validate_traffic(test);
++		ret = testapp_send_receive_2k_frame(test);
+ 		break;
+ 	case TEST_TYPE_RX_POLL:
+-		test->ifobj_rx->use_poll = true;
+-		test_spec_set_name(test, "POLL_RX");
+-		ret = testapp_validate_traffic(test);
++		ret = testapp_poll_rx(test);
+ 		break;
+ 	case TEST_TYPE_TX_POLL:
+-		test->ifobj_tx->use_poll = true;
+-		test_spec_set_name(test, "POLL_TX");
+-		ret = testapp_validate_traffic(test);
++		ret = testapp_poll_tx(test);
+ 		break;
+ 	case TEST_TYPE_POLL_TXQ_TMOUT:
+ 		ret = testapp_poll_txq_tmout(test);
+@@ -2197,49 +2287,22 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
+ 		ret = testapp_poll_rxq_tmout(test);
+ 		break;
+ 	case TEST_TYPE_ALIGNED_INV_DESC:
+-		test_spec_set_name(test, "ALIGNED_INV_DESC");
+-		ret = testapp_invalid_desc(test);
++		ret = testapp_aligned_inv_desc(test);
+ 		break;
+ 	case TEST_TYPE_ALIGNED_INV_DESC_2K_FRAME:
+-		test_spec_set_name(test, "ALIGNED_INV_DESC_2K_FRAME_SIZE");
+-		test->ifobj_tx->umem->frame_size = 2048;
+-		test->ifobj_rx->umem->frame_size = 2048;
+-		ret = testapp_invalid_desc(test);
++		ret = testapp_aligned_inv_desc_2k_frame(test);
+ 		break;
+ 	case TEST_TYPE_UNALIGNED_INV_DESC:
+-		test_spec_set_name(test, "UNALIGNED_INV_DESC");
+-		test->ifobj_tx->umem->unaligned_mode = true;
+-		test->ifobj_rx->umem->unaligned_mode = true;
+-		ret = testapp_invalid_desc(test);
++		ret = testapp_unaligned_inv_desc(test);
+ 		break;
+-	case TEST_TYPE_UNALIGNED_INV_DESC_4K1_FRAME: {
+-		u64 page_size, umem_size;
 -
- struct xsk_umem_info {
- 	struct xsk_ring_prod fq;
- 	struct xsk_ring_cons cq;
+-		test_spec_set_name(test, "UNALIGNED_INV_DESC_4K1_FRAME_SIZE");
+-		/* Odd frame size so the UMEM doesn't end near a page boundary. */
+-		test->ifobj_tx->umem->frame_size = 4001;
+-		test->ifobj_rx->umem->frame_size = 4001;
+-		test->ifobj_tx->umem->unaligned_mode = true;
+-		test->ifobj_rx->umem->unaligned_mode = true;
+-		/* This test exists to test descriptors that staddle the end of
+-		 * the UMEM but not a page.
+-		 */
+-		page_size = sysconf(_SC_PAGESIZE);
+-		umem_size = test->ifobj_tx->umem->num_frames * test->ifobj_tx->umem->frame_size;
+-		assert(umem_size % page_size > MIN_PKT_SIZE);
+-		assert(umem_size % page_size < page_size - MIN_PKT_SIZE);
+-		ret = testapp_invalid_desc(test);
++	case TEST_TYPE_UNALIGNED_INV_DESC_4K1_FRAME:
++		ret = testapp_unaligned_inv_desc_4001_frame(test);
+ 		break;
+-	}
+ 	case TEST_TYPE_ALIGNED_INV_DESC_MB:
+-		test_spec_set_name(test, "ALIGNED_INV_DESC_MULTI_BUFF");
+-		ret = testapp_invalid_desc_mb(test);
++		ret = testapp_aligned_inv_desc_mb(test);
+ 		break;
+ 	case TEST_TYPE_UNALIGNED_INV_DESC_MB:
+-		test_spec_set_name(test, "UNALIGNED_INV_DESC_MULTI_BUFF");
+-		test->ifobj_tx->umem->unaligned_mode = true;
+-		test->ifobj_rx->umem->unaligned_mode = true;
+-		ret = testapp_invalid_desc_mb(test);
++		ret = testapp_unaligned_inv_desc_mb(test);
+ 		break;
+ 	case TEST_TYPE_UNALIGNED:
+ 		ret = testapp_unaligned(test);
+@@ -2254,13 +2317,10 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
+ 		ret = testapp_xdp_drop(test);
+ 		break;
+ 	case TEST_TYPE_XDP_METADATA_COUNT:
+-		test_spec_set_name(test, "XDP_METADATA_COUNT");
+-		ret = testapp_xdp_metadata_count(test);
++		ret = testapp_xdp_metadata(test);
+ 		break;
+ 	case TEST_TYPE_XDP_METADATA_COUNT_MB:
+-		test_spec_set_name(test, "XDP_METADATA_COUNT_MULTI_BUFF");
+-		test->mtu = MAX_ETH_JUMBO_SIZE;
+-		ret = testapp_xdp_metadata_count(test);
++		ret = testapp_xdp_metadata_mb(test);
+ 		break;
+ 	case TEST_TYPE_TOO_MANY_FRAGS:
+ 		ret = testapp_too_many_frags(test);
 -- 
 2.34.1
 
