@@ -1,47 +1,39 @@
-Return-Path: <bpf+bounces-8488-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8489-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF9607871E3
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 16:40:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABC677873EE
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 17:20:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BCF31C20EA7
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 14:40:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E29C1C20E2C
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 15:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D2E156C4;
-	Thu, 24 Aug 2023 14:36:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56B4112B9F;
+	Thu, 24 Aug 2023 15:20:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19E5D14AAA;
-	Thu, 24 Aug 2023 14:36:34 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837E01BD2;
-	Thu, 24 Aug 2023 07:36:16 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RWlwJ4S4rzrSd3;
-	Thu, 24 Aug 2023 22:34:40 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 24 Aug
- 2023 22:36:11 +0800
-From: Liu Jian <liujian56@huawei.com>
-To: <john.fastabend@gmail.com>, <jakub@cloudflare.com>, <ast@kernel.org>,
-	<daniel@iogearbox.net>, <andrii@kernel.org>, <martin.lau@linux.dev>,
-	<song@kernel.org>, <yonghong.song@linux.dev>, <kpsingh@kernel.org>,
-	<sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <dsahern@kernel.org>
-CC: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <liujian56@huawei.com>
-Subject: [PATCH bpf-next v3 7/7] selftests/bpf: add tests for verdict skmsg to closed socket
-Date: Thu, 24 Aug 2023 22:39:59 +0800
-Message-ID: <20230824143959.1134019-8-liujian56@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230824143959.1134019-1-liujian56@huawei.com>
-References: <20230824143959.1134019-1-liujian56@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8F7010979
+	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 15:20:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6A318C433CA;
+	Thu, 24 Aug 2023 15:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1692890425;
+	bh=qcaxRQes33clcsBtyUcSUxvpFzB8w8KpBKdYiso6luw=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=aB9h3moxqrFSoQkIVmnGLGa8Zu4yr+lhBifm1Z+ZsfhO8VJFt4TcwevwKxCOJAOWx
+	 BdNANy4T2WtfbeESnilGGnYdxNUv9Rdv5qrt8M6JMYqXmBhwN4mOX9Rux9ieaXVuoM
+	 748TVdGCWpuI2KnomzopIJ0Q/Bv1454y6u7g7uPFX4xxQgAtS7Dds6eNZqBmQzH+CX
+	 +cOVQRO8Fq9kvkBAd+Xciml3okgRfihNvJFkyPth/pcweGRC4jTya+9lh8BJThju6h
+	 viX0GIm9bKSV9BiAtv3HlyESB6vhyOKbAM95pmeJWW3ajKTYLMDCdxTbBZ+8NI1l7y
+	 q2OoCgpVQ+SqA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 51154E33094;
+	Thu, 24 Aug 2023 15:20:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -49,115 +41,44 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Remove a WARN_ON_ONCE warning related to
+ local kptr
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <169289042532.8092.10627981183140434594.git-patchwork-notify@kernel.org>
+Date: Thu, 24 Aug 2023 15:20:25 +0000
+References: <20230824063417.201925-1-yonghong.song@linux.dev>
+In-Reply-To: <20230824063417.201925-1-yonghong.song@linux.dev>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kernel-team@fb.com, martin.lau@kernel.org,
+ davemarchevsky@fb.com
 
-Add four tests for verdict skmsg to closed socket in sockmap_basic.c.
+Hello:
 
-Signed-off-by: Liu Jian <liujian56@huawei.com>
----
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 42 +++++++++++++++----
- 1 file changed, 34 insertions(+), 8 deletions(-)
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 1fcfa30720c6..dabea0997982 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -476,9 +476,10 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
- 		test_sockmap_drop_prog__destroy(drop);
- }
- 
--static void test_sockmap_msg_verdict(bool is_ingress, bool is_permanent, bool is_self)
-+static void test_sockmap_msg_verdict(bool is_ingress, bool is_permanent, bool is_self,
-+				     bool target_shutdown)
- {
--	int key, sent, recvd, recv_fd;
-+	int key, sent, recvd, recv_fd, target_fd;
- 	int err, map, verdict, s, c0, c1, p0, p1;
- 	struct test_sockmap_msg_verdict *skel;
- 	char buf[256] = "0123456789";
-@@ -522,18 +523,22 @@ static void test_sockmap_msg_verdict(bool is_ingress, bool is_permanent, bool is
- 		skel->bss->skmsg_redir_flags = BPF_F_INGRESS;
- 		if (is_self) {
- 			skel->bss->skmsg_redir_key = 0;
-+			target_fd = p1;
- 			recv_fd = p1;
- 		} else {
- 			skel->bss->skmsg_redir_key = 1;
-+			target_fd = c1;
- 			recv_fd = c1;
- 		}
- 	} else {
- 		skel->bss->skmsg_redir_flags = 0;
- 		if (is_self) {
- 			skel->bss->skmsg_redir_key = 0;
-+			target_fd = p1;
- 			recv_fd = c1;
- 		} else {
- 			skel->bss->skmsg_redir_key = 2;
-+			target_fd = p0;
- 			recv_fd = c0;
- 		}
- 	}
-@@ -546,6 +551,19 @@ static void test_sockmap_msg_verdict(bool is_ingress, bool is_permanent, bool is
- 	recvd = recv_timeout(recv_fd, &buf, sizeof(buf), SOCK_NONBLOCK, IO_TIMEOUT_SEC);
- 	ASSERT_EQ(recvd, sizeof(buf), "recv_timeout(recv_fd)");
- 
-+	if (target_shutdown) {
-+		signal(SIGPIPE, SIG_IGN);
-+		close(target_fd);
-+		sent = send(p1, &buf, sizeof(buf), 0);
-+		if (is_permanent) {
-+			ASSERT_EQ(sent, -1, "xsend(p1)");
-+			ASSERT_EQ(errno, EPIPE, "xsend(p1)");
-+		} else {
-+			ASSERT_EQ(sent, sizeof(buf), "xsend(p1)");
-+		}
-+		goto out_close;
-+	}
-+
- 	sent = xsend(p1, &buf, sizeof(buf), 0);
- 	ASSERT_EQ(sent, sizeof(buf), "xsend(p1)");
- 	recvd = recv_timeout(recv_fd, &buf, sizeof(buf), SOCK_NONBLOCK, IO_TIMEOUT_SEC);
-@@ -600,15 +618,23 @@ void test_sockmap_basic(void)
- 	if (test__start_subtest("sockmap skb_verdict fionread on drop"))
- 		test_sockmap_skb_verdict_fionread(false);
- 	if (test__start_subtest("sockmap msg_verdict"))
--		test_sockmap_msg_verdict(false, false, false);
-+		test_sockmap_msg_verdict(false, false, false, false);
- 	if (test__start_subtest("sockmap msg_verdict ingress"))
--		test_sockmap_msg_verdict(true, false, false);
-+		test_sockmap_msg_verdict(true, false, false, false);
- 	if (test__start_subtest("sockmap msg_verdict permanent"))
--		test_sockmap_msg_verdict(false, true, false);
-+		test_sockmap_msg_verdict(false, true, false, false);
- 	if (test__start_subtest("sockmap msg_verdict ingress permanent"))
--		test_sockmap_msg_verdict(true, true, false);
-+		test_sockmap_msg_verdict(true, true, false, false);
- 	if (test__start_subtest("sockmap msg_verdict permanent self"))
--		test_sockmap_msg_verdict(false, true, true);
-+		test_sockmap_msg_verdict(false, true, true, false);
- 	if (test__start_subtest("sockmap msg_verdict ingress permanent self"))
--		test_sockmap_msg_verdict(true, true, true);
-+		test_sockmap_msg_verdict(true, true, true, false);
-+	if (test__start_subtest("sockmap msg_verdict permanent shutdown"))
-+		test_sockmap_msg_verdict(false, true, false, true);
-+	if (test__start_subtest("sockmap msg_verdict ingress permanent shutdown"))
-+		test_sockmap_msg_verdict(true, true, false, true);
-+	if (test__start_subtest("sockmap msg_verdict shutdown"))
-+		test_sockmap_msg_verdict(false, false, false, true);
-+	if (test__start_subtest("sockmap msg_verdict ingress shutdown"))
-+		test_sockmap_msg_verdict(true, false, false, true);
- }
+On Wed, 23 Aug 2023 23:34:17 -0700 you wrote:
+> Currently, in function bpf_obj_free_fields(), for local kptr,
+> a warning will be issued if the struct does not contain any
+> special fields. But actually the kernel seems totally okay
+> with a local kptr without any special fields. Permitting
+> no special fields also aligns with future percpu kptr which
+> also allows no special fields.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v2,1/2] bpf: Remove a WARN_ON_ONCE warning related to local kptr
+    https://git.kernel.org/bpf/bpf-next/c/393dc4bd92de
+  - [bpf-next,v2,2/2] selftests/bpf: Add a local kptr test with no special fields
+    https://git.kernel.org/bpf/bpf-next/c/001fedacc907
+
+You are awesome, thank you!
 -- 
-2.34.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
