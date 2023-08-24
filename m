@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-8473-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8474-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5EF1786F33
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 14:35:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45F81786F36
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 14:36:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FE0A28162A
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 12:35:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7774F1C20EC4
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 12:36:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C8F156DE;
-	Thu, 24 Aug 2023 12:29:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 842CD15ACF;
+	Thu, 24 Aug 2023 12:30:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 574AC15488;
-	Thu, 24 Aug 2023 12:29:58 +0000 (UTC)
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DF9198B;
-	Thu, 24 Aug 2023 05:29:57 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4f13c41c957so2304341e87.1;
-        Thu, 24 Aug 2023 05:29:57 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A011156FD;
+	Thu, 24 Aug 2023 12:30:00 +0000 (UTC)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD0E10D7;
+	Thu, 24 Aug 2023 05:29:59 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-400e8ab9325so2040085e9.1;
+        Thu, 24 Aug 2023 05:29:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692880195; x=1693484995;
+        d=gmail.com; s=20221208; t=1692880197; x=1693484997;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Jp79f45U+s49dvCS6AwutTJNhrpmhgL5dN2yIt+vQI0=;
-        b=WjqcUBVt7fjAv9RNb8W5bHimwSzLEuwS9pjROvFYmLEFlOzrlxEDRbIs/tYrrElbcx
-         JJipRhv1jjaLMQ07haKAYN/wkNv02kdT8RZufDBpKE0PODCBQYFlgz440npeWwobr2hZ
-         OnGAcvd3UAQbPsdYG481+La8MfI5auCF3S9zHFJdWOb01rVdm11uEBI+nW/4GsrNPDTL
-         6Y2xo5+GjadvtxbMc7t49rljkasik2531ADsvQpvwMcFHZ/LbMEpZ17jLocDzzsn7XD+
-         s13mdCt6kdIAwCfg590B9Qa9p6Rm1n0JamY6E7oXB+vlcrV+wYmrSfxJjMhIZsPEri9j
-         A/qw==
+        bh=gtB1qAnmEEEdOMdr+ldusNhjfEmkbuz6v9vvmxAdLWU=;
+        b=HCmyscqBBHNTLTcBc5OA7BrAnbZC1zKZd4e4mbV9u4Cn/4bVdDnM8ZekC1YQWOsEzp
+         GYJCMO19yDOcpWxEGZQu8VaWnIXwT+3tWa4sWAuwAOgLWXlH98nY9aKc0XvFNBUWddNR
+         V2zqUEuQ2zb+v3kiGHDpI6zAb+ac2WGnazE5WJdn9K8TmC4BuqOgIsqtEh47c52//UDQ
+         VoJ7a/NQvGhNyVDdaYr4xdkwS9YEyzLpuc/UZcelkasXoI7Z280Yw3GVCqJZd4p1mS5M
+         WvYOEj1rJx8PIroV6/tM3jeQbIwkPOGy8I6/G5gSdA734AtL2Ghg9VLwSifugeHoS8J1
+         eT6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692880195; x=1693484995;
+        d=1e100.net; s=20221208; t=1692880197; x=1693484997;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Jp79f45U+s49dvCS6AwutTJNhrpmhgL5dN2yIt+vQI0=;
-        b=M+bbiirvAgP5WVqs/snTbzBIWbnsp0yx/Rmt/hLskkr+lkiib4aMYXbYysVZGjmmfS
-         X1iYBgOQURhtWes5fdXOf/nOuFPSCP0NKkdVgPhvV3TCb+MrZMr17HuQ3YQQJK5l4O/t
-         h8p2oWbwqKXAIh6X/5SSn5dYB9Gt06goS1mFeQ/8dsz+rPxA0ha+hOvztUh9iySLxRP3
-         HFRAJpe6PFQULtFUK4OHGQiI0jBrQ0NfvEcBkEZSTzbTiRSfK/eYoZ4SWARg5JRU87Jo
-         oyEmoO73ZVztW0OuAMN8+vATlt8H15upMjMhTTpr9eD8+hWuhFj1cb3cYPfnAwjm6h8W
-         0L+g==
-X-Gm-Message-State: AOJu0YzfIlOpsny8+HbqOI4BHoMZu4ceILn0AwudhLumL8Iay+0V+rT6
-	aPtqw0RCFAr2ZD+ClJ0LrLE=
-X-Google-Smtp-Source: AGHT+IEt2PuXqnfTcXVZ8z2j4XZzbairCFQ4Yz0Pe7YG0g8ykZDWIc9ZaPRVkL4m3q/kEzM5hc/CJQ==
-X-Received: by 2002:a2e:aaa8:0:b0:2b6:120a:af65 with SMTP id bj40-20020a2eaaa8000000b002b6120aaf65mr8909318ljb.3.1692880195277;
-        Thu, 24 Aug 2023 05:29:55 -0700 (PDT)
+        bh=gtB1qAnmEEEdOMdr+ldusNhjfEmkbuz6v9vvmxAdLWU=;
+        b=d9iZ02qhaF0NdNQgxatjbJ9+qMRUcS0rds229Vu8aoWNm44ce8G3yNVa/lWJS/Bhlo
+         9nkHsBlJf/rdNAC5GsOtMhVTvaZXigCVwtqvdGNDB7cLThbwrbzZCZowPScl+OHE/D84
+         73ibaEBHz0c1O6RZrLs/6ndONgQyNLYnGV4OS4BI9RPT4Od9oeC5YuyCO7AD0xe9METM
+         lvVZ8hYxV4A64j4pj9CcThCds0TfjpbYnkvCtQqiawgcT7iWkCZe5d07B7b+sB10l+dj
+         jIISFVdGLalpmDVe9sfZqIxAl+4/TC1S6Lv3J5CEa+h/mgA7BClJ6xqIF9ql3foYrfOd
+         IjEg==
+X-Gm-Message-State: AOJu0YztNFcVESD2ep16Lj3EBHB34yzmm83YkVl8WyIbTRRjYcnG5MSY
+	uOgJNM5jlK8sf1W0xJPum0Y=
+X-Google-Smtp-Source: AGHT+IF4POKdyilStYzuHxnt860VFcAFmJNoX2yD14rKb1ygTGjlMEsvt4e4B9ALu3HTiM5ZKt9ajA==
+X-Received: by 2002:a05:600c:5185:b0:3fe:dd78:8fbc with SMTP id fa5-20020a05600c518500b003fedd788fbcmr12168797wmb.3.1692880197634;
+        Thu, 24 Aug 2023 05:29:57 -0700 (PDT)
 Received: from localhost.localdomain ([94.234.116.52])
-        by smtp.gmail.com with ESMTPSA id hn1-20020a05600ca38100b003fbe4cecc3bsm2523776wmb.16.2023.08.24.05.29.53
+        by smtp.gmail.com with ESMTPSA id hn1-20020a05600ca38100b003fbe4cecc3bsm2523776wmb.16.2023.08.24.05.29.55
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 24 Aug 2023 05:29:54 -0700 (PDT)
+        Thu, 24 Aug 2023 05:29:57 -0700 (PDT)
 From: Magnus Karlsson <magnus.karlsson@gmail.com>
 To: magnus.karlsson@intel.com,
 	bjorn@kernel.org,
@@ -74,9 +74,9 @@ To: magnus.karlsson@intel.com,
 	haoluo@google.com,
 	jolsa@kernel.org,
 	przemyslaw.kitszel@intel.com
-Subject: [PATCH bpf-next v2 10/11] selftests/xsk: display command line options with -h
-Date: Thu, 24 Aug 2023 14:28:52 +0200
-Message-Id: <20230824122853.3494-11-magnus.karlsson@gmail.com>
+Subject: [PATCH bpf-next v2 11/11] selftests/xsk: introduce XSKTEST_ETH environment variable
+Date: Thu, 24 Aug 2023 14:28:53 +0200
+Message-Id: <20230824122853.3494-12-magnus.karlsson@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230824122853.3494-1-magnus.karlsson@gmail.com>
 References: <20230824122853.3494-1-magnus.karlsson@gmail.com>
@@ -96,86 +96,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Add the -h option to display all available command line options
-available for test_xsk.sh and xskxceiver.
+Introduce the XSKTEST_ETH environment variable to be able to set the
+network interface that should be used for testing.
 
 Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
 ---
- tools/testing/selftests/bpf/test_xsk.sh  | 11 ++++++++++-
- tools/testing/selftests/bpf/xskxceiver.c |  5 ++++-
- 2 files changed, 14 insertions(+), 2 deletions(-)
+ tools/testing/selftests/bpf/test_xsk.sh | 20 +++++++++-----------
+ 1 file changed, 9 insertions(+), 11 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/test_xsk.sh b/tools/testing/selftests/bpf/test_xsk.sh
-index b7186ae48497..9ec718043c1a 100755
+index 9ec718043c1a..3e0a2302a185 100755
 --- a/tools/testing/selftests/bpf/test_xsk.sh
 +++ b/tools/testing/selftests/bpf/test_xsk.sh
-@@ -82,12 +82,15 @@
- #
- # Run a specific test from the test suite
- #   sudo ./test_xsk.sh -t TEST_NAME
-+#
-+# Display the available command line options
-+#   ./test_xsk.sh -h
+@@ -88,14 +88,12 @@
  
  . xsk_prereqs.sh
  
- ETH=""
- 
--while getopts "vi:dm:lt:" flag
-+while getopts "vi:dm:lt:h" flag
+-ETH=""
+-
+ while getopts "vi:dm:lt:h" flag
  do
  	case "${flag}" in
  		v) verbose=1;;
-@@ -96,6 +99,7 @@ do
+ 		d) debug=1;;
+-		i) ETH=${OPTARG};;
++		i) XSKTEST_ETH=${OPTARG};;
  		m) XSKTEST_MODE=${OPTARG};;
  		l) list=1;;
  		t) XSKTEST_TEST=${OPTARG};;
-+		h) help=1;;
- 	esac
- done
- 
-@@ -148,6 +152,11 @@ if [[ $list -eq 1 ]]; then
+@@ -157,9 +155,9 @@ if [[ $help -eq 1 ]]; then
          exit
  fi
  
-+if [[ $help -eq 1 ]]; then
-+	./${XSKOBJ}
-+        exit
-+fi
-+
- if [ ! -z $ETH ]; then
- 	VETH0=${ETH}
- 	VETH1=${ETH}
-diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index 19db9a827c30..9feb476d647f 100644
---- a/tools/testing/selftests/bpf/xskxceiver.c
-+++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -318,6 +318,7 @@ static struct option long_options[] = {
- 	{"mode", required_argument, 0, 'm'},
- 	{"list", no_argument, 0, 'l'},
- 	{"test", required_argument, 0, 't'},
-+	{"help", no_argument, 0, 'h'},
- 	{0, 0, 0, 0}
- };
+-if [ ! -z $ETH ]; then
+-	VETH0=${ETH}
+-	VETH1=${ETH}
++if [ -n "$XSKTEST_ETH" ]; then
++	VETH0=${XSKTEST_ETH}
++	VETH1=${XSKTEST_ETH}
+ else
+ 	validate_root_exec
+ 	validate_veth_support ${VETH0}
+@@ -203,10 +201,10 @@ fi
  
-@@ -331,7 +332,8 @@ static void print_usage(char **argv)
- 		"  -b, --busy-poll      Enable busy poll\n"
- 		"  -m, --mode           Run only mode skb, drv, or zc\n"
- 		"  -l, --list           List all available tests\n"
--		"  -t, --test           Run a specific test. Enter number from -l option.\n";
-+		"  -t, --test           Run a specific test. Enter number from -l option.\n"
-+		"  -h, --help           Display this help and exit\n";
+ exec_xskxceiver
  
- 	ksft_print_msg(str, basename(argv[0]));
- 	ksft_exit_xfail();
-@@ -406,6 +408,7 @@ static void parse_command_line(struct ifobject *ifobj_tx, struct ifobject *ifobj
- 			if (errno)
- 				print_usage(argv);
- 			break;
-+		case 'h':
- 		default:
- 			print_usage(argv);
- 		}
+-if [ -z $ETH ]; then
++if [ -z $XSKTEST_ETH ]; then
+ 	cleanup_exit ${VETH0} ${VETH1}
+ else
+-	cleanup_iface ${ETH} ${MTU}
++	cleanup_iface ${XSKTEST_ETH} ${MTU}
+ fi
+ 
+ if [[ $list -eq 1 ]]; then
+@@ -216,17 +214,17 @@ fi
+ TEST_NAME="XSK_SELFTESTS_${VETH0}_BUSY_POLL"
+ busy_poll=1
+ 
+-if [ -z $ETH ]; then
++if [ -z $XSKTEST_ETH ]; then
+ 	setup_vethPairs
+ fi
+ exec_xskxceiver
+ 
+ ## END TESTS
+ 
+-if [ -z $ETH ]; then
++if [ -z $XSKTEST_ETH ]; then
+ 	cleanup_exit ${VETH0} ${VETH1}
+ else
+-	cleanup_iface ${ETH} ${MTU}
++	cleanup_iface ${XSKTEST_ETH} ${MTU}
+ fi
+ 
+ failures=0
 -- 
 2.34.1
 
