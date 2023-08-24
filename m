@@ -1,428 +1,238 @@
-Return-Path: <bpf+bounces-8479-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8480-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFB3178704A
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 15:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B886D787114
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 16:07:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74DE22813D0
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 13:32:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72CFF28159C
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 14:07:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD382891C;
-	Thu, 24 Aug 2023 13:31:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1F0111A7;
+	Thu, 24 Aug 2023 14:07:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A595CA6E
-	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 13:31:46 +0000 (UTC)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD14EE5E;
-	Thu, 24 Aug 2023 06:31:44 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-31c73c21113so739143f8f.1;
-        Thu, 24 Aug 2023 06:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692883903; x=1693488703;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZE4gDzK4BarFOpFDUm7HsASsZoYlPGB/PtNYZtQuQCs=;
-        b=kUDT9RjwDHv+JZXpX798v6QF8WCmiH9+ChraAqrdEgCcxpCTrkdSXC0HSqVuKGjMoe
-         4TZ8TMsgeLbCUFChDXAMCx6GW8BPtylnx6TxgmN4afs+pjIBNFfdfZRMMXCg+w1vCtJQ
-         QVz/uXJ5LUmDSA8901Uj6fGVc1hqiBYqIfWuYJXgvMS6bBU6xifqsCXcLQUGB2WF/+l/
-         h+AhNeV5kA1gZ/qCEYrW5jhJfQe+YSE9g5+qL1Uo3Fukd/qZCisCNVUW6QJ+LdkiFr9N
-         3otdSppiB1rW3Gw2F1X2OCk3aNWlspGnyXPpEmCKaIABB28qu6r4/gT6duzmsg+48xQe
-         +rEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692883903; x=1693488703;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZE4gDzK4BarFOpFDUm7HsASsZoYlPGB/PtNYZtQuQCs=;
-        b=Ytoubjx/yvO5g+ZHK1kugfmx/uCNZ4y5rmHjAG9TWOVEtEMMkVzuGyx8JbfdZfJaHO
-         b0Z7YPNuV+bzW4IJB767xPRIjORx6jLP2cHpO/aFJO9SNyjLziOkXYwNHSBhNIDfSGSV
-         scVdbsq9CqNkHdDNDPeUJRYW9CCLCsYwJWHyAHcZBrSnftMpUSJ+0KPd/ikHE+si5YqK
-         GOI2yVmONIj2CtJlk6G7QbpEXJxUPSv6g33OpVbSMp0IarfTLKltb6FU/TYFWbSAC7Q0
-         UIV/uh82fQ+hjjN6xscnbXxGWDtbjA0mlHHwCBoWlHsaLRGZi4A+Aj4ZMtl+ExofvlFQ
-         TqZQ==
-X-Gm-Message-State: AOJu0YyOGAkfnyCv6XKg9dstSLTVjssuH3TDiDP6O/oOZWKR/Hx33S5+
-	wsyhBLj9Kv32dLcJpBmfJ5Y=
-X-Google-Smtp-Source: AGHT+IE1DHrzD3RMD7X4DeWFzUxZYCQraZB2mYQ/IPMdz7u1EG1Wbjt6XtsI/mZNX+FYlVXWg+AhbQ==
-X-Received: by 2002:adf:f602:0:b0:31c:5e4d:4e75 with SMTP id t2-20020adff602000000b0031c5e4d4e75mr7471812wrp.44.1692883902923;
-        Thu, 24 Aug 2023 06:31:42 -0700 (PDT)
-Received: from ip-172-31-30-46.eu-west-1.compute.internal (ec2-54-170-241-106.eu-west-1.compute.amazonaws.com. [54.170.241.106])
-        by smtp.gmail.com with ESMTPSA id h11-20020a5d548b000000b00317e77106dbsm22396112wrv.48.2023.08.24.06.31.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 06:31:41 -0700 (PDT)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu,
-	pulehui@huawei.com,
-	conor.dooley@microchip.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yhs@fb.com,
-	kpsingh@kernel.org,
-	bjorn@kernel.org,
-	bpf@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next v2 3/3] bpf, riscv: use prog pack allocator in the BPF JIT
-Date: Thu, 24 Aug 2023 13:31:35 +0000
-Message-Id: <20230824133135.1176709-4-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230824133135.1176709-1-puranjay12@gmail.com>
-References: <20230824133135.1176709-1-puranjay12@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C1CDCA7D
+	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 14:07:38 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21CFCD0
+	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 07:07:36 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RWlJw3MZdz4f3jXM
+	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 22:07:28 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgDndqkgZOdkXrTqBQ--.33707S2;
+	Thu, 24 Aug 2023 22:07:31 +0800 (CST)
+Subject: Re: [PATCH bpf-next 1/3] bpf: Enable preemption after
+ irq_work_raise() in unit_alloc()
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>
+References: <20230822133807.3198625-1-houtao@huaweicloud.com>
+ <20230822133807.3198625-2-houtao@huaweicloud.com>
+ <CAADnVQKFh9pWp1abrG2KKiZanb+4rzRb3HmzX0snggah3Lq-yg@mail.gmail.com>
+ <bf4faa34-019c-bb3d-a451-a067bbe027a4@huaweicloud.com>
+ <CAADnVQJfpxk3dsjYdH8DUarJHu0wFXa24XFxvn+F5mseMKTAhQ@mail.gmail.com>
+ <3c30289a-d683-d1c8-b18d-c87a5ecebe3b@huaweicloud.com>
+ <CAADnVQLHPx-0dR7nBXAfBHOpF09Jr6+cqGjfGf9mT2BHCid5YA@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <5fe435aa-526f-4b54-b0d2-e0ae1c6c234c@huaweicloud.com>
+Date: Thu, 24 Aug 2023 22:07:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <CAADnVQLHPx-0dR7nBXAfBHOpF09Jr6+cqGjfGf9mT2BHCid5YA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgDndqkgZOdkXrTqBQ--.33707S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Gw1xZw15Wry7Aw48Ar17trb_yoWxtr1kpF
+	43tFyIyw4DX3WjvwnFgw18JFyFvw4UKry8XrWjqry3ZrZ8tryvgr4xCry5uFyrur4DGayI
+	yr4DtayxWF48AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCYjI0SjxkI62AI
+	1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AK
+	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+	xUrR6zUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+	MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Use bpf_jit_binary_pack_alloc() for memory management of JIT binaries in
-RISCV BPF JIT. The bpf_jit_binary_pack_alloc creates a pair of RW and RX
-buffers. The JIT writes the program into the RW buffer. When the JIT is
-done, the program is copied to the final RX buffer with
-bpf_jit_binary_pack_finalize.
+Hi,
 
-Implement bpf_arch_text_copy() and bpf_arch_text_invalidate() for RISCV
-JIT as these functions are required by bpf_jit_binary_pack allocator.
+On 8/24/2023 12:33 AM, Alexei Starovoitov wrote:
+> On Tue, Aug 22, 2023 at 9:39 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>> Hi,
+>>
+>> On 8/23/2023 9:57 AM, Alexei Starovoitov wrote:
+>>> On Tue, Aug 22, 2023 at 5:51 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>>>> Hi,
+>>>>
+>>>> On 8/23/2023 8:05 AM, Alexei Starovoitov wrote:
+>>>>> On Tue, Aug 22, 2023 at 6:06 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>>>>>> From: Hou Tao <houtao1@huawei.com>
+>>>>>>
+>>>>>> When doing stress test for qp-trie, bpf_mem_alloc() returned NULL
+>>>>>> unexpectedly because all qp-trie operations were initiated from
+>>>>>> bpf syscalls and there was still available free memory. bpf_obj_new()
+>>>>>> has the same problem as shown by the following selftest.
+>>>>>>
+>>>>>> The failure is due to the preemption. irq_work_raise() will invoke
+>>>>>> irq_work_claim() first to mark the irq work as pending and then inovke
+>>>>>> __irq_work_queue_local() to raise an IPI. So when the current task
+>>>>>> which is invoking irq_work_raise() is preempted by other task,
+>>>>>> unit_alloc() may return NULL for preemptive task as shown below:
+>>>>>>
+>>>>>> task A         task B
+>>>>>>
+>>>>>> unit_alloc()
+>>>>>>   // low_watermark = 32
+>>>>>>   // free_cnt = 31 after alloc
+>>>>>>   irq_work_raise()
+>>>>>>     // mark irq work as IRQ_WORK_PENDING
+>>>>>>     irq_work_claim()
+>>>>>>
+>>>>>>                // task B preempts task A
+>>>>>>                unit_alloc()
+>>>>>>                  // free_cnt = 30 after alloc
+>>>>>>                  // irq work is already PENDING,
+>>>>>>                  // so just return
+>>>>>>                  irq_work_raise()
+>>>>>>                // does unit_alloc() 30-times
+>>>>>>                ......
+>>>>>>                unit_alloc()
+>>>>>>                  // free_cnt = 0 before alloc
+>>>>>>                  return NULL
+>>>>>>
+>>>>>> Fix it by invoking preempt_disable_notrace() before allocation and
+>>>>>> invoking preempt_enable_notrace() to enable preemption after
+>>>>>> irq_work_raise() completes. An alternative fix is to move
+>>>>>> local_irq_restore() after the invocation of irq_work_raise(), but it
+>>>>>> will enlarge the irq-disabled region. Another feasible fix is to only
+>>>>>> disable preemption before invoking irq_work_queue() and enable
+>>>>>> preemption after the invocation in irq_work_raise(), but it can't
+>>>>>> handle the case when c->low_watermark is 1.
+>>>>>>
+>>>>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>>>>>> ---
+>>>>>>  kernel/bpf/memalloc.c | 8 ++++++++
+>>>>>>  1 file changed, 8 insertions(+)
+>>>>>>
+>>>>>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+>>>>>> index 9c49ae53deaf..83f8913ebb0a 100644
+>>>>>> --- a/kernel/bpf/memalloc.c
+>>>>>> +++ b/kernel/bpf/memalloc.c
+>>>>>> @@ -6,6 +6,7 @@
+>>>>>>  #include <linux/irq_work.h>
+>>>>>>  #include <linux/bpf_mem_alloc.h>
+>>>>>>  #include <linux/memcontrol.h>
+>>>>>> +#include <linux/preempt.h>
+>>>>>>  #include <asm/local.h>
+>>>>>>
+>>>>>>  /* Any context (including NMI) BPF specific memory allocator.
+>>>>>> @@ -725,6 +726,7 @@ static void notrace *unit_alloc(struct bpf_mem_cache *c)
+>>>>>>          * Use per-cpu 'active' counter to order free_list access between
+>>>>>>          * unit_alloc/unit_free/bpf_mem_refill.
+>>>>>>          */
+>>>>>> +       preempt_disable_notrace();
+>>>>>>         local_irq_save(flags);
+>>>>>>         if (local_inc_return(&c->active) == 1) {
+>>>>>>                 llnode = __llist_del_first(&c->free_llist);
+>>>>>> @@ -740,6 +742,12 @@ static void notrace *unit_alloc(struct bpf_mem_cache *c)
+>>>>>>
+>>>>>>         if (cnt < c->low_watermark)
+>>>>>>                  (c);
+>>>>>> +       /* Enable preemption after the enqueue of irq work completes,
+>>>>>> +        * so free_llist may be refilled by irq work before other task
+>>>>>> +        * preempts current task.
+>>>>>> +        */
+>>>>>> +       preempt_enable_notrace();
+>>>>> So this helps qp-trie init, since it's doing bpf_mem_alloc from
+>>>>> syscall context and helps bpf_obj_new from bpf prog, since prog is
+>>>>> non-migrateable, but preemptable. It's not an issue for htab doing
+>>>>> during map_update, since
+>>>>> it's under htab bucket lock.
+>>>>> Let's introduce minimal:
+>>>>> /* big comment here explaining the reason of extra preempt disable */
+>>>>> static void bpf_memalloc_irq_work_raise(...)
+>>>>> {
+>>>>>   preempt_disable_notrace();
+>>>>>   irq_work_raise();
+>>>>>   preempt_enable_notrace();
+>>>>> }
+>>>>>
+>>>>> it will have the same effect, right?
+>>>>> .
+>>>> No. As I said in commit message, when c->low_watermark is 1, the above
+>>>> fix doesn't work as shown below:
+>>> Yes. I got mark=1 part. I just don't think it's worth the complexity.
+>> Just find out that for bpf_obj_new() the minimal low_watermark is 2
+>> instead of 1 (unit_size= 4096 instead of 4096 + 8). But even with
+>> low_watermark as 2, the above fix may don't work when there are nested
+>> preemption: task A (free_cnt = 1 after alloc) -> preempted by task B
+>> (free_cnt = 0 after alloc) -> preempted by task C (fail to do
+>> allocation). And in my naive understanding of bpf memory allocate, these
+>> fixes are simple. Why do you think it will introduce extra complexity ?
+>> Do you mean preempt_disable_notrace() could be used to trigger the
+>> running of bpf program ? If it is the problem, I think we should fix it
+>> instead.
+> I'm not worried about recursive calls from _notrace(). That shouldn't
+> be possible.
 
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
----
- arch/riscv/net/bpf_jit.h        |   3 +
- arch/riscv/net/bpf_jit_comp64.c |  56 +++++++++++++---
- arch/riscv/net/bpf_jit_core.c   | 113 +++++++++++++++++++++++++++-----
- 3 files changed, 146 insertions(+), 26 deletions(-)
+OK
+> I'm just saying that disabling preemption around irq_work_raise() helps a bit
+> while disable around the whole unit_alloc/free is a snake oil.
+> bpf prog could be running in irq disabled context and preempt disabled
+> unit_alloc vs irq_work_raise won't make any difference. Both will return NULL.
+> Same with batched htab update. It will hit NULL too.
+> So from my pov you're trying to fix something that is not fixable.
 
-diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
-index 2717f5490428..ad69319c8ea7 100644
---- a/arch/riscv/net/bpf_jit.h
-+++ b/arch/riscv/net/bpf_jit.h
-@@ -68,6 +68,7 @@ static inline bool is_creg(u8 reg)
- struct rv_jit_context {
- 	struct bpf_prog *prog;
- 	u16 *insns;		/* RV insns */
-+	u16 *ro_insns;
- 	int ninsns;
- 	int prologue_len;
- 	int epilogue_offset;
-@@ -85,7 +86,9 @@ static inline int ninsns_rvoff(int ninsns)
- 
- struct rv_jit_data {
- 	struct bpf_binary_header *header;
-+	struct bpf_binary_header *ro_header;
- 	u8 *image;
-+	u8 *ro_image;
- 	struct rv_jit_context ctx;
- };
- 
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index 0ca4f5c0097c..d77b16338ba2 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -144,7 +144,11 @@ static bool in_auipc_jalr_range(s64 val)
- /* Emit fixed-length instructions for address */
- static int emit_addr(u8 rd, u64 addr, bool extra_pass, struct rv_jit_context *ctx)
- {
--	u64 ip = (u64)(ctx->insns + ctx->ninsns);
-+	/*
-+	 * Use the ro_insns(RX) to calculate the offset as the BPF program will
-+	 * finally run from this memory region.
-+	 */
-+	u64 ip = (u64)(ctx->ro_insns + ctx->ninsns);
- 	s64 off = addr - ip;
- 	s64 upper = (off + (1 << 11)) >> 12;
- 	s64 lower = off & 0xfff;
-@@ -465,7 +469,11 @@ static int emit_call(u64 addr, bool fixed_addr, struct rv_jit_context *ctx)
- 	u64 ip;
- 
- 	if (addr && ctx->insns) {
--		ip = (u64)(long)(ctx->insns + ctx->ninsns);
-+		/*
-+		 * Use the ro_insns(RX) to calculate the offset as the BPF
-+		 * program will finally run from this memory region.
-+		 */
-+		ip = (u64)(long)(ctx->ro_insns + ctx->ninsns);
- 		off = addr - ip;
- 	}
- 
-@@ -578,7 +586,8 @@ static int add_exception_handler(const struct bpf_insn *insn,
- {
- 	struct exception_table_entry *ex;
- 	unsigned long pc;
--	off_t offset;
-+	off_t ins_offset;
-+	off_t fixup_offset;
- 
- 	if (!ctx->insns || !ctx->prog->aux->extable || BPF_MODE(insn->code) != BPF_PROBE_MEM)
- 		return 0;
-@@ -593,12 +602,17 @@ static int add_exception_handler(const struct bpf_insn *insn,
- 		return -EINVAL;
- 
- 	ex = &ctx->prog->aux->extable[ctx->nexentries];
--	pc = (unsigned long)&ctx->insns[ctx->ninsns - insn_len];
-+	pc = (unsigned long)&ctx->ro_insns[ctx->ninsns - insn_len];
- 
--	offset = pc - (long)&ex->insn;
--	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
-+	/*
-+	 * This is the relative offset of the instruction that may fault from
-+	 * the exception table itself. This will be written to the exception
-+	 * table and if this instruction faults, the destination register will
-+	 * be set to '0' and the execution will jump to the next instruction.
-+	 */
-+	ins_offset = pc - (long)&ex->insn;
-+	if (WARN_ON_ONCE(ins_offset >= 0 || ins_offset < INT_MIN))
- 		return -ERANGE;
--	ex->insn = offset;
- 
- 	/*
- 	 * Since the extable follows the program, the fixup offset is always
-@@ -607,12 +621,25 @@ static int add_exception_handler(const struct bpf_insn *insn,
- 	 * bits. We don't need to worry about buildtime or runtime sort
- 	 * modifying the upper bits because the table is already sorted, and
- 	 * isn't part of the main exception table.
-+	 *
-+	 * The fixup_offset is set to the next instruction from the instruction
-+	 * that may fault. The execution will jump to this after handling the
-+	 * fault.
- 	 */
--	offset = (long)&ex->fixup - (pc + insn_len * sizeof(u16));
--	if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, offset))
-+	fixup_offset = (long)&ex->fixup - (pc + insn_len * sizeof(u16));
-+	if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, fixup_offset))
- 		return -ERANGE;
- 
--	ex->fixup = FIELD_PREP(BPF_FIXUP_OFFSET_MASK, offset) |
-+	/*
-+	 * The offsets above have been calculated using the RO buffer but we
-+	 * need to use the R/W buffer for writes.
-+	 * switch ex to rw buffer for writing.
-+	 */
-+	ex = (void *)ctx->insns + ((void *)ex - (void *)ctx->ro_insns);
-+
-+	ex->insn = ins_offset;
-+
-+	ex->fixup = FIELD_PREP(BPF_FIXUP_OFFSET_MASK, fixup_offset) |
- 		FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
- 	ex->type = EX_TYPE_BPF;
- 
-@@ -1006,6 +1033,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
- 
- 	ctx.ninsns = 0;
- 	ctx.insns = NULL;
-+	ctx.ro_insns = NULL;
- 	ret = __arch_prepare_bpf_trampoline(im, m, tlinks, func_addr, flags, &ctx);
- 	if (ret < 0)
- 		return ret;
-@@ -1014,7 +1042,15 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
- 		return -EFBIG;
- 
- 	ctx.ninsns = 0;
-+	/*
-+	 * The bpf_int_jit_compile() uses a RW buffer (ctx.insns) to write the
-+	 * JITed instructions and later copies it to a RX region (ctx.ro_insns).
-+	 * It also uses ctx.ro_insns to calculate offsets for jumps etc. As the
-+	 * trampoline image uses the same memory area for writing and execution,
-+	 * both ctx.insns and ctx.ro_insns can be set to image.
-+	 */
- 	ctx.insns = image;
-+	ctx.ro_insns = image;
- 	ret = __arch_prepare_bpf_trampoline(im, m, tlinks, func_addr, flags, &ctx);
- 	if (ret < 0)
- 		return ret;
-diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
-index 7a26a3e1c73c..4c8dffc09368 100644
---- a/arch/riscv/net/bpf_jit_core.c
-+++ b/arch/riscv/net/bpf_jit_core.c
-@@ -8,6 +8,8 @@
- 
- #include <linux/bpf.h>
- #include <linux/filter.h>
-+#include <linux/memory.h>
-+#include <asm/patch.h>
- #include "bpf_jit.h"
- 
- /* Number of iterations to try until offsets converge. */
-@@ -117,16 +119,27 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 				sizeof(struct exception_table_entry);
- 			prog_size = sizeof(*ctx->insns) * ctx->ninsns;
- 
--			jit_data->header =
--				bpf_jit_binary_alloc(prog_size + extable_size,
--						     &jit_data->image,
--						     sizeof(u32),
--						     bpf_fill_ill_insns);
--			if (!jit_data->header) {
-+			jit_data->ro_header =
-+				bpf_jit_binary_pack_alloc(prog_size +
-+							  extable_size,
-+							  &jit_data->ro_image,
-+							  sizeof(u32),
-+							  &jit_data->header,
-+							  &jit_data->image,
-+							  bpf_fill_ill_insns);
-+			if (!jit_data->ro_header) {
- 				prog = orig_prog;
- 				goto out_offset;
- 			}
- 
-+			/*
-+			 * Use the image(RW) for writing the JITed instructions. But also save
-+			 * the ro_image(RX) for calculating the offsets in the image. The RW
-+			 * image will be later copied to the RX image from where the program
-+			 * will run. The bpf_jit_binary_pack_finalize() will do this copy in the
-+			 * final step.
-+			 */
-+			ctx->ro_insns = (u16 *)jit_data->ro_image;
- 			ctx->insns = (u16 *)jit_data->image;
- 			/*
- 			 * Now, when the image is allocated, the image can
-@@ -138,14 +151,12 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 
- 	if (i == NR_JIT_ITERATIONS) {
- 		pr_err("bpf-jit: image did not converge in <%d passes!\n", i);
--		if (jit_data->header)
--			bpf_jit_binary_free(jit_data->header);
- 		prog = orig_prog;
--		goto out_offset;
-+		goto out_free_hdr;
- 	}
- 
- 	if (extable_size)
--		prog->aux->extable = (void *)ctx->insns + prog_size;
-+		prog->aux->extable = (void *)ctx->ro_insns + prog_size;
- 
- skip_init_ctx:
- 	pass++;
-@@ -154,23 +165,35 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 
- 	bpf_jit_build_prologue(ctx);
- 	if (build_body(ctx, extra_pass, NULL)) {
--		bpf_jit_binary_free(jit_data->header);
- 		prog = orig_prog;
--		goto out_offset;
-+		goto out_free_hdr;
- 	}
- 	bpf_jit_build_epilogue(ctx);
- 
- 	if (bpf_jit_enable > 1)
- 		bpf_jit_dump(prog->len, prog_size, pass, ctx->insns);
- 
--	prog->bpf_func = (void *)ctx->insns;
-+	prog->bpf_func = (void *)ctx->ro_insns;
- 	prog->jited = 1;
- 	prog->jited_len = prog_size;
- 
--	bpf_flush_icache(jit_data->header, ctx->insns + ctx->ninsns);
--
- 	if (!prog->is_func || extra_pass) {
--		bpf_jit_binary_lock_ro(jit_data->header);
-+		if (WARN_ON(bpf_jit_binary_pack_finalize(prog,
-+							 jit_data->ro_header,
-+							 jit_data->header))) {
-+			/* ro_header has been freed */
-+			jit_data->ro_header = NULL;
-+			prog = orig_prog;
-+			goto out_offset;
-+		}
-+		/*
-+		 * The instructions have now been copied to the ROX region from
-+		 * where they will execute.
-+		 * Write any modified data cache blocks out to memory and
-+		 * invalidate the corresponding blocks in the instruction cache.
-+		 */
-+		bpf_flush_icache(jit_data->ro_header,
-+				 ctx->ro_insns + ctx->ninsns);
- 		for (i = 0; i < prog->len; i++)
- 			ctx->offset[i] = ninsns_rvoff(ctx->offset[i]);
- 		bpf_prog_fill_jited_linfo(prog, ctx->offset);
-@@ -185,6 +208,15 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		bpf_jit_prog_release_other(prog, prog == orig_prog ?
- 					   tmp : orig_prog);
- 	return prog;
-+
-+out_free_hdr:
-+	if (jit_data->header) {
-+		bpf_arch_text_copy(&jit_data->ro_header->size,
-+				   &jit_data->header->size,
-+				   sizeof(jit_data->header->size));
-+		bpf_jit_binary_pack_free(jit_data->ro_header, jit_data->header);
-+	}
-+	goto out_offset;
- }
- 
- u64 bpf_jit_alloc_exec_limit(void)
-@@ -204,3 +236,52 @@ void bpf_jit_free_exec(void *addr)
- {
- 	return vfree(addr);
- }
-+
-+void *bpf_arch_text_copy(void *dst, void *src, size_t len)
-+{
-+	int ret;
-+
-+	mutex_lock(&text_mutex);
-+	ret = patch_text_nosync(dst, src, len);
-+	mutex_unlock(&text_mutex);
-+
-+	if (ret)
-+		return ERR_PTR(-EINVAL);
-+
-+	return dst;
-+}
-+
-+int bpf_arch_text_invalidate(void *dst, size_t len)
-+{
-+	int ret = 0;
-+
-+	mutex_lock(&text_mutex);
-+	ret = patch_text_set_nosync(dst, 0, len);
-+	mutex_unlock(&text_mutex);
-+
-+	return ret;
-+}
-+
-+void bpf_jit_free(struct bpf_prog *prog)
-+{
-+	if (prog->jited) {
-+		struct rv_jit_data *jit_data = prog->aux->jit_data;
-+		struct bpf_binary_header *hdr;
-+
-+		/*
-+		 * If we fail the final pass of JIT (from jit_subprogs),
-+		 * the program may not be finalized yet. Call finalize here
-+		 * before freeing it.
-+		 */
-+		if (jit_data) {
-+			bpf_jit_binary_pack_finalize(prog, jit_data->ro_header,
-+						     jit_data->header);
-+			kfree(jit_data);
-+		}
-+		hdr = bpf_jit_binary_pack_hdr(prog);
-+		bpf_jit_binary_pack_free(hdr, NULL);
-+		WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(prog));
-+	}
-+
-+	bpf_prog_unlock_free(prog);
-+}
--- 
-2.39.2
+The patch set didn't try to fix the problem for all possible context,
+especially the irq disable context. It just tries to fix the ENOMEM
+problem for process context which is the major context. I still think
+disabling preemption around the whole unit_alloc/free is much solider
+than just do that for irq_work_raise() (e.g., for the nested preemption
+case). But if you have a strong preference for only disabling preemption
+for irq_work_raise(), I will post v2 to do that.
+> Batched alloc will fail. The users have to use bpf_ma differently.
+
+At least under x86-64 and process context, I don't think batched alloc
+will fail as shown in the selftest in which it tries to allocate 512
+4096-sized objects in a bpf_loop. And it also didn't fail when I changed
+bpf_mem_free() to bpf_mem_free_rcu() in bpf_obj_drop() to disable
+immediate reuse.
+> In places where they cannot afford alloc failures they need to pre-allocate.
+> We were planning to introduce bpf_obj_new() that does kmalloc when
+> bpf prog is sleepable. Then bpf prog can stash such manually pre-allocated
+> object and use it later.
+I also thought about the problem when written the patch set. Maybe we
+could introduce bpf_mem_preload() or something similar to do that. For
+non-sleepable bpf program, maybe we need to introduce some userspace
+APIs to do pre-allocation.
 
 
