@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-8502-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8501-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68F95787894
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 21:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 10815787892
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 21:35:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CCE5280199
-	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 19:36:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCB97280366
+	for <lists+bpf@lfdr.de>; Thu, 24 Aug 2023 19:35:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04B8F182D1;
-	Thu, 24 Aug 2023 19:34:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EAFB18045;
+	Thu, 24 Aug 2023 19:34:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD3718036;
-	Thu, 24 Aug 2023 19:34:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A7A18036;
+	Thu, 24 Aug 2023 19:34:08 +0000 (UTC)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E690F1FC7;
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756E31BF0;
 	Thu, 24 Aug 2023 12:34:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1692905642; x=1724441642;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Qz6hpuLmviOaGmr6V7y7olDqf74RE+uzgNC6icYUHTw=;
-  b=hu1xrREsrlXfqDHZrY8EqTqFVmeMUikgDHFvv1/yZ7F6p/whn6aJuFxn
-   Pu+IC0tC3+7NRtWrEoduL3z5RVIYEppIpHzKjBF58MWDo7ywAEJ8d1hqF
-   jLpyyqImd4qvDpAcxtLg2Jbo9J9bvkXqnWawzRuV482BOWcneuLczqTsr
-   KCSxSKlGKIydS9afT553Nf/q7E4vmW+1LoLRLGfAqJufJH/9GrJHblRGg
-   uXXb6IjE7ZjPsW5W37pmyjoUHQCBTZ8WDCNT2ylvngIITVLYoYle1UY81
-   FeDguQ7BKMk8l2O5pj+Wm3Q8ZRe0GrwVx7ox8whABuHEda5eXHHLKTBod
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="374516649"
+  bh=qjTl/GB6HZLKjSbu7LbG5oyjMbEvF6SUYZyttWw8rnc=;
+  b=LFkJD9tCzMwM57XcxZGAUVwEnnWiH0OqWAtLfme/KbxzzdYEfU7wsdkM
+   tErrJYGUgm0GhWtiCdt0wIumePMLzVUcF7UB5z6QAmO6vrNRPRiFcXk5b
+   aDCr0jE4cDmUvIslNLxsWjSVwq+sjS32QYO8Y9jZ+QVxa/itGmR23Kigo
+   lnmVUy4WYx6W2uzHeuwKUUAHHY17HWyo3yly2kFsx7hAND/kRgrqFbPes
+   hDkHaWBThfnrRLM/E9PNV987rwgUn/KKnsdDKtcV0/2mAyrI1q4RAbN89
+   nHjLOnay1iWOjkz7csRrDpSKgDAYO6PX1tTLP2G1kRC07cOxYyGgFUDrS
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="374516637"
 X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="374516649"
+   d="scan'208";a="374516637"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 12:34:02 -0700
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 12:34:01 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="802667400"
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="802667394"
 X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
-   d="scan'208";a="802667400"
+   d="scan'208";a="802667394"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
   by fmsmga008.fm.intel.com with ESMTP; 24 Aug 2023 12:33:56 -0700
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id 112BB33EA3;
-	Thu, 24 Aug 2023 20:33:52 +0100 (IST)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 167B333EAB;
+	Thu, 24 Aug 2023 20:33:54 +0100 (IST)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: bpf@vger.kernel.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -77,9 +77,9 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	Simon Horman <simon.horman@corigine.com>,
 	Tariq Toukan <tariqt@mellanox.com>,
 	Saeed Mahameed <saeedm@mellanox.com>
-Subject: [RFC bpf-next 03/23] ice: make RX checksum checking code more reusable
-Date: Thu, 24 Aug 2023 21:26:42 +0200
-Message-ID: <20230824192703.712881-4-larysa.zaremba@intel.com>
+Subject: [RFC bpf-next 04/23] ice: Make ptype internal to descriptor info processing
+Date: Thu, 24 Aug 2023 21:26:43 +0200
+Message-ID: <20230824192703.712881-5-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230824192703.712881-1-larysa.zaremba@intel.com>
 References: <20230824192703.712881-1-larysa.zaremba@intel.com>
@@ -97,190 +97,125 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Previously, we only needed RX checksum flags in skb path,
-hence all related code was written with skb in mind.
-But with the addition of XDP hints via kfuncs to the ice driver,
-the same logic will be needed in .xmo_() callbacks.
+Currently, rx_ptype variable is used only as an argument
+to ice_process_skb_fields() and is computed
+just before the function call.
 
-Put generic process of determining checksum status into
-a separate function.
+Therefore, there is no reason to pass this value as an argument.
+Instead, remove this argument and compute the value directly inside
+ice_process_skb_fields() function.
 
-Now we cannot operate directly on skb, when deducing
-checksum status, therefore introduce an intermediate enum for checksum
-status. Fortunately, in ice, we have only 4 possibilities: checksum
-validated at level 0, validated at level 1, no checksum, checksum error.
-Use 3 bits for more convenient conversion.
+Also, separate its calculation into a short function, so the code
+can later be reused in .xmo_() callbacks.
 
 Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 ---
- drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 105 ++++++++++++------
- 1 file changed, 69 insertions(+), 36 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_txrx.c     |  6 +-----
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 15 +++++++++++++--
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.h |  2 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c      |  6 +-----
+ 4 files changed, 16 insertions(+), 13 deletions(-)
 
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
+index 52d0a126eb61..40f2f6dabb81 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx.c
++++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
+@@ -1181,7 +1181,6 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
+ 		unsigned int size;
+ 		u16 stat_err_bits;
+ 		u16 vlan_tag = 0;
+-		u16 rx_ptype;
+ 
+ 		/* get the Rx desc from Rx ring based on 'next_to_clean' */
+ 		rx_desc = ICE_RX_DESC(rx_ring, ntc);
+@@ -1286,10 +1285,7 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
+ 		total_rx_bytes += skb->len;
+ 
+ 		/* populate checksum, VLAN, and protocol */
+-		rx_ptype = le16_to_cpu(rx_desc->wb.ptype_flex_flags0) &
+-			ICE_RX_FLEX_DESC_PTYPE_M;
+-
+-		ice_process_skb_fields(rx_ring, rx_desc, skb, rx_ptype);
++		ice_process_skb_fields(rx_ring, rx_desc, skb);
+ 
+ 		ice_trace(clean_rx_irq_indicate, rx_ring, rx_desc, skb);
+ 		/* send completed skb up the stack */
 diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-index b2f241b73934..8b155a502b3b 100644
+index 8b155a502b3b..07241f4229b7 100644
 --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
 +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-@@ -102,18 +102,41 @@ ice_rx_hash_to_skb(const struct ice_rx_ring *rx_ring,
- 		skb_set_hash(skb, hash, ice_ptype_to_htype(rx_ptype));
+@@ -241,12 +241,21 @@ ice_ptp_rx_hwts_to_skb(struct ice_rx_ring *rx_ring,
+ 	};
  }
  
-+enum ice_rx_csum_status {
-+	ICE_RX_CSUM_LVL_0	= 0,
-+	ICE_RX_CSUM_LVL_1	= BIT(0),
-+	ICE_RX_CSUM_NONE	= BIT(1),
-+	ICE_RX_CSUM_ERROR	= BIT(2),
-+	ICE_RX_CSUM_FAIL	= ICE_RX_CSUM_NONE | ICE_RX_CSUM_ERROR,
-+};
++/**
++ * ice_get_ptype - Read HW packet type from the descriptor
++ * @rx_desc: RX descriptor
++ */
++static u16 ice_get_ptype(const union ice_32b_rx_flex_desc *rx_desc)
++{
++	return le16_to_cpu(rx_desc->wb.ptype_flex_flags0) &
++	       ICE_RX_FLEX_DESC_PTYPE_M;
++}
 +
  /**
-- * ice_rx_csum - Indicate in skb if checksum is good
-- * @ring: the ring we care about
-- * @skb: skb currently being received and modified
-+ * ice_rx_csum_lvl - Get checksum level from status
-+ * @status: driver-specific checksum status
-+ */
-+static u8 ice_rx_csum_lvl(enum ice_rx_csum_status status)
-+{
-+	return status & ICE_RX_CSUM_LVL_1;
-+}
-+
-+/**
-+ * ice_rx_csum_ip_summed - Checksum status from driver-specific to generic
-+ * @status: driver-specific checksum status
-+ */
-+static u8 ice_rx_csum_ip_summed(enum ice_rx_csum_status status)
-+{
-+	return status & ICE_RX_CSUM_NONE ? CHECKSUM_NONE : CHECKSUM_UNNECESSARY;
-+}
-+
-+/**
-+ * ice_get_rx_csum_status - Deduce checksum status from descriptor
-  * @rx_desc: the receive descriptor
-  * @ptype: the packet type decoded by hardware
+  * ice_process_skb_fields - Populate skb header fields from Rx descriptor
+  * @rx_ring: Rx descriptor ring packet is being transacted on
+  * @rx_desc: pointer to the EOP Rx descriptor
+  * @skb: pointer to current skb being populated
+- * @ptype: the packet type decoded by hardware
   *
-- * skb->protocol must be set before this function is called
-+ * Returns driver-specific checksum status
-  */
--static void
--ice_rx_csum(struct ice_rx_ring *ring, struct sk_buff *skb,
--	    union ice_32b_rx_flex_desc *rx_desc, u16 ptype)
-+static enum ice_rx_csum_status
-+ice_get_rx_csum_status(const union ice_32b_rx_flex_desc *rx_desc, u16 ptype)
+  * This function checks the ring, descriptor, and packet information in
+  * order to populate the hash, checksum, VLAN, protocol, and
+@@ -255,8 +264,10 @@ ice_ptp_rx_hwts_to_skb(struct ice_rx_ring *rx_ring,
+ void
+ ice_process_skb_fields(struct ice_rx_ring *rx_ring,
+ 		       union ice_32b_rx_flex_desc *rx_desc,
+-		       struct sk_buff *skb, u16 ptype)
++		       struct sk_buff *skb)
  {
- 	struct ice_rx_ptype_decoded decoded;
- 	u16 rx_status0, rx_status1;
-@@ -124,20 +147,12 @@ ice_rx_csum(struct ice_rx_ring *ring, struct sk_buff *skb,
- 
- 	decoded = ice_decode_rx_desc_ptype(ptype);
- 
--	/* Start with CHECKSUM_NONE and by default csum_level = 0 */
--	skb->ip_summed = CHECKSUM_NONE;
--	skb_checksum_none_assert(skb);
--
--	/* check if Rx checksum is enabled */
--	if (!(ring->netdev->features & NETIF_F_RXCSUM))
--		return;
--
- 	/* check if HW has decoded the packet and checksum */
- 	if (!(rx_status0 & BIT(ICE_RX_FLEX_DESC_STATUS0_L3L4P_S)))
--		return;
-+		return ICE_RX_CSUM_NONE;
- 
- 	if (!(decoded.known && decoded.outer_ip))
--		return;
-+		return ICE_RX_CSUM_NONE;
- 
- 	ipv4 = (decoded.outer_ip == ICE_RX_PTYPE_OUTER_IP) &&
- 	       (decoded.outer_ip_ver == ICE_RX_PTYPE_OUTER_IPV4);
-@@ -146,43 +161,61 @@ ice_rx_csum(struct ice_rx_ring *ring, struct sk_buff *skb,
- 
- 	if (ipv4 && (rx_status0 & (BIT(ICE_RX_FLEX_DESC_STATUS0_XSUM_IPE_S) |
- 				   BIT(ICE_RX_FLEX_DESC_STATUS0_XSUM_EIPE_S))))
--		goto checksum_fail;
-+		return ICE_RX_CSUM_FAIL;
- 
- 	if (ipv6 && (rx_status0 & (BIT(ICE_RX_FLEX_DESC_STATUS0_IPV6EXADD_S))))
--		goto checksum_fail;
-+		return ICE_RX_CSUM_FAIL;
- 
- 	/* check for L4 errors and handle packets that were not able to be
- 	 * checksummed due to arrival speed
- 	 */
- 	if (rx_status0 & BIT(ICE_RX_FLEX_DESC_STATUS0_XSUM_L4E_S))
--		goto checksum_fail;
-+		return ICE_RX_CSUM_FAIL;
- 
- 	/* check for outer UDP checksum error in tunneled packets */
- 	if ((rx_status1 & BIT(ICE_RX_FLEX_DESC_STATUS1_NAT_S)) &&
- 	    (rx_status0 & BIT(ICE_RX_FLEX_DESC_STATUS0_XSUM_EUDPE_S)))
--		goto checksum_fail;
--
--	/* If there is an outer header present that might contain a checksum
--	 * we need to bump the checksum level by 1 to reflect the fact that
--	 * we are indicating we validated the inner checksum.
--	 */
--	if (decoded.tunnel_type >= ICE_RX_PTYPE_TUNNEL_IP_GRENAT)
--		skb->csum_level = 1;
-+		return ICE_RX_CSUM_FAIL;
- 
- 	/* Only report checksum unnecessary for TCP, UDP, or SCTP */
- 	switch (decoded.inner_prot) {
- 	case ICE_RX_PTYPE_INNER_PROT_TCP:
- 	case ICE_RX_PTYPE_INNER_PROT_UDP:
- 	case ICE_RX_PTYPE_INNER_PROT_SCTP:
--		skb->ip_summed = CHECKSUM_UNNECESSARY;
--		break;
--	default:
--		break;
-+		/* If there is an outer header present that might contain
-+		 * a checksum we need to bump the checksum level by 1 to reflect
-+		 * the fact that we have validated the inner checksum.
-+		 */
-+		return decoded.tunnel_type >= ICE_RX_PTYPE_TUNNEL_IP_GRENAT ?
-+		       ICE_RX_CSUM_LVL_1 : ICE_RX_CSUM_LVL_0;
- 	}
--	return;
- 
--checksum_fail:
--	ring->vsi->back->hw_csum_rx_error++;
-+	return ICE_RX_CSUM_NONE;
-+}
++	u16 ptype = ice_get_ptype(rx_desc);
 +
-+/**
-+ * ice_rx_csum_into_skb - Indicate in skb if checksum is good
-+ * @ring: the ring we care about
-+ * @skb: skb currently being received and modified
-+ * @rx_desc: the receive descriptor
-+ * @ptype: the packet type decoded by hardware
-+ */
-+static void
-+ice_rx_csum_into_skb(struct ice_rx_ring *ring, struct sk_buff *skb,
-+		     const union ice_32b_rx_flex_desc *rx_desc, u16 ptype)
-+{
-+	enum ice_rx_csum_status csum_status;
-+
-+	/* check if Rx checksum is enabled */
-+	if (!(ring->netdev->features & NETIF_F_RXCSUM))
-+		return;
-+
-+	csum_status = ice_get_rx_csum_status(rx_desc, ptype);
-+	if (csum_status & ICE_RX_CSUM_ERROR)
-+		ring->vsi->back->hw_csum_rx_error++;
-+
-+	skb->ip_summed = ice_rx_csum_ip_summed(csum_status);
-+	skb->csum_level = ice_rx_csum_lvl(csum_status);
- }
+ 	ice_rx_hash_to_skb(rx_ring, rx_desc, skb, ptype);
  
- /**
-@@ -229,7 +262,7 @@ ice_process_skb_fields(struct ice_rx_ring *rx_ring,
  	/* modifies the skb - consumes the enet header */
- 	skb->protocol = eth_type_trans(skb, rx_ring->netdev);
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
+index 115969ecdf7b..e1d49e1235b3 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
++++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
+@@ -148,7 +148,7 @@ void ice_release_rx_desc(struct ice_rx_ring *rx_ring, u16 val);
+ void
+ ice_process_skb_fields(struct ice_rx_ring *rx_ring,
+ 		       union ice_32b_rx_flex_desc *rx_desc,
+-		       struct sk_buff *skb, u16 ptype);
++		       struct sk_buff *skb);
+ void
+ ice_receive_skb(struct ice_rx_ring *rx_ring, struct sk_buff *skb, u16 vlan_tag);
+ #endif /* !_ICE_TXRX_LIB_H_ */
+diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+index 2a3f0834e139..ef778b8e6d1b 100644
+--- a/drivers/net/ethernet/intel/ice/ice_xsk.c
++++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+@@ -870,7 +870,6 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
+ 		struct sk_buff *skb;
+ 		u16 stat_err_bits;
+ 		u16 vlan_tag = 0;
+-		u16 rx_ptype;
  
--	ice_rx_csum(rx_ring, skb, rx_desc, ptype);
-+	ice_rx_csum_into_skb(rx_ring, skb, rx_desc, ptype);
+ 		rx_desc = ICE_RX_DESC(rx_ring, ntc);
  
- 	if (rx_ring->ptp_rx)
- 		ice_ptp_rx_hwts_to_skb(rx_ring, rx_desc, skb);
+@@ -950,10 +949,7 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
+ 
+ 		vlan_tag = ice_get_vlan_tag_from_rx_desc(rx_desc);
+ 
+-		rx_ptype = le16_to_cpu(rx_desc->wb.ptype_flex_flags0) &
+-				       ICE_RX_FLEX_DESC_PTYPE_M;
+-
+-		ice_process_skb_fields(rx_ring, rx_desc, skb, rx_ptype);
++		ice_process_skb_fields(rx_ring, rx_desc, skb);
+ 		ice_receive_skb(rx_ring, skb, vlan_tag);
+ 	}
+ 
 -- 
 2.41.0
 
