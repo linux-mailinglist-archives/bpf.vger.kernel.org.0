@@ -1,184 +1,96 @@
-Return-Path: <bpf+bounces-8614-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8615-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDF7F788B6F
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 16:16:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24DDE788B79
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 16:18:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19C411C21033
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 14:16:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D14782819F3
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 14:18:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30CB21078D;
-	Fri, 25 Aug 2023 14:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E259910785;
+	Fri, 25 Aug 2023 14:18:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03472101D2;
-	Fri, 25 Aug 2023 14:16:37 +0000 (UTC)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4768E26A6;
-	Fri, 25 Aug 2023 07:16:13 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso122297966b.1;
-        Fri, 25 Aug 2023 07:16:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692972910; x=1693577710;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BCh/SkT77T2Ffe7WtjbsHe67/BKAxXhiOOGhuLP94jw=;
-        b=i7ddXGPylDzR0I6AGUY+4BbMsDkjQcZzLGkQxRODWnXGWBeTmbglt/ZcTYDGuC2yTm
-         Jp2kxq75o2VzkJKXDzsHt4j0hYQWTTXIsarDASyqBW06BYXd5E3T5vN5AuKQwUrYkOJH
-         EhYkFirUcRvH+VRlKaEmUUKi+147VPCGeMlh0xtrI4iaRggxWmn41WROVWnuIbreRwSm
-         DlU9oqysXfrLbGY4Tl4QPK5aTVwmeQeMa4iMRxka3SH3ws5qgqNWnScRNUP1sgiMRfY7
-         FbwglmSSmpHK4b8OKulXecmG1zIQFR7FgzFF+c8FuMaymdDSswspEBmqsBZPw125yYgw
-         GxuA==
-X-Gm-Message-State: AOJu0YwJyiVHsqRN/UAxfw6Xm/tuopsfMs4LvESyIds3hlv1DD1xKmzT
-	eXHsfBwzDB/0hM03CrJMbYs=
-X-Google-Smtp-Source: AGHT+IGQ+BS7r6qMCNwz4eVEEF8AR1o7mkAPgh8C4EePozWNU8E/0B3fxHTTLeScNXWoiZOk6sOFPQ==
-X-Received: by 2002:a17:907:a06a:b0:9a1:f46c:ffc5 with SMTP id ia10-20020a170907a06a00b009a1f46cffc5mr4877449ejc.41.1692972910299;
-        Fri, 25 Aug 2023 07:15:10 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-021.fbsv.net. [2a03:2880:31ff:15::face:b00c])
-        by smtp.gmail.com with ESMTPSA id fx13-20020a170906b74d00b00982be08a9besm1014734ejb.172.2023.08.25.07.15.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 07:15:09 -0700 (PDT)
-Date: Fri, 25 Aug 2023 07:15:05 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	io-uring@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
-	krisman@suse.de, Wang Yufen <wangyufen@huawei.com>,
-	Daniel =?iso-8859-1?Q?M=FCller?= <deso@posteo.net>,
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
-	sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
-	willemdebruijn.kernel@gmail.com,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v3 9/9] selftests/bpf/sockopt: Add io_uring support
-Message-ID: <ZOi3aeq43hVb1Ner@gmail.com>
-References: <20230817145554.892543-1-leitao@debian.org>
- <20230817145554.892543-10-leitao@debian.org>
- <59278e71-3a88-5da9-b46e-9992987d258d@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1406C8CE
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 14:18:05 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017212682;
+	Fri, 25 Aug 2023 07:17:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=97b0JfQGSNXqXd4NigawyuOiSD9yyLhmMPvce7xdAJo=; b=bZk9slxNMCK8YfIOmLcT8bDoQ+
+	CF+iY2j2oqXiKFmSR7+zwzbCqwEpYA5VISyStJg2Tttg/Pl3MZ5WGrNerwHBT4gigZU31jLXYn76A
+	ulpj+UZiVCyzAmkOup3aEDwMe4Jh6rUWaKfaY758KyVI/8kFRMxeEX/wkfhKFZh/iw5Ya5CKrKYNE
+	Uz9+CUnyciMsTGggroLM4tSx5DHd8kufPkmohiyotTXibwExH6WZq/urzgWF6RnzMzM+IvmNaHVKP
+	eW+Hor8lFEYZ6rXt9YH9AQZEdDShegK83YSVFG2kS7ZdaG3RxubcGPwsqji2crERVvpByraHyFT4M
+	Yl2Bf2lg==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qZXcI-000Hqa-5E; Fri, 25 Aug 2023 16:16:50 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qZXcH-000OoA-W6; Fri, 25 Aug 2023 16:16:50 +0200
+Subject: Re: [PATCH 1/2] Documentation: sphinx: Add sphinx-prompt
+To: Nishanth Menon <nm@ti.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>
+Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ bpf@vger.kernel.org, Heinrich Schuchardt
+ <heinrich.schuchardt@canonical.com>,
+ Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+ Simon Glass <sjg@chromium.org>, Tom Rini <trini@konsulko.com>,
+ Neha Francis <n-francis@ti.com>
+References: <20230824182107.3702766-1-nm@ti.com>
+ <20230824182107.3702766-2-nm@ti.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <149528e1-062b-ebed-aa25-d37be5fe5894@iogearbox.net>
+Date: Fri, 25 Aug 2023 16:16:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <59278e71-3a88-5da9-b46e-9992987d258d@linux.dev>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+In-Reply-To: <20230824182107.3702766-2-nm@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/27011/Fri Aug 25 09:40:47 2023)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Aug 21, 2023 at 01:59:12PM -0700, Martin KaFai Lau wrote:
-> On 8/17/23 7:55 AM, Breno Leitao wrote:
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > index 538df8fb8c42..4da04242b848 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -362,6 +362,7 @@ CLANG_CFLAGS = $(CLANG_SYS_INCLUDES) \
-> >   $(OUTPUT)/test_l4lb_noinline.o: BPF_CFLAGS += -fno-inline
-> >   $(OUTPUT)/test_xdp_noinline.o: BPF_CFLAGS += -fno-inline
-> > +$(OUTPUT)/test_progs.o: CFLAGS += -I../../../include/
+On 8/24/23 8:21 PM, Nishanth Menon wrote:
+> Sphinx-prompt[1] helps bring-in '.. prompt::' option that allows a
+> better rendered documentation, yet be able to copy paste without
+> picking up the prompt from the rendered documentation.
 > 
-> This is the tools/include? Is it really needed? iirc, some of the
-> prog_tests/*.c has already been using files from tools/include.
+> [1] https://pypi.org/project/sphinx-prompt/
+> Link: https://lore.kernel.org/all/87fs48rgto.fsf@baylibre.com/
+> Suggested-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+> Suggested-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+> Signed-off-by: Nishanth Menon <nm@ti.com>
 
-You are right, we don't need it.
+Given the patch 2/2 is targeted for bpf docs, we can route this via bpf-next.
+Jonathan, could we get an ack for this one if it looks good to you?
 
-> >   $(OUTPUT)/flow_dissector_load.o: flow_dissector_load.h
-> >   $(OUTPUT)/cgroup_getset_retval_hooks.o: cgroup_getset_retval_hooks.h
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt.c b/tools/testing/selftests/bpf/prog_tests/sockopt.c
-> > index 9e6a5e3ed4de..4693ad8bfe8f 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/sockopt.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/sockopt.c
-> > @@ -1,5 +1,6 @@
-> >   // SPDX-License-Identifier: GPL-2.0
-> >   #include <test_progs.h>
-> > +#include <io_uring/mini_liburing.h>
-> >   #include "cgroup_helpers.h"
-> >   static char bpf_log_buf[4096];
-> > @@ -38,6 +39,7 @@ static struct sockopt_test {
-> >   	socklen_t			get_optlen_ret;
-> >   	enum sockopt_test_error		error;
-> > +	bool				io_uring_support;
-> >   } tests[] = {
-> >   	/* ==================== getsockopt ====================  */
-> > @@ -53,6 +55,7 @@ static struct sockopt_test {
-> >   		.attach_type = BPF_CGROUP_GETSOCKOPT,
-> >   		.expected_attach_type = 0,
-> >   		.error = DENY_LOAD,
-> > +		.io_uring_support = true,
-> 
-> DENY_LOAD probably won't be an intersting test. The set/getsockopt won't be called.
-
-Yea, I will remove all the DENY_LOAD and DENY_ATTACH tests.
-
-> The existing test does not seem to have SOL_SOCKET for getsockopt also.
-
-I am planning to move two tests to use SOL_SOCKET so we can also
-exercise the io_uring tests. This is what I have in mind right now:
-
- * getsockopt: read ctx->optlen
- * getsockopt: support smaller ctx->optlen
-
-> > -static int run_test(int cgroup_fd, struct sockopt_test *test)
-> > +/* Core function that handles io_uring ring initialization,
-> > + * sending SQE with sockopt command and waiting for the CQE.
-> > + */
-> > +static int uring_sockopt(int op, int fd, int level, int optname,
-> > +			 const void *optval, socklen_t optlen)
-> > +{
-> > +	struct io_uring_cqe *cqe;
-> > +	struct io_uring_sqe *sqe;
-> > +	struct io_uring ring;
-> > +	int err;
-> > +
-> > +	err = io_uring_queue_init(1, &ring, 0);
-> > +	if (err) {
-> > +		log_err("Failed to initialize io_uring ring");
-> > +		return err;
-> > +	}
-> > +
-> > +	sqe = io_uring_get_sqe(&ring);
-> > +	if (!sqe) {
-> > +		log_err("Failed to get an SQE");
-> > +		return -1;
-> 
-> No need to io_uring_queue_exit() on the error path?
-
-Good idea. updating it.
-
-> > +	}
-> > +
-> > +	io_uring_prep_cmd(sqe, op, fd, level, optname, optval, optlen);
-> > +
-> > +	err = io_uring_submit(&ring);
-> > +	if (err != 1) {
-> > +		log_err("Failed to submit SQE");
-> 
-> Use ASSERT_* instead.
-> 
-> Regarding how to land this set,
-> it will be useful to have the selftest running in the bpf CI. While there is
-> iouring changes, some of the changes is in bpf and/or netdev also. eg. Patch
-> 3 already has a conflict with the net-next and bpf-next tree because of a
-> recent commit in socket.c on Aug 9.
-> 
-> May be Alexi and Daniel can advise how was similar patch managed before ?
-> 
-> 
+Thanks,
+Daniel
 
