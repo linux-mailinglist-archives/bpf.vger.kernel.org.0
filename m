@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-8600-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8596-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCA4D788A86
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 16:05:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3AF5788A2D
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 16:04:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83C472817CF
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 14:05:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 012961C210A6
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 14:04:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87EE210794;
-	Fri, 25 Aug 2023 14:04:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77F0B10788;
+	Fri, 25 Aug 2023 14:02:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55BFE101F2
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 14:04:14 +0000 (UTC)
-Received: from out-250.mta1.migadu.com (out-250.mta1.migadu.com [IPv6:2001:41d0:203:375::fa])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496942713;
-	Fri, 25 Aug 2023 07:03:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47964101F2
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 14:02:45 +0000 (UTC)
+Received: from out-247.mta1.migadu.com (out-247.mta1.migadu.com [IPv6:2001:41d0:203:375::f7])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27842720;
+	Fri, 25 Aug 2023 07:02:18 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692971737;
+	t=1692972134;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=T0rAQ2m4NCOjyQSS+sDl9LbRcvD63qBgcFke1LvzwG4=;
-	b=FhWBDojlb1xYVHNahPbh8JswlNyJ/7jP1EQwNTm7cO8OehSugwUDArDmc1mbqA0BkMNMvY
-	d5QJXx+UI3kBCUhvBoGQg8tDI16sv1k0yhgjUCPvI7yY9h5j0N5DBUGFQcYH7e2p4/SYF7
-	drCs2jVg1zT9ErcXMBzhoggf+SCjkYU=
+	bh=KWqxpxLv+BWdZ1zPLCWWiPjW3gW3QR8GdaNCgbqB+rA=;
+	b=W3mJ9hHH5VKigloC5U9bTjeZXL1WzXE+if57PbkgslJR/vwxXv7urAz03rnLzn8z8erL5h
+	VCpx6iOsBDC23kpw8k8XGE0qr0cLxvBRgKj1NfrV6YtEtntJMub0qfyQ1aHr3mZsH0O0dL
+	P836PFFsTuNux9i0jwQOVu5ehTDOpZM=
 From: Hao Xu <hao.xu@linux.dev>
 To: io-uring@vger.kernel.org,
 	Jens Axboe <axboe@kernel.dk>
@@ -66,9 +66,9 @@ Cc: Dominique Martinet <asmadeus@codewreck.org>,
 	samba-technical@lists.samba.org,
 	linux-mtd@lists.infradead.org,
 	Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCH 02/29] xfs: rename XBF_TRYLOCK to XBF_NOWAIT
-Date: Fri, 25 Aug 2023 21:54:04 +0800
-Message-Id: <20230825135431.1317785-3-hao.xu@linux.dev>
+Subject: [PATCH 16/29] xfs: add nowait parameter for xfs_inode_item_init()
+Date: Fri, 25 Aug 2023 21:54:18 +0800
+Message-Id: <20230825135431.1317785-17-hao.xu@linux.dev>
 In-Reply-To: <20230825135431.1317785-1-hao.xu@linux.dev>
 References: <20230825135431.1317785-1-hao.xu@linux.dev>
 Precedence: bulk
@@ -87,139 +87,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 From: Hao Xu <howeyxu@tencent.com>
 
-XBF_TRYLOCK means we need lock but don't block on it, we can use it to
-stand for not waiting for memory allcation. Rename XBF_TRYLOCK to
-XBF_NOWAIT, which is more generic.
+Add nowait parameter for xfs_inode_item_init() to support nowait
+semantics.
 
 Signed-off-by: Hao Xu <howeyxu@tencent.com>
 ---
- fs/xfs/libxfs/xfs_alloc.c       | 2 +-
- fs/xfs/libxfs/xfs_attr_remote.c | 2 +-
- fs/xfs/libxfs/xfs_btree.c       | 2 +-
- fs/xfs/scrub/repair.c           | 2 +-
- fs/xfs/xfs_buf.c                | 6 +++---
- fs/xfs/xfs_buf.h                | 4 ++--
- fs/xfs/xfs_dquot.c              | 2 +-
- 7 files changed, 10 insertions(+), 10 deletions(-)
+ fs/xfs/libxfs/xfs_trans_inode.c |  3 ++-
+ fs/xfs/xfs_inode_item.c         | 12 ++++++++----
+ fs/xfs/xfs_inode_item.h         |  3 ++-
+ 3 files changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/fs/xfs/libxfs/xfs_alloc.c b/fs/xfs/libxfs/xfs_alloc.c
-index 3069194527dd..a75b9298faa8 100644
---- a/fs/xfs/libxfs/xfs_alloc.c
-+++ b/fs/xfs/libxfs/xfs_alloc.c
-@@ -3183,7 +3183,7 @@ xfs_alloc_read_agf(
- 	ASSERT((flags & (XFS_ALLOC_FLAG_FREEING | XFS_ALLOC_FLAG_TRYLOCK)) !=
- 			(XFS_ALLOC_FLAG_FREEING | XFS_ALLOC_FLAG_TRYLOCK));
- 	error = xfs_read_agf(pag, tp,
--			(flags & XFS_ALLOC_FLAG_TRYLOCK) ? XBF_TRYLOCK : 0,
-+			(flags & XFS_ALLOC_FLAG_TRYLOCK) ? XBF_NOWAIT : 0,
- 			&agfbp);
- 	if (error)
- 		return error;
-diff --git a/fs/xfs/libxfs/xfs_attr_remote.c b/fs/xfs/libxfs/xfs_attr_remote.c
-index d440393b40eb..2ccb0867824c 100644
---- a/fs/xfs/libxfs/xfs_attr_remote.c
-+++ b/fs/xfs/libxfs/xfs_attr_remote.c
-@@ -661,7 +661,7 @@ xfs_attr_rmtval_invalidate(
- 			return error;
- 		if (XFS_IS_CORRUPT(args->dp->i_mount, nmap != 1))
- 			return -EFSCORRUPTED;
--		error = xfs_attr_rmtval_stale(args->dp, &map, XBF_TRYLOCK);
-+		error = xfs_attr_rmtval_stale(args->dp, &map, XBF_NOWAIT);
- 		if (error)
- 			return error;
+diff --git a/fs/xfs/libxfs/xfs_trans_inode.c b/fs/xfs/libxfs/xfs_trans_inode.c
+index cb4796b6e693..e7a8f63c8975 100644
+--- a/fs/xfs/libxfs/xfs_trans_inode.c
++++ b/fs/xfs/libxfs/xfs_trans_inode.c
+@@ -33,7 +33,8 @@ xfs_trans_ijoin(
  
-diff --git a/fs/xfs/libxfs/xfs_btree.c b/fs/xfs/libxfs/xfs_btree.c
-index 6a6503ab0cd7..77c4f1d83475 100644
---- a/fs/xfs/libxfs/xfs_btree.c
-+++ b/fs/xfs/libxfs/xfs_btree.c
-@@ -1343,7 +1343,7 @@ xfs_btree_read_buf_block(
- 	int			error;
+ 	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
+ 	if (ip->i_itemp == NULL)
+-		xfs_inode_item_init(ip, ip->i_mount);
++		xfs_inode_item_init(ip, ip->i_mount,
++				    tp->t_flags & XFS_TRANS_NOWAIT);
+ 	iip = ip->i_itemp;
  
- 	/* need to sort out how callers deal with failures first */
--	ASSERT(!(flags & XBF_TRYLOCK));
-+	ASSERT(!(flags & XBF_NOWAIT));
- 
- 	error = xfs_btree_ptr_to_daddr(cur, ptr, &d);
- 	if (error)
-diff --git a/fs/xfs/scrub/repair.c b/fs/xfs/scrub/repair.c
-index ac6d8803e660..9312cf3b20e2 100644
---- a/fs/xfs/scrub/repair.c
-+++ b/fs/xfs/scrub/repair.c
-@@ -460,7 +460,7 @@ xrep_invalidate_block(
- 
- 	error = xfs_buf_incore(sc->mp->m_ddev_targp,
- 			XFS_FSB_TO_DADDR(sc->mp, fsbno),
--			XFS_FSB_TO_BB(sc->mp, 1), XBF_TRYLOCK, &bp);
-+			XFS_FSB_TO_BB(sc->mp, 1), XBF_NOWAIT, &bp);
- 	if (error)
- 		return 0;
- 
-diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-index 15d1e5a7c2d3..9f84bc3b802c 100644
---- a/fs/xfs/xfs_buf.c
-+++ b/fs/xfs/xfs_buf.c
-@@ -228,7 +228,7 @@ _xfs_buf_alloc(
- 	 * We don't want certain flags to appear in b_flags unless they are
- 	 * specifically set by later operations on the buffer.
- 	 */
--	flags &= ~(XBF_UNMAPPED | XBF_TRYLOCK | XBF_ASYNC | XBF_READ_AHEAD);
-+	flags &= ~(XBF_UNMAPPED | XBF_NOWAIT | XBF_ASYNC | XBF_READ_AHEAD);
- 
- 	atomic_set(&bp->b_hold, 1);
- 	atomic_set(&bp->b_lru_ref, 1);
-@@ -543,7 +543,7 @@ xfs_buf_find_lock(
- 	struct xfs_buf          *bp,
- 	xfs_buf_flags_t		flags)
+ 	ASSERT(iip->ili_lock_flags == 0);
+diff --git a/fs/xfs/xfs_inode_item.c b/fs/xfs/xfs_inode_item.c
+index 91c847a84e10..1742920bb4ce 100644
+--- a/fs/xfs/xfs_inode_item.c
++++ b/fs/xfs/xfs_inode_item.c
+@@ -825,21 +825,25 @@ static const struct xfs_item_ops xfs_inode_item_ops = {
+ /*
+  * Initialize the inode log item for a newly allocated (in-core) inode.
+  */
+-void
++int
+ xfs_inode_item_init(
+ 	struct xfs_inode	*ip,
+-	struct xfs_mount	*mp)
++	struct xfs_mount	*mp,
++	bool			nowait)
  {
--	if (flags & XBF_TRYLOCK) {
-+	if (flags & XBF_NOWAIT) {
- 		if (!xfs_buf_trylock(bp)) {
- 			XFS_STATS_INC(bp->b_mount, xb_busy_locked);
- 			return -EAGAIN;
-@@ -886,7 +886,7 @@ xfs_buf_readahead_map(
- 	struct xfs_buf		*bp;
+ 	struct xfs_inode_log_item *iip;
++	gfp_t gfp_flags = GFP_KERNEL | (nowait ? 0 : __GFP_NOFAIL);
  
- 	xfs_buf_read_map(target, map, nmaps,
--		     XBF_TRYLOCK | XBF_ASYNC | XBF_READ_AHEAD, &bp, ops,
-+		     XBF_NOWAIT | XBF_ASYNC | XBF_READ_AHEAD, &bp, ops,
- 		     __this_address);
+ 	ASSERT(ip->i_itemp == NULL);
+-	iip = ip->i_itemp = kmem_cache_zalloc(xfs_ili_cache,
+-					      GFP_KERNEL | __GFP_NOFAIL);
++	iip = ip->i_itemp = kmem_cache_zalloc(xfs_ili_cache, gfp_flags);
++	if (!iip)
++		return -EAGAIN;
+ 
+ 	iip->ili_inode = ip;
+ 	spin_lock_init(&iip->ili_lock);
+ 	xfs_log_item_init(mp, &iip->ili_item, XFS_LI_INODE,
+ 						&xfs_inode_item_ops);
++	return 0;
  }
  
-diff --git a/fs/xfs/xfs_buf.h b/fs/xfs/xfs_buf.h
-index 549c60942208..8cd307626939 100644
---- a/fs/xfs/xfs_buf.h
-+++ b/fs/xfs/xfs_buf.h
-@@ -45,7 +45,7 @@ struct xfs_buf;
- 
- /* flags used only as arguments to access routines */
- #define XBF_INCORE	 (1u << 29)/* lookup only, return if found in cache */
--#define XBF_TRYLOCK	 (1u << 30)/* lock requested, but do not wait */
-+#define XBF_NOWAIT	 (1u << 30)/* mem/lock requested, but do not wait */
- #define XBF_UNMAPPED	 (1u << 31)/* do not map the buffer */
- 
- 
-@@ -68,7 +68,7 @@ typedef unsigned int xfs_buf_flags_t;
- 	{ _XBF_DELWRI_Q,	"DELWRI_Q" }, \
- 	/* The following interface flags should never be set */ \
- 	{ XBF_INCORE,		"INCORE" }, \
--	{ XBF_TRYLOCK,		"TRYLOCK" }, \
-+	{ XBF_NOWAIT,		"NOWAIT" }, \
- 	{ XBF_UNMAPPED,		"UNMAPPED" }
- 
  /*
-diff --git a/fs/xfs/xfs_dquot.c b/fs/xfs/xfs_dquot.c
-index 7f071757f278..5bc01ed4b2d7 100644
---- a/fs/xfs/xfs_dquot.c
-+++ b/fs/xfs/xfs_dquot.c
-@@ -1233,7 +1233,7 @@ xfs_qm_dqflush(
- 	 * Get the buffer containing the on-disk dquot
- 	 */
- 	error = xfs_trans_read_buf(mp, NULL, mp->m_ddev_targp, dqp->q_blkno,
--				   mp->m_quotainfo->qi_dqchunklen, XBF_TRYLOCK,
-+				   mp->m_quotainfo->qi_dqchunklen, XBF_NOWAIT,
- 				   &bp, &xfs_dquot_buf_ops);
- 	if (error == -EAGAIN)
- 		goto out_unlock;
+diff --git a/fs/xfs/xfs_inode_item.h b/fs/xfs/xfs_inode_item.h
+index 377e06007804..7ba6f8a6b243 100644
+--- a/fs/xfs/xfs_inode_item.h
++++ b/fs/xfs/xfs_inode_item.h
+@@ -42,7 +42,8 @@ static inline int xfs_inode_clean(struct xfs_inode *ip)
+ 	return !ip->i_itemp || !(ip->i_itemp->ili_fields & XFS_ILOG_ALL);
+ }
+ 
+-extern void xfs_inode_item_init(struct xfs_inode *, struct xfs_mount *);
++extern int xfs_inode_item_init(struct xfs_inode *ip, struct xfs_mount *mp,
++			       bool nowait);
+ extern void xfs_inode_item_destroy(struct xfs_inode *);
+ extern void xfs_iflush_abort(struct xfs_inode *);
+ extern void xfs_iflush_shutdown_abort(struct xfs_inode *);
 -- 
 2.25.1
 
