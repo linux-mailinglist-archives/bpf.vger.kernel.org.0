@@ -1,221 +1,272 @@
-Return-Path: <bpf+bounces-8540-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8541-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2D0F787E6B
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 05:17:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB9D9787EBB
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 05:48:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93858281715
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 03:17:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F928281705
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 03:48:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60E6480F;
-	Fri, 25 Aug 2023 03:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C640A31;
+	Fri, 25 Aug 2023 03:48:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9A97E0
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 03:17:19 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCFB1FDF
-	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 20:17:09 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RX4qz2QgSz4f3tDp
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 11:17:03 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgC3Mi8uHehkeVfABQ--.6805S2;
-	Fri, 25 Aug 2023 11:17:06 +0800 (CST)
-Subject: Re: [PATCH bpf-next v3] libbpf: handle producer position overflow
-To: Andrew Werner <awerner32@gmail.com>, bpf@vger.kernel.org
-Cc: kernel-team@dataexmachina.dev, alexei.starovoitov@gmail.com,
- andrii@kernel.org, olsajiri@gmail.com, void@manifault.com
-References: <20230824220907.1172808-1-awerner32@gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <a811af2f-3c5d-64dc-c49a-f865b2de9967@huaweicloud.com>
-Date: Fri, 25 Aug 2023 11:17:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15097E0
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 03:48:46 +0000 (UTC)
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE451BEC
+	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 20:48:44 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2bcc846fed0so6829071fa.2
+        for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 20:48:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692935323; x=1693540123;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Rl1KgoxYMiwpPNkZEErYzEBDv9AIvFtm0ZS5/pbX9zk=;
+        b=m3AjTBihZhw1Hg++r5oppM+pS55Uj4CaMor2rcAlWrKB7I9UMnqLTyUtpT9GPm4bif
+         ua7NeglwqenmnQT2gl0ZXNLT2163L3eiQHWTgaABzh1RJhLUHug7CxuHjee+rGQDznbf
+         GsZ0fDlm4I2e+5Wxtfm3kZxnc8iZR7T7fUBBxc/4BxRFC0l2HCcfqRQubUiMHlfn8FQ4
+         oJKiOTxHew+qur2rcPJqHnV+8j8JKBGums0YLOW1dQChuXgdG3sSKKEp4b/eY4OJXeZ6
+         L+u6IqlaU98Je6EKHBcFqqd1wiwpJ//+8O7qI+ktYskARZCeI0zHhlgnB8S5z8Lz+55K
+         g9BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692935323; x=1693540123;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Rl1KgoxYMiwpPNkZEErYzEBDv9AIvFtm0ZS5/pbX9zk=;
+        b=HFRZAcTjIJH2gTxy63XTkfINwAJyYMTL3PuH7frcLAx2ikPYU61WmE8avrb5788aBS
+         i2U4yUMN6YPQA2r1K1/Q4uj1CoSYw4ezYNXO8vec3/PnrZdz5ZZZiJUoRmPhYN4tmQQk
+         nsd3qBJfcyvIugG8n+ZeslOCO5Oa/zI8shpV3/6oi2+pYg/b7vTdgh8zUQMLKlGLN7ED
+         /4LSSqsEIQ2du81/gcU/Gfjk8e0wSiGljWubRZ0qWEZuHMp0IWZry84PSLMFruc5XOKN
+         MTH3BrPntzSlqTOd9TXyGDHHqlylpDVyA7s1hV/qriD2cIfvQGWHs1SYnVnq+3rdp5qM
+         adRA==
+X-Gm-Message-State: AOJu0YzvLvuipD4AZxGdUOqHIOnLNTUZBsfwHaMMd8QG/VvvdUwoITcI
+	v2EzgkXmTDG8/+xOIQHXs9Q+9d/LadxDQq7ANdE=
+X-Google-Smtp-Source: AGHT+IFsWWss50Y6F1gk0e4C2K0AkfcISm2XIKx1a90MByToF8VgT4GjuZf+o4l2XLHismJQ/GtTU7nTQoJLzFrernU=
+X-Received: by 2002:a2e:6812:0:b0:2b9:e0ba:752a with SMTP id
+ c18-20020a2e6812000000b002b9e0ba752amr12971175lja.53.1692935322492; Thu, 24
+ Aug 2023 20:48:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230824220907.1172808-1-awerner32@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgC3Mi8uHehkeVfABQ--.6805S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Xr1DWFyUAFW5Gr4kXFWDJwb_yoWxXrykpF
-	s8KF4FyrZrZr1rCw17ury0vryrua1kXw4fGF97Kry8Ar1DWFnY9FyxKFW3Kr4fGrykur1F
-	v390g3s2kr1UZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-	c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230822133807.3198625-1-houtao@huaweicloud.com>
+ <20230822133807.3198625-2-houtao@huaweicloud.com> <CAADnVQKFh9pWp1abrG2KKiZanb+4rzRb3HmzX0snggah3Lq-yg@mail.gmail.com>
+ <bf4faa34-019c-bb3d-a451-a067bbe027a4@huaweicloud.com> <CAADnVQJfpxk3dsjYdH8DUarJHu0wFXa24XFxvn+F5mseMKTAhQ@mail.gmail.com>
+ <3c30289a-d683-d1c8-b18d-c87a5ecebe3b@huaweicloud.com> <CAADnVQLHPx-0dR7nBXAfBHOpF09Jr6+cqGjfGf9mT2BHCid5YA@mail.gmail.com>
+ <5fe435aa-526f-4b54-b0d2-e0ae1c6c234c@huaweicloud.com>
+In-Reply-To: <5fe435aa-526f-4b54-b0d2-e0ae1c6c234c@huaweicloud.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 24 Aug 2023 20:48:31 -0700
+Message-ID: <CAADnVQLtJBOTueuGZHM0PUhskMZY-uaaehvgfx7pkpq0qfhvVA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: Enable preemption after
+ irq_work_raise() in unit_alloc()
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
+On Thu, Aug 24, 2023 at 7:07=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wr=
+ote:
+>
+> Hi,
+>
+> On 8/24/2023 12:33 AM, Alexei Starovoitov wrote:
+> > On Tue, Aug 22, 2023 at 9:39=E2=80=AFPM Hou Tao <houtao@huaweicloud.com=
+> wrote:
+> >> Hi,
+> >>
+> >> On 8/23/2023 9:57 AM, Alexei Starovoitov wrote:
+> >>> On Tue, Aug 22, 2023 at 5:51=E2=80=AFPM Hou Tao <houtao@huaweicloud.c=
+om> wrote:
+> >>>> Hi,
+> >>>>
+> >>>> On 8/23/2023 8:05 AM, Alexei Starovoitov wrote:
+> >>>>> On Tue, Aug 22, 2023 at 6:06=E2=80=AFAM Hou Tao <houtao@huaweicloud=
+.com> wrote:
+> >>>>>> From: Hou Tao <houtao1@huawei.com>
+> >>>>>>
+> >>>>>> When doing stress test for qp-trie, bpf_mem_alloc() returned NULL
+> >>>>>> unexpectedly because all qp-trie operations were initiated from
+> >>>>>> bpf syscalls and there was still available free memory. bpf_obj_ne=
+w()
+> >>>>>> has the same problem as shown by the following selftest.
+> >>>>>>
+> >>>>>> The failure is due to the preemption. irq_work_raise() will invoke
+> >>>>>> irq_work_claim() first to mark the irq work as pending and then in=
+ovke
+> >>>>>> __irq_work_queue_local() to raise an IPI. So when the current task
+> >>>>>> which is invoking irq_work_raise() is preempted by other task,
+> >>>>>> unit_alloc() may return NULL for preemptive task as shown below:
+> >>>>>>
+> >>>>>> task A         task B
+> >>>>>>
+> >>>>>> unit_alloc()
+> >>>>>>   // low_watermark =3D 32
+> >>>>>>   // free_cnt =3D 31 after alloc
+> >>>>>>   irq_work_raise()
+> >>>>>>     // mark irq work as IRQ_WORK_PENDING
+> >>>>>>     irq_work_claim()
+> >>>>>>
+> >>>>>>                // task B preempts task A
+> >>>>>>                unit_alloc()
+> >>>>>>                  // free_cnt =3D 30 after alloc
+> >>>>>>                  // irq work is already PENDING,
+> >>>>>>                  // so just return
+> >>>>>>                  irq_work_raise()
+> >>>>>>                // does unit_alloc() 30-times
+> >>>>>>                ......
+> >>>>>>                unit_alloc()
+> >>>>>>                  // free_cnt =3D 0 before alloc
+> >>>>>>                  return NULL
+> >>>>>>
+> >>>>>> Fix it by invoking preempt_disable_notrace() before allocation and
+> >>>>>> invoking preempt_enable_notrace() to enable preemption after
+> >>>>>> irq_work_raise() completes. An alternative fix is to move
+> >>>>>> local_irq_restore() after the invocation of irq_work_raise(), but =
+it
+> >>>>>> will enlarge the irq-disabled region. Another feasible fix is to o=
+nly
+> >>>>>> disable preemption before invoking irq_work_queue() and enable
+> >>>>>> preemption after the invocation in irq_work_raise(), but it can't
+> >>>>>> handle the case when c->low_watermark is 1.
+> >>>>>>
+> >>>>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> >>>>>> ---
+> >>>>>>  kernel/bpf/memalloc.c | 8 ++++++++
+> >>>>>>  1 file changed, 8 insertions(+)
+> >>>>>>
+> >>>>>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+> >>>>>> index 9c49ae53deaf..83f8913ebb0a 100644
+> >>>>>> --- a/kernel/bpf/memalloc.c
+> >>>>>> +++ b/kernel/bpf/memalloc.c
+> >>>>>> @@ -6,6 +6,7 @@
+> >>>>>>  #include <linux/irq_work.h>
+> >>>>>>  #include <linux/bpf_mem_alloc.h>
+> >>>>>>  #include <linux/memcontrol.h>
+> >>>>>> +#include <linux/preempt.h>
+> >>>>>>  #include <asm/local.h>
+> >>>>>>
+> >>>>>>  /* Any context (including NMI) BPF specific memory allocator.
+> >>>>>> @@ -725,6 +726,7 @@ static void notrace *unit_alloc(struct bpf_mem=
+_cache *c)
+> >>>>>>          * Use per-cpu 'active' counter to order free_list access =
+between
+> >>>>>>          * unit_alloc/unit_free/bpf_mem_refill.
+> >>>>>>          */
+> >>>>>> +       preempt_disable_notrace();
+> >>>>>>         local_irq_save(flags);
+> >>>>>>         if (local_inc_return(&c->active) =3D=3D 1) {
+> >>>>>>                 llnode =3D __llist_del_first(&c->free_llist);
+> >>>>>> @@ -740,6 +742,12 @@ static void notrace *unit_alloc(struct bpf_me=
+m_cache *c)
+> >>>>>>
+> >>>>>>         if (cnt < c->low_watermark)
+> >>>>>>                  (c);
+> >>>>>> +       /* Enable preemption after the enqueue of irq work complet=
+es,
+> >>>>>> +        * so free_llist may be refilled by irq work before other =
+task
+> >>>>>> +        * preempts current task.
+> >>>>>> +        */
+> >>>>>> +       preempt_enable_notrace();
+> >>>>> So this helps qp-trie init, since it's doing bpf_mem_alloc from
+> >>>>> syscall context and helps bpf_obj_new from bpf prog, since prog is
+> >>>>> non-migrateable, but preemptable. It's not an issue for htab doing
+> >>>>> during map_update, since
+> >>>>> it's under htab bucket lock.
+> >>>>> Let's introduce minimal:
+> >>>>> /* big comment here explaining the reason of extra preempt disable =
+*/
+> >>>>> static void bpf_memalloc_irq_work_raise(...)
+> >>>>> {
+> >>>>>   preempt_disable_notrace();
+> >>>>>   irq_work_raise();
+> >>>>>   preempt_enable_notrace();
+> >>>>> }
+> >>>>>
+> >>>>> it will have the same effect, right?
+> >>>>> .
+> >>>> No. As I said in commit message, when c->low_watermark is 1, the abo=
+ve
+> >>>> fix doesn't work as shown below:
+> >>> Yes. I got mark=3D1 part. I just don't think it's worth the complexit=
+y.
+> >> Just find out that for bpf_obj_new() the minimal low_watermark is 2
+> >> instead of 1 (unit_size=3D 4096 instead of 4096 + 8). But even with
+> >> low_watermark as 2, the above fix may don't work when there are nested
+> >> preemption: task A (free_cnt =3D 1 after alloc) -> preempted by task B
+> >> (free_cnt =3D 0 after alloc) -> preempted by task C (fail to do
+> >> allocation). And in my naive understanding of bpf memory allocate, the=
+se
+> >> fixes are simple. Why do you think it will introduce extra complexity =
+?
+> >> Do you mean preempt_disable_notrace() could be used to trigger the
+> >> running of bpf program ? If it is the problem, I think we should fix i=
+t
+> >> instead.
+> > I'm not worried about recursive calls from _notrace(). That shouldn't
+> > be possible.
+>
+> OK
+> > I'm just saying that disabling preemption around irq_work_raise() helps=
+ a bit
+> > while disable around the whole unit_alloc/free is a snake oil.
+> > bpf prog could be running in irq disabled context and preempt disabled
+> > unit_alloc vs irq_work_raise won't make any difference. Both will retur=
+n NULL.
+> > Same with batched htab update. It will hit NULL too.
+> > So from my pov you're trying to fix something that is not fixable.
+>
+> The patch set didn't try to fix the problem for all possible context,
+> especially the irq disable context. It just tries to fix the ENOMEM
+> problem for process context which is the major context. I still think
+> disabling preemption around the whole unit_alloc/free is much solider
+> than just do that for irq_work_raise() (e.g., for the nested preemption
+> case). But if you have a strong preference for only disabling preemption
+> for irq_work_raise(), I will post v2 to do that.
 
-On 8/25/2023 6:09 AM, Andrew Werner wrote:
-> Before this patch, the producer position could overflow `unsigned
-> long`, in which case libbpf would forever stop processing new writes to
-> the ringbuf. Similarly, overflows of the producer position could result
-> in __bpf_user_ringbuf_peek not discovering available data. This patch
-> addresses that bug by computing using the signed delta between the
-> consumer and producer position to determine if data is available; the
-> delta computation is robust to overflow.
->
-> A more defensive check could be to ensure that the delta is within
-> the allowed range, but such defensive checks are neither present in
-> the kernel side code nor in libbpf. The overflow that this patch
-> handles can occur while the producer and consumer follow a correct
-> protocol.
->
-> Secondarily, the type used to represent the positions in the
-> user_ring_buffer functions in both libbpf and the kernel has been
-> changed from u64 to unsigned long to match the type used in the
-> kernel's representation of the structure. The change occurs in the
-> same patch because it's required to align the data availability
-> calculations between the userspace producing ringbuf and the bpf
-> producing ringbuf.
+In process ctx the preempt_disable/enable across unit_alloc will keep
+asking kernel to consider preemption on every unit_alloc call
+which can be a lot.
+If I'm reading the code correctly preempt_schedule() is quite heavy.
+Doing it every unit_alloc is a performance concern.
 
-Because the changes include both the change for ring buffer and user
-ring buffer. I think it is better to split the changes into three
-patches to ease the backports of these changes: one patch for change in
-libbpf for ring buffer, and another two patches for changes in libbpf
-and kernel for user ring buffer.
->
-> Not included in this patch, a selftest was written to demonstrate the
-> bug, and indeed this patch allows the test to continue to make progress
-> past the overflow. The shape of the self test was as follows:
->
->  a) Set up ringbuf of 2GB size (the maximum permitted size).
->  b) reserve+commit maximum-sized records (ULONG_MAX/4) constantly as
->     fast as possible.
+Could you try the following:
+diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+index 9c49ae53deaf..ee8262f58c5a 100644
+--- a/kernel/bpf/memalloc.c
++++ b/kernel/bpf/memalloc.c
+@@ -442,7 +442,10 @@ static void bpf_mem_refill(struct irq_work *work)
 
-ULONG_MAX -> UINT_MAX ?
->
-> With 1 million records per second repro time should be about 4.7 hours.
-> Such a test duration is impractical to run, hence the omission.
->
-> Additionally, this patch adds commentary around a separate point to note
-> that the modular arithmetic is valid in the face of overflows, as that
-> fact may not be obvious to future readers.
->
-> v2->v3:
->   - Changed the representation of the consumer and producer positions
->     from u64 to unsigned long in user_ring_buffer functions. 
->   - Addressed overflow in __bpf_user_ringbuf_peek.
->   - Changed data availability computations to use the signed delta
->     between the consumer and producer positions rather than merely
->     checking whether their values were unequal.
-> v1->v2:
->   - Fixed comment grammar.
->   - Properly formatted subject line.
->
-> Signed-off-by: Andrew Werner <awerner32@gmail.com>
-> ---
->  kernel/bpf/ringbuf.c    | 11 ++++++++---
->  tools/lib/bpf/ringbuf.c | 16 +++++++++++++---
->  2 files changed, 21 insertions(+), 6 deletions(-)
+ static void notrace irq_work_raise(struct bpf_mem_cache *c)
+ {
+-       irq_work_queue(&c->refill_work);
++       if (!irq_work_queue(&c->refill_work)) {
++               preempt_disable_notrace();
++               preempt_enable_notrace();
++       }
+ }
 
-Otherwise, these changes look good to me:
-
-Acked-by: Hou Tao <houtao1@huawei.com>
-
->
-> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-> index f045fde632e5..0c48673520fb 100644
-> --- a/kernel/bpf/ringbuf.c
-> +++ b/kernel/bpf/ringbuf.c
-> @@ -658,7 +658,7 @@ static int __bpf_user_ringbuf_peek(struct bpf_ringbuf *rb, void **sample, u32 *s
->  {
->  	int err;
->  	u32 hdr_len, sample_len, total_len, flags, *hdr;
-> -	u64 cons_pos, prod_pos;
-> +	unsigned long cons_pos, prod_pos;
->  
->  	/* Synchronizes with smp_store_release() in user-space producer. */
->  	prod_pos = smp_load_acquire(&rb->producer_pos);
-> @@ -667,7 +667,12 @@ static int __bpf_user_ringbuf_peek(struct bpf_ringbuf *rb, void **sample, u32 *s
->  
->  	/* Synchronizes with smp_store_release() in __bpf_user_ringbuf_sample_release() */
->  	cons_pos = smp_load_acquire(&rb->consumer_pos);
-> -	if (cons_pos >= prod_pos)
-> +
-> +	/* Check if there's data available by computing the signed delta between
-> +	 * cons_pos and prod_pos; a negative delta indicates that the consumer has
-> +	 * not caught up. This formulation is robust to prod_pos wrapping around.
-> +	 */
-> +	if ((long)(cons_pos - prod_pos) >= 0)
->  		return -ENODATA;
->  
->  	hdr = (u32 *)((uintptr_t)rb->data + (uintptr_t)(cons_pos & rb->mask));
-> @@ -711,7 +716,7 @@ static int __bpf_user_ringbuf_peek(struct bpf_ringbuf *rb, void **sample, u32 *s
->  
->  static void __bpf_user_ringbuf_sample_release(struct bpf_ringbuf *rb, size_t size, u64 flags)
->  {
-> -	u64 consumer_pos;
-> +	unsigned long consumer_pos;
->  	u32 rounded_size = round_up(size + BPF_RINGBUF_HDR_SZ, 8);
->  
->  	/* Using smp_load_acquire() is unnecessary here, as the busy-bit
-> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-> index 02199364db13..141030a89370 100644
-> --- a/tools/lib/bpf/ringbuf.c
-> +++ b/tools/lib/bpf/ringbuf.c
-> @@ -237,7 +237,13 @@ static int64_t ringbuf_process_ring(struct ring *r)
->  	do {
->  		got_new_data = false;
->  		prod_pos = smp_load_acquire(r->producer_pos);
-> -		while (cons_pos < prod_pos) {
-> +
-> +		/* Check if there's data available by computing the signed delta
-> +		 * between cons_pos and prod_pos; a negative delta indicates that the
-> +		 * consumer has not caught up. This formulation is robust to prod_pos
-> +		 * wrapping around.
-> +		 */
-> +		while ((long)(cons_pos - prod_pos) < 0) {
->  			len_ptr = r->data + (cons_pos & r->mask);
->  			len = smp_load_acquire(len_ptr);
->  
-> @@ -482,8 +488,7 @@ void user_ring_buffer__submit(struct user_ring_buffer *rb, void *sample)
->  void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size)
->  {
->  	__u32 avail_size, total_size, max_size;
-> -	/* 64-bit to avoid overflow in case of extreme application behavior */
-> -	__u64 cons_pos, prod_pos;
-> +	unsigned long cons_pos, prod_pos;
->  	struct ringbuf_hdr *hdr;
->  
->  	/* The top two bits are used as special flags */
-> @@ -498,6 +503,11 @@ void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size)
->  	prod_pos = smp_load_acquire(rb->producer_pos);
->  
->  	max_size = rb->mask + 1;
-> +
-> +	/* Note that this formulation is valid in the face of overflow of
-> +	 * prod_pos so long as the delta between prod_pos and cons_pos is
-> +	 * no greater than max_size.
-> +	 */
->  	avail_size = max_size - (prod_pos - cons_pos);
->  	/* Round up total size to a multiple of 8. */
->  	total_size = (size + BPF_RINGBUF_HDR_SZ + 7) / 8 * 8;
-
+The idea that it will ask for resched if preemptible.
+will it address the issue you're seeing?
 
