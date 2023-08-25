@@ -1,194 +1,234 @@
-Return-Path: <bpf+bounces-8678-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8677-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 384E1788EF8
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 20:54:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 874AC788EF6
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 20:54:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A2511C20F88
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 18:54:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4317C2818B1
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 18:54:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D862F18B17;
-	Fri, 25 Aug 2023 18:54:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511A618B0A;
+	Fri, 25 Aug 2023 18:54:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EADE1805A;
-	Fri, 25 Aug 2023 18:54:08 +0000 (UTC)
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857371BD2;
-	Fri, 25 Aug 2023 11:54:07 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-637aaaf27f1so1510586d6.0;
-        Fri, 25 Aug 2023 11:54:07 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AC72174F7
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 18:54:02 +0000 (UTC)
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 495C11BD2;
+	Fri, 25 Aug 2023 11:54:01 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9a2185bd83cso157107766b.0;
+        Fri, 25 Aug 2023 11:54:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692989646; x=1693594446;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZpiZq1iBEEF3XG5AT94vls9pl91CF5C4Jt4sCJYAp3Q=;
-        b=PrvTCYcbZIPy8JACiPTvj8uTXgeulpd7fPlL/7rybVKMHFDpbj5sGSLnobftBTxrxc
-         BquJOAUd/fFUdTs7C5CMb0LlRetgoh56XK5O4C9nFzD+SiH6J/FfB1/svyav+o6NWpIj
-         OxhQWDpkAFVGAOE8jO80yxlBFW2qdzZgvTBF5Icgg0MFWRY5I1R9JpSLh7SBp/mjNEhh
-         3m2StqX+52Ev3jNG80Mz7TmchE73bop7dd7mhAZYp0VEM9s98M0oj+ORHmbCu5i77DvQ
-         zYjGyFKTVircmvYe1dvGmO2BijBbQEqBtEcLOS73OzT/2NB+XVGZDn2guNxga+3eRs6J
-         XBiw==
+        d=gmail.com; s=20221208; t=1692989640; x=1693594440;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=mxQMK9RP6ilUyhYYI+Su+gjUxqffi2sMga7zj0RkO+8=;
+        b=G0PN2o2H/4RkfQisDlOCOfjlg+Od9j1hPLw4L1DHMocm8PQsH3NskvWP5tAec/p2JK
+         VmQxoLccLp6GcypBkKPReC95jTmXFCP+RwQfPFuQW+Exw0skitjCLATUzzsuMlnhrqoS
+         WS/I+C03x4Bn06EJq52dn7rEYOHWl2GYOrbHs2nGhuuOw1IONhpVVUUNet1f64pFTMdv
+         Sc+ibh/XWdxCEXdXgnvu4XxYs9xmEQkdZAFUdQqNZ19U0hdQ7rrd0Sw0N9UFVwYXHNw/
+         IMQUn06hAPAX9YHvc9692N7fRVXz1GaAzpE+rOrdBYn2SFaQON4KeIE8gXNeSNZvducR
+         1ozw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692989646; x=1693594446;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZpiZq1iBEEF3XG5AT94vls9pl91CF5C4Jt4sCJYAp3Q=;
-        b=VZMohUTY46/O4OzN7v8YV14atgKFKUlqfmdv4cHlt3wjapvadH6DLYkV1+g/lhX3RZ
-         OUI53WtPk6kqMEbgrAytK4Xg+Pf7fJS06yGaZfvn4krichVODhqKFcFFsvylqqjiv4TL
-         4BlnEO+OwOhS/21KUIV2MZbYN90JUOCm5w5gH6MUlagQX5qITbF1nT5z8qYpjV/bSo3L
-         1nC1fEHCrLj+3PEC9gBNKnUCAFWTInyS8L3fkdfVNoDPqCg1nHaQmCZLmoXCyONLahMT
-         w8fhNo7OTB9YrDKWMjCVYIo4D8pCX98WQ0daXYPG2Vn44NcUYxrnG2IRgWnQcpVfDAVY
-         DMCg==
-X-Gm-Message-State: AOJu0YzWd/Hkhx4vUKCTr6D7D+LWfi7+kyQ/V1q1HS3Xu0I2zTz6LpRI
-	j1UuUmuXiZt/PH3eNqgzDocWk6fMXUpXhLYH6NM=
-X-Google-Smtp-Source: AGHT+IGlbhI63wRLcFo+iK8WhcLKHolamzju8iWEpHtyTpgPDWc8G5Bbe0IN+X7a2hH492DW9doKZXIR3NDiaQDfhsc=
-X-Received: by 2002:a05:6214:4111:b0:621:65de:f60c with SMTP id
- kc17-20020a056214411100b0062165def60cmr22001114qvb.3.1692989646564; Fri, 25
- Aug 2023 11:54:06 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692989640; x=1693594440;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mxQMK9RP6ilUyhYYI+Su+gjUxqffi2sMga7zj0RkO+8=;
+        b=XRe/rQAjlrYJAaIdtPI2odT2+BSOOMYmJGOVDn0fRTwqx/2vy+Cj8Yy65Y+D4uHVpd
+         hxj11LBokEU0jU6VGWTubhL5I6h+GYdzbLja4Z+pz1jg3BP6G9nZLHsqL6SUsnN8V+4D
+         lGtyo8pwanX6naGFLGxb2enwFvV2ZvsttjUozT/HgZh5JGWWNKXbIHphi503v8q7dH+H
+         lwry7ACnUN9CulEjWKklTJ29dCEES+KaTE6c3oFgNmSB1ptqK1ddCQmfEZLhjrQ+k3FL
+         yaLbtPf6lbTA1x9amm3kFWepAIrmfn10FdI6OnjwHTsmdf8hcMjM3fHL8pdkwM2Y2AAG
+         oyuw==
+X-Gm-Message-State: AOJu0YxVWmNQoyd5VBll6Ydpt1oDAtJtiu9ehPeqjQkdDIGBJYg/4Sa4
+	p1gybldbJmNUbLx+U+cT3RI=
+X-Google-Smtp-Source: AGHT+IGMYgJx3Qngg0jobBAnd3GFqEAJm2aB9ZBPeZNi4vv2ZU1Rkq0gIQ93J2FfL57nwSXCYhgWow==
+X-Received: by 2002:a17:906:5385:b0:994:4095:3abf with SMTP id g5-20020a170906538500b0099440953abfmr14748340ejo.14.1692989639406;
+        Fri, 25 Aug 2023 11:53:59 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id jx13-20020a170906ca4d00b00992d122af63sm1239162ejb.89.2023.08.25.11.53.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 11:53:58 -0700 (PDT)
+Message-ID: <65800771171dcaff9901dae47de960ec66602f7e.camel@gmail.com>
+Subject: Re: [PATCH 4/3] selftests/hid: more fixes to build with older kernel
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Justin Stitt <justinstitt@google.com>, Benjamin Tissoires
+	 <bentiss@kernel.org>
+Cc: Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires
+ <benjamin.tissoires@redhat.com>, Shuah Khan <shuah@kernel.org>, Nick
+ Desaulniers <ndesaulniers@google.com>, linux-input@vger.kernel.org,
+ linux-kselftest@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+Date: Fri, 25 Aug 2023 21:53:57 +0300
+In-Reply-To: <20230825182316.m2ksjoxe4s7dsapn@google.com>
+References: <20230825-wip-selftests-v1-0-c862769020a8@kernel.org>
+	 <20230825182316.m2ksjoxe4s7dsapn@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230823144713.2231808-1-tirthendu.sarkar@intel.com>
-In-Reply-To: <20230823144713.2231808-1-tirthendu.sarkar@intel.com>
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Fri, 25 Aug 2023 20:53:55 +0200
-Message-ID: <CAJ8uoz26kQbpqikaWkO3TNwMC=4V=96tppGcm0fjpXgfRkKUww@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] xsk: fix xsk_build_skb() error: 'skb'
- dereferencing possible ERR_PTR()
-To: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn@kernel.org, 
-	magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
-	jonathan.lemon@gmail.com, davem@davemloft.net, kuba@kernel.org, 
-	pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	dan.carpenter@linaro.org, sdf@google.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, 23 Aug 2023 at 17:05, Tirthendu Sarkar
-<tirthendu.sarkar@intel.com> wrote:
->
-> Currently, xsk_build_skb() is a function that builds skb in two possible
-> ways and then is ended with common error handling.
->
-> We can distinguish four possible error paths and handling in xsk_build_skb():
->  1. sock_alloc_send_skb fails: Retry (skb is NULL).
->  2. skb_store_bits fails : Free skb and retry.
->  3. MAX_SKB_FRAGS exceeded: Free skb, cleanup and drop packet.
->  4. alloc_page fails for frag: Retry page allocation w/o freeing skb
->
-> 1] and 3] can happen in xsk_build_skb_zerocopy(), which is one of the two
-> code paths responsible for building skb. Common error path in
-> xsk_build_skb() assumes that in case errno != -EAGAIN, skb is a valid
-> pointer, which is wrong as kernel test robot reports that in
-> xsk_build_skb_zerocopy() other errno values are returned for skb being
-> NULL.
->
-> To fix this, set -EOVERFLOW as error when MAX_SKB_FRAGS are exceeded and
-> packet needs to be dropped in both xsk_build_skb() and
-> xsk_build_skb_zerocopy() and use this to distinguish against all other
-> error cases. Also, add explicit kfree_skb() for 3] so that handling of 1],
-> 2], and 3] becomes identical where allocation needs to be retried.
-
-Thanks Tirtha for the fix.
-
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
-
-> Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Closes: https://lore.kernel.org/r/202307210434.OjgqFcbB-lkp@intel.com/
-> Fixes: cf24f5a5feea ("xsk: add support for AF_XDP multi-buffer on Tx path")
+On Fri, 2023-08-25 at 18:23 +0000, Justin Stitt wrote:
+> On Fri, Aug 25, 2023 at 10:36:30AM +0200, Benjamin Tissoires wrote:
+> > These fixes have been triggered by [0]:
+> > basically, if you do not recompile the kernel first, and are
+> > running on an old kernel, vmlinux.h doesn't have the required
+> > symbols and the compilation fails.
+> >=20
+> > The tests will fail if you run them on that very same machine,
+> > of course, but the binary should compile.
+> >=20
+> > And while I was sorting out why it was failing, I realized I
+> > could do a couple of improvements on the Makefile.
+> >=20
+> > [0] https://lore.kernel.org/linux-input/56ba8125-2c6f-a9c9-d498-0ca1c15=
+3dcb2@redhat.com/T/#t
+> >=20
+> > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> > ---
+> > Benjamin Tissoires (3):
+> >       selftests/hid: ensure we can compile the tests on kernels pre-6.3
+> >       selftests/hid: do not manually call headers_install
+> >       selftests/hid: force using our compiled libbpf headers
+> >=20
+> >  tools/testing/selftests/hid/Makefile                | 10 ++++------
+> >  tools/testing/selftests/hid/progs/hid.c             |  3 ---
+> >  tools/testing/selftests/hid/progs/hid_bpf_helpers.h | 20 +++++++++++++=
++++++++
+> >  3 files changed, 24 insertions(+), 9 deletions(-)
+> > ---
+> > base-commit: 1d7546042f8fdc4bc39ab91ec966203e2d64f8bd
+> > change-id: 20230825-wip-selftests-9a7502b56542
+> >=20
+> > Best regards,
+> > --
+> > Benjamin Tissoires <bentiss@kernel.org>
+> >=20
+>=20
+> Benjamin, thanks for the work here. Your series fixed up _some_ of the
+> errors I had while building on my 6.3.11 kernel. I'm proposing a single
+> patch that should be applied on top of your series that fully fixes
+> _all_ of the build errors I'm experiencing.
+>=20
+> Can you let me know if it works and potentially formulate a new series
+> so that `b4 shazam` applies it cleanly?
+>=20
+> PATCH BELOW
 > ---
-> Changelog:
->         v2 -> v3:
->         - Added further details in commit message as asked by Maciej
->         v1 -> v2:
->         - Removed err as a parameter to xsk_build_skb_zerocopy()
->         [Stanislav Fomichev]
->         - use explicit error to distinguish packet drop vs retry
->
->  net/xdp/xsk.c | 22 +++++++++++++---------
->  1 file changed, 13 insertions(+), 9 deletions(-)
->
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index fcfc8472f73d..55f8b9b0e06d 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -602,7 +602,7 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
->
->         for (copied = 0, i = skb_shinfo(skb)->nr_frags; copied < len; i++) {
->                 if (unlikely(i >= MAX_SKB_FRAGS))
-> -                       return ERR_PTR(-EFAULT);
-> +                       return ERR_PTR(-EOVERFLOW);
->
->                 page = pool->umem->pgs[addr >> PAGE_SHIFT];
->                 get_page(page);
-> @@ -655,15 +655,17 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
->                         skb_put(skb, len);
->
->                         err = skb_store_bits(skb, 0, buffer, len);
-> -                       if (unlikely(err))
-> +                       if (unlikely(err)) {
-> +                               kfree_skb(skb);
->                                 goto free_err;
-> +                       }
->                 } else {
->                         int nr_frags = skb_shinfo(skb)->nr_frags;
->                         struct page *page;
->                         u8 *vaddr;
->
->                         if (unlikely(nr_frags == (MAX_SKB_FRAGS - 1) && xp_mb_desc(desc))) {
-> -                               err = -EFAULT;
-> +                               err = -EOVERFLOW;
->                                 goto free_err;
->                         }
->
-> @@ -690,12 +692,14 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
->         return skb;
->
->  free_err:
-> -       if (err == -EAGAIN) {
-> -               xsk_cq_cancel_locked(xs, 1);
-> -       } else {
-> -               xsk_set_destructor_arg(skb);
-> -               xsk_drop_skb(skb);
-> +       if (err == -EOVERFLOW) {
-> +               /* Drop the packet */
-> +               xsk_set_destructor_arg(xs->skb);
-> +               xsk_drop_skb(xs->skb);
->                 xskq_cons_release(xs->tx);
-> +       } else {
-> +               /* Let application retry */
-> +               xsk_cq_cancel_locked(xs, 1);
->         }
->
->         return ERR_PTR(err);
-> @@ -738,7 +742,7 @@ static int __xsk_generic_xmit(struct sock *sk)
->                 skb = xsk_build_skb(xs, &desc);
->                 if (IS_ERR(skb)) {
->                         err = PTR_ERR(skb);
-> -                       if (err == -EAGAIN)
-> +                       if (err != -EOVERFLOW)
->                                 goto out;
->                         err = 0;
->                         continue;
+> From 5378d70e1b3f7f75656332f9bff65a37122bb288 Mon Sep 17 00:00:00 2001
+> From: Justin Stitt <justinstitt@google.com>
+> Date: Fri, 25 Aug 2023 18:10:33 +0000
+> Subject: [PATCH 4/3] selftests/hid: more fixes to build with older kernel
+>=20
+> I had to use the clever trick [1] on some other symbols to get my builds
+> working.
+>=20
+> Apply this patch on top of Benjamin's series [2].
+>=20
+> This is now a n=3D4 patch series which has fixed my builds when running:
+> > $ make LLVM=3D1 -j128 ARCH=3Dx86_64 mrproper headers
+> > $ make LLVM=3D1 -j128 ARCH=3Dx86_64 -C tools/testing/selftests TARGETS=
+=3Dhid
+>=20
+> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/t=
+ree/tools/testing/selftests/bpf/progs/bpf_iter.h#n3
+> [2]: https://lore.kernel.org/all/20230825-wip-selftests-v1-0-c862769020a8=
+@kernel.org/
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+>  .../selftests/hid/progs/hid_bpf_helpers.h     | 29 +++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>=20
+> diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tools/=
+testing/selftests/hid/progs/hid_bpf_helpers.h
+> index 749097f8f4d9..e2eace2c0029 100644
+> --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+> +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+> @@ -7,12 +7,26 @@
+>=20
+>  /* "undefine" structs in vmlinux.h, because we "override" them below */
+>  #define hid_bpf_ctx hid_bpf_ctx___not_used
+> +#define hid_report_type hid_report_type___not_used
+> +#define hid_class_request hid_class_request___not_used
+> +#define hid_bpf_attach_flags hid_bpf_attach_flags___not_used
+>  #include "vmlinux.h"
+>  #undef hid_bpf_ctx
+> +#undef hid_report_type
+> +#undef hid_class_request
+> +#undef hid_bpf_attach_flags
+>=20
+>  #include <bpf/bpf_helpers.h>
+>  #include <bpf/bpf_tracing.h>
+> +#include <linux/const.h>
+>=20
+> +enum hid_report_type {
+> +	HID_INPUT_REPORT		=3D 0,
+> +	HID_OUTPUT_REPORT		=3D 1,
+> +	HID_FEATURE_REPORT		=3D 2,
+> +
+> +	HID_REPORT_TYPES,
+> +};
+>=20
+>  struct hid_bpf_ctx {
+>  	__u32 index;
+> @@ -25,6 +39,21 @@ struct hid_bpf_ctx {
+>  	};
+>  };
+
+Note, vmlinux.h has the following preamble/postamble:
+
+    #ifndef BPF_NO_PRESERVE_ACCESS_INDEX
+    #pragma clang attribute push (__attribute__((preserve_access_index)), a=
+pply_to =3D record)
+    #endif
+    ...
+    #ifndef BPF_NO_PRESERVE_ACCESS_INDEX
+    #pragma clang attribute pop
+    #endif
+
+You might want to use it or add __attribute__((preserve_access_index))
+to structure definitions, depending on whether or not you need CO-RE
+functionality for these tests.
+
+>=20
+> +enum hid_class_request {
+> +	HID_REQ_GET_REPORT		=3D 0x01,
+> +	HID_REQ_GET_IDLE		=3D 0x02,
+> +	HID_REQ_GET_PROTOCOL		=3D 0x03,
+> +	HID_REQ_SET_REPORT		=3D 0x09,
+> +	HID_REQ_SET_IDLE		=3D 0x0A,
+> +	HID_REQ_SET_PROTOCOL		=3D 0x0B,
+> +};
+> +
+> +enum hid_bpf_attach_flags {
+> +	HID_BPF_FLAG_NONE =3D 0,
+> +	HID_BPF_FLAG_INSERT_HEAD =3D _BITUL(0),
+> +	HID_BPF_FLAG_MAX,
+> +};
+> +
+>  /* following are kfuncs exported by HID for HID-BPF */
+>  extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
+>  			      unsigned int offset,
 > --
-> 2.34.1
->
->
+> 2.42.0.rc1.204.g551eb34607-goog
+>=20
+
 
