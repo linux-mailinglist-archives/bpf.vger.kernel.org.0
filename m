@@ -1,152 +1,120 @@
-Return-Path: <bpf+bounces-8595-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8617-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4C77788A08
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 16:03:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B5EC788B8A
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 16:21:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B945280DFD
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 14:03:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF53C281A14
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 14:21:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 367E7101D2;
-	Fri, 25 Aug 2023 14:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3C891078E;
+	Fri, 25 Aug 2023 14:21:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B26FBFC
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 14:02:24 +0000 (UTC)
-Received: from out-244.mta1.migadu.com (out-244.mta1.migadu.com [IPv6:2001:41d0:203:375::f4])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451B826A8;
-	Fri, 25 Aug 2023 07:02:01 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692972120;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=d4c4JLcaw2hXejiOrGnFBQPVU2RM5hO/J+/aXcCYNEw=;
-	b=khe71NuAofqjJQcQBQh8qaSLQW5l+ABTZSFJ8Vvkem+VJ7Uz3lPnhsRbG1QiQpVIB0WzKu
-	TWSkBSbRJUjuC3LbOfeO0WhIFxiibQKBlsbXK8GLa0a537NlmAJDnBgPGmvzDTS140+5t+
-	gKh3+G5l/F0DpREKKRmtO+kz90FC86s=
-From: Hao Xu <hao.xu@linux.dev>
-To: io-uring@vger.kernel.org,
-	Jens Axboe <axboe@kernel.dk>
-Cc: Dominique Martinet <asmadeus@codewreck.org>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Stefan Roesch <shr@fb.com>,
-	Clay Harris <bugs@claycon.org>,
-	Dave Chinner <david@fromorbit.com>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-cachefs@redhat.com,
-	ecryptfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org,
-	linux-unionfs@vger.kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	codalist@coda.cs.cmu.edu,
-	linux-f2fs-devel@lists.sourceforge.net,
-	cluster-devel@redhat.com,
-	linux-mm@kvack.org,
-	linux-nilfs@vger.kernel.org,
-	devel@lists.orangefs.org,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
-	linux-mtd@lists.infradead.org,
-	Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCH 15/29] xfs: don't wait for free space in xlog_grant_head_check() in nowait case
-Date: Fri, 25 Aug 2023 21:54:17 +0800
-Message-Id: <20230825135431.1317785-16-hao.xu@linux.dev>
-In-Reply-To: <20230825135431.1317785-1-hao.xu@linux.dev>
-References: <20230825135431.1317785-1-hao.xu@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F28210784
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 14:21:18 +0000 (UTC)
+X-Greylist: delayed 2650 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 25 Aug 2023 07:21:02 PDT
+Received: from out01.mta.xmission.com (out01.mta.xmission.com [166.70.13.231])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F122137;
+	Fri, 25 Aug 2023 07:21:02 -0700 (PDT)
+Received: from in02.mta.xmission.com ([166.70.13.52]:50416)
+	by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1qZWz8-00GBtW-AP; Fri, 25 Aug 2023 07:36:22 -0600
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:38324 helo=email.froward.int.ebiederm.org.xmission.com)
+	by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1qZWz6-00E4Wv-P3; Fri, 25 Aug 2023 07:36:21 -0600
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Yonghong Song <yhs@fb.com>,  Kui-Feng Lee <kuifeng@fb.com>,  Andrii
+ Nakryiko <andrii@kernel.org>,  Martin KaFai Lau <martin.lau@kernel.org>,
+  bpf@vger.kernel.org,  linux-kernel@vger.kernel.org
+References: <20230821150909.GA2431@redhat.com>
+	<20230825124115.GA13849@redhat.com>
+Date: Fri, 25 Aug 2023 08:36:13 -0500
+In-Reply-To: <20230825124115.GA13849@redhat.com> (Oleg Nesterov's message of
+	"Fri, 25 Aug 2023 14:41:15 +0200")
+Message-ID: <87fs47qm5u.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-XM-SPF: eid=1qZWz6-00E4Wv-P3;;;mid=<87fs47qm5u.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX1/v0CeTMpQDzRSGn8J9slRx4Jf3faq+kl8=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Virus: No
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Oleg Nesterov <oleg@redhat.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 962 ms - load_scoreonly_sql: 0.04 (0.0%),
+	signal_user_changed: 4.3 (0.4%), b_tie_ro: 3.0 (0.3%), parse: 1.05
+	(0.1%), extract_message_metadata: 11 (1.2%), get_uri_detail_list: 1.75
+	(0.2%), tests_pri_-2000: 10 (1.0%), tests_pri_-1000: 1.88 (0.2%),
+	tests_pri_-950: 1.02 (0.1%), tests_pri_-900: 0.79 (0.1%),
+	tests_pri_-200: 0.66 (0.1%), tests_pri_-100: 3.4 (0.4%),
+	tests_pri_-90: 206 (21.4%), check_bayes: 201 (20.9%), b_tokenize: 4.3
+	(0.5%), b_tok_get_all: 147 (15.3%), b_comp_prob: 2.2 (0.2%),
+	b_tok_touch_all: 45 (4.7%), b_finish: 0.72 (0.1%), tests_pri_0: 182
+	(18.9%), check_dkim_signature: 0.37 (0.0%), check_dkim_adsp: 2.4
+	(0.2%), poll_dns_idle: 526 (54.7%), tests_pri_10: 2.6 (0.3%),
+	tests_pri_500: 534 (55.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] bpf: task_group_seq_get_next: cleanup the usage of
+ next_thread()
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 
-From: Hao Xu <howeyxu@tencent.com>
+Oleg Nesterov <oleg@redhat.com> writes:
 
-Don't sleep and wait for more space for a log ticket in
-xlog_grant_head_check() when it is in nowait case.
+> OK, it seems that you are not going to take these preparatory
+> cleanups ;)
+>
+> I'll resend along with the s/next_thread/__next_thread/ change.
+> I was going to do the last change later, but this recent discussion
+> https://lore.kernel.org/all/20230824143112.GA31208@redhat.com/
+> makes me think we should do this right now.
 
-Signed-off-by: Hao Xu <howeyxu@tencent.com>
----
- fs/xfs/xfs_log.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+For the record I find this code confusing, and wrong.
 
-diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
-index 90fbb1c0eca2..a2aabdd42a29 100644
---- a/fs/xfs/xfs_log.c
-+++ b/fs/xfs/xfs_log.c
-@@ -341,7 +341,8 @@ xlog_grant_head_check(
- 	struct xlog		*log,
- 	struct xlog_grant_head	*head,
- 	struct xlog_ticket	*tic,
--	int			*need_bytes)
-+	int			*need_bytes,
-+	bool			nowait)
- {
- 	int			free_bytes;
- 	int			error = 0;
-@@ -360,13 +361,15 @@ xlog_grant_head_check(
- 		spin_lock(&head->lock);
- 		if (!xlog_grant_head_wake(log, head, &free_bytes) ||
- 		    free_bytes < *need_bytes) {
--			error = xlog_grant_head_wait(log, head, tic,
--						     *need_bytes);
-+			error = nowait ?
-+				-EAGAIN : xlog_grant_head_wait(log, head, tic,
-+							       *need_bytes);
- 		}
- 		spin_unlock(&head->lock);
- 	} else if (free_bytes < *need_bytes) {
- 		spin_lock(&head->lock);
--		error = xlog_grant_head_wait(log, head, tic, *need_bytes);
-+		error = nowait ? -EAGAIN : xlog_grant_head_wait(log, head, tic,
-+								*need_bytes);
- 		spin_unlock(&head->lock);
- 	}
- 
-@@ -428,7 +431,7 @@ xfs_log_regrant(
- 	trace_xfs_log_regrant(log, tic);
- 
- 	error = xlog_grant_head_check(log, &log->l_write_head, tic,
--				      &need_bytes);
-+				      &need_bytes, false);
- 	if (error)
- 		goto out_error;
- 
-@@ -487,7 +490,7 @@ xfs_log_reserve(
- 	trace_xfs_log_reserve(log, tic);
- 
- 	error = xlog_grant_head_check(log, &log->l_reserve_head, tic,
--				      &need_bytes);
-+				      &need_bytes, nowait);
- 	if (error)
- 		goto out_error;
- 
--- 
-2.25.1
+It looks like it wants to keep the task_struct pointer or possibly the
+struct pid pointer like proc does, but then it winds up keeping a
+userspace pid value and regenerating both the struct pid pointer and
+the struct task_struct pointer.
 
+Which means that task_group_seq_get_next is unnecessarily slow and has
+a built in race condition which means it could wind up iterating through
+a different process.
+
+This whole thing looks to be a bad (aka racy) reimplementation of
+first_tid and next_tid from proc.  I thought the changes were to
+adapt to the needs of bpf, but on closer examination the code is
+just racy.
+
+For this code to be correct bpf_iter_seq_task_common needs to store
+at a minimum a struct pid pointer.
+
+
+Oleg your patch makes it easier to see what the how
+far this is from first_tid/next_tid in proc.
+
+Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+
+Eric
 
