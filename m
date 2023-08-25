@@ -1,160 +1,292 @@
-Return-Path: <bpf+bounces-8672-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8673-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB1D4788EBD
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 20:34:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FA50788EC9
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 20:36:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AA5828185C
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 18:34:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E3E91C20F5D
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 18:36:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E76E0107A4;
-	Fri, 25 Aug 2023 18:33:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF00918057;
+	Fri, 25 Aug 2023 18:36:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B72BA256A
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 18:33:56 +0000 (UTC)
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34646210A
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 11:33:55 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-52a4818db4aso1702305a12.2
-        for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 11:33:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78DD1125D2
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 18:36:40 +0000 (UTC)
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D40CD2
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 11:36:38 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5008d16cc36so1865635e87.2
+        for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 11:36:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692988433; x=1693593233;
+        d=google.com; s=20221208; t=1692988597; x=1693593397;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sTFnopBhnyJMr4rPsdfYrwnmTYs6TdUvC5QHjsZ9bIQ=;
-        b=dc+kPd8wGxZU/6Uc6ke8ozahadl+wJ6QtTJsdw6uPF22+oL8K9ortnkM9XTACONf+d
-         u9hEnJSYh1F1QESO9N8770XhqyYFX5bP52tq3nqbhjgoVN6Eu0wFo0Z8ziw4zoYCnzx+
-         w+B2Itj3dz25WD9DbmCjhuwqR/plI6QO3xGqfUI/bUiJ+dBsDlZimii5v3hp40UR/pcI
-         SwjAaf7CF2tpJGSZp/3XeKh5QZTY15MX8zxZehe9s9IvSQ13fbpCwbVT7Z7FkCr4tH//
-         Au9hLxBH5FLOgLq0LvAVn7EFXqVewU/pEdJ2gstp2mikq5S6HGSsuB9LdZqY+5GBM0AR
-         8SRw==
+        bh=zfc+svOzCxvB7yRJtIEcq1qIHS1pzaD7yBQ0frUfrOs=;
+        b=Fbyo8i4DUT7CRSUZhuSpG1rSoSWlUGLlxwdscAVjilPHwlKCw/l+Y38zplZL94R3Go
+         SWLn7P5ndcDgZybrt/hyyURDN59dhFJNLEQ+m1Swn9vo9md5zfLurImt/ZDlhS287NuO
+         rmPMpf0Tflz8yPZvirTNpK7E6p1bq3czP9f2v+mm4Uyb87n0WjKjmxI3tyL//k2/WvPE
+         vZVzePxJ1DSWbDhbKNP/npcIeA/PJ4Ah60yE+aVHFZRHI55oPO7WX9vSv4KQLtXqjIRN
+         m8bfZYhzzmMLOAySl3kdo45qvtCS0uaa3I8q34j3KLzafSOwBkxm5qg/1cQgxKbDvhy4
+         EOsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692988433; x=1693593233;
+        d=1e100.net; s=20221208; t=1692988597; x=1693593397;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sTFnopBhnyJMr4rPsdfYrwnmTYs6TdUvC5QHjsZ9bIQ=;
-        b=Cs1qGwCKWCcCC+6je35KcnH7OwcTnuf7y1r5KhaR+zGMd58qFNIwGu717PlNT2+hHu
-         8h2O454NOjx4U/vXHDXBf0pHL2nZ536AzgCbtwuKxaiMmKtYeNtrgbNwjmjAgyhAo5H8
-         yqiIcNQaj5dvQWyfg9+0DpJTSI8CKHtt9suTy7P9WKonhMwn/Fmnpn1p1x49uZkGv/k5
-         i2L337LvxkTb2f+bTygb0IWNrsxEz1HDiXOexWXVZXq7rzb/KU76mitC/uKJd1wbqZJ8
-         0E5YGBT2+sK0AhO6mqpepGZOxV3wVhawChfldleJAkPeN2DNDoheTuXxS3gkZD8fxP+r
-         R5fA==
-X-Gm-Message-State: AOJu0Yxr3tUuXhvTbzZPB2O0kZzmiJP4bMgzqVBvUkY5+lmziXzJrLrj
-	EvMax8tWE7qoVAfgfUQ4Vvr2qrDWkG6H4U6NHQ5AwNwo
-X-Google-Smtp-Source: AGHT+IHe0gVq3PIrUAKO1ume/LH8liRAGhcwB/54ofjTBl5LfEolnbsyrOYyIP5twRCvVYnx/CQMPGydDYplJFQHjvA=
-X-Received: by 2002:a05:6402:330:b0:522:3855:7ec5 with SMTP id
- q16-20020a056402033000b0052238557ec5mr16137327edw.10.1692988433550; Fri, 25
- Aug 2023 11:33:53 -0700 (PDT)
+        bh=zfc+svOzCxvB7yRJtIEcq1qIHS1pzaD7yBQ0frUfrOs=;
+        b=jUN6qrbIrie5Hn6UK6xlGhO4Pv334dxX9tmxMOLY82UK5zWrXqfFhiSExdxewr8wah
+         kNYFQQ0j4hkZVjoRYjkco8+S4V3ifaKvqFYFHppzgPVkrN8nXknDAIHa5Q3G8aLOKejG
+         FJ7WCiCsiNj3uOaem2tMUW9DF1XgMTvJVtxM9Rba/oEXIGoP4j6piCswH82EeVp3b8wJ
+         4bW2c6AgmWSjtKYi/5vCBpWV4QlBan33rQPdf4B9BgIB7eT01vJqA+p1CuSHDXDkcL1V
+         SAgBDZLT3DY8oq/3RVhcy3C+rl5D+fXEDwAlqJ32Zz0rumdhL0rv3BoPB03YI4meXdND
+         rw2w==
+X-Gm-Message-State: AOJu0Yx2bKjfc6VxJp0iQ0xt9KoVsEtJYMomCdA++T94Vpm1A2Bht7EN
+	eqCanqINb40v2d/N+Y7FSj/zSuDeTZbgU9FGggmjqHMQhcxP6rt2sn9CQA==
+X-Google-Smtp-Source: AGHT+IGrldydCJQJSKs/g27Dr7xBAtnXV9y0Ay5Jeene2HWimKFVvOs3WUFSh0gFcSelV2Qw9y7BcbTiWTe9zY+5qlA=
+X-Received: by 2002:a05:6512:220f:b0:4fb:81f2:422b with SMTP id
+ h15-20020a056512220f00b004fb81f2422bmr17047884lfu.54.1692988596632; Fri, 25
+ Aug 2023 11:36:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <db144689-79c8-6cfb-6a11-983958b28955@huaweicloud.com>
- <e51d4765-25ae-28d6-e141-e7272faa439e@huaweicloud.com> <63cb33d1-6930-0555-dd43-7dd73a786f75@huaweicloud.com>
- <CAADnVQLAQMV21M99xif1OZnyS+vyHpLJDb31c1b+s3fhrCLEvQ@mail.gmail.com>
- <b3fab6ae-1425-48a5-1faa-bb88d44a08f1@huaweicloud.com> <CAADnVQKoriZJn7B2+7O6h+Ebg_0VgViU-XXGMQ0ky6ysEJLFkw@mail.gmail.com>
- <3ec5eed2-fe42-5eef-f8b6-7d6289e37ed8@huaweicloud.com> <CAADnVQKJOc-qxFQmc8An6gp6Bq07LSGLTezQeQRX82TS-H4zvg@mail.gmail.com>
- <57e3df33-f49b-5c8b-82b3-3a8c63a9b37e@huaweicloud.com> <CAADnVQ+2JoqJJvinPvKA+4Nm8F9rTrpXBdq4SmbTeq_9bw=mwg@mail.gmail.com>
- <a3eb33c4-b84f-5386-291c-c43d77b39c48@huaweicloud.com>
-In-Reply-To: <a3eb33c4-b84f-5386-291c-c43d77b39c48@huaweicloud.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 25 Aug 2023 11:33:42 -0700
-Message-ID: <CAEf4BzZPno3m+G0v8ybxb=SMNbmqofCa5aa_Ukhh2OnZO9NxXw@mail.gmail.com>
-Subject: Re: Question: Is it OK to assume the address of bpf_dynptr_kern will
- be 8-bytes aligned and reuse the lowest bits to save extra info ?
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Joanne Koong <joannelkoong@gmail.com>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <CAFhGd8ryUcu2yPC+dFyDKNuVFHxT-=iayG+n2iErotBxgd0FVw@mail.gmail.com>
+ <CAKwvOd=p_7gWwBnR_RHUPukkG1A25GQy6iOnX_eih7u65u=oxw@mail.gmail.com>
+ <CAO-hwJLio2dWs01VAhCgmub5GVxRU-3RFQifviOL0OTaqj9Ktg@mail.gmail.com>
+ <CAFhGd8qmXD6VN+nuXKtV_Uz14gzY1Kqo7tmOAhgYpTBdCnoJRQ@mail.gmail.com>
+ <CAO-hwJJ_ipXwLjyhGC6_4r-uZ-sDbrb_W7um6F2vgws0d-hvTQ@mail.gmail.com>
+ <CAO-hwJ+DTPXWbpNaBDvCkyAsWZHbeLiBwYo4k93ZW79Jt-HAkg@mail.gmail.com>
+ <CAFhGd8pVjUPpukHxxbQCEnmgDUqy-tgBa7POkmgrYyFXVRAMEw@mail.gmail.com>
+ <CAO-hwJJntQTzcJH5nf9RM1bVWGVW1kb28rJ3tgew1AEH00PmJQ@mail.gmail.com>
+ <CAFhGd8rgdszt5vgWuGKkcpTZbKvihGCJXRKKq7RP17+71dTYww@mail.gmail.com>
+ <20230822214220.jjx3srik4mteeond@google.com> <56ba8125-2c6f-a9c9-d498-0ca1c153dcb2@redhat.com>
+ <e99b4226bd450fedfebd4eb5c37054f032432b4f.camel@gmail.com>
+In-Reply-To: <e99b4226bd450fedfebd4eb5c37054f032432b4f.camel@gmail.com>
+From: Justin Stitt <justinstitt@google.com>
+Date: Fri, 25 Aug 2023 11:36:25 -0700
+Message-ID: <CAFhGd8ob_qet6ODduHz2=sjGXkHaFMzrtu1FFkN0eUWQvpyPrQ@mail.gmail.com>
+Subject: Re: selftests: hid: trouble building with clang due to missing header
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
+	Nick Desaulniers <ndesaulniers@google.com>, linux-kselftest@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-input@vger.kernel.org, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Kees Cook <keescook@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Aug 22, 2023 at 6:12=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wr=
-ote:
->
-> Hi,
->
-> On 8/22/2023 11:25 AM, Alexei Starovoitov wrote:
-> > On Mon, Aug 21, 2023 at 6:46=E2=80=AFPM Hou Tao <houtao@huaweicloud.com=
+On Fri, Aug 25, 2023 at 6:01=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
 > wrote:
-> >> Hi,
-> >>
-> >> On 8/22/2023 8:58 AM, Alexei Starovoitov wrote:
-> >>> On Mon, Aug 21, 2023 at 5:55=E2=80=AFPM Hou Tao <houtao@huaweicloud.c=
-om> wrote:
-> >>>> Hi,
-> >>>>
-> >>>> On 8/22/2023 7:49 AM, Alexei Starovoitov wrote:
-> >>>>> On Sat, Aug 19, 2023 at 3:39=E2=80=AFAM Hou Tao <houtao@huaweicloud=
-.com> wrote:
-> >>>>>> Hi,
-> >>>>>>
-> >>>>>> On 8/18/2023 7:00 AM, Alexei Starovoitov wrote:
-> >>>>>>> On Wed, Aug 16, 2023 at 11:35=E2=80=AFPM Hou Tao <houtao@huaweicl=
-oud.com> wrote:
-> >>>>>>>
-> >> SNIP
-> >>>>>>> If the existing bpf_map_lookup_elem() helper doesn't fit qp-tree =
-we can
-> >>>>>>> use new kfuncs from bpf prog and LPM-like map accessors from sysc=
-all.
-> >>>>>> It is a feasible solution, but it will make qp-trie be different w=
-ith
-> >>>>>> other map types. I will try to extend the APIs in bpf_map_ops firs=
-t to
-> >>>>>> see how much churns it may introduce.
-> >>>>> you mean you want to try to dynamically adapt bpf_map_lookup_elem()
-> >>>>> to consider 'void *key' as a pointer to dynptr for bpf prog and
-> >>>>> lpm-like tuple for syscall?
-> >>>>> I'm afraid the verifier changes will be messy, since PTR_TO_MAP_KEY=
- is
-> >>>>> quite special.
-> >>>> No. I didn't plan to do that. I am trying to add three new APIs in
-> >>>> bpf_map_ops to handle lookup/update/delete operation from bpf syscal=
+>
+> On Fri, 2023-08-25 at 10:08 +0200, Benjamin Tissoires wrote:
+> >
+> > On Tue, Aug 22, 2023 at 11:42=E2=80=AFPM Justin Stitt <justinstitt@goog=
+le.com> wrote:
+> > > > > > > Which kernel are you trying to test?
+> > > > > > > I tested your 2 commands on v6.5-rc7 and it just works.
+> > > > > >
+> > > > > > I'm also on v6.5-rc7 (706a741595047797872e669b3101429ab8d378ef)
+> > > > > >
+> > > > > > I ran these exact commands:
+> > > > > > >    $ make mrproper
+> > > > > > >    $ make LLVM=3D1 ARCH=3Dx86_64 headers
+> > > > > > >    $ make LLVM=3D1 ARCH=3Dx86_64 -j128 -C tools/testing/selft=
+ests
+> > > > > > TARGETS=3Dhid &> out
+> > > > > >
+> > > > > > and here's the contents of `out` (still warnings/errors):
+> > > > > > https://gist.github.com/JustinStitt/d0c30180a2a2e046c32d5f0ce5f=
+59c6d
+> > > > > >
+> > > > > > I have a feeling I'm doing something fundamentally incorrectly.=
+ Any ideas?
+> > > > >
+> > > > > Sigh... there is a high chance my Makefile is not correct and use=
+s the
+> > > > > installed headers (I was running the exact same commands, but on =
+a
+> > > > > v6.4-rc7+ kernel).
+> > > > >
+> > > > > But sorry, it will have to wait for tomorrow if you want me to ha=
+ve a
+> > > > > look at it. It's 11:35 PM here, and I need to go to bed
+> > > > Take it easy. Thanks for the prompt responses here! I'd like to get
+> > > > the entire kselftest make target building with Clang so that we can
+> > > > close [1].
+> >
+> > Sorry I got urgent matters to tackle yesterday.
+> >
+> > It took me a while to understand what was going on, and I finally found
+> > it.
+> >
+> > struct hid_bpf_ctx is internal to the kernel, and so is declared in
+> > vmlinux.h, that we generate through BTF. But to generate the vmlinux.h
+> > with the correct symbols, these need to be present in the running
+> > kernel.
+> > And that's where we had a fundamental difference: I was running my
+> > compilations on a kernel v6.3+ (6.4.11) with that symbol available, and
+> > you are probably not.
+> >
+> > The bpf folks are using a clever trick to force the compilation[2]. And
+> > I think the following patch would work for you:
+>
+> Hi Benjamin, Justin,
+>
+> You might want to take a look at these two links:
+> [1] https://nakryiko.com/posts/bpf-core-reference-guide/#handling-incompa=
+tible-field-and-type-changes
+> [2] https://facebookmicrosites.github.io/bpf/blog/2020/02/19/bpf-portabil=
+ity-and-co-re.html#dealing-with-kernel-version-and-configuration-difference=
+s
+>
+> The short version is: CO-RE relocation handling logic in libbpf
+> ignores suffixes of form '___something' for type and field names.
+>
+> So, the following should accomplish the same as the trick with
+> #define/#undef:
+>
+>     #include "vmlinux.h"
+>     ...
+>     struct hid_bpf_ctx___local {
+>         __u32 index;
+>         const struct hid_device *hid;
+>         __u32 allocated_size;
+>         enum hid_report_type report_type;
+>         union {
+>             __s32 retval;
+>             __s32 size;
+>         };
+>
+>     };
+>     ...
+>     extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx___local *ctx,
+>                                   unsigned int offset, ...)
+>
+> However, if the kernel does not have `hid_bpf_ctx` definition would
+> the test `progs/hid.c` still make sense?
+>
+> When I tried to build hid tests locally I run into similar errors:
+>
+>     ...
+>       CLNG-BPF hid.bpf.o
+>     In file included from progs/hid.c:6:
+>     progs/hid_bpf_helpers.h:9:38: error: declaration of 'struct hid_bpf_c=
+tx' \
+>            will not be visible outside of this function [-Werror,-Wvisibi=
+lity]
+>     extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
+>     ...
+>
+> And there is indeed no `hid_bpf_ctx` in my vmlinux.h.
+> However, after enabling CONFIG_HID_BPF in kernel config the
+> `hid_bpf_ctx` appears in vmlinux.h, and I can compile HID selftests
+> w/o issues.
+
+Even with enabling this configuration option I was unable to get clean
+builds of the HID selftests. I proposed a 4th patch on top of
+Benjamin's n=3D3 patch series here [1] using the #def/#undef pattern.
+
+>
+> >
+> > ---
+> >  From bb9eccb7a896ba4b3a35ed12a248e6d6cfed2df6 Mon Sep 17 00:00:00 2001
+> > From: Benjamin Tissoires <bentiss@kernel.org>
+> > Date: Fri, 25 Aug 2023 10:02:32 +0200
+> > Subject: [PATCH] selftests/hid: ensure we can compile the tests on kern=
+els
+> >   pre-6.3
+> >
+> > For the hid-bpf tests to compile, we need to have the definition of
+> > struct hid_bpf_ctx. This definition is an internal one from the kernel
+> > and it is supposed to be defined in the generated vmlinux.h.
+> >
+> > This vmlinux.h header is generated based on the currently running kerne=
 l
-> >>>> (e.g, map_lookup_elem_syscall). So bpf program and bpf syscall can u=
-se
-> >>>> different API to operate on qp-trie.
-> >>> How does bpf prog side api look like?
-> >>> I thought we wanted to use dynptr as a key?
-> >> Yes. bpf prog will use dynptr as the map key. The bpf program will use
-> >> the same map helpers as hash map to operate on qp-trie and the verifie=
-r
-> >> will be updated to allow using dynptr as map key for qp-trie.
-> > And that's the problem I just mentioned.
-> > PTR_TO_MAP_KEY is special. I don't think we should hack it to also
-> > mean ARG_PTR_TO_DYNPTR depending on the first argument (map type).
->
-> Sorry for misunderstanding your reply. But before switch to the kfunc
-> way, could you please point me to some code or function which shows the
-> specialty of PTR_MAP_KEY ?
->
+> > or if the kernel was already compiled in the tree. If you just compile
+> > the selftests without compiling the kernel beforehand and you are runni=
+ng
+> > on a 6.2 kernel, you'll end up with a vmlinux.h without the hid_bpf_ctx
+> > definition.
+> >
+> > Use the clever trick from tools/testing/selftests/bpf/progs/bpf_iter.h
+> > to force the definition of that symbol in case we don't find it in the
+> > BTF.
+> >
+> > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> > ---
+> >   tools/testing/selftests/hid/progs/hid.c       |  3 ---
+> >   .../selftests/hid/progs/hid_bpf_helpers.h     | 20 ++++++++++++++++++=
++
+> >   2 files changed, 20 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/hid/progs/hid.c b/tools/testing/se=
+lftests/hid/progs/hid.c
+> > index 88c593f753b5..1e558826b809 100644
+> > --- a/tools/testing/selftests/hid/progs/hid.c
+> > +++ b/tools/testing/selftests/hid/progs/hid.c
+> > @@ -1,8 +1,5 @@
+> >   // SPDX-License-Identifier: GPL-2.0
+> >   /* Copyright (c) 2022 Red hat */
+> > -#include "vmlinux.h"
+> > -#include <bpf/bpf_helpers.h>
+> > -#include <bpf/bpf_tracing.h>
+> >   #include "hid_bpf_helpers.h"
+> >
+> >   char _license[] SEC("license") =3D "GPL";
+> > diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tool=
+s/testing/selftests/hid/progs/hid_bpf_helpers.h
+> > index 4fff31dbe0e7..749097f8f4d9 100644
+> > --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+> > +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+> > @@ -5,6 +5,26 @@
+> >   #ifndef __HID_BPF_HELPERS_H
+> >   #define __HID_BPF_HELPERS_H
+> >
+> > +/* "undefine" structs in vmlinux.h, because we "override" them below *=
+/
+> > +#define hid_bpf_ctx hid_bpf_ctx___not_used
+> > +#include "vmlinux.h"
+> > +#undef hid_bpf_ctx
+> > +
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +
+> > +
+> > +struct hid_bpf_ctx {
+> > +     __u32 index;
+> > +     const struct hid_device *hid;
+> > +     __u32 allocated_size;
+> > +     enum hid_report_type report_type;
+> > +     union {
+> > +             __s32 retval;
+> > +             __s32 size;
+> > +     };
+> > +};
+> > +
+> >   /* following are kfuncs exported by HID for HID-BPF */
+> >   extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
+> >                             unsigned int offset,
 >
 
-Search in kernel/bpf/verifier.c how PTR_TO_MAP_KEY is handled. The
-logic assumes that there is associated struct bpf_map * pointer from
-which we know fixed-sized key length.
+[1]: https://lore.kernel.org/all/20230825182316.m2ksjoxe4s7dsapn@google.com=
+/
 
-But getting back to the topic at hand. I vaguely remember discussion
-we had, but it would be good if you could summarize it again here to
-avoid talking past each other. What is the bpf_map_ops changes you
-were thinking to do? How bpf_attr will look like? How BPF-side API for
-lookup/delete/update will look like? And then let's go from there?
-Thanks!
+Thanks
+Justin
 
