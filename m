@@ -1,418 +1,234 @@
-Return-Path: <bpf+bounces-8683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8684-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D7F9788F4C
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 21:43:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E7EA788F60
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 21:50:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9541C1C20BF7
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 19:43:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB9D628178E
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 19:50:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A27818C3F;
-	Fri, 25 Aug 2023 19:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DE3219380;
+	Fri, 25 Aug 2023 19:50:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA3D8322B;
-	Fri, 25 Aug 2023 19:43:26 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3152684;
-	Fri, 25 Aug 2023 12:43:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=2yeZvWrPXuOx5+odzuqcbm1Y9YI1/4FQbjAdVVSMiSc=; b=fSV56oqvZO9N/8mE1AoLGUUJyZ
-	ZBjnYwX5g8fpaVpYlx11/6f3ybGtXzQp87jsUjzaNY4GNr8YtBORv+Tp6L3uAEgrOrx4X8URyHMCN
-	afk52YCZneVDVBpA0intMs4m9JiekaiA8ItpFKiIQAMw6eESqlVQ4b6dUlXJNHimJyNp+dtMYOl7v
-	2ubMPteTRgzI18P/8ZimmaOiQ22WJt46zG6DDysM6PBz6J0+mV5ayoM3bOQfsqvSbI/s1Zmhs8P/O
-	hX2VvPN/S7wOH4FpYlO9AkZVj9yDEKycHHEvrjkDd/zr4aICZZ+Li52H+Y9rondJrNlMKffR6JcBT
-	iWEcW82w==;
-Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qZciF-00034P-Ia; Fri, 25 Aug 2023 21:43:19 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: davem@davemloft.net
-Cc: kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: pull-request: bpf-next 2023-08-25
-Date: Fri, 25 Aug 2023 21:43:19 +0200
-Message-Id: <20230825194319.12727-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C736322B
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 19:50:13 +0000 (UTC)
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181702708
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 12:49:49 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bcb50e194dso19174041fa.3
+        for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 12:49:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692992987; x=1693597787;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MnEq+QAFMDWJdfRL6SvpHExJ+XohmGPH8a8o2WYRdhI=;
+        b=corRmrPnMht4WuUYWTBWqZoA8BYpeIBZq7VxdtTHER4r5Ddn4d6tqnDII8io26TTd+
+         +8w7h6O0D7JVOjUWVTaExA/jaPaUQLPuGUwglRw1MEKiYMrFa46UOUnFLPF7iRA1s5vr
+         k3cICSDKSFP5k3hi/7UPW4sYQn9dDlnHYGxctCVG4FhlQzvhTWOv1d5ePIrZ8PypSEdg
+         l7SFcoaccKfgtoXE4oTiyMlgSpJpnVfpCkk7Jy+w6BEVt+womyfUoi2p9JA+lzrTl7W8
+         kz07Zw21P+/Zl6M7euJG2/JHgar1Bhy4WtmQWsnnJ57EHZVrr8/8ZvUQ3KgWU3qyX7xY
+         Xs9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692992987; x=1693597787;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MnEq+QAFMDWJdfRL6SvpHExJ+XohmGPH8a8o2WYRdhI=;
+        b=bgxixF277bfXXUiyL2HaolFaOrCDvH4xg4zO3uPQnCqutF22ieQrUcYVIVjhujmWHm
+         Nqd0gaDOzN/l5jUOP63/Gsn0YmrPFTQaO9it80dA6HbwWzV9Xznm+Cs2qE3QUdl64vfs
+         O7is8Df2ePTSdDWgf8NAUMH+a0NewTOgavShfg0mFxgeHhYZbapYKm1pQC+G/gFe1VAI
+         KWmf+4OQVgx0ZNAJEIWsneZc1u95zrXiZ7WDQJriIwZdnB7nMKkRTZNtebz3/kvwJjVq
+         1Of1uvdRzLewdpdBAoL6JMN4OBax++HAg8VQ1T4jdI6PCFA4AHzE26xGS4arFeQxMrEd
+         OyHg==
+X-Gm-Message-State: AOJu0YxvCnKXiaP7fpBQe+epq5zcQWnW5g++Zxr7bR2Q0PzLWgDkZIWw
+	vRUonEyn5q/hImKzYC7Vxw0nYh1DZifCPtafLSc=
+X-Google-Smtp-Source: AGHT+IF/TMYxmq84SS3+CbMwx1j3YhZQmeH8M+oLp5x/c7VP/NkPiuykELxfZ/E1fHFXCkYvQzvrl8ho1R50EHcmsHg=
+X-Received: by 2002:a2e:9153:0:b0:2bc:bef0:8612 with SMTP id
+ q19-20020a2e9153000000b002bcbef08612mr12503755ljg.23.1692992987040; Fri, 25
+ Aug 2023 12:49:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27011/Fri Aug 25 09:40:47 2023)
+References: <87jztjmmy4.fsf@all.your.base.are.belong.to.us>
+ <2f4f0dfc-ec06-8ac8-a56a-395cc2373def@linux.dev> <CAADnVQ+sthRd1CHtCNo=AKN7mXZEMkA5fS6zh-Ncbh8uC3FERQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+sthRd1CHtCNo=AKN7mXZEMkA5fS6zh-Ncbh8uC3FERQ@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 25 Aug 2023 12:49:35 -0700
+Message-ID: <CAADnVQLg=hXhrjw6KW2xyHb7HOEFwn3+9qHFX3SpHQNeY2=qLg@mail.gmail.com>
+Subject: Re: WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
+To: Yonghong Song <yonghong.song@linux.dev>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Dave Marchevsky <davemarchevsky@meta.com>, Andrii Nakryiko <andrii@kernel.org>
+Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi David, hi Jakub, hi Paolo, hi Eric,
+On Fri, Aug 25, 2023 at 11:53=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Aug 25, 2023 at 8:28=E2=80=AFAM Yonghong Song <yonghong.song@linu=
+x.dev> wrote:
+> >
+> >
+> >
+> > On 8/25/23 3:32 AM, Bj=C3=B6rn T=C3=B6pel wrote:
+> > > I'm chasing a workqueue hang on RISC-V/qemu (TCG), using the bpf
+> > > selftests on bpf-next 9e3b47abeb8f.
+> > >
+> > > I'm able to reproduce the hang by multiple runs of:
+> > >   | ./test_progs -a link_api -a linked_list
+> > > I'm currently investigating that.
+> > >
+> > > But! Sometimes (every blue moon) I get a warn_on_once hit:
+> > >   | ------------[ cut here ]------------
+> > >   | WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342 bpf_mem_ref=
+ill+0x1fc/0x206
+> > >   | Modules linked in: bpf_testmod(OE)
+> > >   | CPU: 3 PID: 261 Comm: test_progs-cpuv Tainted: G           OE    =
+N 6.5.0-rc5-01743-gdcb152bb8328 #2
+> > >   | Hardware name: riscv-virtio,qemu (DT)
+> > >   | epc : bpf_mem_refill+0x1fc/0x206
+> > >   |  ra : irq_work_single+0x68/0x70
+> > >   | epc : ffffffff801b1bc4 ra : ffffffff8015fe84 sp : ff2000000001be2=
+0
+> > >   |  gp : ffffffff82d26138 tp : ff6000008477a800 t0 : 000000000004660=
+0
+> > >   |  t1 : ffffffff812b6ddc t2 : 0000000000000000 s0 : ff2000000001be7=
+0
+> > >   |  s1 : ff5ffffffffe8998 a0 : ff5ffffffffe8998 a1 : ff600003fef4b00=
+0
+> > >   |  a2 : 000000000000003f a3 : ffffffff80008250 a4 : 000000000000006=
+0
+> > >   |  a5 : 0000000000000080 a6 : 0000000000000000 a7 : 000000000073504=
+9
+> > >   |  s2 : ff5ffffffffe8998 s3 : 0000000000000022 s4 : 000000000000100=
+0
+> > >   |  s5 : 0000000000000007 s6 : ff5ffffffffe8570 s7 : ffffffff82d6bd3=
+0
+> > >   |  s8 : 000000000000003f s9 : ffffffff82d2c5e8 s10: 000000000000fff=
+f
+> > >   |  s11: ffffffff82d2c5d8 t3 : ffffffff81ea8f28 t4 : 000000000000000=
+0
+> > >   |  t5 : ff6000008fd28278 t6 : 0000000000040000
+> > >   | status: 0000000200000100 badaddr: 0000000000000000 cause: 0000000=
+000000003
+> > >   | [<ffffffff801b1bc4>] bpf_mem_refill+0x1fc/0x206
+> > >   | [<ffffffff8015fe84>] irq_work_single+0x68/0x70
+> > >   | [<ffffffff8015feb4>] irq_work_run_list+0x28/0x36
+> > >   | [<ffffffff8015fefa>] irq_work_run+0x38/0x66
+> > >   | [<ffffffff8000828a>] handle_IPI+0x3a/0xb4
+> > >   | [<ffffffff800a5c3a>] handle_percpu_devid_irq+0xa4/0x1f8
+> > >   | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
+> > >   | [<ffffffff800ae570>] ipi_mux_process+0xac/0xfa
+> > >   | [<ffffffff8000a8ea>] sbi_ipi_handle+0x2e/0x88
+> > >   | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
+> > >   | [<ffffffff807ee70e>] riscv_intc_irq+0x36/0x4e
+> > >   | [<ffffffff812b5d3a>] handle_riscv_irq+0x54/0x86
+> > >   | [<ffffffff812b6904>] do_irq+0x66/0x98
+> > >   | ---[ end trace 0000000000000000 ]---
+> > >
+> > > Code:
+> > >   | static void free_bulk(struct bpf_mem_cache *c)
+> > >   | {
+> > >   |   struct bpf_mem_cache *tgt =3D c->tgt;
+> > >   |   struct llist_node *llnode, *t;
+> > >   |   unsigned long flags;
+> > >   |   int cnt;
+> > >   |
+> > >   |   WARN_ON_ONCE(tgt->unit_size !=3D c->unit_size);
+> > >   | ...
+> > >
+> > > I'm not well versed in the memory allocator; Before I dive into it --
+> > > has anyone else hit it? Ideas on why the warn_on_once is hit?
+> >
+> > Maybe take a look at the patch
+> >    822fb26bdb55  bpf: Add a hint to allocated objects.
+> >
+> > In the above patch, we have
+> >
+> > +       /*
+> > +        * Remember bpf_mem_cache that allocated this object.
+> > +        * The hint is not accurate.
+> > +        */
+> > +       c->tgt =3D *(struct bpf_mem_cache **)llnode;
+> >
+> > I suspect that the warning may be related to the above.
+> > I tried the above ./test_progs command line (running multiple
+> > at the same time) and didn't trigger the issue.
+>
+> Interesting. Thanks for the report.
+> I wasn't able to repo the warn either, but I can confirm that linked_list
+> test is super slow on the kernel with debugs on and may appear to "hang",
+> since it doesn't respond to key press for many seconds.
+>
+> time ./test_progs -a linked_list
+> Summary: 1/132 PASSED, 0 SKIPPED, 0 FAILED
+>
+> real    0m35.897s
+> user    0m1.860s
+> sys    0m32.105s
+>
+> That's not normal.
+>
+> Kumar, Dave,
+>
+> do you have any suggestions?
 
-The following pull-request contains BPF updates for your *net-next* tree.
+Andrii,
 
-We've added 87 non-merge commits during the last 8 day(s) which contain
-a total of 104 files changed, 3719 insertions(+), 4212 deletions(-).
+this issue seems to be a scalability issue with libbpf.
+The perf report looks like:
 
-The main changes are:
+    9.89%  test_progs       [kernel.kallsyms]   [k] __lock_acquire
+    7.70%  test_progs       [kernel.kallsyms]   [k] check_preemption_disabl=
+ed
+    2.61%  test_progs       [kernel.kallsyms]   [k] asm_exc_page_fault
+    2.32%  test_progs       [kernel.kallsyms]   [k] rcu_is_watching
+    2.30%  test_progs       [kernel.kallsyms]   [k] memcpy_orig
+    2.26%  test_progs       test_progs          [.] btf_find_by_name_kind
+    2.18%  test_progs       libc-2.28.so        [.] __strcmp_avx2
+    2.14%  test_progs       [kernel.kallsyms]   [k] lock_acquire
+    2.10%  test_progs       [kernel.kallsyms]   [k] mark_lock.part.48
+    2.07%  test_progs       test_progs          [.] btf_kind
+    2.05%  test_progs       [kernel.kallsyms]   [k] clear_page_erms
+    1.89%  test_progs       test_progs          [.] btf_type_by_id
+    1.83%  test_progs       [kernel.kallsyms]   [k] lock_is_held_type
+    1.75%  test_progs       [kernel.kallsyms]   [k] lock_release
+    1.31%  test_progs       [kernel.kallsyms]   [k] unwind_next_frame
+    1.29%  test_progs       test_progs          [.] btf__type_by_id
+    1.28%  test_progs       [kernel.kallsyms]   [k] rep_movs_alternative
+    1.09%  test_progs       [kernel.kallsyms]   [k] __orc_find
+    1.06%  swapper          [kernel.kallsyms]   [k] __lock_acquire
+    1.02%  test_progs       test_progs          [.] btf_type_size
+    0.84%  test_progs       test_progs          [.] btf_parse_type_sec
+    0.78%  test_progs       [kernel.kallsyms]   [k] __create_object
+    0.76%  test_progs       [kernel.kallsyms]   [k] __lookup_object
+    0.75%  test_progs       test_progs          [.] btf__str_by_offset
 
-1) Add multi uprobe BPF links for attaching multiple uprobes and usdt probes,
-   which is significantly faster and saves extra fds, from Jiri Olsa.
+The top 5 functions coming from kernel due to libbpf
+reading /sys/kernel/btf/vmlinux
+Then libbpf proceeded to do a search in btf.
 
-2) Add support BPF cpu v4 instructions for arm64 JIT compiler, from Xu Kuohai.
-
-3) Add support BPF cpu v4 instructions for riscv64 JIT compiler, from Pu Lehui.
-
-4) Fix LWT BPF xmit hooks wrt their return values where propagating the result
-   from skb_do_redirect() would trigger a use-after-free, from Yan Zhai.
-
-5) Fix a BPF verifier issue related to bpf_kptr_xchg() with local kptr where the
-   map's value kptr type and locally allocated obj type mismatch, from Yonghong Song.
-
-6) Fix BPF verifier's check_func_arg_reg_off() function wrt graph root/node
-   which bypassed reg->off == 0 enforcement, from Kumar Kartikeya Dwivedi.
-
-7) Lift BPF verifier restriction in networking BPF programs to treat comparison
-   of packet pointers not as a pointer leak, from Yafang Shao.
-
-8) Remove unmaintained XDP BPF samples as they are maintained in xdp-tools
-   repository out of tree, from Toke Høiland-Jørgensen.
-
-9) Batch of fixes for the tracing programs from BPF samples in order to make
-   them more libbpf-aware, from Daniel T. Lee.
-
-10) Fix a libbpf signedness determination bug in the CO-RE relocation handling
-    logic, from Andrii Nakryiko.
-
-11) Extend libbpf to support CO-RE kfunc relocations. Also follow-up fixes
-    for bpf_refcount shared ownership implementation, both from Dave Marchevsky.
-
-12) Add a new bpf_object__unpin() API function to libbpf, from Daniel Xu.
-
-13) Fix a memory leak in libbpf to also free btf_vmlinux when the bpf_object
-    gets closed, from Hao Luo.
-
-14) Small error output improvements to test_bpf module, from Helge Deller.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Alexei Starovoitov, Andrii Nakryiko, Björn Töpel, Dave Marchevsky, David 
-Vernet, Eduard Zingerman, Florent Revest, Jiri Olsa, Jordan Griege, 
-Kumar Kartikeya Dwivedi, Lorenz Bauer, Oleg Nesterov, Song Liu, Toke 
-Høiland-Jørgensen, Yafang Shao, Yonghong Song
-
-----------------------------------------------------------------
-
-The following changes since commit c2e5f4fd1148727801a63d938cec210f16b48864:
-
-  Merge branch 'netconsole-enable-compile-time-configuration' (2023-08-17 19:25:44 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
-
-for you to fetch changes up to ec0ded2e02822ee6a7acb655d186af91854112cb:
-
-  Merge branch 'bpf-refcount-followups-3-bpf_mem_free_rcu-refcounted-nodes' (2023-08-25 09:23:23 -0700)
-
-----------------------------------------------------------------
-bpf-next-for-netdev
-
-----------------------------------------------------------------
-Alexei Starovoitov (8):
-      Merge branch 'remove-unnecessary-synchronizations-in-cpumap'
-      Merge branch 'samples-bpf-make-bpf-programs-more-libbpf-aware'
-      Merge branch 'bpf-add-multi-uprobe-link'
-      Merge branch 'fix-for-check_func_arg_reg_off'
-      Merge branch 'bpf-fix-an-issue-in-verifing-allow_ptr_leaks'
-      Merge branch 'samples-bpf-remove-unmaintained-xdp-sample-utilities'
-      Merge branch 'add-support-cpu-v4-insns-for-rv64'
-      Merge branch 'bpf-refcount-followups-3-bpf_mem_free_rcu-refcounted-nodes'
-
-Andrii Nakryiko (2):
-      selftests/bpf: add uprobe_multi test binary to .gitignore
-      libbpf: fix signedness determination in CO-RE relo handling logic
-
-Daniel T. Lee (9):
-      samples/bpf: fix warning with ignored-attributes
-      samples/bpf: convert to vmlinux.h with tracing programs
-      samples/bpf: unify bpf program suffix to .bpf with tracing programs
-      samples/bpf: fix symbol mismatch by compiler optimization
-      samples/bpf: make tracing programs to be more CO-RE centric
-      samples/bpf: fix bio latency check with tracepoint
-      samples/bpf: fix broken map lookup probe
-      samples/bpf: refactor syscall tracing programs using BPF_KSYSCALL macro
-      samples/bpf: simplify spintest with kprobe.multi
-
-Daniel Xu (1):
-      libbpf: Add bpf_object__unpin()
-
-Dave Marchevsky (9):
-      libbpf: Support triple-underscore flavors for kfunc relocation
-      selftests/bpf: Add CO-RE relocs kfunc flavors tests
-      bpf: Ensure kptr_struct_meta is non-NULL for collection insert and refcount_acquire
-      bpf: Consider non-owning refs trusted
-      bpf: Use bpf_mem_free_rcu when bpf_obj_dropping refcounted nodes
-      bpf: Reenable bpf_refcount_acquire
-      bpf: Consider non-owning refs to refcounted nodes RCU protected
-      bpf: Allow bpf_spin_{lock,unlock} in sleepable progs
-      selftests/bpf: Add tests for rbtree API interaction in sleepable progs
-
-Hao Luo (1):
-      libbpf: Free btf_vmlinux when closing bpf_object
-
-Helge Deller (1):
-      bpf/tests: Enhance output on error and fix typos
-
-Hou Tao (2):
-      bpf, cpumap: Use queue_rcu_work() to remove unnecessary rcu_barrier()
-      bpf, cpumask: Clean up bpf_cpu_map_entry directly in cpu_map_free
-
-Jiri Olsa (28):
-      bpf: Switch BPF_F_KPROBE_MULTI_RETURN macro to enum
-      bpf: Add attach_type checks under bpf_prog_attach_check_attach_type
-      bpf: Add multi uprobe link
-      bpf: Add cookies support for uprobe_multi link
-      bpf: Add pid filter support for uprobe_multi link
-      bpf: Add bpf_get_func_ip helper support for uprobe link
-      libbpf: Add uprobe_multi attach type and link names
-      libbpf: Move elf_find_func_offset* functions to elf object
-      libbpf: Add elf_open/elf_close functions
-      libbpf: Add elf symbol iterator
-      libbpf: Add elf_resolve_syms_offsets function
-      libbpf: Add elf_resolve_pattern_offsets function
-      libbpf: Add bpf_link_create support for multi uprobes
-      libbpf: Add bpf_program__attach_uprobe_multi function
-      libbpf: Add support for u[ret]probe.multi[.s] program sections
-      libbpf: Add uprobe multi link detection
-      libbpf: Add uprobe multi link support to bpf_program__attach_usdt
-      selftests/bpf: Move get_time_ns to testing_helpers.h
-      selftests/bpf: Add uprobe_multi skel test
-      selftests/bpf: Add uprobe_multi api test
-      selftests/bpf: Add uprobe_multi link test
-      selftests/bpf: Add uprobe_multi test program
-      selftests/bpf: Add uprobe_multi bench test
-      selftests/bpf: Add uprobe_multi usdt test code
-      selftests/bpf: Add uprobe_multi usdt bench test
-      selftests/bpf: Add uprobe_multi cookie test
-      selftests/bpf: Add uprobe_multi pid filter tests
-      selftests/bpf: Add extra link to uprobe_multi tests
-
-Kumar Kartikeya Dwivedi (2):
-      bpf: Fix check_func_arg_reg_off bug for graph root/node
-      selftests/bpf: Add test for bpf_obj_drop with bad reg->off
-
-Pu Lehui (7):
-      riscv, bpf: Fix missing exception handling and redundant zext for LDX_B/H/W
-      riscv, bpf: Support sign-extension load insns
-      riscv, bpf: Support sign-extension mov insns
-      riscv, bpf: Support 32-bit offset jmp insn
-      riscv, bpf: Support signed div/mod insns
-      riscv, bpf: Support unconditional bswap insn
-      selftests/bpf: Enable cpu v4 tests for RV64
-
-Toke Høiland-Jørgensen (7):
-      samples/bpf: Remove the xdp_monitor utility
-      samples/bpf: Remove the xdp_redirect* utilities
-      samples/bpf: Remove the xdp_rxq_info utility
-      samples/bpf: Remove the xdp1 and xdp2 utilities
-      samples/bpf: Remove the xdp_sample_pkts utility
-      samples/bpf: Cleanup .gitignore
-      samples/bpf: Add note to README about the XDP utilities moved to xdp-tools
-
-Xu Kuohai (7):
-      arm64: insn: Add encoders for LDRSB/LDRSH/LDRSW
-      bpf, arm64: Support sign-extension load instructions
-      bpf, arm64: Support sign-extension mov instructions
-      bpf, arm64: Support unconditional bswap
-      bpf, arm64: Support 32-bit offset jmp instruction
-      bpf, arm64: Support signed div/mod instructions
-      selftests/bpf: Enable cpu v4 tests for arm64
-
-Yafang Shao (2):
-      bpf: Fix issue in verifying allow_ptr_leaks
-      selftests/bpf: Add selftest for allow_ptr_leaks
-
-Yan Zhai (4):
-      lwt: Fix return values of BPF xmit ops
-      lwt: Check LWTUNNEL_XMIT_CONTINUE strictly
-      selftests/bpf: Add lwt_xmit tests for BPF_REDIRECT
-      selftests/bpf: Add lwt_xmit tests for BPF_REROUTE
-
-Yonghong Song (5):
-      selftests/bpf: Fix a selftest compilation error
-      bpf: Fix a bpf_kptr_xchg() issue with local kptr
-      selftests/bpf: Add a failure test for bpf_kptr_xchg() with local kptr
-      bpf: Remove a WARN_ON_ONCE warning related to local kptr
-      selftests/bpf: Add a local kptr test with no special fields
-
- arch/arm64/include/asm/insn.h                      |   4 +
- arch/arm64/lib/insn.c                              |   6 +
- arch/arm64/net/bpf_jit.h                           |  12 +
- arch/arm64/net/bpf_jit_comp.c                      |  91 ++-
- arch/riscv/net/bpf_jit.h                           |  30 +
- arch/riscv/net/bpf_jit_comp64.c                    | 102 +++-
- include/linux/bpf.h                                |   3 +-
- include/linux/bpf_verifier.h                       |   2 +-
- include/linux/trace_events.h                       |   6 +
- include/net/lwtunnel.h                             |   5 +-
- include/uapi/linux/bpf.h                           |  22 +-
- kernel/bpf/cpumap.c                                | 113 ++--
- kernel/bpf/helpers.c                               |   8 +-
- kernel/bpf/syscall.c                               | 135 +++--
- kernel/bpf/verifier.c                              |  94 ++--
- kernel/trace/bpf_trace.c                           | 342 +++++++++++-
- lib/test_bpf.c                                     |  12 +-
- net/core/lwt_bpf.c                                 |   7 +-
- net/ipv4/ip_output.c                               |   2 +-
- net/ipv6/ip6_output.c                              |   2 +-
- samples/bpf/.gitignore                             |  12 -
- samples/bpf/Makefile                               |  68 +--
- samples/bpf/README.rst                             |   6 +
- samples/bpf/net_shared.h                           |   2 +
- .../bpf/{offwaketime_kern.c => offwaketime.bpf.c}  |  39 +-
- samples/bpf/offwaketime_user.c                     |   2 +-
- samples/bpf/{spintest_kern.c => spintest.bpf.c}    |  27 +-
- samples/bpf/spintest_user.c                        |  24 +-
- samples/bpf/test_map_in_map.bpf.c                  |  10 +-
- samples/bpf/test_overhead_kprobe.bpf.c             |  20 +-
- samples/bpf/test_overhead_tp.bpf.c                 |  29 +-
- samples/bpf/{tracex1_kern.c => tracex1.bpf.c}      |  25 +-
- samples/bpf/tracex1_user.c                         |   2 +-
- samples/bpf/{tracex3_kern.c => tracex3.bpf.c}      |  40 +-
- samples/bpf/tracex3_user.c                         |   2 +-
- samples/bpf/{tracex4_kern.c => tracex4.bpf.c}      |   3 +-
- samples/bpf/tracex4_user.c                         |   2 +-
- samples/bpf/{tracex5_kern.c => tracex5.bpf.c}      |  12 +-
- samples/bpf/tracex5_user.c                         |   2 +-
- samples/bpf/{tracex6_kern.c => tracex6.bpf.c}      |  20 +-
- samples/bpf/tracex6_user.c                         |   2 +-
- samples/bpf/{tracex7_kern.c => tracex7.bpf.c}      |   3 +-
- samples/bpf/tracex7_user.c                         |   2 +-
- samples/bpf/xdp1_kern.c                            | 100 ----
- samples/bpf/xdp1_user.c                            | 166 ------
- samples/bpf/xdp2_kern.c                            | 125 -----
- samples/bpf/xdp_monitor.bpf.c                      |   8 -
- samples/bpf/xdp_monitor_user.c                     | 118 ----
- samples/bpf/xdp_redirect.bpf.c                     |  49 --
- samples/bpf/xdp_redirect_cpu.bpf.c                 | 539 ------------------
- samples/bpf/xdp_redirect_cpu_user.c                | 559 -------------------
- samples/bpf/xdp_redirect_map.bpf.c                 |  97 ----
- samples/bpf/xdp_redirect_map_multi.bpf.c           |  77 ---
- samples/bpf/xdp_redirect_map_multi_user.c          | 232 --------
- samples/bpf/xdp_redirect_map_user.c                | 228 --------
- samples/bpf/xdp_redirect_user.c                    | 172 ------
- samples/bpf/xdp_rxq_info_kern.c                    | 140 -----
- samples/bpf/xdp_rxq_info_user.c                    | 614 ---------------------
- samples/bpf/xdp_sample_pkts_kern.c                 |  57 --
- samples/bpf/xdp_sample_pkts_user.c                 | 196 -------
- tools/include/uapi/linux/bpf.h                     |  22 +-
- tools/lib/bpf/Build                                |   2 +-
- tools/lib/bpf/bpf.c                                |  11 +
- tools/lib/bpf/bpf.h                                |  11 +-
- tools/lib/bpf/elf.c                                | 440 +++++++++++++++
- tools/lib/bpf/libbpf.c                             | 424 +++++++-------
- tools/lib/bpf/libbpf.h                             |  52 ++
- tools/lib/bpf/libbpf.map                           |   2 +
- tools/lib/bpf/libbpf_internal.h                    |  21 +
- tools/lib/bpf/relo_core.c                          |   2 +-
- tools/lib/bpf/usdt.c                               | 116 ++--
- tools/testing/selftests/bpf/.gitignore             |   1 +
- tools/testing/selftests/bpf/Makefile               |   5 +
- tools/testing/selftests/bpf/bench.h                |   9 -
- tools/testing/selftests/bpf/config                 |   2 +
- .../testing/selftests/bpf/prog_tests/bpf_cookie.c  |  78 +++
- .../selftests/bpf/prog_tests/kprobe_multi_test.c   |   8 -
- .../selftests/bpf/prog_tests/local_kptr_stash.c    |  33 +-
- .../testing/selftests/bpf/prog_tests/lwt_helpers.h | 139 +++++
- .../selftests/bpf/prog_tests/lwt_redirect.c        | 330 +++++++++++
- .../testing/selftests/bpf/prog_tests/lwt_reroute.c | 262 +++++++++
- .../selftests/bpf/prog_tests/refcounted_kptr.c     |  26 +
- .../testing/selftests/bpf/prog_tests/task_kfunc.c  |   2 +
- tools/testing/selftests/bpf/prog_tests/tc_bpf.c    |  36 +-
- .../selftests/bpf/prog_tests/uprobe_multi_test.c   | 415 ++++++++++++++
- .../testing/selftests/bpf/progs/local_kptr_stash.c |  28 +
- .../selftests/bpf/progs/local_kptr_stash_fail.c    |  85 +++
- .../testing/selftests/bpf/progs/refcounted_kptr.c  |  71 +++
- .../selftests/bpf/progs/refcounted_kptr_fail.c     |  28 +
- .../selftests/bpf/progs/task_kfunc_success.c       |  51 ++
- tools/testing/selftests/bpf/progs/test_ldsx_insn.c |   3 +-
- .../selftests/bpf/progs/test_lwt_redirect.c        |  90 +++
- .../testing/selftests/bpf/progs/test_lwt_reroute.c |  36 ++
- tools/testing/selftests/bpf/progs/test_tc_bpf.c    |  13 +
- tools/testing/selftests/bpf/progs/uprobe_multi.c   | 101 ++++
- .../selftests/bpf/progs/uprobe_multi_bench.c       |  15 +
- .../selftests/bpf/progs/uprobe_multi_usdt.c        |  16 +
- tools/testing/selftests/bpf/progs/verifier_bswap.c |   3 +-
- tools/testing/selftests/bpf/progs/verifier_gotol.c |   3 +-
- tools/testing/selftests/bpf/progs/verifier_ldsx.c  |   3 +-
- tools/testing/selftests/bpf/progs/verifier_movsx.c |   3 +-
- tools/testing/selftests/bpf/progs/verifier_sdiv.c  |   3 +-
- tools/testing/selftests/bpf/testing_helpers.h      |  10 +
- tools/testing/selftests/bpf/uprobe_multi.c         |  91 +++
- 104 files changed, 3719 insertions(+), 4212 deletions(-)
- rename samples/bpf/{offwaketime_kern.c => offwaketime.bpf.c} (76%)
- rename samples/bpf/{spintest_kern.c => spintest.bpf.c} (67%)
- rename samples/bpf/{tracex1_kern.c => tracex1.bpf.c} (60%)
- rename samples/bpf/{tracex3_kern.c => tracex3.bpf.c} (70%)
- rename samples/bpf/{tracex4_kern.c => tracex4.bpf.c} (95%)
- rename samples/bpf/{tracex5_kern.c => tracex5.bpf.c} (90%)
- rename samples/bpf/{tracex6_kern.c => tracex6.bpf.c} (71%)
- rename samples/bpf/{tracex7_kern.c => tracex7.bpf.c} (82%)
- delete mode 100644 samples/bpf/xdp1_kern.c
- delete mode 100644 samples/bpf/xdp1_user.c
- delete mode 100644 samples/bpf/xdp2_kern.c
- delete mode 100644 samples/bpf/xdp_monitor.bpf.c
- delete mode 100644 samples/bpf/xdp_monitor_user.c
- delete mode 100644 samples/bpf/xdp_redirect.bpf.c
- delete mode 100644 samples/bpf/xdp_redirect_cpu.bpf.c
- delete mode 100644 samples/bpf/xdp_redirect_cpu_user.c
- delete mode 100644 samples/bpf/xdp_redirect_map.bpf.c
- delete mode 100644 samples/bpf/xdp_redirect_map_multi.bpf.c
- delete mode 100644 samples/bpf/xdp_redirect_map_multi_user.c
- delete mode 100644 samples/bpf/xdp_redirect_map_user.c
- delete mode 100644 samples/bpf/xdp_redirect_user.c
- delete mode 100644 samples/bpf/xdp_rxq_info_kern.c
- delete mode 100644 samples/bpf/xdp_rxq_info_user.c
- delete mode 100644 samples/bpf/xdp_sample_pkts_kern.c
- delete mode 100644 samples/bpf/xdp_sample_pkts_user.c
- create mode 100644 tools/lib/bpf/elf.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/lwt_helpers.h
- create mode 100644 tools/testing/selftests/bpf/prog_tests/lwt_redirect.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/lwt_reroute.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
- create mode 100644 tools/testing/selftests/bpf/progs/local_kptr_stash_fail.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_lwt_redirect.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_lwt_reroute.c
- create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi.c
- create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_bench.c
- create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_usdt.c
- create mode 100644 tools/testing/selftests/bpf/uprobe_multi.c
+Don't know whether libbpf is doing too many unnecessary reads on vmlinux bt=
+f
+or what is actually happening, but something isn't right.
+This test shouldn't be causing libbpf to be the main consumer of cpu.
+Not sure whether other tests are similarly affected.
+This is what I've debugged so far.
 
