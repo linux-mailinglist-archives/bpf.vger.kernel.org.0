@@ -1,138 +1,109 @@
-Return-Path: <bpf+bounces-8558-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8559-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73E9E788307
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 11:08:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA1747884F9
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 12:33:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D43B1C20F6A
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 09:08:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 757B5281806
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 10:33:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7992C2D5;
-	Fri, 25 Aug 2023 09:08:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 246ECCA54;
+	Fri, 25 Aug 2023 10:32:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99720A94A
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 09:08:39 +0000 (UTC)
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3AF1FDF;
-	Fri, 25 Aug 2023 02:08:27 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50043cf2e29so980461e87.2;
-        Fri, 25 Aug 2023 02:08:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692954505; x=1693559305;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XGH+s8GQ40mAY7Hi7ApsqsxBdjwgwNJM3n/9eQfKme0=;
-        b=hBNy8K0NdYE+g2rzEg13gMbP6TT+aNG2JduaqcPrtOdXXPc+jSJY9oDIlffzLUK0yJ
-         lEmIcQv2ws72vXRM5LnszfoKMmnnKoxIhM7f92uW5ykpDzHWA+8h3JydgU/VAGVWOYL8
-         Z8wp7/su8He2W1k+Seig/exREsn5NPCt1MKk57wK6puoslCuO7XJYz/seyYm7NPRU/aW
-         QHwj1YqxUkp5Jg/z8E0jniCKTrszqisZnbn18w+hTNgZtPfN+M7dFbOJpSSHmV6s7Xdq
-         Vx69d4Puk9drw9+rn2NffgaGzyT0cHRjX2JhF8HKSY+RZ727cIeNvQDm2PJsvuOMljgN
-         7uyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692954505; x=1693559305;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XGH+s8GQ40mAY7Hi7ApsqsxBdjwgwNJM3n/9eQfKme0=;
-        b=Tvu5XMdQ5gOSwet6bNcZuWEFEwlGuoZkPLLpkQJ6c/TKai7qe3I8ODnMg0bZgKRgFq
-         LeZjjK7B4HCwar+nx23CZgUfrvMApy3HRLlO1dF3Rl6aGXapkzDDi0n+rbR2N4Rq1IKr
-         9oCbC+2PrSk2IUgqJnG44K0WNlYbnbY5FvRFJB0HaoBKBrybLhEF9IhbJZqwfP+ADTI+
-         Dk1ZwJhs8nnNvsiZYd4hZYSE9DIdVTKCM2lSrUQxzX5hxN5oyps5jszZ/Lwh69kwOi0A
-         WO07CnXmHxMVcqCnju6DGI/iDrgfMbiAxHfZ2t0tWdlxzIQpq5QLoCMjWL/kiJW6gALQ
-         sX4Q==
-X-Gm-Message-State: AOJu0YxRhVCSd4OS6M/Q87W1DzT8X8X4Vd2VoNuom3etoQYN8i8ciD39
-	Zp/R4xBmIW9K/w2htghxj5Y=
-X-Google-Smtp-Source: AGHT+IGlMotjqDaVIjnPhJ0aBiH+sa14MKKRgk9Gr7+xNEBZbFXr0QcZClmRgTXLoibUTxZ/LbxPCw==
-X-Received: by 2002:a05:6512:3b9e:b0:500:9a67:d40e with SMTP id g30-20020a0565123b9e00b005009a67d40emr6058180lfv.60.1692954505226;
-        Fri, 25 Aug 2023 02:08:25 -0700 (PDT)
-Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
-        by smtp.gmail.com with ESMTPSA id qo8-20020a170907212800b0099cd008c1a4sm739997ejb.136.2023.08.25.02.08.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 02:08:24 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 25 Aug 2023 11:08:22 +0200
-To: Rong Tao <rtoax@foxmail.com>
-Cc: olsajiri@gmail.com, andrii@kernel.org, ast@kernel.org,
-	bpf@vger.kernel.org, daniel@iogearbox.net, haoluo@google.com,
-	john.fastabend@gmail.com, kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	martin.lau@linux.dev, mykolal@fb.com, rongtao@cestc.cn,
-	sdf@google.com, shuah@kernel.org, song@kernel.org,
-	yonghong.song@linux.dev
-Subject: Re: [PATCH bpf-next v6] selftests/bpf: trace_helpers.c: optimize
- kallsyms cache
-Message-ID: <ZOhvhnUTxtD6YYzl@krava>
-References: <ZOMiqE0QY2Lrw2UC@krava>
- <tencent_492BE2E81E62BEC199106096C025954AFD06@qq.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94B0ED2EC
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 10:32:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA3AEC433C7;
+	Fri, 25 Aug 2023 10:32:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1692959574;
+	bh=rJmtd4AoEg8qpdbmr/J69QEcfU7pcYSpKFVRCPpe/Js=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BM+GM9bM9SM9xPdQtUlBM7AAgc3ZWcfCiaIOW9UuluA2QM9JovGZZUS3tdJo+sAVu
+	 hChGeOTU4Ofk1bb+b7DQ9TKqEdI2J+afOXf7am2Ot0faMuJoGmxEiGrXgPlrxLR0Gp
+	 dPtH1QvH1hKdm0ksS24UjB9fSaGXiJ/9BpXPZK0mo3PtquOoOdy3GN7DUbO+GCDJ1X
+	 lPjGuPABMUr+7fldXVE7pvDl6zGyiVX3WniB9vmNR9exnR6WBq7b5ecErqPncwdFuA
+	 hPLfvN1yRyu0g7B6MLmgHXEA648PSJeNsMi3OWoMDBAoVyBAiL5O4VTRromBGclSX/
+	 78RcaqV96ryiQ==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: bpf@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org
+Subject: WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
+Date: Fri, 25 Aug 2023 12:32:51 +0200
+Message-ID: <87jztjmmy4.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_492BE2E81E62BEC199106096C025954AFD06@qq.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 22, 2023 at 08:38:58AM +0800, Rong Tao wrote:
-> > I think you need to fix this on samples/bpf side
-> > 
-> > I tried to play with the samples/bpf/ includes, but couldn't find a way to
-> > make this work.. selftests base includes on tools/include, while samples
-> > have $(objtree)/usr/include as first include and AFAICS the __must_check is
-> > defined under __KERNEL__ ifdef
-> > 
-> > I guess the reason samples use $(objtree)/usr/include is to get some struct
-> > definitions which are not in tools/include, but looks like some samples objects
-> > already use vmlinux.h include, so that could be the way forward to fix that
-> 
-> I tried the method you suggested, and some unexpected problems occurred. Maybe,
-> we can apply v5 [0] first, and then solve this problem?
+I'm chasing a workqueue hang on RISC-V/qemu (TCG), using the bpf
+selftests on bpf-next 9e3b47abeb8f.
 
-how about change below, seem to work for me
+I'm able to reproduce the hang by multiple runs of:
+ | ./test_progs -a link_api -a linked_list
+I'm currently investigating that.
 
-jirka
+But! Sometimes (every blue moon) I get a warn_on_once hit:
+ | ------------[ cut here ]------------
+ | WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342 bpf_mem_refill+0x1=
+fc/0x206
+ | Modules linked in: bpf_testmod(OE)
+ | CPU: 3 PID: 261 Comm: test_progs-cpuv Tainted: G           OE    N 6.5.0=
+-rc5-01743-gdcb152bb8328 #2
+ | Hardware name: riscv-virtio,qemu (DT)
+ | epc : bpf_mem_refill+0x1fc/0x206
+ |  ra : irq_work_single+0x68/0x70
+ | epc : ffffffff801b1bc4 ra : ffffffff8015fe84 sp : ff2000000001be20
+ |  gp : ffffffff82d26138 tp : ff6000008477a800 t0 : 0000000000046600
+ |  t1 : ffffffff812b6ddc t2 : 0000000000000000 s0 : ff2000000001be70
+ |  s1 : ff5ffffffffe8998 a0 : ff5ffffffffe8998 a1 : ff600003fef4b000
+ |  a2 : 000000000000003f a3 : ffffffff80008250 a4 : 0000000000000060
+ |  a5 : 0000000000000080 a6 : 0000000000000000 a7 : 0000000000735049
+ |  s2 : ff5ffffffffe8998 s3 : 0000000000000022 s4 : 0000000000001000
+ |  s5 : 0000000000000007 s6 : ff5ffffffffe8570 s7 : ffffffff82d6bd30
+ |  s8 : 000000000000003f s9 : ffffffff82d2c5e8 s10: 000000000000ffff
+ |  s11: ffffffff82d2c5d8 t3 : ffffffff81ea8f28 t4 : 0000000000000000
+ |  t5 : ff6000008fd28278 t6 : 0000000000040000
+ | status: 0000000200000100 badaddr: 0000000000000000 cause: 00000000000000=
+03
+ | [<ffffffff801b1bc4>] bpf_mem_refill+0x1fc/0x206
+ | [<ffffffff8015fe84>] irq_work_single+0x68/0x70
+ | [<ffffffff8015feb4>] irq_work_run_list+0x28/0x36
+ | [<ffffffff8015fefa>] irq_work_run+0x38/0x66
+ | [<ffffffff8000828a>] handle_IPI+0x3a/0xb4
+ | [<ffffffff800a5c3a>] handle_percpu_devid_irq+0xa4/0x1f8
+ | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
+ | [<ffffffff800ae570>] ipi_mux_process+0xac/0xfa
+ | [<ffffffff8000a8ea>] sbi_ipi_handle+0x2e/0x88
+ | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
+ | [<ffffffff807ee70e>] riscv_intc_irq+0x36/0x4e
+ | [<ffffffff812b5d3a>] handle_riscv_irq+0x54/0x86
+ | [<ffffffff812b6904>] do_irq+0x66/0x98
+ | ---[ end trace 0000000000000000 ]---
+
+Code:
+ | static void free_bulk(struct bpf_mem_cache *c)
+ | {
+ | 	struct bpf_mem_cache *tgt =3D c->tgt;
+ | 	struct llist_node *llnode, *t;
+ | 	unsigned long flags;
+ | 	int cnt;
+ |=20
+ | 	WARN_ON_ONCE(tgt->unit_size !=3D c->unit_size);
+ | ...
+
+I'm not well versed in the memory allocator; Before I dive into it --
+has anyone else hit it? Ideas on why the warn_on_once is hit?
 
 
----
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 151ec320818b..3115f054dca7 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -316,6 +316,8 @@ XDP_SAMPLE_CFLAGS += -Wall -O2 \
- $(obj)/$(XDP_SAMPLE): TPROGS_CFLAGS = $(XDP_SAMPLE_CFLAGS)
- $(obj)/$(XDP_SAMPLE): $(src)/xdp_sample_user.h $(src)/xdp_sample_shared.h
- 
-+$(obj)/$(TRACE_HELPERS): TPROGS_CFLAGS := $(TPROGS_CFLAGS) -D__must_check=
-+
- -include $(BPF_SAMPLES_PATH)/Makefile.target
- 
- VMLINUX_BTF_PATHS ?= $(abspath $(if $(O),$(O)/vmlinux))				\
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-index 316a7874a12b..551547ba6829 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -14,9 +14,6 @@
- #include <linux/limits.h>
- #include <libelf.h>
- #include <gelf.h>
--#ifndef __must_check
--#define __must_check
--#endif
- #include "bpf/libbpf_internal.h"
- 
- #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
+Bj=C3=B6rn
 
