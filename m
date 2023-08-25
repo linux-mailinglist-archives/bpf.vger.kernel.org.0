@@ -1,115 +1,210 @@
-Return-Path: <bpf+bounces-8679-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8680-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7648788F00
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 20:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F8E7788F05
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 20:56:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0D051C20A8C
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 18:55:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B01871C20A8C
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 18:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F5A18B0E;
-	Fri, 25 Aug 2023 18:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F25EA18B0E;
+	Fri, 25 Aug 2023 18:56:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47033101CA
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 18:55:22 +0000 (UTC)
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2981BD2
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 11:55:20 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50078eba7afso1943986e87.0
-        for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 11:55:20 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C651CEEC1
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 18:56:32 +0000 (UTC)
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8922127
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 11:56:31 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-52a1132b685so1917657a12.1
+        for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 11:56:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692989718; x=1693594518;
+        d=gmail.com; s=20221208; t=1692989790; x=1693594590;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Sa5B6Vq/+KMDNgnjyuhJyRP9AioEf9V1BfDOyTkOSDk=;
-        b=mQGmo2GFncPEwGTODUwvXu+RHh+Cnw7IcZN28OvsomR11TPWQX8X/8LQFitgvRCeYu
-         oBqGapP8x+9fvBFGrkrTx+V7aKtv8gx5a6OedhfHJ90pjBamRvG7MhxP/q9kAkX2dTjV
-         E2xkgu7OtW1tpHf7/+QlNvue63SbnKR0VZUtQ0QD4n9Pv1tjP2I/0ZIccD8t7579s3PB
-         G8nIYrXT35WeXEPkzcKd670B7fZtLD9JWfYHD+PcvLkPLHwtSnnSkxSM7j8eVwrb6fL8
-         H8tMeU6riH4Ujs+Stb7eOpFehrZvrTV5XzxlnefY/uKoVZXd/7p3TSPGhM65TmpMi1XM
-         sMhw==
+        bh=qeKOojWSdoABZdi2XbAHnlS8XMk+72Yc73PFyKQg65o=;
+        b=daCcoK128uwV23pTlP8wu+VtJ5SFdSdB9Tv6zPtM9xiGAkjpzL74ekrrLPq0DhzJN/
+         e3R0foA9NGL2gB+o/GMxw9JB23d+GFspSMeRMcbJqwK6C/uIGmvt9VVXLF6ICrkrpA1q
+         fpvNifOO627eDlbXiSwZmlPOX85NG05ea/i70pDMoKYBuBz7IoJ3K95HDE3gxhKbd9sb
+         vETtSL/fSbp3SfW41nEJ5bD4a4Q5CSjg/ob/A1h+msjF2moJ+6fjH441/wnoXmpeks/Q
+         6+P41Udh3yQJgd18EX0mhao1fqhtHD/FW+VUPh7ZCU0ytgTdHZd4fQGJj6eVqQVXN9fm
+         MnaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692989718; x=1693594518;
+        d=1e100.net; s=20221208; t=1692989790; x=1693594590;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Sa5B6Vq/+KMDNgnjyuhJyRP9AioEf9V1BfDOyTkOSDk=;
-        b=PKxBJYYognLMliy0PGJ+7/bHLdV9quAYw8CKFAmneotkSkXUAv/B9H1yErLirvc0Oy
-         uyF5WSTZLBtm5/7y5ORhLT1jwbTUpUaFd89BJHIYVuluniei1Qpmb/1eS22u9OMHIlqk
-         GtTEEgXVWeJjYV/TLiN+DEjewx/aZBIMsuaKYAkBV9GnT+nkcBAIQhKHoY6yafRI+jCS
-         jWtbvwv7r8+wOGk3KnTRyou22IFPalfUoUYrq02EtkV12hzQQ/HQSRMk2FCRyEKRrO64
-         eIwFQ25yWTJVTZkw7brHXDIsGo6+pui8Jhp3iNmH3WR9EfHWle1o0IwgnF6pRnVZ8+UP
-         RXiA==
-X-Gm-Message-State: AOJu0Yz+4Y9VBpWlOrXUSG1g5uW4b2MM3ENRZM0R2GCpwEuZ/MFqxqXH
-	rbM/im0bcg+UztZq0wtcWfINErKbS8Suw8Mk57s=
-X-Google-Smtp-Source: AGHT+IHTxanFfLzWRGYZAmrRZOsDAp0SnhNgAdq9mwYacHj1+t7ahJQsKDzJS/CmOkjOl/RC3hQ4r7C76qjJxUsB+Qg=
-X-Received: by 2002:a05:6512:ac4:b0:4ff:8d7a:cb20 with SMTP id
- n4-20020a0565120ac400b004ff8d7acb20mr18151396lfu.63.1692989718329; Fri, 25
- Aug 2023 11:55:18 -0700 (PDT)
+        bh=qeKOojWSdoABZdi2XbAHnlS8XMk+72Yc73PFyKQg65o=;
+        b=UMFveq7oXZo5O+oGhHnIWf1fKL8H3SWzOzyP5omFE7eFFuyhxrhC2e/tj0jFo6+Yje
+         Z4IDmrKmY2qTr8URVDZmzLgPRXe6/WlbD1R4ndkDDndVhmzr8Hc7OdoNIjXrpJK8ZBAb
+         i6jWi7eNby8t20JAdHjXpzK4k5PM5YERhzAptGYlRFis200aQWCMFJnBdgaC61DiSN+t
+         CCyI11ZMLpLoDn4S0e2Foh3tS148oy4SWw/qIQKx37K6Oe/37ngRk3EUaeYBb5oTAWjI
+         sHgnlDCTVadGdh91ltIEiCTJjiMk2Q3KmxY7xD0YaN1dd9Do3/4fQ8egT7OFMB5zW+kl
+         0RVQ==
+X-Gm-Message-State: AOJu0YxdQAmZjbEUhpWxiXakw5DRrFrNfFTeEtOQ0pmiXOJKD8UimlDl
+	PA/VI5X2xpul5QEc/BbWvtdurP3INgy0K4dJLlU0cgvx
+X-Google-Smtp-Source: AGHT+IGe9XvmUfmsRNP29ic86XhT6YFQgrheQo8KODEcIrp2zwCUl+uxr7qduAJuyXoTxGnoxLcb15ToxB+DVsQRQyY=
+X-Received: by 2002:a05:6402:b29:b0:523:4a4e:3b57 with SMTP id
+ bo9-20020a0564020b2900b005234a4e3b57mr15494875edb.13.1692989789685; Fri, 25
+ Aug 2023 11:56:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230809114116.3216687-1-memxor@gmail.com> <CAP01T75MjLeu01FJjxcEF3O1f+4=MiP3St_2M5fmTW9RqkGPnw@mail.gmail.com>
- <87lee2enow.fsf@oracle.com> <f7c404d8-41b5-a48d-f156-5556b38f384e@linux.dev>
- <CAP01T757oTUPuRaxiaNZh2E5FtLdWiYybZy453LUYEE7RmY63Q@mail.gmail.com> <CAADnVQLnNgpjsHMBUhHBhwdUNdqoCEEtxv-mSKS==48XNpMZog@mail.gmail.com>
-In-Reply-To: <CAADnVQLnNgpjsHMBUhHBhwdUNdqoCEEtxv-mSKS==48XNpMZog@mail.gmail.com>
+References: <20230824201358.1395122-1-andrii@kernel.org> <CAPhsuW6Qw1xOXruC5E7WjxwdMom3BwyU_2NsAjSx7rmFb7e16g@mail.gmail.com>
+In-Reply-To: <CAPhsuW6Qw1xOXruC5E7WjxwdMom3BwyU_2NsAjSx7rmFb7e16g@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 25 Aug 2023 11:55:06 -0700
-Message-ID: <CAEf4BzbFcO7x4oXYVhJ95C0fFuP6uxec4JbokPdq_5RQMyxurA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 00/14] Exceptions - 1/2
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	"Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	David Vernet <void@manifault.com>
+Date: Fri, 25 Aug 2023 11:56:18 -0700
+Message-ID: <CAEf4BzZQutPNqMkzG7Q_F_TrzSHWOXfmOy38QXZGNDX3bAJX2Q@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] libbpf: add basic BTF sanity validation
+To: Song Liu <song@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Aug 22, 2023 at 4:06=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Thu, Aug 24, 2023 at 2:17=E2=80=AFPM Song Liu <song@kernel.org> wrote:
 >
-> On Tue, Aug 22, 2023 at 3:54=E2=80=AFPM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
+> On Thu, Aug 24, 2023 at 1:14=E2=80=AFPM Andrii Nakryiko <andrii@kernel.or=
+g> wrote:
 > >
-> >
-> > I suppose we could switch to the ' if (!(LHS <op> RHS)) bpf_throw(); '
-> > sequence in C, force volatile load for LHS and __builtin_constant_p
-> > for RHS to get the same behavior. Emitting these redundant checks is
-> > definitely a bit weird just to emit BTF.
+> [...]
+> > +
+> > +static int btf_validate_type(const struct btf *btf, const struct btf_t=
+ype *t, __u32 id)
+> > +{
+> > +       __u32 kind =3D btf_kind(t);
+> > +       int err, i, n;
+> > +
+> > +       err =3D btf_validate_str(btf, t->name_off, "type name", id);
+> > +       if (err)
+> > +               return err;
+> > +
+> > +       switch (kind) {
+> > +       case BTF_KIND_UNKN:
+> > +       case BTF_KIND_INT:
+> > +       case BTF_KIND_FWD:
+> > +       case BTF_KIND_FLOAT:
+> > +               break;
+> > +       case BTF_KIND_PTR:
+> > +       case BTF_KIND_TYPEDEF:
+> > +       case BTF_KIND_VOLATILE:
+> > +       case BTF_KIND_CONST:
+> > +       case BTF_KIND_RESTRICT:
+> > +       case BTF_KIND_FUNC:
+> > +       case BTF_KIND_VAR:
+> > +       case BTF_KIND_DECL_TAG:
+> > +       case BTF_KIND_TYPE_TAG:
+> > +               err =3D btf_validate_id(btf, t->type, id);
+> > +               if (err)
+> > +                       return err;
 >
-> I guess we can try
-> #define bpf_assert(LHS, OP, RHS) if (!(LHS OP RHS)) bpf_throw();
-> with barrier_var(LHS) and __builtin_constant_p(RHS) and
-> keep things completely in C,
-> but there is no guarantee that the compiler will not convert =3D=3D to !=
-=3D,
-> swap lhs and rhs, etc.
-> Maybe we can have both asm and C style macros, then recommend C to start
-> and switch to asm if things are dodgy.
-> Feels like dangerous ambiguity.
+> We can "return err;" at the end, and then remove all these "if (err)
+> return err;", right?
 
-This seems similar to the issue I had with
-__attribute__((cleanup(some_kfunc)))) not emitting BTF info for that
-some_kfunc? See bpf_for_each(), seems like just adding
-`(void)bpf_iter_##type##_destroy` makes Clang emit BTF info.
+in some places, yes, but not where we have loops. And in general I
+find it harder to follow. Keeping each case branch more self-contained
+seems better, personally. I'd prefer to keep it.
 
-It would be nice to have this fixed for cleanup() attribute and asm,
-of course. But this is a simple work around.
+>
+> Thanks,
+> Song
+>
+> > +               break;
+> > +       case BTF_KIND_ARRAY: {
+> > +               const struct btf_array *a =3D btf_array(t);
+> > +
+> > +               err =3D btf_validate_id(btf, a->type, id);
+> > +               err =3D err ?: btf_validate_id(btf, a->index_type, id);
+> > +               if (err)
+> > +                       return err;
+> > +               break;
+> > +       }
+> > +       case BTF_KIND_STRUCT:
+> > +       case BTF_KIND_UNION: {
+> > +               const struct btf_member *m =3D btf_members(t);
+> > +
+> > +               n =3D btf_vlen(t);
+> > +               for (i =3D 0; i < n; i++, m++) {
+> > +                       err =3D btf_validate_str(btf, m->name_off, "fie=
+ld name", id);
+> > +                       err =3D err ?: btf_validate_id(btf, m->type, id=
+);
+> > +                       if (err)
+> > +                               return err;
+> > +               }
+> > +               break;
+> > +       }
+> > +       case BTF_KIND_ENUM: {
+> > +               const struct btf_enum *m =3D btf_enum(t);
+> > +
+> > +               n =3D btf_vlen(t);
+> > +               for (i =3D 0; i < n; i++, m++) {
+> > +                       err =3D btf_validate_str(btf, m->name_off, "enu=
+m name", id);
+> > +                       if (err)
+> > +                               return err;
+> > +               }
+> > +               break;
+> > +       }
+> > +       case BTF_KIND_ENUM64: {
+> > +               const struct btf_enum64 *m =3D btf_enum64(t);
+> > +
+> > +               n =3D btf_vlen(t);
+> > +               for (i =3D 0; i < n; i++, m++) {
+> > +                       err =3D btf_validate_str(btf, m->name_off, "enu=
+m name", id);
+> > +                       if (err)
+> > +                               return err;
+> > +               }
+> > +               break;
+> > +       }
+> > +       case BTF_KIND_FUNC_PROTO: {
+> > +               const struct btf_param *m =3D btf_params(t);
+> > +
+> > +               n =3D btf_vlen(t);
+> > +               for (i =3D 0; i < n; i++, m++) {
+> > +                       err =3D btf_validate_str(btf, m->name_off, "par=
+am name", id);
+> > +                       err =3D err ?: btf_validate_id(btf, m->type, id=
+);
+> > +                       if (err)
+> > +                               return err;
+> > +               }
+> > +               break;
+> > +       }
+> > +       case BTF_KIND_DATASEC: {
+> > +               const struct btf_var_secinfo *m =3D btf_var_secinfos(t)=
+;
+> > +
+> > +               n =3D btf_vlen(t);
+> > +               for (i =3D 0; i < n; i++, m++) {
+> > +                       err =3D btf_validate_id(btf, m->type, id);
+> > +                       if (err)
+> > +                               return err;
+> > +               }
+> > +               break;
+> > +       }
+> > +       default:
+> > +               pr_warn("btf: type [%u]: unrecognized kind %u\n", id, k=
+ind);
+> > +               return -EINVAL;
+> > +       }
+> > +       return 0;
+> > +}
+> [...]
 
