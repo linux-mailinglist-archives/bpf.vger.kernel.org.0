@@ -1,28 +1,28 @@
-Return-Path: <bpf+bounces-8691-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8692-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7C75788F70
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 21:54:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 526A6788F71
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 21:55:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7013728176B
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 19:54:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 813E91C20F51
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 19:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 992EE1939D;
-	Fri, 25 Aug 2023 19:54:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E4FF1939F;
+	Fri, 25 Aug 2023 19:54:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FEF1322B
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 19:54:08 +0000 (UTC)
-Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602681987
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 12:54:07 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02113322B
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 19:54:17 +0000 (UTC)
+Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1E71987
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 12:54:16 -0700 (PDT)
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 0DA142565A02C; Fri, 25 Aug 2023 12:53:59 -0700 (PDT)
+	id 3112E2565A04A; Fri, 25 Aug 2023 12:54:04 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -30,9 +30,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v2 06/13] libbpf: Add __percpu_kptr macro definition
-Date: Fri, 25 Aug 2023 12:53:59 -0700
-Message-Id: <20230825195359.94315-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v2 07/13] selftests/bpf: Add bpf_percpu_obj_{new,drop}() macro in bpf_experimental.h
+Date: Fri, 25 Aug 2023 12:54:04 -0700
+Message-Id: <20230825195404.95831-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230825195328.92126-1-yonghong.song@linux.dev>
 References: <20230825195328.92126-1-yonghong.song@linux.dev>
@@ -49,26 +49,64 @@ X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add __percpu_kptr macro definition in bpf_helpers.h.
+The new macro bpf_percpu_obj_{new/drop}() is very similar to bpf_obj_{new=
+,drop}()
+as they both take a type as the argument.
 
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- tools/lib/bpf/bpf_helpers.h | 1 +
- 1 file changed, 1 insertion(+)
+ .../testing/selftests/bpf/bpf_experimental.h  | 31 +++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index bbab9ad9dc5a..77ceea575dc7 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -181,6 +181,7 @@ enum libbpf_tristate {
- #define __ksym __attribute__((section(".ksyms")))
- #define __kptr_untrusted __attribute__((btf_type_tag("kptr_untrusted")))
- #define __kptr __attribute__((btf_type_tag("kptr")))
-+#define __percpu_kptr __attribute__((btf_type_tag("percpu_kptr")))
+diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testi=
+ng/selftests/bpf/bpf_experimental.h
+index 209811b1993a..4494eaa9937e 100644
+--- a/tools/testing/selftests/bpf/bpf_experimental.h
++++ b/tools/testing/selftests/bpf/bpf_experimental.h
+@@ -131,4 +131,35 @@ extern int bpf_rbtree_add_impl(struct bpf_rb_root *r=
+oot, struct bpf_rb_node *nod
+  */
+ extern struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *root) __=
+ksym;
 =20
- #define bpf_ksym_exists(sym) ({									\
- 	_Static_assert(!__builtin_constant_p(!!sym), #sym " should be marked as=
- __weak");	\
++/* Description
++ *	Allocates a percpu object of the type represented by 'local_type_id' =
+in
++ *	program BTF. User may use the bpf_core_type_id_local macro to pass th=
+e
++ *	type ID of a struct in program BTF.
++ *
++ *	The 'local_type_id' parameter must be a known constant.
++ *	The 'meta' parameter is rewritten by the verifier, no need for BPF
++ *	program to set it.
++ * Returns
++ *	A pointer to a percpu object of the type corresponding to the passed =
+in
++ *	'local_type_id', or NULL on failure.
++ */
++extern void *bpf_percpu_obj_new_impl(__u64 local_type_id, void *meta) __=
+ksym;
++
++/* Convenience macro to wrap over bpf_percpu_obj_new_impl */
++#define bpf_percpu_obj_new(type) ((type __percpu_kptr *)bpf_percpu_obj_n=
+ew_impl(bpf_core_type_id_local(type), NULL))
++
++/* Description
++ *	Free an allocated percpu object. All fields of the object that requir=
+e
++ *	destruction will be destructed before the storage is freed.
++ *
++ *	The 'meta' parameter is rewritten by the verifier, no need for BPF
++ *	program to set it.
++ * Returns
++ *	Void.
++ */
++extern void bpf_percpu_obj_drop_impl(void *kptr, void *meta) __ksym;
++
++/* Convenience macro to wrap over bpf_obj_drop_impl */
++#define bpf_percpu_obj_drop(kptr) bpf_percpu_obj_drop_impl(kptr, NULL)
++
+ #endif
 --=20
 2.34.1
 
