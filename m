@@ -1,119 +1,121 @@
-Return-Path: <bpf+bounces-8709-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8710-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03FF878914B
-	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 00:00:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE26C78915F
+	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 00:02:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 940882818F6
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 22:00:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A170C28185C
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 22:02:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F261AA62;
-	Fri, 25 Aug 2023 22:00:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA1C41AA61;
+	Fri, 25 Aug 2023 22:01:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31AE5193B2
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 22:00:06 +0000 (UTC)
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73562718
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 14:59:46 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-68a402c1fcdso1086716b3a.1
-        for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 14:59:46 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE063193B2
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 22:01:59 +0000 (UTC)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C3A26B2
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 15:01:54 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bf8e5ab39so171124466b.2
+        for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 15:01:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1693000786; x=1693605586;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wCmT1oESbAYhZeNNKJ5ShtRN4csCjH3Kne0S41EAnjg=;
-        b=41e5WqQODP0hmu8CXJSYnJoxP9CYCTQIjvtSx0suLjuCd2LQoihd/jLrKiko4xwooZ
-         7dYHeAbwy4v/acegR7zM2t87koKR6b9HdwUQM9+1khEZHSlP6Ay9Gyi1BnTTJyQ+N1sf
-         Tihv+CPf4TPS3j/ZySi0TL4gDqhyuMZ+nJxTaDnexRh6Pcmjy8aRHLfP/t/1vg9xEN/C
-         0OJKzvJcUqwLuYg4eu+OPeBIRa0lo/YObVmgzaCCijZ7OHy87LLvHUMM6er4JE4Dhtu4
-         AWYpsvb+nGYnjp1AziAY3+XfPWUVf+GXDgs/Cvrt+UTpnf3nupIw3K4PynKsZ49o3GsI
-         BY9g==
+        d=gmail.com; s=20221208; t=1693000913; x=1693605713;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=PhK+vI1oU3EItGfLcR2IVOBX5hUgc9Zh63/6e5LDqJg=;
+        b=UW0TyFLOfGdIqYfszYK2Wr/UI33fsQgUFSwMj5jDgXZIeCaa9wI/QECzYjRYn1w52g
+         ban9Iadxu4Tir/LjMxOObVWuQumosqrUlV/Supa73IOZX+DgFFRTh9SnKF9wgqKdGFX5
+         4fkMkgY1x34m7YV9CL6cZdSvxZO3gP8Oy50BWLxNDUWbbUBg8wosZu2jeQQZ3tDKvPh0
+         xSvVrWj4WtWoM3G/S3OYdmS4lEtGUHFbyzn3Jd1lvoqDvTwrwmQIaHjV3NNyRyx8Oa4R
+         b+bLEYkks+hWgw6B6PLZBnzMCRwdNxctMSOD+s4vB/Ws3GsRSevsq9RgHtAzaA/zzYYn
+         FHwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693000786; x=1693605586;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wCmT1oESbAYhZeNNKJ5ShtRN4csCjH3Kne0S41EAnjg=;
-        b=fzjtKpLFUsZ96xpDxUCqLTKvSzeE19MfML1bJVKMwo9M7Q1QCoZpSxyP/hKxltvYVi
-         wg8Tk1j+3g7XiHEhmY0eKhQiEYu+7987mmiThsbhRsdDmEDkXcwMHyIVezsBOU+T7ZG0
-         ACE4N3GKDeudqTGd4y0GH143Dr3lh+tIE9UCN6anIFRJS9xhLfXQUwyoawFiMTtJvhFN
-         Gi93tCJEvsb9LVs7AKxItR376mRn5onoyeDZVYv0pcMgOPYF/FTbNZbmP0x0yk0aPbWH
-         A2d1xFLq8gnEZ9Zj8qqARY0Cmv/Xl8j7gBA56OWvrVV0o4EMHPNHmQcS+qD1CSj/QFjl
-         hp4A==
-X-Gm-Message-State: AOJu0Yx+G4Ykc9LJHzLYDXqvZb6g+Z8yeLXwWaxyk4bR+RJ3l+o/e7fp
-	5pu5ZezLNhvg2H26HznC1WDnDQ==
-X-Google-Smtp-Source: AGHT+IH1qPsbAkUY/ApYOINMHsRtAsDWZuWyGwI872JdnDKqNbs04KgeM02oT1drFck2zagaT8PEnw==
-X-Received: by 2002:a05:6a00:cc2:b0:68b:a137:3739 with SMTP id b2-20020a056a000cc200b0068ba1373739mr11002510pfv.4.1693000786153;
-        Fri, 25 Aug 2023 14:59:46 -0700 (PDT)
-Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
-        by smtp.gmail.com with ESMTPSA id g2-20020aa78742000000b0068be98f1228sm2025436pfo.57.2023.08.25.14.59.45
+        d=1e100.net; s=20221208; t=1693000913; x=1693605713;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PhK+vI1oU3EItGfLcR2IVOBX5hUgc9Zh63/6e5LDqJg=;
+        b=HTF8NNB2jZsDVAR16Z6Br5HuMG472HVDif8Y5cxL5Dw65/t4jtybHLciQfSHkMiy7a
+         hW1nh0hZdPL5z19XcdalYlo8Pjtki+rgiTUa+45uOVDtpL1pBIgdKYSUjIT3T+H9kQMV
+         tEj7uJ2MNNjBTq8+7ZC5Yo3XttCMWpqlVG2jDvtkjqO/bkfvKR0+NLUce1ESB02I7tmO
+         +FfGePVLwukHW4kLJEPCZ1dDr3SDtlVDZeyRpYnLxs3tWBC3fcl9IxcEvBq0p9cG0tq/
+         D3IFQ7NmgPm5iQqZI6yZUvaKKqDTfFmVtYKxTpgkcNPULIF364Trt29vEg0/DMYRTLUZ
+         7gQw==
+X-Gm-Message-State: AOJu0YwUIPxFLTzupcKNagH2fwoN3gJuozP3Pd2lJWqPFg2ACC013TvA
+	DJhnwO7dmZJXrU8GLNf1rfo=
+X-Google-Smtp-Source: AGHT+IEzCvSVtfAjxro6vHtza6yekjbpsQrkCvrJXzP2uZSfTJoK6Ce/zjgeuqqlDn/O9GlKDWkbmA==
+X-Received: by 2002:a17:906:8466:b0:9a5:846d:d820 with SMTP id hx6-20020a170906846600b009a5846dd820mr1519882ejc.16.1693000913003;
+        Fri, 25 Aug 2023 15:01:53 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id i27-20020a1709063c5b00b009928b4e3b9fsm1377065ejg.114.2023.08.25.15.01.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 14:59:45 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1qZeqF-006VO2-18;
-	Sat, 26 Aug 2023 07:59:43 +1000
-Date: Sat, 26 Aug 2023 07:59:43 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Hao Xu <hao.xu@linux.dev>
-Cc: io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
-	ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-	linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
-	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-	linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-	devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-	Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH 28/29] xfs: support nowait semantics for xc_ctx_lock in
- xlog_cil_commit()
-Message-ID: <ZOkkT5Ai7wyMGcWC@dread.disaster.area>
-References: <20230825135431.1317785-1-hao.xu@linux.dev>
- <20230825135431.1317785-29-hao.xu@linux.dev>
+        Fri, 25 Aug 2023 15:01:52 -0700 (PDT)
+Message-ID: <ce1a7b11bb7b3efece5869a185e92114c571ac66.camel@gmail.com>
+Subject: Re: [PATCH bpf-next] docs/bpf: Add description for CO-RE relocations
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net,  martin.lau@linux.dev, kernel-team@fb.com,
+ yonghong.song@linux.dev
+Date: Sat, 26 Aug 2023 01:01:51 +0300
+In-Reply-To: <0538002efbbc5e887c9e740c7891d2f88ca17e4b.camel@gmail.com>
+References: <20230824230102.2117902-1-eddyz87@gmail.com>
+	 <CAEf4BzYzhHHSDA9MTMbrR_on-e7uqBUdOo690bEtCXYjg5cC6A@mail.gmail.com>
+	 <0538002efbbc5e887c9e740c7891d2f88ca17e4b.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230825135431.1317785-29-hao.xu@linux.dev>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Aug 25, 2023 at 09:54:30PM +0800, Hao Xu wrote:
-> From: Hao Xu <howeyxu@tencent.com>
-> 
-> Apply trylock logic for xc_ctx_lock in xlog_cil_commit() in nowait
-> case and error out -EAGAIN for xlog_cil_commit().
+On Sat, 2023-08-26 at 00:10 +0300, Eduard Zingerman wrote:
+[...]
+> >=20
+> > Instead of referencing BPF_MOV specifically, would it be useful to
+> > incorporate all the different instructions that can be relocated?
+> > bpf_core_patch_insn comment has a nice summary, maybe we can somehow
+> > reuse it in this doc as well?
+> >=20
+> >  * Currently supported classes of BPF instruction are:
+> >  * 1. rX =3D <imm> (assignment with immediate operand);
+> >  * 2. rX +=3D <imm> (arithmetic operations with immediate operand);
+> >  * 3. rX =3D <imm64> (load with 64-bit immediate value);
+> >  * 4. rX =3D *(T *)(rY + <off>), where T is one of {u8, u16, u32, u64};
+> >  * 5. *(T *)(rX + <off>) =3D rY, where T is one of {u8, u16, u32, u64};
+> >  * 6. *(T *)(rX + <off>) =3D <imm>, where T is one of {u8, u16, u32, u6=
+4}.
+>=20
+> Good point. I will keep the BPF_MOV as an example for relocation kind
+> groups description and add this comment describing all relocatable
+> instructions.
+>=20
 
-Again, fundamentally broken. Any error from xlog_cil_commit() will
-result in a filesystem shutdown as we cannot back out from failure
-with dirty log items gracefully at this point.
+Actually, this comment does not mention atomic instructions or loads
+with sign extension. bpf_core_patch_insn() operates basing on
+instruction class. I'll describe it as follows:
 
--Dave.
+  Field to patch is selected basing on the instruction class:
 
--- 
-Dave Chinner
-david@fromorbit.com
+  * For BPF_ALU, BPF_ALU64, BPF_LD immediate field is patched;
+  * For BPF_LDX, BPF_STX, BPF_ST offset field is patched;
+
+WDYT?
+
+[...]
 
