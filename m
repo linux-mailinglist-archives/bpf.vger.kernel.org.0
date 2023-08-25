@@ -1,213 +1,138 @@
-Return-Path: <bpf+bounces-8631-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8632-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9D1E788C70
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 17:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 04080788C72
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 17:28:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 946D02818E4
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 15:28:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0B312818A8
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 15:28:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5340C107A8;
-	Fri, 25 Aug 2023 15:28:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD049107A9;
+	Fri, 25 Aug 2023 15:28:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B52810787
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 15:28:01 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A2F2106
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 08:28:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=LwrhaGWz/QxRcuxkTbdJgWefl7NLyTOixUXQVKAoimo=; b=FrJ0jpa1bc/iJfAK3/zqgbKqWZ
-	qV4ZdGJhDJ0DN9/44L/BvgyN2bDPo/DoqUw4P866tgcGRhA+jxvjw1LTOcZ2yhmeHMb3f53aL8dMR
-	malicQtQ7JEJPteqk+HgNxMvDAtj2E0u9cwl6mgQUwbVNa83PDpt0lsPaPRxf96wM1E3g64MzzLHJ
-	b9SvSfccl+eoZzqRBWE/OHuIGzo1sYZae5zptl0djKwuv+rNwFu39zz6srNIRZmHXEev6humgYiJn
-	Q11ompbuigNWgNcu8j8q7SVx9ArfHNIaTnt4ktVFQoCe1+iHkCVxE0kZAV+ZLuAAslcwUQuH58iOR
-	WZx8ZqOg==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qZYj7-0001OB-FR; Fri, 25 Aug 2023 17:27:57 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qZYj7-000Nkl-E2; Fri, 25 Aug 2023 17:27:57 +0200
-Subject: Re: [PATCH bpf-next v3] libbpf: handle producer position overflow
-To: Andrew Werner <awerner32@gmail.com>, bpf@vger.kernel.org
-Cc: kernel-team@dataexmachina.dev, alexei.starovoitov@gmail.com,
- andrii@kernel.org, olsajiri@gmail.com, houtao@huaweicloud.com,
- void@manifault.com
-References: <20230824220907.1172808-1-awerner32@gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ce26e0c1-7d05-1572-dfc9-10d251fde86f@iogearbox.net>
-Date: Fri, 25 Aug 2023 17:27:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8233210787
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 15:28:27 +0000 (UTC)
+Received: from out-248.mta0.migadu.com (out-248.mta0.migadu.com [IPv6:2001:41d0:1004:224b::f8])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D8F22137
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 08:28:25 -0700 (PDT)
+Message-ID: <2f4f0dfc-ec06-8ac8-a56a-395cc2373def@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1692977303; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ADrLm5FOhZF0BsOKum99yg64wr70c47LcebFXo6vRbY=;
+	b=suRiEhi9s5GtH5k5XB+bLSj2CG4LmY29+v8rAFBSIX0P0CM5GGPGB2UVUxfIBGSiuI1qC5
+	S2KE9mX/bMG7FEA9ljHKBxhlUlZQ72CiiZs/uHp6DJ49TFquhQd9xDwEU2I4IK05E6mzUy
+	6m4fAQ/z4am5+Xv/lDatMDd3hLZjsLQ=
+Date: Fri, 25 Aug 2023 08:28:17 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230824220907.1172808-1-awerner32@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Reply-To: yonghong.song@linux.dev
+Subject: Re: WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27011/Fri Aug 25 09:40:47 2023)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, bpf@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org
+References: <87jztjmmy4.fsf@all.your.base.are.belong.to.us>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <87jztjmmy4.fsf@all.your.base.are.belong.to.us>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 8/25/23 12:09 AM, Andrew Werner wrote:
-> Before this patch, the producer position could overflow `unsigned
-> long`, in which case libbpf would forever stop processing new writes to
-> the ringbuf. Similarly, overflows of the producer position could result
-> in __bpf_user_ringbuf_peek not discovering available data. This patch
-> addresses that bug by computing using the signed delta between the
-> consumer and producer position to determine if data is available; the
-> delta computation is robust to overflow.
-> 
-> A more defensive check could be to ensure that the delta is within
-> the allowed range, but such defensive checks are neither present in
-> the kernel side code nor in libbpf. The overflow that this patch
-> handles can occur while the producer and consumer follow a correct
-> protocol.
-> 
-> Secondarily, the type used to represent the positions in the
-> user_ring_buffer functions in both libbpf and the kernel has been
-> changed from u64 to unsigned long to match the type used in the
-> kernel's representation of the structure. The change occurs in the
 
-Hm, but won't this mismatch for 64bit kernel and 32bit user space? Why
-not fixate both on u64 instead so types are consistent?
 
-> same patch because it's required to align the data availability
-> calculations between the userspace producing ringbuf and the bpf
-> producing ringbuf.
+On 8/25/23 3:32 AM, Björn Töpel wrote:
+> I'm chasing a workqueue hang on RISC-V/qemu (TCG), using the bpf
+> selftests on bpf-next 9e3b47abeb8f.
 > 
-> Not included in this patch, a selftest was written to demonstrate the
-> bug, and indeed this patch allows the test to continue to make progress
-> past the overflow. The shape of the self test was as follows:
+> I'm able to reproduce the hang by multiple runs of:
+>   | ./test_progs -a link_api -a linked_list
+> I'm currently investigating that.
 > 
->   a) Set up ringbuf of 2GB size (the maximum permitted size).
->   b) reserve+commit maximum-sized records (ULONG_MAX/4) constantly as
->      fast as possible.
+> But! Sometimes (every blue moon) I get a warn_on_once hit:
+>   | ------------[ cut here ]------------
+>   | WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342 bpf_mem_refill+0x1fc/0x206
+>   | Modules linked in: bpf_testmod(OE)
+>   | CPU: 3 PID: 261 Comm: test_progs-cpuv Tainted: G           OE    N 6.5.0-rc5-01743-gdcb152bb8328 #2
+>   | Hardware name: riscv-virtio,qemu (DT)
+>   | epc : bpf_mem_refill+0x1fc/0x206
+>   |  ra : irq_work_single+0x68/0x70
+>   | epc : ffffffff801b1bc4 ra : ffffffff8015fe84 sp : ff2000000001be20
+>   |  gp : ffffffff82d26138 tp : ff6000008477a800 t0 : 0000000000046600
+>   |  t1 : ffffffff812b6ddc t2 : 0000000000000000 s0 : ff2000000001be70
+>   |  s1 : ff5ffffffffe8998 a0 : ff5ffffffffe8998 a1 : ff600003fef4b000
+>   |  a2 : 000000000000003f a3 : ffffffff80008250 a4 : 0000000000000060
+>   |  a5 : 0000000000000080 a6 : 0000000000000000 a7 : 0000000000735049
+>   |  s2 : ff5ffffffffe8998 s3 : 0000000000000022 s4 : 0000000000001000
+>   |  s5 : 0000000000000007 s6 : ff5ffffffffe8570 s7 : ffffffff82d6bd30
+>   |  s8 : 000000000000003f s9 : ffffffff82d2c5e8 s10: 000000000000ffff
+>   |  s11: ffffffff82d2c5d8 t3 : ffffffff81ea8f28 t4 : 0000000000000000
+>   |  t5 : ff6000008fd28278 t6 : 0000000000040000
+>   | status: 0000000200000100 badaddr: 0000000000000000 cause: 0000000000000003
+>   | [<ffffffff801b1bc4>] bpf_mem_refill+0x1fc/0x206
+>   | [<ffffffff8015fe84>] irq_work_single+0x68/0x70
+>   | [<ffffffff8015feb4>] irq_work_run_list+0x28/0x36
+>   | [<ffffffff8015fefa>] irq_work_run+0x38/0x66
+>   | [<ffffffff8000828a>] handle_IPI+0x3a/0xb4
+>   | [<ffffffff800a5c3a>] handle_percpu_devid_irq+0xa4/0x1f8
+>   | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
+>   | [<ffffffff800ae570>] ipi_mux_process+0xac/0xfa
+>   | [<ffffffff8000a8ea>] sbi_ipi_handle+0x2e/0x88
+>   | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
+>   | [<ffffffff807ee70e>] riscv_intc_irq+0x36/0x4e
+>   | [<ffffffff812b5d3a>] handle_riscv_irq+0x54/0x86
+>   | [<ffffffff812b6904>] do_irq+0x66/0x98
+>   | ---[ end trace 0000000000000000 ]---
 > 
-> With 1 million records per second repro time should be about 4.7 hours.
-> Such a test duration is impractical to run, hence the omission.
+> Code:
+>   | static void free_bulk(struct bpf_mem_cache *c)
+>   | {
+>   | 	struct bpf_mem_cache *tgt = c->tgt;
+>   | 	struct llist_node *llnode, *t;
+>   | 	unsigned long flags;
+>   | 	int cnt;
+>   |
+>   | 	WARN_ON_ONCE(tgt->unit_size != c->unit_size);
+>   | ...
 > 
-> Additionally, this patch adds commentary around a separate point to note
-> that the modular arithmetic is valid in the face of overflows, as that
-> fact may not be obvious to future readers.
-> 
-> v2->v3:
->    - Changed the representation of the consumer and producer positions
->      from u64 to unsigned long in user_ring_buffer functions.
->    - Addressed overflow in __bpf_user_ringbuf_peek.
->    - Changed data availability computations to use the signed delta
->      between the consumer and producer positions rather than merely
->      checking whether their values were unequal.
-> v1->v2:
->    - Fixed comment grammar.
->    - Properly formatted subject line.
-> 
-> Signed-off-by: Andrew Werner <awerner32@gmail.com>
-> ---
->   kernel/bpf/ringbuf.c    | 11 ++++++++---
->   tools/lib/bpf/ringbuf.c | 16 +++++++++++++---
->   2 files changed, 21 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-> index f045fde632e5..0c48673520fb 100644
-> --- a/kernel/bpf/ringbuf.c
-> +++ b/kernel/bpf/ringbuf.c
-> @@ -658,7 +658,7 @@ static int __bpf_user_ringbuf_peek(struct bpf_ringbuf *rb, void **sample, u32 *s
->   {
->   	int err;
->   	u32 hdr_len, sample_len, total_len, flags, *hdr;
-> -	u64 cons_pos, prod_pos;
-> +	unsigned long cons_pos, prod_pos;
->   
->   	/* Synchronizes with smp_store_release() in user-space producer. */
->   	prod_pos = smp_load_acquire(&rb->producer_pos);
-> @@ -667,7 +667,12 @@ static int __bpf_user_ringbuf_peek(struct bpf_ringbuf *rb, void **sample, u32 *s
->   
->   	/* Synchronizes with smp_store_release() in __bpf_user_ringbuf_sample_release() */
->   	cons_pos = smp_load_acquire(&rb->consumer_pos);
-> -	if (cons_pos >= prod_pos)
-> +
-> +	/* Check if there's data available by computing the signed delta between
-> +	 * cons_pos and prod_pos; a negative delta indicates that the consumer has
-> +	 * not caught up. This formulation is robust to prod_pos wrapping around.
-> +	 */
-> +	if ((long)(cons_pos - prod_pos) >= 0)
->   		return -ENODATA;
->   
->   	hdr = (u32 *)((uintptr_t)rb->data + (uintptr_t)(cons_pos & rb->mask));
-> @@ -711,7 +716,7 @@ static int __bpf_user_ringbuf_peek(struct bpf_ringbuf *rb, void **sample, u32 *s
->   
->   static void __bpf_user_ringbuf_sample_release(struct bpf_ringbuf *rb, size_t size, u64 flags)
->   {
-> -	u64 consumer_pos;
-> +	unsigned long consumer_pos;
->   	u32 rounded_size = round_up(size + BPF_RINGBUF_HDR_SZ, 8);
->   
->   	/* Using smp_load_acquire() is unnecessary here, as the busy-bit
-> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-> index 02199364db13..141030a89370 100644
-> --- a/tools/lib/bpf/ringbuf.c
-> +++ b/tools/lib/bpf/ringbuf.c
-> @@ -237,7 +237,13 @@ static int64_t ringbuf_process_ring(struct ring *r)
->   	do {
->   		got_new_data = false;
->   		prod_pos = smp_load_acquire(r->producer_pos);
-> -		while (cons_pos < prod_pos) {
-> +
-> +		/* Check if there's data available by computing the signed delta
-> +		 * between cons_pos and prod_pos; a negative delta indicates that the
-> +		 * consumer has not caught up. This formulation is robust to prod_pos
-> +		 * wrapping around.
-> +		 */
-> +		while ((long)(cons_pos - prod_pos) < 0) {
->   			len_ptr = r->data + (cons_pos & r->mask);
->   			len = smp_load_acquire(len_ptr);
->   
-> @@ -482,8 +488,7 @@ void user_ring_buffer__submit(struct user_ring_buffer *rb, void *sample)
->   void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size)
->   {
->   	__u32 avail_size, total_size, max_size;
-> -	/* 64-bit to avoid overflow in case of extreme application behavior */
-> -	__u64 cons_pos, prod_pos;
-> +	unsigned long cons_pos, prod_pos;
->   	struct ringbuf_hdr *hdr;
->   
->   	/* The top two bits are used as special flags */
-> @@ -498,6 +503,11 @@ void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size)
->   	prod_pos = smp_load_acquire(rb->producer_pos);
->   
->   	max_size = rb->mask + 1;
-> +
-> +	/* Note that this formulation is valid in the face of overflow of
-> +	 * prod_pos so long as the delta between prod_pos and cons_pos is
-> +	 * no greater than max_size.
-> +	 */
->   	avail_size = max_size - (prod_pos - cons_pos);
->   	/* Round up total size to a multiple of 8. */
->   	total_size = (size + BPF_RINGBUF_HDR_SZ + 7) / 8 * 8;
-> 
+> I'm not well versed in the memory allocator; Before I dive into it --
+> has anyone else hit it? Ideas on why the warn_on_once is hit?
 
+Maybe take a look at the patch
+   822fb26bdb55  bpf: Add a hint to allocated objects.
+
+In the above patch, we have
+
++       /*
++        * Remember bpf_mem_cache that allocated this object.
++        * The hint is not accurate.
++        */
++       c->tgt = *(struct bpf_mem_cache **)llnode;
+
+I suspect that the warning may be related to the above.
+I tried the above ./test_progs command line (running multiple
+at the same time) and didn't trigger the issue.
+
+> 
+> 
+> Björn
+> 
 
