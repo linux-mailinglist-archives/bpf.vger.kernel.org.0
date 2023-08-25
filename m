@@ -1,112 +1,230 @@
-Return-Path: <bpf+bounces-8660-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8661-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBE8E788D66
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 18:48:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FC2F788D77
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 18:54:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12D8628163F
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 16:48:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A15101C20DEA
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 16:54:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE25117ADB;
-	Fri, 25 Aug 2023 16:48:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE9D18026;
+	Fri, 25 Aug 2023 16:54:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 941E01079A
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 16:48:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E72FCC433CB;
-	Fri, 25 Aug 2023 16:48:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692982088;
-	bh=Q79LYCwbEEcZzJqxzYl+4FUzvrTxSOie7i/yZqWDwTg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ie6Wt0NkLp4XAfqT8VvcAYFfUBhnLm5nzQ48i4VMlrJGX7NpUq5fOg5we1JlSjzD5
-	 MyJuy95XrB6ooDD6qqTPgij00M+A/QzdsFyrizv+t1vr6noCySNUecSmMGs0WoVV4Y
-	 f+RV1G19RrXva7PAAXzYZbsQGi2JnXwPCUS0UEhxToCieRvPGOXdpw3lg0sn8pFTXq
-	 2b4Ckdb8kyjuWV4G+tizpktEIh7lmD+xzPrB2a4MVcEWP/187gJCbbGjZ61S6ILdR6
-	 XkGBKEzoolYOoONor6LiupuQvDlX0C6LFZTPIK/9avxW5Uz28FeUNmftMTFWlK9+UF
-	 04upIMvDHz66A==
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-500913779f5so1738506e87.2;
-        Fri, 25 Aug 2023 09:48:08 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxRnM9npOYCr4w/0l/pyjh6jgLaBMkeNCOPLtV0g2IhplIcoccA
-	IA01jxZhHQJ9kXAFRqvMY/0XC+H7axVSWUleQ2M=
-X-Google-Smtp-Source: AGHT+IGSW1A8/Tpphe6fWlm78FsnJvvdIjMAO9DAAkWifGczRpLUkAreq1u3GY30U9ATT7TcYLzs5/MPKUSkjKXR1v4=
-X-Received: by 2002:a19:e058:0:b0:4ff:b830:4b69 with SMTP id
- g24-20020a19e058000000b004ffb8304b69mr11319015lfj.6.1692982086875; Fri, 25
- Aug 2023 09:48:06 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75D2417AD5;
+	Fri, 25 Aug 2023 16:54:04 +0000 (UTC)
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47539E77;
+	Fri, 25 Aug 2023 09:54:02 -0700 (PDT)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-9a1de3417acso461118866b.0;
+        Fri, 25 Aug 2023 09:54:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692982441; x=1693587241;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lP7cZ2Rz5OnDrr8sQ04GNTnuORrvKWdUu3qvHzVHGws=;
+        b=R0nO/pLGP33FZhAWAdCUIb34pLwFWWMW3oo6kXRJF4ReZR+PjGbVOB5HFnkgKfJvF9
+         BYujvycMpO4bsshZTyK9FQ97fvgBrOYCVj/gRRE3mICWHBbLGcHS97Gl9Bit6ut1kveq
+         loOmJDL4Pnupla08sfGLtgUhwHKjpOXgBG9krfmLxPKVgnloiC75X0Fb5g7etfEdQu8Y
+         wQEAsWmNVjGldghsx7TTeMQItASa/9/g6shC1YitQpsi8+gnZrZ6jk+XQwCbRolVlJdB
+         SIBni7v+vA5aD69OR+sQG2uFNe1xaBZ4NqraIv4UWQCe1qc5iacphXnYWmT2FiGeAdQx
+         H1Ew==
+X-Gm-Message-State: AOJu0YwahpJJ/hqcor9XV2MVR33B33Fy1VN23e0C3mJDZ5tqxaDIHM0S
+	gM9jDww9MhCWvVBpYAU8FhI=
+X-Google-Smtp-Source: AGHT+IEuGVqHOFGyJFWQzjtY1yWk9pBKq0Vq4sKCayTDkfjAubGXdPAXCAi5P0CQCpGGZ9/kzOdKYw==
+X-Received: by 2002:a17:906:c116:b0:993:f664:ce25 with SMTP id do22-20020a170906c11600b00993f664ce25mr19345106ejc.19.1692982440507;
+        Fri, 25 Aug 2023 09:54:00 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-003.fbsv.net. [2a03:2880:31ff:3::face:b00c])
+        by smtp.gmail.com with ESMTPSA id dk24-20020a170906f0d800b0099ddc81903asm1125265ejb.221.2023.08.25.09.53.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 09:53:59 -0700 (PDT)
+Date: Fri, 25 Aug 2023 09:53:58 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Gabriel Krisman Bertazi <krisman@suse.de>, sdf@google.com,
+	axboe@kernel.dk, asml.silence@gmail.com,
+	willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	io-uring@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com
+Subject: Re: [PATCH v3 8/9] io_uring/cmd: BPF hook for getsockopt cmd
+Message-ID: <ZOjcpmlukOuEmuZ9@gmail.com>
+References: <20230817145554.892543-1-leitao@debian.org>
+ <20230817145554.892543-9-leitao@debian.org>
+ <87pm3l32rk.fsf@suse.de>
+ <6ae89b3a-b53d-dd2c-ecc6-1094f9b95586@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230825164152.165610-1-namhyung@kernel.org> <20230825164152.165610-2-namhyung@kernel.org>
-In-Reply-To: <20230825164152.165610-2-namhyung@kernel.org>
-From: Song Liu <song@kernel.org>
-Date: Fri, 25 Aug 2023 09:47:54 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5u8Rd4XVF27eeW7CPhAdSF+wfnxKwWRnYPDsXV=_9_aA@mail.gmail.com>
-Message-ID: <CAPhsuW5u8Rd4XVF27eeW7CPhAdSF+wfnxKwWRnYPDsXV=_9_aA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] perf test: Fix perf stat bpf counters test on Intel
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6ae89b3a-b53d-dd2c-ecc6-1094f9b95586@linux.dev>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Fri, Aug 25, 2023 at 9:41=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> As of now, bpf counters (bperf) don't support event groups.  But the
-> default perf stat includes topdown metrics if supported (on recent Intel
-> machines) which require groups.  That makes perf stat exiting.
->
->   $ sudo perf stat --bpf-counter true
->   bpf managed perf events do not yet support groups.
->
-> Actually the test explicitly uses cycles event only, but it missed to
-> pass the option when it checks the availability of the command.
->
-> Fixes: 2c0cb9f56020d ("perf test: Add a shell test for 'perf stat --bpf-c=
-ounters' new option")
-> Cc: stable@vger.kernel.org
-> Cc: Song Liu <song@kernel.org>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+On Mon, Aug 21, 2023 at 01:25:25PM -0700, Martin KaFai Lau wrote:
+> On 8/17/23 12:08 PM, Gabriel Krisman Bertazi wrote:
+> > Shouldn't you call sock->ops->getsockopt for level!=SOL_SOCKET prior to
+> > running the hook?  Before this patch, it would bail out with EOPNOTSUPP,
+> > but now the bpf hook gets called even for level!=SOL_SOCKET, which
+> > doesn't fit __sys_getsockopt. Am I misreading the code?
+> I agree it should not call into bpf if the io_uring cannot support non
+> SOL_SOCKET optnames. Otherwise, the bpf prog will get different optval and
+> optlen when running in _sys_getsockopt vs io_uring getsockopt (e.g. in
+> regular _sys_getsockopt(SOL_TCP), bpf expects the optval returned from
+> tcp_getsockopt).
+> 
+> I think __sys_getsockopt can also be refactored similar to __sys_setsockopt
+> in patch 3. Yes, for non SOL_SOCKET it only supports __user *optval and
+> __user *optlen but may be a WARN_ON_ONCE/BUG_ON(sockpt_is_kernel(optval))
+> can be added before calling ops->getsockopt()? Then this details can be
+> hidden away from the io_uring.
 
-Reviewed-by: Song Liu <song@kernel.org>
 
-Thanks!
-Song
+Right, I've spent some time thinking about it, and this could be done.
+This is a draft I have. Is it what you had in mind?
 
-> ---
->  tools/perf/tests/shell/stat_bpf_counters.sh | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/tests/shell/stat_bpf_counters.sh b/tools/perf/tes=
-ts/shell/stat_bpf_counters.sh
-> index 513cd1e58e0e..a87bb2814b4c 100755
-> --- a/tools/perf/tests/shell/stat_bpf_counters.sh
-> +++ b/tools/perf/tests/shell/stat_bpf_counters.sh
-> @@ -22,10 +22,10 @@ compare_number()
->  }
->
->  # skip if --bpf-counters is not supported
-> -if ! perf stat --bpf-counters true > /dev/null 2>&1; then
-> +if ! perf stat -e cycles --bpf-counters true > /dev/null 2>&1; then
->         if [ "$1" =3D "-v" ]; then
->                 echo "Skipping: --bpf-counters not supported"
-> -               perf --no-pager stat --bpf-counters true || true
-> +               perf --no-pager stat -e cycles --bpf-counters true || tru=
-e
->         fi
->         exit 2
->  fi
-> --
-> 2.42.0.rc1.204.g551eb34607-goog
->
+--
+
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index 5e3419eb267a..e39743f4ce5e 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -378,7 +378,7 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
+ ({									       \
+ 	int __ret = 0;							       \
+ 	if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT))			       \
+-		get_user(__ret, optlen);				       \
++		copy_from_sockptr(&__ret, optlen, sizeof(int));		       \
+ 	__ret;								       \
+ })
+ 
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 2a0324275347..24ea1719fd02 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -1855,6 +1855,8 @@ int sock_setsockopt(struct socket *sock, int level, int op,
+ 		    sockptr_t optval, unsigned int optlen);
+ int do_sock_setsockopt(struct socket *sock, bool compat, int level,
+ 		       int optname, sockptr_t optval, int optlen);
++int do_sock_getsockopt(struct socket *sock, bool compat, int level,
++		       int optname, sockptr_t optval, sockptr_t optlen);
+ 
+ int sk_getsockopt(struct sock *sk, int level, int optname,
+ 		  sockptr_t optval, sockptr_t optlen);
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 9370fd50aa2c..2a5f30f14f5c 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -1997,14 +1997,6 @@ int sk_getsockopt(struct sock *sk, int level, int optname,
+ 	return 0;
+ }
+ 
+-int sock_getsockopt(struct socket *sock, int level, int optname,
+-		    char __user *optval, int __user *optlen)
+-{
+-	return sk_getsockopt(sock->sk, level, optname,
+-			     USER_SOCKPTR(optval),
+-			     USER_SOCKPTR(optlen));
+-}
+-
+ /*
+  * Initialize an sk_lock.
+  *
+diff --git a/net/socket.c b/net/socket.c
+index b5e4398a6b4d..f0d6b6b1f75e 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -2290,6 +2290,40 @@ SYSCALL_DEFINE5(setsockopt, int, fd, int, level, int, optname,
+ INDIRECT_CALLABLE_DECLARE(bool tcp_bpf_bypass_getsockopt(int level,
+ 							 int optname));
+ 
++int do_sock_getsockopt(struct socket *sock, bool compat, int level,
++		       int optname, sockptr_t optval, sockptr_t optlen)
++{
++	int max_optlen __maybe_unused;
++	int err;
++
++	err = security_socket_getsockopt(sock, level, optname);
++	if (err)
++		return err;
++
++	if (level == SOL_SOCKET) {
++		err = sk_getsockopt(sock->sk, level, optname, optval, optlen);
++	} else if (unlikely(!sock->ops->getsockopt)) {
++		err = -EOPNOTSUPP;
++	} else {
++		if (WARN_ONCE(optval.is_kernel || optlen.is_kernel,
++			      "Invalid argument type"))
++			return -EOPNOTSUPP;
++
++		err = sock->ops->getsockopt(sock, level, optname, optval.user,
++					    optlen.user);
++	}
++
++	if (!compat) {
++		max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen);
++		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock->sk, level, optname,
++						     optval, optlen, max_optlen,
++						     err);
++	}
++
++	return err;
++}
++EXPORT_SYMBOL(do_sock_getsockopt);
++
+ /*
+  *	Get a socket option. Because we don't know the option lengths we have
+  *	to pass a user mode parameter for the protocols to sort out.
+@@ -2297,35 +2331,17 @@ INDIRECT_CALLABLE_DECLARE(bool tcp_bpf_bypass_getsockopt(int level,
+ int __sys_getsockopt(int fd, int level, int optname, char __user *optval,
+ 		int __user *optlen)
+ {
+-	int max_optlen __maybe_unused;
+ 	int err, fput_needed;
++	bool compat = in_compat_syscall();
+ 	struct socket *sock;
+ 
+ 	sock = sockfd_lookup_light(fd, &err, &fput_needed);
+ 	if (!sock)
+ 		return err;
+ 
+-	err = security_socket_getsockopt(sock, level, optname);
+-	if (err)
+-		goto out_put;
+-
+-	if (!in_compat_syscall())
+-		max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen);
+-
+-	if (level == SOL_SOCKET)
+-		err = sock_getsockopt(sock, level, optname, optval, optlen);
+-	else if (unlikely(!sock->ops->getsockopt))
+-		err = -EOPNOTSUPP;
+-	else
+-		err = sock->ops->getsockopt(sock, level, optname, optval,
+-					    optlen);
++	err = do_sock_getsockopt(sock, compat, level, optname,
++				 USER_SOCKPTR(optval), USER_SOCKPTR(optlen));
+ 
+-	if (!in_compat_syscall())
+-		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock->sk, level, optname,
+-						     USER_SOCKPTR(optval),
+-						     USER_SOCKPTR(optlen),
+-						     max_optlen, err);
+-out_put:
+ 	fput_light(sock->file, fput_needed);
+ 	return err;
+ }
 
