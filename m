@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-8604-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8606-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EC21788AC9
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 16:08:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89B9C788AFF
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 16:09:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FC021C209E8
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 14:08:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43921281ACA
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 14:09:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4B531078F;
-	Fri, 25 Aug 2023 14:04:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63BD610975;
+	Fri, 25 Aug 2023 14:05:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62EDFC0C
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 14:04:47 +0000 (UTC)
-Received: from out-248.mta1.migadu.com (out-248.mta1.migadu.com [IPv6:2001:41d0:203:375::f8])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057342722;
-	Fri, 25 Aug 2023 07:04:23 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A8010970
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 14:05:54 +0000 (UTC)
+Received: from out-245.mta1.migadu.com (out-245.mta1.migadu.com [95.215.58.245])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 612A52694
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 07:05:30 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692972248;
+	t=1692972277;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZAHRQkTlH3B9Ayy3ByDVW6IFO8x4JKviNIiMKvNnRxw=;
-	b=rqq9t63T1b93nHdvHPb4iPnifbVgNhCPhaGA0/+lVUtdq72oLevGN3oePkSOWgj4tFeMJO
-	883BuPqR+igY5LuYYZDHjdap5mSmKgc54EL0giqHkQRTPmks0t1/1oKfHQU1t1pMyd2ThX
-	7baCMPgFPzeqpA42kG/A+w1RFMlPw/c=
+	bh=sCdpGKioQF34weG5w+z0/y3PF/fjvtNNI35yO4EvtLk=;
+	b=cYsDGPpjRbWUMOTIPyMO/haz1FlbbiWizE4L6+4KiNimBQndM5dbyTTkg9jBA2egpwU6Cb
+	fkg5cTnWwTpMK0RxO73BKMbVgecaeb3ZdD5hvh5LwNn8nQIo0z4wNaoOSgDtnANIdxLDF6
+	nhdxpWfLei5X8co+EkZeZUy0T4PzeHk=
 From: Hao Xu <hao.xu@linux.dev>
 To: io-uring@vger.kernel.org,
 	Jens Axboe <axboe@kernel.dk>
@@ -66,9 +66,9 @@ Cc: Dominique Martinet <asmadeus@codewreck.org>,
 	samba-technical@lists.samba.org,
 	linux-mtd@lists.infradead.org,
 	Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCH 22/29] xfs: comment page allocation for nowait case in xfs_buf_find_insert()
-Date: Fri, 25 Aug 2023 21:54:24 +0800
-Message-Id: <20230825135431.1317785-23-hao.xu@linux.dev>
+Subject: [PATCH 23/29] xfs: don't print warn info for -EAGAIN error in  xfs_buf_get_map()
+Date: Fri, 25 Aug 2023 21:54:25 +0800
+Message-Id: <20230825135431.1317785-24-hao.xu@linux.dev>
 In-Reply-To: <20230825135431.1317785-1-hao.xu@linux.dev>
 References: <20230825135431.1317785-1-hao.xu@linux.dev>
 Precedence: bulk
@@ -87,26 +87,32 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 From: Hao Xu <howeyxu@tencent.com>
 
-Add comments for page allocation in nowait case in xfs_buf_find_insert()
+-EAGAIN is internal error to indicate a retry, no needs to print a
+warn.
 
 Signed-off-by: Hao Xu <howeyxu@tencent.com>
 ---
- fs/xfs/xfs_buf.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/xfs/xfs_buf.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-index eb3cd7702545..57bdc4c5dde1 100644
+index 57bdc4c5dde1..cdad80e1ae25 100644
 --- a/fs/xfs/xfs_buf.c
 +++ b/fs/xfs/xfs_buf.c
-@@ -633,6 +633,8 @@ xfs_buf_find_insert(
- 	 * allocate the memory from the heap to minimise memory usage. If we
- 	 * can't get heap memory for these small buffers, we fall back to using
- 	 * the page allocator.
-+	 * xfs_buf_alloc_kmem may return -EAGAIN, let's not return it but turn
-+	 * to page allocator as well.
- 	 */
- 	if (BBTOB(new_bp->b_length) >= PAGE_SIZE ||
- 	    xfs_buf_alloc_kmem(new_bp, flags) < 0) {
+@@ -730,9 +730,10 @@ xfs_buf_get_map(
+ 	if (!bp->b_addr) {
+ 		error = _xfs_buf_map_pages(bp, flags);
+ 		if (unlikely(error)) {
+-			xfs_warn_ratelimited(btp->bt_mount,
+-				"%s: failed to map %u pages", __func__,
+-				bp->b_page_count);
++			if (error != -EAGAIN)
++				xfs_warn_ratelimited(btp->bt_mount,
++					"%s: failed to map %u pages", __func__,
++					bp->b_page_count);
+ 			xfs_buf_relse(bp);
+ 			return error;
+ 		}
 -- 
 2.25.1
 
