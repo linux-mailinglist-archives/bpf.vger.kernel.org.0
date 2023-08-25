@@ -1,57 +1,57 @@
-Return-Path: <bpf+bounces-8572-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8573-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D43277887CB
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 14:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AEA77887D9
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 14:54:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C7832817BD
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 12:51:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10F07281470
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 12:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60765D538;
-	Fri, 25 Aug 2023 12:50:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 802E9D523;
+	Fri, 25 Aug 2023 12:54:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F75BD52C;
-	Fri, 25 Aug 2023 12:50:34 +0000 (UTC)
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D560D3;
-	Fri, 25 Aug 2023 05:50:31 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-6418b4732afso963226d6.1;
-        Fri, 25 Aug 2023 05:50:31 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D43C2E0;
+	Fri, 25 Aug 2023 12:54:27 +0000 (UTC)
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A352118;
+	Fri, 25 Aug 2023 05:54:13 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-4108e0ec4d0so1550711cf.0;
+        Fri, 25 Aug 2023 05:54:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692967830; x=1693572630;
+        d=gmail.com; s=20221208; t=1692968052; x=1693572852;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HClrwHqPnrT+pZ6A8nG5te5x6eqKymaJ0Wdiusr0SD8=;
-        b=fP57n+Pf+gvC1VjGWB/42IkwSE+rVjGF4ZnjGUMsOvJOfQeuHzAMM+vblmv0J11JF8
-         kkXSfrZ/nT/5e2yVTZgKGm0ran7HDnnS32/QfkRSqt+bVOChgGbDHCqMdd2v5LpYYZb+
-         YBPy9G4Hn5qGQZouuj0WFrlPpk8HnHRdXhEX0mg9l4dEP+udwmwBvYarJu6jGP7pZPU3
-         fZ3Le52x/gacc90N0KgSaI6YnZQsgqumNLCrz/hN8zHb0Uy5BeMEMwCfL00Uj/8ZLIi6
-         tuWuLS+ZbTsMZp/ajoBSB/2UFSA2FIGJ+yDBCHXNVKfTJ5vXVP8mVIwLGWZUFkC1rwA4
-         0ssg==
+        bh=ZwEmxrx9+QpwqzKwVMBIoNd1qZa5shtIpSb4Mytf0Vk=;
+        b=XUQBnT2CVaYrvauMdU7eTh2NWhY0oW6Lrv4U2UQdhNcsml6Y9ubtY3KGDXhoppo9gL
+         xvsXrr/3YpncHwSd+xd49wj7n6Q5e79hKF62pTP6v3ntSPLFazwdShEHYyCBMheOqlTm
+         vgPnUSMVl7JYXkPXRxYsl2qdhdiTrV7VqrfDBhAqJCglAz3Ay5c0zntw9n4TH+GylEQG
+         sUizQ+YJKKo65QMifrBdtnySYLfhkOjE3Rz3FtHgsLKFB1VmTff5QNJwMraCE1T35pRx
+         9SbE7SCXhMgRc4XCeHGhIhF8nQ6Xe4BG8jOyW7f+kXfW+4E8++HB2cmw1aJ3nfLqC17S
+         Frtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692967830; x=1693572630;
+        d=1e100.net; s=20221208; t=1692968052; x=1693572852;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=HClrwHqPnrT+pZ6A8nG5te5x6eqKymaJ0Wdiusr0SD8=;
-        b=efbYw3D31YpJ4QruURV7nz68z36nZ7qvIRnolPClQZPzX7dfrUp6qZW1G4LfSKOy/J
-         smt08CGCZ3kh0ni8oONowCTWfRMVKLgVIZFpR8YtQekvjvLtLwqFQ/rG55W5BVU9ZC7Z
-         ljl4rEFlnKRD8s+EfQDUlax7grxvKTUhFbVFtGNA2vmzETpkuqwRgKhm79p6ABFXow5R
-         YDnwviB7dMCBBvr/wfNH1Mjt02y1NuECAmSlMs+bNrues0wQcskWkedgPB+5KGKacmNM
-         u1rHduA4Lw9cflvh+oThx/955wgvHrbj5LpdgKdugitcUPMQTNAzy4PGEoSIePdVE9/q
-         FlSA==
-X-Gm-Message-State: AOJu0YyAbcmTIxvy23SiYhPZefd8Yo1FscKUKEXfbzStFP6a64zuy9yA
-	eYlzZ3+pMBlfjZsLc3zS7Vhs113akrkMW6V1zow=
-X-Google-Smtp-Source: AGHT+IGM7V5nbs+GLclHUEzNsXZCoornDOExr+VBMsz7G/hpBxhKsGFTYKdTlthVvusZ5NVl9utJj//ilaNXn/kKRQc=
-X-Received: by 2002:a05:6214:5098:b0:63d:2a0b:3f91 with SMTP id
- kk24-20020a056214509800b0063d2a0b3f91mr20729374qvb.2.1692967830528; Fri, 25
- Aug 2023 05:50:30 -0700 (PDT)
+        bh=ZwEmxrx9+QpwqzKwVMBIoNd1qZa5shtIpSb4Mytf0Vk=;
+        b=SqAYTf/eYSKwrHIkQ0iwLCrdBxb0r8g8l7lL0V30j0Ft8+kT32wzkQIw1PHWL3tTTU
+         f2gSQQmEy/weUh2/FJ0KjZhL8H0CWGn30pLW5Hlp/H9sCsftTXeMbafJhxt3BO5w9b0R
+         rHdDO05cFKtokdJWxDVtAMGBPv4ByU9LJQAeE8n3+rDusPvJH7gnzLpxYCGOdvRKnT/k
+         HSDnU9C2+wvVtKpBBQsgjYFLvSqWIMohv+g5El445QXHLWBEWaKCgVjgKJEPptM1y7+7
+         djSqE2v/+vNNVKB8vKhcWWMEeNL3oWYxcWCvlv8PuU42A6Shr8/0Blquo5hvBx7I5Tr4
+         yaRw==
+X-Gm-Message-State: AOJu0Yz++294L/VUD4zZVx0v0NYg/8Zo1VTnwcr9+IajUspm57hs1jpJ
+	2WXEY7YfJshobI4o/MjSMKcaidkpa/q2u6UaPlI=
+X-Google-Smtp-Source: AGHT+IHnzOdlKV2aZ9CRwAMEyjHcck1rWX0+BfEYnpC90qtUbtLjvEZcgtz5NzA4t3cGerhTnc/8sXc1gIG+6i3K7KU=
+X-Received: by 2002:a05:6214:262e:b0:63c:7427:e7e9 with SMTP id
+ gv14-20020a056214262e00b0063c7427e7e9mr21313366qvb.6.1692968052479; Fri, 25
+ Aug 2023 05:54:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -59,12 +59,13 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20230824122853.3494-1-magnus.karlsson@gmail.com>
- <20230824122853.3494-8-magnus.karlsson@gmail.com> <ZOiiPnQPSwZJZD8w@boxer>
-In-Reply-To: <ZOiiPnQPSwZJZD8w@boxer>
+ <20230824122853.3494-11-magnus.karlsson@gmail.com> <ZOijXlBwnLxxyfFt@boxer>
+In-Reply-To: <ZOijXlBwnLxxyfFt@boxer>
 From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Fri, 25 Aug 2023 14:50:19 +0200
-Message-ID: <CAJ8uoz0D2Uhh=AC+4GAyywLBuDGGOJhLFnXBncdmcY3d9q_3hQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 07/11] selftests/xsk: add option to run single test
+Date: Fri, 25 Aug 2023 14:54:01 +0200
+Message-ID: <CAJ8uoz1tukkS6MACytUyZtNo9WOzbUR_EBXiZBcc7zhXWefccg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 10/11] selftests/xsk: display command line
+ options with -h
 To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Cc: magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org, 
 	daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org, yhs@fb.com, 
@@ -79,249 +80,100 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, 25 Aug 2023 at 14:45, Maciej Fijalkowski
+On Fri, 25 Aug 2023 at 14:50, Maciej Fijalkowski
 <maciej.fijalkowski@intel.com> wrote:
 >
-> On Thu, Aug 24, 2023 at 02:28:49PM +0200, Magnus Karlsson wrote:
+> On Thu, Aug 24, 2023 at 02:28:52PM +0200, Magnus Karlsson wrote:
 > > From: Magnus Karlsson <magnus.karlsson@intel.com>
 > >
-> > Add a command line option to be able to run a single test. This option
-> > (-t) takes a number from the list of tests available with the "-l"
-> > option. Here are two examples:
-> >
-> > Run test number 2, the "receive single packet" test in all available modes:
-> >
-> > ./test_xsk.sh -t 2
-> >
-> > Run test number 21, the metadata copy test in skb mode only
-> >
-> > ./test_xsh.sh -t 21 -m skb
+> > Add the -h option to display all available command line options
+> > available for test_xsk.sh and xskxceiver.
 > >
 > > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
 > > ---
-> >  tools/testing/selftests/bpf/test_xsk.sh  | 10 +++-
-> >  tools/testing/selftests/bpf/xskxceiver.c | 58 ++++++++++++++++--------
-> >  tools/testing/selftests/bpf/xskxceiver.h |  3 ++
-> >  3 files changed, 52 insertions(+), 19 deletions(-)
+> >  tools/testing/selftests/bpf/test_xsk.sh  | 11 ++++++++++-
+> >  tools/testing/selftests/bpf/xskxceiver.c |  5 ++++-
+> >  2 files changed, 14 insertions(+), 2 deletions(-)
 > >
 > > diff --git a/tools/testing/selftests/bpf/test_xsk.sh b/tools/testing/selftests/bpf/test_xsk.sh
-> > index 489101922984..b7186ae48497 100755
+> > index b7186ae48497..9ec718043c1a 100755
 > > --- a/tools/testing/selftests/bpf/test_xsk.sh
 > > +++ b/tools/testing/selftests/bpf/test_xsk.sh
-> > @@ -79,12 +79,15 @@
+> > @@ -82,12 +82,15 @@
 > >  #
-> >  # List available tests
-> >  #   ./test_xsk.sh -l
+> >  # Run a specific test from the test suite
+> >  #   sudo ./test_xsk.sh -t TEST_NAME
 > > +#
-> > +# Run a specific test from the test suite
-> > +#   sudo ./test_xsk.sh -t TEST_NAME
+> > +# Display the available command line options
+> > +#   ./test_xsk.sh -h
 > >
 > >  . xsk_prereqs.sh
 > >
 > >  ETH=""
 > >
-> > -while getopts "vi:dm:l" flag
-> > +while getopts "vi:dm:lt:" flag
+> > -while getopts "vi:dm:lt:" flag
+> > +while getopts "vi:dm:lt:h" flag
 > >  do
 > >       case "${flag}" in
 > >               v) verbose=1;;
-> > @@ -92,6 +95,7 @@ do
-> >               i) ETH=${OPTARG};;
+> > @@ -96,6 +99,7 @@ do
 > >               m) XSKTEST_MODE=${OPTARG};;
 > >               l) list=1;;
-> > +             t) XSKTEST_TEST=${OPTARG};;
+> >               t) XSKTEST_TEST=${OPTARG};;
+> > +             h) help=1;;
 > >       esac
 > >  done
 > >
-> > @@ -170,6 +174,10 @@ if [ -n "$XSKTEST_MODE" ]; then
-> >       ARGS+="-m ${XSKTEST_MODE} "
+> > @@ -148,6 +152,11 @@ if [[ $list -eq 1 ]]; then
+> >          exit
 > >  fi
 > >
-> > +if [ -n "$XSKTEST_TEST" ]; then
-> > +     ARGS+="-t ${XSKTEST_TEST} "
+> > +if [[ $help -eq 1 ]]; then
+> > +     ./${XSKOBJ}
+> > +        exit
 > > +fi
 > > +
-> >  retval=$?
-> >  test_status $retval "${TEST_NAME}"
-> >
+> >  if [ ! -z $ETH ]; then
+> >       VETH0=${ETH}
+> >       VETH1=${ETH}
 > > diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-> > index a063b9af7fff..6eca5f95a3e0 100644
+> > index 19db9a827c30..9feb476d647f 100644
 > > --- a/tools/testing/selftests/bpf/xskxceiver.c
 > > +++ b/tools/testing/selftests/bpf/xskxceiver.c
-> > @@ -110,6 +110,7 @@ static const char *MAC2 = "\x00\x0A\x56\x9E\xEE\x61";
-> >  static bool opt_verbose;
-> >  static bool opt_print_tests;
-> >  static enum test_mode opt_mode = TEST_MODE_ALL;
-> > +static u32 opt_run_test = RUN_ALL_TESTS;
-> >
-> >  static void __exit_with_error(int error, const char *file, const char *func, int line)
-> >  {
-> > @@ -316,10 +317,11 @@ static struct option long_options[] = {
-> >       {"verbose", no_argument, 0, 'v'},
+> > @@ -318,6 +318,7 @@ static struct option long_options[] = {
 > >       {"mode", required_argument, 0, 'm'},
 > >       {"list", no_argument, 0, 'l'},
-> > +     {"test", required_argument, 0, 't'},
+> >       {"test", required_argument, 0, 't'},
+> > +     {"help", no_argument, 0, 'h'},
 > >       {0, 0, 0, 0}
 > >  };
 > >
-> > -static void usage(const char *prog)
-> > +static void print_usage(char **argv)
-> >  {
-> >       const char *str =
-> >               "  Usage: xskxceiver [OPTIONS]\n"
-> > @@ -328,9 +330,11 @@ static void usage(const char *prog)
-> >               "  -v, --verbose        Verbose output\n"
+> > @@ -331,7 +332,8 @@ static void print_usage(char **argv)
 > >               "  -b, --busy-poll      Enable busy poll\n"
 > >               "  -m, --mode           Run only mode skb, drv, or zc\n"
-> > -             "  -l, --list           List all available tests\n";
-> > +             "  -l, --list           List all available tests\n"
-> > +             "  -t, --test           Run a specific test. Enter number from -l option.\n";
+> >               "  -l, --list           List all available tests\n"
+> > -             "  -t, --test           Run a specific test. Enter number from -l option.\n";
+> > +             "  -t, --test           Run a specific test. Enter number from -l option.\n"
+> > +             "  -h, --help           Display this help and exit\n";
 > >
-> > -     ksft_print_msg(str, prog);
-> > +     ksft_print_msg(str, basename(argv[0]));
-> > +     ksft_exit_xfail();
-> >  }
-> >
-> >  static bool validate_interface(struct ifobject *ifobj)
-> > @@ -350,7 +354,7 @@ static void parse_command_line(struct ifobject *ifobj_tx, struct ifobject *ifobj
-> >       opterr = 0;
-> >
-> >       for (;;) {
-> > -             c = getopt_long(argc, argv, "i:vbm:l", long_options, &option_index);
-> > +             c = getopt_long(argc, argv, "i:vbm:lt:", long_options, &option_index);
-> >               if (c == -1)
+> >       ksft_print_msg(str, basename(argv[0]));
+> >       ksft_exit_xfail();
+> > @@ -406,6 +408,7 @@ static void parse_command_line(struct ifobject *ifobj_tx, struct ifobject *ifobj
+> >                       if (errno)
+> >                               print_usage(argv);
 > >                       break;
-> >
-> > @@ -390,16 +394,20 @@ static void parse_command_line(struct ifobject *ifobj_tx, struct ifobject *ifobj
-> >                                                               strlen("zc")))) {
-> >                               opt_mode = TEST_MODE_ZC;
-> >                       } else {
-> > -                             usage(basename(argv[0]));
-> > -                             ksft_exit_xfail();
-> > +                             print_usage(argv);
-> >                       }
-> >                       break;
-> >               case 'l':
-> >                       opt_print_tests = true;
-> >                       break;
-> > +             case 't':
-> > +                     errno = 0;
-> > +                     opt_run_test = strtol(optarg, NULL, 0);
-> > +                     if (errno)
-> > +                             print_usage(argv);
+> > +             case 'h':
 >
-> aren't you missing ksft_exit_xfail(); here?
+> do you need 'fallthrough' here?
 
-It is in print_usage() instead since all calls to print_usage() ends that way.
+Did not get any complaints from checkpatch, so do not know since it is
+a case without any content on its own. I would say it is obvious that
+it is "falling through" in this case :-). But I do not know what the
+rule is.
 
-> > +                     break;
 > >               default:
-> > -                     usage(basename(argv[0]));
-> > -                     ksft_exit_xfail();
-> > +                     print_usage(argv);
+> >                       print_usage(argv);
 > >               }
-> >       }
-> >  }
-> > @@ -2330,8 +2338,8 @@ int main(int argc, char **argv)
-> >       struct pkt_stream *rx_pkt_stream_default;
-> >       struct pkt_stream *tx_pkt_stream_default;
-> >       struct ifobject *ifobj_tx, *ifobj_rx;
-> > +     u32 i, j, failed_tests = 0, nb_tests;
-> >       int modes = TEST_MODE_SKB + 1;
-> > -     u32 i, j, failed_tests = 0;
-> >       struct test_spec test;
-> >       bool shared_netdev;
-> >
-> > @@ -2353,15 +2361,17 @@ int main(int argc, char **argv)
-> >               print_tests();
-> >               ksft_exit_xpass();
-> >       }
-> > +     if (opt_run_test != RUN_ALL_TESTS && opt_run_test >= ARRAY_SIZE(tests)) {
-> > +             ksft_print_msg("Error: test %u does not exist.\n", opt_run_test);
-> > +             ksft_exit_xfail();
-> > +     }
-> >
-> >       shared_netdev = (ifobj_tx->ifindex == ifobj_rx->ifindex);
-> >       ifobj_tx->shared_umem = shared_netdev;
-> >       ifobj_rx->shared_umem = shared_netdev;
-> >
-> > -     if (!validate_interface(ifobj_tx) || !validate_interface(ifobj_rx)) {
-> > -             usage(basename(argv[0]));
-> > -             ksft_exit_xfail();
-> > -     }
-> > +     if (!validate_interface(ifobj_tx) || !validate_interface(ifobj_rx))
-> > +             print_usage(argv);
-> >
-> >       if (is_xdp_supported(ifobj_tx->ifindex)) {
-> >               modes++;
-> > @@ -2380,19 +2390,31 @@ int main(int argc, char **argv)
-> >       test.tx_pkt_stream_default = tx_pkt_stream_default;
-> >       test.rx_pkt_stream_default = rx_pkt_stream_default;
-> >
-> > +     if (opt_run_test == RUN_ALL_TESTS)
-> > +             nb_tests = ARRAY_SIZE(tests);
-> > +     else
-> > +             nb_tests = 1;
-> >       if (opt_mode == TEST_MODE_ALL)
-> > -             ksft_set_plan(modes * ARRAY_SIZE(tests));
-> > +             ksft_set_plan(modes * nb_tests);
-> >       else
-> > -             ksft_set_plan(ARRAY_SIZE(tests));
-> > +             ksft_set_plan(nb_tests);
-> >
-> >       for (i = 0; i < modes; i++) {
-> >               if (opt_mode != TEST_MODE_ALL && i != opt_mode)
-> >                       continue;
-> >
-> > -             for (j = 0; j < ARRAY_SIZE(tests); j++) {
-> > -                     test_spec_init(&test, ifobj_tx, ifobj_rx, i, &tests[j]);
-> > +             if (opt_run_test == RUN_ALL_TESTS) {
-> > +                     for (j = 0; j < ARRAY_SIZE(tests); j++) {
-> > +                             test_spec_init(&test, ifobj_tx, ifobj_rx, i, &tests[j]);
-> > +                             run_pkt_test(&test);
-> > +                             usleep(USLEEP_MAX);
-> > +
-> > +                             if (test.fail)
-> > +                                     failed_tests++;
-> > +                     }
-> > +             } else {
-> > +                     test_spec_init(&test, ifobj_tx, ifobj_rx, i, &tests[opt_run_test]);
-> >                       run_pkt_test(&test);
-> > -                     usleep(USLEEP_MAX);
->
-> Could we simplify this and avoid branching just for getting the index of
-> test to run with something like:
->
->                 for (curr_test = opt_run_test; j = 0; j < nb_tests; j++, curr_test++) {
->
-> branch vs additional variable, up to you but repeated code caught my eye
-
-Would be nicer without repeated code for sure. I will try to simplify it.
-
-> >
-> >                       if (test.fail)
-> >                               failed_tests++;
-> > diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-> > index 3a71d490db3e..8015aeea839d 100644
-> > --- a/tools/testing/selftests/bpf/xskxceiver.h
-> > +++ b/tools/testing/selftests/bpf/xskxceiver.h
-> > @@ -5,6 +5,8 @@
-> >  #ifndef XSKXCEIVER_H_
-> >  #define XSKXCEIVER_H_
-> >
-> > +#include <limits.h>
-> > +
-> >  #include "xsk_xdp_progs.skel.h"
-> >
-> >  #ifndef SOL_XDP
-> > @@ -56,6 +58,7 @@
-> >  #define XSK_DESC__MAX_SKB_FRAGS 18
-> >  #define HUGEPAGE_SIZE (2 * 1024 * 1024)
-> >  #define PKT_DUMP_NB_TO_PRINT 16
-> > +#define RUN_ALL_TESTS UINT_MAX
-> >
-> >  #define print_verbose(x...) do { if (opt_verbose) ksft_print_msg(x); } while (0)
-> >
 > > --
 > > 2.34.1
 > >
