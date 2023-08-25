@@ -1,323 +1,178 @@
-Return-Path: <bpf+bounces-8675-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8676-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19652788EE5
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 20:46:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1776D788EF5
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 20:54:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F3471C20F7D
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 18:46:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 478ED1C20EE7
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 18:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBF9A18AE3;
-	Fri, 25 Aug 2023 18:46:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E44218AF2;
+	Fri, 25 Aug 2023 18:53:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B2DD2915
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 18:46:44 +0000 (UTC)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A3DCD2;
-	Fri, 25 Aug 2023 11:46:42 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99c353a395cso156639966b.2;
-        Fri, 25 Aug 2023 11:46:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D98B174F7
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 18:53:55 +0000 (UTC)
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513181BD2
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 11:53:54 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bce552508fso18848901fa.1
+        for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 11:53:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692989201; x=1693594001;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=L8kMb3SGZQ6eWcS2izBfAzJkuNyIE7vijCFiSkYhv/c=;
-        b=pchmme6U7B78a37PLmZ1LuNV3dmzi9pNYcmJichG/F8AvZxrDlxg8ZkoNRPIPl7isp
-         fmFbsl1GEpeN1S48Mt5AT9VYTPgtDCnhC4aP6s7mlHtn/CbZGObrCFwJRz9rOrOfGbJX
-         3ucJGDxeuEnLv7gIr6supoY2dyREq4h9hWETy9dDV7vjwH1X9SNb+cj2ohwZLDAwcbiD
-         VVkdlQk8uqovPFf39rpfeK5EVuIb8FblL0Ruv4gpNPDGcs+fDhQ0UXBy3p9PSJGDckkz
-         I/PETQadfJSMoARWLeyFeYR+JCTEG4S+m7vak7sTXnWqVzFUuVi7OLqgYiZABtnplWJQ
-         kzHg==
+        d=gmail.com; s=20221208; t=1692989632; x=1693594432;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BTNsb8ZD5nYCip/qmAJsV2FZCF/nHIHZIkkwz3tv4Dw=;
+        b=pb+g/Y6GZHZS+GGwxtAU4pQWV56mJqsoMgXzerBWSod+yCPbJAaYRjY9qvA3arNZKE
+         fwl+kXu9Cd+Kpi8zHes91txNh+5av0nJ41Lo53A4bm0DJ7Qd6zCdgshWolKgkUvjuJd8
+         P0SEI/r5nMlGpTOWV8Q79j+d9ZW08Gt77KjVv+guVC80Vjml1euwe5SpdkPGexgzFiBU
+         2gEii/W6pTUtcoxfMBMAvVTI6B3BhjiJMzpgLZCL7OSRPZK7Ml6n6OeeVVRhuOS7tIAO
+         /VBZQ22wHOx0nRPbo+FXXqGQ1yB5MS3fGzAa7oiwubLFjOpOfvhUOj5fGUDvoaP/Omhu
+         1nJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692989201; x=1693594001;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=L8kMb3SGZQ6eWcS2izBfAzJkuNyIE7vijCFiSkYhv/c=;
-        b=Q/gQD7xvvZeiBysxWCkQp0aZ2be0WZtqbLYVPTVLgL5JE29h0ccaJRuaLAE6R5zBQR
-         KHK+6vJKvsKXPOINYPPuwzjmSyGc9A1azt643fZbiuMi47sZb+Ni1IXS6/4bgUBY8t+b
-         M0UxoBnLEVx4KK3r21+ATRdd3goGKsgFMtHmilgchL2UYfuPLAgConMS6rBD2MnYxDFi
-         gjdqtD4uo2QDNtzNvxj5YkrjqaSbVin6WOsqyVYhhF2s6uCCpyCUFLRS0Wz+ambxMpSA
-         EjGCHybBgTnTw03auF4mG/iauLVrMIxHdnV6+F3U9yWtAx3r8m/anOTIMK3NE7XTtYwo
-         +PVA==
-X-Gm-Message-State: AOJu0YxXQcYMrpv6GV7lVU4qL0yCHh4gEd49Sm88MecvvntgSB9BxPEi
-	YbzCbaVDOd9QkKef3zlYxMCKjgBHLqTKXg==
-X-Google-Smtp-Source: AGHT+IFSVqIsCCp6o/KC9FED1oTxoVDQSY208QtrMRSuVRt7HfzLa54diuVazJw1+fwlshH/8kUqoA==
-X-Received: by 2002:a17:907:75f9:b0:994:577:f9dd with SMTP id jz25-20020a17090775f900b009940577f9ddmr15097321ejc.9.1692989200490;
-        Fri, 25 Aug 2023 11:46:40 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id q5-20020a1709064c8500b00993928e4d1bsm1219668eju.24.2023.08.25.11.46.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 11:46:40 -0700 (PDT)
-Message-ID: <3226a69223806f403132a4003676b63f7bf6f7fb.camel@gmail.com>
-Subject: Re: selftests: hid: trouble building with clang due to missing
- header
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Justin Stitt <justinstitt@google.com>
-Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>, Nick Desaulniers
- <ndesaulniers@google.com>, linux-kselftest@vger.kernel.org,
- bpf@vger.kernel.org,  linux-input@vger.kernel.org, Linux Kernel Mailing
- List <linux-kernel@vger.kernel.org>, Nathan Chancellor <nathan@kernel.org>,
- Kees Cook <keescook@google.com>
-Date: Fri, 25 Aug 2023 21:46:38 +0300
-In-Reply-To: <CAFhGd8ob_qet6ODduHz2=sjGXkHaFMzrtu1FFkN0eUWQvpyPrQ@mail.gmail.com>
-References: 
-	<CAFhGd8ryUcu2yPC+dFyDKNuVFHxT-=iayG+n2iErotBxgd0FVw@mail.gmail.com>
-	 <CAKwvOd=p_7gWwBnR_RHUPukkG1A25GQy6iOnX_eih7u65u=oxw@mail.gmail.com>
-	 <CAO-hwJLio2dWs01VAhCgmub5GVxRU-3RFQifviOL0OTaqj9Ktg@mail.gmail.com>
-	 <CAFhGd8qmXD6VN+nuXKtV_Uz14gzY1Kqo7tmOAhgYpTBdCnoJRQ@mail.gmail.com>
-	 <CAO-hwJJ_ipXwLjyhGC6_4r-uZ-sDbrb_W7um6F2vgws0d-hvTQ@mail.gmail.com>
-	 <CAO-hwJ+DTPXWbpNaBDvCkyAsWZHbeLiBwYo4k93ZW79Jt-HAkg@mail.gmail.com>
-	 <CAFhGd8pVjUPpukHxxbQCEnmgDUqy-tgBa7POkmgrYyFXVRAMEw@mail.gmail.com>
-	 <CAO-hwJJntQTzcJH5nf9RM1bVWGVW1kb28rJ3tgew1AEH00PmJQ@mail.gmail.com>
-	 <CAFhGd8rgdszt5vgWuGKkcpTZbKvihGCJXRKKq7RP17+71dTYww@mail.gmail.com>
-	 <20230822214220.jjx3srik4mteeond@google.com>
-	 <56ba8125-2c6f-a9c9-d498-0ca1c153dcb2@redhat.com>
-	 <e99b4226bd450fedfebd4eb5c37054f032432b4f.camel@gmail.com>
-	 <CAFhGd8ob_qet6ODduHz2=sjGXkHaFMzrtu1FFkN0eUWQvpyPrQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        d=1e100.net; s=20221208; t=1692989632; x=1693594432;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BTNsb8ZD5nYCip/qmAJsV2FZCF/nHIHZIkkwz3tv4Dw=;
+        b=GVKAHO/7uHB2gMu33OBa1bwK7w6W3uWmb12qgRVpb7T0EvGTmW9dr57HXgMYnARNsX
+         Fqvww1ollU2Glf8W2nJbu52OdDFBOLWr803iTaJQlLd3xtLb7yV4jA5ZLCIYKDtGAFD+
+         9y+dTR05ne1ArJoBPofrI0951o40MJ7PQhc2kYVbTnK8h0VprSTemR6sxkIvNyIKLaE7
+         7wGn2suDefBcYdGDNS14JUb8IrwFEYpzGmSbcXOEwUS+5tbVrDi4ZV0VJ3cbYFXMk2b0
+         wrIkH/+Xu88MaL1euo4zSOcyoD0r+fqXPtYppGxlBs3PLho7B4tQMybH5dRk9grVodCq
+         Nekw==
+X-Gm-Message-State: AOJu0YzRG51mZawTvT8H+iy3/nAJr39D2R62Nd/xDQ+yZF/EECw/980r
+	h2AEhJedesYZT6KkDe14lF6nUHwOraVbq/6IzbEVJQJgtgc=
+X-Google-Smtp-Source: AGHT+IH1lj6IJ2Oqh5+YmwsxP5iRpd/0RsQY38qRwZGE8zdW9QCWIVhcsBNg/WB6zxnQUYsORFjwY63xRDe8TzYIxjM=
+X-Received: by 2002:a2e:920b:0:b0:2bb:94e4:490 with SMTP id
+ k11-20020a2e920b000000b002bb94e40490mr15845256ljg.23.1692989632311; Fri, 25
+ Aug 2023 11:53:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
+References: <87jztjmmy4.fsf@all.your.base.are.belong.to.us> <2f4f0dfc-ec06-8ac8-a56a-395cc2373def@linux.dev>
+In-Reply-To: <2f4f0dfc-ec06-8ac8-a56a-395cc2373def@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 25 Aug 2023 11:53:41 -0700
+Message-ID: <CAADnVQ+sthRd1CHtCNo=AKN7mXZEMkA5fS6zh-Ncbh8uC3FERQ@mail.gmail.com>
+Subject: Re: WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
+To: Yonghong Song <yonghong.song@linux.dev>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Dave Marchevsky <davemarchevsky@meta.com>
+Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, 2023-08-25 at 11:36 -0700, Justin Stitt wrote:
-> On Fri, Aug 25, 2023 at 6:01=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.c=
-om> wrote:
-> >=20
-> > On Fri, 2023-08-25 at 10:08 +0200, Benjamin Tissoires wrote:
-> > >=20
-> > > On Tue, Aug 22, 2023 at 11:42=E2=80=AFPM Justin Stitt <justinstitt@go=
-ogle.com> wrote:
-> > > > > > > > Which kernel are you trying to test?
-> > > > > > > > I tested your 2 commands on v6.5-rc7 and it just works.
-> > > > > > >=20
-> > > > > > > I'm also on v6.5-rc7 (706a741595047797872e669b3101429ab8d378e=
-f)
-> > > > > > >=20
-> > > > > > > I ran these exact commands:
-> > > > > > > >    $ make mrproper
-> > > > > > > >    $ make LLVM=3D1 ARCH=3Dx86_64 headers
-> > > > > > > >    $ make LLVM=3D1 ARCH=3Dx86_64 -j128 -C tools/testing/sel=
-ftests
-> > > > > > > TARGETS=3Dhid &> out
-> > > > > > >=20
-> > > > > > > and here's the contents of `out` (still warnings/errors):
-> > > > > > > https://gist.github.com/JustinStitt/d0c30180a2a2e046c32d5f0ce=
-5f59c6d
-> > > > > > >=20
-> > > > > > > I have a feeling I'm doing something fundamentally incorrectl=
-y. Any ideas?
-> > > > > >=20
-> > > > > > Sigh... there is a high chance my Makefile is not correct and u=
-ses the
-> > > > > > installed headers (I was running the exact same commands, but o=
-n a
-> > > > > > v6.4-rc7+ kernel).
-> > > > > >=20
-> > > > > > But sorry, it will have to wait for tomorrow if you want me to =
-have a
-> > > > > > look at it. It's 11:35 PM here, and I need to go to bed
-> > > > > Take it easy. Thanks for the prompt responses here! I'd like to g=
-et
-> > > > > the entire kselftest make target building with Clang so that we c=
-an
-> > > > > close [1].
-> > >=20
-> > > Sorry I got urgent matters to tackle yesterday.
-> > >=20
-> > > It took me a while to understand what was going on, and I finally fou=
-nd
-> > > it.
-> > >=20
-> > > struct hid_bpf_ctx is internal to the kernel, and so is declared in
-> > > vmlinux.h, that we generate through BTF. But to generate the vmlinux.=
-h
-> > > with the correct symbols, these need to be present in the running
-> > > kernel.
-> > > And that's where we had a fundamental difference: I was running my
-> > > compilations on a kernel v6.3+ (6.4.11) with that symbol available, a=
-nd
-> > > you are probably not.
-> > >=20
-> > > The bpf folks are using a clever trick to force the compilation[2]. A=
-nd
-> > > I think the following patch would work for you:
-> >=20
-> > Hi Benjamin, Justin,
-> >=20
-> > You might want to take a look at these two links:
-> > [1] https://nakryiko.com/posts/bpf-core-reference-guide/#handling-incom=
-patible-field-and-type-changes
-> > [2] https://facebookmicrosites.github.io/bpf/blog/2020/02/19/bpf-portab=
-ility-and-co-re.html#dealing-with-kernel-version-and-configuration-differen=
-ces
-> >=20
-> > The short version is: CO-RE relocation handling logic in libbpf
-> > ignores suffixes of form '___something' for type and field names.
-> >=20
-> > So, the following should accomplish the same as the trick with
-> > #define/#undef:
-> >=20
-> >     #include "vmlinux.h"
-> >     ...
-> >     struct hid_bpf_ctx___local {
-> >         __u32 index;
-> >         const struct hid_device *hid;
-> >         __u32 allocated_size;
-> >         enum hid_report_type report_type;
-> >         union {
-> >             __s32 retval;
-> >             __s32 size;
-> >         };
-> >=20
-> >     };
-> >     ...
-> >     extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx___local *ctx,
-> >                                   unsigned int offset, ...)
-> >=20
-> > However, if the kernel does not have `hid_bpf_ctx` definition would
-> > the test `progs/hid.c` still make sense?
-> >=20
-> > When I tried to build hid tests locally I run into similar errors:
-> >=20
-> >     ...
-> >       CLNG-BPF hid.bpf.o
-> >     In file included from progs/hid.c:6:
-> >     progs/hid_bpf_helpers.h:9:38: error: declaration of 'struct hid_bpf=
-_ctx' \
-> >            will not be visible outside of this function [-Werror,-Wvisi=
-bility]
-> >     extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
-> >     ...
-> >=20
-> > And there is indeed no `hid_bpf_ctx` in my vmlinux.h.
-> > However, after enabling CONFIG_HID_BPF in kernel config the
-> > `hid_bpf_ctx` appears in vmlinux.h, and I can compile HID selftests
-> > w/o issues.
->=20
-> Even with enabling this configuration option I was unable to get clean
-> builds of the HID selftests. I proposed a 4th patch on top of
-> Benjamin's n=3D3 patch series here [1] using the #def/#undef pattern.
+On Fri, Aug 25, 2023 at 8:28=E2=80=AFAM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
+>
+>
+>
+> On 8/25/23 3:32 AM, Bj=C3=B6rn T=C3=B6pel wrote:
+> > I'm chasing a workqueue hang on RISC-V/qemu (TCG), using the bpf
+> > selftests on bpf-next 9e3b47abeb8f.
+> >
+> > I'm able to reproduce the hang by multiple runs of:
+> >   | ./test_progs -a link_api -a linked_list
+> > I'm currently investigating that.
+> >
+> > But! Sometimes (every blue moon) I get a warn_on_once hit:
+> >   | ------------[ cut here ]------------
+> >   | WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342 bpf_mem_refil=
+l+0x1fc/0x206
+> >   | Modules linked in: bpf_testmod(OE)
+> >   | CPU: 3 PID: 261 Comm: test_progs-cpuv Tainted: G           OE    N =
+6.5.0-rc5-01743-gdcb152bb8328 #2
+> >   | Hardware name: riscv-virtio,qemu (DT)
+> >   | epc : bpf_mem_refill+0x1fc/0x206
+> >   |  ra : irq_work_single+0x68/0x70
+> >   | epc : ffffffff801b1bc4 ra : ffffffff8015fe84 sp : ff2000000001be20
+> >   |  gp : ffffffff82d26138 tp : ff6000008477a800 t0 : 0000000000046600
+> >   |  t1 : ffffffff812b6ddc t2 : 0000000000000000 s0 : ff2000000001be70
+> >   |  s1 : ff5ffffffffe8998 a0 : ff5ffffffffe8998 a1 : ff600003fef4b000
+> >   |  a2 : 000000000000003f a3 : ffffffff80008250 a4 : 0000000000000060
+> >   |  a5 : 0000000000000080 a6 : 0000000000000000 a7 : 0000000000735049
+> >   |  s2 : ff5ffffffffe8998 s3 : 0000000000000022 s4 : 0000000000001000
+> >   |  s5 : 0000000000000007 s6 : ff5ffffffffe8570 s7 : ffffffff82d6bd30
+> >   |  s8 : 000000000000003f s9 : ffffffff82d2c5e8 s10: 000000000000ffff
+> >   |  s11: ffffffff82d2c5d8 t3 : ffffffff81ea8f28 t4 : 0000000000000000
+> >   |  t5 : ff6000008fd28278 t6 : 0000000000040000
+> >   | status: 0000000200000100 badaddr: 0000000000000000 cause: 000000000=
+0000003
+> >   | [<ffffffff801b1bc4>] bpf_mem_refill+0x1fc/0x206
+> >   | [<ffffffff8015fe84>] irq_work_single+0x68/0x70
+> >   | [<ffffffff8015feb4>] irq_work_run_list+0x28/0x36
+> >   | [<ffffffff8015fefa>] irq_work_run+0x38/0x66
+> >   | [<ffffffff8000828a>] handle_IPI+0x3a/0xb4
+> >   | [<ffffffff800a5c3a>] handle_percpu_devid_irq+0xa4/0x1f8
+> >   | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
+> >   | [<ffffffff800ae570>] ipi_mux_process+0xac/0xfa
+> >   | [<ffffffff8000a8ea>] sbi_ipi_handle+0x2e/0x88
+> >   | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
+> >   | [<ffffffff807ee70e>] riscv_intc_irq+0x36/0x4e
+> >   | [<ffffffff812b5d3a>] handle_riscv_irq+0x54/0x86
+> >   | [<ffffffff812b6904>] do_irq+0x66/0x98
+> >   | ---[ end trace 0000000000000000 ]---
+> >
+> > Code:
+> >   | static void free_bulk(struct bpf_mem_cache *c)
+> >   | {
+> >   |   struct bpf_mem_cache *tgt =3D c->tgt;
+> >   |   struct llist_node *llnode, *t;
+> >   |   unsigned long flags;
+> >   |   int cnt;
+> >   |
+> >   |   WARN_ON_ONCE(tgt->unit_size !=3D c->unit_size);
+> >   | ...
+> >
+> > I'm not well versed in the memory allocator; Before I dive into it --
+> > has anyone else hit it? Ideas on why the warn_on_once is hit?
+>
+> Maybe take a look at the patch
+>    822fb26bdb55  bpf: Add a hint to allocated objects.
+>
+> In the above patch, we have
+>
+> +       /*
+> +        * Remember bpf_mem_cache that allocated this object.
+> +        * The hint is not accurate.
+> +        */
+> +       c->tgt =3D *(struct bpf_mem_cache **)llnode;
+>
+> I suspect that the warning may be related to the above.
+> I tried the above ./test_progs command line (running multiple
+> at the same time) and didn't trigger the issue.
 
-What are the remaining errors?
-Could you please share your .config (e.g. as a gist).
+Interesting. Thanks for the report.
+I wasn't able to repo the warn either, but I can confirm that linked_list
+test is super slow on the kernel with debugs on and may appear to "hang",
+since it doesn't respond to key press for many seconds.
 
-As I said, when your kernel does not have `struct hid_bpf_ctx`,
-sure you can define these data structures in the test itself,
-but the test would loose it's meaning. If kernel is built
-w/o HID BPF support there is no sense in compiling this test.
+time ./test_progs -a linked_list
+Summary: 1/132 PASSED, 0 SKIPPED, 0 FAILED
 
->=20
-> >=20
-> > >=20
-> > > ---
-> > >  From bb9eccb7a896ba4b3a35ed12a248e6d6cfed2df6 Mon Sep 17 00:00:00 20=
-01
-> > > From: Benjamin Tissoires <bentiss@kernel.org>
-> > > Date: Fri, 25 Aug 2023 10:02:32 +0200
-> > > Subject: [PATCH] selftests/hid: ensure we can compile the tests on ke=
-rnels
-> > >   pre-6.3
-> > >=20
-> > > For the hid-bpf tests to compile, we need to have the definition of
-> > > struct hid_bpf_ctx. This definition is an internal one from the kerne=
-l
-> > > and it is supposed to be defined in the generated vmlinux.h.
-> > >=20
-> > > This vmlinux.h header is generated based on the currently running ker=
-nel
-> > > or if the kernel was already compiled in the tree. If you just compil=
-e
-> > > the selftests without compiling the kernel beforehand and you are run=
-ning
-> > > on a 6.2 kernel, you'll end up with a vmlinux.h without the hid_bpf_c=
-tx
-> > > definition.
-> > >=20
-> > > Use the clever trick from tools/testing/selftests/bpf/progs/bpf_iter.=
-h
-> > > to force the definition of that symbol in case we don't find it in th=
-e
-> > > BTF.
-> > >=20
-> > > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> > > ---
-> > >   tools/testing/selftests/hid/progs/hid.c       |  3 ---
-> > >   .../selftests/hid/progs/hid_bpf_helpers.h     | 20 ++++++++++++++++=
-+++
-> > >   2 files changed, 20 insertions(+), 3 deletions(-)
-> > >=20
-> > > diff --git a/tools/testing/selftests/hid/progs/hid.c b/tools/testing/=
-selftests/hid/progs/hid.c
-> > > index 88c593f753b5..1e558826b809 100644
-> > > --- a/tools/testing/selftests/hid/progs/hid.c
-> > > +++ b/tools/testing/selftests/hid/progs/hid.c
-> > > @@ -1,8 +1,5 @@
-> > >   // SPDX-License-Identifier: GPL-2.0
-> > >   /* Copyright (c) 2022 Red hat */
-> > > -#include "vmlinux.h"
-> > > -#include <bpf/bpf_helpers.h>
-> > > -#include <bpf/bpf_tracing.h>
-> > >   #include "hid_bpf_helpers.h"
-> > >=20
-> > >   char _license[] SEC("license") =3D "GPL";
-> > > diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/to=
-ols/testing/selftests/hid/progs/hid_bpf_helpers.h
-> > > index 4fff31dbe0e7..749097f8f4d9 100644
-> > > --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> > > +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> > > @@ -5,6 +5,26 @@
-> > >   #ifndef __HID_BPF_HELPERS_H
-> > >   #define __HID_BPF_HELPERS_H
-> > >=20
-> > > +/* "undefine" structs in vmlinux.h, because we "override" them below=
- */
-> > > +#define hid_bpf_ctx hid_bpf_ctx___not_used
-> > > +#include "vmlinux.h"
-> > > +#undef hid_bpf_ctx
-> > > +
-> > > +#include <bpf/bpf_helpers.h>
-> > > +#include <bpf/bpf_tracing.h>
-> > > +
-> > > +
-> > > +struct hid_bpf_ctx {
-> > > +     __u32 index;
-> > > +     const struct hid_device *hid;
-> > > +     __u32 allocated_size;
-> > > +     enum hid_report_type report_type;
-> > > +     union {
-> > > +             __s32 retval;
-> > > +             __s32 size;
-> > > +     };
-> > > +};
-> > > +
-> > >   /* following are kfuncs exported by HID for HID-BPF */
-> > >   extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
-> > >                             unsigned int offset,
-> >=20
->=20
-> [1]: https://lore.kernel.org/all/20230825182316.m2ksjoxe4s7dsapn@google.c=
-om/
->=20
-> Thanks
-> Justin
+real    0m35.897s
+user    0m1.860s
+sys    0m32.105s
 
+That's not normal.
+
+Kumar, Dave,
+
+do you have any suggestions?
 
