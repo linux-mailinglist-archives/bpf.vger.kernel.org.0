@@ -1,189 +1,213 @@
-Return-Path: <bpf+bounces-8629-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8631-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FF5B788C56
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 17:19:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9D1E788C70
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 17:28:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A16491C21019
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 15:19:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 946D02818E4
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 15:28:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4EC107B3;
-	Fri, 25 Aug 2023 15:18:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5340C107A8;
+	Fri, 25 Aug 2023 15:28:02 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 557B81078D
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 15:18:52 +0000 (UTC)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472332121
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 08:18:51 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37PF26Qq029249;
-	Fri, 25 Aug 2023 15:18:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=hepVXRKFiRIv4IdaE1nHxJMdgayn+XmVr4DAvmp/X/A=;
- b=iHZFvnBrgcv2yBa9a049mozeOEMp5nwifNfjvKJGjszW+8ibowUl2DbiI98hJDtgr3xW
- 9TXXE8j6saDhtZuewv1OczrcvISDzDV0PghCAMULExhbyhU10F8pfe9VP+prpAAeymqh
- 2Apfhh7LgeCaCGXA49P3LLgzfQM0/JhTvpu4/c3SwVKk4phi8sLHN3hrIJJCQ3Iszwnl
- rIC3j/PmmazcaT1ZRP+GwPeywi/jacf3KLkqypoRMcEjXAv+rUpRIU6u7VW/tOvJr5sV
- F6ejF/ceVcr39/dMucdaJZOVFvwG3llWA70CiKQZgbbU5pgy2azv7VwH9kNe6QMn2vCv fg== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3spxk48g0j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 25 Aug 2023 15:18:29 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37PDK5tR004050;
-	Fri, 25 Aug 2023 15:18:29 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sn21s0g22-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 25 Aug 2023 15:18:28 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37PFIRFO46072528
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 25 Aug 2023 15:18:27 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id F0D1520043;
-	Fri, 25 Aug 2023 15:18:26 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E526320040;
-	Fri, 25 Aug 2023 15:18:24 +0000 (GMT)
-Received: from li-bd3f974c-2712-11b2-a85c-df1cec4d728e.ibm.com.com (unknown [9.43.75.97])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 25 Aug 2023 15:18:24 +0000 (GMT)
-From: Hari Bathini <hbathini@linux.ibm.com>
-To: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org
-Cc: Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Song Liu <songliubraving@fb.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v3 5/5] powerpc/bpf: use patch_instructions()
-Date: Fri, 25 Aug 2023 20:48:10 +0530
-Message-ID: <20230825151810.164418-6-hbathini@linux.ibm.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230825151810.164418-1-hbathini@linux.ibm.com>
-References: <20230825151810.164418-1-hbathini@linux.ibm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B52810787
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 15:28:01 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A2F2106
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 08:28:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=LwrhaGWz/QxRcuxkTbdJgWefl7NLyTOixUXQVKAoimo=; b=FrJ0jpa1bc/iJfAK3/zqgbKqWZ
+	qV4ZdGJhDJ0DN9/44L/BvgyN2bDPo/DoqUw4P866tgcGRhA+jxvjw1LTOcZ2yhmeHMb3f53aL8dMR
+	malicQtQ7JEJPteqk+HgNxMvDAtj2E0u9cwl6mgQUwbVNa83PDpt0lsPaPRxf96wM1E3g64MzzLHJ
+	b9SvSfccl+eoZzqRBWE/OHuIGzo1sYZae5zptl0djKwuv+rNwFu39zz6srNIRZmHXEev6humgYiJn
+	Q11ompbuigNWgNcu8j8q7SVx9ArfHNIaTnt4ktVFQoCe1+iHkCVxE0kZAV+ZLuAAslcwUQuH58iOR
+	WZx8ZqOg==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qZYj7-0001OB-FR; Fri, 25 Aug 2023 17:27:57 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qZYj7-000Nkl-E2; Fri, 25 Aug 2023 17:27:57 +0200
+Subject: Re: [PATCH bpf-next v3] libbpf: handle producer position overflow
+To: Andrew Werner <awerner32@gmail.com>, bpf@vger.kernel.org
+Cc: kernel-team@dataexmachina.dev, alexei.starovoitov@gmail.com,
+ andrii@kernel.org, olsajiri@gmail.com, houtao@huaweicloud.com,
+ void@manifault.com
+References: <20230824220907.1172808-1-awerner32@gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ce26e0c1-7d05-1572-dfc9-10d251fde86f@iogearbox.net>
+Date: Fri, 25 Aug 2023 17:27:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: zW0Gs0G3hAgvPHrma_6ZckW5s_A8oHh-
-X-Proofpoint-GUID: zW0Gs0G3hAgvPHrma_6ZckW5s_A8oHh-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-25_13,2023-08-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- mlxscore=0 adultscore=0 spamscore=0 impostorscore=0 mlxlogscore=879
- lowpriorityscore=0 phishscore=0 clxscore=1015 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308250134
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20230824220907.1172808-1-awerner32@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/27011/Fri Aug 25 09:40:47 2023)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Use the newly introduced patch_instructions() that handles patching
-multiple instructions with one call. This improves speed of exectution
-for JIT'ing bpf programs.
+On 8/25/23 12:09 AM, Andrew Werner wrote:
+> Before this patch, the producer position could overflow `unsigned
+> long`, in which case libbpf would forever stop processing new writes to
+> the ringbuf. Similarly, overflows of the producer position could result
+> in __bpf_user_ringbuf_peek not discovering available data. This patch
+> addresses that bug by computing using the signed delta between the
+> consumer and producer position to determine if data is available; the
+> delta computation is robust to overflow.
+> 
+> A more defensive check could be to ensure that the delta is within
+> the allowed range, but such defensive checks are neither present in
+> the kernel side code nor in libbpf. The overflow that this patch
+> handles can occur while the producer and consumer follow a correct
+> protocol.
+> 
+> Secondarily, the type used to represent the positions in the
+> user_ring_buffer functions in both libbpf and the kernel has been
+> changed from u64 to unsigned long to match the type used in the
+> kernel's representation of the structure. The change occurs in the
 
-Without this patch (on a POWER9 lpar):
+Hm, but won't this mismatch for 64bit kernel and 32bit user space? Why
+not fixate both on u64 instead so types are consistent?
 
-  # time modprobe test_bpf
-  real    2m59.681s
-  user    0m0.000s
-  sys     1m44.160s
-  #
-
-With this patch (on a POWER9 lpar):
-
-  # time modprobe test_bpf
-  real    0m5.013s
-  user    0m0.000s
-  sys     0m4.216s
-  #
-
-Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
----
- arch/powerpc/net/bpf_jit_comp.c | 30 ++++--------------------------
- 1 file changed, 4 insertions(+), 26 deletions(-)
-
-diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
-index c60d7570e05d..1e5000d18321 100644
---- a/arch/powerpc/net/bpf_jit_comp.c
-+++ b/arch/powerpc/net/bpf_jit_comp.c
-@@ -26,28 +26,6 @@ static void bpf_jit_fill_ill_insns(void *area, unsigned int size)
- 	memset32(area, BREAKPOINT_INSTRUCTION, size / 4);
- }
- 
--/*
-- * Patch 'len' bytes of instructions from opcode to addr, one instruction
-- * at a time. Returns addr on success. ERR_PTR(-EINVAL), otherwise.
-- */
--static void *bpf_patch_instructions(void *addr, void *opcode, size_t len, bool fill_insn)
--{
--	while (len > 0) {
--		ppc_inst_t insn = ppc_inst_read(opcode);
--		int ilen = ppc_inst_len(insn);
--
--		if (patch_instruction(addr, insn))
--			return ERR_PTR(-EINVAL);
--
--		len -= ilen;
--		addr = addr + ilen;
--		if (!fill_insn)
--			opcode = opcode + ilen;
--	}
--
--	return addr;
--}
--
- int bpf_jit_emit_exit_insn(u32 *image, struct codegen_context *ctx, int tmp_reg, long exit_addr)
- {
- 	if (!exit_addr || is_offset_in_branch_range(exit_addr - (ctx->idx * 4))) {
-@@ -330,16 +308,16 @@ int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, u32 *fimage, int pass
- 
- void *bpf_arch_text_copy(void *dst, void *src, size_t len)
- {
--	void *ret;
-+	int err;
- 
- 	if (WARN_ON_ONCE(core_kernel_text((unsigned long)dst)))
- 		return ERR_PTR(-EINVAL);
- 
- 	mutex_lock(&text_mutex);
--	ret = bpf_patch_instructions(dst, src, len, false);
-+	err = patch_instructions(dst, src, len, false);
- 	mutex_unlock(&text_mutex);
- 
--	return ret;
-+	return err ? ERR_PTR(err) : dst;
- }
- 
- int bpf_arch_text_invalidate(void *dst, size_t len)
-@@ -351,7 +329,7 @@ int bpf_arch_text_invalidate(void *dst, size_t len)
- 		return -EINVAL;
- 
- 	mutex_lock(&text_mutex);
--	ret = IS_ERR(bpf_patch_instructions(dst, &insn, len, true));
-+	ret = patch_instructions(dst, &insn, len, true);
- 	mutex_unlock(&text_mutex);
- 
- 	return ret;
--- 
-2.41.0
+> same patch because it's required to align the data availability
+> calculations between the userspace producing ringbuf and the bpf
+> producing ringbuf.
+> 
+> Not included in this patch, a selftest was written to demonstrate the
+> bug, and indeed this patch allows the test to continue to make progress
+> past the overflow. The shape of the self test was as follows:
+> 
+>   a) Set up ringbuf of 2GB size (the maximum permitted size).
+>   b) reserve+commit maximum-sized records (ULONG_MAX/4) constantly as
+>      fast as possible.
+> 
+> With 1 million records per second repro time should be about 4.7 hours.
+> Such a test duration is impractical to run, hence the omission.
+> 
+> Additionally, this patch adds commentary around a separate point to note
+> that the modular arithmetic is valid in the face of overflows, as that
+> fact may not be obvious to future readers.
+> 
+> v2->v3:
+>    - Changed the representation of the consumer and producer positions
+>      from u64 to unsigned long in user_ring_buffer functions.
+>    - Addressed overflow in __bpf_user_ringbuf_peek.
+>    - Changed data availability computations to use the signed delta
+>      between the consumer and producer positions rather than merely
+>      checking whether their values were unequal.
+> v1->v2:
+>    - Fixed comment grammar.
+>    - Properly formatted subject line.
+> 
+> Signed-off-by: Andrew Werner <awerner32@gmail.com>
+> ---
+>   kernel/bpf/ringbuf.c    | 11 ++++++++---
+>   tools/lib/bpf/ringbuf.c | 16 +++++++++++++---
+>   2 files changed, 21 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+> index f045fde632e5..0c48673520fb 100644
+> --- a/kernel/bpf/ringbuf.c
+> +++ b/kernel/bpf/ringbuf.c
+> @@ -658,7 +658,7 @@ static int __bpf_user_ringbuf_peek(struct bpf_ringbuf *rb, void **sample, u32 *s
+>   {
+>   	int err;
+>   	u32 hdr_len, sample_len, total_len, flags, *hdr;
+> -	u64 cons_pos, prod_pos;
+> +	unsigned long cons_pos, prod_pos;
+>   
+>   	/* Synchronizes with smp_store_release() in user-space producer. */
+>   	prod_pos = smp_load_acquire(&rb->producer_pos);
+> @@ -667,7 +667,12 @@ static int __bpf_user_ringbuf_peek(struct bpf_ringbuf *rb, void **sample, u32 *s
+>   
+>   	/* Synchronizes with smp_store_release() in __bpf_user_ringbuf_sample_release() */
+>   	cons_pos = smp_load_acquire(&rb->consumer_pos);
+> -	if (cons_pos >= prod_pos)
+> +
+> +	/* Check if there's data available by computing the signed delta between
+> +	 * cons_pos and prod_pos; a negative delta indicates that the consumer has
+> +	 * not caught up. This formulation is robust to prod_pos wrapping around.
+> +	 */
+> +	if ((long)(cons_pos - prod_pos) >= 0)
+>   		return -ENODATA;
+>   
+>   	hdr = (u32 *)((uintptr_t)rb->data + (uintptr_t)(cons_pos & rb->mask));
+> @@ -711,7 +716,7 @@ static int __bpf_user_ringbuf_peek(struct bpf_ringbuf *rb, void **sample, u32 *s
+>   
+>   static void __bpf_user_ringbuf_sample_release(struct bpf_ringbuf *rb, size_t size, u64 flags)
+>   {
+> -	u64 consumer_pos;
+> +	unsigned long consumer_pos;
+>   	u32 rounded_size = round_up(size + BPF_RINGBUF_HDR_SZ, 8);
+>   
+>   	/* Using smp_load_acquire() is unnecessary here, as the busy-bit
+> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+> index 02199364db13..141030a89370 100644
+> --- a/tools/lib/bpf/ringbuf.c
+> +++ b/tools/lib/bpf/ringbuf.c
+> @@ -237,7 +237,13 @@ static int64_t ringbuf_process_ring(struct ring *r)
+>   	do {
+>   		got_new_data = false;
+>   		prod_pos = smp_load_acquire(r->producer_pos);
+> -		while (cons_pos < prod_pos) {
+> +
+> +		/* Check if there's data available by computing the signed delta
+> +		 * between cons_pos and prod_pos; a negative delta indicates that the
+> +		 * consumer has not caught up. This formulation is robust to prod_pos
+> +		 * wrapping around.
+> +		 */
+> +		while ((long)(cons_pos - prod_pos) < 0) {
+>   			len_ptr = r->data + (cons_pos & r->mask);
+>   			len = smp_load_acquire(len_ptr);
+>   
+> @@ -482,8 +488,7 @@ void user_ring_buffer__submit(struct user_ring_buffer *rb, void *sample)
+>   void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size)
+>   {
+>   	__u32 avail_size, total_size, max_size;
+> -	/* 64-bit to avoid overflow in case of extreme application behavior */
+> -	__u64 cons_pos, prod_pos;
+> +	unsigned long cons_pos, prod_pos;
+>   	struct ringbuf_hdr *hdr;
+>   
+>   	/* The top two bits are used as special flags */
+> @@ -498,6 +503,11 @@ void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size)
+>   	prod_pos = smp_load_acquire(rb->producer_pos);
+>   
+>   	max_size = rb->mask + 1;
+> +
+> +	/* Note that this formulation is valid in the face of overflow of
+> +	 * prod_pos so long as the delta between prod_pos and cons_pos is
+> +	 * no greater than max_size.
+> +	 */
+>   	avail_size = max_size - (prod_pos - cons_pos);
+>   	/* Round up total size to a multiple of 8. */
+>   	total_size = (size + BPF_RINGBUF_HDR_SZ + 7) / 8 * 8;
+> 
 
 
