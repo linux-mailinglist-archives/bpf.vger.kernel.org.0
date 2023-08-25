@@ -1,503 +1,394 @@
-Return-Path: <bpf+bounces-8556-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8557-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D103788284
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 10:43:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5750788297
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 10:46:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFBE51C20F40
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 08:43:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8B541C20F5C
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 08:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BC27A925;
-	Fri, 25 Aug 2023 08:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8EC1A925;
+	Fri, 25 Aug 2023 08:46:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FFD71C06
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 08:42:53 +0000 (UTC)
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0702100;
-	Fri, 25 Aug 2023 01:42:14 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2bcd7a207f7so9094051fa.3;
-        Fri, 25 Aug 2023 01:42:14 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84B401C06
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 08:46:43 +0000 (UTC)
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDD7E7D
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 01:46:41 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37P7guDp018672;
+	Fri, 25 Aug 2023 08:46:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=VrKEXrjtmWSMPoo+Xt3jCJF+iaUAcotvBXaQWNrS9F0=;
+ b=YN0UQU1YXXRQoWKIyDazfe1OHK3lhu/xOBguDiUKKt7NuY3Ki2r0qdEMiwXXpyBPrO1E
+ dG9P4aY032K3gKLXoZxwBttfwWZTcEteqFYe7/ckV4+9YiY1ZqJIi5dq0wsKtds69qfK
+ SoqWCm2C5BjswWAYD3zr27aTMnRxblo0r5zVQ7NDuR0MfeFiAV1TGepoJb13IvgkpZPN
+ kVDDluwRQtIvSm2VkARgVwwzdmWLsgR5HSMy7m+iBl6Mbp7cZcrWmY8RZHfgSW64tlLr
+ pMUbAxoZI1wu1p77ufy3TDQml7NoHUK6rvDWn4gw+zPbvpihnNaTcTkYsDqoD/KIUc3q 9w== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sn1yxnvxy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 25 Aug 2023 08:46:23 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37P8ESNS005879;
+	Fri, 25 Aug 2023 08:46:23 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2173.outbound.protection.outlook.com [104.47.57.173])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3sn1yuaxy4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 25 Aug 2023 08:46:22 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cvQo/ditXZdR5bAcLT3D+j+wGkb2qyn7Job9/uq5QHZASAN1Qod++6OJvws3in8bT/st6GfWNlSetTwEgZdcmeC7JrevKlFwBpiEQLrNG04JQnjeXurSBsvIjqxJ8zJPCLIewqZBW/Dmfi1C43G4lLQsuOpEn3E7YnLGAz3Fk7MXlus7bYcX6XyNNKj2LBWW70mRgCopcBhsxORvQr4pSPSypK0oBZ2pDC7DSUpELPUrU5C7HjwbeXkLvACmSm5eaZsgZJ63ETPP72Z8jj0/p31ERzlL6966e+AYzCSavGZYVxAzuLYNxlodZhvis0lEL+CTqoTs26fPaNs72aq/ZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VrKEXrjtmWSMPoo+Xt3jCJF+iaUAcotvBXaQWNrS9F0=;
+ b=VY6cYi9Op2C0xR+G4yMdZ8GaCWUYTCfs6HmES0x5LdFdbWtrIgUnM7SnF0ZBTF+oUzpcjBlQSU5wwfbQBC0qS+aDHsb3YaHF4tsPReOtmkax7gtithALHBY9IxWq3TEeHdEpObp8dNw7LTrWcXlBT4DWR/1dYVNcw0F/RZS1sOK5ceEcd7ydbKMXykjEWQpn/PpS7+Dk3zZZip2EOY/gKUeU6QCrG/Ow9T91SGnyrXIJCCbp0V6nKYFzit5ZyhuHpbge5vm+vSqm+r5KtHayApZlNnhbvqe+7G8H6/HkM61at+KfAofrANzDV+4T8JeTPUJvI27YU4NZjN+kHgmMYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692952932; x=1693557732;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=juPhK3D/YRfSzOj0sctcxaBJgN+rpnSTyDi3wRfeAts=;
-        b=dgwy1fhhutvwVQkMT6OB510PD8XTlN5PP3zUoYzg504/5+Zn2EEyBSrUb7lgrXx2Zj
-         pTpgf1l7qzdkT2KRrRwj8gLKtsGuoN8USo9gs6xOZyHfRhw//zqPJHPdAc/ljU4UbDcf
-         so4u/rosNzKe3c6KhaNXQIVXYgToYIyr7DnbmiW6mRNAhjL+NwFjoV3hcZ1bwmbN+KFT
-         O1KVlflIaz2887GYOhLKCD1pWDVithU3rshRpF73tIkItBrFBLIqJNvZKVenoZ/5nuEv
-         hTgo5ERBCld5XRKjkeIcSIqLTfFtKUjq4FiFMdnu5G85cdhOUky0Pz3+3jYaSTx3qQ8C
-         Q2Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692952932; x=1693557732;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=juPhK3D/YRfSzOj0sctcxaBJgN+rpnSTyDi3wRfeAts=;
-        b=CT5XuOlCV1H4JRtrWF56eS/yTufu8grjt4j0i4sKjrK2v1dR0XG1rT2mlyXH+zqvcq
-         JuA0gtnFUeZROoPOkyNEaUKEKOAOPlOVyskzTidIzfA3jr6S9THIUg5wAJqVgW3ySLzo
-         JE1fyg4fhOrDOa9+nqLgE8U7ZsUmpoTHn4zzP3gBwDbHI5qf3YdJeH6J4w2bNDH3NTEs
-         8YOMqisZCwNmHRb+FVGxDsnmkAw4JI1LhwOCPogWe7jUVpaozh62nDDGFvGgTaot9m/H
-         uOq8AJvxBBaO0A62g4gLnRXJC/mQ/KEsAgYKcEleSGhXVAwpLtTKCNkeIbcZlw0HwafP
-         Kc8w==
-X-Gm-Message-State: AOJu0YzR1SSYR89HoaPP6Qzp1h4kKSfhppZINx/1V8LclH0jQFSr2bW+
-	49snQoo70DpFWknl7BHZBqSLippsAIu0Nu6gILI=
-X-Google-Smtp-Source: AGHT+IGDNKDXIX6wAoB2UrzfaLEqS4VXe9anlq4IFiT9JgNYW6/M+eLzxZephm4OI+Sq0Hb8HdpoXy5sCsvf5lSy8o8=
-X-Received: by 2002:a2e:934b:0:b0:2b7:117:e54 with SMTP id m11-20020a2e934b000000b002b701170e54mr13302528ljh.4.1692952931791;
- Fri, 25 Aug 2023 01:42:11 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VrKEXrjtmWSMPoo+Xt3jCJF+iaUAcotvBXaQWNrS9F0=;
+ b=XlY3uWs9RN4XsWw6UGTDTkBTJ37aM9nXCu6WAyWqzcMkyGX0J2unyBXDCAuVjDUme3QIoEFzKmlfXsd6K7FbaQzgBLeHMmY+IvW981gm9CaVz2JNvvtsclZKPc7+rftCFF3v0MMon2HIRGdBfx9T4NFP+akdtFiTUul85NEHN1o=
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by CH2PR10MB4119.namprd10.prod.outlook.com (2603:10b6:610:ae::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Fri, 25 Aug
+ 2023 08:46:20 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::97e0:4c4b:17bb:a90f]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::97e0:4c4b:17bb:a90f%4]) with mapi id 15.20.6699.028; Fri, 25 Aug 2023
+ 08:46:20 +0000
+Message-ID: <5af91869-61ff-c3cf-c292-c8f10accd4fc@oracle.com>
+Date: Fri, 25 Aug 2023 09:46:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 bpf-next] libbpf: add basic BTF sanity validation
+Content-Language: en-GB
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@kernel.org
+Cc: kernel-team@meta.com
+References: <20230824201358.1395122-1-andrii@kernel.org>
+From: Alan Maguire <alan.maguire@oracle.com>
+In-Reply-To: <20230824201358.1395122-1-andrii@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0467.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:1aa::22) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230824133135.1176709-1-puranjay12@gmail.com>
- <20230824133135.1176709-4-puranjay12@gmail.com> <3e21f79c-71a8-663e-1a62-0d2d787b9692@huawei.com>
- <b4d5aaaf-7fe6-29fd-645a-62a4032820ae@huawei.com>
-In-Reply-To: <b4d5aaaf-7fe6-29fd-645a-62a4032820ae@huawei.com>
-From: Puranjay Mohan <puranjay12@gmail.com>
-Date: Fri, 25 Aug 2023 10:42:00 +0200
-Message-ID: <CANk7y0hZBsrvMjOQihRLAZkX7OqNeuK+eHojc+X=-peUtn-k7g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/3] bpf, riscv: use prog pack allocator in
- the BPF JIT
-To: Pu Lehui <pulehui@huawei.com>
-Cc: bjorn@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
-	aou@eecs.berkeley.edu, conor.dooley@microchip.com, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	song@kernel.org, yhs@fb.com, linux-riscv@lists.infradead.org, 
-	bpf@vger.kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|CH2PR10MB4119:EE_
+X-MS-Office365-Filtering-Correlation-Id: 25bf5b54-6104-4809-57e0-08dba547c0b6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	xj7Vw//nN0hHgFKgZeCmQ7kfHEXiX7lGdaheQnUR16EcF/5UHiz3Mysb0tcjXqDxTer7aewoNYyQ0wK79C2VsU6pFmLOvXkM3+s73h7AQcRBStKkmHtXXYgeL6PGyTu4jrWY9OxXVHd9fKQ6cwBO8LmQaFjXLYmjPNLykzxYuw59Je0fpFpb6wTGBymkjWEau0DmQdZ5xmv31uGdsyI/YcRD6/Injwpz7h99z7ws1Y4j7GzkX1uZlWXjcpozTg7Wh8kk3AIeEgMYXdKffeBMtNe0zYm7BSEhdDPS8M7hjRLk8eqC/pChLbJh4RwWCNUmcQwoFcisSGsgcvurhvbmJJy29KqVP+s2KHzEbJ/4PxLj4qmK4xjVCm19nOKdCUOnSi1qX1oASdoFFQoP38C26R/1YfvkcuprvTT+lPaAXHC2DncEDRYWcbV+GZ6rlqAbmEfPGxto7rwoYPnWwYbYYkLuDr1AXpIAS1Jeq4IaeEL/q+CgpCDDDT9UDOAsM+aqKBekVRMHgY0CTll2145QYMGIHwKQvoXRDABbjL+shdA/IxZG00ZF/KJwsQm//Sa9I708VmbZM61CuOf7o88nogqVvD+hgtLtwaStfDLbkokpypJH7gZQsaEr5L3RzQhwAfkltRHn5/4IR8Z7j5ZXjV7frmFAQh3R9jO4Vn4dw2w=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(346002)(366004)(376002)(186009)(1800799009)(451199024)(66476007)(316002)(66556008)(6512007)(8676002)(8936002)(966005)(66946007)(4326008)(2616005)(36756003)(41300700001)(478600001)(6666004)(53546011)(5660300002)(6486002)(83380400001)(38100700002)(2906002)(31686004)(31696002)(86362001)(44832011)(6506007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?MEd1RVRyZWtzWnpuNUh5RTN3M0ZDY0MxaW5aRlpMN0xwbU9jZVdZRzhkTnR2?=
+ =?utf-8?B?Mm04VExGTGppOUpIQjk1VHUwV1BxQ0E3V29YSHNhVEZoU1N2cEJhaTRKVWJI?=
+ =?utf-8?B?N3Iyd2RXU25mQU9tNXRYQTlqT2RWUjd0ZWtQa0tnYzREdnNtVFdZc2RHWDFS?=
+ =?utf-8?B?VEF2MDZwMUdJSDVuaTh0TWJyWUl5cUVQM1FCU2pZRUZXa2hyVk9VNXRLK2Vl?=
+ =?utf-8?B?aTVGL3NUWXpSc095RllUREpYQWZzYnI3bFFmLzdJTDl0TGFrWGNuU0R3Q2VF?=
+ =?utf-8?B?S0RPNll2SUVZOFFKUUo4azdFc1M3K0NhVFhUNVdWTCt4K012c2dFK1RuK0oy?=
+ =?utf-8?B?UDdiZFV6QlpjbnI1SjZxOEd2VFR6T3l6VFFnbmRmSEtYVHNHNmZ6cFY5cXlx?=
+ =?utf-8?B?bHd5bzlHOFcrTEtxSnlxMDIweWdXTDIzczFLZFdGeHNLeC9iNkhETTRLN0dw?=
+ =?utf-8?B?R3JkZU9FcDFmcmRablVmZUs2a2lKd2MyZXl5RU5YZnVOZ3VNL3JlK2dMSlFZ?=
+ =?utf-8?B?YjRiWVJ1RTRGNE5Qc3ZmU2JiYklMYy8vNUdEZ2lRRC92K3NNVUE2L0taQ0lS?=
+ =?utf-8?B?MVAxV2hjanErbk9ySFhYOW44Q1hmWk5rMVE5TklISStKVTZWbmhQalNyUm0v?=
+ =?utf-8?B?bUxRTDdsTVBnc0lBVUhwajhQSEx5WjZ2bjZaQ3N1cWgwczZlL1dObnZoMTJq?=
+ =?utf-8?B?WjBqdnpzUFo2ZXd6YTF6QWRsWTRPVE90dWY2bndkMVBpcjVna0RTTGJac2tQ?=
+ =?utf-8?B?eEJyY1JFaUNaZ3JqTFJyMFpxLzhOeloyYjRtNmhEbVUza0JNSTk2RTZWZ3pM?=
+ =?utf-8?B?dkJCa0dSVDZiZXAwNXVFSk1OcFNrc2pQT1RhSzZyY0NhM2NWdmNxa0Qra05T?=
+ =?utf-8?B?UE8wc0xhMWh0cEZ5eWl0N0dGeUEyalBwN3Z6aHA1dktkbDVveGFBWmd2eFhm?=
+ =?utf-8?B?RTZ4MFFETE0rVUxoaWt0R0tNZU5VREppWlFqYzE4SWQvRVdCTHlxdjNhS2dl?=
+ =?utf-8?B?WTBHekpwNU8za2wrazhwTm1pNmthdS9RUkllZnlBaG5DckRRdHBNUnU5V29j?=
+ =?utf-8?B?SVNBWVlWZTJ5QUdIS3pTMmpNbkdhbUJqaFlkVkhxWkdBclFIUkhkM2YxNnFD?=
+ =?utf-8?B?VjhqWXNkWUZ2MzVlQTd6OTVBMHNZLzBTUjBVSTdBeGV0M3k4ekloaDJqRDVx?=
+ =?utf-8?B?RXBFVklqRGVVRVJUWHl4cXhLOFkyelNDaUdHVFl0bDJaY2hVbkQwTUNlNG5Q?=
+ =?utf-8?B?b29qRTAzekRVbVVkeVNlUUE4M09laEowdVY5V1dBLzZzandDVFlwTmRVbFhq?=
+ =?utf-8?B?TUNGZ3VHTy9mNG1NaVhHTitLVnBFeU10LzhUNDAxNHZNb0JBYnpybHlxdjE2?=
+ =?utf-8?B?VUxxN1J1bkFsaG84ajlVdHgzQnRQMmc1bld1SGF0bDgwTW5jMm9raHJDT2lW?=
+ =?utf-8?B?b1ljSTJWTGxHSFMyb0c3cnFIRHVadFlHK0VZamRVY0xwQXFzc2RYNDlmVzZG?=
+ =?utf-8?B?dXgzUVdiSXVRU3hqclVsOHpIa1JVWWMxNFZhTGQvSWZSR0Q5Z3B5MGE3YUoy?=
+ =?utf-8?B?d2crUmFOM1p0OU1va25TRkh5TDFvaUJGUWF1eThEOHVYR0tHd3paa3M2aGNq?=
+ =?utf-8?B?TXU1OGd6UnBGM0EvamM1NmRWZFBQZEtPVXN0REZ0QmVhV0grNWlFM3cwaEsz?=
+ =?utf-8?B?dXVQeno1YVZpOExzSUlNeHo1bkNOYkl6QjkraHUvWSttcDhrM2ZOZk9zOGU0?=
+ =?utf-8?B?Q0p2YlRGTjUrV1o1L0ZYUnJIbG5aLzlEYlRHSEZseDFEYzdxN3h0TzhYQ2N2?=
+ =?utf-8?B?Z3dka0hXckRDVlJITGx5TFhaakNEajl3bWttTHA1RUR3VkhBNjJIREtRa3Q2?=
+ =?utf-8?B?bkhnakpKbDluc0pMbHIvcU95U1F5YkxVS0tEbXYzdzl1L1I4QWt2dytLK2hm?=
+ =?utf-8?B?ZVkyaDRPQkpyYUVJUzBZMzZ4S3NVY29Wc2xGREkyclFQTU0xTkhON3BraWF3?=
+ =?utf-8?B?YWpkaE96cCtDekphVHFmdzVKa1VxbThCK0tEUWdGazNEbGJIVHBUamdYWFdU?=
+ =?utf-8?B?bUxBemxieGphVG91aC9aSUxFeWRrNGxsTnY3OU1qdFJIQVBMakpUeWZxOWpq?=
+ =?utf-8?B?clloY2RMSFNCZ1Z4VFgzclY0SE5LNG4rbWd1ODZkdXpWQVhWZzBhYlhwbkNF?=
+ =?utf-8?B?Tnc9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	VoHBdzT2imj7XfIgMwve86kOy0M+CNWz397A0RNgDbNY8q9mEnKEAF+s00lS3ars5ic///ILkI/gy0205/w5j2P1+hjobOHzNqy2rl9N7qO9VWORBvjtBlqXvuyVcUPh5U6R8bMXTFd6lInMeyvs4F/IKU+9+YMV5MaH2EyK5xcrC3tKCddD178ObEoBWciqhf03QssO6sXBqm4tb8AzzoQnsmCp9cktIsxyh3mDVWFWaIDR0cnsrXKiXxiPq0NKL/cio4RFL0lgdsTrLY6dEej57Bi4ImFFuStWRR5dsEd8OoCpQbjiPa8hlR7wbS5LHWG9j5Nf4w9Ic9XEnIsOegDkLL/RDm3i0VdfDHbNzUUBHfDFXjjDgDCQt9P7DQPUOEjCo/ziV13LcNASZeJIKVzdwLILS1X/TqjaHnbP2ybBniPaPezNuI+QRtbXQVHCjj8PKQqhTE8oPDUXdQjGYTkqeXsiHdIcrVWvtzkMy3ke7R77f9CFJJ2DM5VNwmuPSeBSvXSQekZPYfp05H1Bm0Q0nRIP+1vG8rQiC8e9rhqHVs9kN9QwxWpMm9iHXzL52RWmKtYAdL1q7mMzJPQCISYJUGgVB1BN67Hs8xLpHPxTEdFGxdpZegRua9swDg9gD9WXbR7wbhALHFQ3QU57rJ/wNucJUnNxC9gohaPZobmJDjobzmHBThlqQUNITS6ergoE7KUebKGia/gUOVtDUQCwhH6X/aIlc08wFsrizf1aJfUhgoF9EMHFre8NVzzGl/3HY9MsJ8jBJjrCi8rgSf6xX+2ydjWV4wZqysX6tX5VF6q5+R2A3D2hMgIw49W6mbwBHXkMPxi+jIumM7xHtgFOuKM59mmIrepFUR9RbIo=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 25bf5b54-6104-4809-57e0-08dba547c0b6
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2023 08:46:20.0489
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /+YpurwTezAaGriBAJwI6zjIQcwQiIyb2OHk3+U7KyXCr+faS+xi+FyOfkE2mSd6ha/UcE60Bd8YtO5j3qZIag==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4119
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-25_07,2023-08-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxscore=0
+ adultscore=0 phishscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2308250076
+X-Proofpoint-GUID: iK-Cdqf8kKEu9jlOoG5AgkJ7tefrhvnl
+X-Proofpoint-ORIG-GUID: iK-Cdqf8kKEu9jlOoG5AgkJ7tefrhvnl
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Pu,
+On 24/08/2023 21:13, Andrii Nakryiko wrote:
+> Implement a simple and straightforward BTF sanity check when parsing BTF
+> data. Right now it's very basic and just validates that all the string
+> offsets and type IDs are within valid range. But even with such simple
+> checks it fixes a bunch of crashes found by OSS fuzzer ([0]-[5]) and
+> will allow fuzzer to make further progress.
+> 
+> Some other invariants will be checked in follow up patches (like
+> ensuring there is no infinite type loops), but this seems like a good
+> start already.
+> 
+> v1->v2:
+>   - fix array index_type vs type copy/paste error (Eduard);
+>   - add type ID check in FUNC_PROTO validation (Eduard);
+>   - move sanity check to btf parsing time (Martin).
+> 
+>   [0] https://github.com/libbpf/libbpf/issues/482
+>   [1] https://github.com/libbpf/libbpf/issues/483
+>   [2] https://github.com/libbpf/libbpf/issues/485
+>   [3] https://github.com/libbpf/libbpf/issues/613
+>   [4] https://github.com/libbpf/libbpf/issues/618
+>   [5] https://github.com/libbpf/libbpf/issues/619
+> 
+> Closes: https://github.com/libbpf/libbpf/issues/617
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-On Fri, Aug 25, 2023 at 9:34=E2=80=AFAM Pu Lehui <pulehui@huawei.com> wrote=
-:
->
->
->
-> On 2023/8/25 15:09, Pu Lehui wrote:
-> > Hi Puranjay,
-> >
-> > Happy to see the RV64 pack allocator implementation.
->
-> RV32 also
->
-> >
-> > On 2023/8/24 21:31, Puranjay Mohan wrote:
-> >> Use bpf_jit_binary_pack_alloc() for memory management of JIT binaries =
-in
-> >> RISCV BPF JIT. The bpf_jit_binary_pack_alloc creates a pair of RW and =
-RX
-> >> buffers. The JIT writes the program into the RW buffer. When the JIT i=
-s
-> >> done, the program is copied to the final RX buffer with
-> >> bpf_jit_binary_pack_finalize.
-> >>
-> >> Implement bpf_arch_text_copy() and bpf_arch_text_invalidate() for RISC=
-V
-> >> JIT as these functions are required by bpf_jit_binary_pack allocator.
-> >>
-> >> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> >> ---
-> >>   arch/riscv/net/bpf_jit.h        |   3 +
-> >>   arch/riscv/net/bpf_jit_comp64.c |  56 +++++++++++++---
-> >>   arch/riscv/net/bpf_jit_core.c   | 113 +++++++++++++++++++++++++++---=
---
-> >>   3 files changed, 146 insertions(+), 26 deletions(-)
-> >>
-> >> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
-> >> index 2717f5490428..ad69319c8ea7 100644
-> >> --- a/arch/riscv/net/bpf_jit.h
-> >> +++ b/arch/riscv/net/bpf_jit.h
-> >> @@ -68,6 +68,7 @@ static inline bool is_creg(u8 reg)
-> >>   struct rv_jit_context {
-> >>       struct bpf_prog *prog;
-> >>       u16 *insns;        /* RV insns */
-> >> +    u16 *ro_insns;
->
-> In fact, the definition of w/ or w/o ro_ still looks a bit confusing.
-> Maybe it is better for us not to change the current framework, as the
-> current `image` is the final executed RX image, and the trampoline
-> treats `image` as the same. Maybe it would be better to add a new RW
-> image, such like `rw_iamge`, so that we do not break the existing
-> framework and do not have to add too many comments.
+few small suggestions that could be in followups if needed, so
 
-I had thought about this and decided to create a new _ro image/header
-and not _rw image/header. Here is my reasoning:
-If we let the existing insns, header be considered the read_only
-version from where the
-program will run, and create new rw_insn and rw_header for doing the jit pr=
-ocess
-it would require a lot more changes to the framework.
-functions like build_body(), bpf_jit_build_prologue(), etc. work on
-ctx->insns and
-now all these references would have to be changed to ctx->rw_insns.
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 
-Howsoever we implement this, there is no way to do it without changing
-the current framework.
-The crux of the problem is that we need to use the r/w area for
-writing and the r/x area for calculating
-offsets.
+> ---
+>  tools/lib/bpf/btf.c | 148 ++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 148 insertions(+)
+> 
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index 8484b563b53d..28905539f045 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -448,6 +448,153 @@ static int btf_parse_type_sec(struct btf *btf)
+>  	return 0;
+>  }
+>  
+> +static int btf_validate_str(const struct btf *btf, __u32 str_off, const char *what, __u32 type_id)
+> +{
+> +	const char *s;
+> +
+> +	s = btf__str_by_offset(btf, str_off);
+> +	if (!s) {
+> +		pr_warn("btf: type [%u]: invalid %s (string offset %u)\n", type_id, what, str_off);
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int btf_validate_id(const struct btf *btf, __u32 id, __u32 ctx_id)
+> +{
+> +	const struct btf_type *t;
+> +
 
-If you think this can be done in a more efficient way then I would
-love to implement that, but all other
-solutions that I tried made the code very difficult to follow.
+might be worth having a self-reference test here to ensure ctx_id != id.
 
->
-> And any other parts, it looks great.=F0=9F=98=84
->
-> >>       int ninsns;
-> >>       int prologue_len;
-> >>       int epilogue_offset;
-> >> @@ -85,7 +86,9 @@ static inline int ninsns_rvoff(int ninsns)
-> >>   struct rv_jit_data {
-> >>       struct bpf_binary_header *header;
-> >> +    struct bpf_binary_header *ro_header;
-> >>       u8 *image;
-> >> +    u8 *ro_image;
-> >>       struct rv_jit_context ctx;
-> >>   };
-> >> diff --git a/arch/riscv/net/bpf_jit_comp64.c
-> >> b/arch/riscv/net/bpf_jit_comp64.c
-> >> index 0ca4f5c0097c..d77b16338ba2 100644
-> >> --- a/arch/riscv/net/bpf_jit_comp64.c
-> >> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> >> @@ -144,7 +144,11 @@ static bool in_auipc_jalr_range(s64 val)
-> >>   /* Emit fixed-length instructions for address */
-> >>   static int emit_addr(u8 rd, u64 addr, bool extra_pass, struct
-> >> rv_jit_context *ctx)
-> >>   {
-> >> -    u64 ip =3D (u64)(ctx->insns + ctx->ninsns);
-> >> +    /*
-> >> +     * Use the ro_insns(RX) to calculate the offset as the BPF
-> >> program will
-> >> +     * finally run from this memory region.
-> >> +     */
-> >> +    u64 ip =3D (u64)(ctx->ro_insns + ctx->ninsns);
-> >>       s64 off =3D addr - ip;
-> >>       s64 upper =3D (off + (1 << 11)) >> 12;
-> >>       s64 lower =3D off & 0xfff;
-> >> @@ -465,7 +469,11 @@ static int emit_call(u64 addr, bool fixed_addr,
-> >> struct rv_jit_context *ctx)
-> >>       u64 ip;
-> >>       if (addr && ctx->insns) {
-> >
-> > ctx->insns need to sync to ctx->ro_insns
+> +	t = btf__type_by_id(btf, id);
+> +	if (!t) {
+> +		pr_warn("btf: type [%u]: invalid referenced type ID %u\n", ctx_id, id);
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> + > +static int btf_validate_type(const struct btf *btf, const struct
+btf_type *t, __u32 id)
+> +{
+> +	__u32 kind = btf_kind(t);
+> +	int err, i, n;
+> +
+> +	err = btf_validate_str(btf, t->name_off, "type name", id);
+> +	if (err)
+> +		return err;
+> +
+> +	switch (kind) {
+> +	case BTF_KIND_UNKN:
+> +	case BTF_KIND_INT:
+> +	case BTF_KIND_FWD:
+> +	case BTF_KIND_FLOAT:
+> +		break;
+> +	case BTF_KIND_PTR:
+> +	case BTF_KIND_TYPEDEF:
+> +	case BTF_KIND_VOLATILE:
+> +	case BTF_KIND_CONST:
+> +	case BTF_KIND_RESTRICT:
+> +	case BTF_KIND_FUNC:
 
-Can you elaborate this more. I am missing something here.
-The sync happens at the end by calling bpf_jit_binary_pack_finalize().
+would it be worth doing an additional check here that t->type for
+BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO? I think that's the only case where
+BTF mandates the kind of the target is a specific kind, so might be
+worth checking. I initially thought passing an expected kind to
+btf_validate_id() might make sense, but given that there's only one case
+we have a specific expectation that seemed unnecessary.
 
-> >
-> >> -        ip =3D (u64)(long)(ctx->insns + ctx->ninsns);
-> >> +        /*
-> >> +         * Use the ro_insns(RX) to calculate the offset as the BPF
-> >> +         * program will finally run from this memory region.
-> >> +         */
-> >> +        ip =3D (u64)(long)(ctx->ro_insns + ctx->ninsns);
-> >>           off =3D addr - ip;
-> >>       }
-> >> @@ -578,7 +586,8 @@ static int add_exception_handler(const struct
-> >> bpf_insn *insn,
-> >>   {
-> >>       struct exception_table_entry *ex;
-> >>       unsigned long pc;
-> >> -    off_t offset;
-> >> +    off_t ins_offset;
-> >> +    off_t fixup_offset;
-> >>       if (!ctx->insns || !ctx->prog->aux->extable ||
-> >> BPF_MODE(insn->code) !=3D BPF_PROBE_MEM)
-> >
-> > ctx->ro_insns need to be checked also.
 
-ctx->ro_insns is not initialised until we call bpf_jit_binary_pack_finalize=
-()?
+> +	case BTF_KIND_VAR:
+> +	case BTF_KIND_DECL_TAG:
+> +	case BTF_KIND_TYPE_TAG:
+> +		err = btf_validate_id(btf, t->type, id);
+> +		if (err)
+> +			return err;
+> +		break;
+> +	case BTF_KIND_ARRAY: {
+> +		const struct btf_array *a = btf_array(t);
+> +
+> +		err = btf_validate_id(btf, a->type, id);
+> +		err = err ?: btf_validate_id(btf, a->index_type, id);
+> +		if (err)
+> +			return err;
+> +		break;
+> +	}
+> +	case BTF_KIND_STRUCT:
+> +	case BTF_KIND_UNION: {
+> +		const struct btf_member *m = btf_members(t);
+> +
+> +		n = btf_vlen(t);
+> +		for (i = 0; i < n; i++, m++) {
+> +			err = btf_validate_str(btf, m->name_off, "field name", id);
+> +			err = err ?: btf_validate_id(btf, m->type, id);
+> +			if (err)
+> +				return err;
+> +		}
+> +		break;
+> +	}
+> +	case BTF_KIND_ENUM: {
+> +		const struct btf_enum *m = btf_enum(t);
+> +
+> +		n = btf_vlen(t);
+> +		for (i = 0; i < n; i++, m++) {
+> +			err = btf_validate_str(btf, m->name_off, "enum name", id);
+> +			if (err)
+> +				return err;
+> +		}
+> +		break;
+> +	}
+> +	case BTF_KIND_ENUM64: {
+> +		const struct btf_enum64 *m = btf_enum64(t);
+> +
+> +		n = btf_vlen(t);
+> +		for (i = 0; i < n; i++, m++) {
+> +			err = btf_validate_str(btf, m->name_off, "enum name", id);
+> +			if (err)
+> +				return err;
+> +		}
+> +		break;
+> +	}
+> +	case BTF_KIND_FUNC_PROTO: {
+> +		const struct btf_param *m = btf_params(t);
+> +
+> +		n = btf_vlen(t);
+> +		for (i = 0; i < n; i++, m++) {
+> +			err = btf_validate_str(btf, m->name_off, "param name", id);
+> +			err = err ?: btf_validate_id(btf, m->type, id);
+> +			if (err)
+> +				return err;
+> +		}
+> +		break;
+> +	}
+> +	case BTF_KIND_DATASEC: {
+> +		const struct btf_var_secinfo *m = btf_var_secinfos(t);
+> +
+> +		n = btf_vlen(t);
+> +		for (i = 0; i < n; i++, m++) {
+> +			err = btf_validate_id(btf, m->type, id);
+> +			if (err)
+> +				return err;
+> +		}
+> +		break;
+> +	}
+> +	default:
+> +		pr_warn("btf: type [%u]: unrecognized kind %u\n", id, kind);
+> +		return -EINVAL;
+> +	}
+> +	return 0;
+> +}
+> +
+> +/* Validate basic sanity of BTF. It's intentionally less thorough than
+> + * kernel's validation and validates only properties of BTF that libbpf relies
+> + * on to be correct (e.g., valid type IDs, valid string offsets, etc)
+> + */
+> +static int btf_sanity_check(const struct btf *btf)
+> +{
+> +	const struct btf_type *t;
+> +	__u32 i, n = btf__type_cnt(btf);
+> +	int err;
+> +
+> +	for (i = 1; i < n; i++) {
+> +		t = btf_type_by_id(btf, i);
+> +		err = btf_validate_type(btf, t, i);
+> +		if (err)
+> +			return err;
+> +	}
+> +	return 0;
+> +}
+> +
+>  __u32 btf__type_cnt(const struct btf *btf)
+>  {
+>  	return btf->start_id + btf->nr_types;
+> @@ -902,6 +1049,7 @@ static struct btf *btf_new(const void *data, __u32 size, struct btf *base_btf)
+>  
+>  	err = btf_parse_str_sec(btf);
+>  	err = err ?: btf_parse_type_sec(btf);
+> +	err = err ?: btf_sanity_check(btf);
+>  	if (err)
+>  		goto done;
+>  
 
-> >
-> >>           return 0;
-> >> @@ -593,12 +602,17 @@ static int add_exception_handler(const struct
-> >> bpf_insn *insn,
-> >>           return -EINVAL;
-> >>       ex =3D &ctx->prog->aux->extable[ctx->nexentries];
-> >> -    pc =3D (unsigned long)&ctx->insns[ctx->ninsns - insn_len];
-> >> +    pc =3D (unsigned long)&ctx->ro_insns[ctx->ninsns - insn_len];
-> >> -    offset =3D pc - (long)&ex->insn;
-> >> -    if (WARN_ON_ONCE(offset >=3D 0 || offset < INT_MIN))
-> >> +    /*
-> >> +     * This is the relative offset of the instruction that may fault
-> >> from
-> >> +     * the exception table itself. This will be written to the except=
-ion
-> >> +     * table and if this instruction faults, the destination register
-> >> will
-> >> +     * be set to '0' and the execution will jump to the next
-> >> instruction.
-> >> +     */
-> >> +    ins_offset =3D pc - (long)&ex->insn;
-> >> +    if (WARN_ON_ONCE(ins_offset >=3D 0 || ins_offset < INT_MIN))
-> >>           return -ERANGE;
-> >> -    ex->insn =3D offset;
-> >>       /*
-> >>        * Since the extable follows the program, the fixup offset is
-> >> always
-> >> @@ -607,12 +621,25 @@ static int add_exception_handler(const struct
-> >> bpf_insn *insn,
-> >>        * bits. We don't need to worry about buildtime or runtime sort
-> >>        * modifying the upper bits because the table is already sorted,
-> >> and
-> >>        * isn't part of the main exception table.
-> >> +     *
-> >> +     * The fixup_offset is set to the next instruction from the
-> >> instruction
-> >> +     * that may fault. The execution will jump to this after handling
-> >> the
-> >> +     * fault.
-> >>        */
-> >> -    offset =3D (long)&ex->fixup - (pc + insn_len * sizeof(u16));
-> >> -    if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, offset))
-> >> +    fixup_offset =3D (long)&ex->fixup - (pc + insn_len * sizeof(u16))=
-;
-> >> +    if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, fixup_offset))
-> >>           return -ERANGE;
-> >> -    ex->fixup =3D FIELD_PREP(BPF_FIXUP_OFFSET_MASK, offset) |
-> >> +    /*
-> >> +     * The offsets above have been calculated using the RO buffer but=
- we
-> >> +     * need to use the R/W buffer for writes.
-> >> +     * switch ex to rw buffer for writing.
-> >> +     */
-> >> +    ex =3D (void *)ctx->insns + ((void *)ex - (void *)ctx->ro_insns);
-> >> +
-> >> +    ex->insn =3D ins_offset;
-> >> +
-> >> +    ex->fixup =3D FIELD_PREP(BPF_FIXUP_OFFSET_MASK, fixup_offset) |
-> >>           FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
-> >>       ex->type =3D EX_TYPE_BPF;
-> >> @@ -1006,6 +1033,7 @@ int arch_prepare_bpf_trampoline(struct
-> >> bpf_tramp_image *im, void *image,
-> >>       ctx.ninsns =3D 0;
-> >>       ctx.insns =3D NULL;
-> >> +    ctx.ro_insns =3D NULL;
-> >>       ret =3D __arch_prepare_bpf_trampoline(im, m, tlinks, func_addr,
-> >> flags, &ctx);
-> >>       if (ret < 0)
-> >>           return ret;
-> >> @@ -1014,7 +1042,15 @@ int arch_prepare_bpf_trampoline(struct
-> >> bpf_tramp_image *im, void *image,
-> >>           return -EFBIG;
-> >>       ctx.ninsns =3D 0;
-> >> +    /*
-> >> +     * The bpf_int_jit_compile() uses a RW buffer (ctx.insns) to
-> >> write the
-> >> +     * JITed instructions and later copies it to a RX region
-> >> (ctx.ro_insns).
-> >> +     * It also uses ctx.ro_insns to calculate offsets for jumps etc.
-> >> As the
-> >> +     * trampoline image uses the same memory area for writing and
-> >> execution,
-> >> +     * both ctx.insns and ctx.ro_insns can be set to image.
-> >> +     */
-> >>       ctx.insns =3D image;
-> >> +    ctx.ro_insns =3D image;
-> >>       ret =3D __arch_prepare_bpf_trampoline(im, m, tlinks, func_addr,
-> >> flags, &ctx);
-> >>       if (ret < 0)
-> >>           return ret;
-> >> diff --git a/arch/riscv/net/bpf_jit_core.c
-> >> b/arch/riscv/net/bpf_jit_core.c
-> >> index 7a26a3e1c73c..4c8dffc09368 100644
-> >> --- a/arch/riscv/net/bpf_jit_core.c
-> >> +++ b/arch/riscv/net/bpf_jit_core.c
-> >> @@ -8,6 +8,8 @@
-> >>   #include <linux/bpf.h>
-> >>   #include <linux/filter.h>
-> >> +#include <linux/memory.h>
-> >> +#include <asm/patch.h>
-> >>   #include "bpf_jit.h"
-> >>   /* Number of iterations to try until offsets converge. */
-> >> @@ -117,16 +119,27 @@ struct bpf_prog *bpf_int_jit_compile(struct
-> >> bpf_prog *prog)
-> >>                   sizeof(struct exception_table_entry);
-> >>               prog_size =3D sizeof(*ctx->insns) * ctx->ninsns;
-> >> -            jit_data->header =3D
-> >> -                bpf_jit_binary_alloc(prog_size + extable_size,
-> >> -                             &jit_data->image,
-> >> -                             sizeof(u32),
-> >> -                             bpf_fill_ill_insns);
-> >> -            if (!jit_data->header) {
-> >> +            jit_data->ro_header =3D
-> >> +                bpf_jit_binary_pack_alloc(prog_size +
-> >> +                              extable_size,
-> >> +                              &jit_data->ro_image,
-> >> +                              sizeof(u32),
-> >> +                              &jit_data->header,
-> >> +                              &jit_data->image,
-> >> +                              bpf_fill_ill_insns);
-> >> +            if (!jit_data->ro_header) {
-> >>                   prog =3D orig_prog;
-> >>                   goto out_offset;
-> >>               }
-> >> +            /*
-> >> +             * Use the image(RW) for writing the JITed instructions.
-> >> But also save
-> >> +             * the ro_image(RX) for calculating the offsets in the
-> >> image. The RW
-> >> +             * image will be later copied to the RX image from where
-> >> the program
-> >> +             * will run. The bpf_jit_binary_pack_finalize() will do
-> >> this copy in the
-> >> +             * final step.
-> >> +             */
-> >> +            ctx->ro_insns =3D (u16 *)jit_data->ro_image;
-> >>               ctx->insns =3D (u16 *)jit_data->image;
-> >>               /*
-> >>                * Now, when the image is allocated, the image can
-> >> @@ -138,14 +151,12 @@ struct bpf_prog *bpf_int_jit_compile(struct
-> >> bpf_prog *prog)
-> >>       if (i =3D=3D NR_JIT_ITERATIONS) {
-> >>           pr_err("bpf-jit: image did not converge in <%d passes!\n", i=
-);
-> >> -        if (jit_data->header)
-> >> -            bpf_jit_binary_free(jit_data->header);
-> >>           prog =3D orig_prog;
-> >> -        goto out_offset;
-> >> +        goto out_free_hdr;
-> >>       }
-> >>       if (extable_size)
-> >> -        prog->aux->extable =3D (void *)ctx->insns + prog_size;
-> >> +        prog->aux->extable =3D (void *)ctx->ro_insns + prog_size;
-> >>   skip_init_ctx:
-> >>       pass++;
-> >> @@ -154,23 +165,35 @@ struct bpf_prog *bpf_int_jit_compile(struct
-> >> bpf_prog *prog)
-> >>       bpf_jit_build_prologue(ctx);
-> >>       if (build_body(ctx, extra_pass, NULL)) {
-> >> -        bpf_jit_binary_free(jit_data->header);
-> >>           prog =3D orig_prog;
-> >> -        goto out_offset;
-> >> +        goto out_free_hdr;
-> >>       }
-> >>       bpf_jit_build_epilogue(ctx);
-> >>       if (bpf_jit_enable > 1)
-> >>           bpf_jit_dump(prog->len, prog_size, pass, ctx->insns);
-> >> -    prog->bpf_func =3D (void *)ctx->insns;
-> >> +    prog->bpf_func =3D (void *)ctx->ro_insns;
-> >>       prog->jited =3D 1;
-> >>       prog->jited_len =3D prog_size;
-> >> -    bpf_flush_icache(jit_data->header, ctx->insns + ctx->ninsns);
-> >> -
-> >>       if (!prog->is_func || extra_pass) {
-> >> -        bpf_jit_binary_lock_ro(jit_data->header);
-> >> +        if (WARN_ON(bpf_jit_binary_pack_finalize(prog,
-> >> +                             jit_data->ro_header,
-> >> +                             jit_data->header))) {
-> >> +            /* ro_header has been freed */
-> >> +            jit_data->ro_header =3D NULL;
-> >> +            prog =3D orig_prog;
-> >> +            goto out_offset;
-> >> +        }
-> >> +        /*
-> >> +         * The instructions have now been copied to the ROX region fr=
-om
-> >> +         * where they will execute.
-> >> +         * Write any modified data cache blocks out to memory and
-> >> +         * invalidate the corresponding blocks in the instruction cac=
-he.
-> >> +         */
-> >> +        bpf_flush_icache(jit_data->ro_header,
-> >> +                 ctx->ro_insns + ctx->ninsns);
-> >>           for (i =3D 0; i < prog->len; i++)
-> >>               ctx->offset[i] =3D ninsns_rvoff(ctx->offset[i]);
-> >>           bpf_prog_fill_jited_linfo(prog, ctx->offset);
-> >> @@ -185,6 +208,15 @@ struct bpf_prog *bpf_int_jit_compile(struct
-> >> bpf_prog *prog)
-> >>           bpf_jit_prog_release_other(prog, prog =3D=3D orig_prog ?
-> >>                          tmp : orig_prog);
-> >>       return prog;
-> >> +
-> >> +out_free_hdr:
-> >> +    if (jit_data->header) {
-> >> +        bpf_arch_text_copy(&jit_data->ro_header->size,
-> >> +                   &jit_data->header->size,
-> >> +                   sizeof(jit_data->header->size));
-> >> +        bpf_jit_binary_pack_free(jit_data->ro_header, jit_data->heade=
-r);
-> >> +    }
-> >> +    goto out_offset;
-> >>   }
-> >>   u64 bpf_jit_alloc_exec_limit(void)
-> >> @@ -204,3 +236,52 @@ void bpf_jit_free_exec(void *addr)
-> >>   {
-> >>       return vfree(addr);
-> >>   }
-> >> +
-> >> +void *bpf_arch_text_copy(void *dst, void *src, size_t len)
-> >> +{
-> >> +    int ret;
-> >> +
-> >> +    mutex_lock(&text_mutex);
-> >> +    ret =3D patch_text_nosync(dst, src, len);
-> >> +    mutex_unlock(&text_mutex);
-> >> +
-> >> +    if (ret)
-> >> +        return ERR_PTR(-EINVAL);
-> >> +
-> >> +    return dst;
-> >> +}
-> >> +
-> >> +int bpf_arch_text_invalidate(void *dst, size_t len)
-> >> +{
-> >> +    int ret =3D 0;
-> >
-> > no need to initialize it
-> >
-> >> +
-> >> +    mutex_lock(&text_mutex);
-> >> +    ret =3D patch_text_set_nosync(dst, 0, len);
-> >> +    mutex_unlock(&text_mutex);
-> >> +
-> >> +    return ret;
-> >> +}
-> >> +
-> >> +void bpf_jit_free(struct bpf_prog *prog)
-> >> +{
-> >> +    if (prog->jited) {
-> >> +        struct rv_jit_data *jit_data =3D prog->aux->jit_data;
-> >> +        struct bpf_binary_header *hdr;
-> >> +
-> >> +        /*
-> >> +         * If we fail the final pass of JIT (from jit_subprogs),
-> >> +         * the program may not be finalized yet. Call finalize here
-> >> +         * before freeing it.
-> >> +         */
-> >> +        if (jit_data) {
-> >> +            bpf_jit_binary_pack_finalize(prog, jit_data->ro_header,
-> >> +                             jit_data->header);
-> >> +            kfree(jit_data);
-> >> +        }
-> >> +        hdr =3D bpf_jit_binary_pack_hdr(prog);
-> >> +        bpf_jit_binary_pack_free(hdr, NULL);
-> >> +        WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(prog));
-> >> +    }
-> >> +
-> >> +    bpf_prog_unlock_free(prog);
-> >> +}
-> >
-> >
+While we usually load vmlinux BTF from /sys/kernel/btf, we fall back to
+a set of on-disk locations. Specifically in btf__load_vmlinux_btf(), for
+the case where the array index > 0, it might be worth sanity-checking
+BTF there too.
 
-Thanks,
-Puranjay
+Thanks!
+
+Alan
 
