@@ -1,258 +1,351 @@
-Return-Path: <bpf+bounces-8542-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8543-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F38F2787F82
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 08:04:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98973787F84
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 08:05:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBB8A1C20A89
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 06:04:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E79A2816BC
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 06:05:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A39BA17EA;
-	Fri, 25 Aug 2023 06:04:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0BC217EC;
+	Fri, 25 Aug 2023 06:05:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56ABE288F4
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 06:04:34 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ADFF1BD2
-	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 23:04:28 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RX8Y24YGrz4f3lVH
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 14:04:22 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgDXsaRkROhk2WUgBg--.12729S2;
-	Fri, 25 Aug 2023 14:04:23 +0800 (CST)
-Subject: Re: [PATCH bpf-next 1/3] bpf: Enable preemption after
- irq_work_raise() in unit_alloc()
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>
-References: <20230822133807.3198625-1-houtao@huaweicloud.com>
- <20230822133807.3198625-2-houtao@huaweicloud.com>
- <CAADnVQKFh9pWp1abrG2KKiZanb+4rzRb3HmzX0snggah3Lq-yg@mail.gmail.com>
- <bf4faa34-019c-bb3d-a451-a067bbe027a4@huaweicloud.com>
- <CAADnVQJfpxk3dsjYdH8DUarJHu0wFXa24XFxvn+F5mseMKTAhQ@mail.gmail.com>
- <3c30289a-d683-d1c8-b18d-c87a5ecebe3b@huaweicloud.com>
- <CAADnVQLHPx-0dR7nBXAfBHOpF09Jr6+cqGjfGf9mT2BHCid5YA@mail.gmail.com>
- <5fe435aa-526f-4b54-b0d2-e0ae1c6c234c@huaweicloud.com>
- <CAADnVQLtJBOTueuGZHM0PUhskMZY-uaaehvgfx7pkpq0qfhvVA@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <a6a78ccf-4a48-be46-f2c7-aa0a5a3285d8@huaweicloud.com>
-Date: Fri, 25 Aug 2023 14:04:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C6B288F4
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 06:05:37 +0000 (UTC)
+Received: from out-2.mta1.migadu.com (out-2.mta1.migadu.com [IPv6:2001:41d0:203:375::2])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CD61BC7
+	for <bpf@vger.kernel.org>; Thu, 24 Aug 2023 23:05:35 -0700 (PDT)
+Message-ID: <760317bb-188f-6967-b76d-1e9562a427b8@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1692943533; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LkGqiKJ5a4A0RTrDkbc+NQOISVUCehZGoV2zNJ5hdqw=;
+	b=IuW4AQCeYHyhbUqinSAegELCZPVgq2P4BYym86FBuQ56FzaMXqNpSElY2c2M4V5U3scBnF
+	atCNC1hq4R8M6jkYB4LbEX2g2mwQz2N/FXNgWD3r5UsMlSw4tQpYaT1wCjJIzUbSt9Fldx
+	E2EMoLc0+8rDQLnJPN13aksTKh9wSVs=
+Date: Thu, 24 Aug 2023 23:05:27 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQLtJBOTueuGZHM0PUhskMZY-uaaehvgfx7pkpq0qfhvVA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Reply-To: yonghong.song@linux.dev
+Subject: Re: [PATCH bpf-next] docs/bpf: Add description for CO-RE relocations
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
+Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ kernel-team@fb.com
+References: <20230824230102.2117902-1-eddyz87@gmail.com>
 Content-Language: en-US
-X-CM-TRANSID:gCh0CgDXsaRkROhk2WUgBg--.12729S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Gw47XFW8AF1xCrWkGFy8Zrb_yoW3WF4xpr
-	45tFy0yw4UXF1jvw12qw18Jry5tr4UKry8XrWUXry3Xrn8tryvgr47Jry5uFy8ur4DJFyI
-	yr4ktayxXF48ZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-	NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20230824230102.2117902-1-eddyz87@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
-
-On 8/25/2023 11:48 AM, Alexei Starovoitov wrote:
-> On Thu, Aug 24, 2023 at 7:07 AM Hou Tao <houtao@huaweicloud.com> wrote:
->> Hi,
->>
->> On 8/24/2023 12:33 AM, Alexei Starovoitov wrote:
->>> On Tue, Aug 22, 2023 at 9:39 PM Hou Tao <houtao@huaweicloud.com> wrote:
->>>> Hi,
->>>>
->>>> On 8/23/2023 9:57 AM, Alexei Starovoitov wrote:
->>>>> On Tue, Aug 22, 2023 at 5:51 PM Hou Tao <houtao@huaweicloud.com> wrote:
->>>>>> Hi,
->>>>>>
->>>>>> On 8/23/2023 8:05 AM, Alexei Starovoitov wrote:
->>>>>>> On Tue, Aug 22, 2023 at 6:06 AM Hou Tao <houtao@huaweicloud.com> wrote:
->>>>>>>> From: Hou Tao <houtao1@huawei.com>
->>>>>>>>
->>>>>>>> When doing stress test for qp-trie, bpf_mem_alloc() returned NULL
->>>>>>>> unexpectedly because all qp-trie operations were initiated from
->>>>>>>> bpf syscalls and there was still available free memory. bpf_obj_new()
->>>>>>>> has the same problem as shown by the following selftest.
->>>>>>>>
->>>>>>>> The failure is due to the preemption. irq_work_raise() will invoke
->>>>>>>> irq_work_claim() first to mark the irq work as pending and then inovke
->>>>>>>> __irq_work_queue_local() to raise an IPI. So when the current task
->>>>>>>> which is invoking irq_work_raise() is preempted by other task,
->>>>>>>> unit_alloc() may return NULL for preemptive task as shown below:
->>>>>>>>
->>>>>>>> task A         task B
->>>>>>>>
->>>>>>>> unit_alloc()
->>>>>>>>   // low_watermark = 32
->>>>>>>>   // free_cnt = 31 after alloc
->>>>>>>>   irq_work_raise()
->>>>>>>>     // mark irq work as IRQ_WORK_PENDING
->>>>>>>>     irq_work_claim()
->>>>>>>>
->>>>>>>>                // task B preempts task A
->>>>>>>>                unit_alloc()
->>>>>>>>                  // free_cnt = 30 after alloc
->>>>>>>>                  // irq work is already PENDING,
->>>>>>>>                  // so just return
->>>>>>>>                  irq_work_raise()
->>>>>>>>                // does unit_alloc() 30-times
->>>>>>>>                ......
->>>>>>>>                unit_alloc()
->>>>>>>>                  // free_cnt = 0 before alloc
->>>>>>>>                  return NULL
->>>>>>>>
->>>>>>>> Fix it by invoking preempt_disable_notrace() before allocation and
->>>>>>>> invoking preempt_enable_notrace() to enable preemption after
->>>>>>>> irq_work_raise() completes. An alternative fix is to move
->>>>>>>> local_irq_restore() after the invocation of irq_work_raise(), but it
->>>>>>>> will enlarge the irq-disabled region. Another feasible fix is to only
->>>>>>>> disable preemption before invoking irq_work_queue() and enable
->>>>>>>> preemption after the invocation in irq_work_raise(), but it can't
->>>>>>>> handle the case when c->low_watermark is 1.
->>>>>>>>
->>>>>>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
->>>>>>>> ---
->>>>>>>>  kernel/bpf/memalloc.c | 8 ++++++++
->>>>>>>>  1 file changed, 8 insertions(+)
->>>>>>>>
->>>>>>>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
->>>>>>>> index 9c49ae53deaf..83f8913ebb0a 100644
->>>>>>>> --- a/kernel/bpf/memalloc.c
->>>>>>>> +++ b/kernel/bpf/memalloc.c
->>>>>>>> @@ -6,6 +6,7 @@
->>>>>>>>  #include <linux/irq_work.h>
->>>>>>>>  #include <linux/bpf_mem_alloc.h>
->>>>>>>>  #include <linux/memcontrol.h>
->>>>>>>> +#include <linux/preempt.h>
->>>>>>>>  #include <asm/local.h>
->>>>>>>>
->>>>>>>>  /* Any context (including NMI) BPF specific memory allocator.
->>>>>>>> @@ -725,6 +726,7 @@ static void notrace *unit_alloc(struct bpf_mem_cache *c)
->>>>>>>>          * Use per-cpu 'active' counter to order free_list access between
->>>>>>>>          * unit_alloc/unit_free/bpf_mem_refill.
->>>>>>>>          */
->>>>>>>> +       preempt_disable_notrace();
->>>>>>>>         local_irq_save(flags);
->>>>>>>>         if (local_inc_return(&c->active) == 1) {
->>>>>>>>                 llnode = __llist_del_first(&c->free_llist);
->>>>>>>> @@ -740,6 +742,12 @@ static void notrace *unit_alloc(struct bpf_mem_cache *c)
->>>>>>>>
->>>>>>>>         if (cnt < c->low_watermark)
->>>>>>>>                  (c);
->>>>>>>> +       /* Enable preemption after the enqueue of irq work completes,
->>>>>>>> +        * so free_llist may be refilled by irq work before other task
->>>>>>>> +        * preempts current task.
->>>>>>>> +        */
->>>>>>>> +       preempt_enable_notrace();
->>>>>>> So this helps qp-trie init, since it's doing bpf_mem_alloc from
->>>>>>> syscall context and helps bpf_obj_new from bpf prog, since prog is
->>>>>>> non-migrateable, but preemptable. It's not an issue for htab doing
->>>>>>> during map_update, since
->>>>>>> it's under htab bucket lock.
->>>>>>> Let's introduce minimal:
->>>>>>> /* big comment here explaining the reason of extra preempt disable */
->>>>>>> static void bpf_memalloc_irq_work_raise(...)
->>>>>>> {
->>>>>>>   preempt_disable_notrace();
->>>>>>>   irq_work_raise();
->>>>>>>   preempt_enable_notrace();
->>>>>>> }
->>>>>>>
->>>>>>> it will have the same effect, right?
->>>>>>> .
->>>>>> No. As I said in commit message, when c->low_watermark is 1, the above
->>>>>> fix doesn't work as shown below:
->>>>> Yes. I got mark=1 part. I just don't think it's worth the complexity.
->>>> Just find out that for bpf_obj_new() the minimal low_watermark is 2
->>>> instead of 1 (unit_size= 4096 instead of 4096 + 8). But even with
->>>> low_watermark as 2, the above fix may don't work when there are nested
->>>> preemption: task A (free_cnt = 1 after alloc) -> preempted by task B
->>>> (free_cnt = 0 after alloc) -> preempted by task C (fail to do
->>>> allocation). And in my naive understanding of bpf memory allocate, these
->>>> fixes are simple. Why do you think it will introduce extra complexity ?
->>>> Do you mean preempt_disable_notrace() could be used to trigger the
->>>> running of bpf program ? If it is the problem, I think we should fix it
->>>> instead.
->>> I'm not worried about recursive calls from _notrace(). That shouldn't
->>> be possible.
->> OK
->>> I'm just saying that disabling preemption around irq_work_raise() helps a bit
->>> while disable around the whole unit_alloc/free is a snake oil.
->>> bpf prog could be running in irq disabled context and preempt disabled
->>> unit_alloc vs irq_work_raise won't make any difference. Both will return NULL.
->>> Same with batched htab update. It will hit NULL too.
->>> So from my pov you're trying to fix something that is not fixable.
->> The patch set didn't try to fix the problem for all possible context,
->> especially the irq disable context. It just tries to fix the ENOMEM
->> problem for process context which is the major context. I still think
->> disabling preemption around the whole unit_alloc/free is much solider
->> than just do that for irq_work_raise() (e.g., for the nested preemption
->> case). But if you have a strong preference for only disabling preemption
->> for irq_work_raise(), I will post v2 to do that.
-> In process ctx the preempt_disable/enable across unit_alloc will keep
-> asking kernel to consider preemption on every unit_alloc call
-> which can be a lot.
-> If I'm reading the code correctly preempt_schedule() is quite heavy.
-> Doing it every unit_alloc is a performance concern.
->
-> Could you try the following:
-> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-> index 9c49ae53deaf..ee8262f58c5a 100644
-> --- a/kernel/bpf/memalloc.c
-> +++ b/kernel/bpf/memalloc.c
-> @@ -442,7 +442,10 @@ static void bpf_mem_refill(struct irq_work *work)
->
->  static void notrace irq_work_raise(struct bpf_mem_cache *c)
->  {
-> -       irq_work_queue(&c->refill_work);
-> +       if (!irq_work_queue(&c->refill_work)) {
-> +               preempt_disable_notrace();
-> +               preempt_enable_notrace();
-> +       }
->  }
->
-> The idea that it will ask for resched if preemptible.
-> will it address the issue you're seeing?
->
-> .
-
-No. It didn't work. If you are concerning about the overhead of
-preempt_enabled_notrace(), we could use local_irq_save() and
-local_irq_restore() instead.
 
 
+On 8/24/23 4:01 PM, Eduard Zingerman wrote:
+> Add a section on CO-RE relocations to llvm_relo.rst.
+> Describe relevant .BTF.ext structure, `enum bpf_core_relo_kind`
+> and `struct bpf_core_relo` in some detail.
+> Description is based on doc-string from include/uapi/linux/bpf.h.
+
+Thanks Eduard. This is very helpful to give bpf deverlopers
+some insight about how different of core relocations are
+supported in llvm and libbpf.
+
+Some comments below.
+
+> 
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>   Documentation/bpf/btf.rst        |  27 ++++-
+>   Documentation/bpf/llvm_reloc.rst | 178 +++++++++++++++++++++++++++++++
+>   2 files changed, 201 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
+> index f32db1f44ae9..c0530211c3c1 100644
+> --- a/Documentation/bpf/btf.rst
+> +++ b/Documentation/bpf/btf.rst
+> @@ -726,8 +726,8 @@ same as the one describe in :ref:`BTF_Type_String`.
+>   4.2 .BTF.ext section
+>   --------------------
+>   
+> -The .BTF.ext section encodes func_info and line_info which needs loader
+> -manipulation before loading into the kernel.
+> +The .BTF.ext section encodes func_info, line_info and CO-RE relocations
+> +which needs loader manipulation before loading into the kernel.
+>   
+>   The specification for .BTF.ext section is defined at ``tools/lib/bpf/btf.h``
+>   and ``tools/lib/bpf/btf.c``.
+> @@ -745,11 +745,16 @@ The current header of .BTF.ext section::
+>           __u32   func_info_len;
+>           __u32   line_info_off;
+>           __u32   line_info_len;
+> +
+> +        /* optional part of .BTF.ext header */
+> +        __u32   core_relo_off;
+> +        __u32   core_relo_len;
+>       };
+>   
+>   It is very similar to .BTF section. Instead of type/string section, it
+> -contains func_info and line_info section. See :ref:`BPF_Prog_Load` for details
+> -about func_info and line_info record format.
+> +contains func_info, line_info and core_relo sub-sections.
+> +See :ref:`BPF_Prog_Load` for details about func_info and line_info
+> +record format.
+>   
+>   The func_info is organized as below.::
+>   
+> @@ -787,6 +792,20 @@ kernel API, the ``insn_off`` is the instruction offset in the unit of ``struct
+>   bpf_insn``. For ELF API, the ``insn_off`` is the byte offset from the
+>   beginning of section (``btf_ext_info_sec->sec_name_off``).
+>   
+> +The core_relo is organized as below.::
+> +
+> +     core_relo_rec_size
+> +     btf_ext_info_sec for section #1 /* core_relo for section #1 */
+> +     btf_ext_info_sec for section #2 /* core_relo for section #2 */
+> +
+> +``core_relo_rec_size`` specifies the size of ``bpf_core_relo``
+> +structure when .BTF.ext is generated. All ``bpf_core_relo`` structures
+> +within a single ``btf_ext_info_sec`` describe relocations applied to
+> +section named by ``btf_ext_info_sec::sec_name_off``.
+
+bpf_ext_info_sec->sec_name_off ?
+
+> +
+> +See :ref:`Documentation/bpf/llvm_reloc <btf-co-re-relocations>`
+> +for more information on CO-RE relocations.
+> +
+>   4.2 .BTF_ids section
+>   --------------------
+>   
+> diff --git a/Documentation/bpf/llvm_reloc.rst b/Documentation/bpf/llvm_reloc.rst
+> index 450e6403fe3d..efe0b6ea4921 100644
+> --- a/Documentation/bpf/llvm_reloc.rst
+> +++ b/Documentation/bpf/llvm_reloc.rst
+> @@ -240,3 +240,181 @@ The .BTF/.BTF.ext sections has R_BPF_64_NODYLD32 relocations::
+>         Offset             Info             Type               Symbol's Value  Symbol's Name
+>     000000000000002c  0000000200000004 R_BPF_64_NODYLD32      0000000000000000 .text
+>     0000000000000040  0000000200000004 R_BPF_64_NODYLD32      0000000000000000 .text
+> +
+> +.. _btf-co-re-relocations:
+> +
+> +=================
+> +CO-RE Relocations
+> +=================
+> +
+> +From object file point of view CO-RE mechanism is implemented as a set
+> +of CO-RE specific relocation records. These relocation records are not
+> +related to ELF relocations and are encoded in .BTF.ext section.
+> +See :ref:`Documentation/bpf/btf <BTF_Ext_Section>` for more
+> +information on .BTF.ext structure.
+> +
+> +
+
+one empty line here?
+
+> +CO-RE relocations are applied to BPF instructions to update immediate
+> +or offset fields of the instruction at load time with information
+> +relevant for target kernel.
+> +
+> +Relocation kinds
+> +================
+> +
+> +There are several kinds of CO-RE relocations that could be split in
+> +three groups:
+> +
+> +* Field-based - patch instruction with field related information, e.g.
+> +  change offset field of the BPF_LD instruction to reflect offset
+
+BPF_LDX?
+
+> +  of a specific structure field in the target kernel.
+> +
+> +* Type-based - patch instruction with type related information, e.g.
+> +  change immediate field of the BPF_MOV instruction to 0 or 1 to
+> +  reflect if specific type is present in the target kernel.
+> +
+> +* Enum-based - patch instruction with enum related information, e.g.
+> +  change immediate field of the BPF_MOV instruction to reflect value
+> +  of a specific enum literal in the target kernel.
+
+BPF_MOV -> BPF_LD_IMM64 ?
+below we actually have an example for this:
+   +       5:	r1 = 0x1 ll
+   +		28:  CO-RE <enumval_value> [9] enum bar::V = 1
+
+> +
+> +The complete list of relocation kinds is represented by the following enum:
+> +
+> +.. code-block:: c
+> +
+> + enum bpf_core_relo_kind {
+> +	BPF_CORE_FIELD_BYTE_OFFSET = 0,  /* field byte offset */
+> +	BPF_CORE_FIELD_BYTE_SIZE   = 1,  /* field size in bytes */
+> +	BPF_CORE_FIELD_EXISTS      = 2,  /* field existence in target kernel */
+> +	BPF_CORE_FIELD_SIGNED      = 3,  /* field signedness (0 - unsigned, 1 - signed) */
+> +	BPF_CORE_FIELD_LSHIFT_U64  = 4,  /* bitfield-specific left bitshift */
+> +	BPF_CORE_FIELD_RSHIFT_U64  = 5,  /* bitfield-specific right bitshift */
+> +	BPF_CORE_TYPE_ID_LOCAL     = 6,  /* type ID in local BPF object */
+> +	BPF_CORE_TYPE_ID_TARGET    = 7,  /* type ID in target kernel */
+> +	BPF_CORE_TYPE_EXISTS       = 8,  /* type existence in target kernel */
+> +	BPF_CORE_TYPE_SIZE         = 9,  /* type size in bytes */
+> +	BPF_CORE_ENUMVAL_EXISTS    = 10, /* enum value existence in target kernel */
+> +	BPF_CORE_ENUMVAL_VALUE     = 11, /* enum value integer value */
+> +	BPF_CORE_TYPE_MATCHES      = 12, /* type match in target kernel */
+> + };
+> +
+> +CO-RE Relocation Record
+> +=======================
+> +
+> +Relocation record is encoded as the following structure:
+> +
+> +.. code-block:: c
+> +
+> + struct bpf_core_relo {
+> +	__u32 insn_off;
+> +	__u32 type_id;
+> +	__u32 access_str_off;
+> +	enum bpf_core_relo_kind kind;
+> + };
+> +
+> +* ``insn_off`` - instruction offset (in bytes) within a code section
+> +  associated with this relocation;
+> +
+> +* ``type_id`` - BTF type ID of the "root" (containing) entity of a
+> +  relocatable type or field;
+> +
+> +* ``access_str_off`` - offset into corresponding .BTF string section.
+> +  String interpretation depends on specific relocation kind:
+> +
+> +  * for field-based relocations, string encodes an accessed field using
+> +    a sequence of field and array indices, separated by colon (:). It's
+> +    conceptually very close to LLVM's `getelementptr <GEP_>`_ instruction's
+> +    arguments for identifying offset to a field. For example, consider the
+> +    following C code:
+> +
+> +    .. code-block:: c
+> +
+> +       struct sample {
+> +           int a;
+> +           int b;
+> +           struct { int c[10]; };
+> +       } __attribute__((preserve_access_index));
+> +       struct sample *s;
+> +
+> +    * Access to ``s[0].a`` would be encoded as ``0:0``:
+> +
+> +      * ``0``: first element of ``s`` (as if ``s`` is an array);
+> +      * ``0``: index of field ``a`` in ``struct sample``.
+> +
+> +    * Access to ``s->a`` would be encoded as ``0:0`` as well.
+> +    * Access to ``s->b`` would be encoded as ``0:1``:
+> +
+> +      * ``0``: first element of ``s``;
+> +      * ``1``: index of field ``b`` in ``struct sample``.
+> +
+> +    * Access to ``s[1].c[5]`` would be encoded as ``1:2:0:5``:
+> +
+> +      * ``1``: second element of ``s``;
+> +      * ``2``: index of anonymous structure field in ``struct sample``;
+> +      * ``0``: index of field ``b`` in anonymous structure;
+
+
+``b`` => ``c``
+
+> +      * ``5``: access to array element #5.
+> +
+> +  * for type-based relocations, string is expected to be just "0";
+> +
+> +  * for enum value-based relocations, string contains an index of enum
+> +     value within its enum type;
+> +
+> +* ``kind`` - one of ``enum bpf_core_relo_kind``.
+> +
+> +.. _GEP: https://llvm.org/docs/LangRef.html#getelementptr-instruction
+> +
+> +.. _btf_co_re_relocation_examples:
+> +
+> +CO-RE Relocation Examples
+> +=========================
+> +
+> +For the following C code:
+> +
+> +.. code-block:: c
+> +
+> + struct foo {
+> +     int a;
+> +     int b;
+> + } __attribute__((preserve_access_index));
+> +
+> + enum bar { U, V };
+> +
+> + void buz(struct foo *s, volatile unsigned long *g) {
+> +   s->a = 1;
+> +   *g = __builtin_preserve_field_info(s->b, 1);
+> +   *g = __builtin_preserve_type_info(*s, 1);
+> +   *g = __builtin_preserve_enum_value(*(enum bar *)V, 1);
+
+Maybe __builtin_btf_type_id() can be added as well?
+So far, clang only supports the above 4 builtin's for core
+relocations.
+
+> + }
+> +
+> +With the following BTF definititions:
+> +
+> +.. code-block::
+> +
+> + ...
+> + [2] STRUCT 'foo' size=8 vlen=2
+> + 	'a' type_id=3 bits_offset=0
+> + 	'b' type_id=3 bits_offset=32
+> + [3] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+> + ...
+> + [9] ENUM 'bar' encoding=UNSIGNED size=4 vlen=2
+> + 	'U' val=0
+> + 	'V' val=1
+> +
+> +The following relocation entries would be generated:
+> +
+> +.. code-block:: c
+> +
+> +   <buz>:
+> +       0:	*(u32 *)(r1 + 0x0) = 0x1
+> +		00:  CO-RE <byte_off> [2] struct foo::a (0:0)
+> +       1:	r1 = 0x4
+> +		08:  CO-RE <byte_sz> [2] struct foo::b (0:1)
+> +       2:	*(u64 *)(r2 + 0x0) = r1
+> +       3:	r1 = 0x8
+> +		18:  CO-RE <type_size> [2] struct foo
+> +       4:	*(u64 *)(r2 + 0x0) = r1
+> +       5:	r1 = 0x1 ll
+> +		28:  CO-RE <enumval_value> [9] enum bar::V = 1
+> +       7:	*(u64 *)(r2 + 0x0) = r1
+> +       8:	exit
+> +
+
+It would be great if we can have an example for each of above
+core relocation kinds.
+
+> +Note: modifications for llvm-objdump to show these relocation entries
+> +are currently work in progress.
 
