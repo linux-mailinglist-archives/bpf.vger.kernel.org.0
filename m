@@ -1,248 +1,125 @@
-Return-Path: <bpf+bounces-8711-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8712-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3B0E789190
-	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 00:16:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A37FC7891C2
+	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 00:36:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 998CA281901
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 22:16:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D464D1C21026
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 22:36:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E73C1AA72;
-	Fri, 25 Aug 2023 22:16:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73CA3D6A;
+	Fri, 25 Aug 2023 22:35:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 496BB1AA73
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 22:16:23 +0000 (UTC)
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77531270B
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 15:16:19 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bf48546ccfso10100635ad.2
-        for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 15:16:19 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A71A71C02
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 22:35:55 +0000 (UTC)
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C2926A5
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 15:35:42 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50078eba7afso2202441e87.0
+        for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 15:35:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1693001779; x=1693606579;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ppeQOWgbWz5gqWZs/rbytV4GhpZ82FSsmBh/giRYIfc=;
-        b=oGxnlMh0S/WiVEBqRgXg0XkOHzHqDpTBvnGnagMxXiK0WZOe1Z4r+2p1ptsCZGDnWB
-         pXEktmY/ad0PuwAxCgT0YcHOMRjDsuwyrAXCFtdwEmAj+muyxYQXIE+r39jHMvXhT5B0
-         o+SPYmvdCE0AaqEX44rBk89wjuy74zXAp3Vwzk0u1JPoPtSJh1DrCjw1RqWqiFdJpqby
-         tMNly65LV0QvaLstk47azhvzcHLQyEtc8q2u/G93EQr7wDi/F72WQh2TPKv7ILrD/tve
-         HoezaGEwtih61yu0zT7giO0Mqh1qaOyneAEL9vdEIb12mBB0wZbgWFOwNbvY6RzLwUwH
-         OW2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693001779; x=1693606579;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1693002940; x=1693607740;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ppeQOWgbWz5gqWZs/rbytV4GhpZ82FSsmBh/giRYIfc=;
-        b=lGVlzcG7Iw1hE4rRkkl1daDTNAarAWJFAs9XjQwpe3lXtOscfKJFHkuVYctRsuieFQ
-         mFLYwIg0Cz7brsc91MTOqUfLAPN7jDome8GGWcTPGnW1SX7bbJ2iTew2VdCvAxSVlkDm
-         AHPxXmbaoCJB1zT5RIbbLiJaZLR3yLKZ8nlMx8UCxyM5xLTMNbsDBL2wlZqZC7M1qx/S
-         mBqI3mgs1iKoONVQkS6wCPVGE4HfXjhDKdR8LyKCaYEkejXal+ZcjDIWcMmIlm8KMArO
-         Pt2rGLNmFSnS/qaTFE4AcJ/kQUY4GcO8SyiHIbgH5KTOlteQQ6Ywl8lx5hn0eDNcxstE
-         7afw==
-X-Gm-Message-State: AOJu0YzNjQ+8oa/4HAnpnvhr8bUoIDNfX3fjr2bnTX+d05mDyy1fT0WD
-	NFLaRg01XJySTRLlnVPcHcOD7g==
-X-Google-Smtp-Source: AGHT+IEjt82Q7/ukix1Bwi0HcqOCAUCGzooSpz1T14B8KRhD3u7v0lApveU1bnKvxuVgpN4iNhxk8w==
-X-Received: by 2002:a17:903:264e:b0:1bd:c338:ae14 with SMTP id je14-20020a170903264e00b001bdc338ae14mr16243879plb.12.1693001778913;
-        Fri, 25 Aug 2023 15:16:18 -0700 (PDT)
-Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
-        by smtp.gmail.com with ESMTPSA id f8-20020a170902684800b001c0bf60ba5csm2276046pln.272.2023.08.25.15.16.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 15:16:18 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1qZf6F-006Va3-0j;
-	Sat, 26 Aug 2023 08:16:15 +1000
-Date: Sat, 26 Aug 2023 08:16:15 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Hao Xu <hao.xu@linux.dev>
-Cc: io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
-	ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-	linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
-	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-	linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-	devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-	Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH 25/29] xfs: support nowait for xfs_buf_item_init()
-Message-ID: <ZOkoL8nuXJDVZM1H@dread.disaster.area>
-References: <20230825135431.1317785-1-hao.xu@linux.dev>
- <20230825135431.1317785-26-hao.xu@linux.dev>
+        bh=POOb+S89mIRPcNM8QHuEQ7h2qIW/YDqb1u7QUz6l4pU=;
+        b=Jp14p7o17FpjB96EXEOl7cN5HFRJkLz31iO/7maL5RYI548uqdY8JCXVGn3S+0KnQS
+         rWqnDFRZLQreRuOIt78sL60TCOrtJ01cR/T0MnlBoIvJE3T+hP4ndRCpn+GZZz2oNS+I
+         sapvJ+8HaluykMOpPyhg8rZhaR5iGUxSdD+BpN5hPbLZPP/hjTivbUPiGzMyBFkR62cs
+         anqieiqfHRSD8wv8wMFZnyI409gXPSX9pGOsqvl6qHAqKVPv6uKyQcXOTRJLqqwX39E1
+         NSnqex37pXcdN3r08bu0P8KYQlQrKP1u//4zNdJ87S3qPtGQiCGaGodoHHyNX3jjjzLN
+         AgIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693002940; x=1693607740;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=POOb+S89mIRPcNM8QHuEQ7h2qIW/YDqb1u7QUz6l4pU=;
+        b=Gpbp0oSaRbQjOzWVRgZkeerGSOBchfrtg0rhnPRY8LSxAFdJURvDOh6eOVo598ELU2
+         TghSOhC+jbZflF0XuBYK9slngtBGGIzuKfSnO0XJrgv+WDj9evIorCo62ys4n4TFWfoi
+         gWspwFPvF53hhCRtnIAvySPQd8oB7CGSPxqxTgkEeDu9wYlYw15IiaPqvAG7vyCBnVQ1
+         9G/S4UDaZif17REqpx82x2DUt/GNbetcdGrU3XQ0YFYIUnhjm0+gke0kgU/8xMpGTDkj
+         ZuyqB19Wd8gZ8/qnnY1P6fjmR9joUkx0rpbxyaEF0tNrs/kiufk+7BDp5qqbr1vHzBvq
+         A9nQ==
+X-Gm-Message-State: AOJu0YyRUzf4B0tnQYmaurnzcoU1GhqasZAS0oF88B4002/V+TZoxzjb
+	tK0LPFi2LWaoG5TDbJLIg7yu5GrZ9lUxmOTNwKLKoD8Q
+X-Google-Smtp-Source: AGHT+IHl1Q3SIVmTz/HQZSPsw7cmK3pdOablA/Oh+e3BXTa25Cg8NvOWR3Bcm9X08plNEZcBmF6Dhg08HUL6iwUvcxg=
+X-Received: by 2002:a05:6512:a86:b0:4f8:64f5:f591 with SMTP id
+ m6-20020a0565120a8600b004f864f5f591mr14509482lfu.12.1693002939891; Fri, 25
+ Aug 2023 15:35:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230825135431.1317785-26-hao.xu@linux.dev>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230824230102.2117902-1-eddyz87@gmail.com> <CAEf4BzYzhHHSDA9MTMbrR_on-e7uqBUdOo690bEtCXYjg5cC6A@mail.gmail.com>
+ <0538002efbbc5e887c9e740c7891d2f88ca17e4b.camel@gmail.com> <ce1a7b11bb7b3efece5869a185e92114c571ac66.camel@gmail.com>
+In-Reply-To: <ce1a7b11bb7b3efece5869a185e92114c571ac66.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 25 Aug 2023 15:35:28 -0700
+Message-ID: <CAEf4BzY34_gky2c8FxfR8SB6r5v9Ude3zixZpYeEfDODEOvgpg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] docs/bpf: Add description for CO-RE relocations
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Aug 25, 2023 at 09:54:27PM +0800, Hao Xu wrote:
-> From: Hao Xu <howeyxu@tencent.com>
-> 
-> support nowait for xfs_buf_item_init() and error out -EAGAIN to
-> _xfs_trans_bjoin() when it would block.
-> 
-> Signed-off-by: Hao Xu <howeyxu@tencent.com>
-> ---
->  fs/xfs/xfs_buf_item.c         |  9 +++++++--
->  fs/xfs/xfs_buf_item.h         |  2 +-
->  fs/xfs/xfs_buf_item_recover.c |  2 +-
->  fs/xfs/xfs_trans_buf.c        | 16 +++++++++++++---
->  4 files changed, 22 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_buf_item.c b/fs/xfs/xfs_buf_item.c
-> index 023d4e0385dd..b1e63137d65b 100644
-> --- a/fs/xfs/xfs_buf_item.c
-> +++ b/fs/xfs/xfs_buf_item.c
-> @@ -827,7 +827,8 @@ xfs_buf_item_free_format(
->  int
->  xfs_buf_item_init(
->  	struct xfs_buf	*bp,
-> -	struct xfs_mount *mp)
-> +	struct xfs_mount *mp,
-> +	bool   nowait)
->  {
->  	struct xfs_buf_log_item	*bip = bp->b_log_item;
->  	int			chunks;
-> @@ -847,7 +848,11 @@ xfs_buf_item_init(
->  		return 0;
->  	}
->  
-> -	bip = kmem_cache_zalloc(xfs_buf_item_cache, GFP_KERNEL | __GFP_NOFAIL);
-> +	bip = kmem_cache_zalloc(xfs_buf_item_cache,
-> +				GFP_KERNEL | (nowait ? 0 : __GFP_NOFAIL));
-> +	if (!bip)
-> +		return -EAGAIN;
-> +
->  	xfs_log_item_init(mp, &bip->bli_item, XFS_LI_BUF, &xfs_buf_item_ops);
->  	bip->bli_buf = bp;
+On Fri, Aug 25, 2023 at 3:01=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Sat, 2023-08-26 at 00:10 +0300, Eduard Zingerman wrote:
+> [...]
+> > >
+> > > Instead of referencing BPF_MOV specifically, would it be useful to
+> > > incorporate all the different instructions that can be relocated?
+> > > bpf_core_patch_insn comment has a nice summary, maybe we can somehow
+> > > reuse it in this doc as well?
+> > >
+> > >  * Currently supported classes of BPF instruction are:
+> > >  * 1. rX =3D <imm> (assignment with immediate operand);
+> > >  * 2. rX +=3D <imm> (arithmetic operations with immediate operand);
+> > >  * 3. rX =3D <imm64> (load with 64-bit immediate value);
+> > >  * 4. rX =3D *(T *)(rY + <off>), where T is one of {u8, u16, u32, u64=
+};
+> > >  * 5. *(T *)(rX + <off>) =3D rY, where T is one of {u8, u16, u32, u64=
+};
+> > >  * 6. *(T *)(rX + <off>) =3D <imm>, where T is one of {u8, u16, u32, =
+u64}.
+> >
+> > Good point. I will keep the BPF_MOV as an example for relocation kind
+> > groups description and add this comment describing all relocatable
+> > instructions.
+> >
+>
+> Actually, this comment does not mention atomic instructions or loads
+> with sign extension. bpf_core_patch_insn() operates basing on
+> instruction class. I'll describe it as follows:
+>
+>   Field to patch is selected basing on the instruction class:
+>
+>   * For BPF_ALU, BPF_ALU64, BPF_LD immediate field is patched;
+>   * For BPF_LDX, BPF_STX, BPF_ST offset field is patched;
+>
+> WDYT?
 
-I see filesystem shutdowns....
+SGTM. As a human I still like the `rX +=3D <imm>` notation, but for
+documentation BPF_ALU would be more precise and appropriate.
 
-> diff --git a/fs/xfs/xfs_trans_buf.c b/fs/xfs/xfs_trans_buf.c
-> index 016371f58f26..a1e4f2e8629a 100644
-> --- a/fs/xfs/xfs_trans_buf.c
-> +++ b/fs/xfs/xfs_trans_buf.c
-> @@ -57,13 +57,14 @@ xfs_trans_buf_item_match(
->   * If the buffer does not yet have a buf log item associated with it,
->   * then allocate one for it.  Then add the buf item to the transaction.
->   */
-> -STATIC void
-> +STATIC int
->  _xfs_trans_bjoin(
->  	struct xfs_trans	*tp,
->  	struct xfs_buf		*bp,
->  	int			reset_recur)
->  {
->  	struct xfs_buf_log_item	*bip;
-> +	int ret;
->  
->  	ASSERT(bp->b_transp == NULL);
->  
-> @@ -72,7 +73,11 @@ _xfs_trans_bjoin(
->  	 * it doesn't have one yet, then allocate one and initialize it.
->  	 * The checks to see if one is there are in xfs_buf_item_init().
->  	 */
-> -	xfs_buf_item_init(bp, tp->t_mountp);
-> +	ret = xfs_buf_item_init(bp, tp->t_mountp,
-> +				tp->t_flags & XFS_TRANS_NOWAIT);
-> +	if (ret < 0)
-> +		return ret;
-> +
->  	bip = bp->b_log_item;
->  	ASSERT(!(bip->bli_flags & XFS_BLI_STALE));
->  	ASSERT(!(bip->__bli_format.blf_flags & XFS_BLF_CANCEL));
-> @@ -92,6 +97,7 @@ _xfs_trans_bjoin(
->  	xfs_trans_add_item(tp, &bip->bli_item);
->  	bp->b_transp = tp;
->  
-> +	return 0;
->  }
->  
->  void
-> @@ -309,7 +315,11 @@ xfs_trans_read_buf_map(
->  	}
->  
->  	if (tp) {
-> -		_xfs_trans_bjoin(tp, bp, 1);
-> +		error = _xfs_trans_bjoin(tp, bp, 1);
-> +		if (error) {
-> +			xfs_buf_relse(bp);
-> +			return error;
-> +		}
->  		trace_xfs_trans_read_buf(bp->b_log_item);
-
-So what happens at the callers when we have a dirty transaction and
-joining a buffer fails with -EAGAIN?
-
-Apart from the fact this may well propagate -EAGAIN up to userspace,
-cancelling a dirty transaction at this point will result in a
-filesystem shutdown....
-
-Indeed, this can happen in the "simple" timestamp update case that
-this "nowait" semantic is being aimed at. We log the inode in the
-timestamp update, which dirties the log item and registers a
-precommit operation to be run. We commit the
-transaction, which then runs xfs_inode_item_precommit() and that
-may need to attach the inode to the inode cluster buffer. This
-results in:
-
-xfs_inode_item_precommit
-  xfs_imap_to_bp
-    xfs_trans_read_buf_map
-      _xfs_trans_bjoin
-        xfs_buf_item_init(XFS_TRANS_NOWAIT)
-	  kmem_cache_zalloc(GFP_NOFS)
-	  <memory allocation fails>
-      gets -EAGAIN error
-    propagates -EAGAIN
-  fails due to -EAGAIN
-
-And now xfs_trans_commit() fails with a dirty transaction and the
-filesystem shuts down.
-
-IOWs, XFS_TRANS_NOWAIT as it stands is fundamentally broken. Once we
-dirty an item in a transaction, we *cannot* back out of the
-transaction. We *must block* in every place that could fail -
-locking, memory allocation and/or IO - until the transaction
-completes because we cannot undo the changes we've already made to
-the dirty items in the transaction....
-
-It's even worse than that - once we have committed intents, the
-whole chain of intent processing must be run to completionr. Hence
-we can't tolerate backing out of that defered processing chain half
-way through because we might have to block.
-
-Until we can roll back partial dirty transactions and partially
-completed defered intent chains at any random point of completion,
-XFS_TRANS_NOWAIT will not work.
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+>
+> [...]
 
