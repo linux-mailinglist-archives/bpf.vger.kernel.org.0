@@ -1,153 +1,198 @@
-Return-Path: <bpf+bounces-8622-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8623-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 006B2788BFD
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 16:57:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76C49788C0C
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 17:01:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A002281779
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 14:57:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B17B01C20FE4
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 15:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39601101D7;
-	Fri, 25 Aug 2023 14:57:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2893B101DE;
+	Fri, 25 Aug 2023 15:01:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 170C2CA60
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 14:57:38 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B6B1FCB
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 07:57:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=nMQ9oTK9VIity3mYsTzxf6sAs815oCB1cNM2hcEx14c=; b=nL77Lw4X3E8ie2ogC6+xtQZ/t0
-	9x9dvUBUb1TGigRAkEhDh4p114nMp13t617sIDCkV7xDOgcO26S8rLwpQt+j4d7CUei/7VN/pEqIg
-	2j13yUM5Fiy9ypC5D7lQZ628XKYkYb74k2fByHQm9X2OuBSuozNvmf3vEDxf5JcVTXuKambgNQtyV
-	R/LLHPETnB7VYIBDXyFO16Y+t+bapCsgTC9KzvuYVEDXtMOszj4ybsQkIfS4gqp3aEAjhqrwIXyI3
-	Zwyi5owBpEwMnsdsgxQp0mZGuGlO18xjvT6iWDEe/nnE2uDVkvRiL1XEGSsco3Im9DZtKPAuF7FEM
-	27DC1IQg==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qZYFj-000MrV-9T; Fri, 25 Aug 2023 16:57:35 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qZYFj-000Wnn-DL; Fri, 25 Aug 2023 16:57:35 +0200
-Subject: Re: [PATCH bpf 3/3] samples/bpf: syscall_tp_user: Fix array
- out-of-bound access
-To: Jinghao Jia <jinghao@linux.ibm.com>, bpf@vger.kernel.org
-Cc: ast@kernel.org, andrii@kernel.org
-References: <20230818164643.97782-1-jinghao@linux.ibm.com>
- <20230818164643.97782-4-jinghao@linux.ibm.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <6eeaead1-ed88-eb60-a134-0777d9ac0851@iogearbox.net>
-Date: Fri, 25 Aug 2023 16:57:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE67ECA60
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 15:01:27 +0000 (UTC)
+Received: from out-244.mta1.migadu.com (out-244.mta1.migadu.com [IPv6:2001:41d0:203:375::f4])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FED2126
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 08:01:25 -0700 (PDT)
+Message-ID: <c20192da-766f-0ba0-9645-bd2d8c53f316@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1692975684; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4UpEUat4M3ga3nhSDZWjkh9RTt5p9c2F1c7Bw2b92FQ=;
+	b=fwqLehPZPi18IqbYBTLONLUvnivGjlspsjJy0beMPFnPyoSHhlyB0KzKkaaiRDh7KDFFV1
+	MUiakFKVHEPlZEpElXeFZKkCvn8VbDQT8mXscws9luE3IsXK8Ilgm68AmlIiz8MBPOwh6l
+	rMaJ+MIG4oJeGkZzFOJPbPvMpRQtvM4=
+Date: Fri, 25 Aug 2023 08:01:16 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230818164643.97782-4-jinghao@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Reply-To: yonghong.song@linux.dev
+Subject: Re: [PATCH bpf-next] docs/bpf: Add description for CO-RE relocations
 Content-Language: en-US
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
+Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ kernel-team@fb.com
+References: <20230824230102.2117902-1-eddyz87@gmail.com>
+ <760317bb-188f-6967-b76d-1e9562a427b8@linux.dev>
+ <c7c1936bbfcb8b076de8b05db3baecae5d9fa8fd.camel@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <c7c1936bbfcb8b076de8b05db3baecae5d9fa8fd.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27011/Fri Aug 25 09:40:47 2023)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 8/18/23 6:46 PM, Jinghao Jia wrote:
-> Commit 06744f24696e ("samples/bpf: Add openat2() enter/exit tracepoint
-> to syscall_tp sample") added two more eBPF programs to support the
-> openat2() syscall. However, it did not increase the size of the array
-> that holds the corresponding bpf_links. This leads to an out-of-bound
-> access on that array in the bpf_object__for_each_program loop and could
-> corrupt other variables on the stack. On our testing QEMU, it corrupts
-> the map1_fds array and causes the sample to fail:
-> 
->    # ./syscall_tp
->    prog #0: map ids 4 5
->    verify map:4 val: 5
->    map_lookup failed: Bad file descriptor
-> 
-> Dynamically allocate the array based on the number of programs reported
-> by libbpf to prevent similar inconsistencies in the future
-> 
-> Fixes: 06744f24696e ("samples/bpf: Add openat2() enter/exit tracepoint to syscall_tp sample")
-> Signed-off-by: Jinghao Jia <jinghao@linux.ibm.com>
-> ---
->   samples/bpf/syscall_tp_user.c | 22 +++++++++++++++++++---
->   1 file changed, 19 insertions(+), 3 deletions(-)
-> 
-> diff --git a/samples/bpf/syscall_tp_user.c b/samples/bpf/syscall_tp_user.c
-> index 18c94c7e8a40..8855d2c1290d 100644
-> --- a/samples/bpf/syscall_tp_user.c
-> +++ b/samples/bpf/syscall_tp_user.c
-> @@ -48,7 +48,7 @@ static void verify_map(int map_id)
->   static int test(char *filename, int nr_tests)
->   {
->   	int map0_fds[nr_tests], map1_fds[nr_tests], fd, i, j = 0;
-> -	struct bpf_link *links[nr_tests * 4];
-> +	struct bpf_link **links = NULL;
->   	struct bpf_object *objs[nr_tests];
->   	struct bpf_program *prog;
->   
-> @@ -60,6 +60,17 @@ static int test(char *filename, int nr_tests)
->   			goto cleanup;
->   		}
->   
-> +		/* One-time initialization */
-> +		if (!links) {
-> +			int nr_progs = 0;
-> +
-> +			bpf_object__for_each_program(prog, objs[i])
-> +				nr_progs += 1;
-> +
-> +			links = calloc(nr_progs * nr_tests,
-> +				       sizeof(struct bpf_link *));
 
-NULL check is missing
 
-> +		}
-> +
->   		/* load BPF program */
->   		if (bpf_object__load(objs[i])) {
->   			fprintf(stderr, "loading BPF object file failed\n");
-> @@ -107,8 +118,13 @@ static int test(char *filename, int nr_tests)
->   	}
->   
->   cleanup:
-> -	for (j--; j >= 0; j--)
-> -		bpf_link__destroy(links[j]);
-> +	if (links) {
-> +		for (j--; j >= 0; j--)
-> +			bpf_link__destroy(links[j]);
-> +
-> +		free(links);
-> +		links = NULL;
-
-why is this explicit links = NULL needed?
-
-> +	}
->   
->   	for (i--; i >= 0; i--)
->   		bpf_object__close(objs[i]);
+On 8/25/23 4:40 AM, Eduard Zingerman wrote:
+> On Thu, 2023-08-24 at 23:05 -0700, Yonghong Song wrote:
+>>
+>> On 8/24/23 4:01 PM, Eduard Zingerman wrote:
+>>> Add a section on CO-RE relocations to llvm_relo.rst.
+>>> Describe relevant .BTF.ext structure, `enum bpf_core_relo_kind`
+>>> and `struct bpf_core_relo` in some detail.
+>>> Description is based on doc-string from include/uapi/linux/bpf.h.
+>>
+>> Thanks Eduard. This is very helpful to give bpf deverlopers
+>> some insight about how different of core relocations are
+>> supported in llvm and libbpf.
 > 
+> Hi Yonghong,
+> thank you for taking a look.
+> 
+>>
+>> Some comments below.
+>>
+>>>
+>>> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+>>> ---
+>>>    Documentation/bpf/btf.rst        |  27 ++++-
+>>>    Documentation/bpf/llvm_reloc.rst | 178 +++++++++++++++++++++++++++++++
+>>>    2 files changed, 201 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
+>>> index f32db1f44ae9..c0530211c3c1 100644
+>>> --- a/Documentation/bpf/btf.rst
+>>> +++ b/Documentation/bpf/btf.rst
+>>> @@ -726,8 +726,8 @@ same as the one describe in :ref:`BTF_Type_String`.
+>>>    4.2 .BTF.ext section
+>>>    --------------------
+[...]
+>>> +
+>>> +The complete list of relocation kinds is represented by the following enum:
+>>> +
+>>> +.. code-block:: c
+>>> +
+>>> + enum bpf_core_relo_kind {
+>>> +	BPF_CORE_FIELD_BYTE_OFFSET = 0,  /* field byte offset */
+>>> +	BPF_CORE_FIELD_BYTE_SIZE   = 1,  /* field size in bytes */
+>>> +	BPF_CORE_FIELD_EXISTS      = 2,  /* field existence in target kernel */
+>>> +	BPF_CORE_FIELD_SIGNED      = 3,  /* field signedness (0 - unsigned, 1 - signed) */
+>>> +	BPF_CORE_FIELD_LSHIFT_U64  = 4,  /* bitfield-specific left bitshift */
+>>> +	BPF_CORE_FIELD_RSHIFT_U64  = 5,  /* bitfield-specific right bitshift */
+>>> +	BPF_CORE_TYPE_ID_LOCAL     = 6,  /* type ID in local BPF object */
+>>> +	BPF_CORE_TYPE_ID_TARGET    = 7,  /* type ID in target kernel */
+>>> +	BPF_CORE_TYPE_EXISTS       = 8,  /* type existence in target kernel */
+>>> +	BPF_CORE_TYPE_SIZE         = 9,  /* type size in bytes */
+>>> +	BPF_CORE_ENUMVAL_EXISTS    = 10, /* enum value existence in target kernel */
+>>> +	BPF_CORE_ENUMVAL_VALUE     = 11, /* enum value integer value */
+>>> +	BPF_CORE_TYPE_MATCHES      = 12, /* type match in target kernel */
+>>> + };
+>>> +
+[...]
+>>> +
+>>> +CO-RE Relocation Examples
+>>> +=========================
+>>> +
+>>> +For the following C code:
+>>> +
+>>> +.. code-block:: c
+>>> +
+>>> + struct foo {
+>>> +     int a;
+>>> +     int b;
+>>> + } __attribute__((preserve_access_index));
+>>> +
+>>> + enum bar { U, V };
+>>> +
+>>> + void buz(struct foo *s, volatile unsigned long *g) {
+>>> +   s->a = 1;
+>>> +   *g = __builtin_preserve_field_info(s->b, 1);
+>>> +   *g = __builtin_preserve_type_info(*s, 1);
+>>> +   *g = __builtin_preserve_enum_value(*(enum bar *)V, 1);
+>>
+>> Maybe __builtin_btf_type_id() can be added as well?
+>> So far, clang only supports the above 4 builtin's for core
+>> relocations.
+> 
+> Will add __builtin_btf_type_id() as well.
+> 
+>>
+>>> + }
+>>> +
+>>> +With the following BTF definititions:
+>>> +
+>>> +.. code-block::
+>>> +
+>>> + ...
+>>> + [2] STRUCT 'foo' size=8 vlen=2
+>>> + 	'a' type_id=3 bits_offset=0
+>>> + 	'b' type_id=3 bits_offset=32
+>>> + [3] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+>>> + ...
+>>> + [9] ENUM 'bar' encoding=UNSIGNED size=4 vlen=2
+>>> + 	'U' val=0
+>>> + 	'V' val=1
+>>> +
+>>> +The following relocation entries would be generated:
+>>> +
+>>> +.. code-block:: c
+>>> +
+>>> +   <buz>:
+>>> +       0:	*(u32 *)(r1 + 0x0) = 0x1
+>>> +		00:  CO-RE <byte_off> [2] struct foo::a (0:0)
+>>> +       1:	r1 = 0x4
+>>> +		08:  CO-RE <byte_sz> [2] struct foo::b (0:1)
+>>> +       2:	*(u64 *)(r2 + 0x0) = r1
+>>> +       3:	r1 = 0x8
+>>> +		18:  CO-RE <type_size> [2] struct foo
+>>> +       4:	*(u64 *)(r2 + 0x0) = r1
+>>> +       5:	r1 = 0x1 ll
+>>> +		28:  CO-RE <enumval_value> [9] enum bar::V = 1
+>>> +       7:	*(u64 *)(r2 + 0x0) = r1
+>>> +       8:	exit
+>>> +
+>>
+>> It would be great if we can have an example for each of above
+>> core relocation kinds.
+> 
+> You mean all 13 kinds, right?
 
+Yes, it would be great if we have at least one example for each kind
+to illustrate what this relo kind intends to do.
+
+> 
+>>
+>>> +Note: modifications for llvm-objdump to show these relocation entries
+>>> +are currently work in progress.
+> 
+> 
 
