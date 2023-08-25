@@ -1,109 +1,236 @@
-Return-Path: <bpf+bounces-8559-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8560-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA1747884F9
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 12:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BB74F7884FD
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 12:36:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 757B5281806
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 10:33:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EC5B281852
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 10:36:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 246ECCA54;
-	Fri, 25 Aug 2023 10:32:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF6EFC8D0;
+	Fri, 25 Aug 2023 10:36:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94B0ED2EC
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 10:32:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA3AEC433C7;
-	Fri, 25 Aug 2023 10:32:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692959574;
-	bh=rJmtd4AoEg8qpdbmr/J69QEcfU7pcYSpKFVRCPpe/Js=;
-	h=From:To:Cc:Subject:Date:From;
-	b=BM+GM9bM9SM9xPdQtUlBM7AAgc3ZWcfCiaIOW9UuluA2QM9JovGZZUS3tdJo+sAVu
-	 hChGeOTU4Ofk1bb+b7DQ9TKqEdI2J+afOXf7am2Ot0faMuJoGmxEiGrXgPlrxLR0Gp
-	 dPtH1QvH1hKdm0ksS24UjB9fSaGXiJ/9BpXPZK0mo3PtquOoOdy3GN7DUbO+GCDJ1X
-	 lPjGuPABMUr+7fldXVE7pvDl6zGyiVX3WniB9vmNR9exnR6WBq7b5ecErqPncwdFuA
-	 hPLfvN1yRyu0g7B6MLmgHXEA648PSJeNsMi3OWoMDBAoVyBAiL5O4VTRromBGclSX/
-	 78RcaqV96ryiQ==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: bpf@vger.kernel.org
-Cc: linux-riscv@lists.infradead.org
-Subject: WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
-Date: Fri, 25 Aug 2023 12:32:51 +0200
-Message-ID: <87jztjmmy4.fsf@all.your.base.are.belong.to.us>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCA651843
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 10:36:36 +0000 (UTC)
+Received: from out203-205-221-233.mail.qq.com (out203-205-221-233.mail.qq.com [203.205.221.233])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B221E67;
+	Fri, 25 Aug 2023 03:36:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1692959792;
+	bh=jJE5iplrxe3WtNxu9KkY2HFqumt/zV40jik2obAAn/E=;
+	h=From:To:Cc:Subject:Date;
+	b=sWb16gr4tjgfcRCQhn1mggQcvSk6JIGWNY2vPDIGR3jtbJxYIMiEGbvYFY2l+u6XD
+	 GkVnk0kBvGx3ozIh+zQReRnHsOlxcT/y4jh5hgkZvJmPyDBZgH+2vXu87/9nvntn48
+	 sAx62bg6LfH34PPR93VUWp8KB6w3f7xKWu7cfVTg=
+Received: from localhost.localdomain ([39.156.73.12])
+	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+	id 91B3D264; Fri, 25 Aug 2023 18:36:27 +0800
+X-QQ-mid: xmsmtpt1692959787t4x138bb6
+Message-ID: <tencent_BD6E19C00BF565CD5C36A9A0BD828CFA210A@qq.com>
+X-QQ-XMAILINFO: N7h1OCCDntujNxOiev4OpcuHBreT3JFAVC51ReBNkmRJO/pMsUvD9e42ZK6duK
+	 J5mWGrlDFmruuSx0dyetd5fZbBcTz2Wo3HE9jyg+U6w6QfiE+ULGTzAizqRUOB0nE8SeEREgkTaL
+	 kMPJouYzIqRxzsjO/lz8MAZHo95heh8Kd0SZ/cVkl27pbztlxaIeNqH5ZI/15Xu1fcJSY4J5jFqY
+	 QxCf9vBUGFgx+9vnoafhMaBBxMYrU23geM4jTo+P61DTQtO1wfoWmn+/+81UhLxvzSiFLXYzycb5
+	 Odu4WkCw5DHboreAFErFrvXBsUQ8IIpAQy1nWpugABZCtETbr4iy8daGTAK+JUALigvl82M+eNKV
+	 DctbHOO23b8zmEVpDZRtYPEvBxwZTg5TUW2iGpOF4BKIBRWTyTdz25optZBqJU/ijAMQKWudA3aB
+	 lQzIy3isK6xtAKE/MSkipHQ2HovkArayI02icyVvFhJ9euffgfaNd0bBYQ6XCsXEmPO0N+Uwdzuo
+	 bcDIaS5i06jfDQsafvubaesRiYfW++KdtWVXAR2C0pJIljjSpvvUYagyFTpkRkG221L7XnSovdvT
+	 tI19Ki61H7oJRdJdBa0Z9UkRaTZjWNx5+obtrcMtP8B31WPDQ8UostZUzgpmgTwbepxXnymgOAhA
+	 vEVFx2axtWP4wmASOEuExsCSxlIKsonU7KNGplqLszRDWbesaal0nA0NwHUqeRXw3LGC8PE33/ka
+	 +GjG/CVQB1bg6Cb+1ILXHYY7FBcyyeVnyLkLRz5gVChju/cIbYpTPN5hmtPhsDfiXrdciR+DyhGq
+	 zdJJndq8LXRbaUsXISW9zS4ayLzhLrYqq6MoWuiAz/q3idVTYqFS7D2t1DZgY9mV4bDinonugRvO
+	 mUhzL8lNIs8jyozPOxNhV25C+vpSEnyg0Cqk+bDVP+DecQO25UUpuV8kCByZqAGPB72W/M+HY8iM
+	 7a7o0xaz32hG4lv+FPuv4aUL3Zhn93ahPsEVyHsrFs/9WmyYjcSDIfeP/gwTJh
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+From: Rong Tao <rtoax@foxmail.com>
+To: olsajiri@gmail.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	sdf@google.com
+Cc: Rong Tao <rongtao@cestc.cn>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
+	linux-kernel@vger.kernel.org (open list),
+	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
+Subject: [PATCH bpf-next v7] selftests/bpf: trace_helpers.c: optimize kallsyms cache
+Date: Fri, 25 Aug 2023 18:36:24 +0800
+X-OQ-MSGID: <20230825103624.31766-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-I'm chasing a workqueue hang on RISC-V/qemu (TCG), using the bpf
-selftests on bpf-next 9e3b47abeb8f.
+From: Rong Tao <rongtao@cestc.cn>
 
-I'm able to reproduce the hang by multiple runs of:
- | ./test_progs -a link_api -a linked_list
-I'm currently investigating that.
+Static ksyms often have problems because the number of symbols exceeds the
+MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
+commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
+the problem somewhat, but it's not the perfect way.
 
-But! Sometimes (every blue moon) I get a warn_on_once hit:
- | ------------[ cut here ]------------
- | WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342 bpf_mem_refill+0x1=
-fc/0x206
- | Modules linked in: bpf_testmod(OE)
- | CPU: 3 PID: 261 Comm: test_progs-cpuv Tainted: G           OE    N 6.5.0=
--rc5-01743-gdcb152bb8328 #2
- | Hardware name: riscv-virtio,qemu (DT)
- | epc : bpf_mem_refill+0x1fc/0x206
- |  ra : irq_work_single+0x68/0x70
- | epc : ffffffff801b1bc4 ra : ffffffff8015fe84 sp : ff2000000001be20
- |  gp : ffffffff82d26138 tp : ff6000008477a800 t0 : 0000000000046600
- |  t1 : ffffffff812b6ddc t2 : 0000000000000000 s0 : ff2000000001be70
- |  s1 : ff5ffffffffe8998 a0 : ff5ffffffffe8998 a1 : ff600003fef4b000
- |  a2 : 000000000000003f a3 : ffffffff80008250 a4 : 0000000000000060
- |  a5 : 0000000000000080 a6 : 0000000000000000 a7 : 0000000000735049
- |  s2 : ff5ffffffffe8998 s3 : 0000000000000022 s4 : 0000000000001000
- |  s5 : 0000000000000007 s6 : ff5ffffffffe8570 s7 : ffffffff82d6bd30
- |  s8 : 000000000000003f s9 : ffffffff82d2c5e8 s10: 000000000000ffff
- |  s11: ffffffff82d2c5d8 t3 : ffffffff81ea8f28 t4 : 0000000000000000
- |  t5 : ff6000008fd28278 t6 : 0000000000040000
- | status: 0000000200000100 badaddr: 0000000000000000 cause: 00000000000000=
-03
- | [<ffffffff801b1bc4>] bpf_mem_refill+0x1fc/0x206
- | [<ffffffff8015fe84>] irq_work_single+0x68/0x70
- | [<ffffffff8015feb4>] irq_work_run_list+0x28/0x36
- | [<ffffffff8015fefa>] irq_work_run+0x38/0x66
- | [<ffffffff8000828a>] handle_IPI+0x3a/0xb4
- | [<ffffffff800a5c3a>] handle_percpu_devid_irq+0xa4/0x1f8
- | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
- | [<ffffffff800ae570>] ipi_mux_process+0xac/0xfa
- | [<ffffffff8000a8ea>] sbi_ipi_handle+0x2e/0x88
- | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
- | [<ffffffff807ee70e>] riscv_intc_irq+0x36/0x4e
- | [<ffffffff812b5d3a>] handle_riscv_irq+0x54/0x86
- | [<ffffffff812b6904>] do_irq+0x66/0x98
- | ---[ end trace 0000000000000000 ]---
+This commit uses dynamic memory allocation, which completely solves the
+problem caused by the limitation of the number of kallsyms.
 
-Code:
- | static void free_bulk(struct bpf_mem_cache *c)
- | {
- | 	struct bpf_mem_cache *tgt =3D c->tgt;
- | 	struct llist_node *llnode, *t;
- | 	unsigned long flags;
- | 	int cnt;
- |=20
- | 	WARN_ON_ONCE(tgt->unit_size !=3D c->unit_size);
- | ...
+Acked-by: Stanislav Fomichev <sdf@google.com>
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+v7: Fix __must_check macro.
+v6: https://lore.kernel.org/lkml/tencent_4A09A36F883A06EA428A593497642AF8AF08@qq.com/
+    Apply libbpf_ensure_mem()
+v5: https://lore.kernel.org/lkml/tencent_0E9E1A1C0981678D5E7EA9E4BDBA8EE2200A@qq.com/
+    Release the allocated memory once the load_kallsyms_refresh() upon error
+    given it's dynamically allocated.
+v4: https://lore.kernel.org/lkml/tencent_59C74613113F0C728524B2A82FE5540A5E09@qq.com/
+    Make sure most cases we don't need the realloc() path to begin with,
+    and check strdup() return value.
+v3: https://lore.kernel.org/lkml/tencent_50B4B2622FE7546A5FF9464310650C008509@qq.com/
+    Do not use structs and judge ksyms__add_symbol function return value.
+v2: https://lore.kernel.org/lkml/tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com/
+    Do the usual len/capacity scheme here to amortize the cost of realloc, and
+    don't free symbols.
+v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com/
+---
+ samples/bpf/Makefile                        |  2 +
+ tools/testing/selftests/bpf/trace_helpers.c | 58 ++++++++++++++++-----
+ 2 files changed, 48 insertions(+), 12 deletions(-)
 
-I'm not well versed in the memory allocator; Before I dive into it --
-has anyone else hit it? Ideas on why the warn_on_once is hit?
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index 4ccf4236031c..0cd45c42af2f 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -175,6 +175,7 @@ TPROGS_CFLAGS += -I$(srctree)/tools/testing/selftests/bpf/
+ TPROGS_CFLAGS += -I$(LIBBPF_INCLUDE)
+ TPROGS_CFLAGS += -I$(srctree)/tools/include
+ TPROGS_CFLAGS += -I$(srctree)/tools/perf
++TPROGS_CFLAGS += -I$(srctree)/tools/lib
+ TPROGS_CFLAGS += -DHAVE_ATTR_TEST=0
+ 
+ ifdef SYSROOT
+@@ -314,6 +315,7 @@ XDP_SAMPLE_CFLAGS += -Wall -O2 \
+ 
+ $(obj)/$(XDP_SAMPLE): TPROGS_CFLAGS = $(XDP_SAMPLE_CFLAGS)
+ $(obj)/$(XDP_SAMPLE): $(src)/xdp_sample_user.h $(src)/xdp_sample_shared.h
++$(obj)/$(TRACE_HELPERS): TPROGS_CFLAGS := $(TPROGS_CFLAGS) -D__must_check=
+ 
+ -include $(BPF_SAMPLES_PATH)/Makefile.target
+ 
+diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+index f83d9f65c65b..d62ab3b77153 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.c
++++ b/tools/testing/selftests/bpf/trace_helpers.c
+@@ -14,13 +14,44 @@
+ #include <linux/limits.h>
+ #include <libelf.h>
+ #include <gelf.h>
++#include "bpf/libbpf_internal.h"
+ 
+ #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
+ #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
+ 
+-#define MAX_SYMS 400000
+-static struct ksym syms[MAX_SYMS];
+-static int sym_cnt;
++static struct ksym *syms;
++static size_t sym_cap;
++static size_t sym_cnt;
++
++static int ksyms__add_symbol(const char *name, unsigned long addr)
++{
++	void *tmp;
++
++	tmp = strdup(name);
++	if (!tmp)
++		return -ENOMEM;
++	syms[sym_cnt].addr = addr;
++	syms[sym_cnt].name = tmp;
++
++	sym_cnt++;
++
++	return 0;
++}
++
++static void ksyms__free(void)
++{
++	unsigned int i;
++
++	if (!syms)
++		return;
++
++	for (i = 0; i < sym_cnt; i++)
++		free(syms[i].name);
++	free(syms);
++	syms = NULL;
++	sym_cnt = 0;
++	sym_cap = 0;
++}
+ 
+ static int ksym_cmp(const void *p1, const void *p2)
+ {
+@@ -33,9 +64,7 @@ int load_kallsyms_refresh(void)
+ 	char func[256], buf[256];
+ 	char symbol;
+ 	void *addr;
+-	int i = 0;
+-
+-	sym_cnt = 0;
++	int ret;
+ 
+ 	f = fopen("/proc/kallsyms", "r");
+ 	if (!f)
+@@ -46,17 +75,22 @@ int load_kallsyms_refresh(void)
+ 			break;
+ 		if (!addr)
+ 			continue;
+-		if (i >= MAX_SYMS)
+-			return -EFBIG;
+ 
+-		syms[i].addr = (long) addr;
+-		syms[i].name = strdup(func);
+-		i++;
++		ret = libbpf_ensure_mem((void **) &syms, &sym_cap,
++					sizeof(struct ksym), sym_cnt + 1);
++		if (ret)
++			goto error;
++		ret = ksyms__add_symbol(func, (unsigned long)addr);
++		if (ret)
++			goto error;
+ 	}
+ 	fclose(f);
+-	sym_cnt = i;
+ 	qsort(syms, sym_cnt, sizeof(struct ksym), ksym_cmp);
+ 	return 0;
++
++error:
++	ksyms__free();
++	return ret;
+ }
+ 
+ int load_kallsyms(void)
+-- 
+2.39.3
 
-
-Bj=C3=B6rn
 
