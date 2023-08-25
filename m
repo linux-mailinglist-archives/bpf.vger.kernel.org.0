@@ -1,234 +1,115 @@
-Return-Path: <bpf+bounces-8677-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 874AC788EF6
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 20:54:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7648788F00
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 20:55:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4317C2818B1
-	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 18:54:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0D051C20A8C
+	for <lists+bpf@lfdr.de>; Fri, 25 Aug 2023 18:55:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511A618B0A;
-	Fri, 25 Aug 2023 18:54:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F5A18B0E;
+	Fri, 25 Aug 2023 18:55:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AC72174F7
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 18:54:02 +0000 (UTC)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 495C11BD2;
-	Fri, 25 Aug 2023 11:54:01 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9a2185bd83cso157107766b.0;
-        Fri, 25 Aug 2023 11:54:01 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47033101CA
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 18:55:22 +0000 (UTC)
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2981BD2
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 11:55:20 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50078eba7afso1943986e87.0
+        for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 11:55:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692989640; x=1693594440;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=mxQMK9RP6ilUyhYYI+Su+gjUxqffi2sMga7zj0RkO+8=;
-        b=G0PN2o2H/4RkfQisDlOCOfjlg+Od9j1hPLw4L1DHMocm8PQsH3NskvWP5tAec/p2JK
-         VmQxoLccLp6GcypBkKPReC95jTmXFCP+RwQfPFuQW+Exw0skitjCLATUzzsuMlnhrqoS
-         WS/I+C03x4Bn06EJq52dn7rEYOHWl2GYOrbHs2nGhuuOw1IONhpVVUUNet1f64pFTMdv
-         Sc+ibh/XWdxCEXdXgnvu4XxYs9xmEQkdZAFUdQqNZ19U0hdQ7rrd0Sw0N9UFVwYXHNw/
-         IMQUn06hAPAX9YHvc9692N7fRVXz1GaAzpE+rOrdBYn2SFaQON4KeIE8gXNeSNZvducR
-         1ozw==
+        d=gmail.com; s=20221208; t=1692989718; x=1693594518;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Sa5B6Vq/+KMDNgnjyuhJyRP9AioEf9V1BfDOyTkOSDk=;
+        b=mQGmo2GFncPEwGTODUwvXu+RHh+Cnw7IcZN28OvsomR11TPWQX8X/8LQFitgvRCeYu
+         oBqGapP8x+9fvBFGrkrTx+V7aKtv8gx5a6OedhfHJ90pjBamRvG7MhxP/q9kAkX2dTjV
+         E2xkgu7OtW1tpHf7/+QlNvue63SbnKR0VZUtQ0QD4n9Pv1tjP2I/0ZIccD8t7579s3PB
+         G8nIYrXT35WeXEPkzcKd670B7fZtLD9JWfYHD+PcvLkPLHwtSnnSkxSM7j8eVwrb6fL8
+         H8tMeU6riH4Ujs+Stb7eOpFehrZvrTV5XzxlnefY/uKoVZXd/7p3TSPGhM65TmpMi1XM
+         sMhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692989640; x=1693594440;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mxQMK9RP6ilUyhYYI+Su+gjUxqffi2sMga7zj0RkO+8=;
-        b=XRe/rQAjlrYJAaIdtPI2odT2+BSOOMYmJGOVDn0fRTwqx/2vy+Cj8Yy65Y+D4uHVpd
-         hxj11LBokEU0jU6VGWTubhL5I6h+GYdzbLja4Z+pz1jg3BP6G9nZLHsqL6SUsnN8V+4D
-         lGtyo8pwanX6naGFLGxb2enwFvV2ZvsttjUozT/HgZh5JGWWNKXbIHphi503v8q7dH+H
-         lwry7ACnUN9CulEjWKklTJ29dCEES+KaTE6c3oFgNmSB1ptqK1ddCQmfEZLhjrQ+k3FL
-         yaLbtPf6lbTA1x9amm3kFWepAIrmfn10FdI6OnjwHTsmdf8hcMjM3fHL8pdkwM2Y2AAG
-         oyuw==
-X-Gm-Message-State: AOJu0YxVWmNQoyd5VBll6Ydpt1oDAtJtiu9ehPeqjQkdDIGBJYg/4Sa4
-	p1gybldbJmNUbLx+U+cT3RI=
-X-Google-Smtp-Source: AGHT+IGMYgJx3Qngg0jobBAnd3GFqEAJm2aB9ZBPeZNi4vv2ZU1Rkq0gIQ93J2FfL57nwSXCYhgWow==
-X-Received: by 2002:a17:906:5385:b0:994:4095:3abf with SMTP id g5-20020a170906538500b0099440953abfmr14748340ejo.14.1692989639406;
-        Fri, 25 Aug 2023 11:53:59 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id jx13-20020a170906ca4d00b00992d122af63sm1239162ejb.89.2023.08.25.11.53.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 11:53:58 -0700 (PDT)
-Message-ID: <65800771171dcaff9901dae47de960ec66602f7e.camel@gmail.com>
-Subject: Re: [PATCH 4/3] selftests/hid: more fixes to build with older kernel
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Justin Stitt <justinstitt@google.com>, Benjamin Tissoires
-	 <bentiss@kernel.org>
-Cc: Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires
- <benjamin.tissoires@redhat.com>, Shuah Khan <shuah@kernel.org>, Nick
- Desaulniers <ndesaulniers@google.com>, linux-input@vger.kernel.org,
- linux-kselftest@vger.kernel.org,  linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-Date: Fri, 25 Aug 2023 21:53:57 +0300
-In-Reply-To: <20230825182316.m2ksjoxe4s7dsapn@google.com>
-References: <20230825-wip-selftests-v1-0-c862769020a8@kernel.org>
-	 <20230825182316.m2ksjoxe4s7dsapn@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        d=1e100.net; s=20221208; t=1692989718; x=1693594518;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Sa5B6Vq/+KMDNgnjyuhJyRP9AioEf9V1BfDOyTkOSDk=;
+        b=PKxBJYYognLMliy0PGJ+7/bHLdV9quAYw8CKFAmneotkSkXUAv/B9H1yErLirvc0Oy
+         uyF5WSTZLBtm5/7y5ORhLT1jwbTUpUaFd89BJHIYVuluniei1Qpmb/1eS22u9OMHIlqk
+         GtTEEgXVWeJjYV/TLiN+DEjewx/aZBIMsuaKYAkBV9GnT+nkcBAIQhKHoY6yafRI+jCS
+         jWtbvwv7r8+wOGk3KnTRyou22IFPalfUoUYrq02EtkV12hzQQ/HQSRMk2FCRyEKRrO64
+         eIwFQ25yWTJVTZkw7brHXDIsGo6+pui8Jhp3iNmH3WR9EfHWle1o0IwgnF6pRnVZ8+UP
+         RXiA==
+X-Gm-Message-State: AOJu0Yz+4Y9VBpWlOrXUSG1g5uW4b2MM3ENRZM0R2GCpwEuZ/MFqxqXH
+	rbM/im0bcg+UztZq0wtcWfINErKbS8Suw8Mk57s=
+X-Google-Smtp-Source: AGHT+IHTxanFfLzWRGYZAmrRZOsDAp0SnhNgAdq9mwYacHj1+t7ahJQsKDzJS/CmOkjOl/RC3hQ4r7C76qjJxUsB+Qg=
+X-Received: by 2002:a05:6512:ac4:b0:4ff:8d7a:cb20 with SMTP id
+ n4-20020a0565120ac400b004ff8d7acb20mr18151396lfu.63.1692989718329; Fri, 25
+ Aug 2023 11:55:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
+References: <20230809114116.3216687-1-memxor@gmail.com> <CAP01T75MjLeu01FJjxcEF3O1f+4=MiP3St_2M5fmTW9RqkGPnw@mail.gmail.com>
+ <87lee2enow.fsf@oracle.com> <f7c404d8-41b5-a48d-f156-5556b38f384e@linux.dev>
+ <CAP01T757oTUPuRaxiaNZh2E5FtLdWiYybZy453LUYEE7RmY63Q@mail.gmail.com> <CAADnVQLnNgpjsHMBUhHBhwdUNdqoCEEtxv-mSKS==48XNpMZog@mail.gmail.com>
+In-Reply-To: <CAADnVQLnNgpjsHMBUhHBhwdUNdqoCEEtxv-mSKS==48XNpMZog@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 25 Aug 2023 11:55:06 -0700
+Message-ID: <CAEf4BzbFcO7x4oXYVhJ95C0fFuP6uxec4JbokPdq_5RQMyxurA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 00/14] Exceptions - 1/2
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	"Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	David Vernet <void@manifault.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, 2023-08-25 at 18:23 +0000, Justin Stitt wrote:
-> On Fri, Aug 25, 2023 at 10:36:30AM +0200, Benjamin Tissoires wrote:
-> > These fixes have been triggered by [0]:
-> > basically, if you do not recompile the kernel first, and are
-> > running on an old kernel, vmlinux.h doesn't have the required
-> > symbols and the compilation fails.
-> >=20
-> > The tests will fail if you run them on that very same machine,
-> > of course, but the binary should compile.
-> >=20
-> > And while I was sorting out why it was failing, I realized I
-> > could do a couple of improvements on the Makefile.
-> >=20
-> > [0] https://lore.kernel.org/linux-input/56ba8125-2c6f-a9c9-d498-0ca1c15=
-3dcb2@redhat.com/T/#t
-> >=20
-> > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> > ---
-> > Benjamin Tissoires (3):
-> >       selftests/hid: ensure we can compile the tests on kernels pre-6.3
-> >       selftests/hid: do not manually call headers_install
-> >       selftests/hid: force using our compiled libbpf headers
-> >=20
-> >  tools/testing/selftests/hid/Makefile                | 10 ++++------
-> >  tools/testing/selftests/hid/progs/hid.c             |  3 ---
-> >  tools/testing/selftests/hid/progs/hid_bpf_helpers.h | 20 +++++++++++++=
-+++++++
-> >  3 files changed, 24 insertions(+), 9 deletions(-)
-> > ---
-> > base-commit: 1d7546042f8fdc4bc39ab91ec966203e2d64f8bd
-> > change-id: 20230825-wip-selftests-9a7502b56542
-> >=20
-> > Best regards,
-> > --
-> > Benjamin Tissoires <bentiss@kernel.org>
-> >=20
->=20
-> Benjamin, thanks for the work here. Your series fixed up _some_ of the
-> errors I had while building on my 6.3.11 kernel. I'm proposing a single
-> patch that should be applied on top of your series that fully fixes
-> _all_ of the build errors I'm experiencing.
->=20
-> Can you let me know if it works and potentially formulate a new series
-> so that `b4 shazam` applies it cleanly?
->=20
-> PATCH BELOW
-> ---
-> From 5378d70e1b3f7f75656332f9bff65a37122bb288 Mon Sep 17 00:00:00 2001
-> From: Justin Stitt <justinstitt@google.com>
-> Date: Fri, 25 Aug 2023 18:10:33 +0000
-> Subject: [PATCH 4/3] selftests/hid: more fixes to build with older kernel
->=20
-> I had to use the clever trick [1] on some other symbols to get my builds
-> working.
->=20
-> Apply this patch on top of Benjamin's series [2].
->=20
-> This is now a n=3D4 patch series which has fixed my builds when running:
-> > $ make LLVM=3D1 -j128 ARCH=3Dx86_64 mrproper headers
-> > $ make LLVM=3D1 -j128 ARCH=3Dx86_64 -C tools/testing/selftests TARGETS=
-=3Dhid
->=20
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/t=
-ree/tools/testing/selftests/bpf/progs/bpf_iter.h#n3
-> [2]: https://lore.kernel.org/all/20230825-wip-selftests-v1-0-c862769020a8=
-@kernel.org/
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
->  .../selftests/hid/progs/hid_bpf_helpers.h     | 29 +++++++++++++++++++
->  1 file changed, 29 insertions(+)
->=20
-> diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tools/=
-testing/selftests/hid/progs/hid_bpf_helpers.h
-> index 749097f8f4d9..e2eace2c0029 100644
-> --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> @@ -7,12 +7,26 @@
->=20
->  /* "undefine" structs in vmlinux.h, because we "override" them below */
->  #define hid_bpf_ctx hid_bpf_ctx___not_used
-> +#define hid_report_type hid_report_type___not_used
-> +#define hid_class_request hid_class_request___not_used
-> +#define hid_bpf_attach_flags hid_bpf_attach_flags___not_used
->  #include "vmlinux.h"
->  #undef hid_bpf_ctx
-> +#undef hid_report_type
-> +#undef hid_class_request
-> +#undef hid_bpf_attach_flags
->=20
->  #include <bpf/bpf_helpers.h>
->  #include <bpf/bpf_tracing.h>
-> +#include <linux/const.h>
->=20
-> +enum hid_report_type {
-> +	HID_INPUT_REPORT		=3D 0,
-> +	HID_OUTPUT_REPORT		=3D 1,
-> +	HID_FEATURE_REPORT		=3D 2,
-> +
-> +	HID_REPORT_TYPES,
-> +};
->=20
->  struct hid_bpf_ctx {
->  	__u32 index;
-> @@ -25,6 +39,21 @@ struct hid_bpf_ctx {
->  	};
->  };
+On Tue, Aug 22, 2023 at 4:06=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Aug 22, 2023 at 3:54=E2=80=AFPM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> >
+> > I suppose we could switch to the ' if (!(LHS <op> RHS)) bpf_throw(); '
+> > sequence in C, force volatile load for LHS and __builtin_constant_p
+> > for RHS to get the same behavior. Emitting these redundant checks is
+> > definitely a bit weird just to emit BTF.
+>
+> I guess we can try
+> #define bpf_assert(LHS, OP, RHS) if (!(LHS OP RHS)) bpf_throw();
+> with barrier_var(LHS) and __builtin_constant_p(RHS) and
+> keep things completely in C,
+> but there is no guarantee that the compiler will not convert =3D=3D to !=
+=3D,
+> swap lhs and rhs, etc.
+> Maybe we can have both asm and C style macros, then recommend C to start
+> and switch to asm if things are dodgy.
+> Feels like dangerous ambiguity.
 
-Note, vmlinux.h has the following preamble/postamble:
+This seems similar to the issue I had with
+__attribute__((cleanup(some_kfunc)))) not emitting BTF info for that
+some_kfunc? See bpf_for_each(), seems like just adding
+`(void)bpf_iter_##type##_destroy` makes Clang emit BTF info.
 
-    #ifndef BPF_NO_PRESERVE_ACCESS_INDEX
-    #pragma clang attribute push (__attribute__((preserve_access_index)), a=
-pply_to =3D record)
-    #endif
-    ...
-    #ifndef BPF_NO_PRESERVE_ACCESS_INDEX
-    #pragma clang attribute pop
-    #endif
-
-You might want to use it or add __attribute__((preserve_access_index))
-to structure definitions, depending on whether or not you need CO-RE
-functionality for these tests.
-
->=20
-> +enum hid_class_request {
-> +	HID_REQ_GET_REPORT		=3D 0x01,
-> +	HID_REQ_GET_IDLE		=3D 0x02,
-> +	HID_REQ_GET_PROTOCOL		=3D 0x03,
-> +	HID_REQ_SET_REPORT		=3D 0x09,
-> +	HID_REQ_SET_IDLE		=3D 0x0A,
-> +	HID_REQ_SET_PROTOCOL		=3D 0x0B,
-> +};
-> +
-> +enum hid_bpf_attach_flags {
-> +	HID_BPF_FLAG_NONE =3D 0,
-> +	HID_BPF_FLAG_INSERT_HEAD =3D _BITUL(0),
-> +	HID_BPF_FLAG_MAX,
-> +};
-> +
->  /* following are kfuncs exported by HID for HID-BPF */
->  extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
->  			      unsigned int offset,
-> --
-> 2.42.0.rc1.204.g551eb34607-goog
->=20
-
+It would be nice to have this fixed for cleanup() attribute and asm,
+of course. But this is a simple work around.
 
