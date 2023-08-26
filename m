@@ -1,142 +1,222 @@
-Return-Path: <bpf+bounces-8730-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8731-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80E9B789384
-	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 04:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 569FF7893B3
+	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 05:48:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57F301C20F71
-	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 02:50:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63B181C20F35
+	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 03:48:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDB0D7FB;
-	Sat, 26 Aug 2023 02:50:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D1E818;
+	Sat, 26 Aug 2023 03:48:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A75E47E
-	for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 02:50:43 +0000 (UTC)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1631FF5
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 19:50:42 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bba6fc4339so21326181fa.2
-        for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 19:50:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693018240; x=1693623040;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8wTqqKh1RxCPmtFll7X9hrVX2424fdu6/KnWRrlZW+8=;
-        b=qQQ4PZuT7ttNXD6QVA+FL9Hg2X5UEiLCxgwq2UoUy37GGAYwMANf1awW32ivM2p3wS
-         8rUKYZjmUueVyYV5SNhbxcqX76RAGUUiEk8ZDxY6H8NRCM4EIuTmJstvelowl6evksR+
-         b1OTO41tJypDRdLe3PK57Z8L/VQkChJE+Ibb3GCwDAuJ+n3u8SUvpp5voziaHNdA75Lh
-         dylTDowVzwV4s7ZrGWBYN54QDbbCLtwtZyhVsU/wqsW5scy4eDbmqgDHSXkfU3QblVTQ
-         5p0GZyqC0e6fNgL6znBMNCD0W8LIVO6RNfMN1l17dXDtW6XlmtyFPztYx/AbC2Kuq675
-         Yufw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693018240; x=1693623040;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8wTqqKh1RxCPmtFll7X9hrVX2424fdu6/KnWRrlZW+8=;
-        b=Ji2+eM4Jw3gdG8kvfHcuHzsWW+geRseRKi60VG8pvmRTpZG+kI0Kf1YXFWGtBpiOtj
-         jDHU+WKoxummJWQ0eBrobJIzjzR9T2zBg0Hyih/6o3h3puwVSLiLPyr4pKkXEGArJ+Ck
-         +QrTcvqTOu8hNTUXkwn2WwbeUzYN63+DtSA8urGAhk/KAzZhVAcvzBoW0/NNqp5eyxqO
-         KoVWaW63jTObqnQiyusgmhVtOfTsjwClkKj13AaZmJTqDsxvib2Bn6YStIFnvbrHw9ic
-         5UvKqbv4nyRSB93oW6tSKQMXk7IVdei0+0pMEJr2SoSbfziHHd+CLA2nTEzYmgVhNkmI
-         t8DA==
-X-Gm-Message-State: AOJu0YyDFPDuSnB5fGwSV/J2GADLweicDQjkUr0H48pOgkxmf++5z1ES
-	+mNsgEPfY2ihPIPM29cz2rRkgC/FCoF/saTSlN8=
-X-Google-Smtp-Source: AGHT+IG0/V+6Rw/3YIWiTfWB5yduZo/U8fECOVoDvkTbRwcp+8OmaAAoesR08BpxExLGbS1jCJFwuBU43a3M95+oYNw=
-X-Received: by 2002:a2e:958b:0:b0:2bc:f5d3:1021 with SMTP id
- w11-20020a2e958b000000b002bcf5d31021mr2013004ljh.32.1693018239962; Fri, 25
- Aug 2023 19:50:39 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C9727E
+	for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 03:48:26 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A94E213D
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 20:48:24 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RXjTT4D5Xz4f3jXg
+	for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 11:48:13 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgC3jaD9delkSHdnBg--.43954S2;
+	Sat, 26 Aug 2023 11:48:16 +0800 (CST)
+Subject: Re: WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, bpf@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org, yonghong.song@linux.dev,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+References: <87jztjmmy4.fsf@all.your.base.are.belong.to.us>
+ <2f4f0dfc-ec06-8ac8-a56a-395cc2373def@linux.dev>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <200dcce6-34ff-83e0-02fb-709a24403cc6@huaweicloud.com>
+Date: Sat, 26 Aug 2023 11:48:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230822133807.3198625-1-houtao@huaweicloud.com>
- <20230822133807.3198625-2-houtao@huaweicloud.com> <CAADnVQKFh9pWp1abrG2KKiZanb+4rzRb3HmzX0snggah3Lq-yg@mail.gmail.com>
- <bf4faa34-019c-bb3d-a451-a067bbe027a4@huaweicloud.com> <CAADnVQJfpxk3dsjYdH8DUarJHu0wFXa24XFxvn+F5mseMKTAhQ@mail.gmail.com>
- <3c30289a-d683-d1c8-b18d-c87a5ecebe3b@huaweicloud.com> <CAADnVQLHPx-0dR7nBXAfBHOpF09Jr6+cqGjfGf9mT2BHCid5YA@mail.gmail.com>
- <5fe435aa-526f-4b54-b0d2-e0ae1c6c234c@huaweicloud.com> <CAADnVQLtJBOTueuGZHM0PUhskMZY-uaaehvgfx7pkpq0qfhvVA@mail.gmail.com>
- <a6a78ccf-4a48-be46-f2c7-aa0a5a3285d8@huaweicloud.com> <CAADnVQ+NyR-d-P3fdw14ehy2fficAhPikJ2ZrQi1Db-yGNTiCQ@mail.gmail.com>
- <189f54aa-7b5f-f223-c340-1548aec55ab2@huaweicloud.com>
-In-Reply-To: <189f54aa-7b5f-f223-c340-1548aec55ab2@huaweicloud.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 25 Aug 2023 19:50:28 -0700
-Message-ID: <CAADnVQKgnO2dp4frO+QTYLMFjHnc=YqcgfGEFi_SapNMGGYaHg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: Enable preemption after
- irq_work_raise() in unit_alloc()
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <2f4f0dfc-ec06-8ac8-a56a-395cc2373def@linux.dev>
+Content-Type: multipart/mixed;
+ boundary="------------F8A338A4793F84B37BC09D79"
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgC3jaD9delkSHdnBg--.43954S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWr47Xry7Gr4DAw15JryfCrg_yoWrAw4kpr
+	WfJ347Gr4vkr4vgr4UGry5Jry8Cr18Aa47Jr18XFy5AF1UWr1jgr18JrWYgw1DJr4rXF17
+	Xr1qq3y0vF1UGw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Kb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487M2AExVA0xI801c8C04v7Mc02
+	F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI
+	0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4xvF2IEb7IF0Fy26I8I
+	3I1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+	WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+	67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
+	IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1l
+	IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8Jr1l6VACY4
+	xI67k04243AbIYCTnIWIevJa73UjIFyTuYvjxUzNVyDUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Aug 25, 2023 at 7:22=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
-ote:
->
->
->
-> On 8/26/2023 1:16 AM, Alexei Starovoitov wrote:
-> > On Thu, Aug 24, 2023 at 11:04=E2=80=AFPM Hou Tao <houtao@huaweicloud.co=
-m> wrote:
-> >>> Could you try the following:
-> >>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-> >>> index 9c49ae53deaf..ee8262f58c5a 100644
-> >>> --- a/kernel/bpf/memalloc.c
-> >>> +++ b/kernel/bpf/memalloc.c
-> >>> @@ -442,7 +442,10 @@ static void bpf_mem_refill(struct irq_work *work=
-)
-> >>>
-> >>>  static void notrace irq_work_raise(struct bpf_mem_cache *c)
-> >>>  {
-> >>> -       irq_work_queue(&c->refill_work);
-> >>> +       if (!irq_work_queue(&c->refill_work)) {
-> >>> +               preempt_disable_notrace();
-> >>> +               preempt_enable_notrace();
-> >>> +       }
-> >>>  }
-> >>>
-> >>> The idea that it will ask for resched if preemptible.
-> >>> will it address the issue you're seeing?
-> >>>
-> >>> .
-> >> No. It didn't work.
-> > why?
->
-> Don't know the extra reason. It seems preempt_enable_notrace() inovked
-> in the preemption task doesn't return the CPU back to the preempted
-> task. Will add some debug info to check that.
-> >
-> >> If you are concerning about the overhead of
-> >> preempt_enabled_notrace(), we could use local_irq_save() and
-> >> local_irq_restore() instead.
-> > That's much better.
-> > Moving local_irq_restore() after irq_work_raise() in process ctx
-> > would mean that irq_work will execute immediately after local_irq_resto=
-re()
-> > which would make bpf_ma to behave like sync allocation.
-> > Which is the ideal situation. preempt disable/enable game is more fragi=
-le.
->
-> OK. So you are OK to wrap the whole implementation of unit_alloc() and
-> unit_free() by local_irq_saved() and local_irq_restore(), right ?
+This is a multi-part message in MIME format.
+--------------F8A338A4793F84B37BC09D79
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 
-You don't need to wrap it. Just need to move local_irq_restore()
-in unit_alloc/unit_free/unit_free_rcu couple lines down.
+Hi,
+
+On 8/25/2023 11:28 PM, Yonghong Song wrote:
+>
+>
+> On 8/25/23 3:32 AM, Björn Töpel wrote:
+>> I'm chasing a workqueue hang on RISC-V/qemu (TCG), using the bpf
+>> selftests on bpf-next 9e3b47abeb8f.
+>>
+>> I'm able to reproduce the hang by multiple runs of:
+>>   | ./test_progs -a link_api -a linked_list
+>> I'm currently investigating that.
+>>
+>> But! Sometimes (every blue moon) I get a warn_on_once hit:
+>>   | ------------[ cut here ]------------
+>>   | WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
+>> bpf_mem_refill+0x1fc/0x206
+>>   | Modules linked in: bpf_testmod(OE)
+>>   | CPU: 3 PID: 261 Comm: test_progs-cpuv Tainted: G           OE   
+>> N 6.5.0-rc5-01743-gdcb152bb8328 #2
+>>   | Hardware name: riscv-virtio,qemu (DT)
+>>   | epc : bpf_mem_refill+0x1fc/0x206
+>>   |  ra : irq_work_single+0x68/0x70
+>>   | epc : ffffffff801b1bc4 ra : ffffffff8015fe84 sp : ff2000000001be20
+>>   |  gp : ffffffff82d26138 tp : ff6000008477a800 t0 : 0000000000046600
+>>   |  t1 : ffffffff812b6ddc t2 : 0000000000000000 s0 : ff2000000001be70
+>>   |  s1 : ff5ffffffffe8998 a0 : ff5ffffffffe8998 a1 : ff600003fef4b000
+>>   |  a2 : 000000000000003f a3 : ffffffff80008250 a4 : 0000000000000060
+>>   |  a5 : 0000000000000080 a6 : 0000000000000000 a7 : 0000000000735049
+>>   |  s2 : ff5ffffffffe8998 s3 : 0000000000000022 s4 : 0000000000001000
+>>   |  s5 : 0000000000000007 s6 : ff5ffffffffe8570 s7 : ffffffff82d6bd30
+>>   |  s8 : 000000000000003f s9 : ffffffff82d2c5e8 s10: 000000000000ffff
+>>   |  s11: ffffffff82d2c5d8 t3 : ffffffff81ea8f28 t4 : 0000000000000000
+>>   |  t5 : ff6000008fd28278 t6 : 0000000000040000
+>>   | status: 0000000200000100 badaddr: 0000000000000000 cause:
+>> 0000000000000003
+>>   | [<ffffffff801b1bc4>] bpf_mem_refill+0x1fc/0x206
+>>   | [<ffffffff8015fe84>] irq_work_single+0x68/0x70
+>>   | [<ffffffff8015feb4>] irq_work_run_list+0x28/0x36
+>>   | [<ffffffff8015fefa>] irq_work_run+0x38/0x66
+>>   | [<ffffffff8000828a>] handle_IPI+0x3a/0xb4
+>>   | [<ffffffff800a5c3a>] handle_percpu_devid_irq+0xa4/0x1f8
+>>   | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
+>>   | [<ffffffff800ae570>] ipi_mux_process+0xac/0xfa
+>>   | [<ffffffff8000a8ea>] sbi_ipi_handle+0x2e/0x88
+>>   | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
+>>   | [<ffffffff807ee70e>] riscv_intc_irq+0x36/0x4e
+>>   | [<ffffffff812b5d3a>] handle_riscv_irq+0x54/0x86
+>>   | [<ffffffff812b6904>] do_irq+0x66/0x98
+>>   | ---[ end trace 0000000000000000 ]---
+>>
+>> Code:
+>>   | static void free_bulk(struct bpf_mem_cache *c)
+>>   | {
+>>   |     struct bpf_mem_cache *tgt = c->tgt;
+>>   |     struct llist_node *llnode, *t;
+>>   |     unsigned long flags;
+>>   |     int cnt;
+>>   |
+>>   |     WARN_ON_ONCE(tgt->unit_size != c->unit_size);
+>>   | ...
+>>
+>> I'm not well versed in the memory allocator; Before I dive into it --
+>> has anyone else hit it? Ideas on why the warn_on_once is hit?
+>
+> Maybe take a look at the patch
+>   822fb26bdb55  bpf: Add a hint to allocated objects.
+>
+> In the above patch, we have
+>
+> +       /*
+> +        * Remember bpf_mem_cache that allocated this object.
+> +        * The hint is not accurate.
+> +        */
+> +       c->tgt = *(struct bpf_mem_cache **)llnode;
+>
+> I suspect that the warning may be related to the above.
+> I tried the above ./test_progs command line (running multiple
+> at the same time) and didn't trigger the issue.
+
+The extra 8-bytes before the freed pointer is used to save the pointer
+of the original bpf memory allocator where the freed pointer came from,
+so unit_free() could free the pointer back to the original allocator to
+prevent alloc-and-free unbalance.
+
+I suspect that a wrong pointer was passed to bpf_obj_drop, but do not
+find anything suspicious after checking linked_list. Another possibility
+is that there is write-after-free problem which corrupts the extra
+8-bytes before the freed pointer. Could you please apply the following
+debug patch to check whether or not the extra 8-bytes are corrupted ?
+
+
+
+
+>
+>>
+>>
+>> Björn
+>>
+>
+> .
+
+
+--------------F8A338A4793F84B37BC09D79
+Content-Type: text/plain; charset=UTF-8;
+ name="0001-bpf-Debug-for-bpf_mem_free.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="0001-bpf-Debug-for-bpf_mem_free.patch"
+
+RnJvbSA2OWU5YTI4MTA3N2VhZGNjNzNhNDk4NzZlZTZjNDEwM2VhOTRiMjU3IE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBIb3UgVGFvIDxob3V0YW8xQGh1YXdlaS5jb20+CkRh
+dGU6IFNhdCwgMjYgQXVnIDIwMjMgMTE6MzA6NDUgKzA4MDAKU3ViamVjdDogW1BBVENIXSBi
+cGY6IERlYnVnIGZvciBicGZfbWVtX2ZyZWUoKQoKU2lnbmVkLW9mZi1ieTogSG91IFRhbyA8
+aG91dGFvMUBodWF3ZWkuY29tPgotLS0KIGtlcm5lbC9icGYvbWVtYWxsb2MuYyB8IDE4ICsr
+KysrKysrKysrKysrKysrLQogMSBmaWxlIGNoYW5nZWQsIDE3IGluc2VydGlvbnMoKyksIDEg
+ZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9rZXJuZWwvYnBmL21lbWFsbG9jLmMgYi9rZXJu
+ZWwvYnBmL21lbWFsbG9jLmMKaW5kZXggNjYyODM4YTM0NjI5Li5mYjRmYTA2MDVhNjAgMTAw
+NjQ0Ci0tLSBhL2tlcm5lbC9icGYvbWVtYWxsb2MuYworKysgYi9rZXJuZWwvYnBmL21lbWFs
+bG9jLmMKQEAgLTgzMCw2ICs4MzAsOSBAQCB2b2lkIG5vdHJhY2UgKmJwZl9tZW1fYWxsb2Mo
+c3RydWN0IGJwZl9tZW1fYWxsb2MgKm1hLCBzaXplX3Qgc2l6ZSkKIAogdm9pZCBub3RyYWNl
+IGJwZl9tZW1fZnJlZShzdHJ1Y3QgYnBmX21lbV9hbGxvYyAqbWEsIHZvaWQgKnB0cikKIHsK
+KwlzdHJ1Y3QgYnBmX21lbV9jYWNoZSAqZnJvbSwgKnRvOworCXN0cnVjdCBicGZfbWVtX2Nh
+Y2hlcyAqY2M7CisJc3RhdGljIGludCBvbmNlOwogCWludCBpZHg7CiAKIAlpZiAoIXB0cikK
+QEAgLTgzOSw3ICs4NDIsMjAgQEAgdm9pZCBub3RyYWNlIGJwZl9tZW1fZnJlZShzdHJ1Y3Qg
+YnBmX21lbV9hbGxvYyAqbWEsIHZvaWQgKnB0cikKIAlpZiAoaWR4IDwgMCkKIAkJcmV0dXJu
+OwogCi0JdW5pdF9mcmVlKHRoaXNfY3B1X3B0cihtYS0+Y2FjaGVzKS0+Y2FjaGUgKyBpZHgs
+IHB0cik7CisJY2MgPSB0aGlzX2NwdV9wdHIobWEtPmNhY2hlcyk7CisJdG8gPSBjYy0+Y2Fj
+aGUgKyBpZHg7CisJZnJvbSA9ICooc3RydWN0IGJwZl9tZW1fY2FjaGUgKiopKHB0ciAtIExM
+SVNUX05PREVfU1opOworCWlmICghb25jZSAmJiB0by0+dW5pdF9zaXplICE9IGZyb20tPnVu
+aXRfc2l6ZSkgeworCQlvbmNlID0gdHJ1ZTsKKwkJcHJfZXJyKCJiYWQgY2FjaGUgJXB4OiBn
+b3Qgc2l6ZSAldSB3b3JrICVweCwgY2FjaGUgJXB4IGV4cCBzaXplICV1IHdvcmsgJXB4XG4i
+LAorCQkgICAgICAgZnJvbSwgZnJvbS0+dW5pdF9zaXplLCBmcm9tLT5yZWZpbGxfd29yay5m
+dW5jLAorCQkgICAgICAgdG8sIHRvLT51bml0X3NpemUsIHRvLT5yZWZpbGxfd29yay5mdW5j
+KTsKKwkJV0FSTl9PTigxKTsKKwkJcHJpbnRfaGV4X2R1bXAoS0VSTl9FUlIsICIiLCBEVU1Q
+X1BSRUZJWF9PRkZTRVQsIDE2LCAxLAorCQkJICAgICAgIGZyb20sIHNpemVvZigqZnJvbSks
+IGZhbHNlKTsKKwl9CisKKwl1bml0X2ZyZWUodG8sIHB0cik7CiB9CiAKIHZvaWQgbm90cmFj
+ZSBicGZfbWVtX2ZyZWVfcmN1KHN0cnVjdCBicGZfbWVtX2FsbG9jICptYSwgdm9pZCAqcHRy
+KQotLSAKMi4yOS4yCgo=
+--------------F8A338A4793F84B37BC09D79--
+
 
