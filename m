@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-8756-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8757-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4968078989E
-	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 20:12:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CABA07898B2
+	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 20:31:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECC1E28135B
-	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 18:12:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C9161C20904
+	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 18:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 961F0100B9;
-	Sat, 26 Aug 2023 18:12:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38474100CC;
+	Sat, 26 Aug 2023 18:31:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AB87DF4F
-	for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 18:12:35 +0000 (UTC)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CC2E7B
-	for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 11:12:34 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99c136ee106so239697666b.1
-        for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 11:12:33 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 091DFA53
+	for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 18:31:47 +0000 (UTC)
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719D91711
+	for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 11:31:46 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-991c786369cso246950866b.1
+        for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 11:31:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693073552; x=1693678352;
+        d=gmail.com; s=20221208; t=1693074705; x=1693679505;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=4Gyzqi9og5VHGej7RqMB/sGNKltacYE0aaQTeJM5H9c=;
-        b=GMVg/1oQvsYhhEmYirAtP41Lx/vkOjnyG01n6KTTeUzkspdjzji4xqorSKtk7Uvp1c
-         dNDpUXWsvHEv7QTmUv1CzD0MSOwKfLTQmO6bYwPAVuVPJt+DXwtyRHyRiznbaU06cqfT
-         vD5reBkDVHjMr1a1Ni8/u1s1+9B0HVAP1SxRVhNn3Z7nbdSNlmwSTi/ltm8Ctg/erFPk
-         3arJR/fF1+aLVQmG/UPcU7dRRPtxBBvsvJHzDnCpjCmxK28f6nbp5lOHGixoFN1seDJ/
-         U2bJcQMZyZFTuxf13gohWH0p5+2YnVjl0MIPb2kxEd1gwP/WMiOcRqyLoQAgem7YCxRD
-         j1LQ==
+        bh=+UJQr2hCnxXecSS9bbNuxh3r6VB0zAAGeKLbxHDvwWA=;
+        b=ZY5x4YYYN9qpVOkqEpCIIfBo8tMBylGbu2z1Y05QhqEA3NApF64DwJLl82S0tTm2LT
+         CKi167PjJYVP115gLmohDrJDVF3xM19nwPko0FDBWQVIXVo3wZUm0FMAhyp4t4qW9VLG
+         u2I4IX9i5SG/odnmr5vFItV86o9D6MtP0sRRNm2py+J3Rmccu/CLbijC9Y7Pis4R51SX
+         GeW8LMy5u2YTQ8rzsLAlVNnJFm0hQhQrHCmAJ5I6baKNjOpdizuAlCFWVR16Wlg4ugXQ
+         TWFEqZ891YNe9423wNzEpLrPZ+5Fdb5QSqqPINakdEfToW3J2N6WHAezlJWBt4Dkm95p
+         aCEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693073552; x=1693678352;
+        d=1e100.net; s=20221208; t=1693074705; x=1693679505;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Gyzqi9og5VHGej7RqMB/sGNKltacYE0aaQTeJM5H9c=;
-        b=fK00HXvql8oF3qTZByiEK8+iyabwjXvzfWghmTpPVE2GuNKghwENrKr9tclsHRk2Uk
-         r0oBTAwcfI6PwIztON26/gZd4tS+trlZZEZayHAKje+KJNSh2jtkT5YYTnq6+8dEiSiq
-         Lsn2Pqd3acPyrZ7BZacBa12H3lVqxCClhTKh61xe7ZJ2YDxbRjHPbZcWlAc0nj3MAOng
-         q+5KYm5M+u/e8qu2zDFXZXu9y4xcbbccBqO6JfMxaVp+ryplhBlY913FLAL7lIKcBkkH
-         EYDcNoCXpEY6sZ//66/2Hd8RlPa6jJdN8daiihCi1yiJnH8WxYuOpwLjL61jBuQ+GJ6P
-         tyzw==
-X-Gm-Message-State: AOJu0YwDIQ2LdryZgPlYX/TnUO5zvfXDSmsxicRhUOfwW5kVAruFzjPm
-	UU7ExVTLnSOr/bArMOJXzXc=
-X-Google-Smtp-Source: AGHT+IEkSnUDy4cH+EJxekXscvslKpfZGHS61kq8bBp8TxIYmOpTFGcesNwwLFtzVpMz/YdEFIjesQ==
-X-Received: by 2002:a17:906:8468:b0:9a1:f928:dddc with SMTP id hx8-20020a170906846800b009a1f928dddcmr7338705ejc.41.1693073552146;
-        Sat, 26 Aug 2023 11:12:32 -0700 (PDT)
+        bh=+UJQr2hCnxXecSS9bbNuxh3r6VB0zAAGeKLbxHDvwWA=;
+        b=Y1dbxiBMup6AEQ8m4Qutj0NVab+rYs08FKliYYM33r0TXPOYMdhzx1c7AZ3oRQqQov
+         9yhIuHp2XXcwUNtlTU/9UnJm7sHv9+h2iW6zvDb6U5SgQisPN0w+rukkneb5BpP4bOCB
+         NpKcs7t1pAgoJpgszvY5s5uZI5BN1aSpoQpbE054b4JwIneMjXuMdWHuyYmQ3+DckcXc
+         m0hzmRNnBGP/3ShcqslNpkhtylShX8xOLcvis4G1Q02JyUMAD0nvTRC7oy0rnW6QQtT3
+         ppdvvt5RSqJufpx2zneDr7HzXx+q3aPVEQgsEN3QVxq262FFjq+PaLxQwumgJ2ZCObyJ
+         8y2g==
+X-Gm-Message-State: AOJu0YwQIsPUigMmV7yrlkOfGWrI71esMdgSdO/ohCGcAnhOFByKyFY1
+	0oOZncJKRb138XWtk4/DT0o=
+X-Google-Smtp-Source: AGHT+IECbG3m5ZTwBp8m0310WyiPwYIcaK3SXszCxf7bpYqK78t1mfuk+rPCWQCD2WsFl8PK4JmYNA==
+X-Received: by 2002:a17:906:2009:b0:99b:dd38:864d with SMTP id 9-20020a170906200900b0099bdd38864dmr15776429ejo.23.1693074704819;
+        Sat, 26 Aug 2023 11:31:44 -0700 (PDT)
 Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
-        by smtp.gmail.com with ESMTPSA id cf20-20020a170906b2d400b0098e78ff1a87sm2461305ejb.120.2023.08.26.11.12.30
+        by smtp.gmail.com with ESMTPSA id fj9-20020a1709069c8900b00992e265495csm2474479ejc.212.2023.08.26.11.31.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Aug 2023 11:12:31 -0700 (PDT)
-Date: Sat, 26 Aug 2023 20:12:30 +0200
+        Sat, 26 Aug 2023 11:31:44 -0700 (PDT)
+Date: Sat, 26 Aug 2023 20:31:43 +0200
 From: Nam Cao <namcaov@gmail.com>
 To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
 Cc: linux-riscv@lists.infradead.org, Guo Ren <guoren@kernel.org>,
@@ -66,9 +66,10 @@ Cc: linux-riscv@lists.infradead.org, Guo Ren <guoren@kernel.org>,
 	Puranjay Mohan <puranjay12@gmail.com>
 Subject: Re: RISC-V uprobe bug (Was: Re: WARNING: CPU: 3 PID: 261 at
  kernel/bpf/memalloc.c:342)
-Message-ID: <ZOpAjkTtA4jYtuIa@nam-dell>
+Message-ID: <ZOpFD3W3RfiqOoWn@nam-dell>
 References: <87jztjmmy4.fsf@all.your.base.are.belong.to.us>
  <87v8d19aun.fsf@all.your.base.are.belong.to.us>
+ <ZOpAjkTtA4jYtuIa@nam-dell>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -78,7 +79,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87v8d19aun.fsf@all.your.base.are.belong.to.us>
+In-Reply-To: <ZOpAjkTtA4jYtuIa@nam-dell>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -86,89 +87,56 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, Aug 26, 2023 at 03:44:48PM +0200, Björn Töpel wrote:
-> Björn Töpel <bjorn@kernel.org> writes:
+On Sat, Aug 26, 2023 at 08:12:30PM +0200, Nam Cao wrote:
+> On Sat, Aug 26, 2023 at 03:44:48PM +0200, Björn Töpel wrote:
+> > Björn Töpel <bjorn@kernel.org> writes:
+> > 
+> > > I'm chasing a workqueue hang on RISC-V/qemu (TCG), using the bpf
+> > > selftests on bpf-next 9e3b47abeb8f.
+> > >
+> > > I'm able to reproduce the hang by multiple runs of:
+> > >  | ./test_progs -a link_api -a linked_list
+> > > I'm currently investigating that.
+> > 
+> > +Guo for uprobe
+> > 
+> > This was an interesting bug. The hang is an ebreak (RISC-V breakpoint),
+> > that puts the kernel into an infinite loop.
+> > 
+> > To reproduce, simply run the BPF selftest:
+> > ./test_progs -v -a link_api -a linked_list
+> > 
+> > First the link_api test is being run, which exercises the uprobe
+> > functionality. The link_api test completes, and test_progs will still
+> > have the uprobe active/enabled. Next the linked_list test triggered a
+> > WARN_ON (which is implemented via ebreak as well).
+> > 
+> > Now, handle_break() is entered, and the uprobe_breakpoint_handler()
+> > returns true exiting the handle_break(), which returns to the WARN
+> > ebreak, and we have merry-go-round.
+> > 
+> > Lucky for the RISC-V folks, the BPF memory handler had a WARN that
+> > surfaced the bug! ;-)
 > 
-> > I'm chasing a workqueue hang on RISC-V/qemu (TCG), using the bpf
-> > selftests on bpf-next 9e3b47abeb8f.
-> >
-> > I'm able to reproduce the hang by multiple runs of:
-> >  | ./test_progs -a link_api -a linked_list
-> > I'm currently investigating that.
+> Thanks for the analysis.
 > 
-> +Guo for uprobe
+> I couldn't reproduce the problem, so I am just taking a guess here. The problem
+> is bebcause uprobes didn't find a probe point at that ebreak instruction. However,
+> it also doesn't think a ebreak instruction is there, then it got confused and just
+> return back to the ebreak instruction, then everything repeats.
 > 
-> This was an interesting bug. The hang is an ebreak (RISC-V breakpoint),
-> that puts the kernel into an infinite loop.
-> 
-> To reproduce, simply run the BPF selftest:
-> ./test_progs -v -a link_api -a linked_list
-> 
-> First the link_api test is being run, which exercises the uprobe
-> functionality. The link_api test completes, and test_progs will still
-> have the uprobe active/enabled. Next the linked_list test triggered a
-> WARN_ON (which is implemented via ebreak as well).
-> 
-> Now, handle_break() is entered, and the uprobe_breakpoint_handler()
-> returns true exiting the handle_break(), which returns to the WARN
-> ebreak, and we have merry-go-round.
-> 
-> Lucky for the RISC-V folks, the BPF memory handler had a WARN that
-> surfaced the bug! ;-)
+> The reason why uprobes didn't think there is a ebreak instruction is because
+> is_trap_insn() only returns true if it is a 32-bit ebreak, or 16-bit c.ebreak if
+> C extension is available, not both. So a 32-bit ebreak is not correctly recognized
+> as a trap instruction.
 
-Thanks for the analysis.
-
-I couldn't reproduce the problem, so I am just taking a guess here. The problem
-is bebcause uprobes didn't find a probe point at that ebreak instruction. However,
-it also doesn't think a ebreak instruction is there, then it got confused and just
-return back to the ebreak instruction, then everything repeats.
-
-The reason why uprobes didn't think there is a ebreak instruction is because
-is_trap_insn() only returns true if it is a 32-bit ebreak, or 16-bit c.ebreak if
-C extension is available, not both. So a 32-bit ebreak is not correctly recognized
-as a trap instruction.
-
-If my guess is correct, the following should fix it. Can you please try if it works?
-
-(this is the first time I send a patch this way, so please let me know if you can't apply)
+I feel like I wasn't very clear with this: I was talking about handle_swbp() in
+kernel/events/uprobes.c. In this function, the call to find_active_uprobe() should
+return false. Then uprobes check if the trap instruction is still there by
+calling is_trap_insn(), who correctly says "no". So uprobes assume it is safe to
+just comeback to that address. If is_trap_insn() correctly returns true, then
+uprobes would know that this is a ebreak, but not a probe, and handle thing correctly.
 
 Best regards,
 Nam
-
----
- arch/riscv/kernel/probes/uprobes.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/arch/riscv/kernel/probes/uprobes.c b/arch/riscv/kernel/probes/uprobes.c
-index 194f166b2cc4..91f4ce101cd1 100644
---- a/arch/riscv/kernel/probes/uprobes.c
-+++ b/arch/riscv/kernel/probes/uprobes.c
-@@ -3,6 +3,7 @@
- #include <linux/highmem.h>
- #include <linux/ptrace.h>
- #include <linux/uprobes.h>
-+#include <asm/insn.h>
- 
- #include "decode-insn.h"
- 
-@@ -17,6 +18,15 @@ bool is_swbp_insn(uprobe_opcode_t *insn)
- #endif
- }
- 
-+bool is_trap_insn(uprobe_opcode_t *insn)
-+{
-+#ifdef CONFIG_RISCV_ISA_C
-+	if (riscv_insn_is_c_ebreak(*insn))
-+		return true;
-+#endif
-+	return riscv_insn_is_ebreak(*insn);
-+}
-+
- unsigned long uprobe_get_swbp_addr(struct pt_regs *regs)
- {
- 	return instruction_pointer(regs);
--- 
-2.34.1
-
-
 
