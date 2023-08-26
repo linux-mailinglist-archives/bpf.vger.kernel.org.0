@@ -1,89 +1,157 @@
-Return-Path: <bpf+bounces-8723-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8724-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59DBB7892C2
-	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 02:46:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 333EF7892C7
+	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 02:49:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B295281964
-	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 00:46:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B7901C21047
+	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 00:49:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 829CA393;
-	Sat, 26 Aug 2023 00:46:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D499A385;
+	Sat, 26 Aug 2023 00:49:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37D5D18D
-	for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 00:46:05 +0000 (UTC)
-Received: from out-247.mta1.migadu.com (out-247.mta1.migadu.com [95.215.58.247])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271D226B6
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 17:46:02 -0700 (PDT)
-Message-ID: <65665aaa-f3c1-123a-c61d-7b128835a1c5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1693010760;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nuWctfqYYotL0SbuEIUtNLS1sxkPyQ7nPENsxxNa6iI=;
-	b=PmQF2XqfZruoMX7oq1wyyhx2LeS29heyMgGH53kPSk8p8BtMwRy9CSeAd6bLuh4F2h6TAR
-	WGe6x7/BXHs/VkqEmkfxNNvHX8zt+CTgme75rsFXFERUBCPRqNvfdH7b7cJtmZvQm8eiKM
-	8Q5c6Rkeef4UOT2XsFxG9bxZd89qK3E=
-Date: Fri, 25 Aug 2023 17:45:54 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F57118D
+	for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 00:49:17 +0000 (UTC)
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BE826B6
+	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 17:49:16 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-56b2e689828so864744a12.1
+        for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 17:49:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693010956; x=1693615756;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g42BQ3cB1i0olBbYgwxLW0vQ85qgDLVbebesrlPh3TY=;
+        b=MGqF8FiI/eA9Ezh3ySZPP/ZzzMUJiM5y2EpgOh1j6bwhypp7ajan4rNDGGeNCc8TQ9
+         RI4SUt19v2TGSB2yga6lCyuuJWmdSDZ4N+RerKJgEL15Ovmzz0y5tjnqCfZ+ptonaeQ3
+         1jPaTTC6cXRG3zPsxqgGHZWFlwQCGjrGw2b6Pt9ps2RHRVo94Qvzn0K0QJFCuNRs2fFu
+         JiSvw1s8/HUGn3XUeqGi7TgvHjgCYnY8K6lGl2ZI2siolK4Hr49ADzYAMWKA1Uc1vldB
+         ULSy4SiMqclFqy+32uD7jYbxGe4W8sRgFa+62KJK2hp9F9rWJlhYEjTzm1GmctI0Ld4/
+         Io/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693010956; x=1693615756;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=g42BQ3cB1i0olBbYgwxLW0vQ85qgDLVbebesrlPh3TY=;
+        b=bLBAJqhfcw7cJTvcEwMdBE4JvitHJUbGTETDa8ovDNlrWomZvOxXMz989jr/rVURUA
+         9BdlmNKwsOFb2wG9nGP5Dscd2ofGAoFnkpfDQAQB9iTsvKUPkjG4314am6m37YXFWObT
+         rMw3QmdJW48nEpCqxcHNkOVzPfXiRWly1N4WMgOsmO7qZ6H23LWEMluZJ/uhZ4uYX11V
+         aI1A/K71DKeJLhcK6XCromI/8bAIRGw5d+KEYE3Es0ZarDOeCjjv0TzBVI+f1ZAv5xk5
+         veob0xWzz6/oOUkb+crI0W5+18xHJ1copbwxqocNmg3lJ+Uozu88ZerA+gCQLAIMs5Fc
+         7Idw==
+X-Gm-Message-State: AOJu0YzIykZqiSR3imw3KKYhUcZ0N+r9b6UiqwlweHDTyhQJhTfWpLcf
+	JVJPVR/azQl1vTfmJl90HVVpyQMZoac=
+X-Google-Smtp-Source: AGHT+IHXDWfm3zYwSe4O9hcyF/P88Vx0xlDrcNCuRnFV5Z2J01E0X3ILp2W4D8qdJ44tY7fPkECzWg==
+X-Received: by 2002:a17:903:244e:b0:1c0:d777:3224 with SMTP id l14-20020a170903244e00b001c0d7773224mr4081903pls.50.1693010955894;
+        Fri, 25 Aug 2023 17:49:15 -0700 (PDT)
+Received: from localhost ([98.97.117.85])
+        by smtp.gmail.com with ESMTPSA id g6-20020a170902c38600b001bdccf6b8c9sm2399694plg.127.2023.08.25.17.49.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 17:49:15 -0700 (PDT)
+Date: Fri, 25 Aug 2023 17:49:12 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Justin Iurman <justin.iurman@uliege.be>, 
+ bpf@vger.kernel.org
+Cc: justin.iurman@uliege.be
+Message-ID: <64e94c084c7a7_1b2e6208d@john.notmuch>
+In-Reply-To: <e3783201-3b28-3661-eee3-3b5fecad0964@uliege.be>
+References: <e3783201-3b28-3661-eee3-3b5fecad0964@uliege.be>
+Subject: RE: [QUESTION] bpf/tc verifier error: invalid access to map value,
+ min value is outside of the allowed memory range
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH v3 8/9] io_uring/cmd: BPF hook for getsockopt cmd
-Content-Language: en-US
-To: Breno Leitao <leitao@debian.org>
-Cc: Gabriel Krisman Bertazi <krisman@suse.de>, sdf@google.com,
- axboe@kernel.dk, asml.silence@gmail.com, willemdebruijn.kernel@gmail.com,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- io-uring@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com
-References: <20230817145554.892543-1-leitao@debian.org>
- <20230817145554.892543-9-leitao@debian.org> <87pm3l32rk.fsf@suse.de>
- <6ae89b3a-b53d-dd2c-ecc6-1094f9b95586@linux.dev> <ZOjcpmlukOuEmuZ9@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <ZOjcpmlukOuEmuZ9@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 8/25/23 9:53 AM, Breno Leitao wrote:
-> On Mon, Aug 21, 2023 at 01:25:25PM -0700, Martin KaFai Lau wrote:
->> On 8/17/23 12:08 PM, Gabriel Krisman Bertazi wrote:
->>> Shouldn't you call sock->ops->getsockopt for level!=SOL_SOCKET prior to
->>> running the hook?  Before this patch, it would bail out with EOPNOTSUPP,
->>> but now the bpf hook gets called even for level!=SOL_SOCKET, which
->>> doesn't fit __sys_getsockopt. Am I misreading the code?
->> I agree it should not call into bpf if the io_uring cannot support non
->> SOL_SOCKET optnames. Otherwise, the bpf prog will get different optval and
->> optlen when running in _sys_getsockopt vs io_uring getsockopt (e.g. in
->> regular _sys_getsockopt(SOL_TCP), bpf expects the optval returned from
->> tcp_getsockopt).
->>
->> I think __sys_getsockopt can also be refactored similar to __sys_setsockopt
->> in patch 3. Yes, for non SOL_SOCKET it only supports __user *optval and
->> __user *optlen but may be a WARN_ON_ONCE/BUG_ON(sockpt_is_kernel(optval))
->> can be added before calling ops->getsockopt()? Then this details can be
->> hidden away from the io_uring.
+Justin Iurman wrote:
+> Hello,
 > 
+> I'm facing a verifier error and don't know how to make it happy (already 
+> tried lots of checks). First, here is my env:
+>   - OS: Ubuntu 22.04.3 LTS
+>   - kernel: 5.15.0-79-generic x86_64 (CONFIG_DEBUG_INFO_BTF=y)
+>   - clang version: 14.0.0-1ubuntu1.1
+>   - iproute2-5.15.0 with libbpf 0.5.0
 > 
-> Right, I've spent some time thinking about it, and this could be done.
-> This is a draft I have. Is it what you had in mind?
+> And here is a simplified example of my program (basically, it will 
+> insert in packets some bytes defined inside a map):
+> 
+> #include "vmlinux.h"
+> #include <bpf/bpf_endian.h>
+> #include <bpf/bpf_helpers.h>
+> 
+> #define MAX_BYTES 2048
+> 
+> struct xxx_t {
+> 	__u32 bytes_len;
+> 	__u8 bytes[MAX_BYTES];
+> };
+> 
+> struct {
+> 	__uint(type, BPF_MAP_TYPE_ARRAY);
+> 	__uint(max_entries, 1);
+> 	__type(key, __u32);
+> 	__type(value, struct xxx_t);
+> 	__uint(pinning, LIBBPF_PIN_BY_NAME);
+> } my_map SEC(".maps");
+> 
+> char _license[] SEC("license") = "GPL";
+> 
+> SEC("egress")
+> int egress_handler(struct __sk_buff *skb)
+> {
+> 	void *data_end = (void *)(long)skb->data_end;
+> 	void *data = (void *)(long)skb->data;
+> 	struct ethhdr *eth = data;
+> 	struct ipv6hdr *ip6;
+> 	struct xxx_t *x;
+> 	__u32 offset;
+> 	__u32 idx = 0;
+> 
+> 	offset = sizeof(*eth) + sizeof(*ip6);
+> 	if (data + offset > data_end)
+> 		return TC_ACT_OK;
+> 
+> 	if (bpf_ntohs(eth->h_proto) != ETH_P_IPV6)
+> 		return TC_ACT_OK;
+> 
+> 	x = bpf_map_lookup_elem(&my_map, &idx);
+> 	if (!x)
+> 		return TC_ACT_OK;
+> 
+> 	if (x->bytes_len == 0 || x->bytes_len > MAX_BYTES)
+> 		return TC_ACT_OK;
+> 
+> 	if (bpf_skb_adjust_room(skb, x->bytes_len, BPF_ADJ_ROOM_NET, 0))
+> 		return TC_ACT_OK;
+> 
+> 	if (bpf_skb_store_bytes(skb, offset, x->bytes, 8/*x->bytes_len*/, 
 
-Yes. lgtm. Thanks.
+You will see lots of folks & that value with something to
+ensure compiler/verifier get a solid upper/lower bounds.
+This is slightly kernel dependent the newer kernels are
+better at tracking bounds.
 
+This should do what you want more or less,
+
+  x->bytes_len &= 0x7ff
 
