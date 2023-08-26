@@ -1,71 +1,90 @@
-Return-Path: <bpf+bounces-8724-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8725-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 333EF7892C7
-	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 02:49:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D65BD789318
+	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 03:32:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B7901C21047
-	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 00:49:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE29C1C2108A
+	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 01:32:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D499A385;
-	Sat, 26 Aug 2023 00:49:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C06D397;
+	Sat, 26 Aug 2023 01:32:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F57118D
-	for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 00:49:17 +0000 (UTC)
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BE826B6
-	for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 17:49:16 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-56b2e689828so864744a12.1
-        for <bpf@vger.kernel.org>; Fri, 25 Aug 2023 17:49:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0BBE37F;
+	Sat, 26 Aug 2023 01:32:05 +0000 (UTC)
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3D41FC3;
+	Fri, 25 Aug 2023 18:32:04 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c0d5b16aacso9923555ad.1;
+        Fri, 25 Aug 2023 18:32:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693010956; x=1693615756;
+        d=gmail.com; s=20221208; t=1693013524; x=1693618324;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=g42BQ3cB1i0olBbYgwxLW0vQ85qgDLVbebesrlPh3TY=;
-        b=MGqF8FiI/eA9Ezh3ySZPP/ZzzMUJiM5y2EpgOh1j6bwhypp7ajan4rNDGGeNCc8TQ9
-         RI4SUt19v2TGSB2yga6lCyuuJWmdSDZ4N+RerKJgEL15Ovmzz0y5tjnqCfZ+ptonaeQ3
-         1jPaTTC6cXRG3zPsxqgGHZWFlwQCGjrGw2b6Pt9ps2RHRVo94Qvzn0K0QJFCuNRs2fFu
-         JiSvw1s8/HUGn3XUeqGi7TgvHjgCYnY8K6lGl2ZI2siolK4Hr49ADzYAMWKA1Uc1vldB
-         ULSy4SiMqclFqy+32uD7jYbxGe4W8sRgFa+62KJK2hp9F9rWJlhYEjTzm1GmctI0Ld4/
-         Io/w==
+        bh=pxM42LCCBRiB6Q0CvcNJdV8hGhx4Rs0xMJ6jHxhjzrg=;
+        b=sYJW7xLjWY3iSQhzr8tGNn0mbFOWq44QiPL8WNBrc3tgTAMqZJm/QmWQXOFpXLTNNX
+         l0/XwNuAAfYHMtKhiV6J9MCY1PZMDSquBvkzcGLv24R3CxR+osYXnArjkCdmtCwouVeD
+         Ytsk6CDN/0wiZrEPKv7yrXyWutC8wv95XbXO3YDV9k6dE9SWgRp/7EH3vrtefLhVb3fS
+         PNUXoh+4OOj/GYUONWy527SMpc0ZMqT6TS/J1tUJUrCk4QFlaUD9njbnzhik4cngCvdZ
+         L2Rnojjss/M6URZ/dY8DjGtlISYQLTx8V1CG/hsffQZI6PdMqTgArPCGHTOeVwTsv62Z
+         XVBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693010956; x=1693615756;
+        d=1e100.net; s=20221208; t=1693013524; x=1693618324;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=g42BQ3cB1i0olBbYgwxLW0vQ85qgDLVbebesrlPh3TY=;
-        b=bLBAJqhfcw7cJTvcEwMdBE4JvitHJUbGTETDa8ovDNlrWomZvOxXMz989jr/rVURUA
-         9BdlmNKwsOFb2wG9nGP5Dscd2ofGAoFnkpfDQAQB9iTsvKUPkjG4314am6m37YXFWObT
-         rMw3QmdJW48nEpCqxcHNkOVzPfXiRWly1N4WMgOsmO7qZ6H23LWEMluZJ/uhZ4uYX11V
-         aI1A/K71DKeJLhcK6XCromI/8bAIRGw5d+KEYE3Es0ZarDOeCjjv0TzBVI+f1ZAv5xk5
-         veob0xWzz6/oOUkb+crI0W5+18xHJ1copbwxqocNmg3lJ+Uozu88ZerA+gCQLAIMs5Fc
-         7Idw==
-X-Gm-Message-State: AOJu0YzIykZqiSR3imw3KKYhUcZ0N+r9b6UiqwlweHDTyhQJhTfWpLcf
-	JVJPVR/azQl1vTfmJl90HVVpyQMZoac=
-X-Google-Smtp-Source: AGHT+IHXDWfm3zYwSe4O9hcyF/P88Vx0xlDrcNCuRnFV5Z2J01E0X3ILp2W4D8qdJ44tY7fPkECzWg==
-X-Received: by 2002:a17:903:244e:b0:1c0:d777:3224 with SMTP id l14-20020a170903244e00b001c0d7773224mr4081903pls.50.1693010955894;
-        Fri, 25 Aug 2023 17:49:15 -0700 (PDT)
+        bh=pxM42LCCBRiB6Q0CvcNJdV8hGhx4Rs0xMJ6jHxhjzrg=;
+        b=BGQISMM8VjrEyxFOeWm78U3tqELXzwlONRFQu4eE6BKjrkNU1QabqAuXJeeV7fbRcQ
+         SXCaAYYDMBkpCd6Xjlme2mHJta/nWfNnx74Ue7naBkfNIXSYroBEhZ66PRt66Xi1BHzX
+         0EwpRa0iz9rcGFGUfjtFlILTARf5alMfi4ODKsjwm89IPSECegMx2kSd2HQR8HggrdYZ
+         hz4MsHCQnYIVvEJG8jJsooavS65W0MUf7YO47WeTc/930fRHmUQHgTgO4qiFm4aq7KYk
+         6PLs8jtlKHzaE655n8PLiIVeZFtNXg6T7KI9CJZzbKq/COYkskHaBtthEAGfrvgmXKOW
+         Y7aQ==
+X-Gm-Message-State: AOJu0YyRN6BOI41dS8oG72A/fWzf3n0QhhNGj3Tg3UX3X3nNZERnPk00
+	hjKN4Mn376vqLcwSbeNANk0=
+X-Google-Smtp-Source: AGHT+IGbWnWbeFo7egw/8baSDWPW+7koQyPahMck5oB7vQ9xGV8oKaOQfslcRlWBlNq8peT/0YhP7A==
+X-Received: by 2002:a17:902:ec83:b0:1c0:d17a:bfe9 with SMTP id x3-20020a170902ec8300b001c0d17abfe9mr6083550plg.46.1693013523877;
+        Fri, 25 Aug 2023 18:32:03 -0700 (PDT)
 Received: from localhost ([98.97.117.85])
-        by smtp.gmail.com with ESMTPSA id g6-20020a170902c38600b001bdccf6b8c9sm2399694plg.127.2023.08.25.17.49.15
+        by smtp.gmail.com with ESMTPSA id x19-20020a170902821300b001bbf7fd354csm2416186pln.213.2023.08.25.18.32.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 17:49:15 -0700 (PDT)
-Date: Fri, 25 Aug 2023 17:49:12 -0700
+        Fri, 25 Aug 2023 18:32:03 -0700 (PDT)
+Date: Fri, 25 Aug 2023 18:32:01 -0700
 From: John Fastabend <john.fastabend@gmail.com>
-To: Justin Iurman <justin.iurman@uliege.be>, 
+To: Jakub Sitnicki <jakub@cloudflare.com>, 
+ Liu Jian <liujian56@huawei.com>
+Cc: john.fastabend@gmail.com, 
+ ast@kernel.org, 
+ daniel@iogearbox.net, 
+ andrii@kernel.org, 
+ martin.lau@linux.dev, 
+ song@kernel.org, 
+ yonghong.song@linux.dev, 
+ kpsingh@kernel.org, 
+ sdf@google.com, 
+ haoluo@google.com, 
+ jolsa@kernel.org, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ dsahern@kernel.org, 
+ netdev@vger.kernel.org, 
  bpf@vger.kernel.org
-Cc: justin.iurman@uliege.be
-Message-ID: <64e94c084c7a7_1b2e6208d@john.notmuch>
-In-Reply-To: <e3783201-3b28-3661-eee3-3b5fecad0964@uliege.be>
-References: <e3783201-3b28-3661-eee3-3b5fecad0964@uliege.be>
-Subject: RE: [QUESTION] bpf/tc verifier error: invalid access to map value,
- min value is outside of the allowed memory range
+Message-ID: <64e95611f1b33_1d0032088c@john.notmuch>
+In-Reply-To: <87r0nr5j0a.fsf@cloudflare.com>
+References: <20230824143959.1134019-1-liujian56@huawei.com>
+ <20230824143959.1134019-2-liujian56@huawei.com>
+ <87r0nr5j0a.fsf@cloudflare.com>
+Subject: Re: [PATCH bpf-next v3 1/7] bpf, sockmap: add BPF_F_PERMANENT flag
+ for skmsg redirect
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -77,81 +96,116 @@ Content-Type: text/plain;
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Justin Iurman wrote:
-> Hello,
-> 
-> I'm facing a verifier error and don't know how to make it happy (already 
-> tried lots of checks). First, here is my env:
->   - OS: Ubuntu 22.04.3 LTS
->   - kernel: 5.15.0-79-generic x86_64 (CONFIG_DEBUG_INFO_BTF=y)
->   - clang version: 14.0.0-1ubuntu1.1
->   - iproute2-5.15.0 with libbpf 0.5.0
-> 
-> And here is a simplified example of my program (basically, it will 
-> insert in packets some bytes defined inside a map):
-> 
-> #include "vmlinux.h"
-> #include <bpf/bpf_endian.h>
-> #include <bpf/bpf_helpers.h>
-> 
-> #define MAX_BYTES 2048
-> 
-> struct xxx_t {
-> 	__u32 bytes_len;
-> 	__u8 bytes[MAX_BYTES];
-> };
-> 
-> struct {
-> 	__uint(type, BPF_MAP_TYPE_ARRAY);
-> 	__uint(max_entries, 1);
-> 	__type(key, __u32);
-> 	__type(value, struct xxx_t);
-> 	__uint(pinning, LIBBPF_PIN_BY_NAME);
-> } my_map SEC(".maps");
-> 
-> char _license[] SEC("license") = "GPL";
-> 
-> SEC("egress")
-> int egress_handler(struct __sk_buff *skb)
-> {
-> 	void *data_end = (void *)(long)skb->data_end;
-> 	void *data = (void *)(long)skb->data;
-> 	struct ethhdr *eth = data;
-> 	struct ipv6hdr *ip6;
-> 	struct xxx_t *x;
-> 	__u32 offset;
-> 	__u32 idx = 0;
-> 
-> 	offset = sizeof(*eth) + sizeof(*ip6);
-> 	if (data + offset > data_end)
-> 		return TC_ACT_OK;
-> 
-> 	if (bpf_ntohs(eth->h_proto) != ETH_P_IPV6)
-> 		return TC_ACT_OK;
-> 
-> 	x = bpf_map_lookup_elem(&my_map, &idx);
-> 	if (!x)
-> 		return TC_ACT_OK;
-> 
-> 	if (x->bytes_len == 0 || x->bytes_len > MAX_BYTES)
-> 		return TC_ACT_OK;
-> 
-> 	if (bpf_skb_adjust_room(skb, x->bytes_len, BPF_ADJ_ROOM_NET, 0))
-> 		return TC_ACT_OK;
-> 
-> 	if (bpf_skb_store_bytes(skb, offset, x->bytes, 8/*x->bytes_len*/, 
+Jakub Sitnicki wrote:
+> On Thu, Aug 24, 2023 at 10:39 PM +08, Liu Jian wrote:
+> > If the sockmap msg redirection function is used only to forward packets
+> > and no other operation, the execution result of the BPF_SK_MSG_VERDICT
+> > program is the same each time. In this case, the BPF program only needs to
+> > be run once. Add BPF_F_PERMANENT flag to bpf_msg_redirect_map() and
+> > bpf_msg_redirect_hash() to implement this ability.
+> >
+> > Then we can enable this function in the bpf program as follows:
+> > bpf_msg_redirect_hash(xx, xx, xx, BPF_F_INGRESS | BPF_F_PERMANENT);
+> >
+> > Test results using netperf  TCP_STREAM mode:
+> > for i in 1 64 128 512 1k 2k 32k 64k 100k 500k 1m;then
+> > netperf -T 1,2 -t TCP_STREAM -H 127.0.0.1 -l 20 -- -m $i -s 100m,100m -S 100m,100m
+> > done
+> >
+> > before:
+> > 3.84 246.52 496.89 1885.03 3415.29 6375.03 40749.09 48764.40 51611.34 55678.26 55992.78
+> > after:
+> > 4.43 279.20 555.82 2080.79 3870.70 7105.44 41836.41 49709.75 51861.56 55211.00 54566.85
+> >
+> > Signed-off-by: Liu Jian <liujian56@huawei.com>
 
-You will see lots of folks & that value with something to
-ensure compiler/verifier get a solid upper/lower bounds.
-This is slightly kernel dependent the newer kernels are
-better at tracking bounds.
+[...]
 
-This should do what you want more or less,
+> >  /* BPF_FUNC_skb_set_tunnel_key and BPF_FUNC_skb_get_tunnel_key flags. */
+> > diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+> > index a29508e1ff35..df1443cf5fbd 100644
+> > --- a/net/core/skmsg.c
+> > +++ b/net/core/skmsg.c
+> > @@ -885,6 +885,11 @@ int sk_psock_msg_verdict(struct sock *sk, struct sk_psock *psock,
+> >  			goto out;
+> >  		}
+> >  		psock->redir_ingress = sk_msg_to_ingress(msg);
+> > +		if (!msg->apply_bytes && !msg->cork_bytes)
+> > +			psock->redir_permanent =
+> > +				msg->flags & BPF_F_PERMANENT;
+> > +		else
+> > +			psock->redir_permanent = false;
+> 
+> Above can be rewritten as:
+> 
+> 		psock->redir_permanent = !msg->apply_bytes &&
+> 					 !msg->cork_bytes &&
+> 					 (msg->flags & BPF_F_PERMANENT);
+> 
+> But as I wrote earlier, I don't think it's a good idea to ignore the
+> flag. We can detect this conflict at the time the bpf_msg_sk_redirect_*
+> helper is called and return an error.
+> 
+> Naturally that means that that bpf_msg_{cork,apply}_bytes helpers need
+> to be adjusted to return an error if BPF_F_PERMANENT has been set.
 
-  x->bytes_len &= 0x7ff
+So far we've not really done much to protect a user from doing
+rather silly things. The following will all do something without
+errors,
+
+  bpf_msg_apply_bytes()
+  bpf_msg_apply_bytes() <- reset apply bytes
+
+  bpf_msg_cork_bytes()
+  bpf_msg_cork_bytes() <- resets cork byte
+
+also,
+
+  bpf_msg_redirect(..., BPF_F_INGRESS);
+  bpf_msg_redirect(..., 0); <- resets sk_redir and flags
+
+maybe there is some valid reason to even do above if further parsing
+identifies some reason to redirect to a alert socket or something.
+
+My original thinking was in the interest of not having a bunch of
+extra checks for performance reasons we shouldn't add guard rails
+unless something really unexpected might happen like a kernel
+panic or what not.
+
+This does feel a bit different though because before we
+didn't have calls that could impact other calls. My best idea
+is to just create a precedence and follow it. I would propose,
+
+'If BPF_F_PERMANENT is set apply_bytes and cork_bytes are
+ ignored.'
+
+The other direction (what is above?) has a bit of an inconsistency
+where these two flows are different?
+
+  bpf_apply_bytes()
+  bpf_msg_redirect(..., BPF_F_PERMANENT)
+
+and
+
+  bpf_msg_redirect(..., BPF_F_PERMANENT)
+  bpf_apply_bytes()
+
+It would be best if order of operations doesn't change the
+outcome because that starts to get really hard to reason about.
+
+This avoids having to add checks all over the place and then
+if users want we could give some mechanisms to read apply
+and cork bytes so people could write macros over those if
+they really want the hard error.
+
+WDYT?
+
+[...]
+
+Thanks!
 
