@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-8749-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8750-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9383B789715
-	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 16:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 13A4B78971E
+	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 16:06:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A6E228188E
-	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 14:03:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C23A22817FE
+	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 14:06:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C13EDDD8;
-	Sat, 26 Aug 2023 14:02:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 211DADDDB;
+	Sat, 26 Aug 2023 14:06:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A8ABCA58
-	for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 14:02:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD3A7C433C7;
-	Sat, 26 Aug 2023 14:02:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 147D7CA58
+	for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 14:06:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17630C433C7;
+	Sat, 26 Aug 2023 14:06:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1693058570;
-	bh=RZHkYur0kpYvgVYND39F8EDHpz0KGEHIwqM0/355IUs=;
+	s=k20201202; t=1693058764;
+	bh=ukZ6g9EgWPFpAkFvHGXVcuI1MM3Y+aVwL2MADMeVBTU=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=CYK6t/9miqMJe5VMd7UiNWV2OFKCownnT6Ig+7Q+o6MTvHzQbkt3fZ9WB6gvA9xA7
-	 OuC0j56OJRCUCgDjaMocRfXzo1gKz5OEychsYWDvjjLDfOuckjMs3GuGrfau7vRIOV
-	 1N1+4pj+EOEY0cHOsRxfaSVJsCF+eZgr89hy28O/WmTseKLJlQY8hH2FPBbvhrB4aD
-	 gfexUXDZfDnS+eAwuDv+bY5ZeBJCG9OCjdpexk63QxMwlsBqlfP2x94UsIaepmG/29
-	 ek3eVKbCVYNEl/zihNgr2P+RQKkFlAfE1tuN9nnVuV4x1Czf2WRtlZ+BAyrWUO+DJW
-	 6iIPDxHnHScXQ==
+	b=hEhdoseJzsPGizH7PA9sWAhJB8NV7oOIzb56+6bL7zKKO0dzFZQtjYW53M9Rdtrm1
+	 PDll6zD9T3tkm1zl9r1jdEooRVqDYJEYqiBPe8i5umSYGTn8SSoExX7ih97FPcgUaX
+	 xJUQsdOmuSD77v+2LbiRvJ8yv8ycUPjuEfgX5IZsC7xVUL5KQFE9UGSNONHVcUIjBK
+	 KpDDt8BG7KLshSVKBFcqpDFH72eAt6ZlwcT4g7NHwF86Z+N4JnmPbCzpGW8F+tYP16
+	 DtWyoGHvduD4mTpnEebDQkX8/Y/h/DN6ObHHNQFnzIUnqoJBDcEW/Lvc7aTk75p6HO
+	 8o29gxRGxD3sw==
 From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
 To: Puranjay Mohan <puranjay12@gmail.com>, paul.walmsley@sifive.com,
  palmer@dabbelt.com, aou@eecs.berkeley.edu, pulehui@huawei.com,
@@ -38,13 +38,13 @@ To: Puranjay Mohan <puranjay12@gmail.com>, paul.walmsley@sifive.com,
  kpsingh@kernel.org, bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
  linux-kernel@vger.kernel.org
 Cc: puranjay12@gmail.com
-Subject: Re: [PATCH bpf-next v2 2/3] riscv: implement a memset like function
- for text
-In-Reply-To: <20230824133135.1176709-3-puranjay12@gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/3] bpf, riscv: use prog pack allocator in
+ the BPF JIT
+In-Reply-To: <20230824133135.1176709-4-puranjay12@gmail.com>
 References: <20230824133135.1176709-1-puranjay12@gmail.com>
- <20230824133135.1176709-3-puranjay12@gmail.com>
-Date: Sat, 26 Aug 2023 16:02:47 +0200
-Message-ID: <871qfprjeg.fsf@all.your.base.are.belong.to.us>
+ <20230824133135.1176709-4-puranjay12@gmail.com>
+Date: Sat, 26 Aug 2023 16:06:00 +0200
+Message-ID: <87v8d1q4on.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -56,56 +56,18 @@ Content-Transfer-Encoding: quoted-printable
 
 Puranjay Mohan <puranjay12@gmail.com> writes:
 
-> The BPF JIT needs to write invalid instructions to RX regions of memory
-> to invalidate removed BPF programs. This needs a function like memset()
-> that can work with RX memory.
+> Use bpf_jit_binary_pack_alloc() for memory management of JIT binaries in
+> RISCV BPF JIT. The bpf_jit_binary_pack_alloc creates a pair of RW and RX
+> buffers. The JIT writes the program into the RW buffer. When the JIT is
+> done, the program is copied to the final RX buffer with
+> bpf_jit_binary_pack_finalize.
 >
-> Implement patch_text_set_nosync() which is similar to text_poke_set() of
-> x86.
+> Implement bpf_arch_text_copy() and bpf_arch_text_invalidate() for RISCV
+> JIT as these functions are required by bpf_jit_binary_pack allocator.
 
-Some additional nits, in addition to the other comments (Song, kernel
-test bot, Lehui).
-
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->  arch/riscv/include/asm/patch.h |  1 +
->  arch/riscv/kernel/patch.c      | 74 ++++++++++++++++++++++++++++++++++
->  2 files changed, 75 insertions(+)
->
-> diff --git a/arch/riscv/include/asm/patch.h b/arch/riscv/include/asm/patc=
-h.h
-> index 63c98833d510..aa5c1830ea43 100644
-> --- a/arch/riscv/include/asm/patch.h
-> +++ b/arch/riscv/include/asm/patch.h
-> @@ -7,6 +7,7 @@
->  #define _ASM_RISCV_PATCH_H
->=20=20
->  int patch_text_nosync(void *addr, const void *insns, size_t len);
-> +int patch_text_set_nosync(void *addr, const int c, size_t len);
->  int patch_text(void *addr, u32 *insns, int ninsns);
->=20=20
->  extern int riscv_patch_in_stop_machine;
-> diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-> index 465b2eebbc37..24d49999ac1a 100644
-> --- a/arch/riscv/kernel/patch.c
-> +++ b/arch/riscv/kernel/patch.c
-> @@ -13,6 +13,7 @@
->  #include <asm/fixmap.h>
->  #include <asm/ftrace.h>
->  #include <asm/patch.h>
-> +#include <asm/string.h>
->=20=20
->  struct patch_insn {
->  	void *addr;
-> @@ -53,6 +54,34 @@ static void patch_unmap(int fixmap)
->  }
->  NOKPROBE_SYMBOL(patch_unmap);
->=20=20
-> +static int __patch_insn_set(void *addr, const int c, size_t len)
-
-Drop the "const" from "const int c" everywhere in this patch, and let's
-just use u8 instead of int. We don't need to carry the old memset()
-legacy argumentts! We're more modern than that! ;-)
+General style comment; Please try to use the full 100 characters width
+for the patches. You're having a lot of linebreaks, which IMO makes the
+patch harder to read.
 
 
 Bj=C3=B6rn
