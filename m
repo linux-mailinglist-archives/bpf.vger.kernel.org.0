@@ -1,184 +1,193 @@
-Return-Path: <bpf+bounces-8745-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8746-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7906378965B
-	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 13:54:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43A6A7896A6
+	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 14:21:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DF3828187F
-	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 11:54:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AEEF1C20EFA
+	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 12:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66CFCD539;
-	Sat, 26 Aug 2023 11:54:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 535AED53C;
+	Sat, 26 Aug 2023 12:21:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D2A2F30;
-	Sat, 26 Aug 2023 11:54:08 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F03C2123;
-	Sat, 26 Aug 2023 04:54:06 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RXw9h2q8zztRqF;
-	Sat, 26 Aug 2023 19:50:16 +0800 (CST)
-Received: from [10.174.176.93] (10.174.176.93) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Sat, 26 Aug 2023 19:54:03 +0800
-Message-ID: <389e52fe-13e9-4ded-bfb0-fcffea9b1cbf@huawei.com>
-Date: Sat, 26 Aug 2023 19:54:02 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D9AC2F7
+	for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 12:21:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A89D2C433C8;
+	Sat, 26 Aug 2023 12:20:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1693052461;
+	bh=7EXJ1LENbcLPurI5Z9dQe+9Ef/4yp4DqUevs1jxxCUM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=QXrZon6mgILY3byNR5FdVO14AfRXgGliokWBj7UEH8qMyJK/L4H/fLd/0PGSstUtk
+	 8AzAaWTrePhSf5jH8OmNMttFBD2vmnuAvdmelceQiZAlcrA6MORPqeCiEkB4aDK9jM
+	 iSbZj8kB3KW23QR5XfS2zkchwmSvq60aY0LHMDqO6Gr931s/+D07jbYobJfPiLEXuM
+	 oawV7+GlZWxvnoR6pNFUzLleWtQ/EngVNDVbY+FinkTuR120DUMCpIp3J0FUFlwXOt
+	 l0/DRPNc2Nxmgg2ItwrXI1m6FR1TdOhWUaPmY3tTicHR9x6hKvylQeAyJjCPIUqlyr
+	 Cx9r6xEKuuNPQ==
+Date: Sat, 26 Aug 2023 12:38:38 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Florent Revest <revest@chromium.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v4 6/9] tracing/fprobe: Enable fprobe events with
+ CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+Message-Id: <20230826123838.610b3fe09b9fa1aab75f158d@kernel.org>
+In-Reply-To: <CABRcYmLcTBey7QY9Ln3aVvJPV7weeTR0FA6DOU3_QObuAM8_Zg@mail.gmail.com>
+References: <169280372795.282662.9784422934484459769.stgit@devnote2>
+	<169280379741.282662.12221517584561036597.stgit@devnote2>
+	<CABRcYmLcTBey7QY9Ln3aVvJPV7weeTR0FA6DOU3_QObuAM8_Zg@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH bpf-next v3 1/7] bpf, sockmap: add BPF_F_PERMANENT flag
- for skmsg redirect
-To: John Fastabend <john.fastabend@gmail.com>, Jakub Sitnicki
-	<jakub@cloudflare.com>
-CC: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-	<martin.lau@linux.dev>, <song@kernel.org>, <yonghong.song@linux.dev>,
-	<kpsingh@kernel.org>, <sdf@google.com>, <haoluo@google.com>,
-	<jolsa@kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
-	<kuba@kernel.org>, <pabeni@redhat.com>, <dsahern@kernel.org>,
-	<netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-References: <20230824143959.1134019-1-liujian56@huawei.com>
- <20230824143959.1134019-2-liujian56@huawei.com>
- <87r0nr5j0a.fsf@cloudflare.com> <64e95611f1b33_1d0032088c@john.notmuch>
-From: "liujian (CE)" <liujian56@huawei.com>
-In-Reply-To: <64e95611f1b33_1d0032088c@john.notmuch>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.93]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+(Cc: Peter)
+
+On Fri, 25 Aug 2023 18:12:07 +0200
+Florent Revest <revest@chromium.org> wrote:
+
+> On Wed, Aug 23, 2023 at 5:16 PM Masami Hiramatsu (Google)
+> <mhiramat@kernel.org> wrote:
+> >
+> > diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
+> > index c60d0d9f1a95..90ad28260a9f 100644
+> > --- a/kernel/trace/trace_fprobe.c
+> > +++ b/kernel/trace/trace_fprobe.c
+> > +#else /* CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS && !CONFIG_HAVE_PT_REGS_TO_FTRACE_REGS_CAST */
+> > +
+> > +/* Since fprobe handlers can be nested, pt_regs buffer need to be a stack */
+> > +#define PERF_FPROBE_REGS_MAX   4
+> > +
+> > +struct pt_regs_stack {
+> > +       struct pt_regs regs[PERF_FPROBE_REGS_MAX];
+> > +       int idx;
+> > +};
+> > +
+> > +static DEFINE_PER_CPU(struct pt_regs_stack, perf_fprobe_regs);
+> > +
+> > +static __always_inline
+> > +struct pt_regs *perf_fprobe_partial_regs(struct ftrace_regs *fregs)
+> > +{
+> > +       struct pt_regs_stack *stack = this_cpu_ptr(&perf_fprobe_regs);
+> > +       struct pt_regs *regs;
+> > +
+> > +       if (stack->idx < PERF_FPROBE_REGS_MAX) {
+> > +               regs = stack->regs[stack->idx++];
+> 
+> This is missing an &:
+> regs = &stack->regs[stack->idx++];
+
+Oops, good point. I'm curious it didin't cause compile error...
+(I thought I built it on arm64)
+
+> 
+> > +               return ftrace_partial_regs(fregs, regs);
+> 
+> I think this is incorrect on arm64 and will likely cause very subtle
+> failure modes down the line on other architectures too. The problem on
+> arm64 is that Perf calls "user_mode(regs)" somewhere down the line,
+> that macro tries to read the "pstate" register, which is not populated
+> in ftrace_regs, so it's not copied into a "partial" pt_regs either and
+> Perf can take wrong decisions based on that.
+
+I think we can assure the ftrace_regs is always !user_mode() so in that case
+ftrace_partial_regs() should fill the 'pstate' register as kernel mode.
+
+> 
+> I already mentioned this problem in the past:
+> - in the third answer block of:
+> https://lore.kernel.org/all/CABRcYmJjtVq-330ktqTAUiNO1=yG_aHd0xz=c550O5C7QP++UA@mail.gmail.com/
+> - in the fourth answer block of:
+> https://lore.kernel.org/all/CABRcYm+esb8J2O1v6=C+h+HSa5NxraPUgo63w7-iZj0CXbpusg@mail.gmail.com/
+> 
+
+Oops, sorry I missed that. And I basically agreed that we need a special
+care for perf. Let me reply it.
+
+> It is quite possible that other architectures at some point introduce
+> a light ftrace "args" trampoline that misses one of the registers
+> expected by Perf because they don't realize that this trampoline calls
+> fprobe which calls Perf which has specific registers expectations.
+
+Agreed.
+
+> 
+> We got the green light from Alexei to use ftrace_partial_regs for "BPF
+> mutli_kprobe" because these BPF programs can gracefully deal with
+> sparse pt_regs but I think a similar conversation needs to happen with
+> the Perf folks.
+
+Indeed. Who is the best person to involve, Peterz? (but I think
+we need arm64 PMU part maintainer to talk)
+
+> 
+> ----
+> 
+> On a side-note, a subtle difference between ftrace_partial_regs with
+> and without HAVE_PT_REGS_TO_FTRACE_REGS_CAST is that one does a copy
+> and the other does not. If a subsystem receives a partial regs under
+> HAVE_PT_REGS_TO_FTRACE_REGS_CAST, it can modify register fields and
+> the modified values will be restored by the ftrace trampoline. Without
+> HAVE_PT_REGS_TO_FTRACE_REGS_CAST, only the copy will be modified and
+> ftrace won't restore them. I think the least we can do is to document
+> thoroughly the guarantees of the ftrace_partial_regs API: users
+> shouldn't rely on modifying the resulting regs because depending on
+> the architecture this could do different things. People shouldn't rely
+> on any register that isn't covered by one of the ftrace_regs_get_*
+> helpers because it can be unpopulated on some architectures. I believe
+> this is the case for BPF multi_kprobe but not for Perf.
+
+I agree with the documentation requirement, but since the fprobe official
+interface becomes ftrace_regs, user naturally expects it is not pt_regs.
+The problem is that the perf's case. Since the perf is natively only
+support pt_regs (and there is no reason to support ftrace_regs, yes).
+Hmm, I will recheck how the perf events on trace-event is implementd.
+
+Thank you,
+
+> 
+> > +       }
+> > +       return NULL;
+> > +}
+> > +
+> > +static __always_inline void perf_fprobe_return_regs(struct pt_regs *regs)
+> > +{
+> > +       struct pt_regs_stack *stack = this_cpu_ptr(&perf_fprobe_regs);
+> > +
+> > +       if (WARN_ON_ONCE(regs != stack->regs[stack->idx]))
+> 
+> This is missing an & too:
+> if (WARN_ON_ONCE(regs != &stack->regs[stack->idx]))
+> 
+> 
+> 
+> 
+> > +               return;
+> > +
+> > +       --stack->idx;
+> > +}
+> > +
+> > +#endif /* !CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS || CONFIG_HAVE_PT_REGS_TO_FTRACE_REGS_CAST */
 
 
-
-On 2023/8/26 9:32, John Fastabend wrote:
-> Jakub Sitnicki wrote:
->> On Thu, Aug 24, 2023 at 10:39 PM +08, Liu Jian wrote:
->>> If the sockmap msg redirection function is used only to forward packets
->>> and no other operation, the execution result of the BPF_SK_MSG_VERDICT
->>> program is the same each time. In this case, the BPF program only needs to
->>> be run once. Add BPF_F_PERMANENT flag to bpf_msg_redirect_map() and
->>> bpf_msg_redirect_hash() to implement this ability.
->>>
->>> Then we can enable this function in the bpf program as follows:
->>> bpf_msg_redirect_hash(xx, xx, xx, BPF_F_INGRESS | BPF_F_PERMANENT);
->>>
->>> Test results using netperf  TCP_STREAM mode:
->>> for i in 1 64 128 512 1k 2k 32k 64k 100k 500k 1m;then
->>> netperf -T 1,2 -t TCP_STREAM -H 127.0.0.1 -l 20 -- -m $i -s 100m,100m -S 100m,100m
->>> done
->>>
->>> before:
->>> 3.84 246.52 496.89 1885.03 3415.29 6375.03 40749.09 48764.40 51611.34 55678.26 55992.78
->>> after:
->>> 4.43 279.20 555.82 2080.79 3870.70 7105.44 41836.41 49709.75 51861.56 55211.00 54566.85
->>>
->>> Signed-off-by: Liu Jian <liujian56@huawei.com>
-> 
-> [...]
-> 
->>>   /* BPF_FUNC_skb_set_tunnel_key and BPF_FUNC_skb_get_tunnel_key flags. */
->>> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
->>> index a29508e1ff35..df1443cf5fbd 100644
->>> --- a/net/core/skmsg.c
->>> +++ b/net/core/skmsg.c
->>> @@ -885,6 +885,11 @@ int sk_psock_msg_verdict(struct sock *sk, struct sk_psock *psock,
->>>   			goto out;
->>>   		}
->>>   		psock->redir_ingress = sk_msg_to_ingress(msg);
->>> +		if (!msg->apply_bytes && !msg->cork_bytes)
->>> +			psock->redir_permanent =
->>> +				msg->flags & BPF_F_PERMANENT;
->>> +		else
->>> +			psock->redir_permanent = false;
->>
->> Above can be rewritten as:
->>
->> 		psock->redir_permanent = !msg->apply_bytes &&
->> 					 !msg->cork_bytes &&
->> 					 (msg->flags & BPF_F_PERMANENT);
->>
->> But as I wrote earlier, I don't think it's a good idea to ignore the
->> flag. We can detect this conflict at the time the bpf_msg_sk_redirect_*
->> helper is called and return an error.
->>
->> Naturally that means that that bpf_msg_{cork,apply}_bytes helpers need
->> to be adjusted to return an error if BPF_F_PERMANENT has been set.
-> 
-> So far we've not really done much to protect a user from doing
-> rather silly things. The following will all do something without
-> errors,
-> 
->    bpf_msg_apply_bytes()
->    bpf_msg_apply_bytes() <- reset apply bytes
-> 
->    bpf_msg_cork_bytes()
->    bpf_msg_cork_bytes() <- resets cork byte
-> 
-> also,
-> 
->    bpf_msg_redirect(..., BPF_F_INGRESS);
->    bpf_msg_redirect(..., 0); <- resets sk_redir and flags
-> 
-> maybe there is some valid reason to even do above if further parsing
-> identifies some reason to redirect to a alert socket or something.
-> 
-> My original thinking was in the interest of not having a bunch of
-> extra checks for performance reasons we shouldn't add guard rails
-> unless something really unexpected might happen like a kernel
-> panic or what not.
-> 
-> This does feel a bit different though because before we
-> didn't have calls that could impact other calls. My best idea
-> is to just create a precedence and follow it. I would propose,
-> 
-> 'If BPF_F_PERMANENT is set apply_bytes and cork_bytes are
->   ignored.'
-> 
-I think it's better.
-Both low-priority or high-priority are ok for me. But I think it's 
-better that BPF_F_PERMANENT has a low priority. Because BPF_F_PERMANEN 
-is only for performance, and apply_bytes or cork_bytes may be used to a 
-user logic function.
-
-> The other direction (what is above?) has a bit of an inconsistency
-> where these two flows are different?
-> 
->    bpf_apply_bytes()
->    bpf_msg_redirect(..., BPF_F_PERMANENT)
-> 
-> and
-> 
->    bpf_msg_redirect(..., BPF_F_PERMANENT)
->    bpf_apply_bytes()
-> 
-> It would be best if order of operations doesn't change the
-> outcome because that starts to get really hard to reason about.
-> 
-> This avoids having to add checks all over the place and then
-> if users want we could give some mechanisms to read apply
-> and cork bytes so people could write macros over those if
-> they really want the hard error.
-> 
-> WDYT?
-> 
-> [...]
-> 
-> Thanks!
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
