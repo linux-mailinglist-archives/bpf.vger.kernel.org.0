@@ -1,202 +1,277 @@
-Return-Path: <bpf+bounces-8742-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8743-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F788789610
-	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 12:49:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D4D5789653
+	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 13:36:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 699291C21019
-	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 10:49:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B591D281982
+	for <lists+bpf@lfdr.de>; Sat, 26 Aug 2023 11:36:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7449C8F9;
-	Sat, 26 Aug 2023 10:49:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C0CAD517;
+	Sat, 26 Aug 2023 11:36:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05DF67E
-	for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 10:49:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E605EC433C8;
-	Sat, 26 Aug 2023 10:49:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1693046953;
-	bh=7GZN5LjpBGdsitWmUHrUHQLQGSDFWDAlp6EaXQg6XZM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=ugA+W/emh8+yYYB0wZYtmixczqFH114HeKvaRHrrkreGhXXt+z9uh7n5QbMglvW1W
-	 aK+inmfj5VgAC5jJYoZTyBbiL/sO9AQyFRYKCJkYrgotDr+9ELrvq8bkB4y7Wz/Bey
-	 tZ5Cf5YS10EygS/rKnPh7WrzAAjse/IynFxG1W1RJvBXfP0qY7XW26SU4x4f4TapzS
-	 5aGOMkA96C3QGrWwVjWxyN8MUbCCNmEN2GgKIpHV6/Aklmp+mQxhwwKTEuGhA9Vc/9
-	 g8H6LDBYLu1n0MCcRLknY2Z9oXjgdFjQ1cOaGp2ZA65posbw0dLZ+a4aFDZW2BXgSC
-	 +rdk1qk/NUYMg==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
-Cc: linux-riscv@lists.infradead.org, yonghong.song@linux.dev, Alexei
- Starovoitov <alexei.starovoitov@gmail.com>
-Subject: Re: WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
-In-Reply-To: <64873e42-9be1-1812-b80d-5ea86b4677f0@huaweicloud.com>
-References: <87jztjmmy4.fsf@all.your.base.are.belong.to.us>
- <2f4f0dfc-ec06-8ac8-a56a-395cc2373def@linux.dev>
- <200dcce6-34ff-83e0-02fb-709a24403cc6@huaweicloud.com>
- <87zg2e88ds.fsf@all.your.base.are.belong.to.us>
- <64873e42-9be1-1812-b80d-5ea86b4677f0@huaweicloud.com>
-Date: Sat, 26 Aug 2023 12:49:10 +0200
-Message-ID: <87sf8684ex.fsf@all.your.base.are.belong.to.us>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F067E
+	for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 11:36:41 +0000 (UTC)
+Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED8D1E54
+	for <bpf@vger.kernel.org>; Sat, 26 Aug 2023 04:36:38 -0700 (PDT)
+Date: Sat, 26 Aug 2023 11:36:14 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1693049795; x=1693308995;
+	bh=OGBoSNSsrCHKDTgHI0wmKH4R38z77LUTwxdILZJ7ATU=;
+	h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=Ws4NfQ/NtDSyzdW1IRW9ZrZzR35tFv7vfhyVKN49b6BNfivCxDDk87M2b9GYq8kCW
+	 TKnh7j/O+Kv4hN+pKu5aAcBfZ/Bfi4EVsPWRaq9oa4DuoGeuvrxRamgyUw1PnokuiT
+	 +Ncs2+xRowYqv3KY+1xPg3wO+ApN/LJsHFEmSy9rtbdLXSI+yCmAb9RaUICLl7vLWJ
+	 /sDg9D6dMcllgYw2npU1/xM1j+DfvgMRTptFa2A24hWAtxbjGeAo/+hgqqGnN5o0po
+	 uPv/MwGYusVA7O4seqlD5uuFPBAQeqOPadW/Owvn91ZV9luAcgSqgl6cbt/YPjTmh9
+	 52bNrYI40LFhA==
+To: "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+From: Lasha Khasaia <khasaia@pm.me>
+Subject: libbpf: map 'my_pid_map': unsupported map linkage static - xmake
+Message-ID: <5rDl7ltwN1XQQwmvJ-PPRNmK9F3FXjI3b5i3mILDbJoFxwZo9Dtb_x-ET2OVCsqC-EQlSd_svSnGEXxkt7etZcnNt8TjrDYGUWfZ8eQLkmI=@pm.me>
+Feedback-ID: 6255285:user:proton
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=pgp-sha512; boundary="------01be434c0bf771b5269992e6f9e9112d2911f7537dda9121d5a2d23e033dd90a"; charset=utf-8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HTML_MESSAGE,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------01be434c0bf771b5269992e6f9e9112d2911f7537dda9121d5a2d23e033dd90a
+Content-Type: multipart/mixed;boundary=---------------------2bb99394a2db98ad84114ca586255aeb
+
+-----------------------2bb99394a2db98ad84114ca586255aeb
+Content-Type: multipart/alternative;boundary=---------------------5cbb778a1951cd835fd671b23496ecca
+
+-----------------------5cbb778a1951cd835fd671b23496ecca
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;charset=utf-8
 
-Hou Tao <houtao@huaweicloud.com> writes:
+Hello,
 
-> Hi,
->
-> On 8/26/2023 5:23 PM, Bj=C3=B6rn T=C3=B6pel wrote:
->> Hou Tao <houtao@huaweicloud.com> writes:
->>
->>> Hi,
->>>
->>> On 8/25/2023 11:28 PM, Yonghong Song wrote:
->>>>
->>>> On 8/25/23 3:32 AM, Bj=C3=B6rn T=C3=B6pel wrote:
->>>>> I'm chasing a workqueue hang on RISC-V/qemu (TCG), using the bpf
->>>>> selftests on bpf-next 9e3b47abeb8f.
->>>>>
->>>>> I'm able to reproduce the hang by multiple runs of:
->>>>> =C2=A0 | ./test_progs -a link_api -a linked_list
->>>>> I'm currently investigating that.
->>>>>
->>>>> But! Sometimes (every blue moon) I get a warn_on_once hit:
->>>>> =C2=A0 | ------------[ cut here ]------------
->>>>> =C2=A0 | WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
->>>>> bpf_mem_refill+0x1fc/0x206
->>>>> =C2=A0 | Modules linked in: bpf_testmod(OE)
->>>>> =C2=A0 | CPU: 3 PID: 261 Comm: test_progs-cpuv Tainted: G=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 OE=C2=A0=C2=A0=C2=A0
->>>>> N 6.5.0-rc5-01743-gdcb152bb8328 #2
->>>>> =C2=A0 | Hardware name: riscv-virtio,qemu (DT)
->>>>> =C2=A0 | epc : bpf_mem_refill+0x1fc/0x206
->>>>> =C2=A0 |=C2=A0 ra : irq_work_single+0x68/0x70
->>>>> =C2=A0 | epc : ffffffff801b1bc4 ra : ffffffff8015fe84 sp : ff20000000=
-01be20
->>>>> =C2=A0 |=C2=A0 gp : ffffffff82d26138 tp : ff6000008477a800 t0 : 00000=
-00000046600
->>>>> =C2=A0 |=C2=A0 t1 : ffffffff812b6ddc t2 : 0000000000000000 s0 : ff200=
-0000001be70
->>>>> =C2=A0 |=C2=A0 s1 : ff5ffffffffe8998 a0 : ff5ffffffffe8998 a1 : ff600=
-003fef4b000
->>>>> =C2=A0 |=C2=A0 a2 : 000000000000003f a3 : ffffffff80008250 a4 : 00000=
-00000000060
->>>>> =C2=A0 |=C2=A0 a5 : 0000000000000080 a6 : 0000000000000000 a7 : 00000=
-00000735049
->>>>> =C2=A0 |=C2=A0 s2 : ff5ffffffffe8998 s3 : 0000000000000022 s4 : 00000=
-00000001000
->>>>> =C2=A0 |=C2=A0 s5 : 0000000000000007 s6 : ff5ffffffffe8570 s7 : fffff=
-fff82d6bd30
->>>>> =C2=A0 |=C2=A0 s8 : 000000000000003f s9 : ffffffff82d2c5e8 s10: 00000=
-0000000ffff
->>>>> =C2=A0 |=C2=A0 s11: ffffffff82d2c5d8 t3 : ffffffff81ea8f28 t4 : 00000=
-00000000000
->>>>> =C2=A0 |=C2=A0 t5 : ff6000008fd28278 t6 : 0000000000040000
->>>>> =C2=A0 | status: 0000000200000100 badaddr: 0000000000000000 cause:
->>>>> 0000000000000003
->>>>> =C2=A0 | [<ffffffff801b1bc4>] bpf_mem_refill+0x1fc/0x206
->>>>> =C2=A0 | [<ffffffff8015fe84>] irq_work_single+0x68/0x70
->>>>> =C2=A0 | [<ffffffff8015feb4>] irq_work_run_list+0x28/0x36
->>>>> =C2=A0 | [<ffffffff8015fefa>] irq_work_run+0x38/0x66
->>>>> =C2=A0 | [<ffffffff8000828a>] handle_IPI+0x3a/0xb4
->>>>> =C2=A0 | [<ffffffff800a5c3a>] handle_percpu_devid_irq+0xa4/0x1f8
->>>>> =C2=A0 | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
->>>>> =C2=A0 | [<ffffffff800ae570>] ipi_mux_process+0xac/0xfa
->>>>> =C2=A0 | [<ffffffff8000a8ea>] sbi_ipi_handle+0x2e/0x88
->>>>> =C2=A0 | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
->>>>> =C2=A0 | [<ffffffff807ee70e>] riscv_intc_irq+0x36/0x4e
->>>>> =C2=A0 | [<ffffffff812b5d3a>] handle_riscv_irq+0x54/0x86
->>>>> =C2=A0 | [<ffffffff812b6904>] do_irq+0x66/0x98
->>>>> =C2=A0 | ---[ end trace 0000000000000000 ]---
->>>>>
->>>>> Code:
->>>>> =C2=A0 | static void free_bulk(struct bpf_mem_cache *c)
->>>>> =C2=A0 | {
->>>>> =C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 struct bpf_mem_cache *tgt =3D c->tgt;
->>>>> =C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 struct llist_node *llnode, *t;
->>>>> =C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long flags;
->>>>> =C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 int cnt;
->>>>> =C2=A0 |
->>>>> =C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 WARN_ON_ONCE(tgt->unit_size !=3D c->=
-unit_size);
->>>>> =C2=A0 | ...
->>>>>
->>>>> I'm not well versed in the memory allocator; Before I dive into it --
->>>>> has anyone else hit it? Ideas on why the warn_on_once is hit?
->>>> Maybe take a look at the patch
->>>> =C2=A0 822fb26bdb55=C2=A0 bpf: Add a hint to allocated objects.
->>>>
->>>> In the above patch, we have
->>>>
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Remember bpf_mem_cache t=
-hat allocated this object.
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * The hint is not accurate.
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 c->tgt =3D *(struct bpf_mem_cach=
-e **)llnode;
->>>>
->>>> I suspect that the warning may be related to the above.
->>>> I tried the above ./test_progs command line (running multiple
->>>> at the same time) and didn't trigger the issue.
->>> The extra 8-bytes before the freed pointer is used to save the pointer
->>> of the original bpf memory allocator where the freed pointer came from,
->>> so unit_free() could free the pointer back to the original allocator to
->>> prevent alloc-and-free unbalance.
->>>
->>> I suspect that a wrong pointer was passed to bpf_obj_drop, but do not
->>> find anything suspicious after checking linked_list. Another possibility
->>> is that there is write-after-free problem which corrupts the extra
->>> 8-bytes before the freed pointer. Could you please apply the following
->>> debug patch to check whether or not the extra 8-bytes are corrupted ?
->> Thanks for getting back!
->>
->> I took your patch for a run, and there's a hit:
->>   | bad cache ff5ffffffffe8570: got size 96 work ffffffff801b19c8, cache=
- ff5ffffffffe8980 exp size 128 work ffffffff801b19c8
->
-> The extra 8-bytes are not corrupted. Both of these two bpf_mem_cache are
-> valid and there are in the cache array defined in bpf_mem_caches. BPF
-> memory allocator allocated the pointer from 96-bytes sized-cache, but it
-> tried to free the pointer through 128-bytes sized-cache.
->
-> Now I suspect there is no 96-bytes slab in your system and ksize(ptr -
-> LLIST_NODE_SZ) returns 128, so bpf memory allocator selected the
-> 128-byte sized-cache instead of 96-bytes sized-cache. Could you please
-> check the value of KMALLOC_MIN_SIZE in your kernel .config and using the
-> following command to check whether there is 96-bytes slab in your system:
+I have an issue to compile ebpf prog via xmake.
 
-KMALLOC_MIN_SIZE is 64.
+I have following map:
+```c
+struct
+{
+=C2=A0 __uint(type, BPF_MAP_TYPE_RINGBUF);
+=C2=A0 __uint(max_entries, MAX_ENTRIES);
+} ring_map SEC(".maps");
+```
+under v7.0.0 it works, under v7.1.0 and v7.2.0 getting an error:
+"bpftool gen skeleton build/.gens/xxx/android/x86_64/release/rules/bpf/xxx=
+.bpf.o -d -p"
 
-> $ cat /proc/slabinfo |grep kmalloc-96
-> dma-kmalloc-96=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0 96=C2=A0=C2=A0 42=C2=A0=C2=
-=A0=C2=A0 1 : tunables=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=
-=C2=A0
-> 0 : slabdata=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
-> kmalloc-96=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1865=C2=
-=A0=C2=A0 2268=C2=A0=C2=A0=C2=A0=C2=A0 96=C2=A0=C2=A0 42=C2=A0=C2=A0=C2=A0 =
-1 : tunables=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0
-> 0 : slabdata=C2=A0=C2=A0=C2=A0=C2=A0 54=C2=A0=C2=A0=C2=A0=C2=A0 54=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 0
->
-> In my system, slab has 96-bytes cached, so grep outputs something, but I
-> think there will no output in your system.
+```c
+libbpf: map 'xxx': unsupported map linkage static.
+{
+=C2=A0 =C2=A0 "error": "failed to open BPF object file: Operation not supp=
+orted"
+}
+```
+---
+Reproduce error:
+---
 
-You're right! No kmalloc-96.
+On the system there is bpftool v7.0.0 installed:
+```
+bpftool v7.0.0
+using libbpf v1.0
+features: libbpf_strict, skeletons
+```
+
+Get libbpf-bootstrap repo
+`git clone --recurse-submodules https://github.com/libbpf/libbpf-bootstrap=
+`
+
+try to compile for Android via xmake according to the readme file:
+```
+$ git submodule update --init --recursive =C2=A0 =C2=A0 =C2=A0 # check out=
+ libbpf
+$ cd examples/c
+$ xmake f -p android
+$ xmake
+```
+
+works.
+
+---
+
+Update the bpftool to v7.1.0 or v7.2.0
+
+`git clone --depth 1 --branch v7.1.0 ... && make install`
+`bpftool version`:
+```
+bpftool v7.1.0
+using libbpf v1.1
+features: llvm, skeletons
+```
+
+try again to compile via xmake:
+```
+[ 13%]: compiling.bpf uprobe.bpf.c
+[ 13%]: compiling.bpf minimal.bpf.c
+[ 13%]: compiling.bpf fentry.bpf.c
+[ 13%]: compiling.bpf minimal_legacy.bpf.c
+[ 17%]: cache compiling.release ../../libbpf/src/libbpf.c
+[ 33%]: cache compiling.release ../../libbpf/src/netlink.c
+[ 44%]: cache compiling.release ../../libbpf/src/bpf.c
+[ 44%]: compiling.bpf bootstrap.bpf.c
+libbpf: map 'my_pid_map': unsupported map linkage static.
+Error: failed to open BPF object file: Operation not supported
+error: execv(bpftool gen skeleton build/.gens/minimal_legacy/android/armea=
+bi-v7a/release/rules/bpf/minimal_legacy.bpf.o) failed(161)
+```
+
+failed.
+
+Seems like its for all .maps not only ringbuf.
+
+---
+Same for `v.7.2.0`
+
+I created ticket as well on GitHub: https://github.com/libbpf/libbpf/issue=
+s/720
+Seems like it's a bug
+
+Regads,
+Grubeli
+-----------------------5cbb778a1951cd835fd671b23496ecca
+Content-Type: multipart/related;boundary=---------------------998b9d3087abcfd74ee7ec944fe4e934
+
+-----------------------998b9d3087abcfd74ee7ec944fe4e934
+Content-Type: text/html;charset=utf-8
+Content-Transfer-Encoding: base64
+
+PGRpdiBzdHlsZT0iZm9udC1mYW1pbHk6IEhlbHZldGljYSwgc2Fucy1zZXJpZjsgZm9udC1zaXpl
+OiAxNHB4OyI+SGVsbG8sPGJyPjxicj5JIGhhdmUgYW4gaXNzdWUgdG8gY29tcGlsZSBlYnBmIHBy
+b2cgdmlhIHhtYWtlLjxicj48YnI+PHNwYW4+PC9zcGFuPjxkaXY+PHNwYW4+SSBoYXZlIGZvbGxv
+d2luZyBtYXA6PC9zcGFuPjwvZGl2PjxkaXY+PHNwYW4+YGBgYzwvc3Bhbj48L2Rpdj48ZGl2Pjxz
+cGFuPnN0cnVjdDwvc3Bhbj48L2Rpdj48ZGl2PjxzcGFuPns8L3NwYW4+PC9kaXY+PGRpdj48c3Bh
+bj4mbmJzcDsgX191aW50KHR5cGUsIEJQRl9NQVBfVFlQRV9SSU5HQlVGKTs8L3NwYW4+PC9kaXY+
+PGRpdj48c3Bhbj4mbmJzcDsgX191aW50KG1heF9lbnRyaWVzLCBNQVhfRU5UUklFUyk7PC9zcGFu
+PjwvZGl2PjxkaXY+PHNwYW4+fSByaW5nX21hcCBTRUMoIi5tYXBzIik7PC9zcGFuPjwvZGl2Pjxk
+aXY+PHNwYW4+YGBgPC9zcGFuPjwvZGl2PjxkaXY+PHNwYW4+dW5kZXIgdjcuMC4wIGl0IHdvcmtz
+LCB1bmRlciB2Ny4xLjAgYW5kIHY3LjIuMCBnZXR0aW5nIGFuIGVycm9yOjwvc3Bhbj48L2Rpdj48
+ZGl2PjxzcGFuPiJicGZ0b29sIGdlbiBza2VsZXRvbiBidWlsZC8uZ2Vucy94eHgvYW5kcm9pZC94
+ODZfNjQvcmVsZWFzZS9ydWxlcy9icGYveHh4LmJwZi5vIC1kIC1wIjwvc3Bhbj48L2Rpdj48ZGl2
+Pjxicj48L2Rpdj48ZGl2PjxzcGFuPmBgYGM8L3NwYW4+PC9kaXY+PGRpdj48c3Bhbj5saWJicGY6
+IG1hcCAneHh4JzogdW5zdXBwb3J0ZWQgbWFwIGxpbmthZ2Ugc3RhdGljLjwvc3Bhbj48L2Rpdj48
+ZGl2PjxzcGFuPns8L3NwYW4+PC9kaXY+PGRpdj48c3Bhbj4mbmJzcDsgJm5ic3A7ICJlcnJvciI6
+ICJmYWlsZWQgdG8gb3BlbiBCUEYgb2JqZWN0IGZpbGU6IE9wZXJhdGlvbiBub3Qgc3VwcG9ydGVk
+Ijwvc3Bhbj48L2Rpdj48ZGl2PjxzcGFuPn08L3NwYW4+PC9kaXY+PGRpdj48c3Bhbj5gYGA8L3Nw
+YW4+PC9kaXY+PGRpdj48c3Bhbj4tLS08L3NwYW4+PC9kaXY+PGRpdj48c3Bhbj5SZXByb2R1Y2Ug
+ZXJyb3I6PC9zcGFuPjwvZGl2PjxkaXY+PHNwYW4+LS0tPC9zcGFuPjwvZGl2PjxkaXY+PGJyPjwv
+ZGl2PjxkaXY+PHNwYW4+T24gdGhlIHN5c3RlbSB0aGVyZSBpcyBicGZ0b29sIHY3LjAuMCBpbnN0
+YWxsZWQ6PC9zcGFuPjwvZGl2PjxkaXY+PHNwYW4+YGBgPC9zcGFuPjwvZGl2PjxkaXY+PHNwYW4+
+YnBmdG9vbCB2Ny4wLjA8L3NwYW4+PC9kaXY+PGRpdj48c3Bhbj51c2luZyBsaWJicGYgdjEuMDwv
+c3Bhbj48L2Rpdj48ZGl2PjxzcGFuPmZlYXR1cmVzOiBsaWJicGZfc3RyaWN0LCBza2VsZXRvbnM8
+L3NwYW4+PC9kaXY+PGRpdj48c3Bhbj5gYGA8L3NwYW4+PC9kaXY+PGRpdj48YnI+PC9kaXY+PGRp
+dj48c3Bhbj5HZXQgbGliYnBmLWJvb3RzdHJhcCByZXBvPC9zcGFuPjwvZGl2PjxkaXY+PHNwYW4+
+YGdpdCBjbG9uZSAtLXJlY3Vyc2Utc3VibW9kdWxlcyA8YSBocmVmPSJodHRwczovL2dpdGh1Yi5j
+b20vbGliYnBmL2xpYmJwZi1ib290c3RyYXBgIiByZWw9Im5vcmVmZXJyZXIgbm9mb2xsb3cgbm9v
+cGVuZXIiIHRhcmdldD0iX2JsYW5rIj5odHRwczovL2dpdGh1Yi5jb20vbGliYnBmL2xpYmJwZi1i
+b290c3RyYXBgPC9hPjwvc3Bhbj48L2Rpdj48ZGl2Pjxicj48L2Rpdj48ZGl2PjxzcGFuPnRyeSB0
+byBjb21waWxlIGZvciBBbmRyb2lkIHZpYSB4bWFrZSBhY2NvcmRpbmcgdG8gdGhlIHJlYWRtZSBm
+aWxlOjwvc3Bhbj48L2Rpdj48ZGl2PjxzcGFuPmBgYDwvc3Bhbj48L2Rpdj48ZGl2PjxzcGFuPiQg
+Z2l0IHN1Ym1vZHVsZSB1cGRhdGUgLS1pbml0IC0tcmVjdXJzaXZlICZuYnNwOyAmbmJzcDsgJm5i
+c3A7ICMgY2hlY2sgb3V0IGxpYmJwZjwvc3Bhbj48L2Rpdj48ZGl2PjxzcGFuPiQgY2QgZXhhbXBs
+ZXMvYzwvc3Bhbj48L2Rpdj48ZGl2PjxzcGFuPiQgeG1ha2UgZiAtcCBhbmRyb2lkPC9zcGFuPjwv
+ZGl2PjxkaXY+PHNwYW4+JCB4bWFrZTwvc3Bhbj48L2Rpdj48ZGl2PjxzcGFuPmBgYDwvc3Bhbj48
+L2Rpdj48ZGl2Pjxicj48L2Rpdj48ZGl2PjxzcGFuPndvcmtzLjwvc3Bhbj48L2Rpdj48ZGl2Pjxi
+cj48L2Rpdj48ZGl2PjxzcGFuPi0tLTwvc3Bhbj48L2Rpdj48ZGl2Pjxicj48L2Rpdj48ZGl2Pjxz
+cGFuPlVwZGF0ZSB0aGUgYnBmdG9vbCB0byB2Ny4xLjAgb3IgdjcuMi4wPGJyPjwvc3Bhbj48L2Rp
+dj48ZGl2PjxzcGFuPmBnaXQgY2xvbmUgLS1kZXB0aCAxIC0tYnJhbmNoIHY3LjEuMCAuLi4gJmFt
+cDsmYW1wOyBtYWtlIGluc3RhbGxgPC9zcGFuPjwvZGl2PjxkaXY+PHNwYW4+YGJwZnRvb2wgdmVy
+c2lvbmA6PC9zcGFuPjwvZGl2PjxkaXY+PHNwYW4+YGBgPC9zcGFuPjwvZGl2PjxkaXY+PHNwYW4+
+YnBmdG9vbCB2Ny4xLjA8L3NwYW4+PC9kaXY+PGRpdj48c3Bhbj51c2luZyBsaWJicGYgdjEuMTwv
+c3Bhbj48L2Rpdj48ZGl2PjxzcGFuPmZlYXR1cmVzOiBsbHZtLCBza2VsZXRvbnM8L3NwYW4+PC9k
+aXY+PGRpdj48c3Bhbj5gYGA8L3NwYW4+PC9kaXY+PGRpdj48YnI+PC9kaXY+PGRpdj48c3Bhbj50
+cnkgYWdhaW4gdG8gY29tcGlsZSB2aWEgeG1ha2U6PC9zcGFuPjwvZGl2PjxkaXY+PHNwYW4+YGBg
+PC9zcGFuPjwvZGl2PjxkaXY+PHNwYW4+WyAxMyVdOiBjb21waWxpbmcuYnBmIHVwcm9iZS5icGYu
+Yzwvc3Bhbj48L2Rpdj48ZGl2PjxzcGFuPlsgMTMlXTogY29tcGlsaW5nLmJwZiBtaW5pbWFsLmJw
+Zi5jPC9zcGFuPjwvZGl2PjxkaXY+PHNwYW4+WyAxMyVdOiBjb21waWxpbmcuYnBmIGZlbnRyeS5i
+cGYuYzwvc3Bhbj48L2Rpdj48ZGl2PjxzcGFuPlsgMTMlXTogY29tcGlsaW5nLmJwZiBtaW5pbWFs
+X2xlZ2FjeS5icGYuYzwvc3Bhbj48L2Rpdj48ZGl2PjxzcGFuPlsgMTclXTogY2FjaGUgY29tcGls
+aW5nLnJlbGVhc2UgLi4vLi4vbGliYnBmL3NyYy9saWJicGYuYzwvc3Bhbj48L2Rpdj48ZGl2Pjxz
+cGFuPlsgMzMlXTogY2FjaGUgY29tcGlsaW5nLnJlbGVhc2UgLi4vLi4vbGliYnBmL3NyYy9uZXRs
+aW5rLmM8L3NwYW4+PC9kaXY+PGRpdj48c3Bhbj5bIDQ0JV06IGNhY2hlIGNvbXBpbGluZy5yZWxl
+YXNlIC4uLy4uL2xpYmJwZi9zcmMvYnBmLmM8L3NwYW4+PC9kaXY+PGRpdj48c3Bhbj5bIDQ0JV06
+IGNvbXBpbGluZy5icGYgYm9vdHN0cmFwLmJwZi5jPC9zcGFuPjwvZGl2PjxkaXY+PHNwYW4+bGli
+YnBmOiBtYXAgJ215X3BpZF9tYXAnOiB1bnN1cHBvcnRlZCBtYXAgbGlua2FnZSBzdGF0aWMuPC9z
+cGFuPjwvZGl2PjxkaXY+PHNwYW4+RXJyb3I6IGZhaWxlZCB0byBvcGVuIEJQRiBvYmplY3QgZmls
+ZTogT3BlcmF0aW9uIG5vdCBzdXBwb3J0ZWQ8L3NwYW4+PC9kaXY+PGRpdj48c3Bhbj5lcnJvcjoK
+IGV4ZWN2KGJwZnRvb2wgZ2VuIHNrZWxldG9uIApidWlsZC8uZ2Vucy9taW5pbWFsX2xlZ2FjeS9h
+bmRyb2lkL2FybWVhYmktdjdhL3JlbGVhc2UvcnVsZXMvYnBmL21pbmltYWxfbGVnYWN5LmJwZi5v
+KQogZmFpbGVkKDE2MSk8L3NwYW4+PC9kaXY+PGRpdj48c3Bhbj5gYGA8L3NwYW4+PC9kaXY+PGRp
+dj48YnI+PC9kaXY+PGRpdj48c3Bhbj5mYWlsZWQuPC9zcGFuPjwvZGl2PjxkaXY+PGJyPjwvZGl2
+PjxkaXY+PHNwYW4+U2VlbXMgbGlrZSBpdHMgZm9yIGFsbCAubWFwcyBub3Qgb25seSByaW5nYnVm
+Ljwvc3Bhbj48L2Rpdj48ZGl2Pjxicj48L2Rpdj48ZGl2PjxzcGFuPi0tLTwvc3Bhbj48L2Rpdj48
+ZGl2PjxzcGFuPlNhbWUgZm9yIGB2LjcuMi4wYDxicj48YnI+PHNwYW4+SSBjcmVhdGVkIHRpY2tl
+dCBhcyB3ZWxsIG9uIEdpdEh1YjogPHNwYW4+PGEgaHJlZj0iaHR0cHM6Ly9naXRodWIuY29tL2xp
+YmJwZi9saWJicGYvaXNzdWVzLzcyMCIgcmVsPSJub3JlZmVycmVyIG5vZm9sbG93IG5vb3BlbmVy
+IiB0YXJnZXQ9Il9ibGFuayI+aHR0cHM6Ly9naXRodWIuY29tL2xpYmJwZi9saWJicGYvaXNzdWVz
+LzcyMDxicj48YnI+PC9hPjxicj5TZWVtcyBsaWtlIGl0J3MgYSBidWc8L3NwYW4+PC9zcGFuPjxi
+cj48YnI+UmVnYWRzLDxicj5HcnViZWxpPC9zcGFuPjwvZGl2Pjxicj48L2Rpdj4KPGRpdiBjbGFz
+cz0icHJvdG9ubWFpbF9zaWduYXR1cmVfYmxvY2sgcHJvdG9ubWFpbF9zaWduYXR1cmVfYmxvY2st
+ZW1wdHkiIHN0eWxlPSJmb250LWZhbWlseTogSGVsdmV0aWNhLCBzYW5zLXNlcmlmOyBmb250LXNp
+emU6IDE0cHg7Ij4KICAgIDxkaXYgY2xhc3M9InByb3Rvbm1haWxfc2lnbmF0dXJlX2Jsb2NrLXVz
+ZXIgcHJvdG9ubWFpbF9zaWduYXR1cmVfYmxvY2stZW1wdHkiPgogICAgICAgIAogICAgICAgICAg
+ICA8L2Rpdj4KICAgIAogICAgICAgICAgICA8ZGl2IGNsYXNzPSJwcm90b25tYWlsX3NpZ25hdHVy
+ZV9ibG9jay1wcm90b24gcHJvdG9ubWFpbF9zaWduYXR1cmVfYmxvY2stZW1wdHkiPgogICAgICAg
+IAogICAgICAgICAgICA8L2Rpdj4KPC9kaXY+Cg==
+-----------------------998b9d3087abcfd74ee7ec944fe4e934--
+-----------------------5cbb778a1951cd835fd671b23496ecca--
+-----------------------2bb99394a2db98ad84114ca586255aeb
+Content-Type: application/pgp-keys; filename="publickey - khasaia@pm.me - 0xAC812A1F.asc"; name="publickey - khasaia@pm.me - 0xAC812A1F.asc"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="publickey - khasaia@pm.me - 0xAC812A1F.asc"; name="publickey - khasaia@pm.me - 0xAC812A1F.asc"
+
+LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgp4ak1FWFBwWmt4WUpLd1lCQkFI
+YVJ3OEJBUWRBWFJBR0s2SlJWTXVLcmZIYlVsN1F0Y3pZWTB0Mmhnb2IKajFQL0ZYOW1pN25OSFd0
+b1lYTmhhV0ZBY0cwdWJXVWdQR3RvWVhOaGFXRkFjRzB1YldVK3duY0VFQllLCkFCOEZBbHo2V1pN
+R0N3a0hDQU1DQkJVSUNnSURGZ0lCQWhrQkFoc0RBaDRCQUFvSkVQcUl4NWxIOUYvagpHUHdBLzBT
+SG12czhnR2FKRFQwN1p5aWhVYVh0VkJsOTc4TlBJLzRZbUUrSHZYNW9BUURWUUNhT1lUTHgKQVhH
+MnFxaUhSUlBXTVllM3c5OTEzTkozNW5Dd2tpdUVDODQ0QkZ6NldaTVNDaXNHQVFRQmwxVUJCUUVC
+CkIwQ3p2TGFKYUh6LzdjREU1cmRCZndjTVpqUEpnOUgxOGZuemV1ZGpWY09BYlFNQkNBZkNZUVFZ
+RmdnQQpDUVVDWFBwWmt3SWJEQUFLQ1JENmlNZVpSL1JmNCtRWUFQNG5UeWZTUEF3NUF5NkRwSzRS
+ODhrbjZPdncKREZ6bGhYQlhnOEV6Nk1JaHFRRCtKZlRwT3VyRlkzRldzR1dMRnIrQ3FIV1ZSOEl5
+aDRNQjR6VmFxNit4CkRBRT0KPXFqeXUKLS0tLS1FTkQgUEdQIFBVQkxJQyBLRVkgQkxPQ0stLS0t
+LQo=
+-----------------------2bb99394a2db98ad84114ca586255aeb--
+
+--------01be434c0bf771b5269992e6f9e9112d2911f7537dda9121d5a2d23e033dd90a
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: ProtonMail
+
+wnUEARYKACcFgmTp45oJkPqIx5lH9F/jFiEErIEqH5eubKnbI0GH+ojHmUf0
+X+MAAIIJAP92VaNZD+yFEGwkMQqrI9gqHCoupN3Uaos18kXGHAmCfgD+MbIO
+TWZikyC3XjHzik9yZ1fqpG3Ln2pVMZ/258XXBgY=
+=kdU0
+-----END PGP SIGNATURE-----
 
 
-Bj=C3=B6rn
+--------01be434c0bf771b5269992e6f9e9112d2911f7537dda9121d5a2d23e033dd90a--
+
 
