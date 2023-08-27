@@ -1,28 +1,28 @@
-Return-Path: <bpf+bounces-8799-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8802-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFEB4789FF0
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 17:29:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32E45789FF3
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 17:29:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74846280EF9
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 15:29:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1679280F34
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 15:29:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80D501097A;
-	Sun, 27 Aug 2023 15:28:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1D10111AA;
+	Sun, 27 Aug 2023 15:28:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB587EE
-	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 15:28:20 +0000 (UTC)
-Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6504EEC
-	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 08:28:18 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6391096A
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 15:28:31 +0000 (UTC)
+Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F15D13E
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 08:28:30 -0700 (PDT)
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 84C02257ECFD9; Sun, 27 Aug 2023 08:28:11 -0700 (PDT)
+	id AA791257ED012; Sun, 27 Aug 2023 08:28:16 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -30,9 +30,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v3 08/13] selftests/bpf: Add tests for array map with local percpu kptr
-Date: Sun, 27 Aug 2023 08:28:11 -0700
-Message-Id: <20230827152811.2000125-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v3 09/13] bpf: Mark OBJ_RELEASE argument as MEM_RCU when possible
+Date: Sun, 27 Aug 2023 08:28:16 -0700
+Message-Id: <20230827152816.2000760-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230827152729.1995219-1-yonghong.song@linux.dev>
 References: <20230827152729.1995219-1-yonghong.song@linux.dev>
@@ -49,306 +49,78 @@ X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add non-sleepable and sleepable tests with percpu kptr. For
-non-sleepable test, four programs are executed in the order of:
-  1. allocate percpu data.
-  2. assign values to percpu data.
-  3. retrieve percpu data.
-  4. de-allocate percpu data.
+In previous selftests/bpf patch, we have
+  p =3D bpf_percpu_obj_new(struct val_t);
+  if (!p)
+          goto out;
 
-The sleepable prog tried to exercise all above 4 steps in a
-single prog. Also for sleepable prog, rcu_read_lock is needed
-to protect direct percpu ptr access (from map value) and
-following bpf_this_cpu_ptr() and bpf_per_cpu_ptr() helpers.
+  p1 =3D bpf_kptr_xchg(&e->pc, p);
+  if (p1) {
+          /* race condition */
+          bpf_percpu_obj_drop(p1);
+  }
+
+  p =3D e->pc;
+  if (!p)
+          goto out;
+
+After bpf_kptr_xchg(), we need to re-read e->pc into 'p'.
+This is due to that the second argument of bpf_kptr_xchg() is marked
+OBJ_RELEASE and it will be marked as invalid after the call.
+So after bpf_kptr_xchg(), 'p' is an unknown scalar,
+and the bpf program needs to reread from the map value.
+
+This patch checks if the 'p' has type MEM_ALLOC and MEM_PERCPU,
+and if 'p' is RCU protected. If this is the case, 'p' can be marked
+as MEM_RCU. MEM_ALLOC needs to be removed since 'p' is not
+an owning reference any more. Such a change makes re-read
+from the map value unnecessary.
+
+Note that re-reading 'e->pc' after bpf_kptr_xchg() might get
+a different value from 'p' if immediately before 'p =3D e->pc',
+another cpu may do another bpf_kptr_xchg() and swap in another value
+into 'e->pc'. If this is the case, then 'p =3D e->pc' may
+get either 'p' or another value, and race condition already exists.
+So removing direct re-reading seems fine too.
 
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- .../selftests/bpf/prog_tests/percpu_alloc.c   |  78 ++++++++
- .../selftests/bpf/progs/percpu_alloc_array.c  | 187 ++++++++++++++++++
- 2 files changed, 265 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
- create mode 100644 tools/testing/selftests/bpf/progs/percpu_alloc_array.=
-c
+ kernel/bpf/verifier.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c b/tool=
-s/testing/selftests/bpf/prog_tests/percpu_alloc.c
-new file mode 100644
-index 000000000000..0fb536822f14
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
-@@ -0,0 +1,78 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include "percpu_alloc_array.skel.h"
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 6b7e7ca611f3..dbba2b806017 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -9660,6 +9660,26 @@ static int check_helper_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn
+ 				return -EFAULT;
+ 			}
+ 			err =3D unmark_stack_slots_dynptr(env, &regs[meta.release_regno]);
++		} else if (func_id =3D=3D BPF_FUNC_kptr_xchg && meta.ref_obj_id) {
++			u32 ref_obj_id =3D meta.ref_obj_id;
++			bool in_rcu =3D in_rcu_cs(env);
++			struct bpf_func_state *state;
++			struct bpf_reg_state *reg;
 +
-+static void test_array(void)
-+{
-+	struct percpu_alloc_array *skel;
-+	int err, prog_fd;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+
-+	skel =3D percpu_alloc_array__open();
-+	if (!ASSERT_OK_PTR(skel, "percpu_alloc_array__open"))
-+		return;
-+
-+	bpf_program__set_autoload(skel->progs.test_array_map_1, true);
-+	bpf_program__set_autoload(skel->progs.test_array_map_2, true);
-+	bpf_program__set_autoload(skel->progs.test_array_map_3, true);
-+	bpf_program__set_autoload(skel->progs.test_array_map_4, true);
-+
-+	skel->rodata->nr_cpus =3D libbpf_num_possible_cpus();
-+
-+	err =3D percpu_alloc_array__load(skel);
-+	if (!ASSERT_OK(err, "percpu_alloc_array__load"))
-+		goto out;
-+
-+	err =3D percpu_alloc_array__attach(skel);
-+	if (!ASSERT_OK(err, "percpu_alloc_array__attach"))
-+		goto out;
-+
-+	prog_fd =3D bpf_program__fd(skel->progs.test_array_map_1);
-+	err =3D bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run array_map 1-4");
-+	ASSERT_EQ(topts.retval, 0, "test_run array_map 1-4");
-+	ASSERT_EQ(skel->bss->cpu0_field_d, 2, "cpu0_field_d");
-+	ASSERT_EQ(skel->bss->sum_field_c, 1, "sum_field_c");
-+out:
-+	percpu_alloc_array__destroy(skel);
-+}
-+
-+static void test_array_sleepable(void)
-+{
-+	struct percpu_alloc_array *skel;
-+	int err, prog_fd;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+
-+	skel =3D percpu_alloc_array__open();
-+	if (!ASSERT_OK_PTR(skel, "percpu_alloc__open"))
-+		return;
-+
-+	bpf_program__set_autoload(skel->progs.test_array_map_10, true);
-+
-+	skel->rodata->nr_cpus =3D libbpf_num_possible_cpus();
-+
-+	err =3D percpu_alloc_array__load(skel);
-+	if (!ASSERT_OK(err, "percpu_alloc_array__load"))
-+		goto out;
-+
-+	err =3D percpu_alloc_array__attach(skel);
-+	if (!ASSERT_OK(err, "percpu_alloc_array__attach"))
-+		goto out;
-+
-+	prog_fd =3D bpf_program__fd(skel->progs.test_array_map_10);
-+	err =3D bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run array_map_10");
-+	ASSERT_EQ(topts.retval, 0, "test_run array_map_10");
-+	ASSERT_EQ(skel->bss->cpu0_field_d, 2, "cpu0_field_d");
-+	ASSERT_EQ(skel->bss->sum_field_c, 1, "sum_field_c");
-+out:
-+	percpu_alloc_array__destroy(skel);
-+}
-+
-+void test_percpu_alloc(void)
-+{
-+	if (test__start_subtest("array"))
-+		test_array();
-+	if (test__start_subtest("array_sleepable"))
-+		test_array_sleepable();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/percpu_alloc_array.c b/too=
-ls/testing/selftests/bpf/progs/percpu_alloc_array.c
-new file mode 100644
-index 000000000000..3bd7d47870a9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/percpu_alloc_array.c
-@@ -0,0 +1,187 @@
-+#include "bpf_experimental.h"
-+
-+struct val_t {
-+	long b, c, d;
-+};
-+
-+struct elem {
-+	long sum;
-+	struct val_t __percpu_kptr *pc;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, int);
-+	__type(value, struct elem);
-+} array SEC(".maps");
-+
-+void bpf_rcu_read_lock(void) __ksym;
-+void bpf_rcu_read_unlock(void) __ksym;
-+
-+const volatile int nr_cpus;
-+
-+/* Initialize the percpu object */
-+SEC("?fentry/bpf_fentry_test1")
-+int BPF_PROG(test_array_map_1)
-+{
-+	struct val_t __percpu_kptr *p;
-+	struct elem *e;
-+	int index =3D 0;
-+
-+	e =3D bpf_map_lookup_elem(&array, &index);
-+	if (!e)
-+		return 0;
-+
-+	p =3D bpf_percpu_obj_new(struct val_t);
-+	if (!p)
-+		return 0;
-+
-+	p =3D bpf_kptr_xchg(&e->pc, p);
-+	if (p)
-+		bpf_percpu_obj_drop(p);
-+
-+	return 0;
-+}
-+
-+/* Update percpu data */
-+SEC("?fentry/bpf_fentry_test2")
-+int BPF_PROG(test_array_map_2)
-+{
-+	struct val_t __percpu_kptr *p;
-+	struct val_t *v;
-+	struct elem *e;
-+	int index =3D 0;
-+
-+	e =3D bpf_map_lookup_elem(&array, &index);
-+	if (!e)
-+		return 0;
-+
-+	p =3D e->pc;
-+	if (!p)
-+		return 0;
-+
-+	v =3D bpf_per_cpu_ptr(p, 0);
-+	if (!v)
-+		return 0;
-+	v->c =3D 1;
-+	v->d =3D 2;
-+
-+	return 0;
-+}
-+
-+int cpu0_field_d, sum_field_c;
-+
-+/* Summarize percpu data */
-+SEC("?fentry/bpf_fentry_test3")
-+int BPF_PROG(test_array_map_3)
-+{
-+	struct val_t __percpu_kptr *p;
-+	int i, index =3D 0;
-+	struct val_t *v;
-+	struct elem *e;
-+
-+	e =3D bpf_map_lookup_elem(&array, &index);
-+	if (!e)
-+		return 0;
-+
-+	p =3D e->pc;
-+	if (!p)
-+		return 0;
-+
-+	bpf_for(i, 0, nr_cpus) {
-+		v =3D bpf_per_cpu_ptr(p, i);
-+		if (v) {
-+			if (i =3D=3D 0)
-+				cpu0_field_d =3D v->d;
-+			sum_field_c +=3D v->c;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+/* Explicitly free allocated percpu data */
-+SEC("?fentry/bpf_fentry_test4")
-+int BPF_PROG(test_array_map_4)
-+{
-+	struct val_t __percpu_kptr *p;
-+	struct elem *e;
-+	int index =3D 0;
-+
-+	e =3D bpf_map_lookup_elem(&array, &index);
-+	if (!e)
-+		return 0;
-+
-+	/* delete */
-+	p =3D bpf_kptr_xchg(&e->pc, NULL);
-+	if (p) {
-+		bpf_percpu_obj_drop(p);
-+	}
-+
-+	return 0;
-+}
-+
-+SEC("?fentry.s/bpf_fentry_test1")
-+int BPF_PROG(test_array_map_10)
-+{
-+	struct val_t __percpu_kptr *p, *p1;
-+	int i, index =3D 0;
-+	struct val_t *v;
-+	struct elem *e;
-+
-+	e =3D bpf_map_lookup_elem(&array, &index);
-+	if (!e)
-+		return 0;
-+
-+	bpf_rcu_read_lock();
-+	p =3D e->pc;
-+	if (!p) {
-+		p =3D bpf_percpu_obj_new(struct val_t);
-+		if (!p)
-+			goto out;
-+
-+		p1 =3D bpf_kptr_xchg(&e->pc, p);
-+		if (p1) {
-+			/* race condition */
-+			bpf_percpu_obj_drop(p1);
-+		}
-+
-+		p =3D e->pc;
-+		if (!p)
-+			goto out;
-+	}
-+
-+	v =3D bpf_this_cpu_ptr(p);
-+	v->c =3D 3;
-+	v =3D bpf_this_cpu_ptr(p);
-+	v->c =3D 0;
-+
-+	v =3D bpf_per_cpu_ptr(p, 0);
-+	if (!v)
-+		goto out;
-+	v->c =3D 1;
-+	v->d =3D 2;
-+
-+	/* delete */
-+	p1 =3D bpf_kptr_xchg(&e->pc, NULL);
-+	if (!p1)
-+		goto out;
-+
-+	bpf_for(i, 0, nr_cpus) {
-+		v =3D bpf_per_cpu_ptr(p, i);
-+		if (v) {
-+			if (i =3D=3D 0)
-+				cpu0_field_d =3D v->d;
-+			sum_field_c +=3D v->c;
-+		}
-+	}
-+
-+	/* finally release p */
-+	bpf_percpu_obj_drop(p1);
-+out:
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+char _license[] SEC("license") =3D "GPL";
++			err =3D release_reference_state(cur_func(env), ref_obj_id);
++			if (!err) {
++				bpf_for_each_reg_in_vstate(env->cur_state, state, reg, ({
++					if (reg->ref_obj_id =3D=3D ref_obj_id) {
++						if (in_rcu && (reg->type & MEM_ALLOC) && (reg->type & MEM_PERCPU))=
+ {
++							reg->ref_obj_id =3D 0;
++							reg->type &=3D ~MEM_ALLOC;
++							reg->type |=3D MEM_RCU;
++						} else {
++							mark_reg_invalid(env, reg);
++						}
++					}
++				}));
++			}
+ 		} else if (meta.ref_obj_id) {
+ 			err =3D release_reference(env, meta.ref_obj_id);
+ 		} else if (register_is_null(&regs[meta.release_regno])) {
 --=20
 2.34.1
 
