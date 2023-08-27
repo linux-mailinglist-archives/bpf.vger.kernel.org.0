@@ -1,28 +1,28 @@
-Return-Path: <bpf+bounces-8792-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8793-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3621B789FE9
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 17:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BB9B6789FEA
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 17:28:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F0D41C208EB
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 15:27:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE5B71C208ED
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 15:28:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776911096B;
-	Sun, 27 Aug 2023 15:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E97910974;
+	Sun, 27 Aug 2023 15:27:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 392F97EE
-	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 15:27:45 +0000 (UTC)
-Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ECAEEC
-	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 08:27:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 596557EE
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 15:27:48 +0000 (UTC)
+Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0BAEC
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 08:27:46 -0700 (PDT)
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 4355F257ECDFD; Sun, 27 Aug 2023 08:27:29 -0700 (PDT)
+	id 66832257ECE2B; Sun, 27 Aug 2023 08:27:34 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -30,10 +30,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v3 00/13] bpf: Add support for local percpu kptr
-Date: Sun, 27 Aug 2023 08:27:29 -0700
-Message-Id: <20230827152729.1995219-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v3 01/13] bpf: Add support for non-fix-size percpu mem allocation
+Date: Sun, 27 Aug 2023 08:27:34 -0700
+Message-Id: <20230827152734.1995725-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230827152729.1995219-1-yonghong.song@linux.dev>
+References: <20230827152729.1995219-1-yonghong.song@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -47,101 +49,106 @@ X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Patch set [1] implemented cgroup local storage BPF_MAP_TYPE_CGRP_STORAGE
-similar to sk/task/inode local storage and old BPF_MAP_TYPE_CGROUP_STORAG=
-E
-map is marked as deprecated since old BPF_MAP_TYPE_CGROUP_STORAGE map can
-only work with current cgroup.
+This is needed for later percpu mem allocation when the
+allocation is done by bpf program. For such cases, a global
+bpf_global_percpu_ma is added where a flexible allocation
+size is needed.
 
-Similarly, the existing BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE map
-is a percpu version of BPF_MAP_TYPE_CGROUP_STORAGE and only works
-with current cgroup. But there is no replacement which can work
-with arbitrary cgroup.
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ include/linux/bpf.h   |  4 ++--
+ kernel/bpf/core.c     |  8 +++++---
+ kernel/bpf/memalloc.c | 14 ++++++--------
+ 3 files changed, 13 insertions(+), 13 deletions(-)
 
-This patch set solved this problem but adding support for local
-percpu kptr. The map value can have a percpu kptr field which holds
-a bpf prog allocated percpu data. The below is an example,
-
-  struct percpu_val_t {
-    ... fields ...
-  }
-
-  struct map_value_t {
-    struct percpu_val_t __percpu_kptr *percpu_data_ptr;
-  }
-
-In the above, 'map_value_t' is the map value type for a
-BPF_MAP_TYPE_CGRP_STORAGE map. User can access 'percpu_data_ptr'
-and then read/write percpu data. This covers BPF_MAP_TYPE_PERCPU_CGROUP_S=
-TORAGE
-and more. So BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE map type
-is marked as deprecated.
-
-In additional, local percpu kptr supports the same map type
-as other kptrs including hash, lru_hash, array, sk/inode/task/cgrp
-local storage. Currently, percpu data structure does not support
-non-scalars or special fields (e.g., bpf_spin_lock, bpf_rb_root, etc.).
-They can be supported in the future if there exist use cases.
-
-Please for individual patches for details.
-
-  [1] https://lore.kernel.org/all/20221026042835.672317-1-yhs@fb.com/
-
-Changelog:
-  v2 -> v3:
-    - fix libbpf_str test failure.
-  v1 -> v2:
-    - does not support special fields in percpu data structure.
-    - rename __percpu attr to __percpu_kptr attr.
-    - rename BPF_KPTR_PERCPU_REF to BPF_KPTR_PERCPU.
-    - better code to handle bpf_{this,per}_cpu_ptr() helpers.
-    - add more negative tests.
-    - fix a bpftool related test failure.
-
-Yonghong Song (13):
-  bpf: Add support for non-fix-size percpu mem allocation
-  bpf: Add BPF_KPTR_PERCPU as a field type
-  bpf: Add alloc/xchg/direct_access support for local percpu kptr
-  bpf: Add bpf_this_cpu_ptr/bpf_per_cpu_ptr support for allocated percpu
-    obj
-  selftests/bpf: Update error message in negative linked_list test
-  libbpf: Add __percpu_kptr macro definition
-  selftests/bpf: Add bpf_percpu_obj_{new,drop}() macro in
-    bpf_experimental.h
-  selftests/bpf: Add tests for array map with local percpu kptr
-  bpf: Mark OBJ_RELEASE argument as MEM_RCU when possible
-  selftests/bpf: Remove unnecessary direct read of local percpu kptr
-  selftests/bpf: Add tests for cgrp_local_storage with local percpu kptr
-  selftests/bpf: Add some negative tests
-  bpf: Mark BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE deprecated
-
- include/linux/bpf.h                           |  22 +-
- include/linux/bpf_verifier.h                  |   1 +
- include/uapi/linux/bpf.h                      |   9 +-
- kernel/bpf/btf.c                              |   5 +
- kernel/bpf/core.c                             |   8 +-
- kernel/bpf/helpers.c                          |  16 ++
- kernel/bpf/memalloc.c                         |  14 +-
- kernel/bpf/syscall.c                          |   4 +
- kernel/bpf/verifier.c                         | 191 +++++++++++++++---
- tools/include/uapi/linux/bpf.h                |   9 +-
- tools/lib/bpf/bpf_helpers.h                   |   1 +
- .../testing/selftests/bpf/bpf_experimental.h  |  31 +++
- .../selftests/bpf/prog_tests/libbpf_str.c     |   6 +-
- .../selftests/bpf/prog_tests/linked_list.c    |   4 +-
- .../selftests/bpf/prog_tests/percpu_alloc.c   | 125 ++++++++++++
- .../selftests/bpf/progs/percpu_alloc_array.c  | 183 +++++++++++++++++
- .../progs/percpu_alloc_cgrp_local_storage.c   | 105 ++++++++++
- .../selftests/bpf/progs/percpu_alloc_fail.c   | 164 +++++++++++++++
- .../selftests/bpf/test_bpftool_synctypes.py   |   9 +
- 19 files changed, 853 insertions(+), 54 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
- create mode 100644 tools/testing/selftests/bpf/progs/percpu_alloc_array.=
-c
- create mode 100644 tools/testing/selftests/bpf/progs/percpu_alloc_cgrp_l=
-ocal_storage.c
- create mode 100644 tools/testing/selftests/bpf/progs/percpu_alloc_fail.c
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 12596af59c00..144dbddf53bd 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -55,8 +55,8 @@ struct cgroup;
+ extern struct idr btf_idr;
+ extern spinlock_t btf_idr_lock;
+ extern struct kobject *btf_kobj;
+-extern struct bpf_mem_alloc bpf_global_ma;
+-extern bool bpf_global_ma_set;
++extern struct bpf_mem_alloc bpf_global_ma, bpf_global_percpu_ma;
++extern bool bpf_global_ma_set, bpf_global_percpu_ma_set;
+=20
+ typedef u64 (*bpf_callback_t)(u64, u64, u64, u64, u64);
+ typedef int (*bpf_iter_init_seq_priv_t)(void *private_data,
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 0f8f036d8bd1..95599df82ee4 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -64,8 +64,8 @@
+ #define OFF	insn->off
+ #define IMM	insn->imm
+=20
+-struct bpf_mem_alloc bpf_global_ma;
+-bool bpf_global_ma_set;
++struct bpf_mem_alloc bpf_global_ma, bpf_global_percpu_ma;
++bool bpf_global_ma_set, bpf_global_percpu_ma_set;
+=20
+ /* No hurry in this branch
+  *
+@@ -2921,7 +2921,9 @@ static int __init bpf_global_ma_init(void)
+=20
+ 	ret =3D bpf_mem_alloc_init(&bpf_global_ma, 0, false);
+ 	bpf_global_ma_set =3D !ret;
+-	return ret;
++	ret =3D bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
++	bpf_global_percpu_ma_set =3D !ret;
++	return !bpf_global_ma_set || !bpf_global_percpu_ma_set;
+ }
+ late_initcall(bpf_global_ma_init);
+ #endif
+diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+index 9c49ae53deaf..cb60445de98a 100644
+--- a/kernel/bpf/memalloc.c
++++ b/kernel/bpf/memalloc.c
+@@ -499,15 +499,16 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, in=
+t size, bool percpu)
+ 	struct obj_cgroup *objcg =3D NULL;
+ 	int cpu, i, unit_size, percpu_size =3D 0;
+=20
++	/* room for llist_node and per-cpu pointer */
++	if (percpu)
++		percpu_size =3D LLIST_NODE_SZ + sizeof(void *);
++
+ 	if (size) {
+ 		pc =3D __alloc_percpu_gfp(sizeof(*pc), 8, GFP_KERNEL);
+ 		if (!pc)
+ 			return -ENOMEM;
+=20
+-		if (percpu)
+-			/* room for llist_node and per-cpu pointer */
+-			percpu_size =3D LLIST_NODE_SZ + sizeof(void *);
+-		else
++		if (!percpu)
+ 			size +=3D LLIST_NODE_SZ; /* room for llist_node */
+ 		unit_size =3D size;
+=20
+@@ -527,10 +528,6 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int=
+ size, bool percpu)
+ 		return 0;
+ 	}
+=20
+-	/* size =3D=3D 0 && percpu is an invalid combination */
+-	if (WARN_ON_ONCE(percpu))
+-		return -EINVAL;
+-
+ 	pcc =3D __alloc_percpu_gfp(sizeof(*cc), 8, GFP_KERNEL);
+ 	if (!pcc)
+ 		return -ENOMEM;
+@@ -543,6 +540,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int =
+size, bool percpu)
+ 			c =3D &cc->cache[i];
+ 			c->unit_size =3D sizes[i];
+ 			c->objcg =3D objcg;
++			c->percpu_size =3D percpu_size;
+ 			c->tgt =3D c;
+ 			prefill_mem_cache(c, cpu);
+ 		}
 --=20
 2.34.1
 
