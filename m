@@ -1,39 +1,39 @@
-Return-Path: <bpf+bounces-8813-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8814-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41BC378A1A1
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 22:52:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B951D78A1DF
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 23:32:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 727AE1C20831
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 20:52:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7110F280E72
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 21:32:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEA831428E;
-	Sun, 27 Aug 2023 20:52:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74C7314296;
+	Sun, 27 Aug 2023 21:32:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90B7D14000;
-	Sun, 27 Aug 2023 20:52:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287AC100CC;
+	Sun, 27 Aug 2023 21:32:38 +0000 (UTC)
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B715123;
-	Sun, 27 Aug 2023 13:52:11 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F91CEC;
+	Sun, 27 Aug 2023 14:32:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=64WGA8VV9Ar6eu59jwKakipB5IQeiUdKnhF4bZRyjJg=; b=f4Amt/s2VPJBfpbA4kwhdXTdVg
-	/pn5N3WZwWFuLeNUpjeDraYY4nQbaO2UYvFIaQahuWJpv6yWj9SJhm3438dxwJSqQjroyoc9F0SYv
-	XAWPI0/B2+Jwn7WLlLOC7qTdz3pp+yI4mEjVaLz0qln0W2Hlp6Bqseo3n3BK6S7q8PWF2QR7jDDR5
-	5QOB+otXNut9VVTlFGgE9OB8fNY4Zqee0Fvn6lAYSC0XLvrtBqaDQzjA8XPvUV/U40DN9P1BUUcT+
-	KJAEsVOCJlXQA4wp82KhD9XmJfIxAUdOp4MXoPkTY5GoW5ML77D0bFxP371EeaBKUbiVosNZkp33g
-	ozZ78lYw==;
+	bh=/6hpsLsV03ieW4vELbhOk4pxiCIUuyn6Bpw1V8QuWjA=; b=vTYL9F6nmyMC1z4vgUQ57UMuze
+	c8bgt9vFOKWzPspRsbeTFLgLHz/hKRnLtd9UWTyKshqJF7eN4C3F+EMjcufK9pmtU6JnMc8dQv1Vt
+	5InC4HIkUznFa/hnNRczUUX7xHbrfZD4svYR9Kg0wslB46dSko8l2iAdkLRH/H5iWuiyt8iN5XazN
+	QityxWl2yb3p6DSle3T84m2jiGMPG15FtuhdmZtjHlUbcKD8n1NBcGDOexBbj8JBeLDTA1BEKmInL
+	888FPoRnfrZ00U1GiFcxw/e4IZGsn0ijlmA9d45AXC5VifFlQ9hZQtQ/XxGEdq6/5qdn+lFw1Ut3Y
+	+YmC6jBQ==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1qaMjj-00DkxQ-7a; Sun, 27 Aug 2023 20:51:55 +0000
-Date: Sun, 27 Aug 2023 21:51:55 +0100
+	id 1qaNMq-00DvXM-Sy; Sun, 27 Aug 2023 21:32:21 +0000
+Date: Sun, 27 Aug 2023 22:32:20 +0100
 From: Matthew Wilcox <willy@infradead.org>
 To: Hao Xu <hao.xu@linux.dev>
 Cc: io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
@@ -56,10 +56,10 @@ Cc: io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
 	devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
 	samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
 	Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH 09/11] vfs: error out -EAGAIN if atime needs to be updated
-Message-ID: <ZOu3a/24YJrtpIy1@casper.infradead.org>
+Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
+Message-ID: <ZOvA5DJDZN0FRymp@casper.infradead.org>
 References: <20230827132835.1373581-1-hao.xu@linux.dev>
- <20230827132835.1373581-10-hao.xu@linux.dev>
+ <20230827132835.1373581-8-hao.xu@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,18 +68,48 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230827132835.1373581-10-hao.xu@linux.dev>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230827132835.1373581-8-hao.xu@linux.dev>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+	SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sun, Aug 27, 2023 at 09:28:33PM +0800, Hao Xu wrote:
+On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
 > From: Hao Xu <howeyxu@tencent.com>
 > 
-> To enforce nowait semantics, error out -EAGAIN if atime needs to be
-> updated.
+> Add a boolean parameter for file_accessed() to support nowait semantics.
+> Currently it is true only with io_uring as its initial caller.
 
-Squash this into patch 6.  Otherwise patch 6 makes no sense.
+So why do we need to do this as part of this series?  Apparently it
+hasn't caused any problems for filemap_read().
+
+> +++ b/mm/filemap.c
+> @@ -2723,7 +2723,7 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
+>  		folio_batch_init(&fbatch);
+>  	} while (iov_iter_count(iter) && iocb->ki_pos < isize && !error);
+>  
+> -	file_accessed(filp);
+> +	file_accessed(filp, false);
+>  
+>  	return already_read ? already_read : error;
+>  }
+> @@ -2809,7 +2809,7 @@ generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+>  		retval = kiocb_write_and_wait(iocb, count);
+>  		if (retval < 0)
+>  			return retval;
+> -		file_accessed(file);
+> +		file_accessed(file, false);
+>  
+>  		retval = mapping->a_ops->direct_IO(iocb, iter);
+>  		if (retval >= 0) {
+> @@ -2978,7 +2978,7 @@ ssize_t filemap_splice_read(struct file *in, loff_t *ppos,
+>  
+>  out:
+>  	folio_batch_release(&fbatch);
+> -	file_accessed(in);
+> +	file_accessed(in, false);
+>  
+>  	return total_spliced ? total_spliced : error;
+>  }
 
