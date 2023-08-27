@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-8786-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8787-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18AB6789F36
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 15:35:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74758789F45
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 15:35:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7F4C280197
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 13:35:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A665A1C208E7
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 13:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E6CBD517;
-	Sun, 27 Aug 2023 13:34:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFFA08C14;
+	Sun, 27 Aug 2023 13:35:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A008485;
-	Sun, 27 Aug 2023 13:34:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE4068485
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 13:35:18 +0000 (UTC)
 Received: from out-249.mta1.migadu.com (out-249.mta1.migadu.com [IPv6:2001:41d0:203:375::f9])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37ED013E;
-	Sun, 27 Aug 2023 06:34:42 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB27013E;
+	Sun, 27 Aug 2023 06:35:09 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1693143280;
+	t=1693143308;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=X5RgYva0uI/YfpMcRAQXXXC0hBNumZORbEO2XQnoCOE=;
-	b=WXr39RUhGjmbBKUuqHmNng9tnfRreU8ks2ZtLjekYh53jHM4CnAQcsfBzBDABn1mkShot8
-	ZX46/udLE4Y2+Gp8W4OGBBchscS3B/zTnSSJs8rd29bz5YyB6Ia5W1tSVuXmmsCsWASJVj
-	OhE3i3OIyl7cEamjJGJ1G7EdndXC44c=
+	bh=y42FYySYNsis5G3mORomW/nSivl81IaFtk7YSUfz0Jg=;
+	b=S4P5Lis+5UgxAXsbIFEQ0bJcfwW5bp3gD+5EV25w4Odl6XRzUJpaJGVaokRckJ9Hpyff0y
+	QCMWQ876jzpmtvZlXQ4fdJDhdeygghENaAwk2aokCERTn3SKcsNlbNr+KPD/7nkWidZUEs
+	LZ/LAlKjzWeA2HQHZTdX8ZHXdvIJ060=
 From: Hao Xu <hao.xu@linux.dev>
 To: io-uring@vger.kernel.org,
 	Jens Axboe <axboe@kernel.dk>
@@ -66,9 +66,9 @@ Cc: Dominique Martinet <asmadeus@codewreck.org>,
 	samba-technical@lists.samba.org,
 	linux-mtd@lists.infradead.org,
 	Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCH 08/11] vfs: move file_accessed() to the beginning of iterate_dir()
-Date: Sun, 27 Aug 2023 21:28:32 +0800
-Message-Id: <20230827132835.1373581-9-hao.xu@linux.dev>
+Subject: [PATCH 09/11] vfs: error out -EAGAIN if atime needs to be updated
+Date: Sun, 27 Aug 2023 21:28:33 +0800
+Message-Id: <20230827132835.1373581-10-hao.xu@linux.dev>
 In-Reply-To: <20230827132835.1373581-1-hao.xu@linux.dev>
 References: <20230827132835.1373581-1-hao.xu@linux.dev>
 Precedence: bulk
@@ -88,41 +88,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 From: Hao Xu <howeyxu@tencent.com>
 
-Move file_accessed() to the beginning of iterate_dir() so that we don't
-need to rollback all the work done when file_accessed() returns -EAGAIN
-at the end of getdents.
+To enforce nowait semantics, error out -EAGAIN if atime needs to be
+updated.
 
 Signed-off-by: Hao Xu <howeyxu@tencent.com>
 ---
- fs/readdir.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ fs/inode.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/readdir.c b/fs/readdir.c
-index 2f4c9c663a39..6469f076ba6e 100644
---- a/fs/readdir.c
-+++ b/fs/readdir.c
-@@ -61,6 +61,10 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
+diff --git a/fs/inode.c b/fs/inode.c
+index e83b836f2d09..32d81be65cf9 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -1970,6 +1970,9 @@ int touch_atime(const struct path *path, bool nowait)
+ 	if (!atime_needs_update(path, inode))
+ 		return 0;
  
- 	res = -ENOENT;
- 	if (!IS_DEADDIR(inode)) {
-+		res = file_accessed(file, ctx->flags & DIR_CONTEXT_F_NOWAIT);
-+		if (res == -EAGAIN)
-+			goto out_unlock;
++	if (nowait)
++		return -EAGAIN;
 +
- 		ctx->pos = file->f_pos;
- 		if (shared)
- 			res = file->f_op->iterate_shared(file, ctx);
-@@ -68,8 +72,9 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
- 			res = file->f_op->iterate(file, ctx);
- 		file->f_pos = ctx->pos;
- 		fsnotify_access(file);
--		file_accessed(file, ctx->flags & DIR_CONTEXT_F_NOWAIT);
- 	}
-+
-+out_unlock:
- 	if (shared)
- 		inode_unlock_shared(inode);
- 	else
+ 	if (!sb_start_write_trylock(inode->i_sb))
+ 		return 0;
+ 
 -- 
 2.25.1
 
