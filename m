@@ -1,162 +1,125 @@
-Return-Path: <bpf+bounces-8765-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8766-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A440789B0C
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 04:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80877789BBF
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 09:21:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85AEC1C208DA
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 02:49:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B18C51C208ED
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 07:21:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24A063B;
-	Sun, 27 Aug 2023 02:49:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CA38EC4;
+	Sun, 27 Aug 2023 07:21:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2914190
-	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 02:49:22 +0000 (UTC)
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BC1FA;
-	Sat, 26 Aug 2023 19:49:21 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-64a70194fbeso14318966d6.0;
-        Sat, 26 Aug 2023 19:49:21 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1FA5814
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 07:21:08 +0000 (UTC)
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EA412A
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 00:21:03 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-26f51625d96so1060992a91.1
+        for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 00:21:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693104560; x=1693709360;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NCtnF9exppXJ6XEDIDPLdkpvn2zVvtmJBQygM/RMB4o=;
-        b=rAb2DkGtLtzvfBusGnyMbSTNQITIVKXuVi/834VnyW/8qP/QrdR+zwzLXjW4G9cS16
-         L80aJ8eBncSsGnLp7m/BIHTC5J29pNaiHgxMoR63mUkPSC22edCqtzExg7KRNeWcAehg
-         OWJXkDDMnjjzC/hb1xk9BRhuweSCXFoKMDSCQd/J+uMbKJCIo1sQPlwhhVKV0w2ixnL0
-         hW1HNfiSNNB1q/D2ClEburhGBGvUq2BcPhH0Zptmb08IPwI1fEO5jqOYLXRNZRY4zMD0
-         DeDqHTcMiKiXQl5hWxDOVcXsRbkOeeOOn4QWHYmYOeYaY0Z6zaHzDvurKz+p7KR06RUk
-         BLww==
+        d=bytedance.com; s=google; t=1693120863; x=1693725663;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Didxk1CTE/zuCtDw7bBmVUWH0JktUdKqtxgOWgiwWB8=;
+        b=LciGPZGVBtsUw3ARCvntN9CpiaX/D95sE+KiD9oJBqKckEc3wdTeu5SN0Dz2qHHZhj
+         iwR+OWA30bCxkjyX0OgSjGPDWPwiEF7wHH9EIavnC0V78Lq+IEQVj8lZbtH7oLZnEK1P
+         276KNsw8dzokNBegSZaV+bzP3X892fW6xrxYewi9ugBCPnrmjfhaOwcPOynK71mvOlZy
+         jQrYedn5KW+hqapc1L7CjAI07WEhvqEkAAW74BZusBeVeO1cjgxuX1OsJH57axKX4pJt
+         isicx0c5wIX7tC5oQCi4C6Ayh/Q7n7DddJxFHuL8mvr1m+H5MMY+phlMkMEG6XKkpPwC
+         TGlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693104560; x=1693709360;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NCtnF9exppXJ6XEDIDPLdkpvn2zVvtmJBQygM/RMB4o=;
-        b=Jmfg7tZMqB/Is/qGG59kF2Gh19KiCGpXKxgKD5bWRMb39xGDQK/p58ti8JDhmJ3Rlp
-         cVO0Fe2Vag5ZGyKQoGK3LStCDVzwFG7Z5aYz1jDh4T5bWVwFVO0arzjeb1HV5BWZTrW+
-         xVZdZdEuVOSENdSRY8KMJyadcA45xKcZEJeNTq7aw9tnmj30RDdWD744VXD5CgXhbgIK
-         zRCWrn+QoB/PUJ8pMePaQSmRLVZcpJDNIzvJTIt01yXsEiniKBP6PaqrJSPV218XChE+
-         /S+ZYgxBQYt2Bj9GiQzkisCsmsVG/5NVpCR4QByQmdz1/BGhpLDN5S2BIB4XA0fp6un5
-         RauA==
-X-Gm-Message-State: AOJu0YyGjYHED97iArgCkJ3SdxmBdRbrCeYfRl6xrjRn7WukrPELj1Tu
-	/BZz1AzHA8M7km0V6xJa0RkrbvNsipP1P2i5aCY=
-X-Google-Smtp-Source: AGHT+IF4vkWOe6NkflE5M3y8AVEnYVu/enyv10HrjdIye1KfASXGZWMrI8GglN7QOaOkABkqbpataQrmDhg3E7fucmo=
-X-Received: by 2002:a05:6214:4111:b0:649:bf3:6dbe with SMTP id
- kc17-20020a056214411100b006490bf36dbemr27581212qvb.62.1693104560582; Sat, 26
- Aug 2023 19:49:20 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693120863; x=1693725663;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Didxk1CTE/zuCtDw7bBmVUWH0JktUdKqtxgOWgiwWB8=;
+        b=mHzf7A4KkEyitdKYSFenJyd+uVxmiVcQj3A6nZKHVwszuWmSQYirvIDZ1NjEY+g0aV
+         hJ0Awg49VTqpudZKdjyuEjFG3BgX65KozqfIAaWGJT4x0CrOgEvV/hnmEnJaxGRI0lJT
+         Ux/qkrWxpr8NvbIVGTktZCm4XxbOf/GpTu9bDTfRc8TYJb003Tz+yPBc+hbeo0mLcgJH
+         Cb3tn79DvICZLuJglYouXxW55A0AP1hFFzGWM7noVF4g+6v6I98seM8oUmcr9BKalocQ
+         tfKgQzP4PcuwLRP7F9vu08vCymFDO9NM/P56EjiAo1pOWo4+O3c1osu1I+WW/4T108RO
+         ePZA==
+X-Gm-Message-State: AOJu0YzlbLD/8rYhghk72XUPLp7mNNmQEd/AR0Shlwgkkn9P3MlN5gLV
+	7fUrlUanO06L2z/XvGHL23PuP0jDTtyMSREj0XU=
+X-Google-Smtp-Source: AGHT+IEVPDK8tYUNEO2MtbjAvPsqgFb+MieMVWYwojeqiaRtppLiIb6zx/WAi0p4qIWTMtrxMuUxOA==
+X-Received: by 2002:a17:902:70cc:b0:1bc:9c70:b955 with SMTP id l12-20020a17090270cc00b001bc9c70b955mr18035472plt.28.1693120863043;
+        Sun, 27 Aug 2023 00:21:03 -0700 (PDT)
+Received: from n37-019-243.byted.org ([180.184.51.134])
+        by smtp.gmail.com with ESMTPSA id m3-20020a1709026bc300b001befac3b3cbsm4769723plt.290.2023.08.27.00.21.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Aug 2023 00:21:02 -0700 (PDT)
+From: Chuyi Zhou <zhouchuyi@bytedance.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Chuyi Zhou <zhouchuyi@bytedance.com>
+Subject: [RFC PATCH bpf-next 0/4] Add Open-coded process and css iters
+Date: Sun, 27 Aug 2023 15:20:53 +0800
+Message-Id: <20230827072057.1591929-1-zhouchuyi@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <tencent_6D23FE187408D965E95DFAA858BC7E8C760A@qq.com>
-In-Reply-To: <tencent_6D23FE187408D965E95DFAA858BC7E8C760A@qq.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Sun, 27 Aug 2023 10:48:44 +0800
-Message-ID: <CALOAHbCXVNXk4WUCRGCDsezzTfieDcLT=Jt00m4UX4zdw=RtsQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8] selftests/bpf: trace_helpers.c: optimize
- kallsyms cache
-To: Rong Tao <rtoax@foxmail.com>
-Cc: olsajiri@gmail.com, andrii@kernel.org, daniel@iogearbox.net, 
-	sdf@google.com, Rong Tao <rongtao@cestc.cn>, Alexei Starovoitov <ast@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Ilya Leoshkevich <iii@linux.ibm.com>, =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>, 
-	Manu Bretelle <chantr4@gmail.com>, Xu Kuohai <xukuohai@huawei.com>, 
-	Ross Zwisler <zwisler@google.com>, Eduard Zingerman <eddyz87@gmail.com>, 
-	"open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
-	"moderated list:ARM/STM32 ARCHITECTURE" <linux-stm32@st-md-mailman.stormreply.com>, 
-	"moderated list:ARM/STM32 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, Aug 26, 2023 at 10:46=E2=80=AFPM Rong Tao <rtoax@foxmail.com> wrote=
-:
->
-> From: Rong Tao <rongtao@cestc.cn>
->
-> Static ksyms often have problems because the number of symbols exceeds th=
-e
-> MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
-> commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
-> the problem somewhat, but it's not the perfect way.
->
-> This commit uses dynamic memory allocation, which completely solves the
-> problem caused by the limitation of the number of kallsyms.
->
-> Acked-by: Stanislav Fomichev <sdf@google.com>
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
-> ---
-> v8: Resolves inter-thread contention for ksyms global variables.
-> v7: https://lore.kernel.org/lkml/tencent_BD6E19C00BF565CD5C36A9A0BD828CFA=
-210A@qq.com/
->     Fix __must_check macro.
-> v6: https://lore.kernel.org/lkml/tencent_4A09A36F883A06EA428A593497642AF8=
-AF08@qq.com/
->     Apply libbpf_ensure_mem()
-> v5: https://lore.kernel.org/lkml/tencent_0E9E1A1C0981678D5E7EA9E4BDBA8EE2=
-200A@qq.com/
->     Release the allocated memory once the load_kallsyms_refresh() upon er=
-ror
->     given it's dynamically allocated.
-> v4: https://lore.kernel.org/lkml/tencent_59C74613113F0C728524B2A82FE5540A=
-5E09@qq.com/
->     Make sure most cases we don't need the realloc() path to begin with,
->     and check strdup() return value.
-> v3: https://lore.kernel.org/lkml/tencent_50B4B2622FE7546A5FF9464310650C00=
-8509@qq.com/
->     Do not use structs and judge ksyms__add_symbol function return value.
-> v2: https://lore.kernel.org/lkml/tencent_B655EE5E5D463110D70CD2846AB3262E=
-ED09@qq.com/
->     Do the usual len/capacity scheme here to amortize the cost of realloc=
-, and
->     don't free symbols.
-> v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F=
-2909@qq.com/
-> ---
->  samples/bpf/Makefile                          |   4 +
->  samples/bpf/offwaketime_user.c                |   7 +-
->  samples/bpf/sampleip_user.c                   |   9 +-
->  samples/bpf/spintest_user.c                   |   7 +-
->  samples/bpf/task_fd_query_user.c              |  13 +-
->  samples/bpf/trace_event_user.c                |   7 +-
->  .../selftests/bpf/prog_tests/bpf_cookie.c     |   7 +-
->  .../selftests/bpf/prog_tests/fill_link_info.c |   9 +-
->  .../bpf/prog_tests/get_stack_raw_tp.c         |  10 +-
->  .../bpf/prog_tests/kprobe_multi_test.c        |  13 +-
->  .../prog_tests/kprobe_multi_testmod_test.c    |  13 +-
->  tools/testing/selftests/bpf/trace_helpers.c   | 116 ++++++++++++------
->  tools/testing/selftests/bpf/trace_helpers.h   |  10 +-
->  13 files changed, 154 insertions(+), 71 deletions(-)
+In some BPF usage scenarios, it will be useful to iterate the process and
+css directly in the BPF program. One of the expected scenarios is
+customizable OOM victim selection via BPF[1].
 
-I think we'd better split it into two patches: one for samples/bpf/
-and another for tools/testing/selftests/bpf.
+Inspired by Dave's task_vma iter[2], this patchset adds three types of
+open-coded iterator kfuncs:
 
-BTW, why can't we just load it once for all ?  IOW, load the kallsyms
-before we start each individual test, and free it after all tests
-finish.
+1. bpf_for_each(process, p). Just like for_each_process(p) in kernel to
+itearing all tasks in the system with rcu_read_lock().
 
---=20
-Regards
-Yafang
+2. bpf_for_each(css_task, task, css). It works like
+css_task_iter_{start, next, end} and would be used to iterating
+tasks/threads under a css.
+
+3. bpf_for_each(css, pos, root_css, {PRE, POST}). It works like
+css_next_descendant_{pre, post} to iterating all descendant css.
+
+BPF programs can use these kfuncs directly or through bpf_for_each macro.
+
+link[1]: https://lore.kernel.org/lkml/20230810081319.65668-1-zhouchuyi@bytedance.com/
+link[2]: https://lore.kernel.org/all/20230810183513.684836-1-davemarchevsky@fb.com/
+
+Chuyi Zhou (4):
+  bpf: Introduce css_task open-coded iterator kfuncs
+  bpf: Introduce process open coded iterator kfuncs
+  bpf: Introduce css_descendant open-coded iterator kfuncs
+  selftests/bpf: Add tests for open-coded task and css iter
+
+ include/uapi/linux/bpf.h                      |  13 ++
+ kernel/bpf/helpers.c                          |   9 ++
+ kernel/bpf/task_iter.c                        | 109 ++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |  13 ++
+ tools/lib/bpf/bpf_helpers.h                   |  18 +++
+ .../testing/selftests/bpf/prog_tests/iters.c  | 123 ++++++++++++++++++
+ .../testing/selftests/bpf/progs/iters_task.c  |  83 ++++++++++++
+ 7 files changed, 368 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_task.c
+
+-- 
+2.20.1
+
 
