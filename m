@@ -1,231 +1,204 @@
-Return-Path: <bpf+bounces-8789-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8790-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6FEB789F73
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 15:37:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3681789FD0
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 16:53:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60CA5280DB3
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 13:37:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00B091C2040B
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 14:53:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7702B10959;
-	Sun, 27 Aug 2023 13:36:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5109910959;
+	Sun, 27 Aug 2023 14:53:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 524871094E
-	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 13:36:37 +0000 (UTC)
-Received: from out-250.mta1.migadu.com (out-250.mta1.migadu.com [IPv6:2001:41d0:203:375::fa])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A971B4;
-	Sun, 27 Aug 2023 06:36:28 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 290C27EE
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 14:53:17 +0000 (UTC)
+Received: from out-247.mta1.migadu.com (out-247.mta1.migadu.com [95.215.58.247])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B19CB6
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 07:53:16 -0700 (PDT)
+Message-ID: <fd07e0a3-f4da-b447-c47a-6e933220d452@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1693143386;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	t=1693147994; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NAMtHKwgj081g8lIPVs72MliioxtTYHj7D9CTN85ELE=;
-	b=u7n0PP5Y7t8pZAzx+5IbBJkZfY9azRKTfFVD9LVMOb4Thl+C2D6j0w7wWcMlmzcA25L4C8
-	zEudurGp2ODbmGylA6BsBPQ9105gr52QFoDr/T1ABSTboWT6yVGzUbuarS4ljsFfYjiAKI
-	tkX7K8GiO8NfI2EeGspOsslEfgzb2IA=
-From: Hao Xu <hao.xu@linux.dev>
-To: io-uring@vger.kernel.org,
-	Jens Axboe <axboe@kernel.dk>
-Cc: Dominique Martinet <asmadeus@codewreck.org>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Stefan Roesch <shr@fb.com>,
-	Clay Harris <bugs@claycon.org>,
-	Dave Chinner <david@fromorbit.com>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-cachefs@redhat.com,
-	ecryptfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org,
-	linux-unionfs@vger.kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	codalist@coda.cs.cmu.edu,
-	linux-f2fs-devel@lists.sourceforge.net,
-	cluster-devel@redhat.com,
-	linux-mm@kvack.org,
-	linux-nilfs@vger.kernel.org,
-	devel@lists.orangefs.org,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
-	linux-mtd@lists.infradead.org,
-	Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCH 11/11] io_uring: add support for getdents
-Date: Sun, 27 Aug 2023 21:28:35 +0800
-Message-Id: <20230827132835.1373581-12-hao.xu@linux.dev>
-In-Reply-To: <20230827132835.1373581-1-hao.xu@linux.dev>
-References: <20230827132835.1373581-1-hao.xu@linux.dev>
+	bh=vkdlvibvW7RfIWp4bfHFYZgGn8Vt+WkHSNgk0+G9yYU=;
+	b=D3ECR+pQejeKPxpv88nGbIpFd58wtlaRXrijUxR+ZJDIH1xlS5hD2VMB26ubYz/grEvPwM
+	iOvgro1mkmqBXjDRAfA6rD/rd35VTiUhoBRg+Z6aV1PSKGc4YSrDa16TM17x0RrF5ygjh4
+	2wL2mtwUuQzhKVctVaFvPwJoX2tMMlQ=
+Date: Sun, 27 Aug 2023 07:53:08 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Reply-To: yonghong.song@linux.dev
+Subject: Re: WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
+Content-Language: en-US
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+ Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+References: <87jztjmmy4.fsf@all.your.base.are.belong.to.us>
+ <2f4f0dfc-ec06-8ac8-a56a-395cc2373def@linux.dev>
+ <200dcce6-34ff-83e0-02fb-709a24403cc6@huaweicloud.com>
+ <87zg2e88ds.fsf@all.your.base.are.belong.to.us>
+ <64873e42-9be1-1812-b80d-5ea86b4677f0@huaweicloud.com>
+ <87sf8684ex.fsf@all.your.base.are.belong.to.us>
+ <878r9wswwy.fsf@all.your.base.are.belong.to.us>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <878r9wswwy.fsf@all.your.base.are.belong.to.us>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=3.4.6
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Hao Xu <howeyxu@tencent.com>
 
-This add support for getdents64 to io_uring, acting exactly like the
-syscall: the directory is iterated from it's current's position as
-stored in the file struct, and the file's position is updated exactly as
-if getdents64 had been called.
 
-For filesystems that support NOWAIT in iterate_shared(), try to use it
-first; if a user already knows the filesystem they use do not support
-nowait they can force async through IOSQE_ASYNC in the sqe flags,
-avoiding the need to bounce back through a useless EAGAIN return.
+On 8/27/23 1:37 AM, Björn Töpel wrote:
+> Björn Töpel <bjorn@kernel.org> writes:
+> 
+>> Hou Tao <houtao@huaweicloud.com> writes:
+>>
+>>> Hi,
+>>>
+>>> On 8/26/2023 5:23 PM, Björn Töpel wrote:
+>>>> Hou Tao <houtao@huaweicloud.com> writes:
+>>>>
+>>>>> Hi,
+>>>>>
+>>>>> On 8/25/2023 11:28 PM, Yonghong Song wrote:
+>>>>>>
+>>>>>> On 8/25/23 3:32 AM, Björn Töpel wrote:
+>>>>>>> I'm chasing a workqueue hang on RISC-V/qemu (TCG), using the bpf
+>>>>>>> selftests on bpf-next 9e3b47abeb8f.
+>>>>>>>
+>>>>>>> I'm able to reproduce the hang by multiple runs of:
+>>>>>>>    | ./test_progs -a link_api -a linked_list
+>>>>>>> I'm currently investigating that.
+>>>>>>>
+>>>>>>> But! Sometimes (every blue moon) I get a warn_on_once hit:
+>>>>>>>    | ------------[ cut here ]------------
+>>>>>>>    | WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
+>>>>>>> bpf_mem_refill+0x1fc/0x206
+>>>>>>>    | Modules linked in: bpf_testmod(OE)
+>>>>>>>    | CPU: 3 PID: 261 Comm: test_progs-cpuv Tainted: G           OE
+>>>>>>> N 6.5.0-rc5-01743-gdcb152bb8328 #2
+>>>>>>>    | Hardware name: riscv-virtio,qemu (DT)
+>>>>>>>    | epc : bpf_mem_refill+0x1fc/0x206
+>>>>>>>    |  ra : irq_work_single+0x68/0x70
+>>>>>>>    | epc : ffffffff801b1bc4 ra : ffffffff8015fe84 sp : ff2000000001be20
+>>>>>>>    |  gp : ffffffff82d26138 tp : ff6000008477a800 t0 : 0000000000046600
+>>>>>>>    |  t1 : ffffffff812b6ddc t2 : 0000000000000000 s0 : ff2000000001be70
+>>>>>>>    |  s1 : ff5ffffffffe8998 a0 : ff5ffffffffe8998 a1 : ff600003fef4b000
+>>>>>>>    |  a2 : 000000000000003f a3 : ffffffff80008250 a4 : 0000000000000060
+>>>>>>>    |  a5 : 0000000000000080 a6 : 0000000000000000 a7 : 0000000000735049
+>>>>>>>    |  s2 : ff5ffffffffe8998 s3 : 0000000000000022 s4 : 0000000000001000
+>>>>>>>    |  s5 : 0000000000000007 s6 : ff5ffffffffe8570 s7 : ffffffff82d6bd30
+>>>>>>>    |  s8 : 000000000000003f s9 : ffffffff82d2c5e8 s10: 000000000000ffff
+>>>>>>>    |  s11: ffffffff82d2c5d8 t3 : ffffffff81ea8f28 t4 : 0000000000000000
+>>>>>>>    |  t5 : ff6000008fd28278 t6 : 0000000000040000
+>>>>>>>    | status: 0000000200000100 badaddr: 0000000000000000 cause:
+>>>>>>> 0000000000000003
+>>>>>>>    | [<ffffffff801b1bc4>] bpf_mem_refill+0x1fc/0x206
+>>>>>>>    | [<ffffffff8015fe84>] irq_work_single+0x68/0x70
+>>>>>>>    | [<ffffffff8015feb4>] irq_work_run_list+0x28/0x36
+>>>>>>>    | [<ffffffff8015fefa>] irq_work_run+0x38/0x66
+>>>>>>>    | [<ffffffff8000828a>] handle_IPI+0x3a/0xb4
+>>>>>>>    | [<ffffffff800a5c3a>] handle_percpu_devid_irq+0xa4/0x1f8
+>>>>>>>    | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
+>>>>>>>    | [<ffffffff800ae570>] ipi_mux_process+0xac/0xfa
+>>>>>>>    | [<ffffffff8000a8ea>] sbi_ipi_handle+0x2e/0x88
+>>>>>>>    | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
+>>>>>>>    | [<ffffffff807ee70e>] riscv_intc_irq+0x36/0x4e
+>>>>>>>    | [<ffffffff812b5d3a>] handle_riscv_irq+0x54/0x86
+>>>>>>>    | [<ffffffff812b6904>] do_irq+0x66/0x98
+>>>>>>>    | ---[ end trace 0000000000000000 ]---
+>>>>>>>
+>>>>>>> Code:
+>>>>>>>    | static void free_bulk(struct bpf_mem_cache *c)
+>>>>>>>    | {
+>>>>>>>    |     struct bpf_mem_cache *tgt = c->tgt;
+>>>>>>>    |     struct llist_node *llnode, *t;
+>>>>>>>    |     unsigned long flags;
+>>>>>>>    |     int cnt;
+>>>>>>>    |
+>>>>>>>    |     WARN_ON_ONCE(tgt->unit_size != c->unit_size);
+>>>>>>>    | ...
+>>>>>>>
+>>>>>>> I'm not well versed in the memory allocator; Before I dive into it --
+>>>>>>> has anyone else hit it? Ideas on why the warn_on_once is hit?
+>>>>>> Maybe take a look at the patch
+>>>>>>    822fb26bdb55  bpf: Add a hint to allocated objects.
+>>>>>>
+>>>>>> In the above patch, we have
+>>>>>>
+>>>>>> +       /*
+>>>>>> +        * Remember bpf_mem_cache that allocated this object.
+>>>>>> +        * The hint is not accurate.
+>>>>>> +        */
+>>>>>> +       c->tgt = *(struct bpf_mem_cache **)llnode;
+>>>>>>
+>>>>>> I suspect that the warning may be related to the above.
+>>>>>> I tried the above ./test_progs command line (running multiple
+>>>>>> at the same time) and didn't trigger the issue.
+>>>>> The extra 8-bytes before the freed pointer is used to save the pointer
+>>>>> of the original bpf memory allocator where the freed pointer came from,
+>>>>> so unit_free() could free the pointer back to the original allocator to
+>>>>> prevent alloc-and-free unbalance.
+>>>>>
+>>>>> I suspect that a wrong pointer was passed to bpf_obj_drop, but do not
+>>>>> find anything suspicious after checking linked_list. Another possibility
+>>>>> is that there is write-after-free problem which corrupts the extra
+>>>>> 8-bytes before the freed pointer. Could you please apply the following
+>>>>> debug patch to check whether or not the extra 8-bytes are corrupted ?
+>>>> Thanks for getting back!
+>>>>
+>>>> I took your patch for a run, and there's a hit:
+>>>>    | bad cache ff5ffffffffe8570: got size 96 work ffffffff801b19c8, cache ff5ffffffffe8980 exp size 128 work ffffffff801b19c8
+>>>
+>>> The extra 8-bytes are not corrupted. Both of these two bpf_mem_cache are
+>>> valid and there are in the cache array defined in bpf_mem_caches. BPF
+>>> memory allocator allocated the pointer from 96-bytes sized-cache, but it
+>>> tried to free the pointer through 128-bytes sized-cache.
+>>>
+>>> Now I suspect there is no 96-bytes slab in your system and ksize(ptr -
+>>> LLIST_NODE_SZ) returns 128, so bpf memory allocator selected the
+>>> 128-byte sized-cache instead of 96-bytes sized-cache. Could you please
+>>> check the value of KMALLOC_MIN_SIZE in your kernel .config and using the
+>>> following command to check whether there is 96-bytes slab in your system:
+>>
+>> KMALLOC_MIN_SIZE is 64.
+>>
+>>> $ cat /proc/slabinfo |grep kmalloc-96
+>>> dma-kmalloc-96         0      0     96   42    1 : tunables    0    0
+>>> 0 : slabdata      0      0      0
+>>> kmalloc-96          1865   2268     96   42    1 : tunables    0    0
+>>> 0 : slabdata     54     54      0
+>>>
+>>> In my system, slab has 96-bytes cached, so grep outputs something, but I
+>>> think there will no output in your system.
+>>
+>> You're right! No kmalloc-96.
+> 
+> To get rid of the warning, limit available sizes from
+> bpf_mem_alloc_init()?
 
-Co-developed-by: Dominique Martinet <asmadeus@codewreck.org>
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
-Signed-off-by: Hao Xu <howeyxu@tencent.com>
----
- include/uapi/linux/io_uring.h |  1 +
- io_uring/fs.c                 | 53 +++++++++++++++++++++++++++++++++++
- io_uring/fs.h                 |  3 ++
- io_uring/opdef.c              |  8 ++++++
- 4 files changed, 65 insertions(+)
+Do you know why your system does not have kmalloc-96?
 
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index 8e61f8b7c2ce..3896397a1998 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -240,6 +240,7 @@ enum io_uring_op {
- 	IORING_OP_URING_CMD,
- 	IORING_OP_SEND_ZC,
- 	IORING_OP_SENDMSG_ZC,
-+	IORING_OP_GETDENTS,
- 
- 	/* this goes last, obviously */
- 	IORING_OP_LAST,
-diff --git a/io_uring/fs.c b/io_uring/fs.c
-index f6a69a549fd4..04711feac4e6 100644
---- a/io_uring/fs.c
-+++ b/io_uring/fs.c
-@@ -47,6 +47,12 @@ struct io_link {
- 	int				flags;
- };
- 
-+struct io_getdents {
-+	struct file			*file;
-+	struct linux_dirent64 __user	*dirent;
-+	unsigned int			count;
-+};
-+
- int io_renameat_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
- {
- 	struct io_rename *ren = io_kiocb_to_cmd(req, struct io_rename);
-@@ -291,3 +297,50 @@ void io_link_cleanup(struct io_kiocb *req)
- 	putname(sl->oldpath);
- 	putname(sl->newpath);
- }
-+
-+int io_getdents_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
-+{
-+	struct io_getdents *gd = io_kiocb_to_cmd(req, struct io_getdents);
-+
-+	if (READ_ONCE(sqe->off))
-+		return -EINVAL;
-+
-+	gd->dirent = u64_to_user_ptr(READ_ONCE(sqe->addr));
-+	gd->count = READ_ONCE(sqe->len);
-+
-+	return 0;
-+}
-+
-+int io_getdents(struct io_kiocb *req, unsigned int issue_flags)
-+{
-+	struct io_getdents *gd = io_kiocb_to_cmd(req, struct io_getdents);
-+	struct file *file = req->file;
-+	unsigned long getdents_flags = 0;
-+	bool force_nonblock = issue_flags & IO_URING_F_NONBLOCK;
-+	bool locked;
-+	int ret;
-+
-+	if (force_nonblock) {
-+		if (!(file->f_flags & O_NONBLOCK) &&
-+		    !(file->f_mode & FMODE_NOWAIT))
-+			return -EAGAIN;
-+
-+		getdents_flags = DIR_CONTEXT_F_NOWAIT;
-+	}
-+
-+	ret = file_pos_lock_nowait(file, force_nonblock);
-+	if (ret == -EAGAIN)
-+		return ret;
-+	locked = ret;
-+
-+	ret = vfs_getdents(file, gd->dirent, gd->count, getdents_flags);
-+	if (locked)
-+		file_pos_unlock(file);
-+
-+	if (ret == -EAGAIN && force_nonblock)
-+		return -EAGAIN;
-+
-+	io_req_set_res(req, ret, 0);
-+	return 0;
-+}
-+
-diff --git a/io_uring/fs.h b/io_uring/fs.h
-index 0bb5efe3d6bb..f83a6f3a678d 100644
---- a/io_uring/fs.h
-+++ b/io_uring/fs.h
-@@ -18,3 +18,6 @@ int io_symlinkat(struct io_kiocb *req, unsigned int issue_flags);
- int io_linkat_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe);
- int io_linkat(struct io_kiocb *req, unsigned int issue_flags);
- void io_link_cleanup(struct io_kiocb *req);
-+
-+int io_getdents_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe);
-+int io_getdents(struct io_kiocb *req, unsigned int issue_flags);
-diff --git a/io_uring/opdef.c b/io_uring/opdef.c
-index 3b9c6489b8b6..1bae6b2a8d0b 100644
---- a/io_uring/opdef.c
-+++ b/io_uring/opdef.c
-@@ -428,6 +428,11 @@ const struct io_issue_def io_issue_defs[] = {
- 		.prep			= io_eopnotsupp_prep,
- #endif
- 	},
-+	[IORING_OP_GETDENTS] = {
-+		.needs_file		= 1,
-+		.prep			= io_getdents_prep,
-+		.issue			= io_getdents,
-+	},
- };
- 
- 
-@@ -648,6 +653,9 @@ const struct io_cold_def io_cold_defs[] = {
- 		.fail			= io_sendrecv_fail,
- #endif
- 	},
-+	[IORING_OP_GETDENTS] = {
-+		.name			= "GETDENTS",
-+	},
- };
- 
- const char *io_uring_get_opcode(u8 opcode)
--- 
-2.25.1
-
+> 
+> 
+> Björn
 
