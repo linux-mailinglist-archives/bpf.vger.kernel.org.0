@@ -1,162 +1,155 @@
-Return-Path: <bpf+bounces-8805-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8806-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00771789FF6
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 17:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E42FF78A050
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 18:56:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD6AD280DE7
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 15:30:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54FCC280F3A
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 16:56:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEB51111BE;
-	Sun, 27 Aug 2023 15:28:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6947911199;
+	Sun, 27 Aug 2023 16:56:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82E8E1096A
-	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 15:28:46 +0000 (UTC)
-Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE8BEC
-	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 08:28:45 -0700 (PDT)
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 5589E257ED0D6; Sun, 27 Aug 2023 08:28:37 -0700 (PDT)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v3 13/13] bpf: Mark BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE deprecated
-Date: Sun, 27 Aug 2023 08:28:37 -0700
-Message-Id: <20230827152837.2003563-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230827152729.1995219-1-yonghong.song@linux.dev>
-References: <20230827152729.1995219-1-yonghong.song@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C9F6100AE
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 16:56:43 +0000 (UTC)
+Received: from serv108.segi.ulg.ac.be (serv108.segi.ulg.ac.be [139.165.32.111])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9647FA9
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 09:56:41 -0700 (PDT)
+Received: from [192.168.1.33] (125.179-65-87.adsl-dyn.isp.belgacom.be [87.65.179.125])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by serv108.segi.ulg.ac.be (Postfix) with ESMTPSA id 6CCD8200AA5B;
+	Sun, 27 Aug 2023 18:56:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 serv108.segi.ulg.ac.be 6CCD8200AA5B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uliege.be;
+	s=ulg20190529; t=1693155398;
+	bh=GNH00vcRol0t8Qz+U/UQEB9Ql0F0TwgndyDwS0ZX6tQ=;
+	h=Date:Subject:To:References:Cc:From:In-Reply-To:From;
+	b=krlH9lrBhbbkSjrbNuPWOb+vrx15uejxQogliS9alfHdfgyqgV4sRmtB57Raq46Mm
+	 J3rEIgKotzUacw/LrTED9BCXTGmsIVNFtt6+N8GrnIDoT5BKK4Kr7V/fKJeIq2d+aF
+	 bA7kxxpUJlx/42DdUzkhg2Pr+shIWHR7CbJnuchU2fCCi1VVemuwBdfoa31B7/NxkT
+	 NGdix2etNCvWW6EuTY5DtH+k4MwVhyv0E5KrtmSBC/V752AehRHrDWdxvZUF2K4soa
+	 tc6UIy/qFBE2zmImtUPtS6I4OGF+kyGu/tH18PEjJR7WiHGPh589FkDow/Cpm3l0jE
+	 ME9FUvrzgcp5g==
+Message-ID: <4a968667-5061-83bf-a302-3d455065b461@uliege.be>
+Date: Sun, 27 Aug 2023 18:56:36 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,
-	RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_PASS,SPF_SOFTFAIL,
-	TVD_RCVD_IP autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [QUESTION] bpf/tc verifier error: invalid access to map value,
+ min value is outside of the allowed memory range
+To: John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+References: <e3783201-3b28-3661-eee3-3b5fecad0964@uliege.be>
+ <64e94c084c7a7_1b2e6208d@john.notmuch>
+Content-Language: en-US
+Cc: justin.iurman@uliege.be
+From: Justin Iurman <justin.iurman@uliege.be>
+In-Reply-To: <64e94c084c7a7_1b2e6208d@john.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Now 'BPF_MAP_TYPE_CGRP_STORAGE + local percpu ptr'
-can cover all BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE functionality
-and more. So mark BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE deprecated.
-Also make changes in selftests/bpf/test_bpftool_synctypes.py
-and selftest libbpf_str to fix otherwise test errors.
+On 8/26/23 02:49, John Fastabend wrote:
+> Justin Iurman wrote:
+>> Hello,
+>>
+>> I'm facing a verifier error and don't know how to make it happy (already
+>> tried lots of checks). First, here is my env:
+>>    - OS: Ubuntu 22.04.3 LTS
+>>    - kernel: 5.15.0-79-generic x86_64 (CONFIG_DEBUG_INFO_BTF=y)
+>>    - clang version: 14.0.0-1ubuntu1.1
+>>    - iproute2-5.15.0 with libbpf 0.5.0
+>>
+>> And here is a simplified example of my program (basically, it will
+>> insert in packets some bytes defined inside a map):
+>>
+>> #include "vmlinux.h"
+>> #include <bpf/bpf_endian.h>
+>> #include <bpf/bpf_helpers.h>
+>>
+>> #define MAX_BYTES 2048
+>>
+>> struct xxx_t {
+>> 	__u32 bytes_len;
+>> 	__u8 bytes[MAX_BYTES];
+>> };
+>>
+>> struct {
+>> 	__uint(type, BPF_MAP_TYPE_ARRAY);
+>> 	__uint(max_entries, 1);
+>> 	__type(key, __u32);
+>> 	__type(value, struct xxx_t);
+>> 	__uint(pinning, LIBBPF_PIN_BY_NAME);
+>> } my_map SEC(".maps");
+>>
+>> char _license[] SEC("license") = "GPL";
+>>
+>> SEC("egress")
+>> int egress_handler(struct __sk_buff *skb)
+>> {
+>> 	void *data_end = (void *)(long)skb->data_end;
+>> 	void *data = (void *)(long)skb->data;
+>> 	struct ethhdr *eth = data;
+>> 	struct ipv6hdr *ip6;
+>> 	struct xxx_t *x;
+>> 	__u32 offset;
+>> 	__u32 idx = 0;
+>>
+>> 	offset = sizeof(*eth) + sizeof(*ip6);
+>> 	if (data + offset > data_end)
+>> 		return TC_ACT_OK;
+>>
+>> 	if (bpf_ntohs(eth->h_proto) != ETH_P_IPV6)
+>> 		return TC_ACT_OK;
+>>
+>> 	x = bpf_map_lookup_elem(&my_map, &idx);
+>> 	if (!x)
+>> 		return TC_ACT_OK;
+>>
+>> 	if (x->bytes_len == 0 || x->bytes_len > MAX_BYTES)
+>> 		return TC_ACT_OK;
 
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- include/uapi/linux/bpf.h                              | 9 ++++++++-
- tools/include/uapi/linux/bpf.h                        | 9 ++++++++-
- tools/testing/selftests/bpf/prog_tests/libbpf_str.c   | 6 +++++-
- tools/testing/selftests/bpf/test_bpftool_synctypes.py | 9 +++++++++
- 4 files changed, 30 insertions(+), 3 deletions(-)
+FYI, with bytes_len on the stack (no direct access) and a min check 
+above 1, it works (I thought I already tried it, but I suspect I did on 
+direct access only). What's funny though is that the verifier still 
+fails on the exact same code with a recent kernel.
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 8790b3962e4b..73b155e52204 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -932,7 +932,14 @@ enum bpf_map_type {
- 	 */
- 	BPF_MAP_TYPE_CGROUP_STORAGE =3D BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED,
- 	BPF_MAP_TYPE_REUSEPORT_SOCKARRAY,
--	BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE,
-+	BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE_DEPRECATED,
-+	/* BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE is available to bpf programs
-+	 * attaching to a cgroup. The new mechanism (BPF_MAP_TYPE_CGRP_STORAGE =
-+
-+	 * local percpu kptr) supports all BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE
-+	 * functionality and more. So mark * BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE
-+	 * deprecated.
-+	 */
-+	BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE =3D BPF_MAP_TYPE_PERCPU_CGROUP_STORA=
-GE_DEPRECATED,
- 	BPF_MAP_TYPE_QUEUE,
- 	BPF_MAP_TYPE_STACK,
- 	BPF_MAP_TYPE_SK_STORAGE,
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-index 8790b3962e4b..73b155e52204 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -932,7 +932,14 @@ enum bpf_map_type {
- 	 */
- 	BPF_MAP_TYPE_CGROUP_STORAGE =3D BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED,
- 	BPF_MAP_TYPE_REUSEPORT_SOCKARRAY,
--	BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE,
-+	BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE_DEPRECATED,
-+	/* BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE is available to bpf programs
-+	 * attaching to a cgroup. The new mechanism (BPF_MAP_TYPE_CGRP_STORAGE =
-+
-+	 * local percpu kptr) supports all BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE
-+	 * functionality and more. So mark * BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE
-+	 * deprecated.
-+	 */
-+	BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE =3D BPF_MAP_TYPE_PERCPU_CGROUP_STORA=
-GE_DEPRECATED,
- 	BPF_MAP_TYPE_QUEUE,
- 	BPF_MAP_TYPE_STACK,
- 	BPF_MAP_TYPE_SK_STORAGE,
-diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_str.c b/tools/=
-testing/selftests/bpf/prog_tests/libbpf_str.c
-index efb8bd43653c..c440ea3311ed 100644
---- a/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
-+++ b/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
-@@ -142,10 +142,14 @@ static void test_libbpf_bpf_map_type_str(void)
- 		/* Special case for map_type_name BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECAT=
-ED
- 		 * where it and BPF_MAP_TYPE_CGROUP_STORAGE have the same enum value
- 		 * (map_type). For this enum value, libbpf_bpf_map_type_str() picks
--		 * BPF_MAP_TYPE_CGROUP_STORAGE.
-+		 * BPF_MAP_TYPE_CGROUP_STORAGE. The same for
-+		 * BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE_DEPRECATED and
-+		 * BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE.
- 		 */
- 		if (strcmp(map_type_name, "BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED") =3D=
-=3D 0)
- 			continue;
-+		if (strcmp(map_type_name, "BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE_DEPRECAT=
-ED") =3D=3D 0)
-+			continue;
-=20
- 		ASSERT_STREQ(buf, map_type_name, "exp_str_value");
- 	}
-diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tool=
-s/testing/selftests/bpf/test_bpftool_synctypes.py
-index 0cfece7ff4f8..0ed67b6b31dd 100755
---- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-+++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-@@ -509,6 +509,15 @@ def main():
-     source_map_types.remove('cgroup_storage_deprecated')
-     source_map_types.add('cgroup_storage')
-=20
-+    # The same applied to BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE_DEPRECATED =
-and
-+    # BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE which share the same enum value
-+    # and source_map_types picks
-+    # BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE_DEPRECATED/percpu_cgroup_storag=
-e_deprecated.
-+    # Replace 'percpu_cgroup_storage_deprecated' with 'percpu_cgroup_sto=
-rage'
-+    # so it aligns with what `bpftool map help` shows.
-+    source_map_types.remove('percpu_cgroup_storage_deprecated')
-+    source_map_types.add('percpu_cgroup_storage')
-+
-     help_map_types =3D map_info.get_map_help()
-     help_map_options =3D map_info.get_options()
-     map_info.close()
---=20
-2.34.1
+So, "bytes_len == 0" or "bytes_len < 1" doesn't work, but "bytes_len < 
+2" works (which is weird). Fortunately, I need a min value of 8, which 
+makes the hack OK, but I'm still trying to understand what's going on 
+here. And, as mentioned, it does not work with direct access (i.e., 
+"x->bytes_len < 2").
 
+Thanks,
+Justin
+
+>> 	if (bpf_skb_adjust_room(skb, x->bytes_len, BPF_ADJ_ROOM_NET, 0))
+>> 		return TC_ACT_OK;
+>>
+>> 	if (bpf_skb_store_bytes(skb, offset, x->bytes, 8/*x->bytes_len*/,
+> 
+> You will see lots of folks & that value with something to
+> ensure compiler/verifier get a solid upper/lower bounds.
+> This is slightly kernel dependent the newer kernels are
+> better at tracking bounds.
+> 
+> This should do what you want more or less,
+> 
+>    x->bytes_len &= 0x7ff
 
