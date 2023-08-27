@@ -1,67 +1,65 @@
-Return-Path: <bpf+bounces-8810-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8811-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DD8178A15B
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 22:20:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B182E78A17B
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 22:45:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B5431C208B7
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 20:20:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6D1A1C20914
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 20:45:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAC471427F;
-	Sun, 27 Aug 2023 20:20:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE69514287;
+	Sun, 27 Aug 2023 20:45:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8176D14014
-	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 20:20:08 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D57310C
-	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 13:20:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1693167604;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Zk+jyHlS4udgyaumJ7ZOq9OxrkbOZbwqog5PMYG+ER8=;
-	b=YSxQYE9GClDQnMpo3GmK1J60cO9xw1E3QdpjRMbmeh4b1uG1keFRhc7qkvwsilXLXGfc4k
-	JIua/HtSdSJnxjUB0JopuXm+JKc4YK5igyo4EDprIxHEgyTrI5LYZqufUm2Yxvux+w2EJF
-	MMwwg1ytBp66rGT9aqHUAWSeB6/X+nY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-127--ufNaDsjO_W_5yWqcC5DDg-1; Sun, 27 Aug 2023 16:20:02 -0400
-X-MC-Unique: -ufNaDsjO_W_5yWqcC5DDg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7259E85CCE0;
-	Sun, 27 Aug 2023 20:20:01 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.39])
-	by smtp.corp.redhat.com (Postfix) with SMTP id F37C0401051;
-	Sun, 27 Aug 2023 20:19:58 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sun, 27 Aug 2023 22:19:13 +0200 (CEST)
-Date: Sun, 27 Aug 2023 22:19:10 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Yonghong Song <yhs@fb.com>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Kui-Feng Lee <kuifeng@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] bpf: task_group_seq_get_next: fix the
- skip_if_dup_files check
-Message-ID: <20230827201909.GC28645@redhat.com>
-References: <20230825161842.GA16750@redhat.com>
- <20230825161947.GA16871@redhat.com>
- <20230825170406.GA16800@redhat.com>
- <e254a6db-66eb-8bfc-561f-464327a1005a@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81EB91427A;
+	Sun, 27 Aug 2023 20:45:16 +0000 (UTC)
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 892F8BF;
+	Sun, 27 Aug 2023 13:45:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=b31OO6Xd9+jxzKw5QB3n4d33iA6sZ4nPi+nMylKSno4=; b=rh2eHyjfSChvP5M3GZFqng0djt
+	iCSjqmEmDczFMnSTrKUt8mmVXGPGgbJ4oq2lIEXyRSbFH+YR4YMUxP/z9QQKohjOoCQZks3WE0IMK
+	3S4hJ/QxWWGwrLIXBI8vnsgZg3HMNGIE+hIRemTa2iQvkDDHCCMd0yz1djBYQiyi1qOQAKg4GjHdy
+	fEL5cINLesPqAO5iR1xTPAPnXU+iFHAHJEGUTx86DeTnZzv1uxgeaR21j4BV+7nscvIXdd9sVE/Si
+	rCIGIbVvaskI417AUCK4HwQeBGpvqIcrg+ypempVGeBQFeEiZBUSg5QboubLY+HaM/1Y954EFPxgD
+	hXmevJ/g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1qaMcv-00Dkeb-PH; Sun, 27 Aug 2023 20:44:53 +0000
+Date: Sun, 27 Aug 2023 21:44:53 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Hao Xu <hao.xu@linux.dev>
+Cc: io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
+	Dave Chinner <david@fromorbit.com>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+	ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+	linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
+	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+	linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+	devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+	Wanpeng Li <wanpengli@tencent.com>
+Subject: Re: [PATCH 02/11] xfs: add NOWAIT semantics for readdir
+Message-ID: <ZOu1xYS6LRmPgEiV@casper.infradead.org>
+References: <20230827132835.1373581-1-hao.xu@linux.dev>
+ <20230827132835.1373581-3-hao.xu@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -70,60 +68,89 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e254a6db-66eb-8bfc-561f-464327a1005a@linux.dev>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+In-Reply-To: <20230827132835.1373581-3-hao.xu@linux.dev>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
 	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 08/25, Yonghong Song wrote:
->
-> On 8/25/23 10:04 AM, Oleg Nesterov wrote:
-> >Forgot to mention in the changelog...
-> >
-> >In any case this doesn't look right. ->group_leader can exit before other
-> >threads, call exit_files(), and in this case task_group_seq_get_next() will
-> >check task->files == NULL.
->
-> It is okay. This won't be affecting correctness. We will end with
-> calling bpf program for 'next_task'.
+On Sun, Aug 27, 2023 at 09:28:26PM +0800, Hao Xu wrote:
+> +++ b/fs/xfs/libxfs/xfs_da_btree.c
+> @@ -2643,16 +2643,32 @@ xfs_da_read_buf(
+>  	struct xfs_buf_map	map, *mapp = &map;
+>  	int			nmap = 1;
+>  	int			error;
+> +	int			buf_flags = 0;
+>  
+>  	*bpp = NULL;
+>  	error = xfs_dabuf_map(dp, bno, flags, whichfork, &mapp, &nmap);
+>  	if (error || !nmap)
+>  		goto out_free;
+>  
+> +	/*
+> +	 * NOWAIT semantics mean we don't wait on the buffer lock nor do we
+> +	 * issue IO for this buffer if it is not already in memory. Caller will
+> +	 * retry. This will return -EAGAIN if the buffer is in memory and cannot
+> +	 * be locked, and no buffer and no error if it isn't in memory.  We
+> +	 * translate both of those into a return state of -EAGAIN and *bpp =
+> +	 * NULL.
+> +	 */
 
-Well, I didn't mean it is necessarily wrong, I simply do not know.
+I would not include this comment.
 
-But let's suppose that we have a thread group with the main thread M + 1000
-sub-threads. In the likely case they all have the same ->files, CLONE_THREAD
-without CLONE_FILES is not that common.
+> +	if (flags & XFS_DABUF_NOWAIT)
+> +		buf_flags |= XBF_TRYLOCK | XBF_INCORE;
+>  	error = xfs_trans_read_buf_map(mp, tp, mp->m_ddev_targp, mapp, nmap, 0,
+>  			&bp, ops);
 
-Let's assume the BPF_TASK_ITER_TGID case for simplicity.
+what tsting did you do with this?  Because you don't actually _use_
+buf_flags anywhere in this patch (presumably they should be the
+sixth argument to xfs_trans_read_buf_map() instead of 0).  So I can only
+conclude that either you didn't test, or your testing was inadequate.
 
-Now lets look at task_file_seq_get_next() which passes skip_if_dup_files == 1
-to task_seq_get_next() and thus to task_group_seq_get_next().
+>  	if (error)
+>  		goto out_free;
+> +	if (!bp) {
+> +		ASSERT(flags & XFS_DABUF_NOWAIT);
 
-Now, in this case task_seq_get_next() will return non-NULL only once (OK, unless
-task_file_seq_ops.stop() was called), it will return the group leader M first,
-then after task_file_seq_get_next() "reports" all the fd's of M and increments
-info->tid, the next task_seq_get_next(&info->tid, true) should return NULL because
-of the skip_if_dup_files check in task_group_seq_get_next().
+I don't think this ASSERT is appropriate.
 
-Right?
+> @@ -391,10 +401,17 @@ xfs_dir2_leaf_getdents(
+>  				bp = NULL;
+>  			}
+>  
+> -			if (*lock_mode == 0)
+> -				*lock_mode = xfs_ilock_data_map_shared(dp);
+> +			if (*lock_mode == 0) {
+> +				*lock_mode =
+> +					xfs_ilock_data_map_shared_generic(dp,
+> +					ctx->flags & DIR_CONTEXT_F_NOWAIT);
+> +				if (!*lock_mode) {
+> +					error = -EAGAIN;
+> +					break;
+> +				}
+> +			}
 
-But. if the group leader M exits then M->files == NULL. And in this case
-task_seq_get_next() will need to "inspect" all the sub-threads even if they all
-have the same ->files pointer.
+'generic' doesn't seem like a great suffix to mean 'takes nowait flag'.
+And this is far too far indented.
 
-No?
+			xfs_dir2_lock(dp, ctx, lock_mode);
 
-Again, I am not saying this is a bug and quite possibly I misread this code, but
-in any case the skip_if_dup_files logic looks sub-optimal and confusing to me.
+with:
 
-Nevermind, please forget. This is minor even if I am right.
+STATIC void xfs_dir2_lock(struct xfs_inode *dp, struct dir_context *ctx,
+		unsigned int lock_mode)
+{
+	if (*lock_mode)
+		return;
+	if (ctx->flags & DIR_CONTEXT_F_NOWAIT)
+		return xfs_ilock_data_map_shared_nowait(dp);
+	return xfs_ilock_data_map_shared(dp);
+}
 
-Thanks for rewiev!
-
-Oleg.
+... which I think you can use elsewhere in this patch (reformat it to
+XFS coding style, of course).  And then you don't need
+xfs_ilock_data_map_shared_generic().
 
 
