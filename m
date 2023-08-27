@@ -1,28 +1,28 @@
-Return-Path: <bpf+bounces-8791-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8792-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DB21789FD7
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 17:06:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3621B789FE9
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 17:27:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8431F1C208C6
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 15:06:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F0D41C208EB
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 15:27:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B2910967;
-	Sun, 27 Aug 2023 15:06:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776911096B;
+	Sun, 27 Aug 2023 15:27:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C21CF7EE
-	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 15:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 392F97EE
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 15:27:45 +0000 (UTC)
 Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 182A110F
-	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 08:06:05 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ECAEEC
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 08:27:43 -0700 (PDT)
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 7C895257E9A9C; Sun, 27 Aug 2023 08:05:51 -0700 (PDT)
+	id 4355F257ECDFD; Sun, 27 Aug 2023 08:27:29 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -30,9 +30,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf] selftests/bpf: Fix flaky cgroup_iter_sleepable subtest
-Date: Sun, 27 Aug 2023 08:05:51 -0700
-Message-Id: <20230827150551.1743497-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v3 00/13] bpf: Add support for local percpu kptr
+Date: Sun, 27 Aug 2023 08:27:29 -0700
+Message-Id: <20230827152729.1995219-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -47,77 +47,101 @@ X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Occasionally, with './test_progs -j' on my vm, I will hit the
-following failure:
-  test_cgrp_local_storage:PASS:join_cgroup /cgrp_local_storage 0 nsec
-  test_cgroup_iter_sleepable:PASS:skel_open 0 nsec
-  test_cgroup_iter_sleepable:PASS:skel_load 0 nsec
-  test_cgroup_iter_sleepable:PASS:attach_iter 0 nsec
-  test_cgroup_iter_sleepable:PASS:iter_create 0 nsec
-  test_cgroup_iter_sleepable:FAIL:cgroup_id unexpected cgroup_id: actual =
-1 !=3D expected 2812
-  #48/5    cgrp_local_storage/cgroup_iter_sleepable:FAIL
-  #48      cgrp_local_storage:FAIL
+Patch set [1] implemented cgroup local storage BPF_MAP_TYPE_CGRP_STORAGE
+similar to sk/task/inode local storage and old BPF_MAP_TYPE_CGROUP_STORAG=
+E
+map is marked as deprecated since old BPF_MAP_TYPE_CGROUP_STORAGE map can
+only work with current cgroup.
 
-Finally, I decided to do some investigation since the test is introduced
-by myself. It turns out the reason is due to cgroup_fd with value 0.
-In cgroup_iter, a cgroup_fd of value 0 means the root cgroup.
-	/* from cgroup_iter.c */
-        if (fd)
-                cgrp =3D cgroup_v1v2_get_from_fd(fd);
-        else if (id)
-                cgrp =3D cgroup_get_from_id(id);
-        else /* walk the entire hierarchy by default. */
-                cgrp =3D cgroup_get_from_path("/");
-That is why we got cgroup_id 1 instead of expected 2812.
+Similarly, the existing BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE map
+is a percpu version of BPF_MAP_TYPE_CGROUP_STORAGE and only works
+with current cgroup. But there is no replacement which can work
+with arbitrary cgroup.
 
-Why we got a cgroup_fd 0? Nobody should really touch 'stdin' (fd 0) in te=
-st_progs.
-I traced 'close' syscall with stack trace and found the root cause,
-which is a bug in bpf_obj_pinning.c. Basically, the code closed fd 0
-although it should not. Fixing the bug in bpf_obj_pinning.c
-also resolved the above cgroup_iter_sleepable subtest failure.
+This patch set solved this problem but adding support for local
+percpu kptr. The map value can have a percpu kptr field which holds
+a bpf prog allocated percpu data. The below is an example,
 
-Fixes: 3b22f98e5a05 ("selftests/bpf: Add path_fd-based BPF_OBJ_PIN and BP=
-F_OBJ_GET tests")
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- tools/testing/selftests/bpf/prog_tests/bpf_obj_pinning.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+  struct percpu_val_t {
+    ... fields ...
+  }
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_obj_pinning.c b/t=
-ools/testing/selftests/bpf/prog_tests/bpf_obj_pinning.c
-index 31f1e815f671..ee0458a5ce78 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_obj_pinning.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_obj_pinning.c
-@@ -8,6 +8,7 @@
- #include <linux/unistd.h>
- #include <linux/mount.h>
- #include <sys/syscall.h>
-+#include "bpf/libbpf_internal.h"
-=20
- static inline int sys_fsopen(const char *fsname, unsigned flags)
- {
-@@ -155,7 +156,7 @@ static void validate_pin(int map_fd, const char *map_=
-name, int src_value,
- 	ASSERT_OK(err, "obj_pin");
-=20
- 	/* cleanup */
--	if (pin_opts.path_fd >=3D 0)
-+	if (path_kind =3D=3D PATH_FD_REL && pin_opts.path_fd >=3D 0)
- 		close(pin_opts.path_fd);
- 	if (old_cwd[0])
- 		ASSERT_OK(chdir(old_cwd), "restore_cwd");
-@@ -220,7 +221,7 @@ static void validate_get(int map_fd, const char *map_=
-name, int src_value,
- 		goto cleanup;
-=20
- 	/* cleanup */
--	if (get_opts.path_fd >=3D 0)
-+	if (path_kind =3D=3D PATH_FD_REL && get_opts.path_fd >=3D 0)
- 		close(get_opts.path_fd);
- 	if (old_cwd[0])
- 		ASSERT_OK(chdir(old_cwd), "restore_cwd");
+  struct map_value_t {
+    struct percpu_val_t __percpu_kptr *percpu_data_ptr;
+  }
+
+In the above, 'map_value_t' is the map value type for a
+BPF_MAP_TYPE_CGRP_STORAGE map. User can access 'percpu_data_ptr'
+and then read/write percpu data. This covers BPF_MAP_TYPE_PERCPU_CGROUP_S=
+TORAGE
+and more. So BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE map type
+is marked as deprecated.
+
+In additional, local percpu kptr supports the same map type
+as other kptrs including hash, lru_hash, array, sk/inode/task/cgrp
+local storage. Currently, percpu data structure does not support
+non-scalars or special fields (e.g., bpf_spin_lock, bpf_rb_root, etc.).
+They can be supported in the future if there exist use cases.
+
+Please for individual patches for details.
+
+  [1] https://lore.kernel.org/all/20221026042835.672317-1-yhs@fb.com/
+
+Changelog:
+  v2 -> v3:
+    - fix libbpf_str test failure.
+  v1 -> v2:
+    - does not support special fields in percpu data structure.
+    - rename __percpu attr to __percpu_kptr attr.
+    - rename BPF_KPTR_PERCPU_REF to BPF_KPTR_PERCPU.
+    - better code to handle bpf_{this,per}_cpu_ptr() helpers.
+    - add more negative tests.
+    - fix a bpftool related test failure.
+
+Yonghong Song (13):
+  bpf: Add support for non-fix-size percpu mem allocation
+  bpf: Add BPF_KPTR_PERCPU as a field type
+  bpf: Add alloc/xchg/direct_access support for local percpu kptr
+  bpf: Add bpf_this_cpu_ptr/bpf_per_cpu_ptr support for allocated percpu
+    obj
+  selftests/bpf: Update error message in negative linked_list test
+  libbpf: Add __percpu_kptr macro definition
+  selftests/bpf: Add bpf_percpu_obj_{new,drop}() macro in
+    bpf_experimental.h
+  selftests/bpf: Add tests for array map with local percpu kptr
+  bpf: Mark OBJ_RELEASE argument as MEM_RCU when possible
+  selftests/bpf: Remove unnecessary direct read of local percpu kptr
+  selftests/bpf: Add tests for cgrp_local_storage with local percpu kptr
+  selftests/bpf: Add some negative tests
+  bpf: Mark BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE deprecated
+
+ include/linux/bpf.h                           |  22 +-
+ include/linux/bpf_verifier.h                  |   1 +
+ include/uapi/linux/bpf.h                      |   9 +-
+ kernel/bpf/btf.c                              |   5 +
+ kernel/bpf/core.c                             |   8 +-
+ kernel/bpf/helpers.c                          |  16 ++
+ kernel/bpf/memalloc.c                         |  14 +-
+ kernel/bpf/syscall.c                          |   4 +
+ kernel/bpf/verifier.c                         | 191 +++++++++++++++---
+ tools/include/uapi/linux/bpf.h                |   9 +-
+ tools/lib/bpf/bpf_helpers.h                   |   1 +
+ .../testing/selftests/bpf/bpf_experimental.h  |  31 +++
+ .../selftests/bpf/prog_tests/libbpf_str.c     |   6 +-
+ .../selftests/bpf/prog_tests/linked_list.c    |   4 +-
+ .../selftests/bpf/prog_tests/percpu_alloc.c   | 125 ++++++++++++
+ .../selftests/bpf/progs/percpu_alloc_array.c  | 183 +++++++++++++++++
+ .../progs/percpu_alloc_cgrp_local_storage.c   | 105 ++++++++++
+ .../selftests/bpf/progs/percpu_alloc_fail.c   | 164 +++++++++++++++
+ .../selftests/bpf/test_bpftool_synctypes.py   |   9 +
+ 19 files changed, 853 insertions(+), 54 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/percpu_alloc_array.=
+c
+ create mode 100644 tools/testing/selftests/bpf/progs/percpu_alloc_cgrp_l=
+ocal_storage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/percpu_alloc_fail.c
+
 --=20
 2.34.1
 
