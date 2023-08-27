@@ -1,28 +1,28 @@
-Return-Path: <bpf+bounces-8801-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8803-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31EA1789FF2
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 17:29:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFF8D789FF4
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 17:29:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0B51280F93
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 15:29:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BCEF1C2092C
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 15:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AE75111A9;
-	Sun, 27 Aug 2023 15:28:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 354C7111B3;
+	Sun, 27 Aug 2023 15:28:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6651F7EE
-	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 15:28:31 +0000 (UTC)
-Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A11711B
-	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 08:28:30 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14DBC1096A
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 15:28:36 +0000 (UTC)
+Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E8F11B
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 08:28:34 -0700 (PDT)
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id D4663257ED025; Sun, 27 Aug 2023 08:28:21 -0700 (PDT)
+	id 072F5257ED05C; Sun, 27 Aug 2023 08:28:27 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -30,9 +30,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v3 10/13] selftests/bpf: Remove unnecessary direct read of local percpu kptr
-Date: Sun, 27 Aug 2023 08:28:21 -0700
-Message-Id: <20230827152821.2001129-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v3 11/13] selftests/bpf: Add tests for cgrp_local_storage with local percpu kptr
+Date: Sun, 27 Aug 2023 08:28:27 -0700
+Message-Id: <20230827152827.2001784-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230827152729.1995219-1-yonghong.song@linux.dev>
 References: <20230827152729.1995219-1-yonghong.song@linux.dev>
@@ -49,107 +49,195 @@ X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-For the second argument of bpf_kptr_xchg(), if the reg type contains
-MEM_ALLOC and MEM_PERCPU, which means a percpu allocation,
-after bpf_kptr_xchg(), the argument is marked as MEM_RCU and MEM_PERCPU
-if in rcu critical section. This way, re-reading from the map value
-is not needed. Remove it from the percpu_alloc_array.c selftest.
-
-Without previous kernel change, the test will fail like below:
-
-  0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-  ; int BPF_PROG(test_array_map_10, int a)
-  0: (b4) w1 =3D 0                        ; R1_w=3D0
-  ; int i, index =3D 0;
-  1: (63) *(u32 *)(r10 -4) =3D r1         ; R1_w=3D0 R10=3Dfp0 fp-8=3D000=
-0????
-  2: (bf) r2 =3D r10                      ; R2_w=3Dfp0 R10=3Dfp0
-  ;
-  3: (07) r2 +=3D -4                      ; R2_w=3Dfp-4
-  ; e =3D bpf_map_lookup_elem(&array, &index);
-  4: (18) r1 =3D 0xffff88810e771800       ; R1_w=3Dmap_ptr(off=3D0,ks=3D4=
-,vs=3D16,imm=3D0)
-  6: (85) call bpf_map_lookup_elem#1    ; R0_w=3Dmap_value_or_null(id=3D1=
-,off=3D0,ks=3D4,vs=3D16,imm=3D0)
-  7: (bf) r6 =3D r0                       ; R0_w=3Dmap_value_or_null(id=3D=
-1,off=3D0,ks=3D4,vs=3D16,imm=3D0) R6_w=3Dmap_value_or_null(id=3D1,off=3D0=
-,ks=3D4,vs=3D16,imm=3D0)
-  ; if (!e)
-  8: (15) if r6 =3D=3D 0x0 goto pc+81       ; R6_w=3Dmap_value(off=3D0,ks=
-=3D4,vs=3D16,imm=3D0)
-  ; bpf_rcu_read_lock();
-  9: (85) call bpf_rcu_read_lock#87892          ;
-  ; p =3D e->pc;
-  10: (bf) r7 =3D r6                      ; R6=3Dmap_value(off=3D0,ks=3D4=
-,vs=3D16,imm=3D0) R7_w=3Dmap_value(off=3D0,ks=3D4,vs=3D16,imm=3D0)
-  11: (07) r7 +=3D 8                      ; R7_w=3Dmap_value(off=3D8,ks=3D=
-4,vs=3D16,imm=3D0)
-  12: (79) r6 =3D *(u64 *)(r6 +8)         ; R6_w=3Dpercpu_rcu_ptr_or_null=
-_val_t(id=3D2,off=3D0,imm=3D0)
-  ; if (!p) {
-  13: (55) if r6 !=3D 0x0 goto pc+13      ; R6_w=3D0
-  ; p =3D bpf_percpu_obj_new(struct val_t);
-  14: (18) r1 =3D 0x12                    ; R1_w=3D18
-  16: (b7) r2 =3D 0                       ; R2_w=3D0
-  17: (85) call bpf_percpu_obj_new_impl#87883   ; R0_w=3Dpercpu_ptr_or_nu=
-ll_val_t(id=3D4,ref_obj_id=3D4,off=3D0,imm=3D0) refs=3D4
-  18: (bf) r6 =3D r0                      ; R0=3Dpercpu_ptr_or_null_val_t=
-(id=3D4,ref_obj_id=3D4,off=3D0,imm=3D0) R6=3Dpercpu_ptr_or_null_val_t(id=3D=
-4,ref_obj_id=3D4,off=3D0,imm=3D0) refs=3D4
-  ; if (!p)
-  19: (15) if r6 =3D=3D 0x0 goto pc+69      ; R6=3Dpercpu_ptr_val_t(ref_o=
-bj_id=3D4,off=3D0,imm=3D0) refs=3D4
-  ; p1 =3D bpf_kptr_xchg(&e->pc, p);
-  20: (bf) r1 =3D r7                      ; R1_w=3Dmap_value(off=3D8,ks=3D=
-4,vs=3D16,imm=3D0) R7=3Dmap_value(off=3D8,ks=3D4,vs=3D16,imm=3D0) refs=3D=
-4
-  21: (bf) r2 =3D r6                      ; R2_w=3Dpercpu_ptr_val_t(ref_o=
-bj_id=3D4,off=3D0,imm=3D0) R6=3Dpercpu_ptr_val_t(ref_obj_id=3D4,off=3D0,i=
-mm=3D0) refs=3D4
-  22: (85) call bpf_kptr_xchg#194       ; R0_w=3Dpercpu_ptr_or_null_val_t=
-(id=3D6,ref_obj_id=3D6,off=3D0,imm=3D0) refs=3D6
-  ; if (p1) {
-  23: (15) if r0 =3D=3D 0x0 goto pc+3       ; R0_w=3Dpercpu_ptr_val_t(ref=
-_obj_id=3D6,off=3D0,imm=3D0) refs=3D6
-  ; bpf_percpu_obj_drop(p1);
-  24: (bf) r1 =3D r0                      ; R0_w=3Dpercpu_ptr_val_t(ref_o=
-bj_id=3D6,off=3D0,imm=3D0) R1_w=3Dpercpu_ptr_val_t(ref_obj_id=3D6,off=3D0=
-,imm=3D0) refs=3D6
-  25: (b7) r2 =3D 0                       ; R2_w=3D0 refs=3D6
-  26: (85) call bpf_percpu_obj_drop_impl#87882          ;
-  ; v =3D bpf_this_cpu_ptr(p);
-  27: (bf) r1 =3D r6                      ; R1_w=3Dscalar(id=3D7) R6=3Dsc=
-alar(id=3D7)
-  28: (85) call bpf_this_cpu_ptr#154
-  R1 type=3Dscalar expected=3Dpercpu_ptr_, percpu_rcu_ptr_, percpu_truste=
-d_ptr_
-
-The R1 which gets its value from R6 is a scalar. But before insn 22, R6 i=
-s
-  R6=3Dpercpu_ptr_val_t(ref_obj_id=3D4,off=3D0,imm=3D0)
-Its type is changed to a scalar at insn 22 without previous patch.
+Add a non-sleepable cgrp_local_storage test with percpu kptr. The
+test does allocation of percpu data, assigning values to percpu
+data and retrieval of percpu data. The de-allocation of percpu
+data is done when the map is freed.
 
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- tools/testing/selftests/bpf/progs/percpu_alloc_array.c | 4 ----
- 1 file changed, 4 deletions(-)
+ .../selftests/bpf/prog_tests/percpu_alloc.c   |  40 +++++++
+ .../progs/percpu_alloc_cgrp_local_storage.c   | 105 ++++++++++++++++++
+ 2 files changed, 145 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/percpu_alloc_cgrp_l=
+ocal_storage.c
 
-diff --git a/tools/testing/selftests/bpf/progs/percpu_alloc_array.c b/too=
-ls/testing/selftests/bpf/progs/percpu_alloc_array.c
-index 3bd7d47870a9..bbc45346e006 100644
---- a/tools/testing/selftests/bpf/progs/percpu_alloc_array.c
-+++ b/tools/testing/selftests/bpf/progs/percpu_alloc_array.c
-@@ -146,10 +146,6 @@ int BPF_PROG(test_array_map_10)
- 			/* race condition */
- 			bpf_percpu_obj_drop(p1);
- 		}
--
--		p =3D e->pc;
--		if (!p)
--			goto out;
- 	}
+diff --git a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c b/tool=
+s/testing/selftests/bpf/prog_tests/percpu_alloc.c
+index 0fb536822f14..41bf784a4bb3 100644
+--- a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
++++ b/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <test_progs.h>
+ #include "percpu_alloc_array.skel.h"
++#include "percpu_alloc_cgrp_local_storage.skel.h"
 =20
- 	v =3D bpf_this_cpu_ptr(p);
+ static void test_array(void)
+ {
+@@ -69,10 +70,49 @@ static void test_array_sleepable(void)
+ 	percpu_alloc_array__destroy(skel);
+ }
+=20
++static void test_cgrp_local_storage(void)
++{
++	struct percpu_alloc_cgrp_local_storage *skel;
++	int err, cgroup_fd, prog_fd;
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++
++	cgroup_fd =3D test__join_cgroup("/percpu_alloc");
++	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup /percpu_alloc"))
++		return;
++
++	skel =3D percpu_alloc_cgrp_local_storage__open();
++	if (!ASSERT_OK_PTR(skel, "percpu_alloc_cgrp_local_storage__open"))
++		goto close_fd;
++
++	skel->rodata->nr_cpus =3D libbpf_num_possible_cpus();
++
++	err =3D percpu_alloc_cgrp_local_storage__load(skel);
++	if (!ASSERT_OK(err, "percpu_alloc_cgrp_local_storage__load"))
++		goto destroy_skel;
++
++	err =3D percpu_alloc_cgrp_local_storage__attach(skel);
++	if (!ASSERT_OK(err, "percpu_alloc_cgrp_local_storage__attach"))
++		goto destroy_skel;
++
++	prog_fd =3D bpf_program__fd(skel->progs.test_cgrp_local_storage_1);
++	err =3D bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_run cgrp_local_storage 1-3");
++	ASSERT_EQ(topts.retval, 0, "test_run cgrp_local_storage 1-3");
++	ASSERT_EQ(skel->bss->cpu0_field_d, 2, "cpu0_field_d");
++	ASSERT_EQ(skel->bss->sum_field_c, 1, "sum_field_c");
++
++destroy_skel:
++	percpu_alloc_cgrp_local_storage__destroy(skel);
++close_fd:
++	close(cgroup_fd);
++}
++
+ void test_percpu_alloc(void)
+ {
+ 	if (test__start_subtest("array"))
+ 		test_array();
+ 	if (test__start_subtest("array_sleepable"))
+ 		test_array_sleepable();
++	if (test__start_subtest("cgrp_local_storage"))
++		test_cgrp_local_storage();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/percpu_alloc_cgrp_local_st=
+orage.c b/tools/testing/selftests/bpf/progs/percpu_alloc_cgrp_local_stora=
+ge.c
+new file mode 100644
+index 000000000000..1c36a241852c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/percpu_alloc_cgrp_local_storage.c
+@@ -0,0 +1,105 @@
++#include "bpf_experimental.h"
++
++struct val_t {
++	long b, c, d;
++};
++
++struct elem {
++	long sum;
++	struct val_t __percpu_kptr *pc;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, struct elem);
++} cgrp SEC(".maps");
++
++const volatile int nr_cpus;
++
++/* Initialize the percpu object */
++SEC("fentry/bpf_fentry_test1")
++int BPF_PROG(test_cgrp_local_storage_1)
++{
++	struct task_struct *task;
++	struct val_t __percpu_kptr *p;
++	struct elem *e;
++
++	task =3D bpf_get_current_task_btf();
++	e =3D bpf_cgrp_storage_get(&cgrp, task->cgroups->dfl_cgrp, 0,
++				 BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (!e)
++		return 0;
++
++	p =3D bpf_percpu_obj_new(struct val_t);
++	if (!p)
++		return 0;
++
++	p =3D bpf_kptr_xchg(&e->pc, p);
++	if (p)
++		bpf_percpu_obj_drop(p);
++
++	return 0;
++}
++
++/* Percpu data collection */
++SEC("fentry/bpf_fentry_test2")
++int BPF_PROG(test_cgrp_local_storage_2)
++{
++	struct task_struct *task;
++	struct val_t __percpu_kptr *p;
++	struct val_t *v;
++	struct elem *e;
++
++	task =3D bpf_get_current_task_btf();
++	e =3D bpf_cgrp_storage_get(&cgrp, task->cgroups->dfl_cgrp, 0, 0);
++	if (!e)
++		return 0;
++
++	p =3D e->pc;
++	if (!p)
++		return 0;
++
++	v =3D bpf_per_cpu_ptr(p, 0);
++	if (!v)
++		return 0;
++	v->c =3D 1;
++	v->d =3D 2;
++	return 0;
++}
++
++int cpu0_field_d, sum_field_c;
++
++/* Summarize percpu data collection */
++SEC("fentry/bpf_fentry_test3")
++int BPF_PROG(test_cgrp_local_storage_3)
++{
++	struct task_struct *task;
++	struct val_t __percpu_kptr *p;
++	struct val_t *v;
++	struct elem *e;
++	int i;
++
++	task =3D bpf_get_current_task_btf();
++	e =3D bpf_cgrp_storage_get(&cgrp, task->cgroups->dfl_cgrp, 0, 0);
++	if (!e)
++		return 0;
++
++	p =3D e->pc;
++	if (!p)
++		return 0;
++
++	bpf_for(i, 0, nr_cpus) {
++		v =3D bpf_per_cpu_ptr(p, i);
++		if (v) {
++			if (i =3D=3D 0)
++				cpu0_field_d =3D v->d;
++			sum_field_c +=3D v->c;
++		}
++	}
++
++	return 0;
++}
++
++char _license[] SEC("license") =3D "GPL";
 --=20
 2.34.1
 
