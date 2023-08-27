@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-8808-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8809-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55A2578A132
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 21:41:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C2F078A157
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 22:15:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79DB41C2096D
-	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 19:41:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D66D280E8F
+	for <lists+bpf@lfdr.de>; Sun, 27 Aug 2023 20:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123CD14272;
-	Sun, 27 Aug 2023 19:41:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B251427B;
+	Sun, 27 Aug 2023 20:15:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D996B1401C
-	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 19:41:32 +0000 (UTC)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C445A12E
-	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 12:41:30 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99bcf2de59cso330758166b.0
-        for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 12:41:30 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A932111A3
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 20:15:42 +0000 (UTC)
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C94107
+	for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 13:15:40 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-5009d4a4897so3859821e87.0
+        for <bpf@vger.kernel.org>; Sun, 27 Aug 2023 13:15:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693165289; x=1693770089;
+        d=gmail.com; s=20221208; t=1693167338; x=1693772138;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=dtOReuCG2LtJLkXPBZy6w7ZugfLsBr/nQL1Exzye5GU=;
-        b=n7YgV6+/nEe+PNrDk23EBtXJvDDNU0Hb463SEN5j8ZUetCL6rScYet10m0Yl9Z+Bde
-         weDhz+IoDPP5VfYQkholj3zXBCmhFT4HmBSIOwSPCLFMiIoOBCIO64JsvEYg1eUmu7Fm
-         LFOC77ONbKSwNgUeKMWwkgqxIZbeU3q+SJK+xytRz4NRHgkAxv+S041RdwO1QAspi9R0
-         qaArqDV+uQF6e+h6FNZ0BlUYChtct+xKWxxjfIRDp4svBSfrhUOEbwWDEyZG+ooTG6kh
-         w306AP1tP4ONK8Mz7FMWp3CJKZYOCLbLX/qzePUihArVALKf4RiJQ0+ZURKbW7kQUGVn
-         HMFA==
+        bh=SrKEJGHd7TFgfnwuuBL555hEAHUEGfveeoECEz3v1Ms=;
+        b=prJAmeeaHjuu+lnder/uGA+ufTDAYPx6+HBktkYuoJm+bCfJkiRiV66tab0gmZL7JW
+         FXheMG8bkfZ/qVB0NFdrSt2xMBvzL/BGnIPpqxPWUyvAuxU3cISvSkjoZn1cugFRZtBy
+         t6NLQ4oGsqcJMi+TwHZBQQJ9/KAp33vDzxP/11ath2TRCkIC/nc4U5uwxSnBeC7fMVaA
+         bwYTbZ2YZYoRH4bilkguWQ0aMdTySIZDNKBrmd/j3ynLElKwXXnY0W3NYbmfTS6tLI7K
+         Qz+obSnQ8si/iZsoUroKDzbq2oiLurTV7LQRZCpkN8B6c98XUq6+0gsPdDsTeJLt+iyB
+         fEiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693165289; x=1693770089;
+        d=1e100.net; s=20221208; t=1693167338; x=1693772138;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dtOReuCG2LtJLkXPBZy6w7ZugfLsBr/nQL1Exzye5GU=;
-        b=EZNxoyn9/SbfbMJxizhsCO52Fxg+qlv9K4TjdlH6VpdGp/7m5oFpQCGL8nWrnnGt9C
-         DdMUBXEP7IvrF+hbCUPL/DrShHZRU+79ODHssHRLpMfrP92eo1+d4N3qbWppzu/BY5yV
-         haYTCrSbw244fDjacizstaWsMi7srWKy5LiUL8vif7e4PdrpElFAIwQRKTsHQQx0+fYS
-         UcNQuTQchldJhiS8IhPVB9yecSdl92AeA7HpbjLOKo98lxnhrJoGWdhpQY1nNRo4tnJo
-         +KaR3hK9XZlHkXJArjct28UH370oAzhCCXYyvRxPVvrgE+KDAQRbLd6yGmY+UIFQN5mg
-         NrzA==
-X-Gm-Message-State: AOJu0YzyclEVC6tVhV62xuasVnuS70XYJKOVDZhuHJTsQu5Es3ubh5Go
-	OeyX2xhjiE/eq14fXoU1LHHMSjgSzRc=
-X-Google-Smtp-Source: AGHT+IFuqSmkJLo+RTdqdoTG5olx7LlmPyAs+/AVl64S4Q9zFjqORp2696DtLCW63gWIrAkWkSCf7Q==
-X-Received: by 2002:a17:907:2be0:b0:9a5:a247:5bbc with SMTP id gv32-20020a1709072be000b009a5a2475bbcmr1868830ejc.28.1693165288863;
-        Sun, 27 Aug 2023 12:41:28 -0700 (PDT)
+        bh=SrKEJGHd7TFgfnwuuBL555hEAHUEGfveeoECEz3v1Ms=;
+        b=lan1xI+7eMJi1xqzyasOXfr3/NAMehmisr2v2mHruSZF696bzoK4K89SvFpVeWIKRM
+         LanIywi19vcsqlqxnOnGi5crZmsoeSs3M3uvbECAm+8Q/f1lj0qRj+Snhf/Dx4EU040m
+         w4+Za1MLIotl+ZSXmVxkNkmOxkKdvu6ljQy8OYJxrwBLPIb1N8BwUK2ClY05VrEYzbuC
+         li+N20d5bInaFXfzesng62gEFMTkoNvCPhWCKj8Qu83BL7n8RJa81YLHt0OIY7NIkTkS
+         CZPD4zGb32CKOH5e309NSowc2m4VF89AO78YWk3BZmLlNVNCXnDjcxb7saKJqql5NYKv
+         vNuQ==
+X-Gm-Message-State: AOJu0YzDxJh5bm+Z6FzQ+5/l4usICmeQqJg0mXKp4RpDO6cNR4/7wyco
+	wDj5kGE3xIL58AJOoKEmFWQ=
+X-Google-Smtp-Source: AGHT+IGQ7wjtuWvg9Wkb9joTEwQ1eh1wDuqLsIKGCZVMBRyKXURHrDrpqQdFveAyVKtXPfnzQ4cjyw==
+X-Received: by 2002:a05:6512:224e:b0:4fd:c84f:30c9 with SMTP id i14-20020a056512224e00b004fdc84f30c9mr20202851lfu.47.1693167338131;
+        Sun, 27 Aug 2023 13:15:38 -0700 (PDT)
 Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
-        by smtp.gmail.com with ESMTPSA id a1-20020a17090640c100b0099bcf9c2ec6sm3720828ejk.75.2023.08.27.12.41.27
+        by smtp.gmail.com with ESMTPSA id v21-20020aa7d655000000b0051e22660835sm3654885edr.46.2023.08.27.13.15.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Aug 2023 12:41:28 -0700 (PDT)
-Date: Sun, 27 Aug 2023 21:41:27 +0200
+        Sun, 27 Aug 2023 13:15:37 -0700 (PDT)
+Date: Sun, 27 Aug 2023 22:15:36 +0200
 From: Nam Cao <namcaov@gmail.com>
 To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
 Cc: linux-riscv@lists.infradead.org, Guo Ren <guoren@kernel.org>,
@@ -66,7 +66,7 @@ Cc: linux-riscv@lists.infradead.org, Guo Ren <guoren@kernel.org>,
 	Puranjay Mohan <puranjay12@gmail.com>
 Subject: Re: RISC-V uprobe bug (Was: Re: WARNING: CPU: 3 PID: 261 at
  kernel/bpf/memalloc.c:342)
-Message-ID: <ZOum50Py8Vki+Nd3@nam-dell>
+Message-ID: <ZOuu6IF2Cf6OaJzg@nam-dell>
 References: <87jztjmmy4.fsf@all.your.base.are.belong.to.us>
  <87v8d19aun.fsf@all.your.base.are.belong.to.us>
  <ZOpAjkTtA4jYtuIa@nam-dell>
@@ -147,64 +147,22 @@ On Sun, Aug 27, 2023 at 09:20:44PM +0200, Björn Töpel wrote:
 > 
 > Maybe I wasn't clear, sorry for that! I did take the patch for a spin,
 > and it did not solve this particular problem.
-
-Okay, thanks for the comfirmation!
- 
+> 
 > When we're taking a trap from *kernel*mode, we should never deal with
 > uprobes at all. Have a look at uprobe_pre_sstep_notifier(), this
 > function returns 1, which then means that the trap handler exit
 > premature.
->
+> 
 > The code you're referring to (called from uprobe_notify_resume()), and
 > will never be entered, because we're not exiting the trap to
 > userland. Have a look in kernel/entry/common.c (search for
 > e.g. TIF_UPROBE).
 
-I will think about this a bit and answer later. I will answer the below part
-first.
- 
-> Now, for your concern, which I see as a potential different bug. Not at
-> all related to my issue "trap from kernelmode touches uprobe
-> incorrectly"; A "random" ebreak from *userland* is trapped, when uprobes
-> is enabled will set the kernel in a hang. I suggest you construct try to
-> write a simple program to reproduce this!
-> 
-> I had a quick look in the uprobe handling code, and AFAIU the was used
-> when installing the uprobe as an additional check, and when searching
-> for an active uprobe. I'm still a bit puzzled how the issue you're
-> describing could trigger. A reproducer would help!
-
-I have just produced the problem, using this small program:
-
-	.global _start                                                                                      
-	_start:
-		addi x0, x1, 0
-		addi x0, x1, 1
-	        addi x0, x1, 2
-	.option push
-	.option arch, -c
-	        ebreak
-	.option pop
-	        ecall
-
-Compile that with
-	riscv64-linux-gnu-gcc test.s -nostdlib -static -o ebreak
-
-And setup uprobes by:
-	mount -t tracefs nodev /sys/kernel/tracing/
-	echo "p /ebreak:0x0000010c" > /sys/kernel/tracing/uprobe_events
-	echo 1 > /sys/kernel/tracing/events/uprobes/enable
-
-(obviously you would have to edit the offset value to be _start symbol of your
-binary)
-
-Then I execute the program, and the kernel loop indefinitely (it keeps going in
-and out of exception handler).
-
-Then I apply my patch, then the kernel doesn't loop anymore.
-
-So I think it is a valid issue, and I will send a proper patch to fix this.
+Ah right, uprobe_notify_resume() is not called if we do not return to user
+space. My bad, I thought it is called. Thanks for the discussion, now why I can
+see my patch is irrelevant, and your patch is the correct fix for the reported
+problem.
 
 Best regards,
-Nam 
+Nam
 
