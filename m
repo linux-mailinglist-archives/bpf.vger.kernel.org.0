@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-8823-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8824-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AFB978A6DF
-	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 09:56:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70B6678A6E0
+	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 09:56:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4454D280D86
-	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 07:56:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A253A1C20889
+	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 07:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DA5D10FE;
-	Mon, 28 Aug 2023 07:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83BF710FE;
+	Mon, 28 Aug 2023 07:56:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1580FEC2
-	for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 07:56:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AEF6C433C8;
-	Mon, 28 Aug 2023 07:56:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42457EC2
+	for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 07:56:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 093ACC433C8;
+	Mon, 28 Aug 2023 07:56:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1693209374;
-	bh=72JVCuuga8W/DsobUv9aR/VCA2beTgnUF/dSaVUyqlw=;
+	s=k20201202; t=1693209385;
+	bh=bQL0k7ZDaX82GIXlUjop8lzK89glSdv3YhmALUlQz34=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Feevgiw4OMjIoVFwihcv/4RCvMXRLgdo3JmMF1G36/wX3gwz2ohfgzQEOTds7v6qh
-	 smLy+DDL/dXodzItr+EzuO5ZdBW6UFK2pCzkUL0wPFZJgyWI7pbveoyxEJZbpl1xz3
-	 A8ZTmLiM8mX+S9cMbXE3Hy1fzhRzflTUp2UEeayYPYyBKndO4oBwI/Pe5FBlEnsK9x
-	 jTLp/fD74PYmhIGLt7CCxN41nkqVxZ8De/BdTZHUJ/rrf1knvMI0W68jldSDPaH+tK
-	 jtVyTii2ciLfpKmrD9ZGA6AzCsbXgdLxZ8PXNgF4KtF8tSV/nXeKDKnUjP3ocHECPC
-	 MyarE3XzStMKg==
+	b=cTMxdRx7Wbr+kvuExxsKyDeFvnq3Mh2W7mUSE8c3Z0ELWIPtNDZseyvGq9DTvD6ef
+	 QKCwh3tcnfvIfImhGQrOmVS9Ae7d6D5G0kYRsPV+bhQ5EtBMczb1zXtzVMEsdUEDXC
+	 8PuzWnd3w8eQm7CGIljJ5uRvB+l5JRcj4Wtkg23vBr5A4rBB/Up5mZecscYLuBXV6u
+	 mrb5PMo/tCjjUYF7Q7tHKMDv9VmSrM6HOjTOBOoo0o3YXtodKkIYvU9chSKIzG+ecJ
+	 COQeiIvoiBJH54+kOCXjPHVh1SjL5vV6J2Hp0FzGfvaUKjg1gUUApbzI8RQoxjsYl5
+	 aVFEaUHYGSXLg==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -44,9 +44,9 @@ Cc: bpf@vger.kernel.org,
 	Hao Luo <haoluo@google.com>,
 	Hou Tao <houtao1@huawei.com>,
 	Daniel Xu <dxu@dxuuu.xyz>
-Subject: [PATCH bpf-next 03/12] bpf: Count stats for kprobe_multi programs
-Date: Mon, 28 Aug 2023 09:55:28 +0200
-Message-ID: <20230828075537.194192-4-jolsa@kernel.org>
+Subject: [PATCH bpf-next 04/12] bpf: Add missed value to kprobe_multi link info
+Date: Mon, 28 Aug 2023 09:55:29 +0200
+Message-ID: <20230828075537.194192-5-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230828075537.194192-1-jolsa@kernel.org>
 References: <20230828075537.194192-1-jolsa@kernel.org>
@@ -58,47 +58,56 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding support to gather stats for kprobe_multi programs.
+Add missed value to kprobe_multi link info to hold the stats of missed
+kprobe_multi probe.
 
-We now count:
-  - missed stats due to bpf_prog_active protection (always)
-  - cnt/nsec of the bpf program execution (if kernel.bpf_stats_enabled=1)
+The missed counter gets incremented when fprobe fails the recursion
+check or there's no rethook available for return probe. In either
+case the attached bpf program is not executed.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- kernel/trace/bpf_trace.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ include/uapi/linux/bpf.h       | 1 +
+ kernel/trace/bpf_trace.c       | 1 +
+ tools/include/uapi/linux/bpf.h | 1 +
+ 3 files changed, 3 insertions(+)
 
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 8790b3962e4b..b754edfb0cd7 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -6523,6 +6523,7 @@ struct bpf_link_info {
+ 			__aligned_u64 addrs;
+ 			__u32 count; /* in/out: kprobe_multi function count */
+ 			__u32 flags;
++			__u64 missed;
+ 		} kprobe_multi;
+ 		struct {
+ 			__u32 type; /* enum bpf_perf_event_type */
 diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index a7264b2c17ad..0a8685fc1eee 100644
+index 0a8685fc1eee..0eaec3c4a5fd 100644
 --- a/kernel/trace/bpf_trace.c
 +++ b/kernel/trace/bpf_trace.c
-@@ -2706,18 +2706,24 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
- 		.link = link,
- 		.entry_ip = entry_ip,
- 	};
-+	struct bpf_prog *prog = link->link.prog;
- 	struct bpf_run_ctx *old_run_ctx;
-+	u64 start;
- 	int err;
+@@ -2614,6 +2614,7 @@ static int bpf_kprobe_multi_link_fill_link_info(const struct bpf_link *link,
+ 	kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
+ 	info->kprobe_multi.count = kmulti_link->cnt;
+ 	info->kprobe_multi.flags = kmulti_link->flags;
++	info->kprobe_multi.missed = kmulti_link->fp.nmissed;
  
- 	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
-+		bpf_prog_inc_misses_counter(prog);
- 		err = 0;
- 		goto out;
- 	}
- 
-+
- 	migrate_disable();
- 	rcu_read_lock();
- 	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
--	err = bpf_prog_run(link->link.prog, regs);
-+	start = bpf_prog_start_time();
-+	err = bpf_prog_run(prog, regs);
-+	bpf_prog_update_prog_stats(prog, start);
- 	bpf_reset_run_ctx(old_run_ctx);
- 	rcu_read_unlock();
- 	migrate_enable();
+ 	if (!uaddrs)
+ 		return 0;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 8790b3962e4b..b754edfb0cd7 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -6523,6 +6523,7 @@ struct bpf_link_info {
+ 			__aligned_u64 addrs;
+ 			__u32 count; /* in/out: kprobe_multi function count */
+ 			__u32 flags;
++			__u64 missed;
+ 		} kprobe_multi;
+ 		struct {
+ 			__u32 type; /* enum bpf_perf_event_type */
 -- 
 2.41.0
 
