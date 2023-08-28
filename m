@@ -1,115 +1,254 @@
-Return-Path: <bpf+bounces-8862-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8863-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2BAA78B67F
-	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 19:32:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 850D678B6B5
+	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 19:48:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BE95280EAB
-	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 17:32:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DA34280E89
+	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 17:48:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 546C913AF6;
-	Mon, 28 Aug 2023 17:32:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 247EE13AFE;
+	Mon, 28 Aug 2023 17:48:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C21A12B87
-	for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 17:32:19 +0000 (UTC)
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41EC6E1
-	for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 10:32:18 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50078eba7afso5505462e87.0
-        for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 10:32:18 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCEDB125DE
+	for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 17:48:10 +0000 (UTC)
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92271129
+	for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 10:48:07 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-529fb04a234so4720166a12.3
+        for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 10:48:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693243936; x=1693848736;
+        d=google.com; s=20221208; t=1693244886; x=1693849686;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4tb1yoWbmBUWX9cWLnrgLX31IDmfBgz0Z+KBgou32oo=;
-        b=eMIUpi+Au69gdeBN9EtJrJhGofsJjVsc+ALfGhYYMxMrLerZM8/UyPTSmQ++BqNgys
-         mfH0eoDx2zgiCsXuwQMua70EwhfmkAN5AfjnSGGFXFk9cIR4xjHhW/AFjiGCeiL4wyav
-         bqefCUqXR5EVoO+f1df+w0I5IbmXuzgdyozdOj+FQ2AF0nkuVsen0Zt8K3KZoNjdQj05
-         sNhBGO1F79gctRbhuVOIWqBpUkwLKWBI51x7VNyndZGg4etZf4EuKKR4/xwKX9s/todr
-         ujTLW1ugCJtltPJYOWrO8TL4izV66TTwypF48Ksg8qr+SbFoHowP5MkrQRedoOfFXB80
-         3UEw==
+        bh=3qyIITZmt6yIxcf2AHhToVSoBW9CwGLT+eBWC1sVHAU=;
+        b=odR1gCkyLODs1etSs5WhGACv3cH24ciJWMHclQ8UrrQaRT6tp7Lbt47muVULy3Meim
+         8wuqYAWxhVce2vZ7/dfTM7BZS4Oo3i/RYoVWgFHgFZ2ZjPmKjmncyidLczu0yTTiFgll
+         PDD+lw45/CTMK1++RScIQI/jhRnm+BwqwkdXs/QDWzlRXgjhLzeGavE/LTHXKfCAOrEo
+         MgAP1SJcFvGysfQFYXfu8HgRykHJF9vFOpgWurKmLBAkuhQDQ8dLCgvnUhZqO5XqEptl
+         4z0K1QMbiwW3pM5x+gBfYM2ij7UlC+hu21m4mnXexyzPqfZNAv2b5D7ENphu8fUOLN0C
+         H8lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693243936; x=1693848736;
+        d=1e100.net; s=20221208; t=1693244886; x=1693849686;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4tb1yoWbmBUWX9cWLnrgLX31IDmfBgz0Z+KBgou32oo=;
-        b=OLXFGeCQLHeTr8bi6P6QYRZCvO1pceMGuYBVkisVXjFSCZtj7tgVKPcgEujG89KaKP
-         ZMtm8EyLn4hSbSj9ZgkaFzBFsIaRmJH0oGs2BbqLbmktB3947GWkYTTrAv81ReJRPyXB
-         M/HwB5iQ2/eiQIIj6Y80xfOPzfquokrsXtcxmbxE90ZKmf7NKQqBvi5WjtOdp7FsgxlZ
-         sfb4l9CodyADoy/UBir2FCKO2d0wfhTFjFnj3OdqMYl6kExs+MSRyMtXdVrZ42+UXgpK
-         m7VpGHfq8xZ0DPM7KTivj13xphOhn5apgoVqFv70cqGDJWwUIZfv67p926ku9DXqpEoZ
-         mQpQ==
-X-Gm-Message-State: AOJu0Yxc8AZJPzVLc+SPAphGApe4iPdXp6q84RtrSD5Ukho+/kYjYTFW
-	fCKM9wzz5Qk00guMmAVC8YxglVKXcGc3LaV4JQg=
-X-Google-Smtp-Source: AGHT+IHAQsIGE5aFVZGJGrNfNojic0lWt8SlfRboQIR5Zk9hA/Hp0mPZvFddF6RRGKquZlPV97MjhWMRjRUXV6kmAc8=
-X-Received: by 2002:a2e:b164:0:b0:2bb:bfa5:b72c with SMTP id
- a4-20020a2eb164000000b002bbbfa5b72cmr18826599ljm.15.1693243936211; Mon, 28
- Aug 2023 10:32:16 -0700 (PDT)
+        bh=3qyIITZmt6yIxcf2AHhToVSoBW9CwGLT+eBWC1sVHAU=;
+        b=A9RX3cIDY3FlG5ZcQrakq+GCroQDvdrEKYRLVWyWQMO4wG+cG3rvhiJM4uH6J7gmi+
+         eYZXtHHmBVf2WLDGpcz1SYCgJHqkwggX2YFdrZOEV/xCMBemmbCrg6YGCjyWsBcui12t
+         5EdQtB0pZd4sXrj8jLNtOHM43mKaQzCik/O6FWmxInsvd2H140XZ9vYAAMUh+C9tG6jA
+         Ot29T+vzxcvVQek5KSuu6qgJGPt3/LMSNQS3n7zCAgmNLrNwsxs99lzH+u8fxvTBNY3h
+         RlnqjBjUgdi0r/NFpDq+NAX8oGesezVgp051qOPVIhcZhsQwVcTkXOJEk4VH0NVmyijF
+         TCxA==
+X-Gm-Message-State: AOJu0YxAS+KfeHgPcG/0CtD60alh0Ztjvccui80j3JUNBJhGRm6zIXJk
+	70ZI+0e8B+0jWtNS8W0T+Hxm1J/qWUvn2iDEdVehJw==
+X-Google-Smtp-Source: AGHT+IG5s5Adb1+6Jj4dIei4PAmaE17im1X0zrZxagxFiTM+4t42Iq+COd07+PtZk1fzQuinZ/VGGkYh9+gBNhC9H6A=
+X-Received: by 2002:a05:6402:510:b0:523:2c05:7d24 with SMTP id
+ m16-20020a056402051000b005232c057d24mr23565515edv.24.1693244886029; Mon, 28
+ Aug 2023 10:48:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230828075537.194192-1-jolsa@kernel.org> <20230828075537.194192-7-jolsa@kernel.org>
-In-Reply-To: <20230828075537.194192-7-jolsa@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 28 Aug 2023 10:32:05 -0700
-Message-ID: <CAADnVQJgGvsmr4Sug+ZWa68i9p4xLkW4OS8n4Afk3sZSdd0F5A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 06/12] bpf: Count missed stats in trace_call_bpf
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Hou Tao <houtao1@huawei.com>, 
-	Daniel Xu <dxu@dxuuu.xyz>
+References: <20230825-wip-selftests-v1-0-c862769020a8@kernel.org>
+ <20230825182316.m2ksjoxe4s7dsapn@google.com> <65800771171dcaff9901dae47de960ec66602f7e.camel@gmail.com>
+In-Reply-To: <65800771171dcaff9901dae47de960ec66602f7e.camel@gmail.com>
+From: Justin Stitt <justinstitt@google.com>
+Date: Mon, 28 Aug 2023 10:47:52 -0700
+Message-ID: <CAFhGd8rNtEWpfJKFs+nKj_cLya0q6JSFyuzqqMCYmoi9xxBL6Q@mail.gmail.com>
+Subject: Re: [PATCH 4/3] selftests/hid: more fixes to build with older kernel
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Jiri Kosina <jikos@kernel.org>, 
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>, Shuah Khan <shuah@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, linux-input@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Aug 28, 2023 at 12:56=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote=
-:
->
-> Increase misses stats in case bpf array execution is skipped
-> because of recursion check in trace_call_bpf.
->
-> Adding bpf_prog_missed_array that increase misses counts for
-> all bpf programs in bpf_prog_array.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  include/linux/bpf.h      | 16 ++++++++++++++++
->  kernel/trace/bpf_trace.c |  3 +++
->  2 files changed, 19 insertions(+)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 23a73f52c7bc..71154e991730 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2932,6 +2932,22 @@ static inline int sock_map_bpf_prog_query(const un=
-ion bpf_attr *attr,
->  #endif /* CONFIG_BPF_SYSCALL */
->  #endif /* CONFIG_NET && CONFIG_BPF_SYSCALL */
->
-> +static __always_inline void
-> +bpf_prog_missed_array(const struct bpf_prog_array *array)
+Eduard,
 
-The name hardly explains the purpose.
-Please give it a better name.
-Maybe bpf_prog_inc_misses_counters ?
-Just extra "s".
+On Fri, Aug 25, 2023 at 11:54=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>
+> On Fri, 2023-08-25 at 18:23 +0000, Justin Stitt wrote:
+> > On Fri, Aug 25, 2023 at 10:36:30AM +0200, Benjamin Tissoires wrote:
+> > > These fixes have been triggered by [0]:
+> > > basically, if you do not recompile the kernel first, and are
+> > > running on an old kernel, vmlinux.h doesn't have the required
+> > > symbols and the compilation fails.
+> > >
+> > > The tests will fail if you run them on that very same machine,
+> > > of course, but the binary should compile.
+> > >
+> > > And while I was sorting out why it was failing, I realized I
+> > > could do a couple of improvements on the Makefile.
+> > >
+> > > [0] https://lore.kernel.org/linux-input/56ba8125-2c6f-a9c9-d498-0ca1c=
+153dcb2@redhat.com/T/#t
+> > >
+> > > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> > > ---
+> > > Benjamin Tissoires (3):
+> > >       selftests/hid: ensure we can compile the tests on kernels pre-6=
+.3
+> > >       selftests/hid: do not manually call headers_install
+> > >       selftests/hid: force using our compiled libbpf headers
+> > >
+> > >  tools/testing/selftests/hid/Makefile                | 10 ++++------
+> > >  tools/testing/selftests/hid/progs/hid.c             |  3 ---
+> > >  tools/testing/selftests/hid/progs/hid_bpf_helpers.h | 20 +++++++++++=
++++++++++
+> > >  3 files changed, 24 insertions(+), 9 deletions(-)
+> > > ---
+> > > base-commit: 1d7546042f8fdc4bc39ab91ec966203e2d64f8bd
+> > > change-id: 20230825-wip-selftests-9a7502b56542
+> > >
+> > > Best regards,
+> > > --
+> > > Benjamin Tissoires <bentiss@kernel.org>
+> > >
+> >
+> > Benjamin, thanks for the work here. Your series fixed up _some_ of the
+> > errors I had while building on my 6.3.11 kernel. I'm proposing a single
+> > patch that should be applied on top of your series that fully fixes
+> > _all_ of the build errors I'm experiencing.
+> >
+> > Can you let me know if it works and potentially formulate a new series
+> > so that `b4 shazam` applies it cleanly?
+> >
+> > PATCH BELOW
+> > ---
+> > From 5378d70e1b3f7f75656332f9bff65a37122bb288 Mon Sep 17 00:00:00 2001
+> > From: Justin Stitt <justinstitt@google.com>
+> > Date: Fri, 25 Aug 2023 18:10:33 +0000
+> > Subject: [PATCH 4/3] selftests/hid: more fixes to build with older kern=
+el
+> >
+> > I had to use the clever trick [1] on some other symbols to get my build=
+s
+> > working.
+> >
+> > Apply this patch on top of Benjamin's series [2].
+> >
+> > This is now a n=3D4 patch series which has fixed my builds when running=
+:
+> > > $ make LLVM=3D1 -j128 ARCH=3Dx86_64 mrproper headers
+> > > $ make LLVM=3D1 -j128 ARCH=3Dx86_64 -C tools/testing/selftests TARGET=
+S=3Dhid
+> >
+> > [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git=
+/tree/tools/testing/selftests/bpf/progs/bpf_iter.h#n3
+> > [2]: https://lore.kernel.org/all/20230825-wip-selftests-v1-0-c862769020=
+a8@kernel.org/
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > ---
+> >  .../selftests/hid/progs/hid_bpf_helpers.h     | 29 +++++++++++++++++++
+> >  1 file changed, 29 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tool=
+s/testing/selftests/hid/progs/hid_bpf_helpers.h
+> > index 749097f8f4d9..e2eace2c0029 100644
+> > --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+> > +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+> > @@ -7,12 +7,26 @@
+> >
+> >  /* "undefine" structs in vmlinux.h, because we "override" them below *=
+/
+> >  #define hid_bpf_ctx hid_bpf_ctx___not_used
+> > +#define hid_report_type hid_report_type___not_used
+> > +#define hid_class_request hid_class_request___not_used
+> > +#define hid_bpf_attach_flags hid_bpf_attach_flags___not_used
+> >  #include "vmlinux.h"
+> >  #undef hid_bpf_ctx
+> > +#undef hid_report_type
+> > +#undef hid_class_request
+> > +#undef hid_bpf_attach_flags
+> >
+> >  #include <bpf/bpf_helpers.h>
+> >  #include <bpf/bpf_tracing.h>
+> > +#include <linux/const.h>
+> >
+> > +enum hid_report_type {
+> > +     HID_INPUT_REPORT                =3D 0,
+> > +     HID_OUTPUT_REPORT               =3D 1,
+> > +     HID_FEATURE_REPORT              =3D 2,
+> > +
+> > +     HID_REPORT_TYPES,
+> > +};
+> >
+> >  struct hid_bpf_ctx {
+> >       __u32 index;
+> > @@ -25,6 +39,21 @@ struct hid_bpf_ctx {
+> >       };
+> >  };
+>
+> Note, vmlinux.h has the following preamble/postamble:
+>
+>     #ifndef BPF_NO_PRESERVE_ACCESS_INDEX
+>     #pragma clang attribute push (__attribute__((preserve_access_index)),=
+ apply_to =3D record)
+>     #endif
+>     ...
+>     #ifndef BPF_NO_PRESERVE_ACCESS_INDEX
+>     #pragma clang attribute pop
+>     #endif
+>
+> You might want to use it or add __attribute__((preserve_access_index))
+> to structure definitions, depending on whether or not you need CO-RE
+> functionality for these tests.
+
+I have no idea whether or not CO-RE is needed for these tests or not.
+My main motivation is getting these selftests building with LLVM=3D1
+[1].
+
+Perhaps Benjamin could provide some more insight on whether this is
+needed or not and roll out a v2 containing my patch on top + any CO-RE
+semantics  -- if deemed necessary.
+
+>
+> >
+> > +enum hid_class_request {
+> > +     HID_REQ_GET_REPORT              =3D 0x01,
+> > +     HID_REQ_GET_IDLE                =3D 0x02,
+> > +     HID_REQ_GET_PROTOCOL            =3D 0x03,
+> > +     HID_REQ_SET_REPORT              =3D 0x09,
+> > +     HID_REQ_SET_IDLE                =3D 0x0A,
+> > +     HID_REQ_SET_PROTOCOL            =3D 0x0B,
+> > +};
+> > +
+> > +enum hid_bpf_attach_flags {
+> > +     HID_BPF_FLAG_NONE =3D 0,
+> > +     HID_BPF_FLAG_INSERT_HEAD =3D _BITUL(0),
+> > +     HID_BPF_FLAG_MAX,
+> > +};
+> > +
+> >  /* following are kfuncs exported by HID for HID-BPF */
+> >  extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
+> >                             unsigned int offset,
+> > --
+> > 2.42.0.rc1.204.g551eb34607-goog
+> >
+>
+
+[1]: https://github.com/ClangBuiltLinux/linux/issues/1698
+
+Thanks
+Justin
 
