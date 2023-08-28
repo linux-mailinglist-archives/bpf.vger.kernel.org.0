@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-8829-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8830-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01AA678A6E5
-	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 09:57:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3EFF78A6E6
+	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 09:57:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEFBF280DBA
-	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 07:57:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64847280DAD
+	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 07:57:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A3C310FE;
-	Mon, 28 Aug 2023 07:57:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F3871100;
+	Mon, 28 Aug 2023 07:57:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D346EC2
-	for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 07:57:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF652C433C8;
-	Mon, 28 Aug 2023 07:57:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9F2510F4
+	for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 07:57:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65024C433C8;
+	Mon, 28 Aug 2023 07:57:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1693209438;
-	bh=uYUS+TX3YFJDNv8Iuv6Zp9bPNd1gwVtBNxShGEmP6/o=;
+	s=k20201202; t=1693209448;
+	bh=WuD3nVJvzDMB+7Fn5HVptRfTNFO79UdpuiRjIllL0xw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ygb5pEvtv5CLH1hZg5T65jGyoGjhviTfkd3wJWblOPvQKy9dQ+LZ53G5dKoLIWPn1
-	 2MdKDGTHu72KloWSZN/UH6uq6lpaZYABOvY7+gzZ7Sbo9/nGG0i1rsV8GgkTo/ncDZ
-	 8mxnKF5IF3Bg6/5z4KvX1+HkloMV11fKVjXK9oDox9FIstJ9mp3aYLzukP0C7X5d0d
-	 St1eq/FklDN6QxlXv2UlFKvQpqWk3yFwl+GQAkvK43PZf1ZGzz4ecGrPWCsn3cSrZE
-	 38a8ohMnowA6iT5OQih1n+A8KkcGTD3bVkUMo6gNc02MteoHnSbQAJGL+gPyh3Tu45
-	 ddCAxBUV3+QAg==
+	b=Q0Aw7O7Jv++IF8N+px5V+dQHINU9h3QXBKQVTzA+/UQU/m3gMKN6F1YvXM7AesSRZ
+	 Pq782jT8uNoOS68qEes8JQdDwBkn5/CvZRflui8+nB90Ekfx+k9HHTz6dXjI9PN6tq
+	 AxhFsuNDmk1CaG+z5xfhJPW3zc++bj26urZepzvLKqsIEZvpZxKUiKpjqpa7Q3keEP
+	 OJZhCKGeDGCjXzoFxG+wi742taunOAvCWXmbo0CuBVkoIKsiIQkyFx8kqNeyAEG1ti
+	 BstXifBxY+oYcT5Qttp9kplva3FBmybj+OP1ZRYYQkkjGxTsgEPtItW29cJ0rWT4UC
+	 cteh/kGpjl5MA==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -44,9 +44,9 @@ Cc: bpf@vger.kernel.org,
 	Hao Luo <haoluo@google.com>,
 	Hou Tao <houtao1@huawei.com>,
 	Daniel Xu <dxu@dxuuu.xyz>
-Subject: [PATCH bpf-next 09/12] bpftool: Display missed count for kprobe_multi link
-Date: Mon, 28 Aug 2023 09:55:34 +0200
-Message-ID: <20230828075537.194192-10-jolsa@kernel.org>
+Subject: [PATCH bpf-next 10/12] bpftool: Display missed count for kprobe perf link
+Date: Mon, 28 Aug 2023 09:55:35 +0200
+Message-ID: <20230828075537.194192-11-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230828075537.194192-1-jolsa@kernel.org>
 References: <20230828075537.194192-1-jolsa@kernel.org>
@@ -59,58 +59,61 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 Adding 'missed' field to display missed counts for kprobes
-attached by kprobe multi link, like:
+attached by perf event link, like:
 
   # bpftool link
-  5: kprobe_multi  prog 76
-          kprobe.multi  func_cnt 1 missed 1
-          addr             func [module]
-          ffffffffa039c030 fp3_test [fprobe_test]
+  5: perf_event  prog 82
+          kprobe ffffffff815203e0 ksys_write
+  6: perf_event  prog 83
+          kprobe ffffffff811d1e50 scheduler_tick missed 682217
 
   # bpftool link -jp
   [{
           "id": 5,
-          "type": "kprobe_multi",
-          "prog_id": 76,
+          "type": "perf_event",
+          "prog_id": 82,
           "retprobe": false,
-          "func_cnt": 1,
-          "missed": 1,
-          "funcs": [{
-                  "addr": 18446744072102723632,
-                  "func": "fp3_test",
-                  "module": "fprobe_test"
-              }
-          ]
+          "addr": 18446744071584220128,
+          "func": "ksys_write",
+          "offset": 0,
+          "missed": 0
+      },{
+          "id": 6,
+          "type": "perf_event",
+          "prog_id": 83,
+          "retprobe": false,
+          "addr": 18446744071580753488,
+          "func": "scheduler_tick",
+          "offset": 0,
+          "missed": 693469
       }
   ]
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/bpf/bpftool/link.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/bpf/bpftool/link.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-index 0b214f6ab5c8..7387e51a5e5c 100644
+index 7387e51a5e5c..d65129318f82 100644
 --- a/tools/bpf/bpftool/link.c
 +++ b/tools/bpf/bpftool/link.c
-@@ -265,6 +265,7 @@ show_kprobe_multi_json(struct bpf_link_info *info, json_writer_t *wtr)
- 	jsonw_bool_field(json_wtr, "retprobe",
- 			 info->kprobe_multi.flags & BPF_F_KPROBE_MULTI_RETURN);
- 	jsonw_uint_field(json_wtr, "func_cnt", info->kprobe_multi.count);
-+	jsonw_uint_field(json_wtr, "missed", info->kprobe_multi.missed);
- 	jsonw_name(json_wtr, "funcs");
- 	jsonw_start_array(json_wtr);
- 	addrs = u64_to_ptr(info->kprobe_multi.addrs);
-@@ -640,7 +641,9 @@ static void show_kprobe_multi_plain(struct bpf_link_info *info)
- 		printf("\n\tkretprobe.multi  ");
- 	else
- 		printf("\n\tkprobe.multi  ");
--	printf("func_cnt %u  ", info->kprobe_multi.count);
-+	printf("func_cnt %u", info->kprobe_multi.count);
-+	if (info->kprobe_multi.missed)
-+		printf(" missed %llu", info->kprobe_multi.missed);
- 	addrs = (__u64 *)u64_to_ptr(info->kprobe_multi.addrs);
- 	qsort(addrs, info->kprobe_multi.count, sizeof(__u64), cmp_u64);
+@@ -302,6 +302,7 @@ show_perf_event_kprobe_json(struct bpf_link_info *info, json_writer_t *wtr)
+ 	jsonw_string_field(wtr, "func",
+ 			   u64_to_ptr(info->perf_event.kprobe.func_name));
+ 	jsonw_uint_field(wtr, "offset", info->perf_event.kprobe.offset);
++	jsonw_uint_field(wtr, "missed", info->perf_event.kprobe.missed);
+ }
+ 
+ static void
+@@ -686,6 +687,8 @@ static void show_perf_event_kprobe_plain(struct bpf_link_info *info)
+ 	printf("%s", buf);
+ 	if (info->perf_event.kprobe.offset)
+ 		printf("+%#x", info->perf_event.kprobe.offset);
++	if (info->perf_event.kprobe.missed)
++		printf(" missed %llu", info->perf_event.kprobe.missed);
+ 	printf("  ");
+ }
  
 -- 
 2.41.0
