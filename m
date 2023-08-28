@@ -1,207 +1,355 @@
-Return-Path: <bpf+bounces-8837-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8838-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D77278B04A
-	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 14:31:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D637D78B0E1
+	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 14:46:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FC191C20948
-	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 12:31:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0636E1C20918
+	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 12:46:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9B5511CB4;
-	Mon, 28 Aug 2023 12:31:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12308125B8;
+	Mon, 28 Aug 2023 12:46:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82035613F
-	for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 12:31:22 +0000 (UTC)
-Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2067.outbound.protection.outlook.com [40.107.249.67])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3340C1A6;
-	Mon, 28 Aug 2023 05:30:58 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ezMAGQsTbBJqmyjNPwyAWJnit2zwxcWM+t6oPur5sEnE+AwEJyuLn4szI/UTLjT7AeuDykH0UZzv6ReywU3+BEXI9N2vBLWZklzlXplLzQFscACwzZnIpzyC1rP92GBwGDJRXZdMhvf8BESNNJuRgJiB3f4Bct9FSBGMbDKuJDNKfzr2FItw4DQUhKWa0PmtDwlKxp6XepaKtfcfe2RnUIcLMMvjhhNcv226XG6e+srGKNCM+GOkCqr7l0RDqKEozlNwQmBXTnwURe3EHC0dMajsvxFB+aDAafbd8/Y3g6LFxHb/sMWmhA+GqEUQW3oRIUyc5F0RibEjgZ9ZPuLEaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qEhhEN2axcljFGHRflPdsai4nYx+BLAasVqrU7g4eXQ=;
- b=QijWWk7yhvVKRjTN/B0zEBQ34Afq0KDbIMEmoUxWKc7/rt+M/x4LaAQUHtb3gWFSe0znyCILRWx9c5t1aoTFwfuplb5KeqF2EvKMzFGozye0DtmVyPF9tJMlOWK+VBLd7lCWulM8syhs9fnZTHS862dUhUyVKh2A5ZiqF6QyD19QYT4MSRZ7f1zxt0/6aR24YeE+/lNob1nA5cMcc1k8K5s9ClKZ0WWXtA1L45Yt+FQg+U9E5HO3uAHL6zjf5MedB41rwI0wCnIGc/R3UrnQofi9nLn3QuavoK06DZJX3PPxs6EhXUftPEqqVy4kYHsUONPYJqTQHXQGeit/1UkWIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=gdata.de; dmarc=pass action=none header.from=gdata.de;
- dkim=pass header.d=gdata.de; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBC7111C9A
+	for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 12:46:17 +0000 (UTC)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E72107
+	for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 05:46:15 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bcf2de59cso418959166b.0
+        for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 05:46:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=GDataSoftwareAG.onmicrosoft.com;
- s=selector2-GDataSoftwareAG-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qEhhEN2axcljFGHRflPdsai4nYx+BLAasVqrU7g4eXQ=;
- b=ZY5cAtqb+IWtve3xDo6A15s6LSsqdymDWvWE1EbkTKiGlQZTzRXgcZYLlbfKbtcLV2iyWOzbzBHK6ikhYgk4FLXX6LiVLV46BBwHik1jftnace+oLCbnQQiz/BWKrK5mN4f/37hmyeqdJvpgipKzjeQZx3oxUdwNh3HcSOpRjKc=
-Received: from AS8PR03MB9626.eurprd03.prod.outlook.com (2603:10a6:20b:5ee::7)
- by PAXPR03MB7548.eurprd03.prod.outlook.com (2603:10a6:102:1db::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Mon, 28 Aug
- 2023 12:30:45 +0000
-Received: from AS8PR03MB9626.eurprd03.prod.outlook.com
- ([fe80::f76d:c42c:27b2:e75c]) by AS8PR03MB9626.eurprd03.prod.outlook.com
- ([fe80::f76d:c42c:27b2:e75c%4]) with mapi id 15.20.6699.034; Mon, 28 Aug 2023
- 12:30:45 +0000
-From: =?utf-8?B?RnLDtmhsaW5nLCBNYXhpbWlsaWFu?= <Maximilian.Froehling@gdata.de>
-To: Bagas Sanjaya <bagasdotme@gmail.com>, Ingo Molnar <mingo@kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>, "Steven Rostedt (Google)"
-	<rostedt@goodmis.org>
-CC: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux BPF
-	<bpf@vger.kernel.org>, Linux Memory Management List <linux-mm@kvack.org>
-Subject: RE: bpf: bpf_probe_read_user_str() returns 0 for empty strings
-Thread-Topic: bpf: bpf_probe_read_user_str() returns 0 for empty strings
-Thread-Index: AQHZvQhvHQ03FgRWHEyZl1tV/PFVUq//2zyQ
-Date: Mon, 28 Aug 2023 12:30:45 +0000
-Message-ID:
- <AS8PR03MB9626D86E2025129C178927E2E5E0A@AS8PR03MB9626.eurprd03.prod.outlook.com>
-References: <bba66a5f-3605-e36b-2bf3-f25a48307a46@gmail.com>
-In-Reply-To: <bba66a5f-3605-e36b-2bf3-f25a48307a46@gmail.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=gdata.de;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS8PR03MB9626:EE_|PAXPR03MB7548:EE_
-x-ms-office365-filtering-correlation-id: b9969a8d-6474-4401-c5cf-08dba7c29a59
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- GAXw8Cq7zqDXJ/CnDaSFqgyP52g4TKUUwEfG0dRjGjzYyDauMUX3mRMu0HY23XaFsp+BM8nqFnVwz9JKoIr+xbuPUN+adBoAq4BBg+/ds0EQuOBGx+EXgZRgtp9kaT//hzfepbPXJ0a2HJZbPPyJMESX57sXbUdcWzH8OjQDDouX0SR/B9YObuJ7GiaCWFOHdGL1KAe3O3f3FqWve5SKh8IUY9p1FFEUEwdZj2bTqLjA3V2+pZVtkgm0iIRDcCB+JfUqtKDZtGdL7QjBpVRA0bzEpU0A47toUzkp4getrf+NYHbUMhpWcSZ1mEOesyBW0JOJ6nzinx2xuktrUbo9Gf9FokGZTsIFs7JnJjAzdySCQffX3rgy5Qgyu/YHp+piuvDuSVMQ9LnC1xvID0yxyam6g8FAEDCngIB44IpcpIU2KqhlanC75ZclBdfvqgP7wuUOmreN3ooCjGSU2VIuNSdrWFTnFLen3yJQnjb6BYqLLxEtuGygvCJw5dmsc5xVnJJHoPDIKSBM3PxLCYAjpKa29DlcL1sm210ptoEKinCOUmE/dhIKWkNgatCuTgDS/Wy7qmDM1Gwum+wL/1Fo6DrNAE3jpbVigeZ1CUdJDwSEXMNhHUJ8rfD+/M5OVo9H5D2m4jIh72Uc37/gGE9uPg==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR03MB9626.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(136003)(366004)(39850400004)(451199024)(1800799009)(186009)(1590799021)(1580799018)(71200400001)(6506007)(7696005)(9686003)(53546011)(966005)(83380400001)(478600001)(66556008)(64756008)(52536014)(316002)(54906003)(66446008)(8676002)(5660300002)(66946007)(76116006)(110136005)(2906002)(66476007)(8936002)(4326008)(85202003)(33656002)(85182001)(86362001)(41300700001)(55016003)(66574015)(38100700002)(38070700005)(122000001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?UXovQ0lTeS9HSzh0OTZDdXRNVlQ4Sk5pVDFoeDl0MnQ1Tk9aeDFnN2o5VEx5?=
- =?utf-8?B?Sk9rT1BPZXhNMVhsT3RyaFMwd01KckY5bmpOL3EwbGV3R1lOemtzb3phSG40?=
- =?utf-8?B?QStrN29FdkswTzE1RXMwWGtWZFQ5bTN4SVF5azZpTGNMaXlvaGRlSWZLRHU1?=
- =?utf-8?B?ZnNySmZaNEFhbkFIZ2ZFeDRvMGFaUGV6K0pGQ1EwZVA5OGdsdVNHeER0MVpF?=
- =?utf-8?B?TnZyUVVnTExpSmF1WEk5WEdBOXNDbk1Nc2hsR3NFbC9hSGdUUVI3T1Y5cy9T?=
- =?utf-8?B?aENDNURaUUpNS2pkZHNtNk5XQTJjaiszR251VFU4V0xFbHdnUGZnaUhZdVlP?=
- =?utf-8?B?NjNpc3hBaHJYcUNja3g1VkkzS2tqTGJMQjIvMW1JZDI0cTJySFNCNVp3YlFV?=
- =?utf-8?B?eThUQ2FBWWtaS1hnK2J0K09hVGRJNUFmRDBWWHhvL3RLbG54cGtJeStUWFhG?=
- =?utf-8?B?bVNVTkpjbDJNeWYvQnRmV2JnQUtkeHVkbzcwZEV3VytqR1JtdXZpY1RTbDY5?=
- =?utf-8?B?RitZR3pFYjhtQkRSRjBabTgxOGM0OUdzTUVaRWROZnZuWElqdWpUOUhITDBM?=
- =?utf-8?B?Z1VlNXVNZ2hETS9CT3FGMk9lQ2c4dktSMmtLMWc0dDVrSUdMc0FoQ1A3a1lK?=
- =?utf-8?B?Z2JrMWY4dVZ4ZS9GV3JEY2FuR1NjUDJ3eTQxd1FPVlBNZEJoMXlzU3NHVGw4?=
- =?utf-8?B?U3VnYjNmZ1hBcU41WFF0ay9BdXd6alZUMlcrVStWQVpEL3NGdmNkSGVqMklZ?=
- =?utf-8?B?NmE2Q2JteW9XczV6S1F0RU1VVEEzcUc5V20xQWUxaHh2RDY0cFBBR3YzdjNS?=
- =?utf-8?B?VWFuWjMraGg5K2ZUVXVraThlVG9zTzFjSEtXTWMvYXdWM3VTU2Z3d0ZzdHoz?=
- =?utf-8?B?U0FMdEJrZzRLQWVTcGZYR3kxWmZ0OE9DWk9HNzd4MVlsbk9MYktqRDE1enpi?=
- =?utf-8?B?Smd2UUNDUTJsZU1SZDlBdUZvdmk4SU5YZzg3TWE0d2VwWUVvb1JhSS9WTEhu?=
- =?utf-8?B?N3o4TUNiYlFhdEwrT2FHbzFPVE5tdmR1c2hvQmI5N0gxU1pwZXJtd3M4NjFI?=
- =?utf-8?B?WThYbk5RSWx0TGxGS0ZWSVhRVEI3cEU3YjR1Vk5vb2s1YjROcllMSmtzcmox?=
- =?utf-8?B?US9BNWdOeFQ1eTNadWkvUnNaRzh1WC9uV2EySTE3dnFhMFJkOWU2N0Zmd21r?=
- =?utf-8?B?YzBrSUpXRXZHR2pET3oyZzRXS0ZsaVZhb09iZGo3T09MNm9VVzZRQ011THJX?=
- =?utf-8?B?S1p4QzBPTGJpaFpEVnJpV2RpaWdhdE0ydDVTWFN5bGUwdUhWRWN1RmlDSWRO?=
- =?utf-8?B?NW1JQzJINHhzSzNkdnFWWkZybkdkV0MyRm9GcGNpNWhldFUxMEpTK3FZZUww?=
- =?utf-8?B?WXZ2UTJLbUtPMkdyb0lNQi92WFl4NFoxZEtqaXNtQnRPQUIzTlMxd2lpUHh1?=
- =?utf-8?B?alRJT2g0NTdPOGxGdVNOWHh2aHBaa2w3WTVzVktpb0srMEt5RlVDL2ZiczJ5?=
- =?utf-8?B?cWd1OXJ2bGxua2ZZTnBITElJcU9aOFhvWUxEQ2Z6Zk5NZk0zZjc5NXVkS0dU?=
- =?utf-8?B?OGpaUXlNMUN4TWQ5cXZQUS9WWDVsd29lZ1cxVk5ZT0ZLN0JvaVdMdjhmRkcv?=
- =?utf-8?B?Z1BjK1pQRUpTQW01STQzVStlOU5WWnhIcHJqYmZEWk4zWHhacjhpSHQvYVEx?=
- =?utf-8?B?MkZIekpnQy80S1lNLzZGM3N0RU1EY3ZDY204dTVCdFNJVlg1TU9nRTBKUEFt?=
- =?utf-8?B?TlpnQU93RXp0MG10K0JVai9YSC91Z1l2czBaTmpGVjV0bTZkUDJ2MkJvU25q?=
- =?utf-8?B?bzEyeFp5R2E1QlZ0eE5FVnQxb240ODJKaXJSam1VSUdBeFVVeWs5Nmo0cy9t?=
- =?utf-8?B?ZGs0L1E5Z25heTNJeGJaY04vWDNzTTd2eVdxdjRxeE1jQ1lLN1dQa01tMlE1?=
- =?utf-8?B?UFdZalNDb3cyNzJZQk5IbjRMR2xVU3N6NFlUTlNtSFB1MzJ5NlNWS2RZeklr?=
- =?utf-8?B?SE1iNys2ME81Q1U2Z203bUlDY205N2VkS24rR0F5OXJuTytCbyswaFZ3dzFh?=
- =?utf-8?B?TytRcU9FZVpCRm1SNHZHU0E0Rkp5cHpYTTR1NjZpYkVmRnV4aWNkcHJqWi9E?=
- =?utf-8?B?NWNlaDZVNVlJaDhVVU9FWTUxL3F1K09PTlRGZnJsTkYzaDVJTVFkMjgxeTlk?=
- =?utf-8?B?eFVjRnE0WkljSWdvRGw0LzVGMkFIbjV6UWpBNXQzbVhSR08wRXZpNjE0WXFh?=
- =?utf-8?B?OUczR2xLeVl5TzhmQndDOTczOVh3PT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20221208; t=1693226774; x=1693831574;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=0Ols2QeIXVIPKbiaz+xrKojxZbGbrofL64I1ZOklPX8=;
+        b=VWZ/gyCIRzDNbTVabHlHyawkzT1mW7W1ntuUxLK/XhNUXbnJjTR8kuspnOT5qjLJLT
+         R+7DnurCRdHBBXb9bEIl1cEKhSlXqJ/fgN8ko4KtFJh/duSIhM6pBg7nc6bWxNhCsFG3
+         BcdEGW2CMnBGO6pBeVOcXyApAFHTwZQezB0ZRbvUU7/Mk0dwJwToNHoDIKv0QrIU9yqp
+         SU4NXD8dpctVdih0qmDZLTApc/t15g4qIFmUnlSaJKvcZiQh0gVQ2a3GR3mt/IgcV6Sm
+         CrbmffNuiBVWteMzxaPnTozIc+ZmHq1+5fZs8yU1dcK48I3F0aWeLjAmDQ8PXQgCdmzy
+         H5jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693226774; x=1693831574;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0Ols2QeIXVIPKbiaz+xrKojxZbGbrofL64I1ZOklPX8=;
+        b=KOhis3qntvMW4ePioEAUg6uCxV4jFtJdsadzdWr9S3m1g/04aHAlim50ftuXcgXZ4G
+         c3x13XHBmJDpQrBZRC2RjqFHR0t1t4Uows3tCHc7q2xN5YgBp8cgIuFcm8vr1kf7j12J
+         g484DTyDuyEc/d1MMomTvae96P8ZLBmoBvKhoqmSipQCVJsnRxCu+E735A6YVpaoXtwy
+         btt+OAQ94k2gXJi/yozjWSEKfAHjHwr88oNi3cKYZhdA+eTIp/i0LfxHtRNfJ1windgQ
+         Q+GbMWp2Hl+38TgpSWDbhGBK5GZQXyfvvkU2TCzDN9NURXFvf4miDU/0oyY7Yqzk8tqK
+         4sHg==
+X-Gm-Message-State: AOJu0YwiE4le1gyA12pBVAT9vXU9yiDKsambhGT7zLmtPqr5UzWnAiIc
+	NawadwL8FiwTcckGq9JYh70=
+X-Google-Smtp-Source: AGHT+IFdRt6GYxsn3dUDjN9RF0cy7F6s4mY7WokEm/DT3WJ2Ne1ifqQbLL5HHRzvIr5Eu2a36y3dTg==
+X-Received: by 2002:a17:907:2724:b0:9a1:d087:e0c0 with SMTP id d4-20020a170907272400b009a1d087e0c0mr11369461ejl.42.1693226773798;
+        Mon, 28 Aug 2023 05:46:13 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id mh2-20020a170906eb8200b0099b76c3041csm4572561ejb.7.2023.08.28.05.46.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 05:46:13 -0700 (PDT)
+Message-ID: <98af45809e7276431b7d053bfe8b26d98b2f9394.camel@gmail.com>
+Subject: Re: [QUESTION] bpf/tc verifier error: invalid access to map value,
+ min value is outside of the allowed memory range
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Justin Iurman <justin.iurman@uliege.be>, bpf@vger.kernel.org
+Cc: John Fastabend <john.fastabend@gmail.com>
+Date: Mon, 28 Aug 2023 15:46:12 +0300
+In-Reply-To: <e3783201-3b28-3661-eee3-3b5fecad0964@uliege.be>
+References: <e3783201-3b28-3661-eee3-3b5fecad0964@uliege.be>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: gdata.de
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR03MB9626.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b9969a8d-6474-4401-c5cf-08dba7c29a59
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Aug 2023 12:30:45.7901
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 17a28b0e-dea1-4ab6-82fd-ccf73c7d198e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Xn3vgrJDkRMVBxiEApdh6pI4UI6M+8vTCWdiXvQAVcCb+qvi6LiRFwODARZ+AwP9wlPNNdWSXXpyjG7rWbR783+IhvJuBMdyfVlp/MIUvzM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR03MB7548
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-QXMgYSBxdWljayBzdW1tYXJ5LCBqdXN0IGluIGNhc2UgdGhlIG9yaWdpbmFsIGlzc3VlIGdvdCBt
-aXN1bmRlcnN0b29kOg0KDQpUaGUgcm9vdCBjYXVzZSBhcHBlYXJzIHRvIGJlIGluIG1tL21hY2Nl
-c3MuYzo6c3RybmNweV9mcm9tX3VzZXJfbm9mYXVsdCgpDQoNClRoZSBmdW5jdGlvbiBzYXlzIGl0
-IHJldHVybnMgdGhlIGxlbmd0aCBvZiB0aGUgc3RyaW5nICJpbmNsdWRpbmcgdGhlIHRyYWlsaW5n
-IE5VTCIuIEl0IGRvZXNuJ3QgZG8gdGhhdCBmb3IgZW1wdHkgc3RyaW5nczogSXQgcmV0dXJucyAw
-IGluc3RlYWQuIFRoaXMgaXMgY2F1c2luZyBpc3N1ZXMgZm9yIHRoZSB1cHN0cmVhbSBCUEYgZnVu
-Y3Rpb24gdGhhdCBjYWxscyBpdC4gVGhlcmUncyBhIHBvdGVudGlhbCBvZmYtYnktb25lIGVycm9y
-IHZpc2libGUgaW4gdGhlIGNvZGUuDQoNCnN0cm5jcHlfZnJvbV9rZXJuZWxfbm9mYXVsdCgpIG9u
-IHRoZSBvdGhlciBoYW5kIHdvcmtzIGNvcnJlY3RseTogSXQgcmV0dXJucyAxIGZvciBhbiBlbXB0
-eSBzdHJpbmcuDQoNClRoYW5rcywNCk1heA0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
-RnJvbTogQmFnYXMgU2FuamF5YSA8YmFnYXNkb3RtZUBnbWFpbC5jb20+IA0KU2VudDogU3VuZGF5
-LCBKdWx5IDIzLCAyMDIzIDM6NTMgQU0NClRvOiBJbmdvIE1vbG5hciA8bWluZ29Aa2VybmVsLm9y
-Zz47IE1hc2FtaSBIaXJhbWF0c3UgPG1oaXJhbWF0QGtlcm5lbC5vcmc+OyBTdGV2ZW4gUm9zdGVk
-dCAoR29vZ2xlKSA8cm9zdGVkdEBnb29kbWlzLm9yZz47IEZyw7ZobGluZywgTWF4aW1pbGlhbiA8
-TWF4aW1pbGlhbi5Gcm9laGxpbmdAZ2RhdGEuZGU+DQpDYzogTGludXggS2VybmVsIE1haWxpbmcg
-TGlzdCA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz47IExpbnV4IEJQRiA8YnBmQHZnZXIu
-a2VybmVsLm9yZz47IExpbnV4IE1lbW9yeSBNYW5hZ2VtZW50IExpc3QgPGxpbnV4LW1tQGt2YWNr
-Lm9yZz4NClN1YmplY3Q6IEZ3ZDogYnBmOiBicGZfcHJvYmVfcmVhZF91c2VyX3N0cigpIHJldHVy
-bnMgMCBmb3IgZW1wdHkgc3RyaW5ncw0KDQpIaSwNCg0KSSBub3RpY2UgYSBidWcgcmVwb3J0IG9u
-IEJ1Z3ppbGxhIFsxXS4gUXVvdGluZyBmcm9tIGl0Og0KDQo+IE92ZXJ2aWV3Og0KPiANCj4gRnJv
-bSB3aXRoaW4gZUJQRiwgY2FsbGluZyB0aGUgaGVscGVyIGZ1bmN0aW9uIGJwZl9wcm9iZV9yZWFk
-X3VzZXJfc3RyKHZvaWQgKmRzdCwgX191MzIgc2l6ZSwgY29uc3Qgdm9pZCAqdW5zYWZlX3B0ciBy
-ZXR1cm5zIDAgd2hlbiB0aGUgc291cmNlIHN0cmluZyAodm9pZCAqdW5zYWZlX3B0cikgY29uc2lz
-dHMgb2YgYSBzdHJpbmcgY29udGFpbmluZyBvbmx5IGEgc2luZ2xlIG51bGwtYnl0ZS4NCj4gDQo+
-IFRoaXMgdmlvbGF0ZXMgdmFyaW91cyBmdW5jdGlvbnMgZG9jdW1lbnRhdGlvbnMgKHRoZSBoZWxw
-ZXIgYW5kIHZhcmlvdXMgaW50ZXJuYWwga2VybmVsIGZ1bmN0aW9ucyksIHdoaWNoIGFsbCBzdGF0
-ZToNCj4gDQo+PiBPbiBzdWNjZXNzLCB0aGUgc3RyaWN0bHkgcG9zaXRpdmUgbGVuZ3RoIG9mIHRo
-ZSBvdXRwdXQgc3RyaW5nLCANCj4+IGluY2x1ZGluZyB0aGUgdHJhaWxpbmcgTlVMIGNoYXJhY3Rl
-ci4gT24gZXJyb3IsIGEgbmVnYXRpdmUgdmFsdWUuDQo+IA0KPiBUbyBtZSwgdGhpcyBzdGF0ZXMg
-dGhhdCB0aGUgZnVuY3Rpb24gc2hvdWxkIHJldHVybiAxIGZvciBjaGFyIG15U3RyaW5nW10gPSAi
-IjsgSG93ZXZlciwgdGhpcyBpcyBub3QgdGhlIGNhc2UuIFRoZSBmdW5jdGlvbiByZXR1cm5zIDAg
-aW5zdGVhZC4NCj4gDQo+IEZvciBub24tZW1wdHkgc3RyaW5ncywgaXQgd29ya3MgYXMgZXhwZWN0
-ZWQuIEZvciBleGFtcGxlLCBjaGFyIG15U3RyaW5nW10gPSAiYWJjIjsgcmV0dXJucyA0Lg0KPiAN
-Cj4gU3RlcHMgdG8gUmVwcm9kdWNlOg0KPiAqIFdyaXRlIGFuIGVCUEYgcHJvZ3JhbSB0aGF0IGNh
-bGxzIGJwZl9wcm9iZV9yZWFkX3VzZXJfc3RyKCksIHVzaW5nIGEgdXNlcnNwYWNlIHBvaW50ZXIg
-cG9pbnRpbmcgdG8gYW4gZW1wdHkgc3RyaW5nLg0KPiAqIFN0b3JlIHRoZSByZXN1bHQgdmFsdWUg
-b2YgdGhhdCBmdW5jdGlvbg0KPiAqIERvIHRoZSBzYW1lIHRoaW5nLCBidXQgdHJ5IG91dCBicGZf
-cHJvYmVfcmVhZF9rZXJuZWxfc3RyKCksIGxpa2UgdGhpczoNCj4gY2hhciBlbXB0eVtdID0gIiI7
-DQo+IGNoYXIgY29weVs1XTsNCj4gbG9uZyByZXQgPSBicGZfcHJvYmVfcmVhZF9rZXJuZWxfc3Ry
-KGNvcHksIDUsIGVtcHR5KTsNCj4gKiBDb21wYXJlIHRoZSByZXR1cm4gdmFsdWUgb2YgYnBmX3By
-b2JlX3JlYWRfdXNlcl9zdHIoKSBhbmQgDQo+IGJwZl9wcm9iZV9yZWFkX2tlcm5lbF9zdHIoKQ0K
-PiANCj4gRXhwZWN0ZWQgUmVzdWx0Og0KPiANCj4gQm90aCBmdW5jdGlvbnMgcmV0dXJuIDEgKGJl
-Y2F1c2Ugb2YgdGhlIHNpbmdsZSBOVUxMIGJ5dGUpLg0KPiANCj4gQWN0dWFsIFJlc3VsdDoNCj4g
-DQo+IGJwZl9wcm9iZV9yZWFkX3VzZXJfc3RyKCkgcmV0dXJucyAwLCB3aGlsZSBicGZfcHJvYmVf
-cmVhZF9rZXJuZWxfc3RyKCkgcmV0dXJucyAxLg0KPiANCj4gQWRkaXRpb25hbCBJbmZvcm1hdGlv
-bjoNCj4gDQo+IEkgYmVsaWV2ZSBJIGNhbiBzZWUgdGhlIGJ1ZyBvbiB0aGUgY3VycmVudCBMaW51
-eCBrZXJuZWwgbWFzdGVyIGJyYW5jaC4NCj4gDQo+IEluIHRoZSBmaWxlL2Z1bmN0aW9uIG1tL21h
-Y2Nlc3MuYzo6c3RybmNweV9mcm9tX3VzZXJfbm9mYXVsdCgpIHRoZSBoZWxwZXIgaW1wbGVtZW50
-YXRpb24gY2FsbHMgc3RybmNweV9mcm9tX3VzZXIoKSwgd2hpY2ggcmV0dXJucyB0aGUgbGVuZ3Ro
-IHdpdGhvdXQgdHJhaWxpbmcgMC4gSGVuY2UgdGhpcyBmdW5jdGlvbiByZXR1cm5zIDAgZm9yIGFu
-IGVtcHR5IHN0cmluZy4NCj4gDQo+IEhvd2V2ZXIsIGluIGxpbmUgMTkyIChhcyBvZiBjb21taXQg
-ZmRmMGVhZjExNDUyZDcyOTQ1YWYzMTgwNGUyYTEwNDhlZTFiNTc0YykgdGhlcmUgaXMgYSBjaGVj
-ayB0aGF0IG9ubHkgaW5jcmVtZW50cyByZXQsIGlmIGl0IGlzID4gMC4gVGhpcyBhcHBlYXJzIHRv
-IGJlIHRoZSBsb2dpYyB0aGF0IGFkZHMgdGhlIHRyYWlsaW5nIG51bGwgYnl0ZS4gU2luY2UgdGhl
-IGNoZWNrIG9ubHkgZG9lcyB0aGlzIGZvciBhIHJldCA+IDAsIGEgcmV0IG9mIDAgcmVtYWlucyBh
-dCAwLg0KPiANCj4gVGhpcyBpcyBhIHBvc3NpYmxlIG9mZi1ieS1vbmUgZXJyb3IgdGhhdCBtaWdo
-dCBjYXVzZSB0aGUgYmVoYXZpb3IuDQoNClNlZSBCdWd6aWxsYSBmb3IgdGhlIGZ1bGwgdGhyZWFk
-Lg0KDQpGWUksIHRoZSBjdWxwcml0IGxpbmUgaXMgaW50cm9kdWNlZCBieSBjb21taXQgM2Q3MDgx
-ODIyZjdmOWUgKCJ1YWNjZXNzOiBBZGQgbm9uLXBhZ2VmYXVsdCB1c2VyLXNwYWNlIHJlYWQgZnVu
-Y3Rpb25zIikuIEkgQ2M6IGN1bHByaXQgU29CIHNvIHRoYXQgdGhleSBjYW4gbG9vayBpbnRvIHRo
-aXMgYnVnLg0KDQpUaGFua3MuDQoNClsxXTogaHR0cHM6Ly9idWd6aWxsYS5rZXJuZWwub3JnL3No
-b3dfYnVnLmNnaT9pZD0yMTc2NzkNCg0KLS0NCkFuIG9sZCBtYW4gZG9sbC4uLiBqdXN0IHdoYXQg
-SSBhbHdheXMgd2FudGVkISAtIENsYXJhDQo=
+On Thu, 2023-08-24 at 22:32 +0200, Justin Iurman wrote:
+> Hello,
+>=20
+> I'm facing a verifier error and don't know how to make it happy (already=
+=20
+> tried lots of checks). First, here is my env:
+>   - OS: Ubuntu 22.04.3 LTS
+>   - kernel: 5.15.0-79-generic x86_64 (CONFIG_DEBUG_INFO_BTF=3Dy)
+>   - clang version: 14.0.0-1ubuntu1.1
+>   - iproute2-5.15.0 with libbpf 0.5.0
+>=20
+> And here is a simplified example of my program (basically, it will=20
+> insert in packets some bytes defined inside a map):
+>=20
+> #include "vmlinux.h"
+> #include <bpf/bpf_endian.h>
+> #include <bpf/bpf_helpers.h>
+>=20
+> #define MAX_BYTES 2048
+>=20
+> struct xxx_t {
+> 	__u32 bytes_len;
+> 	__u8 bytes[MAX_BYTES];
+> };
+>=20
+> struct {
+> 	__uint(type, BPF_MAP_TYPE_ARRAY);
+> 	__uint(max_entries, 1);
+> 	__type(key, __u32);
+> 	__type(value, struct xxx_t);
+> 	__uint(pinning, LIBBPF_PIN_BY_NAME);
+> } my_map SEC(".maps");
+>=20
+> char _license[] SEC("license") =3D "GPL";
+>=20
+> SEC("egress")
+> int egress_handler(struct __sk_buff *skb)
+> {
+> 	void *data_end =3D (void *)(long)skb->data_end;
+> 	void *data =3D (void *)(long)skb->data;
+> 	struct ethhdr *eth =3D data;
+> 	struct ipv6hdr *ip6;
+> 	struct xxx_t *x;
+> 	__u32 offset;
+> 	__u32 idx =3D 0;
+>=20
+> 	offset =3D sizeof(*eth) + sizeof(*ip6);
+> 	if (data + offset > data_end)
+> 		return TC_ACT_OK;
+>=20
+> 	if (bpf_ntohs(eth->h_proto) !=3D ETH_P_IPV6)
+> 		return TC_ACT_OK;
+>=20
+> 	x =3D bpf_map_lookup_elem(&my_map, &idx);
+> 	if (!x)
+> 		return TC_ACT_OK;
+>=20
+> 	if (x->bytes_len =3D=3D 0 || x->bytes_len > MAX_BYTES)
+> 		return TC_ACT_OK;
+>=20
+> 	if (bpf_skb_adjust_room(skb, x->bytes_len, BPF_ADJ_ROOM_NET, 0))
+> 		return TC_ACT_OK;
+>=20
+> 	if (bpf_skb_store_bytes(skb, offset, x->bytes, 8/*x->bytes_len*/,=20
+> BPF_F_RECOMPUTE_CSUM))
+> 		return TC_ACT_SHOT;
+>=20
+> 	/* blah blah blah... */
+>=20
+> 	return TC_ACT_OK;
+> }
+>=20
+> Let's focus on the line where bpf_skb_store_bytes is called. As is, with=
+=20
+> a constant length (i.e., 8 for instance), the verifier is happy.=20
+> However, as soon as I try to use a map value as the length, it fails:
+>=20
+> [...]
+> ; if (bpf_skb_store_bytes(skb, offset, x->bytes, x->bytes_len,
+> 34: (bf) r1 =3D r7
+> 35: (b7) r2 =3D 54
+> 36: (bf) r3 =3D r8
+> 37: (b7) r5 =3D 1
+> 38: (85) call bpf_skb_store_bytes#9
+>   R0=3Dinv0 R1_w=3Dctx(id=3D0,off=3D0,imm=3D0) R2_w=3Dinv54=20
+> R3_w=3Dmap_value(id=3D0,off=3D4,ks=3D4,vs=3D2052,imm=3D0)=20
+> R4_w=3Dinv(id=3D0,umax_value=3D4294967295,var_off=3D(0x0; 0xffffffff)) R5=
+_w=3Dinv1=20
+> R6_w=3Dinv1 R7=3Dctx(id=3D0,off=3D0,imm=3D0)=20
+> R8_w=3Dmap_value(id=3D0,off=3D4,ks=3D4,vs=3D2052,imm=3D0) R10=3Dfp0 fp-8=
+=3Dmmmm????
+> invalid access to map value, value_size=3D2052 off=3D4 size=3D0
+> R3 min value is outside of the allowed memory range
+>=20
+> I guess "size=3D0" is the problem here, but don't understand why. What=
+=20
+> bothers me is that it looks like it's about R3 (i.e., x->bytes), not R4.=
+=20
+> Anyway, I already tried to add a bunch of checks for both, but did not=
+=20
+> succeed. Any idea?
+
+Hi Justin, John,
+
+The following fragment of C code:
+
+	if (x->bytes_len =3D=3D 0 || x->bytes_len > MAX_BYTES)
+		return TC_ACT_OK;
+
+	if (bpf_skb_adjust_room(skb, x->bytes_len, BPF_ADJ_ROOM_NET, 0))
+		return TC_ACT_OK;
+
+	if (bpf_skb_store_bytes(skb, offset, x->bytes, x->bytes_len,
+				BPF_F_RECOMPUTE_CSUM))
+		return TC_ACT_SHOT;
+
+Gets compiled to the following BPF:
+
+    ; r8 is `x` at this point
+    ; if (x->bytes_len =3D=3D 0 || x->bytes_len > MAX_BYTES)
+    17: (61) r2 =3D *(u32 *)(r8 +0)           ; R2_w=3Dscalar(umax=3D429496=
+7295,var_off=3D(0x0; 0xffffffff))
+                                            ; R8_w=3Dmap_value(off=3D0,ks=
+=3D4,vs=3D2052,imm=3D0)
+    18: (bc) w1 =3D w2                        ; R1_w=3Dscalar(id=3D2,umax=
+=3D4294967295,var_off=3D(0x0; 0xffffffff))
+                                            ; R2_w=3Dscalar(id=3D2,umax=3D4=
+294967295,var_off=3D(0x0; 0xffffffff))
+    19: (04) w1 +=3D -2049                    ; R1_w=3Dscalar(umax=3D429496=
+7295,var_off=3D(0x0; 0xffffffff))
+    20: (a6) if w1 < 0xfffff800 goto pc+16  ; R1_w=3Dscalar(umin=3D42949652=
+48,umax=3D4294967295,
+                                            ;             var_off=3D(0xffff=
+f800; 0x7ff),s32_min=3D-2048,s32_max=3D-1)
+
+    ; if (bpf_skb_adjust_room(skb, x->bytes_len, BPF_ADJ_ROOM_NET, 0))
+    21: (bf) r1 =3D r6                        ; R1_w=3Dctx(off=3D0,imm=3D0)=
+ R6=3Dctx(off=3D0,imm=3D0)
+    22: (b4) w3 =3D 0                         ; R3_w=3D0
+    23: (b7) r4 =3D 0                         ; R4_w=3D0
+    24: (85) call bpf_skb_adjust_room#50    ; R0=3Dscalar()
+    25: (55) if r0 !=3D 0x0 goto pc+11        ; R0=3D0
+
+    ; if (bpf_skb_store_bytes(skb, offset, x->bytes, x->bytes_len,
+    26: (61) r4 =3D *(u32 *)(r8 +0)           ; R4_w=3Dscalar(umax=3D429496=
+7295,var_off=3D(0x0; 0xffffffff))
+                                            ; R8=3Dmap_value(off=3D0,ks=3D4=
+,vs=3D2052,imm=3D0)
+    27: (07) r8 +=3D 4                        ; R8_w=3Dmap_value(off=3D4,ks=
+=3D4,vs=3D2052,imm=3D0)
+    28: (bf) r1 =3D r6                        ; R1_w=3Dctx(off=3D0,imm=3D0)=
+ R6=3Dctx(off=3D0,imm=3D0)
+    29: (b4) w2 =3D 54                        ; R2_w=3D54
+    30: (bf) r3 =3D r8                        ; R3_w=3Dmap_value(off=3D4,ks=
+=3D4,vs=3D2052,imm=3D0) R8_w=3Dmap_value(off=3D4,ks=3D4,vs=3D2052,imm=3D0)
+    31: (b7) r5 =3D 1                         ; R5_w=3D1
+    32: (85) call bpf_skb_store_bytes#9
+
+Note the following instructions:
+- (17): x->bytes_len access;
+- (18,19,20): a curious way in which clang translates the (_ =3D=3D 0 || _ =
+> MAX_BYTES);
+- (26): x->bytes_len is re-read.
+
+Several observations:
+- because of (20) verifier can infer range for w1, but this range is
+  not propagated to w2;
+- even if it was propagated verifier does not track range for values
+  stored in "general memory", only for values in registers and values
+  spilled to stack =3D> known range for w2 does not imply known range
+  for x->bytes_len.
+
+I can make it work with the following modification:
+
+    int egress_handler(struct __sk_buff *skb)
+    {
+    	void *data_end =3D (void *)(long)skb->data_end;
+    	void *data =3D (void *)(long)skb->data;
+    	struct ethhdr *eth =3D data;
+    	struct ipv6hdr *ip6;
+    	struct xxx_t *x;
+    	__s32 bytes_len;   // <------ signed !
+    	__u32 offset;
+    	__u32 idx =3D 0;
+   =20
+    	offset =3D sizeof(*eth) + sizeof(*ip6);
+    	if (data + offset > data_end)
+    		return TC_ACT_OK;
+   =20
+    	if (bpf_ntohs(eth->h_proto) !=3D ETH_P_IPV6)
+    		return TC_ACT_OK;
+   =20
+    	x =3D bpf_map_lookup_elem(&my_map, &idx);
+    	if (!x)
+    		return TC_ACT_OK;
+   =20
+    	bytes_len =3D x->bytes_len; // <----- use bytes_len everywhere below !
+   =20
+    	if (bytes_len <=3D 0 || bytes_len > MAX_BYTES)
+    		return TC_ACT_OK;
+   =20
+    	if (bpf_skb_adjust_room(skb, bytes_len, BPF_ADJ_ROOM_NET, 0))
+    		return TC_ACT_OK;
+   =20
+    	if (bpf_skb_store_bytes(skb, offset, x->bytes, bytes_len,
+    				BPF_F_RECOMPUTE_CSUM))
+    		return TC_ACT_SHOT;
+   =20
+    	/* blah blah blah... */
+   =20
+    	return TC_ACT_OK;
+    }
+
+After such change the following BPF is generated:
+
+    ; bytes_len =3D x->bytes_len;
+    17: (61) r9 =3D *(u32 *)(r8 +0)         ; R8_w=3Dmap_value(off=3D0,ks=
+=3D4,vs=3D2052,imm=3D0)
+                                          ; R9_w=3Dscalar(umax=3D4294967295=
+,var_off=3D(0x0; 0xffffffff))
+
+    ; if (bytes_len <=3D 0 || bytes_len > MAX_BYTES)
+    18: (c6) if w9 s< 0x1 goto pc+18      ; R9_w=3Dscalar(umin=3D1,umax=3D2=
+147483647,var_off=3D(0x0; 0x7fffffff))
+    19: (66) if w9 s> 0x800 goto pc+17    ; R9_w=3Dscalar(umin=3D1,umax=3D2=
+048,var_off=3D(0x0; 0xfff))
+    ; if (bpf_skb_adjust_room(skb, bytes_len, BPF_ADJ_ROOM_NET, 0))
+    20: (bf) r1 =3D r6                      ; R1_w=3Dctx(off=3D0,imm=3D0) R=
+6=3Dctx(off=3D0,imm=3D0)
+    21: (bc) w2 =3D w9                      ; R2_w=3Dscalar(id=3D2,umin=3D1=
+,umax=3D2048,var_off=3D(0x0; 0xfff))
+                                          ; R9_w=3Dscalar(id=3D2,umin=3D1,u=
+max=3D2048,var_off=3D(0x0; 0xfff))
+    22: (b4) w3 =3D 0                       ; R3_w=3D0
+    23: (b7) r4 =3D 0                       ; R4_w=3D0
+    24: (85) call bpf_skb_adjust_room#50          ; R0=3Dscalar()
+    25: (55) if r0 !=3D 0x0 goto pc+11      ; R0=3D0
+
+    ; if (bpf_skb_store_bytes(skb, offset, x->bytes, bytes_len,
+    26: (07) r8 +=3D 4                      ; R8_w=3Dmap_value(off=3D4,ks=
+=3D4,vs=3D2052,imm=3D0)
+    27: (bf) r1 =3D r6                      ; R1_w=3Dctx(off=3D0,imm=3D0) R=
+6=3Dctx(off=3D0,imm=3D0)
+    28: (b4) w2 =3D 54                      ; R2_w=3D54
+    29: (bf) r3 =3D r8                      ; R3_w=3Dmap_value(off=3D4,ks=
+=3D4,vs=3D2052,imm=3D0)
+                                          ; R8_w=3Dmap_value(off=3D4,ks=3D4=
+,vs=3D2052,imm=3D0)
+    30: (bc) w4 =3D w9                      ; R4_w=3Dscalar(id=3D2,umin=3D1=
+,umax=3D2048,var_off=3D(0x0; 0xfff))
+                                          ; R9=3Dscalar(id=3D2,umin=3D1,uma=
+x=3D2048,var_off=3D(0x0; 0xfff))
+    31: (b7) r5 =3D 1                       ; R5_w=3D1
+    32: (85) call bpf_skb_store_bytes#9
+   =20
+Note the following:
+- (17): x->bytes_len is in w9;
+- (18,19): range check is done w/o -=3D 2049 trick and verifier infers
+  range for w9 as [1,2048];
+- (30): w9 is reused as a parameter to bpf_skb_store_bytes with
+  correct range.
+
+I think that main pain point here is "clever" (_ =3D=3D 0 || _ > MAX_BYTES)
+translation, need to think a bit if it is possible to dissuade clang
+from such transformation (via change in clang).
+
+Alternatively, I think that doing (_ =3D=3D 0 || _ > MAX_BYTES) check in
+inline assembly as two compare instructions should also work.
+
+Thanks,
+Eduard
 
