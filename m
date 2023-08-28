@@ -1,228 +1,245 @@
-Return-Path: <bpf+bounces-8855-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8856-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B527E78B508
-	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 18:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B056978B5BB
+	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 19:00:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D77311C20952
-	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 16:01:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD8451C208CD
+	for <lists+bpf@lfdr.de>; Mon, 28 Aug 2023 17:00:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6F4C13AF5;
-	Mon, 28 Aug 2023 16:00:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7425713ADA;
+	Mon, 28 Aug 2023 17:00:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F619134DF
-	for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 16:00:21 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A47510B
-	for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 09:00:20 -0700 (PDT)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 967A0C169534
-	for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 09:00:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1693238409; bh=hNDlIzFVzdMzhTM9Qvvgj9Q4fFPgTKNjDWv0Gcqzo0w=;
-	h=From:To:Cc:Date:In-Reply-To:References:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=PKeLjBnNU8DQMMEm/3vPJ9wLpzfoz2UznJMsd2dM3TiAGNlXJ+JQ+0aMyPmm1kDz1
-	 jv9nGbJvhZER4u8n2/k386gHUT/2bkglbHSIlnw7s3HhSJkYb3rQviewGGHPc0flwf
-	 DuviMolDwQP1KdCUnYRjo9GEHRQ7f6Vezu/McWNA=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Mon Aug 28 09:00:09 2023
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 7D3EBC16951F;
-	Mon, 28 Aug 2023 09:00:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1693238409; bh=hNDlIzFVzdMzhTM9Qvvgj9Q4fFPgTKNjDWv0Gcqzo0w=;
-	h=From:To:Cc:Date:In-Reply-To:References:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=PKeLjBnNU8DQMMEm/3vPJ9wLpzfoz2UznJMsd2dM3TiAGNlXJ+JQ+0aMyPmm1kDz1
-	 jv9nGbJvhZER4u8n2/k386gHUT/2bkglbHSIlnw7s3HhSJkYb3rQviewGGHPc0flwf
-	 DuviMolDwQP1KdCUnYRjo9GEHRQ7f6Vezu/McWNA=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 9CD9EC14CE52
- for <bpf@ietfa.amsl.com>; Mon, 28 Aug 2023 09:00:08 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -1.41
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id wpclsH1c6E12 for <bpf@ietfa.amsl.com>;
- Mon, 28 Aug 2023 09:00:04 -0700 (PDT)
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com
- [209.85.128.174])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 54F96C15152E
- for <bpf@ietf.org>; Mon, 28 Aug 2023 09:00:04 -0700 (PDT)
-Received: by mail-yw1-f174.google.com with SMTP id
- 00721157ae682-58fae4a5285so40345007b3.0
- for <bpf@ietf.org>; Mon, 28 Aug 2023 09:00:04 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE1111CBE
+	for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 17:00:03 +0000 (UTC)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7BEFAC;
+	Mon, 28 Aug 2023 10:00:00 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-400a087b0bfso32111035e9.2;
+        Mon, 28 Aug 2023 10:00:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693241999; x=1693846799;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yWFHuz4TWzuhU6ynHIHPdsJm14S2Z0yCC4p9I+39C5w=;
+        b=s340FHWJEjVhQCiBX6RAzXBIPowlnIC9z3QktT1dV6wkabMBOt2Lrht9WpTz56JdeT
+         9nWpsfdJ9zhvnodtc7mjmV9+BG/sSenXTQzJPUkLhjVCRHVfVWu5tb4cnPBwyvrWaOLX
+         pKiK4dj1lx3O8NMWlFC8LSDOrPJ9H3kP0nTgBjCutXXhwEpzxzw8Npjo1iGs6vqnwWNu
+         RQ9Aw1WIoDQQt2hpL/Koh0P+6I7brC0PYxTDz9XGCBtVrOSUeriV+eJYCQghMsQ6FNVP
+         DOk9aAXW64DLHHJGXs9tddDPfmCYYTbwCkT5uZW70Ho1HAPdI+d5IX3aZ+SVrt2Fajrp
+         uDDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1693238403; x=1693843203;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=0Dq6hEvnyzheER3NLXV0bHMNRhjR+A8D02vzT+2FQtM=;
- b=beONKgqyifzOc6t7+KxcHE003S79KRcILaJcdPpP9yqj9nnIGyTW8gZuwVzDaBa0Up
- 1pmpnxpz6F5QnWVKmQX0Lv7l0WWzqjXDkchrCeZaN5djcHpuwzP4FmimdH08L03TaQaf
- KfjuC+pFUITbj50+MnLS4T/PyMea61GQUdznXPp0/WnzBNkG9JtqWBZlAacH12jLDrfC
- kbcRgeUWLRtZ4W9mlhwfPmkjiVC0EIo5vUtXG6GmC6wgbgFutQ5cH31nEhgohQ18cVf/
- f1qHfcCyvDD87E8KGGQne9aw935TovlG5jQiHlacqOxAn7XHtE3zwlK5rhksbW1FPaPM
- +4xg==
-X-Gm-Message-State: AOJu0Yzv6I+bkOj/DeqoBgZMrfJvabrS7C9dHfTOQ0oQiu+mxYK3T/FA
- d1GfKOEBGKCfQEeUJBT2pJU=
-X-Google-Smtp-Source: AGHT+IGkPgIoZCO/1q2yZVVpwZp/R7ZnvvPjF/V5EdMHZGd5mSBTXSbbsuY9MBzaT+qbMgnHytKpPg==
-X-Received: by 2002:a81:94c4:0:b0:56d:2f9d:42cc with SMTP id
- l187-20020a8194c4000000b0056d2f9d42ccmr25510012ywg.51.1693238403456; 
- Mon, 28 Aug 2023 09:00:03 -0700 (PDT)
-Received: from localhost ([24.1.27.177]) by smtp.gmail.com with ESMTPSA id
- v5-20020a81a545000000b00559f1cb8444sm2178088ywg.70.2023.08.28.09.00.02
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 28 Aug 2023 09:00:03 -0700 (PDT)
-From: David Vernet <void@manifault.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
- kernel-team@meta.com, hch@infradead.org, hawkinsw@obs.cr,
- dthaler@microsoft.com, bpf@ietf.org
-Date: Mon, 28 Aug 2023 10:59:48 -0500
-Message-ID: <20230828155948.123405-4-void@manifault.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230828155948.123405-1-void@manifault.com>
-References: <20230828155948.123405-1-void@manifault.com>
+        d=1e100.net; s=20221208; t=1693241999; x=1693846799;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yWFHuz4TWzuhU6ynHIHPdsJm14S2Z0yCC4p9I+39C5w=;
+        b=XmjAcAdQ21v4F4XiozrbT4yV76y0QVMTemYPT+0xTynHeJw2Td2/UOrl0mVpmMf5MO
+         SwDG5BYJbbhWrRhezo4j9pbQI119X4jSvom1KCLcXrQEIHPvTXp9CUAaxuQyB7nBrVt6
+         nuyo+NQ8w69pZMpvLFzEjfPbKutQE7uWQwxoGXKWpiOE2262196AHd4F8Hx+TKVaRTVT
+         r9LHgjNWREg40jNIujZyNy4W8IbefnmS1aWiODDhAAVHH+4aO0fgAxVFcP7cH/CYtrKo
+         /42bvk7JeLpvsxsJ0K2S+lWeV3J5PF3y4COch1WzfV3hx49OmjI1ONJRAVO+KbeflH+f
+         AbYw==
+X-Gm-Message-State: AOJu0YyQPnvlOm8qBJ/gU2uKbtnXbtWmFUJADQTwFKE4/UuVBxVihcrJ
+	wgzc33lfo2GeavAq+DGPTj0=
+X-Google-Smtp-Source: AGHT+IEatBn6aeG9NY2XfQLWGllzhYHkWb57abOc3ulGzXBOGHu195uKivOEm8ZJAdclF2yoS2uw0w==
+X-Received: by 2002:a5d:4f0f:0:b0:319:89ce:da0b with SMTP id c15-20020a5d4f0f000000b0031989ceda0bmr19271927wru.68.1693241999026;
+        Mon, 28 Aug 2023 09:59:59 -0700 (PDT)
+Received: from ip-172-31-30-46.eu-west-1.compute.internal (ec2-54-170-241-106.eu-west-1.compute.amazonaws.com. [54.170.241.106])
+        by smtp.gmail.com with ESMTPSA id g9-20020a056000118900b0031ad5fb5a0fsm11033613wrx.58.2023.08.28.09.59.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 09:59:58 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	pulehui@huawei.com,
+	conor.dooley@microchip.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yhs@fb.com,
+	kpsingh@kernel.org,
+	bjorn@kernel.org,
+	bpf@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: puranjay12@gmail.com
+Subject: [PATCH bpf-next v3 0/3] bpf, riscv: use BPF prog pack allocator in BPF JIT
+Date: Mon, 28 Aug 2023 16:59:55 +0000
+Message-Id: <20230828165958.1714079-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/-BO0VqLqZMRZviTSPe8i5sXqRA8>
-Subject: [Bpf] [PATCH bpf-next 3/3] bpf,
- docs: s/eBPF/BPF in standards documents
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-There isn't really anything other than just "BPF" at this point, so
-referring to it as "eBPF" in our standards document just causes
-unnecessary confusion. Let's just be consistent and use "BPF".
+Changes in v2 -> v3:
+1. Fix maximum width of code in patches from 80 to 100. [All patches]
+2. Add checks for ctx->ro_insns == NULL. [Patch 3]
+3. Fix check for edge condition where amount of text to set > 2 * pagesize
+   [Patch 1 and 2]
+4. Add reviewed-by in patches.
+5. Adding results of selftest here:
+   Using the command: ./test_progs on qemu
+   Without the series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
+   With this series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
 
-Suggested-by: Will Hawkins <hawkinsw@obs.cr>
-Signed-off-by: David Vernet <void@manifault.com>
----
- .../bpf/standardization/instruction-set.rst   | 22 +++++++++----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+Changes in v1 -> v2:
+1. Implement a new function patch_text_set_nosync() to be used in bpf_arch_text_invalidate().
+   The implementation in v1 called patch_text_nosync() in a loop and it was bad as it would
+   call flush_icache_range() for every word making it really slow. This was found by running
+   the test_tag selftest which would take forever to complete.
 
-diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
-index cfe85129a303..8afe6567209e 100644
---- a/Documentation/bpf/standardization/instruction-set.rst
-+++ b/Documentation/bpf/standardization/instruction-set.rst
-@@ -1,11 +1,11 @@
- .. contents::
- .. sectnum::
- 
--========================================
--eBPF Instruction Set Specification, v1.0
--========================================
-+=======================================
-+BPF Instruction Set Specification, v1.0
-+=======================================
- 
--This document specifies version 1.0 of the eBPF instruction set.
-+This document specifies version 1.0 of the BPF instruction set.
- 
- Documentation conventions
- =========================
-@@ -100,7 +100,7 @@ Definitions
- Instruction encoding
- ====================
- 
--eBPF has two instruction encodings:
-+BPF has two instruction encodings:
- 
- * the basic instruction encoding, which uses 64 bits to encode an instruction
- * the wide instruction encoding, which appends a second 64-bit immediate (i.e.,
-@@ -244,7 +244,7 @@ BPF_END    0xd0   0        byte swap operations (see `Byte swap instructions`_ b
- =========  =====  =======  ==========================================================
- 
- Underflow and overflow are allowed during arithmetic operations, meaning
--the 64-bit or 32-bit value will wrap. If eBPF program execution would
-+the 64-bit or 32-bit value will wrap. If BPF program execution would
- result in division by zero, the destination register is instead set to zero.
- If execution would result in modulo by zero, for ``BPF_ALU64`` the value of
- the destination register is unchanged whereas for ``BPF_ALU`` the upper
-@@ -366,7 +366,7 @@ BPF_JSLT  0xc    any  PC += offset if dst < src                    signed
- BPF_JSLE  0xd    any  PC += offset if dst <= src                   signed
- ========  =====  ===  ===========================================  =========================================
- 
--The eBPF program needs to store the return value into register R0 before doing a
-+The BPF program needs to store the return value into register R0 before doing a
- ``BPF_EXIT``.
- 
- Example:
-@@ -486,9 +486,9 @@ Atomic operations
- 
- Atomic operations are operations that operate on memory and can not be
- interrupted or corrupted by other access to the same memory region
--by other eBPF programs or means outside of this specification.
-+by other BPF programs or means outside of this specification.
- 
--All atomic operations supported by eBPF are encoded as store operations
-+All atomic operations supported by BPF are encoded as store operations
- that use the ``BPF_ATOMIC`` mode modifier as follows:
- 
- * ``BPF_ATOMIC | BPF_W | BPF_STX`` for 32-bit operations
-@@ -578,7 +578,7 @@ where
- Maps
- ~~~~
- 
--Maps are shared memory regions accessible by eBPF programs on some platforms.
-+Maps are shared memory regions accessible by BPF programs on some platforms.
- A map can have various semantics as defined in a separate document, and may or
- may not have a single contiguous memory region, but the 'map_val(map)' is
- currently only defined for maps that do have a single contiguous memory region.
-@@ -600,6 +600,6 @@ identified by the given id.
- Legacy BPF Packet access instructions
- -------------------------------------
- 
--eBPF previously introduced special instructions for access to packet data that were
-+BPF previously introduced special instructions for access to packet data that were
- carried over from classic BPF. However, these instructions are
- deprecated and should no longer be used.
+Here is some data to prove the V2 fixes the problem:
+
+Without this series:
+root@rv-selftester:~/src/kselftest/bpf# time ./test_tag
+test_tag: OK (40945 tests)
+
+real    7m47.562s
+user    0m24.145s
+sys     6m37.064s
+
+With this series applied:
+root@rv-selftester:~/src/selftest/bpf# time ./test_tag
+test_tag: OK (40945 tests)
+
+real    7m29.472s
+user    0m25.865s
+sys     6m18.401s
+
+BPF programs currently consume a page each on RISCV. For systems with many BPF
+programs, this adds significant pressure to instruction TLB. High iTLB pressure
+usually causes slow down for the whole system.
+
+Song Liu introduced the BPF prog pack allocator[1] to mitigate the above issue.
+It packs multiple BPF programs into a single huge page. It is currently only
+enabled for the x86_64 BPF JIT.
+
+I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed now.
+
+This patch series enables the BPF prog pack allocator for the RISCV BPF JIT.
+This series needs a patch[3] from the ARM64 series to work.
+
+======================================================
+Performance Analysis of prog pack allocator on RISCV64
+======================================================
+
+Test setup:
+===========
+
+Host machine: Debian GNU/Linux 11 (bullseye)
+Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
+u-boot-qemu Version: 2023.07+dfsg-1
+opensbi Version: 1.3-1
+
+To test the performance of the BPF prog pack allocator on RV, a stresser
+tool[4] linked below was built. This tool loads 8 BPF programs on the system and
+triggers 5 of them in an infinite loop by doing system calls.
+
+The runner script starts 20 instances of the above which loads 8*20=160 BPF
+programs on the system, 5*20=100 of which are being constantly triggered.
+The script is passed a command which would be run in the above environment.
+
+The script was run with following perf command:
+./run.sh "perf stat -a \
+        -e iTLB-load-misses \
+        -e dTLB-load-misses  \
+        -e dTLB-store-misses \
+        -e instructions \
+        --timeout 60000"
+
+The output of the above command is discussed below before and after enabling the
+BPF prog pack allocator.
+
+The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The rootfs
+was created using Bjorn's riscv-cross-builder[5] docker container linked below.
+
+Results
+=======
+
+Before enabling prog pack allocator:
+------------------------------------
+
+Performance counter stats for 'system wide':
+
+           4939048      iTLB-load-misses
+           5468689      dTLB-load-misses
+            465234      dTLB-store-misses
+     1441082097998      instructions
+
+      60.045791200 seconds time elapsed
+
+After enabling prog pack allocator:
+-----------------------------------
+
+Performance counter stats for 'system wide':
+
+           3430035      iTLB-load-misses
+           5008745      dTLB-load-misses
+            409944      dTLB-store-misses
+     1441535637988      instructions
+
+      60.046296600 seconds time elapsed
+
+Improvements in metrics
+=======================
+
+It was expected that the iTLB-load-misses would decrease as now a single huge
+page is used to keep all the BPF programs compared to a single page for each
+program earlier.
+
+--------------------------------------------
+The improvement in iTLB-load-misses: -30.5 %
+--------------------------------------------
+
+I repeated this expriment more than 100 times in different setups and the
+improvement was always greater than 30%.
+
+This patch series is boot tested on the Starfive VisionFive 2 board[6].
+The performance analysis was not done on the board because it doesn't
+expose iTLB-load-misses, etc. The stresser program was run on the board to test
+the loading and unloading of BPF programs
+
+[1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
+[2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@gmail.com/
+[3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gmail.com/
+[4] https://github.com/puranjaymohan/BPF-Allocator-Bench
+[5] https://github.com/bjoto/riscv-cross-builder
+[6] https://www.starfivetech.com/en/site/boards
+
+Puranjay Mohan (3):
+  riscv: extend patch_text_nosync() for multiple pages
+  riscv: implement a memset like function for text
+  bpf, riscv: use prog pack allocator in the BPF JIT
+
+ arch/riscv/include/asm/patch.h  |   1 +
+ arch/riscv/kernel/patch.c       | 114 ++++++++++++++++++++++++++++++--
+ arch/riscv/net/bpf_jit.h        |   3 +
+ arch/riscv/net/bpf_jit_comp64.c |  60 +++++++++++++----
+ arch/riscv/net/bpf_jit_core.c   | 106 ++++++++++++++++++++++++-----
+ 5 files changed, 251 insertions(+), 33 deletions(-)
+
 -- 
-2.41.0
+2.40.1
 
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
 
