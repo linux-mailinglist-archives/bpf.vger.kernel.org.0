@@ -1,112 +1,122 @@
-Return-Path: <bpf+bounces-8912-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8913-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6D8478C490
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 14:56:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88B7F78C4A2
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 14:59:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6DBC1C2012A
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 12:56:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 432F228112E
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 12:59:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22B55156EC;
-	Tue, 29 Aug 2023 12:56:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8642F156EF;
+	Tue, 29 Aug 2023 12:58:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A2114AB3;
-	Tue, 29 Aug 2023 12:56:14 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76CF9D;
-	Tue, 29 Aug 2023 05:56:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=9fb4MYRP5fYSklYNqpx8Lj2woGj0yb+xRYXtbbot1Dw=; b=CabpNKtJo88GC2q+1Jpvh+ylAj
-	vrgwVo6Mk6S5Do3l92KY84wxZS7mArCCHFup3B7qexnXU+i67NJ24IvYelhdJD+sZlHzZPzhIFU1M
-	2OrjYQ/JzsIFttHbnW3su44f98kjPVDuCoJnmO8n51nYNTTZpK5R6H8YVkf6yqI6AMT4zHo0KFvRu
-	jBjGjnsdqWHVQt8opvQ/R3OJ+RcyXPAW0NoExa8vhc10cKEZL8BsFrwvHZxtZh5As+Gz54HRhKRfv
-	ibfOJLElp32qAPC9ik3TiHJiWe0yswVWR0dqgmKD7GlTK1Q0b86aC1MH0dF8T0NKoBfiCIotd9KQj
-	pODPlbmg==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qayGN-000Gqj-Rv; Tue, 29 Aug 2023 14:56:08 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qayGN-000PV2-HA; Tue, 29 Aug 2023 14:56:07 +0200
-Subject: Re: [syzbot] [bpf?] [net?] KASAN: slab-use-after-free Read in
- xsk_diag_dump
-To: syzbot <syzbot+822d1359297e2694f873@syzkaller.appspotmail.com>,
- andrii@kernel.org, ast@kernel.org, bjorn@kernel.org, bpf@vger.kernel.org,
- davem@davemloft.net, edumazet@google.com, hawk@kernel.org,
- john.fastabend@gmail.com, jonathan.lemon@gmail.com, kuba@kernel.org,
- linux-kernel@vger.kernel.org, maciej.fijalkowski@intel.com,
- magnus.karlsson@intel.com, netdev@vger.kernel.org, pabeni@redhat.com,
- syzkaller-bugs@googlegroups.com
-References: <000000000000af3ba506040b7d0c@google.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <3d8fa470-8ca9-561c-8381-0687f9e69d10@iogearbox.net>
-Date: Tue, 29 Aug 2023 14:56:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B476156DB;
+	Tue, 29 Aug 2023 12:58:58 +0000 (UTC)
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF2EE48;
+	Tue, 29 Aug 2023 05:58:54 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-637aaaf27f1so8712706d6.0;
+        Tue, 29 Aug 2023 05:58:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693313933; x=1693918733;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FsMYZfhMVSuGAFIMLOJfSHf3ktSPlMv9xHN6XV521us=;
+        b=BEUEVMWzmZWpT4y5RVtsG90kLmOHn2oPex8NfiB77i5mkbaSAEQsSaOx94b5dOVpJu
+         TsqpYCBfU500cR29In+NqdF66CyD56y4Xo+2xS72bWbVw1Nx0iUYjkfO+UvxHqhkq2AH
+         8+l4zKhKR6SL2QMXE1vTd9Z52O6AirlJIBrrVQvsfUMp+ModLDigeNqFkuA5CJ0f29CK
+         0kbAdhb+QEhnG2Y0DJkPC5Z8AXAJPP27fIOpeZ9bjtnwtYFo2Oko6hf0tAL0SRmT0RQ0
+         qSx2NgWVKMbomoeX7IDu0/ERwANubkd0YhuKCVI6SHf9ulgZorq/kYlZQAdFqQQRjJSm
+         zXpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693313933; x=1693918733;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FsMYZfhMVSuGAFIMLOJfSHf3ktSPlMv9xHN6XV521us=;
+        b=Ja93MXlqVCwZ1G4+kdTdtwKSLR2CjCnUtX8Y37oWJ57pHTPTkWDdu2VWMz3HpfVrpz
+         /k9kbccc1/NF7GagXwhwLRNOQ7QmkArUnXg24yp3MNrHLuhtjUZT2at2ppDSi50tjFfy
+         0vNg9eUVgfhEcpmk++wrHcbjEvVY2eZC5N+YZfUiOBrOEcm+ZriiksjQpVAd7kxaQTgw
+         XliDgwdEX1h+ZSeDklHUG56EIt7MsszDsgcHJXxcnJa3SMIRRYB47t4u2wqQXTJAQ38c
+         Jnel3TR+QjtZTa3MisKfRpx5nVP8wqHn30bVtQYsD0b/jHXkJwg20vcprOTzoT6ob1mt
+         uljw==
+X-Gm-Message-State: AOJu0YwMvzkI+ix2mHMxjXa5p9JjUA8youFyq0pceQAK9NzSriicrLiN
+	2OrMgdd8+pPU082dW5eVYPkZEFvBs1RZ0vvkfB8=
+X-Google-Smtp-Source: AGHT+IHkhbo821efYzPP9wI2YYcX+RpD8SIZlQiLhMm/RssrhTmHuN8whjAyAyNiQ/UzwFOfKNA6dPn+T042qF8b/no=
+X-Received: by 2002:a05:6214:27eb:b0:625:8684:33f3 with SMTP id
+ jt11-20020a05621427eb00b00625868433f3mr32333054qvb.0.1693313933335; Tue, 29
+ Aug 2023 05:58:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <000000000000af3ba506040b7d0c@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27015/Tue Aug 29 09:39:45 2023)
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.6
+References: <000000000000af3ba506040b7d0c@google.com> <3d8fa470-8ca9-561c-8381-0687f9e69d10@iogearbox.net>
+In-Reply-To: <3d8fa470-8ca9-561c-8381-0687f9e69d10@iogearbox.net>
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Tue, 29 Aug 2023 14:58:42 +0200
+Message-ID: <CAJ8uoz2rCtznp6yq8YxNNcmZXxkkBFfAudv=3KbLKdho9_0z9Q@mail.gmail.com>
+Subject: Re: [syzbot] [bpf?] [net?] KASAN: slab-use-after-free Read in xsk_diag_dump
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: syzbot <syzbot+822d1359297e2694f873@syzkaller.appspotmail.com>, 
+	andrii@kernel.org, ast@kernel.org, bjorn@kernel.org, bpf@vger.kernel.org, 
+	davem@davemloft.net, edumazet@google.com, hawk@kernel.org, 
+	john.fastabend@gmail.com, jonathan.lemon@gmail.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, maciej.fijalkowski@intel.com, 
+	magnus.karlsson@intel.com, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Magnus,
+On Tue, 29 Aug 2023 at 14:56, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> Hi Magnus,
+>
+> On 8/29/23 10:20 AM, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    5c905279a1b7 Merge branch 'pds_core-error-handling-fixes'
+> > git tree:       net
+> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=16080070680000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=1e4a882f77ed77bd
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=822d1359297e2694f873
+> > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ec63a7a80000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=109926eba80000
+> >
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/98add120b6e5/disk-5c905279.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/c9e9009eadbd/vmlinux-5c905279.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/b840142cc0c1/bzImage-5c905279.xz
+> >
+> > The issue was bisected to:
+> >
+> > commit 18b1ab7aa76bde181bdb1ab19a87fa9523c32f21
+> > Author: Magnus Karlsson <magnus.karlsson@intel.com>
+> > Date:   Mon Feb 28 09:45:52 2022 +0000
+> >
+> >      xsk: Fix race at socket teardown
+>
+> please take a look when you get a chance.
+>
+> Thanks a lot,
+> Daniel
 
-On 8/29/23 10:20 AM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    5c905279a1b7 Merge branch 'pds_core-error-handling-fixes'
-> git tree:       net
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=16080070680000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=1e4a882f77ed77bd
-> dashboard link: https://syzkaller.appspot.com/bug?extid=822d1359297e2694f873
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ec63a7a80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=109926eba80000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/98add120b6e5/disk-5c905279.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/c9e9009eadbd/vmlinux-5c905279.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/b840142cc0c1/bzImage-5c905279.xz
-> 
-> The issue was bisected to:
-> 
-> commit 18b1ab7aa76bde181bdb1ab19a87fa9523c32f21
-> Author: Magnus Karlsson <magnus.karlsson@intel.com>
-> Date:   Mon Feb 28 09:45:52 2022 +0000
-> 
->      xsk: Fix race at socket teardown
+Already looking at it :-).
 
-please take a look when you get a chance.
-
-Thanks a lot,
-Daniel
+/Magnus
 
