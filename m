@@ -1,45 +1,63 @@
-Return-Path: <bpf+bounces-8925-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8926-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E324478C98F
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 18:23:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A1AB78C99E
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 18:27:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2076E1C20A42
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 16:23:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE5B7281212
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 16:27:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F212A17FFD;
-	Tue, 29 Aug 2023 16:22:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 661A017FFC;
+	Tue, 29 Aug 2023 16:27:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA9A814F6D;
-	Tue, 29 Aug 2023 16:22:51 +0000 (UTC)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280661A6;
-	Tue, 29 Aug 2023 09:22:50 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [39.34.186.40])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 139646607236;
-	Tue, 29 Aug 2023 17:22:43 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1693326168;
-	bh=Xq5jz8HdbMocWJzAMFiYi0flLRLw9RkQ3+TdhDp1Xw8=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=HElLb0ShqTSds9x9QyH3BVnv+nr4AQ4MOkSwM6NSfBWfdjpzHFOfKzkJ8uP/Bolqp
-	 ARo7CWT0BYhlVSN3usf9qHWiWDmMj2DceMvMJp8MmJwe3CDXiK1nP8QMIWdD0Y6NMf
-	 Gz+umklaNPL4c3TRkb//MlKr0iVKHM4CLocNndnWceAF3uUnc1NxMabmN2nU14LOyR
-	 QCD/cCfFQbHfEX9NJyNx9e4Kq3V6zpWdnZpKJYrihnF+7UYrIQ+2tPq3mLd4/WHbNA
-	 bEtbqM72dzMi7j5XgEUDE0CJlc9QRSGJiYS4kPIB3JZmKbQWvxTK/i7+MgWvyPROfd
-	 Vu63Kk42IIUDQ==
-Message-ID: <ef489936-9413-4a01-a3f0-eebadfb64ff9@collabora.com>
-Date: Tue, 29 Aug 2023 21:22:39 +0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FBF017FE5
+	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 16:27:29 +0000 (UTC)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EFA2A6
+	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 09:27:28 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fee5ddc23eso43105025e9.1
+        for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 09:27:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1693326447; x=1693931247;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SLJvvswMzWFLkn1QEp0BaamJiRTuLUCR6WYwBkYUwHA=;
+        b=Y+7apWu5J3Pk0G1pf7bLexHqNeB9wMnR5eveA/NJYcbKDOzyPId1k8xUtYm324/rKk
+         vBRZ+2KylXGqpEWtAAoDGhl3gRvB+1bieeeUprfCiacYrm5IZrAy6+C3cCca0+d/0tat
+         pYSELthXT/yXEJ/8A/Knzui0uL4XN97S5JRGubXjuqbQYDnAcpnzBgwPZ95mLZRK2wfi
+         fOm3vFUGRBkJgsZYE/Cr1A7zQGJ43uktlotaUves9cyxBYDtPTQE+l0RZd4z7fLwOvsQ
+         4jmCbXC0Kg9YIkZFF2n5tK/de9LOkqgrHyfN4DOoq3kXi3eB9d5U9hp1Lp0RfGTREDEF
+         n8Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693326447; x=1693931247;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SLJvvswMzWFLkn1QEp0BaamJiRTuLUCR6WYwBkYUwHA=;
+        b=jVQQN2++Ky+mjJRGkfhO5E7f8amqsVn6IKuZmydu66o/0gX+jFy5nl7lMwPmwP6dmE
+         iPoHgfOTYgodfy+hHBuzs9Wupc+3bC59N9zJUjQsHC6vPp91gsKbyQA8jtqyFLExij7N
+         5WYS6erlPAjAFMdCEA+sUUAA/acyFL3ov0flxlqj+1O0EhStV5YkWrbMs2uji9QSVPui
+         5hNJiDPINPmQU0WTd/69oU8F1+YnyKfr/h1lVmXwwKQvtRzKREE9EAb+eEMg4+O9OCkc
+         zbr7YtT2QCGt8kSFUfy6y/MEvEFtCZSnBgkTC5jE9lKxnNpFaY94Vz3xcZwk6sFM2BDH
+         w3ew==
+X-Gm-Message-State: AOJu0Yw/EX4V55qI9cb6WuJI2fnyXu9e43GHDzbq1NYvDA8VrO5oOT9P
+	rTFe7/P1ZBnjIWPM9kXsY8n0Rg==
+X-Google-Smtp-Source: AGHT+IE+LpJAzYp8dfLnifYgBeVqEWftpudPyiSjmgSHu3javhWofTkLnWCvt2zXC1Axps2sr6mJsw==
+X-Received: by 2002:a05:600c:2181:b0:3fe:228a:e782 with SMTP id e1-20020a05600c218100b003fe228ae782mr22655003wme.37.1693326446765;
+        Tue, 29 Aug 2023 09:27:26 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:716a:ac4c:a6ab:1706? ([2a02:8011:e80c:0:716a:ac4c:a6ab:1706])
+        by smtp.gmail.com with ESMTPSA id a9-20020a5d5709000000b00317b5c8a4f1sm14184441wrv.60.2023.08.29.09.27.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 09:27:26 -0700 (PDT)
+Message-ID: <a84fda87-87c4-4b04-9007-5181ff7a8bc4@isovalent.com>
+Date: Tue, 29 Aug 2023 17:27:25 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -47,128 +65,64 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- syzbot <syzbot+de6565462ab540f50e47@syzkaller.appspotmail.com>,
- bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
- jacob.e.keller@intel.com, jiri@nvidia.com, kuba@kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com,
- syzkaller-bugs@googlegroups.com, fishgylk@gmail.com, bagasdotme@gmail.com
-Subject: Re: [syzbot] [net?] WARNING in inet_sock_destruct (4)
-Content-Language: en-US
-To: Eric Dumazet <edumazet@google.com>
-References: <00000000000010353a05fecceea0@google.com>
- <6144228a-799f-4de3-8483-b7add903df0c@collabora.com>
- <CANn89iJiBp9t69Y3htwGGb=pTWhjFQPxKPD1E6uSFks5NrgctA@mail.gmail.com>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <CANn89iJiBp9t69Y3htwGGb=pTWhjFQPxKPD1E6uSFks5NrgctA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 6/9] bpftool: Add support for cgroup unix
+ socket address hooks
+Content-Language: en-GB
+To: Daan De Meyer <daan.j.demeyer@gmail.com>, bpf@vger.kernel.org
+Cc: martin.lau@linux.dev, kernel-team@meta.com
+References: <20230829101838.851350-1-daan.j.demeyer@gmail.com>
+ <20230829101838.851350-7-daan.j.demeyer@gmail.com>
+From: Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20230829101838.851350-7-daan.j.demeyer@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Eric,
-
-On 8/29/23 8:19 PM, Eric Dumazet wrote:
-> On Tue, Aug 29, 2023 at 2:44 PM Muhammad Usama Anjum
-> <usama.anjum@collabora.com> wrote:
->>
->> On 6/23/23 7:36 PM, syzbot wrote:
->>> Hello,
->>>
->>> syzbot found the following issue on:
->>>
->>> HEAD commit: 45a3e24f65e9 Linux 6.4-rc7
->>> git tree: upstream
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=160cc82f280000
->>> kernel config: https://syzkaller.appspot.com/x/.config?x=2cbd298d0aff1140
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=de6565462ab540f50e47
->>> compiler: gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
->>> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=160aacb7280000
->>> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=17c115d3280000
->>>
->>> Downloadable assets:
->>> disk image: https://storage.googleapis.com/syzbot-assets/c09bcd4ec365/disk-45a3e24f.raw.xz
->>> vmlinux: https://storage.googleapis.com/syzbot-assets/03549b639718/vmlinux-45a3e24f.xz
->>> kernel image: https://storage.googleapis.com/syzbot-assets/91f203e5f63e/bzImage-45a3e24f.xz
->>>
->>> The issue was bisected to:
->>>
->>> commit 565b4824c39fa335cba2028a09d7beb7112f3c9a
->>> Author: Jiri Pirko <jiri@nvidia.com>
->>> Date: Mon Feb 6 09:41:51 2023 +0000
->>>
->>> devlink: change port event netdev notifier from per-net to global
->>>
->>> bisection log: https://syzkaller.appspot.com/x/bisect.txt?x=110a1a5b280000
->>> final oops: https://syzkaller.appspot.com/x/report.txt?x=130a1a5b280000
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=150a1a5b280000
->>>
->>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>> Reported-by: syzbot+de6565462ab540f50e47@syzkaller.appspotmail.com
->>> Fixes: 565b4824c39f ("devlink: change port event netdev notifier from per-net to global")
->>>
->>> ------------[ cut here ]------------
->>> WARNING: CPU: 0 PID: 5025 at net/ipv4/af_inet.c:154 inet_sock_destruct+0x6df/0x8a0 net/ipv4/af_inet.c:154
->> This same warning has been spotted and reported:
->> https://bugzilla.kernel.org/show_bug.cgi?id=217555
->>
->> Syzbot has found the same warning on 4.14, 5.15, 6.1, 6.5-rc and latest
->> mainline (1c59d383390f9) kernels. The provided reproducers (such as
->> https://syzkaller.appspot.com/text?tag=ReproC&x=15a10e8aa80000) are
->> reproducing the same warnings on multicore (at least 2 CPUs) qemu instance.
+On 29/08/2023 11:18, Daan De Meyer wrote:
+> Add the necessary plumbing to hook up the new cgroup unix sockaddr
+> hooks into bpftool.
 > 
-> Can you test the following fix ?
-Just tested the fix on 1c59d383390f9, it didn't fix the warning.
-
-Please let me know if you need help in testing more.
-
-> Thanks.
+> Signed-off-by: Daan De Meyer <daan.j.demeyer@gmail.com>
+> ---
+>  .../bpftool/Documentation/bpftool-cgroup.rst  | 21 ++++++++++++++-----
+>  .../bpftool/Documentation/bpftool-prog.rst    | 10 +++++----
+>  tools/bpf/bpftool/bash-completion/bpftool     | 14 ++++++-------
+>  tools/bpf/bpftool/cgroup.c                    | 17 ++++++++-------
+>  tools/bpf/bpftool/prog.c                      |  9 ++++----
+>  5 files changed, 44 insertions(+), 27 deletions(-)
 > 
-> diff --git a/net/dccp/ipv6.c b/net/dccp/ipv6.c
-> index 25816e790527dbd6ff55ffb94762b5974e8144aa..1085357b30c9a0d4bf7a578cebf3eeddec953632
-> 100644
-> --- a/net/dccp/ipv6.c
-> +++ b/net/dccp/ipv6.c
-> @@ -377,8 +377,13 @@ static int dccp_v6_conn_request(struct sock *sk,
-> struct sk_buff *skb)
->         if (ipv6_opt_accepted(sk, skb, IP6CB(skb)) ||
->             np->rxopt.bits.rxinfo || np->rxopt.bits.rxoinfo ||
->             np->rxopt.bits.rxhlim || np->rxopt.bits.rxohlim) {
-> +               /* Only initialize ireq->pktops once.
-> +                * We must take a refcount on skb because ireq->pktops
-> +                * could be consumed immediately.
-> +                */
->                 refcount_inc(&skb->users);
-> -               ireq->pktopts = skb;
-> +               if (cmpxchg(&ireq->pktopts, NULL, skb))
-> +                       refcount_dec(&skb->users);
->         }
->         ireq->ir_iif = READ_ONCE(sk->sk_bound_dev_if);
-> 
-> diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
-> index 6e86721e1cdbb8d47b754a2675f6ab1643c7342c..d45aa267473c4ab817cfda06966a536718b50a53
-> 100644
-> --- a/net/ipv6/tcp_ipv6.c
-> +++ b/net/ipv6/tcp_ipv6.c
-> @@ -798,8 +798,13 @@ static void tcp_v6_init_req(struct request_sock *req,
->              np->rxopt.bits.rxinfo ||
->              np->rxopt.bits.rxoinfo || np->rxopt.bits.rxhlim ||
->              np->rxopt.bits.rxohlim || np->repflow)) {
-> +               /* Only initialize ireq->pktops once.
-> +                * We must take a refcount on skb because ireq->pktops
-> +                * could be consumed immediately.
-> +                */
->                 refcount_inc(&skb->users);
-> -               ireq->pktopts = skb;
-> +               if (cmpxchg(&ireq->pktopts, NULL, skb))
-> +                       refcount_dec(&skb->users);
->         }
->  }
+> diff --git a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
+> index bd015ec9847b..a2d990fa623b 100644
+> --- a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
+> +++ b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
+> @@ -34,13 +34,16 @@ CGROUP COMMANDS
+>  |	*ATTACH_TYPE* := { **cgroup_inet_ingress** | **cgroup_inet_egress** |
+>  |		**cgroup_inet_sock_create** | **cgroup_sock_ops** |
+>  |		**cgroup_device** | **cgroup_inet4_bind** | **cgroup_inet6_bind** |
+> -|		**cgroup_inet4_post_bind** | **cgroup_inet6_post_bind** |
+> -|		**cgroup_inet4_connect** | **cgroup_inet6_connect** |
+> +|		**cgroup_unix_bind** | **cgroup_inet4_post_bind** |
+> +|		**cgroup_inet6_post_bind** | **cgroup_inet4_connect** |
+> +|		**cgroup_inet6_connect** | **cgroup_unix_connect** |
+>  |		**cgroup_inet4_getpeername** | **cgroup_inet6_getpeername** |
+> -|		**cgroup_inet4_getsockname** | **cgroup_inet6_getsockname** |
+> -|		**cgroup_udp4_sendmsg** | **cgroup_udp6_sendmsg** |
+> +|		**cgroup_unix_getpeername** | **cgroup_inet4_getsockname** |
+> +|		**cgroup_inet6_getsockname** | **cgroup_udp4_sendmsg** |
 
--- 
-BR,
-Muhammad Usama Anjum
+Aren't we missing "cgroup_unix_getsockname" in this list?
+
+Looks all good otherwise, thanks.
+
+> +|		**cgroup_udp6_sendmsg** | **cgroup_unix_sendmsg** |
+>  |		**cgroup_udp4_recvmsg** | **cgroup_udp6_recvmsg** |
+> -|		**cgroup_sysctl** | **cgroup_getsockopt** | **cgroup_setsockopt** |
+> +|		**cgroup_unix_recvmsg** | **cgroup_sysctl** |
+> +|		**cgroup_getsockopt** | **cgroup_setsockopt** |
+>  |		**cgroup_inet_sock_release** }
+>  |	*ATTACH_FLAGS* := { **multi** | **override** }
 
