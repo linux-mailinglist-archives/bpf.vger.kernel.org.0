@@ -1,107 +1,258 @@
-Return-Path: <bpf+bounces-8880-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8881-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B446578BECC
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 08:50:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42B6578BF32
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 09:27:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 762A3280FB2
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 06:50:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7449F1C209AE
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 07:26:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 070DC1109;
-	Tue, 29 Aug 2023 06:50:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E7086134;
+	Tue, 29 Aug 2023 07:26:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C965AA28
-	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 06:50:14 +0000 (UTC)
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290BC10A
-	for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 23:50:13 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-565dc391be3so3400892a12.0
-        for <bpf@vger.kernel.org>; Mon, 28 Aug 2023 23:50:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1693291812; x=1693896612;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hj0zcVFcZtB73joYoqKn7u0JrXUadMG4Ol0kcC0MOws=;
-        b=G7vM+ORsSGeTaxZm4gkEkrKjbsOpnSZH5heH7t2yOKxd3MxGmPlGbejiGdvHq2rpr9
-         Y+YuprTJ0yGdUYjqjPN6vyJFo3cVv3eUxI6B004p4gH5Uw3WZ6uRQeB75ZRCLTwDnRLq
-         hiR+B4yJ7rewOJOlhP33q2FB0U6bR/DRMx2R6Oc90oTXJNzF27box2kr6Jyunx91E89P
-         QuxbYzQRy82+gv/Q2O/roQR2sPPj3Ltv8uJFFDn5iGpUgx68pkXDqECBrz0H9HW3aZyT
-         VptZmJHKWQJeJsTBPqRZjlkoMw9xNW7fQZ/XnN+MPqHtAeziyusFYeK6d6q9ksdQhlcC
-         WwUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693291812; x=1693896612;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hj0zcVFcZtB73joYoqKn7u0JrXUadMG4Ol0kcC0MOws=;
-        b=ERylmB7bPnp7Sv13q83rFqWIhh6ZBz8do7IrvdUb8X6SDtPx3lfpxL6asU5K71dV4s
-         e4KU0eMeZmrvjehihKba+UPowfZSaapZ17OGOYPkzYfLzRMqYJ7zw8hxorPsm10Q06YU
-         cs3i+t4Z64SC6N5mm8M3iL8HnJyPqmgnWruWfETXDEJglsefyW/Byy2adGGVOvdBI+ZU
-         MIaG7U4sAvhpI3+F1U2QOJTNBKr2HHGhkGBMNCNNvnYPzhw1JtyxlltWVvKh+oX0xNX0
-         jf7GInnGueGlsC9GF/wQHiPHBAq5SNTiEZXowURafV/dDAyCCyWcJOsz0L8Jh5X66fNM
-         qCaw==
-X-Gm-Message-State: AOJu0YyakH+XoW6q5ZMozBZOcZTptVUIeGIUVWtlonlQHdXma1ruKZWN
-	Ip5mv0pwVEKgPLSaWAsKcdv1/Q==
-X-Google-Smtp-Source: AGHT+IG7v6u6J583NScDd5VhvnBr3oBIVYMSHf38YBYeWjzP6/MlK11DhgHCw5e34bWatr8a9yrePg==
-X-Received: by 2002:a17:90a:1542:b0:26d:609a:74cd with SMTP id y2-20020a17090a154200b0026d609a74cdmr2283335pja.24.1693291812530;
-        Mon, 28 Aug 2023 23:50:12 -0700 (PDT)
-Received: from medusa.lab.kspace.sh (c-98-207-191-243.hsd1.ca.comcast.net. [98.207.191.243])
-        by smtp.googlemail.com with ESMTPSA id hi14-20020a17090b30ce00b00264044cca0fsm608631pjb.1.2023.08.28.23.50.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 23:50:12 -0700 (PDT)
-Date: Mon, 28 Aug 2023 23:50:10 -0700
-From: Mohamed Khalfella <mkhalfella@purestorage.com>
-To: willemjdebruijn <willemdebruijn.kernel@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Alexander Duyck <alexanderduyck@fb.com>,
-	David Howells <dhowells@redhat.com>,
-	Jesper Dangaard Brouer <brouer@redhat.com>,
-	Kees Cook <keescook@chromium.org>,
-	"open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:BPF [MISC]" <bpf@vger.kernel.org>
-Subject: Re: [PATCH] skbuff: skb_segment, Update nfrags after calling zero
- copy functions
-Message-ID: <20230829065010.GO4091703@medusa>
-References: <20230828233210.36532-1-mkhalfella@purestorage.com>
- <64ed7188a2745_9cf208e1@penguin.notmuch>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85537139A
+	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 07:26:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2696C433C8;
+	Tue, 29 Aug 2023 07:26:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1693294009;
+	bh=u4VI9NRg65hm1fWfsOM/yBMSKJVh+T2jEXUR/FXNPpg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=LAYcbJK/af6mgohRFClvMIAaF1v+Tz2SkZk8ysnArIFp6jcYjV2DnWtC3puQZ/OBm
+	 UbCeP7EpE10YfYTkzPVLf6UEv/CFxi5Y3xznTG+MSlhdSKcc41bJEq0afIt8j0GGob
+	 aE8oeIoOfJ9OJiEcQeYqvdqTqqr6eQ1U7n5xVV1HH4HPvG/ZPJFHm2GwuErXODKEtb
+	 TmiAHzGu6GfMB9T+d1ae+kgLJ7vFD/ATD/oSfAN7hhczne8BGVmOR5t+uy7B1lcHXb
+	 G112SIpjviudP7jyuIs96C/mnIwUcJdy2ystofYzDAcPMAXPi5pM+DVTSSgwI2l8zi
+	 kZ7yvaG6V2TKw==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Hou Tao <houtao@huaweicloud.com>, yonghong.song@linux.dev,
+ bpf@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>
+Subject: Re: WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
+In-Reply-To: <65c9e8d9-7682-2c8d-cd4d-9f0ca1213066@huaweicloud.com>
+References: <87jztjmmy4.fsf@all.your.base.are.belong.to.us>
+ <2f4f0dfc-ec06-8ac8-a56a-395cc2373def@linux.dev>
+ <200dcce6-34ff-83e0-02fb-709a24403cc6@huaweicloud.com>
+ <87zg2e88ds.fsf@all.your.base.are.belong.to.us>
+ <64873e42-9be1-1812-b80d-5ea86b4677f0@huaweicloud.com>
+ <87sf8684ex.fsf@all.your.base.are.belong.to.us>
+ <878r9wswwy.fsf@all.your.base.are.belong.to.us>
+ <fd07e0a3-f4da-b447-c47a-6e933220d452@linux.dev>
+ <65c9e8d9-7682-2c8d-cd4d-9f0ca1213066@huaweicloud.com>
+Date: Tue, 29 Aug 2023 09:26:46 +0200
+Message-ID: <87a5uaz4uh.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64ed7188a2745_9cf208e1@penguin.notmuch>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 2023-08-28 21:18:16 -0700, willemjdebruijn wrote:
-> Small point: nfrags is not the only state that needs to be refreshed
-> after a fags realloc, also frag.
+Hou Tao <houtao@huaweicloud.com> writes:
 
-I am new to this code. Can you help me understand why frag needs to be
-updated too? My reading of this code is that frag points to frags array
-in shared info. As long as shared info pointer remain the same frag
-pointer should remain valid.
+> Hi,
+>
+> On 8/27/2023 10:53 PM, Yonghong Song wrote:
+>>
+>>
+>> On 8/27/23 1:37 AM, Bj=C3=B6rn T=C3=B6pel wrote:
+>>> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+>>>
+>>>> Hou Tao <houtao@huaweicloud.com> writes:
+>>>>
+>>>>> Hi,
+>>>>>
+>>>>> On 8/26/2023 5:23 PM, Bj=C3=B6rn T=C3=B6pel wrote:
+>>>>>> Hou Tao <houtao@huaweicloud.com> writes:
+>>>>>>
+>>>>>>> Hi,
+>>>>>>>
+>>>>>>> On 8/25/2023 11:28 PM, Yonghong Song wrote:
+>>>>>>>>
+>>>>>>>> On 8/25/23 3:32 AM, Bj=C3=B6rn T=C3=B6pel wrote:
+>>>>>>>>> I'm chasing a workqueue hang on RISC-V/qemu (TCG), using the bpf
+>>>>>>>>> selftests on bpf-next 9e3b47abeb8f.
+>>>>>>>>>
+>>>>>>>>> I'm able to reproduce the hang by multiple runs of:
+>>>>>>>>> =C2=A0=C2=A0 | ./test_progs -a link_api -a linked_list
+>>>>>>>>> I'm currently investigating that.
+>>>>>>>>>
+>>>>>>>>> But! Sometimes (every blue moon) I get a warn_on_once hit:
+>>>>>>>>> =C2=A0=C2=A0 | ------------[ cut here ]------------
+>>>>>>>>> =C2=A0=C2=A0 | WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:=
+342
+>>>>>>>>> bpf_mem_refill+0x1fc/0x206
+>>>>>>>>> =C2=A0=C2=A0 | Modules linked in: bpf_testmod(OE)
+>>>>>>>>> =C2=A0=C2=A0 | CPU: 3 PID: 261 Comm: test_progs-cpuv Tainted: G=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 OE
+>>>>>>>>> N 6.5.0-rc5-01743-gdcb152bb8328 #2
+>>>>>>>>> =C2=A0=C2=A0 | Hardware name: riscv-virtio,qemu (DT)
+>>>>>>>>> =C2=A0=C2=A0 | epc : bpf_mem_refill+0x1fc/0x206
+>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 ra : irq_work_single+0x68/0x70
+>>>>>>>>> =C2=A0=C2=A0 | epc : ffffffff801b1bc4 ra : ffffffff8015fe84 sp :
+>>>>>>>>> ff2000000001be20
+>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 gp : ffffffff82d26138 tp : ff6000008477a800 =
+t0 :
+>>>>>>>>> 0000000000046600
+>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 t1 : ffffffff812b6ddc t2 : 0000000000000000 =
+s0 :
+>>>>>>>>> ff2000000001be70
+>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s1 : ff5ffffffffe8998 a0 : ff5ffffffffe8998 =
+a1 :
+>>>>>>>>> ff600003fef4b000
+>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 a2 : 000000000000003f a3 : ffffffff80008250 =
+a4 :
+>>>>>>>>> 0000000000000060
+>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 a5 : 0000000000000080 a6 : 0000000000000000 =
+a7 :
+>>>>>>>>> 0000000000735049
+>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s2 : ff5ffffffffe8998 s3 : 0000000000000022 =
+s4 :
+>>>>>>>>> 0000000000001000
+>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s5 : 0000000000000007 s6 : ff5ffffffffe8570 =
+s7 :
+>>>>>>>>> ffffffff82d6bd30
+>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s8 : 000000000000003f s9 : ffffffff82d2c5e8 =
+s10:
+>>>>>>>>> 000000000000ffff
+>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s11: ffffffff82d2c5d8 t3 : ffffffff81ea8f28 =
+t4 :
+>>>>>>>>> 0000000000000000
+>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 t5 : ff6000008fd28278 t6 : 0000000000040000
+>>>>>>>>> =C2=A0=C2=A0 | status: 0000000200000100 badaddr: 0000000000000000=
+ cause:
+>>>>>>>>> 0000000000000003
+>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff801b1bc4>] bpf_mem_refill+0x1fc/0x206
+>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8015fe84>] irq_work_single+0x68/0x70
+>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8015feb4>] irq_work_run_list+0x28/0x36
+>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8015fefa>] irq_work_run+0x38/0x66
+>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8000828a>] handle_IPI+0x3a/0xb4
+>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff800a5c3a>] handle_percpu_devid_irq+0xa4/=
+0x1f8
+>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8009fafa>] generic_handle_domain_irq+0x2=
+8/0x36
+>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff800ae570>] ipi_mux_process+0xac/0xfa
+>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8000a8ea>] sbi_ipi_handle+0x2e/0x88
+>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8009fafa>] generic_handle_domain_irq+0x2=
+8/0x36
+>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff807ee70e>] riscv_intc_irq+0x36/0x4e
+>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff812b5d3a>] handle_riscv_irq+0x54/0x86
+>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff812b6904>] do_irq+0x66/0x98
+>>>>>>>>> =C2=A0=C2=A0 | ---[ end trace 0000000000000000 ]---
+>>>>>>>>>
+>>>>>>>>> Code:
+>>>>>>>>> =C2=A0=C2=A0 | static void free_bulk(struct bpf_mem_cache *c)
+>>>>>>>>> =C2=A0=C2=A0 | {
+>>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 struct bpf_mem_cache *tgt =
+=3D c->tgt;
+>>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 struct llist_node *llnode,=
+ *t;
+>>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long flags;
+>>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 int cnt;
+>>>>>>>>> =C2=A0=C2=A0 |
+>>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 WARN_ON_ONCE(tgt->unit_siz=
+e !=3D c->unit_size);
+>>>>>>>>> =C2=A0=C2=A0 | ...
+>>>>>>>>>
+>>>>>>>>> I'm not well versed in the memory allocator; Before I dive into
+>>>>>>>>> it --
+>>>>>>>>> has anyone else hit it? Ideas on why the warn_on_once is hit?
+>>>>>>>> Maybe take a look at the patch
+>>>>>>>> =C2=A0=C2=A0 822fb26bdb55=C2=A0 bpf: Add a hint to allocated objec=
+ts.
+>>>>>>>>
+>>>>>>>> In the above patch, we have
+>>>>>>>>
+>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Remember bpf_mem_cac=
+he that allocated this object.
+>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * The hint is not accu=
+rate.
+>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 c->tgt =3D *(struct bpf_mem_=
+cache **)llnode;
+>>>>>>>>
+>>>>>>>> I suspect that the warning may be related to the above.
+>>>>>>>> I tried the above ./test_progs command line (running multiple
+>>>>>>>> at the same time) and didn't trigger the issue.
+>>>>>>> The extra 8-bytes before the freed pointer is used to save the
+>>>>>>> pointer
+>>>>>>> of the original bpf memory allocator where the freed pointer came
+>>>>>>> from,
+>>>>>>> so unit_free() could free the pointer back to the original
+>>>>>>> allocator to
+>>>>>>> prevent alloc-and-free unbalance.
+>>>>>>>
+>>>>>>> I suspect that a wrong pointer was passed to bpf_obj_drop, but do
+>>>>>>> not
+>>>>>>> find anything suspicious after checking linked_list. Another
+>>>>>>> possibility
+>>>>>>> is that there is write-after-free problem which corrupts the extra
+>>>>>>> 8-bytes before the freed pointer. Could you please apply the
+>>>>>>> following
+>>>>>>> debug patch to check whether or not the extra 8-bytes are
+>>>>>>> corrupted ?
+>>>>>> Thanks for getting back!
+>>>>>>
+>>>>>> I took your patch for a run, and there's a hit:
+>>>>>> =C2=A0=C2=A0 | bad cache ff5ffffffffe8570: got size 96 work
+>>>>>> ffffffff801b19c8, cache ff5ffffffffe8980 exp size 128 work
+>>>>>> ffffffff801b19c8
+>>>>>
+>>>>> The extra 8-bytes are not corrupted. Both of these two
+>>>>> bpf_mem_cache are
+>>>>> valid and there are in the cache array defined in bpf_mem_caches. BPF
+>>>>> memory allocator allocated the pointer from 96-bytes sized-cache,
+>>>>> but it
+>>>>> tried to free the pointer through 128-bytes sized-cache.
+>>>>>
+>>>>> Now I suspect there is no 96-bytes slab in your system and ksize(ptr -
+>>>>> LLIST_NODE_SZ) returns 128, so bpf memory allocator selected the
+>>>>> 128-byte sized-cache instead of 96-bytes sized-cache. Could you please
+>>>>> check the value of KMALLOC_MIN_SIZE in your kernel .config and
+>>>>> using the
+>>>>> following command to check whether there is 96-bytes slab in your
+>>>>> system:
+>>>>
+>>>> KMALLOC_MIN_SIZE is 64.
+>>>>
+>>>>> $ cat /proc/slabinfo |grep kmalloc-96
+>>>>> dma-kmalloc-96=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0 96=C2=A0=C2=A0 42=C2=
+=A0=C2=A0=C2=A0 1 : tunables=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0 0
+>>>>> 0 : slabdata=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
+>>>>> kmalloc-96=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1865=
+=C2=A0=C2=A0 2268=C2=A0=C2=A0=C2=A0=C2=A0 96=C2=A0=C2=A0 42=C2=A0=C2=A0=C2=
+=A0 1 : tunables=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0 0
+>>>>> 0 : slabdata=C2=A0=C2=A0=C2=A0=C2=A0 54=C2=A0=C2=A0=C2=A0=C2=A0 54=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
+>>>>>
+>>>>> In my system, slab has 96-bytes cached, so grep outputs something,
+>>>>> but I
+>>>>> think there will no output in your system.
+>>>>
+>>>> You're right! No kmalloc-96.
+>>>
+>>> To get rid of the warning, limit available sizes from
+>>> bpf_mem_alloc_init()?
+>
+> It is not enough. We need to adjust size_index accordingly during
+> initialization. Could you please try the attached patch below ? It is
+> not a formal patch and I am considering to disable prefilling for these
+> redirected bpf_mem_caches.
 
-Am I missing something?
-> 
-> Thanks for the report. I'm traveling likely without internet until the
-> weekend. Apologies if it takes a while for me to follow up.
-No problem. Thanks for the quick response!
+Sorry for the slow response; I'll take it for a spin today.
+
+
+Bj=C3=B6rn
 
