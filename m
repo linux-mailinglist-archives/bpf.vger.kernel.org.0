@@ -1,117 +1,163 @@
-Return-Path: <bpf+bounces-8930-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8931-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB12C78CB79
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 19:43:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BBF378CC19
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 20:30:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F6DC28122A
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 17:43:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1CB528122F
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 18:30:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C5871800C;
-	Tue, 29 Aug 2023 17:43:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ED7818019;
+	Tue, 29 Aug 2023 18:30:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43DAB17AAE
-	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 17:43:05 +0000 (UTC)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B549A103
-	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 10:43:03 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b703a0453fso70258361fa.3
-        for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 10:43:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693330982; x=1693935782; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=stXpHcQJU5m/KmE130Q/B+HeDrgYdCgVMN9BRZLNLxE=;
-        b=rNMUgXJqu7JymcGB/IQ9Gv6zoo2Jq88pmS6t2OPxzQt/unTh7HN4sfMpN+SWSgKqy/
-         Pq7a2h/ks+awgoZion0JdAv07rhq51Z6915HQ22u1xhIB3udD3uQZ1pE1Sg2lVocSKz8
-         4vffY4GaaDOMWBCind7x7qgFsuVK/P3ap/pdZF8bK0oDsDwoBDG8L4Bb1Thw2LjJgK53
-         zKW116pxMM1RAsRrra5ZlNjZwJawNYSGZqi/CJZcBPcnvktvz6eRjlBeyh2oCD3v5MA6
-         yw/OiWczrO8J1JS2EKHKmP9q1plktlcf9yN5Ba3X2oYm7VyK8PMBL1pVwD4p5dgsbrjt
-         G6VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693330982; x=1693935782;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=stXpHcQJU5m/KmE130Q/B+HeDrgYdCgVMN9BRZLNLxE=;
-        b=iDcjKukIAHDzl+8pJ7eLKjSRH96wkyH5NfkMRBFxEOzLl0ZMFyF3UItqH1xpIZ2Ab/
-         nRe3AiGkncIb0IXhH1By4i19/6zjYNyKEQ/2ABZD2EFnGwRaU5LYaR8qs+TVvNjkX9Qt
-         byfhvIW5i6t8n6S6KCRhbo+5DacjZ+FLHup9jhBMfq8UQmoYv2ftyqscDTJyrpwt5OvB
-         w1vBZJ44VopH2N3j2BLlGWJJH38GiRUU267+whIqmgtdNH0O+pEbzMrEqKUfIavV5rVq
-         Xm5eaDGYbddMKCm7puYRZm74XDFoymZ1KNBemwFrTem7ULHxNHpjAdln53mPYdTT/hIx
-         9UtA==
-X-Gm-Message-State: AOJu0YwGyNEkp3ZnarPI9LAGVRzzQQcpJsP8ZPPYiYcqeKx5FpkFo1qV
-	iGPdUlUahM56kdXZA6MAJLWG4KvzPDGkkgtk3G0=
-X-Google-Smtp-Source: AGHT+IH/PtkWTKZw3XDK8hmiANa1BqUyeGXMDIk0a69Ic2TqnaehZacBvdtp4wV09/mPm+EqtNfdxvKjraZfUjONd/I=
-X-Received: by 2002:a2e:8898:0:b0:2bc:e51d:89a3 with SMTP id
- k24-20020a2e8898000000b002bce51d89a3mr26145lji.29.1693330981590; Tue, 29 Aug
- 2023 10:43:01 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD9C18035
+	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 18:30:16 +0000 (UTC)
+Received: from out-244.mta0.migadu.com (out-244.mta0.migadu.com [IPv6:2001:41d0:1004:224b::f4])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED45FCC9
+	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 11:30:05 -0700 (PDT)
+Message-ID: <2e260b7c-2a89-2d0c-afb5-708c34230db2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1693333802; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z9qhS9JnvDdEoGnT4EeYHMwTRSvFUoem4eApRVql4dg=;
+	b=KvMhiKrMJ6fsV4goHvB6nER+PmVpg5unIoRCmrDH4ZmWWXrBjkIpdDB65S4iFAYEtizr4Z
+	RA17fWrCt12qth1jWM2Kh66m/RxGUmAfndvPWH4dCAIyo27MqFcJ5hZP5+RvHDeoDlcBQF
+	K00WKUc1/1seLt1xEoDhDPpRM6IE7e0=
+Date: Tue, 29 Aug 2023 14:29:56 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230829101838.851350-1-daan.j.demeyer@gmail.com> <20230829101838.851350-4-daan.j.demeyer@gmail.com>
-In-Reply-To: <20230829101838.851350-4-daan.j.demeyer@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 29 Aug 2023 10:42:50 -0700
-Message-ID: <CAADnVQLvJ3hE73Ag0yLcF6fns5h4jdfT7tJ3dgxTL1LcQTd3ug@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/9] bpf: Add bpf_sock_addr_set() to allow
- writing sockaddr len from bpf
-To: Daan De Meyer <daan.j.demeyer@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+Reply-To: yonghong.song@linux.dev
+Subject: Re: [syzbot] [bpf?] KCSAN: data-race in bpf_percpu_array_update /
+ bpf_percpu_array_update (2)
+To: syzbot <syzbot+97522333291430dd277f@syzkaller.appspotmail.com>,
+ andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+ martin.lau@linux.dev, sdf@google.com, song@kernel.org,
+ syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <000000000000d87a7f06040c970c@google.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <000000000000d87a7f06040c970c@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Aug 29, 2023 at 3:19=E2=80=AFAM Daan De Meyer <daan.j.demeyer@gmail=
-.com> wrote:
->
-> As prep for adding unix socket support to the cgroup sockaddr hooks,
-> let's add a kfunc bpf_sock_addr_set() that allows modifying a sockaddr
-> from bpf. While this is already possible for AF_INET and AF_INET6, we'll
-> need this kfunc when we add unix socket support since modifying the
-> address for those requires modifying both the address and the sockaddr
-> length.
->
-> We also add the necessary hook to make the new kfunc work properly.
->
-> Signed-off-by: Daan De Meyer <daan.j.demeyer@gmail.com>
+
+
+On 8/29/23 5:39 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    727dbda16b83 Merge tag 'hardening-v6.6-rc1' of git://git.k..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=136f39dfa80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=dea9c2ce3f646a25
+> dashboard link: https://syzkaller.appspot.com/bug?extid=97522333291430dd277f
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/9923a023ab11/disk-727dbda1.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/650dbc695d77/vmlinux-727dbda1.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/361da71276bf/bzImage-727dbda1.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+97522333291430dd277f@syzkaller.appspotmail.com
+> 
+> ==================================================================
+> BUG: KCSAN: data-race in bpf_percpu_array_update / bpf_percpu_array_update
+> 
+> write to 0xffffe8fffe7425d8 of 8 bytes by task 8257 on cpu 1:
+>   bpf_long_memcpy include/linux/bpf.h:428 [inline]
+>   bpf_obj_memcpy include/linux/bpf.h:441 [inline]
+>   copy_map_value_long include/linux/bpf.h:464 [inline]
+>   bpf_percpu_array_update+0x3bb/0x500 kernel/bpf/arraymap.c:380
+>   bpf_map_update_value+0x190/0x370 kernel/bpf/syscall.c:175
+>   generic_map_update_batch+0x3ae/0x4f0 kernel/bpf/syscall.c:1749
+>   bpf_map_do_batch+0x2df/0x3d0 kernel/bpf/syscall.c:4648
+>   __sys_bpf+0x28a/0x780
+>   __do_sys_bpf kernel/bpf/syscall.c:5241 [inline]
+>   __se_sys_bpf kernel/bpf/syscall.c:5239 [inline]
+>   __x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5239
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> write to 0xffffe8fffe7425d8 of 8 bytes by task 8268 on cpu 0:
+>   bpf_long_memcpy include/linux/bpf.h:428 [inline]
+>   bpf_obj_memcpy include/linux/bpf.h:441 [inline]
+>   copy_map_value_long include/linux/bpf.h:464 [inline]
+>   bpf_percpu_array_update+0x3bb/0x500 kernel/bpf/arraymap.c:380
+>   bpf_map_update_value+0x190/0x370 kernel/bpf/syscall.c:175
+>   generic_map_update_batch+0x3ae/0x4f0 kernel/bpf/syscall.c:1749
+>   bpf_map_do_batch+0x2df/0x3d0 kernel/bpf/syscall.c:4648
+>   __sys_bpf+0x28a/0x780
+>   __do_sys_bpf kernel/bpf/syscall.c:5241 [inline]
+>   __se_sys_bpf kernel/bpf/syscall.c:5239 [inline]
+>   __x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5239
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> value changed: 0x0000000000000000 -> 0xfffffff000002788
+> 
+> Reported by Kernel Concurrency Sanitizer on:
+> CPU: 0 PID: 8268 Comm: syz-executor.4 Not tainted 6.5.0-syzkaller-00453-g727dbda16b83 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+> ==================================================================
+
+This case is with two tasks doing bpf_map batch update together for the
+same map and key.
+   > write to 0xffffe8fffe7425d8 of 8 bytes by task 8257 on cpu 1:
+   > write to 0xffffe8fffe7425d8 of 8 bytes by task 8268 on cpu 0:
+
+So concurrency is introduced by user applications.
+In my opinion, this probably not an issue from kernel perspective.
+
+> 
+> 
 > ---
->  kernel/bpf/btf.c  |  3 +++
->  net/core/filter.c | 42 +++++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 44 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 249657c466dd..157342eaa2bb 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -217,6 +217,7 @@ enum btf_kfunc_hook {
->         m,
->         BTF_KFUNC_HOOK_LWT,
->         BTF_KFUNC_HOOK_NETFILTER,
-> +       BTF_KFUNC_HOOK_SOCK_ADDR,
-
-Do we really need a new kfunc category?
-Can BTF_KFUNC_HOOK_CGROUP_SKB be reused here?
-or even BTF_KFUNC_HOOK_COMMON ?
-
-struct bpf_sock_addr_kern * type of bpf_sock_addr_set_addr()
-will prevent any other type being passed in here
-and bpf_sock_addr_kern type is local to prog
-run via __cgroup_bpf_run_filter_sock_addr.
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the bug is already fixed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want to overwrite bug's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the bug is a duplicate of another bug, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
+> 
 
