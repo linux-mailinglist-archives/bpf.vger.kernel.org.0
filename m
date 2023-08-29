@@ -1,226 +1,265 @@
-Return-Path: <bpf+bounces-8910-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8911-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EBCE78C46D
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 14:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FAB978C48B
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 14:54:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92EBA1C20A18
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 12:45:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A97FC1C20A68
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 12:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A891156DB;
-	Tue, 29 Aug 2023 12:44:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF65A156DC;
+	Tue, 29 Aug 2023 12:54:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B5C414AB3;
-	Tue, 29 Aug 2023 12:44:50 +0000 (UTC)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D172EC;
-	Tue, 29 Aug 2023 05:44:48 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [39.34.186.40])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 34AB166071E6;
-	Tue, 29 Aug 2023 13:44:43 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1693313087;
-	bh=cfiui2p/zolzYZeGqAwVeu0rIPcbeARCFyKi56+VWiA=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=DpERwzY7oMMBkwdhEyKjbDyfWUXTHWyXPn69CNWPLwq/RkTXN09xZt6Q6M8W8QPb2
-	 I5SPnpqdQojsx6jz5qDx3rwDEC37hiUYSucLGpw6+mhtazaRLE5hJ6xgBugzc8YjRH
-	 65YdHlOLhC8m+iUKANLi7w9nq2QVEJMTwGAXBmf4HxrNu8NWqov5sH3yyWhgmdzJO9
-	 urFmpwBgiloHCiZOk05EVQDv4xuQwA9cKnu1VXmSYGIlJ5FepvK5x5dGSaCQqssE7F
-	 vfT927RKYhiOsmT/OIUHvXZVTcSqZN8DnI+rBIl6PRuimN91KuHEslxmHk0hXZRR01
-	 KpAnSAk3XQJbw==
-Message-ID: <6144228a-799f-4de3-8483-b7add903df0c@collabora.com>
-Date: Tue, 29 Aug 2023 17:44:38 +0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30DD0156CD
+	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 12:54:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87412C433C7;
+	Tue, 29 Aug 2023 12:54:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1693313672;
+	bh=GcyGPLkLb8rNtT/R9cFRZs5D1B0x93bpSl3tVz5Y4SY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=R07wTul7foYmpwtSksnFxG/oA7sHNMDOyl3bWOc++6y0GLRW3xRMFrmgnxYXlxqnw
+	 GVeTDEgeJj9sQBoDotwJyQa0fm9p8TiTNz7ViF7E8osljzvy4vJKQ3ow21NbwLJ6O/
+	 WU+Ya8llMwh9HH8hA1Z6zXd+h1VsA9qL58KGu3s9Jw8Idbi0wzZ364xtFbCb67qDpa
+	 QdUiURJcdQEdM3zaw4/yDZG1L5umdbQdqTiR0WJyWCBS97jdD2A07p/WRf4BXRngVM
+	 fb+27if0ApxOZnVtAi0fz7Ir1ifEXn13SlyvJbUdboijF4yW6GD9sDGu4TFh11PIMv
+	 pPzdPYH141Erw==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Hou Tao <houtao@huaweicloud.com>, yonghong.song@linux.dev,
+ bpf@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>
+Subject: Re: WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
+In-Reply-To: <87a5uaz4uh.fsf@all.your.base.are.belong.to.us>
+References: <87jztjmmy4.fsf@all.your.base.are.belong.to.us>
+ <2f4f0dfc-ec06-8ac8-a56a-395cc2373def@linux.dev>
+ <200dcce6-34ff-83e0-02fb-709a24403cc6@huaweicloud.com>
+ <87zg2e88ds.fsf@all.your.base.are.belong.to.us>
+ <64873e42-9be1-1812-b80d-5ea86b4677f0@huaweicloud.com>
+ <87sf8684ex.fsf@all.your.base.are.belong.to.us>
+ <878r9wswwy.fsf@all.your.base.are.belong.to.us>
+ <fd07e0a3-f4da-b447-c47a-6e933220d452@linux.dev>
+ <65c9e8d9-7682-2c8d-cd4d-9f0ca1213066@huaweicloud.com>
+ <87a5uaz4uh.fsf@all.your.base.are.belong.to.us>
+Date: Tue, 29 Aug 2023 14:54:28 +0200
+Message-ID: <87cyz6f1q3.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Subject: Re: [syzbot] [net?] WARNING in inet_sock_destruct (4)
-To: syzbot <syzbot+de6565462ab540f50e47@syzkaller.appspotmail.com>,
- bpf@vger.kernel.org, davem@davemloft.net, bpf@vger.kernel.org,
- davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
- jacob.e.keller@intel.com, jiri@nvidia.com, kuba@kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com,
- syzkaller-bugs@googlegroups.com, fishgylk@gmail.com, bagasdotme@gmail.com
-References: <00000000000010353a05fecceea0@google.com>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <00000000000010353a05fecceea0@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 6/23/23 7:36 PM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit: 45a3e24f65e9 Linux 6.4-rc7
-> git tree: upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=160cc82f280000
-> kernel config: https://syzkaller.appspot.com/x/.config?x=2cbd298d0aff1140
-> dashboard link: https://syzkaller.appspot.com/bug?extid=de6565462ab540f50e47
-> compiler: gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=160aacb7280000
-> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=17c115d3280000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/c09bcd4ec365/disk-45a3e24f.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/03549b639718/vmlinux-45a3e24f.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/91f203e5f63e/bzImage-45a3e24f.xz
-> 
-> The issue was bisected to:
-> 
-> commit 565b4824c39fa335cba2028a09d7beb7112f3c9a
-> Author: Jiri Pirko <jiri@nvidia.com>
-> Date: Mon Feb 6 09:41:51 2023 +0000
-> 
-> devlink: change port event netdev notifier from per-net to global
-> 
-> bisection log: https://syzkaller.appspot.com/x/bisect.txt?x=110a1a5b280000
-> final oops: https://syzkaller.appspot.com/x/report.txt?x=130a1a5b280000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=150a1a5b280000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+de6565462ab540f50e47@syzkaller.appspotmail.com
-> Fixes: 565b4824c39f ("devlink: change port event netdev notifier from per-net to global")
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 5025 at net/ipv4/af_inet.c:154 inet_sock_destruct+0x6df/0x8a0 net/ipv4/af_inet.c:154
-This same warning has been spotted and reported:
-https://bugzilla.kernel.org/show_bug.cgi?id=217555
+Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
 
-Syzbot has found the same warning on 4.14, 5.15, 6.1, 6.5-rc and latest
-mainline (1c59d383390f9) kernels. The provided reproducers (such as
-https://syzkaller.appspot.com/text?tag=ReproC&x=15a10e8aa80000) are
-reproducing the same warnings on multicore (at least 2 CPUs) qemu instance.
+> Hou Tao <houtao@huaweicloud.com> writes:
+>
+>> Hi,
+>>
+>> On 8/27/2023 10:53 PM, Yonghong Song wrote:
+>>>
+>>>
+>>> On 8/27/23 1:37 AM, Bj=C3=B6rn T=C3=B6pel wrote:
+>>>> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+>>>>
+>>>>> Hou Tao <houtao@huaweicloud.com> writes:
+>>>>>
+>>>>>> Hi,
+>>>>>>
+>>>>>> On 8/26/2023 5:23 PM, Bj=C3=B6rn T=C3=B6pel wrote:
+>>>>>>> Hou Tao <houtao@huaweicloud.com> writes:
+>>>>>>>
+>>>>>>>> Hi,
+>>>>>>>>
+>>>>>>>> On 8/25/2023 11:28 PM, Yonghong Song wrote:
+>>>>>>>>>
+>>>>>>>>> On 8/25/23 3:32 AM, Bj=C3=B6rn T=C3=B6pel wrote:
+>>>>>>>>>> I'm chasing a workqueue hang on RISC-V/qemu (TCG), using the bpf
+>>>>>>>>>> selftests on bpf-next 9e3b47abeb8f.
+>>>>>>>>>>
+>>>>>>>>>> I'm able to reproduce the hang by multiple runs of:
+>>>>>>>>>> =C2=A0=C2=A0 | ./test_progs -a link_api -a linked_list
+>>>>>>>>>> I'm currently investigating that.
+>>>>>>>>>>
+>>>>>>>>>> But! Sometimes (every blue moon) I get a warn_on_once hit:
+>>>>>>>>>> =C2=A0=C2=A0 | ------------[ cut here ]------------
+>>>>>>>>>> =C2=A0=C2=A0 | WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c=
+:342
+>>>>>>>>>> bpf_mem_refill+0x1fc/0x206
+>>>>>>>>>> =C2=A0=C2=A0 | Modules linked in: bpf_testmod(OE)
+>>>>>>>>>> =C2=A0=C2=A0 | CPU: 3 PID: 261 Comm: test_progs-cpuv Tainted: G=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 OE
+>>>>>>>>>> N 6.5.0-rc5-01743-gdcb152bb8328 #2
+>>>>>>>>>> =C2=A0=C2=A0 | Hardware name: riscv-virtio,qemu (DT)
+>>>>>>>>>> =C2=A0=C2=A0 | epc : bpf_mem_refill+0x1fc/0x206
+>>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 ra : irq_work_single+0x68/0x70
+>>>>>>>>>> =C2=A0=C2=A0 | epc : ffffffff801b1bc4 ra : ffffffff8015fe84 sp :
+>>>>>>>>>> ff2000000001be20
+>>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 gp : ffffffff82d26138 tp : ff6000008477a800=
+ t0 :
+>>>>>>>>>> 0000000000046600
+>>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 t1 : ffffffff812b6ddc t2 : 0000000000000000=
+ s0 :
+>>>>>>>>>> ff2000000001be70
+>>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s1 : ff5ffffffffe8998 a0 : ff5ffffffffe8998=
+ a1 :
+>>>>>>>>>> ff600003fef4b000
+>>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 a2 : 000000000000003f a3 : ffffffff80008250=
+ a4 :
+>>>>>>>>>> 0000000000000060
+>>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 a5 : 0000000000000080 a6 : 0000000000000000=
+ a7 :
+>>>>>>>>>> 0000000000735049
+>>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s2 : ff5ffffffffe8998 s3 : 0000000000000022=
+ s4 :
+>>>>>>>>>> 0000000000001000
+>>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s5 : 0000000000000007 s6 : ff5ffffffffe8570=
+ s7 :
+>>>>>>>>>> ffffffff82d6bd30
+>>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s8 : 000000000000003f s9 : ffffffff82d2c5e8=
+ s10:
+>>>>>>>>>> 000000000000ffff
+>>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s11: ffffffff82d2c5d8 t3 : ffffffff81ea8f28=
+ t4 :
+>>>>>>>>>> 0000000000000000
+>>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 t5 : ff6000008fd28278 t6 : 0000000000040000
+>>>>>>>>>> =C2=A0=C2=A0 | status: 0000000200000100 badaddr: 000000000000000=
+0 cause:
+>>>>>>>>>> 0000000000000003
+>>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff801b1bc4>] bpf_mem_refill+0x1fc/0x206
+>>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8015fe84>] irq_work_single+0x68/0x70
+>>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8015feb4>] irq_work_run_list+0x28/0x36
+>>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8015fefa>] irq_work_run+0x38/0x66
+>>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8000828a>] handle_IPI+0x3a/0xb4
+>>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff800a5c3a>] handle_percpu_devid_irq+0xa4=
+/0x1f8
+>>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8009fafa>] generic_handle_domain_irq+0x=
+28/0x36
+>>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff800ae570>] ipi_mux_process+0xac/0xfa
+>>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8000a8ea>] sbi_ipi_handle+0x2e/0x88
+>>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8009fafa>] generic_handle_domain_irq+0x=
+28/0x36
+>>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff807ee70e>] riscv_intc_irq+0x36/0x4e
+>>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff812b5d3a>] handle_riscv_irq+0x54/0x86
+>>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff812b6904>] do_irq+0x66/0x98
+>>>>>>>>>> =C2=A0=C2=A0 | ---[ end trace 0000000000000000 ]---
+>>>>>>>>>>
+>>>>>>>>>> Code:
+>>>>>>>>>> =C2=A0=C2=A0 | static void free_bulk(struct bpf_mem_cache *c)
+>>>>>>>>>> =C2=A0=C2=A0 | {
+>>>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 struct bpf_mem_cache *tgt=
+ =3D c->tgt;
+>>>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 struct llist_node *llnode=
+, *t;
+>>>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long flags;
+>>>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 int cnt;
+>>>>>>>>>> =C2=A0=C2=A0 |
+>>>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 WARN_ON_ONCE(tgt->unit_si=
+ze !=3D c->unit_size);
+>>>>>>>>>> =C2=A0=C2=A0 | ...
+>>>>>>>>>>
+>>>>>>>>>> I'm not well versed in the memory allocator; Before I dive into
+>>>>>>>>>> it --
+>>>>>>>>>> has anyone else hit it? Ideas on why the warn_on_once is hit?
+>>>>>>>>> Maybe take a look at the patch
+>>>>>>>>> =C2=A0=C2=A0 822fb26bdb55=C2=A0 bpf: Add a hint to allocated obje=
+cts.
+>>>>>>>>>
+>>>>>>>>> In the above patch, we have
+>>>>>>>>>
+>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Remember bpf_mem_ca=
+che that allocated this object.
+>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * The hint is not acc=
+urate.
+>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 c->tgt =3D *(struct bpf_mem=
+_cache **)llnode;
+>>>>>>>>>
+>>>>>>>>> I suspect that the warning may be related to the above.
+>>>>>>>>> I tried the above ./test_progs command line (running multiple
+>>>>>>>>> at the same time) and didn't trigger the issue.
+>>>>>>>> The extra 8-bytes before the freed pointer is used to save the
+>>>>>>>> pointer
+>>>>>>>> of the original bpf memory allocator where the freed pointer came
+>>>>>>>> from,
+>>>>>>>> so unit_free() could free the pointer back to the original
+>>>>>>>> allocator to
+>>>>>>>> prevent alloc-and-free unbalance.
+>>>>>>>>
+>>>>>>>> I suspect that a wrong pointer was passed to bpf_obj_drop, but do
+>>>>>>>> not
+>>>>>>>> find anything suspicious after checking linked_list. Another
+>>>>>>>> possibility
+>>>>>>>> is that there is write-after-free problem which corrupts the extra
+>>>>>>>> 8-bytes before the freed pointer. Could you please apply the
+>>>>>>>> following
+>>>>>>>> debug patch to check whether or not the extra 8-bytes are
+>>>>>>>> corrupted ?
+>>>>>>> Thanks for getting back!
+>>>>>>>
+>>>>>>> I took your patch for a run, and there's a hit:
+>>>>>>> =C2=A0=C2=A0 | bad cache ff5ffffffffe8570: got size 96 work
+>>>>>>> ffffffff801b19c8, cache ff5ffffffffe8980 exp size 128 work
+>>>>>>> ffffffff801b19c8
+>>>>>>
+>>>>>> The extra 8-bytes are not corrupted. Both of these two
+>>>>>> bpf_mem_cache are
+>>>>>> valid and there are in the cache array defined in bpf_mem_caches. BPF
+>>>>>> memory allocator allocated the pointer from 96-bytes sized-cache,
+>>>>>> but it
+>>>>>> tried to free the pointer through 128-bytes sized-cache.
+>>>>>>
+>>>>>> Now I suspect there is no 96-bytes slab in your system and ksize(ptr=
+ -
+>>>>>> LLIST_NODE_SZ) returns 128, so bpf memory allocator selected the
+>>>>>> 128-byte sized-cache instead of 96-bytes sized-cache. Could you plea=
+se
+>>>>>> check the value of KMALLOC_MIN_SIZE in your kernel .config and
+>>>>>> using the
+>>>>>> following command to check whether there is 96-bytes slab in your
+>>>>>> system:
+>>>>>
+>>>>> KMALLOC_MIN_SIZE is 64.
+>>>>>
+>>>>>> $ cat /proc/slabinfo |grep kmalloc-96
+>>>>>> dma-kmalloc-96=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0 96=C2=A0=C2=A0 42=C2=
+=A0=C2=A0=C2=A0 1 : tunables=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0 0
+>>>>>> 0 : slabdata=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
+>>>>>> kmalloc-96=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 186=
+5=C2=A0=C2=A0 2268=C2=A0=C2=A0=C2=A0=C2=A0 96=C2=A0=C2=A0 42=C2=A0=C2=A0=C2=
+=A0 1 : tunables=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0 0
+>>>>>> 0 : slabdata=C2=A0=C2=A0=C2=A0=C2=A0 54=C2=A0=C2=A0=C2=A0=C2=A0 54=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
+>>>>>>
+>>>>>> In my system, slab has 96-bytes cached, so grep outputs something,
+>>>>>> but I
+>>>>>> think there will no output in your system.
+>>>>>
+>>>>> You're right! No kmalloc-96.
+>>>>
+>>>> To get rid of the warning, limit available sizes from
+>>>> bpf_mem_alloc_init()?
+>>
+>> It is not enough. We need to adjust size_index accordingly during
+>> initialization. Could you please try the attached patch below ? It is
+>> not a formal patch and I am considering to disable prefilling for these
+>> redirected bpf_mem_caches.
+>
+> Sorry for the slow response; I'll take it for a spin today.
 
-> Modules linked in:
-> CPU: 0 PID: 5025 Comm: syz-executor250 Not tainted 6.4.0-rc7-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
-> RIP: 0010:inet_sock_destruct+0x6df/0x8a0 net/ipv4/af_inet.c:154
-> Code: ff e8 c5 9f e0 f8 0f 0b e9 07 fe ff ff e8 b9 9f e0 f8 0f 0b e9 3f fe ff ff e8 ad 9f e0 f8 0f 0b e9 95 fd ff ff e8 a1 9f e0 f8 <0f> 0b e9 9f fe ff ff e8 d5 6a 33 f9 e9 7a fc ff ff 4c 89 e7 e8 08
-> RSP: 0018:ffffc90000007de8 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: 00000000fffff000 RCX: 0000000000000100
-> RDX: ffff8880792f8000 RSI: ffffffff88a3a73f RDI: 0000000000000005
-> RBP: ffff88814aa99980 R08: 0000000000000005 R09: 0000000000000000
-> R10: 00000000fffff000 R11: 0000000000094001 R12: ffff88814aa999a8
-> R13: ffff88814aa99bf4 R14: ffffc90000007ed8 R15: 0000000000000004
-> FS: 0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f579b4f6ec8 CR3: 000000000c571000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
-> <IRQ>
-> __sk_destruct+0x4d/0x770 net/core/sock.c:2130
-> rcu_do_batch kernel/rcu/tree.c:2115 [inline]
-> rcu_core+0x806/0x1ad0 kernel/rcu/tree.c:2377
-> __do_softirq+0x1d4/0x905 kernel/softirq.c:571
-> invoke_softirq kernel/softirq.c:445 [inline]
-> __irq_exit_rcu+0x114/0x190 kernel/softirq.c:650
-> irq_exit_rcu+0x9/0x20 kernel/softirq.c:662
-> sysvec_apic_timer_interrupt+0x97/0xc0 arch/x86/kernel/apic/apic.c:1106
-> </IRQ>
-> <TASK>
-> asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
-> RIP: 0010:write_comp_data+0x3c/0x90 kernel/kcov.c:236
-> Code: 01 00 00 49 89 f8 65 48 8b 14 25 c0 bb 03 00 a9 00 01 ff 00 74 0e 85 f6 74 59 8b 82 0c 16 00 00 85 c0 74 4f 8b 82 e8 15 00 00 <83> f8 03 75 44 48 8b 82 f0 15 00 00 8b 92 ec 15 00 00 48 8b 38 48
-> RSP: 0018:ffffc90003a7fbf8 EFLAGS: 00000246
-> RAX: 0000000000000000 RBX: ffffc90003a7b020 RCX: ffffffff814d76d1
-> RDX: ffff8880792f8000 RSI: 0000000000000000 RDI: 0000000000000007
-> RBP: ffff8880792f8000 R08: 0000000000000007 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000094001 R12: 0000000000000000
-> R13: ffffc90003a78000 R14: dffffc0000000000 R15: ffff8880792f85f8
-> stack_not_used include/linux/sched/task_stack.h:107 [inline]
-> check_stack_usage kernel/exit.c:776 [inline]
-> do_exit+0x17f1/0x29b0 kernel/exit.c:918
-> do_group_exit+0xd4/0x2a0 kernel/exit.c:1024
-> get_signal+0x2318/0x25b0 kernel/signal.c:2876
-> arch_do_signal_or_restart+0x79/0x5c0 arch/x86/kernel/signal.c:306
-> exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
-> exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
-> __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
-> syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:297
-> do_syscall_64+0x46/0xb0 arch/x86/entry/common.c:86
-> entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f579b4a1d39
-> Code: Unable to access opcode bytes at 0x7f579b4a1d0f.
-> RSP: 002b:00007f579b431308 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-> RAX: fffffffffffffe00 RBX: 00007f579b52a4d8 RCX: 00007f579b4a1d39
-> RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f579b52a4d8
-> RBP: 00007f579b52a4d0 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00007f579b4f72c0
-> R13: 00007f579b52a4dc R14: 00007f579b431400 R15: 0000000000022000
-> </TASK>
-> ----------------
-> Code disassembly (best guess):
-> 0: 01 00 add %eax,(%rax)
-> 2: 00 49 89 add %cl,-0x77(%rcx)
-> 5: f8 clc
-> 6: 65 48 8b 14 25 c0 bb mov %gs:0x3bbc0,%rdx
-> d: 03 00
-> f: a9 00 01 ff 00 test $0xff0100,%eax
-> 14: 74 0e je 0x24
-> 16: 85 f6 test %esi,%esi
-> 18: 74 59 je 0x73
-> 1a: 8b 82 0c 16 00 00 mov 0x160c(%rdx),%eax
-> 20: 85 c0 test %eax,%eax
-> 22: 74 4f je 0x73
-> 24: 8b 82 e8 15 00 00 mov 0x15e8(%rdx),%eax
-> * 2a: 83 f8 03 cmp $0x3,%eax <-- trapping instruction
-> 2d: 75 44 jne 0x73
-> 2f: 48 8b 82 f0 15 00 00 mov 0x15f0(%rdx),%rax
-> 36: 8b 92 ec 15 00 00 mov 0x15ec(%rdx),%edx
-> 3c: 48 8b 38 mov (%rax),%rdi
-> 3f: 48 rex.W
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> 
-> If the bug is already fixed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-> If you want to change bug's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the bug is a duplicate of another bug, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
-> 
+The warning is indeed gone with this fix.
 
--- 
-BR,
-Muhammad Usama Anjum
+
+Bj=C3=B6rn
 
