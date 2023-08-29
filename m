@@ -1,265 +1,112 @@
-Return-Path: <bpf+bounces-8911-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8912-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FAB978C48B
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 14:54:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6D8478C490
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 14:56:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A97FC1C20A68
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 12:54:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6DBC1C2012A
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 12:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF65A156DC;
-	Tue, 29 Aug 2023 12:54:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22B55156EC;
+	Tue, 29 Aug 2023 12:56:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30DD0156CD
-	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 12:54:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87412C433C7;
-	Tue, 29 Aug 2023 12:54:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1693313672;
-	bh=GcyGPLkLb8rNtT/R9cFRZs5D1B0x93bpSl3tVz5Y4SY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=R07wTul7foYmpwtSksnFxG/oA7sHNMDOyl3bWOc++6y0GLRW3xRMFrmgnxYXlxqnw
-	 GVeTDEgeJj9sQBoDotwJyQa0fm9p8TiTNz7ViF7E8osljzvy4vJKQ3ow21NbwLJ6O/
-	 WU+Ya8llMwh9HH8hA1Z6zXd+h1VsA9qL58KGu3s9Jw8Idbi0wzZ364xtFbCb67qDpa
-	 QdUiURJcdQEdM3zaw4/yDZG1L5umdbQdqTiR0WJyWCBS97jdD2A07p/WRf4BXRngVM
-	 fb+27if0ApxOZnVtAi0fz7Ir1ifEXn13SlyvJbUdboijF4yW6GD9sDGu4TFh11PIMv
-	 pPzdPYH141Erw==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Hou Tao <houtao@huaweicloud.com>, yonghong.song@linux.dev,
- bpf@vger.kernel.org
-Cc: linux-riscv@lists.infradead.org, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>
-Subject: Re: WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
-In-Reply-To: <87a5uaz4uh.fsf@all.your.base.are.belong.to.us>
-References: <87jztjmmy4.fsf@all.your.base.are.belong.to.us>
- <2f4f0dfc-ec06-8ac8-a56a-395cc2373def@linux.dev>
- <200dcce6-34ff-83e0-02fb-709a24403cc6@huaweicloud.com>
- <87zg2e88ds.fsf@all.your.base.are.belong.to.us>
- <64873e42-9be1-1812-b80d-5ea86b4677f0@huaweicloud.com>
- <87sf8684ex.fsf@all.your.base.are.belong.to.us>
- <878r9wswwy.fsf@all.your.base.are.belong.to.us>
- <fd07e0a3-f4da-b447-c47a-6e933220d452@linux.dev>
- <65c9e8d9-7682-2c8d-cd4d-9f0ca1213066@huaweicloud.com>
- <87a5uaz4uh.fsf@all.your.base.are.belong.to.us>
-Date: Tue, 29 Aug 2023 14:54:28 +0200
-Message-ID: <87cyz6f1q3.fsf@all.your.base.are.belong.to.us>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A2114AB3;
+	Tue, 29 Aug 2023 12:56:14 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76CF9D;
+	Tue, 29 Aug 2023 05:56:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=9fb4MYRP5fYSklYNqpx8Lj2woGj0yb+xRYXtbbot1Dw=; b=CabpNKtJo88GC2q+1Jpvh+ylAj
+	vrgwVo6Mk6S5Do3l92KY84wxZS7mArCCHFup3B7qexnXU+i67NJ24IvYelhdJD+sZlHzZPzhIFU1M
+	2OrjYQ/JzsIFttHbnW3su44f98kjPVDuCoJnmO8n51nYNTTZpK5R6H8YVkf6yqI6AMT4zHo0KFvRu
+	jBjGjnsdqWHVQt8opvQ/R3OJ+RcyXPAW0NoExa8vhc10cKEZL8BsFrwvHZxtZh5As+Gz54HRhKRfv
+	ibfOJLElp32qAPC9ik3TiHJiWe0yswVWR0dqgmKD7GlTK1Q0b86aC1MH0dF8T0NKoBfiCIotd9KQj
+	pODPlbmg==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qayGN-000Gqj-Rv; Tue, 29 Aug 2023 14:56:08 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qayGN-000PV2-HA; Tue, 29 Aug 2023 14:56:07 +0200
+Subject: Re: [syzbot] [bpf?] [net?] KASAN: slab-use-after-free Read in
+ xsk_diag_dump
+To: syzbot <syzbot+822d1359297e2694f873@syzkaller.appspotmail.com>,
+ andrii@kernel.org, ast@kernel.org, bjorn@kernel.org, bpf@vger.kernel.org,
+ davem@davemloft.net, edumazet@google.com, hawk@kernel.org,
+ john.fastabend@gmail.com, jonathan.lemon@gmail.com, kuba@kernel.org,
+ linux-kernel@vger.kernel.org, maciej.fijalkowski@intel.com,
+ magnus.karlsson@intel.com, netdev@vger.kernel.org, pabeni@redhat.com,
+ syzkaller-bugs@googlegroups.com
+References: <000000000000af3ba506040b7d0c@google.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <3d8fa470-8ca9-561c-8381-0687f9e69d10@iogearbox.net>
+Date: Tue, 29 Aug 2023 14:56:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <000000000000af3ba506040b7d0c@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/27015/Tue Aug 29 09:39:45 2023)
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+Hi Magnus,
 
-> Hou Tao <houtao@huaweicloud.com> writes:
->
->> Hi,
->>
->> On 8/27/2023 10:53 PM, Yonghong Song wrote:
->>>
->>>
->>> On 8/27/23 1:37 AM, Bj=C3=B6rn T=C3=B6pel wrote:
->>>> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
->>>>
->>>>> Hou Tao <houtao@huaweicloud.com> writes:
->>>>>
->>>>>> Hi,
->>>>>>
->>>>>> On 8/26/2023 5:23 PM, Bj=C3=B6rn T=C3=B6pel wrote:
->>>>>>> Hou Tao <houtao@huaweicloud.com> writes:
->>>>>>>
->>>>>>>> Hi,
->>>>>>>>
->>>>>>>> On 8/25/2023 11:28 PM, Yonghong Song wrote:
->>>>>>>>>
->>>>>>>>> On 8/25/23 3:32 AM, Bj=C3=B6rn T=C3=B6pel wrote:
->>>>>>>>>> I'm chasing a workqueue hang on RISC-V/qemu (TCG), using the bpf
->>>>>>>>>> selftests on bpf-next 9e3b47abeb8f.
->>>>>>>>>>
->>>>>>>>>> I'm able to reproduce the hang by multiple runs of:
->>>>>>>>>> =C2=A0=C2=A0 | ./test_progs -a link_api -a linked_list
->>>>>>>>>> I'm currently investigating that.
->>>>>>>>>>
->>>>>>>>>> But! Sometimes (every blue moon) I get a warn_on_once hit:
->>>>>>>>>> =C2=A0=C2=A0 | ------------[ cut here ]------------
->>>>>>>>>> =C2=A0=C2=A0 | WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c=
-:342
->>>>>>>>>> bpf_mem_refill+0x1fc/0x206
->>>>>>>>>> =C2=A0=C2=A0 | Modules linked in: bpf_testmod(OE)
->>>>>>>>>> =C2=A0=C2=A0 | CPU: 3 PID: 261 Comm: test_progs-cpuv Tainted: G=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 OE
->>>>>>>>>> N 6.5.0-rc5-01743-gdcb152bb8328 #2
->>>>>>>>>> =C2=A0=C2=A0 | Hardware name: riscv-virtio,qemu (DT)
->>>>>>>>>> =C2=A0=C2=A0 | epc : bpf_mem_refill+0x1fc/0x206
->>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 ra : irq_work_single+0x68/0x70
->>>>>>>>>> =C2=A0=C2=A0 | epc : ffffffff801b1bc4 ra : ffffffff8015fe84 sp :
->>>>>>>>>> ff2000000001be20
->>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 gp : ffffffff82d26138 tp : ff6000008477a800=
- t0 :
->>>>>>>>>> 0000000000046600
->>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 t1 : ffffffff812b6ddc t2 : 0000000000000000=
- s0 :
->>>>>>>>>> ff2000000001be70
->>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s1 : ff5ffffffffe8998 a0 : ff5ffffffffe8998=
- a1 :
->>>>>>>>>> ff600003fef4b000
->>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 a2 : 000000000000003f a3 : ffffffff80008250=
- a4 :
->>>>>>>>>> 0000000000000060
->>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 a5 : 0000000000000080 a6 : 0000000000000000=
- a7 :
->>>>>>>>>> 0000000000735049
->>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s2 : ff5ffffffffe8998 s3 : 0000000000000022=
- s4 :
->>>>>>>>>> 0000000000001000
->>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s5 : 0000000000000007 s6 : ff5ffffffffe8570=
- s7 :
->>>>>>>>>> ffffffff82d6bd30
->>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s8 : 000000000000003f s9 : ffffffff82d2c5e8=
- s10:
->>>>>>>>>> 000000000000ffff
->>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s11: ffffffff82d2c5d8 t3 : ffffffff81ea8f28=
- t4 :
->>>>>>>>>> 0000000000000000
->>>>>>>>>> =C2=A0=C2=A0 |=C2=A0 t5 : ff6000008fd28278 t6 : 0000000000040000
->>>>>>>>>> =C2=A0=C2=A0 | status: 0000000200000100 badaddr: 000000000000000=
-0 cause:
->>>>>>>>>> 0000000000000003
->>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff801b1bc4>] bpf_mem_refill+0x1fc/0x206
->>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8015fe84>] irq_work_single+0x68/0x70
->>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8015feb4>] irq_work_run_list+0x28/0x36
->>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8015fefa>] irq_work_run+0x38/0x66
->>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8000828a>] handle_IPI+0x3a/0xb4
->>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff800a5c3a>] handle_percpu_devid_irq+0xa4=
-/0x1f8
->>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8009fafa>] generic_handle_domain_irq+0x=
-28/0x36
->>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff800ae570>] ipi_mux_process+0xac/0xfa
->>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8000a8ea>] sbi_ipi_handle+0x2e/0x88
->>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8009fafa>] generic_handle_domain_irq+0x=
-28/0x36
->>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff807ee70e>] riscv_intc_irq+0x36/0x4e
->>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff812b5d3a>] handle_riscv_irq+0x54/0x86
->>>>>>>>>> =C2=A0=C2=A0 | [<ffffffff812b6904>] do_irq+0x66/0x98
->>>>>>>>>> =C2=A0=C2=A0 | ---[ end trace 0000000000000000 ]---
->>>>>>>>>>
->>>>>>>>>> Code:
->>>>>>>>>> =C2=A0=C2=A0 | static void free_bulk(struct bpf_mem_cache *c)
->>>>>>>>>> =C2=A0=C2=A0 | {
->>>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 struct bpf_mem_cache *tgt=
- =3D c->tgt;
->>>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 struct llist_node *llnode=
-, *t;
->>>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long flags;
->>>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 int cnt;
->>>>>>>>>> =C2=A0=C2=A0 |
->>>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 WARN_ON_ONCE(tgt->unit_si=
-ze !=3D c->unit_size);
->>>>>>>>>> =C2=A0=C2=A0 | ...
->>>>>>>>>>
->>>>>>>>>> I'm not well versed in the memory allocator; Before I dive into
->>>>>>>>>> it --
->>>>>>>>>> has anyone else hit it? Ideas on why the warn_on_once is hit?
->>>>>>>>> Maybe take a look at the patch
->>>>>>>>> =C2=A0=C2=A0 822fb26bdb55=C2=A0 bpf: Add a hint to allocated obje=
-cts.
->>>>>>>>>
->>>>>>>>> In the above patch, we have
->>>>>>>>>
->>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
->>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Remember bpf_mem_ca=
-che that allocated this object.
->>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * The hint is not acc=
-urate.
->>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 c->tgt =3D *(struct bpf_mem=
-_cache **)llnode;
->>>>>>>>>
->>>>>>>>> I suspect that the warning may be related to the above.
->>>>>>>>> I tried the above ./test_progs command line (running multiple
->>>>>>>>> at the same time) and didn't trigger the issue.
->>>>>>>> The extra 8-bytes before the freed pointer is used to save the
->>>>>>>> pointer
->>>>>>>> of the original bpf memory allocator where the freed pointer came
->>>>>>>> from,
->>>>>>>> so unit_free() could free the pointer back to the original
->>>>>>>> allocator to
->>>>>>>> prevent alloc-and-free unbalance.
->>>>>>>>
->>>>>>>> I suspect that a wrong pointer was passed to bpf_obj_drop, but do
->>>>>>>> not
->>>>>>>> find anything suspicious after checking linked_list. Another
->>>>>>>> possibility
->>>>>>>> is that there is write-after-free problem which corrupts the extra
->>>>>>>> 8-bytes before the freed pointer. Could you please apply the
->>>>>>>> following
->>>>>>>> debug patch to check whether or not the extra 8-bytes are
->>>>>>>> corrupted ?
->>>>>>> Thanks for getting back!
->>>>>>>
->>>>>>> I took your patch for a run, and there's a hit:
->>>>>>> =C2=A0=C2=A0 | bad cache ff5ffffffffe8570: got size 96 work
->>>>>>> ffffffff801b19c8, cache ff5ffffffffe8980 exp size 128 work
->>>>>>> ffffffff801b19c8
->>>>>>
->>>>>> The extra 8-bytes are not corrupted. Both of these two
->>>>>> bpf_mem_cache are
->>>>>> valid and there are in the cache array defined in bpf_mem_caches. BPF
->>>>>> memory allocator allocated the pointer from 96-bytes sized-cache,
->>>>>> but it
->>>>>> tried to free the pointer through 128-bytes sized-cache.
->>>>>>
->>>>>> Now I suspect there is no 96-bytes slab in your system and ksize(ptr=
- -
->>>>>> LLIST_NODE_SZ) returns 128, so bpf memory allocator selected the
->>>>>> 128-byte sized-cache instead of 96-bytes sized-cache. Could you plea=
-se
->>>>>> check the value of KMALLOC_MIN_SIZE in your kernel .config and
->>>>>> using the
->>>>>> following command to check whether there is 96-bytes slab in your
->>>>>> system:
->>>>>
->>>>> KMALLOC_MIN_SIZE is 64.
->>>>>
->>>>>> $ cat /proc/slabinfo |grep kmalloc-96
->>>>>> dma-kmalloc-96=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0 96=C2=A0=C2=A0 42=C2=
-=A0=C2=A0=C2=A0 1 : tunables=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0 0
->>>>>> 0 : slabdata=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
->>>>>> kmalloc-96=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 186=
-5=C2=A0=C2=A0 2268=C2=A0=C2=A0=C2=A0=C2=A0 96=C2=A0=C2=A0 42=C2=A0=C2=A0=C2=
-=A0 1 : tunables=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0 0
->>>>>> 0 : slabdata=C2=A0=C2=A0=C2=A0=C2=A0 54=C2=A0=C2=A0=C2=A0=C2=A0 54=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
->>>>>>
->>>>>> In my system, slab has 96-bytes cached, so grep outputs something,
->>>>>> but I
->>>>>> think there will no output in your system.
->>>>>
->>>>> You're right! No kmalloc-96.
->>>>
->>>> To get rid of the warning, limit available sizes from
->>>> bpf_mem_alloc_init()?
->>
->> It is not enough. We need to adjust size_index accordingly during
->> initialization. Could you please try the attached patch below ? It is
->> not a formal patch and I am considering to disable prefilling for these
->> redirected bpf_mem_caches.
->
-> Sorry for the slow response; I'll take it for a spin today.
+On 8/29/23 10:20 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    5c905279a1b7 Merge branch 'pds_core-error-handling-fixes'
+> git tree:       net
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=16080070680000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=1e4a882f77ed77bd
+> dashboard link: https://syzkaller.appspot.com/bug?extid=822d1359297e2694f873
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ec63a7a80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=109926eba80000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/98add120b6e5/disk-5c905279.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/c9e9009eadbd/vmlinux-5c905279.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/b840142cc0c1/bzImage-5c905279.xz
+> 
+> The issue was bisected to:
+> 
+> commit 18b1ab7aa76bde181bdb1ab19a87fa9523c32f21
+> Author: Magnus Karlsson <magnus.karlsson@intel.com>
+> Date:   Mon Feb 28 09:45:52 2022 +0000
+> 
+>      xsk: Fix race at socket teardown
 
-The warning is indeed gone with this fix.
+please take a look when you get a chance.
 
-
-Bj=C3=B6rn
+Thanks a lot,
+Daniel
 
