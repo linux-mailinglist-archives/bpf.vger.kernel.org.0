@@ -1,134 +1,130 @@
-Return-Path: <bpf+bounces-8891-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8892-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3044978C11F
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 11:21:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26F8E78C189
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 11:32:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 613E91C209D7
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 09:21:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D43161C20997
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 09:32:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24ABD14F69;
-	Tue, 29 Aug 2023 09:21:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D187F14F7B;
+	Tue, 29 Aug 2023 09:31:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCA9214AB7
-	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 09:21:00 +0000 (UTC)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC0112F
-	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 02:20:59 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-401b5516104so38047435e9.2
-        for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 02:20:59 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A580F14F77
+	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 09:31:40 +0000 (UTC)
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D935E67
+	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 02:31:11 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6bd8639e7e5so3068043a34.1
+        for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 02:31:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1693300858; x=1693905658;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hiOjkxFy5FowkcWV2fKnpQB+5IVohs2oETRtiJnNlHU=;
-        b=dulb1EQvHf6ELfIkbjdAQFI7Lk1zIHVDoWjs4ewleCbGalHUB6bnqvUWGAFwcV8p61
-         DdZIiPbaPqsG/BimAHYywC7zg7VF6V0lveGPksxxq1L5cV/GlWRcxnS73oiKT2W2t4Qo
-         TgJKc3rJfHIMB1vlVBgc5YBxwKBC7RVtC0FxR5Xmcs+f9Qv+CZJkCXycCLNXwjjU4b1H
-         eKe4zSzkqu22XzGqezPpptspVrXAjL6fp56v4K0AlPiWLfbbKfCFMr7UgQoZklj3P8XK
-         sMI640zJuXcYD9xknMw2lEXIjdyPzmCjGT6ALvY4zImO0phYA/VuYP15wFU3DZk07YzH
-         inTA==
+        d=purestorage.com; s=google2022; t=1693301468; x=1693906268;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=guePXrPopLgOPcdT283gc5sTu7sw+Yj419mnndMktxQ=;
+        b=G46WNf6fPWXXmiaXK3LOGve4BCV8l2KqIxaloMmV3wkqAr3ZO5uSD1EkVsUytFDNd3
+         ZW4wQc3URjkmfHrKBc1uGO5VYKoynZgFmnk5k16OkThVEiarySxdGyUnYRHng+Yt/fSH
+         NCB07AZkoGuNVEDW5GYDoeYyUd2f5KfLOmyRNRwsctkVhLExnZjkRl3BrldDlq3AP6kd
+         uwdb9K9QgkwThOczV4x6f3yoKSVIYJqxQiS3n/krZDQQ9uZC7lcHl7RdUJiUjBbtpruE
+         uERXMKeg8Q93dAefTNg/TtxWxcUFrwtd/D7UADUeJAwcRqLx26yJ87Kz1LBjcAayiaE3
+         lj3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693300858; x=1693905658;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1693301468; x=1693906268;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hiOjkxFy5FowkcWV2fKnpQB+5IVohs2oETRtiJnNlHU=;
-        b=OfBz9MAtkEmmlGZmokP5iVAfA2Ph2LDTFCf0qSlMZcKu4OYDd6qY8PqipSb9s7thy9
-         ANcJ/2Oy+/ePgcGqIj9aQAo7TgZ4iHf8OuSmcv+yLvJMfxy3eWWh4L9csVuebxVhd/bx
-         fuPqXs4ia2bN0sPC2AIj0SXyjGGPyXhVGfMtuxK34ak/GCT1oUQqYMh+B4nM82bZyn0Y
-         dSeMIQ1US1ggncKF8o3CguRGSNY5HhR36l3gcC/cclMWQhwgnAdq6S0gQfLs2Zrbo93+
-         iw61Va0xdCcF5Un/wGojp5JqkrxhFV6mBN532t/Jkbla4rJGP9HgjLQVkJrq6l3Zh0yG
-         GVxw==
-X-Gm-Message-State: AOJu0YxJRB8ALFXhkl5IMhotpaJ+j+w7cLHjLvGrbNeY9vyfGIMhOqsi
-	OsF4C0b+XT4E0IgMs0ZfIHPlmg==
-X-Google-Smtp-Source: AGHT+IEVPg6LujE2IyfZ6L24VRQ8JySGzoBh9Pi9CJ/uMz0d5kT+P+FyBoH/EZ2hAcBCQFz0+qKJwQ==
-X-Received: by 2002:a1c:f304:0:b0:3fb:e4ce:cc65 with SMTP id q4-20020a1cf304000000b003fbe4cecc65mr20427498wmq.25.1693300857861;
-        Tue, 29 Aug 2023 02:20:57 -0700 (PDT)
-Received: from ?IPV6:2a02:8011:e80c:0:716a:ac4c:a6ab:1706? ([2a02:8011:e80c:0:716a:ac4c:a6ab:1706])
-        by smtp.gmail.com with ESMTPSA id a9-20020a05600c224900b003fef5402d2dsm16682253wmm.8.2023.08.29.02.20.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 02:20:57 -0700 (PDT)
-Message-ID: <a35d9a2d-54a0-49ec-9ed1-8fcf1369d3cc@isovalent.com>
-Date: Tue, 29 Aug 2023 10:20:56 +0100
+        bh=guePXrPopLgOPcdT283gc5sTu7sw+Yj419mnndMktxQ=;
+        b=hst4TsKMABjg0zzg47oU6mgkTNYcsjVz8Guq4+yt1lISTg+tUwevuxVjSn0nVN3oJk
+         3vcxyddpybeFOaTwXzUAZV8FtBzyJD/4u1m2PZgrj8gHl337o4NpH0kbfsXgAkRPep7h
+         G+dCMxnhoDniTHD/TAmTrJy/idZhK9A/4d743LshE2WaAjpSo9PnkJk9f4EH9Npejnxl
+         hMo4bxGGmTN2kXSBPZ9TxwHlE3oE4OqBYoquSP5FXu+pL4KMNJhAf/5rlvaGL3osevv7
+         4TG0wrdoTJP1ZejQwjZg1PoJCh9HL4OZ9G9GUkTEf1Q/CpGzvasobxZGU7Tk/ZUgAAwg
+         lbgw==
+X-Gm-Message-State: AOJu0YymwmHitZu/X5oPjDoOPdK71P/g8dq91eddLuauy4Od9Mjepqef
+	vEsSwl5za0SAtN/o/eACukxfvA==
+X-Google-Smtp-Source: AGHT+IGkPraI08Qww1nC+lwqJvqyudyb6VsEAq0bqdSWvhaRu2JO4pyOm2p9Ozj4qi8c/yS/CCrB5A==
+X-Received: by 2002:a05:6830:119:b0:6b8:7a79:db37 with SMTP id i25-20020a056830011900b006b87a79db37mr16733428otp.22.1693301467999;
+        Tue, 29 Aug 2023 02:31:07 -0700 (PDT)
+Received: from medusa.lab.kspace.sh (c-98-207-191-243.hsd1.ca.comcast.net. [98.207.191.243])
+        by smtp.googlemail.com with ESMTPSA id g7-20020a63ad07000000b005649cee408fsm8741081pgf.0.2023.08.29.02.31.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 02:31:07 -0700 (PDT)
+Date: Tue, 29 Aug 2023 02:31:05 -0700
+From: Mohamed Khalfella <mkhalfella@purestorage.com>
+To: Eric Dumazet <edumazet@google.com>
+Cc: willemjdebruijn <willemdebruijn.kernel@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	David Howells <dhowells@redhat.com>,
+	Jesper Dangaard Brouer <brouer@redhat.com>,
+	Kees Cook <keescook@chromium.org>,
+	"open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:BPF [MISC]" <bpf@vger.kernel.org>
+Subject: Re: [PATCH] skbuff: skb_segment, Update nfrags after calling zero
+ copy functions
+Message-ID: <20230829093105.GA611013@medusa>
+References: <20230828233210.36532-1-mkhalfella@purestorage.com>
+ <64ed7188a2745_9cf208e1@penguin.notmuch>
+ <20230829065010.GO4091703@medusa>
+ <CANn89iLbNF_kGG9S3R9Y8gpoEM71Wesoi1mTA3-at4Furc+0Fg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 bpf-next 09/10] bpftool: Add perf event names
-Content-Language: en-GB
-To: Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org, daniel@iogearbox.net,
- john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, rostedt@goodmis.org, mhiramat@kernel.org
-Cc: bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- Jiri Olsa <olsajiri@gmail.com>
-References: <20230709025630.3735-1-laoar.shao@gmail.com>
- <20230709025630.3735-10-laoar.shao@gmail.com>
-From: Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20230709025630.3735-10-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANn89iLbNF_kGG9S3R9Y8gpoEM71Wesoi1mTA3-at4Furc+0Fg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+	SPF_HELO_NONE,T_SPF_PERMERROR autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 09/07/2023 03:56, Yafang Shao wrote:
-> Add new functions and macros to get perf event names. These names except
-> the perf_type_name are all copied from
-> tool/perf/util/{parse-events,evsel}.c, so that in the future we will
-> have a good chance to use the same code.
+On 2023-08-29 10:07:59 +0200, Eric Dumazet wrote:
+> On Tue, Aug 29, 2023 at 8:50 AM Mohamed Khalfella
+> <mkhalfella@purestorage.com> wrote:
+> >
+> > On 2023-08-28 21:18:16 -0700, willemjdebruijn wrote:
+> > > Small point: nfrags is not the only state that needs to be refreshed
+> > > after a fags realloc, also frag.
+> >
+> > I am new to this code. Can you help me understand why frag needs to be
+> > updated too? My reading of this code is that frag points to frags array
+> > in shared info. As long as shared info pointer remain the same frag
+> > pointer should remain valid.
+> >
 > 
-> Suggested-by: Jiri Olsa <olsajiri@gmail.com>
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/bpf/bpftool/link.c | 67 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 67 insertions(+)
+> skb_copy_ubufs() could actually call skb_unclone() and thus skb->head
+> could be re-allocated.
 > 
-> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-> index a4f5a436777f..8e4d9176a6e8 100644
-> --- a/tools/bpf/bpftool/link.c
-> +++ b/tools/bpf/bpftool/link.c
+> I guess that if you run your patch (and a repro of the bug ?) with
+> KASAN enabled kernel, you should see a possible use-after-free ?
+> 
+> To force the skb_unclone() path, having a tcpdump catching all packets
+> would be enough I think.
+> 
 
-[...]
+Okay, I see it now. I have not tested this patch with tcpdump capturing
+packets at the same time. Also, during my testing I have not seen the
+value of skb->head changnig. Now you are mentioning it it, I will make
+sure to test with tcpdump running and see skb->head changing. Thank you
+for pointing that out.
 
-> +#define perf_event_name(array, id) ({			\
-> +	const char *event_str = NULL;			\
-> +							\
-> +	if ((id) >= 0 && (id) < ARRAY_SIZE(array))	\
-
-Hi Yafang,
-
-I'm observing build warnings when building bpftool after you series:
-
-    link.c: In function ‘perf_config_hw_cache_str’:
-    link.c:86:18: warning: comparison of unsigned expression in ‘>= 0’ is always true [-Wtype-limits]
-       86 |         if ((id) >= 0 && (id) < ARRAY_SIZE(array))      \
-          |                  ^~
-    link.c:320:20: note: in expansion of macro ‘perf_event_name’
-      320 |         hw_cache = perf_event_name(evsel__hw_cache, config & 0xff);
-          |                    ^~~~~~~~~~~~~~~
-    [... more of the same for the other calls to perf_event_name ...]
-
-(using GCC 11.4.0)
-
-Could you please send a follow-up to suppress them? We're always passing
-unsigned, so it should be safe to drop the check on (id) >= 0.
-
-Thanks,
-Quentin
+For frag, I guess something like frag = &skb_shinfo(list_skb)->frags[i];
+should do the job. I have not tested it though. I will need to do more
+testing before posting updated patch.
 
