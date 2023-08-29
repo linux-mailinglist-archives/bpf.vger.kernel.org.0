@@ -1,258 +1,183 @@
-Return-Path: <bpf+bounces-8881-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8882-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42B6578BF32
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 09:27:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07A0678BF5B
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 09:42:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7449F1C209AE
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 07:26:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B004280FCC
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 07:42:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E7086134;
-	Tue, 29 Aug 2023 07:26:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0235163D8;
+	Tue, 29 Aug 2023 07:42:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85537139A
-	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 07:26:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2696C433C8;
-	Tue, 29 Aug 2023 07:26:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1693294009;
-	bh=u4VI9NRg65hm1fWfsOM/yBMSKJVh+T2jEXUR/FXNPpg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=LAYcbJK/af6mgohRFClvMIAaF1v+Tz2SkZk8ysnArIFp6jcYjV2DnWtC3puQZ/OBm
-	 UbCeP7EpE10YfYTkzPVLf6UEv/CFxi5Y3xznTG+MSlhdSKcc41bJEq0afIt8j0GGob
-	 aE8oeIoOfJ9OJiEcQeYqvdqTqqr6eQ1U7n5xVV1HH4HPvG/ZPJFHm2GwuErXODKEtb
-	 TmiAHzGu6GfMB9T+d1ae+kgLJ7vFD/ATD/oSfAN7hhczne8BGVmOR5t+uy7B1lcHXb
-	 G112SIpjviudP7jyuIs96C/mnIwUcJdy2ystofYzDAcPMAXPi5pM+DVTSSgwI2l8zi
-	 kZ7yvaG6V2TKw==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Hou Tao <houtao@huaweicloud.com>, yonghong.song@linux.dev,
- bpf@vger.kernel.org
-Cc: linux-riscv@lists.infradead.org, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>
-Subject: Re: WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
-In-Reply-To: <65c9e8d9-7682-2c8d-cd4d-9f0ca1213066@huaweicloud.com>
-References: <87jztjmmy4.fsf@all.your.base.are.belong.to.us>
- <2f4f0dfc-ec06-8ac8-a56a-395cc2373def@linux.dev>
- <200dcce6-34ff-83e0-02fb-709a24403cc6@huaweicloud.com>
- <87zg2e88ds.fsf@all.your.base.are.belong.to.us>
- <64873e42-9be1-1812-b80d-5ea86b4677f0@huaweicloud.com>
- <87sf8684ex.fsf@all.your.base.are.belong.to.us>
- <878r9wswwy.fsf@all.your.base.are.belong.to.us>
- <fd07e0a3-f4da-b447-c47a-6e933220d452@linux.dev>
- <65c9e8d9-7682-2c8d-cd4d-9f0ca1213066@huaweicloud.com>
-Date: Tue, 29 Aug 2023 09:26:46 +0200
-Message-ID: <87a5uaz4uh.fsf@all.your.base.are.belong.to.us>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D601163CB
+	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 07:42:08 +0000 (UTC)
+Received: from out-243.mta1.migadu.com (out-243.mta1.migadu.com [IPv6:2001:41d0:203:375::f3])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B13D1A2;
+	Tue, 29 Aug 2023 00:42:04 -0700 (PDT)
+Message-ID: <ca10040f-b7fa-7c43-1c89-6706d13b2747@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1693294923;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kzCYK+m1dXoYq1GdX9wRq/xLcjMjzBwHZbogX1zaiXI=;
+	b=wx9qXfUOb6FlguPiqwy6R82+yQxWta9+fR66YAQ2/1ZdnqJnQPp1kHU4jR8nRlngim3iOe
+	HThmnzNEUSaEuQwHiVi+WxF88JyUG2K+H0WcvTm70cW04LSIUXyP6AZ74VPb7aBxP9rojs
+	L1LrBvpa76A1LVLwfY5LHU6MjnCVZUs=
+Date: Tue, 29 Aug 2023 15:41:43 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 02/11] xfs: add NOWAIT semantics for readdir
+Content-Language: en-US
+To: Matthew Wilcox <willy@infradead.org>
+Cc: io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+ Dominique Martinet <asmadeus@codewreck.org>,
+ Pavel Begunkov <asml.silence@gmail.com>,
+ Christian Brauner <brauner@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Stefan Roesch <shr@fb.com>,
+ Clay Harris <bugs@claycon.org>, Dave Chinner <david@fromorbit.com>,
+ "Darrick J . Wong" <djwong@kernel.org>, linux-fsdevel@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-cachefs@redhat.com, ecryptfs@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-unionfs@vger.kernel.org,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
+ linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+ linux-mm@kvack.org, linux-nilfs@vger.kernel.org, devel@lists.orangefs.org,
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+ linux-mtd@lists.infradead.org, Wanpeng Li <wanpengli@tencent.com>
+References: <20230827132835.1373581-1-hao.xu@linux.dev>
+ <20230827132835.1373581-3-hao.xu@linux.dev>
+ <ZOu1xYS6LRmPgEiV@casper.infradead.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Hao Xu <hao.xu@linux.dev>
+In-Reply-To: <ZOu1xYS6LRmPgEiV@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Hou Tao <houtao@huaweicloud.com> writes:
+On 8/28/23 04:44, Matthew Wilcox wrote:
+> On Sun, Aug 27, 2023 at 09:28:26PM +0800, Hao Xu wrote:
+>> +++ b/fs/xfs/libxfs/xfs_da_btree.c
+>> @@ -2643,16 +2643,32 @@ xfs_da_read_buf(
+>>   	struct xfs_buf_map	map, *mapp = &map;
+>>   	int			nmap = 1;
+>>   	int			error;
+>> +	int			buf_flags = 0;
+>>   
+>>   	*bpp = NULL;
+>>   	error = xfs_dabuf_map(dp, bno, flags, whichfork, &mapp, &nmap);
+>>   	if (error || !nmap)
+>>   		goto out_free;
+>>   
+>> +	/*
+>> +	 * NOWAIT semantics mean we don't wait on the buffer lock nor do we
+>> +	 * issue IO for this buffer if it is not already in memory. Caller will
+>> +	 * retry. This will return -EAGAIN if the buffer is in memory and cannot
+>> +	 * be locked, and no buffer and no error if it isn't in memory.  We
+>> +	 * translate both of those into a return state of -EAGAIN and *bpp =
+>> +	 * NULL.
+>> +	 */
+> 
+> I would not include this comment.
 
-> Hi,
->
-> On 8/27/2023 10:53 PM, Yonghong Song wrote:
->>
->>
->> On 8/27/23 1:37 AM, Bj=C3=B6rn T=C3=B6pel wrote:
->>> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
->>>
->>>> Hou Tao <houtao@huaweicloud.com> writes:
->>>>
->>>>> Hi,
->>>>>
->>>>> On 8/26/2023 5:23 PM, Bj=C3=B6rn T=C3=B6pel wrote:
->>>>>> Hou Tao <houtao@huaweicloud.com> writes:
->>>>>>
->>>>>>> Hi,
->>>>>>>
->>>>>>> On 8/25/2023 11:28 PM, Yonghong Song wrote:
->>>>>>>>
->>>>>>>> On 8/25/23 3:32 AM, Bj=C3=B6rn T=C3=B6pel wrote:
->>>>>>>>> I'm chasing a workqueue hang on RISC-V/qemu (TCG), using the bpf
->>>>>>>>> selftests on bpf-next 9e3b47abeb8f.
->>>>>>>>>
->>>>>>>>> I'm able to reproduce the hang by multiple runs of:
->>>>>>>>> =C2=A0=C2=A0 | ./test_progs -a link_api -a linked_list
->>>>>>>>> I'm currently investigating that.
->>>>>>>>>
->>>>>>>>> But! Sometimes (every blue moon) I get a warn_on_once hit:
->>>>>>>>> =C2=A0=C2=A0 | ------------[ cut here ]------------
->>>>>>>>> =C2=A0=C2=A0 | WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:=
-342
->>>>>>>>> bpf_mem_refill+0x1fc/0x206
->>>>>>>>> =C2=A0=C2=A0 | Modules linked in: bpf_testmod(OE)
->>>>>>>>> =C2=A0=C2=A0 | CPU: 3 PID: 261 Comm: test_progs-cpuv Tainted: G=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 OE
->>>>>>>>> N 6.5.0-rc5-01743-gdcb152bb8328 #2
->>>>>>>>> =C2=A0=C2=A0 | Hardware name: riscv-virtio,qemu (DT)
->>>>>>>>> =C2=A0=C2=A0 | epc : bpf_mem_refill+0x1fc/0x206
->>>>>>>>> =C2=A0=C2=A0 |=C2=A0 ra : irq_work_single+0x68/0x70
->>>>>>>>> =C2=A0=C2=A0 | epc : ffffffff801b1bc4 ra : ffffffff8015fe84 sp :
->>>>>>>>> ff2000000001be20
->>>>>>>>> =C2=A0=C2=A0 |=C2=A0 gp : ffffffff82d26138 tp : ff6000008477a800 =
-t0 :
->>>>>>>>> 0000000000046600
->>>>>>>>> =C2=A0=C2=A0 |=C2=A0 t1 : ffffffff812b6ddc t2 : 0000000000000000 =
-s0 :
->>>>>>>>> ff2000000001be70
->>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s1 : ff5ffffffffe8998 a0 : ff5ffffffffe8998 =
-a1 :
->>>>>>>>> ff600003fef4b000
->>>>>>>>> =C2=A0=C2=A0 |=C2=A0 a2 : 000000000000003f a3 : ffffffff80008250 =
-a4 :
->>>>>>>>> 0000000000000060
->>>>>>>>> =C2=A0=C2=A0 |=C2=A0 a5 : 0000000000000080 a6 : 0000000000000000 =
-a7 :
->>>>>>>>> 0000000000735049
->>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s2 : ff5ffffffffe8998 s3 : 0000000000000022 =
-s4 :
->>>>>>>>> 0000000000001000
->>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s5 : 0000000000000007 s6 : ff5ffffffffe8570 =
-s7 :
->>>>>>>>> ffffffff82d6bd30
->>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s8 : 000000000000003f s9 : ffffffff82d2c5e8 =
-s10:
->>>>>>>>> 000000000000ffff
->>>>>>>>> =C2=A0=C2=A0 |=C2=A0 s11: ffffffff82d2c5d8 t3 : ffffffff81ea8f28 =
-t4 :
->>>>>>>>> 0000000000000000
->>>>>>>>> =C2=A0=C2=A0 |=C2=A0 t5 : ff6000008fd28278 t6 : 0000000000040000
->>>>>>>>> =C2=A0=C2=A0 | status: 0000000200000100 badaddr: 0000000000000000=
- cause:
->>>>>>>>> 0000000000000003
->>>>>>>>> =C2=A0=C2=A0 | [<ffffffff801b1bc4>] bpf_mem_refill+0x1fc/0x206
->>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8015fe84>] irq_work_single+0x68/0x70
->>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8015feb4>] irq_work_run_list+0x28/0x36
->>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8015fefa>] irq_work_run+0x38/0x66
->>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8000828a>] handle_IPI+0x3a/0xb4
->>>>>>>>> =C2=A0=C2=A0 | [<ffffffff800a5c3a>] handle_percpu_devid_irq+0xa4/=
-0x1f8
->>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8009fafa>] generic_handle_domain_irq+0x2=
-8/0x36
->>>>>>>>> =C2=A0=C2=A0 | [<ffffffff800ae570>] ipi_mux_process+0xac/0xfa
->>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8000a8ea>] sbi_ipi_handle+0x2e/0x88
->>>>>>>>> =C2=A0=C2=A0 | [<ffffffff8009fafa>] generic_handle_domain_irq+0x2=
-8/0x36
->>>>>>>>> =C2=A0=C2=A0 | [<ffffffff807ee70e>] riscv_intc_irq+0x36/0x4e
->>>>>>>>> =C2=A0=C2=A0 | [<ffffffff812b5d3a>] handle_riscv_irq+0x54/0x86
->>>>>>>>> =C2=A0=C2=A0 | [<ffffffff812b6904>] do_irq+0x66/0x98
->>>>>>>>> =C2=A0=C2=A0 | ---[ end trace 0000000000000000 ]---
->>>>>>>>>
->>>>>>>>> Code:
->>>>>>>>> =C2=A0=C2=A0 | static void free_bulk(struct bpf_mem_cache *c)
->>>>>>>>> =C2=A0=C2=A0 | {
->>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 struct bpf_mem_cache *tgt =
-=3D c->tgt;
->>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 struct llist_node *llnode,=
- *t;
->>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long flags;
->>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 int cnt;
->>>>>>>>> =C2=A0=C2=A0 |
->>>>>>>>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 WARN_ON_ONCE(tgt->unit_siz=
-e !=3D c->unit_size);
->>>>>>>>> =C2=A0=C2=A0 | ...
->>>>>>>>>
->>>>>>>>> I'm not well versed in the memory allocator; Before I dive into
->>>>>>>>> it --
->>>>>>>>> has anyone else hit it? Ideas on why the warn_on_once is hit?
->>>>>>>> Maybe take a look at the patch
->>>>>>>> =C2=A0=C2=A0 822fb26bdb55=C2=A0 bpf: Add a hint to allocated objec=
-ts.
->>>>>>>>
->>>>>>>> In the above patch, we have
->>>>>>>>
->>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
->>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Remember bpf_mem_cac=
-he that allocated this object.
->>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * The hint is not accu=
-rate.
->>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 c->tgt =3D *(struct bpf_mem_=
-cache **)llnode;
->>>>>>>>
->>>>>>>> I suspect that the warning may be related to the above.
->>>>>>>> I tried the above ./test_progs command line (running multiple
->>>>>>>> at the same time) and didn't trigger the issue.
->>>>>>> The extra 8-bytes before the freed pointer is used to save the
->>>>>>> pointer
->>>>>>> of the original bpf memory allocator where the freed pointer came
->>>>>>> from,
->>>>>>> so unit_free() could free the pointer back to the original
->>>>>>> allocator to
->>>>>>> prevent alloc-and-free unbalance.
->>>>>>>
->>>>>>> I suspect that a wrong pointer was passed to bpf_obj_drop, but do
->>>>>>> not
->>>>>>> find anything suspicious after checking linked_list. Another
->>>>>>> possibility
->>>>>>> is that there is write-after-free problem which corrupts the extra
->>>>>>> 8-bytes before the freed pointer. Could you please apply the
->>>>>>> following
->>>>>>> debug patch to check whether or not the extra 8-bytes are
->>>>>>> corrupted ?
->>>>>> Thanks for getting back!
->>>>>>
->>>>>> I took your patch for a run, and there's a hit:
->>>>>> =C2=A0=C2=A0 | bad cache ff5ffffffffe8570: got size 96 work
->>>>>> ffffffff801b19c8, cache ff5ffffffffe8980 exp size 128 work
->>>>>> ffffffff801b19c8
->>>>>
->>>>> The extra 8-bytes are not corrupted. Both of these two
->>>>> bpf_mem_cache are
->>>>> valid and there are in the cache array defined in bpf_mem_caches. BPF
->>>>> memory allocator allocated the pointer from 96-bytes sized-cache,
->>>>> but it
->>>>> tried to free the pointer through 128-bytes sized-cache.
->>>>>
->>>>> Now I suspect there is no 96-bytes slab in your system and ksize(ptr -
->>>>> LLIST_NODE_SZ) returns 128, so bpf memory allocator selected the
->>>>> 128-byte sized-cache instead of 96-bytes sized-cache. Could you please
->>>>> check the value of KMALLOC_MIN_SIZE in your kernel .config and
->>>>> using the
->>>>> following command to check whether there is 96-bytes slab in your
->>>>> system:
->>>>
->>>> KMALLOC_MIN_SIZE is 64.
->>>>
->>>>> $ cat /proc/slabinfo |grep kmalloc-96
->>>>> dma-kmalloc-96=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0 96=C2=A0=C2=A0 42=C2=
-=A0=C2=A0=C2=A0 1 : tunables=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0 0
->>>>> 0 : slabdata=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
->>>>> kmalloc-96=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1865=
-=C2=A0=C2=A0 2268=C2=A0=C2=A0=C2=A0=C2=A0 96=C2=A0=C2=A0 42=C2=A0=C2=A0=C2=
-=A0 1 : tunables=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0 0
->>>>> 0 : slabdata=C2=A0=C2=A0=C2=A0=C2=A0 54=C2=A0=C2=A0=C2=A0=C2=A0 54=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
->>>>>
->>>>> In my system, slab has 96-bytes cached, so grep outputs something,
->>>>> but I
->>>>> think there will no output in your system.
->>>>
->>>> You're right! No kmalloc-96.
->>>
->>> To get rid of the warning, limit available sizes from
->>> bpf_mem_alloc_init()?
->
-> It is not enough. We need to adjust size_index accordingly during
-> initialization. Could you please try the attached patch below ? It is
-> not a formal patch and I am considering to disable prefilling for these
-> redirected bpf_mem_caches.
+No strong comment here, since this patch is mostly from Dave, it's
+better if Dave can ack this.
 
-Sorry for the slow response; I'll take it for a spin today.
+> 
+>> +	if (flags & XFS_DABUF_NOWAIT)
+>> +		buf_flags |= XBF_TRYLOCK | XBF_INCORE;
+>>   	error = xfs_trans_read_buf_map(mp, tp, mp->m_ddev_targp, mapp, nmap, 0,
+>>   			&bp, ops);
+> 
+> what tsting did you do with this?  Because you don't actually _use_
+> buf_flags anywhere in this patch (presumably they should be the
+> sixth argument to xfs_trans_read_buf_map() instead of 0).  So I can only
+> conclude that either you didn't test, or your testing was inadequate.
+> 
 
 
-Bj=C3=B6rn
+The tests I've done are listed in the cover-letter, this one is missed, 
+the tricky place is it's hard to get this kind of mistake since it runs
+well without nowait logic...I'll fix it in next version.
+
+>>   	if (error)
+>>   		goto out_free;
+>> +	if (!bp) {
+>> +		ASSERT(flags & XFS_DABUF_NOWAIT);
+> 
+> I don't think this ASSERT is appropriate.
+> 
+>> @@ -391,10 +401,17 @@ xfs_dir2_leaf_getdents(
+>>   				bp = NULL;
+>>   			}
+>>   
+>> -			if (*lock_mode == 0)
+>> -				*lock_mode = xfs_ilock_data_map_shared(dp);
+>> +			if (*lock_mode == 0) {
+>> +				*lock_mode =
+>> +					xfs_ilock_data_map_shared_generic(dp,
+>> +					ctx->flags & DIR_CONTEXT_F_NOWAIT);
+>> +				if (!*lock_mode) {
+>> +					error = -EAGAIN;
+>> +					break;
+>> +				}
+>> +			}
+> 
+> 'generic' doesn't seem like a great suffix to mean 'takes nowait flag'.
+> And this is far too far indented.
+> 
+> 			xfs_dir2_lock(dp, ctx, lock_mode);
+> 
+> with:
+> 
+> STATIC void xfs_dir2_lock(struct xfs_inode *dp, struct dir_context *ctx,
+> 		unsigned int lock_mode)
+> {
+> 	if (*lock_mode)
+> 		return;
+> 	if (ctx->flags & DIR_CONTEXT_F_NOWAIT)
+> 		return xfs_ilock_data_map_shared_nowait(dp);
+> 	return xfs_ilock_data_map_shared(dp);
+> }
+> 
+> ... which I think you can use elsewhere in this patch (reformat it to
+> XFS coding style, of course).  And then you don't need
+> xfs_ilock_data_map_shared_generic().
+> 
+
+How about rename xfs_ilock_data_map_shared() to 
+xfs_ilock_data_map_block() and rename 
+xfs_ilock_data_map_shared_generic() to xfs_ilock_data_map_shared()?
+
+STATIC void xfs_ilock_data_map_shared(struct xfs_inode *dp, struct 
+dir_context *ctx, unsigned int lock_mode)
+{
+  	if (*lock_mode)
+  		return;
+  	if (ctx->flags & DIR_CONTEXT_F_NOWAIT)
+  		return xfs_ilock_data_map_shared_nowait(dp);
+  	return xfs_ilock_data_map_shared_block(dp);
+}
+
+
 
