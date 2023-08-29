@@ -1,214 +1,117 @@
-Return-Path: <bpf+bounces-8929-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8930-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6550278CA32
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 19:07:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB12C78CB79
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 19:43:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 887551C20A4F
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 17:07:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F6DC28122A
+	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 17:43:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21BC118001;
-	Tue, 29 Aug 2023 17:06:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C5871800C;
+	Tue, 29 Aug 2023 17:43:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88EA17FE5
-	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 17:06:52 +0000 (UTC)
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1421AA
-	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 10:06:50 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-40c72caec5cso15181cf.0
-        for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 10:06:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43DAB17AAE
+	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 17:43:05 +0000 (UTC)
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B549A103
+	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 10:43:03 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b703a0453fso70258361fa.3
+        for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 10:43:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693328810; x=1693933610; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1693330982; x=1693935782; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hs1JZELCM9fYlqqavqI6elwNwn892gP7ieGSvyrVxDg=;
-        b=ZE5SF2Sshr6slyRAEXOCNAB7PhKobzGhuPwz9xxup8rmVzlOnaGWSEnZ8VZomC8q9E
-         mw/UCw8Pku5/BjLYFfvpuk0OB1/ohw2yjDEOZkaK/HUM3u0AckJ/W5XW7v1ldcVAWmKt
-         QD6Itno4YHs1Go2XaJMKFMMvy/HfUa+hTMo16cLsVx56JniKq3BdHxL/26WVUJP18jdK
-         BkAgOtPrNfWsdeq2kyjN7kPn5/8PiIPGU4FTJh5/VVbMnpMiedXbmZzi/kh8B5YzSg/f
-         9D+pbd8waRZ190Dry2fDWZlejifuz3Q1ZGG6a4kcf5jo2yhh1qEarsAjLFzwjH3SdFov
-         HZjA==
+        bh=stXpHcQJU5m/KmE130Q/B+HeDrgYdCgVMN9BRZLNLxE=;
+        b=rNMUgXJqu7JymcGB/IQ9Gv6zoo2Jq88pmS6t2OPxzQt/unTh7HN4sfMpN+SWSgKqy/
+         Pq7a2h/ks+awgoZion0JdAv07rhq51Z6915HQ22u1xhIB3udD3uQZ1pE1Sg2lVocSKz8
+         4vffY4GaaDOMWBCind7x7qgFsuVK/P3ap/pdZF8bK0oDsDwoBDG8L4Bb1Thw2LjJgK53
+         zKW116pxMM1RAsRrra5ZlNjZwJawNYSGZqi/CJZcBPcnvktvz6eRjlBeyh2oCD3v5MA6
+         yw/OiWczrO8J1JS2EKHKmP9q1plktlcf9yN5Ba3X2oYm7VyK8PMBL1pVwD4p5dgsbrjt
+         G6VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693328810; x=1693933610;
+        d=1e100.net; s=20221208; t=1693330982; x=1693935782;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hs1JZELCM9fYlqqavqI6elwNwn892gP7ieGSvyrVxDg=;
-        b=Sa2YtkLiUMG7OobPaFBlZysuFCoM7aPtu5f1bkKGCUtc7vVe7hH1uavI9RKVMfauq3
-         9Ou5OFMhyha9MF4j+ZHu2PFyoDPMTp0raP/66Tp6L/q+B+YEMvvMx0ioddzLKH2YYeAm
-         ur9q7R+EK3Pe8/tV2kFA+mxjtSi2naOCh1GoAO/qJku/+8gGzSBwJbW2UsNZVeoZnxSh
-         qRX6ySp/W/d47IcUwWFPxFJNhVOQ3eM4HLaO7fPaE8TEZVxy7FKXRvYAJ0rPYwmnVEvx
-         Ly63NkUv1YOloFdpshjAFa/cI/J+PLvWofSVnZzEiJJCV8fu9yvLdyDltUD7MfxM6As/
-         pb7w==
-X-Gm-Message-State: AOJu0Yz293sKmi0T6bZpEmR9Og+LFaxgWHHkZ6kP1nDHcbq7UTyviaxF
-	v8TQJpppzhmPyH6z8lJvxrV7ru/mIhsCE6ByVAlaqw==
-X-Google-Smtp-Source: AGHT+IGlGigV0+6V6yqnja2f6lcbZGfKUuxFs2FpgNDJ+/vW51XQQ7zwsqtI61NdMUlujJ+vR97AHdRG1KtBqIriJzI=
-X-Received: by 2002:a05:622a:289:b0:410:8ba3:21c7 with SMTP id
- z9-20020a05622a028900b004108ba321c7mr327789qtw.18.1693328809588; Tue, 29 Aug
- 2023 10:06:49 -0700 (PDT)
+        bh=stXpHcQJU5m/KmE130Q/B+HeDrgYdCgVMN9BRZLNLxE=;
+        b=iDcjKukIAHDzl+8pJ7eLKjSRH96wkyH5NfkMRBFxEOzLl0ZMFyF3UItqH1xpIZ2Ab/
+         nRe3AiGkncIb0IXhH1By4i19/6zjYNyKEQ/2ABZD2EFnGwRaU5LYaR8qs+TVvNjkX9Qt
+         byfhvIW5i6t8n6S6KCRhbo+5DacjZ+FLHup9jhBMfq8UQmoYv2ftyqscDTJyrpwt5OvB
+         w1vBZJ44VopH2N3j2BLlGWJJH38GiRUU267+whIqmgtdNH0O+pEbzMrEqKUfIavV5rVq
+         Xm5eaDGYbddMKCm7puYRZm74XDFoymZ1KNBemwFrTem7ULHxNHpjAdln53mPYdTT/hIx
+         9UtA==
+X-Gm-Message-State: AOJu0YwGyNEkp3ZnarPI9LAGVRzzQQcpJsP8ZPPYiYcqeKx5FpkFo1qV
+	iGPdUlUahM56kdXZA6MAJLWG4KvzPDGkkgtk3G0=
+X-Google-Smtp-Source: AGHT+IH/PtkWTKZw3XDK8hmiANa1BqUyeGXMDIk0a69Ic2TqnaehZacBvdtp4wV09/mPm+EqtNfdxvKjraZfUjONd/I=
+X-Received: by 2002:a2e:8898:0:b0:2bc:e51d:89a3 with SMTP id
+ k24-20020a2e8898000000b002bce51d89a3mr26145lji.29.1693330981590; Tue, 29 Aug
+ 2023 10:43:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <00000000000010353a05fecceea0@google.com> <6144228a-799f-4de3-8483-b7add903df0c@collabora.com>
- <CANn89iJiBp9t69Y3htwGGb=pTWhjFQPxKPD1E6uSFks5NrgctA@mail.gmail.com> <ef489936-9413-4a01-a3f0-eebadfb64ff9@collabora.com>
-In-Reply-To: <ef489936-9413-4a01-a3f0-eebadfb64ff9@collabora.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 29 Aug 2023 19:06:38 +0200
-Message-ID: <CANn89i+dA0MfoED0zd-N_VQpnmsneNK=E=GgpsSFv=JHu7UrbQ@mail.gmail.com>
-Subject: Re: [syzbot] [net?] WARNING in inet_sock_destruct (4)
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: syzbot <syzbot+de6565462ab540f50e47@syzkaller.appspotmail.com>, 
-	bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org, 
-	jacob.e.keller@intel.com, jiri@nvidia.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com, fishgylk@gmail.com, bagasdotme@gmail.com
+References: <20230829101838.851350-1-daan.j.demeyer@gmail.com> <20230829101838.851350-4-daan.j.demeyer@gmail.com>
+In-Reply-To: <20230829101838.851350-4-daan.j.demeyer@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 29 Aug 2023 10:42:50 -0700
+Message-ID: <CAADnVQLvJ3hE73Ag0yLcF6fns5h4jdfT7tJ3dgxTL1LcQTd3ug@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/9] bpf: Add bpf_sock_addr_set() to allow
+ writing sockaddr len from bpf
+To: Daan De Meyer <daan.j.demeyer@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Aug 29, 2023 at 6:22=E2=80=AFPM Muhammad Usama Anjum
-<usama.anjum@collabora.com> wrote:
+On Tue, Aug 29, 2023 at 3:19=E2=80=AFAM Daan De Meyer <daan.j.demeyer@gmail=
+.com> wrote:
 >
-> Hi Eric,
+> As prep for adding unix socket support to the cgroup sockaddr hooks,
+> let's add a kfunc bpf_sock_addr_set() that allows modifying a sockaddr
+> from bpf. While this is already possible for AF_INET and AF_INET6, we'll
+> need this kfunc when we add unix socket support since modifying the
+> address for those requires modifying both the address and the sockaddr
+> length.
 >
-> On 8/29/23 8:19 PM, Eric Dumazet wrote:
-> > On Tue, Aug 29, 2023 at 2:44=E2=80=AFPM Muhammad Usama Anjum
-> > <usama.anjum@collabora.com> wrote:
-> >>
-> >> On 6/23/23 7:36 PM, syzbot wrote:
-> >>> Hello,
-> >>>
-> >>> syzbot found the following issue on:
-> >>>
-> >>> HEAD commit: 45a3e24f65e9 Linux 6.4-rc7
-> >>> git tree: upstream
-> >>> console output: https://syzkaller.appspot.com/x/log.txt?x=3D160cc82f2=
-80000
-> >>> kernel config: https://syzkaller.appspot.com/x/.config?x=3D2cbd298d0a=
-ff1140
-> >>> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dde6565462ab=
-540f50e47
-> >>> compiler: gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils=
- for Debian) 2.35.2
-> >>> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=3D160aacb72800=
-00
-> >>> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=3D17c115d3280=
-000
-> >>>
-> >>> Downloadable assets:
-> >>> disk image: https://storage.googleapis.com/syzbot-assets/c09bcd4ec365=
-/disk-45a3e24f.raw.xz
-> >>> vmlinux: https://storage.googleapis.com/syzbot-assets/03549b639718/vm=
-linux-45a3e24f.xz
-> >>> kernel image: https://storage.googleapis.com/syzbot-assets/91f203e5f6=
-3e/bzImage-45a3e24f.xz
-> >>>
-> >>> The issue was bisected to:
-> >>>
-> >>> commit 565b4824c39fa335cba2028a09d7beb7112f3c9a
-> >>> Author: Jiri Pirko <jiri@nvidia.com>
-> >>> Date: Mon Feb 6 09:41:51 2023 +0000
-> >>>
-> >>> devlink: change port event netdev notifier from per-net to global
-> >>>
-> >>> bisection log: https://syzkaller.appspot.com/x/bisect.txt?x=3D110a1a5=
-b280000
-> >>> final oops: https://syzkaller.appspot.com/x/report.txt?x=3D130a1a5b28=
-0000
-> >>> console output: https://syzkaller.appspot.com/x/log.txt?x=3D150a1a5b2=
-80000
-> >>>
-> >>> IMPORTANT: if you fix the issue, please add the following tag to the =
-commit:
-> >>> Reported-by: syzbot+de6565462ab540f50e47@syzkaller.appspotmail.com
-> >>> Fixes: 565b4824c39f ("devlink: change port event netdev notifier from=
- per-net to global")
-> >>>
-> >>> ------------[ cut here ]------------
-> >>> WARNING: CPU: 0 PID: 5025 at net/ipv4/af_inet.c:154 inet_sock_destruc=
-t+0x6df/0x8a0 net/ipv4/af_inet.c:154
-> >> This same warning has been spotted and reported:
-> >> https://bugzilla.kernel.org/show_bug.cgi?id=3D217555
-> >>
-> >> Syzbot has found the same warning on 4.14, 5.15, 6.1, 6.5-rc and lates=
-t
-> >> mainline (1c59d383390f9) kernels. The provided reproducers (such as
-> >> https://syzkaller.appspot.com/text?tag=3DReproC&x=3D15a10e8aa80000) ar=
-e
-> >> reproducing the same warnings on multicore (at least 2 CPUs) qemu inst=
-ance.
-> >
-> > Can you test the following fix ?
-> Just tested the fix on 1c59d383390f9, it didn't fix the warning.
+> We also add the necessary hook to make the new kfunc work properly.
 >
-> Please let me know if you need help in testing more.
+> Signed-off-by: Daan De Meyer <daan.j.demeyer@gmail.com>
+> ---
+>  kernel/bpf/btf.c  |  3 +++
+>  net/core/filter.c | 42 +++++++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 44 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 249657c466dd..157342eaa2bb 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -217,6 +217,7 @@ enum btf_kfunc_hook {
+>         m,
+>         BTF_KFUNC_HOOK_LWT,
+>         BTF_KFUNC_HOOK_NETFILTER,
+> +       BTF_KFUNC_HOOK_SOCK_ADDR,
 
-Hmm, no more ideas from my side, thanks.
+Do we really need a new kfunc category?
+Can BTF_KFUNC_HOOK_CGROUP_SKB be reused here?
+or even BTF_KFUNC_HOOK_COMMON ?
 
->
-> > Thanks.
-> >
-> > diff --git a/net/dccp/ipv6.c b/net/dccp/ipv6.c
-> > index 25816e790527dbd6ff55ffb94762b5974e8144aa..1085357b30c9a0d4bf7a578=
-cebf3eeddec953632
-> > 100644
-> > --- a/net/dccp/ipv6.c
-> > +++ b/net/dccp/ipv6.c
-> > @@ -377,8 +377,13 @@ static int dccp_v6_conn_request(struct sock *sk,
-> > struct sk_buff *skb)
-> >         if (ipv6_opt_accepted(sk, skb, IP6CB(skb)) ||
-> >             np->rxopt.bits.rxinfo || np->rxopt.bits.rxoinfo ||
-> >             np->rxopt.bits.rxhlim || np->rxopt.bits.rxohlim) {
-> > +               /* Only initialize ireq->pktops once.
-> > +                * We must take a refcount on skb because ireq->pktops
-> > +                * could be consumed immediately.
-> > +                */
-> >                 refcount_inc(&skb->users);
-> > -               ireq->pktopts =3D skb;
-> > +               if (cmpxchg(&ireq->pktopts, NULL, skb))
-> > +                       refcount_dec(&skb->users);
-> >         }
-> >         ireq->ir_iif =3D READ_ONCE(sk->sk_bound_dev_if);
-> >
-> > diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
-> > index 6e86721e1cdbb8d47b754a2675f6ab1643c7342c..d45aa267473c4ab817cfda0=
-6966a536718b50a53
-> > 100644
-> > --- a/net/ipv6/tcp_ipv6.c
-> > +++ b/net/ipv6/tcp_ipv6.c
-> > @@ -798,8 +798,13 @@ static void tcp_v6_init_req(struct request_sock *r=
-eq,
-> >              np->rxopt.bits.rxinfo ||
-> >              np->rxopt.bits.rxoinfo || np->rxopt.bits.rxhlim ||
-> >              np->rxopt.bits.rxohlim || np->repflow)) {
-> > +               /* Only initialize ireq->pktops once.
-> > +                * We must take a refcount on skb because ireq->pktops
-> > +                * could be consumed immediately.
-> > +                */
-> >                 refcount_inc(&skb->users);
-> > -               ireq->pktopts =3D skb;
-> > +               if (cmpxchg(&ireq->pktopts, NULL, skb))
-> > +                       refcount_dec(&skb->users);
-> >         }
-> >  }
->
-> --
-> BR,
-> Muhammad Usama Anjum
+struct bpf_sock_addr_kern * type of bpf_sock_addr_set_addr()
+will prevent any other type being passed in here
+and bpf_sock_addr_kern type is local to prog
+run via __cgroup_bpf_run_filter_sock_addr.
 
