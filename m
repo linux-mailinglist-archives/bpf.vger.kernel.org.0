@@ -1,166 +1,264 @@
-Return-Path: <bpf+bounces-8984-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8985-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7805A78D52D
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 12:46:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0F8278D5CC
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 14:09:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A75EB1C20AC9
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 10:46:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4C0A1C20980
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 12:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80AF63D62;
-	Wed, 30 Aug 2023 10:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E8AF53AA;
+	Wed, 30 Aug 2023 12:09:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 515AD20E2
-	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 10:46:28 +0000 (UTC)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9EC21BB
-	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 03:46:26 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99cce6f7de2so710508866b.3
-        for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 03:46:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693392385; x=1693997185; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=v8jintge3+sTVJK2Uu77jvmcBVL90Gi5zBkTzekn+7A=;
-        b=F78VD4BUhGA3J41a4PeaqH8pccvvKmOw4llRYgJD48C7cZIHVm22+NhAVk30Af7O93
-         Nb3Ec+Xb8jh1RbNfPSo1evOt/tRWhgThSMcubxjY01V6Gy79Cz4M7TzyfIMETdB7KxQz
-         vJnhFAtITl4KuKx6GRgiPIlF0n7DcGBawYAIIMGJXIa6XQ7+ebad5/O+UmzVlOXaThyz
-         K+cF/TqelBtNFbGjSyRvpGHVA3zPfyrmcMKLO8WVTwv8ymW9c7peTDvw/HMwgFAPDJ2y
-         Fyg3Ze3IT2i/zhiYoj+dsV6ieaHqe07F7zGCny7nicznEkTlcuibF6KqxxTCYJXTcZSL
-         Xgng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693392385; x=1693997185;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v8jintge3+sTVJK2Uu77jvmcBVL90Gi5zBkTzekn+7A=;
-        b=e85gWGh/Z20FnUHP46ZfuWQb6sfIxG4RiFxyKzliIt5eav7XKHCLHjYf/DdNesGB7S
-         aNdHJfQIDWqxRR7cqxUstKCkGv+v1y77SsPtF2WQkNi7p8lV2+t6NfgiNxWz8uoExwl9
-         ggoAR/7FuztHWSXSf4plSJH/zsGfU4rqudM0vpqo9z9T2UcHcn65LaZ+Ib8kvbX/MtRr
-         Ytnt2ho20M2p4ytnsmTmygqrMzWPEbyaPeG0Z7styDJNcPOCVIqVRON/93ZmimDH8vvL
-         erlg25aKU3qa3gCCJPEPF/H6kNdPWKDgaLdNmuNnpf/b6csC1o3pZuvm2ZxY9wQxVDOy
-         DB1w==
-X-Gm-Message-State: AOJu0YxrVzM9LE86kxJqwulRvsTCRvnQXWPdZ4EfPqzMdxykCPKj73YU
-	BeZXkrvZdDPVPh//SnJ+vPw=
-X-Google-Smtp-Source: AGHT+IHJbjxMr/igvLMZuUTWmS3/co5BgU+q67TmOMCyidtLtILOdl5EG/OxQzVf6rMFsuHexd7aDw==
-X-Received: by 2002:a17:906:5347:b0:9a1:fe9c:eee5 with SMTP id j7-20020a170906534700b009a1fe9ceee5mr1344554ejo.63.1693392385130;
-        Wed, 30 Aug 2023 03:46:25 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id qq21-20020a17090720d500b0099329b3ab67sm7082975ejb.71.2023.08.30.03.46.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 03:46:24 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 30 Aug 2023 12:46:21 +0200
-To: Quentin Monnet <quentin@isovalent.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Hou Tao <houtao1@huawei.com>, Daniel Xu <dxu@dxuuu.xyz>
-Subject: Re: [PATCH bpf-next 09/12] bpftool: Display missed count for
- kprobe_multi link
-Message-ID: <ZO8d/edSSaztiY0I@krava>
-References: <20230828075537.194192-1-jolsa@kernel.org>
- <20230828075537.194192-10-jolsa@kernel.org>
- <26a20b9f-839a-4748-9cf4-4eac1e46ce00@isovalent.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB2C71C08
+	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 12:09:03 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9DEB1B0
+	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 05:09:01 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RbNPN6mcKz4f3wR5
+	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 20:08:56 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgBnQqVWMe9k8yDGBw--.27383S2;
+	Wed, 30 Aug 2023 20:08:58 +0800 (CST)
+Subject: Re: WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, bpf <bpf@vger.kernel.org>,
+ linux-riscv <linux-riscv@lists.infradead.org>
+References: <87jztjmmy4.fsf@all.your.base.are.belong.to.us>
+ <2f4f0dfc-ec06-8ac8-a56a-395cc2373def@linux.dev>
+ <200dcce6-34ff-83e0-02fb-709a24403cc6@huaweicloud.com>
+ <87zg2e88ds.fsf@all.your.base.are.belong.to.us>
+ <64873e42-9be1-1812-b80d-5ea86b4677f0@huaweicloud.com>
+ <87sf8684ex.fsf@all.your.base.are.belong.to.us>
+ <878r9wswwy.fsf@all.your.base.are.belong.to.us>
+ <fd07e0a3-f4da-b447-c47a-6e933220d452@linux.dev>
+ <65c9e8d9-7682-2c8d-cd4d-9f0ca1213066@huaweicloud.com>
+ <CAADnVQJGVJCh=i1tuov4t1MmUx5=ybjF544i4F4m-SbHd5N6vA@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <76151038-155d-eac7-d6bb-d569c69fca3d@huaweicloud.com>
+Date: Wed, 30 Aug 2023 20:08:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <26a20b9f-839a-4748-9cf4-4eac1e46ce00@isovalent.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <CAADnVQJGVJCh=i1tuov4t1MmUx5=ybjF544i4F4m-SbHd5N6vA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgBnQqVWMe9k8yDGBw--.27383S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3WFWruF4UXrWkKF4UJrW8WFg_yoW3uw4kpr
+	W3JF1UGr48JF17Jr17tr15Jr1Utr1jy3W7Xry8Jr1UAr1q9r1UJr1UJr4UCr1DJr15C3W7
+	JryDt3yIvr1UJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
+	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+	k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+	1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Aug 29, 2023 at 05:40:57PM +0100, Quentin Monnet wrote:
-> On 28/08/2023 08:55, Jiri Olsa wrote:
-> > Adding 'missed' field to display missed counts for kprobes
-> > attached by kprobe multi link, like:
-> > 
-> >   # bpftool link
-> >   5: kprobe_multi  prog 76
-> >           kprobe.multi  func_cnt 1 missed 1
-> >           addr             func [module]
-> >           ffffffffa039c030 fp3_test [fprobe_test]
-> > 
-> >   # bpftool link -jp
-> >   [{
-> >           "id": 5,
-> >           "type": "kprobe_multi",
-> >           "prog_id": 76,
-> >           "retprobe": false,
-> >           "func_cnt": 1,
-> >           "missed": 1,
-> >           "funcs": [{
-> >                   "addr": 18446744072102723632,
-> >                   "func": "fp3_test",
-> >                   "module": "fprobe_test"
-> >               }
-> >           ]
-> >       }
-> >   ]
-> > 
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  tools/bpf/bpftool/link.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-> > index 0b214f6ab5c8..7387e51a5e5c 100644
-> > --- a/tools/bpf/bpftool/link.c
-> > +++ b/tools/bpf/bpftool/link.c
-> > @@ -265,6 +265,7 @@ show_kprobe_multi_json(struct bpf_link_info *info, json_writer_t *wtr)
-> >  	jsonw_bool_field(json_wtr, "retprobe",
-> >  			 info->kprobe_multi.flags & BPF_F_KPROBE_MULTI_RETURN);
-> >  	jsonw_uint_field(json_wtr, "func_cnt", info->kprobe_multi.count);
-> > +	jsonw_uint_field(json_wtr, "missed", info->kprobe_multi.missed);
-> >  	jsonw_name(json_wtr, "funcs");
-> >  	jsonw_start_array(json_wtr);
-> >  	addrs = u64_to_ptr(info->kprobe_multi.addrs);
-> > @@ -640,7 +641,9 @@ static void show_kprobe_multi_plain(struct bpf_link_info *info)
-> >  		printf("\n\tkretprobe.multi  ");
-> >  	else
-> >  		printf("\n\tkprobe.multi  ");
-> > -	printf("func_cnt %u  ", info->kprobe_multi.count);
-> > +	printf("func_cnt %u", info->kprobe_multi.count);
-> > +	if (info->kprobe_multi.missed)
-> > +		printf(" missed %llu", info->kprobe_multi.missed);
-> 
-> Nit: If you respin, please conserve the double space at the beginning of
-> "  missed %llu", to visually help separate from the previous field in
-> the plain output.
+Hi,
 
-right, will fix that
+On 8/29/2023 11:26 PM, Alexei Starovoitov wrote:
+> On Mon, Aug 28, 2023 at 6:57 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>> Hi,
+>>
+>> On 8/27/2023 10:53 PM, Yonghong Song wrote:
+>>>
+>>> On 8/27/23 1:37 AM, Björn Töpel wrote:
+>>>> Björn Töpel <bjorn@kernel.org> writes:
+>>>>
+>>>>> Hou Tao <houtao@huaweicloud.com> writes:
+>>>>>
+>>>>>> Hi,
+>>>>>>
+>>>>>> On 8/26/2023 5:23 PM, Björn Töpel wrote:
+>>>>>>> Hou Tao <houtao@huaweicloud.com> writes:
+>>>>>>>
+>>>>>>>> Hi,
+>>>>>>>>
+>>>>>>>> On 8/25/2023 11:28 PM, Yonghong Song wrote:
+>>>>>>>>> On 8/25/23 3:32 AM, Björn Töpel wrote:
+>>>>>>>>>> I'm chasing a workqueue hang on RISC-V/qemu (TCG), using the bpf
+>>>>>>>>>> selftests on bpf-next 9e3b47abeb8f.
+>>>>>>>>>>
+>>>>>>>>>> I'm able to reproduce the hang by multiple runs of:
+>>>>>>>>>>    | ./test_progs -a link_api -a linked_list
+>>>>>>>>>> I'm currently investigating that.
+>>>>>>>>>>
+>>>>>>>>>> But! Sometimes (every blue moon) I get a warn_on_once hit:
+>>>>>>>>>>    | ------------[ cut here ]------------
+>>>>>>>>>>    | WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
+>>>>>>>>>> bpf_mem_refill+0x1fc/0x206
+>>>>>>>>>>    | Modules linked in: bpf_testmod(OE)
+>>>>>>>>>>    | CPU: 3 PID: 261 Comm: test_progs-cpuv Tainted: G           OE
+>>>>>>>>>> N 6.5.0-rc5-01743-gdcb152bb8328 #2
+>>>>>>>>>>    | Hardware name: riscv-virtio,qemu (DT)
+>>>>>>>>>>    | epc : bpf_mem_refill+0x1fc/0x206
+>>>>>>>>>>    |  ra : irq_work_single+0x68/0x70
+>>>>>>>>>>    | epc : ffffffff801b1bc4 ra : ffffffff8015fe84 sp :
+>>>>>>>>>> ff2000000001be20
+>>>>>>>>>>    |  gp : ffffffff82d26138 tp : ff6000008477a800 t0 :
+>>>>>>>>>> 0000000000046600
+>>>>>>>>>>    |  t1 : ffffffff812b6ddc t2 : 0000000000000000 s0 :
+>>>>>>>>>> ff2000000001be70
+>>>>>>>>>>    |  s1 : ff5ffffffffe8998 a0 : ff5ffffffffe8998 a1 :
+>>>>>>>>>> ff600003fef4b000
+>>>>>>>>>>    |  a2 : 000000000000003f a3 : ffffffff80008250 a4 :
+>>>>>>>>>> 0000000000000060
+>>>>>>>>>>    |  a5 : 0000000000000080 a6 : 0000000000000000 a7 :
+>>>>>>>>>> 0000000000735049
+>>>>>>>>>>    |  s2 : ff5ffffffffe8998 s3 : 0000000000000022 s4 :
+>>>>>>>>>> 0000000000001000
+>>>>>>>>>>    |  s5 : 0000000000000007 s6 : ff5ffffffffe8570 s7 :
+>>>>>>>>>> ffffffff82d6bd30
+>>>>>>>>>>    |  s8 : 000000000000003f s9 : ffffffff82d2c5e8 s10:
+>>>>>>>>>> 000000000000ffff
+>>>>>>>>>>    |  s11: ffffffff82d2c5d8 t3 : ffffffff81ea8f28 t4 :
+>>>>>>>>>> 0000000000000000
+>>>>>>>>>>    |  t5 : ff6000008fd28278 t6 : 0000000000040000
+>>>>>>>>>>    | status: 0000000200000100 badaddr: 0000000000000000 cause:
+>>>>>>>>>> 0000000000000003
+>>>>>>>>>>    | [<ffffffff801b1bc4>] bpf_mem_refill+0x1fc/0x206
+>>>>>>>>>>    | [<ffffffff8015fe84>] irq_work_single+0x68/0x70
+>>>>>>>>>>    | [<ffffffff8015feb4>] irq_work_run_list+0x28/0x36
+>>>>>>>>>>    | [<ffffffff8015fefa>] irq_work_run+0x38/0x66
+>>>>>>>>>>    | [<ffffffff8000828a>] handle_IPI+0x3a/0xb4
+>>>>>>>>>>    | [<ffffffff800a5c3a>] handle_percpu_devid_irq+0xa4/0x1f8
+>>>>>>>>>>    | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
+>>>>>>>>>>    | [<ffffffff800ae570>] ipi_mux_process+0xac/0xfa
+>>>>>>>>>>    | [<ffffffff8000a8ea>] sbi_ipi_handle+0x2e/0x88
+>>>>>>>>>>    | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
+>>>>>>>>>>    | [<ffffffff807ee70e>] riscv_intc_irq+0x36/0x4e
+>>>>>>>>>>    | [<ffffffff812b5d3a>] handle_riscv_irq+0x54/0x86
+>>>>>>>>>>    | [<ffffffff812b6904>] do_irq+0x66/0x98
+>>>>>>>>>>    | ---[ end trace 0000000000000000 ]---
+>>>>>>>>>>
+>>>>>>>>>> Code:
+>>>>>>>>>>    | static void free_bulk(struct bpf_mem_cache *c)
+>>>>>>>>>>    | {
+>>>>>>>>>>    |     struct bpf_mem_cache *tgt = c->tgt;
+>>>>>>>>>>    |     struct llist_node *llnode, *t;
+>>>>>>>>>>    |     unsigned long flags;
+>>>>>>>>>>    |     int cnt;
+>>>>>>>>>>    |
+>>>>>>>>>>    |     WARN_ON_ONCE(tgt->unit_size != c->unit_size);
+>>>>>>>>>>    | ...
+>>>>>>>>>>
+>>>>>>>>>> I'm not well versed in the memory allocator; Before I dive into
+>>>>>>>>>> it --
+>>>>>>>>>> has anyone else hit it? Ideas on why the warn_on_once is hit?
+>>>>>>>>> Maybe take a look at the patch
+>>>>>>>>>    822fb26bdb55  bpf: Add a hint to allocated objects.
+>>>>>>>>>
+>>>>>>>>> In the above patch, we have
+>>>>>>>>>
+>>>>>>>>> +       /*
+>>>>>>>>> +        * Remember bpf_mem_cache that allocated this object.
+>>>>>>>>> +        * The hint is not accurate.
+>>>>>>>>> +        */
+>>>>>>>>> +       c->tgt = *(struct bpf_mem_cache **)llnode;
+>>>>>>>>>
+>>>>>>>>> I suspect that the warning may be related to the above.
+>>>>>>>>> I tried the above ./test_progs command line (running multiple
+>>>>>>>>> at the same time) and didn't trigger the issue.
+>>>>>>>> The extra 8-bytes before the freed pointer is used to save the
+>>>>>>>> pointer
+>>>>>>>> of the original bpf memory allocator where the freed pointer came
+>>>>>>>> from,
+>>>>>>>> so unit_free() could free the pointer back to the original
+>>>>>>>> allocator to
+>>>>>>>> prevent alloc-and-free unbalance.
+>>>>>>>>
+>>>>>>>> I suspect that a wrong pointer was passed to bpf_obj_drop, but do
+>>>>>>>> not
+>>>>>>>> find anything suspicious after checking linked_list. Another
+>>>>>>>> possibility
+>>>>>>>> is that there is write-after-free problem which corrupts the extra
+>>>>>>>> 8-bytes before the freed pointer. Could you please apply the
+>>>>>>>> following
+>>>>>>>> debug patch to check whether or not the extra 8-bytes are
+>>>>>>>> corrupted ?
+>>>>>>> Thanks for getting back!
+>>>>>>>
+>>>>>>> I took your patch for a run, and there's a hit:
+>>>>>>>    | bad cache ff5ffffffffe8570: got size 96 work
+>>>>>>> ffffffff801b19c8, cache ff5ffffffffe8980 exp size 128 work
+>>>>>>> ffffffff801b19c8
+>>>>>> The extra 8-bytes are not corrupted. Both of these two
+>>>>>> bpf_mem_cache are
+>>>>>> valid and there are in the cache array defined in bpf_mem_caches. BPF
+>>>>>> memory allocator allocated the pointer from 96-bytes sized-cache,
+>>>>>> but it
+>>>>>> tried to free the pointer through 128-bytes sized-cache.
+>>>>>>
+>>>>>> Now I suspect there is no 96-bytes slab in your system and ksize(ptr -
+>>>>>> LLIST_NODE_SZ) returns 128, so bpf memory allocator selected the
+>>>>>> 128-byte sized-cache instead of 96-bytes sized-cache. Could you please
+>>>>>> check the value of KMALLOC_MIN_SIZE in your kernel .config and
+>>>>>> using the
+>>>>>> following command to check whether there is 96-bytes slab in your
+>>>>>> system:
+>>>>> KMALLOC_MIN_SIZE is 64.
+>>>>>
+>>>>>> $ cat /proc/slabinfo |grep kmalloc-96
+>>>>>> dma-kmalloc-96         0      0     96   42    1 : tunables    0    0
+>>>>>> 0 : slabdata      0      0      0
+>>>>>> kmalloc-96          1865   2268     96   42    1 : tunables    0    0
+>>>>>> 0 : slabdata     54     54      0
+>>>>>>
+>>>>>> In my system, slab has 96-bytes cached, so grep outputs something,
+>>>>>> but I
+>>>>>> think there will no output in your system.
+>>>>> You're right! No kmalloc-96.
+>>>> To get rid of the warning, limit available sizes from
+>>>> bpf_mem_alloc_init()?
+>> It is not enough. We need to adjust size_index accordingly during
+>> initialization. Could you please try the attached patch below ? It is
+>> not a formal patch and I am considering to disable prefilling for these
+>> redirected bpf_mem_caches.
+>>> Do you know why your system does not have kmalloc-96?
+>> According to the implementation of setup_kmalloc_cache_index_table() and
+>> create_kmalloc_caches(),  when KMALLOC_MIN_SIZE is greater than 64,
+>> kmalloc-96 will be omitted. If KMALLOC_MIN_SIZE is greater than 128,
+>> kmalloc-192 will be omitted as well.
+> Great catch. The fix looks good.
+> Please submit it officially and add an error check to bpf_mem_alloc_init()
+> that verifies that ksize() matches the expectations.
 
-> 
-> Looks good otherwise, thanks!
-> 
-> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+Do you mean to check the return values of ksize() for these prefill
+objects in free_llist are expected, right ?
+> The alternative is to use kmalloc_size_roundup() during alloc for
+> checking instead of ksize().
+> Technically we can use kmalloc_size_roundup in unit_alloc() and avoid
+> setup_kmalloc_cache_index_table()-like copy paste, but performance
+> overhead might be too high.
+> So your patch + error check at bpf_mem_alloc_init() is preferred.
+I see. Using kmalloc_size_round() in bpf_mem_alloc() is indeed an
+alternative solution. Will post it.
 
-thanks,
-jirka
-
-> 
-> >  	addrs = (__u64 *)u64_to_ptr(info->kprobe_multi.addrs);
-> >  	qsort(addrs, info->kprobe_multi.count, sizeof(__u64), cmp_u64);
-> >  
-> 
 
