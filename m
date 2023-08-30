@@ -1,181 +1,170 @@
-Return-Path: <bpf+bounces-9016-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9007-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2709778E301
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 01:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F65E78E235
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 00:17:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55EFD1C20960
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 23:05:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A16C41C208C9
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 22:17:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4408C09;
-	Wed, 30 Aug 2023 23:05:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8821B8BFB;
+	Wed, 30 Aug 2023 22:17:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46B4E7490
-	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 23:05:44 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3DECC
-	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 16:05:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1693436736;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 623D87481
+	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 22:17:36 +0000 (UTC)
+Received: from out-253.mta0.migadu.com (out-253.mta0.migadu.com [IPv6:2001:41d0:1004:224b::fd])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8734CB4
+	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 15:17:14 -0700 (PDT)
+Message-ID: <566fe0ba-9bd5-d3d6-0c48-6e417dbb7b00@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1693433530; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3NjxVK/JrpkWvoiz6/GperXEOF12luau1rGvSVhj2Bc=;
-	b=gfM1/jy8KOy/Vbf7CxSFINwdUpVSyhbf1pbpw3KPWULFsuRfmLUu0cGoHonItyINru8ADi
-	QERhZk+4K+bKTporZP+9uVAX3JkJxPpGOrdgmiB+sqf62mnYBmYBi2y9Givd1N7UmeGafr
-	RojE4ujA/AjgClwqr6nFiBBXadGgYbg=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-324-rnELq68MPa2-TbRZd15ITA-1; Wed, 30 Aug 2023 15:50:19 -0400
-X-MC-Unique: rnELq68MPa2-TbRZd15ITA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-31c5adb698aso3702101f8f.2
-        for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 12:50:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693425018; x=1694029818;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3NjxVK/JrpkWvoiz6/GperXEOF12luau1rGvSVhj2Bc=;
-        b=OIDReqnJ5O9g5qA0wBmYpzlUnUQU5fPFVzwGHnchucp0XUZ8zRiZjqs7/OaCY0QB5L
-         5ql8zUYqya8yDZS8+GV0zdoaKV20jdcuVqI5qatjmeeBY2PRLqhbi7v4w2H15ZykGuYk
-         36MYddFDT/Nn5IDCQ23zGLbxnUIjBkBEmwuI8Qa5v9KOz15HGKkD2nD3Ht9OrmHwDgjj
-         /pU567VYKbCWOFiiSkXG7bJ+7+t86UEgDwFrk/aQihRda13xehBC5TCzdILcwwiXaaAG
-         72lP4p+r3OuadW5/+7XFrr3CWev6fbw9iNKSbEUrVNaeXxUBhy8nTMYcs2HuQfT28JOm
-         gslQ==
-X-Gm-Message-State: AOJu0YzANHlEOW9iiZZs3EInSP2hEZI0AX16sGLJ831gfnbFeu01EVlB
-	UQw9oSv3qSq6ZHjgElXKGWfyuCSmfN/tnTJkmQLmjW3Gop8KgmebDjItXzU/q3r9NmYRzC/WKMa
-	f4U5sFFqjq3R9LzHGfgG3
-X-Received: by 2002:adf:f9c2:0:b0:319:7134:a3cf with SMTP id w2-20020adff9c2000000b003197134a3cfmr2471114wrr.31.1693425017808;
-        Wed, 30 Aug 2023 12:50:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEPl2d8yog5OYYxnVfR719SFpTMzeSHrPCryTF2nxMjc68c11HQgd4yjH64I6CkiNALUEQ33w==
-X-Received: by 2002:a17:906:18d:b0:9a2:16a7:fd0 with SMTP id 13-20020a170906018d00b009a216a70fd0mr2423093ejb.21.1693424537027;
-        Wed, 30 Aug 2023 12:42:17 -0700 (PDT)
-Received: from redhat.com ([2.55.167.22])
-        by smtp.gmail.com with ESMTPSA id z3-20020a1709064e0300b009a19fa8d2e9sm7490757eju.206.2023.08.30.12.42.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 12:42:16 -0700 (PDT)
-Date: Wed, 30 Aug 2023 15:42:12 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: jasowang@redhat.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-	jiri@nvidia.com, dtatulea@nvidia.com,
-	virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	Gavin Li <gavinl@nvidia.com>
-Subject: Re: [PATCH net-next V1 0/4] virtio_net: add per queue interrupt
- coalescing support
-Message-ID: <20230830154200-mutt-send-email-mst@kernel.org>
-References: <20230710092005.5062-1-gavinl@nvidia.com>
- <20230713074001-mutt-send-email-mst@kernel.org>
- <1689300651.6874406-1-xuanzhuo@linux.alibaba.com>
+	bh=2/qNAxViRV6qEJ5uVuwQ0hBEiP3GVDRYz676LKaLLyk=;
+	b=g5+zAcmy0OEZTSzA10CRK5IePEgPy7N7LhG5MpLfcBpPl0p4I+Kl+Jv/ME4lWosPd0m2Q3
+	YXjfkvfl7FXrkSpv1ULtpNEq8TB0dbF/d+m6ZsqjXhYkcrwOl0FuAnAXN/hnG8Q1Xa7/sc
+	VWony4Dr7onxq5s8zxL4P9zl4COWayg=
+Date: Wed, 30 Aug 2023 18:11:52 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1689300651.6874406-1-xuanzhuo@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-	autolearn=unavailable autolearn_force=no version=3.4.6
+Reply-To: yonghong.song@linux.dev
+Subject: Re: [RFC/PATCH bpf-next] bpf: Fix d_path test after last fs update
+To: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+ Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Hou Tao <houtao1@huawei.com>
+References: <20230830093502.1436694-1-jolsa@kernel.org>
+ <ZO9DvsaOImg4Dt5r@krava>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <ZO9DvsaOImg4Dt5r@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jul 14, 2023 at 10:10:51AM +0800, Xuan Zhuo wrote:
-> On Thu, 13 Jul 2023 07:40:12 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> > On Mon, Jul 10, 2023 at 12:20:01PM +0300, Gavin Li wrote:
-> > > Currently, coalescing parameters are grouped for all transmit and receive
-> > > virtqueues. This patch series add support to set or get the parameters for
-> > > a specified virtqueue.
-> > >
-> > > When the traffic between virtqueues is unbalanced, for example, one virtqueue
-> > > is busy and another virtqueue is idle, then it will be very useful to
-> > > control coalescing parameters at the virtqueue granularity.
-> >
-> > series:
-> >
-> > Acked-by: Michael S. Tsirkin <mst@redhat.com>
-> 
-> 
-> Why?
-> 
-> This series has the bug I reported.
-> 
-> Are you thinking that is ok? Or this is not a bug?
-> 
-> Thanks.
-> 
-> 
 
 
-I missed that mail. What's the bug?
+On 8/30/23 9:27 AM, Jiri Olsa wrote:
+> On Wed, Aug 30, 2023 at 11:35:02AM +0200, Jiri Olsa wrote:
+>> Recent commit [1] broken d_path test, because now filp_close is not
+>> called directly from sys_close, but eventually later when the file
+>> is finally released.
+>>
+>> I can't see any other solution than to hook filp_flush function and
+>> that also means we need to add it to btf_allowlist_d_path list, so
+>> it can use the d_path helper.
+>>
+>> But it's probably not very stable because filp_flush is static so it
+>> could be potentially inlined.
+> 
+> looks like llvm makes it inlined (from CI)
+> 
+>    Error: #68/1 d_path/basic
+>    libbpf: prog 'prog_close': failed to find kernel BTF type ID of 'filp_flush': -3
+> 
+> jirka
+> 
+>>
+>> Also if we'd keep the current filp_close hook and find a way how to 'wait'
+>> for it to be called so user space can go with checks, then it looks
+>> like d_path might not work properly when the task is no longer around.
+>>
+>> thoughts?
 
-> >
-> >
-> >
-> > > Example command:
-> > > $ ethtool -Q eth5 queue_mask 0x1 --coalesce tx-packets 10
-> > > Would set max_packets=10 to VQ 1.
-> > > $ ethtool -Q eth5 queue_mask 0x1 --coalesce rx-packets 10
-> > > Would set max_packets=10 to VQ 0.
-> > > $ ethtool -Q eth5 queue_mask 0x1 --show-coalesce
-> > >  Queue: 0
-> > >  Adaptive RX: off  TX: off
-> > >  stats-block-usecs: 0
-> > >  sample-interval: 0
-> > >  pkt-rate-low: 0
-> > >  pkt-rate-high: 0
-> > >
-> > >  rx-usecs: 222
-> > >  rx-frames: 0
-> > >  rx-usecs-irq: 0
-> > >  rx-frames-irq: 256
-> > >
-> > >  tx-usecs: 222
-> > >  tx-frames: 0
-> > >  tx-usecs-irq: 0
-> > >  tx-frames-irq: 256
-> > >
-> > >  rx-usecs-low: 0
-> > >  rx-frame-low: 0
-> > >  tx-usecs-low: 0
-> > >  tx-frame-low: 0
-> > >
-> > >  rx-usecs-high: 0
-> > >  rx-frame-high: 0
-> > >  tx-usecs-high: 0
-> > >  tx-frame-high: 0
-> > >
-> > > In this patch series:
-> > > Patch-1: Extract interrupt coalescing settings to a structure.
-> > > Patch-2: Extract get/set interrupt coalesce to a function.
-> > > Patch-3: Support per queue interrupt coalesce command.
-> > > Patch-4: Enable per queue interrupt coalesce feature.
-> > >
-> > > Gavin Li (4):
-> > >   virtio_net: extract interrupt coalescing settings to a structure
-> > >   virtio_net: extract get/set interrupt coalesce to a function
-> > >   virtio_net: support per queue interrupt coalesce command
-> > >   virtio_net: enable per queue interrupt coalesce feature
-> > >
-> > >  drivers/net/virtio_net.c        | 169 ++++++++++++++++++++++++++------
-> > >  include/uapi/linux/virtio_net.h |  14 +++
-> > >  2 files changed, 154 insertions(+), 29 deletions(-)
-> > >
-> > > --
-> > > 2.39.1
-> >
+Jiri,
 
+The following patch works fine for me:
+
+$ git diff
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index a7264b2c17ad..fdeec712338f 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -941,6 +941,7 @@ BTF_ID(func, vfs_fallocate)
+  BTF_ID(func, dentry_open)
+  BTF_ID(func, vfs_getattr)
+  BTF_ID(func, filp_close)
++BTF_ID(func, __fput_sync)
+  BTF_SET_END(btf_allowlist_d_path)
+
+  static bool bpf_d_path_allowed(const struct bpf_prog *prog)
+diff --git a/tools/testing/selftests/bpf/progs/test_d_path.c 
+b/tools/testing/selftests/bpf/progs/test_d_path.c
+index 84e1f883f97b..672897197c2a 100644
+--- a/tools/testing/selftests/bpf/progs/test_d_path.c
++++ b/tools/testing/selftests/bpf/progs/test_d_path.c
+@@ -40,8 +40,8 @@ int BPF_PROG(prog_stat, struct path *path, struct 
+kstat *stat,
+         return 0;
+  }
+
+-SEC("fentry/filp_close")
+-int BPF_PROG(prog_close, struct file *file, void *id)
++SEC("fentry/__fput_sync")
++int BPF_PROG(prog_close, struct file *file)
+  {
+         pid_t pid = bpf_get_current_pid_tgid() >> 32;
+         __u32 cnt = cnt_close;
+
+>> jirka
+>>
+>>
+>> [1] 021a160abf62 ("fs: use __fput_sync in close(2)")
+>> ---
+>>   kernel/trace/bpf_trace.c                        | 1 +
+>>   tools/testing/selftests/bpf/progs/test_d_path.c | 4 ++--
+>>   2 files changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+>> index a7264b2c17ad..c829e24af246 100644
+>> --- a/kernel/trace/bpf_trace.c
+>> +++ b/kernel/trace/bpf_trace.c
+>> @@ -941,6 +941,7 @@ BTF_ID(func, vfs_fallocate)
+>>   BTF_ID(func, dentry_open)
+>>   BTF_ID(func, vfs_getattr)
+>>   BTF_ID(func, filp_close)
+>> +BTF_ID(func, filp_flush)
+>>   BTF_SET_END(btf_allowlist_d_path)
+>>   
+>>   static bool bpf_d_path_allowed(const struct bpf_prog *prog)
+>> diff --git a/tools/testing/selftests/bpf/progs/test_d_path.c b/tools/testing/selftests/bpf/progs/test_d_path.c
+>> index 84e1f883f97b..3467d1b8098c 100644
+>> --- a/tools/testing/selftests/bpf/progs/test_d_path.c
+>> +++ b/tools/testing/selftests/bpf/progs/test_d_path.c
+>> @@ -40,8 +40,8 @@ int BPF_PROG(prog_stat, struct path *path, struct kstat *stat,
+>>   	return 0;
+>>   }
+>>   
+>> -SEC("fentry/filp_close")
+>> -int BPF_PROG(prog_close, struct file *file, void *id)
+>> +SEC("fentry/filp_flush")
+>> +int BPF_PROG(prog_close, struct file *file)
+>>   {
+>>   	pid_t pid = bpf_get_current_pid_tgid() >> 32;
+>>   	__u32 cnt = cnt_close;
+>> -- 
+>> 2.41.0
+>>
+> 
 
