@@ -1,256 +1,142 @@
-Return-Path: <bpf+bounces-8980-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8981-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8918778D41C
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 10:31:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7E8678D46E
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 10:56:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F6DB1C2095A
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 08:31:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACBB92811D7
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 08:56:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709921876;
-	Wed, 30 Aug 2023 08:30:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7F7D1C16;
+	Wed, 30 Aug 2023 08:56:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A04C636
-	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 08:30:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B111C433C7;
-	Wed, 30 Aug 2023 08:30:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1693384253;
-	bh=lAVk6c1+p9O2qSt5rKI5PqpuZY72+W78iTkgLcschGk=;
-	h=From:To:Subject:In-Reply-To:References:Date:From;
-	b=parAkT0Ds18TJwR+j7UWPJnms792Pv8js1LYPxxGM2z6f1T4f4VAmCCq4MMn/mXu4
-	 NDfxvgfuaoWiTuAlHNUprD10kV+cQXAsPh7WuE4O3thWXEtfTaCxJIlkKh1LBw+hM/
-	 HV3xydmxr+QTtOjJDxqz+PE+j3Vl3VR+a1l31O5SStz0hql7zFB3vk5IZN/DjazBSm
-	 TzWHg/owO5vV6ZENJaltw/S082HA/f2PlC3NL1gFPvteOHxkyw/h4m5cvRLQ2OMyzr
-	 kKkIUX9QxLk8pAPNwlYTXanYVxkdwNbPEWesxjIWjfafJVjtpXzfvvkvakMYmRdy0T
-	 re66oz8u8pu6Q==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Daniel Borkmann <daniel@iogearbox.net>, Puranjay Mohan
- <puranjay12@gmail.com>, paul.walmsley@sifive.com, palmer@dabbelt.com,
- aou@eecs.berkeley.edu, pulehui@huawei.com, conor.dooley@microchip.com,
- ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
- yhs@fb.com, kpsingh@kernel.org, bpf@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 0/3] bpf, riscv: use BPF prog pack allocator
- in BPF JIT
-In-Reply-To: <9ab91c63-0712-d2d8-9b2b-6f2098287baa@iogearbox.net>
-References: <20230828165958.1714079-1-puranjay12@gmail.com>
- <87edjmb1t8.fsf@all.your.base.are.belong.to.us>
- <9ab91c63-0712-d2d8-9b2b-6f2098287baa@iogearbox.net>
-Date: Wed, 30 Aug 2023 10:30:50 +0200
-Message-ID: <87h6oh2apx.fsf@all.your.base.are.belong.to.us>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 714C5636;
+	Wed, 30 Aug 2023 08:56:06 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D38CC9;
+	Wed, 30 Aug 2023 01:56:03 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RbJ6l5tbMz4f3mWf;
+	Wed, 30 Aug 2023 16:55:59 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP1 (Coremail) with SMTP id cCh0CgD3aygfBO9kp4dNBw--.49911S2;
+	Wed, 30 Aug 2023 16:56:00 +0800 (CST)
+Message-ID: <04e4df50-eed7-8944-0f0b-19bded6f37ef@huaweicloud.com>
+Date: Wed, 30 Aug 2023 16:55:59 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH bpf v3 3/4] selftests/bpf: fix a CI failure caused by
+ vsock sockmap test
+Content-Language: en-US
+To: Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
+ Bobby Eshleman <bobby.eshleman@bytedance.com>
+Cc: Jakub Sitnicki <jakub@cloudflare.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Cong Wang <cong.wang@bytedance.com>
+References: <20230804073740.194770-1-xukuohai@huaweicloud.com>
+ <20230804073740.194770-4-xukuohai@huaweicloud.com>
+ <13ccc3b5-a392-9391-79ec-143a8701c1f5@iogearbox.net>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <13ccc3b5-a392-9391-79ec-143a8701c1f5@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgD3aygfBO9kp4dNBw--.49911S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWF1UGrWfCFyfZrW3KFW3ZFb_yoW5AF4UpF
+	W5tFZ3tr4Ykr9a9FsYkF1DGFy0yrWvqw1UJryUZFy7X345Grn3CrZ0qrsIkF13trs5Za4r
+	tF4qgay7X34kGaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
+On 8/30/2023 4:10 PM, Daniel Borkmann wrote:
+> Hi Xu,
+> 
+> On 8/4/23 9:37 AM, Xu Kuohai wrote:
+>> From: Xu Kuohai <xukuohai@huawei.com>
+>>
+>> BPF CI has reported the following failure:
+>>
+>> Error: #200/79 sockmap_listen/sockmap VSOCK test_vsock_redir
+>>    Error: #200/79 sockmap_listen/sockmap VSOCK test_vsock_redir
+>>    ./test_progs:vsock_unix_redir_connectible:1506: egress: write: Transport endpoint is not connected
+>>    vsock_unix_redir_connectible:FAIL:1506
+>>    ./test_progs:vsock_unix_redir_connectible:1506: ingress: write: Transport endpoint is not connected
+>>    vsock_unix_redir_connectible:FAIL:1506
+>>    ./test_progs:vsock_unix_redir_connectible:1506: egress: write: Transport endpoint is not connected
+>>    vsock_unix_redir_connectible:FAIL:1506
+>>    ./test_progs:vsock_unix_redir_connectible:1514: ingress: recv() err, errno=11
+>>    vsock_unix_redir_connectible:FAIL:1514
+>>    ./test_progs:vsock_unix_redir_connectible:1518: ingress: vsock socket map failed, a != b
+>>    vsock_unix_redir_connectible:FAIL:1518
+>>    ./test_progs:vsock_unix_redir_connectible:1525: ingress: want pass count 1, have 0
+>>
+>> It’s because the recv(... MSG_DONTWAIT) syscall in the test case is
+>> called before the queued work sk_psock_backlog() in the kernel finishes
+>> executing. So the data to be read is still queued in psock->ingress_skb
+>> and cannot be read by the user program. Therefore, the non-blocking
+>> recv() reads nothing and reports an EAGAIN error.
+>>
+>> So replace recv(... MSG_DONTWAIT) with xrecv_nonblock(), which calls
+>> select() to wait for data to be readable or timeout before calls recv().
+>>
+>> Fixes: d61bd8c1fd02 ("selftests/bpf: add a test case for vsock sockmap")
+>> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+> 
+> This is unfortunately still flaky and showing up from time to time in BPF CI, e.g. a
+> very recent one can be found here:
+> 
+> https://github.com/kernel-patches/bpf/actions/runs/6021475685/job/16335248421
+> 
+> [...]
+> Error: #211 sockmap_listen
+> Error: #211/79 sockmap_listen/sockmap VSOCK test_vsock_redir
+>    Error: #211/79 sockmap_listen/sockmap VSOCK test_vsock_redir
+>    ./test_progs:vsock_unix_redir_connectible:1501: egress: write: Transport endpoint is not connected
+>    vsock_unix_redir_connectible:FAIL:1501
+>    ./test_progs:vsock_unix_redir_connectible:1501: ingress: write: Transport endpoint is not connected
+>    vsock_unix_redir_connectible:FAIL:1501
+>    ./test_progs:vsock_unix_redir_connectible:1501: egress: write: Transport endpoint is not connected
+>    vsock_unix_redir_connectible:FAIL:1501
+> 
+> Could you continue to look into it to make the test more robust?
+> 
 
-> On 8/29/23 12:06 PM, Bj=C3=B6rn T=C3=B6pel wrote:
->> Puranjay Mohan <puranjay12@gmail.com> writes:
->>=20
->>> Changes in v2 -> v3:
->>> 1. Fix maximum width of code in patches from 80 to 100. [All patches]
->>> 2. Add checks for ctx->ro_insns =3D=3D NULL. [Patch 3]
->>> 3. Fix check for edge condition where amount of text to set > 2 * pages=
-ize
->>>     [Patch 1 and 2]
->>> 4. Add reviewed-by in patches.
->>> 5. Adding results of selftest here:
->>>     Using the command: ./test_progs on qemu
->>>     Without the series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
->>>     With this series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
->>>
->>> Changes in v1 -> v2:
->>> 1. Implement a new function patch_text_set_nosync() to be used in bpf_a=
-rch_text_invalidate().
->>>     The implementation in v1 called patch_text_nosync() in a loop and i=
-t was bad as it would
->>>     call flush_icache_range() for every word making it really slow. Thi=
-s was found by running
->>>     the test_tag selftest which would take forever to complete.
->>>
->>> Here is some data to prove the V2 fixes the problem:
->>>
->>> Without this series:
->>> root@rv-selftester:~/src/kselftest/bpf# time ./test_tag
->>> test_tag: OK (40945 tests)
->>>
->>> real    7m47.562s
->>> user    0m24.145s
->>> sys     6m37.064s
->>>
->>> With this series applied:
->>> root@rv-selftester:~/src/selftest/bpf# time ./test_tag
->>> test_tag: OK (40945 tests)
->>>
->>> real    7m29.472s
->>> user    0m25.865s
->>> sys     6m18.401s
->>>
->>> BPF programs currently consume a page each on RISCV. For systems with m=
-any BPF
->>> programs, this adds significant pressure to instruction TLB. High iTLB =
-pressure
->>> usually causes slow down for the whole system.
->>>
->>> Song Liu introduced the BPF prog pack allocator[1] to mitigate the abov=
-e issue.
->>> It packs multiple BPF programs into a single huge page. It is currently=
- only
->>> enabled for the x86_64 BPF JIT.
->>>
->>> I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed =
-now.
->>>
->>> This patch series enables the BPF prog pack allocator for the RISCV BPF=
- JIT.
->>> This series needs a patch[3] from the ARM64 series to work.
->>>
->>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
->>> Performance Analysis of prog pack allocator on RISCV64
->>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
->>>
->>> Test setup:
->>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>>
->>> Host machine: Debian GNU/Linux 11 (bullseye)
->>> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
->>> u-boot-qemu Version: 2023.07+dfsg-1
->>> opensbi Version: 1.3-1
->>>
->>> To test the performance of the BPF prog pack allocator on RV, a stresser
->>> tool[4] linked below was built. This tool loads 8 BPF programs on the s=
-ystem and
->>> triggers 5 of them in an infinite loop by doing system calls.
->>>
->>> The runner script starts 20 instances of the above which loads 8*20=3D1=
-60 BPF
->>> programs on the system, 5*20=3D100 of which are being constantly trigge=
-red.
->>> The script is passed a command which would be run in the above environm=
-ent.
->>>
->>> The script was run with following perf command:
->>> ./run.sh "perf stat -a \
->>>          -e iTLB-load-misses \
->>>          -e dTLB-load-misses  \
->>>          -e dTLB-store-misses \
->>>          -e instructions \
->>>          --timeout 60000"
->>>
->>> The output of the above command is discussed below before and after ena=
-bling the
->>> BPF prog pack allocator.
->>>
->>> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The =
-rootfs
->>> was created using Bjorn's riscv-cross-builder[5] docker container linke=
-d below.
->>>
->>> Results
->>> =3D=3D=3D=3D=3D=3D=3D
->>>
->>> Before enabling prog pack allocator:
->>> ------------------------------------
->>>
->>> Performance counter stats for 'system wide':
->>>
->>>             4939048      iTLB-load-misses
->>>             5468689      dTLB-load-misses
->>>              465234      dTLB-store-misses
->>>       1441082097998      instructions
->>>
->>>        60.045791200 seconds time elapsed
->>>
->>> After enabling prog pack allocator:
->>> -----------------------------------
->>>
->>> Performance counter stats for 'system wide':
->>>
->>>             3430035      iTLB-load-misses
->>>             5008745      dTLB-load-misses
->>>              409944      dTLB-store-misses
->>>       1441535637988      instructions
->>>
->>>        60.046296600 seconds time elapsed
->>>
->>> Improvements in metrics
->>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>>
->>> It was expected that the iTLB-load-misses would decrease as now a singl=
-e huge
->>> page is used to keep all the BPF programs compared to a single page for=
- each
->>> program earlier.
->>>
->>> --------------------------------------------
->>> The improvement in iTLB-load-misses: -30.5 %
->>> --------------------------------------------
->>>
->>> I repeated this expriment more than 100 times in different setups and t=
-he
->>> improvement was always greater than 30%.
->>>
->>> This patch series is boot tested on the Starfive VisionFive 2 board[6].
->>> The performance analysis was not done on the board because it doesn't
->>> expose iTLB-load-misses, etc. The stresser program was run on the board=
- to test
->>> the loading and unloading of BPF programs
->>>
->>> [1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
->>> [2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@gma=
-il.com/
->>> [3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gma=
-il.com/
->>> [4] https://github.com/puranjaymohan/BPF-Allocator-Bench
->>> [5] https://github.com/bjoto/riscv-cross-builder
->>> [6] https://www.starfivetech.com/en/site/boards
->>>
->>> Puranjay Mohan (3):
->>>    riscv: extend patch_text_nosync() for multiple pages
->>>    riscv: implement a memset like function for text
->>>    bpf, riscv: use prog pack allocator in the BPF JIT
->>=20
->> Thank you! For the series:
->>=20
->> Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
->> Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
->>=20
->> @Alexei @Daniel This series depends on a core BPF patch from the Arm
->>                  series [3].
->>=20
->> @Palmer LMK if you have any concerns taking the RISC-V text patching
->>          stuff via the BPF tree.
->
-> Palmer, did the riscv PR already go to Linus?
->
-> If not yet, perhaps you could ship this series along with your PR to Linus
-> during this merge window given the big net PR (incl. bpf) was already mer=
-ged
-> yesterday. So from our side only fixes ship to Linus.
->
-> Otherwise we could take it into bpf-next for the next dev cycle if there =
-are
-> no objections, let us know.
+OK, it looks like I only noticed the recv failure and ignored the
+write failure. I'll take it a look.
 
-Daniel, I'll bring this up on the RISC-V patchwork sync meeting [1]
-today.
+> Thanks a lot,
+> Daniel
 
-[1] https://lore.kernel.org/linux-riscv/mhng-775d4068-6c1e-48a4-a1dc-b4a76f=
-f26bb3@palmer-ri-x1c9a/
 
