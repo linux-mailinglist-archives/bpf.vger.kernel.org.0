@@ -1,159 +1,135 @@
-Return-Path: <bpf+bounces-8943-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8944-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8017578D151
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 02:49:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45E3678D18D
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 03:12:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B444D1C20AB0
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 00:49:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AA231C20A94
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 01:12:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF246EC5;
-	Wed, 30 Aug 2023 00:49:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79646EA2;
+	Wed, 30 Aug 2023 01:11:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5384C7E6;
-	Wed, 30 Aug 2023 00:49:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15649C433C8;
-	Wed, 30 Aug 2023 00:48:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1693356547;
-	bh=Y6mimTT4f5bHTNOgMAPJs7UzoDd9JcRrnEgta8s7/7g=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=R2eMjMGcVP6twJXzPd3GjCC/QAkoBXyIXwyF0PetiX1VDQJtkSU/FrVUdLPhlHeJk
-	 dBHqNW4EShjtZaWh7sFQvaiUl3mq77UH9KDN3DI2snJ6o1c+81N9JuEjNxovdv+bSx
-	 sgcIB4JoE+RW7C4bNpHemTP/NmKBpTL7+v/S4iHTHVlduZjb2wd1jti+ZtvOSZrtwV
-	 l+HJJMf2BwuQ5fHlwOGaHAX0BTHl6xVSRaJy3EeRODk9yD0xK9grM4eFB73+9nNR6U
-	 SUPRRhBT9hKA3cHo92ct+4AiPcoeZ/GYLow2fGYu2g/oM5lHg/5skk6mbUINrwlVsy
-	 FRJBQs41w8qcA==
-Message-ID: <d73e7de5056a34578a193185770e46584450d8b7.camel@kernel.org>
-Subject: Re: [PATCH v2 08/92] fs: new helper: simple_rename_timestamp
-From: Jeff Layton <jlayton@kernel.org>
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: jk@ozlabs.org, arnd@arndb.de, mpe@ellerman.id.au, npiggin@gmail.com, 
- christophe.leroy@csgroup.eu, hca@linux.ibm.com, gor@linux.ibm.com, 
- agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, 
- gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
- maco@android.com,  joel@joelfernandes.org, brauner@kernel.org,
- cmllamas@google.com, surenb@google.com, 
- dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca, leon@kernel.org, 
- bwarrum@linux.ibm.com, rituagar@linux.ibm.com, ericvh@kernel.org,
- lucho@ionkov.net,  asmadeus@codewreck.org, linux_oss@crudebyte.com,
- dsterba@suse.com,  dhowells@redhat.com, marc.dionne@auristor.com,
- raven@themaw.net, luisbg@kernel.org,  salah.triki@gmail.com,
- aivazian.tigran@gmail.com, ebiederm@xmission.com,  keescook@chromium.org,
- clm@fb.com, josef@toxicpanda.com, xiubli@redhat.com,  idryomov@gmail.com,
- jaharkes@cs.cmu.edu, coda@cs.cmu.edu, jlbec@evilplan.org,  hch@lst.de,
- nico@fluxnic.net, rafael@kernel.org, code@tyhicks.com, ardb@kernel.org, 
- xiang@kernel.org, chao@kernel.org, huyue2@coolpad.com,
- jefflexu@linux.alibaba.com,  linkinjeon@kernel.org, sj1557.seo@samsung.com,
- jack@suse.com, tytso@mit.edu,  adilger.kernel@dilger.ca,
- jaegeuk@kernel.org, hirofumi@mail.parknet.co.jp,  miklos@szeredi.hu,
- rpeterso@redhat.com, agruenba@redhat.com, richard@nod.at, 
- anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, 
- mikulas@artax.karlin.mff.cuni.cz, mike.kravetz@oracle.com,
- muchun.song@linux.dev,  dwmw2@infradead.org, shaggy@kernel.org,
- tj@kernel.org,  trond.myklebust@hammerspace.com, anna@kernel.org,
- chuck.lever@oracle.com,  neilb@suse.de, kolga@netapp.com,
- Dai.Ngo@oracle.com, tom@talpey.com,  konishi.ryusuke@gmail.com,
- anton@tuxera.com,  almaz.alexandrovich@paragon-software.com,
- mark@fasheh.com,  joseph.qi@linux.alibaba.com, me@bobcopeland.com,
- hubcap@omnibond.com,  martin@omnibond.com, amir73il@gmail.com,
- mcgrof@kernel.org, yzaikin@google.com,  tony.luck@intel.com,
- gpiccoli@igalia.com, al@alarsen.net, sfrench@samba.org,  pc@manguebit.com,
- lsahlber@redhat.com, sprasad@microsoft.com,  senozhatsky@chromium.org,
- phillip@squashfs.org.uk, rostedt@goodmis.org,  mhiramat@kernel.org,
- dushistov@mail.ru, hdegoede@redhat.com, djwong@kernel.org, 
- dlemoal@kernel.org, naohiro.aota@wdc.com, jth@kernel.org, ast@kernel.org, 
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org,  yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@google.com,  haoluo@google.com, jolsa@kernel.org, hughd@google.com,
- akpm@linux-foundation.org,  davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com,  john.johansen@canonical.com,
- paul@paul-moore.com, jmorris@namei.org,  serge@hallyn.com,
- stephen.smalley.work@gmail.com, eparis@parisplace.org,  jgross@suse.com,
- stern@rowland.harvard.edu, lrh2000@pku.edu.cn, 
- sebastian.reichel@collabora.com, wsa+renesas@sang-engineering.com, 
- quic_ugoswami@quicinc.com, quic_linyyuan@quicinc.com, john@keeping.me.uk, 
- error27@gmail.com, quic_uaggarwa@quicinc.com, hayama@lineo.co.jp,
- jomajm@gmail.com,  axboe@kernel.dk, dhavale@google.com,
- dchinner@redhat.com, hannes@cmpxchg.org,  zhangpeng362@huawei.com,
- slava@dubeyko.com, gargaditya08@live.com, 
- penguin-kernel@i-love.sakura.ne.jp, yifeliu@cs.stonybrook.edu, 
- madkar@cs.stonybrook.edu, ezk@cs.stonybrook.edu, yuzhe@nfschina.com, 
- willy@infradead.org, okanatov@gmail.com, jeffxu@chromium.org,
- linux@treblig.org,  mirimmad17@gmail.com, yijiangshan@kylinos.cn,
- yang.yang29@zte.com.cn,  xu.xin16@zte.com.cn, chengzhihao1@huawei.com,
- shr@devkernel.io,  Liam.Howlett@oracle.com, adobriyan@gmail.com,
- chi.minghao@zte.com.cn,  roberto.sassu@huawei.com, linuszeng@tencent.com,
- bvanassche@acm.org,  zohar@linux.ibm.com, yi.zhang@huawei.com,
- trix@redhat.com, fmdefrancesco@gmail.com,  ebiggers@google.com,
- princekumarmaurya06@gmail.com, chenzhongjin@huawei.com,  riel@surriel.com,
- shaozhengchao@huawei.com, jingyuwang_vip@163.com, 
- linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
- linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org, 
- linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
- linux-fsdevel@vger.kernel.org,  linux-afs@lists.infradead.org,
- autofs@vger.kernel.org, linux-mm@kvack.org,  linux-btrfs@vger.kernel.org,
- ceph-devel@vger.kernel.org,  codalist@coda.cs.cmu.edu,
- ecryptfs@vger.kernel.org, linux-efi@vger.kernel.org, 
- linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
- linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, 
- linux-um@lists.infradead.org, linux-mtd@lists.infradead.org, 
- jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org, 
- linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, 
- ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, 
- linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, 
- linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org, 
- reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org, 
- samba-technical@lists.samba.org, linux-trace-kernel@vger.kernel.org, 
- linux-xfs@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
- apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, 
- selinux@vger.kernel.org
-Date: Tue, 29 Aug 2023 20:48:48 -0400
-In-Reply-To: <20230830001917.GC461907@ZenIV>
-References: <20230705185812.579118-1-jlayton@kernel.org>
-	 <20230705185812.579118-3-jlayton@kernel.org>
-	 <20230830001917.GC461907@ZenIV>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 490DEA3D
+	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 01:11:56 +0000 (UTC)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D692983
+	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 18:11:55 -0700 (PDT)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37U0a1DV028967;
+	Wed, 30 Aug 2023 01:11:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=EW3nQluOrhClHbiqlEyo6zxMwSzvK4EV/JVjc40gyvc=;
+ b=iD8ShJa7EJPo25/YuXoGLJxoTZuS1Be/RpXjKVJ/HwGWbDUI/P/eeFuReGF/cB9uZuEr
+ boaA4fTBYp6cOeUOYfnOV/JHWOnYC1iSsWewJmrtuaT88KEbTNGl2bE6CeGR4gw/Yjwg
+ OOFnXe3bHXVfMrlFHXDKGXQIarPfxugaCAF8Wx49CpAO2zJ6bXyr20bEIbHNnBadd22+
+ 16rsVEd1pyCZAWLbM2kW0D4DG9mvIwV+Gjz8rz0+SgjZ2rjAuw74umgpw/9RhMkK2lKO
+ GmIs/CMMLoeYjJyX3PFs6nVfY5LlwRR+DZaik9C9RxInjPPDG5US0zbhgGTrVf+GzvJB xg== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ssu57rw55-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 30 Aug 2023 01:11:42 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37TNdFgw020514;
+	Wed, 30 Aug 2023 01:11:41 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sqv3yg6mh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 30 Aug 2023 01:11:41 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37U1BceI2818734
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 30 Aug 2023 01:11:38 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7D9152004B;
+	Wed, 30 Aug 2023 01:11:38 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0584D20043;
+	Wed, 30 Aug 2023 01:11:38 +0000 (GMT)
+Received: from heavy.boeblingen.de.ibm.com (unknown [9.171.5.44])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 30 Aug 2023 01:11:37 +0000 (GMT)
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next 00/11] Implement cpuv4 support for s390x
+Date: Wed, 30 Aug 2023 03:07:41 +0200
+Message-ID: <20230830011128.1415752-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: uvgcVpP3NO67YVu2R583szMz3s6kjsHi
+X-Proofpoint-ORIG-GUID: uvgcVpP3NO67YVu2R583szMz3s6kjsHi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-29_16,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ adultscore=0 malwarescore=0 spamscore=0 mlxlogscore=736 bulkscore=0
+ lowpriorityscore=0 clxscore=1011 suspectscore=0 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308300008
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Wed, 2023-08-30 at 01:19 +0100, Al Viro wrote:
-> On Wed, Jul 05, 2023 at 02:58:11PM -0400, Jeff Layton wrote:
->=20
-> > + * POSIX mandates that the old and new parent directories have their c=
-time and
-> > + * mtime updated, and that inodes of @old_dentry and @new_dentry (if a=
-ny), have
-> > + * their ctime updated.
->=20
-> APPLICATION USAGE
-> Some implementations mark for update the last file status change timestam=
-p
-> of renamed files and some do not. Applications which make use of the
-> last file status change timestamp may behave differently with respect
-> to renamed files unless they are designed to allow for either behavior.
->
-> So for children POSIX permits rather than mandates.  Doesn't really matte=
-r;
-> Linux behaviour had been to touch ctime on children since way back, if
-> not since the very beginning.
+Hi,
 
-Mea culpa. You're quite correct. I'll plan to roll a small patch to
-update the comment over this function.
+This series adds the cpuv4 support to the s390x eBPF JIT.
+Patches 1-4 are preliminary bugfixes.
+Patches 5-9 implement the new instructions.
+Patches 10-11 enable the tests.
 
-Thanks!
---=20
-Jeff Layton <jlayton@kernel.org>
+Best regards,
+Ilya
+
+Ilya Leoshkevich (11):
+  bpf: Disable zero-extension for BPF_MEMSX
+  net: netfilter: Adjust timeouts of non-confirmed CTs in
+    bpf_ct_insert_entry()
+  selftests/bpf: Unmount the cgroup2 work directory
+  selftests/bpf: Add big-endian support to the ldsx test
+  s390/bpf: Implement BPF_MOV | BPF_X with sign-extension
+  s390/bpf: Implement BPF_MEMSX
+  s390/bpf: Implement unconditional byte swap
+  s390/bpf: Implement unconditional jump with 32-bit offset
+  s390/bpf: Implement signed division
+  selftests/bpf: Enable the cpuv4 tests for s390x
+  selftests/bpf: Trim DENYLIST.s390x
+
+ arch/s390/net/bpf_jit_comp.c                  | 265 +++++++++++++-----
+ kernel/bpf/verifier.c                         |   4 +-
+ net/netfilter/nf_conntrack_bpf.c              |   2 +
+ tools/testing/selftests/bpf/DENYLIST.s390x    |  25 --
+ tools/testing/selftests/bpf/cgroup_helpers.c  |  33 ++-
+ .../selftests/bpf/progs/test_ldsx_insn.c      |   9 +-
+ .../selftests/bpf/progs/verifier_bswap.c      |   3 +-
+ .../selftests/bpf/progs/verifier_gotol.c      |   3 +-
+ .../selftests/bpf/progs/verifier_ldsx.c       | 149 ++++++----
+ .../selftests/bpf/progs/verifier_movsx.c      |   3 +-
+ .../selftests/bpf/progs/verifier_sdiv.c       |   3 +-
+ 11 files changed, 335 insertions(+), 164 deletions(-)
+
+-- 
+2.41.0
+
 
