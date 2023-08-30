@@ -1,83 +1,132 @@
-Return-Path: <bpf+bounces-8940-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8941-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 487FD78CF7E
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 00:24:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5D7878D107
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 02:23:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CE0E1C20A64
-	for <lists+bpf@lfdr.de>; Tue, 29 Aug 2023 22:24:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F379A2812AA
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 00:23:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DCBC182DF;
-	Tue, 29 Aug 2023 22:24:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FFB17E6;
+	Wed, 30 Aug 2023 00:23:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F36F182D4
-	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 22:24:22 +0000 (UTC)
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6F01A4
-	for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 15:24:21 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68bed286169so4229825b3a.1
-        for <bpf@vger.kernel.org>; Tue, 29 Aug 2023 15:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1693347860; x=1693952660; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+YYrVRvFGP8cHlPGoJT9wVJUhY8GN/rwR0tzqEGpip4=;
-        b=HGN6wzE0Z+22ftS0x+nuWnCprmDpb/v0SZ86HyOgWputm+heKUXR2mnqzErStq72tE
-         c4zpJAZLjtl3kqpneEua/+I1WrnSnldvcrdEQdT7A5hy/DT7Q29PJg5ZsJoNRAT7q9t5
-         0pNXHfsoylRRBs84O2jg2jQ44b0YU6QiALeVPzBfC77m+1icx0TiWZM2135zoO1fYz30
-         Gm9oV5xtAaqTC6GGk81p9SW1a+4NDotdsld40wB+14KpNtaDa2zplFhdZqkhACTXNKdX
-         846zMFSDYPBeCRHYzXhz0Q3MFtvLKbd7Qz/i6wN3kFU3FU+6W9fVtld63qMKc3qTQ68j
-         7KuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693347860; x=1693952660;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+YYrVRvFGP8cHlPGoJT9wVJUhY8GN/rwR0tzqEGpip4=;
-        b=LT2SBI/aU1WC/lvZBGruzl91LgULALipPCarZznaXpzCtOgLpAFDQPVRCg6lJKBq5d
-         DWkHQ5706G3jvc+pnkhW7oDZ+bu+mmxTPTXFtCucc+bNn4J+4+quPPFg7VxySrDv6oRE
-         8JxEh0Xs1rR8IanwH1qVVlvvfG3QzYHlkG1qrlcaXQhSvz5xJX5UDKjM48SYlqZD40lh
-         x/N5eXJUfqkexzp5puPxuT24vyIR2ID538Aue7VxbOUYQ3ACt3yGf5n7NtqvIRFxNuop
-         yGZqPNS08WcPxKmprmwtgSLe2BrG+ogLCLFnqlzTuPUzT2FeNLpE8ysfF8Q01rfatP4N
-         7h+w==
-X-Gm-Message-State: AOJu0Yw3B2x+e79SVx2YRoMFBhSk2qmBnEGWoS7zJRe5QolSIoMDoknU
-	7GEF9gBQ5enKrjafPy/iywgS2g==
-X-Google-Smtp-Source: AGHT+IFPNsEXPkaJPGMeeiEFHipjnGseCng4DOTgYsmDDTAwZXJBdp93d1gYNXCJe3ucMHjD39GcnA==
-X-Received: by 2002:a05:6a20:9746:b0:148:656b:9a1f with SMTP id hs6-20020a056a20974600b00148656b9a1fmr654936pzc.20.1693347860454;
-        Tue, 29 Aug 2023 15:24:20 -0700 (PDT)
-Received: from medusa.lab.kspace.sh (c-98-207-191-243.hsd1.ca.comcast.net. [98.207.191.243])
-        by smtp.googlemail.com with ESMTPSA id v12-20020a170902b7cc00b001993a1fce7bsm9798784plz.196.2023.08.29.15.24.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 15:24:20 -0700 (PDT)
-Date: Tue, 29 Aug 2023 15:24:18 -0700
-From: Mohamed Khalfella <mkhalfella@purestorage.com>
-To: Eric Dumazet <edumazet@google.com>
-Cc: willemjdebruijn <willemdebruijn.kernel@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Alexander Duyck <alexanderduyck@fb.com>,
-	David Howells <dhowells@redhat.com>,
-	Jesper Dangaard Brouer <brouer@redhat.com>,
-	Kees Cook <keescook@chromium.org>,
-	"open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:BPF [MISC]" <bpf@vger.kernel.org>
-Subject: Re: [PATCH] skbuff: skb_segment, Update nfrags after calling zero
- copy functions
-Message-ID: <20230829222418.GB1473980@medusa>
-References: <20230828233210.36532-1-mkhalfella@purestorage.com>
- <64ed7188a2745_9cf208e1@penguin.notmuch>
- <20230829065010.GO4091703@medusa>
- <CANn89iLbNF_kGG9S3R9Y8gpoEM71Wesoi1mTA3-at4Furc+0Fg@mail.gmail.com>
- <20230829093105.GA611013@medusa>
- <CANn89iLzOFikw2A8HJJ0zvg1Znw+EnOH2Tm2ghrURkE7NXvQSg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C37A5620;
+	Wed, 30 Aug 2023 00:23:25 +0000 (UTC)
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496C7EA;
+	Tue, 29 Aug 2023 17:23:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=zZxZUyqerb7julFXQ03Jti/01WDk420m8vSi4C3S7Zg=; b=C+B8K/E0jwmlP3x0ynEg/wW0oT
+	8W+g7CEhf7EdCVJx+aCWMaLZ8rDm21ORLwQNEzBBlnKI8nSnQEIfBUqrKOBnjUNllXW768GzG3qB7
+	+cpJ/jhntfWbFQ/3QFzCMkG1sg2st+PpzLnPrKtYydQR6EDaMR8Bc+aEbQhcPGU53TF4NXxBCLwrJ
+	Y+Cse/dfbORxx77QJVsCQ4BCKysmxvXtFDzxb882a/rtaocFDwQw24nZDPRB3CytP/MOuWTM+mTfa
+	+8MJ/m4rwupUEXN1Mh5oBPLgZehFHGmgz56mU9Gh95pn90zVDOFdIxrpzwqUqcKtUFnurzTC7a4a3
+	phr8qPBQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1qb8vV-001xXV-0L;
+	Wed, 30 Aug 2023 00:19:17 +0000
+Date: Wed, 30 Aug 2023 01:19:17 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: jk@ozlabs.org, arnd@arndb.de, mpe@ellerman.id.au, npiggin@gmail.com,
+	christophe.leroy@csgroup.eu, hca@linux.ibm.com, gor@linux.ibm.com,
+	agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+	svens@linux.ibm.com, gregkh@linuxfoundation.org, arve@android.com,
+	tkjos@android.com, maco@android.com, joel@joelfernandes.org,
+	brauner@kernel.org, cmllamas@google.com, surenb@google.com,
+	dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
+	leon@kernel.org, bwarrum@linux.ibm.com, rituagar@linux.ibm.com,
+	ericvh@kernel.org, lucho@ionkov.net, asmadeus@codewreck.org,
+	linux_oss@crudebyte.com, dsterba@suse.com, dhowells@redhat.com,
+	marc.dionne@auristor.com, raven@themaw.net, luisbg@kernel.org,
+	salah.triki@gmail.com, aivazian.tigran@gmail.com,
+	ebiederm@xmission.com, keescook@chromium.org, clm@fb.com,
+	josef@toxicpanda.com, xiubli@redhat.com, idryomov@gmail.com,
+	jaharkes@cs.cmu.edu, coda@cs.cmu.edu, jlbec@evilplan.org,
+	hch@lst.de, nico@fluxnic.net, rafael@kernel.org, code@tyhicks.com,
+	ardb@kernel.org, xiang@kernel.org, chao@kernel.org,
+	huyue2@coolpad.com, jefflexu@linux.alibaba.com,
+	linkinjeon@kernel.org, sj1557.seo@samsung.com, jack@suse.com,
+	tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+	hirofumi@mail.parknet.co.jp, miklos@szeredi.hu, rpeterso@redhat.com,
+	agruenba@redhat.com, richard@nod.at,
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+	mikulas@artax.karlin.mff.cuni.cz, mike.kravetz@oracle.com,
+	muchun.song@linux.dev, dwmw2@infradead.org, shaggy@kernel.org,
+	tj@kernel.org, trond.myklebust@hammerspace.com, anna@kernel.org,
+	chuck.lever@oracle.com, neilb@suse.de, kolga@netapp.com,
+	Dai.Ngo@oracle.com, tom@talpey.com, konishi.ryusuke@gmail.com,
+	anton@tuxera.com, almaz.alexandrovich@paragon-software.com,
+	mark@fasheh.com, joseph.qi@linux.alibaba.com, me@bobcopeland.com,
+	hubcap@omnibond.com, martin@omnibond.com, amir73il@gmail.com,
+	mcgrof@kernel.org, yzaikin@google.com, tony.luck@intel.com,
+	gpiccoli@igalia.com, al@alarsen.net, sfrench@samba.org,
+	pc@manguebit.com, lsahlber@redhat.com, sprasad@microsoft.com,
+	senozhatsky@chromium.org, phillip@squashfs.org.uk,
+	rostedt@goodmis.org, mhiramat@kernel.org, dushistov@mail.ru,
+	hdegoede@redhat.com, djwong@kernel.org, dlemoal@kernel.org,
+	naohiro.aota@wdc.com, jth@kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	jolsa@kernel.org, hughd@google.com, akpm@linux-foundation.org,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, john.johansen@canonical.com, paul@paul-moore.com,
+	jmorris@namei.org, serge@hallyn.com, stephen.smalley.work@gmail.com,
+	eparis@parisplace.org, jgross@suse.com, stern@rowland.harvard.edu,
+	lrh2000@pku.edu.cn, sebastian.reichel@collabora.com,
+	wsa+renesas@sang-engineering.com, quic_ugoswami@quicinc.com,
+	quic_linyyuan@quicinc.com, john@keeping.me.uk, error27@gmail.com,
+	quic_uaggarwa@quicinc.com, hayama@lineo.co.jp, jomajm@gmail.com,
+	axboe@kernel.dk, dhavale@google.com, dchinner@redhat.com,
+	hannes@cmpxchg.org, zhangpeng362@huawei.com, slava@dubeyko.com,
+	gargaditya08@live.com, penguin-kernel@i-love.sakura.ne.jp,
+	yifeliu@cs.stonybrook.edu, madkar@cs.stonybrook.edu,
+	ezk@cs.stonybrook.edu, yuzhe@nfschina.com, willy@infradead.org,
+	okanatov@gmail.com, jeffxu@chromium.org, linux@treblig.org,
+	mirimmad17@gmail.com, yijiangshan@kylinos.cn,
+	yang.yang29@zte.com.cn, xu.xin16@zte.com.cn,
+	chengzhihao1@huawei.com, shr@devkernel.io, Liam.Howlett@oracle.com,
+	adobriyan@gmail.com, chi.minghao@zte.com.cn,
+	roberto.sassu@huawei.com, linuszeng@tencent.com, bvanassche@acm.org,
+	zohar@linux.ibm.com, yi.zhang@huawei.com, trix@redhat.com,
+	fmdefrancesco@gmail.com, ebiggers@google.com,
+	princekumarmaurya06@gmail.com, chenzhongjin@huawei.com,
+	riel@surriel.com, shaozhengchao@huawei.com, jingyuwang_vip@163.com,
+	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
+	autofs@vger.kernel.org, linux-mm@kvack.org,
+	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+	linux-efi@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	cluster-devel@redhat.com, linux-um@lists.infradead.org,
+	linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
+	linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
+	linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev,
+	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+	reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org, linux-trace-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, apparmor@lists.ubuntu.com,
+	linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Subject: Re: [PATCH v2 08/92] fs: new helper: simple_rename_timestamp
+Message-ID: <20230830001917.GC461907@ZenIV>
+References: <20230705185812.579118-1-jlayton@kernel.org>
+ <20230705185812.579118-3-jlayton@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,36 +135,27 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANn89iLzOFikw2A8HJJ0zvg1Znw+EnOH2Tm2ghrURkE7NXvQSg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
-	version=3.4.6
+In-Reply-To: <20230705185812.579118-3-jlayton@kernel.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 2023-08-29 12:09:15 +0200, Eric Dumazet wrote:
-> Another way to test this path for certain (without tcpdump having to race)
-> is to add a temporary/debug patch like this one:
-> 
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index a298992060e6efdecb87c7ffc8290eafe330583f..20cc42be5e81cdca567515f2a886af4ada0fbe0a
-> 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -1749,7 +1749,8 @@ int skb_copy_ubufs(struct sk_buff *skb, gfp_t gfp_mask)
->         int i, order, psize, new_frags;
->         u32 d_off;
-> 
-> -       if (skb_shared(skb) || skb_unclone(skb, gfp_mask))
-> +       if (skb_shared(skb) ||
-> +           pskb_expand_head(skb, 0, 0, gfp_mask))
->                 return -EINVAL;
-> 
->         if (!num_frags)
-> 
-> Note that this might catch other bugs :/
+On Wed, Jul 05, 2023 at 02:58:11PM -0400, Jeff Layton wrote:
 
-I was not able to make it allocate a new frags by running tcpdump while
-reproing the problem. However, I was able to do it with your patch.
+> + * POSIX mandates that the old and new parent directories have their ctime and
+> + * mtime updated, and that inodes of @old_dentry and @new_dentry (if any), have
+> + * their ctime updated.
+
+APPLICATION USAGE
+Some implementations mark for update the last file status change timestamp
+of renamed files and some do not. Applications which make use of the
+last file status change timestamp may behave differently with respect
+to renamed files unless they are designed to allow for either behavior.
+
+So for children POSIX permits rather than mandates.  Doesn't really matter;
+Linux behaviour had been to touch ctime on children since way back, if
+not since the very beginning.
 
