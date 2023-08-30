@@ -1,240 +1,142 @@
-Return-Path: <bpf+bounces-9017-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9018-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46BF678E342
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 01:28:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AB0778E38B
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 01:56:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FC211C20850
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 23:28:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5453228122A
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 23:56:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41EC58C1F;
-	Wed, 30 Aug 2023 23:28:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B3AF8F4D;
+	Wed, 30 Aug 2023 23:55:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAD958C11
-	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 23:28:35 +0000 (UTC)
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4E4C9
-	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 16:28:33 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-79216d8e2cfso11373239f.1
-        for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 16:28:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1693438113; x=1694042913; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qO4oHVMeF3PN/FsRZDW5+HN48tR0F4cYrDjxuervmcc=;
-        b=Eu0NVCbcNENxU4orBwSrtqGgmihSut/PWtGAPbw2wOyvpCJQdk7hA6lP1g+1k5d+C7
-         ae4Acdh+Fa3efuCr0CsyLWOOQpbtJ6O9GHm1jAJ24eZbnawbLwDTFOjH49qe1ma56c//
-         1OqWXvFVOJUSD881Qje3Xm91ynq7X286LsgY1SYf2Rr4aX2dDTTaJhIPhwigMKoWJ1m/
-         /bcH8wrXonwgGfg1MjaMBxTXXhjNdjlz6htRtPhHKU7PIDMrzpgOhJeoTJKhOKsQbXzx
-         22F/riaYP6Nm644PCunG8fGX7fl78eSIaqYk4oAz7dQnmakq3S6UAzjti2zC3H2kndfs
-         0AaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693438113; x=1694042913;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qO4oHVMeF3PN/FsRZDW5+HN48tR0F4cYrDjxuervmcc=;
-        b=NM02o9De793uEvBdOvX+914FvlS5lrZjNbbWwV6jbUSBzQEslkyNsnzn0kOXMZk7S6
-         eB14O95NJgJ9anftvvtgVcspXbRUCT6Sp5zrZYYGKYbuH+OUSgT7P8YQCpbLyQb3+571
-         0fUaOkos1Pf5+imyw6YdKVD0YDL4KsNyF+vKvZ55+33sVR60x4N3jpUF/kC7xjVxGQIp
-         ZdAmBd3RpdIYes9vB1p0GzoOFr02X5hirzw1rxxaBn4+4v2fiJpyyUpnZoLIph8LRvVx
-         UhpmJjbizAZ4o0eVhxvmgB0zu9Cd+d7anOiXcWdtdF7vzLJo4c/4zXVp6DeyBvxeZgF6
-         8pFg==
-X-Gm-Message-State: AOJu0Yxk8ctGjasFsy/Gr1etkhx+UuFsPKudqr5VZl0GjNe763Y/4AvM
-	4NTTk9QVguXtXxU2Dxn/4Py23Q==
-X-Google-Smtp-Source: AGHT+IGHZX6zgxZVgpuwzmQ02MWpvEuUfxgBDG8q3JehNd8n4slhLq/nkl0RKY60VYpQx78mOh9ZbA==
-X-Received: by 2002:a6b:e914:0:b0:783:57ae:1894 with SMTP id u20-20020a6be914000000b0078357ae1894mr4089814iof.9.1693438113284;
-        Wed, 30 Aug 2023 16:28:33 -0700 (PDT)
-Received: from dev-mkhalfella2.dev.purestorage.com ([208.88.159.129])
-        by smtp.googlemail.com with ESMTPSA id x17-20020a029711000000b0041d73d0a412sm56753jai.19.2023.08.30.16.28.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 16:28:32 -0700 (PDT)
-From: Mohamed Khalfella <mkhalfella@purestorage.com>
-To: willemdebruijn.kernel@gmail.com
-Cc: alexanderduyck@fb.com,
-	bpf@vger.kernel.org,
-	brouer@redhat.com,
-	davem@davemloft.net,
-	dhowells@redhat.com,
-	edumazet@google.com,
-	keescook@chromium.org,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	mkhalfella@purestorage.com,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	willemb@google.com,
-	stable@vger.kernel.org
-Subject: [PATCH v2] skbuff: skb_segment, Call zero copy functions before using skbuff frags
-Date: Wed, 30 Aug 2023 17:28:11 -0600
-Message-Id: <20230830232811.9876-1-mkhalfella@purestorage.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <64ed7188a2745_9cf208e1@penguin.notmuch>
-References: <64ed7188a2745_9cf208e1@penguin.notmuch>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,T_SPF_PERMERROR autolearn=unavailable autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5E658C13
+	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 23:55:58 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45ADCC
+	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 16:55:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1693439756;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dvpKwAUlH7l/3d38zTbznxnCgwvMBWdLNFevAQq2bAM=;
+	b=LVXKM4pvrJqriiMyf5iXCkKeiIyymX5Gtw955WJdnsmAxpedPhMW3qYCQzjkrTnKs3h9n/
+	wGdFoZIZwc3Egy9vcgwgtGKi3l+dNKEoKeMfT7QRbkzaS6CzQ5eLEkM5MUHQCRVwSjm14w
+	EIa+/qU9bEWUpiCmR/6/U7dTyxmQKqM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-314-J_nW4K65N_eTtTQT6BXufA-1; Wed, 30 Aug 2023 19:55:52 -0400
+X-MC-Unique: J_nW4K65N_eTtTQT6BXufA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C0E1080027F;
+	Wed, 30 Aug 2023 23:55:51 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.26])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 1E0979A;
+	Wed, 30 Aug 2023 23:55:48 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Thu, 31 Aug 2023 01:55:02 +0200 (CEST)
+Date: Thu, 31 Aug 2023 01:54:59 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Yonghong Song <yhs@fb.com>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Kui-Feng Lee <kuifeng@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] bpf: task_group_seq_get_next: fix the
+ skip_if_dup_files check
+Message-ID: <20230830235459.GA3570@redhat.com>
+References: <20230825161842.GA16750@redhat.com>
+ <20230825161947.GA16871@redhat.com>
+ <20230825170406.GA16800@redhat.com>
+ <e254a6db-66eb-8bfc-561f-464327a1005a@linux.dev>
+ <20230827201909.GC28645@redhat.com>
+ <ac60ff18-22b0-0291-256c-0e0c3abb7b62@linux.dev>
+ <20230828105453.GB19186@redhat.com>
+ <25be098a-dc41-7907-5590-1835308ebe28@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <25be098a-dc41-7907-5590-1835308ebe28@linux.dev>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Commit bf5c25d60861 ("skbuff: in skb_segment, call zerocopy functions
-once per nskb") added the call to zero copy functions in skb_segment().
-The change introduced a bug in skb_segment() because skb_orphan_frags()
-may possibly change the number of fragments or allocate new fragments
-altogether leaving nrfrags and frag to point to the old values. This can
-cause a panic with stacktrace like the one below.
+On 08/28, Yonghong Song wrote:
+>
+> On 8/28/23 3:54 AM, Oleg Nesterov wrote:
+> >
+> >Could you review 6/6 as well?
+>
+> I think we can wait patch 6/6 after
+>    https://lore.kernel.org/all/20230824143142.GA31222@redhat.com/
+> is merged.
 
-[  193.894380] BUG: kernel NULL pointer dereference, address: 00000000000000bc
-[  193.895273] CPU: 13 PID: 18164 Comm: vh-net-17428 Kdump: loaded Tainted: G           O      5.15.123+ #26
-[  193.903919] RIP: 0010:skb_segment+0xb0e/0x12f0
-[  194.021892] Call Trace:
-[  194.027422]  <TASK>
-[  194.072861]  tcp_gso_segment+0x107/0x540
-[  194.082031]  inet_gso_segment+0x15c/0x3d0
-[  194.090783]  skb_mac_gso_segment+0x9f/0x110
-[  194.095016]  __skb_gso_segment+0xc1/0x190
-[  194.103131]  netem_enqueue+0x290/0xb10 [sch_netem]
-[  194.107071]  dev_qdisc_enqueue+0x16/0x70
-[  194.110884]  __dev_queue_xmit+0x63b/0xb30
-[  194.121670]  bond_start_xmit+0x159/0x380 [bonding]
-[  194.128506]  dev_hard_start_xmit+0xc3/0x1e0
-[  194.131787]  __dev_queue_xmit+0x8a0/0xb30
-[  194.138225]  macvlan_start_xmit+0x4f/0x100 [macvlan]
-[  194.141477]  dev_hard_start_xmit+0xc3/0x1e0
-[  194.144622]  sch_direct_xmit+0xe3/0x280
-[  194.147748]  __dev_queue_xmit+0x54a/0xb30
-[  194.154131]  tap_get_user+0x2a8/0x9c0 [tap]
-[  194.157358]  tap_sendmsg+0x52/0x8e0 [tap]
-[  194.167049]  handle_tx_zerocopy+0x14e/0x4c0 [vhost_net]
-[  194.173631]  handle_tx+0xcd/0xe0 [vhost_net]
-[  194.176959]  vhost_worker+0x76/0xb0 [vhost]
-[  194.183667]  kthread+0x118/0x140
-[  194.190358]  ret_from_fork+0x1f/0x30
-[  194.193670]  </TASK>
+OK.
 
-In this case calling skb_orphan_frags() updated nr_frags leaving nrfrags
-local variable in skb_segment() stale. This resulted in the code hitting
-i >= nrfrags prematurely and trying to move to next frag_skb using
-list_skb pointer, which was NULL, and caused kernel panic. Move the call
-to zero copy functions before using frags and nr_frags.
+> >Should I fold 1-5 into a single patch? I tried to document every change
+> >and simplify the review, but I do not want to blow the git history.
+>
+> Currently, because patch 6, the whole patch set cannot be tested by
+> bpf CI since it has a build failure:
+>   https://github.com/kernel-patches/bpf/pull/5580
 
-Fixes: bf5c25d60861 ("skbuff: in skb_segment, call zerocopy functions once per nskb")
-Signed-off-by: Mohamed Khalfella <mkhalfella@purestorage.com>
-Reported-by: Amit Goyal <agoyal@purestorage.com>
-Cc: stable@vger.kernel.org
----
- net/core/skbuff.c | 34 ++++++++++++++++++++--------------
- 1 file changed, 20 insertions(+), 14 deletions(-)
+Heh. I thought this is obvious. I thought you can test 1-5 without 6/6
+and _review_ 6/6.
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index a298992060e6..18a33dc2d6af 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -4354,21 +4354,20 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
- 	struct sk_buff *segs = NULL;
- 	struct sk_buff *tail = NULL;
- 	struct sk_buff *list_skb = skb_shinfo(head_skb)->frag_list;
--	skb_frag_t *frag = skb_shinfo(head_skb)->frags;
- 	unsigned int mss = skb_shinfo(head_skb)->gso_size;
- 	unsigned int doffset = head_skb->data - skb_mac_header(head_skb);
--	struct sk_buff *frag_skb = head_skb;
- 	unsigned int offset = doffset;
- 	unsigned int tnl_hlen = skb_tnl_header_len(head_skb);
- 	unsigned int partial_segs = 0;
- 	unsigned int headroom;
- 	unsigned int len = head_skb->len;
-+	struct sk_buff *frag_skb;
-+	skb_frag_t *frag;
- 	__be16 proto;
- 	bool csum, sg;
--	int nfrags = skb_shinfo(head_skb)->nr_frags;
- 	int err = -ENOMEM;
- 	int i = 0;
--	int pos;
-+	int nfrags, pos;
- 
- 	if ((skb_shinfo(head_skb)->gso_type & SKB_GSO_DODGY) &&
- 	    mss != GSO_BY_FRAGS && mss != skb_headlen(head_skb)) {
-@@ -4445,6 +4444,13 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
- 	headroom = skb_headroom(head_skb);
- 	pos = skb_headlen(head_skb);
- 
-+	if (skb_orphan_frags(head_skb, GFP_ATOMIC))
-+		return ERR_PTR(-ENOMEM);
-+
-+	nfrags = skb_shinfo(head_skb)->nr_frags;
-+	frag = skb_shinfo(head_skb)->frags;
-+	frag_skb = head_skb;
-+
- 	do {
- 		struct sk_buff *nskb;
- 		skb_frag_t *nskb_frag;
-@@ -4465,6 +4471,10 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
- 		    (skb_headlen(list_skb) == len || sg)) {
- 			BUG_ON(skb_headlen(list_skb) > len);
- 
-+			nskb = skb_clone(list_skb, GFP_ATOMIC);
-+			if (unlikely(!nskb))
-+				goto err;
-+
- 			i = 0;
- 			nfrags = skb_shinfo(list_skb)->nr_frags;
- 			frag = skb_shinfo(list_skb)->frags;
-@@ -4483,12 +4493,8 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
- 				frag++;
- 			}
- 
--			nskb = skb_clone(list_skb, GFP_ATOMIC);
- 			list_skb = list_skb->next;
- 
--			if (unlikely(!nskb))
--				goto err;
--
- 			if (unlikely(pskb_trim(nskb, len))) {
- 				kfree_skb(nskb);
- 				goto err;
-@@ -4564,12 +4570,16 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
- 		skb_shinfo(nskb)->flags |= skb_shinfo(head_skb)->flags &
- 					   SKBFL_SHARED_FRAG;
- 
--		if (skb_orphan_frags(frag_skb, GFP_ATOMIC) ||
--		    skb_zerocopy_clone(nskb, frag_skb, GFP_ATOMIC))
-+		if (skb_zerocopy_clone(nskb, list_skb, GFP_ATOMIC))
- 			goto err;
- 
- 		while (pos < offset + len) {
- 			if (i >= nfrags) {
-+				if (skb_orphan_frags(list_skb, GFP_ATOMIC) ||
-+				    skb_zerocopy_clone(nskb, list_skb,
-+						       GFP_ATOMIC))
-+					goto err;
-+
- 				i = 0;
- 				nfrags = skb_shinfo(list_skb)->nr_frags;
- 				frag = skb_shinfo(list_skb)->frags;
-@@ -4583,10 +4593,6 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
- 					i--;
- 					frag--;
- 				}
--				if (skb_orphan_frags(frag_skb, GFP_ATOMIC) ||
--				    skb_zerocopy_clone(nskb, frag_skb,
--						       GFP_ATOMIC))
--					goto err;
- 
- 				list_skb = list_skb->next;
- 			}
--- 
-2.17.1
+I simply can't understand how can this pull/5580 come when I specially
+mentioned
+
+	> 6/6 obviously depends on
+	>
+	>	[PATCH 1/2] introduce __next_thread(), fix next_tid() vs exec() race
+	>	https://lore.kernel.org/all/20230824143142.GA31222@redhat.com/
+	>
+	> which was not merged yet.
+
+in 0/6.
+
+> I suggest you get patch 1-5 and resubmit with tag like
+>   "bpf-next v2"
+>   [Patch bpf-next v2 x/5] ...
+> so CI can build with different architectures and compilers to
+> ensure everything builds and runs fine.
+
+I think we can wait for
+
+	https://lore.kernel.org/all/20230824143142.GA31222@redhat.com/
+
+as you suggest above, then I'll send the s/next_thread/__next_thread/
+oneliner without 1-5. I no longer think it makes sense to try to cleanup
+the poor task_group_seq_get_next() when IMHO the whole task_iter logic
+needs the complete rewrite. Yes, yes, I know, it is very easy to blame
+someone else's code, sorry can't resist ;)
+
+The only "fix" in this series is 3/6, but this code has more serious
+bugs, so I guess we can forget it.
+
+Oleg.
 
 
