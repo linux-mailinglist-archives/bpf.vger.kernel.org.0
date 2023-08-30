@@ -1,153 +1,258 @@
-Return-Path: <bpf+bounces-8987-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8988-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 287E678D623
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 15:27:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E0AE78D65A
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 15:54:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 553A71C20342
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 13:27:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 571902811B9
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 13:54:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2DA263AB;
-	Wed, 30 Aug 2023 13:27:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4539C63CE;
+	Wed, 30 Aug 2023 13:54:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D4C538A
-	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 13:27:32 +0000 (UTC)
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DEB6137
-	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 06:27:31 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-52a4818db4aso7108155a12.2
-        for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 06:27:31 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D095679
+	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 13:54:07 +0000 (UTC)
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3256FE8
+	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 06:54:05 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3a9b41ffe12so3387469b6e.3
+        for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 06:54:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693402050; x=1694006850; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UjWlxw8p+B9MpyoOy1Jyhj/xK2ehhjkLqxLOyKeNY1A=;
-        b=YiSFRBLwIpIzIbpdy4cbSwwjBUWxsAfqFmm97bgCgfj0MIdiCNmbNutDcs/6M4p2qz
-         1wIR7GLY3hZyRKF4/HhKnPyHBWBiIzJZiXdhJwLHsOtZOHgicW2ZzWdYJiaxSAU9r/2H
-         QOidDgUm9bcTSvz98wf/rAP2EslEJpNGaSq668AV79J/y1ozBmczx/lSsm7ehVdYhmyO
-         EtUgTQBHCAI7vwtM2tfkAuOKwKk6ZSeOZDksxDeAJ+6gYIyNhJjyPNZ0S1DUuE2g39ny
-         IaHfoEWJr9jmee1w3uM/rTb3KP2KPXjwrQTcH8kqpCLHcyCtY9Pw5NBCnasvxR2Z0Ei7
-         y1uA==
+        d=dabbelt-com.20221208.gappssmtp.com; s=20221208; t=1693403644; x=1694008444; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hzdL99VC81Ou2F+ipwGBRnVl4uI3qfhrxRwx9w/Xgbk=;
+        b=TfGaljLUuH+otKUMWuvJHU8icpesgbE9AX8nNIt70Yoco8xBiFWEYQeJ/JNMibGj6O
+         x+WLb/Q7XGfsqomsFCzORisgnNy7g6D8tJM6rypLSJdgw34Q+7KRr4+1VMOQNG3SIgAY
+         oe03Gg7eYcYtMs0DNCQxwjetmv1CZ8UqeoZ47XXag/a+QoyiiSmsT+y2fOj44+2zMyRD
+         VYHqU/wrb99ZXxMkq+qayFK5X8vIcKSYOt+YCQ1nOp9qNaeRXceSLYTPGF1kTdpossul
+         F+vn7Se4BxHBFBvVOj8t/Qk+W2b7Rk1WWp4Dqdf+grhdhnvkABQIYSIFN+EGu+mcWSx4
+         qYKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693402050; x=1694006850;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20221208; t=1693403644; x=1694008444;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UjWlxw8p+B9MpyoOy1Jyhj/xK2ehhjkLqxLOyKeNY1A=;
-        b=g9oTrhVm+xorzXQRjHRASaam/o9C6hJKgi79w6NASJF8Y5kxYLbwQmov76rdiGuynX
-         lNa7B+yyVVSrRIoAERcBh5t/c1xlzzKvC72zstA1543Kg68D5S4pTP6uVkyNJs8EiFgn
-         jTgOvYUvt+4Gnavyw1DPVjbVB0uPlUbRMzW8DA9JGhzw6ThmOZoltoOonfuk00Br4ZXD
-         DNDfIUBY8y1wppxagXDyhIfriN+NY31jzYV/stS32MVJWWw6voEPvuu7R8ehGLTDA2v4
-         Q7mHYauQj3ibTXyspckHH1V6bFtgALqptdOzO3guobsWDOSKZfnlAMq/je3oEgJs33Jw
-         jDrQ==
-X-Gm-Message-State: AOJu0YyDtHVqYURudxEl8srupP/Q1P0w0hdX7O8skui8GDj184hHvumr
-	68Gy/CeuAAN2JZDTA+DVIaA=
-X-Google-Smtp-Source: AGHT+IG+qBpxkqQYFYFR9JP421ndoqbSTlwjwensyycHKWiw93J4TBvEBgUbds28yNuJoMvg0WoY0w==
-X-Received: by 2002:a17:906:3287:b0:9a1:ca55:b668 with SMTP id 7-20020a170906328700b009a1ca55b668mr1652947ejw.59.1693402049362;
-        Wed, 30 Aug 2023 06:27:29 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id k25-20020a170906129900b0099caf5bed64sm7277247ejb.57.2023.08.30.06.27.27
+        bh=hzdL99VC81Ou2F+ipwGBRnVl4uI3qfhrxRwx9w/Xgbk=;
+        b=hOBC4vvawtrunH30I19hxI4EULEq6AJMkrimd0Pvtk6WAM3ZADtnReZJ7Vv7DBE9hj
+         RFw/CiYMhSaG98dKcDRhl5qFBh3seYXkwlfh9nypFyQlhKq+rKnDL6gRfbGWgnm61/vw
+         sjbdpd1P5cUibYC0Z1xJB4Wfdsf+yAum1i4XDbjkcDY38oC9tW62jkXPdTRbVChyvPUJ
+         oiRB4K5q3ycT9OZsH0NgUGWiPKbtYzy76M8a4l00FniMWbnl9UEcks8xmge3NImE1tLR
+         g+f079OE+vb0bdYyC2vdGBF/88HeCYDJO68PbuihMUoLV47Tdddx+czEya+srs0/dWrh
+         PjVQ==
+X-Gm-Message-State: AOJu0Yw+LDr4B6JPXbldBtTIXHMJEIJYcXPy4GZvE/x+kGyOu87X03iA
+	c9dGTIyRQOQQibL+vav4fUGfPQ==
+X-Google-Smtp-Source: AGHT+IE4tkQFsFo3Pg17fUm5h2kmeambb/plImzXvc1WYiKRFwqpDv7t527ulUERQBi8+9y9g8Lu0w==
+X-Received: by 2002:a05:6808:1156:b0:3a1:dd99:8158 with SMTP id u22-20020a056808115600b003a1dd998158mr2670079oiu.6.1693403644405;
+        Wed, 30 Aug 2023 06:54:04 -0700 (PDT)
+Received: from localhost ([135.180.227.0])
+        by smtp.gmail.com with ESMTPSA id p25-20020aa78619000000b00686b649cdd0sm10150171pfn.86.2023.08.30.06.54.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 06:27:28 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 30 Aug 2023 15:27:26 +0200
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Hou Tao <houtao1@huawei.com>
-Subject: Re: [RFC/PATCH bpf-next] bpf: Fix d_path test after last fs update
-Message-ID: <ZO9DvsaOImg4Dt5r@krava>
-References: <20230830093502.1436694-1-jolsa@kernel.org>
+        Wed, 30 Aug 2023 06:54:03 -0700 (PDT)
+Date: Wed, 30 Aug 2023 06:54:03 -0700 (PDT)
+X-Google-Original-Date: Wed, 30 Aug 2023 06:54:01 PDT (-0700)
+Subject:     Re: [PATCH bpf-next v3 0/3] bpf, riscv: use BPF prog pack allocator in BPF JIT
+In-Reply-To: <9ab91c63-0712-d2d8-9b2b-6f2098287baa@iogearbox.net>
+CC: bjorn@kernel.org, puranjay12@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>,
+  aou@eecs.berkeley.edu, pulehui@huawei.com, Conor Dooley <conor.dooley@microchip.com>, ast@kernel.org,
+  andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, kpsingh@kernel.org,
+  bpf@vger.kernel.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Palmer Dabbelt <palmer@dabbelt.com>
+To: daniel@iogearbox.net
+Message-ID: <mhng-ac1c6e6a-8f27-4539-83bb-6c10ff4d264e@palmer-ri-x1c9>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230830093502.1436694-1-jolsa@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Aug 30, 2023 at 11:35:02AM +0200, Jiri Olsa wrote:
-> Recent commit [1] broken d_path test, because now filp_close is not
-> called directly from sys_close, but eventually later when the file
-> is finally released.
-> 
-> I can't see any other solution than to hook filp_flush function and
-> that also means we need to add it to btf_allowlist_d_path list, so
-> it can use the d_path helper.
-> 
-> But it's probably not very stable because filp_flush is static so it
-> could be potentially inlined.
+On Wed, 30 Aug 2023 01:18:46 PDT (-0700), daniel@iogearbox.net wrote:
+> On 8/29/23 12:06 PM, Björn Töpel wrote:
+>> Puranjay Mohan <puranjay12@gmail.com> writes:
+>>
+>>> Changes in v2 -> v3:
+>>> 1. Fix maximum width of code in patches from 80 to 100. [All patches]
+>>> 2. Add checks for ctx->ro_insns == NULL. [Patch 3]
+>>> 3. Fix check for edge condition where amount of text to set > 2 * pagesize
+>>>     [Patch 1 and 2]
+>>> 4. Add reviewed-by in patches.
+>>> 5. Adding results of selftest here:
+>>>     Using the command: ./test_progs on qemu
+>>>     Without the series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
+>>>     With this series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
+>>>
+>>> Changes in v1 -> v2:
+>>> 1. Implement a new function patch_text_set_nosync() to be used in bpf_arch_text_invalidate().
+>>>     The implementation in v1 called patch_text_nosync() in a loop and it was bad as it would
+>>>     call flush_icache_range() for every word making it really slow. This was found by running
+>>>     the test_tag selftest which would take forever to complete.
+>>>
+>>> Here is some data to prove the V2 fixes the problem:
+>>>
+>>> Without this series:
+>>> root@rv-selftester:~/src/kselftest/bpf# time ./test_tag
+>>> test_tag: OK (40945 tests)
+>>>
+>>> real    7m47.562s
+>>> user    0m24.145s
+>>> sys     6m37.064s
+>>>
+>>> With this series applied:
+>>> root@rv-selftester:~/src/selftest/bpf# time ./test_tag
+>>> test_tag: OK (40945 tests)
+>>>
+>>> real    7m29.472s
+>>> user    0m25.865s
+>>> sys     6m18.401s
+>>>
+>>> BPF programs currently consume a page each on RISCV. For systems with many BPF
+>>> programs, this adds significant pressure to instruction TLB. High iTLB pressure
+>>> usually causes slow down for the whole system.
+>>>
+>>> Song Liu introduced the BPF prog pack allocator[1] to mitigate the above issue.
+>>> It packs multiple BPF programs into a single huge page. It is currently only
+>>> enabled for the x86_64 BPF JIT.
+>>>
+>>> I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed now.
+>>>
+>>> This patch series enables the BPF prog pack allocator for the RISCV BPF JIT.
+>>> This series needs a patch[3] from the ARM64 series to work.
+>>>
+>>> ======================================================
+>>> Performance Analysis of prog pack allocator on RISCV64
+>>> ======================================================
+>>>
+>>> Test setup:
+>>> ===========
+>>>
+>>> Host machine: Debian GNU/Linux 11 (bullseye)
+>>> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
+>>> u-boot-qemu Version: 2023.07+dfsg-1
+>>> opensbi Version: 1.3-1
+>>>
+>>> To test the performance of the BPF prog pack allocator on RV, a stresser
+>>> tool[4] linked below was built. This tool loads 8 BPF programs on the system and
+>>> triggers 5 of them in an infinite loop by doing system calls.
+>>>
+>>> The runner script starts 20 instances of the above which loads 8*20=160 BPF
+>>> programs on the system, 5*20=100 of which are being constantly triggered.
+>>> The script is passed a command which would be run in the above environment.
+>>>
+>>> The script was run with following perf command:
+>>> ./run.sh "perf stat -a \
+>>>          -e iTLB-load-misses \
+>>>          -e dTLB-load-misses  \
+>>>          -e dTLB-store-misses \
+>>>          -e instructions \
+>>>          --timeout 60000"
+>>>
+>>> The output of the above command is discussed below before and after enabling the
+>>> BPF prog pack allocator.
+>>>
+>>> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The rootfs
+>>> was created using Bjorn's riscv-cross-builder[5] docker container linked below.
+>>>
+>>> Results
+>>> =======
+>>>
+>>> Before enabling prog pack allocator:
+>>> ------------------------------------
+>>>
+>>> Performance counter stats for 'system wide':
+>>>
+>>>             4939048      iTLB-load-misses
+>>>             5468689      dTLB-load-misses
+>>>              465234      dTLB-store-misses
+>>>       1441082097998      instructions
+>>>
+>>>        60.045791200 seconds time elapsed
+>>>
+>>> After enabling prog pack allocator:
+>>> -----------------------------------
+>>>
+>>> Performance counter stats for 'system wide':
+>>>
+>>>             3430035      iTLB-load-misses
+>>>             5008745      dTLB-load-misses
+>>>              409944      dTLB-store-misses
+>>>       1441535637988      instructions
+>>>
+>>>        60.046296600 seconds time elapsed
+>>>
+>>> Improvements in metrics
+>>> =======================
+>>>
+>>> It was expected that the iTLB-load-misses would decrease as now a single huge
+>>> page is used to keep all the BPF programs compared to a single page for each
+>>> program earlier.
+>>>
+>>> --------------------------------------------
+>>> The improvement in iTLB-load-misses: -30.5 %
+>>> --------------------------------------------
+>>>
+>>> I repeated this expriment more than 100 times in different setups and the
+>>> improvement was always greater than 30%.
+>>>
+>>> This patch series is boot tested on the Starfive VisionFive 2 board[6].
+>>> The performance analysis was not done on the board because it doesn't
+>>> expose iTLB-load-misses, etc. The stresser program was run on the board to test
+>>> the loading and unloading of BPF programs
+>>>
+>>> [1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
+>>> [2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@gmail.com/
+>>> [3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gmail.com/
+>>> [4] https://github.com/puranjaymohan/BPF-Allocator-Bench
+>>> [5] https://github.com/bjoto/riscv-cross-builder
+>>> [6] https://www.starfivetech.com/en/site/boards
+>>>
+>>> Puranjay Mohan (3):
+>>>    riscv: extend patch_text_nosync() for multiple pages
+>>>    riscv: implement a memset like function for text
+>>>    bpf, riscv: use prog pack allocator in the BPF JIT
+>>
+>> Thank you! For the series:
+>>
+>> Acked-by: Björn Töpel <bjorn@kernel.org>
+>> Tested-by: Björn Töpel <bjorn@rivosinc.com>
+>>
+>> @Alexei @Daniel This series depends on a core BPF patch from the Arm
+>>                  series [3].
+>>
+>> @Palmer LMK if you have any concerns taking the RISC-V text patching
+>>          stuff via the BPF tree.
+>
+> Palmer, did the riscv PR already go to Linus?
 
-looks like llvm makes it inlined (from CI)
+Not yet, I usually send on Friday mornings -- and I also generally send 
+two, as there's some stragglers/fixes for the second week.  I'm fine 
+taking it (Bjorn just poked me), can someone provide a base commit?  
+Bjorn says it depends on something in Linus' tree, so I'll just pick it 
+up as a straggler for next week.
 
-  Error: #68/1 d_path/basic
-  libbpf: prog 'prog_close': failed to find kernel BTF type ID of 'filp_flush': -3
+Also, do you mind sending an Ack?
 
-jirka
-
-> 
-> Also if we'd keep the current filp_close hook and find a way how to 'wait'
-> for it to be called so user space can go with checks, then it looks
-> like d_path might not work properly when the task is no longer around.
-> 
-> thoughts?
-> jirka
-> 
-> 
-> [1] 021a160abf62 ("fs: use __fput_sync in close(2)")
-> ---
->  kernel/trace/bpf_trace.c                        | 1 +
->  tools/testing/selftests/bpf/progs/test_d_path.c | 4 ++--
->  2 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index a7264b2c17ad..c829e24af246 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -941,6 +941,7 @@ BTF_ID(func, vfs_fallocate)
->  BTF_ID(func, dentry_open)
->  BTF_ID(func, vfs_getattr)
->  BTF_ID(func, filp_close)
-> +BTF_ID(func, filp_flush)
->  BTF_SET_END(btf_allowlist_d_path)
->  
->  static bool bpf_d_path_allowed(const struct bpf_prog *prog)
-> diff --git a/tools/testing/selftests/bpf/progs/test_d_path.c b/tools/testing/selftests/bpf/progs/test_d_path.c
-> index 84e1f883f97b..3467d1b8098c 100644
-> --- a/tools/testing/selftests/bpf/progs/test_d_path.c
-> +++ b/tools/testing/selftests/bpf/progs/test_d_path.c
-> @@ -40,8 +40,8 @@ int BPF_PROG(prog_stat, struct path *path, struct kstat *stat,
->  	return 0;
->  }
->  
-> -SEC("fentry/filp_close")
-> -int BPF_PROG(prog_close, struct file *file, void *id)
-> +SEC("fentry/filp_flush")
-> +int BPF_PROG(prog_close, struct file *file)
->  {
->  	pid_t pid = bpf_get_current_pid_tgid() >> 32;
->  	__u32 cnt = cnt_close;
-> -- 
-> 2.41.0
-> 
+> If not yet, perhaps you could ship this series along with your PR to Linus
+> during this merge window given the big net PR (incl. bpf) was already merged
+> yesterday. So from our side only fixes ship to Linus.
+>
+> Otherwise we could take it into bpf-next for the next dev cycle if there are
+> no objections, let us know.
+>
+> Thanks,
+> Daniel
 
