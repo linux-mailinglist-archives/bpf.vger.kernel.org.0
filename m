@@ -1,94 +1,80 @@
-Return-Path: <bpf+bounces-8973-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8976-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 134D378D3CF
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 10:04:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4743178D3D7
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 10:04:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 177D51C203B1
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 08:04:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD6C9280F2D
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 08:04:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2816A1C03;
-	Wed, 30 Aug 2023 08:03:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF1F1FB5;
+	Wed, 30 Aug 2023 08:04:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45A11852;
-	Wed, 30 Aug 2023 08:03:57 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42EEF4;
-	Wed, 30 Aug 2023 01:03:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=A+GgYw2ISBnq/T2kZKPOnAgFBtUV9rTOB6eIzHCozeg=; b=IMPN6esr9IF69d0bk8BM8rwVqF
-	ndW6PsH7X34zuM0nWKM0GqNiyvIVlRNcVprZPdHpFRlK//4L30T5JKeUGfar8honMjc480+sBf0dF
-	Oj2BM+bz2/JUqAhXuOmWpquR1CXN8jrYC3O2gS6YV/19ygK1e/z2lk6virzVlY44w1gZrND6nz4yw
-	hvwoOcNRYGMLjvpTuR1Dr48Z0q/5CqIShjBijeFiiN5vJ4ekWkSUFRiAACgdlBbjGfPka6zad8YJo
-	yh0/8uH5NxmfZ47mmUv/mib5YTA3K0ZvJq6C9837C9GJbF7RtYy6qcZC/fNyzUGncLtYOYNeZb3LF
-	kugGZTWQ==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qbGB6-0005wG-5x; Wed, 30 Aug 2023 10:03:52 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qbGB6-0000EE-9Q; Wed, 30 Aug 2023 10:03:52 +0200
-Subject: Re: [PATCH bpf] bpf: sockmap, fix preempt_rt splat when using
- raw_spin_lock_t
-To: John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Cc: jakub@cloudflare.com, netdev@vger.kernel.org
-References: <20230830053517.166611-1-john.fastabend@gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d3b0b23f-4cdf-75a6-2781-a618fe65fcec@iogearbox.net>
-Date: Wed, 30 Aug 2023 10:03:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EE6A1C11
+	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 08:04:19 +0000 (UTC)
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF2DF4
+	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 01:04:17 -0700 (PDT)
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1693382655;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=lYuAnkaxmLR+UFbPG2N5LPxXntCwqdkQzjK3MHfo3SA=;
+	b=lhIoeTJI7AzOVUlDhuHDsz/DMf3W12VQE0iU0SZ4itKdt8yWVaQ0+z/VZ9jb/Ynkq6sHu6
+	YAR3t56qo9rT0ZYn/Gk3H2CT1RbYk2EQsFW+PJXwjEAqZJvWn0CQwQdsI+cQUG0ZPiSsWc
+	vg9naC3BItwFNkuCaWPvGnML8kBgvyASwFhbhznIz154r9Uesohr2TkpOhdd7aEjU6KjJl
+	nmCn1ueqg8fOkYcnLtuLzoirQQPtVgLrSiVsaLrtkxZRCCZvVVKixIbO2URyS+RFbUAk1b
+	msl671eZYGxXFt8T1te1HGaRCw94vR4/AOzGasMzbsS0zsvskMwOx6qGeoc8mw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1693382655;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=lYuAnkaxmLR+UFbPG2N5LPxXntCwqdkQzjK3MHfo3SA=;
+	b=zAA6fgZ+XNWiE7VnOJQPQRIClbrKkQ30YrFuK5aoZWVP7YVF55tC5gUGO77BfICcWnbdIW
+	vBMwavj1fmnbsgBw==
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Kui-Feng Lee <kuifeng@fb.com>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 0/2] bpf: Recursion detection related fixes.
+Date: Wed, 30 Aug 2023 10:04:03 +0200
+Message-Id: <20230830080405.251926-1-bigeasy@linutronix.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230830053517.166611-1-john.fastabend@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27015/Tue Aug 29 09:39:45 2023)
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 8/30/23 7:35 AM, John Fastabend wrote:
-[...]
->   net/core/sock_map.c | 36 ++++++++++++++++++------------------
->   1 file changed, 18 insertions(+), 18 deletions(-)
-> 
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index 8f07fea39d9e..cb11750b1df5 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -18,7 +18,7 @@ struct bpf_stab {
->   	struct bpf_map map;
->   	struct sock **sks;
->   	struct sk_psock_progs progs;
-> -	raw_spinlock_t lock;
-> +	spinlock_t lock;
->   };
+Hi,
 
-Looks good to me, and I agree that it's better to take this direction rather
-than converting both to raw_spinlock_t if there is no good reason for it.
-Thanks for looking into it, applied!
+the two things popped up during review. Compile tested only.
+
+Sebastian
+
 
