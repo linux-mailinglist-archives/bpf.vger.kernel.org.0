@@ -1,248 +1,290 @@
-Return-Path: <bpf+bounces-9002-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9003-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69F6778E0E6
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 22:45:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E82E478E128
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 23:08:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3B371C20831
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 20:45:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D435280FFF
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 21:08:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC50479FE;
-	Wed, 30 Aug 2023 20:45:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF594846A;
+	Wed, 30 Aug 2023 21:07:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC4882F5E
-	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 20:45:40 +0000 (UTC)
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C2071BCE
-	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 13:44:56 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68c3ec0578bso67004b3a.2
-        for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 13:44:56 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C355B747D
+	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 21:07:53 +0000 (UTC)
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7F2CF4
+	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 14:07:17 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bcbfb3705dso4371791fa.1
+        for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 14:07:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1693428221; x=1694033021; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zMBkhczQH1qmGcrJTMkEc78ZsB3x427DIZD5leKmdCs=;
-        b=Bysea2dZME0GSzAnJGX5XHzKnPgGsTUDAnT3oDW4erSh0T35yEz9d1ReanXQQ4b7xk
-         orjVudn+EtybJrYWE2jRTV7fRWBAYXZFCfgsrfIhDc6R+h8Pn60gpv6nliU1t9vJ5+d5
-         rGmMoedAHiqVCC4X4uyXf+3QAWCh6smpXLwZcdLG+XgWPxoRgqlQPzgqtz5nQ+jVU3cR
-         PuD53EL93WJDjKGky8AfAicpu/VQ+cgdO2VIzYSNGYdJHho96QVftFb5xn7lyr2Fn7zZ
-         LOF1Aq7ftagmios8GdbFwXsDXP6yrWmLTEjUSxXVOVUGz0H0351tCerpzBNgfKVgvvFX
-         6Oiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693428221; x=1694033021;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1693429529; x=1694034329; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zMBkhczQH1qmGcrJTMkEc78ZsB3x427DIZD5leKmdCs=;
-        b=Ogw2Awho25yjIy20gvKTTHqF7YWlBAE7zwdNBSP15d/NM0HW45cc3E7Uv/LvJ+DDv7
-         SssgUs0Y4GkdB+r7vbie5a//mG+pixUlHVuBWsh9qfLzlY3x7rlSifGbR36wEMAoQf3u
-         vwJw2EwASkqYitRQ/lQ23LmR6bFIGBXkUTZ8FrYL1gNL/4wJL3F5z22oZlcHzJdd7Hyv
-         un4xh+o5Vb1rIe5XbBp61aKg+TvsBHC+U+u8nue1BmEPUVCQJXy2qkM+GbrhwDwMvkYX
-         05118FkG7uMa1hcV48pvt0GVD4+Aw99jXxCL7izrYCgoEfgusSPAq3pmc1t2qddytiii
-         OylQ==
-X-Gm-Message-State: AOJu0YyS78zBS81s+N3T6DHF59agoflTAtvJ3RRjF7ojaQpXzd2gzr7j
-	7d7YZoGdf+NTaWich42Gs31UrQ==
-X-Google-Smtp-Source: AGHT+IEXJX5INKmx+JVIrSQXkkSDnbAq3tdEyiKPwQyI3es3qg1UtsgXXDAUGGMz8iwGEvAWuKz1kg==
-X-Received: by 2002:a05:6a20:5498:b0:14c:c9f6:d657 with SMTP id i24-20020a056a20549800b0014cc9f6d657mr3916796pzk.22.1693428221194;
-        Wed, 30 Aug 2023 13:43:41 -0700 (PDT)
-Received: from localhost ([135.180.227.0])
-        by smtp.gmail.com with ESMTPSA id q10-20020a17090311ca00b001bdcc3a09c3sm11466390plh.256.2023.08.30.13.43.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 13:43:40 -0700 (PDT)
-Date: Wed, 30 Aug 2023 13:43:40 -0700 (PDT)
-X-Google-Original-Date: Wed, 30 Aug 2023 13:43:37 PDT (-0700)
-Subject:     Re: [PATCH bpf-next v3 0/3] bpf, riscv: use BPF prog pack allocator in BPF JIT
-In-Reply-To: <87fs40k4we.fsf@all.your.base.are.belong.to.us>
-CC: daniel@iogearbox.net, puranjay12@gmail.com,
-  Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu, pulehui@huawei.com,
-  Conor Dooley <conor.dooley@microchip.com>, ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-  yhs@fb.com, kpsingh@kernel.org, bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
-  linux-kernel@vger.kernel.org
-From: Palmer Dabbelt <palmer@dabbelt.com>
-To: bjorn@kernel.org
-Message-ID: <mhng-fc3daeee-958b-4851-85e4-b949a2419d57@palmer-ri-x1c9>
+        bh=lE091EAMyBUkgqinpZjH9mkYDXTVY9tjdEA2YqEI9+o=;
+        b=Z2OhtZxOfIvcWSvnMj88WkKv53GHfW7ttx+e3HvWK9nHES7TUqH03ao3odsvuS4nDS
+         rpGxXsbLaq2Vf8s1yaJm7PQ7h0aGartLCbZOWj7WYx7/oMPSV7/SVKpqHsVfpK49dXh5
+         hXJkDZFi3kvEYZ9NaifufC4C15u7rOzxg3ctl2LwtXLKomdMg5ElCGztV85TtC2OFFST
+         qFzJJFPfHPqOzu0uVSj17XJ+kQgfd1WHpWDoSEzsVjdE+X55I0jt8wrOq41cNGUH51qn
+         gXc/rQvZwLLVOqnrFXqBYpE7C6Wb9Mqn/AVYEQzDEEtTaf2XcCPZmE2NZVcMWDYsLPVt
+         Nr4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693429529; x=1694034329;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lE091EAMyBUkgqinpZjH9mkYDXTVY9tjdEA2YqEI9+o=;
+        b=gzEqKxLFPhrcBlcQlIEvAvCkn8Y43slloDfwt6QWAuEVnmivCyLFW2Fgi2JqCW5+ZI
+         Je7PVLoLKyErXHnoVWCJeWQJ2YJ/wuIuQpuq+syv//IIUSAW9ljp/J0L9VXVBzbrafvG
+         SYr7iswK6wKfUA2xCuo1JsZ7br3xo6A5rEP3/v+B+39N0GJV1mE9Abg8sA/4n5I+STUv
+         zYwFDN9KCbvQyRcg3RCIxPYmitiVx0MlokWsHtCxk6JFSSUmAuC4RpXlHRnPf7HRDqOU
+         //OZODwoX8bz+ihCH3Z0Y4mrCn5D/ordGicxL6M33W4txFi1IxGqgazBSrrNNSrjI8IL
+         yHgA==
+X-Gm-Message-State: AOJu0Yyx31LELD5Bx8D0SdEARwOwhbbLpFl9rCv9FkvAGMYaf6d9UvFo
+	MOoB09klY/EHubsLNG+hzxoO0GLoSN75dA1vnAlKq40NY+I=
+X-Google-Smtp-Source: AGHT+IHzyDVjRy2AE3OelchKTho4bCvxzRnsVwCW99+Y1Zk3iNfcE6dC3PaMjb0rp+5CHdDS0fs1kcngazPXjEqAgEA=
+X-Received: by 2002:a2e:9f50:0:b0:2bd:1d02:5026 with SMTP id
+ v16-20020a2e9f50000000b002bd1d025026mr2644298ljk.15.1693429528758; Wed, 30
+ Aug 2023 14:05:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+MIME-Version: 1.0
+References: <87jztjmmy4.fsf@all.your.base.are.belong.to.us>
+ <2f4f0dfc-ec06-8ac8-a56a-395cc2373def@linux.dev> <200dcce6-34ff-83e0-02fb-709a24403cc6@huaweicloud.com>
+ <87zg2e88ds.fsf@all.your.base.are.belong.to.us> <64873e42-9be1-1812-b80d-5ea86b4677f0@huaweicloud.com>
+ <87sf8684ex.fsf@all.your.base.are.belong.to.us> <878r9wswwy.fsf@all.your.base.are.belong.to.us>
+ <fd07e0a3-f4da-b447-c47a-6e933220d452@linux.dev> <65c9e8d9-7682-2c8d-cd4d-9f0ca1213066@huaweicloud.com>
+ <CAADnVQJGVJCh=i1tuov4t1MmUx5=ybjF544i4F4m-SbHd5N6vA@mail.gmail.com> <76151038-155d-eac7-d6bb-d569c69fca3d@huaweicloud.com>
+In-Reply-To: <76151038-155d-eac7-d6bb-d569c69fca3d@huaweicloud.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 30 Aug 2023 14:05:17 -0700
+Message-ID: <CAADnVQK-syC0MBOR1eg_xp3kkhOcojHv1OT4eDu3=u1CekOTtA@mail.gmail.com>
+Subject: Re: WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, 30 Aug 2023 06:59:13 PDT (-0700), bjorn@kernel.org wrote:
-> Daniel Borkmann <daniel@iogearbox.net> writes:
+On Wed, Aug 30, 2023 at 5:09=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wr=
+ote:
 >
->> On 8/29/23 12:06 PM, Björn Töpel wrote:
->>> Puranjay Mohan <puranjay12@gmail.com> writes:
->>> 
->>>> Changes in v2 -> v3:
->>>> 1. Fix maximum width of code in patches from 80 to 100. [All patches]
->>>> 2. Add checks for ctx->ro_insns == NULL. [Patch 3]
->>>> 3. Fix check for edge condition where amount of text to set > 2 * pagesize
->>>>     [Patch 1 and 2]
->>>> 4. Add reviewed-by in patches.
->>>> 5. Adding results of selftest here:
->>>>     Using the command: ./test_progs on qemu
->>>>     Without the series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
->>>>     With this series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
->>>>
->>>> Changes in v1 -> v2:
->>>> 1. Implement a new function patch_text_set_nosync() to be used in bpf_arch_text_invalidate().
->>>>     The implementation in v1 called patch_text_nosync() in a loop and it was bad as it would
->>>>     call flush_icache_range() for every word making it really slow. This was found by running
->>>>     the test_tag selftest which would take forever to complete.
->>>>
->>>> Here is some data to prove the V2 fixes the problem:
->>>>
->>>> Without this series:
->>>> root@rv-selftester:~/src/kselftest/bpf# time ./test_tag
->>>> test_tag: OK (40945 tests)
->>>>
->>>> real    7m47.562s
->>>> user    0m24.145s
->>>> sys     6m37.064s
->>>>
->>>> With this series applied:
->>>> root@rv-selftester:~/src/selftest/bpf# time ./test_tag
->>>> test_tag: OK (40945 tests)
->>>>
->>>> real    7m29.472s
->>>> user    0m25.865s
->>>> sys     6m18.401s
->>>>
->>>> BPF programs currently consume a page each on RISCV. For systems with many BPF
->>>> programs, this adds significant pressure to instruction TLB. High iTLB pressure
->>>> usually causes slow down for the whole system.
->>>>
->>>> Song Liu introduced the BPF prog pack allocator[1] to mitigate the above issue.
->>>> It packs multiple BPF programs into a single huge page. It is currently only
->>>> enabled for the x86_64 BPF JIT.
->>>>
->>>> I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed now.
->>>>
->>>> This patch series enables the BPF prog pack allocator for the RISCV BPF JIT.
->>>> This series needs a patch[3] from the ARM64 series to work.
->>>>
->>>> ======================================================
->>>> Performance Analysis of prog pack allocator on RISCV64
->>>> ======================================================
->>>>
->>>> Test setup:
->>>> ===========
->>>>
->>>> Host machine: Debian GNU/Linux 11 (bullseye)
->>>> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
->>>> u-boot-qemu Version: 2023.07+dfsg-1
->>>> opensbi Version: 1.3-1
->>>>
->>>> To test the performance of the BPF prog pack allocator on RV, a stresser
->>>> tool[4] linked below was built. This tool loads 8 BPF programs on the system and
->>>> triggers 5 of them in an infinite loop by doing system calls.
->>>>
->>>> The runner script starts 20 instances of the above which loads 8*20=160 BPF
->>>> programs on the system, 5*20=100 of which are being constantly triggered.
->>>> The script is passed a command which would be run in the above environment.
->>>>
->>>> The script was run with following perf command:
->>>> ./run.sh "perf stat -a \
->>>>          -e iTLB-load-misses \
->>>>          -e dTLB-load-misses  \
->>>>          -e dTLB-store-misses \
->>>>          -e instructions \
->>>>          --timeout 60000"
->>>>
->>>> The output of the above command is discussed below before and after enabling the
->>>> BPF prog pack allocator.
->>>>
->>>> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The rootfs
->>>> was created using Bjorn's riscv-cross-builder[5] docker container linked below.
->>>>
->>>> Results
->>>> =======
->>>>
->>>> Before enabling prog pack allocator:
->>>> ------------------------------------
->>>>
->>>> Performance counter stats for 'system wide':
->>>>
->>>>             4939048      iTLB-load-misses
->>>>             5468689      dTLB-load-misses
->>>>              465234      dTLB-store-misses
->>>>       1441082097998      instructions
->>>>
->>>>        60.045791200 seconds time elapsed
->>>>
->>>> After enabling prog pack allocator:
->>>> -----------------------------------
->>>>
->>>> Performance counter stats for 'system wide':
->>>>
->>>>             3430035      iTLB-load-misses
->>>>             5008745      dTLB-load-misses
->>>>              409944      dTLB-store-misses
->>>>       1441535637988      instructions
->>>>
->>>>        60.046296600 seconds time elapsed
->>>>
->>>> Improvements in metrics
->>>> =======================
->>>>
->>>> It was expected that the iTLB-load-misses would decrease as now a single huge
->>>> page is used to keep all the BPF programs compared to a single page for each
->>>> program earlier.
->>>>
->>>> --------------------------------------------
->>>> The improvement in iTLB-load-misses: -30.5 %
->>>> --------------------------------------------
->>>>
->>>> I repeated this expriment more than 100 times in different setups and the
->>>> improvement was always greater than 30%.
->>>>
->>>> This patch series is boot tested on the Starfive VisionFive 2 board[6].
->>>> The performance analysis was not done on the board because it doesn't
->>>> expose iTLB-load-misses, etc. The stresser program was run on the board to test
->>>> the loading and unloading of BPF programs
->>>>
->>>> [1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
->>>> [2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@gmail.com/
->>>> [3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gmail.com/
->>>> [4] https://github.com/puranjaymohan/BPF-Allocator-Bench
->>>> [5] https://github.com/bjoto/riscv-cross-builder
->>>> [6] https://www.starfivetech.com/en/site/boards
->>>>
->>>> Puranjay Mohan (3):
->>>>    riscv: extend patch_text_nosync() for multiple pages
->>>>    riscv: implement a memset like function for text
->>>>    bpf, riscv: use prog pack allocator in the BPF JIT
->>> 
->>> Thank you! For the series:
->>> 
->>> Acked-by: Björn Töpel <bjorn@kernel.org>
->>> Tested-by: Björn Töpel <bjorn@rivosinc.com>
->>> 
->>> @Alexei @Daniel This series depends on a core BPF patch from the Arm
->>>                  series [3].
+> Hi,
 >
-> [snip]
->> If not yet, perhaps you could ship this series along with your PR to Linus
->> during this merge window given the big net PR (incl. bpf) was already merged
->> yesterday. So from our side only fixes ship to Linus.
+> On 8/29/2023 11:26 PM, Alexei Starovoitov wrote:
+> > On Mon, Aug 28, 2023 at 6:57=E2=80=AFAM Hou Tao <houtao@huaweicloud.com=
+> wrote:
+> >> Hi,
+> >>
+> >> On 8/27/2023 10:53 PM, Yonghong Song wrote:
+> >>>
+> >>> On 8/27/23 1:37 AM, Bj=C3=B6rn T=C3=B6pel wrote:
+> >>>> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+> >>>>
+> >>>>> Hou Tao <houtao@huaweicloud.com> writes:
+> >>>>>
+> >>>>>> Hi,
+> >>>>>>
+> >>>>>> On 8/26/2023 5:23 PM, Bj=C3=B6rn T=C3=B6pel wrote:
+> >>>>>>> Hou Tao <houtao@huaweicloud.com> writes:
+> >>>>>>>
+> >>>>>>>> Hi,
+> >>>>>>>>
+> >>>>>>>> On 8/25/2023 11:28 PM, Yonghong Song wrote:
+> >>>>>>>>> On 8/25/23 3:32 AM, Bj=C3=B6rn T=C3=B6pel wrote:
+> >>>>>>>>>> I'm chasing a workqueue hang on RISC-V/qemu (TCG), using the b=
+pf
+> >>>>>>>>>> selftests on bpf-next 9e3b47abeb8f.
+> >>>>>>>>>>
+> >>>>>>>>>> I'm able to reproduce the hang by multiple runs of:
+> >>>>>>>>>>    | ./test_progs -a link_api -a linked_list
+> >>>>>>>>>> I'm currently investigating that.
+> >>>>>>>>>>
+> >>>>>>>>>> But! Sometimes (every blue moon) I get a warn_on_once hit:
+> >>>>>>>>>>    | ------------[ cut here ]------------
+> >>>>>>>>>>    | WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342
+> >>>>>>>>>> bpf_mem_refill+0x1fc/0x206
+> >>>>>>>>>>    | Modules linked in: bpf_testmod(OE)
+> >>>>>>>>>>    | CPU: 3 PID: 261 Comm: test_progs-cpuv Tainted: G         =
+  OE
+> >>>>>>>>>> N 6.5.0-rc5-01743-gdcb152bb8328 #2
+> >>>>>>>>>>    | Hardware name: riscv-virtio,qemu (DT)
+> >>>>>>>>>>    | epc : bpf_mem_refill+0x1fc/0x206
+> >>>>>>>>>>    |  ra : irq_work_single+0x68/0x70
+> >>>>>>>>>>    | epc : ffffffff801b1bc4 ra : ffffffff8015fe84 sp :
+> >>>>>>>>>> ff2000000001be20
+> >>>>>>>>>>    |  gp : ffffffff82d26138 tp : ff6000008477a800 t0 :
+> >>>>>>>>>> 0000000000046600
+> >>>>>>>>>>    |  t1 : ffffffff812b6ddc t2 : 0000000000000000 s0 :
+> >>>>>>>>>> ff2000000001be70
+> >>>>>>>>>>    |  s1 : ff5ffffffffe8998 a0 : ff5ffffffffe8998 a1 :
+> >>>>>>>>>> ff600003fef4b000
+> >>>>>>>>>>    |  a2 : 000000000000003f a3 : ffffffff80008250 a4 :
+> >>>>>>>>>> 0000000000000060
+> >>>>>>>>>>    |  a5 : 0000000000000080 a6 : 0000000000000000 a7 :
+> >>>>>>>>>> 0000000000735049
+> >>>>>>>>>>    |  s2 : ff5ffffffffe8998 s3 : 0000000000000022 s4 :
+> >>>>>>>>>> 0000000000001000
+> >>>>>>>>>>    |  s5 : 0000000000000007 s6 : ff5ffffffffe8570 s7 :
+> >>>>>>>>>> ffffffff82d6bd30
+> >>>>>>>>>>    |  s8 : 000000000000003f s9 : ffffffff82d2c5e8 s10:
+> >>>>>>>>>> 000000000000ffff
+> >>>>>>>>>>    |  s11: ffffffff82d2c5d8 t3 : ffffffff81ea8f28 t4 :
+> >>>>>>>>>> 0000000000000000
+> >>>>>>>>>>    |  t5 : ff6000008fd28278 t6 : 0000000000040000
+> >>>>>>>>>>    | status: 0000000200000100 badaddr: 0000000000000000 cause:
+> >>>>>>>>>> 0000000000000003
+> >>>>>>>>>>    | [<ffffffff801b1bc4>] bpf_mem_refill+0x1fc/0x206
+> >>>>>>>>>>    | [<ffffffff8015fe84>] irq_work_single+0x68/0x70
+> >>>>>>>>>>    | [<ffffffff8015feb4>] irq_work_run_list+0x28/0x36
+> >>>>>>>>>>    | [<ffffffff8015fefa>] irq_work_run+0x38/0x66
+> >>>>>>>>>>    | [<ffffffff8000828a>] handle_IPI+0x3a/0xb4
+> >>>>>>>>>>    | [<ffffffff800a5c3a>] handle_percpu_devid_irq+0xa4/0x1f8
+> >>>>>>>>>>    | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
+> >>>>>>>>>>    | [<ffffffff800ae570>] ipi_mux_process+0xac/0xfa
+> >>>>>>>>>>    | [<ffffffff8000a8ea>] sbi_ipi_handle+0x2e/0x88
+> >>>>>>>>>>    | [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
+> >>>>>>>>>>    | [<ffffffff807ee70e>] riscv_intc_irq+0x36/0x4e
+> >>>>>>>>>>    | [<ffffffff812b5d3a>] handle_riscv_irq+0x54/0x86
+> >>>>>>>>>>    | [<ffffffff812b6904>] do_irq+0x66/0x98
+> >>>>>>>>>>    | ---[ end trace 0000000000000000 ]---
+> >>>>>>>>>>
+> >>>>>>>>>> Code:
+> >>>>>>>>>>    | static void free_bulk(struct bpf_mem_cache *c)
+> >>>>>>>>>>    | {
+> >>>>>>>>>>    |     struct bpf_mem_cache *tgt =3D c->tgt;
+> >>>>>>>>>>    |     struct llist_node *llnode, *t;
+> >>>>>>>>>>    |     unsigned long flags;
+> >>>>>>>>>>    |     int cnt;
+> >>>>>>>>>>    |
+> >>>>>>>>>>    |     WARN_ON_ONCE(tgt->unit_size !=3D c->unit_size);
+> >>>>>>>>>>    | ...
+> >>>>>>>>>>
+> >>>>>>>>>> I'm not well versed in the memory allocator; Before I dive int=
+o
+> >>>>>>>>>> it --
+> >>>>>>>>>> has anyone else hit it? Ideas on why the warn_on_once is hit?
+> >>>>>>>>> Maybe take a look at the patch
+> >>>>>>>>>    822fb26bdb55  bpf: Add a hint to allocated objects.
+> >>>>>>>>>
+> >>>>>>>>> In the above patch, we have
+> >>>>>>>>>
+> >>>>>>>>> +       /*
+> >>>>>>>>> +        * Remember bpf_mem_cache that allocated this object.
+> >>>>>>>>> +        * The hint is not accurate.
+> >>>>>>>>> +        */
+> >>>>>>>>> +       c->tgt =3D *(struct bpf_mem_cache **)llnode;
+> >>>>>>>>>
+> >>>>>>>>> I suspect that the warning may be related to the above.
+> >>>>>>>>> I tried the above ./test_progs command line (running multiple
+> >>>>>>>>> at the same time) and didn't trigger the issue.
+> >>>>>>>> The extra 8-bytes before the freed pointer is used to save the
+> >>>>>>>> pointer
+> >>>>>>>> of the original bpf memory allocator where the freed pointer cam=
+e
+> >>>>>>>> from,
+> >>>>>>>> so unit_free() could free the pointer back to the original
+> >>>>>>>> allocator to
+> >>>>>>>> prevent alloc-and-free unbalance.
+> >>>>>>>>
+> >>>>>>>> I suspect that a wrong pointer was passed to bpf_obj_drop, but d=
+o
+> >>>>>>>> not
+> >>>>>>>> find anything suspicious after checking linked_list. Another
+> >>>>>>>> possibility
+> >>>>>>>> is that there is write-after-free problem which corrupts the ext=
+ra
+> >>>>>>>> 8-bytes before the freed pointer. Could you please apply the
+> >>>>>>>> following
+> >>>>>>>> debug patch to check whether or not the extra 8-bytes are
+> >>>>>>>> corrupted ?
+> >>>>>>> Thanks for getting back!
+> >>>>>>>
+> >>>>>>> I took your patch for a run, and there's a hit:
+> >>>>>>>    | bad cache ff5ffffffffe8570: got size 96 work
+> >>>>>>> ffffffff801b19c8, cache ff5ffffffffe8980 exp size 128 work
+> >>>>>>> ffffffff801b19c8
+> >>>>>> The extra 8-bytes are not corrupted. Both of these two
+> >>>>>> bpf_mem_cache are
+> >>>>>> valid and there are in the cache array defined in bpf_mem_caches. =
+BPF
+> >>>>>> memory allocator allocated the pointer from 96-bytes sized-cache,
+> >>>>>> but it
+> >>>>>> tried to free the pointer through 128-bytes sized-cache.
+> >>>>>>
+> >>>>>> Now I suspect there is no 96-bytes slab in your system and ksize(p=
+tr -
+> >>>>>> LLIST_NODE_SZ) returns 128, so bpf memory allocator selected the
+> >>>>>> 128-byte sized-cache instead of 96-bytes sized-cache. Could you pl=
+ease
+> >>>>>> check the value of KMALLOC_MIN_SIZE in your kernel .config and
+> >>>>>> using the
+> >>>>>> following command to check whether there is 96-bytes slab in your
+> >>>>>> system:
+> >>>>> KMALLOC_MIN_SIZE is 64.
+> >>>>>
+> >>>>>> $ cat /proc/slabinfo |grep kmalloc-96
+> >>>>>> dma-kmalloc-96         0      0     96   42    1 : tunables    0  =
+  0
+> >>>>>> 0 : slabdata      0      0      0
+> >>>>>> kmalloc-96          1865   2268     96   42    1 : tunables    0  =
+  0
+> >>>>>> 0 : slabdata     54     54      0
+> >>>>>>
+> >>>>>> In my system, slab has 96-bytes cached, so grep outputs something,
+> >>>>>> but I
+> >>>>>> think there will no output in your system.
+> >>>>> You're right! No kmalloc-96.
+> >>>> To get rid of the warning, limit available sizes from
+> >>>> bpf_mem_alloc_init()?
+> >> It is not enough. We need to adjust size_index accordingly during
+> >> initialization. Could you please try the attached patch below ? It is
+> >> not a formal patch and I am considering to disable prefilling for thes=
+e
+> >> redirected bpf_mem_caches.
+> >>> Do you know why your system does not have kmalloc-96?
+> >> According to the implementation of setup_kmalloc_cache_index_table() a=
+nd
+> >> create_kmalloc_caches(),  when KMALLOC_MIN_SIZE is greater than 64,
+> >> kmalloc-96 will be omitted. If KMALLOC_MIN_SIZE is greater than 128,
+> >> kmalloc-192 will be omitted as well.
+> > Great catch. The fix looks good.
+> > Please submit it officially and add an error check to bpf_mem_alloc_ini=
+t()
+> > that verifies that ksize() matches the expectations.
 >
-> Are you OK with this patch going thru the riscv tree as well?
+> Do you mean to check the return values of ksize() for these prefill
+> objects in free_llist are expected, right ?
 
-I'm generally fine taking almost anything, as long as whomever usually 
-takes them acks it.
+I'd like to avoid adding extra flags to alloc_bulk() and passing them along=
+.
+Instead prefill_mem_cache() can peek into 1st element after alloc_bulk()
+and check its ksize.
+
+> > The alternative is to use kmalloc_size_roundup() during alloc for
+> > checking instead of ksize().
+> > Technically we can use kmalloc_size_roundup in unit_alloc() and avoid
+> > setup_kmalloc_cache_index_table()-like copy paste, but performance
+> > overhead might be too high.
+> > So your patch + error check at bpf_mem_alloc_init() is preferred.
+> I see. Using kmalloc_size_round() in bpf_mem_alloc() is indeed an
+> alternative solution. Will post it.
+
+No need. I think perf degradation for a corner case is prohibitive.
 
