@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-8974-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8975-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5674F78D3D0
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 10:04:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4124778D3D5
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 10:04:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1543D281333
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 08:04:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF5D4280C03
+	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 08:04:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 069A01877;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 580E91C39;
 	Wed, 30 Aug 2023 08:04:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48C81871
-	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 08:04:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 358C11871
+	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 08:04:19 +0000 (UTC)
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F3F3CD8
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FE4CDA
 	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 01:04:17 -0700 (PDT)
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1693382655;
+	s=2020; t=1693382656;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qs5GIxd/gXao51vH1rvqfnIqSWyOPls2CoHbkpmuMQk=;
-	b=WQrcwpmx31Mq2HmsNHgOpN5MwgQ6iaBYjESbKA818M2KOEUTZvz5tkYzsQp/JSKrgB0usw
-	COOKw+ztHEYO+68BreNR2XPfeIoQsNy7Jwnr6OYcqT/ICtbQ4RsZcwqO6WmMIC2jg+6lmL
-	lTvDHJVktoGesCdpbZqrQIF4GW0tzRPlv7hSij/nzW7W/Iy+f/c9dYquzhbo1jDjGk2VKV
-	0S1od9N9JVg45auPY905C8a0ri3w+rgkMB4GUuSXVhL5T9TvYbzt9mxJkCPCxObrCRcgkf
-	zcoIYheHrXvUrBNJHtG2SD+Mm/2Z7br9zKTpqbvPo6aw99GmJSKxZ20Gx5fY3A==
+	bh=zqdZAwU6v40vJUHRhOXclUO3qJSqTF/XTdzJp3JabQI=;
+	b=J2lSRD+6iSrQtwchqlQMMysiplZMLDdu8JB+K0qmLVgrT/HXXkn17jnfGAfLJY9VqGZ7Rj
+	elL4mxGJuuB3/XhPBBebt644+S2aM6jxRfb5u6QY9q6yHvyKYz4W30rsQ5wlMKpdx+8Psf
+	AcMzJUyENBDLCOPVlqhI3+/zSGR6Dd6ryb9mR7WikRUWKgDeiK3H0jks9jObO1c29x6o/L
+	87zCJRcYqnhFzSswvb6M4DpAHLn/+g1EzvnnzTyI8S8JX0TGugXDaQTXVBLKaHEj93Tt/6
+	laCiF/1s8zMJffwzar1wWdsnz/OXGaklMWhbDr6/OwN9iC2rMr1R0d+S2WTmmg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1693382655;
+	s=2020e; t=1693382656;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qs5GIxd/gXao51vH1rvqfnIqSWyOPls2CoHbkpmuMQk=;
-	b=EI1x4r1qZ1nT1KV/J/epqmCuhKQdpj1+4NEIDfsxDff07/hq/YMVNj3utDFhQybiJumz5I
-	mWD1OXL6skKbyzCQ==
+	bh=zqdZAwU6v40vJUHRhOXclUO3qJSqTF/XTdzJp3JabQI=;
+	b=HJ80TsAkxoe9GiYvCsvhC9mqKrjiYnDR3gS+tsgAidk1KQ26zVfYz8dD54hEPDm5Asznr8
+	0EiA1MvGb+wn78DA==
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -58,9 +58,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Kui-Feng Lee <kuifeng@fb.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 1/2] bpf: Invoke __bpf_prog_exit_sleepable_recur() on recursion in kern_sys_bpf().
-Date: Wed, 30 Aug 2023 10:04:04 +0200
-Message-Id: <20230830080405.251926-2-bigeasy@linutronix.de>
+Subject: [PATCH 2/2] bpf: Assign bpf_tramp_run_ctx::saved_run_ctx before recursion check.
+Date: Wed, 30 Aug 2023 10:04:05 +0200
+Message-Id: <20230830080405.251926-3-bigeasy@linutronix.de>
 In-Reply-To: <20230830080405.251926-1-bigeasy@linutronix.de>
 References: <20230830080405.251926-1-bigeasy@linutronix.de>
 Precedence: bulk
@@ -76,37 +76,64 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-If __bpf_prog_enter_sleepable_recur() detects recursion then it returns
-0 without undoing rcu_read_lock_trace(), migrate_disable() or
-decrementing the recursion counter. This is fine in the JIT case because
-the JIT code will jump in the 0 case to the end and invoke the matching
-exit trampoline (__bpf_prog_exit_sleepable_recur()).
+__bpf_prog_enter() assigns bpf_tramp_run_ctx::saved_run_ctx before
+performing the recursion check which means in case of a recursion
+__bpf_prog_exit() uses the previously set
+bpf_tramp_run_ctx::saved_run_ctx value.
 
-This is not the case in kern_sys_bpf() which returns directly to the
-caller with an error code.
+__bpf_prog_enter_sleepable() assigns bpf_tramp_run_ctx::saved_run_ctx
+after the recursion check which means in case of a recursion
+__bpf_prog_exit_sleepable() uses an uninitialized value.
+This does not look right. If I read the entry trampoline code right,
+then bpf_tramp_run_ctx isn't initialized upfront.
 
-Add __bpf_prog_exit_sleepable_recur() as clean up in the recursion case.
+Align __bpf_prog_enter_sleepable() with __bpf_prog_enter() and set
+bpf_tramp_run_ctx::saved_run_ctx before the recursion check is made.
+Remove the assignment of saved_run_ctx in kern_sys_bpf() since it
+happens a few cycles later.
 
-Fixes: b1d18a7574d0d ("bpf: Extend sys_bpf commands for bpf_syscall program=
-s.")
+Fixes: e384c7b7b46d0 ("bpf, x86: Create bpf_tramp_run_ctx on the caller thr=
+ead's stack")
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- kernel/bpf/syscall.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/bpf/syscall.c    | 1 -
+ kernel/bpf/trampoline.c | 5 ++---
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index a2aef900519c2..c925c270ed8b4 100644
+index c925c270ed8b4..1480b6cf12f06 100644
 --- a/kernel/bpf/syscall.c
 +++ b/kernel/bpf/syscall.c
-@@ -5307,6 +5307,7 @@ int kern_sys_bpf(int cmd, union bpf_attr *attr, unsig=
+@@ -5304,7 +5304,6 @@ int kern_sys_bpf(int cmd, union bpf_attr *attr, unsig=
 ned int size)
- 		run_ctx.saved_run_ctx =3D NULL;
+ 		}
+=20
+ 		run_ctx.bpf_cookie =3D 0;
+-		run_ctx.saved_run_ctx =3D NULL;
  		if (!__bpf_prog_enter_sleepable_recur(prog, &run_ctx)) {
  			/* recursion detected */
-+			__bpf_prog_exit_sleepable_recur(prog, 0, &run_ctx);
- 			bpf_prog_put(prog);
- 			return -EBUSY;
- 		}
+ 			__bpf_prog_exit_sleepable_recur(prog, 0, &run_ctx);
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index 78acf28d48732..53ff50cac61ea 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -926,13 +926,12 @@ u64 notrace __bpf_prog_enter_sleepable_recur(struct b=
+pf_prog *prog,
+ 	migrate_disable();
+ 	might_fault();
+=20
++	run_ctx->saved_run_ctx =3D bpf_set_run_ctx(&run_ctx->run_ctx);
++
+ 	if (unlikely(this_cpu_inc_return(*(prog->active)) !=3D 1)) {
+ 		bpf_prog_inc_misses_counter(prog);
+ 		return 0;
+ 	}
+-
+-	run_ctx->saved_run_ctx =3D bpf_set_run_ctx(&run_ctx->run_ctx);
+-
+ 	return bpf_prog_start_time();
+ }
+=20
 --=20
 2.40.1
 
