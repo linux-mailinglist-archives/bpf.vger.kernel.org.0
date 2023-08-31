@@ -1,216 +1,198 @@
-Return-Path: <bpf+bounces-9066-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9067-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC17B78EFBC
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 16:44:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC0FE78EFDC
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 16:58:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4F562815CE
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 14:44:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 286C51C20AD6
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 14:58:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31B8311730;
-	Thu, 31 Aug 2023 14:44:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51863125B5;
+	Thu, 31 Aug 2023 14:58:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08BD5257D
-	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 14:44:12 +0000 (UTC)
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC681B1
-	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 07:44:09 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-26b44247123so642395a91.2
-        for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 07:44:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693493049; x=1694097849; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bVBoZo3DKr9GHpFELDyjgEYOJi+ZjPYs7y1CWrUvKz0=;
-        b=GlSJISfTU4E0xx9qs4ygPD9qZc07HxC4w/93EtvSnYZl167YJYb2rxde2J5Tu/qCRs
-         YA8DbWsuiR4J+gRrCVjCp6r89P5hUGHpeHGFfDiKSwzbmsREqy4Yyfb3+7q61mEtPL2O
-         OXF+5C++ANGYTVlRT0xuIpQyvES7PYei6utwyGSZ0eXqDv0Wh/KHN5aJGk+Y7a+01kZO
-         jAc0rGuAFKL7Vf+qEpqgAnhTf2uF5VyN7eHy+Y5DHL34OckmZd8+Cy7inH0ziI6dsWi3
-         AyaSb8ZAa/vV9MnttvOTYxkJqoeL3JNB2TtFC4f/B4AxBKLN1Bw+Un+yZi1uq7NTcZp5
-         kpJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693493049; x=1694097849;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bVBoZo3DKr9GHpFELDyjgEYOJi+ZjPYs7y1CWrUvKz0=;
-        b=b14DtygzEtzmliFqQCz9jGLKksXGt0E9gJHUAzA8YsabvwGYHWbCRjFRVyhMK+YKKm
-         45+14ImeJI47FQeDtvJ2Xcb22e4oVNGwYWYhor7OOguNg1Vlq/xdNDhWCcphruepYc14
-         4evVuc6ANf6i9+Fth8//5u6MBa2l5Y480gbxnD4zauiN7lEuS/rzRd/PioJtZCbVWINC
-         mLBBSygjaCS6dzbGRCViYa/3Tqz4vu0ixDINHwFVvOAruLWhSZh2fyIzPzQgcWsfqjEE
-         g1oED2LKXcYd/ztuV3mrBENUU5+tknD+kYICMMrIJqO2SJKo8l6Nctt0Kww9sVY4LowE
-         85dQ==
-X-Gm-Message-State: AOJu0YxjxbHhXWYDxiZ28tnWongDWCfvtozEv/aOcraox9LUKC7ltaC7
-	KNW5I7cC3XqB3iJ9AeN++CD8jkmcXfo=
-X-Google-Smtp-Source: AGHT+IHQiwLMi93Z7hB/uurvC9LDVSTQVHI4ktXgn3/nfHmKGEmds68DOmkGBlo/0zMMD85Ij2BsLA==
-X-Received: by 2002:a17:90a:6945:b0:269:154b:6290 with SMTP id j5-20020a17090a694500b00269154b6290mr5071345pjm.24.1693493048848;
-        Thu, 31 Aug 2023 07:44:08 -0700 (PDT)
-Received: from [192.168.1.12] (bb116-14-95-136.singnet.com.sg. [116.14.95.136])
-        by smtp.gmail.com with ESMTPSA id gq18-20020a17090b105200b0026f4bb8b2casm3089384pjb.6.2023.08.31.07.44.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 31 Aug 2023 07:44:08 -0700 (PDT)
-Message-ID: <a4cb884b-a619-bb42-9d0d-b5af65708ed9@gmail.com>
-Date: Thu, 31 Aug 2023 22:44:04 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176F61170F;
+	Thu, 31 Aug 2023 14:58:24 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B29FF19A;
+	Thu, 31 Aug 2023 07:58:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693493903; x=1725029903;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=a2s8MJXRQD7kxsc2FlKpFMY2mTbJX+Ts1LgntWdr7Nc=;
+  b=NxoAVeXIyXKCUD7NzfiXeMI4beZvrwwnJ97hNY0paXTvCTTiSLTBftNR
+   ZwdKjX7K19Rl3uyLLTB637qTPD/qnYzLLT4oVLuiKYUcNx6wREMvoa32O
+   T38P6xy+1e36EzQASXwarIM89cQwVWUXcY0srV82Cp9UD5iq1a3l3zuMb
+   xA8/QGu63IrciUazeJOwANR2A+jPnppXI/LZGGfFiCZBPA9A0GSdWjlI8
+   XAErU3E90zSdMTh5yB3NT43yOosRW143575g0i3Fvd0jh+LgIgNzIbSN7
+   4gEzDfYZGGNxsPPvjczUlC8ydOmvEpbzO/I5w1NmMxFKbcqhQLzGFLvPj
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="373371701"
+X-IronPort-AV: E=Sophos;i="6.02,217,1688454000"; 
+   d="scan'208";a="373371701"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 07:58:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="829727023"
+X-IronPort-AV: E=Sophos;i="6.02,217,1688454000"; 
+   d="scan'208";a="829727023"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Aug 2023 07:58:19 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 31 Aug 2023 07:58:18 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 31 Aug 2023 07:58:18 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Thu, 31 Aug 2023 07:58:18 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.42) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Thu, 31 Aug 2023 07:58:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wd22S6AxI1st4aQJTs1VHLmM2Es6AuMOQ9HsbCJLSd67KWPUwqnwxw9RIsdXwxz6R/fl4BL2RKYXiBFpXj9wmmepKMoMRipXm9EybJH+JfJM9ZofX/kYiD9hNjlSmtKUENMhfp+saw5CMMhYgFeJ4eS9mv8WjUKssqiN0aJvMJWWwm4L9NYd6y5PXiLZZYR/iWxkPCbDRjC038iCLZ0mKJbDcbiL+Fa6DBmfDpPBEsC6Y7Pjr6DJRuaIQvKqX6NTJYiR7z3c2fPLzi0dxt64tLL6leJOlOZg7Eej7ezKsgTgf0+OAW+ODTvfGKkMA2j3vGzx215Gv7kv6KNs8TJwMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0POIdo5MocCTunBLufCIM0iiITfyEhIHE3Hwb7f+p5U=;
+ b=dkFX8jljMW/R9Y9lLye2/30bffy6H/08GL0x8j8p9hHKHGWCuxLouMNkn0v+51mFBxY3mqGMjFN3+a1WIX3BN2WzzpX70q8byOg/AxBCJc6iGZTsmQEUFXPRJTff5fwWZazfz7tE6/0QklL8x1StCdpScqfcW9vLG/JksUdGWMKg2xdJ0Mc1c00c9WYAKk1ZscABDtn55zbtKmXcsGipmZBwxecNaD0XoS36cNbEruKyKzcNp+v4mcuPcpq4XVqceip0htsCGu6tLVQ6Jb5bU4jNztM+LIz4mYhJaQPkwgrKii108cd6IWLQvxxE2VBrft0wtTExpHDbTCqNjS7JYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
+ by PH0PR11MB7523.namprd11.prod.outlook.com (2603:10b6:510:280::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Thu, 31 Aug
+ 2023 14:58:14 +0000
+Received: from SN7PR11MB7540.namprd11.prod.outlook.com
+ ([fe80::10f1:d83:9ee2:bf5d]) by SN7PR11MB7540.namprd11.prod.outlook.com
+ ([fe80::10f1:d83:9ee2:bf5d%3]) with mapi id 15.20.6745.021; Thu, 31 Aug 2023
+ 14:58:14 +0000
+Date: Thu, 31 Aug 2023 16:50:33 +0200
+From: Larysa Zaremba <larysa.zaremba@intel.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+	<martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+	<haoluo@google.com>, <jolsa@kernel.org>, David Ahern <dsahern@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>, Willem de Bruijn <willemb@google.com>,
+	Jesper Dangaard Brouer <brouer@redhat.com>, Anatoly Burakov
+	<anatoly.burakov@intel.com>, Alexander Lobakin <alexandr.lobakin@intel.com>,
+	Magnus Karlsson <magnus.karlsson@gmail.com>, Maryam Tahhan
+	<mtahhan@redhat.com>, <xdp-hints@xdp-project.net>, <netdev@vger.kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Alexei Starovoitov
+	<alexei.starovoitov@gmail.com>, Simon Horman <simon.horman@corigine.com>,
+	Tariq Toukan <tariqt@mellanox.com>, Saeed Mahameed <saeedm@mellanox.com>,
+	<bpf@vger.kernel.org>
+Subject: Re: [RFC bpf-next 00/23] XDP metadata via kfuncs for ice + mlx5
+Message-ID: <ZPCoud8HDxiXXbLj@lincoln>
+References: <20230824192703.712881-1-larysa.zaremba@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230824192703.712881-1-larysa.zaremba@intel.com>
+X-ClientProxiedBy: FR3P281CA0072.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:4b::23) To SN7PR11MB7540.namprd11.prod.outlook.com
+ (2603:10b6:806:340::7)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [RFC PATCH bpf-next v3 1/2] bpf, x64: Fix tailcall infinite loop
-Content-Language: en-US
-From: Leon Hwang <hffilwlqm@gmail.com>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
- bpf@vger.kernel.org
-References: <20230825145216.56660-1-hffilwlqm@gmail.com>
- <20230825145216.56660-2-hffilwlqm@gmail.com> <ZOjrviql/e/14X4a@boxer>
- <238be72c-2a19-f675-83cb-18051937d8fd@gmail.com> <ZO/HjKo+x6SU4vXa@boxer>
- <e573b963-891f-0c7e-42d7-c876fa416a8a@gmail.com>
-In-Reply-To: <e573b963-891f-0c7e-42d7-c876fa416a8a@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-	HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|PH0PR11MB7523:EE_
+X-MS-Office365-Filtering-Correlation-Id: b298c085-2702-41af-b094-08dbaa32b35a
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KCVL2UQaW8jfTezeBJhqNx07I0fd+e5OGd9jv2VttJx9CwWzVbDm6hhUJbxwALuxnqvqlnv7/hOO9fJkn+5xbItr7f0JJvZjjMUAG7Zp+EOqAC8SV7LP4bHhD4aT2EuAVfOES+qHWumCGMU2JQqd/JvvdQ/tYlAXtIV0pYZJ9Yc+2nJYIaycy9p3j0WtH6yodM5wn3OcvZpgBnUKC0C95QfSkZR0TTXFbeg1A5ZyATLLZYdPP3VAHRCbF1BUATI4eocJqnZuVqSvzbn78thRLvaUguJEWFOmkA3B8M8PqANILmzWeF+wEJukzy5jFgquH2OF7AELpmnVAyn1FfwuDsRTUMYJneWGbWXWaDORF3KW5DFUKMWKUiAH5kPxyEy+UQfNzumzsbgs2gokLpcETBKFLWGK85p4I+AnqT7OII//6wWeAgLZ0OFJYaBf0c2KUusjogGkaWWaD5CuBCWmhiMnu7YyBIVzgXXU00GY3D/WUg4Eyqkt1JPeGzd4pyF3wP9g440+8AFUhd4tEQ1nxCPAYS40LSRb/maSCdqU2dJLL0ZLozlBeFhoS7JO8COLWBby/6Lp5w+9GkGRqk6JWA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(346002)(366004)(136003)(396003)(376002)(451199024)(1800799009)(186009)(83380400001)(8936002)(4326008)(8676002)(6916009)(66946007)(66556008)(66476007)(316002)(54906003)(5660300002)(2906002)(44832011)(966005)(41300700001)(6486002)(26005)(9686003)(6512007)(38100700002)(478600001)(33716001)(6666004)(6506007)(86362001)(82960400001)(7416002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DPal3knckCpP2Xd10T1zUV38D0Dext6+aaJdV5ZIFGa3fO7cOE9JEjD6qDTC?=
+ =?us-ascii?Q?62gTA2KFKyTB/LkyD2RoucKHff4mehoK1Z8w5W1RTQ37s1AXMqdgNJeLAben?=
+ =?us-ascii?Q?9RK7PH40KntVFSW6sCkgK1TivBvjcBgI2c+iutL/5sFOTUf9hzkZ8fWUXTK3?=
+ =?us-ascii?Q?TOqLgaszck3cGxjnwYZ4vSH6ANxSQLVGDlg/0ghmGh1AHzRVsGeD/H0A3dt8?=
+ =?us-ascii?Q?5UKOPUtQApDlgIoQY709o8myZTKRocVV2Jj6pOr2/SOKLPaxHlb0Q74oJXMW?=
+ =?us-ascii?Q?h1+PEZZckeGDfbe+iiD7bP0Agreifj/6cTJA2yz9D6mJxsOBphz4LLOiGeeV?=
+ =?us-ascii?Q?ymnYzelztYjnqqudHDZTw4EFh0asKneM6TTggt0aw1eEo87kU9z0yODMckXU?=
+ =?us-ascii?Q?6tIhZ7sD2++sSxtVsCEsIaeiEzGI0tUoMIht9Wmuk/Wd1druXlxh/Su8DkUK?=
+ =?us-ascii?Q?ZZH3rVIELFJJE2kUIrqtZbmRh87Px7QVOL5LNuCrm8H1dsLnIfAwCtbA322H?=
+ =?us-ascii?Q?lQnKA4zu9O8fNPnHVpW9aqMX+2cbBpLMPkZvFWRlKSu2LTL+kyNSIM8eynlr?=
+ =?us-ascii?Q?dpCpIN0eOHBD9vCOa987RawWQddXUJU98tD8WcgRRslgur1lqspu5bPjI+rx?=
+ =?us-ascii?Q?ADCa1WTybggmmFzEThUjIAjsAEMsEHCNhh6Fbt9XaR6x7qxKDiHH6n7L4l65?=
+ =?us-ascii?Q?Z+LOJphMzXwbYkJmTjyH7xg73PynZB9EwXZk4U8lZCdo1oZprAfsEfaSXNzN?=
+ =?us-ascii?Q?Ow59HMzjD7+h/c1+cUzm8muFhMUK0hfQ+xMxQbPDzCj0bfp15UsYF1GiEjyL?=
+ =?us-ascii?Q?TbTILmCvKwGHmbSrBK35F2HPV0STytQ0Ut0yc1IEGE4G2YabIPPtK728vYoE?=
+ =?us-ascii?Q?xS5kVMobPOb4t0OkUWT4mbESP46kAp9s2C6DQkbkp6N6Ie+CSiq9gEjUpirP?=
+ =?us-ascii?Q?62LsdvCBQAghdqWq4yxKjtsUFW8vzlNjYVuBQuJ52rZGwvek0xHHxf/31OHh?=
+ =?us-ascii?Q?DINdFA7tpDvw1eV8C8P34bQO7qH8kxN0Eot4xD5lPYP0Gqp2y+tb4V/aIhYp?=
+ =?us-ascii?Q?BwfckG2cCuAAKrGda/qgudFReFUIxVs8q5hLGasxWbibAiF5Mp1jmle/W3GP?=
+ =?us-ascii?Q?1S9Yxuj/5R0Dh8v/SQuinlgJEgmST7NOfDoo0vbAOOf4iMoWyu4cqjszqVX/?=
+ =?us-ascii?Q?GEOnMslFOuDlUxUME/Q3zfVco3+JeZSxcWuKA1JC08MRVIZrMqvgHNqa+hyx?=
+ =?us-ascii?Q?WcQbVjG6n427/+Dz9wak+kcJFsvFXsUSwKxmour84ODHdpTwny2uL/5HEMbL?=
+ =?us-ascii?Q?rFX6oQDEdYEwF++Qt5cHoMiitcAwmONc8D268IXXJCxkTlm0a3pmfJEt1md9?=
+ =?us-ascii?Q?/udAl6GG2Mb8FqN33FeNGn27K4pJTCAI68c2hRqRHCKgEhReYmDXOL+1oJMq?=
+ =?us-ascii?Q?onk2d2YeCMDYVsiMMRhL2XNWmx1neNW+jQYgHQ6VCvpvfrAmDaLZ0YQItOSv?=
+ =?us-ascii?Q?hbhxn4qJ7YA2GumUekSHrMLmLgXRiw0ejjRh6jHyCrYLKQpfQQIzIRnjceyB?=
+ =?us-ascii?Q?JAN/2FeETWUKgxfKwv8UuBrAkq5LZESE9R3VxVHDW3I9b+5Wu1G9QSTDLGuj?=
+ =?us-ascii?Q?2Q=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b298c085-2702-41af-b094-08dbaa32b35a
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2023 14:58:14.0237
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: I6QF3OvOneiHj2yfDgG2gDECmwcZ00rVQYWcmLfTMCTvQJf1sN+2NTcyozclAIL1pZaj5HfczTiv1OqpyqYv4SFAyEFwxJE/zy5h/C+E9cI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB7523
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-
-
-On 2023/8/31 21:12, Leon Hwang wrote:
+On Thu, Aug 24, 2023 at 09:26:39PM +0200, Larysa Zaremba wrote:
+> Alexei has requested an implementation of VLAN and checksum XDP hints
+> for one more driver [0].
 > 
+> This series is exactly the v5 of "XDP metadata via kfuncs for ice" [1]
+> with 2 additional patches for mlx5.
 > 
-> On 2023/8/31 06:49, Maciej Fijalkowski wrote:
->> On Sat, Aug 26, 2023 at 12:03:12PM +0800, Leon Hwang wrote:
->>>
->>>
->>> On 2023/8/26 01:58, Maciej Fijalkowski wrote:
->>>> On Fri, Aug 25, 2023 at 10:52:15PM +0800, Leon Hwang wrote:
->>>>> From commit ebf7d1f508a73871 ("bpf, x64: rework pro/epilogue and tailcall
->>>>> handling in JIT"), the tailcall on x64 works better than before.
->>>>>
->>>>> From commit e411901c0b775a3a ("bpf: allow for tailcalls in BPF subprograms
->>>>> for x64 JIT"), tailcall is able to run in BPF subprograms on x64.
->>>>>
->>>>> From commit 5b92a28aae4dd0f8 ("bpf: Support attaching tracing BPF program
->>>>> to other BPF programs"), BPF program is able to trace other BPF programs.
->>>>>
->>>>> How about combining them all together?
->>>>>
->>>>> 1. FENTRY/FEXIT on a BPF subprogram.
->>>>> 2. A tailcall runs in the BPF subprogram.
->>>>> 3. The tailcall calls itself.
->>>>
->>>> I would be interested in seeing broken asm code TBH :)
->>>>
->>>>>
->>>>> As a result, a tailcall infinite loop comes up. And the loop would halt
->>>>> the machine.
->>>>>
->>>>> As we know, in tail call context, the tail_call_cnt propagates by stack
->>>>> and rax register between BPF subprograms. So do it in trampolines.
->>>>>
->>>>> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
->>>>> ---
->>>>>  arch/x86/net/bpf_jit_comp.c | 32 ++++++++++++++++++++++++++------
->>>>>  include/linux/bpf.h         |  5 +++++
->>>>>  kernel/bpf/trampoline.c     |  4 ++--
->>>>>  kernel/bpf/verifier.c       | 30 +++++++++++++++++++++++-------
->>>>>  4 files changed, 56 insertions(+), 15 deletions(-)
->>>>>
+> Firstly, there is a VLAN hint implementation. I am pretty sure this
+> one works and would not object adding it to the main series, if someone
+> from nvidia ACKs it.
 > 
-> [SNIP]
+> The second patch is a checksum hint implementation and it is very rough.
+> There is logic duplication and some missing features, but I am sure it
+> captures the main points of the potential end implementation.
 > 
->>>>>  
->>>>> +	if (tgt_prog && tgt_prog->aux->tail_call_reachable) {
->>>>> +		subprog = find_subprog_index(tgt_prog, btf_id);
->>>>> +		tr->flags = subprog > 0 ? BPF_TRAMP_F_TAIL_CALL_CTX : 0;
->>>>> +	}
->>>>
->>>> I kinda forgot trampoline internals so please bear with me.
->>>> Here you are checking actually...what? That current program is a subprog
->>>> of tgt prog? My knee jerk reaction would be to propagate the
->>>> BPF_TRAMP_F_TAIL_CALL_CTX based on just tail_call_reachable, but I need
->>>> some more time to get my head around it again, sorry :<
->>>
->>> Yeah, that current program must be a subprog of tgt prog.
->>>
->>> For example:
->>>
->>> tailcall_subprog() {
->>>   bpf_tail_call_static(&jmp_table, 0);
->>> }
->>>
->>> tailcall_prog() {
->>>   tailcall_subprog();
->>> }
->>>
->>> prog() {
->>>   bpf_tail_call_static(&jmp_table, 0);
->>> }
->>>
->>> jmp_table populates with tailcall_prog().
->>>
->>> When do fentry on prog(), there's no tail_call_cnt for fentry to
->>> propagate. As we can see in emit_prologue(), fentry runs before
->>> initialising tail_call_cnt.
->>>
->>> When do fentry on tailcall_prog()? NO, it's impossible to do fentry on
->>> tailcall_prog(). Because the tailcall 'jmp' skips the fentry on
->>> tailcall_prog().
->>>
->>> And, when do fentry on tailcall_subprog(), fentry has to propagate
->>> tail_call_cnt properly.
->>>
->>> In conclusion, that current program must be a subprog of tgt prog.
->>
->> Verifier propagates the info about tail call usage through whole call
->> chain on a given prog so this doesn't really matter to me where do we
->> attach fentry progs. All I'm saying is:
->>
->> 	if (tgt_prog && tgt_prog->aux->tail_call_reachable)
->> 		tr->flags = BPF_TRAMP_F_TAIL_CALL_CTX;
->>
->> should be just fine. I might be missing something but with above your
->> selftest does not hang my system.
+> I think it is unrealistic for me to provide a fully working mlx5 checksum
+> hint implementation (complex logic, no HW), so would much rather prefer
+> not having it in my main series. My main intension with this RFC is
+> to prove proposed hints functions are suitable for non-intel HW.
 > 
-> I think it's unnecessary to propagate tail call usage info when do
-> fentry on prog(), which is the entry of the whole tail call context. If
-> do propagate in this case, it's meaningless to execute two extra
-> instructions.
+> [0] https://lore.kernel.org/bpf/CAADnVQLNeO81zc4f_z_UDCi+tJ2LS4dj2E1+au5TbXM+CPSyXQ@mail.gmail.com/
+> [1] https://lore.kernel.org/bpf/20230811161509.19722-1-larysa.zaremba@intel.com/
+ 
+[...]
 
-Because it's harmless, I agree with you. I'll change it to
-
- 	if (tgt_prog && tgt_prog->aux->tail_call_reachable)
- 		tr->flags = BPF_TRAMP_F_TAIL_CALL_CTX;
-
-With this update, it's easier to understand BPF_TRAMP_F_TAIL_CALL_CTX.
-
-> 
-> I confirm that the above selftest is able to hang VM. I copy test_progs
-> along with tailcall*.bpf.o to another VM, which is Ubuntu 22.04.3 with
-> kernel 5.15.0-82-generic, then run ./test_progs -t tailcalls. And then
-> the VM hangs.
-> 
-> Here's the Ubuntu 22.04.3 VM info:
-> # uname -a
-> Linux hwang 5.15.0-82-generic #91-Ubuntu SMP Mon Aug 14 14:14:14 UTC
-> 2023 x86_64 x86_64 x86_64 GNU/Linux
-
-What I suggest here is to run the selftest in the second patch, not the
-above example.
-
-Thanks,
-Leon
+Is this an OK approach to your reauest or have you expected something else?
 
