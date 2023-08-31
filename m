@@ -1,249 +1,218 @@
-Return-Path: <bpf+bounces-9041-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9042-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74CC778EB1F
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 12:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AAF1D78EB29
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 12:56:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11B222814C2
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 10:53:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63449281479
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 10:56:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3468F60;
-	Thu, 31 Aug 2023 10:53:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49EE28F66;
+	Thu, 31 Aug 2023 10:56:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788F379F8;
-	Thu, 31 Aug 2023 10:53:02 +0000 (UTC)
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54451CFA;
-	Thu, 31 Aug 2023 03:53:00 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-500913779f5so1343152e87.2;
-        Thu, 31 Aug 2023 03:53:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693479178; x=1694083978; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=H4rOM8YI6bZoN3/wKWjcyWGm1DrX/tISbIPGz/bIbCg=;
-        b=m5CWUyPS+cW08mb0CUOD/Lg996k2rNI0UFA7R4MAgyN+s84ZTYWo93NRxCOIQRhAbR
-         kGntbYDP6mitBh4ivGxfNNvS1DUM5lTJJnQV4aoCTjbCAV62g+wJaA6gsCzp/4oMxW9v
-         IcsOMiAEPB9bLe1DfIWY7VCIcqZHs9eW48mHr98e37AZ8uy/QdVnuqkxCCNXeVrL7kfh
-         ot/Q0/+uPQnlOdIK6Hx69gvhr700F9FpuVyCK0sYPl57NeKbySBM4dfydvbs/gqzMIpm
-         gJIFWIvkYTfOfXPNobzYJG2eVZT0IYOhhBq/DWGmjm6NR1bZh0K/kwLUlhg+wGyyzT57
-         bLUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693479178; x=1694083978;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=H4rOM8YI6bZoN3/wKWjcyWGm1DrX/tISbIPGz/bIbCg=;
-        b=gJFaJ6+snartYAFEktg1ht4RNvjaNbRTV7CDda/VS6WNyzwMA+7gsynZ9S4Vbv+1xv
-         EW0iAhruACz1/woDeRenBOaFTuSeirgfxhnBWKeowoL2a49PzEzrxvqgip5BAn36lLQH
-         hD0pse/lis7ATDedJ64dIgc//94ckj4n15JKlbj3mHkZujmurO2JQv43t7gxBsQ73Xm2
-         6hWUChRl7ETvMIrZ2kvTd6wB58RGIxzehkn2jpWaUOksX8YZ9Qcqsf08t2oYCyFz80q0
-         b9D6RrEEe5LT7jOs7N4pBSqxMivkF9fxMTAA6t2xnK1siJn8MW2uj7j2SscFsHn8F4vP
-         Sg7Q==
-X-Gm-Message-State: AOJu0YxRcL0K/mzGShUW1GHOe21PogrXva9Ur5zm4HajYh2N2PzNcrGK
-	CGQvbzd0dgZFUJpo7uqjVfo=
-X-Google-Smtp-Source: AGHT+IG3ZXCFJVqc6b7ffYVcDbLeIq0KBTkkOZaWtsAf2rMzdQbzh2ZNDpe6Iw6n5nwlluYXaLDCKQ==
-X-Received: by 2002:a19:6504:0:b0:500:9a15:9054 with SMTP id z4-20020a196504000000b005009a159054mr1945177lfb.20.1693479177988;
-        Thu, 31 Aug 2023 03:52:57 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id j26-20020a1709064b5a00b00988be3c1d87sm625085ejv.116.2023.08.31.03.52.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 03:52:57 -0700 (PDT)
-Message-ID: <de816b89073544deb2ce34c4b242d583a6d4660f.camel@gmail.com>
-Subject: Re: [BUG bpf-next] bpf/net: Hitting gpf when running selftests
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,
- netdev@vger.kernel.org, bpf@vger.kernel.org, Martin KaFai Lau
- <kafai@fb.com>,  Song Liu <songliubraving@fb.com>, Yonghong Song
- <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
- <kpsingh@chromium.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Hou Tao <houtao1@huawei.com>
-Date: Thu, 31 Aug 2023 13:52:55 +0300
-In-Reply-To: <ZO+vetPCpOOCGitL@krava>
-References: <ZO+RQwJhPhYcNGAi@krava> <ZO+vetPCpOOCGitL@krava>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1264563CC;
+	Thu, 31 Aug 2023 10:56:13 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74E6CDD;
+	Thu, 31 Aug 2023 03:56:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693479372; x=1725015372;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=a87WVT+pbzimt5MFDG/iAuhshNR5J3F7udVnUlXrxw0=;
+  b=QFae8beVOoak1XWduPhRwCTud7mK2IBkURrUT3r47z0TKdWv2Xz2o0is
+   7NnWftKiUhCSbsQiE4OyefLlPIPYvwE9W+PizPdArgwK+iSYZnNMvsfQq
+   c9zG/vQvOxdAolcmaY2nBYRD+mXiJhunu139oRbBnUPO3Hv5bWSGZcEpV
+   rer8B4W9YO3tJc2ZfraGb+2ZG4TW9d6hPeHiULy+Ce5R3Ip5HHV+3s/X1
+   p89nCG+9p5YR03XTO0ftZNZGcAnOYeMIK4auWe26O+wZ3S2mtqBBjgcqk
+   mz8TJ0HOC4Yk5jb/4Cv+7UB7JcK1tS9jQSK9qfMena+f4YsCdHvdJhOlz
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="374811357"
+X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
+   d="scan'208";a="374811357"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 03:56:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="689280936"
+X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
+   d="scan'208";a="689280936"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Aug 2023 03:56:09 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 31 Aug 2023 03:56:08 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Thu, 31 Aug 2023 03:56:08 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.48) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Thu, 31 Aug 2023 03:56:08 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PTpuhLHnBp0B9OmYKSmDil0j3Jwkp29MsEPFfwFqkTT1ETbCEN2Dv5bEG3mVbNzWADSi2mH+6Dy+czUTet6HHQUgLHir7MOiGH+tb1D78j8VIFEyDOFv/PZwtZ8733gE3ppZSlZdsODcoN5Xp2sc2cOhHrZXn2oRI3eVHy4YmuKL/ltUpWc4NPattYcUrxS5e3CMzMSahYWcY/hz8/PGd3uGO+MvlT8hklVROesVAlKut+CNpaaEzp/svDcqvz0xCG2N1BSagYtPoEWYxQE0tMtW8NHxkJZX8wv118Z5Hjd5b0m5jOOZnl4BunB5dmAC3yIONgXNPyBLhTYxmLN8Yw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iPRL7/Gare9vIqiI9c0O8lppSDM0G8/uxt2B/jsweyc=;
+ b=fF6JUJZGpfA4obefWYK36jM1ppDrWnHLbZAq3RwR86vhNXT3UhKu7E64VzPxi8FIrucPHEocHByG82MJsPu2+iP8uN+4ev9hG5zmGc17HfyWPxmFWdwqdVWJSKVlwHD/R4D1cDGde9eEk+V8Mme/6ko2hnFifcVBvyy27iqbDfizHRQ7+r8VODr0LzSZ9wsDZaYUNXJHtn13GIcMZ6/4Lm8tB10xA8+aWu592LqSiv8Z96L26GlAr5sY3fe3zneLdI3gLz/sCx2MLzRCLA6VTsLC+RQuAyIaLvlXrz0odg/9BdHBUl/neYcb0DnNyBlVnR8AmXL5/5jUTeAphGlcOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ PH0PR11MB5110.namprd11.prod.outlook.com (2603:10b6:510:3f::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.35; Thu, 31 Aug 2023 10:56:06 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::c1f9:b4eb:f57e:5c3d]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::c1f9:b4eb:f57e:5c3d%3]) with mapi id 15.20.6745.021; Thu, 31 Aug 2023
+ 10:56:06 +0000
+Date: Thu, 31 Aug 2023 12:55:59 +0200
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: Magnus Karlsson <magnus.karlsson@gmail.com>
+CC: <magnus.karlsson@intel.com>, <bjorn@kernel.org>, <ast@kernel.org>,
+	<daniel@iogearbox.net>, <netdev@vger.kernel.org>, <jonathan.lemon@gmail.com>,
+	<bpf@vger.kernel.org>,
+	<syzbot+822d1359297e2694f873@syzkaller.appspotmail.com>
+Subject: Re: [PATCH bpf v2] xsk: fix xsk_diag use-after-free error during
+ socket cleanup
+Message-ID: <ZPBxv6Hud3K1KYjA@boxer>
+References: <20230831100119.17408-1-magnus.karlsson@gmail.com>
+ <ZPBt2RdiWstRa5WY@boxer>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZPBt2RdiWstRa5WY@boxer>
+X-ClientProxiedBy: FR2P281CA0068.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:9a::12) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|PH0PR11MB5110:EE_
+X-MS-Office365-Filtering-Correlation-Id: 77541d15-25fb-4d9d-eff2-08dbaa10e041
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Wm5Z6KXFTcAJ0NLsiJCin/FqhnO+1zcSNvXxg0zfGpxfj2Mwzrytf09Xop5nKJh3ycfXqbxcAM8W3+Zj8obp8k0g1JMUHW8u88EXdVE8Tw83refpHmAxmVXpA4QMEoyAfz7NI5A2zBYnE5EUGkiV1DqclAN0kIGosHZAJ731fod4Euswk3OM+LxDkSZF1cX6O5x5aba63lGQG6LOW03RwUYIhleHSMJszYfKEd77uO9Vvi+6PA8TQdg8XSOA12kYUWL+EGlEGCetCyhXCWNUlcNmoPus+H0b/zRaLRxa7Tm7GEpD8U1GxTT0CTvEGHdnFNQsm9Wi68LQsTWa/6fQZeFmJ5hE3Oqa62nY4gt4Rod17jFnfGG9kEUPNazcy8/K84BpKyFjRNxCHOl8n88fLl/oFqrLdg1RL8QF5RmmwNP08EknfG41/FNVONvW2s6T/9rd0b8mxiWhKxiGFm+TGpF14v7nu4WjLkH/ALhVie66LF7000FOr2TGYZDfDLUuoy0Zan48yoLRKBKzam7YKHAyHbm4RRcpbDehExg/5t7NXZOVkk7JEvkN4SkVw1Nf
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(396003)(376002)(136003)(346002)(366004)(451199024)(1800799009)(186009)(6512007)(9686003)(38100700002)(41300700001)(82960400001)(316002)(33716001)(5660300002)(4326008)(83380400001)(44832011)(86362001)(26005)(8676002)(2906002)(6916009)(8936002)(6666004)(66556008)(6506007)(6486002)(66476007)(478600001)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AZyl7/rm8u5ldw+3FnIfoKZ9x2M3RCVXsUc7jHOP7NpJ67QaIPbVicjcHsHA?=
+ =?us-ascii?Q?M1LFGRJaL0wwOBuJ0gY1GgE3ktjt2V9QTrqel9e3DMcOZEJ2JDr9fcBkB9cM?=
+ =?us-ascii?Q?kb5xuFUqqBsrPna6+e7to9r6IphLYut2uOj1zgsyAedwPCv/AG3ZI941n4Ja?=
+ =?us-ascii?Q?JtoISWz6U18LZYndqKw2dWd18TDP97uzmteXry+jOWD4m4FplaullDBPIUD6?=
+ =?us-ascii?Q?Nxv3AWdR8TPZzXpy7TXUbEBr/71B7MvsBT/48yx5vtLPFkWoR7r4rzUuiDp2?=
+ =?us-ascii?Q?ZoDeZvC6OvZrc6TZXsuu8wi2A6tn6bMSS6PN3Qsm/i7PdkIcUo6hYMygiN0R?=
+ =?us-ascii?Q?FlhjZGix1ZdTTkXhx+WOKI+8eSjDB+OFd4IfPIrYSriHHIrp//h30TMoBOFY?=
+ =?us-ascii?Q?PnLD6o4X3rLy3NcypnCbv32XvkJ6niIeDRRFYo1Vt14dbv9CV29Nh9XHra+3?=
+ =?us-ascii?Q?d0x6cJ5qPkbAgAJHsqixFkXyttlMxYayA21Q+/zrXofWRk2AK9uOI1l5E+jT?=
+ =?us-ascii?Q?tnHYDOgAMo9a49QBPmJRLjwHLYGNo8uIxcT+tQz2HgB9BFfetTfePOtqOz8C?=
+ =?us-ascii?Q?mVTYl0XezFe04l/8JdMW3hXCFYNlqTAvwIVmACTFKYYEsfwnMOAuUpxMze09?=
+ =?us-ascii?Q?hbMEdzwnv2VPVi717IQkwLrRWxIJgVaFtm1LtJqclYIgb+QkcSoG/ikLfHbM?=
+ =?us-ascii?Q?+Fc/joJMUDlFvYvrmDEjDBZOenKYcEHllqaPGC0JJkl03yHWby1YPZgLDDTf?=
+ =?us-ascii?Q?Tc2OIfQrrDL5pnLQb/t6ADTj8mUBFlgHuNr8oEXVJA2aOgYVSEiNkSdr7xBN?=
+ =?us-ascii?Q?mvAjUc4FKJIfbP6Z/TSm0ggArHt3CP0v08Ql1t/0I/ePAssprF+cqzux3Sdo?=
+ =?us-ascii?Q?OAhVY8qg0f29xgyS6fOcGKaqzDvPMNy51a13jYP0ThnqjQqmg0z6q4d/2j5Y?=
+ =?us-ascii?Q?2aXXyo3Z8kJdXmt12FazoFMbSWaEEnz3Np0hWZfQi3j2I9a9+VQkXUXv9FqI?=
+ =?us-ascii?Q?52IQMUW6Q+01duytrfKDk7edLmYG/ImmTM0qhBOjTsdBAc5iBiy6zHmI6Xs2?=
+ =?us-ascii?Q?h1lcmajOHW8b/SL/ajMymDrAchWfUPOUpwHsTMSbq5Ktgxwql9KQc8mSnIka?=
+ =?us-ascii?Q?f8bDTS4lI7lpeGw3DqFlaiL8GOVFhehjpnK78zBAHnLpT9Zf5qLUVFKEHPLD?=
+ =?us-ascii?Q?MtEF1VqSaz6V14Gezku1B8l9wZNfraYbDHkkr2PW7HAwxHv6ACRvnuPzWps5?=
+ =?us-ascii?Q?X1B4P7bOpeIOoyZxdFIEz8DeIl6luJ7yK44mEM2Vpwqjy9HQBvt659iMzU+M?=
+ =?us-ascii?Q?NrdpqycCAAp60VZTsrwmm4iE6hzaOCQQov8kL5RPxrckDOlvWIzzNrqxBfB7?=
+ =?us-ascii?Q?jRzqDiXg88k5Te8PAk7iHgkGTMN8pZ6yGAeilEmqn9FVI47Mmkn2D6mdbjUP?=
+ =?us-ascii?Q?LQ9m6FXtgZCdptWKcczTovkJxPLVO5t7+XEYriTFKArV6rJlwVAus3VZlv+t?=
+ =?us-ascii?Q?LWcDzpuXAMUGMT1vea/m6SeOwQr9h6DhdsvGHiQCmsFBZst4tKEw94eQ1VaX?=
+ =?us-ascii?Q?usapDZK/fPo2nQFkg4MgDDl2qqS12qbMsqCWEE8Xhgc0XIHRbVxf/C+oJ9VP?=
+ =?us-ascii?Q?nw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77541d15-25fb-4d9d-eff2-08dbaa10e041
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2023 10:56:06.2656
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: t3tYLC+esMxpDVKOVTSuTfmTaMv0Let8+R8CW5wV39Lwkikj/X80N3qb5Ap0WEpVVrbn9MUWpnXPWzExP3HhiDT4qz8yRI5orJpAdISKIkw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5110
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, 2023-08-30 at 23:07 +0200, Jiri Olsa wrote:
-> On Wed, Aug 30, 2023 at 08:58:11PM +0200, Jiri Olsa wrote:
-> > hi,
-> > I'm hitting crash below on bpf-next/master when running selftests,
-> > full log and config attached
->=20
-> it seems to be 'test_progs -t sockmap_listen' triggering that
+On Thu, Aug 31, 2023 at 12:39:21PM +0200, Maciej Fijalkowski wrote:
+> On Thu, Aug 31, 2023 at 12:01:17PM +0200, Magnus Karlsson wrote:
+> > From: Magnus Karlsson <magnus.karlsson@intel.com>
+> > 
+> > Fix a use-after-free error that is possible if the xsk_diag interface
+> > is used after the socket has been unbound from the device. This can
+> > happen either due to the socket being closed or the device
+> > disappearing. In the early days of AF_XDP, the way we tested that a
+> > socket was not bound to a device was to simply check if the netdevice
+> > pointer in the xsk socket structure was NULL. Later, a better system
+> > was introduced by having an explicit state variable in the xsk socket
+> > struct. For example, the state of a socket that is on the way to being
+> > closed and has been unbound from the device is XSK_UNBOUND.
+> > 
+> > The commit in the Fixes tag below deleted the old way of signalling
+> > that a socket is unbound, setting dev to NULL. This in the belief that
+> > all code using the old way had been exterminated. That was
+> > unfortunately not true as the xsk diagnostics code was still using the
+> > old way and thus does not work as intended when a socket is going
+> > down. Fix this by introducing a test against the state variable. If
+> > the socket is in the state XSK_UNBOUND, simply abort the diagnostic's
+> > netlink operation.
+> > 
+> > Fixes: 18b1ab7aa76b ("xsk: Fix race at socket teardown")
+> > Reported-and-tested-by: syzbot+822d1359297e2694f873@syzkaller.appspotmail.com
+> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> 
+> Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-Hi,
-
-I hit it as well, use the following command to reproduce:
-
-  for i in $(seq 1 100); do \
-    ./test_progs -a 'sockmap_listen/sockmap VSOCK test_vsock_redir' \
-    | grep Summary; \
-  done
-
-However, my backtrace is slightly different:
-
-[   30.615412] BUG: kernel NULL pointer dereference, address: 0000000000000=
-008
-[   30.616114] #PF: supervisor write access in kernel mode
-[   30.616114] #PF: error_code(0x0002) - not-present page
-[   30.616114] PGD 0 P4D 0=20
-[   30.616114] Oops: 0002 [#1] PREEMPT SMP NOPTI
-[   30.616114] CPU: 2 PID: 48 Comm: kworker/2:1 Tainted: G           OE    =
-  6.5.0-03968-g2e29df8dbb0c #90
-[   30.616114] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.1=
-5.0-1 04/01/2014
-[   30.616114] Workqueue: events sk_psock_destroy
-[   30.616114] RIP: 0010:skb_dequeue+0x54/0x80
-[   30.616114] Code: 74 45 4c 39 e3 74 40 8b 43 10 83 e8 01 89 43 10 49 8b =
-14 24 49 8b 44 24 08 49 c7 04 24 00 00 00 00 49 c7 44 24 08 00 00 00 00 <48=
-> 89 42 08 48 89 10 4c 89 ef e8 7d 6f 35 00 41
-[   30.616114] RSP: 0018:ffffc900001afdd0 EFLAGS: 00010097
-[   30.616114] RAX: 0000000000000000 RBX: ffff8881040d39b8 RCX: 3f495367eac=
-50c98
-[   30.616114] RDX: 0000000000000000 RSI: 0000000000000286 RDI: ffff8881040=
-d39d0
-[   30.616114] RBP: ffffc900001afde8 R08: 0000000000000001 R09: 00000000000=
-00001
-[   30.616114] R10: 0000000000000000 R11: 0000000000000091 R12: ffff8881037=
-9d000
-[   30.616114] R13: ffff8881040d39d0 R14: ffff88817bd2e6c0 R15: ffff88817bd=
-33905
-[   30.616114] FS:  0000000000000000(0000) GS:ffff88817bd00000(0000) knlGS:=
-0000000000000000
-[   30.616114] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   30.616114] CR2: 0000000000000008 CR3: 000000010548a000 CR4: 00000000007=
-50ee0
-[   30.616114] PKRU: 55555554
-[   30.616114] Call Trace:
-[   30.616114]  <TASK>
-[   30.616114]  ? show_regs+0x6e/0x80
-[   30.616114]  ? __die+0x29/0x70
-[   30.616114]  ? page_fault_oops+0x160/0x460
-[   30.616114]  ? lock_release+0x137/0x280
-[   30.616114]  ? srso_alias_return_thunk+0x5/0x7f
-[   30.616114]  ? do_user_addr_fault+0x347/0x840
-[   30.616114]  ? __this_cpu_preempt_check+0x17/0x20
-[   30.616114]  ? srso_alias_return_thunk+0x5/0x7f
-[   30.616114]  ? exc_page_fault+0x72/0x1d0
-[   30.616114]  ? asm_exc_page_fault+0x2b/0x30
-[   30.616114]  ? skb_dequeue+0x54/0x80
-[   30.616114]  sk_psock_destroy+0x91/0x2c0
-[   30.616114]  process_one_work+0x287/0x560
-[   30.616114]  worker_thread+0x59/0x400
-[   30.616114]  ? __pfx_worker_thread+0x10/0x10
-[   30.616114]  kthread+0x118/0x150
-[   30.616114]  ? __pfx_kthread+0x10/0x10
-[   30.616114]  ret_from_fork+0x40/0x60
-[   30.616114]  ? __pfx_kthread+0x10/0x10
-[   30.616114]  ret_from_fork_asm+0x1b/0x30
-[   30.616114]  </TASK>
-[   30.616114] Modules linked in: [last unloaded: bpf_testmod(OE)]
-[   30.616114] CR2: 0000000000000008
-[   30.616114] ---[ end trace 0000000000000000 ]---
-[   30.616114] RIP: 0010:skb_dequeue+0x54/0x80
-[   30.616114] Code: 74 45 4c 39 e3 74 40 8b 43 10 83 e8 01 89 43 10 49 8b =
-14 24 49 8b 44 24 08 49 c7 04 24 00 00 00 00 49 c7 44 24 08 00 00 00 00 <48=
-> 89 42 08 48 89 10 4c 89 ef e8 7d 6f 35 00 41
-[   30.616114] RSP: 0018:ffffc900001afdd0 EFLAGS: 00010097
-[   30.616114] RAX: 0000000000000000 RBX: ffff8881040d39b8 RCX: 3f495367eac=
-50c98
-[   30.616114] RDX: 0000000000000000 RSI: 0000000000000286 RDI: ffff8881040=
-d39d0
-[   30.616114] RBP: ffffc900001afde8 R08: 0000000000000001 R09: 00000000000=
-00001
-[   30.616114] R10: 0000000000000000 R11: 0000000000000091 R12: ffff8881037=
-9d000
-[   30.616114] R13: ffff8881040d39d0 R14: ffff88817bd2e6c0 R15: ffff88817bd=
-33905
-[   30.616114] FS:  0000000000000000(0000) GS:ffff88817bd00000(0000) knlGS:=
-0000000000000000
-[   30.616114] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   30.616114] CR2: 0000000000000008 CR3: 000000010548a000 CR4: 00000000007=
-50ee0
-[   30.616114] PKRU: 55555554
-[   30.616114] Kernel panic - not syncing: Fatal exception
-[   30.616114] Kernel Offset: disabled
-[   30.616114] ---[ end Kernel panic - not syncing: Fatal exception ]---
+FWIW also tested that issue is no longer triggered on my local system:
+Tested-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
 
->=20
-> jirka
->=20
-> >=20
-> > jirka
-> >=20
-> >=20
+> 
 > > ---
-> > [ 1022.710250][ T2556] general protection fault, probably for non-canon=
-ical address 0x6b6b6b6b6b6b6b73: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC NOPT=
-I^M
-> > [ 1022.711206][ T2556] CPU: 2 PID: 2556 Comm: kworker/2:4 Tainted: G   =
-        OE      6.5.0+ #693 1723c8b9805ff5a1672ab7e6f25977078a7bcceb^M
-> > [ 1022.712120][ T2556] Hardware name: QEMU Standard PC (Q35 + ICH9, 200=
-9), BIOS 1.16.2-1.fc38 04/01/2014^M
-> > [ 1022.712830][ T2556] Workqueue: events sk_psock_backlog^M
-> > [ 1022.713262][ T2556] RIP: 0010:skb_dequeue+0x4c/0x80^M
-> > [ 1022.713653][ T2556] Code: 41 48 85 ed 74 3c 8b 43 10 4c 89 e7 83 e8 =
-01 89 43 10 48 8b 45 08 48 8b 55 00 48 c7 45 08 00 00 00 00 48 c7 45 00 00 =
-00 00 00 <48> 89 42 08 48 89 10 e8 e8 6a 41 00 48 89 e8 5b 5d 41 5c c3 cc c=
-c^M
-> > [ 1022.714963][ T2556] RSP: 0018:ffffc90003ca7dd0 EFLAGS: 00010046^M
-> > [ 1022.715431][ T2556] RAX: 6b6b6b6b6b6b6b6b RBX: ffff88811de269d0 RCX:=
- 0000000000000000^M
-> > [ 1022.716068][ T2556] RDX: 6b6b6b6b6b6b6b6b RSI: 0000000000000282 RDI:=
- ffff88811de269e8^M
-> > [ 1022.716676][ T2556] RBP: ffff888141ae39c0 R08: 0000000000000001 R09:=
- 0000000000000000^M
-> > [ 1022.717283][ T2556] R10: 0000000000000001 R11: 0000000000000000 R12:=
- ffff88811de269e8^M
-> > [ 1022.717930][ T2556] R13: 0000000000000001 R14: ffff888141ae39c0 R15:=
- ffff88810a20e640^M
-> > [ 1022.718549][ T2556] FS:  0000000000000000(0000) GS:ffff88846d600000(=
-0000) knlGS:0000000000000000^M
-> > [ 1022.719241][ T2556] CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003=
-3^M
-> > [ 1022.719761][ T2556] CR2: 00007fb5c25ca000 CR3: 000000012b902004 CR4:=
- 0000000000770ee0^M
-> > [ 1022.720394][ T2556] PKRU: 55555554^M
-> > [ 1022.720699][ T2556] Call Trace:^M
-> > [ 1022.720984][ T2556]  <TASK>^M
-> > [ 1022.721254][ T2556]  ? die_addr+0x32/0x80^M
-> > [ 1022.721589][ T2556]  ? exc_general_protection+0x25a/0x4b0^M
-> > [ 1022.722026][ T2556]  ? asm_exc_general_protection+0x22/0x30^M
-> > [ 1022.722489][ T2556]  ? skb_dequeue+0x4c/0x80^M
-> > [ 1022.722854][ T2556]  sk_psock_backlog+0x27a/0x300^M
-> > [ 1022.723243][ T2556]  process_one_work+0x2a7/0x5b0^M
-> > [ 1022.723633][ T2556]  worker_thread+0x4f/0x3a0^M
-> > [ 1022.723998][ T2556]  ? __pfx_worker_thread+0x10/0x10^M
-> > [ 1022.724386][ T2556]  kthread+0xfd/0x130^M
-> > [ 1022.724709][ T2556]  ? __pfx_kthread+0x10/0x10^M
-> > [ 1022.725066][ T2556]  ret_from_fork+0x2d/0x50^M
-> > [ 1022.725409][ T2556]  ? __pfx_kthread+0x10/0x10^M
-> > [ 1022.725799][ T2556]  ret_from_fork_asm+0x1b/0x30^M
-> > [ 1022.726201][ T2556]  </TASK>^M
->=20
-
+> > v1 -> v2:
+> >   * Added READ_ONCE for the state variable [Magnus]
+> >   * Improved commit message [Maciej]
+> > 
+> >  net/xdp/xsk_diag.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/net/xdp/xsk_diag.c b/net/xdp/xsk_diag.c
+> > index c014217f5fa7..22b36c8143cf 100644
+> > --- a/net/xdp/xsk_diag.c
+> > +++ b/net/xdp/xsk_diag.c
+> > @@ -111,6 +111,9 @@ static int xsk_diag_fill(struct sock *sk, struct sk_buff *nlskb,
+> >  	sock_diag_save_cookie(sk, msg->xdiag_cookie);
+> > 
+> >  	mutex_lock(&xs->mutex);
+> > +	if (READ_ONCE(xs->state) == XSK_UNBOUND)
+> > +		goto out_nlmsg_trim;
+> > +
+> >  	if ((req->xdiag_show & XDP_SHOW_INFO) && xsk_diag_put_info(xs, nlskb))
+> >  		goto out_nlmsg_trim;
+> > 
+> > 
+> > base-commit: 7d35eb1a184a3f0759ad9e9cde4669b5c55b2063
+> > --
+> > 2.42.0
 
