@@ -1,179 +1,199 @@
-Return-Path: <bpf+bounces-9025-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9026-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20FE978E5A1
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 07:24:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A89CB78E683
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 08:29:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99C3B28122A
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 05:24:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FBA51C209FA
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 06:29:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5967F1861;
-	Thu, 31 Aug 2023 05:24:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B3B71FD5;
+	Thu, 31 Aug 2023 06:29:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C5DA1846
-	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 05:24:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC057C433C7
-	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 05:24:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1693459465;
-	bh=feioVZnKBPcjrXP1rkr2QlMJ2zPqWMlprKytxA7GrWk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=b07VtRmT+0+LJhdb2aFGm7MhX6MQdbVd7M0mVuHFFbnB3RZoO8lD+p+lHxWL7lWkv
-	 d9HoyiQ0W3w7KYk19NsUfQMAWnBtGNezKTzezxE3lwBDu/xYDFNqGAqFIfTsGYSN6Y
-	 QfG6/Y/zuGmJgeOEAnx7h/kEL9m95GmjMgqC/P1GRyKMPAF33Yz3tnMRWfo5ICzL5m
-	 VI2ni8CmrinGk2TTB9/PWYyIr6lR6e9Wphaj9LO4GbREN8W1zvmbrr7krWDq1QnpM5
-	 zzHbOBGGrKI3wgCXSh1wkG+EWEQ0hsLD8IWUT1XluXZJyfiizX+/QWAZboSFQBhbdh
-	 wEtBtpwWnTPjw==
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5007616b756so895314e87.3
-        for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 22:24:24 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzwiAr4HAp7GWvyVL42G6rqvIMruQE4hkMuZtTTKXburmD46GNI
-	80H4NqHxFoMJy1mag1rbxwTMSbCbilztaXbkF74=
-X-Google-Smtp-Source: AGHT+IHtNp5IivOeeed+v26MqcZ5k3RYwcndrb5W2VHIGpixL6pRT97GGY42n5Oz50uGR4lsN9Ua08N2bZ9e4MlKi1w=
-X-Received: by 2002:a05:6512:31d2:b0:500:918c:d5a2 with SMTP id
- j18-20020a05651231d200b00500918cd5a2mr3460447lfe.16.1693459462925; Wed, 30
- Aug 2023 22:24:22 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FE69186A
+	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 06:29:13 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1969BA4
+	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 23:29:12 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Rbrpm1ZCGz4f3nx4
+	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 14:29:04 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgBHHaAwM_BkIa8FCA--.1827S2;
+	Thu, 31 Aug 2023 14:29:07 +0800 (CST)
+Subject: Re: Question: Is it OK to assume the address of bpf_dynptr_kern will
+ be 8-bytes aligned and reuse the lowest bits to save extra info ?
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Joanne Koong <joannelkoong@gmail.com>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <db144689-79c8-6cfb-6a11-983958b28955@huaweicloud.com>
+ <e51d4765-25ae-28d6-e141-e7272faa439e@huaweicloud.com>
+ <63cb33d1-6930-0555-dd43-7dd73a786f75@huaweicloud.com>
+ <CAADnVQLAQMV21M99xif1OZnyS+vyHpLJDb31c1b+s3fhrCLEvQ@mail.gmail.com>
+ <b3fab6ae-1425-48a5-1faa-bb88d44a08f1@huaweicloud.com>
+ <CAADnVQKoriZJn7B2+7O6h+Ebg_0VgViU-XXGMQ0ky6ysEJLFkw@mail.gmail.com>
+ <3ec5eed2-fe42-5eef-f8b6-7d6289e37ed8@huaweicloud.com>
+ <CAADnVQKJOc-qxFQmc8An6gp6Bq07LSGLTezQeQRX82TS-H4zvg@mail.gmail.com>
+ <57e3df33-f49b-5c8b-82b3-3a8c63a9b37e@huaweicloud.com>
+ <CAADnVQ+2JoqJJvinPvKA+4Nm8F9rTrpXBdq4SmbTeq_9bw=mwg@mail.gmail.com>
+ <a3eb33c4-b84f-5386-291c-c43d77b39c48@huaweicloud.com>
+ <CAEf4BzZPno3m+G0v8ybxb=SMNbmqofCa5aa_Ukhh2OnZO9NxXw@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <3b6e3e7e-9d4f-7939-c8c0-edb266bc3758@huaweicloud.com>
+Date: Thu, 31 Aug 2023 14:29:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230830093502.1436694-1-jolsa@kernel.org> <ZO9DvsaOImg4Dt5r@krava>
- <566fe0ba-9bd5-d3d6-0c48-6e417dbb7b00@linux.dev>
-In-Reply-To: <566fe0ba-9bd5-d3d6-0c48-6e417dbb7b00@linux.dev>
-From: Song Liu <song@kernel.org>
-Date: Thu, 31 Aug 2023 01:24:10 -0400
-X-Gmail-Original-Message-ID: <CAPhsuW4qdB1kQM_6gP9WCpymw15-1=gDFU1KApWzQ_A8oC7thA@mail.gmail.com>
-Message-ID: <CAPhsuW4qdB1kQM_6gP9WCpymw15-1=gDFU1KApWzQ_A8oC7thA@mail.gmail.com>
-Subject: Re: [RFC/PATCH bpf-next] bpf: Fix d_path test after last fs update
-To: yonghong.song@linux.dev
-Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAEf4BzZPno3m+G0v8ybxb=SMNbmqofCa5aa_Ukhh2OnZO9NxXw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgBHHaAwM_BkIa8FCA--.1827S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXFy5Ar4fCw1UAw48GFy3urg_yoWrtry7pF
+	48JFyUJryUJry8Jr1Uuw4UJry5tr1Dtw1UJrs8Ja4UJryUKryjqr1UXFyjgr13Cr4kGr4U
+	trWUtry3Zr1UAF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Wed, Aug 30, 2023 at 6:17=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
->
->
-> On 8/30/23 9:27 AM, Jiri Olsa wrote:
-> > On Wed, Aug 30, 2023 at 11:35:02AM +0200, Jiri Olsa wrote:
-> >> Recent commit [1] broken d_path test, because now filp_close is not
-> >> called directly from sys_close, but eventually later when the file
-> >> is finally released.
-> >>
-> >> I can't see any other solution than to hook filp_flush function and
-> >> that also means we need to add it to btf_allowlist_d_path list, so
-> >> it can use the d_path helper.
-> >>
-> >> But it's probably not very stable because filp_flush is static so it
-> >> could be potentially inlined.
-> >
-> > looks like llvm makes it inlined (from CI)
-> >
-> >    Error: #68/1 d_path/basic
-> >    libbpf: prog 'prog_close': failed to find kernel BTF type ID of 'fil=
-p_flush': -3
-> >
-> > jirka
-> >
-> >>
-> >> Also if we'd keep the current filp_close hook and find a way how to 'w=
-ait'
-> >> for it to be called so user space can go with checks, then it looks
-> >> like d_path might not work properly when the task is no longer around.
-> >>
-> >> thoughts?
->
-> Jiri,
->
-> The following patch works fine for me:
->
-> $ git diff
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index a7264b2c17ad..fdeec712338f 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -941,6 +941,7 @@ BTF_ID(func, vfs_fallocate)
->   BTF_ID(func, dentry_open)
->   BTF_ID(func, vfs_getattr)
->   BTF_ID(func, filp_close)
-> +BTF_ID(func, __fput_sync)
->   BTF_SET_END(btf_allowlist_d_path)
->
->   static bool bpf_d_path_allowed(const struct bpf_prog *prog)
-> diff --git a/tools/testing/selftests/bpf/progs/test_d_path.c
-> b/tools/testing/selftests/bpf/progs/test_d_path.c
-> index 84e1f883f97b..672897197c2a 100644
-> --- a/tools/testing/selftests/bpf/progs/test_d_path.c
-> +++ b/tools/testing/selftests/bpf/progs/test_d_path.c
-> @@ -40,8 +40,8 @@ int BPF_PROG(prog_stat, struct path *path, struct
-> kstat *stat,
->          return 0;
->   }
->
-> -SEC("fentry/filp_close")
-> -int BPF_PROG(prog_close, struct file *file, void *id)
-> +SEC("fentry/__fput_sync")
-> +int BPF_PROG(prog_close, struct file *file)
->   {
->          pid_t pid =3D bpf_get_current_pid_tgid() >> 32;
->          __u32 cnt =3D cnt_close;
+Hi Andrii,
 
-Yeah, I guess this is the easiest fix at the moment.
+On 8/26/2023 2:33 AM, Andrii Nakryiko wrote:
+> On Tue, Aug 22, 2023 at 6:12 AM Hou Tao <houtao@huaweicloud.com> wrote:
+SNIP
+>>>> Yes. bpf prog will use dynptr as the map key. The bpf program will use
+>>>> the same map helpers as hash map to operate on qp-trie and the verifier
+>>>> will be updated to allow using dynptr as map key for qp-trie.
+>>> And that's the problem I just mentioned.
+>>> PTR_TO_MAP_KEY is special. I don't think we should hack it to also
+>>> mean ARG_PTR_TO_DYNPTR depending on the first argument (map type).
+>> Sorry for misunderstanding your reply. But before switch to the kfunc
+>> way, could you please point me to some code or function which shows the
+>> specialty of PTR_MAP_KEY ?
+>>
+>>
+> Search in kernel/bpf/verifier.c how PTR_TO_MAP_KEY is handled. The
+> logic assumes that there is associated struct bpf_map * pointer from
+> which we know fixed-sized key length.
 
-Related, shall we have resolve_btfids fail for missing ID? Something
-like:
+Thanks for the information. Will check that.
+>
+> But getting back to the topic at hand. I vaguely remember discussion
+> we had, but it would be good if you could summarize it again here to
+> avoid talking past each other. What is the bpf_map_ops changes you
+> were thinking to do? How bpf_attr will look like? How BPF-side API for
+> lookup/delete/update will look like? And then let's go from there?
+> Thanks!
 
-diff --git i/scripts/link-vmlinux.sh w/scripts/link-vmlinux.sh
-index a432b171be82..9a194152da49 100755
---- i/scripts/link-vmlinux.sh
-+++ w/scripts/link-vmlinux.sh
-@@ -274,7 +274,10 @@ vmlinux_link vmlinux "${kallsymso}" ${btf_vmlinux_bin_=
-o}
- # fill in BTF IDs
- if is_enabled CONFIG_DEBUG_INFO_BTF && is_enabled CONFIG_BPF; then
-        info BTFIDS vmlinux
--       ${RESOLVE_BTFIDS} vmlinux
-+       if ! ${RESOLVE_BTFIDS} vmlinux ; then
-+               echo >&2 Failed to resolve BTF IDs
-+               exit 1
-+       fi
- fi
+Sorry for the late reply. I am a bit distracted by other work this week.
 
- mksysmap vmlinux System.map ${kallsymso}
-diff --git i/tools/bpf/resolve_btfids/main.c w/tools/bpf/resolve_btfids/mai=
-n.c
-index 27a23196d58e..2940fe004220 100644
---- i/tools/bpf/resolve_btfids/main.c
-+++ w/tools/bpf/resolve_btfids/main.c
-@@ -599,8 +599,10 @@ static int id_patch(struct object *obj, struct btf_id =
-*id)
-        int i;
+For bpf_attr, a new field 'dynkey_size' is added to support
+BPF_MAP_{LOOKUP/UPDATE/DELETE}_ELEM and BPF_MAP_GET_NEXT_KEY on qp-trie
+as shown below:
 
-        /* For set, set8, id->id may be 0 */
--       if (!id->id && !id->is_set && !id->is_set8)
--               pr_err("WARN: resolve_btfids: unresolved symbol %s\n",
-id->name);
-+       if (!id->id && !id->is_set && !id->is_set8) {
-+               pr_err("FAILED resolve_btfids: unresolved symbol
-%s\n", id->name);
-+               return -1;
-+       }
+struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
+        __u32           map_fd;
+        __aligned_u64   key;
+        union {
+                __aligned_u64 value;
+                __aligned_u64 next_key;
+        };
+        __u64           flags;
+        __u32           dynkey_size;    /* input/output for
+                                         * BPF_MAP_GET_NEXT_KEY. input
+                                         * only for other commands.
+                                         */
+};
 
-        for (i =3D 0; i < id->addr_cnt; i++) {
-                unsigned long addr =3D id->addr[i];
+And 4 new APIs are added in libbpf to support basic operations on qp-trie:
 
-Thanks,
-Song
+LIBBPF_API int bpf_map_update_dynkey_elem(int fd, const void *key,
+unsigned int key_size, const void *value, __u64 flags);
+LIBBPF_API int bpf_map_lookup_dynkey_elem(int fd, const void *key,
+unsigned int key_size, void *value);
+LIBBPF_API int bpf_map_delete_dynkey_elem(int fd, const void *key,
+unsigned int key_size);
+LIBBPF_API int bpf_map_get_next_dynkey(int fd, const void *key, void
+*next_key, unsigned int *key_size);
+
+About 3 weeks again, I have used the lowest bit of key pointer in
+.map_lookup_elem/.map_update_elem/.map_delete_elem to distinguish
+between bpf_user_dynkey-typed key from syscall and bpf_dynptr_kern-typed
+key from bpf program. The definition of bpf_user_dynkey and its
+allocation method are shown below. bpf syscall uses it to allocate
+variable-sized key and passes it to qp-trie.
+
+/* Allocate bpf_user_dynkey and its data together */
+struct bpf_user_dynkey {
+        unsigned int size;
+        void *data;
+};
+
+static void *bpf_new_user_dynkey(unsigned int size)
+{
+        struct bpf_user_dynkey *dynkey;
+        size_t total;
+
+        total = round_up(sizeof(*dynkey) + size, 2);
+        dynkey = kvmalloc(total, GFP_USER | __GFP_NOWARN);
+        if (!dynkey)
+                return ERR_PTR(-ENOMEM);
+
+        dynkey->size = size;
+        dynkey->data = &dynkey[1];
+        return (void *)((long)dynkey | BPF_USER_DYNKEY_MARK);
+}
+
+
+After Alexei suggested that bit hack is only OK for memory or
+performance reason, I'm planning to add 2 new callbacks in bpf_map_ops
+to support update/delete operations in bpf syscall as shown below, but I
+have tried it yet.
+
+/* map is generic key/value storage optionally accessible by eBPF
+programs */
+struct bpf_map_ops {
+        /* funcs callable from userspace (via syscall) */
+        /* ...... */
+        void *(*map_lookup_elem_sys_only)(struct bpf_map *map, void *key);
+        long (*map_update_elem_sys_only)(struct bpf_map *map, void *key,
+void *value, u64 flags);
+        long (*map_delete_elem_sys_only)(struct bpf_map *map, void *key);
+        /* ...... */
+};
+
+
+
+
+
+
 
