@@ -1,160 +1,121 @@
-Return-Path: <bpf+bounces-9051-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9052-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2C6778ECFF
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 14:25:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07F7E78ED15
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 14:30:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1CC11C20A3C
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 12:25:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 332401C20A93
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 12:30:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C460711708;
-	Thu, 31 Aug 2023 12:25:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941FC11709;
+	Thu, 31 Aug 2023 12:29:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982169470
-	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 12:25:36 +0000 (UTC)
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241FA1A4
-	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 05:25:35 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4cbso911937a12.1
-        for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 05:25:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693484733; x=1694089533; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3EpvPSlXRjhBhXH4X4arE+hYchCvdLs6qGXJVU7UjxI=;
-        b=T/gydr4Mk+F4ffNCmCM+anVAEsypd9Xo/x2acXdo4kKOYiibCxnmqAWi6TaJZCaFXC
-         DejP/DrhTAFhtxiEz8NSJ4GShWRxVPVg1fibGFT3HdAxgRGn27MmKY3WpkTyJcDRY9VY
-         AsqyqsiqmeIrDTA5DVPn47xhYVHhvY2o5hs4SrVxOfZqYndIEy0XuZ/i1VOoYddyZHU0
-         twv6H3oE0jXIVcbNflhnWP1MYzWwKWcJUM6KB1To8+in/2rR+YOZYNo7s10XXioX8I5Y
-         HISNPfL8giXac+lJL5lOtXDVNeKgdjJmyKbjwHajHGKamotioUBTQ5oIa2L8TdRLnoq+
-         j9pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693484733; x=1694089533;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3EpvPSlXRjhBhXH4X4arE+hYchCvdLs6qGXJVU7UjxI=;
-        b=fgBmHD+iC4EcP0nX1R8zctBuuwlAMK7kxl6dI3EIULfVsqUTojfF6he+kZpltWe9rP
-         AUQIctPCRd17wq6hoJ6qOKHtr4gTQiKabTMf+MYh0Gqfx8dNnS1hPU4qReUTbejm+f60
-         D2vB/h4nUcCwGvSnFePZ4KWnLbAzu3bHeffKr0hVJiG6ZED8cdjUiQMdqIIrurI0/81o
-         lHG2zZNpjhakynTXUfCmXhkBjxvNifBGreVPQcraKZwp5rk3XNlbWNSaWIxdB/dBxzAP
-         UDyYVS+sNowJv15JS0CVnMmQcP3OL0/l9SGwAPif3Z2dLUlQ6ggqRbdIYU8/oIz5pxDj
-         3Idg==
-X-Gm-Message-State: AOJu0Yx+h7iFUFP5vqHrteCYzkW5w64nJrLS+XzUFGGMPKSLIhWWgeQV
-	mVucjH94pbM1qL+35V9ZH0aIMJ/tDk8=
-X-Google-Smtp-Source: AGHT+IF1R3ksJUhYjHYisnjw803cTU2jTCc8BmyBLtXmFdg1vmLjtMG1P1JiHqxh1bHz0Cckpqc0kg==
-X-Received: by 2002:a17:906:1019:b0:9a5:d16b:6631 with SMTP id 25-20020a170906101900b009a5d16b6631mr3776901ejm.70.1693484733335;
-        Thu, 31 Aug 2023 05:25:33 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id s6-20020a1709066c8600b00989828a42e8sm705332ejr.154.2023.08.31.05.25.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 05:25:32 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 31 Aug 2023 14:25:30 +0200
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Hou Tao <houtao1@huawei.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix d_path test
-Message-ID: <ZPCGukUcjyih8R+d@krava>
-References: <20230831110020.290102-1-jolsa@kernel.org>
- <6c157270-52e9-774e-6641-bdd32ab69ddf@iogearbox.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5B08C10
+	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 12:29:53 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C955CFF;
+	Thu, 31 Aug 2023 05:29:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=AuoeT0q4LJbl7muZqjyyTpJkzqz+1kv2o9BGttWzdfA=; b=Lt9RdBHrmbU1Mkao1QA3gcXnYe
+	M9KpP2B1pWSPLH+626tGR1/Dc6oK66sR7E1ZpnHZ95/nKwkPQPOLIQ8d1iXSuGI7g+njLLs/qEhVM
+	dQbAbyveGyiF/MxPXdLoNFpN9D7/Lz2oDIICpkmWyRr82WN/J8LwGobTfvzGaSYGOy01mG0ezsRTJ
+	PEFXKEtB12QUWB67nxgDRZsa7Gfz0wGmaZyt1xEcE+jkgkC9cZ0B/02UusnBh/BtR715BmqT61N6Q
+	cAxt/15DGDr5JTp2+M7gevgmhKXVUXoqQf/8q/Krclunplquh2Dzx7K5doqvzuGyMXJGciV57uzsx
+	G2fCf+zA==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qbgnw-0003yI-N6; Thu, 31 Aug 2023 14:29:45 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qbgnw-0004pD-KU; Thu, 31 Aug 2023 14:29:44 +0200
+Subject: Re: [PATCH bpf-next] selftests/bpf: Include build flavors for install
+ target
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ bpf@vger.kernel.org
+Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+ Alexei Starovoitov <ast@kernel.org>, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20230828183329.546959-1-bjorn@kernel.org>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <abe27949-6e35-07e6-ef29-bbc749fc40d5@iogearbox.net>
+Date: Thu, 31 Aug 2023 14:29:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20230828183329.546959-1-bjorn@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <6c157270-52e9-774e-6641-bdd32ab69ddf@iogearbox.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/27017/Thu Aug 31 09:40:48 2023)
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Aug 31, 2023 at 01:46:09PM +0200, Daniel Borkmann wrote:
-> On 8/31/23 1:00 PM, Jiri Olsa wrote:
-> > Recent commit [1] broken d_path test, because now filp_close is not called
-> > directly from sys_close, but eventually later when the file is finally
-> > released.
-> > 
-> > As suggested by Hou Tao we don't need to re-hook the bpf program, but just
-> > instead we can use sys_close_range to trigger filp_close synchronously.
-> > 
-> > [1] 021a160abf62 ("fs: use __fput_sync in close(2)")
-> > Suggested-by: Hou Tao <houtao@huaweicloud.com>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >   tools/testing/selftests/bpf/prog_tests/d_path.c | 8 +++++++-
-> >   1 file changed, 7 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
-> > index 911345c526e6..81e34a4a05d1 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/d_path.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
-> > @@ -90,7 +90,11 @@ static int trigger_fstat_events(pid_t pid)
-> >   	fstat(indicatorfd, &fileStat);
-> >   out_close:
-> > -	/* triggers filp_close */
-> > +	/* sys_close no longer triggers filp_close, but we can
-> > +	 * call sys_close_range instead which still does
-> > +	 */
-> > +#define close(fd) close_range(fd, fd, 0)
-> > +
+On 8/28/23 8:33 PM, Björn Töpel wrote:
+> From: Björn Töpel <bjorn@rivosinc.com>
 > 
-> The BPF CI selftest build says:
+> When using the "install" or targets depending on install,
+> e.g. "gen_tar", the BPF machine flavors weren't included.
 > 
->     [...]
->     TEST-OBJ [test_progs] lookup_key.test.o
->     TEST-OBJ [test_progs] migrate_reuseport.test.o
->     TEST-OBJ [test_progs] user_ringbuf.test.o
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/d_path.c: In function ‘trigger_fstat_events’:
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/d_path.c:96:19: error: implicit declaration of function ‘close_range’ [-Werror=implicit-function-declaration]
->      96 | #define close(fd) close_range(fd, fd, 0)
->         |                   ^~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/d_path.c:98:2: note: in expansion of macro ‘close’
->      98 |  close(pipefd[0]);
->         |  ^~~~~
->     TEST-OBJ [test_progs] task_pt_regs.test.o
->     [...]
+> A command like:
+>    | make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- O=/workspace/kbuild \
+>    |    HOSTCC=gcc FORMAT= SKIP_TARGETS="arm64 ia64 powerpc sparc64 x86 sgx" \
+>    |    -C tools/testing/selftests gen_tar
+> would not include bpf/no_alu32, bpf/cpuv4, or bpf/bpf-gcc.
 > 
-> Perhaps #include <linux/close_range.h> missing ?
+> Include the BPF machine flavors for "install" make target.
+> 
+> Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
 
-yes, will send v2
+Looks good and BPF CI also seems to be fine with it, wrt INSTDIRS could we use
+a more appropriate location where we define it? Was thinking sth like:
 
-thanks,
-jirka
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 7c77a21c3371..8b724efb8b7f 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -50,14 +50,17 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
+         test_cgroup_storage \
+         test_tcpnotify_user test_sysctl \
+         test_progs-no_alu32
++TEST_INST_SUBDIRS := no_alu32
 
-> 
-> >   	close(pipefd[0]);
-> >   	close(pipefd[1]);
-> >   	close(sockfd);
-> > @@ -98,6 +102,8 @@ static int trigger_fstat_events(pid_t pid)
-> >   	close(devfd);
-> >   	close(localfd);
-> >   	close(indicatorfd);
-> > +
-> > +#undef close
-> >   	return ret;
-> >   }
-> > 
-> 
+  # Also test bpf-gcc, if present
+  ifneq ($(BPF_GCC),)
+  TEST_GEN_PROGS += test_progs-bpf_gcc
++TEST_INST_SUBDIRS += bpf_gcc
+  endif
+
+  ifneq ($(CLANG_CPUV4),)
+  TEST_GEN_PROGS += test_progs-cpuv4
++TEST_INST_SUBDIRS += cpuv4
+  endif
+
+[...]
+
+Thanks,
+Daniel
 
