@@ -1,87 +1,121 @@
-Return-Path: <bpf+bounces-9048-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9049-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B921078ECAE
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 14:00:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A6FB78ECBF
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 14:07:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA36C1C20AC9
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 12:00:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94AA31C20ADF
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 12:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69769111BF;
-	Thu, 31 Aug 2023 12:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B7DF111AB;
+	Thu, 31 Aug 2023 12:07:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE9F111BB;
-	Thu, 31 Aug 2023 12:00:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B193EC433C7;
-	Thu, 31 Aug 2023 12:00:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1693483223;
-	bh=fQuCc+pT8AFDqLlZJ9XoMzF8snrZ0LhmySkKQUntOls=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=OMOGH7e7firZvdmnxf6Qxbb152CYEpdg7uMNtuLnyeNYzxI4R1HSW3N/0kIMrKK2K
-	 NpEjpkPERWaQOn+nChQYn6o8S/7ciJaBsSlBkt0OzuhXYuSg4uIw5hpvgWsEefTyu2
-	 Qohz+q4/MHZG3+/j6nrEfaNUBMhXNeLttmCspzSTLv8N7e76y6drDHc09OS++zAEtf
-	 761k02erJppcGisbozdJtT434J98ELlb6pKPc5B0IhvCslYBgAVbhCVp5fLejIC9rm
-	 OYaRJCyBGESW0tmGjgIEUOYuZ2YO1838flrptqqh3Qmh5595H5EvMe2QpPIDFZuB/1
-	 csNNXzwMQGkcg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 92FDAC595D2;
-	Thu, 31 Aug 2023 12:00:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF07663CC
+	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 12:07:11 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0885E59
+	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 05:07:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1693483625;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7eGUrly/T+TjsJyEQHXY9eqJPI+TtQe0WPaN+ZPx0ps=;
+	b=MTGVaksYvcZTgO40Uc29ibSE+AO2YfLbRHJv/RmyZwnfnbozznKlpqH3cCmGtDV+ApkJLE
+	Q2isRKiIVoDrwmA5pQQAOT/IrtiMIUDsdHiPPu/TDYWcxVjjcq/CxQuyue5W0o7oc/0OSc
+	8Jug+hHW39DAObZQBFEcVc1xxs8R9nc=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-227-yb90YrfiO9aEe350LgVBCA-1; Thu, 31 Aug 2023 08:07:00 -0400
+X-MC-Unique: yb90YrfiO9aEe350LgVBCA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 97C213C0F697;
+	Thu, 31 Aug 2023 12:06:59 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.26])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 0E47F1121315;
+	Thu, 31 Aug 2023 12:06:56 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Thu, 31 Aug 2023 14:06:10 +0200 (CEST)
+Date: Thu, 31 Aug 2023 14:06:07 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Yonghong Song <yhs@fb.com>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Kui-Feng Lee <kuifeng@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] bpf: task_group_seq_get_next: fix the
+ skip_if_dup_files check
+Message-ID: <20230831120606.GA6998@redhat.com>
+References: <20230825161842.GA16750@redhat.com>
+ <20230825161947.GA16871@redhat.com>
+ <20230825170406.GA16800@redhat.com>
+ <e254a6db-66eb-8bfc-561f-464327a1005a@linux.dev>
+ <20230827201909.GC28645@redhat.com>
+ <ac60ff18-22b0-0291-256c-0e0c3abb7b62@linux.dev>
+ <20230828105453.GB19186@redhat.com>
+ <25be098a-dc41-7907-5590-1835308ebe28@linux.dev>
+ <20230830235459.GA3570@redhat.com>
+ <0261d27e-f9b5-c0fe-1bae-2b76062e7386@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] Fix invalid escape sequence warnings
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <169348322359.7795.11591685845254219512.git-patchwork-notify@kernel.org>
-Date: Thu, 31 Aug 2023 12:00:23 +0000
-References: <20230829074931.2511204-1-vishalc@linux.ibm.com>
-In-Reply-To: <20230829074931.2511204-1-vishalc@linux.ibm.com>
-To: Vishal Chourasia <vishalc@linux.ibm.com>
-Cc: andrii.nakryiko@gmail.com, andrii@kernel.org, ast@kernel.org,
- bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
- haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com,
- jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org,
- linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org,
- quentin@isovalent.com, sachinp@linux.ibm.com, sdf@google.com,
- song@kernel.org, srikar@linux.vnet.ibm.com, yhs@fb.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0261d27e-f9b5-c0fe-1bae-2b76062e7386@linux.dev>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+	autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Hello:
+On 08/31, Yonghong Song wrote:
+>
+> On 8/30/23 7:54 PM, Oleg Nesterov wrote:
+> >
+> >I simply can't understand how can this pull/5580 come when I specially
+> >mentioned
+> >
+> >	> 6/6 obviously depends on
+> >	>
+> >	>	[PATCH 1/2] introduce __next_thread(), fix next_tid() vs exec() race
+> >	>	https://lore.kernel.org/all/20230824143142.GA31222@redhat.com/
+> >	>
+> >	> which was not merged yet.
+> >
+> >in 0/6.
+>
+> The process in CI for testing is fully automated,
 
-This patch was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+Ah, OK, sorry then.
 
-On Tue, 29 Aug 2023 13:19:31 +0530 you wrote:
-> The script bpf_doc.py generates multiple SyntaxWarnings related to invalid
-> escape sequences when executed with Python 3.12. These warnings do not appear in
-> Python 3.10 and 3.11 and do not affect the kernel build, which completes
-> successfully.
-> 
-> This patch resolves these SyntaxWarnings by converting the relevant string
-> literals to raw strings or by escaping backslashes. This ensures that
-> backslashes are interpreted as literal characters, eliminating the warnings.
-> 
-> [...]
+> >>I suggest you get patch 1-5 and resubmit with tag like
+> >>   "bpf-next v2"
+> >>   [Patch bpf-next v2 x/5] ...
+> >>so CI can build with different architectures and compilers to
+> >>ensure everything builds and runs fine.
 
-Here is the summary with links:
-  - [v2] Fix invalid escape sequence warnings
-    https://git.kernel.org/bpf/bpf/c/121fd33bf2d9
+OK, will do when I have time.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Thanks,
 
+Oleg.
 
 
