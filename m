@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-9058-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9059-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E995A78EE3A
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 15:12:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8160778EE3E
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 15:13:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A43602814DD
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 13:12:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B25CB1C20971
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 13:13:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 416461171C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9344C11723;
 	Thu, 31 Aug 2023 13:12:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10AA911713
-	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 13:12:35 +0000 (UTC)
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ABE0BC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 549431171F
+	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 13:12:36 +0000 (UTC)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26C3CF3;
 	Thu, 31 Aug 2023 06:12:34 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-31c5a2e8501so621541f8f.0;
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-31dcd553fecso601618f8f.2;
         Thu, 31 Aug 2023 06:12:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693487552; x=1694092352; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1693487553; x=1694092353; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Vw9aCO6QF7ehSGg3eSofLWFhJ8EHSCsmR6IG4YjeGA0=;
-        b=eR0/AQcSqjr4CcKO192YlS1cYVIwnqbPfEE0ge7bwNI902wNHfCZrgs7wX1nX0ihKj
-         Gkr0/EwZ9UB3jeZ9rGQnTjbKe08PiR8XAPjOKTaHaYdqzOl3O5ne3bDEfWIpzlu0MGV1
-         KpOIHXScxF5azzHwjrSqyXSO6CKc47hvpw1SpdH63irucztblg/xaZQyYlJ3qxR8T5Xu
-         YmLru+/aR1S6VAZvpo7lzvwnQ1kVrgXpgMEi5UzbZMOnEJk7plnUwIVWULKbnxeDX0Zr
-         j9yrfexA/eaf+XcIrKjDgkh1DWQjhiiA6lOrCc+/7FASiqWB2jI2trK/m1s1Q3Jmv8Ad
-         MbMA==
+        bh=CUYKChQYfJZZ8DPO0whW/zno6UWIarXDmyfOm92F8UA=;
+        b=a7wmDT2IFZ4JxeJqW+YCZF2To/S86kH44zxt34Q3m9QEbpSnrpUZoAxE/Dq2G8V+Ur
+         5xg01mJoc1HNha4xDw+ORjDcLaU0AcPnilvE55Qj26feD6CoYTH8juquKfntWhMLdBS3
+         e+gIzy2pV4jKo+BSS/NNWnZo1G1yAmUr/G04maCjHWO9DRbaLGRCyGDSntpEjy+JkGdw
+         ilj6/o8mtLyf5Wv2MnmOpkceenZEtZlbk06nYAqc1+GgKfvnxWRtlQY7yeUyyD6W3OEK
+         gI9hzLMYdcCyCGCEtO9HZX3Xl5CK4K5sKzkes7PfJdmyjUCHxBSu0t+Ve3/nKkxMPWhc
+         roaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693487552; x=1694092352;
+        d=1e100.net; s=20221208; t=1693487553; x=1694092353;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Vw9aCO6QF7ehSGg3eSofLWFhJ8EHSCsmR6IG4YjeGA0=;
-        b=JV4fybsNq3aky03qRdtO7KmSGbrarZZMuWR6S9nW1ruQpf0qfnYQcUpxZ3ThF3saTM
-         WAVidU+B0a2piQvsosbOGjX1vEZEnYnW3bWxIjmVbQBpx0pUFTxAwK5O/GLO5wd1qOE8
-         pkmRsQBqwiJd9c7Zatvh7BGMDbATeshV81u+oNWrKgYvHJWJqwe5Y2sRwe+aGr3UhbL+
-         zziY+HCHiWnuAFJam4WhOs3iVzyv6muVKyty59KOTutTXRIkZJD0enVS0az1eqxBnsQp
-         jOJdSRLVX3VxWaCmpw8TPvaPEcgvU3PwtX06wl+GygnFnbbxvvLcqc1sPLQnJCrnnHYr
-         2UYQ==
-X-Gm-Message-State: AOJu0YxcR/R1WHqqn2MdZnVqCr9yG8UFthfNOWai/pL4+tELkRIvmaR+
-	aVfSGvr4pjQvEPPQ8sP7Zuc=
-X-Google-Smtp-Source: AGHT+IEV1nZTWVMPYeNOWwrZQScu0+JsXp36Y/oH9nCnr88bGLZYxfwLclYlSX63KCt8UHKIEmHBIA==
-X-Received: by 2002:adf:e54f:0:b0:319:82c9:8e7d with SMTP id z15-20020adfe54f000000b0031982c98e7dmr3698994wrm.31.1693487551537;
-        Thu, 31 Aug 2023 06:12:31 -0700 (PDT)
+        bh=CUYKChQYfJZZ8DPO0whW/zno6UWIarXDmyfOm92F8UA=;
+        b=cy4jqglSPXEJaQqnjifgcudOTy5p9SMssWaOwVZyz+fWnXmewqo8b1kMMttAjEJI20
+         ijXCZmKvKpxuR36W941BcLPruRm9sJuVsEN/5vRxfmbZEeagOV3Fee8+DC7doT+hm8ej
+         Shv5DmmfArJT3q/EKxKlMjnejkHV7DKBOCynQUOWjGaGXJdVZ1AWFBgkDpk9C8IrfKTq
+         dK5+oRET4kfhAzGmn89+cZRwVwfGoi+6wNAVTtGZKcqrhyMG41EHkHsQYgAB5w/9FNa/
+         XJKtAVeyLj8+cRgB/QVbQA3gjfHfrXti142VrZNpgTtb+cjBWVNr0eC2FSDc0x58EVMt
+         KLdw==
+X-Gm-Message-State: AOJu0YyzMnVPt3BTcADM/J+qcYbe/8jXlu0MPZrF1K5T/leGf1T0I6EP
+	JVdausnrt8jSubvB1iXq9l0=
+X-Google-Smtp-Source: AGHT+IEmRLcQA4Zh4qOEOVWO+OJdUOgzn5p2uNiV+/qiisIBP67acZzJXuCuSC/kJMqcbfCWT7qEVg==
+X-Received: by 2002:a5d:668f:0:b0:317:6a7c:6e07 with SMTP id l15-20020a5d668f000000b003176a7c6e07mr3756142wru.32.1693487553087;
+        Thu, 31 Aug 2023 06:12:33 -0700 (PDT)
 Received: from ip-172-31-30-46.eu-west-1.compute.internal (ec2-54-170-241-106.eu-west-1.compute.amazonaws.com. [54.170.241.106])
-        by smtp.gmail.com with ESMTPSA id a28-20020a5d457c000000b00317f70240afsm2206607wrc.27.2023.08.31.06.12.30
+        by smtp.gmail.com with ESMTPSA id a28-20020a5d457c000000b00317f70240afsm2206607wrc.27.2023.08.31.06.12.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 06:12:31 -0700 (PDT)
+        Thu, 31 Aug 2023 06:12:32 -0700 (PDT)
 From: Puranjay Mohan <puranjay12@gmail.com>
 To: paul.walmsley@sifive.com,
 	palmer@dabbelt.com,
@@ -74,9 +74,9 @@ To: paul.walmsley@sifive.com,
 	linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next v4 1/4] bpf: make bpf_prog_pack allocator portable
-Date: Thu, 31 Aug 2023 13:12:26 +0000
-Message-Id: <20230831131229.497941-2-puranjay12@gmail.com>
+Subject: [PATCH bpf-next v4 2/4] riscv: extend patch_text_nosync() for multiple pages
+Date: Thu, 31 Aug 2023 13:12:27 +0000
+Message-Id: <20230831131229.497941-3-puranjay12@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230831131229.497941-1-puranjay12@gmail.com>
 References: <20230831131229.497941-1-puranjay12@gmail.com>
@@ -95,66 +95,95 @@ X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-The bpf_prog_pack allocator currently uses module_alloc() and
-module_memfree() to allocate and free memory. This is not portable
-because different architectures use different methods for allocating
-memory for BPF programs. Like ARM64 and riscv use vmalloc()/vfree().
+The patch_insn_write() function currently doesn't work for multiple pages
+of instructions, therefore patch_text_nosync() will fail with a page fault
+if called with lengths spanning multiple pages.
 
-Use bpf_jit_alloc_exec() and bpf_jit_free_exec() for memory management
-in bpf_prog_pack allocator. Other architectures can override these with
-their implementation and will be able to use bpf_prog_pack directly.
-
-On architectures that don't override bpf_jit_alloc/free_exec() this is
-basically a NOP.
+This commit extends the patch_insn_write() function to support multiple
+pages by copying at max 2 pages at a time in a loop. This implementation
+is similar to text_poke_copy() function of x86.
 
 Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-Acked-by: Song Liu <song@kernel.org>
-Acked-by: Björn Töpel <bjorn@kernel.org>
+Reviewed-by: Pu Lehui <pulehui@huawei.com>
+Reviewed-by: Björn Töpel <bjorn@rivosinc.com>
 Tested-by: Björn Töpel <bjorn@rivosinc.com>
 ---
- kernel/bpf/core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/riscv/kernel/patch.c | 37 ++++++++++++++++++++++++++++++++-----
+ 1 file changed, 32 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 0f8f036d8bd1..4e3ce0542e31 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -870,7 +870,7 @@ static struct bpf_prog_pack *alloc_new_pack(bpf_jit_fill_hole_t bpf_fill_ill_ins
- 		       GFP_KERNEL);
- 	if (!pack)
- 		return NULL;
--	pack->ptr = module_alloc(BPF_PROG_PACK_SIZE);
-+	pack->ptr = bpf_jit_alloc_exec(BPF_PROG_PACK_SIZE);
- 	if (!pack->ptr) {
- 		kfree(pack);
- 		return NULL;
-@@ -894,7 +894,7 @@ void *bpf_prog_pack_alloc(u32 size, bpf_jit_fill_hole_t bpf_fill_ill_insns)
- 	mutex_lock(&pack_mutex);
- 	if (size > BPF_PROG_PACK_SIZE) {
- 		size = round_up(size, PAGE_SIZE);
--		ptr = module_alloc(size);
-+		ptr = bpf_jit_alloc_exec(size);
- 		if (ptr) {
- 			bpf_fill_ill_insns(ptr, size);
- 			set_vm_flush_reset_perms(ptr);
-@@ -932,7 +932,7 @@ void bpf_prog_pack_free(struct bpf_binary_header *hdr)
+diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
+index 575e71d6c8ae..2c97e246f4dc 100644
+--- a/arch/riscv/kernel/patch.c
++++ b/arch/riscv/kernel/patch.c
+@@ -53,12 +53,18 @@ static void patch_unmap(int fixmap)
+ }
+ NOKPROBE_SYMBOL(patch_unmap);
  
- 	mutex_lock(&pack_mutex);
- 	if (hdr->size > BPF_PROG_PACK_SIZE) {
--		module_memfree(hdr);
-+		bpf_jit_free_exec(hdr);
- 		goto out;
- 	}
+-static int patch_insn_write(void *addr, const void *insn, size_t len)
++static int __patch_insn_write(void *addr, const void *insn, size_t len)
+ {
+ 	void *waddr = addr;
+ 	bool across_pages = (((uintptr_t) addr & ~PAGE_MASK) + len) > PAGE_SIZE;
+ 	int ret;
  
-@@ -956,7 +956,7 @@ void bpf_prog_pack_free(struct bpf_binary_header *hdr)
- 	if (bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
- 				       BPF_PROG_CHUNK_COUNT, 0) == 0) {
- 		list_del(&pack->list);
--		module_memfree(pack->ptr);
-+		bpf_jit_free_exec(pack->ptr);
- 		kfree(pack);
- 	}
- out:
++	/*
++	 * Only two pages can be mapped at a time for writing.
++	 */
++	if (len + offset_in_page(addr) > 2 * PAGE_SIZE)
++		return -EINVAL;
++
+ 	/*
+ 	 * Before reaching here, it was expected to lock the text_mutex
+ 	 * already, so we don't need to give another lock here and could
+@@ -74,7 +80,7 @@ static int patch_insn_write(void *addr, const void *insn, size_t len)
+ 		lockdep_assert_held(&text_mutex);
+ 
+ 	if (across_pages)
+-		patch_map(addr + len, FIX_TEXT_POKE1);
++		patch_map(addr + PAGE_SIZE, FIX_TEXT_POKE1);
+ 
+ 	waddr = patch_map(addr, FIX_TEXT_POKE0);
+ 
+@@ -87,15 +93,36 @@ static int patch_insn_write(void *addr, const void *insn, size_t len)
+ 
+ 	return ret;
+ }
+-NOKPROBE_SYMBOL(patch_insn_write);
++NOKPROBE_SYMBOL(__patch_insn_write);
+ #else
+-static int patch_insn_write(void *addr, const void *insn, size_t len)
++static int __patch_insn_write(void *addr, const void *insn, size_t len)
+ {
+ 	return copy_to_kernel_nofault(addr, insn, len);
+ }
+-NOKPROBE_SYMBOL(patch_insn_write);
++NOKPROBE_SYMBOL(__patch_insn_write);
+ #endif /* CONFIG_MMU */
+ 
++static int patch_insn_write(void *addr, const void *insn, size_t len)
++{
++	size_t patched = 0;
++	size_t size;
++	int ret = 0;
++
++	/*
++	 * Copy the instructions to the destination address, two pages at a time
++	 * because __patch_insn_write() can only handle len <= 2 * PAGE_SIZE.
++	 */
++	while (patched < len && !ret) {
++		size = min_t(size_t, PAGE_SIZE * 2 - offset_in_page(addr + patched), len - patched);
++		ret = __patch_insn_write(addr + patched, insn + patched, size);
++
++		patched += size;
++	}
++
++	return ret;
++}
++NOKPROBE_SYMBOL(patch_insn_write);
++
+ int patch_text_nosync(void *addr, const void *insns, size_t len)
+ {
+ 	u32 *tp = addr;
 -- 
 2.39.2
 
