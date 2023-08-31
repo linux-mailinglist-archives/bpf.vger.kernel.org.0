@@ -1,162 +1,147 @@
-Return-Path: <bpf+bounces-9028-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9029-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B02978E732
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 09:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 594F178E742
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 09:37:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC719280D69
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 07:30:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13132280F91
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 07:37:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F6A63BF;
-	Thu, 31 Aug 2023 07:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0AA563DB;
+	Thu, 31 Aug 2023 07:37:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A79DF5258
-	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 07:30:03 +0000 (UTC)
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9445A1B1
-	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 00:30:01 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bc63ef9959so3697845ad.2
-        for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 00:30:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1693467001; x=1694071801; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=kHkD8InmtdxNYFBphrJMG48olpat1cNrjKg/T++oikw=;
-        b=X2LJhVLDLe3qiBlg6znrNnaI62Id/93YkpkURgRh3gEty6ipgaRXVK/bZIy7KA2JHL
-         7CqZfO+R7upsJaReVacXqxYhFSWyjS2uTl2PFkerymU9wuobdqp0nRleNM8V+GO6ROT1
-         Seg9vo2SNrxpCSUACFD5RCX0kU4sKFCmGke3soI0bQeglm02KGiHiAt62dBMVR6O/Dx0
-         cHJysZpTc0KMZHesn4KDuqxlx3JCM8FLskTtYa+HCwSnsrYvMvNCOgUw614bP39G2rGM
-         MWFCuT0fgaICHCoEM+SCeJ2WgVjtcMq8+9M/jQ3fNDVijtWbc7BhfVC3+0gQxvhRPAkj
-         kLsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693467001; x=1694071801;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kHkD8InmtdxNYFBphrJMG48olpat1cNrjKg/T++oikw=;
-        b=HAxT5Mr7GbKL9RrsKdvUTg9Bxjacv1C72NlZN9JwAFrLe+PG9pYN+L97FPZeqgIJlN
-         y+wJCDQSe99w4LS9qcOkxJRDWRw9XIvdIl3mRW8E9QiI3Tht5QCzeaATiJWX9/RMOJur
-         zpu0ye7r2KvavemVyvm5sSdiheHrsQ7bVL7RqyMwAyLVcPpMvnIPvc428gLvHHWUf1jY
-         LrClt7Iee/1A+DygTAZ3omyIvAep5M2T0v2CVPtxeX+zvFbVX9ZpgUxmbPw98JTgHn0K
-         p8OjCtWhNk4ksPW743lR1ImuVlCebQziSP2dCDeb1EyYStD82tUsMLgAaGfzWmnvWhv3
-         CtGw==
-X-Gm-Message-State: AOJu0YzQqH0jsOxAffKU08F+aeMsFC4dvj7gesovXVL8TDV9zYe5DLdt
-	+9aA6KybsW7kCPzQovBvy1oNeg==
-X-Google-Smtp-Source: AGHT+IE5O2NqR8s3cBctEV1BFg7RgqUoh1WdEYsOUTORcefwrWw6BJhLjj6CuS6Bcy8/aQitmNUHGw==
-X-Received: by 2002:a17:902:d4c9:b0:1c0:d777:3224 with SMTP id o9-20020a170902d4c900b001c0d7773224mr4655799plg.50.1693467000995;
-        Thu, 31 Aug 2023 00:30:00 -0700 (PDT)
-Received: from medusa.lab.kspace.sh (c-98-207-191-243.hsd1.ca.comcast.net. [98.207.191.243])
-        by smtp.googlemail.com with ESMTPSA id ji5-20020a170903324500b001b80d399730sm647892plb.242.2023.08.31.00.29.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 00:30:00 -0700 (PDT)
-Date: Thu, 31 Aug 2023 00:29:57 -0700
-From: Mohamed Khalfella <mkhalfella@purestorage.com>
-To: Eric Dumazet <edumazet@google.com>
-Cc: willemdebruijn.kernel@gmail.com, alexanderduyck@fb.com,
-	bpf@vger.kernel.org, brouer@redhat.com, davem@davemloft.net,
-	dhowells@redhat.com, keescook@chromium.org, kuba@kernel.org,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	pabeni@redhat.com, willemb@google.com, stable@vger.kernel.org
-Subject: Re: [PATCH v2] skbuff: skb_segment, Call zero copy functions before
- using skbuff frags
-Message-ID: <20230831072957.GA3696339@medusa>
-References: <64ed7188a2745_9cf208e1@penguin.notmuch>
- <20230830232811.9876-1-mkhalfella@purestorage.com>
- <CANn89iJVnS_dGDtU7AVWgVrun-p68DZ0A3Pde47MHNeeQ2nwRA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84B1E53BD
+	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 07:37:46 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959201A3
+	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 00:37:44 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RbtKw0rPrz4f3l1s
+	for <bpf@vger.kernel.org>; Thu, 31 Aug 2023 15:37:40 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgAX9KZBQ_BkOLIJCA--.8867S2;
+	Thu, 31 Aug 2023 15:37:41 +0800 (CST)
+Subject: Re: [RFC/PATCH bpf-next] bpf: Fix d_path test after last fs update
+To: Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+ Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+References: <20230830093502.1436694-1-jolsa@kernel.org>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <89bb059e-f371-8354-5770-f022396e0b38@huaweicloud.com>
+Date: Thu, 31 Aug 2023 15:37:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <20230830093502.1436694-1-jolsa@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANn89iJVnS_dGDtU7AVWgVrun-p68DZ0A3Pde47MHNeeQ2nwRA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgAX9KZBQ_BkOLIJCA--.8867S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWF48XF43XF4fuF1fGFW3KFg_yoW5GF4xpa
+	y8G34akr4ktrW3tas7Ja1kWFyfGw4xXry0gF1kX343uF1xXr4vgFsIgw4UXr15G3yrZrZ3
+	u3W2gFy0kr47ua7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU1zuWJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 2023-08-31 08:58:51 +0200, Eric Dumazet wrote:
-> On Thu, Aug 31, 2023 at 1:28 AM Mohamed Khalfella
-> <mkhalfella@purestorage.com> wrote:
-> >         do {
-> >                 struct sk_buff *nskb;
-> >                 skb_frag_t *nskb_frag;
-> > @@ -4465,6 +4471,10 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
-> >                     (skb_headlen(list_skb) == len || sg)) {
-> >                         BUG_ON(skb_headlen(list_skb) > len);
-> >
-> > +                       nskb = skb_clone(list_skb, GFP_ATOMIC);
-> > +                       if (unlikely(!nskb))
-> > +                               goto err;
-> > +
-> 
-> This patch is quite complex to review, so I am asking if this part was
-> really needed ?
+Hi
 
-Unfortunately the patch is complex because I try to avoid calling
-skb_orphan_frags() in the middle of processing these frags. Otherwise
-it would be much harder to implement because as reallocated frags do not
-map 1:1 with existing frags as Willem mentioned.
+On 8/30/2023 5:35 PM, Jiri Olsa wrote:
+> Recent commit [1] broken d_path test, because now filp_close is not
+> called directly from sys_close, but eventually later when the file
+> is finally released.
 
-> <1>  : You moved here <2> and <3>
+To make test_d_path self-test pass, beside attaching to a different
+function (e.g., __fput_sync or filp_flush), we could also use
+close_range() or even dup2() to close the created fd, because these
+syscalls still use filp_close() to close the opened file.
 
-<2> was moved here because skb_clone() calls skb_orphan_frags(). By
-moving this up we do not need to call skb_orphan_frags() for list_skb
-and we can start to use nr_frags and frags without worrying their value
-is going to change.
+>
+> I can't see any other solution than to hook filp_flush function and
+> that also means we need to add it to btf_allowlist_d_path list, so
+> it can use the d_path helper.
+>
+> But it's probably not very stable because filp_flush is static so it
+> could be potentially inlined.
+>
+> Also if we'd keep the current filp_close hook and find a way how to 'wait'
+> for it to be called so user space can go with checks, then it looks
+> like d_path might not work properly when the task is no longer around.
 
-<3> was moved here because <2> was moved here. Fail fast if we can not
-clone list_skb.
+It seems there is no need to wait for it to be called, because
+filp_close() is still called synchronously by some syscall (e.g.,
+close_range or io_uring). So if the bpf program tries to collect many
+close event as possible, it should be attach to both filp_close() and
+__fput_sync(), right ?
 
-> 
-> If this is not strictly needed, please keep the code as is to ease
-> code review...
-> 
-> >                         i = 0;
-> >                         nfrags = skb_shinfo(list_skb)->nr_frags;
-> >                         frag = skb_shinfo(list_skb)->frags;
-> > @@ -4483,12 +4493,8 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
-> >                                 frag++;
-> >                         }
-> >
-> > -                       nskb = skb_clone(list_skb, GFP_ATOMIC);
-> 
-> <2>
-> 
-> >                         list_skb = list_skb->next;
-> >
-> > -                       if (unlikely(!nskb))
-> > -                               goto err;
-> > -
-> 
-> <3>
-> 
-> >                         if (unlikely(pskb_trim(nskb, len))) {
-> >                                 kfree_skb(nskb);
-> >                                 goto err;
-> > @@ -4564,12 +4570,16 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
-> >                 skb_shinfo(nskb)->flags |= skb_shinfo(head_skb)->flags &
-> >                                            SKBFL_SHARED_FRAG;
-> >
-> > -               if (skb_orphan_frags(frag_skb, GFP_ATOMIC) ||
-> > -                   skb_zerocopy_clone(nskb, frag_skb, GFP_ATOMIC))
-> > +               if (skb_zerocopy_clone(nskb, list_skb, GFP_ATOMIC))
-> 
-> Why using list_skb here instead of frag_skb ?
-> Again, I have to look at the whole thing to understand why you did this.
+>
+> thoughts?
+> jirka
+>
+>
+> [1] 021a160abf62 ("fs: use __fput_sync in close(2)")
+> ---
+>  kernel/trace/bpf_trace.c                        | 1 +
+>  tools/testing/selftests/bpf/progs/test_d_path.c | 4 ++--
+>  2 files changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index a7264b2c17ad..c829e24af246 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -941,6 +941,7 @@ BTF_ID(func, vfs_fallocate)
+>  BTF_ID(func, dentry_open)
+>  BTF_ID(func, vfs_getattr)
+>  BTF_ID(func, filp_close)
+> +BTF_ID(func, filp_flush)
+>  BTF_SET_END(btf_allowlist_d_path)
+>  
+>  static bool bpf_d_path_allowed(const struct bpf_prog *prog)
+> diff --git a/tools/testing/selftests/bpf/progs/test_d_path.c b/tools/testing/selftests/bpf/progs/test_d_path.c
+> index 84e1f883f97b..3467d1b8098c 100644
+> --- a/tools/testing/selftests/bpf/progs/test_d_path.c
+> +++ b/tools/testing/selftests/bpf/progs/test_d_path.c
+> @@ -40,8 +40,8 @@ int BPF_PROG(prog_stat, struct path *path, struct kstat *stat,
+>  	return 0;
+>  }
+>  
+> -SEC("fentry/filp_close")
+> -int BPF_PROG(prog_close, struct file *file, void *id)
+> +SEC("fentry/filp_flush")
+> +int BPF_PROG(prog_close, struct file *file)
+>  {
+>  	pid_t pid = bpf_get_current_pid_tgid() >> 32;
+>  	__u32 cnt = cnt_close;
 
-Oops, this is a mistake. It should be frag_skb. Will fix it run the test
-one more time and post v3.
 
