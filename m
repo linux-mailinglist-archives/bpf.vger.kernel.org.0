@@ -1,98 +1,129 @@
-Return-Path: <bpf+bounces-9022-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9023-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BB3E78E4AE
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 04:22:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEBE578E593
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 07:15:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2036F1C2091B
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 02:22:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E4E81C209C2
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 05:15:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB47E15A8;
-	Thu, 31 Aug 2023 02:21:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C771872;
+	Thu, 31 Aug 2023 05:15:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9878B10FA;
-	Thu, 31 Aug 2023 02:21:56 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C242CD2;
-	Wed, 30 Aug 2023 19:21:55 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RblKS6pHkz4f3kFC;
-	Thu, 31 Aug 2023 10:21:48 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP4 (Coremail) with SMTP id gCh0CgA3FKc_+e9kXG_3Bw--.49987S2;
-	Thu, 31 Aug 2023 10:21:52 +0800 (CST)
-Message-ID: <29cb8e96-0157-4e86-fb7c-ce5abcd4eadd@huaweicloud.com>
-Date: Thu, 31 Aug 2023 10:21:51 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8B951846;
+	Thu, 31 Aug 2023 05:15:24 +0000 (UTC)
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BAB9D2;
+	Wed, 30 Aug 2023 22:15:19 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-6516bc20f37so1435926d6.1;
+        Wed, 30 Aug 2023 22:15:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693458918; x=1694063718; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=M8FIm4HOaEvNyGP3mdXlZvY4sb39VihsE/tZdbALed8=;
+        b=ME/5KVvmx0h07oVhAwuBXJFRVRZrfEEVdsKNpr6uRho9QjZMP/WSdQB/IonNsiknXD
+         GLSPJwjr7M903X41lbctshxgiju8Yl1yxHApkGJgKy6UYzO+wBrMSKP2/zR3oILy6dem
+         hIKdLz20tG7q6WFGFH61Oatt580N5g2PESR7NTHg9w7cOeWjDIDEk2UVX83z+j3QsdpA
+         JwkF4UTrksMR0B+jFdCW15YQLHLX73ZJkA84EZaWUzt0wATChJjXv+gqTKIAhdFT06pP
+         To6tEiHu2Mv6Y6Vvat2TDV0WPxhAyyrR9snaPpgLUhKiWbrw4bLcEzPNobh4EiO98Trb
+         EJGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693458918; x=1694063718;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=M8FIm4HOaEvNyGP3mdXlZvY4sb39VihsE/tZdbALed8=;
+        b=fGRxJyzkpCWXj+ryYep775j2vPjcJc69cTwPqOKtEq+GdzQejlFyzMpPOPrNZndO2V
+         uO2BBXWhXoqjn7a29UKyMEwi0JktLcurDDHSECJjlhQo2/3SR3vOzsbsz9IQUfONxPnM
+         ikTu9+pKrvi2BQETDyhdG1kdqDF7M7JfyQNMnENjt8NU6I5Rg1imWoY/xGl3P3EKolEq
+         GxZLXNvM+/FEVvMv4XsmcJKzEB3qzMFAWtIT1UtcIqbUJgf5yLBJStG0cCKwAHN0FtBt
+         hZ8jKTBQP50N5jZUg02PMKCGkwkWAXsoMQ/YK2aJM2G7uYC2KAHVvVjgMarJbdIGbYlH
+         2pwA==
+X-Gm-Message-State: AOJu0YxijBDSG5q6vW3AXCUy8SGgICgdiXXUOpr818qmy1HzxnPg06yA
+	b+UBFkJ2+Aqtf+/tDPlhtJsjowUH6BPyLVCN6UU=
+X-Google-Smtp-Source: AGHT+IF7AAV77xKsJCzoV+Bu5gHFIlBoNDuDAlriBlSVpWp/GZ5tmKuBC18U6WnmOilTrcbJTed6WwcZny7OQneFJYg=
+X-Received: by 2002:a05:6214:1d2c:b0:64f:8b28:b753 with SMTP id
+ f12-20020a0562141d2c00b0064f8b28b753mr4480064qvd.0.1693458918578; Wed, 30 Aug
+ 2023 22:15:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next] bpf, sockmap: Rename sock_map_get_from_fd to
- sock_map_prog_attach
-Content-Language: en-US
-To: John Fastabend <john.fastabend@gmail.com>,
- Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- Jakub Sitnicki <jakub@cloudflare.com>
-References: <20230831014346.2931397-1-xukuohai@huaweicloud.com>
- <64eff643ba8c8_9941c2083c@john.notmuch>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <64eff643ba8c8_9941c2083c@john.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgA3FKc_+e9kXG_3Bw--.49987S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYz7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
-	6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-	kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8I
-	cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87
-	Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
-	6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72
-	CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0
-	xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-	1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-	14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-	IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY
-	6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-	73UjIFyTuYvjfU5WlkUUUUU
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-	MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=no
+References: <20230830151704.14855-1-magnus.karlsson@gmail.com>
+In-Reply-To: <20230830151704.14855-1-magnus.karlsson@gmail.com>
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Thu, 31 Aug 2023 07:15:06 +0200
+Message-ID: <CAJ8uoz3V+UXc0K1uYA2zU7oxmbOAQPAf3Uti7W3cmH4hK1s9kg@mail.gmail.com>
+Subject: Re: [PATCH bpf] xsk: fix xsk_diag use-after-free error during socket cleanup
+To: magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, netdev@vger.kernel.org, maciej.fijalkowski@intel.com
+Cc: jonathan.lemon@gmail.com, bpf@vger.kernel.org, 
+	syzbot+822d1359297e2694f873@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 8/31/2023 10:09 AM, John Fastabend wrote:
-> Xu Kuohai wrote:
->> From: Xu Kuohai <xukuohai@huawei.com>
->>
->> What function sock_map_get_from_fd does is to attach a bpf prog to
->> a sock map, so rename it to sock_map_prog_attach to make it more
->> readable.
->>
->> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
->> ---
-> 
-> I don't really think the rename is needed. It will just make any
-> backports difficult.
-> 
+On Wed, 30 Aug 2023 at 17:17, Magnus Karlsson <magnus.karlsson@gmail.com> wrote:
+>
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
+>
+> Fix a use-after-free error that is possible if the xsk_diag interface
+> is used at the same time as the socket is being closed. In the early
+> days of AF_XDP, the way we tested that a socket was not bound or being
+> closed was to simply check if the netdevice pointer in the xsk socket
+> structure was NULL. Later, a better system was introduced by having an
+> explicit state variable in the xsk socket struct. For example, the
+> state of a socket that is going down is XSK_UNBOUND.
+>
+> The commit in the Fixes tag below deleted the old way of signalling
+> that a socket is going down, setting dev to NULL. This in the belief
+> that all code using the old way had been exterminated. That was
+> unfortunately not true as the xsk diagnostics code was still using the
+> old way and thus does not work as intended when a socket is going
+> down. Fix this by introducing a test against the state variable. If
+> the socket is going down, simply abort the diagnostic's netlink
+> operation.
+>
+> Fixes: 18b1ab7aa76b ("xsk: Fix race at socket teardown")
+> Reported-by: syzbot+822d1359297e2694f873@syzkaller.appspotmail.com
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> ---
+>  net/xdp/xsk_diag.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/net/xdp/xsk_diag.c b/net/xdp/xsk_diag.c
+> index c014217f5fa7..da3100bfa1c5 100644
+> --- a/net/xdp/xsk_diag.c
+> +++ b/net/xdp/xsk_diag.c
+> @@ -111,6 +111,9 @@ static int xsk_diag_fill(struct sock *sk, struct sk_buff *nlskb,
+>         sock_diag_save_cookie(sk, msg->xdiag_cookie);
+>
+>         mutex_lock(&xs->mutex);
+> +       if (xs->state == XSK_UNBOUND)
 
-OK, please ignore this patch, this function has been around for a
-long time, maybe everyone is used to the name and I don't insist
-on renaming it.
+Sorry, but I have to spin a v2. There should be a READ_ONCE() here of the state.
 
-> 
-> .
-
+> +               goto out_nlmsg_trim;
+> +
+>         if ((req->xdiag_show & XDP_SHOW_INFO) && xsk_diag_put_info(xs, nlskb))
+>                 goto out_nlmsg_trim;
+>
+>
+> base-commit: 35d2b7ffffc1d9b3dc6c761010aa3338da49165b
+> --
+> 2.42.0
+>
 
