@@ -1,142 +1,157 @@
-Return-Path: <bpf+bounces-9018-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9019-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AB0778E38B
-	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 01:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C88178E457
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 03:31:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5453228122A
-	for <lists+bpf@lfdr.de>; Wed, 30 Aug 2023 23:56:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0F8B281339
+	for <lists+bpf@lfdr.de>; Thu, 31 Aug 2023 01:31:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B3AF8F4D;
-	Wed, 30 Aug 2023 23:55:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B81F136C;
+	Thu, 31 Aug 2023 01:31:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5E658C13
-	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 23:55:58 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45ADCC
-	for <bpf@vger.kernel.org>; Wed, 30 Aug 2023 16:55:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1693439756;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dvpKwAUlH7l/3d38zTbznxnCgwvMBWdLNFevAQq2bAM=;
-	b=LVXKM4pvrJqriiMyf5iXCkKeiIyymX5Gtw955WJdnsmAxpedPhMW3qYCQzjkrTnKs3h9n/
-	wGdFoZIZwc3Egy9vcgwgtGKi3l+dNKEoKeMfT7QRbkzaS6CzQ5eLEkM5MUHQCRVwSjm14w
-	EIa+/qU9bEWUpiCmR/6/U7dTyxmQKqM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-314-J_nW4K65N_eTtTQT6BXufA-1; Wed, 30 Aug 2023 19:55:52 -0400
-X-MC-Unique: J_nW4K65N_eTtTQT6BXufA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C0E1080027F;
-	Wed, 30 Aug 2023 23:55:51 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.26])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 1E0979A;
-	Wed, 30 Aug 2023 23:55:48 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Thu, 31 Aug 2023 01:55:02 +0200 (CEST)
-Date: Thu, 31 Aug 2023 01:54:59 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Yonghong Song <yhs@fb.com>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Kui-Feng Lee <kuifeng@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] bpf: task_group_seq_get_next: fix the
- skip_if_dup_files check
-Message-ID: <20230830235459.GA3570@redhat.com>
-References: <20230825161842.GA16750@redhat.com>
- <20230825161947.GA16871@redhat.com>
- <20230825170406.GA16800@redhat.com>
- <e254a6db-66eb-8bfc-561f-464327a1005a@linux.dev>
- <20230827201909.GC28645@redhat.com>
- <ac60ff18-22b0-0291-256c-0e0c3abb7b62@linux.dev>
- <20230828105453.GB19186@redhat.com>
- <25be098a-dc41-7907-5590-1835308ebe28@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED4A910E1;
+	Thu, 31 Aug 2023 01:31:13 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB59CC2;
+	Wed, 30 Aug 2023 18:31:11 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RbkBx37lkz4f3nqs;
+	Thu, 31 Aug 2023 09:31:05 +0800 (CST)
+Received: from k01.huawei.com (unknown [10.67.174.197])
+	by APP4 (Coremail) with SMTP id gCh0CgD3zJ9b7e9kT4X0Bw--.44897S2;
+	Thu, 31 Aug 2023 09:31:08 +0800 (CST)
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+To: bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+	Bobby Eshleman <bobby.eshleman@bytedance.com>
+Subject: [PATCH bpf-next] selftests/bpf: fix a CI failure caused by vsock write
+Date: Thu, 31 Aug 2023 09:31:05 +0800
+Message-Id: <20230831013105.2930824-1-xukuohai@huaweicloud.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <25be098a-dc41-7907-5590-1835308ebe28@linux.dev>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgD3zJ9b7e9kT4X0Bw--.44897S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCr4fXFyrAF15ZF1rAFy3XFb_yoW5AFyDpa
+	yjy3sxKry0yFyagF4fCFs7WFWrCr4DXr4UArWxXr13Zw1UGrs3Gr4Ig398tFnxGrZ5ZrW5
+	Zw18KrWkuw18Gw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUgKb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCj
+	c4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
+	CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
+	MIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJV
+	Cq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBI
+	daVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+	MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 08/28, Yonghong Song wrote:
->
-> On 8/28/23 3:54 AM, Oleg Nesterov wrote:
-> >
-> >Could you review 6/6 as well?
->
-> I think we can wait patch 6/6 after
->    https://lore.kernel.org/all/20230824143142.GA31222@redhat.com/
-> is merged.
+From: Xu Kuohai <xukuohai@huawei.com>
 
-OK.
+While commit 90f0074cd9f9 ("selftests/bpf: fix a CI failure caused by vsock sockmap test")
+fixes a receive failure of vsock sockmap test, there is still a write failure:
 
-> >Should I fold 1-5 into a single patch? I tried to document every change
-> >and simplify the review, but I do not want to blow the git history.
->
-> Currently, because patch 6, the whole patch set cannot be tested by
-> bpf CI since it has a build failure:
->   https://github.com/kernel-patches/bpf/pull/5580
+Error: #211/79 sockmap_listen/sockmap VSOCK test_vsock_redir
+Error: #211/79 sockmap_listen/sockmap VSOCK test_vsock_redir
+  ./test_progs:vsock_unix_redir_connectible:1501: egress: write: Transport endpoint is not connected
+  vsock_unix_redir_connectible:FAIL:1501
+  ./test_progs:vsock_unix_redir_connectible:1501: ingress: write: Transport endpoint is not connected
+  vsock_unix_redir_connectible:FAIL:1501
+  ./test_progs:vsock_unix_redir_connectible:1501: egress: write: Transport endpoint is not connected
+  vsock_unix_redir_connectible:FAIL:1501
 
-Heh. I thought this is obvious. I thought you can test 1-5 without 6/6
-and _review_ 6/6.
+The reason is that the vsock connection in the test is set to ESTABLISHED state
+by function virtio_transport_recv_pkt, which is executed in a workqueue thread,
+so when the user space test thread runs before the workqueue thread, this
+problem occurs.
 
-I simply can't understand how can this pull/5580 come when I specially
-mentioned
+To fix it, before writing the connection, wait for it to be connected.
 
-	> 6/6 obviously depends on
-	>
-	>	[PATCH 1/2] introduce __next_thread(), fix next_tid() vs exec() race
-	>	https://lore.kernel.org/all/20230824143142.GA31222@redhat.com/
-	>
-	> which was not merged yet.
+Fixes: d61bd8c1fd02 ("selftests/bpf: add a test case for vsock sockmap")
+Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+---
+ .../bpf/prog_tests/sockmap_helpers.h          | 29 +++++++++++++++++++
+ .../selftests/bpf/prog_tests/sockmap_listen.c |  5 ++++
+ 2 files changed, 34 insertions(+)
 
-in 0/6.
-
-> I suggest you get patch 1-5 and resubmit with tag like
->   "bpf-next v2"
->   [Patch bpf-next v2 x/5] ...
-> so CI can build with different architectures and compilers to
-> ensure everything builds and runs fine.
-
-I think we can wait for
-
-	https://lore.kernel.org/all/20230824143142.GA31222@redhat.com/
-
-as you suggest above, then I'll send the s/next_thread/__next_thread/
-oneliner without 1-5. I no longer think it makes sense to try to cleanup
-the poor task_group_seq_get_next() when IMHO the whole task_iter logic
-needs the complete rewrite. Yes, yes, I know, it is very easy to blame
-someone else's code, sorry can't resist ;)
-
-The only "fix" in this series is 3/6, but this code has more serious
-bugs, so I guess we can forget it.
-
-Oleg.
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h b/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
+index d12665490a90..837dfb0361c6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
+@@ -179,6 +179,35 @@
+ 		__ret;                                                         \
+ 	})
+ 
++static inline int poll_connect(int fd, unsigned int timeout_sec)
++{
++	struct timeval timeout = { .tv_sec = timeout_sec };
++	fd_set wfds;
++	int r;
++	int eval;
++	socklen_t esize;
++
++	FD_ZERO(&wfds);
++	FD_SET(fd, &wfds);
++
++	r = select(fd + 1, NULL, &wfds, NULL, &timeout);
++	if (r == 0)
++		errno = ETIME;
++
++	if (r != 1)
++		return -1;
++
++	if (getsockopt(fd, SOL_SOCKET, SO_ERROR, &eval, &esize) < 0)
++		return -1;
++
++	if (eval != 0) {
++		errno = eval;
++		return -1;
++	}
++
++	return 0;
++}
++
+ static inline int poll_read(int fd, unsigned int timeout_sec)
+ {
+ 	struct timeval timeout = { .tv_sec = timeout_sec };
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+index 5674a9d0cacf..2d3bf38677b6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+@@ -1452,6 +1452,11 @@ static int vsock_socketpair_connectible(int sotype, int *v0, int *v1)
+ 	if (p < 0)
+ 		goto close_cli;
+ 
++	if (poll_connect(c, IO_TIMEOUT_SEC) < 0) {
++		FAIL_ERRNO("poll_connect");
++		goto close_cli;
++	}
++
+ 	*v0 = p;
+ 	*v1 = c;
+ 
+-- 
+2.30.2
 
 
