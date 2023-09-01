@@ -1,32 +1,32 @@
-Return-Path: <bpf+bounces-9109-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9110-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 577ED78FC37
-	for <lists+bpf@lfdr.de>; Fri,  1 Sep 2023 13:20:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62B9678FC38
+	for <lists+bpf@lfdr.de>; Fri,  1 Sep 2023 13:20:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C3251C20C52
-	for <lists+bpf@lfdr.de>; Fri,  1 Sep 2023 11:20:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B2252819F5
+	for <lists+bpf@lfdr.de>; Fri,  1 Sep 2023 11:20:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 533E8AD35;
-	Fri,  1 Sep 2023 11:20:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 359D9AD3C;
+	Fri,  1 Sep 2023 11:20:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25081A943
-	for <bpf@vger.kernel.org>; Fri,  1 Sep 2023 11:20:05 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0968E10D2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 040BFA943
+	for <bpf@vger.kernel.org>; Fri,  1 Sep 2023 11:20:06 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D3710D3
 	for <bpf@vger.kernel.org>; Fri,  1 Sep 2023 04:20:04 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RcbCx29CYz4f3nqn
-	for <bpf@vger.kernel.org>; Fri,  1 Sep 2023 19:19:57 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RcbD06N1gz4f3jJ6
+	for <bpf@vger.kernel.org>; Fri,  1 Sep 2023 19:20:00 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgDHoqXcyPFkv5VoCA--.40782S6;
-	Fri, 01 Sep 2023 19:20:00 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgDHoqXcyPFkv5VoCA--.40782S7;
+	Fri, 01 Sep 2023 19:20:01 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -41,9 +41,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Jiri Olsa <jolsa@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	houtao1@huawei.com
-Subject: [PATCH bpf v2 2/3] bpf: Enable IRQ after irq_work_raise() completes in unit_free{_rcu}()
-Date: Fri,  1 Sep 2023 19:19:53 +0800
-Message-Id: <20230901111954.1804721-3-houtao@huaweicloud.com>
+Subject: [PATCH bpf v2 3/3] selftests/bpf: Test preemption between bpf_obj_new() and bpf_obj_drop()
+Date: Fri,  1 Sep 2023 19:19:54 +0800
+Message-Id: <20230901111954.1804721-4-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20230901111954.1804721-1-houtao@huaweicloud.com>
 References: <20230901111954.1804721-1-houtao@huaweicloud.com>
@@ -54,12 +54,12 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDHoqXcyPFkv5VoCA--.40782S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cr1kuFW5ZFW8Cr1DuFy8Zrb_yoW8tF18pF
-	43WFyxtrWrZFyIqw4xCw4xCr9Fqws5Ga47GrW8X343ZrW5Cryvqr92kF1YqFyYvrZ7JF4S
-	yrs5ta40vay8Za7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+X-CM-TRANSID:gCh0CgDHoqXcyPFkv5VoCA--.40782S7
+X-Coremail-Antispam: 1UD129KBjvJXoWxKr47WFW7Xw1fGw4kXr4kXrb_yoWxWFWfpa
+	ySyry0kwn2qwnrG34Sqan7Cr45trW8X3W8JryfWFy5Zr47Wr95tr1xKFyYqF93KrWvqw4r
+	uFn8tFWkArWkJaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
 	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
 	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
@@ -68,96 +68,261 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7Cr1kuFW5ZFW8Cr1DuFy8Zrb_yoW8tF18pF
 	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
 	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
 	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
+	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
+	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
 From: Hou Tao <houtao1@huawei.com>
 
-Both unit_free() and unit_free_rcu() invoke irq_work_raise() to free
-freed objects back to slab and the invocation may also be preempted by
-unit_alloc() and unit_alloc() may return NULL unexpectedly as shown in
-the following case:
+The test case creates 4 threads and then pins these 4 threads in CPU 0.
+These 4 threads will run different bpf program through
+bpf_prog_test_run_opts() and these bpf program will use bpf_obj_new()
+and bpf_obj_drop() to allocate and free local kptrs concurrently.
 
-task A         task B
+Under preemptible kernel, bpf_obj_new() and bpf_obj_drop() may preempt
+each other, bpf_obj_new() may return NULL and the test will fail before
+applying these fixes as shown below:
 
-unit_free()
-  // high_watermark = 48
-  // free_cnt = 49 after free
-  irq_work_raise()
-    // mark irq work as IRQ_WORK_PENDING
-    irq_work_claim()
-
-               // task B preempts task A
-               unit_alloc()
-                 // free_cnt = 48 after alloc
-
-               // does unit_alloc() 32-times
-	       ......
-	       // free_cnt = 16
-
-	       unit_alloc()
-	         // free_cnt = 15 after alloc
-                 // irq work is already PENDING,
-                 // so just return
-                 irq_work_raise()
-
-	       // does unit_alloc() 15-times
-               ......
-	       // free_cnt = 0
-
-               unit_alloc()
-                 // free_cnt = 0 before alloc
-                 return NULL
-
-Fix it by enabling IRQ after irq_work_raise() completes.
+  test_preempted_bpf_ma_op:PASS:open_and_load 0 nsec
+  test_preempted_bpf_ma_op:PASS:attach 0 nsec
+  test_preempted_bpf_ma_op:PASS:no test prog 0 nsec
+  test_preempted_bpf_ma_op:PASS:no test prog 0 nsec
+  test_preempted_bpf_ma_op:PASS:no test prog 0 nsec
+  test_preempted_bpf_ma_op:PASS:no test prog 0 nsec
+  test_preempted_bpf_ma_op:PASS:pthread_create 0 nsec
+  test_preempted_bpf_ma_op:PASS:pthread_create 0 nsec
+  test_preempted_bpf_ma_op:PASS:pthread_create 0 nsec
+  test_preempted_bpf_ma_op:PASS:pthread_create 0 nsec
+  test_preempted_bpf_ma_op:PASS:run prog err 0 nsec
+  test_preempted_bpf_ma_op:PASS:run prog err 0 nsec
+  test_preempted_bpf_ma_op:PASS:run prog err 0 nsec
+  test_preempted_bpf_ma_op:PASS:run prog err 0 nsec
+  test_preempted_bpf_ma_op:FAIL:ENOMEM unexpected ENOMEM: got TRUE
+  #168     preempted_bpf_ma_op:FAIL
+  Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/memalloc.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ .../bpf/prog_tests/preempted_bpf_ma_op.c      |  89 +++++++++++++++
+ .../selftests/bpf/progs/preempted_bpf_ma_op.c | 106 ++++++++++++++++++
+ 2 files changed, 195 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/preempted_bpf_ma_op.c
+ create mode 100644 tools/testing/selftests/bpf/progs/preempted_bpf_ma_op.c
 
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 962472ace98c..7a81dd6b1aed 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -780,11 +780,16 @@ static void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
- 		llist_add(llnode, &c->free_llist_extra);
- 	}
- 	local_dec(&c->active);
--	local_irq_restore(flags);
- 
- 	if (cnt > c->high_watermark)
- 		/* free few objects from current cpu into global kmalloc pool */
- 		irq_work_raise(c);
-+	/* Enable IRQ after irq_work_raise() completes, otherwise when current
-+	 * task is preempted by task which does unit_alloc(), unit_alloc() may
-+	 * return NULL unexpectedly because irq work is already pending but can
-+	 * not been triggered and free_llist can not be refilled timely.
-+	 */
-+	local_irq_restore(flags);
- }
- 
- static void notrace unit_free_rcu(struct bpf_mem_cache *c, void *ptr)
-@@ -802,10 +807,10 @@ static void notrace unit_free_rcu(struct bpf_mem_cache *c, void *ptr)
- 		llist_add(llnode, &c->free_llist_extra_rcu);
- 	}
- 	local_dec(&c->active);
--	local_irq_restore(flags);
- 
- 	if (!atomic_read(&c->call_rcu_in_progress))
- 		irq_work_raise(c);
-+	local_irq_restore(flags);
- }
- 
- /* Called from BPF program or from sys_bpf syscall.
+diff --git a/tools/testing/selftests/bpf/prog_tests/preempted_bpf_ma_op.c b/tools/testing/selftests/bpf/prog_tests/preempted_bpf_ma_op.c
+new file mode 100644
+index 000000000000..3a2ec3923fca
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/preempted_bpf_ma_op.c
+@@ -0,0 +1,89 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
++#define _GNU_SOURCE
++#include <sched.h>
++#include <pthread.h>
++#include <stdbool.h>
++#include <test_progs.h>
++
++#include "preempted_bpf_ma_op.skel.h"
++
++#define ALLOC_THREAD_NR 4
++#define ALLOC_LOOP_NR 512
++
++struct alloc_ctx {
++	/* output */
++	int run_err;
++	/* input */
++	int fd;
++	bool *nomem_err;
++};
++
++static void *run_alloc_prog(void *data)
++{
++	struct alloc_ctx *ctx = data;
++	cpu_set_t cpu_set;
++	int i;
++
++	CPU_ZERO(&cpu_set);
++	CPU_SET(0, &cpu_set);
++	pthread_setaffinity_np(pthread_self(), sizeof(cpu_set), &cpu_set);
++
++	for (i = 0; i < ALLOC_LOOP_NR && !*ctx->nomem_err; i++) {
++		LIBBPF_OPTS(bpf_test_run_opts, topts);
++		int err;
++
++		err = bpf_prog_test_run_opts(ctx->fd, &topts);
++		ctx->run_err |= err | topts.retval;
++	}
++
++	return NULL;
++}
++
++void test_preempted_bpf_ma_op(void)
++{
++	struct alloc_ctx ctx[ALLOC_THREAD_NR];
++	struct preempted_bpf_ma_op *skel;
++	pthread_t tid[ALLOC_THREAD_NR];
++	int i, err;
++
++	skel = preempted_bpf_ma_op__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "open_and_load"))
++		return;
++
++	err = preempted_bpf_ma_op__attach(skel);
++	if (!ASSERT_OK(err, "attach"))
++		goto out;
++
++	for (i = 0; i < ARRAY_SIZE(ctx); i++) {
++		struct bpf_program *prog;
++		char name[8];
++
++		snprintf(name, sizeof(name), "test%d", i);
++		prog = bpf_object__find_program_by_name(skel->obj, name);
++		if (!ASSERT_OK_PTR(prog, "no test prog"))
++			goto out;
++
++		ctx[i].run_err = 0;
++		ctx[i].fd = bpf_program__fd(prog);
++		ctx[i].nomem_err = &skel->bss->nomem_err;
++	}
++
++	memset(tid, 0, sizeof(tid));
++	for (i = 0; i < ARRAY_SIZE(tid); i++) {
++		err = pthread_create(&tid[i], NULL, run_alloc_prog, &ctx[i]);
++		if (!ASSERT_OK(err, "pthread_create"))
++			break;
++	}
++
++	for (i = 0; i < ARRAY_SIZE(tid); i++) {
++		if (!tid[i])
++			break;
++		pthread_join(tid[i], NULL);
++		ASSERT_EQ(ctx[i].run_err, 0, "run prog err");
++	}
++
++	ASSERT_FALSE(skel->bss->nomem_err, "ENOMEM");
++out:
++	preempted_bpf_ma_op__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/preempted_bpf_ma_op.c b/tools/testing/selftests/bpf/progs/preempted_bpf_ma_op.c
+new file mode 100644
+index 000000000000..55907ef961bf
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/preempted_bpf_ma_op.c
+@@ -0,0 +1,106 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++
++#include "bpf_experimental.h"
++
++struct bin_data {
++	char data[256];
++	struct bpf_spin_lock lock;
++};
++
++struct map_value {
++	struct bin_data __kptr * data;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__type(key, int);
++	__type(value, struct map_value);
++	__uint(max_entries, 2048);
++} array SEC(".maps");
++
++char _license[] SEC("license") = "GPL";
++
++bool nomem_err = false;
++
++static int del_array(unsigned int i, int *from)
++{
++	struct map_value *value;
++	struct bin_data *old;
++
++	value = bpf_map_lookup_elem(&array, from);
++	if (!value)
++		return 1;
++
++	old = bpf_kptr_xchg(&value->data, NULL);
++	if (old)
++		bpf_obj_drop(old);
++
++	(*from)++;
++	return 0;
++}
++
++static int add_array(unsigned int i, int *from)
++{
++	struct bin_data *old, *new;
++	struct map_value *value;
++
++	value = bpf_map_lookup_elem(&array, from);
++	if (!value)
++		return 1;
++
++	new = bpf_obj_new(typeof(*new));
++	if (!new) {
++		nomem_err = true;
++		return 1;
++	}
++
++	old = bpf_kptr_xchg(&value->data, new);
++	if (old)
++		bpf_obj_drop(old);
++
++	(*from)++;
++	return 0;
++}
++
++static void del_then_add_array(int from)
++{
++	int i;
++
++	i = from;
++	bpf_loop(512, del_array, &i, 0);
++
++	i = from;
++	bpf_loop(512, add_array, &i, 0);
++}
++
++SEC("fentry/bpf_fentry_test1")
++int BPF_PROG2(test0, int, a)
++{
++	del_then_add_array(0);
++	return 0;
++}
++
++SEC("fentry/bpf_fentry_test2")
++int BPF_PROG2(test1, int, a, u64, b)
++{
++	del_then_add_array(512);
++	return 0;
++}
++
++SEC("fentry/bpf_fentry_test3")
++int BPF_PROG2(test2, char, a, int, b, u64, c)
++{
++	del_then_add_array(1024);
++	return 0;
++}
++
++SEC("fentry/bpf_fentry_test4")
++int BPF_PROG2(test3, void *, a, char, b, int, c, u64, d)
++{
++	del_then_add_array(1536);
++	return 0;
++}
 -- 
 2.29.2
 
