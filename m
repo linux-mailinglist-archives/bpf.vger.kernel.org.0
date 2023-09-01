@@ -1,32 +1,32 @@
-Return-Path: <bpf+bounces-9107-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9108-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C1E478FC35
-	for <lists+bpf@lfdr.de>; Fri,  1 Sep 2023 13:20:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7298B78FC36
+	for <lists+bpf@lfdr.de>; Fri,  1 Sep 2023 13:20:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45757281778
-	for <lists+bpf@lfdr.de>; Fri,  1 Sep 2023 11:20:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CF9A28179C
+	for <lists+bpf@lfdr.de>; Fri,  1 Sep 2023 11:20:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51B43A95E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BDB4AD29;
 	Fri,  1 Sep 2023 11:20:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1453FA943
-	for <bpf@vger.kernel.org>; Fri,  1 Sep 2023 11:20:04 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37301A8
-	for <bpf@vger.kernel.org>; Fri,  1 Sep 2023 04:20:02 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F21A943
+	for <bpf@vger.kernel.org>; Fri,  1 Sep 2023 11:20:05 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D6DE42
+	for <bpf@vger.kernel.org>; Fri,  1 Sep 2023 04:20:03 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RcbCz2xynz4f3jMB
-	for <bpf@vger.kernel.org>; Fri,  1 Sep 2023 19:19:59 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RcbCw60THz4f3nqf
+	for <bpf@vger.kernel.org>; Fri,  1 Sep 2023 19:19:56 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgDHoqXcyPFkv5VoCA--.40782S4;
-	Fri, 01 Sep 2023 19:19:58 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgDHoqXcyPFkv5VoCA--.40782S5;
+	Fri, 01 Sep 2023 19:20:00 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -41,127 +41,113 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Jiri Olsa <jolsa@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	houtao1@huawei.com
-Subject: [PATCH bpf v2 0/3] bpf: Enable IRQ after irq_work_raise() completes
-Date: Fri,  1 Sep 2023 19:19:51 +0800
-Message-Id: <20230901111954.1804721-1-houtao@huaweicloud.com>
+Subject: [PATCH bpf v2 1/3] bpf: Enable IRQ after irq_work_raise() completes in unit_alloc()
+Date: Fri,  1 Sep 2023 19:19:52 +0800
+Message-Id: <20230901111954.1804721-2-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20230901111954.1804721-1-houtao@huaweicloud.com>
+References: <20230901111954.1804721-1-houtao@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDHoqXcyPFkv5VoCA--.40782S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxZFWUJFW5JFW3Wr17AF4xZwb_yoWrGw1rpF
-	4xJayfKr1UGa9FvwsIy3ZrJFy3X3ySgr1kWw1Sqa15ZFs8XFyfXrs7Kr42qF98Wr4xGF1F
-	krn2yr1xG34UJa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
-	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
-	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
-	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
-	vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
-	jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-TRANSID:gCh0CgDHoqXcyPFkv5VoCA--.40782S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxJr1kWF48XF1UWr4DXr4rGrg_yoW8uw4kpF
+	43Xryftw4jqF12vw17Kw4xArya9w4rG347GrW8Xr9xZrZ8Aryvgrn7Kr1YqFy3urZrJFW8
+	ArWktay0gay5ZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
+	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	WxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
+	0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
+	JVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwI
+	xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
+	IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
+	6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jn9N3UUUUU=
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
 From: Hou Tao <houtao1@huawei.com>
 
-Hi,
+When doing stress test for qp-trie, bpf_mem_alloc() returned NULL
+unexpectedly because all qp-trie operations were initiated from
+bpf syscalls and there was still available free memory. bpf_obj_new()
+has the same problem as shown by the following selftest.
 
-The patchset aims to fix the problem that bpf_mem_alloc() may return
-NULL unexpectedly when multiple bpf_mem_alloc() are invoked concurrently
-under process context and there is still free memory available. The
-problem was found when doing stress test for qp-trie but the same
-problem also exists for bpf_obj_new() as demonstrated in patch #3.
+The failure is due to the preemption. irq_work_raise() will invoke
+irq_work_claim() first to mark the irq work as pending and then inovke
+__irq_work_queue_local() to raise an IPI. So when the current task
+which is invoking irq_work_raise() is preempted by other task,
+unit_alloc() may return NULL for preemption task as shown below:
 
-As pointed out by Alexei, the patchset can only fix ENOMEM problem for
-normal process context and can not fix the problem for irq-disabled
-context or RT-enabled kernel.
+task A         task B
 
-Patch #1 fixes the race between unit_alloc() and unit_alloc(). Patch #2
-fixes the race between unit_alloc() and unit_free(). And patch #3 adds
-a selftest for the problem. The major change compared with v1 is using
-local_irq_{save,restore)() pair to disable and enable preemption
-instead of preempt_{disable,enable}_notrace pair. The main reason is to
-prevent potential overhead from __preempt_schedule_notrace(). I also
-run htab_mem benchmark and hash_map_perf on a 8-CPUs KVM VM to compare
-the performance between local_irq_{save,restore} and
-preempt_{disable,enable}_notrace(), but the results are similar as shown
-below:
+unit_alloc()
+  // low_watermark = 32
+  // free_cnt = 31 after alloc
+  irq_work_raise()
+    // mark irq work as IRQ_WORK_PENDING
+    irq_work_claim()
 
-(1) use preempt_{disable,enable}_notrace()
+	       // task B preempts task A
+	       unit_alloc()
+	         // free_cnt = 30 after alloc
+	         // irq work is already PENDING,
+	         // so just return
+	         irq_work_raise()
+	       // does unit_alloc() 30-times
+	       ......
+	       unit_alloc()
+	         // free_cnt = 0 before alloc
+	         return NULL
 
-[root@hello bpf]# ./map_perf_test 4 8
-0:hash_map_perf kmalloc 652179 events per sec
-1:hash_map_perf kmalloc 651880 events per sec
-2:hash_map_perf kmalloc 651382 events per sec
-3:hash_map_perf kmalloc 650791 events per sec
-5:hash_map_perf kmalloc 650140 events per sec
-6:hash_map_perf kmalloc 652773 events per sec
-7:hash_map_perf kmalloc 652751 events per sec
-4:hash_map_perf kmalloc 648199 events per sec
+Fix it by enabling IRQ after irq_work_raise() completes. An alternative
+fix is using preempt_{disable|enable}_notrace() pair, but it may have
+extra overhead. Another feasible fix is to only disable preemption or
+IRQ before invoking irq_work_queue() and enable preemption or IRQ after
+the invocation completes, but it can't handle the case when
+c->low_watermark is 1.
 
-[root@hello bpf]# ./benchs/run_bench_htab_mem.sh
-normal bpf ma
-=============
-overwrite            per-prod-op: 110.82 ± 0.02k/s, avg mem: 2.00 ± 0.00MiB, peak mem: 2.73MiB
-batch_add_batch_del  per-prod-op: 89.79 ± 0.75k/s, avg mem: 1.68 ± 0.38MiB, peak mem: 2.73MiB
-add_del_on_diff_cpu  per-prod-op: 17.83 ± 0.07k/s, avg mem: 25.68 ± 2.92MiB, peak mem: 35.10MiB
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+---
+ kernel/bpf/memalloc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-(2) use local_irq_{save,restore}
-
-[root@hello bpf]# ./map_perf_test 4 8
-0:hash_map_perf kmalloc 656299 events per sec
-1:hash_map_perf kmalloc 656397 events per sec
-2:hash_map_perf kmalloc 656046 events per sec
-3:hash_map_perf kmalloc 655723 events per sec
-5:hash_map_perf kmalloc 655221 events per sec
-4:hash_map_perf kmalloc 654617 events per sec
-6:hash_map_perf kmalloc 650269 events per sec
-7:hash_map_perf kmalloc 653665 events per sec
-
-[root@hello bpf]# ./benchs/run_bench_htab_mem.sh
-normal bpf ma
-=============
-overwrite            per-prod-op: 116.10 ± 0.02k/s, avg mem: 2.00 ± 0.00MiB, peak mem: 2.74MiB
-batch_add_batch_del  per-prod-op: 88.76 ± 0.61k/s, avg mem: 1.94 ± 0.33MiB, peak mem: 2.74MiB
-add_del_on_diff_cpu  per-prod-op: 18.12 ± 0.08k/s, avg mem: 25.10 ± 2.70MiB, peak mem: 34.78MiB
-
-As ususal comments are always welcome.
-
-Change Log:
-v2:
-  * Use local_irq_save to disable preemption instead of using
-    preempt_{disable,enable}_notrace pair to prevent potential overhead
-
-v1: https://lore.kernel.org/bpf/20230822133807.3198625-1-houtao@huaweicloud.com/
-
-Hou Tao (3):
-  bpf: Enable IRQ after irq_work_raise() completes in unit_alloc()
-  bpf: Enable IRQ after irq_work_raise() completes in unit_free{_rcu}()
-  selftests/bpf: Test preemption between bpf_obj_new() and
-    bpf_obj_drop()
-
- kernel/bpf/memalloc.c                         |  16 ++-
- .../bpf/prog_tests/preempted_bpf_ma_op.c      |  89 +++++++++++++++
- .../selftests/bpf/progs/preempted_bpf_ma_op.c | 106 ++++++++++++++++++
- 3 files changed, 208 insertions(+), 3 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/preempted_bpf_ma_op.c
- create mode 100644 tools/testing/selftests/bpf/progs/preempted_bpf_ma_op.c
-
+diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+index 9c49ae53deaf..962472ace98c 100644
+--- a/kernel/bpf/memalloc.c
++++ b/kernel/bpf/memalloc.c
+@@ -734,12 +734,17 @@ static void notrace *unit_alloc(struct bpf_mem_cache *c)
+ 		}
+ 	}
+ 	local_dec(&c->active);
+-	local_irq_restore(flags);
+ 
+ 	WARN_ON(cnt < 0);
+ 
+ 	if (cnt < c->low_watermark)
+ 		irq_work_raise(c);
++	/* Enable IRQ after the enqueue of irq work completes, so irq work
++	 * will run after IRQ is enabled and free_llist may be refilled by
++	 * irq work before other task preempts current task.
++	 */
++	local_irq_restore(flags);
++
+ 	return llnode;
+ }
+ 
 -- 
 2.29.2
 
