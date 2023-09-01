@@ -1,156 +1,114 @@
-Return-Path: <bpf+bounces-9103-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9104-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BE1D78FADA
-	for <lists+bpf@lfdr.de>; Fri,  1 Sep 2023 11:32:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE10678FB04
+	for <lists+bpf@lfdr.de>; Fri,  1 Sep 2023 11:39:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DF652819A5
-	for <lists+bpf@lfdr.de>; Fri,  1 Sep 2023 09:32:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34FD51C20BE2
+	for <lists+bpf@lfdr.de>; Fri,  1 Sep 2023 09:39:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AA03A936;
-	Fri,  1 Sep 2023 09:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3A1EA939;
+	Fri,  1 Sep 2023 09:38:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB84F881F;
-	Fri,  1 Sep 2023 09:32:32 +0000 (UTC)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E214C0;
-	Fri,  1 Sep 2023 02:32:29 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-98377c5d53eso204983066b.0;
-        Fri, 01 Sep 2023 02:32:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693560747; x=1694165547; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=crl5smfE8Cc1ZVUnJvSR8ItSRE/y+pm8xpACMYgbcN8=;
-        b=ByxFoyCdmEuC/cs1sxXgyzNi0GgvGjjT9rq15+Z6C+btf5GZa8SxmqQLkt7I2zK1K4
-         SFePT0I5Oao06UEMjtWs1BK7pWZBS9Fwrz3h4wL4v1UQdGpOyHG0AG2fbAB7vie68+WS
-         biyXzKaImQyD8qW+HXqoY1DW9W16u5TrR9ejXDU0JKni6t/FDqJ8AyHBNb63Whjl3fw1
-         QZPYsThHf67p5pYiGrJZIVZJi79PzGgp6dqpMM4VEFUk4xogbCLVNCQeFnVJgrQnCJiB
-         HaNNERABQpxdzfJXWUlm4aZxQJ8NtGucnTZrIhE7zzkhA1hjlB+y+PZ4Ek3e2Iodh5CU
-         cyDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693560747; x=1694165547;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=crl5smfE8Cc1ZVUnJvSR8ItSRE/y+pm8xpACMYgbcN8=;
-        b=fFQGCrIWZhgq3xAG+KennkrQ+pm9M4+d32qPznb19HspgbbWxqnwrVNOWJgRZ5sH8O
-         u23IGLHZnoh1E1uhi8IRlMzuQ325HbFS9xi0+AQyroJTaC7IWUtwM+GhrimWk8urfxG9
-         /UimwDVT6YjRguQQnVwhH6rwSvEZnyancZNmFnKg6FWbEmoWoaLyhCFmFcBV6sPDTUh/
-         J1Oct8Q4N19PMn46dpZzQMoVNa/RGoLIu2eXYaZRiqNaDWMFjFZO67pbGzXCcEqi4O7G
-         NR2XZUfrj3XyTgBMO7PHw/dfZPMHPTHIdJS6d6f89+HGDu8srfcYFbiwtWE+2tC4Dcdt
-         6oMg==
-X-Gm-Message-State: AOJu0YzTZ0SDVSMxtq+DSDxrFp9ufjJbVJMGZqcKq4TGdj5G9S+tX/Wj
-	LN0xZb+alcRYcFErp2Iw3bc=
-X-Google-Smtp-Source: AGHT+IEACfLhGRzc8xztgx9R1xFnclZpuMIiUB7jLtYSOqLYHkLw9KsquAY2nw96EnrKiDSKfA5JNg==
-X-Received: by 2002:a17:907:784e:b0:9a2:ecd:d963 with SMTP id lb14-20020a170907784e00b009a20ecdd963mr1158422ejc.44.1693560747232;
-        Fri, 01 Sep 2023 02:32:27 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id h5-20020a1709062dc500b009a2235ed496sm1802249eji.141.2023.09.01.02.32.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 02:32:26 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 1 Sep 2023 11:32:24 +0200
-To: Xu Kuohai <xukuohai@huawei.com>
-Cc: John Fastabend <john.fastabend@gmail.com>,
-	Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Hou Tao <houtao1@huawei.com>,
-	Bobby Eshleman <bobby.eshleman@bytedance.com>
-Subject: Re: [BUG bpf-next] bpf/net: Hitting gpf when running selftests
-Message-ID: <ZPGvqOQBwP7vPc+l@krava>
-References: <ZO+RQwJhPhYcNGAi@krava>
- <ZO+vetPCpOOCGitL@krava>
- <23cd4ce0-0360-e3c6-6cc9-f597aefb2ab5@huawei.com>
- <1c533412-b192-3868-991a-d35587329803@huawei.com>
- <64f0e7ae869c9_d03ca20847@john.notmuch>
- <64f0f60b1417c_d45ab2086b@john.notmuch>
- <edeee369-974d-3676-cf53-a2ed8c52cea0@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB74A922;
+	Fri,  1 Sep 2023 09:38:50 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560B310E4;
+	Fri,  1 Sep 2023 02:38:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=uMyJPJBxOLcIVVsqNXFeg88da7ZpAcznuFBOv1G00Mg=; b=DHX/R7mYlLBaJwfFFgCiqIsSgx
+	PODwMRs5ky+wMDoToPxZxQ2Y81C0uN06aKHxEe5nKSrhssmuuAI/SaVC/+Q8pU6QCHx87j7QyCDZ3
+	Wq4MvZ2iWdE0mqFdGi/ct8WDPZAAICmTrDU91V5/6FuOP7GTQPVtU5B0LQ3D4l7xdpmrFV0GbGjWm
+	gjpUkjuP1a6b4F63e6iLokHW/vnbvJeqBVyB3o5qMv/9vHznd3aaORroJUBrRnzbzNsWe/OlpwBw8
+	G5cGfSN08+acSGtZ5FLINDJaP86UXeryzz9wAWK9UUwwE7utZGP/1hkkXxJyWz/A4XOcJSrP4WPnf
+	MN2MN7Yg==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qc0bs-0004Di-31; Fri, 01 Sep 2023 11:38:36 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qc0bs-000SRy-5r; Fri, 01 Sep 2023 11:38:36 +0200
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: fix a CI failure caused by
+ vsock write
+To: Xu Kuohai <xukuohai@huawei.com>, Xu Kuohai <xukuohai@huaweicloud.com>,
+ bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc: Bobby Eshleman <bobby.eshleman@bytedance.com>
+References: <20230901031037.3314007-1-xukuohai@huaweicloud.com>
+ <485647ed-e791-0781-afed-03c2d636a00b@iogearbox.net>
+ <ee9ee99d-115a-f488-2de5-f402daa892a8@huawei.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <30dd8d7f-47f5-154b-25a4-ea2bb65d9235@iogearbox.net>
+Date: Fri, 1 Sep 2023 11:38:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <ee9ee99d-115a-f488-2de5-f402daa892a8@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <edeee369-974d-3676-cf53-a2ed8c52cea0@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/27018/Fri Sep  1 09:45:38 2023)
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Sep 01, 2023 at 05:10:43PM +0800, Xu Kuohai wrote:
-
-SNIP
-
-> > > Trying to come up with some nice fix now.
-> > 
-> > Something like this it fixes the splat, but need to think if it
-> > introduces anything or some better way to do this. Basic idea
-> > is to bump user->refcnt because we have two references to the
-> > skb and want to ensure we really only kfree_skb() the skb
-> > after both references are dropped.
-> > 
-> > diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> > index a0659fc29bcc..6c31eefbd777 100644
-> > --- a/net/core/skmsg.c
-> > +++ b/net/core/skmsg.c
-> > @@ -612,12 +612,18 @@ static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb
-> >   static int sk_psock_handle_skb(struct sk_psock *psock, struct sk_buff *skb,
-> >                                 u32 off, u32 len, bool ingress)
-> >   {
-> > +       int err = 0;
-> > +
-> >          if (!ingress) {
-> >                  if (!sock_writeable(psock->sk))
-> >                          return -EAGAIN;
-> >                  return skb_send_sock(psock->sk, skb, off, len);
-> >          }
-> > -       return sk_psock_skb_ingress(psock, skb, off, len);
-> > +       skb_get(skb);
-> > +       err = sk_psock_skb_ingress(psock, skb, off, len);
-> > +       if (err < 0)
-> > +               kfree_skb(skb);
-> > +       return err;
-> >   }
-> >   static void sk_psock_skb_state(struct sk_psock *psock,
-> > @@ -685,9 +691,7 @@ static void sk_psock_backlog(struct work_struct *work)
-> >                  } while (len);
-> >                  skb = skb_dequeue(&psock->ingress_skb);
-> > -               if (!ingress) {
-> > -                       kfree_skb(skb);
-> > -               }
-> > +               kfree_skb(skb);
-> >          }
-> >   end:
-> >          mutex_unlock(&psock->work_mutex);
-> > .
+On 9/1/23 10:38 AM, Xu Kuohai wrote:
+> On 9/1/2023 4:22 PM, Daniel Borkmann wrote:
+>> On 9/1/23 5:10 AM, Xu Kuohai wrote:
+>>> From: Xu Kuohai <xukuohai@huawei.com>
+[...]
+>> Should the error path rather be ?
+>>
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+>> index 2d3bf38677b6..8df8cbb447f1 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+>> @@ -1454,7 +1454,7 @@ static int vsock_socketpair_connectible(int sotype, int *v0, int *v1)
+>>
+>>          if (poll_connect(c, IO_TIMEOUT_SEC) < 0) {
+>>                  FAIL_ERRNO("poll_connect");
+>> -               goto close_cli;
+>> +               goto close_acc;
+>>          }
+>>
+>>          *v0 = p;
+>> @@ -1462,6 +1462,8 @@ static int vsock_socketpair_connectible(int sotype, int *v0, int *v1)
+>>
+>>          return 0;
+>>
+>> +close_acc:
+>> +       close(p);
+>>   close_cli:
+>>          close(c);
+>>   close_srv:
+>>
+>>
+>> Let me know and I'll squash this into the fix.
+>>
 > 
-> With this fix, the crash is gone.
+> Right, the accepted connection should be closed, thanks.
 
-+1, same on my setup
-
-jirka
-
-> 
-> I am worried that the skb might be inserted into another skb list before
-> skb_dequeue is called, but I can’t find such code, it seems this worry
-> is unnecessary.
+Ok, done, pushed.
 
