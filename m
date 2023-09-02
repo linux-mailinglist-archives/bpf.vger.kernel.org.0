@@ -1,80 +1,70 @@
-Return-Path: <bpf+bounces-9136-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9137-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 844B0790607
-	for <lists+bpf@lfdr.de>; Sat,  2 Sep 2023 10:13:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A855D7906AB
+	for <lists+bpf@lfdr.de>; Sat,  2 Sep 2023 11:00:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E91E1C2091E
-	for <lists+bpf@lfdr.de>; Sat,  2 Sep 2023 08:13:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D8B22819CE
+	for <lists+bpf@lfdr.de>; Sat,  2 Sep 2023 09:00:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1BCC2596;
-	Sat,  2 Sep 2023 08:13:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A34F23C25;
+	Sat,  2 Sep 2023 09:00:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE6523AA;
-	Sat,  2 Sep 2023 08:13:33 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E361706;
-	Sat,  2 Sep 2023 01:13:31 -0700 (PDT)
-Received: from kwepemd100003.china.huawei.com (unknown [172.30.72.57])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rd6zQ14VFzVk1s;
-	Sat,  2 Sep 2023 16:10:58 +0800 (CST)
-Received: from [10.67.111.192] (10.67.111.192) by
- kwepemd100003.china.huawei.com (7.221.188.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.23; Sat, 2 Sep 2023 16:13:28 +0800
-Message-ID: <8a259e47-f119-9bba-acc1-a95a2f3d4cc3@huawei.com>
-Date: Sat, 2 Sep 2023 16:13:28 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DC36258D;
+	Sat,  2 Sep 2023 09:00:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7799DC433C8;
+	Sat,  2 Sep 2023 09:00:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1693645237;
+	bh=MxpykyJ+0W4Y9Le7FBH89s04jQ7y+TZQ+BhkHSsoQmE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=V/dJUHpCbuqZyy7tb0qX7ioXhcTLm5vl5wcDsovBNXFMfiHduExeCPuyMcUEkpA+c
+	 JV4wM8jvnJtftoJmQs0Dhqaw4Wbm8gvPG8l4vXgfUdtWLDVAVnKjtWeUA1uqAe7H1a
+	 jeN4jHlB3xfgJSgas2pTmuV7hk72UWNA/xAjW9vQpTsaYoqh/UsiRq+3W6+wQm1JUs
+	 75dVifk4P5TE+9aaJjwONAM6N4vkLkOoGWyyZMGcAGveIZTP8LFF+dZiHk0H7h+1tm
+	 QWPkYU0RbtwBcP5XOUPWidtHzo3dAbtEzU30wHgjh128Qm3Fy+/4KN6jZO3asJPb8s
+	 i6ajBTzcrOsgw==
+Date: Sat, 2 Sep 2023 11:00:32 +0200
+From: Simon Horman <horms@kernel.org>
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: olsajiri@gmail.com, xukuohai@huawei.com, eddyz87@gmail.com,
+	edumazet@google.com, cong.wang@bytedance.com, bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH bpf] bpf: sockmap, fix skb refcnt race after locking
+ changes
+Message-ID: <20230902090032.GB2146@kernel.org>
+References: <20230901202137.214666-1-john.fastabend@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH bpf] bpf: sockmap, fix skb refcnt race after locking
- changes
-Content-Language: en-US
-To: John Fastabend <john.fastabend@gmail.com>, <olsajiri@gmail.com>,
-	<eddyz87@gmail.com>
-CC: <edumazet@google.com>, <cong.wang@bytedance.com>, <bpf@vger.kernel.org>,
-	<netdev@vger.kernel.org>
-References: <20230901202137.214666-1-john.fastabend@gmail.com>
-From: Xu Kuohai <xukuohai@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20230901202137.214666-1-john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.192]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemd100003.china.huawei.com (7.221.188.180)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-On 9/2/2023 4:21 AM, John Fastabend wrote:
+On Fri, Sep 01, 2023 at 01:21:37PM -0700, John Fastabend wrote:
 > There is a race where skb's from the sk_psock_backlog can be referenced
 > after userspace side has already skb_consumed() the sk_buff and its
 > refcnt dropped to zer0 causing use after free.
 > 
 > The flow is the following,
 > 
->    while ((skb = skb_peek(&psock->ingress_skb))
->      sk_psock_handle_Skb(psock, skb, ..., ingress)
->      if (!ingress) ...
->      sk_psock_skb_ingress
->         sk_psock_skb_ingress_enqueue(skb)
->            msg->skb = skb
->            sk_psock_queue_msg(psock, msg)
->      skb_dequeue(&psock->ingress_skb)
+>   while ((skb = skb_peek(&psock->ingress_skb))
+>     sk_psock_handle_Skb(psock, skb, ..., ingress)
+>     if (!ingress) ...
+>     sk_psock_skb_ingress
+>        sk_psock_skb_ingress_enqueue(skb)
+>           msg->skb = skb
+>           sk_psock_queue_msg(psock, msg)
+>     skb_dequeue(&psock->ingress_skb)
 > 
 > The sk_psock_queue_msg() puts the msg on the ingress_msg queue. This is
 > what the application reads when recvmsg() is called. An application can
@@ -93,11 +83,11 @@ On 9/2/2023 4:21 AM, John Fastabend wrote:
 > The following splat was observed with 'test_progs -t sockmap_listen':
 > 
 > [ 1022.710250][ T2556] general protection fault, ...
->   ...
+>  ...
 > [ 1022.712830][ T2556] Workqueue: events sk_psock_backlog
 > [ 1022.713262][ T2556] RIP: 0010:skb_dequeue+0x4c/0x80
 > [ 1022.713653][ T2556] Code: ...
->   ...
+>  ...
 > [ 1022.720699][ T2556] Call Trace:
 > [ 1022.720984][ T2556]  <TASK>
 > [ 1022.721254][ T2556]  ? die_addr+0x32/0x80^M
@@ -127,47 +117,16 @@ On 9/2/2023 4:21 AM, John Fastabend wrote:
 > couldn't race with user and there was no issue here.
 > 
 > Fixes: 799aa7f98d53e (skmsg: Avoid lock_sock() in sk_psock_backlog())
+
+Hi John,
+
+A minor nit from my side.
+I think the usual format for a fixes tag is follows.
+
+Fixes: 799aa7f98d53e ("skmsg: Avoid lock_sock() in sk_psock_backlog()")
+
 > Reported-by: Jiri Olsa  <jolsa@kernel.org>
 > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
->   net/core/skmsg.c | 12 ++++++++----
->   1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index a0659fc29bcc..6c31eefbd777 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -612,12 +612,18 @@ static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb
->   static int sk_psock_handle_skb(struct sk_psock *psock, struct sk_buff *skb,
->   			       u32 off, u32 len, bool ingress)
->   {
-> +	int err = 0;
-> +
->   	if (!ingress) {
->   		if (!sock_writeable(psock->sk))
->   			return -EAGAIN;
->   		return skb_send_sock(psock->sk, skb, off, len);
->   	}
-> -	return sk_psock_skb_ingress(psock, skb, off, len);
-> +	skb_get(skb);
-> +	err = sk_psock_skb_ingress(psock, skb, off, len);
-> +	if (err < 0)
-> +		kfree_skb(skb);
-> +	return err;
->   }
->   
->   static void sk_psock_skb_state(struct sk_psock *psock,
-> @@ -685,9 +691,7 @@ static void sk_psock_backlog(struct work_struct *work)
->   		} while (len);
->   
->   		skb = skb_dequeue(&psock->ingress_skb);
-> -		if (!ingress) {
-> -			kfree_skb(skb);
-> -		}
-> +		kfree_skb(skb);
->   	}
->   end:
->   	mutex_unlock(&psock->work_mutex);
 
-Tested-by: Xu Kuohai <xukuohai@huawei.com>
+...
 
