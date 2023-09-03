@@ -1,105 +1,210 @@
-Return-Path: <bpf+bounces-9147-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9148-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 992F4790A97
-	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 04:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91315790B32
+	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 10:17:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 460BB1C204F8
-	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 02:44:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61AC71C20757
+	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 08:17:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8138816;
-	Sun,  3 Sep 2023 02:44:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A432B17F7;
+	Sun,  3 Sep 2023 08:17:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861437F
-	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 02:44:29 +0000 (UTC)
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B6512F;
-	Sat,  2 Sep 2023 19:44:27 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-64a5bc52b0aso2635326d6.3;
-        Sat, 02 Sep 2023 19:44:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693709066; x=1694313866; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t1GAPNmXBdNBOSiPidq4SuOnNGpXyf62DRjoqSlEOKo=;
-        b=N3EsxrN6RNGcIPDhcpHMh9mIxInJfKdN6iWkPBH828yhtVT3OqqV6SSeflQBGwOks0
-         VfGoaWfgiygvMpNqUPl57pIxo4d5A6L5CxoQLiS3sW8mOgoWG214ns4m6lhMfUvqcWWx
-         7eDAfC2vndGy1LJu5ARi0Xvi8iYZ67xCK+Klp9Pl7gCJVPESu1iPR9ushYnVeraDzFd4
-         CqXilWaq08FkJt4MFTqc3hjQILrW12BewbWdhH4m8uCS41ns6BC1ixFJgKDY2JaF3Dcf
-         txvEidYgsmfWlS3htEgC861O3N/rSwZNIQpwyM7oE4glV1+XEt4ENFjhIaLanGnqL6Um
-         K5zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693709066; x=1694313866;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t1GAPNmXBdNBOSiPidq4SuOnNGpXyf62DRjoqSlEOKo=;
-        b=dBK6opNvNViLB1mtj7NHKXE7qhQCTG98fLh5mU86zmmX5gmfroaKbkqgiIhKX1rYKe
-         aiHjL4J29tghrLGO8IQ6ZkcU9KzkanHw5H8KHOnWeOgIi6SZHa0Xckd+CuxkRkBT1xm5
-         EJ35vfjh9QnvdDc+/HLBwX2V7/kljZYeRT2ftwGA1jCWD71pBZ5jS9kd5SIS6ClKYOJI
-         lyBbcO3+ioATZNVokNmVqWIMyEq8Rrfx2Ud8iAJp73y+7wutX6ivDigYtdzNf8dJA44M
-         LSD2NvCuN+fm4GXk90M4A4clACw1quZEIW3r5u6R2aDoiI/KrC/kRwhn66NpM3w8Iy4e
-         fIAw==
-X-Gm-Message-State: AOJu0YysCvNpTwojC6AKkHpqO/r/D5xOu50IfjtzU337X+HrTu5AmR/X
-	8FSubYiBQWohrO3AFCQM3Gf2G60rYnRyVn3gnEc=
-X-Google-Smtp-Source: AGHT+IHbSGrDC3xasIMg2h9SHHXg5ol1Cyq5w/p/l2eUSGrtnMxS0UghYfA4zwp55tXGNfaK7lqcxQoRN5HcF/N9iTw=
-X-Received: by 2002:a0c:a9c8:0:b0:651:75a4:75b0 with SMTP id
- c8-20020a0ca9c8000000b0065175a475b0mr7632518qvb.1.1693709066298; Sat, 02 Sep
- 2023 19:44:26 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65BEF17E3
+	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 08:17:17 +0000 (UTC)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A356136
+	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 01:17:15 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3838D97k016979;
+	Sun, 3 Sep 2023 08:16:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=5RYNiS6dZCyllbCbc3GRMuRHbC2TWPy+COaJvZW4lKo=;
+ b=cStEbFkCOY93ot/bDXT0fTyOheLyDzr1U/+QWQGA82dRZTJiKjXKnwAsYHMWX/xSkPdH
+ 2xzxJwYoxNmEMux965vtHNl7C3PlldXr1x0E4ekLbtCTc8Zpl9u+OPvaHNyjWLU7Oi6A
+ up60iCE4rQkDM+h2ja+rZG/QQ+L2VMBa8poIk8LZwrE8rjoAooRPxISFP9uVSfUeTN18
+ CJuplrHdEGxN2vMYpo+D+UUfcuveCD5BAQrmJoGFeMWLB9TuKSwXPTFsbSj70rt4F06B
+ sqZyHZQxPGhNVXWweXn5kKJKBX/Ow8q1OcTlyYF6h2kHcbbSNhsBwpYX5ED9nd/dIVB9 3A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3svpee818g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 03 Sep 2023 08:16:55 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3838En7r019262;
+	Sun, 3 Sep 2023 08:16:55 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3svpee818e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 03 Sep 2023 08:16:54 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3837SD0J026826;
+	Sun, 3 Sep 2023 08:16:54 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svgcmsyry-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 03 Sep 2023 08:16:54 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3838Gpwk36635374
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sun, 3 Sep 2023 08:16:51 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 183A320049;
+	Sun,  3 Sep 2023 08:16:51 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9D98720040;
+	Sun,  3 Sep 2023 08:16:50 +0000 (GMT)
+Received: from [9.171.29.233] (unknown [9.171.29.233])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Sun,  3 Sep 2023 08:16:50 +0000 (GMT)
+Message-ID: <969c49716416d9ba9e03f1fd7e8234d9d0740fd5.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next 01/11] bpf: Disable zero-extension for BPF_MEMSX
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann
+ <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
+ <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Date: Sun, 03 Sep 2023 10:16:50 +0200
+In-Reply-To: <CANk7y0iNnOCZ_KmXBH_xJTG=BKzkDM_jZ+hc_NXcQbbZj-c33Q@mail.gmail.com>
+References: <20230830011128.1415752-1-iii@linux.ibm.com>
+	 <20230830011128.1415752-2-iii@linux.ibm.com>
+	 <CANk7y0iNnOCZ_KmXBH_xJTG=BKzkDM_jZ+hc_NXcQbbZj-c33Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <tencent_4F0CF08592B31A2E69546C5E174785109F09@qq.com> <tencent_2B465711F30DC88514B2842F1D54005E8109@qq.com>
-In-Reply-To: <tencent_2B465711F30DC88514B2842F1D54005E8109@qq.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Sun, 3 Sep 2023 10:43:50 +0800
-Message-ID: <CALOAHbDvA8yG0=ep3e+MbsWu0oeHzoDUzWGf9mzApN_4za09LQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 0/2] selftests/bpf: Optimize kallsyms cache
-To: Rong Tao <rtoax@foxmail.com>
-Cc: alexandre.torgue@foss.st.com, andrii@kernel.org, ast@kernel.org, 
-	bpf@vger.kernel.org, daniel@iogearbox.net, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	martin.lau@linux.dev, mcoquelin.stm32@gmail.com, mykolal@fb.com, 
-	olsajiri@gmail.com, rongtao@cestc.cn, sdf@google.com, shuah@kernel.org, 
-	song@kernel.org, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: e0jJ1_NAT8AbP1Tg9UnUk2SGPE10UUSQ
+X-Proofpoint-ORIG-GUID: 6XRvG-HXIRCnProBE40SKYZZilzNss-u
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-03_05,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ mlxscore=0 mlxlogscore=582 priorityscore=1501 malwarescore=0
+ suspectscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309030074
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, Sep 2, 2023 at 1:24=E2=80=AFPM Rong Tao <rtoax@foxmail.com> wrote:
->
-> Hi, every one.
->
-> I'm so sorry, that i'm not familier with 'how to submit patch series',
-> I just sent some emails repeatedly using the git send-email command,
-> please ignore the error messages.
->
-> PS: How to send patch collections using git send-email?
+On Fri, 2023-09-01 at 16:19 +0200, Puranjay Mohan wrote:
+> Hi Ilya
+>=20
+> On Wed, Aug 30, 2023 at 3:12=E2=80=AFAM Ilya Leoshkevich <iii@linux.ibm.c=
+om>
+> wrote:
+> >=20
+> > On the architectures that use bpf_jit_needs_zext(), e.g., s390x,
+> > the
+> > verifier incorrectly inserts a zero-extension after BPF_MEMSX,
+> > leading
+> > to miscompilations like the one below:
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 24:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+89 1a ff fe 00 00 00 00 "r1 =3D *(s16 *)(r10 -
+> > 2);"=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 # zext_dst set
+> > =C2=A0=C2=A0 0x3ff7fdb910e:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 lgh=C2=
+=A0=C2=A0=C2=A0=C2=A0 %r2,-
+> > 2(%r13,%r0)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 # load halfword
+> > =C2=A0=C2=A0 0x3ff7fdb9114:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 llgfr=
+=C2=A0=C2=A0
+> > %r2,%r2=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 # wrong!
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 25:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+65 10 00 03 00 00 7f ff if r1 s> 32767 goto +3
+> > <l0_1>=C2=A0=C2=A0 # check_cond_jmp_op()
+> >=20
+> > Disable such zero-extensions. The JITs need to insert sign-
+> > extension
+> > themselves, if necessary.
+> >=20
+> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > ---
+> > =C2=A0kernel/bpf/verifier.c | 4 +++-
+> > =C2=A01 file changed, 3 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index bb78212fa5b2..097985a46edc 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -3110,7 +3110,9 @@ static void mark_insn_zext(struct
+> > bpf_verifier_env *env,
+> > =C2=A0{
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 s32 def_idx =3D reg->subreg_=
+def;
+> >=20
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (def_idx =3D=3D DEF_NOT_SUBREG=
+)
+>=20
+> The problem here is that reg->subreg_def should be set as
+> DEF_NOT_SUBREG for
+> registers that are used as destination registers of BPF_LDX |
+> BPF_MEMSX. I am seeing
+> the same problem on ARM32 and was going to send a patch today.
+>=20
+> The problem is that is_reg64() returns false for destination
+> registers
+> of BPF_LDX | BPF_MEMSX.
+> But BPF_LDX | BPF_MEMSX always loads a 64 bit value because of the
+> sign extension so
+> is_reg64() should return true.
+>=20
+> I have written a patch that I will be sending as a reply to this.
+> Please let me know if that makes sense.
+>=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (def_idx =3D=3D DEF_NOT_SUBREG=
+ ||
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (BPF_CLAS=
+S(env->prog->insnsi[def_idx - 1].code) =3D=3D
+> > BPF_LDX &&
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BPF=
+_MODE(env->prog->insnsi[def_idx - 1].code) =3D=3D
+> > BPF_MEMSX))
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 return;
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 env->insn_aux_data[def_idx -=
+ 1].zext_dst =3D true;
+> > --
+> > 2.41.0
+> >=20
+> >=20
+>=20
+> Thanks,
+> Puranjay
 
-$ git send-email --to <outreachy mailing list if required> --cc
-<addresses from get_maintainer.pl output> /tmp/*.patch
+Hi,
 
-See also the section "Using git format-patch to send patchsets" in
-https://kernelnewbies.org/FirstKernelPatch
+I also considered doing this, and I think both approaches are
+functionally equivalent and work in practice.
 
---=20
-Regards
-Yafang
+However, I can envision that, just like we have the zext_dst=C2=A0
+optimization today, we might want a sext_dst optimization in the
+future. Therefore I think it's better to fix this by not setting
+zext_dst instead of not setting subreg_def.
+
+Best regards,
+Ilya
 
