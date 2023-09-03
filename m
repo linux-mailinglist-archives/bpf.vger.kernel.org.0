@@ -1,186 +1,156 @@
-Return-Path: <bpf+bounces-9161-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9162-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C06AF790DD3
-	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 21:55:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BEBA790EF1
+	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 00:31:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FEC4280F5B
-	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 19:55:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0AC71C2034C
+	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 22:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1074BA29;
-	Sun,  3 Sep 2023 19:55:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A09EBBA47;
+	Sun,  3 Sep 2023 22:30:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FA6D2F49
-	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 19:55:02 +0000 (UTC)
-Received: from mail-pf1-f207.google.com (mail-pf1-f207.google.com [209.85.210.207])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D416EDA
-	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 12:55:00 -0700 (PDT)
-Received: by mail-pf1-f207.google.com with SMTP id d2e1a72fcca58-68bec4380edso888933b3a.1
-        for <bpf@vger.kernel.org>; Sun, 03 Sep 2023 12:55:00 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 479B6ECC
+	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 22:30:56 +0000 (UTC)
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14C1FA
+	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 15:30:55 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1c4cf775a14so781416fac.3
+        for <bpf@vger.kernel.org>; Sun, 03 Sep 2023 15:30:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1693780255; x=1694385055; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nv6YpToDNZJcA/Ccz8YHJKQ8zE37n7OYKvDh05ivZ8M=;
+        b=eLvFMZ6HweV3i75Mje3KyiQMHp72f3fVYJp4X8QBR1sUoWt5LbUe2oYe6gz7J03xSV
+         aHsv7iDil4KTnD32vRddboJhyW5dIQThpWZBfmdQlNdU/+SQKnZqTkI+8YNmhDFqSNM4
+         M/5uOEBZigGEpPC3vmfjiwnDFOd47IixsMl044OpUX7QG234XdFYwtba/jPyi6PCo/kZ
+         okP+nX6zzbLjyilv/Ocy1qCe5aC4gkdgDOfyh92JWGe8bVg+DmwjlPuuV3kM/V8mAkRG
+         YMrGVWwsvVs5uRT8A9BN8JD3DAOcyXyqtn49LxBGuGru+09OFjvSzk6tINPlQnplnbJD
+         r/Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693770900; x=1694375700;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uWa3iwwkzdPY4YildIzHGcIx9uOwREDiHAagNULjXhs=;
-        b=S7tz7DKk0JYu+ARDmYcNXz8eJvanXm9v09lbsjx4hty56ObvyvpuyG+MMuXQfzDmA+
-         Lo4ymNgzjczNDmHon3W7TBAXWEcgRNkb1qCdqkh7xdCzqnGxYABhJ7DJ0gtC5kFpGZBh
-         XbcFR7FYA5JqafwjypuyZkx5Un2+q2Gt32NQYarvQowg8y5/iQQF9LFUTehx/t3ZZS5b
-         PQkO9gfWQH94w6inIUj9VV6oPSfOWl5MflOEZ+OT4QQtyDNJl2fqbwkvjchH7QZFO7nM
-         EobqZ6IX+3Adt3oYwWZ0hYRhHeFybaN6rSe95gK+MCcmcXwvPy37RU1VKHW47IHDE3/j
-         AbjQ==
-X-Gm-Message-State: AOJu0Yy9zktfwFi58Iz/y4HuL6vUhLNw1FH4b1RLZ4rUcoonCBl9X9JY
-	pmyPUbpwRoI3ROwiu0Ujv1tLEuBAq0FPumlFDqZfmPXa4Joo
-X-Google-Smtp-Source: AGHT+IEkIjg2R/lH3aIeSKcj8ZfWkzZLtK0sefjowJVjw++uev0i4Xd3oKIQOd84JTflLcP94YlaiBFNWxE7ewL0Qeag+qvpqhvf
+        d=1e100.net; s=20221208; t=1693780255; x=1694385055;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Nv6YpToDNZJcA/Ccz8YHJKQ8zE37n7OYKvDh05ivZ8M=;
+        b=kRVRjhhOnwFmcSO7zOuKy9cNjGHKYfUErWkFgjSnKLXGthOeGeTK5mFwWolmTmXKII
+         zBt8R/mh9LICIuOoNCDoaK8tpe/zE7YE7cw38krGQhpoo/0rsbBWsXu1eEFDD0OkVPrx
+         b82rQwNua+kId0G+pQgs8rB+aT1VifCAKqkH3OtN0EM5cqBGJq+NSpZMsWO9DKnh5wZ8
+         uETqTsj4w66ltiX++MVPhpvhTWoYuad/fBAd4G03rslrTghXo3A+mp9w2wZgZgSuqDY6
+         qz/RzmHC/+7WYxvPA0Rro2USIKEYe/64pQdGTDGYDUiMjNJZzcBudUhHSkeCmbfo7LOy
+         vPNA==
+X-Gm-Message-State: AOJu0YyD9StpYkrR+yYEjUEmygEO2urCMZ3dFrR1MklaF3hOdvs15y11
+	0CF8A8GjzLi6dFR9JF/bYRXELIz/yn65IHsNIRk=
+X-Google-Smtp-Source: AGHT+IGLu9Ypqvz2HQH6Ke2apJHDtGTD5ZHmV6+9u1MT+8XuCmbNG2jkA6AQg79Zc5mY+kWQOWShIA==
+X-Received: by 2002:a05:6870:568d:b0:1be:c8e2:3ec3 with SMTP id p13-20020a056870568d00b001bec8e23ec3mr11536784oao.14.1693780255066;
+        Sun, 03 Sep 2023 15:30:55 -0700 (PDT)
+Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
+        by smtp.gmail.com with ESMTPSA id i15-20020a63bf4f000000b00565e96d9874sm5648132pgo.89.2023.09.03.15.30.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Sep 2023 15:30:54 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1qcvcK-00ASFy-0F;
+	Mon, 04 Sep 2023 08:30:52 +1000
+Date: Mon, 4 Sep 2023 08:30:52 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Hao Xu <hao.xu@linux.dev>
+Cc: Matthew Wilcox <willy@infradead.org>, io-uring@vger.kernel.org,
+	Jens Axboe <axboe@kernel.dk>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+	ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+	linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
+	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+	linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+	devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+	Wanpeng Li <wanpengli@tencent.com>
+Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
+Message-ID: <ZPUJHAKzxvXiEDYA@dread.disaster.area>
+References: <20230827132835.1373581-1-hao.xu@linux.dev>
+ <20230827132835.1373581-8-hao.xu@linux.dev>
+ <ZOvA5DJDZN0FRymp@casper.infradead.org>
+ <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
+ <ZO3cI+DkotHQo3md@casper.infradead.org>
+ <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:4c11:b0:68a:6787:8413 with SMTP id
- ea17-20020a056a004c1100b0068a67878413mr2744479pfb.3.1693770900403; Sun, 03
- Sep 2023 12:55:00 -0700 (PDT)
-Date: Sun, 03 Sep 2023 12:55:00 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d97f3c060479c4f8@google.com>
-Subject: [syzbot] [bpf?] general protection fault in bpf_prog_offload_verifier_prep
-From: syzbot <syzbot+291100dcb32190ec02a8@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com, hawk@kernel.org, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
-	netdev@vger.kernel.org, sdf@google.com, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-	SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello,
+On Wed, Aug 30, 2023 at 02:11:31PM +0800, Hao Xu wrote:
+> On 8/29/23 19:53, Matthew Wilcox wrote:
+> > On Tue, Aug 29, 2023 at 03:46:13PM +0800, Hao Xu wrote:
+> > > On 8/28/23 05:32, Matthew Wilcox wrote:
+> > > > On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
+> > > > > From: Hao Xu <howeyxu@tencent.com>
+> > > > > 
+> > > > > Add a boolean parameter for file_accessed() to support nowait semantics.
+> > > > > Currently it is true only with io_uring as its initial caller.
+> > > > 
+> > > > So why do we need to do this as part of this series?  Apparently it
+> > > > hasn't caused any problems for filemap_read().
+> > > > 
+> > > 
+> > > We need this parameter to indicate if nowait semantics should be enforced in
+> > > touch_atime(), There are locks and maybe IOs in it.
+> > 
+> > That's not my point.  We currently call file_accessed() and
+> > touch_atime() for nowait reads and nowait writes.  You haven't done
+> > anything to fix those.
+> > 
+> > I suspect you can trim this patchset down significantly by avoiding
+> > fixing the file_accessed() problem.  And then come back with a later
+> > patchset that fixes it for all nowait i/o.  Or do a separate prep series
+> 
+> I'm ok to do that.
+> 
+> > first that fixes it for the existing nowait users, and then a second
+> > series to do all the directory stuff.
+> > 
+> > I'd do the first thing.  Just ignore the problem.  Directory atime
+> > updates cause I/O so rarely that you can afford to ignore it.  Almost
+> > everyone uses relatime or nodiratime.
+> 
+> Hi Matthew,
+> The previous discussion shows this does cause issues in real
+> producations: https://lore.kernel.org/io-uring/2785f009-2ebb-028d-8250-d5f3a30510f0@gmail.com/#:~:text=fwiw%2C%20we%27ve%20just%20recently%20had%20similar%20problems%20with%20io_uring%20read/write
+> 
 
-syzbot found the following issue on:
+Then separate it out into it's own patch set so we can have a
+discussion on the merits of requiring using noatime, relatime or
+lazytime for really latency sensitive IO applications. Changing code
+is not always the right solution...
 
-HEAD commit:    fa09bc40b21a igb: disable virtualization features on 82580
-git tree:       net
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=13382fa8680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=634e05b4025da9da
-dashboard link: https://syzkaller.appspot.com/bug?extid=291100dcb32190ec02a8
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1529c448680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15db0248680000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/7ab461d84992/disk-fa09bc40.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/3ac6d43ab2db/vmlinux-fa09bc40.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/778d096a134e/bzImage-fa09bc40.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+291100dcb32190ec02a8@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 1 PID: 5055 Comm: syz-executor625 Not tainted 6.5.0-syzkaller-04012-gfa09bc40b21a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:bpf_prog_offload_verifier_prep+0xaa/0x170 kernel/bpf/offload.c:295
-Code: 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 a1 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 65 10 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 0f 85 93 00 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b
-RSP: 0018:ffffc900039ff7f8 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffffc9000156e000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff81a8cf76 RDI: ffff888021b25f10
-RBP: ffff888021b25f00 R08: 0000000000000001 R09: fffffbfff195203d
-R10: ffffffff8ca901ef R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000005 R14: 0000000000000003 R15: ffffc9000156e060
-FS:  0000555556071380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000100 CR3: 0000000022f6b000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bpf_check+0x52f3/0xabd0 kernel/bpf/verifier.c:19762
- bpf_prog_load+0x153a/0x2270 kernel/bpf/syscall.c:2708
- __sys_bpf+0xbb6/0x4e90 kernel/bpf/syscall.c:5335
- __do_sys_bpf kernel/bpf/syscall.c:5439 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5437 [inline]
- __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5437
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f7c0df78ea9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffde3592128 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f7c0df78ea9
-RDX: 0000000000000090 RSI: 0000000020000940 RDI: 0000000000000005
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000100000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:bpf_prog_offload_verifier_prep+0xaa/0x170 kernel/bpf/offload.c:295
-Code: 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 a1 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 65 10 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 0f 85 93 00 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b
-RSP: 0018:ffffc900039ff7f8 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffffc9000156e000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff81a8cf76 RDI: ffff888021b25f10
-RBP: ffff888021b25f00 R08: 0000000000000001 R09: fffffbfff195203d
-R10: ffffffff8ca901ef R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000005 R14: 0000000000000003 R15: ffffc9000156e060
-FS:  0000555556071380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000100 CR3: 0000000022f6b000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 3 bytes skipped:
-   0:	df 48 89             	fisttps -0x77(%rax)
-   3:	fa                   	cli
-   4:	48 c1 ea 03          	shr    $0x3,%rdx
-   8:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-   c:	0f 85 a1 00 00 00    	jne    0xb3
-  12:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  19:	fc ff df
-  1c:	4c 8b 65 10          	mov    0x10(%rbp),%r12
-  20:	4c 89 e2             	mov    %r12,%rdx
-  23:	48 c1 ea 03          	shr    $0x3,%rdx
-* 27:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2b:	0f 85 93 00 00 00    	jne    0xc4
-  31:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  38:	fc ff df
-  3b:	4d                   	rex.WRB
-  3c:	8b                   	.byte 0x8b
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
