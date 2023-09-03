@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-9157-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9158-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95EE8790CB9
-	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 17:15:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 834A2790CBA
+	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 17:16:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F49D280F81
-	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 15:15:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 805871C20823
+	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 15:16:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 548D53D92;
-	Sun,  3 Sep 2023 15:15:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6F3C3FE3;
+	Sun,  3 Sep 2023 15:15:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 297FD3D81
-	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 15:15:34 +0000 (UTC)
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D9310E4
-	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 08:15:02 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-68a3cae6d94so614453b3a.0
-        for <bpf@vger.kernel.org>; Sun, 03 Sep 2023 08:15:02 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD143D60
+	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 15:15:39 +0000 (UTC)
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D55910F9
+	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 08:15:05 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-68c0d4cc3a4so359921b3a.1
+        for <bpf@vger.kernel.org>; Sun, 03 Sep 2023 08:15:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693754101; x=1694358901; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1693754104; x=1694358904; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YwTt6bTsElcFaLllQU3Hvsx7Yta+HwnMn6jcrhvLCBw=;
-        b=pOZ7YDTX7QBZVB2wjzhrNu9wcy05gHgtwXBs+mKv6rQpbF3bk1ZeWL9KwCt1U385Ts
-         FdzUFyv2zO0up9tzPuNvFusfdxGvfBe8tubs2fEx4mzx5kcmh9OevEtrf3ZygSB+tSWp
-         xDWlm1udIDD08sKvYe6Ob8sLI7CIVQV+bYI4GGV3+aS0wNg487zsZcj7llH/3QIM7Kz/
-         iQCW+AXbywx07pgGvgWVoGjruZLV7l1CZ6UVK68t08Zw29U2cWr8W3GRo9nx8Mb+Uukg
-         gKtZAUKMe0AMsYHWXRLOYg+dVnlJb7KYaOCc1PX6gT6DKCHXPH/CWxUNnMRU6Wih/LZy
-         Dfow==
+        bh=CMSA0+Ahr7SMC7wKOypbl3UJZkEliH/UYw5GFr/znq0=;
+        b=AJuK9GhrpKDd/8NABHQJX4sywKNfKWtnMQaCiQI5IoDuyiKP3THlN3j01L7UR80+BE
+         GgabTlPrZHBKPQmiKYBrp1D7yB3b20eGi3xzxOZAf8fO548HFGpjbcMTyTDO/iju1YkN
+         jouAkW48E8Ep94Md36PsXGQc5mxzRcvCxmYzaHl+krlGWXU/7+XC+ytvBHsAeTkAfBzN
+         J0UdbZqID4prPzluuXuaItpHFOeYzDzkIjiFtYWLsZqY+20XPul19Z3mujfotLaJ9c8A
+         u1tbh+PaaU9BMZzF4jS+npHcIKvFGMnu+DgG3NhGXmiRsLB5VvFkjEf6zrCQHTtXbwGi
+         CXSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693754101; x=1694358901;
+        d=1e100.net; s=20221208; t=1693754104; x=1694358904;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YwTt6bTsElcFaLllQU3Hvsx7Yta+HwnMn6jcrhvLCBw=;
-        b=ke1NLD7rBttbtb0xNT/hTWn6AQoyLCzmfMfgSaQnXL9rUm3bGplNvvKwb3RzBG4bke
-         R90f4vRQMyXdvFGryAF3n8AJpDLynlbJi6KEE9KseFNzzs6ip0D4xWGL6I2Oczn6bryG
-         sSdqQXberlLkpKCUMf1vdB/soWbR7n/KDPnRGBc/xklw7dRLsqf0rRx1NP+epX2YxWcv
-         kB5ztOTTjR87YJ2iGBC/p8Pk/DaZjsO3OUaGvwgNnXqm1C2mlj9S3vYV7QwABk6DUvlf
-         17oA0eH4DqyPlU5bclO06NW1YCGth4xuvb75fhNK0hxaD9k0FoFwhCO/hPUFLN20jmTW
-         eZqQ==
-X-Gm-Message-State: AOJu0Yz0rpriz1fVyxqeKzFviCt2U7N7vUPaW0tm+OuGFQ9fTBNLOjuy
-	qPlv0GOumuIbPQR+OAsy5Bc=
-X-Google-Smtp-Source: AGHT+IGY50dM9f30f8dyaLW0+1qaYnn3htcyoIlDrqi+3ycg9lo1cQsQ8eDaDKyboi5q6O6L/0n7lQ==
-X-Received: by 2002:a05:6a00:15c9:b0:68b:dbad:7ae2 with SMTP id o9-20020a056a0015c900b0068bdbad7ae2mr10912507pfu.21.1693754101376;
-        Sun, 03 Sep 2023 08:15:01 -0700 (PDT)
+        bh=CMSA0+Ahr7SMC7wKOypbl3UJZkEliH/UYw5GFr/znq0=;
+        b=PnvIUEOB/TqXPpzRvaTVBWIsjFFxx5Xy8+7VBfkSk3TSx1mQBoLBFZKEuUASmu6OyP
+         OWLqEmpiJRncKNdKBeoahULQhYq3cD3fivuweFM0/1yvecQ+N7So9LljRAJTTCjbzlYv
+         rm6YmJWni6XGkDmZiBRqZswRGPFM/G2+OhW29I0imy+6NqEukm6kGC0Na2bZS6AYJ6u7
+         AXkcW3jPADoOorkP3NEKsERH+RhyB1MCTCok42aRR46w6tvGWFsj1LWbJzJQlwEfI9Ie
+         DQSWj0UsSbfJUF7NdABejRg8IuExC01Clbdak8Aqjm+wceWWkXuaQhjEALYnEF0NVkB4
+         /9+A==
+X-Gm-Message-State: AOJu0YwBidg122FwTDUOT/CTao78X0l3z4zwHYChgk8hCyvka/aHK5V3
+	J2v2E94zMHYd4WYXsF5Wez3rKljCsWU=
+X-Google-Smtp-Source: AGHT+IEPMd1RYyGWFWXDJ15xO7sVdz6rCvVFY1ElTXpuE3QOosYUA5sTIA79GK9ottE0gBumsfgiZQ==
+X-Received: by 2002:a05:6a00:1952:b0:68a:4261:ab7f with SMTP id s18-20020a056a00195200b0068a4261ab7fmr6786826pfk.31.1693754104126;
+        Sun, 03 Sep 2023 08:15:04 -0700 (PDT)
 Received: from localhost.localdomain (bb116-14-95-136.singnet.com.sg. [116.14.95.136])
-        by smtp.gmail.com with ESMTPSA id x17-20020aa784d1000000b00686940bfb77sm5882268pfn.71.2023.09.03.08.14.58
+        by smtp.gmail.com with ESMTPSA id x17-20020aa784d1000000b00686940bfb77sm5882268pfn.71.2023.09.03.08.15.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 08:15:01 -0700 (PDT)
+        Sun, 03 Sep 2023 08:15:03 -0700 (PDT)
 From: Leon Hwang <hffilwlqm@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -66,9 +66,9 @@ Cc: song@kernel.org,
 	jakub@cloudflare.com,
 	hffilwlqm@gmail.com,
 	bpf@vger.kernel.org
-Subject: [RFC PATCH bpf-next v4 1/4] bpf, x64: Comment tail_call_cnt initialisation
-Date: Sun,  3 Sep 2023 23:14:45 +0800
-Message-ID: <20230903151448.61696-2-hffilwlqm@gmail.com>
+Subject: [RFC PATCH bpf-next v4 2/4] bpf, x64: Fix tailcall infinite loop
+Date: Sun,  3 Sep 2023 23:14:46 +0800
+Message-ID: <20230903151448.61696-3-hffilwlqm@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230903151448.61696-1-hffilwlqm@gmail.com>
 References: <20230903151448.61696-1-hffilwlqm@gmail.com>
@@ -86,35 +86,157 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Without understanding emit_prologue(), it is really hard to figure out
-where does tail_call_cnt come from, even though searching tail_call_cnt
-in the whole kernel repo.
+From commit ebf7d1f508a73871 ("bpf, x64: rework pro/epilogue and tailcall
+handling in JIT"), the tailcall on x64 works better than before.
 
-By adding these comments, it is a little bit easy to understand
-tail_call_cnt initialisation.
+From commit e411901c0b775a3a ("bpf: allow for tailcalls in BPF subprograms
+for x64 JIT"), tailcall is able to run in BPF subprograms on x64.
 
+From commit 5b92a28aae4dd0f8 ("bpf: Support attaching tracing BPF program
+to other BPF programs"), BPF program is able to trace other BPF programs.
+
+How about combining them all together?
+
+1. FENTRY/FEXIT on a BPF subprogram.
+2. A tailcall runs in the BPF subprogram.
+3. The tailcall calls the subprogram's caller.
+
+As a result, a tailcall infinite loop comes up. And the loop would halt
+the machine.
+
+As we know, in tail call context, the tail_call_cnt propagates by stack
+and rax register between BPF subprograms. So do in trampolines.
+
+Fixes: ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling in JIT")
+Fixes: e411901c0b77 ("bpf: allow for tailcalls in BPF subprograms for x64 JIT")
 Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
 ---
- arch/x86/net/bpf_jit_comp.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/x86/net/bpf_jit_comp.c | 28 ++++++++++++++++++++++------
+ include/linux/bpf.h         |  5 +++++
+ kernel/bpf/trampoline.c     |  4 ++--
+ kernel/bpf/verifier.c       |  3 +++
+ 4 files changed, 32 insertions(+), 8 deletions(-)
 
 diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index a5930042139d3..bcca1c9b9a027 100644
+index bcca1c9b9a027..2846c21d75bfa 100644
 --- a/arch/x86/net/bpf_jit_comp.c
 +++ b/arch/x86/net/bpf_jit_comp.c
-@@ -303,8 +303,12 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
- 	prog += X86_PATCH_SIZE;
- 	if (!ebpf_from_cbpf) {
- 		if (tail_call_reachable && !is_subprog)
-+			/* When it's the entry of the whole tailcall context,
-+			 * zeroing rax means initialising tail_call_cnt.
+@@ -1022,6 +1022,10 @@ static void emit_shiftx(u8 **pprog, u32 dst_reg, u8 src_reg, bool is64, u8 op)
+ 
+ #define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
+ 
++/* mov rax, qword ptr [rbp - rounded_stack_depth - 8] */
++#define RESTORE_TAIL_CALL_CNT(stack)				\
++	EMIT3_off32(0x48, 0x8B, 0x85, -round_up(stack, 8) - 8)
++
+ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image,
+ 		  int oldproglen, struct jit_context *ctx, bool jmp_padding)
+ {
+@@ -1627,9 +1631,7 @@ st:			if (is_imm8(insn->off))
+ 
+ 			func = (u8 *) __bpf_call_base + imm32;
+ 			if (tail_call_reachable) {
+-				/* mov rax, qword ptr [rbp - rounded_stack_depth - 8] */
+-				EMIT3_off32(0x48, 0x8B, 0x85,
+-					    -round_up(bpf_prog->aux->stack_depth, 8) - 8);
++				RESTORE_TAIL_CALL_CNT(bpf_prog->aux->stack_depth);
+ 				if (!imm32)
+ 					return -EINVAL;
+ 				offs = 7 + x86_call_depth_emit_accounting(&prog, func);
+@@ -2404,6 +2406,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 	 *                     [ ...        ]
+ 	 *                     [ stack_arg2 ]
+ 	 * RBP - arg_stack_off [ stack_arg1 ]
++	 * RSP                 [ tail_call_cnt ] BPF_TRAMP_F_TAIL_CALL_CTX
+ 	 */
+ 
+ 	/* room for return value of orig_call or fentry prog */
+@@ -2468,6 +2471,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 	else
+ 		/* sub rsp, stack_size */
+ 		EMIT4(0x48, 0x83, 0xEC, stack_size);
++	if (flags & BPF_TRAMP_F_TAIL_CALL_CTX)
++		EMIT1(0x50);		/* push rax */
+ 	/* mov QWORD PTR [rbp - rbx_off], rbx */
+ 	emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_6, -rbx_off);
+ 
+@@ -2520,9 +2525,15 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 		restore_regs(m, &prog, regs_off);
+ 		save_args(m, &prog, arg_stack_off, true);
+ 
++		if (flags & BPF_TRAMP_F_TAIL_CALL_CTX)
++			/* Before calling the original function, restore the
++			 * tail_call_cnt from stack to rax.
 +			 */
- 			EMIT2(0x31, 0xC0); /* xor eax, eax */
- 		else
-+			/* Keep the same instruction layout. */
- 			EMIT2(0x66, 0x90); /* nop2 */
++			RESTORE_TAIL_CALL_CNT(stack_size);
++
+ 		if (flags & BPF_TRAMP_F_ORIG_STACK) {
+-			emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, 8);
+-			EMIT2(0xff, 0xd0); /* call *rax */
++			emit_ldx(&prog, BPF_DW, BPF_REG_6, BPF_REG_FP, 8);
++			EMIT2(0xff, 0xd3); /* call *rbx */
+ 		} else {
+ 			/* call original function */
+ 			if (emit_rsb_call(&prog, orig_call, prog)) {
+@@ -2573,7 +2584,12 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 			ret = -EINVAL;
+ 			goto cleanup;
+ 		}
+-	}
++	} else if (flags & BPF_TRAMP_F_TAIL_CALL_CTX)
++		/* Before running the original function, restore the
++		 * tail_call_cnt from stack to rax.
++		 */
++		RESTORE_TAIL_CALL_CNT(stack_size);
++
+ 	/* restore return value of orig_call or fentry prog back into RAX */
+ 	if (save_ret)
+ 		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -8);
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index cfabbcf47bdb8..c8df257ea435d 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1028,6 +1028,11 @@ struct btf_func_model {
+  */
+ #define BPF_TRAMP_F_SHARE_IPMODIFY	BIT(6)
+ 
++/* Indicate that current trampoline is in a tail call context. Then, it has to
++ * cache and restore tail_call_cnt to avoid infinite tail call loop.
++ */
++#define BPF_TRAMP_F_TAIL_CALL_CTX	BIT(7)
++
+ /* Each call __bpf_prog_enter + call bpf_func + call __bpf_prog_exit is ~50
+  * bytes on x86.
+  */
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index 78acf28d48732..16ab5da7161f2 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -415,8 +415,8 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
+ 		goto out;
  	}
- 	EMIT1(0x55);             /* push rbp */
+ 
+-	/* clear all bits except SHARE_IPMODIFY */
+-	tr->flags &= BPF_TRAMP_F_SHARE_IPMODIFY;
++	/* clear all bits except SHARE_IPMODIFY and TAIL_CALL_CTX */
++	tr->flags &= (BPF_TRAMP_F_SHARE_IPMODIFY | BPF_TRAMP_F_TAIL_CALL_CTX);
+ 
+ 	if (tlinks[BPF_TRAMP_FEXIT].nr_links ||
+ 	    tlinks[BPF_TRAMP_MODIFY_RETURN].nr_links) {
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 4ccca1f6c9981..765da3007106a 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -19629,6 +19629,9 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 	if (!tr)
+ 		return -ENOMEM;
+ 
++	if (tgt_prog && tgt_prog->aux->tail_call_reachable)
++		tr->flags = BPF_TRAMP_F_TAIL_CALL_CTX;
++
+ 	prog->aux->dst_trampoline = tr;
+ 	return 0;
+ }
 -- 
 2.41.0
 
