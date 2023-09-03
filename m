@@ -1,86 +1,74 @@
-Return-Path: <bpf+bounces-9155-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9156-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE62D790C78
-	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 16:29:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2095C790CB8
+	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 17:15:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A9171C20446
-	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 14:29:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DD30280F93
+	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 15:15:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F795666;
-	Sun,  3 Sep 2023 14:28:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4668A3D79;
+	Sun,  3 Sep 2023 15:15:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DDB1539A
-	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 14:28:17 +0000 (UTC)
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA11697;
-	Sun,  3 Sep 2023 07:28:15 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68c3b9f85b7so206487b3a.2;
-        Sun, 03 Sep 2023 07:28:15 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18D1C28ED
+	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 15:15:33 +0000 (UTC)
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A31CED
+	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 08:14:59 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-565403bda57so139571a12.3
+        for <bpf@vger.kernel.org>; Sun, 03 Sep 2023 08:14:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693751295; x=1694356095; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GXV1VH0aENFBhlgyeq6hQvsVgH339T3EWStJqjKjW+o=;
-        b=iry41PyrpkV7Ny57Cr/afcfK2/SS8eUHsGTbKNY/Em4PSPLQkoufrHTR8RHtHkMNyK
-         GIWr3j1nnjSquvklGMlkBdZv9BjuUiglmYUAlB8imGpwus5VZZMky1QclI5sMcPtfOON
-         r0BldredxqtXiKss1b1oKadfQP22tGo/+lfNVuJJI+ZEW3Kmr+/B2qCSwe31X45fLRM/
-         R4H6rNwkASw7AluoQZiiNMxoxqaYysU5hwrww9WuUm3HRaxq/SqMujV4y7/22F9NZkYy
-         iZJ0iLUcj1HV6VIhR+NzB8SaiB07fJGie3z3Naj9eeGIahFWcyt6tQFPVn8rUqXGmQTu
-         /LMQ==
+        d=gmail.com; s=20221208; t=1693754099; x=1694358899; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yy70HFiaWfnz4Brc5xJnZkcb75qpfI3ZQ9kjvXhQ4lM=;
+        b=MNpYdOR2fC9S09Osb640vV4nK+xfcSuRPvn/fiIHR8eySowzYLA8h6+mIV+cyTL6dd
+         2MFNjc6oEjTN+aNeBrbrM/UsgQBg1YqWnnqZWWfJfBrhoCHXU+dbeb9Iuw7Pi2E+fvCA
+         8cXDiujw9yGnKI0wYq/Ik2PNcrZo3W1/rypNjde9wbWvv1Fh74XyXsPXTLNj/5jb3+a/
+         fL0Anw6xB31bY//O9YJFIKMZre2zkkRa2c+aLy+AgETbuqb0LpQZX8ROkwHVVjkkz9rz
+         evGn8J9FJs1BPxEJcduPRKtkCPF6ezF8ppdcc/bjDtWgKXORDKgJ4gWVIoBWHeC6BZHI
+         2/rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693751295; x=1694356095;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GXV1VH0aENFBhlgyeq6hQvsVgH339T3EWStJqjKjW+o=;
-        b=TzlknI79jo77jsDa0FC4L1qDRE/VeWpILVigMl5xuF2G1MQXwDqDpZbyzC/GJEDYWn
-         XJBanESnK2MoM3ChRoXqAB1d7SxcGUa0I73jP6LLCQhNZDSQ4WXs82WNz7YB33Z1qTv7
-         2VSiqwnOYyMDk3/aVmiYTh0H8v7+QbfqoZ7ObIwsNT8+3DLZbjY/FLRxocV3LHVnzCfn
-         2P/AXwALAguil1iAx4NPZbsTMOqkUOeGgdJNFTNSocdjlw5PXd8n5DA9vwNBfmLs4CV1
-         ArIR1kilBLXHXkN4Sv7ijGefXQVQMxj4IeM8sR06xhAO/+haP+spP7KJjkSbNxOF2T/V
-         1Rxg==
-X-Gm-Message-State: AOJu0YwayB2pZfQt9OvZ3cQqdDGREaVuyRGkch31EadI6WKmKJll59Di
-	lWbMUpvUI16GOmR4XpuwMV4=
-X-Google-Smtp-Source: AGHT+IFdvq/JFf626BfUvtNVCJRF9B3u4aRY6TYZl2FFVejJvFTTxCfr34+oEMSX0gsBmAmrtMW9Ng==
-X-Received: by 2002:a05:6a00:1893:b0:68c:42:d3dd with SMTP id x19-20020a056a00189300b0068c0042d3ddmr8198912pfh.27.1693751295248;
-        Sun, 03 Sep 2023 07:28:15 -0700 (PDT)
-Received: from vultr.guest ([2001:19f0:ac02:185:5400:4ff:fe8f:9150])
-        by smtp.gmail.com with ESMTPSA id b23-20020aa78117000000b0065a1b05193asm5809977pfi.185.2023.09.03.07.28.13
+        d=1e100.net; s=20221208; t=1693754099; x=1694358899;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yy70HFiaWfnz4Brc5xJnZkcb75qpfI3ZQ9kjvXhQ4lM=;
+        b=Gk441mP+ikhiuLPBOoiDX3E8zLGf7oVV5hP8rRwsXL1tosDsPcaEl4M6cVK5ST3q5Q
+         REmP0r9KfRv5unshB7fnkJ02Rkj1DB0mb5t6KzmJraaB9hca/rl/gZlc3X6OUpy+h4KY
+         eRSRgcKIOlhqxakeg+UV5/VKpUrkdMyqhLnPplsManHu7CKOMkhxC9w/Ytanyyp4ywcV
+         rQdbtXY1RJ6OPjm+LcMWu0jF+EqzAyKgtJkHIqJFC1nqOZ2KOXXY50ijO1Ca2B9848f2
+         QVFfOC2PC5ned6emgkeCP4+76DdbEwE3KP1xWgKu//eMS9X0vV13CZt2Neip8l9DOzBu
+         z+6Q==
+X-Gm-Message-State: AOJu0YxN73FbzNpf43ZXSmP7tZR7v9CvVc1NlLSoX1zyJMVlQ/Eg5J8F
+	qiPY5q7gw12wGtr7UGRWq/2fAj7ZVAQ=
+X-Google-Smtp-Source: AGHT+IHeNI+sPq7mEVQL/vcsFmnzVXxCmkxPJc0v907n13hqiJwPbES6FW/JSZSXAgy8rT3WgrXnSw==
+X-Received: by 2002:a05:6a20:12cb:b0:13d:af0e:4ee5 with SMTP id v11-20020a056a2012cb00b0013daf0e4ee5mr7663063pzg.18.1693754098654;
+        Sun, 03 Sep 2023 08:14:58 -0700 (PDT)
+Received: from localhost.localdomain (bb116-14-95-136.singnet.com.sg. [116.14.95.136])
+        by smtp.gmail.com with ESMTPSA id x17-20020aa784d1000000b00686940bfb77sm5882268pfn.71.2023.09.03.08.14.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 07:28:14 -0700 (PDT)
-From: Yafang Shao <laoar.shao@gmail.com>
+        Sun, 03 Sep 2023 08:14:58 -0700 (PDT)
+From: Leon Hwang <hffilwlqm@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
 	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	tj@kernel.org,
-	lizefan.x@bytedance.com,
-	hannes@cmpxchg.org,
-	yosryahmed@google.com
-Cc: cgroups@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 5/5] selftests/bpf: Add selftests for current_under_cgroupv1v2
-Date: Sun,  3 Sep 2023 14:28:00 +0000
-Message-Id: <20230903142800.3870-6-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20230903142800.3870-1-laoar.shao@gmail.com>
-References: <20230903142800.3870-1-laoar.shao@gmail.com>
+	maciej.fijalkowski@intel.com
+Cc: song@kernel.org,
+	iii@linux.ibm.com,
+	jakub@cloudflare.com,
+	hffilwlqm@gmail.com,
+	bpf@vger.kernel.org
+Subject: [RFC PATCH bpf-next v4 0/4] bpf, x64: Fix tailcall infinite loop
+Date: Sun,  3 Sep 2023 23:14:44 +0800
+Message-ID: <20230903151448.61696-1-hffilwlqm@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,149 +77,88 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+	HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add selftests for bpf_current_task_under_cgroup() on both cgroup1 and
-cgroup2. The result as follows,
+This patch series fixes a tailcall infinite loop on x64.
 
-  $ tools/testing/selftests/bpf/test_progs --name=current_under_cgroupv1v2
-  #62/1    current_under_cgroupv1v2/test_current_under_cgroup2:OK
-  #62/2    current_under_cgroupv1v2/test_current_under_cgroup1:OK
-  #62      current_under_cgroupv1v2:OK
-  Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+From commit ebf7d1f508a73871 ("bpf, x64: rework pro/epilogue and tailcall
+handling in JIT"), the tailcall on x64 works better than before.
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- .../bpf/prog_tests/current_under_cgroupv1v2.c      | 76 ++++++++++++++++++++++
- .../bpf/progs/test_current_under_cgroupv1v2.c      | 31 +++++++++
- 2 files changed, 107 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/current_under_cgroupv1v2.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_current_under_cgroupv1v2.c
+From commit e411901c0b775a3a ("bpf: allow for tailcalls in BPF subprograms
+for x64 JIT"), tailcall is able to run in BPF subprograms on x64.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/current_under_cgroupv1v2.c b/tools/testing/selftests/bpf/prog_tests/current_under_cgroupv1v2.c
-new file mode 100644
-index 0000000..62efca3
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/current_under_cgroupv1v2.c
-@@ -0,0 +1,76 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include "cgroup_helpers.h"
-+#include "test_current_under_cgroupv1v2.skel.h"
-+
-+#define CGROUP2_DIR "/current_under_cgroup2"
-+
-+static void attach_progs(int cgrp_fd)
-+{
-+	struct test_current_under_cgroupv1v2 *skel;
-+	int cgrp_map_fd, ret, idx = 0;
-+
-+	skel = test_current_under_cgroupv1v2__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_current_under_cgroupv1v2__open"))
-+		return;
-+
-+	cgrp_map_fd = bpf_map__fd(skel->maps.cgrp_map);
-+	ret = bpf_map_update_elem(cgrp_map_fd, &idx, &cgrp_fd, BPF_ANY);
-+	if (!ASSERT_OK(ret, "update_cgrp_map"))
-+		goto cleanup;
-+
-+	/* Attach LSM prog first */
-+	skel->links.lsm_run = bpf_program__attach_lsm(skel->progs.lsm_run);
-+	if (!ASSERT_OK_PTR(skel->links.lsm_run, "lsm_attach"))
-+		goto cleanup;
-+
-+	/* LSM prog will be triggered when attaching fentry */
-+	skel->links.fentry_run = bpf_program__attach_trace(skel->progs.fentry_run);
-+	ASSERT_NULL(skel->links.fentry_run, "fentry_attach");
-+
-+cleanup:
-+	test_current_under_cgroupv1v2__destroy(skel);
-+}
-+
-+static void current_under_cgroup1(void)
-+{
-+	int cgrp_fd, ret;
-+
-+	/* Setup cgroup1 hierarchy */
-+	ret = setup_classid_environment();
-+	if (!ASSERT_OK(ret, "setup_classid_environment"))
-+		return;
-+
-+	ret = join_classid();
-+	if (!ASSERT_OK(ret, "join_cgroup1"))
-+		goto cleanup;
-+
-+	cgrp_fd = open_classid();
-+	attach_progs(cgrp_fd);
-+	close(cgrp_fd);
-+
-+cleanup:
-+	/* Cleanup cgroup1 hierarchy */
-+	cleanup_classid_environment();
-+}
-+
-+static void current_under_cgroup2(void)
-+{
-+	int cgrp_fd;
-+
-+	cgrp_fd = test__join_cgroup(CGROUP2_DIR);
-+	if (!ASSERT_GE(cgrp_fd, 0, "cgroup_join_cgroup2"))
-+		return;
-+
-+	attach_progs(cgrp_fd);
-+	close(cgrp_fd);
-+}
-+
-+void test_current_under_cgroupv1v2(void)
-+{
-+	if (test__start_subtest("test_current_under_cgroup2"))
-+		current_under_cgroup2();
-+	if (test__start_subtest("test_current_under_cgroup1"))
-+		current_under_cgroup1();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_current_under_cgroupv1v2.c b/tools/testing/selftests/bpf/progs/test_current_under_cgroupv1v2.c
-new file mode 100644
-index 0000000..9f0af0b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_current_under_cgroupv1v2.c
-@@ -0,0 +1,31 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CGROUP_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(u32));
-+	__uint(max_entries, 1);
-+} cgrp_map SEC(".maps");
-+
-+SEC("lsm/bpf")
-+int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size)
-+{
-+	if (cmd != BPF_LINK_CREATE)
-+		return 0;
-+
-+	if (bpf_current_task_under_cgroup(&cgrp_map, 0 /* map index */))
-+		return -1;
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(fentry_run)
-+{
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+From commit 5b92a28aae4dd0f8 ("bpf: Support attaching tracing BPF program
+to other BPF programs"), BPF program is able to trace other BPF programs.
+
+How about combining them all together?
+
+1. FENTRY/FEXIT on a BPF subprogram.
+2. A tailcall runs in the BPF subprogram.
+3. The tailcall calls the subprogram's caller.
+
+As a result, a tailcall infinite loop comes up. And the loop would halt
+the machine.
+
+As we know, in tail call context, the tail_call_cnt propagates by stack
+and rax register between BPF subprograms. So do in trampolines.
+
+How did I discover the bug?
+
+From commit 7f6e4312e15a5c37 ("bpf: Limit caller's stack depth 256 for
+subprogs with tailcalls"), the total stack size limits to around 8KiB.
+Then, I write some bpf progs to validate the stack consuming, that are
+tailcalls running in bpf2bpf and FENTRY/FEXIT tracing on bpf2bpf[1].
+
+At that time, accidently, I made a tailcall loop. And then the loop halted
+my VM. Without the loop, the bpf progs would consume over 8KiB stack size.
+But the _stack-overflow_ did not halt my VM.
+
+With bpf_printk(), I confirmed that the tailcall count limit did not work
+expectedly. Next, read the code and fix it.
+
+Finally, unfortunately, I only fix it on x64 but other arches. As a
+result, CI tests failed because this bug hasn't been fixed on s390x.
+
+Some helps on s390x are requested.
+
+v3 -> v4:
+  * Suggestions from Maciej:
+    * Separate tail_call_cnt initialisation to a single patch.
+    * Unnecessary to check subprog.
+
+v2 -> v3:
+  * Suggestions from Alexei:
+    * Fix comment style.
+    * Remove FIXME comment.
+    * Remove arch_prepare_bpf_trampoline() function comment update.
+    * Remove the unnecessary 'tgt_prog->aux->func[subprog]->is_func' check.
+
+[1]: https://github.com/Asphaltt/learn-by-example/tree/main/ebpf/tailcall-stackoverflow
+
+Leon Hwang (4):
+  bpf, x64: Comment tail_call_cnt initialisation
+  bpf, x64: Fix tailcall infinite loop
+  selftests/bpf: Correct map_fd to data_fd in tailcalls
+  selftests/bpf: Add testcases for tailcall infinite loop fixing
+
+ arch/x86/net/bpf_jit_comp.c                   |  32 +-
+ include/linux/bpf.h                           |   5 +
+ kernel/bpf/trampoline.c                       |   4 +-
+ kernel/bpf/verifier.c                         |   3 +
+ .../selftests/bpf/prog_tests/tailcalls.c      | 311 +++++++++++++++++-
+ .../bpf/progs/tailcall_bpf2bpf_fentry.c       |  18 +
+ .../bpf/progs/tailcall_bpf2bpf_fexit.c        |  18 +
+ 7 files changed, 377 insertions(+), 14 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fentry.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fexit.c
+
+
+base-commit: 9930e4af4b509bcf6f060b09b16884f26102d110
 -- 
-1.8.3.1
+2.41.0
 
 
