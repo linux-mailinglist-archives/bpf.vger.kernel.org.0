@@ -1,138 +1,144 @@
-Return-Path: <bpf+bounces-9149-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9150-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B352E790B37
-	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 10:23:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8589A790C72
+	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 16:28:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8232A2813E3
-	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 08:23:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 707C01C203B0
+	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 14:28:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 662D917F4;
-	Sun,  3 Sep 2023 08:23:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156E03C2B;
+	Sun,  3 Sep 2023 14:28:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3160115A7
-	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 08:23:47 +0000 (UTC)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60DD136
-	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 01:23:46 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3838J4xi021292;
-	Sun, 3 Sep 2023 08:23:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=sH7llzHlTaaQy9z36rJMBA+LvNQ7lRRBsAmSk2kM0ac=;
- b=MQpPVrzVpK+oipqP0LjByhslgxpkJRnErRUnlbcguhod+A7/uvH4ON0lhSQPj6zfFomk
- haRGpLdSoTuHSnZpmK2jLT8O53+mzCDv/VA+CyBApwYwVab116ftVMkmsIBsajArgJ3p
- BluICh/Ka+oZ70qB3Fh8Ko+/gykqTz4UL55+N1Ay/eH81waSo/Q2UyTEkP9WxlF8M4Mn
- BxTaCdi0A0r6YoS5snX/2xmvJj6GBGTL0B9HyVklIrDILxTaEReC4qfCvAtDT47Q9aRr
- A7Rn6v64Ode4+0plmbhLEZboq+HT+YlzACW5u3VwnBypXk3rVIIWmjnX2y/FrHCt8f4L pg== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3svphb81ej-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 03 Sep 2023 08:23:28 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38387Dvm006668;
-	Sun, 3 Sep 2023 08:23:28 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svgvjsuq3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 03 Sep 2023 08:23:27 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3838NOAj43319800
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 3 Sep 2023 08:23:25 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D4AC520043;
-	Sun,  3 Sep 2023 08:23:24 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 38FE220040;
-	Sun,  3 Sep 2023 08:23:24 +0000 (GMT)
-Received: from [9.171.29.233] (unknown [9.171.29.233])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Sun,  3 Sep 2023 08:23:24 +0000 (GMT)
-Message-ID: <f7cdb053779c7b47042fbb7a5ba46edc67b9aa8f.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next 02/11] net: netfilter: Adjust timeouts of
- non-confirmed CTs in bpf_ct_insert_entry()
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov
- <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik
- <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>, fw@strlen.de,
-        pablo@netfilter.org
-Date: Sun, 03 Sep 2023 10:23:23 +0200
-In-Reply-To: <08f2e910-2bd8-8cf6-688b-4bdf0161c969@iogearbox.net>
-References: <20230830011128.1415752-1-iii@linux.ibm.com>
-	 <20230830011128.1415752-3-iii@linux.ibm.com>
-	 <08f2e910-2bd8-8cf6-688b-4bdf0161c969@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87992593
+	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 14:28:09 +0000 (UTC)
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE6E97;
+	Sun,  3 Sep 2023 07:28:08 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68a56401c12so303839b3a.2;
+        Sun, 03 Sep 2023 07:28:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693751288; x=1694356088; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wXDwjjmxqBAOxuWYsnka7JEJGco2H68JBbaxg6PfkIk=;
+        b=jSNWjZ5wyBil44ZjC6NBwT9tp9IDYKITmez76HTetNXNAJrdXuSQ73e82iagc3zblY
+         lT5N439w2C5Lp38k8a5dQNI3BSkVScx/GMR7XBDsAuBF0fQ7TzLkzXiYP+57XulMi4vS
+         Cfj3mL5QoV5IVkF5LWuiqU64aL7FliupZM6JpYFdmXiS6S3+VHDBtqYlmVIDAWuz2i8t
+         tvJ4l24W4SxWYox+tKm8dhLVdAvNhG20EQfWvl/cRh7Xq2Nri1le6V3oJI7788Q7Qffu
+         6TvqjfZMRiGTC/fGFYdIne9UrdoaQ5PQE00jTEgTaE3NBLuNgZ61BP0dUCwNYojiUdpG
+         mOLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693751288; x=1694356088;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wXDwjjmxqBAOxuWYsnka7JEJGco2H68JBbaxg6PfkIk=;
+        b=WbiJnP5it14neHf5Ih8F5iYe2b9KvZkQ7wpp/j4Cd8Q9vIs+ZT+gum9PZarB9BY5Hz
+         4uSqP/R5+Ozil1b8khP6rF7dTJ2Er2N7fRE5zxio1W7BIXBcj3gcJc385BEmDsN6utrA
+         Vq4mq/h2nDZ/kGhRWVvmydKIphEvVpfhb7eyMJnnwGQReclhOOvcoxCSs8wNnWOST7Lj
+         rlzrxcAjd/EZgOcVSDosIE96AAEFrddzVOvKGhwSholI3AuoocB5vsy6RI/VtMVM5g8p
+         fv3D+eZNHjH8D3jH5Qx2RBBBmmUae2VHo07TUUtPVCKbuQH+1fJDO7CzS9vayXgn9+Fc
+         2n5Q==
+X-Gm-Message-State: AOJu0YyFUHmYDwzQDO7b7sp6YgqZIV8LL877Yr8sT8xcBxRmYo2/EbSn
+	yGG+LVn6m/CiYnmAKOJuRNI=
+X-Google-Smtp-Source: AGHT+IHN5LVt6UWxQXM7fpLnvTYDUubpKJGTP1gKhXqoPOAIWTMH5ncDoNt1iwVWBa6pMdruvYageQ==
+X-Received: by 2002:a05:6a00:2385:b0:68c:6ebc:2210 with SMTP id f5-20020a056a00238500b0068c6ebc2210mr7248043pfc.18.1693751287792;
+        Sun, 03 Sep 2023 07:28:07 -0700 (PDT)
+Received: from vultr.guest ([2001:19f0:ac02:185:5400:4ff:fe8f:9150])
+        by smtp.gmail.com with ESMTPSA id b23-20020aa78117000000b0065a1b05193asm5809977pfi.185.2023.09.03.07.28.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Sep 2023 07:28:07 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	tj@kernel.org,
+	lizefan.x@bytedance.com,
+	hannes@cmpxchg.org,
+	yosryahmed@google.com
+Cc: cgroups@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 0/5] bpf, cgroup: Enable cgroup_array map on cgroup1 
+Date: Sun,  3 Sep 2023 14:27:55 +0000
+Message-Id: <20230903142800.3870-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: fVoI2X_sfE7vipjeJnGmlRsu6ocgzd7B
-X-Proofpoint-ORIG-GUID: fVoI2X_sfE7vipjeJnGmlRsu6ocgzd7B
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-03_05,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- lowpriorityscore=0 mlxlogscore=999 bulkscore=0 priorityscore=1501
- spamscore=0 mlxscore=0 adultscore=0 malwarescore=0 phishscore=0
- impostorscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2308100000 definitions=main-2309030074
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, 2023-08-31 at 17:30 +0200, Daniel Borkmann wrote:
-> [ +Florian ]
->=20
-> On 8/30/23 3:07 AM, Ilya Leoshkevich wrote:
-> > bpf_nf testcase fails on s390x: bpf_skb_ct_lookup() cannot find the
-> > entry that was added by bpf_ct_insert_entry() within the same BPF
-> > function.
-> >=20
-> > The reason is that this entry is deleted by nf_ct_gc_expired().
-> >=20
-> > The CT timeout starts ticking after the CT confirmation; therefore
-> > nf_conn.timeout is initially set to the timeout value, and
-> > __nf_conntrack_confirm() sets it to the deadline value.
-> > bpf_ct_insert_entry() sets IPS_CONFIRMED_BIT, but does not adjust
-> > the
-> > timeout, making its value meaningless and causing false positives.
-> >=20
-> > Fix the problem by making bpf_ct_insert_entry() adjust the timeout,
-> > like __nf_conntrack_confirm().
-> >=20
-> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
->=20
-> Should we route this fix via bpf tree instead? Also, could you reply
-> with
-> a Fixes tag?
+Currently, the cgroup_array map serves as a critical component for
+bpf_current_under_cgroup() and bpf_skb_under_cgroup() functions, allowing
+us to determine whether a task or a socket buffer (skb) resides within a
+specific cgroup. However, a limitation exists as we can only store cgroup2
+file descriptors in the cgroup_array map. This limitation stems from the
+fact that cgroup_get_from_fd() exclusively supports cgroup2 file
+descriptors. Fortunately, an alternative solution presents itself by
+leveraging cgroup_v1v2_get_from_fd(), which accommodates both cgroup1 and
+cgroup2 file descriptors.
 
-Yes, putting this into the bpf tree makes sense to me. Should I resend
-with a different subject-prefix?
+It is essential to note that it is safe to utilize a cgroup1 pointer within
+both bpf_current_under_cgroup() and bpf_skb_under_cgroup(), with the result
+of receiving a "false" return value when verifying a cgroup1 pointer. To
+enable the checking of tasks under a cgroup1 hierarchy, we can make a minor
+modification to task_under_cgroup_hierarchy() to add support for cgroup1.
 
-Fixes: 2cdaa3eefed8 ("netfilter: conntrack: restore IPS_CONFIRMED out
-of nf_conntrack_hash_check_insert()")
+In our specific use case, we intend to use bpf_current_under_cgroup() to
+audit whether the current task resides within specific containers.
+Subsequently, we can use this information to create distinct ACLs within
+our LSM BPF programs, enabling us to control specific operations performed
+by these tasks.
 
-[...]
+Considering the widespread use of cgroup1 in container environments,
+coupled with the considerable time it will take to transition to cgroup2,
+implementing this change will significantly enhance the utility of BPF
+in container scenarios. This is especially noteworthy because the necessary
+adjustments can be made with minimal alterations to both the cgroup
+subsystem and the BPF subsystem.
+
+Yafang Shao (5):
+  cgroup: Enable task_under_cgroup_hierarchy() on cgroup1
+  bpf: Enable cgroup_array map on cgroup1
+  selftests/bpf: Fix issues in setup_classid_environment()
+  selftests/bpf: Add new cgroup helper open_classid()
+  selftests/bpf: Add selftests for current_under_cgroupv1v2
+
+ include/linux/cgroup.h                             | 24 ++++++-
+ kernel/bpf/arraymap.c                              |  2 +-
+ tools/testing/selftests/bpf/cgroup_helpers.c       | 34 ++++++++--
+ tools/testing/selftests/bpf/cgroup_helpers.h       |  1 +
+ .../bpf/prog_tests/current_under_cgroupv1v2.c      | 76 ++++++++++++++++++++++
+ .../bpf/progs/test_current_under_cgroupv1v2.c      | 31 +++++++++
+ 6 files changed, 160 insertions(+), 8 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/current_under_cgroupv1v2.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_current_under_cgroupv1v2.c
+
+-- 
+1.8.3.1
 
 
