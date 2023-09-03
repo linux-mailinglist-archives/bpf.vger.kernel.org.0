@@ -1,83 +1,81 @@
-Return-Path: <bpf+bounces-9146-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9147-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 536677908E2
-	for <lists+bpf@lfdr.de>; Sat,  2 Sep 2023 19:28:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 992F4790A97
+	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 04:44:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B102F2816A6
-	for <lists+bpf@lfdr.de>; Sat,  2 Sep 2023 17:28:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 460BB1C204F8
+	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 02:44:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 757B8AD22;
-	Sat,  2 Sep 2023 17:28:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8138816;
+	Sun,  3 Sep 2023 02:44:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 328873C1E;
-	Sat,  2 Sep 2023 17:28:34 +0000 (UTC)
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF8EA4;
-	Sat,  2 Sep 2023 10:28:33 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4c0so246834a12.0;
-        Sat, 02 Sep 2023 10:28:33 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861437F
+	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 02:44:29 +0000 (UTC)
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B6512F;
+	Sat,  2 Sep 2023 19:44:27 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-64a5bc52b0aso2635326d6.3;
+        Sat, 02 Sep 2023 19:44:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693675711; x=1694280511; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7IaXdsjn5RYlEEBpoyNU0z5sLpOD8WZpjwwpazlMpBw=;
-        b=KLMGaxDuiBNCaeQ/0jcYOVQ+++nkre029lGe0YLlVSmUkGk/WxaXSUrhAVvodYZwyl
-         aX32FjR4SuTh2j9folV5CHG7rk5JZfze0gc/My6kQhXGeoH17siFS7jh5xphsWWwkz5H
-         YpyMK7azi+HcH8WpRef72W2uXOH2a4t/CgVnuwnVSEP/MYCdWT6Bzf2LPobTbY8Doijl
-         hlfZiHZGyVu+vBTp4xV/rPMrMEVdidmBi8cp7+qDUHkk16n2+vkGMJZAhC8H3fwZ/c5F
-         alAlVhJaS1sqnA76HkNUYvsv9Ik+CQ4glF5IctBXkO8dRPVKwvcRgJ71JKqqq/4VOKNE
-         tFXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693675711; x=1694280511;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1693709066; x=1694313866; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7IaXdsjn5RYlEEBpoyNU0z5sLpOD8WZpjwwpazlMpBw=;
-        b=lZe6U7r/Ra009KeaUpXyYYJVSi+PKmqufCTflXZWU8V9Z27IBTGSTtcgBODFPvIfSy
-         xNLFvfg3rM0f+YJ8Dq5OJbZVK4Vqht1ySmTK7uyTwmG5XyCNFPDEWwvsB18YfPxmq14/
-         gz5Mr1QZmGPT74k+r1tAHKyzCgCM0knl6H9q0LBzY+sBTGb3GaNKEJlVL96tRGbmjiwG
-         9ERX6jt5goTWCtRQCIDPQPvlgpZ2aDwybRCuTa7uA98rHm3YpfgjTVK16egqu1OdsliT
-         rp+W0l/RedJ0GItyeG/svwM16mc/MfQi7YAAlBH2BaKYqahozIIVuEcO5PlkQFS+nq3Q
-         5DRQ==
-X-Gm-Message-State: AOJu0Yyglv96nDK0EzztWz0ZYsNwwKdL4I1f0uXgj5pb6uQeHP4E3w+t
-	YlorkXl5hWVqx38frNFv3LXqvXZ4CWI=
-X-Google-Smtp-Source: AGHT+IGSCYAgXxnVOzQIZjYP5KzsSF5/VEt6SWa7WO48xvXSfS0cphv1h1+GSZPNfXi7oZq8s52/yQ==
-X-Received: by 2002:a05:6402:2684:b0:52b:db44:79e3 with SMTP id w4-20020a056402268400b0052bdb4479e3mr10303419edd.4.1693675711237;
-        Sat, 02 Sep 2023 10:28:31 -0700 (PDT)
-Received: from krava ([83.240.63.222])
-        by smtp.gmail.com with ESMTPSA id n13-20020a05640206cd00b0052a1a623267sm3599085edy.62.2023.09.02.10.28.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Sep 2023 10:28:30 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sat, 2 Sep 2023 19:28:28 +0200
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>,
-	John Fastabend <john.fastabend@gmail.com>, xukuohai@huawei.com,
-	edumazet@google.com, cong.wang@bytedance.com, bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH bpf] bpf: sockmap, fix skb refcnt race after locking
- changes
-Message-ID: <ZPNwvO8ViqLD3MmX@krava>
-References: <20230901202137.214666-1-john.fastabend@gmail.com>
- <ZPJVlLXB/mggaLh5@krava>
- <d8ba77cfeff26a8d52ef05d1bae43b5ceffd1b83.camel@gmail.com>
+        bh=t1GAPNmXBdNBOSiPidq4SuOnNGpXyf62DRjoqSlEOKo=;
+        b=N3EsxrN6RNGcIPDhcpHMh9mIxInJfKdN6iWkPBH828yhtVT3OqqV6SSeflQBGwOks0
+         VfGoaWfgiygvMpNqUPl57pIxo4d5A6L5CxoQLiS3sW8mOgoWG214ns4m6lhMfUvqcWWx
+         7eDAfC2vndGy1LJu5ARi0Xvi8iYZ67xCK+Klp9Pl7gCJVPESu1iPR9ushYnVeraDzFd4
+         CqXilWaq08FkJt4MFTqc3hjQILrW12BewbWdhH4m8uCS41ns6BC1ixFJgKDY2JaF3Dcf
+         txvEidYgsmfWlS3htEgC861O3N/rSwZNIQpwyM7oE4glV1+XEt4ENFjhIaLanGnqL6Um
+         K5zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693709066; x=1694313866;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t1GAPNmXBdNBOSiPidq4SuOnNGpXyf62DRjoqSlEOKo=;
+        b=dBK6opNvNViLB1mtj7NHKXE7qhQCTG98fLh5mU86zmmX5gmfroaKbkqgiIhKX1rYKe
+         aiHjL4J29tghrLGO8IQ6ZkcU9KzkanHw5H8KHOnWeOgIi6SZHa0Xckd+CuxkRkBT1xm5
+         EJ35vfjh9QnvdDc+/HLBwX2V7/kljZYeRT2ftwGA1jCWD71pBZ5jS9kd5SIS6ClKYOJI
+         lyBbcO3+ioATZNVokNmVqWIMyEq8Rrfx2Ud8iAJp73y+7wutX6ivDigYtdzNf8dJA44M
+         LSD2NvCuN+fm4GXk90M4A4clACw1quZEIW3r5u6R2aDoiI/KrC/kRwhn66NpM3w8Iy4e
+         fIAw==
+X-Gm-Message-State: AOJu0YysCvNpTwojC6AKkHpqO/r/D5xOu50IfjtzU337X+HrTu5AmR/X
+	8FSubYiBQWohrO3AFCQM3Gf2G60rYnRyVn3gnEc=
+X-Google-Smtp-Source: AGHT+IHbSGrDC3xasIMg2h9SHHXg5ol1Cyq5w/p/l2eUSGrtnMxS0UghYfA4zwp55tXGNfaK7lqcxQoRN5HcF/N9iTw=
+X-Received: by 2002:a0c:a9c8:0:b0:651:75a4:75b0 with SMTP id
+ c8-20020a0ca9c8000000b0065175a475b0mr7632518qvb.1.1693709066298; Sat, 02 Sep
+ 2023 19:44:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d8ba77cfeff26a8d52ef05d1bae43b5ceffd1b83.camel@gmail.com>
+References: <tencent_4F0CF08592B31A2E69546C5E174785109F09@qq.com> <tencent_2B465711F30DC88514B2842F1D54005E8109@qq.com>
+In-Reply-To: <tencent_2B465711F30DC88514B2842F1D54005E8109@qq.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Sun, 3 Sep 2023 10:43:50 +0800
+Message-ID: <CALOAHbDvA8yG0=ep3e+MbsWu0oeHzoDUzWGf9mzApN_4za09LQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v10 0/2] selftests/bpf: Optimize kallsyms cache
+To: Rong Tao <rtoax@foxmail.com>
+Cc: alexandre.torgue@foss.st.com, andrii@kernel.org, ast@kernel.org, 
+	bpf@vger.kernel.org, daniel@iogearbox.net, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	martin.lau@linux.dev, mcoquelin.stm32@gmail.com, mykolal@fb.com, 
+	olsajiri@gmail.com, rongtao@cestc.cn, sdf@google.com, shuah@kernel.org, 
+	song@kernel.org, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -85,50 +83,23 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, Sep 02, 2023 at 12:24:01AM +0300, Eduard Zingerman wrote:
+On Sat, Sep 2, 2023 at 1:24=E2=80=AFPM Rong Tao <rtoax@foxmail.com> wrote:
+>
+> Hi, every one.
+>
+> I'm so sorry, that i'm not familier with 'how to submit patch series',
+> I just sent some emails repeatedly using the git send-email command,
+> please ignore the error messages.
+>
+> PS: How to send patch collections using git send-email?
 
-SNIP
+$ git send-email --to <outreachy mailing list if required> --cc
+<addresses from get_maintainer.pl output> /tmp/*.patch
 
-> > >  static void sk_psock_skb_state(struct sk_psock *psock,
-> > > @@ -685,9 +691,7 @@ static void sk_psock_backlog(struct work_struct *work)
-> > >  		} while (len);
-> > >  
-> > >  		skb = skb_dequeue(&psock->ingress_skb);
-> > > -		if (!ingress) {
-> > > -			kfree_skb(skb);
-> > > -		}
-> > > +		kfree_skb(skb);
-> > >  	}
-> > >  end:
-> > >  	mutex_unlock(&psock->work_mutex);
-> > > -- 
-> > > 2.33.0
-> > > 
-> > 
-> > there's no crash wit with fix, but I noticed I occasionally get FAIL
-> > 
-> 
-> Please note this patch:
-> https://lore.kernel.org/bpf/20230901031037.3314007-1-xukuohai@huaweicloud.com/
-> Which should fix the test in question.
+See also the section "Using git format-patch to send patchsets" in
+https://kernelnewbies.org/FirstKernelPatch
 
-ah right it does, thanks
-
-Tested-by: Jiri Olsa <jolsa@kernel.org>
-
-jirka
-
-> 
-> > #212/78  sockmap_listen/sockmap Unix test_unix_redir:OK
-> > ./test_progs:vsock_unix_redir_connectible:1501: ingress: write: Transport endpoint is not connected
-> > vsock_unix_redir_connectible:FAIL:1501
-> > ./test_progs:vsock_unix_redir_connectible:1501: egress: write: Transport endpoint is not connected
-> > vsock_unix_redir_connectible:FAIL:1501
-> > #212/79  sockmap_listen/sockmap VSOCK test_vsock_redir:FAIL
-> > #212/80  sockmap_listen/sockhash IPv4 TCP test_insert_invalid:OK
-> > 
-> > no idea if it's related
-> > 
-> > jirka
-> 
+--=20
+Regards
+Yafang
 
