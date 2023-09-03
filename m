@@ -1,477 +1,186 @@
-Return-Path: <bpf+bounces-9160-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9161-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCBAA790CBC
-	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 17:16:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C06AF790DD3
+	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 21:55:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2726F280F4B
-	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 15:16:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FEC4280F5B
+	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 19:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36E783FFA;
-	Sun,  3 Sep 2023 15:15:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1074BA29;
+	Sun,  3 Sep 2023 19:55:02 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF244539A
-	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 15:15:46 +0000 (UTC)
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E89133
-	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 08:15:10 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68a6f6a66e1so330291b3a.2
-        for <bpf@vger.kernel.org>; Sun, 03 Sep 2023 08:15:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693754109; x=1694358909; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=emsdL79mNwcx/aHgJI1te2fCXQqPIdLIm3CHxHOThlg=;
-        b=qflp8iqV0D+S/YmSc5D9odf0l2LBtJFOHKAsf1b86+FEsjyZnuRsc0PczI5DsXdj0C
-         bAwJ+UHhtrB/lMIOLg93iB9JxDT75x/4NewaUtFjILhqX/3SUUbnntmXLkSikzxnHFD+
-         NLqyMt8Vvh4oQghP6VvJi36mqjAXtkNsiE85qsHUk/ti8LeoHcYqZ4uoTVDyLF+HGWvf
-         4dN6ltd/EgaHeNniPFL/gVRms3YZh+Ce6LCVUQQi6q0DCda76JMXsgI7oKcz1E+T5SCY
-         2YDVj8O/PDvHk5UFqGdk1wmVucdJiQwPSw6wBwZssreqI82J5YmgtCP+WZTYGC7K5Y0Q
-         +MoQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FA6D2F49
+	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 19:55:02 +0000 (UTC)
+Received: from mail-pf1-f207.google.com (mail-pf1-f207.google.com [209.85.210.207])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D416EDA
+	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 12:55:00 -0700 (PDT)
+Received: by mail-pf1-f207.google.com with SMTP id d2e1a72fcca58-68bec4380edso888933b3a.1
+        for <bpf@vger.kernel.org>; Sun, 03 Sep 2023 12:55:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693754109; x=1694358909;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=emsdL79mNwcx/aHgJI1te2fCXQqPIdLIm3CHxHOThlg=;
-        b=dH3idTzjpqB5l3qwneEP8BMEsar1Zh0gz4qEuFoSn8szMWHPWdBV1/r8vcjKSmO6sA
-         J0SKoD2M2ewtG1dFYvBa4Osscp/DjgVqa4qnZoGdhU66wPSgEqaGKcagTty9UkqvBgTu
-         90esLd0p1HFRFS6bddZN6NjR6+hP2C2ahN7fDAFUq0CGbl6XSYp7gWbJh4YQG2UonKzY
-         2ZgaQRT2JhJCL5mRRicdwZtNhp9f0tAM+g+xSlBf1Hb5tezc23sq2GhoRo8PGtT9Abjc
-         X4eATAFIewFjul5n2A3R6mkvprg3ElyXEP0Xbf3x1xitoXKk2ONv6yfd57JF/IXuUVmg
-         OqqQ==
-X-Gm-Message-State: AOJu0Yyrw7BO83dHUYk53NOYoJ5a8X/FIG1SRVyz6O4KHnYSaDjFtLTh
-	vjT+G90O4/93BEQlpb+VVuQ=
-X-Google-Smtp-Source: AGHT+IGQEkhpCFm1Mwy1/OQQ8/+bfCXwPLSw7cJMyjkv6v+xEos9bKcHwyn2qrbPEQIw6dEsPnkndw==
-X-Received: by 2002:a05:6a20:9759:b0:10c:7c72:bdf9 with SMTP id hs25-20020a056a20975900b0010c7c72bdf9mr5813483pzc.29.1693754109555;
-        Sun, 03 Sep 2023 08:15:09 -0700 (PDT)
-Received: from localhost.localdomain (bb116-14-95-136.singnet.com.sg. [116.14.95.136])
-        by smtp.gmail.com with ESMTPSA id x17-20020aa784d1000000b00686940bfb77sm5882268pfn.71.2023.09.03.08.15.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 08:15:09 -0700 (PDT)
-From: Leon Hwang <hffilwlqm@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	maciej.fijalkowski@intel.com
-Cc: song@kernel.org,
-	iii@linux.ibm.com,
-	jakub@cloudflare.com,
-	hffilwlqm@gmail.com,
-	bpf@vger.kernel.org
-Subject: [RFC PATCH bpf-next v4 4/4] selftests/bpf: Add testcases for tailcall infinite loop fixing
-Date: Sun,  3 Sep 2023 23:14:48 +0800
-Message-ID: <20230903151448.61696-5-hffilwlqm@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230903151448.61696-1-hffilwlqm@gmail.com>
-References: <20230903151448.61696-1-hffilwlqm@gmail.com>
+        d=1e100.net; s=20221208; t=1693770900; x=1694375700;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uWa3iwwkzdPY4YildIzHGcIx9uOwREDiHAagNULjXhs=;
+        b=S7tz7DKk0JYu+ARDmYcNXz8eJvanXm9v09lbsjx4hty56ObvyvpuyG+MMuXQfzDmA+
+         Lo4ymNgzjczNDmHon3W7TBAXWEcgRNkb1qCdqkh7xdCzqnGxYABhJ7DJ0gtC5kFpGZBh
+         XbcFR7FYA5JqafwjypuyZkx5Un2+q2Gt32NQYarvQowg8y5/iQQF9LFUTehx/t3ZZS5b
+         PQkO9gfWQH94w6inIUj9VV6oPSfOWl5MflOEZ+OT4QQtyDNJl2fqbwkvjchH7QZFO7nM
+         EobqZ6IX+3Adt3oYwWZ0hYRhHeFybaN6rSe95gK+MCcmcXwvPy37RU1VKHW47IHDE3/j
+         AbjQ==
+X-Gm-Message-State: AOJu0Yy9zktfwFi58Iz/y4HuL6vUhLNw1FH4b1RLZ4rUcoonCBl9X9JY
+	pmyPUbpwRoI3ROwiu0Ujv1tLEuBAq0FPumlFDqZfmPXa4Joo
+X-Google-Smtp-Source: AGHT+IEkIjg2R/lH3aIeSKcj8ZfWkzZLtK0sefjowJVjw++uev0i4Xd3oKIQOd84JTflLcP94YlaiBFNWxE7ewL0Qeag+qvpqhvf
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-	HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6a00:4c11:b0:68a:6787:8413 with SMTP id
+ ea17-20020a056a004c1100b0068a67878413mr2744479pfb.3.1693770900403; Sun, 03
+ Sep 2023 12:55:00 -0700 (PDT)
+Date: Sun, 03 Sep 2023 12:55:00 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d97f3c060479c4f8@google.com>
+Subject: [syzbot] [bpf?] general protection fault in bpf_prog_offload_verifier_prep
+From: syzbot <syzbot+291100dcb32190ec02a8@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com, hawk@kernel.org, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	kuba@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
+	netdev@vger.kernel.org, sdf@google.com, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+	SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add 4 test cases to confirm the tailcall infinite loop bug has been fixed.
+Hello,
 
-Like tailcall_bpf2bpf cases, do fentry/fexit on the bpf2bpf, and then
-check the final count result.
+syzbot found the following issue on:
 
-tools/testing/selftests/bpf/test_progs -t tailcalls
-226/13  tailcalls/tailcall_bpf2bpf_fentry:OK
-226/14  tailcalls/tailcall_bpf2bpf_fexit:OK
-226/15  tailcalls/tailcall_bpf2bpf_fentry_fexit:OK
-226/16  tailcalls/tailcall_bpf2bpf_fentry_entry:OK
-226     tailcalls:OK
-Summary: 1/16 PASSED, 0 SKIPPED, 0 FAILED
+HEAD commit:    fa09bc40b21a igb: disable virtualization features on 82580
+git tree:       net
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=13382fa8680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=634e05b4025da9da
+dashboard link: https://syzkaller.appspot.com/bug?extid=291100dcb32190ec02a8
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1529c448680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15db0248680000
 
-Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/7ab461d84992/disk-fa09bc40.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/3ac6d43ab2db/vmlinux-fa09bc40.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/778d096a134e/bzImage-fa09bc40.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+291100dcb32190ec02a8@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 1 PID: 5055 Comm: syz-executor625 Not tainted 6.5.0-syzkaller-04012-gfa09bc40b21a #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+RIP: 0010:bpf_prog_offload_verifier_prep+0xaa/0x170 kernel/bpf/offload.c:295
+Code: 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 a1 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 65 10 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 0f 85 93 00 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b
+RSP: 0018:ffffc900039ff7f8 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffffc9000156e000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff81a8cf76 RDI: ffff888021b25f10
+RBP: ffff888021b25f00 R08: 0000000000000001 R09: fffffbfff195203d
+R10: ffffffff8ca901ef R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000005 R14: 0000000000000003 R15: ffffc9000156e060
+FS:  0000555556071380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000100 CR3: 0000000022f6b000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bpf_check+0x52f3/0xabd0 kernel/bpf/verifier.c:19762
+ bpf_prog_load+0x153a/0x2270 kernel/bpf/syscall.c:2708
+ __sys_bpf+0xbb6/0x4e90 kernel/bpf/syscall.c:5335
+ __do_sys_bpf kernel/bpf/syscall.c:5439 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5437 [inline]
+ __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5437
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f7c0df78ea9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffde3592128 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f7c0df78ea9
+RDX: 0000000000000090 RSI: 0000000020000940 RDI: 0000000000000005
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000100000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bpf_prog_offload_verifier_prep+0xaa/0x170 kernel/bpf/offload.c:295
+Code: 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 a1 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 65 10 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 0f 85 93 00 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b
+RSP: 0018:ffffc900039ff7f8 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffffc9000156e000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff81a8cf76 RDI: ffff888021b25f10
+RBP: ffff888021b25f00 R08: 0000000000000001 R09: fffffbfff195203d
+R10: ffffffff8ca901ef R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000005 R14: 0000000000000003 R15: ffffc9000156e060
+FS:  0000555556071380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000100 CR3: 0000000022f6b000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess), 3 bytes skipped:
+   0:	df 48 89             	fisttps -0x77(%rax)
+   3:	fa                   	cli
+   4:	48 c1 ea 03          	shr    $0x3,%rdx
+   8:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   c:	0f 85 a1 00 00 00    	jne    0xb3
+  12:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  19:	fc ff df
+  1c:	4c 8b 65 10          	mov    0x10(%rbp),%r12
+  20:	4c 89 e2             	mov    %r12,%rdx
+  23:	48 c1 ea 03          	shr    $0x3,%rdx
+* 27:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2b:	0f 85 93 00 00 00    	jne    0xc4
+  31:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  38:	fc ff df
+  3b:	4d                   	rex.WRB
+  3c:	8b                   	.byte 0x8b
+
+
 ---
- .../selftests/bpf/prog_tests/tailcalls.c      | 299 ++++++++++++++++++
- .../bpf/progs/tailcall_bpf2bpf_fentry.c       |  18 ++
- .../bpf/progs/tailcall_bpf2bpf_fexit.c        |  18 ++
- 3 files changed, 335 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fentry.c
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fexit.c
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-index b20d7f77a5bce..331b4e455ad06 100644
---- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-@@ -884,6 +884,297 @@ static void test_tailcall_bpf2bpf_6(void)
- 	tailcall_bpf2bpf6__destroy(obj);
- }
- 
-+static void tailcall_bpf2bpf_fentry_fexit(bool test_fentry, bool test_fexit)
-+{
-+	struct bpf_object *tgt_obj = NULL, *fentry_obj = NULL, *fexit_obj = NULL;
-+	struct bpf_link *fentry_link = NULL, *fexit_link = NULL;
-+	int err, map_fd, prog_fd, main_fd, data_fd, i, val;
-+	struct bpf_map *prog_array, *data_map;
-+	struct bpf_program *prog;
-+	char buff[128] = {};
-+
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		.data_in = buff,
-+		.data_size_in = sizeof(buff),
-+		.repeat = 1,
-+	);
-+
-+	err = bpf_prog_test_load("tailcall_bpf2bpf2.bpf.o",
-+				 BPF_PROG_TYPE_SCHED_CLS,
-+				 &tgt_obj, &prog_fd);
-+	if (!ASSERT_OK(err, "load tgt_obj"))
-+		return;
-+
-+	prog = bpf_object__find_program_by_name(tgt_obj, "entry");
-+	if (!ASSERT_OK_PTR(prog, "find entry prog"))
-+		goto out;
-+
-+	main_fd = bpf_program__fd(prog);
-+	if (!ASSERT_FALSE(main_fd < 0, "find entry prog fd"))
-+		goto out;
-+
-+	prog_array = bpf_object__find_map_by_name(tgt_obj, "jmp_table");
-+	if (!ASSERT_OK_PTR(prog_array, "find jmp_table map"))
-+		goto out;
-+
-+	map_fd = bpf_map__fd(prog_array);
-+	if (!ASSERT_FALSE(map_fd < 0, "find jmp_table map fd"))
-+		goto out;
-+
-+	prog = bpf_object__find_program_by_name(tgt_obj, "classifier_0");
-+	if (!ASSERT_OK_PTR(prog, "find classifier_0 prog"))
-+		goto out;
-+
-+	prog_fd = bpf_program__fd(prog);
-+	if (!ASSERT_FALSE(prog_fd < 0, "find classifier_0 prog fd"))
-+		goto out;
-+
-+	i = 0;
-+	err = bpf_map_update_elem(map_fd, &i, &prog_fd, BPF_ANY);
-+	if (!ASSERT_OK(err, "update jmp_table"))
-+		goto out;
-+
-+	if (test_fentry) {
-+		fentry_obj = bpf_object__open_file("tailcall_bpf2bpf_fentry.bpf.o",
-+						   NULL);
-+		if (!ASSERT_OK_PTR(fentry_obj, "open fentry_obj file"))
-+			goto out;
-+
-+		prog = bpf_object__find_program_by_name(fentry_obj, "fentry");
-+		if (!ASSERT_OK_PTR(prog, "find fentry prog"))
-+			goto out;
-+
-+		err = bpf_program__set_attach_target(prog, prog_fd,
-+						     "subprog_tail");
-+		if (!ASSERT_OK(err, "set_attach_target subprog_tail"))
-+			goto out;
-+
-+		err = bpf_object__load(fentry_obj);
-+		if (!ASSERT_OK(err, "load fentry_obj"))
-+			goto out;
-+
-+		fentry_link = bpf_program__attach_trace(prog);
-+		if (!ASSERT_OK_PTR(fentry_link, "attach_trace"))
-+			goto out;
-+	}
-+
-+	if (test_fexit) {
-+		fexit_obj = bpf_object__open_file("tailcall_bpf2bpf_fexit.bpf.o",
-+						  NULL);
-+		if (!ASSERT_OK_PTR(fexit_obj, "open fexit_obj file"))
-+			goto out;
-+
-+		prog = bpf_object__find_program_by_name(fexit_obj, "fexit");
-+		if (!ASSERT_OK_PTR(prog, "find fexit prog"))
-+			goto out;
-+
-+		err = bpf_program__set_attach_target(prog, prog_fd,
-+						     "subprog_tail");
-+		if (!ASSERT_OK(err, "set_attach_target subprog_tail"))
-+			goto out;
-+
-+		err = bpf_object__load(fexit_obj);
-+		if (!ASSERT_OK(err, "load fexit_obj"))
-+			goto out;
-+
-+		fexit_link = bpf_program__attach_trace(prog);
-+		if (!ASSERT_OK_PTR(fexit_link, "attach_trace"))
-+			goto out;
-+	}
-+
-+	err = bpf_prog_test_run_opts(main_fd, &topts);
-+	ASSERT_OK(err, "tailcall");
-+	ASSERT_EQ(topts.retval, 1, "tailcall retval");
-+
-+	data_map = bpf_object__find_map_by_name(tgt_obj, "tailcall.bss");
-+	if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
-+			  "find tailcall.bss map"))
-+		goto out;
-+
-+	data_fd = bpf_map__fd(data_map);
-+	if (!ASSERT_FALSE(data_fd < 0, "find tailcall.bss map fd"))
-+		goto out;
-+
-+	i = 0;
-+	err = bpf_map_lookup_elem(data_fd, &i, &val);
-+	ASSERT_OK(err, "tailcall count");
-+	ASSERT_EQ(val, 33, "tailcall count");
-+
-+	if (test_fentry) {
-+		data_map = bpf_object__find_map_by_name(fentry_obj, ".bss");
-+		if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
-+				  "find tailcall_bpf2bpf_fentry.bss map"))
-+			goto out;
-+
-+		data_fd = bpf_map__fd(data_map);
-+		if (!ASSERT_FALSE(data_fd < 0,
-+				  "find tailcall_bpf2bpf_fentry.bss map fd"))
-+			goto out;
-+
-+		i = 0;
-+		err = bpf_map_lookup_elem(data_fd, &i, &val);
-+		ASSERT_OK(err, "fentry count");
-+		ASSERT_EQ(val, 33, "fentry count");
-+	}
-+
-+	if (test_fexit) {
-+		data_map = bpf_object__find_map_by_name(fexit_obj, ".bss");
-+		if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
-+				  "find tailcall_bpf2bpf_fexit.bss map"))
-+			goto out;
-+
-+		data_fd = bpf_map__fd(data_map);
-+		if (!ASSERT_FALSE(data_fd < 0,
-+				  "find tailcall_bpf2bpf_fexit.bss map fd"))
-+			goto out;
-+
-+		i = 0;
-+		err = bpf_map_lookup_elem(data_fd, &i, &val);
-+		ASSERT_OK(err, "fexit count");
-+		ASSERT_EQ(val, 33, "fexit count");
-+	}
-+
-+out:
-+	bpf_link__destroy(fentry_link);
-+	bpf_link__destroy(fexit_link);
-+	bpf_object__close(fentry_obj);
-+	bpf_object__close(fexit_obj);
-+	bpf_object__close(tgt_obj);
-+}
-+
-+/* test_tailcall_bpf2bpf_fentry checks that the count value of the tail call
-+ * limit enforcement matches with expectations when tailcall is preceded with
-+ * bpf2bpf call, and the bpf2bpf call is traced by fentry.
-+ */
-+static void test_tailcall_bpf2bpf_fentry(void)
-+{
-+	tailcall_bpf2bpf_fentry_fexit(true, false);
-+}
-+
-+/* test_tailcall_bpf2bpf_fexit checks that the count value of the tail call
-+ * limit enforcement matches with expectations when tailcall is preceded with
-+ * bpf2bpf call, and the bpf2bpf call is traced by fexit.
-+ */
-+static void test_tailcall_bpf2bpf_fexit(void)
-+{
-+	tailcall_bpf2bpf_fentry_fexit(false, true);
-+}
-+
-+/* test_tailcall_bpf2bpf_fentry_fexit checks that the count value of the tail
-+ * call limit enforcement matches with expectations when tailcall is preceded
-+ * with bpf2bpf call, and the bpf2bpf call is traced by both fentry and fexit.
-+ */
-+static void test_tailcall_bpf2bpf_fentry_fexit(void)
-+{
-+	tailcall_bpf2bpf_fentry_fexit(true, true);
-+}
-+
-+/* test_tailcall_bpf2bpf_fentry_entry checks that the count value of the tail
-+ * call limit enforcement matches with expectations when tailcall is preceded
-+ * with bpf2bpf call, and the bpf2bpf caller is traced by fentry.
-+ */
-+static void test_tailcall_bpf2bpf_fentry_entry(void)
-+{
-+	struct bpf_object *tgt_obj = NULL, *fentry_obj = NULL;
-+	int err, map_fd, prog_fd, data_fd, i, val;
-+	struct bpf_map *prog_array, *data_map;
-+	struct bpf_link *fentry_link = NULL;
-+	struct bpf_program *prog;
-+	char buff[128] = {};
-+
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		.data_in = buff,
-+		.data_size_in = sizeof(buff),
-+		.repeat = 1,
-+	);
-+
-+	err = bpf_prog_test_load("tailcall_bpf2bpf2.bpf.o",
-+				 BPF_PROG_TYPE_SCHED_CLS,
-+				 &tgt_obj, &prog_fd);
-+	if (!ASSERT_OK(err, "load tgt_obj"))
-+		return;
-+
-+	prog_array = bpf_object__find_map_by_name(tgt_obj, "jmp_table");
-+	if (!ASSERT_OK_PTR(prog_array, "find jmp_table map"))
-+		goto out;
-+
-+	map_fd = bpf_map__fd(prog_array);
-+	if (!ASSERT_FALSE(map_fd < 0, "find jmp_table map fd"))
-+		goto out;
-+
-+	prog = bpf_object__find_program_by_name(tgt_obj, "classifier_0");
-+	if (!ASSERT_OK_PTR(prog, "find classifier_0 prog"))
-+		goto out;
-+
-+	prog_fd = bpf_program__fd(prog);
-+	if (!ASSERT_FALSE(prog_fd < 0, "find classifier_0 prog fd"))
-+		goto out;
-+
-+	i = 0;
-+	err = bpf_map_update_elem(map_fd, &i, &prog_fd, BPF_ANY);
-+	if (!ASSERT_OK(err, "update jmp_table"))
-+		goto out;
-+
-+	fentry_obj = bpf_object__open_file("tailcall_bpf2bpf_fentry.bpf.o",
-+					   NULL);
-+	if (!ASSERT_OK_PTR(fentry_obj, "open fentry_obj file"))
-+		goto out;
-+
-+	prog = bpf_object__find_program_by_name(fentry_obj, "fentry");
-+	if (!ASSERT_OK_PTR(prog, "find fentry prog"))
-+		goto out;
-+
-+	err = bpf_program__set_attach_target(prog, prog_fd, "classifier_0");
-+	if (!ASSERT_OK(err, "set_attach_target classifier_0"))
-+		goto out;
-+
-+	err = bpf_object__load(fentry_obj);
-+	if (!ASSERT_OK(err, "load fentry_obj"))
-+		goto out;
-+
-+	fentry_link = bpf_program__attach_trace(prog);
-+	if (!ASSERT_OK_PTR(fentry_link, "attach_trace"))
-+		goto out;
-+
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "tailcall");
-+	ASSERT_EQ(topts.retval, 1, "tailcall retval");
-+
-+	data_map = bpf_object__find_map_by_name(tgt_obj, "tailcall.bss");
-+	if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
-+			  "find tailcall.bss map"))
-+		goto out;
-+
-+	data_fd = bpf_map__fd(data_map);
-+	if (!ASSERT_FALSE(data_fd < 0, "find tailcall.bss map fd"))
-+		goto out;
-+
-+	i = 0;
-+	err = bpf_map_lookup_elem(data_fd, &i, &val);
-+	ASSERT_OK(err, "tailcall count");
-+	ASSERT_EQ(val, 34, "tailcall count");
-+
-+	data_map = bpf_object__find_map_by_name(fentry_obj, ".bss");
-+	if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
-+			  "find tailcall_bpf2bpf_fentry.bss map"))
-+		goto out;
-+
-+	data_fd = bpf_map__fd(data_map);
-+	if (!ASSERT_FALSE(data_fd < 0,
-+			  "find tailcall_bpf2bpf_fentry.bss map fd"))
-+		goto out;
-+
-+	i = 0;
-+	err = bpf_map_lookup_elem(data_fd, &i, &val);
-+	ASSERT_OK(err, "fentry count");
-+	ASSERT_EQ(val, 1, "fentry count");
-+
-+out:
-+	bpf_link__destroy(fentry_link);
-+	bpf_object__close(fentry_obj);
-+	bpf_object__close(tgt_obj);
-+}
-+
- void test_tailcalls(void)
- {
- 	if (test__start_subtest("tailcall_1"))
-@@ -910,4 +1201,12 @@ void test_tailcalls(void)
- 		test_tailcall_bpf2bpf_4(true);
- 	if (test__start_subtest("tailcall_bpf2bpf_6"))
- 		test_tailcall_bpf2bpf_6();
-+	if (test__start_subtest("tailcall_bpf2bpf_fentry"))
-+		test_tailcall_bpf2bpf_fentry();
-+	if (test__start_subtest("tailcall_bpf2bpf_fexit"))
-+		test_tailcall_bpf2bpf_fexit();
-+	if (test__start_subtest("tailcall_bpf2bpf_fentry_fexit"))
-+		test_tailcall_bpf2bpf_fentry_fexit();
-+	if (test__start_subtest("tailcall_bpf2bpf_fentry_entry"))
-+		test_tailcall_bpf2bpf_fentry_entry();
- }
-diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fentry.c b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fentry.c
-new file mode 100644
-index 0000000000000..8436c6729167c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fentry.c
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright Leon Hwang */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+int count = 0;
-+
-+SEC("fentry/subprog_tail")
-+int BPF_PROG(fentry, struct sk_buff *skb)
-+{
-+	count++;
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fexit.c b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fexit.c
-new file mode 100644
-index 0000000000000..fe16412c6e6e9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fexit.c
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright Leon Hwang */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+int count = 0;
-+
-+SEC("fexit/subprog_tail")
-+int BPF_PROG(fexit, struct sk_buff *skb)
-+{
-+	count++;
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.41.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
