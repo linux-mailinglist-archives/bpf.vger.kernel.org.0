@@ -1,199 +1,357 @@
-Return-Path: <bpf+bounces-9222-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9223-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46A57791CC2
-	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 20:26:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B1F7791DCE
+	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 21:51:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDFF328109B
-	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 18:26:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B5E31C204F7
+	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 19:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1B7DC8FE;
-	Mon,  4 Sep 2023 18:26:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56FDFC8FA;
+	Mon,  4 Sep 2023 19:51:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C17E1C8EB;
-	Mon,  4 Sep 2023 18:26:39 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D77F21AD;
-	Mon,  4 Sep 2023 11:26:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693851996; x=1725387996;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=Q28Zob2YHwoYHcXzRni/0q+mlkhIeF0kmePiUW2UXW0=;
-  b=Ne18DvPRi+eL9+JmW89ryo9dFOXAflx9V/QkyKIrjTFDsV8s5CGryase
-   6LsVhZR3KcaPsUfWdgnS0AsCsCWK7WTQgdnZP7ZJafJWFEcbFay8sWtVo
-   oqquWMedcFSCHf1ZIpef+vOrI6ZWi0gRB30oisP3gxpT7r3thPzUGSBhP
-   v7IxDuF/LSP1zq+Fre2xJyIbCaEc/RFqcin9rVVAiwCn+25+VZkmwuGQy
-   QbTBq6mllvdts+Xx/X5bUmkqmYEGJRdOjm8hfC/6FdiuWowVr7w3LPMXy
-   3CAcxWDblrmPsZxrP2em6oxqUtcjH5ZG9WNQhmW7sk9u68HyXMR9OnwL0
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="440615772"
-X-IronPort-AV: E=Sophos;i="6.02,227,1688454000"; 
-   d="scan'208";a="440615772"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 11:26:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="770074398"
-X-IronPort-AV: E=Sophos;i="6.02,227,1688454000"; 
-   d="scan'208";a="770074398"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Sep 2023 11:26:36 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 4 Sep 2023 11:26:31 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 4 Sep 2023 11:26:31 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Mon, 4 Sep 2023 11:26:31 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.102)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Mon, 4 Sep 2023 11:26:24 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gt4FUeU2Y3ZYp+Pxbg37CHubSPsvSIsQloAXEFJlwJ42HkW9+T/9pf5+nsKY3QKXI2sInpARy2PVsx0adnTCO986+02QbwGw63qavYiH/VuvjgSBt/SjSRDwBsISr71fgOr8qyCv5egwrEm2qxNl5PkH2TbGPiouCI0uolw7Xhpe3wx0eF/s1TQmh62sLXw9VrUc5uL7avd1niVgOYdifXYeiq7E0zrhvu/lG8dGZKW/tdJYDPIqJc27wq80cSstRAiC9jhjsmBoX8NgINiT3sAQvtHVLjHqpAbO0KqLdB0mLSd2dQhZE/7xlVsJozvMqo21tZn5OZhj0vmZJWu4WA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lTkdy6BD79NG1khpFn0wYeri9Vy8S75wWaBHQmbT4DI=;
- b=QZadtaXAB9YdyiIUXMUOBJhpdAKGRfP0yroSYcj+RHo82C++OGvj0bOvp4agUwI1DKm2gaHrFoopRXanvctRWyfbrEM6E1s8dQwhnIK+X40desreCrTWH0YTWTvzFqQCo02ey1gGak5OnyaNZBcODRBMOw4Ltha70aYjNIpN+OMOYwHiSadiz5ZzPAqMrpCpv92mYVmZlRrjQv42/kTjg6XwdchBHXsa2aQIKtO8G048m2QAmiCfDHMtqRME1FXaJ04nLNcc3pwafXJjO5hLS9XZxv56P9ZH0lHx5zyKvgWNgjblsVUn/18enapXktqNsixIFSMlh3JtYnllD6NarA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
- by SA2PR11MB5180.namprd11.prod.outlook.com (2603:10b6:806:fb::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.30; Mon, 4 Sep
- 2023 18:26:16 +0000
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::10f1:d83:9ee2:bf5d]) by SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::10f1:d83:9ee2:bf5d%3]) with mapi id 15.20.6745.030; Mon, 4 Sep 2023
- 18:26:16 +0000
-Date: Mon, 4 Sep 2023 20:18:01 +0200
-From: Larysa Zaremba <larysa.zaremba@intel.com>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-	<haoluo@google.com>, <jolsa@kernel.org>, David Ahern <dsahern@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>, Willem de Bruijn <willemb@google.com>,
-	Jesper Dangaard Brouer <brouer@redhat.com>, Anatoly Burakov
-	<anatoly.burakov@intel.com>, Alexander Lobakin <alexandr.lobakin@intel.com>,
-	Magnus Karlsson <magnus.karlsson@gmail.com>, Maryam Tahhan
-	<mtahhan@redhat.com>, <xdp-hints@xdp-project.net>, <netdev@vger.kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Alexei Starovoitov
-	<alexei.starovoitov@gmail.com>, Simon Horman <simon.horman@corigine.com>,
-	Tariq Toukan <tariqt@mellanox.com>, Saeed Mahameed <saeedm@mellanox.com>
-Subject: Re: [RFC bpf-next 10/23] ice: Implement VLAN tag hint
-Message-ID: <ZPYfWe5umMSlxAZ5@lincoln>
-References: <20230824192703.712881-1-larysa.zaremba@intel.com>
- <20230824192703.712881-11-larysa.zaremba@intel.com>
- <ZPX/IqfeLXcyQjZT@boxer>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZPX/IqfeLXcyQjZT@boxer>
-X-ClientProxiedBy: DU2PR04CA0330.eurprd04.prod.outlook.com
- (2603:10a6:10:2b5::35) To SN7PR11MB7540.namprd11.prod.outlook.com
- (2603:10b6:806:340::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB6FC8E4
+	for <bpf@vger.kernel.org>; Mon,  4 Sep 2023 19:51:16 +0000 (UTC)
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF7EAE8;
+	Mon,  4 Sep 2023 12:51:14 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bceb02fd2bso25939651fa.1;
+        Mon, 04 Sep 2023 12:51:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693857073; x=1694461873; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3AUBpdzY9yVap/s/23ZdGK7PcPt7+ENwXsRxdz18Anc=;
+        b=CQNoe/vNH7E1XrlGGEfUcjEQB5T4a0HQ0J3tRxOqIk38NWpgotTEqO7M1NrJXG37Hy
+         hXZy31IlbXM1LGSjkjV2T6g6aqPVv/yJYCgc6wfNgtYA5gaAxrgJZ+k/xrb3U4ZzLe7u
+         hHT0S98VEyE/rybSV+Jt8xYRfmS6J0mlODbSfKPwDFUGb68AXONz1CNV8pCJ4cHFn0Qc
+         K+K4RzIffRh6CofUsH8UJrt/nEXmj6dym7BmkxZeevBo0n0n5jD0os9W2LyePp53nFWQ
+         TRVBCzQB1HgPbE7CHqkCyZze1BfCIOUCRO0tOkCvMY+pDdOzQqgDvsMOE93r78mi9hAR
+         ta3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693857073; x=1694461873;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3AUBpdzY9yVap/s/23ZdGK7PcPt7+ENwXsRxdz18Anc=;
+        b=PPBVdry8RWgEFj2ivwWHF9giZzGz6pb8FbSfJsV+v9p5uBZkI+zjujsjfaxHg6EZIS
+         gzHMx5i00dxxtHKCNkiB1qTpAxnqCjiIi5mhjcT/mg64DXD8nqter+GXuAKKQ6kBHdu7
+         /0c9SheadrfUa4XN9ZQX9MtYkDWuaEINFMSYCH8JPKMyeoyNk2Du0Ghbcaj2DxIMs0Dq
+         aMiwi5aHp3Ea7kjxfHmdCspa1OYvD0CVNTo2Wz1kFIq9Qng0pdtDKMBON7A3aUWVohxm
+         2TO+GSNEp92nGTdAE/chdsaqAzNQmIuaK7wt1PNK4hxMnLVYSeCqi+Rw6RqMWBDBbcNh
+         8n+w==
+X-Gm-Message-State: AOJu0YyNn1U/jjEIF1/BR9pvib0FIm8ELSVcEw5n2GIOmcyLUZNWSDGS
+	w+Yp/BJrYW4XM2Et6UPDn0I3B0488Hcmzg==
+X-Google-Smtp-Source: AGHT+IEe5hqM2tLSPD19i5CtW5J/dyVWXpmEWt1LF6g64hsvkH9kl2jvCYwAFLOu+VdQnzFX3w1cLA==
+X-Received: by 2002:a19:ca12:0:b0:500:dc8d:c344 with SMTP id a18-20020a19ca12000000b00500dc8dc344mr6345801lfg.48.1693857072696;
+        Mon, 04 Sep 2023 12:51:12 -0700 (PDT)
+Received: from krava ([83.240.60.62])
+        by smtp.gmail.com with ESMTPSA id qc8-20020a170906d8a800b0099275c59bc9sm6560549ejb.33.2023.09.04.12.51.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Sep 2023 12:51:12 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 4 Sep 2023 21:51:10 +0200
+To: Rong Tao <rtoax@foxmail.com>
+Cc: olsajiri@gmail.com, andrii@kernel.org, daniel@iogearbox.net,
+	sdf@google.com, Rong Tao <rongtao@cestc.cn>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Yafang Shao <laoar.shao@gmail.com>,
+	"open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	"moderated list:ARM/STM32 ARCHITECTURE" <linux-stm32@st-md-mailman.stormreply.com>,
+	"moderated list:ARM/STM32 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH bpf-next v10 1/2] selftests/bpf: trace_helpers.c:
+ optimize kallsyms cache
+Message-ID: <ZPY1Lu8341L+d5Rw@krava>
+References: <cover.1693788910.git.rongtao@cestc.cn>
+ <tencent_0A73B402B1D440480838ABF7124CE5EA5505@qq.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|SA2PR11MB5180:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2dff3d34-d12e-4b3c-beac-08dbad746cd1
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SDVX/osAj9H3Il+W6M2EEaqbVz3KFC6H3CPwotcoAC9ZPoQKYsTvXOt/sUwMS1ptpJKlmBrrKIW14uR+iUP3v3yKEn/l6OBXsfSGIz0Ir4GBtzrM4S88BEy6abihsB8y+uuxWqZcTMX1j8BInZGkfn+qHkm2bt7vuLm58iBwaZ6zsOeOGGuOzbCs76k+8auMWMyl/MskupW6BcEQBqtYiJu/hQwXSnccdh+X1RnQyz986J7HjjPYxZFEj12fsm4nf9xn4Q59olIW8CCUwzNd4oj23RuBjx+T6ya5E8Qc8wmTMZ0kp/qR398DXAqcWuDSdHvf1hD7l2dsy4P322c44Nn0bQqjOH3KhTXII1y6H0406rIgAryKIfgKkli5QDsTO3wpZXHDNwAhk65uEgwueJ/tzYUj249wp4CvMut85o1lwhj2RdARK3BQxP130i1cF+twKQZhVoZuKND24S181Cr2bljQW+Oa9NO5vm1PwQUV4p54Kf9cZ2OudmGdANgGNI27MSCRK8/BGpULt+csr/3XZ5bzSJeCaK6qd2d1ILdlNcVXZ/48BoUCnPCQ8wVq
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(376002)(366004)(346002)(39860400002)(136003)(186009)(1800799009)(451199024)(6506007)(26005)(6486002)(9686003)(6512007)(86362001)(38100700002)(82960400001)(33716001)(83380400001)(44832011)(7416002)(41300700001)(8936002)(66476007)(316002)(6636002)(66556008)(54906003)(4326008)(6862004)(5660300002)(66946007)(8676002)(2906002)(6666004)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Z5dwkEmO9XQftMArdcUdilLgytdCfyuM7CcqiCkacrqRwi02c0agoHI+QTL1?=
- =?us-ascii?Q?YEwM0+8quLpORlVnupzve4u1RAMo54kwB1dsHtCAsfK2jzTQwnC+9KA7GFjT?=
- =?us-ascii?Q?KbWirgWHgTyBM5BRUfflpWPrQnuyndl/bBAImsreAVC9ufANzeC5baupdWuD?=
- =?us-ascii?Q?zwl0fhUibDj34Ktod9GzcqfSR0ZSgITiX/O9JQvQZMCINUTWZuWr/QSN9/+O?=
- =?us-ascii?Q?1XsQ/Tf/SyeE5waUL9HbgVtOgMLMgmcmk7X0dVVNISbdpGR5/ub7uIptsYCC?=
- =?us-ascii?Q?sB6oEQWGW7tKLmbub/RD6jBh9gcACXldoPfK7Fd17JpPOHf4JBAPigpVTsYD?=
- =?us-ascii?Q?kZ/77JgTEG3j6y2V4fYUOBY3PzCa/Vy0sG9/VgB5VxJ2MPmbVPZvNLvq7zRX?=
- =?us-ascii?Q?mWpTsK747CPFd6Kvt3rZoCtzy6fn7vBqMYofmNORfMWrOJkY6vJrOMNAHlqq?=
- =?us-ascii?Q?i/9ZUx4FP4MdBfge/a6WhgFm3eTgLIr7WmjVdXSUGecbCCXzZ/EGMXow7zfg?=
- =?us-ascii?Q?zg909/CiAi9LiS1TgfAg27/RbUmupTTUNuXwWDEOz8T5D3YWj5sT9qfnJdib?=
- =?us-ascii?Q?Fzo3UKwnnMcSbiEtF8SvG3O7wvtk80Tw8QKb/J0ua04hyEn0vRSJzoyxX1JL?=
- =?us-ascii?Q?kQmdkPKCKXzYXT71e5Z930C9Tp+AJJXTyLySPqUpVh5XtMpaydSmkuc9FK3C?=
- =?us-ascii?Q?0J//S6YoN7MRt2QLjWZsJxIl9LYhk/Ru9Ww+SFpUOCd4Wf02VI5M/C6d+Uv8?=
- =?us-ascii?Q?VtdV1aKWKru8P5bXx6ylQZV6Ze+VXVOzgDU4ee/MjvgEv4Il3NSoHCch+2HM?=
- =?us-ascii?Q?yGI2xLNygK/0EfCwuHCneLPSi/rCmVgmr1ee/43IhqoggA03leLd1Yq1tP/4?=
- =?us-ascii?Q?Bppz8tHT9MEZVzaUyRq14eQ2ZMyem5bfmq+FTRVVGI0jcTItx+D0RrMWvewn?=
- =?us-ascii?Q?MARq+rS+mxGm266gFXDAI/EWgJHDgknRx8m2xTtF7Jz17vumc5OtVEKh1m6p?=
- =?us-ascii?Q?lgF4bW8rKRidjIwJ7tHGUid4w5M788SM9edLL94tanmjzqgDhUUKE6wMzyu1?=
- =?us-ascii?Q?Jpcr7SyDfG6bRRu//9JpWACpo4ZlW8tTmJyrfJiYlCkHArdRF0hqOcdnA0Op?=
- =?us-ascii?Q?WWnCePy3muKIc/tSW75JPHcqy3Td25LhXBgIPfFF/Z0ToA1LEuy7KqvR9PK+?=
- =?us-ascii?Q?lImVJgtEn/TBR4f6Un+84elD/JZq06SnYP2TyHxCtJsnE26zBEjnlBE3ljR8?=
- =?us-ascii?Q?gpMI5n4kLMoj4OPx2d2dlciYGCheuNO+OZaMp49VupblC6sMWua5Bcb2a7+w?=
- =?us-ascii?Q?8rPr8wN3L9xC95c96FOkwWAASZUJIuS/myLWkjE3E9HC4bIzEijkWH8vWxV2?=
- =?us-ascii?Q?eJFdFIXkKUJEpj9fQyppY1zZwmxU9DO2Y+dOFv3rM/+ZcnnLYBzKqiWwmbFH?=
- =?us-ascii?Q?EMQesmtPJab35DTJkEmNRPyYNRWwOYp/J9ZzMU2z0g3+yeAWp+gEzx5W8Y3B?=
- =?us-ascii?Q?d9F0EeRPFZ3Kyc/GcwViNqFLZJr+x3iV9Wgy2eQVCgInOM2ThAVdPW47uyOP?=
- =?us-ascii?Q?21p57esNU7b56nUhoTQnm3m29qmjkklnDCb8Oh0pbhvLJ1N4umkRTyhK7Bij?=
- =?us-ascii?Q?jw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2dff3d34-d12e-4b3c-beac-08dbad746cd1
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2023 18:26:15.8615
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8HFgzYledNnoT8c9Fa4kcXZWZGaQEeN5gkGyBWb//LPdeBwuGdkM58IHHCrS+KzKOWDCvuaseNg56mIQjwUeoEV7MdHUl65ThZEexp2hcv8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5180
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_0A73B402B1D440480838ABF7124CE5EA5505@qq.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Sep 04, 2023 at 06:00:34PM +0200, Maciej Fijalkowski wrote:
-> On Thu, Aug 24, 2023 at 09:26:49PM +0200, Larysa Zaremba wrote:
-> > Implement .xmo_rx_vlan_tag callback to allow XDP code to read
-> > packet's VLAN tag.
-> > 
-> > At the same time, use vlan_tci instead of vlan_tag in touched code,
-> > because vlan_tag is misleading.
+On Mon, Sep 04, 2023 at 09:01:20AM +0800, Rong Tao wrote:
+> From: Rong Tao <rongtao@cestc.cn>
 > 
-> misleading...because? ;)
->
+> Static ksyms often have problems because the number of symbols exceeds the
+> MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
+> commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
+> the problem somewhat, but it's not the perfect way.
+> 
+> This commit uses dynamic memory allocation, which completely solves the
+> problem caused by the limitation of the number of kallsyms. At the same
+> time, add APIs:
+> 
+>     load_kallsyms_local()
+>     ksym_search_local()
+>     ksym_get_addr_local()
 
-VLAN tag ofter refers to VLAN proto and VLAN TCI combined, while in the 
-corrected code we clearly store only VLAN TCI.
+missing free_kallsyms_local
 
-Will add the above to the commit message.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
+> index 9d768e083714..13e618317c8b 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
+> @@ -302,16 +302,18 @@ void test_fill_link_info(void)
+>  {
+>  	struct test_fill_link_info *skel;
+>  	int i;
+> +	struct ksyms *ksyms;
+>  
+>  	skel = test_fill_link_info__open_and_load();
+>  	if (!ASSERT_OK_PTR(skel, "skel_open"))
+>  		return;
+>  
+>  	/* load kallsyms to compare the addr */
+> -	if (!ASSERT_OK(load_kallsyms_refresh(), "load_kallsyms_refresh"))
+> +	ksyms = load_kallsyms_local();
+> +	if (!ASSERT_OK_PTR(ksyms, "load_kallsyms_local"))
+>  		goto cleanup;
 
-> > 
-> > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> > ---
-> >  drivers/net/ethernet/intel/ice/ice_main.c     | 22 ++++++++++++++++
-> >  drivers/net/ethernet/intel/ice/ice_txrx.c     |  6 ++---
-> >  drivers/net/ethernet/intel/ice/ice_txrx.h     |  1 +
-> >  drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 26 +++++++++++++++++++
-> >  drivers/net/ethernet/intel/ice/ice_txrx_lib.h |  4 +--
-> >  drivers/net/ethernet/intel/ice/ice_xsk.c      |  6 ++---
-> >  6 files changed, 57 insertions(+), 8 deletions(-)
-> > 
+actually I don't see why this test should need refreshed kallsyms,
+it doesn't load/unload testmod, I think it can use global ksyms
+
+>  
+> -	kprobe_addr = ksym_get_addr(KPROBE_FUNC);
+> +	kprobe_addr = ksym_get_addr_local(ksyms, KPROBE_FUNC);
+>  	if (test__start_subtest("kprobe_link_info"))
+>  		test_kprobe_fill_link_info(skel, BPF_PERF_EVENT_KPROBE, false);
+>  	if (test__start_subtest("kretprobe_link_info"))
+> @@ -329,7 +331,7 @@ void test_fill_link_info(void)
+>  
+>  	qsort(kmulti_syms, KMULTI_CNT, sizeof(kmulti_syms[0]), symbols_cmp_r);
+>  	for (i = 0; i < KMULTI_CNT; i++)
+> -		kmulti_addrs[i] = ksym_get_addr(kmulti_syms[i]);
+> +		kmulti_addrs[i] = ksym_get_addr_local(ksyms, kmulti_syms[i]);
+>  	if (test__start_subtest("kprobe_multi_link_info"))
+>  		test_kprobe_multi_fill_link_info(skel, false, false);
+>  	if (test__start_subtest("kretprobe_multi_link_info"))
+> @@ -339,4 +341,5 @@ void test_fill_link_info(void)
+>  
+>  cleanup:
+>  	test_fill_link_info__destroy(skel);
+> +	free_kallsyms_local(ksyms);
+>  }
+> diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
+> index 1fbe7e4ac00a..532b05ae2da4 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
+> @@ -4,6 +4,8 @@
+>  #include "trace_helpers.h"
+>  #include "bpf/libbpf_internal.h"
+>  
+> +static struct ksyms *ksyms;
+> +
+>  static void kprobe_multi_testmod_check(struct kprobe_multi *skel)
+>  {
+>  	ASSERT_EQ(skel->bss->kprobe_testmod_test1_result, 1, "kprobe_test1_result");
+> @@ -50,12 +52,12 @@ static void test_testmod_attach_api_addrs(void)
+>  	LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
+>  	unsigned long long addrs[3];
+>  
+> -	addrs[0] = ksym_get_addr("bpf_testmod_fentry_test1");
+> -	ASSERT_NEQ(addrs[0], 0, "ksym_get_addr");
+> -	addrs[1] = ksym_get_addr("bpf_testmod_fentry_test2");
+> -	ASSERT_NEQ(addrs[1], 0, "ksym_get_addr");
+> -	addrs[2] = ksym_get_addr("bpf_testmod_fentry_test3");
+> -	ASSERT_NEQ(addrs[2], 0, "ksym_get_addr");
+> +	addrs[0] = ksym_get_addr_local(ksyms, "bpf_testmod_fentry_test1");
+> +	ASSERT_NEQ(addrs[0], 0, "ksym_get_addr_local");
+> +	addrs[1] = ksym_get_addr_local(ksyms, "bpf_testmod_fentry_test2");
+> +	ASSERT_NEQ(addrs[1], 0, "ksym_get_addr_local");
+> +	addrs[2] = ksym_get_addr_local(ksyms, "bpf_testmod_fentry_test3");
+> +	ASSERT_NEQ(addrs[2], 0, "ksym_get_addr_local");
+>  
+>  	opts.addrs = (const unsigned long *) addrs;
+>  	opts.cnt = ARRAY_SIZE(addrs);
+> @@ -79,11 +81,19 @@ static void test_testmod_attach_api_syms(void)
+>  
+>  void serial_test_kprobe_multi_testmod_test(void)
+>  {
+> -	if (!ASSERT_OK(load_kallsyms_refresh(), "load_kallsyms_refresh"))
+> +	ksyms = load_kallsyms_local();
+> +	if (!ASSERT_OK_PTR(ksyms, "load_kallsyms_local"))
+>  		return;
+>  
+>  	if (test__start_subtest("testmod_attach_api_syms"))
+>  		test_testmod_attach_api_syms();
+> +
+> +	ksyms = load_kallsyms_refresh(ksyms);
+> +	if (!ASSERT_OK_PTR(ksyms, "load_kallsyms_refresh"))
+> +		return;
+
+hm, this refresh is not needed right? the test got the fresh kallsyms above
+and both test_testmod_attach_api_syms and test_testmod_attach_api_addrs
+should be happy
+
+> +
+>  	if (test__start_subtest("testmod_attach_api_addrs"))
+>  		test_testmod_attach_api_addrs();
+> +
+> +	free_kallsyms_local(ksyms);
+>  }
+> diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+> index f83d9f65c65b..d64c4ef336e1 100644
+> --- a/tools/testing/selftests/bpf/trace_helpers.c
+> +++ b/tools/testing/selftests/bpf/trace_helpers.c
+> @@ -14,104 +14,171 @@
+>  #include <linux/limits.h>
+>  #include <libelf.h>
+>  #include <gelf.h>
+> +#include "bpf/libbpf_internal.h"
+>  
+>  #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
+>  #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
+>  
+> -#define MAX_SYMS 400000
+> -static struct ksym syms[MAX_SYMS];
+> -static int sym_cnt;
+> +struct ksyms {
+> +	struct ksym *syms;
+> +	size_t sym_cap;
+> +	size_t sym_cnt;
+> +};
+> +
+> +static struct ksyms *ksyms;
+> +
+> +static int ksyms__add_symbol(struct ksyms *ksyms, const char *name,
+> +							 unsigned long addr)
+
+extra white space in here ^^^
+
+> +{
+> +	void *tmp;
+> +
+> +	tmp = strdup(name);
+> +	if (!tmp)
+> +		return -ENOMEM;
+> +	ksyms->syms[ksyms->sym_cnt].addr = addr;
+> +	ksyms->syms[ksyms->sym_cnt].name = tmp;
+> +
+> +	ksyms->sym_cnt++;
+> +
+> +	return 0;
+> +}
+> +
+> +void free_kallsyms_local(struct ksyms *ksyms)
+> +{
+> +	unsigned int i;
+> +
+> +	if (!ksyms)
+> +		return;
+> +
+> +	if (!ksyms->syms) {
+> +		free(ksyms);
+> +		return;
+> +	}
+> +
+> +	for (i = 0; i < ksyms->sym_cnt; i++)
+> +		free(ksyms->syms[i].name);
+> +	free(ksyms->syms);
+> +	free(ksyms);
+> +}
+>  
+>  static int ksym_cmp(const void *p1, const void *p2)
+>  {
+>  	return ((struct ksym *)p1)->addr - ((struct ksym *)p2)->addr;
+>  }
+>  
+> -int load_kallsyms_refresh(void)
+> +struct ksyms *load_kallsyms_refresh(struct ksyms *ksyms)
+>  {
+>  	FILE *f;
+>  	char func[256], buf[256];
+>  	char symbol;
+>  	void *addr;
+> -	int i = 0;
+> +	int ret;
+>  
+> -	sym_cnt = 0;
+> +	/* flush kallsyms, free the previously allocated dynamic memory */
+> +	free_kallsyms_local(ksyms);
+>  
+>  	f = fopen("/proc/kallsyms", "r");
+>  	if (!f)
+> -		return -ENOENT;
+> +		return NULL;
+> +
+> +	ksyms = calloc(1, sizeof(struct ksyms));
+> +	if (!ksyms)
+> +		return NULL;
+
+I wonder it could be easier not to allocate ksyms, but just let the
+caller to pass the pointer to 'ksym' variable on stack.. but there
+might be other problems, so I guess this is fine
+
+>  
+>  	while (fgets(buf, sizeof(buf), f)) {
+>  		if (sscanf(buf, "%p %c %s", &addr, &symbol, func) != 3)
+>  			break;
+>  		if (!addr)
+>  			continue;
+> -		if (i >= MAX_SYMS)
+> -			return -EFBIG;
+>  
+> -		syms[i].addr = (long) addr;
+> -		syms[i].name = strdup(func);
+> -		i++;
+> +		ret = libbpf_ensure_mem((void **) &ksyms->syms, &ksyms->sym_cap,
+> +					sizeof(struct ksym), ksyms->sym_cnt + 1);
+> +		if (ret)
+> +			goto error;
+> +		ret = ksyms__add_symbol(ksyms, func, (unsigned long)addr);
+> +		if (ret)
+> +			goto error;
+>  	}
+>  	fclose(f);
+> -	sym_cnt = i;
+> -	qsort(syms, sym_cnt, sizeof(struct ksym), ksym_cmp);
+> -	return 0;
+> +	qsort(ksyms->syms, ksyms->sym_cnt, sizeof(struct ksym), ksym_cmp);
+> +	return ksyms;
+> +
+> +error:
+> +	free_kallsyms_local(ksyms);
+> +	return NULL;
+> +}
+> +
+> +struct ksyms *load_kallsyms_local(void)
+> +{
+> +	return load_kallsyms_refresh(NULL);
+
+I think we can have just:
+
+   struct ksyms *load_kallsyms_local(struct ksyms *ksyms);
+
+I don't see reason for load_kallsyms_refresh functions, perhaps it's
+leftover because I don't see the function in the changelog
+
+thanks,
+jirka
 
