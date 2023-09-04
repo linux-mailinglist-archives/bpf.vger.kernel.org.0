@@ -1,156 +1,114 @@
-Return-Path: <bpf+bounces-9162-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9163-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BEBA790EF1
-	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 00:31:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2F78790F71
+	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 03:02:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0AC71C2034C
-	for <lists+bpf@lfdr.de>; Sun,  3 Sep 2023 22:31:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 255B51C203A0
+	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 01:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A09EBBA47;
-	Sun,  3 Sep 2023 22:30:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CD5B385;
+	Mon,  4 Sep 2023 01:01:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 479B6ECC
-	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 22:30:56 +0000 (UTC)
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14C1FA
-	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 15:30:55 -0700 (PDT)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1c4cf775a14so781416fac.3
-        for <bpf@vger.kernel.org>; Sun, 03 Sep 2023 15:30:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1693780255; x=1694385055; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nv6YpToDNZJcA/Ccz8YHJKQ8zE37n7OYKvDh05ivZ8M=;
-        b=eLvFMZ6HweV3i75Mje3KyiQMHp72f3fVYJp4X8QBR1sUoWt5LbUe2oYe6gz7J03xSV
-         aHsv7iDil4KTnD32vRddboJhyW5dIQThpWZBfmdQlNdU/+SQKnZqTkI+8YNmhDFqSNM4
-         M/5uOEBZigGEpPC3vmfjiwnDFOd47IixsMl044OpUX7QG234XdFYwtba/jPyi6PCo/kZ
-         okP+nX6zzbLjyilv/Ocy1qCe5aC4gkdgDOfyh92JWGe8bVg+DmwjlPuuV3kM/V8mAkRG
-         YMrGVWwsvVs5uRT8A9BN8JD3DAOcyXyqtn49LxBGuGru+09OFjvSzk6tINPlQnplnbJD
-         r/Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693780255; x=1694385055;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nv6YpToDNZJcA/Ccz8YHJKQ8zE37n7OYKvDh05ivZ8M=;
-        b=kRVRjhhOnwFmcSO7zOuKy9cNjGHKYfUErWkFgjSnKLXGthOeGeTK5mFwWolmTmXKII
-         zBt8R/mh9LICIuOoNCDoaK8tpe/zE7YE7cw38krGQhpoo/0rsbBWsXu1eEFDD0OkVPrx
-         b82rQwNua+kId0G+pQgs8rB+aT1VifCAKqkH3OtN0EM5cqBGJq+NSpZMsWO9DKnh5wZ8
-         uETqTsj4w66ltiX++MVPhpvhTWoYuad/fBAd4G03rslrTghXo3A+mp9w2wZgZgSuqDY6
-         qz/RzmHC/+7WYxvPA0Rro2USIKEYe/64pQdGTDGYDUiMjNJZzcBudUhHSkeCmbfo7LOy
-         vPNA==
-X-Gm-Message-State: AOJu0YyD9StpYkrR+yYEjUEmygEO2urCMZ3dFrR1MklaF3hOdvs15y11
-	0CF8A8GjzLi6dFR9JF/bYRXELIz/yn65IHsNIRk=
-X-Google-Smtp-Source: AGHT+IGLu9Ypqvz2HQH6Ke2apJHDtGTD5ZHmV6+9u1MT+8XuCmbNG2jkA6AQg79Zc5mY+kWQOWShIA==
-X-Received: by 2002:a05:6870:568d:b0:1be:c8e2:3ec3 with SMTP id p13-20020a056870568d00b001bec8e23ec3mr11536784oao.14.1693780255066;
-        Sun, 03 Sep 2023 15:30:55 -0700 (PDT)
-Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
-        by smtp.gmail.com with ESMTPSA id i15-20020a63bf4f000000b00565e96d9874sm5648132pgo.89.2023.09.03.15.30.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 15:30:54 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1qcvcK-00ASFy-0F;
-	Mon, 04 Sep 2023 08:30:52 +1000
-Date: Mon, 4 Sep 2023 08:30:52 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Hao Xu <hao.xu@linux.dev>
-Cc: Matthew Wilcox <willy@infradead.org>, io-uring@vger.kernel.org,
-	Jens Axboe <axboe@kernel.dk>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
-	ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-	linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
-	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-	linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-	devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-	Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
-Message-ID: <ZPUJHAKzxvXiEDYA@dread.disaster.area>
-References: <20230827132835.1373581-1-hao.xu@linux.dev>
- <20230827132835.1373581-8-hao.xu@linux.dev>
- <ZOvA5DJDZN0FRymp@casper.infradead.org>
- <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
- <ZO3cI+DkotHQo3md@casper.infradead.org>
- <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F08381
+	for <bpf@vger.kernel.org>; Mon,  4 Sep 2023 01:01:57 +0000 (UTC)
+Received: from out203-205-221-235.mail.qq.com (out203-205-221-235.mail.qq.com [203.205.221.235])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977E7C6;
+	Sun,  3 Sep 2023 18:01:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1693789312;
+	bh=TB5AzkK7BN11nl5AAqPvegLlqHhbbgXPppq8dVRYyGk=;
+	h=From:To:Cc:Subject:Date;
+	b=H/frfDkLoDJ22Ssoz/+NRxF4uUDmRvT6dmbMOYOtDAs3kKJ4HMAbJV7+KcdD7Osc3
+	 6QW+WFFS6/bjimFIPN3zlpULOZUPtACQ1vyW0ZOT9xq3skU+blHKHeIV4QnX+fK0FL
+	 gbJ2J6Y/1RifMMk0uoetX23BAahF/Z3JvYL2FuQ8=
+Received: from RT-NUC.. ([39.156.73.12])
+	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+	id 6E8B05F; Mon, 04 Sep 2023 09:01:46 +0800
+X-QQ-mid: xmsmtpt1693789306t6uqnk9ls
+Message-ID: <tencent_8898BD228E12207A1A1408E167C15C86AB0A@qq.com>
+X-QQ-XMAILINFO: OZsapEVPoiO6QpYiUEonvb5tVEG3ziOcQU89e5g17iOLxmlH/jeJMynwsFCWL5
+	 +QX7n8L4bIZHqCdtCxK3KPd024ZwMQB7fI8Gmd+f3VRNSab2yi59MvAij/GnwQ9tvVAc5eHLSZxi
+	 gAGbTmi9p8OIbDTgTBWMZ4vX1gRT4UDe+IfUzzLWizarcHfsHVOnhlicgfmBAPgdO25ZzRquq4xJ
+	 hpTscWhQT16Qa5bnu107g6ozuN/GfYz37ld8M1CmCssaEiLuSyW0grFat2FbPCimccF5BNujElKa
+	 /kqBqYrRBBLbEfX5LMDTst0LIzvGLdAYVwblxP7BXAbNRvT0vwQMXaARYnW+VeuwlSZF3c52MCkq
+	 08Yg5OiGKQqahrcIU6nnV6X+aDTG+0gXfLzwx12ZmLZ2D7n68F9dvZ/KogPr1DjJ+mZGpxRieDpu
+	 E/B1vBaM7+I5XPPKFhtGIW4RbHOqxknUQablIRW48LQr+zmJ5UCGNL4rH2v4yx8R42cVwbsWBcZQ
+	 mUA6/WeASZl1qVj0Px7Foq/uS+PTdIAqLTsKUyFsAVYpT9DCmHdOz4HzL/cag36mVepRH8K/P4d7
+	 CLs+KET//xzq2F4AcY9FQ+QMrbBakpx0h2vQFLWhB/K9om0dyxRaFnLS/+TZgl5uUZsCCQWcoHjL
+	 eWwT/N23Z9LuOfWApXWPt64DNVMGdbVhD/wAFcbyyEI/ySYXs9UOfMKzDqd7b53wvtpbA8fn7MME
+	 EejKAxI/DY1NXBbJV/PpdRwaKTWcuEFZE26NlJ4iRnMOg9aPri4E2GUqEz+9Pw1SXTnTi4IOvleB
+	 YljKS8+I/ATs1dLH9eNugFpDB/sknp3Tex1zVsSXUPbxgLxeWClJsv22YtYujqwOoLMnWqyokc5T
+	 jjr60J0D155quUhPUvCR6VQuHhj+Y9cWtgX/5fmqERFNebqm9jQxhA9kKQssfM8hgunelZ2IWSS+
+	 CxOyqi0cWymQxNcRSj/msou3f39u7uZwXgselfXIo=
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Rong Tao <rtoax@foxmail.com>
+To: olsajiri@gmail.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	sdf@google.com
+Cc: Rong Tao <rongtao@cestc.cn>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Yafang Shao <laoar.shao@gmail.com>,
+	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
+	linux-kernel@vger.kernel.org (open list),
+	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
+	linux-stm32@st-md-mailman.stormreply.com (moderated list:ARM/STM32 ARCHITECTURE),
+	linux-arm-kernel@lists.infradead.org (moderated list:ARM/STM32 ARCHITECTURE)
+Subject: [PATCH bpf-next v10 0/2] selftests/bpf: Optimize kallsyms cache
+Date: Mon,  4 Sep 2023 09:01:19 +0800
+X-OQ-MSGID: <cover.1693788910.git.rongtao@cestc.cn>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Aug 30, 2023 at 02:11:31PM +0800, Hao Xu wrote:
-> On 8/29/23 19:53, Matthew Wilcox wrote:
-> > On Tue, Aug 29, 2023 at 03:46:13PM +0800, Hao Xu wrote:
-> > > On 8/28/23 05:32, Matthew Wilcox wrote:
-> > > > On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
-> > > > > From: Hao Xu <howeyxu@tencent.com>
-> > > > > 
-> > > > > Add a boolean parameter for file_accessed() to support nowait semantics.
-> > > > > Currently it is true only with io_uring as its initial caller.
-> > > > 
-> > > > So why do we need to do this as part of this series?  Apparently it
-> > > > hasn't caused any problems for filemap_read().
-> > > > 
-> > > 
-> > > We need this parameter to indicate if nowait semantics should be enforced in
-> > > touch_atime(), There are locks and maybe IOs in it.
-> > 
-> > That's not my point.  We currently call file_accessed() and
-> > touch_atime() for nowait reads and nowait writes.  You haven't done
-> > anything to fix those.
-> > 
-> > I suspect you can trim this patchset down significantly by avoiding
-> > fixing the file_accessed() problem.  And then come back with a later
-> > patchset that fixes it for all nowait i/o.  Or do a separate prep series
-> 
-> I'm ok to do that.
-> 
-> > first that fixes it for the existing nowait users, and then a second
-> > series to do all the directory stuff.
-> > 
-> > I'd do the first thing.  Just ignore the problem.  Directory atime
-> > updates cause I/O so rarely that you can afford to ignore it.  Almost
-> > everyone uses relatime or nodiratime.
-> 
-> Hi Matthew,
-> The previous discussion shows this does cause issues in real
-> producations: https://lore.kernel.org/io-uring/2785f009-2ebb-028d-8250-d5f3a30510f0@gmail.com/#:~:text=fwiw%2C%20we%27ve%20just%20recently%20had%20similar%20problems%20with%20io_uring%20read/write
-> 
+From: Rong Tao <rongtao@cestc.cn>
 
-Then separate it out into it's own patch set so we can have a
-discussion on the merits of requiring using noatime, relatime or
-lazytime for really latency sensitive IO applications. Changing code
-is not always the right solution...
+We need to optimize the kallsyms cache, including optimizations for the
+number of symbols limit, and, some test cases add new kernel symbols
+(such as testmods) and we need to refresh kallsyms (reload or refresh).
 
--Dave.
+Rong Tao (2):
+  selftests/bpf: trace_helpers.c: optimize kallsyms cache
+  selftests/bpf: trace_helpers.c: Add a global ksyms initialization
+    mutex
+
+ samples/bpf/Makefile                          |   4 +
+ .../selftests/bpf/prog_tests/fill_link_info.c |   9 +-
+ .../prog_tests/kprobe_multi_testmod_test.c    |  24 ++-
+ tools/testing/selftests/bpf/trace_helpers.c   | 141 +++++++++++++-----
+ tools/testing/selftests/bpf/trace_helpers.h   |  10 +-
+ 5 files changed, 141 insertions(+), 47 deletions(-)
+
 -- 
-Dave Chinner
-david@fromorbit.com
+2.41.0
+
 
