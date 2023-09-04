@@ -1,299 +1,375 @@
-Return-Path: <bpf+bounces-9196-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9195-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F543791A50
-	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 17:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DBEC3791A4D
+	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 17:09:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 430AD281005
-	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 15:10:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 687D2280EA8
+	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 15:09:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1406AC14D;
-	Mon,  4 Sep 2023 15:10:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF1FBC145;
+	Mon,  4 Sep 2023 15:09:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3A0B3C20;
-	Mon,  4 Sep 2023 15:10:14 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478D01A5;
-	Mon,  4 Sep 2023 08:10:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693840213; x=1725376213;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=HdKwtc/IlUYd/lYBnJzHZ5d/0r/PuGW5UbCQ/8mqtsM=;
-  b=IZ+lVTNspC6iYDfpIsgmIAb1wVKrE9NzShOxfSsOVxVKnTprpGCaeqEB
-   odVcMpTl8guU4mrLGB0R6aMjypN2KJELzUCK9QCHAC+XoM6rjXXTPJH4J
-   zbOetk6Z5Oh4AwZOZhQ7Kg51n4eUhVBTpcnJa9+8ymthBPpRPJqkVIDzc
-   ThawV6AZXg+DR541v1OhKhXTiZzqJ3QHDpq37JFhUB1eN6XuWbX1WT6dt
-   +PDk7iphuMaYpS8GNwI1hmOwbZloldR/sGj9WCN2m2zZj8tQKOfmPfpuf
-   xyfgYqCpXiUQbCUz0kdjnWF0vbUvRscsXwYVnrUQr1xGJ0bPt4s3httSE
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="361646034"
-X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="361646034"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 08:04:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="740799012"
-X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="740799012"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Sep 2023 08:04:41 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 4 Sep 2023 08:04:41 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 4 Sep 2023 08:04:40 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Mon, 4 Sep 2023 08:04:40 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.177)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Mon, 4 Sep 2023 08:04:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i1tmVnv90h9MJsfRNROXL2mpXlu9h5xOVZG/zW3lk41T9p+KwF/q2+FFFEfpXUG9EQCDreI5cDMFxTbPzuUYAmU2PID8v0iiijI2rMSEe/QPrnpU8UB/aCvAYUZ6d4T55yT0N3m9naLT45NRm7BT2uddTD+QzErZgm3DzBkV2aUaIVr6kh70RJ0nCXP9ZTZ9KYGzjSBgIPGTqlxiLg+gMGeWWOuqdW72EaGzqUchB48/9ggTxbgrp135gB7Kr0JrdKzihwUw+3g3SMX+/rQfO3gDFZqG9/h8liPsp7SKEObjGoN2P/Q0iONPtFNaxlC5yeolNWHYyEKkx7C+b1+vfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ukm+wunnp3Nne1gxIDLx2wN4gbUefxDGXHd63AfPVi0=;
- b=YyLQG41WB5fVICeIIH5ynqCNisDWlQHvsXNC5hnQuq9TYjMpbD5SrULemDnCGSmzzUm9Y7UbYFZO3ScR6xn6g4ZbKyuCwThU4+LW7wll5n3rnDaDQGYNHXr7FCDm4nL/g8WFuM24yiJccG0SELXpTrH/4FH8n4EC//EcJkZ+hd7FRRg67uSCZsjPsXoNeF0vioPv4F4sVxpcYxda0HX3BTyAOQ/kL088H9/nE3HmM+80uRBjJbtL3SO5eJa4em2K64gWGfcoTAur7zMUKdrTsatO7IJcMLqV6cb3JjZvhKGyh/8KMddYL2syteDliG1Y6rJUOnhAiuqz3IgFo/vfcw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- DM4PR11MB5534.namprd11.prod.outlook.com (2603:10b6:5:391::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6745.33; Mon, 4 Sep 2023 15:04:34 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::c1f9:b4eb:f57e:5c3d]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::c1f9:b4eb:f57e:5c3d%3]) with mapi id 15.20.6745.030; Mon, 4 Sep 2023
- 15:04:34 +0000
-Date: Mon, 4 Sep 2023 17:04:23 +0200
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Larysa Zaremba <larysa.zaremba@intel.com>
-CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-	<haoluo@google.com>, <jolsa@kernel.org>, David Ahern <dsahern@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>, Willem de Bruijn <willemb@google.com>,
-	Jesper Dangaard Brouer <brouer@redhat.com>, Anatoly Burakov
-	<anatoly.burakov@intel.com>, Alexander Lobakin <alexandr.lobakin@intel.com>,
-	Magnus Karlsson <magnus.karlsson@gmail.com>, Maryam Tahhan
-	<mtahhan@redhat.com>, <xdp-hints@xdp-project.net>, <netdev@vger.kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Alexei Starovoitov
-	<alexei.starovoitov@gmail.com>, Simon Horman <simon.horman@corigine.com>,
-	Tariq Toukan <tariqt@mellanox.com>, Saeed Mahameed <saeedm@mellanox.com>
-Subject: Re: [RFC bpf-next 04/23] ice: Make ptype internal to descriptor info
- processing
-Message-ID: <ZPXx950bIsoQ5fpB@boxer>
-References: <20230824192703.712881-1-larysa.zaremba@intel.com>
- <20230824192703.712881-5-larysa.zaremba@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230824192703.712881-5-larysa.zaremba@intel.com>
-X-ClientProxiedBy: FR2P281CA0057.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:93::17) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 914B93C20
+	for <bpf@vger.kernel.org>; Mon,  4 Sep 2023 15:09:46 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4EE15E5B;
+	Mon,  4 Sep 2023 08:09:42 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C9E27143D;
+	Mon,  4 Sep 2023 08:10:19 -0700 (PDT)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 70DCF3F738;
+	Mon,  4 Sep 2023 08:09:39 -0700 (PDT)
+Message-ID: <a8779d0e-041e-e1c3-4c0b-27b55eae3286@arm.com>
+Date: Mon, 4 Sep 2023 16:09:40 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|DM4PR11MB5534:EE_
-X-MS-Office365-Filtering-Correlation-Id: 27027e3b-7106-4e62-841a-08dbad583fd1
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: p2nwbI+i+/lMFja358WRu6q6jhC75IQfnoTWGeOCAJHFAVLzrpsQI/9MJyEJnsKN3/WR0r+u5PcrTR47dNC0MwiJod2tc/dl5UGuEFMQAKIxm2ttWwKv+s2z1OxI7+5w/bsBvzGvf2lhSh5121Jaih6AKM6WYXz/lH+rVPzZkKC4W4Z2+KykrcxU+E8mzCqE9Uf3Ik6kJ9BpC0aFQ0yEp8inXhWY3l7/2i2uYVz+qPawUh/hYaU8q6MMY+SVwTYbSbqE7rgJnyJqxyJCCIKZ+tPyO3+qaExfv02mVIMUqUezkQMDAjWsx966du7XCEG0FnD2Yhbw89SxVRQoxwVKggYAYZm072f21PRP44QW1JwMRfzncJxAKOhzL7SoeyEMUKifL5bIWzk3vyFa9eiiJ081AON5zjKjF4n4gvT0PGWretXn2JeZcO0o+B5wyqfM9NTgNduDawsLZwATqSLhM2Kmd0D1+fQd36lfXPr5EwLZp1k0I7DAK0AWKK846keolVW25yn9vNOV7JSmjwBQb33IEX2TPskkHTfQzm/wToOzeJlaqLznUZPoxXDZ/3f5
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(39860400002)(376002)(396003)(346002)(136003)(186009)(1800799009)(451199024)(86362001)(6666004)(5660300002)(6506007)(6486002)(44832011)(83380400001)(2906002)(26005)(7416002)(6512007)(9686003)(41300700001)(66476007)(54906003)(66556008)(66946007)(6636002)(316002)(38100700002)(82960400001)(8676002)(33716001)(8936002)(4326008)(6862004)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?voU7Tpst/yVba98wEY/64kZ5naZEXoZQz4uYrqom6yWu3tIdjirB0Lf02kk2?=
- =?us-ascii?Q?IHJSf0agY0hV8qwbpw2Ps6Q4s1TLy1sCUuWsj3C8LgtQl+IZv7lnbq5+QeFo?=
- =?us-ascii?Q?Pwt+0aGleV7I/DqUs51X/q+qnK5foqP5untmKehxhaQnhg3EBJzi44xUBgcm?=
- =?us-ascii?Q?EhvERz08MS7mxCTK/9EOPjb/QZ3DNXV3Wa/zv+M0Rywbh2vsCqfDXNgOmQK1?=
- =?us-ascii?Q?Bt/uAjWDyNH4Zb30OTzUhJAzWNEqccmr9l/otuGFFKIsTB3HDNJbNf2re8t4?=
- =?us-ascii?Q?9/SxQULboXd11TnppeZXcRteTO1gHEV0ozw5BSKeukgYMsFY/T2rWrq4O30i?=
- =?us-ascii?Q?yZnZKaSYTWv7v9f15Z/JEAjAvCLMua/jPZMP98NSp5vUdOkxzZscKEQWRBnr?=
- =?us-ascii?Q?nEAfFzChR7QIt11jJvam31uFG0RBHLCRoS4bchETSYm+Kh5wI04tW0F9ipNe?=
- =?us-ascii?Q?z0yMO3KTU0s54C+b+GAVzqQE4H3SXidv7YHDLd99T7kPVJXEkI6WFe98wLJx?=
- =?us-ascii?Q?fd3waUrNdm5h2jfb3ZBtjxAkQ7t2yk1DfJU5vH6+Ucwtl73A7+h7tF+fc+QE?=
- =?us-ascii?Q?nhlS3vBQuirNbovwv0U3lMlMfWwXhXCTtyjboOYRkrrEbOqcVfQySuysinvs?=
- =?us-ascii?Q?Cig/B0gVH9Ow1XcDvuFPjO8Qs06QROZhBiHfH4DFtxLnNvFgf1lQFlWWEB27?=
- =?us-ascii?Q?yE6R4CqbziZXbMRXpIEkH+tE3sPnXrew3XysGC7DbYB1Azbmyihe6BHF3m8u?=
- =?us-ascii?Q?NdUncEXZC9qChNCSHPrCQPn8jDd5UJ8GGFMFx9QW6P8lH0dsPXFdXOTHwKq5?=
- =?us-ascii?Q?1vprqd0OJyvKaJw7J1IKKZQCm16X0e/zlcc3ZEpUWRncCN3OK5/+Mz88w9Sq?=
- =?us-ascii?Q?K2y0fnrtQJ0gsmoqOK9linQr0wMySmsKnECS8TXRrDRpzS7JlSudEOBfgueU?=
- =?us-ascii?Q?a8sPfgvh9+GUG7jjIM+hOfAErkcvfG5sXeJvTXAWnlO6i6D+NsYu9KJKJm50?=
- =?us-ascii?Q?+j1xfnGqRvehzzXknNiBWFszNBpzJg+nGCq7HAXyafTynvlXGHGdvbfHFIl1?=
- =?us-ascii?Q?mPGyIDFhfJx6d2IL8f28fdsXYtb07WA7YetrgT/Fe7MhFApj9qspO5GxlsO1?=
- =?us-ascii?Q?Jz2JQtmLtgrfNSH7zZLaD0Rj/0CiyRyLaRSKTVo5gEG38YEh2GyovmsiPOBK?=
- =?us-ascii?Q?xdgbn4WzrB+SsgqdxoFna6yFIfL/+yougiOdHKiM9TzT3jwMxodC/BacJ09+?=
- =?us-ascii?Q?krJuaCE9jL8FtlMHHqQhzciO5V+NLQnR/9w+HzkDrA3keBX57goJhL8keMrf?=
- =?us-ascii?Q?icHw5mjYETSDxcr2kN9q2yxXz3VifK/iN7WENb2FLDNw70Tr4j9AEapsQtF8?=
- =?us-ascii?Q?tERy2wpqU9x21YqGlPFMweoV3jYQGUDXXobChY4EkEK607Ufmnf69wqq70YH?=
- =?us-ascii?Q?goRaCNYlm0E+QapVEFoZGYatiERXItZt+WVeF6k7t+9LcoJI4lBVBBia7sOF?=
- =?us-ascii?Q?ovoqA6nFVJw08N0tTnsqNxCN8A7eJUXbCAmyW5juSVQATSJABoq6deCWL/ry?=
- =?us-ascii?Q?u5r7H//Zez+xBYkKXCkUih6yGFPWcQ8yCDhYywyy6zmt8rtzSz3/WxvFuP5A?=
- =?us-ascii?Q?6g=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 27027e3b-7106-4e62-841a-08dbad583fd1
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2023 15:04:34.3962
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: M3egtEPL50dpHE9+LbMQBTxXypOKX1JDtyOSjmCsunFUbztLsMM2EXoseQqHWOV/vdEToDrOOrVxM3xHJxd5wYJro2kjM1W9lPiUWVSjIB8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5534
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v1 2/3] perf tools: Revert enable indices setting syntax
+ for BPF map
+Content-Language: en-US
+To: Ian Rogers <irogers@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+ "coresight@lists.linaro.org" <coresight@lists.linaro.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+ Adrian Hunter <adrian.hunter@intel.com>, Eduard Zingerman
+ <eddyz87@gmail.com>, Kan Liang <kan.liang@linux.intel.com>,
+ Rob Herring <robh@kernel.org>, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ Wang Nan <wangnan0@huawei.com>, Wang ShaoBo <bobo.shaobowang@huawei.com>,
+ YueHaibing <yuehaibing@huawei.com>, He Kuang <hekuang@huawei.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Mark Rutland <mark.rutland@arm.com>
+References: <20230728001212.457900-1-irogers@google.com>
+ <20230728001212.457900-3-irogers@google.com>
+ <77361428-5970-5031-e204-7aefcd9cbebc@arm.com>
+ <CAP-5=fVATGaoeaSEk5jjoGDY=pJkFThU2t2sixfwjouxisor=w@mail.gmail.com>
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <CAP-5=fVATGaoeaSEk5jjoGDY=pJkFThU2t2sixfwjouxisor=w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Aug 24, 2023 at 09:26:43PM +0200, Larysa Zaremba wrote:
-> Currently, rx_ptype variable is used only as an argument
-> to ice_process_skb_fields() and is computed
-> just before the function call.
-> 
-> Therefore, there is no reason to pass this value as an argument.
-> Instead, remove this argument and compute the value directly inside
-> ice_process_skb_fields() function.
-> 
-> Also, separate its calculation into a short function, so the code
-> can later be reused in .xmo_() callbacks.
-> 
-> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-> ---
->  drivers/net/ethernet/intel/ice/ice_txrx.c     |  6 +-----
->  drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 15 +++++++++++++--
->  drivers/net/ethernet/intel/ice/ice_txrx_lib.h |  2 +-
->  drivers/net/ethernet/intel/ice/ice_xsk.c      |  6 +-----
->  4 files changed, 16 insertions(+), 13 deletions(-)
+On 04/09/2023 15:56, Ian Rogers wrote:
+> On Mon, Sep 4, 2023 at 4:02 AM James Clark <james.clark@arm.com> wrote:
+>>
+>>
+>>
+>> On 28/07/2023 01:12, Ian Rogers wrote:
+>>> This reverts commit e571e029bdbf ("perf tools: Enable indices setting
+>>> syntax for BPF map").
+>>>
+>>> The reverted commit added a notion of arrays that could be set as
+>>> event terms for BPF events. The parsing hasn't worked over multiple
+>>> Linux releases. Given the broken nature of the parsing it appears the
+>>> code isn't in use, nor could I find a way for it to be used to add a
+>>> test.
+>>>
+>>> The original commit contains a test in the commit message,
+>>> however, running it yields:
+>>> ```
+>>> $ perf record -e './test_bpf_map_3.c/map:channel.value[0,1,2,3...5]=101/' usleep 2
+>>> event syntax error: '..pf_map_3.c/map:channel.value[0,1,2,3...5]=101/'
+>>>                                   \___ parser error
+>>> Run 'perf list' for a list of valid events
+>>>
+>>>  Usage: perf record [<options>] [<command>]
+>>>     or: perf record [<options>] -- <command> [<options>]
+>>>
+>>>     -e, --event <event>   event selector. use 'perf list' to list available events
+>>> ```
+>>>
+>>> Given the code can't be used this commit reverts and removes it.
+>>>
+>>
+>> Hi Ian,
+>>
+>> Unfortunately this revert breaks Coresight sink argument parsing.
+>>
+>> Before:
+>>
+>>   $ perf record -e cs_etm/@tmc_etr0/ -- true
+>>   [ perf record: Woken up 1 times to write data ]
+>>   [ perf record: Captured and wrote 4.008 MB perf.data ]
+>>
+>> After:
+>>
+>>   $ perf record -e cs_etm/@tmc_etr0/ -- true
+>>   event syntax error: 'cs_etm/@tmc_etr0/'
+>>                            \___ parser error
+>>
+>> I can't really see how it's related to the array syntax that the commit
+>> messages mention, but it could either be that the revert wasn't applied
+>> cleanly or just some unintended side effect.
+>>
+>> We should probably add a cross platform parsing test for Coresight
+>> arguments, but I don't know whether we should just blindly revert the
+>> revert for now, or work on a new change that explicitly fixes the
+>> Coresight case.
 > 
-> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> index 52d0a126eb61..40f2f6dabb81 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_txrx.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> @@ -1181,7 +1181,6 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
->  		unsigned int size;
->  		u16 stat_err_bits;
->  		u16 vlan_tag = 0;
-> -		u16 rx_ptype;
->  
->  		/* get the Rx desc from Rx ring based on 'next_to_clean' */
->  		rx_desc = ICE_RX_DESC(rx_ring, ntc);
-> @@ -1286,10 +1285,7 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
->  		total_rx_bytes += skb->len;
->  
->  		/* populate checksum, VLAN, and protocol */
-> -		rx_ptype = le16_to_cpu(rx_desc->wb.ptype_flex_flags0) &
-> -			ICE_RX_FLEX_DESC_PTYPE_M;
-> -
-> -		ice_process_skb_fields(rx_ring, rx_desc, skb, rx_ptype);
-> +		ice_process_skb_fields(rx_ring, rx_desc, skb);
->  
->  		ice_trace(clean_rx_irq_indicate, rx_ring, rx_desc, skb);
->  		/* send completed skb up the stack */
-> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> index 8b155a502b3b..07241f4229b7 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> @@ -241,12 +241,21 @@ ice_ptp_rx_hwts_to_skb(struct ice_rx_ring *rx_ring,
->  	};
->  }
->  
-> +/**
-> + * ice_get_ptype - Read HW packet type from the descriptor
-> + * @rx_desc: RX descriptor
-> + */
-> +static u16 ice_get_ptype(const union ice_32b_rx_flex_desc *rx_desc)
-> +{
-> +	return le16_to_cpu(rx_desc->wb.ptype_flex_flags0) &
-> +	       ICE_RX_FLEX_DESC_PTYPE_M;
-> +}
-> +
->  /**
->   * ice_process_skb_fields - Populate skb header fields from Rx descriptor
->   * @rx_ring: Rx descriptor ring packet is being transacted on
->   * @rx_desc: pointer to the EOP Rx descriptor
->   * @skb: pointer to current skb being populated
-> - * @ptype: the packet type decoded by hardware
->   *
->   * This function checks the ring, descriptor, and packet information in
->   * order to populate the hash, checksum, VLAN, protocol, and
-> @@ -255,8 +264,10 @@ ice_ptp_rx_hwts_to_skb(struct ice_rx_ring *rx_ring,
->  void
->  ice_process_skb_fields(struct ice_rx_ring *rx_ring,
->  		       union ice_32b_rx_flex_desc *rx_desc,
-> -		       struct sk_buff *skb, u16 ptype)
-> +		       struct sk_buff *skb)
->  {
-> +	u16 ptype = ice_get_ptype(rx_desc);
-> +
->  	ice_rx_hash_to_skb(rx_ring, rx_desc, skb, ptype);
->  
->  	/* modifies the skb - consumes the enet header */
-> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-> index 115969ecdf7b..e1d49e1235b3 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-> +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-> @@ -148,7 +148,7 @@ void ice_release_rx_desc(struct ice_rx_ring *rx_ring, u16 val);
->  void
->  ice_process_skb_fields(struct ice_rx_ring *rx_ring,
->  		       union ice_32b_rx_flex_desc *rx_desc,
-> -		       struct sk_buff *skb, u16 ptype);
-> +		       struct sk_buff *skb);
->  void
->  ice_receive_skb(struct ice_rx_ring *rx_ring, struct sk_buff *skb, u16 vlan_tag);
->  #endif /* !_ICE_TXRX_LIB_H_ */
-> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> index 2a3f0834e139..ef778b8e6d1b 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> @@ -870,7 +870,6 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
->  		struct sk_buff *skb;
->  		u16 stat_err_bits;
->  		u16 vlan_tag = 0;
-> -		u16 rx_ptype;
->  
->  		rx_desc = ICE_RX_DESC(rx_ring, ntc);
->  
-> @@ -950,10 +949,7 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
->  
->  		vlan_tag = ice_get_vlan_tag_from_rx_desc(rx_desc);
->  
-> -		rx_ptype = le16_to_cpu(rx_desc->wb.ptype_flex_flags0) &
-> -				       ICE_RX_FLEX_DESC_PTYPE_M;
-> -
-> -		ice_process_skb_fields(rx_ring, rx_desc, skb, rx_ptype);
-> +		ice_process_skb_fields(rx_ring, rx_desc, skb);
->  		ice_receive_skb(rx_ring, skb, vlan_tag);
->  	}
->  
-> -- 
-> 2.41.0
+> Agreed, I'll take a look. Any chance you could post the full error
+> message? I suspect there's a first error hiding in there too.
 > 
+> Thanks,
+> Ian
 > 
+
+No that seems to be the whole thing, running with -vvv and pasting
+everything:
+
+
+$ perf record -e cs_etm/@tmc_etr0/ -vvv -- true
+event syntax error: 'cs_etm/@tmc_etr0/'
+                           \___ parser error
+Run 'perf list' for a list of valid events
+
+ Usage: perf record [<options>] [<command>]
+    or: perf record [<options>] -- <command> [<options>]
+
+    -e, --event <event>   event selector. use 'perf list' to list
+available events
+
+
+I previously mentioned that this is a Coresight thing, but I saw that it
+may actually be the more generic "drv_str". Unless nothing other than
+Coresight is using it, then it's just a Coresight thing.
+
+>> Thanks
+>> James
+>>
+>>> Signed-off-by: Ian Rogers <irogers@google.com>
+>>> ---
+>>>  tools/perf/util/parse-events.c |   8 +--
+>>>  tools/perf/util/parse-events.l |  11 ---
+>>>  tools/perf/util/parse-events.y | 122 ---------------------------------
+>>>  3 files changed, 1 insertion(+), 140 deletions(-)
+>>>
+>>> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+>>> index 02647313c918..0e2004511cf5 100644
+>>> --- a/tools/perf/util/parse-events.c
+>>> +++ b/tools/perf/util/parse-events.c
+>>> @@ -800,13 +800,7 @@ parse_events_config_bpf(struct parse_events_state *parse_state,
+>>>
+>>>                       parse_events_error__handle(parse_state->error, idx,
+>>>                                               strdup(errbuf),
+>>> -                                             strdup(
+>>> -"Hint:\tValid config terms:\n"
+>>> -"     \tmap:[<arraymap>].value<indices>=[value]\n"
+>>> -"     \tmap:[<eventmap>].event<indices>=[event]\n"
+>>> -"\n"
+>>> -"     \twhere <indices> is something like [0,3...5] or [all]\n"
+>>> -"     \t(add -v to see detail)"));
+>>> +                                             NULL);
+>>>                       return err;
+>>>               }
+>>>       }
+>>> diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
+>>> index 99335ec586ae..d7d084cc4140 100644
+>>> --- a/tools/perf/util/parse-events.l
+>>> +++ b/tools/perf/util/parse-events.l
+>>> @@ -175,7 +175,6 @@ do {                                                      \
+>>>  %x mem
+>>>  %s config
+>>>  %x event
+>>> -%x array
+>>>
+>>>  group                [^,{}/]*[{][^}]*[}][^,{}/]*
+>>>  event_pmu    [^,{}/]+[/][^/]*[/][^,{}/]*
+>>> @@ -251,14 +250,6 @@ non_digit        [^0-9]
+>>>               }
+>>>  }
+>>>
+>>> -<array>{
+>>> -"]"                  { BEGIN(config); return ']'; }
+>>> -{num_dec}            { return value(yyscanner, 10); }
+>>> -{num_hex}            { return value(yyscanner, 16); }
+>>> -,                    { return ','; }
+>>> -"\.\.\."             { return PE_ARRAY_RANGE; }
+>>> -}
+>>> -
+>>>  <config>{
+>>>       /*
+>>>        * Please update config_term_names when new static term is added.
+>>> @@ -302,8 +293,6 @@ r0x{num_raw_hex}  { return str(yyscanner, PE_RAW); }
+>>>  {lc_type}-{lc_op_result}     { return lc_str(yyscanner, _parse_state); }
+>>>  {lc_type}-{lc_op_result}-{lc_op_result}      { return lc_str(yyscanner, _parse_state); }
+>>>  {name_minus}         { return str(yyscanner, PE_NAME); }
+>>> -\[all\]                      { return PE_ARRAY_ALL; }
+>>> -"["                  { BEGIN(array); return '['; }
+>>>  @{drv_cfg_term}              { return drv_str(yyscanner, PE_DRV_CFG_TERM); }
+>>>  }
+>>>
+>>> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+>>> index 454577f7aff6..5a90e7874c59 100644
+>>> --- a/tools/perf/util/parse-events.y
+>>> +++ b/tools/perf/util/parse-events.y
+>>> @@ -64,7 +64,6 @@ static void free_list_evsel(struct list_head* list_evsel)
+>>>  %token PE_LEGACY_CACHE
+>>>  %token PE_PREFIX_MEM
+>>>  %token PE_ERROR
+>>> -%token PE_ARRAY_ALL PE_ARRAY_RANGE
+>>>  %token PE_DRV_CFG_TERM
+>>>  %token PE_TERM_HW
+>>>  %type <num> PE_VALUE
+>>> @@ -108,11 +107,6 @@ static void free_list_evsel(struct list_head* list_evsel)
+>>>  %type <list_evsel> groups
+>>>  %destructor { free_list_evsel ($$); } <list_evsel>
+>>>  %type <tracepoint_name> tracepoint_name
+>>> -%destructor { free ($$.sys); free ($$.event); } <tracepoint_name>
+>>> -%type <array> array
+>>> -%type <array> array_term
+>>> -%type <array> array_terms
+>>> -%destructor { free ($$.ranges); } <array>
+>>>  %type <hardware_term> PE_TERM_HW
+>>>  %destructor { free ($$.str); } <hardware_term>
+>>>
+>>> @@ -127,7 +121,6 @@ static void free_list_evsel(struct list_head* list_evsel)
+>>>               char *sys;
+>>>               char *event;
+>>>       } tracepoint_name;
+>>> -     struct parse_events_array array;
+>>>       struct hardware_term {
+>>>               char *str;
+>>>               u64 num;
+>>> @@ -878,121 +871,6 @@ PE_TERM
+>>>
+>>>       $$ = term;
+>>>  }
+>>> -|
+>>> -name_or_raw array '=' name_or_legacy
+>>> -{
+>>> -     struct parse_events_term *term;
+>>> -     int err = parse_events_term__str(&term, PARSE_EVENTS__TERM_TYPE_USER, $1, $4, &@1, &@4);
+>>> -
+>>> -     if (err) {
+>>> -             free($1);
+>>> -             free($4);
+>>> -             free($2.ranges);
+>>> -             PE_ABORT(err);
+>>> -     }
+>>> -     term->array = $2;
+>>> -     $$ = term;
+>>> -}
+>>> -|
+>>> -name_or_raw array '=' PE_VALUE
+>>> -{
+>>> -     struct parse_events_term *term;
+>>> -     int err = parse_events_term__num(&term, PARSE_EVENTS__TERM_TYPE_USER, $1, $4, false, &@1, &@4);
+>>> -
+>>> -     if (err) {
+>>> -             free($1);
+>>> -             free($2.ranges);
+>>> -             PE_ABORT(err);
+>>> -     }
+>>> -     term->array = $2;
+>>> -     $$ = term;
+>>> -}
+>>> -|
+>>> -PE_DRV_CFG_TERM
+>>> -{
+>>> -     struct parse_events_term *term;
+>>> -     char *config = strdup($1);
+>>> -     int err;
+>>> -
+>>> -     if (!config)
+>>> -             YYNOMEM;
+>>> -     err = parse_events_term__str(&term, PARSE_EVENTS__TERM_TYPE_DRV_CFG, config, $1, &@1, NULL);
+>>> -     if (err) {
+>>> -             free($1);
+>>> -             free(config);
+>>> -             PE_ABORT(err);
+>>> -     }
+>>> -     $$ = term;
+>>> -}
+>>> -
+>>> -array:
+>>> -'[' array_terms ']'
+>>> -{
+>>> -     $$ = $2;
+>>> -}
+>>> -|
+>>> -PE_ARRAY_ALL
+>>> -{
+>>> -     $$.nr_ranges = 0;
+>>> -     $$.ranges = NULL;
+>>> -}
+>>> -
+>>> -array_terms:
+>>> -array_terms ',' array_term
+>>> -{
+>>> -     struct parse_events_array new_array;
+>>> -
+>>> -     new_array.nr_ranges = $1.nr_ranges + $3.nr_ranges;
+>>> -     new_array.ranges = realloc($1.ranges,
+>>> -                             sizeof(new_array.ranges[0]) *
+>>> -                             new_array.nr_ranges);
+>>> -     if (!new_array.ranges)
+>>> -             YYNOMEM;
+>>> -     memcpy(&new_array.ranges[$1.nr_ranges], $3.ranges,
+>>> -            $3.nr_ranges * sizeof(new_array.ranges[0]));
+>>> -     free($3.ranges);
+>>> -     $$ = new_array;
+>>> -}
+>>> -|
+>>> -array_term
+>>> -
+>>> -array_term:
+>>> -PE_VALUE
+>>> -{
+>>> -     struct parse_events_array array;
+>>> -
+>>> -     array.nr_ranges = 1;
+>>> -     array.ranges = malloc(sizeof(array.ranges[0]));
+>>> -     if (!array.ranges)
+>>> -             YYNOMEM;
+>>> -     array.ranges[0].start = $1;
+>>> -     array.ranges[0].length = 1;
+>>> -     $$ = array;
+>>> -}
+>>> -|
+>>> -PE_VALUE PE_ARRAY_RANGE PE_VALUE
+>>> -{
+>>> -     struct parse_events_array array;
+>>> -
+>>> -     if ($3 < $1) {
+>>> -             struct parse_events_state *parse_state = _parse_state;
+>>> -             struct parse_events_error *error = parse_state->error;
+>>> -             char *err_str;
+>>> -
+>>> -             if (asprintf(&err_str, "Expected '%ld' to be less-than '%ld'", $3, $1) < 0)
+>>> -                     err_str = NULL;
+>>> -
+>>> -             parse_events_error__handle(error, @1.first_column, err_str, NULL);
+>>> -             YYABORT;
+>>> -     }
+>>> -     array.nr_ranges = 1;
+>>> -     array.ranges = malloc(sizeof(array.ranges[0]));
+>>> -     if (!array.ranges)
+>>> -             YYNOMEM;
+>>> -     array.ranges[0].start = $1;
+>>> -     array.ranges[0].length = $3 - $1 + 1;
+>>> -     $$ = array;
+>>> -}
+>>>
+>>>  sep_dc: ':' |
+>>>
 
