@@ -1,269 +1,395 @@
-Return-Path: <bpf+bounces-9191-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9192-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BBA97919C3
-	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 16:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 66A2C791A22
+	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 16:56:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5171F28101A
-	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 14:38:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C611280FA1
+	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 14:56:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E635BE4C;
-	Mon,  4 Sep 2023 14:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF9DC140;
+	Mon,  4 Sep 2023 14:56:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E433D84;
-	Mon,  4 Sep 2023 14:38:14 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12983CC8;
-	Mon,  4 Sep 2023 07:38:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693838293; x=1725374293;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=B7Ovf21Taa7r21Bo9cHRJuIL9ssMIdgf122W78HwibY=;
-  b=G4eFVkOXJYKBdTMiKkmW3l5C46A90d2vmsNg4GMK6zlBVe/sXkgSTQv7
-   GCk8fi11ekXAks0uaG/SGaxflckUUEOWcw9W+lffYB7PtCg+Z65kcWO12
-   PMreUl2G0B8pVc485gU7X8hUHp6nIzt5+pXASb8PTdyDGREWXYhV1Rnu5
-   ht6i07EPaPUXHZtbpNAivDJAvq1HCO5lU42lEg7mtfPC2I1MNy3au4bGw
-   Wt5dh74d2Wen+WEFjkfQuoX2P+jYBEUdfViIKVWGpJxxCsxHfzdfVmRUm
-   CJxS3NGgTHAwv7ZcrFRjg0IHlVC2uJBOhbaVnI6q30PsH+pECbqr9cjaA
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="379321598"
-X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="379321598"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 07:38:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="810922948"
-X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="810922948"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Sep 2023 07:38:11 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 4 Sep 2023 07:38:11 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 4 Sep 2023 07:38:10 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Mon, 4 Sep 2023 07:38:10 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.174)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Mon, 4 Sep 2023 07:38:09 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NwH7xsNmKt7RetoStAGwgP5dtdR0XKkdhzur84GmZaNKJJ0+tRHPjcZvuOwfRzW1xNVd2tlZZaPtRhEUTkWWsvMukBdNaVpuirSVvH8u5i23pEGd1wjlh0KUJicoc2MlbfqJFt4G77wf4Jp0G9vPlg5FpdGeQ/OSyiM2/ZoEgGGs0WEniR76VzXfW+VDaA2JcsJDkv4xiyeSQwDHYZ3cLp/5YVhLXZ0Tco0CwScTmH3LCfb1226WpncS/TUSyeCpINJAn6pTuUTs5wnRDUWAj9TflLvbGw6eFwER3lGA77ijVWeOVMUpEYXLxfRPS0beD0gUlenDETYywrYWDDFdiw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2ZbYyKBAp93SXYMKpJhgCpzKGi9y5Rg2LECLzp/dH6Y=;
- b=NxFXAodLfHBwmywQSAYBc6lum3rQuVTr3RhITKvjFZs4/YUs8J7wuTlySsp70S63HlCIBcO5wtaCFCDV6ONQ3nXd2Rdh+DSTtGpTE0utw9GlwVpKJZWEjB3UUxXi0BBSETXd8hI4nzNk4i12tTt/xbXSMaycHYEVt2clXe4DCYCVgISJDZIM1Z5l6H9Imr1uvL7ruPDxa4IACUcEjjVw5+/Y3KoDKAR8W1xBhBVJU4xO41vNVoktdGevtB8cvygRuCifTHd7PoidXosKisJsTYaJH6Zn68f38XVXuxdQkHMALPHGZKoPa7Kfreyb35oifDhbrrB6lVokNgISq8MO8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- BY1PR11MB8125.namprd11.prod.outlook.com (2603:10b6:a03:528::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.23; Mon, 4 Sep
- 2023 14:37:59 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::c1f9:b4eb:f57e:5c3d]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::c1f9:b4eb:f57e:5c3d%3]) with mapi id 15.20.6745.030; Mon, 4 Sep 2023
- 14:37:59 +0000
-Date: Mon, 4 Sep 2023 16:37:45 +0200
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Larysa Zaremba <larysa.zaremba@intel.com>
-CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-	<haoluo@google.com>, <jolsa@kernel.org>, David Ahern <dsahern@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>, Willem de Bruijn <willemb@google.com>,
-	Jesper Dangaard Brouer <brouer@redhat.com>, Anatoly Burakov
-	<anatoly.burakov@intel.com>, Alexander Lobakin <alexandr.lobakin@intel.com>,
-	Magnus Karlsson <magnus.karlsson@gmail.com>, Maryam Tahhan
-	<mtahhan@redhat.com>, <xdp-hints@xdp-project.net>, <netdev@vger.kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Alexei Starovoitov
-	<alexei.starovoitov@gmail.com>, Simon Horman <simon.horman@corigine.com>,
-	Tariq Toukan <tariqt@mellanox.com>, Saeed Mahameed <saeedm@mellanox.com>
-Subject: Re: [xdp-hints] [RFC bpf-next 01/23] ice: make RX hash reading code
- more reusable
-Message-ID: <ZPXruYZtN6rA6MuS@boxer>
-References: <20230824192703.712881-1-larysa.zaremba@intel.com>
- <20230824192703.712881-2-larysa.zaremba@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230824192703.712881-2-larysa.zaremba@intel.com>
-X-ClientProxiedBy: FR2P281CA0118.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:9d::10) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B53633D99
+	for <bpf@vger.kernel.org>; Mon,  4 Sep 2023 14:56:43 +0000 (UTC)
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36A3AD
+	for <bpf@vger.kernel.org>; Mon,  4 Sep 2023 07:56:38 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-40a47e8e38dso397421cf.1
+        for <bpf@vger.kernel.org>; Mon, 04 Sep 2023 07:56:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693839398; x=1694444198; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B8dnXbe6GgMXG/QAPAnuqzyd8DFJuI3wGF/AqzBGZE0=;
+        b=s6X7ErhMRXTxoRPswpczGG9BLMbuT0YcrHfTJ3G0tQyLyV6kCdFCaACG3qGqmKF4Jj
+         NFvNDnr569GPJ5Ex+lJb5T2L4VtXcH7OiJUBeKFsE2qD1IBZaf6rnS85R6lEs/YaMMtf
+         wLcpyQ+LEn6R3X6juCzqz4KBDDXS8aITdMsOW9ZdwxIM/Q916SYcztZw6xEQdxTCv2g0
+         bmJUZ5lIbxwOo+OdG3OOSNnPhtWRU4W2OE6xwOOxjSIkNLuv4OETadq+KDGH3XzxyshE
+         Cyl4VuhgoysYa+18+dZhp+uaLbn3LWWYoOimKuFh0IF1STmtg4PqIWv2yiIFtRj3HVN4
+         StRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693839398; x=1694444198;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B8dnXbe6GgMXG/QAPAnuqzyd8DFJuI3wGF/AqzBGZE0=;
+        b=Iqf847e+vXrgBpKhu2+WXcPY4biAiBQCYjmMM1tq8EeKvWuUGFvd8uqAhkp6AAq7We
+         snhq1ylXQRhlIh8Iady6eDcAKvdihIP1nOFFl0q8NFpp4Tvd4j5+sSaby05ef9uInvv3
+         r6DpdVtcf6yu9bXkU+qz2scM1NJjoq6DxmyL4IWVvGS80CzreXm0wxZCnyYB4KVG+E9M
+         5H4sBziX57bE51NcNDkxjWBF6FyVg8xOwn5Gy2fEiQhz10jBZgOdCHMGUdgdf62B1XjP
+         YOCJo9HIS6kauODR8GaCwTEEmUSLRv+eN0L/4RgbDnb5jKD9vYEGziBAVrozL5XqXW6g
+         lRwQ==
+X-Gm-Message-State: AOJu0Yx5cEZLYcRBC7qrS2otJjBTp72cw/O3/PCH+LioiJylLQXfz7GU
+	TkY8+Z3SBsM3e5H7HxlNx81UMX728Cg1KqB9MOIZgg==
+X-Google-Smtp-Source: AGHT+IFpe3Dvh7nmW/wCBzxTCHHMjcosW4dHk2wlflmIKdWhbxuKM+OmTZAODzw5dGa6Jt+tJikYPOCFPIxRkzy2Ck8=
+X-Received: by 2002:a05:622a:1d0:b0:410:8ba3:21c7 with SMTP id
+ t16-20020a05622a01d000b004108ba321c7mr368058qtw.18.1693839397645; Mon, 04 Sep
+ 2023 07:56:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|BY1PR11MB8125:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1e5bc748-9aaf-4396-379b-08dbad548907
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NbA4xielSCBiCwyMyh2lViM2NSNwSlNXo9e2qkqODHpCmUfYZK36y9VXgUVDrQKNBcZetiF514b+un7BaJAtYTxTOlCO9ZY9yEESmOWqVxrdCG52rAv5OaeX1suTGDXE0Wq+NCbb4DTswD2GyEC6NAiuZmufg0PriHNrhjFIltT0ZT6uz+4o/4Vflg5fhXbmYGohCNFs/ue+6vgsrzNIWGkF/uOvEzMPlO7eyZmztf7cOsMyd+Jny+qCSqTXKr5yomafeTwjiOtt8/pfLtevf8fXO0QpO3skGQ/nqpCnAgUYa1c2jwSxXEs0pn7p5/JxtiXQN+Km+vOmRsr8IAjoO9P2+tcI+vA83/AW4CfYx4pjsPfYl3AO0p8/ao4PZXKYAG3j3ADElPHuDJ59dsEk4oAsH6lXEMPFwAi/cMkRqWM1dgt8yWXOM+4XAVu09NRJZn6bl79WeoRfMaqCVyXjANCAwSOQSSIgQ3taPG96tDs8Y2gG3UOkdltz3CP0qpk914r2J8+qpdUv9qlarjAtN48I24157wR3L5sul0Qw6SVL6PMSzMtnuC/D9bWw1cuC
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(376002)(396003)(346002)(366004)(39860400002)(186009)(1800799009)(451199024)(8676002)(7416002)(33716001)(2906002)(44832011)(6636002)(316002)(41300700001)(5660300002)(4326008)(6862004)(8936002)(86362001)(6666004)(478600001)(83380400001)(6506007)(26005)(6512007)(9686003)(66946007)(82960400001)(6486002)(66556008)(38100700002)(66476007)(54906003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ldx6BYH2RB6PnD9cghJ2c/wpCdg9b393ufHphAUoUAQMfX7vCOQD8IzSipKR?=
- =?us-ascii?Q?4SISsE21J17AdGkkEms6J9QM1NtTD1bWYbXBpreU1+iTz0XsxaiZYeESI9g6?=
- =?us-ascii?Q?ekPeOBmLeIMUt6TGNDy9bmYQNjsTth4Qx/n4ciS934G+PLaQKY8R41RToufo?=
- =?us-ascii?Q?5VMlng5nUTsR2AlgkoLjGNCo19K4VE78Sj3/cfeSmAiw6RPTU8CiWQyIg5Y4?=
- =?us-ascii?Q?6/ou1jhpNQvk+9bnKxirdsQFvb21CURZpyhSlHvGDT21vLiMZCMph2rDpPY2?=
- =?us-ascii?Q?l7loV6pqzbClqyNVgGCCYYmZPX5uqqrrUs+eo5Nj5852ADjTf574LOjTe5Kn?=
- =?us-ascii?Q?ej1jZ4I+Th818umpX+IhSV+vpywNNWDc8DTb1HRQM+wvly4/NWgMeQ7NRKXd?=
- =?us-ascii?Q?OlQ9U0c56qdqxMJHUTctehj9HpIqM4cov1SzlN1HdpRVQjFBVxP7id3mPaUR?=
- =?us-ascii?Q?oHjnE+QQHQ1n2VhOpVfLJEWpVi1QmCVMp4d9EKIip2pd1LuX4T8no1Ch38iw?=
- =?us-ascii?Q?v2W4+c9TH7wWvsv2m3FH66GCzpnNtExqT1mPakuOk4jmZOIUF9rFuLwhCH9k?=
- =?us-ascii?Q?ZBcgOilzZukveZuckoytNl4l+t8C+5qtY8Y8Kx6DSH+Z3vOL6mMM/lQLk7oS?=
- =?us-ascii?Q?4ljkqGLH/+eUusSJRShbvHggxDHOsyvFTgV5EMjScurHSAzPacw5iCZpEQpw?=
- =?us-ascii?Q?ruCVGiYWU+vws8yEJswmmybe2Yy9lXuxiynPeRMwUUPn/nYOVdqemsr293Lv?=
- =?us-ascii?Q?+rOatD3HESix4dcw008hD7nc1eLwF1651Zv0Uuz3bdLQh+xo22p0DwCc7OJo?=
- =?us-ascii?Q?gTyO/t9tPbJhaboR37OMbtyO0KMnZs2xMQ6r48ohyHXugIeJNR8NMn6lt4Bo?=
- =?us-ascii?Q?UPAkeB9EvbShy2Ucv2134D8UdU0s5AGvcvMl56D5du1n2iA76NKJLANlFPJy?=
- =?us-ascii?Q?Ggu+AhTDVNNkyFCp3m1KjwnUzjeTpAmwhXoSendBofk//vV2rBZXkgrbu+Ib?=
- =?us-ascii?Q?2SNNUIX/yLzAdI4hHBDZknGcP3F5yypzc8ie8wETcM3cSWQQ6y4PzPAcHlSB?=
- =?us-ascii?Q?/QDrdB126lDlsq9CGPcTYK7fHoM5/2nVEQCaufbtxPB4HNln0kBb16lcJuxY?=
- =?us-ascii?Q?aWnLjrxmjad3rH0QOmhJs38zIRHYl9LRyiKL0t05RE2mY4DWDnPaEF4f5GBp?=
- =?us-ascii?Q?9iGFValpN7TG5EuQYApPFnSkS9kQXk8HHmJLMSMMExdzLRbhe9B9ycN+WLxp?=
- =?us-ascii?Q?TW/tY/Qhv+SFn3oha6MQpO4e7wSHqpdTp9lTl0N0LBQfRVqUa8p8VcmLopic?=
- =?us-ascii?Q?SRkCPMpdYWAYHdMemxEAXOkhxpfLINgURI8EcjqIGRDqy46r2896wDMdcE3t?=
- =?us-ascii?Q?J0vSizuaK1mbogSsPo5hrMSqj2IGB3KNER3uTijZuairor5zmf/TZTlFlYUU?=
- =?us-ascii?Q?bt7YvFM+z+/BrsVwL1yzgVI1GtBaqtU/9aFd6zRM50950ChNkoEaSpLNynmi?=
- =?us-ascii?Q?1qUtgQO2BWRXSzCwyYPxve2OihYHBPxXcn/5bxw/HqTPuCQy2QWTb/bou8eh?=
- =?us-ascii?Q?V5SyP2cNk2gYvgA9wroYFRazx8XmeZemeenbVHudSfpiaVRkLdAeg0gffOJT?=
- =?us-ascii?Q?dQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e5bc748-9aaf-4396-379b-08dbad548907
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2023 14:37:59.2435
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NHW/m4VmE4EdeZZfNEEPZk36scvYAm3tiHpy2j0Ey2e5ufmKUiRx1fN1ySvHpZummXzpZFR/od6uUHPxKhdvXpRIQJu8kMXvxRQ108LcE4s=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY1PR11MB8125
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230728001212.457900-1-irogers@google.com> <20230728001212.457900-3-irogers@google.com>
+ <77361428-5970-5031-e204-7aefcd9cbebc@arm.com>
+In-Reply-To: <77361428-5970-5031-e204-7aefcd9cbebc@arm.com>
+From: Ian Rogers <irogers@google.com>
+Date: Mon, 4 Sep 2023 07:56:25 -0700
+Message-ID: <CAP-5=fVATGaoeaSEk5jjoGDY=pJkFThU2t2sixfwjouxisor=w@mail.gmail.com>
+Subject: Re: [PATCH v1 2/3] perf tools: Revert enable indices setting syntax
+ for BPF map
+To: James Clark <james.clark@arm.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	"coresight@lists.linaro.org" <coresight@lists.linaro.org>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Rob Herring <robh@kernel.org>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	Wang Nan <wangnan0@huawei.com>, Wang ShaoBo <bobo.shaobowang@huawei.com>, 
+	YueHaibing <yuehaibing@huawei.com>, He Kuang <hekuang@huawei.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Aug 24, 2023 at 09:26:40PM +0200, Larysa Zaremba wrote:
-> Previously, we only needed RX hash in skb path,
-> hence all related code was written with skb in mind.
-> But with the addition of XDP hints via kfuncs to the ice driver,
-> the same logic will be needed in .xmo_() callbacks.
-> 
-> Separate generic process of reading RX hash from a descriptor
-> into a separate function.
-> 
-> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 37 +++++++++++++------
->  1 file changed, 26 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> index c8322fb6f2b3..8f7f6d78f7bf 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> @@ -63,28 +63,43 @@ static enum pkt_hash_types ice_ptype_to_htype(u16 ptype)
->  }
->  
->  /**
-> - * ice_rx_hash - set the hash value in the skb
-> + * ice_get_rx_hash - get RX hash value from descriptor
-> + * @rx_desc: specific descriptor
-> + *
-> + * Returns hash, if present, 0 otherwise.
-> + */
-> +static u32
-> +ice_get_rx_hash(const union ice_32b_rx_flex_desc *rx_desc)
-> +{
-> +	const struct ice_32b_rx_flex_desc_nic *nic_mdid;
-> +
-> +	if (rx_desc->wb.rxdid != ICE_RXDID_FLEX_NIC)
-> +		return 0;
-> +
-> +	nic_mdid = (struct ice_32b_rx_flex_desc_nic *)rx_desc;
-> +	return le32_to_cpu(nic_mdid->rss_hash);
-> +}
-> +
-> +/**
-> + * ice_rx_hash_to_skb - set the hash value in the skb
->   * @rx_ring: descriptor ring
->   * @rx_desc: specific descriptor
->   * @skb: pointer to current skb
->   * @rx_ptype: the ptype value from the descriptor
->   */
->  static void
-> -ice_rx_hash(struct ice_rx_ring *rx_ring, union ice_32b_rx_flex_desc *rx_desc,
-> -	    struct sk_buff *skb, u16 rx_ptype)
-> +ice_rx_hash_to_skb(const struct ice_rx_ring *rx_ring,
+On Mon, Sep 4, 2023 at 4:02=E2=80=AFAM James Clark <james.clark@arm.com> wr=
+ote:
+>
+>
+>
+> On 28/07/2023 01:12, Ian Rogers wrote:
+> > This reverts commit e571e029bdbf ("perf tools: Enable indices setting
+> > syntax for BPF map").
+> >
+> > The reverted commit added a notion of arrays that could be set as
+> > event terms for BPF events. The parsing hasn't worked over multiple
+> > Linux releases. Given the broken nature of the parsing it appears the
+> > code isn't in use, nor could I find a way for it to be used to add a
+> > test.
+> >
+> > The original commit contains a test in the commit message,
+> > however, running it yields:
+> > ```
+> > $ perf record -e './test_bpf_map_3.c/map:channel.value[0,1,2,3...5]=3D1=
+01/' usleep 2
+> > event syntax error: '..pf_map_3.c/map:channel.value[0,1,2,3...5]=3D101/=
+'
+> >                                   \___ parser error
+> > Run 'perf list' for a list of valid events
+> >
+> >  Usage: perf record [<options>] [<command>]
+> >     or: perf record [<options>] -- <command> [<options>]
+> >
+> >     -e, --event <event>   event selector. use 'perf list' to list avail=
+able events
+> > ```
+> >
+> > Given the code can't be used this commit reverts and removes it.
+> >
+>
+> Hi Ian,
+>
+> Unfortunately this revert breaks Coresight sink argument parsing.
+>
+> Before:
+>
+>   $ perf record -e cs_etm/@tmc_etr0/ -- true
+>   [ perf record: Woken up 1 times to write data ]
+>   [ perf record: Captured and wrote 4.008 MB perf.data ]
+>
+> After:
+>
+>   $ perf record -e cs_etm/@tmc_etr0/ -- true
+>   event syntax error: 'cs_etm/@tmc_etr0/'
+>                            \___ parser error
+>
+> I can't really see how it's related to the array syntax that the commit
+> messages mention, but it could either be that the revert wasn't applied
+> cleanly or just some unintended side effect.
+>
+> We should probably add a cross platform parsing test for Coresight
+> arguments, but I don't know whether we should just blindly revert the
+> revert for now, or work on a new change that explicitly fixes the
+> Coresight case.
 
-nit: maybe ice_rx_skb_hash, but i have not seen xdp side yet.
+Agreed, I'll take a look. Any chance you could post the full error
+message? I suspect there's a first error hiding in there too.
 
-other idea would be to turn ice_get_rx_hash to __ice_rx_hash and keep the
-ice_rx_hash name as-is. Usual way of naming internal funcs.
+Thanks,
+Ian
 
-Take it or leave it:)
-
-> +		   const union ice_32b_rx_flex_desc *rx_desc,
-> +		   struct sk_buff *skb, u16 rx_ptype)
->  {
-> -	struct ice_32b_rx_flex_desc_nic *nic_mdid;
->  	u32 hash;
->  
->  	if (!(rx_ring->netdev->features & NETIF_F_RXHASH))
->  		return;
->  
-> -	if (rx_desc->wb.rxdid != ICE_RXDID_FLEX_NIC)
-> -		return;
-> -
-> -	nic_mdid = (struct ice_32b_rx_flex_desc_nic *)rx_desc;
-> -	hash = le32_to_cpu(nic_mdid->rss_hash);
-> -	skb_set_hash(skb, hash, ice_ptype_to_htype(rx_ptype));
-> +	hash = ice_get_rx_hash(rx_desc);
-> +	if (likely(hash))
-> +		skb_set_hash(skb, hash, ice_ptype_to_htype(rx_ptype));
-
-Looks like a behavior change as you wouldn't be setting l4_hash and
-sw_hash from skb in case !hash ? When can we get hash == 0 ?
-
->  }
->  
->  /**
-> @@ -186,7 +201,7 @@ ice_process_skb_fields(struct ice_rx_ring *rx_ring,
->  		       union ice_32b_rx_flex_desc *rx_desc,
->  		       struct sk_buff *skb, u16 ptype)
->  {
-> -	ice_rx_hash(rx_ring, rx_desc, skb, ptype);
-> +	ice_rx_hash_to_skb(rx_ring, rx_desc, skb, ptype);
->  
->  	/* modifies the skb - consumes the enet header */
->  	skb->protocol = eth_type_trans(skb, rx_ring->netdev);
-> -- 
-> 2.41.0
-> 
+> Thanks
+> James
+>
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/util/parse-events.c |   8 +--
+> >  tools/perf/util/parse-events.l |  11 ---
+> >  tools/perf/util/parse-events.y | 122 ---------------------------------
+> >  3 files changed, 1 insertion(+), 140 deletions(-)
+> >
+> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-eve=
+nts.c
+> > index 02647313c918..0e2004511cf5 100644
+> > --- a/tools/perf/util/parse-events.c
+> > +++ b/tools/perf/util/parse-events.c
+> > @@ -800,13 +800,7 @@ parse_events_config_bpf(struct parse_events_state =
+*parse_state,
+> >
+> >                       parse_events_error__handle(parse_state->error, id=
+x,
+> >                                               strdup(errbuf),
+> > -                                             strdup(
+> > -"Hint:\tValid config terms:\n"
+> > -"     \tmap:[<arraymap>].value<indices>=3D[value]\n"
+> > -"     \tmap:[<eventmap>].event<indices>=3D[event]\n"
+> > -"\n"
+> > -"     \twhere <indices> is something like [0,3...5] or [all]\n"
+> > -"     \t(add -v to see detail)"));
+> > +                                             NULL);
+> >                       return err;
+> >               }
+> >       }
+> > diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-eve=
+nts.l
+> > index 99335ec586ae..d7d084cc4140 100644
+> > --- a/tools/perf/util/parse-events.l
+> > +++ b/tools/perf/util/parse-events.l
+> > @@ -175,7 +175,6 @@ do {                                               =
+       \
+> >  %x mem
+> >  %s config
+> >  %x event
+> > -%x array
+> >
+> >  group                [^,{}/]*[{][^}]*[}][^,{}/]*
+> >  event_pmu    [^,{}/]+[/][^/]*[/][^,{}/]*
+> > @@ -251,14 +250,6 @@ non_digit        [^0-9]
+> >               }
+> >  }
+> >
+> > -<array>{
+> > -"]"                  { BEGIN(config); return ']'; }
+> > -{num_dec}            { return value(yyscanner, 10); }
+> > -{num_hex}            { return value(yyscanner, 16); }
+> > -,                    { return ','; }
+> > -"\.\.\."             { return PE_ARRAY_RANGE; }
+> > -}
+> > -
+> >  <config>{
+> >       /*
+> >        * Please update config_term_names when new static term is added.
+> > @@ -302,8 +293,6 @@ r0x{num_raw_hex}  { return str(yyscanner, PE_RAW); =
+}
+> >  {lc_type}-{lc_op_result}     { return lc_str(yyscanner, _parse_state);=
+ }
+> >  {lc_type}-{lc_op_result}-{lc_op_result}      { return lc_str(yyscanner=
+, _parse_state); }
+> >  {name_minus}         { return str(yyscanner, PE_NAME); }
+> > -\[all\]                      { return PE_ARRAY_ALL; }
+> > -"["                  { BEGIN(array); return '['; }
+> >  @{drv_cfg_term}              { return drv_str(yyscanner, PE_DRV_CFG_TE=
+RM); }
+> >  }
+> >
+> > diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-eve=
+nts.y
+> > index 454577f7aff6..5a90e7874c59 100644
+> > --- a/tools/perf/util/parse-events.y
+> > +++ b/tools/perf/util/parse-events.y
+> > @@ -64,7 +64,6 @@ static void free_list_evsel(struct list_head* list_ev=
+sel)
+> >  %token PE_LEGACY_CACHE
+> >  %token PE_PREFIX_MEM
+> >  %token PE_ERROR
+> > -%token PE_ARRAY_ALL PE_ARRAY_RANGE
+> >  %token PE_DRV_CFG_TERM
+> >  %token PE_TERM_HW
+> >  %type <num> PE_VALUE
+> > @@ -108,11 +107,6 @@ static void free_list_evsel(struct list_head* list=
+_evsel)
+> >  %type <list_evsel> groups
+> >  %destructor { free_list_evsel ($$); } <list_evsel>
+> >  %type <tracepoint_name> tracepoint_name
+> > -%destructor { free ($$.sys); free ($$.event); } <tracepoint_name>
+> > -%type <array> array
+> > -%type <array> array_term
+> > -%type <array> array_terms
+> > -%destructor { free ($$.ranges); } <array>
+> >  %type <hardware_term> PE_TERM_HW
+> >  %destructor { free ($$.str); } <hardware_term>
+> >
+> > @@ -127,7 +121,6 @@ static void free_list_evsel(struct list_head* list_=
+evsel)
+> >               char *sys;
+> >               char *event;
+> >       } tracepoint_name;
+> > -     struct parse_events_array array;
+> >       struct hardware_term {
+> >               char *str;
+> >               u64 num;
+> > @@ -878,121 +871,6 @@ PE_TERM
+> >
+> >       $$ =3D term;
+> >  }
+> > -|
+> > -name_or_raw array '=3D' name_or_legacy
+> > -{
+> > -     struct parse_events_term *term;
+> > -     int err =3D parse_events_term__str(&term, PARSE_EVENTS__TERM_TYPE=
+_USER, $1, $4, &@1, &@4);
+> > -
+> > -     if (err) {
+> > -             free($1);
+> > -             free($4);
+> > -             free($2.ranges);
+> > -             PE_ABORT(err);
+> > -     }
+> > -     term->array =3D $2;
+> > -     $$ =3D term;
+> > -}
+> > -|
+> > -name_or_raw array '=3D' PE_VALUE
+> > -{
+> > -     struct parse_events_term *term;
+> > -     int err =3D parse_events_term__num(&term, PARSE_EVENTS__TERM_TYPE=
+_USER, $1, $4, false, &@1, &@4);
+> > -
+> > -     if (err) {
+> > -             free($1);
+> > -             free($2.ranges);
+> > -             PE_ABORT(err);
+> > -     }
+> > -     term->array =3D $2;
+> > -     $$ =3D term;
+> > -}
+> > -|
+> > -PE_DRV_CFG_TERM
+> > -{
+> > -     struct parse_events_term *term;
+> > -     char *config =3D strdup($1);
+> > -     int err;
+> > -
+> > -     if (!config)
+> > -             YYNOMEM;
+> > -     err =3D parse_events_term__str(&term, PARSE_EVENTS__TERM_TYPE_DRV=
+_CFG, config, $1, &@1, NULL);
+> > -     if (err) {
+> > -             free($1);
+> > -             free(config);
+> > -             PE_ABORT(err);
+> > -     }
+> > -     $$ =3D term;
+> > -}
+> > -
+> > -array:
+> > -'[' array_terms ']'
+> > -{
+> > -     $$ =3D $2;
+> > -}
+> > -|
+> > -PE_ARRAY_ALL
+> > -{
+> > -     $$.nr_ranges =3D 0;
+> > -     $$.ranges =3D NULL;
+> > -}
+> > -
+> > -array_terms:
+> > -array_terms ',' array_term
+> > -{
+> > -     struct parse_events_array new_array;
+> > -
+> > -     new_array.nr_ranges =3D $1.nr_ranges + $3.nr_ranges;
+> > -     new_array.ranges =3D realloc($1.ranges,
+> > -                             sizeof(new_array.ranges[0]) *
+> > -                             new_array.nr_ranges);
+> > -     if (!new_array.ranges)
+> > -             YYNOMEM;
+> > -     memcpy(&new_array.ranges[$1.nr_ranges], $3.ranges,
+> > -            $3.nr_ranges * sizeof(new_array.ranges[0]));
+> > -     free($3.ranges);
+> > -     $$ =3D new_array;
+> > -}
+> > -|
+> > -array_term
+> > -
+> > -array_term:
+> > -PE_VALUE
+> > -{
+> > -     struct parse_events_array array;
+> > -
+> > -     array.nr_ranges =3D 1;
+> > -     array.ranges =3D malloc(sizeof(array.ranges[0]));
+> > -     if (!array.ranges)
+> > -             YYNOMEM;
+> > -     array.ranges[0].start =3D $1;
+> > -     array.ranges[0].length =3D 1;
+> > -     $$ =3D array;
+> > -}
+> > -|
+> > -PE_VALUE PE_ARRAY_RANGE PE_VALUE
+> > -{
+> > -     struct parse_events_array array;
+> > -
+> > -     if ($3 < $1) {
+> > -             struct parse_events_state *parse_state =3D _parse_state;
+> > -             struct parse_events_error *error =3D parse_state->error;
+> > -             char *err_str;
+> > -
+> > -             if (asprintf(&err_str, "Expected '%ld' to be less-than '%=
+ld'", $3, $1) < 0)
+> > -                     err_str =3D NULL;
+> > -
+> > -             parse_events_error__handle(error, @1.first_column, err_st=
+r, NULL);
+> > -             YYABORT;
+> > -     }
+> > -     array.nr_ranges =3D 1;
+> > -     array.ranges =3D malloc(sizeof(array.ranges[0]));
+> > -     if (!array.ranges)
+> > -             YYNOMEM;
+> > -     array.ranges[0].start =3D $1;
+> > -     array.ranges[0].length =3D $3 - $1 + 1;
+> > -     $$ =3D array;
+> > -}
+> >
+> >  sep_dc: ':' |
+> >
 
