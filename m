@@ -1,73 +1,73 @@
-Return-Path: <bpf+bounces-9194-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FA68791A38
-	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 17:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F543791A50
+	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 17:10:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0ED6C280FFF
-	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 15:03:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 430AD281005
+	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 15:10:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA18C146;
-	Mon,  4 Sep 2023 15:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1406AC14D;
+	Mon,  4 Sep 2023 15:10:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 388B23D84;
-	Mon,  4 Sep 2023 15:02:56 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A5461A5;
-	Mon,  4 Sep 2023 08:02:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3A0B3C20;
+	Mon,  4 Sep 2023 15:10:14 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478D01A5;
+	Mon,  4 Sep 2023 08:10:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693839775; x=1725375775;
+  t=1693840213; x=1725376213;
   h=date:from:to:cc:subject:message-id:references:
    in-reply-to:mime-version;
-  bh=XapmlrfnLX5LDrZZaSe/VUi/Nk3AYAt9THjCZb4VLsA=;
-  b=Ee9xHHth1JKp/fTmYem88BCmg0fXIFakvgahhhdO2tj1juU528YNmYEs
-   5Zllty/6aDvcr8nD1vggPU3BTOPKeF/CtkHem+m/XErR+8oj4gbY591Nl
-   C0LdrZim+5uLNNHZjxeXPImXrJn/lxRGKNlaWbX9+Gqg2AKbjwmplHJlH
-   O/H66R+lcVwyIifiikkUZdsSNrmvEGg4ommobiCI2zbcJ7TKz8AvkoQTh
-   nv4+h/g9zd8ICH6g8hEmroFbSK/jqvM10HQ+ED/dKsyJaBwSMw/1/xyZo
-   4cwRZ7UMimeFjk1nSmf6NqxQpJcRUmkz9c39yqLsN2uoRBivZpSEYrZzL
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="374008537"
+  bh=HdKwtc/IlUYd/lYBnJzHZ5d/0r/PuGW5UbCQ/8mqtsM=;
+  b=IZ+lVTNspC6iYDfpIsgmIAb1wVKrE9NzShOxfSsOVxVKnTprpGCaeqEB
+   odVcMpTl8guU4mrLGB0R6aMjypN2KJELzUCK9QCHAC+XoM6rjXXTPJH4J
+   zbOetk6Z5Oh4AwZOZhQ7Kg51n4eUhVBTpcnJa9+8ymthBPpRPJqkVIDzc
+   ThawV6AZXg+DR541v1OhKhXTiZzqJ3QHDpq37JFhUB1eN6XuWbX1WT6dt
+   +PDk7iphuMaYpS8GNwI1hmOwbZloldR/sGj9WCN2m2zZj8tQKOfmPfpuf
+   xyfgYqCpXiUQbCUz0kdjnWF0vbUvRscsXwYVnrUQr1xGJ0bPt4s3httSE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="361646034"
 X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="374008537"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 08:02:54 -0700
+   d="scan'208";a="361646034"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 08:04:51 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="1071648710"
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="740799012"
 X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="1071648710"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Sep 2023 08:02:54 -0700
+   d="scan'208";a="740799012"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Sep 2023 08:04:41 -0700
 Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 4 Sep 2023 08:02:53 -0700
+ 15.1.2507.27; Mon, 4 Sep 2023 08:04:41 -0700
 Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
  ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 4 Sep 2023 08:02:53 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ 15.1.2507.27; Mon, 4 Sep 2023 08:04:40 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
  orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Mon, 4 Sep 2023 08:02:53 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.172)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ 15.1.2507.27 via Frontend Transport; Mon, 4 Sep 2023 08:04:40 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.177)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Mon, 4 Sep 2023 08:02:53 -0700
+ 15.1.2507.27; Mon, 4 Sep 2023 08:04:38 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VKfg+a4XGphHk81g2jg/JHpmnhbecaWPIcHtPwFn3N9a5OU7ezvAt+gh94+aT150D78aeWOnvIyNlSPNgGK0mIhe60mg2qzHdZt2MPMdOpB7nFyI5bLGhmpPwZXW2Y/KtwplP8NPj0J0SIbyzuPWlfejly23Q52YZQyDgZHs02SkvNPMcoUTcrgyNi9hHzevCvqS2/oznX1sLoth34jX3DO7erDZgnO1NdVWplbIZC57TuGCwsps16mNJaA6K0kSdQ4mWaqR63zVwAR7FAN/vsOywAHrOVfsysQqx3pavsX8SpeQzZ+aPSlAjtuU0hWfMHc4x8AYZCs8Rd4s8ZGLDw==
+ b=i1tmVnv90h9MJsfRNROXL2mpXlu9h5xOVZG/zW3lk41T9p+KwF/q2+FFFEfpXUG9EQCDreI5cDMFxTbPzuUYAmU2PID8v0iiijI2rMSEe/QPrnpU8UB/aCvAYUZ6d4T55yT0N3m9naLT45NRm7BT2uddTD+QzErZgm3DzBkV2aUaIVr6kh70RJ0nCXP9ZTZ9KYGzjSBgIPGTqlxiLg+gMGeWWOuqdW72EaGzqUchB48/9ggTxbgrp135gB7Kr0JrdKzihwUw+3g3SMX+/rQfO3gDFZqG9/h8liPsp7SKEObjGoN2P/Q0iONPtFNaxlC5yeolNWHYyEKkx7C+b1+vfA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RIGHN9KzlIi1eNQ7/rL0v3Fvp0gfD/1TfQd2/7xq4DY=;
- b=b10Pmb3Ff+wR/w+5VV5PkUCVkDuIxrQMh38LWJwLV24bcml1cwkhwzaPgXMC3yFyuSAdjyUbR0OO8QMRfNYqlXDDzVSpRbGzTAoxcE/bifpyxCpYgMSfinYrz05KlMFRMbPkcKINTtS23FV550gnUkiSOXlRiU3DCY22HpxMQ0ltE6d+QlgPTqtTWNJHUf9m1D24OwwSwNPYPFgAQs/ChdJ8eMpF+kDdUshanW/aHKbwTfJMVW/AC3xR3ThD63EQfDfcldUK8RLf7FdfpPrKg1AvZifVkxcvMoULscymX0pcz5tni2WIxjt9Mk0Z9WI8eHb5n+KaebZjMnzt07AoTg==
+ bh=ukm+wunnp3Nne1gxIDLx2wN4gbUefxDGXHd63AfPVi0=;
+ b=YyLQG41WB5fVICeIIH5ynqCNisDWlQHvsXNC5hnQuq9TYjMpbD5SrULemDnCGSmzzUm9Y7UbYFZO3ScR6xn6g4ZbKyuCwThU4+LW7wll5n3rnDaDQGYNHXr7FCDm4nL/g8WFuM24yiJccG0SELXpTrH/4FH8n4EC//EcJkZ+hd7FRRg67uSCZsjPsXoNeF0vioPv4F4sVxpcYxda0HX3BTyAOQ/kL088H9/nE3HmM+80uRBjJbtL3SO5eJa4em2K64gWGfcoTAur7zMUKdrTsatO7IJcMLqV6cb3JjZvhKGyh/8KMddYL2syteDliG1Y6rJUOnhAiuqz3IgFo/vfcw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
@@ -76,12 +76,12 @@ Authentication-Results: dkim=none (message not signed)
 Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
  DM4PR11MB5534.namprd11.prod.outlook.com (2603:10b6:5:391::22) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6745.33; Mon, 4 Sep 2023 15:02:50 +0000
+ 15.20.6745.33; Mon, 4 Sep 2023 15:04:34 +0000
 Received: from DM4PR11MB6117.namprd11.prod.outlook.com
  ([fe80::c1f9:b4eb:f57e:5c3d]) by DM4PR11MB6117.namprd11.prod.outlook.com
  ([fe80::c1f9:b4eb:f57e:5c3d%3]) with mapi id 15.20.6745.030; Mon, 4 Sep 2023
- 15:02:50 +0000
-Date: Mon, 4 Sep 2023 17:02:40 +0200
+ 15:04:34 +0000
+Date: Mon, 4 Sep 2023 17:04:23 +0200
 From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 To: Larysa Zaremba <larysa.zaremba@intel.com>
 CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
@@ -96,16 +96,16 @@ CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
 	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Alexei Starovoitov
 	<alexei.starovoitov@gmail.com>, Simon Horman <simon.horman@corigine.com>,
 	Tariq Toukan <tariqt@mellanox.com>, Saeed Mahameed <saeedm@mellanox.com>
-Subject: Re: [xdp-hints] [RFC bpf-next 03/23] ice: make RX checksum checking
- code more reusable
-Message-ID: <ZPXxkOCK5e4M/P5H@boxer>
+Subject: Re: [RFC bpf-next 04/23] ice: Make ptype internal to descriptor info
+ processing
+Message-ID: <ZPXx950bIsoQ5fpB@boxer>
 References: <20230824192703.712881-1-larysa.zaremba@intel.com>
- <20230824192703.712881-4-larysa.zaremba@intel.com>
+ <20230824192703.712881-5-larysa.zaremba@intel.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20230824192703.712881-4-larysa.zaremba@intel.com>
-X-ClientProxiedBy: FR2P281CA0157.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:99::18) To DM4PR11MB6117.namprd11.prod.outlook.com
+In-Reply-To: <20230824192703.712881-5-larysa.zaremba@intel.com>
+X-ClientProxiedBy: FR2P281CA0057.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:93::17) To DM4PR11MB6117.namprd11.prod.outlook.com
  (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -115,51 +115,51 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|DM4PR11MB5534:EE_
-X-MS-Office365-Filtering-Correlation-Id: c2969ea6-5513-4307-649c-08dbad5801de
+X-MS-Office365-Filtering-Correlation-Id: 27027e3b-7106-4e62-841a-08dbad583fd1
 X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PL1Brs+8o6RB4y/vJB5k0uzCqP8gXVA1BTjMaXi9BWx5/keZdwsSsVFY1GDFD/+JFw8sx6lwUqDkvReS3uxUbI+gOrqJ00JdO5t1pNfNKHo5aNLOy3Z3Zfc6vHRmbH3BGAlaNFaUhiWckCJGJtOCXHYts6OnBA6oVeYXepb2tv8VP0w0KUkEVK6ruvAQszzGqCV5OngHAbX2aBQnz048BCRN9erwaEMNgtdeTNLUo6yj4s2GppapYdV2LkC8xzRNBHbZN5UZ8MtxM3sjvds1Ws//AZI0ko7gHym/ipN3wt62XfLP6oO6wijgWhQMu0adTM+8GwemAoC9wpTMG+CFTbqKktMuJD+x+wZu1pVwG8KJFtu5tjIYr70ELiu+QuPPWAnnnNA/Su/QjIbxbe9V6a7OdGZQ5fue+yuUqGjVCAl3uvIPbio6s+uLNhUy2zILeq+cSYJb/U3Cn7DXkEEHn4C5LRYyNeCf4qMc+8q95Qmg6ToOKD1LTC/XYpAqOM4EGn5VMsiLWKWma6L1+wuf/OQZ+AiQxbPsypJADfLYlCLlufHj4z9d4CcLcY4fbHq4
+X-Microsoft-Antispam-Message-Info: p2nwbI+i+/lMFja358WRu6q6jhC75IQfnoTWGeOCAJHFAVLzrpsQI/9MJyEJnsKN3/WR0r+u5PcrTR47dNC0MwiJod2tc/dl5UGuEFMQAKIxm2ttWwKv+s2z1OxI7+5w/bsBvzGvf2lhSh5121Jaih6AKM6WYXz/lH+rVPzZkKC4W4Z2+KykrcxU+E8mzCqE9Uf3Ik6kJ9BpC0aFQ0yEp8inXhWY3l7/2i2uYVz+qPawUh/hYaU8q6MMY+SVwTYbSbqE7rgJnyJqxyJCCIKZ+tPyO3+qaExfv02mVIMUqUezkQMDAjWsx966du7XCEG0FnD2Yhbw89SxVRQoxwVKggYAYZm072f21PRP44QW1JwMRfzncJxAKOhzL7SoeyEMUKifL5bIWzk3vyFa9eiiJ081AON5zjKjF4n4gvT0PGWretXn2JeZcO0o+B5wyqfM9NTgNduDawsLZwATqSLhM2Kmd0D1+fQd36lfXPr5EwLZp1k0I7DAK0AWKK846keolVW25yn9vNOV7JSmjwBQb33IEX2TPskkHTfQzm/wToOzeJlaqLznUZPoxXDZ/3f5
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(39860400002)(376002)(396003)(346002)(136003)(186009)(1800799009)(451199024)(86362001)(6666004)(5660300002)(6506007)(6486002)(44832011)(83380400001)(2906002)(26005)(7416002)(6512007)(9686003)(41300700001)(66476007)(54906003)(66556008)(66946007)(6636002)(316002)(38100700002)(82960400001)(8676002)(33716001)(8936002)(4326008)(6862004)(478600001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BBYnsXwGPkaQF69hJaFMC8zF+JbKOl2tNHmfHC582VZZzv2doLhUGDAC1zzW?=
- =?us-ascii?Q?BM9tyP7PtN14n93TwxqBeMbFgliu5zHq3TB5WRfthl/RCJDuxkSv3Elt1Z08?=
- =?us-ascii?Q?HLm3B46hw7U7omhe8g0Sa0QO/qUOhM6nrgNiVBoajikgbEqaWB+FqmItE/FN?=
- =?us-ascii?Q?Oc6BtuUjTgtidLJ4rZvi7qvLKJjudZSNMd0YjHZZ6nWlrWNWco/eQ0ac0OR6?=
- =?us-ascii?Q?gZmJRpBut3JGTXZbvl0EHq9h5t7rfvKxKlVc4hNQ+WDG0G6z2EjxwOEDgz2K?=
- =?us-ascii?Q?PpBoyrEoY5YBXXa6oeKWDHsd3sPReXRA+AJUBwNVlwrb0JUUO8TH/Z5+dC6o?=
- =?us-ascii?Q?XrexQ+MBq47WuQcp/Rj3uk+w2oo6Uvn24WU1shlZuiBr3vaJr0K/Bki98gLw?=
- =?us-ascii?Q?QeBxeUO+Rk7ZiyBrDvpDJsBoH6u2IdQx5eAdP2PQZHTEjlck3pkyfRM+pcxd?=
- =?us-ascii?Q?mv3wBD1uJArkq0XJ9wNZDXLu3up6pBzGhW2+d3oCnvCUJXBip/KCsrAOkRgi?=
- =?us-ascii?Q?mO97jIWwmnkiE9UYjyGol6+f3TBqMlfEJi8ODmPebN44hbD80DDcj5/CrYD8?=
- =?us-ascii?Q?CiZ8GhUbHYQib00OQZQAhvkMg6fJCIgf9xB4+aqIJ9XhblZx4pBc2wQ32v2M?=
- =?us-ascii?Q?fXlCQqQBAbMcr1niEhfTE9gR2aZK2zfWBW8Hb6QzYqxUSwyduAJHKn+YPka7?=
- =?us-ascii?Q?rq1qp60ppc88/SHK/wQhPG5at6dMYA1BzSsPYrTcnKUBb7fMPpnUK46ul9tc?=
- =?us-ascii?Q?VxKwKSkAcwrOYeWiuv1kDY9Q16R3OMH25P7Zaar9HIm0IjRDDBZNZ3Pg7yq4?=
- =?us-ascii?Q?i3i0WExK8WsD3jDuNz7iQbz5/LbosZ2iOE7HhrUUJIL9AHb2b7NRYs9q2E95?=
- =?us-ascii?Q?GDMjeEqqmgRMb6MdxudEE9GXFZdbax/aPoFLlF6bs01Gcsrzh/fNhf9ZwAPi?=
- =?us-ascii?Q?+Cw9VzwZE2TI30tDAsqS7bduU3RRlNTR4Voblarbj5XE1ZNZ8pDNVC6Gobi+?=
- =?us-ascii?Q?WWjIoyuOFR/CSifZhb/R0B3RmFW3Qj/phAQo72xBscjxZSQsL+JCeWmwBtwm?=
- =?us-ascii?Q?YF8Ri7tlsn3v4HNSlB49ch1H4jLyQ5JJDfG0zunj0XF4FXuzA1Uw9zLp0XD4?=
- =?us-ascii?Q?Mu6FTnkmbVdeLEe2G5IGrRAnO0u+IKptLnXkBQ8FvAQLc39wKZJQAwSH0RhD?=
- =?us-ascii?Q?QKgfP/Au7MOIHfinBab9ZFJ76S9ewAQfw9YI3IaFXZsRHQTuGWI2Evz2NnRp?=
- =?us-ascii?Q?7oUbfHoHjQbm7Xc8oDQrX48ezzfVnZCsWKkeYBNF/CfKOXN93uE6D8KAD62e?=
- =?us-ascii?Q?oUw+8bmTNBBSHHHkZP/RNItTKJd4kVPo0tHx/X4MENuc/ZANLPZf9ZOdZVtV?=
- =?us-ascii?Q?nyzGen7IGWkW3WRsJpJpxCMqxtlyysu/t35mSv9ioAQAq1jjcNVscWcult78?=
- =?us-ascii?Q?mQsDUxdKKoo8eLNYje1Hf2RiOsPRKMhhoBgVBj9zhj1ZXDq+CI8hBUxbETdv?=
- =?us-ascii?Q?igw0wvQ2fsCCADcH99DL1iYt62P8ky05o4Hets7km2/6KiBW+uac/N5VfOC9?=
- =?us-ascii?Q?/I54A4JyNDvkLttKjIF+b6/Mti8jI0pwG0nohGdp3FRTryr7sRt1t9xu4/2r?=
- =?us-ascii?Q?DA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2969ea6-5513-4307-649c-08dbad5801de
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?voU7Tpst/yVba98wEY/64kZ5naZEXoZQz4uYrqom6yWu3tIdjirB0Lf02kk2?=
+ =?us-ascii?Q?IHJSf0agY0hV8qwbpw2Ps6Q4s1TLy1sCUuWsj3C8LgtQl+IZv7lnbq5+QeFo?=
+ =?us-ascii?Q?Pwt+0aGleV7I/DqUs51X/q+qnK5foqP5untmKehxhaQnhg3EBJzi44xUBgcm?=
+ =?us-ascii?Q?EhvERz08MS7mxCTK/9EOPjb/QZ3DNXV3Wa/zv+M0Rywbh2vsCqfDXNgOmQK1?=
+ =?us-ascii?Q?Bt/uAjWDyNH4Zb30OTzUhJAzWNEqccmr9l/otuGFFKIsTB3HDNJbNf2re8t4?=
+ =?us-ascii?Q?9/SxQULboXd11TnppeZXcRteTO1gHEV0ozw5BSKeukgYMsFY/T2rWrq4O30i?=
+ =?us-ascii?Q?yZnZKaSYTWv7v9f15Z/JEAjAvCLMua/jPZMP98NSp5vUdOkxzZscKEQWRBnr?=
+ =?us-ascii?Q?nEAfFzChR7QIt11jJvam31uFG0RBHLCRoS4bchETSYm+Kh5wI04tW0F9ipNe?=
+ =?us-ascii?Q?z0yMO3KTU0s54C+b+GAVzqQE4H3SXidv7YHDLd99T7kPVJXEkI6WFe98wLJx?=
+ =?us-ascii?Q?fd3waUrNdm5h2jfb3ZBtjxAkQ7t2yk1DfJU5vH6+Ucwtl73A7+h7tF+fc+QE?=
+ =?us-ascii?Q?nhlS3vBQuirNbovwv0U3lMlMfWwXhXCTtyjboOYRkrrEbOqcVfQySuysinvs?=
+ =?us-ascii?Q?Cig/B0gVH9Ow1XcDvuFPjO8Qs06QROZhBiHfH4DFtxLnNvFgf1lQFlWWEB27?=
+ =?us-ascii?Q?yE6R4CqbziZXbMRXpIEkH+tE3sPnXrew3XysGC7DbYB1Azbmyihe6BHF3m8u?=
+ =?us-ascii?Q?NdUncEXZC9qChNCSHPrCQPn8jDd5UJ8GGFMFx9QW6P8lH0dsPXFdXOTHwKq5?=
+ =?us-ascii?Q?1vprqd0OJyvKaJw7J1IKKZQCm16X0e/zlcc3ZEpUWRncCN3OK5/+Mz88w9Sq?=
+ =?us-ascii?Q?K2y0fnrtQJ0gsmoqOK9linQr0wMySmsKnECS8TXRrDRpzS7JlSudEOBfgueU?=
+ =?us-ascii?Q?a8sPfgvh9+GUG7jjIM+hOfAErkcvfG5sXeJvTXAWnlO6i6D+NsYu9KJKJm50?=
+ =?us-ascii?Q?+j1xfnGqRvehzzXknNiBWFszNBpzJg+nGCq7HAXyafTynvlXGHGdvbfHFIl1?=
+ =?us-ascii?Q?mPGyIDFhfJx6d2IL8f28fdsXYtb07WA7YetrgT/Fe7MhFApj9qspO5GxlsO1?=
+ =?us-ascii?Q?Jz2JQtmLtgrfNSH7zZLaD0Rj/0CiyRyLaRSKTVo5gEG38YEh2GyovmsiPOBK?=
+ =?us-ascii?Q?xdgbn4WzrB+SsgqdxoFna6yFIfL/+yougiOdHKiM9TzT3jwMxodC/BacJ09+?=
+ =?us-ascii?Q?krJuaCE9jL8FtlMHHqQhzciO5V+NLQnR/9w+HzkDrA3keBX57goJhL8keMrf?=
+ =?us-ascii?Q?icHw5mjYETSDxcr2kN9q2yxXz3VifK/iN7WENb2FLDNw70Tr4j9AEapsQtF8?=
+ =?us-ascii?Q?tERy2wpqU9x21YqGlPFMweoV3jYQGUDXXobChY4EkEK607Ufmnf69wqq70YH?=
+ =?us-ascii?Q?goRaCNYlm0E+QapVEFoZGYatiERXItZt+WVeF6k7t+9LcoJI4lBVBBia7sOF?=
+ =?us-ascii?Q?ovoqA6nFVJw08N0tTnsqNxCN8A7eJUXbCAmyW5juSVQATSJABoq6deCWL/ry?=
+ =?us-ascii?Q?u5r7H//Zez+xBYkKXCkUih6yGFPWcQ8yCDhYywyy6zmt8rtzSz3/WxvFuP5A?=
+ =?us-ascii?Q?6g=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 27027e3b-7106-4e62-841a-08dbad583fd1
 X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2023 15:02:50.6443
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2023 15:04:34.3962
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0hH0xWQxuaAxjTyGWCQjUbq1+cDyuhoVvdC0/5LoPONN5LqAKj7Dxd3PQNmGO1uIiI8nDhoefAeB1f1SPOQj9n9pbdxxPitQTXmnEYVpSXg=
+X-MS-Exchange-CrossTenant-UserPrincipalName: M3egtEPL50dpHE9+LbMQBTxXypOKX1JDtyOSjmCsunFUbztLsMM2EXoseQqHWOV/vdEToDrOOrVxM3xHJxd5wYJro2kjM1W9lPiUWVSjIB8=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5534
 X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -169,197 +169,131 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Aug 24, 2023 at 09:26:42PM +0200, Larysa Zaremba wrote:
-> Previously, we only needed RX checksum flags in skb path,
-> hence all related code was written with skb in mind.
-> But with the addition of XDP hints via kfuncs to the ice driver,
-> the same logic will be needed in .xmo_() callbacks.
+On Thu, Aug 24, 2023 at 09:26:43PM +0200, Larysa Zaremba wrote:
+> Currently, rx_ptype variable is used only as an argument
+> to ice_process_skb_fields() and is computed
+> just before the function call.
 > 
-> Put generic process of determining checksum status into
-> a separate function.
+> Therefore, there is no reason to pass this value as an argument.
+> Instead, remove this argument and compute the value directly inside
+> ice_process_skb_fields() function.
 > 
-> Now we cannot operate directly on skb, when deducing
-> checksum status, therefore introduce an intermediate enum for checksum
-> status. Fortunately, in ice, we have only 4 possibilities: checksum
-> validated at level 0, validated at level 1, no checksum, checksum error.
-> Use 3 bits for more convenient conversion.
+> Also, separate its calculation into a short function, so the code
+> can later be reused in .xmo_() callbacks.
 > 
 > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+
 > ---
->  drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 105 ++++++++++++------
->  1 file changed, 69 insertions(+), 36 deletions(-)
+>  drivers/net/ethernet/intel/ice/ice_txrx.c     |  6 +-----
+>  drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 15 +++++++++++++--
+>  drivers/net/ethernet/intel/ice/ice_txrx_lib.h |  2 +-
+>  drivers/net/ethernet/intel/ice/ice_xsk.c      |  6 +-----
+>  4 files changed, 16 insertions(+), 13 deletions(-)
 > 
+> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
+> index 52d0a126eb61..40f2f6dabb81 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_txrx.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
+> @@ -1181,7 +1181,6 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
+>  		unsigned int size;
+>  		u16 stat_err_bits;
+>  		u16 vlan_tag = 0;
+> -		u16 rx_ptype;
+>  
+>  		/* get the Rx desc from Rx ring based on 'next_to_clean' */
+>  		rx_desc = ICE_RX_DESC(rx_ring, ntc);
+> @@ -1286,10 +1285,7 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
+>  		total_rx_bytes += skb->len;
+>  
+>  		/* populate checksum, VLAN, and protocol */
+> -		rx_ptype = le16_to_cpu(rx_desc->wb.ptype_flex_flags0) &
+> -			ICE_RX_FLEX_DESC_PTYPE_M;
+> -
+> -		ice_process_skb_fields(rx_ring, rx_desc, skb, rx_ptype);
+> +		ice_process_skb_fields(rx_ring, rx_desc, skb);
+>  
+>  		ice_trace(clean_rx_irq_indicate, rx_ring, rx_desc, skb);
+>  		/* send completed skb up the stack */
 > diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> index b2f241b73934..8b155a502b3b 100644
+> index 8b155a502b3b..07241f4229b7 100644
 > --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
 > +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> @@ -102,18 +102,41 @@ ice_rx_hash_to_skb(const struct ice_rx_ring *rx_ring,
->  		skb_set_hash(skb, hash, ice_ptype_to_htype(rx_ptype));
+> @@ -241,12 +241,21 @@ ice_ptp_rx_hwts_to_skb(struct ice_rx_ring *rx_ring,
+>  	};
 >  }
 >  
-> +enum ice_rx_csum_status {
-> +	ICE_RX_CSUM_LVL_0	= 0,
-> +	ICE_RX_CSUM_LVL_1	= BIT(0),
-> +	ICE_RX_CSUM_NONE	= BIT(1),
-> +	ICE_RX_CSUM_ERROR	= BIT(2),
-> +	ICE_RX_CSUM_FAIL	= ICE_RX_CSUM_NONE | ICE_RX_CSUM_ERROR,
-> +};
+> +/**
+> + * ice_get_ptype - Read HW packet type from the descriptor
+> + * @rx_desc: RX descriptor
+> + */
+> +static u16 ice_get_ptype(const union ice_32b_rx_flex_desc *rx_desc)
+> +{
+> +	return le16_to_cpu(rx_desc->wb.ptype_flex_flags0) &
+> +	       ICE_RX_FLEX_DESC_PTYPE_M;
+> +}
 > +
 >  /**
-> - * ice_rx_csum - Indicate in skb if checksum is good
-> - * @ring: the ring we care about
-> - * @skb: skb currently being received and modified
-> + * ice_rx_csum_lvl - Get checksum level from status
-> + * @status: driver-specific checksum status
-> + */
-> +static u8 ice_rx_csum_lvl(enum ice_rx_csum_status status)
-> +{
-> +	return status & ICE_RX_CSUM_LVL_1;
-> +}
-> +
-> +/**
-> + * ice_rx_csum_ip_summed - Checksum status from driver-specific to generic
-> + * @status: driver-specific checksum status
-> + */
-> +static u8 ice_rx_csum_ip_summed(enum ice_rx_csum_status status)
-> +{
-> +	return status & ICE_RX_CSUM_NONE ? CHECKSUM_NONE : CHECKSUM_UNNECESSARY;
-
-	return !(status & ICE_RX_CSUM_NONE);
-
-?
-
-> +}
-> +
-> +/**
-> + * ice_get_rx_csum_status - Deduce checksum status from descriptor
->   * @rx_desc: the receive descriptor
->   * @ptype: the packet type decoded by hardware
+>   * ice_process_skb_fields - Populate skb header fields from Rx descriptor
+>   * @rx_ring: Rx descriptor ring packet is being transacted on
+>   * @rx_desc: pointer to the EOP Rx descriptor
+>   * @skb: pointer to current skb being populated
+> - * @ptype: the packet type decoded by hardware
 >   *
-> - * skb->protocol must be set before this function is called
-> + * Returns driver-specific checksum status
->   */
-> -static void
-> -ice_rx_csum(struct ice_rx_ring *ring, struct sk_buff *skb,
-> -	    union ice_32b_rx_flex_desc *rx_desc, u16 ptype)
-> +static enum ice_rx_csum_status
-> +ice_get_rx_csum_status(const union ice_32b_rx_flex_desc *rx_desc, u16 ptype)
+>   * This function checks the ring, descriptor, and packet information in
+>   * order to populate the hash, checksum, VLAN, protocol, and
+> @@ -255,8 +264,10 @@ ice_ptp_rx_hwts_to_skb(struct ice_rx_ring *rx_ring,
+>  void
+>  ice_process_skb_fields(struct ice_rx_ring *rx_ring,
+>  		       union ice_32b_rx_flex_desc *rx_desc,
+> -		       struct sk_buff *skb, u16 ptype)
+> +		       struct sk_buff *skb)
 >  {
->  	struct ice_rx_ptype_decoded decoded;
->  	u16 rx_status0, rx_status1;
-> @@ -124,20 +147,12 @@ ice_rx_csum(struct ice_rx_ring *ring, struct sk_buff *skb,
->  
->  	decoded = ice_decode_rx_desc_ptype(ptype);
->  
-> -	/* Start with CHECKSUM_NONE and by default csum_level = 0 */
-> -	skb->ip_summed = CHECKSUM_NONE;
-> -	skb_checksum_none_assert(skb);
-> -
-> -	/* check if Rx checksum is enabled */
-> -	if (!(ring->netdev->features & NETIF_F_RXCSUM))
-> -		return;
-> -
->  	/* check if HW has decoded the packet and checksum */
->  	if (!(rx_status0 & BIT(ICE_RX_FLEX_DESC_STATUS0_L3L4P_S)))
-> -		return;
-> +		return ICE_RX_CSUM_NONE;
->  
->  	if (!(decoded.known && decoded.outer_ip))
-> -		return;
-> +		return ICE_RX_CSUM_NONE;
->  
->  	ipv4 = (decoded.outer_ip == ICE_RX_PTYPE_OUTER_IP) &&
->  	       (decoded.outer_ip_ver == ICE_RX_PTYPE_OUTER_IPV4);
-> @@ -146,43 +161,61 @@ ice_rx_csum(struct ice_rx_ring *ring, struct sk_buff *skb,
->  
->  	if (ipv4 && (rx_status0 & (BIT(ICE_RX_FLEX_DESC_STATUS0_XSUM_IPE_S) |
->  				   BIT(ICE_RX_FLEX_DESC_STATUS0_XSUM_EIPE_S))))
-> -		goto checksum_fail;
-> +		return ICE_RX_CSUM_FAIL;
->  
->  	if (ipv6 && (rx_status0 & (BIT(ICE_RX_FLEX_DESC_STATUS0_IPV6EXADD_S))))
-> -		goto checksum_fail;
-> +		return ICE_RX_CSUM_FAIL;
->  
->  	/* check for L4 errors and handle packets that were not able to be
->  	 * checksummed due to arrival speed
->  	 */
->  	if (rx_status0 & BIT(ICE_RX_FLEX_DESC_STATUS0_XSUM_L4E_S))
-> -		goto checksum_fail;
-> +		return ICE_RX_CSUM_FAIL;
->  
->  	/* check for outer UDP checksum error in tunneled packets */
->  	if ((rx_status1 & BIT(ICE_RX_FLEX_DESC_STATUS1_NAT_S)) &&
->  	    (rx_status0 & BIT(ICE_RX_FLEX_DESC_STATUS0_XSUM_EUDPE_S)))
-> -		goto checksum_fail;
-> -
-> -	/* If there is an outer header present that might contain a checksum
-> -	 * we need to bump the checksum level by 1 to reflect the fact that
-> -	 * we are indicating we validated the inner checksum.
-> -	 */
-> -	if (decoded.tunnel_type >= ICE_RX_PTYPE_TUNNEL_IP_GRENAT)
-> -		skb->csum_level = 1;
-> +		return ICE_RX_CSUM_FAIL;
->  
->  	/* Only report checksum unnecessary for TCP, UDP, or SCTP */
->  	switch (decoded.inner_prot) {
->  	case ICE_RX_PTYPE_INNER_PROT_TCP:
->  	case ICE_RX_PTYPE_INNER_PROT_UDP:
->  	case ICE_RX_PTYPE_INNER_PROT_SCTP:
-> -		skb->ip_summed = CHECKSUM_UNNECESSARY;
-> -		break;
-> -	default:
-> -		break;
-> +		/* If there is an outer header present that might contain
-> +		 * a checksum we need to bump the checksum level by 1 to reflect
-> +		 * the fact that we have validated the inner checksum.
-> +		 */
-> +		return decoded.tunnel_type >= ICE_RX_PTYPE_TUNNEL_IP_GRENAT ?
-> +		       ICE_RX_CSUM_LVL_1 : ICE_RX_CSUM_LVL_0;
->  	}
-> -	return;
->  
-> -checksum_fail:
-> -	ring->vsi->back->hw_csum_rx_error++;
-> +	return ICE_RX_CSUM_NONE;
-> +}
+> +	u16 ptype = ice_get_ptype(rx_desc);
 > +
-> +/**
-> + * ice_rx_csum_into_skb - Indicate in skb if checksum is good
-> + * @ring: the ring we care about
-> + * @skb: skb currently being received and modified
-> + * @rx_desc: the receive descriptor
-> + * @ptype: the packet type decoded by hardware
-> + */
-> +static void
-> +ice_rx_csum_into_skb(struct ice_rx_ring *ring, struct sk_buff *skb,
-> +		     const union ice_32b_rx_flex_desc *rx_desc, u16 ptype)
-> +{
-> +	enum ice_rx_csum_status csum_status;
-> +
-> +	/* check if Rx checksum is enabled */
-> +	if (!(ring->netdev->features & NETIF_F_RXCSUM))
-> +		return;
-> +
-> +	csum_status = ice_get_rx_csum_status(rx_desc, ptype);
-> +	if (csum_status & ICE_RX_CSUM_ERROR)
-> +		ring->vsi->back->hw_csum_rx_error++;
-> +
-> +	skb->ip_summed = ice_rx_csum_ip_summed(csum_status);
-> +	skb->csum_level = ice_rx_csum_lvl(csum_status);
->  }
+>  	ice_rx_hash_to_skb(rx_ring, rx_desc, skb, ptype);
 >  
->  /**
-> @@ -229,7 +262,7 @@ ice_process_skb_fields(struct ice_rx_ring *rx_ring,
 >  	/* modifies the skb - consumes the enet header */
->  	skb->protocol = eth_type_trans(skb, rx_ring->netdev);
+> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
+> index 115969ecdf7b..e1d49e1235b3 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
+> +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
+> @@ -148,7 +148,7 @@ void ice_release_rx_desc(struct ice_rx_ring *rx_ring, u16 val);
+>  void
+>  ice_process_skb_fields(struct ice_rx_ring *rx_ring,
+>  		       union ice_32b_rx_flex_desc *rx_desc,
+> -		       struct sk_buff *skb, u16 ptype);
+> +		       struct sk_buff *skb);
+>  void
+>  ice_receive_skb(struct ice_rx_ring *rx_ring, struct sk_buff *skb, u16 vlan_tag);
+>  #endif /* !_ICE_TXRX_LIB_H_ */
+> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> index 2a3f0834e139..ef778b8e6d1b 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> @@ -870,7 +870,6 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
+>  		struct sk_buff *skb;
+>  		u16 stat_err_bits;
+>  		u16 vlan_tag = 0;
+> -		u16 rx_ptype;
 >  
-> -	ice_rx_csum(rx_ring, skb, rx_desc, ptype);
-> +	ice_rx_csum_into_skb(rx_ring, skb, rx_desc, ptype);
+>  		rx_desc = ICE_RX_DESC(rx_ring, ntc);
 >  
->  	if (rx_ring->ptp_rx)
->  		ice_ptp_rx_hwts_to_skb(rx_ring, rx_desc, skb);
+> @@ -950,10 +949,7 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
+>  
+>  		vlan_tag = ice_get_vlan_tag_from_rx_desc(rx_desc);
+>  
+> -		rx_ptype = le16_to_cpu(rx_desc->wb.ptype_flex_flags0) &
+> -				       ICE_RX_FLEX_DESC_PTYPE_M;
+> -
+> -		ice_process_skb_fields(rx_ring, rx_desc, skb, rx_ptype);
+> +		ice_process_skb_fields(rx_ring, rx_desc, skb);
+>  		ice_receive_skb(rx_ring, skb, vlan_tag);
+>  	}
+>  
 > -- 
 > 2.41.0
+> 
 > 
 
