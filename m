@@ -1,262 +1,177 @@
-Return-Path: <bpf+bounces-9170-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9171-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE46779101A
-	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 04:25:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BAE479106A
+	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 05:29:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67A32280D1A
-	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 02:25:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B95791C20443
+	for <lists+bpf@lfdr.de>; Mon,  4 Sep 2023 03:29:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8F9397;
-	Mon,  4 Sep 2023 02:25:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49DDD656;
+	Mon,  4 Sep 2023 03:29:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 378CD62E
-	for <bpf@vger.kernel.org>; Mon,  4 Sep 2023 02:25:28 +0000 (UTC)
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8036BB
-	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 19:25:25 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-26f6b2c8e80so699599a91.1
-        for <bpf@vger.kernel.org>; Sun, 03 Sep 2023 19:25:25 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09568635
+	for <bpf@vger.kernel.org>; Mon,  4 Sep 2023 03:29:02 +0000 (UTC)
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8B05BF
+	for <bpf@vger.kernel.org>; Sun,  3 Sep 2023 20:29:00 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-414ba610766so134651cf.0
+        for <bpf@vger.kernel.org>; Sun, 03 Sep 2023 20:29:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693794325; x=1694399125; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1693798140; x=1694402940; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qqVtV6R/rWVrHVBAD1bwGK9xImd/SxOCN/mOrTtWilY=;
-        b=UzrYnBHGKYsoBWk1lAcnEhCXtm5fPGoWLeXrezOtR9cbeqUtK/Tvu5Qn8gwl3pYyVM
-         9T67Fu+DFCiGhbDd4WT0F/sIC8Tj/ukGnPYfgsgXZIU9LE1K6qw814kJoj365TjL90KR
-         6h3a1ZHVsuGTa1f9c/XcvpdWURKM2xThEXwzqbAAfRnmzNDnurLSXRE4wZF3ez9wByfc
-         mpWqQY6e81RFU2wCJg/fFSFxj2eHcVpxXf4PUQ8XY5AeU3PeRYa1N9fFxhEr+c0OMnyQ
-         vDjL+aLXjbV2WDmB6XR0f1zHGZeX2UvF1+vwf6cSi+iGN3xlO9xNshVppZ8jc9DhU+P/
-         EVqw==
+        bh=7deoe6GKhFpc+m67Hlb6XpoWBoI8jcvPYFdC1NBI18E=;
+        b=f0UkjQPVZLS35/683sE9Topltynn1uueMUc1mXgVROtG2fUvnEOqKtytWKhxUKqEK/
+         0aBO9wj74V4uOL5AQaJjklFux7KY9zbz1CHYUWZdHFMRFsxi2CuxOa0JwKXDNtnDKTVz
+         CKNWCMCvM/vmplkGAXROVhPBjXHoFFPZwggBVzV+KL7Fh6B4ospjik/PA+6UCV2pOpgi
+         rgW1VffOHu6YvVI0PJZJoam9psWp6sEQvXAyFtZS7C2MbuOEW7VEW2TeA1zDPdwvVhvg
+         PLaV83ED65i/dyArDeh/xN3ZnZjhtuvUylbha6HaqytWkwTyxxVJecJz+USHcQW06pul
+         BeYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693794325; x=1694399125;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1693798140; x=1694402940;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qqVtV6R/rWVrHVBAD1bwGK9xImd/SxOCN/mOrTtWilY=;
-        b=gbuLVmiixq0IRFG6jd+GdQ8yHbvJy5s+Pc2GB/1TTHM/SLNGKAbEuq1/Sb/TS7GPXS
-         tCO0tqCiXdgoU548Q/DnOplUKlncW7QNqL0Z5l7geBx0TVqQxZdpk/CjXCz4f8bucR/k
-         Qlu2m9r/uv+8B/i/zlfVqnfU3zPqllIFFJypJBHml0T47JZBDmwusVGswn1eBa7/LugQ
-         aK76UWdZ1+wV7uANjHV8pT+LGyxxZIfiDizVr3XRVMZ2sjlalsaD2qgjjAsk53UhZiHc
-         0EkTWKBVtt4d1fWzus0nzFW1bVqQzq3LxtLcqhzW8nAAcDjjJdYnFahczevddHJMfuav
-         Zdug==
-X-Gm-Message-State: AOJu0Yw/8nLN209HY/i4e6E9f4u2dOLzz2li2xUW6ayskySIX80bcgUC
-	9fRC2ghMSAgCU7T1xn0T29zkvg6aUWDp2CO5
-X-Google-Smtp-Source: AGHT+IGap6NHCLFKIUZaRLCRp/x46+k+GrVZfrI/8F+kY5nhlIYtfQvdu7k5hmveoHM/C/EulkMh3g==
-X-Received: by 2002:a17:90b:1e4a:b0:26d:5049:cf48 with SMTP id pi10-20020a17090b1e4a00b0026d5049cf48mr7793699pjb.40.1693794325109;
-        Sun, 03 Sep 2023 19:25:25 -0700 (PDT)
-Received: from localhost.localdomain ([14.116.239.34])
-        by smtp.gmail.com with ESMTPSA id h9-20020a170902748900b001c3267ae314sm3041636pll.156.2023.09.03.19.25.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 19:25:24 -0700 (PDT)
-From: Hengqi Chen <hengqi.chen@gmail.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	hengqi.chen@gmail.com
-Subject: [PATCH bpf-next 2/2] libbpf: Support symbol versioning for uprobe
-Date: Mon,  4 Sep 2023 02:24:44 +0000
-Message-Id: <20230904022444.1695820-3-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20230904022444.1695820-1-hengqi.chen@gmail.com>
-References: <20230904022444.1695820-1-hengqi.chen@gmail.com>
+        bh=7deoe6GKhFpc+m67Hlb6XpoWBoI8jcvPYFdC1NBI18E=;
+        b=hm2Rw/ljED7M8UvSBM+LcEcciBFJvnklZx4j0GRV6osTFfokpNpDGSqETENZATWI2Q
+         s87swJIJFw5KKC5R4MnUK3B/EaE6eSHjp9+zxY+vCDNHbPDqml+KdzXs1GQ/RsKg9q09
+         XNX2UwKmqO3QJjzV4GeA0zShGQ2+alwupU6s2dB684nveteetw4aiEPCVPgl+UwdKnKT
+         BWaKJpmRkvm//0NE16qVifeJC707J/fUihUC0xI699G3Opt+tZxj88s498nAX54xnJH3
+         9WOesPCBfhEm0lekdt3EPkXCu9z6m7LmMsAvTtfRBul0sIa5IoDgAvKEdO571+LwwLvJ
+         D+oQ==
+X-Gm-Message-State: AOJu0YxiEBSFnjQXd27+L+Lte1CqgJl7BwlQtUMe2Vsq1FzAHPmQBDgw
+	tZedENzJDb/V/4VL0hXx9VATPyNpozOa7MEhpOVFtg==
+X-Google-Smtp-Source: AGHT+IGpSZA5b0THqLBucCAWJlFUihqilCsAwDngJNJeRAOaion0lQdf4xoRZy/rGwGk+pRPS1y9EbG705O13KUZr6M=
+X-Received: by 2002:a05:622a:341:b0:412:7cc4:a0f4 with SMTP id
+ r1-20020a05622a034100b004127cc4a0f4mr224747qtw.8.1693798139968; Sun, 03 Sep
+ 2023 20:28:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT
-	autolearn=ham autolearn_force=no version=3.4.6
+References: <20230830230126.260508-1-namhyung@kernel.org>
+In-Reply-To: <20230830230126.260508-1-namhyung@kernel.org>
+From: Ian Rogers <irogers@google.com>
+Date: Sun, 3 Sep 2023 20:28:48 -0700
+Message-ID: <CAP-5=fWQGsBBku+vuRpxia8faVkJeR1Rp5PmoAd63LcDM3FYXg@mail.gmail.com>
+Subject: Re: [PATCHSET 0/5] perf lock contention: Add cgroup support (v1)
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>, 
+	Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Currently, we allow users to specify symbol name for uprobe in a qualified
-form, i.e. func@@LIB or func@@LIB_VERSION. For dynamic symbols, their version
-info is actually stored in .gnu.version and .gnu.version_d sections of the ELF
-objects. So dynamic symbols and the qualified name won't match. Add support for
-symbol versioning ([0]) so that we can handle the above case.
+On Wed, Aug 30, 2023 at 4:01=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> Hello,
+>
+> The cgroup support comes with two flavors.  One is to aggregate the
+> result by cgroups and the other is to filter result for the given
+> cgroups.  For now, it only works in BPF mode.
+>
+> The first one is -g/--lock-cgroup option to show lock stats by cgroups
+> like below.  The cgroup names were shortened for brevity:
+>
+>   $ sudo perf lock con -abg perf bench sched messaging
+>    contended   total wait     max wait     avg wait   cgroup
+>
+>         1052      3.34 ms     84.71 us      3.17 us   /app-org.gnome.Term=
+inal.slice/vte-spawn-52221fb8-b33f-4a52-b5c3-e35d1e6fc0e0.scope
+>           13    106.60 us     11.48 us      8.20 us   /session.slice/org.=
+gnome.Shell@x11.service
+>           12     21.20 us      4.93 us      1.77 us   /
+>            3     12.10 us      8.80 us      4.03 us   /session-4.scope
+>            2     10.98 us      7.50 us      5.49 us   /app-gnome-firefox\=
+x2desr-34054.scope
+>            2      6.04 us      4.88 us      3.02 us   /app-gnome-google\x=
+2dchrome-6442.scope
+>            1      5.63 us      5.63 us      5.63 us   /app-org.gnome.Term=
+inal.slice/gnome-terminal-server.service
+>            1      3.51 us      3.51 us      3.51 us   /pipewire.service
+>            1      2.15 us      2.15 us      2.15 us   /pipewire-pulse.ser=
+vice
+>            1       742 ns       742 ns       742 ns   /dbus.service
+>
+> The other is -G/--cgroup-filter option to show lock stats only from the
+> given cgroups.  It doesn't support cgroup hierarchy and regex matching.
+>
+>   $ sudo perf lock con -abt -G / perf bench sched messaging
+>    contended   total wait     max wait     avg wait          pid   comm
+>
+>            2     10.58 us      8.39 us      5.29 us       257552   kworke=
+r/4:1
+>            2      9.76 us      7.96 us      4.88 us            0   swappe=
+r
+>            4      5.36 us      2.09 us      1.34 us       255462   kworke=
+r/0:2
+>            3      3.33 us      1.48 us      1.11 us       257680   kworke=
+r/3:1
+>            2      2.59 us      1.46 us      1.29 us       257478   kworke=
+r/2:2
+>            1      1.50 us      1.50 us      1.50 us           15   rcu_pr=
+eempt
+>
+> You can also use these two options together. :)
+>
+> The two more test cases were added to the existing lock contention test.
+>
+> The code is available at 'perf/lock-cgroup-v1' branch in the tree below.
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+>
+>
+> Thanks,
+> Namhyung
+>
+>
+> Namhyung Kim (5):
+>   perf tools: Add read_all_cgroups() and __cgroup_find()
+>   perf lock contention: Prepare to handle cgroups
+>   perf lock contention: Add -g/--lock-cgroup option
+>   perf lock contention: Add -G/--cgroup-filter option
+>   perf test: Improve perf lock contention test
 
-  [0]: https://refspecs.linuxfoundation.org/LSB_3.0.0/LSB-PDA/LSB-PDA.junk/symversion.html
+Series:
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- tools/lib/bpf/elf.c | 98 +++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 90 insertions(+), 8 deletions(-)
+Thanks,
+Ian
 
-diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-index 5c9e588b17da..ed3d9880eaa4 100644
---- a/tools/lib/bpf/elf.c
-+++ b/tools/lib/bpf/elf.c
-@@ -9,6 +9,7 @@
- #include "str_error.h"
-
- #define STRERR_BUFSIZE  128
-+#define HIDDEN_BIT	16
-
- int elf_open(const char *binary_path, struct elf_fd *elf_fd)
- {
-@@ -64,11 +65,14 @@ struct elf_sym {
- 	const char *name;
- 	GElf_Sym sym;
- 	GElf_Shdr sh;
-+	int ver;
-+	bool hidden;
- };
-
- struct elf_sym_iter {
- 	Elf *elf;
- 	Elf_Data *syms;
-+	Elf_Data *versyms;
- 	size_t nr_syms;
- 	size_t strtabidx;
- 	size_t next_sym_idx;
-@@ -111,6 +115,18 @@ static int elf_sym_iter_new(struct elf_sym_iter *iter,
- 	iter->nr_syms = iter->syms->d_size / sh.sh_entsize;
- 	iter->elf = elf;
- 	iter->st_type = st_type;
-+
-+	/* Version symbol table only meaningful to dynsym only */
-+	if (sh_type != SHT_DYNSYM)
-+		return 0;
-+
-+	scn = elf_find_next_scn_by_type(elf, SHT_GNU_versym, NULL);
-+	if (!scn)
-+		return 0;
-+	if (!gelf_getshdr(scn, &sh))
-+		return -EINVAL;
-+	iter->versyms = elf_getdata(scn, 0);
-+
- 	return 0;
- }
-
-@@ -119,6 +135,7 @@ static struct elf_sym *elf_sym_iter_next(struct elf_sym_iter *iter)
- 	struct elf_sym *ret = &iter->sym;
- 	GElf_Sym *sym = &ret->sym;
- 	const char *name = NULL;
-+	GElf_Versym versym;
- 	Elf_Scn *sym_scn;
- 	size_t idx;
-
-@@ -138,12 +155,57 @@ static struct elf_sym *elf_sym_iter_next(struct elf_sym_iter *iter)
-
- 		iter->next_sym_idx = idx + 1;
- 		ret->name = name;
-+		ret->ver = 0;
-+		ret->hidden = false;
-+
-+		if (iter->versyms) {
-+			if (!gelf_getversym(iter->versyms, idx, &versym))
-+				continue;
-+			ret->ver = versym & ~(1 << HIDDEN_BIT);
-+			ret->hidden = versym & (1 << HIDDEN_BIT);
-+		}
- 		return ret;
- 	}
-
- 	return NULL;
- }
-
-+static const char *elf_get_vername(Elf *elf, int ver)
-+{
-+	GElf_Verdaux verdaux;
-+	GElf_Verdef verdef;
-+	Elf_Data *verdefs;
-+	size_t strtabidx;
-+	GElf_Shdr sh;
-+	Elf_Scn *scn;
-+	int offset;
-+
-+	scn = elf_find_next_scn_by_type(elf, SHT_GNU_verdef, NULL);
-+	if (!scn)
-+		return NULL;
-+	if (!gelf_getshdr(scn, &sh))
-+		return NULL;
-+	strtabidx = sh.sh_link;
-+	verdefs =  elf_getdata(scn, 0);
-+
-+	offset = 0;
-+	while (gelf_getverdef(verdefs, offset, &verdef)) {
-+		if (verdef.vd_ndx != ver) {
-+			if (!verdef.vd_next)
-+				break;
-+
-+			offset += verdef.vd_next;
-+			continue;
-+		}
-+
-+		if (!gelf_getverdaux(verdefs, offset + verdef.vd_aux, &verdaux))
-+			break;
-+
-+		return elf_strptr(elf, strtabidx, verdaux.vda_name);
-+
-+	}
-+	return NULL;
-+}
-
- /* Transform symbol's virtual address (absolute for binaries and relative
-  * for shared libs) into file offset, which is what kernel is expecting
-@@ -191,6 +253,9 @@ long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name)
- 	for (i = 0; i < ARRAY_SIZE(sh_types); i++) {
- 		struct elf_sym_iter iter;
- 		struct elf_sym *sym;
-+		size_t sname_len;
-+		char sname[256];
-+		const char *ver;
- 		int last_bind = -1;
- 		int cur_bind;
-
-@@ -201,14 +266,31 @@ long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name)
- 			goto out;
-
- 		while ((sym = elf_sym_iter_next(&iter))) {
--			/* User can specify func, func@@LIB or func@@LIB_VERSION. */
--			if (strncmp(sym->name, name, name_len) != 0)
--				continue;
--			/* ...but we don't want a search for "foo" to match 'foo2" also, so any
--			 * additional characters in sname should be of the form "@@LIB".
--			 */
--			if (!is_name_qualified && sym->name[name_len] != '\0' && sym->name[name_len] != '@')
--				continue;
-+			if (sh_types[i] == SHT_DYNSYM && is_name_qualified) {
-+				if (sym->hidden)
-+					continue;
-+
-+				sname_len = strlen(sym->name);
-+				if (strncmp(sym->name, name, sname_len) != 0)
-+					continue;
-+
-+				ver = elf_get_vername(elf, sym->ver);
-+				if (!ver)
-+					continue;
-+
-+				snprintf(sname, sizeof(sname), "%s@@%s", sym->name, ver);
-+				if (strncmp(sname, name, name_len) != 0)
-+					continue;
-+			} else {
-+				/* User can specify func, func@@LIB or func@@LIB_VERSION. */
-+				if (strncmp(sym->name, name, name_len) != 0)
-+					continue;
-+				/* ...but we don't want a search for "foo" to match 'foo2" also, so any
-+				* additional characters in sname should be of the form "@@LIB".
-+				*/
-+				if (!is_name_qualified && sym->name[name_len] != '\0' && sym->name[name_len] != '@')
-+					continue;
-+			}
-
- 			cur_bind = GELF_ST_BIND(sym->sym.st_info);
-
---
-2.39.3
+>  tools/perf/Documentation/perf-lock.txt        |  8 ++
+>  tools/perf/builtin-lock.c                     | 99 ++++++++++++++++++-
+>  tools/perf/tests/shell/lock_contention.sh     | 45 +++++++++
+>  tools/perf/util/bpf_lock_contention.c         | 51 +++++++++-
+>  .../perf/util/bpf_skel/lock_contention.bpf.c  | 48 ++++++++-
+>  tools/perf/util/bpf_skel/lock_data.h          |  3 +-
+>  tools/perf/util/cgroup.c                      | 63 ++++++++++--
+>  tools/perf/util/cgroup.h                      |  5 +
+>  tools/perf/util/lock-contention.h             | 10 +-
+>  9 files changed, 312 insertions(+), 20 deletions(-)
+>
+>
+> base-commit: d2045f87154bf67a50ebefe28d2ca0e1e3f8eef1
+> --
+> 2.42.0.283.g2d96d420d3-goog
+>
 
