@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-9234-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9235-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B73027920AC
-	for <lists+bpf@lfdr.de>; Tue,  5 Sep 2023 09:19:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 578FF7920AD
+	for <lists+bpf@lfdr.de>; Tue,  5 Sep 2023 09:19:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4867C280EC4
-	for <lists+bpf@lfdr.de>; Tue,  5 Sep 2023 07:19:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AAA02809AE
+	for <lists+bpf@lfdr.de>; Tue,  5 Sep 2023 07:19:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90204ECE;
-	Tue,  5 Sep 2023 07:19:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98949ECE;
+	Tue,  5 Sep 2023 07:19:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B55EBC
-	for <bpf@vger.kernel.org>; Tue,  5 Sep 2023 07:19:26 +0000 (UTC)
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BE6CC2
-	for <bpf@vger.kernel.org>; Tue,  5 Sep 2023 00:19:24 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9a5be3166a2so295062366b.1
-        for <bpf@vger.kernel.org>; Tue, 05 Sep 2023 00:19:24 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69F6EA38
+	for <bpf@vger.kernel.org>; Tue,  5 Sep 2023 07:19:35 +0000 (UTC)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27248CC2
+	for <bpf@vger.kernel.org>; Tue,  5 Sep 2023 00:19:34 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9a648f9d8e3so267620966b.1
+        for <bpf@vger.kernel.org>; Tue, 05 Sep 2023 00:19:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693898363; x=1694503163; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1693898372; x=1694503172; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pmPZ6MwhGsjqW+PqQ60aIxMny+s/DXkbn11tQsT0+h0=;
-        b=PLJvF0YU/uAW7FdLGQzGdpwAsBa0gtrqiB7KqlG01MCpg9dce8mobzA+yEQ+WlGakf
-         tDOp3CLJProVXqedSLRxx7baFKl8A7S6jsYTbN+J5TMnDk6oq6qQAjfl0I8e82ygWky1
-         4NEmOBMsEVbUPhXewU6kkCWGg1uLEgh2LZUcvyNCVrQ1FP43xj2oZoIQoqcVY7sgsjkJ
-         0oXQSkmzYfYUuUiIdZyJlVNC649X697KmRZNR2i/ebbV1LhdSF/nqRGYcpRBfb3KMYBz
-         SOpPjMWCYN1Nj0niF2qGaJhfRjJocdJUTvC4RmZ0eICqrVTFlZgvP88Lca5GeVCbxCIy
-         BURA==
+        bh=doAnPxCCxhRnfgdHjQ/vtZMCh1tyDiK9UCVyMDVbeac=;
+        b=S7gjCFHPODBB8b3Ztji9aJWouaez010Ya0g1edp5ZNfuqS75AqruKM2AmC0r68BDlO
+         v5RoUdOCMqvfXCarvr0Ue3QLwLR8cKlEuOTfnGP809blnAVv9DS6xgWTCcGTnXopzmcY
+         /rydV2b8/LQyu71RkqHJT+tBG06yxmTLxTWV48/0kbtvSp1Gs4Lvx0H09O8+AdGCSNtc
+         lAQOgRjSH6+LR1Y+V2fz3sdA0kq5T2B8GTsAKTcXSJjgCtL9FgVJNlO2PGpjbiYwRWOW
+         1lnXEDqvn2FwF0cS22Yvbt4ei1XW0dFaVVIC0lPlheE/ud6VRt4MnX7LqJvjIWo3sGeS
+         iHvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693898363; x=1694503163;
+        d=1e100.net; s=20221208; t=1693898372; x=1694503172;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pmPZ6MwhGsjqW+PqQ60aIxMny+s/DXkbn11tQsT0+h0=;
-        b=c9PZhZcHUz0/eMwlIMKVcRcD6rGv6XqBCckAsus7tWvus6GsLHektLB9sf6HG8Amyw
-         wuNdr8AZKNGnJS9LPSSmbCD3AEhDYvy/Lid7N9dqzJNUeWUQ4yUl7u56GMCyk9HHgkkH
-         ZeA5ol//vl9X5p06L+xvkhwHC55uCb79eUZB7VZhAPdFUrEoxilNsULIaEzrVQNOOTu8
-         4PvG5zj0J2EaOdYc9oroSR7gbbPWBYtkPwSnEbIDNnDFVMZfeysVVxS9CQbzCIY508Hn
-         SGmohlQSZG0AM8bcsjbRj55Eqhjv3awCagyydNfcXl9Dg9UduXTvt6oH+0Dqj8XIZXHt
-         CTAQ==
-X-Gm-Message-State: AOJu0YxaWtKn5lAtdB3o467GNVMB3y1aIBefSFSYXTNeVtzb46vgdA4P
-	5BAyVZSg04qCb13f0OnXUzKuL+sRAFT0YQ==
-X-Google-Smtp-Source: AGHT+IF2hqM+oUg+h8dp2cRre9tgP8L5WJ7ltcWqDy4g879oEBnrwSh5ad02MM4ZnwsdT24juUlEuw==
-X-Received: by 2002:a17:906:1daa:b0:9a6:5696:3879 with SMTP id u10-20020a1709061daa00b009a656963879mr3135377ejh.65.1693898363020;
-        Tue, 05 Sep 2023 00:19:23 -0700 (PDT)
+        bh=doAnPxCCxhRnfgdHjQ/vtZMCh1tyDiK9UCVyMDVbeac=;
+        b=YtSDYBqn7dBU1crCNfuwE8kC4x7tKGshlJ3UDRtWh7/qEvBluIoDCxbWjcgEZjih0X
+         xlo9C+DRRTX009QE1lnrI0CfPzF/5MiTKL7+oj7RcWN9QO6d/IGoqDwDky+Sv57yPaBX
+         y3U5puQXQmdO8cSS9UbfjvktsLh8BDHD74IhnB4uEq5Z24OvcN2gGtWPpWGrgp9xyTsY
+         41ouATZkdLHrN4D2clONSJ1DVEW7V8uJjO3XQxDhaV3gFZGbtl/i+J15LqHJF7r3PtJj
+         EM5uM38Lh0zgx+URDctVQqnDICrGwQi9JC0LJViDYXtb3SmADuUqxxkFmk5MUFX++uTq
+         HGeA==
+X-Gm-Message-State: AOJu0Yw978x/GVhNeczGOvj0MuyOhmXRU1FPuefw/tkKS1Q0o9aaM2ZL
+	KMPVuqwuf00r/ydScawiGSs=
+X-Google-Smtp-Source: AGHT+IGjaDOMRKMS4JfRUkxBtGDItFhbfWhUYV1qr32F9UvisUKARCfB5IIg6bKozx7yDATKZQmGuw==
+X-Received: by 2002:a17:906:189:b0:9a4:dd49:da3e with SMTP id 9-20020a170906018900b009a4dd49da3emr8894916ejb.68.1693898372654;
+        Tue, 05 Sep 2023 00:19:32 -0700 (PDT)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id kb3-20020a1709070f8300b009930c80b87csm7326719ejc.142.2023.09.05.00.19.21
+        by smtp.gmail.com with ESMTPSA id la20-20020a170906ad9400b0099caf5bed64sm7208468ejb.57.2023.09.05.00.19.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 00:19:22 -0700 (PDT)
+        Tue, 05 Sep 2023 00:19:32 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 5 Sep 2023 09:19:20 +0200
+Date: Tue, 5 Sep 2023 09:19:30 +0200
 To: Hou Tao <houtao@huaweicloud.com>
 Cc: bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
 	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
@@ -67,11 +67,11 @@ Cc: bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
 	Daniel Xu <dxu@dxuuu.xyz>, Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf-next 08/12] bpf: Count run stats in bpf_prog_run_array
-Message-ID: <ZPbWeHpb0SPDPkLq@krava>
+Subject: Re: [PATCH bpf-next 03/12] bpf: Count stats for kprobe_multi programs
+Message-ID: <ZPbWggSZ3x0G+bx4@krava>
 References: <20230828075537.194192-1-jolsa@kernel.org>
- <20230828075537.194192-9-jolsa@kernel.org>
- <7adba3b2-29de-4959-b99a-d1ce3f26f31a@huaweicloud.com>
+ <20230828075537.194192-4-jolsa@kernel.org>
+ <6fcc4045-7a73-8ce9-0926-af5f2088d4eb@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -80,62 +80,67 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7adba3b2-29de-4959-b99a-d1ce3f26f31a@huaweicloud.com>
+In-Reply-To: <6fcc4045-7a73-8ce9-0926-af5f2088d4eb@huaweicloud.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Sep 05, 2023 at 10:40:01AM +0800, Hou Tao wrote:
+On Tue, Sep 05, 2023 at 02:15:49PM +0800, Hou Tao wrote:
 > Hi,
 > 
 > On 8/28/2023 3:55 PM, Jiri Olsa wrote:
-> > Count runtime stats for bf programs executed through bpf_prog_run_array
-> > function. That covers kprobe, perf event and trace syscall probe.
+> > Adding support to gather stats for kprobe_multi programs.
+> >
+> > We now count:
+> >   - missed stats due to bpf_prog_active protection (always)
+> >   - cnt/nsec of the bpf program execution (if kernel.bpf_stats_enabled=1)
 > >
 > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> >  include/linux/bpf.h | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> >  kernel/trace/bpf_trace.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
 > >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 478fdc4794c9..732253eea675 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -2715,10 +2715,11 @@ bpf_prog_run_array(const struct bpf_prog_array *array,
-> >  		   const void *ctx, bpf_prog_run_fn run_prog)
-> >  {
-> >  	const struct bpf_prog_array_item *item;
-> > -	const struct bpf_prog *prog;
-> > +	struct bpf_prog *prog;
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index a7264b2c17ad..0a8685fc1eee 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -2706,18 +2706,24 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
+> >  		.link = link,
+> >  		.entry_ip = entry_ip,
+> >  	};
+> > +	struct bpf_prog *prog = link->link.prog;
 > >  	struct bpf_run_ctx *old_run_ctx;
-> >  	struct bpf_trace_run_ctx run_ctx;
-> >  	u32 ret = 1;
 > > +	u64 start;
+> >  	int err;
 > >  
-> >  	RCU_LOCKDEP_WARN(!rcu_read_lock_held(), "no rcu lock held");
-> >  
-> > @@ -2732,7 +2733,9 @@ bpf_prog_run_array(const struct bpf_prog_array *array,
-> >  	item = &array->items[0];
-> >  	while ((prog = READ_ONCE(item->prog))) {
-> >  		run_ctx.bpf_cookie = item->bpf_cookie;
-> > +		start = bpf_prog_start_time();
-> >  		ret &= run_prog(prog, ctx);
-> > +		bpf_prog_update_prog_stats(prog, start);
-> >  		item++;
+> >  	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
+> > +		bpf_prog_inc_misses_counter(prog);
+> >  		err = 0;
+> >  		goto out;
 > >  	}
+> >  
+> > +
+> >  	migrate_disable();
+> >  	rcu_read_lock();
+> >  	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+> > -	err = bpf_prog_run(link->link.prog, regs);
+> > +	start = bpf_prog_start_time();
+> > +	err = bpf_prog_run(prog, regs);
+> > +	bpf_prog_update_prog_stats(prog, start);
 > 
-> bpf_prog_run() has already accounted the running count and the consumed
-> time for the prog, so I think both previous patch and this patch are not
-> needed.
+> Oops, I missed the bpf_prog_run() here. It seems that bpf_prog_run() has
+> already done the accounting thing, so there is no need for double
+> accounting.
 
-ugh right, I missed that.. thanks
+right, same as the other change, thanks
 
 jirka
 
-> 
 > >  	bpf_reset_run_ctx(old_run_ctx);
+> >  	rcu_read_unlock();
+> >  	migrate_enable();
 > 
 
