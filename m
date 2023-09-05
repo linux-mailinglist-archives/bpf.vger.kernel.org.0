@@ -1,97 +1,114 @@
-Return-Path: <bpf+bounces-9244-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ED75792212
-	for <lists+bpf@lfdr.de>; Tue,  5 Sep 2023 13:12:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDF12792294
+	for <lists+bpf@lfdr.de>; Tue,  5 Sep 2023 14:24:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58AE5281107
-	for <lists+bpf@lfdr.de>; Tue,  5 Sep 2023 11:12:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A8C6280A73
+	for <lists+bpf@lfdr.de>; Tue,  5 Sep 2023 12:24:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ED33CA6F;
-	Tue,  5 Sep 2023 11:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B15EED30A;
+	Tue,  5 Sep 2023 12:24:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B32DCA49
-	for <bpf@vger.kernel.org>; Tue,  5 Sep 2023 11:11:47 +0000 (UTC)
-Received: from m1388.mail.163.com (m1388.mail.163.com [220.181.13.88])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 907541AB;
-	Tue,  5 Sep 2023 04:11:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-	Message-ID; bh=AnoszC4Wf0HgzM7XYH9pKyosfCmKtyeLWNv6taO6AUI=; b=W
-	FoI5zsiATykTn77Ph2c6rJ7H9vnHj6kA8fJez8bRF02zQThvvaio/Oa8cqancqwb
-	cRCRUrDXZzIG3UI0gXw28gLSdrE0n6957grUWclUckB1ie/3I3Bce6Bkeouu8fGl
-	vjPItgeHNIz9L6FyVeW13lyfmrS6HMh2jjvvjDcRhg=
-Received: from 00107082$163.com ( [111.35.184.199] ) by ajax-webmail-wmsvr88
- (Coremail) ; Tue, 5 Sep 2023 19:09:03 +0800 (CST)
-X-Originating-IP: [111.35.184.199]
-Date: Tue, 5 Sep 2023 19:09:03 +0800 (CST)
-From: "David Wang" <00107082@163.com>
-To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
-Cc: "Florian Westphal" <fw@strlen.de>, "Alexei Starovoitov" <ast@kernel.org>, 
-	"Daniel Borkmann" <daniel@iogearbox.net>, 
-	"Andrii Nakryiko" <andrii@kernel.org>, 
-	"Martin KaFai Lau" <martin.lau@linux.dev>, 
-	"Song Liu" <song@kernel.org>, 
-	"Yonghong Song" <yonghong.song@linux.dev>, 
-	"John Fastabend" <john.fastabend@gmail.com>, 
-	"KP Singh" <kpsingh@kernel.org>, 
-	"Stanislav Fomichev" <sdf@google.com>, "Hao Luo" <haoluo@google.com>, 
-	"Jiri Olsa" <jolsa@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH] samples/bpf: Add sample usage for
- BPF_PROG_TYPE_NETFILTER
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2023 www.mailtech.cn 163com
-In-Reply-To: <CAADnVQJVyQQ5geDuUgoDYygN9R1gJr-21XmQOR8gY5UkZsosCQ@mail.gmail.com>
-References: <20230904102128.11476-1-00107082@163.com>
- <20230904104856.GE11802@breakpoint.cc>
- <CAADnVQJVyQQ5geDuUgoDYygN9R1gJr-21XmQOR8gY5UkZsosCQ@mail.gmail.com>
-X-NTES-SC: AL_QuySAfWavUkv5SeYbekZnEYQheY4XMKyuPkg1YJXOp80oyr99Q0sT01nIlv0y/OUNDKKgiqbeQhXx9RqQbBzZoiVTmO+wEnN8eHQPL7ak4kW
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8C8D2F7;
+	Tue,  5 Sep 2023 12:24:29 +0000 (UTC)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA841A8;
+	Tue,  5 Sep 2023 05:24:28 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E70811FD8E;
+	Tue,  5 Sep 2023 12:24:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1693916666; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+7M4X3ltwI/VM1laJUfqoL6rnCUoo+tPTHyGF9EcSb4=;
+	b=BSh4tK42t37/hjB81tIVJaoFbkEnB6TT/FK0HXE+uFX6Bw5xI1/G+94VWY4bjgEVS1GsLN
+	9CesqlourNuHjoPH/ZzJwE87JSVCVcWft8zO/5qxhY2n1FjhWR88pJW0EVVp2oB5TwVjuI
+	9J3ZjN23vadJmaQ7RXmH+8Uzr0YfeUk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1693916666;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+7M4X3ltwI/VM1laJUfqoL6rnCUoo+tPTHyGF9EcSb4=;
+	b=Pvu8ACuOSzN6VLftdOMZeeF6kb0rzpSRVD0zDfew662reQ86XWGhE0rRmAViHV6je5hvcE
+	7iBXBna3vnmbFNAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B027213911;
+	Tue,  5 Sep 2023 12:24:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id YS15Jfod92QpEwAAMHmgww
+	(envelope-from <krisman@suse.de>); Tue, 05 Sep 2023 12:24:26 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: Breno Leitao <leitao@debian.org>
+Cc: sdf@google.com,  axboe@kernel.dk,  asml.silence@gmail.com,
+  willemdebruijn.kernel@gmail.com,  martin.lau@linux.dev,
+  bpf@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  netdev@vger.kernel.org,  io-uring@vger.kernel.org,  kuba@kernel.org,
+  pabeni@redhat.com
+Subject: Re: [PATCH v4 08/10] io_uring/cmd: Introduce
+ SOCKET_URING_OP_GETSOCKOPT
+In-Reply-To: <20230904162504.1356068-9-leitao@debian.org> (Breno Leitao's
+	message of "Mon, 4 Sep 2023 09:25:01 -0700")
+Organization: SUSE
+References: <20230904162504.1356068-1-leitao@debian.org>
+	<20230904162504.1356068-9-leitao@debian.org>
+Date: Tue, 05 Sep 2023 08:24:25 -0400
+Message-ID: <87a5u0byfa.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <5490ca67.552d.18a6508175f.Coremail.00107082@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:WMGowABns5hQDPdkjk0AAA--.3984W
-X-CM-SenderInfo: qqqrilqqysqiywtou0bp/xtbBEAThqmNfu+chxgAJsR
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-CgoKCgoKCgoKCgpBdCAyMDIzLTA5LTA1IDA1OjAxOjE0LCAiQWxleGVpIFN0YXJvdm9pdG92IiA8
-YWxleGVpLnN0YXJvdm9pdG92QGdtYWlsLmNvbT4gd3JvdGU6Cj5PbiBNb24sIFNlcCA0LCAyMDIz
-IGF0IDM6NDnigK9BTSBGbG9yaWFuIFdlc3RwaGFsIDxmd0BzdHJsZW4uZGU+IHdyb3RlOgo+Pgo+
-PiBEYXZpZCBXYW5nIDwwMDEwNzA4MkAxNjMuY29tPiB3cm90ZToKPj4gPiBUaGlzIHNhbXBsZSBj
-b2RlIGltcGxlbWVudHMgYSBzaW1wbGUgaXB2NAo+PiA+IGJsYWNrbGlzdCB2aWEgdGhlIG5ldyBi
-cGYgdHlwZSBCUEZfUFJPR19UWVBFX05FVEZJTFRFUiwKPj4gPiB3aGljaCB3YXMgaW50cm9kdWNl
-ZCBpbiA2LjQuCj4+ID4KPj4gPiBUaGUgYnBmIHByb2dyYW0gZHJvcHMgcGFja2FnZSBpZiBkZXN0
-aW5hdGlvbiBpcCBhZGRyZXNzCj4+ID4gaGl0cyBhIG1hdGNoIGluIHRoZSBtYXAgb2YgdHlwZSBC
-UEZfTUFQX1RZUEVfTFBNX1RSSUUsCj4+ID4KPj4gPiBUaGUgdXNlcnNwYWNlIGNvZGUgd291bGQg
-bG9hZCB0aGUgYnBmIHByb2dyYW0sCj4+ID4gYXR0YWNoIGl0IHRvIG5ldGZpbHRlcidzIEZPUldB
-UkQvT1VUUFVUIGhvb2ssCj4+ID4gYW5kIHRoZW4gd3JpdGUgaXAgcGF0dGVybnMgaW50byB0aGUg
-YnBmIG1hcC4KPj4KPj4gVGhhbmtzLCBJIHRoaW5rIGl0cyBnb29kIHRvIGhhdmUgdGhpcy4KPgo+
-WWVzLCBidXQgb25seSBpbiBzZWxmdGVzdHMvYnBmLgo+c2FtcGxlcy9icGYvIGFyZSBub3QgdGVz
-dGVkIGFuZCBiaXQgcm90IGhlYXZpbHkuCgpIaSBBbGV4ZWksIAoKSSBuZWVkIHRvIGtub3cgd2hl
-dGhlciBzYW1wbGVzL2JwZiBpcyBzdGlsbCBhIGdvb2QgcGxhY2UgdG8gcHV0IGNvZGUuIApJIHdp
-bGwgcHV0IHRoZSBjb2RlIGluIGFub3RoZXIgb3BlbiBzb3VyY2UgcHJvamVjdCAgZm9yIGJwZiBz
-YW1wbGVzLCAgbWVudGlvbmVkIGJ5IFRva2UuCkJ1dCBJIHN0aWxsIHdhbnQgdG8gcHV0IGl0IGlu
-IHNhbXBsZXMvYnBmICwgc2luY2UgdGhlIGNvZGUgb25seSBjb21waWxlL3dvcmsgd2l0aCBuZXcg
-a2VybmVsLgoKTmVlZCB5b3VyIGZlZWRiYWNrIG9uIHRoaXMsICBjb3VsZCB0aGlzIGNvZGUgYmUg
-a2VwdCBpbiBzYW1wbGVzL2JwZj8gOikKClRoYW5rcwpEYXZpZC4=
+Breno Leitao <leitao@debian.org> writes:
+
+> Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
+> level is SOL_SOCKET. This is leveraging the sockptr_t infrastructure,
+> where a sockptr_t is either userspace or kernel space, and handled as
+> such.
+>
+> Differently from the getsockopt(2), the optlen field is not a userspace
+> pointers. In getsockopt(2), userspace provides optlen pointer, which is
+> overwritten by the kernel.  In this implementation, userspace passes a
+> u32, and the new value is returned in cqe->res. I.e., optlen is not a
+> pointer.
+>
+> Important to say that userspace needs to keep the pointer alive until
+> the CQE is completed.
+>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+
+IMO, this looks much cleaner with most of the bpf and socket logic under
+net/.
+
+Reviewed-by: Gabriel Krisman Bertazi <krisman@suse.de>
+
+Thanks!
+
+
+-- 
+Gabriel Krisman Bertazi
 
