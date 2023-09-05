@@ -1,156 +1,91 @@
-Return-Path: <bpf+bounces-9241-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9242-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28A4D7921DB
-	for <lists+bpf@lfdr.de>; Tue,  5 Sep 2023 12:29:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53A037921FD
+	for <lists+bpf@lfdr.de>; Tue,  5 Sep 2023 12:56:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 639AB1C20329
-	for <lists+bpf@lfdr.de>; Tue,  5 Sep 2023 10:29:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05A64281100
+	for <lists+bpf@lfdr.de>; Tue,  5 Sep 2023 10:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54440C2DF;
-	Tue,  5 Sep 2023 10:29:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03D39CA43;
+	Tue,  5 Sep 2023 10:55:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 143F66AAB;
-	Tue,  5 Sep 2023 10:29:34 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CF4DB;
-	Tue,  5 Sep 2023 03:29:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693909773; x=1725445773;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Bn7q6Tcu2HMXKbL23eq+DAUGqdWll8RQjB5RohTItbQ=;
-  b=DBwRdMJHpj03uJQj0+iTo1UjRzTehrF2TdXkkZwBgCmNPq7QQlAOwjnK
-   96+1HlG1roViquYLVDSl7anWSlvThXk2812zJuoaaDgE5rtk5GkAU7FV9
-   xZYPcGbG5xDc5kbOycAbDAp71dR+qE3Xk/q3bqMwnvYJly13Vj8wluko1
-   +feOadG4zR2ICWaYwiRmJd50fq/NE8F+p8IwVJvZACZWEO3ZetgrTSNHL
-   nXb7cU42Vy0njPI66ur5tlI1WJ/BJVsgC2szOP12amG6asV3SvBD5vKM+
-   rX7TYwgB/7KJKjt246fxo9ErtP9gVD81z7J2kNN1liSRVq+1mjNkHgvOr
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="356254681"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="356254681"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 03:29:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="734605190"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="734605190"
-Received: from unknown (HELO smile.fi.intel.com) ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 03:29:26 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1qdTJC-006efP-1u;
-	Tue, 05 Sep 2023 13:29:22 +0300
-Date: Tue, 5 Sep 2023 13:29:22 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Breno Leitao <leitao@debian.org>
-Cc: sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
-	willemdebruijn.kernel@gmail.com, martin.lau@linux.dev,
-	krisman@suse.de, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, io-uring@vger.kernel.org,
-	Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-	Xin Long <lucien.xin@gmail.com>,
-	David Howells <dhowells@redhat.com>,
-	Jason Xing <kernelxing@tencent.com>
-Subject: Re: [PATCH v4 04/10] net/socket: Break down __sys_getsockopt
-Message-ID: <ZPcDAk81DAqevy43@smile.fi.intel.com>
-References: <20230904162504.1356068-1-leitao@debian.org>
- <20230904162504.1356068-5-leitao@debian.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19B5A38
+	for <bpf@vger.kernel.org>; Tue,  5 Sep 2023 10:55:50 +0000 (UTC)
+Received: from m1388.mail.163.com (m1388.mail.163.com [220.181.13.88])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 65670199;
+	Tue,  5 Sep 2023 03:55:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+	Message-ID; bh=JNwwYvVvNJhmFDnLWPQOWWhJmo1VIZIdhEFNmT8j+bQ=; b=S
+	t+w39o4fft4aX4Vyj/rr0p6mEX1curZShPbTyOg1O465B1tBi51o8hscTHtNCnrW
+	qQd+YjO5NH4PhdFiP5WKJ/CgL2vTG6TxmVWqp7iTW/ZcpprASbu1ZqlW4MJk1G4H
+	x2gPRvbw3zhKx/99R7wPWi7bR2+ObZhCikBjNxZOFQ=
+Received: from 00107082$163.com ( [111.35.184.199] ) by ajax-webmail-wmsvr88
+ (Coremail) ; Tue, 5 Sep 2023 18:52:42 +0800 (CST)
+X-Originating-IP: [111.35.184.199]
+Date: Tue, 5 Sep 2023 18:52:42 +0800 (CST)
+From: "David Wang" <00107082@163.com>
+To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+Cc: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>, 
+	"Florian Westphal" <fw@strlen.de>, 
+	"Alexei Starovoitov" <ast@kernel.org>, 
+	"Daniel Borkmann" <daniel@iogearbox.net>, 
+	"Andrii Nakryiko" <andrii@kernel.org>, 
+	"Martin KaFai Lau" <martin.lau@linux.dev>, 
+	"Song Liu" <song@kernel.org>, 
+	"Yonghong Song" <yonghong.song@linux.dev>, 
+	"John Fastabend" <john.fastabend@gmail.com>, 
+	"KP Singh" <kpsingh@kernel.org>, 
+	"Stanislav Fomichev" <sdf@google.com>, "Hao Luo" <haoluo@google.com>, 
+	"Jiri Olsa" <jolsa@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH] samples/bpf: Add sample usage for
+ BPF_PROG_TYPE_NETFILTER
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
+ Copyright (c) 2002-2023 www.mailtech.cn 163com
+In-Reply-To: <87wmx5ovv0.fsf@toke.dk>
+References: <20230904102128.11476-1-00107082@163.com>
+ <20230904104856.GE11802@breakpoint.cc>
+ <CAADnVQJVyQQ5geDuUgoDYygN9R1gJr-21XmQOR8gY5UkZsosCQ@mail.gmail.com>
+ <49e1d877.1e64.18a63574e6a.Coremail.00107082@163.com>
+ <87wmx5ovv0.fsf@toke.dk>
+X-NTES-SC: AL_QuySAfWavkkt5CCZYOkZnEYQheY4XMKyuPkg1YJXOp80oyr99Q0sT01nIlv0y/OUNDKKgiqbeQhXx9RqQbBzZojMZIO+0KTJ1y78mii/4lkh
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230904162504.1356068-5-leitao@debian.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <51bb4eb.547e.18a64f91ca1.Coremail.00107082@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:WMGowABns5h7CPdkmkwAAA--.3940W
+X-CM-SenderInfo: qqqrilqqysqiywtou0bp/xtbBEAThqmNfu+chxgACsa
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Sep 04, 2023 at 09:24:57AM -0700, Breno Leitao wrote:
-> Split __sys_getsockopt() into two functions by removing the core
-> logic into a sub-function (do_sock_getsockopt()). This will avoid
-> code duplication when doing the same operation in other callers, for
-> instance.
-> 
-> do_sock_getsockopt() will be called by io_uring getsockopt() command
-> operation in the following patch.
-> 
-> The same was done for the setsockopt pair.
-
-...
-
-> +	ops = READ_ONCE(sock->ops);
-> +	if (level == SOL_SOCKET) {
-> +		err = sk_getsockopt(sock->sk, level, optname, optval, optlen);
-> +	} else if (unlikely(!ops->getsockopt)) {
-> +		err = -EOPNOTSUPP;
-> +	} else {
-> +		if (WARN_ONCE(optval.is_kernel || optlen.is_kernel,
-> +			      "Invalid argument type"))
-> +			return -EOPNOTSUPP;
-> +
-> +		err = ops->getsockopt(sock, level, optname, optval.user,
-> +				      optlen.user);
-> +	}
-
-Can be written as
-
-	} else if (WARN_ONCE(optval.is_kernel || optlen.is_kernel,
-			     "Invalid argument type"))
-		return -EOPNOTSUPP;
-	} else {
-		err = ops->getsockopt(sock, level, optname, optval.user,
-				      optlen.user);
-	}
-
-With that done, the {} are not needed anymore.
-
-> +	if (!compat) {
-
-	if (compat)
-		return err;
-
-> +		max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen);
-
-> +		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock->sk, level, optname,
-> +						     optval, optlen, max_optlen,
-> +						     err);
-
-	return ... ?
-
-> +	}
-> +
-> +	return err;
-> +}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+CkF0IDIwMjMtMDktMDUgMTY6NDE6MjMsICJUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4iIDx0b2tl
+QGtlcm5lbC5vcmc+IHdyb3RlOgo+IkRhdmlkIFdhbmciIDwwMDEwNzA4MkAxNjMuY29tPiB3cml0
+ZXM6Cj4KCj4+IEdldCBhIGZlZWxpbmcgc2FtcGxlcy9icGYgd291bGQgYmUgZGVwcmVjYXRlZCBz
+b29uZXIgb3IgbGF0ZXIsIGhvcGUgdGhhdCB3b3VsZCBub3QgaGFwcGVuLgo+Pgo+PiBBbnl3YXks
+IHRoaXMgc2FtcGxlIGNvZGUgaXMgbm90IG1lYW50IHRvIHRlc3QuIAo+Cj5GWUksIHdlIG1haW50
+YWluIGEgR2l0aHViIHJlcG9zaXRvcnkgd2l0aCBCUEYgZXhhbXBsZSBwcm9ncmFtcyBvZgo+dmFy
+aW91cyB0eXBlcyBhdCBodHRwczovL2dpdGh1Yi5jb20veGRwLXByb2plY3QvYnBmLWV4YW1wbGVz
+Cj4KPkhhcHB5IHRvIGluY2x1ZGUgdGhpcyBleGFtcGxlIHRoZXJlIGFzIGFuIGFsdGVybmF0aXZl
+IHRvIHRoZSBpbi10cmVlCj5zYW1wbGVzL2JwZiA6KQo+Cj4tVG9rZQoKQ29vbCBwcm9qZWN0fiEg
+IEkgd2lsbCBzdWJtaXQgYSBQUiB0aGVyZS4=
 
