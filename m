@@ -1,174 +1,311 @@
-Return-Path: <bpf+bounces-9281-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9283-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FABC792FDD
-	for <lists+bpf@lfdr.de>; Tue,  5 Sep 2023 22:23:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 363257930A9
+	for <lists+bpf@lfdr.de>; Tue,  5 Sep 2023 23:06:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 493671C209D6
-	for <lists+bpf@lfdr.de>; Tue,  5 Sep 2023 20:22:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA955281145
+	for <lists+bpf@lfdr.de>; Tue,  5 Sep 2023 21:06:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65362DF58;
-	Tue,  5 Sep 2023 20:22:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45C0FC0E;
+	Tue,  5 Sep 2023 21:06:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36AEBDDCE
-	for <bpf@vger.kernel.org>; Tue,  5 Sep 2023 20:22:49 +0000 (UTC)
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77740CC;
-	Tue,  5 Sep 2023 13:22:48 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bcfd3220d3so44141011fa.2;
-        Tue, 05 Sep 2023 13:22:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 442C1DDB6
+	for <bpf@vger.kernel.org>; Tue,  5 Sep 2023 21:06:27 +0000 (UTC)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616281B7;
+	Tue,  5 Sep 2023 14:06:24 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31768ce2e81so2430806f8f.1;
+        Tue, 05 Sep 2023 14:06:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693945366; x=1694550166; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fG5rfBSuPXfXle+iI7qfryofXP3nifEMoZ37UvmA0n8=;
-        b=sThmf14zJl8SRFMRn6NvBI4FNvLHQzOTRCvnp/i1N8ogDRsnU3kFHUU2mjwEJ88yGG
-         5g4t/bGnuXaEOajN7Wf3tjhr4KXARGwDEsGdEUBXx3cBOXv/6pLBsgask/UaqoCQBvoK
-         wppxyQu3Y6X5+TJEtiDllzQQCp7Ifwx1NO9zRm7vauLFCMa/njWiYnFIkgZrQDena4EZ
-         wQKHSyVgVd/d//NQDmmP798Ib7YJYMgCuQgNCVf44TZ+qv8qUXCyVWTM7YGYEuVuOdn9
-         rEHddAw4do8PCPQ18OyJbM+ulpAVonlDEm9Oa4bveNvOIm+UBnAaCtr+ST4o4N5WSpSX
-         EuwQ==
+        d=gmail.com; s=20221208; t=1693947983; x=1694552783; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sSNRKoiYVqeI+6LdDm1Zmc3zvMitEmgpQMdZQfaG9dI=;
+        b=RUEmmqeNAnCqR4nLkZ7vBjamqsFQBBEP91zFHHYLAsHxA3Ibpr4PXvZM/qgz9DkxT+
+         yk+M7to7B3tUbdc2X1bE9A6AMp4AAm02yiUGjuZLV6r954vtI+iGgWQFz2WyXd2XTubt
+         DL9cIukL9EEWApe2rFfbq7hpSX2E5zurdZ8mLEcB0eTXp4kxfN1Q1BrxUCJLCWpZIeVw
+         /FLrBdcj/rkVd1vKSH55iNeKhW8ry9q6uGHoFl50gtIwYDgd7W4ftMO5xCRnuplloNty
+         Uz6t15Ex8ElNu+CFp8STQFqGO5QcFuZ8dvw6SZAwNp7tBQqdWQw7UWIchCO6YyCTQw/v
+         bovw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693945366; x=1694550166;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fG5rfBSuPXfXle+iI7qfryofXP3nifEMoZ37UvmA0n8=;
-        b=NtB0HK/SC3bKn+WC6qH454NEqHP5bsaEwKKt966e/fgVEDDyFcMIddlaGgp5GurjBC
-         E964i3gX4I5wxotqi+kwTvKOA5pVQeVvEIdRS3w9NluRoG3F96KZTCfXKfi45Hjfm3Nk
-         PCdu/OQ26OLuGdpp48jv3SNL6CXdoFC+Aa4vrARNSZY/xNNJjlEnIPhgNeQmIalIiUx9
-         hKohmS3KQvW5wBVCPEM/7h3CPF0zGIFsDGqKe7eNOdALwBIfv7Gpn22Y8AjilcebQHmS
-         emD40R9UD1BbEpctYgBS4MATM+yaCzwI3pgTD52yGf19zE7m6tBAwEiPrF8Mo6HKwwOE
-         gqJA==
-X-Gm-Message-State: AOJu0YzLoNZbWEB0yE3QXVgoaSWcPg8ZlK0GfrXmNocu6Lg2FogDJF6d
-	96AoAnKC6asD2gKyasTZXpanhOe/nEhQW3UYg4A=
-X-Google-Smtp-Source: AGHT+IElFCbjQ8SNtWknYAVBmUIgOQnWgkA8SKNq1xMdkZKmNfW5urzHgHNVH3M6IIja9nXx7Gmyy5EEMK046lLflyQ=
-X-Received: by 2002:a2e:9646:0:b0:2bc:b9cd:8bc2 with SMTP id
- z6-20020a2e9646000000b002bcb9cd8bc2mr596401ljh.4.1693945366347; Tue, 05 Sep
- 2023 13:22:46 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693947983; x=1694552783;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sSNRKoiYVqeI+6LdDm1Zmc3zvMitEmgpQMdZQfaG9dI=;
+        b=FYe0FkTcaxtUl2up480L25vsd1DwPWF20cNeG0fkoclhF5Z/N8pAzHttw5mPZfUd/H
+         AK8hYQyN/GTgcEUuB0OH999fwf2hwiCsPBWVXGSQqdu3oALGVm9LeKDTNXleoqL8hGRw
+         R1e/gBN4bOKDbYSYsgTtFY0d9SmLDGYSUhc8b6QS4FcNkzxFyzyVmNCr6qgUj5nPi7HQ
+         Av6ys39lTu5BtNq08JnHUMd185lX9hKJm2HUvK4hSTaWV8aEDL35M3iwwS3aZzYkMML2
+         Ic/4r3yo3UigKiG+U7nmUmUmFlygkzGJ/rV0JDiD3fURxwqEatsb7cjekqJnte7s5qY3
+         yesQ==
+X-Gm-Message-State: AOJu0Yz82JGO1aZE5eldQ6JeQhZLayP3/VIfCxJ6sWGEON17jQ2f6gQ/
+	H0WRbCPaBZJ3wCsMUm+zZqM=
+X-Google-Smtp-Source: AGHT+IGU4HQTEq5maFXCNNmFCbt+bhir34vLzDYorhEZ5iqcWuFqf88Am1txE08GDK1HqqFnKMLgrQ==
+X-Received: by 2002:adf:e647:0:b0:317:6348:8a9d with SMTP id b7-20020adfe647000000b0031763488a9dmr626747wrn.66.1693947982401;
+        Tue, 05 Sep 2023 14:06:22 -0700 (PDT)
+Received: from ip-172-31-30-46.eu-west-1.compute.internal (ec2-54-170-241-106.eu-west-1.compute.amazonaws.com. [54.170.241.106])
+        by smtp.gmail.com with ESMTPSA id e18-20020a5d5012000000b00317b063590fsm18427672wrt.55.2023.09.05.14.06.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 14:06:22 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shubham Bansal <illusionist.neo@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: puranjay12@gmail.com
+Subject: [PATCH bpf-next 0/8] arm32, bpf: add support for cpuv4 insns
+Date: Tue,  5 Sep 2023 21:06:13 +0000
+Message-Id: <20230905210621.1711859-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230827072057.1591929-1-zhouchuyi@bytedance.com> <20230827072057.1591929-4-zhouchuyi@bytedance.com>
-In-Reply-To: <20230827072057.1591929-4-zhouchuyi@bytedance.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 5 Sep 2023 13:22:35 -0700
-Message-ID: <CAADnVQLbDWUxFen-RS67C86sOE5DykEPD8xyihJ2RnG1WEnTQg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 3/4] bpf: Introduce css_descendant open-coded
- iterator kfuncs
-To: Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sun, Aug 27, 2023 at 12:21=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.co=
-m> wrote:
->
-> This Patch adds kfuncs bpf_iter_css_{new,next,destroy} which allow creati=
-on
-> and manipulation of struct bpf_iter_css in open-coded iterator style. The=
-se
-> kfuncs actually wrapps css_next_descendant_{pre, post}. BPF programs can
-> use these kfuncs through bpf_for_each macro for iteration of all descenda=
-nt
-> css under a root css.
->
-> Normally, css_next_descendant_{pre, post} should be called with rcu
-> locking. Although we have bpf_rcu_read_lock(), here we still calls
-> rcu_read_lock in bpf_iter_css_new and unlock in bpf_iter_css_destroy
-> for convenience use.
->
-> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
-> ---
->  include/uapi/linux/bpf.h       |  5 +++++
->  kernel/bpf/helpers.c           |  3 +++
->  kernel/bpf/task_iter.c         | 39 ++++++++++++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h |  5 +++++
->  tools/lib/bpf/bpf_helpers.h    |  6 ++++++
->  5 files changed, 58 insertions(+)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index cfbd527e3733..19f1f1bf9301 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -7203,4 +7203,9 @@ struct bpf_iter_process {
->         __u64 __opaque[1];
->  } __attribute__((aligned(8)));
->
-> +struct bpf_iter_css {
-> +       __u64 __opaque[2];
-> +       char __opaque_c[1];
+Add the support for cpuv4 instructions for ARM32 BPF JIT. 64-bit division
+was not supported earlier so this series adds 64-bit DIV, SDIV, MOD, SMOD
+instructions.
 
-Burning extra 8 bytes for flags seems excessive.
-Maybe let's add two iterators for descendant_post/_pre ?
-The bpf prog code will be easier to read (no need to guess
-what bool flag does).
+This series needs any one of the patches from [1] to support ldsx.
 
-> +} __attribute__((aligned(8)));
-> +
->  #endif /* _UAPI__LINUX_BPF_H__ */
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 81a2005edc26..47d46a51855f 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -2461,6 +2461,9 @@ BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_IT=
-ER_DESTROY)
->  BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
->  BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
-> +BTF_ID_FLAGS(func, bpf_iter_css_new, KF_ITER_NEW)
-> +BTF_ID_FLAGS(func, bpf_iter_css_next, KF_ITER_NEXT | KF_RET_NULL)
-> +BTF_ID_FLAGS(func, bpf_iter_css_destroy, KF_ITER_DESTROY)
->  BTF_ID_FLAGS(func, bpf_dynptr_adjust)
->  BTF_ID_FLAGS(func, bpf_dynptr_is_null)
->  BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
-> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> index a6717a76c1e0..ef9aef62f1ac 100644
-> --- a/kernel/bpf/task_iter.c
-> +++ b/kernel/bpf/task_iter.c
-> @@ -893,6 +893,45 @@ __bpf_kfunc void bpf_iter_process_destroy(struct bpf=
-_iter_process *it)
->         rcu_read_unlock();
->  }
->
-> +struct bpf_iter_css_kern {
-> +       struct cgroup_subsys_state *root;
-> +       struct cgroup_subsys_state *pos;
-> +       char flag;
-> +} __attribute__((aligned(8)));
-> +
-> +__bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
-> +               struct cgroup_subsys_state *root, char flag)
-> +{
-> +       struct bpf_iter_css_kern *kit =3D (void *)it;
-> +
-> +       BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) !=3D sizeof(struct =
-bpf_iter_css));
-> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) !=3D __alignof=
-__(struct bpf_iter_css));
-> +       kit->root =3D root;
-> +       kit->pos =3D NULL;
-> +       kit->flag =3D flag;
-> +       rcu_read_lock();
+The relevant selftests have passed expect ldsx_insn which needs fentry:
 
-Same request as in previous patch.
-let's make bpf prog do explicit bpf_rcu_read_lock() instead.
+Tested on BeagleBone Black (ARMv7-A):
+
+[root@alarm del]# echo 1 > /proc/sys/net/core/bpf_jit_enable
+[root@alarm del]# ./test_progs -a verifier_sdiv,verifier_movsx,verifier_ldsx,verifier_gotol,verifier_bswap
+#337/1   verifier_bswap/BSWAP, 16:OK
+#337/2   verifier_bswap/BSWAP, 16 @unpriv:OK
+#337/3   verifier_bswap/BSWAP, 32:OK
+#337/4   verifier_bswap/BSWAP, 32 @unpriv:OK
+#337/5   verifier_bswap/BSWAP, 64:OK
+#337/6   verifier_bswap/BSWAP, 64 @unpriv:OK
+#337     verifier_bswap:OK
+#351/1   verifier_gotol/gotol, small_imm:OK
+#351/2   verifier_gotol/gotol, small_imm @unpriv:OK
+#351     verifier_gotol:OK
+#359/1   verifier_ldsx/LDSX, S8:OK
+#359/2   verifier_ldsx/LDSX, S8 @unpriv:OK
+#359/3   verifier_ldsx/LDSX, S16:OK
+#359/4   verifier_ldsx/LDSX, S16 @unpriv:OK
+#359/5   verifier_ldsx/LDSX, S32:OK
+#359/6   verifier_ldsx/LDSX, S32 @unpriv:OK
+#359/7   verifier_ldsx/LDSX, S8 range checking, privileged:OK
+#359/8   verifier_ldsx/LDSX, S16 range checking:OK
+#359/9   verifier_ldsx/LDSX, S16 range checking @unpriv:OK
+#359/10  verifier_ldsx/LDSX, S32 range checking:OK
+#359/11  verifier_ldsx/LDSX, S32 range checking @unpriv:OK
+#359     verifier_ldsx:OK
+#370/1   verifier_movsx/MOV32SX, S8:OK
+#370/2   verifier_movsx/MOV32SX, S8 @unpriv:OK
+#370/3   verifier_movsx/MOV32SX, S16:OK
+#370/4   verifier_movsx/MOV32SX, S16 @unpriv:OK
+#370/5   verifier_movsx/MOV64SX, S8:OK
+#370/6   verifier_movsx/MOV64SX, S8 @unpriv:OK
+#370/7   verifier_movsx/MOV64SX, S16:OK
+#370/8   verifier_movsx/MOV64SX, S16 @unpriv:OK
+#370/9   verifier_movsx/MOV64SX, S32:OK
+#370/10  verifier_movsx/MOV64SX, S32 @unpriv:OK
+#370/11  verifier_movsx/MOV32SX, S8, range_check:OK
+#370/12  verifier_movsx/MOV32SX, S8, range_check @unpriv:OK
+#370/13  verifier_movsx/MOV32SX, S16, range_check:OK
+#370/14  verifier_movsx/MOV32SX, S16, range_check @unpriv:OK
+#370/15  verifier_movsx/MOV32SX, S16, range_check 2:OK
+#370/16  verifier_movsx/MOV32SX, S16, range_check 2 @unpriv:OK
+#370/17  verifier_movsx/MOV64SX, S8, range_check:OK
+#370/18  verifier_movsx/MOV64SX, S8, range_check @unpriv:OK
+#370/19  verifier_movsx/MOV64SX, S16, range_check:OK
+#370/20  verifier_movsx/MOV64SX, S16, range_check @unpriv:OK
+#370/21  verifier_movsx/MOV64SX, S32, range_check:OK
+#370/22  verifier_movsx/MOV64SX, S32, range_check @unpriv:OK
+#370/23  verifier_movsx/MOV64SX, S16, R10 Sign Extension:OK
+#370/24  verifier_movsx/MOV64SX, S16, R10 Sign Extension @unpriv:OK
+#370     verifier_movsx:OK
+#382/1   verifier_sdiv/SDIV32, non-zero imm divisor, check 1:OK
+#382/2   verifier_sdiv/SDIV32, non-zero imm divisor, check 1 @unpriv:OK
+#382/3   verifier_sdiv/SDIV32, non-zero imm divisor, check 2:OK
+#382/4   verifier_sdiv/SDIV32, non-zero imm divisor, check 2 @unpriv:OK
+#382/5   verifier_sdiv/SDIV32, non-zero imm divisor, check 3:OK
+#382/6   verifier_sdiv/SDIV32, non-zero imm divisor, check 3 @unpriv:OK
+#382/7   verifier_sdiv/SDIV32, non-zero imm divisor, check 4:OK
+#382/8   verifier_sdiv/SDIV32, non-zero imm divisor, check 4 @unpriv:OK
+#382/9   verifier_sdiv/SDIV32, non-zero imm divisor, check 5:OK
+#382/10  verifier_sdiv/SDIV32, non-zero imm divisor, check 5 @unpriv:OK
+#382/11  verifier_sdiv/SDIV32, non-zero imm divisor, check 6:OK
+#382/12  verifier_sdiv/SDIV32, non-zero imm divisor, check 6 @unpriv:OK
+#382/13  verifier_sdiv/SDIV32, non-zero imm divisor, check 7:OK
+#382/14  verifier_sdiv/SDIV32, non-zero imm divisor, check 7 @unpriv:OK
+#382/15  verifier_sdiv/SDIV32, non-zero imm divisor, check 8:OK
+#382/16  verifier_sdiv/SDIV32, non-zero imm divisor, check 8 @unpriv:OK
+#382/17  verifier_sdiv/SDIV32, non-zero reg divisor, check 1:OK
+#382/18  verifier_sdiv/SDIV32, non-zero reg divisor, check 1 @unpriv:OK
+#382/19  verifier_sdiv/SDIV32, non-zero reg divisor, check 2:OK
+#382/20  verifier_sdiv/SDIV32, non-zero reg divisor, check 2 @unpriv:OK
+#382/21  verifier_sdiv/SDIV32, non-zero reg divisor, check 3:OK
+#382/22  verifier_sdiv/SDIV32, non-zero reg divisor, check 3 @unpriv:OK
+#382/23  verifier_sdiv/SDIV32, non-zero reg divisor, check 4:OK
+#382/24  verifier_sdiv/SDIV32, non-zero reg divisor, check 4 @unpriv:OK
+#382/25  verifier_sdiv/SDIV32, non-zero reg divisor, check 5:OK
+#382/26  verifier_sdiv/SDIV32, non-zero reg divisor, check 5 @unpriv:OK
+#382/27  verifier_sdiv/SDIV32, non-zero reg divisor, check 6:OK
+#382/28  verifier_sdiv/SDIV32, non-zero reg divisor, check 6 @unpriv:OK
+#382/29  verifier_sdiv/SDIV32, non-zero reg divisor, check 7:OK
+#382/30  verifier_sdiv/SDIV32, non-zero reg divisor, check 7 @unpriv:OK
+#382/31  verifier_sdiv/SDIV32, non-zero reg divisor, check 8:OK
+#382/32  verifier_sdiv/SDIV32, non-zero reg divisor, check 8 @unpriv:OK
+#382/33  verifier_sdiv/SDIV64, non-zero imm divisor, check 1:OK
+#382/34  verifier_sdiv/SDIV64, non-zero imm divisor, check 1 @unpriv:OK
+#382/35  verifier_sdiv/SDIV64, non-zero imm divisor, check 2:OK
+#382/36  verifier_sdiv/SDIV64, non-zero imm divisor, check 2 @unpriv:OK
+#382/37  verifier_sdiv/SDIV64, non-zero imm divisor, check 3:OK
+#382/38  verifier_sdiv/SDIV64, non-zero imm divisor, check 3 @unpriv:OK
+#382/39  verifier_sdiv/SDIV64, non-zero imm divisor, check 4:OK
+#382/40  verifier_sdiv/SDIV64, non-zero imm divisor, check 4 @unpriv:OK
+#382/41  verifier_sdiv/SDIV64, non-zero imm divisor, check 5:OK
+#382/42  verifier_sdiv/SDIV64, non-zero imm divisor, check 5 @unpriv:OK
+#382/43  verifier_sdiv/SDIV64, non-zero imm divisor, check 6:OK
+#382/44  verifier_sdiv/SDIV64, non-zero imm divisor, check 6 @unpriv:OK
+#382/45  verifier_sdiv/SDIV64, non-zero reg divisor, check 1:OK
+#382/46  verifier_sdiv/SDIV64, non-zero reg divisor, check 1 @unpriv:OK
+#382/47  verifier_sdiv/SDIV64, non-zero reg divisor, check 2:OK
+#382/48  verifier_sdiv/SDIV64, non-zero reg divisor, check 2 @unpriv:OK
+#382/49  verifier_sdiv/SDIV64, non-zero reg divisor, check 3:OK
+#382/50  verifier_sdiv/SDIV64, non-zero reg divisor, check 3 @unpriv:OK
+#382/51  verifier_sdiv/SDIV64, non-zero reg divisor, check 4:OK
+#382/52  verifier_sdiv/SDIV64, non-zero reg divisor, check 4 @unpriv:OK
+#382/53  verifier_sdiv/SDIV64, non-zero reg divisor, check 5:OK
+#382/54  verifier_sdiv/SDIV64, non-zero reg divisor, check 5 @unpriv:OK
+#382/55  verifier_sdiv/SDIV64, non-zero reg divisor, check 6:OK
+#382/56  verifier_sdiv/SDIV64, non-zero reg divisor, check 6 @unpriv:OK
+#382/57  verifier_sdiv/SMOD32, non-zero imm divisor, check 1:OK
+#382/58  verifier_sdiv/SMOD32, non-zero imm divisor, check 1 @unpriv:OK
+#382/59  verifier_sdiv/SMOD32, non-zero imm divisor, check 2:OK
+#382/60  verifier_sdiv/SMOD32, non-zero imm divisor, check 2 @unpriv:OK
+#382/61  verifier_sdiv/SMOD32, non-zero imm divisor, check 3:OK
+#382/62  verifier_sdiv/SMOD32, non-zero imm divisor, check 3 @unpriv:OK
+#382/63  verifier_sdiv/SMOD32, non-zero imm divisor, check 4:OK
+#382/64  verifier_sdiv/SMOD32, non-zero imm divisor, check 4 @unpriv:OK
+#382/65  verifier_sdiv/SMOD32, non-zero imm divisor, check 5:OK
+#382/66  verifier_sdiv/SMOD32, non-zero imm divisor, check 5 @unpriv:OK
+#382/67  verifier_sdiv/SMOD32, non-zero imm divisor, check 6:OK
+#382/68  verifier_sdiv/SMOD32, non-zero imm divisor, check 6 @unpriv:OK
+#382/69  verifier_sdiv/SMOD32, non-zero reg divisor, check 1:OK
+#382/70  verifier_sdiv/SMOD32, non-zero reg divisor, check 1 @unpriv:OK
+#382/71  verifier_sdiv/SMOD32, non-zero reg divisor, check 2:OK
+#382/72  verifier_sdiv/SMOD32, non-zero reg divisor, check 2 @unpriv:OK
+#382/73  verifier_sdiv/SMOD32, non-zero reg divisor, check 3:OK
+#382/74  verifier_sdiv/SMOD32, non-zero reg divisor, check 3 @unpriv:OK
+#382/75  verifier_sdiv/SMOD32, non-zero reg divisor, check 4:OK
+#382/76  verifier_sdiv/SMOD32, non-zero reg divisor, check 4 @unpriv:OK
+#382/77  verifier_sdiv/SMOD32, non-zero reg divisor, check 5:OK
+#382/78  verifier_sdiv/SMOD32, non-zero reg divisor, check 5 @unpriv:OK
+#382/79  verifier_sdiv/SMOD32, non-zero reg divisor, check 6:OK
+#382/80  verifier_sdiv/SMOD32, non-zero reg divisor, check 6 @unpriv:OK
+#382/81  verifier_sdiv/SMOD64, non-zero imm divisor, check 1:OK
+#382/82  verifier_sdiv/SMOD64, non-zero imm divisor, check 1 @unpriv:OK
+#382/83  verifier_sdiv/SMOD64, non-zero imm divisor, check 2:OK
+#382/84  verifier_sdiv/SMOD64, non-zero imm divisor, check 2 @unpriv:OK
+#382/85  verifier_sdiv/SMOD64, non-zero imm divisor, check 3:OK
+#382/86  verifier_sdiv/SMOD64, non-zero imm divisor, check 3 @unpriv:OK
+#382/87  verifier_sdiv/SMOD64, non-zero imm divisor, check 4:OK
+#382/88  verifier_sdiv/SMOD64, non-zero imm divisor, check 4 @unpriv:OK
+#382/89  verifier_sdiv/SMOD64, non-zero imm divisor, check 5:OK
+#382/90  verifier_sdiv/SMOD64, non-zero imm divisor, check 5 @unpriv:OK
+#382/91  verifier_sdiv/SMOD64, non-zero imm divisor, check 6:OK
+#382/92  verifier_sdiv/SMOD64, non-zero imm divisor, check 6 @unpriv:OK
+#382/93  verifier_sdiv/SMOD64, non-zero imm divisor, check 7:OK
+#382/94  verifier_sdiv/SMOD64, non-zero imm divisor, check 7 @unpriv:OK
+#382/95  verifier_sdiv/SMOD64, non-zero imm divisor, check 8:OK
+#382/96  verifier_sdiv/SMOD64, non-zero imm divisor, check 8 @unpriv:OK
+#382/97  verifier_sdiv/SMOD64, non-zero reg divisor, check 1:OK
+#382/98  verifier_sdiv/SMOD64, non-zero reg divisor, check 1 @unpriv:OK
+#382/99  verifier_sdiv/SMOD64, non-zero reg divisor, check 2:OK
+#382/100 verifier_sdiv/SMOD64, non-zero reg divisor, check 2 @unpriv:OK
+#382/101 verifier_sdiv/SMOD64, non-zero reg divisor, check 3:OK
+#382/102 verifier_sdiv/SMOD64, non-zero reg divisor, check 3 @unpriv:OK
+#382/103 verifier_sdiv/SMOD64, non-zero reg divisor, check 4:OK
+#382/104 verifier_sdiv/SMOD64, non-zero reg divisor, check 4 @unpriv:OK
+#382/105 verifier_sdiv/SMOD64, non-zero reg divisor, check 5:OK
+#382/106 verifier_sdiv/SMOD64, non-zero reg divisor, check 5 @unpriv:OK
+#382/107 verifier_sdiv/SMOD64, non-zero reg divisor, check 6:OK
+#382/108 verifier_sdiv/SMOD64, non-zero reg divisor, check 6 @unpriv:OK
+#382/109 verifier_sdiv/SMOD64, non-zero reg divisor, check 7:OK
+#382/110 verifier_sdiv/SMOD64, non-zero reg divisor, check 7 @unpriv:OK
+#382/111 verifier_sdiv/SMOD64, non-zero reg divisor, check 8:OK
+#382/112 verifier_sdiv/SMOD64, non-zero reg divisor, check 8 @unpriv:OK
+#382/113 verifier_sdiv/SDIV32, zero divisor:OK
+#382/114 verifier_sdiv/SDIV32, zero divisor @unpriv:OK
+#382/115 verifier_sdiv/SDIV64, zero divisor:OK
+#382/116 verifier_sdiv/SDIV64, zero divisor @unpriv:OK
+#382/117 verifier_sdiv/SMOD32, zero divisor:OK
+#382/118 verifier_sdiv/SMOD32, zero divisor @unpriv:OK
+#382/119 verifier_sdiv/SMOD64, zero divisor:OK
+#382/120 verifier_sdiv/SMOD64, zero divisor @unpriv:OK
+#382     verifier_sdiv:OK
+Summary: 5/163 PASSED, 0 SKIPPED, 0 FAILED
+
+As the selftests don't compile for 32-bit architectures without
+modifications I have added new tests to lib/test_bpf.c for cpuv4 insns:
+
+test_bpf: Summary: 1052 PASSED, 0 FAILED, [891/1040 JIT'ed]
+test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
+test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+
+[1] https://lore.kernel.org/all/mb61p5y4u3ptd.fsf@amazon.com/
+
+Puranjay Mohan (8):
+  arm32, bpf: add support for 32-bit offset jmp instruction
+  arm32, bpf: add support for sign-extension load instruction
+  arm32, bpf: add support for sign-extension mov instruction
+  arm32, bpf: add support for unconditional bswap instruction
+  arm32, bpf: add support for 32-bit signed division
+  arm32, bpf: add support for 64 bit division instruction
+  selftest, bpf: enable cpu v4 tests for arm32
+  bpf/tests: add tests for cpuv4 instructions
+
+ arch/arm/net/bpf_jit_32.c                     | 250 +++++++++++-
+ arch/arm/net/bpf_jit_32.h                     |   4 +
+ include/linux/filter.h                        |  50 ++-
+ lib/test_bpf.c                                | 371 ++++++++++++++++++
+ .../selftests/bpf/progs/verifier_bswap.c      |   3 +-
+ .../selftests/bpf/progs/verifier_gotol.c      |   3 +-
+ .../selftests/bpf/progs/verifier_ldsx.c       |   3 +-
+ .../selftests/bpf/progs/verifier_movsx.c      |   3 +-
+ .../selftests/bpf/progs/verifier_sdiv.c       |   3 +-
+ 9 files changed, 665 insertions(+), 25 deletions(-)
+
+-- 
+2.39.2
+
 
