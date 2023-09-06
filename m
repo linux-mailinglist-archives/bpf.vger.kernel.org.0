@@ -1,116 +1,82 @@
-Return-Path: <bpf+bounces-9318-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9320-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D454479377C
-	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 10:52:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95244793798
+	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 11:00:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9426428125E
-	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 08:52:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F4BE281297
+	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 09:00:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AE391103;
-	Wed,  6 Sep 2023 08:52:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 494551368;
+	Wed,  6 Sep 2023 09:00:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D146EC2
-	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 08:52:43 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D0BE9
-	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 01:52:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=UKf05mvw6oY9cTFjqq69Eejd2KGvUw3q7ZZ9CI6ZhS8=; b=nOWVzMm2y+DAnWoGH6n/nQz3Ne
-	q7Q/zI6MqN1T1yF2mmYOM9Pgqy1659J3zqIcKo8PjDtT9iLfv2fLfTB8Jy6lM9is2cI3UoBt7i38V
-	fEBVyG+o4amuzR8hX2dz/G22URqp7PDJNGz//Ot4PH1DK2eGBHgIt4uG90oqEfrRYcFvz7sz3ng9H
-	nET2KWwXPzGCPmgEBhKlKpnxoHAQZZ6zQ7WWZSvD/ybhQ6pUl8H/DCuJ8Xp7HZpUO0F+1GX0N+ZZx
-	O1g8b3x6AepXBbo0GYuUSCEaU0gEyh2Bmo/s9F4UmhfV0AqNWUg3gRlTgSMU5Mggi6kTbm0ALc9KM
-	0BH+ZUog==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qdoH7-000Ftr-9M; Wed, 06 Sep 2023 10:52:37 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qdoH7-000XnK-2u; Wed, 06 Sep 2023 10:52:37 +0200
-Subject: Re: [PATCH 2/2] bpf: Assign bpf_tramp_run_ctx::saved_run_ctx before
- recursion check.
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Jiri Olsa <olsajiri@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Kui-Feng Lee <kuifeng@fb.com>, Thomas Gleixner <tglx@linutronix.de>
-References: <20230830080405.251926-1-bigeasy@linutronix.de>
- <20230830080405.251926-3-bigeasy@linutronix.de> <ZPHxAbQDzZVNyXBL@krava>
- <20230901141908.vMoXrBK6@linutronix.de>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <e51947bb-c01b-8bbd-603b-19c11a71ceff@iogearbox.net>
-Date: Wed, 6 Sep 2023 10:52:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6F70ED0
+	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 09:00:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3DB25C433C9;
+	Wed,  6 Sep 2023 09:00:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1693990824;
+	bh=5vAHwVUQQJrgBcymMHk+CybvQjeXh14elc96WpYmWMw=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=cVsFFbGZfK2Txbzc5wZAeUA/DBkKSpFUzdWCTEdqNsbvIeUzZD1+6Y2otkyq0c5vq
+	 IivzP3PtVsXf6EbxdHHEnPrxmKR0+nnRluYIrs6JblB8++PH6bowsLy76OOe9X5+NI
+	 wmLOQdvnJ4/5KWC9pcs4H1p0HYxjATyjeTiA/+1pR18Wd9NNUMezj38DKksvyv9pFk
+	 QiD79NfsFETIpogYW8RsxOIfFQp7pQKGipOCt22FNlu9dBQATzYZVp5DLZSv1o5f4I
+	 Bh4WRNymIoMIWWli1L410/gj6OzpcI/3znaB2f2brmknEs9cjRUW2fHoTmYlM+k5j3
+	 HGbiQEFtxX1tw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 23E68C04D3F;
+	Wed,  6 Sep 2023 09:00:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230901141908.vMoXrBK6@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27023/Wed Sep  6 09:38:27 2023)
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] s390/bpf: Pass through tail call counter in trampolines
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <169399082414.6662.10802557802739575767.git-patchwork-notify@kernel.org>
+Date: Wed, 06 Sep 2023 09:00:24 +0000
+References: <20230906004448.111674-1-iii@linux.ibm.com>
+In-Reply-To: <20230906004448.111674-1-iii@linux.ibm.com>
+To: Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ bpf@vger.kernel.org, hca@linux.ibm.com, gor@linux.ibm.com,
+ agordeev@linux.ibm.com, hffilwlqm@gmail.com
 
-On 9/1/23 4:19 PM, Sebastian Andrzej Siewior wrote:
-> On 2023-09-01 16:13:04 [+0200], Jiri Olsa wrote:
->> On Wed, Aug 30, 2023 at 10:04:05AM +0200, Sebastian Andrzej Siewior wrote:
->>> __bpf_prog_enter() assigns bpf_tramp_run_ctx::saved_run_ctx before
->>
->> I guess you meant __bpf_prog_enter_recur right?
->>
->>> performing the recursion check which means in case of a recursion
->>> __bpf_prog_exit() uses the previously set
->>> bpf_tramp_run_ctx::saved_run_ctx value.
->>>
->>> __bpf_prog_enter_sleepable() assigns bpf_tramp_run_ctx::saved_run_ctx
->>
->> __bpf_prog_enter_sleepable_recur ?
->>
->>> after the recursion check which means in case of a recursion
->>> __bpf_prog_exit_sleepable() uses an uninitialized value.
->>> This does not look right. If I read the entry trampoline code right,
->>> then bpf_tramp_run_ctx isn't initialized upfront.
->>>
->>> Align __bpf_prog_enter_sleepable() with __bpf_prog_enter() and set
->>
->> ditto
+Hello:
+
+This patch was applied to bpf/bpf.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Wed,  6 Sep 2023 02:44:19 +0200 you wrote:
+> s390x eBPF programs use the following extension to the s390x calling
+> convention: tail call counter is passed on stack at offset
+> STK_OFF_TCCNT, which callees otherwise use as scratch space.
 > 
-> Yes, in both cases. The ones I mentioned have no conditionals. Sorry.
+> Currently trampoline does not respect this and clobbers tail call
+> counter. This breaks enforcing tail call limits in eBPF programs, which
+> have trampolines attached to them.
+> 
+> [...]
 
-Sebastian, I fixed this up and also the __bpf_prog_exit*() presumably should
-have been the _recur flavor.
+Here is the summary with links:
+  - [bpf] s390/bpf: Pass through tail call counter in trampolines
+    https://git.kernel.org/bpf/bpf/c/a192103a1146
 
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=6764e767f4af1e35f87f3497e1182d945de37f93
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Thanks,
-Daniel
+
 
