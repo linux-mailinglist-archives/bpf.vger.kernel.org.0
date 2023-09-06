@@ -1,178 +1,229 @@
-Return-Path: <bpf+bounces-9314-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9315-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96D6D79341E
-	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 05:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D6416793598
+	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 08:50:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACCBF1C20985
-	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 03:27:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12E6D1C209CA
+	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 06:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 127697F3;
-	Wed,  6 Sep 2023 03:27:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E3BCA54;
+	Wed,  6 Sep 2023 06:49:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D21E17E
-	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 03:27:49 +0000 (UTC)
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33EFCE8;
-	Tue,  5 Sep 2023 20:27:46 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0VrRuUhU_1693970860;
-Received: from 30.240.113.202(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VrRuUhU_1693970860)
-          by smtp.aliyun-inc.com;
-          Wed, 06 Sep 2023 11:27:43 +0800
-Message-ID: <bad0d23d-a66e-0558-469b-a2dd1d5eb497@linux.alibaba.com>
-Date: Wed, 6 Sep 2023 11:27:38 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C63B2362
+	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 06:49:57 +0000 (UTC)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594CBCFA;
+	Tue,  5 Sep 2023 23:49:56 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3866fZu1012110;
+	Wed, 6 Sep 2023 06:49:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=pp1; bh=hpQKNfo6U16AwKtZqIESlBlwyqrKWSYpNKNB15nKW+8=;
+ b=Gvd0G9e5MJiP3pNMOTbMY3r3cTW8cBTX1aeKkrNleEkVuMn33P5AIEXFPC3mhTxXAeTu
+ J1IY+Sd4Cq6nsf8ljntTISL/BusDeOpxYi/HRg6FnRcLCiDtGs5L8Wq3r8EQuJn4cCPQ
+ smv0H4ff9P5JDsX+9fJYlhvxH9nWOCnWS6lzrO/Ey0G+Ok63mRzvK3x1vZJWY4x3SJWP
+ R/c3qyDOk8gbnBmW/xLIIcQLcCODOlMhsOe52hT8jWRAujBX9WY4PxCQVLrYpOGTtY9U
+ /OTcQftNAhgpw146HLxAjYuW9QHStWyUx1+VAqsVeF+ib0gPtg0tmjR2afVKknKwaioA Kg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sxmcjr6bu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Sep 2023 06:49:16 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3866frXm013184;
+	Wed, 6 Sep 2023 06:49:15 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sxmcjr6bb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Sep 2023 06:49:15 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38659Njk011124;
+	Wed, 6 Sep 2023 06:49:14 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3svj31rage-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Sep 2023 06:49:14 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3866nCK561341968
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 6 Sep 2023 06:49:12 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BD2372004E;
+	Wed,  6 Sep 2023 06:49:12 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4F97120040;
+	Wed,  6 Sep 2023 06:49:12 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed,  6 Sep 2023 06:49:12 +0000 (GMT)
+From: Sven Schnelle <svens@linux.ibm.com>
+To: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt
+ <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann
+ <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark
+ Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v4 4/9] fprobe: rethook: Use ftrace_regs in fprobe exit
+ handler and rethook
+References: <169280372795.282662.9784422934484459769.stgit@devnote2>
+	<169280377434.282662.7610009313268953247.stgit@devnote2>
+	<20230904224038.4420a76ea15931aa40179697@kernel.org>
+	<yt9d5y4pozrl.fsf@linux.ibm.com>
+	<20230905223633.23cd4e6e8407c45b934be477@kernel.org>
+Date: Wed, 06 Sep 2023 08:49:11 +0200
+In-Reply-To: <20230905223633.23cd4e6e8407c45b934be477@kernel.org> (Masami
+	Hiramatsu's message of "Tue, 5 Sep 2023 22:36:33 +0900")
+Message-ID: <yt9dzg1zokyg.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v4 1/2] perf/core: Bail out early if the request AUX area
- is out of bound
-Content-Language: en-US
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-To: Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>,
- Peter Zijlstra <peterz@infradead.org>
-Cc: alexander.shishkin@linux.intel.com, mingo@redhat.com,
- baolin.wang@linux.alibaba.com, acme@kernel.org, mark.rutland@arm.com,
- jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
- adrian.hunter@intel.com, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, nathan@kernel.org, bpf@vger.kernel.org
-References: <20230804072945.85731-1-xueshuai@linux.alibaba.com>
- <20230804072945.85731-2-xueshuai@linux.alibaba.com>
- <20230804085947.GB589820@leoy-yangtze.lan>
- <534c5e53-07bb-07bd-0435-76a10b55228d@linux.alibaba.com>
-In-Reply-To: <534c5e53-07bb-07bd-0435-76a10b55228d@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-	SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: VfqUkRXvjBIDEgigSlkozvmCeU6UomUF
+X-Proofpoint-GUID: Pni8IGuwgJSKY-NuHenskpMz5GGOBf-A
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_13,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 phishscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ impostorscore=0 clxscore=1015 adultscore=0 malwarescore=0 mlxlogscore=869
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309060054
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+Hi Masami,
 
+Masami Hiramatsu (Google) <mhiramat@kernel.org> writes:
 
-On 2023/8/4 19:24, Shuai Xue wrote:
-> 
-> 
-> On 2023/8/4 16:59, Leo Yan wrote:
->> On Fri, Aug 04, 2023 at 03:29:44PM +0800, Shuai Xue wrote:
->>> When perf-record with a large AUX area, e.g 4GB, it fails with:
->>>
->>>     #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
->>>     failed to mmap with 12 (Cannot allocate memory)
->>>
->>> and it reveals a WARNING with __alloc_pages():
->>>
->>> [   66.595604] ------------[ cut here ]------------
->>> [   66.600206] WARNING: CPU: 44 PID: 17573 at mm/page_alloc.c:5568 __alloc_pages+0x1ec/0x248
->>> [   66.608375] Modules linked in: ip6table_filter(E) ip6_tables(E) iptable_filter(E) ebtable_nat(E) ebtables(E) aes_ce_blk(E) vfat(E) fat(E) aes_ce_cipher(E) crct10dif_ce(E) ghash_ce(E) sm4_ce_cipher(E) sm4(E) sha2_ce(E) sha256_arm64(E) sha1_ce(E) acpi_ipmi(E) sbsa_gwdt(E) sg(E) ipmi_si(E) ipmi_devintf(E) ipmi_msghandler(E) ip_tables(E) sd_mod(E) ast(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E) nvme(E) sysimgblt(E) i2c_algo_bit(E) nvme_core(E) drm_shmem_helper(E) ahci(E) t10_pi(E) libahci(E) drm(E) crc64_rocksoft(E) i40e(E) crc64(E) libata(E) i2c_core(E)
->>> [   66.657719] CPU: 44 PID: 17573 Comm: perf Kdump: loaded Tainted: G            E      6.3.0-rc4+ #58
->>> [   66.666749] Hardware name: Default Default/Default, BIOS 1.2.M1.AL.P.139.00 03/22/2023
->>> [   66.674650] pstate: 23400009 (nzCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
->>> [   66.681597] pc : __alloc_pages+0x1ec/0x248
->>> [   66.685680] lr : __kmalloc_large_node+0xc0/0x1f8
->>> [   66.690285] sp : ffff800020523980
->>> [   66.693585] pmr_save: 000000e0
->>> [   66.696624] x29: ffff800020523980 x28: ffff000832975800 x27: 0000000000000000
->>> [   66.703746] x26: 0000000000100000 x25: 0000000000100000 x24: ffff8000083615d0
->>> [   66.710866] x23: 0000000000040dc0 x22: ffff000823d6d140 x21: 000000000000000b
->>> [   66.717987] x20: 000000000000000b x19: 0000000000000000 x18: 0000000000000030
->>> [   66.725108] x17: 0000000000000000 x16: ffff800008f05be8 x15: ffff000823d6d6d0
->>> [   66.732229] x14: 0000000000000000 x13: 343373656761705f x12: 726e202c30206574
->>> [   66.739350] x11: 00000000ffff7fff x10: 00000000ffff7fff x9 : ffff8000083af570
->>> [   66.746471] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 : 000000000005fff4
->>> [   66.753592] x5 : 0000000000000000 x4 : ffff000823d6d8d8 x3 : 0000000000000000
->>> [   66.760713] x2 : 0000000000000000 x1 : 0000000000000001 x0 : 0000000000040dc0
->>> [   66.767834] Call trace:
->>> [   66.770267]  __alloc_pages+0x1ec/0x248
->>> [   66.774003]  __kmalloc_large_node+0xc0/0x1f8
->>> [   66.778259]  __kmalloc_node+0x134/0x1e8
->>> [   66.782081]  rb_alloc_aux+0xe0/0x298
->>> [   66.785643]  perf_mmap+0x440/0x660
->>> [   66.789031]  mmap_region+0x308/0x8a8
->>> [   66.792593]  do_mmap+0x3c0/0x528
->>> [   66.795807]  vm_mmap_pgoff+0xf4/0x1b8
->>> [   66.799456]  ksys_mmap_pgoff+0x18c/0x218
->>> [   66.803365]  __arm64_sys_mmap+0x38/0x58
->>> [   66.807187]  invoke_syscall+0x50/0x128
->>> [   66.810922]  el0_svc_common.constprop.0+0x58/0x188
->>> [   66.815698]  do_el0_svc+0x34/0x50
->>> [   66.818999]  el0_svc+0x34/0x108
->>> [   66.822127]  el0t_64_sync_handler+0xb8/0xc0
->>> [   66.826296]  el0t_64_sync+0x1a4/0x1a8
->>> [   66.829946] ---[ end trace 0000000000000000 ]---
->>>
->>> 'rb->aux_pages' allocated by kcalloc() is a pointer array which is used to
->>> maintains AUX trace pages. The allocated page for this array is physically
->>> contiguous (and virtually contiguous) with an order of 0..MAX_ORDER. If the
->>> size of pointer array crosses the limitation set by MAX_ORDER, it reveals a
->>> WARNING.
->>>
->>> So bail out early with -ENOMEM if the request AUX area is out of bound,
->>> e.g.:
->>>
->>>     #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
->>>     failed to mmap with 12 (Cannot allocate memory)
->>>
->>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->>> ---
->>>  kernel/events/ring_buffer.c | 3 +++
->>>  1 file changed, 3 insertions(+)
->>>
->>> diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
->>> index a0433f37b024..c445e927368d 100644
->>> --- a/kernel/events/ring_buffer.c
->>> +++ b/kernel/events/ring_buffer.c
->>> @@ -699,6 +699,9 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
->>>  		watermark = 0;
->>>  	}
->>>  
->>> +	/* Can't allocate more than MAX_ORDER */
->>
->> The comment is confused.  I'd like to refine it as:
->>
->>   /*
->>    * kcalloc_node() is unable to allocate buffer if the size is larger
->>    * than: PAGE_SIZE << MAX_ORDER; directly bail out in this case.
->>    */
-> 
-> Hi, Leo,
-> 
-> Thank you for your quick feedback. The comment is simplified from Peter's reply in v2
-> version. Your refined comment is more detailed and it makes sense to me, I would like
-> to adopt it if @Peter has no other opinions.
-> 
->> To be honest, I am not sure if perf core maintainers like this kind
->> thing or not.  Please seek their opinion before you move forward.
->>
-> 
-> and hi, all perf core maintainers,
-> 
-> I have not received explicit objection from perf core maintainers @Peter or @James so
-> I moved forward to address their comments. It's fine to me to wait for more opinions from
-> perf core maintainers.
-> 
-> Best Regards,
-> Shuai
-> 
+> Thus, we need to ensure that the ftrace_regs which is saved in the ftrace
+> *without* FTRACE_WITH_REGS flags, can be used for hooking the function
+> return. I saw;
+>
+> void arch_rethook_prepare(struct rethook_node *rh, struct pt_regs *regs, bool mcount)
+> {
+>         rh->ret_addr = regs->gprs[14];
+>         rh->frame = regs->gprs[15];
+>
+>         /* Replace the return addr with trampoline addr */
+>         regs->gprs[14] = (unsigned long)&arch_rethook_trampoline;
+> }
+>
+> gprs[15] is a stack pointer, so it is saved in ftrace_regs too, but what about
+> gprs[14]? (I guess it is a link register)
+> We need to read the gprs[14] and ensure that is restored to gpr14 when the
+> ftrace is exit even without FTRACE_WITH_REGS flag.
+>
+> IOW, it is ftrace save regs/restore regs code issue. I need to check how the
+> function_graph implements it.
 
-Hi, Leo, and all folks,
+gpr2-gpr14 are always saved in ftrace_caller/ftrace_regs_caller(),
+regardless of the FTRACE_WITH_REGS flags. The only difference is that
+without the FTRACE_WITH_REGS flag the program status word (psw) is not
+saved because collecting that is a rather expensive operation.
 
-Any more comments? Should I move forward to send a new patch?
+I used the following commands to test rethook (is that the correct
+testcase?)
 
-Thank you.
+#!/bin/bash
+cd /sys/kernel/tracing
 
-Best Regards,
-Shuai
+echo 'r:icmp_rcv icmp_rcv' >kprobe_events
+echo 1 >events/kprobes/icmp_rcv/enable
+ping -c 1 127.0.0.1
+cat trace
+
+which gave me:
+
+ping-686     [001] ..s1.    96.890817: icmp_rcv: (ip_protocol_deliver_rcu+0x42/0x218 <- icmp_rcv)
+
+I applied the following patch on top of your patches to make it compile,
+and rethook still seems to work:
+
+commit dab51b0a5b885660630433ac89f8e64a2de0eb86
+Author: Sven Schnelle <svens@linux.ibm.com>
+Date:   Wed Sep 6 08:06:23 2023 +0200
+
+    rethook wip
+    
+    Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+
+diff --git a/arch/s390/kernel/rethook.c b/arch/s390/kernel/rethook.c
+index af10e6bdd34e..4e86c0a1a064 100644
+--- a/arch/s390/kernel/rethook.c
++++ b/arch/s390/kernel/rethook.c
+@@ -3,8 +3,9 @@
+ #include <linux/kprobes.h>
+ #include "rethook.h"
+ 
+-void arch_rethook_prepare(struct rethook_node *rh, struct pt_regs *regs, bool mcount)
++void arch_rethook_prepare(struct rethook_node *rh, struct ftrace_regs *fregs, bool mcount)
+ {
++	struct pt_regs *regs = (struct pt_regs *)fregs;
+ 	rh->ret_addr = regs->gprs[14];
+ 	rh->frame = regs->gprs[15];
+ 
+@@ -13,10 +14,11 @@ void arch_rethook_prepare(struct rethook_node *rh, struct pt_regs *regs, bool mc
+ }
+ NOKPROBE_SYMBOL(arch_rethook_prepare);
+ 
+-void arch_rethook_fixup_return(struct pt_regs *regs,
++void arch_rethook_fixup_return(struct ftrace_regs *fregs,
+ 			       unsigned long correct_ret_addr)
+ {
+ 	/* Replace fake return address with real one. */
++	struct pt_regs *regs = (struct pt_regs *)fregs;
+ 	regs->gprs[14] = correct_ret_addr;
+ }
+ NOKPROBE_SYMBOL(arch_rethook_fixup_return);
+@@ -24,9 +26,9 @@ NOKPROBE_SYMBOL(arch_rethook_fixup_return);
+ /*
+  * Called from arch_rethook_trampoline
+  */
+-unsigned long arch_rethook_trampoline_callback(struct pt_regs *regs)
++unsigned long arch_rethook_trampoline_callback(struct ftrace_regs *fregs)
+ {
+-	return rethook_trampoline_handler(regs, regs->gprs[15]);
++	return rethook_trampoline_handler(fregs, fregs->regs.gprs[15]);
+ }
+ NOKPROBE_SYMBOL(arch_rethook_trampoline_callback);
+ 
+diff --git a/arch/s390/kernel/rethook.h b/arch/s390/kernel/rethook.h
+index 32f069eed3f3..0fe62424fc78 100644
+--- a/arch/s390/kernel/rethook.h
++++ b/arch/s390/kernel/rethook.h
+@@ -2,6 +2,6 @@
+ #ifndef __S390_RETHOOK_H
+ #define __S390_RETHOOK_H
+ 
+-unsigned long arch_rethook_trampoline_callback(struct pt_regs *regs);
++unsigned long arch_rethook_trampoline_callback(struct ftrace_regs *fregs);
+ 
+ #endif
+
 
