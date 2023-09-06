@@ -1,260 +1,195 @@
-Return-Path: <bpf+bounces-9339-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9340-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 527DE79408F
-	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 17:41:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C83D79409B
+	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 17:43:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44BDE1C20A4F
-	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 15:41:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A6A4281445
+	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 15:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7A7B10940;
-	Wed,  6 Sep 2023 15:41:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C6310942;
+	Wed,  6 Sep 2023 15:43:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C6C107B1
-	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 15:41:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06B24C433C8;
-	Wed,  6 Sep 2023 15:41:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694014874;
-	bh=iiJZWAYxRtMc9lZR5UR45Z+cgCiGl6bOaoOUTY43tKQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JqGXf2/Udd6tPkNGB6BxfD7B3G8DLA2MXFB48pYVIXoto+e+rH2Z+0h4WyKNKMPNP
-	 qOIjRPnn1LXxEWxTHyhX4F0Yc870yzXtJo946EJi0EkHgua0+FGMixto252I6Gcsmr
-	 bfaR4PsCw+ISnOp3+a+PkxeKn26/Nfl8Ddzf0D8ZifPiHQy03myUeAKfux7egvKMpt
-	 FfDVKKeAtpnUd+HpCNq0rbvnJpHZCN1ca2aZ4eWNwyrzOHPf6+euQedGvdN3eKyZlr
-	 VyW79zLVp9CobeucyZ0gKWIp3jdrsH6EGowKrQpy2uhcwZRLmRdzYC6kHjqMW7AuGt
-	 4CxszOcv2+tGA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id E47A2403F4; Wed,  6 Sep 2023 12:41:11 -0300 (-03)
-Date: Wed, 6 Sep 2023 12:41:11 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH 1/5] perf tools: Add read_all_cgroups() and
- __cgroup_find()
-Message-ID: <ZPidlwe2yXEDZB+U@kernel.org>
-References: <20230830230126.260508-1-namhyung@kernel.org>
- <20230830230126.260508-2-namhyung@kernel.org>
- <ZPic6Fegc7PGSvmp@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A396710791
+	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 15:43:12 +0000 (UTC)
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E911990
+	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 08:43:07 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-56a3e6bce68so12780a12.1
+        for <bpf@vger.kernel.org>; Wed, 06 Sep 2023 08:43:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694014987; x=1694619787; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DERp2+RhbO95qOoNSPh3y49/4Hj0CNbKkM4WkG1l21c=;
+        b=TEeGKBWOlTH8JSM/jX+JSRcgqcw4H+zdAuqncdMxuE1Hg5LeC1xLdXOlU+Brqm+RYi
+         kNl6J3BUz+EIauEWmihyH26cL0wjC2KdwmII8RxxH8JbNRds5GMUx8cqD/zrBLq0RrYJ
+         +UuMPXhmM8c7RSbuezc1m9eUGAU+xSj/0vdVhLX8luSiG3Dyw2mYEoqsxtEPVDRFK/ua
+         FTSX5F5r86LkVe+KpxR7J/Eoz6OAm6KvW0RocVvIU9FxafgZ3Cxm04qu5sSmxm5n6aYi
+         UvKR4fFTp37L59TueFRIQIEiMOk8nmCer7kB1iVIjhSK3ZqIlb/bfB8K2Cbe0SatN0Ox
+         Z2sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694014987; x=1694619787;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DERp2+RhbO95qOoNSPh3y49/4Hj0CNbKkM4WkG1l21c=;
+        b=HNgswQ+55DtKT1ZAIOsKoDYD7IuNzIRE0DlYl9+P7I2vPrfZuchp/LJvC7ZfnrgHoL
+         phmWGUj/asqUWFtApCaFH0ohPTsdApSqdqR+1IeYLPB5p+i4/t/VXOCyWy+GmT780OGS
+         1jeAMsx7VyLOCDZyF7D+cCt+aFBHHJDYHobjfVwsjPPBjb5yM1DmQORRW0Px7A91EEuW
+         8MtlTniOlGUi7nna8uIT1jI942atifOppfTV5X2Zhzcc4YWYffqdJUrBChYZnRmXRmFQ
+         5mH5L7W5vG6enOEY6VvpRVUM3yMjD1IOeLSia3BEhhku0ieY5cUSZuYzYqCqQF1bQQS2
+         Vy7Q==
+X-Gm-Message-State: AOJu0YyclMIeRqi0Sa6Lyy0FDCuHxLLZrHu95D2ejMs0fgVHc3CnNjAs
+	7yOvF9hfUE+uffh1ZJllDXGOhAksfh8=
+X-Google-Smtp-Source: AGHT+IF3SxoTPKpn/UmE53NfnaYCUX2kidMKvZHYIBtT9pDP+Nim/4cZ/iK7bqyl/s7Lc5s//mrAHA==
+X-Received: by 2002:a05:6a20:9799:b0:142:8731:bed1 with SMTP id hx25-20020a056a20979900b001428731bed1mr13379139pzc.41.1694014986981;
+        Wed, 06 Sep 2023 08:43:06 -0700 (PDT)
+Received: from localhost.localdomain (bb116-14-95-136.singnet.com.sg. [116.14.95.136])
+        by smtp.gmail.com with ESMTPSA id 5-20020aa79205000000b0068c0fcb40d3sm10959050pfo.211.2023.09.06.08.43.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 08:43:06 -0700 (PDT)
+From: Leon Hwang <hffilwlqm@gmail.com>
+To: bpf@vger.kernel.org
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	maciej.fijalkowski@intel.com,
+	jakub@cloudflare.com,
+	hffilwlqm@gmail.com,
+	kernel-patches-bot@fb.com
+Subject: [PATCH bpf-next] selftests/bpf: Correct map_fd to data_fd in tailcalls
+Date: Wed,  6 Sep 2023 23:42:56 +0800
+Message-ID: <20230906154256.95461-1-hffilwlqm@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZPic6Fegc7PGSvmp@kernel.org>
-X-Url: http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+	HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Em Wed, Sep 06, 2023 at 12:38:17PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Wed, Aug 30, 2023 at 04:01:22PM -0700, Namhyung Kim escreveu:
-> > The read_all_cgroups() is to build a tree of cgroups in the system and
-> > users can look up a cgroup using __cgroup_find().
-> 
-> ⬢[acme@toolbox perf-tools-next]$ alias m='make -k BUILD_BPF_SKEL=1 CORESIGHT=1 O=/tmp/build/perf-tools-next -C tools/perf install-bin && git status && perf test python'
-> ⬢[acme@toolbox perf-tools-next]$ m
-> make: Entering directory '/var/home/acme/git/perf-tools-next/tools/perf'
->   BUILD:   Doing 'make -j32' parallel build
-> Warning: Kernel ABI header differences:
->   diff -u tools/include/uapi/linux/perf_event.h include/uapi/linux/perf_event.h
->   diff -u tools/arch/x86/include/asm/cpufeatures.h arch/x86/include/asm/cpufeatures.h
->   diff -u tools/arch/x86/include/asm/msr-index.h arch/x86/include/asm/msr-index.h
->   diff -u tools/arch/arm64/include/uapi/asm/perf_regs.h arch/arm64/include/uapi/asm/perf_regs.h
-> 
->   INSTALL libsubcmd_headers
->   INSTALL libperf_headers
->   INSTALL libapi_headers
->   INSTALL libsymbol_headers
->   INSTALL libbpf_headers
->   CC      /tmp/build/perf-tools-next/builtin-lock.o
->   CC      /tmp/build/perf-tools-next/util/bpf_lock_contention.o
-> builtin-lock.c: In function ‘__cmd_contention’:
-> builtin-lock.c:2162:9: error: too few arguments to function ‘lock_contention_finish’
->  2162 |         lock_contention_finish();
->       |         ^~~~~~~~~~~~~~~~~~~~~~
-> In file included from builtin-lock.c:14:
-> util/lock-contention.h:156:5: note: declared here
->   156 | int lock_contention_finish(struct lock_contention *con);
->       |     ^~~~~~~~~~~~~~~~~~~~~~
-> make[3]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:97: /tmp/build/perf-tools-next/builtin-lock.o] Error 1
-> make[3]: *** Waiting for unfinished jobs....
-> util/bpf_lock_contention.c: In function ‘lock_contention_get_name’:
-> util/bpf_lock_contention.c:231:34: error: ‘struct contention_key’ has no member named ‘lock_addr_or_cgroup’
->   231 |                 u64 cgrp_id = key->lock_addr_or_cgroup;
->       |                                  ^~
-> make[4]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:97: /tmp/build/perf-tools-next/util/bpf_lock_contention.o] Error 1
-> make[3]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:150: util] Error 2
-> make[2]: *** [Makefile.perf:662: /tmp/build/perf-tools-next/perf-in.o] Error 2
-> make[1]: *** [Makefile.perf:238: sub-make] Error 2
-> make: *** [Makefile:113: install-bin] Error 2
-> make: Leaving directory '/var/home/acme/git/perf-tools-next/tools/perf'
-> ⬢[acme@toolbox perf-tools-next]$
-> 
-> Trying to figure this out.
+Get and check data_fd. It should not check map_fd again.
 
-So it works on the following patch:
+Meanwhile, correct some 'return' to 'goto out'.
 
-⬢[acme@toolbox perf-tools-next]$ git log --oneline -5
-94a54d498ae35c66 (HEAD) perf lock contention: Add -g/--lock-cgroup option
-defe88978441a00d perf lock contention: Prepare to handle cgroups
-cc0717270d2f0daa perf cgroup: Add read_all_cgroups() and __cgroup_find()
-752d73a1dd62cd4a perf shell completion: Support completion of metrics/metricgroups
-72aa5816258bf9fe perf completion: Support completion of libpfm4 events
-⬢[acme@toolbox perf-tools-next]$
+Thank the suggestion from Maciej in "bpf, x64: Fix tailcall infinite
+loop"[0] discussions.
 
-Please check and submit a v2.
+[0] https://lore.kernel.org/bpf/e496aef8-1f80-0f8e-dcdd-25a8c300319a@gmail.com/T/#m7d3b601066ba66400d436b7e7579b2df4a101033
 
-- Arnaldo
+Fixes: 79d49ba048ec ("bpf, testing: Add various tail call test cases")
+Fixes: 3b0379111197 ("selftests/bpf: Add tailcall_bpf2bpf tests")
+Fixes: 5e0b0a4c52d3 ("selftests/bpf: Test tail call counting with bpf2bpf and data on stack")
+Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
+---
+ .../selftests/bpf/prog_tests/tailcalls.c      | 32 +++++++++----------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+index 58fe2c586ed76..09c189761926c 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
++++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+@@ -271,11 +271,11 @@ static void test_tailcall_count(const char *which)
  
-> - Arnaldo
->  
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/util/cgroup.c | 61 ++++++++++++++++++++++++++++++++++------
-> >  tools/perf/util/cgroup.h |  4 +++
-> >  2 files changed, 57 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
-> > index bfb13306d82c..2e969d1464f4 100644
-> > --- a/tools/perf/util/cgroup.c
-> > +++ b/tools/perf/util/cgroup.c
-> > @@ -48,28 +48,36 @@ static int open_cgroup(const char *name)
-> >  }
-> >  
-> >  #ifdef HAVE_FILE_HANDLE
-> > -int read_cgroup_id(struct cgroup *cgrp)
-> > +static u64 __read_cgroup_id(const char *path)
-> >  {
-> > -	char path[PATH_MAX + 1];
-> > -	char mnt[PATH_MAX + 1];
-> >  	struct {
-> >  		struct file_handle fh;
-> >  		uint64_t cgroup_id;
-> >  	} handle;
-> >  	int mount_id;
-> >  
-> > +	handle.fh.handle_bytes = sizeof(handle.cgroup_id);
-> > +	if (name_to_handle_at(AT_FDCWD, path, &handle.fh, &mount_id, 0) < 0)
-> > +		return -1ULL;
-> > +
-> > +	return handle.cgroup_id;
-> > +}
-> > +
-> > +int read_cgroup_id(struct cgroup *cgrp)
-> > +{
-> > +	char path[PATH_MAX + 1];
-> > +	char mnt[PATH_MAX + 1];
-> > +
-> >  	if (cgroupfs_find_mountpoint(mnt, PATH_MAX + 1, "perf_event"))
-> >  		return -1;
-> >  
-> >  	scnprintf(path, PATH_MAX, "%s/%s", mnt, cgrp->name);
-> >  
-> > -	handle.fh.handle_bytes = sizeof(handle.cgroup_id);
-> > -	if (name_to_handle_at(AT_FDCWD, path, &handle.fh, &mount_id, 0) < 0)
-> > -		return -1;
-> > -
-> > -	cgrp->id = handle.cgroup_id;
-> > +	cgrp->id = __read_cgroup_id(path);
-> >  	return 0;
-> >  }
-> > +#else
-> > +static inline u64 __read_cgroup_id(const char *path) { return -1ULL; }
-> >  #endif  /* HAVE_FILE_HANDLE */
-> >  
-> >  #ifndef CGROUP2_SUPER_MAGIC
-> > @@ -562,6 +570,11 @@ struct cgroup *cgroup__findnew(struct perf_env *env, uint64_t id,
-> >  	return cgrp;
-> >  }
-> >  
-> > +struct cgroup *__cgroup__find(struct rb_root *root, uint64_t id)
-> > +{
-> > +	return __cgroup__findnew(root, id, /*create=*/false, /*path=*/NULL);
-> > +}
-> > +
-> >  struct cgroup *cgroup__find(struct perf_env *env, uint64_t id)
-> >  {
-> >  	struct cgroup *cgrp;
-> > @@ -587,3 +600,35 @@ void perf_env__purge_cgroups(struct perf_env *env)
-> >  	}
-> >  	up_write(&env->cgroups.lock);
-> >  }
-> > +
-> > +void read_all_cgroups(struct rb_root *root)
-> > +{
-> > +	char mnt[PATH_MAX];
-> > +	struct cgroup_name *cn;
-> > +	int prefix_len;
-> > +
-> > +	if (cgroupfs_find_mountpoint(mnt, sizeof(mnt), "perf_event"))
-> > +		return;
-> > +
-> > +	/* cgroup_name will have a full path, skip the root directory */
-> > +	prefix_len = strlen(mnt);
-> > +
-> > +	/* collect all cgroups in the cgroup_list */
-> > +	if (nftw(mnt, add_cgroup_name, 20, 0) < 0)
-> > +		return;
-> > +
-> > +	list_for_each_entry(cn, &cgroup_list, list) {
-> > +		const char *name;
-> > +		u64 cgrp_id;
-> > +
-> > +		/* cgroup_name might have a full path, skip the prefix */
-> > +		name = cn->name + prefix_len;
-> > +		if (name[0] == '\0')
-> > +			name = "/";
-> > +
-> > +		cgrp_id = __read_cgroup_id(cn->name);
-> > +		__cgroup__findnew(root, cgrp_id, /*create=*/true, name);
-> > +	}
-> > +
-> > +	release_cgroup_list();
-> > +}
-> > diff --git a/tools/perf/util/cgroup.h b/tools/perf/util/cgroup.h
-> > index 12256b78608c..beb6fe1012ed 100644
-> > --- a/tools/perf/util/cgroup.h
-> > +++ b/tools/perf/util/cgroup.h
-> > @@ -37,6 +37,7 @@ int parse_cgroups(const struct option *opt, const char *str, int unset);
-> >  struct cgroup *cgroup__findnew(struct perf_env *env, uint64_t id,
-> >  			       const char *path);
-> >  struct cgroup *cgroup__find(struct perf_env *env, uint64_t id);
-> > +struct cgroup *__cgroup__find(struct rb_root *root, uint64_t id);
-> >  
-> >  void perf_env__purge_cgroups(struct perf_env *env);
-> >  
-> > @@ -49,6 +50,9 @@ static inline int read_cgroup_id(struct cgroup *cgrp __maybe_unused)
-> >  }
-> >  #endif  /* HAVE_FILE_HANDLE */
-> >  
-> > +/* read all cgroups in the system and save them in the rbtree */
-> > +void read_all_cgroups(struct rb_root *root);
-> > +
-> >  int cgroup_is_v2(const char *subsys);
-> >  
-> >  #endif /* __CGROUP_H__ */
-> > -- 
-> > 2.42.0.283.g2d96d420d3-goog
-> > 
-> 
-> -- 
-> 
-> - Arnaldo
+ 	data_map = bpf_object__find_map_by_name(obj, "tailcall.bss");
+ 	if (CHECK_FAIL(!data_map || !bpf_map__is_internal(data_map)))
+-		return;
++		goto out;
+ 
+ 	data_fd = bpf_map__fd(data_map);
+-	if (CHECK_FAIL(map_fd < 0))
+-		return;
++	if (CHECK_FAIL(data_fd < 0))
++		goto out;
+ 
+ 	i = 0;
+ 	err = bpf_map_lookup_elem(data_fd, &i, &val);
+@@ -352,11 +352,11 @@ static void test_tailcall_4(void)
+ 
+ 	data_map = bpf_object__find_map_by_name(obj, "tailcall.bss");
+ 	if (CHECK_FAIL(!data_map || !bpf_map__is_internal(data_map)))
+-		return;
++		goto out;
+ 
+ 	data_fd = bpf_map__fd(data_map);
+-	if (CHECK_FAIL(map_fd < 0))
+-		return;
++	if (CHECK_FAIL(data_fd < 0))
++		goto out;
+ 
+ 	for (i = 0; i < bpf_map__max_entries(prog_array); i++) {
+ 		snprintf(prog_name, sizeof(prog_name), "classifier_%d", i);
+@@ -442,11 +442,11 @@ static void test_tailcall_5(void)
+ 
+ 	data_map = bpf_object__find_map_by_name(obj, "tailcall.bss");
+ 	if (CHECK_FAIL(!data_map || !bpf_map__is_internal(data_map)))
+-		return;
++		goto out;
+ 
+ 	data_fd = bpf_map__fd(data_map);
+-	if (CHECK_FAIL(map_fd < 0))
+-		return;
++	if (CHECK_FAIL(data_fd < 0))
++		goto out;
+ 
+ 	for (i = 0; i < bpf_map__max_entries(prog_array); i++) {
+ 		snprintf(prog_name, sizeof(prog_name), "classifier_%d", i);
+@@ -631,11 +631,11 @@ static void test_tailcall_bpf2bpf_2(void)
+ 
+ 	data_map = bpf_object__find_map_by_name(obj, "tailcall.bss");
+ 	if (CHECK_FAIL(!data_map || !bpf_map__is_internal(data_map)))
+-		return;
++		goto out;
+ 
+ 	data_fd = bpf_map__fd(data_map);
+-	if (CHECK_FAIL(map_fd < 0))
+-		return;
++	if (CHECK_FAIL(data_fd < 0))
++		goto out;
+ 
+ 	i = 0;
+ 	err = bpf_map_lookup_elem(data_fd, &i, &val);
+@@ -805,11 +805,11 @@ static void test_tailcall_bpf2bpf_4(bool noise)
+ 
+ 	data_map = bpf_object__find_map_by_name(obj, "tailcall.bss");
+ 	if (CHECK_FAIL(!data_map || !bpf_map__is_internal(data_map)))
+-		return;
++		goto out;
+ 
+ 	data_fd = bpf_map__fd(data_map);
+-	if (CHECK_FAIL(map_fd < 0))
+-		return;
++	if (CHECK_FAIL(data_fd < 0))
++		goto out;
+ 
+ 	i = 0;
+ 	val.noise = noise;
+@@ -872,7 +872,7 @@ static void test_tailcall_bpf2bpf_6(void)
+ 	ASSERT_EQ(topts.retval, 0, "tailcall retval");
+ 
+ 	data_fd = bpf_map__fd(obj->maps.bss);
+-	if (!ASSERT_GE(map_fd, 0, "bss map fd"))
++	if (!ASSERT_GE(data_fd, 0, "bss map fd"))
+ 		goto out;
+ 
+ 	i = 0;
 
+base-commit: 05ae0b55e72dca3e22598c7f231b86b6c3b69d83
 -- 
+2.41.0
 
-- Arnaldo
 
