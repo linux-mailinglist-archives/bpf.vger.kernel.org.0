@@ -1,76 +1,71 @@
-Return-Path: <bpf+bounces-9371-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9372-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 308EB794454
-	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 22:13:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1806879447E
+	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 22:27:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B79A9281445
-	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 20:13:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C0571C20AB1
+	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 20:27:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF6E811C9A;
-	Wed,  6 Sep 2023 20:13:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C49AC11CA1;
+	Wed,  6 Sep 2023 20:26:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4FB6AB3
-	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 20:13:43 +0000 (UTC)
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB6219A6;
-	Wed,  6 Sep 2023 13:13:42 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c0c6d4d650so1895075ad.0;
-        Wed, 06 Sep 2023 13:13:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694031222; x=1694636022; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Rg5DjKI/9NLJunvSSGRemhG/m4wH99s/gp8Mx1+uNl8=;
-        b=ZVLZpxEAl/DpmTVAYahTXjvFETUSynPwjQS/2HiyHER1ND9Kf+p7vXJesSR6mbAglx
-         ohi+5+lKhL8nPJoc35f3sye7yzuKvJkKgtr/u9m7JVcqRtWb8BoZP3OmrXDseu+t41LP
-         vqha3/Zw8Om8lxmnOdZ8VIAW0lH/yPMZ9xL6dbwibaLeiDT0eWS2R+l9Eg0wETspxyT9
-         S/HboTUAN/8U56UR7rCkOBF+FKrwOXKXB1S42Qtnei9p47vpQOVP/1OrM/UZd2+BWour
-         /zvy+/FYh3GX2OPb0DLnOQr72lGeXnjlzyEWSWkREYMPEmBBVe1SlIbdldsHMJecSIS1
-         eb3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694031222; x=1694636022;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rg5DjKI/9NLJunvSSGRemhG/m4wH99s/gp8Mx1+uNl8=;
-        b=ReHWwdIowaKws+wJQ93c6fI6oXEaGwY6lCgUHYzLZYJUyFHgt7QKpX8UwEvjkl5RWh
-         rLGkvGq0UEIcOaNzC7NKDFtcMod56dRgzZkRNWBZ+HxUi+ZM1PC/3fB+h0LDaVACC3UC
-         55zv9LoD3I8+X74wNPxrcROBuePErtbBgjc/DqlQgizz/Iu8hda5Fr4AJs02izdyVc+8
-         aVbUsVu0lQfs8kDQE25XgPX6u42cletVuo59c0R/0HWEeMG7pGYQPNeO2hPtcay70+Ar
-         shSx4zpFplf0Z0Knlh4OucyO1ou2hp7srvow/+RdD3ZCM2VUySSXwDJPXpG/bht/+0De
-         llEA==
-X-Gm-Message-State: AOJu0Yy149Z6XDWfkdGdc/Vp43WLeFIG1QnVCSnLXSEJsiNgqRDJwsLq
-	omIHy/10H+RNGRnohMCPAho=
-X-Google-Smtp-Source: AGHT+IEsgyaEiycFAnEtb2KDEZxiMCqauxrhml48+kwTqdfylUp6mJypNGsGvY8zCIiSjyfLaRw3Kg==
-X-Received: by 2002:a17:902:f546:b0:1b9:de67:286f with SMTP id h6-20020a170902f54600b001b9de67286fmr20707829plf.49.1694031221634;
-        Wed, 06 Sep 2023 13:13:41 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:eca7])
-        by smtp.gmail.com with ESMTPSA id t23-20020a1709028c9700b001bdb85291casm11418725plo.208.2023.09.06.13.13.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 13:13:40 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 6 Sep 2023 10:13:39 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
-	haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com,
-	hannes@cmpxchg.org, yosryahmed@google.com, cgroups@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 1/5] cgroup: Enable
- task_under_cgroup_hierarchy() on cgroup1
-Message-ID: <ZPjdc3IwX9gjXk_F@slm.duckdns.org>
-References: <20230903142800.3870-1-laoar.shao@gmail.com>
- <20230903142800.3870-2-laoar.shao@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 823151079A
+	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 20:26:52 +0000 (UTC)
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB651BC8;
+	Wed,  6 Sep 2023 13:26:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=vhu69JjbUEsaG2Fb6jcnk2JWuOJif2VvpPpIss2uZlA=; b=c7JKmV2QogHBKoCaJTnvhwO2PS
+	BoAdU38CgxwXiYHw2sqfCarzwSGUG26HyoAVQWPxtmSiP4j2dNPkUBnhPXKtZct6o9rRb4H0ZAkru
+	eSy3cuFcxGFJysxj98HlRe3it9ssVakvawe4bnKZDbysaVbjTByTYWfIIppqWuwc3LypsJS1u18/k
+	Xe/cFiNwELQ9W4ZUttoglQNXjDcdjFpkDSkJhWchyqoeQH40qJzy3dhvYrMrZ2kIt+07O5aZdXv9m
+	Kj+XjcgPp2T6ab96PIj1h4bLKvMNAT4KfyKpkMnnL3wGC/bGmXHPLI4TuWaDHLzwYG/Q+iaOsxWiF
+	zHnwHqgg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50600)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1qdz6W-00011f-0q;
+	Wed, 06 Sep 2023 21:26:24 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1qdz6V-00056o-Ec; Wed, 06 Sep 2023 21:26:23 +0100
+Date: Wed, 6 Sep 2023 21:26:23 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Shubham Bansal <illusionist.neo@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 6/8] arm32, bpf: add support for 64 bit division
+ instruction
+Message-ID: <ZPjgb9LDbAZlw0cp@shell.armlinux.org.uk>
+References: <20230905210621.1711859-1-puranjay12@gmail.com>
+ <20230905210621.1711859-7-puranjay12@gmail.com>
+ <ZPein8oS5egqGwzp@shell.armlinux.org.uk>
+ <mb61po7if3b0w.fsf@amazon.com>
+ <ZPjLSHG7JToLWvmT@shell.armlinux.org.uk>
+ <mb61p8r9j2jop.fsf@amazon.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -79,53 +74,51 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230903142800.3870-2-laoar.shao@gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <mb61p8r9j2jop.fsf@amazon.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+	SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello,
+On Wed, Sep 06, 2023 at 07:19:50PM +0000, Puranjay Mohan wrote:
+> On Wed, Sep 06 2023, Russell King (Oracle) wrote:
+> 
+> > On Wed, Sep 06, 2023 at 09:29:19AM +0000, Puranjay Mohan wrote:
+> >> On Tue, Sep 05 2023, Russell King (Oracle) wrote:
+> >> 
+> >> > On Tue, Sep 05, 2023 at 09:06:19PM +0000, Puranjay Mohan wrote:
+> >> Actually, there can also be a situation where rd[1] != ARM_R0 && rd[1] != ARM_R2,
+> >> so should I do it like:
+> >> 
+> >>  	if (rd[1] != ARM_R0 && rd[1] != ARM_R2) {
+> >>  		emit(ARM_POP(BIT(ARM_R0) | BIT(ARM_R1)), ctx);
+> >>  		emit(ARM_POP(BIT(ARM_R2) | BIT(ARM_R3)), ctx);      
+> >>  	} else if (rd[1] != ARM_R0) {
+> >>  		emit(ARM_POP(BIT(ARM_R0) | BIT(ARM_R1)), ctx);
+> >>  		emit(ARM_ADD_I(ARM_SP, ARM_SP, 8), ctx);
+> >>  	} else if (rd[1] != ARM_R2) {
+> >>  		emit(ARM_ADD_I(ARM_SP, ARM_SP, 8), ctx);
+> >>  		emit(ARM_POP(BIT(ARM_R2) | BIT(ARM_R3)), ctx);
+> >>  	} else {
+> >>  		emit(ARM_ADD_I(ARM_SP, ARM_SP, 16), ctx);
+> >>  	}
+> >
+> > Are you sure all four states are possible?
+> 
+> ohh!
+> 
+> I just realized that the last else will never run.
+> rd[1] can never be equal to both ARM_R0 and ARM_R2.
+> Will fix it in V3 as I already sent out the V2.
+> 
+> I need to learn to leave patches on the list for few days before re-spinning.
 
-On Sun, Sep 03, 2023 at 02:27:56PM +0000, Yafang Shao wrote:
->  static inline bool task_under_cgroup_hierarchy(struct task_struct *task,
->  					       struct cgroup *ancestor)
->  {
->  	struct css_set *cset = task_css_set(task);
-> +	struct cgroup *cgrp;
-> +	bool ret = false;
-> +	int ssid;
-> +
-> +	if (ancestor->root == &cgrp_dfl_root)
-> +		return cgroup_is_descendant(cset->dfl_cgrp, ancestor);
-> +
-> +	for (ssid = 0; ssid < CGROUP_SUBSYS_COUNT; ssid++) {
-> +		if (!ancestor->subsys[ssid])
-> +			continue;
->  
-> -	return cgroup_is_descendant(cset->dfl_cgrp, ancestor);
-> +		cgrp = task_css(task, ssid)->cgroup;
-> +		if (!cgrp)
-> +			continue;
-> +
-> +		if (!cgroup_is_descendant(cgrp, ancestor))
-> +			return false;
-> +		if (!ret)
-> +			ret = true;
-> +	}
-> +	return ret;
-
-I feel ambivalent about adding support for this in cgroup1 especially given
-that this can only work for fd based interface which is worse than the ID
-based ones. Even if we're doing this, the above is definitely not what we
-want to do as it won't work for controller-less hierarchies like the one
-that systemd used to use. You'd have to lock css_set_lock and walk the
-cgpr_cset_links.
-
-Thanks.
+The last comment on that is you can pop r0-r3 in one go, rather than
+using two instructions.
 
 -- 
-tejun
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
