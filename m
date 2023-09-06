@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-9330-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9331-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F76D793CC5
-	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 14:37:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 651BF793CCF
+	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 14:38:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 864561C20B34
-	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 12:37:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C386281565
+	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 12:38:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A34FDDCD;
-	Wed,  6 Sep 2023 12:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D63DBDDCD;
+	Wed,  6 Sep 2023 12:38:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6B3810FC
-	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 12:37:07 +0000 (UTC)
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A3E1724
-	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 05:37:04 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bc0d39b52cso21943205ad.2
-        for <bpf@vger.kernel.org>; Wed, 06 Sep 2023 05:37:04 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2EB410FC
+	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 12:38:11 +0000 (UTC)
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57295171D
+	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 05:37:58 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-573fa7c19c7so290982a12.1
+        for <bpf@vger.kernel.org>; Wed, 06 Sep 2023 05:37:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694003824; x=1694608624; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+        d=bytedance.com; s=google; t=1694003878; x=1694608678; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:subject:from
          :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GZoUjaIcUo1mllggo8PIlPzobJP22nNfvBp/20MZSjI=;
-        b=Cw/91PW1lwj/vNshPfbXOLa/EIkKzjlXJW+WsGCv52xnoV041/BUgB8n7wlz/3jMOc
-         JIR8qbzA2Gni1cmgnNd2xuDSaC1gE/xrxEKVjS5mXHcfSr1dtFfGLoWS70FwY6dZGnIJ
-         amCgx6holaF+96JOrX16IwOqljC5xOaz7dkMWzOyY47bxUyOm8VBLTc0AS4YIw2u7cgM
-         3No4kJtttbWT98q2a/sx+mGwG6oFstTzs/AvLuraozwetd0lcdTZu1zbVf30eVZPHTPX
-         DwYdhfT0zAD8FCUn0VKG4Ji5Ny+etIFjkrS8zvF3Blp7jDDAljxHGMx9gyMRyD0o1wYi
-         4DGw==
+        bh=J0bKcsUZrDLfGK82pb7CdvyyKC8wqtZ9yLfdwnJHBSQ=;
+        b=g425VIT627FohsNj8JM83LVELJktmAD9on4EdLGJNQAkiW26X64XaQT6Z8PnTAB/kz
+         m21QV+r6gojdGfCirqVssDhWK5TNPluYEjSTWeL3MA23pKomJuy1RYx99xGo1CU/28Ue
+         dpZe3iv4UHOFi77BZxariktLWOvZTx5vfo6hGUOB3tflEZU3/iDGFjUMCtmxnuQoMZFu
+         N0bH380jJS7Qhv6eQIzJBYGR73oI1ib5QsCECemx0Ns4Ue/dCo3eu64kvEYjWpWnrAJt
+         71QMzE0h1HJ2dpyfK7XaZAOE7M9GH0eRABfjvWpiED2APvSTCim/MOpWwzXQ95rZkIvx
+         f0wQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694003824; x=1694608624;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+        d=1e100.net; s=20221208; t=1694003878; x=1694608678;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:subject:from
          :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=GZoUjaIcUo1mllggo8PIlPzobJP22nNfvBp/20MZSjI=;
-        b=UYiygF/jX0qR7vfvVoLuKuACY7kEix3AJ/YS/itIklPhvHr4Mu0lGo6YPwrXq5qqd1
-         GebdptgtqotZDojohSGJsqkF9bwaa5WnBW5tEGgCQtfed7le4vnuucC4jhQlxYsdtTuM
-         AnORratl9vj4GPlC/aPMbBnoQTYAffCo43vldS+c/MVe/6NOugnUkc+da3nEJwqAI+6M
-         1k+YmsmONgT2UZiUSdXDd0gdH6lw/rIRXLrE0mSjlG/gWRIOG4mVar23px/3MsfZXVgR
-         8f1+5VHwmcH5PT/2eJ3+7GleGtZqNvEhTkA+MIkMNAF+uPW2/T8qf04SvA1JZkM04xCV
-         32iQ==
-X-Gm-Message-State: AOJu0YzjR0dg2+iJ4U5SalyhmH+NQziQbNLWJEoOllkHo3r9M0RCqrN6
-	s/NxgowBB5YiD0b2+b3khULTZKp+U6h8RI4EujWy8g==
-X-Google-Smtp-Source: AGHT+IEmhhT/rCH4yP0vhUdx8s06CFggy495YiJSJ8R1aF9No28AqQyo+0KokwU5GVyE/2rzpwdxxg==
-X-Received: by 2002:a17:902:820d:b0:1bd:b8c8:98f8 with SMTP id x13-20020a170902820d00b001bdb8c898f8mr13558458pln.4.1694003824036;
-        Wed, 06 Sep 2023 05:37:04 -0700 (PDT)
+        bh=J0bKcsUZrDLfGK82pb7CdvyyKC8wqtZ9yLfdwnJHBSQ=;
+        b=PypFfiIWF1dCK+ljoYXQYMVHnCA2yyu3AU8FVYqrUfW7F5Bz9TWGF1+qcdEJApdNHo
+         cUbrVDilJLt/8lJ9Z+2JWVFydm98mI4VXrtnykLnq5cupFAYvap8Y+gD6Rq4ZKcf/1dJ
+         dVX3ZZ3x+1vTbWi4TBH6Z2BPWEukko7ATGLx/4gHyTqk7YI65zOeaG9tEiFZ0L0mvVM5
+         XIo5ct2GSmV/I7OHK0b6lKPrFXR9b6UojUze1aEuHW8KQerxIorYuf66pOLBxFE6JLik
+         1M0yVn6xTuvlrsgWKcVSBBFRQUo+Tb12XPHw1Ic8Wklu9ley4WLYAhiT9+uvpogWWTEE
+         FEAQ==
+X-Gm-Message-State: AOJu0YxtzSOz9SKD37xXijbKMG1aAovAjNR1iKYh5gFxvEwwjl4qpInX
+	gKGmDTSLyZobmqlNo72J94Wbew==
+X-Google-Smtp-Source: AGHT+IGhX8cSPoKUgMI/duSqg60zplBgTNG7dvqSfAfLagdbivIrDQm13gTTkN0SrQzIMcdMyWvosA==
+X-Received: by 2002:a17:90b:4a83:b0:26b:4e40:7be6 with SMTP id lp3-20020a17090b4a8300b0026b4e407be6mr20992741pjb.20.1694003877481;
+        Wed, 06 Sep 2023 05:37:57 -0700 (PDT)
 Received: from [10.84.145.144] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id g15-20020a1709029f8f00b001bba3a4888bsm11019687plq.102.2023.09.06.05.37.01
+        by smtp.gmail.com with ESMTPSA id jj4-20020a170903048400b001b531e8a000sm10994282plb.157.2023.09.06.05.37.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 05:37:03 -0700 (PDT)
-Message-ID: <c4791970-720e-7c1c-0e81-915dbcb23139@bytedance.com>
-Date: Wed, 6 Sep 2023 20:36:56 +0800
+        Wed, 06 Sep 2023 05:37:57 -0700 (PDT)
+Message-ID: <e5e986a0-0bb9-6611-77f0-f8472346965e@bytedance.com>
+Date: Wed, 6 Sep 2023 20:37:53 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,17 +66,17 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [RFC PATCH bpf-next 1/4] bpf: Introduce css_task open-coded
+From: Chuyi Zhou <zhouchuyi@bytedance.com>
+Subject: Re: [RFC PATCH bpf-next 2/4] bpf: Introduce process open coded
  iterator kfuncs
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
  Martin KaFai Lau <martin.lau@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 References: <20230827072057.1591929-1-zhouchuyi@bytedance.com>
- <20230827072057.1591929-2-zhouchuyi@bytedance.com>
- <CAADnVQJpZRoOtC0JF7uub+vPY5JZusWmPyjOJQD=eTxUFWOr_A@mail.gmail.com>
-From: Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <CAADnVQJpZRoOtC0JF7uub+vPY5JZusWmPyjOJQD=eTxUFWOr_A@mail.gmail.com>
+ <20230827072057.1591929-3-zhouchuyi@bytedance.com>
+ <CAADnVQLKytNcAF_LkMgMJ1sq9Tv8QMNc3En7Psuxg+=FXP+B-A@mail.gmail.com>
+In-Reply-To: <CAADnVQLKytNcAF_LkMgMJ1sq9Tv8QMNc3En7Psuxg+=FXP+B-A@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -86,105 +86,112 @@ X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello,
+Hello, Alexei.
 
-在 2023/9/6 03:02, Alexei Starovoitov 写道:
+在 2023/9/6 04:09, Alexei Starovoitov 写道:
 > On Sun, Aug 27, 2023 at 12:21 AM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
 >>
->> This Patch adds kfuncs bpf_iter_css_task_{new,next,destroy} which allow
->> creation and manipulation of struct bpf_iter_css_task in open-coded
->> iterator style. These kfuncs actually wrapps
->> css_task_iter_{start,next,end}. BPF programs can use these kfuncs through
->> bpf_for_each macro for iteration of all tasks under a css.
+>> This patch adds kfuncs bpf_iter_process_{new,next,destroy} which allow
+>> creation and manipulation of struct bpf_iter_process in open-coded iterator
+>> style. BPF programs can use these kfuncs or through bpf_for_each macro to
+>> iterate all processes in the system.
 >>
 >> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
 >> ---
 >>   include/uapi/linux/bpf.h       |  4 ++++
 >>   kernel/bpf/helpers.c           |  3 +++
->>   kernel/bpf/task_iter.c         | 39 ++++++++++++++++++++++++++++++++++
+>>   kernel/bpf/task_iter.c         | 31 +++++++++++++++++++++++++++++++
 >>   tools/include/uapi/linux/bpf.h |  4 ++++
->>   tools/lib/bpf/bpf_helpers.h    |  7 ++++++
->>   5 files changed, 57 insertions(+)
+>>   tools/lib/bpf/bpf_helpers.h    |  5 +++++
+>>   5 files changed, 47 insertions(+)
 >>
 >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 60a9d59beeab..2a6e9b99564b 100644
+>> index 2a6e9b99564b..cfbd527e3733 100644
 >> --- a/include/uapi/linux/bpf.h
 >> +++ b/include/uapi/linux/bpf.h
->> @@ -7195,4 +7195,8 @@ struct bpf_iter_num {
+>> @@ -7199,4 +7199,8 @@ struct bpf_iter_css_task {
 >>          __u64 __opaque[1];
 >>   } __attribute__((aligned(8)));
 >>
->> +struct bpf_iter_css_task {
+>> +struct bpf_iter_process {
 >> +       __u64 __opaque[1];
 >> +} __attribute__((aligned(8)));
 >> +
 >>   #endif /* _UAPI__LINUX_BPF_H__ */
 >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index 9e80efa59a5d..cf113ad24837 100644
+>> index cf113ad24837..81a2005edc26 100644
 >> --- a/kernel/bpf/helpers.c
 >> +++ b/kernel/bpf/helpers.c
->> @@ -2455,6 +2455,9 @@ BTF_ID_FLAGS(func, bpf_dynptr_slice_rdwr, KF_RET_NULL)
->>   BTF_ID_FLAGS(func, bpf_iter_num_new, KF_ITER_NEW)
->>   BTF_ID_FLAGS(func, bpf_iter_num_next, KF_ITER_NEXT | KF_RET_NULL)
->>   BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
->> +BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW)
->> +BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_RET_NULL)
->> +BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
+>> @@ -2458,6 +2458,9 @@ BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
+>>   BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW)
+>>   BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_RET_NULL)
+>>   BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
+>> +BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
+>> +BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET_NULL)
+>> +BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
 >>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
 >>   BTF_ID_FLAGS(func, bpf_dynptr_is_null)
 >>   BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
 >> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
->> index c4ab9d6cdbe9..b1bdba40b684 100644
+>> index b1bdba40b684..a6717a76c1e0 100644
 >> --- a/kernel/bpf/task_iter.c
 >> +++ b/kernel/bpf/task_iter.c
->> @@ -823,6 +823,45 @@ const struct bpf_func_proto bpf_find_vma_proto = {
->>          .arg5_type      = ARG_ANYTHING,
->>   };
+>> @@ -862,6 +862,37 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
+>>          kfree(kit->css_it);
+>>   }
 >>
->> +struct bpf_iter_css_task_kern {
->> +       struct css_task_iter *css_it;
+>> +struct bpf_iter_process_kern {
+>> +       struct task_struct *tsk;
 >> +} __attribute__((aligned(8)));
 >> +
->> +__bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
->> +               struct cgroup_subsys_state *css, unsigned int flags)
+>> +__bpf_kfunc int bpf_iter_process_new(struct bpf_iter_process *it)
 >> +{
->> +       struct bpf_iter_css_task_kern *kit = (void *)it;
+>> +       struct bpf_iter_process_kern *kit = (void *)it;
 >> +
->> +       BUILD_BUG_ON(sizeof(struct bpf_iter_css_task_kern) != sizeof(struct bpf_iter_css_task));
->> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_css_task_kern) !=
->> +                                       __alignof__(struct bpf_iter_css_task));
+>> +       BUILD_BUG_ON(sizeof(struct bpf_iter_process_kern) != sizeof(struct bpf_iter_process));
+>> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_process_kern) !=
+>> +                                       __alignof__(struct bpf_iter_process));
 >> +
->> +       kit->css_it = kzalloc(sizeof(struct css_task_iter), GFP_KERNEL);
->> +       if (!kit->css_it)
->> +               return -ENOMEM;
->> +       css_task_iter_start(css, flags, kit->css_it);
+>> +       rcu_read_lock();
+>> +       kit->tsk = &init_task;
+>> +       return 0;
+>> +}
+>> +
+>> +__bpf_kfunc struct task_struct *bpf_iter_process_next(struct bpf_iter_process *it)
+>> +{
+>> +       struct bpf_iter_process_kern *kit = (void *)it;
+>> +
+>> +       kit->tsk = next_task(kit->tsk);
+>> +
+>> +       return kit->tsk == &init_task ? NULL : kit->tsk;
+>> +}
+>> +
+>> +__bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process *it)
+>> +{
+>> +       rcu_read_unlock();
+>> +}
 > 
-> Some of the flags are internal. Like CSS_TASK_ITER_SKIPPED.
-> The kfunc should probably only allow CSS_TASK_ITER_PROCS |
-> CSS_TASK_ITER_THREADED,
-> and not CSS_TASK_ITER_THREADED alone.
-> 
-> Since they're #define-s it's not easy for bpf prog to use them.
-> I think would be good to have a pre-patch that converts them to enum,
-> so that bpf prog can take them from vmlinux.h.
-> 
-> 
-> But the main issue of the patch that it adds this iter to common kfuncs.
-> That's not safe, since css_task_iter_*() does spin_unlock_irq() which
-> might screw up irq flags depending on the context where bpf prog is running.
-> Can css_task_iter internals switch to irqsave/irqrestore?
+> This iter can be used in all ctx-s which is nice, but let's
+> make the verifier enforce rcu_read_lock/unlock done by bpf prog
+> instead of doing in the ctor/dtor of iter, since
+> in sleepable progs the verifier won't recognize that body is RCU CS.
+> We'd need to teach the verifier to allow bpf_iter_process_new()
+> inside in_rcu_cs() and make sure there is no rcu_read_unlock
+> while BPF_ITER_STATE_ACTIVE.
+> bpf_iter_process_destroy() would become a nop.
 
-Yes, I think so. Switching to irqsave/irqrestore is no harm.
+Thanks for your review!
 
-> css_set_lock is also global, so the bpf side has to be careful in
-> where it allows to use this iter.
-> bpf_lsm hooks are safe, most of bpf iter-s are safe too.
-> Future bpf-oom hooks are probably safe as well.
-> We probably need an allowlist here.
+I think bpf_iter_process_{new, next, destroy} should be protected by 
+bpf_rcu_read_lock/unlock explicitly whether the prog is sleepable or 
+not, right? I'm not very familiar with the BPF verifier, but I believe 
+there is still a risk in directly calling these kfuns even if 
+in_rcu_cs() is true.
 
-What should we do if we want to make a allowlist?
-Do you mean we need to check prog_type or attach_type when we call these 
-kfuncs in BPF verifier? If so, we should add a new attach_type or 
-prog_type for bpf-oom in the feature so we can know the current BPF 
-program is hooking for OOM Policy.
+Maby what we actually need here is to enforce BPF verifier to check 
+env->cur_state->active_rcu_lock is true when we want to call these kfuncs.
+
+Thanks.
+
+
 
