@@ -1,60 +1,61 @@
-Return-Path: <bpf+bounces-9347-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9346-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12C4F794238
-	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 19:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F12A9794237
+	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 19:49:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB84A2811C7
-	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 17:49:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F1C12813E0
+	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 17:49:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 178021118E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15A721118D;
 	Wed,  6 Sep 2023 17:49:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4C811097A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E13BA10940
 	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 17:49:09 +0000 (UTC)
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729E119AE;
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942E2BD;
 	Wed,  6 Sep 2023 10:49:07 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-26f57f02442so73335a91.0;
+Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-5733789a44cso39161eaf.2;
         Wed, 06 Sep 2023 10:49:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694022545; x=1694627345; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=rbxxF3pN1PaPN9re65XUx8AyYVj3neI58zu4FlTZdnI=;
-        b=NneKSSnWP9k+Gmm3c9BjmStAPPkEeTLG2eX/mfZpZM5S9zX1hplXVI9360FVdF7d5W
-         PiOZcVESIaTDZ4QwgnvJF0C2wBVEpVfxshE1ru7VGjgzwOFBDilVcfArLZ6zow7lTlGq
-         sWM5mpYKJJt8IIwmpSP+9IdNhEe+nx1mTroGNl0oxCcXgieqai8jxCWVIarvNfYDQTzM
-         BojYSmvCktpBFwdQ4XewDLv3OIssPI48kRvBmGlguWSzLl9SsFl6JF5LXEN6Pn/5FrpK
-         7RSqV+My3sjnZG2zo2igf0gGzOjAzqF2eZJJehyD0i7Nt0evVQsSRIvHeqxJ1GR6aivK
-         eZIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694022545; x=1694627345;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1694022547; x=1694627347; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rbxxF3pN1PaPN9re65XUx8AyYVj3neI58zu4FlTZdnI=;
-        b=hgxyMHcDcLIDEScEBudu4NNmu+F9NU1h14XLzhKezQRAXyb12zA8XlH+MX1nkHGmcZ
-         w3hWACXsdGIDKqYbTtdazv2RXSbmqxSQ96Fl48vjt+5mwpqBrv5lM8vw+OkMUsigQG2h
-         Mi1aphQvLprheAhjB5aV1pCZEinfeNQ4H45RWNKK4W5JLSJGFtrnjV090ZvxnrDmSm4U
-         iy6ImFrIQR7SPY+89Q4vXtG/q/4ezOLJYiqaKoonQVrju55PR5A9Gln+tTZwuz+gHLPQ
-         AuLLzOf+VYYqkzplmlnlTZH5l2A+mny/d8NlS7sl2lgGQH6v7im/Yw1vgq9HPIu341BE
-         C/Ew==
-X-Gm-Message-State: AOJu0Yy8o9hEA/RZ7v+vLHlGtPWLMCqkyGYzGv2Ya+Ppe+8jTYaf+9Jx
-	plVTvSIn8vV2yd0impF+JiU=
-X-Google-Smtp-Source: AGHT+IHIsJB5k5MtRKBtd9SIsU3bq2FtvyoDxLeB6d+PFGwSuPycpKDnvgaXIq9FsjtETtPqxw3hMQ==
-X-Received: by 2002:a17:90a:2acf:b0:26b:36dc:2f08 with SMTP id i15-20020a17090a2acf00b0026b36dc2f08mr14447576pjg.46.1694022545392;
-        Wed, 06 Sep 2023 10:49:05 -0700 (PDT)
+        bh=PBQ5G2FX24MM3CgYsRh2BznK6RgK/ifaz8ZcxdhCQEw=;
+        b=oF1j3wX38wASrXvwTUlviqu0776yIpO+kr6NBdV7ZdWyYP4d+PgL6kwyOMRbSLFp37
+         SXZdJmr5fnVtSQ3yigypioWqWina5SUSsD9Id2pS4Oamh2JQPq2AGLA7XVH8/TGpZIFz
+         kNCRFHedsPjbuOgflqYwBJq0PrEiyHuyFGwpAO5+DyhZjs42nFr7bsUUadaE8pzlUT0/
+         vtJ9FVylM3MeOxDcZlaaGhQKE+dc5Cd0Ie2of6j0YxR9bxS+cy1jitVziLG58T2t8vq6
+         PKboA3E+6iFPd+5XOw7OF8wA75xnyXUy48tgWP2VJvSnSAfgnTLaoPqYUSNq/Fe8Xf5A
+         I1wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694022547; x=1694627347;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=PBQ5G2FX24MM3CgYsRh2BznK6RgK/ifaz8ZcxdhCQEw=;
+        b=BSINu5f1WUNKl4X7t9E9kfY888qWUzV00ciP5WIkEF9nlF2r6DzUh1pSt73rF5YiZb
+         kuCjMuEeEJaqROJlZRJ3wVu5Ct6n87YHkvtPR8xlkOmw+ELrMrEk3G5ruX7+g2QPA7RV
+         gGQN/eCPx8E1lVK7PSj3ZHQv0sNhkHP//y3+l8503GR2fergTJTNHQdg/xGXRtB1j0Vr
+         4S53ZEj6ez7gc5/63Lp/liYac3InvLlYUwyV675GXjnZ7sKa/9y73KFW+tzRpaMVm4mx
+         kiV4b9vdxkZs4zc41lWbo5/mXlcXI1CA3bvZUpKxyvBcJrTG10uLYhYeOX/x/rcIbUrj
+         PxSA==
+X-Gm-Message-State: AOJu0Yz8+Yw1Jx1sEfg5t2gLhf4PurYa5zJ/oSUNwkpG3bg/OFQmCBgM
+	w/+/xWe90L4dYH0VKMHMhIU=
+X-Google-Smtp-Source: AGHT+IHpaczWiQhmc3kppZcNKp/jtOF7byv8+L0SKDn71OBpR5ykPGEvw9W9yP2nZqPQQ13gIgQm/Q==
+X-Received: by 2002:a05:6358:418b:b0:13c:cdef:25ab with SMTP id w11-20020a056358418b00b0013ccdef25abmr3499752rwc.24.1694022546735;
+        Wed, 06 Sep 2023 10:49:06 -0700 (PDT)
 Received: from bangji.corp.google.com ([2620:15c:2c0:5:5035:1b47:9a3f:312c])
-        by smtp.gmail.com with ESMTPSA id p11-20020a17090ad30b00b00262eccfa29fsm63564pju.33.2023.09.06.10.49.04
+        by smtp.gmail.com with ESMTPSA id p11-20020a17090ad30b00b00262eccfa29fsm63564pju.33.2023.09.06.10.49.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 10:49:04 -0700 (PDT)
+        Wed, 06 Sep 2023 10:49:06 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -68,10 +69,12 @@ Cc: Ian Rogers <irogers@google.com>,
 	Song Liu <song@kernel.org>,
 	Hao Luo <haoluo@google.com>,
 	bpf@vger.kernel.org
-Subject: [PATCHSET 0/5] perf lock contention: Add cgroup support (v2)
-Date: Wed,  6 Sep 2023 10:48:58 -0700
-Message-ID: <20230906174903.346486-1-namhyung@kernel.org>
+Subject: [PATCH 1/5] perf tools: Add read_all_cgroups() and __cgroup_find()
+Date: Wed,  6 Sep 2023 10:48:59 -0700
+Message-ID: <20230906174903.346486-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
+In-Reply-To: <20230906174903.346486-1-namhyung@kernel.org>
+References: <20230906174903.346486-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,79 +89,135 @@ X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello,
+The read_all_cgroups() is to build a tree of cgroups in the system and
+users can look up a cgroup using __cgroup_find().
 
-The cgroup support comes with two flavors.  One is to aggregate the
-result by cgroups and the other is to filter result for the given
-cgroups.  For now, it only works in BPF mode.
+Reviewed-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/cgroup.c | 61 ++++++++++++++++++++++++++++++++++------
+ tools/perf/util/cgroup.h |  4 +++
+ 2 files changed, 57 insertions(+), 8 deletions(-)
 
-* v2 changes
- - fix compiler errors  (Arnaldo)
- - add Reviewed-by from Ian
+diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
+index bfb13306d82c..2e969d1464f4 100644
+--- a/tools/perf/util/cgroup.c
++++ b/tools/perf/util/cgroup.c
+@@ -48,28 +48,36 @@ static int open_cgroup(const char *name)
+ }
  
-The first one is -g/--lock-cgroup option to show lock stats by cgroups
-like below.  The cgroup names were shortened for brevity:
-
-  $ sudo perf lock con -abg perf bench sched messaging
-   contended   total wait     max wait     avg wait   cgroup
-
-        1052      3.34 ms     84.71 us      3.17 us   /app-org.gnome.Terminal.slice/vte-spawn-52221fb8-b33f-4a52-b5c3-e35d1e6fc0e0.scope
-          13    106.60 us     11.48 us      8.20 us   /session.slice/org.gnome.Shell@x11.service
-          12     21.20 us      4.93 us      1.77 us   /
-           3     12.10 us      8.80 us      4.03 us   /session-4.scope
-           2     10.98 us      7.50 us      5.49 us   /app-gnome-firefox\x2desr-34054.scope
-           2      6.04 us      4.88 us      3.02 us   /app-gnome-google\x2dchrome-6442.scope
-           1      5.63 us      5.63 us      5.63 us   /app-org.gnome.Terminal.slice/gnome-terminal-server.service
-           1      3.51 us      3.51 us      3.51 us   /pipewire.service
-           1      2.15 us      2.15 us      2.15 us   /pipewire-pulse.service
-           1       742 ns       742 ns       742 ns   /dbus.service
-
-The other is -G/--cgroup-filter option to show lock stats only from the
-given cgroups.  It doesn't support cgroup hierarchy and regex matching.
-
-  $ sudo perf lock con -abt -G / perf bench sched messaging
-   contended   total wait     max wait     avg wait          pid   comm
-
-           2     10.58 us      8.39 us      5.29 us       257552   kworker/4:1
-           2      9.76 us      7.96 us      4.88 us            0   swapper
-           4      5.36 us      2.09 us      1.34 us       255462   kworker/0:2
-           3      3.33 us      1.48 us      1.11 us       257680   kworker/3:1
-           2      2.59 us      1.46 us      1.29 us       257478   kworker/2:2
-           1      1.50 us      1.50 us      1.50 us           15   rcu_preempt
-
-You can also use these two options together. :)
-
-The two more test cases were added to the existing lock contention test.
-
-The code is available at 'perf/lock-cgroup-v2' branch in the tree below.
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
-
-
-Thanks,
-Namhyung
-
-
-Namhyung Kim (5):
-  perf tools: Add read_all_cgroups() and __cgroup_find()
-  perf lock contention: Prepare to handle cgroups
-  perf lock contention: Add -g/--lock-cgroup option
-  perf lock contention: Add -G/--cgroup-filter option
-  perf test: Improve perf lock contention test
-
- tools/perf/Documentation/perf-lock.txt        |  8 ++
- tools/perf/builtin-lock.c                     | 99 ++++++++++++++++++-
- tools/perf/tests/shell/lock_contention.sh     | 45 +++++++++
- tools/perf/util/bpf_lock_contention.c         | 51 +++++++++-
- .../perf/util/bpf_skel/lock_contention.bpf.c  | 48 ++++++++-
- tools/perf/util/bpf_skel/lock_data.h          |  3 +-
- tools/perf/util/cgroup.c                      | 63 ++++++++++--
- tools/perf/util/cgroup.h                      |  5 +
- tools/perf/util/lock-contention.h             | 10 +-
- 9 files changed, 312 insertions(+), 20 deletions(-)
-
-
-base-commit: 45fc4628c15ab2cb7b2f53354b21db63f0a41f81
+ #ifdef HAVE_FILE_HANDLE
+-int read_cgroup_id(struct cgroup *cgrp)
++static u64 __read_cgroup_id(const char *path)
+ {
+-	char path[PATH_MAX + 1];
+-	char mnt[PATH_MAX + 1];
+ 	struct {
+ 		struct file_handle fh;
+ 		uint64_t cgroup_id;
+ 	} handle;
+ 	int mount_id;
+ 
++	handle.fh.handle_bytes = sizeof(handle.cgroup_id);
++	if (name_to_handle_at(AT_FDCWD, path, &handle.fh, &mount_id, 0) < 0)
++		return -1ULL;
++
++	return handle.cgroup_id;
++}
++
++int read_cgroup_id(struct cgroup *cgrp)
++{
++	char path[PATH_MAX + 1];
++	char mnt[PATH_MAX + 1];
++
+ 	if (cgroupfs_find_mountpoint(mnt, PATH_MAX + 1, "perf_event"))
+ 		return -1;
+ 
+ 	scnprintf(path, PATH_MAX, "%s/%s", mnt, cgrp->name);
+ 
+-	handle.fh.handle_bytes = sizeof(handle.cgroup_id);
+-	if (name_to_handle_at(AT_FDCWD, path, &handle.fh, &mount_id, 0) < 0)
+-		return -1;
+-
+-	cgrp->id = handle.cgroup_id;
++	cgrp->id = __read_cgroup_id(path);
+ 	return 0;
+ }
++#else
++static inline u64 __read_cgroup_id(const char *path) { return -1ULL; }
+ #endif  /* HAVE_FILE_HANDLE */
+ 
+ #ifndef CGROUP2_SUPER_MAGIC
+@@ -562,6 +570,11 @@ struct cgroup *cgroup__findnew(struct perf_env *env, uint64_t id,
+ 	return cgrp;
+ }
+ 
++struct cgroup *__cgroup__find(struct rb_root *root, uint64_t id)
++{
++	return __cgroup__findnew(root, id, /*create=*/false, /*path=*/NULL);
++}
++
+ struct cgroup *cgroup__find(struct perf_env *env, uint64_t id)
+ {
+ 	struct cgroup *cgrp;
+@@ -587,3 +600,35 @@ void perf_env__purge_cgroups(struct perf_env *env)
+ 	}
+ 	up_write(&env->cgroups.lock);
+ }
++
++void read_all_cgroups(struct rb_root *root)
++{
++	char mnt[PATH_MAX];
++	struct cgroup_name *cn;
++	int prefix_len;
++
++	if (cgroupfs_find_mountpoint(mnt, sizeof(mnt), "perf_event"))
++		return;
++
++	/* cgroup_name will have a full path, skip the root directory */
++	prefix_len = strlen(mnt);
++
++	/* collect all cgroups in the cgroup_list */
++	if (nftw(mnt, add_cgroup_name, 20, 0) < 0)
++		return;
++
++	list_for_each_entry(cn, &cgroup_list, list) {
++		const char *name;
++		u64 cgrp_id;
++
++		/* cgroup_name might have a full path, skip the prefix */
++		name = cn->name + prefix_len;
++		if (name[0] == '\0')
++			name = "/";
++
++		cgrp_id = __read_cgroup_id(cn->name);
++		__cgroup__findnew(root, cgrp_id, /*create=*/true, name);
++	}
++
++	release_cgroup_list();
++}
+diff --git a/tools/perf/util/cgroup.h b/tools/perf/util/cgroup.h
+index 12256b78608c..beb6fe1012ed 100644
+--- a/tools/perf/util/cgroup.h
++++ b/tools/perf/util/cgroup.h
+@@ -37,6 +37,7 @@ int parse_cgroups(const struct option *opt, const char *str, int unset);
+ struct cgroup *cgroup__findnew(struct perf_env *env, uint64_t id,
+ 			       const char *path);
+ struct cgroup *cgroup__find(struct perf_env *env, uint64_t id);
++struct cgroup *__cgroup__find(struct rb_root *root, uint64_t id);
+ 
+ void perf_env__purge_cgroups(struct perf_env *env);
+ 
+@@ -49,6 +50,9 @@ static inline int read_cgroup_id(struct cgroup *cgrp __maybe_unused)
+ }
+ #endif  /* HAVE_FILE_HANDLE */
+ 
++/* read all cgroups in the system and save them in the rbtree */
++void read_all_cgroups(struct rb_root *root);
++
+ int cgroup_is_v2(const char *subsys);
+ 
+ #endif /* __CGROUP_H__ */
 -- 
 2.42.0.283.g2d96d420d3-goog
 
