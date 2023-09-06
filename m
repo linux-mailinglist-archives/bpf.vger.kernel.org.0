@@ -1,332 +1,573 @@
-Return-Path: <bpf+bounces-9375-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9376-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCBB47944CB
-	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 22:54:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31384794504
+	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 23:18:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72BB7281499
-	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 20:54:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F75D1C20A16
+	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 21:18:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 268F511CAC;
-	Wed,  6 Sep 2023 20:54:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 998DB11CB9;
+	Wed,  6 Sep 2023 21:18:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB3426ADB
-	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 20:54:20 +0000 (UTC)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD28519BB;
-	Wed,  6 Sep 2023 13:54:17 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-31c3df710bdso281842f8f.1;
-        Wed, 06 Sep 2023 13:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694033656; x=1694638456; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6kVCXHAEjEM8goSFYvxXt/gFxYeO8nmrzpZAICgJpDE=;
-        b=WRg50l3e054AP/FJdPcq5EkqENfuhzGraycFkPkkaIWsc68bbq69C99KHh1tp37ao0
-         Ii9NJ5vFq4mjeykZwiUHPPBVTbU+tMT/YHJQuV/KxowP7+zIqDdYL9h+04MYcA5Vy7S+
-         2rBV3+K4uAjtRtc6QwJmD5qDO46q4oQENpqrDQB7EFqG9FIiyvh55ah+Vg3S2lrEfhGI
-         O7VXINFDPCCk6n35kkahnRGqhW9NNUHejhUM4VQzGjj2ahupUb4ZhGDHFxN+u7iI7z1n
-         pOYb4tvqrWmNDspaZ97z68Y1mm6CFKKCIvmvEJbhaCz3Im7uJ2SpQoXoZaCKG0aPyPjL
-         ViMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694033656; x=1694638456;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6kVCXHAEjEM8goSFYvxXt/gFxYeO8nmrzpZAICgJpDE=;
-        b=PxFHxbyarRPsr6hjMH6p7opvQyEXF+MtEuIV9ATQzo8Zi3dx85sEHVtWixm1goYXLG
-         I8bjLOATPzVPQg2a1/2LHud4AnCMn+s0VLNpDpWneuL870hqTPD2J3fUZ4hkb1E5n8PK
-         VS9L1y6WX2ArE+w2mwsY1jwI4zlPo3mqt0Aq/uSUuswTY1SfXmA74q835aC6JyF1x2qQ
-         5AFziXkUwg9xiMiz63JJZ337EPMA6GRwsmfZaDhPU8erZBp04jT9+OUFOYOJ62wFEStX
-         y3MLSXocszzGkMDFiqes8y9JKKruG4+N8eBXvLL7jw27EZDxG56WhE1RG+4TtxoQnZFo
-         oRFA==
-X-Gm-Message-State: AOJu0YyOtUdgoMK7qPCHRHOSr5/FaxfN//DC+S2fe7Riz16KIIVfk4UK
-	P1VoBjEUaB/CTn0CruhzGgU=
-X-Google-Smtp-Source: AGHT+IG4ooluzmxwcYlqOgvX4/v7UF1oQSyZHST17ujusbKy/cUFYsvzWSMQkJmILJfYgGTJTfe45Q==
-X-Received: by 2002:a5d:6582:0:b0:31a:d4a9:bdac with SMTP id q2-20020a5d6582000000b0031ad4a9bdacmr3038816wru.11.1694033655894;
-        Wed, 06 Sep 2023 13:54:15 -0700 (PDT)
-Received: from krava ([83.240.60.62])
-        by smtp.gmail.com with ESMTPSA id j9-20020a170906410900b009926928d486sm9420794ejk.35.2023.09.06.13.54.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 13:54:15 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 6 Sep 2023 22:54:13 +0200
-To: Rong Tao <rtoax@foxmail.com>
-Cc: olsajiri@gmail.com, andrii@kernel.org, daniel@iogearbox.net,
-	sdf@google.com, Rong Tao <rongtao@cestc.cn>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Yafang Shao <laoar.shao@gmail.com>,
-	"open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
-	"moderated list:ARM/STM32 ARCHITECTURE" <linux-stm32@st-md-mailman.stormreply.com>,
-	"moderated list:ARM/STM32 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH bpf-next v11 1/2] selftests/bpf: trace_helpers.c:
- optimize kallsyms cache
-Message-ID: <ZPjm9fcy35JJZj6M@krava>
-References: <cover.1693922135.git.rongtao@cestc.cn>
- <tencent_F9CAE827E2BA8193D06796FBE58ECAD16B06@qq.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F78F2FB3
+	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 21:18:42 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB12E6F
+	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 14:18:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694035119; x=1725571119;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=wN0CEA+/ZIMXTw7Uj6IYwkuAjEL2aqdNN2S2SDVIEAw=;
+  b=X6E30uUlMK1hq70zXwaIuAglZdkzPfBmXiFTxAUq6iPg4FwsHwy0D09p
+   saNblJJSlQifWd5i4maSG0zo5oJi7OhnlGQowhJGZw782KQ/mKG2y26MD
+   7tYQJj9IOH6QL9nGbEajo4cYcpedv0wEj+lgs0h8ufFj5Jjp49gQsJWZs
+   6GmCWaABNxl28pcRzDJADNSe73hmf7MfvtvGMkaF5iyhIsv+5AN2XV2ed
+   UpmNRAPGXlh6SB+OCmDgI5mvD8IFqNsCV0AksFqOFGVrlGDIPei5ch4rm
+   df9c3Z01DlwuMgjVausCNr/4myl49oH/LyXQ6RqLDvsiE0zQ/mV5bQdjC
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="374580818"
+X-IronPort-AV: E=Sophos;i="6.02,233,1688454000"; 
+   d="scan'208";a="374580818"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 14:18:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="865315619"
+X-IronPort-AV: E=Sophos;i="6.02,233,1688454000"; 
+   d="scan'208";a="865315619"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Sep 2023 14:18:38 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 6 Sep 2023 14:18:38 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 6 Sep 2023 14:18:38 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 6 Sep 2023 14:18:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dxwl70OSA0Bk9/i8Q0gHeofODgHRaAmXbKEfbl7g2chaxPkoMum2uLcdLJJfiUP5SmxkLscC+MFqwVGiNkbOSphmUtG6vnbcDY6ttoezCCtfux3NUwFsrnbrrQWXtB7dn42NhHjWgzJ3cs6pCs0plocx9gJ0kZdYnMYG1V0Er2dR8I3GRBlRqRvLG8rmJ9RjM9zvUgMxcVU0wWyyQGS2ln/fzvbCctXv7CVpPFZf/caUwjLXyGe0+4QWCyb0GcLgcdnybDYWLsBlQRrWWvh0VP4OZHzzT9qJcFxLwpkNPXNQk+NDRkvyXPR5YFESZSyqxlfU7/a8FLXK6Ajsg0+eYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ge5ZKx0lSFPzkABhLXfker2BesDwI1oh/DCirolMPxk=;
+ b=k/nTxqUc3jVM+J4Mx2euysg8cjaCc21meZNpQN0MbIJ/K0/0gZbCv34Nr1ufliWBHobuYDDVFL8Qb1WPaN7UG6VkVWAb2Sf06jS8whxWTFT049cC/KQg7gQDubRIOCi8a9M4YIohl/3N5y6WMQkDHOM271EFvUKq75NHv9VYxCaTCC2XOVcMYDHnUl+KzCMpVGoYcqvRLpmZE2EU/oLk4v50CxMhSATR+5t++UtJZ46HQ1SgDdE0gSaGxb0PO3J5Ai6rFTS67dyqks0g4mRE9AGu82G7JUWDNeGnAaxzanz825UAJdIA4wktlHQEFbCDA/MYbVAj6wiWi6FVn/Vs0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ MN6PR11MB8243.namprd11.prod.outlook.com (2603:10b6:208:46e::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Wed, 6 Sep
+ 2023 21:18:34 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::c1f9:b4eb:f57e:5c3d]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::c1f9:b4eb:f57e:5c3d%3]) with mapi id 15.20.6745.034; Wed, 6 Sep 2023
+ 21:18:34 +0000
+Date: Wed, 6 Sep 2023 23:18:22 +0200
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: Leon Hwang <hffilwlqm@gmail.com>
+CC: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+	<song@kernel.org>, <iii@linux.ibm.com>, <jakub@cloudflare.com>,
+	<bpf@vger.kernel.org>
+Subject: Re: [RFC PATCH bpf-next v4 4/4] selftests/bpf: Add testcases for
+ tailcall infinite loop fixing
+Message-ID: <ZPjsnjoS/nh7aMcF@boxer>
+References: <20230903151448.61696-1-hffilwlqm@gmail.com>
+ <20230903151448.61696-5-hffilwlqm@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230903151448.61696-5-hffilwlqm@gmail.com>
+X-ClientProxiedBy: FR3P281CA0040.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:4a::8) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_F9CAE827E2BA8193D06796FBE58ECAD16B06@qq.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|MN6PR11MB8243:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6693abba-2e89-448b-634c-08dbaf1ed3ce
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BGmiKUOjrJ7FYoh9pb/zQvCeHY6PxBEL1HPLDeOpyqaMqg0yOd17dSsgBnp5hEty+JYhkQBgD/ww8Er5dJTNpACmsGC5j5cc0Ihyl0QFWOqodwjLP9LCG3DHsfG6UZljCZHNxC0/sE3V/7BD96+jJuzH766J9WxSQ2Tx4NBqigg/tKUEswNGn9cmpFEaerbZo4vjdlhQ6urGWv1aS5uY8EmXS0yfFQnQX9PwGh5+kZOOcOipm0a9zrlqEQOQ8HQ/0leFBpgSSsfk6gk84vUOxG8m5QnwlbRDTvnE++0DLe2nXlldH19HMlG6x+kVs6r2s7yN8qxLnVRHwWwRBnYKV4B3P29CJokSv1i6em6s0MYeCPSQugmbx+ZqKW/si1ccm7jEXTp9FBIT7TyBqNsHc0VbKR+Zu0/zKogSiopRJ1pgzRp2ZUMr214nffcTo7pSmCLroO15aOXywzitULShgizblfayIn4LhrdytCJTJbdcphf4/EeQU/jFQ7b9uUM42Gan1OF+SXGzES7uBuMySqlOoW7bl0fnno+PWvNHemwOGDSEC3TXgyCu2GrIiArJ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(376002)(366004)(396003)(346002)(39860400002)(1800799009)(451199024)(186009)(6486002)(6506007)(6512007)(478600001)(9686003)(41300700001)(66476007)(66946007)(66556008)(6916009)(6666004)(316002)(44832011)(26005)(5660300002)(33716001)(8936002)(8676002)(4326008)(86362001)(83380400001)(30864003)(38100700002)(82960400001)(2906002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9Sr8wlTCP9WrkaYfHe4Z57dGBC1CrHcr9iMEZRW6Vb7GA5bS+XvrklQ+m/+c?=
+ =?us-ascii?Q?fi3iwJLZJsN71Ga69rb9zBxEBfMFM9oCouRE7OtRDqYDvStHxMnjH1aqsPWc?=
+ =?us-ascii?Q?NBfnnSoEwB/So2+ZVUVuThQjnhaXIwvdRK1p8k1eLDHzEmg3momjHwBBJrB/?=
+ =?us-ascii?Q?M90aniqm7LcSsoTeEQk9XHoMzVCwL+r9xKK0rKjKwR9YRuYBBEfGPrSrGCvD?=
+ =?us-ascii?Q?2O2FCIGGafPT6aT1bh7Z35OYmJREPNH9R1a0+uLojU1ZB85PzeBsO+oAZ5VI?=
+ =?us-ascii?Q?XyP5isXUqQSScMnuJgYwaiTU4/gXMpXBSlqyC55NfGXzxjjvkMUJSvTZ4EWg?=
+ =?us-ascii?Q?gLhMtYqGarBZAqKgBMYKaFOLGAzLt4GeXVxymNDSOd3aBOC+C3MlzIs0CRQP?=
+ =?us-ascii?Q?gaKnnuerW3QApcmfNuDucaVDQ/CQb/9EvsaCQG87yg1JWluEa4aEIWsjakAh?=
+ =?us-ascii?Q?EPgaVdSuXxAtuqFZwycHG1+8x+MzlOnRw8re4iQWepivpdBsMMy3N0bo+L9R?=
+ =?us-ascii?Q?TLT02+L73XF9D6tDdHwlMWAb3wloNxnsFEqMw7fV8Og89NWrykf/+SJMteoS?=
+ =?us-ascii?Q?zZM6kN83x8N5wQqBmwj7S9ecyVnsPGNBPuqroccQVABnEy3ItsTEHBiO4Bxd?=
+ =?us-ascii?Q?cxjOx+B6Zj/C5x1G4m/U1L3mc8N8420b8kpdXGNagDhb9Ae50pI/uUOK9igG?=
+ =?us-ascii?Q?X6cbICpcsKeLBzncma4PhHqh+/CWYHC238W079LhaQwkENsQg4WhsBvq/k49?=
+ =?us-ascii?Q?czXcF13xFldJzigaH9JjO4EahY9L2HY1ax42qS+XQe6aji5fmLAoHE9+tvGb?=
+ =?us-ascii?Q?A+oxl3foO8JHbH/tff6WjRldgJgwz9jEKL0BoTdMKQEMRS3UWjw7K/QM0vJt?=
+ =?us-ascii?Q?66THoIfkYOgBnb/RrNqs4b71W/lPy2W2tuZH2d53/nzXfsq5Bsv6P+QKezY7?=
+ =?us-ascii?Q?ahT78PD3R9/K3HU/612rbUaFRpMf2n5FnOxNbFRvUP2Lpp+i6OWYk0wSSn82?=
+ =?us-ascii?Q?ak3Dp1sqd7scuY11XAd5NFeka1yrrNYc234820fRfJdwFptnaLu8bMgwlBIr?=
+ =?us-ascii?Q?jVMvtjXDHJJAWWyb98oGK9yKcz0gzpaa5AbP1tkb2UcEs+IRGWR7xNLjfbTJ?=
+ =?us-ascii?Q?BE1i3wNSs9VDY80+AMpnPvU9pzCAbwfdaCztRrnfAbu5w4SQx7PcqD6XV4os?=
+ =?us-ascii?Q?OsHkLteFgJerOe/7M8SexrjhHzXMFAASXKXSzWYzWNGn0UHXfisZL4iqH0Sr?=
+ =?us-ascii?Q?3CZjhMUAge72HO0naIDrpglGgw4ccjJMUPio/Ip0hkjyUojcTIoc1staHMvi?=
+ =?us-ascii?Q?Ktn7RwZ08q9qMAUQdtFwv2qQMJ7Gcf1g7updg+qERjzyUjbb9vIwe76Z+xA8?=
+ =?us-ascii?Q?T5lUKzXCnrSX5U6WvypjmERVl57K3S92aypZuQJVTL/8jUEQNF3q6TJRWDQN?=
+ =?us-ascii?Q?qpmPM6OSbD1VkDKdsC87As9XxrDWgz3CysOu7jpFhRIIJRW/ycaOMlbgaUmK?=
+ =?us-ascii?Q?C4xEe1BKxqScQIHsI1IRR2FkG/zA+rHIoeOg+MAh7gwkf+0hrSqInq3hf5Uv?=
+ =?us-ascii?Q?6vRjGxuwDh5KRWLOBkwCVmCOzKXQlqUFnnAK2oC3YckmNZUs0Na6HMlMVH2i?=
+ =?us-ascii?Q?+Q=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6693abba-2e89-448b-634c-08dbaf1ed3ce
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 21:18:34.2816
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gMYsKlXEMsw7UUrN9LaSZnC40p+WT9wCWYoKyboZFU8NMtxt+T9m8rA1G5CVZG1rmID3+JO9nDiCplXBkkGdWJHjpwndlJPn9s7kDT7/PXU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR11MB8243
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Sep 05, 2023 at 10:04:18PM +0800, Rong Tao wrote:
-> From: Rong Tao <rongtao@cestc.cn>
+On Sun, Sep 03, 2023 at 11:14:48PM +0800, Leon Hwang wrote:
+> Add 4 test cases to confirm the tailcall infinite loop bug has been fixed.
 > 
-> Static ksyms often have problems because the number of symbols exceeds the
-> MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
-> commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
-> the problem somewhat, but it's not the perfect way.
+> Like tailcall_bpf2bpf cases, do fentry/fexit on the bpf2bpf, and then
+> check the final count result.
 > 
-> This commit uses dynamic memory allocation, which completely solves the
-> problem caused by the limitation of the number of kallsyms. At the same
-> time, add APIs:
+> tools/testing/selftests/bpf/test_progs -t tailcalls
+> 226/13  tailcalls/tailcall_bpf2bpf_fentry:OK
+> 226/14  tailcalls/tailcall_bpf2bpf_fexit:OK
+> 226/15  tailcalls/tailcall_bpf2bpf_fentry_fexit:OK
+> 226/16  tailcalls/tailcall_bpf2bpf_fentry_entry:OK
+> 226     tailcalls:OK
+> Summary: 1/16 PASSED, 0 SKIPPED, 0 FAILED
 > 
->     load_kallsyms_local()
->     ksym_search_local()
->     ksym_get_addr_local()
->     free_kallsyms_local()
-> 
-> There are used to solve the problem of selftests/bpf updating kallsyms
-> after attach new symbols during testmod testing.
-> 
-> Acked-by: Stanislav Fomichev <sdf@google.com>
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
-
-looks good, I added few more coments, with them addressed you can add my
-
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-thanks,
-jirka
-
-
+> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
 > ---
-> v11: Remove useless load_kallsyms_refresh() and modify code some format
-> v10: https://lore.kernel.org/lkml/tencent_0A73B402B1D440480838ABF7124CE5EA5505@qq.com/
->     Keep the original load_kallsyms().
-> v9: https://lore.kernel.org/lkml/tencent_254B7015EED7A5D112C45E033DA1822CF107@qq.com/
->     Add load_kallsyms_local,ksym_search_local,ksym_get_addr_local functions.
-> v8: https://lore.kernel.org/lkml/tencent_6D23FE187408D965E95DFAA858BC7E8C760A@qq.com/
->     Resolves inter-thread contention for ksyms global variables.
-> v7: https://lore.kernel.org/lkml/tencent_BD6E19C00BF565CD5C36A9A0BD828CFA210A@qq.com/
->     Fix __must_check macro.
-> v6: https://lore.kernel.org/lkml/tencent_4A09A36F883A06EA428A593497642AF8AF08@qq.com/
->     Apply libbpf_ensure_mem()
-> v5: https://lore.kernel.org/lkml/tencent_0E9E1A1C0981678D5E7EA9E4BDBA8EE2200A@qq.com/
->     Release the allocated memory once the load_kallsyms_refresh() upon error
->     given it's dynamically allocated.
-> v4: https://lore.kernel.org/lkml/tencent_59C74613113F0C728524B2A82FE5540A5E09@qq.com/
->     Make sure most cases we don't need the realloc() path to begin with,
->     and check strdup() return value.
-> v3: https://lore.kernel.org/lkml/tencent_50B4B2622FE7546A5FF9464310650C008509@qq.com/
->     Do not use structs and judge ksyms__add_symbol function return value.
-> v2: https://lore.kernel.org/lkml/tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com/
->     Do the usual len/capacity scheme here to amortize the cost of realloc, and
->     don't free symbols.
-> v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com/
-
-SNIP
-
-> +static int ksyms__add_symbol(struct ksyms *ksyms, const char *name,
-> +			     unsigned long addr)
+>  .../selftests/bpf/prog_tests/tailcalls.c      | 299 ++++++++++++++++++
+>  .../bpf/progs/tailcall_bpf2bpf_fentry.c       |  18 ++
+>  .../bpf/progs/tailcall_bpf2bpf_fexit.c        |  18 ++
+>  3 files changed, 335 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fentry.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fexit.c
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+> index b20d7f77a5bce..331b4e455ad06 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+> @@ -884,6 +884,297 @@ static void test_tailcall_bpf2bpf_6(void)
+>  	tailcall_bpf2bpf6__destroy(obj);
+>  }
+>  
+> +static void tailcall_bpf2bpf_fentry_fexit(bool test_fentry, bool test_fexit)
 > +{
-> +	void *tmp;
+> +	struct bpf_object *tgt_obj = NULL, *fentry_obj = NULL, *fexit_obj = NULL;
+> +	struct bpf_link *fentry_link = NULL, *fexit_link = NULL;
+> +	int err, map_fd, prog_fd, main_fd, data_fd, i, val;
+> +	struct bpf_map *prog_array, *data_map;
+> +	struct bpf_program *prog;
+> +	char buff[128] = {};
 > +
-> +	tmp = strdup(name);
-> +	if (!tmp)
-> +		return -ENOMEM;
-> +	ksyms->syms[ksyms->sym_cnt].addr = addr;
-> +	ksyms->syms[ksyms->sym_cnt].name = tmp;
+> +	LIBBPF_OPTS(bpf_test_run_opts, topts,
+> +		.data_in = buff,
+> +		.data_size_in = sizeof(buff),
+> +		.repeat = 1,
+> +	);
 > +
-> +	ksyms->sym_cnt++;
-> +
-> +	return 0;
-
-nit, extra new lines above
-
-> +}
-> +
-> +void free_kallsyms_local(struct ksyms *ksyms)
-> +{
-> +	unsigned int i;
-> +
-> +	if (!ksyms)
+> +	err = bpf_prog_test_load("tailcall_bpf2bpf2.bpf.o",
+> +				 BPF_PROG_TYPE_SCHED_CLS,
+> +				 &tgt_obj, &prog_fd);
+> +	if (!ASSERT_OK(err, "load tgt_obj"))
 > +		return;
 > +
-> +	if (!ksyms->syms) {
-> +		free(ksyms);
-> +		return;
+> +	prog = bpf_object__find_program_by_name(tgt_obj, "entry");
+> +	if (!ASSERT_OK_PTR(prog, "find entry prog"))
+> +		goto out;
+> +
+> +	main_fd = bpf_program__fd(prog);
+> +	if (!ASSERT_FALSE(main_fd < 0, "find entry prog fd"))
+> +		goto out;
+> +
+> +	prog_array = bpf_object__find_map_by_name(tgt_obj, "jmp_table");
+> +	if (!ASSERT_OK_PTR(prog_array, "find jmp_table map"))
+> +		goto out;
+> +
+> +	map_fd = bpf_map__fd(prog_array);
+> +	if (!ASSERT_FALSE(map_fd < 0, "find jmp_table map fd"))
+> +		goto out;
+> +
+> +	prog = bpf_object__find_program_by_name(tgt_obj, "classifier_0");
+> +	if (!ASSERT_OK_PTR(prog, "find classifier_0 prog"))
+> +		goto out;
+> +
+> +	prog_fd = bpf_program__fd(prog);
+> +	if (!ASSERT_FALSE(prog_fd < 0, "find classifier_0 prog fd"))
+> +		goto out;
+> +
+> +	i = 0;
+> +	err = bpf_map_update_elem(map_fd, &i, &prog_fd, BPF_ANY);
+> +	if (!ASSERT_OK(err, "update jmp_table"))
+> +		goto out;
+> +
+> +	if (test_fentry) {
+> +		fentry_obj = bpf_object__open_file("tailcall_bpf2bpf_fentry.bpf.o",
+> +						   NULL);
+> +		if (!ASSERT_OK_PTR(fentry_obj, "open fentry_obj file"))
+> +			goto out;
+> +
+> +		prog = bpf_object__find_program_by_name(fentry_obj, "fentry");
+> +		if (!ASSERT_OK_PTR(prog, "find fentry prog"))
+> +			goto out;
+> +
+> +		err = bpf_program__set_attach_target(prog, prog_fd,
+> +						     "subprog_tail");
+> +		if (!ASSERT_OK(err, "set_attach_target subprog_tail"))
+> +			goto out;
+> +
+> +		err = bpf_object__load(fentry_obj);
+> +		if (!ASSERT_OK(err, "load fentry_obj"))
+> +			goto out;
+> +
+> +		fentry_link = bpf_program__attach_trace(prog);
+> +		if (!ASSERT_OK_PTR(fentry_link, "attach_trace"))
+> +			goto out;
 > +	}
 > +
-> +	for (i = 0; i < ksyms->sym_cnt; i++)
-> +		free(ksyms->syms[i].name);
-> +	free(ksyms->syms);
-> +	free(ksyms);
+> +	if (test_fexit) {
+> +		fexit_obj = bpf_object__open_file("tailcall_bpf2bpf_fexit.bpf.o",
+> +						  NULL);
+> +		if (!ASSERT_OK_PTR(fexit_obj, "open fexit_obj file"))
+> +			goto out;
+> +
+> +		prog = bpf_object__find_program_by_name(fexit_obj, "fexit");
+> +		if (!ASSERT_OK_PTR(prog, "find fexit prog"))
+> +			goto out;
+> +
+> +		err = bpf_program__set_attach_target(prog, prog_fd,
+> +						     "subprog_tail");
+> +		if (!ASSERT_OK(err, "set_attach_target subprog_tail"))
+> +			goto out;
+> +
+> +		err = bpf_object__load(fexit_obj);
+> +		if (!ASSERT_OK(err, "load fexit_obj"))
+> +			goto out;
+> +
+> +		fexit_link = bpf_program__attach_trace(prog);
+> +		if (!ASSERT_OK_PTR(fexit_link, "attach_trace"))
+> +			goto out;
+> +	}
+> +
+> +	err = bpf_prog_test_run_opts(main_fd, &topts);
+> +	ASSERT_OK(err, "tailcall");
+> +	ASSERT_EQ(topts.retval, 1, "tailcall retval");
+> +
+> +	data_map = bpf_object__find_map_by_name(tgt_obj, "tailcall.bss");
+> +	if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
+> +			  "find tailcall.bss map"))
+> +		goto out;
+> +
+> +	data_fd = bpf_map__fd(data_map);
+> +	if (!ASSERT_FALSE(data_fd < 0, "find tailcall.bss map fd"))
+> +		goto out;
+> +
+> +	i = 0;
+> +	err = bpf_map_lookup_elem(data_fd, &i, &val);
+> +	ASSERT_OK(err, "tailcall count");
+> +	ASSERT_EQ(val, 33, "tailcall count");
+> +
+> +	if (test_fentry) {
+> +		data_map = bpf_object__find_map_by_name(fentry_obj, ".bss");
+> +		if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
+> +				  "find tailcall_bpf2bpf_fentry.bss map"))
+> +			goto out;
+> +
+> +		data_fd = bpf_map__fd(data_map);
+> +		if (!ASSERT_FALSE(data_fd < 0,
+> +				  "find tailcall_bpf2bpf_fentry.bss map fd"))
+> +			goto out;
+> +
+> +		i = 0;
+> +		err = bpf_map_lookup_elem(data_fd, &i, &val);
+> +		ASSERT_OK(err, "fentry count");
+> +		ASSERT_EQ(val, 33, "fentry count");
+> +	}
+> +
+> +	if (test_fexit) {
+> +		data_map = bpf_object__find_map_by_name(fexit_obj, ".bss");
+> +		if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
+> +				  "find tailcall_bpf2bpf_fexit.bss map"))
+> +			goto out;
+> +
+> +		data_fd = bpf_map__fd(data_map);
+> +		if (!ASSERT_FALSE(data_fd < 0,
+> +				  "find tailcall_bpf2bpf_fexit.bss map fd"))
+> +			goto out;
+> +
+> +		i = 0;
+> +		err = bpf_map_lookup_elem(data_fd, &i, &val);
+> +		ASSERT_OK(err, "fexit count");
+> +		ASSERT_EQ(val, 33, "fexit count");
+> +	}
+> +
+> +out:
+> +	bpf_link__destroy(fentry_link);
+> +	bpf_link__destroy(fexit_link);
+> +	bpf_object__close(fentry_obj);
+> +	bpf_object__close(fexit_obj);
+> +	bpf_object__close(tgt_obj);
 > +}
->  
->  static int ksym_cmp(const void *p1, const void *p2)
+> +
+> +/* test_tailcall_bpf2bpf_fentry checks that the count value of the tail call
+> + * limit enforcement matches with expectations when tailcall is preceded with
+> + * bpf2bpf call, and the bpf2bpf call is traced by fentry.
+> + */
+> +static void test_tailcall_bpf2bpf_fentry(void)
+> +{
+> +	tailcall_bpf2bpf_fentry_fexit(true, false);
+> +}
+> +
+> +/* test_tailcall_bpf2bpf_fexit checks that the count value of the tail call
+> + * limit enforcement matches with expectations when tailcall is preceded with
+> + * bpf2bpf call, and the bpf2bpf call is traced by fexit.
+> + */
+> +static void test_tailcall_bpf2bpf_fexit(void)
+> +{
+> +	tailcall_bpf2bpf_fentry_fexit(false, true);
+> +}
+> +
+> +/* test_tailcall_bpf2bpf_fentry_fexit checks that the count value of the tail
+> + * call limit enforcement matches with expectations when tailcall is preceded
+> + * with bpf2bpf call, and the bpf2bpf call is traced by both fentry and fexit.
+> + */
+> +static void test_tailcall_bpf2bpf_fentry_fexit(void)
+> +{
+> +	tailcall_bpf2bpf_fentry_fexit(true, true);
+
+Would it be possible to modify existing test_tailcall_count() to have
+fentry/fexit testing within? __tailcall_bpf2bpf_fentry_fexit() basically
+repeats the logic of test_tailcall_count(), right?
+
+How about something like:
+
+static void test_tailcall_bpf2bpf_fentry(void)
+{
+	test_tailcall_count("tailcall_bpf2bpf2.bpf.o", true, false);
+}
+
+// rest of your test cases
+
+and existing tailcall count tests:
+
+static void test_tailcall_3(void)
+{
+	test_tailcall_count("tailcall3.bpf.o", false, false);
+}
+
+static void test_tailcall_6(void)
+{
+	test_tailcall_count("tailcall6.bpf.o", false, false);
+}
+
+> +}
+> +
+> +/* test_tailcall_bpf2bpf_fentry_entry checks that the count value of the tail
+> + * call limit enforcement matches with expectations when tailcall is preceded
+> + * with bpf2bpf call, and the bpf2bpf caller is traced by fentry.
+> + */
+> +static void test_tailcall_bpf2bpf_fentry_entry(void)
+> +{
+> +	struct bpf_object *tgt_obj = NULL, *fentry_obj = NULL;
+> +	int err, map_fd, prog_fd, data_fd, i, val;
+> +	struct bpf_map *prog_array, *data_map;
+> +	struct bpf_link *fentry_link = NULL;
+> +	struct bpf_program *prog;
+> +	char buff[128] = {};
+> +
+> +	LIBBPF_OPTS(bpf_test_run_opts, topts,
+> +		.data_in = buff,
+> +		.data_size_in = sizeof(buff),
+> +		.repeat = 1,
+> +	);
+> +
+> +	err = bpf_prog_test_load("tailcall_bpf2bpf2.bpf.o",
+> +				 BPF_PROG_TYPE_SCHED_CLS,
+> +				 &tgt_obj, &prog_fd);
+> +	if (!ASSERT_OK(err, "load tgt_obj"))
+> +		return;
+> +
+> +	prog_array = bpf_object__find_map_by_name(tgt_obj, "jmp_table");
+> +	if (!ASSERT_OK_PTR(prog_array, "find jmp_table map"))
+> +		goto out;
+> +
+> +	map_fd = bpf_map__fd(prog_array);
+> +	if (!ASSERT_FALSE(map_fd < 0, "find jmp_table map fd"))
+> +		goto out;
+> +
+> +	prog = bpf_object__find_program_by_name(tgt_obj, "classifier_0");
+> +	if (!ASSERT_OK_PTR(prog, "find classifier_0 prog"))
+> +		goto out;
+> +
+> +	prog_fd = bpf_program__fd(prog);
+> +	if (!ASSERT_FALSE(prog_fd < 0, "find classifier_0 prog fd"))
+> +		goto out;
+> +
+> +	i = 0;
+> +	err = bpf_map_update_elem(map_fd, &i, &prog_fd, BPF_ANY);
+> +	if (!ASSERT_OK(err, "update jmp_table"))
+> +		goto out;
+> +
+> +	fentry_obj = bpf_object__open_file("tailcall_bpf2bpf_fentry.bpf.o",
+> +					   NULL);
+> +	if (!ASSERT_OK_PTR(fentry_obj, "open fentry_obj file"))
+> +		goto out;
+> +
+> +	prog = bpf_object__find_program_by_name(fentry_obj, "fentry");
+> +	if (!ASSERT_OK_PTR(prog, "find fentry prog"))
+> +		goto out;
+> +
+> +	err = bpf_program__set_attach_target(prog, prog_fd, "classifier_0");
+> +	if (!ASSERT_OK(err, "set_attach_target classifier_0"))
+> +		goto out;
+> +
+> +	err = bpf_object__load(fentry_obj);
+> +	if (!ASSERT_OK(err, "load fentry_obj"))
+> +		goto out;
+> +
+> +	fentry_link = bpf_program__attach_trace(prog);
+> +	if (!ASSERT_OK_PTR(fentry_link, "attach_trace"))
+> +		goto out;
+> +
+> +	err = bpf_prog_test_run_opts(prog_fd, &topts);
+> +	ASSERT_OK(err, "tailcall");
+> +	ASSERT_EQ(topts.retval, 1, "tailcall retval");
+> +
+> +	data_map = bpf_object__find_map_by_name(tgt_obj, "tailcall.bss");
+> +	if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
+> +			  "find tailcall.bss map"))
+> +		goto out;
+> +
+> +	data_fd = bpf_map__fd(data_map);
+> +	if (!ASSERT_FALSE(data_fd < 0, "find tailcall.bss map fd"))
+> +		goto out;
+> +
+> +	i = 0;
+> +	err = bpf_map_lookup_elem(data_fd, &i, &val);
+> +	ASSERT_OK(err, "tailcall count");
+> +	ASSERT_EQ(val, 34, "tailcall count");
+> +
+> +	data_map = bpf_object__find_map_by_name(fentry_obj, ".bss");
+> +	if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
+> +			  "find tailcall_bpf2bpf_fentry.bss map"))
+> +		goto out;
+> +
+> +	data_fd = bpf_map__fd(data_map);
+> +	if (!ASSERT_FALSE(data_fd < 0,
+> +			  "find tailcall_bpf2bpf_fentry.bss map fd"))
+> +		goto out;
+> +
+> +	i = 0;
+> +	err = bpf_map_lookup_elem(data_fd, &i, &val);
+> +	ASSERT_OK(err, "fentry count");
+> +	ASSERT_EQ(val, 1, "fentry count");
+> +
+> +out:
+> +	bpf_link__destroy(fentry_link);
+> +	bpf_object__close(fentry_obj);
+> +	bpf_object__close(tgt_obj);
+> +}
+> +
+>  void test_tailcalls(void)
 >  {
->  	return ((struct ksym *)p1)->addr - ((struct ksym *)p2)->addr;
+>  	if (test__start_subtest("tailcall_1"))
+> @@ -910,4 +1201,12 @@ void test_tailcalls(void)
+>  		test_tailcall_bpf2bpf_4(true);
+>  	if (test__start_subtest("tailcall_bpf2bpf_6"))
+>  		test_tailcall_bpf2bpf_6();
+> +	if (test__start_subtest("tailcall_bpf2bpf_fentry"))
+> +		test_tailcall_bpf2bpf_fentry();
+> +	if (test__start_subtest("tailcall_bpf2bpf_fexit"))
+> +		test_tailcall_bpf2bpf_fexit();
+> +	if (test__start_subtest("tailcall_bpf2bpf_fentry_fexit"))
+> +		test_tailcall_bpf2bpf_fentry_fexit();
+> +	if (test__start_subtest("tailcall_bpf2bpf_fentry_entry"))
+> +		test_tailcall_bpf2bpf_fentry_entry();
 >  }
->  
-> -int load_kallsyms_refresh(void)
-> +struct ksyms *load_kallsyms_local(struct ksyms *ksyms)
->  {
->  	FILE *f;
->  	char func[256], buf[256];
->  	char symbol;
->  	void *addr;
-> -	int i = 0;
-> +	int ret;
->  
-> -	sym_cnt = 0;
-> +	/* flush kallsyms, free the previously allocated dynamic memory */
-> +	free_kallsyms_local(ksyms);
-
-with the removal of the refresh function (from last version) there's
-no need now for ksyms argument in load_kallsyms_local
-
-all the current users of load_kallsyms_local are passing NULL arg
-
->  
->  	f = fopen("/proc/kallsyms", "r");
->  	if (!f)
-> -		return -ENOENT;
-> +		return NULL;
+> diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fentry.c b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fentry.c
+> new file mode 100644
+> index 0000000000000..8436c6729167c
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fentry.c
+> @@ -0,0 +1,18 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright Leon Hwang */
 > +
-> +	ksyms = calloc(1, sizeof(struct ksyms));
-> +	if (!ksyms)
-
-missing fclose(f);
-
-> +		return NULL;
->  
->  	while (fgets(buf, sizeof(buf), f)) {
->  		if (sscanf(buf, "%p %c %s", &addr, &symbol, func) != 3)
->  			break;
->  		if (!addr)
->  			continue;
-> -		if (i >= MAX_SYMS)
-> -			return -EFBIG;
->  
-> -		syms[i].addr = (long) addr;
-> -		syms[i].name = strdup(func);
-> -		i++;
-> +		ret = libbpf_ensure_mem((void **) &ksyms->syms, &ksyms->sym_cap,
-> +					sizeof(struct ksym), ksyms->sym_cnt + 1);
-> +		if (ret)
-> +			goto error;
-> +		ret = ksyms__add_symbol(ksyms, func, (unsigned long)addr);
-> +		if (ret)
-> +			goto error;
->  	}
->  	fclose(f);
-> -	sym_cnt = i;
-> -	qsort(syms, sym_cnt, sizeof(struct ksym), ksym_cmp);
-> -	return 0;
-> +	qsort(ksyms->syms, ksyms->sym_cnt, sizeof(struct ksym), ksym_cmp);
-> +	return ksyms;
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
 > +
-> +error:
-> +	free_kallsyms_local(ksyms);
-
-missing fclose(f);
-
-> +	return NULL;
->  }
->  
->  int load_kallsyms(void)
->  {
-> -	/*
-> -	 * This is called/used from multiplace places,
-> -	 * load symbols just once.
-> -	 */
-> -	if (sym_cnt)
-> -		return 0;
-> -	return load_kallsyms_refresh();
-> +	if (!ksyms)
-> +		ksyms = load_kallsyms_local(NULL);
-> +	return ksyms ? 0 : 1;
->  }
->  
-> -struct ksym *ksym_search(long key)
-> +struct ksym *ksym_search_local(struct ksyms *ksyms, long key)
->  {
-> -	int start = 0, end = sym_cnt;
-> +	int start = 0, end = ksyms->sym_cnt;
->  	int result;
->  
-> +	if (!ksyms)
-> +		return NULL;
-
-I don't think we need to check !ksyms in here, you don't do
-that check in ksym_get_addr_local and I think it's fine
-
+> +int count = 0;
 > +
->  	/* kallsyms not loaded. return NULL */
-> -	if (sym_cnt <= 0)
-> +	if (ksyms->sym_cnt <= 0)
->  		return NULL;
->  
->  	while (start < end) {
-
-SNIP
-
-> diff --git a/tools/testing/selftests/bpf/trace_helpers.h b/tools/testing/selftests/bpf/trace_helpers.h
-> index 876f3e711df6..d6eeec85a5e4 100644
-> --- a/tools/testing/selftests/bpf/trace_helpers.h
-> +++ b/tools/testing/selftests/bpf/trace_helpers.h
-> @@ -11,13 +11,18 @@ struct ksym {
->  	long addr;
->  	char *name;
->  };
-> +struct ksyms;
->  
->  int load_kallsyms(void);
-> -int load_kallsyms_refresh(void);
-> -
->  struct ksym *ksym_search(long key);
->  long ksym_get_addr(const char *name);
->  
-> +struct ksyms *load_kallsyms_local(struct ksyms *ksyms);
-> +struct ksym *ksym_search_local(struct ksyms *ksyms, long key);
-> +long ksym_get_addr_local(struct ksyms *ksyms, const char *name);
+> +SEC("fentry/subprog_tail")
+> +int BPF_PROG(fentry, struct sk_buff *skb)
+> +{
+> +	count++;
 > +
-
-nit, extra newline
-
-> +void free_kallsyms_local(struct ksyms *ksyms);
+> +	return 0;
+> +}
 > +
->  /* open kallsyms and find addresses on the fly, faster than load + search. */
->  int kallsyms_find(const char *sym, unsigned long long *addr);
->  
+> +char _license[] SEC("license") = "GPL";
+> diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fexit.c b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fexit.c
+> new file mode 100644
+> index 0000000000000..fe16412c6e6e9
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fexit.c
+> @@ -0,0 +1,18 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright Leon Hwang */
+> +
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +int count = 0;
+> +
+> +SEC("fexit/subprog_tail")
+> +int BPF_PROG(fexit, struct sk_buff *skb)
+> +{
+> +	count++;
+> +
+> +	return 0;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
 > -- 
 > 2.41.0
 > 
