@@ -1,106 +1,163 @@
-Return-Path: <bpf+bounces-9326-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9327-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96707793AEA
-	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 13:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BB946793BA9
+	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 13:47:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E4F21C209EC
-	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 11:18:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0213A1C20A35
+	for <lists+bpf@lfdr.de>; Wed,  6 Sep 2023 11:47:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1115A6AB4;
-	Wed,  6 Sep 2023 11:18:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0BE6DDA6;
+	Wed,  6 Sep 2023 11:47:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C407710FE
-	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 11:18:22 +0000 (UTC)
-X-Greylist: delayed 63 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 06 Sep 2023 04:18:21 PDT
-Received: from rcdn-iport-6.cisco.com (rcdn-iport-6.cisco.com [173.37.86.77])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCE8A8
-	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 04:18:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=1016; q=dns/txt; s=iport;
-  t=1693999101; x=1695208701;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=aq7o8RAi4a4MaGrncDvprrOzbdMOC5K6kdeF+MeL3Ng=;
-  b=EHGz3D2eRXYtWRcyaEU3f4OZz4b9QBzNrkMDzLCrv/APQejQsrg+c2nf
-   18kvBXYzoU/vZduFiPJX3LZ5OGLx9AorF1ulQQgRZ0yVIIOIFiJlg7ZJi
-   I3NT2WJX4r7D3+0ockguxpJXDkBvWpOp3E/wvAZpLCpN9/ou6TzcDT0oc
-   w=;
-X-CSE-ConnectionGUID: mTUWnM3tRC+c/J6YrGiiAg==
-X-CSE-MsgGUID: YRYa1feAReOXo6x2vhXWbA==
-X-IronPort-AV: E=Sophos;i="6.02,231,1688428800"; 
-   d="scan'208";a="111452891"
-Received: from rcdn-core-5.cisco.com ([173.37.93.156])
-  by rcdn-iport-6.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 11:17:18 +0000
-Received: from sjc-ads-9103.cisco.com (sjc-ads-9103.cisco.com [10.30.208.113])
-	by rcdn-core-5.cisco.com (8.15.2/8.15.2) with ESMTPS id 386BHHMQ024932
-	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-	Wed, 6 Sep 2023 11:17:17 GMT
-Received: by sjc-ads-9103.cisco.com (Postfix, from userid 487941)
-	id 5635CCC1293; Wed,  6 Sep 2023 04:17:17 -0700 (PDT)
-From: Denys Zagorui <dzagorui@cisco.com>
-To: alastorze@fb.com, quentin@isovalent.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org
-Cc: dzagorui@cisco.com, bpf@vger.kernel.org
-Subject: [PATCH] bpftool: fix -Wcast-qual warning
-Date: Wed,  6 Sep 2023 04:17:17 -0700
-Message-Id: <20230906111717.2876511-1-dzagorui@cisco.com>
-X-Mailer: git-send-email 2.35.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FE4079D4
+	for <bpf@vger.kernel.org>; Wed,  6 Sep 2023 11:47:18 +0000 (UTC)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E93ECF;
+	Wed,  6 Sep 2023 04:47:16 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-402d0eda361so27190275e9.0;
+        Wed, 06 Sep 2023 04:47:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694000835; x=1694605635; darn=vger.kernel.org;
+        h=mime-version:user-agent:message-id:in-reply-to:date:references
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=F2eaACEiwNOBR0CmXxKwHpPHw6vWE8V2R0NQnhuogoY=;
+        b=W4D/cC4VJ14Y1xB89+3FtPGZzzJIAWnp6l3thrFTiJKihIL03TKUCCxLpY5yZc+YJV
+         FpqKAqAhU5cbLip6m/PqEH00wgBiDVmLM5WubUSIFLNoI5nbl8gz8ONSGr5MMXEdO5jT
+         OncXQV4C+Fk4EBFmN8GRS6RcgWdt8soY/72QwsAkiH8t1ivvEIUd0/cHFkcykdPSz7g1
+         udMyBiB/4w6dQXFYwLQEjwzoBkBk8xQfWoDjxY2ESMk2aMZmqOyeJx2hTvVYHqZNPGXr
+         7dOL0Uu2PhmbT1cQgnjDr3UlSyRaTCVYZp3KUepI7e6Fs71BKCCGxNRda8Q/WcaCtmcz
+         9SYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694000835; x=1694605635;
+        h=mime-version:user-agent:message-id:in-reply-to:date:references
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F2eaACEiwNOBR0CmXxKwHpPHw6vWE8V2R0NQnhuogoY=;
+        b=DujKGuEhG11YABMgM14thEPWqEVrYe6GM84yuKDv0GXwd5HfK1qYq3ROPpqZ64Tvl/
+         TjaA9ahrI19TMUSyWp8JPa4rmLD9ww5XxrMJ0vHB60YQ9STawu6X/V44uzE/xIBG14ZW
+         QY7O8D8Nj22eENkv2mFSiHmTfh7WrI9LUbYA23OSIuaotEuBBLBAFyF3jBut8DMb0D6Q
+         cC9quG7awUhVH7WA7QXT/A1NfS4mqrKQJBXc1s4hExDLNDdNBJ1XyJf0MtfF+UMqgXP9
+         8oUXnzVvGfa0A/6adpI7TLMcUBk2tLOvYbQ/yhMzRvfj9YZtflnHjWVPeRlhXZOqwE1D
+         kdvg==
+X-Gm-Message-State: AOJu0YwcQLcXS2KGzIQ10u5+Kiz+GdPg8JWk2QyIi02iuTWx1dG/0Ypj
+	y+y2hIUL1kn9GOlh/74fk9OBp6FUwkP6MgUoMjY=
+X-Google-Smtp-Source: AGHT+IF7nE1PrmxOMYf+opmJ2sQuwLT6cnLGUFRdZDtVVjfaLeR9Nl2nQuhAwy3jvGoBLrr5FVI5Uw==
+X-Received: by 2002:a7b:cb8c:0:b0:3fe:22a9:907 with SMTP id m12-20020a7bcb8c000000b003fe22a90907mr1959689wmi.20.1694000834248;
+        Wed, 06 Sep 2023 04:47:14 -0700 (PDT)
+Received: from dev-dsk-pjy-1a-76bc80b3.eu-west-1.amazon.com (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id bt9-20020a056000080900b0031c5ce91ad6sm16328019wrb.97.2023.09.06.04.47.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 06 Sep 2023 04:47:13 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,  Martin
+ KaFai Lau <martin.lau@linux.dev>,  Song Liu <song@kernel.org>,  Yonghong
+ Song <yonghong.song@linux.dev>,  John Fastabend
+ <john.fastabend@gmail.com>,  KP Singh <kpsingh@kernel.org>,  Stanislav
+ Fomichev <sdf@google.com>,  Hao Luo <haoluo@google.com>,  Jiri Olsa
+ <jolsa@kernel.org>,  Shubham Bansal <illusionist.neo@gmail.com>,  Mykola
+ Lysenko <mykolal@fb.com>,  Shuah Khan <shuah@kernel.org>,
+  bpf@vger.kernel.org,  linux-kselftest@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 2/8] arm32, bpf: add support for sign-extension
+ load instruction
+References: <20230905210621.1711859-1-puranjay12@gmail.com>
+	<20230905210621.1711859-3-puranjay12@gmail.com>
+	<ZPeceR+qKgsedJ1H@shell.armlinux.org.uk>
+Date: Wed, 06 Sep 2023 11:47:13 +0000
+In-Reply-To: <ZPeceR+qKgsedJ1H@shell.armlinux.org.uk> (Russell King's message
+	of "Tue, 5 Sep 2023 22:24:09 +0100")
+Message-ID: <mb61pfs3r34n2.fsf@amazon.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Outbound-SMTP-Client: 10.30.208.113, sjc-ads-9103.cisco.com
-X-Outbound-Node: rcdn-core-5.cisco.com
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_PASS,SPF_NONE,USER_IN_DEF_DKIM_WL autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This cast was made by purpose for older libbpf where the
-bpf_object_skeleton field is void * instead of const void *
-to eliminte a warning (as i understand
--Wincompatible-pointer-types-discards-qualifiers) but this
-cast introduces another warnging (-Wcast-qual) for libbpf
-where data field is const void *
+On Tue, Sep 05 2023, Russell King (Oracle) wrote:
 
-It makes sense for bpftool to be in sync with libbpf from
-kernel sources
+[...]
+>> +/* dst = *(signed size*)(src + off) */
+>> +static inline void emit_ldsx_r(const s8 dst[], const s8 src,
+>> +			       s16 off, struct jit_ctx *ctx, const u8 sz){
+>> +	const s8 *tmp = bpf2a32[TMP_REG_1];
+>> +	const s8 *rd = is_stacked(dst_lo) ? tmp : dst;
+>> +	s8 rm = src;
+>> +
+>> +	if (!is_ldst_imm8(off, sz)) {
+>> +		emit_a32_mov_i(tmp[0], off, ctx);
+>> +		emit(ARM_ADD_R(tmp[0], tmp[0], src), ctx);
+>
+> Hmm. This looks inefficient when "off" is able to fit in an immediate.
+> Please try:
+>
+> 	int add_off;
+>
+> 	if (!is_ldst_imm8(off, sz)) {
+> 		add_off = imm8m(off);
+> 		if (add_off > 0) {
+> 			emit(ARM_ADD_I(tmp[0], src, add_off), ctx);
+> 			rm = tmp[0];
+> 		} else {
+> 			emit_a32_mov_i(tmp[0], off, ctx);
+> 			emit(ARM_ADD_R(tmp[0], tmp[0], src), ctx);
+> 			rm = tmp[0];
+> 		}
+> 		off = 0;
+>> +	} else if (rd[1] == rm) {
+>> +		emit(ARM_MOV_R(tmp[0], rm), ctx);
+>> +		rm = tmp[0];
+>
+> Why do you need this? rd and rm can be the same for LDRS[BH].
 
-Signed-off-by: Denys Zagorui <dzagorui@cisco.com>
----
- tools/bpf/bpftool/gen.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I agree that this is not required, will remove in the next version.
+Will also use the suggested optimization for immediate.
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 2883660d6b67..04c47745b3ea 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -1209,7 +1209,7 @@ static int do_skeleton(int argc, char **argv)
- 	codegen("\
- 		\n\
- 									    \n\
--			s->data = (void *)%2$s__elf_bytes(&s->data_sz);	    \n\
-+			s->data = %2$s__elf_bytes(&s->data_sz);		    \n\
- 									    \n\
- 			obj->skeleton = s;				    \n\
- 			return 0;					    \n\
--- 
-2.35.6
+>> +	}
+>> +	switch (sz) {
+>> +	case BPF_B:
+>> +		/* Load a Byte with sign extension*/
+>> +		emit(ARM_LDRSB_I(rd[1], rm, off), ctx);
+>> +		/* Carry the sign extension to upper 32 bits */
+>> +		emit(ARM_ASR_I(rd[0], rd[1], 31), ctx);
+>> +		break;
+>> +	case BPF_H:
+>> +		/* Load a HalfWord with sign extension*/
+>> +		emit(ARM_LDRSH_I(rd[1], rm, off), ctx);
+>> +		/* Carry the sign extension to upper 32 bits */
+>> +		emit(ARM_ASR_I(rd[0], rd[1], 31), ctx);
+>> +		break;
+>> +	case BPF_W:
+>> +		/* Load a Word*/
+>> +		emit(ARM_LDR_I(rd[1], rm, off), ctx);
+>> +		/* Carry the sign extension to upper 32 bits */
+>> +		emit(ARM_ASR_I(rd[0], rd[1], 31), ctx);
+>
+> The last instruction extending to the upper 32 bits is the same in each
+> of these cases, so is there any reason not to do it outside the switch
+> statement?
+
+Will move it outside in the next version.
+
+
+Thanks,
+Puranjay
 
 
