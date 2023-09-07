@@ -1,299 +1,267 @@
-Return-Path: <bpf+bounces-9431-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9437-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4FB879787F
-	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 18:47:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE06A797A3A
+	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 19:34:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13C5F1C20B91
-	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 16:47:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D04FF1C20BFA
+	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 17:34:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 002E8134CD;
-	Thu,  7 Sep 2023 16:47:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAA7713AEC;
+	Thu,  7 Sep 2023 17:33:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8815C134C1;
-	Thu,  7 Sep 2023 16:47:01 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 518592702;
-	Thu,  7 Sep 2023 09:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694105196; x=1725641196;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=TpyOm31/x67trGDwqjheOYnbkoKm1D0PRcPwGWesd/c=;
-  b=FnAs93RrHVs3XFplHp/P9s+Z7eX7rYzBmJRLNUIMMI4YHGvzKBu+Bt/u
-   5Ixe8qNBqKrundKsS4GLIdolPQ2EEFpK+dMJe8kCOqEWR4Y9CpCHL9y1D
-   Y2yh8ifULTbj7Ys1NEN3828aW9oIRZSs+XqMh3kmMp/7W6pn3900Qh5FO
-   zmnboD0xaAq5pWQh/LIoEYQZas8zm/MvTUAXprnGVh8tSevgZgNyBA52U
-   mtvE9cM46qaFvUvHdi20nhJFa+hJInW+eRPhpQbtzE3SYqJuYjUjFGcB4
-   QCJTMlRO04mVw8rCwztqBpMZbiQ6UwpIWhygulXj9hXWKL9cmXKGrwpZo
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="357721773"
-X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="357721773"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 09:44:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="832271335"
-X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="832271335"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Sep 2023 09:44:12 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 7 Sep 2023 09:44:11 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Thu, 7 Sep 2023 09:44:11 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.49) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 7 Sep 2023 09:44:11 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G6nf5yZ3LJ9kmedFUN1X+9DaJkFmag7gDo3GjGRWHFP80k/IVoi4GJveOQngHcEZr1YWdayQHsSea1uNO/vtlfrbYXUdvbN8m2wZCT7IX2l0NJbuociktRagg/RxSwYTGElMZRafQ+WZvl37Aqq+PUIw73SNIG1L9vbHJlUPmDYRnoRfGFOXvEBvDvmmg3pwa9KgrY3Jt0Rl6mr5Azz6NurB22BGcn+x7G8gMeE834VJzuY3osT8HJIbKvkWSm7WMUqlbOqyGCMBG8mPuKSKc1jGBP4UNC1n0am6X9GfVujPwE2idvOTTaEGskFPeBGKjKO0cy5vTBP9cb5mF/zmVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JPdAGA4EniEHgJtsSQpBOM6eEGk2yY5/HUnflzF1LP0=;
- b=BFkpExloHf1Gd5K+vZBY/xEhCL+tfm8lojHomv/i9LcivrJ+20rxB5sSxiLC/ae0/lu+2M8LTmd/D2KEwmEk9SKSTBwXTpYLqySlrHjuTHrRGf01r1gA81/2hFFXiJnT9crRMhQgXT8xJ0pJC7LQfX8aopU0BKna2mRGEn0uXUvxsIeznxX4lIzrrM9icMR7H4tVt6c/GsIgw+ybz4pVHV1orkJJ4cIQvaKPkkGGpVG3w5Rj5B9dgateTbNIUdug0+1/kJrIj7S6jBDJ/kpeFLUQWaN9LnTjVZWLDE6BYeYrxg5Cj29uHs6wlQJ0F7VVaIsfqLIndxaG1Y3eWTJ+Aw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- SJ0PR11MB6624.namprd11.prod.outlook.com (2603:10b6:a03:47a::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6745.33; Thu, 7 Sep 2023 16:44:07 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::c1f9:b4eb:f57e:5c3d]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::c1f9:b4eb:f57e:5c3d%3]) with mapi id 15.20.6745.034; Thu, 7 Sep 2023
- 16:44:07 +0000
-Date: Thu, 7 Sep 2023 18:43:58 +0200
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Stanislav Fomichev <sdf@google.com>
-CC: Larysa Zaremba <larysa.zaremba@intel.com>, <bpf@vger.kernel.org>,
-	<ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-	<martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <haoluo@google.com>,
-	<jolsa@kernel.org>, David Ahern <dsahern@gmail.com>, Jakub Kicinski
-	<kuba@kernel.org>, Willem de Bruijn <willemb@google.com>, "Jesper Dangaard
- Brouer" <brouer@redhat.com>, Anatoly Burakov <anatoly.burakov@intel.com>,
-	Alexander Lobakin <alexandr.lobakin@intel.com>, Magnus Karlsson
-	<magnus.karlsson@gmail.com>, Maryam Tahhan <mtahhan@redhat.com>,
-	<xdp-hints@xdp-project.net>, <netdev@vger.kernel.org>, Willem de Bruijn
-	<willemdebruijn.kernel@gmail.com>, Alexei Starovoitov
-	<alexei.starovoitov@gmail.com>, Simon Horman <simon.horman@corigine.com>,
-	Tariq Toukan <tariqt@mellanox.com>, Saeed Mahameed <saeedm@mellanox.com>
-Subject: Re: [xdp-hints] [RFC bpf-next 05/23] ice: Introduce ice_xdp_buff
-Message-ID: <ZPn9zgnItkkVfpu/@boxer>
-References: <20230824192703.712881-1-larysa.zaremba@intel.com>
- <20230824192703.712881-6-larysa.zaremba@intel.com>
- <ZPX4ftTJiJ+Ibbdd@boxer>
- <ZPYdve6E467wewgP@lincoln>
- <ZPdq/7oDhwKu8KFF@boxer>
- <ZPncfkACKhPFU0PU@lincoln>
- <CAKH8qBuzgtJj=OKMdsxEkyML36VsAuZpcrsXcyqjdKXSJCBq=Q@mail.gmail.com>
- <ZPn9eRofEv3guPLj@boxer>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZPn9eRofEv3guPLj@boxer>
-X-ClientProxiedBy: FRYP281CA0005.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::15)
- To DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B3713ADD
+	for <bpf@vger.kernel.org>; Thu,  7 Sep 2023 17:33:58 +0000 (UTC)
+Received: from mx0b-00206402.pphosted.com (mx0b-00206402.pphosted.com [148.163.152.16])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B13C2125
+	for <bpf@vger.kernel.org>; Thu,  7 Sep 2023 10:33:33 -0700 (PDT)
+Received: from pps.filterd (m0354654.ppops.net [127.0.0.1])
+	by mx0b-00206402.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 387BDWtV032561;
+	Thu, 7 Sep 2023 17:32:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
+	 h=message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type; s=default; bh=0X2wy6vDMqny7o58g9AwlHC
+	rmBWaRBGEgxIwfXvPT8g=; b=csNd+toZ0JEFR7fA3KKLWaeGJX7Kl/OlJ+ZRo3Y
+	MlVBGFxw2Z+kaI/l4hBDX3UvxzzajmPPdp+KM5Z0oXKgztyHOBI6ZRu4rKO3IiIx
+	PjO2uuEa5PFeuKgQIAYsFoHeGGMWnAQ3qxqQSVawxxlUJoFCyJ1V4XInSr6I1fLb
+	kA+Krgsrxnh2OW0f3mzZR3TmVuQ+NKN2iM8jt/XRGNxEEnysG7qKZqnTNDfXtwR+
+	H6sYiRGqtubFkMZ5ZnIjol/VCJAnQHPsB8iQ0QdtiDz0pGc5nv3iv6VRMu9MAg4n
+	yTyioyDMAoI8XR0JvYQDlDQRqMQoCrZOAjdRJhRmL5OQ78Q==
+Received: from 04wpexch06.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60])
+	by mx0b-00206402.pphosted.com (PPS) with ESMTPS id 3sydf1ry6e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Sep 2023 17:32:01 +0000 (GMT)
+Received: from [10.102.42.42] (10.100.11.122) by 04wpexch06.crowdstrike.sys
+ (10.100.11.99) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.16; Thu, 7 Sep
+ 2023 17:31:59 +0000
+Message-ID: <d616e7c0-4655-85b3-c288-7c5b5fba665f@crowdstrike.com>
+Date: Thu, 7 Sep 2023 10:31:58 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|SJ0PR11MB6624:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8a9e3ddf-beea-47c4-8bac-08dbafc1a778
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VRk/lNDGVbHgz9Urpbsb5cQb6ebeL8ALPTso+G9XjF/vbWKrQ2143+S81dtIWP1Wy1hqDtmtcxmrKsNRuv0rV6c2wFRimx3NVDE0DyewlNHMkNFwxIQ0cnmgPKyRbifW+yINSUUQOSJ2Fo//bnukSWb8ceCErJmg7TBXxnd2d1GWbIyBaHV5DquY3swcyBN6NcZ7XVLkIOGlT+kidfLSM6R9iW5UbCjcz6fabhg5m4qO23oNtTjTELbLYc3PxS+Z0aSEM66hf+PTXJtLVxaloV+uRmtbMC/Lby02iqCJbj/CZefjTKoc/W9mc2w8hO20DtXcf/i29aI4rgiwQhw7Bo3e79uYs5t1aNf+fwE70qM2GbqZ8NXR+9tigIqphcZA2zoxnh8pthggkfxNO911kBDYwAej9aHtqR4ZbDx2N7/9qDuUFOKj3ndiQbqeakrNYD5e4Fr5uwYagwTrMJWS7M880/zjtBbV58CbxA88Z5FoTZzSgqHCKaLnRkB7TM4RG4ar50gPxkPcI6sxmEVAEt432f/d+PJjD1l/Mqm2uqE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(346002)(366004)(396003)(39860400002)(376002)(1800799009)(186009)(451199024)(26005)(5660300002)(4326008)(8676002)(8936002)(2906002)(7416002)(83380400001)(86362001)(82960400001)(38100700002)(33716001)(6916009)(6486002)(6506007)(6666004)(66556008)(54906003)(66946007)(66476007)(53546011)(966005)(44832011)(6512007)(478600001)(41300700001)(9686003)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VW4vRU9IVzJaQStpQ0h3VWxSclRkUXFsUnlFVThOQm5lVm05WjRJN1dQUGtJ?=
- =?utf-8?B?QThZU1RpUEVqOGVJdGQrR0Z5d2NrWk1BNWhSN29JQkNCUDc5SGc2N3NOQTMy?=
- =?utf-8?B?cjc5VFhKVkIzUWJYcnN5amNzOUFVK0N1UThsd3o1aDFUeFRyZ2NXdHZCaUV0?=
- =?utf-8?B?aXdaYkpIcDNmTFFZVE9STGg3Sjd3MGZEUXpteG5WRmk0U214TEhrZWZSZlkr?=
- =?utf-8?B?azNHc3hJRmFlVEw0UndBczVsWE5sQnlUSVlWa2w5UnZ3NXZ6U3dyQlp0UEZt?=
- =?utf-8?B?WTdKclRFUkNLK24zZ0dZQkJHRjdacHNqVUJvMFRqZ3VBOFZ0OWRYWFRzOVds?=
- =?utf-8?B?OE9ZVnpRVndBeS9sazhqZzdVaTlVeGV0MWNxcXp0elJZd0JzS3BVNVZJZFpQ?=
- =?utf-8?B?K1Flbm5nYUZuanFhTERnMmRYaFdDNnhadkRGWjFNTDVZVjdxTWdqMW9ZYmxZ?=
- =?utf-8?B?K2YyS29zRG1oY3F3V3grbno2eWRVMzgyMy9qVjcwOGJDVWFHdU5RQlNwb0hU?=
- =?utf-8?B?NmREL0JVLzBIS3RIaDcvZnhpNVZqWWl4THFjZUY0ckFHK1k2eVZRdU9yS3Z2?=
- =?utf-8?B?QTBwV0xrUVdQdlBicUVVUE16UzVIT1p2a2RhWE5pYUFhOURuUmQ4N0N6eXJU?=
- =?utf-8?B?L2JEYkhINENuKzN3enh2V3ZteVFzT3BuSkNMRGNPZzdYM1QzUUdTRXJTTzlj?=
- =?utf-8?B?K2pjMk40MXQxRW5mOG0rYTBnMzhjNisyUXZEWkRMVVIrM2VZOHFaNDAzelJt?=
- =?utf-8?B?VUFNaU0wbnR2NnVUcFJHTFBVRVRLdVAxajg1bGlYYml1OGoyajJidXNtai90?=
- =?utf-8?B?WHlJYVVVR0Y2MTBHcmNRNVQyL1Q3eDlsWFdqQ3Y1emZxc3lFYXNFZVVGUlhz?=
- =?utf-8?B?V1dlSW9JdVJhSGc2M1pjUmNXUjBHb3R6Rko5Z2pFVWl0MC84THo4em5sQnQy?=
- =?utf-8?B?SG9BMFd6aTRPUEJXL1V5eWNOc2N6WXRWMGdaWm5nUWU2WDlvYkVGZmZXYTdk?=
- =?utf-8?B?Njc3L3dIdmliQ2Q0U2RXdkNLSEl5SGdxTi9EbTdodjVDR2hnQ1FlQUExZkhP?=
- =?utf-8?B?YmpwbmpEbHUyYXBFQ0w1N3ZJM28yOFc2Sm1iOWptWGJEQkx3azBhZXhvTit3?=
- =?utf-8?B?MmtaWmlXVUp0Z3hDQVMxQlU2ZCtSSVV6cmNxNHpiM1NueGI0NHVSTTNPUjl0?=
- =?utf-8?B?bVl3eDhXamxRb3h6dXJnb0cxcDNtS1Q5M3NEdWNrbjQzR2ZMYzFKaG9sWm83?=
- =?utf-8?B?eWFTNmJWMys3SFNyOFhKSWNVQkFlL09HeVVPamJvelBRd0dBVmpFMUZ6VkU2?=
- =?utf-8?B?TDBZbEwzMmVlUkVqR253aEc5TXhPQlNsVGJ4QW91SDNIVHRzNHAvYzlOYXN2?=
- =?utf-8?B?bzUzVnRFT0lKS2Uxdk56Q3dtYW1TeFRTMm02aTg1R1UxQ1VoYnVyTklMb3NU?=
- =?utf-8?B?K0dNZTh0RmFGbmh1V0ZBNTNvV1JLVUpXK2pTTjhrb1g5VmV4cTRsU2ZrRVlG?=
- =?utf-8?B?MGh3RFdaRFA4dXRLUUFoQ0ZTb0g5RjgrcmZHVW1KdnRSUE1uYkZqdm5UVjd1?=
- =?utf-8?B?SW9Db0c1VkZXQWVDcnRMaHpBa3RIOTYzcmc0NjVqWjhOdXhCeUwvQVFqRjhB?=
- =?utf-8?B?bmR6Z1FBaE4xcG5hTWVlc2RhazV3dGtNR2NGbkYveG85REdZTGt4UGg1YmFH?=
- =?utf-8?B?VlJ6Nis0S2pMeEVwelo0aVhHZEZhM2lvaDlnWFk2QnVsR1B5R3h4dEtxQ1B3?=
- =?utf-8?B?SVVmODdBV01raFM1SzJkNDFTYlA1RDdOVm1yQW1XNHJWWk5GWFVqcmVsMDg0?=
- =?utf-8?B?M1NYWWhXNFpEQmlKY3NvYTBGR2IvcWZFMEZ3Sm1WNWlFMkh6YVJLLzBWS1M0?=
- =?utf-8?B?OHZvRjVyZlJYVmwxZXEyTnAvZG12QTFWaWExYTFodG9yR1BENE5OWS9lendn?=
- =?utf-8?B?M1BidGg0VE53MDZGK2JYZ08vNUFRcnB0U244UWFiTlZsTFJzQ1ZrNUxxbnNS?=
- =?utf-8?B?MERsNEQ3R1oxc3Rna0V1RnUwVjlHajFhSklKRGV5REh4aFNyM3J6REdjaDVU?=
- =?utf-8?B?UnFSL2gxNWZPdUVqcE1LM3NKdmZEVFZHTHZrUVhUMlMxOWFrL2VhTEpiSEpK?=
- =?utf-8?B?WUk3c3hQUW5sMXZsZXU1bjVBUkFldm54K3V3akx4TUp3dFhjMWIxa0JDc0Rn?=
- =?utf-8?B?TXc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a9e3ddf-beea-47c4-8bac-08dbafc1a778
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 16:44:07.7507
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +syrhIQH+TrqAGIoi6hsrRPeWh09KFW4ciKfd44TGPTzlUiZI49nQuNsblq9E+jo6hVGGJIN2B7dP6Jj+9gwnKeTg01jZPh1TrZfCBMeGIY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB6624
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: Re: [PATCH bpf] libbpf: soften BTF map error
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC: Daniel Borkmann <daniel@iogearbox.net>, <bpf@vger.kernel.org>,
+        Andrii
+ Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+References: <20230816173030.148536-1-martin.kelly@crowdstrike.com>
+ <5806e499-069f-18f4-2af0-5d9bd8bfa05e@iogearbox.net>
+ <2e6c5f26-7ef9-f97f-44dc-03967b3326ea@crowdstrike.com>
+ <c109eeeb-9db7-3a7a-f815-412f412968a3@crowdstrike.com>
+ <CAEf4BzY1ZPmyyG3T+hSms7Avbb+4CmMJo13v5yZMz824wLt2iw@mail.gmail.com>
+Content-Language: en-US
+From: Martin Kelly <martin.kelly@crowdstrike.com>
+In-Reply-To: <CAEf4BzY1ZPmyyG3T+hSms7Avbb+4CmMJo13v5yZMz824wLt2iw@mail.gmail.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature";
+	micalg=sha-256; boundary="------------ms000300050902020508020806"
+X-Originating-IP: [10.100.11.122]
+X-ClientProxiedBy: 04WPEXCH11.crowdstrike.sys (10.100.11.115) To
+ 04wpexch06.crowdstrike.sys (10.100.11.99)
+X-Disclaimer: USA
+X-Proofpoint-GUID: ewIiqiHyeNnn-XqY4kApwfEX7OD6SM2y
+X-Proofpoint-ORIG-GUID: ewIiqiHyeNnn-XqY4kApwfEX7OD6SM2y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-07_10,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 bulkscore=0 spamscore=0 phishscore=0 impostorscore=0
+ suspectscore=0 adultscore=0 mlxlogscore=999 clxscore=1011 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2308100000 definitions=main-2309070155
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Sep 07, 2023 at 06:42:33PM +0200, Maciej Fijalkowski wrote:
-> On Thu, Sep 07, 2023 at 09:33:14AM -0700, Stanislav Fomichev wrote:
-> > On Thu, Sep 7, 2023 at 7:27 AM Larysa Zaremba <larysa.zaremba@intel.com> wrote:
-> > >
-> > > On Tue, Sep 05, 2023 at 07:53:03PM +0200, Maciej Fijalkowski wrote:
-> > > > On Mon, Sep 04, 2023 at 08:11:09PM +0200, Larysa Zaremba wrote:
-> > > > > On Mon, Sep 04, 2023 at 05:32:14PM +0200, Maciej Fijalkowski wrote:
-> > > > > > On Thu, Aug 24, 2023 at 09:26:44PM +0200, Larysa Zaremba wrote:
-> > > > > > > In order to use XDP hints via kfuncs we need to put
-> > > > > > > RX descriptor and ring pointers just next to xdp_buff.
-> > > > > > > Same as in hints implementations in other drivers, we achieve
-> > > > > > > this through putting xdp_buff into a child structure.
-> > > > > >
-> > > > > > Don't you mean a parent struct? xdp_buff will be 'child' of ice_xdp_buff
-> > > > > > if i'm reading this right.
-> > > > > >
-> > > > >
-> > > > > ice_xdp_buff is a child in terms of inheritance (pointer to ice_xdp_buff could
-> > > > > replace pointer to xdp_buff, but not in reverse).
-> > > > >
-> > > > > > >
-> > > > > > > Currently, xdp_buff is stored in the ring structure,
-> > > > > > > so replace it with union that includes child structure.
-> > > > > > > This way enough memory is available while existing XDP code
-> > > > > > > remains isolated from hints.
-> > > > > > >
-> > > > > > > Minimum size of the new child structure (ice_xdp_buff) is exactly
-> > > > > > > 64 bytes (single cache line). To place it at the start of a cache line,
-> > > > > > > move 'next' field from CL1 to CL3, as it isn't used often. This still
-> > > > > > > leaves 128 bits available in CL3 for packet context extensions.
-> > > > > >
-> > > > > > I believe ice_xdp_buff will be beefed up in later patches, so what is the
-> > > > > > point of moving 'next' ? We won't be able to keep ice_xdp_buff in a single
-> > > > > > CL anyway.
-> > > > > >
-> > > > >
-> > > > > It is to at least keep xdp_buff and descriptor pointer (used for every hint) in
-> > > > > a single CL, other fields are situational.
-> > > >
-> > > > Right, something must be moved...still, would be good to see perf
-> > > > before/after :)
-> > > >
-> > > > >
-> > > > > > >
-> > > > > > > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> > > > > > > ---
-> > > > > > >  drivers/net/ethernet/intel/ice/ice_txrx.c     |  7 +++--
-> > > > > > >  drivers/net/ethernet/intel/ice/ice_txrx.h     | 26 ++++++++++++++++---
-> > > > > > >  drivers/net/ethernet/intel/ice/ice_txrx_lib.h | 10 +++++++
-> > > > > > >  3 files changed, 38 insertions(+), 5 deletions(-)
-> > > > > > >
-> > > > > > > diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> > > > > > > index 40f2f6dabb81..4e6546d9cf85 100644
-> > > > > > > --- a/drivers/net/ethernet/intel/ice/ice_txrx.c
-> > > > > > > +++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> > > > > > > @@ -557,13 +557,14 @@ ice_rx_frame_truesize(struct ice_rx_ring *rx_ring, const unsigned int size)
-> > > > > > >   * @xdp_prog: XDP program to run
-> > > > > > >   * @xdp_ring: ring to be used for XDP_TX action
-> > > > > > >   * @rx_buf: Rx buffer to store the XDP action
-> > > > > > > + * @eop_desc: Last descriptor in packet to read metadata from
-> > > > > > >   *
-> > > > > > >   * Returns any of ICE_XDP_{PASS, CONSUMED, TX, REDIR}
-> > > > > > >   */
-> > > > > > >  static void
-> > > > > > >  ice_run_xdp(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
-> > > > > > >             struct bpf_prog *xdp_prog, struct ice_tx_ring *xdp_ring,
-> > > > > > > -           struct ice_rx_buf *rx_buf)
-> > > > > > > +           struct ice_rx_buf *rx_buf, union ice_32b_rx_flex_desc *eop_desc)
-> > > > > > >  {
-> > > > > > >         unsigned int ret = ICE_XDP_PASS;
-> > > > > > >         u32 act;
-> > > > > > > @@ -571,6 +572,8 @@ ice_run_xdp(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
-> > > > > > >         if (!xdp_prog)
-> > > > > > >                 goto exit;
-> > > > > > >
-> > > > > > > +       ice_xdp_meta_set_desc(xdp, eop_desc);
-> > > > > >
-> > > > > > I am currently not sure if for multi-buffer case HW repeats all the
-> > > > > > necessary info within each descriptor for every frag? IOW shouldn't you be
-> > > > > > using the ice_rx_ring::first_desc?
-> > > > > >
-> > > > > > Would be good to test hints for mbuf case for sure.
-> > > > > >
-> > > > >
-> > > > > In the skb path, we take metadata from the last descriptor only, so this should
-> > > > > be fine. Really worth testing with mbuf though.
-> > >
-> > > I retract my promise to test this with mbuf, as for now hints and mbuf are not
-> > > supposed to go together [0].
-> > 
-> > Hm, I don't think it's intentional. I don't see why mbuf and hints
-> > can't coexist.
-> 
-> They should coexist, xdp mbuf support is an integral part of driver as we
-> know:)
-> 
-> > Anything pops into your mind? Otherwise, can change that mask to be
-> > ~(BPF_F_XDP_DEV_BOUND_ONLY|BPF_F_XDP_HAS_FRAGS) as part of the series
-> > (or separately, up to you).
-> 
-> +1
+--------------ms000300050902020508020806
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-IMHO that should be a standalone patch.
+On 9/6/23 17:29, Andrii Nakryiko wrote:
+> On Mon, Aug 28, 2023 at 1:22 PM Martin Kelly
+> <martin.kelly@crowdstrike.com> wrote:
+>> On 8/17/23 10:07, Martin Kelly wrote:
+>>> On 8/17/23 07:17, Daniel Borkmann wrote:
+>>>> On 8/16/23 7:30 PM, Martin Kelly wrote:
+>>>>> For map-in-map types, the first time the map is loaded, we get a scary
+>>>>> error looking like this:
+>>>>>
+>>>>> libbpf: bpf_create_map_xattr(map_name):ERROR:
+>>>>> strerror_r(-524)=22(-524). Retrying without BTF.
+>>>>>
+>>>>> On the second try without BTF, everything works fine. However, as this
+>>>>> is logged at error level, it looks needlessly scary to users. Soften
+>>>>> this to be at debug level; if the second attempt still fails, we'll
+>>>>> still get an error as expected.
+>>>>>
+>>>>> Signed-off-by: Martin Kelly <martin.kelly@crowdstrike.com>
+>>>> nit: $subj should be for bpf-next instead of bpf
+>>> I had purposefully sent to "bpf" instead of "bpf-next" as it felt like
+>>> a fix, but I'm fine with "bpf-next" instead if that's better.
+>>>
+>>>>> ---
+>>>>>    tools/lib/bpf/libbpf.c | 2 +-
+>>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>>>>> index b14a4376a86e..0ca0c8d01707 100644
+>>>>> --- a/tools/lib/bpf/libbpf.c
+>>>>> +++ b/tools/lib/bpf/libbpf.c
+>>>>> @@ -5123,7 +5123,7 @@ static int bpf_object__create_map(struct
+>>>>> bpf_object *obj, struct bpf_map *map, b
+>>>>>              err = -errno;
+>>>>>            cp = libbpf_strerror_r(err, errmsg, sizeof(errmsg));
+>>>>> -        pr_warn("Error in bpf_create_map_xattr(%s):%s(%d). Retrying
+>>>>> without BTF.\n",
+>>>>> +        pr_debug("bpf_create_map_xattr(%s):%s(%d). Retrying without
+>>>>> BTF.\n",
+>>>>>                map->name, cp, err);
+>>>> There are also several other places with pr_warns about BTF when
+>>>> loading an obj. Did
+>>>> you audit them as well under !BTF kernel? nit: Why changing the fmt
+>>>> string itself,
+>>>> looked ok as-is, no?
+>>> This message is actually printed even for a BTF-supported kernel.
+>>> Basically, the first call to bpf_create_map_xattr using BTF *always*
+>>> fails for map-in-map types, printing this message, and then the second
+>>> always succeeds. So this isn't really about BTF support but simply
+>>> about an over-zealous message.
+>>>
+>>> I changed the format string because calling this an "Error" feels (to
+>>> me) unnecessarily alarming, given that this is totally normal
+>>> behavior. I'm OK keeping the "Error in" part if you think that's
+>>> better. The most important thing to me was that, when the program
+>>> loads successfully, we shouldn't be logging to stderr and scaring the
+>>> user.
+>>>
+>>> Let me know if you'd like me to keep the "Error in" part for a v2 patch.
+>>>
+>>>> There is also libbpf_needs_btf(obj), perhaps this could be left as
+>>>> pr_warn similar
+>>>> as in bpf_object__init_btf() - or would this still trigger in your case?
+>>> I think this one should stay as a warning, as it looks like the code
+>>> path is a fatal error, and if you try to load a BTF-requiring program
+>>> but don't have BTF, that seems like an error to me. This patch was
+>>> more about an error being logged 100% of the time in a totally normal,
+>>> non-fatal, BTF-supported case due to the quirks of map-in-map types
+>>> and BTF.
+>>>
+>>>>>            create_attr.btf_fd = 0;
+>>>>>            create_attr.btf_key_type_id = 0;
+>>>>>
+>>>> Thanks,
+>>>> Daniel
+>> (ping) any thoughts on the above? I'm happy to send a v2 patch but want
+>> to make sure we're on the same page with what should be in it.
+>>
+> map creation failing due to having a BTF information should be a
+> rather exception than the norm, for two reasons: 1) libbpf sanitizes
+> BTF, so even older kernels can still retain some (modified) BTF
+> information, and 2) libbpf drops BTF for maps that don't support BTF
+> type info for keys/values. So if you see this, then it would be useful
+> to actually look into why this is happening.
+>
+> So I'd prefer this to keep pretty visible. Can you try to debug what
+> makes the kernel reject your BTF information?
 
-> 
-> > 
-> > > Making sure they can co-exist peacefully can be a topic for another series.
-> > > For now I just can just say with high confidence that in case of multi-buffer
-> > > frames, we do have all the supported metadata in the EoP descriptor.
-> > >
-> > > [0] https://elixir.bootlin.com/linux/v6.5.2/source/kernel/bpf/offload.c#L234
-> > >
-> > > >
-> > > > Ok, thanks!
-> > > >
-> > 
+I'm happy to report that the issue that prompted this patch doesn't 
+repro anymore on latest bpf-next; I originally wrote this some time 
+back, so something must have changed in either the BPF code or libbpf. 
+Thanks for following up; let's drop this patch.
+
+
+--------------ms000300050902020508020806
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+Cn8wggUVMIID/aADAgECAhEArxwEsqyM/5sAAAAAUc4Y4zANBgkqhkiG9w0BAQsFADCBtDEU
+MBIGA1UEChMLRW50cnVzdC5uZXQxQDA+BgNVBAsUN3d3dy5lbnRydXN0Lm5ldC9DUFNfMjA0
+OCBpbmNvcnAuIGJ5IHJlZi4gKGxpbWl0cyBsaWFiLikxJTAjBgNVBAsTHChjKSAxOTk5IEVu
+dHJ1c3QubmV0IExpbWl0ZWQxMzAxBgNVBAMTKkVudHJ1c3QubmV0IENlcnRpZmljYXRpb24g
+QXV0aG9yaXR5ICgyMDQ4KTAeFw0yMDA3MjkxNTQ4MzBaFw0yOTA2MjkxNjE4MzBaMIGlMQsw
+CQYDVQQGEwJVUzEWMBQGA1UEChMNRW50cnVzdCwgSW5jLjE5MDcGA1UECxMwd3d3LmVudHJ1
+c3QubmV0L0NQUyBpcyBpbmNvcnBvcmF0ZWQgYnkgcmVmZXJlbmNlMR8wHQYDVQQLExYoYykg
+MjAxMCBFbnRydXN0LCBJbmMuMSIwIAYDVQQDExlFbnRydXN0IENsYXNzIDIgQ2xpZW50IENB
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxDKNQtCeGZ1bkFoQTLUQACG5B0je
+rm6A1v8UUAboda9rRo7npU+tw4yw+nvgGZH98GOtcUnzqBwfqzQZIE5LVOkAk75wCDHeiVOs
+V7wk7yqPQtT36pUlXRR20s2nEvobsrRcYUC9X91Xm0RV2MWJGTxlPbno1KUtwizT6oMxogg8
+XlmuEi4qCoxe87MxrgqtfuywSQn8py4iHmhkNJ0W46Y9AzFAFveU9ksZNMmX5iKcSN5koIML
+WAWYxCJGiQX9o772SUxhAxak+AqZHOLAxn5pAjJXkAOvAJShudzOr+/0fBjOMAvKh/jVXx9Z
+UdiLC7k4xljCU3zaJtTb8r2QzQIDAQABo4IBLTCCASkwDgYDVR0PAQH/BAQDAgGGMB0GA1Ud
+JQQWMBQGCCsGAQUFBwMEBggrBgEFBQcDAjASBgNVHRMBAf8ECDAGAQH/AgEAMDMGCCsGAQUF
+BwEBBCcwJTAjBggrBgEFBQcwAYYXaHR0cDovL29jc3AuZW50cnVzdC5uZXQwMgYDVR0fBCsw
+KTAnoCWgI4YhaHR0cDovL2NybC5lbnRydXN0Lm5ldC8yMDQ4Y2EuY3JsMDsGA1UdIAQ0MDIw
+MAYEVR0gADAoMCYGCCsGAQUFBwIBFhpodHRwOi8vd3d3LmVudHJ1c3QubmV0L3JwYTAdBgNV
+HQ4EFgQUCZGluunyLip1381+/nfK8t5rmyQwHwYDVR0jBBgwFoAUVeSB0RGAvtiJuQijMfmh
+JAkWuXAwDQYJKoZIhvcNAQELBQADggEBAD+96RB180Kn0WyBJqFGIFcSJBVasgwIf91HuT9C
+k6QKr0wR7sxrMPS0LITeCheQ+Xg0rq4mRXYFNSSDwJNzmU+lcnFjtAmIEctsbu+UldVJN8+h
+APANSxRRRvRocbL+YKE3DyX87yBaM8aph8nqUvbXaUiWzlrPEJv2twHDOiGlyEPAhJ0D+MU0
+CIfLiwqDXKojK+n/uN6nSQ5tMhWBMMgn9MD+zxp1zIe7uhGhgmVQBZ/zRZKHoEW4Gedf+EYK
+W8zYXWsWkUwVlWrj5PzeBnT2bFTdxCXwaRbW6g4/Wb4BYvlgnx1AszH3EJwv+YpEZthgAk4x
+ELH2l47+IIO9TUowggViMIIESqADAgECAhEA08tQuGADKTUAAAAATD0rOTANBgkqhkiG9w0B
+AQsFADCBpTELMAkGA1UEBhMCVVMxFjAUBgNVBAoTDUVudHJ1c3QsIEluYy4xOTA3BgNVBAsT
+MHd3dy5lbnRydXN0Lm5ldC9DUFMgaXMgaW5jb3Jwb3JhdGVkIGJ5IHJlZmVyZW5jZTEfMB0G
+A1UECxMWKGMpIDIwMTAgRW50cnVzdCwgSW5jLjEiMCAGA1UEAxMZRW50cnVzdCBDbGFzcyAy
+IENsaWVudCBDQTAeFw0yMzA2MjAxNzIwNTVaFw0yNDA2MjAxNzUwNTVaMIGhMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEPMA0GA1UEBxMGSXJ2aW5lMRowGAYDVQQKExFD
+cm93ZFN0cmlrZSwgSW5jLjFQMCMGA1UEAwwcbWFydGluLmtlbGx5QGNyb3dkc3RyaWtlLmNv
+bTApBgkqhkiG9w0BCQEWHG1hcnRpbi5rZWxseUBjcm93ZHN0cmlrZS5jb20wggEiMA0GCSqG
+SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDNA2/NGaQa5lSMUmccV1LLbYtqs/nWOHqgNwCcmKCz
+H8nUJbQfQ6zTD1+azeD3yXyNh0/ZA0VC2+viSX8tEEKfUs6xog6dOYh1nPmn65M2NY/FfEP2
+SuvrjXRRy21Pl5C9Fg6hhPqSFpZghY1gY02ur6t+mMp1If+5Cfre4Z8kSQR5QCLSsfhV1HgT
+ugzXJRYeQVzaiqoFzrVL/IzWL9zkoQZyayC1yUTJNCuHF7jLbxU96S9E2eaCsXb1uh3fL7uo
+zDLTd1LlmAFbgpPY9pvg42TZBt8R8HhZz60xO6eWd559Kr1BiSfN6/ljEKf6dbqZhQ5YeQX5
+0vOtRULdAgKpAgMBAAGjggGNMIIBiTAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYwFAYIKwYB
+BQUHAwIGCCsGAQUFBwMEMEIGA1UdIAQ7MDkwNwYLYIZIAYb6bAoBBAIwKDAmBggrBgEFBQcC
+ARYaaHR0cDovL3d3dy5lbnRydXN0Lm5ldC9ycGEwagYIKwYBBQUHAQEEXjBcMCMGCCsGAQUF
+BzABhhdodHRwOi8vb2NzcC5lbnRydXN0Lm5ldDA1BggrBgEFBQcwAoYpaHR0cDovL2FpYS5l
+bnRydXN0Lm5ldC8yMDQ4Y2xhc3Myc2hhMi5jZXIwNAYDVR0fBC0wKzApoCegJYYjaHR0cDov
+L2NybC5lbnRydXN0Lm5ldC9jbGFzczJjYS5jcmwwJwYDVR0RBCAwHoEcbWFydGluLmtlbGx5
+QGNyb3dkc3RyaWtlLmNvbTAfBgNVHSMEGDAWgBQJkaW66fIuKnXfzX7+d8ry3mubJDAdBgNV
+HQ4EFgQUkn2sFfaEEaPL26WPi54nFGuQfiAwCQYDVR0TBAIwADANBgkqhkiG9w0BAQsFAAOC
+AQEAoGF01JRkMwGCNNuxH42WwS+Ynqf4eIjMylH46nNml/hUbZaEI67ibqYgIwRjuiij3eRX
+aqeLtpl7veL7ZoUikhx7wCM/9BU0xxkiMDVSwevpacMF5CqHdcHkvIAb4oFKbv3F9169XKRK
+nmtd5cTBEoP0WWvM7/8Jm6Z7R575e2kb7vq2qFvIo2GhZLjVBhgAKr3lpe/TSY0/FlPf23Wt
+UeyPcuEbmiTnGKCaYrAZatALpkPRfSp+A8jigq3o7wgf+yek6yv0SOlPQFnzlIwb7UigF476
+vgkX3jbK07h4ev/cnmmMc4BKiH7kqhFDxW2oMbZyLtvTengQ3434PKNQljGCBGIwggReAgEB
+MIG7MIGlMQswCQYDVQQGEwJVUzEWMBQGA1UEChMNRW50cnVzdCwgSW5jLjE5MDcGA1UECxMw
+d3d3LmVudHJ1c3QubmV0L0NQUyBpcyBpbmNvcnBvcmF0ZWQgYnkgcmVmZXJlbmNlMR8wHQYD
+VQQLExYoYykgMjAxMCBFbnRydXN0LCBJbmMuMSIwIAYDVQQDExlFbnRydXN0IENsYXNzIDIg
+Q2xpZW50IENBAhEA08tQuGADKTUAAAAATD0rOTANBglghkgBZQMEAgEFAKCCAncwGAYJKoZI
+hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwOTA3MTczMTU4WjAvBgkq
+hkiG9w0BCQQxIgQgiV6wyg2+2jG/mTjIqzVNsXt6sLypWpCWeKlKSoQJR0kwbAYJKoZIhvcN
+AQkPMV8wXTALBglghkgBZQMEASowCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3
+DQMCAgIAgDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBzAYJKwYB
+BAGCNxAEMYG+MIG7MIGlMQswCQYDVQQGEwJVUzEWMBQGA1UEChMNRW50cnVzdCwgSW5jLjE5
+MDcGA1UECxMwd3d3LmVudHJ1c3QubmV0L0NQUyBpcyBpbmNvcnBvcmF0ZWQgYnkgcmVmZXJl
+bmNlMR8wHQYDVQQLExYoYykgMjAxMCBFbnRydXN0LCBJbmMuMSIwIAYDVQQDExlFbnRydXN0
+IENsYXNzIDIgQ2xpZW50IENBAhEA08tQuGADKTUAAAAATD0rOTCBzgYLKoZIhvcNAQkQAgsx
+gb6ggbswgaUxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1FbnRydXN0LCBJbmMuMTkwNwYDVQQL
+EzB3d3cuZW50cnVzdC5uZXQvQ1BTIGlzIGluY29ycG9yYXRlZCBieSByZWZlcmVuY2UxHzAd
+BgNVBAsTFihjKSAyMDEwIEVudHJ1c3QsIEluYy4xIjAgBgNVBAMTGUVudHJ1c3QgQ2xhc3Mg
+MiBDbGllbnQgQ0ECEQDTy1C4YAMpNQAAAABMPSs5MA0GCSqGSIb3DQEBAQUABIIBACzLnFFj
+zxRlKV39MgY1HzEY2l7OI73wEAnfJqYXHsquaFMqNH4bc/Rj+/JgMGmrZvwNGjs2aZGYj28J
+mZ3tpxZqxN+5xIeSpE4e9t1hL6NPBTcUCeK175kGaiGtcoR0c/EkRU5HS1Rgq01xgCG5ObQs
+Glq4fxcuQGq2JMSag8a04XI93gpWi4htI34j6TrnxZ8BIdBaV4u4slJD/g6sxYAxlZ6FZgru
+wuiH1drtwqnBCuuAKJGQSTNOfHO7e+wIq6hQUJV+ULPiTqTSrAskM5O2gqq0DS8vYJTn9AC3
+7u9EWLA01T56FgfLHkS0TtZhZWPMT3kYn9DH6fgD7ECGr+sAAAAAAAA=
+--------------ms000300050902020508020806--
 
