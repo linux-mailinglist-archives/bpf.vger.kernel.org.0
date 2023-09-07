@@ -1,132 +1,90 @@
-Return-Path: <bpf+bounces-9433-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9420-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA4A87978DE
-	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 18:56:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 140A5797682
+	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 18:11:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA11C2819A3
-	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 16:56:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 449791C20BAD
+	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 16:11:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7565A134D5;
-	Thu,  7 Sep 2023 16:56:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5BA0134B0;
+	Thu,  7 Sep 2023 16:11:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD47125A7
-	for <bpf@vger.kernel.org>; Thu,  7 Sep 2023 16:56:24 +0000 (UTC)
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CE31BE9;
-	Thu,  7 Sep 2023 09:56:01 -0700 (PDT)
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-400a087b0bfso12673555e9.2;
-        Thu, 07 Sep 2023 09:56:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694105397; x=1694710197; darn=vger.kernel.org;
-        h=mime-version:user-agent:message-id:in-reply-to:date:references
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zJt/9WZjIvczsRkxafc4lYbTBilfxwLL5Q8Z2MfbMxA=;
-        b=sIyv8y6BstNYPgCkKYouA0nClPdzHpzFsSwR2R5WKhLc7KetEy1CbeXi8RYz4kf8pL
-         vuOh2q4nRy7hxzvfMHsKvS4lZxJWNuTyh5QerRPyTNwd95Qp7bZhICi1WRWr8Sr7VwNP
-         mNtjG2DqqyB+xJ5y+ZGpbN91MS1FBx7xi9L918mEWLQx3/oENeRreY7mrVhG4hwfTAkN
-         ZB3FHb0vrFQbacWDfoiujcR9SMxEmiohYeOcYDgivfKWvX5rpoi1bH78toHcSrBBbsIF
-         Yf+hIZcY8hRJoffHeajx1ZknY9S7reCwyPxtRxsqJt2Juu/Xilj+n7Kv/YQ66saDfxgz
-         1ddQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694105397; x=1694710197;
-        h=mime-version:user-agent:message-id:in-reply-to:date:references
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zJt/9WZjIvczsRkxafc4lYbTBilfxwLL5Q8Z2MfbMxA=;
-        b=jseJvb6XStpg9JhKXaXoKLAnkgXbpqpX9nK9c2zPOTfRegO3gAKcsSx60J0Y8VgTbi
-         pZrftQUMG2I9H5h75zY+BneSb6kMkIqHanThLVSPDTIko6SESPzt9cNbLRRfbZZOMd6V
-         lqQSIP71ByUpY1EUlMYSW4Mgso435wbHVh0r9sGtpc+NmdaEJHBbOqTMq8qWyv7w9H3C
-         OSEh1MGb2qx3lxufkbMRtg7/s2pU6MkFCXOc9jxWX6Erc0l2rqlrFu8ULI/XnSqDTA0l
-         eVb2zkeLc+xplZdutfjRWqBqADMNWEixZwnAqL+9eyxeRjrG7aijlRtms2XQ+lRXJHFB
-         srhQ==
-X-Gm-Message-State: AOJu0YxWYWHl0zRU95bvKNYfGCgH3I6YEjuAOyFsaw9b1KMSiO2Kt2Ka
-	rfbRTwWJnnUwfr843JyhaZCDTcw8viJ9cVhtrOs=
-X-Google-Smtp-Source: AGHT+IHQms088fQHxPwTfEA6+q2JptXmrfKtUg9+VGkg/zVvy2mqqimWslcAItCwwk8cjnVfE5Wtew==
-X-Received: by 2002:a05:6000:10d0:b0:319:7788:5027 with SMTP id b16-20020a05600010d000b0031977885027mr4324606wrx.59.1694077727914;
-        Thu, 07 Sep 2023 02:08:47 -0700 (PDT)
-Received: from dev-dsk-pjy-1a-76bc80b3.eu-west-1.amazon.com (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id m12-20020adff38c000000b0031ad5fb5a0fsm22777884wro.58.2023.09.07.02.08.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Sep 2023 02:08:47 -0700 (PDT)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
- <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,  Martin
- KaFai Lau <martin.lau@linux.dev>,  Song Liu <song@kernel.org>,  Yonghong
- Song <yonghong.song@linux.dev>,  John Fastabend
- <john.fastabend@gmail.com>,  KP Singh <kpsingh@kernel.org>,  Stanislav
- Fomichev <sdf@google.com>,  Hao Luo <haoluo@google.com>,  Jiri Olsa
- <jolsa@kernel.org>,  Shubham Bansal <illusionist.neo@gmail.com>,  Mykola
- Lysenko <mykolal@fb.com>,  Shuah Khan <shuah@kernel.org>,
-  bpf@vger.kernel.org,  linux-kselftest@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 4/8] arm32, bpf: add support for
- unconditional bswap instruction
-References: <20230906183320.1959008-1-puranjay12@gmail.com>
-	<20230906183320.1959008-5-puranjay12@gmail.com>
-	<ZPmOUYBdRxR1/8vw@shell.armlinux.org.uk>
-Date: Thu, 07 Sep 2023 09:08:46 +0000
-In-Reply-To: <ZPmOUYBdRxR1/8vw@shell.armlinux.org.uk> (Russell King's message
-	of "Thu, 7 Sep 2023 09:48:17 +0100")
-Message-ID: <mb61pzg1y1hb5.fsf@amazon.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81A3028E7
+	for <bpf@vger.kernel.org>; Thu,  7 Sep 2023 16:11:39 +0000 (UTC)
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E4D33AB9
+	for <bpf@vger.kernel.org>; Thu,  7 Sep 2023 09:11:11 -0700 (PDT)
+Date: Thu, 7 Sep 2023 12:12:13 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1694081538;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6U5abOhWSw3+4J+OxxHRy5LrGr4oNqSnDD1ZY8GQhWA=;
+	b=BP2n+vCtLJcOF2HcueqU0ozGi0Uu1lmLRsv1IxDJ25slpCa/t21KqVsjhEdziitDZ0dyGW
+	5fvDnyvvxUTcdfeJTj51W3Fppw9e0EToip/uo8jvDyWdTdGgsNAvmDb2l6plZ2n3atBPcQ
+	kqGbhrn22MV90o8PwZuJe1zNM+9JWHMbEcChcFGEYGKjt3Dv0KK7UBWgI6sbuvm/5VtbeI
+	semLFFOuh5iiH9xmK+93M2lQQLe29PrSpXW+gdtLagmKmK9en/hW0Kf/A7mWRnKGKGadr4
+	VgY2TAdcEjQPENeLm0d2aUZIH5FisdpYvHpr0kJVD7gsR9fpVheUddITtZWA+A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1694081538;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6U5abOhWSw3+4J+OxxHRy5LrGr4oNqSnDD1ZY8GQhWA=;
+	b=vJTq2x5uN0yYinKsOtbjFlZSQGdlCik2wAYS0+unkRBMyU2W3wYbvgFTDc5dWaxjYQLxDk
+	U3kIGoG/fnQwZvDw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Kui-Feng Lee <kuifeng@fb.com>, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 2/2] bpf: Assign bpf_tramp_run_ctx::saved_run_ctx before
+ recursion check.
+Message-ID: <20230907101213.Qqv7i5vN@linutronix.de>
+References: <20230830080405.251926-1-bigeasy@linutronix.de>
+ <20230830080405.251926-3-bigeasy@linutronix.de>
+ <ZPHxAbQDzZVNyXBL@krava>
+ <20230901141908.vMoXrBK6@linutronix.de>
+ <e51947bb-c01b-8bbd-603b-19c11a71ceff@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e51947bb-c01b-8bbd-603b-19c11a71ceff@iogearbox.net>
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Sep 07 2023, Russell King (Oracle) wrote:
+On 2023-09-06 10:52:36 [+0200], Daniel Borkmann wrote:
+> Sebastian, I fixed this up and also the __bpf_prog_exit*() presumably should
+> have been the _recur flavor.
 
-> On Wed, Sep 06, 2023 at 06:33:16PM +0000, Puranjay Mohan wrote:
->> @@ -1633,8 +1633,10 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx)
->>  	/* dst = htobe(dst) */
->>  	case BPF_ALU | BPF_END | BPF_FROM_LE:
->>  	case BPF_ALU | BPF_END | BPF_FROM_BE:
->> +	/* dst = bswap(dst) */
->> +	case BPF_ALU64 | BPF_END | BPF_TO_LE:
->>  		rd = arm_bpf_get_reg64(dst, tmp, ctx);
->> -		if (BPF_SRC(code) == BPF_FROM_LE)
->> +		if (BPF_SRC(code) == BPF_FROM_LE && BPF_CLASS(code) != BPF_ALU64)
->
-> With the addition of the BPF_ALU64 case, I'm wondering why this if() is
-> affected. If you were adding:
->
-> 	case BPF_ALU64 | BPF_END | BPF_FROM_LE:
->
-> then maybe there would be a reason, but the BPF_ALU64 | BPF_END |
-> BPF_TO_LE case will never match even the original if() statement.
+I'm sorry, for not following up in time. Thank you.
 
-The reason is that these mean the same thing.
-from: include/uapi/linux/bpf.h
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=6764e767f4af1e35f87f3497e1182d945de37f93
+> 
+> Thanks,
+> Daniel
 
-#define BPF_TO_LE	0x00	/* convert to little-endian */
-#define BPF_TO_BE	0x08	/* convert to big-endian */
-#define BPF_FROM_LE	BPF_TO_LE
-#define BPF_FROM_BE	BPF_TO_BE
-
-So, to not cause confusion and follow the earlier cases I can add:
-
-case BPF_ALU64 | BPF_END | BPF_FROM_LE:
-
-in the next version.
-
-
-Thanks,
-Puranjay
+Sebastian
 
