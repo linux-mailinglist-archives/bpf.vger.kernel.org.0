@@ -1,116 +1,132 @@
-Return-Path: <bpf+bounces-9438-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9433-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CD7A797ADE
-	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 19:53:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA4A87978DE
+	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 18:56:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 469F02817BD
-	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 17:53:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA11C2819A3
+	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 16:56:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2788F13AFA;
-	Thu,  7 Sep 2023 17:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7565A134D5;
+	Thu,  7 Sep 2023 16:56:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDC25134B2
-	for <bpf@vger.kernel.org>; Thu,  7 Sep 2023 17:53:04 +0000 (UTC)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E67C019A5
-	for <bpf@vger.kernel.org>; Thu,  7 Sep 2023 10:52:42 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b962535808so22334901fa.0
-        for <bpf@vger.kernel.org>; Thu, 07 Sep 2023 10:52:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD47125A7
+	for <bpf@vger.kernel.org>; Thu,  7 Sep 2023 16:56:24 +0000 (UTC)
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CE31BE9;
+	Thu,  7 Sep 2023 09:56:01 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-400a087b0bfso12673555e9.2;
+        Thu, 07 Sep 2023 09:56:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1694109156; x=1694713956; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hDkQ66F0t2DBT6ld7rUkD2AiaPRnoFJFHtAB4wHE4pw=;
-        b=cHBX+NyRtrQvw81yXqq5zbRUcBBMhFmFIT/auANVAPA0ydgTJKdC3APplpxoCZKEXK
-         uG+6LJ+Zvzmdtsrhf51N+7L8S8nOWWMB7xxWD7rZje+1MeVQM9wsImDrVmytbg/Z5Uhi
-         BqhktNTYGPU6ASQX+fecV8zZ2dVDNkzKaBrBahSSsgpK6Owu/h84iN/wyTKC1AbfLuk2
-         pbg1yoVdaVzQOtbjoptfhI2xKqzrZzK0oL14S6aWq4azha1KpZxCqlzZVWsoXc1VS4z4
-         7QYsAMpNvpfFHryxD49op1QWHHNynXU0L5gxNHnT2Ho4c/JlhQOzcbdfNLoiPQ8GK13n
-         ONLA==
+        d=gmail.com; s=20221208; t=1694105397; x=1694710197; darn=vger.kernel.org;
+        h=mime-version:user-agent:message-id:in-reply-to:date:references
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zJt/9WZjIvczsRkxafc4lYbTBilfxwLL5Q8Z2MfbMxA=;
+        b=sIyv8y6BstNYPgCkKYouA0nClPdzHpzFsSwR2R5WKhLc7KetEy1CbeXi8RYz4kf8pL
+         vuOh2q4nRy7hxzvfMHsKvS4lZxJWNuTyh5QerRPyTNwd95Qp7bZhICi1WRWr8Sr7VwNP
+         mNtjG2DqqyB+xJ5y+ZGpbN91MS1FBx7xi9L918mEWLQx3/oENeRreY7mrVhG4hwfTAkN
+         ZB3FHb0vrFQbacWDfoiujcR9SMxEmiohYeOcYDgivfKWvX5rpoi1bH78toHcSrBBbsIF
+         Yf+hIZcY8hRJoffHeajx1ZknY9S7reCwyPxtRxsqJt2Juu/Xilj+n7Kv/YQ66saDfxgz
+         1ddQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694109156; x=1694713956;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hDkQ66F0t2DBT6ld7rUkD2AiaPRnoFJFHtAB4wHE4pw=;
-        b=R/UC3OEUZIzChKV8Wg+c8mkY+mkUT2YTPni4L52Kpwer6piY7uMgFuiJyvUAe0TBl2
-         po/F2PFgZIF1mMB1UZCSQ5azAymcYWo9gwW3pofwZP6hmI/RaoyCgmcBNmrcJDE7kMiF
-         oPlZh4c5TUAKiYFe6xsf8bsBxs3WJa4tuE2l3w28fUT/v8FbAokvXvdSLozTkIqsuLNV
-         fzAHWIqGPj5FhtHRMbJulPKeqn6um5Adt4Pzi20QI33EGFzfhukqOXN1Cj2MRLfrtCou
-         vwxXMESlCbNlFd9fvjTw+Oh2T+dSyl2S/t7PiVgXOtlV3EDtLKbI2+qnNJnQPtMbSSV7
-         ohcQ==
-X-Gm-Message-State: AOJu0YzijBIzQGQqvlmJd0+A71F2pA/MOt/gq63bT7hfYpN7maZ9xcRz
-	QkAfP/VUunvwUtDmMixuJG2Iqdo5cOPGaPnCpnAulg==
-X-Google-Smtp-Source: AGHT+IGvuVRW4QDGJWbrzaBzVE7O1UV4/dy4mz+398NKCvbT0eIfFW9nayFN8gJFNwiFd8tJ4vzmzA==
-X-Received: by 2002:a5d:670a:0:b0:319:7c1f:8dae with SMTP id o10-20020a5d670a000000b003197c1f8daemr4194474wru.3.1694077166108;
-        Thu, 07 Sep 2023 01:59:26 -0700 (PDT)
-Received: from ?IPV6:2a02:8011:e80c:0:ace0:3e80:4307:5b4b? ([2a02:8011:e80c:0:ace0:3e80:4307:5b4b])
-        by smtp.gmail.com with ESMTPSA id f12-20020adffccc000000b003143c9beeaesm22642040wrs.44.2023.09.07.01.59.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 01:59:25 -0700 (PDT)
-Message-ID: <15e73381-0ced-401b-b6b7-55b66f873dea@isovalent.com>
-Date: Thu, 7 Sep 2023 09:59:24 +0100
+        d=1e100.net; s=20221208; t=1694105397; x=1694710197;
+        h=mime-version:user-agent:message-id:in-reply-to:date:references
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zJt/9WZjIvczsRkxafc4lYbTBilfxwLL5Q8Z2MfbMxA=;
+        b=jseJvb6XStpg9JhKXaXoKLAnkgXbpqpX9nK9c2zPOTfRegO3gAKcsSx60J0Y8VgTbi
+         pZrftQUMG2I9H5h75zY+BneSb6kMkIqHanThLVSPDTIko6SESPzt9cNbLRRfbZZOMd6V
+         lqQSIP71ByUpY1EUlMYSW4Mgso435wbHVh0r9sGtpc+NmdaEJHBbOqTMq8qWyv7w9H3C
+         OSEh1MGb2qx3lxufkbMRtg7/s2pU6MkFCXOc9jxWX6Erc0l2rqlrFu8ULI/XnSqDTA0l
+         eVb2zkeLc+xplZdutfjRWqBqADMNWEixZwnAqL+9eyxeRjrG7aijlRtms2XQ+lRXJHFB
+         srhQ==
+X-Gm-Message-State: AOJu0YxWYWHl0zRU95bvKNYfGCgH3I6YEjuAOyFsaw9b1KMSiO2Kt2Ka
+	rfbRTwWJnnUwfr843JyhaZCDTcw8viJ9cVhtrOs=
+X-Google-Smtp-Source: AGHT+IHQms088fQHxPwTfEA6+q2JptXmrfKtUg9+VGkg/zVvy2mqqimWslcAItCwwk8cjnVfE5Wtew==
+X-Received: by 2002:a05:6000:10d0:b0:319:7788:5027 with SMTP id b16-20020a05600010d000b0031977885027mr4324606wrx.59.1694077727914;
+        Thu, 07 Sep 2023 02:08:47 -0700 (PDT)
+Received: from dev-dsk-pjy-1a-76bc80b3.eu-west-1.amazon.com (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id m12-20020adff38c000000b0031ad5fb5a0fsm22777884wro.58.2023.09.07.02.08.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 07 Sep 2023 02:08:47 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,  Martin
+ KaFai Lau <martin.lau@linux.dev>,  Song Liu <song@kernel.org>,  Yonghong
+ Song <yonghong.song@linux.dev>,  John Fastabend
+ <john.fastabend@gmail.com>,  KP Singh <kpsingh@kernel.org>,  Stanislav
+ Fomichev <sdf@google.com>,  Hao Luo <haoluo@google.com>,  Jiri Olsa
+ <jolsa@kernel.org>,  Shubham Bansal <illusionist.neo@gmail.com>,  Mykola
+ Lysenko <mykolal@fb.com>,  Shuah Khan <shuah@kernel.org>,
+  bpf@vger.kernel.org,  linux-kselftest@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 4/8] arm32, bpf: add support for
+ unconditional bswap instruction
+References: <20230906183320.1959008-1-puranjay12@gmail.com>
+	<20230906183320.1959008-5-puranjay12@gmail.com>
+	<ZPmOUYBdRxR1/8vw@shell.armlinux.org.uk>
+Date: Thu, 07 Sep 2023 09:08:46 +0000
+In-Reply-To: <ZPmOUYBdRxR1/8vw@shell.armlinux.org.uk> (Russell King's message
+	of "Thu, 7 Sep 2023 09:48:17 +0100")
+Message-ID: <mb61pzg1y1hb5.fsf@amazon.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bpftool: fix -Wcast-qual warning
-Content-Language: en-GB
-To: "Denys Zagorui -X (dzagorui - GLOBALLOGIC INC at Cisco)"
- <dzagorui@cisco.com>, "alastorze@fb.com" <alastorze@fb.com>,
- "ast@kernel.org" <ast@kernel.org>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>,
- "andrii@kernel.org" <andrii@kernel.org>,
- "martin.lau@linux.dev" <martin.lau@linux.dev>,
- "song@kernel.org" <song@kernel.org>,
- "yonghong.song@linux.dev" <yonghong.song@linux.dev>,
- "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
- "kpsingh@kernel.org" <kpsingh@kernel.org>, "sdf@google.com"
- <sdf@google.com>, "haoluo@google.com" <haoluo@google.com>,
- "jolsa@kernel.org" <jolsa@kernel.org>
-Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-References: <20230906111717.2876511-1-dzagorui@cisco.com>
- <3145d302-5ab2-4cd8-974c-6ae1fe436328@isovalent.com>
- <CY5PR11MB6187F0721793B24A00C0699FD9EEA@CY5PR11MB6187.namprd11.prod.outlook.com>
-From: Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <CY5PR11MB6187F0721793B24A00C0699FD9EEA@CY5PR11MB6187.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 07/09/2023 09:56, Denys Zagorui -X (dzagorui - GLOBALLOGIC INC at
-Cisco) wrote:
->> If I follow correctly, the cast was added in bpftool in a6cc6b34b93e
->> ("bpftool: Provide a helper method for accessing skeleton's embedded ELF
->> data"), which mentions indeed:
->>
->>    The assignment to s->data is cast to void * to ensure no warning is
->>    issued if compiled with a previous version of libbpf where the
->>    bpf_object_skeleton field is void * instead of const void *
->>
->> but in libbpf, s->data's type had already been changed since commit
->> 08a6f22ef6f8 ("libbpf: Change bpf_object_skeleton data field to const
->> pointer"), part of libbpf 0.6, is this correct?
-> yes, this is correct
-> 
+On Thu, Sep 07 2023, Russell King (Oracle) wrote:
+
+> On Wed, Sep 06, 2023 at 06:33:16PM +0000, Puranjay Mohan wrote:
+>> @@ -1633,8 +1633,10 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx)
+>>  	/* dst = htobe(dst) */
+>>  	case BPF_ALU | BPF_END | BPF_FROM_LE:
+>>  	case BPF_ALU | BPF_END | BPF_FROM_BE:
+>> +	/* dst = bswap(dst) */
+>> +	case BPF_ALU64 | BPF_END | BPF_TO_LE:
+>>  		rd = arm_bpf_get_reg64(dst, tmp, ctx);
+>> -		if (BPF_SRC(code) == BPF_FROM_LE)
+>> +		if (BPF_SRC(code) == BPF_FROM_LE && BPF_CLASS(code) != BPF_ALU64)
+>
+> With the addition of the BPF_ALU64 case, I'm wondering why this if() is
+> affected. If you were adding:
+>
+> 	case BPF_ALU64 | BPF_END | BPF_FROM_LE:
+>
+> then maybe there would be a reason, but the BPF_ALU64 | BPF_END |
+> BPF_TO_LE case will never match even the original if() statement.
+
+The reason is that these mean the same thing.
+from: include/uapi/linux/bpf.h
+
+#define BPF_TO_LE	0x00	/* convert to little-endian */
+#define BPF_TO_BE	0x08	/* convert to big-endian */
+#define BPF_FROM_LE	BPF_TO_LE
+#define BPF_FROM_BE	BPF_TO_BE
+
+So, to not cause confusion and follow the earlier cases I can add:
+
+case BPF_ALU64 | BPF_END | BPF_FROM_LE:
+
+in the next version.
 
 
-OK, thanks
-
-Acked-by: Quentin Monnet <quentin@isovalent.com>
+Thanks,
+Puranjay
 
