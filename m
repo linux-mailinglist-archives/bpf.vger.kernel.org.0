@@ -1,120 +1,110 @@
-Return-Path: <bpf+bounces-9444-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9445-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8808797C1B
-	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 20:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22C06797C2F
+	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 20:44:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E4EE281765
-	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 18:41:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7CD6280194
+	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 18:44:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D7BD13AC2;
-	Thu,  7 Sep 2023 18:41:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C75B213AD8;
+	Thu,  7 Sep 2023 18:44:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31AE98BF5
-	for <bpf@vger.kernel.org>; Thu,  7 Sep 2023 18:41:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CB24C43395
-	for <bpf@vger.kernel.org>; Thu,  7 Sep 2023 18:41:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694112061;
-	bh=S9ZAswZQkRWoyTBkTJdEmpRgs0QwmwDTBD/yjXWEK40=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=gJr78pzBwWNytA0Owuys83RqLCISmNIyEGe1PUFf8eKNKhIiMG0Aa6xOnyqcCb0Xf
-	 5DDiCVJRiRhSlaTVY67LHAT282E8d9p2hGTXvLfGATNeMt/fZqlV2xHPlHAx0TPV4M
-	 Pp9IK+Ku+yClsEjjLbBpnVNaLv5jBtyXogiQsE+SKtf/JG+YBW2+14nxnUafHObtSa
-	 7cRa32by4UX7gPZx293CEV2mx0rVN2NBaZLsKhLVIgbUH7rAXHRnOMDfHMfAI0/21U
-	 sB355Bh3Q2JA9bg7DvOMg+0udldGVJdZUAvKQDbSj2icqZUGbPX5tQTpf7qtatty6m
-	 ZD9CD8anmcwlg==
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5008d16cc36so2152953e87.2
-        for <bpf@vger.kernel.org>; Thu, 07 Sep 2023 11:41:01 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzJvbw4q6Jp4256q5oD951RqK7tMz9kPmD5w9ZO9kO8/kjPoBjB
-	u8CKuJRQ4vnVujvlFRbHrkDc+1cX1BMtQDSXfXs=
-X-Google-Smtp-Source: AGHT+IFpXvx04V93n2xfn+Df2HH+qexZ8rmAF4qR72CPztyrvOBuBW+9LN0MsASYVIpJc3z2W3JCYd+AzZDthxJt29I=
-X-Received: by 2002:a19:915a:0:b0:500:9704:3c9 with SMTP id
- y26-20020a19915a000000b00500970403c9mr176541lfj.26.1694112059575; Thu, 07 Sep
- 2023 11:40:59 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E4FD8BF5
+	for <bpf@vger.kernel.org>; Thu,  7 Sep 2023 18:44:39 +0000 (UTC)
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4FA132;
+	Thu,  7 Sep 2023 11:44:37 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@strlen.de>)
+	id 1qeJzS-0001hz-Iq; Thu, 07 Sep 2023 20:44:30 +0200
+Date: Thu, 7 Sep 2023 20:44:30 +0200
+From: Florian Westphal <fw@strlen.de>
+To: David Wang <00107082@163.com>
+Cc: Daniel Xu <dxu@dxuuu.xyz>, Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH] uapi/netfilter: Change netfilter hook verdict code
+ definition from macro to enum
+Message-ID: <20230907184430.GF20947@breakpoint.cc>
+References: <20230904130201.14632-1-00107082@163.com>
+ <cc6e3tukgqhi5y4uhepntrpf272o652pytuynj4nijsf5bkgjq@rgnbhckr3p4w>
+ <19d2362f.5c85.18a6647817b.Coremail.00107082@163.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230907071311.254313-1-jolsa@kernel.org> <20230907071311.254313-4-jolsa@kernel.org>
-In-Reply-To: <20230907071311.254313-4-jolsa@kernel.org>
-From: Song Liu <song@kernel.org>
-Date: Thu, 7 Sep 2023 11:40:46 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4hX95fHZCDYnfzAwK43dbnGJUxHEF3bGdODWe_6MytnQ@mail.gmail.com>
-Message-ID: <CAPhsuW4hX95fHZCDYnfzAwK43dbnGJUxHEF3bGdODWe_6MytnQ@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 3/9] bpf: Add missed value to kprobe perf link info
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Hou Tao <houtao1@huawei.com>, 
-	Daniel Xu <dxu@dxuuu.xyz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <19d2362f.5c85.18a6647817b.Coremail.00107082@163.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Thu, Sep 7, 2023 at 12:13=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Add missed value to kprobe attached through perf link info to
-> hold the stats of missed kprobe handler execution.
->
-> The kprobe's missed counter gets incremented when kprobe handler
-> is not executed due to another kprobe running on the same cpu.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+David Wang <00107082@163.com> wrote:
+> At 2023-09-06 00:38:02, "Daniel Xu" <dxu@dxuuu.xyz> wrote:
+> >Hi David,
+> >
+> >On Mon, Sep 04, 2023 at 09:02:02PM +0800, David Wang wrote:
+> 
+> >>  #include <linux/in6.h>
+> >>  
+> >>  /* Responses from hook functions. */
+> >> -#define NF_DROP 0
+> >> -#define NF_ACCEPT 1
+> >> -#define NF_STOLEN 2
+> >> -#define NF_QUEUE 3
+> >> -#define NF_REPEAT 4
+> >> -#define NF_STOP 5	/* Deprecated, for userspace nf_queue compatibility. */
+> >> -#define NF_MAX_VERDICT NF_STOP
+> >> +enum {
+> >> +	NF_DROP        = 0,
+> >> +	NF_ACCEPT      = 1,
+> >> +	NF_STOLEN      = 2,
+> >> +	NF_QUEUE       = 3,
+> >> +	NF_REPEAT      = 4,
+> >> +	NF_STOP        = 5,	/* Deprecated, for userspace nf_queue compatibility. */
+> >> +	NF_MAX_VERDICT = NF_STOP,
+> >> +};
+> >
+> >Switching from macro to enum works for almost all use cases, but not
+> >all. If someone if #ifdefing the symbols (which is plausible) this
+> >change would break them.
+> >
+> >I think I've seen some other networking code define both enums and
+> >macros. But it was a little ugly. Not sure if that is acceptable here or
+> >not.
+> >
+> >[...]
+> >
+> >Thanks,
+> >Daniel
+> 
+> 
+> Thanks for the review~
+> I do not have a strong reasoning to deny the possibility of breaking unexpected usage of this macros,
+> 
+> but I also agree that it is ugly to use both enum and macro at the same time.
+> 
+> Kind of don't know how to proceed from here now...
 
-[...]
+I don't see anyone doing #ifdef tests on these, so I suggest we
+give your patch a try and see if anything breaks.
 
-The code looks good to me. But I have two thoughts on this (and 2/9).
-
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index e5216420ec73..e824b0c50425 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -6546,6 +6546,7 @@ struct bpf_link_info {
->                                         __u32 name_len;
->                                         __u32 offset; /* offset from func=
-_name */
->                                         __u64 addr;
-> +                                       __u64 missed;
->                                 } kprobe; /* BPF_PERF_EVENT_KPROBE, BPF_P=
-ERF_EVENT_KRETPROBE */
->                                 struct {
->                                         __aligned_u64 tp_name;   /* in/ou=
-t */
-
-1) Shall we add missed for all bpf_link_info? Something like:
-
-diff --git i/include/uapi/linux/bpf.h w/include/uapi/linux/bpf.h
-index 5a39c7a13499..cf0b8b2a8b39 100644
---- i/include/uapi/linux/bpf.h
-+++ w/include/uapi/linux/bpf.h
-@@ -6465,6 +6465,7 @@ struct bpf_link_info {
-        __u32 type;
-        __u32 id;
-        __u32 prog_id;
-+       __u64 missed;
-        union {
-                struct {
-                        __aligned_u64 tp_name; /* in/out: tp_name buffer pt=
-r */
-
-2) "missed" doesn't seem to fit well with other information in
-struct bpf_link_info. Other information there are more like stable-ish
-information; while missed is a stat that changes over time. Given we
-have prog_id in bpf_link_info, do we really need "missed" here?
-
-Thanks,
-Song
-
-
-[...]
+Technically only ACCEPT and DROP can be used by bpf
+programs but splitting it in
+enum-for-accept-drop-and-define-for-the-rest looks even more silly.
 
