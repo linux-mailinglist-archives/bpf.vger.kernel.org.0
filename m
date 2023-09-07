@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-9401-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9402-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12893797075
-	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 09:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F420C797076
+	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 09:14:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42D961C20AE3
-	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 07:14:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BEA01C20ADD
+	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 07:14:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 171E7136B;
-	Thu,  7 Sep 2023 07:14:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2CF11117;
+	Thu,  7 Sep 2023 07:14:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1C301103
-	for <bpf@vger.kernel.org>; Thu,  7 Sep 2023 07:14:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBAB6C43395;
-	Thu,  7 Sep 2023 07:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F151137C
+	for <bpf@vger.kernel.org>; Thu,  7 Sep 2023 07:14:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27651C43391;
+	Thu,  7 Sep 2023 07:14:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694070869;
-	bh=6b5GOEpnsWsLh3G+q7HBAHaHvnjXJzNhKhNYPWW6Xnw=;
+	s=k20201202; t=1694070880;
+	bh=VQmugnI2kltuYNtUrGsDPwX3U8wwnw265+8NavBzFrM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WzZtut2aegJblb4JgVaLnFwvhTfQhHMoGUOeoq4FmBWtwzPwwJRpnLjgZQjMSyvyu
-	 HNzoK6jjJeMLmCpxNHvbXoiqCHJX9el3QWioMyIzgMBrQKQploPmTSEpRpffQrK7PI
-	 rtY0ZElMJXzgOqOhMvdhqzaGeMYHuKnOW4JTcCsGJuLLWZOtSFhqjDZnwHlfs2SGFG
-	 VtLpK6lpgKOJEAS8twpKvC4kbgUzDqQW3941nNo1S+JaJ2dCk8uvyUo1it0L+lDyF5
-	 3fXb+dLataHqNr57EIZSgEY9nymfRVm/EgHsCbHw0BoLytTjSvzWuN1BMFY+u5SzqC
-	 MXlr9PYZEtFWQ==
+	b=jkyAHYsHsb6htLAWGzbfAyizCT+6Zp2fFtq2z2mi8fYE9nKTe8GdWRMP13ke+Bd2o
+	 420y5awPYTGge9GH5AQi99CdcFKVeERPiI61lEv8c/dGFHlU1p9umLP56mMymkaFn7
+	 Z9lmSWyTkzgfJ/ewXr0mWdG8ywPGREmmY1hNfCKxpu8rR4y/tMN/+CkszrujSa4ZvN
+	 Zm09wJo4cyvE+79Vb+ntpqXzI+9Mql03b6fhGXPgFDS5/jJn96uDHtj+jMSrw9Jf+T
+	 wCNhmwGIhKHno9mzYZwnZtqkHcp7+bkZJsAPPs6sjbqz0CLMwuuW7Qt0JFAGWKAU7K
+	 Z4xv1x/YRc45Q==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -44,9 +44,9 @@ Cc: Hou Tao <houtao1@huawei.com>,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>,
 	Daniel Xu <dxu@dxuuu.xyz>
-Subject: [PATCHv2 bpf-next 7/9] selftests/bpf: Add test for missed counts of perf event link kprobe
-Date: Thu,  7 Sep 2023 09:13:09 +0200
-Message-ID: <20230907071311.254313-8-jolsa@kernel.org>
+Subject: [PATCHv2 bpf-next 8/9] selftests/bpf: Add test for recursion counts of perf event link kprobe
+Date: Thu,  7 Sep 2023 09:13:10 +0200
+Message-ID: <20230907071311.254313-9-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230907071311.254313-1-jolsa@kernel.org>
 References: <20230907071311.254313-1-jolsa@kernel.org>
@@ -58,86 +58,80 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding test that puts kprobe on bpf_fentry_test1 that calls
-bpf_kfunc_common_test kfunc, which has also kprobe on.
+Adding selftest that puts kprobe.multi on bpf_fentry_test1 that
+calls bpf_kfunc_common_test kfunc which has 3 perf event kprobes
+and 1 kprobe.multi attached.
 
-The latter won't get triggered due to kprobe recursion check
-and kprobe missed counter is incremented.
+Because fprobe (kprobe.multi attach layear) does not have strict
+recursion check the kprobe's bpf_prog_active check is hit for test2-5.
+
+Disabling this test for arm64, because there's no fprobe support yet.
 
 Acked-by: Hou Tao <houtao1@huawei.com>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  5 ++
- .../bpf/bpf_testmod/bpf_testmod_kfunc.h       |  2 +
- .../testing/selftests/bpf/prog_tests/missed.c | 47 +++++++++++++++++++
- .../selftests/bpf/progs/missed_kprobe.c       | 30 ++++++++++++
- 4 files changed, 84 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/missed.c
- create mode 100644 tools/testing/selftests/bpf/progs/missed_kprobe.c
+ tools/testing/selftests/bpf/DENYLIST.aarch64  |  1 +
+ .../testing/selftests/bpf/prog_tests/missed.c | 51 +++++++++++++++++++
+ .../bpf/progs/missed_kprobe_recursion.c       | 48 +++++++++++++++++
+ 3 files changed, 100 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/missed_kprobe_recursion.c
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index cefc5dd72573..a5e246f7b202 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -138,6 +138,10 @@ __bpf_kfunc void bpf_iter_testmod_seq_destroy(struct bpf_iter_testmod_seq *it)
- 	it->cnt = 0;
+diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
+index 7f768d335698..3f2187c049db 100644
+--- a/tools/testing/selftests/bpf/DENYLIST.aarch64
++++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
+@@ -15,3 +15,4 @@ fexit_test/fexit_many_args                       # fexit_many_args:FAIL:fexit_ma
+ fill_link_info/kprobe_multi_link_info            # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+ fill_link_info/kretprobe_multi_link_info         # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+ fill_link_info/kprobe_multi_invalid_ubuff        # bpf_program__attach_kprobe_multi_opts unexpected error: -95
++missed/kprobe_recursion                          # missed_kprobe_recursion__attach unexpected error: -95 (errno 95)
+diff --git a/tools/testing/selftests/bpf/prog_tests/missed.c b/tools/testing/selftests/bpf/prog_tests/missed.c
+index fc674258c81f..f10dc9232b3f 100644
+--- a/tools/testing/selftests/bpf/prog_tests/missed.c
++++ b/tools/testing/selftests/bpf/prog_tests/missed.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <test_progs.h>
+ #include "missed_kprobe.skel.h"
++#include "missed_kprobe_recursion.skel.h"
+ 
+ /*
+  * Putting kprobe on bpf_fentry_test1 that calls bpf_kfunc_common_test
+@@ -40,8 +41,58 @@ static void test_missed_perf_kprobe(void)
+ 	missed_kprobe__destroy(skel);
  }
  
-+__bpf_kfunc void bpf_kfunc_common_test(void)
++static __u64 get_count(int fd)
 +{
++	struct bpf_prog_info info = {};
++	__u32 len = sizeof(info);
++	int err;
++
++	err = bpf_prog_get_info_by_fd(fd, &info, &len);
++	if (!ASSERT_OK(err, "bpf_prog_get_info_by_fd"))
++		return (__u64) -1;
++	return info.recursion_misses;
 +}
 +
- struct bpf_testmod_btf_type_tag_1 {
- 	int a;
- };
-@@ -343,6 +347,7 @@ BTF_SET8_START(bpf_testmod_common_kfunc_ids)
- BTF_ID_FLAGS(func, bpf_iter_testmod_seq_new, KF_ITER_NEW)
- BTF_ID_FLAGS(func, bpf_iter_testmod_seq_next, KF_ITER_NEXT | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_iter_testmod_seq_destroy, KF_ITER_DESTROY)
-+BTF_ID_FLAGS(func, bpf_kfunc_common_test)
- BTF_SET8_END(bpf_testmod_common_kfunc_ids)
- 
- static const struct btf_kfunc_id_set bpf_testmod_common_kfunc_set = {
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
-index f5c5b1375c24..7c664dd61059 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
-@@ -104,4 +104,6 @@ void bpf_kfunc_call_test_fail1(struct prog_test_fail1 *p);
- void bpf_kfunc_call_test_fail2(struct prog_test_fail2 *p);
- void bpf_kfunc_call_test_fail3(struct prog_test_fail3 *p);
- void bpf_kfunc_call_test_mem_len_fail1(void *mem, int len);
-+
-+void bpf_kfunc_common_test(void) __ksym;
- #endif /* _BPF_TESTMOD_KFUNC_H */
-diff --git a/tools/testing/selftests/bpf/prog_tests/missed.c b/tools/testing/selftests/bpf/prog_tests/missed.c
-new file mode 100644
-index 000000000000..fc674258c81f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/missed.c
-@@ -0,0 +1,47 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include "missed_kprobe.skel.h"
-+
 +/*
-+ * Putting kprobe on bpf_fentry_test1 that calls bpf_kfunc_common_test
-+ * kfunc, which has also kprobe on. The latter won't get triggered due
-+ * to kprobe recursion check and kprobe missed counter is incremented.
++ * Putting kprobe.multi on bpf_fentry_test1 that calls bpf_kfunc_common_test
++ * kfunc which has 3 perf event kprobes and 1 kprobe.multi attached.
++ *
++ * Because fprobe (kprobe.multi attach layear) does not have strict recursion
++ * check the kprobe's bpf_prog_active check is hit for test2-5.
 + */
-+static void test_missed_perf_kprobe(void)
++static void test_missed_kprobe_recursion(void)
 +{
 +	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+	struct bpf_link_info info = {};
-+	struct missed_kprobe *skel;
-+	__u32 len = sizeof(info);
++	struct missed_kprobe_recursion *skel;
 +	int err, prog_fd;
 +
-+	skel = missed_kprobe__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "missed_kprobe__open_and_load"))
++	skel = missed_kprobe_recursion__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "missed_kprobe_recursion__open_and_load"))
 +		goto cleanup;
 +
-+	err = missed_kprobe__attach(skel);
-+	if (!ASSERT_OK(err, "missed_kprobe__attach"))
++	err = missed_kprobe_recursion__attach(skel);
++	if (!ASSERT_OK(err, "missed_kprobe_recursion__attach"))
 +		goto cleanup;
 +
 +	prog_fd = bpf_program__fd(skel->progs.trigger);
@@ -145,29 +139,29 @@ index 000000000000..fc674258c81f
 +	ASSERT_OK(err, "test_run");
 +	ASSERT_EQ(topts.retval, 0, "test_run");
 +
-+	err = bpf_link_get_info_by_fd(bpf_link__fd(skel->links.test2), &info, &len);
-+	if (!ASSERT_OK(err, "bpf_link_get_info_by_fd"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(info.type, BPF_LINK_TYPE_PERF_EVENT, "info.type");
-+	ASSERT_EQ(info.perf_event.type, BPF_PERF_EVENT_KPROBE, "info.perf_event.type");
-+	ASSERT_EQ(info.perf_event.kprobe.missed, 1, "info.perf_event.kprobe.missed");
++	ASSERT_EQ(get_count(bpf_program__fd(skel->progs.test1)), 0, "test1_recursion_misses");
++	ASSERT_EQ(get_count(bpf_program__fd(skel->progs.test2)), 1, "test2_recursion_misses");
++	ASSERT_EQ(get_count(bpf_program__fd(skel->progs.test3)), 1, "test3_recursion_misses");
++	ASSERT_EQ(get_count(bpf_program__fd(skel->progs.test4)), 1, "test4_recursion_misses");
++	ASSERT_EQ(get_count(bpf_program__fd(skel->progs.test5)), 1, "test5_recursion_misses");
 +
 +cleanup:
-+	missed_kprobe__destroy(skel);
++	missed_kprobe_recursion__destroy(skel);
 +}
 +
-+void serial_test_missed(void)
-+{
-+	if (test__start_subtest("perf_kprobe"))
-+		test_missed_perf_kprobe();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/missed_kprobe.c b/tools/testing/selftests/bpf/progs/missed_kprobe.c
+ void serial_test_missed(void)
+ {
+ 	if (test__start_subtest("perf_kprobe"))
+ 		test_missed_perf_kprobe();
++	if (test__start_subtest("kprobe_recursion"))
++		test_missed_kprobe_recursion();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/missed_kprobe_recursion.c b/tools/testing/selftests/bpf/progs/missed_kprobe_recursion.c
 new file mode 100644
-index 000000000000..7f9ef701f5de
+index 000000000000..8ea71cbd6c45
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/missed_kprobe.c
-@@ -0,0 +1,30 @@
++++ b/tools/testing/selftests/bpf/progs/missed_kprobe_recursion.c
+@@ -0,0 +1,48 @@
 +// SPDX-License-Identifier: GPL-2.0
 +#include "vmlinux.h"
 +#include <bpf/bpf_helpers.h>
@@ -186,7 +180,7 @@ index 000000000000..7f9ef701f5de
 +	return 0;
 +}
 +
-+SEC("kprobe/bpf_fentry_test1")
++SEC("kprobe.multi/bpf_fentry_test1")
 +int test1(struct pt_regs *ctx)
 +{
 +	bpf_kfunc_common_test();
@@ -195,6 +189,24 @@ index 000000000000..7f9ef701f5de
 +
 +SEC("kprobe/bpf_kfunc_common_test")
 +int test2(struct pt_regs *ctx)
++{
++	return 0;
++}
++
++SEC("kprobe/bpf_kfunc_common_test")
++int test3(struct pt_regs *ctx)
++{
++	return 0;
++}
++
++SEC("kprobe/bpf_kfunc_common_test")
++int test4(struct pt_regs *ctx)
++{
++	return 0;
++}
++
++SEC("kprobe.multi/bpf_kfunc_common_test")
++int test5(struct pt_regs *ctx)
 +{
 +	return 0;
 +}
