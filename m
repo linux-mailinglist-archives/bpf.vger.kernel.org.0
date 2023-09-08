@@ -1,216 +1,211 @@
-Return-Path: <bpf+bounces-9526-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9527-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C23D1798B52
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 19:15:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE789798B5B
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 19:18:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AB271C2085A
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 17:15:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDDB41C20D30
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 17:18:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20A901400E;
-	Fri,  8 Sep 2023 17:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 722AA14298;
+	Fri,  8 Sep 2023 17:17:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDA4613AFC
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 17:15:12 +0000 (UTC)
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B71CE6
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 10:15:11 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-6543d62e9a4so16700366d6.1
-        for <bpf@vger.kernel.org>; Fri, 08 Sep 2023 10:15:11 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38F5F14277
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 17:17:33 +0000 (UTC)
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5CF199F
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 10:17:32 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-56c2e882416so1801082a12.3
+        for <bpf@vger.kernel.org>; Fri, 08 Sep 2023 10:17:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694193310; x=1694798110; darn=vger.kernel.org;
+        d=google.com; s=20221208; t=1694193452; x=1694798252; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FvC9pL6Ni1XwRDm5BeqCIzzDS/+lbPGOBzfjrA1tAJw=;
-        b=wiQXsHXBdcJgKOcBTW+aP1wTLqrfFu3ZwioqoFLcftkbynaQf0/VhkqpoNBrfNjueX
-         RV8RA7Oa5bYW1F44gIOygUUgHjZWWXjI1ZcuY66vpiig5y7s/dN56PPKM7o9siW90tIl
-         Uldm9Dx3Cw9yeFiBz5qD8RJBJEjHxTneHcNbb4sTuE+By+X8FT6NK7kxlfzrYkEEoHOn
-         n8DRzzEJX1k7D8hNaePkxzESbD6Z1KHREd2xO9H1EmX/zgfTh9Rfiba5pWk9VeeLRlh5
-         tzf5ADacSAlVhdymOWn7ywqpsx2uV0BOYjvgskKEoayLjy6Q0TQAXCZXHg34VS2NStYG
-         bG3g==
+        bh=dytdhOUY4d267Lvi8EgrlRmP7ykYMIsK1Jem27n9klw=;
+        b=KWKzxaeVmuW9HCFbNTl1CgxJpebCNvWWjROKyYtXL4dS8q6kztH4kN2cZ8CYEk2dvt
+         +ba04Bu9xjC+9UzeHsaAWVgmV46OeR2G3cRxFYbosC1bKzThu0ZrKon+i482uWyReM7A
+         VdPQfWixVwcZ5BYr5RA7NUrqCFYMAmhPgMPH4T2kwBWnR6qEVbCp0BHsAqfdmRqbQVck
+         bMBM2OkGGrnXThVPGgH2v7WrMGfJvNQ1wAJDzkl8pLf+rM+50CM2yLlwUVHwV0u+Lf35
+         JhmAQ0LwzMbh/RPxIUbUOz2xzyahbzgmZ+dAPcr0Sy9bgCsObz0Dw1fqPCJqhXivsIdA
+         FRhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694193310; x=1694798110;
+        d=1e100.net; s=20230601; t=1694193452; x=1694798252;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FvC9pL6Ni1XwRDm5BeqCIzzDS/+lbPGOBzfjrA1tAJw=;
-        b=X6pB4IQIOMTH57K2TbPBdQMeuRHtlaLhDNJzYnfqKPM7QiJm1y1Wcry6S9Vv0mdbMQ
-         r8L0Zck6scasAJWYHdMHIfk5JqhDjeJVMUKQyWrjXRn/l9DQx391FgcnDRVLIV4vt32l
-         RuMnJX91cHYmgKv5H7ZuZDLN9hhDTJ0TZZ60jGUtq37raZKoqzm0f7YtycsGZmBf4P2f
-         6XGV4u0uO54AW8f2zXU8E9D282gOsAtH+UGM2YCir4soEz9rtsCr3KpebYKqbMVXt0IC
-         pW+kYVwkiVtqH/RWJDR3dxER8Y0qmgDF2sn6RmR3e1IOLRzI5mv//5bUnoOrcQUKo9gA
-         XTPg==
-X-Gm-Message-State: AOJu0Yzx1ldPkUQZEjXFr2v3Sae6hgR+fp90uM5WzY7UmfaBiKZWVe/h
-	I2mD3JspnIT17TZXUxdYxNooUbBwgkgSe4Hzkn1Kfg==
-X-Google-Smtp-Source: AGHT+IHurteqR3i6yaqkMaO/DxMsTokaewDiPBujsr0fhYb39oy8+ZmDi6wXwmbrivcBqzheTati8qR0uJemwcQ3Zag=
-X-Received: by 2002:a05:6214:20e2:b0:630:1b99:5c53 with SMTP id
- 2-20020a05621420e200b006301b995c53mr7558558qvk.9.1694193310278; Fri, 08 Sep
- 2023 10:15:10 -0700 (PDT)
+        bh=dytdhOUY4d267Lvi8EgrlRmP7ykYMIsK1Jem27n9klw=;
+        b=bupJB/10dkNSYWQe08V18XawRlcUv0KqRnaCfWa7e9UHiy3B36gwo1ZA1tbcfMUZr2
+         Ar9WzWbebriL3NnbqQLqiTMn3Sx1Hat0pWWv2M+lPl+69yu3Ach55H8RC/q94XHNWXJS
+         hbQq+JlSTgzwHGiOJ5M1bLilz/PlqcQot5rWFEiUDh1bf9Jv6EDTCJ6dXu9UeJNQnoeG
+         0qbOY3Pw3G0w70LyB+IH9vr5jEzXcfrqacXQw41qkT/Ihz8vIEBgVfd6nCzu2SdNOu85
+         7iflgHrrePwWdW/yXfqCdMkoasV2sYCTeC+G9Gl8FGBq5nqunv7xDjnwe1wUgeI4XLsd
+         Z1zw==
+X-Gm-Message-State: AOJu0YxLJI0q52dp+DECnCzd83T+HD1Bqo8XtZCMA7352aiGutttIdi3
+	J+29eTsbjeXXv14u8dt1f74rWnfpmhhVEmJTF2e6DQ==
+X-Google-Smtp-Source: AGHT+IGAe/fv4uMQ0BlxMb67RlhBxKTj5nqsa5XxGuEZUU4hL1QHPUBOFNZRoNQc3deWgEJMnJF1y/FmCRWoPUgPXvc=
+X-Received: by 2002:a17:90a:d484:b0:26b:3625:d1a2 with SMTP id
+ s4-20020a17090ad48400b0026b3625d1a2mr3123198pju.41.1694193451678; Fri, 08 Sep
+ 2023 10:17:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAKwvOdnaEakT_y8TA9b_nMY3kMp=xxqKpGQPc2drNqRdV39RQw@mail.gmail.com>
- <ZPozfCEF9SV2ADQ5@krava> <ZPsJ4AAqNMchvms/@krava>
-In-Reply-To: <ZPsJ4AAqNMchvms/@krava>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Fri, 8 Sep 2023 10:14:56 -0700
-Message-ID: <CAKwvOd==X0exrhmsqX1j1WFX77xe8W7xPbfiCY+Rt6abgmkMCQ@mail.gmail.com>
-Subject: Re: duplicate BTF_IDs leading to symbol redefinition errors?
-To: Jiri Olsa <olsajiri@gmail.com>, Marcus Seyfarth <m.seyfarth@gmail.com>, 
-	Masahiro Yamada <masahiroy@kernel.org>
-Cc: bpf <bpf@vger.kernel.org>, clang-built-linux <llvm@lists.linux.dev>, 
-	Stanislav Fomichev <sdf@google.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>
+References: <20221121180340.1983627-1-sdf@google.com> <20221121180340.1983627-2-sdf@google.com>
+ <2b84e81a-90f8-898f-d320-a29233ff37ad@iogearbox.net>
+In-Reply-To: <2b84e81a-90f8-898f-d320-a29233ff37ad@iogearbox.net>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Fri, 8 Sep 2023 10:17:20 -0700
+Message-ID: <CAKH8qBv5xvjxF2G78Nm3iOeC5OVygSZK3vVzZgOXT8EwyW+Obg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Make sure zero-len skbs
+ aren't redirectable
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev, 
+	netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
 	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Thanks for the patch!
-
-+ Marcus
-
-Marcus can you please test the below patch and provide your tested-by
-and reported-by tags?
-
-On Fri, Sep 8, 2023 at 4:47=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrote=
-:
+On Fri, Sep 8, 2023 at 9:54=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.ne=
+t> wrote:
 >
-> On Thu, Sep 07, 2023 at 10:33:00PM +0200, Jiri Olsa wrote:
-> > On Thu, Sep 07, 2023 at 12:01:18PM -0700, Nick Desaulniers wrote:
-> > > So we've got a curious report recently:
-> > > https://github.com/ClangBuiltLinux/linux/issues/1913
-> > >
-> > > ld.lld: error: ld-temp.o <inline asm>:14577:1: symbol
-> > > '__BTF_ID__struct__cgroup__624' is already defined
-> > > __BTF_ID__struct__cgroup__624:
-> > > ^
-> > >
-> > > It's been hard to pin down a SHA and .config to reproduce this, but
-> > > looking at the definition of BTF_ID's usage of __ID's usage of
-> > > __COUNTER__, and the two statements:
-> > >
-> > > kernel/bpf/helpers.c:2460:BTF_ID(struct, cgroup)
-> > > kernel/bpf/verifier.c:5075:BTF_ID(struct, cgroup)
-> > >
-> > > Is it possible that __COUNTER__ could evaluate to the same value
-> > > across 2 different translation units, leading to a name collision lik=
-e
-> > > the above?
+> Hi Stan,
+>
+> Do you have some cycles to look into the below?
+
+Sure, I'll take a look!
+
+> On 11/21/22 7:03 PM, Stanislav Fomichev wrote:
+> > LWT_XMIT to test L3 case, TC to test L2 case.
 > >
-> > hum, that probably the case, I see same counter values at different
-> > __BTF_ID_ symbols:
+> > v2:
+> > - s/veth_ifindex/ipip_ifindex/ in two places (Martin)
+> > - add comment about which condition triggers the rejection (Martin)
 > >
-> > ffffffff833fe540 r __BTF_ID__struct__bpf_bloom_filter__380
-> > ffffffff833fe548 r __BTF_ID__struct__bpf_queue_stack__380
-> > ffffffff833fe578 r __BTF_ID__struct__cgroup__380
-> >
-> > perhaps we were just lucky not to hit that :-\
-> >
-> > >
-> > > looking at another usage of BTF_ID other than struct
-> > > cgroup;kernel/bpf/helpers.c:2461:BTF_ID(func, bpf_cgroup_release)
-> > > is only defined in one translation unit
-> > >
-> > > Should one of those two `BTF_ID(struct, cgroup)` be removed? Is there
-> > > some other way we can avoid these collisions in the future?
-> >
-> > need to find some way to make the symbol unique, will check
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> [...]
+> > +             /* ETH_HLEN+1-sized packet should be redirected. */
+> > +
+> > +             {
+> > +                     .msg =3D "veth ETH_HLEN+1 packet ingress",
+> > +                     .data_in =3D eth_hlen_pp,
+> > +                     .data_size_in =3D sizeof(eth_hlen_pp),
+> > +                     .ifindex =3D &veth_ifindex,
+> > +             },
+> [...]
 >
-> the change below uses object's path as the __BTF_ID_.. symbol suffix to m=
-ake
-> it unique
+> This one is now failing in BPF CI on net/net-next ff after the veth drive=
+r changed
+> it's drop error code in [0] from NETDEV_TX_OK (0) to NET_XMIT_DROP (1) :
 >
-> I'm still looking, but can't think of a better way so far, perhaps somebo=
-dy
-> will have better idea
-
-Another good approach; I had simply added __LINE__ into the paste.
-https://github.com/ClangBuiltLinux/linux/issues/1913#issuecomment-171079431=
-9
-Which just makes the probability of this occurring again smaller, but
-still non-zero.
-
-+ Masahiro for thoughts on the invocation of echo and base32.  Looks
-like base32 is part of coreutils. Kind of strange that coreutils isn't
-listed in Documentation/process/changes.rst.  Would adding the usage
-of base32 add a new dependency on coreutils?
-
+> test_empty_skb:FAIL:ret: veth ETH_HLEN+1 packet ingress [redirect_egress]=
+ unexpected ret: veth ETH_HLEN+1 packet ingress [redirect_egress]: actual 1=
+ !=3D expected 0
+> test_empty_skb:PASS:err: veth ETH_HLEN+1 packet ingress [tc_redirect_ingr=
+ess] 0 nsec
+> test_empty_skb:PASS:ret: veth ETH_HLEN+1 packet ingress [tc_redirect_ingr=
+ess] 0 nsec
+> test_empty_skb:PASS:err: veth ETH_HLEN+1 packet ingress [tc_redirect_egre=
+ss] 0 nsec
+> test_empty_skb:PASS:ret: veth ETH_HLEN+1 packet ingress [tc_redirect_egre=
+ss] 0 nsec
+> test_empty_skb:PASS:err: ipip ETH_HLEN+1 packet ingress [redirect_ingress=
+] 0 nsec
+> test_empty_skb:PASS:ret: ipip ETH_HLEN+1 packet ingress [redirect_ingress=
+] 0 nsec
+> test_empty_skb:PASS:err: ipip ETH_HLEN+1 packet ingress [redirect_egress]=
+ 0 nsec
+> test_empty_skb:PASS:ret: ipip ETH_HLEN+1 packet ingress [redirect_egress]=
+ 0 nsec
+> test_empty_skb:PASS:err: ipip ETH_HLEN+1 packet ingress [tc_redirect_ingr=
+ess] 0 nsec
+> test_empty_skb:PASS:ret: ipip ETH_HLEN+1 packet ingress [tc_redirect_ingr=
+ess] 0 nsec
+> test_empty_skb:PASS:err: ipip ETH_HLEN+1 packet ingress [tc_redirect_egre=
+ss] 0 nsec
+> test_empty_skb:PASS:ret: ipip ETH_HLEN+1 packet ingress [tc_redirect_egre=
+ss] 0 nsec
+> close_netns:PASS:setns 0 nsec
+> #71      empty_skb:FAIL
 >
-> jirka
+> The test was testing bpf_clone_redirect which is still okay, just that fo=
+r the
+> xmit sides it propagates the error code now into ret and hence the assert=
+ fails.
+> Perhaps we would need to tweak the test case to test for 0 or 1 ... 0 in =
+case
+> bpf_clone_redirect pushes to ingress, 1 in case it pushes to egress and r=
+eaches
+> veth..
 >
+> Thanks,
+> Daniel
 >
-> ---
-> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> index a3462a9b8e18..564953f9cbc7 100644
-> --- a/include/linux/btf_ids.h
-> +++ b/include/linux/btf_ids.h
-> @@ -49,7 +49,7 @@ word                                                  \
->         ____BTF_ID(symbol, word)
+>    [0] https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/com=
+mit/?id=3D151e887d8ff97e2e42110ffa1fb1e6a2128fb364
 >
->  #define __ID(prefix) \
-> -       __PASTE(prefix, __COUNTER__)
-> +       __PASTE(__PASTE(prefix, __COUNTER__), BTF_ID_BASE)
-
-Do we still need __COUNTER__ if we're now using BTF_ID_BASE?
-
+> > +     };
+> > +
+> > +     SYS("ip netns add empty_skb");
+> > +     tok =3D open_netns("empty_skb");
+> > +     SYS("ip link add veth0 type veth peer veth1");
+> > +     SYS("ip link set dev veth0 up");
+> > +     SYS("ip link set dev veth1 up");
+> > +     SYS("ip addr add 10.0.0.1/8 dev veth0");
+> > +     SYS("ip addr add 10.0.0.2/8 dev veth1");
+> > +     veth_ifindex =3D if_nametoindex("veth0");
+> > +
+> > +     SYS("ip link add ipip0 type ipip local 10.0.0.1 remote 10.0.0.2")=
+;
+> > +     SYS("ip link set ipip0 up");
+> > +     SYS("ip addr add 192.168.1.1/16 dev ipip0");
+> > +     ipip_ifindex =3D if_nametoindex("ipip0");
+> > +
+> > +     bpf_obj =3D empty_skb__open_and_load();
+> > +     if (!ASSERT_OK_PTR(bpf_obj, "open skeleton"))
+> > +             goto out;
+> > +
+> > +     for (i =3D 0; i < ARRAY_SIZE(tests); i++) {
+> > +             bpf_object__for_each_program(prog, bpf_obj->obj) {
+> > +                     char buf[128];
+> > +                     bool at_tc =3D !strncmp(bpf_program__section_name=
+(prog), "tc", 2);
+> > +
+> > +                     tattr.data_in =3D tests[i].data_in;
+> > +                     tattr.data_size_in =3D tests[i].data_size_in;
+> > +
+> > +                     tattr.data_size_out =3D 0;
+> > +                     bpf_obj->bss->ifindex =3D *tests[i].ifindex;
+> > +                     bpf_obj->bss->ret =3D 0;
+> > +                     err =3D bpf_prog_test_run_opts(bpf_program__fd(pr=
+og), &tattr);
+> > +                     sprintf(buf, "err: %s [%s]", tests[i].msg, bpf_pr=
+ogram__name(prog));
+> > +
+> > +                     if (at_tc && tests[i].success_on_tc)
+> > +                             ASSERT_GE(err, 0, buf);
+> > +                     else
+> > +                             ASSERT_EQ(err, tests[i].err, buf);
+> > +                     sprintf(buf, "ret: %s [%s]", tests[i].msg, bpf_pr=
+ogram__name(prog));
+> > +                     if (at_tc && tests[i].success_on_tc)
+> > +                             ASSERT_GE(bpf_obj->bss->ret, 0, buf);
+> > +                     else
+> > +                             ASSERT_EQ(bpf_obj->bss->ret, tests[i].ret=
+, buf);
 >
->  /*
->   * The BTF_ID defines unique symbol for each ID pointing
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index 68d0134bdbf9..2ef8b2798be0 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -200,6 +200,10 @@ _c_flags +=3D $(if $(patsubst n%,, \
->         -D__KCSAN_INSTRUMENT_BARRIERS__)
->  endif
->
-> +ifeq ($(CONFIG_DEBUG_INFO_BTF),y)
-> +_c_flags +=3D -DBTF_ID_BASE=3D$(subst =3D,,$(shell echo -n $(modfile) | =
-base32 -w0))
-
-`man 1 base32` shows it can just read a file. Could the above be:
-
-_c_flags +=3D -DBTF_ID_BASE=3D$(subst =3D,,$(shell base32 -w0 $(modfile)))
-
-? (untested)
-
-Also, the output of
-
-$ base32 -w0 Documentation/process/changes.rst
-
-is 24456 characters.  This is going to blow up symbol tables. I
-suppose ELF probably has some length limit on symbol names, too.  I
-was nervous about my approaching appending __LINE__.
-
-Perhaps pipe the output to `head -c <n bytes>`?
-
-> +endif
-> +
->  # $(srctree)/$(src) for including checkin headers from generated source =
-files
->  # $(objtree)/$(obj) for including generated headers from checkin source =
-files
->  ifeq ($(KBUILD_EXTMOD),)
-
-
-
---=20
-Thanks,
-~Nick Desaulniers
 
