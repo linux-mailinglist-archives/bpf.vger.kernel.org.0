@@ -1,80 +1,76 @@
-Return-Path: <bpf+bounces-9578-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9579-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73AA27992E5
-	for <lists+bpf@lfdr.de>; Sat,  9 Sep 2023 01:44:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FE607992EA
+	for <lists+bpf@lfdr.de>; Sat,  9 Sep 2023 01:51:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E7221C20CB8
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 23:44:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 991F5281CD0
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 23:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19FD5747E;
-	Fri,  8 Sep 2023 23:44:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 664F87480;
+	Fri,  8 Sep 2023 23:51:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1E737466
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 23:44:34 +0000 (UTC)
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5C818E
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 16:44:33 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-52e5900cf77so3414004a12.2
-        for <bpf@vger.kernel.org>; Fri, 08 Sep 2023 16:44:33 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B05F7466
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 23:51:08 +0000 (UTC)
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B8718E;
+	Fri,  8 Sep 2023 16:51:07 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9a9d82d73f9so316525666b.3;
+        Fri, 08 Sep 2023 16:51:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694216671; x=1694821471; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694217066; x=1694821866; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=N8aaiPzmyB8SkSZWJlvSQHyGnGbgrddC1UWeu4OSW4c=;
-        b=lS6MZ27EY2v7lc+A45Pnk1HYX7UxHpbUf++h4YJEGI7ZFeZNVsQ0J6ky7LZwEe/YbR
-         QMtfEu8HLDxQPqyCvDPYEs2HopIHzJkv20dAkMtDPZvLbHP7p3i5WSOCR4HLZ3Boomay
-         5Wh4EppevEPgzdzjqNDiOmdOCtPIbvVpd7yNMV8PE4VvI4DfnRnkwqtwNlmmH4WJNHqz
-         1vC1q2stQl+6GYhW2yJT3QOoUpbi6JdEC/LX00g+l4FEgRY3G4B6TOUxcMhQAbsC27OR
-         tKm6y+zM3SalG1fY5pB45tMJJ7Br6R9kxjS9uLs+MAp/FC10/f9oxR2EHFBL7TrsXgSv
-         Pnvg==
+        bh=rz46q7yCO0bfK6/28GIiUTUVIGvYKbXoVgA69/2My4U=;
+        b=M6tojbXU891Pt3cck1bc5V18F1d63AJDu1FC5z0t5TlIUeju9PncCvbW0MkFNEllTt
+         VWXUWGbVp6Hy6le6HiqEVkbdRh0KnUll+8ncAbQR5XcudIvRmcapagnI4ImLuxshIN95
+         fVqGSCkuzyZJCCAZg6DNELAp3cmjR+LR4oZY4iNFGCSDZRlIaUHKvL+n7D7rJX8iy+zt
+         290QELRFuhhq/KSccezzvL7v/0R+Ig3w+ywSBJds3y8GC6qRb3wbp9ngfO9pcNefKq1r
+         khCF7CherbA8t3Vp9JxhYJj491lTOAmiD59rmAYtQbilfeWIxAWHGy2XSGNzg9p92Fk/
+         JT7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694216671; x=1694821471;
+        d=1e100.net; s=20230601; t=1694217066; x=1694821866;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N8aaiPzmyB8SkSZWJlvSQHyGnGbgrddC1UWeu4OSW4c=;
-        b=XyT1xCLRDrDiI07bKaT+d6xqzgm3Lc3F6n8GB5ogx76jqllfNmEJ9AaitbU7VNAFUn
-         5as/Q+D3KbwjcBo4Yshlsqhmd1suBzRRaQEIkm1gfbOHdO9zbbk70ln5XvZHIyJo4oz1
-         AF86qw4RXcYovrAVRlqTJrIKMv3RIvE/iMHx23m+xysns9FS/S/RFrvIeizVdinkOspn
-         9H4BvNloiiO9/OeDwxqXfHiGQt7hzq2DKlmYQNst5j1HOUil7E6R+XIoq12joYuaDAjw
-         rU1NpU+ItqR/gLFNJozpUOWvrbTzbdbAN8iePui/fCWOE1XgtIhJV4VFKQJ/Oc2oiw5v
-         A8yA==
-X-Gm-Message-State: AOJu0Ywj6MvbuIVp05D3QJOGHIjTjc0RYu8wp8JqCEknONiB5Qi071sI
-	BAYQiWZ+T1hDI7izGf0GtT1878CX3pfgZ8O84RA=
-X-Google-Smtp-Source: AGHT+IFSvzjyrZoi8AJMtH768tKgVb+WPYCGWHdD0OF+Zne4iBnZRmMWx8mViNG3ia81AZdWkreoHAK6fXf03jtScNw=
-X-Received: by 2002:a05:6402:1b01:b0:52e:1d58:a709 with SMTP id
- by1-20020a0564021b0100b0052e1d58a709mr2402822edb.40.1694216671513; Fri, 08
- Sep 2023 16:44:31 -0700 (PDT)
+        bh=rz46q7yCO0bfK6/28GIiUTUVIGvYKbXoVgA69/2My4U=;
+        b=gzYlNoBKKqqZ9cao5kUe0Sc540S05fCi/qDdtOD+9d2Eughnbw56F7htLyd+6IkxFP
+         S9N3yju79ASqk0rl2jJlrJ33b5iwzKJLLA0/fp4QnHYPyH8gwpTt2rBVGKapxteV4lwX
+         HM9wAbEkYxYa6EFXTEzdWC2xckWSHBnPAYIxQemiarwmFkiTdQaK5+cekzt/V0V+p0RY
+         SHG/2Cpz0ih8A0+B8O/2YESvtNuRjyTZvYVchL5VP0mQy3++Jx+k+5agwP+Dr2zfn2jZ
+         4w86pp1Sr+04RnKm9nJIGUHIkMOj1mdjWr2JBAtxo9jyGztfw5gyXdVaItdTgb5fhOhU
+         nTAA==
+X-Gm-Message-State: AOJu0Yyo2S4aak2ENhvbcqClOqcGGmqQSgpMav1kvBwenXjrFudfuq9W
+	5KcKl7Vz6xI49TZfna8qYDgIPRWM1oWGvi0sN/A=
+X-Google-Smtp-Source: AGHT+IGCXV2gz7eM22d1Agkbwn85ii7m8IM9fsCyxitt2Q0YhhrjjYiebZxm8haHgEf2GRFyi5W3lRSLnQJURjobkZk=
+X-Received: by 2002:a17:907:7612:b0:9a9:efa0:fccf with SMTP id
+ jx18-20020a170907761200b009a9efa0fccfmr3053087ejc.0.1694217065631; Fri, 08
+ Sep 2023 16:51:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230907071311.254313-1-jolsa@kernel.org> <20230907071311.254313-4-jolsa@kernel.org>
- <CAPhsuW4hX95fHZCDYnfzAwK43dbnGJUxHEF3bGdODWe_6MytnQ@mail.gmail.com>
- <ZPsI/4nX7IUpJ6Gr@krava> <CAEf4Bzawf5_uq5bE_O8Y1GqxJhNd_zkOYTnDdPRy3n_0upXn2A@mail.gmail.com>
- <CAPhsuW4qzim9KDJZUD6-2xA42fr8tgQ9dh7odeAhiym-xsiuVg@mail.gmail.com>
-In-Reply-To: <CAPhsuW4qzim9KDJZUD6-2xA42fr8tgQ9dh7odeAhiym-xsiuVg@mail.gmail.com>
+References: <20230907200652.926951-1-jolsa@kernel.org> <2deafa8c-94cb-247a-2a8f-97f756f28898@oracle.com>
+In-Reply-To: <2deafa8c-94cb-247a-2a8f-97f756f28898@oracle.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 8 Sep 2023 16:44:20 -0700
-Message-ID: <CAEf4BzYEpc+sD3N6LwHoYAqj9UWzF2ahN=SqXaz7q7Q2JGabxw@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 3/9] bpf: Add missed value to kprobe perf link info
-To: Song Liu <song@kernel.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Hou Tao <houtao1@huawei.com>, 
-	Daniel Xu <dxu@dxuuu.xyz>
+Date: Fri, 8 Sep 2023 16:50:54 -0700
+Message-ID: <CAEf4BzZ_=AQ2rt1z=FUE6QoHq44Y_fCmh+xjbn-39NhLw5-VNg@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] bpf: Add override check to kprobe multi link attach
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, stable@vger.kernel.org, 
+	bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, 
+	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Djalal Harouni <tixxdz@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,85 +80,89 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Sep 8, 2023 at 4:33=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+On Fri, Sep 8, 2023 at 6:49=E2=80=AFAM Alan Maguire <alan.maguire@oracle.co=
+m> wrote:
 >
-> On Fri, Sep 8, 2023 at 4:22=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> On 07/09/2023 21:06, Jiri Olsa wrote:
+> > Currently the multi_kprobe link attach does not check error
+> > injection list for programs with bpf_override_return helper
+> > and allows them to attach anywhere. Adding the missing check.
 > >
-> > On Fri, Sep 8, 2023 at 4:44=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> w=
-rote:
-> > >
-> > > On Thu, Sep 07, 2023 at 11:40:46AM -0700, Song Liu wrote:
-> > > > On Thu, Sep 7, 2023 at 12:13=E2=80=AFAM Jiri Olsa <jolsa@kernel.org=
-> wrote:
-> > > > >
-> > > > > Add missed value to kprobe attached through perf link info to
-> > > > > hold the stats of missed kprobe handler execution.
-> > > > >
-> > > > > The kprobe's missed counter gets incremented when kprobe handler
-> > > > > is not executed due to another kprobe running on the same cpu.
-> > > > >
-> > > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > >
-> > > > [...]
-> > > >
-> > > > The code looks good to me. But I have two thoughts on this (and 2/9=
-).
-> > > >
-> > > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > > > index e5216420ec73..e824b0c50425 100644
-> > > > > --- a/include/uapi/linux/bpf.h
-> > > > > +++ b/include/uapi/linux/bpf.h
-> > > > > @@ -6546,6 +6546,7 @@ struct bpf_link_info {
-> > > > >                                         __u32 name_len;
-> > > > >                                         __u32 offset; /* offset f=
-rom func_name */
-> > > > >                                         __u64 addr;
-> > > > > +                                       __u64 missed;
-> > > > >                                 } kprobe; /* BPF_PERF_EVENT_KPROB=
-E, BPF_PERF_EVENT_KRETPROBE */
-> > > > >                                 struct {
-> > > > >                                         __aligned_u64 tp_name;   =
-/* in/out */
-> > > >
-> > > > 1) Shall we add missed for all bpf_link_info? Something like:
-> > > >
-> > > > diff --git i/include/uapi/linux/bpf.h w/include/uapi/linux/bpf.h
-> > > > index 5a39c7a13499..cf0b8b2a8b39 100644
-> > > > --- i/include/uapi/linux/bpf.h
-> > > > +++ w/include/uapi/linux/bpf.h
-> > > > @@ -6465,6 +6465,7 @@ struct bpf_link_info {
-> > > >         __u32 type;
-> > > >         __u32 id;
-> > > >         __u32 prog_id;
-> > > > +       __u64 missed;
-> > > >         union {
-> > > >                 struct {
-> > > >                         __aligned_u64 tp_name; /* in/out: tp_name b=
-uffer ptr */
-> > >
-> > > hm, there's lot of links under bpf_link_info, can't really tell if
-> > > all could gather 'missed' data.. like I don't think we have any for
-> > > standard perf event or perf tracepoint
+> > Cc: stable@vger.kernel.org
+> > Fixes: 0dcac2725406 ("bpf: Add multi kprobe link")
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+>
+> For the series,
+>
+> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+>
+> ...with one small question below...
+>
+> > ---
+> >  kernel/trace/bpf_trace.c | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
 > >
-> > even if missed for all link types would make sense, we can't add any
-> > field before union, this would be a breaking change
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index a7264b2c17ad..c1c1af63ced2 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -2853,6 +2853,17 @@ static int get_modules_for_addrs(struct module *=
+**mods, unsigned long *addrs, u3
+> >       return arr.mods_cnt;
+> >  }
+> >
+> > +static int addrs_check_error_injection_list(unsigned long *addrs, u32 =
+cnt)
+> > +{
+> > +     u32 i;
+> > +
+> > +     for (i =3D 0; i < cnt; i++) {
+> > +             if (!within_error_injection_list(addrs[i]))
+> > +                     return -EINVAL;
 >
-> Right...
->
-> It is also tricky to add it to the union, right? We cannot tell whether
-> the kernel supports missed stats based on sizeof(struct bpf_link_info).
-> I guess this is also problematic?
+> do we need a check like trace_kprobe_on_func_entry() to verify that
+> it's a combination of function entry+kprobe override, or is that
+> handled elsewhere/not needed? perf_event_attach_bpf_prog() does
 
-right, just checking size won't be reliable (it would be if missed is
-added to largest substruct of a union). If it's important to know if
-kernel reports missed, one would need to do a more proper feature
-detection
-
+multi-kprobe programs are always attached at function entry, so I
+believe it's not necessary?
 
 >
-> Thanks,
-> Song
+> /*
+>  * Kprobe override only works if they are on the function entry,
+>  * and only if they are on the opt-in list.
+>  */
+>         if (prog->kprobe_override &&
+>             (!trace_kprobe_on_func_entry(event->tp_event) ||
+>              !trace_kprobe_error_injectable(event->tp_event)))
+>                 return -EINVAL;
 >
-> [...]
+>
+> if this is needed, it might be good to augment the selftest to
+> cover the case of specifying non-entry+kprobe override. thanks!
+>
+> Alan
+>
+>
+> > +     return 0;
+> > +}
+> > +
+> >  int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bp=
+f_prog *prog)
+> >  {
+> >       struct bpf_kprobe_multi_link *link =3D NULL;
+> > @@ -2930,6 +2941,11 @@ int bpf_kprobe_multi_link_attach(const union bpf=
+_attr *attr, struct bpf_prog *pr
+> >                       goto error;
+> >       }
+> >
+> > +     if (prog->kprobe_override && addrs_check_error_injection_list(add=
+rs, cnt)) {
+> > +             err =3D -EINVAL;
+> > +             goto error;
+> > +     }
+> > +
+> >       link =3D kzalloc(sizeof(*link), GFP_KERNEL);
+> >       if (!link) {
+> >               err =3D -ENOMEM;
 
