@@ -1,95 +1,179 @@
-Return-Path: <bpf+bounces-9546-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9548-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B135E798E1C
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 20:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 03F8A798E3C
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 20:31:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4671E281D75
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 18:29:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA9D1281DCC
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 18:31:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C83168B1;
-	Fri,  8 Sep 2023 18:19:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33B9014F73;
+	Fri,  8 Sep 2023 18:20:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11439168AB
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 18:19:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3303C116B3;
-	Fri,  8 Sep 2023 18:19:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694197155;
-	bh=J2QMtXX3kvkZ2nBhEkgQpCn/AL0LO2VsYGWrL/6/kog=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CFRTPa7+Kr3eKqwCRT4dnxQmSm5SxlNRYLCvfj/CWkY75+cklI6FTvC4NZ7daA4d1
-	 eVngfzhln8Gyy7+zFQ5nmthupxbPCBJ+X5DefoKHMmzoKowWj4N41pkhwyd9O+VGib
-	 4dWG8e6txcqiuQI17hxjGGDPU6yWVe+/vRzs46YI6pkmpR80xQNrnJ2ZmXPjcrCEUl
-	 3lzAgtshzxAvlMZS9840yj4SeExQHIb2etWxFEUhVlPjp/UmP+xacqhlkzaMPIiui/
-	 aD5ABRJMsDCJ84x6OhZSmJp4x/HBoFhu7ytk9YObtaqHGmoUIrC+AWJq/45YWdHArx
-	 lZAHqhR/aj4zw==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Hao Luo <haoluo@google.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 25/26] libbpf: Free btf_vmlinux when closing bpf_object
-Date: Fri,  8 Sep 2023 14:18:03 -0400
-Message-Id: <20230908181806.3460164-25-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908181806.3460164-1-sashal@kernel.org>
-References: <20230908181806.3460164-1-sashal@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3655171A2
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 18:20:21 +0000 (UTC)
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0803D3A97
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 11:20:01 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-68e26165676so2510563b3a.0
+        for <bpf@vger.kernel.org>; Fri, 08 Sep 2023 11:20:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1694197133; x=1694801933; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=9DIksM6myeoWeDBcpXYOMBk+NYMmdWPc+5HOrctp+9s=;
+        b=cQPXp1mI5865RqEsYQSRQnbMWBiiStN4A6SkaGlxc4NIeF2t7LEAgCMeUfJHqeZoBB
+         CnHObcP4Ukr48Sb80NpKI4VbLnme5u4d1giaKMomMha/0NKTnwYSJ+Evz9SdqP0xAylv
+         eyFATxMoXFz93RqQrUdo6JAVhCnyyKum/mUtU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694197133; x=1694801933;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9DIksM6myeoWeDBcpXYOMBk+NYMmdWPc+5HOrctp+9s=;
+        b=jzvPRFbPHNOhu2DI+EWxgVMaT2KV650vHS9VeAdf2mRsgMKfDtTu9P+KV+wMyVjbKP
+         7T9OceuICr/QZczgUMWvToM5UhGnc/nC+752qryh91ly9o3Rn2HiOVgjj4btM50nolee
+         o9gfWFELdYXb85rjNCet24LfHGJvsIcKW1aBLle7iFjSnzvGjehKWOj7BewXNrVGnZ19
+         iACDzBx/o0RAC4bqics4uGKuXSyyOi0bx7ZPj2gK7DQ/j3APwfxV0ifXzaMCdrvLcsFs
+         6ImC+Wjd3ocxtWoM/1wkrc5uB8CNTgoz9T2ZzgA2XQwf2hSnXl57ys8bZI6jWk6ebfrt
+         zlSw==
+X-Gm-Message-State: AOJu0YxCcXLYp8/GnZIvl4IcZWgl7sMb4XUQrYc+PsivTtXFgRXnEXvs
+	NNHaO/fzq/LI8d25qi6vNh04AA==
+X-Google-Smtp-Source: AGHT+IEL011BEfLSNoZ0VWbsnUu9K98As3uc78Y5lkcy50J2yjnTrkBn7oLeFhQDR9RIQZU4AK+E0w==
+X-Received: by 2002:a05:6a20:7d9b:b0:13e:debc:3657 with SMTP id v27-20020a056a207d9b00b0013edebc3657mr3555227pzj.30.1694197133598;
+        Fri, 08 Sep 2023 11:18:53 -0700 (PDT)
+Received: from C02YVCJELVCG.dhcp.broadcom.net ([192.19.144.250])
+        by smtp.gmail.com with ESMTPSA id w25-20020a63af19000000b00563da87a52dsm1470280pge.40.2023.09.08.11.18.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Sep 2023 11:18:53 -0700 (PDT)
+From: Andy Gospodarek <andrew.gospodarek@broadcom.com>
+X-Google-Original-From: Andy Gospodarek <gospo@broadcom.com>
+Date: Fri, 8 Sep 2023 14:18:45 -0400
+To: Michael Chan <michael.chan@broadcom.com>
+Cc: Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	netdev@vger.kernel.org, bpf@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH net 2/4] bnxt_en: Flush XDP for bnxt_poll_nitroa0()'s NAPI
+Message-ID: <ZPtlhSywT5cBTj8u@C02YVCJELVCG.dhcp.broadcom.net>
+References: <20230908135748.794163-1-bigeasy@linutronix.de>
+ <20230908135748.794163-3-bigeasy@linutronix.de>
+ <CALs4sv2=ox6ZWj3FUY=0-Zj3uNAOpCLM_vf_dmsVx+ju2S9UUA@mail.gmail.com>
+ <CACKFLin+1whPs0qeM5xBb1yXx8FkFS_vGrW6PaGy41_XVH=SGg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.52
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACKFLin+1whPs0qeM5xBb1yXx8FkFS_vGrW6PaGy41_XVH=SGg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-From: Hao Luo <haoluo@google.com>
+On Fri, Sep 08, 2023 at 10:57:13AM -0700, Michael Chan wrote:
+> On Fri, Sep 8, 2023 at 9:30 AM Pavan Chebbi <pavan.chebbi@broadcom.com> wrote:
+> >
+> > On Fri, Sep 8, 2023 at 7:29 PM Sebastian Andrzej Siewior
+> > <bigeasy@linutronix.de> wrote:
+> > >
+> > > bnxt_poll_nitroa0() invokes bnxt_rx_pkt() which can run a XDP program
+> > > which in turn can return XDP_REDIRECT. bnxt_rx_pkt() is also used by
+> > > __bnxt_poll_work() which flushes (xdp_do_flush()) the packets after each
+> > > round. bnxt_poll_nitroa0() lacks this feature.
+> > > xdp_do_flush() should be invoked before leaving the NAPI callback.
+> > >
+> > > Invoke xdp_do_flush() after a redirect in bnxt_poll_nitroa0() NAPI.
+> > >
+> > > Cc: Michael Chan <michael.chan@broadcom.com>
+> > > Fixes: f18c2b77b2e4e ("bnxt_en: optimized XDP_REDIRECT support")
+> > > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > > ---
+> > >  drivers/net/ethernet/broadcom/bnxt/bnxt.c | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > >
+> > > diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> > > index 5cc0dbe121327..7551aa8068f8f 100644
+> > > --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> > > +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> > > @@ -2614,6 +2614,7 @@ static int bnxt_poll_nitroa0(struct napi_struct *napi, int budget)
+> > >         struct rx_cmp_ext *rxcmp1;
+> > >         u32 cp_cons, tmp_raw_cons;
+> > >         u32 raw_cons = cpr->cp_raw_cons;
+> > > +       bool flush_xdp = false;
+> >
+> > Michael can confirm but I don't think we need this additional variable.
+> > Since the event is always ORed, we could directly check if (event &
+> > BNXT_REDIRECT_EVENT) just like is done in __bnxt_poll_work().
+> 
+> If we have a mix of XDP_TX and XDP_REDIRECT during NAPI, event can be
+> cleared by XDP_TX.  So this patch looks correct to me because of that.
 
-[ Upstream commit 29d67fdebc42af6466d1909c60fdd1ef4f3e5240 ]
+Agreed
 
-I hit a memory leak when testing bpf_program__set_attach_target().
-Basically, set_attach_target() may allocate btf_vmlinux, for example,
-when setting attach target for bpf_iter programs. But btf_vmlinux
-is freed only in bpf_object_load(), which means if we only open
-bpf object but not load it, setting attach target may leak
-btf_vmlinux.
+> Or we can make it consistent with __bnxt_poll_work() and assume that
+> XDP_TX won't mix with XDP_REDIRECT.
 
-So let's free btf_vmlinux in bpf_object__close() anyway.
+Unfortunately we probably cannot guarantee that or maybe more to point
+we do not want to guarantee that.
 
-Signed-off-by: Hao Luo <haoluo@google.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20230822193840.1509809-1-haoluo@google.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/lib/bpf/libbpf.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks for this patch.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index b9a29d1053765..383e93d699bf4 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8169,6 +8169,7 @@ void bpf_object__close(struct bpf_object *obj)
- 	bpf_object__elf_finish(obj);
- 	bpf_object_unload(obj);
- 	btf__free(obj->btf);
-+	btf__free(obj->btf_vmlinux);
- 	btf_ext__free(obj->btf_ext);
- 
- 	for (i = 0; i < obj->nr_maps; i++)
--- 
-2.40.1
+Reviewed-by: Andy Gospodarek <gospo@broadcom.com>
+
+
+> Handling a mix of XDP actions needs to be looked at separately.  The
+> driver currently won't work well when that happens.  I am working on
+> an internal patch to address that and will post it when it's ready.
+> Thanks.
+> 
+> >
+> > >         u32 rx_pkts = 0;
+> > >         u8 event = 0;
+> > >
+> > > @@ -2648,6 +2649,8 @@ static int bnxt_poll_nitroa0(struct napi_struct *napi, int budget)
+> > >                                 rx_pkts++;
+> > >                         else if (rc == -EBUSY)  /* partial completion */
+> > >                                 break;
+> > > +                       if (event & BNXT_REDIRECT_EVENT)
+> > > +                               flush_xdp = true;
+> > >                 } else if (unlikely(TX_CMP_TYPE(txcmp) ==
+> > >                                     CMPL_BASE_TYPE_HWRM_DONE)) {
+> > >                         bnxt_hwrm_handler(bp, txcmp);
+> > > @@ -2667,6 +2670,8 @@ static int bnxt_poll_nitroa0(struct napi_struct *napi, int budget)
+> > >
+> > >         if (event & BNXT_AGG_EVENT)
+> > >                 bnxt_db_write(bp, &rxr->rx_agg_db, rxr->rx_agg_prod);
+> > > +       if (flush_xdp)
+> > > +               xdp_do_flush();
+> > >
+> > >         if (!bnxt_has_work(bp, cpr) && rx_pkts < budget) {
+> > >                 napi_complete_done(napi, rx_pkts);
+> > > --
+> > > 2.40.1
+> > >
+> > >
+
 
 
