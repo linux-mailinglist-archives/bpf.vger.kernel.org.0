@@ -1,113 +1,135 @@
-Return-Path: <bpf+bounces-9557-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9558-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFE4B799209
-	for <lists+bpf@lfdr.de>; Sat,  9 Sep 2023 00:07:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B5AA799227
+	for <lists+bpf@lfdr.de>; Sat,  9 Sep 2023 00:22:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69978281C5D
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 22:07:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12DD4281C25
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 22:22:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8277EB649;
-	Fri,  8 Sep 2023 22:07:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC3EB64D;
+	Fri,  8 Sep 2023 22:22:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F3CB643
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 22:07:36 +0000 (UTC)
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D852F1FCA
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 15:07:32 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-573f722b86eso1930493a12.1
-        for <bpf@vger.kernel.org>; Fri, 08 Sep 2023 15:07:32 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4359030FA9
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 22:22:44 +0000 (UTC)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D05A1FC9
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 15:22:42 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d7ec535fe42so2297605276.1
+        for <bpf@vger.kernel.org>; Fri, 08 Sep 2023 15:22:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694210852; x=1694815652; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Zt6hYgn3Ous9Au4d5GwRFSvf11hCq9Ot7Mad1hvaRo8=;
-        b=HoS7s5oa381GMwPR0GLL3fAmbBEGNTL2rf8ZUidHyA0J/B0sAQ3JEfx6jHdA5LHA3i
-         ip37e+bqya35zB3Js9DuZuStv13FL3bfROJ330ydN444nQ3P7OWdTCfSEsfVAzBAhm3b
-         kl1xURlBgAzX5O0ylGAwnK9QoqpsOf0saf5tNKBTn++lEWNAy+K9r111X+gB/X6QfBNP
-         EOG/Mtya4Y95Ns9nm69utVPa0EoOzoiyD39FCx0YZInpBfnP9bgLbLzHZN1l3f3HzZJL
-         AJGA5Gbs9FkQgp5kzKAV3G0HMnIdm+EXVuwqNBmiB2PbsvsRKDH98DhosZfv0LtA+E5m
-         x/Kg==
+        d=google.com; s=20221208; t=1694211761; x=1694816561; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gYFwNaHOE9Gb8BtRYtg1fi2IuOu5WJ//tLflJpSOuU0=;
+        b=UZ4nEodqfUiE1TBBLxRbBE6CGcPF0ZxTlCkl3G295Ma2Qm0QHYaMlTkM1ViwZYLdIr
+         EYY25k8et+Igt290cIFcdtSLsFY0imXbDAetEUnI64tOvOs8TG+d47IuVdwHslOlXK5x
+         A6OWdh3IkV3Svp3Tb0fIIEKvlh1kqxPJLcoGyBYC8lHKQt8X5rDHYRJ/YzgAKV3OuM9q
+         AVsVPzDeQ7aR8e0T16d9eOq9JS4wDxXxeyh9lGYt5SrHFVwF3UB7WJAn7+h4Pm4Uw5BA
+         rVrQnFKWtpt95j/90VRxn/YA2XLaH9YIAAarasjREu3HHOm5LQ5lu1eHxXF6ZK6S9lmB
+         gt0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694210852; x=1694815652;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Zt6hYgn3Ous9Au4d5GwRFSvf11hCq9Ot7Mad1hvaRo8=;
-        b=kSvrs+4+VTmI9jyxuCYOEkQMYQlkPwh9BY6oWisRb8uqPhSoCG2BoJzWA4qe1h7t92
-         2vDNdpZxUFjkj5kD5VLUlI2ms9RdyaeD/fRYvJ57bFRPR5bDMWygK4On+tNgBntbJ2ld
-         F8YSeEJQAw87e0R9sQf58qfp8Rn5IxOyY0ux2o0cZVbtqpb7vaROVc7Rg7dUSsYH/nXE
-         r4GTowwr7L739uXCM/SWWsQcsgTAd3ZsAJM+cAc6UTla2kFHIMQgY7Fz7E1fdJxu6cNq
-         bf5ZokDwDkzht2GLfzAMmnX8lsw+o8l7XaecJ6eZQdOiNqqipPfMAAa8Z3dYy5ih54UQ
-         Zibw==
-X-Gm-Message-State: AOJu0YxIdYIrPmMPAAN7lI1Ru+bFUBK/CD8QCs+8VioBj8gYt/bCiQoE
-	UZXGKnhaWjITZQFn4BCIZik=
-X-Google-Smtp-Source: AGHT+IGNz/WWQXAA8E9yJxP5Uw5ouaZzmEuylmdxDDskkgQWznC8PmuG2Pf6zKyXEnXblTtZrm8UKg==
-X-Received: by 2002:a05:6a21:4985:b0:14c:5c5e:7d42 with SMTP id ax5-20020a056a21498500b0014c5c5e7d42mr4033935pzc.35.1694210852062;
-        Fri, 08 Sep 2023 15:07:32 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:2fd6])
-        by smtp.gmail.com with ESMTPSA id z14-20020aa791ce000000b00686fe7b7b48sm1698843pfa.121.2023.09.08.15.07.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 15:07:31 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 8 Sep 2023 12:07:29 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Josh Don <joshdon@google.com>
-Cc: paulmck@kernel.org, Hao Luo <haoluo@google.com>,
-	davemarchevsky@meta.com, David Vernet <dvernet@meta.com>,
-	Neel Natu <neelnatu@google.com>,
-	Jack Humphries <jhumphri@google.com>, bpf@vger.kernel.org,
-	ast@kernel.org
-Subject: Re: BPF memory model
-Message-ID: <ZPubIZLXFuAsfN7a@slm.duckdns.org>
-References: <CABk29NuQ4C-w_JA-zev796Nr_vx932qC4_OcdH=gMM6HZ_r4WQ@mail.gmail.com>
- <33f06fa6-2f4d-4e50-a87e-0d6604d3c413@paulmck-laptop>
- <CABk29Nva+c6oBZra6srWGcfxMEquOP30dReM-PgW_Wh+zKiBuQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1694211761; x=1694816561;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gYFwNaHOE9Gb8BtRYtg1fi2IuOu5WJ//tLflJpSOuU0=;
+        b=h9sWUqhmdvZpuPaesq5ZwCYeKRd0T5jKAVHh1yy/gLmJxghBzkCzQIGO4RBoax9Exy
+         kG68lIls8DzaiLd6vdzwbME2p5CbuikmqMUrLZx+81jF0ot64PWZuRmZOGAc+1TzTVe5
+         SQR4hYtw6CjDEA3Q4jgC7nfrL+1mLgvoyeYXmfYzV8L6wmvzOdt0EGYlWSj3sqGK/ybH
+         uoOkBumWSor1kOntL8KKc1GCb7jPONFcEGzyeeVVmcGWPWDFU5qSXkloeDyRumiucvQr
+         01oiMtC2PlzXZ4klRla/4+HmQSL6dYtiS9FnFrtvcCADW1YnAej3sR8DDAtaeJEKJeek
+         VR5g==
+X-Gm-Message-State: AOJu0YxSXZCrnp6zcEeiSgMPfoAbZ532ubVd7k2bA92KGO2rv/ka9qhR
+	bkRLdOtOjHctGoRoS1dAyQI0Jtnfmm9NiFsO0Q==
+X-Google-Smtp-Source: AGHT+IH/dZif8ZNBOT7oK04Qr/HSa5OvHNQCkN8TzxXe3Xwr0uD+zxocLyl7KL/gWADq0/EydxN0bn9uGbXKo2GMDw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:77d7:0:b0:d7e:afff:c8fa with SMTP
+ id s206-20020a2577d7000000b00d7eafffc8famr91028ybc.5.1694211761764; Fri, 08
+ Sep 2023 15:22:41 -0700 (PDT)
+Date: Fri, 08 Sep 2023 22:22:37 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABk29Nva+c6oBZra6srWGcfxMEquOP30dReM-PgW_Wh+zKiBuQ@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAK2e+2QC/x3MTQqAIBBA4avErBPEtL+rRAvRsYaiwpEIpLsnL
+ b/FexkYIyHDWGWIeBPTeRSougK32mNBQb4YlFSNHGQvNsY9JOQk5CCKTeu7oG3vjdNQqitioOc /TvP7fpelbF9hAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694211760; l=2010;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=DkdXz0gdYc8K4Dds4Hy2YgaRuE3mMLNMc2Nv2KtHoLM=; b=hfjA+lh2yDSa1Epz8BoB10kB7nRgp5rdqEjyTIW3oK3cbxeqC4ESVF7raHoM5rRrg0bOLhF2X
+ RObNw/URLUtDwIm23oF2u119UfojLMeap0Qrevubi71IG/gdDhQis6C
+X-Mailer: b4 0.12.3
+Message-ID: <20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com>
+Subject: [PATCH v2 0/3] selftests/hid: fix building for older kernels
+From: Justin Stitt <justinstitt@google.com>
+To: Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
+	Shuah Khan <shuah@kernel.org>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, linux-input@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>, 
+	Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello,
+Hi, I am sending this series on behalf of myself and Benjamin Tissoires. There
+existed an initial n=3 patch series which was later expanded to n=4 and
+is now back to n=3 with some fixes added in and rebased against
+mainline.
 
-On Fri, Sep 08, 2023 at 01:26:11PM -0700, Josh Don wrote:
-> I'm writing BPF programs for scheduling (ie. sched_ext), so these are
-> getting invoked in hot paths and invoked concurrently across multiple
-> cpus (for example, pick_next_task, enqueue_task, etc.). The kernel is
-> responsible for relaying ground truth, userspace makes O(ms)
-> scheduling decisions, and BPF makes O(us) scheduling decisions.
-> BPF-BPF concurrency is possible with spinlocks and RMW, BPF-userspace
-> can currently only really use RMW. My line of questioning is more
-> forward looking, as I'm preemptively thinking of how to ensure
-> kernel-like scheduling performance, since BPF spinlock or RMW is
-> sometimes overkill :) I would think that barrier() and smp_mb() would
-> probably be the minimum viable set (at least for x86) that people
-> would find useful, but maybe others can chime in.
+This patch series aims to ensure that the hid/bpf selftests can be built
+without errors.
 
-My personal favorite set is store_release/load_acquire(). I have a hard time
-thinking up cases which can't be covered by them and they're basically free
-on x86.
+Here's Benjamin's initial cover letter for context:
+|  These fixes have been triggered by [0]:
+|  basically, if you do not recompile the kernel first, and are
+|  running on an old kernel, vmlinux.h doesn't have the required
+|  symbols and the compilation fails.
+|
+|  The tests will fail if you run them on that very same machine,
+|  of course, but the binary should compile.
+|
+|  And while I was sorting out why it was failing, I realized I
+|  could do a couple of improvements on the Makefile.
+|
+|  [0] https://lore.kernel.org/linux-input/56ba8125-2c6f-a9c9-d498-0ca1c153dcb2@redhat.com/T/#t
 
-Thanks.
+Changes from v1 -> v2:
+- roll Justin's fix into patch 1/3
+- add __attribute__((preserve_access_index)) (thanks Eduard)
+- rebased onto mainline (2dde18cd1d8fac735875f2e4987f11817cc0bc2c)
+- Link to v1: https://lore.kernel.org/all/20230825-wip-selftests-v1-0-c862769020a8@kernel.org/
 
--- 
-tejun
+Link: https://github.com/ClangBuiltLinux/linux/issues/1698
+Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/61
+---
+Benjamin Tissoires (3):
+      selftests/hid: ensure we can compile the tests on kernels pre-6.3
+      selftests/hid: do not manually call headers_install
+      selftests/hid: force using our compiled libbpf headers
+
+ tools/testing/selftests/hid/Makefile               | 10 ++---
+ tools/testing/selftests/hid/progs/hid.c            |  3 --
+ .../testing/selftests/hid/progs/hid_bpf_helpers.h  | 49 ++++++++++++++++++++++
+ 3 files changed, 53 insertions(+), 9 deletions(-)
+---
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+change-id: 20230908-kselftest-09-08-56d7f4a8d5c4
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
 
