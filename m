@@ -1,136 +1,158 @@
-Return-Path: <bpf+bounces-9473-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9475-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 433F1797F4A
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 01:42:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01A53797FB7
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 02:30:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 316B31C20B94
-	for <lists+bpf@lfdr.de>; Thu,  7 Sep 2023 23:42:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EA31281876
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 00:30:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9546E14A98;
-	Thu,  7 Sep 2023 23:42:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8FF2EA4;
+	Fri,  8 Sep 2023 00:30:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 655BC14A87
-	for <bpf@vger.kernel.org>; Thu,  7 Sep 2023 23:42:14 +0000 (UTC)
-Received: from mx0a-00206402.pphosted.com (mx0a-00206402.pphosted.com [148.163.148.77])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7342A1BD2
-	for <bpf@vger.kernel.org>; Thu,  7 Sep 2023 16:42:13 -0700 (PDT)
-Received: from pps.filterd (m0354650.ppops.net [127.0.0.1])
-	by mx0a-00206402.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 387HPVQw016732;
-	Thu, 7 Sep 2023 23:42:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=default;
-	 bh=Az8uD3vR+LqKVSBoaSF5yKiMSRElub0jbj9JLqszPf4=; b=QWzi33yBtDCs
-	4qAcrA8Os7LKI21Pj623p5Ro/FGxpBmOdrf/v2l8kyjjBjAICe2ICbPo8SnRrNa6
-	d8FEYjjRmWOj5BKZW3UPisQWs+jWxHg92bfpTqdnG5doT+Fja3T9XrCB+GKeHfSg
-	q/7GwkjVK5lOBvQq4cSSbVnBHbMP2nG2o03TKIXkVr91REY+tiG0xudqNfgHsIBQ
-	CxzSmcIcnouN6XVx0MT66YO4jmsTfnPEhxPYWak35LNemUAkTbEBPMRUHwvOaznx
-	bjhnazR5IZURiENAo182jB+74twB1veofspkDyDcLrdbzss7PgpMHXJv4BYnDkX4
-	sVX67VA3dQ==
-Received: from 04wpexch06.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60])
-	by mx0a-00206402.pphosted.com (PPS) with ESMTPS id 3svhhabsfd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 07 Sep 2023 23:42:00 +0000 (GMT)
-Received: from LL-556NGK3.crowdstrike.sys (10.100.11.122) by
- 04wpexch06.crowdstrike.sys (10.100.11.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.16; Thu, 7 Sep 2023 23:41:58 +0000
-From: Martin Kelly <martin.kelly@crowdstrike.com>
-To: <bpf@vger.kernel.org>
-CC: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Kelly
-	<martin.kelly@crowdstrike.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: add tests for ring_buffer__query
-Date: Thu, 7 Sep 2023 16:40:41 -0700
-Message-ID: <20230907234041.58388-3-martin.kelly@crowdstrike.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230907234041.58388-1-martin.kelly@crowdstrike.com>
-References: <20230907234041.58388-1-martin.kelly@crowdstrike.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FD9C628;
+	Fri,  8 Sep 2023 00:30:27 +0000 (UTC)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E3B1BD8;
+	Thu,  7 Sep 2023 17:30:23 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so319222466b.0;
+        Thu, 07 Sep 2023 17:30:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694133021; x=1694737821; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rWH+VGW4ynUEnqVgfK8Uo5vbTneevGaezyT5mB/sqg4=;
+        b=OiY77u4+0lZZf05zyJjqtXsFEt53gnu17pzSAddazvgmxBSqq/iFfofB+q7WLCDEyU
+         m/fz+w2DjK7ajFwh6Wl5OMnpq2lSnZxhKNITuhb+ArT10qBLF/w3E6hUYLr2Ynr9Uy0L
+         sHeGcXkyahOnjrEnkCzBF3EwG9xF9KIv8UmufrGSjWBO9hDNyInV8+iHy5QYfk82jWye
+         xbFkA6w68il0m14wAmbY3aZ9vJvLyqfqhwJlL2IlVpJJ69odvj++3/+rNIuFZ3ktA/po
+         yf2n1Q3ML2zeCD2E+gfopvnQ7ym8KgJXlk0oJnacR9HwefsoXzYDvWgFTWYeFL/HpkjL
+         rvkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694133021; x=1694737821;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rWH+VGW4ynUEnqVgfK8Uo5vbTneevGaezyT5mB/sqg4=;
+        b=swAuNJCU2T/msM1CDytYscRXwuvHCPjssnrRg+Q6Gn7quYAY71uw8aCdr4KLss/JJi
+         G6KLB7yGgMtpzSEqasgGhnoK9InCJNEld8+zIiBIk6Ib73pTZPE7X04zo7zpkugFhJci
+         FB+wowcPCWOhpTjklmK7ntYr2LOzHNB4AGtrC9b25JIVYeLFsYHwRSAhkJs8WFQWvS4u
+         vQxfHEgY989eWvrIeqsl/qncCGZ2RDh8vKZ5Mk2v5JpUD/f4gpCSG4bq17oZDFtAC9Kv
+         wJHwZCnijNuEHfLVBXqC1a5ybSKNjL6PIh5HcP7KQEar+axr0nPLUVpqEUAJzfRRNzW3
+         rmNw==
+X-Gm-Message-State: AOJu0Ywbm+yLTgh3g27h3+DIFkr+l/LoZwnwZO1VTqKbEQRqI2iKTpej
+	ASdAUdrtewy2vCnIWaRCJoM=
+X-Google-Smtp-Source: AGHT+IHUmcSd3yGn0Yc+fxHKH36GJLlYUzap6qvtcfMqwZgOcAgDOYhbcm3dJF4+eYZ9U6PvPuYQ6g==
+X-Received: by 2002:a17:907:6e87:b0:9a1:c69c:9388 with SMTP id sh7-20020a1709076e8700b009a1c69c9388mr4152809ejc.37.1694133021412;
+        Thu, 07 Sep 2023 17:30:21 -0700 (PDT)
+Received: from [192.168.8.100] ([148.252.141.16])
+        by smtp.gmail.com with ESMTPSA id lz24-20020a170906fb1800b009932337747esm280974ejb.86.2023.09.07.17.30.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Sep 2023 17:30:21 -0700 (PDT)
+Message-ID: <6489b8cb-7d54-1e29-f192-a3449ed87fa1@gmail.com>
+Date: Fri, 8 Sep 2023 01:29:55 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.100.11.122]
-X-ClientProxiedBy: 04WPEXCH11.crowdstrike.sys (10.100.11.115) To
- 04wpexch06.crowdstrike.sys (10.100.11.99)
-X-Disclaimer: USA
-X-Proofpoint-ORIG-GUID: 2_x1Oeyr1c0NuqcRHgwO0FTqYOlzg6ae
-X-Proofpoint-GUID: 2_x1Oeyr1c0NuqcRHgwO0FTqYOlzg6ae
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-07_13,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- bulkscore=0 priorityscore=1501 mlxlogscore=999 adultscore=0 suspectscore=0
- phishscore=0 spamscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2308100000
- definitions=main-2309070208
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
+To: Dave Chinner <david@fromorbit.com>, Hao Xu <hao.xu@linux.dev>
+Cc: Matthew Wilcox <willy@infradead.org>, io-uring@vger.kernel.org,
+ Jens Axboe <axboe@kernel.dk>, Dominique Martinet <asmadeus@codewreck.org>,
+ Christian Brauner <brauner@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Stefan Roesch <shr@fb.com>,
+ Clay Harris <bugs@claycon.org>, "Darrick J . Wong" <djwong@kernel.org>,
+ linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+ ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+ linux-unionfs@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ codalist@coda.cs.cmu.edu, linux-f2fs-devel@lists.sourceforge.net,
+ cluster-devel@redhat.com, linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+ devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+ samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+ Wanpeng Li <wanpengli@tencent.com>
+References: <20230827132835.1373581-1-hao.xu@linux.dev>
+ <20230827132835.1373581-8-hao.xu@linux.dev>
+ <ZOvA5DJDZN0FRymp@casper.infradead.org>
+ <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
+ <ZO3cI+DkotHQo3md@casper.infradead.org>
+ <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
+ <ZPUJHAKzxvXiEDYA@dread.disaster.area>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <ZPUJHAKzxvXiEDYA@dread.disaster.area>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Confirm we get the same results using ring_buffer__query from the
-usermode side as from the corresponding BPF helper.
+On 9/3/23 23:30, Dave Chinner wrote:
+> On Wed, Aug 30, 2023 at 02:11:31PM +0800, Hao Xu wrote:
+>> On 8/29/23 19:53, Matthew Wilcox wrote:
+>>> On Tue, Aug 29, 2023 at 03:46:13PM +0800, Hao Xu wrote:
+>>>> On 8/28/23 05:32, Matthew Wilcox wrote:
+>>>>> On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
+>>>>>> From: Hao Xu <howeyxu@tencent.com>
+>>>>>>
+>>>>>> Add a boolean parameter for file_accessed() to support nowait semantics.
+>>>>>> Currently it is true only with io_uring as its initial caller.
+>>>>>
+>>>>> So why do we need to do this as part of this series?  Apparently it
+>>>>> hasn't caused any problems for filemap_read().
+>>>>>
+>>>>
+>>>> We need this parameter to indicate if nowait semantics should be enforced in
+>>>> touch_atime(), There are locks and maybe IOs in it.
+>>>
+>>> That's not my point.  We currently call file_accessed() and
+>>> touch_atime() for nowait reads and nowait writes.  You haven't done
+>>> anything to fix those.
+>>>
+>>> I suspect you can trim this patchset down significantly by avoiding
+>>> fixing the file_accessed() problem.  And then come back with a later
+>>> patchset that fixes it for all nowait i/o.  Or do a separate prep series
+>>
+>> I'm ok to do that.
+>>
+>>> first that fixes it for the existing nowait users, and then a second
+>>> series to do all the directory stuff.
+>>>
+>>> I'd do the first thing.  Just ignore the problem.  Directory atime
+>>> updates cause I/O so rarely that you can afford to ignore it.  Almost
+>>> everyone uses relatime or nodiratime.
+>>
+>> Hi Matthew,
+>> The previous discussion shows this does cause issues in real
+>> producations: https://lore.kernel.org/io-uring/2785f009-2ebb-028d-8250-d5f3a30510f0@gmail.com/#:~:text=fwiw%2C%20we%27ve%20just%20recently%20had%20similar%20problems%20with%20io_uring%20read/write
+>>
+> 
+> Then separate it out into it's own patch set so we can have a
+> discussion on the merits of requiring using noatime, relatime or
+> lazytime for really latency sensitive IO applications. Changing code
+> is not always the right solution...
 
-Signed-off-by: Martin Kelly <martin.kelly@crowdstrike.com>
----
- .../selftests/bpf/prog_tests/ringbuf.c        | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
+Separation sounds reasonable, but it can hardly be said that only
+latency sensitive apps would care about >1s nowait/async submission
+delays. Presumably, btrfs can improve on that, but it still looks
+like it's perfectly legit for filesystems do heavy stuff in
+timestamping like waiting for IO. Right?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-index ac104dc652e3..93dcb92fc0c5 100644
---- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-@@ -91,6 +91,7 @@ static void ringbuf_subtest(void)
- 	int err, cnt, rb_fd;
- 	int page_size = getpagesize();
- 	void *mmap_ptr, *tmp_ptr;
-+	__u64 val;
- 
- 	skel = test_ringbuf_lskel__open();
- 	if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
-@@ -176,6 +177,27 @@ static void ringbuf_subtest(void)
- 	      "err_prod_pos", "exp %ld, got %ld\n",
- 	      3L * rec_sz, skel->bss->prod_pos);
- 
-+	/* verify the same results from the usermode side */
-+	val = ring_buffer__query(ringbuf, 0, BPF_RB_AVAIL_DATA);
-+	CHECK(val != 3 * rec_sz,
-+	      "err_query_avail_size", "exp %ld, got %llu\n",
-+	      3L * rec_sz, val);
-+
-+	val = ring_buffer__query(ringbuf, 0, BPF_RB_RING_SIZE);
-+	CHECK(val != page_size,
-+	      "err_query_ring_size", "exp %ld, got %llu\n",
-+	      (long)page_size, val);
-+
-+	val = ring_buffer__query(ringbuf, 0, BPF_RB_CONS_POS);
-+	CHECK(val != 0,
-+	      "err_query_cons_pos", "exp %ld, got %llu\n",
-+	      0L, val);
-+
-+	val = ring_buffer__query(ringbuf, 0, BPF_RB_PROD_POS);
-+	CHECK(val != 3 * rec_sz,
-+	      "err_query_prod_pos", "exp %ld, got %llu\n",
-+	      3L * rec_sz, val);
-+
- 	/* poll for samples */
- 	err = ring_buffer__poll(ringbuf, -1);
- 
 -- 
-2.34.1
-
+Pavel Begunkov
 
