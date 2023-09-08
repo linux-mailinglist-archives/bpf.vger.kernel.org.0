@@ -1,208 +1,143 @@
-Return-Path: <bpf+bounces-9568-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9569-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF9D6799294
-	for <lists+bpf@lfdr.de>; Sat,  9 Sep 2023 01:00:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EBF679929C
+	for <lists+bpf@lfdr.de>; Sat,  9 Sep 2023 01:02:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67D65281F36
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 23:00:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CFDB1C20EAE
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 23:02:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C461779C4;
-	Fri,  8 Sep 2023 22:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29C366FD3;
+	Fri,  8 Sep 2023 23:02:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F61D7472
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 22:58:17 +0000 (UTC)
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACDE81FF5
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 15:58:15 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-570096f51acso2760644a12.0
-        for <bpf@vger.kernel.org>; Fri, 08 Sep 2023 15:58:15 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63496FCC
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 23:02:35 +0000 (UTC)
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903971FEB
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 16:02:34 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-68becf931d0so2254701b3a.3
+        for <bpf@vger.kernel.org>; Fri, 08 Sep 2023 16:02:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694213895; x=1694818695; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+pctUSafwe4blND7eBmA4Ld3j2KByva5xmEYPxwP5JQ=;
-        b=Wx82+IkKtUEdu12a/Bfe2zQzrciXRa4JLTVh+Fi3xtsBqFZF6lyZIhrZwdZ3rRhyP0
-         hNseJfboaRhMjIYiWFhsOokz09eneAyL1se/XvjDBLtwwUGUNfnRYNavIwoO33uNW+rh
-         koEcJTCSW13xC15VYGXro4BVi47CohYMkW8tK5By4cFoaSiUiOO4Hk/EVmC8pBKHmeDF
-         hm9RZdnV011BOo60DzFkR5/H9rh73nsT0jBlpJcHR7AkdPrHmEbgcCKGd1M2HQ2X/p7k
-         vlhkfkgAcfBj8v9QrE4Evk2qkAvh8ro+81pJCsbxzmF3t0JlVFdbu4AREsyWLdEt35kF
-         LBSg==
+        d=google.com; s=20221208; t=1694214154; x=1694818954; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=u3gm03RUg+/EX5Gaa+EMR3lyCYLZB5fnaib13/h9Wog=;
+        b=6XdUPZhpU35w4EgWevDa1+pO5gRmmhZ1EB+1UJb2N0TceDwumJU1xdAuFCiokkI3ZA
+         aGCODk0bsKZSlg/UJjiom2HwSN+CUd5BcNp+JHZ4VjMOTcUpSidfPOUpBz+FRbN77T93
+         AA0PEbMvA0ehXqg1ZUyVEYXuFzHMJ519hjm/sIGKJuNYRyP+BW6fJV5NMiCO/jxTtzvp
+         m3VpXoa62kYJNBKn/gDyZxyfEjlm0Q2QMWeJZBoqQoQ+Y0cm0IKtV4lfF+hAR7L4lyRw
+         tQ+vliHny7ne/Zr9kBHXhGhyHZQRTK1Gv+Xxoeui576q6TUc1RZ8uYmdf/DCJnWNU5j2
+         0ShA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694213895; x=1694818695;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+pctUSafwe4blND7eBmA4Ld3j2KByva5xmEYPxwP5JQ=;
-        b=MmdQYY2iQ6EgIHj+ODETD4D1Icy26DTMWdkySJVrDYknhJdnBx2ZD27N1TgFKBBkZD
-         XWImPlzBxXnCiAB+Kg/WCAChxamdxSKqud5ja/ihkmZGdVtV170bfAeNsFM5M/xigrGD
-         lb1hXcyDEWQ0ftVvkpSsKmNpsuDXv7UTloonDXPOfkUe3RGMAljKd91uvDrG5MHh8klU
-         TGm5v8ylLrKV5lknhITdIEYT2t6QQMtgyNs3S0lsgENxrm0pLof9hcg/FpLHlKrWD3GC
-         25JG9yWjwx9VJY8IrNXt6OAPvahc2tGBSVPnCqf9ncWc3LgGmZUhiDwBPrt+aN6svRc0
-         P0pQ==
-X-Gm-Message-State: AOJu0YwzVS6un4eSZQIv9302ZsgWIb5qMrx6qcToXfPWfg4G8y4537je
-	pKp07WshJsx6ToHZt3l8o9p6FM87yt2wBc/MtjlRN2Hb8YxqLWVdIZJzSb62Hr/F8y4WnhGxHxc
-	Dbv5/58txNXstaBOVXfah/swgSgIz9CjoStatLlv5uygQRZy46A==
-X-Google-Smtp-Source: AGHT+IFDKFL3tUMqNSx3DrZVfT6EPLtb1WF7YYWAmBogx+8LgoWNQKxVAHAl9Wdqs9R3pu98DyGlTkM=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:902:dac7:b0:1c1:df80:67ef with SMTP id
- q7-20020a170902dac700b001c1df8067efmr1393869plx.1.1694213894961; Fri, 08 Sep
- 2023 15:58:14 -0700 (PDT)
-Date: Fri,  8 Sep 2023 15:58:07 -0700
-In-Reply-To: <20230908225807.1780455-1-sdf@google.com>
+        d=1e100.net; s=20230601; t=1694214154; x=1694818954;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u3gm03RUg+/EX5Gaa+EMR3lyCYLZB5fnaib13/h9Wog=;
+        b=ZTnfmvGSYGL0tuu0wMNkyya76c/omdrnmUnolcn2auzeKQ0tlDOba6gTQcdqTd4Rgs
+         bUg+/eQ9H4RmI3nmCTFldsqEv6GWH3DJbHmMvqMZzjq1ORM9W1H2T/apLGP8FgsIq4wg
+         9/6cr5RdzEhBfYSTDX+pijI5XlQ2HSrtFb0WyA731cxOYClb7OnMpPervxUG325yuT6m
+         LveVSDyq018MQiY8Ve53O62IzMObdPt8X9uyWVaPU6H/8nMxE91D6n9WG6NsEcpXRpPe
+         J0onacypOINwErbXXTgVND/gQr0/PNZOEclZuVGqW1GcILscSYcMfz4iKhi52uvT1aXK
+         S6rw==
+X-Gm-Message-State: AOJu0Yz8VhAY/+bpAHFiVU+6Ux64e74p8PSSOKDHONGup0VJ+l24aeZL
+	EPMJlpf9SCL5jQgGtrr0Is3Ysg==
+X-Google-Smtp-Source: AGHT+IFS+Nskv6R1HWPO1fnwAzKoZR+l2MTbKrrsdbgDWCjS9RGNTlB1Vy9DYoCX21GSL+ppgh7S+Q==
+X-Received: by 2002:a05:6a00:2494:b0:68a:4bef:5f9a with SMTP id c20-20020a056a00249400b0068a4bef5f9amr3856161pfv.0.1694214153767;
+        Fri, 08 Sep 2023 16:02:33 -0700 (PDT)
+Received: from google.com ([2620:15c:2d1:203:d39f:a985:2060:eedd])
+        by smtp.gmail.com with ESMTPSA id j20-20020a62e914000000b0068b1149ea4dsm1753544pfh.69.2023.09.08.16.02.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Sep 2023 16:02:33 -0700 (PDT)
+Date: Fri, 8 Sep 2023 16:02:28 -0700
+From: Nick Desaulniers <ndesaulniers@google.com>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Shuah Khan <shuah@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+	linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Benjamin Tissoires <bentiss@kernel.org>, llvm@lists.linux.dev
+Subject: Re: [PATCH v2 0/3] selftests/hid: fix building for older kernels
+Message-ID: <ZPuoBBGossSy0EiO@google.com>
+References: <20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20230908225807.1780455-1-sdf@google.com>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230908225807.1780455-4-sdf@google.com>
-Subject: [PATCH bpf-next 3/3] tools: ynl: extend netdev sample to dump xdp-rx-metadata-features
-From: Stanislav Fomichev <sdf@google.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	netdev@vger.kernel.org, Willem de Bruijn <willemb@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-	autolearn=unavailable autolearn_force=no version=3.4.6
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-The tool can be used to verify that everything works end to end.
+On Fri, Sep 08, 2023 at 10:22:37PM +0000, Justin Stitt wrote:
+> Hi, I am sending this series on behalf of myself and Benjamin Tissoires. There
+> existed an initial n=3 patch series which was later expanded to n=4 and
+> is now back to n=3 with some fixes added in and rebased against
+> mainline.
+> 
+> This patch series aims to ensure that the hid/bpf selftests can be built
+> without errors.
+> 
+> Here's Benjamin's initial cover letter for context:
+> |  These fixes have been triggered by [0]:
+> |  basically, if you do not recompile the kernel first, and are
+> |  running on an old kernel, vmlinux.h doesn't have the required
+> |  symbols and the compilation fails.
+> |
+> |  The tests will fail if you run them on that very same machine,
+> |  of course, but the binary should compile.
+> |
+> |  And while I was sorting out why it was failing, I realized I
+> |  could do a couple of improvements on the Makefile.
+> |
+> |  [0] https://lore.kernel.org/linux-input/56ba8125-2c6f-a9c9-d498-0ca1c153dcb2@redhat.com/T/#t
+> 
+> Changes from v1 -> v2:
+> - roll Justin's fix into patch 1/3
+> - add __attribute__((preserve_access_index)) (thanks Eduard)
+> - rebased onto mainline (2dde18cd1d8fac735875f2e4987f11817cc0bc2c)
+> - Link to v1: https://lore.kernel.org/all/20230825-wip-selftests-v1-0-c862769020a8@kernel.org/
+> 
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1698
+> Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/61
 
-Unrelated updates:
-- include tools/include/uapi to pick the latest kernel uapi headers
-- print "xdp-features" and "xdp-rx-metadata-features" so it's clear
-  which bitmask is being dumped
+Thanks to you and Benjamin for sorting all of this out! With this series
+applied, I was able to build the hid selftests now without the previous
+-Wvisibility diagnostics failing the build.
 
-Cc: netdev@vger.kernel.org
-Cc: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/net/ynl/generated/netdev-user.c | 19 +++++++++++++++++++
- tools/net/ynl/generated/netdev-user.h |  3 +++
- tools/net/ynl/samples/Makefile        |  2 +-
- tools/net/ynl/samples/netdev.c        |  8 +++++++-
- 4 files changed, 30 insertions(+), 2 deletions(-)
+Tested-by: Nick Desaulniers <ndesaulniers@google.com> # Build
 
-diff --git a/tools/net/ynl/generated/netdev-user.c b/tools/net/ynl/generated/netdev-user.c
-index 68b408ca0f7f..b5ffe8cd1144 100644
---- a/tools/net/ynl/generated/netdev-user.c
-+++ b/tools/net/ynl/generated/netdev-user.c
-@@ -45,12 +45,26 @@ const char *netdev_xdp_act_str(enum netdev_xdp_act value)
- 	return netdev_xdp_act_strmap[value];
- }
- 
-+static const char * const netdev_xdp_rx_metadata_strmap[] = {
-+	[0] = "timestamp",
-+	[1] = "hash",
-+};
-+
-+const char *netdev_xdp_rx_metadata_str(enum netdev_xdp_rx_metadata value)
-+{
-+	value = ffs(value) - 1;
-+	if (value < 0 || value >= (int)MNL_ARRAY_SIZE(netdev_xdp_rx_metadata_strmap))
-+		return NULL;
-+	return netdev_xdp_rx_metadata_strmap[value];
-+}
-+
- /* Policies */
- struct ynl_policy_attr netdev_dev_policy[NETDEV_A_DEV_MAX + 1] = {
- 	[NETDEV_A_DEV_IFINDEX] = { .name = "ifindex", .type = YNL_PT_U32, },
- 	[NETDEV_A_DEV_PAD] = { .name = "pad", .type = YNL_PT_IGNORE, },
- 	[NETDEV_A_DEV_XDP_FEATURES] = { .name = "xdp-features", .type = YNL_PT_U64, },
- 	[NETDEV_A_DEV_XDP_ZC_MAX_SEGS] = { .name = "xdp-zc-max-segs", .type = YNL_PT_U32, },
-+	[NETDEV_A_DEV_XDP_RX_METADATA_FEATURES] = { .name = "xdp-rx-metadata-features", .type = YNL_PT_U64, },
- };
- 
- struct ynl_policy_nest netdev_dev_nest = {
-@@ -97,6 +111,11 @@ int netdev_dev_get_rsp_parse(const struct nlmsghdr *nlh, void *data)
- 				return MNL_CB_ERROR;
- 			dst->_present.xdp_zc_max_segs = 1;
- 			dst->xdp_zc_max_segs = mnl_attr_get_u32(attr);
-+		} else if (type == NETDEV_A_DEV_XDP_RX_METADATA_FEATURES) {
-+			if (ynl_attr_validate(yarg, attr))
-+				return MNL_CB_ERROR;
-+			dst->_present.xdp_rx_metadata_features = 1;
-+			dst->xdp_rx_metadata_features = mnl_attr_get_u64(attr);
- 		}
- 	}
- 
-diff --git a/tools/net/ynl/generated/netdev-user.h b/tools/net/ynl/generated/netdev-user.h
-index 0952d3261f4d..b4351ff34595 100644
---- a/tools/net/ynl/generated/netdev-user.h
-+++ b/tools/net/ynl/generated/netdev-user.h
-@@ -18,6 +18,7 @@ extern const struct ynl_family ynl_netdev_family;
- /* Enums */
- const char *netdev_op_str(int op);
- const char *netdev_xdp_act_str(enum netdev_xdp_act value);
-+const char *netdev_xdp_rx_metadata_str(enum netdev_xdp_rx_metadata value);
- 
- /* Common nested types */
- /* ============== NETDEV_CMD_DEV_GET ============== */
-@@ -48,11 +49,13 @@ struct netdev_dev_get_rsp {
- 		__u32 ifindex:1;
- 		__u32 xdp_features:1;
- 		__u32 xdp_zc_max_segs:1;
-+		__u32 xdp_rx_metadata_features:1;
- 	} _present;
- 
- 	__u32 ifindex;
- 	__u64 xdp_features;
- 	__u32 xdp_zc_max_segs;
-+	__u64 xdp_rx_metadata_features;
- };
- 
- void netdev_dev_get_rsp_free(struct netdev_dev_get_rsp *rsp);
-diff --git a/tools/net/ynl/samples/Makefile b/tools/net/ynl/samples/Makefile
-index f2db8bb78309..32abbc0af39e 100644
---- a/tools/net/ynl/samples/Makefile
-+++ b/tools/net/ynl/samples/Makefile
-@@ -4,7 +4,7 @@ include ../Makefile.deps
- 
- CC=gcc
- CFLAGS=-std=gnu11 -O2 -W -Wall -Wextra -Wno-unused-parameter -Wshadow \
--	-I../lib/ -I../generated/ -idirafter $(UAPI_PATH)
-+	-I../../../include/uapi -I../lib/ -I../generated/ -idirafter $(UAPI_PATH)
- ifeq ("$(DEBUG)","1")
-   CFLAGS += -g -fsanitize=address -fsanitize=leak -static-libasan
- endif
-diff --git a/tools/net/ynl/samples/netdev.c b/tools/net/ynl/samples/netdev.c
-index 06433400dddd..b828225daad0 100644
---- a/tools/net/ynl/samples/netdev.c
-+++ b/tools/net/ynl/samples/netdev.c
-@@ -32,12 +32,18 @@ static void netdev_print_device(struct netdev_dev_get_rsp *d, unsigned int op)
- 	if (!d->_present.xdp_features)
- 		return;
- 
--	printf("%llx:", d->xdp_features);
-+	printf("xdp-features (%llx):", d->xdp_features);
- 	for (int i = 0; d->xdp_features > 1U << i; i++) {
- 		if (d->xdp_features & (1U << i))
- 			printf(" %s", netdev_xdp_act_str(1 << i));
- 	}
- 
-+	printf(" xdp-rx-metadata-features (%llx):", d->xdp_rx_metadata_features);
-+	for (int i = 0; d->xdp_rx_metadata_features > 1U << i; i++) {
-+		if (d->xdp_rx_metadata_features & (1U << i))
-+			printf(" %s", netdev_xdp_rx_metadata_str(1 << i));
-+	}
-+
- 	printf(" xdp-zc-max-segs=%u", d->xdp_zc_max_segs);
- 
- 	name = netdev_op_str(op);
--- 
-2.42.0.283.g2d96d420d3-goog
-
+> ---
+> Benjamin Tissoires (3):
+>       selftests/hid: ensure we can compile the tests on kernels pre-6.3
+>       selftests/hid: do not manually call headers_install
+>       selftests/hid: force using our compiled libbpf headers
+> 
+>  tools/testing/selftests/hid/Makefile               | 10 ++---
+>  tools/testing/selftests/hid/progs/hid.c            |  3 --
+>  .../testing/selftests/hid/progs/hid_bpf_helpers.h  | 49 ++++++++++++++++++++++
+>  3 files changed, 53 insertions(+), 9 deletions(-)
+> ---
+> base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+> change-id: 20230908-kselftest-09-08-56d7f4a8d5c4
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
 
