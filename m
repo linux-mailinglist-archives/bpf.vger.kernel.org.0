@@ -1,58 +1,59 @@
-Return-Path: <bpf+bounces-9512-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9511-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B67D0798914
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 16:43:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A02CB798911
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 16:43:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66F9E281E79
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 14:43:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D03181C20EA2
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 14:43:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC63B6D39;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E8BC6AA4;
 	Fri,  8 Sep 2023 14:43:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FCA16AB0
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 14:43:26 +0000 (UTC)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7A61BFF;
-	Fri,  8 Sep 2023 07:43:23 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b962c226ceso36210671fa.3;
-        Fri, 08 Sep 2023 07:43:23 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCB865231
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 14:43:25 +0000 (UTC)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306C11FC0;
+	Fri,  8 Sep 2023 07:43:24 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-977e0fbd742so261528066b.2;
+        Fri, 08 Sep 2023 07:43:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20221208; t=1694184202; x=1694789002; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=w8HwV+J/7uNnqFbijDhQaafWl9GR5aB5QOka+RcaLbE=;
-        b=ifxa3gaoc5LGoesPfBm8FnhW6pxYTrgTnveivx5F67e/UOenYvgdiWGkhEIVKWtRfk
-         Wu2hNZI8CHSWSf5JOIjgqo7ZRdrKWdc82UON3iqVNa4J2dxPms47k7WJCKj4zmgbHmld
-         6dWCyaoKYsYmr5sO/BLI5E6hVF8lQz6LKajL/+KuENgidNxdXIP8NwjoktezlG9+7Aik
-         JUgM3PajeUKFZVRwSJkhRvphyUQ+EismLzsl0itBucLTXcQRBwmAeOt+EvkAWM0MGbvG
-         x7dgSyKeRRg+Mj/QM59u8+jCSv72kg7gJpQ6sUXdIxZ9cG31XXAHQa+tHD5RW9tcOEs8
-         OUtA==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O1QyEsWglzsKtSFRl6GqbG8YUnWZHW9/8Dm/6UtUzbY=;
+        b=sX2b1lqvasFf4+rivGpfZS1wT+EO4lBhbJQJzyp6SHlIn3kJ+qLhgmfhcW4bip+21a
+         xbvJuWWAqg9G3wBX+/FlQt5gQN8pHQdObsEx+9RYSV3U55uTjUKEQiGdj8KoeeNmSS8H
+         Ib/w/5Ixy6r52Ld/TFatCRwuZgPbeJEopWGNJDikljvMLzDAJzZURRsz6i3lQm4KpmV3
+         sNoliNSKMfvK70aWiJSSAKWaW1lDGb0aj2f0Gm31l10l/bi9TpjRQuoCNEH5kgY+v5Aw
+         uIU7S6f01YtSeJNSFTD7xaAFN1rb6AHycjUvG5nhuh5f6Nd8aCqP6TK2oGRT8mwUnuF+
+         5+PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1694184202; x=1694789002;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=w8HwV+J/7uNnqFbijDhQaafWl9GR5aB5QOka+RcaLbE=;
-        b=oc0IRnKSK/uDMK7m5u5vGLNrXLQza/eep5G/3rJvolPU1nZlmdF8h++7/JRAopDZhm
-         GcfWZnv68NN9EVCS9oQBbzLCKbHkfowiE03+Nle6fSpbj5mkpf/7JqTzmRc82cUY0e8M
-         xJl7BxP9G9qNFTLpSnPvovFI6x2gK3Wid2u4Iy6Y8/CARyxy2x5VgN5wVyRm2cB6iY8m
-         H0ndBZKe6J6ubET8tNlyUjivkgCH9I5nWQS0macA/nAI+LB1yK+35QXmAYc+XldoZkSJ
-         p0hOxXGkU3qNLFdf3JoLKUQes0S8Z1sfKhjx6Kp4IsKraweAwJw1jHRifqjHdQSNY5YW
-         cDjw==
-X-Gm-Message-State: AOJu0YwHR3zT8pmtZu8/79y2bPOp0WB4/N2eq6QAKu0nBSitkIS2zAWP
-	ATA5YHow09WROyTbBN2b0ww=
-X-Google-Smtp-Source: AGHT+IFytL8L4GmYN1lwr1zUUD8lffspTsgM5GvKOTcdz6bFTFuST3e9LT9M6Av3AlU+swSps1K05g==
-X-Received: by 2002:a2e:3c18:0:b0:2bd:1615:f9f8 with SMTP id j24-20020a2e3c18000000b002bd1615f9f8mr2033400lja.45.1694184201563;
-        Fri, 08 Sep 2023 07:43:21 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O1QyEsWglzsKtSFRl6GqbG8YUnWZHW9/8Dm/6UtUzbY=;
+        b=UH1AnObqD6oz1LImZWiX1TfwwBGVwHIs2vw8IvFWSQW95Y6CUVNzaTafR+5Q1xJ4ob
+         q+OWZMI5ACcc6r3+qUDBRaAB3ZT8pOQIhrxKw2RldeKXcPpaAFPTOnPDA4xpHBs1w3DC
+         5jD5NqMRp8+k4+kHdYJgOTK+GbvXjDGhNd9sUFfWsdJlc0Np+3THlhfm6QPlQKEIrQUa
+         D6NcMhTRRcVieUaFQ9gZGB+QDYZf6u9FezBFGblSYIg/NG048ZmDkVnyD7BlpbUaylwl
+         1siVfe4Zfw6SbPVWwnqnaLHblzzF+FWwzhZVtzsk364BwZUccqdHN15fEdC+ES1l63gz
+         De1Q==
+X-Gm-Message-State: AOJu0YxXdVkl2YoPVGBRx+S1OesY++sBgrabtapK9pTphrpiKEMt8KJK
+	sXcZa0GS5/quvt5LqtoprYcWglwvOfY5x14YHaiHSQ==
+X-Google-Smtp-Source: AGHT+IEzWM9tlE4k/vQsSnrED1cgEwDPDtRDd6Z3U7kUSH/qSX4ARaU+ud4z+lvVsM+ZaPaKPvKraQ==
+X-Received: by 2002:a17:907:7759:b0:9a9:e393:8bcd with SMTP id kx25-20020a170907775900b009a9e3938bcdmr1942854ejc.5.1694184202216;
+        Fri, 08 Sep 2023 07:43:22 -0700 (PDT)
 Received: from ip-172-31-30-46.eu-west-1.compute.internal (ec2-54-217-129-48.eu-west-1.compute.amazonaws.com. [54.217.129.48])
-        by smtp.gmail.com with ESMTPSA id lz5-20020a170906fb0500b0098e78ff1a87sm1099436ejb.120.2023.09.08.07.43.20
+        by smtp.gmail.com with ESMTPSA id lz5-20020a170906fb0500b0098e78ff1a87sm1099436ejb.120.2023.09.08.07.43.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 08 Sep 2023 07:43:21 -0700 (PDT)
 From: Puranjay Mohan <puranjay12@gmail.com>
@@ -68,10 +69,12 @@ To: ast@kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next v5 0/3] bpf, arm64: use BPF prog pack allocator in BPF JIT
-Date: Fri,  8 Sep 2023 14:43:17 +0000
-Message-Id: <20230908144320.2474-1-puranjay12@gmail.com>
+Subject: [PATCH bpf-next v5 1/3] arm64: patching: Add aarch64_insn_copy()
+Date: Fri,  8 Sep 2023 14:43:18 +0000
+Message-Id: <20230908144320.2474-2-puranjay12@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230908144320.2474-1-puranjay12@gmail.com>
+References: <20230908144320.2474-1-puranjay12@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -81,150 +84,90 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Changes in V4 => v5:
-1. Remove the patch for making prog pack allocator portable as it will come
-   through the RISCV tree[1].
+This will be used by BPF JIT compiler to dump JITed binary to a RX huge
+page, and thus allow multiple BPF programs sharing the a huge (2MB)
+page.
 
-2. Add a new function aarch64_insn_set() to be used in
-   bpf_arch_text_invalidate() for putting illegal instructions after a
-   program is removed. The earlier implementation of bpf_arch_text_invalidate()
-   was calling aarch64_insn_patch_text_nosync() in a loop and making it slow
-   because each call invalidated the cache.
+The bpf_prog_pack allocator that implements the above feature allocates
+a RX/RW buffer pair. The JITed code is written to the RW buffer and then
+this function will be used to copy the code from RW to RX buffer.
 
-   Here is test_tag now:
-   [root@ip-172-31-6-176 bpf]# time ./test_tag
-   test_tag: OK (40945 tests)
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+Acked-by: Song Liu <song@kernel.org>
+---
+ arch/arm64/include/asm/patching.h |  1 +
+ arch/arm64/kernel/patching.c      | 41 +++++++++++++++++++++++++++++++
+ 2 files changed, 42 insertions(+)
 
-   real    0m19.695s
-   user    0m1.514s
-   sys     0m17.841s
-
-   test_tag without these patches:
-   [root@ip-172-31-6-176 bpf]# time ./test_tag
-   test_tag: OK (40945 tests)
-
-   real    0m21.487s
-   user    0m1.647s
-   sys     0m19.106s
-
-   test_tag in the previous version was really slow > 2 minutes. see [2]
-
-3. Add cache invalidation in aarch64_insn_copy() so other users can call the
-   function without worrying about the cache. Currently only bpf_arch_text_copy()
-   is using it, but there might be more users in the future.
-
-Chanes in V3 => V4: Changes only in 3rd patch
-1. Fix the I-cache maintenance: Clean the data cache and invalidate the i-Cache
-   only *after* the instructions have been copied to the ROX region.
-
-Chanes in V2 => V3: Changes only in 3rd patch
-1. Set prog = orig_prog; in the failure path of bpf_jit_binary_pack_finalize()
-call.
-2. Add comments explaining the usage of the offsets in the exception table.
-
-Changes in v1 => v2:
-1. Make the naming consistent in the 3rd patch:
-   ro_image and image
-   ro_header and header
-   ro_image_ptr and image_ptr
-2. Use names dst/src in place of addr/opcode in second patch.
-3. Add Acked-by: Song Liu <song@kernel.org> in 1st and 2nd patch.
-
-BPF programs currently consume a page each on ARM64. For systems with many BPF
-programs, this adds significant pressure to instruction TLB. High iTLB pressure
-usually causes slow down for the whole system.
-
-Song Liu introduced the BPF prog pack allocator[3] to mitigate the above issue.
-It packs multiple BPF programs into a single huge page. It is currently only
-enabled for the x86_64 BPF JIT.
-
-This patch series enables the BPF prog pack allocator for the ARM64 BPF JIT.
-
-====================================================
-Performance Analysis of prog pack allocator on ARM64
-====================================================
-
-To test the performance of the BPF prog pack allocator on ARM64, a stresser
-tool[4] was built. This tool loads 8 BPF programs on the system and triggers
-5 of them in an infinite loop by doing system calls.
-
-The runner script starts 20 instances of the above which loads 8*20=160 BPF
-programs on the system, 5*20=100 of which are being constantly triggered.
-
-In the above environment we try to build Python-3.8.4 and try to find different
-iTLB metrics for the compilation done by gcc-12.2.0.
-
-The source code[5] is  configured with the following command:
-./configure --enable-optimizations --with-ensurepip=install
-
-Then the runner script is executed with the following command:
-./run.sh "perf stat -e ITLB_WALK,L1I_TLB,INST_RETIRED,iTLB-load-misses -a make -j32"
-
-This builds Python while 160 BPF programs are loaded and 100 are being constantly
-triggered and measures iTLB related metrics.
-
-The output of the above command is discussed below before and after enabling the
-BPF prog pack allocator.
-
-The tests were run on qemu-system-aarch64 with 32 cpus, 4G memory, -machine virt,
--cpu host, and -enable-kvm.
-
-Results
--------
-
-Before enabling prog pack allocator:
-------------------------------------
-
-Performance counter stats for 'system wide':
-
-         333278635      ITLB_WALK
-     6762692976558      L1I_TLB
-    25359571423901      INST_RETIRED
-       15824054789      iTLB-load-misses
-
-     189.029769053 seconds time elapsed
-
-After enabling prog pack allocator:
------------------------------------
-
-Performance counter stats for 'system wide':
-
-         190333544      ITLB_WALK
-     6712712386528      L1I_TLB
-    25278233304411      INST_RETIRED
-        5716757866      iTLB-load-misses
-
-     185.392650561 seconds time elapsed
-
-Improvements in metrics
------------------------
-
-Compilation time                             ---> 1.92% faster
-iTLB-load-misses/Sec (Less is better)        ---> 63.16% decrease
-ITLB_WALK/1000 INST_RETIRED (Less is better) ---> 42.71% decrease
-ITLB_Walk/L1I_TLB (Less is better)           ---> 42.47% decrease
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git/commit/?h=for-next&id=20e490adea279d49d57b800475938f5b67926d98
-[2] https://lore.kernel.org/all/CANk7y0gcP3dF2mESLp5JN1+9iDfgtiWRFGqLkCgZD6wby1kQOw@mail.gmail.com/
-[3] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
-[4] https://github.com/puranjaymohan/BPF-Allocator-Bench
-[5] https://www.python.org/ftp/python/3.8.4/Python-3.8.4.tgz
-
-Puranjay Mohan (3):
-  arm64: patching: Add aarch64_insn_copy()
-  arm64: patching: Add aarch64_insn_set()
-  bpf, arm64: use bpf_jit_binary_pack_alloc
-
- arch/arm64/include/asm/patching.h |   2 +
- arch/arm64/kernel/patching.c      |  81 ++++++++++++++++++
- arch/arm64/net/bpf_jit_comp.c     | 136 ++++++++++++++++++++++++------
- 3 files changed, 195 insertions(+), 24 deletions(-)
-
+diff --git a/arch/arm64/include/asm/patching.h b/arch/arm64/include/asm/patching.h
+index 68908b82b168..f78a0409cbdb 100644
+--- a/arch/arm64/include/asm/patching.h
++++ b/arch/arm64/include/asm/patching.h
+@@ -8,6 +8,7 @@ int aarch64_insn_read(void *addr, u32 *insnp);
+ int aarch64_insn_write(void *addr, u32 insn);
+ 
+ int aarch64_insn_write_literal_u64(void *addr, u64 val);
++void *aarch64_insn_copy(void *dst, const void *src, size_t len);
+ 
+ int aarch64_insn_patch_text_nosync(void *addr, u32 insn);
+ int aarch64_insn_patch_text(void *addrs[], u32 insns[], int cnt);
+diff --git a/arch/arm64/kernel/patching.c b/arch/arm64/kernel/patching.c
+index b4835f6d594b..243d6ae8d2d8 100644
+--- a/arch/arm64/kernel/patching.c
++++ b/arch/arm64/kernel/patching.c
+@@ -105,6 +105,47 @@ noinstr int aarch64_insn_write_literal_u64(void *addr, u64 val)
+ 	return ret;
+ }
+ 
++/**
++ * aarch64_insn_copy - Copy instructions into (an unused part of) RX memory
++ * @dst: address to modify
++ * @src: source of the copy
++ * @len: length to copy
++ *
++ * Useful for JITs to dump new code blocks into unused regions of RX memory.
++ */
++noinstr void *aarch64_insn_copy(void *dst, const void *src, size_t len)
++{
++	unsigned long flags;
++	size_t patched = 0;
++	size_t size;
++	void *waddr;
++	void *ptr;
++	int ret;
++
++	raw_spin_lock_irqsave(&patch_lock, flags);
++
++	while (patched < len) {
++		ptr = dst + patched;
++		size = min_t(size_t, PAGE_SIZE - offset_in_page(ptr),
++			     len - patched);
++
++		waddr = patch_map(ptr, FIX_TEXT_POKE0);
++		ret = copy_to_kernel_nofault(waddr, src + patched, size);
++		patch_unmap(FIX_TEXT_POKE0);
++
++		if (ret < 0) {
++			raw_spin_unlock_irqrestore(&patch_lock, flags);
++			return NULL;
++		}
++		patched += size;
++	}
++	raw_spin_unlock_irqrestore(&patch_lock, flags);
++
++	caches_clean_inval_pou((uintptr_t)dst, (uintptr_t)dst + len);
++
++	return dst;
++}
++
+ int __kprobes aarch64_insn_patch_text_nosync(void *addr, u32 insn)
+ {
+ 	u32 *tp = addr;
 -- 
 2.40.1
 
