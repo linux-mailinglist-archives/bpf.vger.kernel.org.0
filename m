@@ -1,241 +1,137 @@
-Return-Path: <bpf+bounces-9552-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9553-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB20D7990E7
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 22:15:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B35B97990F8
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 22:26:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8655A281B48
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 20:15:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB9821C20CB9
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 20:26:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF3E530FA2;
-	Fri,  8 Sep 2023 20:15:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2908C30FA6;
+	Fri,  8 Sep 2023 20:26:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B13EE30F8D
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 20:15:43 +0000 (UTC)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C3F5E0
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 13:15:40 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99c1c66876aso307513366b.2
-        for <bpf@vger.kernel.org>; Fri, 08 Sep 2023 13:15:40 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAE4130F96
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 20:26:25 +0000 (UTC)
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815EC8E
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 13:26:24 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-41513d2cca7so76711cf.0
+        for <bpf@vger.kernel.org>; Fri, 08 Sep 2023 13:26:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694204138; x=1694808938; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=si1xGkM7Ros3c7RMLtdfTxwuvqPomUDStzBN1AuUiUQ=;
-        b=ixFcCWkp3mrBC6zzqXi0PzSDAmBKU979iF6DVSIYkHfQT2MryoSWJu83hD8yo9IqdU
-         0cUb+UcmI7d09Pcn3c4UbGth4aEryLJv93LDGCcGrYOmbaUyrKiTVajRCuLt9NOMItH/
-         9RxNUsZ3ucpB1mKli0DtdgJTrME5lPglbPBUUPwcQqkPN8Lz4SX3H7RTN0ZeH/6Zg+4u
-         qTTaYglzq3fu7RnK55aYInfO5DjNNVi5iJrmQ7P6XNIK/Fvgt07KnNBNuR2oUXn4dFgT
-         aRlKau97W/jgLbURLn05rnakaIK0QH6KDReoT3sHnhLbrjhtDiZlEMbewZ0GzjSIg5R3
-         zgpA==
+        d=google.com; s=20221208; t=1694204783; x=1694809583; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O2/KkuHa1swKMHIuQVh5aWKxZfJHHCKni8ZMZOLEOSY=;
+        b=52kHZN+LmpuAJxUCxY/SGS9DLA0GMqSRNGzhUqNVJc3XzcR2Jlm0jwm5DQ2lueHeTl
+         zNbS/4yFpvF6RpeT/OGdG6UICcy9GRfwijtN2wv8WOxIYT7lraBE0BwvNQgTZwA+1pRP
+         p+jzevo0uF6OeOMYLDgHIqcL92UB0EMge128AznRuh3qbAzqcwggr/y1ITwxnJIFours
+         aJKnEVDI1ldO/M8r4Hdyxhcdw+3Hh7du77yG/KemjBcdPvBHaJEsR2hiToAtka0L90tM
+         phdtbKGqgWQ1qHmS+GNHbtEw4PiHLg28mpEUqwgJzpIY6wu/C/1g2JpiJnNd9Ol0+t5w
+         UF6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694204138; x=1694808938;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=si1xGkM7Ros3c7RMLtdfTxwuvqPomUDStzBN1AuUiUQ=;
-        b=PTHj2PPw9lDizJrNyIL1ACbEMagH/cGkBGa/CXlXQ6ENa1CwnOgEYAXvP8qkJbhKup
-         nnEaDy2KpoOpB+KIS8v7SqLyDo3j8LjTsS/KLzFsKgFsuk9RV7UAm7PL5srDkE1g4t8m
-         3rI0H7DAzJF+HbTIcGXmBRTr19qz9RUQSlCmCr/Le0TrtJbc0MdT/Hcq1SOxO0mLMwv6
-         Q+B28k9789Jd7wLMznimyr1PGhF7jwUduJ5J45+nxBi06CWbfWE2mPHyuFweuacIonkx
-         dxS8gy5cUm2sYjYHJ3qCm1QsM02DFAuO26JrDcehPhhOKvpZA6DMdjkLfiVrlrO7TB17
-         TCRw==
-X-Gm-Message-State: AOJu0Yy2h79AIl+WtHPw+qIGtk3bztI7tj6OeVOLYvF/AAgpOwCQ0+mS
-	18C8ushO11i0ehzwr2KJaxsNV1QvTXs=
-X-Google-Smtp-Source: AGHT+IH25N0r6VV2un5+wqQKFwEggFRKFnpRBeYcun0YJGT1y54WhSAiL9ngsk8F1RRwuXgbuFKq1A==
-X-Received: by 2002:a17:907:770b:b0:9a5:8269:2c94 with SMTP id kw11-20020a170907770b00b009a582692c94mr3077635ejc.57.1694204138379;
-        Fri, 08 Sep 2023 13:15:38 -0700 (PDT)
-Received: from krava ([83.240.61.79])
-        by smtp.gmail.com with ESMTPSA id c15-20020a170906528f00b00992b2c55c67sm1449713ejm.156.2023.09.08.13.15.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 13:15:37 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 8 Sep 2023 22:15:35 +0200
-To: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Marcus Seyfarth <m.seyfarth@gmail.com>,
-	Masahiro Yamada <masahiroy@kernel.org>, bpf <bpf@vger.kernel.org>,
-	clang-built-linux <llvm@lists.linux.dev>,
-	Stanislav Fomichev <sdf@google.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>
-Subject: Re: duplicate BTF_IDs leading to symbol redefinition errors?
-Message-ID: <ZPuA5+HmbcdBLbIq@krava>
-References: <CAKwvOdnaEakT_y8TA9b_nMY3kMp=xxqKpGQPc2drNqRdV39RQw@mail.gmail.com>
- <ZPozfCEF9SV2ADQ5@krava>
- <ZPsJ4AAqNMchvms/@krava>
- <CAKwvOd==X0exrhmsqX1j1WFX77xe8W7xPbfiCY+Rt6abgmkMCQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1694204783; x=1694809583;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O2/KkuHa1swKMHIuQVh5aWKxZfJHHCKni8ZMZOLEOSY=;
+        b=PIHAo7kOHOGfNpexReBb4JMJQkufg+lRkNO6oBFs7hJVDcREtrH9KLjmcQwEWWs7UI
+         uBwf9jf5aftFllCqRhx81EHJtWgpSNqZHPnK56TG0d1Zs2dbyDe/umtrQF4jiceBUmxz
+         mJ6KZG0rbaJaW4TfvVY/0qeF2a5RxXZ5jPH0e6rU/3tnFr/AYrq/P73zPo8836MCFgqW
+         n8PILDPHbCXPLNHZNH8W6rH7EsUwxtaoCDtF4c4t0BSz07JdBRfGIF2NJW7EL9n0BZg5
+         SGbCsFNQKM+6Vgia4N3anw9tYV23JU0sh2oPb8w8mTfmB6xX4e8hvT1p9yqgeKgsw4ct
+         HB6g==
+X-Gm-Message-State: AOJu0YzqJJXdhY/anncwSvs1HenyWnF2ck4gzS/TuLADz77RcwvrqX7C
+	fUJ3ArgqVCuB7VSfL1ZJJvyJxeEGUGUnDY82GquHfA==
+X-Google-Smtp-Source: AGHT+IFZjC7Hd3ciCfpZuPYvhyAq+pZqpicznN6efwlyFKifdG5lIRGL3afr3p5ttECeps228YagcBHCDe6gqTofe9s=
+X-Received: by 2002:a05:622a:309:b0:410:9cfe:339 with SMTP id
+ q9-20020a05622a030900b004109cfe0339mr325721qtw.3.1694204783388; Fri, 08 Sep
+ 2023 13:26:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKwvOd==X0exrhmsqX1j1WFX77xe8W7xPbfiCY+Rt6abgmkMCQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <CABk29NuQ4C-w_JA-zev796Nr_vx932qC4_OcdH=gMM6HZ_r4WQ@mail.gmail.com>
+ <33f06fa6-2f4d-4e50-a87e-0d6604d3c413@paulmck-laptop>
+In-Reply-To: <33f06fa6-2f4d-4e50-a87e-0d6604d3c413@paulmck-laptop>
+From: Josh Don <joshdon@google.com>
+Date: Fri, 8 Sep 2023 13:26:11 -0700
+Message-ID: <CABk29Nva+c6oBZra6srWGcfxMEquOP30dReM-PgW_Wh+zKiBuQ@mail.gmail.com>
+Subject: Re: BPF memory model
+To: paulmck@kernel.org
+Cc: Hao Luo <haoluo@google.com>, davemarchevsky@meta.com, Tejun Heo <tj@kernel.org>, 
+	David Vernet <dvernet@meta.com>, Neel Natu <neelnatu@google.com>, 
+	Jack Humphries <jhumphri@google.com>, bpf@vger.kernel.org, ast@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Sep 08, 2023 at 10:14:56AM -0700, Nick Desaulniers wrote:
-> Thanks for the patch!
-> 
-> + Marcus
-> 
-> Marcus can you please test the below patch and provide your tested-by
-> and reported-by tags?
-> 
-> On Fri, Sep 8, 2023 at 4:47 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Thu, Sep 07, 2023 at 10:33:00PM +0200, Jiri Olsa wrote:
-> > > On Thu, Sep 07, 2023 at 12:01:18PM -0700, Nick Desaulniers wrote:
-> > > > So we've got a curious report recently:
-> > > > https://github.com/ClangBuiltLinux/linux/issues/1913
-> > > >
-> > > > ld.lld: error: ld-temp.o <inline asm>:14577:1: symbol
-> > > > '__BTF_ID__struct__cgroup__624' is already defined
-> > > > __BTF_ID__struct__cgroup__624:
-> > > > ^
-> > > >
-> > > > It's been hard to pin down a SHA and .config to reproduce this, but
-> > > > looking at the definition of BTF_ID's usage of __ID's usage of
-> > > > __COUNTER__, and the two statements:
-> > > >
-> > > > kernel/bpf/helpers.c:2460:BTF_ID(struct, cgroup)
-> > > > kernel/bpf/verifier.c:5075:BTF_ID(struct, cgroup)
-> > > >
-> > > > Is it possible that __COUNTER__ could evaluate to the same value
-> > > > across 2 different translation units, leading to a name collision like
-> > > > the above?
-> > >
-> > > hum, that probably the case, I see same counter values at different
-> > > __BTF_ID_ symbols:
-> > >
-> > > ffffffff833fe540 r __BTF_ID__struct__bpf_bloom_filter__380
-> > > ffffffff833fe548 r __BTF_ID__struct__bpf_queue_stack__380
-> > > ffffffff833fe578 r __BTF_ID__struct__cgroup__380
-> > >
-> > > perhaps we were just lucky not to hit that :-\
-> > >
-> > > >
-> > > > looking at another usage of BTF_ID other than struct
-> > > > cgroup;kernel/bpf/helpers.c:2461:BTF_ID(func, bpf_cgroup_release)
-> > > > is only defined in one translation unit
-> > > >
-> > > > Should one of those two `BTF_ID(struct, cgroup)` be removed? Is there
-> > > > some other way we can avoid these collisions in the future?
-> > >
-> > > need to find some way to make the symbol unique, will check
-> >
-> > the change below uses object's path as the __BTF_ID_.. symbol suffix to make
-> > it unique
-> >
-> > I'm still looking, but can't think of a better way so far, perhaps somebody
-> > will have better idea
-> 
-> Another good approach; I had simply added __LINE__ into the paste.
-> https://github.com/ClangBuiltLinux/linux/issues/1913#issuecomment-1710794319
-> Which just makes the probability of this occurring again smaller, but
-> still non-zero.
+On Fri, Sep 8, 2023 at 1:43=E2=80=AFAM Paul E. McKenney <paulmck@kernel.org=
+> wrote:
+>
+> On Thu, Sep 07, 2023 at 03:00:56PM -0700, Josh Don wrote:
+> > Has there been any further interest in supporting additional
+> > kernel-style atomics in BPF that you know of?
+>
+> This is one of the first that I have heard of.  ;-)
+>
+> But what BPF programs are you running that are seeing excessive
+> synchronization overhead?  That will tell us which operations to
+> start with.  (Or maybe it is time to just add the full Linux-kernel
+> atomic-operations kitchen sink, but that would not normally be the way
+> to bet.)
 
-yes, there's still possibility of the match
+I'm writing BPF programs for scheduling (ie. sched_ext), so these are
+getting invoked in hot paths and invoked concurrently across multiple
+cpus (for example, pick_next_task, enqueue_task, etc.). The kernel is
+responsible for relaying ground truth, userspace makes O(ms)
+scheduling decisions, and BPF makes O(us) scheduling decisions.
+BPF-BPF concurrency is possible with spinlocks and RMW, BPF-userspace
+can currently only really use RMW. My line of questioning is more
+forward looking, as I'm preemptively thinking of how to ensure
+kernel-like scheduling performance, since BPF spinlock or RMW is
+sometimes overkill :) I would think that barrier() and smp_mb() would
+probably be the minimum viable set (at least for x86) that people
+would find useful, but maybe others can chime in.
 
-> 
-> + Masahiro for thoughts on the invocation of echo and base32.  Looks
-> like base32 is part of coreutils. Kind of strange that coreutils isn't
-> listed in Documentation/process/changes.rst.  Would adding the usage
-> of base32 add a new dependency on coreutils?
-> 
-> >
-> > jirka
-> >
-> >
-> > ---
-> > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> > index a3462a9b8e18..564953f9cbc7 100644
-> > --- a/include/linux/btf_ids.h
-> > +++ b/include/linux/btf_ids.h
-> > @@ -49,7 +49,7 @@ word                                                  \
-> >         ____BTF_ID(symbol, word)
-> >
-> >  #define __ID(prefix) \
-> > -       __PASTE(prefix, __COUNTER__)
-> > +       __PASTE(__PASTE(prefix, __COUNTER__), BTF_ID_BASE)
-> 
-> Do we still need __COUNTER__ if we're now using BTF_ID_BASE?
+> > And on a different BPF note, one thing I wasn't sure about was the
+> > ability of the cpu to reorder loads and stores across the BPF program
+> > call boundary. For example, could the load of "z" in the BPF program
+> > below be reordered before the store to x in the kernel? I'm sure that
+> > no compiler barrier is ever necessary here since the BPF program is
+> > compiled separately from the kernel, but I'm not sure whether a
+> > hardware barrier is necessary.
+> > <kernel>
+> > x =3D 3
+> > call_bpf();
+> >   <bpf>
+> >   int y =3D z;
+>
+> Given that a major goal of BPF is the ability to add low-overhead
+> programs to code on fastpaths, I would not expect any implicit barriers
+> in that case.  Consider for example counting the number of calls to a
+> "hot" function in the Linux kernel, in which case adding full ordering
+> would incur unacceptable performance degradation.  I would instead
+> expect that the BPF program would need to add explicit barriers or
+> ordered RMW operations.
 
-yes we still need that because we could have same __BTF_ID__...
-symbol used multiple times within same object, and that's where
-__COUNTER__ makes the difference
+Yep, that was my expectation as well. On the plus, this gives the
+flexibility of only adding barriers where they are really needed.
 
-> 
-> >
-> >  /*
-> >   * The BTF_ID defines unique symbol for each ID pointing
-> > diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> > index 68d0134bdbf9..2ef8b2798be0 100644
-> > --- a/scripts/Makefile.lib
-> > +++ b/scripts/Makefile.lib
-> > @@ -200,6 +200,10 @@ _c_flags += $(if $(patsubst n%,, \
-> >         -D__KCSAN_INSTRUMENT_BARRIERS__)
-> >  endif
-> >
-> > +ifeq ($(CONFIG_DEBUG_INFO_BTF),y)
-> > +_c_flags += -DBTF_ID_BASE=$(subst =,,$(shell echo -n $(modfile) | base32 -w0))
-> 
-> `man 1 base32` shows it can just read a file. Could the above be:
-> 
-> _c_flags += -DBTF_ID_BASE=$(subst =,,$(shell base32 -w0 $(modfile)))
-> 
-> ? (untested)
-> 
-> Also, the output of
-> 
-> $ base32 -w0 Documentation/process/changes.rst
-> 
-> is 24456 characters.  This is going to blow up symbol tables. I
-> suppose ELF probably has some length limit on symbol names, too.  I
-> was nervous about my approaching appending __LINE__.
-> 
-> Perhaps pipe the output to `head -c <n bytes>`?
-
-so the change is about adding unique id that's basically path of
-the object stored in base32 so it could be used as symbol, so we
-don't really need to read the actual file
-
-the problem is when BTF_ID definition like:
-
-BTF_ID(struct, cgroup)
-
-translates in 2 separate objects into same symbol name because of
-the matching __COUNTER__ macro values (like 380 below)
-
-  __BTF_ID__struct__cgroup__380
-
-this change just adds unique id of the path name at the end of the
-symbol with:
-
-  echo -n 'kernel/bpf/helpers' | base32 -w0 --> NNSXE3TFNQXWE4DGF5UGK3DQMVZHG
-
-so the symbol looks like:
-
-  __BTF_ID__struct__cgroup__380NNSXE3TFNQXWE4DGF5UGK3DQMVZHG
-
-and is unique over the sources
-
-but I still hope we could come up with some better solution ;-)
-
-jirka
+Best,
+Josh
 
