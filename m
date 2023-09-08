@@ -1,32 +1,32 @@
-Return-Path: <bpf+bounces-9493-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9495-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44268798805
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 15:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 57CD5798807
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 15:40:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 286FE281AF1
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 13:39:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12FD6281B10
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 13:40:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCCDE63AB;
-	Fri,  8 Sep 2023 13:39:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6843963C5;
+	Fri,  8 Sep 2023 13:39:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 856F65254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22CE563B3
 	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 13:39:39 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376A919BC
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B1A1BC5
 	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 06:39:37 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Rhxzk0VS2z4f3knY
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 21:39:30 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rhxzn6PN0z4f3kpV
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 21:39:33 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgDHVqkPJPtkRmSwCg--.44307S5;
-	Fri, 08 Sep 2023 21:39:33 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgDHVqkPJPtkRmSwCg--.44307S6;
+	Fri, 08 Sep 2023 21:39:34 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -42,9 +42,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
 	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
 	houtao1@huawei.com
-Subject: [PATCH bpf 1/4] bpf: Adjust size_index according to the value of KMALLOC_MIN_SIZE
-Date: Fri,  8 Sep 2023 21:39:20 +0800
-Message-Id: <20230908133923.2675053-2-houtao@huaweicloud.com>
+Subject: [PATCH bpf 2/4] bpf: Don't prefill for unused bpf_mem_cache
+Date: Fri,  8 Sep 2023 21:39:21 +0800
+Message-Id: <20230908133923.2675053-3-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20230908133923.2675053-1-houtao@huaweicloud.com>
 References: <20230908133923.2675053-1-houtao@huaweicloud.com>
@@ -54,148 +54,94 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDHVqkPJPtkRmSwCg--.44307S5
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jr17Cr18Jr4DKFW8AF4rAFb_yoW7Xr1kpF
-	y3Jr18Gr48ZF4xJr47CF4rJFWrGw1Fk3W7JrWfXw1UZF15Gr1DJr1ktryruFyqqrWrZ3W7
-	JF4qqw48Kr1UJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Eb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
-	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0
-	oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7V
-	C0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j
-	6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI7VAKI4
-	8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
-	wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
-	v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
-	Y4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
-	AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8-TmDUUUUU==
+X-CM-TRANSID:gCh0CgDHVqkPJPtkRmSwCg--.44307S6
+X-Coremail-Antispam: 1UD129KBjvJXoW7CF45Zw4rZFW3AFW5JFy8AFb_yoW8tryxpF
+	y3CF10krs5ZFZru3WxWw1xCayft34vg3Zrt3yrtry09rs5ur1Dur4DJry7XFyY9rZ7ta1f
+	Ar4kKry0gF4UZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	WxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
+	0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
+	JVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwI
+	xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
+	IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
+	6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UC9aPUUUUU=
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
 From: Hou Tao <houtao1@huawei.com>
 
-The following warning was reported when running "./test_progs -a
-link_api -a linked_list" on a RISC-V QEMU VM:
+When the unit_size of a bpf_mem_cache is unmatched with the object_size
+of the underlying slab cache, the bpf_mem_cache will not be used, and
+the allocation will be redirected to a bpf_mem_cache with a bigger
+unit_size instead, so there is no need to prefill for these
+unused bpf_mem_caches.
 
-  ------------[ cut here ]------------
-  WARNING: CPU: 3 PID: 261 at kernel/bpf/memalloc.c:342 bpf_mem_refill
-  Modules linked in: bpf_testmod(OE)
-  CPU: 3 PID: 261 Comm: test_progs- ... 6.5.0-rc5-01743-gdcb152bb8328 #2
-  Hardware name: riscv-virtio,qemu (DT)
-  epc : bpf_mem_refill+0x1fc/0x206
-   ra : irq_work_single+0x68/0x70
-  epc : ffffffff801b1bc4 ra : ffffffff8015fe84 sp : ff2000000001be20
-   gp : ffffffff82d26138 tp : ff6000008477a800 t0 : 0000000000046600
-   t1 : ffffffff812b6ddc t2 : 0000000000000000 s0 : ff2000000001be70
-   s1 : ff5ffffffffe8998 a0 : ff5ffffffffe8998 a1 : ff600003fef4b000
-   a2 : 000000000000003f a3 : ffffffff80008250 a4 : 0000000000000060
-   a5 : 0000000000000080 a6 : 0000000000000000 a7 : 0000000000735049
-   s2 : ff5ffffffffe8998 s3 : 0000000000000022 s4 : 0000000000001000
-   s5 : 0000000000000007 s6 : ff5ffffffffe8570 s7 : ffffffff82d6bd30
-   s8 : 000000000000003f s9 : ffffffff82d2c5e8 s10: 000000000000ffff
-   s11: ffffffff82d2c5d8 t3 : ffffffff81ea8f28 t4 : 0000000000000000
-   t5 : ff6000008fd28278 t6 : 0000000000040000
-  [<ffffffff801b1bc4>] bpf_mem_refill+0x1fc/0x206
-  [<ffffffff8015fe84>] irq_work_single+0x68/0x70
-  [<ffffffff8015feb4>] irq_work_run_list+0x28/0x36
-  [<ffffffff8015fefa>] irq_work_run+0x38/0x66
-  [<ffffffff8000828a>] handle_IPI+0x3a/0xb4
-  [<ffffffff800a5c3a>] handle_percpu_devid_irq+0xa4/0x1f8
-  [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
-  [<ffffffff800ae570>] ipi_mux_process+0xac/0xfa
-  [<ffffffff8000a8ea>] sbi_ipi_handle+0x2e/0x88
-  [<ffffffff8009fafa>] generic_handle_domain_irq+0x28/0x36
-  [<ffffffff807ee70e>] riscv_intc_irq+0x36/0x4e
-  [<ffffffff812b5d3a>] handle_riscv_irq+0x54/0x86
-  [<ffffffff812b6904>] do_irq+0x66/0x98
-  ---[ end trace 0000000000000000 ]---
-
-The warning is due to WARN_ON_ONCE(tgt->unit_size != c->unit_size) in
-free_bulk(). The direct reason is that a object is allocated and
-freed by bpf_mem_caches with different unit_size.
-
-The root cause is that KMALLOC_MIN_SIZE is 64 and there is no 96-bytes
-slab cache in the specific VM. When linked_list test allocates a
-72-bytes object through bpf_obj_new(), bpf_global_ma will allocate it
-from a bpf_mem_cache with 96-bytes unit_size, but this bpf_mem_cache is
-backed by 128-bytes slab cache. When the object is freed, bpf_mem_free()
-uses ksize() to choose the corresponding bpf_mem_cache. Because the
-object is allocated from 128-bytes slab cache, ksize() returns 128,
-bpf_mem_free() chooses a 128-bytes bpf_mem_cache to free the object and
-triggers the warning.
-
-A similar warning will also be reported when using CONFIG_SLAB instead
-of CONFIG_SLUB in a x86-64 kernel. Because CONFIG_SLUB defines
-KMALLOC_MIN_SIZE as 8 but CONFIG_SLAB defines KMALLOC_MIN_SIZE as 32.
-
-An alternative fix is to use kmalloc_size_round() in bpf_mem_alloc() to
-choose a bpf_mem_cache which has the same unit_size with the backing
-slab cache, but it may introduce performance degradation, so fix the
-warning by adjusting the indexes in size_index according to the value of
-KMALLOC_MIN_SIZE just like setup_kmalloc_cache_index_table() does.
-
-Fixes: 822fb26bdb55 ("bpf: Add a hint to allocated objects.")
-Reported-by: Björn Töpel <bjorn@kernel.org>
-Closes: https://lore.kernel.org/bpf/87jztjmmy4.fsf@all.your.base.are.belong.to.us
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/memalloc.c | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ kernel/bpf/memalloc.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 9c49ae53deaf..98d9e96fba3c 100644
+index 98d9e96fba3c..90c1ed8210a2 100644
 --- a/kernel/bpf/memalloc.c
 +++ b/kernel/bpf/memalloc.c
-@@ -916,3 +916,41 @@ void notrace *bpf_mem_cache_alloc_flags(struct bpf_mem_alloc *ma, gfp_t flags)
- 
- 	return !ret ? NULL : ret + LLIST_NODE_SZ;
- }
-+
-+/* Most of the logic is taken from setup_kmalloc_cache_index_table() */
-+static __init int bpf_mem_cache_adjust_size(void)
-+{
-+	unsigned int size, index;
-+
-+	/* Normally KMALLOC_MIN_SIZE is 8-bytes, but it can be
-+	 * up-to 256-bytes.
-+	 */
-+	size = KMALLOC_MIN_SIZE;
-+	if (size <= 192)
-+		index = size_index[(size - 1) / 8];
-+	else
-+		index = fls(size - 1) - 1;
-+	for (size = 8; size < KMALLOC_MIN_SIZE && size <= 192; size += 8)
-+		size_index[(size - 1) / 8] = index;
-+
-+	/* The minimal alignment is 64-bytes, so disable 96-bytes cache and
-+	 * use 128-bytes cache instead.
-+	 */
-+	if (KMALLOC_MIN_SIZE >= 64) {
-+		index = size_index[(128 - 1) / 8];
-+		for (size = 64 + 8; size <= 96; size += 8)
-+			size_index[(size - 1) / 8] = index;
-+	}
-+
-+	/* The minimal alignment is 128-bytes, so disable 192-bytes cache and
-+	 * use 256-bytes cache instead.
-+	 */
-+	if (KMALLOC_MIN_SIZE >= 128) {
-+		index = fls(256 - 1) - 1;
-+		for (size = 128 + 8; size <= 192; size += 8)
-+			size_index[(size - 1) / 8] = index;
-+	}
-+
-+	return 0;
+@@ -459,8 +459,7 @@ static void notrace irq_work_raise(struct bpf_mem_cache *c)
+  * Typical case will be between 11K and 116K closer to 11K.
+  * bpf progs can and should share bpf_mem_cache when possible.
+  */
+-
+-static void prefill_mem_cache(struct bpf_mem_cache *c, int cpu)
++static void init_refill_work(struct bpf_mem_cache *c)
+ {
+ 	init_irq_work(&c->refill_work, bpf_mem_refill);
+ 	if (c->unit_size <= 256) {
+@@ -476,7 +475,10 @@ static void prefill_mem_cache(struct bpf_mem_cache *c, int cpu)
+ 		c->high_watermark = max(96 * 256 / c->unit_size, 3);
+ 	}
+ 	c->batch = max((c->high_watermark - c->low_watermark) / 4 * 3, 1);
 +}
-+subsys_initcall(bpf_mem_cache_adjust_size);
+ 
++static void prefill_mem_cache(struct bpf_mem_cache *c, int cpu)
++{
+ 	/* To avoid consuming memory assume that 1st run of bpf
+ 	 * prog won't be doing more than 4 map_update_elem from
+ 	 * irq disabled region
+@@ -521,6 +523,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
+ 			c->objcg = objcg;
+ 			c->percpu_size = percpu_size;
+ 			c->tgt = c;
++			init_refill_work(c);
+ 			prefill_mem_cache(c, cpu);
+ 		}
+ 		ma->cache = pc;
+@@ -544,6 +547,15 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
+ 			c->unit_size = sizes[i];
+ 			c->objcg = objcg;
+ 			c->tgt = c;
++
++			init_refill_work(c);
++			/* Another bpf_mem_cache will be used when allocating
++			 * c->unit_size in bpf_mem_alloc(), so doesn't prefill
++			 * for the bpf_mem_cache because these free objects will
++			 * never be used.
++			 */
++			if (i != bpf_mem_cache_idx(c->unit_size))
++				continue;
+ 			prefill_mem_cache(c, cpu);
+ 		}
+ 	}
 -- 
 2.29.2
 
