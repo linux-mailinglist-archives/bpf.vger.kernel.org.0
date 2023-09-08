@@ -1,156 +1,115 @@
-Return-Path: <bpf+bounces-9555-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9556-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F6C7799156
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 23:00:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB1DD79915A
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 23:03:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E43D8281733
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 21:00:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E92928156C
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 21:03:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4439630FB5;
-	Fri,  8 Sep 2023 21:00:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E2F520E2;
+	Fri,  8 Sep 2023 21:03:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E979030FB1
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 21:00:13 +0000 (UTC)
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51485E46
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 14:00:12 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5958487ca15so27071127b3.1
-        for <bpf@vger.kernel.org>; Fri, 08 Sep 2023 14:00:12 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0488B30FA3
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 21:03:20 +0000 (UTC)
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A39DC
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 14:03:19 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5924093a9b2so24693887b3.2
+        for <bpf@vger.kernel.org>; Fri, 08 Sep 2023 14:03:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694206811; x=1694811611; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=norNfSBT5F4z9CQcDn5RrP9YOgJ7ih7oYHT+rCwBRgM=;
-        b=PVXvD+4fMbXbn5ShvDirC8omVY7RYq3Wls0M4WKOPtickkd2grkwWzDQuv27jb3+c+
-         2xJ0Lms/DV3IvGKwKC187gPCUdVRFH/LneiIwZlyksVmy1rgViuX2eF78QliVMAQup0M
-         2YerWXMKp0uzj5rqmgUPIhsB/xTs75euj/IkyNoKlFnHP8AyjMzszNWWhpimjqIVCVko
-         4hCXMS2Js0Jh3QX/G/q4Vchs2YN7ArAc3Zdwt7AH1iR0JcgGlm+CeH5ntVHcBPhZYNk6
-         y2deVx4hBWxVOnrBSzrteDncgYefnv+0einQDJ7mbK3EcqO611kvffAfsVLbVHiJPC3x
-         Rg7w==
+        d=gmail.com; s=20221208; t=1694206999; x=1694811799; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VYaRZhRWe9s16/bj/V0ZxDqhOreSubKxeSNAm6RQ174=;
+        b=ZPNGBIQqG9w5AX5KoULtn7Iww6f7fvR3ckLjW8RUmsvDVx1zeBdApip2SI4/lBv0Uu
+         8z3LD4CFLa8A1lrUSB7magF2IAqf0M221vKCpf3gczqw1BbbVJq4WAhaIlci9SLIGR7o
+         iZ0GkaBn470GlyHL40gvw07rIYE/HniEVk33z7R3iOYU/B/B+Jg/VA1T0XyuYUHA+myJ
+         enaYGDWgzG88D3MOMubaVLvdUA4oJvI2qc3urG+eMgpNRCZNvgv2sf4X8sfzeH0VOhEF
+         xSeMiCOEVRUaRKfDdKBXItlOr2kzsALDV9TFtTC3dSlVrXY+LbzHs5KZzxWWBihfuOoc
+         bliA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694206811; x=1694811611;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=norNfSBT5F4z9CQcDn5RrP9YOgJ7ih7oYHT+rCwBRgM=;
-        b=EnRO0TzUTCnByuIhORw2xVGGvF+CBiExEfgI4S72i2XiRIIpFQbAAu3S7+M7LNWkYW
-         aJ85hPRSbMs0EuVtR4XqFayMn0gB0UOKHkD8kdDGl3XJypSge+rA6KEvASSBVUNlMY7m
-         IpujGxhMXoi+Si4m+wJiaQHKl1CX809cjAzy/wtSAfgfSTBpssU+12rS5FXyy/0FWJw7
-         rBY37tXnVNHQGlEs9ROe/aD9PWEJzFI33P4QRJCzLDEXiJ9JP4NfWWk4wG9TJZZp4kFp
-         zTOePYZ/70ccRiNu3w6DvxNp4+OAIlKcZSoc6JzYQGD20A/yhRj7xS4H8hYFWhSVndw9
-         TAiw==
-X-Gm-Message-State: AOJu0YxiyM4JSV+UwsOlFBRvkvAso04bJrcbJ3Ix4PAozIo0VjC2WgX8
-	yO6Ryl6LMcCjh3KDFvnq25R0tK4ILJxP2lXTaglEpicADFBKQn+sosIBBmeQmifXbWbBN8kEOJw
-	EeVRm6Op72Gd9f0nIGVZIBrvIPLVcfEgtf4WxGUVBeroq0kqJkw==
-X-Google-Smtp-Source: AGHT+IHFDfs7XkOIWRQZ7JuZGTXuP9lFnw0MJvmNFUN71qcJGqGN94g0I3SA4WfgxUN2hzGyuU4Hi0I=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a81:ae1a:0:b0:59b:4e9a:2ac3 with SMTP id
- m26-20020a81ae1a000000b0059b4e9a2ac3mr85875ywh.9.1694206811524; Fri, 08 Sep
- 2023 14:00:11 -0700 (PDT)
-Date: Fri,  8 Sep 2023 14:00:07 -0700
-In-Reply-To: <20230908210007.1469091-1-sdf@google.com>
+        d=1e100.net; s=20230601; t=1694206999; x=1694811799;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VYaRZhRWe9s16/bj/V0ZxDqhOreSubKxeSNAm6RQ174=;
+        b=OlIs0ERPRej3bzIFNdPV+1ishhgUezqfOfMdcqWtXcHbBkfHPMXDxv2NIEprZXdAcq
+         LvDFiFWfIAnNVtlsAVSuHFpTX1WN5J6otmkIkih7ZUNtuHfSAy5GprI/yrE++w+w6UiG
+         NUNGbvKf2uca6XetFxmlReb9aHQb5FM+Yw+7wJoe2AKXhoyF93UC1H0Vt20etrehExRt
+         RnqYqsCVATcwpIdOyFPW3A2QbqeTWoFFnBDq0osCr8Q6QgDWWlhScC2bwNV/bl75L/TC
+         POlmiO3vaCun78YH0NBeTd3Vzo+oxOIXGgGQHnLQ+BwD0xqTjy/8/2M/fDMAkvMaA0d2
+         Cx8A==
+X-Gm-Message-State: AOJu0YyfLhAvQOQ3ZYtG5nNshebZbY2S83qIe+5BMTnS6epxlabIzlpy
+	HHk6aXjDb8Dw+eyuO8VKTB8=
+X-Google-Smtp-Source: AGHT+IFmaJtrxhvc4HopuxXX+NARYfn4V8TDgUm9QFfu5t9iNb238K9GRVaLckkOK+/ue+T8IDITjw==
+X-Received: by 2002:a81:840d:0:b0:586:9ccb:b5ad with SMTP id u13-20020a81840d000000b005869ccbb5admr3619346ywf.46.1694206999020;
+        Fri, 08 Sep 2023 14:03:19 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:ca10:ff1b:4740:238d? ([2600:1700:6cf8:1240:ca10:ff1b:4740:238d])
+        by smtp.gmail.com with ESMTPSA id u70-20020a0deb49000000b00559fb950d9fsm627821ywe.45.2023.09.08.14.03.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Sep 2023 14:03:18 -0700 (PDT)
+Message-ID: <b1c35333-013b-2f3a-e6cd-c00530e8a6cf@gmail.com>
+Date: Fri, 8 Sep 2023 14:03:17 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20230908210007.1469091-1-sdf@google.com>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230908210007.1469091-2-sdf@google.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: update bpf_clone_redirect
- expected return code
-From: Stanislav Fomichev <sdf@google.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-	autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [RFC bpf-next] Registering struct_ops types from modules.
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Kui-Feng Lee <thinker.li@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>,
+ Kui-Feng Lee <kuifeng@meta.com>
+References: <20230907203202.90790-1-thinker.li@gmail.com>
+ <CAADnVQLAmvNewqyVUZkcFt8RRvs+W0RJfyExa-gZ=-0-nwL16A@mail.gmail.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <CAADnVQLAmvNewqyVUZkcFt8RRvs+W0RJfyExa-gZ=-0-nwL16A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Commit 151e887d8ff9 ("veth: Fixing transmit return status for dropped
-packets") started propagating proper NET_XMIT_DROP error into
-the caller which means it's now possible to get -ENOBUFS when
-calling bpf_clone_redirect() in this particular test. Update the
-test to reflect that.
 
-Reported-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/prog_tests/empty_skb.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/empty_skb.c b/tools/testing/selftests/bpf/prog_tests/empty_skb.c
-index 3b77d8a422db..b9f5cb312033 100644
---- a/tools/testing/selftests/bpf/prog_tests/empty_skb.c
-+++ b/tools/testing/selftests/bpf/prog_tests/empty_skb.c
-@@ -24,6 +24,7 @@ void test_empty_skb(void)
- 		int *ifindex;
- 		int err;
- 		int ret;
-+		int lwt_egress_ret; /* expected retval at lwt/egress */
- 		bool success_on_tc;
- 	} tests[] = {
- 		/* Empty packets are always rejected. */
-@@ -57,6 +58,7 @@ void test_empty_skb(void)
- 			.data_size_in = sizeof(eth_hlen),
- 			.ifindex = &veth_ifindex,
- 			.ret = -ERANGE,
-+			.lwt_egress_ret = -ERANGE,
- 			.success_on_tc = true,
- 		},
- 		{
-@@ -70,6 +72,7 @@ void test_empty_skb(void)
- 			.data_size_in = sizeof(eth_hlen),
- 			.ifindex = &ipip_ifindex,
- 			.ret = -ERANGE,
-+			.lwt_egress_ret = -ERANGE,
- 		},
- 
- 		/* ETH_HLEN+1-sized packet should be redirected. */
-@@ -79,6 +82,7 @@ void test_empty_skb(void)
- 			.data_in = eth_hlen_pp,
- 			.data_size_in = sizeof(eth_hlen_pp),
- 			.ifindex = &veth_ifindex,
-+			.lwt_egress_ret = -ENOBUFS,
- 		},
- 		{
- 			.msg = "ipip ETH_HLEN+1 packet ingress",
-@@ -108,8 +112,12 @@ void test_empty_skb(void)
- 
- 	for (i = 0; i < ARRAY_SIZE(tests); i++) {
- 		bpf_object__for_each_program(prog, bpf_obj->obj) {
--			char buf[128];
-+			bool at_egress = strstr(bpf_program__name(prog), "egress") != NULL;
- 			bool at_tc = !strncmp(bpf_program__section_name(prog), "tc", 2);
-+			int expected_ret;
-+			char buf[128];
-+
-+			expected_ret = at_egress && !at_tc ? tests[i].lwt_egress_ret : tests[i].ret;
- 
- 			tattr.data_in = tests[i].data_in;
- 			tattr.data_size_in = tests[i].data_size_in;
-@@ -128,7 +136,7 @@ void test_empty_skb(void)
- 			if (at_tc && tests[i].success_on_tc)
- 				ASSERT_GE(bpf_obj->bss->ret, 0, buf);
- 			else
--				ASSERT_EQ(bpf_obj->bss->ret, tests[i].ret, buf);
-+				ASSERT_EQ(bpf_obj->bss->ret, expected_ret, buf);
- 		}
- 	}
- 
--- 
-2.42.0.283.g2d96d420d3-goog
+On 9/8/23 11:24, Alexei Starovoitov wrote:
+> On Thu, Sep 7, 2023 at 1:32 PM <thinker.li@gmail.com> wrote:
+>>
+>> From: Kui-Feng Lee <thinker.li@gmail.com>
+>>
+>> Resend to remove noise!
+>>
+>> Given the current constraints of the current implementation, struct_ops
+>> cannot be registered dynamically. This presents a significant limitation
+>> for modules like fuse-bpf, which seeks to implement a new struct_ops
+>> type. To address this issue, here it proposes the introduction of a new
+>> API. This API will enable the registering of new struct_ops types from
+>> modules.
+>>
+>> The following code is an example of how to implement a new struct_ops type
+>> in a module with the proposed API. It adds a new type bpf_testmod_ops in
+>> the bpf_testmod module. And, call register_bpf_struct_ops() and
+>> unregister_bpf_struct_ops() when init and exit the module.
+> 
+> register_bpf_struct_ops() api implementation is missing in the diff.
 
+Sorry for the confusion!
+The purpose of this RFC to check how people think about the API itself.
 
