@@ -1,137 +1,117 @@
-Return-Path: <bpf+bounces-9553-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9554-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B35B97990F8
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 22:26:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B39D799155
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 23:00:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB9821C20CB9
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 20:26:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 692C01C20CBF
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 21:00:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2908C30FA6;
-	Fri,  8 Sep 2023 20:26:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB7330FA9;
+	Fri,  8 Sep 2023 21:00:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAE4130F96
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 20:26:25 +0000 (UTC)
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815EC8E
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 13:26:24 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-41513d2cca7so76711cf.0
-        for <bpf@vger.kernel.org>; Fri, 08 Sep 2023 13:26:24 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84C621C39
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 21:00:12 +0000 (UTC)
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C175DC
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 14:00:10 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-68bef1614e3so3389393b3a.3
+        for <bpf@vger.kernel.org>; Fri, 08 Sep 2023 14:00:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694204783; x=1694809583; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O2/KkuHa1swKMHIuQVh5aWKxZfJHHCKni8ZMZOLEOSY=;
-        b=52kHZN+LmpuAJxUCxY/SGS9DLA0GMqSRNGzhUqNVJc3XzcR2Jlm0jwm5DQ2lueHeTl
-         zNbS/4yFpvF6RpeT/OGdG6UICcy9GRfwijtN2wv8WOxIYT7lraBE0BwvNQgTZwA+1pRP
-         p+jzevo0uF6OeOMYLDgHIqcL92UB0EMge128AznRuh3qbAzqcwggr/y1ITwxnJIFours
-         aJKnEVDI1ldO/M8r4Hdyxhcdw+3Hh7du77yG/KemjBcdPvBHaJEsR2hiToAtka0L90tM
-         phdtbKGqgWQ1qHmS+GNHbtEw4PiHLg28mpEUqwgJzpIY6wu/C/1g2JpiJnNd9Ol0+t5w
-         UF6g==
+        d=google.com; s=20221208; t=1694206810; x=1694811610; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bddCSM3skZGvKtQFslQ+yQF/46KHkBCwOJAZz1C1rA4=;
+        b=3HS09LpDs3+AL091EPG9uwf47rNN/uwbxGIVnGN6vFNRDc2hC0aP3ZokYC81gr7EO+
+         tlXhbwhrECIvdjJCzBxU6FxfjcLUR6fG0bkqxdTVolkekHJ/v1X05FU0/KjqFyniTqOf
+         BNVVENwcuEOxPxq1RHkqX9DiYmCABSYtQAKlJizj5o6nofXfB+7j+o/kq56p1QgBUVt/
+         Pc3yxIFRNwRCjhL1akpfNbCoQ/KJO8d1jPuZVjG8ULycI6HQ4ka5R7MmDpH+ElUbNGqS
+         PCxB+BSgO2tVQw38JC4DoQZegvnv5XhiLx9cDKshR1mE+sIfYUQ5zNms/16OgENTKVMe
+         mktQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694204783; x=1694809583;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O2/KkuHa1swKMHIuQVh5aWKxZfJHHCKni8ZMZOLEOSY=;
-        b=PIHAo7kOHOGfNpexReBb4JMJQkufg+lRkNO6oBFs7hJVDcREtrH9KLjmcQwEWWs7UI
-         uBwf9jf5aftFllCqRhx81EHJtWgpSNqZHPnK56TG0d1Zs2dbyDe/umtrQF4jiceBUmxz
-         mJ6KZG0rbaJaW4TfvVY/0qeF2a5RxXZ5jPH0e6rU/3tnFr/AYrq/P73zPo8836MCFgqW
-         n8PILDPHbCXPLNHZNH8W6rH7EsUwxtaoCDtF4c4t0BSz07JdBRfGIF2NJW7EL9n0BZg5
-         SGbCsFNQKM+6Vgia4N3anw9tYV23JU0sh2oPb8w8mTfmB6xX4e8hvT1p9yqgeKgsw4ct
-         HB6g==
-X-Gm-Message-State: AOJu0YzqJJXdhY/anncwSvs1HenyWnF2ck4gzS/TuLADz77RcwvrqX7C
-	fUJ3ArgqVCuB7VSfL1ZJJvyJxeEGUGUnDY82GquHfA==
-X-Google-Smtp-Source: AGHT+IFZjC7Hd3ciCfpZuPYvhyAq+pZqpicznN6efwlyFKifdG5lIRGL3afr3p5ttECeps228YagcBHCDe6gqTofe9s=
-X-Received: by 2002:a05:622a:309:b0:410:9cfe:339 with SMTP id
- q9-20020a05622a030900b004109cfe0339mr325721qtw.3.1694204783388; Fri, 08 Sep
- 2023 13:26:23 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694206810; x=1694811610;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bddCSM3skZGvKtQFslQ+yQF/46KHkBCwOJAZz1C1rA4=;
+        b=CFb01Pcly4YCMNerTD8G89Hjm/KXkR7AW2Cbb/E1I1rewX3sJovoaBwVvEX0V7avdJ
+         LPyz7JzRgS7XM7ZfwwMkL23tY1sJKMHxsqT+A/bnlFOAatGZOGCfi/qtoDthUJOmoLZo
+         eufsnS1NT/i37GbkQH/mZubuKafHQAuwpcRl3zSydLl00kqhF0ESsl2AtWfhF3/Xy17z
+         X7l24kW4IDQbu814B1dp64FylUx8BmIZiRgLMmYvkZQMeNa5rao8njEW3bi3EyoVhEu7
+         /NkWXJAoJvCZinRskZUmQQnUn5mIR5sWdeitVIjKcOMlUvd33smXptmIKZJZTKRDdTtf
+         5Qeg==
+X-Gm-Message-State: AOJu0YzoUwunP21kTJSpX6hkjqC8wJCIwe1O6ZEihz2R0qVTYK+fc8bR
+	3eTYPUSaiM190svViLSiSvnIiAYGlhup/dLyqT9YKI5MINlCOQ9xDi2dmGF+005r42soxKEH6Ma
+	A4jeh36Fj8HeW9CBtEtLmxOans0nOfd9PFGH+45Y9OfQwKRhWPg==
+X-Google-Smtp-Source: AGHT+IHdNEnc3xJEy0SUWqaYeljGn5OhfMxIZN6gNHoWXhJQvuCZV6OcMMVQfjDB64yh8pskIxDpMJ4=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6a00:1408:b0:68e:26f2:6c8 with SMTP id
+ l8-20020a056a00140800b0068e26f206c8mr1398991pfu.1.1694206809720; Fri, 08 Sep
+ 2023 14:00:09 -0700 (PDT)
+Date: Fri,  8 Sep 2023 14:00:06 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <CABk29NuQ4C-w_JA-zev796Nr_vx932qC4_OcdH=gMM6HZ_r4WQ@mail.gmail.com>
- <33f06fa6-2f4d-4e50-a87e-0d6604d3c413@paulmck-laptop>
-In-Reply-To: <33f06fa6-2f4d-4e50-a87e-0d6604d3c413@paulmck-laptop>
-From: Josh Don <joshdon@google.com>
-Date: Fri, 8 Sep 2023 13:26:11 -0700
-Message-ID: <CABk29Nva+c6oBZra6srWGcfxMEquOP30dReM-PgW_Wh+zKiBuQ@mail.gmail.com>
-Subject: Re: BPF memory model
-To: paulmck@kernel.org
-Cc: Hao Luo <haoluo@google.com>, davemarchevsky@meta.com, Tejun Heo <tj@kernel.org>, 
-	David Vernet <dvernet@meta.com>, Neel Natu <neelnatu@google.com>, 
-	Jack Humphries <jhumphri@google.com>, bpf@vger.kernel.org, ast@kernel.org
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
+Message-ID: <20230908210007.1469091-1-sdf@google.com>
+Subject: [PATCH bpf-next 1/2] bpf: return correct -ENOBUFS from bpf_clone_redirect
+From: Stanislav Fomichev <sdf@google.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-	autolearn_force=no version=3.4.6
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Sep 8, 2023 at 1:43=E2=80=AFAM Paul E. McKenney <paulmck@kernel.org=
-> wrote:
->
-> On Thu, Sep 07, 2023 at 03:00:56PM -0700, Josh Don wrote:
-> > Has there been any further interest in supporting additional
-> > kernel-style atomics in BPF that you know of?
->
-> This is one of the first that I have heard of.  ;-)
->
-> But what BPF programs are you running that are seeing excessive
-> synchronization overhead?  That will tell us which operations to
-> start with.  (Or maybe it is time to just add the full Linux-kernel
-> atomic-operations kitchen sink, but that would not normally be the way
-> to bet.)
+Commit 151e887d8ff9 ("veth: Fixing transmit return status for dropped
+packets") exposed the fact that bpf_clone_redirect is capable of
+returning raw NET_XMIT_XXX return codes.
 
-I'm writing BPF programs for scheduling (ie. sched_ext), so these are
-getting invoked in hot paths and invoked concurrently across multiple
-cpus (for example, pick_next_task, enqueue_task, etc.). The kernel is
-responsible for relaying ground truth, userspace makes O(ms)
-scheduling decisions, and BPF makes O(us) scheduling decisions.
-BPF-BPF concurrency is possible with spinlocks and RMW, BPF-userspace
-can currently only really use RMW. My line of questioning is more
-forward looking, as I'm preemptively thinking of how to ensure
-kernel-like scheduling performance, since BPF spinlock or RMW is
-sometimes overkill :) I would think that barrier() and smp_mb() would
-probably be the minimum viable set (at least for x86) that people
-would find useful, but maybe others can chime in.
+This is in the conflict with its UAPI doc which says the following:
+"0 on success, or a negative error in case of failure."
 
-> > And on a different BPF note, one thing I wasn't sure about was the
-> > ability of the cpu to reorder loads and stores across the BPF program
-> > call boundary. For example, could the load of "z" in the BPF program
-> > below be reordered before the store to x in the kernel? I'm sure that
-> > no compiler barrier is ever necessary here since the BPF program is
-> > compiled separately from the kernel, but I'm not sure whether a
-> > hardware barrier is necessary.
-> > <kernel>
-> > x =3D 3
-> > call_bpf();
-> >   <bpf>
-> >   int y =3D z;
->
-> Given that a major goal of BPF is the ability to add low-overhead
-> programs to code on fastpaths, I would not expect any implicit barriers
-> in that case.  Consider for example counting the number of calls to a
-> "hot" function in the Linux kernel, in which case adding full ordering
-> would incur unacceptable performance degradation.  I would instead
-> expect that the BPF program would need to add explicit barriers or
-> ordered RMW operations.
+Let's wrap dev_queue_xmit's return value (in __bpf_tx_skb) into
+net_xmit_errno to make sure we correctly propagate NET_XMIT_DROP
+as -ENOBUFS instead of 1.
 
-Yep, that was my expectation as well. On the plus, this gives the
-flexibility of only adding barriers where they are really needed.
+Note, this is technically breaking existing UAPI where we used to
+return 1 and now will do -ENOBUFS. The alternative is to
+document that bpf_clone_redirect can return 1 for DROP and 2 for CN.
 
-Best,
-Josh
+Reported-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ net/core/filter.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/net/core/filter.c b/net/core/filter.c
+index a094694899c9..9e297931b02f 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -2129,6 +2129,9 @@ static inline int __bpf_tx_skb(struct net_device *dev, struct sk_buff *skb)
+ 	ret = dev_queue_xmit(skb);
+ 	dev_xmit_recursion_dec();
+ 
++	if (ret > 0)
++		ret = net_xmit_errno(ret);
++
+ 	return ret;
+ }
+ 
+-- 
+2.42.0.283.g2d96d420d3-goog
+
 
