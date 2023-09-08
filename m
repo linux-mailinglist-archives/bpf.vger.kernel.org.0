@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-9549-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9550-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B97E798E42
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 20:33:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E3A5798E45
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 20:34:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4697A281D1B
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 18:33:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A0FE1C20E71
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 18:34:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402A1171B1;
-	Fri,  8 Sep 2023 18:20:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3738171C3;
+	Fri,  8 Sep 2023 18:21:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC510171AE
-	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 18:20:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC9A5C433CB;
-	Fri,  8 Sep 2023 18:20:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63A0414F7B
+	for <bpf@vger.kernel.org>; Fri,  8 Sep 2023 18:21:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 606F7C116A5;
+	Fri,  8 Sep 2023 18:21:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694197242;
-	bh=5gYfhHtbATN1eBZVLKgHgCJ6/y3b9OYHJfOcIM3jMVo=;
+	s=k20201202; t=1694197267;
+	bh=tLxC2jLxw7ViCMJNwlmj0KNOB7TdgaNnRbv/DiajX+4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ohSUDPXS5dIWfC5d5DxljfFeXqa1OsFfDszXY6fZQYHJ9iy9cQy4xrofha5IOw9TV
-	 QdLcIkeF28rvG2TToqudpMZvXw93KjkMcOCqSc6VReywk13z1HhCQY7x3HewwhL3sv
-	 VNc2PMBgLFCJD8VkvFd5DmDcNMcsPRt9Er1a7tIAd/2sTvwCbac4asAFlJxKcgaDq+
-	 Hkg97hgOiOeN0KJMwP6On1PGcbPz8aHpFtIqXlzxMqFKSN5y/uWZ0IpYt/Ylb+ekS3
-	 OSsOlaP4Y2kw0WLydQhS1QGZ0QvYnz4YoBFD1tahofu8AkTp8rzHJ17Qv2qjkYYAKT
-	 rlQs+yUIsbRCA==
+	b=uIAnHuqRFJnzImTcn58V6eX77xf+wgzDaQ/NrWicxihOEtxrLyfQmFz6Fk/AjOn5i
+	 hm8BDmSqjgpBfRCAaHmZoKu1p1SGWfPKJpOvOxh6ztyjwmdq9OIYP+YkzWPoG3ImKd
+	 IrRAdqc76j7FQs2h8WXJpO3vYUDyZs+XJodLQg3cNkSqO6pC0bTICse6AobEVNBOmc
+	 apmFLBr/bdWI7wG9RBWPlVlfUr5AfuwmJG3Cz1XsBMUZ/HwKFpYVvYUWcAfmjIz5uo
+	 GlTGCTM/1B2Y98O0C8tkqVJfy5IOyOfetPcEj4SIoB+iSvPOW6owUdPXonoQpGCovu
+	 wuQYIWmkTPmJw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -39,12 +39,12 @@ Cc: Hao Luo <haoluo@google.com>,
 	ast@kernel.org,
 	daniel@iogearbox.net,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 13/14] libbpf: Free btf_vmlinux when closing bpf_object
-Date: Fri,  8 Sep 2023 14:20:00 -0400
-Message-Id: <20230908182003.3460721-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 09/10] libbpf: Free btf_vmlinux when closing bpf_object
+Date: Fri,  8 Sep 2023 14:20:43 -0400
+Message-Id: <20230908182046.3460968-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908182003.3460721-1-sashal@kernel.org>
-References: <20230908182003.3460721-1-sashal@kernel.org>
+In-Reply-To: <20230908182046.3460968-1-sashal@kernel.org>
+References: <20230908182046.3460968-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -53,7 +53,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.194
+X-stable-base: Linux 5.4.256
 Content-Transfer-Encoding: 8bit
 
 From: Hao Luo <haoluo@google.com>
@@ -78,17 +78,17 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 015ed8253f739..44646c5286fbe 100644
+index b8849812449c3..343018632d2d1 100644
 --- a/tools/lib/bpf/libbpf.c
 +++ b/tools/lib/bpf/libbpf.c
-@@ -7962,6 +7962,7 @@ void bpf_object__close(struct bpf_object *obj)
+@@ -4202,6 +4202,7 @@ void bpf_object__close(struct bpf_object *obj)
  	bpf_object__elf_finish(obj);
  	bpf_object__unload(obj);
  	btf__free(obj->btf);
 +	btf__free(obj->btf_vmlinux);
  	btf_ext__free(obj->btf_ext);
  
- 	for (i = 0; i < obj->nr_maps; i++)
+ 	for (i = 0; i < obj->nr_maps; i++) {
 -- 
 2.40.1
 
