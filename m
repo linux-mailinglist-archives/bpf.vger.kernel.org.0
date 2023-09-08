@@ -1,25 +1,25 @@
-Return-Path: <bpf+bounces-9503-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9504-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58CE3798834
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 15:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 51EE9798836
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 15:59:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 266631C20C66
-	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 13:59:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59A871C20DB1
+	for <lists+bpf@lfdr.de>; Fri,  8 Sep 2023 13:59:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1469AF50D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E9011724;
 	Fri,  8 Sep 2023 13:58:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A1FE563;
-	Fri,  8 Sep 2023 13:58:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F96AF9C1;
+	Fri,  8 Sep 2023 13:58:01 +0000 (UTC)
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8994E1BF6;
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FAC1BF8;
 	Fri,  8 Sep 2023 06:57:59 -0700 (PDT)
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -28,21 +28,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UEnWQjN8yKLvp2C1VP+XA3VBPqY8Xx7vebay2Q8ZdmA=;
-	b=tGgfq7nSwBbr3kiGTCCnybDdL8XowQCXdBt1BIrT1rbZZSt7VKgfsXaRDQT5LNtpg3MIvI
-	UMR8QsEs4kWYPgulqhj5Mqg2X897oaMo40vIf+VOsB2pWQuKOEPVvul7pQqIfJqCE5GDv5
-	4L20LUBv/wz8Ut/SEFiB71GB++nsfZCf1qKlvIkjWdWT1e5ak01U3Bqqd7CKFyNGDBwtRo
-	w3/mQ8qMTYZB2BoY8pzJeg4B80YtcMI0NlTGUok5kblCOY9NHL+jRFg+TntvgYjKmfZT2u
-	ErbuiGruWgkj471Aum3SIoGhEgqnai9BBlwygXP/mWNxGGum3IoIsp+CCkoPog==
+	bh=ML+aEaZjiCZB3YKWe6Q0J9RcruG1KCXhm2H7e9PKSwA=;
+	b=sWabV3FKQaoxEe69YJv6V0jL4iixxdMqgvPo1LpCwEeOYYKMwmFOmS8yG+SbMQlGbdKtaL
+	hl5Ro6UqjOzlTACohCoMh2D+dTfUAMwFMUvqpPfd8JpNKVKYwRzoKhV4AXTNeOP+xXRgbZ
+	8lyFVWkkC+gODb6AUoKO5UJtN/Ilu3fP7bpz67FrHwflvNb//3RbLRjKcvUbAzIzTNp4td
+	JFAwgMjxvyIjpnFZA+4xKsW7KSgTN6oOkQqIlJGr8woBxHf0s3yKzOLVrFO9riV+3yw1pA
+	BuIW8MVATqKv34/jXdNYVyXM/1bmzVFpJ4pRzssOzvR62j//3MGCWpnEhwjvXA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1694181478;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UEnWQjN8yKLvp2C1VP+XA3VBPqY8Xx7vebay2Q8ZdmA=;
-	b=esKwYOdFMGQ+TG/I1j7x25XLVS7hRQc/KMWHmfxZZjgl8gZ4PDWfqmR7KRJljxa8s9W/mN
-	m18XCy3dwO4YTdDg==
+	bh=ML+aEaZjiCZB3YKWe6Q0J9RcruG1KCXhm2H7e9PKSwA=;
+	b=ugh6CUPcA2GukpKuTy2aLzTnzAuNFrqicKct5s0UpxKmFYIh8nqYMr5bgk1ooalltzGX/q
+	15QTG9Pemkt6KSDw==
 To: netdev@vger.kernel.org,
 	bpf@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -55,10 +55,13 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Paolo Abeni <pabeni@redhat.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Michael Chan <michael.chan@broadcom.com>
-Subject: [PATCH net 2/4] bnxt_en: Flush XDP for bnxt_poll_nitroa0()'s NAPI
-Date: Fri,  8 Sep 2023 15:57:46 +0200
-Message-Id: <20230908135748.794163-3-bigeasy@linutronix.de>
+	Geetha sowjanya <gakula@marvell.com>,
+	Subbaraya Sundeep <sbhatta@marvell.com>,
+	Sunil Goutham <sgoutham@marvell.com>,
+	hariprasad <hkelam@marvell.com>
+Subject: [PATCH net 3/4] octeontx2-pf: Do xdp_do_flush() after redirects.
+Date: Fri,  8 Sep 2023 15:57:47 +0200
+Message-Id: <20230908135748.794163-4-bigeasy@linutronix.de>
 In-Reply-To: <20230908135748.794163-1-bigeasy@linutronix.de>
 References: <20230908135748.794163-1-bigeasy@linutronix.de>
 Precedence: bulk
@@ -74,55 +77,104 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-bnxt_poll_nitroa0() invokes bnxt_rx_pkt() which can run a XDP program
-which in turn can return XDP_REDIRECT. bnxt_rx_pkt() is also used by
-__bnxt_poll_work() which flushes (xdp_do_flush()) the packets after each
-round. bnxt_poll_nitroa0() lacks this feature.
-xdp_do_flush() should be invoked before leaving the NAPI callback.
+xdp_do_flush() should be invoked before leaving the NAPI poll function
+if XDP-redirect has been performed.
 
-Invoke xdp_do_flush() after a redirect in bnxt_poll_nitroa0() NAPI.
+Invoke xdp_do_flush() before leaving NAPI.
 
-Cc: Michael Chan <michael.chan@broadcom.com>
-Fixes: f18c2b77b2e4e ("bnxt_en: optimized XDP_REDIRECT support")
+Cc: Geetha sowjanya <gakula@marvell.com>
+Cc: Subbaraya Sundeep <sbhatta@marvell.com>
+Cc: Sunil Goutham <sgoutham@marvell.com>
+Cc: hariprasad <hkelam@marvell.com>
+Fixes: 06059a1a9a4a5 ("octeontx2-pf: Add XDP support to netdev PF")
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ .../marvell/octeontx2/nic/otx2_txrx.c         | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethern=
-et/broadcom/bnxt/bnxt.c
-index 5cc0dbe121327..7551aa8068f8f 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -2614,6 +2614,7 @@ static int bnxt_poll_nitroa0(struct napi_struct *napi=
-, int budget)
- 	struct rx_cmp_ext *rxcmp1;
- 	u32 cp_cons, tmp_raw_cons;
- 	u32 raw_cons =3D cpr->cp_raw_cons;
-+	bool flush_xdp =3D false;
- 	u32 rx_pkts =3D 0;
- 	u8 event =3D 0;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drive=
+rs/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+index e369baf115301..6c02eaa460277 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+@@ -29,7 +29,8 @@
+ static bool otx2_xdp_rcv_pkt_handler(struct otx2_nic *pfvf,
+ 				     struct bpf_prog *prog,
+ 				     struct nix_cqe_rx_s *cqe,
+-				     struct otx2_cq_queue *cq);
++				     struct otx2_cq_queue *cq,
++				     bool *need_xdp_flush);
 =20
-@@ -2648,6 +2649,8 @@ static int bnxt_poll_nitroa0(struct napi_struct *napi=
-, int budget)
- 				rx_pkts++;
- 			else if (rc =3D=3D -EBUSY)	/* partial completion */
- 				break;
-+			if (event & BNXT_REDIRECT_EVENT)
-+				flush_xdp =3D true;
- 		} else if (unlikely(TX_CMP_TYPE(txcmp) =3D=3D
- 				    CMPL_BASE_TYPE_HWRM_DONE)) {
- 			bnxt_hwrm_handler(bp, txcmp);
-@@ -2667,6 +2670,8 @@ static int bnxt_poll_nitroa0(struct napi_struct *napi=
-, int budget)
+ static int otx2_nix_cq_op_status(struct otx2_nic *pfvf,
+ 				 struct otx2_cq_queue *cq)
+@@ -337,7 +338,7 @@ static bool otx2_check_rcv_errors(struct otx2_nic *pfvf,
+ static void otx2_rcv_pkt_handler(struct otx2_nic *pfvf,
+ 				 struct napi_struct *napi,
+ 				 struct otx2_cq_queue *cq,
+-				 struct nix_cqe_rx_s *cqe)
++				 struct nix_cqe_rx_s *cqe, bool *need_xdp_flush)
+ {
+ 	struct nix_rx_parse_s *parse =3D &cqe->parse;
+ 	struct nix_rx_sg_s *sg =3D &cqe->sg;
+@@ -353,7 +354,7 @@ static void otx2_rcv_pkt_handler(struct otx2_nic *pfvf,
+ 	}
 =20
- 	if (event & BNXT_AGG_EVENT)
- 		bnxt_db_write(bp, &rxr->rx_agg_db, rxr->rx_agg_prod);
-+	if (flush_xdp)
+ 	if (pfvf->xdp_prog)
+-		if (otx2_xdp_rcv_pkt_handler(pfvf, pfvf->xdp_prog, cqe, cq))
++		if (otx2_xdp_rcv_pkt_handler(pfvf, pfvf->xdp_prog, cqe, cq, need_xdp_flu=
+sh))
+ 			return;
+=20
+ 	skb =3D napi_get_frags(napi);
+@@ -388,6 +389,7 @@ static int otx2_rx_napi_handler(struct otx2_nic *pfvf,
+ 				struct napi_struct *napi,
+ 				struct otx2_cq_queue *cq, int budget)
+ {
++	bool need_xdp_flush =3D false;
+ 	struct nix_cqe_rx_s *cqe;
+ 	int processed_cqe =3D 0;
+=20
+@@ -409,13 +411,15 @@ static int otx2_rx_napi_handler(struct otx2_nic *pfvf,
+ 		cq->cq_head++;
+ 		cq->cq_head &=3D (cq->cqe_cnt - 1);
+=20
+-		otx2_rcv_pkt_handler(pfvf, napi, cq, cqe);
++		otx2_rcv_pkt_handler(pfvf, napi, cq, cqe, &need_xdp_flush);
+=20
+ 		cqe->hdr.cqe_type =3D NIX_XQE_TYPE_INVALID;
+ 		cqe->sg.seg_addr =3D 0x00;
+ 		processed_cqe++;
+ 		cq->pend_cqe--;
+ 	}
++	if (need_xdp_flush)
 +		xdp_do_flush();
 =20
- 	if (!bnxt_has_work(bp, cpr) && rx_pkts < budget) {
- 		napi_complete_done(napi, rx_pkts);
+ 	/* Free CQEs to HW */
+ 	otx2_write64(pfvf, NIX_LF_CQ_OP_DOOR,
+@@ -1334,7 +1338,8 @@ bool otx2_xdp_sq_append_pkt(struct otx2_nic *pfvf, u6=
+4 iova, int len, u16 qidx)
+ static bool otx2_xdp_rcv_pkt_handler(struct otx2_nic *pfvf,
+ 				     struct bpf_prog *prog,
+ 				     struct nix_cqe_rx_s *cqe,
+-				     struct otx2_cq_queue *cq)
++				     struct otx2_cq_queue *cq,
++				     bool *need_xdp_flush)
+ {
+ 	unsigned char *hard_start, *data;
+ 	int qidx =3D cq->cq_idx;
+@@ -1371,8 +1376,10 @@ static bool otx2_xdp_rcv_pkt_handler(struct otx2_nic=
+ *pfvf,
+=20
+ 		otx2_dma_unmap_page(pfvf, iova, pfvf->rbsize,
+ 				    DMA_FROM_DEVICE);
+-		if (!err)
++		if (!err) {
++			*need_xdp_flush =3D true;
+ 			return true;
++		}
+ 		put_page(page);
+ 		break;
+ 	default:
 --=20
 2.40.1
 
