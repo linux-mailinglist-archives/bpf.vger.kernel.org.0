@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-9585-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9586-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 080E7799348
-	for <lists+bpf@lfdr.de>; Sat,  9 Sep 2023 02:24:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD904799354
+	for <lists+bpf@lfdr.de>; Sat,  9 Sep 2023 02:24:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F8B81C20ACF
-	for <lists+bpf@lfdr.de>; Sat,  9 Sep 2023 00:24:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEB8C1C20984
+	for <lists+bpf@lfdr.de>; Sat,  9 Sep 2023 00:24:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036DF10ED;
-	Sat,  9 Sep 2023 00:24:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25FD1EA1;
+	Sat,  9 Sep 2023 00:24:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE35510E1
-	for <bpf@vger.kernel.org>; Sat,  9 Sep 2023 00:24:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 967A2C4167D;
-	Sat,  9 Sep 2023 00:23:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE399370
+	for <bpf@vger.kernel.org>; Sat,  9 Sep 2023 00:24:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A13EBC433C8;
+	Sat,  9 Sep 2023 00:24:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694219041;
-	bh=kA478PEecCt3vyxSqYOoFJ19TD2X6Ic5k0Wpr/WWTSc=;
+	s=k20201202; t=1694219057;
+	bh=x9Y7FBkg3BsPqNSt7nwbTb/lNAKoOPQFp4cDPtwA/10=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=juwrDmDyAJzl+NZ+gbEpWy8ZVdH3j8ppa8OWykr3shbfoFAj2Jg4Wn/S/QaF5twK+
-	 9EFfgl2DxEagS5RKnJKAfjxa9oSu9t3WRjfGJO19CIsEJlf/4rqlJCE5zq5whnfslc
-	 N2iT/2QVH/EFAVX7H4y1Hh8sOzcaFcmtvLqqEar9mF0t903/eRmmp9WAVHz2xm8CZc
-	 p/TuldHNO/Qdl6IL8UUnLobp3x+SE01IFsdbwVx666QTEE0mOElXTgXBnAchN/0jAp
-	 RoFsmH1KrkioW+jHwx/Cao3MtjmphsxtJ41o85JMpsGaDyeRvja+7X2DTxVnYWuQcL
-	 Vdn9465Rmpdpw==
+	b=SIRoSCPwRV+YhhJtgm/4LfhnteW+9GsxP+hqm0SWNMQpmpBlyQJhoD49GC3zdWG5r
+	 sv2GfUUGNbLDMVLCrG73y4cBdv211nFEp11PhSSqm6LcGPeOswL0jueE9a17vn7sB7
+	 PQCFfnKzxsL+EGhQPFh+JNECT8DbYrsFLywXSPe6qc/pMMWWNoRtrpgelTAHZJUJIg
+	 LAbeutkYeO0QwQq3UMQw6tLxIqvwCyQcQJ1Ersr7ZY1y61CaimOOvxWMioDfX1nzkS
+	 zK7PUfAYhp4dssVPJIiQ2WtLCxJOP+tLjY90gXMYULK8hf69VRohqP37MEfYa8NBYF
+	 YVnYrsoLsfUFQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -48,12 +48,12 @@ Cc: Tomislav Novak <tnovak@fb.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-perf-users@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 4/5] ARM: 9316/1: hw_breakpoint: fix single-stepping when using bpf_overflow_handler
-Date: Fri,  8 Sep 2023 20:23:48 -0400
-Message-Id: <20230909002351.3578696-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 4/6] ARM: 9316/1: hw_breakpoint: fix single-stepping when using bpf_overflow_handler
+Date: Fri,  8 Sep 2023 20:24:03 -0400
+Message-Id: <20230909002406.3578776-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230909002351.3578696-1-sashal@kernel.org>
-References: <20230909002351.3578696-1-sashal@kernel.org>
+In-Reply-To: <20230909002406.3578776-1-sashal@kernel.org>
+References: <20230909002406.3578776-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,7 +62,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.194
+X-stable-base: Linux 5.4.256
 Content-Transfer-Encoding: 8bit
 
 From: Tomislav Novak <tnovak@fb.com>
@@ -107,10 +107,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 25 insertions(+), 9 deletions(-)
 
 diff --git a/arch/arm/kernel/hw_breakpoint.c b/arch/arm/kernel/hw_breakpoint.c
-index b1423fb130ea4..8f1fa7aac31fb 100644
+index b06d9ea07c846..a69dd64a84017 100644
 --- a/arch/arm/kernel/hw_breakpoint.c
 +++ b/arch/arm/kernel/hw_breakpoint.c
-@@ -626,7 +626,7 @@ int hw_breakpoint_arch_parse(struct perf_event *bp,
+@@ -623,7 +623,7 @@ int hw_breakpoint_arch_parse(struct perf_event *bp,
  	hw->address &= ~alignment_mask;
  	hw->ctrl.len <<= offset;
  
@@ -119,7 +119,7 @@ index b1423fb130ea4..8f1fa7aac31fb 100644
  		/*
  		 * Mismatch breakpoints are required for single-stepping
  		 * breakpoints.
-@@ -798,7 +798,7 @@ static void watchpoint_handler(unsigned long addr, unsigned int fsr,
+@@ -795,7 +795,7 @@ static void watchpoint_handler(unsigned long addr, unsigned int fsr,
  		 * Otherwise, insert a temporary mismatch breakpoint so that
  		 * we can single-step over the watchpoint trigger.
  		 */
@@ -128,7 +128,7 @@ index b1423fb130ea4..8f1fa7aac31fb 100644
  			continue;
  step:
  		enable_single_step(wp, instruction_pointer(regs));
-@@ -811,7 +811,7 @@ static void watchpoint_handler(unsigned long addr, unsigned int fsr,
+@@ -808,7 +808,7 @@ static void watchpoint_handler(unsigned long addr, unsigned int fsr,
  		info->trigger = addr;
  		pr_debug("watchpoint fired: address = 0x%x\n", info->trigger);
  		perf_bp_event(wp, regs);
@@ -137,7 +137,7 @@ index b1423fb130ea4..8f1fa7aac31fb 100644
  			enable_single_step(wp, instruction_pointer(regs));
  	}
  
-@@ -886,7 +886,7 @@ static void breakpoint_handler(unsigned long unknown, struct pt_regs *regs)
+@@ -883,7 +883,7 @@ static void breakpoint_handler(unsigned long unknown, struct pt_regs *regs)
  			info->trigger = addr;
  			pr_debug("breakpoint fired: address = 0x%x\n", addr);
  			perf_bp_event(bp, regs);
@@ -147,7 +147,7 @@ index b1423fb130ea4..8f1fa7aac31fb 100644
  			goto unlock;
  		}
 diff --git a/arch/arm64/kernel/hw_breakpoint.c b/arch/arm64/kernel/hw_breakpoint.c
-index 712e97c03e54c..e5a0c38f1b5ee 100644
+index b4a1607958246..534578eba556e 100644
 --- a/arch/arm64/kernel/hw_breakpoint.c
 +++ b/arch/arm64/kernel/hw_breakpoint.c
 @@ -654,7 +654,7 @@ static int breakpoint_handler(unsigned long unused, unsigned int esr,
@@ -169,10 +169,10 @@ index 712e97c03e54c..e5a0c38f1b5ee 100644
  
  	info->trigger = addr;
 diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 67a50c78232fe..93dffe2f3fff2 100644
+index b7ac395513c0f..c99e2f851d312 100644
 --- a/include/linux/perf_event.h
 +++ b/include/linux/perf_event.h
-@@ -1069,15 +1069,31 @@ extern int perf_event_output(struct perf_event *event,
+@@ -1018,15 +1018,31 @@ extern int perf_event_output(struct perf_event *event,
  			     struct pt_regs *regs);
  
  static inline bool
