@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-9609-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9610-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79E41799D92
-	for <lists+bpf@lfdr.de>; Sun, 10 Sep 2023 11:53:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7256A799D93
+	for <lists+bpf@lfdr.de>; Sun, 10 Sep 2023 11:53:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E50C1C20852
-	for <lists+bpf@lfdr.de>; Sun, 10 Sep 2023 09:53:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03541281475
+	for <lists+bpf@lfdr.de>; Sun, 10 Sep 2023 09:53:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 090C8258B;
-	Sun, 10 Sep 2023 09:53:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F997257E;
+	Sun, 10 Sep 2023 09:53:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD80257E
-	for <bpf@vger.kernel.org>; Sun, 10 Sep 2023 09:53:19 +0000 (UTC)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CD0CCD
-	for <bpf@vger.kernel.org>; Sun, 10 Sep 2023 02:53:18 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-403012f276dso11748285e9.0
-        for <bpf@vger.kernel.org>; Sun, 10 Sep 2023 02:53:18 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69E8AA49
+	for <bpf@vger.kernel.org>; Sun, 10 Sep 2023 09:53:29 +0000 (UTC)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B84CCD
+	for <bpf@vger.kernel.org>; Sun, 10 Sep 2023 02:53:27 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31adc5c899fso3629609f8f.2
+        for <bpf@vger.kernel.org>; Sun, 10 Sep 2023 02:53:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694339597; x=1694944397; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694339606; x=1694944406; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DdKEba/1b2uhxpoNEDG+0m9s/KGfS2WBVeM3powphP8=;
-        b=J/isfb17iWJ2jZTspPi05z5g5seVYU7IWD6jzfD5EAAzXrnuIX1X03tA/l4m7CEr64
-         GV0d/fdQKhmhgTsTof1EQcoS8Qbx1T+sZ+Zc3WNyHIXZ8L6fIdraZ4RQI/69yKH/7Skg
-         a9fQy0uEZ6WtWMNrEHhRBJ6C1KpbTaaR/c6jS0FdytUZj/hkuUyOYm5Zks4KrDItOTYC
-         C2BlsLZyr9Fg02Ddh8ydXVxBecd7nQLjA5gjE4b9scRW46q/DbcPfdvEbZudP+mZ3i/Q
-         ZUVb1rk+0/g6VdMZqXcfv6dz9IIRLGA+jg/69GdfijAHE8se+91dlGe6nfmwO9Z4VugF
-         lYUg==
+        bh=instIEKq+uD1AghMVaKEvO9/7oGWL8WlAyTf55PpG44=;
+        b=hXRob6MDdWOFrnbUXI0wHqzubBjlEr00zEovLb/UxUBtUfCxH1w3hCu+zxb0E3rBHO
+         i0ei8UQorUXS0T3kcRk39S9GsprQjI33OrrgqzhCI6NZyIDTcD/yH8qwIZkF6siR+IH3
+         vx5Ep2zEFxjxjnMFsSn+UecdgylT7mpMFFQVaqPMyIRbIPPhRtuOSCrLOxAAZ0SIyjDC
+         +iEzGlHvrw5ZjHHH30wn5EzOEFQ/HtQu40tK91ZGHUfKxIkSC6VKeGnyC2waIkNHds5O
+         sbhUzDE27uB3vvcG30Mh9h/2zuTs0LgItDz34o/0SZ6Fcg9Q1cdD5K8e+I8IX9+suPmh
+         rm/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694339597; x=1694944397;
+        d=1e100.net; s=20230601; t=1694339606; x=1694944406;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DdKEba/1b2uhxpoNEDG+0m9s/KGfS2WBVeM3powphP8=;
-        b=xFKUi9Twmju79tIAf8C3S4IsoolOHYRl+HGjxBz0BMdK1GAjurh9u2SwtdRlNN6rDj
-         s18hzKD82zMybAnmkns33kOqpbGwErhgqreClSnf9XsfbYFiu7xAz8mMSSzrraZDFxRc
-         e2puFRw/otb+u+RZdGajq7ikgq+rHaQHc1WL8Dj0JWQFgh5tNAgczgWQJNciMDl8HrRy
-         HIKLEZgv8zsCTTbJp2aMTGfhkSvTqH5shFz4Rm7z71zjRe52ysl7JyyuJ3V13uQzJNAH
-         p2JAXpFfcaFx7DPJMlhRO8laQURV+rA5DXiVIXJQy7F+M3RX9n2JW7S1IL1ULK3wCBmp
-         41Fw==
-X-Gm-Message-State: AOJu0YyHWhRT6jmrvCAS9WE6+f7M/vqcDmOOkEEArPif+MLTMEPQBKE1
-	uy8e/YbFdGZPaBtXGEWpyrThyoPrVVA=
-X-Google-Smtp-Source: AGHT+IHIWgGofCPWXE2iBBcu3UkIdqGU48FYM914x7aRiBLoP81HY0m9kdAwkVl4YsUHs0VeI74rgQ==
-X-Received: by 2002:a05:600c:1c87:b0:403:9b7:a720 with SMTP id k7-20020a05600c1c8700b0040309b7a720mr1101731wms.1.1694339596670;
-        Sun, 10 Sep 2023 02:53:16 -0700 (PDT)
+        bh=instIEKq+uD1AghMVaKEvO9/7oGWL8WlAyTf55PpG44=;
+        b=v1qgmomcB5dhPHpAUcwvrlZ/BgwVtdtVcR+sXciPsWD7e61UBP+mEIzO1/9/o7gBrN
+         Rtal/TyYGB8LnolLc21kAc4ku+QyMv3kvbbdP1FsIP2fb3mrpYhQQDGpZhFCwGDM/WcK
+         3bSJ1qHadv1g9gOm/5w2OgJBOgKuq3gieG2SeCLsr8U8SuWqPqS6Tmhmv1+vd4OUjdl3
+         cZvNq8+kfRZfJz5SNTZ1t1UonlCLY1bMhM5iVBb8Eis4ey5AkcJFaww5XmRwuxgGBAa3
+         4WjbKGYfUXNNayQHvcsFsC5Vvzc+lPWzQrj/5iIw3E0IgSeM6kjgNkC3jmNVPmA5nJ3s
+         IqqA==
+X-Gm-Message-State: AOJu0YyGV3zhhxh0BTSDt8Nz0loLJpqphoz4miS2KavSw5K5HGZsWtaO
+	+a1oqdU/6ymDFoUjp2Q7gV3eQfRNTw8=
+X-Google-Smtp-Source: AGHT+IGIvdW4KvH3XybJJJM/Yqvpi+8Z0sFiBqiSvVWOzAHkC+C3T+D4AU4ic3SFLBXE3L1ngOicYQ==
+X-Received: by 2002:a5d:6952:0:b0:319:854f:7b02 with SMTP id r18-20020a5d6952000000b00319854f7b02mr5751628wrw.51.1694339606159;
+        Sun, 10 Sep 2023 02:53:26 -0700 (PDT)
 Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
-        by smtp.gmail.com with ESMTPSA id 21-20020a05600c229500b00402d34ea099sm9979602wmf.29.2023.09.10.02.53.15
+        by smtp.gmail.com with ESMTPSA id g8-20020a5d4888000000b0031912c0ffebsm6879417wrq.23.2023.09.10.02.53.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Sep 2023 02:53:16 -0700 (PDT)
+        Sun, 10 Sep 2023 02:53:25 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sun, 10 Sep 2023 11:53:14 +0200
+Date: Sun, 10 Sep 2023 11:53:23 +0200
 To: Hengqi Chen <hengqi.chen@gmail.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
 	andrii@kernel.org, alan.maguire@oracle.com, olsajiri@gmail.com
-Subject: Re: [PATCH bpf-next v2 1/3] libbpf: Resolve symbol conflicts at the
- same offset for uprobe
-Message-ID: <ZP2SCuwKVRf14atN@krava>
+Subject: Re: [PATCH bpf-next v2 2/3] libbpf: Support symbol versioning for
+ uprobe
+Message-ID: <ZP2SEyyS5RFdZzaY@krava>
 References: <20230905151257.729192-1-hengqi.chen@gmail.com>
- <20230905151257.729192-2-hengqi.chen@gmail.com>
+ <20230905151257.729192-3-hengqi.chen@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230905151257.729192-2-hengqi.chen@gmail.com>
+In-Reply-To: <20230905151257.729192-3-hengqi.chen@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -82,8 +82,12 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Sep 05, 2023 at 03:12:55PM +0000, Hengqi Chen wrote:
-> Dynamic symbols in shared library may have the same name, for example:
+On Tue, Sep 05, 2023 at 03:12:56PM +0000, Hengqi Chen wrote:
+> In current implementation, we assume that symbol found in .dynsym section
+> would have a version suffix and use it to compare with symbol user supplied.
+> According to the spec ([0]), this assumption is incorrect, the version info
+> of dynamic symbols are stored in .gnu.version and .gnu.version_d sections
+> of ELF objects. For example:
 > 
 >     $ nm -D /lib/x86_64-linux-gnu/libc.so.6 | grep rwlock_wrlock
 >     000000000009b1a0 T __pthread_rwlock_wrlock@GLIBC_2.2.5
@@ -91,43 +95,69 @@ On Tue, Sep 05, 2023 at 03:12:55PM +0000, Hengqi Chen wrote:
 >     000000000009b1a0 T pthread_rwlock_wrlock@GLIBC_2.2.5
 > 
 >     $ readelf -W --dyn-syms /lib/x86_64-linux-gnu/libc.so.6 | grep rwlock_wrlock
->      706: 000000000009b1a0   878 FUNC    GLOBAL DEFAULT   15 __pthread_rwlock_wrlock@GLIBC_2.2.5
->     2568: 000000000009b1a0   878 FUNC    GLOBAL DEFAULT   15 pthread_rwlock_wrlock@@GLIBC_2.34
->     2571: 000000000009b1a0   878 FUNC    GLOBAL DEFAULT   15 pthread_rwlock_wrlock@GLIBC_2.2.5
+>       706: 000000000009b1a0   878 FUNC    GLOBAL DEFAULT   15 __pthread_rwlock_wrlock@GLIBC_2.2.5
+>       2568: 000000000009b1a0   878 FUNC    GLOBAL DEFAULT   15 pthread_rwlock_wrlock@@GLIBC_2.34
+>       2571: 000000000009b1a0   878 FUNC    GLOBAL DEFAULT   15 pthread_rwlock_wrlock@GLIBC_2.2.5
 > 
-> Currently, users can't attach a uprobe to pthread_rwlock_wrlock because
-> there are two symbols named pthread_rwlock_wrlock and both are global
-> bind. And libbpf considers it as a conflict.
+> In this case, specify pthread_rwlock_wrlock@@GLIBC_2.34 or
+> pthread_rwlock_wrlock@GLIBC_2.2.5 in bpf_uprobe_opts::func_name won't work.
+> Because the qualified name does NOT match `pthread_rwlock_wrlock` (without
+> version suffix) in .dynsym sections.
 > 
-> Since both of them are at the same offset we could accept one of them
-> harmlessly. Note that we already does this in elf_resolve_syms_offsets.
+> This commit implements the symbol versioning for dynsym and allows user to
+> specify symbol in the following forms:
+>   - func
+>   - func@LIB_VERSION
+>   - func@@LIB_VERSION
+> 
+> In case of symbol conflicts, error out and users should resolve it by
+> specifying a qualified name.
+> 
+>   [0]: https://refspecs.linuxfoundation.org/LSB_5.0.0/LSB-Core-generic/LSB-Core-generic/symversion.html
 > 
 > Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 
+I have a question below, but other than that
+
 Acked-by: Jiri Olsa <jolsa@kernel.org>
 
+thanks,
 jirka
 
-> ---
->  tools/lib/bpf/elf.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+
+SNIP
+
+> @@ -119,6 +148,7 @@ static struct elf_sym *elf_sym_iter_next(struct elf_sym_iter *iter)
+>  	struct elf_sym *ret = &iter->sym;
+>  	GElf_Sym *sym = &ret->sym;
+>  	const char *name = NULL;
+> +	GElf_Versym versym;
+>  	Elf_Scn *sym_scn;
+>  	size_t idx;
 > 
-> diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-> index 9d0296c1726a..5c9e588b17da 100644
-> --- a/tools/lib/bpf/elf.c
-> +++ b/tools/lib/bpf/elf.c
-> @@ -214,7 +214,10 @@ long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name)
+> @@ -138,12 +168,112 @@ static struct elf_sym *elf_sym_iter_next(struct elf_sym_iter *iter)
 > 
->  			if (ret > 0) {
->  				/* handle multiple matches */
-> -				if (last_bind != STB_WEAK && cur_bind != STB_WEAK) {
-> +				if (elf_sym_offset(sym) == ret) {
-> +					/* same offset, no problem */
-> +					continue;
-> +				} else if (last_bind != STB_WEAK && cur_bind != STB_WEAK) {
->  					/* Only accept one non-weak bind. */
->  					pr_warn("elf: ambiguous match for '%s', '%s' in '%s'\n",
->  						sym->name, name, binary_path);
-> --
-> 2.34.1
+>  		iter->next_sym_idx = idx + 1;
+>  		ret->name = name;
+> +		ret->ver = 0;
+> +		ret->hidden = false;
+> +
+> +		if (iter->versyms) {
+> +			if (!gelf_getversym(iter->versyms, idx, &versym))
+> +				continue;
+> +			ret->ver = versym & VERSYM_VERSION;
+> +			ret->hidden = versym & VERSYM_HIDDEN;
+
+the doc mentions value 1 being special, also I can see readelf
+code checking on that.. is that taken into account?
+
+> +		}
+>  		return ret;
+>  	}
+> 
+>  	return NULL;
+>  }
+> 
+
+SNIP
 
