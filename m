@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-9671-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9672-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 237CE79AA73
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 19:08:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB40D79AA74
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 19:08:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D16E02811F7
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 17:08:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1A8C1C20942
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 17:08:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D837015AC0;
-	Mon, 11 Sep 2023 17:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1370715AC4;
+	Mon, 11 Sep 2023 17:06:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3A85A950
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 17:06:12 +0000 (UTC)
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F1C123
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 10:06:11 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-570428954b9so6260813a12.3
-        for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 10:06:11 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D27B8A950
+	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 17:06:15 +0000 (UTC)
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9C40121
+	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 10:06:14 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59222a14ee1so55437557b3.1
+        for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 10:06:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694451971; x=1695056771; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694451974; x=1695056774; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=1Vzz2XipswXqhRAZU8hIAWN5QKsHwhXA4M9PtsNSBLg=;
-        b=YWCOnLA3d4/1GNUUBAPQ7IGBWC9j9mXhT7x0i2jwYLaTNsKaNXktq7Oo0GS4HN20XH
-         D1x2yETJaiV4uDvGIoS6zXvlugijlRvIJMEKFnAIepyz6nUx7atxJAvwCSDeR4p3Z39S
-         qan3tfA0QYt6XRy30ikBmsZB/MfvX23i26yLDzClGhRoX0rt0IlLIvV+23h5ssKYpBKd
-         B84NpEqQnuqrdbVuNLHb3OIWny4mgBoXqMOjFxlTLcPLl4cUHSE3nNhNnD4zy9YAwE1C
-         YgAMxrRyzLkrSrjOpIlSMo2bcifnDylyzpaGeVxDEi71j5LffHk6ae0AsuR3LnEoMoN8
-         j6WA==
+        bh=jM+dJg6+Q8M1FZ5UU9eubWWeg2o94iYO63nHk29mZE0=;
+        b=cqu1njkytaLXL7/8cI1UInw/4EjXigL/8mJ9US1MNLyV/Vv+Ycg3aYCo/UQshw7LmX
+         b8WTHsxZDHZw00N0HU4CAt8y+Kolf88o+0YXuuldfrxk9m+GpvZQQu5wchpoGXbYNB52
+         GLH2OEoNQExO3S2n0A7M2vK7CWWVNic3LxDI2MqVIKrWYgGoQGJcZBAYAU7Q2WscVdjW
+         Kl+V7+k+BWMLaIbgrLYUTqvIdoVnCa0qynoI/azz0JQsHf6QIeroiaRQwhYp0GqRYVd8
+         N/JizA7dZm8Oe8K3kiLTqiTyYJqlqVDliue9m5ezeslTFoCpLHANsD/II5OhgfaqEzJg
+         VH7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694451971; x=1695056771;
+        d=1e100.net; s=20230601; t=1694451974; x=1695056774;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Vzz2XipswXqhRAZU8hIAWN5QKsHwhXA4M9PtsNSBLg=;
-        b=NH+VQJhP2BV4FqaTm67Kn5Y9tGgaXXgLeSXTXfAl/FCOe3tqX9Ea+JwMOsDyAz8o1D
-         PpVOwt/gfIeeLKh7s/arsd60e3o1zqydy+mP8EDAdanYuW7i3XNi+VPSQhXbrGTKw2QW
-         B+8g+g1zyYUYK7bm8vA83TF/gCM+OQOZlFnjCkM15eb6FeD2Vp3jKvGdbAdKjMO7JHE2
-         Jb/X1iCh0CUMKJUxus7X9iqYhXXj0SlOWp+VKV67oxJ7trAiFM0uPfMKUAfEIQAoVo7s
-         75JtcqMvd4kLKkEuduIwFHiGAarOQpnLu5GqfxMJoW+dU4vNQzkPF04/EtVNKcAEjcBU
-         24qQ==
-X-Gm-Message-State: AOJu0YzMfaMqM4L7JNplRtcO2TEUGlXipBFo2v+d4twNhno7z1C8tzmh
-	0Vdc9O1YooOC7xccdtwFy1lCF+G9a3cO
-X-Google-Smtp-Source: AGHT+IGIhSAWZ1imjQEKI5kVl5ekILjaw0OmXTbC9BInGiGxTOTdQVla++ZMTYyGVj4IXpyev+Ua2Gvq2EsG
+        bh=jM+dJg6+Q8M1FZ5UU9eubWWeg2o94iYO63nHk29mZE0=;
+        b=uLiMvIjGhuCLaEakOpq2n43L4/qirEpSqK8Q2voHCXiKOpqwQhqWEbL/fkkH/VzQH6
+         tI2CesANsQxidySkpBuMudiUxx0l/30+zYjWaVgElEq+0eKkZouHS3ukVasSkFqpuYWf
+         8cHEHQFNK/hfX3rbTJTh6E9zPIUBe05RgG9N83c90KBieiKEkfvrzYvrTI2gUxgpQske
+         rEtHToK34gkhoaOz4J81ow5XjxknZxDSLfk9Plq9jJgdaVesrZpgLZBoC8Th7Oh3e3t1
+         albVvZBx8cf6SI1ZhnD3I1cxcsfJ4FgStHzULPLI1QGmoYaa5BH+hJl3m2k+T/GiFqG9
+         zP0Q==
+X-Gm-Message-State: AOJu0YwZ1d/BAhxKly/6b/Nf9YNeg0R2ooAf+f+6T7rB1FXzYYh5P08f
+	8iw9A35yvQDqfye/3j1gKajLvZMosWFu
+X-Google-Smtp-Source: AGHT+IEf8EOkd7KXi4dLHtAwPVr8ZfIkJi8rUiMAIwb+DURWDmpuxRsLBlZRkx2NkJr+aWBkJOO0mSOsV17o
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:6a92:55a:3ba0:c74b])
- (user=irogers job=sendgmr) by 2002:a65:6ab5:0:b0:573:f899:b6f with SMTP id
- x21-20020a656ab5000000b00573f8990b6fmr2287578pgu.10.1694451971254; Mon, 11
- Sep 2023 10:06:11 -0700 (PDT)
-Date: Mon, 11 Sep 2023 10:05:57 -0700
+ (user=irogers job=sendgmr) by 2002:a81:eb12:0:b0:586:b332:8618 with SMTP id
+ n18-20020a81eb12000000b00586b3328618mr263769ywm.7.1694451973822; Mon, 11 Sep
+ 2023 10:06:13 -0700 (PDT)
+Date: Mon, 11 Sep 2023 10:05:58 -0700
 In-Reply-To: <20230911170559.4037734-1-irogers@google.com>
-Message-Id: <20230911170559.4037734-3-irogers@google.com>
+Message-Id: <20230911170559.4037734-4-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,7 +63,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20230911170559.4037734-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Subject: [PATCH v1 3/5] perf expr: Make YYDEBUG dependent on doing a debug build
+Subject: [PATCH v1 4/5] perf pmu: Add YYDEBUG
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
@@ -75,34 +75,35 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-	autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
 YYDEBUG enables line numbers and other error helpers in the generated
-expr-bison.c. These shouldn't be generated when debugging
-isn't enabled.
+pmu-bison.c. Conditionally enabled only for debug builds.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/expr.y | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/perf/util/pmu.y | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
-index 6c93b358cc2d..e364790babb5 100644
---- a/tools/perf/util/expr.y
-+++ b/tools/perf/util/expr.y
-@@ -1,6 +1,8 @@
- /* Simple expression parser */
+diff --git a/tools/perf/util/pmu.y b/tools/perf/util/pmu.y
+index 600c8c158c8e..198907a8a48a 100644
+--- a/tools/perf/util/pmu.y
++++ b/tools/perf/util/pmu.y
+@@ -5,6 +5,10 @@
+ 
  %{
+ 
 +#ifndef NDEBUG
- #define YYDEBUG 1
++#define YYDEBUG 1
 +#endif
- #include <assert.h>
- #include <math.h>
- #include <stdlib.h>
++
+ #include <linux/compiler.h>
+ #include <linux/list.h>
+ #include <linux/bitmap.h>
 -- 
 2.42.0.283.g2d96d420d3-goog
 
