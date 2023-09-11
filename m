@@ -1,170 +1,188 @@
-Return-Path: <bpf+bounces-9676-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9677-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B297679AA98
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 19:41:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D364C79AAB0
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 20:02:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C67E1C20852
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 17:41:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 900B1281253
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 18:02:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0E48156DB;
-	Mon, 11 Sep 2023 17:41:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB55156E8;
+	Mon, 11 Sep 2023 18:01:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9661EAD2E
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 17:41:34 +0000 (UTC)
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B8DC5
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 10:41:32 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-c8f360a07a2so4562204276.2
-        for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 10:41:32 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67254156DF;
+	Mon, 11 Sep 2023 18:01:45 +0000 (UTC)
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C9A103;
+	Mon, 11 Sep 2023 11:01:43 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99c136ee106so594030566b.1;
+        Mon, 11 Sep 2023 11:01:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694454092; x=1695058892; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xu7iMhDcNFGmX/EjUlUOV/uW3b7muKE6w5Sjrvs71hU=;
-        b=hMmrWoccR5H7OZjeJkb4MCg46cy3iyLCQoleZmr79A8xdtoywh2jA53Nub9bkAU/n4
-         XF3c3MbKjf6DtM0IMoaJqwVkKatE+XulD8tqJrqO5jibCUdpxE1l2noQnyNuZyXUNEno
-         f0bPNd9EOL/PjLQ/NpvFIXzrMPHL8hgkEJv568B1nyowOYL17zq9cXMtHUyf5E65T3OC
-         FmjTbI52sJ5RL0g9Uj0r3C7btYMsm691nQrv2v+C0O++uimWpodGkIsz1wndzFWxbCIM
-         oSbXF0NsmOmlYZMreAGq2ujPZAPuh4LTiltY7m6iIdTZBcsgRI74wcsgHjrHaPqurwKo
-         wJyg==
+        d=gmail.com; s=20221208; t=1694455302; x=1695060102; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wuqr/SJlcmFyZdXtrVtsbFVis4YJvJcZZ7ZjftUCRXA=;
+        b=U4XusRWPM5v03KUhor84USo1pxV9zsPfLPmAW0hrwttpO8gKL+FWDFiz0XmeCYt8IF
+         5Jz07dNG0lsPuTyYjaly8DFnF73DXv95FssTfBxPSNSBz6IY29NSBHpLBJLDWukKtDOU
+         rv5VE/f2xkhTjMYOq7iRNo5QrF59a5B9n9NTxqvX05HylPW59Hk3uKADMa15AISBC2yr
+         IkQWDtOvaOeSQOqnvx6rDWFrRfyS9OJSz1WuYUTsq4ppHXKxwJBrvImz2UqtYG0xGrMA
+         FFVBaHmGBfBigtbUL757I5RV0D0KsJrC50pFxjAjwnfcN1AdVvigS6YfUum4o0O+ED+/
+         v/Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694454092; x=1695058892;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xu7iMhDcNFGmX/EjUlUOV/uW3b7muKE6w5Sjrvs71hU=;
-        b=R/i35dXvenzfVMmzuVAcnp+D/jtdMz72OschXEYGblA9eFMRR4X64ZO13Mj9M1C/sy
-         h5i31DuOlQHgSeG6Y39azJK7YyMvUU+hNHFcWzDSmFGf7lQvxDg+2eMEBp6nCbJ/k+6f
-         f544C2o6u/9oq24KaiUtBzuO/w5u1onhm9Xj+WgLxYvCVtTYPtuw2kqfBJtASUdqY7YD
-         UHddTNRh/HaIHqXHHO4mrO5IE2N8tpLjZwyla+U6CTaeO7Rt2o+PqxchAM7vLGA8+kcO
-         cUl77qOUBF2XnulobRZIUP50KjGhLy/HEi/s5TANqYHGLmo8BkybUjilp81DqnOTfdD1
-         25tg==
-X-Gm-Message-State: AOJu0Yx2/z6bHNvp4AZ/9H2rZOo+od9iBt9lI18tF+gRmVolegh6Awkx
-	vp1fdkS38e1MjTcCDigoUcMF4Uc=
-X-Google-Smtp-Source: AGHT+IFD1OBnNOA3ZKLNQqB+s+Z5vDfLAh4EUipPkzJD6d1yh/dyS3XBJqCZPuj/+AZQZ5fdaScDMs0=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:adc3:0:b0:d01:60ec:d0e with SMTP id
- d3-20020a25adc3000000b00d0160ec0d0emr240559ybe.9.1694454092113; Mon, 11 Sep
- 2023 10:41:32 -0700 (PDT)
-Date: Mon, 11 Sep 2023 10:41:30 -0700
-In-Reply-To: <a7570c31-b19d-e1d8-8e7e-f47ead34b79b@iogearbox.net>
+        d=1e100.net; s=20230601; t=1694455302; x=1695060102;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Wuqr/SJlcmFyZdXtrVtsbFVis4YJvJcZZ7ZjftUCRXA=;
+        b=en2rMpMX2h2FyBCfM/37jtvjl9et5PYQn0TELJN9kWdJUWZppmMiPN4PN2dFtltRA7
+         aO8D84f6cbVNgc5++hb05VPFTXFsUuuLOEwazFOjhMRxaWAWbLyojHXxHnAqH9O8KxpE
+         YrXEWiDmoCEFOO1XUqWcxJG+83G85P+bx6of+dSfTObvo+GQZphUPwI90z93zlBxz6VG
+         U2xD0o3HT5MXCoDblubOl+Md20BXsxOIzlKIz6WSGEsuzl+dNRAYMT66s5ChATGJwqfx
+         Nx3LVPWGUw4/jkbWIA1ijr5I0GHQlKW70CDnBG8dLdEdBR78aPxL8ESwgb2LhXC50Fxa
+         mQIg==
+X-Gm-Message-State: AOJu0YyP9lbcL25YLUllltquwMeKKsPiuyY27k6vWIvdW+0irXx7cPrV
+	ZtLxY+Z79z4t3pjuorlZGbiT1prf2U+UJ5dsCJY=
+X-Google-Smtp-Source: AGHT+IGghJcloW80Nv5Dqafuj5HzFfwihzzeHCX+C3d5DH/bEXzhpxWZvYSVapoxVJaOYmfJoVaem72fCNNyAARLPlk=
+X-Received: by 2002:a17:906:74c5:b0:9a1:eb67:c0ce with SMTP id
+ z5-20020a17090674c500b009a1eb67c0cemr9421769ejl.50.1694455301555; Mon, 11 Sep
+ 2023 11:01:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20230908210007.1469091-1-sdf@google.com> <acdb12bc-518a-c3f6-ef09-2dfd714770b5@linux.dev>
- <ZP9KJpQIpoYqzaB3@google.com> <a7570c31-b19d-e1d8-8e7e-f47ead34b79b@iogearbox.net>
-Message-ID: <ZP9RSu3QDRN0wsr/@google.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: return correct -ENOBUFS from bpf_clone_redirect
-From: Stanislav Fomichev <sdf@google.com>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, ast@kernel.org, andrii@kernel.org, 
-	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-	autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+References: <CAEf4BzYMAAhwscTWWTenvyr-PQ7E5tMg_iqXsPj_dyZEMVCrKg@mail.gmail.com>
+ <64b4c5891096b_2b67208f@john.notmuch> <CAEf4Bzb2=p3nkaTctDcMAabzL41JjCkTso-aFrfv21z7Y0C48w@mail.gmail.com>
+ <64ff278e16f06_2e8f2083a@john.notmuch>
+In-Reply-To: <64ff278e16f06_2e8f2083a@john.notmuch>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 11 Sep 2023 11:01:29 -0700
+Message-ID: <CAEf4Bzb1fMy5beHKxCjvoeCqaYmQFvnjnMi9bgWoML0v27n3SQ@mail.gmail.com>
+Subject: Re: Sockmap's parser/verdict programs and epoll notifications
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>, 
+	"davidhwei@meta.com" <davidhwei@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 09/11, Daniel Borkmann wrote:
-> On 9/11/23 7:11 PM, Stanislav Fomichev wrote:
-> > On 09/09, Martin KaFai Lau wrote:
-> > > On 9/8/23 2:00 PM, Stanislav Fomichev wrote:
-> > > > Commit 151e887d8ff9 ("veth: Fixing transmit return status for dropped
-> > > > packets") exposed the fact that bpf_clone_redirect is capable of
-> > > > returning raw NET_XMIT_XXX return codes.
-> > > > 
-> > > > This is in the conflict with its UAPI doc which says the following:
-> > > > "0 on success, or a negative error in case of failure."
-> > > > 
-> > > > Let's wrap dev_queue_xmit's return value (in __bpf_tx_skb) into
-> > > > net_xmit_errno to make sure we correctly propagate NET_XMIT_DROP
-> > > > as -ENOBUFS instead of 1.
-> > > > 
-> > > > Note, this is technically breaking existing UAPI where we used to
-> > > > return 1 and now will do -ENOBUFS. The alternative is to
-> > > > document that bpf_clone_redirect can return 1 for DROP and 2 for CN.
-> > > > 
-> > > > Reported-by: Daniel Borkmann <daniel@iogearbox.net>
-> > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > > ---
-> > > >    net/core/filter.c | 3 +++
-> > > >    1 file changed, 3 insertions(+)
-> > > > 
-> > > > diff --git a/net/core/filter.c b/net/core/filter.c
-> > > > index a094694899c9..9e297931b02f 100644
-> > > > --- a/net/core/filter.c
-> > > > +++ b/net/core/filter.c
-> > > > @@ -2129,6 +2129,9 @@ static inline int __bpf_tx_skb(struct net_device *dev, struct sk_buff *skb)
-> > > >    	ret = dev_queue_xmit(skb);
-> > > >    	dev_xmit_recursion_dec();
-> > > > +	if (ret > 0)
-> > > > +		ret = net_xmit_errno(ret);
-> > > 
-> > > I think it is better to have bpf_clone_redirect returning -ENOBUFS instead
-> > > of leaking NET_XMIT_XXX to the uapi. The bpf_clone_redirect in the
-> > > uapi/bpf.h also mentions
-> > > 
-> > >   *      Return
-> > >   *              0 on success, or a negative error in case of failure.
-> > > 
-> > > If -ENOBUFS is returned in __bpf_tx_skb, should the same be done for
-> > > __bpf_rx_skb? and should net_xmit_errno() only be done for
-> > > bpf_clone_redirect()?  __bpf_{tx,rx}_skb is also used by skb_do_redirect()
-> > > which also calls __bpf_redirect_neigh() that returns NET_XMIT_xxx but no
-> > > caller seems to care the NET_XMIT_xxx value now.
-> > 
-> > __bpf_rx_skb seems to only add to backlog and doesn't seem to return any
-> > of the NET_XMIT_xxx. But I might be wrong and haven't looked too deep
-> > into that.
-> > 
-> > > Daniel should know more here. I would wait for Daniel to comment.
-> > 
-> > Ack, sure!
-> 
-> I think my preference would be to just document it in the helper UAPI, what
-> Stan was suggesting below:
-> 
-> | Note, this is technically breaking existing UAPI where we used to
-> | return 1 and now will do -ENOBUFS. The alternative is to
-> | document that bpf_clone_redirect can return 1 for DROP and 2 for CN.
-> 
-> And then only adjusting the test case.
+On Mon, Sep 11, 2023 at 7:43=E2=80=AFAM John Fastabend <john.fastabend@gmai=
+l.com> wrote:
+>
+> Andrii Nakryiko wrote:
+> > On Sun, Jul 16, 2023 at 9:37=E2=80=AFPM John Fastabend <john.fastabend@=
+gmail.com> wrote:
+> > >
+> > > Andrii Nakryiko wrote:
+> > > > Hey John,
+> > >
+> > > Sorry missed this while I was on PTO that week.
+> >
+> > yeah, vacations tend to cause missing things :)
+> >
+> > >
+> > > >
+> > > > We've been recently experimenting with using BPF_SK_SKB_STREAM_PARS=
+ER
+> > > > and BPF_SK_SKB_STREAM_VERDICT with sockmap/sockhash to perform
+> > > > in-kernel parsing of RSocket frames. A very simple format ([0]) whe=
+re
+> > > > the first 3 bytes specify the size of the frame payload. The idea w=
+as
+> > > > to collect the entire frame in the kernel before notifying user-spa=
+ce
+> > > > that data is available. This is meant to minimize unnecessary wakeu=
+ps
+> > > > due to incomplete logical frames, saving CPU.
+> > >
+> > > Nice.
+> > >
+> > > >
+> > > > You can find the BPF source code I've used at [1], it has lots of
+> > > > extra logging and stuff, but the idea is to read the first 3 bytes =
+of
+> > > > each logical frame, and return the expected full frame size from th=
+e
+> > > > parser program. The verdict program always just returns SK_PASS.
+> > > >
+> > > > This seems to work exactly as expected in manual simulations of
+> > > > various packet size distributions, and even for a bunch of
+> > > > ping/pong-like benchmark (which are very sensitive to correct frame
+> > > > length determination, so I'm reasonably confident we don't screw th=
+at
+> > > > up much). And yet, when benchmarking sending multiple logical RPC
+> > > > streams over the same single socket (so many interleaving RSocket
+> > > > frames on single socket, but in terms of logical frames nothing sho=
+uld
+> > > > change), we often see that while full frame hasn't been accumulated=
+ in
+> > > > socket receive buffer yet, epoll_wait() for that socket would retur=
+n
+> > > > with success notifying user space that there is data on socket.
+> > > > Subsequent recvfrom() call would immediately return -EAGAIN and no
+> > > > data, and our benchmark would go on this loop of useless
+> > > > epoll_wait()+recvfrom() calls back to back, many times over.
+> > >
+> > > Aha yes this sounds bad.
+> > >
+> > > >
+> > > > So I have a few questions:
+> > > >   - is the above use case something that was meant to be handled by
+> > > > sockmap+parser/verdict?
+> > >
+> > > We shouldn't wake up user space if there is nothing to read. So
+> > > yes this seems like a valid use case to me.
+> > >
+> > > >   - is it correct to assume that epoll won't wake up until amount o=
+f
+> > > > bytes requested by parser program is accumulated (this seems to be =
+the
+> > > > case from manually experimenting with various "packet delays");
+> > >
+> > > Seems there is some bug that races and causes it to wake up
+> > > user space. I'm aware of a couple bugs in the stream parser
+> > > that I wanted to fix. Not sure I can get to them this week
+> > > but should have time next week. We have a couple more fixes
+> > > to resolve a few HTTPS server compliance tests as well.
+> > >
+> > > >   - is there some known bug or race in how sockmap and strparser
+> > > > framework interacts with epoll subsystem that could cause this weir=
+d
+> > > > epoll_wait() behavior?
+> > >
+> > > Yes I know of some races in strparser. I'll elaborate later
+> > > probably with patches as I don't recall them readily at the
+> > > moment.
+> >
+> > So I missed a good chunk of BPF mailing list traffic while I was on my
+> > PTO. Did you end up getting to these bugs in strparser logic? Should I
+> > try running the latest bpf-next/net-next on our production workload to
+> > see if this is still happening?
+>
+> You will likely still hit there error I haven't got it out of my queue
+> yet. I just knocked off a couple things last week so could probably
+> take a look at flushing my queue this week. Then it would make sense
+> to retest to see if its something new or not.
+>
+> I'll at least send an RFC with the idea even if I don't get to testing
+> it yet.
 
-In this case, would we also need something similar to our
-TCP_BPF_<state> changes? Like BUILD_BUG_ON(BPF_NET_XMIT_XXX !=
-NET_XMIT_XXX)? Otherwise, we risk more leakage into the UAPI.
-Merely documenting doesn't seem enough?
+Sounds good, thanks a lot!
 
-> Programs checking for ret < 0 will continue to behave as before. Technically
-> the bpf_clone_redirect() did its job just that on the veth side things were
-> dropped. Other drivers such as tun, vrf, ipvlan, bond could already have
-> returned NET_XMIT_DROP, so technically it's not a new situation where it is
-> possible. And having a ret > 0 could then also be clearly used to differentiate
-> that something came from driver side rather than helper side.
-> 
-> > > For the selftest, may be another option is to use a 28 bytes data_in for the
-> > > lwt program redirecting to veth? 14 bytes used by bpf_prog_test_run_skb and
-> > > leave 14 bytes for veth_xmit. It seems the original intention of the "veth
-> > > ETH_HLEN+1 packet ingress" test is expecting it to succeed also.
-> > 
-> > IIUC, you're suggesting to pass full ipv4 or ipv6 packet for veth tests
-> > to make them actually succeed with the forwarding, right?
-> > 
-> > Sure, I can do that. But let's keep this entry with the -NOBUFS as well?
-> > Just for the sake of ensuring that we don't export NET_XMIT_xxx from
-> > uapi.
-> > 
-> 
+>
+> Thanks,
+> John
 
