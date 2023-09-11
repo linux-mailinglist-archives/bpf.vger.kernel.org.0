@@ -1,181 +1,118 @@
-Return-Path: <bpf+bounces-9688-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9689-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6D5A79AB1E
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 21:53:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC53379AB2E
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 22:24:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8B9C1C2091E
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 19:53:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BBE1280F29
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 20:24:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76FE215AE3;
-	Mon, 11 Sep 2023 19:53:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEEAC15AF8;
+	Mon, 11 Sep 2023 20:24:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29BD115ACA
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 19:53:34 +0000 (UTC)
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1277F1A2;
-	Mon, 11 Sep 2023 12:53:33 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-501bd164fbfso7877176e87.0;
-        Mon, 11 Sep 2023 12:53:32 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE319AD23
+	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 20:24:36 +0000 (UTC)
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CAE185;
+	Mon, 11 Sep 2023 13:24:35 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-68fb85afef4so1397986b3a.1;
+        Mon, 11 Sep 2023 13:24:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694462011; x=1695066811; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R4Sic40zovBW+5AtjExOsIc28jivRQhihGT7xjxZ+KU=;
-        b=ShYcaZosKFez/kXBqrzHye3IStZMvcKOh7rcR+YsL15nncAJtsa3/N710pw31Zxda8
-         /6u4C8lnfTxan4AHjTBRVKWHCAvK0Dnu0RvJKYW+fb/zxxaLWWC+xt3YQ+NmzBncRNOE
-         bKBCmg3EJpSpHpqFzhD13DziD5KxypyAztWWPCinOvyrnjox7LBGcA884aPhdfuYBRsf
-         cyRTsF4d60eQn0z0CyjN4qKE7Cy6tA4qjD486c+8UQ61g5iZwE0itwoitfOycyfZjdGT
-         LOlJQu8L5D/MFTHPI+W5QqPcspHFU8+lltr5KCXV/VV7vfiD0F1XFlp44RuINSloLoB3
-         vl0A==
+        d=gmail.com; s=20221208; t=1694463875; x=1695068675; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=teqXbckacJlPukkv2EFTdTd3A90eXZl+lHL7XzD31Z4=;
+        b=DpHY+9vxUaEI1Fad0tiIOzAyr/aptpRy9NijKgVkqLrFb1xQEx7GrBafGOfgVJXH9m
+         yDLjnGpm5+OVPTEVBZqh8KMhLeczjGF4vXJ7yCK8pSe6+z6ltjSFevu8+tzlyNGymPeC
+         vlWOUGzjsrdT6KPv00in7cGpDHELyMxr80pqaA643YDy9KPnek7VKG4WsSCtwPMyQAmQ
+         BAJnl9ALyV6zFmkATx7VhmUdK3JjtnAeiMjPejypMkvnphZNyDoUfrJixEyhLarjNUHa
+         dKcrHOMSUuD890STU9dINFvTI74jm7xxPrt6RCt5rFWTf39n5Vu60bws/TuKqYRkwTEi
+         TfNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694462011; x=1695066811;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1694463875; x=1695068675;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=R4Sic40zovBW+5AtjExOsIc28jivRQhihGT7xjxZ+KU=;
-        b=vp4L+v0YhxbVuWC1HTd/dsASgLQdWSQAUxAIYS3CvtOQD5GI18Hs+FZzAOmM6APfv5
-         wWMWtSXPEcdPDFk6H17y6kVoZO/JdEaxDR4W+tmyaRwNHnsGnIJTEMWsHGbemirvsJtl
-         3DmJ3Sbnc8FVEmOc+gOQ+oiyGfMpGsdZdB8l6KPZzMObGB6xVnmnIpWK0qr3Pm6sjFjl
-         EmuHi/6Zn4wMwLxdswStpi/m/tYk0PfRPQ2XZJxKdMcKhxpRXsYEg979Qea0bwjgNhro
-         ReTu4toW4rWaT/pluD3XqiDDn4s+lZP7t6F2MzT8VqC4Q46I2XfYH270frz48AvIL/Qe
-         BwzA==
-X-Gm-Message-State: AOJu0YwCBL+W6LeJikTMcOXlUxqLRRWf0UehXhQDKKxnGepRzI09PdWc
-	JYX4dXzipaBUQBZBGFAgWRqEKDu2Oo2RswjeL9M=
-X-Google-Smtp-Source: AGHT+IGVHo/69FUsCdyrL9DHMN9YgpiqkTfMYuzOx+tieFXkrLbOG85v6zMrjnotMfqeB0b9iULq6RaaqtvG0vIHKhI=
-X-Received: by 2002:ac2:4ac7:0:b0:4fe:3364:6c20 with SMTP id
- m7-20020ac24ac7000000b004fe33646c20mr8226571lfp.16.1694462010932; Mon, 11 Sep
- 2023 12:53:30 -0700 (PDT)
+        bh=teqXbckacJlPukkv2EFTdTd3A90eXZl+lHL7XzD31Z4=;
+        b=kmmefLoKCxf0F2xTXyoOFzr+eNhTnBeKcRk1HVZDsPd9LAFyTbipMY+pohM2sNV+qg
+         0et+y3i/dTY9NXi5lC+XUCQiNFlFr+V3I3bOm0cgMMKfOS50NvY71L5IV1Csnz4e3wsQ
+         oZ3usAnLZDxR4ReWlwG02fUJEjQ8DnUBjhdmNAN1yG+sjnHcKXzRb2QZcnr51XWikuO1
+         TWBV60cJwT4ted5fNGz68MtSYE8A6ZrDAVirbG9cIO1ORpCdeeazr+RUOfqwyJKQCpDg
+         Lglq8uHV8XdKIJ62O//kSxhIK8yCM2VQLZxDBWFruuNMP4jPtgpUypj3QwEb5zE7Ne/a
+         j2ng==
+X-Gm-Message-State: AOJu0Yyb1EKvcs4k3EqBYFbBhvGAJTyy2TiLqWXbfC/zZTl3ztbLZ6k0
+	btgHbY7mPPXxaVyUGRmsE/k=
+X-Google-Smtp-Source: AGHT+IEBRnXd6b8j/Nv48oLvoPxniTYksbyjMvpIJWYHWLSkhedNoxT2y5sLmouRcDFQzxebagKgog==
+X-Received: by 2002:a05:6a00:1acb:b0:68a:2272:23e9 with SMTP id f11-20020a056a001acb00b0068a227223e9mr10368917pfv.17.1694463875075;
+        Mon, 11 Sep 2023 13:24:35 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id w26-20020aa7859a000000b006873aa079aasm6209347pfn.171.2023.09.11.13.24.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 13:24:34 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 11 Sep 2023 10:24:33 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Yosry Ahmed <yosryahmed@google.com>,
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>
+Subject: Re: [RFC PATCH bpf-next 0/5] bpf, cgroup: Enable cgroup_array map on
+ cgroup1
+Message-ID: <ZP93gUwf_nLzDvM5@mtj.duckdns.org>
+References: <20230903142800.3870-1-laoar.shao@gmail.com>
+ <qv2xdcsvb4brjsc7qx6ncxrudwusogdo4itzv4bx2perfjymwl@in7zaeymjiie>
+ <CALOAHbB-PF1LjSAxoCdePN6Va4D+ufkeDmq8s3b0AGtfX5E-cQ@mail.gmail.com>
+ <CAADnVQL+6PsRbNMo=8kJpgw1OTbdLG9epsup0q7La5Ffqj6g6A@mail.gmail.com>
+ <CALOAHbBhOL9w+rnh_xkgZZBhxMpbrmLZWhm1X+ZeDLfxxt8Nrw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230903142800.3870-1-laoar.shao@gmail.com> <qv2xdcsvb4brjsc7qx6ncxrudwusogdo4itzv4bx2perfjymwl@in7zaeymjiie>
- <CALOAHbB-PF1LjSAxoCdePN6Va4D+ufkeDmq8s3b0AGtfX5E-cQ@mail.gmail.com>
- <CAADnVQL+6PsRbNMo=8kJpgw1OTbdLG9epsup0q7La5Ffqj6g6A@mail.gmail.com> <CALOAHbBhOL9w+rnh_xkgZZBhxMpbrmLZWhm1X+ZeDLfxxt8Nrw@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <CALOAHbBhOL9w+rnh_xkgZZBhxMpbrmLZWhm1X+ZeDLfxxt8Nrw@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 11 Sep 2023 12:53:19 -0700
-Message-ID: <CAADnVQJG8kGDVC6XUj40rabZK6Z78CqOMvkjnNv8zTSTkNYn7Q@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/5] bpf, cgroup: Enable cgroup_array map on cgroup1
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Yosry Ahmed <yosryahmed@google.com>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, Sep 9, 2023 at 8:18=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> w=
-rote:
->
-> On Sat, Sep 9, 2023 at 2:09=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Thu, Sep 7, 2023 at 7:54=E2=80=AFPM Yafang Shao <laoar.shao@gmail.co=
-m> wrote:
-> > >
-> > > On Thu, Sep 7, 2023 at 10:41=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@s=
-use.com> wrote:
-> > > >
-> > > > Hello Yafang.
-> > > >
-> > > > On Sun, Sep 03, 2023 at 02:27:55PM +0000, Yafang Shao <laoar.shao@g=
-mail.com> wrote:
-> > > > > In our specific use case, we intend to use bpf_current_under_cgro=
-up() to
-> > > > > audit whether the current task resides within specific containers=
-.
-> > > >
-> > > > I wonder -- how does this work in practice?
-> > >
-> > > In our practice, the cgroup_array map serves as a shared map utilized
-> > > by both our LSM programs and the target pods. as follows,
-> > >
-> > >     ----------------
-> > >     | target pod |
-> > >     ----------------
-> > >            |
-> > >            |
-> > >           V                                      ----------------
-> > >  /sys/fs/bpf/cgoup_array     <--- | LSM progs|
-> > >                                                   ----------------
-> > >
-> > > Within the target pods, we employ a script to update its cgroup file
-> > > descriptor into the cgroup_array, for instance:
-> > >
-> > >     cgrp_fd =3D open("/sys/fs/cgroup/cpu");
-> > >     cgrp_map_fd =3D bpf_obj_get("/sys/fs/bpf/cgroup_array");
-> > >     bpf_map_update_elem(cgrp_map_fd, &app_idx, &cgrp_fd, 0);
-> > >
-> > > Next, we will validate the contents of the cgroup_array within our LS=
-M
-> > > programs, as follows:
-> > >
-> > >      if (!bpf_current_task_under_cgroup(&cgroup_array, app_idx))
-> > >             return -1;
-> > >
-> > > Within our Kubernetes deployment system, we will inject this script
-> > > into the target pods only if specific annotations, such as
-> > > "bpf_audit," are present. Consequently, users do not need to manually
-> > > modify their code; this process will be handled automatically.
-> > >
-> > > Within our Kubernetes environment, there is only a single instance of
-> > > these target pods on each host. Consequently, we can conveniently
-> > > utilize the array index as the application ID. However, in scenarios
-> > > where you have multiple instances running on a single host, you will
-> > > need to manage the mapping of instances to array indexes
-> > > independently. For cases with multiple instances, a cgroup_hash may b=
-e
-> > > a more suitable approach, although that is a separate discussion
-> > > altogether.
-> >
-> > Is there a reason you cannot use bpf_get_current_cgroup_id()
-> > to associate task with cgroup in your lsm prog?
->
-> Using cgroup_id as the key serves as a temporary workaround;
-> nevertheless, employing bpf_get_current_cgroup_id() is impractical due
-> to its exclusive support for cgroup2.
->
-> To acquire the cgroup_id, we can resort to open coding, as exemplified be=
-low:
->
->     task =3D bpf_get_current_task_btf();
->     cgroups =3D task->cgroups;
->     cgroup =3D cgroups->subsys[cpu_cgrp_id]->cgroup;
->     key =3D cgroup->kn->id;
->
-> Nonetheless, creating an open-coded version of
-> bpf_get_current_ancestor_cgroup_id() is unfeasible since the BPF
-> verifier prohibits access to "cgrp->ancestors[ancestor_level]."
+On Sun, Sep 10, 2023 at 11:17:48AM +0800, Yafang Shao wrote:
+> To acquire the cgroup_id, we can resort to open coding, as exemplified below:
+> 
+>     task = bpf_get_current_task_btf();
+>     cgroups = task->cgroups;
+>     cgroup = cgroups->subsys[cpu_cgrp_id]->cgroup;
+>     key = cgroup->kn->id;
 
-Both helpers can be extended to support v1 or not?
-I mean can a task be part of v1 and v2 hierarchy at the same time?
-If not then bpf_get_current_cgroup_id() can fallback to what you
-describing above and return cgroup_id.
-Same would apply to bpf_get_current_ancestor_cgroup_id.
+You can't hardcode it to a specific controller tree like that. You either
+stick with fd based interface or need also add something to identify the
+specifc cgroup1 tree.
 
-If not, two new kfuncs for v1 could be another option.
-prog_array for cgroups is an old design. We can and should do
-more flexible interface nowadays.
+Thanks.
+
+-- 
+tejun
 
