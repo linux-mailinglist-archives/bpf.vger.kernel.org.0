@@ -1,153 +1,169 @@
-Return-Path: <bpf+bounces-9641-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9644-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E688C79A86D
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 15:59:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45CF779A95C
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 17:05:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFF361C208C1
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 13:59:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76EB21C20A09
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 15:05:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50D1911719;
-	Mon, 11 Sep 2023 13:58:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78D8E1172C;
+	Mon, 11 Sep 2023 15:05:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2677311710
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 13:58:46 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id B024FCD7
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 06:58:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1694440724;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=A36/jUHiNm3kPuZ+L53KLWDeRgfIZbwcm1XGDxvpiWs=;
-	b=DTRfODe2MwKc+zVv6y3/QBAfYP81+n0lxrdYzv/J8OK5/s+8dSJrkb/ZLssOlaqML6gjVt
-	7qcOt8ngopDPCxDufrQ8qtIxqJuhNks9tDa3Ia5I+ulNe9MqWajBjDBSauVYgGk1IEVTLW
-	6gVCA7MVkA6IGXVjjSjjifpbzfO4oxs=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-247-Md4xgoWtNJ--EwDrXa1udg-1; Mon, 11 Sep 2023 09:58:43 -0400
-X-MC-Unique: Md4xgoWtNJ--EwDrXa1udg-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-500c67585acso4512059e87.2
-        for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 06:58:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694440721; x=1695045521;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=A36/jUHiNm3kPuZ+L53KLWDeRgfIZbwcm1XGDxvpiWs=;
-        b=imHl94vLQlLGenX63mYevMR4HeVYlT9+MxIWjNSmzSnIJOwrn6AVCu0xA5nYVxPZ+s
-         mRt/1o+biMOtMteTa5ynwWRPb8xD0xu+7e/pSfgpbONsCVCK364uL1vqLYnuWfeGc7L+
-         eQla00wz6WAuwuQNuQWXStRVRXgJr2iYrGyRkfQ9/E6ZsbUpwUhtDLwrOIZJkROr0DG6
-         N6C607xePzbdsm2O2pbacgrmj/4i/cV3VjkDl58cjEKUtP+YUPPWvJzN7GueBnLuiW9t
-         iUMbGgqG8fisPqtuuOAAr31XSX3pkAkalaJ4izNOYzNqQn/O3Udr/pa1OR/7FTeQSJZQ
-         hM2g==
-X-Gm-Message-State: AOJu0Yy6RnVwGapDa+zpsAnFy5o9CYjU4LCZ81D0pgTAGpKFwRKWjSSO
-	jY8COWhcTMb4Q+KBPsGi+vFsthplDHLRWTDS9MRqQqb7U4Em7VkSjuHqCdeDXC79ODUPNekGAuj
-	aLQKf7hC77MyR3LUg06fh
-X-Received: by 2002:ac2:4ece:0:b0:4fc:3756:754e with SMTP id p14-20020ac24ece000000b004fc3756754emr6711880lfr.56.1694440721086;
-        Mon, 11 Sep 2023 06:58:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGCdjrohb0Z6US6Uo0TPXg4UkXz9wIkaXq+F/rQatOYdo18Jpk+r9G7b3qDcWRWtJh0gCDxlg==
-X-Received: by 2002:ac2:4ece:0:b0:4fc:3756:754e with SMTP id p14-20020ac24ece000000b004fc3756754emr6711866lfr.56.1694440720669;
-        Mon, 11 Sep 2023 06:58:40 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id sb1-20020a170906edc100b009a1c05bd672sm5362988ejb.127.2023.09.11.06.58.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 06:58:40 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id D42BADC70F5; Mon, 11 Sep 2023 15:58:39 +0200 (CEST)
-From: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Stanislav Fomichev <sdf@google.com>,
-	Gerhard Engleder <gerhard@engleder-embedded.com>,
-	Simon Horman <horms@kernel.org>
-Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Marek Majtyka <alardam@gmail.com>,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH net] veth: Update XDP feature set when bringing up device
-Date: Mon, 11 Sep 2023 15:58:25 +0200
-Message-ID: <20230911135826.722295-1-toke@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43239E57C;
+	Mon, 11 Sep 2023 15:05:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CEC2C433C8;
+	Mon, 11 Sep 2023 15:05:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1694444716;
+	bh=gKqYzOtmrb5mT8E3JBJBeA0x4l7Np5Du2SHbHf9/9co=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=nbB/GVsmFBtROEFncTL2NMpv9C8y3bHqau90RJxcsvuYNI+Bl1bA3QFvyrYT5Fl3s
+	 ek2JzG5EmhjXJTEOHwi8wvH909Joe8E4XJOzSdpro49dKi8nZL0i2qEShhYrL55icM
+	 0ruiWXCZJ2s+R0YIKfE2b/VoM8rVNQKScDOGfxfI=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	Ian Rogers <irogers@google.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Stephane Eranian <eranian@google.com>,
+	bpf@vger.kernel.org,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH 6.1 091/600] tools lib subcmd: Add install target
+Date: Mon, 11 Sep 2023 15:42:04 +0200
+Message-ID: <20230911134636.295266151@linuxfoundation.org>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230911134633.619970489@linuxfoundation.org>
+References: <20230911134633.619970489@linuxfoundation.org>
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-There's an early return in veth_set_features() if the device is in a down
-state, which leads to the XDP feature flags not being updated when enabling
-GRO while the device is down. Which in turn leads to XDP_REDIRECT not
-working, because the redirect code now checks the flags.
+6.1-stable review patch.  If anyone has any objections, please let me know.
 
-Fix this by updating the feature flags after bringing the device up.
+------------------
 
-Before this patch:
+From: Ian Rogers <irogers@google.com>
 
-NETDEV_XDP_ACT_BASIC:		yes
-NETDEV_XDP_ACT_REDIRECT:	yes
-NETDEV_XDP_ACT_NDO_XMIT:	no
-NETDEV_XDP_ACT_XSK_ZEROCOPY:	no
-NETDEV_XDP_ACT_HW_OFFLOAD:	no
-NETDEV_XDP_ACT_RX_SG:		yes
-NETDEV_XDP_ACT_NDO_XMIT_SG:	no
+commit 630ae80ea1dd253609cb50cff87f3248f901aca3 upstream.
 
-After this patch:
+This allows libsubcmd to be installed as a dependency.
 
-NETDEV_XDP_ACT_BASIC:		yes
-NETDEV_XDP_ACT_REDIRECT:	yes
-NETDEV_XDP_ACT_NDO_XMIT:	yes
-NETDEV_XDP_ACT_XSK_ZEROCOPY:	no
-NETDEV_XDP_ACT_HW_OFFLOAD:	no
-NETDEV_XDP_ACT_RX_SG:		yes
-NETDEV_XDP_ACT_NDO_XMIT_SG:	yes
-
-Fixes: fccca038f300 ("veth: take into account device reconfiguration for xdp_features flag")
-Fixes: 66c0e13ad236 ("drivers: net: turn on XDP features")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Nicolas Schier <nicolas@fjasle.eu>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Stephane Eranian <eranian@google.com>
+Cc: bpf@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20221109184914.1357295-3-irogers@google.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/veth.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/lib/subcmd/Makefile |   49 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 9c6f4f83f22b..0deefd1573cf 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -1446,6 +1446,8 @@ static int veth_open(struct net_device *dev)
- 		netif_carrier_on(peer);
- 	}
+--- a/tools/lib/subcmd/Makefile
++++ b/tools/lib/subcmd/Makefile
+@@ -17,6 +17,15 @@ RM = rm -f
  
-+	veth_set_xdp_features(dev);
+ MAKEFLAGS += --no-print-directory
+ 
++INSTALL = install
 +
- 	return 0;
- }
++# Use DESTDIR for installing into a different root directory.
++# This is useful for building a package. The program will be
++# installed in this directory as if it was the root directory.
++# Then the build tool can move it later.
++DESTDIR ?=
++DESTDIR_SQ = '$(subst ','\'',$(DESTDIR))'
++
+ LIBFILE = $(OUTPUT)libsubcmd.a
  
--- 
-2.42.0
+ CFLAGS := -ggdb3 -Wall -Wextra -std=gnu99 -fPIC
+@@ -48,6 +57,18 @@ CFLAGS += $(EXTRA_WARNINGS) $(EXTRA_CFLA
+ 
+ SUBCMD_IN := $(OUTPUT)libsubcmd-in.o
+ 
++ifeq ($(LP64), 1)
++  libdir_relative = lib64
++else
++  libdir_relative = lib
++endif
++
++prefix ?=
++libdir = $(prefix)/$(libdir_relative)
++
++# Shell quotes
++libdir_SQ = $(subst ','\'',$(libdir))
++
+ all:
+ 
+ export srctree OUTPUT CC LD CFLAGS V
+@@ -61,6 +82,34 @@ $(SUBCMD_IN): FORCE
+ $(LIBFILE): $(SUBCMD_IN)
+ 	$(QUIET_AR)$(RM) $@ && $(AR) rcs $@ $(SUBCMD_IN)
+ 
++define do_install_mkdir
++	if [ ! -d '$(DESTDIR_SQ)$1' ]; then             \
++		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$1'; \
++	fi
++endef
++
++define do_install
++	if [ ! -d '$(DESTDIR_SQ)$2' ]; then             \
++		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$2'; \
++	fi;                                             \
++	$(INSTALL) $1 $(if $3,-m $3,) '$(DESTDIR_SQ)$2'
++endef
++
++install_lib: $(LIBFILE)
++	$(call QUIET_INSTALL, $(LIBFILE)) \
++		$(call do_install_mkdir,$(libdir_SQ)); \
++		cp -fpR $(LIBFILE) $(DESTDIR)$(libdir_SQ)
++
++install_headers:
++	$(call QUIET_INSTALL, headers) \
++		$(call do_install,exec-cmd.h,$(prefix)/include/subcmd,644); \
++		$(call do_install,help.h,$(prefix)/include/subcmd,644); \
++		$(call do_install,pager.h,$(prefix)/include/subcmd,644); \
++		$(call do_install,parse-options.h,$(prefix)/include/subcmd,644); \
++		$(call do_install,run-command.h,$(prefix)/include/subcmd,644);
++
++install: install_lib install_headers
++
+ clean:
+ 	$(call QUIET_CLEAN, libsubcmd) $(RM) $(LIBFILE); \
+ 	find $(or $(OUTPUT),.) -name \*.o -or -name \*.o.cmd -or -name \*.o.d | xargs $(RM)
+
 
 
