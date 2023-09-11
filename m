@@ -1,88 +1,78 @@
-Return-Path: <bpf+bounces-9689-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9690-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC53379AB2E
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 22:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 72D3F79AB35
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 22:29:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BBE1280F29
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 20:24:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BE2D2810AF
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 20:29:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEEAC15AF8;
-	Mon, 11 Sep 2023 20:24:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1528116419;
+	Mon, 11 Sep 2023 20:27:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE319AD23
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 20:24:36 +0000 (UTC)
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CAE185;
-	Mon, 11 Sep 2023 13:24:35 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-68fb85afef4so1397986b3a.1;
-        Mon, 11 Sep 2023 13:24:35 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEEBF168A2
+	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 20:27:45 +0000 (UTC)
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D25185;
+	Mon, 11 Sep 2023 13:27:44 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bf7423ef3eso35417155ad.3;
+        Mon, 11 Sep 2023 13:27:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694463875; x=1695068675; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694464064; x=1695068864; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=teqXbckacJlPukkv2EFTdTd3A90eXZl+lHL7XzD31Z4=;
-        b=DpHY+9vxUaEI1Fad0tiIOzAyr/aptpRy9NijKgVkqLrFb1xQEx7GrBafGOfgVJXH9m
-         yDLjnGpm5+OVPTEVBZqh8KMhLeczjGF4vXJ7yCK8pSe6+z6ltjSFevu8+tzlyNGymPeC
-         vlWOUGzjsrdT6KPv00in7cGpDHELyMxr80pqaA643YDy9KPnek7VKG4WsSCtwPMyQAmQ
-         BAJnl9ALyV6zFmkATx7VhmUdK3JjtnAeiMjPejypMkvnphZNyDoUfrJixEyhLarjNUHa
-         dKcrHOMSUuD890STU9dINFvTI74jm7xxPrt6RCt5rFWTf39n5Vu60bws/TuKqYRkwTEi
-         TfNQ==
+        bh=SNnl2EUxq2zaX99R7tX9+iE5LFUxTKUThPqOegYIa5s=;
+        b=i/kVnY717xMDqCNn3WYnViiOjjcMpjRZ3YDH8aw7uIBl6563xM8YlJRH0UUKIkzMnh
+         Oy+VVJSeiQF17nUJj0keyWSm0EKkS064TuM65gKaN7cKXk+eDxX/f/PE9Mq659URYrHe
+         xEkgSLA+Tf51xJozMHikNt7u5vqNY0lfOICQhaWYHi88CvK60oWo1gb1ggG49IBsOrsr
+         I97r7rWLJyrFw3VLiX6JAeIb06R0U6ZHAoeLgqgUXnnBKcVOSzk6a/eFE9JBnEkHhCIm
+         Ag6sSmOSPB8eLx6IT2BYVgPBkXm6hcCKZiUdcyOdAfD8z8xzunnGYF+heAxUmZMeWs4d
+         Xy1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694463875; x=1695068675;
+        d=1e100.net; s=20230601; t=1694464064; x=1695068864;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=teqXbckacJlPukkv2EFTdTd3A90eXZl+lHL7XzD31Z4=;
-        b=kmmefLoKCxf0F2xTXyoOFzr+eNhTnBeKcRk1HVZDsPd9LAFyTbipMY+pohM2sNV+qg
-         0et+y3i/dTY9NXi5lC+XUCQiNFlFr+V3I3bOm0cgMMKfOS50NvY71L5IV1Csnz4e3wsQ
-         oZ3usAnLZDxR4ReWlwG02fUJEjQ8DnUBjhdmNAN1yG+sjnHcKXzRb2QZcnr51XWikuO1
-         TWBV60cJwT4ted5fNGz68MtSYE8A6ZrDAVirbG9cIO1ORpCdeeazr+RUOfqwyJKQCpDg
-         Lglq8uHV8XdKIJ62O//kSxhIK8yCM2VQLZxDBWFruuNMP4jPtgpUypj3QwEb5zE7Ne/a
-         j2ng==
-X-Gm-Message-State: AOJu0Yyb1EKvcs4k3EqBYFbBhvGAJTyy2TiLqWXbfC/zZTl3ztbLZ6k0
-	btgHbY7mPPXxaVyUGRmsE/k=
-X-Google-Smtp-Source: AGHT+IEBRnXd6b8j/Nv48oLvoPxniTYksbyjMvpIJWYHWLSkhedNoxT2y5sLmouRcDFQzxebagKgog==
-X-Received: by 2002:a05:6a00:1acb:b0:68a:2272:23e9 with SMTP id f11-20020a056a001acb00b0068a227223e9mr10368917pfv.17.1694463875075;
-        Mon, 11 Sep 2023 13:24:35 -0700 (PDT)
+        bh=SNnl2EUxq2zaX99R7tX9+iE5LFUxTKUThPqOegYIa5s=;
+        b=GJr1bVNln4mEQkuKMtgrD9dpt5hvsd82mQEf2g7TtbTiiZStZYF1nQEU8L4Xg2AdNU
+         6uecaGWKNVWf8Um07G7tGEQQdr+4S3v5WYGJ3YfVaP+TxEUMJST4cw/0IwWRQ40wnXyX
+         cd9Ro6h5UCZ/Q9s0iyMmluu1ARNM4CWD15ukaUGraFnT2UpNpnMkuW6L8Y2YneZxDYwT
+         jiTXXyLp5GtFMkR76nd2LT1KCg1QRKfgqtLGHEYXYsz5OBN3PqU6z4Yg03fV6Ex0P+wS
+         i0GJZEIYGS0IRYo5gjLI1lTXCl9P98UQsZ15/o5DqIXQeP0/KDTbmXJOZtGbossxSuJS
+         TjSw==
+X-Gm-Message-State: AOJu0YymsTAogienNJIkhaQYwlx0FEjs5X0yIoNrLuTKjy45U7ib059O
+	k+ptkZy1D7vIwPYpjyEWFapA8mWirVFdiA==
+X-Google-Smtp-Source: AGHT+IGngHVyRdmTKS2TRrqK78EOerqzQ008OJjN7s8aS/kznDTkl0Gc09j8mylpOFyQkkxZWS+CFA==
+X-Received: by 2002:a17:903:2302:b0:1bc:2c58:ad97 with SMTP id d2-20020a170903230200b001bc2c58ad97mr10290139plh.22.1694464064016;
+        Mon, 11 Sep 2023 13:27:44 -0700 (PDT)
 Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id w26-20020aa7859a000000b006873aa079aasm6209347pfn.171.2023.09.11.13.24.34
+        by smtp.gmail.com with ESMTPSA id l12-20020a170902eb0c00b001bf574dd1fesm6835997plb.141.2023.09.11.13.27.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 13:24:34 -0700 (PDT)
+        Mon, 11 Sep 2023 13:27:43 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 11 Sep 2023 10:24:33 -1000
+Date: Mon, 11 Sep 2023 10:27:42 -1000
 From: Tejun Heo <tj@kernel.org>
 To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Yosry Ahmed <yosryahmed@google.com>,
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-	bpf <bpf@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next 0/5] bpf, cgroup: Enable cgroup_array map on
- cgroup1
-Message-ID: <ZP93gUwf_nLzDvM5@mtj.duckdns.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+	haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com,
+	hannes@cmpxchg.org, yosryahmed@google.com, cgroups@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 1/5] cgroup: Enable
+ task_under_cgroup_hierarchy() on cgroup1
+Message-ID: <ZP94Pqiz6PtUy_Ww@mtj.duckdns.org>
 References: <20230903142800.3870-1-laoar.shao@gmail.com>
- <qv2xdcsvb4brjsc7qx6ncxrudwusogdo4itzv4bx2perfjymwl@in7zaeymjiie>
- <CALOAHbB-PF1LjSAxoCdePN6Va4D+ufkeDmq8s3b0AGtfX5E-cQ@mail.gmail.com>
- <CAADnVQL+6PsRbNMo=8kJpgw1OTbdLG9epsup0q7La5Ffqj6g6A@mail.gmail.com>
- <CALOAHbBhOL9w+rnh_xkgZZBhxMpbrmLZWhm1X+ZeDLfxxt8Nrw@mail.gmail.com>
+ <20230903142800.3870-2-laoar.shao@gmail.com>
+ <ZPjdc3IwX9gjXk_F@slm.duckdns.org>
+ <CALOAHbA7gDFh5Bsr_99-rBa3h9dZw6ntF_+RxTjfK3yQXpYEFA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -91,7 +81,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALOAHbBhOL9w+rnh_xkgZZBhxMpbrmLZWhm1X+ZeDLfxxt8Nrw@mail.gmail.com>
+In-Reply-To: <CALOAHbA7gDFh5Bsr_99-rBa3h9dZw6ntF_+RxTjfK3yQXpYEFA@mail.gmail.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
@@ -99,17 +89,16 @@ X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sun, Sep 10, 2023 at 11:17:48AM +0800, Yafang Shao wrote:
-> To acquire the cgroup_id, we can resort to open coding, as exemplified below:
-> 
->     task = bpf_get_current_task_btf();
->     cgroups = task->cgroups;
->     cgroup = cgroups->subsys[cpu_cgrp_id]->cgroup;
->     key = cgroup->kn->id;
+On Thu, Sep 07, 2023 at 11:05:07AM +0800, Yafang Shao wrote:
+> The fd-based cgroup interface plays a crucial role in BPF programs,
+> particularly in components such as cgroup_iter, bpf_cgrp_storage, and
+> cgroup_array maps, as well as in the attachment and detachment of
+> cgroups.
 
-You can't hardcode it to a specific controller tree like that. You either
-stick with fd based interface or need also add something to identify the
-specifc cgroup1 tree.
+Yeah, I know they're used. It's just that they are inferior identifiers from
+cgroup's POV as they are ephemeral, can't easily be transferred across
+process boundaries or persisted beyond the lifetime of the fd-owing process
+or the cgroups which are being pointed to.
 
 Thanks.
 
