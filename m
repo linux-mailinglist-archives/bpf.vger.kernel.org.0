@@ -1,84 +1,226 @@
-Return-Path: <bpf+bounces-9636-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9637-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F02B79A7F4
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 14:35:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79E2E79A83F
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 15:19:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDF2F2810B6
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 12:35:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 032142811C1
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 13:19:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FBB4C8C0;
-	Mon, 11 Sep 2023 12:35:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6374F111BB;
+	Mon, 11 Sep 2023 13:19:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F34194432
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 12:35:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 174C7C433C7;
-	Mon, 11 Sep 2023 12:35:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694435726;
-	bh=P2X5HQVGLxoGcauLnK65kalfLdiRnwUpcJ4JOMx8SDk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WDGOEY8n+o4nUr3QOuEV25GHkRhk6CpylfXgLn6xWNr10ZrRwAR1taHVxwVGczTN0
-	 6ESL6Aq+u7FlnD2LzuBZIU4ORq82xWOYcF1hiJbDmr9JjFmp2KxXMDQeGwcN6XyLX5
-	 pgkOYENb8sLyV3Z0gfXYLW+4FR3VJqUKSpFTX5GglujnStzQDM1smoSCO1ASZEeGJi
-	 o0lipQxL7OhONqByvQfmWGzxZ5AGPS3FaTZTXrc4lRJ5TqhttSae9kEPzVPPVd1i8e
-	 9AjujS95uFldbPm08DUgkltv6LxDdRmJyDpHPuHh+lnocLft9ITJmwdNfK2dJVP2rm
-	 ZLxi4u32tpVmg==
-Date: Mon, 11 Sep 2023 14:35:15 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>
-Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Quentin Monnet <quentin@isovalent.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	gyroidos@aisec.fraunhofer.de, paul@paul-moore.com,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>
-Subject: Re: [PATCH RFC 1/4] bpf: add cgroup device guard to flag a cgroup
- device prog
-Message-ID: <20230911-leerstand-letztendlich-043fab663451@brauner>
-References: <20230814-devcg_guard-v1-0-654971ab88b1@aisec.fraunhofer.de>
- <20230814-devcg_guard-v1-1-654971ab88b1@aisec.fraunhofer.de>
- <20230815-feigling-kopfsache-56c2d31275bd@brauner>
- <20230817221102.6hexih3uki3jf6w3@macbook-pro-8.dhcp.thefacebook.com>
- <CAJqdLrpx4v4To=XSK0gyM4Ks2+c=Jrni2ttw4ZViKv-jK=tJKQ@mail.gmail.com>
- <20230904-harfe-haargenau-4c6cb31c304a@brauner>
- <c0a32db6-b798-4430-476d-dc74e9f79766@aisec.fraunhofer.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A32D4432
+	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 13:19:27 +0000 (UTC)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6988AEE;
+	Mon, 11 Sep 2023 06:19:26 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9a9cd066db5so563945366b.0;
+        Mon, 11 Sep 2023 06:19:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694438365; x=1695043165; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=oYApqvgaLw3ymGGIpb89h6zPjC6eHwEbBV7sAXEoTx4=;
+        b=loGRq68sbDK7K+nxJ7ch/PVyC1246xfq++YioxtPOK0QK623lWmq4XvGfVMA0zc7dZ
+         N9rYdqPxhOTftehIlGYdg5VzWoQ5Yn6z7PpuYfv+i1AneAyuHITELVt6GXBCOrRHmGj7
+         AI2egPnVwy/4M0hWrv2IA6Dw4vPANpGpvFMUS8PSpaXavDaTkcXMcOZrnSIi2MQxG7d0
+         kIEc/ckl83J5JV83D7Lm8PYdUXHbXQGWXkOfAh7JncTzR+smytQ+DGozX95j4fx2sEyM
+         sJOuOW/lHSVKAtUyGyCQwdo8JXvT1m/IYofv58vYKHW5cXiMe3GS9/DR/RmBdrag5n5R
+         cpAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694438365; x=1695043165;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oYApqvgaLw3ymGGIpb89h6zPjC6eHwEbBV7sAXEoTx4=;
+        b=suqx47OM+1kVz72Q+zpnI4+zrKPblhEsyj5q8ZigmJ4wL7VT4DFFkIjF3FoyNUtO+K
+         CwpLTt37fw/A9S5UfI4IlM9SZ4ApniUU1Nt3sQOBKbj/iUI+SdLSU9JsjI+ZvSUwsGzG
+         lr8aLT+sghJZpu2vVZqoErOElBls0w9YyMwoJJ1nSV8pDIu5Aj85HqfSuiCpWQPEMGXl
+         BXsXdXe+vsjrCmL4IYlCEgd/USFot24W+C4MdhllG7G8tjNSDYmPKO7JwlzU2Sgm8dhk
+         ryoGRnFBGxu77ssW50p+BFE8uK/bpPbK7hybgM5tPSeaQ689fBErjiHEACDkJ6OPkAla
+         Kkmw==
+X-Gm-Message-State: AOJu0Yx8U/CDwFHwmnv2EBIoKgxSWdn1xFcSMCohTLjPJNY22MUxhsdY
+	NDIblvLVD0eVe179zH5Ngq1DMXCYHx0=
+X-Google-Smtp-Source: AGHT+IF8gRl9y19pvIHmim64bQq1N0gu6atCEteh1ulReooZA/H5+YH+OytdKZ0jIXcwJe1ywmIUSw==
+X-Received: by 2002:a17:906:301b:b0:9a1:c39a:8bfd with SMTP id 27-20020a170906301b00b009a1c39a8bfdmr7755321ejz.57.1694438363659;
+        Mon, 11 Sep 2023 06:19:23 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id h3-20020a170906718300b0098e34446464sm5359448ejk.25.2023.09.11.06.19.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 06:19:23 -0700 (PDT)
+Message-ID: <d168d22ba2133d3b38a09ee0e8dbbe0fa97f72d0.camel@gmail.com>
+Subject: Re: [PATCH v2 1/3] selftests/hid: ensure we can compile the tests
+ on kernels pre-6.3
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Justin Stitt <justinstitt@google.com>, Jiri Kosina <jikos@kernel.org>, 
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>, Shuah Khan
+ <shuah@kernel.org>
+Cc: linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, Benjamin Tissoires
+	 <bentiss@kernel.org>
+Date: Mon, 11 Sep 2023 16:19:21 +0300
+In-Reply-To: <20230908-kselftest-09-08-v2-1-0def978a4c1b@google.com>
+References: <20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com>
+	 <20230908-kselftest-09-08-v2-1-0def978a4c1b@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <c0a32db6-b798-4430-476d-dc74e9f79766@aisec.fraunhofer.de>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-> So are OK with the checks here?
+On Fri, 2023-09-08 at 22:22 +0000, Justin Stitt wrote:
+> From: Benjamin Tissoires <bentiss@kernel.org>
+>=20
+> For the hid-bpf tests to compile, we need to have the definition of
+> struct hid_bpf_ctx. This definition is an internal one from the kernel
+> and it is supposed to be defined in the generated vmlinux.h.
+>=20
+> This vmlinux.h header is generated based on the currently running kernel
+> or if the kernel was already compiled in the tree. If you just compile
+> the selftests without compiling the kernel beforehand and you are running
+> on a 6.2 kernel, you'll end up with a vmlinux.h without the hid_bpf_ctx
+> definition.
+>=20
+> Use the clever trick from tools/testing/selftests/bpf/progs/bpf_iter.h
+> to force the definition of that symbol in case we don't find it in the
+> BTF and also add __attribute__((preserve_access_index)) to further
+> support CO-RE functionality for these tests.
+>=20
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> ---
+>  tools/testing/selftests/hid/progs/hid.c            |  3 --
+>  .../testing/selftests/hid/progs/hid_bpf_helpers.h  | 49 ++++++++++++++++=
+++++++
+>  2 files changed, 49 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/tools/testing/selftests/hid/progs/hid.c b/tools/testing/self=
+tests/hid/progs/hid.c
+> index 88c593f753b5..1e558826b809 100644
+> --- a/tools/testing/selftests/hid/progs/hid.c
+> +++ b/tools/testing/selftests/hid/progs/hid.c
+> @@ -1,8 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /* Copyright (c) 2022 Red hat */
+> -#include "vmlinux.h"
+> -#include <bpf/bpf_helpers.h>
+> -#include <bpf/bpf_tracing.h>
+>  #include "hid_bpf_helpers.h"
+> =20
+>  char _license[] SEC("license") =3D "GPL";
+> diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tools/=
+testing/selftests/hid/progs/hid_bpf_helpers.h
+> index 4fff31dbe0e7..ab3b18ba48c4 100644
+> --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+> +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+> @@ -5,6 +5,55 @@
+>  #ifndef __HID_BPF_HELPERS_H
+>  #define __HID_BPF_HELPERS_H
+> =20
+> +/* "undefine" structs in vmlinux.h, because we "override" them below */
 
-I'm ok with figuring out whether we can do this nicely, yes.
+Hi Justin,
 
-> > Because right now device access management seems its own form of
-> > mandatory access control.
-> 
-> I'm currently testing an updated version which has incorporated the locking
-> changes already mention by Alex and the change which avoids setting SB_I_NODEV
-> in fs/super.c.
+What you have here should work, however I still think that the trick
+with "___local" suffix I refer to in [1] is a bit less hacky, e.g.:
 
-Not having to hack around SB_I_NODEV would be pretty crucial imho. It's
-a core security assumption so we need to integrate with it nicely.
+    enum hid_report_type___local { ... };
+    struct hid_bpf_ctx___local {
+       __u32 index;
+       const struct hid_device *hid; // this one should be in vmlinux.h wit=
+h any config
+       __u32 allocated_size;
+       enum hid_report_type___local report_type;
+       union {
+           __s32 retval;
+           __s32 size;
+       };
+    } __attribute__((preserve_access_index));
+   =20
+    enum hid_class_request___local { ... };
+    enum hid_bpf_attach_flags___local { ... };
+    ...
+    extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx___local *ctx,
+                                  unsigned int offset,
+
+
+(sorry for being a bore, won't bring this up anymore).
+
+Thanks,
+Eduard
+
+[1] https://lore.kernel.org/bpf/e99b4226bd450fedfebd4eb5c37054f032432b4f.ca=
+mel@gmail.com/
+
+> +#define hid_bpf_ctx hid_bpf_ctx___not_used
+> +#define hid_report_type hid_report_type___not_used
+> +#define hid_class_request hid_class_request___not_used
+> +#define hid_bpf_attach_flags hid_bpf_attach_flags___not_used
+> +#include "vmlinux.h"
+> +#undef hid_bpf_ctx
+> +#undef hid_report_type
+> +#undef hid_class_request
+> +#undef hid_bpf_attach_flags
+> +
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include <linux/const.h>
+> +
+> +enum hid_report_type {
+> +	HID_INPUT_REPORT		=3D 0,
+> +	HID_OUTPUT_REPORT		=3D 1,
+> +	HID_FEATURE_REPORT		=3D 2,
+> +
+> +	HID_REPORT_TYPES,
+> +};
+> +
+> +struct hid_bpf_ctx {
+> +	__u32 index;
+> +	const struct hid_device *hid;
+> +	__u32 allocated_size;
+> +	enum hid_report_type report_type;
+> +	union {
+> +		__s32 retval;
+> +		__s32 size;
+> +	};
+> +} __attribute__((preserve_access_index));
+> +
+> +enum hid_class_request {
+> +	HID_REQ_GET_REPORT		=3D 0x01,
+> +	HID_REQ_GET_IDLE		=3D 0x02,
+> +	HID_REQ_GET_PROTOCOL		=3D 0x03,
+> +	HID_REQ_SET_REPORT		=3D 0x09,
+> +	HID_REQ_SET_IDLE		=3D 0x0A,
+> +	HID_REQ_SET_PROTOCOL		=3D 0x0B,
+> +};
+> +
+> +enum hid_bpf_attach_flags {
+> +	HID_BPF_FLAG_NONE =3D 0,
+> +	HID_BPF_FLAG_INSERT_HEAD =3D _BITUL(0),
+> +	HID_BPF_FLAG_MAX,
+> +};
+> +
+>  /* following are kfuncs exported by HID for HID-BPF */
+>  extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
+>  			      unsigned int offset,
+>=20
+
 
