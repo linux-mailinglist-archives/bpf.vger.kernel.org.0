@@ -1,98 +1,123 @@
-Return-Path: <bpf+bounces-9665-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9666-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F42779AA1A
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 18:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9536F79AA50
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 18:47:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48CD82813C5
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 16:21:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FE0A2814EF
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 16:47:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C09125DA;
-	Mon, 11 Sep 2023 16:21:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5114C125A2;
+	Mon, 11 Sep 2023 16:46:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F1F5125C4
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 16:21:26 +0000 (UTC)
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0176CC3
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 09:21:24 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-649921ec030so26191306d6.1
-        for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 09:21:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694449284; x=1695054084; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EeFJiodoKA7hHhrPJOWFs8NZnEvUY71O9fR/UOYGmEc=;
-        b=p62eb9apu7wcVnKKIY5Kyeihum3ZhLqSJSCfldRTSHTBaHtldWwPO6qbUhvocisFzo
-         uUORt3WZXcFbvoYfb1fIvF7WaO0xneJlwBnunLGHluob5WnTlj3RMT/F9tAE+OtFSpGA
-         LivOqGkJcTrrSHuR6BM6kkfmqP/6xx1rvQRxDU0p3/6TljlzCU27QV1dYu8kzMGKqAla
-         3LHQnu9rxYp/oGBjFLLPNNxOj1b9J+YqZHEi7ob9eSQGd0C4l0Kjxl8/GEKbEHTE+4Pk
-         epe1q3NqTRqVRHLSDZR1xrC4OjZ+riicrn9jZsURZWzOZrSM7/bqsNeiazvcN1rVNa+F
-         ykFg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D5A211704;
+	Mon, 11 Sep 2023 16:46:55 +0000 (UTC)
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315DEE3;
+	Mon, 11 Sep 2023 09:46:54 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-52e297c7c39so5868206a12.2;
+        Mon, 11 Sep 2023 09:46:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694449284; x=1695054084;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EeFJiodoKA7hHhrPJOWFs8NZnEvUY71O9fR/UOYGmEc=;
-        b=b7zmomvy+ibO96mUHu4cU8FbPUIb0JUCQtocgUb53ZfnyNYrH2tWSVRfI8DGuu2ys+
-         bZbINGEET+e0vR5C1r+aHXqobsGWZ1NddmUaH20cSO/6G+JOWL2AtRwHrctKKqRHXClK
-         daOHvP7AcmERIAWCgzUll7uRIWgvtsU8Ct+Q7W2w5s4gTSsKdG6XrUEdkzl/yGD1kzwR
-         vsY7ZKagv16vI0rmEPkYGkdzLSvY98q1Eosvg0WhlIVH7tuND3RKzyNakXXeLjDzKgml
-         +gv1d+PK+sG4ueYfruKhz5GhXGS1JeigQ/Ap+07l4+krXSKbLCTV3B+6lr51dF2hUX5e
-         wQHg==
-X-Gm-Message-State: AOJu0YwUPJovlFm8+RPP9Wc5BRKIjGe0GkzOFRPAXfKSZ+PZ7FEyRo7u
-	lpCyfyrXjASRLyoJjZfIyo/esZyIIolXuX+aQyfXBw==
-X-Google-Smtp-Source: AGHT+IGps5w/lebxuCKKA14q4iU4eqcA7x01Ibg5/Dx8gzqfnml8MGL/5o7ANavlbSOkGBx1RqjeRVpMISBMpPpCFGc=
-X-Received: by 2002:a0c:b3d5:0:b0:651:69d7:3d6a with SMTP id
- b21-20020a0cb3d5000000b0065169d73d6amr10206690qvf.15.1694449283791; Mon, 11
- Sep 2023 09:21:23 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694450812; x=1695055612;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fz0qgG1xAQKjyAXZ1F3HGmELYa8PYKoGe3IryD6lsZo=;
+        b=s5RVSmQLJqz8+OiqDIN1LxVChoA5KOHTVWvtEZPg2RyF+bBuNP94pnUquLrSWAaDJk
+         fZvZ7jA7mYsaSAYDA/2tdV/xzrICaOJLlBGGCs0gamcpdPgZybrGYotZppsL7A/jpTlh
+         yMdm53+MeZBKx2Tk8KRKkLQyhm8lNPuKqI5HsmByi2RLXFnppWdF8nqhJkcNlQZaTpiD
+         U3PGWTZAl5fhzwebX9ycxBThtvkzAmwRbv5nvCEyeMDNfAnO+smSntP6y3q/RdNyuwgu
+         szpp+vMx2E2dPBxaMgctmL8LbgngyS23uYpxAA59nkave2vR7cvypaTpJbZLQxFQetHK
+         ZXgA==
+X-Gm-Message-State: AOJu0Yzlg7DgwwyP5whvYAqsZnowsF4Rp7C8hw3OmPk/hwgAM2l3wcWw
+	ylBp9qBby5JnmD2LcMB6iCk=
+X-Google-Smtp-Source: AGHT+IGbKXR5utsZSAcjo25hC+LWL6BmnRTWGZSSZF/5ZDH7OKutTBo9ihUXtpcWszGOcfOQii6Fxg==
+X-Received: by 2002:aa7:c1d5:0:b0:522:2f8c:8953 with SMTP id d21-20020aa7c1d5000000b005222f8c8953mr7573057edp.39.1694450812406;
+        Mon, 11 Sep 2023 09:46:52 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-017.fbsv.net. [2a03:2880:31ff:11::face:b00c])
+        by smtp.gmail.com with ESMTPSA id i23-20020a0564020f1700b0052f8c67a399sm538287eda.37.2023.09.11.09.46.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 09:46:51 -0700 (PDT)
+Date: Mon, 11 Sep 2023 09:46:50 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Gabriel Krisman Bertazi <krisman@suse.de>
+Cc: sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
+	willemdebruijn.kernel@gmail.com, kuba@kernel.org,
+	martin.lau@linux.dev, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	io-uring@vger.kernel.org, pabeni@redhat.com
+Subject: Re: [PATCH v5 5/8] io_uring/cmd: return -EOPNOTSUPP if net is
+ disabled
+Message-ID: <ZP9EeunfcbWos80w@gmail.com>
+References: <20230911103407.1393149-1-leitao@debian.org>
+ <20230911103407.1393149-6-leitao@debian.org>
+ <87ledc904p.fsf@suse.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAKwvOdnaEakT_y8TA9b_nMY3kMp=xxqKpGQPc2drNqRdV39RQw@mail.gmail.com>
- <ZPozfCEF9SV2ADQ5@krava> <ZPsJ4AAqNMchvms/@krava> <CAKwvOd==X0exrhmsqX1j1WFX77xe8W7xPbfiCY+Rt6abgmkMCQ@mail.gmail.com>
- <ZPuA5+HmbcdBLbIq@krava>
-In-Reply-To: <ZPuA5+HmbcdBLbIq@krava>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Mon, 11 Sep 2023 09:21:12 -0700
-Message-ID: <CAKwvOdnRDuDSZ=wHHRBFThz368MP-JvdsS-afF6ATje9eeUUfg@mail.gmail.com>
-Subject: Re: duplicate BTF_IDs leading to symbol redefinition errors?
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Marcus Seyfarth <m.seyfarth@gmail.com>, Masahiro Yamada <masahiroy@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, clang-built-linux <llvm@lists.linux.dev>, 
-	Stanislav Fomichev <sdf@google.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ledc904p.fsf@suse.de>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Sep 8, 2023 at 1:15=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrote=
-:
->
-> but I still hope we could come up with some better solution ;-)
+On Mon, Sep 11, 2023 at 11:53:58AM -0400, Gabriel Krisman Bertazi wrote:
+> Breno Leitao <leitao@debian.org> writes:
+> 
+> > Protect io_uring_cmd_sock() to be called if CONFIG_NET is not set. If
+> > network is not enabled, but io_uring is, then we want to return
+> > -EOPNOTSUPP for any possible socket operation.
+> >
+> > This is helpful because io_uring_cmd_sock() can now call functions that
+> > only exits if CONFIG_NET is enabled without having #ifdef CONFIG_NET
+> > inside the function itself.
+> >
+> > Signed-off-by: Breno Leitao <leitao@debian.org>
+> > ---
+> >  io_uring/uring_cmd.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >
+> > diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
+> > index 60f843a357e0..a7d6a7d112b7 100644
+> > --- a/io_uring/uring_cmd.c
+> > +++ b/io_uring/uring_cmd.c
+> > @@ -167,6 +167,7 @@ int io_uring_cmd_import_fixed(u64 ubuf, unsigned long len, int rw,
+> >  }
+> >  EXPORT_SYMBOL_GPL(io_uring_cmd_import_fixed);
+> >  
+> > +#if defined(CONFIG_NET)
+> >  int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
+> >  {
+> >  	struct socket *sock = cmd->file->private_data;
+> > @@ -193,3 +194,10 @@ int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
+> >  	}
+> >  }
+> >  EXPORT_SYMBOL_GPL(io_uring_cmd_sock);
+> > +#else
+> > +int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
+> > +{
+> > +	return -EOPNOTSUPP;
+> > +}
+> > +#endif
+> > +
+> 
+> Is net/socket.c even built without CONFIG_NET? if not, you don't even need
+> the alternative EOPNOTSUPP implementation.
 
-I have no preference, and other fires to attend to.  Thanks for the patch.
-Acked-by: Nick Desaulniers <ndesaulniers@google.com>
+It seems so. net/socket.o is part of obj-y:
 
-I see Marcus replied but in text/html; I've encouraged Marcus to
-re-reply for the public record.
---=20
-Thanks,
-~Nick Desaulniers
+https://github.com/torvalds/linux/blob/master/net/Makefile#L9
 
