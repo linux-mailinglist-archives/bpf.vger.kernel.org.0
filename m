@@ -1,89 +1,181 @@
-Return-Path: <bpf+bounces-9687-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9688-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCE1C79AB1C
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 21:50:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6D5A79AB1E
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 21:53:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75195281263
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 19:50:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8B9C1C2091E
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 19:53:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A1DB15ADB;
-	Mon, 11 Sep 2023 19:50:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76FE215AE3;
+	Mon, 11 Sep 2023 19:53:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE23315ACA
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 19:50:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 32EA5C433C9;
-	Mon, 11 Sep 2023 19:50:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694461829;
-	bh=1Be3EsTrAUckTvzW4qpOlb8imJWBlDn9/6fluvZpCS8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=MJYG2u52I2xI74jBKEadOo40dOBCx0QLUntHjDRRNA17K1/yBGlnnsqtUBAEkZwSx
-	 dCNn6lSgNBcE8jP3UMG0zg4NaeUJlf9OKRLvGChA17Z8EL4L4aRAPRss1Ue9IdMMwL
-	 ek2/4w4J/KrJZwg3TVgxQGLyQn4k0EBa5QWtCPvQFMPpcluFPv9acxlMLOp7sYJ8Z5
-	 w0O4cjL6AV37kaidRr9kn8AU9mGnSUlmP3BR6f0JxJfvRHKv8Z5DTuh0fAe/6SF8H3
-	 obkM3MHqA/Om1rbcLTKfKVSSt4X072hWSrexh8BAsz5VAo7Bk8kEjauS5DtuWSJ3zj
-	 J9fE3hTsKuMlw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 171A9C00446;
-	Mon, 11 Sep 2023 19:50:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29BD115ACA
+	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 19:53:34 +0000 (UTC)
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1277F1A2;
+	Mon, 11 Sep 2023 12:53:33 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-501bd164fbfso7877176e87.0;
+        Mon, 11 Sep 2023 12:53:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694462011; x=1695066811; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R4Sic40zovBW+5AtjExOsIc28jivRQhihGT7xjxZ+KU=;
+        b=ShYcaZosKFez/kXBqrzHye3IStZMvcKOh7rcR+YsL15nncAJtsa3/N710pw31Zxda8
+         /6u4C8lnfTxan4AHjTBRVKWHCAvK0Dnu0RvJKYW+fb/zxxaLWWC+xt3YQ+NmzBncRNOE
+         bKBCmg3EJpSpHpqFzhD13DziD5KxypyAztWWPCinOvyrnjox7LBGcA884aPhdfuYBRsf
+         cyRTsF4d60eQn0z0CyjN4qKE7Cy6tA4qjD486c+8UQ61g5iZwE0itwoitfOycyfZjdGT
+         LOlJQu8L5D/MFTHPI+W5QqPcspHFU8+lltr5KCXV/VV7vfiD0F1XFlp44RuINSloLoB3
+         vl0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694462011; x=1695066811;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R4Sic40zovBW+5AtjExOsIc28jivRQhihGT7xjxZ+KU=;
+        b=vp4L+v0YhxbVuWC1HTd/dsASgLQdWSQAUxAIYS3CvtOQD5GI18Hs+FZzAOmM6APfv5
+         wWMWtSXPEcdPDFk6H17y6kVoZO/JdEaxDR4W+tmyaRwNHnsGnIJTEMWsHGbemirvsJtl
+         3DmJ3Sbnc8FVEmOc+gOQ+oiyGfMpGsdZdB8l6KPZzMObGB6xVnmnIpWK0qr3Pm6sjFjl
+         EmuHi/6Zn4wMwLxdswStpi/m/tYk0PfRPQ2XZJxKdMcKhxpRXsYEg979Qea0bwjgNhro
+         ReTu4toW4rWaT/pluD3XqiDDn4s+lZP7t6F2MzT8VqC4Q46I2XfYH270frz48AvIL/Qe
+         BwzA==
+X-Gm-Message-State: AOJu0YwCBL+W6LeJikTMcOXlUxqLRRWf0UehXhQDKKxnGepRzI09PdWc
+	JYX4dXzipaBUQBZBGFAgWRqEKDu2Oo2RswjeL9M=
+X-Google-Smtp-Source: AGHT+IGVHo/69FUsCdyrL9DHMN9YgpiqkTfMYuzOx+tieFXkrLbOG85v6zMrjnotMfqeB0b9iULq6RaaqtvG0vIHKhI=
+X-Received: by 2002:ac2:4ac7:0:b0:4fe:3364:6c20 with SMTP id
+ m7-20020ac24ac7000000b004fe33646c20mr8226571lfp.16.1694462010932; Mon, 11 Sep
+ 2023 12:53:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf 0/4] Fix the unmatched unit_size of bpf_mem_cache
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <169446182908.10545.14547502551008272952.git-patchwork-notify@kernel.org>
-Date: Mon, 11 Sep 2023 19:50:29 +0000
-References: <20230908133923.2675053-1-houtao@huaweicloud.com>
-In-Reply-To: <20230908133923.2675053-1-houtao@huaweicloud.com>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, martin.lau@linux.dev, alexei.starovoitov@gmail.com,
- andrii@kernel.org, song@kernel.org, haoluo@google.com,
- yonghong.song@linux.dev, daniel@iogearbox.net, kpsingh@kernel.org,
- sdf@google.com, jolsa@kernel.org, john.fastabend@gmail.com, bjorn@kernel.org,
- houtao1@huawei.com
+References: <20230903142800.3870-1-laoar.shao@gmail.com> <qv2xdcsvb4brjsc7qx6ncxrudwusogdo4itzv4bx2perfjymwl@in7zaeymjiie>
+ <CALOAHbB-PF1LjSAxoCdePN6Va4D+ufkeDmq8s3b0AGtfX5E-cQ@mail.gmail.com>
+ <CAADnVQL+6PsRbNMo=8kJpgw1OTbdLG9epsup0q7La5Ffqj6g6A@mail.gmail.com> <CALOAHbBhOL9w+rnh_xkgZZBhxMpbrmLZWhm1X+ZeDLfxxt8Nrw@mail.gmail.com>
+In-Reply-To: <CALOAHbBhOL9w+rnh_xkgZZBhxMpbrmLZWhm1X+ZeDLfxxt8Nrw@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 11 Sep 2023 12:53:19 -0700
+Message-ID: <CAADnVQJG8kGDVC6XUj40rabZK6Z78CqOMvkjnNv8zTSTkNYn7Q@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 0/5] bpf, cgroup: Enable cgroup_array map on cgroup1
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Yosry Ahmed <yosryahmed@google.com>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Hello:
+On Sat, Sep 9, 2023 at 8:18=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> w=
+rote:
+>
+> On Sat, Sep 9, 2023 at 2:09=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Thu, Sep 7, 2023 at 7:54=E2=80=AFPM Yafang Shao <laoar.shao@gmail.co=
+m> wrote:
+> > >
+> > > On Thu, Sep 7, 2023 at 10:41=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@s=
+use.com> wrote:
+> > > >
+> > > > Hello Yafang.
+> > > >
+> > > > On Sun, Sep 03, 2023 at 02:27:55PM +0000, Yafang Shao <laoar.shao@g=
+mail.com> wrote:
+> > > > > In our specific use case, we intend to use bpf_current_under_cgro=
+up() to
+> > > > > audit whether the current task resides within specific containers=
+.
+> > > >
+> > > > I wonder -- how does this work in practice?
+> > >
+> > > In our practice, the cgroup_array map serves as a shared map utilized
+> > > by both our LSM programs and the target pods. as follows,
+> > >
+> > >     ----------------
+> > >     | target pod |
+> > >     ----------------
+> > >            |
+> > >            |
+> > >           V                                      ----------------
+> > >  /sys/fs/bpf/cgoup_array     <--- | LSM progs|
+> > >                                                   ----------------
+> > >
+> > > Within the target pods, we employ a script to update its cgroup file
+> > > descriptor into the cgroup_array, for instance:
+> > >
+> > >     cgrp_fd =3D open("/sys/fs/cgroup/cpu");
+> > >     cgrp_map_fd =3D bpf_obj_get("/sys/fs/bpf/cgroup_array");
+> > >     bpf_map_update_elem(cgrp_map_fd, &app_idx, &cgrp_fd, 0);
+> > >
+> > > Next, we will validate the contents of the cgroup_array within our LS=
+M
+> > > programs, as follows:
+> > >
+> > >      if (!bpf_current_task_under_cgroup(&cgroup_array, app_idx))
+> > >             return -1;
+> > >
+> > > Within our Kubernetes deployment system, we will inject this script
+> > > into the target pods only if specific annotations, such as
+> > > "bpf_audit," are present. Consequently, users do not need to manually
+> > > modify their code; this process will be handled automatically.
+> > >
+> > > Within our Kubernetes environment, there is only a single instance of
+> > > these target pods on each host. Consequently, we can conveniently
+> > > utilize the array index as the application ID. However, in scenarios
+> > > where you have multiple instances running on a single host, you will
+> > > need to manage the mapping of instances to array indexes
+> > > independently. For cases with multiple instances, a cgroup_hash may b=
+e
+> > > a more suitable approach, although that is a separate discussion
+> > > altogether.
+> >
+> > Is there a reason you cannot use bpf_get_current_cgroup_id()
+> > to associate task with cgroup in your lsm prog?
+>
+> Using cgroup_id as the key serves as a temporary workaround;
+> nevertheless, employing bpf_get_current_cgroup_id() is impractical due
+> to its exclusive support for cgroup2.
+>
+> To acquire the cgroup_id, we can resort to open coding, as exemplified be=
+low:
+>
+>     task =3D bpf_get_current_task_btf();
+>     cgroups =3D task->cgroups;
+>     cgroup =3D cgroups->subsys[cpu_cgrp_id]->cgroup;
+>     key =3D cgroup->kn->id;
+>
+> Nonetheless, creating an open-coded version of
+> bpf_get_current_ancestor_cgroup_id() is unfeasible since the BPF
+> verifier prohibits access to "cgrp->ancestors[ancestor_level]."
 
-This series was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Both helpers can be extended to support v1 or not?
+I mean can a task be part of v1 and v2 hierarchy at the same time?
+If not then bpf_get_current_cgroup_id() can fallback to what you
+describing above and return cgroup_id.
+Same would apply to bpf_get_current_ancestor_cgroup_id.
 
-On Fri,  8 Sep 2023 21:39:19 +0800 you wrote:
-> From: Hou Tao <houtao1@huawei.com>
-> 
-> Hi,
-> 
-> The patchset aims to fix the reported warning [0] when the unit_size of
-> bpf_mem_cache is mismatched with the object size of underly slab-cache.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf,1/4] bpf: Adjust size_index according to the value of KMALLOC_MIN_SIZE
-    https://git.kernel.org/bpf/bpf/c/d52b59315bf5
-  - [bpf,2/4] bpf: Don't prefill for unused bpf_mem_cache
-    https://git.kernel.org/bpf/bpf/c/b1d53958b693
-  - [bpf,3/4] bpf: Ensure unit_size is matched with slab cache object size
-    https://git.kernel.org/bpf/bpf/c/c93047255202
-  - [bpf,4/4] selftests/bpf: Test all valid alloc sizes for bpf mem allocator
-    https://git.kernel.org/bpf/bpf/c/f0a42ab5890f
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+If not, two new kfuncs for v1 could be another option.
+prog_array for cgroups is an old design. We can and should do
+more flexible interface nowadays.
 
