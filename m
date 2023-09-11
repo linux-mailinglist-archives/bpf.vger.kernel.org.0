@@ -1,80 +1,85 @@
-Return-Path: <bpf+bounces-9624-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9625-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B447279A6A9
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 11:20:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA7BC79A6AB
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 11:21:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C1DD28112C
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 09:20:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBA551C209DB
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 09:21:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E83ABE7F;
-	Mon, 11 Sep 2023 09:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1DCBC129;
+	Mon, 11 Sep 2023 09:20:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC239BE5D
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 09:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD37AC121
+	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 09:20:33 +0000 (UTC)
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D0DCD5
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 02:20:14 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE71ACD3
+	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 02:20:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1694424013;
+	s=mimecast20190719; t=1694424031;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GS9lli0wQxzaeTtYduf+SRNAVGdyjoOnuF5+YHmnsp0=;
-	b=b2diDwa/IJETC9P9b4zXQE83FN42nBpTI0OzgtpL2WbwCMJl0bqPMJVwWL2cz6BwIYwvVX
-	CSfb269cVgrbhAbpW/QG6TSgv3CWM64O9JGUNuQzhkoDDMMYWmpnRKBUov3UvE82pX7iw7
-	7evdu3NsNMQoVweF032WxBZ55HCXD8s=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=bPNf+LMH2dPWsk1O9R4yW1taYmiwMEwNxmfzPkZ8n54=;
+	b=fTvuAB4+L5f4QO53dDmctIhh3b9NnS2qpTLhoa+T0Ci9oebJi5p2jEX+baT8FUO9I9LlNq
+	z7GwwiocgFRFbesFvk8UCtr8P+l1Ys6//7NffSz9f815SkaFYLpTyciOhhsNDTEQlOWHK0
+	jvMQ3rQJ4D+DdcCmkyojShRVCHPoWTc=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-224-oPFERa_3N1G6Lk5DgYqYkA-1; Mon, 11 Sep 2023 05:20:10 -0400
-X-MC-Unique: oPFERa_3N1G6Lk5DgYqYkA-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9aa20a75780so83180166b.2
-        for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 02:20:10 -0700 (PDT)
+ us-mta-654-GAevZkZbNHKRlR5d1RXapA-1; Mon, 11 Sep 2023 05:20:29 -0400
+X-MC-Unique: GAevZkZbNHKRlR5d1RXapA-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-993eeb3a950so291567066b.2
+        for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 02:20:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694424009; x=1695028809;
+        d=1e100.net; s=20230601; t=1694424028; x=1695028828;
         h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:to:from:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=GS9lli0wQxzaeTtYduf+SRNAVGdyjoOnuF5+YHmnsp0=;
-        b=HEH5LWo5JHo7CmLXW61dgT1XzXOSPaU9iZwtklrjtlT1b/b4nS62e1SU68ulPLbzi9
-         MiZHl19S9eYA/Zz4ickb5sEDRvIbT5z2fDe1NHQt7l5SIkarFzVWTxYrqPD5QATl96Q1
-         Lr/6VicM3PiyELuonal3tN14J8guiRmWzuCPo+Y+LSlBI0Am+Iznbb60HJ4b02d+UtDC
-         KQNv3CE1Fth3epxJmz9aSuZ2MiM8C0XhkN+WoYY81/UeuAOkuiiSo0w6uS0rUpuEMN6d
-         wqWhbynkD9MO710S+MiAC3AZWpnjgcj+QVV3RmFv+WQh0G5JqetA80EIoQkJNFF76RRB
-         Jg1w==
-X-Gm-Message-State: AOJu0YyrYxjhjTslLIsyrqSgNTr9kflLsTXt0LCgMvgBUzlWy64zzBkn
-	ViNHor9XLWC77q6EGKhBChsIJHAfqqkS08u8+0DBtYE2dP8t9aF/hxyQulcljEpyduDUyZVWhMQ
-	Jr0kI54qhjrFI
-X-Received: by 2002:a17:906:768f:b0:9a0:9558:82a3 with SMTP id o15-20020a170906768f00b009a0955882a3mr6795803ejm.58.1694424009394;
-        Mon, 11 Sep 2023 02:20:09 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEkBc0rdiHwYVxnqaCimatHdHg4I0Z4S/Rok+rT3zSfqZu/ml0H/GPLrSjgEsNYr1vPJUl/Ug==
-X-Received: by 2002:a17:906:768f:b0:9a0:9558:82a3 with SMTP id o15-20020a170906768f00b009a0955882a3mr6795791ejm.58.1694424009051;
-        Mon, 11 Sep 2023 02:20:09 -0700 (PDT)
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bPNf+LMH2dPWsk1O9R4yW1taYmiwMEwNxmfzPkZ8n54=;
+        b=HE18mnO3wxkKkjPSgrHmaKiKEdmT1wizCtHqniXarNjvfkV0xkh3T46PSiey7SJ20y
+         Do1sU4PmGuHftgxiImyNanAJQlSdGSaftF0d+/dSYgVs0szUX0Qlr27wLvHC1Toh+Cd3
+         UfPl4/vjBlnV9XYxcRXc2cT7nLrOYsqejfXeMjK/tAJLNGbRzV8dK8govNxDFFLlO73Q
+         7wDqtYENIr/8aVhcmRJy/EM8ejYg793A5XpiCqCD4s/SlJm7rgjq28sstMxoGjkLCS9J
+         In+CpAYtBPL45vdrJRGTUT6HytTkb1Q6BbMvxcT29GT/Xn9yxaGwgS2x9LPT3Fr/cA9h
+         JFtA==
+X-Gm-Message-State: AOJu0Yx7CWe5aFMgRKU40t7leyaavnDDMZ5p8WHf2LklnA6HJg3BzHPe
+	QsufDFVRhlloLicKI1h/AmL+UanDiqNf/m7aZCVpAMtEMntL21q0HUVwcu6MYCHmwq4kv5TJK3N
+	cjhC8cmIOp4CA
+X-Received: by 2002:a17:906:24b:b0:9a1:fc1e:19af with SMTP id 11-20020a170906024b00b009a1fc1e19afmr6786243ejl.36.1694424028611;
+        Mon, 11 Sep 2023 02:20:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGijDggNvdmqYqoLEDD9Wp9ri92BPlaUPd4uWRjxNU59f99NwK55C+xsHG7LTncUSgylxp7Hg==
+X-Received: by 2002:a17:906:24b:b0:9a1:fc1e:19af with SMTP id 11-20020a170906024b00b009a1fc1e19afmr6786233ejl.36.1694424028295;
+        Mon, 11 Sep 2023 02:20:28 -0700 (PDT)
 Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id q7-20020a170906360700b0098ce63e36e9sm5135636ejb.16.2023.09.11.02.20.08
+        by smtp.gmail.com with ESMTPSA id z10-20020a170906074a00b00993cc1242d4sm5019863ejb.151.2023.09.11.02.20.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 02:20:08 -0700 (PDT)
+        Mon, 11 Sep 2023 02:20:28 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 1D72EDC709D; Mon, 11 Sep 2023 11:20:08 +0200 (CEST)
+	id A1042DC709F; Mon, 11 Sep 2023 11:20:27 +0200 (CEST)
 From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
  netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 1/2] net: Tree wide: Replace xdp_do_flush_map()
- with xdp_do_flush().
-In-Reply-To: <20230908143215.869913-2-bigeasy@linutronix.de>
+Cc: "David S. Miller" <davem@davemloft.net>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Paolo
+ Abeni <pabeni@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Sebastian
+ Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH net-next 2/2] bpf: Remove xdp_do_flush_map().
+In-Reply-To: <20230908143215.869913-3-bigeasy@linutronix.de>
 References: <20230908143215.869913-1-bigeasy@linutronix.de>
- <20230908143215.869913-2-bigeasy@linutronix.de>
+ <20230908143215.869913-3-bigeasy@linutronix.de>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date: Mon, 11 Sep 2023 11:20:08 +0200
-Message-ID: <87pm2pkqwn.fsf@toke.dk>
+Date: Mon, 11 Sep 2023 11:20:27 +0200
+Message-ID: <87msxtkqw4.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,45 +97,11 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
 
-> xdp_do_flush_map() is deprecated and new code should use xdp_do_flush()
-> instead.
+> xdp_do_flush_map() can be removed because there is no more user in tree.
 >
-> Replace xdp_do_flush_map() with xdp_do_flush().
+> Remove xdp_do_flush_map().
 >
-> Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> Cc: Arthur Kiyanovski <akiyano@amazon.com>
-> Cc: Clark Wang <xiaoning.wang@nxp.com>
-> Cc: Claudiu Manoil <claudiu.manoil@nxp.com>
-> Cc: David Arinzon <darinzon@amazon.com>
-> Cc: Edward Cree <ecree.xilinx@gmail.com>
-> Cc: Felix Fietkau <nbd@nbd.name>
-> Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-> Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> Cc: Jassi Brar <jaswinder.singh@linaro.org>
-> Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> Cc: John Crispin <john@phrozen.org>
-> Cc: Leon Romanovsky <leon@kernel.org>
-> Cc: Lorenzo Bianconi <lorenzo@kernel.org>
-> Cc: Louis Peens <louis.peens@corigine.com>
-> Cc: Marcin Wojtas <mw@semihalf.com>
-> Cc: Mark Lee <Mark-MC.Lee@mediatek.com>
-> Cc: Martin Habets <habetsm.xilinx@gmail.com>
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> Cc: NXP Linux Team <linux-imx@nxp.com>
-> Cc: Noam Dagan <ndagan@amazon.com>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Saeed Bishara <saeedb@amazon.com>
-> Cc: Saeed Mahameed <saeedm@nvidia.com>
-> Cc: Sean Wang <sean.wang@mediatek.com>
-> Cc: Shay Agroskin <shayagr@amazon.com>
-> Cc: Shenwei Wang <shenwei.wang@nxp.com>
-> Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-> Cc: Tony Nguyen <anthony.l.nguyen@intel.com>
-> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
-> Cc: Wei Fang <wei.fang@nxp.com>
 > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-
-Thank you for doing this cleanup!
 
 Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
