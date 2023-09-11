@@ -1,226 +1,165 @@
-Return-Path: <bpf+bounces-9637-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9638-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79E2E79A83F
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 15:19:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7720879A848
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 15:28:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 032142811C1
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 13:19:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 733021C208C1
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 13:28:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6374F111BB;
-	Mon, 11 Sep 2023 13:19:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B597911700;
+	Mon, 11 Sep 2023 13:28:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A32D4432
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 13:19:27 +0000 (UTC)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6988AEE;
-	Mon, 11 Sep 2023 06:19:26 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9a9cd066db5so563945366b.0;
-        Mon, 11 Sep 2023 06:19:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694438365; x=1695043165; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=oYApqvgaLw3ymGGIpb89h6zPjC6eHwEbBV7sAXEoTx4=;
-        b=loGRq68sbDK7K+nxJ7ch/PVyC1246xfq++YioxtPOK0QK623lWmq4XvGfVMA0zc7dZ
-         N9rYdqPxhOTftehIlGYdg5VzWoQ5Yn6z7PpuYfv+i1AneAyuHITELVt6GXBCOrRHmGj7
-         AI2egPnVwy/4M0hWrv2IA6Dw4vPANpGpvFMUS8PSpaXavDaTkcXMcOZrnSIi2MQxG7d0
-         kIEc/ckl83J5JV83D7Lm8PYdUXHbXQGWXkOfAh7JncTzR+smytQ+DGozX95j4fx2sEyM
-         sJOuOW/lHSVKAtUyGyCQwdo8JXvT1m/IYofv58vYKHW5cXiMe3GS9/DR/RmBdrag5n5R
-         cpAg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67210C153
+	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 13:28:43 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 097AF12A
+	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 06:28:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1694438921;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=gtlVWNxpce0i0IglaRI+hudygK2Rn/UhTsEIHKPXY4I=;
+	b=SMT2V7xcPxtCxlWIYaRdmytcJm97VTLxxzjbAwv8aNGhhBotshP+y+isb4rscrKXBmQd4M
+	gJWdXhmJBMED5Q70G6fbkznz3ZbBy0iDJ5XItuSNFAfyqCQhJJ2moCGJz3VolAUuTCOerx
+	cCa2ig9PpG4nkedzRLjpO+UYzTzI4xg=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-286-gE90XCNiOGmWzYnMs7hvKg-1; Mon, 11 Sep 2023 09:28:39 -0400
+X-MC-Unique: gE90XCNiOGmWzYnMs7hvKg-1
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-50081b0dba6so4653787e87.0
+        for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 06:28:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694438365; x=1695043165;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oYApqvgaLw3ymGGIpb89h6zPjC6eHwEbBV7sAXEoTx4=;
-        b=suqx47OM+1kVz72Q+zpnI4+zrKPblhEsyj5q8ZigmJ4wL7VT4DFFkIjF3FoyNUtO+K
-         CwpLTt37fw/A9S5UfI4IlM9SZ4ApniUU1Nt3sQOBKbj/iUI+SdLSU9JsjI+ZvSUwsGzG
-         lr8aLT+sghJZpu2vVZqoErOElBls0w9YyMwoJJ1nSV8pDIu5Aj85HqfSuiCpWQPEMGXl
-         BXsXdXe+vsjrCmL4IYlCEgd/USFot24W+C4MdhllG7G8tjNSDYmPKO7JwlzU2Sgm8dhk
-         ryoGRnFBGxu77ssW50p+BFE8uK/bpPbK7hybgM5tPSeaQ689fBErjiHEACDkJ6OPkAla
-         Kkmw==
-X-Gm-Message-State: AOJu0Yx8U/CDwFHwmnv2EBIoKgxSWdn1xFcSMCohTLjPJNY22MUxhsdY
-	NDIblvLVD0eVe179zH5Ngq1DMXCYHx0=
-X-Google-Smtp-Source: AGHT+IF8gRl9y19pvIHmim64bQq1N0gu6atCEteh1ulReooZA/H5+YH+OytdKZ0jIXcwJe1ywmIUSw==
-X-Received: by 2002:a17:906:301b:b0:9a1:c39a:8bfd with SMTP id 27-20020a170906301b00b009a1c39a8bfdmr7755321ejz.57.1694438363659;
-        Mon, 11 Sep 2023 06:19:23 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id h3-20020a170906718300b0098e34446464sm5359448ejk.25.2023.09.11.06.19.22
+        d=1e100.net; s=20230601; t=1694438918; x=1695043718;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gtlVWNxpce0i0IglaRI+hudygK2Rn/UhTsEIHKPXY4I=;
+        b=isRej8lYsXfunaCSfpdi9lcSLlzmzg+SeDoC58BJyFARIY1yuUFuXC29neV5TmE/5w
+         wdPKJUjXzInlMGIY8bz13Jzphj2p911uILZzUKdaZby2M99+xZzJiY4Vl/SQrmegt2r6
+         s9sLOYrV7rTBkM/WCn0NkDYmqpzX81D0hXV3eYAhDFesDrG/Y0pOX7YSzNtAAWWCb4Z9
+         /nmx+XUPLDk8V3tQQom0FQBEMkZ04ay1v6Iw7VcbywKUDzRz3BljkS8P6t0eFvIfk1RB
+         5mPud0Bp3Oy3jp35OTI62Hu04R2oj2UxE7QnYEtZtTOE8dT58K0bPLuUMa0omBlRo6Kc
+         dL3w==
+X-Gm-Message-State: AOJu0Yw4bw1iDTah7iTF7EAPwFwRm8v6Rb/mCjwil7ZyvjVcNMDKELd/
+	bfs5BHQMpZy8/R0JP4RsHBusMPuvVX/QAe64WevXCMebfe9cUcQgggOUoZY0APAeXljPKsz9TJr
+	hoveZCRz0g+67
+X-Received: by 2002:ac2:48b5:0:b0:4fb:91c5:fd38 with SMTP id u21-20020ac248b5000000b004fb91c5fd38mr7407353lfg.0.1694438917889;
+        Mon, 11 Sep 2023 06:28:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHBqMtDGn0pf99XADWB6tGgZF40Kd02qqzkH6QWq615qHUsC/OWdR39cBAauhrsaySiGTKsqw==
+X-Received: by 2002:ac2:48b5:0:b0:4fb:91c5:fd38 with SMTP id u21-20020ac248b5000000b004fb91c5fd38mr7407324lfg.0.1694438917487;
+        Mon, 11 Sep 2023 06:28:37 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id bm5-20020a0564020b0500b0052e7e1931e2sm4606706edb.57.2023.09.11.06.28.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 06:19:23 -0700 (PDT)
-Message-ID: <d168d22ba2133d3b38a09ee0e8dbbe0fa97f72d0.camel@gmail.com>
-Subject: Re: [PATCH v2 1/3] selftests/hid: ensure we can compile the tests
- on kernels pre-6.3
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Justin Stitt <justinstitt@google.com>, Jiri Kosina <jikos@kernel.org>, 
- Benjamin Tissoires <benjamin.tissoires@redhat.com>, Shuah Khan
- <shuah@kernel.org>
-Cc: linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, Benjamin Tissoires
-	 <bentiss@kernel.org>
-Date: Mon, 11 Sep 2023 16:19:21 +0300
-In-Reply-To: <20230908-kselftest-09-08-v2-1-0def978a4c1b@google.com>
-References: <20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com>
-	 <20230908-kselftest-09-08-v2-1-0def978a4c1b@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        Mon, 11 Sep 2023 06:28:37 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 8D1F9DC70E7; Mon, 11 Sep 2023 15:28:36 +0200 (CEST)
+From: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mauricio Vasquez B <mauricio.vasquez@polito.it>
+Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Hsin-Wei Hung <hsinweih@uci.edu>,
+	bpf@vger.kernel.org
+Subject: [PATCH bpf] bpf: Avoid deadlock when using queue and stack maps from NMI
+Date: Mon, 11 Sep 2023 15:28:14 +0200
+Message-ID: <20230911132815.717240-1-toke@redhat.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, 2023-09-08 at 22:22 +0000, Justin Stitt wrote:
-> From: Benjamin Tissoires <bentiss@kernel.org>
->=20
-> For the hid-bpf tests to compile, we need to have the definition of
-> struct hid_bpf_ctx. This definition is an internal one from the kernel
-> and it is supposed to be defined in the generated vmlinux.h.
->=20
-> This vmlinux.h header is generated based on the currently running kernel
-> or if the kernel was already compiled in the tree. If you just compile
-> the selftests without compiling the kernel beforehand and you are running
-> on a 6.2 kernel, you'll end up with a vmlinux.h without the hid_bpf_ctx
-> definition.
->=20
-> Use the clever trick from tools/testing/selftests/bpf/progs/bpf_iter.h
-> to force the definition of that symbol in case we don't find it in the
-> BTF and also add __attribute__((preserve_access_index)) to further
-> support CO-RE functionality for these tests.
->=20
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> ---
->  tools/testing/selftests/hid/progs/hid.c            |  3 --
->  .../testing/selftests/hid/progs/hid_bpf_helpers.h  | 49 ++++++++++++++++=
-++++++
->  2 files changed, 49 insertions(+), 3 deletions(-)
->=20
-> diff --git a/tools/testing/selftests/hid/progs/hid.c b/tools/testing/self=
-tests/hid/progs/hid.c
-> index 88c593f753b5..1e558826b809 100644
-> --- a/tools/testing/selftests/hid/progs/hid.c
-> +++ b/tools/testing/selftests/hid/progs/hid.c
-> @@ -1,8 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /* Copyright (c) 2022 Red hat */
-> -#include "vmlinux.h"
-> -#include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->  #include "hid_bpf_helpers.h"
-> =20
->  char _license[] SEC("license") =3D "GPL";
-> diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tools/=
-testing/selftests/hid/progs/hid_bpf_helpers.h
-> index 4fff31dbe0e7..ab3b18ba48c4 100644
-> --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> @@ -5,6 +5,55 @@
->  #ifndef __HID_BPF_HELPERS_H
->  #define __HID_BPF_HELPERS_H
-> =20
-> +/* "undefine" structs in vmlinux.h, because we "override" them below */
+Sysbot discovered that the queue and stack maps can deadlock if they are
+being used from a BPF program that can be called from NMI context (such as
+one that is attached to a perf HW counter event). To fix this, add an
+in_nmi() check and use raw_spin_trylock() in NMI context, erroring out if
+grabbing the lock fails.
 
-Hi Justin,
+Fixes: f1a2e44a3aec ("bpf: add queue and stack maps")
+Reported-by: Hsin-Wei Hung <hsinweih@uci.edu>
+Tested-by: Hsin-Wei Hung <hsinweih@uci.edu>
+Co-developed-by: Hsin-Wei Hung <hsinweih@uci.edu>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+ kernel/bpf/queue_stack_maps.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-What you have here should work, however I still think that the trick
-with "___local" suffix I refer to in [1] is a bit less hacky, e.g.:
-
-    enum hid_report_type___local { ... };
-    struct hid_bpf_ctx___local {
-       __u32 index;
-       const struct hid_device *hid; // this one should be in vmlinux.h wit=
-h any config
-       __u32 allocated_size;
-       enum hid_report_type___local report_type;
-       union {
-           __s32 retval;
-           __s32 size;
-       };
-    } __attribute__((preserve_access_index));
-   =20
-    enum hid_class_request___local { ... };
-    enum hid_bpf_attach_flags___local { ... };
-    ...
-    extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx___local *ctx,
-                                  unsigned int offset,
-
-
-(sorry for being a bore, won't bring this up anymore).
-
-Thanks,
-Eduard
-
-[1] https://lore.kernel.org/bpf/e99b4226bd450fedfebd4eb5c37054f032432b4f.ca=
-mel@gmail.com/
-
-> +#define hid_bpf_ctx hid_bpf_ctx___not_used
-> +#define hid_report_type hid_report_type___not_used
-> +#define hid_class_request hid_class_request___not_used
-> +#define hid_bpf_attach_flags hid_bpf_attach_flags___not_used
-> +#include "vmlinux.h"
-> +#undef hid_bpf_ctx
-> +#undef hid_report_type
-> +#undef hid_class_request
-> +#undef hid_bpf_attach_flags
-> +
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <linux/const.h>
-> +
-> +enum hid_report_type {
-> +	HID_INPUT_REPORT		=3D 0,
-> +	HID_OUTPUT_REPORT		=3D 1,
-> +	HID_FEATURE_REPORT		=3D 2,
-> +
-> +	HID_REPORT_TYPES,
-> +};
-> +
-> +struct hid_bpf_ctx {
-> +	__u32 index;
-> +	const struct hid_device *hid;
-> +	__u32 allocated_size;
-> +	enum hid_report_type report_type;
-> +	union {
-> +		__s32 retval;
-> +		__s32 size;
-> +	};
-> +} __attribute__((preserve_access_index));
-> +
-> +enum hid_class_request {
-> +	HID_REQ_GET_REPORT		=3D 0x01,
-> +	HID_REQ_GET_IDLE		=3D 0x02,
-> +	HID_REQ_GET_PROTOCOL		=3D 0x03,
-> +	HID_REQ_SET_REPORT		=3D 0x09,
-> +	HID_REQ_SET_IDLE		=3D 0x0A,
-> +	HID_REQ_SET_PROTOCOL		=3D 0x0B,
-> +};
-> +
-> +enum hid_bpf_attach_flags {
-> +	HID_BPF_FLAG_NONE =3D 0,
-> +	HID_BPF_FLAG_INSERT_HEAD =3D _BITUL(0),
-> +	HID_BPF_FLAG_MAX,
-> +};
-> +
->  /* following are kfuncs exported by HID for HID-BPF */
->  extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
->  			      unsigned int offset,
->=20
+diff --git a/kernel/bpf/queue_stack_maps.c b/kernel/bpf/queue_stack_maps.c
+index 8d2ddcb7566b..d869f51ea93a 100644
+--- a/kernel/bpf/queue_stack_maps.c
++++ b/kernel/bpf/queue_stack_maps.c
+@@ -98,7 +98,12 @@ static long __queue_map_get(struct bpf_map *map, void *value, bool delete)
+ 	int err = 0;
+ 	void *ptr;
+ 
+-	raw_spin_lock_irqsave(&qs->lock, flags);
++	if (in_nmi()) {
++		if (!raw_spin_trylock_irqsave(&qs->lock, flags))
++			return -EBUSY;
++	} else {
++		raw_spin_lock_irqsave(&qs->lock, flags);
++	}
+ 
+ 	if (queue_stack_map_is_empty(qs)) {
+ 		memset(value, 0, qs->map.value_size);
+@@ -128,7 +133,12 @@ static long __stack_map_get(struct bpf_map *map, void *value, bool delete)
+ 	void *ptr;
+ 	u32 index;
+ 
+-	raw_spin_lock_irqsave(&qs->lock, flags);
++	if (in_nmi()) {
++		if (!raw_spin_trylock_irqsave(&qs->lock, flags))
++			return -EBUSY;
++	} else {
++		raw_spin_lock_irqsave(&qs->lock, flags);
++	}
+ 
+ 	if (queue_stack_map_is_empty(qs)) {
+ 		memset(value, 0, qs->map.value_size);
+@@ -193,7 +203,12 @@ static long queue_stack_map_push_elem(struct bpf_map *map, void *value,
+ 	if (flags & BPF_NOEXIST || flags > BPF_EXIST)
+ 		return -EINVAL;
+ 
+-	raw_spin_lock_irqsave(&qs->lock, irq_flags);
++	if (in_nmi()) {
++		if (!raw_spin_trylock_irqsave(&qs->lock, irq_flags))
++			return -EBUSY;
++	} else {
++		raw_spin_lock_irqsave(&qs->lock, irq_flags);
++	}
+ 
+ 	if (queue_stack_map_is_full(qs)) {
+ 		if (!replace) {
+-- 
+2.42.0
 
 
