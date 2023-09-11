@@ -1,147 +1,120 @@
-Return-Path: <bpf+bounces-9646-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9642-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8344979A960
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 17:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AB1F79A882
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 16:16:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9372B1C209C6
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 15:05:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D79B1C20953
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 14:16:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70CDE1173A;
-	Mon, 11 Sep 2023 15:05:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EBC41171C;
+	Mon, 11 Sep 2023 14:16:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03B76E57C;
-	Mon, 11 Sep 2023 15:05:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EF5BC433C9;
-	Mon, 11 Sep 2023 15:05:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1694444721;
-	bh=ZW+Q1JOHZ/uDaaroiW9oP5TW2ELU1qx2psiVBuG2scQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OFzQEkS/HF0zKqCIdwlTu/T50chShWZjHXyfSt98Ubj9+pA7qH3pSyZTkFsn3dGV5
-	 fMtUR9T59JoSLujFOQa8PBxN3pPjBlgglscoA7eG+apOR4tABcbix4QKW01y3nwvlV
-	 jSETHIRks23rdXqmTQCMcAjCCBDYHV4BTIVJohe8=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	Ian Rogers <irogers@google.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Stephane Eranian <eranian@google.com>,
-	Tom Rix <trix@redhat.com>,
-	bpf@vger.kernel.org,
-	llvm@lists.linux.dev,
-	Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 6.1 093/600] tools lib subcmd: Add dependency test to install_headers
-Date: Mon, 11 Sep 2023 15:42:06 +0200
-Message-ID: <20230911134636.353908314@linuxfoundation.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230911134633.619970489@linuxfoundation.org>
-References: <20230911134633.619970489@linuxfoundation.org>
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 021ED1170E
+	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 14:16:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95A3BC433C7;
+	Mon, 11 Sep 2023 14:16:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1694441766;
+	bh=KXMxuh2b3iJk8T/pEtBjYdbcbrbdQSKwgRi4Ihd42Cc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=NsiA08LeJ2l2QqaF2Mc6EPGMtZH+dDzcgipfV7b7nC0+R82itaFMgvZHm/PC3Ag/8
+	 wOkdRAEiJhReJPG82IycnW2brztwBd70iPPejBKp1KgNyVGDJxhcQd0z8yIjZNRwUX
+	 R8ujtKfFqjA0bT3CTjlYrXErPATtpmyBqwOuokY3EdPHaoawjT4bZt0o1fE0IybKo/
+	 8QB3w7+XEI/s2YMx3Qmg7R5zIpsUOgjdCVSy6o2eb+/Rwr/TMKBrwVPNXD124U9OCr
+	 ObNs/a+bbt/g7xKzgPTtvGSapBb3o+vGb7u7T3o1wYB8NJ7Dpir2rLEwMATY/k2+gp
+	 CdSFXxmQUopOQ==
+Date: Mon, 11 Sep 2023 23:15:59 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Sven Schnelle <svens@linux.ibm.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
+ linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v4 4/9] fprobe: rethook: Use ftrace_regs in fprobe exit
+ handler and rethook
+Message-Id: <20230911231559.67dc02ec42995042b7e92c58@kernel.org>
+In-Reply-To: <yt9dy1hdi1pe.fsf@linux.ibm.com>
+References: <169280372795.282662.9784422934484459769.stgit@devnote2>
+	<169280377434.282662.7610009313268953247.stgit@devnote2>
+	<20230904224038.4420a76ea15931aa40179697@kernel.org>
+	<yt9d5y4pozrl.fsf@linux.ibm.com>
+	<20230905223633.23cd4e6e8407c45b934be477@kernel.org>
+	<yt9dzg1zokyg.fsf@linux.ibm.com>
+	<20230909232435.dfa15f93f1c5eef5b229a7d2@kernel.org>
+	<yt9dy1hdi1pe.fsf@linux.ibm.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-6.1-stable review patch.  If anyone has any objections, please let me know.
+On Mon, 11 Sep 2023 09:55:09 +0200
+Sven Schnelle <svens@linux.ibm.com> wrote:
 
-------------------
+> Masami Hiramatsu (Google) <mhiramat@kernel.org> writes:
+> 
+> >> > IOW, it is ftrace save regs/restore regs code issue. I need to check how the
+> >> > function_graph implements it.
+> >> 
+> >> gpr2-gpr14 are always saved in ftrace_caller/ftrace_regs_caller(),
+> >> regardless of the FTRACE_WITH_REGS flags. The only difference is that
+> >> without the FTRACE_WITH_REGS flag the program status word (psw) is not
+> >> saved because collecting that is a rather expensive operation.
+> >
+> > Thanks for checking that! So s390 will recover those saved registers
+> > even if FTRACE_WITH_REGS flag is not set? (I wonder what is the requirement
+> > of the ftrace_regs when returning from ftrace_call() without
+> > FTRACE_WITH_REGS?)
+> 
+> Yes, it will recover these in all cases.
 
-From: Ian Rogers <irogers@google.com>
+Thanks for the confirmation!
 
-commit 5d890591db6bed8ca69bd4bfe0cdaca372973033 upstream.
+> 
+> >> 
+> >> I used the following commands to test rethook (is that the correct
+> >> testcase?)
+> >> 
+> >> #!/bin/bash
+> >> cd /sys/kernel/tracing
+> >> 
+> >> echo 'r:icmp_rcv icmp_rcv' >kprobe_events
+> >> echo 1 >events/kprobes/icmp_rcv/enable
+> >> ping -c 1 127.0.0.1
+> >> cat trace
+> >
+> > No, the kprobe will path pt_regs to rethook.
+> > Cna you run
+> >
+> > echo "f:icmp_rcv%return icmp_rcv" >> dynamic_events
+> 
+> Ah, ok. Seems to work as well:
+> 
+>   ping-481     [001] ..s2.    53.918480: icmp_rcv: (ip_protocol_deliver_rcu+0x42/0x218 <- icmp_rcv)
+>   ping-481     [001] ..s2.    53.918491: icmp_rcv: (ip_protocol_deliver_rcu+0x42/0x218 <- icmp_rcv)
 
-Compute the headers to be installed from their source headers and make
-each have its own build target to install it. Using dependencies
-avoids headers being reinstalled and getting a new timestamp which
-then causes files that depend on the header to be rebuilt.
+Nice!
+OK, then s390 is safe to use ftrace_regs :) 
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Nicolas Schier <nicolas@fjasle.eu>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Tom Rix <trix@redhat.com>
-Cc: bpf@vger.kernel.org
-Cc: llvm@lists.linux.dev
-Link: https://lore.kernel.org/r/20221202045743.2639466-4-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- tools/lib/subcmd/Makefile |   23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
-
---- a/tools/lib/subcmd/Makefile
-+++ b/tools/lib/subcmd/Makefile
-@@ -89,10 +89,10 @@ define do_install_mkdir
- endef
- 
- define do_install
--	if [ ! -d '$(DESTDIR_SQ)$2' ]; then             \
--		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$2'; \
-+	if [ ! -d '$2' ]; then             \
-+		$(INSTALL) -d -m 755 '$2'; \
- 	fi;                                             \
--	$(INSTALL) $1 $(if $3,-m $3,) '$(DESTDIR_SQ)$2'
-+	$(INSTALL) $1 $(if $3,-m $3,) '$2'
- endef
- 
- install_lib: $(LIBFILE)
-@@ -100,13 +100,16 @@ install_lib: $(LIBFILE)
- 		$(call do_install_mkdir,$(libdir_SQ)); \
- 		cp -fpR $(LIBFILE) $(DESTDIR)$(libdir_SQ)
- 
--install_headers:
--	$(call QUIET_INSTALL, libsubcmd_headers) \
--		$(call do_install,exec-cmd.h,$(prefix)/include/subcmd,644); \
--		$(call do_install,help.h,$(prefix)/include/subcmd,644); \
--		$(call do_install,pager.h,$(prefix)/include/subcmd,644); \
--		$(call do_install,parse-options.h,$(prefix)/include/subcmd,644); \
--		$(call do_install,run-command.h,$(prefix)/include/subcmd,644);
-+HDRS := exec-cmd.h help.h pager.h parse-options.h run-command.h
-+INSTALL_HDRS_PFX := $(DESTDIR)$(prefix)/include/subcmd
-+INSTALL_HDRS := $(addprefix $(INSTALL_HDRS_PFX)/, $(HDRS))
-+
-+$(INSTALL_HDRS): $(INSTALL_HDRS_PFX)/%.h: %.h
-+	$(call QUIET_INSTALL, $@) \
-+		$(call do_install,$<,$(INSTALL_HDRS_PFX)/,644)
-+
-+install_headers: $(INSTALL_HDRS)
-+	$(call QUIET_INSTALL, libsubcmd_headers)
- 
- install: install_lib install_headers
- 
+Thanks!
 
 
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
