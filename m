@@ -1,107 +1,85 @@
-Return-Path: <bpf+bounces-9690-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9691-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72D3F79AB35
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 22:29:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B6EB79AB41
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 22:40:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BE2D2810AF
-	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 20:29:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA9B81C20971
+	for <lists+bpf@lfdr.de>; Mon, 11 Sep 2023 20:40:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1528116419;
-	Mon, 11 Sep 2023 20:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74DFB5388;
+	Mon, 11 Sep 2023 20:40:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEEBF168A2
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 20:27:45 +0000 (UTC)
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D25185;
-	Mon, 11 Sep 2023 13:27:44 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bf7423ef3eso35417155ad.3;
-        Mon, 11 Sep 2023 13:27:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694464064; x=1695068864; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SNnl2EUxq2zaX99R7tX9+iE5LFUxTKUThPqOegYIa5s=;
-        b=i/kVnY717xMDqCNn3WYnViiOjjcMpjRZ3YDH8aw7uIBl6563xM8YlJRH0UUKIkzMnh
-         Oy+VVJSeiQF17nUJj0keyWSm0EKkS064TuM65gKaN7cKXk+eDxX/f/PE9Mq659URYrHe
-         xEkgSLA+Tf51xJozMHikNt7u5vqNY0lfOICQhaWYHi88CvK60oWo1gb1ggG49IBsOrsr
-         I97r7rWLJyrFw3VLiX6JAeIb06R0U6ZHAoeLgqgUXnnBKcVOSzk6a/eFE9JBnEkHhCIm
-         Ag6sSmOSPB8eLx6IT2BYVgPBkXm6hcCKZiUdcyOdAfD8z8xzunnGYF+heAxUmZMeWs4d
-         Xy1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694464064; x=1695068864;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SNnl2EUxq2zaX99R7tX9+iE5LFUxTKUThPqOegYIa5s=;
-        b=GJr1bVNln4mEQkuKMtgrD9dpt5hvsd82mQEf2g7TtbTiiZStZYF1nQEU8L4Xg2AdNU
-         6uecaGWKNVWf8Um07G7tGEQQdr+4S3v5WYGJ3YfVaP+TxEUMJST4cw/0IwWRQ40wnXyX
-         cd9Ro6h5UCZ/Q9s0iyMmluu1ARNM4CWD15ukaUGraFnT2UpNpnMkuW6L8Y2YneZxDYwT
-         jiTXXyLp5GtFMkR76nd2LT1KCg1QRKfgqtLGHEYXYsz5OBN3PqU6z4Yg03fV6Ex0P+wS
-         i0GJZEIYGS0IRYo5gjLI1lTXCl9P98UQsZ15/o5DqIXQeP0/KDTbmXJOZtGbossxSuJS
-         TjSw==
-X-Gm-Message-State: AOJu0YymsTAogienNJIkhaQYwlx0FEjs5X0yIoNrLuTKjy45U7ib059O
-	k+ptkZy1D7vIwPYpjyEWFapA8mWirVFdiA==
-X-Google-Smtp-Source: AGHT+IGngHVyRdmTKS2TRrqK78EOerqzQ008OJjN7s8aS/kznDTkl0Gc09j8mylpOFyQkkxZWS+CFA==
-X-Received: by 2002:a17:903:2302:b0:1bc:2c58:ad97 with SMTP id d2-20020a170903230200b001bc2c58ad97mr10290139plh.22.1694464064016;
-        Mon, 11 Sep 2023 13:27:44 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id l12-20020a170902eb0c00b001bf574dd1fesm6835997plb.141.2023.09.11.13.27.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 13:27:43 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 11 Sep 2023 10:27:42 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
-	haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com,
-	hannes@cmpxchg.org, yosryahmed@google.com, cgroups@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 1/5] cgroup: Enable
- task_under_cgroup_hierarchy() on cgroup1
-Message-ID: <ZP94Pqiz6PtUy_Ww@mtj.duckdns.org>
-References: <20230903142800.3870-1-laoar.shao@gmail.com>
- <20230903142800.3870-2-laoar.shao@gmail.com>
- <ZPjdc3IwX9gjXk_F@slm.duckdns.org>
- <CALOAHbA7gDFh5Bsr_99-rBa3h9dZw6ntF_+RxTjfK3yQXpYEFA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B84A420EB
+	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 20:40:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2585DC433C8;
+	Mon, 11 Sep 2023 20:40:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1694464829;
+	bh=nM9qdqvpiaAiiZFd6CGwCiL85z9XzfxRoxta9lY8W/8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=OmK9pbxJM7RFJYD2owYX0Q5NH0xWS5EXLCNlLkjy5C9MteLhn2ZeccKg9/0qFbYMa
+	 DteFCgUAHkF/llUigQ4/ZnBosi+JKAYZ+yRENuSVB9FnRmUxlhsLtDS1x5bvgHctRV
+	 Zrq+LfchF9f8DMX8oV7TyUOV4Y5E8gmF1CYXsJMxTHsjgxlT4GONEhB+vfGPACEtZy
+	 1EIQylc43xeqcP+GNKUk84gupRiqvPeniM8D8CuVADaot9xnQc8kkVThflOK+yau/n
+	 PNL4pEGFqVQ3VCcBKe3+U6w127glw7O+DHm2AOi6h2cl/WCXLkQECKnSpFvIHmzrsH
+	 Dm0quh/kA9+UA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 06FABE1C280;
+	Mon, 11 Sep 2023 20:40:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALOAHbA7gDFh5Bsr_99-rBa3h9dZw6ntF_+RxTjfK3yQXpYEFA@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: clarify error expectations from
+ bpf_clone_redirect
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <169446482902.4154.9987772850452271859.git-patchwork-notify@kernel.org>
+Date: Mon, 11 Sep 2023 20:40:29 +0000
+References: <20230911194731.286342-1-sdf@google.com>
+In-Reply-To: <20230911194731.286342-1-sdf@google.com>
+To: Stanislav Fomichev <sdf@google.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+ john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+ jolsa@kernel.org
 
-On Thu, Sep 07, 2023 at 11:05:07AM +0800, Yafang Shao wrote:
-> The fd-based cgroup interface plays a crucial role in BPF programs,
-> particularly in components such as cgroup_iter, bpf_cgrp_storage, and
-> cgroup_array maps, as well as in the attachment and detachment of
-> cgroups.
+Hello:
 
-Yeah, I know they're used. It's just that they are inferior identifiers from
-cgroup's POV as they are ephemeral, can't easily be transferred across
-process boundaries or persisted beyond the lifetime of the fd-owing process
-or the cgroups which are being pointed to.
+This series was applied to bpf/bpf.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-Thanks.
+On Mon, 11 Sep 2023 12:47:30 -0700 you wrote:
+> Commit 151e887d8ff9 ("veth: Fixing transmit return status for dropped
+> packets") exposed the fact that bpf_clone_redirect is capable of
+> returning raw NET_XMIT_XXX return codes.
+> 
+> This is in the conflict with its UAPI doc which says the following:
+> "0 on success, or a negative error in case of failure."
+> 
+> [...]
 
+Here is the summary with links:
+  - [bpf-next,v2,1/2] bpf: clarify error expectations from bpf_clone_redirect
+    https://git.kernel.org/bpf/bpf/c/7cb779a6867f
+  - [bpf-next,v2,2/2] selftests/bpf: update bpf_clone_redirect expected return code
+    https://git.kernel.org/bpf/bpf/c/b772b70b6904
+
+You are awesome, thank you!
 -- 
-tejun
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
