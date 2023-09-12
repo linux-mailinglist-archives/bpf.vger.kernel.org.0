@@ -1,104 +1,83 @@
-Return-Path: <bpf+bounces-9783-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9785-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 957F779D9D4
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 21:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A51E179D9FC
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 22:21:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E961281A27
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 19:58:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F053281B37
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 20:21:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0010CAD50;
-	Tue, 12 Sep 2023 19:57:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02B36B65C;
+	Tue, 12 Sep 2023 20:20:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDAC633D2
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 19:57:57 +0000 (UTC)
-Received: from out-219.mta1.migadu.com (out-219.mta1.migadu.com [95.215.58.219])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 143E91B2
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 12:57:57 -0700 (PDT)
-Message-ID: <8b272d63-5dd7-13bd-7691-d061895fdbe1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1694548674;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I8O2Nscd47hkRROGFh80UDSBByNjzYNNhSIVk3mOdSU=;
-	b=NPxpvABMTXZYABRLcfwsASp2EUogpYid24GMsBkMb4WxznmknrD7VDDnNsXtQJQ5Q6VCsF
-	Qxebw4mdfJHig5Lgf4B1sjGQnCxeT9GAtgzBDAe6xlNX8y3vhYR3hGJQt7Yp8xyyxJXJpa
-	AkluNAMk/4AEKPJCebJ0wgc7mxxc0zk=
-Date: Tue, 12 Sep 2023 12:57:47 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23E4FAD57;
+	Tue, 12 Sep 2023 20:20:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9A83DC433CA;
+	Tue, 12 Sep 2023 20:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1694550025;
+	bh=gU/CeO6Y/T1uavamob8EZRBzi77IzZ7qj2zJ7oTQMBo=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=obbcqfaHsYA2dOc9urGdZ6AGLjEfPrMnjD1rNHGNmY70wJoLJkTPRIR9OLeNij+5P
+	 iqVGZh1xteAPm18aaCoduzHjQXmx6cGfxvtgW3zEtZBB4crdsVfha8pqdDsnDo3lpt
+	 YikCT7NTwNa0RCMkm/G7C8ikeXUFQsxB6jp/2cj4nZHFWDxyZfpvyBBHskYMbYZLAw
+	 +RYMavHAGnuAEok6ewyjgam4Cwcrg9NhZ4SyDJg6y57KEDhdhDIcDBKbgWqob8VCfe
+	 9LTAegjGiM0sxEN6Qd4PWd3gWSAD710n9n/mRgLdgDsZximiVDsm3DDvEDc6ucsz7I
+	 ESUYFCRPmfcJw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7CE56E1C290;
+	Tue, 12 Sep 2023 20:20:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 2/6] bpf: Introduce css_task open-coded
- iterator kfuncs
-Content-Language: en-US
-To: Chuyi Zhou <zhouchuyi@bytedance.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] selftests/bpf: fix unpriv_disabled check in test_verifier
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <169455002550.29579.5589738448347101961.git-patchwork-notify@kernel.org>
+Date: Tue, 12 Sep 2023 20:20:25 +0000
+References: <20230912120631.213139-1-asavkov@redhat.com>
+In-Reply-To: <20230912120631.213139-1-asavkov@redhat.com>
+To: Artem Savkov <asavkov@redhat.com>
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@kernel.org, tj@kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20230912070149.969939-1-zhouchuyi@bytedance.com>
- <20230912070149.969939-3-zhouchuyi@bytedance.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230912070149.969939-3-zhouchuyi@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+ bpf@vger.kernel.org, netdev@vger.kernel.org, eddyz87@gmail.com,
+ linux-kernel@vger.kernel.org
 
-On 9/12/23 12:01 AM, Chuyi Zhou wrote:
-> +__bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
-> +		struct cgroup_subsys_state *css, unsigned int flags)
-> +{
-> +	struct bpf_iter_css_task_kern *kit = (void *)it;
-> +
-> +	BUILD_BUG_ON(sizeof(struct bpf_iter_css_task_kern) != sizeof(struct bpf_iter_css_task));
-> +	BUILD_BUG_ON(__alignof__(struct bpf_iter_css_task_kern) !=
-> +					__alignof__(struct bpf_iter_css_task));
-> +
-> +	switch (flags) {
-> +	case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
-> +	case CSS_TASK_ITER_PROCS:
-> +	case 0:
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	kit->css_it = kzalloc(sizeof(struct css_task_iter), GFP_KERNEL);
-> +	if (!kit->css_it)
-> +		return -ENOMEM;
-> +	css_task_iter_start(css, flags, kit->css_it);
-> +	return 0;
-> +}
-> +
+Hello:
 
-> +static bool check_css_task_iter_allowlist(struct bpf_verifier_env *env)
-> +{
-> +	enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
-> +
-> +	switch (prog_type) {
-> +	case BPF_PROG_TYPE_LSM:
+This patch was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-This will allow the non-sleepable lsm prog to call bpf_iter_css_task_new. The 
-above kzalloc(GFP_KERNEL) in bpf_iter_css_task_new should trigger a lockdep 
-error in the lsm selftest in patch 6.
+On Tue, 12 Sep 2023 14:06:31 +0200 you wrote:
+> Commit 1d56ade032a49 changed the function get_unpriv_disabled() to
+> return its results as a bool instead of updating a global variable, but
+> test_verifier was not updated to keep in line with these changes. Thus
+> unpriv_disabled is always false in test_verifier and unprivileged tests
+> are not properly skipped on systems with unprivileged bpf disabled.
+> 
+> Fixes: 1d56ade032a49 ("selftests/bpf: Unprivileged tests for test_loader.c")
+> Signed-off-by: Artem Savkov <asavkov@redhat.com>
+> 
+> [...]
 
-> +		return true;
-> +	case BPF_TRACE_ITER:
-> +		return env->prog->aux->sleepable;
-> +	default:
-> +		return false;
-> +	}
-> +}
+Here is the summary with links:
+  - [bpf] selftests/bpf: fix unpriv_disabled check in test_verifier
+    https://git.kernel.org/bpf/bpf/c/d128860dbb29
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
