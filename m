@@ -1,131 +1,156 @@
-Return-Path: <bpf+bounces-9766-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9767-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE02B79D502
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 17:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AD7E79D60E
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 18:18:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 829CF1C20B72
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 15:34:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D1251C20B78
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 16:18:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0B9918C17;
-	Tue, 12 Sep 2023 15:33:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C106719BA8;
+	Tue, 12 Sep 2023 16:17:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5769418056
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 15:33:58 +0000 (UTC)
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8601710F4
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 08:33:57 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-64ccdf8820dso25830656d6.1
-        for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 08:33:57 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CF0718C35
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:17:32 +0000 (UTC)
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD80D10EB
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 09:17:31 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-307d58b3efbso5348431f8f.0
+        for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 09:17:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694532836; x=1695137636; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694535450; x=1695140250; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jn3gYV6z0mHJzWuz6G6eyUwdrkRbzHbTqw/XH7fEH4s=;
-        b=jXSW4sr0/V0TjTygldTr884ibK6jtHHyYxRV6nM1uAsrYMhRGlPYT5IV8wxSASiQt3
-         etjGNSVMhu9OE3YJ6Taca3oX5YOEBO8AH1muDseBgwvJBZPgGW7wvFhhovPvA2VVvYvi
-         7cIYUxtFUbsyGMxzcfNUGm8QCKQfdVFW8dIzAKgcEcy3bStwurtLo3txAKaYJWHG2/Ds
-         jDpI9FyiEYuT9LF5bnbNrhBt4GdREQlewD7YDtkaJEYJ0Fmaw3Owsb0Y09JGEnu1fZqU
-         mkx7I0agpaYsSJFNrXWo8vL7ZONfceEepwrEp7sAQ5mlMZZf6vJC1p+akXVskBatrkUx
-         IFZA==
+        bh=LR/G0+j326yUI4bInAyOsVMLuaD3ScYFapNQuQINprQ=;
+        b=HF0GbLVeiJ9nb70PXkHdgBYGCd3zrA9KwgOEjHwP99mzs+eA5xP0mEVih3gK03SKV2
+         ZWdvWIeSK0Yfpu9Kh+zJbjjPVUz2f/4GdSwf43yY26lR4yvifEdgxSGt9F0iivjb8kXn
+         n4BcTn/mv5UDvFVREyqGMTExopGgL7X8IRxoajFSm6v9kaO9cjT1QGhkgbzWoywPaskM
+         TUpfb48PHxiktE7RZNRpRtRdtBxwblHsvGSEVDBvNOyY9oMJiD3UeF0Fc+7C2RvutAh+
+         /ZcaPo+Wwqk4Kpwqbr1AvLEKMYOLpUDBQy42uS7C25qLvsv3XiF1NREo6uOVenrQihzY
+         wRHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694532836; x=1695137636;
+        d=1e100.net; s=20230601; t=1694535450; x=1695140250;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jn3gYV6z0mHJzWuz6G6eyUwdrkRbzHbTqw/XH7fEH4s=;
-        b=vSbgrFSCzlw3k/er7HLmW14pxgZB1+YyAiM3N6xX2S7jXQZZ7trXtkc22PmYCfiPBw
-         NuswrHv9DN9F06Ai+sbR0n+J/KXXNhqRSUpBpX/LfGsbp3HyTRTMdH0D87MicoR8ezuT
-         3ycwGmPwpHdl08uZ7bfq+1jjaCCjFhCjfDg+DRIzgKrocMySbcPTejuz4ZyuIOhewDXB
-         s2IQEfHy2+nF81VuBHlemzS7k7fPlL/lNEd1wFw4KHaLN/LQgBI0rC7zf6TFmkBT6SMM
-         5wiNioKvIdsqHLaks1uYMyBNOhkSS7x/LLffb5EWlo6hn/OAmXvUt+QWOXzOEyGyVvX9
-         Fh5g==
-X-Gm-Message-State: AOJu0Yweg+lYNAOtC/XcWxts4yOTIGiKoL/I+ZTAbQbQ9Q2QR1tFk8R2
-	HODPY2EHkCI95TA+2wdlFvogqRY+8mEemNoEmkZGXA==
-X-Google-Smtp-Source: AGHT+IE0Ca2qfQkE6enrGukSoNDCb1OXtuL9IDZszmjiWUcu3f+9cYN/mXNgIzl2i4wDmR90/hv9yYRTETUzcz21Ipg=
-X-Received: by 2002:ad4:5d4b:0:b0:635:da80:e53a with SMTP id
- jk11-20020ad45d4b000000b00635da80e53amr4483115qvb.12.1694532836379; Tue, 12
- Sep 2023 08:33:56 -0700 (PDT)
+        bh=LR/G0+j326yUI4bInAyOsVMLuaD3ScYFapNQuQINprQ=;
+        b=RN+B45AJKboFZ9exZjtxh6LHkU/EiyAW2LUzvN1YnR6FIRKDLhl6x9ui+wOJczE8yA
+         VGh6uHFLY+ftiVLpUDYAPNFMushwQtPRDw0Gs7uPPiR1DyH5ssieYzFR2QAJPuY+UYcU
+         VYHDeAwuRq2VpkoDDmVwftLkDZkYF8pWzxM2FKfB6OEhqQ9gb84ana26OfqU1PW5YIGa
+         rfWxEBC7eLO3Sfrb0eugr9jPfE5Hg7TYxnjYqCKrMN+qXREdLe/WZxGek4qBxj3Ex9IV
+         YMk0Eujmfb1Xuxl89VG0YVItxqXK7MdxgLMV1v4cuoiPOHTX3ZK9lNZSxWlssX/PuGiA
+         A2hg==
+X-Gm-Message-State: AOJu0YzJGV14VbOTKkfPK2Zno5FJZgJNaiHocWEZARQyHD9i0hvF2+v1
+	2QM6mJ8Mqm0UVLQy9h3GZYCIL6pdqVI0NNRNuQk=
+X-Google-Smtp-Source: AGHT+IHv4pamMKHgWLLZ5zGJoqKNVaBXFVkXm/FAL3REMRsUaHYxyTvrpW7RCSlMOeoLU5nZYw6lPBJrXVZciCKXRgM=
+X-Received: by 2002:a05:6000:92f:b0:317:3deb:a899 with SMTP id
+ cx15-20020a056000092f00b003173deba899mr13500wrb.1.1694535449889; Tue, 12 Sep
+ 2023 09:17:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230912060801.95533-1-bgray@linux.ibm.com> <20230912060801.95533-2-bgray@linux.ibm.com>
-In-Reply-To: <20230912060801.95533-2-bgray@linux.ibm.com>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Tue, 12 Sep 2023 08:33:42 -0700
-Message-ID: <CAKwvOdkP1uwU0Cq9541zf309tudfFdbu-10Xo3h+g07-k=Fg4A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/7] ia64: fix Python string escapes
-To: Benjamin Gray <bgray@linux.ibm.com>, Ard Biesheuvel <ardb@kernel.org>
-Cc: linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, llvm@lists.linux.dev, linux-pm@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Jonathan Corbet <corbet@lwn.net>, Ian Abbott <abbotti@mev.co.uk>, 
-	H Hartley Sweeten <hsweeten@visionengravers.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Tom Rix <trix@redhat.com>, Jan Kiszka <jan.kiszka@siemens.com>, 
-	Kieran Bingham <kbingham@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	Todd E Brandt <todd.e.brandt@linux.intel.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+References: <20230912141437.366046-1-jolsa@kernel.org> <CAADnVQ+BfF3fojHCcfq6suJ-4GkTrchtkfrZHtvt0OQDMXLBBA@mail.gmail.com>
+In-Reply-To: <CAADnVQ+BfF3fojHCcfq6suJ-4GkTrchtkfrZHtvt0OQDMXLBBA@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 12 Sep 2023 09:17:18 -0700
+Message-ID: <CAEf4BzZKgM0g+M4Se181qKh0NH_csa+4EsSgcvJE5_icJdEmSg@mail.gmail.com>
+Subject: Re: [PATCH bpf] selftests/bpf: Fix kprobe_multi_test/attach_override test
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 11, 2023 at 11:08=E2=80=AFPM Benjamin Gray <bgray@linux.ibm.com=
-> wrote:
+On Tue, Sep 12, 2023 at 7:57=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Python 3.6 introduced a DeprecationWarning for invalid escape sequences.
-> This is upgraded to a SyntaxWarning in Python 3.12, and will eventually
-> be a syntax error.
+> On Tue, Sep 12, 2023 at 7:14=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrot=
+e:
+> >
+> > We need to deny the attach_override test for arm64
+> > and make it static.
+> >
+> > Fixes: 7182e56411b9 ("selftests/bpf: Add kprobe_multi override test")
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  tools/testing/selftests/bpf/DENYLIST.aarch64               | 1 +
+> >  tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c | 2 +-
+> >  2 files changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testi=
+ng/selftests/bpf/DENYLIST.aarch64
+> > index 7f768d335698..b32f962dee92 100644
+> > --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
+> > +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
+> > @@ -9,6 +9,7 @@ kprobe_multi_test/bench_attach                   # bpf_=
+program__attach_kprobe_mu
+> >  kprobe_multi_test/link_api_addrs                 # link_fd unexpected =
+link_fd: actual -95 < expected 0
+> >  kprobe_multi_test/link_api_syms                  # link_fd unexpected =
+link_fd: actual -95 < expected 0
+> >  kprobe_multi_test/skel_api                       # libbpf: failed to l=
+oad BPF skeleton 'kprobe_multi': -3
+> > +kprobe_multi_test/attach_override                # test_attach_overrid=
+e:FAIL:kprobe_multi_empty__open_and_load unexpected error: -22
 >
-> Fix these now to get ahead of it before it's an error.
->
-> Signed-off-by: Benjamin Gray <bgray@linux.ibm.com>
-> ---
->  arch/ia64/scripts/unwcheck.py | 2 +-
+> why do we need this ?
+> Andrii, move of kconfig override into common should fix it, no?
 
-Ard is proposing removing this script, along with the rest of the architect=
-ure:
-https://lore.kernel.org/linux-arch/20230911163129.3777603-2-ardb@google.com=
-/
+So my patch did indeed enable BPF_KPROBE_OVERRIDE=3Dy on aarch64, but we
+are now encountering "not supported" error somewhere:
 
-So this change can be dropped.
+test_attach_override:PASS:kprobe_multi_empty__open_and_load 0 nsec
+libbpf: prog 'test_override': failed to attach: Operation not supported
+test_attach_override:PASS:override_attached_bpf_fentry_test1 0 nsec
+libbpf: prog 'test_override': failed to attach: Operation not supported
+test_attach_override:FAIL:override_attached_should_fail_bio unexpected
+error: -95
 
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/ia64/scripts/unwcheck.py b/arch/ia64/scripts/unwcheck.p=
-y
-> index 9581742f0db2..adc24152d3b9 100644
-> --- a/arch/ia64/scripts/unwcheck.py
-> +++ b/arch/ia64/scripts/unwcheck.py
-> @@ -21,7 +21,7 @@ if len(sys.argv) !=3D 2:
->
->  readelf =3D os.getenv("READELF", "readelf")
->
-> -start_pattern =3D re.compile("<([^>]*)>: \[0x([0-9a-f]+)-0x([0-9a-f]+)\]=
-")
-> +start_pattern =3D re.compile(r"<([^>]*)>: \[0x([0-9a-f]+)-0x([0-9a-f]+)\=
-]")
->  rlen_pattern  =3D re.compile(".*rlen=3D([0-9]+)")
->
->  def check_func (func, slots, rlen_sum):
-> --
-> 2.41.0
->
+retsnoop should be able to point out where this is coming from, but
+unfortunately I don't have aarch64 setup that allows me to run VMs (at
+least not yet). So if Jiri has access to arm64 machine, please take a
+look meanwhile.
 
+We need to understand if bpf_override_return() never worked, or Jiri's
+change with addrs_check_error_injection_list added breaks something.
+And then act accordingly (either denylist the test, or fix the bug).
 
---=20
-Thanks,
-~Nick Desaulniers
+>
+> >  module_attach                                    # prog 'kprobe_multi'=
+: failed to auto-attach: -95
+> >  fentry_test/fentry_many_args                     # fentry_many_args:FA=
+IL:fentry_many_args_attach unexpected error: -524
+> >  fexit_test/fexit_many_args                       # fexit_many_args:FAI=
+L:fexit_many_args_attach unexpected error: -524
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c=
+ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> > index e05477b210a5..4041cfa670eb 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> > @@ -454,7 +454,7 @@ static void test_kprobe_multi_bench_attach(bool ker=
+nel)
+> >         }
+> >  }
+> >
+> > -void test_attach_override(void)
+> > +static void test_attach_override(void)
+> >  {
+> >         struct kprobe_multi_override *skel =3D NULL;
+> >         struct bpf_link *link =3D NULL;
+> > --
+> > 2.41.0
+> >
 
