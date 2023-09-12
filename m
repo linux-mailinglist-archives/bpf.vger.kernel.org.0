@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-9835-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9836-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49D1F79DCB5
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 01:34:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D7B479DCB6
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 01:35:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 028C3282089
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 23:34:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB74228119F
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 23:35:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 487C9154BA;
-	Tue, 12 Sep 2023 23:32:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32341156E3;
+	Tue, 12 Sep 2023 23:32:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12DDC1429F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0E561429F
 	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 23:32:27 +0000 (UTC)
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7189510FF
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:32:26 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id 5b1f17b1804b1-401d24f1f27so70514155e9.1
-        for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:32:26 -0700 (PDT)
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C38210FE
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:32:27 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id a640c23a62f3a-99bf3f59905so770187166b.3
+        for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:32:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20221208; t=1694561545; x=1695166345; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=biVZEDEAYEKp2V+herIPqP7yZxpTsOL7p/iaRINkOLw=;
-        b=nO6O/RfFLchSbmuq6CWirCyvS80yDDb7max4suhBLCBYRGrKOdKlrUJ7bNgO8p2n0B
-         RqBWum/ZDbtRAHJ8iGXwNNufm7W4YR6ijRkepdxcY4dp8XBckB8PRpY/S21BDl96uqqa
-         7he34mPNrbQO6OGBZp2XveJexL0wakHEdghlaBwdOPOMvfRuAMzv9Jlvl96PIg8T5e/E
-         r07Tj48bM3J6qKQpMCLnOoxdLTgRw9q88yV6iVthTgAn5itG9IZXCCwXbRaZwwpe4Gby
-         6eCn6VEHY1S80SqM6USayGJNGAXzN3IjJTUO4OpU2IttJ33Uv8GR/swbXEArQPbN7iny
-         SboQ==
+        bh=W4nEz1Iccr+xZqvDM5bnGug5s7P4+oRT7ierkjOsGaE=;
+        b=Zd909t06qpmEmHXw+DWc1Y/XGH9qWbd0bcwyfuuNf4G6KZPyhl+UfQHHgrQrhp4+1n
+         2JMP27mswQWqyy6MzmVEPvSMhHIYo9q9t/W6xJFSK8VmrX3iRt1pGIsj1BdGOlDv+NBM
+         Zmscf3OoW22f66u9zdduZyS945AUAK+RGIvbbVJCJK3STdSMTWYc5HiXKgJ0ndiGgv9i
+         o8swP/0uyE8B1UyHr6B7yUAov7hGe4n22F4C6SKYLvi0Kg8IFRF7BHe8iV+ipXpIOU8/
+         5LWnvKewUIbCDxyhr28Kyol6J9BY6eth0zh1QUbxCF+YJTJhyW8D+q5ZpKRCI0zNIf47
+         UXPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1694561545; x=1695166345;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=biVZEDEAYEKp2V+herIPqP7yZxpTsOL7p/iaRINkOLw=;
-        b=IbJCCnhUQrJgcF1LFC5PK0vn52u3QG6eBtMI50HCjQxzPXcl2EqzInA2bnc3Pv373c
-         L5craTOr/H76AyuAf/AekhI18m2UlP74xLHRxKNE7Mg8TkkqmvQloHGP2q1tfDUFS1IE
-         hC91mRSFK7XBADSbj8gxw4a18ePSPmUUurJXBCX11WGUaWIocbbag3DVN3HfFS9AsVxC
-         2aC2PpOP/cE3+iIHICpw1MWmxYp3pM4km9hEONBDshFG+UP81rI0pL2q5/OF8j2o4kqG
-         TS/kxSLy5nNxagU4O3eGa+3VJE3hcaQ0MU4Zr3QzfTgWi92F84Q7nibo/qzK5iI30qaA
-         45BQ==
-X-Gm-Message-State: AOJu0YyPxWuF4pg0qRpbYmMMpmR2FnrUkkkdRINP2908Z7OB9SqKQ/rB
-	BqpTPXaoipddd/cqSYszqFl+07YQWdixhg==
-X-Google-Smtp-Source: AGHT+IF/10U9we/4qPZgBYOYdt/ovJKo4QwujYWea7Vpt3e2S0TsrozE7pK8bqssM+1yK9P7BDxLBw==
-X-Received: by 2002:a05:600c:108b:b0:3fe:2079:196c with SMTP id e11-20020a05600c108b00b003fe2079196cmr723023wmd.16.1694561544704;
-        Tue, 12 Sep 2023 16:32:24 -0700 (PDT)
+        bh=W4nEz1Iccr+xZqvDM5bnGug5s7P4+oRT7ierkjOsGaE=;
+        b=TssYe5EaBAd5pp6vRD3COsYioqxqllosizXxsXsg82DYIBsbL+JXag9RbAbY7yhNvd
+         ubeV9vbnl1VLVnMxFrDYJq8H7BrmlmGFWf+ExfyXiRenQXjwNP8WDaNic0y6DJ3EpA8U
+         jaKt0KNgEDRtJRlm4GMdZGEEgfW3DDKc7/tzRBDoE8so4WVrPPJDh+nnTdEYV+o/EvXW
+         0ZNr0YH8BdNtVPaJbOCTLpQ2gm36mLl5hPumxSwKuEsYfCv4kjkmXkgxxdunkCt9QpQX
+         WEerVtRU807wW+udNPnbTF9qaqGFoHG5lnl6gZtRadgcZb2OvD99E6rFXYUmriT/MRi0
+         q38Q==
+X-Gm-Message-State: AOJu0Yzxldku7j0qABMGNEN3aR7YjuOvx37YGtjJMYstbUn8RhM2Tmzn
+	VEv01lKFecwC5BYbnakSuz85D53n6c7Fgg==
+X-Google-Smtp-Source: AGHT+IEr8d3pYighYqPSWw4xRQfn0fNAl7/N89SiBWDt1TFgsOm8aItNZpw6jtag4NbEDPU78mnqOg==
+X-Received: by 2002:a17:907:2c6a:b0:9a1:edfd:73bb with SMTP id ib10-20020a1709072c6a00b009a1edfd73bbmr601569ejc.47.1694561545491;
+        Tue, 12 Sep 2023 16:32:25 -0700 (PDT)
 Received: from localhost ([212.203.98.42])
-        by smtp.gmail.com with ESMTPSA id dx22-20020a170906a85600b0099d959f9536sm7547968ejb.12.2023.09.12.16.32.24
+        by smtp.gmail.com with ESMTPSA id se22-20020a170906ce5600b009920e9a3a73sm7489440ejb.115.2023.09.12.16.32.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 16:32:24 -0700 (PDT)
+        Tue, 12 Sep 2023 16:32:25 -0700 (PDT)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -65,9 +65,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	David Vernet <void@manifault.com>,
 	Puranjay Mohan <puranjay12@gmail.com>
-Subject: [PATCH bpf-next v3 11/17] bpf: Detect IP == ksym.end as part of BPF program
-Date: Wed, 13 Sep 2023 01:32:08 +0200
-Message-ID: <20230912233214.1518551-12-memxor@gmail.com>
+Subject: [PATCH bpf-next v3 12/17] bpf: Disallow fentry/fexit/freplace for exception callbacks
+Date: Wed, 13 Sep 2023 01:32:09 +0200
+Message-ID: <20230912233214.1518551-13-memxor@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230912233214.1518551-1-memxor@gmail.com>
 References: <20230912233214.1518551-1-memxor@gmail.com>
@@ -77,92 +77,101 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2617; i=memxor@gmail.com; h=from:subject; bh=pGHbRWDKfQzSJuQ7RuVgf7MLQ6H8s585iql6KmWXG7k=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBlAPSt+kbHObhSg37ORGR43DfIeHYlhc407aWY3 Tt++AHRRMKJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZQD0rQAKCRBM4MiGSL8R ynKDEACnhlZp7MyNLouJrtxXegUULiCsAU0ZoQjgtnRGchFApD7pPel1sVhpr0bwD6qyNakDXPm oHwJfG6iCaUUoRea9jHbosSZt5VN0+WYpmsqYDr4XZAYCGlsL8OId+2tWMe15A9UBnN6oPh/7iL oK1vgxmDlN67l8bBiNoNOgu8nsOQwFZsc+kjqueRotwA8rfxrxatFSmVIazUdr+u7dQ6/FXKVyK rG6Q93QNf3ovhzlGuV++jV1V+ULny9/rE8RiOMd54MaI5jRvZm1sPtD5/cnXdpQY+cGd+E+yiL0 t5C2pMDZjqVPHLJCZpHVuR7SOI1XD415wQXliXq7tiBOVNx7f+Jep9Rq+4byip2EiZa/LgtpMu9 IOujkOLl19z7rubTE1EsnVFzGCMrryfOeDK9a5sagr4M+0NQgXUSPepKSK+qYs49kMjLvSpRcuM LcJLWW6+s+qDLUK1Qst7kT0nPsMx1vyrDNyukAPSOJ+UCTtgQMjoiGIyltxdtycrOeQEmPAJ0x/ nEQLmDLmsWBvPVm6xfHhYxj5zNQ/fGK5bRW16EA6tP8tq4Yjl5y4j6d/ZmDji6tVMZ7jFrJAaVZ ePxfltM6LzXiqbMuTgVDaY13pxyTiiMl+qFtwFqU1X2CWv2bAviN9ml1JQfCJyTQ/TENXqIHtFQ raJ5B2G1zjyoL/Q==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3994; i=memxor@gmail.com; h=from:subject; bh=ZYZfPK9xehq0OlRbe34+tgm5ELBdf5+L7TGiYkXpUx8=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBlAPStPNtkQvOi1eXnTzCTxzh4HbyCSiqKhPicI 8AZlMhkLpGJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZQD0rQAKCRBM4MiGSL8R ytoBEACbKGtjeyjXZ9sBe7Z2Y3b8mnALTo14ca8u7Pt+C/NGBzgdYAZRyrm9vT+VM8OCpLNM0Of JjxbY5PvqY4a5hbs5yt95HZjAn6v33afWRCIZ4mUhew5wXCUjrK6mNq2ubrq5apiUhDo5LP6y+e H1c+8hcpUqimaC4GyoC0VCewDoJhaEv8Y70q9yE5r5r7MEuZyTzbFHymF+PPnxF2ic2YYOliDSM QteuvDOFnIYKg2JbylMYZ7l4BrkQGDygBckOvDQhad2wYullNweq06gUGk+2jQcDU4MjxgAmG8R CQ5u85N3iPTNctYT8KClmNddrlLQQVpoeuKo+rGMZlWHJD9ABdouAk+UI1+JcWJlFaA5o1JoLXa 83xkCVD1Nm/Js4LxHA6qI38HoVJ0q7xGH6sBu+qTkZZj9++AD2Keex7II63J/EWnpc4KP4eyA1g oYEaMjtJGorb5qTUB2sdAF91kFqeqyEUwcBjx2PplmUB0b2Opxn58/B9R21+bMHpeDhhRrkH6sq CLYOl/9X/3SdNf81j5aYrh4RPgvBkaKudhs1V4UQrx6Dxy96SqqlZsTkhR2NK+HXbOpuX87C3Tf N4RDPOgPSPBgFDtfjo645JW14XbkZILMcMYydMU+zt84NPaY6XBCR7Tv1NREMcwIgQO/7qoZn+A HFqWyCrWYlxu2wQ==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Now that bpf_throw kfunc is the first such call instruction that has
-noreturn semantics within the verifier, this also kicks in dead code
-elimination in unprecedented ways. For one, any instruction following
-a bpf_throw call will never be marked as seen. Moreover, if a callchain
-ends up throwing, any instructions after the call instruction to the
-eventually throwing subprog in callers will also never be marked as
-seen.
+During testing, it was discovered that extensions to exception callbacks
+had no checks, upon running a testcase, the kernel ended up running off
+the end of a program having final call as bpf_throw, and hitting int3
+instructions.
 
-The tempting way to fix this would be to emit extra 'int3' instructions
-which bump the jited_len of a program, and ensure that during runtime
-when a program throws, we can discover its boundaries even if the call
-instruction to bpf_throw (or to subprogs that always throw) is emitted
-as the final instruction in the program.
+The reason is that while the default exception callback would have reset
+the stack frame to return back to the main program's caller, the
+replacing extension program will simply return back to bpf_throw, which
+will instead return back to the program and the program will continue
+execution, now in an undefined state where anything could happen.
 
-An example of such a program would be this:
+The way to support extensions to an exception callback would be to mark
+the BPF_PROG_TYPE_EXT main subprog as an exception_cb, and prevent it
+from calling bpf_throw. This would make the JIT produce a prologue that
+restores saved registers and reset the stack frame. But let's not do
+that until there is a concrete use case for this, and simply disallow
+this for now.
 
-do_something():
-	...
-	r0 = 0
-	exit
+Similar issues will exist for fentry and fexit cases, where trampoline
+saves data on the stack when invoking exception callback, which however
+will then end up resetting the stack frame, and on return, the fexit
+program will never will invoked as the return address points to the main
+program's caller in the kernel. Instead of additional complexity and
+back and forth between the two stacks to enable such a use case, simply
+forbid it.
 
-foo():
-	r1 = 0
-	call bpf_throw
-	r0 = 0
-	exit
+One key point here to note is that currently X86_TAIL_CALL_OFFSET didn't
+require any modifications, even though we emit instructions before the
+corresponding endbr64 instruction. This is because we ensure that a main
+subprog never serves as an exception callback, and therefore the
+exception callback (which will be a global subprog) can never serve as
+the tail call target, eliminating any discrepancies. However, once we
+support a BPF_PROG_TYPE_EXT to also act as an exception callback, it
+will end up requiring change to the tail call offset to account for the
+extra instructions. For simplicitly, tail calls could be disabled for
+such targets.
 
-bar(cond):
-	if r1 != 0 goto pc+2
-	call do_something
-	exit
-	call foo
-	r0 = 0  // Never seen by verifier
-	exit	//
+Noting the above, it appears better to wait for a concrete use case
+before choosing to permit extension programs to replace exception
+callbacks.
 
-main(ctx):
-	r1 = ...
-	call bar
-	r0 = 0
-	exit
-
-Here, if we do end up throwing, the stacktrace would be the following:
-
-bpf_throw
-foo
-bar
-main
-
-In bar, the final instruction emitted will be the call to foo, as such,
-the return address will be the subsequent instruction (which the JIT
-emits as int3 on x86). This will end up lying outside the jited_len of
-the program, thus, when unwinding, we will fail to discover the return
-address as belonging to any program and end up in a panic due to the
-unreliable stack unwinding of BPF programs that we never expect.
-
-To remedy this case, make bpf_prog_ksym_find treat IP == ksym.end as
-part of the BPF program, so that is_bpf_text_address returns true when
-such a case occurs, and we are able to unwind reliably when the final
-instruction ends up being a call instruction.
+As a precaution, we disable fentry and fexit for exception callbacks as
+well.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/core.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel/bpf/helpers.c  |  1 +
+ kernel/bpf/verifier.c | 11 +++++++++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 7849b9cca749..8f921b6d6981 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -623,7 +623,11 @@ static __always_inline int bpf_tree_comp(void *key, struct latch_tree_node *n)
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 2c8e1ee97b71..7ff2a42f1996 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2490,6 +2490,7 @@ __bpf_kfunc void bpf_throw(u64 cookie)
+ 	 */
+ 	kasan_unpoison_task_stack_below((void *)ctx.sp);
+ 	ctx.aux->bpf_exception_cb(cookie, ctx.sp, ctx.bp);
++	WARN(1, "A call to BPF exception callback should never return\n");
+ }
  
- 	if (val < ksym->start)
- 		return -1;
--	if (val >= ksym->end)
-+	/* Ensure that we detect return addresses as part of the program, when
-+	 * the final instruction is a call for a program part of the stack
-+	 * trace. Therefore, do val > ksym->end instead of val >= ksym->end.
-+	 */
-+	if (val > ksym->end)
- 		return  1;
- 
- 	return 0;
+ __diag_pop();
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 0ba32b626320..21e37e46d792 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -19750,6 +19750,12 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+ 			bpf_log(log, "Subprog %s doesn't exist\n", tname);
+ 			return -EINVAL;
+ 		}
++		if (aux->func && aux->func[subprog]->aux->exception_cb) {
++			bpf_log(log,
++				"%s programs cannot attach to exception callback\n",
++				prog_extension ? "Extension" : "FENTRY/FEXIT");
++			return -EINVAL;
++		}
+ 		conservative = aux->func_info_aux[subprog].unreliable;
+ 		if (prog_extension) {
+ 			if (conservative) {
+@@ -19762,6 +19768,11 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+ 					"Extension programs should be JITed\n");
+ 				return -EINVAL;
+ 			}
++			if (aux->func && aux->func[subprog]->aux->exception_cb) {
++				bpf_log(log,
++					"Extension programs cannot replace exception callback\n");
++				return -EINVAL;
++			}
+ 		}
+ 		if (!tgt_prog->jited) {
+ 			bpf_log(log, "Can attach to only JITed progs\n");
 -- 
 2.41.0
 
