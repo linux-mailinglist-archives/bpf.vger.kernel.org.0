@@ -1,87 +1,141 @@
-Return-Path: <bpf+bounces-9695-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9694-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A08379C13E
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 02:44:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B68B379C13B
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 02:44:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA7081C20ACD
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 00:44:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E69841C20AC8
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 00:44:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035641843;
-	Tue, 12 Sep 2023 00:43:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3DF817D9;
+	Tue, 12 Sep 2023 00:43:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF04217EA
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 00:43:18 +0000 (UTC)
-Received: from out-221.mta0.migadu.com (out-221.mta0.migadu.com [IPv6:2001:41d0:1004:224b::dd])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00FA210D8
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 17:29:38 -0700 (PDT)
-Message-ID: <6c275fdc-4468-7573-a33c-35fc442c61c5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1694470312;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74119138E;
+	Tue, 12 Sep 2023 00:43:18 +0000 (UTC)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1AB618B8B4;
+	Mon, 11 Sep 2023 17:21:35 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B6F732185A;
+	Tue, 12 Sep 2023 00:20:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1694478004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5WZ2X8irrYsMGdmTvsQZf0PGkIQMT/5DkX5HnLljfQ8=;
-	b=ksuZ7e4VDPtO/M0sq4SoEmPgUxuphDQdLi3vp7XB2pwWn78JCtUG/NIfu6+L/J3nD9pVGW
-	GBsCTpeSBNFNq5Ew8ZcuJHRDdlNOfC/RatIsxSOwNln3ftALuKg12iJHT8iz7XTC0ZucRT
-	HMGllfDSiSYv7jm8WTUQTP7ptsnWL/0=
-Date: Mon, 11 Sep 2023 15:11:43 -0700
+	bh=miCkGFoxKxVBRFGfrRVmp7107zCZ87ZsGupuJ8/qi4I=;
+	b=y+XJ5licnv6p4VsbMaYCCmjo88xpeuPolvb06IFTBaohmZvi/sfa6ct/tsx/rT903MwHja
+	feieLTBbRrr7hs0PQAhssAyrPqBBQWX4zmAHc8gS4JuL7um1lHz3M+ZofnVQg4X0c7oJa6
+	zntywi97zFwmCzO4Bh5EOVScVd7Yopo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1694478004;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=miCkGFoxKxVBRFGfrRVmp7107zCZ87ZsGupuJ8/qi4I=;
+	b=gWiZ8WawDBD37dgffca3X5PwhwfGLc4J5xDCDY4r5blSjYZHqemjX9l8+4vwn4kc0fSi9z
+	aQgqVsD/spaBrZAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7F699139DB;
+	Tue, 12 Sep 2023 00:20:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id 3zaDGbSu/2StUQAAMHmgww
+	(envelope-from <krisman@suse.de>); Tue, 12 Sep 2023 00:20:04 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: Breno Leitao <leitao@debian.org>
+Cc: sdf@google.com,  axboe@kernel.dk,  asml.silence@gmail.com,
+  willemdebruijn.kernel@gmail.com,  kuba@kernel.org,  martin.lau@linux.dev,
+  bpf@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  netdev@vger.kernel.org,  io-uring@vger.kernel.org,  pabeni@redhat.com
+Subject: Re: [PATCH v5 5/8] io_uring/cmd: return -EOPNOTSUPP if net is disabled
+In-Reply-To: <ZP9EeunfcbWos80w@gmail.com> (Breno Leitao's message of "Mon, 11
+	Sep 2023 09:46:50 -0700")
+Organization: SUSE
+References: <20230911103407.1393149-1-leitao@debian.org>
+	<20230911103407.1393149-6-leitao@debian.org> <87ledc904p.fsf@suse.de>
+	<ZP9EeunfcbWos80w@gmail.com>
+Date: Mon, 11 Sep 2023 20:20:03 -0400
+Message-ID: <87jzsw5jkc.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 2/3] bpf: expose information about supported xdp
- metadata kfunc
-Content-Language: en-US
-To: Stanislav Fomichev <sdf@google.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
- kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
- netdev@vger.kernel.org, Willem de Bruijn <willemb@google.com>
-References: <20230908225807.1780455-1-sdf@google.com>
- <20230908225807.1780455-3-sdf@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230908225807.1780455-3-sdf@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain
 
-On 9/8/23 3:58 PM, Stanislav Fomichev wrote:
-> @@ -12,15 +13,24 @@ static int
->   netdev_nl_dev_fill(struct net_device *netdev, struct sk_buff *rsp,
->   		   const struct genl_info *info)
->   {
-> +	u64 xdp_rx_meta = 0;
->   	void *hdr;
->   
->   	hdr = genlmsg_iput(rsp, info);
->   	if (!hdr)
->   		return -EMSGSIZE;
->   
-> +#define XDP_METADATA_KFUNC(_, flag, __, xmo) \
-> +	if (netdev->xdp_metadata_ops->xmo) \
+Breno Leitao <leitao@debian.org> writes:
 
-A NULL check is needed for netdev->xdp_metadata_ops.
+> On Mon, Sep 11, 2023 at 11:53:58AM -0400, Gabriel Krisman Bertazi wrote:
+>> Breno Leitao <leitao@debian.org> writes:
+>> 
+>> > Protect io_uring_cmd_sock() to be called if CONFIG_NET is not set. If
+>> > network is not enabled, but io_uring is, then we want to return
+>> > -EOPNOTSUPP for any possible socket operation.
+>> >
+>> > This is helpful because io_uring_cmd_sock() can now call functions that
+>> > only exits if CONFIG_NET is enabled without having #ifdef CONFIG_NET
+>> > inside the function itself.
+>> >
+>> > Signed-off-by: Breno Leitao <leitao@debian.org>
+>> > ---
+>> >  io_uring/uring_cmd.c | 8 ++++++++
+>> >  1 file changed, 8 insertions(+)
+>> >
+>> > diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
+>> > index 60f843a357e0..a7d6a7d112b7 100644
+>> > --- a/io_uring/uring_cmd.c
+>> > +++ b/io_uring/uring_cmd.c
+>> > @@ -167,6 +167,7 @@ int io_uring_cmd_import_fixed(u64 ubuf, unsigned long len, int rw,
+>> >  }
+>> >  EXPORT_SYMBOL_GPL(io_uring_cmd_import_fixed);
+>> >  
+>> > +#if defined(CONFIG_NET)
+>> >  int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
+>> >  {
+>> >  	struct socket *sock = cmd->file->private_data;
+>> > @@ -193,3 +194,10 @@ int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
+>> >  	}
+>> >  }
+>> >  EXPORT_SYMBOL_GPL(io_uring_cmd_sock);
+>> > +#else
+>> > +int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
+>> > +{
+>> > +	return -EOPNOTSUPP;
+>> > +}
+>> > +#endif
+>> > +
+>> 
+>> Is net/socket.c even built without CONFIG_NET? if not, you don't even need
+>> the alternative EOPNOTSUPP implementation.
+>
+> It seems so. net/socket.o is part of obj-y:
+>
+> https://github.com/torvalds/linux/blob/master/net/Makefile#L9
 
-> +		xdp_rx_meta |= flag;
-> +XDP_METADATA_KFUNC_xxx
-> +#undef XDP_METADATA_KFUNC
-> +
+Yes. But also:
 
+[0:cartola linux]$ grep 'net/' Kbuild
+obj-$(CONFIG_NET)       += net/
+
+I doubled checked and it should build fine without it.  Technically, you
+also want to also guard the declaration in the header file, IMO, even if
+it compiles fine.  Also, there is an extra blank line warning when applying
+the patch but, surprisingly, checkpatch.pl seems to miss it.
+
+-- 
+Gabriel Krisman Bertazi
 
