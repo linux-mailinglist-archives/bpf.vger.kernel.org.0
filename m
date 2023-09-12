@@ -1,143 +1,135 @@
-Return-Path: <bpf+bounces-9733-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9734-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90EE179CA27
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 10:37:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4D4479CBE6
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 11:33:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BBA4281CD3
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 08:37:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AC372816BA
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 09:33:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC25134B1;
-	Tue, 12 Sep 2023 08:34:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82BCB168AF;
+	Tue, 12 Sep 2023 09:32:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0677B9457;
-	Tue, 12 Sep 2023 08:34:55 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B9310DD;
-	Tue, 12 Sep 2023 01:34:54 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RlGzB35YfzVkfZ;
-	Tue, 12 Sep 2023 16:32:06 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 12 Sep 2023 16:34:52 +0800
-From: Yunsheng Lin <linyunsheng@huawei.com>
-To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
-	<linyunsheng@huawei.com>, Lorenzo Bianconi <lorenzo@kernel.org>, Alexander
- Duyck <alexander.duyck@gmail.com>, Liang Chen <liangchen.linux@gmail.com>,
-	Alexander Lobakin <aleksander.lobakin@intel.com>, Eric Dumazet
-	<edumazet@google.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
- Fastabend <john.fastabend@gmail.com>, <bpf@vger.kernel.org>
-Subject: [PATCH net-next v8 6/6] net: veth: use newly added page pool API for veth with xdp
-Date: Tue, 12 Sep 2023 16:31:25 +0800
-Message-ID: <20230912083126.65484-7-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20230912083126.65484-1-linyunsheng@huawei.com>
-References: <20230912083126.65484-1-linyunsheng@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 536041641A;
+	Tue, 12 Sep 2023 09:32:48 +0000 (UTC)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321811BE;
+	Tue, 12 Sep 2023 02:32:47 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-500b66f8b27so9295077e87.3;
+        Tue, 12 Sep 2023 02:32:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694511165; x=1695115965; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0tisjtGn5HwTnlDuYa+imw6wh2RyyzM10er9tYhq8WM=;
+        b=snvGSoPjxEL/s4jIixTw3OEYv4z5to0wlSuFMbExcC6FoxfPa5BY33kJdhwAtsNUlo
+         LYIrclGX4BldiBLlI+ccG6dJPLbfYEZB76PQou8q4J+xOyQ96iYGZ2Gjz/F9A4vjjGZj
+         jHumjYvxkgiHwwdIPyk3AzuJnkg8n1bH4/H1zvrLRldC0FdYVbO1Svs6wcQQXiGqE3Ld
+         Kn9p0eFv159pNBIuM2NH3PjpNJ8XYsLa4zFaNugB0rmjgISvWF4ZshPiJ9/hkuh2SChX
+         4VlXW0+/pY+SZ9CMnJPcJGfZw0zHLEzkXbUQ2w3L/lV1gyjiYKbexzkTa+An5eCusLMq
+         +r8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694511165; x=1695115965;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0tisjtGn5HwTnlDuYa+imw6wh2RyyzM10er9tYhq8WM=;
+        b=eygyoGwmaimW9jiFwEkg+H7XQYv0xH8eIkj8qTvvZwhI+y66TtYjXjR5Q77zXa7BMB
+         y9FsgT5lkRqdi+s6EYcORWc5YiDls0OpEos294pKr79Sd96pXk2WlfMvR3KKeD1ZbJ4n
+         vWT1EIbSHf523WK76akwamSH4slylxdUSPZvN2y6KV/JzV+QbQtJTJ+RX5E0CnfKI6Vs
+         09tBxfDBRFzTTE7nb2M8tHYJPgXGSns96Ck5RHTOhXXKpeaeHcpL72h8BglGtWxYFJYg
+         S7oLW61+swdwr0eUdHpYZ6Pz9yI9g3zHrVnSPWpBTrTpaS8wtxJsz51KH1V6DZzmUAsq
+         lQYw==
+X-Gm-Message-State: AOJu0Yz98Lw61upQ1TPoxM6lzS2LtMfuJNHqyOt4Ksn+fNp1mGQVyoJ+
+	rZ40EyM+Sj23z7JNv15r2yI=
+X-Google-Smtp-Source: AGHT+IFN0FGqvBqLO0ShV2AAM8xsq5NGKgI5Df4M79ZbrNaAs0NTSfr0K19fMExUSUhkJbZjrDV/ig==
+X-Received: by 2002:ac2:4297:0:b0:500:b8bc:bd9a with SMTP id m23-20020ac24297000000b00500b8bcbd9amr8613584lfh.49.1694511164975;
+        Tue, 12 Sep 2023 02:32:44 -0700 (PDT)
+Received: from mobilestation ([85.249.16.222])
+        by smtp.gmail.com with ESMTPSA id c10-20020ac2530a000000b004fdfd4c1fcesm1663425lfh.36.2023.09.12.02.32.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 02:32:44 -0700 (PDT)
+Date: Tue, 12 Sep 2023 12:32:40 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Jose Abreu <Jose.Abreu@synopsys.com>, 
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Alexei Starovoitov <ast@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
+	Emil Renner Berthing <kernel@esmil.dk>, Eric Dumazet <edumazet@google.com>, 
+	Fabio Estevam <festevam@gmail.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
+	"linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, NXP Linux Team <linux-imx@nxp.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Samin Guo <samin.guo@starfivetech.com>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH net-next 1/6] net: stmmac: add platform library
+Message-ID: <u7sabfdqk7i6wlv2j4cxuyb6psjwqs2kukdkafhcpq2zc766m3@m6iqexqjrvkv>
+References: <E1qfiq8-007TOe-9F@rmk-PC.armlinux.org.uk>
+ <DM4PR12MB5088F83CE829184956147E6BD3F1A@DM4PR12MB5088.namprd12.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM4PR12MB5088F83CE829184956147E6BD3F1A@DM4PR12MB5088.namprd12.prod.outlook.com>
 
-Use page_pool[_cache]_alloc() API to allocate memory with
-least memory utilization and performance penalty.
+On Tue, Sep 12, 2023 at 07:59:49AM +0000, Jose Abreu wrote:
+> From: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> Date: Mon, Sep 11, 2023 at 16:28:40
+> 
+> > Add a platform library of helper functions for common traits in the
+> > platform drivers. Currently, this is setting the tx clock.
+> > 
+> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > ---
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-CC: Lorenzo Bianconi <lorenzo@kernel.org>
-CC: Alexander Duyck <alexander.duyck@gmail.com>
-CC: Liang Chen <liangchen.linux@gmail.com>
-CC: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- drivers/net/veth.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+> >  drivers/net/ethernet/stmicro/stmmac/Makefile  |  2 +-
+> >  .../ethernet/stmicro/stmmac/stmmac_plat_lib.c | 29 +++++++++++++++++++
+> >  .../ethernet/stmicro/stmmac/stmmac_plat_lib.h |  8 +++++
+> 
+> Wouldn't it be better to just call it "stmmac_lib{.c,.h}" in case we need to add
+> more helpers on the future that are not only for platform-based drivers?
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 9c6f4f83f22b..a31a792aa00d 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -737,10 +737,11 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
- 	if (skb_shared(skb) || skb_head_is_locked(skb) ||
- 	    skb_shinfo(skb)->nr_frags ||
- 	    skb_headroom(skb) < XDP_PACKET_HEADROOM) {
--		u32 size, len, max_head_size, off;
-+		u32 size, len, max_head_size, off, truesize, page_offset;
- 		struct sk_buff *nskb;
- 		struct page *page;
- 		int i, head_off;
-+		void *data;
- 
- 		/* We need a private copy of the skb and data buffers since
- 		 * the ebpf program can modify it. We segment the original skb
-@@ -753,14 +754,17 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
- 		if (skb->len > PAGE_SIZE * MAX_SKB_FRAGS + max_head_size)
- 			goto drop;
- 
-+		size = min_t(u32, skb->len, max_head_size);
-+		truesize = SKB_HEAD_ALIGN(size) + VETH_XDP_HEADROOM;
-+
- 		/* Allocate skb head */
--		page = page_pool_dev_alloc_pages(rq->page_pool);
--		if (!page)
-+		data = page_pool_dev_cache_alloc(rq->page_pool, &truesize);
-+		if (!data)
- 			goto drop;
- 
--		nskb = napi_build_skb(page_address(page), PAGE_SIZE);
-+		nskb = napi_build_skb(data, truesize);
- 		if (!nskb) {
--			page_pool_put_full_page(rq->page_pool, page, true);
-+			page_pool_cache_free(rq->page_pool, data, true);
- 			goto drop;
- 		}
- 
-@@ -768,7 +772,6 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
- 		skb_copy_header(nskb, skb);
- 		skb_mark_for_recycle(nskb);
- 
--		size = min_t(u32, skb->len, max_head_size);
- 		if (skb_copy_bits(skb, 0, nskb->data, size)) {
- 			consume_skb(nskb);
- 			goto drop;
-@@ -783,14 +786,18 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
- 		len = skb->len - off;
- 
- 		for (i = 0; i < MAX_SKB_FRAGS && off < skb->len; i++) {
--			page = page_pool_dev_alloc_pages(rq->page_pool);
-+			size = min_t(u32, len, PAGE_SIZE);
-+			truesize = size;
-+
-+			page = page_pool_dev_alloc(rq->page_pool, &page_offset,
-+						   &truesize);
- 			if (!page) {
- 				consume_skb(nskb);
- 				goto drop;
- 			}
- 
--			size = min_t(u32, len, PAGE_SIZE);
--			skb_add_rx_frag(nskb, i, page, 0, size, PAGE_SIZE);
-+			skb_add_rx_frag(nskb, i, page, page_offset, size,
-+					truesize);
- 			if (skb_copy_bits(skb, off, page_address(page),
- 					  size)) {
- 				consume_skb(nskb);
--- 
-2.33.0
+What is the difference between stmmac_platform.{c,h} and
+stmmac_plat_lib.{c,h} files? It isn't clear really. In perspective it
+may cause confusions like mixed definitions in both of these files.
 
+Why not to use the stmmac_platform.{c,h} instead of adding one more
+file? Especially seeing it already has some generic
+platform/glue-drivers helpers like:
+stmmac_get_platform_resources() <- especially this one.
+(devm_)stmmac_probe_config_dt()
+stmmac_remove_config_dt()
+stmmac_pltfr_init()
+stmmac_pltfr_exit()
+(devm_)stmmac_pltfr_probe()
+stmmac_pltfr_remove()
+stmmac_pltfr_suspend()
+stmmac_pltfr_resume()
+stmmac_runtime_suspend()
+stmmac_runtime_resume()
+stmmac_pltfr_noirq_suspend()
+stmmac_pltfr_noirq_resume()
+All of them look like being decent to be defined in the generic
+platform library methods too.
+
+-Serge(y)
+
+> 
+> I believe it's also missing the SPDX identifiers?
+> 
+> Thanks,
+> Jose
 
