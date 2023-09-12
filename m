@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-9762-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9763-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57F1379D449
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 17:05:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 582DA79D44E
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 17:05:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 789181C20D52
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 15:05:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8915D281BDC
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 15:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 910CE18C00;
-	Tue, 12 Sep 2023 15:05:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A34E618C07;
+	Tue, 12 Sep 2023 15:05:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62842A952
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 15:05:01 +0000 (UTC)
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FC9CC7
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 08:05:00 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c35ee3b0d2so39114625ad.2
-        for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 08:05:00 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F7AA952
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 15:05:04 +0000 (UTC)
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC771115
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 08:05:03 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bf55a81eeaso39313765ad.0
+        for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 08:05:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694531100; x=1695135900; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694531103; x=1695135903; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qHTlaHgRQYq4iGS9O2Rgutovx/HNtZyntKoPfx9PGkE=;
-        b=SAbtg2nerKiXFS/uTS0Bp/qP5Wsj3QkYWfelH6g9XtDzRpq467eo6t986FQavNBEdt
-         7ZUh7cB5NewIckREloaSpwF4xeJlwRjCWE8j2SqPDhMf7OeKif0a0Qq75+mCM/YI0sIs
-         /lGlbGz27o15tvTKO0d1GDNJQOMswrX+v/teXQSN0U9SIP3n1szP6J65Jv9LiNXAXRel
-         hGmj50fKpkNbIkWOIwq26dvdL6fPPdwGvxOG0x3JXIK0zetae/rkcR4QzXDeEsk5kxKB
-         Jjqn/EpR50BSP5srCJbLhdC6j+ArludCBhv4FwWODVlqqztzyG1VT2STHr0f4mVT8ce8
-         B7OA==
+        bh=HfVvgOJTXqrns/RXSyNCC8WwMRAz+jjmfx8yekQjfGE=;
+        b=pKw6M3vw/84LphYHVc6BQjdSq6N9pBbs9VtdeaoMFLOn5wZRddWo00qj3hCVWutlti
+         DyShWscduIM+NWbshxPhMye1Pgwnyq6/v1UAgYn4djmaXftofZl8z6I6CCjyj/YIMdaX
+         Aro1Z8odiOwL8PWzwo9bhUsCeeQFjZo+rRJANsOIhdi2gPkDHe4W8CjE9cqC6cFV/jPw
+         6UCYfs8tEYNR0jNttvC6wjixab5FqLpY8N2phvp3pNzdUMY/CjAykyF77p2wHTWH5143
+         W61ghN+hyLnebWqYRF6XwhNY5Kgps6r5A87HGTLTcdrLnCzKhYdJpUovnoR1w9R81l+9
+         LzcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694531100; x=1695135900;
+        d=1e100.net; s=20230601; t=1694531103; x=1695135903;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qHTlaHgRQYq4iGS9O2Rgutovx/HNtZyntKoPfx9PGkE=;
-        b=MeU6GUGJ3uQT0VpdBpZlFWGNkxSvADfTVYv2ufi19CvjeII//pQzHsbCXG1ZO8tV+2
-         ZJ1UXxUz7x1VMaJO08sMMT6Lm5iUSW1jjHVXJbmFSCQK3kUAnTAEn8TbTIwEh6SVp8Uy
-         h01qBU0YHLpgBpUjKHJ/ZvCwqM7fZpRGB+EOEaz53bw9YsDCKWfCEG66YBmUP1nBb7Fh
-         +qCf1VdGqh3lIOZamXcMGkPOUgMxLV98068vBrvn5h6b0CAu6JuniH1VPhyU/QX+CX0s
-         x2MJBcIf0Akkw+Lvid6rW+9sZJFob73qFxu1AaX2MFA+MOvuDsJOUz7ryDr2eyiga4rm
-         PGJw==
-X-Gm-Message-State: AOJu0YyGYKnSISglqEJX9zWo+LuRGvLq2J5xXHVYP8Fwo6eP7Zn2Spcn
-	mVZdbvpwLiLXj3HR17tYt+10bjjgs5E=
-X-Google-Smtp-Source: AGHT+IEPXIaqCQHDUTSt4sg+6yblgU0DSfQfSYN59I6hx1FyuTZZch3vHhXCFkVlwmAEl4QGARZmjg==
-X-Received: by 2002:a17:903:120b:b0:1bd:bba1:be78 with SMTP id l11-20020a170903120b00b001bdbba1be78mr32808plh.23.1694531099423;
-        Tue, 12 Sep 2023 08:04:59 -0700 (PDT)
+        bh=HfVvgOJTXqrns/RXSyNCC8WwMRAz+jjmfx8yekQjfGE=;
+        b=dzW+4LWlQRDmryGVrqi/JOssAaNwY3Jt3EfVsu9qGvS0sBdig5KHDB1WNoeZZEcFhW
+         BwfRWdPAJZjrJbHywwytoQIvi+m6rviss32EjVGv0xlmuOPcEeH/fTOx01GjbTNQkTq1
+         2J0KL1F1YQDQiuzqLRJ0AByA+Jlqv/kbbNyE5DpVKdk0HJca5oWCTdHjdkcx+eKSqcov
+         /AwnlB/zVHiIoLawLDyITawpBmV+UtaVwxNHe9+W5u1k5AlQhxoBZbAgSQdIfLkey7P2
+         rDdOVEfaLVP4FVmrw0wXLrge1dakaqP+ImDm7SWzghP2nnqqAK86zcH3DTG5G21h/OO5
+         m4Dg==
+X-Gm-Message-State: AOJu0YyeW1Estw2vHhLblNpkxNQRfQc4K1Hp5WQGUoC/T6TbqXTHo/Fl
+	JVfeaHEkjCldcXhwEDbh0UydTcA5Xpk=
+X-Google-Smtp-Source: AGHT+IF3x/UoirAEaU7h89t5BpycEGa+eJ3dO5jrMfhn90+5EFQAvlZKLlpyz1xi/WpxF1hFuLLjbw==
+X-Received: by 2002:a17:902:da92:b0:1bb:b226:52b1 with SMTP id j18-20020a170902da9200b001bbb22652b1mr1866plx.17.1694531102406;
+        Tue, 12 Sep 2023 08:05:02 -0700 (PDT)
 Received: from localhost.localdomain (bb116-14-95-136.singnet.com.sg. [116.14.95.136])
-        by smtp.gmail.com with ESMTPSA id i4-20020a170902eb4400b001b8b26fa6c1sm8526941pli.115.2023.09.12.08.04.56
+        by smtp.gmail.com with ESMTPSA id i4-20020a170902eb4400b001b8b26fa6c1sm8526941pli.115.2023.09.12.08.04.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 08:04:59 -0700 (PDT)
+        Tue, 12 Sep 2023 08:05:02 -0700 (PDT)
 From: Leon Hwang <hffilwlqm@gmail.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -67,9 +67,9 @@ Cc: ast@kernel.org,
 	xukuohai@huawei.com,
 	hffilwlqm@gmail.com,
 	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next 2/3] bpf, x64: Fix tailcall infinite loop
-Date: Tue, 12 Sep 2023 23:04:41 +0800
-Message-ID: <20230912150442.2009-3-hffilwlqm@gmail.com>
+Subject: [PATCH bpf-next 3/3] selftests/bpf: Add testcases for tailcall infinite loop fixing
+Date: Tue, 12 Sep 2023 23:04:42 +0800
+Message-ID: <20230912150442.2009-4-hffilwlqm@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230912150442.2009-1-hffilwlqm@gmail.com>
 References: <20230912150442.2009-1-hffilwlqm@gmail.com>
@@ -81,158 +81,375 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From commit ebf7d1f508a73871 ("bpf, x64: rework pro/epilogue and tailcall
-handling in JIT"), the tailcall on x64 works better than before.
+Add 4 test cases to confirm the tailcall infinite loop bug has been fixed.
 
-From commit e411901c0b775a3a ("bpf: allow for tailcalls in BPF subprograms
-for x64 JIT"), tailcall is able to run in BPF subprograms on x64.
+Like tailcall_bpf2bpf cases, do fentry/fexit on the bpf2bpf, and then
+check the final count result.
 
-From commit 5b92a28aae4dd0f8 ("bpf: Support attaching tracing BPF program
-to other BPF programs"), BPF program is able to trace other BPF programs.
+tools/testing/selftests/bpf/test_progs -t tailcalls
+226/13  tailcalls/tailcall_bpf2bpf_fentry:OK
+226/14  tailcalls/tailcall_bpf2bpf_fexit:OK
+226/15  tailcalls/tailcall_bpf2bpf_fentry_fexit:OK
+226/16  tailcalls/tailcall_bpf2bpf_fentry_entry:OK
+226     tailcalls:OK
+Summary: 1/16 PASSED, 0 SKIPPED, 0 FAILED
 
-How about combining them all together?
-
-1. FENTRY/FEXIT on a BPF subprogram.
-2. A tailcall runs in the BPF subprogram.
-3. The tailcall calls the subprogram's caller.
-
-As a result, a tailcall infinite loop comes up. And the loop would halt
-the machine.
-
-As we know, in tail call context, the tail_call_cnt propagates by stack
-and rax register between BPF subprograms. So do in trampolines.
-
-Fixes: ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling in JIT")
-Fixes: e411901c0b77 ("bpf: allow for tailcalls in BPF subprograms for x64 JIT")
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
 ---
- arch/x86/net/bpf_jit_comp.c | 28 ++++++++++++++++++++++------
- include/linux/bpf.h         |  5 +++++
- kernel/bpf/trampoline.c     |  4 ++--
- kernel/bpf/verifier.c       |  3 +++
- 4 files changed, 32 insertions(+), 8 deletions(-)
+ .../selftests/bpf/prog_tests/tailcalls.c      | 237 +++++++++++++++++-
+ .../bpf/progs/tailcall_bpf2bpf_fentry.c       |  18 ++
+ .../bpf/progs/tailcall_bpf2bpf_fexit.c        |  18 ++
+ 3 files changed, 269 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fentry.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fexit.c
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index bcca1c9b9a027..2846c21d75bfa 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1022,6 +1022,10 @@ static void emit_shiftx(u8 **pprog, u32 dst_reg, u8 src_reg, bool is64, u8 op)
- 
- #define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
- 
-+/* mov rax, qword ptr [rbp - rounded_stack_depth - 8] */
-+#define RESTORE_TAIL_CALL_CNT(stack)				\
-+	EMIT3_off32(0x48, 0x8B, 0x85, -round_up(stack, 8) - 8)
-+
- static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image,
- 		  int oldproglen, struct jit_context *ctx, bool jmp_padding)
- {
-@@ -1627,9 +1631,7 @@ st:			if (is_imm8(insn->off))
- 
- 			func = (u8 *) __bpf_call_base + imm32;
- 			if (tail_call_reachable) {
--				/* mov rax, qword ptr [rbp - rounded_stack_depth - 8] */
--				EMIT3_off32(0x48, 0x8B, 0x85,
--					    -round_up(bpf_prog->aux->stack_depth, 8) - 8);
-+				RESTORE_TAIL_CALL_CNT(bpf_prog->aux->stack_depth);
- 				if (!imm32)
- 					return -EINVAL;
- 				offs = 7 + x86_call_depth_emit_accounting(&prog, func);
-@@ -2404,6 +2406,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 	 *                     [ ...        ]
- 	 *                     [ stack_arg2 ]
- 	 * RBP - arg_stack_off [ stack_arg1 ]
-+	 * RSP                 [ tail_call_cnt ] BPF_TRAMP_F_TAIL_CALL_CTX
- 	 */
- 
- 	/* room for return value of orig_call or fentry prog */
-@@ -2468,6 +2471,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 	else
- 		/* sub rsp, stack_size */
- 		EMIT4(0x48, 0x83, 0xEC, stack_size);
-+	if (flags & BPF_TRAMP_F_TAIL_CALL_CTX)
-+		EMIT1(0x50);		/* push rax */
- 	/* mov QWORD PTR [rbp - rbx_off], rbx */
- 	emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_6, -rbx_off);
- 
-@@ -2520,9 +2525,15 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 		restore_regs(m, &prog, regs_off);
- 		save_args(m, &prog, arg_stack_off, true);
- 
-+		if (flags & BPF_TRAMP_F_TAIL_CALL_CTX)
-+			/* Before calling the original function, restore the
-+			 * tail_call_cnt from stack to rax.
-+			 */
-+			RESTORE_TAIL_CALL_CNT(stack_size);
-+
- 		if (flags & BPF_TRAMP_F_ORIG_STACK) {
--			emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, 8);
--			EMIT2(0xff, 0xd0); /* call *rax */
-+			emit_ldx(&prog, BPF_DW, BPF_REG_6, BPF_REG_FP, 8);
-+			EMIT2(0xff, 0xd3); /* call *rbx */
- 		} else {
- 			/* call original function */
- 			if (emit_rsb_call(&prog, orig_call, prog)) {
-@@ -2573,7 +2584,12 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 			ret = -EINVAL;
- 			goto cleanup;
- 		}
--	}
-+	} else if (flags & BPF_TRAMP_F_TAIL_CALL_CTX)
-+		/* Before running the original function, restore the
-+		 * tail_call_cnt from stack to rax.
-+		 */
-+		RESTORE_TAIL_CALL_CNT(stack_size);
-+
- 	/* restore return value of orig_call or fentry prog back into RAX */
- 	if (save_ret)
- 		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -8);
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 87eeb3a46a1d5..b9e5731594324 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1035,6 +1035,11 @@ struct btf_func_model {
-  */
- #define BPF_TRAMP_F_SHARE_IPMODIFY	BIT(6)
- 
-+/* Indicate that current trampoline is in a tail call context. Then, it has to
-+ * cache and restore tail_call_cnt to avoid infinite tail call loop.
-+ */
-+#define BPF_TRAMP_F_TAIL_CALL_CTX	BIT(7)
-+
- /* Each call __bpf_prog_enter + call bpf_func + call __bpf_prog_exit is ~50
-  * bytes on x86.
-  */
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 53ff50cac61ea..e97aeda3a86b5 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -415,8 +415,8 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
- 		goto out;
- 	}
- 
--	/* clear all bits except SHARE_IPMODIFY */
--	tr->flags &= BPF_TRAMP_F_SHARE_IPMODIFY;
-+	/* clear all bits except SHARE_IPMODIFY and TAIL_CALL_CTX */
-+	tr->flags &= (BPF_TRAMP_F_SHARE_IPMODIFY | BPF_TRAMP_F_TAIL_CALL_CTX);
- 
- 	if (tlinks[BPF_TRAMP_FEXIT].nr_links ||
- 	    tlinks[BPF_TRAMP_MODIFY_RETURN].nr_links) {
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index dbba2b8060176..18e673c0ac159 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -19774,6 +19774,9 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
- 	if (!tr)
- 		return -ENOMEM;
- 
-+	if (tgt_prog && tgt_prog->aux->tail_call_reachable)
-+		tr->flags = BPF_TRAMP_F_TAIL_CALL_CTX;
-+
- 	prog->aux->dst_trampoline = tr;
- 	return 0;
+diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+index 09c189761926c..fc6b2954e8f50 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
++++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+@@ -218,12 +218,14 @@ static void test_tailcall_2(void)
+ 	bpf_object__close(obj);
  }
+ 
+-static void test_tailcall_count(const char *which)
++static void test_tailcall_count(const char *which, bool test_fentry,
++				bool test_fexit)
+ {
++	struct bpf_object *obj = NULL, *fentry_obj = NULL, *fexit_obj = NULL;
++	struct bpf_link *fentry_link = NULL, *fexit_link = NULL;
+ 	int err, map_fd, prog_fd, main_fd, data_fd, i, val;
+ 	struct bpf_map *prog_array, *data_map;
+ 	struct bpf_program *prog;
+-	struct bpf_object *obj;
+ 	char buff[128] = {};
+ 	LIBBPF_OPTS(bpf_test_run_opts, topts,
+ 		.data_in = buff,
+@@ -265,6 +267,54 @@ static void test_tailcall_count(const char *which)
+ 	if (CHECK_FAIL(err))
+ 		goto out;
+ 
++	if (test_fentry) {
++		fentry_obj = bpf_object__open_file("tailcall_bpf2bpf_fentry.bpf.o",
++						   NULL);
++		if (!ASSERT_OK_PTR(fentry_obj, "open fentry_obj file"))
++			goto out;
++
++		prog = bpf_object__find_program_by_name(fentry_obj, "fentry");
++		if (!ASSERT_OK_PTR(prog, "find fentry prog"))
++			goto out;
++
++		err = bpf_program__set_attach_target(prog, prog_fd,
++						     "subprog_tail");
++		if (!ASSERT_OK(err, "set_attach_target subprog_tail"))
++			goto out;
++
++		err = bpf_object__load(fentry_obj);
++		if (!ASSERT_OK(err, "load fentry_obj"))
++			goto out;
++
++		fentry_link = bpf_program__attach_trace(prog);
++		if (!ASSERT_OK_PTR(fentry_link, "attach_trace"))
++			goto out;
++	}
++
++	if (test_fexit) {
++		fexit_obj = bpf_object__open_file("tailcall_bpf2bpf_fexit.bpf.o",
++						  NULL);
++		if (!ASSERT_OK_PTR(fexit_obj, "open fexit_obj file"))
++			goto out;
++
++		prog = bpf_object__find_program_by_name(fexit_obj, "fexit");
++		if (!ASSERT_OK_PTR(prog, "find fexit prog"))
++			goto out;
++
++		err = bpf_program__set_attach_target(prog, prog_fd,
++						     "subprog_tail");
++		if (!ASSERT_OK(err, "set_attach_target subprog_tail"))
++			goto out;
++
++		err = bpf_object__load(fexit_obj);
++		if (!ASSERT_OK(err, "load fexit_obj"))
++			goto out;
++
++		fexit_link = bpf_program__attach_trace(prog);
++		if (!ASSERT_OK_PTR(fexit_link, "attach_trace"))
++			goto out;
++	}
++
+ 	err = bpf_prog_test_run_opts(main_fd, &topts);
+ 	ASSERT_OK(err, "tailcall");
+ 	ASSERT_EQ(topts.retval, 1, "tailcall retval");
+@@ -282,6 +332,40 @@ static void test_tailcall_count(const char *which)
+ 	ASSERT_OK(err, "tailcall count");
+ 	ASSERT_EQ(val, 33, "tailcall count");
+ 
++	if (test_fentry) {
++		data_map = bpf_object__find_map_by_name(fentry_obj, ".bss");
++		if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
++				  "find tailcall_bpf2bpf_fentry.bss map"))
++			goto out;
++
++		data_fd = bpf_map__fd(data_map);
++		if (!ASSERT_FALSE(data_fd < 0,
++				  "find tailcall_bpf2bpf_fentry.bss map fd"))
++			goto out;
++
++		i = 0;
++		err = bpf_map_lookup_elem(data_fd, &i, &val);
++		ASSERT_OK(err, "fentry count");
++		ASSERT_EQ(val, 33, "fentry count");
++	}
++
++	if (test_fexit) {
++		data_map = bpf_object__find_map_by_name(fexit_obj, ".bss");
++		if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
++				  "find tailcall_bpf2bpf_fexit.bss map"))
++			goto out;
++
++		data_fd = bpf_map__fd(data_map);
++		if (!ASSERT_FALSE(data_fd < 0,
++				  "find tailcall_bpf2bpf_fexit.bss map fd"))
++			goto out;
++
++		i = 0;
++		err = bpf_map_lookup_elem(data_fd, &i, &val);
++		ASSERT_OK(err, "fexit count");
++		ASSERT_EQ(val, 33, "fexit count");
++	}
++
+ 	i = 0;
+ 	err = bpf_map_delete_elem(map_fd, &i);
+ 	if (CHECK_FAIL(err))
+@@ -291,6 +375,10 @@ static void test_tailcall_count(const char *which)
+ 	ASSERT_OK(err, "tailcall");
+ 	ASSERT_OK(topts.retval, "tailcall retval");
+ out:
++	bpf_link__destroy(fentry_link);
++	bpf_link__destroy(fexit_link);
++	bpf_object__close(fentry_obj);
++	bpf_object__close(fexit_obj);
+ 	bpf_object__close(obj);
+ }
+ 
+@@ -299,7 +387,7 @@ static void test_tailcall_count(const char *which)
+  */
+ static void test_tailcall_3(void)
+ {
+-	test_tailcall_count("tailcall3.bpf.o");
++	test_tailcall_count("tailcall3.bpf.o", false, false);
+ }
+ 
+ /* test_tailcall_6 checks that the count value of the tail call limit
+@@ -307,7 +395,7 @@ static void test_tailcall_3(void)
+  */
+ static void test_tailcall_6(void)
+ {
+-	test_tailcall_count("tailcall6.bpf.o");
++	test_tailcall_count("tailcall6.bpf.o", false, false);
+ }
+ 
+ /* test_tailcall_4 checks that the kernel properly selects indirect jump
+@@ -884,6 +972,139 @@ static void test_tailcall_bpf2bpf_6(void)
+ 	tailcall_bpf2bpf6__destroy(obj);
+ }
+ 
++/* test_tailcall_bpf2bpf_fentry checks that the count value of the tail call
++ * limit enforcement matches with expectations when tailcall is preceded with
++ * bpf2bpf call, and the bpf2bpf call is traced by fentry.
++ */
++static void test_tailcall_bpf2bpf_fentry(void)
++{
++	test_tailcall_count("tailcall_bpf2bpf2.bpf.o", true, false);
++}
++
++/* test_tailcall_bpf2bpf_fexit checks that the count value of the tail call
++ * limit enforcement matches with expectations when tailcall is preceded with
++ * bpf2bpf call, and the bpf2bpf call is traced by fexit.
++ */
++static void test_tailcall_bpf2bpf_fexit(void)
++{
++	test_tailcall_count("tailcall_bpf2bpf2.bpf.o", false, true);
++}
++
++/* test_tailcall_bpf2bpf_fentry_fexit checks that the count value of the tail
++ * call limit enforcement matches with expectations when tailcall is preceded
++ * with bpf2bpf call, and the bpf2bpf call is traced by both fentry and fexit.
++ */
++static void test_tailcall_bpf2bpf_fentry_fexit(void)
++{
++	test_tailcall_count("tailcall_bpf2bpf2.bpf.o", true, true);
++}
++
++/* test_tailcall_bpf2bpf_fentry_entry checks that the count value of the tail
++ * call limit enforcement matches with expectations when tailcall is preceded
++ * with bpf2bpf call, and the bpf2bpf caller is traced by fentry.
++ */
++static void test_tailcall_bpf2bpf_fentry_entry(void)
++{
++	struct bpf_object *tgt_obj = NULL, *fentry_obj = NULL;
++	int err, map_fd, prog_fd, data_fd, i, val;
++	struct bpf_map *prog_array, *data_map;
++	struct bpf_link *fentry_link = NULL;
++	struct bpf_program *prog;
++	char buff[128] = {};
++
++	LIBBPF_OPTS(bpf_test_run_opts, topts,
++		.data_in = buff,
++		.data_size_in = sizeof(buff),
++		.repeat = 1,
++	);
++
++	err = bpf_prog_test_load("tailcall_bpf2bpf2.bpf.o",
++				 BPF_PROG_TYPE_SCHED_CLS,
++				 &tgt_obj, &prog_fd);
++	if (!ASSERT_OK(err, "load tgt_obj"))
++		return;
++
++	prog_array = bpf_object__find_map_by_name(tgt_obj, "jmp_table");
++	if (!ASSERT_OK_PTR(prog_array, "find jmp_table map"))
++		goto out;
++
++	map_fd = bpf_map__fd(prog_array);
++	if (!ASSERT_FALSE(map_fd < 0, "find jmp_table map fd"))
++		goto out;
++
++	prog = bpf_object__find_program_by_name(tgt_obj, "classifier_0");
++	if (!ASSERT_OK_PTR(prog, "find classifier_0 prog"))
++		goto out;
++
++	prog_fd = bpf_program__fd(prog);
++	if (!ASSERT_FALSE(prog_fd < 0, "find classifier_0 prog fd"))
++		goto out;
++
++	i = 0;
++	err = bpf_map_update_elem(map_fd, &i, &prog_fd, BPF_ANY);
++	if (!ASSERT_OK(err, "update jmp_table"))
++		goto out;
++
++	fentry_obj = bpf_object__open_file("tailcall_bpf2bpf_fentry.bpf.o",
++					   NULL);
++	if (!ASSERT_OK_PTR(fentry_obj, "open fentry_obj file"))
++		goto out;
++
++	prog = bpf_object__find_program_by_name(fentry_obj, "fentry");
++	if (!ASSERT_OK_PTR(prog, "find fentry prog"))
++		goto out;
++
++	err = bpf_program__set_attach_target(prog, prog_fd, "classifier_0");
++	if (!ASSERT_OK(err, "set_attach_target classifier_0"))
++		goto out;
++
++	err = bpf_object__load(fentry_obj);
++	if (!ASSERT_OK(err, "load fentry_obj"))
++		goto out;
++
++	fentry_link = bpf_program__attach_trace(prog);
++	if (!ASSERT_OK_PTR(fentry_link, "attach_trace"))
++		goto out;
++
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "tailcall");
++	ASSERT_EQ(topts.retval, 1, "tailcall retval");
++
++	data_map = bpf_object__find_map_by_name(tgt_obj, "tailcall.bss");
++	if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
++			  "find tailcall.bss map"))
++		goto out;
++
++	data_fd = bpf_map__fd(data_map);
++	if (!ASSERT_FALSE(data_fd < 0, "find tailcall.bss map fd"))
++		goto out;
++
++	i = 0;
++	err = bpf_map_lookup_elem(data_fd, &i, &val);
++	ASSERT_OK(err, "tailcall count");
++	ASSERT_EQ(val, 34, "tailcall count");
++
++	data_map = bpf_object__find_map_by_name(fentry_obj, ".bss");
++	if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
++			  "find tailcall_bpf2bpf_fentry.bss map"))
++		goto out;
++
++	data_fd = bpf_map__fd(data_map);
++	if (!ASSERT_FALSE(data_fd < 0,
++			  "find tailcall_bpf2bpf_fentry.bss map fd"))
++		goto out;
++
++	i = 0;
++	err = bpf_map_lookup_elem(data_fd, &i, &val);
++	ASSERT_OK(err, "fentry count");
++	ASSERT_EQ(val, 1, "fentry count");
++
++out:
++	bpf_link__destroy(fentry_link);
++	bpf_object__close(fentry_obj);
++	bpf_object__close(tgt_obj);
++}
++
+ void test_tailcalls(void)
+ {
+ 	if (test__start_subtest("tailcall_1"))
+@@ -910,4 +1131,12 @@ void test_tailcalls(void)
+ 		test_tailcall_bpf2bpf_4(true);
+ 	if (test__start_subtest("tailcall_bpf2bpf_6"))
+ 		test_tailcall_bpf2bpf_6();
++	if (test__start_subtest("tailcall_bpf2bpf_fentry"))
++		test_tailcall_bpf2bpf_fentry();
++	if (test__start_subtest("tailcall_bpf2bpf_fexit"))
++		test_tailcall_bpf2bpf_fexit();
++	if (test__start_subtest("tailcall_bpf2bpf_fentry_fexit"))
++		test_tailcall_bpf2bpf_fentry_fexit();
++	if (test__start_subtest("tailcall_bpf2bpf_fentry_entry"))
++		test_tailcall_bpf2bpf_fentry_entry();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fentry.c b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fentry.c
+new file mode 100644
+index 0000000000000..8436c6729167c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fentry.c
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright Leon Hwang */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++int count = 0;
++
++SEC("fentry/subprog_tail")
++int BPF_PROG(fentry, struct sk_buff *skb)
++{
++	count++;
++
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fexit.c b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fexit.c
+new file mode 100644
+index 0000000000000..fe16412c6e6e9
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fexit.c
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright Leon Hwang */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++int count = 0;
++
++SEC("fexit/subprog_tail")
++int BPF_PROG(fexit, struct sk_buff *skb)
++{
++	count++;
++
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.41.0
 
