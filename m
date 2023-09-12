@@ -1,103 +1,105 @@
-Return-Path: <bpf+bounces-9703-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9704-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E8A279C65D
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 07:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3042C79C65E
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 08:00:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 087FC281603
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 05:58:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF62A281555
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 05:59:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 202FB171A5;
-	Tue, 12 Sep 2023 05:58:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 999C3171A6;
+	Tue, 12 Sep 2023 05:59:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E77AA28E6
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 05:58:30 +0000 (UTC)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9A2E6F;
-	Mon, 11 Sep 2023 22:58:30 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-d776e1f181bso4550363276.3;
-        Mon, 11 Sep 2023 22:58:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694498309; x=1695103109;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IzNC+0OhuunUarOHTZE8fkSETZJ/UvD+n1Tp93c3ctM=;
-        b=GYKTrGyW5Iz4sVTwCK/xif4HvPFXCwSDU3/9D+7bq68HGYDfzvSfTFsbf+jSTSbsaA
-         COKC6otVZ739Q3vRv1Yp6JEpgKcJlKpAnBCdNDVhUCCyURWz50p6YrK3OOGrxyQqAefW
-         Cxj5Y3OU7Di/w4G5O9iUBsnj7KJt1y+dw7Llmp6NITFVuru1rPlt85foep1w/hUxXmZ/
-         uWg1cB+OuVwe44EL+aiBFgAAgH/eai8TxLa9zfwm/QttTycvjLV58+ATBlbn5ujwHYj4
-         u4Bp0mfb3FelAj0YqEfeSiN46GweJuyScqM+qYmdwCT2M+XcC6n08kWLw1dUbzxOk3Rl
-         Pmpw==
-X-Gm-Message-State: AOJu0YyXTuPehnKkuYqynt44M0Vxezfh/dNtFScnn/ya0TdI4fJrnSug
-	7OR6/liVjKKWBJV46JC98IpbwydyqGQ/YNzPtjOKtqIO
-X-Google-Smtp-Source: AGHT+IGqk2pHdFI97hJjtxdveBCMtzd46ihdDOdI5NFuC2aGoVGOHFQcmDZVzP8sL9zzjHf3Mv01sD/ZXnUL4OTKTLw=
-X-Received: by 2002:a25:cc4c:0:b0:d7f:374b:638c with SMTP id
- l73-20020a25cc4c000000b00d7f374b638cmr12389850ybf.14.1694498309407; Mon, 11
- Sep 2023 22:58:29 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7262A28E6
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 05:59:49 +0000 (UTC)
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F2CE6F
+	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 22:59:48 -0700 (PDT)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38C1QIvc000879
+	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 22:59:48 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3t28mypft5-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 22:59:48 -0700
+Received: from twshared58712.02.prn6.facebook.com (2620:10d:c0a8:1b::30) by
+ mail.thefacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Mon, 11 Sep 2023 22:59:47 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id 3CC6D37E94062; Mon, 11 Sep 2023 22:59:30 -0700 (PDT)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH bpf] selftests/bpf: ensure all CI arches set CONFIG_BPF_KPROBE_OVERRIDE=y
+Date: Mon, 11 Sep 2023 22:59:28 -0700
+Message-ID: <20230912055928.1704269-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: C054GDU81TlBtP1tTwZBW49Vz1MF9mON
+X-Proofpoint-GUID: C054GDU81TlBtP1tTwZBW49Vz1MF9mON
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230911170559.4037734-1-irogers@google.com>
-In-Reply-To: <20230911170559.4037734-1-irogers@google.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Mon, 11 Sep 2023 22:58:18 -0700
-Message-ID: <CAM9d7cg4nc5rpW9jL-RPJP7w4Rg8h7t4A-EkHTE9rWF=Nm6bBQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/5] perf parse-events: Remove unused header files
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	James Clark <james.clark@arm.com>, Gaosheng Cui <cuigaosheng1@huawei.com>, 
-	Rob Herring <robh@kernel.org>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_03,2023-09-05_01,2023-05-22_02
 
-On Mon, Sep 11, 2023 at 10:06=E2=80=AFAM Ian Rogers <irogers@google.com> wr=
-ote:
->
-> The fnmatch header is now used in the PMU matching logic in pmu.c.
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
+Turns out CONFIG_BPF_KPROBE_OVERRIDE=3Dy is only enabled in x86-64 CI, but
+is not set on aarch64, causing CI failures ([0]).
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+Move CONFIG_BPF_KPROBE_OVERRIDE=3Dy to arch-agnostic CI config.
 
-Thanks,
-Namhyung
+  [0] https://github.com/kernel-patches/bpf/actions/runs/6122324047/job/166=
+18390535
 
-> ---
->  tools/perf/util/parse-events.y | 3 ---
->  1 file changed, 3 deletions(-)
->
-> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-event=
-s.y
-> index 21bfe7e0d944..ef03728b7ea3 100644
-> --- a/tools/perf/util/parse-events.y
-> +++ b/tools/perf/util/parse-events.y
-> @@ -9,11 +9,8 @@
->  #define YYDEBUG 1
->
->  #include <errno.h>
-> -#include <fnmatch.h>
-> -#include <stdio.h>
->  #include <linux/compiler.h>
->  #include <linux/types.h>
-> -#include <linux/zalloc.h>
->  #include "pmu.h"
->  #include "pmus.h"
->  #include "evsel.h"
-> --
-> 2.42.0.283.g2d96d420d3-goog
->
+Fixes: 7182e56411b9 ("selftests/bpf: Add kprobe_multi override test")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/testing/selftests/bpf/config        | 1 +
+ tools/testing/selftests/bpf/config.x86_64 | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/b=
+pf/config
+index 1c7584e8dd9e..e41eb33b2704 100644
+--- a/tools/testing/selftests/bpf/config
++++ b/tools/testing/selftests/bpf/config
+@@ -4,6 +4,7 @@ CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC=3Dy
+ CONFIG_BPF=3Dy
+ CONFIG_BPF_EVENTS=3Dy
+ CONFIG_BPF_JIT=3Dy
++CONFIG_BPF_KPROBE_OVERRIDE=3Dy
+ CONFIG_BPF_LIRC_MODE2=3Dy
+ CONFIG_BPF_LSM=3Dy
+ CONFIG_BPF_STREAM_PARSER=3Dy
+diff --git a/tools/testing/selftests/bpf/config.x86_64 b/tools/testing/self=
+tests/bpf/config.x86_64
+index b650b2e617b8..2e70a6048278 100644
+--- a/tools/testing/selftests/bpf/config.x86_64
++++ b/tools/testing/selftests/bpf/config.x86_64
+@@ -20,7 +20,6 @@ CONFIG_BLK_DEV_THROTTLING=3Dy
+ CONFIG_BONDING=3Dy
+ CONFIG_BOOTTIME_TRACING=3Dy
+ CONFIG_BPF_JIT_ALWAYS_ON=3Dy
+-CONFIG_BPF_KPROBE_OVERRIDE=3Dy
+ CONFIG_BPF_PRELOAD=3Dy
+ CONFIG_BPF_PRELOAD_UMD=3Dy
+ CONFIG_BPFILTER=3Dy
+--=20
+2.34.1
+
 
