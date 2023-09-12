@@ -1,450 +1,288 @@
-Return-Path: <bpf+bounces-9823-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9824-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4134379DC93
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 01:19:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 136EA79DCA8
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 01:32:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5149280DC1
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 23:19:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B40441C212A1
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 23:32:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606641173D;
-	Tue, 12 Sep 2023 23:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00DD4125D7;
+	Tue, 12 Sep 2023 23:32:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3A4D17C2
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 23:19:35 +0000 (UTC)
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDBDE10F6
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:19:34 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-502153ae36cso9975971e87.3
-        for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:19:34 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9D2817C2
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 23:32:18 +0000 (UTC)
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B041910FE
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:32:17 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id a640c23a62f3a-9a6190af24aso772364866b.0
+        for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:32:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694560773; x=1695165573; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FUfpYsrd9EB/lJJBWYltWcpwe2mGUtNIZ9AtOaq3E/E=;
-        b=mOzDnuZJDIOUgdoAtGjFoKg/HWZvIbpaaEAvz8o1lc0U/Yvxn51crCzoKA5dHWW2ru
-         7Tbux4yfe+9r+hNM6H6BbZ1ZgkkVnYjel7pmJhFZA9xSjYpVOou877PzbqBqJ9Vkbmxk
-         PI19iPFDPRt9F2eT6IHElcMrTlz3rhBqK3uwFlgK+2qsEMg2502jq97OUxM9CZ/o9S4w
-         2Xzn4/PmpO8Sm1yOHLzayLVuhyJtLXVyOP/1kcq/jAHCh4bPn5DZxrMrZG0Ln/jRQ+Iu
-         XKEB5PddPZ0BMA7nznAe5tJb+LL8PikiYGp5Eu234QuDNsFUzAvuzVFh3CVE7IzS7J74
-         tvGw==
+        d=gmail.com; s=20221208; t=1694561536; x=1695166336; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yPuWazfASr1wC5dtt2RgFA5TbA6rDFn3kEak4sradTs=;
+        b=ij7ulbtnK5R7p+y69WEZbCSOIUUdc8mqD4rLWr/sPGbp0Ng9JHDkbOYnICX4KN3kvP
+         hG8RmQDUhRWJ+lvzkuxvEIhk7LWPUS/lzV6UAOnBFxYVzythFFv8dxVc1UtO1D0xMaKc
+         MoC2JLe3rR38Lnx49Un65xq/PAGocYE5m0Wvxjz8JQGI6FV8Fntqs1zqvnlV26FNXt1N
+         v6ZORWbDvRg0b2c7dlXt2UgizADqZxFN5OyH0ElsYIzjGy+3BRhpoBbhacPen6EEoPDX
+         CCpaSQTrJ5Lg8zGPLMapgVczAgm8Mp6eo0DzcFxf004RbIbi14ZtsduecdBCd7NGkP2d
+         hRvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694560773; x=1695165573;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FUfpYsrd9EB/lJJBWYltWcpwe2mGUtNIZ9AtOaq3E/E=;
-        b=iIWebyiXIwg8A6jQH+vYcp8dIiWthLd8yUDg3ZsWe3Fw3nllvnjtHwtqSR9kbg2GAC
-         HGVfK5w6Lo09YuuDHqij4wYkR7drX52SiHoynPvYyahO4H8G62I2pYSR0bUFwDXhhXGU
-         rW9P+G+GTRvJZ+8OTUPeMmInVx/z0UuSG5qqFErhN+NHWek9eZMS/FFs1OyU233oka92
-         yVn0i4ewTvJshidbmSitrfnkrh28K3F7lt+OKa/7Hhxc6EwK/pZWj2mhJ9gG9JnHFC53
-         D8XC4ZmUou7dEdcivqbxLVlCfSDGUCwskKQk5dE2Ud8laUH5V+jHxAzhe8pP8qZoM/85
-         vH2w==
-X-Gm-Message-State: AOJu0YyAY8LmmJ+8E7biCNoYDkwNfF5tPrZZuWl0W5/ohi5mrIQDiiu3
-	HTmgMuBGq8qXRQuqX3utZpTgPcC4oIPeLlBYYLQ=
-X-Google-Smtp-Source: AGHT+IEjOVkCaZPoaHqddnctnQuaqDsJ0CLaxfu7mdSXQ78L0PXaC3x6y3EsbalvGm/UWuiE1pISnlE1WIarZzM/C6k=
-X-Received: by 2002:a05:6512:3f15:b0:500:bffa:5b85 with SMTP id
- y21-20020a0565123f1500b00500bffa5b85mr824573lfa.32.1694560772713; Tue, 12 Sep
- 2023 16:19:32 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694561536; x=1695166336;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yPuWazfASr1wC5dtt2RgFA5TbA6rDFn3kEak4sradTs=;
+        b=ZKFkkgUKMZiCVbIWb701KEr6nDF5lM28HjH14uS4FSHcXPA6/+PUJoyir4uEV5wbEF
+         Vz9Z1Y5up0aKTbBLvmX27MbdbbCRy8lp9WBQWDX/e6rq4Qtiu6RH5I6fl25SQKcYc52s
+         sZROOiRYyjdRIgj8/BrobEwRNE6D8NWFKH/JAxcxp/QGVyDvpmHpH2Xfmo8YqByaMBDV
+         4q3m0JgRBSrdH3EPwWHjdOmova/I1be5QV90IVRuKrBbHpbyBk0tDyoMmZdOWgLmbLWc
+         7O7xIYpcRHn/Yh2La8XCSFB+A8DWguibqMI2cLB/y2jcexi514R3AgswMIbqn65mB0qN
+         vGDQ==
+X-Gm-Message-State: AOJu0Yx33qet9D3pnnyJT3gc3ChMWjZ8jHefvNll1aPYCJdB77Do4Rfb
+	2OUD+UN20P+ChzmAjIffQ1hVyakCZYVcNg==
+X-Google-Smtp-Source: AGHT+IFWaaO4Aet5ayfqffKCbYatl/nH94rsZXkZdpQxUnlT8s50A6NatFG8mbWy0mn5YHivzNxebw==
+X-Received: by 2002:a17:906:20dc:b0:9a1:e395:2d10 with SMTP id c28-20020a17090620dc00b009a1e3952d10mr610655ejc.75.1694561535617;
+        Tue, 12 Sep 2023 16:32:15 -0700 (PDT)
+Received: from localhost ([212.203.98.42])
+        by smtp.gmail.com with ESMTPSA id kf4-20020a17090776c400b0099c53c4407dsm7417866ejc.78.2023.09.12.16.32.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 16:32:15 -0700 (PDT)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	David Vernet <void@manifault.com>,
+	Puranjay Mohan <puranjay12@gmail.com>
+Subject: [PATCH bpf-next v3 00/17] Exceptions - 1/2
+Date: Wed, 13 Sep 2023 01:31:57 +0200
+Message-ID: <20230912233214.1518551-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230911015052.72975-1-hengqi.chen@gmail.com> <20230911015052.72975-4-hengqi.chen@gmail.com>
-In-Reply-To: <20230911015052.72975-4-hengqi.chen@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 12 Sep 2023 16:19:20 -0700
-Message-ID: <CAEf4BzbCcP4_1sE0NjQTyjxUuLMDv2AvfPZbXJ-x-wOmh1Dt9g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/3] selftests/bpf: Add tests for symbol
- versioning for uprobe
-To: Hengqi Chen <hengqi.chen@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, alan.maguire@oracle.com, olsajiri@gmail.com, 
-	Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9678; i=memxor@gmail.com; h=from:subject; bh=MJJXF+paqYPFu0RtuYTSJVUl1hdnfuUxNpYzcsyK/pA=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBlAPSsJnNwaN5A8W6Dtp/2KL4Shei2srAfe86Mq VwCjPZjzXSJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZQD0rAAKCRBM4MiGSL8R yoeYD/9NMpFLB8SZVcxyk9zM7dojQJ2fwFAglP7JxIwmLJGE0zirIp/4jtrB6Bu7NGZh2wpXghG ZpGxWXIR9CUYwOXiNpLo7UU2U4JelQnAEV4zMOD0XuMC1az/tkZ5E/1dIFql9hB6NU6EKbsEw4h eSdYuOjN3PcBfwhukvCa5tD+/WOW9Af/SF/S+uJ/AKYryyHIS2cBOn+rZT/ieaDnpsXNVK1kxLX cgY7+39ce0FFJ1B4FJe8S8AMhHrsFAa+wqXLaRHGw6lG6Yz4T28CgVl19tVvNfSjfO0vQrj42w6 7Vba9JcgEmFqpJDCEnl9AQfgidB3WCheDToNHZEIe2FuAcTKD1t3XhPYWanHSpnIff+A0QrteyX HT/04Wk1kTB+F09Dv5l9m87TG9mrniU6Ve49g0gGTvNEMzOWxNyz7MKLcZvoLNH0OnMvdH0B+2G aCXypvDa+ny48GIPiJ9zfZNV9tSD1NVWXOpTaKk70YJGkZfa4jnit5XX+0FUjkkz6r8zPgeTOYw pFn15XurvNjmC18SdL2ZaDvvZjgCEC0AY260JctnQYp7IPhlLRMBryu5uNHrkQrjSHFg4rZrnOC mrFQD5LtPdFsdxTY+iXXa5v0uC9qYCU/JKY3SkmZhET2Mzf2I5dpoR0iv3sRju4QK6rQFYj6l8I /cGYb5CAs9vb1Nw==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 
-On Sun, Sep 10, 2023 at 6:51=E2=80=AFPM Hengqi Chen <hengqi.chen@gmail.com>=
- wrote:
->
-> This exercises the newly added dynsym symbol versioning logics.
-> Now we accept symbols in form of func, func@LIB_VERSION or
-> func@@LIB_VERSION.
->
-> The test rely on liburandom_read.so. For liburandom_read.so, we have:
->
->     $ nm -D liburandom_read.so
->                      w __cxa_finalize@GLIBC_2.17
->                      w __gmon_start__
->                      w _ITM_deregisterTMCloneTable
->                      w _ITM_registerTMCloneTable
->     0000000000000000 A LIBURANDOM_READ_1.0.0
->     0000000000000000 A LIBURANDOM_READ_2.0.0
->     000000000000081c T urandlib_api@@LIBURANDOM_READ_2.0.0
->     0000000000000814 T urandlib_api@LIBURANDOM_READ_1.0.0
->     0000000000000824 T urandlib_api_sameoffset@LIBURANDOM_READ_1.0.0
->     0000000000000824 T urandlib_api_sameoffset@@LIBURANDOM_READ_2.0.0
->     000000000000082c T urandlib_read_without_sema@@LIBURANDOM_READ_1.0.0
->     00000000000007c4 T urandlib_read_with_sema@@LIBURANDOM_READ_1.0.0
->     0000000000011018 D urandlib_read_with_sema_semaphore@@LIBURANDOM_READ=
-_1.0.0
->
-> For `urandlib_api`, specifying `urandlib_api` will cause a conflict becau=
-se
-> there are two symbols named urandlib_api and both are global bind.
-> For `urandlib_api_sameoffset`, there are also two symbols in the .so, but
-> both are at the same offset and essentially they refer to the same functi=
-on
-> so no conflict.
->
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> ---
->  tools/testing/selftests/bpf/Makefile          |  5 +-
->  .../testing/selftests/bpf/liburandom_read.map | 15 +++
->  .../testing/selftests/bpf/prog_tests/uprobe.c | 95 +++++++++++++++++++
->  .../testing/selftests/bpf/progs/test_uprobe.c | 61 ++++++++++++
->  tools/testing/selftests/bpf/urandom_read.c    |  9 ++
->  .../testing/selftests/bpf/urandom_read_lib1.c | 41 ++++++++
->  6 files changed, 224 insertions(+), 2 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/liburandom_read.map
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_uprobe.c
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index caede9b574cb..47365161b6fc 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -196,11 +196,12 @@ endif
->
->  # Filter out -static for liburandom_read.so and its dependent targets so=
- that static builds
->  # do not fail. Static builds leave urandom_read relying on system-wide s=
-hared libraries.
-> -$(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c
-> +$(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c li=
-burandom_read.map
->         $(call msg,LIB,,$@)
->         $(Q)$(CLANG) $(filter-out -static,$(CFLAGS) $(LDFLAGS))   \
-> -                    $^ $(filter-out -static,$(LDLIBS))      \
-> +                    $(filter %.c,$^) $(filter-out -static,$(LDLIBS)) \
->                      -fuse-ld=3D$(LLD) -Wl,-znoseparate-code -Wl,--build-=
-id=3Dsha1 \
-> +                    -Wl,--version-script=3Dliburandom_read.map \
->                      -fPIC -shared -o $@
->
->  $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/libu=
-random_read.so
-> diff --git a/tools/testing/selftests/bpf/liburandom_read.map b/tools/test=
-ing/selftests/bpf/liburandom_read.map
-> new file mode 100644
-> index 000000000000..38a97a419a04
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/liburandom_read.map
-> @@ -0,0 +1,15 @@
-> +LIBURANDOM_READ_1.0.0 {
-> +       global:
-> +               urandlib_api;
-> +               urandlib_api_sameoffset;
-> +               urandlib_read_without_sema;
-> +               urandlib_read_with_sema;
-> +               urandlib_read_with_sema_semaphore;
-> +       local:
-> +               *;
-> +};
-> +
-> +LIBURANDOM_READ_2.0.0 {
-> +       global:
-> +               urandlib_api;
-> +} LIBURANDOM_READ_1.0.0;
-> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe.c b/tools/test=
-ing/selftests/bpf/prog_tests/uprobe.c
-> new file mode 100644
-> index 000000000000..cf3e0e7a64fa
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe.c
-> @@ -0,0 +1,95 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2023 Hengqi Chen */
-> +
-> +#include <test_progs.h>
-> +#include "test_uprobe.skel.h"
-> +
-> +static FILE *urand_spawn(int *pid)
-> +{
-> +       FILE *f;
-> +
-> +       /* urandom_read's stdout is wired into f */
-> +       f =3D popen("./urandom_read 1 report-pid", "r");
-> +       if (!f)
-> +               return NULL;
-> +
-> +       if (fscanf(f, "%d", pid) !=3D 1) {
-> +               pclose(f);
-> +               errno =3D EINVAL;
-> +               return NULL;
-> +       }
-> +
-> +       return f;
-> +}
-> +
-> +static int urand_trigger(FILE **urand_pipe)
-> +{
-> +       int exit_code;
-> +
-> +       /* pclose() waits for child process to exit and returns their exi=
-t code */
-> +       exit_code =3D pclose(*urand_pipe);
-> +       *urand_pipe =3D NULL;
-> +
-> +       return exit_code;
-> +}
-> +
-> +void test_uprobe(void)
-> +{
-> +       LIBBPF_OPTS(bpf_uprobe_opts, uprobe_opts);
-> +       struct test_uprobe *skel;
-> +       FILE *urand_pipe =3D NULL;
-> +       int urand_pid =3D 0, err;
-> +
-> +       skel =3D test_uprobe__open_and_load();
-> +       if (!ASSERT_OK_PTR(skel, "skel_open"))
-> +               return;
-> +
-> +       urand_pipe =3D urand_spawn(&urand_pid);
-> +       if (!ASSERT_OK_PTR(urand_pipe, "urand_spawn"))
-> +               goto cleanup;
-> +
-> +       skel->bss->my_pid =3D urand_pid;
-> +
-> +       /* Manual attach uprobe to urandlib_api
-> +        * There are two `urandlib_api` symbols in .dynsym section:
-> +        *   - urandlib_api@LIBURANDOM_READ_1.0.0
-> +        *   - urandlib_api@@LIBURANDOM_READ_2.0.0
-> +        * Both are global bind and would cause a conflict if user
-> +        * specify the symbol name without a version suffix
-> +        */
-> +       uprobe_opts.func_name =3D "urandlib_api";
-> +       skel->links.test4 =3D bpf_program__attach_uprobe_opts(skel->progs=
-.test4,
-> +                                                           urand_pid,
-> +                                                           "./liburandom=
-_read.so",
-> +                                                           0 /* offset *=
-/,
-> +                                                           &uprobe_opts)=
-;
-> +       if (!ASSERT_ERR_PTR(skel->links.test4, "urandlib_api_attach_confl=
-ict"))
-> +               goto cleanup;
-> +
-> +       uprobe_opts.func_name =3D "urandlib_api@LIBURANDOM_READ_1.0.0";
-> +       skel->links.test4 =3D bpf_program__attach_uprobe_opts(skel->progs=
-.test4,
-> +                                                           urand_pid,
-> +                                                           "./liburandom=
-_read.so",
-> +                                                           0 /* offset *=
-/,
-> +                                                           &uprobe_opts)=
-;
-> +       if (!ASSERT_OK_PTR(skel->links.test4, "urandlib_api_attach_ok"))
-> +               goto cleanup;
-> +
-> +       /* Auto attach 3 u[ret]probes to urandlib_api_sameoffset */
-> +       err =3D test_uprobe__attach(skel);
-> +       if (!ASSERT_OK(err, "skel_attach"))
-> +               goto cleanup;
-> +
-> +       /* trigger urandom_read */
-> +       ASSERT_OK(urand_trigger(&urand_pipe), "urand_exit_code");
-> +
-> +       ASSERT_EQ(skel->bss->test1_result, 1, "urandlib_api_sameoffset");
-> +       ASSERT_EQ(skel->bss->test2_result, 1, "urandlib_api_sameoffset@v1=
-");
-> +       ASSERT_EQ(skel->bss->test3_result, 3, "urandlib_api_sameoffset@@v=
-2");
-> +       ASSERT_EQ(skel->bss->test4_result, 1, "urandlib_api");
-> +
-> +cleanup:
-> +       if (urand_pipe)
-> +               pclose(urand_pipe);
-> +       test_uprobe__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_uprobe.c b/tools/test=
-ing/selftests/bpf/progs/test_uprobe.c
-> new file mode 100644
-> index 000000000000..896c88a4960d
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_uprobe.c
-> @@ -0,0 +1,61 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2023 Hengqi Chen */
-> +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +pid_t my_pid =3D 0;
-> +
-> +int test1_result =3D 0;
-> +int test2_result =3D 0;
-> +int test3_result =3D 0;
-> +int test4_result =3D 0;
-> +
-> +SEC("uprobe/./liburandom_read.so:urandlib_api_sameoffset")
-> +int BPF_UPROBE(test1)
-> +{
-> +       pid_t pid =3D bpf_get_current_pid_tgid() >> 32;
-> +
-> +       if (pid !=3D my_pid)
-> +               return 0;
-> +
-> +       test1_result =3D 1;
-> +       return 0;
-> +}
-> +
-> +SEC("uprobe/./liburandom_read.so:urandlib_api_sameoffset@LIBURANDOM_READ=
-_1.0.0")
-> +int BPF_UPROBE(test2)
-> +{
-> +       pid_t pid =3D bpf_get_current_pid_tgid() >> 32;
-> +
-> +       if (pid !=3D my_pid)
-> +               return 0;
-> +
-> +       test2_result =3D 1;
-> +       return 0;
-> +}
-> +
-> +SEC("uretprobe/./liburandom_read.so:urandlib_api_sameoffset@@LIBURANDOM_=
-READ_2.0.0")
-> +int BPF_URETPROBE(test3, int ret)
-> +{
-> +       pid_t pid =3D bpf_get_current_pid_tgid() >> 32;
-> +
-> +       if (pid !=3D my_pid)
-> +               return 0;
-> +
-> +       test3_result =3D ret;
-> +       return 0;
-> +}
-> +
-> +SEC("uprobe")
-> +int BPF_UPROBE(test4)
-> +{
-> +       pid_t pid =3D bpf_get_current_pid_tgid() >> 32;
-> +
-> +       if (pid !=3D my_pid)
-> +               return 0;
-> +
-> +       test4_result =3D 1;
-> +       return 0;
-> +}
-> diff --git a/tools/testing/selftests/bpf/urandom_read.c b/tools/testing/s=
-elftests/bpf/urandom_read.c
-> index e92644d0fa75..b28e910a8fbb 100644
-> --- a/tools/testing/selftests/bpf/urandom_read.c
-> +++ b/tools/testing/selftests/bpf/urandom_read.c
-> @@ -21,6 +21,11 @@ void urand_read_without_sema(int iter_num, int iter_cn=
-t, int read_sz);
->  void urandlib_read_with_sema(int iter_num, int iter_cnt, int read_sz);
->  void urandlib_read_without_sema(int iter_num, int iter_cnt, int read_sz)=
-;
->
-> +int urandlib_api(void);
-> +__asm__(".symver urandlib_api_old,urandlib_api@LIBURANDOM_READ_1.0.0");
+This series implements the _first_ part of the runtime and verifier
+support needed to enable BPF exceptions. Exceptions thrown from programs
+are processed as an immediate exit from the program, which unwinds all
+the active stack frames until the main stack frame, and returns to the
+BPF program's caller. The ability to perform this unwinding safely
+allows the program to test conditions that are always true at runtime
+but which the verifier has no visibility into.
 
-any reason to not use COMPAT_VERSION() macro here?
+Thus, it also reduces verification effort by safely terminating
+redundant paths that can be taken within a program.
 
-> +int urandlib_api_old(void);
-> +int urandlib_api_sameoffset(void);
-> +
->  unsigned short urand_read_with_sema_semaphore SEC(".probes");
->
->  static __attribute__((noinline))
-> @@ -83,6 +88,10 @@ int main(int argc, char *argv[])
->
->         urandom_read(fd, count);
->
-> +       urandlib_api();
-> +       urandlib_api_old();
-> +       urandlib_api_sameoffset();
-> +
->         close(fd);
->         return 0;
->  }
-> diff --git a/tools/testing/selftests/bpf/urandom_read_lib1.c b/tools/test=
-ing/selftests/bpf/urandom_read_lib1.c
-> index 86186e24b740..403b0735e223 100644
-> --- a/tools/testing/selftests/bpf/urandom_read_lib1.c
-> +++ b/tools/testing/selftests/bpf/urandom_read_lib1.c
-> @@ -11,3 +11,44 @@ void urandlib_read_with_sema(int iter_num, int iter_cn=
-t, int read_sz)
->  {
->         STAP_PROBE3(urandlib, read_with_sema, iter_num, iter_cnt, read_sz=
-);
->  }
-> +
-> +/* Symbol versioning is different between static and shared library.
-> + * Properly versioned symbols are needed for shared library, but
-> + * only the symbol of the new version is needed for static library.
-> + * Starting with GNU C 10, use symver attribute instead of .symver assem=
-bler
-> + * directive, which works better with GCC LTO builds.
-> + */
-> +#if defined(__GNUC__) && __GNUC__ >=3D 10
-> +
-> +#define DEFAULT_VERSION(internal_name, api_name, version) \
-> +       __attribute__((symver(#api_name "@@" #version)))
-> +#define COMPAT_VERSION(internal_name, api_name, version) \
-> +       __attribute__((symver(#api_name "@" #version)))
-> +
-> +#else
-> +
-> +#define COMPAT_VERSION(internal_name, api_name, version) \
-> +       asm(".symver " #internal_name "," #api_name "@" #version);
-> +#define DEFAULT_VERSION(internal_name, api_name, version) \
-> +       asm(".symver " #internal_name "," #api_name "@@" #version);
-> +
-> +#endif
+The patches to perform runtime resource cleanup during the
+frame-by-frame unwinding will be posted as a follow-up to this set.
 
-maybe let's just use libbpf_internal.h instead of copy/pasting this
-barely maintainable piece of magic?
+It must be noted that exceptions are not an error handling mechanism for
+unlikely runtime conditions, but a way to safely terminate the execution
+of a program in presence of conditions that should never occur at
+runtime. They are meant to serve higher-level primitives such as program
+assertions.
 
-> +
-> +COMPAT_VERSION(urandlib_api_v1, urandlib_api, LIBURANDOM_READ_1.0.0)
-> +int urandlib_api_v1(void)
-> +{
-> +       return 1;
-> +}
-> +
-> +DEFAULT_VERSION(urandlib_api_v2, urandlib_api, LIBURANDOM_READ_2.0.0)
-> +int urandlib_api_v2(void)
-> +{
-> +       return 2;
-> +}
-> +
-> +COMPAT_VERSION(urandlib_api_sameoffset, urandlib_api_sameoffset, LIBURAN=
-DOM_READ_1.0.0)
-> +DEFAULT_VERSION(urandlib_api_sameoffset, urandlib_api_sameoffset, LIBURA=
-NDOM_READ_2.0.0)
-> +int urandlib_api_sameoffset(void)
-> +{
-> +       return 3;
-> +}
-> --
-> 2.34.1
->
+The following kfuncs and macros are introduced:
+
+Assertion macros are also introduced, please see patch 13 for their
+documentation.
+
+/* Description
+ *	Throw a BPF exception from the program, immediately terminating its
+ *	execution and unwinding the stack. The supplied 'cookie' parameter
+ *	will be the return value of the program when an exception is thrown,
+ *	and the default exception callback is used. Otherwise, if an exception
+ *	callback is set using the '__exception_cb(callback)' declaration tag
+ *	on the main program, the 'cookie' parameter will be the callback's only
+ *	input argument.
+ *
+ *	Thus, in case of default exception callback, 'cookie' is subjected to
+ *	constraints on the program's return value (as with R0 on exit).
+ *	Otherwise, the return value of the marked exception callback will be
+ *	subjected to the same checks.
+ *
+ *	Note that throwing an exception with lingering resources (locks,
+ *	references, etc.) will lead to a verification error.
+ *
+ *	Note that callbacks *cannot* call this helper.
+ * Returns
+ *	Never.
+ * Throws
+ *	An exception with the specified 'cookie' value.
+ */
+extern void bpf_throw(u64 cookie) __ksym;
+
+/* This macro must be used to mark the exception callback corresponding to the
+ * main program. For example:
+ *
+ * int exception_cb(u64 cookie) {
+ *	return cookie;
+ * }
+ *
+ * SEC("tc")
+ * __exception_cb(exception_cb)
+ * int main_prog(struct __sk_buff *ctx) {
+ *	...
+ *	return TC_ACT_OK;
+ * }
+ *
+ * Here, exception callback for the main program will be 'exception_cb'. Note
+ * that this attribute can only be used once, and multiple exception callbacks
+ * specified for the main program will lead to verification error.
+ */
+\#define __exception_cb(name) __attribute__((btf_decl_tag("exception_callback:" #name)))
+
+As such, a program can only install an exception handler once for the
+lifetime of a BPF program, and this handler cannot be changed at
+runtime. The purpose of the handler is to simply interpret the cookie
+value supplied by the bpf_throw call, and execute user-defined logic
+corresponding to it. The primary purpose of allowing a handler is to
+control the return value of the program. The default handler returns the
+cookie value passed to bpf_throw when an exception is thrown.
+
+Fixing the handler for the lifetime of the program eliminates tricky and
+expensive handling in case of runtime changes of the handler callback
+when programs begin to nest, where it becomes more complex to save and
+restore the active handler at runtime.
+
+This version of offline unwinding based BPF exceptions is truly zero
+overhead, with the exception of generation of a default callback which
+contains a few instructions to return a default return value (0) when no
+exception callback is supplied by the user.
+
+Callbacks are disallowed from throwing BPF exceptions for now, since
+such exceptions need to cross the callback helper boundary (and
+therefore must care about unwinding kernel state), however it is
+possible to lift this restriction in the future follow-up.
+
+Exceptions terminate propogating at program boundaries, hence both
+BPF_PROG_TYPE_EXT and tail call targets return to their caller context
+the return value of the exception callback, in the event that they throw
+an exception. Thus, exceptions do not cross extension or tail call
+boundary.
+
+However, this is mostly an implementation choice, and can be changed to
+suit more user-friendly semantics.
+
+Changelog:
+----------
+v2 -> v3
+v2: https://lore.kernel.org/bpf/20230809114116.3216687-1-memxor@gmail.com
+
+ * Add Dave's Acked-by.
+ * Address all comments from Alexei.
+   * Use bpf_is_subprog to check for main prog in bpf_stack_walker.
+   * Drop accidental leftover hunk in libbpf patch.
+   * Split libbpf patch's refactoring to aid review
+   * Disable fentry/fexit in addition to freplace for exception cb.
+   * Add selftests for fentry/fexit/freplace on exception cb and main prog.
+ * Use btf_find_by_name_kind in bpf_find_exception_callback_insn_off (Martin)
+ * Split KASAN patch into two to aid backporting (Andrey)
+ * Move exception callback append step to bpf_object__reloacte (Andrii)
+ * Ensure that the exception callback name is unique (Andrii)
+ * Keep ASM implementation of assertion macros instead of C, as it does
+   not achieve intended results for bpf_assert_range and other cases.
+
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20230713023232.1411523-1-memxor@gmail.com
+
+ * Address all comments from Alexei.
+ * Fix a few bugs and corner cases in the implementations found during
+   testing. Also add new selftests for these cases.
+ * Reinstate patch to consider ksym.end part of the program (but
+   reworked to cover other corner cases).
+ * Implement new style of tagging exception callbacks, add libbpf
+   support for the new declaration tag.
+ * Limit support to 64-bit integer types for assertion macros. The
+   compiler ends up performing shifts or bitwise and operations when
+   finally making use of the value, which defeats the purpose of the
+   macro. On noalu32 mode, the shifts may also happen before use,
+   hurting reliability.
+ * Comprehensively test assertion macros and their side effects on the
+   verifier state, register bounds, etc.
+ * Fix a KASAN false positive warning.
+
+RFC v1 -> v1
+RFC v1: https://lore.kernel.org/bpf/20230405004239.1375399-1-memxor@gmail.com
+
+ * Completely rework the unwinding infrastructure to use offline
+   unwinding support.
+ * Remove the runtime exception state and program rewriting code.
+ * Make bpf_set_exception_callback idempotent to avoid vexing
+   synchronization and state clobbering issues in presence of program
+   nesting.
+ * Disable bpf_throw within callback functions, for now.
+ * Allow bpf_throw in tail call programs and extension programs,
+   removing limitations of rewrite based unwinding.
+ * Expand selftests.
+
+Kumar Kartikeya Dwivedi (17):
+  bpf: Use bpf_is_subprog to check for subprogs
+  arch/x86: Implement arch_bpf_stack_walk
+  bpf: Implement support for adding hidden subprogs
+  bpf: Implement BPF exceptions
+  bpf: Refactor check_btf_func and split into two phases
+  bpf: Add support for custom exception callbacks
+  bpf: Perform CFG walk for exception callback
+  bpf: Treat first argument as return value for bpf_throw
+  mm: kasan: Declare kasan_unpoison_task_stack_below in kasan.h
+  bpf: Prevent KASAN false positive with bpf_throw
+  bpf: Detect IP == ksym.end as part of BPF program
+  bpf: Disallow fentry/fexit/freplace for exception callbacks
+  bpf: Fix kfunc callback register type handling
+  libbpf: Refactor bpf_object__reloc_code
+  libbpf: Add support for custom exception callbacks
+  selftests/bpf: Add BPF assertion macros
+  selftests/bpf: Add tests for BPF exceptions
+
+ arch/arm64/net/bpf_jit_comp.c                 |   2 +-
+ arch/s390/net/bpf_jit_comp.c                  |   2 +-
+ arch/x86/net/bpf_jit_comp.c                   | 117 ++++-
+ include/linux/bpf.h                           |  13 +-
+ include/linux/bpf_verifier.h                  |   8 +-
+ include/linux/filter.h                        |   8 +
+ include/linux/kasan.h                         |   2 +
+ kernel/bpf/btf.c                              |  29 +-
+ kernel/bpf/core.c                             |  29 +-
+ kernel/bpf/helpers.c                          |  45 ++
+ kernel/bpf/syscall.c                          |   2 +-
+ kernel/bpf/verifier.c                         | 456 +++++++++++++++---
+ mm/kasan/kasan.h                              |   1 -
+ tools/lib/bpf/libbpf.c                        | 166 ++++++-
+ tools/testing/selftests/bpf/DENYLIST.aarch64  |   1 +
+ tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
+ .../testing/selftests/bpf/bpf_experimental.h  | 288 +++++++++++
+ .../selftests/bpf/prog_tests/exceptions.c     | 408 ++++++++++++++++
+ .../testing/selftests/bpf/progs/exceptions.c  | 368 ++++++++++++++
+ .../selftests/bpf/progs/exceptions_assert.c   | 135 ++++++
+ .../selftests/bpf/progs/exceptions_ext.c      |  72 +++
+ .../selftests/bpf/progs/exceptions_fail.c     | 347 +++++++++++++
+ 22 files changed, 2376 insertions(+), 124 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/exceptions.c
+ create mode 100644 tools/testing/selftests/bpf/progs/exceptions.c
+ create mode 100644 tools/testing/selftests/bpf/progs/exceptions_assert.c
+ create mode 100644 tools/testing/selftests/bpf/progs/exceptions_ext.c
+ create mode 100644 tools/testing/selftests/bpf/progs/exceptions_fail.c
+
+
+base-commit: 5bbb9e1f08352a381a6e8a17b5180170b2a93685
+-- 
+2.41.0
+
 
