@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-9826-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9827-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8F1079DCAA
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 01:32:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DED579DCAB
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 01:33:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD8731C21433
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 23:32:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9414D1C21398
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 23:33:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B708213AFE;
-	Tue, 12 Sep 2023 23:32:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3251400E;
+	Tue, 12 Sep 2023 23:32:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8561B17C2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0749017C2
 	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 23:32:20 +0000 (UTC)
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D8110FE
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:32:19 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id 2adb3069b0e04-50078e52537so10500709e87.1
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0577F10FF
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:32:20 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id ffacd0b85a97d-31c6d17aec4so6107237f8f.1
         for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:32:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20221208; t=1694561538; x=1695166338; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nQyCKvejR05FLvij5SV3MltntkSCOrFj//tSa1rbDlg=;
-        b=T+1C/U4aC5a2DAeYtkTGZqY9j2Vpj5P8dxOaLsa/dj+IW/vIFRKi2JIg8vmcIalaHk
-         Tezw8RA6n+uc7f2Usm8k2BDQaKFpuQKtfuoREfVQ8WvDFdY1UthMALiPWSmRujrIlr2J
-         eh5VWYWgh32aHLpQf6kzcTn8XYlihglwsDqYVBbUNmVtYED1Wiel5Z19Vy+kA8tqLlDW
-         dUCm/QKaa7cSEpUEA9Ikarc3B2wVCgEMJtxskSt7i9GbwPekKZVBk0wfdEBSPd5pWCV/
-         9e5GgTgEiKA+ePDMLCU7In8y5tnf0Pa72vgoepUS531yICn9AKqxsgZTSjgc4suLhljH
-         oMWw==
+        bh=5fOfWa2tmL8t6EH3saX0Z0ggyM4Di2cdRmBbwAqkfyk=;
+        b=qPPRishCaidTLj6eKgXHgLU6KajK913VGvCq3p+ySUsemjX8u3t1C0VJ/4cIaoNdEE
+         JutnnRQe6kTpuQKW+eHoa5JqYW9UcxWg9J3hpWDqibxwi3EPhK79MKJjIP+fR63sg4DS
+         xiJincs/vGG/GjxqP/8sw782fo4xaivrCVNxzA/R6B/tEroWXjj0k+ELgEVgVbaR6xO6
+         WamoTQZqogS2EtRJy2Nn+xpqoe37VSaYCwbdrLK+PndA3i9EbRlFVXUwxcbe19mF6bD+
+         xb8tN2x6AaqbYqTF8rDQBvcsidW/ggDMMw1sJL7yr3aS94IbTBCuymgBGaBkQOCStiTn
+         kttw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1694561538; x=1695166338;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nQyCKvejR05FLvij5SV3MltntkSCOrFj//tSa1rbDlg=;
-        b=j4QKA1CVu+DCG8q+VR2g6TgDCVm5zvSknfyGrLyceVZR8fTrEzzOscIuUyu/h1vgr7
-         xrlcAEpS0CImjoNDyQ+QY3XnHHReySFcjuYU/NG6fSeg+ULUuSzKn2ULWPUh2j8eUQKP
-         yoUp0JPin1piovs0Fs2UPJEDvYi3dIVf+dIXadmlmF0IXnTf3XxYa9SAMUtXa8IeaEF/
-         BjbDXcC3waNG2jiacQuHB6gGhge/fds+Ecj1hrnyKCOL2NQdFQeTMOM58uirOnO8kUU7
-         aGFA8jl0o81lzomtZphHWhVEjmK53L1uXEZe+5ZqncP/bgFwg4qLn9SDQJgh41AgPIwe
-         SaKw==
-X-Gm-Message-State: AOJu0Yxhzc9+2rz3PEocrHq/2X51EQ26eLrss8Hlr7NwXqghMMNW1UYI
-	l+C0QiDoVw4+8MaRiBeNmNt8G7+XG2Fn3g==
-X-Google-Smtp-Source: AGHT+IGNHVA1tb1cN2M7//o9tjAvSHCrlI27ttuh+KuGqzY1Qw9dzoC+euDpX2UoA++9K5MfpGinuw==
-X-Received: by 2002:a19:2d52:0:b0:4fd:d213:dfd4 with SMTP id t18-20020a192d52000000b004fdd213dfd4mr650167lft.20.1694561537503;
-        Tue, 12 Sep 2023 16:32:17 -0700 (PDT)
+        bh=5fOfWa2tmL8t6EH3saX0Z0ggyM4Di2cdRmBbwAqkfyk=;
+        b=vCAUHb+A6LEPEsAfQFG1IyMiIVo+o+lT9kE9beQZQb0f8R9KMRYjIb2iK6QSCl2rxn
+         7meIQAZj4TIxYO0V2ltDA/mA56a9d+I+Hth6NwbaVLB2Fl/mvUg/HMfXyxzR6Yvwt9QW
+         gNTezeuQz2f0iJIZfBUTS7Qe1D+6AK3Kuqger/us4qk+lKfXNAosKoZ85jBV6ZSz7eJs
+         Jqh2AVq5v7go0twMRn3WHcL5/YPXlhl6p/tj2QEMBlCBp+sd+vjorhuP7PQWPcuiIfBr
+         G8HscjClo8h0cJp/VkMC8eDL4sHkA8vOS9HYQVeUv6voKJfYHI3LrecWmwcdcyfrIiuA
+         dqdQ==
+X-Gm-Message-State: AOJu0Yzfz4wcj4hrhiSr6uORIWou9Vn1jymLlmX3ySi06jzmaKfcsqlf
+	XMr/cySUAe/zvC2FOfAbKK3XyEf9tf9yGg==
+X-Google-Smtp-Source: AGHT+IHknOJTnoJd4b1Sq1Rj5m7sOTA1uPpiGYA337JJFHfK70Y6vShIU3tPSaBO5Ada6WLZIBSfkg==
+X-Received: by 2002:adf:d4c1:0:b0:31f:a277:4cde with SMTP id w1-20020adfd4c1000000b0031fa2774cdemr700068wrk.43.1694561538254;
+        Tue, 12 Sep 2023 16:32:18 -0700 (PDT)
 Received: from localhost ([212.203.98.42])
-        by smtp.gmail.com with ESMTPSA id f20-20020a170906825400b0099bc2d1429csm7460356ejx.72.2023.09.12.16.32.17
+        by smtp.gmail.com with ESMTPSA id u12-20020aa7d98c000000b0052a1d98618bsm6506825eds.54.2023.09.12.16.32.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 16:32:17 -0700 (PDT)
+        Tue, 12 Sep 2023 16:32:18 -0700 (PDT)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -65,9 +65,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	David Vernet <void@manifault.com>,
 	Puranjay Mohan <puranjay12@gmail.com>
-Subject: [PATCH bpf-next v3 02/17] arch/x86: Implement arch_bpf_stack_walk
-Date: Wed, 13 Sep 2023 01:31:59 +0200
-Message-ID: <20230912233214.1518551-3-memxor@gmail.com>
+Subject: [PATCH bpf-next v3 03/17] bpf: Implement support for adding hidden subprogs
+Date: Wed, 13 Sep 2023 01:32:00 +0200
+Message-ID: <20230912233214.1518551-4-memxor@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230912233214.1518551-1-memxor@gmail.com>
 References: <20230912233214.1518551-1-memxor@gmail.com>
@@ -77,113 +77,219 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4040; i=memxor@gmail.com; h=from:subject; bh=sgqrFU8/IE1hJC02IhP+Kq/56a74YibDEH8nsdcFXWw=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBlAPSsX9VVxxLHLIMs4BgGQ8qbLOSOKDyPbyywJ d2bm7Zw9VmJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZQD0rAAKCRBM4MiGSL8R yk9sD/9tJQFU9+cn3Jdat0Jz9oQa7oy8Vym4WdieonMdqPoTsmuBXOXiYIA8eFxJYRtc+rCIrDa 0iZNErqZSMVJd3S6YrZ/THVgiuXl46htKIlBtlYuqEOFvHZoDFwYuL6+BIIdVnzQXzruxrsLKXp H8pmLuLrpVvu7KiILkDKwk4D+OLjxXDe8mWtBWi6plkpJWAoq2+9NxDZMqvG3cIZrZ6sT+Sjsg7 YIe+dPqIiuVtJrJTEhPVe5sjwwp2Z+T2Gm0Htm7C2DwxXOOsJpexyNG5t2bVaNdWnSm9LEFpN/J hqpTW9vfttlW7vMy8eEoVdFOIaeVAoqS4F3QMtwW2YIbgMnKng/AG83WNAB0hJXPvSvMnM/Lo+L D+LK5zdUwnN0S+UATx0iV+OC+Lml1xonnc4Dbmic2zsSfNuVzGQM5xHol3uKXP4UhyiDY4ybRuf xU6ycpG3rJxrHht7aEaKW++JwZX89CmA3qxjFXDrVr8wcHeuvZxIfjiKXIf5ZY6gGUkcAmd/6SA NB77Dabctx5i1pYCVSw5fW6QIvdOTgyZwTv5vpSd4rHsmQPABumU042Mf7gdoqAfN00NJF12jcY dBSytTHkTh97zExEO00b/EuTjfG9hpT7u3KaiejR+psoNXhQtXblEneAux3uBa+mXPdge+jFQXX QJ6C8GFHshSdNTw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8798; i=memxor@gmail.com; h=from:subject; bh=taTmdIM29si9oEtx177zT6xSGvloeVryMsABiMpFttI=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBlAPSs97mBFCvOHPHvSPjInht5snikqcS62KUx5 kYrP9VSjeWJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZQD0rAAKCRBM4MiGSL8R ytIbEACfpLni0II7Kn8DVhAWl/ug3O069hXn+ypUEKbcs8x9/JYUyerctHPtuc+85HJjWL2JyFN kmuX6bFwDs2f6eOTcCSxnVzaP2dmZhwCv3jgnVGUOcVDKfzGRXUB0NMaivXrtV5bwTiN6aqydbZ ndhSMum/nVFPu/VR9EbRtB8SV7dpbgHw7A9IoeBBIAiCs6HXm6Bk+BH0oS5SA6A9QUE9zQF+s5Q Fs+9J5OJL9Mq4u4Te3SswHzCc/LfRwy6kKjcj9o4uemTT3pmOU5qWiGiRnG5Ub8girxvZS2ibl9 4Q9Sf2qDxAKfRNd/seGPq7v+LQEkjy0chp8XkZgvpuBOB+bE14xasIs9Ieem8TyK84DV4hMWPOs OF+UpOwr1xSbNZcx78Q3DmCWloYKhBVwl8eV1CnWqXzZ53S62gp5yWh7EvEouyhwYDo5X8LaeeP tme255mjd8H8n1hTIKlBr1y/NnF82LjAV1Dz/neWeq37dc9RULPsx7dWvGLHc/xI9Ec69veTI+e joaRghkW7mJTPvyYCjHTRUgZi6XCyjFKXbasXRoyD3cIr6xxM4w3RXm8NEor7bU435WP3hw+oQ3 D5DrHsAAruI/oNQSPGhyvAmTeb8k1wfNGdYXubxKWAGBikNMUM8qMs/3AdYmO6uWfY8gof2pq6H AR+5Eusi5N7CmHw==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-The plumbing for offline unwinding when we throw an exception in
-programs would require walking the stack, hence introduce a new
-arch_bpf_stack_walk function. This is provided when the JIT supports
-exceptions, i.e. bpf_jit_supports_exceptions is true. The arch-specific
-code is really minimal, hence it should be straightforward to extend
-this support to other architectures as well, as it reuses the logic of
-arch_stack_walk, but allowing access to unwind_state data.
+Introduce support in the verifier for generating a subprogram and
+include it as part of a BPF program dynamically after the do_check phase
+is complete. The first user will be the next patch which generates
+default exception callbacks if none are set for the program. The phase
+of invocation will be do_misc_fixups. Note that this is an internal
+verifier function, and should be used with instruction blocks which
+uphold the invariants stated in check_subprogs.
 
-Once the stack pointer and frame pointer are known for the main subprog
-during the unwinding, we know the stack layout and location of any
-callee-saved registers which must be restored before we return back to
-the kernel. This handling will be added in the subsequent patches.
+Since these subprogs are always appended to the end of the instruction
+sequence of the program, it becomes relatively inexpensive to do the
+related adjustments to the subprog_info of the program. Only the fake
+exit subprogram is shifted forward, making room for our new subprog.
 
-Note that while we primarily unwind through BPF frames, which are
-effectively CONFIG_UNWINDER_FRAME_POINTER, we still need one of this or
-CONFIG_UNWINDER_ORC to be able to unwind through the bpf_throw frame
-from which we begin walking the stack. We also require both sp and bp
-(stack and frame pointers) from the unwind_state structure, which are
-only available when one of these two options are enabled.
+This is useful to insert a new subprogram, get it JITed, and obtain its
+function pointer. The next patch will use this functionality to insert a
+default exception callback which will be invoked after unwinding the
+stack.
+
+Note that these added subprograms are invisible to userspace, and never
+reported in BPF_OBJ_GET_INFO_BY_ID etc. For now, only a single
+subprogram is supported, but more can be easily supported in the future.
+
+To this end, two function counts are introduced now, the existing
+func_cnt, and real_func_cnt, the latter including hidden programs. This
+allows us to conver the JIT code to use the real_func_cnt for management
+of resources while syscall path continues working with existing
+func_cnt.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- arch/x86/net/bpf_jit_comp.c | 28 ++++++++++++++++++++++++++++
- include/linux/filter.h      |  2 ++
- kernel/bpf/core.c           |  9 +++++++++
- 3 files changed, 39 insertions(+)
+ include/linux/bpf.h          |  1 +
+ include/linux/bpf_verifier.h |  3 ++-
+ kernel/bpf/core.c            | 12 ++++++------
+ kernel/bpf/syscall.c         |  2 +-
+ kernel/bpf/verifier.c        | 36 +++++++++++++++++++++++++++++++++---
+ 5 files changed, 43 insertions(+), 11 deletions(-)
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index a0d03503b3cb..d0c24b5a6abb 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -16,6 +16,7 @@
- #include <asm/set_memory.h>
- #include <asm/nospec-branch.h>
- #include <asm/text-patching.h>
-+#include <asm/unwind.h>
- 
- static u8 *emit_code(u8 *ptr, u32 bytes, unsigned int len)
- {
-@@ -2933,3 +2934,30 @@ void bpf_jit_free(struct bpf_prog *prog)
- 
- 	bpf_prog_unlock_free(prog);
- }
-+
-+bool bpf_jit_supports_exceptions(void)
-+{
-+	/* We unwind through both kernel frames (starting from within bpf_throw
-+	 * call) and BPF frames. Therefore we require one of ORC or FP unwinder
-+	 * to be enabled to walk kernel frames and reach BPF frames in the stack
-+	 * trace.
-+	 */
-+	return IS_ENABLED(CONFIG_UNWINDER_ORC) || IS_ENABLED(CONFIG_UNWINDER_FRAME_POINTER);
-+}
-+
-+void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
-+{
-+#if defined(CONFIG_UNWINDER_ORC) || defined(CONFIG_UNWINDER_FRAME_POINTER)
-+	struct unwind_state state;
-+	unsigned long addr;
-+
-+	for (unwind_start(&state, current, NULL, NULL); !unwind_done(&state);
-+	     unwind_next_frame(&state)) {
-+		addr = unwind_get_return_address(&state);
-+		if (!addr || !consume_fn(cookie, (u64)addr, (u64)state.sp, (u64)state.bp))
-+			break;
-+	}
-+	return;
-+#endif
-+	WARN(1, "verification of programs using bpf_throw should have failed\n");
-+}
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 761af6b3cf2b..9fd8f0dc4077 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -912,6 +912,8 @@ bool bpf_jit_needs_zext(void);
- bool bpf_jit_supports_subprog_tailcalls(void);
- bool bpf_jit_supports_kfunc_call(void);
- bool bpf_jit_supports_far_kfunc_call(void);
-+bool bpf_jit_supports_exceptions(void);
-+void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie);
- bool bpf_helper_changes_pkt_data(void *func);
- 
- static inline bool bpf_dump_raw_ok(const struct cred *cred)
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 9171b0b6a590..c3667e95af59 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1389,6 +1389,7 @@ struct bpf_prog_aux {
+ 	u32 stack_depth;
+ 	u32 id;
+ 	u32 func_cnt; /* used by non-func prog as the number of func progs */
++	u32 real_func_cnt; /* includes hidden progs, only used for JIT and freeing progs */
+ 	u32 func_idx; /* 0 for non-func prog, the index in func array for func prog */
+ 	u32 attach_btf_id; /* in-kernel BTF type id to attach to */
+ 	u32 ctx_arg_info_size;
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index a3236651ec64..3c2a8636ab29 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -588,6 +588,7 @@ struct bpf_verifier_env {
+ 	u32 used_map_cnt;		/* number of used maps */
+ 	u32 used_btf_cnt;		/* number of used BTF objects */
+ 	u32 id_gen;			/* used to generate unique reg IDs */
++	u32 hidden_subprog_cnt;		/* number of hidden subprogs */
+ 	bool explore_alu_limits;
+ 	bool allow_ptr_leaks;
+ 	bool allow_uninit_stack;
+@@ -598,7 +599,7 @@ struct bpf_verifier_env {
+ 	struct bpf_insn_aux_data *insn_aux_data; /* array of per-insn state */
+ 	const struct bpf_line_info *prev_linfo;
+ 	struct bpf_verifier_log log;
+-	struct bpf_subprog_info subprog_info[BPF_MAX_SUBPROGS + 1];
++	struct bpf_subprog_info subprog_info[BPF_MAX_SUBPROGS + 2]; /* max + 2 for the fake and exception subprogs */
+ 	union {
+ 		struct bpf_idmap idmap_scratch;
+ 		struct bpf_idset idset_scratch;
 diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 95599df82ee4..c4ac084f2767 100644
+index c4ac084f2767..840ba952702d 100644
 --- a/kernel/bpf/core.c
 +++ b/kernel/bpf/core.c
-@@ -2914,6 +2914,15 @@ int __weak bpf_arch_text_invalidate(void *dst, size_t len)
- 	return -ENOTSUPP;
+@@ -212,7 +212,7 @@ void bpf_prog_fill_jited_linfo(struct bpf_prog *prog,
+ 	const struct bpf_line_info *linfo;
+ 	void **jited_linfo;
+ 
+-	if (!prog->aux->jited_linfo)
++	if (!prog->aux->jited_linfo || prog->aux->func_idx > prog->aux->func_cnt)
+ 		/* Userspace did not provide linfo */
+ 		return;
+ 
+@@ -539,7 +539,7 @@ static void bpf_prog_kallsyms_del_subprogs(struct bpf_prog *fp)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < fp->aux->func_cnt; i++)
++	for (i = 0; i < fp->aux->real_func_cnt; i++)
+ 		bpf_prog_kallsyms_del(fp->aux->func[i]);
  }
  
-+bool __weak bpf_jit_supports_exceptions(void)
+@@ -589,7 +589,7 @@ bpf_prog_ksym_set_name(struct bpf_prog *prog)
+ 	sym  = bin2hex(sym, prog->tag, sizeof(prog->tag));
+ 
+ 	/* prog->aux->name will be ignored if full btf name is available */
+-	if (prog->aux->func_info_cnt) {
++	if (prog->aux->func_info_cnt && prog->aux->func_idx < prog->aux->func_info_cnt) {
+ 		type = btf_type_by_id(prog->aux->btf,
+ 				      prog->aux->func_info[prog->aux->func_idx].type_id);
+ 		func_name = btf_name_by_offset(prog->aux->btf, type->name_off);
+@@ -1208,7 +1208,7 @@ int bpf_jit_get_func_addr(const struct bpf_prog *prog,
+ 		if (!extra_pass)
+ 			addr = NULL;
+ 		else if (prog->aux->func &&
+-			 off >= 0 && off < prog->aux->func_cnt)
++			 off >= 0 && off < prog->aux->real_func_cnt)
+ 			addr = (u8 *)prog->aux->func[off]->bpf_func;
+ 		else
+ 			return -EINVAL;
+@@ -2721,7 +2721,7 @@ static void bpf_prog_free_deferred(struct work_struct *work)
+ #endif
+ 	if (aux->dst_trampoline)
+ 		bpf_trampoline_put(aux->dst_trampoline);
+-	for (i = 0; i < aux->func_cnt; i++) {
++	for (i = 0; i < aux->real_func_cnt; i++) {
+ 		/* We can just unlink the subprog poke descriptor table as
+ 		 * it was originally linked to the main program and is also
+ 		 * released along with it.
+@@ -2729,7 +2729,7 @@ static void bpf_prog_free_deferred(struct work_struct *work)
+ 		aux->func[i]->aux->poke_tab = NULL;
+ 		bpf_jit_free(aux->func[i]);
+ 	}
+-	if (aux->func_cnt) {
++	if (aux->real_func_cnt) {
+ 		kfree(aux->func);
+ 		bpf_prog_unlock_free(aux->prog);
+ 	} else {
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 6a692f3bea15..85c1d908f70f 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2749,7 +2749,7 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+ 	 * period before we can tear down JIT memory since symbols
+ 	 * are already exposed under kallsyms.
+ 	 */
+-	__bpf_prog_put_noref(prog, prog->aux->func_cnt);
++	__bpf_prog_put_noref(prog, prog->aux->real_func_cnt);
+ 	return err;
+ free_prog_sec:
+ 	free_uid(prog->aux->user);
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 18e673c0ac15..39548e326d53 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -15210,7 +15210,8 @@ static void adjust_btf_func(struct bpf_verifier_env *env)
+ 	if (!aux->func_info)
+ 		return;
+ 
+-	for (i = 0; i < env->subprog_cnt; i++)
++	/* func_info is not available for hidden subprogs */
++	for (i = 0; i < env->subprog_cnt - env->hidden_subprog_cnt; i++)
+ 		aux->func_info[i].insn_off = env->subprog_info[i].start;
+ }
+ 
+@@ -18151,7 +18152,8 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+ 		 * the call instruction, as an index for this list
+ 		 */
+ 		func[i]->aux->func = func;
+-		func[i]->aux->func_cnt = env->subprog_cnt;
++		func[i]->aux->func_cnt = env->subprog_cnt - env->hidden_subprog_cnt;
++		func[i]->aux->real_func_cnt = env->subprog_cnt;
+ 	}
+ 	for (i = 0; i < env->subprog_cnt; i++) {
+ 		old_bpf_func = func[i]->bpf_func;
+@@ -18197,7 +18199,8 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+ 	prog->aux->extable = func[0]->aux->extable;
+ 	prog->aux->num_exentries = func[0]->aux->num_exentries;
+ 	prog->aux->func = func;
+-	prog->aux->func_cnt = env->subprog_cnt;
++	prog->aux->func_cnt = env->subprog_cnt - env->hidden_subprog_cnt;
++	prog->aux->real_func_cnt = env->subprog_cnt;
+ 	bpf_prog_jit_attempt_done(prog);
+ 	return 0;
+ out_free:
+@@ -18433,6 +18436,33 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 	return 0;
+ }
+ 
++/* The function requires that first instruction in 'patch' is insnsi[prog->len - 1] */
++static __maybe_unused int add_hidden_subprog(struct bpf_verifier_env *env, struct bpf_insn *patch, int len)
 +{
-+	return false;
++	struct bpf_subprog_info *info = env->subprog_info;
++	int cnt = env->subprog_cnt;
++	struct bpf_prog *prog;
++
++	/* We only reserve one slot for hidden subprogs in subprog_info. */
++	if (env->hidden_subprog_cnt) {
++		verbose(env, "verifier internal error: only one hidden subprog supported\n");
++		return -EFAULT;
++	}
++	/* We're not patching any existing instruction, just appending the new
++	 * ones for the hidden subprog. Hence all of the adjustment operations
++	 * in bpf_patch_insn_data are no-ops.
++	 */
++	prog = bpf_patch_insn_data(env, env->prog->len - 1, patch, len);
++	if (!prog)
++		return -ENOMEM;
++	env->prog = prog;
++	info[cnt + 1].start = info[cnt].start;
++	info[cnt].start = prog->len - len + 1;
++	env->subprog_cnt++;
++	env->hidden_subprog_cnt++;
++	return 0;
 +}
 +
-+void __weak arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
-+{
-+}
-+
- #ifdef CONFIG_BPF_SYSCALL
- static int __init bpf_global_ma_init(void)
- {
+ /* Do various post-verification rewrites in a single program pass.
+  * These rewrites simplify JIT and interpreter implementations.
+  */
 -- 
 2.41.0
 
