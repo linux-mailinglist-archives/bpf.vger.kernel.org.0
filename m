@@ -1,161 +1,124 @@
-Return-Path: <bpf+bounces-9769-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9770-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3102B79D68B
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 18:41:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FFE879D6E0
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 18:53:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BEB21C20C71
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 16:41:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06941281DEB
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 16:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC6C1C2B;
-	Tue, 12 Sep 2023 16:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B47892100;
+	Tue, 12 Sep 2023 16:53:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 783B21C05
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:40:33 +0000 (UTC)
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B246E115;
-	Tue, 12 Sep 2023 09:40:32 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2bcb89b4767so96476011fa.3;
-        Tue, 12 Sep 2023 09:40:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694536831; x=1695141631; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IkHo4j2Je41GsmDMW8omOLUe6wtjQHu4mDM0qIbuMqs=;
-        b=SedgNbGJUdpouI6Fp0Ew6HIzOhRpclZ1t536iJrJ5p/027mIgoS46IDyhwxxRxpCiQ
-         05uI34EFsmLuUkumngG1PHfQZhzqsuMMLnqPRMq/5eBy79dcwX4x+W6GsDgs4fyrjqUT
-         g0WgcM5oqqwLbOrOSxdzhnMdbQP3tXwloUA/9WAWu2UcoheNC5+NgQgL72Eon9JPy4za
-         0EQ/bH9YIlYwGpW0q9MrVEVES89zgqhqzCKu6E49bmCPYxHEaAipPRPpg8RDhaVo78lA
-         dbJnOjruDuifdMB6qcWeUrTaOGmFFpjm3Z9yIAlv/TceOYg+A8Z9ozAeq/4l32Pf087m
-         iBlA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FA1F1C06
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:53:30 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 981CD115
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 09:53:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1694537608;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Nc4+V5bh6p5NzLv7LF9hSohtp8QcmhcwlRvEw/hU9ug=;
+	b=C8RoaxPedyOJVIci3rxGr0NcxzYXfyJYr78k3R10kP4ld/AIVCeeu84Sai69Q6vTge1WEB
+	eMN4txJC0ZmEMC1zGJ25J5cRn0c/kYvQibn/Q/jqQhWx7TiSFPfMo6w2NVW78ZEnV4+fbq
+	5tY4jNIQN+lNmPJeFIuoMOrdZSUNjBM=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-118-R5z4QZEMO2S7qnz6_VgJvw-1; Tue, 12 Sep 2023 12:53:27 -0400
+X-MC-Unique: R5z4QZEMO2S7qnz6_VgJvw-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-500b295b4deso965689e87.1
+        for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 09:53:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694536831; x=1695141631;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IkHo4j2Je41GsmDMW8omOLUe6wtjQHu4mDM0qIbuMqs=;
-        b=Ic9yuDlyvFeQSwyryjW0O3FUqOpukwkDdN8UjA4vlI3HmTB7ijsCVpbvaJP8kiBcmg
-         k/YvbtV6OXJsaXd8lSnkh+sTJ5/ybTk2/A/lfOCzdP6T4PpdLcp6lO0b1dG8t7jFxyua
-         1MtNxmlW7Xi2TbIAPDPu8LG5eevoM9kp1oQlEOH5I6sMwym2Pv3fMilqoEbkOqf4U+bw
-         iXEMtiUCiJ+RP3RgjGJPW0KSmTsCAs0KLtWoorxYYPYdkKWyiAE8Ebn8olVgGvHI+mJU
-         K+vpbJcI3Ih1uomzRlaZCMPdkvcDSsSO81oQVecEMg+B/LIKEWBc6CDHpbhnhpRCb2rC
-         Xm5g==
-X-Gm-Message-State: AOJu0Yw9Kc3/Fz9Z2OJKuRXHim9SU2ghfIna+7NILVMn6Z7WwzOkFPTd
-	Vw9kylxCSDvXImkak8vAnv+RyCvLnwb/C0T2ofQ=
-X-Google-Smtp-Source: AGHT+IFynt4EHyvl4JVYJbIY4c5EoRe2MuajjeTZ9QeAH2lI8pVs1Fx0KXrfntmVS+35oI/W26zJpeKv4zynkNbztCg=
-X-Received: by 2002:a05:6512:220d:b0:502:d639:22ed with SMTP id
- h13-20020a056512220d00b00502d63922edmr17122lfu.48.1694536830618; Tue, 12 Sep
- 2023 09:40:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694537606; x=1695142406;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Nc4+V5bh6p5NzLv7LF9hSohtp8QcmhcwlRvEw/hU9ug=;
+        b=KYF2vLDtybzanNnIaIP1JwcKAe0rwfhLLz3pHJ8yItZn96h7OBC+EfHpkEymakhGPt
+         lW3Bn0lYKj+wb2JaUL+qZyyNZpsUnE0kyJXtJoVxlkPDWR06dH20Ff6JpdmvlaOv/2AZ
+         sQ4tcRioPEHS+bhtFxdQo75AA/923DpWdbVZL1OnSkxP1qjOXVNrqbgDjcwPdrH7F1FZ
+         MD7niA2l677vG7vD5sUPSl06scOz7V88bOD1Al1uJ0Y39aSTmBt7Ii9/ecMrUp27F4RA
+         zHy5zKqfq0vxibYzNuve9+vwQqbl0NwQkHDVEnCThg8p1zWX9c6/aXXGoJtJyLh0Tg5A
+         Q/Sw==
+X-Gm-Message-State: AOJu0Yx8NPD4Bpi0ORHKqZcoL60Y6sv9aSXar8r/ZwTkQOUClczsSUPF
+	R2YpU2UskWJmKuwLX+gRVKgvZmx4UyZcAu18GAXH/SdYpCfUcsOIpnGzLc8iEGkd6EWWiu0Sot2
+	JbwA09lJdNijL
+X-Received: by 2002:a05:6512:14b:b0:502:9b86:7112 with SMTP id m11-20020a056512014b00b005029b867112mr51057lfo.2.1694537605920;
+        Tue, 12 Sep 2023 09:53:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFB9zqEAtYNJs425Tw5xYK7xk5fDmDx97idivW9+AuMvyrKi8iFS4UnFeFpx5tOwp92xSj67w==
+X-Received: by 2002:a05:6512:14b:b0:502:9b86:7112 with SMTP id m11-20020a056512014b00b005029b867112mr51049lfo.2.1694537605588;
+        Tue, 12 Sep 2023 09:53:25 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-249-231.dyn.eolo.it. [146.241.249.231])
+        by smtp.gmail.com with ESMTPSA id sb5-20020a170906edc500b009a1be9c29d7sm7177110ejb.179.2023.09.12.09.53.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 09:53:25 -0700 (PDT)
+Message-ID: <20f57b1309b6df60b08ce71f2d7711fa3d6b6b44.camel@redhat.com>
+Subject: Re: [PATCH net-next v1 2/2] net: core: Sort headers alphabetically
+From: Paolo Abeni <pabeni@redhat.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Simon Horman
+	 <horms@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org,  "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>
+Date: Tue, 12 Sep 2023 18:53:23 +0200
+In-Reply-To: <ZQCTXkZcJLvzNL4F@smile.fi.intel.com>
+References: <20230911154534.4174265-1-andriy.shevchenko@linux.intel.com>
+	 <20230911154534.4174265-2-andriy.shevchenko@linux.intel.com>
+	 <20230912152031.GI401982@kernel.org> <ZQCTXkZcJLvzNL4F@smile.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230909091646.420163-1-pengdonglin@sangfor.com.cn>
- <20ef8441084c9d5fd54f84987afa77eed7fe148e.camel@gmail.com> <e78dc807b54f80fd3db836df08f71c7d2fb33387.camel@gmail.com>
-In-Reply-To: <e78dc807b54f80fd3db836df08f71c7d2fb33387.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 12 Sep 2023 09:40:19 -0700
-Message-ID: <CAADnVQL0O_WFYcYQRig7osO0piPdOH2yHkdH0CxCfNV7NkA0Lw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] bpf: Using binary search to improve the
- performance of btf_find_by_name_kind
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Donglin Peng <pengdonglin@sangfor.com.cn>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, dinghui@sangfor.com.cn, 
-	huangcun@sangfor.com.cn, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 12, 2023 at 7:19=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Tue, 2023-09-12 at 16:51 +0300, Eduard Zingerman wrote:
-> > On Sat, 2023-09-09 at 02:16 -0700, Donglin Peng wrote:
-> > > Currently, we are only using the linear search method to find the typ=
-e id
-> > > by the name, which has a time complexity of O(n). This change involve=
-s
-> > > sorting the names of btf types in ascending order and using binary se=
-arch,
-> > > which has a time complexity of O(log(n)). This idea was inspired by t=
-he
-> > > following patch:
-> > >
-> > > 60443c88f3a8 ("kallsyms: Improve the performance of kallsyms_lookup_n=
-ame()").
-> > >
-> > > At present, this improvement is only for searching in vmlinux's and
-> > > module's BTFs, and the kind should only be BTF_KIND_FUNC or BTF_KIND_=
-STRUCT.
-> > >
-> > > Another change is the search direction, where we search the BTF first=
- and
-> > > then its base, the type id of the first matched btf_type will be retu=
-rned.
-> > >
-> > > Here is a time-consuming result that finding all the type ids of 67,8=
-19 kernel
-> > > functions in vmlinux's BTF by their names:
-> > >
-> > > Before: 17000 ms
-> > > After:     10 ms
-> > >
-> > > The average lookup performance has improved about 1700x at the above =
-scenario.
-> > >
-> > > However, this change will consume more memory, for example, 67,819 ke=
-rnel
-> > > functions will allocate about 530KB memory.
-> >
-> > Hi Donglin,
-> >
-> > I think this is a good improvement. However, I wonder, why did you
-> > choose to have a separate name map for each BTF kind?
-> >
-> > I did some analysis for my local testing kernel config and got such num=
-bers:
-> > - total number of BTF objects: 97350
-> > - number of FUNC and STRUCT objects: 51597
-> > - number of FUNC, STRUCT, UNION, ENUM, ENUM64, TYPEDEF, DATASEC objects=
-: 56817
-> >   (these are all kinds for which lookup by name might make sense)
-> > - number of named objects: 54246
-> > - number of name collisions:
-> >   - unique names: 53985 counts
-> >   - 2 objects with the same name: 129 counts
-> >   - 3 objects with the same name: 3 counts
-> >
-> > So, it appears that having a single map for all named objects makes
-> > sense and would also simplify the implementation, what do you think?
->
-> Some more numbers for my config:
-> - 13241 types (struct, union, typedef, enum), log2 13241 =3D 13.7
-> - 43575 funcs, log2 43575 =3D 15.4
-> Thus, having separate map for types vs functions might save ~1.7
-> search iterations. Is this a significant slowdown in practice?
+On Tue, 2023-09-12 at 19:35 +0300, Andy Shevchenko wrote:
+> On Tue, Sep 12, 2023 at 05:20:31PM +0200, Simon Horman wrote:
+> > On Mon, Sep 11, 2023 at 06:45:34PM +0300, Andy Shevchenko wrote:
+> > > It's rather a gigantic list of heards that is very hard to follow.
+> > > Sorting helps to see what's already included and what's not.
+> > > It improves a maintainability in a long term.
+> > >=20
+> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> >=20
+> > Hi Andy,
+> >=20
+> > At the risk of bike shedding, the sort function of Vim, when operating
+> > with the C locale, gives a slightly different order, as experssed by
+> > this incremental diff.
+> >=20
+> > I have no objections to your oder, but I'm slightly curious as
+> > to how it came about.
+>=20
+> !sort which is external command.
+>=20
+> $ locale -k LC_COLLATE
+> collate-nrules=3D4
+> collate-rulesets=3D""
+> collate-symb-hash-sizemb=3D1303
+> collate-codeset=3D"UTF-8"
 
-What do you propose to do in case of duplicates ?
-func and struct can have the same name, but they will have two different
-btf_ids. How do we store them ?
-Also we might add global vars to BTF. Such request came up several times.
-So we need to make sure our search approach scales to
-func, struct, vars. I don't recall whether we search any other kinds.
-Separate arrays for different kinds seems ok.
-It's a bit of code complexity, but it's not an increase in memory.
-With 13k structs and 43k funcs it's 56k * (4 + 4) that's 0.5 Mbyte
-extra memory. That's quite a bit. Anything we can do to compress it?
-Folks requested vmlinux BTF to be a module, so it's loaded on demand.
-BTF memory consumption is a concern to many.
-I think before we add these per-kind search arrays we better make
-BTF optional as a module.
+I'm unsure this change is worthy. It will make any later fix touching
+the header list more difficult to backport, and I don't see a great
+direct advantage.
+
+Please repost the first patch standalone.
+
+Thanks,
+
+Paolo
+
 
