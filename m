@@ -1,255 +1,424 @@
-Return-Path: <bpf+bounces-9729-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9730-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F21AE79C92B
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 10:01:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BF2C79C933
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 10:04:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4B112814AF
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 08:01:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EE0A1C20AA4
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 08:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 095211773D;
-	Tue, 12 Sep 2023 08:01:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D69B31773E;
+	Tue, 12 Sep 2023 08:03:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EDE51640D;
-	Tue, 12 Sep 2023 08:01:39 +0000 (UTC)
-Received: from mx0b-00230701.pphosted.com (mx0b-00230701.pphosted.com [148.163.158.9])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFA28689;
-	Tue, 12 Sep 2023 01:01:38 -0700 (PDT)
-Received: from pps.filterd (m0297265.ppops.net [127.0.0.1])
-	by mx0a-00230701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38C7pCNL023897;
-	Tue, 12 Sep 2023 01:00:09 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pfptdkimsnps;
- bh=QNg7xNkVk8coKWOQ7AMSnGt3m0iU22Kw6rIoy22DVlo=;
- b=Qk/13Fm6N3AnlvlTm4b+yvMSSLJYIurX4Fmb9lz81iCx40zweYmvPxxkdRZy9yI+fYzq
- yazcgYwI1Dz4+kwQgM/Au2vMDHHchJx+wurHQ4AgzOYD/pMEVjB6qJT2TzdAyTSDzsYV
- 58GdfhSOLlXK8hgSfq23ny8lGmXgCKOU+MqR88I+5a/xqdIQVh24MUzSAo7/BLnUEClJ
- 8v44j14pQdv4dUOT7UDsJ2iGwpAYoShDc8Air7mEc5c8la5zGTQpwtFPQcvNFSqeejeD
- KCBtrVspsVgFWTfh4oJb41y2JP3V+GWUhkG1Wdbaplgbxw2Ha6c+VrWp3MmTC8mYQJA8 bQ== 
-Received: from smtprelay-out1.synopsys.com (smtprelay-out1.synopsys.com [149.117.87.133])
-	by mx0a-00230701.pphosted.com (PPS) with ESMTPS id 3t0qmvnthf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Sep 2023 01:00:09 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-	t=1694505607; bh=QNg7xNkVk8coKWOQ7AMSnGt3m0iU22Kw6rIoy22DVlo=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=bCn7x9f6NbWW85BTwsRhmHtiRyt0FLh1Y6wde67Hi3w8Tx6NtqVKfMBaOkT7kB8c/
-	 wO1InGOZYEDOIkSgDFFGQxT1jSGVh/GzQiXBBpsHNHUICdQvuS/qg7c10mLnTL9VUC
-	 M5Uax035jHqDkzhoP7OMrbVKyuHJtsyPXOf0F0NoHoNPUKzayRkgfaV7QC9YOxgs4g
-	 Oh/Of5pVPCIr6cWmQLjwFo2KJZdPk0tgt1EhSOHg9kFy5MpfVSH1aMDh0PD+nQ1uvl
-	 VIWeK0z62C5Lw54L+JZF+iyYQXUwzj2lMVhhXo6sz5iDD0j0Z9pGEL4mg04euMLrAc
-	 fTAmNpf6mRAvQ==
-Received: from mailhost.synopsys.com (sv1-mailhost2.synopsys.com [10.205.2.132])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits)
-	 client-signature RSA-PSS (2048 bits))
-	(Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
-	by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id D46E7404AC;
-	Tue, 12 Sep 2023 08:00:02 +0000 (UTC)
-Received: from o365relay-in.synopsys.com (us03-o365relay3.synopsys.com [10.4.161.139])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(Client CN "o365relay-in.synopsys.com", Issuer "Entrust Certification Authority - L1K" (verified OK))
-	by mailhost.synopsys.com (Postfix) with ESMTPS id 41FE4A0075;
-	Tue, 12 Sep 2023 07:59:58 +0000 (UTC)
-Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
-Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=synopsys.com
-Authentication-Results: o365relay-in.synopsys.com;
-	dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.a=rsa-sha256 header.s=selector1 header.b=U7Ys/HbS;
-	dkim-atps=neutral
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
-	by o365relay-in.synopsys.com (Postfix) with ESMTPS id 5272440147;
-	Tue, 12 Sep 2023 07:59:52 +0000 (UTC)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RE+YzWkbuk8dDf2Jf7MH6rLs5FXVvEUQzRpZDgzr3o5tCGtBaEwwks0lj1w67+GxE1S1LFlqA13BMsKm2GaPYA7NGLPnsW/UdQRPTyvA3pXl2o19t8EyUr04Si71FFKJzSkPfiUlffZ5R4B42dkxnhUNLuifkcJo4IDnYqlnKCyWDdXJ9eXVfoQJxq8t+7F9IY+AIWbRpaTRR/Bfk4X7R1RiCPH4nipwxqytyvom4Ox1XMeGplEfPbOyFSbV1d71URcn5jRkoHwyIHyssO/zdnf1sVK2etpVlxAV2abNi8CeKzQQTgnyeTZldsjzuWbCV1L+WKbKwerrd34fiyo82w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QNg7xNkVk8coKWOQ7AMSnGt3m0iU22Kw6rIoy22DVlo=;
- b=jNJ23S1jDwiGcZWqI7ECn8M7j+F6PNqqoTeV8aEYsh6LBUHG9IUC4r3s2rFl2Bsq4YfQMUhctRaDxMWoILL1S3elIRklSK3MuL+w5eZvxfCwk1DfY7EPrRKu9YTj5Vwk8FCgVez4Dys3Kqo760AUutHfcukMb+wkF2W/q7G33qSkSwoydPispyE4hhcjlbm6+bxAwS8Z5564iknmBDBnCsOgONqXRMr8ewaYrEmfXyGJXSiaWmHfbCrowu0Mp8TowBE9ASg04N0jyqfWMR57S+GNIWI3GA8p/eEZe+QMI7NtDK95opq3g3wJoMk5wZvvQFJyRv37cWvdvNwMcwyn/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QNg7xNkVk8coKWOQ7AMSnGt3m0iU22Kw6rIoy22DVlo=;
- b=U7Ys/HbS6RHyAsOBBcNkCf0Ee4S4c+Z/yIKFQORaeakoPbxZzZIjvV29wedT1RjAgz8PsEpGywFfM9UcRGax/ouFaJDbahsuuRgvqZYp0N7XhgWNJVNr/CpA0pxzMsMNnDPeFGmIcvmQmdqRXSXR2bYR5N6o1HPww7WmqiGBuzI=
-Received: from DM4PR12MB5088.namprd12.prod.outlook.com (2603:10b6:5:38b::9) by
- SJ2PR12MB8112.namprd12.prod.outlook.com (2603:10b6:a03:4f8::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.31; Tue, 12 Sep
- 2023 07:59:49 +0000
-Received: from DM4PR12MB5088.namprd12.prod.outlook.com
- ([fe80::e258:a60c:4c08:e3a5]) by DM4PR12MB5088.namprd12.prod.outlook.com
- ([fe80::e258:a60c:4c08:e3a5%3]) with mapi id 15.20.6768.036; Tue, 12 Sep 2023
- 07:59:49 +0000
-X-SNPS-Relay: synopsys.com
-From: Jose Abreu <Jose.Abreu@synopsys.com>
-To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Alexandre Torgue
-	<alexandre.torgue@foss.st.com>
-CC: Alexei Starovoitov <ast@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S.  Miller" <davem@davemloft.net>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Eric Dumazet <edumazet@google.com>, Fabio Estevam <festevam@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>, Paolo Abeni <pabeni@redhat.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
-        Jose Abreu <Jose.Abreu@synopsys.com>
-Subject: RE: [PATCH net-next 1/6] net: stmmac: add platform library
-Thread-Topic: [PATCH net-next 1/6] net: stmmac: add platform library
-Thread-Index: AQHZ5MS34d3H+d6TiEebdtTyLIXHS7AW1Apg
-Date: Tue, 12 Sep 2023 07:59:49 +0000
-Message-ID: 
- <DM4PR12MB5088F83CE829184956147E6BD3F1A@DM4PR12MB5088.namprd12.prod.outlook.com>
-References: <E1qfiq8-007TOe-9F@rmk-PC.armlinux.org.uk>
-In-Reply-To: <E1qfiq8-007TOe-9F@rmk-PC.armlinux.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: 
- PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcam9hYnJldVxhcHBkYXRhXHJvYW1pbmdcMDlkODQ5YjYtMzJkMy00YTQwLTg1ZWUtNmI4NGJhMjllMzViXG1zZ3NcbXNnLTU2ZGQ4YzJlLTUxNDItMTFlZS04NjMxLTNjMjE5Y2RkNzFiNFxhbWUtdGVzdFw1NmRkOGMzMC01MTQyLTExZWUtODYzMS0zYzIxOWNkZDcxYjRib2R5LnR4dCIgc3o9IjgyMCIgdD0iMTMzMzg5NzkxODcyMjM3MDA4IiBoPSJsODZOZU1wc3BSQlo4OStldUVkTDhhSGY5Y009IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM4PR12MB5088:EE_|SJ2PR12MB8112:EE_
-x-ms-office365-filtering-correlation-id: 70c0f79d-fa26-42bc-0b4a-08dbb3663cce
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- zSnfLs2KNcad7J4zuZNwATtXiExMSk35yVUiwnJfFPojROVT5okutNp0dWSGamu9LShyaxioOh2wiT+oWmpGPi++JM97UY1efafIEW6afqphXxjEpz8ZoXvLNPmHkKfuzCbh29olWmIDXFQ1QGFHDvX1Dy+ZZVBHxaoVhi60ofAL3qFqGXK6Ez7RDc9bf0nrqrjx/BufyC21hFBuuPwk1Dk4kFmyIRkhkzoWHiqj4NAVKvnFqyKhfo5ej67U2gyKQIrmZzABf2FYOHPKS4KEbLtXZsYjy/6Zq2c2GxMr+x4iLwvuISYmlnpaTucoPyQ5jGIUa7vRjt/nVRd3E1gvlums0OVDl6O6CEjhr+G1fmlQTi/+NmiWbSzxYzqGmMg/PvZzz6ZPMzYchBiDLiPgQdEoi73ZTdd/Bxq4llXDxjg9Aa86/nyC2qFtyMiUH6330hDmf+PAHhFwOyDdDcUu8/McwMyjwPU9HljkQ4Mz2NIBNsGYZ71v3t24yE8U2F/v1OtCD2NYRLbT/fmUx8YapZC+IXmBXS7+LT7i8PWYIa4NanhwQCk0NNeO2vkPfDiY/qfJJn5IzdxRQz3YyF9dv5n3aj2neKBdcXlY++TrSunjw//p6PUaYDQ0Z7PkZGMV
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5088.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(136003)(376002)(346002)(1800799009)(186009)(451199024)(316002)(71200400001)(6506007)(7696005)(478600001)(26005)(2906002)(9686003)(4744005)(66446008)(110136005)(107886003)(4326008)(54906003)(64756008)(66476007)(66556008)(66946007)(41300700001)(76116006)(7416002)(83380400001)(8936002)(8676002)(86362001)(38100700002)(33656002)(55016003)(38070700005)(122000001)(52536014)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?utf-8?B?SHBvR1d0amJjVFBXbVYvVll6dG4vTTlkWkl3NUhPSyt2UmZtYmVPN1F3UmVR?=
- =?utf-8?B?a0tNQWJLUE5HcDgrRHFTU0swbDdtY3VLUlJyKzF6Rmg0emswVmpNakZ4SG9n?=
- =?utf-8?B?eTRmbmlrSmYzNEpPaU1CMFBmc2ZqNkdIVDE1aHZva3JVZDJZdXpBME5tZHNz?=
- =?utf-8?B?MlpMbVBXRjQyYmRFLzQ1NnUvVUVWWkFZcGhIL0FCMGdST2RsU1ZtMnlNUWpJ?=
- =?utf-8?B?aXRrcVAwZWNleEJST1ZkWTl4S0FmS0loeHF0ZEdzNHMzd3R2UFNuQ3drMGR6?=
- =?utf-8?B?cjlDSDliZHlMOWlHTkhsUStRNVAzNSszUURBaVRIOHZUby9jQTRZdEVYSmVL?=
- =?utf-8?B?Ykg0ZklOTHIvd01mR2tzOFREeEtwYm5ZN1JNb1hpNUlNQjl4WEZoVUJTVWFH?=
- =?utf-8?B?bDVxMWlnRkdVMzBWbUV1L3RqK2p1Qko1VGkyNWZ5Zmg3S3pkOCs0TXZLc21R?=
- =?utf-8?B?RmwyaUNPcDFJR1VnenBpdmQ3Tmk1ZzFrSUI5YjMvM3lpNHY4TzhTV3hqTGp4?=
- =?utf-8?B?b05EMy9xRGZiSktHbk5QMHhJazQwYzRMTGxvaE16OTZ6SHBDdWtOSFBEUG11?=
- =?utf-8?B?NFR1TlgvcWdSYXNYSXFxQVRucjhnVTFheUlDVG5zNElZUllXdytGa05CcXI2?=
- =?utf-8?B?RW5Bb0hpd1E5S2RuZzNXQlFUUFJKMzRmVDNpSkMyZThqYzl4dFArS09aSE1E?=
- =?utf-8?B?Vlpmd0Ntb1MyYjlXakg2RGgxeTVCNnhaZWVtdHVEY0VyQ1dTRWZrS01BOEd0?=
- =?utf-8?B?NTQyRmlibm5vK2lwdS9QczhDU2hnMTh3SWhTRkhuM3hoVzgrM0RxcW1CT0I3?=
- =?utf-8?B?SVFXczFQU0NUVDlJdDdlZWhaaDZrTVMzaG5KeEJMWDBHZVVZZ2ZtNGtDenJZ?=
- =?utf-8?B?b1hsZWt3MjRtVkxBcFR5ZTZwaWg1NmFqU2RXWUtneDgyRnJvbjdES1A1Uk9E?=
- =?utf-8?B?LzBRZWVsMnhMWXN6azBwbmpCUkI3eTdlay8yT3ZTYi9yM0xVckJBdXZYc0lp?=
- =?utf-8?B?YWw5d3NLZGwvTnd5T21NbGZjUTBib293ZEhrNDAzbzN6bGgvZEN0cVBMaFRN?=
- =?utf-8?B?LzBGc2tEY1BPQW1JRmdGTUtZTU5xZGwwT3BYTHpYTVNpaXVqNEloMWJxWVRj?=
- =?utf-8?B?SHFVcGhJd29lZEtodWZHN2VxVHBDdThQZGJLaVoveWh6MStSQ096SkZQUzdR?=
- =?utf-8?B?Sm5YYld6UFFiTFU4c2g5ZXRSTUhRTUJCamdvN2NmOWRNTTdLQ1VRazQ4TmNX?=
- =?utf-8?B?LzdVdzdhaTlJOVU4VE5mNzNlM1M0OVFwMDdhWHJCMnNpZ084RFdlVFVVaHVW?=
- =?utf-8?B?RHJ1OTFEbVpRUy9rOXYwRitza3BkVEZka01mMEhmNk4rNjh6S3oxRE96bEVK?=
- =?utf-8?B?WkQ4eVllY3F5dFVRZ0xxM3MreC82REU0VXkvbUJvbHQzb20zN2N5aWJhNWl4?=
- =?utf-8?B?aysyOVZPcmVqbTdDRjhPbkh6Wjc5RW1NeS84SitJWXhBOGl3VWRKOTJrSzVQ?=
- =?utf-8?B?RE5oNjBhYW9GYWtuTEFJTk1JblFFUU91QWdYVCtXWVUxQ1J2UlFYNHgzT2NC?=
- =?utf-8?B?M1JEd2thOHlaUGdYZUQ3cmthaHF3VDlGdFZiOVJqdzU2N3U2OXBabWVndFhD?=
- =?utf-8?B?aDRtRDRxNG5ITFRyUUQ1TUlHRjhuTVhsRmRRN1B5YXRJYlJRS1JYdk54cFVQ?=
- =?utf-8?B?cVJiejZ1cWFrTVAyUGUwWFE3Nlo3djFUNnBiSEppUm9Xb213bWpvemhUOTNt?=
- =?utf-8?B?bmRPeExJL1VIVnA2N0hXekR6UURmNC9KYnRYSk9oNnkxcDR5U242dFVmNlRj?=
- =?utf-8?B?Wms3empXOVZkQ2REeVRQL08xWWt5Sm1NL28zaGhuYklZSnBkUUpQR0pjMXpY?=
- =?utf-8?B?eW5uUWdxSEdHTkwyMjI1a2lYU1krUlpqamJ4cGl1cDRGM091V0JoRGM2ODg4?=
- =?utf-8?B?MmxsUTBaenVldU1UaDZuWFZKM1JaMVc1c3FYYXNaZGE5TTNnOGc2UWlzaG4z?=
- =?utf-8?B?ZW03VG1qZy9IL2ZRYWdrL3Bla0ZwR2R3a3Zvdm9lVlYrZlJ6L0hYajY1cW01?=
- =?utf-8?B?clBySVhWVmlBcEhjQ1BkaHRMWWlyTHpGN2x2aUw3VTV3UU5xdEtpWExhVWJk?=
- =?utf-8?Q?OUUCh+V+xLrotONpzoShf3noX?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F99215495;
+	Tue, 12 Sep 2023 08:03:55 +0000 (UTC)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE384233;
+	Tue, 12 Sep 2023 01:03:54 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-403004a96eeso32658565e9.3;
+        Tue, 12 Sep 2023 01:03:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694505833; x=1695110633; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ohrhB31lcouNPBWbsQGLt92x/wlj/9DWwrV8TcTP59k=;
+        b=X1AZStXZ5d9CVOjyUp/7csHPzip7tfmPErQzDdX6Yh/UF8oYXuXi4klfXKbTEpvwx2
+         Nd2RhcDClIzx7TOciaGya6s2np1g0kIYHvFgujfxPRcojUUREmZ+hbGn9h7cMdjBWPiS
+         cGs745gCQS1NesG/8nN4sP2ft8ymBX/OXxk4xj5uM75xt9tVAUvV1dwnTdz4F1fSkdAf
+         e0eL7yAYOKpo7ESClcXGdqbM+5WQMVBw+2Jj7IBoqg8R+E4TwXImYVSRqgixaQtDUXxT
+         4ru6pXv4K3H3FIDhQecHq+iV5z2QD2HIozSukZrI8I6KPiSJ7109AxvOXlm46S9Oj/ZS
+         c3Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694505833; x=1695110633;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ohrhB31lcouNPBWbsQGLt92x/wlj/9DWwrV8TcTP59k=;
+        b=a4y/B5g7Z/WWNsg05KmmYJQkdSSBmJpjBoBGw0jo9VNUWynt6weto1Zm8HBBcp00rA
+         gIqkGfL9rQ722Lu49lDH9SNyqXI3SZuW/HZRI/2O0hEMhBpD3Eyp4hmWZnp6JbdipLG7
+         GtgPRQJzkCAbeyoEfx4KoisXk4I3rVR81DqBr8x+lmwKEcrKLTGJwtdqsJjTsdqFSg2Z
+         ctpoBXrNHZLWT4q1eDMBShXuL0AwPy/9V9wX/fKZA80hVFH12yGQnDlGzfO/2SpZK1DT
+         1yyfMYM3GhmDCVGmSTi69ckYMob9a2CFnts2VfhLNQMQ23RAtU/FcvfECglB2kPPKOCK
+         60fw==
+X-Gm-Message-State: AOJu0Yx86q3AhFPMIb9jRE+uQy/yQKcjk+P+GVuG59cyxU5zIw33Xx//
+	2xX0QRoGtDDERPzw4BzEuS0=
+X-Google-Smtp-Source: AGHT+IGp56ciJG4tM76LLF3DMfZ2J35G3pxesUPTwNs3LbxC0Fp5gcSKaeGk8wFkTR2052ujgdVT9Q==
+X-Received: by 2002:a5d:6a03:0:b0:314:1e47:8bc2 with SMTP id m3-20020a5d6a03000000b003141e478bc2mr9459086wru.0.1694505832508;
+        Tue, 12 Sep 2023 01:03:52 -0700 (PDT)
+Received: from localhost ([81.168.73.77])
+        by smtp.gmail.com with ESMTPSA id y18-20020adfd092000000b003179d5aee67sm12202301wrh.94.2023.09.12.01.03.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 01:03:52 -0700 (PDT)
+Date: Tue, 12 Sep 2023 09:03:51 +0100
+From: Martin Habets <habetsm.xilinx@gmail.com>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Arthur Kiyanovski <akiyano@amazon.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	Claudiu Manoil <claudiu.manoil@nxp.com>,
+	David Arinzon <darinzon@amazon.com>,
+	Edward Cree <ecree.xilinx@gmail.com>, Felix Fietkau <nbd@nbd.name>,
+	Grygorii Strashko <grygorii.strashko@ti.com>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Jassi Brar <jaswinder.singh@linaro.org>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	John Crispin <john@phrozen.org>, Leon Romanovsky <leon@kernel.org>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Louis Peens <louis.peens@corigine.com>,
+	Marcin Wojtas <mw@semihalf.com>,
+	Mark Lee <Mark-MC.Lee@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>, Noam Dagan <ndagan@amazon.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Saeed Bishara <saeedb@amazon.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Shay Agroskin <shayagr@amazon.com>,
+	Shenwei Wang <shenwei.wang@nxp.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	Wei Fang <wei.fang@nxp.com>
+Subject: Re: [PATCH net-next 1/2] net: Tree wide: Replace xdp_do_flush_map()
+ with xdp_do_flush().
+Message-ID: <20230912080351.GA99658@gmail.com>
+Mail-Followup-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	netdev@vger.kernel.org, bpf@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Arthur Kiyanovski <akiyano@amazon.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	Claudiu Manoil <claudiu.manoil@nxp.com>,
+	David Arinzon <darinzon@amazon.com>,
+	Edward Cree <ecree.xilinx@gmail.com>, Felix Fietkau <nbd@nbd.name>,
+	Grygorii Strashko <grygorii.strashko@ti.com>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Jassi Brar <jaswinder.singh@linaro.org>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	John Crispin <john@phrozen.org>, Leon Romanovsky <leon@kernel.org>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Louis Peens <louis.peens@corigine.com>,
+	Marcin Wojtas <mw@semihalf.com>,
+	Mark Lee <Mark-MC.Lee@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>, Noam Dagan <ndagan@amazon.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Saeed Bishara <saeedb@amazon.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Shay Agroskin <shayagr@amazon.com>,
+	Shenwei Wang <shenwei.wang@nxp.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	Wei Fang <wei.fang@nxp.com>
+References: <20230908143215.869913-1-bigeasy@linutronix.de>
+ <20230908143215.869913-2-bigeasy@linutronix.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	=?utf-8?B?ZEFGWDNnNDVpVUN6ZGhVcWVOV01ZVVVIaGpCMm1KYUM0K1ByU21XNnkxMjZw?=
- =?utf-8?B?bXUyTkFGSmsvREpOQlFIdmxHZUQ4c2hBRGlnN2Zxamc2dFdQV0ZWaXh1ZTZJ?=
- =?utf-8?B?YzJiYmhrblR1RmprQUx6WnFpeHp1ejRDYnVtT0VkVEsrcERvQkRPeGhKeEJY?=
- =?utf-8?B?djRGUnV6VWF0NFRycVBtN0dKbmdta01TMHQrV2IvWjJ4UHMxY1gxd2Nwc2Nu?=
- =?utf-8?B?blhvWWkvQWd1aWE4VTdIRmFsNHFxeTNKL1NwNENoVjFHdE5XVmVSRFVId0pp?=
- =?utf-8?B?ZnpiYUdlQ05HMVdtYzNPbHpMQUkxbVp6SjdDY3pIRGRqOFZaZTJydEkyMXNQ?=
- =?utf-8?B?cThrTldBVU1tN2svT1hLUzdOTkZIekpqODRIR3dnWnFkbXA3KzZPOXFTNnpv?=
- =?utf-8?B?OGFCQTZac0k2VVRFckxQRGprcWxhMnpJa0ZTdTBFN3N0TXRnRVdGc0dvSEZu?=
- =?utf-8?B?Q2lZV2NsMThvamNNTVlaaDVzNnRMWGo5TGlDb2VpMXlMbGlwUElKZytnTndz?=
- =?utf-8?B?Qm1JS1V3TG1LSUovNkl0cVJiL2VDY2FKTlF6dXFUblBxbDl1QzVBd2xpdHBS?=
- =?utf-8?B?WmJHeUhzQytRMXJhZVlhWmhLNFBaTVVaVnpFSWhLemRQRWJ5MWxBYUVnaHhv?=
- =?utf-8?B?UkdFaURFRFJMS0Y2V1NHakM4ZlZKdFJFUW1ISEhCQWYycDJGeXhiUStzMG1B?=
- =?utf-8?B?cW1kU2Vja1BHUU5xWE9lT0dodkx5NWdWSS9UQVl4MUs4QnM2TWJZUFNSN21v?=
- =?utf-8?B?dll3VDVuM3ZCTjVmR0JiMmJMUmxIYWdlU2k4TUViTzFNbjF0RHVVQWpWSi93?=
- =?utf-8?B?WjJuemR2RXg4KzJ6eUZJaDA0TTFaN3VZK0gydzhoeVJ4dFVudmptQTJ3RjB1?=
- =?utf-8?B?NzArZW5kWk51Q3I2d3NINzQ1ck5XZHlQMDNoREFWVVJFQWNYbFYyNS9pNWUz?=
- =?utf-8?B?dnNpb3VQMWJocS9WQmxnTEJQQ1JTb090NmNhV2FvUXJlandYenBhUXVldldX?=
- =?utf-8?B?V09sbDZ1ai92U25jMTE4VzlITENLc2tlWkJ0TmFhZlJwVWp5YlIzc21VS2pU?=
- =?utf-8?B?NG9CN2l4TU9heUFXbDc5d3dMRGtEdzYvd00xU1RiQlVXRWtUckJHSXVUQjhQ?=
- =?utf-8?B?MDBLOEkvWk01ejd4NHlzdm51Qi95NStwQzNXYmpvV09RRVNsNW1wSXp1ejQy?=
- =?utf-8?B?VzBMNndXbGIrNEFUMktKc1V6MzNuanlPc2Y1dmdvLzhWY3JST2VjL1dDcW1p?=
- =?utf-8?B?ZFMzdGJKM04vcVMwUjgwUXBZb0NqZHB4RjlmT3NBdjVHcEszcldaUitYWFZw?=
- =?utf-8?B?V0V3bml2RWxidnA0NWZudTFiVVlxTW9FKys3YU9FTEtRcGhyNnVJeFVtZGRk?=
- =?utf-8?B?cEdqc0d1Qmx6SkZEdHhwT3Q0TDZCb3o1Sjc5cElaU3pNQUZTT21CdkRJRTg1?=
- =?utf-8?B?a3NFVHFnbE0rK1pudHA5Y0ZKK3VxMDV0eUUvMDQzZmNRWkd1alRMTkQxMkhZ?=
- =?utf-8?B?M1ZTR011MEhjUGRXTVRodUpXSk5IcHpwRUhWQWg5OGpOTzgyOVJQeXAybWhZ?=
- =?utf-8?B?dEh3ZUZaY3pmanFSSmx1ZDhybTh3Z3d3dEpzaDFnRllUVXRYYzZydy9Kc011?=
- =?utf-8?B?bHlOUUUyOEd2TndHak9UdDVlY1BwdkIwbWVxTEQyV0NtTjhoU2xJanZkK1R2?=
- =?utf-8?B?bHZocG9lMU1sQm1mQnplV1FLaFRWT2VldFFoZjRoYmx3dGlVR2JKZmZmZHFa?=
- =?utf-8?Q?iytXlESHWhBqASONiXFPfkY0B0DG4jx8oRsic99?=
-X-OriginatorOrg: synopsys.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5088.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 70c0f79d-fa26-42bc-0b4a-08dbb3663cce
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2023 07:59:49.0713
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: koo2uFPLPoqbdd77DRMquOteGKYPDwlee7GYe/uHSSjZWRDP7D5Y+6il6xpgFm9xiHkWDwsDqCWx7Nw5dtT4aw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8112
-X-Proofpoint-ORIG-GUID: oZTr52DJGloAJMNA93IT5sNxxxjFBQ7f
-X-Proofpoint-GUID: oZTr52DJGloAJMNA93IT5sNxxxjFBQ7f
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_04,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_active_cloned_notspam policy=outbound_active_cloned score=0
- clxscore=1011 priorityscore=1501 impostorscore=0 lowpriorityscore=0
- suspectscore=0 phishscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
- mlxscore=0 adultscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2308100000 definitions=main-2309120067
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230908143215.869913-2-bigeasy@linutronix.de>
 
-RnJvbTogUnVzc2VsbCBLaW5nIChPcmFjbGUpIDxybWsra2VybmVsQGFybWxpbnV4Lm9yZy51az4N
-CkRhdGU6IE1vbiwgU2VwIDExLCAyMDIzIGF0IDE2OjI4OjQwDQoNCj4gQWRkIGEgcGxhdGZvcm0g
-bGlicmFyeSBvZiBoZWxwZXIgZnVuY3Rpb25zIGZvciBjb21tb24gdHJhaXRzIGluIHRoZQ0KPiBw
-bGF0Zm9ybSBkcml2ZXJzLiBDdXJyZW50bHksIHRoaXMgaXMgc2V0dGluZyB0aGUgdHggY2xvY2su
-DQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBSdXNzZWxsIEtpbmcgKE9yYWNsZSkgPHJtaytrZXJuZWxA
-YXJtbGludXgub3JnLnVrPg0KPiAtLS0NCj4gIGRyaXZlcnMvbmV0L2V0aGVybmV0L3N0bWljcm8v
-c3RtbWFjL01ha2VmaWxlICB8ICAyICstDQo+ICAuLi4vZXRoZXJuZXQvc3RtaWNyby9zdG1tYWMv
-c3RtbWFjX3BsYXRfbGliLmMgfCAyOSArKysrKysrKysrKysrKysrKysrDQo+ICAuLi4vZXRoZXJu
-ZXQvc3RtaWNyby9zdG1tYWMvc3RtbWFjX3BsYXRfbGliLmggfCAgOCArKysrKw0KDQpXb3VsZG4n
-dCBpdCBiZSBiZXR0ZXIgdG8ganVzdCBjYWxsIGl0ICJzdG1tYWNfbGliey5jLC5ofSIgaW4gY2Fz
-ZSB3ZSBuZWVkIHRvIGFkZA0KbW9yZSBoZWxwZXJzIG9uIHRoZSBmdXR1cmUgdGhhdCBhcmUgbm90
-IG9ubHkgZm9yIHBsYXRmb3JtLWJhc2VkIGRyaXZlcnM/DQoNCkkgYmVsaWV2ZSBpdCdzIGFsc28g
-bWlzc2luZyB0aGUgU1BEWCBpZGVudGlmaWVycz8NCg0KVGhhbmtzLA0KSm9zZQ0K
+On Fri, Sep 08, 2023 at 04:32:14PM +0200, Sebastian Andrzej Siewior wrote:
+> xdp_do_flush_map() is deprecated and new code should use xdp_do_flush()
+> instead.
+> 
+> Replace xdp_do_flush_map() with xdp_do_flush().
+> 
+> Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Cc: Arthur Kiyanovski <akiyano@amazon.com>
+> Cc: Clark Wang <xiaoning.wang@nxp.com>
+> Cc: Claudiu Manoil <claudiu.manoil@nxp.com>
+> Cc: David Arinzon <darinzon@amazon.com>
+> Cc: Edward Cree <ecree.xilinx@gmail.com>
+> Cc: Felix Fietkau <nbd@nbd.name>
+> Cc: Grygorii Strashko <grygorii.strashko@ti.com>
+> Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> Cc: Jassi Brar <jaswinder.singh@linaro.org>
+> Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
+> Cc: John Crispin <john@phrozen.org>
+> Cc: Leon Romanovsky <leon@kernel.org>
+> Cc: Lorenzo Bianconi <lorenzo@kernel.org>
+> Cc: Louis Peens <louis.peens@corigine.com>
+> Cc: Marcin Wojtas <mw@semihalf.com>
+> Cc: Mark Lee <Mark-MC.Lee@mediatek.com>
+> Cc: Martin Habets <habetsm.xilinx@gmail.com>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: NXP Linux Team <linux-imx@nxp.com>
+> Cc: Noam Dagan <ndagan@amazon.com>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Saeed Bishara <saeedb@amazon.com>
+> Cc: Saeed Mahameed <saeedm@nvidia.com>
+> Cc: Sean Wang <sean.wang@mediatek.com>
+> Cc: Shay Agroskin <shayagr@amazon.com>
+> Cc: Shenwei Wang <shenwei.wang@nxp.com>
+> Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+> Cc: Tony Nguyen <anthony.l.nguyen@intel.com>
+> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Cc: Wei Fang <wei.fang@nxp.com>
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+
+For sfc drivers:
+Acked-by: Martin Habets <habetsm.xilinx@gmail.com>
+
+> ---
+>  drivers/net/ethernet/amazon/ena/ena_netdev.c     | 2 +-
+>  drivers/net/ethernet/freescale/enetc/enetc.c     | 2 +-
+>  drivers/net/ethernet/freescale/fec_main.c        | 2 +-
+>  drivers/net/ethernet/intel/i40e/i40e_txrx.c      | 2 +-
+>  drivers/net/ethernet/intel/ice/ice_txrx_lib.c    | 2 +-
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c    | 2 +-
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c     | 2 +-
+>  drivers/net/ethernet/marvell/mvneta.c            | 2 +-
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c  | 2 +-
+>  drivers/net/ethernet/mediatek/mtk_eth_soc.c      | 2 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c | 2 +-
+>  drivers/net/ethernet/netronome/nfp/nfd3/xsk.c    | 2 +-
+>  drivers/net/ethernet/sfc/efx_channels.c          | 2 +-
+>  drivers/net/ethernet/sfc/siena/efx_channels.c    | 2 +-
+>  drivers/net/ethernet/socionext/netsec.c          | 2 +-
+>  drivers/net/ethernet/ti/cpsw_priv.c              | 2 +-
+>  16 files changed, 16 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> index ad32ca81f7ef4..69bc8dfa7d71b 100644
+> --- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> +++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> @@ -1828,7 +1828,7 @@ static int ena_clean_rx_irq(struct ena_ring *rx_ring, struct napi_struct *napi,
+>  	}
+>  
+>  	if (xdp_flags & ENA_XDP_REDIRECT)
+> -		xdp_do_flush_map();
+> +		xdp_do_flush();
+>  
+>  	return work_done;
+>  
+> diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
+> index 35461165de0d2..30bec47bc665b 100644
+> --- a/drivers/net/ethernet/freescale/enetc/enetc.c
+> +++ b/drivers/net/ethernet/freescale/enetc/enetc.c
+> @@ -1655,7 +1655,7 @@ static int enetc_clean_rx_ring_xdp(struct enetc_bdr *rx_ring,
+>  	rx_ring->stats.bytes += rx_byte_cnt;
+>  
+>  	if (xdp_redirect_frm_cnt)
+> -		xdp_do_flush_map();
+> +		xdp_do_flush();
+>  
+>  	if (xdp_tx_frm_cnt)
+>  		enetc_update_tx_ring_tail(tx_ring);
+> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+> index 77c8e9cfb4456..b833467088811 100644
+> --- a/drivers/net/ethernet/freescale/fec_main.c
+> +++ b/drivers/net/ethernet/freescale/fec_main.c
+> @@ -1832,7 +1832,7 @@ fec_enet_rx_queue(struct net_device *ndev, int budget, u16 queue_id)
+>  	rxq->bd.cur = bdp;
+>  
+>  	if (xdp_result & FEC_ENET_XDP_REDIR)
+> -		xdp_do_flush_map();
+> +		xdp_do_flush();
+>  
+>  	return pkt_received;
+>  }
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+> index 0b3a27f118fb9..d680df615ff95 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+> @@ -2405,7 +2405,7 @@ void i40e_update_rx_stats(struct i40e_ring *rx_ring,
+>  void i40e_finalize_xdp_rx(struct i40e_ring *rx_ring, unsigned int xdp_res)
+>  {
+>  	if (xdp_res & I40E_XDP_REDIR)
+> -		xdp_do_flush_map();
+> +		xdp_do_flush();
+>  
+>  	if (xdp_res & I40E_XDP_TX) {
+>  		struct i40e_ring *xdp_ring =
+> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> index c8322fb6f2b37..7e06373e14d98 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> @@ -450,7 +450,7 @@ void ice_finalize_xdp_rx(struct ice_tx_ring *xdp_ring, unsigned int xdp_res,
+>  	struct ice_tx_buf *tx_buf = &xdp_ring->tx_buf[first_idx];
+>  
+>  	if (xdp_res & ICE_XDP_REDIR)
+> -		xdp_do_flush_map();
+> +		xdp_do_flush();
+>  
+>  	if (xdp_res & ICE_XDP_TX) {
+>  		if (static_branch_unlikely(&ice_xdp_locking_key))
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> index dd03b017dfc51..94bde2cad0f47 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> @@ -2421,7 +2421,7 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
+>  	}
+>  
+>  	if (xdp_xmit & IXGBE_XDP_REDIR)
+> -		xdp_do_flush_map();
+> +		xdp_do_flush();
+>  
+>  	if (xdp_xmit & IXGBE_XDP_TX) {
+>  		struct ixgbe_ring *ring = ixgbe_determine_xdp_ring(adapter);
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> index 1703c640a434d..59798bc33298f 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> @@ -351,7 +351,7 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
+>  	}
+>  
+>  	if (xdp_xmit & IXGBE_XDP_REDIR)
+> -		xdp_do_flush_map();
+> +		xdp_do_flush();
+>  
+>  	if (xdp_xmit & IXGBE_XDP_TX) {
+>  		struct ixgbe_ring *ring = ixgbe_determine_xdp_ring(adapter);
+> diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+> index d483b8c00ec0e..7b2aa30de8222 100644
+> --- a/drivers/net/ethernet/marvell/mvneta.c
+> +++ b/drivers/net/ethernet/marvell/mvneta.c
+> @@ -2520,7 +2520,7 @@ static int mvneta_rx_swbm(struct napi_struct *napi,
+>  		mvneta_xdp_put_buff(pp, rxq, &xdp_buf, -1);
+>  
+>  	if (ps.xdp_redirect)
+> -		xdp_do_flush_map();
+> +		xdp_do_flush();
+>  
+>  	if (ps.rx_packets)
+>  		mvneta_update_stats(pp, &ps);
+> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> index eb74ccddb4409..60c53f66935a6 100644
+> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> @@ -4027,7 +4027,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
+>  	}
+>  
+>  	if (xdp_ret & MVPP2_XDP_REDIR)
+> -		xdp_do_flush_map();
+> +		xdp_do_flush();
+>  
+>  	if (ps.rx_packets) {
+>  		struct mvpp2_pcpu_stats *stats = this_cpu_ptr(port->stats);
+> diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> index 6ad42e3b488f7..0b8ee35d713d1 100644
+> --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> @@ -2209,7 +2209,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
+>  	net_dim(&eth->rx_dim, dim_sample);
+>  
+>  	if (xdp_flush)
+> -		xdp_do_flush_map();
+> +		xdp_do_flush();
+>  
+>  	return done;
+>  }
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> index 12f56d0db0af2..cc3fcd24b36d6 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> @@ -893,7 +893,7 @@ void mlx5e_xdp_rx_poll_complete(struct mlx5e_rq *rq)
+>  	mlx5e_xmit_xdp_doorbell(xdpsq);
+>  
+>  	if (test_bit(MLX5E_RQ_FLAG_XDP_REDIRECT, rq->flags)) {
+> -		xdp_do_flush_map();
+> +		xdp_do_flush();
+>  		__clear_bit(MLX5E_RQ_FLAG_XDP_REDIRECT, rq->flags);
+>  	}
+>  }
+> diff --git a/drivers/net/ethernet/netronome/nfp/nfd3/xsk.c b/drivers/net/ethernet/netronome/nfp/nfd3/xsk.c
+> index 5d9db8c2a5b43..45be6954d5aae 100644
+> --- a/drivers/net/ethernet/netronome/nfp/nfd3/xsk.c
+> +++ b/drivers/net/ethernet/netronome/nfp/nfd3/xsk.c
+> @@ -256,7 +256,7 @@ nfp_nfd3_xsk_rx(struct nfp_net_rx_ring *rx_ring, int budget,
+>  	nfp_net_xsk_rx_ring_fill_freelist(r_vec->rx_ring);
+>  
+>  	if (xdp_redir)
+> -		xdp_do_flush_map();
+> +		xdp_do_flush();
+>  
+>  	if (tx_ring->wr_ptr_add)
+>  		nfp_net_tx_xmit_more_flush(tx_ring);
+> diff --git a/drivers/net/ethernet/sfc/efx_channels.c b/drivers/net/ethernet/sfc/efx_channels.c
+> index 8d2d7ea2ebefc..c9e17a8208a90 100644
+> --- a/drivers/net/ethernet/sfc/efx_channels.c
+> +++ b/drivers/net/ethernet/sfc/efx_channels.c
+> @@ -1260,7 +1260,7 @@ static int efx_poll(struct napi_struct *napi, int budget)
+>  
+>  	spent = efx_process_channel(channel, budget);
+>  
+> -	xdp_do_flush_map();
+> +	xdp_do_flush();
+>  
+>  	if (spent < budget) {
+>  		if (efx_channel_has_rx_queue(channel) &&
+> diff --git a/drivers/net/ethernet/sfc/siena/efx_channels.c b/drivers/net/ethernet/sfc/siena/efx_channels.c
+> index 1776f7f8a7a90..a7346e965bfe7 100644
+> --- a/drivers/net/ethernet/sfc/siena/efx_channels.c
+> +++ b/drivers/net/ethernet/sfc/siena/efx_channels.c
+> @@ -1285,7 +1285,7 @@ static int efx_poll(struct napi_struct *napi, int budget)
+>  
+>  	spent = efx_process_channel(channel, budget);
+>  
+> -	xdp_do_flush_map();
+> +	xdp_do_flush();
+>  
+>  	if (spent < budget) {
+>  		if (efx_channel_has_rx_queue(channel) &&
+> diff --git a/drivers/net/ethernet/socionext/netsec.c b/drivers/net/ethernet/socionext/netsec.c
+> index f358ea0031936..b834b129639f0 100644
+> --- a/drivers/net/ethernet/socionext/netsec.c
+> +++ b/drivers/net/ethernet/socionext/netsec.c
+> @@ -780,7 +780,7 @@ static void netsec_finalize_xdp_rx(struct netsec_priv *priv, u32 xdp_res,
+>  				   u16 pkts)
+>  {
+>  	if (xdp_res & NETSEC_XDP_REDIR)
+> -		xdp_do_flush_map();
+> +		xdp_do_flush();
+>  
+>  	if (xdp_res & NETSEC_XDP_TX)
+>  		netsec_xdp_ring_tx_db(priv, pkts);
+> diff --git a/drivers/net/ethernet/ti/cpsw_priv.c b/drivers/net/ethernet/ti/cpsw_priv.c
+> index 0ec85635dfd60..764ed298b5708 100644
+> --- a/drivers/net/ethernet/ti/cpsw_priv.c
+> +++ b/drivers/net/ethernet/ti/cpsw_priv.c
+> @@ -1360,7 +1360,7 @@ int cpsw_run_xdp(struct cpsw_priv *priv, int ch, struct xdp_buff *xdp,
+>  		 *  particular hardware is sharing a common queue, so the
+>  		 *  incoming device might change per packet.
+>  		 */
+> -		xdp_do_flush_map();
+> +		xdp_do_flush();
+>  		break;
+>  	default:
+>  		bpf_warn_invalid_xdp_action(ndev, prog, act);
+> -- 
+> 2.40.1
+> 
 
