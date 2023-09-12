@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-9839-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0352D79DCB9
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 01:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 71C1879DCBA
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 01:35:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B319E2815F9
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 23:35:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2606628138C
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 23:35:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00BC015AE9;
-	Tue, 12 Sep 2023 23:32:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 119A71640C;
+	Tue, 12 Sep 2023 23:32:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFAC311CAD
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 23:32:30 +0000 (UTC)
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF7E10FE
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:32:30 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id 38308e7fff4ca-2b962535808so106247011fa.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1A2F11CAD
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 23:32:31 +0000 (UTC)
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7AC10FE
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:32:31 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id a640c23a62f3a-9ad8add163cso137077266b.2
         for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:32:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694561548; x=1695166348; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694561549; x=1695166349; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=b7pmoitH+AiMJiFKg+FFb7MBDaxehp8zsVFc9eCNZDA=;
-        b=C2EH5NFazHo6EfeH4g1nta0ofcOIFuasJ3+Z6tmMEVnQABci4Mt0lNKdNOOCgP6T9g
-         fqfU5s7nJ1QfKYEoioUGG1xC4pJ8GOUukwKprN1S+DEfZm2VkkaTJcD6jwUc0GFntvvu
-         YJvKHbXZZiSrlm6GdSygivVcTOH1jCxp4QBOkPpCdiXn1/t96q9CIeuu81oeFTSApfDD
-         6Z2nr9VP5cWBbRiC7IKSPlOwy3ulNixad2kAkYHcWJDroVJDI2cPK4hIYKM1x/ANrzEp
-         HneD1gd2nANegNWLtF4jMpIx/5tGxu7OMafMcMBMccOwkPa8xlrj5kYXv+dq88ErSljd
-         8wOg==
+        bh=DOHf7UvNL/MfIQqx3fKPtHAMQ0tFRlyKasyS8VWjH/k=;
+        b=Pv+PMv+0jbjieCMS5tji618ss2NcxZh2yeCSyhPy2vj8qrIRgPGyhmjU5+QvWPlikW
+         YZ5ZcEjZ3lZExqF7bRi5UcDchwz2AlKk/s0EBB85ZsjcZCdCRtoqoFAFqzzgeZSeWZTJ
+         j96dHyOYgAQ4guB/UIzF9GDBDVo5/L6GqVHyFSSIqBieGhMYp6PSfXB7l2ktGl1XH+E2
+         qtmDje5gfXw1DOIc2F7gJTsB/yCVO+cfDfEHI0qECQDr/wrIqvtV5njkV1q1UQiPFG0u
+         c9trJGhMO1dfY7jD/un85WZsJ/WbcGySJh3BthHmq9MVb/3JuHQhPJy/uuMIT2sQN6Kb
+         rGIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694561548; x=1695166348;
+        d=1e100.net; s=20230601; t=1694561549; x=1695166349;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=b7pmoitH+AiMJiFKg+FFb7MBDaxehp8zsVFc9eCNZDA=;
-        b=eXu+bVwnMHR78q4hIPfWJfbi9vDIwcizP+zFflKDPABDS9JQkA4UA+0iDjmGHnGGY+
-         DU//C+Cl3a2NoJfVdVpTvpuWy13iWAvAjKVjaCFy1rB+I3H4b0orm3ZHeYuWqif1HsAM
-         L2MbdfWHyhVR6fG0JPn2tcI0ZL/tGf5z6gIALhx52P1obrVNfv5CD+SPdAS4gxt1eNtL
-         UupuBZseKHmZwvHrGl7QTS5tnvKGMCF9bePT6iSfwHZWXXCjARmWkcCEuJL2EXB9aoaa
-         Enxk7xc/K9LPEDfvgvfhCP0e8Gv91WRAfbvqJJyutsF74qRLHJ1swRka5+O/f2StU2hx
-         sSzw==
-X-Gm-Message-State: AOJu0YwhkuPh/QdbA/b+1RboEy+g4GwWG92ZRp9iqk59+GiED3DzETEI
-	VSljaLMMuGgGQjFWUKBiyU1x6+DO2V/lWQ==
-X-Google-Smtp-Source: AGHT+IFThpaJAygVmnfCDVgda1dXZidiOaH65Th8g12rqEYx1oUdFluGvTZLZWQP6XzhTK8+bYOJwQ==
-X-Received: by 2002:a2e:96cf:0:b0:2bc:d38e:65ab with SMTP id d15-20020a2e96cf000000b002bcd38e65abmr1012816ljj.37.1694561547933;
-        Tue, 12 Sep 2023 16:32:27 -0700 (PDT)
+        bh=DOHf7UvNL/MfIQqx3fKPtHAMQ0tFRlyKasyS8VWjH/k=;
+        b=XKbBqJkZub7cWP1gA2cOFnshsOp1WnO5e8EuIL10+HmJd2WaEZAh0vdH+89uvVmSxo
+         IiFEifoOSQNAqbwupOZV19kJkzaixyo09XbQfC70PXM2QKU4sn/c3SlY4XDdrq4wH/UG
+         d+SPU47cmm+4JW+s5wNImWPj8+ZiRmi81HolutSveifmT1E3XDjx8UlD0wfr3RuBtl+p
+         P94TKRQ3K+vOpoIj+UiIkL/UbE81iLXJs2Ru03toHwPYrfhH4i9cQm2hqzpL0EZPmBsj
+         5l9fb+w4CETwsywr7XAJtGGSF7izmfSKbZ7j8RM5GzXp5M+ndTfnYW9wqv5pqXBJz+pv
+         fMpQ==
+X-Gm-Message-State: AOJu0YzRsRm5Ux2hSuVf2XYioovzVf8fdhT1KvRS23U0E3LOl7s8VucH
+	SENEa8jBfJdHaFOjLEwM/2b9wsgBXLlirw==
+X-Google-Smtp-Source: AGHT+IFcbvjsGa9p5uJR5y/awxg7WJUq4ImmxHRbHaAOEl5FEpUkT++TpP4xgLelkQk7QTzCLlbTsw==
+X-Received: by 2002:a17:907:a053:b0:9a1:b144:30f0 with SMTP id gz19-20020a170907a05300b009a1b14430f0mr515211ejc.53.1694561549105;
+        Tue, 12 Sep 2023 16:32:29 -0700 (PDT)
 Received: from localhost ([212.203.98.42])
-        by smtp.gmail.com with ESMTPSA id lj16-20020a170906f9d000b00992d0de8762sm7432326ejb.216.2023.09.12.16.32.27
+        by smtp.gmail.com with ESMTPSA id f20-20020a170906825400b0099bc2d1429csm7460524ejx.72.2023.09.12.16.32.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 16:32:27 -0700 (PDT)
+        Tue, 12 Sep 2023 16:32:28 -0700 (PDT)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -65,9 +65,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	David Vernet <void@manifault.com>,
 	Puranjay Mohan <puranjay12@gmail.com>
-Subject: [PATCH bpf-next v3 15/17] libbpf: Add support for custom exception callbacks
-Date: Wed, 13 Sep 2023 01:32:12 +0200
-Message-ID: <20230912233214.1518551-16-memxor@gmail.com>
+Subject: [PATCH bpf-next v3 16/17] selftests/bpf: Add BPF assertion macros
+Date: Wed, 13 Sep 2023 01:32:13 +0200
+Message-ID: <20230912233214.1518551-17-memxor@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230912233214.1518551-1-memxor@gmail.com>
 References: <20230912233214.1518551-1-memxor@gmail.com>
@@ -77,198 +77,289 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6677; i=memxor@gmail.com; h=from:subject; bh=r36Y41HKrfmjdJkM3HT2I8pc/IZkGUAxlE7zci8mNdQ=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBlAPSu0C6fe+4yTY8XuEaBJ5uEBlL58uJdCvbmD +T1r8WYnv2JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZQD0rgAKCRBM4MiGSL8R yjtzD/0dUtfvOd5m45kXvglJ2KQWeQbZBFgYDEYldNPOCG/YLYwvc/6r1bw5Qxe+S28crS7j7Ja lmBqcS3s91s0bk7eka5uTs7aRGtG95XHADAuMm1UjD/Z8ZeAAtDErMBMjCUYpDOUF6RymAFPNan Zmxsv6yiggqP0TjPxom6mpLrzNTRD25+CKQC6SvakbZ2RMAjprZLQI5WRzOHgHAY9FuFHwy2ODS v9RgEYhgJTUF+ngoHqgsdRrQ6vRlMXf3NljhYyFWZOeBpeKY9Nj2xRWwdy6bF+fFM3v6jfXx25t KJR8//s09/OeM1aJcKgpbXZWOxsx917mDY5vy43Glh9379AcK1T+czJIcbOCbQbxm5XLo1KyTvZ LAWhZ9VYPfH5TkYytjD7jwB7Wsy5z+Y+8guJjBFe1n9gu33w+cq3ddOV7Jw5+KH19cq7jf52+X2 zPPsJDVZpFOzpA7D1XaLfjf139KwTDuopsMQgFhuxhYGsyUvvevPVnm93irX6xxqjAz/txZ61qn 4ig+V5jhEOOtIhKcA7ZPB+ide5YRnwmn9Z3s57bnWwR2kyBIJPUN0kgCIZF0dZ9liQqU2Vb6dH0 bl1s4AGo/f2hXjxJv41JqYQ4QA5WNwIUt1MEIgh6gFZ+7jqJaiGUm6S+nYbOqBoxC6jtPtyatXC RP/9BLoGnp4mEFA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9737; i=memxor@gmail.com; h=from:subject; bh=S7OPOB8h/TK+lGTRLmoipCDNro3S4BIBa8ptAz+GI+M=; b=kA0DAAgBTODIhki/EcoByyZiAGUA9K6g8tnxWLLEZdXXyhx4y82HncUEG3mRcdkwNht42FRDP YkCMwQAAQgAHRYhBEu+Kn4G7PnVgjxhEUzgyIZIvxHKBQJlAPSuAAoJEEzgyIZIvxHKEQ0P/jpS 61ILnbkoYWfsrb9gQmLoK/+TuKbjSEJ6tFo6MvPSZAVly/FuhDvOxv7zd4i95pwPZSlU9XH+xPl b+ZCFeB4G859PFHYN9tH/xXoR1/NMl1FRnrcXmeRz+oYYS/5EVAlsUCf/oIhZdxXe4YRI29H8l/ 12sQ7AdV5HRnS14KeFBw+TQ9rCOsXQizljsWW+ilDHEcsbuVdagedPI3lFFJ8ZjGgaearfWlfdc pQRlTeRReDTS79m0v+HGrOL0ttGxuwQcNyN4IkqasiMTojQVEUuhMOSv3a4zx4QlY7G7EkP4wDj iswaXPXF9Yx1tQux1bcFLQjWjPpBfVWTIs8Ke1yIF2VjFJZ3PwwQIihi9TRhqvQxn9R/Iaa6aUV oS5weCMYNYB7cOh0x9PJRuzhikZ22w0kbv07ioHsFjtfUW1z9VWIk3bYqHdNVWDwlQ//tO+5tSv XtK9qrVLC+enWqJLRZlKCe6TB2i3FFD7C1xlz30HA3KPc0XB/r/CnrLYPr7XRloti4CcxKCVmok xBVOrMShvH9JwzwYBQnmUr5WBqKegCh6kiv1hBwvW6YyfF7PZN8IEMRHeJ/2Y56sj/XPkGADqck /gdzNgo46u2jlc2K4nT2mnuYOpJ85tL898S2q+MfrHvV4n0ngjn+acKb5ID5+Rud5tdgv1L8Xzb TPSaD
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Add support to libbpf to append exception callbacks when loading a
-program. The exception callback is found by discovering the declaration
-tag 'exception_callback:<value>' and finding the callback in the value
-of the tag.
+Add macros implementing an 'assert' statement primitive using macros,
+built on top of the BPF exceptions support introduced in previous
+patches.
 
-The process is done in two steps. First, for each main program, the
-bpf_object__sanitize_and_load_btf function finds and marks its
-corresponding exception callback as defined by the declaration tag on
-it. Second, bpf_object__reloc_code is modified to append the indicated
-exception callback at the end of the instruction iteration (since
-exception callback will never be appended in that loop, as it is not
-directly referenced).
+The bpf_assert_*_with variants allow supplying a value which can the be
+inspected within the exception handler to signify the assert statement
+that led to the program being terminated abruptly, or be returned by the
+default exception handler.
+
+Note that only 64-bit scalar values are supported with these assertion
+macros, as during testing I found other cases quite unreliable in
+presence of compiler shifts/manipulations extracting the value of the
+right width from registers scrubbing the verifier's bounds information
+and knowledge about the value in the register.
+
+Thus, it is easier to reliably support this feature with only the full
+register width, and support both signed and unsigned variants.
+
+The bpf_assert_range is interesting in particular, which clamps the
+value in the [begin, end] (both inclusive) range within verifier state,
+and emits a check for the same at runtime.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- tools/lib/bpf/libbpf.c | 114 +++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 109 insertions(+), 5 deletions(-)
+ .../testing/selftests/bpf/bpf_experimental.h  | 243 ++++++++++++++++++
+ 1 file changed, 243 insertions(+)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index afc07a8f7dc7..3a6108e3238b 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -436,9 +436,11 @@ struct bpf_program {
- 	int fd;
- 	bool autoload;
- 	bool autoattach;
-+	bool sym_global;
- 	bool mark_btf_static;
- 	enum bpf_prog_type type;
- 	enum bpf_attach_type expected_attach_type;
-+	int exception_cb_idx;
+diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
+index 9a87170524ce..9aa29564bd74 100644
+--- a/tools/testing/selftests/bpf/bpf_experimental.h
++++ b/tools/testing/selftests/bpf/bpf_experimental.h
+@@ -207,4 +207,247 @@ extern void bpf_throw(u64 cookie) __ksym;
+  */
+ #define __exception_cb(name) __attribute__((btf_decl_tag("exception_callback:" #name)))
  
- 	int prog_ifindex;
- 	__u32 attach_btf_obj_fd;
-@@ -765,6 +767,7 @@ bpf_object__init_prog(struct bpf_object *obj, struct bpf_program *prog,
- 
- 	prog->type = BPF_PROG_TYPE_UNSPEC;
- 	prog->fd = -1;
-+	prog->exception_cb_idx = -1;
- 
- 	/* libbpf's convention for SEC("?abc...") is that it's just like
- 	 * SEC("abc...") but the corresponding bpf_program starts out with
-@@ -871,14 +874,16 @@ bpf_object__add_programs(struct bpf_object *obj, Elf_Data *sec_data,
- 		if (err)
- 			return err;
- 
-+		if (ELF64_ST_BIND(sym->st_info) != STB_LOCAL)
-+			prog->sym_global = true;
++#define __bpf_assert_signed(x) _Generic((x), \
++    unsigned long: 0,       \
++    unsigned long long: 0,  \
++    signed long: 1,         \
++    signed long long: 1     \
++)
 +
- 		/* if function is a global/weak symbol, but has restricted
- 		 * (STV_HIDDEN or STV_INTERNAL) visibility, mark its BTF FUNC
- 		 * as static to enable more permissive BPF verification mode
- 		 * with more outside context available to BPF verifier
- 		 */
--		if (ELF64_ST_BIND(sym->st_info) != STB_LOCAL
--		    && (ELF64_ST_VISIBILITY(sym->st_other) == STV_HIDDEN
--			|| ELF64_ST_VISIBILITY(sym->st_other) == STV_INTERNAL))
-+		if (prog->sym_global && (ELF64_ST_VISIBILITY(sym->st_other) == STV_HIDDEN
-+		    || ELF64_ST_VISIBILITY(sym->st_other) == STV_INTERNAL))
- 			prog->mark_btf_static = true;
- 
- 		nr_progs++;
-@@ -3142,6 +3147,86 @@ static int bpf_object__sanitize_and_load_btf(struct bpf_object *obj)
- 		}
- 	}
- 
-+	if (!kernel_supports(obj, FEAT_BTF_DECL_TAG))
-+		goto skip_exception_cb;
-+	for (i = 0; i < obj->nr_programs; i++) {
-+		struct bpf_program *prog = &obj->programs[i];
-+		int j, k, n;
++#define __bpf_assert_check(LHS, op, RHS)								 \
++	_Static_assert(sizeof(&(LHS)), "1st argument must be an lvalue expression");			 \
++	_Static_assert(sizeof(LHS) == 8, "Only 8-byte integers are supported\n");			 \
++	_Static_assert(__builtin_constant_p(__bpf_assert_signed(LHS)), "internal static assert");	 \
++	_Static_assert(__builtin_constant_p((RHS)), "2nd argument must be a constant expression")
 +
-+		if (prog_is_subprog(obj, prog))
-+			continue;
-+		n = btf__type_cnt(obj->btf);
-+		for (j = 1; j < n; j++) {
-+			const char *str = "exception_callback:", *name;
-+			size_t len = strlen(str);
-+			struct btf_type *t;
++#define __bpf_assert(LHS, op, cons, RHS, VAL)							\
++	({											\
++		(void)bpf_throw;								\
++		asm volatile ("if %[lhs] " op " %[rhs] goto +2; r1 = %[value]; call bpf_throw"	\
++			       : : [lhs] "r"(LHS), [rhs] cons(RHS), [value] "ri"(VAL) : );	\
++	})
 +
-+			t = btf_type_by_id(obj->btf, j);
-+			if (!btf_is_decl_tag(t) || btf_decl_tag(t)->component_idx != -1)
-+				continue;
++#define __bpf_assert_op_sign(LHS, op, cons, RHS, VAL, supp_sign)			\
++	({										\
++		__bpf_assert_check(LHS, op, RHS);					\
++		if (__bpf_assert_signed(LHS) && !(supp_sign))				\
++			__bpf_assert(LHS, "s" #op, cons, RHS, VAL);			\
++		else									\
++			__bpf_assert(LHS, #op, cons, RHS, VAL);				\
++	 })
 +
-+			name = btf__str_by_offset(obj->btf, t->name_off);
-+			if (strncmp(name, str, len))
-+				continue;
++#define __bpf_assert_op(LHS, op, RHS, VAL, supp_sign)					\
++	({										\
++		if (sizeof(typeof(RHS)) == 8) {						\
++			const typeof(RHS) rhs_var = (RHS);				\
++			__bpf_assert_op_sign(LHS, op, "r", rhs_var, VAL, supp_sign);	\
++		} else {								\
++			__bpf_assert_op_sign(LHS, op, "i", RHS, VAL, supp_sign);	\
++		}									\
++	 })
 +
-+			t = btf_type_by_id(obj->btf, t->type);
-+			if (!btf_is_func(t) || btf_func_linkage(t) != BTF_FUNC_GLOBAL) {
-+				pr_warn("prog '%s': exception_callback:<value> decl tag not applied to the main program\n",
-+					prog->name);
-+				return -EINVAL;
-+			}
-+			if (strcmp(prog->name, btf__str_by_offset(obj->btf, t->name_off)))
-+				continue;
-+			/* Multiple callbacks are specified for the same prog,
-+			 * the verifier will eventually return an error for this
-+			 * case, hence simply skip appending a subprog.
-+			 */
-+			if (prog->exception_cb_idx >= 0) {
-+				prog->exception_cb_idx = -1;
-+				break;
-+			}
++/* Description
++ *	Assert that a conditional expression is true.
++ * Returns
++ *	Void.
++ * Throws
++ *	An exception with the value zero when the assertion fails.
++ */
++#define bpf_assert(cond) if (!(cond)) bpf_throw(0);
 +
-+			name += len;
-+			if (str_is_empty(name)) {
-+				pr_warn("prog '%s': exception_callback:<value> decl tag contains empty value\n",
-+					prog->name);
-+				return -EINVAL;
-+			}
++/* Description
++ *	Assert that a conditional expression is true.
++ * Returns
++ *	Void.
++ * Throws
++ *	An exception with the specified value when the assertion fails.
++ */
++#define bpf_assert_with(cond, value) if (!(cond)) bpf_throw(value);
 +
-+			for (k = 0; k < obj->nr_programs; k++) {
-+				struct bpf_program *subprog = &obj->programs[k];
++/* Description
++ *	Assert that LHS is equal to RHS. This statement updates the known value
++ *	of LHS during verification. Note that RHS must be a constant value, and
++ *	must fit within the data type of LHS.
++ * Returns
++ *	Void.
++ * Throws
++ *	An exception with the value zero when the assertion fails.
++ */
++#define bpf_assert_eq(LHS, RHS)						\
++	({								\
++		barrier_var(LHS);					\
++		__bpf_assert_op(LHS, ==, RHS, 0, true);			\
++	})
 +
-+				if (!prog_is_subprog(obj, subprog))
-+					continue;
-+				if (strcmp(name, subprog->name))
-+					continue;
-+				/* Enforce non-hidden, as from verifier point of
-+				 * view it expects global functions, whereas the
-+				 * mark_btf_static fixes up linkage as static.
-+				 */
-+				if (!subprog->sym_global || subprog->mark_btf_static) {
-+					pr_warn("prog '%s': exception callback %s must be a global non-hidden function\n",
-+						prog->name, subprog->name);
-+					return -EINVAL;
-+				}
-+				/* Let's see if we already saw a static exception callback with the same name */
-+				if (prog->exception_cb_idx >= 0) {
-+					pr_warn("prog '%s': multiple subprogs with same name as exception callback '%s'\n",
-+					        prog->name, subprog->name);
-+					return -EINVAL;
-+				}
-+				prog->exception_cb_idx = k;
-+				break;
-+			}
++/* Description
++ *	Assert that LHS is equal to RHS. This statement updates the known value
++ *	of LHS during verification. Note that RHS must be a constant value, and
++ *	must fit within the data type of LHS.
++ * Returns
++ *	Void.
++ * Throws
++ *	An exception with the specified value when the assertion fails.
++ */
++#define bpf_assert_eq_with(LHS, RHS, value)				\
++	({								\
++		barrier_var(LHS);					\
++		__bpf_assert_op(LHS, ==, RHS, value, true);		\
++	})
 +
-+			if (prog->exception_cb_idx >= 0)
-+				continue;
-+			pr_warn("prog '%s': cannot find exception callback '%s'\n", prog->name, name);
-+			return -ENOENT;
-+		}
-+	}
-+skip_exception_cb:
++/* Description
++ *	Assert that LHS is less than RHS. This statement updates the known
++ *	bounds of LHS during verification. Note that RHS must be a constant
++ *	value, and must fit within the data type of LHS.
++ * Returns
++ *	Void.
++ * Throws
++ *	An exception with the value zero when the assertion fails.
++ */
++#define bpf_assert_lt(LHS, RHS)						\
++	({								\
++		barrier_var(LHS);					\
++		__bpf_assert_op(LHS, <, RHS, 0, false);			\
++	})
 +
- 	sanitize = btf_needs_sanitization(obj);
- 	if (sanitize) {
- 		const void *raw_data;
-@@ -6270,10 +6355,10 @@ static int
- bpf_object__reloc_code(struct bpf_object *obj, struct bpf_program *main_prog,
- 		       struct bpf_program *prog)
- {
--	size_t sub_insn_idx, insn_idx, new_cnt;
-+	size_t sub_insn_idx, insn_idx;
- 	struct bpf_program *subprog;
--	struct bpf_insn *insns, *insn;
- 	struct reloc_desc *relo;
-+	struct bpf_insn *insn;
- 	int err;
- 
- 	err = reloc_prog_func_and_line_info(obj, main_prog, prog);
-@@ -6582,6 +6667,25 @@ bpf_object__relocate(struct bpf_object *obj, const char *targ_btf_path)
- 				prog->name, err);
- 			return err;
- 		}
++/* Description
++ *	Assert that LHS is less than RHS. This statement updates the known
++ *	bounds of LHS during verification. Note that RHS must be a constant
++ *	value, and must fit within the data type of LHS.
++ * Returns
++ *	Void.
++ * Throws
++ *	An exception with the specified value when the assertion fails.
++ */
++#define bpf_assert_lt_with(LHS, RHS, value)				\
++	({								\
++		barrier_var(LHS);					\
++		__bpf_assert_op(LHS, <, RHS, value, false);		\
++	})
 +
-+		/* Now, also append exception callback if it has not been done already. */
-+		if (prog->exception_cb_idx >= 0) {
-+			struct bpf_program *subprog = &obj->programs[prog->exception_cb_idx];
++/* Description
++ *	Assert that LHS is greater than RHS. This statement updates the known
++ *	bounds of LHS during verification. Note that RHS must be a constant
++ *	value, and must fit within the data type of LHS.
++ * Returns
++ *	Void.
++ * Throws
++ *	An exception with the value zero when the assertion fails.
++ */
++#define bpf_assert_gt(LHS, RHS)						\
++	({								\
++		barrier_var(LHS);					\
++		__bpf_assert_op(LHS, >, RHS, 0, false);			\
++	})
 +
-+			/* Calling exception callback directly is disallowed, which the
-+			 * verifier will reject later. In case it was processed already,
-+			 * we can skip this step, otherwise for all other valid cases we
-+			 * have to append exception callback now.
-+			 */
-+			if (subprog->sub_insn_off == 0) {
-+				err = bpf_object__append_subprog_code(obj, prog, subprog);
-+				if (err)
-+					return err;
-+				err = bpf_object__reloc_code(obj, prog, subprog);
-+				if (err)
-+					return err;
-+			}
-+		}
- 	}
- 	/* Process data relos for main programs */
- 	for (i = 0; i < obj->nr_programs; i++) {
++/* Description
++ *	Assert that LHS is greater than RHS. This statement updates the known
++ *	bounds of LHS during verification. Note that RHS must be a constant
++ *	value, and must fit within the data type of LHS.
++ * Returns
++ *	Void.
++ * Throws
++ *	An exception with the specified value when the assertion fails.
++ */
++#define bpf_assert_gt_with(LHS, RHS, value)				\
++	({								\
++		barrier_var(LHS);					\
++		__bpf_assert_op(LHS, >, RHS, value, false);		\
++	})
++
++/* Description
++ *	Assert that LHS is less than or equal to RHS. This statement updates the
++ *	known bounds of LHS during verification. Note that RHS must be a
++ *	constant value, and must fit within the data type of LHS.
++ * Returns
++ *	Void.
++ * Throws
++ *	An exception with the value zero when the assertion fails.
++ */
++#define bpf_assert_le(LHS, RHS)						\
++	({								\
++		barrier_var(LHS);					\
++		__bpf_assert_op(LHS, <=, RHS, 0, false);		\
++	})
++
++/* Description
++ *	Assert that LHS is less than or equal to RHS. This statement updates the
++ *	known bounds of LHS during verification. Note that RHS must be a
++ *	constant value, and must fit within the data type of LHS.
++ * Returns
++ *	Void.
++ * Throws
++ *	An exception with the specified value when the assertion fails.
++ */
++#define bpf_assert_le_with(LHS, RHS, value)				\
++	({								\
++		barrier_var(LHS);					\
++		__bpf_assert_op(LHS, <=, RHS, value, false);		\
++	})
++
++/* Description
++ *	Assert that LHS is greater than or equal to RHS. This statement updates
++ *	the known bounds of LHS during verification. Note that RHS must be a
++ *	constant value, and must fit within the data type of LHS.
++ * Returns
++ *	Void.
++ * Throws
++ *	An exception with the value zero when the assertion fails.
++ */
++#define bpf_assert_ge(LHS, RHS)						\
++	({								\
++		barrier_var(LHS);					\
++		__bpf_assert_op(LHS, >=, RHS, 0, false);		\
++	})
++
++/* Description
++ *	Assert that LHS is greater than or equal to RHS. This statement updates
++ *	the known bounds of LHS during verification. Note that RHS must be a
++ *	constant value, and must fit within the data type of LHS.
++ * Returns
++ *	Void.
++ * Throws
++ *	An exception with the specified value when the assertion fails.
++ */
++#define bpf_assert_ge_with(LHS, RHS, value)				\
++	({								\
++		barrier_var(LHS);					\
++		__bpf_assert_op(LHS, >=, RHS, value, false);		\
++	})
++
++/* Description
++ *	Assert that LHS is in the range [BEG, END] (inclusive of both). This
++ *	statement updates the known bounds of LHS during verification. Note
++ *	that both BEG and END must be constant values, and must fit within the
++ *	data type of LHS.
++ * Returns
++ *	Void.
++ * Throws
++ *	An exception with the value zero when the assertion fails.
++ */
++#define bpf_assert_range(LHS, BEG, END)					\
++	({								\
++		_Static_assert(BEG <= END, "BEG must be <= END");	\
++		barrier_var(LHS);					\
++		__bpf_assert_op(LHS, >=, BEG, 0, false);		\
++		__bpf_assert_op(LHS, <=, END, 0, false);		\
++	})
++
++/* Description
++ *	Assert that LHS is in the range [BEG, END] (inclusive of both). This
++ *	statement updates the known bounds of LHS during verification. Note
++ *	that both BEG and END must be constant values, and must fit within the
++ *	data type of LHS.
++ * Returns
++ *	Void.
++ * Throws
++ *	An exception with the specified value when the assertion fails.
++ */
++#define bpf_assert_range_with(LHS, BEG, END, value)			\
++	({								\
++		_Static_assert(BEG <= END, "BEG must be <= END");	\
++		barrier_var(LHS);					\
++		__bpf_assert_op(LHS, >=, BEG, value, false);		\
++		__bpf_assert_op(LHS, <=, END, value, false);		\
++	})
++
+ #endif
 -- 
 2.41.0
 
