@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-9815-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9816-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5823A79DC32
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 00:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F024879DC39
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 00:50:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AED62813EA
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 22:49:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A88F1282512
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 22:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A55F14F6C;
-	Tue, 12 Sep 2023 22:47:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F9B114F9C;
+	Tue, 12 Sep 2023 22:47:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC18114AB1;
-	Tue, 12 Sep 2023 22:47:02 +0000 (UTC)
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1153210F4;
-	Tue, 12 Sep 2023 15:47:02 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31c65820134so5762419f8f.1;
-        Tue, 12 Sep 2023 15:47:01 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5BC014F89;
+	Tue, 12 Sep 2023 22:47:03 +0000 (UTC)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED9910F9;
+	Tue, 12 Sep 2023 15:47:03 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-401da71b7faso72322075e9.2;
+        Tue, 12 Sep 2023 15:47:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694558820; x=1695163620; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694558821; x=1695163621; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qhUNqTKNJ5t40WxcJkQJJc6NwQozn+LNI3JL0/ULous=;
-        b=dsh8CodRO/rjPAwHsY5JMfDmx8BK07PZ4jrSu27Py0Tef5Mr+XoxzwVHp7iuX7a51c
-         Dvikoo4hYXxMHrL8vcxwFNL8zxnaLK6MTHe/4xOQqWoHVBm4WgDyJhCBNXN730LSYUgk
-         SF2JWi3oU99EMGbDqsVqFrDp8liz8DHqJV3hPMhNuN0V87V749ae1wgCGtkDHlBT/JHP
-         fbRNxYZrDe2FcS9TZvws1003xu03L32J2uo/Q0k+OZtsDkCenl7mEk8qnYqcqaYg/gSM
-         WJNk0DaBfxkneFNf6zZmFyrhqimnuQX7IElCVRKWBCaNvaV5/gXp3KBD1+i7G86O5htO
-         1ERg==
+        bh=9kqE25xddEGWdkAd5IJWaOPr3bcznXZB6DbOZ/MzuKY=;
+        b=CoRXAahptuRkL8SsIVeDj3ObxXrfCw8u4+j7VRtnnA9lLibob9UB23lXRhbob5ONXX
+         HsJ2pBd9R3/50QfiB/xYttGbWUMGq+YFqHubDAfZkg0JGy2daXNJYVkVYIZOHQZ33bsa
+         pPTnc/LkGz177lSMT7qpBqhZ4d6ZfWAH6gummX1vVxgaX/p5KnFUr5KqmJPjCioizIk1
+         VErLKbwO+4JPsz8knfA9YCAlbLcALCZe7hQCc8z/Ujt7fyELW2O8SgZn54VbwUOVhcVr
+         Ld80KKRNvQzLH3JRZ+z68txpk5O9nT/UBsQ1DQ28K/DHUiCs908ZmE36oh9IrM9x+Cv+
+         YRrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694558820; x=1695163620;
+        d=1e100.net; s=20230601; t=1694558821; x=1695163621;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qhUNqTKNJ5t40WxcJkQJJc6NwQozn+LNI3JL0/ULous=;
-        b=sWI9ps6tej+A/643AqH/qPTq7bSRsWooXjxvOwPmFleT1zV/3KDsLPwUQQQ93Xtons
-         Uwea9uDI5mYZBdmm2xNNKUlTdQgssv44a35Lb+2yyIfEuSf0RFWiJG5TUraqjXfS7X8q
-         bbmhCisDBa4RiR31Ub41DgwEyzpY70T6YxORUzFEULhd4B9UFSVduF372VIUqwEQGu3I
-         NJKngj2bwhmFH7VLVkCVHHsmcml9zcfnkDkz5LZGbinpbMLtNUV70xQbezaNCRWpTXo5
-         la9/i1yB6McKi+CemJZvQd38uANxuEwsVicUBPwgIQav0+8eQtsYOwkyIQtlFllFkxiU
-         Fqsg==
-X-Gm-Message-State: AOJu0YyS1ChUxTAQZCE9oQNPsTcPdAF9R7btvAuGG9ezuKf1hhLrx4uZ
-	hCw+QijRnbYnW0OegWemGQw=
-X-Google-Smtp-Source: AGHT+IFgAH0fOtyaF0ehV56I8y/PX0drowIs04cM59dILrqCnUI/euGHNvJaohPj3FXuSexhWOZw7g==
-X-Received: by 2002:a5d:628c:0:b0:319:7a9f:c63 with SMTP id k12-20020a5d628c000000b003197a9f0c63mr718103wru.50.1694558820430;
-        Tue, 12 Sep 2023 15:47:00 -0700 (PDT)
+        bh=9kqE25xddEGWdkAd5IJWaOPr3bcznXZB6DbOZ/MzuKY=;
+        b=MinWX+D11KDq8mHbaGbwstMgF7noRAZ8kR1sDwa9381tj9taGmpVzUGLUZ1cN0DWXB
+         gr2e0p/DnKArvhoBuZW9LFF4xAhJR6RYnI9dXmaBIipLAjmaBllvijbprmacNF5NfbJC
+         w7jSn9Ao3VgyHKFdfeLAPgJjJ955NtiDSa48YP6eB70k7YE8t0wHGD3TST7c/0HaufdR
+         2pl5cbQK/hV4tZY9rCK5QLCXLiH4bCCFnyAwM7qV3fxHxvjHnAkxH3KtlTkcV8DKEj2b
+         BXLYloOe/xlvIT46aCMa0AoMIjC1WhYvmtW1vfp6UtRIKDFbCwetWom0MyoUc/uIDS34
+         c5RQ==
+X-Gm-Message-State: AOJu0Yzm5JRZjjlUY/xOuekpfMM4zJ8cc/ffQa+A4upT8JCBEEC6l8WD
+	HHnZYPKNg890sdbK2x5g5aM=
+X-Google-Smtp-Source: AGHT+IFtRPmqCA45qZeOfe4gap2/v8LgzERhETar42HTdZcTU3NFDWNWl1Q7ouaYhNuNBRQewOmqOA==
+X-Received: by 2002:a7b:cbcc:0:b0:3fe:db1b:8c39 with SMTP id n12-20020a7bcbcc000000b003fedb1b8c39mr604002wmi.41.1694558821453;
+        Tue, 12 Sep 2023 15:47:01 -0700 (PDT)
 Received: from ip-172-31-30-46.eu-west-1.compute.internal (ec2-34-242-166-189.eu-west-1.compute.amazonaws.com. [34.242.166.189])
-        by smtp.gmail.com with ESMTPSA id e15-20020a5d594f000000b00317df42e91dsm13921794wri.4.2023.09.12.15.46.59
+        by smtp.gmail.com with ESMTPSA id e15-20020a5d594f000000b00317df42e91dsm13921794wri.4.2023.09.12.15.47.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 15:47:00 -0700 (PDT)
+        Tue, 12 Sep 2023 15:47:01 -0700 (PDT)
 From: Puranjay Mohan <puranjay12@gmail.com>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -90,9 +90,9 @@ To: Alexei Starovoitov <ast@kernel.org>,
 	linux-riscv@lists.infradead.org,
 	netdev@vger.kernel.org
 Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next 4/6] bpf, powerpc32: Always zero extend for LDX
-Date: Tue, 12 Sep 2023 22:46:52 +0000
-Message-Id: <20230912224654.6556-5-puranjay12@gmail.com>
+Subject: [PATCH bpf-next 5/6] bpf, arm32: Always zero extend for LDX with B/H/W
+Date: Tue, 12 Sep 2023 22:46:53 +0000
+Message-Id: <20230912224654.6556-6-puranjay12@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230912224654.6556-1-puranjay12@gmail.com>
 References: <20230912224654.6556-1-puranjay12@gmail.com>
@@ -113,65 +113,37 @@ after LDX.
 
 Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
 ---
- arch/powerpc/net/bpf_jit_comp32.c | 25 ++++++++-----------------
- 1 file changed, 8 insertions(+), 17 deletions(-)
+ arch/arm/net/bpf_jit_32.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
-index 7f91ea064c08..0a952a2cfaac 100644
---- a/arch/powerpc/net/bpf_jit_comp32.c
-+++ b/arch/powerpc/net/bpf_jit_comp32.c
-@@ -936,14 +936,13 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 				PPC_BCC_SHORT(COND_GT, (ctx->idx + 4) * 4);
- 				EMIT(PPC_RAW_LI(dst_reg, 0));
- 				/*
--				 * For BPF_DW case, "li reg_h,0" would be needed when
--				 * !fp->aux->verifier_zext. Emit NOP otherwise.
-+				 * For BPF_DW case, "li reg_h,0" would be needed emit NOP otherwise.
- 				 *
- 				 * Note that "li reg_h,0" is emitted for BPF_B/H/W case,
- 				 * if necessary. So, jump there insted of emitting an
- 				 * additional "li reg_h,0" instruction.
- 				 */
--				if (size == BPF_DW && !fp->aux->verifier_zext)
-+				if (size == BPF_DW)
- 					EMIT(PPC_RAW_LI(dst_reg_h, 0));
- 				else
- 					EMIT(PPC_RAW_NOP());
-@@ -974,7 +973,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 				break;
- 			}
- 
--			if (size != BPF_DW && !fp->aux->verifier_zext)
-+			if (size != BPF_DW)
- 				EMIT(PPC_RAW_LI(dst_reg_h, 0));
- 
- 			if (BPF_MODE(code) == BPF_PROBE_MEM) {
-@@ -982,20 +981,12 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 				int jmp_off = 4;
- 
- 				/*
--				 * In case of BPF_DW, two lwz instructions are emitted, one
--				 * for higher 32-bit and another for lower 32-bit. So, set
--				 * ex->insn to the first of the two and jump over both
--				 * instructions in fixup.
--				 *
--				 * Similarly, with !verifier_zext, two instructions are
--				 * emitted for BPF_B/H/W case. So, set ex->insn to the
--				 * instruction that could fault and skip over both
--				 * instructions.
-+				 * Two instructions are emitted for LDX.
-+				 * So, set ex->insn to the instruction that could fault and skip
-+				 * over both instructions.
- 				 */
--				if (size == BPF_DW || !fp->aux->verifier_zext) {
--					insn_idx -= 1;
--					jmp_off += 4;
--				}
-+				insn_idx -= 1;
-+				jmp_off += 4;
- 
- 				ret = bpf_add_extable_entry(fp, image, pass, ctx, insn_idx,
- 							    jmp_off, dst_reg);
+diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+index 6a1c9fca5260..757a99febba5 100644
+--- a/arch/arm/net/bpf_jit_32.c
++++ b/arch/arm/net/bpf_jit_32.c
+@@ -1081,20 +1081,17 @@ static inline void emit_ldx_r(const s8 dst[], const s8 src,
+ 	case BPF_B:
+ 		/* Load a Byte */
+ 		emit(ARM_LDRB_I(rd[1], rm, off), ctx);
+-		if (!ctx->prog->aux->verifier_zext)
+-			emit_a32_mov_i(rd[0], 0, ctx);
++		emit_a32_mov_i(rd[0], 0, ctx);
+ 		break;
+ 	case BPF_H:
+ 		/* Load a HalfWord */
+ 		emit(ARM_LDRH_I(rd[1], rm, off), ctx);
+-		if (!ctx->prog->aux->verifier_zext)
+-			emit_a32_mov_i(rd[0], 0, ctx);
++		emit_a32_mov_i(rd[0], 0, ctx);
+ 		break;
+ 	case BPF_W:
+ 		/* Load a Word */
+ 		emit(ARM_LDR_I(rd[1], rm, off), ctx);
+-		if (!ctx->prog->aux->verifier_zext)
+-			emit_a32_mov_i(rd[0], 0, ctx);
++		emit_a32_mov_i(rd[0], 0, ctx);
+ 		break;
+ 	case BPF_DW:
+ 		/* Load a Double Word */
 -- 
 2.39.2
 
