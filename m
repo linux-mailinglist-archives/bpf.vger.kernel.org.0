@@ -1,114 +1,109 @@
-Return-Path: <bpf+bounces-9741-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89F0879CE3B
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 12:27:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7D5379CE21
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 12:21:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4429C281D50
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 10:27:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 008E41C2149B
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 10:20:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9464179A3;
-	Tue, 12 Sep 2023 10:27:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08426179BD;
+	Tue, 12 Sep 2023 10:18:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C16F51775A
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 10:27:13 +0000 (UTC)
-X-Greylist: delayed 532 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 12 Sep 2023 03:27:13 PDT
-Received: from smtp65.iad3b.emailsrvr.com (smtp65.iad3b.emailsrvr.com [146.20.161.65])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5681701
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 03:27:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-	s=20221208-6x11dpa4; t=1694513899;
-	bh=FH3C6DGeGqxyT5D0x1WZDEUoGXKaA0SlVyvXD/E86uk=;
-	h=Date:Subject:To:From:From;
-	b=Tq6xJ2+piqPbhOIJE69N/bFxHEol/tmPY3c/hCTgDQpjfzcL1PHLR0dKjZfF714V7
-	 Vl/6zaEzVFXQTpS59Oc3i3RhW8WqIwPdHyjcxiin/hSqOtSelQtRrdQ5MMJLWJtYqR
-	 D98zi0KdjdUX1nH+1iIJQBq7/UhFQ72R5qHGEl7g=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp17.relay.iad3b.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id C837BA00C7;
-	Tue, 12 Sep 2023 06:18:15 -0400 (EDT)
-Message-ID: <44acdea6-271f-4e71-a0b3-d74a92034a9a@mev.co.uk>
-Date: Tue, 12 Sep 2023 11:18:13 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D7A17994
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 10:18:42 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4BF921723
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 03:18:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1694513921;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Oucudl+k5IeCt8bSPR9EAaN7OT3eWorjofAbojhI4aE=;
+	b=OVAjADK76J5rmhxnmhk5Yh8HxQkd7FM7b12e705N1b7J+VsJ9b4DjoD2QdhakdSmrQQ6LA
+	yNKt9FghvvkrctcLP9yLeJEDjXVkg+8EHqnP+G8FEUEY5PaLqEKpKpTu6tZhVoCDNMin65
+	G/A+dWCtSHxbFfluK5XfcB/6K53wa+s=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-328-CJOBKFqvNaS-uXKoc6ChGg-1; Tue, 12 Sep 2023 06:18:39 -0400
+X-MC-Unique: CJOBKFqvNaS-uXKoc6ChGg-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-52c0134dfcdso789466a12.1
+        for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 03:18:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694513918; x=1695118718;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Oucudl+k5IeCt8bSPR9EAaN7OT3eWorjofAbojhI4aE=;
+        b=pvtETTCEq5YEr0qaKq/s0qqyDMMjShQayXF7oA9xHoC19SxUqNy0v8TCqdiOwx6ROa
+         On+t0J7uWIw2A6aM4m7guXNadPZicmnDLICJApljUzEX1XuZqK4LB2gr0aq7aWLngbB4
+         26DYZKMIn1m3KlpRoHFClSwnoFVzL8IFg9Ao+9lRZOhS5omvNoumm7PplJA37ZKsn8aZ
+         fBJhWLZ3bahJHAEghCD4jgfVufF2jnMlnC17AIXOBEfaERFdlFku6ZKi5M+4qZ/qTd5X
+         BBDw1XeXIst+dMXq5R0cemKsHh8lUYwk1zUUHBlCg29lXSs6K4ezdxxwwOCxDdtYuRDg
+         tT4w==
+X-Gm-Message-State: AOJu0Yyf2R6yLliorwpJueACPFhgc3fkbIde+YuwFZgHtfp6b+rMstwQ
+	6VEB7eVOaGaO2R6cZtvTAQSi8xBCUloKAC+ipAmQrTvEw01zEXvJEn3h8Tex++5wvP4qNCcdHvN
+	g9ZHCScD1b2kl
+X-Received: by 2002:a17:907:971d:b0:9ad:786d:72af with SMTP id jg29-20020a170907971d00b009ad786d72afmr2092906ejc.5.1694513918693;
+        Tue, 12 Sep 2023 03:18:38 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEKwCMgpdBMyoyLEjev3VQygvMbQjCTrvrmIP82YAFTOsxsVft5rlwggdRA/8rvn4uqVVCjZw==
+X-Received: by 2002:a17:907:971d:b0:9ad:786d:72af with SMTP id jg29-20020a170907971d00b009ad786d72afmr2092894ejc.5.1694513918370;
+        Tue, 12 Sep 2023 03:18:38 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-249-231.dyn.eolo.it. [146.241.249.231])
+        by smtp.gmail.com with ESMTPSA id z25-20020a1709067e5900b009937e7c4e54sm6681815ejr.39.2023.09.12.03.18.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 03:18:38 -0700 (PDT)
+Message-ID: <ad61e3fffdfb899d57307b2bddb2226a084bcb65.camel@redhat.com>
+Subject: Re: [PATCH net-next 1/6] net: stmmac: add platform library
+From: Paolo Abeni <pabeni@redhat.com>
+To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>, Alexandre Torgue
+	 <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org, Daniel
+ Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>,
+ Emil Renner Berthing <kernel@esmil.dk>, Eric Dumazet <edumazet@google.com>,
+ Fabio Estevam <festevam@gmail.com>,  Jakub Kicinski <kuba@kernel.org>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
+ <john.fastabend@gmail.com>, linux-arm-kernel@lists.infradead.org, 
+ linux-stm32@st-md-mailman.stormreply.com, Maxime Coquelin
+ <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org, NXP Linux Team
+ <linux-imx@nxp.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, Samin
+ Guo <samin.guo@starfivetech.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Shawn Guo <shawnguo@kernel.org>
+Date: Tue, 12 Sep 2023 12:18:36 +0200
+In-Reply-To: <E1qfiqd-007TPL-7K@rmk-PC.armlinux.org.uk>
+References: <ZP8yEFWn0Ml3ALWq@shell.armlinux.org.uk>
+	 <E1qfiqd-007TPL-7K@rmk-PC.armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/7] drivers/comedi: fix Python string escapes
-To: Benjamin Gray <bgray@linux.ibm.com>, linux-ia64@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- llvm@lists.linux.dev, linux-pm@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Cc: Jonathan Corbet <corbet@lwn.net>,
- H Hartley Sweeten <hsweeten@visionengravers.com>,
- Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>,
- Jan Kiszka <jan.kiszka@siemens.com>, Kieran Bingham <kbingham@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
- linux-perf-users@vger.kernel.org,
- Todd E Brandt <todd.e.brandt@linux.intel.com>,
- Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>
-References: <20230912060801.95533-1-bgray@linux.ibm.com>
- <20230912060801.95533-4-bgray@linux.ibm.com>
-Content-Language: en-GB
-From: Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-In-Reply-To: <20230912060801.95533-4-bgray@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: 263f4c94-c5b5-4040-bf22-1f7e4ea60010-1-1
 
-On 12/09/2023 07:07, Benjamin Gray wrote:
-> Python 3.6 introduced a DeprecationWarning for invalid escape sequences.
-> This is upgraded to a SyntaxWarning in Python 3.12, and will eventually
-> be a syntax error.
-> 
-> Fix these now to get ahead of it before it's an error.
-> 
-> Signed-off-by: Benjamin Gray <bgray@linux.ibm.com>
-> ---
->   drivers/comedi/drivers/ni_routing/tools/convert_csv_to_c.py | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/comedi/drivers/ni_routing/tools/convert_csv_to_c.py b/drivers/comedi/drivers/ni_routing/tools/convert_csv_to_c.py
-> index 90378fb50580..d19101fc2a94 100755
-> --- a/drivers/comedi/drivers/ni_routing/tools/convert_csv_to_c.py
-> +++ b/drivers/comedi/drivers/ni_routing/tools/convert_csv_to_c.py
-> @@ -44,7 +44,7 @@ def routedict_to_structinit_single(name, D, return_name=False):
->   
->       lines.append('\t\t[B({})] = {{'.format(D0_sig))
->       for D1_sig, value in D1:
-> -      if not re.match('[VIU]\([^)]*\)', value):
-> +      if not re.match(r'[VIU]\([^)]*\)', value):
->           sys.stderr.write('Invalid register format: {}\n'.format(repr(value)))
->           sys.stderr.write(
->             'Register values should be formatted with V(),I(),or U()\n')
+On Mon, 2023-09-11 at 16:29 +0100, Russell King (Oracle) wrote:
+> Add a platform library of helper functions for common traits in the
+> platform drivers. Currently, this is setting the tx clock.
+>=20
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-Looks good thanks!  I ran the modified script using 'make everything' in 
-the directory (after setting up a python venv to install ctypesgen) and 
-it didn't break anything. (There were some harmless errors output by 
-ctypesgen due to failing to parse some GCC extensions, but those are 
-nothing to do with this patch and the generated C files are OK.)
+FTR, two copies of this series landed on the ML. I'm marking the no-
+cover-letter version as Superseded, but please have a look at the
+comments there, too.
 
-Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+Thanks,
 
--- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+Paolo
 
 
