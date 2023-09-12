@@ -1,141 +1,82 @@
-Return-Path: <bpf+bounces-9694-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9693-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B68B379C13B
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 02:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD8D079C122
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 02:30:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E69841C20AC8
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 00:44:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5FBD1C20A9B
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 00:30:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3DF817D9;
-	Tue, 12 Sep 2023 00:43:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF62D65C;
+	Tue, 12 Sep 2023 00:30:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74119138E;
-	Tue, 12 Sep 2023 00:43:18 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1AB618B8B4;
-	Mon, 11 Sep 2023 17:21:35 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B6F732185A;
-	Tue, 12 Sep 2023 00:20:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1694478004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=miCkGFoxKxVBRFGfrRVmp7107zCZ87ZsGupuJ8/qi4I=;
-	b=y+XJ5licnv6p4VsbMaYCCmjo88xpeuPolvb06IFTBaohmZvi/sfa6ct/tsx/rT903MwHja
-	feieLTBbRrr7hs0PQAhssAyrPqBBQWX4zmAHc8gS4JuL7um1lHz3M+ZofnVQg4X0c7oJa6
-	zntywi97zFwmCzO4Bh5EOVScVd7Yopo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1694478004;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=miCkGFoxKxVBRFGfrRVmp7107zCZ87ZsGupuJ8/qi4I=;
-	b=gWiZ8WawDBD37dgffca3X5PwhwfGLc4J5xDCDY4r5blSjYZHqemjX9l8+4vwn4kc0fSi9z
-	aQgqVsD/spaBrZAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7F699139DB;
-	Tue, 12 Sep 2023 00:20:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 3zaDGbSu/2StUQAAMHmgww
-	(envelope-from <krisman@suse.de>); Tue, 12 Sep 2023 00:20:04 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Breno Leitao <leitao@debian.org>
-Cc: sdf@google.com,  axboe@kernel.dk,  asml.silence@gmail.com,
-  willemdebruijn.kernel@gmail.com,  kuba@kernel.org,  martin.lau@linux.dev,
-  bpf@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  netdev@vger.kernel.org,  io-uring@vger.kernel.org,  pabeni@redhat.com
-Subject: Re: [PATCH v5 5/8] io_uring/cmd: return -EOPNOTSUPP if net is disabled
-In-Reply-To: <ZP9EeunfcbWos80w@gmail.com> (Breno Leitao's message of "Mon, 11
-	Sep 2023 09:46:50 -0700")
-Organization: SUSE
-References: <20230911103407.1393149-1-leitao@debian.org>
-	<20230911103407.1393149-6-leitao@debian.org> <87ledc904p.fsf@suse.de>
-	<ZP9EeunfcbWos80w@gmail.com>
-Date: Mon, 11 Sep 2023 20:20:03 -0400
-Message-ID: <87jzsw5jkc.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656FF14F97
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 00:30:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1E668C4163C;
+	Tue, 12 Sep 2023 00:30:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1694478627;
+	bh=KLjjVVXmrgBmEYHg8q0teeOp/4ipFC3Ut+Hc/DdQYJQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=VAySSY4mMiMZYRJHEcY/SeAXt1eTatYYhbR4d9ucanu8xrlQ6auObN0yW9kWrPWTs
+	 a3xuQGUcqxIWLW9s3ry/6MTjh7j+Yw+iyAj2RAL3g1HfqCEufKny7xRqrYwFmDx1yk
+	 X36fGggv/o+FvMGqZtsga5AMWM+G8bBdYKjkjp0j60a7vGanxdHbJXloZvlzQorcuQ
+	 j5WrcQN6wAzTZCOFQ4mJfBrZ29s3drZ1I2mq1ZJiPyCq/S5S9BWWomgAPnzgRuSm6v
+	 0++/8cmWjRS0UmlJNiygiSllQaugGOq+fBNzYitKQxAPMLwiXE5Y/C7PCki8EQt90c
+	 YkSj0ZDNneM+w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 03E07E1C280;
+	Tue, 12 Sep 2023 00:30:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: Correct map_fd to data_fd in
+ tailcalls
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <169447862701.16556.10767524281745060375.git-patchwork-notify@kernel.org>
+Date: Tue, 12 Sep 2023 00:30:27 +0000
+References: <20230906154256.95461-1-hffilwlqm@gmail.com>
+In-Reply-To: <20230906154256.95461-1-hffilwlqm@gmail.com>
+To: Leon Hwang <hffilwlqm@gmail.com>
+Cc: bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, maciej.fijalkowski@intel.com, jakub@cloudflare.com,
+ kernel-patches-bot@fb.com
 
-Breno Leitao <leitao@debian.org> writes:
+Hello:
 
-> On Mon, Sep 11, 2023 at 11:53:58AM -0400, Gabriel Krisman Bertazi wrote:
->> Breno Leitao <leitao@debian.org> writes:
->> 
->> > Protect io_uring_cmd_sock() to be called if CONFIG_NET is not set. If
->> > network is not enabled, but io_uring is, then we want to return
->> > -EOPNOTSUPP for any possible socket operation.
->> >
->> > This is helpful because io_uring_cmd_sock() can now call functions that
->> > only exits if CONFIG_NET is enabled without having #ifdef CONFIG_NET
->> > inside the function itself.
->> >
->> > Signed-off-by: Breno Leitao <leitao@debian.org>
->> > ---
->> >  io_uring/uring_cmd.c | 8 ++++++++
->> >  1 file changed, 8 insertions(+)
->> >
->> > diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
->> > index 60f843a357e0..a7d6a7d112b7 100644
->> > --- a/io_uring/uring_cmd.c
->> > +++ b/io_uring/uring_cmd.c
->> > @@ -167,6 +167,7 @@ int io_uring_cmd_import_fixed(u64 ubuf, unsigned long len, int rw,
->> >  }
->> >  EXPORT_SYMBOL_GPL(io_uring_cmd_import_fixed);
->> >  
->> > +#if defined(CONFIG_NET)
->> >  int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
->> >  {
->> >  	struct socket *sock = cmd->file->private_data;
->> > @@ -193,3 +194,10 @@ int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
->> >  	}
->> >  }
->> >  EXPORT_SYMBOL_GPL(io_uring_cmd_sock);
->> > +#else
->> > +int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
->> > +{
->> > +	return -EOPNOTSUPP;
->> > +}
->> > +#endif
->> > +
->> 
->> Is net/socket.c even built without CONFIG_NET? if not, you don't even need
->> the alternative EOPNOTSUPP implementation.
->
-> It seems so. net/socket.o is part of obj-y:
->
-> https://github.com/torvalds/linux/blob/master/net/Makefile#L9
+This patch was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
 
-Yes. But also:
+On Wed,  6 Sep 2023 23:42:56 +0800 you wrote:
+> Get and check data_fd. It should not check map_fd again.
+> 
+> Meanwhile, correct some 'return' to 'goto out'.
+> 
+> Thank the suggestion from Maciej in "bpf, x64: Fix tailcall infinite
+> loop"[0] discussions.
+> 
+> [...]
 
-[0:cartola linux]$ grep 'net/' Kbuild
-obj-$(CONFIG_NET)       += net/
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: Correct map_fd to data_fd in tailcalls
+    https://git.kernel.org/bpf/bpf-next/c/96daa9874211
 
-I doubled checked and it should build fine without it.  Technically, you
-also want to also guard the declaration in the header file, IMO, even if
-it compiles fine.  Also, there is an extra blank line warning when applying
-the patch but, surprisingly, checkpatch.pl seems to miss it.
-
+You are awesome, thank you!
 -- 
-Gabriel Krisman Bertazi
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
