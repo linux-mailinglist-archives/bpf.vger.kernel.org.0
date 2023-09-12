@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-9831-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9832-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EA3E79DCAF
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 01:34:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4944879DCB0
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 01:34:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38F19281F37
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 23:34:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E37DE1C212B6
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 23:34:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 335F214F81;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4DA514F94;
 	Tue, 12 Sep 2023 23:32:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE001429F
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 23:32:23 +0000 (UTC)
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3720310FE
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:32:23 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id 38308e7fff4ca-2bfb1167277so9828191fa.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A71A31429F
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 23:32:24 +0000 (UTC)
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E02510FE
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:32:24 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id 4fb4d7f45d1cf-52f33659d09so4426740a12.1
         for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 16:32:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694561541; x=1695166341; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694561542; x=1695166342; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=K6fOZXSAiZjm2cSMS2cSkgEH3WnXEVvnoYLQHmSdkEw=;
-        b=FX2IXR1mgJSexOYP8d1N0iCT87w8vgnsS9tKFxvma+2b9vNL++NVmak7A4Ssg6D8RP
-         ZihGOT9Uy5dEj4YyhEFFZ+EM1qYdiqdyhKAx7zeqX4xDQGnKUy5gm90gLIsXwUyNZpQ1
-         wMjLEMW0fsktwFpB69kte6/yVqql4qjZjZH1f17h7uizyRiqKoZWKiBin8dTqnunsh46
-         y0Ighm+kdsl42MeQ1usIksXWOcLEUxH24TvqChegZvyZM9Nnr8/t7BnANuWDY5qo8db2
-         Bx24/XJT5f9MeEBetVrSEFLcknCvwCOLssITeKtJ6BelaRF5czn9mQ/p0AfBGJhnqv49
-         TqJg==
+        bh=DEqNKEyyn2bquryM443pcbyNh0rQI9bn3pNb7P20yv0=;
+        b=oaOz9eSie9Xm1ywgaVUbg2t2qcY7Jry0fUSl8oWKDbavVvLA3HdvO0xIdFbRXfzaIo
+         ti4I3jngnFG7h59XYVgPwRP6TqANLa7/cbUNkr4YTGMs+8R3E1huwP/uXya7SWbkvD9S
+         PJivGlPK+cDLNi2BzJMCi2PIIglCb703D4mczNcbBtd1x1TLVIb7WzI/ThKDX0jgfkpm
+         RMhcm0cWJ31RyFBmIKvx9BLyPfixf2bPpG81CPJ8XUQ1X5q07RwpNYqW6crVp5EJzMhq
+         5lCBCQjbPSEq6TTi/DjmQiS1FwKYjOeRaXd6z+dP0sK777qSdFHd4TkZojXhGyK54kUs
+         s+bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694561541; x=1695166341;
+        d=1e100.net; s=20230601; t=1694561542; x=1695166342;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=K6fOZXSAiZjm2cSMS2cSkgEH3WnXEVvnoYLQHmSdkEw=;
-        b=Y45E/v8f9N6iEJrLDYN7iTJFtcjdCngfAdNITHXH4jC/sWV6JOnBQiSuE1Zf/XSPam
-         NbDpxTjHsROOWgXfpb82oOPZDIYJ1peY7vyIf/HtkAz9PcJd5PC3+75X1uvgOAQJT2G2
-         tDcX2YSUp6HO4AkLwp2MJl95MPlTbTgNnBEHluhDtLNtZagddKVNT5toH5mk6whhi9vB
-         sVK6MLwlVR/sXPdBZfXSpghgJlZbmSObLoWExpfVBced67Se4MP3raXuKr1R2dxt+OhQ
-         CI5rITGfqmi/pecpQaMJWEX+XP20Quu4S07Q0x/Eycd+nlrcIuXOkrUt6RgbzBYUctqh
-         P2Yg==
-X-Gm-Message-State: AOJu0YwmKQVBVhVlL/TIZRsFWFuO3pxcP9vTa2AwFAJWB8gXIz/z4X0j
-	4v96sXE08t68Iyb2VhVUFxI0Z2HCuo0fDA==
-X-Google-Smtp-Source: AGHT+IECRtOEGE6Pc4SrptqysMKVfxW4SXncDzXfaMr18UQjetnzVOj3yQA29KotoHZLMLW8H5xPMw==
-X-Received: by 2002:a2e:8206:0:b0:2b9:ee3e:2412 with SMTP id w6-20020a2e8206000000b002b9ee3e2412mr923831ljg.22.1694561541217;
-        Tue, 12 Sep 2023 16:32:21 -0700 (PDT)
+        bh=DEqNKEyyn2bquryM443pcbyNh0rQI9bn3pNb7P20yv0=;
+        b=V0RW/7QGOmrGRKqbq5LaRewBjQ+lrXrwpigonS0OwQbK6gK2cvXbfgSPF5GWaxG7RE
+         vlEzoebK4ROQzxzb1GvVrLeKqNd8tEIFTv+mfcXMFUT7mrI3z9mVpdvc2YdD8q/y742D
+         ykTglRJRpvqK75cdP/KpqfaXnVreImsYSZhHX4pyPZ0d8cJGkeXNmLuwfUY96bSOs4KE
+         JSN9PcAS8vELOcSO4I6ap2zDmpfSsqOZAZZB1hJ8KjkkM3/fU1BGR/dE6yafetK10avq
+         H3qPQCDu1BedP02GCtNWtxH0yopnGrpTNVuaUo4M3zGjQl2zyqLwu5IBuuYk60+jO1lH
+         l+2w==
+X-Gm-Message-State: AOJu0Yz0wb2qBYyxZMgcM4PSine9vqieJiIm1NpJ33NJDqvaQEx3lhB6
+	Iun9p/VEmEdxn1looYbk3eA7CHEAgAC9nQ==
+X-Google-Smtp-Source: AGHT+IEjuI+DgEaQ5vfu0OMk+2aXX3NkLWQ46JOTGJYDiVITOt0CuonVNB/qRFZr3f8nEDYdwTUXbQ==
+X-Received: by 2002:a50:fb89:0:b0:52b:daff:f6e9 with SMTP id e9-20020a50fb89000000b0052bdafff6e9mr809317edq.17.1694561542086;
+        Tue, 12 Sep 2023 16:32:22 -0700 (PDT)
 Received: from localhost ([212.203.98.42])
-        by smtp.gmail.com with ESMTPSA id oz13-20020a170906cd0d00b0098951bb4dc3sm7446788ejb.184.2023.09.12.16.32.20
+        by smtp.gmail.com with ESMTPSA id eq18-20020a056402299200b0052fe2faf44fsm10411edb.75.2023.09.12.16.32.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 12 Sep 2023 16:32:21 -0700 (PDT)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
@@ -65,9 +65,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	David Vernet <void@manifault.com>,
 	Puranjay Mohan <puranjay12@gmail.com>
-Subject: [PATCH bpf-next v3 07/17] bpf: Perform CFG walk for exception callback
-Date: Wed, 13 Sep 2023 01:32:04 +0200
-Message-ID: <20230912233214.1518551-8-memxor@gmail.com>
+Subject: [PATCH bpf-next v3 08/17] bpf: Treat first argument as return value for bpf_throw
+Date: Wed, 13 Sep 2023 01:32:05 +0200
+Message-ID: <20230912233214.1518551-9-memxor@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230912233214.1518551-1-memxor@gmail.com>
 References: <20230912233214.1518551-1-memxor@gmail.com>
@@ -77,64 +77,137 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1909; i=memxor@gmail.com; h=from:subject; bh=KMEC7C7g+3JkHUGpCQErdFOWVieZ1zfyS4CL+h7sjbw=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBlAPStFiDWp5kvthNHypcBbyK+NuFN02qSh4BXx oi/B9OqD1uJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZQD0rQAKCRBM4MiGSL8R yqdzD/4vQmvKR2caqfDxCdUhOpuWr03ecOG+K5gkL9Lrk0IJ8fHHYzKR0r26E6D2EODlxC0aNlF uWWkFhDaFppbgRVw4lREov7qksVtG0cVGij+Hjg1VWw/yVD9ebQanP3IcdHAQhJu/LqsxVNyHXp PLQIaDrYBsiRwQG4Lsthn7xZcmxN66EN0gn1kDmnKiNJAiMk6h9+IANwKHnbPyC3JNqvofDInDq o+QVra8QRPCyZvqoE1/ucxQyG1O+WFNLxDMEtAb7g522nP+p7TLaVH3JYCfT9oCGPjLEi1ABTNU de/RRxOyf6Gczmy8ZR5tFebC2+TqR1j42SAYZ4yapYBkK/0cL0Kr3ZeWkCFaPe6GxzY/kziwvvz aI/PGGsFjWEAqsmb0Zi2BvX4wSu4M93/rFi/c2FXaHpRXTSWUw5m1stho5nIJ1/cE8yRwi9Iozj HYkPfYKT1DTx1oKWsFXCf6k/qGpq2xedj00Y6kED7sXhfTLphbSwEVbVrcbPWHpjBMDi5MRV2I7 SQhpo6S5bUkt78FwdUtIK/qJUfJDWbvf0rwaBcvQ0/TYUUl6lry/D1JXk2crARZVHfKMJ0+guj/ Qs7EDYJGO00OfkVhz36ULg044eh6+TLp57GiUq4uwFe3NyFlvDgepaVaRv8lFB+nGwwGMRVj9fw FGhGSRo0YOF26Gw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4675; i=memxor@gmail.com; h=from:subject; bh=NYrdPgP3ltPdMBCETLJI7uiGC1Lo4GXt4r58HXYpCNQ=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBlAPSty5CANEROfhpiVp2x8LTYd+djg+BPI4cGM /Fln6GI34GJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZQD0rQAKCRBM4MiGSL8R ygrxEAClHTzrnHzCLB9+1DynctsmmYCg7U0t27lQNc16RbEtYmrI23s0xg2jndvJ+uQ35q8G5W0 cwH1N2I3C59dQIbpWhTYV1WqB2DzUIBQ9k28CqZVA7Zkx+dWDah1NYNOXHgoUfbCCu3qoyVP3rh RdSHMHGp4YsaKdj4pimUtOx3XTgSXxD41YL/j9+B37KJV73wLKARb0pXtoUdJV1Zg2Ntbc6+RR6 et8pi+ywUOaQ80WvF1rtQtQkoTKxaeNVvhn8b61LgHOCXyabzWkYEuLTRr7RHx2cXCUnADArGvg B/OHzE272JRCHDn/O5FiAiMxPPHBKdttGEuDgnuHZ1iEiUoKBBnBGzEt2V+V8CJEsJ2l4/aZQgI WU46IjQMLOxYp5K54sJmTtg5TNO5URNucZeObdSf0pAnAVFHz6XI24j5C1OHQAAx5hWuH77KejZ Ji+huxJ3b1LanwUrM6bXWbhFNqxlYGyzvYVevWUGHQpHzINsEhoWC7WPpfggfTf1rW5XL+NyuaB DdZiW4hgP23ukbgbmJOs6jpfAuNftExBRTeMZaa5jFLmq+SX1fYHJluvQBLaJlCLw3ogT3ODoQ5 EMYbyrDCvQw71l+1lbm79DF/lvplEVnlFJSdWORj0J33BsB0uqaTXF9sds7Qf7eQSCaTN+ViuPg fCLcsEX1wlBbloA==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Since exception callbacks are not referenced using bpf_pseudo_func and
-bpf_pseudo_call instructions, check_cfg traversal will never explore
-instructions of the exception callback. Even after adding the subprog,
-the program will then fail with a 'unreachable insn' error.
+In case of the default exception callback, change the behavior of
+bpf_throw, where the passed cookie value is no longer ignored, but
+is instead the return value of the default exception callback. As
+such, we need to place restrictions on the value being passed into
+bpf_throw in such a case, only allowing those permitted by the
+check_return_code function.
 
-We thus need to begin walking from the start of the exception callback
-again in check_cfg after a complete CFG traversal finishes, so as to
-explore the CFG rooted at the exception callback.
+Thus, bpf_throw can now control the return value of the program from
+each call site without having the user install a custom exception
+callback just to override the return value when an exception is thrown.
+
+We also modify the hidden subprog instructions to now move BPF_REG_1 to
+BPF_REG_0, so as to set the return value before exit in the default
+callback.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/verifier.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ kernel/bpf/verifier.c | 37 ++++++++++++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 13 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index ec3f22312516..863e4e6c4616 100644
+index 863e4e6c4616..0ba32b626320 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -15126,8 +15126,8 @@ static int check_cfg(struct bpf_verifier_env *env)
+@@ -11485,6 +11485,8 @@ static int fetch_kfunc_meta(struct bpf_verifier_env *env,
+ 	return 0;
+ }
+ 
++static int check_return_code(struct bpf_verifier_env *env, int regno);
++
+ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 			    int *insn_idx_p)
  {
- 	int insn_cnt = env->prog->len;
- 	int *insn_stack, *insn_state;
--	int ret = 0;
--	int i;
-+	int ex_insn_beg, i, ret = 0;
-+	bool ex_done = false;
- 
- 	insn_state = env->cfg.insn_state = kvcalloc(insn_cnt, sizeof(int), GFP_KERNEL);
- 	if (!insn_state)
-@@ -15143,6 +15143,7 @@ static int check_cfg(struct bpf_verifier_env *env)
- 	insn_stack[0] = 0; /* 0 is the first instruction */
- 	env->cfg.cur_stack = 1;
- 
-+walk_cfg:
- 	while (env->cfg.cur_stack > 0) {
- 		int t = insn_stack[env->cfg.cur_stack - 1];
- 
-@@ -15169,6 +15170,16 @@ static int check_cfg(struct bpf_verifier_env *env)
- 		goto err_free;
+@@ -11613,6 +11615,15 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 			return -ENOTSUPP;
+ 		}
+ 		env->seen_exception = true;
++
++		/* In the case of the default callback, the cookie value passed
++		 * to bpf_throw becomes the return value of the program.
++		 */
++		if (!env->exception_callback_subprog) {
++			err = check_return_code(env, BPF_REG_1);
++			if (err < 0)
++				return err;
++		}
  	}
  
-+	if (env->exception_callback_subprog && !ex_done) {
-+		ex_insn_beg = env->subprog_info[env->exception_callback_subprog].start;
-+
-+		insn_state[ex_insn_beg] = DISCOVERED;
-+		insn_stack[0] = ex_insn_beg;
-+		env->cfg.cur_stack = 1;
-+		ex_done = true;
-+		goto walk_cfg;
-+	}
-+
- 	for (i = 0; i < insn_cnt; i++) {
- 		if (insn_state[i] != EXPLORED) {
- 			verbose(env, "unreachable insn %d\n", i);
+ 	for (i = 0; i < CALLER_SAVED_REGS; i++)
+@@ -14709,7 +14720,7 @@ static int check_ld_abs(struct bpf_verifier_env *env, struct bpf_insn *insn)
+ 	return 0;
+ }
+ 
+-static int check_return_code(struct bpf_verifier_env *env)
++static int check_return_code(struct bpf_verifier_env *env, int regno)
+ {
+ 	struct tnum enforce_attach_type_range = tnum_unknown;
+ 	const struct bpf_prog *prog = env->prog;
+@@ -14743,22 +14754,22 @@ static int check_return_code(struct bpf_verifier_env *env)
+ 	 * of bpf_exit, which means that program wrote
+ 	 * something into it earlier
+ 	 */
+-	err = check_reg_arg(env, BPF_REG_0, SRC_OP);
++	err = check_reg_arg(env, regno, SRC_OP);
+ 	if (err)
+ 		return err;
+ 
+-	if (is_pointer_value(env, BPF_REG_0)) {
+-		verbose(env, "R0 leaks addr as return value\n");
++	if (is_pointer_value(env, regno)) {
++		verbose(env, "R%d leaks addr as return value\n", regno);
+ 		return -EACCES;
+ 	}
+ 
+-	reg = cur_regs(env) + BPF_REG_0;
++	reg = cur_regs(env) + regno;
+ 
+ 	if (frame->in_async_callback_fn) {
+ 		/* enforce return zero from async callbacks like timer */
+ 		if (reg->type != SCALAR_VALUE) {
+-			verbose(env, "In async callback the register R0 is not a known value (%s)\n",
+-				reg_type_str(env, reg->type));
++			verbose(env, "In async callback the register R%d is not a known value (%s)\n",
++				regno, reg_type_str(env, reg->type));
+ 			return -EINVAL;
+ 		}
+ 
+@@ -14771,8 +14782,8 @@ static int check_return_code(struct bpf_verifier_env *env)
+ 
+ 	if (is_subprog && !frame->in_exception_callback_fn) {
+ 		if (reg->type != SCALAR_VALUE) {
+-			verbose(env, "At subprogram exit the register R0 is not a scalar value (%s)\n",
+-				reg_type_str(env, reg->type));
++			verbose(env, "At subprogram exit the register R%d is not a scalar value (%s)\n",
++				regno, reg_type_str(env, reg->type));
+ 			return -EINVAL;
+ 		}
+ 		return 0;
+@@ -14854,8 +14865,8 @@ static int check_return_code(struct bpf_verifier_env *env)
+ 	}
+ 
+ 	if (reg->type != SCALAR_VALUE) {
+-		verbose(env, "At program exit the register R0 is not a known value (%s)\n",
+-			reg_type_str(env, reg->type));
++		verbose(env, "At program exit the register R%d is not a known value (%s)\n",
++			regno, reg_type_str(env, reg->type));
+ 		return -EINVAL;
+ 	}
+ 
+@@ -17053,7 +17064,7 @@ static int do_check(struct bpf_verifier_env *env)
+ 					continue;
+ 				}
+ 
+-				err = check_return_code(env);
++				err = check_return_code(env, BPF_REG_0);
+ 				if (err)
+ 					return err;
+ process_bpf_exit:
+@@ -18722,7 +18733,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 	if (env->seen_exception && !env->exception_callback_subprog) {
+ 		struct bpf_insn patch[] = {
+ 			env->prog->insnsi[insn_cnt - 1],
+-			BPF_MOV64_IMM(BPF_REG_0, 0),
++			BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
+ 			BPF_EXIT_INSN(),
+ 		};
+ 
 -- 
 2.41.0
 
