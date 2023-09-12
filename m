@@ -1,91 +1,247 @@
-Return-Path: <bpf+bounces-9789-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9793-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5497079DA82
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 23:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B89EB79DAEF
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 23:30:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D274281CF5
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 21:03:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72B3D2819C8
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 21:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90C17B659;
-	Tue, 12 Sep 2023 21:03:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FF10BA36;
+	Tue, 12 Sep 2023 21:29:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57C1623B8
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 21:03:37 +0000 (UTC)
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B31F6199;
-	Tue, 12 Sep 2023 14:03:36 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::e2d])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 1C6A835F;
-	Tue, 12 Sep 2023 21:03:36 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 1C6A835F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1694552616; bh=SSAzwh1tnDrXl1M/+o/bZ/L2hYeqt2O/VVxB3bIyHmg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=TuO+4D0PzRhG+DW7unB1FLksenos5iftQBkayTrzYKNCCz871oCH98Wc992FRYPtj
-	 jaauzWR6a/pyjQMM5rU8bxnl2sgqDgB3ydTZ/ylwVNDWXnbpdaRukPb4Fw8hYtro5n
-	 p+HjkQhaVXOtbKHRK3GvZPjsGK7IOEYz40atzKN/2b2twKQESEKmf6jpl+Akk8rEXX
-	 TgknuAxOjXCHnjPaQwtF7xzuy8pToOd/vXDxJv+hCCtUeH0lETgL2RdtybQCi6szNb
-	 UWmPZfW+/9jxgLTZPCaaz2myM9zL2O+8WcSvqwCdJPP5WfFnuF4QncBZULW9EwRcvD
-	 jJnTmWQq6YAVw==
-From: Jonathan Corbet <corbet@lwn.net>
-To: Benjamin Gray <bgray@linux.ibm.com>, linux-ia64@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- llvm@lists.linux.dev, linux-pm@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Cc: Ian Abbott <abbotti@mev.co.uk>, H Hartley Sweeten
- <hsweeten@visionengravers.com>, Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, Jan
- Kiszka <jan.kiszka@siemens.com>, Kieran Bingham <kbingham@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Alexander Shishkin
- <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org,
- Todd E Brandt <todd.e.brandt@linux.intel.com>, Andrii Nakryiko
- <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan
- <shuah@kernel.org>, Benjamin Gray <bgray@linux.ibm.com>
-Subject: Re: [PATCH v2 2/7] Documentation/sphinx: fix Python string escapes
-In-Reply-To: <20230912060801.95533-3-bgray@linux.ibm.com>
-References: <20230912060801.95533-1-bgray@linux.ibm.com>
- <20230912060801.95533-3-bgray@linux.ibm.com>
-Date: Tue, 12 Sep 2023 15:03:35 -0600
-Message-ID: <874jjzhzo8.fsf@meer.lwn.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27594B663
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 21:29:30 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E3D10D8
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 14:29:30 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38CKioEW017009
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 14:29:30 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3t2ya00d71-10
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 14:29:30 -0700
+Received: from twshared15338.14.prn3.facebook.com (2620:10d:c0a8:1c::11) by
+ mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Tue, 12 Sep 2023 14:29:22 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id C6A7137F405B4; Tue, 12 Sep 2023 14:29:06 -0700 (PDT)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>
+CC: <linux-fsdevel@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
+        <keescook@chromium.org>, <brauner@kernel.org>,
+        <lennart@poettering.net>, <kernel-team@meta.com>, <sargun@sargun.me>
+Subject: [PATCH v4 bpf-next 00/12] BPF token and BPF FS-based delegation
+Date: Tue, 12 Sep 2023 14:28:54 -0700
+Message-ID: <20230912212906.3975866-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 8U1zTHRoPI0Kg8NF1up6C2JwEn2VTKjf
+X-Proofpoint-GUID: 8U1zTHRoPI0Kg8NF1up6C2JwEn2VTKjf
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_20,2023-09-05_01,2023-05-22_02
 
-Benjamin Gray <bgray@linux.ibm.com> writes:
+This patch set introduces an ability to delegate a subset of BPF subsystem
+functionality from privileged system-wide daemon (e.g., systemd or any other
+container manager) through special mount options for userns-bound BPF FS to
+a *trusted* unprivileged application. Trust is the key here. This
+functionality is not about allowing unconditional unprivileged BPF usage.
+Establishing trust, though, is completely up to the discretion of respective
+privileged application that would create and mount a BPF FS instance with
+delegation enabled, as different production setups can and do achieve it
+through a combination of different means (signing, LSM, code reviews, etc),
+and it's undesirable and infeasible for kernel to enforce any particular way
+of validating trustworthiness of particular process.
 
-> Python 3.6 introduced a DeprecationWarning for invalid escape sequences.
-> This is upgraded to a SyntaxWarning in Python 3.12, and will eventually
-> be a syntax error.
->
-> Fix these now to get ahead of it before it's an error.
->
-> Signed-off-by: Benjamin Gray <bgray@linux.ibm.com>
-> ---
->  Documentation/sphinx/cdomain.py             | 2 +-
->  Documentation/sphinx/kernel_abi.py          | 2 +-
->  Documentation/sphinx/kernel_feat.py         | 2 +-
->  Documentation/sphinx/kerneldoc.py           | 2 +-
->  Documentation/sphinx/maintainers_include.py | 8 ++++----
->  5 files changed, 8 insertions(+), 8 deletions(-)
+The main motivation for this work is a desire to enable containerized BPF
+applications to be used together with user namespaces. This is currently
+impossible, as CAP_BPF, required for BPF subsystem usage, cannot be namespa=
+ced
+or sandboxed, as a general rule. E.g., tracing BPF programs, thanks to BPF
+helpers like bpf_probe_read_kernel() and bpf_probe_read_user() can safely r=
+ead
+arbitrary memory, and it's impossible to ensure that they only read memory =
+of
+processes belonging to any given namespace. This means that it's impossible=
+ to
+have a mechanically verifiable namespace-aware CAP_BPF capability, and as s=
+uch
+another mechanism to allow safe usage of BPF functionality is necessary.BPF=
+ FS
+delegation mount options and BPF token derived from such BPF FS instance is
+such a mechanism. Kernel makes no assumption about what "trusted" constitut=
+es
+in any particular case, and it's up to specific privileged applications and
+their surrounding infrastructure to decide that. What kernel provides is a =
+set
+of APIs to setup and mount special BPF FS instanecs and derive BPF tokens f=
+rom
+it. BPF FS and BPF token are both bound to its owning userns and in such a =
+way
+are constrained inside intended container. Users can then pass BPF token FD=
+ to
+privileged bpf() syscall commands, like BPF map creation and BPF program
+loading, to perform such operations without having init userns privileged.
 
-I've applied this one to the docs tree, thanks.
+This v4 incorporates feedback and suggestions ([3]) received on v3 of this
+patch set, and instead of allowing to create BPF tokens directly assuming
+capable(CAP_SYS_ADMIN), we instead enhance BPF FS to accepts a few new
+delegation mount options. If these options are used and BPF FS itself is
+properly created, set up, and mounted inside the user namespaced container,
+user application is able to derive a BPF token object from BPF FS instance,
+and pass that token to bpf() syscall. As explained in patch #2, BPF token
+itself doesn't grant access to BPF functionality, but instead allows kernel=
+ to
+do namespaced capabilities checks (ns_capable() vs capable()) for CAP_BPF,
+CAP_PERFMON, CAP_NET_ADMIN, and CAP_SYS_ADMIN, as applicable. So it forms o=
+ne
+half of a puzzle and allows container managers and sys admins to have safe =
+and
+flexible configuration options: determining which containers get delegation=
+ of
+BPF functionality through BPF FS, and then which applications within such
+containers are allowed to perform bpf() commands, based on namespaces
+capabilities.
 
-jon
+Previous attempt at addressing this very same problem ([0]) attempted to
+utilize authoritative LSM approach, but was conclusively rejected by upstre=
+am
+LSM maintainers. BPF token concept is not changing anything about LSM
+approach, but can be combined with LSM hooks for very fine-grained security
+policy. Some ideas about making BPF token more convenient to use with LSM (=
+in
+particular custom BPF LSM programs) was briefly described in recent LSF/MM/=
+BPF
+2023 presentation ([1]). E.g., an ability to specify user-provided data
+(context), which in combination with BPF LSM would allow implementing a very
+dynamic and fine-granular custom security policies on top of BPF token. In =
+the
+interest of minimizing API surface area and discussions this was relegated =
+to
+follow up patches, as it's not essential to the fundamental concept of
+delegatable BPF token.
+
+It should be noted that BPF token is conceptually quite similar to the idea=
+ of
+/dev/bpf device file, proposed by Song a while ago ([2]). The biggest
+difference is the idea of using virtual anon_inode file to hold BPF token a=
+nd
+allowing multiple independent instances of them, each (potentially) with its
+own set of restrictions. And also, crucially, BPF token approach is not usi=
+ng
+any special stateful task-scoped flags. Instead, bpf() syscall accepts
+token_fd parameters explicitly for each relevant BPF command. This addresses
+main concerns brought up during the /dev/bpf discussion, and fits better wi=
+th
+overall BPF subsystem design.
+
+This patch set adds a basic minimum of functionality to make BPF token idea
+useful and to discuss API and functionality. Currently only low-level libbpf
+APIs support creating and passing BPF token around, allowing to test kernel
+functionality, but for the most part is not sufficient for real-world
+applications, which typically use high-level libbpf APIs based on `struct
+bpf_object` type. This was done with the intent to limit the size of patch =
+set
+and concentrate on mostly kernel-side changes. All the necessary plumbing f=
+or
+libbpf will be sent as a separate follow up patch set kernel support makes =
+it
+upstream.
+
+Another part that should happen once kernel-side BPF token is established, =
+is
+a set of conventions between applications (e.g., systemd), tools (e.g.,
+bpftool), and libraries (e.g., libbpf) on exposing delegatable BPF FS
+instance(s) at well-defined locations to allow applications take advantage =
+of
+this in automatic fashion without explicit code changes on BPF application's
+side. But I'd like to postpone this discussion to after BPF token concept
+lands.
+
+  [0] https://lore.kernel.org/bpf/20230412043300.360803-1-andrii@kernel.org/
+  [1] http://vger.kernel.org/bpfconf2023_material/Trusted_unprivileged_BPF_=
+LSFMM2023.pdf
+  [2] https://lore.kernel.org/bpf/20190627201923.2589391-2-songliubraving@f=
+b.com/
+  [3] https://lore.kernel.org/bpf/20230704-hochverdient-lehne-eeb9eeef785e@=
+brauner/
+
+v3->v4;
+  - add delegation mount options to BPF FS;
+  - BPF token is derived from the instance of BPF FS and associates itself
+    with BPF FS' owning userns;
+  - BPF token doesn't grant BPF functionality directly, it just turns
+    capable() checks into ns_capable() checks within BPF FS' owning user;
+  - BPF token cannot be pinned;
+v2->v3:
+  - make BPF_TOKEN_CREATE pin created BPF token in BPF FS, and disallow
+    BPF_OBJ_PIN for BPF token;
+v1->v2:
+  - fix build failures on Kconfig with CONFIG_BPF_SYSCALL unset;
+  - drop BPF_F_TOKEN_UNKNOWN_* flags and simplify UAPI (Stanislav).
+
+
+Andrii Nakryiko (12):
+  bpf: add BPF token delegation mount options to BPF FS
+  bpf: introduce BPF token object
+  bpf: add BPF token support to BPF_MAP_CREATE command
+  bpf: add BPF token support to BPF_BTF_LOAD command
+  bpf: add BPF token support to BPF_PROG_LOAD command
+  bpf: take into account BPF token when fetching helper protos
+  bpf: consistenly use BPF token throughout BPF verifier logic
+  libbpf: add bpf_token_create() API
+  libbpf: add BPF token support to bpf_map_create() API
+  libbpf: add BPF token support to bpf_btf_load() API
+  libbpf: add BPF token support to bpf_prog_load() API
+  selftests/bpf: add BPF token-enabled tests
+
+ drivers/media/rc/bpf-lirc.c                   |   2 +-
+ include/linux/bpf.h                           |  78 ++-
+ include/linux/filter.h                        |   2 +-
+ include/uapi/linux/bpf.h                      |  44 ++
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/arraymap.c                         |   2 +-
+ kernel/bpf/cgroup.c                           |   6 +-
+ kernel/bpf/core.c                             |   3 +-
+ kernel/bpf/helpers.c                          |   6 +-
+ kernel/bpf/inode.c                            |  93 ++-
+ kernel/bpf/syscall.c                          | 183 ++++--
+ kernel/bpf/token.c                            | 229 +++++++
+ kernel/bpf/verifier.c                         |  13 +-
+ kernel/trace/bpf_trace.c                      |   2 +-
+ net/core/filter.c                             |  36 +-
+ net/ipv4/bpf_tcp_ca.c                         |   2 +-
+ net/netfilter/nf_bpf_link.c                   |   2 +-
+ tools/include/uapi/linux/bpf.h                |  44 ++
+ tools/lib/bpf/bpf.c                           |  30 +-
+ tools/lib/bpf/bpf.h                           |  39 +-
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../selftests/bpf/prog_tests/libbpf_probes.c  |   4 +
+ .../selftests/bpf/prog_tests/libbpf_str.c     |   6 +
+ .../testing/selftests/bpf/prog_tests/token.c  | 621 ++++++++++++++++++
+ 24 files changed, 1346 insertions(+), 104 deletions(-)
+ create mode 100644 kernel/bpf/token.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/token.c
+
+--=20
+2.34.1
+
 
