@@ -1,169 +1,564 @@
-Return-Path: <bpf+bounces-9696-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9699-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CF1D79C170
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 03:11:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D10579C21A
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 04:07:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24FF7281762
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 01:11:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36B4D1C209F4
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 02:07:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2023E17EA;
-	Tue, 12 Sep 2023 01:11:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 043DD8F4B;
+	Tue, 12 Sep 2023 02:07:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECA4217C8
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 01:11:20 +0000 (UTC)
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371979AF51
-	for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 17:58:09 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-52eed139ec2so4888433a12.2
-        for <bpf@vger.kernel.org>; Mon, 11 Sep 2023 17:58:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694480212; x=1695085012; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=62Tv26+GzZO2QOffDbc9TVLFHEBItRH7qqMDHFtHY4A=;
-        b=JFMNZdhHCD/72iqcygwY7cEj2SB8u2H3aQu4I5B6A/Qpr19jxJfkq2Y6ZCDUUo5bNg
-         nfl+y1HM61NMG7QuE/ZnPjLvA09dbkJdIIjd6gbKBkzJ+tiqFW7fl7La8dAhYvyem/K9
-         E8zxyj+PxRns5+TTsu3j1pLgLStXypyoWq0Bx8q+AuN/cMS4qOOwp4S9IHgYcwGghD+0
-         vUJaYS5DbVIaXeD0L2AQWNdaF/E+3m0zJZSOBzWUqNwt+9mUPoES1plraW8hMpBFZhaP
-         IRCvuS2Ug4/Y6QT+R8AYiI+6/QDG8q6b9RZCpeGweq+pRb22gfZ7Yn44g8F8VtzNhni9
-         DmYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694480212; x=1695085012;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=62Tv26+GzZO2QOffDbc9TVLFHEBItRH7qqMDHFtHY4A=;
-        b=nMAp2iJ1jSGFt3HUScKUuyeN9PGDO7F5BzQtVPPM2Ne4RvGoLXbPnm3XGSXnORptfy
-         wsD1x+4yfZ8fUdPbZOeW8jIkfBz/RmiRxHn3wwKek//Fvc7LG528E2enpRuKF0bB1odT
-         GF4Pb98mEHRb6jDzEmDeFsbuz1n3GpdgKh7g1uGkhCgtyH3QmASf0GMNsHbNAYo2NyJ2
-         K4WrcJZrJv6cUQlBPmAbsyDv7roY3eWoq+HXyUwezSD3IoRclpyWKkBUfqNPaBzfXtGg
-         bRQnARYNVWMS5knv/s+zr0aB0KifCIjEqRvuU41veM+twU5maWkwDYKQbXhlZZxldPQo
-         WNmg==
-X-Gm-Message-State: AOJu0YxdAczFezTGt1Rprn7L7YeRdnk4Dreiqfk8ToxjeYX6kz292UH6
-	fprVaP4EqUMUR3qg2hajicn3O9PJ75+Fzw==
-X-Google-Smtp-Source: AGHT+IFaTejynSwqYgBfG2Zyr7NVRDNewlCXJu5V6M8qPJbFoZj5kOaPPayQMOJ7+SPfBaKfi0IRsw==
-X-Received: by 2002:a17:907:2cca:b0:9a1:bf00:ae52 with SMTP id hg10-20020a1709072cca00b009a1bf00ae52mr8565305ejc.62.1694480212047;
-        Mon, 11 Sep 2023 17:56:52 -0700 (PDT)
-Received: from bigfoot.. (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id gt33-20020a1709072da100b009ad854daea6sm272153ejc.132.2023.09.11.17.56.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 17:56:51 -0700 (PDT)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	sdf@google.com,
-	kuba@kernel.org,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Offloaded prog after non-offloaded should not cause BUG
-Date: Tue, 12 Sep 2023 03:55:38 +0300
-Message-ID: <20230912005539.2248244-3-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230912005539.2248244-1-eddyz87@gmail.com>
-References: <20230912005539.2248244-1-eddyz87@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C563B17EA
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 02:07:07 +0000 (UTC)
+Received: from mail-m12741.qiye.163.com (mail-m12741.qiye.163.com [115.236.127.41])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB89F3B9EA;
+	Mon, 11 Sep 2023 19:06:59 -0700 (PDT)
+Received: from [10.128.10.193] (unknown [123.120.52.233])
+	by mail-m15579.qiye.163.com (Hmail) with ESMTPA id DA506A80263;
+	Tue, 12 Sep 2023 10:06:45 +0800 (CST)
+Message-ID: <33d64375-d672-49a8-bbc8-c31a67595403@sangfor.com.cn>
+Date: Tue, 12 Sep 2023 10:06:44 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2] bpf: Using binary search to improve the
+ performance of btf_find_by_name_kind
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: martin.lau@linux.dev, ast@kernel.org, song@kernel.org, yhs@fb.com,
+ rostedt@goodmis.org, dinghui@sangfor.com.cn, huangcun@sangfor.com.cn,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230909091646.420163-1-pengdonglin@sangfor.com.cn>
+ <20230909212933.1552f2842b06e50525a4daef@kernel.org>
+From: pengdonglin <pengdonglin@sangfor.com.cn>
+In-Reply-To: <20230909212933.1552f2842b06e50525a4daef@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDSUhKVkxDHh5DHR5DGk9LGFUTARMWGhIXJBQOD1
+	lXWRgSC1lBWUpJSFVKSUtVTklVSUhIWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVSktLVUtZBg++
+X-HM-Tid: 0a8a87241ffe2e9ckusnda506a80263
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OU06Eww*HD1KFQscPw4cFD0S
+	IlEwChxVSlVKTUJPT0NPT0tNQk1CVTMWGhIXVQseFRwfFBUcFxIVOwgaFRwdFAlVGBQWVRgVRVlX
+	WRILWUFZSklIVUpJS1VOSVVJSEhZV1kIAVlBSk5CQkk3Bg++
 
-Check what happens if non-offloaded dev bound BPF
-program is followed by offloaded dev bound program.
-Test case adapated from syzbot report [1].
+在 2023/9/9 20:29, Masami Hiramatsu (Google) 写道:
+> On Sat,  9 Sep 2023 02:16:46 -0700
+> Donglin Peng <pengdonglin@sangfor.com.cn> wrote:
+> 
+>> Currently, we are only using the linear search method to find the type id
+>> by the name, which has a time complexity of O(n). This change involves
+>> sorting the names of btf types in ascending order and using binary search,
+>> which has a time complexity of O(log(n)). This idea was inspired by the
+>> following patch:
+>>
+>> 60443c88f3a8 ("kallsyms: Improve the performance of kallsyms_lookup_name()").
+>>
+>> At present, this improvement is only for searching in vmlinux's and
+>> module's BTFs, and the kind should only be BTF_KIND_FUNC or BTF_KIND_STRUCT.
+>>
+>> Another change is the search direction, where we search the BTF first and
+>> then its base, the type id of the first matched btf_type will be returned.
+>>
+>> Here is a time-consuming result that finding all the type ids of 67,819 kernel
+>> functions in vmlinux's BTF by their names:
+>>
+>> Before: 17000 ms
+>> After:     10 ms
+> 
+> Nice work!
 
-[1] https://lore.kernel.org/bpf/000000000000d97f3c060479c4f8@google.com/
+Thank you
 
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- .../bpf/prog_tests/xdp_dev_bound_only.c       | 58 +++++++++++++++++++
- 1 file changed, 58 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_dev_bound_only.c
+> 
+>>
+>> The average lookup performance has improved about 1700x at the above scenario.
+>>
+>> However, this change will consume more memory, for example, 67,819 kernel
+>> functions will allocate about 530KB memory.
+> 
+> I'm not so familier with how the BTF is generated, what about making this
+> list offline? Since BTF is static data, it is better to make the map when
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_dev_bound_only.c b/tools/testing/selftests/bpf/prog_tests/xdp_dev_bound_only.c
-new file mode 100644
-index 000000000000..5ee4c16d2e21
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_dev_bound_only.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <net/if.h>
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+
-+#define LOCAL_NETNS "xdp_dev_bound_only_netns"
-+
-+int load_dummy_prog(char *name, __u32 ifindex, __u32 flags)
-+{
-+	struct bpf_insn insns[] = { BPF_MOV64_IMM(BPF_REG_0, 0), BPF_EXIT_INSN() };
-+	LIBBPF_OPTS(bpf_prog_load_opts, opts);
-+
-+	opts.prog_flags = flags;
-+	opts.prog_ifindex = ifindex;
-+	return bpf_prog_load(BPF_PROG_TYPE_XDP, name, "GPL", insns, ARRAY_SIZE(insns), &opts);
-+}
-+
-+/* A test case for bpf_offload_netdev->offload handling bug:
-+ * - create a veth device (does not support offload);
-+ * - create a device bound XDP program with BPF_F_XDP_DEV_BOUND_ONLY flag
-+ *   (such programs are not offloaded);
-+ * - create a device bound XDP program without flags (such programs are offloaded).
-+ * This might lead to 'BUG: kernel NULL pointer dereference'.
-+ */
-+void test_xdp_dev_bound_only_offdev(void)
-+{
-+	struct nstoken *tok = NULL;
-+	__u32 ifindex;
-+	int fd1 = -1;
-+	int fd2 = -1;
-+
-+	SYS(out, "ip netns add " LOCAL_NETNS);
-+	tok = open_netns(LOCAL_NETNS);
-+	SYS(out, "ip link add eth42 type veth");
-+	ifindex = if_nametoindex("eth42");
-+	if (!ASSERT_NEQ(ifindex, 0, "if_nametoindex")) {
-+		perror("if_nametoindex");
-+		goto out;
-+	}
-+	fd1 = load_dummy_prog("dummy1", ifindex, BPF_F_XDP_DEV_BOUND_ONLY);
-+	if (!ASSERT_GE(fd1, 0, "load_dummy_prog #1")) {
-+		perror("load_dummy_prog #1");
-+		goto out;
-+	}
-+	/* Program with ifindex is considered offloaded, however veth
-+	 * does not support offload => error should be reported.
-+	 */
-+	fd2 = load_dummy_prog("dummy2", ifindex, 0);
-+	ASSERT_EQ(fd2, -EINVAL, "load_dummy_prog #2 (offloaded)");
-+
-+out:
-+	close(fd1);
-+	close(fd2);
-+	SYS_NOFAIL("ip link delete eth42");
-+	SYS_NOFAIL("ip netns del " LOCAL_NETNS);
-+	if (tok)
-+		close_netns(tok);
-+}
--- 
-2.41.0
+The BTF is generated by pahole during the building of the kernel or modules.
+Pahole is maintained in the project https://github.com/acmel/dwarves. 
+The log
+printed by scripts/link-vmlinux.sh when generating BTF for vmlinux is as
+follows:
+
+LLVM_OBJCOPY=objcopy pahole -J --skip_encoding_btf_vars --btf_gen_floats 
+.tmp_vmlinux.btf
+
+If making the list offline, the pahole needs to be modified or a new tool
+needs to be written and maintained in the kernel tree. Therefore, it may
+be simpler to make the list at runtime.
+
+> it is built. And I also would like to suggest to make a new map to make
+> another new map which maps the BTF ID and the address of the function, so
+> that we can do binary search the BTF object from the function address.
+> (The latter map should be built when CONFIG_BTF_ADDR_MAP=y)
+
+It has been observed that two or more functions may have the same address
+but different IDs. For example:
+
+         ffffffff81218370 t __do_sys_getuid16
+         ffffffff81218370 T __ia32_sys_getuid16
+         ffffffff81218370 T __x64_sys_getuid16
+
+         {
+             "id": 27911,
+             "kind": "FUNC",
+             "name": "__do_sys_getuid16",
+             "type_id": 4455,
+             "linkage": "static"
+         },{
+             "id": 20303,
+             "kind": "FUNC",
+             "name": "__ia32_sys_getuid16",
+             "type_id": 4455,
+             "linkage": "static"
+         },{
+             "id": 20304,
+             "kind": "FUNC",
+             "name": "__x64_sys_getuid16",
+             "type_id": 4455,
+             "linkage": "static"
+         },
+
+It may be a issue to return which id. However, if only the FUNC_PROTO is
+of concern, any one of them can be returned.
+
+It may not be necessary to create a new list for function addresses because
+  the id_name map can be reused for this purpose. Here is an idea:
+
+1. Use the function address to get the name by calling the function
+  sprint_symbol_no_offset.
+
+2. Then call the function btf_find_by_name_kind to get the BTF ID.
+
+Both sprint_symbol_no_offset and btf_find_by_name_kind use binary search.
+
+> 
+> Thank you,
+> 
+>>
+>> Signed-off-by: Donglin Peng <pengdonglin@sangfor.com.cn>
+>> ---
+>> Changes in RFC v2:
+>>   - Fix the build issue reported by kernel test robot <lkp@intel.com>
+>> ---
+>>   include/linux/btf.h |   1 +
+>>   kernel/bpf/btf.c    | 300 ++++++++++++++++++++++++++++++++++++++++++--
+>>   2 files changed, 291 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/include/linux/btf.h b/include/linux/btf.h
+>> index cac9f304e27a..6260a0668773 100644
+>> --- a/include/linux/btf.h
+>> +++ b/include/linux/btf.h
+>> @@ -201,6 +201,7 @@ bool btf_is_kernel(const struct btf *btf);
+>>   bool btf_is_module(const struct btf *btf);
+>>   struct module *btf_try_get_module(const struct btf *btf);
+>>   u32 btf_nr_types(const struct btf *btf);
+>> +u32 btf_type_cnt(const struct btf *btf);
+>>   bool btf_member_is_reg_int(const struct btf *btf, const struct btf_type *s,
+>>   			   const struct btf_member *m,
+>>   			   u32 expected_offset, u32 expected_size);
+>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+>> index 817204d53372..51aa9f27853b 100644
+>> --- a/kernel/bpf/btf.c
+>> +++ b/kernel/bpf/btf.c
+>> @@ -240,6 +240,26 @@ struct btf_id_dtor_kfunc_tab {
+>>   	struct btf_id_dtor_kfunc dtors[];
+>>   };
+>>   
+>> +enum {
+>> +	BTF_ID_NAME_FUNC,	/* function */
+>> +	BTF_ID_NAME_STRUCT,	/* struct */
+>> +	BTF_ID_NAME_MAX
+>> +};
+>> +
+>> +struct btf_id_name {
+>> +	int id;
+>> +	u32 name_off;
+>> +};
+>> +
+>> +struct btf_id_name_map {
+>> +	struct btf_id_name *id_name;
+>> +	u32 count;
+>> +};
+>> +
+>> +struct btf_id_name_maps {
+>> +	struct btf_id_name_map map[BTF_ID_NAME_MAX];
+>> +};
+>> +
+>>   struct btf {
+>>   	void *data;
+>>   	struct btf_type **types;
+>> @@ -257,6 +277,7 @@ struct btf {
+>>   	struct btf_kfunc_set_tab *kfunc_set_tab;
+>>   	struct btf_id_dtor_kfunc_tab *dtor_kfunc_tab;
+>>   	struct btf_struct_metas *struct_meta_tab;
+>> +	struct btf_id_name_maps *id_name_maps;
+>>   
+>>   	/* split BTF support */
+>>   	struct btf *base_btf;
+>> @@ -532,22 +553,142 @@ u32 btf_nr_types(const struct btf *btf)
+>>   	return total;
+>>   }
+>>   
+>> +u32 btf_type_cnt(const struct btf *btf)
+>> +{
+>> +	return btf->start_id + btf->nr_types;
+>> +}
+>> +
+>> +static inline u8 btf_id_name_idx_to_kind(int index)
+>> +{
+>> +	u8 kind;
+>> +
+>> +	switch (index) {
+>> +	case BTF_ID_NAME_FUNC:
+>> +		kind = BTF_KIND_FUNC;
+>> +		break;
+>> +	case BTF_ID_NAME_STRUCT:
+>> +		kind = BTF_KIND_STRUCT;
+>> +		break;
+>> +	default:
+>> +		kind = BTF_KIND_UNKN;
+>> +		break;
+>> +	}
+>> +
+>> +	return kind;
+>> +}
+>> +
+>> +static inline int btf_id_name_kind_to_idx(u8 kind)
+>> +{
+>> +	int index;
+>> +
+>> +	switch (kind) {
+>> +	case BTF_KIND_FUNC:
+>> +		index = BTF_ID_NAME_FUNC;
+>> +		break;
+>> +	case BTF_KIND_STRUCT:
+>> +		index = BTF_ID_NAME_STRUCT;
+>> +		break;
+>> +	default:
+>> +		index = -1;
+>> +		break;
+>> +	}
+>> +
+>> +	return index;
+>> +}
+>> +
+>> +static s32 btf_find_by_name_bsearch(struct btf_id_name *id_name,
+>> +				    u32 size, const char *name,
+>> +				    struct btf_id_name **start,
+>> +				    struct btf_id_name **end,
+>> +				    const struct btf *btf)
+>> +{
+>> +	int ret;
+>> +	int low, mid, high;
+>> +	const char *name_buf;
+>> +
+>> +	low = 0;
+>> +	high = size - 1;
+>> +
+>> +	while (low <= high) {
+>> +		mid = low + (high - low) / 2;
+>> +		name_buf = btf_name_by_offset(btf, id_name[mid].name_off);
+>> +		ret = strcmp(name, name_buf);
+>> +		if (ret > 0)
+>> +			low = mid + 1;
+>> +		else if (ret < 0)
+>> +			high = mid - 1;
+>> +		else
+>> +			break;
+>> +	}
+>> +
+>> +	if (low > high)
+>> +		return -ESRCH;
+>> +
+>> +	if (start) {
+>> +		low = mid;
+>> +		while (low) {
+>> +			name_buf = btf_name_by_offset(btf, id_name[low-1].name_off);
+>> +			if (strcmp(name, name_buf))
+>> +				break;
+>> +			low--;
+>> +		}
+>> +		*start = &id_name[low];
+>> +	}
+>> +
+>> +	if (end) {
+>> +		high = mid;
+>> +		while (high < size - 1) {
+>> +			name_buf = btf_name_by_offset(btf, id_name[high+1].name_off);
+>> +			if (strcmp(name, name_buf))
+>> +				break;
+>> +			high++;
+>> +		}
+>> +		*end = &id_name[high];
+>> +	}
+>> +
+>> +	return id_name[mid].id;
+>> +}
+>> +
+>>   s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 kind)
+>>   {
+>> +	const struct btf_id_name_maps *maps;
+>> +	const struct btf_id_name_map *map;
+>> +	struct btf_id_name *start;
+>>   	const struct btf_type *t;
+>>   	const char *tname;
+>> -	u32 i, total;
+>> +	int index = btf_id_name_kind_to_idx(kind);
+>> +	s32 id, total;
+>>   
+>> -	total = btf_nr_types(btf);
+>> -	for (i = 1; i < total; i++) {
+>> -		t = btf_type_by_id(btf, i);
+>> -		if (BTF_INFO_KIND(t->info) != kind)
+>> -			continue;
+>> +	do {
+>> +		maps = btf->id_name_maps;
+>> +		if (index >= 0 && maps && maps->map[index].id_name) {
+>> +			/* binary search */
+>> +			map = &maps->map[index];
+>> +			id = btf_find_by_name_bsearch(map->id_name,
+>> +				map->count, name, &start, NULL, btf);
+>> +			if (id > 0) {
+>> +				/*
+>> +				 * Return the first one that
+>> +				 * matched
+>> +				 */
+>> +				return start->id;
+>> +			}
+>> +		} else {
+>> +			/* linear search */
+>> +			total = btf_type_cnt(btf);
+>> +			for (id = btf->start_id; id < total; id++) {
+>> +				t = btf_type_by_id(btf, id);
+>> +				if (BTF_INFO_KIND(t->info) != kind)
+>> +					continue;
+>> +
+>> +				tname = btf_name_by_offset(btf, t->name_off);
+>> +				if (!strcmp(tname, name))
+>> +					return id;
+>> +			}
+>> +		}
+>>   
+>> -		tname = btf_name_by_offset(btf, t->name_off);
+>> -		if (!strcmp(tname, name))
+>> -			return i;
+>> -	}
+>> +		btf = btf->base_btf;
+>> +	} while (btf);
+>>   
+>>   	return -ENOENT;
+>>   }
+>> @@ -1639,6 +1780,32 @@ static void btf_free_id(struct btf *btf)
+>>   	spin_unlock_irqrestore(&btf_idr_lock, flags);
+>>   }
+>>   
+>> +static void btf_destroy_id_name(struct btf *btf, int index)
+>> +{
+>> +	struct btf_id_name_maps *maps = btf->id_name_maps;
+>> +	struct btf_id_name_map *map = &maps->map[index];
+>> +
+>> +	if (map->id_name) {
+>> +		kvfree(map->id_name);
+>> +		map->id_name = NULL;
+>> +		map->count = 0;
+>> +	}
+>> +}
+>> +
+>> +static void btf_destroy_id_name_map(struct btf *btf)
+>> +{
+>> +	int i;
+>> +
+>> +	if (!btf->id_name_maps)
+>> +		return;
+>> +
+>> +	for (i = 0; i < BTF_ID_NAME_MAX; i++)
+>> +		btf_destroy_id_name(btf, i);
+>> +
+>> +	kfree(btf->id_name_maps);
+>> +	btf->id_name_maps = NULL;
+>> +}
+>> +
+>>   static void btf_free_kfunc_set_tab(struct btf *btf)
+>>   {
+>>   	struct btf_kfunc_set_tab *tab = btf->kfunc_set_tab;
+>> @@ -1689,6 +1856,7 @@ static void btf_free_struct_meta_tab(struct btf *btf)
+>>   
+>>   static void btf_free(struct btf *btf)
+>>   {
+>> +	btf_destroy_id_name_map(btf);
+>>   	btf_free_struct_meta_tab(btf);
+>>   	btf_free_dtor_kfunc_tab(btf);
+>>   	btf_free_kfunc_set_tab(btf);
+>> @@ -5713,6 +5881,107 @@ int get_kern_ctx_btf_id(struct bpf_verifier_log *log, enum bpf_prog_type prog_ty
+>>   	return kctx_type_id;
+>>   }
+>>   
+>> +static int btf_compare_id_name(const void *a, const void *b, const void *priv)
+>> +{
+>> +	const struct btf_id_name *ia = (const struct btf_id_name *)a;
+>> +	const struct btf_id_name *ib = (const struct btf_id_name *)b;
+>> +	const struct btf *btf = priv;
+>> +	int ret;
+>> +
+>> +	/*
+>> +	 * Sort names in ascending order, if the name is same, sort ids in
+>> +	 * ascending order.
+>> +	 */
+>> +	ret = strcmp(btf_name_by_offset(btf, ia->name_off),
+>> +		     btf_name_by_offset(btf, ib->name_off));
+>> +	if (!ret)
+>> +		ret = ia->id - ib->id;
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static int btf_create_id_name(struct btf *btf, int index)
+>> +{
+>> +	struct btf_id_name_maps *maps = btf->id_name_maps;
+>> +	struct btf_id_name_map *map = &maps->map[index];
+>> +	const struct btf_type *t;
+>> +	struct btf_id_name *id_name;
+>> +	const char *name;
+>> +	int i, j = 0;
+>> +	u32 total, count = 0;
+>> +	u8 kind;
+>> +
+>> +	kind = btf_id_name_idx_to_kind(index);
+>> +	if (kind == BTF_KIND_UNKN)
+>> +		return -EINVAL;
+>> +
+>> +	if (map->id_name || map->count != 0)
+>> +		return -EINVAL;
+>> +
+>> +	total = btf_type_cnt(btf);
+>> +	for (i = btf->start_id; i < total; i++) {
+>> +		t = btf_type_by_id(btf, i);
+>> +		if (BTF_INFO_KIND(t->info) != kind)
+>> +			continue;
+>> +		name = btf_name_by_offset(btf, t->name_off);
+>> +		if (str_is_empty(name))
+>> +			continue;
+>> +		count++;
+>> +	}
+>> +
+>> +	if (count == 0)
+>> +		return 0;
+>> +
+>> +	id_name = kvcalloc(count, sizeof(struct btf_id_name),
+>> +			   GFP_KERNEL);
+>> +	if (!id_name)
+>> +		return -ENOMEM;
+>> +
+>> +	for (i = btf->start_id; i < total; i++) {
+>> +		t = btf_type_by_id(btf, i);
+>> +		if (BTF_INFO_KIND(t->info) != kind)
+>> +			continue;
+>> +		name = btf_name_by_offset(btf, t->name_off);
+>> +		if (str_is_empty(name))
+>> +			continue;
+>> +
+>> +		id_name[j].id = i;
+>> +		id_name[j].name_off = t->name_off;
+>> +		j++;
+>> +	}
+>> +
+>> +	sort_r(id_name, count, sizeof(id_name[0]), btf_compare_id_name,
+>> +	       NULL, btf);
+>> +
+>> +	map->id_name = id_name;
+>> +	map->count = count;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int btf_create_id_name_map(struct btf *btf)
+>> +{
+>> +	int err, i;
+>> +	struct btf_id_name_maps *maps;
+>> +
+>> +	if (btf->id_name_maps)
+>> +		return -EBUSY;
+>> +
+>> +	maps = kzalloc(sizeof(struct btf_id_name_maps), GFP_KERNEL);
+>> +	if (!maps)
+>> +		return -ENOMEM;
+>> +
+>> +	btf->id_name_maps = maps;
+>> +
+>> +	for (i = 0; i < BTF_ID_NAME_MAX; i++) {
+>> +		err = btf_create_id_name(btf, i);
+>> +		if (err < 0)
+>> +			break;
+>> +	}
+>> +
+>> +	return err;
+>> +}
+>> +
+>>   BTF_ID_LIST(bpf_ctx_convert_btf_id)
+>>   BTF_ID(struct, bpf_ctx_convert)
+>>   
+>> @@ -5760,6 +6029,10 @@ struct btf *btf_parse_vmlinux(void)
+>>   	if (err)
+>>   		goto errout;
+>>   
+>> +	err = btf_create_id_name_map(btf);
+>> +	if (err)
+>> +		goto errout;
+>> +
+>>   	/* btf_parse_vmlinux() runs under bpf_verifier_lock */
+>>   	bpf_ctx_convert.t = btf_type_by_id(btf, bpf_ctx_convert_btf_id[0]);
+>>   
+>> @@ -5777,6 +6050,7 @@ struct btf *btf_parse_vmlinux(void)
+>>   errout:
+>>   	btf_verifier_env_free(env);
+>>   	if (btf) {
+>> +		btf_destroy_id_name_map(btf);
+>>   		kvfree(btf->types);
+>>   		kfree(btf);
+>>   	}
+>> @@ -5844,13 +6118,19 @@ static struct btf *btf_parse_module(const char *module_name, const void *data, u
+>>   	if (err)
+>>   		goto errout;
+>>   
+>> +	err = btf_create_id_name_map(btf);
+>> +	if (err)
+>> +		goto errout;
+>> +
+>>   	btf_verifier_env_free(env);
+>>   	refcount_set(&btf->refcnt, 1);
+>> +
+>>   	return btf;
+>>   
+>>   errout:
+>>   	btf_verifier_env_free(env);
+>>   	if (btf) {
+>> +		btf_destroy_id_name_map(btf);
+>>   		kvfree(btf->data);
+>>   		kvfree(btf->types);
+>>   		kfree(btf);
+>> -- 
+>> 2.25.1
+>>
+> 
+> 
 
 
