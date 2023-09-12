@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-9726-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9727-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0C3179C78B
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 09:03:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7381379C78C
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 09:03:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22F951C20A59
-	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 07:03:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E445281802
+	for <lists+bpf@lfdr.de>; Tue, 12 Sep 2023 07:03:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70EDD1772A;
-	Tue, 12 Sep 2023 07:02:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB5B1772E;
+	Tue, 12 Sep 2023 07:02:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F4568F44
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 07:02:17 +0000 (UTC)
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF7A4E79
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 00:02:16 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bf55a81eeaso35459565ad.0
-        for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 00:02:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54C7E8F44
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 07:02:20 +0000 (UTC)
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A9010D0
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 00:02:19 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c1f8aaab9aso45901155ad.1
+        for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 00:02:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694502136; x=1695106936; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1694502139; x=1695106939; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zZ7auXMwt2HG2eO79EZb79CGVaa+fy/IcLCkXgQTU2E=;
-        b=gJntY8cV6wapICpdZfEIKXOai/sUbNM/O2PEKnDVSxn2gbWVIXA5t6cb7ba/zTwtwZ
-         WPKEc9Sb6BUUld9t3MOlZYSn36CNY7tArLtbbMwnTUTx3Mf5iaTfiZltVlVMV5xD4xQY
-         X0FW9FZVCyndsjXUA8mh1czh/TU1HNC0/w83YQ7H09Et5h9x0ZmpeyHEFeji9O+0Vmxl
-         xlJ0cfto8eS7a4We7zUxCHvM91RjLFelbmxD1yMP5jZN/ZD7K0XFwIEDw+SW7VfCMNOT
-         Jep7/hQOIfpGe4m+m5bjhWqY0GvnE9Fwk1FcBmB1GqSj2HWUlw3/QSPGHW5JjFwi6oqI
-         xDyg==
+        bh=WHvChKGnnZi2VbMoC/1ghgca6iZmmMi6EKlv8J2G2fg=;
+        b=Pz94yrZEm1gAewdNBZNyHYGilUQYcv52N/6CM7ofREcH9Azf91rO5OrplltOLjm/vK
+         2IjyqTcsuiHZR2OZlAWJlsf3XCAkc07jw5hrHF3czY017l5o1m+shrQ07R8ALKrHbDsM
+         sqOozaHKk1//v8czq1/Et6jCeIAuhLqU8nfj+qGH4NUWsHn0unUwp4tQAmEIH0PA7Oyg
+         F4tDd+v3U65B5PQXAz+S65m2l8CQVvAKbW20jgwvksYdCtctjwy30kapQemgdGTTH4Bl
+         e/siybWVV/ldUfRAqjdF0+W9DLCPMZtZ++C9BLwYUypljfkYj9xhPuaPoz0TD54DAI2V
+         4p5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694502136; x=1695106936;
+        d=1e100.net; s=20230601; t=1694502139; x=1695106939;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zZ7auXMwt2HG2eO79EZb79CGVaa+fy/IcLCkXgQTU2E=;
-        b=Rs2XSHnY+IMCElIusJ3xuze0yfEoyczfo3SafY69hwKw/dpJK5nMQHutkQ60kfGBqy
-         TVVM51IfhJSKZsTNkFMi5sxLfGvMMq8Hi5Nz+PDrMvDut3WDEL2fIgIQIBh1KbmSDu8q
-         U1uAvstEaTMUR/27c5mtjsdvNvv0DEJOGtFMLG7cXXtDHGXNYtSMSeuJXLozz2+ySjJF
-         gTuDFUEwop5XIySoXojf9HGPao63pZ6Crip/RHu2ShxgWnzUnu1NpqUNNd/DaXcc1hYZ
-         Swm+6x6azTNta3N3O5gK/JnktWBAMuWxkO2G8iRb1RLJdKZq0E9nGUYdjgpA+0xRUnKh
-         o14Q==
-X-Gm-Message-State: AOJu0Yws4job5gVDueRzfRpIndLgE4YeE1X6xbPM9EZ/jqyQbkhlWgCW
-	3Q68y7KLj74EJpJG+7XOoSAVViQGdMNmct37Mqa6YQ==
-X-Google-Smtp-Source: AGHT+IF1L3zszd0Qt7OImIjEsl7I2HCtreNc7f6XF9vPUvB7JGyRpTNFMRSxt9GUYpLv2X335et5TA==
-X-Received: by 2002:a17:902:e883:b0:1bc:506a:58f2 with SMTP id w3-20020a170902e88300b001bc506a58f2mr10371670plg.46.1694502136153;
-        Tue, 12 Sep 2023 00:02:16 -0700 (PDT)
+        bh=WHvChKGnnZi2VbMoC/1ghgca6iZmmMi6EKlv8J2G2fg=;
+        b=iY0jetgbmutkKGyBBC6+Qd8V+U0SzDwnqanbtpbXilYfMi01KRJOFggaz0JEWmrrz2
+         MGSQUuw54Nx9/+5Fnru6brdJUprH7TOfGuIPyp5YkCIA2bpdCN5kYtZLfRdkApM3Cd0p
+         qVeunT6MisG2HQhzt0CGg5/gyuW78MnHagz+O5Cjb6v5hVhO7KfkUItFsffuEXxCC+E6
+         JSa48HVY6bTgP5G/eOTZCoecwUgqlV0RdRcPcHjYBQgQg+SjqDObHv4V/Dh3SaX9AXen
+         64qYXXgjUnz1URhDoGxoo+E7FxLvlagnQpDbtIFFB3rnIkDtguUOlVAWylDsMx/Egr8m
+         utKQ==
+X-Gm-Message-State: AOJu0Yx2bYD3HC0ApzLzxY/0rV8bCg1ghXD24E6VhSpXYMirAanLETmg
+	LpS9n2WMv3uORDSrSXmQhoM7oHg6N0nA+AoPZVnAtg==
+X-Google-Smtp-Source: AGHT+IGAzzXLvSkqyFtsQ81mmEO/NsorZtgGazng17R/SZuKMut3kM4aZbbVuYOInENRSv12IHsRgQ==
+X-Received: by 2002:a17:902:b287:b0:1c3:7628:fcbb with SMTP id u7-20020a170902b28700b001c37628fcbbmr10807814plr.43.1694502139227;
+        Tue, 12 Sep 2023 00:02:19 -0700 (PDT)
 Received: from n37-019-243.byted.org ([180.184.84.173])
-        by smtp.gmail.com with ESMTPSA id b8-20020a170902d50800b001b8953365aesm7635401plg.22.2023.09.12.00.02.14
+        by smtp.gmail.com with ESMTPSA id b8-20020a170902d50800b001b8953365aesm7635401plg.22.2023.09.12.00.02.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 00:02:15 -0700 (PDT)
+        Tue, 12 Sep 2023 00:02:19 -0700 (PDT)
 From: Chuyi Zhou <zhouchuyi@bytedance.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -65,9 +65,9 @@ Cc: ast@kernel.org,
 	tj@kernel.org,
 	linux-kernel@vger.kernel.org,
 	Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: [PATCH bpf-next v2 5/6] bpf: teach the verifier to enforce css_iter and process_iter in RCU CS
-Date: Tue, 12 Sep 2023 15:01:48 +0800
-Message-Id: <20230912070149.969939-6-zhouchuyi@bytedance.com>
+Subject: [PATCH bpf-next v2 6/6] selftests/bpf: Add tests for open-coded task and css iter
+Date: Tue, 12 Sep 2023 15:01:49 +0800
+Message-Id: <20230912070149.969939-7-zhouchuyi@bytedance.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20230912070149.969939-1-zhouchuyi@bytedance.com>
 References: <20230912070149.969939-1-zhouchuyi@bytedance.com>
@@ -79,97 +79,307 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-css_iter and process_iter should be used in rcu section. Specifically, in
-sleepable progs explicit bpf_rcu_read_lock() is needed before use these
-iters. In normal bpf progs that have implicit rcu_read_lock(), it's OK to
-use them directly.
+This patch adds three tests to demonstrate these patterns and validating
+correctness.
 
-This patch checks whether we are in rcu cs before we want to invoke
-bpf_iter_process_new and bpf_iter_css_{pre, post}_new in
-mark_stack_slots_iter(). If the rcu protection is guaranteed, we would
-let st->type = PTR_TO_STACK | MEM_RCU. is_iter_reg_valid_init() will
-reject if reg->type is UNTRUSTED.
+test1: We use bpf_for_each(process, task) to iterate all process in the
+system and search for the current process with a given pid.
+
+test2: We create a cgroup and add the current task to the cgroup. In the
+BPF program, we would use bpf_for_each(css_task, task, css) to iterate all
+tasks under the cgroup. As expected, we would find the current process.
+
+test3: We create a cgroup tree. In the BPF program, we use
+bpf_for_each(css_{pre,post}, pos, root) to iterate all descendant under the
+root with pre and post order. As expected, we would find all descendant and
+the last iterating cgroup in post-order is root cgroup, the first
+iterating cgroup in pre-order is root cgroup.
 
 Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
 ---
- kernel/bpf/verifier.c | 30 ++++++++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
+ .../testing/selftests/bpf/prog_tests/iters.c  | 138 ++++++++++++++++++
+ .../testing/selftests/bpf/progs/iters_task.c  | 104 +++++++++++++
+ 2 files changed, 242 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_task.c
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 2367483bf4c2..6a6827ba7a18 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1172,7 +1172,13 @@ static bool is_dynptr_type_expected(struct bpf_verifier_env *env, struct bpf_reg
+diff --git a/tools/testing/selftests/bpf/prog_tests/iters.c b/tools/testing/selftests/bpf/prog_tests/iters.c
+index 10804ae5ae97..f4e69a506509 100644
+--- a/tools/testing/selftests/bpf/prog_tests/iters.c
++++ b/tools/testing/selftests/bpf/prog_tests/iters.c
+@@ -1,13 +1,21 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
  
- static void __mark_reg_known_zero(struct bpf_reg_state *reg);
++#include <sys/syscall.h>
++#include <sys/mman.h>
++#include <sys/wait.h>
++#include <unistd.h>
++#include <malloc.h>
++#include <stdlib.h>
+ #include <test_progs.h>
++#include "cgroup_helpers.h"
  
-+static bool in_rcu_cs(struct bpf_verifier_env *env);
-+
-+/* check whether we are using bpf_iter_process_*() or bpf_iter_css_*() */
-+static bool is_iter_need_rcu(struct bpf_kfunc_call_arg_meta *meta);
-+
- static int mark_stack_slots_iter(struct bpf_verifier_env *env,
-+				 struct bpf_kfunc_call_arg_meta *meta,
- 				 struct bpf_reg_state *reg, int insn_idx,
- 				 struct btf *btf, u32 btf_id, int nr_slots)
+ #include "iters.skel.h"
+ #include "iters_state_safety.skel.h"
+ #include "iters_looping.skel.h"
+ #include "iters_num.skel.h"
+ #include "iters_testmod_seq.skel.h"
++#include "iters_task.skel.h"
+ 
+ static void subtest_num_iters(void)
  {
-@@ -1193,6 +1199,12 @@ static int mark_stack_slots_iter(struct bpf_verifier_env *env,
+@@ -90,6 +98,130 @@ static void subtest_testmod_seq_iters(void)
+ 	iters_testmod_seq__destroy(skel);
+ }
  
- 		__mark_reg_known_zero(st);
- 		st->type = PTR_TO_STACK; /* we don't have dedicated reg type */
-+		if (is_iter_need_rcu(meta)) {
-+			if (in_rcu_cs(env))
-+				st->type |= MEM_RCU;
-+			else
-+				st->type |= PTR_UNTRUSTED;
-+		}
- 		st->live |= REG_LIVE_WRITTEN;
- 		st->ref_obj_id = i == 0 ? id : 0;
- 		st->iter.btf = btf;
-@@ -1281,6 +1293,8 @@ static bool is_iter_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_
- 		struct bpf_stack_state *slot = &state->stack[spi - i];
- 		struct bpf_reg_state *st = &slot->spilled_ptr;
- 
-+		if (st->type & PTR_UNTRUSTED)
-+			return false;
- 		/* only main (first) slot has ref_obj_id set */
- 		if (i == 0 && !st->ref_obj_id)
- 			return false;
-@@ -7503,13 +7517,13 @@ static int process_iter_arg(struct bpf_verifier_env *env, int regno, int insn_id
- 				return err;
- 		}
- 
--		err = mark_stack_slots_iter(env, reg, insn_idx, meta->btf, btf_id, nr_slots);
-+		err = mark_stack_slots_iter(env, meta, reg, insn_idx, meta->btf, btf_id, nr_slots);
- 		if (err)
- 			return err;
- 	} else {
- 		/* iter_next() or iter_destroy() expect initialized iter state*/
- 		if (!is_iter_reg_valid_init(env, reg, meta->btf, btf_id, nr_slots)) {
--			verbose(env, "expected an initialized iter_%s as arg #%d\n",
-+			verbose(env, "expected an initialized iter_%s as arg #%d or without bpf_rcu_read_lock()\n",
- 				iter_type_str(meta->btf, btf_id), regno);
- 			return -EINVAL;
- 		}
-@@ -10382,6 +10396,18 @@ BTF_ID(func, bpf_percpu_obj_new_impl)
- BTF_ID(func, bpf_percpu_obj_drop_impl)
- BTF_ID(func, bpf_iter_css_task_new)
- 
-+BTF_SET_START(rcu_protect_kfuns_set)
-+BTF_ID(func, bpf_iter_process_new)
-+BTF_ID(func, bpf_iter_css_pre_new)
-+BTF_ID(func, bpf_iter_css_post_new)
-+BTF_SET_END(rcu_protect_kfuns_set)
-+
-+static inline bool is_iter_need_rcu(struct bpf_kfunc_call_arg_meta *meta)
++static void subtest_process_iters(void)
 +{
-+	return btf_id_set_contains(&rcu_protect_kfuns_set, meta->func_id);
++	struct iters_task *skel;
++	int err;
++
++	skel = iters_task__open();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		goto cleanup;
++	bpf_program__set_autoload(skel->progs.iter_task_for_each_sleep, true);
++	err = iters_task__load(skel);
++	if (!ASSERT_OK(err, "skel_load"))
++		goto cleanup;
++	skel->bss->target_pid = getpid();
++	err = iters_task__attach(skel);
++	if (!ASSERT_OK(err, "iters_task__attach"))
++		goto cleanup;
++	syscall(SYS_getpgid);
++	iters_task__detach(skel);
++	ASSERT_EQ(skel->bss->process_cnt, 1, "process_cnt");
++
++cleanup:
++	iters_task__destroy(skel);
++}
++
++extern int stack_mprotect(void);
++
++static void subtest_css_task_iters(void)
++{
++	struct iters_task *skel;
++	int err, cg_fd, cg_id;
++	const char *cgrp_path = "/cg1";
++
++	err = setup_cgroup_environment();
++	if (!ASSERT_OK(err, "setup_cgroup_environment"))
++		goto cleanup;
++	cg_fd = create_and_get_cgroup(cgrp_path);
++	if (!ASSERT_GE(cg_fd, 0, "cg_create"))
++		goto cleanup;
++	cg_id = get_cgroup_id(cgrp_path);
++	err = join_cgroup(cgrp_path);
++	if (!ASSERT_OK(err, "setup_cgroup_environment"))
++		goto cleanup;
++
++	skel = iters_task__open();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		goto cleanup;
++
++	bpf_program__set_autoload(skel->progs.iter_css_task_for_each, true);
++	err = iters_task__load(skel);
++	if (!ASSERT_OK(err, "skel_load"))
++		goto cleanup;
++
++	skel->bss->target_pid = getpid();
++	skel->bss->cg_id = cg_id;
++	err = iters_task__attach(skel);
++
++	err = stack_mprotect();
++	if (!ASSERT_OK(err, "iters_task__attach"))
++		goto cleanup;
++
++	iters_task__detach(skel);
++	ASSERT_EQ(skel->bss->css_task_cnt, 1, "css_task_cnt");
++
++cleanup:
++	cleanup_cgroup_environment();
++	iters_task__destroy(skel);
++}
++
++static void subtest_css_dec_iters(void)
++{
++	struct iters_task *skel;
++	struct {
++		const char *path;
++		int fd;
++	} cgs[] = {
++		{ "/cg1" },
++		{ "/cg1/cg2" },
++		{ "/cg1/cg2/cg3" },
++		{ "/cg1/cg2/cg3/cg4" },
++	};
++	int err, cg_nr = ARRAY_SIZE(cgs);
++	int i;
++
++	err = setup_cgroup_environment();
++	if (!ASSERT_OK(err, "setup_cgroup_environment"))
++		goto cleanup;
++	for (i = 0; i < cg_nr; i++) {
++		cgs[i].fd = create_and_get_cgroup(cgs[i].path);
++		if (!ASSERT_GE(cgs[i].fd, 0, "cg_create"))
++			goto cleanup;
++	}
++
++	skel = iters_task__open();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		goto cleanup;
++	bpf_program__set_autoload(skel->progs.iter_css_dec_for_each, true);
++	err = iters_task__load(skel);
++	if (!ASSERT_OK(err, "skel_load"))
++		goto cleanup;
++
++	skel->bss->target_pid = getpid();
++	skel->bss->cg_id = get_cgroup_id(cgs[0].path);
++
++	err = iters_task__attach(skel);
++
++	if (!ASSERT_OK(err, "iters_task__attach"))
++		goto cleanup;
++
++	syscall(SYS_getpgid);
++	ASSERT_EQ(skel->bss->css_dec_cnt, cg_nr, "pre order search dec count");
++	ASSERT_EQ(skel->bss->first_cg_id, get_cgroup_id(cgs[0].path),
++				"pre order search first cgroup id");
++	skel->bss->css_dec_cnt = 0;
++	skel->bss->is_post_order = 1;
++	syscall(SYS_getpgid);
++	ASSERT_EQ(skel->bss->css_dec_cnt, cg_nr, "post order search dec count");
++	ASSERT_EQ(skel->bss->last_cg_id, get_cgroup_id(cgs[0].path),
++				"post order search last cgroup id");
++	iters_task__detach(skel);
++cleanup:
++	cleanup_cgroup_environment();
++	iters_task__destroy(skel);
++}
++
+ void test_iters(void)
+ {
+ 	RUN_TESTS(iters_state_safety);
+@@ -103,4 +235,10 @@ void test_iters(void)
+ 		subtest_num_iters();
+ 	if (test__start_subtest("testmod_seq"))
+ 		subtest_testmod_seq_iters();
++	if (test__start_subtest("process"))
++		subtest_process_iters();
++	if (test__start_subtest("css_task"))
++		subtest_css_task_iters();
++	if (test__start_subtest("css_dec"))
++		subtest_css_dec_iters();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/iters_task.c b/tools/testing/selftests/bpf/progs/iters_task.c
+new file mode 100644
+index 000000000000..cf24a3b177f2
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/iters_task.c
+@@ -0,0 +1,104 @@
++// SPDX-License-Identifier: GPL-2.0
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_misc.h"
++char _license[] SEC("license") = "GPL";
++
++pid_t target_pid = 0;
++int process_cnt = 0;
++int css_task_cnt = 0;
++int css_dec_cnt = 0;
++
++char is_post_order;
++u64 cg_id;
++u64 last_cg_id;
++u64 first_cg_id;
++
++struct cgroup *bpf_cgroup_from_id(u64 cgid) __ksym;
++struct cgroup *bpf_cgroup_acquire(struct cgroup *cgrp) __ksym;
++void bpf_cgroup_release(struct cgroup *p) __ksym;
++void bpf_rcu_read_lock(void) __ksym;
++void bpf_rcu_read_unlock(void) __ksym;
++
++SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
++int iter_task_for_each_sleep(void *ctx)
++{
++	struct task_struct *task;
++	struct task_struct *cur_task = bpf_get_current_task_btf();
++
++	if (cur_task->pid != target_pid)
++		return 0;
++	bpf_rcu_read_lock();
++	bpf_for_each(process, task) {
++		if (task->pid == target_pid)
++			process_cnt += 1;
++	}
++	bpf_rcu_read_unlock();
++	return 0;
 +}
 +
 +
- static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
- {
- 	if (meta->func_id == special_kfunc_list[KF_bpf_refcount_acquire_impl] &&
++SEC("?lsm/file_mprotect")
++int BPF_PROG(iter_css_task_for_each)
++{
++	struct task_struct *task;
++	struct task_struct *cur_task = bpf_get_current_task_btf();
++
++	if (cur_task->pid != target_pid)
++		return 0;
++
++	struct cgroup *cgrp = bpf_cgroup_from_id(cg_id);
++
++	if (cgrp == NULL)
++		return 0;
++	struct cgroup_subsys_state *css = &cgrp->self;
++
++	bpf_for_each(css_task, task, css, CSS_TASK_ITER_PROCS) {
++		if (!task)
++			continue;
++		if (task->pid == target_pid)
++			css_task_cnt += 1;
++	}
++	bpf_cgroup_release(cgrp);
++	return 0;
++}
++
++SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
++int iter_css_dec_for_each(const void *ctx)
++{
++	struct task_struct *cur_task = bpf_get_current_task_btf();
++
++	if (cur_task->pid != target_pid)
++		return 0;
++
++	struct cgroup *cgrp = bpf_cgroup_from_id(cg_id);
++
++	if (cgrp == NULL)
++		return 0;
++	struct cgroup_subsys_state *root = &cgrp->self;
++	struct cgroup_subsys_state *pos = NULL;
++
++	bpf_rcu_read_lock();
++	if (is_post_order) {
++		bpf_for_each(css_post, pos, root) {
++			struct cgroup *cur_cgrp = pos->cgroup;
++
++			css_dec_cnt += 1;
++			if (cur_cgrp)
++				last_cg_id = cur_cgrp->kn->id;
++		}
++	} else {
++		bpf_for_each(css_pre, pos, root) {
++			struct cgroup *cur_cgrp = pos->cgroup;
++
++			css_dec_cnt += 1;
++			if (cur_cgrp && !first_cg_id)
++				first_cg_id = cur_cgrp->kn->id;
++		}
++	}
++	bpf_rcu_read_unlock();
++	bpf_cgroup_release(cgrp);
++	return 0;
++}
++
 -- 
 2.20.1
 
