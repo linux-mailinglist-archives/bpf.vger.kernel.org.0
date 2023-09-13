@@ -1,176 +1,195 @@
-Return-Path: <bpf+bounces-9858-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9859-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B415879DF4D
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 06:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BDC979DF92
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 07:53:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2B6E1C20E82
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 04:59:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 579BD1C20F53
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 05:53:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5C8615481;
-	Wed, 13 Sep 2023 04:59:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC40156DA;
+	Wed, 13 Sep 2023 05:53:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60FD659;
-	Wed, 13 Sep 2023 04:59:23 +0000 (UTC)
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E76172A;
-	Tue, 12 Sep 2023 21:59:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1694581160;
-	bh=BQWQxVgtDq67jRQfNxeUs/YY/NSz0gkDxgXPDiLLg4Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ox7p/ixZ4XdLZb7vURtOdqoQjj/ecaEwbncvnBgOqT3tTmsuN0O2a3cMbMyFBquQD
-	 TnvHstGG7e/t5hECabxAgouneLH5VM4aExCobQD8N1t/H8lySAmJCB1ljn7wwL4GYc
-	 eAbjC8uzV6XsMtxaY4Q7cxpEwpKADca3EvFrxrUamcWh5PpBgEKabXUFVWCAFY4MGj
-	 mH1Nb4zHofGCOw1Eiw4E9CBgPT/XSdh1bzPQms6WKGCcISbSgjhmRvIeZwU8aH32HJ
-	 ZbI8W36fhtEoo302Pkp958hplz79Ah+aqFlh97kAwlgxMn+kYIEYQXcA9W3HiH53du
-	 9egLxkWgDcMyQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4RlpCC68Bmz4wbj;
-	Wed, 13 Sep 2023 14:59:19 +1000 (AEST)
-Date: Wed, 13 Sep 2023 14:59:19 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
- <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, bpf
- <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
-Cc: Yonghong Song <yonghong.song@linux.dev>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: boot warning from the bpf-next tree
-Message-ID: <20230913145919.6060ae61@canb.auug.org.au>
-In-Reply-To: <20230913133436.0eeec4cb@canb.auug.org.au>
-References: <20230913133436.0eeec4cb@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7C8115481
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 05:53:39 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFA9172D;
+	Tue, 12 Sep 2023 22:53:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694584419; x=1726120419;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=FfUA0UJfdB5sO+CbLAWUBiXpBV0138FnSY1bREzj/FU=;
+  b=QV8jGdSjLEz5e8Rs40VJFqPJokTyfYRb5bBS6zollkQie6chUQq0llmP
+   K2bcMRKuf5cilPQAV0G2lD8CkNbsWIbfET6XYPueghB2ns9XyHiDezx0U
+   WvmzVm79eCcOkQR1aSkg/IOAOQn1fdnPUKX2OfoezwG1Ws22hJA16BS6o
+   0LTEsuyIyxhMI/b5GRICyJacAPU+w5rxJLcZfRCFhbu/bBbPneg16CPUp
+   BpjUzXWC/1pZeGrGbxfPXspj8j35QKEOvXpPWdC2ng2zrGmjb2NhNnBW6
+   WBVtH9gG5gnMAy8d1F+6eBAyDlVQPISuYePCUZ3+KBSQuTjJ39b2RULCh
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="464941613"
+X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
+   d="scan'208";a="464941613"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 22:53:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="990784456"
+X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
+   d="scan'208";a="990784456"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.45.177])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 22:53:31 -0700
+Message-ID: <592b8fd2-bfe3-0f8d-2814-d8340bbc75ee@intel.com>
+Date: Wed, 13 Sep 2023 08:53:26 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/PXHm/nlbskOi1ycBzy=CONu";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.0
+Subject: Re: [PATCH v2 5/7] tools/perf: fix Python string escapes
+To: Benjamin Gray <bgray@linux.ibm.com>, linux-ia64@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ llvm@lists.linux.dev, linux-pm@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Cc: Jonathan Corbet <corbet@lwn.net>, Ian Abbott <abbotti@mev.co.uk>,
+ H Hartley Sweeten <hsweeten@visionengravers.com>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>,
+ Jan Kiszka <jan.kiszka@siemens.com>, Kieran Bingham <kbingham@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+ Ian Rogers <irogers@google.com>, linux-perf-users@vger.kernel.org,
+ Todd E Brandt <todd.e.brandt@linux.intel.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>
+References: <20230912060801.95533-1-bgray@linux.ibm.com>
+ <20230912060801.95533-6-bgray@linux.ibm.com>
+ <340eae90-d270-5e52-4982-a67459bc46dd@intel.com>
+ <d603d3b3-7563-d1c9-5086-c5bb78ea2e52@linux.ibm.com>
+Content-Language: en-US
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <d603d3b3-7563-d1c9-5086-c5bb78ea2e52@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
---Sig_/PXHm/nlbskOi1ycBzy=CONu
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 13/09/23 03:26, Benjamin Gray wrote:
+> On 12/9/23 8:56 pm, Adrian Hunter wrote:
+>> On 12/09/23 09:07, Benjamin Gray wrote:
+>>> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+>>> index a7e88332276d..980f080a5a2c 100755
+>>> --- a/tools/perf/pmu-events/jevents.py
+>>> +++ b/tools/perf/pmu-events/jevents.py
+>>> @@ -83,7 +83,7 @@ def c_len(s: str) -> int:
+>>>     """Return the length of s a C string
+>>>       This doesn't handle all escape characters properly. It first assumes
+>>> -  all \ are for escaping, it then adjusts as it will have over counted
+>>> +  all \\ are for escaping, it then adjusts as it will have over counted
+>>
+>> It looks like the whole string should be a raw string
+>>
+> ...
+>>> -                s = value.replace("%", "\%")
+>>> -                s = s.replace("_", "\_")
+>>> +                s = value.replace("%", "\\%")
+>>> +                s = s.replace("_", "\\_")
+>>
+>> Raw strings seem more readable, so could be
+>> used here too
+> 
+> Yeah, sounds good. I normally use r strings only for regex, but there shouldn't be any ambiguity here (it might have been misleading if the search argument to replace looked like a regex).
+> 
+> Having the docstring be an r string is a good catch. There's probably a few like that in the kernel, but finding them is a little more complicated because they might be 'valid' syntax (e.g., the '\000' just becomes a null byte. This series is focused on the syntax errors though, so I'll just leave it be.
+> 
+> How is the following?
+> ---
+> Subject: [PATCH] tools/perf: fix Python string escapes
+> 
+> Python 3.6 introduced a DeprecationWarning for invalid escape sequences.
+> This is upgraded to a SyntaxWarning in Python 3.12, and will eventually
+> be a syntax error.
+> 
+> Fix these now to get ahead of it before it's an error.
+> 
+> Signed-off-by: Benjamin Gray <bgray@linux.ibm.com>
 
-Hi all,
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-On Wed, 13 Sep 2023 13:34:36 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next boot tests (powerpc pseries_le_defconfig) produced
-> this warning:
->=20
->  ------------[ cut here ]------------
->  bpf_mem_cache[0]: unexpected object size 16, expect 96
->  WARNING: CPU: 0 PID: 1 at kernel/bpf/memalloc.c:500 bpf_mem_alloc_init+0=
-x410/0x440
->  Modules linked in:
->  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.6.0-rc1-04964-g2e08ed1d459f =
-#1
->  Hardware name: IBM pSeries (emulated by qemu) POWER8 (raw) 0x4d0200 0xf0=
-00004 of:SLOF,HEAD pSeries
->  NIP:  c0000000003c0890 LR: c0000000003c088c CTR: 0000000000000000
->  REGS: c000000004783890 TRAP: 0700   Not tainted  (6.6.0-rc1-04964-g2e08e=
-d1d459f)
->  MSR:  8000000002029033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 24000280  XER: 00=
-000000
->  CFAR: c00000000014cfa0 IRQMASK: 0=20
->  GPR00: c0000000003c088c c000000004783b30 c000000001578c00 00000000000000=
-36=20
->  GPR04: 0000000000000000 c000000002667e18 0000000000000001 00000000000000=
-00=20
->  GPR08: c000000002667ce0 0000000000000001 0000000000000000 00000000440002=
-80=20
->  GPR12: 0000000000000000 c000000002b00000 c000000000011188 00000000000000=
-60=20
->  GPR16: c0000000011f9a30 c000000002920f68 c0000000021fac40 c0000000021fac=
-40=20
->  GPR20: c000000002a3ed88 c000000002921560 c0000000014867f0 c00000000291cc=
-d8=20
->  GPR24: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
-10=20
->  GPR28: c0000000011f9a30 0000000000000000 000000000000000b c00000007fc9ac=
-40=20
->  NIP [c0000000003c0890] bpf_mem_alloc_init+0x410/0x440
->  LR [c0000000003c088c] bpf_mem_alloc_init+0x40c/0x440
->  Call Trace:
->  [c000000004783b30] [c0000000003c088c] bpf_mem_alloc_init+0x40c/0x440 (un=
-reliable)
->  [c000000004783c20] [c00000000203d0c0] bpf_global_ma_init+0x5c/0x9c
->  [c000000004783c50] [c000000000010bc0] do_one_initcall+0x80/0x300
->  [c000000004783d20] [c000000002004978] kernel_init_freeable+0x30c/0x3b4
->  [c000000004783df0] [c0000000000111b0] kernel_init+0x30/0x1a0
->  [c000000004783e50] [c00000000000debc] ret_from_kernel_user_thread+0x14/0=
-x1c
->  --- interrupt: 0 at 0x0
->  NIP:  0000000000000000 LR: 0000000000000000 CTR: 0000000000000000
->  REGS: c000000004783e80 TRAP: 0000   Not tainted  (6.6.0-rc1-04964-g2e08e=
-d1d459f)
->  MSR:  0000000000000000 <>  CR: 00000000  XER: 00000000
->  CFAR: 0000000000000000 IRQMASK: 0=20
->  GPR00: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
-00=20
->  GPR04: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
-00=20
->  GPR08: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
-00=20
->  GPR12: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
-00=20
->  GPR16: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
-00=20
->  GPR20: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
-00=20
->  GPR24: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
-00=20
->  GPR28: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
-00=20
->  NIP [0000000000000000] 0x0
->  LR [0000000000000000] 0x0
->  --- interrupt: 0
->  Code: 3b000000 4bfffcbc 78650020 3c62ffe7 39200001 3d420130 7cc607b4 7ba=
-40020 386382f0 992a1e24 4bd8c631 60000000 <0fe00000> 4bffff40 ea410080 3860=
-fff4=20
->  ---[ end trace 0000000000000000 ]---
->=20
-> Presumably related to commit
->=20
->   41a5db8d8161 ("bpf: Add support for non-fix-size percpu mem allocation")
->=20
-> (or other commist in that series) from the bpf-next tree.
+> ---
+>  tools/perf/pmu-events/jevents.py                 | 2 +-
+>  tools/perf/scripts/python/arm-cs-trace-disasm.py | 4 ++--
+>  tools/perf/scripts/python/compaction-times.py    | 2 +-
+>  tools/perf/scripts/python/exported-sql-viewer.py | 4 ++--
+>  4 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+> index a7e88332276d..1b4519333a28 100755
+> --- a/tools/perf/pmu-events/jevents.py
+> +++ b/tools/perf/pmu-events/jevents.py
+> @@ -80,7 +80,7 @@ def file_name_to_table_name(prefix: str, parents: Sequence[str],
+> 
+> 
+>  def c_len(s: str) -> int:
+> -  """Return the length of s a C string
+> +  r"""Return the length of s a C string
+> 
+>    This doesn't handle all escape characters properly. It first assumes
+>    all \ are for escaping, it then adjusts as it will have over counted
+> diff --git a/tools/perf/scripts/python/arm-cs-trace-disasm.py b/tools/perf/scripts/python/arm-cs-trace-disasm.py
+> index d59ff53f1d94..de58991c78bb 100755
+> --- a/tools/perf/scripts/python/arm-cs-trace-disasm.py
+> +++ b/tools/perf/scripts/python/arm-cs-trace-disasm.py
+> @@ -45,8 +45,8 @@ parser = OptionParser(option_list=option_list)
+>  # Initialize global dicts and regular expression
+>  disasm_cache = dict()
+>  cpu_data = dict()
+> -disasm_re = re.compile("^\s*([0-9a-fA-F]+):")
+> -disasm_func_re = re.compile("^\s*([0-9a-fA-F]+)\s.*:")
+> +disasm_re = re.compile(r"^\s*([0-9a-fA-F]+):")
+> +disasm_func_re = re.compile(r"^\s*([0-9a-fA-F]+)\s.*:")
+>  cache_size = 64*1024
+> 
+>  glb_source_file_name    = None
+> diff --git a/tools/perf/scripts/python/compaction-times.py b/tools/perf/scripts/python/compaction-times.py
+> index 2560a042dc6f..9401f7c14747 100644
+> --- a/tools/perf/scripts/python/compaction-times.py
+> +++ b/tools/perf/scripts/python/compaction-times.py
+> @@ -260,7 +260,7 @@ def pr_help():
+> 
+>  comm_re = None
+>  pid_re = None
+> -pid_regex = "^(\d*)-(\d*)$|^(\d*)$"
+> +pid_regex = r"^(\d*)-(\d*)$|^(\d*)$"
+> 
+>  opt_proc = popt.DISP_DFL
+>  opt_disp = topt.DISP_ALL
+> diff --git a/tools/perf/scripts/python/exported-sql-viewer.py b/tools/perf/scripts/python/exported-sql-viewer.py
+> index 13f2d8a81610..78763531fe5a 100755
+> --- a/tools/perf/scripts/python/exported-sql-viewer.py
+> +++ b/tools/perf/scripts/python/exported-sql-viewer.py
+> @@ -677,8 +677,8 @@ class CallGraphModelBase(TreeModel):
+>              #   sqlite supports GLOB (text only) which uses * and ? and is case sensitive
+>              if not self.glb.dbref.is_sqlite3:
+>                  # Escape % and _
+> -                s = value.replace("%", "\%")
+> -                s = s.replace("_", "\_")
+> +                s = value.replace("%", r"\%")
+> +                s = s.replace("_", r"\_")
+>                  # Translate * and ? into SQL LIKE pattern characters % and _
+>                  trans = string.maketrans("*?", "%_")
+>                  match = " LIKE '" + str(s).translate(trans) + "'"
 
-Actually it looks like it is some interaction between that commit a
-commits in the bpf tree.
-
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/PXHm/nlbskOi1ycBzy=CONu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUBQacACgkQAVBC80lX
-0Gwh9gf+NxNxIq7gQtNipwJYuIA0IKO1UYtFeQYprv/zknhJrGIwuBk1/YIolPfF
-R1MGdnszYqdVr76FRZ7tODn32QsRAmyus220G6TW9P4JYIeMHrgZ/mF4ji0GsAcV
-gF+de4mLrgJlvBVQhdqp04NKR9UmHzluV4kQH/IFTm8QMCBGr91fOC4kEfjvtbKT
-FGqpvkR6q0xrzUrnbC+N9sEO6YurXRuQ01clAHEwOx2i2NKGaYURAnIODNG7eJY7
-AwZ/FE/lec1Y2jHV8nIKTrJU7WvLgiA+mIbl4fKJOTESUYKCTMOnq4ihb5E9UXJe
-aIUyIVPBV41c7EDT6ypCyiQRmj4g3Q==
-=8q4r
------END PGP SIGNATURE-----
-
---Sig_/PXHm/nlbskOi1ycBzy=CONu--
 
