@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-9869-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9870-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4716979DFD9
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 08:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1891C79DFDB
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 08:17:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00FF6281A25
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 06:16:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1DE1281E54
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 06:17:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6136C1799B;
-	Wed, 13 Sep 2023 06:15:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D78B3179A5;
+	Wed, 13 Sep 2023 06:15:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29B16A45
-	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 06:15:18 +0000 (UTC)
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985D8172E
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 23:15:17 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-58fba83feb0so62618257b3.3
-        for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 23:15:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F382A45
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 06:15:19 +0000 (UTC)
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4009172E
+	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 23:15:18 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-58e6c05f529so64492547b3.3
+        for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 23:15:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694585716; x=1695190516; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694585718; x=1695190518; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4PVz59K5l8Xp4iimWiGaL0A+Vn+eobZxCGm5oc1YD5A=;
-        b=TZNJD+mLvqCpelWfdPAmJC7jwbpk/mfTQn8SMHuTIWEpNABfPgXL4jjsL+rNeX2KVz
-         4XVsoj641Q9e84+VJVP+rF7/PjB5SYQXVX3ZV8wtuA61vGATX7wRMb6wWq7Dr3owbFol
-         2YOy5CGmwlimgtnCoGc6hfM3aynUNFPl4ry9tZpE4f1XFNs3JP6QcGQ4ksFAbVQB/4XH
-         i1xjN0N6/wUG9Im90vtpyY/grdUJn4zYTvBIPzfc/nRD8Ge778o1TAJdwkmzRyn155xA
-         7AAPSwBpXGKR2uTOW6WoobuN4D1vaeaiVytwbMQQ7WKmA37DPKd9yA2fviViPdkEMvpb
-         kxfg==
+        bh=/twNvdph7o8C7N/8hTYJsnndXJEVrCiku6pnMziniOI=;
+        b=AT3osPM97KxCf833D/mFwgIAjVfOT+41ETrl9/D2XyqBdfjDGyP4LCfL+Jgd4tWfsI
+         Jmih1kke0FOPo/sfWPstJZ2HeRIvF8ECc/eOoJVqADVLrDoePJagu9VG5B76lNLz2dHQ
+         YPsQ/CH3wqEM/nLdWKfZOobOROy/6HatE73pLMKNwC5vQ1tn1ixos/7MobJoibGnOxCB
+         ZqUc/Hf1bPx+FOgdpXzYlWQhrYpZLCegttzo0Vvv+d2jftlYQNDUNWDhJ5Ib7SjaZqF0
+         1zos0OXeiGXeZq9x4fUDluXz0fU43c0Et4mSKNPjLuT3JPRubGqeWC0PGfnfH0M3BWXh
+         QvMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694585716; x=1695190516;
+        d=1e100.net; s=20230601; t=1694585718; x=1695190518;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4PVz59K5l8Xp4iimWiGaL0A+Vn+eobZxCGm5oc1YD5A=;
-        b=ngO84l+vZIOX28LeAhjZq1cKW7yCpxCQ9rCfJd+ky/3NY5GvFMHKlG6xp5R+qDiUG9
-         2VFRprBCeqL8UjrhOAEyAtxFW41N1tvlo5RDciRONjLC1s2h7qXDC3Zz6c+5lMPJKWuE
-         cSqpkiaK1iJDcFK7MuW6nZMWkHEmRU8z3i54H4OwRWRP+8DGful4kW3kbCNTJm97Pamm
-         32VzHQPcNi3Y3Ztwk5Aq5G/NvNgWUV2cEyrElLgnc7HolIMdR7vthE+Xjnebr8k1TSGe
-         POi3f/q7niTTzvtG20rtodsZLBcGNdRnJ1pjfJrCD2wFaGwOeMfpsGIcGVA1c16hBrPg
-         tD/A==
-X-Gm-Message-State: AOJu0YyDka3iOIUH56jSFud578EcCkgPMnn8sSnyaEu1N4DWiaHidlmi
-	EjN/eT9TJnWlNa5gHyPXT6ZYFeWIDsw=
-X-Google-Smtp-Source: AGHT+IECrY0cnyvjn/w/bhwUMAIcgZG5w46kRKvEzr9vpHPGJg7IGMGusXt61aZnA59qyHSzc8AHzg==
-X-Received: by 2002:a81:918d:0:b0:589:f5c1:aaf3 with SMTP id i135-20020a81918d000000b00589f5c1aaf3mr1565165ywg.17.1694585716576;
-        Tue, 12 Sep 2023 23:15:16 -0700 (PDT)
+        bh=/twNvdph7o8C7N/8hTYJsnndXJEVrCiku6pnMziniOI=;
+        b=o/5ZEtQYJa6Kax5blzoJCKyIEy0GnMCZzFoDx7d4GkvS4cT/S/g+9u+3MHbUbAHxEn
+         VJ/kOofTbdNx3kJqY6nRzeLOXzGzbSe1lVUR/kC5N9kmCxVgqXu2oW8biEVk6SPutR8e
+         GJekuYhNO4OrfCsqYe2ZyRsMCFQ7G4yt1TwmcYkN1uimMG82FtIBhpjMMh9YM5pRvDnF
+         ggrtcl+NKDw4/BbxQ1TxdFFXDnpjzVF9TH9ehLF8DzhBueQziI7y3OUuvSRgZMAxFPmQ
+         B2n3TIqugPvrfHQEWk5kFnn1gLxghpI34MnuNn+Zjeh8YFnZAU2jTXeiNLai5ed3psFA
+         kEJA==
+X-Gm-Message-State: AOJu0YxMsDYuMuTmlZYZ41CN+vbyN/lNpXbhzdy/SSZm4MdPJspDH0rS
+	6I13OP0VyFqLV4zTKZiw8dir12nmTWg=
+X-Google-Smtp-Source: AGHT+IFcBOPJRUe3XiTc0Xzd/m15VRK8eNSsWmoEa41XVO3SEz0+teqnzjMGpvUHzXhbfT4pXmUYpA==
+X-Received: by 2002:a0d:ebc3:0:b0:583:307d:41bc with SMTP id u186-20020a0debc3000000b00583307d41bcmr1884745ywe.27.1694585717796;
+        Tue, 12 Sep 2023 23:15:17 -0700 (PDT)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:34c0:240e:9597:d8ed])
-        by smtp.gmail.com with ESMTPSA id b132-20020a0dd98a000000b0057a5302e2fesm2961454ywe.5.2023.09.12.23.15.15
+        by smtp.gmail.com with ESMTPSA id b132-20020a0dd98a000000b0057a5302e2fesm2961454ywe.5.2023.09.12.23.15.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 23:15:16 -0700 (PDT)
+        Tue, 12 Sep 2023 23:15:17 -0700 (PDT)
 From: thinker.li@gmail.com
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -66,9 +66,9 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [RFC bpf-next v2 8/9] selftests/bpf: test case for register_bpf_struct_ops().
-Date: Tue, 12 Sep 2023 23:14:48 -0700
-Message-Id: <20230913061449.1918219-9-thinker.li@gmail.com>
+Subject: [RFC bpf-next v2 9/9] Comments and debug
+Date: Tue, 12 Sep 2023 23:14:49 -0700
+Message-Id: <20230913061449.1918219-10-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230913061449.1918219-1-thinker.li@gmail.com>
 References: <20230913061449.1918219-1-thinker.li@gmail.com>
@@ -84,230 +84,169 @@ From: Kui-Feng Lee <thinker.li@gmail.com>
 
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 84 +++++++++++++++++++
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  5 ++
- .../bpf/prog_tests/test_struct_ops_module.c   | 40 +++++++++
- .../selftests/bpf/progs/struct_ops_module.c   | 30 +++++++
- 4 files changed, 159 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_module.c
+ kernel/bpf/bpf_struct_ops.c | 15 +++++++++++++++
+ kernel/bpf/syscall.c        |  6 ++++++
+ tools/lib/bpf/libbpf.c      | 26 ++++++++++++++++++++++++++
+ 3 files changed, 47 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index cefc5dd72573..136638c15047 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2020 Facebook */
-+#include <linux/bpf.h>
- #include <linux/btf.h>
- #include <linux/btf_ids.h>
- #include <linux/error-injection.h>
-@@ -517,11 +518,88 @@ BTF_ID_FLAGS(func, bpf_kfunc_call_test_static_unused_arg)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_offset)
- BTF_SET8_END(bpf_testmod_check_kfunc_ids)
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index 845873bc806d..47045b026bec 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -133,6 +133,9 @@ static void bpf_struct_ops_init_one(struct bpf_struct_ops *st_ops,
+ 	}
+ 	sprintf(value_name, "%s%s", VALUE_PREFIX, st_ops->name);
  
-+#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-+
-+enum bpf_struct_ops_state {
-+	BPF_STRUCT_OPS_STATE_INIT,
-+	BPF_STRUCT_OPS_STATE_INUSE,
-+	BPF_STRUCT_OPS_STATE_TOBEFREE,
-+	BPF_STRUCT_OPS_STATE_READY,
-+};
-+
-+#define BPF_STRUCT_OPS_COMMON_VALUE			\
-+	refcount_t refcnt;				\
-+	enum bpf_struct_ops_state state
-+
-+#define BPF_STRUCT_OPS_TYPE(_name)				\
-+struct bpf_struct_ops_##_name {						\
-+	BPF_STRUCT_OPS_COMMON_VALUE;				\
-+	struct _name data ____cacheline_aligned_in_smp;		\
-+}
-+
-+BPF_STRUCT_OPS_TYPE(bpf_testmod_ops);
-+
-+
-+static int bpf_testmod_ops_init(struct btf *btf)
-+{
-+	return 0;
-+}
-+
-+static bool bpf_testmod_ops_is_valid_access(int off, int size,
-+					    enum bpf_access_type type,
-+					    const struct bpf_prog *prog,
-+					    struct bpf_insn_access_aux *info)
-+{
-+	return bpf_tracing_btf_ctx_access(off, size, type, prog, info);
-+}
-+
-+static int bpf_testmod_ops_init_member(const struct btf_type *t,
-+				       const struct btf_member *member,
-+				       void *kdata, const void *udata)
-+{
-+	return 0;
-+}
-+
- static const struct btf_kfunc_id_set bpf_testmod_kfunc_set = {
- 	.owner = THIS_MODULE,
- 	.set   = &bpf_testmod_check_kfunc_ids,
- };
++	/* XXX: This ID is not unique across modules. We need to include
++	 * module or module ID as an unique ID.
++	 */
+ 	value_id = btf_find_by_name_kind(btf, value_name,
+ 					 BTF_KIND_STRUCT);
+ 	if (value_id < 0) {
+@@ -141,6 +144,9 @@ static void bpf_struct_ops_init_one(struct bpf_struct_ops *st_ops,
+ 		return;
+ 	}
  
-+static const struct bpf_verifier_ops bpf_testmod_verifier_ops = {
-+	.is_valid_access = bpf_testmod_ops_is_valid_access,
-+};
-+
-+static int bpf_dummy_reg(void *kdata)
-+{
-+	struct bpf_testmod_ops *ops = kdata;
-+	int r;
-+
-+	((struct bpf_struct_ops_bpf_testmod_ops *)0);
-+	r = ops->test_2(4, 3);
-+	printk(KERN_CRIT "bpf_dummy_reg: test_2 %d\n", r);
-+	return 0;
-+}
-+
-+static void bpf_dummy_unreg(void *kdata)
-+{
-+}
-+
-+struct bpf_struct_ops bpf_bpf_testmod_ops = {
-+	.verifier_ops = &bpf_testmod_verifier_ops,
-+	.init = bpf_testmod_ops_init,
-+	.init_member = bpf_testmod_ops_init_member,
-+	.reg = bpf_dummy_reg,
-+	.unreg = bpf_dummy_unreg,
-+	.name = "bpf_testmod_ops",
-+};
-+
-+static struct bpf_struct_ops_mod bpf_testmod_struct_ops = {
-+	.owner = THIS_MODULE,
-+	.st_ops = &bpf_bpf_testmod_ops,
-+};
-+
-+#endif /* CONFIG_DEBUG_INFO_BTF_MODULES */
-+
- extern int bpf_fentry_test1(int a);
++	/* XXX: This ID is not unique across modules. We need to include
++	 * module or module ID as an unique ID.
++	 */
+ 	type_id = btf_find_by_name_kind(btf, st_ops->name,
+ 					BTF_KIND_STRUCT);
+ 	if (type_id < 0) {
+@@ -569,6 +575,9 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+ 		u32 moff;
  
- static int bpf_testmod_init(void)
-@@ -532,6 +610,9 @@ static int bpf_testmod_init(void)
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &bpf_testmod_kfunc_set);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_testmod_kfunc_set);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &bpf_testmod_kfunc_set);
-+#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-+	ret = ret ?: register_bpf_struct_ops(&bpf_testmod_struct_ops);
-+#endif
- 	if (ret < 0)
- 		return ret;
- 	if (bpf_fentry_test1(0) < 0)
-@@ -541,6 +622,9 @@ static int bpf_testmod_init(void)
+ 		moff = __btf_member_bit_offset(t, member) / 8;
++		/* XXX: Should resolve member types from module BTF, but
++		 * it's not available yet.
++		 */
+ 		ptype = btf_type_resolve_ptr(btf_vmlinux, member->type, NULL);
+ 		if (ptype == module_type) {
+ 			if (*(void **)(udata + moff))
+@@ -837,6 +846,12 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+ 	if (!st_map)
+ 		return ERR_PTR(-ENOMEM);
  
- static void bpf_testmod_exit(void)
- {
-+#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-+	unregister_bpf_struct_ops(&bpf_testmod_struct_ops);
-+#endif
- 	return sysfs_remove_bin_file(kernel_kobj, &bin_attr_bpf_testmod_file);
++	/* XXX: should sync with the unregister path */
++	/* XXX: Since we assign a st_ops, we need to do a rcu_synchronize()
++	 *      twice to make sure the st_ops is not freed while other
++	 *      tasks use this value. Or, we can find st_ops again holding
++	 *      the mutex to make sure it is not freed.
++	 */
+ 	st_map->st_ops = st_ops;
+ 	map = &st_map->map;
+ 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 04d3017b7db1..75c4f0b251a3 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1204,6 +1204,10 @@ static int map_create(union bpf_attr *attr)
+ 		return -EPERM;
+ 	}
+ 
++	/* XXX: attr->attach_btf_obj_fd should be initialized by the user
++	 *      space. We should use it to find type infor from
++	 *      attach_btf_id.
++	 */
+ 	map = ops->map_alloc(attr);
+ 	if (IS_ERR(map))
+ 		return PTR_ERR(map);
+@@ -2624,6 +2628,7 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+ 		btf_get(attach_btf);
+ 	}
+ 
++
+ 	bpf_prog_load_fixup_attach_type(attr);
+ 	if (bpf_prog_load_check_attach(type, attr->expected_attach_type,
+ 				       attach_btf, attr->attach_btf_id,
+@@ -4576,6 +4581,7 @@ static int bpf_map_get_info_by_fd(struct file *file,
+ 		info.btf_value_type_id = map->btf_value_type_id;
+ 	}
+ 	info.btf_vmlinux_value_type_id = map->btf_vmlinux_value_type_id;
++	/* XXX: copy map->mod_btf->name as well? */
+ 
+ 	if (bpf_map_is_offloaded(map)) {
+ 		err = bpf_map_offload_info_fill(&info, map);
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 211889d37320..cd866a30471b 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -988,6 +988,7 @@ find_struct_ops_kern_types(struct bpf_object *obj, const char *tname,
+ 	 * find "struct bpf_struct_ops_tcp_congestion_ops" from the
+ 	 * btf_vmlinux.
+ 	 */
++	/* XXX: Should search module BTFs as well. */
+ 	kern_vtype_id = find_btf_by_prefix_kind(btf, STRUCT_OPS_VALUE_PREFIX,
+ 						tname, BTF_KIND_STRUCT);
+ 	if (kern_vtype_id < 0) {
+@@ -5143,6 +5144,8 @@ bpf_object__populate_internal_map(struct bpf_object *obj, struct bpf_map *map)
+ 	return 0;
  }
  
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-index f32793efe095..ca5435751c79 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-@@ -28,4 +28,9 @@ struct bpf_iter_testmod_seq {
- 	int cnt;
- };
++int turnon_kk = false;
++
+ static void bpf_map__destroy(struct bpf_map *map);
  
-+struct bpf_testmod_ops {
-+	int (*test_1)(void);
-+	int (*test_2)(int a, int b);
-+};
-+
- #endif /* _BPF_TESTMOD_H */
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-new file mode 100644
-index 000000000000..29dd203121f5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-@@ -0,0 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+#include <test_progs.h>
-+
-+#include "struct_ops_module.skel.h"
-+#include "testing_helpers.h"
-+
-+static void test_regular_load()
-+{
-+	struct struct_ops_module *skel;
-+	struct bpf_link *link;
-+	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
-+	int err;
-+
-+	opts.btf_custom_path = "/sys/kernel/btf/bpf_testmod",
-+
-+	printf("test_regular_load\n");
-+	skel = struct_ops_module__open_opts(&opts);
-+	if (!ASSERT_OK_PTR(skel, "struct_ops_module_open"))
-+		return;
-+	err = struct_ops_module__load(skel);
-+	if (!ASSERT_OK(err, "struct_ops_module_load"))
-+		return;
-+
-+	link = bpf_map__attach_struct_ops(skel->maps.testmod_1);
-+	ASSERT_OK_PTR(link, "attach_test_mod_1");
-+
-+	ASSERT_EQ(skel->bss->test_2_result, 7, "test_2_result");
-+
-+	bpf_link__destroy(link);
-+
-+	struct_ops_module__destroy(skel);
-+}
-+
-+void serial_test_struct_ops_module(void)
-+{
-+	if (test__start_subtest("regular_load"))
-+		test_regular_load();
-+}
-+
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_module.c b/tools/testing/selftests/bpf/progs/struct_ops_module.c
-new file mode 100644
-index 000000000000..cb305d04342f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_module.c
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../bpf_testmod/bpf_testmod.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int test_2_result = 0;
-+
-+SEC("struct_ops/test_1")
-+int BPF_PROG(test_1)
-+{
-+	return 0xdeadbeef;
-+}
-+
-+SEC("struct_ops/test_2")
-+int BPF_PROG(test_2, int a, int b)
-+{
-+	test_2_result = a + b;
-+	return a + b;
-+}
-+
-+SEC(".struct_ops.link")
-+struct bpf_testmod_ops testmod_1 = {
-+	.test_1 = (void *)test_1,
-+	.test_2 = (void *)test_2,
-+};
-+
+ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, bool is_inner)
+@@ -7945,13 +7948,32 @@ static int bpf_object_load(struct bpf_object *obj, int extra_log_level, const ch
+ 		bpf_gen__init(obj->gen_loader, extra_log_level, obj->nr_programs, obj->nr_maps);
+ 
+ 	err = bpf_object__probe_loading(obj);
++	if (turnon_kk)
++		printf("bpf_object__probe_loading err=%d\n", err);
++	/* XXX: should correct module btf if needed.
++	 *      obj->btf_vmlinux provides the information of members of
++	 *      the struct_ops type required to load the object.
++	 *      (see bpf_object__init_kern_struct_ops_maps() and
++	 *      bpf_map__init_kern_struct_ops())
++	 */
+ 	err = err ? : bpf_object__load_vmlinux_btf(obj, false);
++	if (turnon_kk)
++		printf("bpf_object__probe_loading err=%d\n", err);
+ 	err = err ? : bpf_object__resolve_externs(obj, obj->kconfig);
+ 	err = err ? : bpf_object__sanitize_and_load_btf(obj);
+ 	err = err ? : bpf_object__sanitize_maps(obj);
++	if (turnon_kk)
++		printf("bpf_object__probe_loading err=%d\n", err);
++	/* XXX: obj->btf_vmliux is not used for loading the object. */
+ 	err = err ? : bpf_object__init_kern_struct_ops_maps(obj);
++	if (turnon_kk)
++		printf("bpf_object__probe_loading err=%d\n", err);
+ 	err = err ? : bpf_object__create_maps(obj);
++	if (turnon_kk)
++		printf("bpf_object__probe_loading err=%d\n", err);
+ 	err = err ? : bpf_object__relocate(obj, obj->btf_custom_path ? : target_btf_path);
++	if (turnon_kk)
++		printf("bpf_object__probe_loading err=%d\n", err);
+ 	err = err ? : bpf_object__load_progs(obj, extra_log_level);
+ 	err = err ? : bpf_object_init_prog_arrays(obj);
+ 	err = err ? : bpf_object_prepare_struct_ops(obj);
+@@ -9230,6 +9252,7 @@ static int bpf_object__collect_st_ops_relos(struct bpf_object *obj,
+ 		 * attach_btf_id and member_idx
+ 		 */
+ 		if (!prog->attach_btf_id) {
++			/* XXX: attach_btf_obj_fd is needed as well */
+ 			prog->attach_btf_id = st_ops->type_id;
+ 			prog->expected_attach_type = member_idx;
+ 		}
+@@ -13124,7 +13147,9 @@ int bpf_object__load_skeleton(struct bpf_object_skeleton *s)
+ {
+ 	int i, err;
+ 
++	printf("Loading BPF skeleton '%s'...\n", s->name);
+ 	err = bpf_object__load(*s->obj);
++	printf("bpf_object__load\n");
+ 	if (err) {
+ 		pr_warn("failed to load BPF skeleton '%s': %d\n", s->name, err);
+ 		return libbpf_err(err);
+@@ -13169,6 +13194,7 @@ int bpf_object__load_skeleton(struct bpf_object_skeleton *s)
+ 		}
+ 	}
+ 
++	printf("BPF skeleton '%s' loaded successfully\n", s->name);
+ 	return 0;
+ }
+ 
 -- 
 2.34.1
 
