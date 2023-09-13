@@ -1,82 +1,56 @@
-Return-Path: <bpf+bounces-9928-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9929-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1AC579ED19
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 17:34:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A809879ED23
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 17:34:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93C37281F84
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 15:34:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62DA22813B2
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 15:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A77F822EE4;
-	Wed, 13 Sep 2023 15:28:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2585C1F92A;
+	Wed, 13 Sep 2023 15:33:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7471C1F925;
-	Wed, 13 Sep 2023 15:28:40 +0000 (UTC)
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9A61BD6;
-	Wed, 13 Sep 2023 08:28:39 -0700 (PDT)
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-99c3c8adb27so888272466b.1;
-        Wed, 13 Sep 2023 08:28:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694618918; x=1695223718;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f1vGDg0uCtdiqjKqDiwFtuGhRJ18xP0o/QuRB7i2CeI=;
-        b=A11Q5a1VP/fcQ9TgOWN78oPoZg6kkmtsNi8QeNGpOkGuscvR8HqQ6es6BHcDKvKp2x
-         lBr2okhW4SWaRc0xECzgePXGbkx53DUIerGucgd5ltRQdrnaZX1FW5qZwaDU3IgLEZ/5
-         tW3urGbcup0SaCqGrLa6idF3tGoqyRzxZ9eQoOCgzMuTThsnaf4rjR/FRMUDHAk1lj8/
-         qBHkYYbd95m76Pxyzal2pZKIzPqb0j/1E+u52NBGs9hULg8ElXMQwFfwZjuI0l0dcSLH
-         FCMmdZpbvxuKPQboKGIqYdMMG2s5K7THQNlvjIVVXjnPxQaQPmGaxU+/xjplB5XwD3ZA
-         noLw==
-X-Gm-Message-State: AOJu0YzCcGjpJd6aYMOGT5rgjkO0gH3gY+w4pBLs4Blmejm/B1PVWTYG
-	iJKu5vdGCKZLxTCDtLkvzlo=
-X-Google-Smtp-Source: AGHT+IHmrrgmP8mf+1WIardtNbDBakZ+xUtLB1E1+f4WfhRclf5HQB29Q5O+QutRs462a3Yp0wPRsw==
-X-Received: by 2002:a17:906:3151:b0:9a1:c495:66bb with SMTP id e17-20020a170906315100b009a1c49566bbmr2361258eje.60.1694618918240;
-        Wed, 13 Sep 2023 08:28:38 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-009.fbsv.net. [2a03:2880:31ff:9::face:b00c])
-        by smtp.gmail.com with ESMTPSA id rn3-20020a170906d92300b0099cc3c7ace2sm8709378ejb.140.2023.09.13.08.28.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 08:28:37 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-To: sdf@google.com,
-	axboe@kernel.dk,
-	asml.silence@gmail.com,
-	willemdebruijn.kernel@gmail.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	martin.lau@linux.dev,
-	krisman@suse.de,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCA99639;
+	Wed, 13 Sep 2023 15:33:54 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B406E3;
+	Wed, 13 Sep 2023 08:33:53 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Rm4HG233rz4f3jrq;
+	Wed, 13 Sep 2023 23:33:46 +0800 (CST)
+Received: from ultra.huawei.com (unknown [10.90.53.71])
+	by APP2 (Coremail) with SMTP id Syh0CgAXIAVd1gFltNV8AQ--.25893S2;
+	Wed, 13 Sep 2023 23:33:50 +0800 (CST)
+From: Pu Lehui <pulehui@huaweicloud.com>
+To: bpf@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	netdev@vger.kernel.org
+Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
 	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
+	Yonghong Song <yhs@fb.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	io-uring@vger.kernel.org,
-	=?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>,
-	Wang Yufen <wangyufen@huawei.com>,
-	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
-Subject: [PATCH v6 8/8] selftests/bpf/sockopt: Add io_uring support
-Date: Wed, 13 Sep 2023 08:27:44 -0700
-Message-Id: <20230913152744.2333228-9-leitao@debian.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230913152744.2333228-1-leitao@debian.org>
-References: <20230913152744.2333228-1-leitao@debian.org>
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Luke Nelson <luke.r.nels@gmail.com>,
+	Pu Lehui <pulehui@huawei.com>,
+	Pu Lehui <pulehui@huaweicloud.com>
+Subject: [PATCH bpf-next 0/6] Zbb support and code simplification for RV64 JIT
+Date: Wed, 13 Sep 2023 23:34:07 +0800
+Message-Id: <20230913153413.1446068-1-pulehui@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,160 +58,46 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgAXIAVd1gFltNV8AQ--.25893S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruF13Xr4UZw17Zw13Cw1kAFb_yoWfCFc_Ka
+	y8XFyxGr1YyFyrtF9xt3W8JrWkC395JFyUXFn0qF4UuFnxur95J3s5trZFv348ua15XF13
+	Xr1UAFy0kr4a9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbxxFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVW8
+	JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUF0
+	eHDUUUU
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
 
-Expand the BPF sockopt test to use also check for io_uring
-{g,s}etsockopt commands operations.
+Add Zbb support [0] to optimize code size and performance of RV64 JIT.
+Meanwhile, adjust the code for unification and simplification. Tests
+test_bpf.ko and test_verifier have passed, as well as the relative
+testcases of test_progs*.
 
-Create infrastructure to run io_uring tests using the mini_liburing
-helpers, so, the {g,s}etsockopt operation could either be called from
-system calls, or, via io_uring.
+[0] https://github.com/riscv/riscv-bitmanip/releases/download/1.0.0/bitmanip-1.0.0-38-g865e7a7.pdf 
 
-Add a 'use_io_uring' parameter to run_test(), to specify if the test
-should be run using io_uring if the parameter is set, or via the regular
-system calls if false.
+Pu Lehui (6):
+  riscv, bpf: Unify 32-bit sign-extension to emit_sextw
+  riscv, bpf: Unify 32-bit zero-extension to emit_zextw
+  riscv, bpf: Simplify sext and zext logics in branch instructions
+  riscv, bpf: Add necessary Zbb instructions
+  riscv, bpf: Optimize sign-extention mov insns with Zbb support
+  riscv, bpf: Optimize bswap insns with Zbb support
 
-Call *all* tests twice, using the regular io_uring path, and the new
-io_uring path.
+ arch/riscv/net/bpf_jit.h        | 123 ++++++++++++++++++
+ arch/riscv/net/bpf_jit_comp64.c | 213 +++++++++++---------------------
+ 2 files changed, 194 insertions(+), 142 deletions(-)
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- .../selftests/bpf/prog_tests/sockopt.c        | 95 +++++++++++++++++--
- 1 file changed, 89 insertions(+), 6 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt.c b/tools/testing/selftests/bpf/prog_tests/sockopt.c
-index 9e6a5e3ed4de..40fb4c315ad9 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <test_progs.h>
-+#include <io_uring/mini_liburing.h>
- #include "cgroup_helpers.h"
- 
- static char bpf_log_buf[4096];
-@@ -940,7 +941,85 @@ static int load_prog(const struct bpf_insn *insns,
- 	return fd;
- }
- 
--static int run_test(int cgroup_fd, struct sockopt_test *test)
-+/* Core function that handles io_uring ring initialization,
-+ * sending SQE with sockopt command and waiting for the CQE.
-+ */
-+static int uring_sockopt(int op, int fd, int level, int optname,
-+			 const void *optval, socklen_t *optlen)
-+{
-+	struct io_uring_cqe *cqe;
-+	struct io_uring_sqe *sqe;
-+	struct io_uring ring;
-+	int err;
-+
-+	err = io_uring_queue_init(1, &ring, 0);
-+	if (!ASSERT_OK(err, "Initialize io_uring ring"))
-+		return err;
-+
-+	sqe = io_uring_get_sqe(&ring);
-+	if (!ASSERT_NEQ(sqe, NULL, "Get an SQE")) {
-+		err = -1;
-+		goto fail;
-+	}
-+
-+	if (op == SOCKET_URING_OP_GETSOCKOPT)
-+		io_uring_prep_cmd_get(sqe, op, fd, level, optname, optval,
-+				      optlen);
-+	else
-+		io_uring_prep_cmd(sqe, op, fd, level, optname, optval,
-+				  *optlen);
-+
-+	err = io_uring_submit(&ring);
-+	if (!ASSERT_EQ(err, 1, "Submit SQE"))
-+		goto fail;
-+
-+	err = io_uring_wait_cqe(&ring, &cqe);
-+	if (!ASSERT_OK(err, "Wait for CQE"))
-+		goto fail;
-+
-+	err = cqe->res;
-+
-+fail:
-+	io_uring_queue_exit(&ring);
-+
-+	return err;
-+}
-+
-+static int uring_setsockopt(int fd, int level, int optname, const void *optval,
-+			    socklen_t *optlen)
-+{
-+	return uring_sockopt(SOCKET_URING_OP_SETSOCKOPT, fd, level, optname,
-+			     optval, optlen);
-+}
-+
-+static int uring_getsockopt(int fd, int level, int optname, void *optval,
-+			    socklen_t *optlen)
-+{
-+	return uring_sockopt(SOCKET_URING_OP_GETSOCKOPT, fd, level, optname,
-+			     optval, optlen);
-+}
-+
-+/* Execute the setsocktopt operation */
-+static int call_setsockopt(bool use_io_uring, int fd, int level, int optname,
-+			   const void *optval, socklen_t optlen)
-+{
-+	if (use_io_uring)
-+		return uring_setsockopt(fd, level, optname, optval, &optlen);
-+
-+	return setsockopt(fd, level, optname, optval, optlen);
-+}
-+
-+/* Execute the getsocktopt operation */
-+static int call_getsockopt(bool use_io_uring, int fd, int level, int optname,
-+			   void *optval, socklen_t *optlen)
-+{
-+	if (use_io_uring)
-+		return uring_getsockopt(fd, level, optname, optval, optlen);
-+
-+	return getsockopt(fd, level, optname, optval, optlen);
-+}
-+
-+static int run_test(int cgroup_fd, struct sockopt_test *test, bool use_io_uring)
- {
- 	int sock_fd, err, prog_fd;
- 	void *optval = NULL;
-@@ -980,8 +1059,9 @@ static int run_test(int cgroup_fd, struct sockopt_test *test)
- 			test->set_optlen = num_pages * sysconf(_SC_PAGESIZE) + remainder;
- 		}
- 
--		err = setsockopt(sock_fd, test->set_level, test->set_optname,
--				 test->set_optval, test->set_optlen);
-+		err = call_setsockopt(use_io_uring, sock_fd, test->set_level,
-+				      test->set_optname, test->set_optval,
-+				      test->set_optlen);
- 		if (err) {
- 			if (errno == EPERM && test->error == EPERM_SETSOCKOPT)
- 				goto close_sock_fd;
-@@ -1008,8 +1088,8 @@ static int run_test(int cgroup_fd, struct sockopt_test *test)
- 		socklen_t expected_get_optlen = test->get_optlen_ret ?:
- 			test->get_optlen;
- 
--		err = getsockopt(sock_fd, test->get_level, test->get_optname,
--				 optval, &optlen);
-+		err = call_getsockopt(use_io_uring, sock_fd, test->get_level,
-+				      test->get_optname, optval, &optlen);
- 		if (err) {
- 			if (errno == EOPNOTSUPP && test->error == EOPNOTSUPP_GETSOCKOPT)
- 				goto free_optval;
-@@ -1063,7 +1143,10 @@ void test_sockopt(void)
- 		if (!test__start_subtest(tests[i].descr))
- 			continue;
- 
--		ASSERT_OK(run_test(cgroup_fd, &tests[i]), tests[i].descr);
-+		ASSERT_OK(run_test(cgroup_fd, &tests[i], false),
-+			  tests[i].descr);
-+		ASSERT_OK(run_test(cgroup_fd, &tests[i], true),
-+			  tests[i].descr);
- 	}
- 
- 	close(cgroup_fd);
 -- 
-2.34.1
+2.25.1
 
 
