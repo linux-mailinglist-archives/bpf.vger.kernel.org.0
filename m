@@ -1,112 +1,86 @@
-Return-Path: <bpf+bounces-9956-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9957-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC1B679F162
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 20:50:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A5D979F164
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 20:50:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEFCD1C20A5D
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 18:50:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7B33281943
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 18:50:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31D7665D;
-	Wed, 13 Sep 2023 18:50:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0EFEEB8;
+	Wed, 13 Sep 2023 18:50:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7B2737F
-	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 18:50:01 +0000 (UTC)
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB64170B
-	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 11:50:01 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-cf4cb742715so175471276.2
-        for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 11:50:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694631000; x=1695235800; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qPAgyrXwVifCgs8YcSIJJHY71Xaauw3uUQtmqIC6VZw=;
-        b=VC/aUfJSLUD322l8VLNpCyQBoOLkyS/EaUegtC7OA5mGf6zxDGSl/T+jsdBFcXH5UP
-         8MueJJnfn/JizBtldwcYxCKzV2JGRQ3vR4q3cUP7TYTQ2YB9DTxLOEX29i8iwOdFc8Gt
-         Z57uzqrcRP+Qey81gBp33dFPP2+N0xBZXL1Xe/SpsZp4mOxTEBuBT1OjCQ/26CWnZqp+
-         CYg/wGPkzRobbYm9q8ayw6vEG+fA+lcn2T99xuOk08YP8YQBMcSYZfuV1vd9SKMgG1EX
-         Ro9YEA+ym66bCKTL4eu80Jvro0rzpbCZByWqWYdyvcVKfrbr57DPCtQyU/ZQn2qebi2J
-         RJ/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694631000; x=1695235800;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qPAgyrXwVifCgs8YcSIJJHY71Xaauw3uUQtmqIC6VZw=;
-        b=YKvCmZ2xQwDPES9Wb2O34CgVN3bkzLU9YuyIDXQs9Fz4UjPTvpgCgvgtwn3Fi3kHUv
-         s6NjuZiRZZNQHCPAzJmF8Zx/QSeCuuCTaT1+FFLOeVmtAk41SFcPdUGteRzKrlltz8i/
-         A3XvANGT1q5KVUgBHaQjmtYhJRZGSr6tjv0kSo7iSN05ob/apGszqIHAvcDRpHUDKnIk
-         8kNSoCJ7qLb/nZCBODDaSAiMxPJrcYcqjZ45LJnjaGF677/P9qxzNwQd20DmK+M1tiuT
-         3u2EYsOZeDHVxcmYt7Lr1r3hkIYWf6yKovi9j1lZZvGzRlYGfpYM5k3siSsi2ZP8Uw1K
-         qwBw==
-X-Gm-Message-State: AOJu0Yy6FducFzYnm0TnxIY0Ge/DbrgB1W07k9s0yt3rDrt9s34G009R
-	5NTSUy9eiN2kFj9fcit5gznv1VTXE/W0
-X-Google-Smtp-Source: AGHT+IGsHx+kaHfl63g3U+7aSP4ap1F2ajOv98JBdUwuZaW3YgiloBSxM9+4YpOZlykSC2AeodbWFKOxMdI7
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:f3b:42d0:4853:6022])
- (user=irogers job=sendgmr) by 2002:a25:6c03:0:b0:d80:2916:c3eb with SMTP id
- h3-20020a256c03000000b00d802916c3ebmr72569ybc.12.1694631000618; Wed, 13 Sep
- 2023 11:50:00 -0700 (PDT)
-Date: Wed, 13 Sep 2023 11:49:57 -0700
-Message-Id: <20230913184957.230076-1-irogers@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2830F813
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 18:50:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A0A10C433C9;
+	Wed, 13 Sep 2023 18:50:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1694631024;
+	bh=pjoRbTgCErKCAtk79jBqizoxI2iDbOKmaX4F49GHq/Q=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=jt3jW+1sdMhbiDQIk2sSW5iURsZaobSWnK+X2tsDSjQ6pfd/NVTxcZrGuk0y89KtA
+	 ySuWDt+x3jLI/Fg5gejzutbOHX3XilO5/ClQRpXx9GpAcUkRDwXytcXTDUBGosMrb5
+	 t2aoNgkVPx5a55ZPylR+LPAqrVPcrJOPDRDwZ/A4YRYyeJAcXgxoRyx0l7cjkb4z/5
+	 jIIoILnreeqK/hA5zC00r0rSEyhfwaVCXDEY0CJzMwvK17sE4ZdVZmgl5TxjyxSx6u
+	 F2ujBZEug+kuUUT66je32AXDfatJ5bJ0d/w0cEZBC8WGKraX+3DkFszPuLyrwyid/f
+	 nwZPoXgHiL+7w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8321EE1C290;
+	Wed, 13 Sep 2023 18:50:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Subject: [PATCH v1] perf trace: Avoid compile error wrt redefining bool
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Leo Yan <leo.yan@linaro.org>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCHv2 bpf] selftests/bpf: Fix kprobe_multi_test/attach_override
+ test
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <169463102453.14252.1553643164526204933.git-patchwork-notify@kernel.org>
+Date: Wed, 13 Sep 2023 18:50:24 +0000
+References: <20230913114711.499829-1-jolsa@kernel.org>
+In-Reply-To: <20230913114711.499829-1-jolsa@kernel.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+ john.fastabend@gmail.com, kpsingh@chromium.org, sdf@google.com,
+ haoluo@google.com
 
-Make part of an existing TODO conditional to avoid the following build
-error:
-```
-tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c:26:14: error: cannot combine with previous 'char' declaration specifier
-   26 | typedef char bool;
-      |              ^
-include/stdbool.h:20:14: note: expanded from macro 'bool'
-   20 | #define bool _Bool
-      |              ^
-tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c:26:1: error: typedef requires a name [-Werror,-Wmissing-declarations]
-   26 | typedef char bool;
-      | ^~~~~~~~~~~~~~~~~
-2 errors generated.
-```
+Hello:
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c | 2 ++
- 1 file changed, 2 insertions(+)
+This patch was applied to bpf/bpf.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-diff --git a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
-index 90ce22f9c1a9..939ec769bf4a 100644
---- a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
-+++ b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
-@@ -23,7 +23,9 @@
- #define MAX_CPUS  4096
- 
- // FIXME: These should come from system headers
-+#ifndef bool
- typedef char bool;
-+#endif
- typedef int pid_t;
- typedef long long int __s64;
- typedef __s64 time64_t;
+On Wed, 13 Sep 2023 13:47:11 +0200 you wrote:
+> We need to deny the attach_override test for arm64, denying the
+> whole kprobe_multi_test suite. Also making attach_override static.
+> 
+> Fixes: 7182e56411b9 ("selftests/bpf: Add kprobe_multi override test")
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/testing/selftests/bpf/DENYLIST.aarch64             | 9 +--------
+>  .../testing/selftests/bpf/prog_tests/kprobe_multi_test.c | 2 +-
+>  2 files changed, 2 insertions(+), 9 deletions(-)
+> 
+> [...]
+
+Here is the summary with links:
+  - [PATCHv2,bpf] selftests/bpf: Fix kprobe_multi_test/attach_override test
+    https://git.kernel.org/bpf/bpf/c/8a19edd4fa6f
+
+You are awesome, thank you!
 -- 
-2.42.0.283.g2d96d420d3-goog
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
