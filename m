@@ -1,66 +1,65 @@
-Return-Path: <bpf+bounces-9917-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9916-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A857879EB0E
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 16:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D25E179EB0D
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 16:27:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62BBB281DF0
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 14:28:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BD96281E5A
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 14:27:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F190F1F19B;
-	Wed, 13 Sep 2023 14:27:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EBF61F198;
+	Wed, 13 Sep 2023 14:27:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C419A1A713
-	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 14:27:31 +0000 (UTC)
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1751E9B
-	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 07:27:31 -0700 (PDT)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DCIc1c013522;
-	Wed, 13 Sep 2023 14:27:03 GMT
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28BF81A713
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 14:27:25 +0000 (UTC)
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A905A91
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 07:27:24 -0700 (PDT)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DDkKQg029022;
+	Wed, 13 Sep 2023 14:27:06 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2023-03-30;
- bh=3KihomYapQcqP+Th12kI6NGQkN3e3Afww//lf/Pd2o0=;
- b=hwozCNhqB5LaP8xudsbyhrWtPE8FeJ9Kv1tMimdFmMZ3TOal2KOml/phjZ3raK1C4Jhl
- S7SQrs3XNOG8ST//2CD91G04EaNUFIELhaCCyJonZIe6r8OlsiOkf55nCcN26PZ7gFqi
- VhUicghAR9TKJVvwZEribt+b3aiyssH0f+iWfMz9eTtkeaqjcUOb9q/FkRosGh05WZM3
- ia+9LbOcdkKSvdwGxAKpIyhpo3Oxi5GxXoBFZ0QUpjP5eNjgceTtJ14KegYdeDRCL+AE
- /W06/BjqYrkyfiou5uGt4DKvsWihLpkTPRgcgqvv+B6cMSgr+3628ecoTybUIMZC8GxP wg== 
+ bh=J5vD8ufc89HXLxAwnezExdB3cO6/gL7le2a1PZjDo1o=;
+ b=FhClDZnkWNrkwW6ZUSQbf/k9OMaTZpYxuPz22X8Xt51cE/uVffLFODgY58uhdaYRQyU7
+ 9gEVuUnasbI2KNToQ+hgE4n0DXvL6UZ3tbHo4Z3E1nbSonItKoBqM0AfBOaDXRZaqeVq
+ oR1+3t5VLbRvNa6tqre5GPzO+q2sGPNe4C3Q/e+0sOhyBlzHImNeSbLEhYowCL67CVk3
+ h1zC1xced4xSTa7KAm5wPTZ9A7oLeRFOgGMT3IqiSZ7VtIlUv9gjctG7o5yuA3SI4C+a
+ VSUFAQG5NrLTdYsZi8Ca42+EQ1u5ZPk/xVy5LPOJQywGIf8OLVBNFpFNioywvGqBKsny Vw== 
 Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t2y7kj5qm-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t2y7ka8kx-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 13 Sep 2023 14:27:02 +0000
+	Wed, 13 Sep 2023 14:27:06 +0000
 Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38DDOxDU014631;
-	Wed, 13 Sep 2023 14:27:01 GMT
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38DDlZoX014676;
+	Wed, 13 Sep 2023 14:27:05 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3t0f5dkhp2-1
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3t0f5dkhsp-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 13 Sep 2023 14:27:01 +0000
+	Wed, 13 Sep 2023 14:27:05 +0000
 Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38DENxAM005305;
-	Wed, 13 Sep 2023 14:27:00 GMT
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38DENxAO005305;
+	Wed, 13 Sep 2023 14:27:04 GMT
 Received: from bpf.uk.oracle.com (dhcp-10-175-188-149.vpn.oracle.com [10.175.188.149])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3t0f5dkhdj-3;
-	Wed, 13 Sep 2023 14:27:00 +0000
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3t0f5dkhdj-4;
+	Wed, 13 Sep 2023 14:27:04 +0000
 From: Alan Maguire <alan.maguire@oracle.com>
 To: acme@kernel.org
 Cc: andrii.nakryiko@gmail.com, ast@kernel.org, daniel@iogearbox.net,
         jolsa@kernel.org, eddyz87@gmail.com, martin.lau@linux.dev,
         song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
         kpsingh@kernel.org, sdf@google.com, haoluo@google.com, mykolal@fb.com,
-        bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
-        Jiri Olsa <olsajiri@gmail.com>
-Subject: [PATCH dwarves 2/3] pahole: add --skip_autodetect_btf_kind_max to disable kind autodetect
-Date: Wed, 13 Sep 2023 15:26:45 +0100
-Message-Id: <20230913142646.190047-3-alan.maguire@oracle.com>
+        bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH dwarves 3/3] btf_encoder: learn BTF_KIND_MAX value from base BTF when generating split BTF
+Date: Wed, 13 Sep 2023 15:26:46 +0100
+Message-Id: <20230913142646.190047-4-alan.maguire@oracle.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20230913142646.190047-1-alan.maguire@oracle.com>
 References: <20230913142646.190047-1-alan.maguire@oracle.com>
@@ -78,96 +77,84 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malw
  mlxlogscore=999 mlxscore=0 spamscore=0 adultscore=0 bulkscore=0
  suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2308100000 definitions=main-2309130118
-X-Proofpoint-GUID: 0cGs_kyOqREHENQRyiSF9GcBMEVIa7Od
-X-Proofpoint-ORIG-GUID: 0cGs_kyOqREHENQRyiSF9GcBMEVIa7Od
+X-Proofpoint-GUID: 6y8efBAXTje9WIYGuzMzwp43CiWg82UK
+X-Proofpoint-ORIG-GUID: 6y8efBAXTje9WIYGuzMzwp43CiWg82UK
 
-Autodetection of BTF kinds supported may not be wanted or may be
-broken at some point; it is prudent to provide a way to switch it
-off.
+When creating module BTF, the module likely will not have a DWARF
+specificiation of BTF_KIND_MAX, so look for it in the base BTF.  For
+vmlinux base BTF, the enumeration value is present, so the base BTF
+can be checked to limit BTF kind representation.
 
-Suggested-by: Jiri Olsa <olsajiri@gmail.com>
 Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 ---
- btf_encoder.c      | 3 ++-
- dwarves.h          | 1 +
- man-pages/pahole.1 | 4 ++++
- pahole.c           | 8 ++++++++
- 4 files changed, 15 insertions(+), 1 deletion(-)
+ btf_encoder.c | 24 ++++++++++++++++++++++++
+ btf_encoder.h |  2 ++
+ pahole.c      |  2 ++
+ 3 files changed, 28 insertions(+)
 
 diff --git a/btf_encoder.c b/btf_encoder.c
-index 98c7529..ad0158f 100644
+index ad0158f..6cb3df6 100644
 --- a/btf_encoder.c
 +++ b/btf_encoder.c
-@@ -1892,7 +1892,8 @@ struct btf *btf_encoder__btf(struct btf_encoder *encoder)
- 
- void dwarves__set_btf_kind_max(struct conf_load *conf_load, int btf_kind_max)
- {
--	if (btf_kind_max < 0 || btf_kind_max >= BTF_KIND_MAX)
-+	if (conf_load->skip_autodetect_btf_kind_max ||
-+	    btf_kind_max < 0 || btf_kind_max >= BTF_KIND_MAX)
- 		return;
- 	if (btf_kind_max < BTF_KIND_DECL_TAG)
- 		conf_load->skip_encoding_btf_decl_tag = true;
-diff --git a/dwarves.h b/dwarves.h
-index f4d9347..04a4c29 100644
---- a/dwarves.h
-+++ b/dwarves.h
-@@ -68,6 +68,7 @@ struct conf_load {
- 	bool			skip_encoding_btf_enum64;
- 	bool			btf_gen_optimized;
- 	bool			skip_encoding_btf_inconsistent_proto;
-+	bool			skip_autodetect_btf_kind_max;
- 	uint8_t			hashtable_bits;
- 	uint8_t			max_hashtable_bits;
- 	uint16_t		kabi_prefix_len;
-diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
-index c1b48de..523d4fd 100644
---- a/man-pages/pahole.1
-+++ b/man-pages/pahole.1
-@@ -233,6 +233,10 @@ Do not encode type tags in BTF.
- .B \-\-skip_encoding_btf_inconsistent_proto
- Do not encode functions with multiple inconsistent prototypes or unexpected register use for their parameters, where the registers used do not match calling conventions.
- 
-+.TP
-+.B \-\-skip_autodetect_btf_kind_max
-+Do not scan DWARF to find out which BTF kinds are supported by the underlying object.
+@@ -1902,3 +1902,27 @@ void dwarves__set_btf_kind_max(struct conf_load *conf_load, int btf_kind_max)
+ 	if (btf_kind_max < BTF_KIND_ENUM64)
+ 		conf_load->skip_encoding_btf_enum64 = true;
+ }
 +
- .TP
- .B \-j, \-\-jobs=N
- Run N jobs in parallel. Defaults to number of online processors + 10% (like
++void btf__set_btf_kind_max(struct conf_load *conf_load, struct btf *btf)
++{
++	__u32 id, type_cnt = btf__type_cnt(btf);
++
++	for (id = 1; id < type_cnt; id++) {
++		const struct btf_type *t = btf__type_by_id(btf, id);
++		const struct btf_enum *e;
++		__u16 vlen, i;
++
++		if (!t || !btf_is_enum(t))
++			continue;
++		vlen = btf_vlen(t);
++		e = btf_enum(t);
++		for (i = 0; i < vlen; e++, i++) {
++			const char *name = btf__name_by_offset(btf, e->name_off);
++
++			if (!name || strcmp(name, "BTF_KIND_MAX"))
++				continue;
++			dwarves__set_btf_kind_max(conf_load, e->val);
++			return;
++		}
++	}
++}
+diff --git a/btf_encoder.h b/btf_encoder.h
+index 34516bb..e5e12ef 100644
+--- a/btf_encoder.h
++++ b/btf_encoder.h
+@@ -27,4 +27,6 @@ struct btf *btf_encoder__btf(struct btf_encoder *encoder);
+ 
+ int btf_encoder__add_encoder(struct btf_encoder *encoder, struct btf_encoder *other);
+ 
++void btf__set_btf_kind_max(struct conf_load *conf_load, struct btf *btf);
++
+ #endif /* _BTF_ENCODER_H_ */
 diff --git a/pahole.c b/pahole.c
-index e843999..aca2704 100644
+index aca2704..4d6d059 100644
 --- a/pahole.c
 +++ b/pahole.c
-@@ -1232,6 +1232,7 @@ ARGP_PROGRAM_VERSION_HOOK_DEF = dwarves_print_version;
- #define ARGP_skip_emitting_atomic_typedefs 338
- #define ARGP_btf_gen_optimized  339
- #define ARGP_skip_encoding_btf_inconsistent_proto 340
-+#define ARGP_skip_autodetect_btf_kind_max 341
+@@ -3470,6 +3470,7 @@ int main(int argc, char *argv[])
+ 				base_btf_file, libbpf_get_error(conf_load.base_btf));
+ 			goto out;
+ 		}
++		btf__set_btf_kind_max(&conf_load, conf_load.base_btf);
+ 		if (!btf_encode && !ctf_encode) {
+ 			// Force "btf" since a btf_base is being informed
+ 			conf_load.format_path = "btf";
+@@ -3513,6 +3514,7 @@ try_sole_arg_as_class_names:
+ 					base_btf_file, libbpf_get_error(conf_load.base_btf));
+ 				goto out;
+ 			}
++			btf__set_btf_kind_max(&conf_load, conf_load.base_btf);
+ 		}
+ 	}
  
- static const struct argp_option pahole__options[] = {
- 	{
-@@ -1654,6 +1655,11 @@ static const struct argp_option pahole__options[] = {
- 		.key = ARGP_skip_encoding_btf_inconsistent_proto,
- 		.doc = "Skip functions that have multiple inconsistent function prototypes sharing the same name, or that use unexpected registers for parameter values."
- 	},
-+	{
-+		.name = "skip_autodetect_btf_kind_max",
-+		.key = ARGP_skip_autodetect_btf_kind_max,
-+		.doc = "Skip auto-detection of maximum BTF kind supported."
-+	},
- 	{
- 		.name = NULL,
- 	}
-@@ -1829,6 +1835,8 @@ static error_t pahole__options_parser(int key, char *arg,
- 		conf_load.btf_gen_optimized = true;		break;
- 	case ARGP_skip_encoding_btf_inconsistent_proto:
- 		conf_load.skip_encoding_btf_inconsistent_proto = true; break;
-+	case ARGP_skip_autodetect_btf_kind_max:
-+		conf_load.skip_autodetect_btf_kind_max = true;	break;
- 	default:
- 		return ARGP_ERR_UNKNOWN;
- 	}
 -- 
 2.39.3
 
