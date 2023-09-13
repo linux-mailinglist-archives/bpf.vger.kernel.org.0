@@ -1,163 +1,165 @@
-Return-Path: <bpf+bounces-9854-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9855-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6436E79DDF6
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 03:49:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A04779DEAB
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 05:35:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B97E1C20E6E
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 01:49:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FEFC1C20D09
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 03:34:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13C24396;
-	Wed, 13 Sep 2023 01:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C68CEDC;
+	Wed, 13 Sep 2023 03:34:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D14D8384
-	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 01:49:27 +0000 (UTC)
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA616B2
-	for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 18:49:26 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-501cef42bc9so10320839e87.0
-        for <bpf@vger.kernel.org>; Tue, 12 Sep 2023 18:49:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694569765; x=1695174565; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kqqZczQ5FB/PKTV0ke6RrJq1FMBCiNEbSD8ICMiDreA=;
-        b=frEBD4cQEeNnHTpCsrZmn//Onwi+rrQvaQcjHzkpGpWyyp840qclpJ8wNr9WXHTl2k
-         kLsJQ6BtNWzZxZzwIOROB9i0frk/ImfEWjLnHusI1i24/O/oDF51wLZdz6FGvSvTUqrN
-         Wd1e4+T+cy0ucU3C9UVvX82dDfH+VnbsMDZdesEDCzgKZBcAQtNxtA3/9/BjiYAxZVfr
-         unL6bdfT+Cu0mmSGKzeQ65+ELwnP++1xfcNXC2bVHlvwQW1dCVI+D75+bVFI7jL5iz0d
-         gG9DEWGeF4vSvoqAhM2GUXzOu7imQyaYh1g9rGK8Smo8V1Wh47k9Fnl6v0as9T6DIYbN
-         e7SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694569765; x=1695174565;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kqqZczQ5FB/PKTV0ke6RrJq1FMBCiNEbSD8ICMiDreA=;
-        b=shPtTlzBiH0pamI0yZeDjVHvX0/Wk17MvdffXhjd8QJYHqr+3Jxw6OmCsL4SwaXnvV
-         qaqadlbQhIAmfM1jo6ewKbtFlw9t3Bdv128yZpmr2nSf2/nETdqSkO7r5AqRIbe7P3Rk
-         YYw7zUgroJw2PwjOJcU6eutOzcdIGjdzBzk/5RkhrvtyQ5Y9QJxFK91Um1OxT8QZDv4N
-         VLn6or9vvyLKquQzPQ5JY6txilqhNqShYumdrYO1eJ4DNQV1nz+QfhGM5orI8DjnwlZj
-         KFeSxBPCPCOvDkC7FWrrh3M9RxfXNH7pBwpRPWl8R9mY6hMrYn+C/Dl4sXCizY/oKoMi
-         rKSA==
-X-Gm-Message-State: AOJu0YwARmkR5mR3mB/TvNn5B1a6haINEvPcGHmrt2L+X0/ZkXbDJ+l2
-	f55bYCDoT6Gi+9OwustQn4k9H1pRcqWXDLW8ZiE=
-X-Google-Smtp-Source: AGHT+IGacUHwSkxZGr6lt+NcVz6m4lp1xChWzJ0aP0bsdILioH5c/G/+/uERWNltTlNWXigL4p2kihjhDmHT7TUjfkw=
-X-Received: by 2002:a05:6512:2e3:b0:4fb:8ee0:b8a5 with SMTP id
- m3-20020a05651202e300b004fb8ee0b8a5mr684818lfq.46.1694569764669; Tue, 12 Sep
- 2023 18:49:24 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B893065A;
+	Wed, 13 Sep 2023 03:34:40 +0000 (UTC)
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C3A125;
+	Tue, 12 Sep 2023 20:34:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1694576077;
+	bh=Dy9uoHunOxBUhL2lOo0mUbBiUZ+oUaTiLsVFylkoPbQ=;
+	h=Date:From:To:Cc:Subject:From;
+	b=piMKBqFnBW2rxtAwIlETdgFgk4YpJiyl+QYOkTT0G/dJI/T3UhZdDyGkdJAwW/weu
+	 02h3SXWir6FmOKhdRVW0lZAkUo0euxAxm+75ztK4SAX4uRGxaVS8AJ06AW7xmX8Tr7
+	 zE9TogB9NWJpCRVfpVb7RLnVhhI2pzPJ/LYYMBcuLVAUEvE8ofnk+8h8LhLLkyMsV8
+	 pbbipfVxB/BQPAahm5bPHj48E50GFLByWUrPMv1kp5kacA1U33ya2OCn31j2CfK1jH
+	 7HHIuiozuMaaBVA5h94kQrarKnmTptIg2bkQ7lfxbkiQoZpdrzRQ0zxwFKObwjNURX
+	 PNQCKyCMOMkuQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4RlmKT42vdz4wxn;
+	Wed, 13 Sep 2023 13:34:37 +1000 (AEST)
+Date: Wed, 13 Sep 2023 13:34:36 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
+ <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, bpf
+ <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+Cc: Yonghong Song <yonghong.song@linux.dev>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: boot warning from the bpf-next tree
+Message-ID: <20230913133436.0eeec4cb@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230830011128.1415752-1-iii@linux.ibm.com> <20230830011128.1415752-2-iii@linux.ibm.com>
- <CANk7y0iNnOCZ_KmXBH_xJTG=BKzkDM_jZ+hc_NXcQbbZj-c33Q@mail.gmail.com>
- <mb61p5y4u3ptd.fsf@amazon.com> <CAADnVQ+u1hMBS3rm=meQaAgujHf6bOvONrwg6nYh1qWzVLVoAA@mail.gmail.com>
- <mb61p4jk630a9.fsf@amazon.com> <CAADnVQJCc6t82H+iFXvhs=mfg1DMxZ-1PS3DP5h7mtbuCW79qQ@mail.gmail.com>
- <mb61pv8cm0wf9.fsf@amazon.com> <CAADnVQ+ccoQrTcOZW_BZXMv2A+uYEYdHqx0tSVgXK31vGS=+gA@mail.gmail.com>
- <CANk7y0hK9sQJ-kRx3nQpVJSxpP=NzzFaLitOYq8=Pb6Dvk9fpg@mail.gmail.com>
- <CAADnVQ+EpYBTGMJ0MBdK8=qKrYseicxpA1AE+BmHu1CFoOPUvQ@mail.gmail.com> <CANk7y0g73bZpikgHtV1Z=c+1msE8vzZx9ZWHjJd_6FBFOEZNXQ@mail.gmail.com>
-In-Reply-To: <CANk7y0g73bZpikgHtV1Z=c+1msE8vzZx9ZWHjJd_6FBFOEZNXQ@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 12 Sep 2023 18:49:13 -0700
-Message-ID: <CAADnVQLJ-OG4GhYJ7K4BqoHT8hBBT2OHSkZErQZU2xTh02TiJA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 01/11] bpf: Disable zero-extension for BPF_MEMSX
-To: Puranjay Mohan <puranjay12@gmail.com>
-Cc: Ilya Leoshkevich <iii@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Johan Almbladh <johan.almbladh@anyfinetworks.com>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/2nhR/XrgbpD/A2lo9BdBFyW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/2nhR/XrgbpD/A2lo9BdBFyW
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 12, 2023 at 5:22=E2=80=AFPM Puranjay Mohan <puranjay12@gmail.co=
-m> wrote:
->
-> On Wed, Sep 13, 2023 at 2:09=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Sep 12, 2023 at 3:49=E2=80=AFPM Puranjay Mohan <puranjay12@gmai=
-l.com> wrote:
-> > >
-> > > Hi Alexei,
-> > >
-> > > [...]
-> > >
-> > > > I guess we never clearly defined what 'needs_zext' is supposed to b=
-e,
-> > > > so it wouldn't be fair to call 32-bit JITs buggy.
-> > > > But we better address this issue now.
-> > > > This 32-bit zeroing after LDX hurts mips64, s390, ppc64, riscv64.
-> > > > I believe all 4 JITs emit proper zero extension into 64-bit registe=
-r
-> > > > by using single cpu instruction,
-> > > > but they also define bpf_jit_needs_zext() as true,
-> > > > so extra BPF_ZEXT_REG() is added by the verifier
-> > > > and it is a pure run-time overhead.
-> > >
-> > > I just realised that these zext instructions will not be a runtime
-> > > overhead because the JITs ignore them.
-> > > Like
-> > > s390 does:
-> > > case BPF_LDX | BPF_MEM | BPF_B: /* dst =3D *(u8 *)(ul) (src + off) */
-> > > case BPF_LDX | BPF_PROBE_MEM | BPF_B:
-> > >         /* llgc %dst,0(off,%src) */
-> > >         EMIT6_DISP_LH(0xe3000000, 0x0090, dst_reg, src_reg, REG_0, of=
-f);
-> > >         jit->seen |=3D SEEN_MEM;
-> > >         if (insn_is_zext(&insn[1]))
-> > >                 insn_count =3D 2; /* this will skip the next zext ins=
-truction */
-> > >         break;
-> > >
-> > > powerpc does after LDX:
-> > > if (size !=3D BPF_DW && insn_is_zext(&insn[i + 1]))
-> > >         addrs[++i] =3D ctx->idx * 4;
-> >
-> >
-> > I see. Indeed the 64-bit JITs ignore this special zext insn after LDX.
-> >
-> > > > It's better to remove
-> > > > if (t !=3D SRC_OP)
-> > > >     return BPF_SIZE(code) =3D=3D BPF_DW;
-> > > > from is_reg64() to avoid adding BPF_ZEXT_REG() insn
-> > > > and fix 32-bit JITs at the same time.
-> > > > RISCV32, PowerPC32, x86-32 JITs fixed in the first 3 patches
-> > > > to always zero upper 32-bit after LDX and
-> > > > then 4th patch to remove these two lines.
-> > >
-> > > I have sent the patches for above, although I think this optimization
-> > > is useful because
-> > > zero extension after LDX is only required when the loaded value is
-> > > later being used as
-> > > a 64-bit value. If it is not the case then the verifier will not emit
-> > > the zext and 32-bit JITs will emit
-> > > 1 less instruction because they expect the verifier to do the zext fo=
-r
-> > > them where required.
-> >
-> > You're correct.
-> > Ok. Let's keep zext for LDX as-is.
->
-> Yes,
-> let's do
->         if (class =3D=3D BPF_LDX) {
->                 if (t !=3D SRC_OP)
-> -                       return BPF_SIZE(code) =3D=3D BPF_DW;
-> +                       return (BPF_SIZE(code) =3D=3D BPF_DW ||
-> BPF_MODE(code) =3D=3D BPF_MEMSX);
+Hi all,
 
-Agree. imo that's a cleaner approach vs changing mark_insn_zext().
+Today's linux-next boot tests (powerpc pseries_le_defconfig) produced
+this warning:
+
+ ------------[ cut here ]------------
+ bpf_mem_cache[0]: unexpected object size 16, expect 96
+ WARNING: CPU: 0 PID: 1 at kernel/bpf/memalloc.c:500 bpf_mem_alloc_init+0x4=
+10/0x440
+ Modules linked in:
+ CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.6.0-rc1-04964-g2e08ed1d459f #1
+ Hardware name: IBM pSeries (emulated by qemu) POWER8 (raw) 0x4d0200 0xf000=
+004 of:SLOF,HEAD pSeries
+ NIP:  c0000000003c0890 LR: c0000000003c088c CTR: 0000000000000000
+ REGS: c000000004783890 TRAP: 0700   Not tainted  (6.6.0-rc1-04964-g2e08ed1=
+d459f)
+ MSR:  8000000002029033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 24000280  XER: 0000=
+0000
+ CFAR: c00000000014cfa0 IRQMASK: 0=20
+ GPR00: c0000000003c088c c000000004783b30 c000000001578c00 0000000000000036=
+=20
+ GPR04: 0000000000000000 c000000002667e18 0000000000000001 0000000000000000=
+=20
+ GPR08: c000000002667ce0 0000000000000001 0000000000000000 0000000044000280=
+=20
+ GPR12: 0000000000000000 c000000002b00000 c000000000011188 0000000000000060=
+=20
+ GPR16: c0000000011f9a30 c000000002920f68 c0000000021fac40 c0000000021fac40=
+=20
+ GPR20: c000000002a3ed88 c000000002921560 c0000000014867f0 c00000000291ccd8=
+=20
+ GPR24: 0000000000000000 0000000000000000 0000000000000000 0000000000000010=
+=20
+ GPR28: c0000000011f9a30 0000000000000000 000000000000000b c00000007fc9ac40=
+=20
+ NIP [c0000000003c0890] bpf_mem_alloc_init+0x410/0x440
+ LR [c0000000003c088c] bpf_mem_alloc_init+0x40c/0x440
+ Call Trace:
+ [c000000004783b30] [c0000000003c088c] bpf_mem_alloc_init+0x40c/0x440 (unre=
+liable)
+ [c000000004783c20] [c00000000203d0c0] bpf_global_ma_init+0x5c/0x9c
+ [c000000004783c50] [c000000000010bc0] do_one_initcall+0x80/0x300
+ [c000000004783d20] [c000000002004978] kernel_init_freeable+0x30c/0x3b4
+ [c000000004783df0] [c0000000000111b0] kernel_init+0x30/0x1a0
+ [c000000004783e50] [c00000000000debc] ret_from_kernel_user_thread+0x14/0x1c
+ --- interrupt: 0 at 0x0
+ NIP:  0000000000000000 LR: 0000000000000000 CTR: 0000000000000000
+ REGS: c000000004783e80 TRAP: 0000   Not tainted  (6.6.0-rc1-04964-g2e08ed1=
+d459f)
+ MSR:  0000000000000000 <>  CR: 00000000  XER: 00000000
+ CFAR: 0000000000000000 IRQMASK: 0=20
+ GPR00: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
+=20
+ GPR04: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
+=20
+ GPR08: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
+=20
+ GPR12: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
+=20
+ GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
+=20
+ GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
+=20
+ GPR24: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
+=20
+ GPR28: 0000000000000000 0000000000000000 0000000000000000 0000000000000000=
+=20
+ NIP [0000000000000000] 0x0
+ LR [0000000000000000] 0x0
+ --- interrupt: 0
+ Code: 3b000000 4bfffcbc 78650020 3c62ffe7 39200001 3d420130 7cc607b4 7ba40=
+020 386382f0 992a1e24 4bd8c631 60000000 <0fe00000> 4bffff40 ea410080 3860ff=
+f4=20
+ ---[ end trace 0000000000000000 ]---
+
+Presumably related to commit
+
+  41a5db8d8161 ("bpf: Add support for non-fix-size percpu mem allocation")
+
+(or other commist in that series) from the bpf-next tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/2nhR/XrgbpD/A2lo9BdBFyW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUBLcwACgkQAVBC80lX
+0GwoWAf/WS/cy+zGeUOhFGGy4ClkfDlQdz+7voGFOfLXmfowWgVau3QTv3+XXr5c
+B8uLvoxuS0EJfcZw5/4l2qPnYcl3UyTXTfRAOdVpZlGz2FZIhPGzizrcg5FdPCxc
+0PeDPG8sVklwVOFfQ8N+ZN/9xhWbV5lTt3miYo2wtMaWPSTRxl7/2l9dpvr8wVSR
+zePaC6s2dGTIrzSZ0mqbd7fEjyUmt3fcRC16bh3WdRYk6cwBqPfQt9Gmbl61/lna
+x8n62LU7WpcYEQIHU6ZM0E2STDabPmK9MAX9UFem9lxzIu3XFlQuUNQvlhsEl7J+
+QJIa2LvwFF0jZYbHSfBTo0oLsx3dcA==
+=HIPp
+-----END PGP SIGNATURE-----
+
+--Sig_/2nhR/XrgbpD/A2lo9BdBFyW--
 
