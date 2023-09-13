@@ -1,86 +1,141 @@
-Return-Path: <bpf+bounces-9957-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9958-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A5D979F164
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 20:50:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0714579F233
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 21:37:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7B33281943
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 18:50:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D679D1C209A8
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 19:36:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0EFEEB8;
-	Wed, 13 Sep 2023 18:50:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FBBC1DA32;
+	Wed, 13 Sep 2023 19:36:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2830F813
-	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 18:50:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A0A10C433C9;
-	Wed, 13 Sep 2023 18:50:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694631024;
-	bh=pjoRbTgCErKCAtk79jBqizoxI2iDbOKmaX4F49GHq/Q=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=jt3jW+1sdMhbiDQIk2sSW5iURsZaobSWnK+X2tsDSjQ6pfd/NVTxcZrGuk0y89KtA
-	 ySuWDt+x3jLI/Fg5gejzutbOHX3XilO5/ClQRpXx9GpAcUkRDwXytcXTDUBGosMrb5
-	 t2aoNgkVPx5a55ZPylR+LPAqrVPcrJOPDRDwZ/A4YRYyeJAcXgxoRyx0l7cjkb4z/5
-	 jIIoILnreeqK/hA5zC00r0rSEyhfwaVCXDEY0CJzMwvK17sE4ZdVZmgl5TxjyxSx6u
-	 F2ujBZEug+kuUUT66je32AXDfatJ5bJ0d/w0cEZBC8WGKraX+3DkFszPuLyrwyid/f
-	 nwZPoXgHiL+7w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8321EE1C290;
-	Wed, 13 Sep 2023 18:50:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A3EB33D4
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 19:36:36 +0000 (UTC)
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D213B7
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 12:36:36 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-34f17290a9cso251445ab.1
+        for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 12:36:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1694633795; x=1695238595; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=600gHmPTU+Trd8NzTTpGSeg9Z9knkVYO4N8Fmwu8qxw=;
+        b=GmXeNZItd0tblgxPYbW4mYF7KRlghXHUXTf12uNOu1EDYoeV1HzaHmUIxYqkxC06W4
+         givmVINMTqiHvdBacoZK9T4sPbmrW20FmqC6tTKacGdZeExDTlbAc5L/r4H/nNoJNhwx
+         UfBQZ6ED9Ufmumm+GdT1rcW4bjrIOMeY+Oq1kOrIXHsltTibFVeTeAEkFrAWgNNUHZeJ
+         /obABc2rO4fMP10hMbnqTmISB4YtV8yxQom2qt/JAstogPTi2f0c0u5TRbdUTqjhNOPP
+         +6bsxucqGz2FfzM0p2s7Ycsnd+IW6/9TaqMR3UxSoNQQeMonVCGey/B47vydDIiUzydE
+         77IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694633795; x=1695238595;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=600gHmPTU+Trd8NzTTpGSeg9Z9knkVYO4N8Fmwu8qxw=;
+        b=s7mtV/8w1zL0qkAwQNSN7Aj4GywF9K2PxZVrM6w04lycuPbv1J+dCqCcwpT1r5kOpS
+         q7AGg0hzoSk/gmlWynFEBIEMPtgKkgS8Tg4YgrV7z/syKKUBlr1RBzGiheyecZYZwumW
+         HH1/g4y7Y8BKlvr8Th3YLhGykabjNFtr2Qhut40HNTz30HLWUjESKVkqdlVKd8nAeWsc
+         Igi3EZJed8x2Ku5uCTkwi0cMEjVGAa3XyNNqMNc4RkXDODpeEWmwJI3prEwbpXTby1x0
+         wAM4GVM4EveJ8BSJQim+jWlE/iqxrJx5f8zj4skpy/HHjk+mCGUWhjBMzO7jynmDLiTV
+         TCHQ==
+X-Gm-Message-State: AOJu0YyRhpuPhoORL2/SafzKYI7GSiEsp0xE2gzL2fjrkDGbI5kAcjaY
+	FDmaxTT3PM6XOoxmK+ZPBTNrqQ==
+X-Google-Smtp-Source: AGHT+IGgRX/b5xTJitTFmH9tPbgOWBI8DW1+WaDRnd9O3BLjGFsQ1GF/JUHKQWRSykFB1nAj1cY/qA==
+X-Received: by 2002:a05:6602:488f:b0:792:8a08:1bf9 with SMTP id ee15-20020a056602488f00b007928a081bf9mr3529973iob.0.1694633795603;
+        Wed, 13 Sep 2023 12:36:35 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id o26-20020a02c6ba000000b00433f32f6e3dsm3659503jan.29.2023.09.13.12.36.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 12:36:34 -0700 (PDT)
+Message-ID: <d606f285-a31f-4b36-a7a9-bd913e1b0836@kernel.dk>
+Date: Wed, 13 Sep 2023 13:36:33 -0600
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCHv2 bpf] selftests/bpf: Fix kprobe_multi_test/attach_override
- test
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <169463102453.14252.1553643164526204933.git-patchwork-notify@kernel.org>
-Date: Wed, 13 Sep 2023 18:50:24 +0000
-References: <20230913114711.499829-1-jolsa@kernel.org>
-In-Reply-To: <20230913114711.499829-1-jolsa@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
- john.fastabend@gmail.com, kpsingh@chromium.org, sdf@google.com,
- haoluo@google.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 6/8] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
+Content-Language: en-US
+To: Breno Leitao <leitao@debian.org>, sdf@google.com, asml.silence@gmail.com,
+ willemdebruijn.kernel@gmail.com, kuba@kernel.org, pabeni@redhat.com,
+ martin.lau@linux.dev, krisman@suse.de
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, io-uring@vger.kernel.org
+References: <20230913152744.2333228-1-leitao@debian.org>
+ <20230913152744.2333228-7-leitao@debian.org>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20230913152744.2333228-7-leitao@debian.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This patch was applied to bpf/bpf.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Wed, 13 Sep 2023 13:47:11 +0200 you wrote:
-> We need to deny the attach_override test for arm64, denying the
-> whole kprobe_multi_test suite. Also making attach_override static.
+On 9/13/23 9:27 AM, Breno Leitao wrote:
+> Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
+> level is SOL_SOCKET. This is similar to the getsockopt(2) system
+> call, and both parameters are pointers to userspace.
 > 
-> Fixes: 7182e56411b9 ("selftests/bpf: Add kprobe_multi override test")
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/testing/selftests/bpf/DENYLIST.aarch64             | 9 +--------
->  .../testing/selftests/bpf/prog_tests/kprobe_multi_test.c | 2 +-
->  2 files changed, 2 insertions(+), 9 deletions(-)
-> 
-> [...]
+> Important to say that userspace needs to keep the pointer alive until
+> the CQE is completed.
 
-Here is the summary with links:
-  - [PATCHv2,bpf] selftests/bpf: Fix kprobe_multi_test/attach_override test
-    https://git.kernel.org/bpf/bpf/c/8a19edd4fa6f
+Since it's holding the data needed, this is true for any request that
+is writing data. IOW, this is not unusual and should be taken for
+granted. I think this may warrant a bit of rewording if the patch is
+respun, if not then just ignore it.
 
-You are awesome, thank you!
+> diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
+> index 5753c3611b74..a2a6ac0c503b 100644
+> --- a/io_uring/uring_cmd.c
+> +++ b/io_uring/uring_cmd.c
+> @@ -167,6 +167,19 @@ int io_uring_cmd_import_fixed(u64 ubuf, unsigned long len, int rw,
+>  }
+>  EXPORT_SYMBOL_GPL(io_uring_cmd_import_fixed);
+>  
+> +static inline int io_uring_cmd_getsockopt(struct socket *sock,
+> +					  struct io_uring_cmd *cmd,
+> +					  unsigned int issue_flags)
+> +{
+> +	void __user *optval = u64_to_user_ptr(READ_ONCE(cmd->sqe->optval));
+> +	int __user *optlen = u64_to_user_ptr(READ_ONCE(cmd->sqe->optlen));
+> +	bool compat = !!(issue_flags & IO_URING_F_COMPAT);
+> +	int optname = READ_ONCE(cmd->sqe->optname);
+> +	int level = READ_ONCE(cmd->sqe->level);
+> +
+> +	return do_sock_getsockopt(sock, compat, level, optname, optval, optlen);
+> +}
+
+Personal preference, but any other io_uring generally uses the format
+of:
+
+	bool compat = !!(issue_flags & IO_URING_F_COMPAT);
+	void __user *optval;
+	int __user *optlen;
+	int optname, level;
+
+	optval = u64_to_user_ptr(READ_ONCE(cmd->sqe->optval));
+	optlen = u64_to_user_ptr(READ_ONCE(cmd->sqe->optlen));
+	optname = READ_ONCE(cmd->sqe->optname);
+	level = READ_ONCE(cmd->sqe->level);
+
+	return do_sock_getsockopt(sock, compat, level, optname, optval, optlen);
+
+which I find a lot easier to read than bundling variable declarations
+and reading the values into them.
+
+And I always forget that cmd->sqe is a copy for URING_CMD, which makes
+this just look wrong as they should've been read at prep time rather
+than issue time. But it's fine!
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Jens Axboe
 
 
