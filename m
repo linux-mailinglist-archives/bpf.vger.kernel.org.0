@@ -1,266 +1,627 @@
-Return-Path: <bpf+bounces-9879-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9881-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7AB879E342
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 11:13:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBD5279E3DC
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 11:36:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C85C281F19
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 09:13:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90551281B1B
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 09:36:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D926E1DDD0;
-	Wed, 13 Sep 2023 09:13:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18B5E1DDDF;
+	Wed, 13 Sep 2023 09:36:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F0CC1DDCB
-	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 09:13:10 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1062C1BC2;
-	Wed, 13 Sep 2023 02:13:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694596390; x=1726132390;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UI7Qbv2ISxSWzVTtCLjJhlZfMYW9yi+U3VgE2/7eP5M=;
-  b=h+iqKoyfahZv56xDh7FKJYwrqjdPzGCjclznRNWlnsSK9oBlxG5nkGC3
-   RGWvntAC7/9P4xdrT0VkE7f9BFtmJLV/NYWQKOnm9SAuhj+z8W8EAAa2u
-   kkIhjgvT4GcBkhDmbt5vdeubrF/MN8m5Cy6unWshh42Qi6ofNPf51rN1g
-   LMitPhDCv1KQZbhEAK89j87YxRgFY+upYxWnmfgiVgbcOd7vJ1GP9R4Vi
-   sB8fMAxUueiliaKRn1XCFOYU+YhpZUnTemFIxVzWfyHwag7afGkQYve/r
-   rqBlkPm/WAPUWuXX7E/sRiODGxvK78ue/JtEihkK06ZK0KQTFdHPBcakW
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="445046171"
-X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="445046171"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 02:13:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="693786102"
-X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="693786102"
-Received: from lkp-server02.sh.intel.com (HELO cf13c67269a2) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 13 Sep 2023 02:13:06 -0700
-Received: from kbuild by cf13c67269a2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qgLvk-0000K1-13;
-	Wed, 13 Sep 2023 09:13:04 +0000
-Date: Wed, 13 Sep 2023 17:13:00 +0800
-From: kernel test robot <lkp@intel.com>
-To: Chuyi Zhou <zhouchuyi@bytedance.com>, bpf@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	tj@kernel.org, linux-kernel@vger.kernel.org,
-	Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: Re: [PATCH bpf-next v2 4/6] bpf: Introduce css_descendant open-coded
- iterator kfuncs
-Message-ID: <202309131634.hJlxw7NA-lkp@intel.com>
-References: <20230912070149.969939-5-zhouchuyi@bytedance.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B664410F5
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 09:36:26 +0000 (UTC)
+X-Greylist: delayed 500 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 Sep 2023 02:36:25 PDT
+Received: from mail-m49206.qiye.163.com (mail-m49206.qiye.163.com [45.254.49.206])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C964196;
+	Wed, 13 Sep 2023 02:36:24 -0700 (PDT)
+Received: from [10.128.10.193] (unknown [123.120.52.233])
+	by mail-m12739.qiye.163.com (Hmail) with ESMTPA id 2C67A4A033D;
+	Wed, 13 Sep 2023 17:27:28 +0800 (CST)
+Message-ID: <f365a5b0-bf44-4c60-8214-5b66112cb42a@sangfor.com.cn>
+Date: Wed, 13 Sep 2023 17:27:24 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912070149.969939-5-zhouchuyi@bytedance.com>
+User-Agent: Mozilla Thunderbird
+From: pengdonglin <pengdonglin@sangfor.com.cn>
+Subject: Re: [RFC PATCH v2] bpf: Using binary search to improve the
+ performance of btf_find_by_name_kind
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: martin.lau@linux.dev, ast@kernel.org, song@kernel.org, yhs@fb.com,
+ rostedt@goodmis.org, dinghui@sangfor.com.cn, huangcun@sangfor.com.cn,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230909091646.420163-1-pengdonglin@sangfor.com.cn>
+ <20230909212933.1552f2842b06e50525a4daef@kernel.org>
+ <33d64375-d672-49a8-bbc8-c31a67595403@sangfor.com.cn>
+ <4c20dc33-8d10-45f3-a1f7-d8a872aaf5bd@sangfor.com.cn>
+ <20230913170758.56098cb2d2eb2e9f4b17bf00@kernel.org>
+In-Reply-To: <20230913170758.56098cb2d2eb2e9f4b17bf00@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCTEoeVkhJT05LGB9LTEkfS1UTARMWGhIXJBQOD1
+	lXWRgSC1lBWUpJSFVKSUtVTklVSUhIWVdZFhoPEhUdFFlBWU9LSFVKSEpOTUlVSktLVUtZBg++
+X-HM-Tid: 0a8a8dddf69fb212kuuu2c67a4a033d
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pk06Qzo4Lj1KFQ8OT1E1LTgp
+	TxkaFANVSlVKTUJPTkJMSU9CTkpIVTMWGhIXVQseFRwfFBUcFxIVOwgaFRwdFAlVGBQWVRgVRVlX
+	WRILWUFZSklIVUpJS1VOSVVJSEhZV1kIAVlBSUlMSEs3Bg++
 
-Hi Chuyi,
+On 2023/9/13 16:07, Masami Hiramatsu (Google) wrote:
+> On Tue, 12 Sep 2023 11:35:16 +0800
+> pengdonglin <pengdonglin@sangfor.com.cn> wrote:
+> 
+>> On 2023/9/12 10:06, pengdonglin wrote:
+>>> 在 2023/9/9 20:29, Masami Hiramatsu (Google) 写道:
+>>>> On Sat,  9 Sep 2023 02:16:46 -0700
+>>>> Donglin Peng <pengdonglin@sangfor.com.cn> wrote:
+>>>>
+>>>>> Currently, we are only using the linear search method to find the
+>>>>> type id
+>>>>> by the name, which has a time complexity of O(n). This change involves
+>>>>> sorting the names of btf types in ascending order and using binary
+>>>>> search,
+>>>>> which has a time complexity of O(log(n)). This idea was inspired by the
+>>>>> following patch:
+>>>>>
+>>>>> 60443c88f3a8 ("kallsyms: Improve the performance of
+>>>>> kallsyms_lookup_name()").
+>>>>>
+>>>>> At present, this improvement is only for searching in vmlinux's and
+>>>>> module's BTFs, and the kind should only be BTF_KIND_FUNC or
+>>>>> BTF_KIND_STRUCT.
+>>>>>
+>>>>> Another change is the search direction, where we search the BTF first
+>>>>> and
+>>>>> then its base, the type id of the first matched btf_type will be
+>>>>> returned.
+>>>>>
+>>>>> Here is a time-consuming result that finding all the type ids of
+>>>>> 67,819 kernel
+>>>>> functions in vmlinux's BTF by their names:
+>>>>>
+>>>>> Before: 17000 ms
+>>>>> After:     10 ms
+>>>>
+>>>> Nice work!
+>>>
+>>> Thank you
+>>>
+>>>>
+>>>>>
+>>>>> The average lookup performance has improved about 1700x at the above
+>>>>> scenario.
+>>>>>
+>>>>> However, this change will consume more memory, for example, 67,819
+>>>>> kernel
+>>>>> functions will allocate about 530KB memory.
+>>>>
+>>>> I'm not so familier with how the BTF is generated, what about making this
+>>>> list offline? Since BTF is static data, it is better to make the map when
+>>>
+>>> The BTF is generated by pahole during the building of the kernel or
+>>> modules.
+>>> Pahole is maintained in the project https://github.com/acmel/dwarves.
+>>> The log
+>>> printed by scripts/link-vmlinux.sh when generating BTF for vmlinux is as
+>>> follows:
+>>>
+>>> LLVM_OBJCOPY=objcopy pahole -J --skip_encoding_btf_vars --btf_gen_floats
+>>> .tmp_vmlinux.btf
+>>>
+>>> If making the list offline, the pahole needs to be modified or a new tool
+>>> needs to be written and maintained in the kernel tree. Therefore, it may
+>>> be simpler to make the list at runtime.
+> 
+> Hmm, I'm not convinced, since this push the sorting cost to the kernel
+> boot process. To reduce the kernel boot time we need to drop this improvement.
+> But if pahole just sort it offline, in any case we can use this.
 
-kernel test robot noticed the following build errors:
+Thank you, I agree. In a separate thread, Eduard and Alexei also proposed
+modifying the pahole. I will analyze the pahole and conduct a test.
 
-[auto build test ERROR on bpf-next/master]
+> 
+>>>
+>>>> it is built. And I also would like to suggest to make a new map to make
+>>>> another new map which maps the BTF ID and the address of the function, so
+>>>> that we can do binary search the BTF object from the function address.
+>>>> (The latter map should be built when CONFIG_BTF_ADDR_MAP=y)
+>>>
+>>> It has been observed that two or more functions may have the same address
+>>> but different IDs. For example:
+>>>
+>>>           ffffffff81218370 t __do_sys_getuid16
+>>>           ffffffff81218370 T __ia32_sys_getuid16
+>>>           ffffffff81218370 T __x64_sys_getuid16
+>>>
+>>>           {
+>>>               "id": 27911,
+>>>               "kind": "FUNC",
+>>>               "name": "__do_sys_getuid16",
+>>>               "type_id": 4455,
+>>>               "linkage": "static"
+>>>           },{
+>>>               "id": 20303,
+>>>               "kind": "FUNC",
+>>>               "name": "__ia32_sys_getuid16",
+>>>               "type_id": 4455,
+>>>               "linkage": "static"
+>>>           },{
+>>>               "id": 20304,
+>>>               "kind": "FUNC",
+>>>               "name": "__x64_sys_getuid16",
+>>>               "type_id": 4455,
+>>>               "linkage": "static"
+>>>           },
+>>>
+>>> It may be a issue to return which id. However, if only the FUNC_PROTO is
+>>> of concern, any one of them can be returned.
+> 
+> In this case, since those have same type_id, returning either one is
+> good enough. Since those have same address, we can not identify even
+> if we use kallsyms ;)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Chuyi-Zhou/cgroup-Prepare-for-using-css_task_iter_-in-BPF/20230912-150454
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20230912070149.969939-5-zhouchuyi%40bytedance.com
-patch subject: [PATCH bpf-next v2 4/6] bpf: Introduce css_descendant open-coded iterator kfuncs
-config: arm-randconfig-r032-20230913 (https://download.01.org/0day-ci/archive/20230913/202309131634.hJlxw7NA-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309131634.hJlxw7NA-lkp@intel.com/reproduce)
+Yeah.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309131634.hJlxw7NA-lkp@intel.com/
+> 
+>>>
+>>> It may not be necessary to create a new list for function addresses because
+>>>    the id_name map can be reused for this purpose. Here is an idea:
+>>>
+>>> 1. Use the function address to get the name by calling the function
+>>>    sprint_symbol_no_offset.
+>>>
+>>> 2. Then call the function btf_find_by_name_kind to get the BTF ID.
+>>>
+>>> Both sprint_symbol_no_offset and btf_find_by_name_kind use binary search.
+>>>
+>>
+>> Here is a time-consuming test to compare two methods for finding all the
+>> IDs of 67,823 kernel function by their addresses:
+>>
+>> 1. Using a new map for function addresses took 4 ms.
+>>
+>> 2. Using sprint_symbol_no_offset + btf_find_by_name_kind took 38 ms.
+>>
+>> However, the former method requires more memory. For example, if we use
+>> the following structure to hold the function address and the BTF ID:
+>>
+>> struct btf_id_func {
+>> 	void *addr;
+>> 	int id;
+>> };
+>>
+>> We would need to allocate 1059K (67823 * 16) of memory.
+> 
+> OK, then it can be optional. Anyway, currently only kprobe event will
+> need it but in the cold path.
 
-All errors (new ones prefixed by >>):
+Yeah, it appears that we need to utilize method 2 or explore alternateive
+approaches.
 
-   kernel/bpf/task_iter.c:810:17: warning: no previous prototype for function 'bpf_iter_css_task_new' [-Wmissing-prototypes]
-     810 | __bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
-         |                 ^
-   kernel/bpf/task_iter.c:810:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     810 | __bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:835:33: warning: no previous prototype for function 'bpf_iter_css_task_next' [-Wmissing-prototypes]
-     835 | __bpf_kfunc struct task_struct *bpf_iter_css_task_next(struct bpf_iter_css_task *it)
-         |                                 ^
-   kernel/bpf/task_iter.c:835:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     835 | __bpf_kfunc struct task_struct *bpf_iter_css_task_next(struct bpf_iter_css_task *it)
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:844:18: warning: no previous prototype for function 'bpf_iter_css_task_destroy' [-Wmissing-prototypes]
-     844 | __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
-         |                  ^
-   kernel/bpf/task_iter.c:844:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     844 | __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:858:17: warning: no previous prototype for function 'bpf_iter_process_new' [-Wmissing-prototypes]
-     858 | __bpf_kfunc int bpf_iter_process_new(struct bpf_iter_process *it)
-         |                 ^
-   kernel/bpf/task_iter.c:858:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     858 | __bpf_kfunc int bpf_iter_process_new(struct bpf_iter_process *it)
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:870:33: warning: no previous prototype for function 'bpf_iter_process_next' [-Wmissing-prototypes]
-     870 | __bpf_kfunc struct task_struct *bpf_iter_process_next(struct bpf_iter_process *it)
-         |                                 ^
-   kernel/bpf/task_iter.c:870:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     870 | __bpf_kfunc struct task_struct *bpf_iter_process_next(struct bpf_iter_process *it)
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:879:18: warning: no previous prototype for function 'bpf_iter_process_destroy' [-Wmissing-prototypes]
-     879 | __bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process *it)
-         |                  ^
-   kernel/bpf/task_iter.c:879:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     879 | __bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process *it)
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:888:17: warning: no previous prototype for function 'bpf_iter_css_pre_new' [-Wmissing-prototypes]
-     888 | __bpf_kfunc int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
-         |                 ^
-   kernel/bpf/task_iter.c:888:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     888 | __bpf_kfunc int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:900:41: warning: no previous prototype for function 'bpf_iter_css_pre_next' [-Wmissing-prototypes]
-     900 | __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_pre_next(struct bpf_iter_css_pre *it)
-         |                                         ^
-   kernel/bpf/task_iter.c:900:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     900 | __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_pre_next(struct bpf_iter_css_pre *it)
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:908:18: warning: no previous prototype for function 'bpf_iter_css_pre_destroy' [-Wmissing-prototypes]
-     908 | __bpf_kfunc void bpf_iter_css_pre_destroy(struct bpf_iter_css_pre *it)
-         |                  ^
-   kernel/bpf/task_iter.c:908:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     908 | __bpf_kfunc void bpf_iter_css_pre_destroy(struct bpf_iter_css_pre *it)
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:912:17: warning: no previous prototype for function 'bpf_iter_css_post_new' [-Wmissing-prototypes]
-     912 | __bpf_kfunc int bpf_iter_css_post_new(struct bpf_iter_css_post *it,
-         |                 ^
-   kernel/bpf/task_iter.c:912:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     912 | __bpf_kfunc int bpf_iter_css_post_new(struct bpf_iter_css_post *it,
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:924:41: warning: no previous prototype for function 'bpf_iter_css_post_next' [-Wmissing-prototypes]
-     924 | __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_post_next(struct bpf_iter_css_post *it)
-         |                                         ^
-   kernel/bpf/task_iter.c:924:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     924 | __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_post_next(struct bpf_iter_css_post *it)
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:932:18: warning: no previous prototype for function 'bpf_iter_css_post_destroy' [-Wmissing-prototypes]
-     932 | __bpf_kfunc void bpf_iter_css_post_destroy(struct bpf_iter_css_post *it)
-         |                  ^
-   kernel/bpf/task_iter.c:932:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     932 | __bpf_kfunc void bpf_iter_css_post_destroy(struct bpf_iter_css_post *it)
-         |             ^
-         |             static 
->> kernel/bpf/task_iter.c:893:2: error: call to '__compiletime_assert_389' declared with 'error' attribute: BUILD_BUG_ON failed: sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css_pre)
-     893 |         BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css_pre));
-         |         ^
-   include/linux/build_bug.h:50:2: note: expanded from macro 'BUILD_BUG_ON'
-      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-         |         ^
-   include/linux/build_bug.h:39:37: note: expanded from macro 'BUILD_BUG_ON_MSG'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^
-   include/linux/compiler_types.h:425:2: note: expanded from macro 'compiletime_assert'
-     425 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^
-   include/linux/compiler_types.h:413:2: note: expanded from macro '_compiletime_assert'
-     413 |         __compiletime_assert(condition, msg, prefix, suffix)
-         |         ^
-   include/linux/compiler_types.h:406:4: note: expanded from macro '__compiletime_assert'
-     406 |                         prefix ## suffix();                             \
-         |                         ^
-   <scratch space>:6:1: note: expanded from here
-       6 | __compiletime_assert_389
-         | ^
->> kernel/bpf/task_iter.c:917:2: error: call to '__compiletime_assert_391' declared with 'error' attribute: BUILD_BUG_ON failed: sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css_post)
-     917 |         BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css_post));
-         |         ^
-   include/linux/build_bug.h:50:2: note: expanded from macro 'BUILD_BUG_ON'
-      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-         |         ^
-   include/linux/build_bug.h:39:37: note: expanded from macro 'BUILD_BUG_ON_MSG'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^
-   include/linux/compiler_types.h:425:2: note: expanded from macro 'compiletime_assert'
-     425 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^
-   include/linux/compiler_types.h:413:2: note: expanded from macro '_compiletime_assert'
-     413 |         __compiletime_assert(condition, msg, prefix, suffix)
-         |         ^
-   include/linux/compiler_types.h:406:4: note: expanded from macro '__compiletime_assert'
-     406 |                         prefix ## suffix();                             \
-         |                         ^
-   <scratch space>:14:1: note: expanded from here
-      14 | __compiletime_assert_391
-         | ^
-   12 warnings and 2 errors generated.
+> 
+> Thank you,
+> 
+>>
+>>>>
+>>>> Thank you,
+>>>>
+>>>>>
+>>>>> Signed-off-by: Donglin Peng <pengdonglin@sangfor.com.cn>
+>>>>> ---
+>>>>> Changes in RFC v2:
+>>>>>    - Fix the build issue reported by kernel test robot <lkp@intel.com>
+>>>>> ---
+>>>>>    include/linux/btf.h |   1 +
+>>>>>    kernel/bpf/btf.c    | 300 ++++++++++++++++++++++++++++++++++++++++++--
+>>>>>    2 files changed, 291 insertions(+), 10 deletions(-)
+>>>>>
+>>>>> diff --git a/include/linux/btf.h b/include/linux/btf.h
+>>>>> index cac9f304e27a..6260a0668773 100644
+>>>>> --- a/include/linux/btf.h
+>>>>> +++ b/include/linux/btf.h
+>>>>> @@ -201,6 +201,7 @@ bool btf_is_kernel(const struct btf *btf);
+>>>>>    bool btf_is_module(const struct btf *btf);
+>>>>>    struct module *btf_try_get_module(const struct btf *btf);
+>>>>>    u32 btf_nr_types(const struct btf *btf);
+>>>>> +u32 btf_type_cnt(const struct btf *btf);
+>>>>>    bool btf_member_is_reg_int(const struct btf *btf, const struct
+>>>>> btf_type *s,
+>>>>>                   const struct btf_member *m,
+>>>>>                   u32 expected_offset, u32 expected_size);
+>>>>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+>>>>> index 817204d53372..51aa9f27853b 100644
+>>>>> --- a/kernel/bpf/btf.c
+>>>>> +++ b/kernel/bpf/btf.c
+>>>>> @@ -240,6 +240,26 @@ struct btf_id_dtor_kfunc_tab {
+>>>>>        struct btf_id_dtor_kfunc dtors[];
+>>>>>    };
+>>>>> +enum {
+>>>>> +    BTF_ID_NAME_FUNC,    /* function */
+>>>>> +    BTF_ID_NAME_STRUCT,    /* struct */
+>>>>> +    BTF_ID_NAME_MAX
+>>>>> +};
+>>>>> +
+>>>>> +struct btf_id_name {
+>>>>> +    int id;
+>>>>> +    u32 name_off;
+>>>>> +};
+>>>>> +
+>>>>> +struct btf_id_name_map {
+>>>>> +    struct btf_id_name *id_name;
+>>>>> +    u32 count;
+>>>>> +};
+>>>>> +
+>>>>> +struct btf_id_name_maps {
+>>>>> +    struct btf_id_name_map map[BTF_ID_NAME_MAX];
+>>>>> +};
+>>>>> +
+>>>>>    struct btf {
+>>>>>        void *data;
+>>>>>        struct btf_type **types;
+>>>>> @@ -257,6 +277,7 @@ struct btf {
+>>>>>        struct btf_kfunc_set_tab *kfunc_set_tab;
+>>>>>        struct btf_id_dtor_kfunc_tab *dtor_kfunc_tab;
+>>>>>        struct btf_struct_metas *struct_meta_tab;
+>>>>> +    struct btf_id_name_maps *id_name_maps;
+>>>>>        /* split BTF support */
+>>>>>        struct btf *base_btf;
+>>>>> @@ -532,22 +553,142 @@ u32 btf_nr_types(const struct btf *btf)
+>>>>>        return total;
+>>>>>    }
+>>>>> +u32 btf_type_cnt(const struct btf *btf)
+>>>>> +{
+>>>>> +    return btf->start_id + btf->nr_types;
+>>>>> +}
+>>>>> +
+>>>>> +static inline u8 btf_id_name_idx_to_kind(int index)
+>>>>> +{
+>>>>> +    u8 kind;
+>>>>> +
+>>>>> +    switch (index) {
+>>>>> +    case BTF_ID_NAME_FUNC:
+>>>>> +        kind = BTF_KIND_FUNC;
+>>>>> +        break;
+>>>>> +    case BTF_ID_NAME_STRUCT:
+>>>>> +        kind = BTF_KIND_STRUCT;
+>>>>> +        break;
+>>>>> +    default:
+>>>>> +        kind = BTF_KIND_UNKN;
+>>>>> +        break;
+>>>>> +    }
+>>>>> +
+>>>>> +    return kind;
+>>>>> +}
+>>>>> +
+>>>>> +static inline int btf_id_name_kind_to_idx(u8 kind)
+>>>>> +{
+>>>>> +    int index;
+>>>>> +
+>>>>> +    switch (kind) {
+>>>>> +    case BTF_KIND_FUNC:
+>>>>> +        index = BTF_ID_NAME_FUNC;
+>>>>> +        break;
+>>>>> +    case BTF_KIND_STRUCT:
+>>>>> +        index = BTF_ID_NAME_STRUCT;
+>>>>> +        break;
+>>>>> +    default:
+>>>>> +        index = -1;
+>>>>> +        break;
+>>>>> +    }
+>>>>> +
+>>>>> +    return index;
+>>>>> +}
+>>>>> +
+>>>>> +static s32 btf_find_by_name_bsearch(struct btf_id_name *id_name,
+>>>>> +                    u32 size, const char *name,
+>>>>> +                    struct btf_id_name **start,
+>>>>> +                    struct btf_id_name **end,
+>>>>> +                    const struct btf *btf)
+>>>>> +{
+>>>>> +    int ret;
+>>>>> +    int low, mid, high;
+>>>>> +    const char *name_buf;
+>>>>> +
+>>>>> +    low = 0;
+>>>>> +    high = size - 1;
+>>>>> +
+>>>>> +    while (low <= high) {
+>>>>> +        mid = low + (high - low) / 2;
+>>>>> +        name_buf = btf_name_by_offset(btf, id_name[mid].name_off);
+>>>>> +        ret = strcmp(name, name_buf);
+>>>>> +        if (ret > 0)
+>>>>> +            low = mid + 1;
+>>>>> +        else if (ret < 0)
+>>>>> +            high = mid - 1;
+>>>>> +        else
+>>>>> +            break;
+>>>>> +    }
+>>>>> +
+>>>>> +    if (low > high)
+>>>>> +        return -ESRCH;
+>>>>> +
+>>>>> +    if (start) {
+>>>>> +        low = mid;
+>>>>> +        while (low) {
+>>>>> +            name_buf = btf_name_by_offset(btf,
+>>>>> id_name[low-1].name_off);
+>>>>> +            if (strcmp(name, name_buf))
+>>>>> +                break;
+>>>>> +            low--;
+>>>>> +        }
+>>>>> +        *start = &id_name[low];
+>>>>> +    }
+>>>>> +
+>>>>> +    if (end) {
+>>>>> +        high = mid;
+>>>>> +        while (high < size - 1) {
+>>>>> +            name_buf = btf_name_by_offset(btf,
+>>>>> id_name[high+1].name_off);
+>>>>> +            if (strcmp(name, name_buf))
+>>>>> +                break;
+>>>>> +            high++;
+>>>>> +        }
+>>>>> +        *end = &id_name[high];
+>>>>> +    }
+>>>>> +
+>>>>> +    return id_name[mid].id;
+>>>>> +}
+>>>>> +
+>>>>>    s32 btf_find_by_name_kind(const struct btf *btf, const char *name,
+>>>>> u8 kind)
+>>>>>    {
+>>>>> +    const struct btf_id_name_maps *maps;
+>>>>> +    const struct btf_id_name_map *map;
+>>>>> +    struct btf_id_name *start;
+>>>>>        const struct btf_type *t;
+>>>>>        const char *tname;
+>>>>> -    u32 i, total;
+>>>>> +    int index = btf_id_name_kind_to_idx(kind);
+>>>>> +    s32 id, total;
+>>>>> -    total = btf_nr_types(btf);
+>>>>> -    for (i = 1; i < total; i++) {
+>>>>> -        t = btf_type_by_id(btf, i);
+>>>>> -        if (BTF_INFO_KIND(t->info) != kind)
+>>>>> -            continue;
+>>>>> +    do {
+>>>>> +        maps = btf->id_name_maps;
+>>>>> +        if (index >= 0 && maps && maps->map[index].id_name) {
+>>>>> +            /* binary search */
+>>>>> +            map = &maps->map[index];
+>>>>> +            id = btf_find_by_name_bsearch(map->id_name,
+>>>>> +                map->count, name, &start, NULL, btf);
+>>>>> +            if (id > 0) {
+>>>>> +                /*
+>>>>> +                 * Return the first one that
+>>>>> +                 * matched
+>>>>> +                 */
+>>>>> +                return start->id;
+>>>>> +            }
+>>>>> +        } else {
+>>>>> +            /* linear search */
+>>>>> +            total = btf_type_cnt(btf);
+>>>>> +            for (id = btf->start_id; id < total; id++) {
+>>>>> +                t = btf_type_by_id(btf, id);
+>>>>> +                if (BTF_INFO_KIND(t->info) != kind)
+>>>>> +                    continue;
+>>>>> +
+>>>>> +                tname = btf_name_by_offset(btf, t->name_off);
+>>>>> +                if (!strcmp(tname, name))
+>>>>> +                    return id;
+>>>>> +            }
+>>>>> +        }
+>>>>> -        tname = btf_name_by_offset(btf, t->name_off);
+>>>>> -        if (!strcmp(tname, name))
+>>>>> -            return i;
+>>>>> -    }
+>>>>> +        btf = btf->base_btf;
+>>>>> +    } while (btf);
+>>>>>        return -ENOENT;
+>>>>>    }
+>>>>> @@ -1639,6 +1780,32 @@ static void btf_free_id(struct btf *btf)
+>>>>>        spin_unlock_irqrestore(&btf_idr_lock, flags);
+>>>>>    }
+>>>>> +static void btf_destroy_id_name(struct btf *btf, int index)
+>>>>> +{
+>>>>> +    struct btf_id_name_maps *maps = btf->id_name_maps;
+>>>>> +    struct btf_id_name_map *map = &maps->map[index];
+>>>>> +
+>>>>> +    if (map->id_name) {
+>>>>> +        kvfree(map->id_name);
+>>>>> +        map->id_name = NULL;
+>>>>> +        map->count = 0;
+>>>>> +    }
+>>>>> +}
+>>>>> +
+>>>>> +static void btf_destroy_id_name_map(struct btf *btf)
+>>>>> +{
+>>>>> +    int i;
+>>>>> +
+>>>>> +    if (!btf->id_name_maps)
+>>>>> +        return;
+>>>>> +
+>>>>> +    for (i = 0; i < BTF_ID_NAME_MAX; i++)
+>>>>> +        btf_destroy_id_name(btf, i);
+>>>>> +
+>>>>> +    kfree(btf->id_name_maps);
+>>>>> +    btf->id_name_maps = NULL;
+>>>>> +}
+>>>>> +
+>>>>>    static void btf_free_kfunc_set_tab(struct btf *btf)
+>>>>>    {
+>>>>>        struct btf_kfunc_set_tab *tab = btf->kfunc_set_tab;
+>>>>> @@ -1689,6 +1856,7 @@ static void btf_free_struct_meta_tab(struct btf
+>>>>> *btf)
+>>>>>    static void btf_free(struct btf *btf)
+>>>>>    {
+>>>>> +    btf_destroy_id_name_map(btf);
+>>>>>        btf_free_struct_meta_tab(btf);
+>>>>>        btf_free_dtor_kfunc_tab(btf);
+>>>>>        btf_free_kfunc_set_tab(btf);
+>>>>> @@ -5713,6 +5881,107 @@ int get_kern_ctx_btf_id(struct
+>>>>> bpf_verifier_log *log, enum bpf_prog_type prog_ty
+>>>>>        return kctx_type_id;
+>>>>>    }
+>>>>> +static int btf_compare_id_name(const void *a, const void *b, const
+>>>>> void *priv)
+>>>>> +{
+>>>>> +    const struct btf_id_name *ia = (const struct btf_id_name *)a;
+>>>>> +    const struct btf_id_name *ib = (const struct btf_id_name *)b;
+>>>>> +    const struct btf *btf = priv;
+>>>>> +    int ret;
+>>>>> +
+>>>>> +    /*
+>>>>> +     * Sort names in ascending order, if the name is same, sort ids in
+>>>>> +     * ascending order.
+>>>>> +     */
+>>>>> +    ret = strcmp(btf_name_by_offset(btf, ia->name_off),
+>>>>> +             btf_name_by_offset(btf, ib->name_off));
+>>>>> +    if (!ret)
+>>>>> +        ret = ia->id - ib->id;
+>>>>> +
+>>>>> +    return ret;
+>>>>> +}
+>>>>> +
+>>>>> +static int btf_create_id_name(struct btf *btf, int index)
+>>>>> +{
+>>>>> +    struct btf_id_name_maps *maps = btf->id_name_maps;
+>>>>> +    struct btf_id_name_map *map = &maps->map[index];
+>>>>> +    const struct btf_type *t;
+>>>>> +    struct btf_id_name *id_name;
+>>>>> +    const char *name;
+>>>>> +    int i, j = 0;
+>>>>> +    u32 total, count = 0;
+>>>>> +    u8 kind;
+>>>>> +
+>>>>> +    kind = btf_id_name_idx_to_kind(index);
+>>>>> +    if (kind == BTF_KIND_UNKN)
+>>>>> +        return -EINVAL;
+>>>>> +
+>>>>> +    if (map->id_name || map->count != 0)
+>>>>> +        return -EINVAL;
+>>>>> +
+>>>>> +    total = btf_type_cnt(btf);
+>>>>> +    for (i = btf->start_id; i < total; i++) {
+>>>>> +        t = btf_type_by_id(btf, i);
+>>>>> +        if (BTF_INFO_KIND(t->info) != kind)
+>>>>> +            continue;
+>>>>> +        name = btf_name_by_offset(btf, t->name_off);
+>>>>> +        if (str_is_empty(name))
+>>>>> +            continue;
+>>>>> +        count++;
+>>>>> +    }
+>>>>> +
+>>>>> +    if (count == 0)
+>>>>> +        return 0;
+>>>>> +
+>>>>> +    id_name = kvcalloc(count, sizeof(struct btf_id_name),
+>>>>> +               GFP_KERNEL);
+>>>>> +    if (!id_name)
+>>>>> +        return -ENOMEM;
+>>>>> +
+>>>>> +    for (i = btf->start_id; i < total; i++) {
+>>>>> +        t = btf_type_by_id(btf, i);
+>>>>> +        if (BTF_INFO_KIND(t->info) != kind)
+>>>>> +            continue;
+>>>>> +        name = btf_name_by_offset(btf, t->name_off);
+>>>>> +        if (str_is_empty(name))
+>>>>> +            continue;
+>>>>> +
+>>>>> +        id_name[j].id = i;
+>>>>> +        id_name[j].name_off = t->name_off;
+>>>>> +        j++;
+>>>>> +    }
+>>>>> +
+>>>>> +    sort_r(id_name, count, sizeof(id_name[0]), btf_compare_id_name,
+>>>>> +           NULL, btf);
+>>>>> +
+>>>>> +    map->id_name = id_name;
+>>>>> +    map->count = count;
+>>>>> +
+>>>>> +    return 0;
+>>>>> +}
+>>>>> +
+>>>>> +static int btf_create_id_name_map(struct btf *btf)
+>>>>> +{
+>>>>> +    int err, i;
+>>>>> +    struct btf_id_name_maps *maps;
+>>>>> +
+>>>>> +    if (btf->id_name_maps)
+>>>>> +        return -EBUSY;
+>>>>> +
+>>>>> +    maps = kzalloc(sizeof(struct btf_id_name_maps), GFP_KERNEL);
+>>>>> +    if (!maps)
+>>>>> +        return -ENOMEM;
+>>>>> +
+>>>>> +    btf->id_name_maps = maps;
+>>>>> +
+>>>>> +    for (i = 0; i < BTF_ID_NAME_MAX; i++) {
+>>>>> +        err = btf_create_id_name(btf, i);
+>>>>> +        if (err < 0)
+>>>>> +            break;
+>>>>> +    }
+>>>>> +
+>>>>> +    return err;
+>>>>> +}
+>>>>> +
+>>>>>    BTF_ID_LIST(bpf_ctx_convert_btf_id)
+>>>>>    BTF_ID(struct, bpf_ctx_convert)
+>>>>> @@ -5760,6 +6029,10 @@ struct btf *btf_parse_vmlinux(void)
+>>>>>        if (err)
+>>>>>            goto errout;
+>>>>> +    err = btf_create_id_name_map(btf);
+>>>>> +    if (err)
+>>>>> +        goto errout;
+>>>>> +
+>>>>>        /* btf_parse_vmlinux() runs under bpf_verifier_lock */
+>>>>>        bpf_ctx_convert.t = btf_type_by_id(btf,
+>>>>> bpf_ctx_convert_btf_id[0]);
+>>>>> @@ -5777,6 +6050,7 @@ struct btf *btf_parse_vmlinux(void)
+>>>>>    errout:
+>>>>>        btf_verifier_env_free(env);
+>>>>>        if (btf) {
+>>>>> +        btf_destroy_id_name_map(btf);
+>>>>>            kvfree(btf->types);
+>>>>>            kfree(btf);
+>>>>>        }
+>>>>> @@ -5844,13 +6118,19 @@ static struct btf *btf_parse_module(const
+>>>>> char *module_name, const void *data, u
+>>>>>        if (err)
+>>>>>            goto errout;
+>>>>> +    err = btf_create_id_name_map(btf);
+>>>>> +    if (err)
+>>>>> +        goto errout;
+>>>>> +
+>>>>>        btf_verifier_env_free(env);
+>>>>>        refcount_set(&btf->refcnt, 1);
+>>>>> +
+>>>>>        return btf;
+>>>>>    errout:
+>>>>>        btf_verifier_env_free(env);
+>>>>>        if (btf) {
+>>>>> +        btf_destroy_id_name_map(btf);
+>>>>>            kvfree(btf->data);
+>>>>>            kvfree(btf->types);
+>>>>>            kfree(btf);
+>>>>> -- 
+>>>>> 2.25.1
+>>>>>
+>>>>
+>>>>
+>>>
+>>
+> 
+> 
 
-
-vim +893 kernel/bpf/task_iter.c
-
-   887	
-   888	__bpf_kfunc int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
-   889			struct cgroup_subsys_state *root)
-   890	{
-   891		struct bpf_iter_css_kern *kit = (void *)it;
-   892	
- > 893		BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css_pre));
-   894		BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) != __alignof__(struct bpf_iter_css_pre));
-   895		kit->root = root;
-   896		kit->pos = NULL;
-   897		return 0;
-   898	}
-   899	
-   900	__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_pre_next(struct bpf_iter_css_pre *it)
-   901	{
-   902		struct bpf_iter_css_kern *kit = (void *)it;
-   903	
-   904		kit->pos = css_next_descendant_pre(kit->pos, kit->root);
-   905		return kit->pos;
-   906	}
-   907	
-   908	__bpf_kfunc void bpf_iter_css_pre_destroy(struct bpf_iter_css_pre *it)
-   909	{
-   910	}
-   911	
-   912	__bpf_kfunc int bpf_iter_css_post_new(struct bpf_iter_css_post *it,
-   913			struct cgroup_subsys_state *root)
-   914	{
-   915		struct bpf_iter_css_kern *kit = (void *)it;
-   916	
- > 917		BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css_post));
-   918		BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) != __alignof__(struct bpf_iter_css_post));
-   919		kit->root = root;
-   920		kit->pos = NULL;
-   921		return 0;
-   922	}
-   923	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
