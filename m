@@ -1,124 +1,147 @@
-Return-Path: <bpf+bounces-9952-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49D7B79F0DF
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 20:07:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A15579F14C
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 20:42:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8C5F28158C
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 18:07:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D27A41C2094A
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 18:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FC9E200D7;
-	Wed, 13 Sep 2023 18:06:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66C2D65D;
+	Wed, 13 Sep 2023 18:42:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01FC6200B8;
-	Wed, 13 Sep 2023 18:06:38 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5306E19AF;
-	Wed, 13 Sep 2023 11:06:38 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31DC7397
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 18:42:01 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5B1A3;
+	Wed, 13 Sep 2023 11:42:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694628398; x=1726164398;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=WlYbkPJZkUce+Ge4UcLmtKXlVZSqkCwT2W6g3hDwPqM=;
-  b=UnOBtai6lCKyyjQGFscZgWwg3tcOtrs5KMfCGJuNoHLC8Kmm1oV82a+N
-   OBjwlR2T5jMmJd8YqNz42rTNM7/5HRtUyEOSoFhWoIt/I7qANX5wha5Gy
-   riDwB0cYrmsiTt8u/r61NSXaLr7tx/4pLwy0bghh6D93j9yyLluTrWFdy
-   Qpq+bNJwV6W0vx9slKJaEADDarnqhUrgDLN9JoW1BFOrXuRMujq26YLP8
-   X9gd4iE/IXmV+UpFVG1Q8jzCWmyOvQBHjrJ3Be4uzlGDXyjwwT07b1kRl
-   SeagyvxfzyWts1p7VD2Ao7SHZ/1RQhAWQWekWMCLG7Kq/pT3bhpZCfq5y
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="378659437"
+  t=1694630520; x=1726166520;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=efM8CDotFiLZ34XLPxPB/I5B9udJDpiuZFDvc+UHFlw=;
+  b=m4kMbcoFqNEyH6RZXRlbFMZ/DBVo9FktmGZIdzjTurqcQd0IX5Ydf0vY
+   p3lpGSTLYp6vxqfQ48LjVMq8xWJ3tLu3kbMbX3YGOcGuN1AHnQKqdP9xP
+   WsXtYSxJ3U9qdqBlGeHuWBz9JP7VWD0nMESndTDoMyG7tSUZwc74oxJTA
+   5g/JfzJMpxgOPzn2ml+lJXF3OOYKmDi8qwIloW0ZPO446ZcpIDpaB9CIV
+   cPPyZiKobKNtNjiEKmMT8y/gVOpESTa3UIXorW2O19TZtqLTEOM2U30V4
+   h5EEAf74sC9XUBe6VBQGjJ9siuBP8k4XsePrhU+djqDSfVDnvObDhvHYw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="377663154"
 X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="378659437"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 11:06:34 -0700
+   d="scan'208";a="377663154"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 11:41:59 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="747418209"
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="991040388"
 X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="747418209"
-Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
-  by fmsmga007.fm.intel.com with ESMTP; 13 Sep 2023 11:06:33 -0700
-From: Tony Nguyen <anthony.l.nguyen@intel.com>
-To: davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	netdev@vger.kernel.org
-Cc: Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-	anthony.l.nguyen@intel.com,
-	sasha.neftin@intel.com,
-	maciej.fijalkowski@intel.com,
-	magnus.karlsson@intel.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	bpf@vger.kernel.org,
-	Ferenc Fejes <ferenc.fejes@ericsson.com>,
-	Naama Meir <naamax.meir@linux.intel.com>
-Subject: [PATCH net] igc: Fix infinite initialization loop with early XDP redirect
-Date: Wed, 13 Sep 2023 11:06:15 -0700
-Message-Id: <20230913180615.2116232-1-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.38.1
+   d="scan'208";a="991040388"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 13 Sep 2023 11:41:57 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qgUoF-0000T7-0Y;
+	Wed, 13 Sep 2023 18:41:55 +0000
+Date: Thu, 14 Sep 2023 02:41:26 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org, keescook@chromium.org,
+	brauner@kernel.org, lennart@poettering.net, kernel-team@meta.com,
+	sargun@sargun.me
+Subject: Re: [PATCH v4 bpf-next 06/12] bpf: take into account BPF token when
+ fetching helper protos
+Message-ID: <202309140202.lwVDn4bK-lkp@intel.com>
+References: <20230912212906.3975866-7-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912212906.3975866-7-andrii@kernel.org>
 
-From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Hi Andrii,
 
-When an XDP redirect happens before the link is ready, that
-transmission will not finish and will timeout, causing an adapter
-reset. If the redirects do not stop, the adapter will not stop
-resetting.
+kernel test robot noticed the following build errors:
 
-Wait for the driver to signal that there's a carrier before allowing
-transmissions to proceed.
+[auto build test ERROR on bpf-next/master]
 
-Previous code was relying that when __IGC_DOWN is cleared, the NIC is
-ready to transmit as all the queues are ready, what happens is that
-the carrier presence will only be signaled later, after the watchdog
-workqueue has a chance to run. And during this interval (between
-clearing __IGC_DOWN and the watchdog running) if any transmission
-happens the timeout is emitted (detected by igc_tx_timeout()) which
-causes the reset, with the potential for the infinite loop.
+url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/bpf-add-BPF-token-delegation-mount-options-to-BPF-FS/20230913-053240
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230912212906.3975866-7-andrii%40kernel.org
+patch subject: [PATCH v4 bpf-next 06/12] bpf: take into account BPF token when fetching helper protos
+config: i386-randconfig-r015-20230913 (https://download.01.org/0day-ci/archive/20230914/202309140202.lwVDn4bK-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309140202.lwVDn4bK-lkp@intel.com/reproduce)
 
-Fixes: 4ff320361092 ("igc: Add support for XDP_REDIRECT action")
-Reported-by: Ferenc Fejes <ferenc.fejes@ericsson.com>
-Closes: https://lore.kernel.org/netdev/0caf33cf6adb3a5bf137eeaa20e89b167c9986d5.camel@ericsson.com/
-Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Tested-by: Ferenc Fejes <ferenc.fejes@ericsson.com>
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Tested-by: Naama Meir <naamax.meir@linux.intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- drivers/net/ethernet/intel/igc/igc_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309140202.lwVDn4bK-lkp@intel.com/
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 293b45717683..98de34d0ce07 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -6491,7 +6491,7 @@ static int igc_xdp_xmit(struct net_device *dev, int num_frames,
- 	struct igc_ring *ring;
- 	int i, drops;
- 
--	if (unlikely(test_bit(__IGC_DOWN, &adapter->state)))
-+	if (unlikely(!netif_carrier_ok(dev)))
- 		return -ENETDOWN;
- 
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
+All errors (new ones prefixed by >>):
+
+>> net/core/filter.c:11721:7: error: call to undeclared function 'bpf_token_capable'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+           if (!bpf_token_capable(prog->aux->token, CAP_PERFMON))
+                ^
+   1 error generated.
+
+
+vim +/bpf_token_capable +11721 net/core/filter.c
+
+ 11687	
+ 11688	static const struct bpf_func_proto *
+ 11689	bpf_sk_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 11690	{
+ 11691		const struct bpf_func_proto *func;
+ 11692	
+ 11693		switch (func_id) {
+ 11694		case BPF_FUNC_skc_to_tcp6_sock:
+ 11695			func = &bpf_skc_to_tcp6_sock_proto;
+ 11696			break;
+ 11697		case BPF_FUNC_skc_to_tcp_sock:
+ 11698			func = &bpf_skc_to_tcp_sock_proto;
+ 11699			break;
+ 11700		case BPF_FUNC_skc_to_tcp_timewait_sock:
+ 11701			func = &bpf_skc_to_tcp_timewait_sock_proto;
+ 11702			break;
+ 11703		case BPF_FUNC_skc_to_tcp_request_sock:
+ 11704			func = &bpf_skc_to_tcp_request_sock_proto;
+ 11705			break;
+ 11706		case BPF_FUNC_skc_to_udp6_sock:
+ 11707			func = &bpf_skc_to_udp6_sock_proto;
+ 11708			break;
+ 11709		case BPF_FUNC_skc_to_unix_sock:
+ 11710			func = &bpf_skc_to_unix_sock_proto;
+ 11711			break;
+ 11712		case BPF_FUNC_skc_to_mptcp_sock:
+ 11713			func = &bpf_skc_to_mptcp_sock_proto;
+ 11714			break;
+ 11715		case BPF_FUNC_ktime_get_coarse_ns:
+ 11716			return &bpf_ktime_get_coarse_ns_proto;
+ 11717		default:
+ 11718			return bpf_base_func_proto(func_id, prog);
+ 11719		}
+ 11720	
+ 11721		if (!bpf_token_capable(prog->aux->token, CAP_PERFMON))
+ 11722			return NULL;
+ 11723	
+ 11724		return func;
+ 11725	}
+ 11726	
+
 -- 
-2.38.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
