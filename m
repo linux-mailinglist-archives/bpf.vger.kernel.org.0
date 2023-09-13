@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-9946-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9947-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FD3179F00D
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 19:15:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0F3079F016
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 19:15:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C73381C21251
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 17:15:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52060282249
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 17:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 397A4200C0;
-	Wed, 13 Sep 2023 17:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1D56200D2;
+	Wed, 13 Sep 2023 17:13:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11887200B2
-	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 17:13:55 +0000 (UTC)
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B57398
-	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 10:13:55 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58cbf62bae8so480757b3.3
-        for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 10:13:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 898D7200A7
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 17:13:57 +0000 (UTC)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2033E98
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 10:13:57 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d7e4151d07aso69995276.2
+        for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 10:13:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694625234; x=1695230034; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694625236; x=1695230036; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=w/AfsWqTsY33pj6en+LuS4ONjftbdwS42oVsfuILkVY=;
-        b=kMHgYyybaYfK9rZkAZMMD1u9+QuHUMoG+85HGCcGZET56f6VTu91RlzfXH78TniHs5
-         YCb/KMZkcJsgDbawCA70Fd9flM7iitNmaiE7T7SLU0krnB2wFKODTbqkJ9oUfxNvCsLB
-         TyA+OnzstTFtd+M76Ix6VzbvLtIepthHEqLJiGIDhuIIIcPW21NhTcyhmbt1MZM7MvFW
-         cCtNguumnfD/MpJlitxeQS82aS+auyytFqSI/quCtihsX5W/CxcmgyKtpdFMahvb+t93
-         LnlIupkjQLHdQ5yLGon80wPBhPVR+tyfGvdwq0tVYfblMATkLAFq3aABm0imLARVec/D
-         k5Jw==
+        bh=DDXiCrgak3BjQvKYGaNmvz/iQfc81iw57UO8j38SAOQ=;
+        b=sJmznJ6HtxBNJA1/Th8LwBgQYqFd9ls9C67Fcmibd1K0TVRJCEZII30RJKgoWzLVZe
+         t+fkWVbwodAnv0j7Vi0FCvO+y7yevsdbZiGFCJsbVGpklGD7D8fQ2j4X9UmYXkLuvLkX
+         7H+HSCn2vpm89tWTdq/LXBzbuSd+TgwwCsspJnzksIQORoFr26YDBntIOCnrWW5LWI2Z
+         MB78brRdck+PQu9ZPN/X/EgnpHM1LMgsxEIpVsqEaDaf8Ur40sqPkyZ60R6PofTIISBZ
+         IK5qlITA9R60AxOF2NfPxflawFEZkaCGTqhCodIuIGpUz37/C7RlygQtPSIpWIWMTs/Q
+         9RAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694625234; x=1695230034;
+        d=1e100.net; s=20230601; t=1694625236; x=1695230036;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=w/AfsWqTsY33pj6en+LuS4ONjftbdwS42oVsfuILkVY=;
-        b=omokLYVY0jgLKYsvFoiiqwoMMxx6DqCfrMAIJriviApPpM5ILEhfBX+6UsO909OHRU
-         8EqHR4kCzwaNlmssXZkR7N8I5klOQjkX2/Bu19RDm/TFI/Wu0qY6/awR6SiIuq8SxvT/
-         QwXy1Z1RW0sFY5mHU2nqC/Llobm/SviLO5lrkSa4NfgjaUv6smV+c3wH1viGRoJ6CxRx
-         dlHgDKnPDoha0tEaBv5ZqeYr3MfCZmYvNvalup3Dh0b7x/xiQVDWHFJvX89ygM4taVAR
-         /98zH1DGydCpWPhkI7WCOd8M35pbW2J6YdQLrWyRJyOMhRI8gEczD2wVC35V69LD/JeM
-         wZuA==
-X-Gm-Message-State: AOJu0YzcwoZ5K6zgzy4FxGbk6IZgDDXGBnCt7MN/YtNPY7/3hD06uWYm
-	6BsQRJbFA7k1Urs73HbVEv5MHnZ8/0uAEqxqPq9m05kbP02hVVXBWfxLfWyxg5LMuXfC4sWJi0K
-	S+j3biTHBvObEkH8mZ1EvmxvJ4Kh8FQWhpYf4nOu8+8uCYWYO5A==
-X-Google-Smtp-Source: AGHT+IGcYpsAB5B+CyxeUuBbZ6ZnfoO+pPjAnIC5Zu3/29S4EZU0dlDMPQ0eeq5TlgSc3mJjXEq0clg=
+        bh=DDXiCrgak3BjQvKYGaNmvz/iQfc81iw57UO8j38SAOQ=;
+        b=cb3lgzc+zHXhjQRGP4GTbSXzAAHsG3o0Nq5S2K0oyI60q2byjxTaxd6WdLUpu/FXAz
+         IFXCSmJgoBb65EP+CZXoq5T/NK391eVEqwjUaAbEv+YssojIUmnsQULRpneCyanBUnYL
+         e2HacyoxGRhyjDsUtW4tLjcB+uGWPQsiyMzZqzZ4a+LBQugwe1etzgJeuBR/0gDZmG3z
+         Z3OChYnufxJtqYbEgxfamprLSugqIic7yD2p2Tz4auxtd8pWWnylkKZpl/0hs68DnQ0Z
+         i6xeDzkR4pZR1/R7iDSu/x07kRJ237FD2HciN1A7HjoXZ7BOKqxAIaYtjVkCFPo3rL4/
+         ngfw==
+X-Gm-Message-State: AOJu0YzWNFlumrwKqsNeuPMdVSHg+4SFKlgOfmABB2bIODQqJbYfDuWN
+	VqtAbQSTXMzFmvfe39+OZtVVWbwzi9BCyBNjhqy6m0t2X6qjbC2YWdMWAQKp8MwEsOIsW/niQjE
+	BaA+Yg76iHnn+trjtXoFf9KP2rWeBbpDEMkO05LQk5iaeQyh8vQ==
+X-Google-Smtp-Source: AGHT+IHye5HkFwAiyo6XqhFIg2UaBiiR4W/ddyzwvw2+Vy1D1l+xFc/jOZqq4DK17j6j7wZdaPw09gQ=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:2f96:0:b0:d81:7617:a397 with SMTP id
- v144-20020a252f96000000b00d817617a397mr28853ybv.9.1694625234437; Wed, 13 Sep
- 2023 10:13:54 -0700 (PDT)
-Date: Wed, 13 Sep 2023 10:13:48 -0700
+ (user=sdf job=sendgmr) by 2002:a25:e6c4:0:b0:d78:f45:d7bd with SMTP id
+ d187-20020a25e6c4000000b00d780f45d7bdmr70261ybh.4.1694625236315; Wed, 13 Sep
+ 2023 10:13:56 -0700 (PDT)
+Date: Wed, 13 Sep 2023 10:13:49 -0700
 In-Reply-To: <20230913171350.369987-1-sdf@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -63,8 +63,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20230913171350.369987-1-sdf@google.com>
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230913171350.369987-2-sdf@google.com>
-Subject: [PATCH bpf-next v2 1/3] bpf: make it easier to add new metadata kfunc
+Message-ID: <20230913171350.369987-3-sdf@google.com>
+Subject: [PATCH bpf-next v2 2/3] bpf: expose information about supported xdp
+ metadata kfunc
 From: Stanislav Fomichev <sdf@google.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
@@ -73,86 +74,218 @@ Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
 	netdev@vger.kernel.org, Willem de Bruijn <willemb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-No functional changes.
+Add new xdp-rx-metadata-features member to netdev netlink
+which exports a bitmask of supported kfuncs. Most of the patch
+is autogenerated (headers), the only relevant part is netdev.yaml
+and the changes in netdev-genl.c to marshal into netlink.
 
-Instead of having hand-crafted code in bpf_dev_bound_resolve_kfunc,
-move kfunc <> xmo handler relationship into XDP_METADATA_KFUNC_xxx.
-This way, any time new kfunc is added, we don't have to touch
-bpf_dev_bound_resolve_kfunc.
+Example output on veth:
 
-Also document XDP_METADATA_KFUNC_xxx arguments since we now have
-more than two and it might be confusing what is what.
+$ ip link add veth0 type veth peer name veth1 # ifndex == 12
+$ ./tools/net/ynl/samples/netdev 12
+
+Select ifc ($ifindex; or 0 = dump; or -2 ntf check): 12
+   veth1[12]    xdp-features (23): basic redirect rx-sg xdp-rx-metadata-features (3): timestamp hash xdp-zc-max-segs=0
 
 Cc: netdev@vger.kernel.org
 Cc: Willem de Bruijn <willemb@google.com>
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- include/net/xdp.h    | 16 ++++++++++++----
- kernel/bpf/offload.c |  9 +++++----
- net/core/xdp.c       |  4 ++--
- 3 files changed, 19 insertions(+), 10 deletions(-)
+ Documentation/netlink/specs/netdev.yaml      | 21 ++++++++++++++++++++
+ Documentation/networking/xdp-rx-metadata.rst |  7 +++++++
+ include/net/xdp.h                            |  5 ++++-
+ include/uapi/linux/netdev.h                  | 16 +++++++++++++++
+ kernel/bpf/offload.c                         |  2 +-
+ net/core/netdev-genl.c                       | 12 ++++++++++-
+ net/core/xdp.c                               |  4 ++--
+ tools/include/uapi/linux/netdev.h            | 16 +++++++++++++++
+ 8 files changed, 78 insertions(+), 5 deletions(-)
 
+diff --git a/Documentation/netlink/specs/netdev.yaml b/Documentation/netlink/specs/netdev.yaml
+index 1c7284fd535b..c46fcc78fc04 100644
+--- a/Documentation/netlink/specs/netdev.yaml
++++ b/Documentation/netlink/specs/netdev.yaml
+@@ -42,6 +42,19 @@ name: netdev
+         doc:
+           This feature informs if netdev implements non-linear XDP buffer
+           support in ndo_xdp_xmit callback.
++  -
++    type: flags
++    name: xdp-rx-metadata
++    render-max: true
++    entries:
++      -
++        name: timestamp
++        doc:
++          Device is capable of exposing receive HW timestamp via bpf_xdp_metadata_rx_timestamp().
++      -
++        name: hash
++        doc:
++          Device is capable of exposing receive packet hash via bpf_xdp_metadata_rx_hash().
+ 
+ attribute-sets:
+   -
+@@ -68,6 +81,13 @@ name: netdev
+         type: u32
+         checks:
+           min: 1
++      -
++        name: xdp-rx-metadata-features
++        doc: Bitmask of supported XDP receive metadata features.
++             See Documentation/networking/xdp-rx-metadata.rst for more details.
++        type: u64
++        enum: xdp-rx-metadata
++        enum-as-flags: true
+ 
+ operations:
+   list:
+@@ -84,6 +104,7 @@ name: netdev
+             - ifindex
+             - xdp-features
+             - xdp-zc-max-segs
++            - xdp-rx-metadata-features
+       dump:
+         reply: *dev-all
+     -
+diff --git a/Documentation/networking/xdp-rx-metadata.rst b/Documentation/networking/xdp-rx-metadata.rst
+index 25ce72af81c2..205696780b78 100644
+--- a/Documentation/networking/xdp-rx-metadata.rst
++++ b/Documentation/networking/xdp-rx-metadata.rst
+@@ -105,6 +105,13 @@ bpf_tail_call
+ Adding programs that access metadata kfuncs to the ``BPF_MAP_TYPE_PROG_ARRAY``
+ is currently not supported.
+ 
++Supported Devices
++=================
++
++It is possible to query which kfunc the particular netdev implements via
++netlink. See ``xdp-rx-metadata-features`` attribute set in
++``Documentation/netlink/specs/netdev.yaml``.
++
+ Example
+ =======
+ 
 diff --git a/include/net/xdp.h b/include/net/xdp.h
-index de08c8e0d134..d59e12f8f311 100644
+index d59e12f8f311..349c36fb5fd8 100644
 --- a/include/net/xdp.h
 +++ b/include/net/xdp.h
-@@ -383,14 +383,22 @@ void xdp_attachment_setup(struct xdp_attachment_info *info,
- 
- #define DEV_MAP_BULK_SIZE XDP_BULK_QUEUE_SIZE
- 
-+/* Define the relationship between xdp-rx-metadata kfunc and
-+ * various other entities:
-+ * - xdp_rx_metadata enum
-+ * - kfunc name
-+ * - xdp_metadata_ops field
-+ */
+@@ -386,19 +386,22 @@ void xdp_attachment_setup(struct xdp_attachment_info *info,
+ /* Define the relationship between xdp-rx-metadata kfunc and
+  * various other entities:
+  * - xdp_rx_metadata enum
++ * - netdev netlink enum (Documentation/netlink/specs/netdev.yaml)
+  * - kfunc name
+  * - xdp_metadata_ops field
+  */
  #define XDP_METADATA_KFUNC_xxx	\
  	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_TIMESTAMP, \
--			   bpf_xdp_metadata_rx_timestamp) \
-+			   bpf_xdp_metadata_rx_timestamp, \
-+			   xmo_rx_timestamp) \
++			   NETDEV_XDP_RX_METADATA_TIMESTAMP, \
+ 			   bpf_xdp_metadata_rx_timestamp, \
+ 			   xmo_rx_timestamp) \
  	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_HASH, \
--			   bpf_xdp_metadata_rx_hash) \
-+			   bpf_xdp_metadata_rx_hash, \
-+			   xmo_rx_hash) \
++			   NETDEV_XDP_RX_METADATA_HASH, \
+ 			   bpf_xdp_metadata_rx_hash, \
+ 			   xmo_rx_hash) \
  
--enum {
--#define XDP_METADATA_KFUNC(name, _) name,
-+enum xdp_rx_metadata {
-+#define XDP_METADATA_KFUNC(name, _, __) name,
+ enum xdp_rx_metadata {
+-#define XDP_METADATA_KFUNC(name, _, __) name,
++#define XDP_METADATA_KFUNC(name, _, __, ___) name,
  XDP_METADATA_KFUNC_xxx
  #undef XDP_METADATA_KFUNC
  MAX_XDP_METADATA_KFUNC,
+diff --git a/include/uapi/linux/netdev.h b/include/uapi/linux/netdev.h
+index c1634b95c223..2943a151d4f1 100644
+--- a/include/uapi/linux/netdev.h
++++ b/include/uapi/linux/netdev.h
+@@ -38,11 +38,27 @@ enum netdev_xdp_act {
+ 	NETDEV_XDP_ACT_MASK = 127,
+ };
+ 
++/**
++ * enum netdev_xdp_rx_metadata
++ * @NETDEV_XDP_RX_METADATA_TIMESTAMP: Device is capable of exposing receive HW
++ *   timestamp via bpf_xdp_metadata_rx_timestamp().
++ * @NETDEV_XDP_RX_METADATA_HASH: Device is capable of exposing receive packet
++ *   hash via bpf_xdp_metadata_rx_hash().
++ */
++enum netdev_xdp_rx_metadata {
++	NETDEV_XDP_RX_METADATA_TIMESTAMP = 1,
++	NETDEV_XDP_RX_METADATA_HASH = 2,
++
++	/* private: */
++	NETDEV_XDP_RX_METADATA_MASK = 3,
++};
++
+ enum {
+ 	NETDEV_A_DEV_IFINDEX = 1,
+ 	NETDEV_A_DEV_PAD,
+ 	NETDEV_A_DEV_XDP_FEATURES,
+ 	NETDEV_A_DEV_XDP_ZC_MAX_SEGS,
++	NETDEV_A_DEV_XDP_RX_METADATA_FEATURES,
+ 
+ 	__NETDEV_A_DEV_MAX,
+ 	NETDEV_A_DEV_MAX = (__NETDEV_A_DEV_MAX - 1)
 diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-index 3e4f2ec1af06..6aa6de8d715d 100644
+index 6aa6de8d715d..e7a1752b5a09 100644
 --- a/kernel/bpf/offload.c
 +++ b/kernel/bpf/offload.c
-@@ -845,10 +845,11 @@ void *bpf_dev_bound_resolve_kfunc(struct bpf_prog *prog, u32 func_id)
+@@ -845,7 +845,7 @@ void *bpf_dev_bound_resolve_kfunc(struct bpf_prog *prog, u32 func_id)
  	if (!ops)
  		goto out;
  
--	if (func_id == bpf_xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP))
--		p = ops->xmo_rx_timestamp;
--	else if (func_id == bpf_xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_HASH))
--		p = ops->xmo_rx_hash;
-+#define XDP_METADATA_KFUNC(name, _, xmo) \
-+	if (func_id == bpf_xdp_metadata_kfunc_id(name)) p = ops->xmo;
-+	XDP_METADATA_KFUNC_xxx
+-#define XDP_METADATA_KFUNC(name, _, xmo) \
++#define XDP_METADATA_KFUNC(name, _, __, xmo) \
+ 	if (func_id == bpf_xdp_metadata_kfunc_id(name)) p = ops->xmo;
+ 	XDP_METADATA_KFUNC_xxx
+ #undef XDP_METADATA_KFUNC
+diff --git a/net/core/netdev-genl.c b/net/core/netdev-genl.c
+index c1aea8b756b6..fe61f85bcf33 100644
+--- a/net/core/netdev-genl.c
++++ b/net/core/netdev-genl.c
+@@ -5,6 +5,7 @@
+ #include <linux/rtnetlink.h>
+ #include <net/net_namespace.h>
+ #include <net/sock.h>
++#include <net/xdp.h>
+ 
+ #include "netdev-genl-gen.h"
+ 
+@@ -12,15 +13,24 @@ static int
+ netdev_nl_dev_fill(struct net_device *netdev, struct sk_buff *rsp,
+ 		   const struct genl_info *info)
+ {
++	u64 xdp_rx_meta = 0;
+ 	void *hdr;
+ 
+ 	hdr = genlmsg_iput(rsp, info);
+ 	if (!hdr)
+ 		return -EMSGSIZE;
+ 
++#define XDP_METADATA_KFUNC(_, flag, __, xmo) \
++	if (netdev->xdp_metadata_ops && netdev->xdp_metadata_ops->xmo) \
++		xdp_rx_meta |= flag;
++XDP_METADATA_KFUNC_xxx
 +#undef XDP_METADATA_KFUNC
 +
- out:
- 	up_read(&bpf_devs_lock);
- 
+ 	if (nla_put_u32(rsp, NETDEV_A_DEV_IFINDEX, netdev->ifindex) ||
+ 	    nla_put_u64_64bit(rsp, NETDEV_A_DEV_XDP_FEATURES,
+-			      netdev->xdp_features, NETDEV_A_DEV_PAD)) {
++			      netdev->xdp_features, NETDEV_A_DEV_PAD) ||
++	    nla_put_u64_64bit(rsp, NETDEV_A_DEV_XDP_RX_METADATA_FEATURES,
++			      xdp_rx_meta, NETDEV_A_DEV_PAD)) {
+ 		genlmsg_cancel(rsp, hdr);
+ 		return -EINVAL;
+ 	}
 diff --git a/net/core/xdp.c b/net/core/xdp.c
-index a70670fe9a2d..bab563b2f812 100644
+index bab563b2f812..df4789ab512d 100644
 --- a/net/core/xdp.c
 +++ b/net/core/xdp.c
 @@ -741,7 +741,7 @@ __bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32 *hash,
  __diag_pop();
  
  BTF_SET8_START(xdp_metadata_kfunc_ids)
--#define XDP_METADATA_KFUNC(_, name) BTF_ID_FLAGS(func, name, KF_TRUSTED_ARGS)
-+#define XDP_METADATA_KFUNC(_, name, __) BTF_ID_FLAGS(func, name, KF_TRUSTED_ARGS)
+-#define XDP_METADATA_KFUNC(_, name, __) BTF_ID_FLAGS(func, name, KF_TRUSTED_ARGS)
++#define XDP_METADATA_KFUNC(_, __, name, ___) BTF_ID_FLAGS(func, name, KF_TRUSTED_ARGS)
  XDP_METADATA_KFUNC_xxx
  #undef XDP_METADATA_KFUNC
  BTF_SET8_END(xdp_metadata_kfunc_ids)
@@ -160,11 +293,43 @@ index a70670fe9a2d..bab563b2f812 100644
  };
  
  BTF_ID_LIST(xdp_metadata_kfunc_ids_unsorted)
--#define XDP_METADATA_KFUNC(name, str) BTF_ID(func, str)
-+#define XDP_METADATA_KFUNC(name, str, _) BTF_ID(func, str)
+-#define XDP_METADATA_KFUNC(name, str, _) BTF_ID(func, str)
++#define XDP_METADATA_KFUNC(name, _, str, __) BTF_ID(func, str)
  XDP_METADATA_KFUNC_xxx
  #undef XDP_METADATA_KFUNC
  
+diff --git a/tools/include/uapi/linux/netdev.h b/tools/include/uapi/linux/netdev.h
+index c1634b95c223..2943a151d4f1 100644
+--- a/tools/include/uapi/linux/netdev.h
++++ b/tools/include/uapi/linux/netdev.h
+@@ -38,11 +38,27 @@ enum netdev_xdp_act {
+ 	NETDEV_XDP_ACT_MASK = 127,
+ };
+ 
++/**
++ * enum netdev_xdp_rx_metadata
++ * @NETDEV_XDP_RX_METADATA_TIMESTAMP: Device is capable of exposing receive HW
++ *   timestamp via bpf_xdp_metadata_rx_timestamp().
++ * @NETDEV_XDP_RX_METADATA_HASH: Device is capable of exposing receive packet
++ *   hash via bpf_xdp_metadata_rx_hash().
++ */
++enum netdev_xdp_rx_metadata {
++	NETDEV_XDP_RX_METADATA_TIMESTAMP = 1,
++	NETDEV_XDP_RX_METADATA_HASH = 2,
++
++	/* private: */
++	NETDEV_XDP_RX_METADATA_MASK = 3,
++};
++
+ enum {
+ 	NETDEV_A_DEV_IFINDEX = 1,
+ 	NETDEV_A_DEV_PAD,
+ 	NETDEV_A_DEV_XDP_FEATURES,
+ 	NETDEV_A_DEV_XDP_ZC_MAX_SEGS,
++	NETDEV_A_DEV_XDP_RX_METADATA_FEATURES,
+ 
+ 	__NETDEV_A_DEV_MAX,
+ 	NETDEV_A_DEV_MAX = (__NETDEV_A_DEV_MAX - 1)
 -- 
 2.42.0.283.g2d96d420d3-goog
 
