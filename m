@@ -1,101 +1,119 @@
-Return-Path: <bpf+bounces-9967-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9968-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C6B679F4DB
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 00:19:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F8D979F4E4
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 00:27:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B213280EC1
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 22:19:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DEAF41F21745
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 22:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E1E27710;
-	Wed, 13 Sep 2023 22:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AA6327710;
+	Wed, 13 Sep 2023 22:27:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A18ED200CB;
-	Wed, 13 Sep 2023 22:19:16 +0000 (UTC)
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9E919A0;
-	Wed, 13 Sep 2023 15:19:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1694643554;
-	bh=zLywpBXGPVjbMPp/0mEgBcEgMQCavtFgVgs4YNmeboQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=kxzJhbH1+28KFnuIyD0+hA0t5IgqfMR06PjSVd7E3LfFAnNu1EkaktoyihADutvG4
-	 uOuXO0xDpd1GHYOTuyn0djgunqNDUiK8rlL+7xqghDxV7rWkko5VKINEJtkTMcNaNI
-	 84yY3mrOnek7UV643Dy9BZ7OnT3o2twYuXbOi9jpFVH3Or4dXloUmPCQ0CJo9fhuMW
-	 FK3+LvJP2pVa94TGOKyszXptJ3KAgwQfTYgVelWFOfiUfjeMqny7H3iRSQAxuNvtLL
-	 OM//u3h/FKqrceui/SNciBouBnD6Rlk+iVo8ZOPPaWbFmVxfvUDMpkdVbXLfqd9+V1
-	 0iBiw16UjCprg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4RmFH55Zglz4wxl;
-	Thu, 14 Sep 2023 08:19:13 +1000 (AEST)
-Date: Thu, 14 Sep 2023 08:19:12 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
- <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, bpf
- <bpf@vger.kernel.org>, Yonghong Song <yonghong.song@linux.dev>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Networking <netdev@vger.kernel.org>
-Subject: Re: linux-next: boot warning from the bpf-next tree
-Message-ID: <20230914081912.33b30cc8@canb.auug.org.au>
-In-Reply-To: <64f1f578-17e7-a8a8-12f2-6a1a0d98a4af@huaweicloud.com>
-References: <20230913133436.0eeec4cb@canb.auug.org.au>
-	<20230913145919.6060ae61@canb.auug.org.au>
-	<64f1f578-17e7-a8a8-12f2-6a1a0d98a4af@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E6229CA
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 22:27:03 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B931BCB
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 15:27:02 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DIS8U2003231
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 15:27:02 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3t3363asf7-3
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 15:27:02 -0700
+Received: from twshared52565.14.frc2.facebook.com (2620:10d:c0a8:1c::1b) by
+ mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Wed, 13 Sep 2023 15:27:00 -0700
+Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
+	id CC41D244DF337; Wed, 13 Sep 2023 15:26:51 -0700 (PDT)
+From: Song Liu <song@kernel.org>
+To: <bpf@vger.kernel.org>
+CC: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <martin.lau@linux.dev>, <kernel-team@meta.com>,
+        Song Liu <song@kernel.org>
+Subject: [PATCH bpf-next] bpf: Charge modmem for struct_ops trampoline
+Date: Wed, 13 Sep 2023 15:26:32 -0700
+Message-ID: <20230913222632.3312183-1-song@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/orKwvZW7.iPNQ9_UONq7tER";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/orKwvZW7.iPNQ9_UONq7tER
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: BUjCDn4xe2Qqg9ANubnSviSiCd_djC6-
+X-Proofpoint-GUID: BUjCDn4xe2Qqg9ANubnSviSiCd_djC6-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-13_17,2023-09-13_01,2023-05-22_02
 
-Hi Hou,
+Current code charges modmem for regular trampoline, but not for struct_op=
+s
+trampoline. Add bpf_jit_[charge|uncharge]_modmem() to struct_ops so the
+trampoline is charged in both cases.
 
-On Wed, 13 Sep 2023 15:56:04 +0800 Hou Tao <houtao@huaweicloud.com> wrote:
->
-> Yes. The warning is due to the checking added in commit c93047255202
-> ("bpf: Ensure unit_size is matched with slab cache object size").
-> Considering that bpf-next has not merged the patch-set yet, should I
-> post a patch to bpf tree to fix it ? A fix patch is attached which can
-> fix the warning in my local setup.
+Signed-off-by: Song Liu <song@kernel.org>
+---
+ kernel/bpf/bpf_struct_ops.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-I will apply your patch as a merge resolution for the bpf-next tree
-merge until something better is done.   Please make sure to let me know
-if it is not longer needed (in case it is not obvious).
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index fdc3e8705a3c..ea6ca87a2ed9 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -615,7 +615,10 @@ static void __bpf_struct_ops_map_free(struct bpf_map=
+ *map)
+ 	if (st_map->links)
+ 		bpf_struct_ops_map_put_progs(st_map);
+ 	bpf_map_area_free(st_map->links);
+-	bpf_jit_free_exec(st_map->image);
++	if (st_map->image) {
++		bpf_jit_free_exec(st_map->image);
++		bpf_jit_uncharge_modmem(PAGE_SIZE);
++	}
+ 	bpf_map_area_free(st_map->uvalue);
+ 	bpf_map_area_free(st_map);
+ }
+@@ -657,6 +660,7 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union=
+ bpf_attr *attr)
+ 	struct bpf_struct_ops_map *st_map;
+ 	const struct btf_type *t, *vt;
+ 	struct bpf_map *map;
++	int ret;
+=20
+ 	st_ops =3D bpf_struct_ops_find_value(attr->btf_vmlinux_value_type_id);
+ 	if (!st_ops)
+@@ -681,6 +685,12 @@ static struct bpf_map *bpf_struct_ops_map_alloc(unio=
+n bpf_attr *attr)
+ 	st_map->st_ops =3D st_ops;
+ 	map =3D &st_map->map;
+=20
++	ret =3D bpf_jit_charge_modmem(PAGE_SIZE);
++	if (ret) {
++		__bpf_struct_ops_map_free(map);
++		return ERR_PTR(ret);
++	}
++
+ 	st_map->uvalue =3D bpf_map_area_alloc(vt->size, NUMA_NO_NODE);
+ 	st_map->links =3D
+ 		bpf_map_area_alloc(btf_type_vlen(t) * sizeof(struct bpf_links *),
+@@ -907,4 +917,3 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
+ 	kfree(link);
+ 	return err;
+ }
+-
 --=20
-Cheers,
-Stephen Rothwell
+2.34.1
 
---Sig_/orKwvZW7.iPNQ9_UONq7tER
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUCNWAACgkQAVBC80lX
-0GwuOQf+KWBTqY7eObPbFTZBSZSSIanAEyD/PV0bdtfB9zxa74+OE5mutDSDTYEv
-6Pf72Z1PNxdZzhOdufqE/XVx7rXfy9vIp++vkE7+Uz1J21f5Ilfn7gbbsTYu6N9u
-9RG+JENpbroJtRT/LLyRerXT+q7Q5fyBcB/kL5B3CfOataLF9usI7sv/hifhPu8U
-I0CnAV3SsUVDD2gqOtI16maGXhabtHM/Hzl+vRz53oX9Z+bMcSwSJ2GGDkV7WHKi
-XYq7BjlrllIOXPxLtacWpTB/HADKoLierClCWeDXc0K1otS9ZMy7D7+UD2Db4clc
-T5u+IhRq0Y7NPQQ0DtRXVd4gLVjt9w==
-=PvI8
------END PGP SIGNATURE-----
-
---Sig_/orKwvZW7.iPNQ9_UONq7tER--
 
