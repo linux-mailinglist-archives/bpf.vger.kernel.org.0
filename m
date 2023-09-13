@@ -1,148 +1,101 @@
-Return-Path: <bpf+bounces-9966-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9967-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14B3479F4D2
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 00:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C6B679F4DB
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 00:19:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9FD3281947
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 22:17:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B213280EC1
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 22:19:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C0527708;
-	Wed, 13 Sep 2023 22:16:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E1E27710;
+	Wed, 13 Sep 2023 22:19:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7976727703
-	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 22:16:51 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87D8198B;
-	Wed, 13 Sep 2023 15:16:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694643410; x=1726179410;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gV5m7FnIi0psr4k+6ytGpr38jWqH/wH1K3hvo+SLTQI=;
-  b=VTTn7IkNsxi3+fbqOrJehY488pQ1mTaFxljC4Kaazp07bsCOcf9qxgDx
-   qkX3hYgvQvBqP+Bb/2n679NjbJfAzbDaEYPjgH8A9HuQxi02F6JmazjnK
-   P3ZRt9NrkmPa6nyOjXVZycGeE7uihjNsI+D2WUf7Abt2tUT9nQXS+JP1s
-   xXNeCxmTIXUMSS2Y6xnUmP6enmT5ZF5RarDVlm5bJAOqYSSy6iz/idmH8
-   iKOaP7sHpfDJGQgGIghCQcl0y09yTH0bD9XYN5mg1GtykLyOb/fnOdHwY
-   6WaganNWMtMD++kfjlhFDgM0/cROQeS6QUEtzRiFjxWVbcEkT9wZKHkjD
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="377706281"
-X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
-   d="scan'208";a="377706281"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 15:16:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="694001202"
-X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
-   d="scan'208";a="694001202"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 13 Sep 2023 15:16:47 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qgYA3-0000iz-1N;
-	Wed, 13 Sep 2023 22:16:42 +0000
-Date: Thu, 14 Sep 2023 06:15:14 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, keescook@chromium.org,
-	brauner@kernel.org, lennart@poettering.net, kernel-team@meta.com,
-	sargun@sargun.me
-Subject: Re: [PATCH v4 bpf-next 07/12] bpf: consistenly use BPF token
- throughout BPF verifier logic
-Message-ID: <202309140537.jHmBqMd6-lkp@intel.com>
-References: <20230912212906.3975866-8-andrii@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A18ED200CB;
+	Wed, 13 Sep 2023 22:19:16 +0000 (UTC)
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9E919A0;
+	Wed, 13 Sep 2023 15:19:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1694643554;
+	bh=zLywpBXGPVjbMPp/0mEgBcEgMQCavtFgVgs4YNmeboQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=kxzJhbH1+28KFnuIyD0+hA0t5IgqfMR06PjSVd7E3LfFAnNu1EkaktoyihADutvG4
+	 uOuXO0xDpd1GHYOTuyn0djgunqNDUiK8rlL+7xqghDxV7rWkko5VKINEJtkTMcNaNI
+	 84yY3mrOnek7UV643Dy9BZ7OnT3o2twYuXbOi9jpFVH3Or4dXloUmPCQ0CJo9fhuMW
+	 FK3+LvJP2pVa94TGOKyszXptJ3KAgwQfTYgVelWFOfiUfjeMqny7H3iRSQAxuNvtLL
+	 OM//u3h/FKqrceui/SNciBouBnD6Rlk+iVo8ZOPPaWbFmVxfvUDMpkdVbXLfqd9+V1
+	 0iBiw16UjCprg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4RmFH55Zglz4wxl;
+	Thu, 14 Sep 2023 08:19:13 +1000 (AEST)
+Date: Thu, 14 Sep 2023 08:19:12 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
+ <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, bpf
+ <bpf@vger.kernel.org>, Yonghong Song <yonghong.song@linux.dev>, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+Subject: Re: linux-next: boot warning from the bpf-next tree
+Message-ID: <20230914081912.33b30cc8@canb.auug.org.au>
+In-Reply-To: <64f1f578-17e7-a8a8-12f2-6a1a0d98a4af@huaweicloud.com>
+References: <20230913133436.0eeec4cb@canb.auug.org.au>
+	<20230913145919.6060ae61@canb.auug.org.au>
+	<64f1f578-17e7-a8a8-12f2-6a1a0d98a4af@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912212906.3975866-8-andrii@kernel.org>
+Content-Type: multipart/signed; boundary="Sig_/orKwvZW7.iPNQ9_UONq7tER";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hi Andrii,
+--Sig_/orKwvZW7.iPNQ9_UONq7tER
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-kernel test robot noticed the following build errors:
+Hi Hou,
 
-[auto build test ERROR on bpf-next/master]
+On Wed, 13 Sep 2023 15:56:04 +0800 Hou Tao <houtao@huaweicloud.com> wrote:
+>
+> Yes. The warning is due to the checking added in commit c93047255202
+> ("bpf: Ensure unit_size is matched with slab cache object size").
+> Considering that bpf-next has not merged the patch-set yet, should I
+> post a patch to bpf tree to fix it ? A fix patch is attached which can
+> fix the warning in my local setup.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/bpf-add-BPF-token-delegation-mount-options-to-BPF-FS/20230913-053240
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20230912212906.3975866-8-andrii%40kernel.org
-patch subject: [PATCH v4 bpf-next 07/12] bpf: consistenly use BPF token throughout BPF verifier logic
-config: x86_64-randconfig-074-20230914 (https://download.01.org/0day-ci/archive/20230914/202309140537.jHmBqMd6-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309140537.jHmBqMd6-lkp@intel.com/reproduce)
+I will apply your patch as a merge resolution for the bpf-next tree
+merge until something better is done.   Please make sure to let me know
+if it is not longer needed (in case it is not obvious).
+--=20
+Cheers,
+Stephen Rothwell
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309140537.jHmBqMd6-lkp@intel.com/
+--Sig_/orKwvZW7.iPNQ9_UONq7tER
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-All errors (new ones prefixed by >>):
+-----BEGIN PGP SIGNATURE-----
 
-   In file included from include/net/sock_reuseport.h:5,
-                    from include/net/tcp.h:35,
-                    from include/linux/netfilter_ipv6.h:11,
-                    from include/uapi/linux/netfilter_ipv6/ip6_tables.h:22,
-                    from include/linux/netfilter_ipv6/ip6_tables.h:23,
-                    from net/ipv6/netfilter/ip6table_filter.c:11:
-   include/linux/filter.h: In function 'bpf_jit_blinding_enabled':
->> include/linux/filter.h:1104:36: error: implicit declaration of function 'bpf_token_capable'; did you mean 'bpf_token_put'? [-Werror=implicit-function-declaration]
-    1104 |         if (bpf_jit_harden == 1 && bpf_token_capable(prog->aux->token, CAP_BPF))
-         |                                    ^~~~~~~~~~~~~~~~~
-         |                                    bpf_token_put
-   cc1: some warnings being treated as errors
---
-   In file included from include/net/sock_reuseport.h:5,
-                    from include/net/tcp.h:35,
-                    from include/linux/netfilter_ipv6.h:11,
-                    from net/ipv6/netfilter/nf_reject_ipv6.c:12:
-   include/linux/filter.h: In function 'bpf_jit_blinding_enabled':
->> include/linux/filter.h:1104:36: error: implicit declaration of function 'bpf_token_capable'; did you mean 'bpf_token_put'? [-Werror=implicit-function-declaration]
-    1104 |         if (bpf_jit_harden == 1 && bpf_token_capable(prog->aux->token, CAP_BPF))
-         |                                    ^~~~~~~~~~~~~~~~~
-         |                                    bpf_token_put
-   net/ipv6/netfilter/nf_reject_ipv6.c: In function 'nf_send_reset6':
-   net/ipv6/netfilter/nf_reject_ipv6.c:287:25: warning: variable 'ip6h' set but not used [-Wunused-but-set-variable]
-     287 |         struct ipv6hdr *ip6h;
-         |                         ^~~~
-   cc1: some warnings being treated as errors
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUCNWAACgkQAVBC80lX
+0GwuOQf+KWBTqY7eObPbFTZBSZSSIanAEyD/PV0bdtfB9zxa74+OE5mutDSDTYEv
+6Pf72Z1PNxdZzhOdufqE/XVx7rXfy9vIp++vkE7+Uz1J21f5Ilfn7gbbsTYu6N9u
+9RG+JENpbroJtRT/LLyRerXT+q7Q5fyBcB/kL5B3CfOataLF9usI7sv/hifhPu8U
+I0CnAV3SsUVDD2gqOtI16maGXhabtHM/Hzl+vRz53oX9Z+bMcSwSJ2GGDkV7WHKi
+XYq7BjlrllIOXPxLtacWpTB/HADKoLierClCWeDXc0K1otS9ZMy7D7+UD2Db4clc
+T5u+IhRq0Y7NPQQ0DtRXVd4gLVjt9w==
+=PvI8
+-----END PGP SIGNATURE-----
 
-
-vim +1104 include/linux/filter.h
-
-  1091	
-  1092	static inline bool bpf_jit_blinding_enabled(struct bpf_prog *prog)
-  1093	{
-  1094		/* These are the prerequisites, should someone ever have the
-  1095		 * idea to call blinding outside of them, we make sure to
-  1096		 * bail out.
-  1097		 */
-  1098		if (!bpf_jit_is_ebpf())
-  1099			return false;
-  1100		if (!prog->jit_requested)
-  1101			return false;
-  1102		if (!bpf_jit_harden)
-  1103			return false;
-> 1104		if (bpf_jit_harden == 1 && bpf_token_capable(prog->aux->token, CAP_BPF))
-  1105			return false;
-  1106	
-  1107		return true;
-  1108	}
-  1109	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--Sig_/orKwvZW7.iPNQ9_UONq7tER--
 
