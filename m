@@ -1,287 +1,161 @@
-Return-Path: <bpf+bounces-9903-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9904-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0BCB79E81C
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 14:33:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEFB279E880
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 15:00:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4802E1C211BA
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 12:33:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7132B280FB8
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 13:00:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F6851A722;
-	Wed, 13 Sep 2023 12:32:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEF421A71C;
+	Wed, 13 Sep 2023 13:00:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C63C71A717
-	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 12:32:39 +0000 (UTC)
-Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C7019A8;
-	Wed, 13 Sep 2023 05:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1694608359; x=1726144359;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC6933D6C
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 13:00:07 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6882A1989;
+	Wed, 13 Sep 2023 06:00:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694610004; x=1726146004;
   h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:reply-to:mime-version:
-   content-transfer-encoding;
-  bh=5oIhYdCJEkownT50F9w6XGgNq4kRwDe875Odq22n3v0=;
-  b=rj9DLiQpKgT1eW9AVJHWZadTQRzs3rqrqJhPFd/kAA7Eu0hcCLMYsS6i
-   UpqvIMr6zd729bhQfiMYwSjjydHmFZOrcZx9jNFx1lQE0iGnJB8xMFil3
-   DsE1bSFcf71Oj9s4SdjelPmg0+8hurhOKP1ct2Dp4ZEQWi3v+2KTxIadT
-   s=;
-X-IronPort-AV: E=Sophos;i="6.02,143,1688428800"; 
-   d="scan'208";a="238776791"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-3e1fab07.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 12:32:35 +0000
-Received: from EX19D017EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-	by email-inbound-relay-iad-1e-m6i4x-3e1fab07.us-east-1.amazon.com (Postfix) with ESMTPS id 61788805E0;
-	Wed, 13 Sep 2023 12:32:29 +0000 (UTC)
-Received: from dev-dsk-gerhorst-1c-a6f23d20.eu-west-1.amazon.com
- (10.15.21.113) by EX19D017EUA004.ant.amazon.com (10.252.50.239) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 13 Sep
- 2023 12:32:22 +0000
-From: Luis Gerhorst <gerhorst@amazon.de>
-To: <alexei.starovoitov@gmail.com>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <haoluo@google.com>, <john.fastabend@gmail.com>,
-	<jolsa@kernel.org>, <kpsingh@kernel.org>, <laoar.shao@gmail.com>,
-	<martin.lau@linux.dev>, <sdf@google.com>, <song@kernel.org>,
-	<yonghong.song@linux.dev>, <mykolal@fb.com>, <shuah@kernel.org>,
-	<gerhorst@amazon.de>, <iii@linux.ibm.com>, <linux-kselftest@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Luis Gerhorst <gerhorst@cs.fau.de>
-Subject: [PATCH 3/3] selftests/bpf: Add selftest for packet-pointer Spectre v1 gadget
-Date: Wed, 13 Sep 2023 12:31:54 +0000
-Message-ID: <20230913123154.94264-1-gerhorst@amazon.de>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <CAADnVQLid7QvukhnqRoY2VVFi1tCfkPFsMGUUeHDtCgf0SAJCg@mail.gmail.com>
-References: <CAADnVQLid7QvukhnqRoY2VVFi1tCfkPFsMGUUeHDtCgf0SAJCg@mail.gmail.com>
-Reply-To: <gerhorst@cs.fau.de>
+   references:mime-version:content-transfer-encoding;
+  bh=SS5UdfEd5/aGjW95PuR1Hrc1ehfo5reasMr5Jb91wy0=;
+  b=abDz9kzUWQ2kSs78Eu+X4vtTDYKdewXwQ4f83lRCbdq0qzG5xo74sORm
+   JU//2HDLl7s1TqO7EhQyhKK8RrT3jIGNiijTSuaDL6NZVNf2M0EBsXVp0
+   bbt0+TkIvbFDfpHM5zQHaiIQK4lv7/jB1ooIwWiPTz8kp/ZvDcvYIFDwi
+   u8/+rFdawT4wQH7oxpk9qQJjL3CdF64BivVoUFelVwhOSolMJEc4xUI1Z
+   tqgWr9kZ/TIGWi+Zvhv+wc1WM0twa55iPY4tyOKeTXabswx6l2E3wryZS
+   0dL99OnYx9Ep7Q94vIYE6Akqrd6mFQcfdJjvy7UKe/tJ5Pzzvd+LNQPgQ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="375983355"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="375983355"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 06:00:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="990908097"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="990908097"
+Received: from asjackso-mobl2.amr.corp.intel.com (HELO tkristo-desk.intel.com) ([10.249.45.219])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 05:59:59 -0700
+From: Tero Kristo <tero.kristo@linux.intel.com>
+To: x86@kernel.org,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	tglx@linutronix.de
+Cc: hpa@zytor.com,
+	irogers@google.com,
+	jolsa@kernel.org,
+	namhyung@kernel.org,
+	adrian.hunter@intel.com,
+	acme@kernel.org,
+	mingo@redhat.com,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	alexander.shishkin@linux.intel.com,
+	linux-perf-users@vger.kernel.org,
+	peterz@infradead.org,
+	mark.rutland@arm.com
+Subject: [PATCHv2 2/2] perf/core: Allow reading package events from perf_event_read_local
+Date: Wed, 13 Sep 2023 15:59:56 +0300
+Message-Id: <20230913125956.3652667-1-tero.kristo@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230912124432.3616761-2-tero.kristo@linux.intel.com>
+References: <20230912124432.3616761-2-tero.kristo@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Originating-IP: [10.15.21.113]
-X-ClientProxiedBy: EX19D035UWB003.ant.amazon.com (10.13.138.85) To
- EX19D017EUA004.ant.amazon.com (10.252.50.239)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-When allowing speculative leaks by enabling packet pointer accesses
-without CAP_PERFMON (i.e., without having [1] reverted):
+Per-package perf events are typically registered with a single CPU only,
+however they can be read across all the CPUs within the package.
+Currently perf_event_read maps the event CPU according to the topology
+information to avoid an unnecessary SMP call, however
+perf_event_read_local deals with hard values and rejects a read with a
+failure if the CPU is not the one exactly registered. Allow similar
+mapping within the perf_event_read_local if the perf event in question
+can support this.
 
-  $ tools/testing/selftests/bpf/test_progs --name=tc_bpf
-  tc_bpf_non_root:PASS:set_cap_bpf_cap_net_admin 0 nsec
-  tc_bpf_non_root:PASS:disable_cap_sys_admin 0 nsec
-  tc_bpf_non_root:FAIL:test_tc_bpf__open_and_load unexpected pointer: 0x55bbd81969a0
-  Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
+This allows users like BPF code to read the package perf events properly
+across different CPUs within a package.
 
-With [1] reverted:
-
-  $ tools/testing/selftests/bpf/test_progs --name=tc_bpf
-  #238/1   tc_bpf/tc_bpf_root:OK
-  #238/2   tc_bpf/tc_bpf_non_root:OK
-  #238     tc_bpf:OK
-  Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-
-[1] d75e30dddf73449bc2d10bb8e2f1a2c446bc67a2 ("bpf: Fix issue in verifying allow_ptr_leaks")
-
-Signed-off-by: Luis Gerhorst <gerhorst@amazon.de>
-Signed-off-by: Luis Gerhorst <gerhorst@cs.fau.de>
-Based-on-patch-by: Yafang Shao <laoar.shao@gmail.com>
+Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
 ---
- .../testing/selftests/bpf/prog_tests/tc_bpf.c | 37 +++++++-
- .../testing/selftests/bpf/progs/test_tc_bpf.c | 95 +++++++++++++++++++
- 2 files changed, 131 insertions(+), 1 deletion(-)
+v2:
+  * prevent illegal array access in case event->oncpu == -1
+  * split the event->cpu / event->oncpu handling to their own variables
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_bpf.c b/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
-index e873766276d1..5319cb94a0ae 100644
---- a/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
-@@ -3,6 +3,7 @@
- #include <test_progs.h>
- #include <linux/pkt_cls.h>
- 
-+#include "cap_helpers.h"
- #include "test_tc_bpf.skel.h"
- 
- #define LO_IFINDEX 1
-@@ -327,7 +328,7 @@ static int test_tc_bpf_api(struct bpf_tc_hook *hook, int fd)
- 	return 0;
- }
- 
--void test_tc_bpf(void)
-+void tc_bpf_root(void)
+ kernel/events/core.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 4c72a41f11af..6b343bac0a71 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -4425,6 +4425,9 @@ static int __perf_event_read_cpu(struct perf_event *event, int event_cpu)
  {
- 	DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .ifindex = LO_IFINDEX,
- 			    .attach_point = BPF_TC_INGRESS);
-@@ -393,3 +394,37 @@ void test_tc_bpf(void)
+ 	u16 local_pkg, event_pkg;
+ 
++	if (event_cpu < 0 || event_cpu >= nr_cpu_ids)
++		return event_cpu;
++
+ 	if (event->group_caps & PERF_EV_CAP_READ_ACTIVE_PKG) {
+ 		int local_cpu = smp_processor_id();
+ 
+@@ -4528,6 +4531,8 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
+ {
+ 	unsigned long flags;
+ 	int ret = 0;
++	int event_cpu;
++	int event_oncpu;
+ 
+ 	/*
+ 	 * Disabling interrupts avoids all counter scheduling (context
+@@ -4551,15 +4556,22 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
+ 		goto out;
  	}
- 	test_tc_bpf__destroy(skel);
- }
-+
-+void tc_bpf_non_root(void)
-+{
-+	struct test_tc_bpf *skel = NULL;
-+	__u64 caps = 0;
-+	int ret;
-+
-+	/* In case CAP_BPF and CAP_PERFMON is not set */
-+	ret = cap_enable_effective(1ULL << CAP_BPF | 1ULL << CAP_NET_ADMIN, &caps);
-+	if (!ASSERT_OK(ret, "set_cap_bpf_cap_net_admin"))
-+		return;
-+	ret = cap_disable_effective(1ULL << CAP_SYS_ADMIN | 1ULL << CAP_PERFMON, NULL);
-+	if (!ASSERT_OK(ret, "disable_cap_sys_admin"))
-+		goto restore_cap;
-+
-+	skel = test_tc_bpf__open_and_load();
-+	if (!ASSERT_ERR_PTR(skel, "test_tc_bpf__open_and_load"))
-+		goto destroy;
-+
-+	goto restore_cap;
-+destroy:
-+	test_tc_bpf__destroy(skel);
-+restore_cap:
-+	if (caps)
-+		cap_enable_effective(caps, NULL);
-+}
-+
-+void test_tc_bpf(void)
-+{
-+	if (test__start_subtest("tc_bpf_root"))
-+		tc_bpf_root();
-+	if (test__start_subtest("tc_bpf_non_root"))
-+		tc_bpf_non_root();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_bpf.c b/tools/testing/selftests/bpf/progs/test_tc_bpf.c
-index d28ca8d1f3d0..3b3f9ce6b9d4 100644
---- a/tools/testing/selftests/bpf/progs/test_tc_bpf.c
-+++ b/tools/testing/selftests/bpf/progs/test_tc_bpf.c
-@@ -2,6 +2,8 @@
  
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
-+#include <linux/if_ether.h>
-+#include <linux/ip.h>
++	/*
++	 * Get the event CPU numbers, and adjust them to local if the event is
++	 * a per-package event that can be read locally
++	 */
++	event_oncpu = __perf_event_read_cpu(event, event->oncpu);
++	event_cpu = __perf_event_read_cpu(event, event->cpu);
++
+ 	/* If this is a per-CPU event, it must be for this CPU */
+ 	if (!(event->attach_state & PERF_ATTACH_TASK) &&
+-	    event->cpu != smp_processor_id()) {
++	    event_cpu != smp_processor_id()) {
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
  
- /* Dummy prog to test TC-BPF API */
+ 	/* If this is a pinned event it must be running on this CPU */
+-	if (event->attr.pinned && event->oncpu != smp_processor_id()) {
++	if (event->attr.pinned && event_oncpu != smp_processor_id()) {
+ 		ret = -EBUSY;
+ 		goto out;
+ 	}
+@@ -4569,7 +4581,7 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
+ 	 * or local to this CPU. Furthermore it means its ACTIVE (otherwise
+ 	 * oncpu == -1).
+ 	 */
+-	if (event->oncpu == smp_processor_id())
++	if (event_oncpu == smp_processor_id())
+ 		event->pmu->read(event);
  
-@@ -10,3 +12,96 @@ int cls(struct __sk_buff *skb)
- {
- 	return 0;
- }
-+
-+/* Prog to verify tc-bpf without cap_sys_admin and cap_perfmon is rejected as
-+ * required to prevent Spectre v1 using CPU multiplication port contention
-+ * side-channel. This is not a full exploit but rather a PoC for x86_64. With
-+ * extensions to the verifier's mitigations this may become obsolete.
-+ *
-+ * This should compile to the following bytecode if the kernel would allow
-+ * unprivileged packet pointer accesses:
-+ *
-+
-+0000000000000000 <pkt_ptr>:
-+       0:	b4 00 00 00 00 00 00 00	w0 = 0
-+       1:	61 12 50 00 00 00 00 00	r2 = *(u32 *)(r1 + 80)
-+       2:	61 11 4c 00 00 00 00 00	r1 = *(u32 *)(r1 + 76)
-+       3:	bf 13 00 00 00 00 00 00	r3 = r1
-+       4:	07 03 00 00 22 00 00 00	r3 += 34
-+       5:	bd 23 07 00 00 00 00 00	if r3 <= r2 goto +7 <LBB1_3>
-+       6:	71 10 0e 00 00 00 00 00	r0 = *(u8 *)(r1 + 14)
-+       7:	64 00 00 00 18 00 00 00	w0 <<= 24
-+       8:	c4 00 00 00 18 00 00 00	w0 s>>= 24
-+       9:	bc 01 00 00 00 00 00 00	w1 = w0
-+      10:	54 01 00 00 01 00 00 00	w1 &= 1
-+      11:	16 01 01 00 00 00 00 00	if w1 == 0 goto +1 <LBB1_3>
-+      12:	24 00 00 00 61 00 00 00	w0 *= 97
-+
-+0000000000000068 <LBB1_3>:
-+      13:	95 00 00 00 00 00 00 00	exit
-+
-+ *
-+ * Which should in turn translate to this x86_64 assembly with !allow_ptr_leaks
-+ * and !bypass_spec_v1:
-+ *
-+
-+int pkt_ptr(struct __sk_buff * skb):
-+bpf_prog_7c3834bad32f2b0f_pkt_ptr:
-+; int pkt_ptr(struct __sk_buff *skb)
-+   0:   endbr64
-+   4:   nopl   0x0(%rax,%rax,1)
-+   9:   xchg   %ax,%ax
-+   b:   push   %rbp
-+   c:   mov    %rsp,%rbp
-+   f:   endbr64
-+  13:   xor    %eax,%eax
-+; if ((long)(iph + 1) > (long)skb->data_end)
-+  15:   mov    0x50(%rdi),%rsi
-+; struct iphdr *iph = (void *)(long)skb->data + sizeof(struct ethhdr);
-+  19:   mov    0xc8(%rdi),%rdi
-+; if ((long)(iph + 1) > (long)skb->data_end)
-+  20:   mov    %rdi,%rdx
-+  23:   add    $0x22,%rdx
-+; if ((long)(iph + 1) > (long)skb->data_end)
-+  27:   cmp    %rsi,%rdx
-+  2a:   ja     0x0000000000000043
-+; char secret = *((char *) iph);
-+  2c:   movzbq 0xe(%rdi),%rax
-+  31:   shl    $0x18,%eax
-+  34:   sar    $0x18,%eax
-+; if (secret & 1) {
-+  37:   mov    %eax,%edi
-+  39:   and    $0x1,%edi
-+; if (secret & 1) {
-+  3c:   test   %edi,%edi
-+  3e:   je     0x0000000000000043
-+  40:   imul   $0x61,%eax,%eax
-+; }
-+  43:   leaveq
-+  44:   retq
-+
-+ *
-+ */
-+SEC("tcx/ingress")
-+int pkt_ptr(struct __sk_buff *skb)
-+{
-+	struct iphdr *iph = (void *)(long)skb->data + sizeof(struct ethhdr);
-+
-+	/* Branch to be speculatively bypassed. */
-+	if ((long)(iph + 1) > (long)skb->data_end)
-+		return 0;
-+
-+	/* Speculative access to be prevented. */
-+	char secret = *((char *) iph);
-+
-+	/* Leak the first bit of the secret value that lies behind data_end to a
-+	 * SMP silbling thread that also executes imul instructions. If the bit
-+	 * is 1, the silbling will experience a slowdown. */
-+	long long x = secret;
-+	if (secret & 1) {
-+		x *= 97;
-+	}
-+
-+	/* To prevent optimization. */
-+	return x;
-+}
+ 	*value = local64_read(&event->count);
 -- 
 2.40.1
-
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
 
 
