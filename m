@@ -1,31 +1,31 @@
-Return-Path: <bpf+bounces-9930-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9932-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 872C379ED3D
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 17:37:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A582179ED3F
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 17:37:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 185682820AD
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 15:37:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 273791C20F11
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 15:37:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B114200A6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C95C200A7;
 	Wed, 13 Sep 2023 15:33:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 299841F92D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3286A1F92F;
 	Wed, 13 Sep 2023 15:33:55 +0000 (UTC)
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8E3C1;
-	Wed, 13 Sep 2023 08:33:53 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B906E54;
+	Wed, 13 Sep 2023 08:33:54 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rm4HL0lqQz4f3kK0;
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rm4HL1c5gz4f3kK8;
 	Wed, 13 Sep 2023 23:33:50 +0800 (CST)
 Received: from ultra.huawei.com (unknown [10.90.53.71])
-	by APP2 (Coremail) with SMTP id Syh0CgAXIAVd1gFltNV8AQ--.25893S6;
+	by APP2 (Coremail) with SMTP id Syh0CgAXIAVd1gFltNV8AQ--.25893S7;
 	Wed, 13 Sep 2023 23:33:50 +0800 (CST)
 From: Pu Lehui <pulehui@huaweicloud.com>
 To: bpf@vger.kernel.org,
@@ -47,9 +47,9 @@ Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
 	Luke Nelson <luke.r.nels@gmail.com>,
 	Pu Lehui <pulehui@huawei.com>,
 	Pu Lehui <pulehui@huaweicloud.com>
-Subject: [PATCH bpf-next 4/6] riscv, bpf: Add necessary Zbb instructions
-Date: Wed, 13 Sep 2023 23:34:11 +0800
-Message-Id: <20230913153413.1446068-5-pulehui@huaweicloud.com>
+Subject: [PATCH bpf-next 5/6] riscv, bpf: Optimize sign-extention mov insns with Zbb support
+Date: Wed, 13 Sep 2023 23:34:12 +0800
+Message-Id: <20230913153413.1446068-6-pulehui@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230913153413.1446068-1-pulehui@huaweicloud.com>
 References: <20230913153413.1446068-1-pulehui@huaweicloud.com>
@@ -60,10 +60,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgAXIAVd1gFltNV8AQ--.25893S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1rAFy3WF4rWrWfuFW8Crg_yoW8Wr4xpa
-	n8GrWrAa4vqFyfGryftr48Xr4YvFs5Ww13Jr4293yDJa17WrZIk3s5Kw17tFn8Gry8Cr9x
-	WFZ8KF4rCa18AFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:Syh0CgAXIAVd1gFltNV8AQ--.25893S7
+X-Coremail-Antispam: 1UD129KBjvJXoW7KryDur1xJF48AFWUGry3Jwb_yoW8Aw45pF
+	WUGrs3C392qF1SqF9xtF47Wr15GFsYvF13KF1xC398ta1Iqr4DCw1Skw17AF98GFyrW3Wr
+	WFWj9r13C3Wvv37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -83,61 +83,63 @@ X-CFilter-Loop: Reflected
 
 From: Pu Lehui <pulehui@huawei.com>
 
-Add necessary Zbb instructions introduced by [0] to reduce code size and
-improve performance of RV64 JIT. At the same time, a helper is added to
-check whether the CPU supports Zbb instructions.
-
-[0] https://github.com/riscv/riscv-bitmanip/releases/download/1.0.0/bitmanip-1.0.0-38-g865e7a7.pdf
+Add 8-bit and 16-bit sign-extention wraper with Zbb support to optimize
+sign-extension mov instructions.
 
 Signed-off-by: Pu Lehui <pulehui@huawei.com>
 ---
- arch/riscv/net/bpf_jit.h | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ arch/riscv/net/bpf_jit.h        | 20 ++++++++++++++++++++
+ arch/riscv/net/bpf_jit_comp64.c |  5 +++--
+ 2 files changed, 23 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
-index 8e0ef4d08..7ee59d1f6 100644
+index 7ee59d1f6..fb6347bd4 100644
 --- a/arch/riscv/net/bpf_jit.h
 +++ b/arch/riscv/net/bpf_jit.h
-@@ -18,6 +18,11 @@ static inline bool rvc_enabled(void)
- 	return IS_ENABLED(CONFIG_RISCV_ISA_C);
+@@ -1110,6 +1110,26 @@ static inline void emit_subw(u8 rd, u8 rs1, u8 rs2, struct rv_jit_context *ctx)
+ 		emit(rv_subw(rd, rs1, rs2), ctx);
  }
  
-+static inline bool rvzbb_enabled(void)
++static inline void emit_sextb(u8 rd, u8 rs, struct rv_jit_context *ctx)
 +{
-+	return IS_ENABLED(CONFIG_RISCV_ISA_ZBB);
++	if (rvzbb_enabled()) {
++		emit(rvzbb_sextb(rd, rs), ctx);
++	} else {
++		emit_slli(rd, rs, 56, ctx);
++		emit_srai(rd, rd, 56, ctx);
++	}
 +}
 +
- enum {
- 	RV_REG_ZERO =	0,	/* The constant value 0 */
- 	RV_REG_RA =	1,	/* Return address */
-@@ -727,6 +732,27 @@ static inline u16 rvc_swsp(u32 imm8, u8 rs2)
- 	return rv_css_insn(0x6, imm, rs2, 0x2);
- }
- 
-+/* RVZBB instrutions. */
-+static inline u32 rvzbb_sextb(u8 rd, u8 rs1)
++static inline void emit_sexth(u8 rd, u8 rs, struct rv_jit_context *ctx)
 +{
-+       return rv_i_insn(0x604, rs1, 1, rd, 0x13);
++	if (rvzbb_enabled()) {
++		emit(rvzbb_sexth(rd, rs), ctx);
++	} else {
++		emit_slli(rd, rs, 48, ctx);
++		emit_srai(rd, rd, 48, ctx);
++	}
 +}
 +
-+static inline u32 rvzbb_sexth(u8 rd, u8 rs1)
-+{
-+       return rv_i_insn(0x605, rs1, 1, rd, 0x13);
-+}
-+
-+static inline u32 rvzbb_zexth(u8 rd, u8 rs)
-+{
-+       return rv_i_insn(0x80, rs, 4, rd, __riscv_xlen == 64 ? 0x3b : 0x33);
-+}
-+
-+static inline u32 rvzbb_rev8(u8 rd, u8 rs)
-+{
-+       return rv_i_insn(__riscv_xlen == 64 ? 0x6b8 : 0x698, rs, 5, rd, 0x13);
-+}
-+
- /*
-  * RV64-only instructions.
-  *
+ static inline void emit_sextw(u8 rd, u8 rs, struct rv_jit_context *ctx)
+ {
+ 	emit_addiw(rd, rs, 0, ctx);
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index 1728ce16d..2ba14d716 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -1027,9 +1027,10 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 			emit_mv(rd, rs, ctx);
+ 			break;
+ 		case 8:
++			emit_sextb(rd, rs, ctx);
++			break;
+ 		case 16:
+-			emit_slli(RV_REG_T1, rs, 64 - insn->off, ctx);
+-			emit_srai(rd, RV_REG_T1, 64 - insn->off, ctx);
++			emit_sexth(rd, rs, ctx);
+ 			break;
+ 		case 32:
+ 			emit_sextw(rd, rs, ctx);
 -- 
 2.25.1
 
