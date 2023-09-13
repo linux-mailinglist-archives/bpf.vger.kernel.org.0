@@ -1,127 +1,165 @@
-Return-Path: <bpf+bounces-9937-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9939-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5252079EE13
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 18:12:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5816F79EE31
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 18:24:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BBA3281E19
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 16:12:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 820DB1C20FED
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 16:24:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1E01F944;
-	Wed, 13 Sep 2023 16:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8B781F953;
+	Wed, 13 Sep 2023 16:23:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EA528F68
-	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 16:12:45 +0000 (UTC)
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E07B8
-	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 09:12:44 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50091b91a83so11519387e87.3
-        for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 09:12:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694621562; x=1695226362; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DZHPBUHROlmV78pmncNrNTS0Rrd+auaZ+8hoskWMuyE=;
-        b=FstBmudz1EZMwuU4I/im250sZDNiYyCX1zhCQfJEd0qCna043p8eU6L4yYnnuDdaTz
-         QeMNAG+3AvUhXYMazt3knTHpWorXqhH6X/dkEjMa8VM0TIhuTK80NhvHtligVu1ZkSy3
-         YsHg9P8giNQYKb/f6gINxyz+YNbyl0cIRLCTGMAtIcTx86a/3cMXJdUk56N9cO6yB/hK
-         LSpsviwcUtXU1JxzqkDRl9v0N4BAH9ptDcLmJha/UeF/PKnM2pWwVzAutF+oqOS4SAES
-         wmbdzS1MRFi63uNhD7xi4LB3rKAJfimm2efJx/XrZbE+2gK7wHB8zCMDrYi5b6MSx0Ly
-         Bwhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694621562; x=1695226362;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DZHPBUHROlmV78pmncNrNTS0Rrd+auaZ+8hoskWMuyE=;
-        b=L5P6RYsIwVUc3vN+NgUYbVkUllks6ytHBp/pcmg5BBaU0cHoO4r6gGtC78f8zkTahR
-         Fd91uePlNvIYsgSFcykvrVV3LH51Sxpxj2bi8Ba2116iD51UipM6S9IWKWty1CAOZIJ/
-         iqzBoKNnmrX5rvwdXro9jy2wuOic/lKtSRIwGbawx6ULxaP3eNCANgeOYTkASbYRdK0g
-         TshMQCx+WcrdK9MHicKaSXntAwZd4SYzMGLZBFSo78zeovDpF+AZHGyUlyeS20d5riuw
-         r3UJWbwyRIFQHRsCC6CvQp170bcGPjbwVe/YK7sj0mxbCZWaGnZUgHDbSOSrIy8KEtlT
-         xIaA==
-X-Gm-Message-State: AOJu0YxH5WEuckBcqRyiwBpP7QXPjkLsoDEmULmF4zC2C3QlDNU7kLCy
-	QaQxYgCJett0GBgHvn9Ji5wJn4agzvE1rYLFewRYB+GSuFPgpcIF
-X-Google-Smtp-Source: AGHT+IEOq82pLFuGPeVkYeNR+4Udl/T8LisA1Am9+Wo9Dy9SuCtvUoQmsGBjT1FsZ2RTGD6CVf8C8VUqO/ESOyiDX1c=
-X-Received: by 2002:a05:6512:110a:b0:500:aa41:9d67 with SMTP id
- l10-20020a056512110a00b00500aa419d67mr3063240lfg.8.1694621562071; Wed, 13 Sep
- 2023 09:12:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0E378F6E;
+	Wed, 13 Sep 2023 16:23:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4E09C433CA;
+	Wed, 13 Sep 2023 16:23:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1694622234;
+	bh=8VoScEvUyoiDW9AdnpzrCROK3tKKfb5CZhsEihgoG3g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=N7s1IOoxxPdu4onAmi4d9534YJpOJUqFgHZrygzVHfp7xJuM6OEw+NEPML68xaiAF
+	 Pjcfnj8Cy4TI2y6H1NBr1OVzxGLk7rQ4yiTf5xtYPH059dhRCOZ46cqr+Vvt6/f1GR
+	 D2OxnXn6/tUKYeBLTYTfGbZl18skl2vnJSbxivGkeGLA93tg3dKfVqrJ2kYBr6CAyI
+	 qWcSV0vV+tMQrqZl+fZpUIL44/nH5sYPA6x/QrS4X/0+VoWiPG8IJ3e/dIBZ8caTBK
+	 qntSNTgoj5Uf8yIyv8dnfhsZf5v8IGEDkal8YE7Lu7N4y1iN4b/CAx0YH4uivRKphw
+	 1Awad78OmONew==
+Date: Wed, 13 Sep 2023 17:23:48 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Pu Lehui <pulehui@huaweicloud.com>
+Cc: bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
+	netdev@vger.kernel.org,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Luke Nelson <luke.r.nels@gmail.com>, Pu Lehui <pulehui@huawei.com>
+Subject: Re: [PATCH bpf-next 4/6] riscv, bpf: Add necessary Zbb instructions
+Message-ID: <20230913-granny-heat-35d70b49ac85@spud>
+References: <20230913153413.1446068-1-pulehui@huaweicloud.com>
+ <20230913153413.1446068-5-pulehui@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230912233214.1518551-1-memxor@gmail.com> <20230912233214.1518551-18-memxor@gmail.com>
- <mb61pr0n214xq.fsf@amazon.com>
-In-Reply-To: <mb61pr0n214xq.fsf@amazon.com>
-From: Puranjay Mohan <puranjay12@gmail.com>
-Date: Wed, 13 Sep 2023 18:12:31 +0200
-Message-ID: <CANk7y0iBGC31ifLCLYOFgGaoj8V7UJKUMtx+p9DC5uirhXBZPw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 17/17] selftests/bpf: Add tests for BPF exceptions
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Yonghong Song <yonghong.song@linux.dev>, 
-	David Vernet <void@manifault.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="gdnSM3Xp1zOMi15X"
+Content-Disposition: inline
+In-Reply-To: <20230913153413.1446068-5-pulehui@huaweicloud.com>
+
+
+--gdnSM3Xp1zOMi15X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 13, 2023 at 5:14=E2=80=AFPM Puranjay Mohan <puranjay12@gmail.co=
-m> wrote:
->
-> On Wed, Sep 13 2023, Kumar Kartikeya Dwivedi wrote:
->
-> Hi,
->
-> > Add selftests to cover success and failure cases of API usage, runtime
-> > behavior and invariants that need to be maintained for implementation
-> > correctness.
-> >
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> >  tools/testing/selftests/bpf/DENYLIST.aarch64  |   1 +
-> >  tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
-> >  .../selftests/bpf/prog_tests/exceptions.c     | 408 ++++++++++++++++++
-> >  .../testing/selftests/bpf/progs/exceptions.c  | 368 ++++++++++++++++
-> >  .../selftests/bpf/progs/exceptions_assert.c   | 135 ++++++
-> >  .../selftests/bpf/progs/exceptions_ext.c      |  72 ++++
-> >  .../selftests/bpf/progs/exceptions_fail.c     | 347 +++++++++++++++
-> >  7 files changed, 1332 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/exceptions.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/exceptions.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/exceptions_assert=
-.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/exceptions_ext.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/exceptions_fail.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testi=
-ng/selftests/bpf/DENYLIST.aarch64
-> > index 7f768d335698..f5065576cae9 100644
-> > --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-> > +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-> > @@ -1,5 +1,6 @@
-> >  bpf_cookie/multi_kprobe_attach_api               # kprobe_multi_link_a=
-pi_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
-> >  bpf_cookie/multi_kprobe_link_api                 # kprobe_multi_link_a=
-pi_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
-> > +exceptions                                    # JIT does not support c=
-alling kfunc bpf_throw: -524
->
-> I think you forgot to drop this.
-> exceptions work on aarch64 with this: https://lore.kernel.org/bpf/2023091=
-2233942.6734-1-puranjay12@gmail.com/
+On Wed, Sep 13, 2023 at 11:34:11PM +0800, Pu Lehui wrote:
+> From: Pu Lehui <pulehui@huawei.com>
+>=20
+> Add necessary Zbb instructions introduced by [0] to reduce code size and
+> improve performance of RV64 JIT. At the same time, a helper is added to
+> check whether the CPU supports Zbb instructions.
+>=20
+> [0] https://github.com/riscv/riscv-bitmanip/releases/download/1.0.0/bitma=
+nip-1.0.0-38-g865e7a7.pdf
+>=20
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> ---
+>  arch/riscv/net/bpf_jit.h | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+>=20
+> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+> index 8e0ef4d08..7ee59d1f6 100644
+> --- a/arch/riscv/net/bpf_jit.h
+> +++ b/arch/riscv/net/bpf_jit.h
+> @@ -18,6 +18,11 @@ static inline bool rvc_enabled(void)
+>  	return IS_ENABLED(CONFIG_RISCV_ISA_C);
+>  }
+> =20
+> +static inline bool rvzbb_enabled(void)
+> +{
+> +	return IS_ENABLED(CONFIG_RISCV_ISA_ZBB);
+> +}
 
-Sorry for the noise. I realised that my patch should remove this from
-the DENYLIST.
+I dunno much about bpf, so passing question that may be a bit obvious:
+Is this meant to be a test as to whether the kernel binary is built with
+support for the extension, or whether the underlying platform is capable
+of executing zbb instructions.
 
-> Thanks,
-> Puranjay
+Sorry if that would be obvious to a bpf aficionado, context I have here
+is the later user and the above rvc_enabled() test, which functions
+differently to Zbb and so doesn't really help me.
+
+Thanks,
+Conor.
+
+> +
+>  enum {
+>  	RV_REG_ZERO =3D	0,	/* The constant value 0 */
+>  	RV_REG_RA =3D	1,	/* Return address */
+> @@ -727,6 +732,27 @@ static inline u16 rvc_swsp(u32 imm8, u8 rs2)
+>  	return rv_css_insn(0x6, imm, rs2, 0x2);
+>  }
+> =20
+> +/* RVZBB instrutions. */
+> +static inline u32 rvzbb_sextb(u8 rd, u8 rs1)
+> +{
+> +       return rv_i_insn(0x604, rs1, 1, rd, 0x13);
+> +}
+> +
+> +static inline u32 rvzbb_sexth(u8 rd, u8 rs1)
+> +{
+> +       return rv_i_insn(0x605, rs1, 1, rd, 0x13);
+> +}
+> +
+> +static inline u32 rvzbb_zexth(u8 rd, u8 rs)
+> +{
+> +       return rv_i_insn(0x80, rs, 4, rd, __riscv_xlen =3D=3D 64 ? 0x3b :=
+ 0x33);
+> +}
+> +
+> +static inline u32 rvzbb_rev8(u8 rd, u8 rs)
+> +{
+> +       return rv_i_insn(__riscv_xlen =3D=3D 64 ? 0x6b8 : 0x698, rs, 5, r=
+d, 0x13);
+> +}
+> +
+>  /*
+>   * RV64-only instructions.
+>   *
+> --=20
+> 2.25.1
+>=20
+>=20
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+--gdnSM3Xp1zOMi15X
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQHiFAAKCRB4tDGHoIJi
+0rE3AQDJSqVf5PFuL9NuR1rG1fneRG6aQgIytEsKp73KeKKgKQEA1wYuSNQw6iEB
+xZzZo8l2LAK8kyranGvVj6Wc1QSFyQI=
+=zvto
+-----END PGP SIGNATURE-----
+
+--gdnSM3Xp1zOMi15X--
 
