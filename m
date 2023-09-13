@@ -1,107 +1,195 @@
-Return-Path: <bpf+bounces-9900-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9901-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6A1779E717
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 13:47:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFC9379E7E6
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 14:27:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64EAE28252A
-	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 11:47:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE3221C20B81
+	for <lists+bpf@lfdr.de>; Wed, 13 Sep 2023 12:27:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C8181EA7D;
-	Wed, 13 Sep 2023 11:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F039B1EA96;
+	Wed, 13 Sep 2023 12:26:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009661E526
-	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 11:47:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4011C433C8;
-	Wed, 13 Sep 2023 11:47:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694605636;
-	bh=QqPRdNeD+/dYvnBl0JYSi5mYEsu9mAiNJAnLBzOCV5k=;
-	h=From:To:Cc:Subject:Date:From;
-	b=pico752EkLjCM5CfS+5xo1Dr41HK8nid9QlRu+WFeYc7JM+WEpmanE1kkE9awwJfc
-	 V4gXW2W39lU7JtLWXNJd/gP9XvQZKJrNWHZoyit/Yp0pHTNUdm0+wrRBTmgtH38UFx
-	 s2iHJ2gF6F3r8ukFf8pXH7sJLRp9wMXn+TtnhSkfyPqzpwMxTWUdeyI3pJovsRsfSV
-	 0EWzqpNYjCSrXWxbEO+Z38bOQWBDz1hkQrkjKJ698G0NAfgzbBsHUR1VTSfeiieCvc
-	 9n5pL4EQ6ilzqKljBAeP0/de/kBreqFbfOr4uAoEYrhUUv9Q6B7l6Gq+AKPNTJ3fYz
-	 RjWY3JJFBceTw==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>
-Subject: [PATCHv2 bpf] selftests/bpf: Fix kprobe_multi_test/attach_override test
-Date: Wed, 13 Sep 2023 13:47:11 +0200
-Message-ID: <20230913114711.499829-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.41.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A87FF17982
+	for <bpf@vger.kernel.org>; Wed, 13 Sep 2023 12:26:57 +0000 (UTC)
+Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6298019AC;
+	Wed, 13 Sep 2023 05:26:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1694608017; x=1726144017;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:reply-to:mime-version:
+   content-transfer-encoding;
+  bh=N31oCUU7CHkmI4vyS7k5OHuBwDNqQwrdeueOu92um7M=;
+  b=ZDQA5bMnR1OzmVVyqQQv3X9SwULIjvfA//mLcN5pIf51AuOXefg3TM9P
+   BZFq7GBRO5DfTY1D5baDzMuEdIbseRoJdZ19o017wnhVJWfMzKK6GNOoY
+   fcgbJqvwnZRB0ueLEVtxOm8olPu7aTeEc8yCky6fYmrfF2VsYKWXecM5O
+   k=;
+X-IronPort-AV: E=Sophos;i="6.02,143,1688428800"; 
+   d="scan'208";a="356058087"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-96feee09.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 12:26:54 +0000
+Received: from EX19D017EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+	by email-inbound-relay-iad-1a-m6i4x-96feee09.us-east-1.amazon.com (Postfix) with ESMTPS id 4CF2C47E7A;
+	Wed, 13 Sep 2023 12:26:49 +0000 (UTC)
+Received: from dev-dsk-gerhorst-1c-a6f23d20.eu-west-1.amazon.com
+ (10.15.21.113) by EX19D017EUA004.ant.amazon.com (10.252.50.239) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 13 Sep
+ 2023 12:26:42 +0000
+From: Luis Gerhorst <gerhorst@amazon.de>
+To: <alexei.starovoitov@gmail.com>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <haoluo@google.com>, <john.fastabend@gmail.com>,
+	<jolsa@kernel.org>, <kpsingh@kernel.org>, <laoar.shao@gmail.com>,
+	<martin.lau@linux.dev>, <sdf@google.com>, <song@kernel.org>,
+	<yonghong.song@linux.dev>, <mykolal@fb.com>, <shuah@kernel.org>,
+	<gerhorst@amazon.de>, <iii@linux.ibm.com>, <linux-kselftest@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Luis Gerhorst <gerhorst@cs.fau.de>
+Subject: [PATCH 1/3] Revert "selftests/bpf: Add selftest for allow_ptr_leaks"
+Date: Wed, 13 Sep 2023 12:25:15 +0000
+Message-ID: <20230913122514.89078-1-gerhorst@amazon.de>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <CAADnVQLid7QvukhnqRoY2VVFi1tCfkPFsMGUUeHDtCgf0SAJCg@mail.gmail.com>
+References: <CAADnVQLid7QvukhnqRoY2VVFi1tCfkPFsMGUUeHDtCgf0SAJCg@mail.gmail.com>
+Reply-To: <gerhorst@cs.fau.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.15.21.113]
+X-ClientProxiedBy: EX19D040UWA002.ant.amazon.com (10.13.139.113) To
+ EX19D017EUA004.ant.amazon.com (10.252.50.239)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-We need to deny the attach_override test for arm64, denying the
-whole kprobe_multi_test suite. Also making attach_override static.
+This reverts commit 0072e3624b463636c842ad8e261f1dc91deb8c78.
 
-Fixes: 7182e56411b9 ("selftests/bpf: Add kprobe_multi override test")
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+The test tests behavior which can not be permitted because of Spectre
+v1. See the following commit
+
+  Revert "bpf: Fix issue in verifying allow_ptr_leaks"
+
+which reverts commit d75e30dddf73449bc2d10bb8e2f1a2c446bc67a2 for a
+detailed description of the issue.
+
+Reported-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Luis Gerhorst <gerhorst@amazon.de>
+Signed-off-by: Luis Gerhorst <gerhorst@cs.fau.de>
 ---
- tools/testing/selftests/bpf/DENYLIST.aarch64             | 9 +--------
- .../testing/selftests/bpf/prog_tests/kprobe_multi_test.c | 2 +-
- 2 files changed, 2 insertions(+), 9 deletions(-)
+ .../testing/selftests/bpf/prog_tests/tc_bpf.c | 36 +------------------
+ .../testing/selftests/bpf/progs/test_tc_bpf.c | 13 -------
+ 2 files changed, 1 insertion(+), 48 deletions(-)
 
-v2 changes:
-  - rebased on latest bpf/master, used just kprobe_multi_test suite name
-    in DENYLIST.aarch64 to cover all kprobe_multi tests
-
-diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
-index 7f768d335698..b733ce16c0f8 100644
---- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-+++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-@@ -1,14 +1,7 @@
- bpf_cookie/multi_kprobe_attach_api               # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
- bpf_cookie/multi_kprobe_link_api                 # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
- fexit_sleep                                      # The test never returns. The remaining tests cannot start.
--kprobe_multi_bench_attach                        # bpf_program__attach_kprobe_multi_opts unexpected error: -95
--kprobe_multi_test/attach_api_addrs               # bpf_program__attach_kprobe_multi_opts unexpected error: -95
--kprobe_multi_test/attach_api_pattern             # bpf_program__attach_kprobe_multi_opts unexpected error: -95
--kprobe_multi_test/attach_api_syms                # bpf_program__attach_kprobe_multi_opts unexpected error: -95
--kprobe_multi_test/bench_attach                   # bpf_program__attach_kprobe_multi_opts unexpected error: -95
--kprobe_multi_test/link_api_addrs                 # link_fd unexpected link_fd: actual -95 < expected 0
--kprobe_multi_test/link_api_syms                  # link_fd unexpected link_fd: actual -95 < expected 0
--kprobe_multi_test/skel_api                       # libbpf: failed to load BPF skeleton 'kprobe_multi': -3
-+kprobe_multi_test                                # needs CONFIG_FPROBE
- module_attach                                    # prog 'kprobe_multi': failed to auto-attach: -95
- fentry_test/fentry_many_args                     # fentry_many_args:FAIL:fentry_many_args_attach unexpected error: -524
- fexit_test/fexit_many_args                       # fexit_many_args:FAIL:fexit_many_args_attach unexpected error: -524
-diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-index e05477b210a5..4041cfa670eb 100644
---- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-@@ -454,7 +454,7 @@ static void test_kprobe_multi_bench_attach(bool kernel)
- 	}
+diff --git a/tools/testing/selftests/bpf/prog_tests/tc_bpf.c b/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
+index 48b55539331e..e873766276d1 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
++++ b/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
+@@ -3,7 +3,6 @@
+ #include <test_progs.h>
+ #include <linux/pkt_cls.h>
+ 
+-#include "cap_helpers.h"
+ #include "test_tc_bpf.skel.h"
+ 
+ #define LO_IFINDEX 1
+@@ -328,7 +327,7 @@ static int test_tc_bpf_api(struct bpf_tc_hook *hook, int fd)
+ 	return 0;
  }
  
--void test_attach_override(void)
-+static void test_attach_override(void)
+-void tc_bpf_root(void)
++void test_tc_bpf(void)
  {
- 	struct kprobe_multi_override *skel = NULL;
- 	struct bpf_link *link = NULL;
+ 	DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .ifindex = LO_IFINDEX,
+ 			    .attach_point = BPF_TC_INGRESS);
+@@ -394,36 +393,3 @@ void tc_bpf_root(void)
+ 	}
+ 	test_tc_bpf__destroy(skel);
+ }
+-
+-void tc_bpf_non_root(void)
+-{
+-	struct test_tc_bpf *skel = NULL;
+-	__u64 caps = 0;
+-	int ret;
+-
+-	/* In case CAP_BPF and CAP_PERFMON is not set */
+-	ret = cap_enable_effective(1ULL << CAP_BPF | 1ULL << CAP_NET_ADMIN, &caps);
+-	if (!ASSERT_OK(ret, "set_cap_bpf_cap_net_admin"))
+-		return;
+-	ret = cap_disable_effective(1ULL << CAP_SYS_ADMIN | 1ULL << CAP_PERFMON, NULL);
+-	if (!ASSERT_OK(ret, "disable_cap_sys_admin"))
+-		goto restore_cap;
+-
+-	skel = test_tc_bpf__open_and_load();
+-	if (!ASSERT_OK_PTR(skel, "test_tc_bpf__open_and_load"))
+-		goto restore_cap;
+-
+-	test_tc_bpf__destroy(skel);
+-
+-restore_cap:
+-	if (caps)
+-		cap_enable_effective(caps, NULL);
+-}
+-
+-void test_tc_bpf(void)
+-{
+-	if (test__start_subtest("tc_bpf_root"))
+-		tc_bpf_root();
+-	if (test__start_subtest("tc_bpf_non_root"))
+-		tc_bpf_non_root();
+-}
+diff --git a/tools/testing/selftests/bpf/progs/test_tc_bpf.c b/tools/testing/selftests/bpf/progs/test_tc_bpf.c
+index ef7da419632a..d28ca8d1f3d0 100644
+--- a/tools/testing/selftests/bpf/progs/test_tc_bpf.c
++++ b/tools/testing/selftests/bpf/progs/test_tc_bpf.c
+@@ -2,8 +2,6 @@
+ 
+ #include <linux/bpf.h>
+ #include <bpf/bpf_helpers.h>
+-#include <linux/if_ether.h>
+-#include <linux/ip.h>
+ 
+ /* Dummy prog to test TC-BPF API */
+ 
+@@ -12,14 +10,3 @@ int cls(struct __sk_buff *skb)
+ {
+ 	return 0;
+ }
+-
+-/* Prog to verify tc-bpf without cap_sys_admin and cap_perfmon */
+-SEC("tcx/ingress")
+-int pkt_ptr(struct __sk_buff *skb)
+-{
+-	struct iphdr *iph = (void *)(long)skb->data + sizeof(struct ethhdr);
+-
+-	if ((long)(iph + 1) > (long)skb->data_end)
+-		return 1;
+-	return 0;
+-}
 -- 
-2.41.0
+2.40.1
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
 
 
