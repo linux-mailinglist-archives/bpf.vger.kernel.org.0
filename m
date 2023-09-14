@@ -1,193 +1,308 @@
-Return-Path: <bpf+bounces-10067-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10068-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B6F57A0BAE
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 19:26:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49F597A0BCA
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 19:31:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4410E2825B2
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 17:26:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC25B1F2486E
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 17:31:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18AFC262AE;
-	Thu, 14 Sep 2023 17:24:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3817A26291;
+	Thu, 14 Sep 2023 17:31:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E024EC8F3
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 17:24:24 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24101359C;
-	Thu, 14 Sep 2023 10:24:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=+rQkSX/sTt9mCfEyiFHgFHaHzrtXbCcdvkzQAAhcaCs=; b=jJYYKQiLbpdOVDjsdPtWUT6TFj
-	gIUSL0E1I0K9FlPVK7YspQJTHRg8rpubRjsPu6LnmF2U95xpHfr3wlI3gvjQinqqbGOBohWR2umHr
-	/oLG2eG2yInnO/eUSA7/xml20eBP76E7sgvVjIu+3H6NnDye2dsuxDMkYmsftqg9eYsFXFkl9TkUn
-	+O/XGVj0+MTrUU5BhYwV6I24vjTVr7m32a9Dhz1fdd2S4nYmWEa+uCzGdeiikHwbziwI2M3GfUYa1
-	gSq4dY0QkoWQC11WwBan3CsrqqUDr/s/o4pTND1h2ZEfxN9FqRqWTsOCuqSeiL5dMwQq3Wds8K39S
-	eWDU0MpA==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qgq4Z-000J4w-I0; Thu, 14 Sep 2023 19:24:11 +0200
-Received: from [64.61.70.24] (helo=localhost.localdomain)
-	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qgq4Y-0009Z8-JG; Thu, 14 Sep 2023 19:24:10 +0200
-Subject: Re: [PATCH 2/3] Revert "bpf: Fix issue in verifying allow_ptr_leaks"
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Luis Gerhorst <gerhorst@cs.fau.de>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- bpf <bpf@vger.kernel.org>, Hao Luo <haoluo@google.com>,
- John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>,
- KP Singh <kpsingh@kernel.org>, Yafang Shao <laoar.shao@gmail.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev
- <sdf@google.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, gerhorst@amazon.de,
- Ilya Leoshkevich <iii@linux.ibm.com>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Hagar Gamal Halim Hemdan <hagarhem@amazon.de>,
- Puranjay Mohan <puranjay12@gmail.com>
-References: <CAADnVQLid7QvukhnqRoY2VVFi1tCfkPFsMGUUeHDtCgf0SAJCg@mail.gmail.com>
- <20230913122827.91591-1-gerhorst@amazon.de>
- <CAADnVQJsjVf3t0OJCZkc3rNpHMi_ZTtwLa3LBMi6ot3zufnb+A@mail.gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <723a49b4-c4ed-3b0b-2a9d-915b49725411@iogearbox.net>
-Date: Thu, 14 Sep 2023 19:24:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E540B10A2F
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 17:31:27 +0000 (UTC)
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE919B;
+	Thu, 14 Sep 2023 10:31:26 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-502defbb0c3so2176944e87.0;
+        Thu, 14 Sep 2023 10:31:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694712685; x=1695317485; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OMHN56Md/rXpUdz8F53cl2sQe2G45nHnzdvjCyrgRQY=;
+        b=HBzw2lo70H8zvHj6bm2XrvU79ATHkXEKzE+BXFG5RuYBOC/2dSfO76YXvW0o4+CRST
+         GPtULWFxZda2emq/yoJ+varoYF8FfoYB/YAkKRFI2aOVajy8lgtVOxS/cgVsrEtaTvdL
+         E29PYO+cEqNvcq6Q6Tsdo9n3zpX5P6bFKSdhUiRHHCC1+CoTM/3wswhnejnovCW3jBVG
+         jqyIMSGVhgRauqLZl4CeMVA6MXGaHnJuPHrfc2MXXdyC4y3XnI68xOOikFL5MFHAehu4
+         XvYWkdk/wHpKqpqCtWLxCoy+k0vBL4EboKoSRFFjhWzHUviTGmUMYAYvNki9J3NOUdYx
+         73qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694712685; x=1695317485;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OMHN56Md/rXpUdz8F53cl2sQe2G45nHnzdvjCyrgRQY=;
+        b=Rbo7Jyq39nIYdgxRNdyeUNzrsm+rlK8HKfCTpkqrg+1ntsmP9GsUVy2tB5c+CR7XgL
+         4ymbkVEwQcUToA1FnEqOyLt4VV9LyuDWDqU66fplczZM4GlWTBre6I+m94oG70k4bx/E
+         KdwZMvhAYihxXxGReSd0mA9Q0i2DySD/NxmBbfNsdSryK5NVi+NPAK+0xeXeWQGCNcrT
+         B6Fqq6mLLpdGzscf3fvVaTpGHonUPQpqI2hCHXZbByWVUxSC27NLpMICcMG3Jj9sKGJ5
+         wNZYn1odNAR6U+dTQ/sorbeEt7+CsvFbmgo36Gxr7GJkS8LbHZ6BkD+ciH1rasBIs0lS
+         jJ5Q==
+X-Gm-Message-State: AOJu0YyIPaEOXyZ4VoXfePV+UMcLwgzUyAyG6Usfvaqnn3LqL/MaJWS2
+	1mJ6M5aecaoIBFVQ59wfAIo6jfDDDpZaFhO31XE=
+X-Google-Smtp-Source: AGHT+IEkIYMzU/zf3fIQW7HBKtkKe0IrRYWK7UvhYVH0lVGfZIq+VhoUFpuURVoilLqqqq4dAK8xbT8HVtzQ+QkZpNg=
+X-Received: by 2002:a05:6512:2398:b0:500:b88c:ea79 with SMTP id
+ c24-20020a056512239800b00500b88cea79mr6923463lfv.54.1694712684707; Thu, 14
+ Sep 2023 10:31:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQJsjVf3t0OJCZkc3rNpHMi_ZTtwLa3LBMi6ot3zufnb+A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27031/Thu Sep 14 09:39:27 2023)
+References: <20230912212906.3975866-3-andrii@kernel.org> <3808036a0b32a17a7fd9e7d671b5458d.paul@paul-moore.com>
+In-Reply-To: <3808036a0b32a17a7fd9e7d671b5458d.paul@paul-moore.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 14 Sep 2023 10:31:12 -0700
+Message-ID: <CAEf4BzYiKhG3ZL-GGQ4fHzSu6RKx2fh2JHwcL9_XKzQBvx3Bjg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/12] bpf: introduce BPF token object
+To: Paul Moore <paul@paul-moore.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, keescook@chromium.org, 
+	brauner@kernel.org, lennart@poettering.net, kernel-team@meta.com, 
+	sargun@sargun.me
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/14/23 6:20 PM, Alexei Starovoitov wrote:
-> On Wed, Sep 13, 2023 at 5:30 AM Luis Gerhorst <gerhorst@amazon.de> wrote:
->>
->> This reverts commit d75e30dddf73449bc2d10bb8e2f1a2c446bc67a2.
->>
->> To mitigate Spectre v1, the verifier relies on static analysis to deduct
->> constant pointer bounds, which can then be enforced by rewriting pointer
->> arithmetic [1] or index masking [2]. This relies on the fact that every
->> memory region to be accessed has a static upper bound and every date
->> below that bound is accessible. The verifier can only rewrite pointer
->> arithmetic or insert masking instructions to mitigate Spectre v1 if a
->> static upper bound, below of which every access is valid, can be given.
->>
->> When allowing packet pointer comparisons, this introduces a way for the
->> program to effectively construct an accessible pointer for which no
->> static upper bound is known. Intuitively, this is obvious as a packet
->> might be of any size and therefore 0 is the only statically known upper
->> bound below of which every date is always accessible (i.e., none).
->>
->> To clarify, the problem is not that comparing two pointers can be used
->> for pointer leaks in the same way in that comparing a pointer to a known
->> scalar can be used for pointer leaks. That is because the "secret"
->> components of the addresses cancel each other out if the pointers are
->> into the same region.
->>
->> With [3] applied, the following malicious BPF program can be loaded into
->> the kernel without CAP_PERFMON:
->>
->> r2 = *(u32 *)(r1 + 76) // data
->> r3 = *(u32 *)(r1 + 80) // data_end
->> r4 = r2
->> r4 += 1
->> if r4 > r3 goto exit
->> r5 = *(u8 *)(r2 + 0) // speculatively read secret
->> r5 &= 1 // choose bit to leak
->> // ... side channel to leak secret bit
->> exit:
->> // ...
->>
->> This is jited to the following amd64 code which still contains the
->> gadget:
->>
->>     0:   endbr64
->>     4:   nopl   0x0(%rax,%rax,1)
->>     9:   xchg   %ax,%ax
->>     b:   push   %rbp
->>     c:   mov    %rsp,%rbp
->>     f:   endbr64
->>    13:   push   %rbx
->>    14:   mov    0xc8(%rdi),%rsi // data
->>    1b:   mov    0x50(%rdi),%rdx // data_end
->>    1f:   mov    %rsi,%rcx
->>    22:   add    $0x1,%rcx
->>    26:   cmp    %rdx,%rcx
->>    29:   ja     0x000000000000003f // branch to mispredict
->>    2b:   movzbq 0x0(%rsi),%r8 // speculative load of secret
->>    30:   and    $0x1,%r8 // choose bit to leak
->>    34:   xor    %ebx,%ebx
->>    36:   cmp    %rbx,%r8
->>    39:   je     0x000000000000003f // branch based on secret
->>    3b:   imul   $0x61,%r8,%r8 // leak using port contention side channel
->>    3f:   xor    %eax,%eax
->>    41:   pop    %rbx
->>    42:   leaveq
->>    43:   retq
->>
->> Here I'm using a port contention side channel because storing the secret
->> to the stack causes the verifier to insert an lfence for unrelated
->> reasons (SSB mitigation) which would terminate the speculation.
->>
->> As Daniel already pointed out to me, data_end is even attacker
->> controlled as one could send many packets of sufficient length to train
->> the branch prediction into assuming data_end >= data will never be true.
->> When the attacker then sends a packet with insufficient data, the
->> Spectre v1 gadget leaks the chosen bit of some value that lies behind
->> data_end.
-> 
-> The above analysis is correct, but unlike traditional spec_v1
-> the attacker doesn't control data/data_end.
-> The attack can send many large packets to train that data + X < data_end
-> and then send a small packet where CPU will mispredict that branch
-> and data + X will speculatively read past data_end,
-> so the attacker can extract a bit past data_end,
-> but data/data_end themselves cannot be controlled.
-> So whether this bit 0 or 1 has no bearing.
-> The attack cannot be repeated for the same location.
-> The attacker can read one bit 8 times in a row and all of them
-> will be from different locations in the memory.
-> Same as reading 8 random bits from 8 random locations.
-> Hence I don't think this revert is necessary.
-> I don't believe you can craft an actual exploit.
-> 
-> Your patch 3 says:
->         /* Speculative access to be prevented. */
-> +       char secret = *((char *) iph);
-> +
-> +       /* Leak the first bit of the secret value that lies behind data_end to a
-> +        * SMP silbling thread that also executes imul instructions. If the bit
-> +        * is 1, the silbling will experience a slowdown. */
-> +       long long x = secret;
-> +       if (secret & 1) {
-> +               x *= 97;
-> +       }
-> 
-> the comment is correct, but speculative access alone is not enough
-> to leak data.
+On Wed, Sep 13, 2023 at 2:46=E2=80=AFPM Paul Moore <paul@paul-moore.com> wr=
+ote:
+>
+> On Sep 12, 2023 Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > Add new kind of BPF kernel object, BPF token. BPF token is meant to
+> > allow delegating privileged BPF functionality, like loading a BPF
+> > program or creating a BPF map, from privileged process to a *trusted*
+> > unprivileged process, all while have a good amount of control over whic=
+h
+> > privileged operations could be performed using provided BPF token.
+> >
+> > This is achieved through mounting BPF FS instance with extra delegation
+> > mount options, which determine what operations are delegatable, and als=
+o
+> > constraining it to the owning user namespace (as mentioned in the
+> > previous patch).
+> >
+> > BPF token itself is just a derivative from BPF FS and can be created
+> > through a new bpf() syscall command, BPF_TOKEN_CREAT, which accepts
+> > a path specification (using the usual fd + string path combo) to a BPF
+> > FS mount. Currently, BPF token "inherits" delegated command, map types,
+> > prog type, and attach type bit sets from BPF FS as is. In the future,
+> > having an BPF token as a separate object with its own FD, we can allow
+> > to further restrict BPF token's allowable set of things either at the c=
+reation
+> > time or after the fact, allowing the process to guard itself further
+> > from, e.g., unintentionally trying to load undesired kind of BPF
+> > programs. But for now we keep things simple and just copy bit sets as i=
+s.
+> >
+> > When BPF token is created from BPF FS mount, we take reference to the
+> > BPF super block's owning user namespace, and then use that namespace fo=
+r
+> > checking all the {CAP_BPF, CAP_PERFMON, CAP_NET_ADMIN, CAP_SYS_ADMIN}
+> > capabilities that are normally only checked against init userns (using
+> > capable()), but now we check them using ns_capable() instead (if BPF
+> > token is provided). See bpf_token_capable() for details.
+> >
+> > Such setup means that BPF token in itself is not sufficient to grant BP=
+F
+> > functionality. User namespaced process has to *also* have necessary
+> > combination of capabilities inside that user namespace. So while
+> > previously CAP_BPF was useless when granted within user namespace, now
+> > it gains a meaning and allows container managers and sys admins to have
+> > a flexible control over which processes can and need to use BPF
+> > functionality within the user namespace (i.e., container in practice).
+> > And BPF FS delegation mount options and derived BPF tokens serve as
+> > a per-container "flag" to grant overall ability to use bpf() (plus furt=
+her
+> > restrict on which parts of bpf() syscalls are treated as namespaced).
+> >
+> > The alternative to creating BPF token object was:
+> >   a) not having any extra object and just pasing BPF FS path to each
+> >      relevant bpf() command. This seems suboptimal as it's racy (mount
+> >      under the same path might change in between checking it and using =
+it
+> >      for bpf() command). And also less flexible if we'd like to further
+> >      restrict ourselves compared to all the delegated functionality
+> >      allowed on BPF FS.
+> >   b) use non-bpf() interface, e.g., ioctl(), but otherwise also create
+> >      a dedicated FD that would represent a token-like functionality. Th=
+is
+> >      doesn't seem superior to having a proper bpf() command, so
+> >      BPF_TOKEN_CREATE was chosen.
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  include/linux/bpf.h            |  36 +++++++
+> >  include/uapi/linux/bpf.h       |  39 +++++++
+> >  kernel/bpf/Makefile            |   2 +-
+> >  kernel/bpf/inode.c             |   4 +-
+> >  kernel/bpf/syscall.c           |  17 +++
+> >  kernel/bpf/token.c             | 189 +++++++++++++++++++++++++++++++++
+> >  tools/include/uapi/linux/bpf.h |  39 +++++++
+> >  7 files changed, 324 insertions(+), 2 deletions(-)
+> >  create mode 100644 kernel/bpf/token.c
+>
+> ...
+>
+> > diff --git a/kernel/bpf/token.c b/kernel/bpf/token.c
+> > new file mode 100644
+> > index 000000000000..f6ea3eddbee6
+> > --- /dev/null
+> > +++ b/kernel/bpf/token.c
+> > @@ -0,0 +1,189 @@
+> > +#include <linux/bpf.h>
+> > +#include <linux/vmalloc.h>
+> > +#include <linux/anon_inodes.h>
+> > +#include <linux/fdtable.h>
+> > +#include <linux/file.h>
+> > +#include <linux/fs.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/idr.h>
+> > +#include <linux/namei.h>
+> > +#include <linux/user_namespace.h>
+> > +
+> > +bool bpf_token_capable(const struct bpf_token *token, int cap)
+> > +{
+> > +     /* BPF token allows ns_capable() level of capabilities */
+> > +     if (token) {
+> > +             if (ns_capable(token->userns, cap))
+> > +                     return true;
+> > +             if (cap !=3D CAP_SYS_ADMIN && ns_capable(token->userns, C=
+AP_SYS_ADMIN))
+> > +                     return true;
+> > +     }
+> > +     /* otherwise fallback to capable() checks */
+> > +     return capable(cap) || (cap !=3D CAP_SYS_ADMIN && capable(CAP_SYS=
+_ADMIN));
+> > +}
+>
+> While the above looks to be equivalent to the bpf_capable() function it
+> replaces, for callers checking CAP_BPF and CAP_SYS_ADMIN, I'm looking
+> quickly at patch 3/12 and this is also being used to replace a
+> capable(CAP_NET_ADMIN) call which results in a change in behavior.
+> The current code which performs a capable(CAP_NET_ADMIN) check cannot
+> be satisfied by CAP_SYS_ADMIN, but this patchset using
+> bpf_token_capable(token, CAP_NET_ADMIN) can be satisfied by either
+> CAP_NET_ADMIN or CAP_SYS_ADMIN.
+>
+> It seems that while bpf_token_capable() can be used as a replacement
+> for bpf_capable(), it is not currently a suitable replacement for a
+> generic capable() call.  Perhaps this is intentional, but I didn't see
+> it mentioned in the commit description, or in the comments, and I
+> wanted to make sure it wasn't an oversight.
 
-What you write makes sense, it will probably be hard to craft an exploit.
-Where it's a bit more of an unknown to me is whether struct skb_shared_info
-could have e.g. destructor_arg rather static (at last the upper addr bits)
-so that you would leak out kernel addresses.
+You are right. It is an intentional attempt to unify all such checks.
+If you look at bpf_prog_load(), we have this:
+
+if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN) &&
+!capable(CAP_SYS_ADMIN))
+    return -EPERM;
+
+So seeing that, I realized that we did have an intent to always use
+CAP_SYS_ADMIN as a "fallback" cap, even for CAP_NET_ADMIN when it
+comes to using network-enabled BPF programs. So I decided that
+unifying all this makes sense.
+
+I'll add a comment mentioning this, I should have been more explicit
+from the get go.
+
+>
+> > +void bpf_token_inc(struct bpf_token *token)
+> > +{
+> > +     atomic64_inc(&token->refcnt);
+> > +}
+> > +
+
+[...]
+
+> > +#define BPF_TOKEN_INODE_NAME "bpf-token"
+> > +
+> > +/* Alloc anon_inode and FD for prepared token.
+> > + * Returns fd >=3D 0 on success; negative error, otherwise.
+> > + */
+> > +int bpf_token_new_fd(struct bpf_token *token)
+> > +{
+> > +     return anon_inode_getfd(BPF_TOKEN_INODE_NAME, &bpf_token_fops, to=
+ken, O_CLOEXEC);
+> > +}
+> > +
+> > +struct bpf_token *bpf_token_get_from_fd(u32 ufd)
+> > +{
+> > +     struct fd f =3D fdget(ufd);
+> > +     struct bpf_token *token;
+> > +
+> > +     if (!f.file)
+> > +             return ERR_PTR(-EBADF);
+> > +     if (f.file->f_op !=3D &bpf_token_fops) {
+> > +             fdput(f);
+> > +             return ERR_PTR(-EINVAL);
+> > +     }
+> > +
+> > +     token =3D f.file->private_data;
+> > +     bpf_token_inc(token);
+> > +     fdput(f);
+> > +
+> > +     return token;
+> > +}
+> > +
+> > +bool bpf_token_allow_cmd(const struct bpf_token *token, enum bpf_cmd c=
+md)
+> > +{
+> > +     if (!token)
+> > +             return false;
+> > +
+> > +     return token->allowed_cmds & (1ULL << cmd);
+> > +}
+>
+> I mentioned this a while back, likely in the other threads where this
+> token-based approach was only being discussed in general terms, but I
+> think we want to have a LSM hook at the point of initial token
+> delegation for this and a hook when the token is used.  My initial
+> thinking is that we should be able to address the former with a hook
+> in bpf_fill_super() and the latter either in bpf_token_get_from_fd()
+> or bpf_token_allow_XXX(); bpf_token_get_from_fd() would be simpler,
+> but it doesn't allow for much in the way of granularity.  Inserting the
+> LSM hooks in bpf_token_allow_XXX() would also allow the BPF code to fall
+> gracefully fallback to the system-wide checks if the LSM denied the
+> requested access whereas an access denial in bpf_token_get_from_fd()
+> denial would cause the operation to error out.
+
+I think the bpf_fill_super() LSM hook makes sense, but I thought
+someone mentioned that we already have some generic LSM hook for
+validating mounts? If we don't, I can certainly add one for BPF FS
+specifically.
+
+As for the bpf_token_allow_xxx(). This feels a bit too specific and
+narrow-focused. What if we later add yet another dimension for BPF FS
+and token? Do we need to introduce yet another LSM for each such case?
+But also see bpf_prog_load(). There are two checks, allow_prog_type
+and allow_attach_type, which are really only meaningful in
+combination. And yet you'd have to have two separate LSM hooks for
+that.
+
+So I feel like the better approach is less mechanistically
+concentrating on BPF token operations themselves, but rather on more
+semantically meaningful operations that are token-enabled. E.g.,
+protect BPF program loading, BPF map creation, BTF loading, etc. And
+we do have such LSM hooks right now, though they might not be the most
+convenient. So perhaps the right move is to add new ones that would
+provide a bit more context (e.g., we can pass in the BPF token that
+was used for the operation, attributes with which map/prog was
+created, etc). Low-level token LSMs seem hard to use cohesively in
+practice, though.
+
+WDYT?
+
+>
+> --
+> paul-moore.com
 
