@@ -1,294 +1,193 @@
-Return-Path: <bpf+bounces-10066-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10067-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31A777A0B62
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 19:16:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B6F57A0BAE
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 19:26:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A6C61C20DED
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 17:16:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4410E2825B2
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 17:26:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EC7F26299;
-	Thu, 14 Sep 2023 17:16:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18AFC262AE;
+	Thu, 14 Sep 2023 17:24:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69CC1208A1
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 17:16:21 +0000 (UTC)
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97531CF;
-	Thu, 14 Sep 2023 10:16:20 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-530196c780dso1077334a12.1;
-        Thu, 14 Sep 2023 10:16:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694711779; x=1695316579; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wR8njeDBhvSDtR6lVlpBWKsc/TiwJI5inQMLli8IvXE=;
-        b=nQJeEWkB+r1rSts6S53Kz9LEBZCCrZ/+qfTPzGQpQZjAPZ5BoUcKQCSimEzzZpudgj
-         gcig6NIseLRg0hO5b4Fl3OlllB9rSIg2JAuK3G5tNgMnQQpnDrfT2DzV8ro3lNdGlKAB
-         c/IMLkytIAgNaJr62BvEbbQ6Ag7pcZ52aQs1ezXeHjdzaLupaMQabTpr5li0arXwfsWj
-         VcV9psWe6iTNhX1eGBQWcvIxsu/Mrz08u4XEb4NjW/SUHR3rc+cTNMBEB06ANCCmgsxB
-         skax4ZX4ppkGzSyGEz0U9+3AWngUxV29/OjIojn85qhO2w1D+w/r581Oo4QCYFturNtW
-         KT+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694711779; x=1695316579;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wR8njeDBhvSDtR6lVlpBWKsc/TiwJI5inQMLli8IvXE=;
-        b=M7ial1aC0cxWWQwzF2J2fqAvF2uK3sghgX3AdVLdkACIcXL1osDeYuYaxd4WfgQTem
-         G00uMHHvd1GENfzFU3PQpN8UtufeVBE3Ww4hwJgVurigQdl3q4exVr3XlZINsnQwT7Oa
-         CQyP5iMXhhCqeiKKsVVnzSG5tSnhlUbdjoRUaffb10V98RbjUOQJAIrcxJxJ/TOFp/wy
-         SqXdaR+BNOY8z9x56Fn5maFLGwCgQdmpzq18WIfBUTcl7OGlBjXbV+5YoiRt32jjj6+G
-         5BW6BCA9Uw9Z0wQgBLBjmeUbkJTbK9KjNAMFM9CXxz73SHKE3XEVpd7a6isVIXwzGXx+
-         vuIw==
-X-Gm-Message-State: AOJu0YyjB9hhRri/D6i+ysJr81117y6zTUYYWyjwQxOlzH9POV1ayypR
-	C763y0gJ9lEEQ9IfCXikDaMic+8P1ZoCM36Zwmw=
-X-Google-Smtp-Source: AGHT+IG7AECGJCQlEUvPgHVZQrQ8QYcBqANrfXJzC9D4NyMNu7aYNrTVzEh+oErPxr/zoB/QsSAcX2ThZYlCrMlytaQ=
-X-Received: by 2002:aa7:c1d1:0:b0:525:6588:b624 with SMTP id
- d17-20020aa7c1d1000000b005256588b624mr5479932edp.37.1694711778617; Thu, 14
- Sep 2023 10:16:18 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E024EC8F3
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 17:24:24 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24101359C;
+	Thu, 14 Sep 2023 10:24:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=+rQkSX/sTt9mCfEyiFHgFHaHzrtXbCcdvkzQAAhcaCs=; b=jJYYKQiLbpdOVDjsdPtWUT6TFj
+	gIUSL0E1I0K9FlPVK7YspQJTHRg8rpubRjsPu6LnmF2U95xpHfr3wlI3gvjQinqqbGOBohWR2umHr
+	/oLG2eG2yInnO/eUSA7/xml20eBP76E7sgvVjIu+3H6NnDye2dsuxDMkYmsftqg9eYsFXFkl9TkUn
+	+O/XGVj0+MTrUU5BhYwV6I24vjTVr7m32a9Dhz1fdd2S4nYmWEa+uCzGdeiikHwbziwI2M3GfUYa1
+	gSq4dY0QkoWQC11WwBan3CsrqqUDr/s/o4pTND1h2ZEfxN9FqRqWTsOCuqSeiL5dMwQq3Wds8K39S
+	eWDU0MpA==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qgq4Z-000J4w-I0; Thu, 14 Sep 2023 19:24:11 +0200
+Received: from [64.61.70.24] (helo=localhost.localdomain)
+	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qgq4Y-0009Z8-JG; Thu, 14 Sep 2023 19:24:10 +0200
+Subject: Re: [PATCH 2/3] Revert "bpf: Fix issue in verifying allow_ptr_leaks"
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Luis Gerhorst <gerhorst@cs.fau.de>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ bpf <bpf@vger.kernel.org>, Hao Luo <haoluo@google.com>,
+ John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>,
+ KP Singh <kpsingh@kernel.org>, Yafang Shao <laoar.shao@gmail.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev
+ <sdf@google.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, gerhorst@amazon.de,
+ Ilya Leoshkevich <iii@linux.ibm.com>,
+ "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Hagar Gamal Halim Hemdan <hagarhem@amazon.de>,
+ Puranjay Mohan <puranjay12@gmail.com>
+References: <CAADnVQLid7QvukhnqRoY2VVFi1tCfkPFsMGUUeHDtCgf0SAJCg@mail.gmail.com>
+ <20230913122827.91591-1-gerhorst@amazon.de>
+ <CAADnVQJsjVf3t0OJCZkc3rNpHMi_ZTtwLa3LBMi6ot3zufnb+A@mail.gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <723a49b4-c4ed-3b0b-2a9d-915b49725411@iogearbox.net>
+Date: Thu, 14 Sep 2023 19:24:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230827072057.1591929-1-zhouchuyi@bytedance.com>
- <20230827072057.1591929-3-zhouchuyi@bytedance.com> <CAADnVQLKytNcAF_LkMgMJ1sq9Tv8QMNc3En7Psuxg+=FXP+B-A@mail.gmail.com>
- <e5e986a0-0bb9-6611-77f0-f8472346965e@bytedance.com> <CAADnVQL-ZGV6C7VWdQpX64f0+gokE5MLBO3F2J3WyMoq-_NCPg@mail.gmail.com>
- <CAEf4BzaEg5CieQKQxvRGnwnyeK_2MZqr8ROVjg-Tftg-0vpntg@mail.gmail.com> <CAP01T77cWxWNwq5HLr+Woiu7k4-P3QQfJWX1OeQJUkxW3=P4bA@mail.gmail.com>
-In-Reply-To: <CAP01T77cWxWNwq5HLr+Woiu7k4-P3QQfJWX1OeQJUkxW3=P4bA@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 14 Sep 2023 10:16:06 -0700
-Message-ID: <CAEf4BzY+BuTfLfamUVCGk+3kY2O5BtTvWiXQRn5OcXt4P2md2g@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 2/4] bpf: Introduce process open coded
- iterator kfuncs
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Chuyi Zhou <zhouchuyi@bytedance.com>, 
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAADnVQJsjVf3t0OJCZkc3rNpHMi_ZTtwLa3LBMi6ot3zufnb+A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/27031/Thu Sep 14 09:39:27 2023)
 
-On Tue, Sep 12, 2023 at 3:21=E2=80=AFPM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Wed, 13 Sept 2023 at 00:12, Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Wed, Sep 6, 2023 at 10:18=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Wed, Sep 6, 2023 at 5:38=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedanc=
-e.com> wrote:
-> > > >
-> > > > Hello, Alexei.
-> > > >
-> > > > =E5=9C=A8 2023/9/6 04:09, Alexei Starovoitov =E5=86=99=E9=81=93:
-> > > > > On Sun, Aug 27, 2023 at 12:21=E2=80=AFAM Chuyi Zhou <zhouchuyi@by=
-tedance.com> wrote:
-> > > > >>
-> > > > >> This patch adds kfuncs bpf_iter_process_{new,next,destroy} which=
- allow
-> > > > >> creation and manipulation of struct bpf_iter_process in open-cod=
-ed iterator
-> > > > >> style. BPF programs can use these kfuncs or through bpf_for_each=
- macro to
-> > > > >> iterate all processes in the system.
-> > > > >>
-> > > > >> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
-> > > > >> ---
-> > > > >>   include/uapi/linux/bpf.h       |  4 ++++
-> > > > >>   kernel/bpf/helpers.c           |  3 +++
-> > > > >>   kernel/bpf/task_iter.c         | 31 ++++++++++++++++++++++++++=
-+++++
-> > > > >>   tools/include/uapi/linux/bpf.h |  4 ++++
-> > > > >>   tools/lib/bpf/bpf_helpers.h    |  5 +++++
-> > > > >>   5 files changed, 47 insertions(+)
-> > > > >>
-> > > > >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > > >> index 2a6e9b99564b..cfbd527e3733 100644
-> > > > >> --- a/include/uapi/linux/bpf.h
-> > > > >> +++ b/include/uapi/linux/bpf.h
-> > > > >> @@ -7199,4 +7199,8 @@ struct bpf_iter_css_task {
-> > > > >>          __u64 __opaque[1];
-> > > > >>   } __attribute__((aligned(8)));
-> > > > >>
-> > > > >> +struct bpf_iter_process {
-> > > > >> +       __u64 __opaque[1];
-> > > > >> +} __attribute__((aligned(8)));
-> > > > >> +
-> > > > >>   #endif /* _UAPI__LINUX_BPF_H__ */
-> > > > >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > > > >> index cf113ad24837..81a2005edc26 100644
-> > > > >> --- a/kernel/bpf/helpers.c
-> > > > >> +++ b/kernel/bpf/helpers.c
-> > > > >> @@ -2458,6 +2458,9 @@ BTF_ID_FLAGS(func, bpf_iter_num_destroy, K=
-F_ITER_DESTROY)
-> > > > >>   BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW)
-> > > > >>   BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_R=
-ET_NULL)
-> > > > >>   BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
-> > > > >> +BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
-> > > > >> +BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET=
-_NULL)
-> > > > >> +BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
-> > > > >>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
-> > > > >>   BTF_ID_FLAGS(func, bpf_dynptr_is_null)
-> > > > >>   BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
-> > > > >> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> > > > >> index b1bdba40b684..a6717a76c1e0 100644
-> > > > >> --- a/kernel/bpf/task_iter.c
-> > > > >> +++ b/kernel/bpf/task_iter.c
-> > > > >> @@ -862,6 +862,37 @@ __bpf_kfunc void bpf_iter_css_task_destroy(=
-struct bpf_iter_css_task *it)
-> > > > >>          kfree(kit->css_it);
-> > > > >>   }
-> > > > >>
-> > > > >> +struct bpf_iter_process_kern {
-> > > > >> +       struct task_struct *tsk;
-> > > > >> +} __attribute__((aligned(8)));
-> > > > >> +
-> > > > >> +__bpf_kfunc int bpf_iter_process_new(struct bpf_iter_process *i=
-t)
-> > > > >> +{
-> > > > >> +       struct bpf_iter_process_kern *kit =3D (void *)it;
-> > > > >> +
-> > > > >> +       BUILD_BUG_ON(sizeof(struct bpf_iter_process_kern) !=3D s=
-izeof(struct bpf_iter_process));
-> > > > >> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_process_kern) !=
-=3D
-> > > > >> +                                       __alignof__(struct bpf_i=
-ter_process));
-> > > > >> +
-> > > > >> +       rcu_read_lock();
-> > > > >> +       kit->tsk =3D &init_task;
-> > > > >> +       return 0;
-> > > > >> +}
-> > > > >> +
-> > > > >> +__bpf_kfunc struct task_struct *bpf_iter_process_next(struct bp=
-f_iter_process *it)
-> > > > >> +{
-> > > > >> +       struct bpf_iter_process_kern *kit =3D (void *)it;
-> > > > >> +
-> > > > >> +       kit->tsk =3D next_task(kit->tsk);
-> > > > >> +
-> > > > >> +       return kit->tsk =3D=3D &init_task ? NULL : kit->tsk;
-> > > > >> +}
-> > > > >> +
-> > > > >> +__bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_proce=
-ss *it)
-> > > > >> +{
-> > > > >> +       rcu_read_unlock();
-> > > > >> +}
-> > > > >
-> > > > > This iter can be used in all ctx-s which is nice, but let's
-> > > > > make the verifier enforce rcu_read_lock/unlock done by bpf prog
-> > > > > instead of doing in the ctor/dtor of iter, since
-> > > > > in sleepable progs the verifier won't recognize that body is RCU =
-CS.
-> > > > > We'd need to teach the verifier to allow bpf_iter_process_new()
-> > > > > inside in_rcu_cs() and make sure there is no rcu_read_unlock
-> > > > > while BPF_ITER_STATE_ACTIVE.
-> > > > > bpf_iter_process_destroy() would become a nop.
-> > > >
-> > > > Thanks for your review!
-> > > >
-> > > > I think bpf_iter_process_{new, next, destroy} should be protected b=
-y
-> > > > bpf_rcu_read_lock/unlock explicitly whether the prog is sleepable o=
-r
-> > > > not, right?
-> > >
-> > > Correct. By explicit bpf_rcu_read_lock() in case of sleepable progs
-> > > or just by using them in normal bpf progs that have implicit rcu_read=
-_lock()
-> > > done before calling into them.
-> > >
-> > > > I'm not very familiar with the BPF verifier, but I believe
-> > > > there is still a risk in directly calling these kfuns even if
-> > > > in_rcu_cs() is true.
-> > > >
-> > > > Maby what we actually need here is to enforce BPF verifier to check
-> > > > env->cur_state->active_rcu_lock is true when we want to call these =
-kfuncs.
-> > >
-> > > active_rcu_lock means explicit bpf_rcu_read_lock.
-> > > Currently we do allow bpf_rcu_read_lock in non-sleepable, but it's po=
-intless.
-> > >
-> > > Technically we can extend the check:
-> > >                 if (in_rbtree_lock_required_cb(env) && (rcu_lock ||
-> > > rcu_unlock)) {
-> > >                         verbose(env, "Calling
-> > > bpf_rcu_read_{lock,unlock} in unnecessary rbtree callback\n");
-> > >                         return -EACCES;
-> > >                 }
-> > > to discourage their use in all non-sleepable, but it will break some =
-progs.
-> > >
-> > > I think it's ok to check in_rcu_cs() to allow bpf_iter_process_*().
-> > > If bpf prog adds explicit and unnecessary bpf_rcu_read_lock() around
-> > > the iter ops it won't do any harm.
-> > > Just need to make sure that rcu unlock logic:
-> > >                 } else if (rcu_unlock) {
-> > >                         bpf_for_each_reg_in_vstate(env->cur_state,
-> > > state, reg, ({
-> > >                                 if (reg->type & MEM_RCU) {
-> > >                                         reg->type &=3D ~(MEM_RCU |
-> > > PTR_MAYBE_NULL);
-> > >                                         reg->type |=3D PTR_UNTRUSTED;
-> > >                                 }
-> > >                         }));
-> > > clears iter state that depends on rcu.
-> > >
-> > > I thought about changing mark_stack_slots_iter() to do
-> > > st->type =3D PTR_TO_STACK | MEM_RCU;
-> > > so that the above clearing logic kicks in,
-> > > but it might be better to have something iter specific.
-> > > is_iter_reg_valid_init() should probably be changed to
-> > > make sure reg->type is not UNTRUSTED.
-> > >
-> > > Andrii,
-> > > do you have better suggestions?
-> >
-> > What if we just remember inside bpf_reg_state.iter state whether
-> > iterator needs to be RCU protected (it's just one bit if we don't
-> > allow nesting rcu_read_lock()/rcu_read_unlock(), or we'd need to
-> > remember RCU nestedness level), and then when validating iter_next and
-> > iter_destroy() kfuncs, check that we are still in RCU-protected region
-> > (if we have nestedness, then iter->rcu_nest_level <=3D
-> > cur_rcu_nest_level, if I understand correctly). And if not, provide a
-> > clear and nice message.
-> >
-> > That seems straightforward enough, but am I missing anything subtle?
-> >
->
-> We also need to ensure one does not do a bpf_rcu_read_unlock and
-> bpf_rcu_read_lock again between the iter_new and
-> iter_next/iter_destroy calls. Simply checking we are in an RCU
-> protected region will pass the verifier in such a case.
+On 9/14/23 6:20 PM, Alexei Starovoitov wrote:
+> On Wed, Sep 13, 2023 at 5:30 AM Luis Gerhorst <gerhorst@amazon.de> wrote:
+>>
+>> This reverts commit d75e30dddf73449bc2d10bb8e2f1a2c446bc67a2.
+>>
+>> To mitigate Spectre v1, the verifier relies on static analysis to deduct
+>> constant pointer bounds, which can then be enforced by rewriting pointer
+>> arithmetic [1] or index masking [2]. This relies on the fact that every
+>> memory region to be accessed has a static upper bound and every date
+>> below that bound is accessible. The verifier can only rewrite pointer
+>> arithmetic or insert masking instructions to mitigate Spectre v1 if a
+>> static upper bound, below of which every access is valid, can be given.
+>>
+>> When allowing packet pointer comparisons, this introduces a way for the
+>> program to effectively construct an accessible pointer for which no
+>> static upper bound is known. Intuitively, this is obvious as a packet
+>> might be of any size and therefore 0 is the only statically known upper
+>> bound below of which every date is always accessible (i.e., none).
+>>
+>> To clarify, the problem is not that comparing two pointers can be used
+>> for pointer leaks in the same way in that comparing a pointer to a known
+>> scalar can be used for pointer leaks. That is because the "secret"
+>> components of the addresses cancel each other out if the pointers are
+>> into the same region.
+>>
+>> With [3] applied, the following malicious BPF program can be loaded into
+>> the kernel without CAP_PERFMON:
+>>
+>> r2 = *(u32 *)(r1 + 76) // data
+>> r3 = *(u32 *)(r1 + 80) // data_end
+>> r4 = r2
+>> r4 += 1
+>> if r4 > r3 goto exit
+>> r5 = *(u8 *)(r2 + 0) // speculatively read secret
+>> r5 &= 1 // choose bit to leak
+>> // ... side channel to leak secret bit
+>> exit:
+>> // ...
+>>
+>> This is jited to the following amd64 code which still contains the
+>> gadget:
+>>
+>>     0:   endbr64
+>>     4:   nopl   0x0(%rax,%rax,1)
+>>     9:   xchg   %ax,%ax
+>>     b:   push   %rbp
+>>     c:   mov    %rsp,%rbp
+>>     f:   endbr64
+>>    13:   push   %rbx
+>>    14:   mov    0xc8(%rdi),%rsi // data
+>>    1b:   mov    0x50(%rdi),%rdx // data_end
+>>    1f:   mov    %rsi,%rcx
+>>    22:   add    $0x1,%rcx
+>>    26:   cmp    %rdx,%rcx
+>>    29:   ja     0x000000000000003f // branch to mispredict
+>>    2b:   movzbq 0x0(%rsi),%r8 // speculative load of secret
+>>    30:   and    $0x1,%r8 // choose bit to leak
+>>    34:   xor    %ebx,%ebx
+>>    36:   cmp    %rbx,%r8
+>>    39:   je     0x000000000000003f // branch based on secret
+>>    3b:   imul   $0x61,%r8,%r8 // leak using port contention side channel
+>>    3f:   xor    %eax,%eax
+>>    41:   pop    %rbx
+>>    42:   leaveq
+>>    43:   retq
+>>
+>> Here I'm using a port contention side channel because storing the secret
+>> to the stack causes the verifier to insert an lfence for unrelated
+>> reasons (SSB mitigation) which would terminate the speculation.
+>>
+>> As Daniel already pointed out to me, data_end is even attacker
+>> controlled as one could send many packets of sufficient length to train
+>> the branch prediction into assuming data_end >= data will never be true.
+>> When the attacker then sends a packet with insufficient data, the
+>> Spectre v1 gadget leaks the chosen bit of some value that lies behind
+>> data_end.
+> 
+> The above analysis is correct, but unlike traditional spec_v1
+> the attacker doesn't control data/data_end.
+> The attack can send many large packets to train that data + X < data_end
+> and then send a small packet where CPU will mispredict that branch
+> and data + X will speculatively read past data_end,
+> so the attacker can extract a bit past data_end,
+> but data/data_end themselves cannot be controlled.
+> So whether this bit 0 or 1 has no bearing.
+> The attack cannot be repeated for the same location.
+> The attacker can read one bit 8 times in a row and all of them
+> will be from different locations in the memory.
+> Same as reading 8 random bits from 8 random locations.
+> Hence I don't think this revert is necessary.
+> I don't believe you can craft an actual exploit.
+> 
+> Your patch 3 says:
+>         /* Speculative access to be prevented. */
+> +       char secret = *((char *) iph);
+> +
+> +       /* Leak the first bit of the secret value that lies behind data_end to a
+> +        * SMP silbling thread that also executes imul instructions. If the bit
+> +        * is 1, the silbling will experience a slowdown. */
+> +       long long x = secret;
+> +       if (secret & 1) {
+> +               x *= 97;
+> +       }
+> 
+> the comment is correct, but speculative access alone is not enough
+> to leak data.
 
-Yep, you are right, what I proposed is too naive, of course.
-
->
-> A simple solution might be associating an ID with the RCU CS, so make
-> active_rcu_lock a 32-bit ID which is monotonically increasing for each
-> new RCU region. Ofcourse, all of this only matters for sleepable
-> programs. Then check if id recorded in iter state is same on next and
-> destroy.
-
-Yep, I think each RCU region should ideally be tracked separately and
-get a unique ID. Kind of like a ref. It is some lifetime/scope, not
-necessarily an actual kernel object. And if/when we have it, we can
-grab the ID of most nested RCU scope, associate it with RCU-protected
-iter, and then make sure that this RCU scope is active at every
-next/destroy invocation.
+What you write makes sense, it will probably be hard to craft an exploit.
+Where it's a bit more of an unknown to me is whether struct skb_shared_info
+could have e.g. destructor_arg rather static (at last the upper addr bits)
+so that you would leak out kernel addresses.
 
