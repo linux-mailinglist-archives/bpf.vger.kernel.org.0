@@ -1,125 +1,184 @@
-Return-Path: <bpf+bounces-10027-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10028-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD8907A06D5
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 16:04:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 067AF7A077C
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 16:38:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 656E21F23A71
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 14:04:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97665B20A08
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 14:38:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80D48224DB;
-	Thu, 14 Sep 2023 14:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA99410A39;
+	Thu, 14 Sep 2023 14:37:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C049241E3;
-	Thu, 14 Sep 2023 14:04:08 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4735D1A2;
-	Thu, 14 Sep 2023 07:04:07 -0700 (PDT)
-Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.57])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rmf8y1GDlzGppB;
-	Thu, 14 Sep 2023 22:00:18 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 14 Sep 2023 22:04:01 +0800
-Message-ID: <aacefd22-39df-6941-4d43-d47f72caa9d2@huawei.com>
-Date: Thu, 14 Sep 2023 22:04:00 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BC59847D;
+	Thu, 14 Sep 2023 14:37:19 +0000 (UTC)
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A98131AD;
+	Thu, 14 Sep 2023 07:37:18 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-502e0b7875dso1825277e87.0;
+        Thu, 14 Sep 2023 07:37:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694702237; x=1695307037; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0kK+0I3XIPPrGhkB0om7mc8r7QRJGhz7r+ekae91Iis=;
+        b=KNSWbIkxFMJ7uLu528Qwy2OD/ApryIBkwRMdbwuvrrVsScns3Cv5XgQm+sbC76mkWj
+         CyNRf54a3ywJpn/LIKcptPDiFvjSFRpUz8zYGo5DLWC1sgTseZOCj75K+zx3Bl9kd480
+         D3p2WPfnRIuY9PJVT+fB5n+7SOTNLGs97m3nKfhexhfTpv9hFNUsRL1LMzserUddSSox
+         ZI34LKpD9XsX09bMD3w4iXr3p8mq7waGyJ0kQqM5rAWsC6uWau0CRZCl23h53tztl/Pk
+         cdjFmiPulLEfzQ9mFkvFrjKw58lHP8C/vXajLa9LFOsywSItDO3cBU2rs+Wr6HlE2Tz3
+         +rcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694702237; x=1695307037;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0kK+0I3XIPPrGhkB0om7mc8r7QRJGhz7r+ekae91Iis=;
+        b=HhmFtkKwAPkjo8t4GJE9vTaSQti5dH7AdqBlOk2Hd/nuPJbS8eGfRSL76wMNksryCq
+         aj9NodDHYUgRk8ZjYeoblLozDZRTo0nYBWQB0L4ZM/l+erXT/9vUg4e2BG1HYh7hu5cc
+         jsgtNgHqYJYd/qAH5k+KQ5TxfuWOTnBGLC5U6ekEvPxGGaD+8tRn8ksOnQ+G1aAgT8YX
+         snEyyG4s6xjJJ/bt/BuEI5S7+KTd2Yd0TSOF99osGyqcaRRnm29yx9ZihWA2CzgFFgEo
+         Nghz6OFbrzK4OFRtsLEe7ZRa02lLtd5EXVnyJ/RMiDYtROfntggU8/1X+R9qf423/NBJ
+         FWOw==
+X-Gm-Message-State: AOJu0YyOk++oOGnm1Ton1ph1hWt+95ZWyRjCRsbIsq/RuRuCGp22C8tM
+	nYi+Se76wCLh2W15dXWxxDY=
+X-Google-Smtp-Source: AGHT+IHTmVRi837uQB0y/sPX3uJQ+hm834yJYSetnbihr9kUbQUqybyp46P9VrQu9i5XR2Nx0h4Cgw==
+X-Received: by 2002:a19:2d54:0:b0:4fe:d0f:1f1e with SMTP id t20-20020a192d54000000b004fe0d0f1f1emr3971532lft.25.1694702236523;
+        Thu, 14 Sep 2023 07:37:16 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id er20-20020a05651248d400b004fe2503e31bsm295007lfb.157.2023.09.14.07.37.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 07:37:16 -0700 (PDT)
+Date: Thu, 14 Sep 2023 17:37:13 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Jose Abreu <joabreu@synopsys.com>, Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org, 
+	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
+	Emil Renner Berthing <kernel@esmil.dk>, Eric Dumazet <edumazet@google.com>, 
+	Fabio Estevam <festevam@gmail.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Samin Guo <samin.guo@starfivetech.com>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH net-next 4/6] net: stmmac: rk: use
+ stmmac_set_tx_clk_gmii()
+Message-ID: <7vhtvd25qswsju34lgqi4em5v3utsxlvi3lltyt5yqqecddpyh@c5yvk7t5k5zz>
+References: <ZQMPnyutz6T23E8T@shell.armlinux.org.uk>
+ <E1qgmkp-007Z4s-GL@rmk-PC.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [PATCH bpf-next 4/6] riscv, bpf: Add necessary Zbb instructions
-Content-Language: en-US
-To: Conor Dooley <conor.dooley@microchip.com>, Conor Dooley <conor@kernel.org>
-CC: Pu Lehui <pulehui@huaweicloud.com>, <bpf@vger.kernel.org>,
-	<linux-riscv@lists.infradead.org>, <netdev@vger.kernel.org>,
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Alexei Starovoitov
-	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
-	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
-	<song@kernel.org>, Yonghong Song <yhs@fb.com>, John Fastabend
-	<john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>, Luke Nelson <luke.r.nels@gmail.com>
-References: <20230913153413.1446068-1-pulehui@huaweicloud.com>
- <20230913153413.1446068-5-pulehui@huaweicloud.com>
- <20230913-granny-heat-35d70b49ac85@spud>
- <20230914-ought-hypnotize-64cee0e27ed2@wendy>
-From: Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <20230914-ought-hypnotize-64cee0e27ed2@wendy>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500020.china.huawei.com (7.221.188.8)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <E1qgmkp-007Z4s-GL@rmk-PC.armlinux.org.uk>
 
-
-
-On 2023/9/14 21:02, Conor Dooley wrote:
-> On Wed, Sep 13, 2023 at 05:23:48PM +0100, Conor Dooley wrote:
->> On Wed, Sep 13, 2023 at 11:34:11PM +0800, Pu Lehui wrote:
->>> From: Pu Lehui <pulehui@huawei.com>
->>>
->>> Add necessary Zbb instructions introduced by [0] to reduce code size and
->>> improve performance of RV64 JIT. At the same time, a helper is added to
->>> check whether the CPU supports Zbb instructions.
->>>
->>> [0] https://github.com/riscv/riscv-bitmanip/releases/download/1.0.0/bitmanip-1.0.0-38-g865e7a7.pdf
->>>
->>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->>> ---
->>>   arch/riscv/net/bpf_jit.h | 26 ++++++++++++++++++++++++++
->>>   1 file changed, 26 insertions(+)
->>>
->>> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
->>> index 8e0ef4d08..7ee59d1f6 100644
->>> --- a/arch/riscv/net/bpf_jit.h
->>> +++ b/arch/riscv/net/bpf_jit.h
->>> @@ -18,6 +18,11 @@ static inline bool rvc_enabled(void)
->>>   	return IS_ENABLED(CONFIG_RISCV_ISA_C);
->>>   }
->>>   
->>> +static inline bool rvzbb_enabled(void)
->>> +{
->>> +	return IS_ENABLED(CONFIG_RISCV_ISA_ZBB);
->>> +}
->>
->> I dunno much about bpf, so passing question that may be a bit obvious:
->> Is this meant to be a test as to whether the kernel binary is built with
->> support for the extension, or whether the underlying platform is capable
->> of executing zbb instructions.
->>
->> Sorry if that would be obvious to a bpf aficionado, context I have here
->> is the later user and the above rvc_enabled() test, which functions
->> differently to Zbb and so doesn't really help me.
+On Thu, Sep 14, 2023 at 02:51:35PM +0100, Russell King (Oracle) wrote:
+> Use stmmac_set_tx_clk_gmii().
 > 
-> FTR, I got an off-list reply about this & it is meant to be a check as
-> to whether the underlying platform supports the extension. The current
-> test here is insufficient for that.
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> ---
+>  .../net/ethernet/stmicro/stmmac/dwmac-rk.c    | 60 +++++--------------
+>  1 file changed, 16 insertions(+), 44 deletions(-)
 > 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
+> index d920a50dd16c..5731a73466eb 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
+> @@ -1081,28 +1081,14 @@ static void rk3568_set_gmac_speed(struct rk_priv_data *bsp_priv, int speed)
+>  {
+>  	struct clk *clk_mac_speed = bsp_priv->clks[RK_CLK_MAC_SPEED].clk;
+>  	struct device *dev = &bsp_priv->pdev->dev;
+> -	unsigned long rate;
+> -	int ret;
+> -
+> -	switch (speed) {
+> -	case 10:
+> -		rate = 2500000;
+> -		break;
+> -	case 100:
+> -		rate = 25000000;
+> -		break;
+> -	case 1000:
+> -		rate = 125000000;
+> -		break;
+> -	default:
+> -		dev_err(dev, "unknown speed value for GMAC speed=%d", speed);
+> -		return;
+> -	}
+> -
+> -	ret = clk_set_rate(clk_mac_speed, rate);
+> -	if (ret)
+> -		dev_err(dev, "%s: set clk_mac_speed rate %ld failed %d\n",
+> -			__func__, rate, ret);
+> +	int err;
+> +
+> +	err = stmmac_set_tx_clk_gmii(clk_mac_speed, speed);
+> +	if (err == -ENOTSUPP)
 
-Thanks Conor for explain me lot about the difference between Compressed 
-instructions and Zbb instructions. As the compressed instructions are a 
-build-time option, while the Zbb is runtime detected. We need to add 
-additional runtime detection as show bellow:
+> +		dev_err(dev, "invalid speed %uMbps\n", speed);
+> +	else if (err)
+> +		dev_err(dev, "failed to set tx rate for speed %uMbps: %pe\n",
 
-riscv_has_extension_likely(RISCV_ISA_EXT_ZBB)
+These type specifiers should have been '%d' since the speed variable
+is of the signed integer type here.
 
-will patch this suggestion to the next version.
+-Serge(y)
 
-Thanks,
-Lehui.
-
-> Thanks,
-> Conor.
+> +			speed, ERR_PTR(err));
+>  }
+>  
+>  static const struct rk_gmac_ops rk3568_ops = {
+> @@ -1387,28 +1373,14 @@ static void rv1126_set_rgmii_speed(struct rk_priv_data *bsp_priv, int speed)
+>  {
+>  	struct clk *clk_mac_speed = bsp_priv->clks[RK_CLK_MAC_SPEED].clk;
+>  	struct device *dev = &bsp_priv->pdev->dev;
+> -	unsigned long rate;
+> -	int ret;
+> -
+> -	switch (speed) {
+> -	case 10:
+> -		rate = 2500000;
+> -		break;
+> -	case 100:
+> -		rate = 25000000;
+> -		break;
+> -	case 1000:
+> -		rate = 125000000;
+> -		break;
+> -	default:
+> -		dev_err(dev, "unknown speed value for RGMII speed=%d", speed);
+> -		return;
+> -	}
+> -
+> -	ret = clk_set_rate(clk_mac_speed, rate);
+> -	if (ret)
+> -		dev_err(dev, "%s: set clk_mac_speed rate %ld failed %d\n",
+> -			__func__, rate, ret);
+> +	int err;
+> +
+> +	err = stmmac_set_tx_clk_gmii(clk_mac_speed, speed);
+> +	if (err == -ENOTSUPP)
+> +		dev_err(dev, "invalid speed %dMbps\n", speed);
+> +	else if (err)
+> +		dev_err(dev, "failed to set tx rate for speed %dMbps: %pe\n",
+> +			speed, ERR_PTR(err));
+>  }
+>  
+>  static void rv1126_set_rmii_speed(struct rk_priv_data *bsp_priv, int speed)
+> -- 
+> 2.30.2
+> 
+> 
 
