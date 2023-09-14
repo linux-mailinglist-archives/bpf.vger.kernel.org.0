@@ -1,154 +1,168 @@
-Return-Path: <bpf+bounces-10094-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10095-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75D067A0FDB
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 23:29:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62B667A1005
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 23:49:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E79A1C20A6C
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 21:29:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D55E1C210A4
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 21:49:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B54326E3A;
-	Thu, 14 Sep 2023 21:28:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C21AC273C2;
+	Thu, 14 Sep 2023 21:49:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 815FC10A2F
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 21:28:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F26B5C433C7
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 21:28:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694726927;
-	bh=HdPWW2yFqakL/lJ80eEUzT6mjHd9OX1zy8RkA1ZjKus=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=KddoxJpzkHy1zBPJtTZOj9/hll8nUCTfr2SVlCXHmjyBFJ/cqNACvdREQI8wwv4yd
-	 7iv1xywAcZfjacuxMzkY2qTwDYFPML2+buaty4I4MVupuBKuzCsX0IyxmbCzz1fk0N
-	 Kp2pD5WoVwbUrhuEUvSXZgEhgoi4EkMqZk+7lnzSTc9tY8XqnrBv8aGrORJKyxoJvn
-	 2p32gJFcbrCmxAvtUk5aUMIgikmhOSbOlKOKVRvU8YShHlCVzsjtrDbIveczsYAzA8
-	 sY/TNnowbdi3EKBtGvpkN0ZuUe2QV/KuYb4anygn0GxI/V2Fxn+cl5q2t79ypSZAVr
-	 UBSJy6Xd8ZosA==
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso24209411fa.1
-        for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 14:28:46 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzpJAt1dNjIe5ybh6IHzULMwfUbmpRnZ3Uz1P/48ylgfs+UsWu4
-	CpIk91Z4UpKlgpIvMpRPViBhcDODijtpCjEL9fM=
-X-Google-Smtp-Source: AGHT+IHQvwl07bAPw03ffNhJpdURVE1FVg6FvSTi1IhRozWEdOJSKxHxt3RbyU1yzY16X3xC8bI8ifTOjpCAIsFG38A=
-X-Received: by 2002:a05:6512:ea7:b0:4fe:a2c:24b0 with SMTP id
- bi39-20020a0565120ea700b004fe0a2c24b0mr6450182lfb.26.1694726925175; Thu, 14
- Sep 2023 14:28:45 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A53B10A0C
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 21:49:11 +0000 (UTC)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A109B270B
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 14:49:10 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9a64619d8fbso195458066b.0
+        for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 14:49:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694728149; x=1695332949; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yywFNfkxTANxC6bAdNsmDQ/EQAjE0DKcXK52CjAEWfw=;
+        b=BtDQS/wu1LgMU0YD4/g9U88Ww9Y7nIZ4ZEysH34ubTsXFkvMPUYaOaFMQxgd/xHyhT
+         Lr/FbnztRzkaov3OkZxl/t/XgPHw7SGFUvT0B3kT2+rhbM0K4fPXBERKreETPzhrfPKr
+         yXC/MbGSX5pfxmZyT0NEK/SZJxDwZdEWS4D/UX3ATmuhW8oaH94HdKpPzRxxjlQwG8pQ
+         U+qhlvpXSzS6HmP6vGuJxJ6VSzwvwm8lQfAc8EJ1MPMGNgdzvzvMpBiX/M5t1C1Ud+t+
+         a+QNQL1Iuk03Bw7CyJtbBu0PQHVk11SoEiHZhEM54iiQHoTN3uiiL+vyIUUvtvHkZ4Ku
+         4FEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694728149; x=1695332949;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yywFNfkxTANxC6bAdNsmDQ/EQAjE0DKcXK52CjAEWfw=;
+        b=ejgexVdpbLWn9OoYRzTjQJ3ntFnz5RlSjuAztHnNTH0vTTkLGA2idcJn6pul1w74wm
+         Q/ho+Lj46lXz+1JrLmmTVHSQvgJkUdewcuPHFl87rgHSB0ns0rJL/JUcEIc6m/dWoHFA
+         HdUevEzuZUQZ/KsmeDnAyfWI5bgBFqd+gr2U41/Y8a4t9DdEpjuhDubzLOW129E8QTwG
+         lwqb4rQvmOYl6NRwYA/24gJ7PtCLh1tLtiTxUGt13qm5sfDkmPcrsa8JxDkrNukH4/W3
+         +/7fjD7sVSSmvQBUlKmxkNEUdou7KffECSxDltHkbRqxVjjR0rS3M6tLqNdqr+/1eQTe
+         Jbsg==
+X-Gm-Message-State: AOJu0YzZYMnGsj4b0qQPFkeKHougPKDRARkZYT2FXAeTs09iWwc1iN0e
+	VFluIrH48U4P4sCaO9VhkRE=
+X-Google-Smtp-Source: AGHT+IFNgy0445LR2WwRikJer/g4uGsAxKYPQNR0/zokjxT6VQ+f6xmV9bBdKPe+3JD8k8FhbyB+8Q==
+X-Received: by 2002:a17:907:77c3:b0:9ad:a86b:2337 with SMTP id kz3-20020a17090777c300b009ada86b2337mr4784600ejc.23.1694728148706;
+        Thu, 14 Sep 2023 14:49:08 -0700 (PDT)
+Received: from krava ([83.240.62.189])
+        by smtp.gmail.com with ESMTPSA id kg11-20020a17090776eb00b009a1a653770bsm1552713ejc.87.2023.09.14.14.49.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 14:49:08 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 14 Sep 2023 23:49:04 +0200
+To: Leon Hwang <hffilwlqm@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+	daniel@iogearbox.net, toke@redhat.com, sdf@google.com,
+	lkp@intel.com, dan.carpenter@linaro.org,
+	maciej.fijalkowski@intel.com, hengqi.chen@gmail.com,
+	kernel-patches-bot@fb.com
+Subject: Re: [PATCH bpf] bpf: Fix tr dereferencing
+Message-ID: <ZQN/0IpgAX2gF5gx@krava>
+References: <20230914145126.40202-1-hffilwlqm@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230913222632.3312183-1-song@kernel.org> <208035ba-3016-c9ba-92e4-fe2cee797ca8@linux.dev>
-In-Reply-To: <208035ba-3016-c9ba-92e4-fe2cee797ca8@linux.dev>
-From: Song Liu <song@kernel.org>
-Date: Thu, 14 Sep 2023 14:28:32 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4LykHS9pnaaYuxgnoKMbVaxDpCKfL8OQxsjQGMnXqXPA@mail.gmail.com>
-Message-ID: <CAPhsuW4LykHS9pnaaYuxgnoKMbVaxDpCKfL8OQxsjQGMnXqXPA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Charge modmem for struct_ops trampoline
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	kernel-team@meta.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914145126.40202-1-hffilwlqm@gmail.com>
 
-On Thu, Sep 14, 2023 at 2:14=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
->
-> On 9/13/23 3:26 PM, Song Liu wrote:
-> > Current code charges modmem for regular trampoline, but not for struct_=
-ops
-> > trampoline. Add bpf_jit_[charge|uncharge]_modmem() to struct_ops so the
-> > trampoline is charged in both cases.
-> >
-> > Signed-off-by: Song Liu <song@kernel.org>
-> > ---
-> >   kernel/bpf/bpf_struct_ops.c | 13 +++++++++++--
-> >   1 file changed, 11 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> > index fdc3e8705a3c..ea6ca87a2ed9 100644
-> > --- a/kernel/bpf/bpf_struct_ops.c
-> > +++ b/kernel/bpf/bpf_struct_ops.c
-> > @@ -615,7 +615,10 @@ static void __bpf_struct_ops_map_free(struct bpf_m=
-ap *map)
-> >       if (st_map->links)
-> >               bpf_struct_ops_map_put_progs(st_map);
-> >       bpf_map_area_free(st_map->links);
-> > -     bpf_jit_free_exec(st_map->image);
-> > +     if (st_map->image) {
-> > +             bpf_jit_free_exec(st_map->image);
-> > +             bpf_jit_uncharge_modmem(PAGE_SIZE);
-> > +     }
-> >       bpf_map_area_free(st_map->uvalue);
-> >       bpf_map_area_free(st_map);
-> >   }
-> > @@ -657,6 +660,7 @@ static struct bpf_map *bpf_struct_ops_map_alloc(uni=
-on bpf_attr *attr)
-> >       struct bpf_struct_ops_map *st_map;
-> >       const struct btf_type *t, *vt;
-> >       struct bpf_map *map;
-> > +     int ret;
-> >
-> >       st_ops =3D bpf_struct_ops_find_value(attr->btf_vmlinux_value_type=
-_id);
-> >       if (!st_ops)
-> > @@ -681,6 +685,12 @@ static struct bpf_map *bpf_struct_ops_map_alloc(un=
-ion bpf_attr *attr)
-> >       st_map->st_ops =3D st_ops;
-> >       map =3D &st_map->map;
-> >
-> > +     ret =3D bpf_jit_charge_modmem(PAGE_SIZE);
-> > +     if (ret) {
-> > +             __bpf_struct_ops_map_free(map);
-> > +             return ERR_PTR(ret);
-> > +     }
->
->
-> This just came to my mind when reading it again.
->
-> It will miss a bpf_jit_uncharge_modmem() if the bpf_jit_alloc_exec() at a=
- few
-> lines below did fail (meaning st_map->image is NULL). It is because the
-> __bpf_struct_ops_map_free() only uncharge if st_map->image is not NULL.
+On Thu, Sep 14, 2023 at 10:51:26PM +0800, Leon Hwang wrote:
+> Fix 'tr' dereferencing bug when CONFIG_BPF_JIT is turned off.
+> 
+> Like 'bpf_trampoline_get_progs()', return 'ERR_PTR()' and then check by
+> 'IS_ERR()'. As a result, when CONFIG_BPF_JIT is turned off, it's able to
+> handle the case that 'bpf_trampoline_get()' returns
+> 'ERR_PTR(-EOPNOTSUPP)'.
+> 
+> Fixes: 4a1e7c0c63e0 ("bpf: Support attaching freplace programs to multiple attach points")
+> Fixes: f7b12b6fea00 ("bpf: verifier: refactor check_attach_btf_id()")
+> Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/r/202309131936.5Nc8eUD0-lkp@intel.com/
+> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
 
-Indeed. This is a problem.
+it does not apply cleanly on bpf/master for me, but nice catch
 
->
-> How above moving the bpf_jit_alloc_exec() to here (immediately after
-> bpf_jit_charge_modem succeeded). Like,
->
->         st_map->image =3D bpf_jit_alloc_exec(PAGE_SIZE);
->         if (!st_map->image) {
->                 bpf_jit_uncharge_modmem(PAGE_SIZE);
->                 __bpf_struct_ops_map_free(map);
->                 return ERR_PTR(-ENOMEM);
->         }
->
-> Then there is also no need to test 'if (st_map->image)' in
-> __bpf_struct_ops_map_free().
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-I think we still need this test for uncharge, no?
+jirka
 
-Thanks,
-Song
-
->
-> > +
-> >       st_map->uvalue =3D bpf_map_area_alloc(vt->size, NUMA_NO_NODE);
-> >       st_map->links =3D
-> >               bpf_map_area_alloc(btf_type_vlen(t) * sizeof(struct bpf_l=
-inks *),
-> > @@ -907,4 +917,3 @@ int bpf_struct_ops_link_create(union bpf_attr *attr=
-)
-> >       kfree(link);
-> >       return err;
-> >   }
-> > -
->
+> ---
+>  kernel/bpf/syscall.c    | 4 ++--
+>  kernel/bpf/trampoline.c | 6 +++---
+>  kernel/bpf/verifier.c   | 4 ++--
+>  3 files changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 6a692f3bea150..5748d01c99854 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -3211,8 +3211,8 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+>  		}
+>  
+>  		tr = bpf_trampoline_get(key, &tgt_info);
+> -		if (!tr) {
+> -			err = -ENOMEM;
+> +		if (IS_ERR(tr)) {
+> +			err = PTR_ERR(tr);
+>  			goto out_unlock;
+>  		}
+>  	} else {
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index e97aeda3a86b5..1952614778433 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -697,8 +697,8 @@ int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
+>  
+>  	bpf_lsm_find_cgroup_shim(prog, &bpf_func);
+>  	tr = bpf_trampoline_get(key, &tgt_info);
+> -	if (!tr)
+> -		return  -ENOMEM;
+> +	if (IS_ERR(tr))
+> +		return PTR_ERR(tr);
+>  
+>  	mutex_lock(&tr->mutex);
+>  
+> @@ -775,7 +775,7 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
+>  
+>  	tr = bpf_trampoline_lookup(key);
+>  	if (!tr)
+> -		return NULL;
+> +		return ERR_PTR(-ENOMEM);
+>  
+>  	mutex_lock(&tr->mutex);
+>  	if (tr->func.addr)
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 18e673c0ac159..054063ead0e54 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -19771,8 +19771,8 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+>  
+>  	key = bpf_trampoline_compute_key(tgt_prog, prog->aux->attach_btf, btf_id);
+>  	tr = bpf_trampoline_get(key, &tgt_info);
+> -	if (!tr)
+> -		return -ENOMEM;
+> +	if (IS_ERR(tr))
+> +		return PTR_ERR(tr);
+>  
+>  	if (tgt_prog && tgt_prog->aux->tail_call_reachable)
+>  		tr->flags = BPF_TRAMP_F_TAIL_CALL_CTX;
+> 
+> base-commit: cbb1dbcd99b0ae74c45c4c83c6d213c12c31785c
+> -- 
+> 2.41.0
+> 
+> 
 
