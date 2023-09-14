@@ -1,101 +1,145 @@
-Return-Path: <bpf+bounces-10017-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10018-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6A287A04B2
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 15:00:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EAFA7A04C6
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 15:03:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3BF21C20DBC
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 13:00:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03E722820A9
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 13:03:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C34AE18E3A;
-	Thu, 14 Sep 2023 13:00:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B2A1F5E6;
+	Thu, 14 Sep 2023 13:02:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B05FC241E0
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 13:00:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 180ECC433CA;
-	Thu, 14 Sep 2023 13:00:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694696426;
-	bh=JnGXz16l4E8oLSfnUoqmt+jwbuOV16bjQ7fZpkFPPLE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=vGo51jYB3aHh9P3teaIVRdwy/cf6PWMv7k9BQUbAbH6DpifUN0tnSfEngCJLPWDkg
-	 2MGQUV6phoiR2WUZbp4twmGj83j/tLBv79VaZc22sk/awKf9DVr6KyCwJwcKoWs25+
-	 Ap3Ms0Rb3b8KEg9ntDECyV+O2vPrP1PL0IYpPW671ODRzTRgwdAN2PU4mUtPYc8k7u
-	 ChXAt4ZLKH86s4gJz1RldZ8vnBQqxuVQZsV8kpl9TN9pnm3lBoUKjQy2DVifMjO5ta
-	 YmeVF4Dt5clktxZ8GI8b1C/8ypB5y6/Lbesfpf1sI0pBcyNCuopUUnrm/0GxoulJ3x
-	 uTOGABMqwJNgg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 02010E1C280;
-	Thu, 14 Sep 2023 13:00:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2881241E0;
+	Thu, 14 Sep 2023 13:02:28 +0000 (UTC)
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC951FD0;
+	Thu, 14 Sep 2023 06:02:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1694696548; x=1726232548;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FKfzwEgabNmnr7ctogDVTVjqR+tQlE/LAJw2UQIySqk=;
+  b=hrWnDQYtILFTTUD0q/BB8TJ7+Q70gXbGNOJEd8woYYvNkk5IHy06M9Us
+   tWZXMA8Am4b7kuY8ERaweJqccxPTgaKXSiJ/xwyDMYGo/cxwWQD9sJ01e
+   IlXqXwNaIyCQh+Zg4sEw4dv3DURVsQ2jZd2FW9JdHXBuGU8Pi06fb/Dcc
+   HLFAkb4oBwWh8e4YoBPV9jjrrdRJolp4sXy02JLC9OXdQehsHqp753IUm
+   KjnTg7f2INSPRSAyGFh//UD6/12P6Y5iR/mCMUVe0iR5lpwdkziyHR1U3
+   03fqyTuvw9hlSsaVhRt37fQBqgj7WL0Gqbm3qPziy60Vw77AXaxF+Q9J1
+   Q==;
+X-CSE-ConnectionGUID: AFW5LNIURoy9wLgAfO/wEA==
+X-CSE-MsgGUID: MPvWWLIsRTuZD0YJFcDjng==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.02,146,1688454000"; 
+   d="asc'?scan'208";a="235193637"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 Sep 2023 06:02:26 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 14 Sep 2023 06:02:24 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Thu, 14 Sep 2023 06:02:20 -0700
+Date: Thu, 14 Sep 2023 14:02:04 +0100
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Conor Dooley <conor@kernel.org>
+CC: Pu Lehui <pulehui@huaweicloud.com>, <bpf@vger.kernel.org>,
+	<linux-riscv@lists.infradead.org>, <netdev@vger.kernel.org>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
+	<song@kernel.org>, Yonghong Song <yhs@fb.com>, John Fastabend
+	<john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
+	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>, Luke Nelson <luke.r.nels@gmail.com>, Pu
+ Lehui <pulehui@huawei.com>
+Subject: Re: [PATCH bpf-next 4/6] riscv, bpf: Add necessary Zbb instructions
+Message-ID: <20230914-ought-hypnotize-64cee0e27ed2@wendy>
+References: <20230913153413.1446068-1-pulehui@huaweicloud.com>
+ <20230913153413.1446068-5-pulehui@huaweicloud.com>
+ <20230913-granny-heat-35d70b49ac85@spud>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 00/11] Implement cpuv4 support for s390x
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <169469642600.18020.9158299367745661864.git-patchwork-notify@kernel.org>
-Date: Thu, 14 Sep 2023 13:00:26 +0000
-References: <20230830011128.1415752-1-iii@linux.ibm.com>
-In-Reply-To: <20230830011128.1415752-1-iii@linux.ibm.com>
-To: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- bpf@vger.kernel.org, hca@linux.ibm.com, gor@linux.ibm.com,
- agordeev@linux.ibm.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="UdjAGp0Chm4M5aeN"
+Content-Disposition: inline
+In-Reply-To: <20230913-granny-heat-35d70b49ac85@spud>
 
-Hello:
+--UdjAGp0Chm4M5aeN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This series was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+On Wed, Sep 13, 2023 at 05:23:48PM +0100, Conor Dooley wrote:
+> On Wed, Sep 13, 2023 at 11:34:11PM +0800, Pu Lehui wrote:
+> > From: Pu Lehui <pulehui@huawei.com>
+> >=20
+> > Add necessary Zbb instructions introduced by [0] to reduce code size and
+> > improve performance of RV64 JIT. At the same time, a helper is added to
+> > check whether the CPU supports Zbb instructions.
+> >=20
+> > [0] https://github.com/riscv/riscv-bitmanip/releases/download/1.0.0/bit=
+manip-1.0.0-38-g865e7a7.pdf
+> >=20
+> > Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> > ---
+> >  arch/riscv/net/bpf_jit.h | 26 ++++++++++++++++++++++++++
+> >  1 file changed, 26 insertions(+)
+> >=20
+> > diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+> > index 8e0ef4d08..7ee59d1f6 100644
+> > --- a/arch/riscv/net/bpf_jit.h
+> > +++ b/arch/riscv/net/bpf_jit.h
+> > @@ -18,6 +18,11 @@ static inline bool rvc_enabled(void)
+> >  	return IS_ENABLED(CONFIG_RISCV_ISA_C);
+> >  }
+> > =20
+> > +static inline bool rvzbb_enabled(void)
+> > +{
+> > +	return IS_ENABLED(CONFIG_RISCV_ISA_ZBB);
+> > +}
+>=20
+> I dunno much about bpf, so passing question that may be a bit obvious:
+> Is this meant to be a test as to whether the kernel binary is built with
+> support for the extension, or whether the underlying platform is capable
+> of executing zbb instructions.
+>=20
+> Sorry if that would be obvious to a bpf aficionado, context I have here
+> is the later user and the above rvc_enabled() test, which functions
+> differently to Zbb and so doesn't really help me.
 
-On Wed, 30 Aug 2023 03:07:41 +0200 you wrote:
-> Hi,
-> 
-> This series adds the cpuv4 support to the s390x eBPF JIT.
-> Patches 1-4 are preliminary bugfixes.
-> Patches 5-9 implement the new instructions.
-> Patches 10-11 enable the tests.
-> 
-> [...]
+FTR, I got an off-list reply about this & it is meant to be a check as
+to whether the underlying platform supports the extension. The current
+test here is insufficient for that.
 
-Here is the summary with links:
-  - [bpf-next,01/11] bpf: Disable zero-extension for BPF_MEMSX
-    (no matching commit)
-  - [bpf-next,02/11] net: netfilter: Adjust timeouts of non-confirmed CTs in bpf_ct_insert_entry()
-    https://git.kernel.org/bpf/bpf/c/6bd5bcb18f94
-  - [bpf-next,03/11] selftests/bpf: Unmount the cgroup2 work directory
-    (no matching commit)
-  - [bpf-next,04/11] selftests/bpf: Add big-endian support to the ldsx test
-    (no matching commit)
-  - [bpf-next,05/11] s390/bpf: Implement BPF_MOV | BPF_X with sign-extension
-    (no matching commit)
-  - [bpf-next,06/11] s390/bpf: Implement BPF_MEMSX
-    (no matching commit)
-  - [bpf-next,07/11] s390/bpf: Implement unconditional byte swap
-    (no matching commit)
-  - [bpf-next,08/11] s390/bpf: Implement unconditional jump with 32-bit offset
-    (no matching commit)
-  - [bpf-next,09/11] s390/bpf: Implement signed division
-    (no matching commit)
-  - [bpf-next,10/11] selftests/bpf: Enable the cpuv4 tests for s390x
-    (no matching commit)
-  - [bpf-next,11/11] selftests/bpf: Trim DENYLIST.s390x
-    (no matching commit)
+Thanks,
+Conor.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+--UdjAGp0Chm4M5aeN
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQMETAAKCRB4tDGHoIJi
+0r2GAP9G/Tqz8CZj+46l3JPNeu10+ifMteg0qvwIC0WpXczpbAEAoZJnprYePgJx
+FLwHEzyRTZklaezLKQvJLVjjuM4DjQ8=
+=qF/h
+-----END PGP SIGNATURE-----
+
+--UdjAGp0Chm4M5aeN--
 
