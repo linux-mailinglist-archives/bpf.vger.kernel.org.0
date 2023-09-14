@@ -1,158 +1,136 @@
-Return-Path: <bpf+bounces-10009-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B600F7A03A0
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 14:19:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B52687A03FC
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 14:36:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E0701F23520
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 12:19:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 826ADB20EA1
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 12:36:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25AC921A01;
-	Thu, 14 Sep 2023 12:19:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245CE241F6;
+	Thu, 14 Sep 2023 12:35:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB344208A8;
-	Thu, 14 Sep 2023 12:19:16 +0000 (UTC)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FEE31FCA;
-	Thu, 14 Sep 2023 05:19:16 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bceb02fd2bso13590741fa.1;
-        Thu, 14 Sep 2023 05:19:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4C9F241E4
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 12:35:47 +0000 (UTC)
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D0C31FC9
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 05:35:47 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-68fb2e9ebbfso688711b3a.2
+        for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 05:35:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694693954; x=1695298754; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MIai8kEfSJbbe1MQb/EaG0qclNnxV1ZUNxpY+1c/fgg=;
-        b=qmV0jNYFzd4yu8PKwd04qfL+mI9xgGFkLb87lchMQFEXPZjOob/HGUMSKKdUgWg/I+
-         C6VidDWz2FKfwMrkZdmllMdU+xiMIdDR49HCoMp4DKaK93gPI4DcJtsNhhISdWBU4G+y
-         Ewdz/Wy0ssW1Y5B3ImBpB028OUp3QiXnBGW0HaFNCyy0fCHu/S/xYscQEkZunQ4VLVJ6
-         iJhrem8IrNKZbjhiZ6+eOSQ6fSCwLRAt0R4qrCPhBTqEWTpJ8QgRe5sOC5CXcDeNTz44
-         H1dGoafP9gpbXEBeay4zMl0WlnEml/63d1yqpd58GaEMmZ9Fx4Gk68biaHRH8NnXu0Ue
-         Djrw==
+        d=gmail.com; s=20221208; t=1694694946; x=1695299746; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nzb5nAmn+mX7YW/p5CUpVW3w6LrJzc04jKkqA/umsbw=;
+        b=W7NfCdfeqh282PLNHxRG9VaA39EXe9+87+GWscD4L3s6/QudQllYzmwtO7c5zT4XLd
+         oBvnUBdvCq93gEbzmoFYRE3xnszxqGFmIb5X3Jex2jJE5Ba5fEFS/TgVHP1JXsqImfB4
+         ekOrw53DU5bjPXTno/kKeMlC6tVoggFvZoOT9y/S8Zk/fGReR+3GTQyQtobx380SU/1N
+         5LKGNG95aTodllAhgXncrja4dBkYNQyqfh5HTP4AeDr6dVQFWMAh2UwYH2tZQP0FiCUl
+         zEipol8qznW4pSA+KfqDAk/6h2S6K2LfLLliwk1/07y+cjYAZ1NU/jy14qzXtyyGy1cx
+         Uo4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694693954; x=1695298754;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MIai8kEfSJbbe1MQb/EaG0qclNnxV1ZUNxpY+1c/fgg=;
-        b=ogFSAXMYXDv+zglZfeTboxf6zxmc2AKymO8UnQ+nxj3KbUvX8bri9MxXV4olVO7qCa
-         3B7aFyAUHYylRHwlzLfacR8WMqxWj0Ms1NworiOh9tw25YOqTgN9NwaFC3338is+R9ij
-         qDUuOxqziEoDvUurX61KHqROwB+Vbk2DqEX06+tbiIdZ9bJ5b+mSWsBENigSGLeZOe04
-         A4e4V2lKAYtUrK/bYYKUVN4vAVKPlR0vv2+LvEINlpwZvWKFhtfw9EQSxj/wsBts/VzF
-         n7HQcaTVwFcCxok6ErPvSpGJtzqmDMgkOO7EhhurvatsoF/RpDYYQwtcpfckVP1xn8go
-         I2WA==
-X-Gm-Message-State: AOJu0Yyacvp8VNFN299huZ10kQPCDVV0giVRIzaWReqrbKLpfzTGY3OB
-	8V3w8ksYxYLdhqhH+WoijlE=
-X-Google-Smtp-Source: AGHT+IE9J7DJwE8nML/CCXVSNOTksA6PiQP2wqKee1UuUlkr5qnQ39Oe2QWwbbOyrqnQ31oguUUuxw==
-X-Received: by 2002:a2e:808d:0:b0:2bd:a5e:2255 with SMTP id i13-20020a2e808d000000b002bd0a5e2255mr4898056ljg.28.1694693954191;
-        Thu, 14 Sep 2023 05:19:14 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id w24-20020a2e9bd8000000b002bce5e379a3sm261435ljj.7.2023.09.14.05.19.12
+        d=1e100.net; s=20230601; t=1694694946; x=1695299746;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nzb5nAmn+mX7YW/p5CUpVW3w6LrJzc04jKkqA/umsbw=;
+        b=J0hF5i3MfH36RBGXeGyhYZ9WfxRO7FFmevBE8eQYZ8QU6r6nvL4PBjY4+pKQ6uNmQb
+         pr8ZsgnxZBlWctTITHJWBQRJhamRl4P17hN6zXRVw70WE3Ez1BXytuoCIpClGPGRzZso
+         S0q0d7ogkV86pi8DSLgbqemreaU1UEVeEQgmlT0DEvffH0xPnz396O0SS1/sUU2uJ93S
+         I8o7O47FKbwxQ++mszvYI/yLxmDTPu/6+ujTrvH/Ba7wXLArn96S1SCea2fxPY5RfrDM
+         L2SJYqKQKEXIW/7KDDcDMD9tY0rc9TKoY0okDJvcBmZoZtoMw+/hLhe/+X2cByHibcNY
+         6VXw==
+X-Gm-Message-State: AOJu0YzRnKoVJcq5dhwBgIUR6ljWfSFH0XiwFhyeo3cE7spsnJMHaU9y
+	mt6/NmpMqIS8b6lmI+ci32/G0/K95ig=
+X-Google-Smtp-Source: AGHT+IEHYv/7iPSnCYvanauAE+kS26lZokwvLDByJ+uBbxnU0Rd0jwP+0M1/OhlIGJ99bPpbXFvT2Q==
+X-Received: by 2002:a05:6a00:1a8d:b0:68f:da2a:637b with SMTP id e13-20020a056a001a8d00b0068fda2a637bmr6124881pfv.19.1694694946339;
+        Thu, 14 Sep 2023 05:35:46 -0700 (PDT)
+Received: from localhost.localdomain (bb116-14-95-136.singnet.com.sg. [116.14.95.136])
+        by smtp.gmail.com with ESMTPSA id fe20-20020a056a002f1400b00687dde8ae5dsm1252826pfb.154.2023.09.14.05.35.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 05:19:13 -0700 (PDT)
-Date: Thu, 14 Sep 2023 15:19:10 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jose Abreu <joabreu@synopsys.com>, Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org, 
-	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
-	Emil Renner Berthing <kernel@esmil.dk>, Eric Dumazet <edumazet@google.com>, 
-	Fabio Estevam <festevam@gmail.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>, 
-	Paolo Abeni <pabeni@redhat.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Samin Guo <samin.guo@starfivetech.com>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH net-next 2/6] net: stmmac: imx: use
- dwmac_set_tx_clk_gmii()
-Message-ID: <hsov2bii5wenzexplq2fbgzsls2y5yssdobqjeil2nd2haqilm@jammanegu4vd>
-References: <ZP8yEFWn0Ml3ALWq@shell.armlinux.org.uk>
- <E1qfiqi-007TPS-BZ@rmk-PC.armlinux.org.uk>
+        Thu, 14 Sep 2023 05:35:45 -0700 (PDT)
+From: Leon Hwang <hffilwlqm@gmail.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	tglx@linutronix.de,
+	maciej.fijalkowski@intel.com,
+	hffilwlqm@gmail.com,
+	kernel-patches-bot@fb.com
+Subject: [PATCH bpf-next v2] bpf, x64: Check imm32 first at BPF_CALL in do_jit()
+Date: Thu, 14 Sep 2023 20:35:27 +0800
+Message-ID: <20230914123527.34624-1-hffilwlqm@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <E1qfiqi-007TPS-BZ@rmk-PC.armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Sep 11, 2023 at 04:29:16PM +0100, Russell King (Oracle) wrote:
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+It's unnecessary to check 'imm32' in both 'if' and 'else'.
 
-BTW I don't know whether it's ok to have an empty description in the
-patches for the networking subsystem, but the kernel maintainers
-mainly request to add at least some text with the change justification
-especially seeing the submitting-patches.rst doc says the description
-is mandatory.
+It's better to check it first.
 
--Serge(y)
+Meanwhile, refactor the code for 'offs' calculation.
 
-> ---
->  .../net/ethernet/stmicro/stmmac/dwmac-imx.c   | 27 ++++++-------------
->  1 file changed, 8 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
-> index df34e34cc14f..d2569faf7cc3 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
-> @@ -21,6 +21,7 @@
->  #include <linux/stmmac.h>
->  
->  #include "stmmac_platform.h"
-> +#include "stmmac_plat_lib.h"
->  
->  #define GPR_ENET_QOS_INTF_MODE_MASK	GENMASK(21, 16)
->  #define GPR_ENET_QOS_INTF_SEL_MII	(0x0 << 16)
-> @@ -186,7 +187,6 @@ static void imx_dwmac_fix_speed(void *priv, unsigned int speed, unsigned int mod
->  {
->  	struct plat_stmmacenet_data *plat_dat;
->  	struct imx_priv_data *dwmac = priv;
-> -	unsigned long rate;
->  	int err;
->  
->  	plat_dat = dwmac->plat_dat;
-> @@ -196,24 +196,13 @@ static void imx_dwmac_fix_speed(void *priv, unsigned int speed, unsigned int mod
->  	    (plat_dat->mac_interface == PHY_INTERFACE_MODE_MII))
->  		return;
->  
-> -	switch (speed) {
-> -	case SPEED_1000:
-> -		rate = 125000000;
-> -		break;
-> -	case SPEED_100:
-> -		rate = 25000000;
-> -		break;
-> -	case SPEED_10:
-> -		rate = 2500000;
-> -		break;
-> -	default:
-> -		dev_err(dwmac->dev, "invalid speed %u\n", speed);
-> -		return;
-> -	}
-> -
-> -	err = clk_set_rate(dwmac->clk_tx, rate);
-> -	if (err < 0)
-> -		dev_err(dwmac->dev, "failed to set tx rate %lu\n", rate);
-> +	err = dwmac_set_tx_clk_gmii(dwmac->clk_tx, speed);
-> +	if (err == -ENOTSUPP)
-> +		dev_err(dwmac->dev, "invalid speed %dMbps\n", speed);
-> +	else if (err)
-> +		dev_err(dwmac->dev,
-> +			"failed to set tx rate for speed %dMbps: %pe\n",
-> +			speed, ERR_PTR(err));
->  }
->  
->  static void imx93_dwmac_fix_speed(void *priv, unsigned int speed, unsigned int mode)
-> -- 
-> 2.30.2
-> 
-> 
+v1 -> v2:
+ * Add '#define RESTORE_TAIL_CALL_CNT_INSN_SIZE 7'.
+
+Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
+---
+ arch/x86/net/bpf_jit_comp.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 2846c21d75bfa..fe0393c7e7b68 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1025,6 +1025,7 @@ static void emit_shiftx(u8 **pprog, u32 dst_reg, u8 src_reg, bool is64, u8 op)
+ /* mov rax, qword ptr [rbp - rounded_stack_depth - 8] */
+ #define RESTORE_TAIL_CALL_CNT(stack)				\
+ 	EMIT3_off32(0x48, 0x8B, 0x85, -round_up(stack, 8) - 8)
++#define RESTORE_TAIL_CALL_CNT_INSN_SIZE 7
+ 
+ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image,
+ 		  int oldproglen, struct jit_context *ctx, bool jmp_padding)
+@@ -1629,17 +1630,16 @@ st:			if (is_imm8(insn->off))
+ 		case BPF_JMP | BPF_CALL: {
+ 			int offs;
+ 
++			if (!imm32)
++				return -EINVAL;
++
+ 			func = (u8 *) __bpf_call_base + imm32;
+-			if (tail_call_reachable) {
++			if (tail_call_reachable)
+ 				RESTORE_TAIL_CALL_CNT(bpf_prog->aux->stack_depth);
+-				if (!imm32)
+-					return -EINVAL;
+-				offs = 7 + x86_call_depth_emit_accounting(&prog, func);
+-			} else {
+-				if (!imm32)
+-					return -EINVAL;
+-				offs = x86_call_depth_emit_accounting(&prog, func);
+-			}
++
++			offs = (tail_call_reachable ?
++				RESTORE_TAIL_CALL_CNT_INSN_SIZE : 0);
++			offs += x86_call_depth_emit_accounting(&prog, func);
+ 			if (emit_call(&prog, func, image + addrs[i - 1] + offs))
+ 				return -EINVAL;
+ 			break;
+
+base-commit: cbb1dbcd99b0ae74c45c4c83c6d213c12c31785c
+-- 
+2.41.0
+
 
