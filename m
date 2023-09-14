@@ -1,192 +1,151 @@
-Return-Path: <bpf+bounces-10071-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10072-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C9407A0C4B
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 20:14:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 831797A0C4D
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 20:15:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 231951F2470A
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 18:14:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 692711C20A87
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 18:14:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AFDA266AC;
-	Thu, 14 Sep 2023 18:14:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2EB3266B2;
+	Thu, 14 Sep 2023 18:14:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AAA218E1B
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 18:14:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 101E5C433C7;
-	Thu, 14 Sep 2023 18:14:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694715249;
-	bh=nwUHI8kYOtSNI8gncw95NjA+2bR5emVv7ch03L133v0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=d9RoP6XdloT01A+hBBwNATLv9a+NQaGRq+ErZ1Y/7L17loS42qs1D/hc5ocfa/P++
-	 Kq9VngLAallDAdcQdXcIHTbSAzfsJzVr1JsweRKS6+uNJcwRhs7QxI93bYvde+klkB
-	 k/cciLOtvQFBMOn6owM22fqgNsrMLgq46/imUnqSMuNiNFdC/DD5PCbcXU2dOKDwSF
-	 wJmbPxnxK2lD9TvEV2/d2nLqnG8y4ru4m4Pr0aRxBG57I7ZolV5toiyro6ZuL7GaoH
-	 u4+S8yDvivELwdIvEnNjufG9nO0pWunku3Zd2ZK76/HtoEKh92gpgRG2f/ncYiDbF+
-	 8duKoOmaCBiRA==
-Date: Thu, 14 Sep 2023 11:14:07 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	houtao1@huawei.com
-Subject: Re: [PATCH bpf 3/4] bpf: Ensure unit_size is matched with slab cache
- object size
-Message-ID: <20230914181407.GA1000274@dev-arch.thelio-3990X>
-References: <20230908133923.2675053-1-houtao@huaweicloud.com>
- <20230908133923.2675053-4-houtao@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3763266A5
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 18:14:34 +0000 (UTC)
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88E81FD0
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 11:14:33 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-500c37d479aso2114947e87.2
+        for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 11:14:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694715272; x=1695320072; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9+px6xB3dKSOuOKTUx8ifL1ajg/qno+d0d5z5ssjqDw=;
+        b=kc8FV9IbXiUdwKlVHQmHpeNXtM7RDDp5R9f4YMwtcObjgiYsXxcJvAWpyG9LJ0YQjg
+         enLFyfVqMkd1gQ03Lhoh1kEyKQfXMj57iHEBvGl+IuGpxwneFx+va0ipbGP49x6KUxOJ
+         NVUU8hMXHw/P+60u4OxeK07w/ntnzO6sNMj5BegxHCPq8LiRc9D9/XunxxErlhLfq7g8
+         EV5Do3gdOhgny2TdG2yT25rh+1W26M+yn3jT/MOmeSMl54W4RhjwPyoXIfzaxoL3r8G5
+         //Um39okrPmLmHovC9QeEIrChpz8j1M8JJpiQD08OnIBNXbe9DFzJOHUHCsiEFSUI3yC
+         flnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694715272; x=1695320072;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9+px6xB3dKSOuOKTUx8ifL1ajg/qno+d0d5z5ssjqDw=;
+        b=FQ+bgK1939qn9NJK5HvXKfuS0bRu7fbABE7RR6hme0Gc8PtLqrTsrRbxBYuZ8rXnmT
+         a1MvrUXvvcULXWdLdAeLx2ERn4Zz0CUFmvyG6mSyqe41qcVyXnszMwaGLSxM4eLjfcAf
+         shttQt8kvvJ/VsOaQ67C6JPGi28/ftQuMLzSUZ7mwVQz3Pz8OPw0J6YMDPGG6Qs5FMEL
+         z9JNp5eE1jMLTQk1SCcxnSKcTx7j+7NuUqV1JcDs4vOVyMsDiQWEPdYrAW4XP3ikCbs5
+         zWNCh9UPEIq72T9HN4J+hV9rxbOHrjvBVQB+hMhtv7Ei0uCQR7uE2qklWZkFu4I0/P53
+         A+Xw==
+X-Gm-Message-State: AOJu0YzhDR/pnOQaqvx9a6rBNek50phUHdmnsBI81H7Clru2M1oyd543
+	K7BX9sXW1Q0Oq93+Jirf46C1rqpYPcmUmZu9BKo=
+X-Google-Smtp-Source: AGHT+IE/SAIvZUH2mYGIhXW2D+jjNFI/gSZEHoEVhKgyJbu/+f7/e/YwjgdnHrpcrFK4eNBJ/51d8t4cO7W03tJYSSc=
+X-Received: by 2002:ac2:592d:0:b0:500:a6c1:36f7 with SMTP id
+ v13-20020ac2592d000000b00500a6c136f7mr4800523lfi.3.1694715271697; Thu, 14 Sep
+ 2023 11:14:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230908133923.2675053-4-houtao@huaweicloud.com>
+References: <CAKwvOdnaEakT_y8TA9b_nMY3kMp=xxqKpGQPc2drNqRdV39RQw@mail.gmail.com>
+ <ZPozfCEF9SV2ADQ5@krava> <ZPsJ4AAqNMchvms/@krava> <CAKwvOd==X0exrhmsqX1j1WFX77xe8W7xPbfiCY+Rt6abgmkMCQ@mail.gmail.com>
+ <ZPuA5+HmbcdBLbIq@krava> <ZQLBm8sC+V53CIzD@krava> <CAK7LNATiHvOXiWQi9gXJO9rZbT_MFm6NddaWqoY4ykNWf+OYsQ@mail.gmail.com>
+ <ZQLX3oSCk95Qf4Ma@krava>
+In-Reply-To: <ZQLX3oSCk95Qf4Ma@krava>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 14 Sep 2023 11:14:19 -0700
+Message-ID: <CAEf4Bzb5KQ2_LmhN769ifMeSJaWfebccUasQOfQKaOd0nQ51tw@mail.gmail.com>
+Subject: Re: duplicate BTF_IDs leading to symbol redefinition errors?
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Marcus Seyfarth <m.seyfarth@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	clang-built-linux <llvm@lists.linux.dev>, Stanislav Fomichev <sdf@google.com>, 
+	Nathan Chancellor <nathan@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Hou,
+On Thu, Sep 14, 2023 at 2:52=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
+>
+> On Thu, Sep 14, 2023 at 05:30:51PM +0900, Masahiro Yamada wrote:
+>
+> SNIP
+>
+> > > > so the change is about adding unique id that's basically path of
+> > > > the object stored in base32 so it could be used as symbol, so we
+> > > > don't really need to read the actual file
+> > > >
+> > > > the problem is when BTF_ID definition like:
+> > > >
+> > > > BTF_ID(struct, cgroup)
+> > > >
+> > > > translates in 2 separate objects into same symbol name because of
+> > > > the matching __COUNTER__ macro values (like 380 below)
+> > > >
+> > > >   __BTF_ID__struct__cgroup__380
+> > > >
+> > > > this change just adds unique id of the path name at the end of the
+> > > > symbol with:
+> > > >
+> > > >   echo -n 'kernel/bpf/helpers' | base32 -w0 --> NNSXE3TFNQXWE4DGF5U=
+GK3DQMVZHG
+> > > >
+> > > > so the symbol looks like:
+> > > >
+> > > >   __BTF_ID__struct__cgroup__380NNSXE3TFNQXWE4DGF5UGK3DQMVZHG
+> > > >
+> > > > and is unique over the sources
+> > > >
+> > > > but I still hope we could come up with some better solution ;-)
+> > >
+> > > so far the only better solution I could come up with is to use
+> > > cksum (also from coreutils) instead of base32, which makes the
+> > > BTF_ID_BASE value compact
+> > >
+> > > I'll run test to find out how much it hurts the build time
+> > >
+> > > jirka
+> >
+> >
+> >
+> > Seems a bad idea to me.
+> >
+> > It would fork a new shell and chsum for all files,
+> > while only a few of them need it.
+>
+> right, I have a change to limit this on kernel and net directories,
+> but it's still bad
+>
+> >
+> > Better to consult BTF forks.
+>
+> perhaps there's better way within kbuild to get unique id/value
+> for each object file?
 
-On Fri, Sep 08, 2023 at 09:39:22PM +0800, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
-> 
-> Add extra check in bpf_mem_alloc_init() to ensure the unit_size of
-> bpf_mem_cache is matched with the object_size of underlying slab cache.
-> If these two sizes are unmatched, print a warning once and return
-> -EINVAL in bpf_mem_alloc_init(), so the mismatch can be found early and
-> the potential issue can be prevented.
-> 
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> ---
->  kernel/bpf/memalloc.c | 33 +++++++++++++++++++++++++++++++--
->  1 file changed, 31 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-> index 90c1ed8210a2..1c22b90e754a 100644
-> --- a/kernel/bpf/memalloc.c
-> +++ b/kernel/bpf/memalloc.c
-> @@ -486,6 +486,24 @@ static void prefill_mem_cache(struct bpf_mem_cache *c, int cpu)
->  	alloc_bulk(c, c->unit_size <= 256 ? 4 : 1, cpu_to_node(cpu), false);
->  }
->  
-> +static int check_obj_size(struct bpf_mem_cache *c, unsigned int idx)
-> +{
-> +	struct llist_node *first;
-> +	unsigned int obj_size;
-> +
-> +	first = c->free_llist.first;
-> +	if (!first)
-> +		return 0;
-> +
-> +	obj_size = ksize(first);
-> +	if (obj_size != c->unit_size) {
-> +		WARN_ONCE(1, "bpf_mem_cache[%u]: unexpected object size %u, expect %u\n",
-> +			  idx, obj_size, c->unit_size);
-> +		return -EINVAL;
-> +	}
-> +	return 0;
-> +}
+let's just use __LINE__ + __COUNTER__ for now and teach resolve_btfids
+to fail and complain loudly about duplicate symbols?
 
-I am seeing the warning added by this change as commit c93047255202
-("bpf: Ensure unit_size is matched with slab cache object size") when
-booting ARCH=riscv defconfig in QEMU. I have seen some discussion on the
-mailing list around this, so I apologize if this is a duplicate report
-but it sounded like the previously reported instance of this warning was
-already resolved by some other changeor supposed to be resolved by [1].
-Unfortunately, I tested both current bpf master (currently at
-6bd5bcb18f94) with and without that change and I still see the warning
-in both cases. The rootfs is available at [2], if it is relevant.
 
-$ make -skj"$(nproc)" ARCH=riscv CROSS_COMPILE=riscv64-linux- mrproper defconfig Image
+This will give us time and opportunity to implement a better approach
+to .BTF_ids overall. Encoding the desired type name in the symbol name
+always felt off. Maybe it's better to encode type + name as data,
+which is discarded at the latest stage during vmlinux linking? Either
+way, this baseid hack seems worse and unnecessary.
 
-$ qemu-system-riscv64 \
-    -display none \
-    -nodefaults \
-    -bios default \
-    -M virt \
-    -append earlycon \
-    -kernel arch/riscv/boot/Image \
-    -initrd riscv-rootfs.cpio \
-    -m 512m \
-    -serial mon:stdio
-...
-[    0.000000] Linux version 6.5.0-12679-gc93047255202 (nathan@dev-arch.thelio-3990X) (riscv64-linux-gcc (GCC) 13.2.0, GNU ld (GNU Binutils) 2.41) #1 SMP Thu Sep 14 10:44:41 MST 2023
-...
-[    0.433002] ------------[ cut here ]------------
-[    0.433128] bpf_mem_cache[0]: unexpected object size 128, expect 96
-[    0.433585] WARNING: CPU: 0 PID: 1 at kernel/bpf/memalloc.c:500 bpf_mem_alloc_init+0x348/0x354
-[    0.433810] Modules linked in:
-[    0.433928] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.5.0-12679-gc93047255202 #1
-[    0.434025] Hardware name: riscv-virtio,qemu (DT)
-[    0.434105] epc : bpf_mem_alloc_init+0x348/0x354
-[    0.434140]  ra : bpf_mem_alloc_init+0x348/0x354
-[    0.434163] epc : ffffffff80112572 ra : ffffffff80112572 sp : ff2000000000bd30
-[    0.434177]  gp : ffffffff81501588 tp : ff600000018d0000 t0 : ffffffff808cd1a0
-[    0.434190]  t1 : 0720072007200720 t2 : 635f6d656d5f6670 s0 : ff2000000000bdd0
-[    0.434202]  s1 : ffffffff80e17620 a0 : 0000000000000037 a1 : ffffffff814866b8
-[    0.434215]  a2 : 0000000000000000 a3 : 0000000000000001 a4 : 0000000000000000
-[    0.434227]  a5 : 0000000000000000 a6 : 0000000000000047 a7 : 0000000000000046
-[    0.434239]  s2 : 000000000000000b s3 : 0000000000000000 s4 : 0000000000000000
-[    0.434251]  s5 : 0000000000000100 s6 : ffffffff815031f8 s7 : ffffffff8153a610
-[    0.434264]  s8 : 0000000000000060 s9 : 0000000000000060 s10: 0000000000000000
-[    0.434276]  s11: ff6000001ffe5410 t3 : ff60000001858f00 t4 : ff60000001858f00
-[    0.434288]  t5 : ff60000001858000 t6 : ff2000000000bb48
-[    0.434299] status: 0000000200000120 badaddr: 0000000000000000 cause: 0000000000000003
-[    0.434394] [<ffffffff80112572>] bpf_mem_alloc_init+0x348/0x354
-[    0.434492] [<ffffffff80a0f302>] bpf_global_ma_init+0x1c/0x30
-[    0.434516] [<ffffffff8000212c>] do_one_initcall+0x58/0x19c
-[    0.434526] [<ffffffff80a0105e>] kernel_init_freeable+0x214/0x27e
-[    0.434537] [<ffffffff808db4dc>] kernel_init+0x1e/0x10a
-[    0.434548] [<ffffffff80003386>] ret_from_fork+0xa/0x1c
-[    0.434618] ---[ end trace 0000000000000000 ]---
-
-[1]: https://lore.kernel.org/20230913135943.3137292-1-houtao@huaweicloud.com/
-[2]: https://github.com/ClangBuiltLinux/boot-utils/releases
-
-Cheers,
-Nathan
-
-# bad: [98897dc735cf6635f0966f76eb0108354168fb15] Add linux-next specific files for 20230914
-# good: [aed8aee11130a954356200afa3f1b8753e8a9482] Merge tag 'pmdomain-v6.6-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm
-git bisect start '98897dc735cf6635f0966f76eb0108354168fb15' 'aed8aee11130a954356200afa3f1b8753e8a9482'
-# good: [ea1bbd78a48c8b325583e8c0bc2690850cb51807] bcachefs: Fix assorted checkpatch nits
-git bisect good ea1bbd78a48c8b325583e8c0bc2690850cb51807
-# bad: [9c4e2139cfa15d769eafd51bf3e051293b106986] Merge branch 'master' of git://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth-next.git
-git bisect bad 9c4e2139cfa15d769eafd51bf3e051293b106986
-# bad: [4f07b13481ab390108b015da2bc8f560416e48d2] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux.git
-git bisect bad 4f07b13481ab390108b015da2bc8f560416e48d2
-# bad: [bcfe98207530e1ea0004f4e5dbd6e7e4d9eb2471] Merge branch 'for-linux-next-fixes' of git://anongit.freedesktop.org/drm/drm-misc
-git bisect bad bcfe98207530e1ea0004f4e5dbd6e7e4d9eb2471
-# bad: [95d3e99b1ca8ad3da86c525cc1c00e4ba27592ac] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless.git
-git bisect bad 95d3e99b1ca8ad3da86c525cc1c00e4ba27592ac
-# good: [6836d373943afeeeb8e2989c22aaaa51218a83c6] Merge branch 'master' of git://git.kernel.org/pub/scm/linux/kernel/git/davem/sparc.git
-git bisect good 6836d373943afeeeb8e2989c22aaaa51218a83c6
-# good: [3d3e2fb5e45a08a45ae01f0dfaf9621ae0e439f9] Merge branch 'main' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git
-git bisect good 3d3e2fb5e45a08a45ae01f0dfaf9621ae0e439f9
-# bad: [51d56d51d3881addaea2c7242ae859155ae75607] Merge branch 'master' of git://git.kernel.org/pub/scm/linux/kernel/git/klassert/ipsec.git
-git bisect bad 51d56d51d3881addaea2c7242ae859155ae75607
-# bad: [1a49f4195d3498fe458a7f5ff7ec5385da70d92e] bpf: Avoid dummy bpf_offload_netdev in __bpf_prog_dev_bound_init
-git bisect bad 1a49f4195d3498fe458a7f5ff7ec5385da70d92e
-# bad: [c930472552022bd09aab3cd946ba3f243070d5c7] bpf: Ensure unit_size is matched with slab cache object size
-git bisect bad c930472552022bd09aab3cd946ba3f243070d5c7
-# good: [7182e56411b9a8b76797ed7b6095fc84be76dfb0] selftests/bpf: Add kprobe_multi override test
-git bisect good 7182e56411b9a8b76797ed7b6095fc84be76dfb0
-# good: [b1d53958b69312e43c118d4093d8f93d3f6f80af] bpf: Don't prefill for unused bpf_mem_cache
-git bisect good b1d53958b69312e43c118d4093d8f93d3f6f80af
-# first bad commit: [c930472552022bd09aab3cd946ba3f243070d5c7] bpf: Ensure unit_size is matched with slab cache object size
+>
+> thanks,
+> jirka
+>
 
