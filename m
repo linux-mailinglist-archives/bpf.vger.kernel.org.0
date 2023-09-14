@@ -1,47 +1,56 @@
-Return-Path: <bpf+bounces-10099-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10100-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13D567A10EA
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 00:26:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8AC37A1177
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 01:12:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11D871C20AC0
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 22:26:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AAC9282280
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 23:12:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC77B273E2;
-	Thu, 14 Sep 2023 22:25:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82720D30A;
+	Thu, 14 Sep 2023 23:12:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2582E26E3C
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 22:25:54 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB2E8269D
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 15:25:53 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38EMBexm010774
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 15:25:53 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3t451h3nj6-4
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 15:25:53 -0700
-Received: from twshared52565.14.frc2.facebook.com (2620:10d:c0a8:1c::1b) by
- mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Thu, 14 Sep 2023 15:25:50 -0700
-Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
-	id 9E7B0245C6036; Thu, 14 Sep 2023 15:25:47 -0700 (PDT)
-From: Song Liu <song@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8908B33F2
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 23:12:31 +0000 (UTC)
+Received: from mx0a-00206402.pphosted.com (mx0a-00206402.pphosted.com [148.163.148.77])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55DE1BFA
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 16:12:30 -0700 (PDT)
+Received: from pps.filterd (m0354652.ppops.net [127.0.0.1])
+	by mx0a-00206402.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38EL8jj0017098;
+	Thu, 14 Sep 2023 23:12:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
+	 h=from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=default; bh=HHfUMBfHd
+	3sOc4eCmcNWhBk1jB7nHOmKYKkRPXMcQ2c=; b=yqDS9QP4EKmNoC8ani4HEXg7G
+	FBm8saDffyaJMTfB3xk+MaMdIf84B/ZY7NO+ETgKD/Lp5Z/6b0eNrS9lfFvUDaL+
+	8XUnS7RYmH+Ky5fTzpCSLjPNqDqDa20k47viSQkPnmE6QI6A2ZK/5maK8aK1BP0J
+	1QY0vWOEbVJln3VAnOT12yJt0a1+ZPDYIiGQisIaYcma4KdNg4XowOLscdrJYbrg
+	hHFb2BcUdMf0Q/xS8GYyTHv/dGsdU7Ljh/MIJyLDJ90hoeCrCRmojqOYZeeF0L1q
+	+tyBCda1gcF0ijkKZ2dVBHW1zNc7TwvOFLMyPTfj3UAN3KhLM1PfFzIhIlsRA==
+Received: from 04wpexch06.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60])
+	by mx0a-00206402.pphosted.com (PPS) with ESMTPS id 3t2ybtx6yn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Sep 2023 23:12:10 +0000 (GMT)
+Received: from LL-556NGK3.crowdstrike.sys (10.100.11.122) by
+ 04wpexch06.crowdstrike.sys (10.100.11.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.16; Thu, 14 Sep 2023 23:12:08 +0000
+From: Martin Kelly <martin.kelly@crowdstrike.com>
 To: <bpf@vger.kernel.org>
-CC: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <martin.lau@linux.dev>, <kernel-team@meta.com>,
-        Song Liu <song@kernel.org>
-Subject: [PATCH v2 bpf-next] bpf: Charge modmem for struct_ops trampoline
-Date: Thu, 14 Sep 2023 15:25:42 -0700
-Message-ID: <20230914222542.2986059-1-song@kernel.org>
+CC: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau
+	<martin.lau@kernel.org>,
+        Martin Kelly <martin.kelly@crowdstrike.com>
+Subject: [PATCH bpf-next 00/14] add libbpf getters for individual ringbuffers
+Date: Thu, 14 Sep 2023 16:11:09 -0700
+Message-ID: <20230914231123.193901-1-martin.kelly@crowdstrike.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -49,92 +58,63 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: kuaM2FtmmVyq0Zmx0EbjoRrqDz2_hvub
-X-Proofpoint-ORIG-GUID: kuaM2FtmmVyq0Zmx0EbjoRrqDz2_hvub
+X-Originating-IP: [10.100.11.122]
+X-ClientProxiedBy: 04WPEXCH12.crowdstrike.sys (10.100.11.116) To
+ 04wpexch06.crowdstrike.sys (10.100.11.99)
+X-Disclaimer: USA
+X-Proofpoint-GUID: 9dcksltxV32ZX9IkKTHH7XWDP8cRiEBy
+X-Proofpoint-ORIG-GUID: 9dcksltxV32ZX9IkKTHH7XWDP8cRiEBy
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-09-14_12,2023-09-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
+ lowpriorityscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=906
+ phishscore=0 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2308100000 definitions=main-2309140201
 
-Current code charges modmem for regular trampoline, but not for struct_op=
-s
-trampoline. Add bpf_jit_[charge|uncharge]_modmem() to struct_ops so the
-trampoline is charged in both cases.
+This patch series adds a new ring__ API to libbpf exposing getters for accessing
+the individual ringbuffers inside a struct ring_buffer. This is useful for
+polling individually, getting available data, or similar use cases. The API
+looks like this, and was roughly proposed by Andrii Nakryiko in another thread:
 
-Signed-off-by: Song Liu <song@kernel.org>
+Getting a ring struct:
+struct ring *ring_buffer__ring(struct ring_buffer *rb, unsigned int idx);
 
----
-Changes in v2:
-1. Fix error handling path of bpf_struct_ops_map_alloc(). (Martin)
----
- kernel/bpf/bpf_struct_ops.c | 26 ++++++++++++++++++++++----
- 1 file changed, 22 insertions(+), 4 deletions(-)
+Using the ring struct:
+unsigned long ring__consumer_pos(const struct ring *r);
+unsigned long ring__producer_pos(const struct ring *r);
+size_t ring__avail_data_size(const struct ring *r);
+size_t ring__size(const struct ring *r);
+int ring__map_fd(const struct ring *r);
+int ring__consume(struct ring *r);
 
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index fdc3e8705a3c..db6176fb64dc 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -615,7 +615,10 @@ static void __bpf_struct_ops_map_free(struct bpf_map=
- *map)
- 	if (st_map->links)
- 		bpf_struct_ops_map_put_progs(st_map);
- 	bpf_map_area_free(st_map->links);
--	bpf_jit_free_exec(st_map->image);
-+	if (st_map->image) {
-+		bpf_jit_free_exec(st_map->image);
-+		bpf_jit_uncharge_modmem(PAGE_SIZE);
-+	}
- 	bpf_map_area_free(st_map->uvalue);
- 	bpf_map_area_free(st_map);
- }
-@@ -657,6 +660,7 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union=
- bpf_attr *attr)
- 	struct bpf_struct_ops_map *st_map;
- 	const struct btf_type *t, *vt;
- 	struct bpf_map *map;
-+	int ret;
-=20
- 	st_ops =3D bpf_struct_ops_find_value(attr->btf_vmlinux_value_type_id);
- 	if (!st_ops)
-@@ -681,12 +685,27 @@ static struct bpf_map *bpf_struct_ops_map_alloc(uni=
-on bpf_attr *attr)
- 	st_map->st_ops =3D st_ops;
- 	map =3D &st_map->map;
-=20
-+	ret =3D bpf_jit_charge_modmem(PAGE_SIZE);
-+	if (ret) {
-+		__bpf_struct_ops_map_free(map);
-+		return ERR_PTR(ret);
-+	}
-+
-+	st_map->image =3D bpf_jit_alloc_exec(PAGE_SIZE);
-+	if (!st_map->image) {
-+		/* __bpf_struct_ops_map_free() uses st_map->image as flag
-+		 * for "charged or not". In this case, we need to unchange
-+		 * here.
-+		 */
-+		bpf_jit_uncharge_modmem(PAGE_SIZE);
-+		__bpf_struct_ops_map_free(map);
-+		return ERR_PTR(-ENOMEM);
-+	}
- 	st_map->uvalue =3D bpf_map_area_alloc(vt->size, NUMA_NO_NODE);
- 	st_map->links =3D
- 		bpf_map_area_alloc(btf_type_vlen(t) * sizeof(struct bpf_links *),
- 				   NUMA_NO_NODE);
--	st_map->image =3D bpf_jit_alloc_exec(PAGE_SIZE);
--	if (!st_map->uvalue || !st_map->links || !st_map->image) {
-+	if (!st_map->uvalue || !st_map->links) {
- 		__bpf_struct_ops_map_free(map);
- 		return ERR_PTR(-ENOMEM);
- 	}
-@@ -907,4 +926,3 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
- 	kfree(link);
- 	return err;
- }
--
---=20
+Martin Kelly (14):
+  libbpf: refactor cleanup in ring_buffer__add
+  libbpf: switch rings to array of pointers
+  libbpf: add ring_buffer__ring
+  selftests/bpf: add tests for ring_buffer__ring
+  libbpf: add ring__producer_pos, ring__consumer_pos
+  selftests/bpf: add tests for ring__*_pos
+  libbpf: add ring__avail_data_size
+  selftests/bpf: add tests for ring__avail_data_size
+  libbpf: add ring__size
+  selftests/bpf: add tests for ring__size
+  libbpf: add ring__map_fd
+  selftests/bpf: add tests for ring__map_fd
+  libbpf: add ring__consume
+  selftests/bpf: add tests for ring__consume
+
+ tools/lib/bpf/libbpf.h                        | 68 +++++++++++++++
+ tools/lib/bpf/libbpf.map                      |  7 ++
+ tools/lib/bpf/ringbuf.c                       | 87 +++++++++++++++----
+ .../selftests/bpf/prog_tests/ringbuf.c        | 38 +++++++-
+ .../selftests/bpf/prog_tests/ringbuf_multi.c  | 16 ++++
+ 5 files changed, 199 insertions(+), 17 deletions(-)
+
+-- 
 2.34.1
 
 
