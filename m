@@ -1,184 +1,162 @@
-Return-Path: <bpf+bounces-10028-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10029-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 067AF7A077C
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 16:38:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B8687A0883
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 17:06:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97665B20A08
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 14:38:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E94B9281F01
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 15:06:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA99410A39;
-	Thu, 14 Sep 2023 14:37:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A51C421111;
+	Thu, 14 Sep 2023 14:51:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BC59847D;
-	Thu, 14 Sep 2023 14:37:19 +0000 (UTC)
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A98131AD;
-	Thu, 14 Sep 2023 07:37:18 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-502e0b7875dso1825277e87.0;
-        Thu, 14 Sep 2023 07:37:18 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BD5B28E11
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 14:51:38 +0000 (UTC)
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F82F9
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 07:51:38 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bdf4752c3cso8152505ad.2
+        for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 07:51:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694702237; x=1695307037; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0kK+0I3XIPPrGhkB0om7mc8r7QRJGhz7r+ekae91Iis=;
-        b=KNSWbIkxFMJ7uLu528Qwy2OD/ApryIBkwRMdbwuvrrVsScns3Cv5XgQm+sbC76mkWj
-         CyNRf54a3ywJpn/LIKcptPDiFvjSFRpUz8zYGo5DLWC1sgTseZOCj75K+zx3Bl9kd480
-         D3p2WPfnRIuY9PJVT+fB5n+7SOTNLGs97m3nKfhexhfTpv9hFNUsRL1LMzserUddSSox
-         ZI34LKpD9XsX09bMD3w4iXr3p8mq7waGyJ0kQqM5rAWsC6uWau0CRZCl23h53tztl/Pk
-         cdjFmiPulLEfzQ9mFkvFrjKw58lHP8C/vXajLa9LFOsywSItDO3cBU2rs+Wr6HlE2Tz3
-         +rcA==
+        d=gmail.com; s=20221208; t=1694703097; x=1695307897; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dw8Z5ZsdHe0R5PJlHhouptZdCrrEBGXwCzeH0ePBZGk=;
+        b=CNNSXYimy5muI6wIKOWBmOETgxs6bYs6mliiOhaE5oIBaBZFGiLID4fdCaGgNtK4+y
+         94u5z+Q+VmJ4CH3PXzet5X4yKNpY/JaZsVomh5kY2mkxJJx/qZAaIBGtjOC4YohbJ1vR
+         6/w20JGHY1Q/DlCCv8tr8zYiYrTfB3UCmDY3jeC47OOkulW5HA14xcHU8oq4BAr9bRGX
+         txzXjq+Vb5+gOZJPac/0WzeHkd8LZKhp/QYJFaHGZPl7B/Ky/Bmso7sERPCM3WPtdXAp
+         VwBmQPwHkcJjEKB5N9vMuCdaMKoIvnx/neHFsSt9LnOmTE7IudtCsXGotjmPNY14WtlH
+         HmPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694702237; x=1695307037;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0kK+0I3XIPPrGhkB0om7mc8r7QRJGhz7r+ekae91Iis=;
-        b=HhmFtkKwAPkjo8t4GJE9vTaSQti5dH7AdqBlOk2Hd/nuPJbS8eGfRSL76wMNksryCq
-         aj9NodDHYUgRk8ZjYeoblLozDZRTo0nYBWQB0L4ZM/l+erXT/9vUg4e2BG1HYh7hu5cc
-         jsgtNgHqYJYd/qAH5k+KQ5TxfuWOTnBGLC5U6ekEvPxGGaD+8tRn8ksOnQ+G1aAgT8YX
-         snEyyG4s6xjJJ/bt/BuEI5S7+KTd2Yd0TSOF99osGyqcaRRnm29yx9ZihWA2CzgFFgEo
-         Nghz6OFbrzK4OFRtsLEe7ZRa02lLtd5EXVnyJ/RMiDYtROfntggU8/1X+R9qf423/NBJ
-         FWOw==
-X-Gm-Message-State: AOJu0YyOk++oOGnm1Ton1ph1hWt+95ZWyRjCRsbIsq/RuRuCGp22C8tM
-	nYi+Se76wCLh2W15dXWxxDY=
-X-Google-Smtp-Source: AGHT+IHTmVRi837uQB0y/sPX3uJQ+hm834yJYSetnbihr9kUbQUqybyp46P9VrQu9i5XR2Nx0h4Cgw==
-X-Received: by 2002:a19:2d54:0:b0:4fe:d0f:1f1e with SMTP id t20-20020a192d54000000b004fe0d0f1f1emr3971532lft.25.1694702236523;
-        Thu, 14 Sep 2023 07:37:16 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id er20-20020a05651248d400b004fe2503e31bsm295007lfb.157.2023.09.14.07.37.15
+        d=1e100.net; s=20230601; t=1694703097; x=1695307897;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Dw8Z5ZsdHe0R5PJlHhouptZdCrrEBGXwCzeH0ePBZGk=;
+        b=DvZ1OW++daHN9XxzP/rG0/oJalZhDgmXrbyN7cr52cK+CfyH0AI43kco+CmA4m0VGv
+         djyPVeQXmD3JT6qqBGRcNX0gqw5YDSGkiksAouqYzqrA7UvZ8Tx/mUAva01CJpRwj5fm
+         kjfhgXP/ykSTKxNMCoi8PfbWdoz8OfATNATKyNXzSpZBjcsFSnENN4yr7KnzA913qimh
+         0CLaWD2YeqvqA29INjRyTUjZtidyXq23ARNzRGTOy29neTWHm0o3t7ikv943B1VoNDCR
+         sBnOYowMZZekui5zKg6fA7/ubY4BmqO+RwBpMilqP9O8Xfzq4m2GJpGUZT+GJMswWzl/
+         SRWw==
+X-Gm-Message-State: AOJu0YyG6nlDzKPf1Ilsg/ec6gGRTRBh8h7Wh+YJ3GtmMYQgt7WX9dQD
+	CM2snzHBUVWnYq3S1su6cE5zwGuLYBc=
+X-Google-Smtp-Source: AGHT+IFhO0m+i+weW3f4E6E9DviZHLNCgO8F9XrA30JONeqvKwyGJSIoAOuAuDYXmCP/+s2Unnwveg==
+X-Received: by 2002:a17:902:bd46:b0:1bc:844:5831 with SMTP id b6-20020a170902bd4600b001bc08445831mr5348904plx.57.1694703096955;
+        Thu, 14 Sep 2023 07:51:36 -0700 (PDT)
+Received: from localhost.localdomain (bb116-14-95-136.singnet.com.sg. [116.14.95.136])
+        by smtp.gmail.com with ESMTPSA id d17-20020a170902ced100b001b8b26fa6c1sm1687565plg.115.2023.09.14.07.51.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 07:37:16 -0700 (PDT)
-Date: Thu, 14 Sep 2023 17:37:13 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jose Abreu <joabreu@synopsys.com>, Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org, 
-	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
-	Emil Renner Berthing <kernel@esmil.dk>, Eric Dumazet <edumazet@google.com>, 
-	Fabio Estevam <festevam@gmail.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>, 
-	Paolo Abeni <pabeni@redhat.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Samin Guo <samin.guo@starfivetech.com>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH net-next 4/6] net: stmmac: rk: use
- stmmac_set_tx_clk_gmii()
-Message-ID: <7vhtvd25qswsju34lgqi4em5v3utsxlvi3lltyt5yqqecddpyh@c5yvk7t5k5zz>
-References: <ZQMPnyutz6T23E8T@shell.armlinux.org.uk>
- <E1qgmkp-007Z4s-GL@rmk-PC.armlinux.org.uk>
+        Thu, 14 Sep 2023 07:51:36 -0700 (PDT)
+From: Leon Hwang <hffilwlqm@gmail.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	toke@redhat.com,
+	sdf@google.com,
+	lkp@intel.com,
+	dan.carpenter@linaro.org,
+	maciej.fijalkowski@intel.com,
+	hengqi.chen@gmail.com,
+	hffilwlqm@gmail.com,
+	kernel-patches-bot@fb.com
+Subject: [PATCH bpf] bpf: Fix tr dereferencing
+Date: Thu, 14 Sep 2023 22:51:26 +0800
+Message-ID: <20230914145126.40202-1-hffilwlqm@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <E1qgmkp-007Z4s-GL@rmk-PC.armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Sep 14, 2023 at 02:51:35PM +0100, Russell King (Oracle) wrote:
-> Use stmmac_set_tx_clk_gmii().
-> 
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> ---
->  .../net/ethernet/stmicro/stmmac/dwmac-rk.c    | 60 +++++--------------
->  1 file changed, 16 insertions(+), 44 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
-> index d920a50dd16c..5731a73466eb 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
-> @@ -1081,28 +1081,14 @@ static void rk3568_set_gmac_speed(struct rk_priv_data *bsp_priv, int speed)
->  {
->  	struct clk *clk_mac_speed = bsp_priv->clks[RK_CLK_MAC_SPEED].clk;
->  	struct device *dev = &bsp_priv->pdev->dev;
-> -	unsigned long rate;
-> -	int ret;
-> -
-> -	switch (speed) {
-> -	case 10:
-> -		rate = 2500000;
-> -		break;
-> -	case 100:
-> -		rate = 25000000;
-> -		break;
-> -	case 1000:
-> -		rate = 125000000;
-> -		break;
-> -	default:
-> -		dev_err(dev, "unknown speed value for GMAC speed=%d", speed);
-> -		return;
-> -	}
-> -
-> -	ret = clk_set_rate(clk_mac_speed, rate);
-> -	if (ret)
-> -		dev_err(dev, "%s: set clk_mac_speed rate %ld failed %d\n",
-> -			__func__, rate, ret);
-> +	int err;
-> +
-> +	err = stmmac_set_tx_clk_gmii(clk_mac_speed, speed);
-> +	if (err == -ENOTSUPP)
+Fix 'tr' dereferencing bug when CONFIG_BPF_JIT is turned off.
 
-> +		dev_err(dev, "invalid speed %uMbps\n", speed);
-> +	else if (err)
-> +		dev_err(dev, "failed to set tx rate for speed %uMbps: %pe\n",
+Like 'bpf_trampoline_get_progs()', return 'ERR_PTR()' and then check by
+'IS_ERR()'. As a result, when CONFIG_BPF_JIT is turned off, it's able to
+handle the case that 'bpf_trampoline_get()' returns
+'ERR_PTR(-EOPNOTSUPP)'.
 
-These type specifiers should have been '%d' since the speed variable
-is of the signed integer type here.
+Fixes: 4a1e7c0c63e0 ("bpf: Support attaching freplace programs to multiple attach points")
+Fixes: f7b12b6fea00 ("bpf: verifier: refactor check_attach_btf_id()")
+Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/r/202309131936.5Nc8eUD0-lkp@intel.com/
+Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
+---
+ kernel/bpf/syscall.c    | 4 ++--
+ kernel/bpf/trampoline.c | 6 +++---
+ kernel/bpf/verifier.c   | 4 ++--
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
--Serge(y)
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 6a692f3bea150..5748d01c99854 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3211,8 +3211,8 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+ 		}
+ 
+ 		tr = bpf_trampoline_get(key, &tgt_info);
+-		if (!tr) {
+-			err = -ENOMEM;
++		if (IS_ERR(tr)) {
++			err = PTR_ERR(tr);
+ 			goto out_unlock;
+ 		}
+ 	} else {
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index e97aeda3a86b5..1952614778433 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -697,8 +697,8 @@ int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
+ 
+ 	bpf_lsm_find_cgroup_shim(prog, &bpf_func);
+ 	tr = bpf_trampoline_get(key, &tgt_info);
+-	if (!tr)
+-		return  -ENOMEM;
++	if (IS_ERR(tr))
++		return PTR_ERR(tr);
+ 
+ 	mutex_lock(&tr->mutex);
+ 
+@@ -775,7 +775,7 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
+ 
+ 	tr = bpf_trampoline_lookup(key);
+ 	if (!tr)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	mutex_lock(&tr->mutex);
+ 	if (tr->func.addr)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 18e673c0ac159..054063ead0e54 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -19771,8 +19771,8 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 
+ 	key = bpf_trampoline_compute_key(tgt_prog, prog->aux->attach_btf, btf_id);
+ 	tr = bpf_trampoline_get(key, &tgt_info);
+-	if (!tr)
+-		return -ENOMEM;
++	if (IS_ERR(tr))
++		return PTR_ERR(tr);
+ 
+ 	if (tgt_prog && tgt_prog->aux->tail_call_reachable)
+ 		tr->flags = BPF_TRAMP_F_TAIL_CALL_CTX;
 
-> +			speed, ERR_PTR(err));
->  }
->  
->  static const struct rk_gmac_ops rk3568_ops = {
-> @@ -1387,28 +1373,14 @@ static void rv1126_set_rgmii_speed(struct rk_priv_data *bsp_priv, int speed)
->  {
->  	struct clk *clk_mac_speed = bsp_priv->clks[RK_CLK_MAC_SPEED].clk;
->  	struct device *dev = &bsp_priv->pdev->dev;
-> -	unsigned long rate;
-> -	int ret;
-> -
-> -	switch (speed) {
-> -	case 10:
-> -		rate = 2500000;
-> -		break;
-> -	case 100:
-> -		rate = 25000000;
-> -		break;
-> -	case 1000:
-> -		rate = 125000000;
-> -		break;
-> -	default:
-> -		dev_err(dev, "unknown speed value for RGMII speed=%d", speed);
-> -		return;
-> -	}
-> -
-> -	ret = clk_set_rate(clk_mac_speed, rate);
-> -	if (ret)
-> -		dev_err(dev, "%s: set clk_mac_speed rate %ld failed %d\n",
-> -			__func__, rate, ret);
-> +	int err;
-> +
-> +	err = stmmac_set_tx_clk_gmii(clk_mac_speed, speed);
-> +	if (err == -ENOTSUPP)
-> +		dev_err(dev, "invalid speed %dMbps\n", speed);
-> +	else if (err)
-> +		dev_err(dev, "failed to set tx rate for speed %dMbps: %pe\n",
-> +			speed, ERR_PTR(err));
->  }
->  
->  static void rv1126_set_rmii_speed(struct rk_priv_data *bsp_priv, int speed)
-> -- 
-> 2.30.2
-> 
-> 
+base-commit: cbb1dbcd99b0ae74c45c4c83c6d213c12c31785c
+-- 
+2.41.0
+
 
