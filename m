@@ -1,183 +1,172 @@
-Return-Path: <bpf+bounces-10008-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10007-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 975227A0389
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 14:15:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 011EC7A0383
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 14:13:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D4661F23510
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 12:15:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A2DB1C20EBC
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 12:13:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 540DB21A04;
-	Thu, 14 Sep 2023 12:13:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE2F3219F3;
+	Thu, 14 Sep 2023 12:13:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 244D520B2B
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 12:13:43 +0000 (UTC)
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A1A1FC9
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 05:13:43 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id a640c23a62f3a-9adb9fa7200so131140566b.0
-        for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 05:13:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B93208A8;
+	Thu, 14 Sep 2023 12:13:17 +0000 (UTC)
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4971FD3;
+	Thu, 14 Sep 2023 05:13:16 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-500913779f5so1481199e87.2;
+        Thu, 14 Sep 2023 05:13:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694693621; x=1695298421; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RTXlV2LvqMCVJ/I2tg55mmX5FwjBNIrWdoJP8/3/mBM=;
-        b=FLPrSktjhG9V0td20rJQ9hRHptcv3cxadQbhNhRAUHKsm0ow4hQttvrYmVoQVq6QBS
-         x0VP79QMYtN+gmeJVXiNvhoihrZSqatCtvkV5Xchgb4f8+lagtW3pdq5GvqbbIulGdYg
-         cB/P244xAMwQACtwNX/c8G2qejEGanOE59T5d8D4nBf8a5LC9hKSQxl1OmuyGb4K1AOP
-         sAAaRiPDGJzJPbXj/IslI0GkhTJLlg0zG6pPfyhmRy2FG+ZV9+1Wz2pnr+lLqi70tQxZ
-         7M0mIRCHLlea/bpB4NMnksUDWOtiF3DqVBpPKWZET7TPqz2ubt2/IjBuDyTmX1zRYbwT
-         wcew==
+        d=gmail.com; s=20221208; t=1694693595; x=1695298395; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vAsYiYV8tZEJujkaxJ088mOxaTtmj4YYmIGTa7ifbAU=;
+        b=AyTgXhCnnq/N51HHp/lHGThCb8VeGutBlJnwEURdLFD/28GvBNISVe/iilfbPDlZOQ
+         hOlvQ7XCkpTHUOHTewC7CzEC/NkN3w/tcvm/P/ZbXonwwaj5jelP9E6b2gmH07pnZS0Q
+         GPW0n3pH4Rhlhb2tDK6MLdUpks1+g32Y5cT2X8eE0mEFxXVGyW1uXzGuHs279oxTBSx3
+         7YNYMoK8EDYSfJ86bnn/F6/JMRic+60L6PhNhDeJTPmzEbjUDP0kuAyRqbO8nVV/Qzuj
+         TnqznHjnWalGTN/MOnSYU8SxAs12eczT/lSsagFi3KXlc15ll5Sk7vNEVCibjDGjXjMS
+         0uMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694693621; x=1695298421;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RTXlV2LvqMCVJ/I2tg55mmX5FwjBNIrWdoJP8/3/mBM=;
-        b=advlykge+Af6F3+rg+KXe7ZAjknLRWF+c5TCScE2ZtnR/8IJW8Eo1LfCa1JbyCxQ/a
-         Axl0u4kadyKMc3snfm03WyOpHUO6pKbkBXemtwZyyue5aJLnDIkYYYjCeRcrCq2jyTzU
-         W8ZAHQoktN0PlsDKJui307h46xbGJ3cnt8YV2N2keajza5AzidhE01OeEs+bgINP+JSI
-         H961AOOgX3Uz6EUM8j4MCLFy/s9juCdRHvV1DKh9sB1Jav67ZC4Uc/XCSGBaC33nZdR6
-         CumU0R7JN8hQglUFB5/3dtugPyNzLmvpk9yCn8AUz1Q/vlvQGZzB6SyXiL+945i1a4HO
-         UTdw==
-X-Gm-Message-State: AOJu0YysuWsQTD8J2ohfcjmTcI7Mz/XXr99M3eeuBao5r/ulttIufS4D
-	MhqYa6MayKwrGJEkI0T9ziVm5DmZUu9Vo5Ut7/A=
-X-Google-Smtp-Source: AGHT+IE6ld5Q8C7HJHZrvfzgIt41swFKh3mx12aVzHq0+v4lPON2P3v9G1IixrSV6sEPOXHii6gHKC4gMG2qNDWE6UU=
-X-Received: by 2002:a17:907:6091:b0:9aa:1794:945b with SMTP id
- ht17-20020a170907609100b009aa1794945bmr2457519ejc.22.1694693621334; Thu, 14
- Sep 2023 05:13:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694693595; x=1695298395;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vAsYiYV8tZEJujkaxJ088mOxaTtmj4YYmIGTa7ifbAU=;
+        b=XAPaUG0sFIc5urBJAGjQ4qnPuQzK1tqmiJalS+rz1xRLDBTT7JXhKbQUU90BbMOlQb
+         hdIDC3q0g47+V3JjTLv0grPsGndnq8e8tgJ78n6xftihBb7ZES7Yw5Pds+d2qHeR31T+
+         /kut2eKKGVNfpD5awvSE0W5WT6ra7FnHy80QSb6dfsue4O02ArIbEHLBAYK81iSl3QhR
+         GisOCCZmqP1N2y4PS8xSaMAKdJLSWnHNcYkvrByrlB/jm9QohW+8r/TtuDkP0Eyueu1M
+         yOlwLjFlu+iPdHkZcrNNTVKBDOyUjnPoXSTboEGFFMxJr0HKX7K9HpnCFNs/WUWP/e+a
+         Eqjg==
+X-Gm-Message-State: AOJu0Yw/d1oxHJcEddptmFlhPP6DwsLZ1nnv96XcImR6zCz/udwkVgyb
+	Xi0p74K9xg5y567FIqJMDcc=
+X-Google-Smtp-Source: AGHT+IHJQlpkWJPHB3PuWrwV6GkiZ4fG9hPIJaNch03+5NJJ1+qqAh4Z3XjEdSE2rPlt0z+Nw8Lv4Q==
+X-Received: by 2002:a05:6512:1048:b0:500:a0a3:80ff with SMTP id c8-20020a056512104800b00500a0a380ffmr5741069lfb.58.1694693594533;
+        Thu, 14 Sep 2023 05:13:14 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id w30-20020a05651204de00b00502a770394dsm254986lfq.100.2023.09.14.05.13.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 05:13:14 -0700 (PDT)
+Date: Thu, 14 Sep 2023 15:13:10 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Jose Abreu <joabreu@synopsys.com>, Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org, 
+	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
+	Emil Renner Berthing <kernel@esmil.dk>, Eric Dumazet <edumazet@google.com>, 
+	Fabio Estevam <festevam@gmail.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Samin Guo <samin.guo@starfivetech.com>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH net-next 6/6] net: stmmac: qos-eth: use
+ dwmac_set_tx_clk_gmii()
+Message-ID: <tgurnug3ftp53gui6wwz25lo77b52clgmoqvgq5dcps2fi2xv5@uzzqvtoogy3i>
+References: <ZP8yEFWn0Ml3ALWq@shell.armlinux.org.uk>
+ <E1qfir2-007TPt-Uw@rmk-PC.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230912233214.1518551-1-memxor@gmail.com> <20230912233214.1518551-13-memxor@gmail.com>
- <mb61pmsxq14h4.fsf@amazon.com>
-In-Reply-To: <mb61pmsxq14h4.fsf@amazon.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Thu, 14 Sep 2023 14:13:05 +0200
-Message-ID: <CAP01T7691P9m4ZrDQk63waC9wGu3ToK-cznsHha-r6Lteh0fWw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 12/17] bpf: Disallow fentry/fexit/freplace for
- exception callbacks
-To: Puranjay Mohan <puranjay12@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Yonghong Song <yonghong.song@linux.dev>, 
-	David Vernet <void@manifault.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <E1qfir2-007TPt-Uw@rmk-PC.armlinux.org.uk>
 
-On Wed, 13 Sept 2023 at 17:24, Puranjay Mohan <puranjay12@gmail.com> wrote:
->
-> On Wed, Sep 13 2023, Kumar Kartikeya Dwivedi wrote:
->
-> > During testing, it was discovered that extensions to exception callbacks
-> > had no checks, upon running a testcase, the kernel ended up running off
-> > the end of a program having final call as bpf_throw, and hitting int3
-> > instructions.
-> >
-> > The reason is that while the default exception callback would have reset
-> > the stack frame to return back to the main program's caller, the
-> > replacing extension program will simply return back to bpf_throw, which
-> > will instead return back to the program and the program will continue
-> > execution, now in an undefined state where anything could happen.
-> >
-> > The way to support extensions to an exception callback would be to mark
-> > the BPF_PROG_TYPE_EXT main subprog as an exception_cb, and prevent it
-> > from calling bpf_throw. This would make the JIT produce a prologue that
-> > restores saved registers and reset the stack frame. But let's not do
-> > that until there is a concrete use case for this, and simply disallow
-> > this for now.
-> >
-> > Similar issues will exist for fentry and fexit cases, where trampoline
-> > saves data on the stack when invoking exception callback, which however
-> > will then end up resetting the stack frame, and on return, the fexit
-> > program will never will invoked as the return address points to the main
-> > program's caller in the kernel. Instead of additional complexity and
-> > back and forth between the two stacks to enable such a use case, simply
-> > forbid it.
-> >
-> > One key point here to note is that currently X86_TAIL_CALL_OFFSET didn't
-> > require any modifications, even though we emit instructions before the
-> > corresponding endbr64 instruction. This is because we ensure that a main
-> > subprog never serves as an exception callback, and therefore the
-> > exception callback (which will be a global subprog) can never serve as
-> > the tail call target, eliminating any discrepancies. However, once we
-> > support a BPF_PROG_TYPE_EXT to also act as an exception callback, it
-> > will end up requiring change to the tail call offset to account for the
-> > extra instructions. For simplicitly, tail calls could be disabled for
-> > such targets.
-> >
-> > Noting the above, it appears better to wait for a concrete use case
-> > before choosing to permit extension programs to replace exception
-> > callbacks.
-> >
-> > As a precaution, we disable fentry and fexit for exception callbacks as
-> > well.
-> >
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> >  kernel/bpf/helpers.c  |  1 +
-> >  kernel/bpf/verifier.c | 11 +++++++++++
-> >  2 files changed, 12 insertions(+)
-> >
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > index 2c8e1ee97b71..7ff2a42f1996 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -2490,6 +2490,7 @@ __bpf_kfunc void bpf_throw(u64 cookie)
-> >        */
-> >       kasan_unpoison_task_stack_below((void *)ctx.sp);
-> >       ctx.aux->bpf_exception_cb(cookie, ctx.sp, ctx.bp);
-> > +     WARN(1, "A call to BPF exception callback should never return\n");
-> >  }
-> >
-> >  __diag_pop();
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 0ba32b626320..21e37e46d792 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -19750,6 +19750,12 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
-> >                       bpf_log(log, "Subprog %s doesn't exist\n", tname);
-> >                       return -EINVAL;
-> >               }
-> > +             if (aux->func && aux->func[subprog]->aux->exception_cb) {
-> > +                     bpf_log(log,
-> > +                             "%s programs cannot attach to exception callback\n",
-> > +                             prog_extension ? "Extension" : "FENTRY/FEXIT");
-> > +                     return -EINVAL;
-> > +             }
-> >               conservative = aux->func_info_aux[subprog].unreliable;
-> >               if (prog_extension) {
-> >                       if (conservative) {
-> > @@ -19762,6 +19768,11 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
-> >                                       "Extension programs should be JITed\n");
-> >                               return -EINVAL;
-> >                       }
-> > +                     if (aux->func && aux->func[subprog]->aux->exception_cb) {
-> > +                             bpf_log(log,
-> > +                                     "Extension programs cannot replace exception callback\n");
-> > +                             return -EINVAL;
-> > +                     }
->
-> This check is redundant because you already did this check above if (prog_extension branch)
-> Remove this as it will never be reached.
->
+On Mon, Sep 11, 2023 at 04:29:36PM +0100, Russell King (Oracle) wrote:
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> ---
+>  .../stmicro/stmmac/dwmac-dwc-qos-eth.c        | 37 ++++++-------------
+>  1 file changed, 11 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-dwc-qos-eth.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-dwc-qos-eth.c
+> index 61ebf36da13d..a8fae37b9858 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-dwc-qos-eth.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-dwc-qos-eth.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/stmmac.h>
+>  
+>  #include "stmmac_platform.h"
+> +#include "stmmac_plat_lib.h"
+>  #include "dwmac4.h"
+>  
+>  struct tegra_eqos {
+> @@ -181,32 +182,10 @@ static void dwc_qos_remove(struct platform_device *pdev)
+>  static void tegra_eqos_fix_speed(void *priv, unsigned int speed, unsigned int mode)
+>  {
+>  	struct tegra_eqos *eqos = priv;
+> -	unsigned long rate = 125000000;
+> -	bool needs_calibration = false;
+>  	u32 value;
+>  	int err;
+>  
+> -	switch (speed) {
+> -	case SPEED_1000:
+> -		needs_calibration = true;
+> -		rate = 125000000;
+> -		break;
+> -
+> -	case SPEED_100:
+> -		needs_calibration = true;
+> -		rate = 25000000;
+> -		break;
+> -
+> -	case SPEED_10:
+> -		rate = 2500000;
+> -		break;
+> -
+> -	default:
+> -		dev_err(eqos->dev, "invalid speed %u\n", speed);
+> -		break;
+> -	}
+> -
+> -	if (needs_calibration) {
+> +	if (speed == SPEED_1000 || speed == SPEED_100) {
+>  		/* calibrate */
+>  		value = readl(eqos->regs + SDMEMCOMPPADCTRL);
+>  		value |= SDMEMCOMPPADCTRL_PAD_E_INPUT_OR_E_PWRD;
+> @@ -246,9 +225,15 @@ static void tegra_eqos_fix_speed(void *priv, unsigned int speed, unsigned int mo
+>  		writel(value, eqos->regs + AUTO_CAL_CONFIG);
+>  	}
+>  
+> -	err = clk_set_rate(eqos->clk_tx, rate);
+> -	if (err < 0)
+> -		dev_err(eqos->dev, "failed to set TX rate: %d\n", err);
+> +	err = dwmac_set_tx_clk_gmii(eqos->clk_tx, speed);
+> +	if (err == -ENOTSUPP) {
 
-Good catch, will fix it in v4.
+> +		dev_err(eqos->dev, "invalid speed %dMbps\n", speed);
 
->
-> >               }
-> >               if (!tgt_prog->jited) {
-> >                       bpf_log(log, "Can attach to only JITed progs\n");
->
->
-> Thanks,
-> Puranjay
+%u?
+
+> +		err = dwmac_set_tx_clk_gmii(eqos->clk_tx, SPEED_1000);
+> +	} else if (err) {
+> +		dev_err(eqos->dev,
+
+> +			"failed to set tx rate for speed %dMbps: %pe\n",
+
+ditto
+
+-Serge(y)
+
+> +			speed, ERR_PTR(err));
+> +	}
+>  }
+>  
+>  static int tegra_eqos_init(struct platform_device *pdev, void *priv)
+> -- 
+> 2.30.2
+> 
+> 
 
