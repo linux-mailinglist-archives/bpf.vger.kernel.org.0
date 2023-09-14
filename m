@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-10117-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10118-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66A807A11AA
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 01:27:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A22B27A11AB
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 01:27:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24E932822E7
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 23:27:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D21831C20F7E
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 23:27:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5D55D30A;
-	Thu, 14 Sep 2023 23:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76A0CD50B;
+	Thu, 14 Sep 2023 23:27:02 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95B3633F2
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 23:26:54 +0000 (UTC)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30042716;
-	Thu, 14 Sep 2023 16:26:53 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-31c5c06e8bbso1441545f8f.1;
-        Thu, 14 Sep 2023 16:26:53 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A18FA33F2
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 23:27:00 +0000 (UTC)
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1E42729;
+	Thu, 14 Sep 2023 16:26:59 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-52eed139ec2so1725827a12.2;
+        Thu, 14 Sep 2023 16:26:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694734012; x=1695338812; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694734018; x=1695338818; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/TZlQmyfZ3ztxFPheOy8Lhwx7RuZLz/KzMM2TITFVNE=;
-        b=YD9MyhwzGDSvfNbr3ZOhQh5lhBEOnfrLj1SLLoabBpWadoMj+gXsmIUVml1sYfyjzH
-         R1U4wwj7csFbb1KTS23aLXQ+6Wc4IQyPHKK8pzHPGtYEdrPWLfbS69qrnmOWtubH7Pek
-         6tWbhThExfHiduzlo7dEnrMQrZQiePpTHUyBX2YR2+qYV2rhpXglFPL+kLwg5RfnDst0
-         1TtBD+nPvnKYPcbCD3ZvskZsSrG9xIsYobbTFmZWw7vcWgMzv9iItWkq+m2o7kaxlNbn
-         sbjhTTnc51Yn1gJcZ3m8oQ9/lv+DVDrSZDbm8A0h1Q3NKGyQwfKh1ogaXhoncHcEw/Yg
-         nWiQ==
+        bh=m5Hl9cDGuf3HeMIbNy2+lG6sVU6W7XRK06rgKNehvKA=;
+        b=MdiAtC/Jjnt6SdJsWgOsLPZ6gxCfWLf/Hy0A7UXYnmhlCISPz9Mae7lI4XwMQNnQzJ
+         bfjSBlz4s9FplSRRv1LCKYY9+Njy8NGnkJgR37akYS9SIj6BTqXsYjxhuxYjxVNtqk3r
+         w/Iz6lFZvH8X+hKSKkMqxhtvUHjQ4i8vithSrolBwVOuvr62SVUOPHBabYWqEoDmpsIM
+         q5zK26hMNC07B7r3aZHSYmRsh39jatYxIC+IA1wL8eSbPszsNXeVuX2IV1dpNM2hSvzW
+         jAgDvG1b+NA//wmPUhHJ/T7U2qKseBWU+DMPvrH0vrNjeWKrqG0vrTb//8ARDgQyqhdr
+         CpUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694734012; x=1695338812;
+        d=1e100.net; s=20230601; t=1694734018; x=1695338818;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/TZlQmyfZ3ztxFPheOy8Lhwx7RuZLz/KzMM2TITFVNE=;
-        b=GZ8qTqrS56H1Gt2RnzKXjU1UdZatnJmfNCB/s1CDK++d+M8c3GGV24SA+ue2d3EvRu
-         MQB6tSZMiE0SX6cb0++/nehLVRFx7+DV6Pt6iQLPzw3FWUJjHo1b8MFo2sxiYvNeuZhd
-         3fH2s1uxYpt1yPEF/4KPVeJtBuEiv47MkUhPzGdls8exkUv8BsEYAN6f1WDEoLQat4gS
-         3Cl8cxyrR+ALSUEgrgvWN/EqyG/iLdYb8B9PqlatMq6dOy25CmNQaa+vV9G5OVOhahRb
-         GEEb4KvfZrMqPNYKH1iRXQrFi4bf1RTe/5TMEVTrLixZ8hv9WYuB5zd/vTQA0N6QlwSL
-         BklQ==
-X-Gm-Message-State: AOJu0YxZUQzbs+dmui6Icoycp9ok6aPNpyRYFUyJq4yyOiC+aUKqz2Hf
-	vvWYOWfaXddZyzfNzUdmhg3YZyZ6uDHNdxMm8Oo=
-X-Google-Smtp-Source: AGHT+IHCKMOB/thJ7R47d3uvmOIL+qKnWZ8/keuDJxg6yY1servYNO/Hb4pif5fz5mttejQxTbq7c9fYDG4/xvWgbAc=
-X-Received: by 2002:a5d:4952:0:b0:317:6653:60b8 with SMTP id
- r18-20020a5d4952000000b00317665360b8mr21595wrs.50.1694734011765; Thu, 14 Sep
- 2023 16:26:51 -0700 (PDT)
+        bh=m5Hl9cDGuf3HeMIbNy2+lG6sVU6W7XRK06rgKNehvKA=;
+        b=YsUBDSvpCza5OgwusovYjlS0oaG2lF0pJH6EoTMolBWjnC5DH5cKjUCVdxt0K/a7fq
+         PADu0nrHNl1khX7FeeKWhoyxPC7hTJCrscJoJJju1Ckq25SXgfSQ/N8rjnVevyolOO6q
+         QblEPGJ/es3yON5kYO2GMAb9RvV9DXs76vl4WjIN+cFYNsnacwvCtvxXHSTvbplxSKzp
+         GvVMOhUkPu88XvHJmoMxlzLJfZZ+Pl3lETH5Y1zBxOBcsVBI7RMmmsXi6QSR7H7ajgYP
+         I1oL3/kn2Vs0+e9YaRPlaee8DgKiWvNpIIT0pn0u2BHC8QNen40zYvdH2MH66JynWt7q
+         RtHw==
+X-Gm-Message-State: AOJu0Yz7Pm663v5VJl/NKp5c53Z+2C9+UoHUPBJHA7U78fEtwyQEicwv
+	xfL1fm4glzegiWr2/5qK/SbKdKe5IB1tV5+r0y+den2e
+X-Google-Smtp-Source: AGHT+IEvL5YKC81jQtyubqeAEoqfdPjP20fgOxmlZr29I1IGdH3vAS8pjBFZwdap9b+CkmbqFWcsdDIFtdqoeVa/WAk=
+X-Received: by 2002:a05:6402:f0c:b0:530:7abf:3a84 with SMTP id
+ i12-20020a0564020f0c00b005307abf3a84mr564786eda.25.1694734018046; Thu, 14 Sep
+ 2023 16:26:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230912070149.969939-1-zhouchuyi@bytedance.com> <20230912070149.969939-5-zhouchuyi@bytedance.com>
-In-Reply-To: <20230912070149.969939-5-zhouchuyi@bytedance.com>
+References: <20230912070149.969939-1-zhouchuyi@bytedance.com> <20230912070149.969939-6-zhouchuyi@bytedance.com>
+In-Reply-To: <20230912070149.969939-6-zhouchuyi@bytedance.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 14 Sep 2023 16:26:39 -0700
-Message-ID: <CAEf4BzY4qabpk3SD-GA5n5++REcXCxTtA4ythsR9HKHtGi33xA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/6] bpf: Introduce css_descendant open-coded
- iterator kfuncs
+Date: Thu, 14 Sep 2023 16:26:46 -0700
+Message-ID: <CAEf4Bzb33btcH8McsTS7BpC_+GefzEUGUMNdetxAqvDvDDFA9g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 5/6] bpf: teach the verifier to enforce
+ css_iter and process_iter in RCU CS
 To: Chuyi Zhou <zhouchuyi@bytedance.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
 	andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org, 
@@ -76,188 +76,133 @@ Content-Transfer-Encoding: quoted-printable
 On Tue, Sep 12, 2023 at 12:02=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.co=
 m> wrote:
 >
-> This Patch adds kfuncs bpf_iter_css_{pre,post}_{new,next,destroy} which
-> allow creation and manipulation of struct bpf_iter_css in open-coded
-> iterator style. These kfuncs actually wrapps css_next_descendant_{pre,
-> post}. BPF programs can use these kfuncs through bpf_for_each macro for
-> iteration of all descendant css under a root css.
+> css_iter and process_iter should be used in rcu section. Specifically, in
+> sleepable progs explicit bpf_rcu_read_lock() is needed before use these
+> iters. In normal bpf progs that have implicit rcu_read_lock(), it's OK to
+> use them directly.
+>
+> This patch checks whether we are in rcu cs before we want to invoke
+> bpf_iter_process_new and bpf_iter_css_{pre, post}_new in
+> mark_stack_slots_iter(). If the rcu protection is guaranteed, we would
+> let st->type =3D PTR_TO_STACK | MEM_RCU. is_iter_reg_valid_init() will
+> reject if reg->type is UNTRUSTED.
+
+it would be nice to mention where this MEM_RCU is turned into
+UNTRUSTED when we do rcu_read_unlock(). For someone unfamiliar with
+these parts of verifier (like me) this is completely unobvious.
+
 >
 > Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
 > ---
->  include/uapi/linux/bpf.h       |  8 +++++
->  kernel/bpf/helpers.c           |  6 ++++
->  kernel/bpf/task_iter.c         | 53 ++++++++++++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h |  8 +++++
->  tools/lib/bpf/bpf_helpers.h    | 12 ++++++++
->  5 files changed, 87 insertions(+)
+>  kernel/bpf/verifier.c | 30 ++++++++++++++++++++++++++++--
+>  1 file changed, 28 insertions(+), 2 deletions(-)
 >
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index befa55b52e29..57760afc13d0 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -7326,4 +7326,12 @@ struct bpf_iter_process {
->         __u64 __opaque[1];
->  } __attribute__((aligned(8)));
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 2367483bf4c2..6a6827ba7a18 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -1172,7 +1172,13 @@ static bool is_dynptr_type_expected(struct bpf_ver=
+ifier_env *env, struct bpf_reg
 >
-> +struct bpf_iter_css_pre {
-> +       __u64 __opaque[2];
-> +} __attribute__((aligned(8)));
+>  static void __mark_reg_known_zero(struct bpf_reg_state *reg);
+>
+> +static bool in_rcu_cs(struct bpf_verifier_env *env);
 > +
-> +struct bpf_iter_css_post {
-> +       __u64 __opaque[2];
-> +} __attribute__((aligned(8)));
+> +/* check whether we are using bpf_iter_process_*() or bpf_iter_css_*() *=
+/
+> +static bool is_iter_need_rcu(struct bpf_kfunc_call_arg_meta *meta);
 > +
->  #endif /* _UAPI__LINUX_BPF_H__ */
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 9b7d2c6f99d1..ca1f6404af9e 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -2510,6 +2510,12 @@ BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_I=
-TER_DESTROY)
->  BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
->  BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
-> +BTF_ID_FLAGS(func, bpf_iter_css_pre_new, KF_ITER_NEW)
-> +BTF_ID_FLAGS(func, bpf_iter_css_pre_next, KF_ITER_NEXT | KF_RET_NULL)
-> +BTF_ID_FLAGS(func, bpf_iter_css_pre_destroy, KF_ITER_DESTROY)
-> +BTF_ID_FLAGS(func, bpf_iter_css_post_new, KF_ITER_NEW)
-> +BTF_ID_FLAGS(func, bpf_iter_css_post_next, KF_ITER_NEXT | KF_RET_NULL)
-> +BTF_ID_FLAGS(func, bpf_iter_css_post_destroy, KF_ITER_DESTROY)
->  BTF_ID_FLAGS(func, bpf_dynptr_adjust)
->  BTF_ID_FLAGS(func, bpf_dynptr_is_null)
->  BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
-> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> index 9d1927dc3a06..8963fc779b87 100644
-> --- a/kernel/bpf/task_iter.c
-> +++ b/kernel/bpf/task_iter.c
-> @@ -880,6 +880,59 @@ __bpf_kfunc void bpf_iter_process_destroy(struct bpf=
-_iter_process *it)
+>  static int mark_stack_slots_iter(struct bpf_verifier_env *env,
+> +                                struct bpf_kfunc_call_arg_meta *meta,
+>                                  struct bpf_reg_state *reg, int insn_idx,
+>                                  struct btf *btf, u32 btf_id, int nr_slot=
+s)
 >  {
->  }
+> @@ -1193,6 +1199,12 @@ static int mark_stack_slots_iter(struct bpf_verifi=
+er_env *env,
 >
-> +struct bpf_iter_css_kern {
-> +       struct cgroup_subsys_state *root;
-> +       struct cgroup_subsys_state *pos;
-> +} __attribute__((aligned(8)));
-> +
-> +__bpf_kfunc int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
-> +               struct cgroup_subsys_state *root)
+>                 __mark_reg_known_zero(st);
+>                 st->type =3D PTR_TO_STACK; /* we don't have dedicated reg=
+ type */
+> +               if (is_iter_need_rcu(meta)) {
+> +                       if (in_rcu_cs(env))
+> +                               st->type |=3D MEM_RCU;
+> +                       else
+> +                               st->type |=3D PTR_UNTRUSTED;
+> +               }
+>                 st->live |=3D REG_LIVE_WRITTEN;
+>                 st->ref_obj_id =3D i =3D=3D 0 ? id : 0;
+>                 st->iter.btf =3D btf;
+> @@ -1281,6 +1293,8 @@ static bool is_iter_reg_valid_init(struct bpf_verif=
+ier_env *env, struct bpf_reg_
+>                 struct bpf_stack_state *slot =3D &state->stack[spi - i];
+>                 struct bpf_reg_state *st =3D &slot->spilled_ptr;
+>
+> +               if (st->type & PTR_UNTRUSTED)
+> +                       return false;
+>                 /* only main (first) slot has ref_obj_id set */
+>                 if (i =3D=3D 0 && !st->ref_obj_id)
+>                         return false;
+> @@ -7503,13 +7517,13 @@ static int process_iter_arg(struct bpf_verifier_e=
+nv *env, int regno, int insn_id
+>                                 return err;
+>                 }
+>
+> -               err =3D mark_stack_slots_iter(env, reg, insn_idx, meta->b=
+tf, btf_id, nr_slots);
+> +               err =3D mark_stack_slots_iter(env, meta, reg, insn_idx, m=
+eta->btf, btf_id, nr_slots);
+>                 if (err)
+>                         return err;
+>         } else {
+>                 /* iter_next() or iter_destroy() expect initialized iter =
+state*/
+>                 if (!is_iter_reg_valid_init(env, reg, meta->btf, btf_id, =
+nr_slots)) {
+> -                       verbose(env, "expected an initialized iter_%s as =
+arg #%d\n",
+> +                       verbose(env, "expected an initialized iter_%s as =
+arg #%d or without bpf_rcu_read_lock()\n",
+>                                 iter_type_str(meta->btf, btf_id), regno);
 
-similar to my comment on previous patches, please see
-kernel/bpf/cgroup_iter.c for iter/cgroup iterator program. Let's stay
-consistent. We have one iterator that accepts parameters defining
-iteration order and starting cgroup. Unless there are some technical
-reasons we can't follow similar approach with this open-coded iter,
-let's use the same approach. We can even reuse
-BPF_CGROUP_ITER_DESCENDANTS_PRE, BPF_CGROUP_ITER_DESCENDANTS_POST,
-BPF_CGROUP_ITER_ANCESTORS_UP enums.
+this message makes no sense, but even if reworded it would be
+confusing for users. So maybe do the RCU check separately and report a
+clear message that this iterator is expected to be within a single
+continuous rcu_read_{lock+unlock} region.
+
+I do think tracking RCU regions explicitly would make for much easier
+to follow code, better messages, etc. Probably would be beneficial for
+some other RCU-protected features. But that's a separate topic.
+
+>                         return -EINVAL;
+>                 }
+> @@ -10382,6 +10396,18 @@ BTF_ID(func, bpf_percpu_obj_new_impl)
+>  BTF_ID(func, bpf_percpu_obj_drop_impl)
+>  BTF_ID(func, bpf_iter_css_task_new)
+>
+> +BTF_SET_START(rcu_protect_kfuns_set)
+> +BTF_ID(func, bpf_iter_process_new)
+> +BTF_ID(func, bpf_iter_css_pre_new)
+> +BTF_ID(func, bpf_iter_css_post_new)
+> +BTF_SET_END(rcu_protect_kfuns_set)
+> +
+
+instead of maintaining these extra special sets, why not add a KF
+flag, like KF_RCU_PROTECTED?
 
 
+> +static inline bool is_iter_need_rcu(struct bpf_kfunc_call_arg_meta *meta=
+)
 > +{
-> +       struct bpf_iter_css_kern *kit =3D (void *)it;
-> +
-> +       BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) !=3D sizeof(struct =
-bpf_iter_css_pre));
-> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) !=3D __alignof=
-__(struct bpf_iter_css_pre));
-> +       kit->root =3D root;
-> +       kit->pos =3D NULL;
-> +       return 0;
+> +       return btf_id_set_contains(&rcu_protect_kfuns_set, meta->func_id)=
+;
 > +}
 > +
-> +__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_pre_next(struct bpf=
-_iter_css_pre *it)
-> +{
-> +       struct bpf_iter_css_kern *kit =3D (void *)it;
 > +
-> +       kit->pos =3D css_next_descendant_pre(kit->pos, kit->root);
-> +       return kit->pos;
-> +}
-> +
-> +__bpf_kfunc void bpf_iter_css_pre_destroy(struct bpf_iter_css_pre *it)
-> +{
-> +}
-> +
-> +__bpf_kfunc int bpf_iter_css_post_new(struct bpf_iter_css_post *it,
-> +               struct cgroup_subsys_state *root)
-> +{
-> +       struct bpf_iter_css_kern *kit =3D (void *)it;
-> +
-> +       BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) !=3D sizeof(struct =
-bpf_iter_css_post));
-> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) !=3D __alignof=
-__(struct bpf_iter_css_post));
-> +       kit->root =3D root;
-> +       kit->pos =3D NULL;
-> +       return 0;
-> +}
-> +
-> +__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_post_next(struct bp=
-f_iter_css_post *it)
-> +{
-> +       struct bpf_iter_css_kern *kit =3D (void *)it;
-> +
-> +       kit->pos =3D css_next_descendant_post(kit->pos, kit->root);
-> +       return kit->pos;
-> +}
-> +
-> +__bpf_kfunc void bpf_iter_css_post_destroy(struct bpf_iter_css_post *it)
-> +{
-> +}
-> +
->  DEFINE_PER_CPU(struct mmap_unlock_irq_work, mmap_unlock_work);
->
->  static void do_mmap_read_unlock(struct irq_work *entry)
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-> index befa55b52e29..57760afc13d0 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -7326,4 +7326,12 @@ struct bpf_iter_process {
->         __u64 __opaque[1];
->  } __attribute__((aligned(8)));
->
-> +struct bpf_iter_css_pre {
-> +       __u64 __opaque[2];
-> +} __attribute__((aligned(8)));
-> +
-> +struct bpf_iter_css_post {
-> +       __u64 __opaque[2];
-> +} __attribute__((aligned(8)));
-> +
->  #endif /* _UAPI__LINUX_BPF_H__ */
-> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> index 858252c2641c..6e5bd9ef14d6 100644
-> --- a/tools/lib/bpf/bpf_helpers.h
-> +++ b/tools/lib/bpf/bpf_helpers.h
-> @@ -315,6 +315,18 @@ extern int bpf_iter_process_new(struct bpf_iter_proc=
-ess *it) __weak __ksym;
->  extern struct task_struct *bpf_iter_process_next(struct bpf_iter_process=
- *it) __weak __ksym;
->  extern void bpf_iter_process_destroy(struct bpf_iter_process *it) __weak=
- __ksym;
->
-> +struct bpf_iter_css_pre;
-> +extern int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
-> +               struct cgroup_subsys_state *root) __weak __ksym;
-> +extern struct cgroup_subsys_state *bpf_iter_css_pre_next(struct bpf_iter=
-_css_pre *it) __weak __ksym;
-> +extern void bpf_iter_css_pre_destroy(struct bpf_iter_css_pre *it) __weak=
- __ksym;
-> +
-> +struct bpf_iter_css_post;
-> +extern int bpf_iter_css_post_new(struct bpf_iter_css_post *it,
-> +               struct cgroup_subsys_state *root) __weak __ksym;
-> +extern struct cgroup_subsys_state *bpf_iter_css_post_next(struct bpf_ite=
-r_css_post *it) __weak __ksym;
-> +extern void bpf_iter_css_post_destroy(struct bpf_iter_css_post *it) __we=
-ak __ksym;
-> +
->  #ifndef bpf_for_each
->  /* bpf_for_each(iter_type, cur_elem, args...) provides generic construct=
- for
->   * using BPF open-coded iterators without having to write mundane explic=
-it
+>  static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
+>  {
+>         if (meta->func_id =3D=3D special_kfunc_list[KF_bpf_refcount_acqui=
+re_impl] &&
 > --
 > 2.20.1
 >
