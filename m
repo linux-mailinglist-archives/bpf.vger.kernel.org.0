@@ -1,240 +1,245 @@
-Return-Path: <bpf+bounces-10076-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10077-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F4877A0E7A
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 21:47:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C7107A0F75
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 23:05:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 538BB281C61
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 19:47:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8ECC81C20AD8
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 21:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81D78266C3;
-	Thu, 14 Sep 2023 19:47:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D15726E20;
+	Thu, 14 Sep 2023 21:04:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C35C210FE
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 19:47:30 +0000 (UTC)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBB82698;
-	Thu, 14 Sep 2023 12:47:29 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-5007616b756so2215572e87.3;
-        Thu, 14 Sep 2023 12:47:29 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A6DE26E0F
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 21:04:56 +0000 (UTC)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB1B2700
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 14:04:55 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-cf4cb742715so1713301276.2
+        for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 14:04:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694720848; x=1695325648; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UtprqRWjjPvRfIDAlcNH4nik58BKZh2xiWkpAj29BbM=;
-        b=p0IXen1ugDCvaG1uDYqkU6pSr9Ez5MmBpklRdT/HH7qixZeBLQSu2T/6PnIuWRaai+
-         TROuPBLdTuqI2S9YQ8AtV4LHoxVIOIWm27reJtcKNN8o3BDuytZR89qpgFBjZR3ZGSTj
-         gL7Jk1KJqqJdg87bs75Dn0l73DV1M+z4VkpnRrRQAzm73zJ/bGv5z3qz7ixBhMU8P4tk
-         ZSeQCA4r937ir/hZc5+VhLwGxMplVJGmj35wPIMpsAKgJXzX7mJTQz7BdI2l6UsZztlH
-         2d8i4rhGmUuCJc3uvdA5Wj5MnvmHfKTHWu4STtT1mCJprJW4ayC4f4rW4GzFYnTotURH
-         oTdQ==
+        d=google.com; s=20230601; t=1694725495; x=1695330295; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zJvyBO3Te8NNwAzPIWarqP43OTSbA2TQxDf8pmoNBSA=;
+        b=mwmTmr6uEpOatFeneNOuxWi7e/HXlTOOM1s/aDLqcENABFRFYEt0wJ/fzqClfknc00
+         iT/wsx2loGRsQnOKTAQtGOgq5BeF0sIZg1Y4DT0q2jhXcTfh20ZXnikfyxcByDUbgTFp
+         dAOlkcC9zO8SfyKPlZLU58dho/TyNKd6RGhrG7mORIkDUArTvaSblL2LW1S8KAVNJ+ZZ
+         iLcfENiwIorwDAmfDnext1h7svufOZ6UQqYSPmJqBcKTLvUDJu9IfoQu0owPZrc8/ogn
+         /LYNesMWVh4msIkAg8CpTxkwgj2ygQYdTMIoLYozBuj7jfctrQYUQtkMe7gSOZv/GuPS
+         14xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694720848; x=1695325648;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UtprqRWjjPvRfIDAlcNH4nik58BKZh2xiWkpAj29BbM=;
-        b=TEG0xa6HDU3p7xuCKaodDKMOdErpGQRcyInKwQEfJ5WQxJkXWOvMLbHLIeTYxvrlol
-         kdY/qsxym2UcTkrNjX+rdMRAvtY5DJiZ1L9MwcI7CHCSGDW6trXQKt2AOF4FqFWN/SZ8
-         eqprvOikx4Fmh0tDlvbYh3cF2hFEUlxwVKLsHRgwoHIAs7XYOQ+GCgmZ1CIAkPV95JSr
-         HT6+ZdrIiN7Gvasii3lynfXfM8Clv1qUWXXrNt5k43n3ysZ8ec7FIKx9zYCEppETGfbH
-         OOrHA1d9J8mAIQ2zrw//6Z5q8bWz8Hj1CWIRimwLdpd4wFFuInhyMA2EAQbE6nyfFz2y
-         AV4A==
-X-Gm-Message-State: AOJu0YzWS9NJml6o12BQ64/jDkexB2FWf3NrsUjHKv9BCTV0XW3zgBJM
-	k+y8EwiyOZncS3ke+zttJ5ZcJ3cxQmawHpzLz0v9V+7oECw=
-X-Google-Smtp-Source: AGHT+IGGsxb29ulva7qi96je+NUvGWwXoUkFSCWbZaM05+K3BskEWVT/4/8Hwu7/CMxfzOXW7W1lKNEJPIb2Gw4w3V8=
-X-Received: by 2002:ac2:4248:0:b0:500:adbd:43e9 with SMTP id
- m8-20020ac24248000000b00500adbd43e9mr5205245lfl.15.1694720847696; Thu, 14 Sep
- 2023 12:47:27 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694725495; x=1695330295;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zJvyBO3Te8NNwAzPIWarqP43OTSbA2TQxDf8pmoNBSA=;
+        b=QsMt61+3U5eCaIcsawBvnD+whqVdDvy0AcVyO/xFilbcwxcrdAG5LBbl3Yqu05PZRx
+         ZSAIouEqzopawcOhWy/+OHDaO8L0IX0HM4Xo4/rotOyOsIn9tvEVWClz+3NLG/GXNO4+
+         VPqtM5GiKWL1o8eIC1XsJUe1RO97Kdg6Pbjo5zfGYxbaMCkwbrGTUGWcmx+MTt/JChXc
+         p6eGBpuRt8zCEg47DpI1ol02V8GdjjKZSs26D/6BHkIUshoDmvViysjMgQxoJPT+WxTm
+         WDcKfWP4OKJVPVGAJhBZjJqMsSMV/JxlTY7x8TcpLf3LlHheLGdW4cFXgUpTfNsoM6/3
+         sHgg==
+X-Gm-Message-State: AOJu0YzEXxEcBCcDILIpP4i2XHoZ0D1SqcjBAk8h3KlKpUUOfCXHcvT0
+	0jbromF+kw/grnsfgfxqdXiCY8Ws0d1I8OgQThynsAnNO7X2/rhKmLiydPWemUifhYEeIBZGVxB
+	kKYQ1LHguEWiSTOp1WEsVwesuvZFaUgrRa+O5PxO/m0uImtA0wQ==
+X-Google-Smtp-Source: AGHT+IGgeUdxlwN37ZfLi36wuzFL1iUtuwduz2tDD5Vw0iVaYfSvBm/18ryiAh9o+jvjXeSkeBSD+Iw=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a25:aa83:0:b0:d77:f4f5:9e4 with SMTP id
+ t3-20020a25aa83000000b00d77f4f509e4mr152429ybi.2.1694725494666; Thu, 14 Sep
+ 2023 14:04:54 -0700 (PDT)
+Date: Thu, 14 Sep 2023 14:04:43 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <CAADnVQLid7QvukhnqRoY2VVFi1tCfkPFsMGUUeHDtCgf0SAJCg@mail.gmail.com>
- <20230913122827.91591-1-gerhorst@amazon.de> <CAADnVQJsjVf3t0OJCZkc3rNpHMi_ZTtwLa3LBMi6ot3zufnb+A@mail.gmail.com>
- <723a49b4-c4ed-3b0b-2a9d-915b49725411@iogearbox.net>
-In-Reply-To: <723a49b4-c4ed-3b0b-2a9d-915b49725411@iogearbox.net>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 14 Sep 2023 12:47:16 -0700
-Message-ID: <CAADnVQJ4Fg-VQ-tVCEqsKLuozT7y_o8pZ1oM3eBW7u-Z0jOk4A@mail.gmail.com>
-Subject: Re: [PATCH 2/3] Revert "bpf: Fix issue in verifying allow_ptr_leaks"
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Luis Gerhorst <gerhorst@cs.fau.de>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, Hao Luo <haoluo@google.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, Yafang Shao <laoar.shao@gmail.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev <sdf@google.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	gerhorst@amazon.de, Ilya Leoshkevich <iii@linux.ibm.com>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Hagar Gamal Halim Hemdan <hagarhem@amazon.de>, Puranjay Mohan <puranjay12@gmail.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
+Message-ID: <20230914210452.2588884-1-sdf@google.com>
+Subject: [PATCH bpf-next v2 0/9] xsk: TX metadata
+From: Stanislav Fomichev <sdf@google.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	kuba@kernel.org, toke@kernel.org, willemb@google.com, dsahern@kernel.org, 
+	magnus.karlsson@intel.com, bjorn@kernel.org, maciej.fijalkowski@intel.com, 
+	hawk@kernel.org, yoong.siang.song@intel.com, netdev@vger.kernel.org, 
+	xdp-hints@xdp-project.net, Saeed Mahameed <saeedm@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 14, 2023 at 10:24=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.=
-net> wrote:
->
-> On 9/14/23 6:20 PM, Alexei Starovoitov wrote:
-> > On Wed, Sep 13, 2023 at 5:30=E2=80=AFAM Luis Gerhorst <gerhorst@amazon.=
-de> wrote:
-> >>
-> >> This reverts commit d75e30dddf73449bc2d10bb8e2f1a2c446bc67a2.
-> >>
-> >> To mitigate Spectre v1, the verifier relies on static analysis to dedu=
-ct
-> >> constant pointer bounds, which can then be enforced by rewriting point=
-er
-> >> arithmetic [1] or index masking [2]. This relies on the fact that ever=
-y
-> >> memory region to be accessed has a static upper bound and every date
-> >> below that bound is accessible. The verifier can only rewrite pointer
-> >> arithmetic or insert masking instructions to mitigate Spectre v1 if a
-> >> static upper bound, below of which every access is valid, can be given=
-.
-> >>
-> >> When allowing packet pointer comparisons, this introduces a way for th=
-e
-> >> program to effectively construct an accessible pointer for which no
-> >> static upper bound is known. Intuitively, this is obvious as a packet
-> >> might be of any size and therefore 0 is the only statically known uppe=
-r
-> >> bound below of which every date is always accessible (i.e., none).
-> >>
-> >> To clarify, the problem is not that comparing two pointers can be used
-> >> for pointer leaks in the same way in that comparing a pointer to a kno=
-wn
-> >> scalar can be used for pointer leaks. That is because the "secret"
-> >> components of the addresses cancel each other out if the pointers are
-> >> into the same region.
-> >>
-> >> With [3] applied, the following malicious BPF program can be loaded in=
-to
-> >> the kernel without CAP_PERFMON:
-> >>
-> >> r2 =3D *(u32 *)(r1 + 76) // data
-> >> r3 =3D *(u32 *)(r1 + 80) // data_end
-> >> r4 =3D r2
-> >> r4 +=3D 1
-> >> if r4 > r3 goto exit
-> >> r5 =3D *(u8 *)(r2 + 0) // speculatively read secret
-> >> r5 &=3D 1 // choose bit to leak
-> >> // ... side channel to leak secret bit
-> >> exit:
-> >> // ...
-> >>
-> >> This is jited to the following amd64 code which still contains the
-> >> gadget:
-> >>
-> >>     0:   endbr64
-> >>     4:   nopl   0x0(%rax,%rax,1)
-> >>     9:   xchg   %ax,%ax
-> >>     b:   push   %rbp
-> >>     c:   mov    %rsp,%rbp
-> >>     f:   endbr64
-> >>    13:   push   %rbx
-> >>    14:   mov    0xc8(%rdi),%rsi // data
-> >>    1b:   mov    0x50(%rdi),%rdx // data_end
-> >>    1f:   mov    %rsi,%rcx
-> >>    22:   add    $0x1,%rcx
-> >>    26:   cmp    %rdx,%rcx
-> >>    29:   ja     0x000000000000003f // branch to mispredict
-> >>    2b:   movzbq 0x0(%rsi),%r8 // speculative load of secret
-> >>    30:   and    $0x1,%r8 // choose bit to leak
-> >>    34:   xor    %ebx,%ebx
-> >>    36:   cmp    %rbx,%r8
-> >>    39:   je     0x000000000000003f // branch based on secret
-> >>    3b:   imul   $0x61,%r8,%r8 // leak using port contention side chann=
-el
-> >>    3f:   xor    %eax,%eax
-> >>    41:   pop    %rbx
-> >>    42:   leaveq
-> >>    43:   retq
-> >>
-> >> Here I'm using a port contention side channel because storing the secr=
-et
-> >> to the stack causes the verifier to insert an lfence for unrelated
-> >> reasons (SSB mitigation) which would terminate the speculation.
-> >>
-> >> As Daniel already pointed out to me, data_end is even attacker
-> >> controlled as one could send many packets of sufficient length to trai=
-n
-> >> the branch prediction into assuming data_end >=3D data will never be t=
-rue.
-> >> When the attacker then sends a packet with insufficient data, the
-> >> Spectre v1 gadget leaks the chosen bit of some value that lies behind
-> >> data_end.
-> >
-> > The above analysis is correct, but unlike traditional spec_v1
-> > the attacker doesn't control data/data_end.
-> > The attack can send many large packets to train that data + X < data_en=
-d
-> > and then send a small packet where CPU will mispredict that branch
-> > and data + X will speculatively read past data_end,
-> > so the attacker can extract a bit past data_end,
-> > but data/data_end themselves cannot be controlled.
-> > So whether this bit 0 or 1 has no bearing.
-> > The attack cannot be repeated for the same location.
-> > The attacker can read one bit 8 times in a row and all of them
-> > will be from different locations in the memory.
-> > Same as reading 8 random bits from 8 random locations.
-> > Hence I don't think this revert is necessary.
-> > I don't believe you can craft an actual exploit.
-> >
-> > Your patch 3 says:
-> >         /* Speculative access to be prevented. */
-> > +       char secret =3D *((char *) iph);
-> > +
-> > +       /* Leak the first bit of the secret value that lies behind data=
-_end to a
-> > +        * SMP silbling thread that also executes imul instructions. If=
- the bit
-> > +        * is 1, the silbling will experience a slowdown. */
-> > +       long long x =3D secret;
-> > +       if (secret & 1) {
-> > +               x *=3D 97;
-> > +       }
-> >
-> > the comment is correct, but speculative access alone is not enough
-> > to leak data.
->
-> What you write makes sense, it will probably be hard to craft an exploit.
-> Where it's a bit more of an unknown to me is whether struct skb_shared_in=
-fo
-> could have e.g. destructor_arg rather static (at last the upper addr bits=
-)
-> so that you would leak out kernel addresses.
+This series implements initial TX metadata (offloads) for AF_XDP.
+See patch #2 for the main implementation and mlx5-one for the
+example on how to consume the metadata on the device side.
 
-You mean since skb_shared_info is placed after skb->end
-and in zero copy case destructor_arg may be initialized with the same
-kernel pointer for multiple skb-s ?
-The attacker cannot construct the address from data_end.
-The verifier explicitly prohibits any ALU with PTR_TO_PACKET_END.
-But the attacker can do skb->data + X.
-The idea is that they can train the branch to mispredict with
-a large packet and then send a small one so that shared_info
-after skb->end has the same uarg pointer in all packets?
-So every skb->data+X is a different location, but all of them
-point to data that has uarg=3D=3Ddestructor_arg ?
+Starting with two types of offloads:
+- request TX timestamp (and write it back into the metadata area)
+- request TX checksum offload
 
-That would be feasible in theory, but in order to speculate the loads
-the branch mispredict has to be reliable.
-The spec v1 attack requires one of two loads feeding
-into compare operation has to be slow.
-In this case both data and data_end loads are going to be fast.
-The attacker cannot evict skb->data or skb->data_end from cache.
-Remember that we rearranged 'max_entries' field in struct bpf_map
-specifically to be in the different cache line vs fields
-controlled by user space. It was the necessary part of spec v1 attack.
+Changes since v1:
+- fix obviously broken xp_tx_metadata_enabled (Jesper)
+- update xsk_tx_metadata to be a union of tx and completion sides
+  (Willem, offline)
+- update the doc to mention that metadata padding area is ignored
+  by the kernel and doesn't have to be zeroed-out (Willem, offline)
+- move tx_metadata_len to umem (Maciej, Magnus)
+- store and pass tx_timestamp separately instead of relying on
+  the metadata been unchanged between tx and completion evetns (Maciej)
 
-So I still believe this revert is unnecessary and this speculative
-execution is not exploitable.
+Note that I still only have mlx5 support here. Posting a respin
+to let Intel folks play with the latest state of the patches.
+
+v1: https://lore.kernel.org/all/20230809165418.2831456-1-sdf@google.com/
+
+Performance:
+
+I've implemented a small xskgen tool to try to saturate single tx queue:
+https://github.com/fomichev/xskgen/tree/master
+
+Here are the performance numbers with some analysis.
+
+1. Baseline. Running with commit eb62e6aef940 ("Merge branch 'bpf:
+Support bpf_get_func_ip helper in uprobes'"), nothing from this series:
+
+- with 1400 bytes of payload: 98 gbps, 8 mpps
+./xskgen -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+sent 10000000 packets 116960000000 bits, took 1.189130 sec, 98.357623 gbps 8.409509 mpps
+
+- with 200 bytes of payload: 49 gbps, 23 mpps
+./xskgen -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+sent 10000064 packets 20960134144 bits, took 0.422235 sec, 49.640921 gbps 23.683645 mpps
+
+2. Adding single commit that supports reserving tx_metadata_len
+   changes nothing numbers-wise.
+
+- baseline for 1400
+./xskgen -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+sent 10000000 packets 116960000000 bits, took 1.189247 sec, 98.347946 gbps 8.408682 mpps
+
+- baseline for 200
+./xskgen -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+sent 10000000 packets 20960000000 bits, took 0.421248 sec, 49.756913 gbps 23.738985 mpps
+
+3. Adding -M flag causes xskgen to reserve the metadata and fill it, but
+   doesn't set XDP_TX_METADATA descriptor option.
+
+- new baseline for 1400 (with only filling the metadata)
+./xskgen -M -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+sent 10000000 packets 116960000000 bits, took 1.188767 sec, 98.387657 gbps 8.412077 mpps
+
+- new baseline for 200 (with only filling the metadata)
+./xskgen -M -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+sent 10000000 packets 20960000000 bits, took 0.410213 sec, 51.095407 gbps 24.377579 mpps
+(the numbers go sligtly up here, not really sure why, maybe some cache-related
+side-effects?
+
+4. Next, I'm running the same test but with the commit that adds actual
+   general infra to parse XDP_TX_METADATA (but no driver support).
+   Essentially applying "xsk: add TX timestamp and TX checksum offload support"
+   from this series. Numbers are the same.
+
+- fill metadata for 1400
+./xskgen -M -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+sent 10000000 packets 116960000000 bits, took 1.188430 sec, 98.415557 gbps 8.414463 mpps
+
+- fill metadata for 200
+./xskgen -M -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+sent 10000000 packets 20960000000 bits, took 0.411559 sec, 50.928299 gbps 24.297853 mpps
+
+- request metadata for 1400
+./xskgen -m -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+sent 10000000 packets 116960000000 bits, took 1.188723 sec, 98.391299 gbps 8.412389 mpps
+
+- request metadata for 200
+./xskgen -m -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+sent 10000064 packets 20960134144 bits, took 0.411240 sec, 50.968131 gbps 24.316856 mpps
+
+5. Now, for the most interesting part, I'm adding mlx5 driver support.
+   The mpps for 200 bytes case goes down from 23 mpps to 19 mpps, but
+   _only_ when I enable the metadata. This looks like a side effect
+   of me pushing extra metadata pointer via mlx5e_xdpi_fifo_push.
+   Hence, this part is wrapped into 'if (xp_tx_metadata_enabled)'
+   to not affect the existing non-metadata use-cases. Since this is not
+   regressing existing workloads, I'm not spending any time trying to
+   optimize it more (and leaving it up to mlx owners to purse if
+   they see any good way to do it).
+
+- same baseline
+./xskgen -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+sent 10000000 packets 116960000000 bits, took 1.189434 sec, 98.332484 gbps 8.407360 mpps
+
+./xskgen -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+sent 10000128 packets 20960268288 bits, took 0.425254 sec, 49.288821 gbps 23.515659 mpps
+
+- fill metadata for 1400
+./xskgen -M -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+sent 10000000 packets 116960000000 bits, took 1.189528 sec, 98.324714 gbps 8.406696 mpps
+
+- fill metadata for 200
+./xskgen -M -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+sent 10000128 packets 20960268288 bits, took 0.519085 sec, 40.379260 gbps 19.264914 mpps
+
+- request metadata for 1400
+./xskgen -m -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+sent 10000000 packets 116960000000 bits, took 1.189329 sec, 98.341165 gbps 8.408102 mpps
+
+- request metadata for 200
+./xskgen -m -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+sent 10000128 packets 20960268288 bits, took 0.519929 sec, 40.313713 gbps 19.233642 mpps
+
+Cc: Saeed Mahameed <saeedm@nvidia.com>
+
+Stanislav Fomichev (9):
+  xsk: Support tx_metadata_len
+  xsk: add TX timestamp and TX checksum offload support
+  tools: ynl: print xsk-features from the sample
+  net/mlx5e: Implement AF_XDP TX timestamp and checksum offload
+  selftests/xsk: Support tx_metadata_len
+  selftests/bpf: Add csum helpers
+  selftests/bpf: Add TX side to xdp_metadata
+  selftests/bpf: Add TX side to xdp_hw_metadata
+  xsk: document tx_metadata_len layout
+
+ Documentation/netlink/specs/netdev.yaml       |  20 ++
+ Documentation/networking/index.rst            |   1 +
+ Documentation/networking/xsk-tx-metadata.rst  |  77 +++++++
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  72 ++++++-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |  11 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/tx.c   |  17 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |   1 +
+ include/linux/netdevice.h                     |  27 +++
+ include/linux/skbuff.h                        |  14 +-
+ include/net/xdp_sock.h                        |  81 +++++++
+ include/net/xdp_sock_drv.h                    |  13 ++
+ include/net/xsk_buff_pool.h                   |   7 +
+ include/uapi/linux/if_xdp.h                   |  41 ++++
+ include/uapi/linux/netdev.h                   |  16 ++
+ net/core/netdev-genl.c                        |  12 +-
+ net/xdp/xdp_umem.c                            |   4 +
+ net/xdp/xsk.c                                 |  51 ++++-
+ net/xdp/xsk_buff_pool.c                       |   1 +
+ net/xdp/xsk_queue.h                           |  19 +-
+ tools/include/uapi/linux/if_xdp.h             |  55 ++++-
+ tools/include/uapi/linux/netdev.h             |  15 ++
+ tools/net/ynl/generated/netdev-user.c         |  19 ++
+ tools/net/ynl/generated/netdev-user.h         |   3 +
+ tools/net/ynl/samples/netdev.c                |   6 +
+ tools/testing/selftests/bpf/network_helpers.h |  43 ++++
+ .../selftests/bpf/prog_tests/xdp_metadata.c   |  31 ++-
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 202 +++++++++++++++++-
+ tools/testing/selftests/bpf/xsk.c             |   3 +
+ tools/testing/selftests/bpf/xsk.h             |   1 +
+ 30 files changed, 822 insertions(+), 45 deletions(-)
+ create mode 100644 Documentation/networking/xsk-tx-metadata.rst
+
+-- 
+2.42.0.459.ge4e396fd5e-goog
+
 
