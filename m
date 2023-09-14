@@ -1,129 +1,240 @@
-Return-Path: <bpf+bounces-10075-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10076-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 808D37A0DD4
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 21:07:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F4877A0E7A
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 21:47:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C3111F20FCB
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 19:07:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 538BB281C61
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 19:47:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75FF1262BB;
-	Thu, 14 Sep 2023 19:07:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81D78266C3;
+	Thu, 14 Sep 2023 19:47:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D3F6D307
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 19:07:16 +0000 (UTC)
-Received: from mx0a-00206402.pphosted.com (mx0a-00206402.pphosted.com [148.163.148.77])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A691FC7
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 12:07:16 -0700 (PDT)
-Received: from pps.filterd (m0354652.ppops.net [127.0.0.1])
-	by mx0a-00206402.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38EHFRSt011574;
-	Thu, 14 Sep 2023 19:07:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=default;
-	 bh=JeAEwlJS+ilge4mxrvUCMiGaQoi5W1kwq7iJ4IrTUA4=; b=gSNrUlx1IzWF
-	BQFWLsX3z4e1YQ7pgjeXQGecvdZe6RlxaMHSKoiAkulD+pHu9xhFg/GoLc9UhW7L
-	hOqqtyCZgRxnrdSzXNXSWZjqRTFS+UFM7pFWyPKNttXofNe2Tl1jAwGG1V8tTBG8
-	C4IJFlnuv/Xhal0IecwRczy5qPhPpM6gJqhsodG4Sk7SWks933Lv52ATxqDVQUSS
-	YHm8di0wSR9239TwRdpUQBIYOD6gIFHUJ8NKPq+SGUzCbmCxYsV5UDUO1RQHgWy0
-	kQlYc+Ozc8t07jW67D+iiGqnoqfFa8hbfhmTR4RQThAHViL957qIVpqxCmYBADd4
-	//NsiLaMkA==
-Received: from 04wpexch06.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60])
-	by mx0a-00206402.pphosted.com (PPS) with ESMTPS id 3t2ybtwnj6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Sep 2023 19:07:11 +0000 (GMT)
-Received: from [10.102.42.52] (10.100.11.122) by 04wpexch06.crowdstrike.sys
- (10.100.11.99) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.16; Thu, 14 Sep
- 2023 19:07:10 +0000
-Message-ID: <e776f129-3796-a425-b162-ac74e7d78530@crowdstrike.com>
-Date: Thu, 14 Sep 2023 12:07:09 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C35C210FE
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 19:47:30 +0000 (UTC)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBB82698;
+	Thu, 14 Sep 2023 12:47:29 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-5007616b756so2215572e87.3;
+        Thu, 14 Sep 2023 12:47:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694720848; x=1695325648; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UtprqRWjjPvRfIDAlcNH4nik58BKZh2xiWkpAj29BbM=;
+        b=p0IXen1ugDCvaG1uDYqkU6pSr9Ez5MmBpklRdT/HH7qixZeBLQSu2T/6PnIuWRaai+
+         TROuPBLdTuqI2S9YQ8AtV4LHoxVIOIWm27reJtcKNN8o3BDuytZR89qpgFBjZR3ZGSTj
+         gL7Jk1KJqqJdg87bs75Dn0l73DV1M+z4VkpnRrRQAzm73zJ/bGv5z3qz7ixBhMU8P4tk
+         ZSeQCA4r937ir/hZc5+VhLwGxMplVJGmj35wPIMpsAKgJXzX7mJTQz7BdI2l6UsZztlH
+         2d8i4rhGmUuCJc3uvdA5Wj5MnvmHfKTHWu4STtT1mCJprJW4ayC4f4rW4GzFYnTotURH
+         oTdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694720848; x=1695325648;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UtprqRWjjPvRfIDAlcNH4nik58BKZh2xiWkpAj29BbM=;
+        b=TEG0xa6HDU3p7xuCKaodDKMOdErpGQRcyInKwQEfJ5WQxJkXWOvMLbHLIeTYxvrlol
+         kdY/qsxym2UcTkrNjX+rdMRAvtY5DJiZ1L9MwcI7CHCSGDW6trXQKt2AOF4FqFWN/SZ8
+         eqprvOikx4Fmh0tDlvbYh3cF2hFEUlxwVKLsHRgwoHIAs7XYOQ+GCgmZ1CIAkPV95JSr
+         HT6+ZdrIiN7Gvasii3lynfXfM8Clv1qUWXXrNt5k43n3ysZ8ec7FIKx9zYCEppETGfbH
+         OOrHA1d9J8mAIQ2zrw//6Z5q8bWz8Hj1CWIRimwLdpd4wFFuInhyMA2EAQbE6nyfFz2y
+         AV4A==
+X-Gm-Message-State: AOJu0YzWS9NJml6o12BQ64/jDkexB2FWf3NrsUjHKv9BCTV0XW3zgBJM
+	k+y8EwiyOZncS3ke+zttJ5ZcJ3cxQmawHpzLz0v9V+7oECw=
+X-Google-Smtp-Source: AGHT+IGGsxb29ulva7qi96je+NUvGWwXoUkFSCWbZaM05+K3BskEWVT/4/8Hwu7/CMxfzOXW7W1lKNEJPIb2Gw4w3V8=
+X-Received: by 2002:ac2:4248:0:b0:500:adbd:43e9 with SMTP id
+ m8-20020ac24248000000b00500adbd43e9mr5205245lfl.15.1694720847696; Thu, 14 Sep
+ 2023 12:47:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: Re: Best way to check for fentry attach support
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC: <bpf@vger.kernel.org>, Rahul Shah <rahul.shah@crowdstrike.com>
-References: <f76a8cb2-6cc7-be5d-0335-cc6b98baaed8@crowdstrike.com>
- <CAEf4BzYubqYZ=Hu2yzZ3FXGW-oGJ+-3k9=s+EAhvu07OCzgh+w@mail.gmail.com>
-Content-Language: en-US
-From: Martin Kelly <martin.kelly@crowdstrike.com>
-In-Reply-To: <CAEf4BzYubqYZ=Hu2yzZ3FXGW-oGJ+-3k9=s+EAhvu07OCzgh+w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.100.11.122]
-X-ClientProxiedBy: 04wpexch02.crowdstrike.sys (10.100.11.92) To
- 04wpexch06.crowdstrike.sys (10.100.11.99)
-X-Disclaimer: USA
-X-Proofpoint-GUID: J0rU9oeiTdLq6qurzoUw_A6XC8xs83FP
-X-Proofpoint-ORIG-GUID: J0rU9oeiTdLq6qurzoUw_A6XC8xs83FP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-14_11,2023-09-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
- lowpriorityscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
- phishscore=0 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2309140166
+References: <CAADnVQLid7QvukhnqRoY2VVFi1tCfkPFsMGUUeHDtCgf0SAJCg@mail.gmail.com>
+ <20230913122827.91591-1-gerhorst@amazon.de> <CAADnVQJsjVf3t0OJCZkc3rNpHMi_ZTtwLa3LBMi6ot3zufnb+A@mail.gmail.com>
+ <723a49b4-c4ed-3b0b-2a9d-915b49725411@iogearbox.net>
+In-Reply-To: <723a49b4-c4ed-3b0b-2a9d-915b49725411@iogearbox.net>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 14 Sep 2023 12:47:16 -0700
+Message-ID: <CAADnVQJ4Fg-VQ-tVCEqsKLuozT7y_o8pZ1oM3eBW7u-Z0jOk4A@mail.gmail.com>
+Subject: Re: [PATCH 2/3] Revert "bpf: Fix issue in verifying allow_ptr_leaks"
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Luis Gerhorst <gerhorst@cs.fau.de>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, Hao Luo <haoluo@google.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, Yafang Shao <laoar.shao@gmail.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev <sdf@google.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	gerhorst@amazon.de, Ilya Leoshkevich <iii@linux.ibm.com>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Hagar Gamal Halim Hemdan <hagarhem@amazon.de>, Puranjay Mohan <puranjay12@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/14/23 11:05, Andrii Nakryiko wrote:
-> On Tue, Sep 12, 2023 at 11:50 AM Martin Kelly
-> <martin.kelly@crowdstrike.com> wrote:
->> Hi all,
->>
->> I'm trying to figure out the best way to handle the fact that
->> fentry/fexit trampolines are not fully supported on all architectures
->> and kernel versions. As an example, I want to be able to load an fentry
->> if the kernel supports it, and a kprobe otherwise.
->>
->> It's tempting to use libbpf_probe_bpf_prog_type for this, but on ARM64
->> kernels >= 5.5 (when BPF trampolines were introduced) but before the
->> most recent ones, loading an fentry program will pass, but attaching it
->> will still fail. This also means that libbpf_probe_bpf_prog_type will
->> return true even if the program can't be attached, so that can't be used
->> to test for attachability.
-> Right, because libbpf_probe_bpf_prog_type() is testing whether given
-> program type can be loaded, not attached.
+On Thu, Sep 14, 2023 at 10:24=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.=
+net> wrote:
 >
->> I can work around this by attempting to attach a dummy fentry program in
->> my application, but I'm wondering if this is something that should be
->> done more generally by libbpf. Some possible ways to do this are:
->>
->> - Extend the libbpf_probe API to add libbpf_probe_trampoline or similar,
->> attempting attach to a known-exported function, such as the BPF syscall,
->> or to a user-specified symbol.
->>
->> - Extend the libbpf_probe API to add a generic libbpf_probe_attach API
->> to check if a given function is attachable. However, as attach code is
->> different depending on the hook, this might be very complex and require
->> a ton of parameters.
->>
->> - Maybe there are other options that I haven't thought of.
->>
->> I have a patch I could send for libbpf_probe_trampoline, but I wanted to
->> first check if this is a good idea or if it's preferred to simply have
->> applications probe this themselves.
-> It doesn't seem too hard for an application to try to attach and if
-> attachment fails fallback to attaching kprobe-based program. So I'd
-> prefer that over much more maintenance burden of keeping this "can
-> attach" generic API. At least for now.
+> On 9/14/23 6:20 PM, Alexei Starovoitov wrote:
+> > On Wed, Sep 13, 2023 at 5:30=E2=80=AFAM Luis Gerhorst <gerhorst@amazon.=
+de> wrote:
+> >>
+> >> This reverts commit d75e30dddf73449bc2d10bb8e2f1a2c446bc67a2.
+> >>
+> >> To mitigate Spectre v1, the verifier relies on static analysis to dedu=
+ct
+> >> constant pointer bounds, which can then be enforced by rewriting point=
+er
+> >> arithmetic [1] or index masking [2]. This relies on the fact that ever=
+y
+> >> memory region to be accessed has a static upper bound and every date
+> >> below that bound is accessible. The verifier can only rewrite pointer
+> >> arithmetic or insert masking instructions to mitigate Spectre v1 if a
+> >> static upper bound, below of which every access is valid, can be given=
+.
+> >>
+> >> When allowing packet pointer comparisons, this introduces a way for th=
+e
+> >> program to effectively construct an accessible pointer for which no
+> >> static upper bound is known. Intuitively, this is obvious as a packet
+> >> might be of any size and therefore 0 is the only statically known uppe=
+r
+> >> bound below of which every date is always accessible (i.e., none).
+> >>
+> >> To clarify, the problem is not that comparing two pointers can be used
+> >> for pointer leaks in the same way in that comparing a pointer to a kno=
+wn
+> >> scalar can be used for pointer leaks. That is because the "secret"
+> >> components of the addresses cancel each other out if the pointers are
+> >> into the same region.
+> >>
+> >> With [3] applied, the following malicious BPF program can be loaded in=
+to
+> >> the kernel without CAP_PERFMON:
+> >>
+> >> r2 =3D *(u32 *)(r1 + 76) // data
+> >> r3 =3D *(u32 *)(r1 + 80) // data_end
+> >> r4 =3D r2
+> >> r4 +=3D 1
+> >> if r4 > r3 goto exit
+> >> r5 =3D *(u8 *)(r2 + 0) // speculatively read secret
+> >> r5 &=3D 1 // choose bit to leak
+> >> // ... side channel to leak secret bit
+> >> exit:
+> >> // ...
+> >>
+> >> This is jited to the following amd64 code which still contains the
+> >> gadget:
+> >>
+> >>     0:   endbr64
+> >>     4:   nopl   0x0(%rax,%rax,1)
+> >>     9:   xchg   %ax,%ax
+> >>     b:   push   %rbp
+> >>     c:   mov    %rsp,%rbp
+> >>     f:   endbr64
+> >>    13:   push   %rbx
+> >>    14:   mov    0xc8(%rdi),%rsi // data
+> >>    1b:   mov    0x50(%rdi),%rdx // data_end
+> >>    1f:   mov    %rsi,%rcx
+> >>    22:   add    $0x1,%rcx
+> >>    26:   cmp    %rdx,%rcx
+> >>    29:   ja     0x000000000000003f // branch to mispredict
+> >>    2b:   movzbq 0x0(%rsi),%r8 // speculative load of secret
+> >>    30:   and    $0x1,%r8 // choose bit to leak
+> >>    34:   xor    %ebx,%ebx
+> >>    36:   cmp    %rbx,%r8
+> >>    39:   je     0x000000000000003f // branch based on secret
+> >>    3b:   imul   $0x61,%r8,%r8 // leak using port contention side chann=
+el
+> >>    3f:   xor    %eax,%eax
+> >>    41:   pop    %rbx
+> >>    42:   leaveq
+> >>    43:   retq
+> >>
+> >> Here I'm using a port contention side channel because storing the secr=
+et
+> >> to the stack causes the verifier to insert an lfence for unrelated
+> >> reasons (SSB mitigation) which would terminate the speculation.
+> >>
+> >> As Daniel already pointed out to me, data_end is even attacker
+> >> controlled as one could send many packets of sufficient length to trai=
+n
+> >> the branch prediction into assuming data_end >=3D data will never be t=
+rue.
+> >> When the attacker then sends a packet with insufficient data, the
+> >> Spectre v1 gadget leaks the chosen bit of some value that lies behind
+> >> data_end.
+> >
+> > The above analysis is correct, but unlike traditional spec_v1
+> > the attacker doesn't control data/data_end.
+> > The attack can send many large packets to train that data + X < data_en=
+d
+> > and then send a small packet where CPU will mispredict that branch
+> > and data + X will speculatively read past data_end,
+> > so the attacker can extract a bit past data_end,
+> > but data/data_end themselves cannot be controlled.
+> > So whether this bit 0 or 1 has no bearing.
+> > The attack cannot be repeated for the same location.
+> > The attacker can read one bit 8 times in a row and all of them
+> > will be from different locations in the memory.
+> > Same as reading 8 random bits from 8 random locations.
+> > Hence I don't think this revert is necessary.
+> > I don't believe you can craft an actual exploit.
+> >
+> > Your patch 3 says:
+> >         /* Speculative access to be prevented. */
+> > +       char secret =3D *((char *) iph);
+> > +
+> > +       /* Leak the first bit of the secret value that lies behind data=
+_end to a
+> > +        * SMP silbling thread that also executes imul instructions. If=
+ the bit
+> > +        * is 1, the silbling will experience a slowdown. */
+> > +       long long x =3D secret;
+> > +       if (secret & 1) {
+> > +               x *=3D 97;
+> > +       }
+> >
+> > the comment is correct, but speculative access alone is not enough
+> > to leak data.
+>
+> What you write makes sense, it will probably be hard to craft an exploit.
+> Where it's a bit more of an unknown to me is whether struct skb_shared_in=
+fo
+> could have e.g. destructor_arg rather static (at last the upper addr bits=
+)
+> so that you would leak out kernel addresses.
 
-OK, it's easy enough to do it in the application, so we'll do that. Thanks!
+You mean since skb_shared_info is placed after skb->end
+and in zero copy case destructor_arg may be initialized with the same
+kernel pointer for multiple skb-s ?
+The attacker cannot construct the address from data_end.
+The verifier explicitly prohibits any ALU with PTR_TO_PACKET_END.
+But the attacker can do skb->data + X.
+The idea is that they can train the branch to mispredict with
+a large packet and then send a small one so that shared_info
+after skb->end has the same uarg pointer in all packets?
+So every skb->data+X is a different location, but all of them
+point to data that has uarg=3D=3Ddestructor_arg ?
 
->> Thanks,
->>
->> Martin
->>
->>
+That would be feasible in theory, but in order to speculate the loads
+the branch mispredict has to be reliable.
+The spec v1 attack requires one of two loads feeding
+into compare operation has to be slow.
+In this case both data and data_end loads are going to be fast.
+The attacker cannot evict skb->data or skb->data_end from cache.
+Remember that we rearranged 'max_entries' field in struct bpf_map
+specifically to be in the different cache line vs fields
+controlled by user space. It was the necessary part of spec v1 attack.
+
+So I still believe this revert is unnecessary and this speculative
+execution is not exploitable.
 
