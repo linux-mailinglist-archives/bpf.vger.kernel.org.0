@@ -1,79 +1,75 @@
-Return-Path: <bpf+bounces-10032-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10033-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B43B07A08CB
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 17:16:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 799D27A08E6
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 17:19:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7507CB20D67
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 15:16:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65BA01C20E27
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 15:19:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C67262B9;
-	Thu, 14 Sep 2023 15:00:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6BDF262A4;
+	Thu, 14 Sep 2023 15:03:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A78539C;
-	Thu, 14 Sep 2023 15:00:18 +0000 (UTC)
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC741FC4;
-	Thu, 14 Sep 2023 08:00:17 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-501bef6e0d3so1788183e87.1;
-        Thu, 14 Sep 2023 08:00:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694703615; x=1695308415; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ost934mXsFAdMAZL0F6K6qliA7AblkstZWyU0HrIN0s=;
-        b=U0Ucn2dr2NcrRdXiCBQ8vtODENVLNfrd/4La3iLgeVQTPlIK+E5Wh6siCNaUZShYNi
-         +mBM+rJDKH5tsLfTJlBKyNRAJBRLdJpGup6iOaNSMvfzXE2vu4z9tKL9ySA5pf2HuJRL
-         T9QhQLrfkrmvjo9zXtw181xbeOz5luszhAICW/wMVB/Q81FH/MhDFTYZqbJZxTflunj2
-         fph08PPYpmJxjkvh3IlDPfFc3mVUd9YzDORLqx0oYNZBly8HHQvdhJF4v6Hf4sdx5XjY
-         FMnjqZKXC1wnjpCr6D3Ljs0408cUlRqFlzFeaahl2n0gSr9V99vl7PJU8noAuCJvN0H5
-         kqXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694703615; x=1695308415;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ost934mXsFAdMAZL0F6K6qliA7AblkstZWyU0HrIN0s=;
-        b=rgYVR6hxFZ2ZzIwpqd0DMC02UQOE3UW6l1QJowqOxHSljleazW1xt2ITjCPCBxOJ50
-         PdNlaX9TynU27BY+vy0lwp6gJVHx9m41t89yOmT0FOFpDJnp+0v2Zk8OsBmdc99CRWEb
-         XL7Pgoa1N9gh06cwjll1lsnn4u+UrzJZQrPiRBYBpr7xWLMzwFLL6MdiABEtILZHMQDl
-         02HfvM65Jc7lBuHU9KjEVxL0d9y2T5bwbWq0gMVVba/VJvxQ2hlPQ51FDx3ouN1giNq9
-         HMvEucI1FgLYqW9MxfeAxmIfLltfWH3NaYhrX+Oj4SAsg5L2m1SedXA0Tk8V1zsKtiJu
-         0AKA==
-X-Gm-Message-State: AOJu0YxOMJEOUuv92ljeFDjBFhmb6mgLqhkWPtK/RRR3AbbfzhsH0k9w
-	AwBmZDjjOco9HQwtIjphAtA=
-X-Google-Smtp-Source: AGHT+IEyuQasdt2T0VDWeN/DaQrMM3CCucu0MV6lzspojZuxz3D9lCseE6UrznxpRfcOfZwYMqK2hw==
-X-Received: by 2002:a19:6918:0:b0:4fb:9f93:365f with SMTP id e24-20020a196918000000b004fb9f93365fmr4161961lfc.38.1694703615403;
-        Thu, 14 Sep 2023 08:00:15 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id a13-20020a056512020d00b005008b5191aesm302321lfo.284.2023.09.14.08.00.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Sep 2023 08:00:15 -0700 (PDT)
-Date: Thu, 14 Sep 2023 18:00:12 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jose Abreu <joabreu@synopsys.com>, Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org, 
-	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
-	Emil Renner Berthing <kernel@esmil.dk>, Eric Dumazet <edumazet@google.com>, 
-	Fabio Estevam <festevam@gmail.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>, 
-	Paolo Abeni <pabeni@redhat.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Samin Guo <samin.guo@starfivetech.com>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B843F28E28;
+	Thu, 14 Sep 2023 15:03:30 +0000 (UTC)
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3031BA8;
+	Thu, 14 Sep 2023 08:03:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=RE3IKnkVM1o//7e7tQAyrkiYmQQrfQVxuj7YjxSm9tg=; b=nhdYLCMoe8emRkBajZTeqgMGF2
+	9N7Aj3Jtq6ogxxz/sjndT5aWDpEVH8biPtO56utKLzIyBE+6HwBcthKC+b/2EYi55i+W54HjJQxh2
+	gOSYO+osjvn/NvYfaZJPB+ZdYe0KgP7Rh9BsQsOEbfGNVwqtvyBPyek4N0lf0oGVEfhNrndgB0D12
+	88LgA9dJ8IsMGW4SOmPy3fPvBOxv4HMsPUZ77LaCjBXHHnJASzsH8RwBzDEuI4Wc779Jubsx6jpRC
+	QqbOHcWZIenwxmKLCazJo5l8ibGARlIILqcUS2mjdsaaHAwnQ3Tgu7vxDRaiZehFKsvznbOC4X0VR
+	4A0Y7owg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49528)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1qgnsH-0004Qz-2Y;
+	Thu, 14 Sep 2023 16:03:21 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1qgnsD-0004r8-H3; Thu, 14 Sep 2023 16:03:17 +0100
+Date: Thu, 14 Sep 2023 16:03:17 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Eric Dumazet <edumazet@google.com>,
+	Fabio Estevam <festevam@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
+	NXP Linux Team <linux-imx@nxp.com>, Paolo Abeni <pabeni@redhat.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Samin Guo <samin.guo@starfivetech.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
 	Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH net-next 3/6] net: stmmac: intel-plat: use
+Subject: Re: [PATCH net-next 4/6] net: stmmac: rk: use
  stmmac_set_tx_clk_gmii()
-Message-ID: <vbljmrosykldu3jutfqyxtp22ivbcfyn2luu3cg55saeyi2uqp@tayl2qsbmovg>
+Message-ID: <ZQMgtXSTsNoZohnx@shell.armlinux.org.uk>
 References: <ZQMPnyutz6T23E8T@shell.armlinux.org.uk>
- <E1qgmkk-007Z4l-BK@rmk-PC.armlinux.org.uk>
+ <E1qgmkp-007Z4s-GL@rmk-PC.armlinux.org.uk>
+ <7vhtvd25qswsju34lgqi4em5v3utsxlvi3lltyt5yqqecddpyh@c5yvk7t5k5zz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,68 +78,70 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <E1qgmkk-007Z4l-BK@rmk-PC.armlinux.org.uk>
+In-Reply-To: <7vhtvd25qswsju34lgqi4em5v3utsxlvi3lltyt5yqqecddpyh@c5yvk7t5k5zz>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Thu, Sep 14, 2023 at 02:51:30PM +0100, Russell King (Oracle) wrote:
-> Use stmmac_set_tx_clk_gmii().
+On Thu, Sep 14, 2023 at 05:37:13PM +0300, Serge Semin wrote:
+> On Thu, Sep 14, 2023 at 02:51:35PM +0100, Russell King (Oracle) wrote:
+> > Use stmmac_set_tx_clk_gmii().
+> > 
+> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > ---
+> >  .../net/ethernet/stmicro/stmmac/dwmac-rk.c    | 60 +++++--------------
+> >  1 file changed, 16 insertions(+), 44 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
+> > index d920a50dd16c..5731a73466eb 100644
+> > --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
+> > +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
+> > @@ -1081,28 +1081,14 @@ static void rk3568_set_gmac_speed(struct rk_priv_data *bsp_priv, int speed)
+> >  {
+> >  	struct clk *clk_mac_speed = bsp_priv->clks[RK_CLK_MAC_SPEED].clk;
+> >  	struct device *dev = &bsp_priv->pdev->dev;
+> > -	unsigned long rate;
+> > -	int ret;
+> > -
+> > -	switch (speed) {
+> > -	case 10:
+> > -		rate = 2500000;
+> > -		break;
+> > -	case 100:
+> > -		rate = 25000000;
+> > -		break;
+> > -	case 1000:
+> > -		rate = 125000000;
+> > -		break;
+> > -	default:
+> > -		dev_err(dev, "unknown speed value for GMAC speed=%d", speed);
+> > -		return;
+> > -	}
+> > -
+> > -	ret = clk_set_rate(clk_mac_speed, rate);
+> > -	if (ret)
+> > -		dev_err(dev, "%s: set clk_mac_speed rate %ld failed %d\n",
+> > -			__func__, rate, ret);
+> > +	int err;
+> > +
+> > +	err = stmmac_set_tx_clk_gmii(clk_mac_speed, speed);
+> > +	if (err == -ENOTSUPP)
 > 
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > +		dev_err(dev, "invalid speed %uMbps\n", speed);
+> > +	else if (err)
+> > +		dev_err(dev, "failed to set tx rate for speed %uMbps: %pe\n",
+> 
+> These type specifiers should have been '%d' since the speed variable
+> is of the signed integer type here.
 
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+Okay, having re-reviewed the changes, I'm changing them _all_ back to
+be %d, because that is the _right_ thing. It is *not* unsigned, even
+if fix_mac_speed() thinks that it is. It isn't. It's signed, and it's
+stmmac bollocks implicitly casting it to unsigned - and that is
+_wrong_.
 
--Serge(y)
+So, on that point, my original submission was more correct than this
+one, and you led me astray.
 
-> ---
->  .../stmicro/stmmac/dwmac-intel-plat.c         | 34 +++++--------------
->  1 file changed, 8 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c
-> index d352a14f9d48..c6ebd1d91f38 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c
-> @@ -31,32 +31,14 @@ struct intel_dwmac_data {
->  static void kmb_eth_fix_mac_speed(void *priv, unsigned int speed, unsigned int mode)
->  {
->  	struct intel_dwmac *dwmac = priv;
-> -	unsigned long rate;
-> -	int ret;
-> -
-> -	rate = clk_get_rate(dwmac->tx_clk);
-> -
-> -	switch (speed) {
-> -	case SPEED_1000:
-> -		rate = 125000000;
-> -		break;
-> -
-> -	case SPEED_100:
-> -		rate = 25000000;
-> -		break;
-> -
-> -	case SPEED_10:
-> -		rate = 2500000;
-> -		break;
-> -
-> -	default:
-> -		dev_err(dwmac->dev, "Invalid speed\n");
-> -		break;
-> -	}
-> -
-> -	ret = clk_set_rate(dwmac->tx_clk, rate);
-> -	if (ret)
-> -		dev_err(dwmac->dev, "Failed to configure tx clock rate\n");
-> +	int err;
-> +
-> +	err = stmmac_set_tx_clk_gmii(dwmac->tx_clk, speed);
-> +	if (err == -ENOTSUPP)
-> +		dev_err(dwmac->dev, "invalid speed %uMbps\n", speed);
-> +	else if (err)
-> +		dev_err(dwmac->dev, "failed to set tx rate for speed %uMbps: %pe\n",
-> +			speed, ERR_PTR(err));
->  }
->  
->  static const struct intel_dwmac_data kmb_data = {
-> -- 
-> 2.30.2
-> 
-> 
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
