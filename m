@@ -1,198 +1,124 @@
-Return-Path: <bpf+bounces-10069-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10070-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D317A7A0C16
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 19:59:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F018B7A0C2F
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 20:05:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8F1A1C20B1B
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 17:59:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A53951F2436B
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 18:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF54262BC;
-	Thu, 14 Sep 2023 17:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FD13266A1;
+	Thu, 14 Sep 2023 18:05:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645591D54D
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 17:58:38 +0000 (UTC)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD661FF5
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 10:58:37 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-502934c88b7so2194511e87.2
-        for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 10:58:37 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB4AE1D54D
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 18:05:16 +0000 (UTC)
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE5AEB9
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 11:05:15 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-52713d2c606so1479143a12.2
+        for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 11:05:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694714315; x=1695319115; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694714713; x=1695319513; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ow/EkEHuuppRgqaLrjUA4gmZm4vZxN4SCbA0kpXdfeo=;
-        b=DhrY3s1Y3kg/Z235qOwaCtTN+Nzo1c1c8T4t1+uvqBL8aulvhY9OozKvciJXJpfU2a
-         JD0GeuhkRglzEx9fWxQNdRx2EbdF3+SoZj0LCzm5LyrJzS9EmJ196kWtqsRt+iWUYBPM
-         wfrAnxMWR3N0ddfdFGjZatc4wDTO+iQRGw9WmKsKoM3tB4EvS3DvN9VDXxJzYhQosJOs
-         auBazbWM6Js4eST+5aIbIYafyA75YUfaB4Rb0i5ewCa1xNKnW61g7/8QznlEOY+7hfrb
-         Km4Y1oH+WU1vRAGiR8qZNryD0fIZWXXBnDL23rsYkLTQdHspo41SxHhmtBN9ENFLGD61
-         1F5w==
+        bh=QT4pFbV2Cww33ESpzW/l6C+DiWNd4rOt8QY1sbxAtDY=;
+        b=C6fZkpUC4x2SLlxxoDve14FBKzP8HqIuxdmxkO8AhyTGUjkIDCYSu2T8KLvw/vfL0P
+         fxH4L/eURPgaAUWZxP1beVhoI31cpGHO31hztSFyzEaV+vE8WNJBFX6h08Z2EP+gP9DO
+         SB5T1ZKvOlod9BPIXOOGY2NGdO1gGhk7Ixn09bZd7AqAcbwZmODoFGX4aDPuH1bF0JdB
+         BeVJzF6Y8ah3+zRrLiJSZvjSWPOORvUCY8+N8CFaKGEuayXCIeb1pg8GndtHObB55OEf
+         oazl78epufWXhqwPqjx0KhRaXHp2BayC3cW02baz7yyIa7ZGnfEH/azKJMDQ6xWS/z6F
+         LuRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694714315; x=1695319115;
+        d=1e100.net; s=20230601; t=1694714713; x=1695319513;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ow/EkEHuuppRgqaLrjUA4gmZm4vZxN4SCbA0kpXdfeo=;
-        b=juibr4/XT2PC+JC2jE/ycJ5uq/E7/ah51kMbkWi4+8ygSCVC17iNsbb3V7rvm43X1F
-         DYGbromgX1LriEEZE27EwEm1nQ68XAiTLvaZt44+TwfKgeCU5VtwPfray/ooppjBiZnF
-         JtZObtoTuh3vcaCQ02wi7o5jbu++ix4oIJSGn6O2eKpyOxnXf/IQ+k9bBuzCpV5FKUxO
-         oKlN123C0ngylzhNyKYd6KOIAbBmvT2r+r2OwEN7g4zMgOYm7XhuGcnqqmU3KrbAiRhm
-         lPushV5CpL96EHGGNVmUi1N3tjmz5XXx3KJJXd9oXFhhYA5gYMTUHKxcqTubZed8gMJp
-         xd+A==
-X-Gm-Message-State: AOJu0Yz5rNyaQb8pZu8k1Zrg+Gjl/U+hwKyUqnPETaN8toWT8KXzIMMR
-	BViQ81VpA101A5pv6giNMRp/QU/MtGN8DoPD90s=
-X-Google-Smtp-Source: AGHT+IFEkHw8LbVlMggWGrCy0WCFIiFBWoC92It64oNtWxnW5MwXyQZz6DoVVo/JAPiAmFA6Akjm8Cjz16xnJg21VeA=
-X-Received: by 2002:a05:6512:703:b0:500:a092:d085 with SMTP id
- b3-20020a056512070300b00500a092d085mr4488886lfs.68.1694714315332; Thu, 14 Sep
- 2023 10:58:35 -0700 (PDT)
+        bh=QT4pFbV2Cww33ESpzW/l6C+DiWNd4rOt8QY1sbxAtDY=;
+        b=MfpCMNGYqew7/9wrMV/CRNjoLiDXx4/1lMGFSLh1Z/4nWkW+uwkWrajK5p0/W3C+3l
+         Lhbv8T4hxBKSqkyO7ETYPiu6+xfkZ05lq4LTm5/d+i0awDG3uHvPlm/Xsj2deDoCzuLe
+         Q0S3U0/BPQA8x/W+R8gQg0MDZSDmW1Bog44xtG5HAV4hOGLREwnt7Dd/k2nG5RpmUWbR
+         FugPrF+x3ty+ZmP5EVS7jIPt1T1SXlcw1VCagcC8uw+zU0MAClQw8psg+dX9mzFsdu/r
+         EJwb30AiEWXZxCZ07nrnb+bdhI1Sv1YlAuuFGNzUqrUq62tcrYpQZ+Z6FqyOFi/NLXac
+         OoUQ==
+X-Gm-Message-State: AOJu0YzdxggccKoTXzNIjFo2jCkda4UzAhYUuw0PKhB9iD/pjDE1xHL3
+	/PyJpISzHFgLTQ7mVze/mP3dVuu5ZRWpzWe/j3+L6Ddr
+X-Google-Smtp-Source: AGHT+IHZLBV86nfqcwxBCBSxhLw49uqyvp4+fz8yzji1SF6TeMYP32Ti59hL3w3nT1pW1sYvDx0XIgbymzGZ8dyj0OQ=
+X-Received: by 2002:aa7:c0cb:0:b0:52e:1d58:a6fa with SMTP id
+ j11-20020aa7c0cb000000b0052e1d58a6famr5792319edp.36.1694714713298; Thu, 14
+ Sep 2023 11:05:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230913142646.190047-1-alan.maguire@oracle.com>
-In-Reply-To: <20230913142646.190047-1-alan.maguire@oracle.com>
+References: <f76a8cb2-6cc7-be5d-0335-cc6b98baaed8@crowdstrike.com>
+In-Reply-To: <f76a8cb2-6cc7-be5d-0335-cc6b98baaed8@crowdstrike.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 14 Sep 2023 10:58:23 -0700
-Message-ID: <CAEf4BzayTrNnOLj4t2s1aegATjqMdvz1iiGq4A6gMmbxJ+zmYg@mail.gmail.com>
-Subject: Re: [PATCH dwarves 0/3] dwarves: detect BTF kinds supported by kernel
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: acme@kernel.org, ast@kernel.org, daniel@iogearbox.net, jolsa@kernel.org, 
-	eddyz87@gmail.com, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, mykolal@fb.com, bpf@vger.kernel.org
+Date: Thu, 14 Sep 2023 11:05:01 -0700
+Message-ID: <CAEf4BzYubqYZ=Hu2yzZ3FXGW-oGJ+-3k9=s+EAhvu07OCzgh+w@mail.gmail.com>
+Subject: Re: Best way to check for fentry attach support
+To: Martin Kelly <martin.kelly@crowdstrike.com>
+Cc: bpf@vger.kernel.org, Rahul Shah <rahul.shah@crowdstrike.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 13, 2023 at 7:26=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
-om> wrote:
+On Tue, Sep 12, 2023 at 11:50=E2=80=AFAM Martin Kelly
+<martin.kelly@crowdstrike.com> wrote:
 >
-> When a newer pahole is run on an older kernel, it often knows about BTF
-> kinds that the kernel does not support, and adds them to the BTF
-> representation.  This is a problem because the BTF generated is then
-> embedded in the kernel image.  When it is later read - possibly by
-> a different older toolchain or by the kernel directly - it is not usable.
+> Hi all,
 >
-> The scripts/pahole-flags.sh script enumerates the various pahole options
-> available associated with various versions of pahole, but in the case
-> of an older kernel is the set of BTF kinds the _kernel_ can handle that
-> is of more importance.
+> I'm trying to figure out the best way to handle the fact that
+> fentry/fexit trampolines are not fully supported on all architectures
+> and kernel versions. As an example, I want to be able to load an fentry
+> if the kernel supports it, and a kprobe otherwise.
 >
-> Because recent features such as BTF_KIND_ENUM64 are added by default
-> (and only skipped if --skip_encoding_btf_* is set), BTF will be
-> created with these newer kinds that the older kernel cannot read.
-> This can be (and has been) fixed by stable-backporting --skip options,
-> but this is cumbersome and would have to be done every time a new BTF kin=
-d
-> is introduced.
->
+> It's tempting to use libbpf_probe_bpf_prog_type for this, but on ARM64
+> kernels >=3D 5.5 (when BPF trampolines were introduced) but before the
+> most recent ones, loading an fentry program will pass, but attaching it
+> will still fail. This also means that libbpf_probe_bpf_prog_type will
+> return true even if the program can't be attached, so that can't be used
+> to test for attachability.
 
-Yes, this is indeed the problem, but I don't think any sort of auto
-detection by pahole itself of what is the BTF_KIND_MAX is the best
-solution. Sometimes new features are added to existing kinds (like
-kflag usage, etc), and that will still break even with "auto
-detection".
+Right, because libbpf_probe_bpf_prog_type() is testing whether given
+program type can be loaded, not attached.
 
-I think the solution is to design pahole behavior in such a way that
-it allows full control for old kernels to specify which BTF features
-are expected to be generated, while also allowing to default to all
-the latest and greatest BTF features by default for any other
-application.
-
-So, how about something like the following. By default, pahole
-generates all the BTF features it knows about. But we add a new flag
-that says to stay conservative and only generate a specified subset of
-BTF features. E.g.:
-
-1) `pahole -J <eLF.o>`  will generate everything
-
-2) `pahole -J <elf.o> --btf_feature=3Dbasic` will generate only the very
-basic stuff (we can decide what constitutes basic, we can go all the
-way to before we added variables, or can pick any random state after
-that)
-
-3) `pahole -J <elf.o> --btf_feature=3Dbasic --btf_feature=3Denum64
---btf_feature=3Dfancy_funcs` will generate only requested bits.
-
-We can have --btf_feature=3Dall as a convenience as well, but kernel
-scripts won't use it.
-
-From the very beginning, pahole should not fail with a feature name
-that it doesn't recognize, though (maybe emit a warning, don't know).
-So that kernel-side scripts can be simpler: when kernel starts to
-recognize some new BTF functionality, we just unconditionally add
-another `--btf_feature=3D<something>`. And that works starting from the
-first pahole version that supports this `--btf_feature` flag.
-
-
-All this cleverness in trying to guess what kernel supports and what
-not (without actually running the kernel and feature-testing) will
-just come biting us later on. This never works reliably.
-
-
-> So this series attempts to detect the BTF kinds supported by the
-> kernel/modules so that this can inform BTF encoding for older
-> kernels.  We look for BTF_KIND_MAX - either as an enumerated value
-> in vmlinux DWARF (patch 1) or as an enumerated value in base vmlinux
-> BTF (patch 3).  Knowing this prior to encoding BTF allows us to specify
-> skip_encoding options to avoid having BTF with kinds the kernel itself
-> will not understand.
 >
-> The aim is to minimize pain for older stable kernels when new BTF
-> kinds are introduced.  Kind encoding [1] can solve the parsing problem
-> with BTF, but this approach is intended to ensure generated BTF is
-> usable when newer pahole runs on older kernels.
+> I can work around this by attempting to attach a dummy fentry program in
+> my application, but I'm wondering if this is something that should be
+> done more generally by libbpf. Some possible ways to do this are:
 >
-> This approach requires BTF kinds to be defined via an enumerated type,
-> which happened for 5.16 and later.  Older kernels than this used #defines
-> so the approach will only work for 5.16 stable kernels and later currentl=
-y.
+> - Extend the libbpf_probe API to add libbpf_probe_trampoline or similar,
+> attempting attach to a known-exported function, such as the BPF syscall,
+> or to a user-specified symbol.
 >
-> With this change in hand, adding new BTF kinds becomes a bit simpler,
-> at least for the user of pahole.  All that needs to be done is to add
-> internal "skip_new_kind" booleans to struct conf_load and set them
-> in dwarves__set_btf_kind_max() if the detected maximum kind is less
-> than the kind in question - in other words, if the kernel does not know
-> about that kind.  In that case, we will not use it in encoding.
+> - Extend the libbpf_probe API to add a generic libbpf_probe_attach API
+> to check if a given function is attachable. However, as attach code is
+> different depending on the hook, this might be very complex and require
+> a ton of parameters.
 >
-> The approach was tested on Linux 5.16 as released, i.e. prior to the
-> backports adding --skip_encoding logic, and the BTF generated did not
-> contain kinds > BTF_KIND_MAX for the kernel (corresponding to
-> BTF_KIND_DECL_TAG in that case).
+> - Maybe there are other options that I haven't thought of.
 >
-> Changes since RFC [2]:
->  - added --skip_autodetect_btf_kind_max to disable kind autodetection
->    (Jiri, patch 2)
+> I have a patch I could send for libbpf_probe_trampoline, but I wanted to
+> first check if this is a good idea or if it's preferred to simply have
+> applications probe this themselves.
+
+It doesn't seem too hard for an application to try to attach and if
+attachment fails fallback to attaching kprobe-based program. So I'd
+prefer that over much more maintenance burden of keeping this "can
+attach" generic API. At least for now.
+
 >
-> [1] https://lore.kernel.org/bpf/20230616171728.530116-1-alan.maguire@orac=
-le.com/
-> [2] https://lore.kernel.org/bpf/20230720201443.224040-1-alan.maguire@orac=
-le.com/
+> Thanks,
 >
-> Alan Maguire (3):
->   dwarves: auto-detect maximum kind supported by vmlinux
->   pahole: add --skip_autodetect_btf_kind_max to disable kind autodetect
->   btf_encoder: learn BTF_KIND_MAX value from base BTF when generating
->     split BTF
+> Martin
 >
->  btf_encoder.c      | 37 +++++++++++++++++++++++++++++++++
->  btf_encoder.h      |  2 ++
->  dwarf_loader.c     | 52 ++++++++++++++++++++++++++++++++++++++++++++++
->  dwarves.h          |  3 +++
->  man-pages/pahole.1 |  4 ++++
->  pahole.c           | 10 +++++++++
->  6 files changed, 108 insertions(+)
->
-> --
-> 2.39.3
 >
 
