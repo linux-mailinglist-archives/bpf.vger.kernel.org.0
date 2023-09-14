@@ -1,152 +1,125 @@
-Return-Path: <bpf+bounces-10026-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10027-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E9F67A06AD
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 15:58:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD8907A06D5
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 16:04:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E810F281ADB
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 13:58:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 656E21F23A71
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 14:04:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ECF823769;
-	Thu, 14 Sep 2023 13:51:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80D48224DB;
+	Thu, 14 Sep 2023 14:04:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15461D556;
-	Thu, 14 Sep 2023 13:51:53 +0000 (UTC)
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E411B1FC8;
-	Thu, 14 Sep 2023 06:51:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
-	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
-	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=blBCZ/n7JwsBPVsYbstO8SD+/phIKgnPgDwevzXDKaM=; b=Mu1CG0VkGeF/qC0Q9tfXvBQeSz
-	faafrqhFFvCEqjC5NmQGvN1Gp6ml3Iwtwzh9kl2IomWp1tw9+sODmsMWE4EnKsCgzIwPLGazqNVqL
-	RTcPKrCN3wqgCcScIrPeR18qn+VLnE9h95eCevcu6ROG31UpNaFX+gTgUhAPHbceTaGxi2aMvDFmW
-	29AyFtVrWW4eWTOX2q26/otD/AXlFM3znfwtsxoGC5Q6J4Hh5QD4e/06HbHykIWu/no8LW1wNLIAK
-	zbHuRPERR1whdXqf9y3KuimKFvQHoxmjbJWreLc3dhJouETQ0JAsoTjw2cXSixPoVR7NS6Da95wtX
-	mSdBh/sA==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:59460 helo=rmk-PC.armlinux.org.uk)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <rmk@armlinux.org.uk>)
-	id 1qgml0-0004Gx-2q;
-	Thu, 14 Sep 2023 14:51:46 +0100
-Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1qgmkz-007Z54-P3; Thu, 14 Sep 2023 14:51:45 +0100
-In-Reply-To: <ZQMPnyutz6T23E8T@shell.armlinux.org.uk>
-References: <ZQMPnyutz6T23E8T@shell.armlinux.org.uk>
-From: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-To: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	 Jose Abreu <joabreu@synopsys.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	bpf@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Emil Renner Berthing <kernel@esmil.dk>,
-	Eric Dumazet <edumazet@google.com>,
-	Fabio Estevam <festevam@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	netdev@vger.kernel.org,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Samin Guo <samin.guo@starfivetech.com>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH net-next 6/6] net: stmmac: qos-eth: use
- stmmac_set_tx_clk_gmii()
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C049241E3;
+	Thu, 14 Sep 2023 14:04:08 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4735D1A2;
+	Thu, 14 Sep 2023 07:04:07 -0700 (PDT)
+Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.57])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rmf8y1GDlzGppB;
+	Thu, 14 Sep 2023 22:00:18 +0800 (CST)
+Received: from [10.67.109.184] (10.67.109.184) by
+ kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 14 Sep 2023 22:04:01 +0800
+Message-ID: <aacefd22-39df-6941-4d43-d47f72caa9d2@huawei.com>
+Date: Thu, 14 Sep 2023 22:04:00 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1qgmkz-007Z54-P3@rmk-PC.armlinux.org.uk>
-Sender: Russell King <rmk@armlinux.org.uk>
-Date: Thu, 14 Sep 2023 14:51:45 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [PATCH bpf-next 4/6] riscv, bpf: Add necessary Zbb instructions
+Content-Language: en-US
+To: Conor Dooley <conor.dooley@microchip.com>, Conor Dooley <conor@kernel.org>
+CC: Pu Lehui <pulehui@huaweicloud.com>, <bpf@vger.kernel.org>,
+	<linux-riscv@lists.infradead.org>, <netdev@vger.kernel.org>,
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
+	<song@kernel.org>, Yonghong Song <yhs@fb.com>, John Fastabend
+	<john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
+	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>, Luke Nelson <luke.r.nels@gmail.com>
+References: <20230913153413.1446068-1-pulehui@huaweicloud.com>
+ <20230913153413.1446068-5-pulehui@huaweicloud.com>
+ <20230913-granny-heat-35d70b49ac85@spud>
+ <20230914-ought-hypnotize-64cee0e27ed2@wendy>
+From: Pu Lehui <pulehui@huawei.com>
+In-Reply-To: <20230914-ought-hypnotize-64cee0e27ed2@wendy>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.109.184]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemi500020.china.huawei.com (7.221.188.8)
+X-CFilter-Loop: Reflected
 
-Use stmmac_set_tx_clk_gmii().
 
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
----
- .../stmicro/stmmac/dwmac-dwc-qos-eth.c        | 36 ++++++-------------
- 1 file changed, 10 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-dwc-qos-eth.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-dwc-qos-eth.c
-index 61ebf36da13d..bc9b054e10af 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-dwc-qos-eth.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-dwc-qos-eth.c
-@@ -181,32 +181,10 @@ static void dwc_qos_remove(struct platform_device *pdev)
- static void tegra_eqos_fix_speed(void *priv, unsigned int speed, unsigned int mode)
- {
- 	struct tegra_eqos *eqos = priv;
--	unsigned long rate = 125000000;
--	bool needs_calibration = false;
- 	u32 value;
- 	int err;
- 
--	switch (speed) {
--	case SPEED_1000:
--		needs_calibration = true;
--		rate = 125000000;
--		break;
--
--	case SPEED_100:
--		needs_calibration = true;
--		rate = 25000000;
--		break;
--
--	case SPEED_10:
--		rate = 2500000;
--		break;
--
--	default:
--		dev_err(eqos->dev, "invalid speed %u\n", speed);
--		break;
--	}
--
--	if (needs_calibration) {
-+	if (speed == SPEED_1000 || speed == SPEED_100) {
- 		/* calibrate */
- 		value = readl(eqos->regs + SDMEMCOMPPADCTRL);
- 		value |= SDMEMCOMPPADCTRL_PAD_E_INPUT_OR_E_PWRD;
-@@ -246,9 +224,15 @@ static void tegra_eqos_fix_speed(void *priv, unsigned int speed, unsigned int mo
- 		writel(value, eqos->regs + AUTO_CAL_CONFIG);
- 	}
- 
--	err = clk_set_rate(eqos->clk_tx, rate);
--	if (err < 0)
--		dev_err(eqos->dev, "failed to set TX rate: %d\n", err);
-+	err = stmmac_set_tx_clk_gmii(eqos->clk_tx, speed);
-+	if (err == -ENOTSUPP) {
-+		dev_err(eqos->dev, "invalid speed %uMbps\n", speed);
-+		err = stmmac_set_tx_clk_gmii(eqos->clk_tx, SPEED_1000);
-+	} else if (err) {
-+		dev_err(eqos->dev,
-+			"failed to set tx rate for speed %uMbps: %pe\n",
-+			speed, ERR_PTR(err));
-+	}
- }
- 
- static int tegra_eqos_init(struct platform_device *pdev, void *priv)
--- 
-2.30.2
+On 2023/9/14 21:02, Conor Dooley wrote:
+> On Wed, Sep 13, 2023 at 05:23:48PM +0100, Conor Dooley wrote:
+>> On Wed, Sep 13, 2023 at 11:34:11PM +0800, Pu Lehui wrote:
+>>> From: Pu Lehui <pulehui@huawei.com>
+>>>
+>>> Add necessary Zbb instructions introduced by [0] to reduce code size and
+>>> improve performance of RV64 JIT. At the same time, a helper is added to
+>>> check whether the CPU supports Zbb instructions.
+>>>
+>>> [0] https://github.com/riscv/riscv-bitmanip/releases/download/1.0.0/bitmanip-1.0.0-38-g865e7a7.pdf
+>>>
+>>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+>>> ---
+>>>   arch/riscv/net/bpf_jit.h | 26 ++++++++++++++++++++++++++
+>>>   1 file changed, 26 insertions(+)
+>>>
+>>> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+>>> index 8e0ef4d08..7ee59d1f6 100644
+>>> --- a/arch/riscv/net/bpf_jit.h
+>>> +++ b/arch/riscv/net/bpf_jit.h
+>>> @@ -18,6 +18,11 @@ static inline bool rvc_enabled(void)
+>>>   	return IS_ENABLED(CONFIG_RISCV_ISA_C);
+>>>   }
+>>>   
+>>> +static inline bool rvzbb_enabled(void)
+>>> +{
+>>> +	return IS_ENABLED(CONFIG_RISCV_ISA_ZBB);
+>>> +}
+>>
+>> I dunno much about bpf, so passing question that may be a bit obvious:
+>> Is this meant to be a test as to whether the kernel binary is built with
+>> support for the extension, or whether the underlying platform is capable
+>> of executing zbb instructions.
+>>
+>> Sorry if that would be obvious to a bpf aficionado, context I have here
+>> is the later user and the above rvc_enabled() test, which functions
+>> differently to Zbb and so doesn't really help me.
+> 
+> FTR, I got an off-list reply about this & it is meant to be a check as
+> to whether the underlying platform supports the extension. The current
+> test here is insufficient for that.
+> 
 
+Thanks Conor for explain me lot about the difference between Compressed 
+instructions and Zbb instructions. As the compressed instructions are a 
+build-time option, while the Zbb is runtime detected. We need to add 
+additional runtime detection as show bellow:
+
+riscv_has_extension_likely(RISCV_ISA_EXT_ZBB)
+
+will patch this suggestion to the next version.
+
+Thanks,
+Lehui.
+
+> Thanks,
+> Conor.
 
