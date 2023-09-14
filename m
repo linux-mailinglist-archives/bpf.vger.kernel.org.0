@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-9988-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-9989-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77CC579FF2C
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 10:56:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 974B779FF37
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 10:57:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4890D1C20429
-	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 08:56:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCE381F21C42
+	for <lists+bpf@lfdr.de>; Thu, 14 Sep 2023 08:57:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ADDC20B14;
-	Thu, 14 Sep 2023 08:49:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41F2120B26;
+	Thu, 14 Sep 2023 08:49:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEA0C20B0B;
-	Thu, 14 Sep 2023 08:49:36 +0000 (UTC)
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E670291;
-	Thu, 14 Sep 2023 01:49:35 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40471c054f9so1123655e9.0;
-        Thu, 14 Sep 2023 01:49:35 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11AB520B0B;
+	Thu, 14 Sep 2023 08:49:38 +0000 (UTC)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68EEA91;
+	Thu, 14 Sep 2023 01:49:37 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-401e6ce2d9fso2038085e9.1;
+        Thu, 14 Sep 2023 01:49:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694681374; x=1695286174; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694681376; x=1695286176; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Mv22b1bD/6K0IVKOQZcsj8mwHqX6UhX4AG2tvVmiBp8=;
-        b=TqJ5glpLJWMR542Zty3RCtP677yf+1yZSp56wHoQMEep0GKQNfdiMf6MQvIDjBJh2o
-         UOyGC0Pb6fkJvD9WW4RoFtC6ZYPtN5r0waQkoMwK4DGJ9TlabUUMAbxd3DLMyYSOhNmM
-         CSfj46ODYQZhCY+GMIsMBpVegZbpr79Vy0Uvx9bQGN/tvADzW/Jonb8snBbHeocKmPVZ
-         IUjIQLLX0hGsbaNIkB1B/nV460EFGZbbStL4VTDSXYJiwHVyVHqlaVLWiTtDKWkDW6Xd
-         jQfOaPa0MOFSXy2+s+zp9XF4E3ApMUd4y/XjR+bfX/ojdpEsmBZJRFB8H3uEKS/zjgmL
-         DTrg==
+        bh=1uHwZUh1Pqwr68CzPSNrcu026ql9RF+nbsIeT6rz6gM=;
+        b=V2Dt47hYtLnX+hsrkd5PjkdPGR5+br8YX0UDYcr9kawTD9N9chGiqpIvpnHEagWms4
+         4Y8nY21vNzWizvTtstV97E3aKI5CdokY7Q/xe/wYkRZ/2dpLdn4EpnoqPvyCWMkqGWtW
+         zCTMFADCdrGG2i58B7ZKEetrOG55AUyve1vlXU68HAIA5i/PYtolpgRtsKaAS65opqku
+         lXppTJKxcPhnF4DHo0CNtUkWECSVvmQ+RW7b9hv+YHYilsKi67rHJsOVWyHrZzd5rCaD
+         TRQLn9gzjjqFwBqFdeD8W7Scd7CaLEUHGdsAzo0spLT+fmx5xsaTz3T6vmqbBjq1r4aE
+         muTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694681374; x=1695286174;
+        d=1e100.net; s=20230601; t=1694681376; x=1695286176;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Mv22b1bD/6K0IVKOQZcsj8mwHqX6UhX4AG2tvVmiBp8=;
-        b=lCsJK+4FAO2o8cyG+TEDCKU4pM+BzVVk246ZnuaVhRkblSOujIiJ3uzwV5JgigF83W
-         I6Pp+nkbO4nIDLfiMPFdZIEpa1/18Wpp2vX74gJ9lU7Tk/m1JFHNbHsgdbTRRIMaHWvN
-         dB2i1sNvAK1QrFWPpLLpGELzJsDr/QrJvwcJ9mCVpVo9Q63ZntQoTGRXUg1NxbfBa8oB
-         uvH0dC0JMulORn7MGuhtEYJ/C9Gnh/XWSrSNuCLnoUiNf1mbLFesSvoynjLw6tVyTIOE
-         LvRG95C6Xd65yt7TawKqXKEDhi/Y8ZxSKPN9bSTkWu9k4naJn22axxfDk/0v2cmcLRlL
-         V8rQ==
-X-Gm-Message-State: AOJu0YyZy4WQqbsawwlqOFT6CxzNHguiNlSrAOLWNwe+Z0W1lBh0z333
-	yaivVWMVcuO2i4zX39RtXPw=
-X-Google-Smtp-Source: AGHT+IFkaq5E1rNzzyHd9P1MK4Kyg6HQIgJriuXkcu78gqDJ8ljBNf4RCESTcgC80LT+i6Wx7TuY0Q==
-X-Received: by 2002:a05:600c:1c0d:b0:401:c07f:72bd with SMTP id j13-20020a05600c1c0d00b00401c07f72bdmr4129426wms.4.1694681374012;
-        Thu, 14 Sep 2023 01:49:34 -0700 (PDT)
+        bh=1uHwZUh1Pqwr68CzPSNrcu026ql9RF+nbsIeT6rz6gM=;
+        b=qthRGpzKaIJgdtVSxxWFEGCEwQUr9bhzusnDsum4M50dzbxHFyHACY5CsWxV2YWAfz
+         UUyeQhcQqMQyXYLZJKfI0UFpfTC5LOazvER4JK7REPPqnGMZNlrha18tGqpkYgvfBDn3
+         PfEEtSxwa1IEGUX3n52OkgYThLpAs3M1872lD4Lq6VXeoPb3ubaPD1nxX5AIKMH8PCLv
+         X1ntYXJpicUTTY5L41UMhABJMvgeJGQKGAySDYP31nfTBEBYcNRYywceBDWBWnLVsMl6
+         M1KIIYf9HshbLN0kLw08FxadHxlT69aJGO1D0Q+laZbVeFjiLyJYvAB73uOg2HLkZgDG
+         KdwA==
+X-Gm-Message-State: AOJu0YyUtF3Yqdb0OE++nNXBtyHoN+0/siTztALarBimwKi2VzHw3ofD
+	r4LKGeCNyuYw1ZdI3e24S5Y=
+X-Google-Smtp-Source: AGHT+IH/P/9hmXj6C4I8kB1UbNonO3gyI196GiWgC3Wc94TrpHxKklhiN8DNNsYgSuyot2e0F8+yiA==
+X-Received: by 2002:a05:600c:1d26:b0:3fe:21a6:a18 with SMTP id l38-20020a05600c1d2600b003fe21a60a18mr4186926wms.3.1694681375793;
+        Thu, 14 Sep 2023 01:49:35 -0700 (PDT)
 Received: from localhost.localdomain (h-176-10-144-222.NA.cust.bahnhof.se. [176.10.144.222])
-        by smtp.gmail.com with ESMTPSA id n12-20020a05600c294c00b003fee777fd84sm1321099wmd.41.2023.09.14.01.49.32
+        by smtp.gmail.com with ESMTPSA id n12-20020a05600c294c00b003fee777fd84sm1321099wmd.41.2023.09.14.01.49.34
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Sep 2023 01:49:33 -0700 (PDT)
+        Thu, 14 Sep 2023 01:49:35 -0700 (PDT)
 From: Magnus Karlsson <magnus.karlsson@gmail.com>
 To: magnus.karlsson@intel.com,
 	bjorn@kernel.org,
@@ -74,9 +74,9 @@ To: magnus.karlsson@intel.com,
 	haoluo@google.com,
 	jolsa@kernel.org,
 	przemyslaw.kitszel@intel.com
-Subject: [PATCH bpf-next v4 05/10] selftests/xsk: declare test names in struct
-Date: Thu, 14 Sep 2023 10:48:52 +0200
-Message-ID: <20230914084900.492-6-magnus.karlsson@gmail.com>
+Subject: [PATCH bpf-next v4 06/10] selftests/xsk: add option that lists all tests
+Date: Thu, 14 Sep 2023 10:48:53 +0200
+Message-ID: <20230914084900.492-7-magnus.karlsson@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230914084900.492-1-magnus.karlsson@gmail.com>
 References: <20230914084900.492-1-magnus.karlsson@gmail.com>
@@ -90,530 +90,177 @@ Content-Transfer-Encoding: 8bit
 
 From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Declare the test names statically in a struct so that we can refer to
-them when adding the support to execute a single test in the next
-commit. Before this patch, the names of them were not declared in a
-single place which made it not possible to refer to them.
+Add a command line option (-l) that lists all the tests. The number
+before the test will be used in the next commit for specifying a
+single test to run. Here is an example of the output:
+
+Tests:
+0: SEND_RECEIVE
+1: SEND_RECEIVE_2K_FRAME
+2: SEND_RECEIVE_SINGLE_PKT
+3: POLL_RX
+4: POLL_TX
+5: POLL_RXQ_FULL
+6: POLL_TXQ_FULL
+7: SEND_RECEIVE_UNALIGNED
+:
+:
 
 Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
 ---
- tools/testing/selftests/bpf/xskxceiver.c | 191 +++++++----------------
- tools/testing/selftests/bpf/xskxceiver.h |  37 +----
- 2 files changed, 57 insertions(+), 171 deletions(-)
+ tools/testing/selftests/bpf/test_xsk.sh    | 15 +++++++++++++-
+ tools/testing/selftests/bpf/xsk_prereqs.sh | 10 +++++----
+ tools/testing/selftests/bpf/xskxceiver.c   | 24 ++++++++++++++++++++--
+ 3 files changed, 42 insertions(+), 7 deletions(-)
 
+diff --git a/tools/testing/selftests/bpf/test_xsk.sh b/tools/testing/selftests/bpf/test_xsk.sh
+index 85e7a7e843f7..cb215a83b622 100755
+--- a/tools/testing/selftests/bpf/test_xsk.sh
++++ b/tools/testing/selftests/bpf/test_xsk.sh
+@@ -76,18 +76,22 @@
+ #
+ # Run test suite in a specific mode only [skb,drv,zc]
+ #   sudo ./test_xsk.sh -m MODE
++#
++# List available tests
++#   ./test_xsk.sh -l
+ 
+ . xsk_prereqs.sh
+ 
+ ETH=""
+ 
+-while getopts "vi:dm:" flag
++while getopts "vi:dm:l" flag
+ do
+ 	case "${flag}" in
+ 		v) verbose=1;;
+ 		d) debug=1;;
+ 		i) ETH=${OPTARG};;
+ 		m) MODE=${OPTARG};;
++		l) list=1;;
+ 	esac
+ done
+ 
+@@ -135,6 +139,11 @@ setup_vethPairs() {
+ 	ip link set ${VETH0} up
+ }
+ 
++if [[ $list -eq 1 ]]; then
++        ./${XSKOBJ} -l
++        exit
++fi
++
+ if [ ! -z $ETH ]; then
+ 	VETH0=${ETH}
+ 	VETH1=${ETH}
+@@ -183,6 +192,10 @@ else
+ 	cleanup_iface ${ETH} ${MTU}
+ fi
+ 
++if [[ $list -eq 1 ]]; then
++    exit
++fi
++
+ TEST_NAME="XSK_SELFTESTS_${VETH0}_BUSY_POLL"
+ busy_poll=1
+ 
+diff --git a/tools/testing/selftests/bpf/xsk_prereqs.sh b/tools/testing/selftests/bpf/xsk_prereqs.sh
+index 29175682c44d..47c7b8064f38 100755
+--- a/tools/testing/selftests/bpf/xsk_prereqs.sh
++++ b/tools/testing/selftests/bpf/xsk_prereqs.sh
+@@ -83,9 +83,11 @@ exec_xskxceiver()
+ 	fi
+ 
+ 	./${XSKOBJ} -i ${VETH0} -i ${VETH1} ${ARGS}
+-
+ 	retval=$?
+-	test_status $retval "${TEST_NAME}"
+-	statusList+=($retval)
+-	nameList+=(${TEST_NAME})
++
++	if [[ $list -ne 1 ]]; then
++	    test_status $retval "${TEST_NAME}"
++	    statusList+=($retval)
++	    nameList+=(${TEST_NAME})
++	fi
+ }
 diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index e8425f758d79..38d4c036060d 100644
+index 38d4c036060d..289fae654bab 100644
 --- a/tools/testing/selftests/bpf/xskxceiver.c
 +++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -444,7 +444,8 @@ static void __test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
+@@ -108,6 +108,7 @@ static const char *MAC1 = "\x00\x0A\x56\x9E\xEE\x62";
+ static const char *MAC2 = "\x00\x0A\x56\x9E\xEE\x61";
+ 
+ static bool opt_verbose;
++static bool opt_print_tests;
+ static enum test_mode opt_mode = TEST_MODE_ALL;
+ 
+ static void __exit_with_error(int error, const char *file, const char *func, int line)
+@@ -314,6 +315,7 @@ static struct option long_options[] = {
+ 	{"busy-poll", no_argument, 0, 'b'},
+ 	{"verbose", no_argument, 0, 'v'},
+ 	{"mode", required_argument, 0, 'm'},
++	{"list", no_argument, 0, 'l'},
+ 	{0, 0, 0, 0}
+ };
+ 
+@@ -325,7 +327,8 @@ static void usage(const char *prog)
+ 		"  -i, --interface      Use interface\n"
+ 		"  -v, --verbose        Verbose output\n"
+ 		"  -b, --busy-poll      Enable busy poll\n"
+-		"  -m, --mode           Run only mode skb, drv, or zc\n";
++		"  -m, --mode           Run only mode skb, drv, or zc\n"
++		"  -l, --list           List all available tests\n";
+ 
+ 	ksft_print_msg(str, prog);
  }
+@@ -347,7 +350,7 @@ static void parse_command_line(struct ifobject *ifobj_tx, struct ifobject *ifobj
+ 	opterr = 0;
  
- static void test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
--			   struct ifobject *ifobj_rx, enum test_mode mode)
-+			   struct ifobject *ifobj_rx, enum test_mode mode,
-+			   const struct test_spec *test_to_run)
- {
- 	struct pkt_stream *tx_pkt_stream;
- 	struct pkt_stream *rx_pkt_stream;
-@@ -466,6 +467,8 @@ static void test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
- 			ifobj->bind_flags |= XDP_COPY;
- 	}
+ 	for (;;) {
+-		c = getopt_long(argc, argv, "i:vbm:", long_options, &option_index);
++		c = getopt_long(argc, argv, "i:vbm:l", long_options, &option_index);
+ 		if (c == -1)
+ 			break;
  
-+	strncpy(test->name, test_to_run->name, MAX_TEST_NAME_SIZE);
-+	test->test_func = test_to_run->test_func;
- 	test->mode = mode;
- 	__test_spec_init(test, ifobj_tx, ifobj_rx);
- }
-@@ -475,11 +478,6 @@ static void test_spec_reset(struct test_spec *test)
- 	__test_spec_init(test, test->ifobj_tx, test->ifobj_rx);
- }
+@@ -388,6 +391,9 @@ static void parse_command_line(struct ifobject *ifobj_tx, struct ifobject *ifobj
+ 				ksft_exit_xfail();
+ 			}
+ 			break;
++		case 'l':
++			opt_print_tests = true;
++			break;
+ 		default:
+ 			usage(basename(argv[0]));
+ 			ksft_exit_xfail();
+@@ -2307,6 +2313,15 @@ static const struct test_spec tests[] = {
+ 	{.name = "TOO_MANY_FRAGS", .test_func = testapp_too_many_frags},
+ };
  
--static void test_spec_set_name(struct test_spec *test, const char *name)
--{
--	strncpy(test->name, name, MAX_TEST_NAME_SIZE);
--}
--
- static void test_spec_set_xdp_prog(struct test_spec *test, struct bpf_program *xdp_prog_rx,
- 				   struct bpf_program *xdp_prog_tx, struct bpf_map *xskmap_rx,
- 				   struct bpf_map *xskmap_tx)
-@@ -1724,7 +1722,6 @@ static int testapp_teardown(struct test_spec *test)
- {
- 	int i;
- 
--	test_spec_set_name(test, "TEARDOWN");
- 	for (i = 0; i < MAX_TEARDOWN_ITER; i++) {
- 		if (testapp_validate_traffic(test))
- 			return TEST_FAILURE;
-@@ -1746,11 +1743,10 @@ static void swap_directions(struct ifobject **ifobj1, struct ifobject **ifobj2)
- 	*ifobj2 = tmp_ifobj;
- }
- 
--static int testapp_bidi(struct test_spec *test)
-+static int testapp_bidirectional(struct test_spec *test)
- {
- 	int res;
- 
--	test_spec_set_name(test, "BIDIRECTIONAL");
- 	test->ifobj_tx->rx_on = true;
- 	test->ifobj_rx->tx_on = true;
- 	test->total_steps = 2;
-@@ -1779,9 +1775,8 @@ static void swap_xsk_resources(struct ifobject *ifobj_tx, struct ifobject *ifobj
- 		exit_with_error(errno);
- }
- 
--static int testapp_bpf_res(struct test_spec *test)
-+static int testapp_xdp_prog_cleanup(struct test_spec *test)
- {
--	test_spec_set_name(test, "BPF_RES");
- 	test->total_steps = 2;
- 	test->nb_sockets = 2;
- 	if (testapp_validate_traffic(test))
-@@ -1793,14 +1788,12 @@ static int testapp_bpf_res(struct test_spec *test)
- 
- static int testapp_headroom(struct test_spec *test)
- {
--	test_spec_set_name(test, "UMEM_HEADROOM");
- 	test->ifobj_rx->umem->frame_headroom = UMEM_HEADROOM_TEST_SIZE;
- 	return testapp_validate_traffic(test);
- }
- 
- static int testapp_stats_rx_dropped(struct test_spec *test)
- {
--	test_spec_set_name(test, "STAT_RX_DROPPED");
- 	if (test->mode == TEST_MODE_ZC) {
- 		ksft_test_result_skip("Can not run RX_DROPPED test for ZC mode\n");
- 		return TEST_SKIP;
-@@ -1816,7 +1809,6 @@ static int testapp_stats_rx_dropped(struct test_spec *test)
- 
- static int testapp_stats_tx_invalid_descs(struct test_spec *test)
- {
--	test_spec_set_name(test, "STAT_TX_INVALID");
- 	pkt_stream_replace_half(test, XSK_UMEM__INVALID_FRAME_SIZE, 0);
- 	test->ifobj_tx->validation_func = validate_tx_invalid_descs;
- 	return testapp_validate_traffic(test);
-@@ -1824,7 +1816,6 @@ static int testapp_stats_tx_invalid_descs(struct test_spec *test)
- 
- static int testapp_stats_rx_full(struct test_spec *test)
- {
--	test_spec_set_name(test, "STAT_RX_FULL");
- 	pkt_stream_replace(test, DEFAULT_UMEM_BUFFERS + DEFAULT_UMEM_BUFFERS / 2, MIN_PKT_SIZE);
- 	test->ifobj_rx->pkt_stream = pkt_stream_generate(test->ifobj_rx->umem,
- 							 DEFAULT_UMEM_BUFFERS, MIN_PKT_SIZE);
-@@ -1837,7 +1828,6 @@ static int testapp_stats_rx_full(struct test_spec *test)
- 
- static int testapp_stats_fill_empty(struct test_spec *test)
- {
--	test_spec_set_name(test, "STAT_RX_FILL_EMPTY");
- 	pkt_stream_replace(test, DEFAULT_UMEM_BUFFERS + DEFAULT_UMEM_BUFFERS / 2, MIN_PKT_SIZE);
- 	test->ifobj_rx->pkt_stream = pkt_stream_generate(test->ifobj_rx->umem,
- 							 DEFAULT_UMEM_BUFFERS, MIN_PKT_SIZE);
-@@ -1847,9 +1837,8 @@ static int testapp_stats_fill_empty(struct test_spec *test)
- 	return testapp_validate_traffic(test);
- }
- 
--static int testapp_unaligned(struct test_spec *test)
-+static int testapp_send_receive_unaligned(struct test_spec *test)
- {
--	test_spec_set_name(test, "UNALIGNED_MODE");
- 	test->ifobj_tx->umem->unaligned_mode = true;
- 	test->ifobj_rx->umem->unaligned_mode = true;
- 	/* Let half of the packets straddle a 4K buffer boundary */
-@@ -1858,9 +1847,8 @@ static int testapp_unaligned(struct test_spec *test)
- 	return testapp_validate_traffic(test);
- }
- 
--static int testapp_unaligned_mb(struct test_spec *test)
-+static int testapp_send_receive_unaligned_mb(struct test_spec *test)
- {
--	test_spec_set_name(test, "UNALIGNED_MODE_9K");
- 	test->mtu = MAX_ETH_JUMBO_SIZE;
- 	test->ifobj_tx->umem->unaligned_mode = true;
- 	test->ifobj_rx->umem->unaligned_mode = true;
-@@ -1872,14 +1860,12 @@ static int testapp_single_pkt(struct test_spec *test)
- {
- 	struct pkt pkts[] = {{0, MIN_PKT_SIZE, 0, true}};
- 
--	test_spec_set_name(test, "SEND_RECEIVE_SINGLE_PKT");
- 	pkt_stream_generate_custom(test, pkts, ARRAY_SIZE(pkts));
- 	return testapp_validate_traffic(test);
- }
- 
--static int testapp_multi_buffer(struct test_spec *test)
-+static int testapp_send_receive_mb(struct test_spec *test)
- {
--	test_spec_set_name(test, "SEND_RECEIVE_9K_PACKETS");
- 	test->mtu = MAX_ETH_JUMBO_SIZE;
- 	pkt_stream_replace(test, DEFAULT_PKT_CNT, MAX_ETH_JUMBO_SIZE);
- 
-@@ -1976,7 +1962,6 @@ static int testapp_xdp_drop(struct test_spec *test)
- 	struct xsk_xdp_progs *skel_rx = test->ifobj_rx->xdp_progs;
- 	struct xsk_xdp_progs *skel_tx = test->ifobj_tx->xdp_progs;
- 
--	test_spec_set_name(test, "XDP_DROP_HALF");
- 	test_spec_set_xdp_prog(test, skel_rx->progs.xsk_xdp_drop, skel_tx->progs.xsk_xdp_drop,
- 			       skel_rx->maps.xsk, skel_tx->maps.xsk);
- 
-@@ -2009,8 +1994,6 @@ static int testapp_xdp_metadata_copy(struct test_spec *test)
- 
- static int testapp_poll_txq_tmout(struct test_spec *test)
- {
--	test_spec_set_name(test, "POLL_TXQ_FULL");
--
- 	test->ifobj_tx->use_poll = true;
- 	/* create invalid frame by set umem frame_size and pkt length equal to 2048 */
- 	test->ifobj_tx->umem->frame_size = 2048;
-@@ -2020,7 +2003,6 @@ static int testapp_poll_txq_tmout(struct test_spec *test)
- 
- static int testapp_poll_rxq_tmout(struct test_spec *test)
- {
--	test_spec_set_name(test, "POLL_RXQ_EMPTY");
- 	test->ifobj_rx->use_poll = true;
- 	return testapp_validate_traffic_single_thread(test, test->ifobj_rx);
- }
-@@ -2030,7 +2012,6 @@ static int testapp_too_many_frags(struct test_spec *test)
- 	struct pkt pkts[2 * XSK_DESC__MAX_SKB_FRAGS + 2] = {};
- 	u32 max_frags, i;
- 
--	test_spec_set_name(test, "TOO_MANY_FRAGS");
- 	if (test->mode == TEST_MODE_ZC)
- 		max_frags = test->ifobj_tx->xdp_zc_max_segs;
- 	else
-@@ -2136,13 +2117,11 @@ static void init_iface(struct ifobject *ifobj, const char *dst_mac, const char *
- 
- static int testapp_send_receive(struct test_spec *test)
- {
--	test_spec_set_name(test, "SEND_RECEIVE");
- 	return testapp_validate_traffic(test);
- }
- 
- static int testapp_send_receive_2k_frame(struct test_spec *test)
- {
--	test_spec_set_name(test, "SEND_RECEIVE_2K_FRAME_SIZE");
- 	test->ifobj_tx->umem->frame_size = 2048;
- 	test->ifobj_rx->umem->frame_size = 2048;
- 	pkt_stream_replace(test, DEFAULT_PKT_CNT, MIN_PKT_SIZE);
-@@ -2152,26 +2131,22 @@ static int testapp_send_receive_2k_frame(struct test_spec *test)
- static int testapp_poll_rx(struct test_spec *test)
- {
- 	test->ifobj_rx->use_poll = true;
--	test_spec_set_name(test, "POLL_RX");
- 	return testapp_validate_traffic(test);
- }
- 
- static int testapp_poll_tx(struct test_spec *test)
- {
- 	test->ifobj_tx->use_poll = true;
--	test_spec_set_name(test, "POLL_TX");
- 	return testapp_validate_traffic(test);
- }
- 
- static int testapp_aligned_inv_desc(struct test_spec *test)
- {
--	test_spec_set_name(test, "ALIGNED_INV_DESC");
- 	return testapp_invalid_desc(test);
- }
- 
- static int testapp_aligned_inv_desc_2k_frame(struct test_spec *test)
- {
--	test_spec_set_name(test, "ALIGNED_INV_DESC_2K_FRAME_SIZE");
- 	test->ifobj_tx->umem->frame_size = 2048;
- 	test->ifobj_rx->umem->frame_size = 2048;
- 	return testapp_invalid_desc(test);
-@@ -2179,7 +2154,6 @@ static int testapp_aligned_inv_desc_2k_frame(struct test_spec *test)
- 
- static int testapp_unaligned_inv_desc(struct test_spec *test)
- {
--	test_spec_set_name(test, "UNALIGNED_INV_DESC");
- 	test->ifobj_tx->umem->unaligned_mode = true;
- 	test->ifobj_rx->umem->unaligned_mode = true;
- 	return testapp_invalid_desc(test);
-@@ -2189,7 +2163,6 @@ static int testapp_unaligned_inv_desc_4001_frame(struct test_spec *test)
- {
- 	u64 page_size, umem_size;
- 
--	test_spec_set_name(test, "UNALIGNED_INV_DESC_4K1_FRAME_SIZE");
- 	/* Odd frame size so the UMEM doesn't end near a page boundary. */
- 	test->ifobj_tx->umem->frame_size = 4001;
- 	test->ifobj_rx->umem->frame_size = 4001;
-@@ -2208,13 +2181,11 @@ static int testapp_unaligned_inv_desc_4001_frame(struct test_spec *test)
- 
- static int testapp_aligned_inv_desc_mb(struct test_spec *test)
- {
--	test_spec_set_name(test, "ALIGNED_INV_DESC_MULTI_BUFF");
- 	return testapp_invalid_desc_mb(test);
- }
- 
- static int testapp_unaligned_inv_desc_mb(struct test_spec *test)
- {
--	test_spec_set_name(test, "UNALIGNED_INV_DESC_MULTI_BUFF");
- 	test->ifobj_tx->umem->unaligned_mode = true;
- 	test->ifobj_rx->umem->unaligned_mode = true;
- 	return testapp_invalid_desc_mb(test);
-@@ -2222,109 +2193,20 @@ static int testapp_unaligned_inv_desc_mb(struct test_spec *test)
- 
- static int testapp_xdp_metadata(struct test_spec *test)
- {
--	test_spec_set_name(test, "XDP_METADATA_COPY");
- 	return testapp_xdp_metadata_copy(test);
- }
- 
- static int testapp_xdp_metadata_mb(struct test_spec *test)
- {
--	test_spec_set_name(test, "XDP_METADATA_COPY_MULTI_BUFF");
- 	test->mtu = MAX_ETH_JUMBO_SIZE;
- 	return testapp_xdp_metadata_copy(test);
- }
- 
--static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_type type)
--{
--	int ret = TEST_SKIP;
--
--	switch (type) {
--	case TEST_TYPE_STATS_RX_DROPPED:
--		ret = testapp_stats_rx_dropped(test);
--		break;
--	case TEST_TYPE_STATS_TX_INVALID_DESCS:
--		ret = testapp_stats_tx_invalid_descs(test);
--		break;
--	case TEST_TYPE_STATS_RX_FULL:
--		ret = testapp_stats_rx_full(test);
--		break;
--	case TEST_TYPE_STATS_FILL_EMPTY:
--		ret = testapp_stats_fill_empty(test);
--		break;
--	case TEST_TYPE_TEARDOWN:
--		ret = testapp_teardown(test);
--		break;
--	case TEST_TYPE_BIDI:
--		ret = testapp_bidi(test);
--		break;
--	case TEST_TYPE_BPF_RES:
--		ret = testapp_bpf_res(test);
--		break;
--	case TEST_TYPE_RUN_TO_COMPLETION:
--		ret = testapp_send_receive(test);
--		break;
--	case TEST_TYPE_RUN_TO_COMPLETION_MB:
--		ret = testapp_multi_buffer(test);
--		break;
--	case TEST_TYPE_RUN_TO_COMPLETION_SINGLE_PKT:
--		ret = testapp_single_pkt(test);
--		break;
--	case TEST_TYPE_RUN_TO_COMPLETION_2K_FRAME:
--		ret = testapp_send_receive_2k_frame(test);
--		break;
--	case TEST_TYPE_RX_POLL:
--		ret = testapp_poll_rx(test);
--		break;
--	case TEST_TYPE_TX_POLL:
--		ret = testapp_poll_tx(test);
--		break;
--	case TEST_TYPE_POLL_TXQ_TMOUT:
--		ret = testapp_poll_txq_tmout(test);
--		break;
--	case TEST_TYPE_POLL_RXQ_TMOUT:
--		ret = testapp_poll_rxq_tmout(test);
--		break;
--	case TEST_TYPE_ALIGNED_INV_DESC:
--		ret = testapp_aligned_inv_desc(test);
--		break;
--	case TEST_TYPE_ALIGNED_INV_DESC_2K_FRAME:
--		ret = testapp_aligned_inv_desc_2k_frame(test);
--		break;
--	case TEST_TYPE_UNALIGNED_INV_DESC:
--		ret = testapp_unaligned_inv_desc(test);
--		break;
--	case TEST_TYPE_UNALIGNED_INV_DESC_4K1_FRAME:
--		ret = testapp_unaligned_inv_desc_4001_frame(test);
--		break;
--	case TEST_TYPE_ALIGNED_INV_DESC_MB:
--		ret = testapp_aligned_inv_desc_mb(test);
--		break;
--	case TEST_TYPE_UNALIGNED_INV_DESC_MB:
--		ret = testapp_unaligned_inv_desc_mb(test);
--		break;
--	case TEST_TYPE_UNALIGNED:
--		ret = testapp_unaligned(test);
--		break;
--	case TEST_TYPE_UNALIGNED_MB:
--		ret = testapp_unaligned_mb(test);
--		break;
--	case TEST_TYPE_HEADROOM:
--		ret = testapp_headroom(test);
--		break;
--	case TEST_TYPE_XDP_DROP_HALF:
--		ret = testapp_xdp_drop(test);
--		break;
--	case TEST_TYPE_XDP_METADATA_COUNT:
--		ret = testapp_xdp_metadata(test);
--		break;
--	case TEST_TYPE_XDP_METADATA_COUNT_MB:
--		ret = testapp_xdp_metadata_mb(test);
--		break;
--	case TEST_TYPE_TOO_MANY_FRAGS:
--		ret = testapp_too_many_frags(test);
--		break;
--	default:
--		break;
--	}
-+static void run_pkt_test(struct test_spec *test)
++static void print_tests(void)
 +{
-+	int ret;
++	u32 i;
 +
-+	ret = test->test_func(test);
- 
- 	if (ret == TEST_PASS)
- 		ksft_test_result_pass("PASS: %s %s%s\n", mode_string(test), busy_poll_string(test),
-@@ -2392,6 +2274,39 @@ static bool is_xdp_supported(int ifindex)
- 	return true;
- }
- 
-+static const struct test_spec tests[] = {
-+	{.name = "SEND_RECEIVE", .test_func = testapp_send_receive},
-+	{.name = "SEND_RECEIVE_2K_FRAME", .test_func = testapp_send_receive_2k_frame},
-+	{.name = "SEND_RECEIVE_SINGLE_PKT", .test_func = testapp_single_pkt},
-+	{.name = "POLL_RX", .test_func = testapp_poll_rx},
-+	{.name = "POLL_TX", .test_func = testapp_poll_tx},
-+	{.name = "POLL_RXQ_FULL", .test_func = testapp_poll_rxq_tmout},
-+	{.name = "POLL_TXQ_FULL", .test_func = testapp_poll_txq_tmout},
-+	{.name = "SEND_RECEIVE_UNALIGNED", .test_func = testapp_send_receive_unaligned},
-+	{.name = "ALIGNED_INV_DESC", .test_func = testapp_aligned_inv_desc},
-+	{.name = "ALIGNED_INV_DESC_2K_FRAME_SIZE", .test_func = testapp_aligned_inv_desc_2k_frame},
-+	{.name = "UNALIGNED_INV_DESC", .test_func = testapp_unaligned_inv_desc},
-+	{.name = "UNALIGNED_INV_DESC_4001_FRAME_SIZE",
-+	 .test_func = testapp_unaligned_inv_desc_4001_frame},
-+	{.name = "UMEM_HEADROOM", .test_func = testapp_headroom},
-+	{.name = "TEARDOWN", .test_func = testapp_teardown},
-+	{.name = "BIDIRECTIONAL", .test_func = testapp_bidirectional},
-+	{.name = "STAT_RX_DROPPED", .test_func = testapp_stats_rx_dropped},
-+	{.name = "STAT_TX_INVALID", .test_func = testapp_stats_tx_invalid_descs},
-+	{.name = "STAT_RX_FULL", .test_func = testapp_stats_rx_full},
-+	{.name = "STAT_FILL_EMPTY", .test_func = testapp_stats_fill_empty},
-+	{.name = "XDP_PROG_CLEANUP", .test_func = testapp_xdp_prog_cleanup},
-+	{.name = "XDP_DROP_HALF", .test_func = testapp_xdp_drop},
-+	{.name = "XDP_METADATA_COPY", .test_func = testapp_xdp_metadata},
-+	{.name = "XDP_METADATA_COPY_MULTI_BUFF", .test_func = testapp_xdp_metadata_mb},
-+	{.name = "SEND_RECEIVE_9K_PACKETS", .test_func = testapp_send_receive_mb},
-+	{.name = "SEND_RECEIVE_UNALIGNED_9K_PACKETS",
-+	 .test_func = testapp_send_receive_unaligned_mb},
-+	{.name = "ALIGNED_INV_DESC_MULTI_BUFF", .test_func = testapp_aligned_inv_desc_mb},
-+	{.name = "UNALIGNED_INV_DESC_MULTI_BUFF", .test_func = testapp_unaligned_inv_desc_mb},
-+	{.name = "TOO_MANY_FRAGS", .test_func = testapp_too_many_frags},
-+};
++	printf("Tests:\n");
++	for (i = 0; i < ARRAY_SIZE(tests); i++)
++		printf("%u: %s\n", i, tests[i].name);
++}
 +
  int main(int argc, char **argv)
  {
  	struct pkt_stream *rx_pkt_stream_default;
-@@ -2434,7 +2349,7 @@ int main(int argc, char **argv)
- 	init_iface(ifobj_rx, MAC1, MAC2, worker_testapp_validate_rx);
- 	init_iface(ifobj_tx, MAC2, MAC1, worker_testapp_validate_tx);
+@@ -2331,6 +2346,11 @@ int main(int argc, char **argv)
  
--	test_spec_init(&test, ifobj_tx, ifobj_rx, 0);
-+	test_spec_init(&test, ifobj_tx, ifobj_rx, 0, &tests[0]);
- 	tx_pkt_stream_default = pkt_stream_generate(ifobj_tx->umem, DEFAULT_PKT_CNT, MIN_PKT_SIZE);
- 	rx_pkt_stream_default = pkt_stream_generate(ifobj_rx->umem, DEFAULT_PKT_CNT, MIN_PKT_SIZE);
- 	if (!tx_pkt_stream_default || !rx_pkt_stream_default)
-@@ -2443,7 +2358,7 @@ int main(int argc, char **argv)
- 	test.rx_pkt_stream_default = rx_pkt_stream_default;
+ 	parse_command_line(ifobj_tx, ifobj_rx, argc, argv);
  
- 	if (opt_mode == TEST_MODE_ALL) {
--		ksft_set_plan(modes * TEST_TYPE_MAX);
-+		ksft_set_plan(modes * ARRAY_SIZE(tests));
- 	} else {
- 		if (opt_mode == TEST_MODE_DRV && modes <= TEST_MODE_DRV) {
- 			ksft_print_msg("Error: XDP_DRV mode not supported.\n");
-@@ -2454,16 +2369,16 @@ int main(int argc, char **argv)
- 			ksft_exit_xfail();
- 		}
- 
--		ksft_set_plan(TEST_TYPE_MAX);
-+		ksft_set_plan(ARRAY_SIZE(tests));
- 	}
- 
- 	for (i = 0; i < modes; i++) {
- 		if (opt_mode != TEST_MODE_ALL && i != opt_mode)
- 			continue;
- 
--		for (j = 0; j < TEST_TYPE_MAX; j++) {
--			test_spec_init(&test, ifobj_tx, ifobj_rx, i);
--			run_pkt_test(&test, i, j);
-+		for (j = 0; j < ARRAY_SIZE(tests); j++) {
-+			test_spec_init(&test, ifobj_tx, ifobj_rx, i, &tests[j]);
-+			run_pkt_test(&test);
- 			usleep(USLEEP_MAX);
- 
- 			if (test.fail)
-diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-index 1412492e9618..3a71d490db3e 100644
---- a/tools/testing/selftests/bpf/xskxceiver.h
-+++ b/tools/testing/selftests/bpf/xskxceiver.h
-@@ -34,7 +34,7 @@
- #define MAX_INTERFACES 2
- #define MAX_INTERFACE_NAME_CHARS 16
- #define MAX_SOCKETS 2
--#define MAX_TEST_NAME_SIZE 32
-+#define MAX_TEST_NAME_SIZE 48
- #define MAX_TEARDOWN_ITER 10
- #define PKT_HDR_SIZE (sizeof(struct ethhdr) + 2) /* Just to align the data in the packet */
- #define MIN_PKT_SIZE 64
-@@ -66,38 +66,6 @@ enum test_mode {
- 	TEST_MODE_ALL
- };
- 
--enum test_type {
--	TEST_TYPE_RUN_TO_COMPLETION,
--	TEST_TYPE_RUN_TO_COMPLETION_2K_FRAME,
--	TEST_TYPE_RUN_TO_COMPLETION_SINGLE_PKT,
--	TEST_TYPE_RX_POLL,
--	TEST_TYPE_TX_POLL,
--	TEST_TYPE_POLL_RXQ_TMOUT,
--	TEST_TYPE_POLL_TXQ_TMOUT,
--	TEST_TYPE_UNALIGNED,
--	TEST_TYPE_ALIGNED_INV_DESC,
--	TEST_TYPE_ALIGNED_INV_DESC_2K_FRAME,
--	TEST_TYPE_UNALIGNED_INV_DESC,
--	TEST_TYPE_UNALIGNED_INV_DESC_4K1_FRAME,
--	TEST_TYPE_HEADROOM,
--	TEST_TYPE_TEARDOWN,
--	TEST_TYPE_BIDI,
--	TEST_TYPE_STATS_RX_DROPPED,
--	TEST_TYPE_STATS_TX_INVALID_DESCS,
--	TEST_TYPE_STATS_RX_FULL,
--	TEST_TYPE_STATS_FILL_EMPTY,
--	TEST_TYPE_BPF_RES,
--	TEST_TYPE_XDP_DROP_HALF,
--	TEST_TYPE_XDP_METADATA_COUNT,
--	TEST_TYPE_XDP_METADATA_COUNT_MB,
--	TEST_TYPE_RUN_TO_COMPLETION_MB,
--	TEST_TYPE_UNALIGNED_MB,
--	TEST_TYPE_ALIGNED_INV_DESC_MB,
--	TEST_TYPE_UNALIGNED_INV_DESC_MB,
--	TEST_TYPE_TOO_MANY_FRAGS,
--	TEST_TYPE_MAX
--};
--
- struct xsk_umem_info {
- 	struct xsk_ring_prod fq;
- 	struct xsk_ring_cons cq;
-@@ -137,8 +105,10 @@ struct pkt_stream {
- };
- 
- struct ifobject;
-+struct test_spec;
- typedef int (*validation_func_t)(struct ifobject *ifobj);
- typedef void *(*thread_func_t)(void *arg);
-+typedef int (*test_func_t)(struct test_spec *test);
- 
- struct ifobject {
- 	char ifname[MAX_INTERFACE_NAME_CHARS];
-@@ -180,6 +150,7 @@ struct test_spec {
- 	struct bpf_program *xdp_prog_tx;
- 	struct bpf_map *xskmap_rx;
- 	struct bpf_map *xskmap_tx;
-+	test_func_t test_func;
- 	int mtu;
- 	u16 total_steps;
- 	u16 current_step;
++	if (opt_print_tests) {
++		print_tests();
++		ksft_exit_xpass();
++	}
++
+ 	shared_netdev = (ifobj_tx->ifindex == ifobj_rx->ifindex);
+ 	ifobj_tx->shared_umem = shared_netdev;
+ 	ifobj_rx->shared_umem = shared_netdev;
 -- 
 2.42.0
 
