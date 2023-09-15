@@ -1,224 +1,189 @@
-Return-Path: <bpf+bounces-10130-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10131-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 245897A13EB
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 04:45:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C70EB7A1410
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 04:55:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9649281868
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 02:45:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECF831C20C66
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 02:55:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2E6620EA;
-	Fri, 15 Sep 2023 02:45:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D6FC1FA4;
+	Fri, 15 Sep 2023 02:55:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71BA17F;
-	Fri, 15 Sep 2023 02:45:20 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BF426AB;
-	Thu, 14 Sep 2023 19:45:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694745919; x=1726281919;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bknfMAASl4tDMfba7zMcHuWz0AayuUezqHpZNb2hdkw=;
-  b=KRtBnh24klc74AEARGSgK4G0/a3RYa12+PFQmMTRNdfUpm2s4BEb1YVi
-   GO7krgnIgOJHBHp7xHb0U6mviGcmGfVZ8z98jFMKaF9W+sLJ0lnmhuqC0
-   aadVjIcPDu3nrXUsPivxHWx1LG4FtYQWrIGOMUpBccndfREk7RO5kbo7r
-   mAl7+mcphKFHTXNhvR/i53uxrwf1gbpOiizemH3Yx+osWqxGN98eYyChz
-   SPjY4pdnev8bJ+xWbogXE5WP6gnpOftFPX10arBQqed+B9nPQzgZ8IJrh
-   fWTBoHefHZkmW/voQNKVbFstHKxym8TL2WqAGUpp+OFKOtaSz6QXhggon
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="379061817"
-X-IronPort-AV: E=Sophos;i="6.02,147,1688454000"; 
-   d="scan'208";a="379061817"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 19:45:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="738165607"
-X-IronPort-AV: E=Sophos;i="6.02,147,1688454000"; 
-   d="scan'208";a="738165607"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 14 Sep 2023 19:45:12 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qgypR-0002KT-0l;
-	Fri, 15 Sep 2023 02:45:09 +0000
-Date: Fri, 15 Sep 2023 10:44:14 +0800
-From: kernel test robot <lkp@intel.com>
-To: Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-	kuba@kernel.org, toke@kernel.org, willemb@google.com,
-	dsahern@kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org,
-	maciej.fijalkowski@intel.com, hawk@kernel.org,
-	yoong.siang.song@intel.com, netdev@vger.kernel.org,
-	xdp-hints@xdp-project.net, Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH bpf-next v2 4/9] net/mlx5e: Implement AF_XDP TX timestamp
- and checksum offload
-Message-ID: <202309151024.ZDZ6mRxc-lkp@intel.com>
-References: <20230914210452.2588884-5-sdf@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 808A1EA3
+	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 02:54:58 +0000 (UTC)
+Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC68E2701
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 19:54:57 -0700 (PDT)
+Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1d637f9c587so691802fac.1
+        for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 19:54:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694746497; x=1695351297; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pXHuhIzDe/bz+j385T2N3ck82lc0SQui6VrsSZllf/U=;
+        b=SFr/eLsIpyotKeXTrSrrzl5FZsta04lsDjBd1dFdsGC5ege7RCxH8oWEd4SA111WvC
+         fEpLyzqGPacFjiyx7PztPBaqno5Ve9lQ4EWov57Rq/nal1seHLXcIQteaFYydHcyp45l
+         5mVFrYJdF70T5RPA0zfU+M+LGAss8Y2K17gkbbTdUXyWDF5lWFa/Ilv2aBaahibL8Tcv
+         SD2XOuFOzWHbLfQTro8uIdzRA9ksm0CvR2747DXOrSAk+MPtt7xrhunVLqRiMRW43XcG
+         biVt3IhOmNttuDBPiw+8tLXDjt9gGW1iaGVjOZIHti1HTaUUgESbjIghnIMTgk+Clfkg
+         R8kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694746497; x=1695351297;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pXHuhIzDe/bz+j385T2N3ck82lc0SQui6VrsSZllf/U=;
+        b=NE435S2RrhiVYhARWVbAjyrV0IaVuy4qLTUDyZeDq+eD/s/UIB3zDmFroK/qKZcVok
+         d8JrfWPuXrx+7kbJ85lHXQ7WyBV9RhGeAIb+ltokyyGJx9L3h/7SKopMbGMJl0JT3TQJ
+         rwpxTmR43HABlDKSv3h2xAfem2nDHg3XTmgb/E6TDpZtDdilPYpURE++alQUjb0KyCXt
+         SyulLCcsrrxuIikbN/tZvIeMfr5NtbFOfFAV16Q2X+14vaV+Zj7GW7PbAu373xvWpQ8H
+         bZgYaSDN4RGJIBwbvZFZzTwbRXtUFfM//beFbjqOOdZwlPNzYSoRRb7CH0xj1M0sntHJ
+         OCzQ==
+X-Gm-Message-State: AOJu0YzsZjNwAgNkLEDVdm5Fu1O64pgqLGuYuPTbpn9hTMXYz9OS23/4
+	/qsMs+BOOp7D+UxzbAs8bvapRcCp5Li4jEGCGcY=
+X-Google-Smtp-Source: AGHT+IEHcA5AJUWtENYmVw6QDQ0IfzJXz2t1wkPzOf2pVpYjCqHVoofHg2PF9orkC42UFWFq7uIor+zyrkjg38IC1vE=
+X-Received: by 2002:a05:6870:c155:b0:1b4:4c6d:765c with SMTP id
+ g21-20020a056870c15500b001b44c6d765cmr2623943oad.26.1694746497053; Thu, 14
+ Sep 2023 19:54:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914210452.2588884-5-sdf@google.com>
+References: <20230914145126.40202-1-hffilwlqm@gmail.com> <CAEyhmHRAvR=Ch-DjMpmpB0zeUsbQYcTXkMqyTSL9iwmZukcTgw@mail.gmail.com>
+ <8148921c-cc06-bad7-787f-d190cba0bce1@gmail.com>
+In-Reply-To: <8148921c-cc06-bad7-787f-d190cba0bce1@gmail.com>
+From: Hengqi Chen <hengqi.chen@gmail.com>
+Date: Fri, 15 Sep 2023 10:54:45 +0800
+Message-ID: <CAEyhmHR9g+B67Fy_wmdTwHzMFhmdw86ak6dPFpMjui16ecTUjw@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Fix tr dereferencing
+To: Leon Hwang <hffilwlqm@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, toke@redhat.com, sdf@google.com, lkp@intel.com, 
+	dan.carpenter@linaro.org, maciej.fijalkowski@intel.com, 
+	kernel-patches-bot@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Stanislav,
+On Fri, Sep 15, 2023 at 10:18=E2=80=AFAM Leon Hwang <hffilwlqm@gmail.com> w=
+rote:
+>
+>
+>
+> On 15/9/23 10:13, Hengqi Chen wrote:
+> > On Thu, Sep 14, 2023 at 10:51=E2=80=AFPM Leon Hwang <hffilwlqm@gmail.co=
+m> wrote:
+> >>
+> >> Fix 'tr' dereferencing bug when CONFIG_BPF_JIT is turned off.
+> >>
+> >> Like 'bpf_trampoline_get_progs()', return 'ERR_PTR()' and then check b=
+y
+> >> 'IS_ERR()'. As a result, when CONFIG_BPF_JIT is turned off, it's able =
+to
+> >> handle the case that 'bpf_trampoline_get()' returns
+> >> 'ERR_PTR(-EOPNOTSUPP)'.
+> >>
+> >> Fixes: 4a1e7c0c63e0 ("bpf: Support attaching freplace programs to mult=
+iple attach points")
+> >> Fixes: f7b12b6fea00 ("bpf: verifier: refactor check_attach_btf_id()")
+> >> Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
+> >> Reported-by: kernel test robot <lkp@intel.com>
+> >> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> >> Closes: https://lore.kernel.org/r/202309131936.5Nc8eUD0-lkp@intel.com/
+> >> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
+> >> ---
+> >>  kernel/bpf/syscall.c    | 4 ++--
+> >>  kernel/bpf/trampoline.c | 6 +++---
+> >>  kernel/bpf/verifier.c   | 4 ++--
+> >>  3 files changed, 7 insertions(+), 7 deletions(-)
+> >>
+> >> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> >> index 6a692f3bea150..5748d01c99854 100644
+> >> --- a/kernel/bpf/syscall.c
+> >> +++ b/kernel/bpf/syscall.c
+> >> @@ -3211,8 +3211,8 @@ static int bpf_tracing_prog_attach(struct bpf_pr=
+og *prog,
+> >>                 }
+> >>
+> >>                 tr =3D bpf_trampoline_get(key, &tgt_info);
+> >> -               if (!tr) {
+> >> -                       err =3D -ENOMEM;
+> >> +               if (IS_ERR(tr)) {
+> >> +                       err =3D PTR_ERR(tr);
+> >>                         goto out_unlock;
+> >
+> > IS_ERR does not check the null case, so this should be IS_ERR_OR_NULL i=
+nstead.
+>
+> Actually, bpf_trampoline_get() would not return NULL. It returns ERR_PTR(=
+-ENOMEM)
+> or a valid ptr.
+>
 
-kernel test robot noticed the following build errors:
+OK, I missed the change in bpf_trampoline_get(). Anyway,
 
-[auto build test ERROR on bpf-next/master]
+Reviewed-by: Hengqi Chen <hengqi.chen@gmail.com>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Stanislav-Fomichev/xsk-Support-tx_metadata_len/20230915-051153
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20230914210452.2588884-5-sdf%40google.com
-patch subject: [PATCH bpf-next v2 4/9] net/mlx5e: Implement AF_XDP TX timestamp and checksum offload
-config: s390-defconfig (https://download.01.org/0day-ci/archive/20230915/202309151024.ZDZ6mRxc-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230915/202309151024.ZDZ6mRxc-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309151024.ZDZ6mRxc-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from include/net/xdp_sock_drv.h:9,
-                    from drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c:34:
-   include/net/xdp_sock.h:183:52: warning: 'struct xsk_tx_metadata_comp' declared inside parameter list will not be visible outside of this definition or declaration
-     183 | static inline void xsk_tx_metadata_complete(struct xsk_tx_metadata_comp *compl,
-         |                                                    ^~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c: In function 'mlx5e_free_xdpsq_desc':
->> drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c:719:58: error: passing argument 1 of 'xsk_tx_metadata_complete' from incompatible pointer type [-Werror=incompatible-pointer-types]
-     719 |                                 xsk_tx_metadata_complete(compl, &mlx5e_xsk_tx_metadata_ops, &priv);
-         |                                                          ^~~~~
-         |                                                          |
-         |                                                          struct xsk_tx_metadata_compl *
-   include/net/xdp_sock.h:183:74: note: expected 'struct xsk_tx_metadata_comp *' but argument is of type 'struct xsk_tx_metadata_compl *'
-     183 | static inline void xsk_tx_metadata_complete(struct xsk_tx_metadata_comp *compl,
-         |                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
-   cc1: some warnings being treated as errors
---
-   In file included from drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h:36,
-                    from drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.c:6:
-   include/net/xdp_sock.h:183:52: warning: 'struct xsk_tx_metadata_comp' declared inside parameter list will not be visible outside of this definition or declaration
-     183 | static inline void xsk_tx_metadata_complete(struct xsk_tx_metadata_comp *compl,
-         |                                                    ^~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.c: In function 'mlx5e_xsk_tx':
->> drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.c:117:33: error: implicit declaration of function 'xsk_tx_metadata_to_compl'; did you mean 'xsk_tx_metadata_complete'? [-Werror=implicit-function-declaration]
-     117 |                                 xsk_tx_metadata_to_compl(meta, &compl);
-         |                                 ^~~~~~~~~~~~~~~~~~~~~~~~
-         |                                 xsk_tx_metadata_complete
-   cc1: some warnings being treated as errors
-
-
-vim +/xsk_tx_metadata_complete +719 drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-
-   641	
-   642	static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq *sq,
-   643					  struct mlx5e_xdp_wqe_info *wi,
-   644					  u32 *xsk_frames,
-   645					  struct xdp_frame_bulk *bq,
-   646					  struct mlx5e_cq *cq,
-   647					  struct mlx5_cqe64 *cqe)
-   648	{
-   649		struct mlx5e_xdp_info_fifo *xdpi_fifo = &sq->db.xdpi_fifo;
-   650		u16 i;
-   651	
-   652		for (i = 0; i < wi->num_pkts; i++) {
-   653			union mlx5e_xdp_info xdpi = mlx5e_xdpi_fifo_pop(xdpi_fifo);
-   654	
-   655			switch (xdpi.mode) {
-   656			case MLX5E_XDP_XMIT_MODE_FRAME: {
-   657				/* XDP_TX from the XSK RQ and XDP_REDIRECT */
-   658				struct xdp_frame *xdpf;
-   659				dma_addr_t dma_addr;
-   660	
-   661				xdpi = mlx5e_xdpi_fifo_pop(xdpi_fifo);
-   662				xdpf = xdpi.frame.xdpf;
-   663				xdpi = mlx5e_xdpi_fifo_pop(xdpi_fifo);
-   664				dma_addr = xdpi.frame.dma_addr;
-   665	
-   666				dma_unmap_single(sq->pdev, dma_addr,
-   667						 xdpf->len, DMA_TO_DEVICE);
-   668				if (xdp_frame_has_frags(xdpf)) {
-   669					struct skb_shared_info *sinfo;
-   670					int j;
-   671	
-   672					sinfo = xdp_get_shared_info_from_frame(xdpf);
-   673					for (j = 0; j < sinfo->nr_frags; j++) {
-   674						skb_frag_t *frag = &sinfo->frags[j];
-   675	
-   676						xdpi = mlx5e_xdpi_fifo_pop(xdpi_fifo);
-   677						dma_addr = xdpi.frame.dma_addr;
-   678	
-   679						dma_unmap_single(sq->pdev, dma_addr,
-   680								 skb_frag_size(frag), DMA_TO_DEVICE);
-   681					}
-   682				}
-   683				xdp_return_frame_bulk(xdpf, bq);
-   684				break;
-   685			}
-   686			case MLX5E_XDP_XMIT_MODE_PAGE: {
-   687				/* XDP_TX from the regular RQ */
-   688				u8 num, n = 0;
-   689	
-   690				xdpi = mlx5e_xdpi_fifo_pop(xdpi_fifo);
-   691				num = xdpi.page.num;
-   692	
-   693				do {
-   694					struct page *page;
-   695	
-   696					xdpi = mlx5e_xdpi_fifo_pop(xdpi_fifo);
-   697					page = xdpi.page.page;
-   698	
-   699					/* No need to check ((page->pp_magic & ~0x3UL) == PP_SIGNATURE)
-   700					 * as we know this is a page_pool page.
-   701					 */
-   702					page_pool_recycle_direct(page->pp, page);
-   703				} while (++n < num);
-   704	
-   705				break;
-   706			}
-   707			case MLX5E_XDP_XMIT_MODE_XSK: {
-   708				/* AF_XDP send */
-   709				struct xsk_tx_metadata_compl *compl = NULL;
-   710				struct mlx5e_xsk_tx_complete priv = {
-   711					.cqe = cqe,
-   712					.cq = cq,
-   713				};
-   714	
-   715				if (xp_tx_metadata_enabled(sq->xsk_pool)) {
-   716					xdpi = mlx5e_xdpi_fifo_pop(xdpi_fifo);
-   717					compl = &xdpi.xsk_meta;
-   718	
- > 719					xsk_tx_metadata_complete(compl, &mlx5e_xsk_tx_metadata_ops, &priv);
-   720				}
-   721	
-   722				(*xsk_frames)++;
-   723				break;
-   724			}
-   725			default:
-   726				WARN_ON_ONCE(true);
-   727			}
-   728		}
-   729	}
-   730	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Thanks,
+> Leon
+>
+> >
+> >>                 }
+> >>         } else {
+> >> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> >> index e97aeda3a86b5..1952614778433 100644
+> >> --- a/kernel/bpf/trampoline.c
+> >> +++ b/kernel/bpf/trampoline.c
+> >> @@ -697,8 +697,8 @@ int bpf_trampoline_link_cgroup_shim(struct bpf_pro=
+g *prog,
+> >>
+> >>         bpf_lsm_find_cgroup_shim(prog, &bpf_func);
+> >>         tr =3D bpf_trampoline_get(key, &tgt_info);
+> >> -       if (!tr)
+> >> -               return  -ENOMEM;
+> >> +       if (IS_ERR(tr))
+> >> +               return PTR_ERR(tr);
+> >>
+> >>         mutex_lock(&tr->mutex);
+> >>
+> >> @@ -775,7 +775,7 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
+> >>
+> >>         tr =3D bpf_trampoline_lookup(key);
+> >>         if (!tr)
+> >> -               return NULL;
+> >> +               return ERR_PTR(-ENOMEM);
+> >>
+> >>         mutex_lock(&tr->mutex);
+> >>         if (tr->func.addr)
+> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> >> index 18e673c0ac159..054063ead0e54 100644
+> >> --- a/kernel/bpf/verifier.c
+> >> +++ b/kernel/bpf/verifier.c
+> >> @@ -19771,8 +19771,8 @@ static int check_attach_btf_id(struct bpf_veri=
+fier_env *env)
+> >>
+> >>         key =3D bpf_trampoline_compute_key(tgt_prog, prog->aux->attach=
+_btf, btf_id);
+> >>         tr =3D bpf_trampoline_get(key, &tgt_info);
+> >> -       if (!tr)
+> >> -               return -ENOMEM;
+> >> +       if (IS_ERR(tr))
+> >> +               return PTR_ERR(tr);
+> >>
+> >>         if (tgt_prog && tgt_prog->aux->tail_call_reachable)
+> >>                 tr->flags =3D BPF_TRAMP_F_TAIL_CALL_CTX;
+> >>
+> >> base-commit: cbb1dbcd99b0ae74c45c4c83c6d213c12c31785c
+> >> --
+> >> 2.41.0
+> >>
 
