@@ -1,131 +1,101 @@
-Return-Path: <bpf+bounces-10166-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10167-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 592127A24D8
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 19:33:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 794F57A24E3
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 19:35:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14394282181
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 17:33:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31126282238
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 17:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB3FF15EA7;
-	Fri, 15 Sep 2023 17:32:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67F6415EAA;
+	Fri, 15 Sep 2023 17:35:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05044125A1
-	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 17:32:55 +0000 (UTC)
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083F73ABD;
-	Fri, 15 Sep 2023 10:31:47 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c06f6f98c0so21475685ad.3;
-        Fri, 15 Sep 2023 10:31:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9938FCA6F
+	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 17:35:16 +0000 (UTC)
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CCA3AA1
+	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 10:34:07 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-76de9c23e5cso154037285a.3
+        for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 10:34:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694799106; x=1695403906; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Uh+Svyu69yjI7IZ0hILShgFArwlpiuOCby9tFGyVqR8=;
-        b=MyFJanD/JyG6CZw1jd7qaQ6kwaizla4Q1YJOLrJ6320U+9vxRF5sj8YiZLWqFEyWeX
-         7zZnvN9Z35bnK6yT9iFomEmDvGhk8jExSns6B0jVI25OMfx/wLJJt3yl8UzrPmg2k/MD
-         tzjzGv5tcI0GxlDU/F0h/ZNaFjHc/qi39FarDgaXhvO1McQimWDlSZR13cDfbkhv+T1p
-         qMI2bi4Lo6g3Zymgy8+llGsv/BpT//gC8ph66SnX+AMyMXlossDaTJ/4CTn7MvOY4rb2
-         4E4vqCHD32pyBH47F1pjGtdZeMorsRMB9a9kwU3CD8evncSd4X78k92UYjKQo46wGmVg
-         S5AA==
+        d=google.com; s=20230601; t=1694799246; x=1695404046; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B0w0jftHrCKOLI2sub5u/VeO/32jPwYn8o9L7rrDhT8=;
+        b=C3YzfpQnPRTWEN7YloNioiOpM10fq1DthdYTNZZ0GNMh/ulir/zHT00Fg6QNfrT3sn
+         /eswteh+WFfHjQx5ww8hPcY+XbjR/2OfxI4ytHJTwllf0OwqslAPmzN/Vh3YvYDnyXNO
+         pE9bqrY3ausXGLEwyt+821845V6vigVY4JpkedDbFCNMLqxkFj2J8bKZJCPM0iUyMz88
+         2mq2cOwuSLRkxpdV4SvPKTfkiu3LLdJ27PODERWkoax51UatP+4ZwmqpoC8tTSz0KyxN
+         LgYqX8nXLJV3fMYLgcoCctPXktq3ngzuXP5RvDNvkF5R2jOWehV9ZjVvwGh/q3kIyyHb
+         a5Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694799106; x=1695403906;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uh+Svyu69yjI7IZ0hILShgFArwlpiuOCby9tFGyVqR8=;
-        b=Az51IBMRgaldvXHrOTosUIu+ZsaE8jTrrQ5QCBzg8eIMBaTPCOGu0un4wykFaCXQus
-         EJN+hhPjl/g0bYskFPxcX0PFGcbxirCkBOcNdNgOG8lIUhh8BdBpT59kQZBFKZ+/txeq
-         ceBojv/LbX+32iZCR14VRG6HO8q3xKobVM1HMlCoS0LCvGeqNt83fQPLYEwOGamE1oDs
-         xLe223m9LLcBDebFoCqtTqd7cVODu6ICSj6eDLyqkheht8JuUrjOfTpE+w82e44isx0w
-         Dj6k0/j11FOgKSYsTtHdRdGq2RNDvlXhNzrDNT3TuTI6V0wrx87wYm7eDYAMEZkW9dG0
-         g9Hw==
-X-Gm-Message-State: AOJu0YwmTOFEbjZJxBG4I5I+lUb5pyIW9JOoCvpWyJKKIvVDiFWjsSOb
-	N2NzaO1paF3Tqsinp02U/D0=
-X-Google-Smtp-Source: AGHT+IEMD0ybfNq7bcxql1mt92ZWWVw00Hcg32Yehr09pM5ZJgT9yOw9K2SImgB8Ie0w1CsooHbV3A==
-X-Received: by 2002:a17:902:6949:b0:1bb:9b29:20d9 with SMTP id k9-20020a170902694900b001bb9b2920d9mr2221472plt.20.1694799105825;
-        Fri, 15 Sep 2023 10:31:45 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id ix11-20020a170902f80b00b001c3a7fbf96fsm14336plb.216.2023.09.15.10.31.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Sep 2023 10:31:45 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 15 Sep 2023 07:31:43 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: Yafang Shao <laoar.shao@gmail.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Yosry Ahmed <yosryahmed@google.com>,
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-	bpf <bpf@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next 0/5] bpf, cgroup: Enable cgroup_array map on
- cgroup1
-Message-ID: <ZQSU_0RhpVw-Y0v2@mtj.duckdns.org>
-References: <20230903142800.3870-1-laoar.shao@gmail.com>
- <qv2xdcsvb4brjsc7qx6ncxrudwusogdo4itzv4bx2perfjymwl@in7zaeymjiie>
- <CALOAHbB-PF1LjSAxoCdePN6Va4D+ufkeDmq8s3b0AGtfX5E-cQ@mail.gmail.com>
- <CAADnVQL+6PsRbNMo=8kJpgw1OTbdLG9epsup0q7La5Ffqj6g6A@mail.gmail.com>
- <CALOAHbBhOL9w+rnh_xkgZZBhxMpbrmLZWhm1X+ZeDLfxxt8Nrw@mail.gmail.com>
- <ZP93gUwf_nLzDvM5@mtj.duckdns.org>
- <CALOAHbC=yxSoBR=vok2295ejDOEYQK2C8LRjDLGRruhq-rDjOQ@mail.gmail.com>
- <jikppfidbxyqpsswzamsqwcj4gy4ppysvcskrw4pa2ndajtul7@pns7byug3yez>
+        d=1e100.net; s=20230601; t=1694799246; x=1695404046;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B0w0jftHrCKOLI2sub5u/VeO/32jPwYn8o9L7rrDhT8=;
+        b=CPwj82RGcjGdnesjS9HXzi9VY9GoIzDe6+pVRQGaI8AAKhhEJ/skN7L0mqWmHuieiT
+         ZUnsfSwXhotQELtboa2IsO10e/4rze8fXkkwwGulPJJWEpnAPslyFogAU38Qo/Xu4QQF
+         8OqM9v/9MHzL/cBEf1IUC9ATMl11b3Y6bRx7DHj45kmKRKCtj4p9p8Ifq8rOdiWQTrIs
+         4dz0GzctDuAoqPoPU4kjRDO+DyDDlcAwb/wWFTB7KW7fW7w3hM6DpealDAaDJHhqat+3
+         HbIcdCVx7ZGRHpQKfv7kF04WRUQadlVhjNyYwLM/VcyR6i5NgLB7sp/lROtHRWRgUPf8
+         qUgA==
+X-Gm-Message-State: AOJu0YyDf5lIyKuA2wLvFL4dYAPEQsO05rPdEfTk9aCOM0lIUQ65Fthy
+	7ii1hbJvZ+DfoHVxW9vwA4AkrJbgravtgaV1i/ig0LIDLiFjrBQaadoeBw==
+X-Google-Smtp-Source: AGHT+IEZ/WDxzF/O9gB4A+40qEo3bPuHJhEt/xOjx6Re1kZpnRTINetruNrbaRwq/pC5z/EudhBlcPg80BxynPtATiE=
+X-Received: by 2002:a0c:e094:0:b0:653:5961:f005 with SMTP id
+ l20-20020a0ce094000000b006535961f005mr2596649qvk.26.1694799246336; Fri, 15
+ Sep 2023 10:34:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <jikppfidbxyqpsswzamsqwcj4gy4ppysvcskrw4pa2ndajtul7@pns7byug3yez>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230915-bpf_collision-v2-1-027670d38bdf@google.com>
+ <20230915171814.GA1721473@dev-arch.thelio-3990X> <CAADnVQJVL7yo5ZrBZ99xO-MWHHg8L-SuSJrCTf-eUd-k5UO75g@mail.gmail.com>
+ <CAKwvOdkbqHFTvRNWG==0FjOPHgnA-zqE2Gn_nB4ys6qvKR2+HA@mail.gmail.com>
+ <CAADnVQLfdMuxWVGKSF+COp8Q7DnKxYL0w5crN19vPkSd0Gh7mg@mail.gmail.com> <CAADnVQKJbTM-1n8YKvpC9XN7=tZuJi9mhnmmZSTVFOeBDv+SGA@mail.gmail.com>
+In-Reply-To: <CAADnVQKJbTM-1n8YKvpC9XN7=tZuJi9mhnmmZSTVFOeBDv+SGA@mail.gmail.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Fri, 15 Sep 2023 10:33:54 -0700
+Message-ID: <CAKwvOd=1X+2m2ZRUft9y+j8H0WBLWbM=VEiS+O0FfywnfpRYyA@mail.gmail.com>
+Subject: Re: [PATCH v2] bpf: Fix BTF_ID symbol generation collision
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Nathan Chancellor <nathan@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, stable <stable@vger.kernel.org>, 
+	Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>, Marcus Seyfarth <m.seyfarth@gmail.com>, 
+	Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Sep 15, 2023 at 07:01:28PM +0200, Michal Koutný wrote:
-> Hello.
-> 
-> On Tue, Sep 12, 2023 at 11:30:32AM +0800, Yafang Shao <laoar.shao@gmail.com> wrote:
-> > With the above changes, I think it can meet most use cases with BPF on cgroup1.
-> > What do you think ?
-> 
-> I think the presented use case of LSM hooks is better served by the
-> default hierarchy (see also [1]).
-> Relying on a chosen subsys v1 hierarchy is not systematic. And extending
-> ancestry checking on named v1 hierarchies seems backwards given
-> the existence of the default hierarchy.
+On Fri, Sep 15, 2023 at 10:28=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> And please use [PATCH bpf v3] in subject, so that BPF CI can test it prop=
+erly.
 
-Yeah, identifying cgroup1 hierarchies by subsys leave out pretty good chunk
-of usecases - e.g. systemd used to use a named hierarchy for primary process
-organization on cgroup1.
+Testing `b4 prep --set-prefixes "PATCH bpf "`
 
-Also, you don't have to switch to cgroup2 wholesale. You can just build the
-same hierarchy in cgroup2 for process organization and combine that with any
-cgroup1 hierarchies.
-
-Thanks.
-
--- 
-tejun
+--=20
+Thanks,
+~Nick Desaulniers
 
