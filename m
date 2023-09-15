@@ -1,132 +1,157 @@
-Return-Path: <bpf+bounces-10155-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10156-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A06377A238F
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 18:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D9197A2398
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 18:29:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57C8228284B
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 16:26:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB2F9281239
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 16:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95FF3125CA;
-	Fri, 15 Sep 2023 16:25:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9CEC125B6;
+	Fri, 15 Sep 2023 16:29:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DE8125A1
-	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 16:25:40 +0000 (UTC)
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA6F19A9
-	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 09:25:37 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-65636f2d3e0so4107206d6.2
-        for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 09:25:37 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7551711CAF
+	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 16:29:19 +0000 (UTC)
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D47CC268E
+	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 09:29:16 -0700 (PDT)
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-1cca0a1b3c7so1275983fac.2
+        for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 09:29:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694795137; x=1695399937; darn=vger.kernel.org;
+        d=riotgames.com; s=riotgames; t=1694795356; x=1695400156; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hmftETAXOQrZAO1rbJ1A5lHyYUbxUNroqKw/rpculKQ=;
-        b=0iQgBrU88xqIgezB+btyd5BLMYaukyiKqFNpsZ2MpGE/tHpBzOYYraF99wiGXQboqt
-         go8LUudxPp7SwcFxZVwi/8K2MFBisTt+xMo5LetsM5ZBTkuKdcDbrvBFJnTU/11cEgK/
-         X0jwpzePdOHikr37IeJHGbWjby+QXcDR68YsSi7Ya47sx7Ns0oxAlWYVnAUhFPE5PW7M
-         +aGQS/akw4tKENrVIYEfOTPkgOctzG/Ntc8tdKx4ZLQkcm7zf8FzeXrLHg4Lnc0HNtPb
-         k8tD9xTMdBuAze7Ni2Veuq4mhTrnH2TQ3tf5o07znTuzxOiGpH6dYfweXbfkRDfyDbWJ
-         uGpQ==
+        bh=75VIBFWysFjhghxFJlM1nAPOhfRt9qZzTD3QiP8oJGQ=;
+        b=WqbNG7Fv51C2tgmfTJql5MwvRzQhtvJmC7TZwwTWJD+XeocpEXdLR9U/QuJrdBDk+K
+         +rEELDyc3MIDBzvlA63ritWODf7TCsQmlV5IX8ocSUdsDLMqm6Q0BXZ6c87P9oK1WbWf
+         cSW2c4JOqnVQ0bjvHg/yN83Yx3LTAWQCtXmVc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694795137; x=1695399937;
+        d=1e100.net; s=20230601; t=1694795356; x=1695400156;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hmftETAXOQrZAO1rbJ1A5lHyYUbxUNroqKw/rpculKQ=;
-        b=w+9REX5cou+RVwXaYDr8tmn1XOlBsBYKre9z/rHNUhT1UvIX6VjauN5WLEI3odDwPd
-         Ot8lYOwGeUhUqAiI9Pz0zyLfYiqUJ/kjGugD0dpRMP2A3XnFoFME4pQWSYhmI3Uiuvp1
-         1/ppz0owC5hbQGPw8CT4Rm4p+lQ6WmtkPA3PEOcQSKawJRYdyZCh2yo3V5cCW0tYHoCe
-         VkvtIunNSapLxXycwCDAPZy5orhm4fBEr/WE6htZvuVOEzcn94O3AVMcC7jVHG9Rck5M
-         mFg0QzyrygXYwQIuoxlMqDMEyX+v6XsldGBimjJJYFYPPm2WDVwY3O7niDq+fcU71lBz
-         3O6A==
-X-Gm-Message-State: AOJu0YxJus8dJida0zL/cIRVqeQ5IQrPDme+DirwvcyCLbKC62ASSkwZ
-	MGGcWZvUbcimo0g9mEIfO2dsi8+nmX2OUG53ZAvNuw==
-X-Google-Smtp-Source: AGHT+IFSlpiBrrslnQtcAsY86Zqf4x+VuwwA1FtPHuxOjlhsbPWhuLwH5Vc03N7/PycF4/6pv5HdmU8Sp8zlWyUqlT4=
-X-Received: by 2002:ad4:430b:0:b0:635:e0dd:db4b with SMTP id
- c11-20020ad4430b000000b00635e0dddb4bmr2211158qvs.37.1694795136747; Fri, 15
- Sep 2023 09:25:36 -0700 (PDT)
+        bh=75VIBFWysFjhghxFJlM1nAPOhfRt9qZzTD3QiP8oJGQ=;
+        b=AOQUTbDVmTpvC3TUPr7GrYTCJcr7ozi1xdzS52Os78oSodG6Iy7AoOV1ey8g38Kkev
+         AIg6rt/P/xYYUwZKKMylD8oylGeY8cskjLKdBglDAllXWOZPR0ZMiqq6uYM9Vt55ub4f
+         GtabGCrRdGIS0cB4LPVxMYGZvKYUMPN6EgKVmEYFQIGzpLtew0I7//oUFI+rwIufywvj
+         Q9fkDKFusHUxWiU+WvfoDienbX6AXc36zWrYfNJPHG3p+kT35hzRJxOleg0lnWNHUe4w
+         7fW/q0msoSDvDdRsf4KIoqx8Eu59Q7t6/lNxvNOO2CMn6BOP0Jk18ltbgOcbM52Bs+21
+         OyQg==
+X-Gm-Message-State: AOJu0YyKg23CUW/96eTZmGV3oJzQpQ4k2UO9IePvaHEWMgtc4SMUNQwI
+	BK4Ki9xZp5mKQd6B3ecrmAh7mKlsKYToOHwqsHLVjw==
+X-Google-Smtp-Source: AGHT+IEn26Vxkt4OIvLRCg3nvOfo2pseKiXPCbRffSpw8hr/ARWePuXqTxeB8WBqo0cFThFrQ3GaQMgTp4JtjLbgCM0=
+X-Received: by 2002:a05:6870:5387:b0:1d6:97:bd7d with SMTP id
+ h7-20020a056870538700b001d60097bd7dmr2730060oan.34.1694795355805; Fri, 15 Sep
+ 2023 09:29:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230915103228.1196234-1-jolsa@kernel.org>
-In-Reply-To: <20230915103228.1196234-1-jolsa@kernel.org>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Fri, 15 Sep 2023 09:25:22 -0700
-Message-ID: <CAKwvOd=XXry=gbaUCUqprPqxeSnFKbe2drPygFU8SDFw=HwuXw@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Fix BTF_ID symbol generation
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Marcus Seyfarth <m.seyfarth@gmail.com>, bpf@vger.kernel.org, 
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+References: <20230914123527.34624-1-hffilwlqm@gmail.com>
+In-Reply-To: <20230914123527.34624-1-hffilwlqm@gmail.com>
+From: Zvi Effron <zeffron@riotgames.com>
+Date: Fri, 15 Sep 2023 11:29:04 -0500
+Message-ID: <CAC1LvL3vTzKx8mcObCKbVJFNVjj0DjS=RF+wytryJZYrqnwhBQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf, x64: Check imm32 first at BPF_CALL in do_jit()
+To: Leon Hwang <hffilwlqm@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, tglx@linutronix.de, maciej.fijalkowski@intel.com, 
+	kernel-patches-bot@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Sep 15, 2023 at 3:32=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+On Thu, Sep 14, 2023 at 7:36=E2=80=AFAM Leon Hwang <hffilwlqm@gmail.com> wr=
+ote:
 >
-> Marcus and Nick reported issue where BTF_ID macro generates same
-> symbol in separate objects and that breaks final vmlinux link.
+> It's unnecessary to check 'imm32' in both 'if' and 'else'.
 >
-> Adding __LINE__ number suffix to make BTF_ID symbol more unique,
-> which is not real fix, but it would help for now and meanwhile
-> we can work on better solution as suggested by Andrii in [2].
+> It's better to check it first.
 >
-> [1] https://github.com/ClangBuiltLinux/linux/issues/1913
-> [2] https://lore.kernel.org/bpf/ZQQVr35crUtN1quS@krava/T/#m64d7c29c407d6a=
-df0e7b420359958b3aafa7bf69
-> Reported-by: Marcus Seyfarth <m.seyfarth@gmail.com>
-> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> Meanwhile, refactor the code for 'offs' calculation.
+>
+> v1 -> v2:
+>  * Add '#define RESTORE_TAIL_CALL_CNT_INSN_SIZE 7'.
+>
+> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
 > ---
->  include/linux/btf_ids.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/x86/net/bpf_jit_comp.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
 >
-> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> index a3462a9b8e18..a9cb10b0e2e9 100644
-> --- a/include/linux/btf_ids.h
-> +++ b/include/linux/btf_ids.h
-> @@ -49,7 +49,7 @@ word                                                  \
->         ____BTF_ID(symbol, word)
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 2846c21d75bfa..fe0393c7e7b68 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -1025,6 +1025,7 @@ static void emit_shiftx(u8 **pprog, u32 dst_reg, u8=
+ src_reg, bool is64, u8 op)
+>  /* mov rax, qword ptr [rbp - rounded_stack_depth - 8] */
+>  #define RESTORE_TAIL_CALL_CNT(stack)                           \
+>         EMIT3_off32(0x48, 0x8B, 0x85, -round_up(stack, 8) - 8)
+> +#define RESTORE_TAIL_CALL_CNT_INSN_SIZE 7
 >
->  #define __ID(prefix) \
-> -       __PASTE(prefix, __COUNTER__)
-> +       __PASTE(__PASTE(prefix, __COUNTER__), __LINE__)
+>  static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *=
+rw_image,
+>                   int oldproglen, struct jit_context *ctx, bool jmp_paddi=
+ng)
+> @@ -1629,17 +1630,16 @@ st:                     if (is_imm8(insn->off))
+>                 case BPF_JMP | BPF_CALL: {
+>                         int offs;
+>
 
-I think __COUNTER__ and __LINE__ both expand to string literals; you
-can avoid another expansion via __PASTE by just putting them adjacent,
-like so:
-https://github.com/ClangBuiltLinux/linux/issues/1913#issuecomment-171079431=
-9
-I'll send that as a v2 and link back to your v1.
+<snip>
 
+> +                       if (tail_call_reachable)
+>                                 RESTORE_TAIL_CALL_CNT(bpf_prog->aux->stac=
+k_depth);
+
+<snip>
+
+> +                       offs =3D (tail_call_reachable ?
+> +                               RESTORE_TAIL_CALL_CNT_INSN_SIZE : 0);
+
+I'm not sure which is preferred style for the kernel, but this seems like i=
+t
+could be replaced with
+
+int offs =3D 0;
+...
+if (tail_call_reachable) {
+    RESTORE_TAIL_CALL_CNT(bpf_prog->aux->stack_depth);
+    offs =3D RESTORE_TAIL_CALL_CNT_INSN_SIZE;
+}
+
+which is easier for my brain to follow because it reduces the branches (in =
+C,
+I assume the compiler is smart enough to optimize). It does create an
+unconditional write (of 0) that could otherwise be avoided (unless the comp=
+iler
+is also smart enough to optimize that).
+
+Also not sure if the performance difference matters here.
+
+> +                       offs +=3D x86_call_depth_emit_accounting(&prog, f=
+unc);
+>                         if (emit_call(&prog, func, image + addrs[i - 1] +=
+ offs))
+>                                 return -EINVAL;
+>                         break;
 >
->  /*
->   * The BTF_ID defines unique symbol for each ID pointing
+> base-commit: cbb1dbcd99b0ae74c45c4c83c6d213c12c31785c
 > --
 > 2.41.0
 >
-
-
---=20
-Thanks,
-~Nick Desaulniers
+>
 
