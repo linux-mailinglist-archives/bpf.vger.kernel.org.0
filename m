@@ -1,77 +1,78 @@
-Return-Path: <bpf+bounces-10182-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10183-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D69AC7A27F8
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 22:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D1537A2802
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 22:24:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8F841C20F4A
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 20:21:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FE131C20F4B
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 20:24:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50C7A1B27B;
-	Fri, 15 Sep 2023 20:21:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B55F1B27D;
+	Fri, 15 Sep 2023 20:23:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3786918E09
-	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 20:20:58 +0000 (UTC)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B31B33586
-	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 13:20:16 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-307d58b3efbso2366188f8f.0
-        for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 13:20:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC7B510947
+	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 20:23:47 +0000 (UTC)
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E93AA8;
+	Fri, 15 Sep 2023 13:23:46 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-501cba1ec0aso4226314e87.2;
+        Fri, 15 Sep 2023 13:23:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694809215; x=1695414015; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1694809424; x=1695414224; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=y4O3JffxhKgOfvrINGNFbjXtPsgq7PwScJvi2qUbCcg=;
-        b=ckGmwD3GH7J1F+3GRPCiCP+8OFZA80GEEGsTwA/j9Mv1coKYqdTcBsOLQM876JIRWV
-         I8gm03iXxcWUk8K9w0oUtjqfA20vyuW/CBPHcivfS545MW/jY6JBoyeLdsCbHa/B1yy7
-         W0DH1gsPBt4hk24qUwJZB7miQJtVM2XWAYkvpnViMN17ytjhK9kroXeDUoD4coELa5jw
-         kRg30yaNK4b2dcYRZRomDdqvwZNGGkPO9BV/SP+5cz+RnHP3nk/kbpFzvNu8v4cClwUo
-         HXjOKzhGbZUn5cj7NMxKEmIgj3Rn+Y6q18lDLddNPx5t/z88RYR3Ct+HNypjJ+RPjTxh
-         XGEw==
+        bh=j10NGF+uwrPInTdK3534ZVRmil1MgGKJfRrtg2/+nrE=;
+        b=cyv9uime3tAFzhQTppdliQq5HOMUlDfA7gAhpO8pNZD6+aaxPXDGtKv4FdATgAklis
+         fkTrLKFwuFa0enyrKrlR8W/IsoKvNeMqYTkRSSNXL/C8jCgFdCtD/khm6wUkhadtZiwS
+         1PVm5nl/yqVjx4lkjJmct7pVWqTDJ6BqLudUp7FLHTHQYrmjvoUMkYuTmkDHJOAIqNxU
+         gqo7ULp40utRSbjmqFt25IxQJtQNnAnG8TJh4JfzM8oH4DJh8fuKHZXFZ3PYHt7VuF/D
+         DwVY21DoIGPKHh0YE0hqmtQEp4BxjPSqCAptY2rflNN+oCeD2xO+GoLR2V+g9iwQ3W5C
+         n+Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694809215; x=1695414015;
+        d=1e100.net; s=20230601; t=1694809424; x=1695414224;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=y4O3JffxhKgOfvrINGNFbjXtPsgq7PwScJvi2qUbCcg=;
-        b=BAuEdodM1F2ad+LJ825KwMLEwwYxBxrCFuJ6oCGBJmmDcSQA9VGQcBZG35KqwEQblW
-         WV/eRAAwpntQ3+/DremAg9f+kY9TglNuTnO5xm2wlyOsEOmjj3cAae0/Zv5cs1SC2eB3
-         ldABUAeSljR8yb6JL9ZWW9xkBfwLeM6JBk11wxuw6ACvOoTPeJNKbmdRAfvcN/KAJz33
-         aVGJzXAwTkCQXExmR5aJT7wJUQcaMsFlQLRobTp1UToja+v1DrZbMr6zjf6gowb6M1cc
-         D5cvrpqXjEEffP3PhYwDFuEGqXI6htOO7pwJmLPTPQxDqnBId4Cm9gfk+vPQ5n2ew3H8
-         4CNg==
-X-Gm-Message-State: AOJu0Yw/bQy6f78vhBcV2SW44YqDFzkky7U3WQ01V5yHv/UUGeNnIyA+
-	9NUrt3Wk8GkOcLQiloAP3KMkfjup3J2P/NdVxQA=
-X-Google-Smtp-Source: AGHT+IFy1ywIdB7yAhq8Cpdqi3SQprowYNBMujA2fWd1239A73IpZ+5Mz4vyTW34vlVyiEbhaS5y2Fg5VLpk4/DBRoY=
-X-Received: by 2002:a05:6000:70e:b0:31f:f94f:e13f with SMTP id
- bs14-20020a056000070e00b0031ff94fe13fmr1933632wrb.19.1694809214739; Fri, 15
- Sep 2023 13:20:14 -0700 (PDT)
+        bh=j10NGF+uwrPInTdK3534ZVRmil1MgGKJfRrtg2/+nrE=;
+        b=XBo9s7HLUKeEkrA92PFoFYGXPXI+yC3Kgys4lja5ZY6ptLcDwjZCzuZO27Rw3bnW3N
+         nciCAKDcFPddkSQbLKZO8ljatUnJ9HWjdo7NqBLyF++gbEp4+BQM6AR2mwWz9fbk1McN
+         MKv/eUmP/naRD8wYEJZVLrxVxQR8f3EFblNPZC7VLq2x8dVd4+vFS5GUqHIANnIdNgxA
+         7O0uS8+Lr3AgGV1gv11M7oPhqPi8kv+ALDp4zrh66URTSF/7bbvDCK4sELAb0OmNQZkO
+         HbLjWsNRnkYwHtVKu5HiNJqsOkxg3CVe2LDtbZ/0/l14OCgVYRH3NVB7+odIhXXZap7H
+         rxRQ==
+X-Gm-Message-State: AOJu0YyHvmh95rx0sZiDjGkA6pbo+npKuxo1JRpnDeZ/Sj4DTT8zZPsJ
+	wDbtXxoCYFl196mMIfbHFpbcJ3DJ4ZP+AiaE8Kw=
+X-Google-Smtp-Source: AGHT+IEwUUVd9cPKODuRMtOILMmPnjAogp1VUdG5BfsmwADmBY5HkoMW9m7dDogBQa4izMYSVROtMsuUESJR3XEEwdQ=
+X-Received: by 2002:a05:6512:ba7:b0:4ff:9095:a817 with SMTP id
+ b39-20020a0565120ba700b004ff9095a817mr3211434lfv.57.1694809423988; Fri, 15
+ Sep 2023 13:23:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230911015052.72975-1-hengqi.chen@gmail.com> <20230911015052.72975-3-hengqi.chen@gmail.com>
- <CAEf4BzZxN52J1_Y03QBEL-wSucWZZ1ZGTMKho9FDudf=0X3xvQ@mail.gmail.com>
- <CAEyhmHRFD7KEJwV-CzRSwg4Cw-v=ZqSFrF4UXC-zSthH2OvJPA@mail.gmail.com>
- <CAEf4BzbJE-S71YLtbBGbdN_MiQNK21Dt6r7hfBxC5uHhWTJD-g@mail.gmail.com> <CAEyhmHQcDYvnUkE2EAbhenMYoXai7cC=q5xNgMC3X-+hfx6agw@mail.gmail.com>
-In-Reply-To: <CAEyhmHQcDYvnUkE2EAbhenMYoXai7cC=q5xNgMC3X-+hfx6agw@mail.gmail.com>
+References: <20230912070149.969939-1-zhouchuyi@bytedance.com>
+ <20230912070149.969939-6-zhouchuyi@bytedance.com> <4c15c9fc-7c9f-9695-5c67-d3f214d04bd9@bytedance.com>
+ <1f9cae15-979c-c049-78a9-f89d5cd1b53e@bytedance.com> <CAEf4BzZ18pjmav45mxhQ9eigJuAWnowgSm=+c==8dY0AUm2WdQ@mail.gmail.com>
+ <8f388b8f-bc19-5ad1-00ee-e67cdcdd9d4f@bytedance.com>
+In-Reply-To: <8f388b8f-bc19-5ad1-00ee-e67cdcdd9d4f@bytedance.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 15 Sep 2023 13:20:03 -0700
-Message-ID: <CAEf4BzZ=RoEQkVy6b4uW4Bi8xnx6TimJ8=hYLJVVq8reLkus4w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/3] libbpf: Support symbol versioning for uprobe
-To: Hengqi Chen <hengqi.chen@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, alan.maguire@oracle.com, olsajiri@gmail.com, 
-	Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 15 Sep 2023 13:23:32 -0700
+Message-ID: <CAEf4Bzb8v-O+7Py0zxNFOGgGx_Ley76u7hrjRpBKE49eHbfHOw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next v2 5/6] bpf: teach the verifier to
+ enforce css_iter and process_iter in RCU CS
+To: Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org, 
+	linux-kernel@vger.kernel.org, ast@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -81,254 +82,180 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Sep 15, 2023 at 12:30=E2=80=AFAM Hengqi Chen <hengqi.chen@gmail.com=
-> wrote:
+On Thu, Sep 14, 2023 at 10:46=E2=80=AFPM Chuyi Zhou <zhouchuyi@bytedance.co=
+m> wrote:
 >
-> On Fri, Sep 15, 2023 at 1:12=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Thu, Sep 14, 2023 at 5:37=E2=80=AFAM Hengqi Chen <hengqi.chen@gmail.=
-com> wrote:
-> > >
-> > > On Wed, Sep 13, 2023 at 7:14=E2=80=AFAM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Sun, Sep 10, 2023 at 6:51=E2=80=AFPM Hengqi Chen <hengqi.chen@gm=
-ail.com> wrote:
-> > > > >
-> > > > > In current implementation, we assume that symbol found in .dynsym=
- section
-> > > > > would have a version suffix and use it to compare with symbol use=
-r supplied.
-> > > > > According to the spec ([0]), this assumption is incorrect, the ve=
-rsion info
-> > > > > of dynamic symbols are stored in .gnu.version and .gnu.version_d =
-sections
-> > > > > of ELF objects. For example:
-> > > > >
-> > > > >     $ nm -D /lib/x86_64-linux-gnu/libc.so.6 | grep rwlock_wrlock
-> > > > >     000000000009b1a0 T __pthread_rwlock_wrlock@GLIBC_2.2.5
-> > > > >     000000000009b1a0 T pthread_rwlock_wrlock@@GLIBC_2.34
-> > > > >     000000000009b1a0 T pthread_rwlock_wrlock@GLIBC_2.2.5
-> > > > >
-> > > > >     $ readelf -W --dyn-syms /lib/x86_64-linux-gnu/libc.so.6 | gre=
-p rwlock_wrlock
-> > > > >       706: 000000000009b1a0   878 FUNC    GLOBAL DEFAULT   15 __p=
-thread_rwlock_wrlock@GLIBC_2.2.5
-> > > > >       2568: 000000000009b1a0   878 FUNC    GLOBAL DEFAULT   15 pt=
-hread_rwlock_wrlock@@GLIBC_2.34
-> > > > >       2571: 000000000009b1a0   878 FUNC    GLOBAL DEFAULT   15 pt=
-hread_rwlock_wrlock@GLIBC_2.2.5
-> > > > >
-> > > > > In this case, specify pthread_rwlock_wrlock@@GLIBC_2.34 or
-> > > > > pthread_rwlock_wrlock@GLIBC_2.2.5 in bpf_uprobe_opts::func_name w=
-on't work.
-> > > > > Because the qualified name does NOT match `pthread_rwlock_wrlock`=
- (without
-> > > > > version suffix) in .dynsym sections.
-> > > > >
-> > > > > This commit implements the symbol versioning for dynsym and allow=
-s user to
-> > > > > specify symbol in the following forms:
-> > > > >   - func
-> > > > >   - func@LIB_VERSION
-> > > > >   - func@@LIB_VERSION
-> > > > >
-> > > > > In case of symbol conflicts, error out and users should resolve i=
-t by
-> > > > > specifying a qualified name.
-> > > > >
-> > > > >   [0]: https://refspecs.linuxfoundation.org/LSB_5.0.0/LSB-Core-ge=
-neric/LSB-Core-generic/symversion.html
-> > > > >
-> > > > > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> > > > > Acked-by: Jiri Olsa <jolsa@kernel.org>
-> > > > > Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> > > > > ---
-> > > > >  tools/lib/bpf/elf.c    | 146 +++++++++++++++++++++++++++++++++++=
-++----
-> > > > >  tools/lib/bpf/libbpf.c |   2 +-
-> > > > >  2 files changed, 134 insertions(+), 14 deletions(-)
-> > > > >
-> > > > > diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-> > > > > index 5c9e588b17da..825da903a34c 100644
-> > > > > --- a/tools/lib/bpf/elf.c
-> > > > > +++ b/tools/lib/bpf/elf.c
-> > > > > @@ -1,5 +1,8 @@
-> > > > >  // SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-> > > > >
-> > > > > +#ifndef _GNU_SOURCE
-> > > > > +#define _GNU_SOURCE
-> > > > > +#endif
-> > > > >  #include <libelf.h>
-> > > > >  #include <gelf.h>
-> > > > >  #include <fcntl.h>
-> > > > > @@ -10,6 +13,17 @@
-> > > > >
-> > > > >  #define STRERR_BUFSIZE  128
-> > > > >
-> > > > > +/* A SHT_GNU_versym section holds 16-bit words. This bit is set =
-if
-> > > > > + * the symbol is hidden and can only be seen when referenced usi=
-ng an
-> > > > > + * explicit version number. This is a GNU extension.
-> > > > > + */
-> > > > > +#define VERSYM_HIDDEN  0x8000
-> > > > > +
-> > > > > +/* This is the mask for the rest of the data in a word read from=
- a
-> > > > > + * SHT_GNU_versym section.
-> > > > > + */
-> > > > > +#define VERSYM_VERSION 0x7fff
-> > > > > +
-> > > > >  int elf_open(const char *binary_path, struct elf_fd *elf_fd)
-> > > > >  {
-> > > > >         char errmsg[STRERR_BUFSIZE];
-> > > > > @@ -64,11 +78,14 @@ struct elf_sym {
-> > > > >         const char *name;
-> > > > >         GElf_Sym sym;
-> > > > >         GElf_Shdr sh;
-> > > > > +       int ver;
-> > > > > +       bool hidden;
-> > > > >  };
-> > > > >
-> > > > >  struct elf_sym_iter {
-> > > > >         Elf *elf;
-> > > > >         Elf_Data *syms;
-> > > > > +       Elf_Data *versyms;
-> > > > >         size_t nr_syms;
-> > > > >         size_t strtabidx;
-> > > > >         size_t next_sym_idx;
-> > > > > @@ -111,6 +128,18 @@ static int elf_sym_iter_new(struct elf_sym_i=
-ter *iter,
-> > > > >         iter->nr_syms =3D iter->syms->d_size / sh.sh_entsize;
-> > > > >         iter->elf =3D elf;
-> > > > >         iter->st_type =3D st_type;
-> > > > > +
-> > > > > +       /* Version symbol table is meaningful to dynsym only */
-> > > > > +       if (sh_type !=3D SHT_DYNSYM)
-> > > > > +               return 0;
-> > > > > +
-> > > > > +       scn =3D elf_find_next_scn_by_type(elf, SHT_GNU_versym, NU=
-LL);
-> > > > > +       if (!scn)
-> > > > > +               return 0;
-> > > > > +       if (!gelf_getshdr(scn, &sh))
-> > > > > +               return -EINVAL;
-> > > > > +       iter->versyms =3D elf_getdata(scn, 0);
-> > > > > +
-> > > > >         return 0;
-> > > > >  }
-> > > > >
-> > > > > @@ -119,6 +148,7 @@ static struct elf_sym *elf_sym_iter_next(stru=
-ct elf_sym_iter *iter)
-> > > > >         struct elf_sym *ret =3D &iter->sym;
-> > > > >         GElf_Sym *sym =3D &ret->sym;
-> > > > >         const char *name =3D NULL;
-> > > > > +       GElf_Versym versym;
-> > > > >         Elf_Scn *sym_scn;
-> > > > >         size_t idx;
-> > > > >
-> > > > > @@ -138,12 +168,113 @@ static struct elf_sym *elf_sym_iter_next(s=
-truct elf_sym_iter *iter)
-> > > > >
-> > > > >                 iter->next_sym_idx =3D idx + 1;
-> > > > >                 ret->name =3D name;
-> > > > > +               ret->ver =3D 0;
-> > > > > +               ret->hidden =3D false;
-> > > > > +
-> > > > > +               if (iter->versyms) {
-> > > > > +                       if (!gelf_getversym(iter->versyms, idx, &=
-versym))
-> > > > > +                               continue;
-> > > > > +                       ret->ver =3D versym & VERSYM_VERSION;
-> > > > > +                       ret->hidden =3D versym & VERSYM_HIDDEN;
-> > > > > +               }
-> > > > >                 return ret;
-> > > > >         }
-> > > > >
-> > > > >         return NULL;
-> > > > >  }
-> > > > >
-> > > > > +static const char *elf_get_vername(Elf *elf, int ver)
-> > > > > +{
-> > > > > +       GElf_Verdaux verdaux;
-> > > > > +       GElf_Verdef verdef;
-> > > > > +       Elf_Data *verdefs;
-> > > > > +       size_t strtabidx;
-> > > > > +       GElf_Shdr sh;
-> > > > > +       Elf_Scn *scn;
-> > > > > +       int offset;
-> > > > > +
-> > > > > +       scn =3D elf_find_next_scn_by_type(elf, SHT_GNU_verdef, NU=
-LL);
-> > > >
-> > > > so this is a linear search, right? And we'll be doing it for every
-> > > > .dynsym symbol. Let's do this once at the creation time and remembe=
-r a
-> > > > pointer inside struct Elf?
-> > > >
-> > >
-> > > We reach here only when the symbol part match, and likely we get the
-> > > desired one.
-> >
-> > sure, but you can have multiple versions, so multiple hits of this.
-> > And the ELF itself could be pretty big with lots of sections. So I
-> > think we should try to minimize number of linear searches over ELF
-> > sections, if possible.
-> >
-> > > if we store the pointers in struct Elf, then we have to involve
-> > > dynamic allocations.
-> >
-> > I'm not sure why dynamic allocations are needed?
-> >
+> Hello.
 >
-> Your last comment says remember those version name pointer in struct Elf,
-> I thought this would be allocate an array and save those pointers
-> (i.e. store a mapping from version index to version name)
+> =E5=9C=A8 2023/9/15 07:26, Andrii Nakryiko =E5=86=99=E9=81=93:
+> > On Thu, Sep 14, 2023 at 1:56=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance=
+.com> wrote:
+> >>
+> >>
+> >>
+> >> =E5=9C=A8 2023/9/13 21:53, Chuyi Zhou =E5=86=99=E9=81=93:
+> >>> Hello.
+> >>>
+> >>> =E5=9C=A8 2023/9/12 15:01, Chuyi Zhou =E5=86=99=E9=81=93:
+> >>>> css_iter and process_iter should be used in rcu section. Specificall=
+y, in
+> >>>> sleepable progs explicit bpf_rcu_read_lock() is needed before use th=
+ese
+> >>>> iters. In normal bpf progs that have implicit rcu_read_lock(), it's =
+OK to
+> >>>> use them directly.
+> >>>>
+> >>>> This patch checks whether we are in rcu cs before we want to invoke
+> >>>> bpf_iter_process_new and bpf_iter_css_{pre, post}_new in
+> >>>> mark_stack_slots_iter(). If the rcu protection is guaranteed, we wou=
+ld
+> >>>> let st->type =3D PTR_TO_STACK | MEM_RCU. is_iter_reg_valid_init() wi=
+ll
+> >>>> reject if reg->type is UNTRUSTED.
+> >>>
+> >>> I use the following BPF Prog to test this patch:
+> >>>
+> >>> SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
+> >>> int iter_task_for_each_sleep(void *ctx)
+> >>> {
+> >>>       struct task_struct *task;
+> >>>       struct task_struct *cur_task =3D bpf_get_current_task_btf();
+> >>>
+> >>>       if (cur_task->pid !=3D target_pid)
+> >>>           return 0;
+> >>>       bpf_rcu_read_lock();
+> >>>       bpf_for_each(process, task) {
+> >>>           bpf_rcu_read_unlock();
+> >>>           if (task->pid =3D=3D target_pid)
+> >>>               process_cnt +=3D 1;
+> >>>           bpf_rcu_read_lock();
+> >>>       }
+> >>>       bpf_rcu_read_unlock();
+> >>>       return 0;
+> >>> }
+> >>>
+> >>> Unfortunately, we can pass the verifier.
+> >>>
+> >>> Then I add some printk-messages before setting/clearing state to help
+> >>> debug:
+> >>>
+> >>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> >>> index d151e6b43a5f..35f3fa9471a9 100644
+> >>> --- a/kernel/bpf/verifier.c
+> >>> +++ b/kernel/bpf/verifier.c
+> >>> @@ -1200,7 +1200,7 @@ static int mark_stack_slots_iter(struct
+> >>> bpf_verifier_env *env,
+> >>>                   __mark_reg_known_zero(st);
+> >>>                   st->type =3D PTR_TO_STACK; /* we don't have dedicat=
+ed reg
+> >>> type */
+> >>>                   if (is_iter_need_rcu(meta)) {
+> >>> +                       printk("mark reg_addr : %px", st);
+> >>>                           if (in_rcu_cs(env))
+> >>>                                   st->type |=3D MEM_RCU;
+> >>>                           else
+> >>> @@ -11472,8 +11472,8 @@ static int check_kfunc_call(struct
+> >>> bpf_verifier_env *env, struct bpf_insn *insn,
+> >>>                           return -EINVAL;
+> >>>                   } else if (rcu_unlock) {
+> >>>                           bpf_for_each_reg_in_vstate(env->cur_state,
+> >>> state, reg, ({
+> >>> +                               printk("clear reg_addr : %px MEM_RCU =
+:
+> >>> %d PTR_UNTRUSTED : %d\n ", reg, reg->type & MEM_RCU, reg->type &
+> >>> PTR_UNTRUSTED);
+> >>>                                   if (reg->type & MEM_RCU) {
+> >>> -                                       printk("clear reg addr : %lld=
+",
+> >>> reg);
+> >>>                                           reg->type &=3D ~(MEM_RCU |
+> >>> PTR_MAYBE_NULL);
+> >>>                                           reg->type |=3D PTR_UNTRUSTE=
+D;
+> >>>                                   }
+> >>>
+> >>>
+> >>> The demsg log:
+> >>>
+> >>> [  393.705324] mark reg_addr : ffff88814e40e200
+> >>>
+> >>> [  393.706883] clear reg_addr : ffff88814d5f8000 MEM_RCU : 0
+> >>> PTR_UNTRUSTED : 0
+> >>>
+> >>> [  393.707353] clear reg_addr : ffff88814d5f8078 MEM_RCU : 0
+> >>> PTR_UNTRUSTED : 0
+> >>>
+> >>> [  393.708099] clear reg_addr : ffff88814d5f80f0 MEM_RCU : 0
+> >>> PTR_UNTRUSTED : 0
+> >>> ....
+> >>> ....
+> >>>
+> >>> I didn't see ffff88814e40e200 is cleared as expected because
+> >>> bpf_for_each_reg_in_vstate didn't find it.
+> >>>
+> >>> It seems when we are doing bpf_read_unlock() in the middle of iterati=
+on
+> >>> and want to clearing state through bpf_for_each_reg_in_vstate, we can
+> >>> not find the previous reg which we marked MEM_RCU/PTR_UNTRUSTED in
+> >>> mark_stack_slots_iter().
+> >>>
+> >>
+> >> bpf_get_spilled_reg will skip slots if they are not STACK_SPILL, but i=
+n
+> >> mark_stack_slots_iter() we has marked the slots *STACK_ITER*
+> >>
+> >> With the following change, everything seems work OK.
+> >>
+> >> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier=
+.h
+> >> index a3236651ec64..83c5ecccadb4 100644
+> >> --- a/include/linux/bpf_verifier.h
+> >> +++ b/include/linux/bpf_verifier.h
+> >> @@ -387,7 +387,7 @@ struct bpf_verifier_state {
+> >>
+> >>    #define bpf_get_spilled_reg(slot, frame)                           =
+    \
+> >>           (((slot < frame->allocated_stack / BPF_REG_SIZE) &&         =
+    \
+> >> -         (frame->stack[slot].slot_type[0] =3D=3D STACK_SPILL))       =
+      \
+> >> +         (frame->stack[slot].slot_type[0] =3D=3D STACK_SPILL ||
+> >> frame->stack[slot].slot_type[0] =3D=3D STACK_ITER))            \
+> >>            ? &frame->stack[slot].spilled_ptr : NULL)
+> >>
+> >> I am not sure whether this would harm some logic implicitly when using
+> >> bpf_get_spilled_reg/bpf_for_each_spilled_reg in other place. If so,
+> >> maybe we should add a extra parameter to control the picking behaviour=
+.
+> >>
+> >> #define bpf_get_spilled_reg(slot, frame, stack_type)
+> >>                          \
+> >>          (((slot < frame->allocated_stack / BPF_REG_SIZE) &&          =
+   \
+> >>            (frame->stack[slot].slot_type[0] =3D=3D stack_type))       =
+       \
+> >>           ? &frame->stack[slot].spilled_ptr : NULL)
+> >>
+> >> Thanks.
+> >
+> > I don't think it's safe to just make bpf_get_spilled_reg, and
+> > subsequently bpf_for_each_reg_in_vstate and bpf_for_each_spilled_reg
+> > just suddenly start iterating iterator states and/or dynptrs. At least
+> > some of existing uses of those assume they are really working just
+> > with registers.
 >
-> > But also I had struct elf_sym_iter in mind, where we already cache
-> > Elf_Data *versyms, so why not do that with verdefs as well? I think
+> IIUC, when we are doing bpf_rcu_unlock, we do need to clear the state of
+> reg including STACK_ITER.
 >
-> verdef is not per symbol.
+> Maybe here we only need change the logic when using
+> bpf_for_each_reg_in_vstate to clear state in bpf_rcu_unlock and keep
+> everything else unchanged ?
 
-I meant to just not do elf_find_next_scn_by_type() search every time,
-and just store Elf_Scn * pointer for SHT_GNU_verdef in iter state.
-
+Right, maybe. I see 10 uses of bpf_for_each_reg_in_vstate() in
+kernel/bpf/verifier.c. Before we change the definition of
+bpf_for_each_reg_in_vstate() we should validate that iterating dynptr
+and iter states doesn't break any of them, that's all.
 
 >
-> > all these helpers (symbol_match and elf_get_vername) are called only
-> > from elf_sym_iter stuff right now, right?
-> >
-> >
-> > >
-> > > > > +       if (!scn)
-> > > > > +               return NULL;
-> > > > > +       if (!gelf_getshdr(scn, &sh))
-> > > > > +               return NULL;
-> > > > > +       strtabidx =3D sh.sh_link;
-> > > > > +       verdefs =3D  elf_getdata(scn, 0);
-> > > > > +
-> > > > > +       offset =3D 0;
-> > > > > +       while (gelf_getverdef(verdefs, offset, &verdef)) {
-> > > > > +               if (verdef.vd_ndx !=3D ver) {
-> > > > > +                       if (!verdef.vd_next)
-> > > > > +                               break;
-> > > > > +
-> > > > > +                       offset +=3D verdef.vd_next;
-> > > > > +                       continue;
-> > > > > +               }
-> > > > > +
-> > > > > +               if (!gelf_getverdaux(verdefs, offset + verdef.vd_=
-aux, &verdaux))
-> > > > > +                       break;
-> > > > > +
-> > > > > +               return elf_strptr(elf, strtabidx, verdaux.vda_nam=
-e);
-> > > > > +
-> > > > > +       }
-> > > > > +       return NULL;
-> > > > > +}
-
-[...]
+> Thanks.
 
