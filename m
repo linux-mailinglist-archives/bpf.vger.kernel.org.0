@@ -1,120 +1,113 @@
-Return-Path: <bpf+bounces-10150-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10151-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C6FB7A2273
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 17:32:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B46A37A232A
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 18:02:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 278642823AC
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 15:32:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AE201C20F8C
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 16:02:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31B7C11C8B;
-	Fri, 15 Sep 2023 15:32:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ACF011CB1;
+	Fri, 15 Sep 2023 16:02:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21DBC111B2
-	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 15:32:34 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id C18E5E6E
-	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 08:32:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1694791951;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7155B30CE6
+	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 16:02:28 +0000 (UTC)
+Received: from out-221.mta1.migadu.com (out-221.mta1.migadu.com [95.215.58.221])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F454E78
+	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 09:02:26 -0700 (PDT)
+Message-ID: <01584fd4-6f51-ebae-f8a2-d05965d7c075@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1694793744;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7RVB1hOIPfQpHaOi4Yk7qJuVpzOQ7elLy/nnGKg1a4U=;
-	b=HMhl1Tt9KPMA8eTvo/V/XvgZSt6SPVqZk/6MW2rQlbrs8XSUoiUMxZwmufBiMgJmb0xC47
-	Si8fJIjIk0gZLCa+SiWXolUF440OHuc3XN/OxGiD7UnK26nM0bkeRqN2dUGxcQQzzo1XgA
-	M05iLCILZ2bshLVV7Y0B8KcUmW7px0Y=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-91-G74hyFSSMxyKHRVlRWqTQA-1; Fri, 15 Sep 2023 11:32:23 -0400
-X-MC-Unique: G74hyFSSMxyKHRVlRWqTQA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B2CEC94593E;
-	Fri, 15 Sep 2023 15:32:22 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 6F91C40C6EA8;
-	Fri, 15 Sep 2023 15:32:21 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <CANn89iLwMhOnrmQTZJ+BqZJSbJZ+Q4W6xRknAAr+uSrk5TX-EQ@mail.gmail.com>
-References: <CANn89iLwMhOnrmQTZJ+BqZJSbJZ+Q4W6xRknAAr+uSrk5TX-EQ@mail.gmail.com> <0000000000001c12b30605378ce8@google.com>
-To: Eric Dumazet <edumazet@google.com>
-Cc: dhowells@redhat.com,
-    syzbot <syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com>,
-    bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
-    kuba@kernel.org, linux-kernel@vger.kernel.org,
-    netdev@vger.kernel.org, pabeni@redhat.com,
-    syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [net?] WARNING in __ip6_append_data
+	bh=I9qXWq2VqDh/JyDDgSP3lQaC0VvRZrcllxmErlIgMnc=;
+	b=HTg/hEg/h7LxM8YCq0jj3yKXDIjygCJyqc0f7ZZbMdTcDu9n1wP1epm0B/Fw7WuqVteqcT
+	GW5fJVKH2UsZaWosogQ3bV2HkISkA5DiChnkpZYj9GGWytqGw6K8NPdpKYNrrJaRoBZ1Zs
+	HexQfWqJVBtKMfbhiVyk5L5Ga6hW6AA=
+Date: Fri, 15 Sep 2023 09:02:18 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3792061.1694791940.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 15 Sep 2023 16:32:20 +0100
-Message-ID: <3792062.1694791940@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+Subject: Re: [Syzkaller & bisect] There is general protection fault in
+ bpf_prog_offload_verifier_prep in v6.6-rc1 kernel
+Content-Language: en-US
+To: Pengfei Xu <pengfei.xu@intel.com>
+Cc: bpf@vger.kernel.org, heng.su@intel.com, lkp@intel.com, sdf@google.com
+References: <ZQPTq8LBmwsz4PGg@xpf.sh.intel.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <ZQPTq8LBmwsz4PGg@xpf.sh.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Eric,
+On 9/14/23 8:46 PM, Pengfei Xu wrote:
+> Hi Stanislav,
+> 
+> Greeting!
+> 
+> There is general protection fault in bpf_prog_offload_verifier_prep in
+> v6.6-rc1 kernel.
+> 
+> All detailed info: https://github.com/xupengfe/syzkaller_logs/tree/main/230914_154711_bpf_prog_offload_verifier_prep
+> Syzkaller reproduced code: https://github.com/xupengfe/syzkaller_logs/blob/main/230914_154711_bpf_prog_offload_verifier_prep/repro.c
+> Syzkaller reproduced steps: https://github.com/xupengfe/syzkaller_logs/blob/main/230914_154711_bpf_prog_offload_verifier_prep/repro.prog
+> Bisect info: https://github.com/xupengfe/syzkaller_logs/blob/main/230914_154711_bpf_prog_offload_verifier_prep/bisect_info.log
+> Issue dmesg: https://github.com/xupengfe/syzkaller_logs/blob/main/230914_154711_bpf_prog_offload_verifier_prep/0bb80ecc33a8fb5a682236443c1e740d5c917d1d_dmesg.log
+> bzImage: https://github.com/xupengfe/syzkaller_logs/raw/main/230914_154711_bpf_prog_offload_verifier_prep/bzImage_0bb80ecc33a8fb5a682236443c1e740d5c917d1d.tar.gz
+> Kconfig: https://github.com/xupengfe/syzkaller_logs/blob/main/230914_154711_bpf_prog_offload_verifier_prep/kconfig_origin
+> 
+> Bisected and found suspected commit is:
+> 2b3486bc2d23 bpf: Introduce device-bound XDP programs
 
-> > WARNING: CPU: 1 PID: 5042 at net/ipv6/ip6_output.c:1800 __ip6_append_d=
-ata.isra.0+0x1be8/0x47f0 net/ipv6/ip6_output.c:1800
+Thanks for the report.
 
-That would appear to be this:
+It has just been fixed in the following commit in the bpf tree:
 
-			if (WARN_ON_ONCE(copy > msg->msg_iter.count))
-				goto error;
+commit 1a49f4195d3498fe458a7f5ff7ec5385da70d92e
+Author: Eduard Zingerman <eddyz87@gmail.com>
+Date:   Mon Sep 11 17:55:37 2023
 
-However, I have a problem that the repro program errors out at this point
-before it gets that far:
+     bpf: Avoid dummy bpf_offload_netdev in __bpf_prog_dev_bound_init
 
-	if (cork->length + length > maxnonfragsize - headersize) {
-   emsgsize:
-		pmtu =3D max_t(int, mtu - headersize + sizeof(struct ipv6hdr), 0);
-		ipv6_local_error(sk, EMSGSIZE, fl6, pmtu);
-		return -EMSGSIZE;
-	}
+     Fix for a bug observable under the following sequence of events:
+     1. Create a network device that does not support XDP offload.
+     2. Load a device bound XDP program with BPF_F_XDP_DEV_BOUND_ONLY flag
+        (such programs are not offloaded).
+     3. Load a device bound XDP program with zero flags
+        (such programs are offloaded).
 
-Are you able to reproduce the issue?
+     At step (2) __bpf_prog_dev_bound_init() associates with device (1)
+     a dummy bpf_offload_netdev struct with .offdev field set to NULL.
+     At step (3) __bpf_prog_dev_bound_init() would reuse dummy struct
+     allocated at step (2).
+     However, downstream usage of the bpf_offload_netdev assumes that
+     .offdev field can't be NULL, e.g. in bpf_prog_offload_verifier_prep().
 
-The values in and around that point are:
+     Adjust __bpf_prog_dev_bound_init() to require bpf_offload_netdev
+     with non-NULL .offdev for offloaded BPF programs.
 
-	cork->length		0
-	length			65540
-	maxnonfragsize		65575
-	headersize		40
-	transhdrlen		4
-	mtu			65536
-	ip6_sk_ignore_df(sk)	true
-
-with maxnonfragsize coming from 'sizeof(struct ipv6hdr) + IPV6_MAXPLEN'.  =
-Is
-that even viable for the size of a packet?
-
-David
+     Fixes: 2b3486bc2d23 ("bpf: Introduce device-bound XDP programs")
+     Reported-by: syzbot+291100dcb32190ec02a8@syzkaller.appspotmail.com
+     Closes: https://lore.kernel.org/bpf/000000000000d97f3c060479c4f8@google.com/
+     Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+     Link: https://lore.kernel.org/r/20230912005539.2248244-2-eddyz87@gmail.com
+     Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 
 
