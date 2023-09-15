@@ -1,139 +1,212 @@
-Return-Path: <bpf+bounces-10157-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10158-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2BC37A23B9
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 18:42:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6130F7A23DB
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 18:47:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A070E1C20EC2
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 16:42:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51DC91C20D54
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 16:47:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A256611C8B;
-	Fri, 15 Sep 2023 16:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16B78125B2;
+	Fri, 15 Sep 2023 16:47:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF67125B2
-	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 16:42:28 +0000 (UTC)
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14535FB
-	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 09:42:26 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d7b957fd276so2815035276.0
-        for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 09:42:26 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DD1611CAF
+	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 16:47:35 +0000 (UTC)
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039CDE69
+	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 09:47:34 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3ab2436b57dso1422385b6e.0
+        for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 09:47:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694796145; x=1695400945; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=5w8nYSzkVPx0Y4u1Ts0WLw0xCMJcfflotrabEjHQ33Q=;
-        b=ApwWh6n0wxiKSuI9gEA0fx0wrklh1S2ew7sCqhPf6FbE9afejpIXqjisiF7zu5r11D
-         ZUAykGC9rMwJ8Y8fr+ylxXv+PG8lgScEAIWNXH3TKVhNOk4EUUFUg39RSMJnJV2o7iyg
-         H4LD3sIKrnOkeSHF6O2A4BVz6APzAxC/tCx1Ub20h2Emh2fxRd8nddncuf5O7zydF2+6
-         6eQiGLWqAfizCCpCzSUjqhWPmhjOhoOeZutKRwpgSEpa+TlQrZCXC/W+bgji+SfjYeys
-         sBiTbfBntmTxUGLD3iigbvmEJV7Vt2wxwmP4ksJQP7yHOCLVpa0/nY8c+B8Ipst1WgfH
-         bgUg==
+        d=google.com; s=20230601; t=1694796453; x=1695401253; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cF9YS+ehaF+t5NpFvOnVvaBghLCf/gM6bVST9fQJ4mY=;
+        b=u3QdTJHR09KzqRSIGHVE2aHDlpNujKI6o+DvV2kifsIu7VESfhAMGu+Bl67fuwwMUY
+         2ukS1Z/ybHbecXe0AME1btEheLPx3NtWIq1P7fGrJgHSC2zz9h5YSmwQDpQ7auu0Fl19
+         wBEQKv6twZfIhrHcNIoY9uMBtvyhVC9bO0IdkC9Y+/smOEP8HjPj5b86pi5MJfxMCyWE
+         Reihae5yB/hej5iW4FWQItW+zgqDoDDnrJMkV/xp971IQmUhEnojGRFlc2hL2tZsaat+
+         9ZaPOKBXhIOmdfJ0qgpTG4B/PbL7dt6TtBrf7BPkz0fq3OvSrdfA3KKh7uzXUKx+JSeq
+         KB0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694796145; x=1695400945;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5w8nYSzkVPx0Y4u1Ts0WLw0xCMJcfflotrabEjHQ33Q=;
-        b=ZQ8UdV03opFdYJJledPiHmk5xNAEF4c7aF7oI/KqGRpGm5SRwrQP9ieiZgL3vO7F3H
-         +LEdv71fmmKccC8q2Esjv4bMrxXeX+u01lbFjboV4H7OS5BsFPzuKgLQwHtzMieAEaa7
-         LtXMpekflAshhYeqgiZIU9bDuLohnE2bv7F7+57IOPBM/SvHyS+gz7Wr4jEvT9x2+3J0
-         99mXWW1uw9BvNnhtU+XK1C1D0wiPAeLd0h16Wx9HBP51BWFmm7fSZwLXGCy6BsakvaAa
-         5koWBgV37TozpzqSHL+SFIvKoJViaUJ8/H+kz4aaDy2jZiY6+JC6H2TBdzCE7WlXrqMg
-         Vt5A==
-X-Gm-Message-State: AOJu0Yx4TZy8k5aSeeroncCOmwr6c9Ny9E14J+QVzCTk7RwIno8yihMj
-	ykCecm8fQpjF3up2UEosvZvou6/g1gGuJAsw4nE=
-X-Google-Smtp-Source: AGHT+IGST3z+4KkcZ6kz4kNyjk4QqtRxcLbAmEGaWSms7bQf894dFDpTB9oaFPiSxyc4T6mpJxzaP3F9DPY4Ro3m/Hs=
-X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:22ea:f17b:9811:4611])
- (user=ndesaulniers job=sendgmr) by 2002:a25:fc01:0:b0:d10:5b67:843c with SMTP
- id v1-20020a25fc01000000b00d105b67843cmr50528ybd.4.1694796145127; Fri, 15 Sep
- 2023 09:42:25 -0700 (PDT)
-Date: Fri, 15 Sep 2023 09:42:20 -0700
+        d=1e100.net; s=20230601; t=1694796453; x=1695401253;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cF9YS+ehaF+t5NpFvOnVvaBghLCf/gM6bVST9fQJ4mY=;
+        b=SzSVhVCFRhIGy6rUEXQBR4tiF4EI9xF3r8M21IjYNDTdGx7DaiwfUCjUaKMDRJAuZ4
+         HROGeVUUuk4VaQANlu+NxU/kJls57/4X1R+aKAMWctg9Ud2FfLS8lcu4o48PGFkhREgE
+         fNx4w0MHcg7cmb0bnGbC9UFOMnJp32p8bUhO/vc7bmRXZpLGdur09Sct/qbZuKjf/mZb
+         +6j5WpEhkn2drev5AWWXGRRK7+AT9MDckuJK61OJ8/YdObeLC8iBBtwBjndqTa/kOHg4
+         HjNOjGA8xzQwjeWGr4robcNH6Me4SwrM+gLR/AUMF8a+0Bcm0wKn9tUpXLRaNFCdrWwF
+         j7sA==
+X-Gm-Message-State: AOJu0Yy9pTWqH7yEhzXLrL8gX5NjK9+tSpv8R+KUq4p2kELKR0zlKcEI
+	3jsdjYLWPaQuNVQDstTMhpO81U0pxiOJVAzBQDqQ5g==
+X-Google-Smtp-Source: AGHT+IFvL2eD//es1+Vlrx72iJXEbG1iWd4k5Qmr5WyFLT5JxMTHytrk/S/0QC6X0oR8TKe+Okc61Jc/op6Uj4KT4Zc=
+X-Received: by 2002:a05:6871:281:b0:1c0:937:455d with SMTP id
+ i1-20020a056871028100b001c00937455dmr2658921oae.47.1694796453154; Fri, 15 Sep
+ 2023 09:47:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAGuJBGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyjHQUlJIzE
- vPSU3UzU4B8JSMDI2MDS0NT3aSCtPjk/JwcsEpdYzMLC8tEY0vDFBMTJaCegqLUtMwKsHnRsbW 1AKn00e1fAAAA
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=eMOZeIQ4DYNKvsNmDNzVbQZqpdex34Aww3b8Ah957X4=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694796143; l=1838;
- i=ndesaulniers@google.com; s=20230823; h=from:subject:message-id;
- bh=xGla73CQna/Fo/W2LSdP2nzHHuTYVpRoroUyiOyj28c=; b=PXHwW1V09cFms7V2IdxFS5Lhjdgg3ChUMjyCNuo5CFmdvRYm+zJ/C9YtGZKTavJ+GvRYufx1c
- 3hWeTQ77CCGBtgQPO5uvlTnSX1I/sGSpJSC8fEX0g1G09/3VdFv6clr
-X-Mailer: b4 0.12.3
-Message-ID: <20230915-bpf_collision-v2-1-027670d38bdf@google.com>
-Subject: [PATCH v2] bpf: Fix BTF_ID symbol generation collision
+MIME-Version: 1.0
+References: <CAKwvOdnaEakT_y8TA9b_nMY3kMp=xxqKpGQPc2drNqRdV39RQw@mail.gmail.com>
+ <ZPozfCEF9SV2ADQ5@krava> <ZPsJ4AAqNMchvms/@krava> <CAKwvOd==X0exrhmsqX1j1WFX77xe8W7xPbfiCY+Rt6abgmkMCQ@mail.gmail.com>
+ <ZPuA5+HmbcdBLbIq@krava> <ZQLBm8sC+V53CIzD@krava> <CAK7LNATiHvOXiWQi9gXJO9rZbT_MFm6NddaWqoY4ykNWf+OYsQ@mail.gmail.com>
+ <ZQLX3oSCk95Qf4Ma@krava> <CAEf4Bzb5KQ2_LmhN769ifMeSJaWfebccUasQOfQKaOd0nQ51tw@mail.gmail.com>
+ <ZQQVr35crUtN1quS@krava>
+In-Reply-To: <ZQQVr35crUtN1quS@krava>
 From: Nick Desaulniers <ndesaulniers@google.com>
-To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, stable@vger.kernel.org, 
-	Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>, Marcus Seyfarth <m.seyfarth@gmail.com>, 
-	Nathan Chancellor <nathan@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Date: Fri, 15 Sep 2023 09:47:18 -0700
+Message-ID: <CAKwvOdk0i5fXACA5ZBn0ZLK4jvoXn6X3VjSjfOTc6R=+owNB1g@mail.gmail.com>
+Subject: Re: duplicate BTF_IDs leading to symbol redefinition errors?
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Marcus Seyfarth <m.seyfarth@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	clang-built-linux <llvm@lists.linux.dev>, Stanislav Fomichev <sdf@google.com>, 
+	Nathan Chancellor <nathan@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-	autolearn=ham autolearn_force=no version=3.4.6
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Marcus and Satya reported an issue where BTF_ID macro generates same
-symbol in separate objects and that breaks final vmlinux link.
+On Fri, Sep 15, 2023 at 1:28=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
+>
+> On Thu, Sep 14, 2023 at 11:14:19AM -0700, Andrii Nakryiko wrote:
+> > On Thu, Sep 14, 2023 at 2:52=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> =
+wrote:
+> > >
+> > > On Thu, Sep 14, 2023 at 05:30:51PM +0900, Masahiro Yamada wrote:
+> > >
+> > > SNIP
+> > >
+> > > > > > so the change is about adding unique id that's basically path o=
+f
+> > > > > > the object stored in base32 so it could be used as symbol, so w=
+e
+> > > > > > don't really need to read the actual file
+> > > > > >
+> > > > > > the problem is when BTF_ID definition like:
+> > > > > >
+> > > > > > BTF_ID(struct, cgroup)
+> > > > > >
+> > > > > > translates in 2 separate objects into same symbol name because =
+of
+> > > > > > the matching __COUNTER__ macro values (like 380 below)
+> > > > > >
+> > > > > >   __BTF_ID__struct__cgroup__380
+> > > > > >
+> > > > > > this change just adds unique id of the path name at the end of =
+the
+> > > > > > symbol with:
+> > > > > >
+> > > > > >   echo -n 'kernel/bpf/helpers' | base32 -w0 --> NNSXE3TFNQXWE4D=
+GF5UGK3DQMVZHG
+> > > > > >
+> > > > > > so the symbol looks like:
+> > > > > >
+> > > > > >   __BTF_ID__struct__cgroup__380NNSXE3TFNQXWE4DGF5UGK3DQMVZHG
+> > > > > >
+> > > > > > and is unique over the sources
+> > > > > >
+> > > > > > but I still hope we could come up with some better solution ;-)
+> > > > >
+> > > > > so far the only better solution I could come up with is to use
+> > > > > cksum (also from coreutils) instead of base32, which makes the
+> > > > > BTF_ID_BASE value compact
+> > > > >
+> > > > > I'll run test to find out how much it hurts the build time
+> > > > >
+> > > > > jirka
+> > > >
+> > > >
+> > > >
+> > > > Seems a bad idea to me.
+> > > >
+> > > > It would fork a new shell and chsum for all files,
+> > > > while only a few of them need it.
+> > >
+> > > right, I have a change to limit this on kernel and net directories,
+> > > but it's still bad
+> > >
+> > > >
+> > > > Better to consult BTF forks.
+> > >
+> > > perhaps there's better way within kbuild to get unique id/value
+> > > for each object file?
+> >
+> > let's just use __LINE__ + __COUNTER__ for now and teach resolve_btfids
+> > to fail and complain loudly about duplicate symbols?
+>
+> ok, will send that.. but it fails during link before resolve_btfids
+> takes place
+>
+> >
+> >
+> > This will give us time and opportunity to implement a better approach
+> > to .BTF_ids overall. Encoding the desired type name in the symbol name
+> > always felt off. Maybe it's better to encode type + name as data,
+> > which is discarded at the latest stage during vmlinux linking? Either
+>
+> hum, so maybe having a special section (.BTF_ids_desc below)
+> that would have record for each ID placed in .BTF_ids section:
+>
+> asm(                                           \
+> ".pushsection .BTF_ids,\"a\";        \n"       \
+> "1:                                  \n"       \
+> ".zero 4                             \n"       \
+> ".popsection;                        \n"       \
+> ".pushsection .BTF_ids_desc,\"a\";   \n"       \
+> ".long 1b                            \n"       \
+>
+> and somehow get prefix and name pointers in here:
+>
+> ".long prefix
+> ".long name
+>
+> ".popsection;                        \n");
+>
+> so resolve_btfids would iterate .BTF_ids_desc records and fix
+> up .BTF_ids data..
+>
+> we might need to do one extra link phase to get rid of the
+> .BTF_ids_desc secion
 
-  ld.lld: error: ld-temp.o <inline asm>:14577:1: symbol
-  '__BTF_ID__struct__cgroup__624' is already defined
+It should be ok to keep it in vmlinux as we do for DWARF debug info.
 
-This can be triggered under specific configs when __COUNTER__ happens to
-be the same for the same symbol in two different translation units,
-which is already quite unlikely to happen.
+We'd want to make sure it's not retained in the compressed image
+though. Pretty sure `strip` is used to drop DWARF from the compressed
+image, but `strip` isn't going to recognize the semantics of some new
+ad-hoc ELF section.  Pretty sure `objcopy` can be used to drop ELF
+sections; we'd need to probably invoke `objcopy` explicitly to drop
+that section (or add any new section to any pre-existing list of
+sections to drop).
 
-Add __LINE__ number suffix to make BTF_ID symbol more unique, which is
-not a complete fix, but it would help for now and meanwhile we can work
-on better solution as suggested by Andrii.
+>
+> > way, this baseid hack seems worse and unnecessary.
+>
+> yes, it's bad
+>
+> jirka
 
-Cc: stable@vger.kernel.org
-Reported-by: Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>
-Reported-by: Marcus Seyfarth <m.seyfarth@gmail.com>
-Closes: https://github.com/ClangBuiltLinux/linux/issues/1913
-Tested-by: Marcus Seyfarth <m.seyfarth@gmail.com>
-Debugged-by: Nathan Chancellor <nathan@kernel.org>
-Co-developed-by: Jiri Olsa <jolsa@kernel.org>
-Link: https://lore.kernel.org/bpf/CAEf4Bzb5KQ2_LmhN769ifMeSJaWfebccUasQOfQKaOd0nQ51tw@mail.gmail.com/
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- tools/include/linux/btf_ids.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/include/linux/btf_ids.h b/tools/include/linux/btf_ids.h
-index 71e54b1e3796..30e920b96a18 100644
---- a/tools/include/linux/btf_ids.h
-+++ b/tools/include/linux/btf_ids.h
-@@ -38,7 +38,7 @@ asm(							\
- 	____BTF_ID(symbol)
- 
- #define __ID(prefix) \
--	__PASTE(prefix, __COUNTER__)
-+	__PASTE(prefix, __COUNTER__ __LINE__)
- 
- /*
-  * The BTF_ID defines unique symbol for each ID pointing
 
----
-base-commit: 9fdfb15a3dbf818e06be514f4abbfc071004cbe7
-change-id: 20230915-bpf_collision-36889a391d44
-
-Best regards,
--- 
-Nick Desaulniers <ndesaulniers@google.com>
-
+--=20
+Thanks,
+~Nick Desaulniers
 
