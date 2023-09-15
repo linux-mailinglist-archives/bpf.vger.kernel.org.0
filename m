@@ -1,177 +1,191 @@
-Return-Path: <bpf+bounces-10127-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10128-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33AD87A13C0
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 04:18:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C69467A13D5
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 04:27:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC04C281AB4
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 02:18:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA28B1C20CA0
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 02:27:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74556ECB;
-	Fri, 15 Sep 2023 02:18:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A9081C;
+	Fri, 15 Sep 2023 02:26:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBCBD7F8
-	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 02:18:39 +0000 (UTC)
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9A31BEB
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 19:18:39 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c1ff5b741cso15074975ad.2
-        for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 19:18:39 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB1EE7EE
+	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 02:26:57 +0000 (UTC)
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35082134;
+	Thu, 14 Sep 2023 19:26:56 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-6491907dbc3so9527596d6.2;
+        Thu, 14 Sep 2023 19:26:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694744319; x=1695349119; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eVDPL70Kg4GILb44eYhoF+roPDrCsejnz1gm9Vu/IE0=;
-        b=G99N3XW+Unk24b5m9AP0ZarS0Smaf91mHV0Rk19Zydon2ZhTbznDQweAFImRRfnI/U
-         PjvE7Yd7Bn0FLFf6U57rL6Ck4kQ0kanoZGsTrl/unanGhAKzjGG3LcD5f4PR7Rg1/PfB
-         W+2V+oF3Sf+D0Sn5wJK3n0/Reyg/JHWmllbN0eolwRmhe76hGj0aaHHPhcpvUCxqIpko
-         82VJ7HXpWPGuG5t7v/zH5EPYdW7T4WZh6IiOGG/ZmxbTzqpR2JYbDJLCzGoebdZeSQZi
-         YpfrDdafJRsyb5rcZrAPRwflOdVQTUtQKvpBycWo6QKNl6ooOuOaBFB50UPorSUBaEhu
-         b/Fg==
+        d=gmail.com; s=20230601; t=1694744816; x=1695349616; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0V+Ej050wtBPVkvgLAURHyBGUEz6TBckGLvBwf0w5ek=;
+        b=biaJ2IxunrpxB70Atdrc1R4WoE9HsATB3NyVNjXtZhI6vXfNMuT9x6emDg4VSqyj3b
+         T+VeroTjs09eeB3OVFr8TehRrDylmzIlqnsJFOE1if3ipC/HuRkEdy1sqmC/VNB5LRJD
+         bOL17MiNyVjQwI3qeAmYjcfNhOmFwGH+rtmBMJFei7FQAfTq330R0w16XZCVCjtkc5ze
+         4uR1+lwJsLVM7Zxtz1TDHPZQtTQLQY9IFPVb+XfdtyU33Jcd1nsl9nuS41lIYiIKzgam
+         Qgo/v8yY/ACqRAyeNiusFGK5jdNyNXsE1hvqoksyGa7rkRySwabs3GMheuLS7CSGMx3D
+         io6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694744319; x=1695349119;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eVDPL70Kg4GILb44eYhoF+roPDrCsejnz1gm9Vu/IE0=;
-        b=Zxkp8yxaazlHqUAtvUWx0aL9rngDgGcVsMroJ0/fTkwEPGGZzWg8q+mMB1T4NDuYV2
-         uknA9cM2Q/Q9zXV2qmkG9MnXHPuLakVf48gPcpqjEsTW552vRPLZPYgyoMV3gDWt29KS
-         xP1kxAKjvCASX/JWdxGOjvZX0aBq+KyhZ5kr73hJaxujuSFl5xO5ZAQjEE1Ts7UyplvV
-         ujMWfN4uBlbNWWfzYyYvm8NSw26YjdIOXzEay+V9vlWDSynmhAhiYHs6JZw2G2WNdspE
-         TFBU3TQKdNCrscoDRy1HCceY/YbU2gldmWpBFYWPHIvdlxjlqWoo6yuvcIeE6GoF4t28
-         JbOw==
-X-Gm-Message-State: AOJu0YxbU9XoHdMlanRT1RiRJ5i2i9cJ16Ikwz+Eida8XQzDOyMXFFCI
-	AF+ivbmKFGv52ChlMTYVmyY=
-X-Google-Smtp-Source: AGHT+IGg+I4SIChNwrDBX9VMARuh6tl+jHlf3TFid8JdDh9N3selr+fMV2DlJh3AyaqhRFO6pZr1UA==
-X-Received: by 2002:a17:902:e881:b0:1bc:203f:3b3c with SMTP id w1-20020a170902e88100b001bc203f3b3cmr407800plg.24.1694744318438;
-        Thu, 14 Sep 2023 19:18:38 -0700 (PDT)
-Received: from [10.22.68.46] ([122.11.166.8])
-        by smtp.gmail.com with ESMTPSA id r8-20020a1709028bc800b001bf11cf2e21sm2230040plo.210.2023.09.14.19.18.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Sep 2023 19:18:37 -0700 (PDT)
-Message-ID: <8148921c-cc06-bad7-787f-d190cba0bce1@gmail.com>
-Date: Fri, 15 Sep 2023 10:18:34 +0800
+        d=1e100.net; s=20230601; t=1694744816; x=1695349616;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0V+Ej050wtBPVkvgLAURHyBGUEz6TBckGLvBwf0w5ek=;
+        b=MtCc7NcoiLW0kAbEppJfP2v2UIzPL40q9y0LERpDOq50rjLOZlRPBgs49ebFYl3SU4
+         WpaNyMkuKtkB+rtnuVejkTdFKjwsSg9aeVczmofnwSYMghwz3rzFuw7GVIMSC3fcBW2y
+         Vamv2qhvGljwnpGpw2wf5H0y+bGjgUJE57cl0dVJ8WJ5Kn2z6ev/ZYxyFnbhSNQ+sqNT
+         lqbgkQcwM6ppPMyajxeXe1Bx6zXi2Pz6UYXbz5DdsmJk615bUmrp8TDeyyHI4gwusMN6
+         rk8S6Cy2g8IMWCo+AleBZN6mE530zBWLpVt2tmojvVk7cipxBUvuQXWtt8EeSinc9YGK
+         dVDA==
+X-Gm-Message-State: AOJu0YzHdsauoe2e16RFo3QFWxuFipXMdF/uOYlYUa5Rx//mun39edaM
+	2ZrVz5sj8ZwFPNKp1XrJ1kGDaCF/zN67SBtxgWg=
+X-Google-Smtp-Source: AGHT+IEQIFGBqnwaVx6CYRVwvI75J6PHFp1VzHmY85UfwZyp/hATEeui96erhiU98nairCgDsIa4WHzwKu1kuXTsxbc=
+X-Received: by 2002:a0c:e04a:0:b0:631:f9ad:1d43 with SMTP id
+ y10-20020a0ce04a000000b00631f9ad1d43mr403460qvk.14.1694744815978; Thu, 14 Sep
+ 2023 19:26:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH bpf] bpf: Fix tr dereferencing
-Content-Language: en-US
-To: Hengqi Chen <hengqi.chen@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, toke@redhat.com, sdf@google.com, lkp@intel.com,
- dan.carpenter@linaro.org, maciej.fijalkowski@intel.com,
- kernel-patches-bot@fb.com
-References: <20230914145126.40202-1-hffilwlqm@gmail.com>
- <CAEyhmHRAvR=Ch-DjMpmpB0zeUsbQYcTXkMqyTSL9iwmZukcTgw@mail.gmail.com>
-From: Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <CAEyhmHRAvR=Ch-DjMpmpB0zeUsbQYcTXkMqyTSL9iwmZukcTgw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <CAADnVQLid7QvukhnqRoY2VVFi1tCfkPFsMGUUeHDtCgf0SAJCg@mail.gmail.com>
+ <20230913122827.91591-1-gerhorst@amazon.de>
+In-Reply-To: <20230913122827.91591-1-gerhorst@amazon.de>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Fri, 15 Sep 2023 10:26:19 +0800
+Message-ID: <CALOAHbAswO78gQ+D6yOupi5Hx_i3xqHQFrjGdWR=EhdVvV3ZkA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] Revert "bpf: Fix issue in verifying allow_ptr_leaks"
+To: gerhorst@cs.fau.de
+Cc: alexei.starovoitov@gmail.com, andrii@kernel.org, ast@kernel.org, 
+	bpf@vger.kernel.org, daniel@iogearbox.net, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	martin.lau@linux.dev, sdf@google.com, song@kernel.org, 
+	yonghong.song@linux.dev, mykolal@fb.com, shuah@kernel.org, gerhorst@amazon.de, 
+	iii@linux.ibm.com, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Hagar Gamal Halim Hemdan <hagarhem@amazon.de>, 
+	Puranjay Mohan <puranjay12@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Sep 13, 2023 at 8:30=E2=80=AFPM Luis Gerhorst <gerhorst@amazon.de> =
+wrote:
+>
+> This reverts commit d75e30dddf73449bc2d10bb8e2f1a2c446bc67a2.
+>
+> To mitigate Spectre v1, the verifier relies on static analysis to deduct
+> constant pointer bounds, which can then be enforced by rewriting pointer
+> arithmetic [1] or index masking [2]. This relies on the fact that every
+> memory region to be accessed has a static upper bound and every date
+> below that bound is accessible. The verifier can only rewrite pointer
+> arithmetic or insert masking instructions to mitigate Spectre v1 if a
+> static upper bound, below of which every access is valid, can be given.
+>
+> When allowing packet pointer comparisons, this introduces a way for the
+> program to effectively construct an accessible pointer for which no
+> static upper bound is known. Intuitively, this is obvious as a packet
+> might be of any size and therefore 0 is the only statically known upper
+> bound below of which every date is always accessible (i.e., none).
+>
+> To clarify, the problem is not that comparing two pointers can be used
+> for pointer leaks in the same way in that comparing a pointer to a known
+> scalar can be used for pointer leaks. That is because the "secret"
+> components of the addresses cancel each other out if the pointers are
+> into the same region.
+>
+> With [3] applied, the following malicious BPF program can be loaded into
+> the kernel without CAP_PERFMON:
+>
+> r2 =3D *(u32 *)(r1 + 76) // data
+> r3 =3D *(u32 *)(r1 + 80) // data_end
+> r4 =3D r2
+> r4 +=3D 1
+> if r4 > r3 goto exit
+> r5 =3D *(u8 *)(r2 + 0) // speculatively read secret
+> r5 &=3D 1 // choose bit to leak
+> // ... side channel to leak secret bit
+> exit:
+> // ...
+>
+> This is jited to the following amd64 code which still contains the
+> gadget:
+>
+>    0:   endbr64
+>    4:   nopl   0x0(%rax,%rax,1)
+>    9:   xchg   %ax,%ax
+>    b:   push   %rbp
+>    c:   mov    %rsp,%rbp
+>    f:   endbr64
+>   13:   push   %rbx
+>   14:   mov    0xc8(%rdi),%rsi // data
+>   1b:   mov    0x50(%rdi),%rdx // data_end
+>   1f:   mov    %rsi,%rcx
+>   22:   add    $0x1,%rcx
+>   26:   cmp    %rdx,%rcx
+>   29:   ja     0x000000000000003f // branch to mispredict
+>   2b:   movzbq 0x0(%rsi),%r8 // speculative load of secret
+>   30:   and    $0x1,%r8 // choose bit to leak
+>   34:   xor    %ebx,%ebx
+>   36:   cmp    %rbx,%r8
+>   39:   je     0x000000000000003f // branch based on secret
+>   3b:   imul   $0x61,%r8,%r8 // leak using port contention side channel
+>   3f:   xor    %eax,%eax
+>   41:   pop    %rbx
+>   42:   leaveq
+>   43:   retq
+>
+> Here I'm using a port contention side channel because storing the secret
+> to the stack causes the verifier to insert an lfence for unrelated
+> reasons (SSB mitigation) which would terminate the speculation.
+>
+> As Daniel already pointed out to me, data_end is even attacker
+> controlled as one could send many packets of sufficient length to train
+> the branch prediction into assuming data_end >=3D data will never be true=
+.
+> When the attacker then sends a packet with insufficient data, the
+> Spectre v1 gadget leaks the chosen bit of some value that lies behind
+> data_end.
+>
+> To make it clear that the problem is not the pointer comparison but the
+> missing masking instruction, it can be useful to transform the code
+> above into the following equivalent pseudocode:
+>
+> r2 =3D data
+> r3 =3D data_end
+> r6 =3D ... // index to access, constant does not help
+> r7 =3D data_end - data // only known at runtime, could be [0,PKT_MAX)
+> if !(r6 < r7) goto exit
+> // no masking of index in r6 happens
+> r2 +=3D r6 // addr. to access
+> r5 =3D *(u8 *)(r2 + 0) // speculatively read secret
+> // ... leak secret as above
+>
+> One idea to resolve this while still allowing for unprivileged packet
+> access would be to always allocate a power of 2 for the packet data and
+> then also pass the respective index mask in the skb structure. The
+> verifier would then have to check that this index mask is always applied
+> to the offset before a packet pointer is dereferenced. This patch does
+> not implement this extension, but only reverts [3].
 
+Hi Luis,
 
-On 15/9/23 10:13, Hengqi Chen wrote:
-> On Thu, Sep 14, 2023 at 10:51 PM Leon Hwang <hffilwlqm@gmail.com> wrote:
->>
->> Fix 'tr' dereferencing bug when CONFIG_BPF_JIT is turned off.
->>
->> Like 'bpf_trampoline_get_progs()', return 'ERR_PTR()' and then check by
->> 'IS_ERR()'. As a result, when CONFIG_BPF_JIT is turned off, it's able to
->> handle the case that 'bpf_trampoline_get()' returns
->> 'ERR_PTR(-EOPNOTSUPP)'.
->>
->> Fixes: 4a1e7c0c63e0 ("bpf: Support attaching freplace programs to multiple attach points")
->> Fixes: f7b12b6fea00 ("bpf: verifier: refactor check_attach_btf_id()")
->> Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
->> Reported-by: kernel test robot <lkp@intel.com>
->> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
->> Closes: https://lore.kernel.org/r/202309131936.5Nc8eUD0-lkp@intel.com/
->> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
->> ---
->>  kernel/bpf/syscall.c    | 4 ++--
->>  kernel/bpf/trampoline.c | 6 +++---
->>  kernel/bpf/verifier.c   | 4 ++--
->>  3 files changed, 7 insertions(+), 7 deletions(-)
->>
->> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index 6a692f3bea150..5748d01c99854 100644
->> --- a/kernel/bpf/syscall.c
->> +++ b/kernel/bpf/syscall.c
->> @@ -3211,8 +3211,8 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
->>                 }
->>
->>                 tr = bpf_trampoline_get(key, &tgt_info);
->> -               if (!tr) {
->> -                       err = -ENOMEM;
->> +               if (IS_ERR(tr)) {
->> +                       err = PTR_ERR(tr);
->>                         goto out_unlock;
-> 
-> IS_ERR does not check the null case, so this should be IS_ERR_OR_NULL instead.
+The skb pointer comparison is a reasonable operation in a networking bpf pr=
+og.
+If we just prohibit a reasonable operation to prevent a possible
+spectre v1 attack, it looks a little weird, right ?
+Should we figure out a real fix to prevent it ?
 
-Actually, bpf_trampoline_get() would not return NULL. It returns ERR_PTR(-ENOMEM) 
-or a valid ptr.
-
-Thanks,
-Leon
-
-> 
->>                 }
->>         } else {
->> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
->> index e97aeda3a86b5..1952614778433 100644
->> --- a/kernel/bpf/trampoline.c
->> +++ b/kernel/bpf/trampoline.c
->> @@ -697,8 +697,8 @@ int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
->>
->>         bpf_lsm_find_cgroup_shim(prog, &bpf_func);
->>         tr = bpf_trampoline_get(key, &tgt_info);
->> -       if (!tr)
->> -               return  -ENOMEM;
->> +       if (IS_ERR(tr))
->> +               return PTR_ERR(tr);
->>
->>         mutex_lock(&tr->mutex);
->>
->> @@ -775,7 +775,7 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
->>
->>         tr = bpf_trampoline_lookup(key);
->>         if (!tr)
->> -               return NULL;
->> +               return ERR_PTR(-ENOMEM);
->>
->>         mutex_lock(&tr->mutex);
->>         if (tr->func.addr)
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 18e673c0ac159..054063ead0e54 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -19771,8 +19771,8 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
->>
->>         key = bpf_trampoline_compute_key(tgt_prog, prog->aux->attach_btf, btf_id);
->>         tr = bpf_trampoline_get(key, &tgt_info);
->> -       if (!tr)
->> -               return -ENOMEM;
->> +       if (IS_ERR(tr))
->> +               return PTR_ERR(tr);
->>
->>         if (tgt_prog && tgt_prog->aux->tail_call_reachable)
->>                 tr->flags = BPF_TRAMP_F_TAIL_CALL_CTX;
->>
->> base-commit: cbb1dbcd99b0ae74c45c4c83c6d213c12c31785c
->> --
->> 2.41.0
->>
+--=20
+Regards
+Yafang
 
