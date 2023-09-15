@@ -1,189 +1,111 @@
-Return-Path: <bpf+bounces-10131-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10132-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C70EB7A1410
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 04:55:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 199107A1469
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 05:31:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECF831C20C66
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 02:55:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31F561C20ADA
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 03:31:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D6FC1FA4;
-	Fri, 15 Sep 2023 02:55:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE484258C;
+	Fri, 15 Sep 2023 03:31:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 808A1EA3
-	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 02:54:58 +0000 (UTC)
-Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC68E2701
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 19:54:57 -0700 (PDT)
-Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1d637f9c587so691802fac.1
-        for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 19:54:57 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A569E211A
+	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 03:31:26 +0000 (UTC)
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0FB2126
+	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 20:31:25 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c0c6d4d650so15269645ad.0
+        for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 20:31:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694746497; x=1695351297; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=bytedance.com; s=google; t=1694748685; x=1695353485; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pXHuhIzDe/bz+j385T2N3ck82lc0SQui6VrsSZllf/U=;
-        b=SFr/eLsIpyotKeXTrSrrzl5FZsta04lsDjBd1dFdsGC5ege7RCxH8oWEd4SA111WvC
-         fEpLyzqGPacFjiyx7PztPBaqno5Ve9lQ4EWov57Rq/nal1seHLXcIQteaFYydHcyp45l
-         5mVFrYJdF70T5RPA0zfU+M+LGAss8Y2K17gkbbTdUXyWDF5lWFa/Ilv2aBaahibL8Tcv
-         SD2XOuFOzWHbLfQTro8uIdzRA9ksm0CvR2747DXOrSAk+MPtt7xrhunVLqRiMRW43XcG
-         biVt3IhOmNttuDBPiw+8tLXDjt9gGW1iaGVjOZIHti1HTaUUgESbjIghnIMTgk+Clfkg
-         R8kw==
+        bh=hpWRm2xOvIj7k2faB4bOIBQWQx7RWcYPohu2ZtEfRdI=;
+        b=lfpB69hQ+HT7cPnK56ljrqcQBQqiPG7lfKlClk/ftatbtDW/YWsKWpw8A7lJEgoLqj
+         HMvm/FQz7Gnh0/Gtrb0Tax1Zuk6d/boGznKWSmBBQEjNi/ahlXxK1fwok7ENOF/q08I0
+         KrAVUHKgnvTOO1+FvWKr3O04hURZK92ddlZZSawhZoPMc/w+5zokVC46/hRW812UY918
+         BX2SSxMdVC+jPVPMjKbKU8wjHqnSYvl48JvB5GcSziEEbkrkzsoaBPqhoQMNKGiy+E3Z
+         jTWwQpNEnQc6aF2kd7Z0i9fg+yW3nWI+LQ2+Yx/mtZ4D9ILms8UX+/CH2JEF5JwR6EzK
+         73xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694746497; x=1695351297;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pXHuhIzDe/bz+j385T2N3ck82lc0SQui6VrsSZllf/U=;
-        b=NE435S2RrhiVYhARWVbAjyrV0IaVuy4qLTUDyZeDq+eD/s/UIB3zDmFroK/qKZcVok
-         d8JrfWPuXrx+7kbJ85lHXQ7WyBV9RhGeAIb+ltokyyGJx9L3h/7SKopMbGMJl0JT3TQJ
-         rwpxTmR43HABlDKSv3h2xAfem2nDHg3XTmgb/E6TDpZtDdilPYpURE++alQUjb0KyCXt
-         SyulLCcsrrxuIikbN/tZvIeMfr5NtbFOfFAV16Q2X+14vaV+Zj7GW7PbAu373xvWpQ8H
-         bZgYaSDN4RGJIBwbvZFZzTwbRXtUFfM//beFbjqOOdZwlPNzYSoRRb7CH0xj1M0sntHJ
-         OCzQ==
-X-Gm-Message-State: AOJu0YzsZjNwAgNkLEDVdm5Fu1O64pgqLGuYuPTbpn9hTMXYz9OS23/4
-	/qsMs+BOOp7D+UxzbAs8bvapRcCp5Li4jEGCGcY=
-X-Google-Smtp-Source: AGHT+IEHcA5AJUWtENYmVw6QDQ0IfzJXz2t1wkPzOf2pVpYjCqHVoofHg2PF9orkC42UFWFq7uIor+zyrkjg38IC1vE=
-X-Received: by 2002:a05:6870:c155:b0:1b4:4c6d:765c with SMTP id
- g21-20020a056870c15500b001b44c6d765cmr2623943oad.26.1694746497053; Thu, 14
- Sep 2023 19:54:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694748685; x=1695353485;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=hpWRm2xOvIj7k2faB4bOIBQWQx7RWcYPohu2ZtEfRdI=;
+        b=TS4JUBnhqEgzTJr2BzYH+YMFXu13M8YnfWUnWOi3AS66B5fr7XDi/1IBp/+HUGjBhc
+         nKPi4USY0Dt29B3znTu9ZEb7FXXyzm4LKsp5zdoC2kE48ojtedEXUEfA6DHXPoPyX183
+         zsbgTNFS9Xq+NMLNPmCtNyLRUBpoT0yq9829uuMXvWoQl5C91iLP3/TBhR5c8t01h44Z
+         BGFMLdzXp2QDPRWj1dnEyvIoAc1nP1N8zUIC1hFzgt9JczC8KpR4JKps0YMI/TjW2YFo
+         IdVunF7VZhkABh49CXhsctjo5Fqq23I/doqpG9wCY4hz0ZfDBjG4NRuFNoRiLdOlQHuQ
+         Tv9Q==
+X-Gm-Message-State: AOJu0Yzbtl7xiySsWGE0KdALUtTR69Xx7Afr98oLkkrXtc96IySBDeKD
+	eZaFLukrn7lowjv8r69pDy0D1g==
+X-Google-Smtp-Source: AGHT+IHkWRJQiv5Qf/cfuGEDWVM5jxQ4hNQK+qCRnUK1ZewV+/2s0bDDBdtvBsWAfFab3l8fsODlRw==
+X-Received: by 2002:a17:903:258a:b0:1c4:3956:585e with SMTP id jb10-20020a170903258a00b001c43956585emr70750plb.51.1694748685025;
+        Thu, 14 Sep 2023 20:31:25 -0700 (PDT)
+Received: from [10.84.145.144] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id z16-20020a170903019000b001ab2b4105ddsm2303584plg.60.2023.09.14.20.31.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Sep 2023 20:31:24 -0700 (PDT)
+Message-ID: <513b8479-4c2d-b6c1-2081-15ea0cd0ebeb@bytedance.com>
+Date: Fri, 15 Sep 2023 11:31:15 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230914145126.40202-1-hffilwlqm@gmail.com> <CAEyhmHRAvR=Ch-DjMpmpB0zeUsbQYcTXkMqyTSL9iwmZukcTgw@mail.gmail.com>
- <8148921c-cc06-bad7-787f-d190cba0bce1@gmail.com>
-In-Reply-To: <8148921c-cc06-bad7-787f-d190cba0bce1@gmail.com>
-From: Hengqi Chen <hengqi.chen@gmail.com>
-Date: Fri, 15 Sep 2023 10:54:45 +0800
-Message-ID: <CAEyhmHR9g+B67Fy_wmdTwHzMFhmdw86ak6dPFpMjui16ecTUjw@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Fix tr dereferencing
-To: Leon Hwang <hffilwlqm@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, toke@redhat.com, sdf@google.com, lkp@intel.com, 
-	dan.carpenter@linaro.org, maciej.fijalkowski@intel.com, 
-	kernel-patches-bot@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [RFC PATCH v2 2/5] mm: Add policy_name to identify OOM policies
+To: Bixuan Cui <cuibixuan@vivo.com>, Jonathan Corbet <corbet@lwn.net>,
+ hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ muchun.song@linux.dev
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ wuyun.abel@bytedance.com, robin.lu@bytedance.com
+References: <20230810081319.65668-1-zhouchuyi@bytedance.com>
+ <20230810081319.65668-3-zhouchuyi@bytedance.com>
+ <87h6p1uz3w.fsf@meer.lwn.net> <5343d12a-630c-4d54-91f1-7a7d08326840@vivo.com>
+ <89295904-3afa-4c8f-ccdb-1d78d9ad3024@bytedance.com>
+ <9f6b8aaa-50b1-435b-a525-9a7986f63845@vivo.com>
+From: Chuyi Zhou <zhouchuyi@bytedance.com>
+In-Reply-To: <9f6b8aaa-50b1-435b-a525-9a7986f63845@vivo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Sep 15, 2023 at 10:18=E2=80=AFAM Leon Hwang <hffilwlqm@gmail.com> w=
-rote:
->
->
->
-> On 15/9/23 10:13, Hengqi Chen wrote:
-> > On Thu, Sep 14, 2023 at 10:51=E2=80=AFPM Leon Hwang <hffilwlqm@gmail.co=
-m> wrote:
-> >>
-> >> Fix 'tr' dereferencing bug when CONFIG_BPF_JIT is turned off.
-> >>
-> >> Like 'bpf_trampoline_get_progs()', return 'ERR_PTR()' and then check b=
-y
-> >> 'IS_ERR()'. As a result, when CONFIG_BPF_JIT is turned off, it's able =
-to
-> >> handle the case that 'bpf_trampoline_get()' returns
-> >> 'ERR_PTR(-EOPNOTSUPP)'.
-> >>
-> >> Fixes: 4a1e7c0c63e0 ("bpf: Support attaching freplace programs to mult=
-iple attach points")
-> >> Fixes: f7b12b6fea00 ("bpf: verifier: refactor check_attach_btf_id()")
-> >> Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
-> >> Reported-by: kernel test robot <lkp@intel.com>
-> >> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> >> Closes: https://lore.kernel.org/r/202309131936.5Nc8eUD0-lkp@intel.com/
-> >> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
-> >> ---
-> >>  kernel/bpf/syscall.c    | 4 ++--
-> >>  kernel/bpf/trampoline.c | 6 +++---
-> >>  kernel/bpf/verifier.c   | 4 ++--
-> >>  3 files changed, 7 insertions(+), 7 deletions(-)
-> >>
-> >> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> >> index 6a692f3bea150..5748d01c99854 100644
-> >> --- a/kernel/bpf/syscall.c
-> >> +++ b/kernel/bpf/syscall.c
-> >> @@ -3211,8 +3211,8 @@ static int bpf_tracing_prog_attach(struct bpf_pr=
-og *prog,
-> >>                 }
-> >>
-> >>                 tr =3D bpf_trampoline_get(key, &tgt_info);
-> >> -               if (!tr) {
-> >> -                       err =3D -ENOMEM;
-> >> +               if (IS_ERR(tr)) {
-> >> +                       err =3D PTR_ERR(tr);
-> >>                         goto out_unlock;
-> >
-> > IS_ERR does not check the null case, so this should be IS_ERR_OR_NULL i=
-nstead.
->
-> Actually, bpf_trampoline_get() would not return NULL. It returns ERR_PTR(=
--ENOMEM)
-> or a valid ptr.
->
 
-OK, I missed the change in bpf_trampoline_get(). Anyway,
 
-Reviewed-by: Hengqi Chen <hengqi.chen@gmail.com>
+在 2023/9/15 10:28, Bixuan Cui 写道:
+> 
+> 
+> 在 2023/9/14 20:50, Chuyi Zhou 写道:
+>>>
+>>> Delete set_oom_policy_name, it makes no sense for users to set policy 
+>>> names. 🙂
+>>>
+>>
+>> There can be multiple OOM policy in the system at the same time.
+>>
+>> If we need to apply different OOM policies to different memcgs based 
+>> on different scenarios, we can use this hook(set_oom_policy_name) to 
+>> set name to identify which policy in invoked at that time.
+>>
+>> Just some thoughts.
+> Well, I thought the system would only load one OOM policy(set one policy 
+> name), which would set the prio of all memcgs.
+> 
+> What you mean is that multiple bpf.c may be loaded at the system, and 
+> each bpf.c sets the different policy for different memcgs?
 
-> Thanks,
-> Leon
->
-> >
-> >>                 }
-> >>         } else {
-> >> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> >> index e97aeda3a86b5..1952614778433 100644
-> >> --- a/kernel/bpf/trampoline.c
-> >> +++ b/kernel/bpf/trampoline.c
-> >> @@ -697,8 +697,8 @@ int bpf_trampoline_link_cgroup_shim(struct bpf_pro=
-g *prog,
-> >>
-> >>         bpf_lsm_find_cgroup_shim(prog, &bpf_func);
-> >>         tr =3D bpf_trampoline_get(key, &tgt_info);
-> >> -       if (!tr)
-> >> -               return  -ENOMEM;
-> >> +       if (IS_ERR(tr))
-> >> +               return PTR_ERR(tr);
-> >>
-> >>         mutex_lock(&tr->mutex);
-> >>
-> >> @@ -775,7 +775,7 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
-> >>
-> >>         tr =3D bpf_trampoline_lookup(key);
-> >>         if (!tr)
-> >> -               return NULL;
-> >> +               return ERR_PTR(-ENOMEM);
-> >>
-> >>         mutex_lock(&tr->mutex);
-> >>         if (tr->func.addr)
-> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> >> index 18e673c0ac159..054063ead0e54 100644
-> >> --- a/kernel/bpf/verifier.c
-> >> +++ b/kernel/bpf/verifier.c
-> >> @@ -19771,8 +19771,8 @@ static int check_attach_btf_id(struct bpf_veri=
-fier_env *env)
-> >>
-> >>         key =3D bpf_trampoline_compute_key(tgt_prog, prog->aux->attach=
-_btf, btf_id);
-> >>         tr =3D bpf_trampoline_get(key, &tgt_info);
-> >> -       if (!tr)
-> >> -               return -ENOMEM;
-> >> +       if (IS_ERR(tr))
-> >> +               return PTR_ERR(tr);
-> >>
-> >>         if (tgt_prog && tgt_prog->aux->tail_call_reachable)
-> >>                 tr->flags =3D BPF_TRAMP_F_TAIL_CALL_CTX;
-> >>
-> >> base-commit: cbb1dbcd99b0ae74c45c4c83c6d213c12c31785c
-> >> --
-> >> 2.41.0
-> >>
+No. Not multiple bpf_oompolicy.c but multiple OOM Policy in one BPF Program.
 
