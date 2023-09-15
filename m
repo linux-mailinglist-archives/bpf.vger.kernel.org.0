@@ -1,123 +1,130 @@
-Return-Path: <bpf+bounces-10141-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10142-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 916B97A191C
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 10:45:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 731FC7A1AB0
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 11:37:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BACB282837
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 08:45:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A823F1C20BFF
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 09:37:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ED52D523;
-	Fri, 15 Sep 2023 08:45:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BEADDDCA;
+	Fri, 15 Sep 2023 09:37:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB8C2F38
-	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 08:45:46 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC132710;
-	Fri, 15 Sep 2023 01:45:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694767545; x=1726303545;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Qjyaj6/vHYjlTgH8HsMMy0BE05DoiU6MR8cgOG0PfUI=;
-  b=dgfcs0BJrGpl1Jz5lBgaP7jz1ysMyaPP7FJnEp0Uc4/V+RW3cYpTudyl
-   ld59ajUuWRm6VIG9WaPMTJjHPW6s56ZejnSvJ44AiXrhDhmTS9rEHtCwU
-   7O/B+4WXjFqvH6UW6iwbQHp8wyBtUaDI99APXaVQBl1zOjLOs57ZCa/Hq
-   8MH5FjqSm0kcJ3Vc1jGNAlrtYRQ9IwA5TQuMqOxL8J8OCjLSmO30SnFm6
-   m50A5b8DJoOHZmfy+dt9SzXbClvMusNalGiYIXo4MdjaBzd7O6V5HM1Xe
-   XtRm9yi3q60WY8wJ+q8raZl6XcCh9q3GVYCzkd+0EgvbGOjibo3NhZTpp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="445657287"
-X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
-   d="scan'208";a="445657287"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2023 01:45:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="748122728"
-X-IronPort-AV: E=Sophos;i="6.02,148,1688454000"; 
-   d="scan'208";a="748122728"
-Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by fmsmga007.fm.intel.com with ESMTP; 15 Sep 2023 01:45:40 -0700
-Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id 21E7F33E80;
-	Fri, 15 Sep 2023 09:45:39 +0100 (IST)
-From: Larysa Zaremba <larysa.zaremba@intel.com>
-To: bpf@vger.kernel.org
-Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH bpf-next v2] bpf: Allow to use kfunc XDP hints and frags together
-Date: Fri, 15 Sep 2023 10:39:10 +0200
-Message-ID: <20230915083914.65538-1-larysa.zaremba@intel.com>
-X-Mailer: git-send-email 2.41.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F06B56AD7
+	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 09:37:08 +0000 (UTC)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA41819BC
+	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 02:37:06 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9aa2c6f0806so249456366b.3
+        for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 02:37:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694770625; x=1695375425; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=k07mrQgvr71mnGbvfxEmEgVEHuj2PPd+FW0mOyTAgdc=;
+        b=Zxd6vvMwtd/w2KAVOlIvP4evJAJW208wtxdyQyR0UNqSEua59ZuBi+C/uezpH0kqoQ
+         nyzNSw+U00izJOfqYH2onH539+UgiEh++uwOuIcHOKvHYvnyc70XEyR1xtLvwxv7TZIa
+         Z1xie8S0/JvxPYPlAo2Z+sgK34HADkVJ4sBp5X8kb95OmGC8o1GvF1LSrg4kYt4f9jax
+         QQ3CFSoMxDDPi5te1AuAp9auqyWp6E6seOD8qtl4RMQjRdP0F7mNu+pBVog32RJk+9gl
+         YVgYzTbJSk5zs753HR9uA6JBGR0gRXC8JPCBliI5iDMqDKqEGYtjGwacEEw0GbZilF3w
+         pHog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694770625; x=1695375425;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k07mrQgvr71mnGbvfxEmEgVEHuj2PPd+FW0mOyTAgdc=;
+        b=VOJsVWsKhqcOewPrGMJTaYTkTmo3p45FUiQEzpRWooCKMGrOGChIy7Ch1hl4CTlWHr
+         ZTSs5ULB7nZmAgGU3rpeJix19ifHVUHvX3HbcyULuCkPGeVK4Kb35i7aWLnOk1p9c1zK
+         7QuxW1dmmls+OYEc0igTCjNSSPXrqgcb2815yhWx1fN3liBDDNPZ+XZDPmeJ/SE4LsJs
+         e6UiW3C5aGjdH9DeAP6J8hm0TtxcR1vkKkKs8Fj8rTOVT9w10AlUq9vqMut6/97wnnXT
+         fKlHcmH4YfV5++amjY6iSIABPjeOktgijD/8JsNq2lJ+k4vGjOhknNIU+PGR0qxKDqIQ
+         t7nw==
+X-Gm-Message-State: AOJu0Ywyrx1arSWMDjHR8SObcXQ8+FysJNiAXuRR0y5xfc/Ft2GjbHzm
+	ZH/nHLfKc2NH+idK8QtIYNw=
+X-Google-Smtp-Source: AGHT+IHZAva+2KzVmZ8PzQNbKKPbC63wVPJjklwutTdJGyBdg4OCL8XhBZx9XS7JwI9YPG1RXcqWWQ==
+X-Received: by 2002:a17:906:5a5a:b0:99c:55c0:ad15 with SMTP id my26-20020a1709065a5a00b0099c55c0ad15mr914526ejc.38.1694770625049;
+        Fri, 15 Sep 2023 02:37:05 -0700 (PDT)
+Received: from krava ([83.240.60.47])
+        by smtp.gmail.com with ESMTPSA id p8-20020a1709061b4800b0099c53c44083sm2156306ejg.79.2023.09.15.02.37.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Sep 2023 02:37:04 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 15 Sep 2023 11:37:02 +0200
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: bpf@vger.kernel.org
+Subject: Re: [bug report] bpf: Add pid filter support for uprobe_multi link
+Message-ID: <ZQQlvlsl1U8K4ZZ7@krava>
+References: <c5ffa7c0-6b06-40d5-aca2-63833b5cd9af@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c5ffa7c0-6b06-40d5-aca2-63833b5cd9af@moroto.mountain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-There is no fundamental reason, why multi-buffer XDP and XDP kfunc RX hints
-cannot coexist in a single program.
+On Fri, Sep 15, 2023 at 10:12:34AM +0300, Dan Carpenter wrote:
+> Hello Jiri Olsa,
+> 
+> The patch b733eeade420: "bpf: Add pid filter support for uprobe_multi
+> link" from Aug 9, 2023 (linux-next), leads to the following Smatch
+> static checker warning:
+> 
+> 	kernel/trace/bpf_trace.c:3227 bpf_uprobe_multi_link_attach()
+> 	warn: missing error code here? 'get_pid_task()' failed. 'err' = '0'
+> 
+> kernel/trace/bpf_trace.c
+>     3217                 err = -EBADF;
+>     3218                 goto error_path_put;
+>     3219         }
+>     3220 
+>     3221         pid = attr->link_create.uprobe_multi.pid;
+>     3222         if (pid) {
+>     3223                 rcu_read_lock();
+>     3224                 task = get_pid_task(find_vpid(pid), PIDTYPE_PID);
+>     3225                 rcu_read_unlock();
+>     3226                 if (!task)
+> --> 3227                         goto error_path_put;
+> 
+> Should this have an error code?
 
-Allow those features to be used together by modifying the flags condition
-for dev-bound-only programs, segments are still prohibited for fully
-offloaded programs, hence additional check.
+yes, it should.. I'll send the fix below
 
-Suggested-by: Stanislav Fomichev <sdf@google.com>
-Link: https://lore.kernel.org/bpf/CAKH8qBuzgtJj=OKMdsxEkyML36VsAuZpcrsXcyqjdKXSJCBq=Q@mail.gmail.com/
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+thanks,
+jirka
+
+
 ---
- kernel/bpf/offload.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-index ee35f33a96d1..9d8e508c9b86 100644
---- a/kernel/bpf/offload.c
-+++ b/kernel/bpf/offload.c
-@@ -232,7 +232,14 @@ int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr)
- 	    attr->prog_type != BPF_PROG_TYPE_XDP)
- 		return -EINVAL;
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index c1c1af63ced2..868008f56fec 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -3223,8 +3223,10 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+ 		rcu_read_lock();
+ 		task = get_pid_task(find_vpid(pid), PIDTYPE_PID);
+ 		rcu_read_unlock();
+-		if (!task)
++		if (!task) {
++			err = -ESRCH;
+ 			goto error_path_put;
++		}
+ 	}
  
--	if (attr->prog_flags & ~BPF_F_XDP_DEV_BOUND_ONLY)
-+	if (attr->prog_flags & ~(BPF_F_XDP_DEV_BOUND_ONLY | BPF_F_XDP_HAS_FRAGS))
-+		return -EINVAL;
-+
-+	/* Frags are allowed only if program is dev-bound-only, but not
-+	 * if it is requesting bpf offload.
-+	 */
-+	if (attr->prog_flags & BPF_F_XDP_HAS_FRAGS &&
-+	    !(attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY))
- 		return -EINVAL;
- 
- 	if (attr->prog_type == BPF_PROG_TYPE_SCHED_CLS &&
--- 
-2.41.0
-
+ 	err = -ENOMEM;
 
