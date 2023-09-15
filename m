@@ -1,353 +1,420 @@
-Return-Path: <bpf+bounces-10121-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10122-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 949467A12A0
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 02:56:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6A6F7A12C0
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 03:06:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DFB3281BAA
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 00:56:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85C8B1C20F48
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 01:06:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3CD57FC;
-	Fri, 15 Sep 2023 00:55:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FF237F5;
+	Fri, 15 Sep 2023 01:06:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7257F3
-	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 00:55:55 +0000 (UTC)
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D2A2700
-	for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 17:55:55 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-59bf1dde73fso12822977b3.3
-        for <bpf@vger.kernel.org>; Thu, 14 Sep 2023 17:55:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1694739354; x=1695344154; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c1FlqXUdPjyj6me8kGYUdaY5qmjDeueDC49YLGEFQVY=;
-        b=TV3vn+RcDglfLKJG5YlR1DiSFG1c0+WvfHmrvNzoAgv6vzR258kAkotzjLzYcE4Ly4
-         N0Af8SyscTDVZ61PQz+5qo2np8tCzqkIQtjXsXmTQYbAAULTRxfuVnMIG575hZWoRFG+
-         s7CcgCu0SbW3yeP+5uOLrk1iPUt+NwDHZPWXytEsFbTc4oy/9Od7yzang90LPH9Evc+w
-         OWUzW345+ymB9HexrfD2lrmrNgrpSgtao1vxNBZDq1FAc7X3GcdUzbtGBEAc52ziJTo0
-         gjMF0Tsvv3MQAmH7J1tyCvBRMSRyhXVO9ijLWZysCamsa8kA1dyT16apBjzwFCnYyIEW
-         e77g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694739354; x=1695344154;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c1FlqXUdPjyj6me8kGYUdaY5qmjDeueDC49YLGEFQVY=;
-        b=tPqXvEqPNujsujogbZXwoX21AF3yrTz9py1jbGfJEGfCYaD7fY555W4sqUoAE6Ry+J
-         CVfd2LSRmZLH0A8/tAOG+0Z6dDu3GRs9OtYAIXvbTqUUOkdLyKoe1BUFFBvcxAKli5ey
-         +g/eUh1JL5xHwk4F3R5JhZE9OPCMe2sJYzzWD2kt7ndLehkeRai3LF3lsQvY0wjBNBQ9
-         5lEfILuLj3I2W0UEEkpR5E6/JN6wYNWKcJB0gkUozlpbg/lIpedkpdRguDTBdbXZZZ+h
-         bwjdRsHDuSWsBmPG+h/uZaRDsgY6QkNAvwc3nbUNatUfa+xH8hJlikZhD4YYtfdXB1CV
-         tfAg==
-X-Gm-Message-State: AOJu0Yy1je6i67ttWpN/w45oGEWxxXP6cAqETn0oKRIpD/hFZpaHkIwa
-	kSTm3FMf+Jcl31ErQerO9l0KMYSHfbI9ckIsYNwJ
-X-Google-Smtp-Source: AGHT+IHTSbiWh8LlDJaKwyJzDpTzWID3S8nIyZTRT2Pt3OfQMXqYzbo2dF6Xlkztbw+zK7O4PM07DWuMBDqKM3nLU/8=
-X-Received: by 2002:a81:6c8f:0:b0:59b:e666:1fb4 with SMTP id
- h137-20020a816c8f000000b0059be6661fb4mr365826ywc.9.1694739354487; Thu, 14 Sep
- 2023 17:55:54 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F05936A;
+	Fri, 15 Sep 2023 01:06:00 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 865CB2111;
+	Thu, 14 Sep 2023 18:05:59 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RmwrD74PsztRtk;
+	Fri, 15 Sep 2023 09:01:48 +0800 (CST)
+Received: from [10.174.176.93] (10.174.176.93) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 15 Sep 2023 09:05:56 +0800
+Message-ID: <22dda933-9c60-e515-733f-97958ab42563@huawei.com>
+Date: Fri, 15 Sep 2023 09:05:56 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230912212906.3975866-3-andrii@kernel.org> <3808036a0b32a17a7fd9e7d671b5458d.paul@paul-moore.com>
- <CAEf4BzYiKhG3ZL-GGQ4fHzSu6RKx2fh2JHwcL9_XKzQBvx3Bjg@mail.gmail.com>
-In-Reply-To: <CAEf4BzYiKhG3ZL-GGQ4fHzSu6RKx2fh2JHwcL9_XKzQBvx3Bjg@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Thu, 14 Sep 2023 20:55:43 -0400
-Message-ID: <CAHC9VhSOCAb6JQJn96xgwNNMGM0mKXf64ygkj4=Yv0FA8AYR=Q@mail.gmail.com>
-Subject: Re: [PATCH v4 2/12] bpf: introduce BPF token object
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, keescook@chromium.org, 
-	brauner@kernel.org, lennart@poettering.net, kernel-team@meta.com, 
-	sargun@sargun.me
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH bpf-next v4 0/7] add BPF_F_PERMANENT flag for sockmap
+ skmsg redirect
+To: Jakub Sitnicki <jakub@cloudflare.com>
+CC: <john.fastabend@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
+	<yonghong.song@linux.dev>, <kpsingh@kernel.org>, <sdf@google.com>,
+	<haoluo@google.com>, <jolsa@kernel.org>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<dsahern@kernel.org>, <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+References: <20230902100744.2687785-1-liujian56@huawei.com>
+ <87il8f9tuo.fsf@cloudflare.com>
+From: "liujian (CE)" <liujian56@huawei.com>
+In-Reply-To: <87il8f9tuo.fsf@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.93]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
 
-On Thu, Sep 14, 2023 at 1:31=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> On Wed, Sep 13, 2023 at 2:46=E2=80=AFPM Paul Moore <paul@paul-moore.com> =
-wrote:
-> >
-> > On Sep 12, 2023 Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > Add new kind of BPF kernel object, BPF token. BPF token is meant to
-> > > allow delegating privileged BPF functionality, like loading a BPF
-> > > program or creating a BPF map, from privileged process to a *trusted*
-> > > unprivileged process, all while have a good amount of control over wh=
-ich
-> > > privileged operations could be performed using provided BPF token.
-> > >
-> > > This is achieved through mounting BPF FS instance with extra delegati=
-on
-> > > mount options, which determine what operations are delegatable, and a=
-lso
-> > > constraining it to the owning user namespace (as mentioned in the
-> > > previous patch).
-> > >
-> > > BPF token itself is just a derivative from BPF FS and can be created
-> > > through a new bpf() syscall command, BPF_TOKEN_CREAT, which accepts
-> > > a path specification (using the usual fd + string path combo) to a BP=
-F
-> > > FS mount. Currently, BPF token "inherits" delegated command, map type=
-s,
-> > > prog type, and attach type bit sets from BPF FS as is. In the future,
-> > > having an BPF token as a separate object with its own FD, we can allo=
-w
-> > > to further restrict BPF token's allowable set of things either at the=
- creation
-> > > time or after the fact, allowing the process to guard itself further
-> > > from, e.g., unintentionally trying to load undesired kind of BPF
-> > > programs. But for now we keep things simple and just copy bit sets as=
- is.
-> > >
-> > > When BPF token is created from BPF FS mount, we take reference to the
-> > > BPF super block's owning user namespace, and then use that namespace =
-for
-> > > checking all the {CAP_BPF, CAP_PERFMON, CAP_NET_ADMIN, CAP_SYS_ADMIN}
-> > > capabilities that are normally only checked against init userns (usin=
-g
-> > > capable()), but now we check them using ns_capable() instead (if BPF
-> > > token is provided). See bpf_token_capable() for details.
-> > >
-> > > Such setup means that BPF token in itself is not sufficient to grant =
-BPF
-> > > functionality. User namespaced process has to *also* have necessary
-> > > combination of capabilities inside that user namespace. So while
-> > > previously CAP_BPF was useless when granted within user namespace, no=
-w
-> > > it gains a meaning and allows container managers and sys admins to ha=
-ve
-> > > a flexible control over which processes can and need to use BPF
-> > > functionality within the user namespace (i.e., container in practice)=
-.
-> > > And BPF FS delegation mount options and derived BPF tokens serve as
-> > > a per-container "flag" to grant overall ability to use bpf() (plus fu=
-rther
-> > > restrict on which parts of bpf() syscalls are treated as namespaced).
-> > >
-> > > The alternative to creating BPF token object was:
-> > >   a) not having any extra object and just pasing BPF FS path to each
-> > >      relevant bpf() command. This seems suboptimal as it's racy (moun=
-t
-> > >      under the same path might change in between checking it and usin=
-g it
-> > >      for bpf() command). And also less flexible if we'd like to furth=
-er
-> > >      restrict ourselves compared to all the delegated functionality
-> > >      allowed on BPF FS.
-> > >   b) use non-bpf() interface, e.g., ioctl(), but otherwise also creat=
-e
-> > >      a dedicated FD that would represent a token-like functionality. =
-This
-> > >      doesn't seem superior to having a proper bpf() command, so
-> > >      BPF_TOKEN_CREATE was chosen.
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  include/linux/bpf.h            |  36 +++++++
-> > >  include/uapi/linux/bpf.h       |  39 +++++++
-> > >  kernel/bpf/Makefile            |   2 +-
-> > >  kernel/bpf/inode.c             |   4 +-
-> > >  kernel/bpf/syscall.c           |  17 +++
-> > >  kernel/bpf/token.c             | 189 +++++++++++++++++++++++++++++++=
-++
-> > >  tools/include/uapi/linux/bpf.h |  39 +++++++
-> > >  7 files changed, 324 insertions(+), 2 deletions(-)
-> > >  create mode 100644 kernel/bpf/token.c
-> >
-> > ...
-> >
-> > > diff --git a/kernel/bpf/token.c b/kernel/bpf/token.c
-> > > new file mode 100644
-> > > index 000000000000..f6ea3eddbee6
-> > > --- /dev/null
-> > > +++ b/kernel/bpf/token.c
-> > > @@ -0,0 +1,189 @@
-> > > +#include <linux/bpf.h>
-> > > +#include <linux/vmalloc.h>
-> > > +#include <linux/anon_inodes.h>
-> > > +#include <linux/fdtable.h>
-> > > +#include <linux/file.h>
-> > > +#include <linux/fs.h>
-> > > +#include <linux/kernel.h>
-> > > +#include <linux/idr.h>
-> > > +#include <linux/namei.h>
-> > > +#include <linux/user_namespace.h>
-> > > +
-> > > +bool bpf_token_capable(const struct bpf_token *token, int cap)
-> > > +{
-> > > +     /* BPF token allows ns_capable() level of capabilities */
-> > > +     if (token) {
-> > > +             if (ns_capable(token->userns, cap))
-> > > +                     return true;
-> > > +             if (cap !=3D CAP_SYS_ADMIN && ns_capable(token->userns,=
- CAP_SYS_ADMIN))
-> > > +                     return true;
-> > > +     }
-> > > +     /* otherwise fallback to capable() checks */
-> > > +     return capable(cap) || (cap !=3D CAP_SYS_ADMIN && capable(CAP_S=
-YS_ADMIN));
-> > > +}
-> >
-> > While the above looks to be equivalent to the bpf_capable() function it
-> > replaces, for callers checking CAP_BPF and CAP_SYS_ADMIN, I'm looking
-> > quickly at patch 3/12 and this is also being used to replace a
-> > capable(CAP_NET_ADMIN) call which results in a change in behavior.
-> > The current code which performs a capable(CAP_NET_ADMIN) check cannot
-> > be satisfied by CAP_SYS_ADMIN, but this patchset using
-> > bpf_token_capable(token, CAP_NET_ADMIN) can be satisfied by either
-> > CAP_NET_ADMIN or CAP_SYS_ADMIN.
-> >
-> > It seems that while bpf_token_capable() can be used as a replacement
-> > for bpf_capable(), it is not currently a suitable replacement for a
-> > generic capable() call.  Perhaps this is intentional, but I didn't see
-> > it mentioned in the commit description, or in the comments, and I
-> > wanted to make sure it wasn't an oversight.
->
-> You are right. It is an intentional attempt to unify all such checks.
-> If you look at bpf_prog_load(), we have this:
->
-> if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN) &&
-> !capable(CAP_SYS_ADMIN))
->     return -EPERM;
->
-> So seeing that, I realized that we did have an intent to always use
-> CAP_SYS_ADMIN as a "fallback" cap, even for CAP_NET_ADMIN when it
-> comes to using network-enabled BPF programs. So I decided that
-> unifying all this makes sense.
->
-> I'll add a comment mentioning this, I should have been more explicit
-> from the get go.
 
-Thanks for the clarification.  I'm not to worried about checking
-CAP_SYS_ADMIN as a fallback, but I always get a little twitchy when I
-see capability changes in the code without any mention.
 
-A mention in the commit description is good, and you could also draft
-up a standalone patch that adds the CAP_SYS_ADMIN fallback to the
-current in-tree code.  That would be a good way to really highlight
-the capability changes and deal with any issues that might arise
-(review, odd corner cases?, etc.) prior to the BPF capability
-delegation patcheset we are discussing here.
-
-> > > +#define BPF_TOKEN_INODE_NAME "bpf-token"
-> > > +
-> > > +/* Alloc anon_inode and FD for prepared token.
-> > > + * Returns fd >=3D 0 on success; negative error, otherwise.
-> > > + */
-> > > +int bpf_token_new_fd(struct bpf_token *token)
-> > > +{
-> > > +     return anon_inode_getfd(BPF_TOKEN_INODE_NAME, &bpf_token_fops, =
-token, O_CLOEXEC);
-> > > +}
-> > > +
-> > > +struct bpf_token *bpf_token_get_from_fd(u32 ufd)
-> > > +{
-> > > +     struct fd f =3D fdget(ufd);
-> > > +     struct bpf_token *token;
-> > > +
-> > > +     if (!f.file)
-> > > +             return ERR_PTR(-EBADF);
-> > > +     if (f.file->f_op !=3D &bpf_token_fops) {
-> > > +             fdput(f);
-> > > +             return ERR_PTR(-EINVAL);
-> > > +     }
-> > > +
-> > > +     token =3D f.file->private_data;
-> > > +     bpf_token_inc(token);
-> > > +     fdput(f);
-> > > +
-> > > +     return token;
-> > > +}
-> > > +
-> > > +bool bpf_token_allow_cmd(const struct bpf_token *token, enum bpf_cmd=
- cmd)
-> > > +{
-> > > +     if (!token)
-> > > +             return false;
-> > > +
-> > > +     return token->allowed_cmds & (1ULL << cmd);
-> > > +}
-> >
-> > I mentioned this a while back, likely in the other threads where this
-> > token-based approach was only being discussed in general terms, but I
-> > think we want to have a LSM hook at the point of initial token
-> > delegation for this and a hook when the token is used.  My initial
-> > thinking is that we should be able to address the former with a hook
-> > in bpf_fill_super() and the latter either in bpf_token_get_from_fd()
-> > or bpf_token_allow_XXX(); bpf_token_get_from_fd() would be simpler,
-> > but it doesn't allow for much in the way of granularity.  Inserting the
-> > LSM hooks in bpf_token_allow_XXX() would also allow the BPF code to fal=
-l
-> > gracefully fallback to the system-wide checks if the LSM denied the
-> > requested access whereas an access denial in bpf_token_get_from_fd()
-> > denial would cause the operation to error out.
->
-> I think the bpf_fill_super() LSM hook makes sense, but I thought
-> someone mentioned that we already have some generic LSM hook for
-> validating mounts? If we don't, I can certainly add one for BPF FS
-> specifically.
-
-We do have security_sb_mount(), but that is a generic mount operation
-access control and not well suited for controlling the mount-based
-capability delegation that you are proposing here.  However, if you or
-someone else has a clever way to make security_sb_mount() work for
-this purpose I would be very happy to review that code.
-
-> As for the bpf_token_allow_xxx(). This feels a bit too specific and
-> narrow-focused. What if we later add yet another dimension for BPF FS
-> and token? Do we need to introduce yet another LSM for each such case?
-
-[I'm assuming you meant new LSM *hook*]
-
-Possibly.  There are also some other issues which I've been thinking
-about along these lines, specifically the fact that the
-capability/command delegation happens after the existing
-security_bpf() hook is called which makes things rather awkward from a
-LSM perspective: the LSM would first need to allow the process access
-to the desired BPF op using it's current LSM specific security
-attributes (e.g. SELinux security domain, etc.) and then later
-consider the op in the context of the delegated access control rights
-(if the LSM decides to support those hooks).
-
-I suspect that if we want to make this practical we would need to
-either move some of the token code up into __sys_bpf() so we could
-have a better interaction with security_bpf(), or we need to consider
-moving the security_bpf() call into the op specific functions.  I'm
-still thinking on this (lots of reviews to get through this week), but
-I'm hoping there is a better way because I'm not sure I like either
-option very much.
-
-> But also see bpf_prog_load(). There are two checks, allow_prog_type
-> and allow_attach_type, which are really only meaningful in
-> combination. And yet you'd have to have two separate LSM hooks for
-> that.
->
-> So I feel like the better approach is less mechanistically
-> concentrating on BPF token operations themselves, but rather on more
-> semantically meaningful operations that are token-enabled. E.g.,
-> protect BPF program loading, BPF map creation, BTF loading, etc. And
-> we do have such LSM hooks right now, though they might not be the most
-> convenient. So perhaps the right move is to add new ones that would
-> provide a bit more context (e.g., we can pass in the BPF token that
-> was used for the operation, attributes with which map/prog was
-> created, etc). Low-level token LSMs seem hard to use cohesively in
-> practice, though.
-
-Can you elaborate a bit more?  It's hard to judge the comments above
-without some more specifics about hook location, parameters, etc.
-
---=20
-paul-moore.com
+On 2023/9/13 1:21, Jakub Sitnicki wrote:
+> On Sat, Sep 02, 2023 at 06:07 PM +08, Liu Jian wrote:
+>> v3->v4: Change the two helpers's description.
+>> 	Let BPF_F_PERMANENT takes precedence over apply/cork_bytes.
+> 
+> I gave it another try. But somethings is still not right.
+> 
+> sockmap tests run cleanly for me on bpf tree @ 4eb94a779307.
+> 
+> But with this patch set applied I'm seeing a refcount splat. Please see
+> the sample session log at the end. Reproducible every time.
+> 
+> I've also included the warning itself with the stack trace decoded. Once
+> again, this is commit 4eb94a779307 with these patches on top.
+> 
+> I'm preparing for a talk that is in a few weeks [1], so unfortunately I
+> have limited cycles to help debug this.
+I'll try and debug this issue. Thank you for taking the time to review it.
+> 
+> [1] https://www.usenix.org/conference/srecon23emea/presentation/sitnicki
+> 
+> $ ./scripts/decode_stacktrace.sh ./vmlinux < trace.txt
+> [    7.846863] ------------[ cut here ]------------
+> [    7.847383] refcount_t: underflow; use-after-free.
+> [    7.847919] WARNING: CPU: 3 PID: 36 at lib/refcount.c:28 refcount_warn_saturate (lib/refcount.c:28 (discriminator 1))
+> [    7.848719] Modules linked in: bpf_testmod(OE)
+> [    7.850364] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc38 04/01/2014
+> [    7.851893] Workqueue: events sk_psock_destroy
+> [    7.852617] RIP: 0010:refcount_warn_saturate (lib/refcount.c:28 (discriminator 1))
+> [ 7.853383] Code: 01 e8 32 f0 a9 ff 0f 0b 5d c3 cc cc cc cc 80 3d 24 c5 01 02 00 75 81 48 c7 c7 98 cc 77 82 c6 05 14 c5 01 02 01 e8 0e f0 a9 ff <0f> 0b 5d c3 cc cc cc cc 80 3d 01 c5 01 02 00 0f 85 59 ff ff ff 48
+> All code
+> ========
+>     0:   01 e8                   add    %ebp,%eax
+>     2:   32 f0                   xor    %al,%dh
+>     4:   a9 ff 0f 0b 5d          test   $0x5d0b0fff,%eax
+>     9:   c3                      ret
+>     a:   cc                      int3
+>     b:   cc                      int3
+>     c:   cc                      int3
+>     d:   cc                      int3
+>     e:   80 3d 24 c5 01 02 00    cmpb   $0x0,0x201c524(%rip)        # 0x201c539
+>    15:   75 81                   jne    0xffffffffffffff98
+>    17:   48 c7 c7 98 cc 77 82    mov    $0xffffffff8277cc98,%rdi
+>    1e:   c6 05 14 c5 01 02 01    movb   $0x1,0x201c514(%rip)        # 0x201c539
+>    25:   e8 0e f0 a9 ff          call   0xffffffffffa9f038
+>    2a:*  0f 0b                   ud2             <-- trapping instruction
+>    2c:   5d                      pop    %rbp
+>    2d:   c3                      ret
+>    2e:   cc                      int3
+>    2f:   cc                      int3
+>    30:   cc                      int3
+>    31:   cc                      int3
+>    32:   80 3d 01 c5 01 02 00    cmpb   $0x0,0x201c501(%rip)        # 0x201c53a
+>    39:   0f 85 59 ff ff ff       jne    0xffffffffffffff98
+>    3f:   48                      rex.W
+> 
+> Code starting with the faulting instruction
+> ===========================================
+>     0:   0f 0b                   ud2
+>     2:   5d                      pop    %rbp
+>     3:   c3                      ret
+>     4:   cc                      int3
+>     5:   cc                      int3
+>     6:   cc                      int3
+>     7:   cc                      int3
+>     8:   80 3d 01 c5 01 02 00    cmpb   $0x0,0x201c501(%rip)        # 0x201c510
+>     f:   0f 85 59 ff ff ff       jne    0xffffffffffffff6e
+>    15:   48                      rex.W
+> [    7.855330] RSP: 0018:ffffc9000014bdd8 EFLAGS: 00010282
+> [    7.855891] RAX: 0000000000000000 RBX: ffff888104ea0438 RCX: 0000000000000000
+> [    7.856539] RDX: 0000000000000002 RSI: ffffc9000014bc50 RDI: 00000000ffffffff
+> [    7.857348] RBP: ffffc9000014bdd8 R08: 0000000000000000 R09: ffffffff82e9bd60
+> [    7.858088] R10: ffffc9000014bc48 R11: ffffffff8359bda8 R12: ffff888104ea0268
+> [    7.858956] R13: ffff888104ea0268 R14: ffff888104ea0268 R15: dead000000000100
+> [    7.859687] FS:  0000000000000000(0000) GS:ffff88813bd80000(0000) knlGS:0000000000000000
+> [    7.860349] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    7.861013] CR2: 00007f4e2d2a7f78 CR3: 0000000002e6e002 CR4: 0000000000770ea0
+> [    7.862014] PKRU: 55555554
+> [    7.862224] Call Trace:
+> [    7.862515]  <TASK>
+> [    7.862719] ? show_regs (arch/x86/kernel/dumpstack.c:479)
+> [    7.863159] ? __warn (kernel/panic.c:673)
+> [    7.863521] ? refcount_warn_saturate (lib/refcount.c:28 (discriminator 1))
+> [    7.864073] ? report_bug (lib/bug.c:180 lib/bug.c:219)
+> [    7.864523] ? handle_bug (arch/x86/kernel/traps.c:237)
+> [    7.864954] ? exc_invalid_op (arch/x86/kernel/traps.c:258 (discriminator 1))
+> [    7.865379] ? asm_exc_invalid_op (./arch/x86/include/asm/idtentry.h:568)
+> [    7.866011] ? refcount_warn_saturate (lib/refcount.c:28 (discriminator 1))
+> [    7.866613] ? refcount_warn_saturate (lib/refcount.c:28 (discriminator 1))
+> [    7.867159] sk_psock_destroy (./include/linux/refcount.h:283 ./include/linux/refcount.h:315 ./include/linux/refcount.h:333 ./include/net/sock.h:1990 net/core/skmsg.c:828)
+> [    7.867579] process_one_work (kernel/workqueue.c:2630)
+> [    7.868120] worker_thread (kernel/workqueue.c:2697 (discriminator 2) kernel/workqueue.c:2784 (discriminator 2))
+> [    7.868363] ? rescuer_thread (kernel/workqueue.c:2730)
+> [    7.868589] kthread (kernel/kthread.c:388)
+> [    7.869017] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> [    7.869716] ret_from_fork (arch/x86/kernel/process.c:147)
+> [    7.870273] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> [    7.870889] ret_from_fork_asm (arch/x86/entry/entry_64.S:312)
+> [    7.871374]  </TASK>
+> [    7.871818] irq event stamp: 2515
+> [    7.872285] hardirqs last enabled at (2523): console_unlock (./arch/x86/include/asm/irqflags.h:42 ./arch/x86/include/asm/irqflags.h:77 ./arch/x86/include/asm/irqflags.h:135 kernel/printk/printk.c:347 kernel/printk/printk.c:2720 kernel/printk/printk.c:3039)
+> [    7.873173] hardirqs last disabled at (2532): console_unlock (kernel/printk/printk.c:345 (discriminator 3) kernel/printk/printk.c:2720 (discriminator 3) kernel/printk/printk.c:3039 (discriminator 3))
+> [    7.874103] softirqs last enabled at (2190): __do_softirq (./arch/x86/include/asm/preempt.h:27 kernel/softirq.c:400 kernel/softirq.c:582)
+> [    7.875196] softirqs last disabled at (2185): irq_exit_rcu (kernel/softirq.c:427 kernel/softirq.c:632 kernel/softirq.c:644)
+> [    7.875811] ---[ end trace 0000000000000000 ]---
+> 
+> --8<--
+> 
+> bash-5.2# ./test_progs -t sockmap
+> [    7.691453] bpf_testmod: loading out-of-tree module taints kernel.
+> [    7.691759] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
+> #24      bpf_sockmap_map_iter_fd:OK
+> #211/1   sockmap_basic/sockmap create_update_free:OK
+> #211/2   sockmap_basic/sockhash create_update_free:OK
+> #211/3   sockmap_basic/sockmap sk_msg load helpers:OK
+> #211/4   sockmap_basic/sockhash sk_msg load helpers:OK
+> #211/5   sockmap_basic/sockmap update:OK
+> #211/6   sockmap_basic/sockhash update:OK
+> #211/7   sockmap_basic/sockmap update in unsafe context:OK
+> #211/8   sockmap_basic/sockmap copy:OK
+> #211/9   sockmap_basic/sockhash copy:OK
+> #211/10  sockmap_basic/sockmap skb_verdict attach:OK
+> #211/11  sockmap_basic/sockmap msg_verdict progs query:OK
+> #211/12  sockmap_basic/sockmap stream_parser progs query:OK
+> #211/13  sockmap_basic/sockmap stream_verdict progs query:OK
+> #211/14  sockmap_basic/sockmap skb_verdict progs query:OK
+> #211/15  sockmap_basic/sockmap skb_verdict shutdown:OK
+> #211/16  sockmap_basic/sockmap skb_verdict fionread:OK
+> #211/17  sockmap_basic/sockmap skb_verdict fionread on drop:OK
+> #211/18  sockmap_basic/sockmap msg_verdict:OK
+> #211/19  sockmap_basic/sockmap msg_verdict ingress:OK
+> #211/20  sockmap_basic/sockmap msg_verdict permanent:OK
+> #211/21  sockmap_basic/sockmap msg_verdict ingress permanent:OK
+> #211/22  sockmap_basic/sockmap msg_verdict permanent self:OK
+> #211/23  sockmap_basic/sockmap msg_verdict ingress permanent self:OK
+> #211/24  sockmap_basic/sockmap msg_verdict permanent shutdown:OK
+> #211/25  sockmap_basic/sockmap msg_verdict ingress permanent shutdown:OK
+> #211/26  sockmap_basic/sockmap msg_verdict shutdown:OK
+> #211/27  sockmap_basic/sockmap msg_verdict ingress shutdown:OK
+> #211     sockmap_basic:OK
+> #212/1   sockmap_ktls/sockmap_ktls disconnect_after_delete IPv4 SOCKMAP:OK
+> #212/2   sockmap_ktls/sockmap_ktls update_fails_when_sock_has_ulp IPv4 SOCKMAP:OK
+> #212/3   sockmap_ktls/sockmap_ktls disconnect_after_delete IPv4 SOCKMAP:OK
+> #212/4   sockmap_ktls/sockmap_ktls update_fails_when_sock_has_ulp IPv4 SOCKMAP:OK
+> #212/5   sockmap_ktls/sockmap_ktls disconnect_after_delete IPv4 SOCKMAP:OK
+> #212/6   sockmap_ktls/sockmap_ktls update_fails_when_sock_has_ulp IPv4 SOCKMAP:OK
+> #212/7   sockmap_ktls/sockmap_ktls disconnect_after_delete IPv4 SOCKMAP:OK
+> #212/8   sockmap_ktls/sockmap_ktls update_fails_when_sock_has_ulp IPv4 SOCKMAP:OK
+> #212     sockmap_ktls:OK
+> [    7.846863] ------------[ cut here ]------------
+> [    7.847383] refcount_t: underflow; use-after-free.
+> [    7.847919] WARNING: CPU: 3 PID: 36 at lib/refcount.c:28 refcount_warn_saturate+0xc2/0x110
+> [    7.848719] Modules linked in: bpf_testmod(OE)
+> [    7.849207] CPU: 3 PID: 36 Comm: kworker/3:0 Tainted: G           OE      6.5.0+ #13
+> [    7.850364] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc38 04/01/2014
+> [    7.851893] Workqueue: events sk_psock_destroy
+> [    7.852617] RIP: 0010:refcount_warn_saturate+0xc2/0x110
+> [    7.853383] Code: 01 e8 32 f0 a9 ff 0f 0b 5d c3 cc cc cc cc 80 3d 24 c5 01 02 00 75 81 48 c7 c7 98 cc 77 82 c6 05 14 c5 01 02 01 e8 0e f0 a9 ff <0f> 0b 5d c3 cc cc cc cc 80 3d 01 c5 01 02 00 0f 85 59 ff ff ff 48
+> [    7.855330] RSP: 0018:ffffc9000014bdd8 EFLAGS: 00010282
+> [    7.855891] RAX: 0000000000000000 RBX: ffff888104ea0438 RCX: 0000000000000000
+> [    7.856539] RDX: 0000000000000002 RSI: ffffc9000014bc50 RDI: 00000000ffffffff
+> [    7.857348] RBP: ffffc9000014bdd8 R08: 0000000000000000 R09: ffffffff82e9bd60
+> [    7.858088] R10: ffffc9000014bc48 R11: ffffffff8359bda8 R12: ffff888104ea0268
+> [    7.858956] R13: ffff888104ea0268 R14: ffff888104ea0268 R15: dead000000000100
+> [    7.859687] FS:  0000000000000000(0000) GS:ffff88813bd80000(0000) knlGS:0000000000000000
+> [    7.860349] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    7.861013] CR2: 00007f4e2d2a7f78 CR3: 0000000002e6e002 CR4: 0000000000770ea0
+> [    7.862014] PKRU: 55555554
+> [    7.862224] Call Trace:
+> [    7.862515]  <TASK>
+> [    7.862719]  ? show_regs+0x60/0x70
+> [    7.863159]  ? __warn+0x84/0x180
+> [    7.863521]  ? refcount_warn_saturate+0xc2/0x110
+> [    7.864073]  ? report_bug+0x192/0x1c0
+> [    7.864523]  ? handle_bug+0x42/0x80
+> [    7.864954]  ? exc_invalid_op+0x18/0x70
+> [    7.865379]  ? asm_exc_invalid_op+0x1b/0x20
+> [    7.866011]  ? refcount_warn_saturate+0xc2/0x110
+> [    7.866613]  ? refcount_warn_saturate+0xc2/0x110
+> [    7.867159]  sk_psock_destroy+0x2c5/0x2e0
+> [    7.867579]  process_one_work+0x1fe/0x4f0
+> [    7.868120]  worker_thread+0x1d6/0x3d0
+> [    7.868363]  ? rescuer_thread+0x380/0x380
+> [    7.868589]  kthread+0x106/0x140
+> [    7.869017]  ? kthread_complete_and_exit+0x20/0x20
+> [    7.869716]  ret_from_fork+0x35/0x60
+> [    7.870273]  ? kthread_complete_and_exit+0x20/0x20
+> [    7.870889]  ret_from_fork_asm+0x11/0x20
+> [    7.871374]  </TASK>
+> [    7.871818] irq event stamp: 2515
+> [    7.872285] hardirqs last  enabled at (2523): [<ffffffff811ae505>] console_unlock+0x105/0x130
+> [    7.873173] hardirqs last disabled at (2532): [<ffffffff811ae4ea>] console_unlock+0xea/0x130
+> [    7.874103] softirqs last  enabled at (2190): [<ffffffff81d21495>] __do_softirq+0x2f5/0x3f3
+> [    7.875196] softirqs last disabled at (2185): [<ffffffff8112d18f>] irq_exit_rcu+0x8f/0xf0
+> [    7.875811] ---[ end trace 0000000000000000 ]---
+> #213/1   sockmap_listen/sockmap IPv4 TCP test_insert_invalid:OK
+> #213/2   sockmap_listen/sockmap IPv4 TCP test_insert_opened:OK
+> #213/3   sockmap_listen/sockmap IPv4 TCP test_insert_bound:OK
+> #213/4   sockmap_listen/sockmap IPv4 TCP test_insert:OK
+> #213/5   sockmap_listen/sockmap IPv4 TCP test_delete_after_insert:OK
+> #213/6   sockmap_listen/sockmap IPv4 TCP test_delete_after_close:OK
+> #213/7   sockmap_listen/sockmap IPv4 TCP test_lookup_after_insert:OK
+> #213/8   sockmap_listen/sockmap IPv4 TCP test_lookup_after_delete:OK
+> #213/9   sockmap_listen/sockmap IPv4 TCP test_lookup_32_bit_value:OK
+> #213/10  sockmap_listen/sockmap IPv4 TCP test_update_existing:OK
+> #213/11  sockmap_listen/sockmap IPv4 TCP test_destroy_orphan_child:OK
+> #213/12  sockmap_listen/sockmap IPv4 TCP test_syn_recv_insert_delete:OK
+> #213/13  sockmap_listen/sockmap IPv4 TCP test_race_insert_listen:OK
+> #213/14  sockmap_listen/sockmap IPv4 TCP test_clone_after_delete:OK
+> #213/15  sockmap_listen/sockmap IPv4 TCP test_accept_after_delete:OK
+> #213/16  sockmap_listen/sockmap IPv4 TCP test_accept_before_delete:OK
+> #213/17  sockmap_listen/sockmap IPv4 UDP test_insert_invalid:OK
+> #213/18  sockmap_listen/sockmap IPv4 UDP test_insert_opened:OK
+> #213/19  sockmap_listen/sockmap IPv4 UDP test_insert:OK
+> #213/20  sockmap_listen/sockmap IPv4 UDP test_delete_after_insert:OK
+> #213/21  sockmap_listen/sockmap IPv4 UDP test_delete_after_close:OK
+> #213/22  sockmap_listen/sockmap IPv4 UDP test_lookup_after_insert:OK
+> #213/23  sockmap_listen/sockmap IPv4 UDP test_lookup_after_delete:OK
+> #213/24  sockmap_listen/sockmap IPv4 UDP test_lookup_32_bit_value:OK
+> #213/25  sockmap_listen/sockmap IPv4 UDP test_update_existing:OK
+> #213/26  sockmap_listen/sockmap IPv4 test_skb_redir_to_connected:OK
+> #213/27  sockmap_listen/sockmap IPv4 test_skb_redir_to_listening:OK
+> #213/28  sockmap_listen/sockmap IPv4 test_skb_redir_partial:OK
+> #213/29  sockmap_listen/sockmap IPv4 test_msg_redir_to_connected:OK
+> #213/30  sockmap_listen/sockmap IPv4 test_msg_redir_to_listening:OK
+> #213/31  sockmap_listen/sockmap IPv4 TCP test_reuseport_select_listening:OK
+> #213/32  sockmap_listen/sockmap IPv4 TCP test_reuseport_select_connected:OK
+> #213/33  sockmap_listen/sockmap IPv4 TCP test_reuseport_mixed_groups:OK
+> #213/34  sockmap_listen/sockmap IPv4 UDP test_reuseport_select_listening:OK
+> #213/35  sockmap_listen/sockmap IPv4 UDP test_reuseport_select_connected:OK
+> #213/36  sockmap_listen/sockmap IPv4 UDP test_reuseport_mixed_groups:OK
+> #213/37  sockmap_listen/sockmap IPv4 test_udp_redir:OK
+> #213/38  sockmap_listen/sockmap IPv4 test_udp_unix_redir:OK
+> #213/39  sockmap_listen/sockmap IPv6 TCP test_insert_invalid:OK
+> #213/40  sockmap_listen/sockmap IPv6 TCP test_insert_opened:OK
+> #213/41  sockmap_listen/sockmap IPv6 TCP test_insert_bound:OK
+> #213/42  sockmap_listen/sockmap IPv6 TCP test_insert:OK
+> #213/43  sockmap_listen/sockmap IPv6 TCP test_delete_after_insert:OK
+> #213/44  sockmap_listen/sockmap IPv6 TCP test_delete_after_close:OK
+> #213/45  sockmap_listen/sockmap IPv6 TCP test_lookup_after_insert:OK
+> #213/46  sockmap_listen/sockmap IPv6 TCP test_lookup_after_delete:OK
+> #213/47  sockmap_listen/sockmap IPv6 TCP test_lookup_32_bit_value:OK
+> #213/48  sockmap_listen/sockmap IPv6 TCP test_update_existing:OK
+> #213/49  sockmap_listen/sockmap IPv6 TCP test_destroy_orphan_child:OK
+> #213/50  sockmap_listen/sockmap IPv6 TCP test_syn_recv_insert_delete:OK
+> #213/51  sockmap_listen/sockmap IPv6 TCP test_race_insert_listen:OK
+> #213/52  sockmap_listen/sockmap IPv6 TCP test_clone_after_delete:OK
+> #213/53  sockmap_listen/sockmap IPv6 TCP test_accept_after_delete:OK
+> #213/54  sockmap_listen/sockmap IPv6 TCP test_accept_before_delete:OK
+> #213/55  sockmap_listen/sockmap IPv6 UDP test_insert_invalid:OK
+> #213/56  sockmap_listen/sockmap IPv6 UDP test_insert_opened:OK
+> #213/57  sockmap_listen/sockmap IPv6 UDP test_insert:OK
+> #213/58  sockmap_listen/sockmap IPv6 UDP test_delete_after_insert:OK
+> #213/59  sockmap_listen/sockmap IPv6 UDP test_delete_after_close:OK
+> #213/60  sockmap_listen/sockmap IPv6 UDP test_lookup_after_insert:OK
+> #213/61  sockmap_listen/sockmap IPv6 UDP test_lookup_after_delete:OK
+> #213/62  sockmap_listen/sockmap IPv6 UDP test_lookup_32_bit_value:OK
+> #213/63  sockmap_listen/sockmap IPv6 UDP test_update_existing:OK
+> #213/64  sockmap_listen/sockmap IPv6 test_skb_redir_to_connected:OK
+> #213/65  sockmap_listen/sockmap IPv6 test_skb_redir_to_listening:OK
+> #213/66  sockmap_listen/sockmap IPv6 test_skb_redir_partial:OK
+> #213/67  sockmap_listen/sockmap IPv6 test_msg_redir_to_connected:OK
+> #213/68  sockmap_listen/sockmap IPv6 test_msg_redir_to_listening:OK
+> #213/69  sockmap_listen/sockmap IPv6 TCP test_reuseport_select_listening:OK
+> #213/70  sockmap_listen/sockmap IPv6 TCP test_reuseport_select_connected:OK
+> #213/71  sockmap_listen/sockmap IPv6 TCP test_reuseport_mixed_groups:OK
+> #213/72  sockmap_listen/sockmap IPv6 UDP test_reuseport_select_listening:OK
+> #213/73  sockmap_listen/sockmap IPv6 UDP test_reuseport_select_connected:OK
+> #213/74  sockmap_listen/sockmap IPv6 UDP test_reuseport_mixed_groups:OK
+> #213/75  sockmap_listen/sockmap IPv6 test_udp_redir:OK
+> #213/76  sockmap_listen/sockmap IPv6 test_udp_unix_redir:OK
+> #213/77  sockmap_listen/sockmap Unix test_unix_redir:OK
+> #213/78  sockmap_listen/sockmap Unix test_unix_redir:OK
+> #213/79  sockmap_listen/sockmap VSOCK test_vsock_redir:OK
+> #213/80  sockmap_listen/sockhash IPv4 TCP test_insert_invalid:OK
+> #213/81  sockmap_listen/sockhash IPv4 TCP test_insert_opened:OK
+> #213/82  sockmap_listen/sockhash IPv4 TCP test_insert_bound:OK
+> #213/83  sockmap_listen/sockhash IPv4 TCP test_insert:OK
+> #213/84  sockmap_listen/sockhash IPv4 TCP test_delete_after_insert:OK
+> #213/85  sockmap_listen/sockhash IPv4 TCP test_delete_after_close:OK
+> #213/86  sockmap_listen/sockhash IPv4 TCP test_lookup_after_insert:OK
+> #213/87  sockmap_listen/sockhash IPv4 TCP test_lookup_after_delete:OK
+> #213/88  sockmap_listen/sockhash IPv4 TCP test_lookup_32_bit_value:OK
+> #213/89  sockmap_listen/sockhash IPv4 TCP test_update_existing:OK
+> #213/90  sockmap_listen/sockhash IPv4 TCP test_destroy_orphan_child:OK
+> #213/91  sockmap_listen/sockhash IPv4 TCP test_syn_recv_insert_delete:OK
+> #213/92  sockmap_listen/sockhash IPv4 TCP test_race_insert_listen:OK
+> #213/93  sockmap_listen/sockhash IPv4 TCP test_clone_after_delete:OK
+> #213/94  sockmap_listen/sockhash IPv4 TCP test_accept_after_delete:OK
+> #213/95  sockmap_listen/sockhash IPv4 TCP test_accept_before_delete:OK
+> #213/96  sockmap_listen/sockhash IPv4 UDP test_insert_invalid:OK
+> #213/97  sockmap_listen/sockhash IPv4 UDP test_insert_opened:OK
+> #213/98  sockmap_listen/sockhash IPv4 UDP test_insert:OK
+> #213/99  sockmap_listen/sockhash IPv4 UDP test_delete_after_insert:OK
+> #213/100 sockmap_listen/sockhash IPv4 UDP test_delete_after_close:OK
+> #213/101 sockmap_listen/sockhash IPv4 UDP test_lookup_after_insert:OK
+> #213/102 sockmap_listen/sockhash IPv4 UDP test_lookup_after_delete:OK
+> #213/103 sockmap_listen/sockhash IPv4 UDP test_lookup_32_bit_value:OK
+> #213/104 sockmap_listen/sockhash IPv4 UDP test_update_existing:OK
+> #213/105 sockmap_listen/sockhash IPv4 test_skb_redir_to_connected:OK
+> #213/106 sockmap_listen/sockhash IPv4 test_skb_redir_to_listening:OK
+> #213/107 sockmap_listen/sockhash IPv4 test_skb_redir_partial:OK
+> #213/108 sockmap_listen/sockhash IPv4 test_msg_redir_to_connected:OK
+> #213/109 sockmap_listen/sockhash IPv4 test_msg_redir_to_listening:OK
+> #213/110 sockmap_listen/sockhash IPv4 TCP test_reuseport_select_listening:OK
+> #213/111 sockmap_listen/sockhash IPv4 TCP test_reuseport_select_connected:OK
+> #213/112 sockmap_listen/sockhash IPv4 TCP test_reuseport_mixed_groups:OK
+> #213/113 sockmap_listen/sockhash IPv4 UDP test_reuseport_select_listening:OK
+> #213/114 sockmap_listen/sockhash IPv4 UDP test_reuseport_select_connected:OK
+> #213/115 sockmap_listen/sockhash IPv4 UDP test_reuseport_mixed_groups:OK
+> #213/116 sockmap_listen/sockhash IPv4 test_udp_redir:OK
+> #213/117 sockmap_listen/sockhash IPv4 test_udp_unix_redir:OK
+> #213/118 sockmap_listen/sockhash IPv6 TCP test_insert_invalid:OK
+> #213/119 sockmap_listen/sockhash IPv6 TCP test_insert_opened:OK
+> #213/120 sockmap_listen/sockhash IPv6 TCP test_insert_bound:OK
+> #213/121 sockmap_listen/sockhash IPv6 TCP test_insert:OK
+> #213/122 sockmap_listen/sockhash IPv6 TCP test_delete_after_insert:OK
+> #213/123 sockmap_listen/sockhash IPv6 TCP test_delete_after_close:OK
+> #213/124 sockmap_listen/sockhash IPv6 TCP test_lookup_after_insert:OK
+> #213/125 sockmap_listen/sockhash IPv6 TCP test_lookup_after_delete:OK
+> #213/126 sockmap_listen/sockhash IPv6 TCP test_lookup_32_bit_value:OK
+> #213/127 sockmap_listen/sockhash IPv6 TCP test_update_existing:OK
+> #213/128 sockmap_listen/sockhash IPv6 TCP test_destroy_orphan_child:OK
+> #213/129 sockmap_listen/sockhash IPv6 TCP test_syn_recv_insert_delete:OK
+> #213/130 sockmap_listen/sockhash IPv6 TCP test_race_insert_listen:OK
+> #213/131 sockmap_listen/sockhash IPv6 TCP test_clone_after_delete:OK
+> #213/132 sockmap_listen/sockhash IPv6 TCP test_accept_after_delete:OK
+> #213/133 sockmap_listen/sockhash IPv6 TCP test_accept_before_delete:OK
+> #213/134 sockmap_listen/sockhash IPv6 UDP test_insert_invalid:OK
+> #213/135 sockmap_listen/sockhash IPv6 UDP test_insert_opened:OK
+> #213/136 sockmap_listen/sockhash IPv6 UDP test_insert:OK
+> #213/137 sockmap_listen/sockhash IPv6 UDP test_delete_after_insert:OK
+> #213/138 sockmap_listen/sockhash IPv6 UDP test_delete_after_close:OK
+> #213/139 sockmap_listen/sockhash IPv6 UDP test_lookup_after_insert:OK
+> #213/140 sockmap_listen/sockhash IPv6 UDP test_lookup_after_delete:OK
+> #213/141 sockmap_listen/sockhash IPv6 UDP test_lookup_32_bit_value:OK
+> #213/142 sockmap_listen/sockhash IPv6 UDP test_update_existing:OK
+> #213/143 sockmap_listen/sockhash IPv6 test_skb_redir_to_connected:OK
+> #213/144 sockmap_listen/sockhash IPv6 test_skb_redir_to_listening:OK
+> #213/145 sockmap_listen/sockhash IPv6 test_skb_redir_partial:OK
+> #213/146 sockmap_listen/sockhash IPv6 test_msg_redir_to_connected:OK
+> #213/147 sockmap_listen/sockhash IPv6 test_msg_redir_to_listening:OK
+> #213/148 sockmap_listen/sockhash IPv6 TCP test_reuseport_select_listening:OK
+> #213/149 sockmap_listen/sockhash IPv6 TCP test_reuseport_select_connected:OK
+> #213/150 sockmap_listen/sockhash IPv6 TCP test_reuseport_mixed_groups:OK
+> #213/151 sockmap_listen/sockhash IPv6 UDP test_reuseport_select_listening:OK
+> #213/152 sockmap_listen/sockhash IPv6 UDP test_reuseport_select_connected:OK
+> #213/153 sockmap_listen/sockhash IPv6 UDP test_reuseport_mixed_groups:OK
+> #213/154 sockmap_listen/sockhash IPv6 test_udp_redir:OK
+> #213/155 sockmap_listen/sockhash IPv6 test_udp_unix_redir:OK
+> #213/156 sockmap_listen/sockhash Unix test_unix_redir:OK
+> #213/157 sockmap_listen/sockhash Unix test_unix_redir:OK
+> #213/158 sockmap_listen/sockhash VSOCK test_vsock_redir:OK
+> #213     sockmap_listen:OK
+> Summary: 4/193 PASSED, 0 SKIPPED, 0 FAILED
+> bash-5.2#
+> 
 
