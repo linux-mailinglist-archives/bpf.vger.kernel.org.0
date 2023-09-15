@@ -1,367 +1,266 @@
-Return-Path: <bpf+bounces-10124-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10125-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A66E87A12F5
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 03:31:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 063787A1384
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 04:03:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA6A61C210DA
-	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 01:31:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A59D0281A3A
+	for <lists+bpf@lfdr.de>; Fri, 15 Sep 2023 02:03:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50C95A4A;
-	Fri, 15 Sep 2023 01:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B817BA3C;
+	Fri, 15 Sep 2023 02:02:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A57AEA3C;
-	Fri, 15 Sep 2023 01:30:26 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A1892100;
-	Thu, 14 Sep 2023 18:30:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694741426; x=1726277426;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=vq59Wc9diWTW3drYjRR2KmcNzlARGJAYOni6nTlOm9k=;
-  b=TeLntBbb7ZZSH+baoYh1CCMnJrZCHbc90KomRmQjHJVGe0js1EMVn87w
-   cdrQacitpz2K5kny4+mYY6S1DtuQL+5uqbAVNkjQgpl7ouWjju3BnnEFi
-   +IgV4j/kOVmezT8jYkgEE1a3Ucpfc5ouGcS1CbamTk9t3dku8cxfqMXyS
-   y2RRkEeh385EIIOZD8NLsmVn8BFqRIz+5S4xf/WkbkdnVtbP5zdzlmHFl
-   Bt2Xjx6EszTCME6kmood2Ne8PyyWHciooBJPMWWxf2VtJSrpJWZ3pDDRj
-   j3WS8SFD0PxlYFdRtu81Lo76l+z33pV+7sAZffHrWMavKxxFWxvHH7/y/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="359387085"
-X-IronPort-AV: E=Sophos;i="6.02,147,1688454000"; 
-   d="scan'208";a="359387085"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 18:30:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="694542647"
-X-IronPort-AV: E=Sophos;i="6.02,147,1688454000"; 
-   d="scan'208";a="694542647"
-Received: from vcostago-mobl3.jf.intel.com (HELO vcostago-mobl3) ([10.24.14.106])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2023 18:30:25 -0700
-From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To: Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, kuba@kernel.org, toke@kernel.org,
- willemb@google.com, dsahern@kernel.org, magnus.karlsson@intel.com,
- bjorn@kernel.org, maciej.fijalkowski@intel.com, hawk@kernel.org,
- yoong.siang.song@intel.com, netdev@vger.kernel.org,
- xdp-hints@xdp-project.net
-Subject: Re: [PATCH bpf-next v2 2/9] xsk: add TX timestamp and TX checksum
- offload support
-In-Reply-To: <20230914210452.2588884-3-sdf@google.com>
-References: <20230914210452.2588884-1-sdf@google.com>
- <20230914210452.2588884-3-sdf@google.com>
-Date: Thu, 14 Sep 2023 18:30:25 -0700
-Message-ID: <87edj0dxzi.fsf@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C350658
+	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 02:02:50 +0000 (UTC)
+Received: from vmicros1.altlinux.org (vmicros1.altlinux.org [194.107.17.57])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id C559D1FE5;
+	Thu, 14 Sep 2023 19:02:49 -0700 (PDT)
+Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
+	by vmicros1.altlinux.org (Postfix) with ESMTP id 055AD72C8E4;
+	Fri, 15 Sep 2023 05:02:49 +0300 (MSK)
+Received: from altlinux.org (sole.flsd.net [185.75.180.6])
+	by imap.altlinux.org (Postfix) with ESMTPSA id ECCFE36D00B7;
+	Fri, 15 Sep 2023 05:02:48 +0300 (MSK)
+Date: Fri, 15 Sep 2023 05:02:48 +0300
+From: Vitaly Chikunov <vt@altlinux.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>, dwarves@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: "Dmitry V. Levin" <ldv@altlinux.org>
+Subject: Re: pahole 1.25 SIGSEGV when building kernel (-j when cores > 81)
+Message-ID: <20230915020248.klgd2yjpe2mnphnk@altlinux.org>
+References: <20230705020040.bqhtd3yxpntk44q5@altlinux.org>
+ <ZKwK049Hg7taAxv9@kernel.org>
+ <20230710200002.ca4okot5rrvewqvb@altlinux.org>
+ <20230914033717.mbb2cn2rukndtvlw@altlinux.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+In-Reply-To: <20230914033717.mbb2cn2rukndtvlw@altlinux.org>
 
-Hi,
+Arnaldo,
 
-Stanislav Fomichev <sdf@google.com> writes:
+On Thu, Sep 14, 2023 at 06:37:17AM +0300, Vitaly Chikunov wrote:
+> On Mon, Jul 10, 2023 at 11:00:02PM +0300, Vitaly Chikunov wrote:
+> > On Mon, Jul 10, 2023 at 10:42:43AM -0300, Arnaldo Carvalho de Melo wrote:
+> > > Em Wed, Jul 05, 2023 at 05:00:40AM +0300, Vitaly Chikunov escreveu:
+> > > > 
+> > > > After updating Dwarves to v1.25 we are getting SIGSEGV while building
+> > > > kernel on 32-bit x86 architecture. It looks like this:
+> > > 
+> > > 128 cores, 32-bit system? Interesting :-)
+> > 
+> > This is just AMD Zen in 32-bit personality.
+> 
+> This started to reappear for v6.5 on armv7hf with 64 cores (Cortex-A72
+> aarch64 which supports linux32 personality) even with your proposed
+> patch. But with different error messages:
+> 
+>     BTF     .btf.vmlinux.bin.o
+>   [24982] STRUCT super_block's field 's_bdev' offset=1120 bit_size=0 type=25296 Error emitting field
+>   Encountered error while encoding BTF.
+>     LD      .tmp_vmlinux.kallsyms1
+>     NM      .tmp_vmlinux.kallsyms1.syms
+>     KSYMS   .tmp_vmlinux.kallsyms1.S
+>     AS      .tmp_vmlinux.kallsyms1.S
+>     LD      .tmp_vmlinux.kallsyms2
+>     NM      .tmp_vmlinux.kallsyms2.syms
+>     KSYMS   .tmp_vmlinux.kallsyms2.S
+>     AS      .tmp_vmlinux.kallsyms2.S
+>     LD      vmlinux
+>     BTFIDS  vmlinux
+>   libbpf: failed to find '.BTF' ELF section in vmlinux
+>   FAILED: load BTF from vmlinux: No data available
+> 
+> With V=1:
+> 
+>   + info BTF .btf.vmlinux.bin.o
+>   + printf '  %-7s %s\n' BTF .btf.vmlinux.bin.o
+>     BTF     .btf.vmlinux.bin.o
+>   + LLVM_OBJCOPY=objcopy
+>   + pahole -J --btf_gen_floats -j --lang_exclude=rust --skip_encoding_btf_inconsistent_proto --btf_gen_optimized .tmp_vmlinux.btf
+>   [26109] STRUCT kiocb's field 'ki_waitq' offset=256 bit_size=0 type=26179 Error emitting field
+>   Encountered error while encoding BTF.
+> 
+> Restricting -j to 32 helped, though.
 
-> This change actually defines the (initial) metadata layout
-> that should be used by AF_XDP userspace (xsk_tx_metadata).
-> The first field is flags which requests appropriate offloads,
-> followed by the offload-specific fields. The supported per-device
-> offloads are exported via netlink (new xsk-flags).
->
-> The offloads themselves are still implemented in a bit of a
-> framework-y fashion that's left from my initial kfunc attempt.
-> I'm introducing new xsk_tx_metadata_ops which drivers are
-> supposed to implement. The drivers are also supposed
-> to call xsk_tx_metadata_request/xsk_tx_metadata_complete in
-> the right places. Since xsk_tx_metadata_{request,_complete}
-> are static inline, we don't incur any extra overhead doing
-> indirect calls.
->
-> The benefit of this scheme is as follows:
-> - keeps all metadata layout parsing away from driver code
-> - makes it easy to grep and see which drivers implement what
-> - don't need any extra flags to maintain to keep track of what
->   offloads are implemented; if the callback is implemented - the offload
->   is supported (used by netlink reporting code)
->
-> Two offloads are defined right now:
-> 1. XDP_TX_METADATA_CHECKSUM: skb-style csum_start+csum_offset
-> 2. XDP_TX_METADATA_TIMESTAMP: writes TX timestamp back into metadata
->    area upon completion (tx_timestamp field)
->
-> The offloads are also implemented for copy mode:
-> 1. Extra XDP_TX_METADATA_CHECKSUM_SW to trigger skb_checksum_help; this
->    might be useful as a reference implementation and for testing
-> 2. XDP_TX_METADATA_TIMESTAMP writes SW timestamp from the skb
->    destructor (note I'm reusing hwtstamps to pass metadata pointer)
->
-> The struct is forward-compatible and can be extended in the future
-> by appending more fields.
->
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
->  Documentation/netlink/specs/netdev.yaml | 20 +++++++
->  include/linux/netdevice.h               | 27 +++++++++
->  include/linux/skbuff.h                  | 14 ++++-
->  include/net/xdp_sock.h                  | 80 +++++++++++++++++++++++++
->  include/net/xdp_sock_drv.h              | 13 ++++
->  include/net/xsk_buff_pool.h             |  6 ++
->  include/uapi/linux/if_xdp.h             | 40 +++++++++++++
->  include/uapi/linux/netdev.h             | 16 +++++
->  net/core/netdev-genl.c                  | 12 +++-
->  net/xdp/xsk.c                           | 39 ++++++++++++
->  net/xdp/xsk_queue.h                     |  2 +-
->  tools/include/uapi/linux/if_xdp.h       | 54 +++++++++++++++--
->  tools/include/uapi/linux/netdev.h       | 15 +++++
->  13 files changed, 330 insertions(+), 8 deletions(-)
->
-> diff --git a/Documentation/netlink/specs/netdev.yaml b/Documentation/netlink/specs/netdev.yaml
-> index 1c7284fd535b..9002b37b7676 100644
-> --- a/Documentation/netlink/specs/netdev.yaml
-> +++ b/Documentation/netlink/specs/netdev.yaml
-> @@ -42,6 +42,19 @@ name: netdev
->          doc:
->            This feature informs if netdev implements non-linear XDP buffer
->            support in ndo_xdp_xmit callback.
-> +  -
-> +    type: flags
-> +    name: xsk-flags
-> +    render-max: true
-> +    entries:
-> +      -
-> +        name: tx-timestamp
-> +        doc:
-> +          HW timestamping egress packets is supported by the driver.
-> +      -
-> +        name: tx-checksum
-> +        doc:
-> +          L3 checksum HW offload is supported by the driver.
->  
->  attribute-sets:
->    -
-> @@ -68,6 +81,12 @@ name: netdev
->          type: u32
->          checks:
->            min: 1
-> +      -
-> +        name: xsk-features
-> +        doc: Bitmask of enabled AF_XDP features.
-> +        type: u64
-> +        enum: xsk-flags
-> +        enum-as-flags: true
->  
->  operations:
->    list:
-> @@ -84,6 +103,7 @@ name: netdev
->              - ifindex
->              - xdp-features
->              - xdp-zc-max-segs
-> +            - xsk-features
->        dump:
->          reply: *dev-all
->      -
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index 0896aaa91dd7..3f02aaa30590 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -1647,6 +1647,31 @@ struct net_device_ops {
->  						    struct netlink_ext_ack *extack);
->  };
->  
-> +/*
-> + * This structure defines the AF_XDP TX metadata hooks for network devices.
-> + * The following hooks can be defined; unless noted otherwise, they are
-> + * optional and can be filled with a null pointer.
-> + *
-> + * int (*tmo_request_timestamp)(void *priv)
-> + *     This function is called when AF_XDP frame requested egress timestamp.
-> + *
-> + * int (*tmo_fill_timestamp)(void *priv)
-> + *     This function is called when AF_XDP frame, that had requested
-> + *     egress timestamp, received a completion. The hook needs to return
-> + *     the actual HW timestamp.
-> + *
-> + * int (*tmo_request_checksum)(u16 csum_start, u16 csum_offset, void *priv)
-> + *     This function is called when AF_XDP frame requested HW checksum
-> + *     offload. csum_start indicates position where checksumming should start.
-> + *     csum_offset indicates position where checksum should be stored.
-> + *
-> + */
-> +struct xsk_tx_metadata_ops {
-> +	void	(*tmo_request_timestamp)(void *priv);
-> +	u64	(*tmo_fill_timestamp)(void *priv);
-> +	void	(*tmo_request_checksum)(u16 csum_start, u16 csum_offset, void *priv);
-> +};
-> +
->  /**
->   * enum netdev_priv_flags - &struct net_device priv_flags
->   *
-> @@ -1835,6 +1860,7 @@ enum netdev_ml_priv_type {
->   *	@netdev_ops:	Includes several pointers to callbacks,
->   *			if one wants to override the ndo_*() functions
->   *	@xdp_metadata_ops:	Includes pointers to XDP metadata callbacks.
-> + *	@xsk_tx_metadata_ops:	Includes pointers to AF_XDP TX metadata callbacks.
->   *	@ethtool_ops:	Management operations
->   *	@l3mdev_ops:	Layer 3 master device operations
->   *	@ndisc_ops:	Includes callbacks for different IPv6 neighbour
-> @@ -2091,6 +2117,7 @@ struct net_device {
->  	unsigned long long	priv_flags;
->  	const struct net_device_ops *netdev_ops;
->  	const struct xdp_metadata_ops *xdp_metadata_ops;
-> +	const struct xsk_tx_metadata_ops *xsk_tx_metadata_ops;
->  	int			ifindex;
->  	unsigned short		gflags;
->  	unsigned short		hard_header_len;
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index 4174c4b82d13..444d35dcd690 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -566,6 +566,15 @@ struct ubuf_info_msgzc {
->  int mm_account_pinned_pages(struct mmpin *mmp, size_t size);
->  void mm_unaccount_pinned_pages(struct mmpin *mmp);
->  
-> +/* Preserve some data across TX submission and completion.
-> + *
-> + * Note, this state is stored in the driver. Extending the layout
-> + * might need some special care.
-> + */
-> +struct xsk_tx_metadata_compl {
-> +	__u64 *tx_timestamp;
-> +};
-> +
->  /* This data is invariant across clones and lives at
->   * the end of the header data, ie. at skb->end.
->   */
-> @@ -578,7 +587,10 @@ struct skb_shared_info {
->  	/* Warning: this field is not always filled in (UFO)! */
->  	unsigned short	gso_segs;
->  	struct sk_buff	*frag_list;
-> -	struct skb_shared_hwtstamps hwtstamps;
-> +	union {
-> +		struct skb_shared_hwtstamps hwtstamps;
-> +		struct xsk_tx_metadata_compl xsk_meta;
-> +	};
->  	unsigned int	gso_type;
->  	u32		tskey;
->  
-> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> index 10993a05d220..c438c614a8d0 100644
-> --- a/include/net/xdp_sock.h
-> +++ b/include/net/xdp_sock.h
-> @@ -90,6 +90,74 @@ int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp);
->  int __xsk_map_redirect(struct xdp_sock *xs, struct xdp_buff *xdp);
->  void __xsk_map_flush(void);
->  
-> +/**
-> + *  xsk_tx_metadata_to_compl - Save enough relevant metadata information
-> + *  to perform tx completion in the future.
-> + *  @meta: pointer to AF_XDP metadata area
-> + *  @compl: pointer to output struct xsk_tx_metadata_to_compl
-> + *
-> + *  This function should be called by the networking device when
-> + *  it prepares AF_XDP egress packet. The value of @compl should be stored
-> + *  and passed to xsk_tx_metadata_complete upon TX completion.
-> + */
-> +static inline void xsk_tx_metadata_to_compl(struct xsk_tx_metadata *meta,
-> +					    struct xsk_tx_metadata_compl *compl)
+FYI. This tuned out to be more weird than that. Adding -j32 causes arm32
+to not boot in qemu properly with BPF errors (which I did not investigate
+further, log below), -j16 with timeouts, so I resorted to just removing
+-j for 32-bit architectures from `scripts/pahole-flags.sh`.
 
-One of my systems didn't have the config XDP_SOCKETS enabled, and found
-some issues:
+Test boot after build with pahole -j32:
 
-This function is not defined when XDP_SOCKETS is disabled, got a
-compilation error.
+  [00:23:50] + timeout 300 vm-run uname -a
+  [00:23:52] + time qemu-system-aarch64-bundle -M accel=kvm:tcg -m 3072 -smp cores=6 -serial mon:stdio -nodefaults -nographic -no-reboot -fsdev local,id=root,path=/,security_model=none,multidevs=remap -device virtio-9p-pci,fsdev=root,mount_tag=virtio-9p:/ -device virtio-rng-pci -kernel /usr/src/tmp/kernel-image-un-def-buildroot/boot/vmlinuz-6.5.3-un-def-alt1 -initrd /usr/src/tmp/initramfs-6.5.3-un-def-alt1.img -sandbox on,spawn=deny -M virt,highmem=off -cpu host,aarch64=off -append 'console=ttyAMA0 mitigations=off nokaslr quiet panic=-1 SCRIPT=/usr/src/tmp/vm.eKPHAvWlYq watchdog_thresh=60'
+  [00:23:55] [    0.240771] BPF: 	 type_id=0 offset=2944 size=4864
+  [00:23:55] [    0.242126] BPF:  
+  [00:23:55] [    0.242681] BPF: Invalid type_id
+  [00:23:55] [    0.243557] BPF: 
+  [00:23:55] init_module 'netfs.ko' Invalid argument
+  [00:23:55] init_module '9pnet.ko' Invalid argument
+  [00:23:55] init_module 'virtio.ko' Invalid argument
+  [00:23:55] init_module 'virtio_ring.ko' Invalid argument
+  [00:23:56] init_module 'virtio_pci_modern_dev.ko' Invalid argument
+  [00:23:56] init_module 'virtio_pci_legacy_dev.ko' Invalid argument
+  [00:23:56] glob: 9p mount_tag not found (ret: 3): No such file or directory
+  [00:23:56] rootfs not found.
+  [00:23:57] [    2.000050] reboot: Power down
 
-> +{
-> +	if (!meta)
-> +		return;
-> +
-> +	if (meta->flags & XDP_TX_METADATA_TIMESTAMP)
-> +		compl->tx_timestamp = &meta->completion.tx_timestamp;
-> +	else
-> +		compl->tx_timestamp = NULL;
-> +}
-> +
-> +/**
-> + *  xsk_tx_metadata_request - Evaluate AF_XDP TX metadata at submission
-> + *  and call appropriate xsk_tx_metadata_ops operation.
-> + *  @meta: pointer to AF_XDP metadata area
-> + *  @ops: pointer to struct xsk_tx_metadata_ops
-> + *  @priv: pointer to driver-private aread
-> + *
-> + *  This function should be called by the networking device when
-> + *  it prepares AF_XDP egress packet.
-> + */
-> +static inline void xsk_tx_metadata_request(const struct xsk_tx_metadata *meta,
-> +					   const struct xsk_tx_metadata_ops *ops,
-> +					   void *priv)
-> +{
-> +	if (!meta)
-> +		return;
-> +
-> +	if (ops->tmo_request_timestamp)
-> +		if (meta->flags & XDP_TX_METADATA_TIMESTAMP)
-> +			ops->tmo_request_timestamp(priv);
-> +
-> +	if (ops->tmo_request_checksum)
-> +		if (meta->flags & XDP_TX_METADATA_CHECKSUM)
-> +			ops->tmo_request_checksum(meta->csum_start, meta->csum_offset, priv);
-> +}
-> +
-> +/**
-> + *  xsk_tx_metadata_complete - Evaluate AF_XDP TX metadata at completion
-> + *  and call appropriate xsk_tx_metadata_ops operation.
-> + *  @compl: pointer to completion metadata produced from xsk_tx_metadata_to_compl
-> + *  @ops: pointer to struct xsk_tx_metadata_ops
-> + *  @priv: pointer to driver-private aread
-> + *
-> + *  This function should be called by the networking device upon
-> + *  AF_XDP egress completion.
-> + */
-> +static inline void xsk_tx_metadata_complete(struct xsk_tx_metadata_compl *compl,
-> +					    const struct xsk_tx_metadata_ops *ops,
-> +					    void *priv)
-> +{
-> +	if (!compl)
-> +		return;
-> +
-> +	*compl->tx_timestamp = ops->tmo_fill_timestamp(priv);
-> +}
-> +
->  #else
->  
->  static inline int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
-> @@ -106,6 +174,18 @@ static inline void __xsk_map_flush(void)
->  {
->  }
->  
-> +static inline void xsk_tx_metadata_request(struct xsk_tx_metadata *meta,
-> +					   const struct xsk_tx_metadata_ops *ops,
-> +					   void *priv)
-> +{
-> +}
-> +
-> +static inline void xsk_tx_metadata_complete(struct xsk_tx_metadata_comp *compl,
+(qemu-system-aarch64-bundle is special qemu wrapper to run aarch64 qemu
+on arm32 system - which actually is aarch64 with linux32 personality.)
 
-typo here: should be 'struct xsk_tx_metadata_compl'.
+Also in this build, there is 264 errors after `BTFIDS  vmlinux` like
+this:
 
-Just so you are aware of these (very) minor issues for the next version.
+  [00:04:49] WARN: resolve_btfids: unresolved symbol udp6_sock
+  [00:04:49] WARN: resolve_btfids: unresolved symbol reuseport_array
+  [00:04:49] WARN: resolve_btfids: unresolved symbol bpf_ringbuf_map
+  [00:04:49] WARN: resolve_btfids: unresolved symbol vfs_truncate
+  [00:04:49] WARN: resolve_btfids: unresolved symbol tcp_slow_start
+  [00:04:49] WARN: resolve_btfids: unresolved symbol tcp_reno_undo_cwnd
+  [00:04:49] WARN: resolve_btfids: unresolved symbol tcp_reno_ssthresh
+  [00:04:49] WARN: resolve_btfids: unresolved symbol tcp_reno_cong_avoid
+  [00:04:49] WARN: resolve_btfids: unresolved symbol tcp_cong_avoid_ai
+  [00:04:49] WARN: resolve_btfids: unresolved symbol should_failslab
+  [00:04:49] WARN: resolve_btfids: unresolved symbol crash_kexec
+  [00:04:49] WARN: resolve_btfids: unresolved symbol bpf_sock_destroy
+  [00:04:49] WARN: resolve_btfids: unresolved symbol bpf_obj_new_impl
+  [00:04:49] WARN: resolve_btfids: unresolved symbol bpf_lsm_xfrm_state_pol_flow_match
+  [00:04:49] WARN: resolve_btfids: unresolved symbol bpf_lsm_xfrm_state_free_security
+  ... &c.
 
-I enabled XDP_SOCKETS and will take a better look.
+With -j removed there is still errors like this but a lot less (7):
 
+  [00:04:36] WARN: resolve_btfids: unresolved symbol vfs_truncate
+  [00:04:36] WARN: resolve_btfids: unresolved symbol bpf_obj_new_impl
+  [00:04:36] WARN: resolve_btfids: unresolved symbol bpf_lsm_path_notify
+  [00:04:36] WARN: resolve_btfids: unresolved symbol bpf_lsm_kernel_post_load_data
+  [00:04:36] WARN: resolve_btfids: unresolved symbol bpf_lookup_user_key
+  [00:04:36] WARN: resolve_btfids: unresolved symbol bpf_dynptr_from_xdp
+  [00:04:36] WARN: resolve_btfids: unresolved symbol bpf_dynptr_from_skb
 
-Cheers,
--- 
-Vinicius
+(There are no such errors on the i586 build.)
+
+Thanks,
+
+> 
+> Thanks,
+> 
+> 
+> 
+> > 
+> > >  
+> > > >     BTF     .btf.vmlinux.bin.o
+> > > >   scripts/link-vmlinux.sh: line 111: 395728 Segmentation fault      LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${PAHOLE_FLAGS} ${1}
+> > > >     LD      .tmp_vmlinux.kallsyms1
+> > > >     NM      .tmp_vmlinux.kallsyms1.syms
+> > > >     KSYMS   .tmp_vmlinux.kallsyms1.S
+> > > >     AS      .tmp_vmlinux.kallsyms1.S
+> > > >     LD      .tmp_vmlinux.kallsyms2
+> > > >     NM      .tmp_vmlinux.kallsyms2.syms
+> > > >     KSYMS   .tmp_vmlinux.kallsyms2.S
+> > > >     AS      .tmp_vmlinux.kallsyms2.S
+> > > >     LD      vmlinux
+> > > >     BTFIDS  vmlinux
+> > > >   libbpf: failed to find '.BTF' ELF section in vmlinux
+> > > >   FAILED: load BTF from vmlinux: No data available
+> > > > 
+> > > > What crashes is this command:
+> > > > 
+> > > >   pahole -J --btf_gen_floats -j --lang_exclude=rust .tmp_vmlinux.btf
+> > > > 
+> > > > I found that cause of the crash is that build box having 128 cores. By
+> > > > experiment I found that with -j81 pahole works OK, but with -j82 or
+> > > > greater it crashes.
+> > > > 
+> > > >   $ gdb -q --args pahole -J --btf_gen_floats -j111 --lang_exclude=rust .tmp_vmlinux.btf
+> > > >   Thread 15 "pahole" received signal SIGSEGV, Segmentation fault.
+> > > >   [Switching to Thread 0xda5ffb40 (LWP 3102466)]
+> > > >   0xf7f3c944 in btf_encoder__btf (encoder=0x0) at /usr/src/debug/dwarves-1.25/btf_encoder.c:1890
+> > > >   1890            return encoder->btf;
+> > > >   (gdb) bt
+> > > >   #0  0xf7f3c944 in btf_encoder__btf (encoder=0x0) at /usr/src/debug/dwarves-1.25/btf_encoder.c:1890
+> > > >   #1  0x5655c25d in pahole_stealer (cu=0xd9a01f80, conf_load=0x565640c0 <conf_load>, thr_data=0x56567c18) at /usr/src/debug/dwarves-1.25/pahole.c:3100
+> > > >   #2  0xf7f452d7 in cu__finalize (cu=cu@entry=0xd9a01f80, conf=0x565640c0 <conf_load>, thr_data=thr_data@entry=0x56567c18)
+> > > >       at /usr/src/debug/dwarves-1.25/dwarf_loader.c:3001
+> > > >   #3  0xf7f4541d in cus__finalize (thr_data=0x56567c18, conf=<optimized out>, cu=0xd9a01f80, cus=0x565651c0) at /usr/src/debug/dwarves-1.25/dwarf_loader.c:3008
+> > > >   #4  dwarf_cus__create_and_process_cu (dcus=dcus@entry=0xffffd19c, cu_die=cu_die@entry=0xda5ff38c, pointer_size=<optimized out>, thr_data=0x56567c18)
+> > > >       at /usr/src/debug/dwarves-1.25/dwarf_loader.c:3207
+> > > >   #5  0xf7f461af in dwarf_cus__process_cu_thread (arg=0xffffcbf8) at /usr/src/debug/dwarves-1.25/dwarf_loader.c:3250
+> > > >   #6  0xf7db4258 in start_thread (arg=<optimized out>) at pthread_create.c:444
+> > > >   #7  0xf7e3a878 in clone3 () from /lib/libc.so.6
+> > > >   (gdb) p encoder
+> > > >   $1 = (struct btf_encoder *) 0x0
+> > > >   (gdb) f 1
+> > > >   #1  0x5655c25d in pahole_stealer (cu=0xd9a01f80, conf_load=0x565640c0 <conf_load>, thr_data=0x56567c18) at /usr/src/debug/dwarves-1.25/pahole.c:3100
+> > > >   3100                                    thread->btf = btf_encoder__btf(thread->encoder);
+> > > >   (gdb) list -2
+> > > >   3093                                    thread->encoder =
+> > > >   3094                                            btf_encoder__new(cu, detached_btf_filename,
+> > > >   3095                                                             NULL,
+> > > >   3096                                                             skip_encoding_btf_vars,
+> > > >   3097                                                             btf_encode_force,
+> > > >   3098                                                             btf_gen_floats,
+> > > >   3099                                                             global_verbose);
+> > > >   3100                                    thread->btf = btf_encoder__btf(thread->encoder);
+> > > >   3101                            }
+> > > >   3102                            encoder = thread->encoder;
+> > > > 
+> > > > I think that return value of btf_encoder__new is not checked. But did
+> > > > not investigate further why is this happening. It would be great to have
+> > > > this fixed.
+> > > 
+> > > Can you try with this minimal patch? Maybe we can with some more work
+> > > auto-limit the number of threads or make the threads without a
+> > > btf_encoder be processed at the end, reusing the main btf_encoder, but
+> > > this first patch would at least help diagnosing the problem more
+> > > quickly.
+> > 
+> > With this patch applied and run on 20 core:
+> > 
+> >   builder@i586:kernel-source-6.3$ pahole -J --btf_gen_floats -j111 --lang_exclude=rust .tmp_vmlinux.btf
+> >   Not enough memory to instantiate new BTF encoder.
+> >   HINT: Maybe reduce the -j/--jobs command line value?.
+> >   ... 40 times this message ....
+> >   Not enough memory to instantiate new BTF encoder.
+> >   HINT: Maybe reduce the -j/--jobs command line value?.
+> >   builder@i586:kernel-source-6.3$ echo $?
+> >   0
+> > 
+> > Thanks,
+> > 
+> > > 
+> > > - Arnaldo
+> > > 
+> > > diff --git a/pahole.c b/pahole.c
+> > > index e843999fde2a8a37..887b3403dcff18c0 100644
+> > > --- a/pahole.c
+> > > +++ b/pahole.c
+> > > @@ -3097,6 +3097,15 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
+> > >  							 btf_encode_force,
+> > >  							 btf_gen_floats,
+> > >  							 global_verbose);
+> > > +				if (thread->encoder == NULL) {
+> > > +					fprintf(stderr, "Not enough memory to instantiate new BTF encoder.\n");
+> > > +
+> > > +					if (conf_load->nr_jobs > 1)
+> > > +						fprintf(stderr, "HINT: Maybe reduce the -j/--jobs command line value?.\n");
+> > > +
+> > > +					ret = LSK__STOP_LOADING;
+> > > +					goto out_btf;
+> > > +				}
+> > >  				thread->btf = btf_encoder__btf(thread->encoder);
+> > >  			}
+> > >  			encoder = thread->encoder;
 
