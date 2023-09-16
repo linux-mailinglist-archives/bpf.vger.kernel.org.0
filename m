@@ -1,128 +1,136 @@
-Return-Path: <bpf+bounces-10189-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10191-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 768A67A2B25
-	for <lists+bpf@lfdr.de>; Sat, 16 Sep 2023 02:05:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34B5A7A2C00
+	for <lists+bpf@lfdr.de>; Sat, 16 Sep 2023 02:31:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74E131C20C1C
-	for <lists+bpf@lfdr.de>; Sat, 16 Sep 2023 00:05:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E095D28443C
+	for <lists+bpf@lfdr.de>; Sat, 16 Sep 2023 00:31:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A80A643;
-	Sat, 16 Sep 2023 00:05:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F70815A1;
+	Sat, 16 Sep 2023 00:31:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E577C367
-	for <bpf@vger.kernel.org>; Sat, 16 Sep 2023 00:05:36 +0000 (UTC)
-Received: from out-225.mta1.migadu.com (out-225.mta1.migadu.com [95.215.58.225])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307112102
-	for <bpf@vger.kernel.org>; Fri, 15 Sep 2023 17:05:35 -0700 (PDT)
-Message-ID: <414e9f49-ad34-5282-6c05-882876440f34@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1694822733;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7TlaScHzBzr/qbRBTyCtySTJ6nxP2kkLx+DKw2O6/ew=;
-	b=v4F7SWCeg57uZ0aEu3OhKqfez3Jq49RRAGiDVpzuLnOW4SBcHCzNzsuRftu/IshKFKc4Wp
-	7/auE3prA0/rTI07dJHjvcmmEuc6Z7AoZNwiV5mRP8SpUM73UwpNmvf8yIT4qZNBt9sucF
-	iyInqUaOLCla6WevU25fVXNF2AOLlv4=
-Date: Fri, 15 Sep 2023 17:05:26 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F38BEC0
+	for <bpf@vger.kernel.org>; Sat, 16 Sep 2023 00:31:04 +0000 (UTC)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1DA44B9;
+	Fri, 15 Sep 2023 17:19:57 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-402c46c49f4so29132525e9.1;
+        Fri, 15 Sep 2023 17:19:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694823548; x=1695428348; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u9flE6dYRYbq8DBhx5GKkycXD3lGBgnPeT7V0R69zQo=;
+        b=aWmezyHDC0gQyvdVa+K4eio5vDlXQQXuI0tjEx+ScKQC5ycdVE+yWuufMivTcQzTXN
+         0uBmLBGvJFKr5ofuBF7yrHsP93lb81VaxRmQUcC0ArvDvD8+uDjxbCV46FhCILZJ0QKh
+         ddAMPC7DObJe0BgXEn91nLX8QSxZI4eZ1iqFPH3ZbdkHU7etyuK3Snw5cRE8HpHP6Ltk
+         YY9lMGt+B7jekIdiBh2bUF8hgmg+JZfG7WAoEoSio+zz5+cdY++QYwiHI4rBw+Y/orW7
+         knoVCh7Ree7nlDE9ANVN/4nFxSKDz7pmSnvHkQDKZoBk2I8GYVNgIwlV/nlxP+hvGb6u
+         0IKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694823548; x=1695428348;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u9flE6dYRYbq8DBhx5GKkycXD3lGBgnPeT7V0R69zQo=;
+        b=AoGIiNOjm+QPzZQWiFQsklUMloYzH6TDgIgn5wEf+QBt4dZGW7+i4zUhiwKCCskMD5
+         0zIti2r43CZ7K3qBKxD5Gkae1wM0DxiOqBAYcCM/DsWgZx3epF0QsZmVuPiSRUODk6S1
+         aK8e/ku9xCYZBev0F49c4pkatyC2b6tRC35/f9wPfMRXrMiypIyg7hIBfeltTKJOt6t9
+         LZ84HbDIHgT85n5ZVdRAHob/l60389nrljdHtLkhQZoCLryAqDkDZ/EToqgfC3e6brqj
+         WMtZt/qpYFlN4m9R25Xv9O6puUm/JjFgS/iWFrY2BOKbQ+TtgiFkl+DINbRl6jqQKXz0
+         i0tw==
+X-Gm-Message-State: AOJu0YwyDNfxIcNR1QxBizHfQG2NLqi/cd0NvcxyDlp7RTFzOm+FH+le
+	WbKVXQwM+rBhn1a3XN/+/cJmGm7vmz9zVI8UkBc=
+X-Google-Smtp-Source: AGHT+IEPE6CWPA9ayILU9kIgGKupoUTtyfybCYP0bX1o30D1C/gOv6i+wOk2NCHx6iKJA0mKvgtDnM7QzusuVBVPd84=
+X-Received: by 2002:a7b:cbcf:0:b0:401:cf0d:25cd with SMTP id
+ n15-20020a7bcbcf000000b00401cf0d25cdmr2688762wmi.22.1694823548286; Fri, 15
+ Sep 2023 17:19:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC bpf-next v2 2/9] bpf: add register and unregister functions
- for struct_ops.
-Content-Language: en-US
-To: thinker.li@gmail.com
-Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
- ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org
-References: <20230913061449.1918219-1-thinker.li@gmail.com>
- <20230913061449.1918219-3-thinker.li@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230913061449.1918219-3-thinker.li@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20230907230550.1417590-1-puranjay12@gmail.com>
+ <20230907230550.1417590-10-puranjay12@gmail.com> <ZPrdQEhw4f+TK8TB@shell.armlinux.org.uk>
+ <1a4bc20a-b7ff-3697-5859-a2bb868c575f@iogearbox.net> <CANk7y0izCD1Cwqpkf_i2Vi+QyS4ggdOEhJP0Uq_QWkLhp4zHwQ@mail.gmail.com>
+In-Reply-To: <CANk7y0izCD1Cwqpkf_i2Vi+QyS4ggdOEhJP0Uq_QWkLhp4zHwQ@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 15 Sep 2023 17:18:56 -0700
+Message-ID: <CAADnVQLBc1pc7rRb0vm-e5a-bYzdtCdL05HezEJXbfPMhqLBPg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 9/9] MAINTAINERS: Add myself for ARM32 BPF JIT maintainer.
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, "Russell King (Oracle)" <linux@armlinux.org.uk>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Shubham Bansal <illusionist.neo@gmail.com>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 9/12/23 11:14 PM, thinker.li@gmail.com wrote:
-> +int register_bpf_struct_ops(struct bpf_struct_ops_mod *mod)
-> +{
-> +	struct bpf_struct_ops *st_ops = mod->st_ops;
-> +	struct bpf_verifier_log *log;
-> +	struct btf *btf;
-> +	int err;
-> +
-> +	if (mod->st_ops == NULL ||
-> +	    mod->owner == NULL)
-> +		return -EINVAL;
-> +
-> +	log = kzalloc(sizeof(*log), GFP_KERNEL | __GFP_NOWARN);
-> +	if (!log) {
-> +		err = -ENOMEM;
-> +		goto errout;
-> +	}
-> +
-> +	log->level = BPF_LOG_KERNEL;
-> +
-> +	btf = btf_get_module_btf(mod->owner);
+On Fri, Sep 8, 2023 at 7:50=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.com=
+> wrote:
+>
+> On Fri, Sep 8, 2023 at 3:49=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.=
+net> wrote:
+> >
+> > On 9/8/23 10:37 AM, Russell King (Oracle) wrote:
+> > > On Thu, Sep 07, 2023 at 11:05:50PM +0000, Puranjay Mohan wrote:
+> > >> As Shubham has been inactive since 2017, Add myself for ARM32 BPF JI=
+T.
+> > >>
+> > >> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> > >> ---
+> > >>   MAINTAINERS | 5 +++--
+> > >>   1 file changed, 3 insertions(+), 2 deletions(-)
+> > >>
+> > >> diff --git a/MAINTAINERS b/MAINTAINERS
+> > >> index 612d6d1dbf36..c241856819bd 100644
+> > >> --- a/MAINTAINERS
+> > >> +++ b/MAINTAINERS
+> > >> @@ -3602,9 +3602,10 @@ F:    Documentation/devicetree/bindings/iio/a=
+ccel/bosch,bma400.yaml
+> > >>   F: drivers/iio/accel/bma400*
+> > >>
+> > >>   BPF JIT for ARM
+> > >> -M:  Shubham Bansal <illusionist.neo@gmail.com>
+> > >> +M:  Puranjay Mohan <puranjay12@gmail.com>
+> > >> +R:  Shubham Bansal <illusionist.neo@gmail.com>
+> > >
+> > > Don't forget that I also want to review the changes, but I guess my
+> > > arch/arm entry will cover this too.
+> >
+> > If there are no objections from all parties, it would be nice/better if=
+ both of
+> > you (Puranjay & Russell) could be explicitly added here as maintainers.
+>
+> Yes, I agree with that. Russell knows more about ARM than anyone else!
+>
+> If I send another version for any other comments I get, I will include
+> this change.
+> But if this version of the series is applied, can you make this change
+> while applying the patch?
 
-Where is btf_put called?
+I removed Shubham, since he didn't touch the code in years
+and added Russell while applying.
 
-It is not stored anywhere in patch 2, so a bit confusing. I quickly looked at 
-the following patches but also don't see the bpf_put.
-
-> +	if (!btf) {
-> +		err = -EINVAL;
-> +		goto errout;
-> +	}
-> +
-> +	bpf_struct_ops_init_one(st_ops, btf, log);
-> +	err = add_struct_ops(st_ops);
-> +
-> +errout:
-> +	kfree(log);
-> +
-> +	return err;
-> +}
-> +EXPORT_SYMBOL(register_bpf_struct_ops);
-> +
-> +int unregister_bpf_struct_ops(struct bpf_struct_ops_mod *mod)
-
-It is not clear to me why the subsystem needs to explicitly call 
-unregister_bpf_struct_ops(). Can it be done similar to the module kfunc support 
-(the kfunc_set_tab goes away with the btf)?
-
-Related to this, does it need to maintain a global struct_ops array for all 
-kernel module? Can the struct_ops be maintained under its corresponding module 
-btf itself?
-
-> +{
-> +	struct bpf_struct_ops *st_ops = mod->st_ops;
-> +	int err;
-> +
-> +	err = remove_struct_ops(st_ops);
-> +	if (!err && st_ops->uninit)
-> +		err = st_ops->uninit();
-> +
-> +	return err;
-> +}
-> +EXPORT_SYMBOL(unregister_bpf_struct_ops);
-
-
+Thanks a lot for upgrading the status of arm jit to Maintained !
+This has been long overdue. We see increased use of BPF on arm32.
 
