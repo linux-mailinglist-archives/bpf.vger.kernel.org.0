@@ -1,160 +1,431 @@
-Return-Path: <bpf+bounces-10224-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10225-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7C217A35D5
-	for <lists+bpf@lfdr.de>; Sun, 17 Sep 2023 16:30:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7D127A360F
+	for <lists+bpf@lfdr.de>; Sun, 17 Sep 2023 17:09:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9D2B1C208DC
-	for <lists+bpf@lfdr.de>; Sun, 17 Sep 2023 14:30:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 070D428148B
+	for <lists+bpf@lfdr.de>; Sun, 17 Sep 2023 15:09:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5C654C61;
-	Sun, 17 Sep 2023 14:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536014C6E;
+	Sun, 17 Sep 2023 15:09:02 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8CA33D0
-	for <bpf@vger.kernel.org>; Sun, 17 Sep 2023 14:29:53 +0000 (UTC)
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D54127
-	for <bpf@vger.kernel.org>; Sun, 17 Sep 2023 07:29:52 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c43fe0c0bfso11367635ad.1
-        for <bpf@vger.kernel.org>; Sun, 17 Sep 2023 07:29:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694960991; x=1695565791; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0bbD7osL848QKxxxFqrwWnx41DaF/XQ4MI319Jfm6dE=;
-        b=bWCbNd5Gj+4u1SgE1pumceT9Xa77rrqXiiJJLkeSOvKQz0A18e1GMO7R7REaOcw2MZ
-         aH9AvuDV1LtpNJfBq3x5CSFSXeCFJhlHimKbjlnVDRa64UZfy0TkE7ljHaRAXtkYwAZf
-         74hh7Eay+pTAtfaKaQXSW1evfSlpyUuOAAEea2NOtjErPjdDn3E+fCgqSLyZLSa3gvbP
-         tjjiygp8kLT1EJH7jEfIUKO/70AsHa/aVlFMHqZ0kIeReQWu7OTk523VO91sevMxX9Va
-         0TVkmLtkOCK+u6oGgY6y2qYzeEOuckpgcndojPDo7o2jVY0QC0cHXWLXrBNetiPgK55K
-         bNGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694960991; x=1695565791;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0bbD7osL848QKxxxFqrwWnx41DaF/XQ4MI319Jfm6dE=;
-        b=rOeiN1u6Ohnfj0r5tO6S9EtVQF+T4dbhbCqbdBnQ68lyvKk6hrMt5mIDudzjw+NvU7
-         e+ucNtXWYn/xqsTqmiJI1LDFGFx17/d9WRVUJXjawwgyRWxajfLjefpjZpQy/5tqTnTm
-         0NGNkI5/AZolK053aJ/MJFFf8RwYr2x1H5GGFN6lrbz/9sSXOMle4n+TlLHxs4KsSuar
-         AaDIAYlFFyvXQsz6Yk/lhNXdyS0Jln/Z01t6tinIxnC29ud8cBMd6o9ertxCowEHDM/E
-         ukLlesM1Gzc13MyUBjXkOmBUUYMWK64N8KlUm5pWGN4fEYuA7LIAv98pVXxEPO5YF4KF
-         LcPA==
-X-Gm-Message-State: AOJu0YyzrP2wWwiW3q4gvWdjnZ2DWBm2ZDjy0hy02hf8/KZILpoCA3BD
-	BNGX3ctce+fgNz/N7Li31sI=
-X-Google-Smtp-Source: AGHT+IEyqbE6Flg4K5tzPf1V8DgMhBzcmsnDjFdtcm6P6xEhZ5AjdTERSV6vvzexIt/kD8xFttrJ+g==
-X-Received: by 2002:a17:903:451:b0:1c3:9120:2920 with SMTP id iw17-20020a170903045100b001c391202920mr4720987plb.40.1694960991414;
-        Sun, 17 Sep 2023 07:29:51 -0700 (PDT)
-Received: from [192.168.1.12] (bb116-14-95-136.singnet.com.sg. [116.14.95.136])
-        by smtp.gmail.com with ESMTPSA id z1-20020a170902708100b001bdeb6bdfbasm2775579plk.241.2023.09.17.07.29.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Sep 2023 07:29:50 -0700 (PDT)
-Message-ID: <3a354608-6685-ee51-6317-9bf127cfd7b8@gmail.com>
-Date: Sun, 17 Sep 2023 22:29:44 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D025A4C60
+	for <bpf@vger.kernel.org>; Sun, 17 Sep 2023 15:08:59 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B979B6
+	for <bpf@vger.kernel.org>; Sun, 17 Sep 2023 08:08:56 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RpWXg2DGmz4f3lDK
+	for <bpf@vger.kernel.org>; Sun, 17 Sep 2023 23:08:51 +0800 (CST)
+Received: from k01.huawei.com (unknown [10.67.174.197])
+	by APP3 (Coremail) with SMTP id _Ch0CgBHoE+DFgdlr6CoAg--.39324S2;
+	Sun, 17 Sep 2023 23:08:53 +0800 (CST)
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+To: bpf@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Florent Revest <revest@chromium.org>,
+	Will Deacon <will@kernel.org>,
+	Zi Shen Lim <zlim.lnx@gmail.com>
+Subject: [PATCH bpf-next] bpf, arm64: Support up to 12 function arguments
+Date: Sun, 17 Sep 2023 23:07:52 +0800
+Message-Id: <20230917150752.69612-1-xukuohai@huaweicloud.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH bpf] bpf: Fix tr dereferencing
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Hengqi Chen <hengqi.chen@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
- Stanislav Fomichev <sdf@google.com>, kbuild test robot <lkp@intel.com>,
- Dan Carpenter <dan.carpenter@linaro.org>,
- "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
- kernel-patches-bot@fb.com
-References: <20230914145126.40202-1-hffilwlqm@gmail.com>
- <CAEyhmHRAvR=Ch-DjMpmpB0zeUsbQYcTXkMqyTSL9iwmZukcTgw@mail.gmail.com>
- <8148921c-cc06-bad7-787f-d190cba0bce1@gmail.com>
- <CAEyhmHR9g+B67Fy_wmdTwHzMFhmdw86ak6dPFpMjui16ecTUjw@mail.gmail.com>
- <CAADnVQ+FLBbvE=TPuNHs2ir3s+6kVOpZGQ4U_X3SuAaAAcdL-w@mail.gmail.com>
-From: Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <CAADnVQ+FLBbvE=TPuNHs2ir3s+6kVOpZGQ4U_X3SuAaAAcdL-w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-	HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+X-CM-TRANSID:_Ch0CgBHoE+DFgdlr6CoAg--.39324S2
+X-Coremail-Antispam: 1UD129KBjvAXoW3KrWxGw1DGw4DJw13CrWDXFb_yoW8Jr1DAo
+	ZFg3WkXF1xKryrXrZ3KrykJry7Zan7tr15XFWrJrs8uF97XrW5tr4fuws3J3W5ZF4j9F1U
+	uF1Uta4Fka1fAr4kn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UjIYCTnIWjp_UUU5l7kC6x804xWl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK
+	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
+	AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF
+	7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCj
+	c4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
+	CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
+	MIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJV
+	Cq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBI
+	daVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+From: Xu Kuohai <xukuohai@huawei.com>
 
+Currently arm64 bpf trampoline supports up to 8 function arguments.
+According to the statistics from commit
+473e3150e30a ("bpf, x86: allow function arguments up to 12 for TRACING"),
+there are about 200 functions accept 9 to 12 arguments, so adding support
+for up to 12 function arguments.
 
-On 2023/9/16 01:38, Alexei Starovoitov wrote:
-> On Thu, Sep 14, 2023 at 7:54 PM Hengqi Chen <hengqi.chen@gmail.com> wrote:
->>
->> On Fri, Sep 15, 2023 at 10:18 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
->>>
->>>
->>>
->>> On 15/9/23 10:13, Hengqi Chen wrote:
->>>> On Thu, Sep 14, 2023 at 10:51 PM Leon Hwang <hffilwlqm@gmail.com> wrote:
->>>>>
->>>>> Fix 'tr' dereferencing bug when CONFIG_BPF_JIT is turned off.
->>>>>
->>>>> Like 'bpf_trampoline_get_progs()', return 'ERR_PTR()' and then check by
->>>>> 'IS_ERR()'. As a result, when CONFIG_BPF_JIT is turned off, it's able to
->>>>> handle the case that 'bpf_trampoline_get()' returns
->>>>> 'ERR_PTR(-EOPNOTSUPP)'.
->>>>>
->>>>> Fixes: 4a1e7c0c63e0 ("bpf: Support attaching freplace programs to multiple attach points")
->>>>> Fixes: f7b12b6fea00 ("bpf: verifier: refactor check_attach_btf_id()")
->>>>> Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
->>>>> Reported-by: kernel test robot <lkp@intel.com>
->>>>> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
->>>>> Closes: https://lore.kernel.org/r/202309131936.5Nc8eUD0-lkp@intel.com/
->>>>> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
->>>>> ---
->>>>>  kernel/bpf/syscall.c    | 4 ++--
->>>>>  kernel/bpf/trampoline.c | 6 +++---
->>>>>  kernel/bpf/verifier.c   | 4 ++--
->>>>>  3 files changed, 7 insertions(+), 7 deletions(-)
->>>>>
->>>>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->>>>> index 6a692f3bea150..5748d01c99854 100644
->>>>> --- a/kernel/bpf/syscall.c
->>>>> +++ b/kernel/bpf/syscall.c
->>>>> @@ -3211,8 +3211,8 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
->>>>>                 }
->>>>>
->>>>>                 tr = bpf_trampoline_get(key, &tgt_info);
->>>>> -               if (!tr) {
->>>>> -                       err = -ENOMEM;
->>>>> +               if (IS_ERR(tr)) {
->>>>> +                       err = PTR_ERR(tr);
->>>>>                         goto out_unlock;
->>>>
->>>> IS_ERR does not check the null case, so this should be IS_ERR_OR_NULL instead.
->>>
->>> Actually, bpf_trampoline_get() would not return NULL. It returns ERR_PTR(-ENOMEM)
->>> or a valid ptr.
->>>
->>
->> OK, I missed the change in bpf_trampoline_get(). Anyway,
->>
->> Reviewed-by: Hengqi Chen <hengqi.chen@gmail.com>
-> 
-> That's too much churn to address !JIT config.
-> Just make it return NULL in that case,
-> instead of hacking things all over the place.
+Due to bpf only supports function arguments up to 16 bytes, according to
+AAPCS64, starting from the first argument, each argument is first
+attempted to be loaded to 1 or 2 smallest registers from x0-x7, if there
+are no enough registers to hold the entire argument, then all remaining
+arguments starting from this one are pushed to the stack for passing.
 
-OK, I'll do it in v2 patch.
+Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+---
+ arch/arm64/net/bpf_jit_comp.c                | 171 ++++++++++++++-----
+ tools/testing/selftests/bpf/DENYLIST.aarch64 |   2 -
+ 2 files changed, 131 insertions(+), 42 deletions(-)
 
-Thanks,
-Leon
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 7d4af64e3982..a0cf526b07ea 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -1705,7 +1705,7 @@ bool bpf_jit_supports_subprog_tailcalls(void)
+ }
+ 
+ static void invoke_bpf_prog(struct jit_ctx *ctx, struct bpf_tramp_link *l,
+-			    int args_off, int retval_off, int run_ctx_off,
++			    int bargs_off, int retval_off, int run_ctx_off,
+ 			    bool save_ret)
+ {
+ 	__le32 *branch;
+@@ -1747,7 +1747,7 @@ static void invoke_bpf_prog(struct jit_ctx *ctx, struct bpf_tramp_link *l,
+ 	/* save return value to callee saved register x20 */
+ 	emit(A64_MOV(1, A64_R(20), A64_R(0)), ctx);
+ 
+-	emit(A64_ADD_I(1, A64_R(0), A64_SP, args_off), ctx);
++	emit(A64_ADD_I(1, A64_R(0), A64_SP, bargs_off), ctx);
+ 	if (!p->jited)
+ 		emit_addr_mov_i64(A64_R(1), (const u64)p->insnsi, ctx);
+ 
+@@ -1772,7 +1772,7 @@ static void invoke_bpf_prog(struct jit_ctx *ctx, struct bpf_tramp_link *l,
+ }
+ 
+ static void invoke_bpf_mod_ret(struct jit_ctx *ctx, struct bpf_tramp_links *tl,
+-			       int args_off, int retval_off, int run_ctx_off,
++			       int bargs_off, int retval_off, int run_ctx_off,
+ 			       __le32 **branches)
+ {
+ 	int i;
+@@ -1782,7 +1782,7 @@ static void invoke_bpf_mod_ret(struct jit_ctx *ctx, struct bpf_tramp_links *tl,
+ 	 */
+ 	emit(A64_STR64I(A64_ZR, A64_SP, retval_off), ctx);
+ 	for (i = 0; i < tl->nr_links; i++) {
+-		invoke_bpf_prog(ctx, tl->links[i], args_off, retval_off,
++		invoke_bpf_prog(ctx, tl->links[i], bargs_off, retval_off,
+ 				run_ctx_off, true);
+ 		/* if (*(u64 *)(sp + retval_off) !=  0)
+ 		 *	goto do_fexit;
+@@ -1796,23 +1796,111 @@ static void invoke_bpf_mod_ret(struct jit_ctx *ctx, struct bpf_tramp_links *tl,
+ 	}
+ }
+ 
+-static void save_args(struct jit_ctx *ctx, int args_off, int nregs)
++struct arg_aux {
++	/* how many args are passed through registers, the rest args are
++	 * passed through stack
++	 */
++	int args_in_reg;
++	/* how many registers used for passing arguments */
++	int regs_for_arg;
++	/* how many stack slots used for arguments, each slot is 8 bytes */
++	int stack_slots_for_arg;
++};
++
++static void calc_arg_aux(const struct btf_func_model *m,
++			 struct arg_aux *a)
+ {
+ 	int i;
++	int nregs;
++	int slots;
++	int stack_slots;
++
++	/* verifier ensures m->nr_args <= MAX_BPF_FUNC_ARGS */
++	for (i = 0, nregs = 0; i < m->nr_args; i++) {
++		slots = (m->arg_size[i] + 7) / 8;
++		if (nregs + slots <= 8) /* passed through register ? */
++			nregs += slots;
++		else
++			break;
++	}
++
++	a->args_in_reg = i;
++	a->regs_for_arg = nregs;
+ 
+-	for (i = 0; i < nregs; i++) {
+-		emit(A64_STR64I(i, A64_SP, args_off), ctx);
+-		args_off += 8;
++	/* the rest arguments are passed through stack */
++	for (stack_slots = 0; i < m->nr_args; i++)
++		stack_slots += (m->arg_size[i] + 7) / 8;
++
++	a->stack_slots_for_arg = stack_slots;
++}
++
++static void clear_garbage(struct jit_ctx *ctx, int reg, int effective_bytes)
++{
++	if (effective_bytes) {
++		int garbage_bits = 64 - 8 * effective_bytes;
++#ifdef CONFIG_CPU_BIG_ENDIAN
++		/* garbage bits are at the right end */
++		emit(A64_LSR(1, reg, reg, garbage_bits), ctx);
++		emit(A64_LSL(1, reg, reg, garbage_bits), ctx);
++#else
++		/* garbage bits are at the left end */
++		emit(A64_LSL(1, reg, reg, garbage_bits), ctx);
++		emit(A64_LSR(1, reg, reg, garbage_bits), ctx);
++#endif
+ 	}
+ }
+ 
+-static void restore_args(struct jit_ctx *ctx, int args_off, int nregs)
++static void save_args(struct jit_ctx *ctx, int bargs_off, int oargs_off,
++		      const struct btf_func_model *m,
++		      const struct arg_aux *a,
++		      bool for_call_origin)
+ {
+ 	int i;
++	int reg;
++	int doff;
++	int soff;
++	int slots;
++	u8 tmp = bpf2a64[TMP_REG_1];
++
++	/* store argument registers to stack for call bpf, or restore argument
++	 * registers from stack for the original function
++	 */
++	for (reg = 0; reg < a->regs_for_arg; reg++) {
++		emit(for_call_origin ?
++		     A64_LDR64I(reg, A64_SP, bargs_off) :
++		     A64_STR64I(reg, A64_SP, bargs_off),
++		     ctx);
++		bargs_off += 8;
++	}
+ 
+-	for (i = 0; i < nregs; i++) {
+-		emit(A64_LDR64I(i, A64_SP, args_off), ctx);
+-		args_off += 8;
++	soff = 32; /* on stack arguments start from FP + 32 */
++	doff = (for_call_origin ? oargs_off : bargs_off);
++
++	/* save on stack arguments */
++	for (i = a->args_in_reg; i < m->nr_args; i++) {
++		slots = (m->arg_size[i] + 7) / 8;
++		/* verifier ensures arg_size <= 16, so slots equals 1 or 2 */
++		while (slots-- > 0) {
++			emit(A64_LDR64I(tmp, A64_FP, soff), ctx);
++			/* if there is unused space in the last slot, clear
++			 * the garbage contained in the space.
++			 */
++			if (slots == 0 && !for_call_origin)
++				clear_garbage(ctx, tmp, m->arg_size[i] % 8);
++			emit(A64_STR64I(tmp, A64_SP, doff), ctx);
++			soff += 8;
++			doff += 8;
++		}
++	}
++}
++
++static void restore_args(struct jit_ctx *ctx, int bargs_off, int nregs)
++{
++	int reg;
++
++	for (reg = 0; reg < nregs; reg++) {
++		emit(A64_LDR64I(reg, A64_SP, bargs_off), ctx);
++		bargs_off += 8;
+ 	}
+ }
+ 
+@@ -1829,17 +1917,21 @@ static void restore_args(struct jit_ctx *ctx, int args_off, int nregs)
+  */
+ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+ 			      struct bpf_tramp_links *tlinks, void *orig_call,
+-			      int nregs, u32 flags)
++			      const struct btf_func_model *m,
++			      const struct arg_aux *a,
++			      u32 flags)
+ {
+ 	int i;
+ 	int stack_size;
+ 	int retaddr_off;
+ 	int regs_off;
+ 	int retval_off;
+-	int args_off;
++	int bargs_off;
+ 	int nregs_off;
+ 	int ip_off;
+ 	int run_ctx_off;
++	int oargs_off;
++	int nregs;
+ 	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
+ 	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
+ 	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
+@@ -1859,19 +1951,26 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+ 	 *
+ 	 * SP + retval_off  [ return value      ] BPF_TRAMP_F_CALL_ORIG or
+ 	 *                                        BPF_TRAMP_F_RET_FENTRY_RET
+-	 *
+ 	 *                  [ arg reg N         ]
+ 	 *                  [ ...               ]
+-	 * SP + args_off    [ arg reg 1         ]
++	 * SP + bargs_off   [ arg reg 1         ] for bpf
+ 	 *
+ 	 * SP + nregs_off   [ arg regs count    ]
+ 	 *
+ 	 * SP + ip_off      [ traced function   ] BPF_TRAMP_F_IP_ARG flag
+ 	 *
+ 	 * SP + run_ctx_off [ bpf_tramp_run_ctx ]
++	 *
++	 *                  [ stack arg N       ]
++	 *                  [ ...               ]
++	 * SP + oargs_off   [ stack arg 1       ] for original func
+ 	 */
+ 
+ 	stack_size = 0;
++	oargs_off = stack_size;
++	if (flags & BPF_TRAMP_F_CALL_ORIG)
++		stack_size += 8 * a->stack_slots_for_arg;
++
+ 	run_ctx_off = stack_size;
+ 	/* room for bpf_tramp_run_ctx */
+ 	stack_size += round_up(sizeof(struct bpf_tramp_run_ctx), 8);
+@@ -1885,9 +1984,10 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+ 	/* room for args count */
+ 	stack_size += 8;
+ 
+-	args_off = stack_size;
++	bargs_off = stack_size;
+ 	/* room for args */
+-	stack_size += nregs * 8;
++	nregs = a->regs_for_arg + a->stack_slots_for_arg;
++	stack_size += 8 * nregs;
+ 
+ 	/* room for return value */
+ 	retval_off = stack_size;
+@@ -1934,8 +2034,8 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+ 	emit(A64_MOVZ(1, A64_R(10), nregs, 0), ctx);
+ 	emit(A64_STR64I(A64_R(10), A64_SP, nregs_off), ctx);
+ 
+-	/* save arg regs */
+-	save_args(ctx, args_off, nregs);
++	/* save args for bpf */
++	save_args(ctx, bargs_off, oargs_off, m, a, false);
+ 
+ 	/* save callee saved registers */
+ 	emit(A64_STR64I(A64_R(19), A64_SP, regs_off), ctx);
+@@ -1947,7 +2047,7 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+ 	}
+ 
+ 	for (i = 0; i < fentry->nr_links; i++)
+-		invoke_bpf_prog(ctx, fentry->links[i], args_off,
++		invoke_bpf_prog(ctx, fentry->links[i], bargs_off,
+ 				retval_off, run_ctx_off,
+ 				flags & BPF_TRAMP_F_RET_FENTRY_RET);
+ 
+@@ -1957,12 +2057,13 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+ 		if (!branches)
+ 			return -ENOMEM;
+ 
+-		invoke_bpf_mod_ret(ctx, fmod_ret, args_off, retval_off,
++		invoke_bpf_mod_ret(ctx, fmod_ret, bargs_off, retval_off,
+ 				   run_ctx_off, branches);
+ 	}
+ 
+ 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
+-		restore_args(ctx, args_off, nregs);
++		/* save args for original func */
++		save_args(ctx, bargs_off, oargs_off, m, a, true);
+ 		/* call original func */
+ 		emit(A64_LDR64I(A64_R(10), A64_SP, retaddr_off), ctx);
+ 		emit(A64_ADR(A64_LR, AARCH64_INSN_SIZE * 2), ctx);
+@@ -1981,7 +2082,7 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+ 	}
+ 
+ 	for (i = 0; i < fexit->nr_links; i++)
+-		invoke_bpf_prog(ctx, fexit->links[i], args_off, retval_off,
++		invoke_bpf_prog(ctx, fexit->links[i], bargs_off, retval_off,
+ 				run_ctx_off, false);
+ 
+ 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
+@@ -1991,7 +2092,7 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+ 	}
+ 
+ 	if (flags & BPF_TRAMP_F_RESTORE_REGS)
+-		restore_args(ctx, args_off, nregs);
++		restore_args(ctx, bargs_off, a->regs_for_arg);
+ 
+ 	/* restore callee saved register x19 and x20 */
+ 	emit(A64_LDR64I(A64_R(19), A64_SP, regs_off), ctx);
+@@ -2031,26 +2132,16 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
+ 				u32 flags, struct bpf_tramp_links *tlinks,
+ 				void *orig_call)
+ {
+-	int i, ret;
+-	int nregs = m->nr_args;
++	int ret;
+ 	int max_insns = ((long)image_end - (long)image) / AARCH64_INSN_SIZE;
+ 	struct jit_ctx ctx = {
+ 		.image = NULL,
+ 		.idx = 0,
+ 	};
++	struct arg_aux aaux;
+ 
+-	/* extra registers needed for struct argument */
+-	for (i = 0; i < MAX_BPF_FUNC_ARGS; i++) {
+-		/* The arg_size is at most 16 bytes, enforced by the verifier. */
+-		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
+-			nregs += (m->arg_size[i] + 7) / 8 - 1;
+-	}
+-
+-	/* the first 8 registers are used for arguments */
+-	if (nregs > 8)
+-		return -ENOTSUPP;
+-
+-	ret = prepare_trampoline(&ctx, im, tlinks, orig_call, nregs, flags);
++	calc_arg_aux(m, &aaux);
++	ret = prepare_trampoline(&ctx, im, tlinks, orig_call, m, &aaux, flags);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -2061,7 +2152,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
+ 	ctx.idx = 0;
+ 
+ 	jit_fill_hole(image, (unsigned int)(image_end - image));
+-	ret = prepare_trampoline(&ctx, im, tlinks, orig_call, nregs, flags);
++	ret = prepare_trampoline(&ctx, im, tlinks, orig_call, m, &aaux, flags);
+ 
+ 	if (ret > 0 && validate_code(&ctx) < 0)
+ 		ret = -EINVAL;
+diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
+index f5065576cae9..35a297a3c92f 100644
+--- a/tools/testing/selftests/bpf/DENYLIST.aarch64
++++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
+@@ -11,8 +11,6 @@ kprobe_multi_test/link_api_addrs                 # link_fd unexpected link_fd: a
+ kprobe_multi_test/link_api_syms                  # link_fd unexpected link_fd: actual -95 < expected 0
+ kprobe_multi_test/skel_api                       # libbpf: failed to load BPF skeleton 'kprobe_multi': -3
+ module_attach                                    # prog 'kprobe_multi': failed to auto-attach: -95
+-fentry_test/fentry_many_args                     # fentry_many_args:FAIL:fentry_many_args_attach unexpected error: -524
+-fexit_test/fexit_many_args                       # fexit_many_args:FAIL:fexit_many_args_attach unexpected error: -524
+ fill_link_info/kprobe_multi_link_info            # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+ fill_link_info/kretprobe_multi_link_info         # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+ fill_link_info/kprobe_multi_invalid_ubuff        # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+-- 
+2.30.2
+
 
