@@ -1,142 +1,398 @@
-Return-Path: <bpf+bounces-10219-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10220-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA0887A3412
-	for <lists+bpf@lfdr.de>; Sun, 17 Sep 2023 09:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8877A7A34D2
+	for <lists+bpf@lfdr.de>; Sun, 17 Sep 2023 11:08:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5725828111A
-	for <lists+bpf@lfdr.de>; Sun, 17 Sep 2023 07:30:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30E0C28130D
+	for <lists+bpf@lfdr.de>; Sun, 17 Sep 2023 09:08:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EE95186B;
-	Sun, 17 Sep 2023 07:30:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9D9C1FC4;
+	Sun, 17 Sep 2023 09:08:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A58D51865
-	for <bpf@vger.kernel.org>; Sun, 17 Sep 2023 07:30:41 +0000 (UTC)
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC2A186;
-	Sun, 17 Sep 2023 00:30:40 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-6563409d7c2so12324356d6.1;
-        Sun, 17 Sep 2023 00:30:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1694935839; x=1695540639; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CHboe8nA34+TWlqz42IVoMs0G+Rp7/msDkEqBjUm0qo=;
-        b=bnrM6vELY9l2Q8Hxvlc7bvaVyeJI4bcW2g54ddAJF/B2UkLjz7FmorHubjqieJBaDu
-         nsy/S1x9vZj+l5PLakfU55A3nWfDT+9LRJ1s/eiURB9qJt2KgrChdGWd17EL2QyA2Imn
-         9Z4zuZMzcDYJQrRf3GPYIF3xlxXtgoP0mcUeK1k+ElV5Clrv1LvpPqq7jzkib7HrJ/nD
-         wWfQUTH0sb36FSaqTAFYlvZlCnDYwuzgPJm4TKw658OxSWVywbIfYOmO7YWb05v2LM5W
-         lhbtNstGFY0GAvBduZJgZ4DJzIG9SFEFf0H6IuTnkCg11GA3t85r1cxJnWvJ7OH73lUW
-         siIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694935839; x=1695540639;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CHboe8nA34+TWlqz42IVoMs0G+Rp7/msDkEqBjUm0qo=;
-        b=IXvLotbajtrGr1zG9eHScvBw2OYADEKWtjG6+xXd/C6icn7wZkcNtUCP3+EreixZFx
-         aBIvZJKORjmS+yxDf2hnoy9dUrSfXg4DeMcnQpte2tDSFb5hyvNuiPNP8xvO0p78iW/3
-         AxIzU+xtYal+ODXJzqZv5UkZ+0fbuCYqPlm8LV/krqg6HZV1sz2I0dUx3GShgcit7QPA
-         kygd90nFk2+FeFZjXe/v6WxIluzso8b4ddOk6OK6smk0YNVEkPwCnidfRF0LMjWWEKV/
-         gljq74iDPuN8koqP0EWT5UnNjw91aPPMsjdb3fqTXT2Sx35syH/qarDWfbnqdRT6qbuU
-         TrQQ==
-X-Gm-Message-State: AOJu0YyPB757mvCnTtEWKaL2po3a9ynfJHu/PZWUi8qAJi+KZDRac3od
-	Kd3/TYpoUTqjfj1d3KqdoNISKGojq0uWGHzidPA=
-X-Google-Smtp-Source: AGHT+IEdtZPbxcCu1aE5YY4gCTN5TPLXm2UZndKbvCU3l3gT+owKRWVE8u4yi6benAyozDXj/C/8JD5XjdbaSwZMJvg=
-X-Received: by 2002:a0c:de07:0:b0:656:3c43:6bc5 with SMTP id
- t7-20020a0cde07000000b006563c436bc5mr5430699qvk.7.1694935839502; Sun, 17 Sep
- 2023 00:30:39 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05A881C35
+	for <bpf@vger.kernel.org>; Sun, 17 Sep 2023 09:08:34 +0000 (UTC)
+Received: from mail-m127157.xmail.ntesmail.com (mail-m127157.xmail.ntesmail.com [115.236.127.157])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064C3F9;
+	Sun, 17 Sep 2023 02:08:30 -0700 (PDT)
+Received: from [172.23.196.159] (unknown [121.32.254.146])
+	by mail-m11877.qiye.163.com (Hmail) with ESMTPA id C024C4001B2;
+	Sun, 17 Sep 2023 17:07:51 +0800 (CST)
+Message-ID: <6784b0d1-0da2-48dd-ad99-bb8b86978519@sangfor.com.cn>
+Date: Sun, 17 Sep 2023 17:07:47 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230903142800.3870-1-laoar.shao@gmail.com> <qv2xdcsvb4brjsc7qx6ncxrudwusogdo4itzv4bx2perfjymwl@in7zaeymjiie>
- <CALOAHbB-PF1LjSAxoCdePN6Va4D+ufkeDmq8s3b0AGtfX5E-cQ@mail.gmail.com>
- <CAADnVQL+6PsRbNMo=8kJpgw1OTbdLG9epsup0q7La5Ffqj6g6A@mail.gmail.com>
- <CALOAHbBhOL9w+rnh_xkgZZBhxMpbrmLZWhm1X+ZeDLfxxt8Nrw@mail.gmail.com>
- <ZP93gUwf_nLzDvM5@mtj.duckdns.org> <CALOAHbC=yxSoBR=vok2295ejDOEYQK2C8LRjDLGRruhq-rDjOQ@mail.gmail.com>
- <CA+khW7hah317_beZ7QDA1R=sWi5q7TanRC+efMhivPKtWzbA4w@mail.gmail.com>
-In-Reply-To: <CA+khW7hah317_beZ7QDA1R=sWi5q7TanRC+efMhivPKtWzbA4w@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Sun, 17 Sep 2023 15:30:01 +0800
-Message-ID: <CALOAHbAYTYasEHgd9C2Oc8yznR9bR9Q2M-QS9vzBpOYvmG7F+w@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/5] bpf, cgroup: Enable cgroup_array map on cgroup1
-To: Hao Luo <haoluo@google.com>
-Cc: Tejun Heo <tj@kernel.org>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Yosry Ahmed <yosryahmed@google.com>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2] bpf: Using binary search to improve the
+ performance of btf_find_by_name_kind
+To: Alan Maguire <alan.maguire@oracle.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Eduard Zingerman <eddyz87@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, dinghui@sangfor.com.cn,
+ huangcun@sangfor.com.cn, bpf <bpf@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <20230909091646.420163-1-pengdonglin@sangfor.com.cn>
+ <20ef8441084c9d5fd54f84987afa77eed7fe148e.camel@gmail.com>
+ <e78dc807b54f80fd3db836df08f71c7d2fb33387.camel@gmail.com>
+ <CAADnVQL0O_WFYcYQRig7osO0piPdOH2yHkdH0CxCfNV7NkA0Lw@mail.gmail.com>
+ <035ab912d7d6bd11c54c038464795da01dbed2de.camel@gmail.com>
+ <CAADnVQLMHUNE95eBXdy6=+gHoFHRsihmQ75GZvGy-hSuHoaT5A@mail.gmail.com>
+ <5f8d82c3-838e-4d75-bb25-7d98a6d0a37c@sangfor.com.cn>
+ <e564b0e9-3497-a133-3094-afefc0cd1f7e@oracle.com>
+ <a0bd3ed9-afe7-49a4-a394-949bd5831d6d@sangfor.com.cn>
+ <6b77425c-7f09-ae6d-c981-7cb2b3b826bd@oracle.com>
+ <774732d7-1603-466e-8df2-3b21314913e5@sangfor.com.cn>
+ <2d520a7b-9166-16c4-5385-5bb90437d45c@oracle.com>
+From: pengdonglin <pengdonglin@sangfor.com.cn>
+In-Reply-To: <2d520a7b-9166-16c4-5385-5bb90437d45c@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDQh0dVhkfSh1OGhlLGEhCHVUTARMWGhIXJBQOD1
+	lXWRgSC1lBWUpJSlVISVVJTk9VSk9NWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVSktLVUtZBg++
+X-HM-Tid: 0a8aa26573622eb3kusnc024c4001b2
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6KyI6LAw*OD1ICVY6IlZOIggX
+	Di4aCgpVSlVKTUJPQk9KTUxIS0pLVTMWGhIXVQseFRwfFBUcFxIVOwgaFRwdFAlVGBQWVRgVRVlX
+	WRILWUFZSklKVUhJVUlOT1VKT01ZV1kIAVlBSkxJT0w3Bg++
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, Sep 16, 2023 at 2:57=E2=80=AFAM Hao Luo <haoluo@google.com> wrote:
->
-> On Mon, Sep 11, 2023 at 8:31=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com=
-> wrote:
-> >
-> > On Tue, Sep 12, 2023 at 4:24=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote=
-:
-> > >
-> > > On Sun, Sep 10, 2023 at 11:17:48AM +0800, Yafang Shao wrote:
-> > > > To acquire the cgroup_id, we can resort to open coding, as exemplif=
-ied below:
-> > > >
-> > > >     task =3D bpf_get_current_task_btf();
-> > > >     cgroups =3D task->cgroups;
-> > > >     cgroup =3D cgroups->subsys[cpu_cgrp_id]->cgroup;
-> > > >     key =3D cgroup->kn->id;
-> > >
-> > > You can't hardcode it to a specific controller tree like that. You ei=
-ther
-> > > stick with fd based interface or need also add something to identify =
-the
-> > > specifc cgroup1 tree.
-> >
-> > As pointed out by Alexei, I think we can introduce some
-> > cgroup_id-based kfuncs which can work for both cgroup1 and cgroup2.
-> >
-> > Something as follows (untested),
-> >
-> > __bpf_kfunc u64 bpf_current_cgroup_id_from_subsys(int subsys)
-> > {
-> >         struct cgroup *cgroup;
-> >
-> >         cgroup =3D task_cgroup(current, subsys);
-> >         if (!cgroup)
-> >             return 0;
-> >         return cgroup_id(cgroup);
-> > }
-> >
->
-> Can we also support checking arbitrary tasks, instead of just current?
-> I find myself often needing to find the cgroup only given a
-> task_struct. For example, when attaching to context switch, I want to
-> know whether the next task is under a cgroup. Having such a kfunc
-> would be very useful. It can also be used in task_iter programs.
+On 2023/9/15 1:14, Alan Maguire wrote:
+> On 14/09/2023 14:05, pengdonglin wrote:
+>> On 2023/9/14 20:46, Alan Maguire wrote:
+>>> On 14/09/2023 11:13, pengdonglin wrote:
+>>>> On 2023/9/13 21:34, Alan Maguire wrote:
+>>>>> On 13/09/2023 11:32, pengdonglin wrote:
+>>>>>> On 2023/9/13 2:46, Alexei Starovoitov wrote:
+>>>>>>> On Tue, Sep 12, 2023 at 10:03 AM Eduard Zingerman <eddyz87@gmail.com>
+>>>>>>> wrote:
+>>>>>>>>
+>>>>>>>> On Tue, 2023-09-12 at 09:40 -0700, Alexei Starovoitov wrote:
+>>>>>>>>> On Tue, Sep 12, 2023 at 7:19 AM Eduard Zingerman
+>>>>>>>>> <eddyz87@gmail.com>
+>>>>>>>>> wrote:
+>>>>>>>>>>
+>>>>>>>>>> On Tue, 2023-09-12 at 16:51 +0300, Eduard Zingerman wrote:
+>>>>>>>>>>> On Sat, 2023-09-09 at 02:16 -0700, Donglin Peng wrote:
+>>>>>>>>>>>> Currently, we are only using the linear search method to find
+>>>>>>>>>>>> the
+>>>>>>>>>>>> type id
+>>>>>>>>>>>> by the name, which has a time complexity of O(n). This change
+>>>>>>>>>>>> involves
+>>>>>>>>>>>> sorting the names of btf types in ascending order and using
+>>>>>>>>>>>> binary search,
+>>>>>>>>>>>> which has a time complexity of O(log(n)). This idea was inspired
+>>>>>>>>>>>> by the
+>>>>>>>>>>>> following patch:
+>>>>>>>>>>>>
+>>>>>>>>>>>> 60443c88f3a8 ("kallsyms: Improve the performance of
+>>>>>>>>>>>> kallsyms_lookup_name()").
+>>>>>>>>>>>>
+>>>>>>>>>>>> At present, this improvement is only for searching in vmlinux's
+>>>>>>>>>>>> and
+>>>>>>>>>>>> module's BTFs, and the kind should only be BTF_KIND_FUNC or
+>>>>>>>>>>>> BTF_KIND_STRUCT.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Another change is the search direction, where we search the BTF
+>>>>>>>>>>>> first and
+>>>>>>>>>>>> then its base, the type id of the first matched btf_type will be
+>>>>>>>>>>>> returned.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Here is a time-consuming result that finding all the type ids of
+>>>>>>>>>>>> 67,819 kernel
+>>>>>>>>>>>> functions in vmlinux's BTF by their names:
+>>>>>>>>>>>>
+>>>>>>>>>>>> Before: 17000 ms
+>>>>>>>>>>>> After:     10 ms
+>>>>>>>>>>>>
+>>>>>>>>>>>> The average lookup performance has improved about 1700x at the
+>>>>>>>>>>>> above scenario.
+>>>>>>>>>>>>
+>>>>>>>>>>>> However, this change will consume more memory, for example,
+>>>>>>>>>>>> 67,819 kernel
+>>>>>>>>>>>> functions will allocate about 530KB memory.
+>>>>>>>>>>>
+>>>>>>>>>>> Hi Donglin,
+>>>>>>>>>>>
+>>>>>>>>>>> I think this is a good improvement. However, I wonder, why did
+>>>>>>>>>>> you
+>>>>>>>>>>> choose to have a separate name map for each BTF kind?
+>>>>>>>>>>>
+>>>>>>>>>>> I did some analysis for my local testing kernel config and got
+>>>>>>>>>>> such numbers:
+>>>>>>>>>>> - total number of BTF objects: 97350
+>>>>>>>>>>> - number of FUNC and STRUCT objects: 51597
+>>>>>>>>>>> - number of FUNC, STRUCT, UNION, ENUM, ENUM64, TYPEDEF, DATASEC
+>>>>>>>>>>> objects: 56817
+>>>>>>>>>>>       (these are all kinds for which lookup by name might make
+>>>>>>>>>>> sense)
+>>>>>>>>>>> - number of named objects: 54246
+>>>>>>>>>>> - number of name collisions:
+>>>>>>>>>>>       - unique names: 53985 counts
+>>>>>>>>>>>       - 2 objects with the same name: 129 counts
+>>>>>>>>>>>       - 3 objects with the same name: 3 counts
+>>>>>>>>>>>
+>>>>>>>>>>> So, it appears that having a single map for all named objects
+>>>>>>>>>>> makes
+>>>>>>>>>>> sense and would also simplify the implementation, what do you
+>>>>>>>>>>> think?
+>>>>>>>>>>
+>>>>>>>>>> Some more numbers for my config:
+>>>>>>>>>> - 13241 types (struct, union, typedef, enum), log2 13241 = 13.7
+>>>>>>>>>> - 43575 funcs, log2 43575 = 15.4
+>>>>>>>>>> Thus, having separate map for types vs functions might save ~1.7
+>>>>>>>>>> search iterations. Is this a significant slowdown in practice?
+>>>>>>>>>
+>>>>>>>>> What do you propose to do in case of duplicates ?
+>>>>>>>>> func and struct can have the same name, but they will have two
+>>>>>>>>> different
+>>>>>>>>> btf_ids. How do we store them ?
+>>>>>>>>> Also we might add global vars to BTF. Such request came up several
+>>>>>>>>> times.
+>>>>>>>>> So we need to make sure our search approach scales to
+>>>>>>>>> func, struct, vars. I don't recall whether we search any other
+>>>>>>>>> kinds.
+>>>>>>>>> Separate arrays for different kinds seems ok.
+>>>>>>>>> It's a bit of code complexity, but it's not an increase in memory.
+>>>>>>>>
+>>>>>>>> Binary search gives, say, lowest index of a thing with name A, then
+>>>>>>>> increment index while name remains A looking for correct kind.
+>>>>>>>> Given the name conflicts info from above, 99% of times there
+>>>>>>>> would be
+>>>>>>>> no need to iterate and in very few cases there would a couple of
+>>>>>>>> iterations.
+>>>>>>>>
+>>>>>>>> Same logic would be necessary with current approach if different BTF
+>>>>>>>> kinds would be allowed in BTF_ID_NAME_* cohorts. I figured that
+>>>>>>>> these
+>>>>>>>> cohorts are mainly a way to split the tree for faster lookups, but
+>>>>>>>> maybe that is not the main intent.
+>>>>>>>>
+>>>>>>>>> With 13k structs and 43k funcs it's 56k * (4 + 4) that's 0.5 Mbyte
+>>>>>>>>> extra memory. That's quite a bit. Anything we can do to compress
+>>>>>>>>> it?
+>>>>>>>>
+>>>>>>>> That's an interesting question, from the top of my head:
+>>>>>>>> pre-sort in pahole (re-assign IDs so that increasing ID also would
+>>>>>>>> mean "increasing" name), shouldn't be that difficult.
+>>>>>>>
+>>>>>>> That sounds great. kallsyms are pre-sorted at build time.
+>>>>>>> We should do the same with BTF.
+>>>>>>> I think GCC can emit BTF directly now and LLVM emits it for bpf progs
+>>>>>>> too,
+>>>>>>> but since vmlinux and kernel module BTFs will keep being processed
+>>>>>>> through pahole we don't have to make gcc/llvm sort things right away.
+>>>>>>> pahole will be enough. The kernel might do 'is it sorted' check
+>>>>>>> during BTF validation and then use binary search or fall back to
+>>>>>>> linear
+>>>>>>> when not-sorted == old pahole.
+>>>>>>>
+>>>>>>
+>>>>>> Yeah, I agree and will attempt to modify the pahole and perform a
+>>>>>> test.
+>>>>>> Do we need
+>>>>>> to introduce a new macro to control the behavior when the BTF is not
+>>>>>> sorted? If
+>>>>>> it is not sorted, we can use the method mentioned in this patch or use
+>>>>>> linear
+>>>>>> search.
+>>>>>>
+>>>>>>
+>>>>>
+>>>>> One challenge with pahole is that it often runs in parallel mode, so I
+>>>>> suspect any sorting would have to be done after merging across threads.
+>>>>> Perhaps BTF deduplication time might be a useful time to re-sort by
+>>>>> name? BTF dedup happens after BTF has been merged, and a new "sorted"
+>>>>> btf_dedup_opts option could be added and controlled by a pahole
+>>>>> option. However dedup is pretty complicated already..
+>>>>>
+>>>>> One thing we should weigh up though is if there are benefits to the
+>>>>> way BTF is currently laid out. It tends to start with base types,
+>>>>> and often-encountered types end up being located towards the start
+>>>>> of the BTF data. For example
+>>>>>
+>>>>>
+>>>>> [1] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64
+>>>>> encoding=(none)
+>>>>> [2] CONST '(anon)' type_id=1
+>>>>> [3] VOLATILE '(anon)' type_id=1
+>>>>> [4] ARRAY '(anon)' type_id=1 index_type_id=21 nr_elems=2
+>>>>> [5] PTR '(anon)' type_id=8
+>>>>> [6] CONST '(anon)' type_id=5
+>>>>> [7] INT 'char' size=1 bits_offset=0 nr_bits=8 encoding=SIGNED
+>>>>> [8] CONST '(anon)' type_id=7
+>>>>> [9] INT 'unsigned int' size=4 bits_offset=0 nr_bits=32 encoding=(none)
+>>>>> [10] CONST '(anon)' type_id=9
+>>>>> [11] TYPEDEF '__s8' type_id=12
+>>>>> [12] INT 'signed char' size=1 bits_offset=0 nr_bits=8 encoding=SIGNED
+>>>>> [13] TYPEDEF '__u8' type_id=14
+>>>>>
+>>>>> So often-used types will be found quickly, even under linear search
+>>>>> conditions.
+>>>>
+>>>> I found that there seems to be no code in the kernel that get the ID
+>>>> of the
+>>>> basic data type by calling btf_find_by_name_kind directly. The general
+>>>> usage
+>>>> of this function is to obtain the ID of a structure or function. After
+>>>> we got
+>>>> the ID of a structure or function, it is O(1) to get the IDs of its
+>>>> members
+>>>> or parameters.
+>>>>
+>>>> ./kernel/trace/trace_probe.c:383:       id = btf_find_by_name_kind(btf,
+>>>> funcname, BTF_KIND_FUNC);
+>>>> ./kernel/bpf/btf.c:3523:        id = btf_find_by_name_kind(btf,
+>>>> value_type, BTF_KIND_STRUCT);
+>>>> ./kernel/bpf/btf.c:5504:                id = btf_find_by_name_kind(btf,
+>>>> alloc_obj_fields[i], BTF_KIND_STRUCT);
+>>>> ./kernel/bpf/bpf_struct_ops.c:128:      module_id =
+>>>> btf_find_by_name_kind(btf, "module", BTF_KIND_STRUCT);
+>>>> ./net/ipv4/bpf_tcp_ca.c:28:     type_id = btf_find_by_name_kind(btf,
+>>>> "sock", BTF_KIND_STRUCT);
+>>>> ./net/ipv4/bpf_tcp_ca.c:33:     type_id = btf_find_by_name_kind(btf,
+>>>> "tcp_sock", BTF_KIND_STRUCT);
+>>>> ./net/netfilter/nf_bpf_link.c:181:      type_id =
+>>>> btf_find_by_name_kind(btf, name, BTF_KIND_STRUCT);
+>>>>
+>>>>>
+>>>>> When we look at how many lookups by id (which are O(1), since they are
+>>>>> done via the btf->types[] array) versus by name, we see:
+>>>>>
+>>>>> $ grep btf_type_by_id kernel/bpf/*.c|wc -l
+>>>>> 120
+>>>>> $ grep btf_find_by_nam kernel/bpf/*.c|wc -l
+>>>>> 15
+>>>>>
+>>>>> I don't see a huge number of name-based lookups, and I think most are
+>>>>> outside of the hotter codepaths, unless I'm missing some. All of which
+>>>>> is to say it would be a good idea to have a clear sense of what will
+>>>>> get
+>>>>> faster with sorted-by-name BTF. Thanks!
+>>>>
+>>>> The story goes like this.
+>>>>
+>>>> I have added a new feature to the function graph called
+>>>> "funcgraph_retval",
+>>>> here is the link:
+>>>>
+>>>> https://lore.kernel.org/all/1fc502712c981e0e6742185ba242992170ac9da8.1680954589.git.pengdonglin@sangfor.com.cn/
+>>>>
+>>>> We can obtain the return values of almost every function during the
+>>>> execution
+>>>> of kernel through this feature, it can help us analyze problems.
+>>>>
+>>>
+>>> It's a great feature!
+>>
+>> Thanks.
+>>
+>>>
+>>>> However, this feature has two main drawbacks.
+>>>>
+>>>> 1. Even if a function's return type is void,  a return value will still
+>>>> be printed.
+>>>>
+>>>> 2. The return value printed may be incorrect when the width of the
+>>>> return type is
+>>>> smaller than the generic register.
+>>>>
+>>>> I think if we can get this return type of the function, then the
+>>>> drawbacks mentioned
+>>>> above can be eliminated. The function btf_find_by_name_kind can be used
+>>>> to get the ID of
+>>>> the kernel function, then we can get its return type easily. If the
+>>>> return type is
+>>>> void, the return value recorded will not be printed. If the width of the
+>>>> return type
+>>>> is smaller than the generic register, then the value stored in the upper
+>>>> bits will be
+>>>> trimmed. I have written a demo and these drawbacks were resolved.
+>>>>
+>>>> However, during my test, I found that it took too much time when read
+>>>> the trace log
+>>>> with this feature enabled, because the trace log consists of 200,000
+>>>> lines. The
+>>>> majority of the time was consumed by the btf_find_by_name_kind, which is
+>>>> called
+>>>> 200,000 times.
+>>>>
+>>>> So I think the performance of btf_find_by_name_kind  may need to be
+>>>> improved.
+>>>>
+>>>
+>>> If I recall, Masami's work uses BTF ids, but can cache them since the
+>>> user explicitly asks for specific fields in the trace output. I'm
+>>> presuming that's not an option for you due to the fact funcgraph tracing
+>>> enables everything (or at least everything under a filter predicate) and
+>>> you have limited context to work with, is that right?
+>>
+>> Yes, right.
+>>
+>>>
+>>> Looking at print_graph_entry_leaf() which I _think_ is where you'd need
+>>> to print the retval from, you have access to the function address via
+>>> call->func, and I presume you get the name from snprinting the symbol to
+>>> a string or similar. So you're stuck in a context where you have the
+>>> function address, and from that you can derive the function name. Is
+>>> that correct? Thanks!
+>>
+>> Yes, both print_graph_return and print_graph_entry_leaf will call
+>> print_graph_retval
+>> to print the return value. Then call sprint_symbol_no_offset with
+>> call->func to get
+>> the function name, then call btf_find_by_name_kind to get the return type.
+>>
+> 
+> So what you ultimately need is a way to map from that information
+> available to be able to figure out the size of the return value
+> associated with a function.
+> 
+> On the BPF side we've been thinking a bit about the relationship between
+> kernel function addresses and their BTF representations; sometimes
+> knowing BTF->address mapping is needed for cases where the same function
+> name has multiple inconsistent function signatures in BTF. We don't
+> represent function addresses yet in BTF but may end up having to.
+> The reason I mention this is in an ideal world, it would benefit to
+> populate kallsyms entries with their associated BTF ids; then a
+> function would need to be looked up once in kallsyms; that lookup would
+> benefit from recent speedups, and if it contained the associated BTF id
+> we'd have an O(1) lookup from the BTF id -> function. Not sure if that
+> would be tenable from the kallsyms side, but I just wanted to mention
+> it, as from the above it seems an address-based lookup is a possibility
+> to solve the return value type lookup problem that you're facing.
+> 
+> Cc'ed Jiri who had to wrestle with kallsyms for the kprobe multi stuff.
+> Would the above help do you think?
 
-Agree. Will do it.
+Thank you, but I tend to agree with Alexei. Using kallsyms will consume extra
+memory too, but it can only be used for functions. I have done a test using
+kallsyms_lookup + optimized  btf_find_by_name_kind, and the time consumed
+was not excessive, it took about 38ms to find the IDs of 67823 kernel
+functions. If using a new map for IDs and function addresses, it took
+about 5ms.
 
---=20
-Regards
-Yafang
+> 
+> Thanks!
+> 
+> Alan
+> 
+
 
