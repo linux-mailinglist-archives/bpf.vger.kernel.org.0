@@ -1,307 +1,212 @@
-Return-Path: <bpf+bounces-10222-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10223-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C8FF7A35C4
-	for <lists+bpf@lfdr.de>; Sun, 17 Sep 2023 16:07:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 387D87A35C7
+	for <lists+bpf@lfdr.de>; Sun, 17 Sep 2023 16:09:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 933071C20832
-	for <lists+bpf@lfdr.de>; Sun, 17 Sep 2023 14:07:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E56D2281325
+	for <lists+bpf@lfdr.de>; Sun, 17 Sep 2023 14:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD4724A3B;
-	Sun, 17 Sep 2023 14:07:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 600854A39;
+	Sun, 17 Sep 2023 14:09:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B69290B;
-	Sun, 17 Sep 2023 14:06:59 +0000 (UTC)
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D00B10B;
-	Sun, 17 Sep 2023 07:06:57 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailout.west.internal (Postfix) with ESMTP id EA5843200913;
-	Sun, 17 Sep 2023 10:06:52 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Sun, 17 Sep 2023 10:06:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjusaka.me; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-	1694959612; x=1695046012; bh=36oFoU5myC0cy0uQQQU6bYn1vlg4AMZg4/A
-	uOQKAsNk=; b=Q37CfMF5lQQDtGOpW3feCoFYHh/MbZl53T2Oq/iZobgzCeBX2hv
-	aUcwJyDJrMPyC03aQ2cEQtnH+nQZM82zlkADgdxA+Bl0PaHa51IFnkgFTj4iqi7e
-	y9kXX6pWNFOadV/RKHreNU4B+9Kjv0xAOM0ZwTGEqeEOQ1U6hsBJuz8/vLVcrnc+
-	0XgUFZnBYyw2Nxs2FIxi/jatVtFLtBp+wHnwGWcuUukW0pORe06viWg/Ou+27A9w
-	5gSE6QgZ4uHsBIb4h14Vyik1pfmrNtAycHyjzEgMIZZI+tYxObh4Y3pRniXH231x
-	2SB2Y//iCIaBNdknZN0EfJAEoa/9c2Bzlmg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1694959612; x=1695046012; bh=36oFoU5myC0cy0uQQQU6bYn1vlg4AMZg4/A
-	uOQKAsNk=; b=WyIzRYv5w8HGgIwhCD90/+5VadegU+KAnmx8lAeN/7fiFfRF255
-	0/myjRmx5b8QmeRvNmzM0FaE035quYWhfYn1PG+UvtI/0yio68CNP1gcxvq5tGw/
-	oS9/Hl7oQrfEq/0xlaR4Il+MnkfaY9g3rtHuzLmk5y/LHkRXJLGoe3jWFGC3F/jX
-	L0wJWpymSoJCd+0puPb9QdRdBYYfZdXCnZEKyS810pp0XiUxr80y1q6AbgDWCMx3
-	YCnoKBkr4ygbG2ov59X7YO26jOd3HcEhoLoNL8VUQKqDok7Flwo5wCu2G9t/q9Xm
-	4zgQeLQ7UJV6qFORiXgQLPOCV8aiRBHheYQ==
-X-ME-Sender: <xms:_AcHZVkR6gLBDbvxcco6MZYWP1Lq63jaPHuJOl5H2fB3wBKmD5rYRA>
-    <xme:_AcHZQ11Qf38LK9VuVqF-jUH1kSj7tCIqE2dVetVG4HcNjFCxAnzGv6qYHHSe1Ms9
-    0pMdd07E-W5r4uAnTY>
-X-ME-Received: <xmr:_AcHZbrcZMmWtdUL1yauWssKV-G6IcCbOCAe0H-eQxxTwLqQJLKj9lEn-PZGknyZIg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejiedgjedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefkffggfgfuvfevfhfhjggtgfesth
-    ejredttddvjeenucfhrhhomhepofgrnhhjuhhsrghkrgcuoehmvgesmhgrnhhjuhhsrghk
-    rgdrmhgvqeenucggtffrrghtthgvrhhnpeeiheefvddvgeektddvveegtefghfehhfeuue
-    efueetieejkefhueffffekieetfeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgvsehmrg
-    hnjhhushgrkhgrrdhmvg
-X-ME-Proxy: <xmx:_AcHZVmDnGqeJoFcQ_hxkHFWl2XeYkcsT-FvUBNDUaCOgWroT77Ykg>
-    <xmx:_AcHZT2n9YL0WSh7XoORIpFghCVN4-IIwTk67TBVyHQC8OY0-vtjkg>
-    <xmx:_AcHZUuf-wkCC1TbAKXvj0q7Xq6wt9ougeWH26Xz3IbZ6CuaivluJg>
-    <xmx:_AcHZVwsLUwViYoXVZ_aXzsJ2-rfaQ2Ga26DFaifYhSFf0c2ucliHA>
-Feedback-ID: i3ea9498d:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 17 Sep 2023 10:06:48 -0400 (EDT)
-Message-ID: <c978c5a5-a9a6-41bf-86f2-2eebf6888e1e@manjusaka.me>
-Date: Sun, 17 Sep 2023 22:06:45 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C056F46BF
+	for <bpf@vger.kernel.org>; Sun, 17 Sep 2023 14:09:37 +0000 (UTC)
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA5511D
+	for <bpf@vger.kernel.org>; Sun, 17 Sep 2023 07:09:36 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50079d148aeso6072190e87.3
+        for <bpf@vger.kernel.org>; Sun, 17 Sep 2023 07:09:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694959774; x=1695564574; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Kp6SnmZgIfKPny1qW6KLyl8FjhdyKwdjfWEdpXSSC/I=;
+        b=HipcGVcnOUiaMibdOdk3Lm5+DI3X95tfMq5cdU5c8wSeYnuEoWV1BWtGsqQ3+5kl2h
+         ZRIOkQEy8WOqo1oamBWlBTj9tGHwp3r1rc1Bik7e/GlgtFYfOReScpAsIt2J6QIiXTEF
+         YQDbPVb35psoM0+l8THXakiPGu6Nv30bseB5cg9IKku4h2b98pePB7VNSFwj1eAgPpRG
+         RiMhdT2NgvVypQRWc/ymN+uzPFbKuoKuA22Pa3C5J7UCgDTaJpEducBeuRmYkPfI5OIW
+         AVHKRtH/WA39/q+O1VX3qQ4DkStGxXw3A3ZLqF627vMEeRWCJyMRQcYE0OgCw4Ugpjx2
+         COyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694959774; x=1695564574;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kp6SnmZgIfKPny1qW6KLyl8FjhdyKwdjfWEdpXSSC/I=;
+        b=kT56T9P3GeavEVabnkh3NxxDvu/Jey83CUJH9q990hwKKdwyNw3Kuqw2UNv13mqZJT
+         ahSbH1Cw2Dh0LcG1Sc61VnTMtNlvGQdhSXcl5Bnc/vKpq/eJrbS+87rvtc8g9vCcqWv9
+         n8XtTj0JZh9MGO/1ABvIYvWhAWCPqsVfqwlyBWWupHqULOtcmR8mxxltQJymr9u4XS2V
+         GqkGWiSjwqRDNEcrQArw9yeUYeWG2wUrQNZOWWspL19eCpW4blyaD4JZNYegCOAX9H5L
+         nXgLaN26NSTmD1ycb94lzdayoXZXmxSTUxwZTwlTzsytA8LdGgexLUS+Aox9nv60+tjC
+         K9dQ==
+X-Gm-Message-State: AOJu0YyIfsjeF82GABgjjncUNspr4YvtHgEkpUZSYtBPw4DlY8Jv5KwB
+	AQqH0ZiE0hXZQjBX9MtJQBMYxPf8CKS5cw==
+X-Google-Smtp-Source: AGHT+IEvy0xPaCxJWk7c9ZYYKlpxm5S6TzNC05vEZYj7lckJE6DLB6atp04K7mC0rCN7uQRs0YmCwQ==
+X-Received: by 2002:ac2:5976:0:b0:4fb:911b:4e19 with SMTP id h22-20020ac25976000000b004fb911b4e19mr5413741lfp.35.1694959774088;
+        Sun, 17 Sep 2023 07:09:34 -0700 (PDT)
+Received: from krava ([217.192.101.2])
+        by smtp.gmail.com with ESMTPSA id ee17-20020a056402291100b005308fa6ef7fsm3184858edb.16.2023.09.17.07.09.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Sep 2023 07:09:33 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Sun, 17 Sep 2023 16:09:31 +0200
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Masahiro Yamada <masahiroy@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Marcus Seyfarth <m.seyfarth@gmail.com>, bpf <bpf@vger.kernel.org>,
+	clang-built-linux <llvm@lists.linux.dev>,
+	Stanislav Fomichev <sdf@google.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>
+Subject: Re: duplicate BTF_IDs leading to symbol redefinition errors?
+Message-ID: <ZQcIm/TZH73IklIf@krava>
+References: <ZPozfCEF9SV2ADQ5@krava>
+ <ZPsJ4AAqNMchvms/@krava>
+ <CAKwvOd==X0exrhmsqX1j1WFX77xe8W7xPbfiCY+Rt6abgmkMCQ@mail.gmail.com>
+ <ZPuA5+HmbcdBLbIq@krava>
+ <ZQLBm8sC+V53CIzD@krava>
+ <CAK7LNATiHvOXiWQi9gXJO9rZbT_MFm6NddaWqoY4ykNWf+OYsQ@mail.gmail.com>
+ <ZQLX3oSCk95Qf4Ma@krava>
+ <CAEf4Bzb5KQ2_LmhN769ifMeSJaWfebccUasQOfQKaOd0nQ51tw@mail.gmail.com>
+ <ZQQVr35crUtN1quS@krava>
+ <CAEf4BzZe_27FPzMwjaU3d5gPuyXX3iTQJGzT64CCTZLEfpQUvQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] tracepoint: add new `tcp:tcp_ca_event` trace event
-Content-Language: en-US
-To: edumazet@google.com, mhiramat@kernel.org, rostedt@goodmis.org,
- davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20230825133246.344364-1-me@manjusaka.me>
-From: Manjusaka <me@manjusaka.me>
-Autocrypt: addr=me@manjusaka.me;
- keydata= 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
-In-Reply-To: <20230825133246.344364-1-me@manjusaka.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZe_27FPzMwjaU3d5gPuyXX3iTQJGzT64CCTZLEfpQUvQ@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 2023/8/25 21:32, Zheao Li wrote:
-> Hello 
+On Fri, Sep 15, 2023 at 01:41:25PM -0700, Andrii Nakryiko wrote:
+> On Fri, Sep 15, 2023 at 1:28 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Thu, Sep 14, 2023 at 11:14:19AM -0700, Andrii Nakryiko wrote:
+> > > On Thu, Sep 14, 2023 at 2:52 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> > > >
+> > > > On Thu, Sep 14, 2023 at 05:30:51PM +0900, Masahiro Yamada wrote:
+> > > >
+> > > > SNIP
+> > > >
+> > > > > > > so the change is about adding unique id that's basically path of
+> > > > > > > the object stored in base32 so it could be used as symbol, so we
+> > > > > > > don't really need to read the actual file
+> > > > > > >
+> > > > > > > the problem is when BTF_ID definition like:
+> > > > > > >
+> > > > > > > BTF_ID(struct, cgroup)
+> > > > > > >
+> > > > > > > translates in 2 separate objects into same symbol name because of
+> > > > > > > the matching __COUNTER__ macro values (like 380 below)
+> > > > > > >
+> > > > > > >   __BTF_ID__struct__cgroup__380
+> > > > > > >
+> > > > > > > this change just adds unique id of the path name at the end of the
+> > > > > > > symbol with:
+> > > > > > >
+> > > > > > >   echo -n 'kernel/bpf/helpers' | base32 -w0 --> NNSXE3TFNQXWE4DGF5UGK3DQMVZHG
+> > > > > > >
+> > > > > > > so the symbol looks like:
+> > > > > > >
+> > > > > > >   __BTF_ID__struct__cgroup__380NNSXE3TFNQXWE4DGF5UGK3DQMVZHG
+> > > > > > >
+> > > > > > > and is unique over the sources
+> > > > > > >
+> > > > > > > but I still hope we could come up with some better solution ;-)
+> > > > > >
+> > > > > > so far the only better solution I could come up with is to use
+> > > > > > cksum (also from coreutils) instead of base32, which makes the
+> > > > > > BTF_ID_BASE value compact
+> > > > > >
+> > > > > > I'll run test to find out how much it hurts the build time
+> > > > > >
+> > > > > > jirka
+> > > > >
+> > > > >
+> > > > >
+> > > > > Seems a bad idea to me.
+> > > > >
+> > > > > It would fork a new shell and chsum for all files,
+> > > > > while only a few of them need it.
+> > > >
+> > > > right, I have a change to limit this on kernel and net directories,
+> > > > but it's still bad
+> > > >
+> > > > >
+> > > > > Better to consult BTF forks.
+> > > >
+> > > > perhaps there's better way within kbuild to get unique id/value
+> > > > for each object file?
+> > >
+> > > let's just use __LINE__ + __COUNTER__ for now and teach resolve_btfids
+> > > to fail and complain loudly about duplicate symbols?
+> >
+> > ok, will send that.. but it fails during link before resolve_btfids
+> > takes place
+> >
+> > >
+> > >
+> > > This will give us time and opportunity to implement a better approach
+> > > to .BTF_ids overall. Encoding the desired type name in the symbol name
+> > > always felt off. Maybe it's better to encode type + name as data,
+> > > which is discarded at the latest stage during vmlinux linking? Either
+> >
+> > hum, so maybe having a special section (.BTF_ids_desc below)
+> > that would have record for each ID placed in .BTF_ids section:
+> >
+> > asm(                                           \
+> > ".pushsection .BTF_ids,\"a\";        \n"       \
+> > "1:                                  \n"       \
+> > ".zero 4                             \n"       \
+> > ".popsection;                        \n"       \
+> > ".pushsection .BTF_ids_desc,\"a\";   \n"       \
+> > ".long 1b                            \n"       \
+> >
+> > and somehow get prefix and name pointers in here:
+> >
+> > ".long prefix
+> > ".long name
+> >
+> > ".popsection;                        \n");
+> >
+> > so resolve_btfids would iterate .BTF_ids_desc records and fix
+> > up .BTF_ids data..
+> >
 > 
-> This the 4th version of the patch, the previous discusstion is here
+> Something like that. I don't think it's even a regression in terms of
+> vmlinux space usage, because right now we spend as much space on
+> storing symbol names. So just adding string pointers would be already
+> a win due to repeating "struct", "func", etc strings.
 > 
-> https://lore.kernel.org/linux-trace-kernel/20230807183308.9015-1-me@manjusaka.me/
 > 
-> In this version of the code, here's some different:
+> > we might need to do one extra link phase to get rid of the
+> > .BTF_ids_desc secion
 > 
-> 1. The event name has been changed from `tcp_ca_event_set` to
-> `tcp_ca_event`
-> 
-> 2. Output the current protocol family in TP_printk
-> 
-> 3. Show the ca_event symbol instead of the original number
-> 
-> But the `./scripts/checkpatch.pl` has been failed to check this patch,
-> because we sill have some code error in ./scripts/checkpatch.pl(in
-> another world, the test would be failed when we use the 
-> scripts/checkpatch.pl to check the events/tcp.h
-> 
-> Feel free to ask me if you have have any issues and ideas.
-> 
-> Thanks
-> 
-> ---
-> 
-> In normal use case, the tcp_ca_event would be changed in high frequency.
-> 
-> The developer can monitor the network quality more easier by tracing
-> TCP stack with this TP event.
-> 
-> So I propose to add a `tcp:tcp_ca_event` trace event
-> like `tcp:tcp_cong_state_set` to help the people to
-> trace the TCP connection status
-> 
-> Signed-off-by: Zheao Li <me@manjusaka.me>
-> ---
->  include/net/tcp.h          |  9 ++----
->  include/trace/events/tcp.h | 60 ++++++++++++++++++++++++++++++++++++++
->  net/ipv4/tcp_cong.c        | 10 +++++++
->  3 files changed, 72 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> index 0ca972ebd3dd..a68c5b61889c 100644
-> --- a/include/net/tcp.h
-> +++ b/include/net/tcp.h
-> @@ -1154,13 +1154,8 @@ static inline bool tcp_ca_needs_ecn(const struct sock *sk)
->  	return icsk->icsk_ca_ops->flags & TCP_CONG_NEEDS_ECN;
->  }
->  
-> -static inline void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event)
-> -{
-> -	const struct inet_connection_sock *icsk = inet_csk(sk);
-> -
-> -	if (icsk->icsk_ca_ops->cwnd_event)
-> -		icsk->icsk_ca_ops->cwnd_event(sk, event);
-> -}
-> +/* from tcp_cong.c */
-> +void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event);
->  
->  /* From tcp_cong.c */
->  void tcp_set_ca_state(struct sock *sk, const u8 ca_state);
-> diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
-> index 7b1ddffa3dfc..993eb00403ea 100644
-> --- a/include/trace/events/tcp.h
-> +++ b/include/trace/events/tcp.h
-> @@ -41,6 +41,18 @@
->  	TP_STORE_V4MAPPED(__entry, saddr, daddr)
->  #endif
->  
-> +/* The TCP CA event traced by tcp_ca_event*/
-> +#define tcp_ca_event_names    \
-> +		EM(CA_EVENT_TX_START)     \
-> +		EM(CA_EVENT_CWND_RESTART) \
-> +		EM(CA_EVENT_COMPLETE_CWR) \
-> +		EM(CA_EVENT_LOSS)         \
-> +		EM(CA_EVENT_ECN_NO_CE)    \
-> +		EMe(CA_EVENT_ECN_IS_CE)
-> +
-> +#define show_tcp_ca_event_names(val) \
-> +	__print_symbolic(val, tcp_ca_event_names)
-> +
->  /*
->   * tcp event with arguments sk and skb
->   *
-> @@ -419,6 +431,54 @@ TRACE_EVENT(tcp_cong_state_set,
->  		  __entry->cong_state)
->  );
->  
-> +TRACE_EVENT(tcp_ca_event,
-> +
-> +	TP_PROTO(struct sock *sk, const u8 ca_event),
-> +
-> +	TP_ARGS(sk, ca_event),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(const void *, skaddr)
-> +		__field(__u16, sport)
-> +		__field(__u16, dport)
-> +		__field(__u16, family)
-> +		__array(__u8, saddr, 4)
-> +		__array(__u8, daddr, 4)
-> +		__array(__u8, saddr_v6, 16)
-> +		__array(__u8, daddr_v6, 16)
-> +		__field(__u8, ca_event)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		struct inet_sock *inet = inet_sk(sk);
-> +		__be32 *p32;
-> +
-> +		__entry->skaddr = sk;
-> +
-> +		__entry->sport = ntohs(inet->inet_sport);
-> +		__entry->dport = ntohs(inet->inet_dport);
-> +		__entry->family = sk->sk_family;
-> +
-> +		p32 = (__be32 *) __entry->saddr;
-> +		*p32 = inet->inet_saddr;
-> +
-> +		p32 = (__be32 *) __entry->daddr;
-> +		*p32 =  inet->inet_daddr;
-> +
-> +		TP_STORE_ADDRS(__entry, inet->inet_saddr, inet->inet_daddr,
-> +			   sk->sk_v6_rcv_saddr, sk->sk_v6_daddr);
-> +
-> +		__entry->ca_event = ca_event;
-> +	),
-> +
-> +	TP_printk("family=%s sport=%hu dport=%hu saddr=%pI4 daddr=%pI4 saddrv6=%pI6c daddrv6=%pI6c ca_event=%s",
-> +		  show_family_name(__entry->family),
-> +		  __entry->sport, __entry->dport,
-> +		  __entry->saddr, __entry->daddr,
-> +		  __entry->saddr_v6, __entry->daddr_v6,
-> +		  show_tcp_ca_event_names(__entry->ca_event))
-> +);
-> +
->  #endif /* _TRACE_TCP_H */
->  
->  /* This part must be outside protection */
-> diff --git a/net/ipv4/tcp_cong.c b/net/ipv4/tcp_cong.c
-> index 1b34050a7538..fb7ec6ebbbd0 100644
-> --- a/net/ipv4/tcp_cong.c
-> +++ b/net/ipv4/tcp_cong.c
-> @@ -34,6 +34,16 @@ struct tcp_congestion_ops *tcp_ca_find(const char *name)
->  	return NULL;
->  }
->  
-> +void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event)
-> +{
-> +	const struct inet_connection_sock *icsk = inet_csk(sk);
-> +
-> +	trace_tcp_ca_event(sk, (u8)event);
-> +
-> +	if (icsk->icsk_ca_ops->cwnd_event)
-> +		icsk->icsk_ca_ops->cwnd_event(sk, event);
-> +}
-> +
->  void tcp_set_ca_state(struct sock *sk, const u8 ca_state)
->  {
->  	struct inet_connection_sock *icsk = inet_csk(sk);
+> Hopefully we can find a way to avoid this, we already do like 3 link
+> phases at least (for kallsyms), so doing all that on the first one and
+> then stripping it out using link script at subsequent one would be
+> best.
 
+perhaps we could move that section under .init.data and
+get rid of it on startup
 
-Ping to review(
+jirka
 
