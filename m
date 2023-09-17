@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-10234-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10235-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C32667A3A8B
-	for <lists+bpf@lfdr.de>; Sun, 17 Sep 2023 22:06:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF6457A3B69
+	for <lists+bpf@lfdr.de>; Sun, 17 Sep 2023 22:17:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81E0A2817EB
-	for <lists+bpf@lfdr.de>; Sun, 17 Sep 2023 20:06:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 110AE1C20A17
+	for <lists+bpf@lfdr.de>; Sun, 17 Sep 2023 20:17:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B6E0746E;
-	Sun, 17 Sep 2023 20:06:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05F6E746F;
+	Sun, 17 Sep 2023 20:17:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D4F6FA7;
-	Sun, 17 Sep 2023 20:06:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E611C433C9;
-	Sun, 17 Sep 2023 20:06:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD75C6FA7;
+	Sun, 17 Sep 2023 20:17:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 013DFC433C7;
+	Sun, 17 Sep 2023 20:17:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1694981164;
-	bh=OwuYqBXSKFkqO6BZYKjTziP8vGOUgaxhrGsonnA6eaM=;
+	s=korg; t=1694981842;
+	bh=lqtlD4Sd7Jf+dw3QdzIoNx7dZ9JDJJgQn88aQL7tsN4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dpLlCcmyNucvJWVybovy14aXDUmuq5H1NaUHAKFC9VvGWb0mAev76mpk4tmvjLeW+
-	 REcRD0Gv/51vC9EJkWcZ+tf+XHeICff0eHpkX7Ri6oQpqf+TRFvfarzFecEGZkUQLf
-	 NeRPJmE5Mbzxj3bT/C3cXD5tmqbcHyGApPIGY2os=
+	b=ehMdvi4VDs/p+Hu3YeQtQK39US8Y0/12LaTPWBJ/nnRRUJRFodf9VXCSEH/Rgo9FJ
+	 r2UpIhmhfdVpMmVOa+JYwc//V/yrINHpYvuNMcyJm6mSD5al0gqVHZSFDvUZOeFJZf
+	 qCWsc1zoenAO4c0/PLX8mxobC+cKnQXg54OqbphA=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	patches@lists.linux.dev,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Song Liu <song@kernel.org>,
 	Namhyung Kim <namhyung@kernel.org>,
 	Adrian Hunter <adrian.hunter@intel.com>,
 	Ian Rogers <irogers@google.com>,
@@ -39,11 +39,10 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Jiri Olsa <jolsa@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	bpf@vger.kernel.org,
-	Arnaldo Carvalho de Melo <acme@redhat.com>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 081/219] perf test stat_bpf_counters_cgrp: Enhance perf stat cgroup BPF counter test
-Date: Sun, 17 Sep 2023 21:13:28 +0200
-Message-ID: <20230917191043.901641440@linuxfoundation.org>
+	Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 6.1 179/219] perf test shell stat_bpf_counters: Fix test on Intel
+Date: Sun, 17 Sep 2023 21:15:06 +0200
+Message-ID: <20230917191047.429834924@linuxfoundation.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230917191040.964416434@linuxfoundation.org>
 References: <20230917191040.964416434@linuxfoundation.org>
@@ -64,49 +63,50 @@ Content-Transfer-Encoding: 8bit
 
 From: Namhyung Kim <namhyung@kernel.org>
 
-[ Upstream commit a84260e314029e6dc9904fd6eabf8d9fd7965351 ]
+commit 68ca249c964f520af7f8763e22f12bd26b57b870 upstream.
 
-It has system-wide test and cpu-list test but the cpu-list test fails
-sometimes.  It runs sleep command on CPU1 and measure both user.slice
-and system.slice cgroups by default (on systemd-based systems).
+As of now, bpf counters (bperf) don't support event groups.  But the
+default perf stat includes topdown metrics if supported (on recent Intel
+machines) which require groups.  That makes perf stat exiting.
 
-But if the system was idle enough, sometime the system.slice gets no
-count and it makes the test failing.  Maybe that's because it only looks
-at the CPU1, let's add CPU0 to increase the chance it finds some tasks.
+  $ sudo perf stat --bpf-counter true
+  bpf managed perf events do not yet support groups.
 
-Fixes: 7901086014bbaa3a ("perf test: Add a new test for perf stat cgroup BPF counter")
-Reported-by: Arnaldo Carvalho de Melo <acme@kernel.org>
+Actually the test explicitly uses cycles event only, but it missed to
+pass the option when it checks the availability of the command.
+
+Fixes: 2c0cb9f56020d2ea ("perf test: Add a shell test for 'perf stat --bpf-counters' new option")
+Reviewed-by: Song Liu <song@kernel.org>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 Cc: Adrian Hunter <adrian.hunter@intel.com>
 Cc: Ian Rogers <irogers@google.com>
 Cc: Ingo Molnar <mingo@kernel.org>
 Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: bpf@vger.kernel.org
-Link: https://lore.kernel.org/r/20230825164152.165610-3-namhyung@kernel.org
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20230825164152.165610-2-namhyung@kernel.org
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/tests/shell/stat_bpf_counters_cgrp.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/tests/shell/stat_bpf_counters.sh |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh b/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
-index a74440a00b6b6..e75d0780dc788 100755
---- a/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
-+++ b/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
-@@ -60,7 +60,7 @@ check_system_wide_counted()
+--- a/tools/perf/tests/shell/stat_bpf_counters.sh
++++ b/tools/perf/tests/shell/stat_bpf_counters.sh
+@@ -22,10 +22,10 @@ compare_number()
+ }
  
- check_cpu_list_counted()
- {
--	check_cpu_list_counted_output=$(perf stat -C 1 --bpf-counters --for-each-cgroup ${test_cgroups} -e cpu-clock -x, taskset -c 1 sleep 1  2>&1)
-+	check_cpu_list_counted_output=$(perf stat -C 0,1 --bpf-counters --for-each-cgroup ${test_cgroups} -e cpu-clock -x, taskset -c 1 sleep 1  2>&1)
- 	if echo ${check_cpu_list_counted_output} | grep -q -F "<not "; then
- 		echo "Some CPU events are not counted"
- 		if [ "${verbose}" = "1" ]; then
--- 
-2.40.1
-
+ # skip if --bpf-counters is not supported
+-if ! perf stat --bpf-counters true > /dev/null 2>&1; then
++if ! perf stat -e cycles --bpf-counters true > /dev/null 2>&1; then
+ 	if [ "$1" = "-v" ]; then
+ 		echo "Skipping: --bpf-counters not supported"
+-		perf --no-pager stat --bpf-counters true || true
++		perf --no-pager stat -e cycles --bpf-counters true || true
+ 	fi
+ 	exit 2
+ fi
 
 
 
