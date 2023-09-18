@@ -1,174 +1,132 @@
-Return-Path: <bpf+bounces-10323-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10324-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 987427A5254
-	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 20:48:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83D1D7A5257
+	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 20:49:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9246B1C209D3
-	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 18:48:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A6A01C209D4
+	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 18:49:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEAA126E00;
-	Mon, 18 Sep 2023 18:48:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5411126E24;
+	Mon, 18 Sep 2023 18:49:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06D301F947
-	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 18:48:06 +0000 (UTC)
-Received: from out-227.mta1.migadu.com (out-227.mta1.migadu.com [95.215.58.227])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06014FC
-	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 11:48:03 -0700 (PDT)
-Message-ID: <f16aeae6-cdf4-4836-5899-5c81e530936a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1695062882;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dpARqLkUWoTDT8Y57mg4JZyuZNPJucMNE9Iv1pxRBLA=;
-	b=K1yZoJYJD21OZFXw1py5O8aP20jdW+gTZPGwej4S5E12oCJw0Y2Sb+DJK3B2Nn5xdthUzm
-	04eZQfJhJ1Tw4JCgy+fAvrNpBjJ9sIHMXfq9uQtPI5rQU+iCZY7avX0sZthGHR+60ilZTm
-	aUVZYdpUUDLX/UH2qaIMS/NY0Fw4wWo=
-Date: Mon, 18 Sep 2023 11:47:55 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17557262A2;
+	Mon, 18 Sep 2023 18:49:07 +0000 (UTC)
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A851D109;
+	Mon, 18 Sep 2023 11:49:04 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-59be8a2099bso48105717b3.0;
+        Mon, 18 Sep 2023 11:49:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695062944; x=1695667744; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZBScvKSzp0uWOXXPxrbaBCIKGxV7w6c3lLSoPif2v3M=;
+        b=RzqRdO5cu9lYrlarbKCuuqjyeZw8e56eGij5M1OxTJx4ebcCzaDwJV+RwQtAZZdrkd
+         RBJuUIjNuGN7A2mFk1cbgPKpjyiNakeqkx+JGa7a2YuLrJ+8HfX0shHIs4U6GFtk2u8w
+         67XX8ReMaoxal354JE5HZLWOSXXQ5+49dGB0x+E5Rns8WMOxVmyPJc//UQ8E14Z2cLxO
+         /JG0J3TkL/Fop+Eha5BLLH8sEItJnDJD1i2BtVQRO8+E2ZSGiPtd5bx6E9El8yFirgbm
+         rvJzTNPjLMIAm9lVWNQo6tzPIc8cndZ6cHDnOkY+EXd+GdnTdnK2LqIrp4ZkHAV+OPet
+         zqiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695062944; x=1695667744;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZBScvKSzp0uWOXXPxrbaBCIKGxV7w6c3lLSoPif2v3M=;
+        b=RLg0Jb8Hr4Q/a0+4m+HSImMDEDuengZaRy2GWqaw9ZEGqQuX/x5DNQdg63oyOATV8D
+         F/7EPxznLfP68IgW5005DJTb6bP6PTsuXb1BRl+fea6DRV6R3KHAo3QH4uezQZ0BG47n
+         ai4OBLzbkXV1GbDgkAibJ54/oygKtUP+cbJVgUnfXefmwsNHDad9orxIhZArp6+SbKKf
+         EAJ/ivoxk4NUOCXyULATdQJxO9YhR7a+MhlnA5s913Ddmvqf/qLeZZOsB7JktC3xS2mf
+         OkOL5mJ/P5iEaDUDWjqndAe2hpQUH/BW2EA2cR/fmvjn3TAiiOZC3Sh9R0JKLcqHDNOb
+         +XYA==
+X-Gm-Message-State: AOJu0Yw/0ktmbrxGw0caMMGDgNMeFg9QJ23Z1V5zUf+lIVehUKRszr49
+	W5BHXeTXBc51svP/aXUU4m4=
+X-Google-Smtp-Source: AGHT+IFlabmyCKzs3TJCwRu9pzXgXQ5gnGGWAj5UTnvOq4RVLQmMmcwqpHWTteWj40envjYp+EaoFA==
+X-Received: by 2002:a81:a0c2:0:b0:586:a68b:4c9a with SMTP id x185-20020a81a0c2000000b00586a68b4c9amr11609317ywg.2.1695062943808;
+        Mon, 18 Sep 2023 11:49:03 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:cd9b:b05b:a4d3:eeda? ([2600:1700:6cf8:1240:cd9b:b05b:a4d3:eeda])
+        by smtp.gmail.com with ESMTPSA id v129-20020a814887000000b0059b516ed11fsm2768725ywa.110.2023.09.18.11.49.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 11:49:03 -0700 (PDT)
+Message-ID: <dc84f39f-5b13-4a7d-a26c-598227fd9a42@gmail.com>
+Date: Mon, 18 Sep 2023 11:49:02 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC bpf-next v2 2/9] bpf: add register and unregister functions
- for struct_ops.
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] bpf, sockmap: fix deadlocks in the sockhash and sockmap
 Content-Language: en-US
-To: Kui-Feng Lee <sinquersw@gmail.com>
-Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, thinker.li@gmail.com
-References: <20230913061449.1918219-1-thinker.li@gmail.com>
- <20230913061449.1918219-3-thinker.li@gmail.com>
- <414e9f49-ad34-5282-6c05-882876440f34@linux.dev>
- <912b0d41-5959-74ff-a1a9-6277bf62aac2@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <912b0d41-5959-74ff-a1a9-6277bf62aac2@gmail.com>
+To: Ma Ke <make_ruc2021@163.com>, john.fastabend@gmail.com,
+ jakub@cloudflare.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20230918093620.3479627-1-make_ruc2021@163.com>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20230918093620.3479627-1-make_ruc2021@163.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 9/15/23 6:14 PM, Kui-Feng Lee wrote:
-> 
-> 
-> On 9/15/23 17:05, Martin KaFai Lau wrote:
->> On 9/12/23 11:14 PM, thinker.li@gmail.com wrote:
->>> +int register_bpf_struct_ops(struct bpf_struct_ops_mod *mod)
->>> +{
->>> +    struct bpf_struct_ops *st_ops = mod->st_ops;
->>> +    struct bpf_verifier_log *log;
->>> +    struct btf *btf;
->>> +    int err;
->>> +
->>> +    if (mod->st_ops == NULL ||
->>> +        mod->owner == NULL)
->>> +        return -EINVAL;
->>> +
->>> +    log = kzalloc(sizeof(*log), GFP_KERNEL | __GFP_NOWARN);
->>> +    if (!log) {
->>> +        err = -ENOMEM;
->>> +        goto errout;
->>> +    }
->>> +
->>> +    log->level = BPF_LOG_KERNEL;
->>> +
->>> +    btf = btf_get_module_btf(mod->owner);
->>
->> Where is btf_put called?
->>
->> It is not stored anywhere in patch 2, so a bit confusing. I quickly looked at 
->> the following patches but also don't see the bpf_put.
-> 
-> It is my fault to use it without calling btf_put().
-> I miss-understood the API, thought it doesn't increase refcount by
-> mistake.
-> 
->>
->>> +    if (!btf) {
->>> +        err = -EINVAL;
->>> +        goto errout;
->>> +    }
->>> +
->>> +    bpf_struct_ops_init_one(st_ops, btf, log);
->>> +    err = add_struct_ops(st_ops);
->>> +
->>> +errout:
->>> +    kfree(log);
->>> +
->>> +    return err;
->>> +}
->>> +EXPORT_SYMBOL(register_bpf_struct_ops);
->>> +
->>> +int unregister_bpf_struct_ops(struct bpf_struct_ops_mod *mod)
->>
->> It is not clear to me why the subsystem needs to explicitly call 
->> unregister_bpf_struct_ops(). Can it be done similar to the module kfunc 
->> support (the kfunc_set_tab goes away with the btf)?
-> 
-> It could be. However, registering to module notifier
-> (register_module_notifier()) is more straight forward if we go
-> this way. What do you think?
 
-Right, but not sure if struct_ops needs to create yet another notifier 
-considering there is already a btf_module_notify(). It is why the earlier 
-question on btf_put because I was trying to understand if the struct_ops can go 
-away together during btf_free. More on this next.
 
+On 9/18/23 02:36, Ma Ke wrote:
+> It seems that elements in sockhash are rarely actively
+> deleted by users or ebpf program. Therefore, we do not
+> pay much attention to their deletion. Compared with hash
+> maps, sockhash only provides spin_lock_bh protection.
+> This causes it to appear to have self-locking behavior
+> in the interrupt context, as CVE-2023-0160 points out.
 > 
->>
->> Related to this, does it need to maintain a global struct_ops array for all 
->> kernel module? Can the struct_ops be maintained under its corresponding module 
->> btf itself?
+> Signed-off-by: Ma Ke <make_ruc2021@163.com>
+> ---
+>   net/core/sock_map.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> What is the purpose?
-> We have a global struct_ops array already, although it is not
-> per-module. For now, the number of struct_ops is pretty small.
-> We have only one so far, and it is unlikely to grow fast in
-> near future. It is probably a bit overkill to have
-> per-module ones if this is what you mean.
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index cb11750b1df5..1302d484e769 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -928,11 +928,12 @@ static long sock_hash_delete_elem(struct bpf_map *map, void *key)
+>   	struct bpf_shtab_bucket *bucket;
+>   	struct bpf_shtab_elem *elem;
+>   	int ret = -ENOENT;
+> +	unsigned long flags;
 
-The array size is not the concern.
+Keep reverse xmas tree ordering?
 
-The global struct_ops array was created before btf supporting kernel module. 
-Since then, btf module and kfunc module support were added.
-
-To maintain this global struct_ops array, it needs to register its own module 
-notifier, maintains its own mutex_lock (in patch 5), and also the modified 
-bpf_struct_ops_find*() is searching something under a specific btf module.
-
-afaict, the current btf kfunc support has the infrastructure to do all these 
-(for example, the global LIST_HEAD(btf_modules), btf_module_mutex, 
-btf_module_notify()...etc). Why struct_ops needs to be special and reinvent 
-something which looks very similar to btf kfunc? Did I missing something that 
-struct_ops needs special handling?
-
-> 
->>
->>> +{
->>> +    struct bpf_struct_ops *st_ops = mod->st_ops;
->>> +    int err;
->>> +
->>> +    err = remove_struct_ops(st_ops);
->>> +    if (!err && st_ops->uninit)
->>> +        err = st_ops->uninit();
->>> +
->>> +    return err;
->>> +}
->>> +EXPORT_SYMBOL(unregister_bpf_struct_ops);
->>
->>
-
+>   
+>   	hash = sock_hash_bucket_hash(key, key_size);
+>   	bucket = sock_hash_select_bucket(htab, hash);
+>   
+> -	spin_lock_bh(&bucket->lock);
+> +	spin_lock_irqsave(&bucket->lock, flags);
+>   	elem = sock_hash_lookup_elem_raw(&bucket->head, hash, key, key_size);
+>   	if (elem) {
+>   		hlist_del_rcu(&elem->node);
+> @@ -940,7 +941,7 @@ static long sock_hash_delete_elem(struct bpf_map *map, void *key)
+>   		sock_hash_free_elem(htab, elem);
+>   		ret = 0;
+>   	}
+> -	spin_unlock_bh(&bucket->lock);
+> +	spin_unlock_irqrestore(&bucket->lock, flags);
+>   	return ret;
+>   }
+>   
 
