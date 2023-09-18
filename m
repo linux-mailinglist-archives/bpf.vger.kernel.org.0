@@ -1,182 +1,104 @@
-Return-Path: <bpf+bounces-10290-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10300-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAAC77A4CE6
-	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 17:43:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 626B87A4DC6
+	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 17:59:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FC601C2128C
-	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 15:43:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B453282AD1
+	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 15:59:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2BD91F60B;
-	Mon, 18 Sep 2023 15:42:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64B1721109;
+	Mon, 18 Sep 2023 15:57:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287BC1D6AF;
-	Mon, 18 Sep 2023 15:42:18 +0000 (UTC)
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A13115;
-	Mon, 18 Sep 2023 08:40:23 -0700 (PDT)
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1695051379;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5uItVMOEWNOMCKaEwLwvaBU6x/Cu3Qyaf2heiEbofrg=;
-	b=Be5pNv3292IXVjkqNhDEVwevzotC4Yyle9R988mOxRd3j+fLUSaC0+/uJU6vvcUrWn/Q3K
-	K5YCpdCUkozlKXuxxXCJBlx1pIzfXP/SxmAn/OFkfQeLNiisYzFSK4u3LgtRjZZqa1xEX8
-	zuEgyxdXjQj9Kf1uqfVERd3HEu0HJ2GQR8hdfpElCstC/1sDyubTHV6XD0Nh2MAbNNWIzy
-	dxTeq7nMAydejD7+uEgxRxmctEq2IBzdgZQ680d/jXVQqu8OV9EDhC7gfNCk09vSXhlkpl
-	i9ZM+Qb4cydBfB7Pg2xdX5sEnZd9CWfBdXzi1B1hcOt3ZpjhmoYdnkSoT03IeQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1695051379;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5uItVMOEWNOMCKaEwLwvaBU6x/Cu3Qyaf2heiEbofrg=;
-	b=e5KTDeUUKfw5/aBGh8iahBp8Okdv9ax1G6Q5g8Q0/k5yLD9MpFpWqouJcEohHZUtqYZlzO
-	8iIn/3MPb6kvKwAA==
-To: netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Geetha sowjanya <gakula@marvell.com>,
-	Subbaraya Sundeep <sbhatta@marvell.com>,
-	Sunil Goutham <sgoutham@marvell.com>,
-	hariprasad <hkelam@marvell.com>
-Subject: [PATCH net v2 3/3] octeontx2-pf: Do xdp_do_flush() after redirects.
-Date: Mon, 18 Sep 2023 17:36:11 +0200
-Message-Id: <20230918153611.165722-4-bigeasy@linutronix.de>
-In-Reply-To: <20230918153611.165722-1-bigeasy@linutronix.de>
-References: <20230918153611.165722-1-bigeasy@linutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE20210FF
+	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 15:57:35 +0000 (UTC)
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425E71B5
+	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 08:56:05 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id 4fb4d7f45d1cf-530fa34ab80so2906754a12.0
+        for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 08:56:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695052354; x=1695657154; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b7/VCfZ/0qX+gh35pHtwLjYy8IOpSlbNWTMoh0TEEBo=;
+        b=fYPAB/sGSVY021u4QDYp5k4t6JY8efi74NNarLUBDtAyTVuLc3uNIcsjCWQvrIqlni
+         f4YBAZ4wZ0W+0ps67l1IlZ4z3SPoiP7b6ztUkwJbQKJWScNbx0w+gtO9/ysWTSn/MAyc
+         mIUK1yc7wjhIPT1dX1+j0TA9nQksNZDGchXigKo6lwJH0JHRjXnAAUoPJRrlRXtqaRFV
+         Tg61VIi61mdN4F7ekN/CoJorUdaP7wWL+QbcBwBfL5aPddl1pxTi41u6wukqT/3lxR24
+         CwlD9hLtDRtrwJtdW030dvsMdU86WY0/1fXjjrJ4DFRbvmNK6C0Bkrtw/syQZKSQu4CG
+         1ksg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695052354; x=1695657154;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=b7/VCfZ/0qX+gh35pHtwLjYy8IOpSlbNWTMoh0TEEBo=;
+        b=g6WUAnyRA4KtQC/nbVqlQwu2HjnUmOWWUESNmJUw4jByyhHzeGs0EQN/G6c4bUgmCt
+         O0TIpnqi6JN9w01Bzf4v4Nox2RwULrSZBFAG3qi9mwIescstebDS4vjcMyxfQrC6MLc4
+         UctFYCCcckQE1V/hSTRv48LMs995Dm3F2Z91ImE16+VYQtIFl5aVg7EAsnWlbhhV7eWn
+         5vjncftSGZoQ2OzX9SLj8L9v07MsKkagw+M/hHSCPbcxVhgRHkM+y2k+hiUEZbHJOidH
+         YHO1xw5tz9R6QvbPeGfd1Nrx9ZhOLOoFM3hvP4bxPHUvh1yasAz2GSlFfKAC2SJIhOIV
+         KKWg==
+X-Gm-Message-State: AOJu0YwQEUd9OrC84XuJD6z5s1ZPwLDwvuAzkS6YTtvPQZvn9kEEEhOB
+	NtwgAKFFSioH5gu4EE620j0TwyNzz4mCdQ==
+X-Google-Smtp-Source: AGHT+IFH+oDN9EEdBCRWkZqFPGfEBttnBkrI4RJODj8XnAfmES7gu8Gr+fdeXyNBNDgg1tKBRtdINA==
+X-Received: by 2002:a17:907:2c47:b0:9ad:eeb3:22f8 with SMTP id hf7-20020a1709072c4700b009adeeb322f8mr78483ejc.22.1695052354328;
+        Mon, 18 Sep 2023 08:52:34 -0700 (PDT)
+Received: from localhost ([212.203.98.42])
+        by smtp.gmail.com with ESMTPSA id z18-20020a1709067e5200b0099d798a6bb5sm6588203ejr.67.2023.09.18.08.52.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Sep 2023 08:52:34 -0700 (PDT)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH bpf-next v2 0/3] Fixes for Exceptions
+Date: Mon, 18 Sep 2023 17:52:30 +0200
+Message-ID: <20230918155233.297024-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+X-Developer-Signature: v=1; a=openpgp-sha256; l=762; i=memxor@gmail.com; h=from:subject; bh=ObqxHCxeTcSdg+MxsdVb36xCD4Y7T6K6uCkrzZz3MWQ=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBlCHIauOyLQUHMfBZrwfIs6M5OLiWVltbILC4UH HOQWtqZ5SaJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZQhyGgAKCRBM4MiGSL8R yvmoD/93mRXKP7EciammR/+Wxuihvai6uD04RDdhgd/JowyynhtZmCyIZEuabELToCcMmqSJdJa USz0xkfA2rkIXBPleKDns4W5n/JS3oG/9H6s3z4/NZxyyj05p9BoAsCQC5Rn74nDA9D7R17g2w4 DeAw+T4HM1Moex6GTFn+n1m+C03p5FEFMEhNvF9g2UIW2vfwYxx4g6l8eC70Ue8sC4xdbw5KsKK iAwRGrDf2D3Aovt4rzmNV5HIL+FFZkpsYQEkuIyD4TfGnpPiwebrRKuaU28xuBT0WjmBdofB865 H35zFlSbZGC9HZYL4O3qjis/soPf11ytiV9LcrLkfVeRT8fdhBhBxjEp1eoMGCl8QmI7HHPR3zR 7bq9fOjFppZVAznR/AGkDUhn7aHJH8eB6nEEr0uihM3053MdJdes1QdAnHGY1tVuESdh0aUUdU+ Io2S/Gln48qt8UYsAPZ9rJlIZZs4FJ4nRRbezVNqBYVh2GWuva5JWvVNxNTubvbCEcLNSErad7+ jfxmVcZZar1UZjqQy7iK5pr+lsZN2YH0A27qyV3ekcuGXTvSg5WCD3v94urlR4zdJ4WsLWZjNgL uyB0M89lNnzhAY18B9VnSfxWNTXjdhWmWtChIvj27K1+Kx2Xs3JbKK3Crtc5kBJXgYDgS4O1zy1 /nXUmU7NC3iyAqg==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-xdp_do_flush() should be invoked before leaving the NAPI poll function
-if XDP-redirect has been performed.
+Set of fixes for bugs reported for the exceptions series.
 
-Invoke xdp_do_flush() before leaving NAPI.
+Changelog:
+----------
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20230918143914.292526-1-memxor@gmail.com
 
-Cc: Geetha sowjanya <gakula@marvell.com>
-Cc: Subbaraya Sundeep <sbhatta@marvell.com>
-Cc: Sunil Goutham <sgoutham@marvell.com>
-Cc: hariprasad <hkelam@marvell.com>
-Fixes: 06059a1a9a4a5 ("octeontx2-pf: Add XDP support to netdev PF")
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Acked-by: Geethasowjanya Akula <gakula@marvell.com>
----
- .../marvell/octeontx2/nic/otx2_txrx.c         | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ * Resend with trimmed Cc due to patchwork problem (Alexei)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drive=
-rs/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-index e77d438489557..53b2a4ef52985 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-@@ -29,7 +29,8 @@
- static bool otx2_xdp_rcv_pkt_handler(struct otx2_nic *pfvf,
- 				     struct bpf_prog *prog,
- 				     struct nix_cqe_rx_s *cqe,
--				     struct otx2_cq_queue *cq);
-+				     struct otx2_cq_queue *cq,
-+				     bool *need_xdp_flush);
-=20
- static int otx2_nix_cq_op_status(struct otx2_nic *pfvf,
- 				 struct otx2_cq_queue *cq)
-@@ -337,7 +338,7 @@ static bool otx2_check_rcv_errors(struct otx2_nic *pfvf,
- static void otx2_rcv_pkt_handler(struct otx2_nic *pfvf,
- 				 struct napi_struct *napi,
- 				 struct otx2_cq_queue *cq,
--				 struct nix_cqe_rx_s *cqe)
-+				 struct nix_cqe_rx_s *cqe, bool *need_xdp_flush)
- {
- 	struct nix_rx_parse_s *parse =3D &cqe->parse;
- 	struct nix_rx_sg_s *sg =3D &cqe->sg;
-@@ -353,7 +354,7 @@ static void otx2_rcv_pkt_handler(struct otx2_nic *pfvf,
- 	}
-=20
- 	if (pfvf->xdp_prog)
--		if (otx2_xdp_rcv_pkt_handler(pfvf, pfvf->xdp_prog, cqe, cq))
-+		if (otx2_xdp_rcv_pkt_handler(pfvf, pfvf->xdp_prog, cqe, cq, need_xdp_flu=
-sh))
- 			return;
-=20
- 	skb =3D napi_get_frags(napi);
-@@ -388,6 +389,7 @@ static int otx2_rx_napi_handler(struct otx2_nic *pfvf,
- 				struct napi_struct *napi,
- 				struct otx2_cq_queue *cq, int budget)
- {
-+	bool need_xdp_flush =3D false;
- 	struct nix_cqe_rx_s *cqe;
- 	int processed_cqe =3D 0;
-=20
-@@ -409,13 +411,15 @@ static int otx2_rx_napi_handler(struct otx2_nic *pfvf,
- 		cq->cq_head++;
- 		cq->cq_head &=3D (cq->cqe_cnt - 1);
-=20
--		otx2_rcv_pkt_handler(pfvf, napi, cq, cqe);
-+		otx2_rcv_pkt_handler(pfvf, napi, cq, cqe, &need_xdp_flush);
-=20
- 		cqe->hdr.cqe_type =3D NIX_XQE_TYPE_INVALID;
- 		cqe->sg.seg_addr =3D 0x00;
- 		processed_cqe++;
- 		cq->pend_cqe--;
- 	}
-+	if (need_xdp_flush)
-+		xdp_do_flush();
-=20
- 	/* Free CQEs to HW */
- 	otx2_write64(pfvf, NIX_LF_CQ_OP_DOOR,
-@@ -1354,7 +1358,8 @@ bool otx2_xdp_sq_append_pkt(struct otx2_nic *pfvf, u6=
-4 iova, int len, u16 qidx)
- static bool otx2_xdp_rcv_pkt_handler(struct otx2_nic *pfvf,
- 				     struct bpf_prog *prog,
- 				     struct nix_cqe_rx_s *cqe,
--				     struct otx2_cq_queue *cq)
-+				     struct otx2_cq_queue *cq,
-+				     bool *need_xdp_flush)
- {
- 	unsigned char *hard_start, *data;
- 	int qidx =3D cq->cq_idx;
-@@ -1391,8 +1396,10 @@ static bool otx2_xdp_rcv_pkt_handler(struct otx2_nic=
- *pfvf,
-=20
- 		otx2_dma_unmap_page(pfvf, iova, pfvf->rbsize,
- 				    DMA_FROM_DEVICE);
--		if (!err)
-+		if (!err) {
-+			*need_xdp_flush =3D true;
- 			return true;
-+		}
- 		put_page(page);
- 		break;
- 	default:
---=20
-2.40.1
+Kumar Kartikeya Dwivedi (3):
+  selftests/bpf: Print log buffer for exceptions test only on failure
+  bpf: Fix bpf_throw warning on 32-bit arch
+  bpf: Disable exceptions when CONFIG_UNWINDER_FRAME_POINTER=y
+
+ arch/x86/net/bpf_jit_comp.c                         | 9 ++++-----
+ kernel/bpf/helpers.c                                | 2 +-
+ tools/testing/selftests/bpf/prog_tests/exceptions.c | 5 +++--
+ 3 files changed, 8 insertions(+), 8 deletions(-)
+
+
+base-commit: ec6f1b4db95b7eedb3fe85f4f14e08fa0e9281c3
+-- 
+2.41.0
 
 
