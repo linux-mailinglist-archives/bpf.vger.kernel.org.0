@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-10324-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10325-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83D1D7A5257
-	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 20:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C4167A543B
+	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 22:40:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A6A01C209D4
-	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 18:49:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B4521C20A4C
+	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 20:40:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5411126E24;
-	Mon, 18 Sep 2023 18:49:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A032B450CE;
+	Mon, 18 Sep 2023 20:40:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17557262A2;
-	Mon, 18 Sep 2023 18:49:07 +0000 (UTC)
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A851D109;
-	Mon, 18 Sep 2023 11:49:04 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-59be8a2099bso48105717b3.0;
-        Mon, 18 Sep 2023 11:49:04 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE605450C5
+	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 20:40:16 +0000 (UTC)
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BCB8F
+	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 13:40:15 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-59c0d329a8bso31731057b3.1
+        for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 13:40:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695062944; x=1695667744; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695069614; x=1695674414; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZBScvKSzp0uWOXXPxrbaBCIKGxV7w6c3lLSoPif2v3M=;
-        b=RzqRdO5cu9lYrlarbKCuuqjyeZw8e56eGij5M1OxTJx4ebcCzaDwJV+RwQtAZZdrkd
-         RBJuUIjNuGN7A2mFk1cbgPKpjyiNakeqkx+JGa7a2YuLrJ+8HfX0shHIs4U6GFtk2u8w
-         67XX8ReMaoxal354JE5HZLWOSXXQ5+49dGB0x+E5Rns8WMOxVmyPJc//UQ8E14Z2cLxO
-         /JG0J3TkL/Fop+Eha5BLLH8sEItJnDJD1i2BtVQRO8+E2ZSGiPtd5bx6E9El8yFirgbm
-         rvJzTNPjLMIAm9lVWNQo6tzPIc8cndZ6cHDnOkY+EXd+GdnTdnK2LqIrp4ZkHAV+OPet
-         zqiA==
+        bh=5XCYlJZThylO/wbg1eXpySrc4lP3JpK0dOXondHepn4=;
+        b=HiKuY8nyIhbCQGlcyu0Rm6TRk5wRqm7z20afkrNFzKqjd0kcavyxAj3OjTIg3uCTeT
+         4fOKj/0y+BQqxF8esAmruXikS6e3a4A7n4GyFv4jQCN0koxSU8PtzLUKs9n5mDP/WIgi
+         L86Kj0jDTyjJ2PFvRGNGcIY1W82bO3FVyl/Xxr2cbuXcfRRmsR24+qX/GNpOQq00vW/L
+         VhOGJEWLxgY9k/68+8ZS6uNGSNvX8PwM2F3WK9zw0veYpZ0B8Mik5JkXPZt4sP3v6kxG
+         +aUJehYOQjwl6uMNV5N7E4X/mhm2ukwprZAyim06yUiBgdsSSnyQDV8HYB+sZbw5oexy
+         r5oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695062944; x=1695667744;
+        d=1e100.net; s=20230601; t=1695069614; x=1695674414;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZBScvKSzp0uWOXXPxrbaBCIKGxV7w6c3lLSoPif2v3M=;
-        b=RLg0Jb8Hr4Q/a0+4m+HSImMDEDuengZaRy2GWqaw9ZEGqQuX/x5DNQdg63oyOATV8D
-         F/7EPxznLfP68IgW5005DJTb6bP6PTsuXb1BRl+fea6DRV6R3KHAo3QH4uezQZ0BG47n
-         ai4OBLzbkXV1GbDgkAibJ54/oygKtUP+cbJVgUnfXefmwsNHDad9orxIhZArp6+SbKKf
-         EAJ/ivoxk4NUOCXyULATdQJxO9YhR7a+MhlnA5s913Ddmvqf/qLeZZOsB7JktC3xS2mf
-         OkOL5mJ/P5iEaDUDWjqndAe2hpQUH/BW2EA2cR/fmvjn3TAiiOZC3Sh9R0JKLcqHDNOb
-         +XYA==
-X-Gm-Message-State: AOJu0Yw/0ktmbrxGw0caMMGDgNMeFg9QJ23Z1V5zUf+lIVehUKRszr49
-	W5BHXeTXBc51svP/aXUU4m4=
-X-Google-Smtp-Source: AGHT+IFlabmyCKzs3TJCwRu9pzXgXQ5gnGGWAj5UTnvOq4RVLQmMmcwqpHWTteWj40envjYp+EaoFA==
-X-Received: by 2002:a81:a0c2:0:b0:586:a68b:4c9a with SMTP id x185-20020a81a0c2000000b00586a68b4c9amr11609317ywg.2.1695062943808;
-        Mon, 18 Sep 2023 11:49:03 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:cd9b:b05b:a4d3:eeda? ([2600:1700:6cf8:1240:cd9b:b05b:a4d3:eeda])
-        by smtp.gmail.com with ESMTPSA id v129-20020a814887000000b0059b516ed11fsm2768725ywa.110.2023.09.18.11.49.02
+        bh=5XCYlJZThylO/wbg1eXpySrc4lP3JpK0dOXondHepn4=;
+        b=pNHQdU9XYbloafe7BFmvGrNz2KVzDTI21quboaGo3RihKqFhUYbrZlnVSmSQx33YLo
+         4zW1tdjY2angnrt7eBbzprnSZfQTbVrNg05OAcQe1d2QSFnShj+eepDYpjXYpULbYucN
+         ibuGYBmcU28+6fET+TepU01UZKsYy5aMgzIxv2CkRKVjc54qS82F2RwMZDGoGhbTMc0v
+         NzEt2jaBZRdw9gYCCpIB3ZRWiEBoi44TPnjiNvzu9Kn2H352oii2QKF9/V9nMfRJZOzm
+         BSF3iqBZkBNJmrwcTq0l/e1a0onlK0dtNkZpL6Sshg1/dApMYs+DEtFrQ5S2BonQWL05
+         e0jA==
+X-Gm-Message-State: AOJu0YyL567G0SfmRfxsLAaJG8vQVcY8GZP5blxH4hHSCPd67Z3rzaD7
+	dxAgB43J4z59qu/hK2OfFzI=
+X-Google-Smtp-Source: AGHT+IFBoaTBPwCE8Q24s5rZilGh1QkRYto5LgwywFTqee4zAEF/yERzMAUVu6hUNwcf+bBJhKa5nA==
+X-Received: by 2002:a81:a113:0:b0:59b:ee58:67fb with SMTP id y19-20020a81a113000000b0059bee5867fbmr10108940ywg.10.1695069614143;
+        Mon, 18 Sep 2023 13:40:14 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:7c77:26bf:e557:d572? ([2600:1700:6cf8:1240:7c77:26bf:e557:d572])
+        by smtp.gmail.com with ESMTPSA id g4-20020a815204000000b005897fd75c80sm2816251ywb.78.2023.09.18.13.40.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 11:49:03 -0700 (PDT)
-Message-ID: <dc84f39f-5b13-4a7d-a26c-598227fd9a42@gmail.com>
-Date: Mon, 18 Sep 2023 11:49:02 -0700
+        Mon, 18 Sep 2023 13:40:13 -0700 (PDT)
+Message-ID: <256287ce-660a-0e31-ab6f-ff484137a4cc@gmail.com>
+Date: Mon, 18 Sep 2023 13:40:12 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,17 +66,21 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH] bpf, sockmap: fix deadlocks in the sockhash and sockmap
+Subject: Re: [RFC bpf-next v2 2/9] bpf: add register and unregister functions
+ for struct_ops.
 Content-Language: en-US
-To: Ma Ke <make_ruc2021@163.com>, john.fastabend@gmail.com,
- jakub@cloudflare.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20230918093620.3479627-1-make_ruc2021@163.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, thinker.li@gmail.com
+References: <20230913061449.1918219-1-thinker.li@gmail.com>
+ <20230913061449.1918219-3-thinker.li@gmail.com>
+ <414e9f49-ad34-5282-6c05-882876440f34@linux.dev>
+ <912b0d41-5959-74ff-a1a9-6277bf62aac2@gmail.com>
+ <f16aeae6-cdf4-4836-5899-5c81e530936a@linux.dev>
 From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <20230918093620.3479627-1-make_ruc2021@163.com>
+In-Reply-To: <f16aeae6-cdf4-4836-5899-5c81e530936a@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -86,47 +90,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 
 
-On 9/18/23 02:36, Ma Ke wrote:
-> It seems that elements in sockhash are rarely actively
-> deleted by users or ebpf program. Therefore, we do not
-> pay much attention to their deletion. Compared with hash
-> maps, sockhash only provides spin_lock_bh protection.
-> This causes it to appear to have self-locking behavior
-> in the interrupt context, as CVE-2023-0160 points out.
+On 9/18/23 11:47, Martin KaFai Lau wrote:
+> On 9/15/23 6:14 PM, Kui-Feng Lee wrote:
+>>
+>>
+>> On 9/15/23 17:05, Martin KaFai Lau wrote:
+>>> On 9/12/23 11:14 PM, thinker.li@gmail.com wrote:
+>>>> +int register_bpf_struct_ops(struct bpf_struct_ops_mod *mod)
+>>>> +{
+>>>> +    struct bpf_struct_ops *st_ops = mod->st_ops;
+>>>> +    struct bpf_verifier_log *log;
+>>>> +    struct btf *btf;
+>>>> +    int err;
+>>>> +
+>>>> +    if (mod->st_ops == NULL ||
+>>>> +        mod->owner == NULL)
+>>>> +        return -EINVAL;
+>>>> +
+>>>> +    log = kzalloc(sizeof(*log), GFP_KERNEL | __GFP_NOWARN);
+>>>> +    if (!log) {
+>>>> +        err = -ENOMEM;
+>>>> +        goto errout;
+>>>> +    }
+>>>> +
+>>>> +    log->level = BPF_LOG_KERNEL;
+>>>> +
+>>>> +    btf = btf_get_module_btf(mod->owner);
+>>>
+>>> Where is btf_put called?
+>>>
+>>> It is not stored anywhere in patch 2, so a bit confusing. I quickly 
+>>> looked at the following patches but also don't see the bpf_put.
+>>
+>> It is my fault to use it without calling btf_put().
+>> I miss-understood the API, thought it doesn't increase refcount by
+>> mistake.
+>>
+>>>
+>>>> +    if (!btf) {
+>>>> +        err = -EINVAL;
+>>>> +        goto errout;
+>>>> +    }
+>>>> +
+>>>> +    bpf_struct_ops_init_one(st_ops, btf, log);
+>>>> +    err = add_struct_ops(st_ops);
+>>>> +
+>>>> +errout:
+>>>> +    kfree(log);
+>>>> +
+>>>> +    return err;
+>>>> +}
+>>>> +EXPORT_SYMBOL(register_bpf_struct_ops);
+>>>> +
+>>>> +int unregister_bpf_struct_ops(struct bpf_struct_ops_mod *mod)
+>>>
+>>> It is not clear to me why the subsystem needs to explicitly call 
+>>> unregister_bpf_struct_ops(). Can it be done similar to the module 
+>>> kfunc support (the kfunc_set_tab goes away with the btf)?
+>>
+>> It could be. However, registering to module notifier
+>> (register_module_notifier()) is more straight forward if we go
+>> this way. What do you think?
 > 
-> Signed-off-by: Ma Ke <make_ruc2021@163.com>
-> ---
->   net/core/sock_map.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
+> Right, but not sure if struct_ops needs to create yet another notifier 
+> considering there is already a btf_module_notify(). It is why the 
+> earlier question on btf_put because I was trying to understand if the 
+> struct_ops can go away together during btf_free. More on this next.
+
+In short, it is not necessary to have another notifier.
+The benefit with a separated notifier is loose coupling without touching
+btf code. I don't have a strong opinion on this.
+
+
 > 
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index cb11750b1df5..1302d484e769 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -928,11 +928,12 @@ static long sock_hash_delete_elem(struct bpf_map *map, void *key)
->   	struct bpf_shtab_bucket *bucket;
->   	struct bpf_shtab_elem *elem;
->   	int ret = -ENOENT;
-> +	unsigned long flags;
+>>
+>>>
+>>> Related to this, does it need to maintain a global struct_ops array 
+>>> for all kernel module? Can the struct_ops be maintained under its 
+>>> corresponding module btf itself?
+>>
+>> What is the purpose?
+>> We have a global struct_ops array already, although it is not
+>> per-module. For now, the number of struct_ops is pretty small.
+>> We have only one so far, and it is unlikely to grow fast in
+>> near future. It is probably a bit overkill to have
+>> per-module ones if this is what you mean.
+> 
+> The array size is not the concern.
+> 
+> The global struct_ops array was created before btf supporting kernel 
+> module. Since then, btf module and kfunc module support were added.
+> 
+> To maintain this global struct_ops array, it needs to register its own 
+> module notifier, maintains its own mutex_lock (in patch 5), and also the 
+> modified bpf_struct_ops_find*() is searching something under a specific 
+> btf module.
+> 
+> afaict, the current btf kfunc support has the infrastructure to do all 
+> these (for example, the global LIST_HEAD(btf_modules), btf_module_mutex, 
+> btf_module_notify()...etc). Why struct_ops needs to be special and 
+> reinvent something which looks very similar to btf kfunc? Did I missing 
+> something that struct_ops needs special handling?
 
-Keep reverse xmas tree ordering?
 
->   
->   	hash = sock_hash_bucket_hash(key, key_size);
->   	bucket = sock_hash_select_bucket(htab, hash);
->   
-> -	spin_lock_bh(&bucket->lock);
-> +	spin_lock_irqsave(&bucket->lock, flags);
->   	elem = sock_hash_lookup_elem_raw(&bucket->head, hash, key, key_size);
->   	if (elem) {
->   		hlist_del_rcu(&elem->node);
-> @@ -940,7 +941,7 @@ static long sock_hash_delete_elem(struct bpf_map *map, void *key)
->   		sock_hash_free_elem(htab, elem);
->   		ret = 0;
->   	}
-> -	spin_unlock_bh(&bucket->lock);
-> +	spin_unlock_irqrestore(&bucket->lock, flags);
->   	return ret;
->   }
->   
+I don't think you missing anything.
+
+> 
+>>
+>>>
+>>>> +{
+>>>> +    struct bpf_struct_ops *st_ops = mod->st_ops;
+>>>> +    int err;
+>>>> +
+>>>> +    err = remove_struct_ops(st_ops);
+>>>> +    if (!err && st_ops->uninit)
+>>>> +        err = st_ops->uninit();
+>>>> +
+>>>> +    return err;
+>>>> +}
+>>>> +EXPORT_SYMBOL(unregister_bpf_struct_ops);
+>>>
+>>>
+> 
 
