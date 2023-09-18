@@ -1,111 +1,100 @@
-Return-Path: <bpf+bounces-10272-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10273-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD6F67A461A
-	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 11:39:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 171BF7A4696
+	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 12:04:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 786302820D8
-	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 09:39:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CE911C20F78
+	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 10:04:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 541341C2BA;
-	Mon, 18 Sep 2023 09:38:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 037D41C693;
+	Mon, 18 Sep 2023 10:03:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98A6F1BDF7;
-	Mon, 18 Sep 2023 09:38:28 +0000 (UTC)
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.216])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0A0CD109;
-	Mon, 18 Sep 2023 02:38:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=E6Gq9
-	q199088uQOPOTWvFqHg+HaKxn9bHmNfYLiu5Pc=; b=RNgmNIYISLthaIaO9kLB9
-	nJWV450G5i0dDGgSXisS5fgLpPATWjhJptaqaLQQF3kYN/mso4x4w2pdO5BrE3Z+
-	NBbaLtFvDny8PhUY7hA2m3LKvigIAg66HfKArN9m5m3VEQHGTTOS6wmO2sWuKfVG
-	Vbm5UFEUyzuudXVXDS7+r4=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
-	by zwqz-smtp-mta-g5-1 (Coremail) with SMTP id _____wDnq2QWGghlLjGXCQ--.241S4;
-	Mon, 18 Sep 2023 17:36:32 +0800 (CST)
-From: Ma Ke <make_ruc2021@163.com>
-To: john.fastabend@gmail.com,
-	jakub@cloudflare.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Ma Ke <make_ruc2021@163.com>
-Subject: [PATCH] bpf, sockmap: fix deadlocks in the sockhash and sockmap
-Date: Mon, 18 Sep 2023 17:36:20 +0800
-Message-Id: <20230918093620.3479627-1-make_ruc2021@163.com>
-X-Mailer: git-send-email 2.37.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF141BDC5
+	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 10:03:42 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0CE1A8
+	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 03:03:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1695031388;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KHQ1/UuyBZLpfUL6czplgqv9YFzz7xn0PsYaq4PItgo=;
+	b=F/vN0gR5aJaGUg9fgrU6TWcVE3w00V8Tv5rlxFTxaZQn9/mvI9jqgZRYMDZOqq0hD10dnc
+	DGKFAXNG0Q6e35cDPLtV6alK4hENLS+TShEqHH4vP11k+Y/iv9cmDxyMdw6pjsFV+cdDHO
+	Z3FUsAIsFSP7piwChQaSvqtbABUtpkg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-458-7I-FY3CRN5Wqikm7tOozwQ-1; Mon, 18 Sep 2023 06:03:04 -0400
+X-MC-Unique: 7I-FY3CRN5Wqikm7tOozwQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EC910101A550;
+	Mon, 18 Sep 2023 10:03:03 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id A8044C15BB8;
+	Mon, 18 Sep 2023 10:03:02 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <3793723.1694795079@warthog.procyon.org.uk>
+References: <3793723.1694795079@warthog.procyon.org.uk> <CANn89iLwMhOnrmQTZJ+BqZJSbJZ+Q4W6xRknAAr+uSrk5TX-EQ@mail.gmail.com> <0000000000001c12b30605378ce8@google.com>
+To: Eric Dumazet <edumazet@google.com>
+Cc: dhowells@redhat.com,
+    syzbot <syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com>,
+    bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
+    kuba@kernel.org, linux-kernel@vger.kernel.org,
+    netdev@vger.kernel.org, pabeni@redhat.com,
+    syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] WARNING in __ip6_append_data
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDnq2QWGghlLjGXCQ--.241S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Aryktr43tr48Xw4DGF15urg_yoW8GF4rpF
-	yrKa1rWrWkA3WF9FZ3Xw4vqrs5trn8Zr1UGFyrCa4Yyr9xKryqgFy0kasY9r1YyrW2yr15
-	GF42k3y3G3yrC3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zifcTdUUUUU=
-X-Originating-IP: [183.174.60.14]
-X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/1tbiyALuC1p7LzCXDgAAsI
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
-	RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3905045.1695031382.1@warthog.procyon.org.uk>
+Date: Mon, 18 Sep 2023 11:03:02 +0100
+Message-ID: <3905046.1695031382@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-It seems that elements in sockhash are rarely actively
-deleted by users or ebpf program. Therefore, we do not
-pay much attention to their deletion. Compared with hash
-maps, sockhash only provides spin_lock_bh protection.
-This causes it to appear to have self-locking behavior
-in the interrupt context, as CVE-2023-0160 points out.
+David Howells <dhowells@redhat.com> wrote:
 
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
----
- net/core/sock_map.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> I think the attached is probably an equivalent cleaned up reproducer.  Note
+> that if the length given to sendfile() is less than 65536, it fails with
+> EINVAL before it gets into __ip6_append_data().
 
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index cb11750b1df5..1302d484e769 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -928,11 +928,12 @@ static long sock_hash_delete_elem(struct bpf_map *map, void *key)
- 	struct bpf_shtab_bucket *bucket;
- 	struct bpf_shtab_elem *elem;
- 	int ret = -ENOENT;
-+	unsigned long flags;
- 
- 	hash = sock_hash_bucket_hash(key, key_size);
- 	bucket = sock_hash_select_bucket(htab, hash);
- 
--	spin_lock_bh(&bucket->lock);
-+	spin_lock_irqsave(&bucket->lock, flags);
- 	elem = sock_hash_lookup_elem_raw(&bucket->head, hash, key, key_size);
- 	if (elem) {
- 		hlist_del_rcu(&elem->node);
-@@ -940,7 +941,7 @@ static long sock_hash_delete_elem(struct bpf_map *map, void *key)
- 		sock_hash_free_elem(htab, elem);
- 		ret = 0;
- 	}
--	spin_unlock_bh(&bucket->lock);
-+	spin_unlock_irqrestore(&bucket->lock, flags);
- 	return ret;
- }
- 
--- 
-2.37.2
+Actually, it only fails with EINVAL if the size is not a multiple of the block
+size of the source file because it's open O_DIRECT so, say, 65536-512 is fine
+(and works).
+
+But thinking more on this further, is this even a bug in my code, I wonder?
+The length passed is 65536 - but a UDP packet can't carry that, so it
+shouldn't it have errored out before getting that far?  (which is what it
+seems to do when I try it).
+
+I don't see how we get past the length check in ip6_append_data() with the
+reproducer we're given unless the MTU is somewhat bigger than 65536 (is that
+even possible?)
+
+David
 
 
