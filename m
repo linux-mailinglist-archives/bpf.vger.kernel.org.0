@@ -1,127 +1,98 @@
-Return-Path: <bpf+bounces-10285-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10281-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DFE87A4C71
-	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 17:34:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 229E97A4B7E
+	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 17:17:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF0ED281688
-	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 15:34:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82E05281652
+	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 15:17:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D3A1D6B6;
-	Mon, 18 Sep 2023 15:34:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 492C81D55E;
+	Mon, 18 Sep 2023 15:17:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF241D6AC
-	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 15:34:34 +0000 (UTC)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B37CEB;
-	Mon, 18 Sep 2023 08:32:30 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 055681FF60;
-	Mon, 18 Sep 2023 14:45:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1695048313; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6CE1CA8A
+	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 15:17:17 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBEF4135
+	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 08:17:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1695050221;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=m+c5MwjrU6e+eqnpeyq/gfs4XPJ67C6Tq+An5QkBSWg=;
-	b=kpFMGaQSztQjUayzxgZpeMJevfzfaEbLDhJIiP1PMhvnA91PRgsjzMiZ3kQcYtUXTvhnWA
-	NHNmK/Z3DHTHlj4QDK3W9B20H5pHeiB4qVBcm1ml22z85HS7EDcI3KyRUI4zgc7U2yG6hD
-	Lrrhgr8yHCn6WiZPyA+sj71HWSNahy0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	bh=sJqX1sGDZxCaO6XqvDak7bVSlywdTalhVTk58OTxlhc=;
+	b=JtSI5WpmKF997NCEDeW9A8Yalptm6G6x371g8oELnCh9yFALOsLTlZN4NVLJ5WcFnwkgT+
+	A3IEQ1lYfpp+fgdzX9yFHM1/8yy/6ag36Qao1JbZ/0kChHTGpBkV+X1h9v4cCFUQqW56TH
+	YM1H68t+YLVhi8P2WXuqfm1cYQbv+gk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-351-fx8Km0DFOuGpnqu3F2U_Iw-1; Mon, 18 Sep 2023 10:46:18 -0400
+X-MC-Unique: fx8Km0DFOuGpnqu3F2U_Iw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B69D01358A;
-	Mon, 18 Sep 2023 14:45:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id VZzuK3hiCGUUQgAAMHmgww
-	(envelope-from <mkoutny@suse.com>); Mon, 18 Sep 2023 14:45:12 +0000
-Date: Mon, 18 Sep 2023 16:45:11 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org, 
-	yosryahmed@google.com, cgroups@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 1/5] cgroup: Enable
- task_under_cgroup_hierarchy() on cgroup1
-Message-ID: <ysajseo5a5dashpz4dtkdpthtdww4m6wpgtgpakbtlbqoy7cvg@53fx3pou6hrl>
-References: <20230903142800.3870-1-laoar.shao@gmail.com>
- <20230903142800.3870-2-laoar.shao@gmail.com>
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B24FA802E5A;
+	Mon, 18 Sep 2023 14:46:15 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 4BCBF1005E27;
+	Mon, 18 Sep 2023 14:46:14 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <65085768c17da_898cd294ae@willemb.c.googlers.com.notmuch>
+References: <65085768c17da_898cd294ae@willemb.c.googlers.com.notmuch> <3793723.1694795079@warthog.procyon.org.uk> <CANn89iLwMhOnrmQTZJ+BqZJSbJZ+Q4W6xRknAAr+uSrk5TX-EQ@mail.gmail.com> <0000000000001c12b30605378ce8@google.com> <3905046.1695031382@warthog.procyon.org.uk>
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: dhowells@redhat.com, Eric Dumazet <edumazet@google.com>,
+    syzbot <syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com>,
+    bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
+    kuba@kernel.org, linux-kernel@vger.kernel.org,
+    netdev@vger.kernel.org, pabeni@redhat.com,
+    syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] WARNING in __ip6_append_data
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="uoq6y5kmp3pqpxzu"
-Content-Disposition: inline
-In-Reply-To: <20230903142800.3870-2-laoar.shao@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4138873.1695048373.1@warthog.procyon.org.uk>
+Date: Mon, 18 Sep 2023 15:46:13 +0100
+Message-ID: <4138874.1695048373@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
 
---uoq6y5kmp3pqpxzu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> 
+> An ipv6 packet can carry 64KB of payload, so maxnonfragsize of 65535 + 40
+> sounds correct. But payload length passed of 65536 is not (ignoring ipv6
+> jumbograms). So that should probably trigger an EINVAL -- if that is indeed
+> what the repro does.
 
-On Sun, Sep 03, 2023 at 02:27:56PM +0000, Yafang Shao <laoar.shao@gmail.com=
-> wrote:
->  static inline bool task_under_cgroup_hierarchy(struct task_struct *task,
->  					       struct cgroup *ancestor)
->  {
->  	struct css_set *cset =3D task_css_set(task);
-> +	struct cgroup *cgrp;
-> +	bool ret =3D false;
-> +	int ssid;
-> +
-> +	if (ancestor->root =3D=3D &cgrp_dfl_root)
-> +		return cgroup_is_descendant(cset->dfl_cgrp, ancestor);
-> +
-> +	for (ssid =3D 0; ssid < CGROUP_SUBSYS_COUNT; ssid++) {
+The problem is that on entry to __ip6_append_data(), the length includes
+transhdrlen.  However, this is a problem if we already have something in the
+packet.  At that point, this fails:
 
-This loop were better an iteration over cset->cgrp_links to handle any
-v1 hierarchy (under css_set_lock :-/).
+			if (WARN_ON_ONCE(copy > msg->msg_iter.count))
+				goto error;
 
-> +		if (!ancestor->subsys[ssid])
-> +			continue;
-> =20
-> -	return cgroup_is_descendant(cset->dfl_cgrp, ancestor);
-> +		cgrp =3D task_css(task, ssid)->cgroup;
+because copy includes transhdrlen.
 
-Does this pass on a lockdep-enabled kernel?
+David
 
-See conditions in task_css_set_check(), it seems at least RCU read lock
-would be needed (if not going through cgrp_links mentioned above).
-
-HTH,
-Michal
-
---uoq6y5kmp3pqpxzu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZQhidQAKCRAGvrMr/1gc
-jstqAQCEYHUIebapzJQGj+eNhDHfhcCyW19Sdpyn2oF07i7N+wD/QQufiDWkuqHZ
-1Mzzg+E3EsbzUxHd+erYEhkctnPTtw4=
-=JT1H
------END PGP SIGNATURE-----
-
---uoq6y5kmp3pqpxzu--
 
