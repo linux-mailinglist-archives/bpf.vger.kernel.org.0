@@ -1,112 +1,157 @@
-Return-Path: <bpf+bounces-10328-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10329-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3A6D7A54DB
-	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 23:10:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25F927A54F6
+	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 23:25:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4C461C20AF8
-	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 21:10:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD286281BCD
+	for <lists+bpf@lfdr.de>; Mon, 18 Sep 2023 21:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53B5031A66;
-	Mon, 18 Sep 2023 21:01:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D145928DA5;
+	Mon, 18 Sep 2023 21:25:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DDC5286BB
-	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 21:01:28 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07C010D
-	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 14:01:26 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38IKFr13017730
-	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 14:01:26 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3t57pjygr4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 14:01:25 -0700
-Received: from twshared51307.04.prn6.facebook.com (2620:10d:c0a8:1b::30) by
- mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 18 Sep 2023 14:01:22 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 11075384A98D8; Mon, 18 Sep 2023 14:01:15 -0700 (PDT)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>, Chris Mason <clm@meta.com>
-Subject: [PATCH bpf] bpf: unconditionally reset backtrack_state masks on global func exit
-Date: Mon, 18 Sep 2023 14:01:10 -0700
-Message-ID: <20230918210110.2241458-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 771A0450C7
+	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 21:25:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ABDBC433C7;
+	Mon, 18 Sep 2023 21:25:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695072313;
+	bh=v7HrHk/auMBPUrO+Ktdp23Bxj9pNu96eMnMq/wlxdGU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ZoG2gMilxigu+rUgAM1cruo7UGM9cTU5qkMCuifSSJDpRcusYMXASNM6PORB4R/VL
+	 +inaCMw/Tk42dLkmVdqem6iKsmVTogiRErc3isNgLreaW4NaPGRubBfAmw2oGO5mHQ
+	 dPp8EHiI0G51HFrg6p8zzygkLizMptGNk7rBeG7tIZ0OKEFApI9qi0hKyiLmojRB0J
+	 3aTTyLtsgKPulBbsIJBI6aw9CLXEV7oSpfSfQXrN3GCnZTu6Zl521Qk8BrehPNNREz
+	 f4Seh5ieGSNRN3BMlPuuN1/2wygSElfzepWuG1Zjx5CJpEpOmgKf4y320jepyWGRFM
+	 1Q5EIL4uRKbKQ==
+From: KP Singh <kpsingh@kernel.org>
+To: linux-security-module@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: paul@paul-moore.com,
+	keescook@chromium.org,
+	casey@schaufler-ca.com,
+	song@kernel.org,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	kpsingh@kernel.org
+Subject: [PATCH v3 0/5] Reduce overhead of LSMs with static calls
+Date: Mon, 18 Sep 2023 23:24:54 +0200
+Message-ID: <20230918212459.1937798-1-kpsingh@kernel.org>
+X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: A-_giPGqtQ3hAkLLTlSrDf5-BP-neSDK
-X-Proofpoint-ORIG-GUID: A-_giPGqtQ3hAkLLTlSrDf5-BP-neSDK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-18_10,2023-09-18_01,2023-05-22_02
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 8bit
 
-In mark_chain_precision() logic, when we reach the entry to a global
-func, it is expected that R1-R5 might be still requested to be marked
-precise. This would correspond to some integer input arguments being
-tracked as precise. This is all expected and handled as a special case.
+# Background
 
-What's not expected is that we'll leave backtrack_state structure with
-some register bits set. This is because for subsequent precision
-propagations backtrack_state is reused without clearing masks, as all
-code paths are carefully written in a way to leave empty backtrack_state
-with zeroed out masks, for speed.
+LSM hooks (callbacks) are currently invoked as indirect function calls. These
+callbacks are registered into a linked list at boot time as the order of the
+LSMs can be configured on the kernel command line with the "lsm=" command line
+parameter.
 
-The fix is trivial, we always clear register bit in the register mask, an=
-d
-then, optionally, set reg->precise if register is SCALAR_VALUE type.
+Indirect function calls have a high overhead due to retpoline mitigation for
+various speculative execution attacks.
 
-Reported-by: Chris Mason <clm@meta.com>
-Fixes: be2ef8161572 ("bpf: allow precision tracking for programs with sub=
-progs")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- kernel/bpf/verifier.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+Retpolines remain relevant even with newer generation CPUs as recently
+discovered speculative attacks, like Spectre BHB need Retpolines to mitigate
+against branch history injection and still need to be used in combination with
+newer mitigation features like eIBRS.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index bb78212fa5b2..c0c7d137066a 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4047,11 +4047,9 @@ static int __mark_chain_precision(struct bpf_verif=
-ier_env *env, int regno)
- 				bitmap_from_u64(mask, bt_reg_mask(bt));
- 				for_each_set_bit(i, mask, 32) {
- 					reg =3D &st->frame[0]->regs[i];
--					if (reg->type !=3D SCALAR_VALUE) {
--						bt_clear_reg(bt, i);
--						continue;
--					}
--					reg->precise =3D true;
-+					bt_clear_reg(bt, i);
-+					if (reg->type =3D=3D SCALAR_VALUE)
-+						reg->precise =3D true;
- 				}
- 				return 0;
- 			}
---=20
-2.34.1
+This overhead is especially significant for the "bpf" LSM which allows the user
+to implement LSM functionality with eBPF program. In order to facilitate this
+the "bpf" LSM provides a default callback for all LSM hooks. When enabled,
+the "bpf" LSM incurs an unnecessary / avoidable indirect call. This is
+especially bad in OS hot paths (e.g. in the networking stack).
+This overhead prevents the adoption of bpf LSM on performance critical
+systems, and also, in general, slows down all LSMs.
+
+Since we know the address of the enabled LSM callbacks at compile time and only
+the order is determined at boot time, the LSM framework can allocate static
+calls for each of the possible LSM callbacks and these calls can be updated once
+the order is determined at boot.
+
+This series is a respin of the RFC proposed by Paul Renauld (renauld@google.com)
+and Brendan Jackman (jackmanb@google.com) [1]
+
+# Performance improvement
+
+With this patch-set some syscalls with lots of LSM hooks in their path
+benefitted at an average of ~3% and I/O and Pipe based system calls benefitting
+the most.
+
+Here are the results of the relevant Unixbench system benchmarks with BPF LSM
+and SELinux enabled with default policies enabled with and without these
+patches.
+
+Benchmark                                               Delta(%): (+ is better)
+===============================================================================
+Execl Throughput                                             +1.9356
+File Write 1024 bufsize 2000 maxblocks                       +6.5953
+Pipe Throughput                                              +9.5499
+Pipe-based Context Switching                                 +3.0209
+Process Creation                                             +2.3246
+Shell Scripts (1 concurrent)                                 +1.4975
+System Call Overhead                                         +2.7815
+System Benchmarks Index Score (Partial Only):                +3.4859
+
+In the best case, some syscalls like eventfd_create benefitted to about ~10%.
+The full analysis can be viewed at https://kpsingh.ch/lsm-perf
+
+[1] https://lore.kernel.org/linux-security-module/20200820164753.3256899-1-jackmanb@chromium.org/
+
+
+# BPF LSM Side effects
+
+Patch 4 of the series also addresses the issues with the side effects of the
+default value return values of the BPF LSM callbacks and also removes the
+overheads associated with them making it deployable at hyperscale.
+
+# v2 -> v3
+
+* Fixed a build issue on archs which don't have static calls and enable
+  CONFIG_SECURITY.
+* Updated the LSM_COUNT macros based on Andrii's suggestions.
+* Changed the security_ prefix to lsm_prefix based on Casey's suggestion.
+* Inlined static_branch_maybe into lsm_for_each_hook on Kees' feedback.
+
+# v1 -> v2 (based on linux-next, next-20230614)
+
+* Incorporated suggestions from Kees
+* Changed the way MAX_LSMs are counted from a binary based generator to a clever header.
+* Add CONFIG_SECURITY_HOOK_LIKELY to configure the likelihood of LSM hooks.
+
+
+KP Singh (5):
+  kernel: Add helper macros for loop unrolling
+  security: Count the LSMs enabled at compile time
+  security: Replace indirect LSM hook calls with static calls
+  bpf: Only enable BPF LSM hooks when an LSM program is attached
+  security: Add CONFIG_SECURITY_HOOK_LIKELY
+
+ include/linux/bpf.h       |   1 +
+ include/linux/bpf_lsm.h   |   5 +
+ include/linux/lsm_count.h | 106 +++++++++++++++++++
+ include/linux/lsm_hooks.h |  81 +++++++++++++--
+ include/linux/unroll.h    |  36 +++++++
+ kernel/bpf/trampoline.c   |  29 +++++-
+ security/Kconfig          |  11 ++
+ security/bpf/hooks.c      |  25 ++++-
+ security/security.c       | 213 +++++++++++++++++++++++++-------------
+ 9 files changed, 424 insertions(+), 83 deletions(-)
+ create mode 100644 include/linux/lsm_count.h
+ create mode 100644 include/linux/unroll.h
+
+-- 
+2.42.0.459.ge4e396fd5e-goog
 
 
