@@ -1,117 +1,109 @@
-Return-Path: <bpf+bounces-10387-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10388-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC3557A61F2
-	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 14:01:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2508A7A649C
+	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 15:16:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9DEC1C20985
-	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 12:01:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E057281A90
+	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 13:16:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7284233996;
-	Tue, 19 Sep 2023 12:01:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E1F130FA6;
+	Tue, 19 Sep 2023 13:16:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 229C74684;
-	Tue, 19 Sep 2023 12:01:16 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602E7F4;
-	Tue, 19 Sep 2023 05:01:15 -0700 (PDT)
-Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.54])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RqgCr2lWszVkbt;
-	Tue, 19 Sep 2023 19:58:16 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 19 Sep 2023 20:01:12 +0800
-Message-ID: <1210e225-ec86-4b07-b8f1-0e9c11788190@huawei.com>
-Date: Tue, 19 Sep 2023 20:01:11 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2430F37CB6;
+	Tue, 19 Sep 2023 13:16:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 738B3C433C8;
+	Tue, 19 Sep 2023 13:16:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695129402;
+	bh=Tgx947AMX984xnlu4hGkPuGi+cgC/mGGmoaAgMZ9kF8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MoNVqpVQs/KdLWOrd11QjiNg3qHmz+zOP7mH9PZruHvJCBC65jY8f25Y8XdI7SB2j
+	 J33K++/dgnu/J+4jCKcqQz1Tbv9RTE0KdbXHaklBl3g/GydG3MjDlbgXp2IP80jyUe
+	 XAaybnL0twZ/IHlgZAXlruZJ6uXFrZtBstrYR1X4/uK39hFpbVRzh7ygJWqiEWgRW6
+	 CzO3PJuI0JfonjDC5pPaJ9v8a8jmhAYjn0KxuwVAtbyPDek3uSAhl3FRrSdOf7Rypn
+	 MdloMtXODd4nYcT6QAD+pb+TFqL42J6QYZEe+ZUJwiNuNCKYSo0GORdXQ0fPzsaknh
+	 02fhScU/Brbuw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 2AEC0406D9; Tue, 19 Sep 2023 15:16:40 +0200 (CEST)
+Date: Tue, 19 Sep 2023 15:16:40 +0200
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Nick Terrell <terrelln@fb.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Tom Rix <trix@redhat.com>, Andrii Nakryiko <andrii@kernel.org>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>,
+	James Clark <james.clark@arm.com>, Kajol Jain <kjain@linux.ibm.com>,
+	Patrice Duroux <patrice.duroux@gmail.com>,
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH v1 0/5] Enable BPF skeletons by default
+Message-ID: <ZQmfOO0tt9FuIkrj@kernel.org>
+References: <20230914211948.814999-1-irogers@google.com>
+ <CAM9d7cgNbRs3LJh_AjqAnRkJzsTxrGr_yqVK-urtoS-B2k1S=w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 4/4] riscv, bpf: Mixing bpf2bpf and tailcalls
-Content-Language: en-US
-To: Conor Dooley <conor@kernel.org>
-CC: Pu Lehui <pulehui@huaweicloud.com>, <bpf@vger.kernel.org>,
-	<linux-riscv@lists.infradead.org>, <netdev@vger.kernel.org>,
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Alexei Starovoitov
-	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
-	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
-	<song@kernel.org>, Yonghong Song <yhs@fb.com>, John Fastabend
-	<john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>, Luke Nelson <luke.r.nels@gmail.com>
-References: <20230919035711.3297256-1-pulehui@huaweicloud.com>
- <20230919035711.3297256-5-pulehui@huaweicloud.com>
- <20230919-4734211982e4e411a93650a7@fedora>
- <8ebbd85d-857a-432b-be56-1f8f425b979d@huawei.com>
- <20230919-5f1894d892685612395aabaf@fedora>
-From: Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <20230919-5f1894d892685612395aabaf@fedora>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500020.china.huawei.com (7.221.188.8)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM9d7cgNbRs3LJh_AjqAnRkJzsTxrGr_yqVK-urtoS-B2k1S=w@mail.gmail.com>
+X-Url: http://acmel.wordpress.com
 
-
-
-On 2023/9/19 19:50, Conor Dooley wrote:
-> On Tue, Sep 19, 2023 at 07:23:07PM +0800, Pu Lehui wrote:
->>
->>
->> On 2023/9/19 18:04, Conor Dooley wrote:
->>> On Tue, Sep 19, 2023 at 11:57:11AM +0800, Pu Lehui wrote:
->>>> From: Pu Lehui <pulehui@huawei.com>
->>>>
->>>> In the current RV64 JIT, if we just don't initialize the TCC in subprog,
->>>> the TCC can be propagated from the parent process to the subprocess, but
->>>> the TCC of the parent process cannot be restored when the subprocess
->>>> exits. Since the RV64 TCC is initialized before saving the callee saved
->>>> registers into the stack, we cannot use the callee saved register to
->>>> pass the TCC, otherwise the original value of the callee saved register
->>>> will be destroyed. So we implemented mixing bpf2bpf and tailcalls
->>>> similar to x86_64, i.e. using a non-callee saved register to transfer
->>>> the TCC between functions, and saving that register to the stack to
->>>> protect the TCC value. At the same time, we also consider the scenario
->>>> of mixing trampoline.
->>>>
->>>> Tests test_bpf.ko and test_verifier have passed, as well as the relative
->>>> testcases of test_progs*.
->>>>
->>>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->>>
->>> Breaks the build:
->>> ../arch/riscv/net/bpf_jit_comp64.c:846:14: error: use of undeclared identifier 'BPF_TRAMP_F_TAIL_CALL_CTX'
->>>
->>
->> Hi Conor,
->>
->> BPF_TRAMP_F_TAIL_CALL_CTX rely on commit [0], and it has been merged into
->> bpf-next tree.
+Em Mon, Sep 18, 2023 at 04:40:15PM -0700, Namhyung Kim escreveu:
+> On Thu, Sep 14, 2023 at 2:20 PM Ian Rogers <irogers@google.com> wrote:
+> >
+> > Enable BPF skeletons by default but warn don't fail if they can't be
+> > supported. This was the intended behavior for Linux 6.4 but it caused
+> > an issue captured in this thread:
+> > https://lore.kernel.org/lkml/20230503211801.897735-1-acme@kernel.org/
+> >
+> > This issue isn't repeated here as the previous issue related to
+> > generating vmlinux.h, which is no longer performed by default as a
+> > checked-in vmlinux.h is used instead.
+> >
+> > Unlike with those changes, the BUILD_BPF_SKEL is kept and setting it
+> > to 0 disables BPF skeletons. Also, rather than fail the build due to a
+> > missed dependency, dependencies are checked and BPF skeletons disabled
+> > if they aren't present.
+> >
+> > Some related commits:
+> > b7a2d774c9c5 perf build: Add ability to build with a generated vmlinux.h
+> > a887466562b4 perf bpf skels: Stop using vmlinux.h generated from BTF, use subset of used structs + CO-RE
+> > a2af0f6b8ef7 perf build: Add system include paths to BPF builds
+> > 5be6cecda080 perf bpf skels: Make vmlinux.h use bpf.h and perf_event.h in source directory
+> > 9a2d5178b9d5 Revert "perf build: Make BUILD_BPF_SKEL default, rename to NO_BPF_SKEL"
+> > a887466562b4 perf bpf skels: Stop using vmlinux.h generated from BTF, use subset of used structs + CO-RE
+> > 1d7966547e11 perf build: Add warning for when vmlinux.h generation fails
+> > a980755beb5a perf build: Make BUILD_BPF_SKEL default, rename to NO_BPF_SKEL
+> >
+> > Ian Rogers (5):
+> >   perf version: Add status of bpf skeletons
+> >   perf build: Default BUILD_BPF_SKEL, warn/disable for missing deps
+> >   perf test: Update build test for changed BPF skeleton defaults
+> >   perf test: Ensure EXTRA_TESTS is covered in build test
+> >   perf test: Detect off-cpu support from build options
 > 
-> I see. I did check the cover to see if there was anything relevant
-> there, like a link or base commit, but since there were neither I opted
-> to pass on the warning from the patchwork automation we have :) >
+> Tested-by: Namhyung Kim <namhyung@kernel.org>
 
-Thanks, maybe it should be better to attach it to the cover.
+Is this verbose by default now? Maybe its something on my side, but I
+noticed a higher level of verbosity, can you check?
 
-> Thanks & sorry for the noise on this one.
-> 
-> Thanks,
-> Conor.
+- Arnaldo
 
