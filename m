@@ -1,115 +1,129 @@
-Return-Path: <bpf+bounces-10364-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10365-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1B877A5D5D
-	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 11:06:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AFF37A5D5E
+	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 11:06:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7A7B1C21247
-	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 09:06:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43AFE280352
+	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 09:06:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C603D3A5;
-	Tue, 19 Sep 2023 09:05:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92A563D3A5;
+	Tue, 19 Sep 2023 09:06:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D4CF3D39D
-	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 09:05:47 +0000 (UTC)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD21C118
-	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 02:05:46 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38J8jHPB020305;
-	Tue, 19 Sep 2023 09:05:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=KE0GrbJloUg8oc4VX39mqrs93LfZWjIBeBQss/rZmug=;
- b=XeoLUN9f4B5YaS0AA8O3eS2uVbo6J76f+IsSXDUv2e2ctpOD4k1Bfhw6n3lpOdMb/+O2
- LpbpW+ttyVvllBHytfuh8hD6kyhFeP0UiVbYJHRj5cDG0QxRje9LQS83hBJU8fqZH/nN
- w4E0rNU1Lv61Q+xatOFsWE5ziCSaOc2EXaJBGz9yF1TUH35q5bgbPFRCgI7pNDgG9L35
- Uojc6HSMRYOiAobZ5Kh4UIdqiwUjn9DQY+dNp+XI2o8SwF9MpLEY0WhCm0kexhQ3c16x
- G3wfnh7oV0ZfKAGgQIVBzXXJLIcFSuuMho6d9g7/hSHWgG+aY3d9Fjq5oMAUErcF3D8s IA== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t77n31yhp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Sep 2023 09:05:22 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38J7tlH1005542;
-	Tue, 19 Sep 2023 09:05:15 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t5q2yjxnq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Sep 2023 09:05:15 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38J95DfK43319994
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Sep 2023 09:05:13 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9344220049;
-	Tue, 19 Sep 2023 09:05:13 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 040E220040;
-	Tue, 19 Sep 2023 09:05:13 +0000 (GMT)
-Received: from [9.171.67.55] (unknown [9.171.67.55])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 19 Sep 2023 09:05:12 +0000 (GMT)
-Message-ID: <3bdfe5b975210b3ca6235e139479254856f75ce3.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf 2/2] selftests/bpf: Check bpf_cubic_acked() is
- called via struct_ops
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Song Liu <song@kernel.org>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, kernel-team@meta.com,
-        Martin KaFai Lau
- <martin.lau@kernel.org>
-Date: Tue, 19 Sep 2023 11:05:12 +0200
-In-Reply-To: <20230919060258.3237176-3-song@kernel.org>
-References: <20230919060258.3237176-1-song@kernel.org>
-	 <20230919060258.3237176-3-song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F10053D39B
+	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 09:06:05 +0000 (UTC)
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95ABDF0
+	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 02:06:04 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50309daf971so3992640e87.3
+        for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 02:06:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695114362; x=1695719162; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nAU9vxgfjQgM8ckwAHtNLAT11Jk7/qxri/tf8kcJzxY=;
+        b=UQZb4gJxAK0DMFHCDZzitUAzs7kuL/ZDaV/clBwVp67hoag0prlpgTvuvwJtFsCVa2
+         hqdBY2wnJwAHSk+YXti8ieepiq+1sNHq/zK7u//1AuawsPkT3nUaMf5uvSnW+3Q+kFFd
+         IxMrfl+SCbCK+hC03NbzNYaeHcI8ltZ0Filh4n6QDkV/89cYXhEBfmceyrSCeP1J2KqU
+         8LYJd2c1AjcMiN0wmnCpJ31C97IBz5vZSdODIusQkc5+akpEI1U8aipzpO/WVfmZX/Ta
+         nzMTTlKi1V6s+RakbDG1Ww9DFZo5N9Xmyczbiq0u3cSZ5U/lyvdisznPj3Jp8HDHT+B+
+         aaAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695114362; x=1695719162;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nAU9vxgfjQgM8ckwAHtNLAT11Jk7/qxri/tf8kcJzxY=;
+        b=s5w6LmTLsUdD8EZBSG3JwY613DMBFUo4oV59wGGBNZamTBJfLX6hlwGNlpkwDRQ6Iy
+         aUdF5KxzaLsJeW3GFBseHRwZ1XlSx5k9YoeQctFGlkgU0AO+c9ymoQVg3h37frBVd41h
+         pZtksNjf+GJAo7IeQsjwOXiVvsLcYZ627W5hCw0pVgvluru48orIFaubqBbz29+zgQuD
+         tD4nHaoZDEYFXhd5duuPCZGgFi5Q/0kA3xMG8aRjkPdotG8DHy+n6ceif5eToBJSGlN8
+         Yb/v0FENq9+/i6Tr+phIODJkBexflWatnS7cojuvz3ZwcBcP2lnjC04sffrMJ45qbJad
+         pkgQ==
+X-Gm-Message-State: AOJu0Yzc+wu3GAs3DuEVIpL1/n4iBcfupFcejSVnQoBW2rhfzOicau86
+	p59NA++yunWU1ima//f7APvrskYjJAe18yEKwicOcFOxcTk=
+X-Google-Smtp-Source: AGHT+IFNED8h/6fkl74FZmlOHfdBVn4EXnChr+tauY00vnrcX80K6HHHgzZxPs/1O+LjW6xQYSkIWW4Fg0KsPX8fHmI=
+X-Received: by 2002:a19:5014:0:b0:503:34b4:8149 with SMTP id
+ e20-20020a195014000000b0050334b48149mr495994lfb.38.1695114362208; Tue, 19 Sep
+ 2023 02:06:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: lp8T8JVPqqohkOQcYb46tPx4z3ay9mLr
-X-Proofpoint-ORIG-GUID: lp8T8JVPqqohkOQcYb46tPx4z3ay9mLr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-19_03,2023-09-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- clxscore=1011 spamscore=0 mlxscore=0 suspectscore=0 adultscore=0
- priorityscore=1501 malwarescore=0 mlxlogscore=560 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309190076
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230918210110.2241458-1-andrii@kernel.org>
+In-Reply-To: <20230918210110.2241458-1-andrii@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 19 Sep 2023 02:05:51 -0700
+Message-ID: <CAADnVQ+w4e2K06tPdV8J-TuEvY6ysGv_45PJZe2AkOpYFrx7Og@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: unconditionally reset backtrack_state masks on
+ global func exit
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kernel Team <kernel-team@meta.com>, Chris Mason <clm@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, 2023-09-18 at 23:02 -0700, Song Liu wrote:
-> Test bpf_tcp_ca (in test_progs) checks multiple tcp_congestion_ops.
-> However, there isn't a test that verifies functions in the
-> tcp_congestion_ops is actually called. Add a check to verify that
-> bpf_cubic_acked is actually called during the test.
->=20
-> Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
-> Signed-off-by: Song Liu <song@kernel.org>
+On Mon, Sep 18, 2023 at 2:01=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org>=
+ wrote:
+>
+> In mark_chain_precision() logic, when we reach the entry to a global
+> func, it is expected that R1-R5 might be still requested to be marked
+> precise. This would correspond to some integer input arguments being
+> tracked as precise. This is all expected and handled as a special case.
+>
+> What's not expected is that we'll leave backtrack_state structure with
+> some register bits set. This is because for subsequent precision
+> propagations backtrack_state is reused without clearing masks, as all
+> code paths are carefully written in a way to leave empty backtrack_state
+> with zeroed out masks, for speed.
+>
+> The fix is trivial, we always clear register bit in the register mask, an=
+d
+> then, optionally, set reg->precise if register is SCALAR_VALUE type.
+>
+> Reported-by: Chris Mason <clm@meta.com>
+> Fixes: be2ef8161572 ("bpf: allow precision tracking for programs with sub=
+progs")
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
-> =C2=A0tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c | 2 ++
-> =C2=A0tools/testing/selftests/bpf/progs/bpf_cubic.c=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 | 3 +++
-> =C2=A02 files changed, 5 insertions(+)
+>  kernel/bpf/verifier.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index bb78212fa5b2..c0c7d137066a 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -4047,11 +4047,9 @@ static int __mark_chain_precision(struct bpf_verif=
+ier_env *env, int regno)
+>                                 bitmap_from_u64(mask, bt_reg_mask(bt));
+>                                 for_each_set_bit(i, mask, 32) {
+>                                         reg =3D &st->frame[0]->regs[i];
+> -                                       if (reg->type !=3D SCALAR_VALUE) =
+{
+> -                                               bt_clear_reg(bt, i);
+> -                                               continue;
+> -                                       }
+> -                                       reg->precise =3D true;
+> +                                       bt_clear_reg(bt, i);
+> +                                       if (reg->type =3D=3D SCALAR_VALUE=
+)
+> +                                               reg->precise =3D true;
 
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Looks good, but is there a selftest that can demonstrate the issue?
 
