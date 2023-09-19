@@ -1,105 +1,247 @@
-Return-Path: <bpf+bounces-10390-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10391-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E7DC7A68C2
-	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 18:22:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 758727A68DC
+	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 18:28:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A07A02816C3
-	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 16:22:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAB30281621
+	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 16:28:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D646F38DF0;
-	Tue, 19 Sep 2023 16:22:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF48B3AC02;
+	Tue, 19 Sep 2023 16:28:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 627B88813
-	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 16:22:15 +0000 (UTC)
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5784B92
-	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 09:22:14 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-59ea6064e2eso23869797b3.2
-        for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 09:22:14 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 527FB37158
+	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 16:28:33 +0000 (UTC)
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605C2AB
+	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 09:28:30 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-530c9980556so4141627a12.2
+        for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 09:28:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695140533; x=1695745333; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=q0TPU34dMpePdJop08ByWvOSkZChuXAmj8qbmDpK4f8=;
-        b=QSJW0vrutDwfHGth9lSj+vJjv+MOMbhi2VOZ6sMfSAnsAOhPntD9zxGcEMQvEzBGaj
-         2pvwqSNkX4dNbOKslhnx5/Aft+Jj1Gr484f4K0GB2/tMWWGzlavqAHZiTLnBcKZgOjPo
-         YpTgU6rtI/Wl7W0Xhu8r/YPKek7EGdrMpo7wcqzogbCzRKz8EwmJTDC9sFNTa3TdMigc
-         PA+ceYv8aiBA+XddhyDcYWY/EKS5as9qjxRzGJShryQD0yHWBK8RHnICVo1MSnd93WFh
-         DBehaVpGJlvCDvYNG3TAif36AwuJBnrWtSFXjyhwfkmlUIdGs59ONp27k4gAV5EkkFR9
-         QLYQ==
+        d=gmail.com; s=20230601; t=1695140909; x=1695745709; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=f1AVwovpL24lJLWq2FFaf/DoCZReplBk9pHDQ5T0KMs=;
+        b=TCp66mTLAitkb0DbjmlR7ZPKNCax2JfLcXBIjQLkYQYjBrY/7xtnH/4e+vEao2LBcL
+         pqw1Knh5pS7QFrxf1FBR99wvVOkH1Q1uzMkhA5oQYuYQpE3CsL5pvWJv9bqJ1BDyBXVp
+         5w0s2LUh3eUXB5GnyM7TJKYVI/WlPnoVP1jw6a8giGOPDKf4Tj8mmlY3agy9SV7/yrw1
+         6eEiCcUbmqFGJlb/ROt4Bz+zIWXfvmn2BKkaXTXr+8o4cWA1IHRT+CvPdUSW630CtRGs
+         DdjetMQ3VAvwTOSK5Q6xaWV+qxA3+qqtixWkABr7g/J6CJHkNFolDW3QjzTnNY1igj+Y
+         RIzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695140533; x=1695745333;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q0TPU34dMpePdJop08ByWvOSkZChuXAmj8qbmDpK4f8=;
-        b=TGZQWyKg3zEPXPka1FrRGKZiP9r5qvyPcF5Qz9yTSUB0VcQJySgUN2YyAkS3Tnop8B
-         wXmN/SoMc9DfIxVyOPSmNX4+AYeWTeZxLMZhjvDQ3LZqOujEXTmh6OTdOOyACCQyzfgG
-         DiVXEnmWeu5BL0NKIHw2ZVzVVbuDayTlxbJyfH9rIQZ/kjw5D/rf4v8PQMbBCa7D3omk
-         lmP/iH3U58PCzTKXmroPgAIUaoMbsB/gRZKanJc8lH9d9G2IsW4UdjJeiXQaodDz1vly
-         T9fQApKBV3s6n3dAhjMpPhbcShJkTwErWjJP4qWuyN3wkOMhIoPVPbpcRA3/hkf9Jt2l
-         Ez7w==
-X-Gm-Message-State: AOJu0Yy66v+WxhXZmiqYa6wayBx7ECukqixiWYtbgCd2TUJBTIpzjfrm
-	4crmChT9Us4pmJCqgXP8wvfQ8Q87KyI=
-X-Google-Smtp-Source: AGHT+IFkmI673os5MrAHDpSm2eu6mbSk5oG2RMXFL8+1cfGzmKNeONx3AjkL0b96dPKw/ApkZ+rJyA==
-X-Received: by 2002:a81:a104:0:b0:595:406b:93fa with SMTP id y4-20020a81a104000000b00595406b93famr14230435ywg.2.1695140533405;
-        Tue, 19 Sep 2023 09:22:13 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:9b0e:1e45:8c20:a337? ([2600:1700:6cf8:1240:9b0e:1e45:8c20:a337])
-        by smtp.gmail.com with ESMTPSA id er7-20020a05690c2d8700b0059c2e3b7d88sm2330602ywb.12.2023.09.19.09.22.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Sep 2023 09:22:12 -0700 (PDT)
-Message-ID: <be0d14e6-072c-83a5-b21b-2ab33e97e3fa@gmail.com>
-Date: Tue, 19 Sep 2023 09:22:11 -0700
+        d=1e100.net; s=20230601; t=1695140909; x=1695745709;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=f1AVwovpL24lJLWq2FFaf/DoCZReplBk9pHDQ5T0KMs=;
+        b=DCdoGy0cZ//os14wAWmNdbafM6sGb4IYVkWkLrnd8fP+PcYaraP9rs/BTX5chzFDL1
+         jFz2tLIsVRYzmWQ584/8tcljMTidNhMW4dUoHbImXry+E3gJ/c3i/q9dO07FfdDssMo4
+         3zPprPv7576icuKSwcYdU5THrKjCdm9hAJQVvPameudl92TmYpPFvuFG5k9hk14LLKcM
+         479AZ2FgskOMAR2GwDYs0CEIqbglwPs3yVPUSCd3h6YnreRE96v/N82lAizWGzsANmBq
+         xFWIsFDZuG1h+Qm0lPJIUhNIqW99MLZ9bBFE1PXKC0F/BuLghR0RLlTF3v8sUKJ0caC/
+         itvQ==
+X-Gm-Message-State: AOJu0Yy8ylfPLhL3nN9hqzwO1TDhZKHvoJGLxFTGvsX3O+OFXRaiTNC9
+	avTOjuktKlVV3GzHdNpMcbQ=
+X-Google-Smtp-Source: AGHT+IFn7FnR6eJP7qdF3Scnxa3siOV0S10/GObe2xuvZnCx/dCcMa2n7hu1jXgtBnizlfPhDfo9+Q==
+X-Received: by 2002:a17:906:5188:b0:9a1:db97:62a1 with SMTP id y8-20020a170906518800b009a1db9762a1mr10462648ejk.46.1695140908532;
+        Tue, 19 Sep 2023 09:28:28 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id e7-20020a1709067e0700b0099bd0b5a2bcsm8033608ejr.101.2023.09.19.09.28.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Sep 2023 09:28:27 -0700 (PDT)
+Message-ID: <97a90da09404c65c8e810cf83c94ac703705dc0e.camel@gmail.com>
+Subject: Re: [BUG] verifier escape with iteration helpers (bpf_loop, ...)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrew Werner
+ <awerner32@gmail.com>, bpf <bpf@vger.kernel.org>, Andrei Matei
+ <andreimatei1@gmail.com>, Tamir Duberstein <tamird@gmail.com>, Joanne Koong
+ <joannelkoong@gmail.com>, kernel-team@dataexmachina.dev, Song Liu
+ <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Tue, 19 Sep 2023 19:28:26 +0300
+In-Reply-To: <a2995c1d7c01794ca9b652cdea7917cac5d98a16.camel@gmail.com>
+References:
+	  <CA+vRuzPChFNXmouzGG+wsy=6eMcfr1mFG0F3g7rbg-sedGKW3w@mail.gmail.com>
+	 <CAADnVQJpLAzmUfwvWBr8a_PWHYHxHw9vdAXnWB4R4PbVY4S4mw@mail.gmail.com>
+	 <CAEf4Bzbubu7KjBv=98BZrVnTrcfPQrnsp-g1kOYKM=kUtiqEgw@mail.gmail.com>
+	 <dff1cfec20d1711cb023be38dfe886bac8aac5f6.camel@gmail.com>
+	 <CAP01T76duVGmnb+LQjhdKneVYs1q=ehU4yzTLmgZdG0r2ErOYQ@mail.gmail.com>
+	 <a2995c1d7c01794ca9b652cdea7917cac5d98a16.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: Is is possible to get the function calling stack in an fentry bpf
- program?
-To: =?UTF-8?B?5YiY55WF?= <chang-liu22@mails.tsinghua.edu.cn>,
- bpf@vger.kernel.org
-References: <49b9b6f.1279.18aadb90e05.Coremail.chang-liu22@mails.tsinghua.edu.cn>
-Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <49b9b6f.1279.18aadb90e05.Coremail.chang-liu22@mails.tsinghua.edu.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+It looks like I hit a related but slightly different bug with bpf_iter_next=
+().
+Consider the following example:
 
+    SEC("fentry/" SYS_PREFIX "sys_nanosleep")
+    int num_iter_bug(const void *ctx) {
+        struct bpf_iter_num it;                 // fp[-8] below
+        __u64 val =3D 0;                          // fp[-16] in the below
+        __u64 *ptr =3D &val;                      // r7 below
+        __u64 rnd =3D bpf_get_current_pid_tgid(); // r6 below
+        void *v;
+   =20
+        bpf_iter_num_new(&it, 0, 10);
+        while ((v =3D bpf_iter_num_next(&it))) {
+            rnd++;
+            if (rnd =3D=3D 42) {
+                ptr =3D (void*)(0xdead);
+                continue;
+            }
+            bpf_probe_read_user(ptr, 8, (void*)(0xdeadbeef));
+        }
+        bpf_iter_num_destroy(&it);
+        return 0;
+    }
 
-On 9/19/23 06:55, 刘畅 wrote:
-> Hi all
-> 
-> I attached an fentry eBPF program to a kernel function, i.e., tcp_transmit_skb(). I want to implement different logic in the bpf program for different calling stack cases, e.g., __tcp_retransmit_skb()->tcp_transmit_skb() and tcp_write_xmit()->tcp_transmit_skb(). I know that I can access stack traces using the bpf_get_stack() helper function. However, in the fentry eBPF program, I don't know the value of the RSP and RBP register, which means I can not locate the return address even if I can get the stack traces. I want to know if there's any way that I can get the return address and thus get the function calling stack in an fentry bpf program.
-> 
-> I'd be appreciate if you can help me.
-> 
-> Chang Liu
-> Tsinghua University, China
+(Unfortunately, it had to be converted to assembly to avoid compiler
+ clobbering loop structure, complete test case is at the end of the email).
+=20
+The example is not safe because of 0xdead being a possible `ptr` value.
+However, currently it is marked as safe.
 
-Once you get stack returned by bpf_get_stack(), it is an array of
-addresses. For example,
+This happens because of states_equal() usage for iterator convergence
+detection:
 
-  __u64 buf[256];
-  bpf_get_stack(ctx, buf, 256, 0);
+    static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+        ...
+    	while (sl)
+    		states_cnt++;
+    		if (sl->state.insn_idx !=3D insn_idx)
+    			goto next;
+   =20
+    		if (sl->state.branches)
+                ...
+    			if (is_iter_next_insn(env, insn_idx)) {
+    				if (states_equal(env, &sl->state, cur)) {
+                        ...
+    					if (iter_state->iter.state =3D=3D BPF_ITER_STATE_ACTIVE)
+    						goto hit;
+    				}
+    				goto skip_inf_loop_check;
+    			}
+        ...
 
-buf[0], buf[1], ... will be addresses of caller sites from most inner.
+With some additional logging I see that the following states are
+considered equal:
+
+    13: (85) call bpf_iter_num_next#59908
+    ...
+    at is_iter_next_insn(insn 13):
+      old state:
+         R0=3Dscalar() R1_rw=3Dfp-8 R6_r=3Dscalar(id=3D1) R7=3Dfp-16 R10=3D=
+fp0
+         fp-8_r=3Diter_num(ref_id=3D2,state=3Dactive,depth=3D0) fp-16=3D000=
+00000 refs=3D2
+      cur state:
+         R0=3Drdonly_mem(id=3D3,ref_obj_id=3D2,off=3D0,imm=3D0) R1_w=3Dfp-8=
+ R6=3D42 R7_w=3D57005
+         R10=3Dfp0 fp-8=3Diter_num(ref_id=3D2,state=3Dactive,depth=3D1) fp-=
+16=3D00000000 refs=3D2
+    states_equal()?: true
+
+Note that R7=3Dfp-16 in old state vs R7_w=3D57005 in cur state.
+The registers are considered equal because R7 does not have a read mark.
+However read marks are not yet finalized for old state because
+sl->state.branches !=3D 0. (Note: precision marks are not finalized as
+well, which should be a problem, but this requires another example).
+
+A possible fix is to add a special flag to states_equal() and
+conditionally ignore logic related to liveness and precision when this
+flag is set. Set this flag for is_iter_next_insn() branch above.
+
+---
+
+/* BTF FUNC records are not generated for kfuncs referenced
+ * from inline assembly. These records are necessary for
+ * libbpf to link the program. The function below is a hack
+ * to ensure that BTF FUNC records are generated.
+ */
+void __kfunc_btf_root(void)
+{
+	bpf_iter_num_new(0, 0, 0);
+	bpf_iter_num_next(0);
+	bpf_iter_num_destroy(0);
+}
+
+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
+__naked int num_iter_bug(const void *ctx)
+{
+	asm volatile (
+		// r7 =3D &fp[-16]
+		// fp[-16] =3D 0
+		"r7 =3D r10;"
+		"r7 +=3D -16;"
+		"r0 =3D 0;"
+		"*(u64 *)(r7 + 0) =3D r0;"
+		// r6 =3D bpf_get_current_pid_tgid()
+		"call %[bpf_get_current_pid_tgid];"
+		"r6 =3D r0;"
+		// bpf_iter_num_new(&fp[-8], 0, 10)
+		"r1 =3D r10;"
+		"r1 +=3D -8;"
+		"r2 =3D 0;"
+		"r3 =3D 10;"
+		"call %[bpf_iter_num_new];"
+		// while (bpf_iter_num_next(&fp[-8])) {
+		//   r6++
+		//   if (r6 !=3D 42) {
+		//     r7 =3D 0xdead
+		//     continue;
+		//   }
+		//   bpf_probe_read_user(r7, 8, 0xdeadbeef)
+		// }
+	"1:"
+		"r1 =3D r10;"
+		"r1 +=3D -8;"
+		"call %[bpf_iter_num_next];"
+		"if r0 =3D=3D 0 goto 2f;"
+		"r6 +=3D 1;"
+		"if r6 !=3D 42 goto 3f;"
+		"r7 =3D 0xdead;"
+		"goto 1b;"
+	"3:"
+		"r1 =3D r7;"
+		"r2 =3D 8;"
+		"r3 =3D 0xdeadbeef;"
+		"call %[bpf_probe_read_user];"
+		"goto 1b;"
+	"2:"
+		// bpf_iter_num_destroy(&fp[-8])
+		"r1 =3D r10;"
+		"r1 +=3D -8;"
+		"call %[bpf_iter_num_destroy];"
+		// return 0
+		"r0 =3D 0;"
+		"exit;"
+		:
+		: __imm(bpf_get_current_pid_tgid),
+		  __imm(bpf_iter_num_new),
+		  __imm(bpf_iter_num_next),
+		  __imm(bpf_iter_num_destroy),
+		  __imm(bpf_probe_read_user)
+		: __clobber_all
+	);
+}
 
