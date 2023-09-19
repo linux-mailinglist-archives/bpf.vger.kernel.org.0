@@ -1,123 +1,113 @@
-Return-Path: <bpf+bounces-10359-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10360-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEA637A5B7B
-	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 09:43:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A41437A5C71
+	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 10:26:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C3001C20D0A
-	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 07:43:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FA9E281BEE
+	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 08:26:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED80838BD0;
-	Tue, 19 Sep 2023 07:43:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44CE9341A9;
+	Tue, 19 Sep 2023 08:25:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D0ACA3B;
-	Tue, 19 Sep 2023 07:43:30 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A041FC;
-	Tue, 19 Sep 2023 00:43:28 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RqYYh3nZ1z4f3khJ;
-	Tue, 19 Sep 2023 15:43:20 +0800 (CST)
-Received: from [10.67.109.184] (unknown [10.67.109.184])
-	by APP4 (Coremail) with SMTP id gCh0CgD3itobUQllqvpkAw--.22769S2;
-	Tue, 19 Sep 2023 15:43:24 +0800 (CST)
-Message-ID: <ed2be1b1-f556-42a5-878a-f3e499c18f2a@huaweicloud.com>
-Date: Tue, 19 Sep 2023 15:43:23 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6741450F6;
+	Tue, 19 Sep 2023 08:25:48 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0A417E4;
+	Tue, 19 Sep 2023 01:25:41 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8Ax1fADWwllAdwpAA--.14862S3;
+	Tue, 19 Sep 2023 16:25:39 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxO9wCWwllBl4LAA--.22628S2;
+	Tue, 19 Sep 2023 16:25:38 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+To: Jonathan Corbet <corbet@lwn.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: [PATCH bpf-next v1] bpf, docs: Add loongarch64 as arch supporting BPF JIT
+Date: Tue, 19 Sep 2023 16:25:37 +0800
+Message-Id: <1695111937-19697-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID:AQAAf8CxO9wCWwllBl4LAA--.22628S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7WFW8KFy7Xw48GFy7ur4kGrX_yoW8Xw1DpF
+	n09r1Iq345G3WUGa4UJ3y2gF13KF97ur45GF4vg348Xrn8ZwnYgrs5KFnYvF15GFWxuFWF
+	qF43tFy5Z3WqkagCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
+	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0x
+	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
+	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+	kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07URa0PUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 4/6] riscv, bpf: Add necessary Zbb
- instructions
-Content-Language: en-US
-To: Conor Dooley <conor@kernel.org>
-Cc: bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
- netdev@vger.kernel.org, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Palmer Dabbelt <palmer@dabbelt.com>, Luke Nelson <luke.r.nels@gmail.com>,
- Pu Lehui <pulehui@huawei.com>
-References: <20230919035839.3297328-1-pulehui@huaweicloud.com>
- <20230919035839.3297328-5-pulehui@huaweicloud.com>
- <20230919-a19c47b423c995826615a89e@fedora>
-From: Pu Lehui <pulehui@huaweicloud.com>
-In-Reply-To: <20230919-a19c47b423c995826615a89e@fedora>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgD3itobUQllqvpkAw--.22769S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF4DGry8uFW7ZFWkurWruFg_yoW8Jw4xpF
-	48GF45CrWvqrn7Gr9aqF18Wr15tF4Fqr13Gr47XrW8JFZFg345Krn5Gw1YgFn8uFyIkF1F
-	vrWfWFn3CF4jvaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
-	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
-	AIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280
-	aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
+As BPF JIT support for loongarch64 was added about one year ago
+with commit 5dc615520c4d ("LoongArch: Add BPF JIT support"), it
+is appropriate to add loongarch64 as arch supporting BPF JIT in
+bpf and sysctl docs as well.
 
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ Documentation/admin-guide/sysctl/net.rst | 1 +
+ Documentation/networking/filter.rst      | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-On 2023/9/19 15:38, Conor Dooley wrote:
-> On Tue, Sep 19, 2023 at 11:58:37AM +0800, Pu Lehui wrote:
->> From: Pu Lehui <pulehui@huawei.com>
->>
->> Add necessary Zbb instructions introduced by [0] to reduce code size and
->> improve performance of RV64 JIT. Meanwhile, a runtime deteted helper is
->> added to check whether the CPU supports Zbb instructions.
->>
->> Link: https://github.com/riscv/riscv-bitmanip/releases/download/1.0.0/bitmanip-1.0.0-38-g865e7a7.pdf [0]
->> Suggested-by: Conor Dooley <conor@kernel.org>
-> 
-> Nah, you can drop this. It was just a review comment :)
-> 
-OK, will drop if have next
-
->> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->> ---
->>   arch/riscv/net/bpf_jit.h | 26 ++++++++++++++++++++++++++
->>   1 file changed, 26 insertions(+)
->>
->> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
->> index 8e0ef4d08..4e24fb2bd 100644
->> --- a/arch/riscv/net/bpf_jit.h
->> +++ b/arch/riscv/net/bpf_jit.h
->> @@ -18,6 +18,11 @@ static inline bool rvc_enabled(void)
->>   	return IS_ENABLED(CONFIG_RISCV_ISA_C);
->>   }
->>   
->> +static inline bool rvzbb_enabled(void)
->> +{
->> +	return IS_ENABLED(CONFIG_RISCV_ISA_ZBB) && riscv_has_extension_likely(RISCV_ISA_EXT_ZBB);
-> 
-> This looks like it should work, thanks for changing it.
-> 
-> Cheers,
-> Conor.
+diff --git a/Documentation/admin-guide/sysctl/net.rst b/Documentation/admin-guide/sysctl/net.rst
+index 4877563..c752594 100644
+--- a/Documentation/admin-guide/sysctl/net.rst
++++ b/Documentation/admin-guide/sysctl/net.rst
+@@ -71,6 +71,7 @@ two flavors of JITs, the newer eBPF JIT currently supported on:
+   - s390x
+   - riscv64
+   - riscv32
++  - loongarch64
+ 
+ And the older cBPF JIT supported on the following archs:
+ 
+diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
+index f69da50..7d8c538 100644
+--- a/Documentation/networking/filter.rst
++++ b/Documentation/networking/filter.rst
+@@ -650,8 +650,8 @@ before a conversion to the new layout is being done behind the scenes!
+ 
+ Currently, the classic BPF format is being used for JITing on most
+ 32-bit architectures, whereas x86-64, aarch64, s390x, powerpc64,
+-sparc64, arm32, riscv64, riscv32 perform JIT compilation from eBPF
+-instruction set.
++sparc64, arm32, riscv64, riscv32, loongarch64 perform JIT compilation
++from eBPF instruction set.
+ 
+ Testing
+ -------
+-- 
+2.1.0
 
 
