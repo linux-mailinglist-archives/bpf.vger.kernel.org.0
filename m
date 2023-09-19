@@ -1,123 +1,106 @@
-Return-Path: <bpf+bounces-10355-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10356-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ED5D7A59B0
-	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 08:04:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2B967A5A04
+	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 08:36:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD5E6281F94
-	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 06:04:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D72C1C209D4
+	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 06:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8909535895;
-	Tue, 19 Sep 2023 06:04:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D9EB34197;
+	Tue, 19 Sep 2023 06:36:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 042FF180
-	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 06:04:05 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6F2FC
-	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 23:04:05 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38IKG70u030429
-	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 23:04:05 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3t60jdvcc5-4
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Mon, 18 Sep 2023 23:04:04 -0700
-Received: from twshared29562.14.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 18 Sep 2023 23:04:03 -0700
-Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
-	id E45C12498508E; Mon, 18 Sep 2023 23:03:47 -0700 (PDT)
-From: Song Liu <song@kernel.org>
-To: <bpf@vger.kernel.org>
-CC: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <martin.lau@linux.dev>, <kernel-team@meta.com>, <iii@linux.ibm.com>,
-        Song Liu
-	<song@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf 2/2] selftests/bpf: Check bpf_cubic_acked() is called via struct_ops
-Date: Mon, 18 Sep 2023 23:02:58 -0700
-Message-ID: <20230919060258.3237176-3-song@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230919060258.3237176-1-song@kernel.org>
-References: <20230919060258.3237176-1-song@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAB7321358;
+	Tue, 19 Sep 2023 06:36:35 +0000 (UTC)
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7B2116;
+	Mon, 18 Sep 2023 23:36:32 -0700 (PDT)
+Date: Tue, 19 Sep 2023 08:36:26 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1695105390;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HNsa/Hw2hv12CIG/NGD55HoGCgGxEaZUkdKrfsXvu1g=;
+	b=pxYoStcD9nXSBKjhZyJFTiU43EhMnTCRvhy0RMW3OdtRgBtnqYe9bcWWEssQTu5rRcin3M
+	IZAMjV0uwIasKti1+jAvXgq+VWhSbZ/QY6HXvPBcFh7JHLkH4ST2bj5THt62pGwqqYGc9w
+	hA66hSWF9S9neqKofpvqzOadu91Z29/k4Ai0axJSWTmMEuxXwAEGtS5vUVZ8+EEwQTuA9M
+	ap2ndy661fBe36n5ROxjB189cIwLFNAEfzs1AJv6DaS9notMDDq6YCNkuoZ1o5fvCMxQhp
+	q7QD0fkrOanjJudM5UvRXOpVKJl0k2VEdw73cy8cbUSWAYpSvRLShLaitPrr2Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1695105390;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HNsa/Hw2hv12CIG/NGD55HoGCgGxEaZUkdKrfsXvu1g=;
+	b=jDt0N2NTuBjduKl41IOkcIxWDUFBsvjCsEg2D2x/xvB7/PMipgwX4hSoHpqdvnL3PZL4xP
+	8ACSy2WZ4xjN2oDg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Kui-Feng Lee <sinquersw@gmail.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Geetha sowjanya <gakula@marvell.com>,
+	Subbaraya Sundeep <sbhatta@marvell.com>,
+	Sunil Goutham <sgoutham@marvell.com>,
+	hariprasad <hkelam@marvell.com>
+Subject: Re: [PATCH net v2 3/3] octeontx2-pf: Do xdp_do_flush() after
+ redirects.
+Message-ID: <20230919063626.k604dEwL@linutronix.de>
+References: <20230918153611.165722-1-bigeasy@linutronix.de>
+ <20230918153611.165722-4-bigeasy@linutronix.de>
+ <aa182e22-e7b9-d8e7-04ea-781fe0fb9103@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 6Cqas0_hEEdaXDvtnukUFJWRDhET9TZB
-X-Proofpoint-GUID: 6Cqas0_hEEdaXDvtnukUFJWRDhET9TZB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-18_11,2023-09-18_01,2023-05-22_02
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <aa182e22-e7b9-d8e7-04ea-781fe0fb9103@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Test bpf_tcp_ca (in test_progs) checks multiple tcp_congestion_ops.
-However, there isn't a test that verifies functions in the
-tcp_congestion_ops is actually called. Add a check to verify that
-bpf_cubic_acked is actually called during the test.
+On 2023-09-18 10:58:39 [-0700], Kui-Feng Lee wrote:
+> > diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> > index e77d438489557..53b2a4ef52985 100644
+> > --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> > +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> > @@ -1391,8 +1396,10 @@ static bool otx2_xdp_rcv_pkt_handler(struct otx2_nic *pfvf,
+> >   		otx2_dma_unmap_page(pfvf, iova, pfvf->rbsize,
+> >   				    DMA_FROM_DEVICE);
+> > -		if (!err)
+> > +		if (!err) {
+> > +			*need_xdp_flush = true;
+> 
+> Is it possible to call xdp_do_flush() at the first place (here)?
 
-Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
-Signed-off-by: Song Liu <song@kernel.org>
----
- tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c | 2 ++
- tools/testing/selftests/bpf/progs/bpf_cubic.c       | 3 +++
- 2 files changed, 5 insertions(+)
+It shouldn't be wrong. All drivers, except for cpsw, invoke
+xdp_do_flush() after completing their NAPI loop and then flushing all
+possible packets at once.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/=
-testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-index a53c254c6058..4aabeaa525d4 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-@@ -185,6 +185,8 @@ static void test_cubic(void)
-=20
- 	do_test("bpf_cubic", NULL);
-=20
-+	ASSERT_EQ(cubic_skel->bss->bpf_cubic_acked_called, 1, "pkts_acked calle=
-d");
-+
- 	bpf_link__destroy(link);
- 	bpf_cubic__destroy(cubic_skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/bpf_cubic.c b/tools/testin=
-g/selftests/bpf/progs/bpf_cubic.c
-index d9660e7200e2..c997e3e3d3fb 100644
---- a/tools/testing/selftests/bpf/progs/bpf_cubic.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_cubic.c
-@@ -490,6 +490,8 @@ static __always_inline void hystart_update(struct soc=
-k *sk, __u32 delay)
- 	}
- }
-=20
-+int bpf_cubic_acked_called =3D 0;
-+
- void BPF_STRUCT_OPS(bpf_cubic_acked, struct sock *sk,
- 		    const struct ack_sample *sample)
- {
-@@ -497,6 +499,7 @@ void BPF_STRUCT_OPS(bpf_cubic_acked, struct sock *sk,
- 	struct bictcp *ca =3D inet_csk_ca(sk);
- 	__u32 delay;
-=20
-+	bpf_cubic_acked_called =3D 1;
- 	/* Some calls are for duplicates without timetamps */
- 	if (sample->rtt_us < 0)
- 		return;
---=20
-2.34.1
+> >   			return true;
+> > +		}
+> >   		put_page(page);
+> >   		break;
+> >   	default:
 
+Sebastian
 
