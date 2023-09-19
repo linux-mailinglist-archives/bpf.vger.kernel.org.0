@@ -1,306 +1,307 @@
-Return-Path: <bpf+bounces-10415-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10416-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 832E17A6F4B
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 01:14:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F4847A6F5E
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 01:21:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36750280D7A
-	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 23:14:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8726281AF7
+	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 23:21:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1938B37143;
-	Tue, 19 Sep 2023 23:14:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D659938BBE;
+	Tue, 19 Sep 2023 23:21:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB35C46A1
-	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 23:14:41 +0000 (UTC)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB4EC5
-	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 16:14:39 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-404773f2501so59667845e9.0
-        for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 16:14:39 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCF6336B10
+	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 23:21:13 +0000 (UTC)
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4662DC6
+	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 16:21:10 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-59c2ca01f27so38482617b3.2
+        for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 16:21:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695165278; x=1695770078; darn=vger.kernel.org;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1695165669; x=1695770469; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nPk+WKhimpYwBdX8XFHH0nBVuna5VV3c38rjq7breIo=;
-        b=HZ1KADIhQ9IEMCZrbrJ9+StTV+ndiSTiPzKN6Wt0mSHp6oucTrzOnArp5eWR/+HNoV
-         L01Y/pseQ3+gtvHEqVED3YDu4tMfQ4KTemqbdsFG0CWpIVF1qvAQdQPiuztqyYaqtFsU
-         BfDkJ8Ay9hOZLv5aSbwoco087JDWBJ6sp61aHrlIFH2fPXB9NABBZvG+UIajREv+oxdh
-         OhOZxFpF7kqdqhDgsmqK9prfnusB948UmuxZJTWSUDrKDRl2XisHFX0d0bGbkMQXHA6O
-         kqefIZhChSlX1SzV4FdQD/3xTTdcEVAZQ3HnSimc3MNneNFEcaLW9GyJYAWi6R2g+6MH
-         t2Gw==
+        bh=jvRY6GIRuNpH85uEp8BO43W0zUABYZOdiEC6/P/5XEg=;
+        b=CkjGUfZM59vh3SBfJaadDcJC5lwmHjxRFDoFMYYNazR2RW5lu2wK+yM9PCfQrsDS/P
+         LntTLdBf4A9dfIPY2dqVt7wdBCrkmAl4yzHRtusfyakjL8VBeLZMngvmrSdqRltFL+Yl
+         NK1Y3onwv7kQVrcgf/taCo6dvEfYz/LoOhcM5MkRT8rZPV7LrQi1tVnR+l8mvPUCZSu6
+         IkeTLDQ4tUEIbJ+i7v2Pk6vtE7G+Wrk42zrmjk538CIyGcxvAcedcjsZBRfFWDSw0a91
+         gefhS+WNBLBM4MQJrV1Erk7JbAZlAacoot5J4NkCyk2uZPTC6DJ7d08AbUtk4fiSUKxD
+         u8Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695165278; x=1695770078;
+        d=1e100.net; s=20230601; t=1695165669; x=1695770469;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nPk+WKhimpYwBdX8XFHH0nBVuna5VV3c38rjq7breIo=;
-        b=B7rSES4KQ7Km4T/Qk8DwZJvxGYKBA5r5uZynZYpxfNcl8/nt1vfIvBORAkZ9Teurnt
-         CVoNVKAD0uIL2vXrFaWB2Aj0FEvzfkYWs2ByEaE/RhcBmU/4vjBJJSAHr/1x2D4PW4ua
-         soWgJi/UglcXze8w4Gc7GhUr3R597JC7Xxu5WjmrBDNIly/bVUY7mtr+lh1kKRY7Lib9
-         MktAozRlUGMa7faK1lJFKzlXC9bNZHTmpAGcKH6s3lWxLPKBfcNRjWX3cJ/YYhhSOIha
-         HLCk6reQZ1/8FbkPao7M3C96eKoHaJryQL99sxe96jB9x2eRFGSOk0echqyZihPqum9A
-         KqXA==
-X-Gm-Message-State: AOJu0YxkTRdC6GQXrLUjFkIEjQw2+x6C8xQEgkJ7UmvnrNWqEVMxGCFB
-	CyzHk3/A6qn9Y4IC3wwYD2cLrKygLAAxvHNgtB0DYjoF
-X-Google-Smtp-Source: AGHT+IEknXJmgpVA0vxWp/0m3NYF6FY8Txs8UHRXTTAiGS3GDCzjRsNvP6NopWvDgQaw0KCz71wAdpAi7d4bNblCAOo=
-X-Received: by 2002:a05:600c:2249:b0:3fb:e189:3532 with SMTP id
- a9-20020a05600c224900b003fbe1893532mr936169wmm.20.1695165277853; Tue, 19 Sep
- 2023 16:14:37 -0700 (PDT)
+        bh=jvRY6GIRuNpH85uEp8BO43W0zUABYZOdiEC6/P/5XEg=;
+        b=SyyLYmVvVrIbezLSz5Mh+NytrCYZkQMmNM7FhkKy8MKaFl2wLnDLscg92dxYnKLlew
+         pI8M/f0X4IsmoWX/A03uyi7YjGGEj1IljuPDRs7J3leXjFlIojdz3KbXNKnCrCfHvpyE
+         4bm+QIk0hHpSU7WUrq34pFjQVxicQlac4/qiwPiaaI+SZOsf2Nh2ORYJdDnOAA2w75zQ
+         dvH5F6GN+aAo6mY17wNozZIPTmSH3cFADNFsNddXTKQGUUt9KZbjJ4QlgUF9LFeYFf45
+         c9W9MhQPBNQ9nfhbCBLRQ1qvy2U40B7plwnAsJzx+KpZ68YLyovVcW1HIMzIRNw/1UIm
+         JwKQ==
+X-Gm-Message-State: AOJu0YxJYtktoDAPUV/DEpB+NNXPi+zpdzVS+h3Y0859tdSlQC9iLFYX
+	aFkKgEEIQAXhGEDaJM8rWLJ6yt32cUk4ur0bh8+T7w==
+X-Google-Smtp-Source: AGHT+IHBx08fNle7EE6arVskw/j97O30UacFFRWRbyI7Ho37qGwqM9ifgU8GHQ5Wd/JUtRDAAPc4nqCfyWw+g1kaFlE=
+X-Received: by 2002:a0d:dd13:0:b0:595:e1b:b978 with SMTP id
+ g19-20020a0ddd13000000b005950e1bb978mr940317ywe.21.1695165669425; Tue, 19 Sep
+ 2023 16:21:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CA+vRuzPChFNXmouzGG+wsy=6eMcfr1mFG0F3g7rbg-sedGKW3w@mail.gmail.com>
- <CAADnVQJpLAzmUfwvWBr8a_PWHYHxHw9vdAXnWB4R4PbVY4S4mw@mail.gmail.com>
- <CAEf4Bzbubu7KjBv=98BZrVnTrcfPQrnsp-g1kOYKM=kUtiqEgw@mail.gmail.com> <dff1cfec20d1711cb023be38dfe886bac8aac5f6.camel@gmail.com>
-In-Reply-To: <dff1cfec20d1711cb023be38dfe886bac8aac5f6.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 19 Sep 2023 16:14:25 -0700
-Message-ID: <CAEf4BzbKV5eHSWk8LgQmCM1vx1N2__ANUbB137i7_7RqBOsTiQ@mail.gmail.com>
-Subject: Re: [BUG] verifier escape with iteration helpers (bpf_loop, ...)
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrew Werner <awerner32@gmail.com>, 
-	bpf <bpf@vger.kernel.org>, Andrei Matei <andreimatei1@gmail.com>, 
-	Tamir Duberstein <tamird@gmail.com>, Joanne Koong <joannelkoong@gmail.com>, kernel-team@dataexmachina.dev, 
-	Song Liu <song@kernel.org>
+References: <20230919145951.352548-1-victor@mojatatu.com> <beb5e6f3-e2a1-637d-e06d-247b36474e95@iogearbox.net>
+In-Reply-To: <beb5e6f3-e2a1-637d-e06d-247b36474e95@iogearbox.net>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Tue, 19 Sep 2023 19:20:57 -0400
+Message-ID: <CAM0EoMncgehpwCOxaUUKhOP7V0DyJtbDP9Q5aUkMG2h5dmfQJA@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/1] net/sched: Disambiguate verdict from return code
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Victor Nogueira <victor@mojatatu.com>, xiyou.wangcong@gmail.com, jiri@resnulli.us, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	paulb@nvidia.com, netdev@vger.kernel.org, kernel@mojatatu.com, 
+	martin.lau@linux.dev, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sun, Sep 17, 2023 at 2:37=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
+On Tue, Sep 19, 2023 at 6:15=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
 >
-> On Fri, 2023-07-07 at 11:08 -0700, Andrii Nakryiko wrote:
-> > On Fri, Jul 7, 2023 at 9:44=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Fri, Jul 7, 2023 at 7:04=E2=80=AFAM Andrew Werner <awerner32@gmail=
-.com> wrote:
-> > > >
-> > > > When it comes to fixing the problem, I don't quite know where to st=
-art.
-> > > > Perhaps these iteration callbacks ought to be treated more like glo=
-bal functions
-> > > > -- you can't always make assumptions about the state of the data in=
- the context
-> > > > pointer. Treating the context pointer as totally opaque seems bad f=
-rom
-> > > > a usability
-> > > > perspective. Maybe there's a way to attempt to verify the function
-> > > > body of the function
-> > > > by treating all or part of the context as read-only, and then if th=
-at
-> > > > fails, go back and
-> > > > assume nothing about that part of the context structure. What is th=
-e
-> > > > right way to
-> > > > think about plugging this hole?
-> > >
-> > > 'treat as global' might be a way to fix it, but it will likely break
-> > > some setups, since people passing pointers in a context and current
-> > > global func verification doesn't support that.
+> [ +Martin, bpf ]
+>
+> On 9/19/23 4:59 PM, Victor Nogueira wrote:
+> > Currently there is no way to distinguish between an error and a
+> > classification verdict. This patch adds the verdict field as a part of
+> > struct tcf_result. That way, tcf_classify can return a proper
+> > error number when it fails, and we keep the classification result
+> > information encapsulated in struct tcf_result.
 > >
-> > yeah, the intended use case is to return something from callbacks
-> > through context pointer. So it will definitely break real uses.
+> > Also add values SKB_DROP_REASON_TC_EGRESS_ERROR and
+> > SKB_DROP_REASON_TC_INGRESS_ERROR to enum skb_drop_reason.
+> > With that we can distinguish between a drop from a processing error ver=
+sus
+> > a drop from classification.
 > >
-> > > I think the simplest fix would be to disallow writes into any pointer=
-s
-> > > within a ctx. Writes to scalars should still be allowed.
+> > Signed-off-by: Victor Nogueira <victor@mojatatu.com>
+> > ---
+> >   include/net/dropreason-core.h |  6 +++++
+> >   include/net/sch_generic.h     |  7 ++++++
+> >   net/core/dev.c                | 42 ++++++++++++++++++++++++++--------=
+-
+> >   net/sched/cls_api.c           | 38 ++++++++++++++++++++-----------
+> >   net/sched/sch_cake.c          | 32 +++++++++++++-------------
+> >   net/sched/sch_drr.c           | 33 +++++++++++++--------------
+> >   net/sched/sch_ets.c           |  6 +++--
+> >   net/sched/sch_fq_codel.c      | 29 ++++++++++++------------
+> >   net/sched/sch_fq_pie.c        | 28 +++++++++++------------
+> >   net/sched/sch_hfsc.c          |  6 +++--
+> >   net/sched/sch_htb.c           |  6 +++--
+> >   net/sched/sch_multiq.c        |  6 +++--
+> >   net/sched/sch_prio.c          |  7 ++++--
+> >   net/sched/sch_qfq.c           | 34 +++++++++++++---------------
+> >   net/sched/sch_sfb.c           | 29 ++++++++++++------------
+> >   net/sched/sch_sfq.c           | 28 +++++++++++------------
+> >   16 files changed, 195 insertions(+), 142 deletions(-)
 > >
-> > It might be a partial mitigation, but even with SCALARs there could be
-> > problems due to assumed SCALAR range, which will be invalid if
-> > callback is never called or called many times.
+> > diff --git a/include/net/dropreason-core.h b/include/net/dropreason-cor=
+e.h
+> > index a587e83fc169..b1c069c8e7f2 100644
+> > --- a/include/net/dropreason-core.h
+> > +++ b/include/net/dropreason-core.h
+> > @@ -80,6 +80,8 @@
+> >       FN(IPV6_NDISC_BAD_OPTIONS)      \
+> >       FN(IPV6_NDISC_NS_OTHERHOST)     \
+> >       FN(QUEUE_PURGE)                 \
+> > +     FN(TC_EGRESS_ERROR)             \
+> > +     FN(TC_INGRESS_ERROR)            \
+> >       FNe(MAX)
 > >
-> > > Much more complex fix would be to verify callbacks as
-> > > process_iter_next_call(). See giant comment next to it.
+> >   /**
+> > @@ -345,6 +347,10 @@ enum skb_drop_reason {
+> >       SKB_DROP_REASON_IPV6_NDISC_NS_OTHERHOST,
+> >       /** @SKB_DROP_REASON_QUEUE_PURGE: bulk free. */
+> >       SKB_DROP_REASON_QUEUE_PURGE,
+> > +     /** @SKB_DROP_REASON_TC_EGRESS_ERROR: dropped in TC egress HOOK d=
+ue to error */
+> > +     SKB_DROP_REASON_TC_EGRESS_ERROR,
+> > +     /** @SKB_DROP_REASON_TC_INGRESS_ERROR: dropped in TC ingress HOOK=
+ due to error */
+> > +     SKB_DROP_REASON_TC_INGRESS_ERROR,
+> >       /**
+> >        * @SKB_DROP_REASON_MAX: the maximum of core drop reasons, which
+> >        * shouldn't be used as a real 'reason' - only for tracing code g=
+en
+> > diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+> > index f232512505f8..9a3f71d2545e 100644
+> > --- a/include/net/sch_generic.h
+> > +++ b/include/net/sch_generic.h
+> > @@ -326,6 +326,7 @@ struct Qdisc_ops {
 > >
-> > yep, that seems like the right way forward. We need to simulate 0, 1,
-> > 2, .... executions of callbacks until we validate and exhaust all
-> > possible context modification permutations, just like open-coded
-> > iterators do it
 > >
-> > > But since we need a fix for stable I'd try the simple approach first.
-> > > Could you try to implement that?
+> >   struct tcf_result {
+> > +     u32 verdict;
+> >       union {
+> >               struct {
+> >                       unsigned long   class;
+> > @@ -336,6 +337,12 @@ struct tcf_result {
+> >       };
+> >   };
+> >
+> > +static inline void tcf_result_set_verdict(struct tcf_result *res,
+> > +                                       const u32 verdict)
+> > +{
+> > +     res->verdict =3D verdict;
+> > +}
+> > +
+> >   struct tcf_chain;
+> >
+> >   struct tcf_proto_ops {
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index ccff2b6ef958..1450f4741d9b 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -3910,31 +3910,39 @@ EXPORT_SYMBOL_GPL(netdev_xmit_skip_txqueue);
+> >   #endif /* CONFIG_NET_EGRESS */
+> >
+> >   #ifdef CONFIG_NET_XGRESS
+> > -static int tc_run(struct tcx_entry *entry, struct sk_buff *skb)
+> > +static int tc_run(struct tcx_entry *entry, struct sk_buff *skb,
+> > +               struct tcf_result *res)
+> >   {
+> > -     int ret =3D TC_ACT_UNSPEC;
+> > +     int ret =3D 0;
+> >   #ifdef CONFIG_NET_CLS_ACT
+> >       struct mini_Qdisc *miniq =3D rcu_dereference_bh(entry->miniq);
+> > -     struct tcf_result res;
+> >
+> > -     if (!miniq)
+> > +     if (!miniq) {
+> > +             tcf_result_set_verdict(res, TC_ACT_UNSPEC);
+> >               return ret;
+> > +     }
+> >
+> >       tc_skb_cb(skb)->mru =3D 0;
+> >       tc_skb_cb(skb)->post_ct =3D false;
+> >
+> >       mini_qdisc_bstats_cpu_update(miniq, skb);
+> > -     ret =3D tcf_classify(skb, miniq->block, miniq->filter_list, &res,=
+ false);
+> > +     ret =3D tcf_classify(skb, miniq->block, miniq->filter_list, res, =
+false);
+> > +     if (ret < 0) {
+> > +             mini_qdisc_qstats_cpu_drop(miniq);
+> > +             return ret;
+> > +     }
+> >       /* Only tcf related quirks below. */
+> > -     switch (ret) {
+> > +     switch (res->verdict) {
+> >       case TC_ACT_SHOT:
+> >               mini_qdisc_qstats_cpu_drop(miniq);
+> >               break;
+> >       case TC_ACT_OK:
+> >       case TC_ACT_RECLASSIFY:
+> > -             skb->tc_index =3D TC_H_MIN(res.classid);
+> > +             skb->tc_index =3D TC_H_MIN(res->classid);
+> >               break;
+> >       }
+> > +#else
+> > +     tcf_result_set_verdict(res, TC_ACT_UNSPEC);
+> >   #endif /* CONFIG_NET_CLS_ACT */
+> >       return ret;
+> >   }
+> > @@ -3977,6 +3985,7 @@ sch_handle_ingress(struct sk_buff *skb, struct pa=
+cket_type **pt_prev, int *ret,
+> >                  struct net_device *orig_dev, bool *another)
+> >   {
+> >       struct bpf_mprog_entry *entry =3D rcu_dereference_bh(skb->dev->tc=
+x_ingress);
+> > +     struct tcf_result res =3D {0};
+> >       int sch_ret;
+> >
+> >       if (!entry)
+> > @@ -3994,9 +4003,14 @@ sch_handle_ingress(struct sk_buff *skb, struct p=
+acket_type **pt_prev, int *ret,
+> >               if (sch_ret !=3D TC_ACT_UNSPEC)
+> >                       goto ingress_verdict;
+> >       }
+> > -     sch_ret =3D tc_run(tcx_entry(entry), skb);
+> > +     sch_ret =3D tc_run(tcx_entry(entry), skb, &res);
+> > +     if (sch_ret < 0) {
+> > +             kfree_skb_reason(skb, SKB_DROP_REASON_TC_INGRESS_ERROR);
+> > +             *ret =3D NET_RX_DROP;
+> > +             return NULL;
+> > +     }
+> >   ingress_verdict:
+> > -     switch (sch_ret) {
+> > +     switch (res.verdict) {
 >
-> Hi All,
+> This breaks tcx, please move all this logic into tc_run(). No changes to =
+sch_handle_ingress()
+> or sch_handle_egress should be necessary, you can then just remap the ret=
+urn code to TC_ACT_SHOT
+> in such case.
 >
-> This issue seems stalled, so I took a look over the weekend.
-> I have a work in progress fix, please let me know if you don't agree
-> with direction I'm taking or if I'm stepping on anyone's toes.
->
-> After some analysis I decided to go with Alexei's suggestion and
-> implement something similar to iterators for selected set of helper
-> functions that accept "looping" callbacks, such as:
-> - bpf_loop
-> - bpf_for_each_map_elem
-> - bpf_user_ringbuf_drain
-> - bpf_timer_set_callback (?)
 
-As Kumar mentioned, pretty much all helpers with callbacks are either
-0-1, or 0-1-many cases, so all of them (except for the async callback
-ones that shouldn't be accepting parent stack pointers) should be
-validated.
+I think it is valuable to have a good reason code like
+SKB_DROP_REASON_TC_XXX_ERROR to disambiguate between errors vs
+verdicts in the case of tc_run() variant.
+For tcx_run(), does this look ok (for consistency)?:
 
->
-> The sketch of the fix looks as follows:
-> - extend struct bpf_func_state with callback iterator state information:
->   - active/non-active flag
+if (static_branch_unlikely(&tcx_needed_key)) {
+                sch_ret =3D tcx_run(entry, skb, true);
+                if (sch_ret !=3D TC_ACT_UNSPEC) {
+                        res.verdict =3D sch_ret;
+                        goto ingress_verdict;
+                }
+}
 
-not sure why you need this flag
+cheers,
+jamal
 
->   - depth
-
-yep, this seems necessary
-
->   - r1-r5 state at the entry to callback;
-
-not sure why you need this, this should be part of func_state already?
-
-
-> - extend __check_func_call() to setup callback iterator state when
->   call to suitable helper function is processed;
-
-this logic is "like iterator", but it's not exactly the same, so I
-don't think we should reuse bpf_iter state (as you can see above with
-active/non-active flag, for example)
-
-> - extend BPF_EXIT processing (prepare_func_exit()) to queue new
->   callback visit upon return from iterating callback
->   (similar to process_iter_next_call());
-
-as mentioned above, we should simulate "no callback called" situation
-as well, don't forget about that
-
-> - extend is_state_visited() to account for callback iterator hits in a
->   way similar to regular iterators;
-> - extend backtrack_insn() to correctly react to jumps from callback
->   exit to callback entry.
->
-> I have a patch (at the end of this email) that correctly recognizes
-> the bpf_loop example in this thread as unsafe. However this patch has
-> a few deficiencies:
->
-> - verif_scale_strobemeta_bpf_loop selftest is not passing, because
->   read_map_var function invoked from the callback continuously
->   increments 'payload' pointer used in subsequent iterations.
->
->   In order to handle such code I need to add an upper bound tracking
->   for iteration depth (when such bound could be deduced).
-
-if the example is broken and really can get out of bounds, we should
-fix an example to be provable within bounds no matter how many
-iterations it was called with
-
->
-> - loop detection is broken for simple callback as below:
->
->   static int loop_callback_infinite(__u32 idx, __u64 *data)
->   {
->       for (;;)
->           (*ctx)++;
->       return 0;
->   }
->
->   To handle such code I need to change is_state_visited() to do
->   callback iterator loop/hit detection on exit from callback
->   (returns are not prune points at the moment), currently it is done
->   on entry.
-
-I'm a bit confused. What's ctx in the above example? And why loop
-detection doesn't detect for(;;) loop right now?
-
->
-> - the callback as bellow currently causes state explosion:
->
->   static int precise1_callback(__u32 idx, struct precise1_ctx *ctx)
->   {
->       if (idx =3D=3D 0)
->           ctx->a =3D 1;
->       if (idx =3D=3D 1 && ctx->a =3D=3D 1)
->           ctx->b =3D 1;
->       return 0;
->   }
-
-why state explosion? there should be a bunch of different branches
-(idx 0, 1, something else x ctx->a =3D 1 or not 1 and ctx->b being 1 or
-not), but it should be a fixed number of states? Do you know what
-causes the explosion?
-
->
->   I'm not sure yet what to do about this, there are several possibilities=
-:
->   - tweak the order in which states are visited (need to think about it);
->   - check states in bpf_verifier_env::head (not explored yet) for
->     equivalence and avoid enqueuing duplicate states.
->
-> I'll proceed addressing the issues above on Monday.
->
-> Thanks,
-> Eduard
->
-> ---
->
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index a3236651ec64..5589f55e42ba 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -70,6 +70,17 @@ enum bpf_iter_state {
->         BPF_ITER_STATE_DRAINED,
->  };
->
-> +struct bpf_iter {
-> +       /* BTF container and BTF type ID describing
-> +        * struct bpf_iter_<type> of an iterator state
-> +        */
-> +       struct btf *btf;
-> +       u32 btf_id;
-> +       /* packing following two fields to fit iter state into 16 bytes *=
+> >       case TC_ACT_REDIRECT:
+> >               /* skb_mac_header check was done by BPF, so we can safely
+> >                * push the L2 header back before redirecting to another
+> > @@ -4032,6 +4046,7 @@ static __always_inline struct sk_buff *
+> >   sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *d=
+ev)
+> >   {
+> >       struct bpf_mprog_entry *entry =3D rcu_dereference_bh(dev->tcx_egr=
+ess);
+> > +     struct tcf_result res =3D {0};
+> >       int sch_ret;
+> >
+> >       if (!entry)
+> > @@ -4045,9 +4060,14 @@ sch_handle_egress(struct sk_buff *skb, int *ret,=
+ struct net_device *dev)
+> >               if (sch_ret !=3D TC_ACT_UNSPEC)
+> >                       goto egress_verdict;
+> >       }
+> > -     sch_ret =3D tc_run(tcx_entry(entry), skb);
+> > +     sch_ret =3D tc_run(tcx_entry(entry), skb, &res);
+> > +     if (sch_ret < 0) {
+> > +             kfree_skb_reason(skb, SKB_DROP_REASON_TC_EGRESS_ERROR);
+> > +             *ret =3D NET_XMIT_DROP;
+> > +             return NULL;
+> > +     }
+> >   egress_verdict:
+> > -     switch (sch_ret) {
+> > +     switch (res.verdict) {
+> >       case TC_ACT_REDIRECT:
+> >               /* No need to push/pop skb's mac_header here on egress! *=
 /
-> +       enum bpf_iter_state state:2;
-> +       int depth:30;
-> +};
-> +
->  struct bpf_reg_state {
->         /* Ordering of fields matters.  See states_equal() */
->         enum bpf_reg_type type;
-> @@ -115,16 +126,7 @@ struct bpf_reg_state {
->                 } dynptr;
->
->                 /* For bpf_iter stack slots */
-> -               struct {
-> -                       /* BTF container and BTF type ID describing
-> -                        * struct bpf_iter_<type> of an iterator state
-> -                        */
-> -                       struct btf *btf;
-> -                       u32 btf_id;
-> -                       /* packing following two fields to fit iter state=
- into 16 bytes */
-> -                       enum bpf_iter_state state:2;
-> -                       int depth:30;
-> -               } iter;
-> +               struct bpf_iter iter;
-
-Let's not do this, conceptually processes are similar, but bpf_iter is
-one thing, and this callback validation is another thing. Let's not
-conflate things.
-
->
->                 /* Max size from any of the above. */
->                 struct {
-
-[...]
+> >               skb_do_redirect(skb);
 
