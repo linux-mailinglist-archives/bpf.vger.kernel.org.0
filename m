@@ -1,266 +1,267 @@
-Return-Path: <bpf+bounces-10413-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10414-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 599607A6E8E
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 00:19:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75CD67A6EE6
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 01:03:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 630AD1C204F8
-	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 22:19:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB48528177C
+	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 23:03:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B40FB3C69D;
-	Tue, 19 Sep 2023 22:15:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02127339B6;
+	Tue, 19 Sep 2023 23:03:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E13B23B788;
-	Tue, 19 Sep 2023 22:15:36 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53739D8;
-	Tue, 19 Sep 2023 15:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=d0HioYZKyXay6hHxTJK1WFxa9hlPbFJmhfqfWx+ai4A=; b=flMHtCANXl75Zo3gGIrTeg0leW
-	uoJxGOvDO2RHyWSp0c6oV6fhgtitLbvcRI7x+J6kS19wxB4FpmZxhvOTafZlSNRnfB9dqgfsSeWi2
-	JyPnvm7cfFZRS9qz2I08cc6NvYz7yD/Yxqj8LaUlWJHWvE59m/vgkz/tYORNV8nBaHE8YtuJXknFD
-	e4fQVkY8gwGW1KS1iUodyTKwe4hBMuZaDPsmMVlXtnitCC+jo8fNgfjnmz9PwP/MOvySVXhVCSWT6
-	RVolgFqdnbpY8FSEF1P40wPx8vpuVXpW6G+TLxaOoV7nAtLGXhCL+VVh6iii0daCpRgdckFw1b/sV
-	eQn6ylkA==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qiizy-000NfG-OD; Wed, 20 Sep 2023 00:15:14 +0200
-Received: from [194.230.148.14] (helo=localhost.localdomain)
-	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qiizy-000AW7-5l; Wed, 20 Sep 2023 00:15:14 +0200
-Subject: Re: [PATCH net-next 1/1] net/sched: Disambiguate verdict from return
- code
-To: Victor Nogueira <victor@mojatatu.com>, jhs@mojatatu.com,
- xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, paulb@nvidia.com
-Cc: netdev@vger.kernel.org, kernel@mojatatu.com, martin.lau@linux.dev,
- bpf@vger.kernel.org
-References: <20230919145951.352548-1-victor@mojatatu.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <beb5e6f3-e2a1-637d-e06d-247b36474e95@iogearbox.net>
-Date: Wed, 20 Sep 2023 00:15:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1713346A1
+	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 23:03:05 +0000 (UTC)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2847C0
+	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 16:03:03 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-31fe2c8db0dso5466045f8f.3
+        for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 16:03:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695164582; x=1695769382; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J2XLuflDZJeS02yoL2FQPGhJ84jZMkzQXV0TQa0r7Hg=;
+        b=F2GHC59rNxJ3Ay9WKBXN0ewOCQZKSa3AVZ7M1yi6jnHkzmpe5HySyc7NGFFeYz082g
+         iAsMB64qFX72ewtLOV5xhti8gGfiunJyfAKlMaAsKimpOb4g8+OV4iAnfceboUv1cuN7
+         yDtDkP2R7/bfCEUUxu2EvxVS1ohmT2Ie3Rj0QGbW+b7lvuDKhaW+0EbVDiO7rGOaGfHb
+         XWt0XD6Z5jrnQsFHlPUZ0Ov7QvAkvr6/s4K+21Qc0OP74nejJynoaOqJjEkt2ia8bU7h
+         DPAU3fEJDrTusNSXKe4md9siGOEHIjdugtDwaJqLKtX2+hjatWyJ0UgyoN15a7ChLac7
+         GGdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695164582; x=1695769382;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=J2XLuflDZJeS02yoL2FQPGhJ84jZMkzQXV0TQa0r7Hg=;
+        b=Rh2cl+j9th1EXgyMFQWJin6fSJgr+7Nah2JeMQJQ4+RicuQ5Ad4McLZQe2Ba42fBHS
+         YxPsrt6+H9x/WxnPhSXwNFWwMxvDTLkey/617E6XyrmSZlXjllQsyipNWvejDrGNVGVi
+         AHvMLUGwR1OMc086tm5H4u4sYoEebul0EO9c2It2asLiCcziOCoD9TN44HL1QIoXqSsU
+         lSJkyDiQPGKhWpqNBHtCGhJbf9lUb20llV17RWux8xSSM4xsAJS61rn2E3ZrYzYoPdPt
+         b7sbjv/nzfuN9c0tRumg/iKdjrlLUR2fEcifCnIGleeCHf5O/CXlJ19YwOZM3TnSdh+5
+         BMYQ==
+X-Gm-Message-State: AOJu0Yxaqyen0RvRc1rWtx/RynCnxH95BKnY43kxFOuhnbnb3oRK1Icn
+	2FVwI70FBGAgBSdHUEOxEeJA4U3lL4HTR8Oyf0Y896tp01M=
+X-Google-Smtp-Source: AGHT+IF9/fbRKXubCLvXxCnDSpvOxSEm9jtY8EXWCrtqmQ6AGElz2lNWhlAz84sq2qEao/rIJQWayHhg3pKaukPE3RI=
+X-Received: by 2002:adf:f291:0:b0:321:4c58:7722 with SMTP id
+ k17-20020adff291000000b003214c587722mr792855wro.69.1695164582091; Tue, 19 Sep
+ 2023 16:03:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230919145951.352548-1-victor@mojatatu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27036/Tue Sep 19 09:42:31 2023)
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+References: <CA+vRuzPChFNXmouzGG+wsy=6eMcfr1mFG0F3g7rbg-sedGKW3w@mail.gmail.com>
+ <CAADnVQJpLAzmUfwvWBr8a_PWHYHxHw9vdAXnWB4R4PbVY4S4mw@mail.gmail.com>
+ <CAEf4Bzbubu7KjBv=98BZrVnTrcfPQrnsp-g1kOYKM=kUtiqEgw@mail.gmail.com>
+ <dff1cfec20d1711cb023be38dfe886bac8aac5f6.camel@gmail.com>
+ <CAP01T76duVGmnb+LQjhdKneVYs1q=ehU4yzTLmgZdG0r2ErOYQ@mail.gmail.com>
+ <a2995c1d7c01794ca9b652cdea7917cac5d98a16.camel@gmail.com> <97a90da09404c65c8e810cf83c94ac703705dc0e.camel@gmail.com>
+In-Reply-To: <97a90da09404c65c8e810cf83c94ac703705dc0e.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 19 Sep 2023 16:02:50 -0700
+Message-ID: <CAEf4BzYg8T_Dek6T9HYjHZCuLTQT8ptAkQRxrsgaXg7-MZmHDA@mail.gmail.com>
+Subject: Re: [BUG] verifier escape with iteration helpers (bpf_loop, ...)
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrew Werner <awerner32@gmail.com>, 
+	bpf <bpf@vger.kernel.org>, Andrei Matei <andreimatei1@gmail.com>, 
+	Tamir Duberstein <tamird@gmail.com>, Joanne Koong <joannelkoong@gmail.com>, kernel-team@dataexmachina.dev, 
+	Song Liu <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-[ +Martin, bpf ]
+On Tue, Sep 19, 2023 at 9:28=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> It looks like I hit a related but slightly different bug with bpf_iter_ne=
+xt().
+> Consider the following example:
+>
+>     SEC("fentry/" SYS_PREFIX "sys_nanosleep")
+>     int num_iter_bug(const void *ctx) {
+>         struct bpf_iter_num it;                 // fp[-8] below
+>         __u64 val =3D 0;                          // fp[-16] in the below
+>         __u64 *ptr =3D &val;                      // r7 below
+>         __u64 rnd =3D bpf_get_current_pid_tgid(); // r6 below
+>         void *v;
+>
+>         bpf_iter_num_new(&it, 0, 10);
+>         while ((v =3D bpf_iter_num_next(&it))) {
+>             rnd++;
+>             if (rnd =3D=3D 42) {
+>                 ptr =3D (void*)(0xdead);
+>                 continue;
+>             }
+>             bpf_probe_read_user(ptr, 8, (void*)(0xdeadbeef));
+>         }
+>         bpf_iter_num_destroy(&it);
+>         return 0;
+>     }
+>
+> (Unfortunately, it had to be converted to assembly to avoid compiler
+>  clobbering loop structure, complete test case is at the end of the email=
+).
+>
+> The example is not safe because of 0xdead being a possible `ptr` value.
+> However, currently it is marked as safe.
+>
+> This happens because of states_equal() usage for iterator convergence
+> detection:
+>
+>     static int is_state_visited(struct bpf_verifier_env *env, int insn_id=
+x)
+>         ...
+>         while (sl)
+>                 states_cnt++;
+>                 if (sl->state.insn_idx !=3D insn_idx)
+>                         goto next;
+>
+>                 if (sl->state.branches)
+>                 ...
+>                         if (is_iter_next_insn(env, insn_idx)) {
+>                                 if (states_equal(env, &sl->state, cur)) {
+>                         ...
+>                                         if (iter_state->iter.state =3D=3D=
+ BPF_ITER_STATE_ACTIVE)
+>                                                 goto hit;
+>                                 }
+>                                 goto skip_inf_loop_check;
+>                         }
+>         ...
+>
+> With some additional logging I see that the following states are
+> considered equal:
+>
+>     13: (85) call bpf_iter_num_next#59908
+>     ...
+>     at is_iter_next_insn(insn 13):
+>       old state:
+>          R0=3Dscalar() R1_rw=3Dfp-8 R6_r=3Dscalar(id=3D1) R7=3Dfp-16 R10=
+=3Dfp0
+>          fp-8_r=3Diter_num(ref_id=3D2,state=3Dactive,depth=3D0) fp-16=3D0=
+0000000 refs=3D2
+>       cur state:
+>          R0=3Drdonly_mem(id=3D3,ref_obj_id=3D2,off=3D0,imm=3D0) R1_w=3Dfp=
+-8 R6=3D42 R7_w=3D57005
+>          R10=3Dfp0 fp-8=3Diter_num(ref_id=3D2,state=3Dactive,depth=3D1) f=
+p-16=3D00000000 refs=3D2
+>     states_equal()?: true
+>
+> Note that R7=3Dfp-16 in old state vs R7_w=3D57005 in cur state.
+> The registers are considered equal because R7 does not have a read mark.
+> However read marks are not yet finalized for old state because
+> sl->state.branches !=3D 0. (Note: precision marks are not finalized as
+> well, which should be a problem, but this requires another example).
 
-On 9/19/23 4:59 PM, Victor Nogueira wrote:
-> Currently there is no way to distinguish between an error and a
-> classification verdict. This patch adds the verdict field as a part of
-> struct tcf_result. That way, tcf_classify can return a proper
-> error number when it fails, and we keep the classification result
-> information encapsulated in struct tcf_result.
-> 
-> Also add values SKB_DROP_REASON_TC_EGRESS_ERROR and
-> SKB_DROP_REASON_TC_INGRESS_ERROR to enum skb_drop_reason.
-> With that we can distinguish between a drop from a processing error versus
-> a drop from classification.
-> 
-> Signed-off-by: Victor Nogueira <victor@mojatatu.com>
+I originally convinced myself that non-finalized precision marking is
+fine, see the comment next to process_iter_next_call() for reasoning.
+If you can have a dedicated example for precision that would be great.
+
+As for read marks... Yep, that's a bummer. That r7 is not used after
+the loop, so is not marked as read, and it's basically ignored for
+loop invariant checking, which is definitely not what was intended.
+
+>
+> A possible fix is to add a special flag to states_equal() and
+> conditionally ignore logic related to liveness and precision when this
+> flag is set. Set this flag for is_iter_next_insn() branch above.
+
+Probably not completely ignore liveness (and maybe precision, but
+let's do it one step at a time), but only at least one of the
+registers or stack slots are marked as written or read in one of
+old/new states? Basically, if some register/slot at the end of
+iteration is read or modified, it must be important for loop
+invariant, so even if the parent state says it's not read, we still
+treat it as read. Can you please try that with just read/write marks
+and see if anything fails?
+
+
+>
 > ---
->   include/net/dropreason-core.h |  6 +++++
->   include/net/sch_generic.h     |  7 ++++++
->   net/core/dev.c                | 42 ++++++++++++++++++++++++++---------
->   net/sched/cls_api.c           | 38 ++++++++++++++++++++-----------
->   net/sched/sch_cake.c          | 32 +++++++++++++-------------
->   net/sched/sch_drr.c           | 33 +++++++++++++--------------
->   net/sched/sch_ets.c           |  6 +++--
->   net/sched/sch_fq_codel.c      | 29 ++++++++++++------------
->   net/sched/sch_fq_pie.c        | 28 +++++++++++------------
->   net/sched/sch_hfsc.c          |  6 +++--
->   net/sched/sch_htb.c           |  6 +++--
->   net/sched/sch_multiq.c        |  6 +++--
->   net/sched/sch_prio.c          |  7 ++++--
->   net/sched/sch_qfq.c           | 34 +++++++++++++---------------
->   net/sched/sch_sfb.c           | 29 ++++++++++++------------
->   net/sched/sch_sfq.c           | 28 +++++++++++------------
->   16 files changed, 195 insertions(+), 142 deletions(-)
-> 
-> diff --git a/include/net/dropreason-core.h b/include/net/dropreason-core.h
-> index a587e83fc169..b1c069c8e7f2 100644
-> --- a/include/net/dropreason-core.h
-> +++ b/include/net/dropreason-core.h
-> @@ -80,6 +80,8 @@
->   	FN(IPV6_NDISC_BAD_OPTIONS)	\
->   	FN(IPV6_NDISC_NS_OTHERHOST)	\
->   	FN(QUEUE_PURGE)			\
-> +	FN(TC_EGRESS_ERROR)		\
-> +	FN(TC_INGRESS_ERROR)		\
->   	FNe(MAX)
->   
->   /**
-> @@ -345,6 +347,10 @@ enum skb_drop_reason {
->   	SKB_DROP_REASON_IPV6_NDISC_NS_OTHERHOST,
->   	/** @SKB_DROP_REASON_QUEUE_PURGE: bulk free. */
->   	SKB_DROP_REASON_QUEUE_PURGE,
-> +	/** @SKB_DROP_REASON_TC_EGRESS_ERROR: dropped in TC egress HOOK due to error */
-> +	SKB_DROP_REASON_TC_EGRESS_ERROR,
-> +	/** @SKB_DROP_REASON_TC_INGRESS_ERROR: dropped in TC ingress HOOK due to error */
-> +	SKB_DROP_REASON_TC_INGRESS_ERROR,
->   	/**
->   	 * @SKB_DROP_REASON_MAX: the maximum of core drop reasons, which
->   	 * shouldn't be used as a real 'reason' - only for tracing code gen
-> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-> index f232512505f8..9a3f71d2545e 100644
-> --- a/include/net/sch_generic.h
-> +++ b/include/net/sch_generic.h
-> @@ -326,6 +326,7 @@ struct Qdisc_ops {
->   
->   
->   struct tcf_result {
-> +	u32 verdict;
->   	union {
->   		struct {
->   			unsigned long	class;
-> @@ -336,6 +337,12 @@ struct tcf_result {
->   	};
->   };
->   
-> +static inline void tcf_result_set_verdict(struct tcf_result *res,
-> +					  const u32 verdict)
-> +{
-> +	res->verdict = verdict;
-> +}
-> +
->   struct tcf_chain;
->   
->   struct tcf_proto_ops {
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index ccff2b6ef958..1450f4741d9b 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -3910,31 +3910,39 @@ EXPORT_SYMBOL_GPL(netdev_xmit_skip_txqueue);
->   #endif /* CONFIG_NET_EGRESS */
->   
->   #ifdef CONFIG_NET_XGRESS
-> -static int tc_run(struct tcx_entry *entry, struct sk_buff *skb)
-> +static int tc_run(struct tcx_entry *entry, struct sk_buff *skb,
-> +		  struct tcf_result *res)
->   {
-> -	int ret = TC_ACT_UNSPEC;
-> +	int ret = 0;
->   #ifdef CONFIG_NET_CLS_ACT
->   	struct mini_Qdisc *miniq = rcu_dereference_bh(entry->miniq);
-> -	struct tcf_result res;
->   
-> -	if (!miniq)
-> +	if (!miniq) {
-> +		tcf_result_set_verdict(res, TC_ACT_UNSPEC);
->   		return ret;
-> +	}
->   
->   	tc_skb_cb(skb)->mru = 0;
->   	tc_skb_cb(skb)->post_ct = false;
->   
->   	mini_qdisc_bstats_cpu_update(miniq, skb);
-> -	ret = tcf_classify(skb, miniq->block, miniq->filter_list, &res, false);
-> +	ret = tcf_classify(skb, miniq->block, miniq->filter_list, res, false);
-> +	if (ret < 0) {
-> +		mini_qdisc_qstats_cpu_drop(miniq);
-> +		return ret;
-> +	}
->   	/* Only tcf related quirks below. */
-> -	switch (ret) {
-> +	switch (res->verdict) {
->   	case TC_ACT_SHOT:
->   		mini_qdisc_qstats_cpu_drop(miniq);
->   		break;
->   	case TC_ACT_OK:
->   	case TC_ACT_RECLASSIFY:
-> -		skb->tc_index = TC_H_MIN(res.classid);
-> +		skb->tc_index = TC_H_MIN(res->classid);
->   		break;
->   	}
-> +#else
-> +	tcf_result_set_verdict(res, TC_ACT_UNSPEC);
->   #endif /* CONFIG_NET_CLS_ACT */
->   	return ret;
->   }
-> @@ -3977,6 +3985,7 @@ sch_handle_ingress(struct sk_buff *skb, struct packet_type **pt_prev, int *ret,
->   		   struct net_device *orig_dev, bool *another)
->   {
->   	struct bpf_mprog_entry *entry = rcu_dereference_bh(skb->dev->tcx_ingress);
-> +	struct tcf_result res = {0};
->   	int sch_ret;
->   
->   	if (!entry)
-> @@ -3994,9 +4003,14 @@ sch_handle_ingress(struct sk_buff *skb, struct packet_type **pt_prev, int *ret,
->   		if (sch_ret != TC_ACT_UNSPEC)
->   			goto ingress_verdict;
->   	}
-> -	sch_ret = tc_run(tcx_entry(entry), skb);
-> +	sch_ret = tc_run(tcx_entry(entry), skb, &res);
-> +	if (sch_ret < 0) {
-> +		kfree_skb_reason(skb, SKB_DROP_REASON_TC_INGRESS_ERROR);
-> +		*ret = NET_RX_DROP;
-> +		return NULL;
-> +	}
->   ingress_verdict:
-> -	switch (sch_ret) {
-> +	switch (res.verdict) {
-
-This breaks tcx, please move all this logic into tc_run(). No changes to sch_handle_ingress()
-or sch_handle_egress should be necessary, you can then just remap the return code to TC_ACT_SHOT
-in such case.
-
->   	case TC_ACT_REDIRECT:
->   		/* skb_mac_header check was done by BPF, so we can safely
->   		 * push the L2 header back before redirecting to another
-> @@ -4032,6 +4046,7 @@ static __always_inline struct sk_buff *
->   sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *dev)
->   {
->   	struct bpf_mprog_entry *entry = rcu_dereference_bh(dev->tcx_egress);
-> +	struct tcf_result res = {0};
->   	int sch_ret;
->   
->   	if (!entry)
-> @@ -4045,9 +4060,14 @@ sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *dev)
->   		if (sch_ret != TC_ACT_UNSPEC)
->   			goto egress_verdict;
->   	}
-> -	sch_ret = tc_run(tcx_entry(entry), skb);
-> +	sch_ret = tc_run(tcx_entry(entry), skb, &res);
-> +	if (sch_ret < 0) {
-> +		kfree_skb_reason(skb, SKB_DROP_REASON_TC_EGRESS_ERROR);
-> +		*ret = NET_XMIT_DROP;
-> +		return NULL;
-> +	}
->   egress_verdict:
-> -	switch (sch_ret) {
-> +	switch (res.verdict) {
->   	case TC_ACT_REDIRECT:
->   		/* No need to push/pop skb's mac_header here on egress! */
->   		skb_do_redirect(skb);
+>
+> /* BTF FUNC records are not generated for kfuncs referenced
+>  * from inline assembly. These records are necessary for
+>  * libbpf to link the program. The function below is a hack
+>  * to ensure that BTF FUNC records are generated.
+>  */
+> void __kfunc_btf_root(void)
+> {
+>         bpf_iter_num_new(0, 0, 0);
+>         bpf_iter_num_next(0);
+>         bpf_iter_num_destroy(0);
+> }
+>
+> SEC("fentry/" SYS_PREFIX "sys_nanosleep")
+> __naked int num_iter_bug(const void *ctx)
+> {
+>         asm volatile (
+>                 // r7 =3D &fp[-16]
+>                 // fp[-16] =3D 0
+>                 "r7 =3D r10;"
+>                 "r7 +=3D -16;"
+>                 "r0 =3D 0;"
+>                 "*(u64 *)(r7 + 0) =3D r0;"
+>                 // r6 =3D bpf_get_current_pid_tgid()
+>                 "call %[bpf_get_current_pid_tgid];"
+>                 "r6 =3D r0;"
+>                 // bpf_iter_num_new(&fp[-8], 0, 10)
+>                 "r1 =3D r10;"
+>                 "r1 +=3D -8;"
+>                 "r2 =3D 0;"
+>                 "r3 =3D 10;"
+>                 "call %[bpf_iter_num_new];"
+>                 // while (bpf_iter_num_next(&fp[-8])) {
+>                 //   r6++
+>                 //   if (r6 !=3D 42) {
+>                 //     r7 =3D 0xdead
+>                 //     continue;
+>                 //   }
+>                 //   bpf_probe_read_user(r7, 8, 0xdeadbeef)
+>                 // }
+>         "1:"
+>                 "r1 =3D r10;"
+>                 "r1 +=3D -8;"
+>                 "call %[bpf_iter_num_next];"
+>                 "if r0 =3D=3D 0 goto 2f;"
+>                 "r6 +=3D 1;"
+>                 "if r6 !=3D 42 goto 3f;"
+>                 "r7 =3D 0xdead;"
+>                 "goto 1b;"
+>         "3:"
+>                 "r1 =3D r7;"
+>                 "r2 =3D 8;"
+>                 "r3 =3D 0xdeadbeef;"
+>                 "call %[bpf_probe_read_user];"
+>                 "goto 1b;"
+>         "2:"
+>                 // bpf_iter_num_destroy(&fp[-8])
+>                 "r1 =3D r10;"
+>                 "r1 +=3D -8;"
+>                 "call %[bpf_iter_num_destroy];"
+>                 // return 0
+>                 "r0 =3D 0;"
+>                 "exit;"
+>                 :
+>                 : __imm(bpf_get_current_pid_tgid),
+>                   __imm(bpf_iter_num_new),
+>                   __imm(bpf_iter_num_next),
+>                   __imm(bpf_iter_num_destroy),
+>                   __imm(bpf_probe_read_user)
+>                 : __clobber_all
+>         );
+> }
 
