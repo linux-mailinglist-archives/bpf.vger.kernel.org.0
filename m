@@ -1,307 +1,308 @@
-Return-Path: <bpf+bounces-10416-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10417-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F4847A6F5E
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 01:21:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DA907A6F6C
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 01:30:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8726281AF7
-	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 23:21:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48D4F1C209D1
+	for <lists+bpf@lfdr.de>; Tue, 19 Sep 2023 23:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D659938BBE;
-	Tue, 19 Sep 2023 23:21:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 855B938BBD;
+	Tue, 19 Sep 2023 23:30:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCF6336B10
-	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 23:21:13 +0000 (UTC)
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4662DC6
-	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 16:21:10 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-59c2ca01f27so38482617b3.2
-        for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 16:21:10 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5752F347AE
+	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 23:30:25 +0000 (UTC)
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C61FC0;
+	Tue, 19 Sep 2023 16:30:23 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b974031aeaso102512701fa.0;
+        Tue, 19 Sep 2023 16:30:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1695165669; x=1695770469; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695166221; x=1695771021; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jvRY6GIRuNpH85uEp8BO43W0zUABYZOdiEC6/P/5XEg=;
-        b=CkjGUfZM59vh3SBfJaadDcJC5lwmHjxRFDoFMYYNazR2RW5lu2wK+yM9PCfQrsDS/P
-         LntTLdBf4A9dfIPY2dqVt7wdBCrkmAl4yzHRtusfyakjL8VBeLZMngvmrSdqRltFL+Yl
-         NK1Y3onwv7kQVrcgf/taCo6dvEfYz/LoOhcM5MkRT8rZPV7LrQi1tVnR+l8mvPUCZSu6
-         IkeTLDQ4tUEIbJ+i7v2Pk6vtE7G+Wrk42zrmjk538CIyGcxvAcedcjsZBRfFWDSw0a91
-         gefhS+WNBLBM4MQJrV1Erk7JbAZlAacoot5J4NkCyk2uZPTC6DJ7d08AbUtk4fiSUKxD
-         u8Gg==
+        bh=tfCHX0NYadHxilWRiPDE43IPqx1RrnQk5fFi8TttVsI=;
+        b=eF5j9sjQG4s3T4YyVlqfzD6uHAY1huKZ/45XnfSp4EE9ofCEgAoJ0mI6XpZwz5aDyR
+         dujUXWtNoHoMDoHl+WxOZml3z5k4hcesih9XrLqw6GCXRs5FIXbo76AG4MP+EnbkSaWm
+         p1ik3LWczF/UwW3oYUzh9MV9uJIKRASOUHn5jHlz0wzwMFTnvPBhb58lyOQX6L0TPHI+
+         znaolvIi01a91oJHxUIPhpIG98cFzDxbY8wZfHCBt3VdZj3IP3zW6ZtBI8yGPGBBPQrH
+         As8jAPwrE7zJh75IW7A6dUudgBIy93Tkg09NIofeFcrUnPPNhEilue2mHhPuCWsGqcni
+         w8Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695165669; x=1695770469;
+        d=1e100.net; s=20230601; t=1695166221; x=1695771021;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jvRY6GIRuNpH85uEp8BO43W0zUABYZOdiEC6/P/5XEg=;
-        b=SyyLYmVvVrIbezLSz5Mh+NytrCYZkQMmNM7FhkKy8MKaFl2wLnDLscg92dxYnKLlew
-         pI8M/f0X4IsmoWX/A03uyi7YjGGEj1IljuPDRs7J3leXjFlIojdz3KbXNKnCrCfHvpyE
-         4bm+QIk0hHpSU7WUrq34pFjQVxicQlac4/qiwPiaaI+SZOsf2Nh2ORYJdDnOAA2w75zQ
-         dvH5F6GN+aAo6mY17wNozZIPTmSH3cFADNFsNddXTKQGUUt9KZbjJ4QlgUF9LFeYFf45
-         c9W9MhQPBNQ9nfhbCBLRQ1qvy2U40B7plwnAsJzx+KpZ68YLyovVcW1HIMzIRNw/1UIm
-         JwKQ==
-X-Gm-Message-State: AOJu0YxJYtktoDAPUV/DEpB+NNXPi+zpdzVS+h3Y0859tdSlQC9iLFYX
-	aFkKgEEIQAXhGEDaJM8rWLJ6yt32cUk4ur0bh8+T7w==
-X-Google-Smtp-Source: AGHT+IHBx08fNle7EE6arVskw/j97O30UacFFRWRbyI7Ho37qGwqM9ifgU8GHQ5Wd/JUtRDAAPc4nqCfyWw+g1kaFlE=
-X-Received: by 2002:a0d:dd13:0:b0:595:e1b:b978 with SMTP id
- g19-20020a0ddd13000000b005950e1bb978mr940317ywe.21.1695165669425; Tue, 19 Sep
- 2023 16:21:09 -0700 (PDT)
+        bh=tfCHX0NYadHxilWRiPDE43IPqx1RrnQk5fFi8TttVsI=;
+        b=lgnkXB5NEX3Arz4Y7xOxw17/j3hQjADy0fARXvdWp0RP+Ba49lz+hj850HrikFTlSj
+         243aIhTy80/pAmyUptauO7xYAYPc83UXsbKcAP0BYew5PDSH5OWnNeZ9J8Rn8gX0askB
+         vLG4m/5SpFDRdMb+MtMTHUDTTDv+vM0I3QYlJ6/8eXnhSWC6voCngVDrM2flAi4PY5la
+         RtdypoFpfWNVIuiPOF7RCJUPPtixGnj5/iPDyp3X42MmNGFA2blIQVNfvQTYfxgVNq9m
+         80599xt+bb9+j3MK7j+CKYB4sOAGsyy4hdtaKS1lFI7XaWzmP1GlUwACUCyOnhXi960T
+         Jrtw==
+X-Gm-Message-State: AOJu0YwBfdM+PGbHSy3MtRch5dZouWrSAjJDtRB7r5w4hGcvo6rhgBmn
+	C44lJmS442PwU3O5uFqRX7cHF30gAdsfQciEGv+eDYwSS+M=
+X-Google-Smtp-Source: AGHT+IFGACrAVAK03DuUwFxSX+3ZPHucjR0l6zN0wX+RypeyDYKs86DLEgPEGJCSUTysEq4UamOQnk0uEQG5LeS2dQ0=
+X-Received: by 2002:a2e:b616:0:b0:2ba:18e5:1063 with SMTP id
+ r22-20020a2eb616000000b002ba18e51063mr616019ljn.50.1695166221039; Tue, 19 Sep
+ 2023 16:30:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230919145951.352548-1-victor@mojatatu.com> <beb5e6f3-e2a1-637d-e06d-247b36474e95@iogearbox.net>
-In-Reply-To: <beb5e6f3-e2a1-637d-e06d-247b36474e95@iogearbox.net>
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Date: Tue, 19 Sep 2023 19:20:57 -0400
-Message-ID: <CAM0EoMncgehpwCOxaUUKhOP7V0DyJtbDP9Q5aUkMG2h5dmfQJA@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/1] net/sched: Disambiguate verdict from return code
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Victor Nogueira <victor@mojatatu.com>, xiyou.wangcong@gmail.com, jiri@resnulli.us, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	paulb@nvidia.com, netdev@vger.kernel.org, kernel@mojatatu.com, 
-	martin.lau@linux.dev, bpf@vger.kernel.org
+References: <20230912070149.969939-1-zhouchuyi@bytedance.com>
+ <20230912070149.969939-4-zhouchuyi@bytedance.com> <CAEf4BzbsBUGiPJ+_RG3c3WdEWNQy2b6h60kLDREcXDsNp3E0_Q@mail.gmail.com>
+ <30eadbff-8340-a721-362b-ff82de03cb9f@bytedance.com> <CAEf4BzbM=v9KNtQQNcUSRs7mwwKa7FEsBFXO3T1+7KgpZVZKFw@mail.gmail.com>
+ <67d07ab7-8202-4bbd-88d9-587707bd58b1@bytedance.com>
+In-Reply-To: <67d07ab7-8202-4bbd-88d9-587707bd58b1@bytedance.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 19 Sep 2023 16:30:09 -0700
+Message-ID: <CAEf4Bzb_hMRbDU_0ibpzsf4eZ3mR4D=0SLu9E2dLHsP8=-ALiw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/6] bpf: Introduce process open coded
+ iterator kfuncs
+To: Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-	autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Sep 19, 2023 at 6:15=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.n=
-et> wrote:
+On Sat, Sep 16, 2023 at 7:03=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.com=
+> wrote:
 >
-> [ +Martin, bpf ]
+> Hello.
 >
-> On 9/19/23 4:59 PM, Victor Nogueira wrote:
-> > Currently there is no way to distinguish between an error and a
-> > classification verdict. This patch adds the verdict field as a part of
-> > struct tcf_result. That way, tcf_classify can return a proper
-> > error number when it fails, and we keep the classification result
-> > information encapsulated in struct tcf_result.
+> =E5=9C=A8 2023/9/16 04:37, Andrii Nakryiko =E5=86=99=E9=81=93:
+> > On Fri, Sep 15, 2023 at 8:03=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance=
+.com> wrote:
+> >> =E5=9C=A8 2023/9/15 07:26, Andrii Nakryiko =E5=86=99=E9=81=93:
+> >>> On Tue, Sep 12, 2023 at 12:02=E2=80=AFAM Chuyi Zhou <zhouchuyi@byteda=
+nce.com> wrote:
+> >>>>
+> >>>> This patch adds kfuncs bpf_iter_process_{new,next,destroy} which all=
+ow
+> >>>> creation and manipulation of struct bpf_iter_process in open-coded i=
+terator
+> >>>> style. BPF programs can use these kfuncs or through bpf_for_each mac=
+ro to
+> >>>> iterate all processes in the system.
+> >>>>
+> [...cut...]
+> >>>
+> >>> Few high level thoughts. I think it would be good to follow
+> >>> SEC("iter/task") naming and approach. Open-coded iterators in many
+> >>> ways are in-kernel counterpart to iterator programs, so keeping them
+> >>> close enough within reason is useful for knowledge transfer.
+> >>>
+> >>> SEC("iter/task") allows to:
+> >>> a) iterate all threads in the system
+> >>> b) iterate all threads for a given TGID
+> >>> c) it also allows to "iterate" a single thread or process, but that's
+> >>> a bit less relevant for in-kernel iterator, but we can still support
+> >>> them, why not?
+> >>>
+> >>> I'm not sure if it supports iterating all processes (as in group
+> >>> leaders of each task group) in the system, but if it's possible I
+> >>> think we should support it at least for open-coded iterator, seems
+> >>> like a very useful functionality.
+> >>>
+> >>> So to that end, let's design a small set of input arguments for
+> >>> bpf_iter_process_new() that would allow to specify this as flags +
+> >>> either (optional) struct task_struct * pointer to represent
+> >>> task/process or PID/TGID.
+> >>>
+> >>
+> >> Another concern from Alexei was the readability of the API of open-cod=
+ed
+> >> in BPF Program[1].
+> >>
+> >> bpf_for_each(task, curr) is straightforward. Users can easily understa=
+nd
+> >> that this API does the same thing as 'for_each_process' in kernel.
 > >
-> > Also add values SKB_DROP_REASON_TC_EGRESS_ERROR and
-> > SKB_DROP_REASON_TC_INGRESS_ERROR to enum skb_drop_reason.
-> > With that we can distinguish between a drop from a processing error ver=
-sus
-> > a drop from classification.
+> > In general, users might have no idea about for_each_process macro in
+> > the kernel, so I don't find this particular argument very convincing.
 > >
-> > Signed-off-by: Victor Nogueira <victor@mojatatu.com>
-> > ---
-> >   include/net/dropreason-core.h |  6 +++++
-> >   include/net/sch_generic.h     |  7 ++++++
-> >   net/core/dev.c                | 42 ++++++++++++++++++++++++++--------=
--
-> >   net/sched/cls_api.c           | 38 ++++++++++++++++++++-----------
-> >   net/sched/sch_cake.c          | 32 +++++++++++++-------------
-> >   net/sched/sch_drr.c           | 33 +++++++++++++--------------
-> >   net/sched/sch_ets.c           |  6 +++--
-> >   net/sched/sch_fq_codel.c      | 29 ++++++++++++------------
-> >   net/sched/sch_fq_pie.c        | 28 +++++++++++------------
-> >   net/sched/sch_hfsc.c          |  6 +++--
-> >   net/sched/sch_htb.c           |  6 +++--
-> >   net/sched/sch_multiq.c        |  6 +++--
-> >   net/sched/sch_prio.c          |  7 ++++--
-> >   net/sched/sch_qfq.c           | 34 +++++++++++++---------------
-> >   net/sched/sch_sfb.c           | 29 ++++++++++++------------
-> >   net/sched/sch_sfq.c           | 28 +++++++++++------------
-> >   16 files changed, 195 insertions(+), 142 deletions(-)
+> > We can add a separate set of iterator kfuncs for every useful
+> > combination of conditions, of course, but it's a double-edged sword.
+> > Needing to use a different iterator just to specify a different
+> > direction of cgroup iteration (from the example you referred in [1])
+> > also means that it's now harder to write some generic function that
+> > needs to do something for all cgroups matching some criteria where the
+> > order might be coming as an argument.
 > >
-> > diff --git a/include/net/dropreason-core.h b/include/net/dropreason-cor=
-e.h
-> > index a587e83fc169..b1c069c8e7f2 100644
-> > --- a/include/net/dropreason-core.h
-> > +++ b/include/net/dropreason-core.h
-> > @@ -80,6 +80,8 @@
-> >       FN(IPV6_NDISC_BAD_OPTIONS)      \
-> >       FN(IPV6_NDISC_NS_OTHERHOST)     \
-> >       FN(QUEUE_PURGE)                 \
-> > +     FN(TC_EGRESS_ERROR)             \
-> > +     FN(TC_INGRESS_ERROR)            \
-> >       FNe(MAX)
+> > Similarly for task iterators. It's not hard to imagine some processing
+> > that can be equivalently done per thread or per process in the system,
+> > or on each thread of the process, depending on some conditions or
+> > external configuration. Having to do three different
+> > bpf_for_each(task_xxx, task, ...) for this seems suboptimal. If the
+> > nature of the thing that is iterated over is the same, and it's just a
+> > different set of filters to specify which subset of those items should
+> > be iterated, I think it's better to try to stick to the same iterator
+> > with few simple arguments. IMO, of course, there is no objectively
+> > best approach.
 > >
-> >   /**
-> > @@ -345,6 +347,10 @@ enum skb_drop_reason {
-> >       SKB_DROP_REASON_IPV6_NDISC_NS_OTHERHOST,
-> >       /** @SKB_DROP_REASON_QUEUE_PURGE: bulk free. */
-> >       SKB_DROP_REASON_QUEUE_PURGE,
-> > +     /** @SKB_DROP_REASON_TC_EGRESS_ERROR: dropped in TC egress HOOK d=
-ue to error */
-> > +     SKB_DROP_REASON_TC_EGRESS_ERROR,
-> > +     /** @SKB_DROP_REASON_TC_INGRESS_ERROR: dropped in TC ingress HOOK=
- due to error */
-> > +     SKB_DROP_REASON_TC_INGRESS_ERROR,
-> >       /**
-> >        * @SKB_DROP_REASON_MAX: the maximum of core drop reasons, which
-> >        * shouldn't be used as a real 'reason' - only for tracing code g=
-en
-> > diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-> > index f232512505f8..9a3f71d2545e 100644
-> > --- a/include/net/sch_generic.h
-> > +++ b/include/net/sch_generic.h
-> > @@ -326,6 +326,7 @@ struct Qdisc_ops {
+> >>
+> >> However, if we keep the approach of SEC("iter/task")
+> >>
+> >> enum ITER_ITEM {
+> >>          ITER_TASK,
+> >>          ITER_THREAD,
+> >> }
+> >>
+> >> __bpf_kfunc int bpf_iter_task_new(struct bpf_iter_process *it, struct
+> >> task_struct *group_task, enum ITER_ITEM type)
+> >>
+> >> the API have to chang:
+> >>
+> >>
+> >> bpf_for_each(task, curr, NULL, ITERATE_TASK) // iterate all process in
+> >> the  system
+> >> bpf_for_each(task, curr, group_leader, ITERATE_THREAD) // iterate all
+> >> thread of group_leader
+> >> bpf_for_each(task, curr, NULL, ITERATE_THREAD) //iterate all threads o=
+f
+> >> all the process in the system
+> >>
+> >> Useres may guess what are this API actually doing....
 > >
-> >
-> >   struct tcf_result {
-> > +     u32 verdict;
-> >       union {
-> >               struct {
-> >                       unsigned long   class;
-> > @@ -336,6 +337,12 @@ struct tcf_result {
-> >       };
-> >   };
-> >
-> > +static inline void tcf_result_set_verdict(struct tcf_result *res,
-> > +                                       const u32 verdict)
-> > +{
-> > +     res->verdict =3D verdict;
-> > +}
-> > +
-> >   struct tcf_chain;
-> >
-> >   struct tcf_proto_ops {
-> > diff --git a/net/core/dev.c b/net/core/dev.c
-> > index ccff2b6ef958..1450f4741d9b 100644
-> > --- a/net/core/dev.c
-> > +++ b/net/core/dev.c
-> > @@ -3910,31 +3910,39 @@ EXPORT_SYMBOL_GPL(netdev_xmit_skip_txqueue);
-> >   #endif /* CONFIG_NET_EGRESS */
-> >
-> >   #ifdef CONFIG_NET_XGRESS
-> > -static int tc_run(struct tcx_entry *entry, struct sk_buff *skb)
-> > +static int tc_run(struct tcx_entry *entry, struct sk_buff *skb,
-> > +               struct tcf_result *res)
-> >   {
-> > -     int ret =3D TC_ACT_UNSPEC;
-> > +     int ret =3D 0;
-> >   #ifdef CONFIG_NET_CLS_ACT
-> >       struct mini_Qdisc *miniq =3D rcu_dereference_bh(entry->miniq);
-> > -     struct tcf_result res;
-> >
-> > -     if (!miniq)
-> > +     if (!miniq) {
-> > +             tcf_result_set_verdict(res, TC_ACT_UNSPEC);
-> >               return ret;
-> > +     }
-> >
-> >       tc_skb_cb(skb)->mru =3D 0;
-> >       tc_skb_cb(skb)->post_ct =3D false;
-> >
-> >       mini_qdisc_bstats_cpu_update(miniq, skb);
-> > -     ret =3D tcf_classify(skb, miniq->block, miniq->filter_list, &res,=
- false);
-> > +     ret =3D tcf_classify(skb, miniq->block, miniq->filter_list, res, =
-false);
-> > +     if (ret < 0) {
-> > +             mini_qdisc_qstats_cpu_drop(miniq);
-> > +             return ret;
-> > +     }
-> >       /* Only tcf related quirks below. */
-> > -     switch (ret) {
-> > +     switch (res->verdict) {
-> >       case TC_ACT_SHOT:
-> >               mini_qdisc_qstats_cpu_drop(miniq);
-> >               break;
-> >       case TC_ACT_OK:
-> >       case TC_ACT_RECLASSIFY:
-> > -             skb->tc_index =3D TC_H_MIN(res.classid);
-> > +             skb->tc_index =3D TC_H_MIN(res->classid);
-> >               break;
-> >       }
-> > +#else
-> > +     tcf_result_set_verdict(res, TC_ACT_UNSPEC);
-> >   #endif /* CONFIG_NET_CLS_ACT */
-> >       return ret;
-> >   }
-> > @@ -3977,6 +3985,7 @@ sch_handle_ingress(struct sk_buff *skb, struct pa=
-cket_type **pt_prev, int *ret,
-> >                  struct net_device *orig_dev, bool *another)
-> >   {
-> >       struct bpf_mprog_entry *entry =3D rcu_dereference_bh(skb->dev->tc=
-x_ingress);
-> > +     struct tcf_result res =3D {0};
-> >       int sch_ret;
-> >
-> >       if (!entry)
-> > @@ -3994,9 +4003,14 @@ sch_handle_ingress(struct sk_buff *skb, struct p=
-acket_type **pt_prev, int *ret,
-> >               if (sch_ret !=3D TC_ACT_UNSPEC)
-> >                       goto ingress_verdict;
-> >       }
-> > -     sch_ret =3D tc_run(tcx_entry(entry), skb);
-> > +     sch_ret =3D tc_run(tcx_entry(entry), skb, &res);
-> > +     if (sch_ret < 0) {
-> > +             kfree_skb_reason(skb, SKB_DROP_REASON_TC_INGRESS_ERROR);
-> > +             *ret =3D NET_RX_DROP;
-> > +             return NULL;
-> > +     }
-> >   ingress_verdict:
-> > -     switch (sch_ret) {
-> > +     switch (res.verdict) {
+> > I'd expect users to consult documentation before trying to use an
+> > unfamiliar cutting-edge functionality. So let's try to keep
+> > documentation clear and up to the point. Extra flag argument doesn't
+> > seem to be a big deal.
 >
-> This breaks tcx, please move all this logic into tc_run(). No changes to =
-sch_handle_ingress()
-> or sch_handle_egress should be necessary, you can then just remap the ret=
-urn code to TC_ACT_SHOT
-> in such case.
+> Thanks for your suggestion!
+>
+> Before we begin working on the next version, I have outlined a detailed
+> API design here:
+>
+> 1.task_iter
+>
+> It will be used to iterate process/threads like SEC("iter/task"). Here
+> we should better to follow the naming and approach SEC("iter/task"):
+>
+> enum {
+>         ITERATE_PROCESS,
+>         ITERATE_THREAD,
+> }
+>
+> __bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it, struct
+> task_struct *task, int flag);
+>
+> If we want to iterate all processes in the system, the iteration will
+> start from the *task* which is passed from user.(since process in the
+> system are connected through a linked list)
+
+but will go through all of them anyways, right? it's kind of
+surprising from usability standpoint to have to pass some task_struct
+to iterate all of them, tbh. I wonder if it's hard to adjust kfunc
+validation to allow "nullable" pointers? We can look at that
+separately, of course.
+
+>
+> Additionally, the *task* can allow users to specify iterating all
+> threads within a task group.
+>
+> SEC("xxx")
+> int xxxx(void *ctx)
+> {
+>         struct task_struct *pos;
+>         struct task_struct *cur_task =3D bpf_get_current_task_btf();
+>
+>         bpf_rcu_read_lock();
+>
+>         // iterating all process in the system start from cur_task
+>         bpf_for_each(task, pos, cur_task, ITERATE_PROCESS) {
+>
+>         }
+>
+>         // iterate all thread belongs to cur_task group.
+>         bpf_for_each(task, pos, cur_task, ITERATE_THREAD) {
+>
+>         }
+>
+>         bpf_rcu_read_unlock();
+>         return 0;
+> }
+>
+> Iterating all thread of each process is great=EF=BC=88ITERATE_ALL=EF=BC=
+=89. But maybe
+> let's break it down step by step and implement
+> ITERATE_PROCESS/ITERATE_THREAD first? (I'm little worried about the cpu
+> overhead of ITERATE_ALL, since we are doing a heavy job in BPF Prog)
 >
 
-I think it is valuable to have a good reason code like
-SKB_DROP_REASON_TC_XXX_ERROR to disambiguate between errors vs
-verdicts in the case of tc_run() variant.
-For tcx_run(), does this look ok (for consistency)?:
+Hm... but if it was a sleepable BPF program and
+bpf_rcu_read_{lock,unlock}() was only per task, then it shouldn't be
+the problem? See enum bpf_cgroup_iter_order.
 
-if (static_branch_unlikely(&tcx_needed_key)) {
-                sch_ret =3D tcx_run(entry, skb, true);
-                if (sch_ret !=3D TC_ACT_UNSPEC) {
-                        res.verdict =3D sch_ret;
-                        goto ingress_verdict;
-                }
-}
 
-cheers,
-jamal
+> I wanted to reuse BPF_TASK_ITER_ALL/BPF_TASK_ITER_TID/BPF_TASK_ITER_TGID
+> insted of new enums like ITERATE_PROCESS/ITERATE_THREAD. But it seems
+> necessary. In BPF Prog, we usually operate task_struct directly instead
+> of pid/tgid. It's a little weird to use
+> BPF_TASK_ITER_TID/BPF_TASK_ITER_TGID here:
 
-> >       case TC_ACT_REDIRECT:
-> >               /* skb_mac_header check was done by BPF, so we can safely
-> >                * push the L2 header back before redirecting to another
-> > @@ -4032,6 +4046,7 @@ static __always_inline struct sk_buff *
-> >   sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *d=
-ev)
-> >   {
-> >       struct bpf_mprog_entry *entry =3D rcu_dereference_bh(dev->tcx_egr=
-ess);
-> > +     struct tcf_result res =3D {0};
-> >       int sch_ret;
-> >
-> >       if (!entry)
-> > @@ -4045,9 +4060,14 @@ sch_handle_egress(struct sk_buff *skb, int *ret,=
- struct net_device *dev)
-> >               if (sch_ret !=3D TC_ACT_UNSPEC)
-> >                       goto egress_verdict;
-> >       }
-> > -     sch_ret =3D tc_run(tcx_entry(entry), skb);
-> > +     sch_ret =3D tc_run(tcx_entry(entry), skb, &res);
-> > +     if (sch_ret < 0) {
-> > +             kfree_skb_reason(skb, SKB_DROP_REASON_TC_EGRESS_ERROR);
-> > +             *ret =3D NET_XMIT_DROP;
-> > +             return NULL;
-> > +     }
-> >   egress_verdict:
-> > -     switch (sch_ret) {
-> > +     switch (res.verdict) {
-> >       case TC_ACT_REDIRECT:
-> >               /* No need to push/pop skb's mac_header here on egress! *=
-/
-> >               skb_do_redirect(skb);
+enum bpf_iter_task_type is internal type, so we can rename
+BPF_TASK_ITER_TID to BPF_TASK_ITER_THREAD and BPF_TASK_ITER_PROC (or
+add them as aliases). At the very least, we should use consistent
+BPF_TASK_ITER_xxx naming, instead of just ITERATE_PROCESS. See
+
+>
+> bpf_for_each(task, pos, cur_task, BPF_TASK_ITER_TID) {
+> }
+>
+> On the other hand,
+> BPF_TASK_ITER_ALL/BPF_TASK_ITER_TID/BPF_TASK_ITER_TGID are inner flags
+> that are hidden from the users.
+> Exposing ITERATE_PROCESS/ITERATE_THREAD will not cause confusion to user.
+>
+
+inner types are not a problem when used with vmlinux.h
+
+
+>
+> 2. css_iter.
+>
+> css_iter will be used to:
+> (1) iterating subsystem, like
+> for_each_mem_cgroup_tree/cpuset_for_each_descendant_pre in kernel.
+> (2) iterating cgroup. (patch-6's selfetest has a basic example)
+>
+> css(cgroup_subsys_state) is more fundamental than struct cgroup. I think
+> we'd better operating css rather than cgroup, since it's can be hard for
+> cgroup_iter to achive (2). So here we keep the name of "css_iter",
+> BPF_CGROUP_ITER_DESCENDANTS_PRE/BPF_CGROUP_ITER_DESCENDANTS_POST/BPF_CGRO=
+UP_ITER_ANCESTORS_UP
+> can be reused.
+>
+>
+> __bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
+>                 struct cgroup_subsys_state *root, unsigned int flag)
+>
+> bpf_for_each(css, root, BPF_CGROUP_ITER_DESCENDANTS_PRE)
+>
+
+Makes sense, yep, thanks.
+
+> Thanks.
+>
+>
+>
+>
 
