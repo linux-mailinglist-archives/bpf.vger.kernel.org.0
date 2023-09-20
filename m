@@ -1,128 +1,119 @@
-Return-Path: <bpf+bounces-10487-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10488-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC5527A8E41
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 23:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 09E737A8E7B
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 23:32:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5792F1C2091D
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 21:11:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F7421C20921
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 21:32:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC2743CD18;
-	Wed, 20 Sep 2023 21:11:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 692F63E48B;
+	Wed, 20 Sep 2023 21:31:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7E5E41A80;
-	Wed, 20 Sep 2023 21:11:23 +0000 (UTC)
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FF9C2;
-	Wed, 20 Sep 2023 14:11:22 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d81b803b09aso397227276.2;
-        Wed, 20 Sep 2023 14:11:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695244282; x=1695849082; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ck01rY7g6eieWdyN/838nrtggmL0o8sQJFo5pWQPmMI=;
-        b=SN/WTUCL2ZGJ6ZLqKEkYdKLTqh30LIzYETOjjz+Ox7n8XvATtQFYgIeVP9DVx3wY72
-         /cf0PVzRGcuEqtyOYrzYmj8f2sKX01g+t3YNQuQGs4XXAXQa05JFVbvN3LCyDTF6tG1n
-         rOXZsQXyEJwuLiQToMUo6kh8yHpUpJdp5gXufzZ7kGeOMJbx8ipcw0Ud9P12d8uyN84l
-         HbNX70XH45AIsEsCS9o1vlUrC/0DFrQkV/GQDgS0iLAEcdewkGlHjHs5Ofy2r0ZBuHQp
-         ppARf0azo+jMXDJY6ubrQQOXMSCUqahuZSdo23EdEKCbZ94L51HOfcN4fxcj4ZWHKRJv
-         0q4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695244282; x=1695849082;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ck01rY7g6eieWdyN/838nrtggmL0o8sQJFo5pWQPmMI=;
-        b=sqIF9d4VF/UpEq6RDz704Kw9lcmf9pzShL/mzMRf3mm9SAde/r8uSy2vaSAWefYNqZ
-         pVrFdJronjOhQP4WP8XvBzCDGbI1ULUm2AgIt4ohfWfUdsPY98aacn6csl1i3Y6g7E/X
-         nx4VV3yo6gMlT1k99Ny+kmzijZHB06vyoNcmG5BDQxUkdPeFC27es04hYhdREbwT86bA
-         ygvm9xu1qrjJPI9/j7/VA51FMm1bhzK4OZcLTr4e8z1BWwbrLelWhLpKsmrmXXX30gNF
-         TrdvonQ7JwdV7s7+t8WYJYuc3whOAs3Y8k2F+WifT89/0pJyfdGKjmdC0YeUAML+K87S
-         +GnA==
-X-Gm-Message-State: AOJu0YxGnKgVi/F5AcFtzqUvCMyMy/x9WaiTUMy38UAE5ZVBiw0awWc1
-	y4BNK1s+OjmC9d+DWQPgQbLe1BkOuCw=
-X-Google-Smtp-Source: AGHT+IHJdK7nOnt0hU3D91rCQjheuhXxVnULYhHnjKmmqbgHHKpSh7W6Y+okZfiiJHPzQ1PvWYIZ9g==
-X-Received: by 2002:a25:d2c2:0:b0:d08:2101:562d with SMTP id j185-20020a25d2c2000000b00d082101562dmr3841349ybg.34.1695244281751;
-        Wed, 20 Sep 2023 14:11:21 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:dcd2:9730:2c7c:239f? ([2600:1700:6cf8:1240:dcd2:9730:2c7c:239f])
-        by smtp.gmail.com with ESMTPSA id 142-20020a250394000000b00d8161769507sm15506ybd.25.2023.09.20.14.11.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 14:11:21 -0700 (PDT)
-Message-ID: <3b0af149-2561-a672-a03c-241dbb1672c1@gmail.com>
-Date: Wed, 20 Sep 2023 14:11:19 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15BE241A88
+	for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 21:31:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A70FC433C7;
+	Wed, 20 Sep 2023 21:31:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695245510;
+	bh=F/lk7KBzky7ybhGLC7FUC31ndjpQ/6UfQh3yYpW+cgM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=bpACIvLsbtWsj7lW/Lyts2Hl2NQ09NLir9H+OMg4nN0owOhsjP6dFsfsn3BKcLyH5
+	 y8r784r2g/BHVSUa5tEnP1Xn+aNuWi9KXxT3dgC5IMrBwIU7A1SxYbFlLM8j0rje47
+	 QHKosCyPnrD3D6lGCi8QuODp9WQYOe5uxFb5wpvbpHvg0luzdl+/XiOT3AwaOVSRTE
+	 +P4yU1SQpHaJmmVc0Mdl+J15jFKv9t9aFz6iYZqnEhs0JPAJxhyQeVwq2486cq1bdk
+	 F6zAPkoBcR9VP7iOJqGpusIHKD0c1ilsqM0z5+i7hJ495zIXHJmvUCz9pLpvp+pGmD
+	 mdFR33Ge73QhQ==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>,
+	Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Hou Tao <houtao1@huawei.com>,
+	Daniel Xu <dxu@dxuuu.xyz>
+Subject: [PATCHv3 bpf-next 0/9] bpf: Add missed stats for kprobes
+Date: Wed, 20 Sep 2023 23:31:36 +0200
+Message-ID: <20230920213145.1941596-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH bpf] bpf, sockmap: Reject sk_msg egress redirects to
- non-TCP sockets
-Content-Language: en-US
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, kernel-team@cloudflare.com,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Cong Wang <cong.wang@bytedance.com>
-References: <20230920102055.42662-1-jakub@cloudflare.com>
- <1224b3f1-4b2a-3c49-5f29-cfce0652ba94@gmail.com>
- <87wmwk7dy5.fsf@cloudflare.com>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <87wmwk7dy5.fsf@cloudflare.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 8bit
+
+hi,
+at the moment we can't retrieve the number of missed kprobe
+executions and subsequent execution of BPF programs.
+
+This patchset adds:
+  - counting of missed execution on attach layer for:
+    . kprobes attached through perf link (kprobe/ftrace)
+    . kprobes attached through kprobe.multi link (fprobe)
+  - counting of recursion_misses for BPF kprobe programs
+
+It's still technically possible to create kprobe without perf link (using
+SET_BPF perf ioctl) in which case we don't have a way to retrieve the kprobe's
+'missed' count. However both libbpf and cilium/ebpf libraries use perf link
+if it's available, and for old kernels without perf link support we can use
+BPF program to retrieve the kprobe missed count.
+
+v3 changes:
+  - added acks [Song]
+  - make test_missed not serial [Andrii]
+
+Also available at:
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  bpf/missed_stats
+
+thanks,
+jirka
 
 
+---
+Jiri Olsa (9):
+      bpf: Count stats for kprobe_multi programs
+      bpf: Add missed value to kprobe_multi link info
+      bpf: Add missed value to kprobe perf link info
+      bpf: Count missed stats in trace_call_bpf
+      bpftool: Display missed count for kprobe_multi link
+      bpftool: Display missed count for kprobe perf link
+      selftests/bpf: Add test for missed counts of perf event link kprobe
+      selftests/bpf: Add test for recursion counts of perf event link kprobe
+      selftests/bpf: Add test for recursion counts of perf event link tracepoint
 
-On 9/20/23 13:59, Jakub Sitnicki wrote:
-> On Wed, Sep 20, 2023 at 11:19 AM -07, Kui-Feng Lee wrote:
->> On 9/20/23 03:20, Jakub Sitnicki wrote:
->>> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
->>> index cb11750b1df5..4292c2ed1828 100644
->>> --- a/net/core/sock_map.c
->>> +++ b/net/core/sock_map.c
->>> @@ -668,6 +668,8 @@ BPF_CALL_4(bpf_msg_redirect_map, struct sk_msg *, msg,
->>>    	sk = __sock_map_lookup_elem(map, key);
->>>    	if (unlikely(!sk || !sock_map_redirect_allowed(sk)))
->>>    		return SK_DROP;
->>> +	if (!(flags & BPF_F_INGRESS) && !sk_is_tcp(sk))
->>> +		return SK_DROP;
->>>      	msg->flags = flags;
->>>    	msg->sk_redir = sk;
->>> @@ -1267,6 +1269,8 @@ BPF_CALL_4(bpf_msg_redirect_hash, struct sk_msg *, msg,
->>>    	sk = __sock_hash_lookup_elem(map, key);
->>>    	if (unlikely(!sk || !sock_map_redirect_allowed(sk)))
->>>    		return SK_DROP;
->>> +	if (!(flags & BPF_F_INGRESS) && !sk_is_tcp(sk))
->>> +		return SK_DROP;
->>>      	msg->flags = flags;
->>>    	msg->sk_redir = sk;
->>
->> Just be curious! Can it happen to other socket types?
->> I mean to redirect a msg from a sk of any type to one of another type.
-> 
-> Today sk_msg redirects are implemented only for tcp4 and tcp6.
-> 
-> Here's a full matrix of what redirects are supported [1].
-> 
-> [1] https://gist.github.com/jsitnicki/578fdd614d181bed2b02922b17972b4e
-
-Thanks!
+ include/linux/bpf.h                                         |  16 +++++++++++
+ include/linux/trace_events.h                                |   6 ++--
+ include/uapi/linux/bpf.h                                    |   2 ++
+ kernel/bpf/syscall.c                                        |  14 ++++++----
+ kernel/trace/bpf_trace.c                                    |  10 +++++--
+ kernel/trace/trace_kprobe.c                                 |  14 ++++++++--
+ tools/bpf/bpftool/link.c                                    |   6 ++++
+ tools/include/uapi/linux/bpf.h                              |   2 ++
+ tools/testing/selftests/bpf/DENYLIST.aarch64                |   1 +
+ tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c       |   5 ++++
+ tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h |   2 ++
+ tools/testing/selftests/bpf/prog_tests/missed.c             | 138 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/missed_kprobe.c           |  30 ++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/missed_kprobe_recursion.c |  48 ++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/missed_tp_recursion.c     |  41 +++++++++++++++++++++++++++
+ 15 files changed, 322 insertions(+), 13 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/missed.c
+ create mode 100644 tools/testing/selftests/bpf/progs/missed_kprobe.c
+ create mode 100644 tools/testing/selftests/bpf/progs/missed_kprobe_recursion.c
+ create mode 100644 tools/testing/selftests/bpf/progs/missed_tp_recursion.c
 
