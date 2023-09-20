@@ -1,190 +1,383 @@
-Return-Path: <bpf+bounces-10424-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10425-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92C6B7A6FF6
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 03:00:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 063237A6FF8
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 03:03:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D2C31C2096F
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 01:00:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90419281396
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 01:03:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA8417CD;
-	Wed, 20 Sep 2023 01:00:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFE1B17CD;
+	Wed, 20 Sep 2023 01:03:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64D2FA49
-	for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 01:00:34 +0000 (UTC)
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03287AB
-	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 18:00:32 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so784039a12.1
-        for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 18:00:31 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC8C9A49
+	for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 01:03:19 +0000 (UTC)
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42790BD
+	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 18:03:17 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id 4fb4d7f45d1cf-532c66a105bso1429198a12.3
+        for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 18:03:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695171630; x=1695776430; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=09CY5SwSHF/SrDzdOna0vPyDHEJTcAh9i7QpJ77CmJE=;
-        b=BZzaOSYaToToIkvrCcPZSOGCRG0gT1DHSJACovNbM03cCmCZIeaWHQwQDLj7Gk7qpQ
-         Hsw+xM4cVpDvnyBNuIB/pQP+DFBkM3ianClD7APSxvRVx5f9dJCPr/6p4/7k504lvQGs
-         lzmi1fjUls1TNvNAoyAd6IsurNcMGjF6YpEIAF3IEkndOhDZhJ+KcrNo1Sdum/xbAuS2
-         TDuIj9/K5FfoPB/S+essuauCsUsOtm57RsJIA/VtZVnaJfy7oBIAmfiUXDvLZAVETwrL
-         i3wUnbkBZCoQrDJCOjreciip/Q1NEd/PjVymaDPBrHugqpTZk6iycs/JXL2TRvPFfkQg
-         Lbgw==
+        d=gmail.com; s=20230601; t=1695171795; x=1695776595; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EYDyKw2MTXGByz3yz0phakx5pJW7f6EUvrlNZRlMpq8=;
+        b=bE0XtSHGbrcf0NvzJhsADlU1gjHFwQ39QCgRg4fY3WAASBTXLjI5ZhYjXOzR9v+yE+
+         6pu63F/p/kKwe+Ibo1+HvS2Ld9IN2VvRnlxHuLx/2DOsEZI0k6UoA4+KEP1yHMnOuYjo
+         MTOzU5jtUr9N25+dV8hs3rD1Vb1beJD2RqpJoHEHWEHFND6gsTk9dSpb3kII0LDqMd2B
+         q4NfKKDpwr+rKEPq/brOvNm+CnAStwj9xcshW0c30B1aRfCTN8KTZFNNsClez9YoEk0w
+         xTQNSzUZCuLizKmAAaxTDQTzNygozD3LZGEtFqMQUuuHVts8tQR8vcRx0H3yInS4X3RY
+         91rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695171630; x=1695776430;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=09CY5SwSHF/SrDzdOna0vPyDHEJTcAh9i7QpJ77CmJE=;
-        b=DX1WJrlw0M4J2Il7ktf9TgqNq9mlrX1XJPZigam4CajC/sz8uOE4K3F/HNMF2sOFrh
-         EmCBAd5NnRcUf0Mc/gKlYb7hNWL2IPPwqwhfMK9O95EphY7fK+jCWebatPE7BaldARcX
-         wR0WDdZKwGQpcRUFnLLX39YjHjCbOC7yPYmQst+0ekE1q8KwqA7qDIVbCjToHj/p/Ux5
-         hMY8UWd7stDgNmhXQ3uegmTQ5abpyGkrb8exTQWzfY3j529PuMVI8uSz5gJDPzIxt8Cs
-         Mi9afnKoq4rSMAxjv8bhoAU8l3EjhJhyFcW3SokNgLyn0SIlHvr7vDqSwgwXVtDJGxZP
-         6GTQ==
-X-Gm-Message-State: AOJu0YyxhtUDlYSEgr/ULcW9Hp/hDePGTWfcgWcuQsd+a/JX9NJUGXvM
-	EXs72Ju+XDwP1dVy1lxref5kmqByeo//kQ==
-X-Google-Smtp-Source: AGHT+IHx4K0FgFT9j9frcVMYybb2TEf2jC2KkotkPIf/njbsxTR7PwASxRV+Q/OtIcCrKWiz2Mz9bA==
-X-Received: by 2002:a50:ed03:0:b0:52a:38c3:1b4b with SMTP id j3-20020a50ed03000000b0052a38c31b4bmr1649167eds.15.1695171630161;
-        Tue, 19 Sep 2023 18:00:30 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id a3-20020aa7cf03000000b0052e1959db1csm8083723edy.20.2023.09.19.18.00.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 18:00:29 -0700 (PDT)
-Message-ID: <3c0703abeec622f9b7747c0385cc83752d578af3.camel@gmail.com>
-Subject: Re: [PATCH bpf] bpf: unconditionally reset backtrack_state masks on
- global func exit
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov
-	 <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team
- <kernel-team@meta.com>, Chris Mason <clm@meta.com>
-Date: Wed, 20 Sep 2023 04:00:28 +0300
-In-Reply-To: <CAEf4BzYYm8enhZBw3QYxpPYGQEJTJ_0onDVAH4N8CvCsoxY+=A@mail.gmail.com>
-References: <20230918210110.2241458-1-andrii@kernel.org>
-	 <CAADnVQ+w4e2K06tPdV8J-TuEvY6ysGv_45PJZe2AkOpYFrx7Og@mail.gmail.com>
-	 <CAEf4BzY9_0RCfXQdPL65W182jaQ3uHo7RUEkZ3JQaOfA5NXXMg@mail.gmail.com>
-	 <CAEf4BzYYm8enhZBw3QYxpPYGQEJTJ_0onDVAH4N8CvCsoxY+=A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=1e100.net; s=20230601; t=1695171795; x=1695776595;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EYDyKw2MTXGByz3yz0phakx5pJW7f6EUvrlNZRlMpq8=;
+        b=AlDu4qQoloB3qq1CNWHW83BnIGqhLm2ySJLqwTH/QUP3Y4EgXq9U4J6m7vDZDdiGg+
+         VVhZ3flKjjoU3rWNe9Rb9trGfrvDTqx2vaEDReKMF9S1RoRmuGEc1YATmdHFZuAKyrPX
+         /eUp7E6qUcmcpqb26UI+diPwqAjpmzoUzSRVQYKL2/k0D+cNA7kj3ZjtSApz3FTdv3Xg
+         pL8nYlOX3/3J8x1Y5lm7jtJwv9tvNFMxqSjf1E7HyVm5CccmMbumTmsg066GTn9K+2mg
+         y6f1ScL9tDwT16ork5+OsYlgTU2BPcxQN1qWeeFv3Qk0XE/N+RxOJa0F4J4UvbbEy/Kt
+         8ClA==
+X-Gm-Message-State: AOJu0YwsWePbi8BDZKhYVBqggs33ipC+wemGHDwKpDHQOW7vr97p4t0t
+	TIbfzjWtNbPjaaYVFgUFFsjEJ3OLrH8HnESjCfc=
+X-Google-Smtp-Source: AGHT+IGRmy+2crvofObJcTdiYtgEI3Tp9EDIjr25BUk6LoI9kqZ1F2eHz5xTqrlktuNz5u9lhNe5/GvWkUIvUwX1qL0=
+X-Received: by 2002:a05:6402:288:b0:52c:b469:bafd with SMTP id
+ l8-20020a056402028800b0052cb469bafdmr691276edv.41.1695171795395; Tue, 19 Sep
+ 2023 18:03:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
+References: <20230912233214.1518551-1-memxor@gmail.com> <20230912233214.1518551-16-memxor@gmail.com>
+ <CAEf4BzbY5CW_CFSeZBKDi6zCyFCmWkHcPBmCs65z8Vd-=cEduw@mail.gmail.com>
+In-Reply-To: <CAEf4BzbY5CW_CFSeZBKDi6zCyFCmWkHcPBmCs65z8Vd-=cEduw@mail.gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Wed, 20 Sep 2023 03:02:39 +0200
+Message-ID: <CAP01T75pXfT2NFKj=R=t_zTMX_1QySgjaQGCa_0Ve6RQZwR9xg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 15/17] libbpf: Add support for custom
+ exception callbacks
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Yonghong Song <yonghong.song@linux.dev>, 
+	David Vernet <void@manifault.com>, Puranjay Mohan <puranjay12@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, 2023-09-19 at 13:56 -0700, Andrii Nakryiko wrote:
-> On Tue, Sep 19, 2023 at 11:59=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >=20
-> > On Tue, Sep 19, 2023 at 2:06=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >=20
-> > > On Mon, Sep 18, 2023 at 2:01=E2=80=AFPM Andrii Nakryiko <andrii@kerne=
-l.org> wrote:
-> > > >=20
-> > > > In mark_chain_precision() logic, when we reach the entry to a globa=
-l
-> > > > func, it is expected that R1-R5 might be still requested to be mark=
-ed
-> > > > precise. This would correspond to some integer input arguments bein=
-g
-> > > > tracked as precise. This is all expected and handled as a special c=
-ase.
-> > > >=20
-> > > > What's not expected is that we'll leave backtrack_state structure w=
+Hi Andrii,
+
+On Wed, 20 Sept 2023 at 02:25, Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Sep 12, 2023 at 4:32=E2=80=AFPM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> > Add support to libbpf to append exception callbacks when loading a
+> > program. The exception callback is found by discovering the declaration
+> > tag 'exception_callback:<value>' and finding the callback in the value
+> > of the tag.
+> >
+> > The process is done in two steps. First, for each main program, the
+> > bpf_object__sanitize_and_load_btf function finds and marks its
+> > corresponding exception callback as defined by the declaration tag on
+> > it. Second, bpf_object__reloc_code is modified to append the indicated
+> > exception callback at the end of the instruction iteration (since
+> > exception callback will never be appended in that loop, as it is not
+> > directly referenced).
+> >
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  tools/lib/bpf/libbpf.c | 114 +++++++++++++++++++++++++++++++++++++++--
+> >  1 file changed, 109 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index afc07a8f7dc7..3a6108e3238b 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -436,9 +436,11 @@ struct bpf_program {
+> >         int fd;
+> >         bool autoload;
+> >         bool autoattach;
+> > +       bool sym_global;
+> >         bool mark_btf_static;
+> >         enum bpf_prog_type type;
+> >         enum bpf_attach_type expected_attach_type;
+> > +       int exception_cb_idx;
+> >
+> >         int prog_ifindex;
+> >         __u32 attach_btf_obj_fd;
+> > @@ -765,6 +767,7 @@ bpf_object__init_prog(struct bpf_object *obj, struc=
+t bpf_program *prog,
+> >
+> >         prog->type =3D BPF_PROG_TYPE_UNSPEC;
+> >         prog->fd =3D -1;
+> > +       prog->exception_cb_idx =3D -1;
+> >
+> >         /* libbpf's convention for SEC("?abc...") is that it's just lik=
+e
+> >          * SEC("abc...") but the corresponding bpf_program starts out w=
 ith
-> > > > some register bits set. This is because for subsequent precision
-> > > > propagations backtrack_state is reused without clearing masks, as a=
-ll
-> > > > code paths are carefully written in a way to leave empty backtrack_=
-state
-> > > > with zeroed out masks, for speed.
-> > > >=20
-> > > > The fix is trivial, we always clear register bit in the register ma=
-sk, and
-> > > > then, optionally, set reg->precise if register is SCALAR_VALUE type=
-.
-> > > >=20
-> > > > Reported-by: Chris Mason <clm@meta.com>
-> > > > Fixes: be2ef8161572 ("bpf: allow precision tracking for programs wi=
-th subprogs")
-> > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > ---
-> > > >  kernel/bpf/verifier.c | 8 +++-----
-> > > >  1 file changed, 3 insertions(+), 5 deletions(-)
-> > > >=20
-> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > index bb78212fa5b2..c0c7d137066a 100644
-> > > > --- a/kernel/bpf/verifier.c
-> > > > +++ b/kernel/bpf/verifier.c
-> > > > @@ -4047,11 +4047,9 @@ static int __mark_chain_precision(struct bpf=
-_verifier_env *env, int regno)
-> > > >                                 bitmap_from_u64(mask, bt_reg_mask(b=
-t));
-> > > >                                 for_each_set_bit(i, mask, 32) {
-> > > >                                         reg =3D &st->frame[0]->regs=
-[i];
-> > > > -                                       if (reg->type !=3D SCALAR_V=
-ALUE) {
-> > > > -                                               bt_clear_reg(bt, i)=
-;
-> > > > -                                               continue;
-> > > > -                                       }
-> > > > -                                       reg->precise =3D true;
-> > > > +                                       bt_clear_reg(bt, i);
-> > > > +                                       if (reg->type =3D=3D SCALAR=
-_VALUE)
-> > > > +                                               reg->precise =3D tr=
-ue;
-> > >=20
-> > > Looks good, but is there a selftest that can demonstrate the issue?
-> >=20
-> > I'll see if I can write something small and reliable.
->=20
-> I give up. It seems like lots of conditions have to come together to
-> trigger this. In production it was an application that happened to
-> finish global func validation with that r1 set as precise in
-> backtrack_state, and then proceeded to have some equivalent state
-> matched immediately, which triggered propagate_precision() ->
-> mark_chain_precision_batch(), but doing propagation of r9. Then with
-> this bug we were looking to propagate r1 and r9, but the code path
-> under verification didn't have any instruction touching r1 until we
-> bubbled back up to helper call instruction, where verifier complained
-> about r1 being required to be precise right after helper call (which
-> is illegal, as r1-r5 are clobbered).
->=20
-> Few simple tests I tried failed to set up all the necessary conditions
-> to trigger this in the exact sequence necessary. The fix is simple and
-> well understood, I'd vote for landing it, given crafting a test is
-> highly non-trivial.
+> > @@ -871,14 +874,16 @@ bpf_object__add_programs(struct bpf_object *obj, =
+Elf_Data *sec_data,
+> >                 if (err)
+> >                         return err;
+> >
+> > +               if (ELF64_ST_BIND(sym->st_info) !=3D STB_LOCAL)
+> > +                       prog->sym_global =3D true;
+> > +
+> >                 /* if function is a global/weak symbol, but has restric=
+ted
+> >                  * (STV_HIDDEN or STV_INTERNAL) visibility, mark its BT=
+F FUNC
+> >                  * as static to enable more permissive BPF verification=
+ mode
+> >                  * with more outside context available to BPF verifier
+> >                  */
+> > -               if (ELF64_ST_BIND(sym->st_info) !=3D STB_LOCAL
+> > -                   && (ELF64_ST_VISIBILITY(sym->st_other) =3D=3D STV_H=
+IDDEN
+> > -                       || ELF64_ST_VISIBILITY(sym->st_other) =3D=3D ST=
+V_INTERNAL))
+> > +               if (prog->sym_global && (ELF64_ST_VISIBILITY(sym->st_ot=
+her) =3D=3D STV_HIDDEN
+> > +                   || ELF64_ST_VISIBILITY(sym->st_other) =3D=3D STV_IN=
+TERNAL))
+> >                         prog->mark_btf_static =3D true;
+> >
+> >                 nr_progs++;
+> > @@ -3142,6 +3147,86 @@ static int bpf_object__sanitize_and_load_btf(str=
+uct bpf_object *obj)
+> >                 }
+> >         }
+> >
+> > +       if (!kernel_supports(obj, FEAT_BTF_DECL_TAG))
+> > +               goto skip_exception_cb;
+> > +       for (i =3D 0; i < obj->nr_programs; i++) {
+>
+> I'm not sure why you chose to do these very inefficient three nested
+> for loops, tbh. Can you please send a follow up patch to make this a
+> bit more sane? There is no reason to iterate over BTF multiple times.
+> In general BPF object's BTF can have tons of information (especially
+> with vmlinux.h), so minimizing unnecessary linear searches here is
+> worth doing.
+>
+> How about this structure:
+>
+>
+> for each btf type in btf:
+>    if not decl_tag and not "exception_callback:" one, continue
+>
+>    prog_name =3D <find from decl_tag's referenced func>
+>    subprog_name =3D <find from decl_Tag's name>
+>
+>    prog =3D find_by_name(prog_name);
+>    subprog =3D find_by_name(subprog_name);
+>
+>    <check conditions>
+>
+>    <remember idx; if it's already set, emit human-readable error and
+> exit, don't rely on BPF verifier to complain >
+>
+> Thanks.
+>
 
-I agree with this change and it does not cause any issues when tested local=
-ly.
-As far as I understand, to make a test case one needs to:
-- make a special async callback that would leave some garbage "r1-r5"
-  bits set in frame zero;
-- trick verifier to check the async callback first and then jump to a
-  state where precision marks on "r1-r5" are forbidden, e.g. a point
-  right after pseudo call, so that backtrack_insn would jump to
-  BPF_EXIT and complain.
-Crafting such testcase sounds tricky and it might be fragile.
+Yes, I think this looks better. I will rework and send a follow up fix.
+I was actually under the impression (based on dumping BTF of objects
+in selftests) that usually the count is somewhere like 30 or 100 for
+user BTFs.
+Even when vmlinux.h is included the unused types are dropped from the
+BTF. So I didn't pay much attention to looping over the user BTF over
+and over.
+But I do see in some objects it is up to 500 and I guess it goes
+higher in huge BPF objects that have a lot of programs (or many
+objects linked together).
 
-It appears to me that from time to time we get to situations when
-having kunit tests would be beneficial =C2=AF\_(=E3=83=84)_/=C2=AF.
+> > +               struct bpf_program *prog =3D &obj->programs[i];
+> > +               int j, k, n;
+> > +
+> > +               if (prog_is_subprog(obj, prog))
+> > +                       continue;
+> > +               n =3D btf__type_cnt(obj->btf);
+> > +               for (j =3D 1; j < n; j++) {
+> > +                       const char *str =3D "exception_callback:", *nam=
+e;
+> > +                       size_t len =3D strlen(str);
+> > +                       struct btf_type *t;
+> > +
+> > +                       t =3D btf_type_by_id(obj->btf, j);
+> > +                       if (!btf_is_decl_tag(t) || btf_decl_tag(t)->com=
+ponent_idx !=3D -1)
+> > +                               continue;
+> > +
+> > +                       name =3D btf__str_by_offset(obj->btf, t->name_o=
+ff);
+> > +                       if (strncmp(name, str, len))
+> > +                               continue;
+> > +
+> > +                       t =3D btf_type_by_id(obj->btf, t->type);
+> > +                       if (!btf_is_func(t) || btf_func_linkage(t) !=3D=
+ BTF_FUNC_GLOBAL) {
+> > +                               pr_warn("prog '%s': exception_callback:=
+<value> decl tag not applied to the main program\n",
+> > +                                       prog->name);
+> > +                               return -EINVAL;
+> > +                       }
+> > +                       if (strcmp(prog->name, btf__str_by_offset(obj->=
+btf, t->name_off)))
+> > +                               continue;
+> > +                       /* Multiple callbacks are specified for the sam=
+e prog,
+> > +                        * the verifier will eventually return an error=
+ for this
+> > +                        * case, hence simply skip appending a subprog.
+> > +                        */
+> > +                       if (prog->exception_cb_idx >=3D 0) {
+> > +                               prog->exception_cb_idx =3D -1;
+> > +                               break;
+> > +                       }
+>
+> you check this condition three times and handle it in three different
+> ways, it's bizarre. Why?
+>
+
+I agree it looks confusing. The first check happens when for a given
+main program, we are going through all types and we already saw a
+exception cb satisfying the conditions previously.
+The second one is to catch multiple subprogs that are static and have
+the same name. So in the loop with k as iterator, if we already found
+a satisfying subprog, we still continue to catch other cases by
+matching on the name and linkage.
+The third one is to just check whether the loop over subprogs for a
+given main prog actually set the exception_cb_idx or not, otherwise we
+could not find a subprog with the target name in the decl tag string.
+
+I hope this clears up some confusion. But I will rework it as you
+suggested. It's very late here today but I can send it out tomorrow.
+
+>
+> > +
+> > +                       name +=3D len;
+> > +                       if (str_is_empty(name)) {
+> > +                               pr_warn("prog '%s': exception_callback:=
+<value> decl tag contains empty value\n",
+> > +                                       prog->name);
+> > +                               return -EINVAL;
+> > +                       }
+> > +
+> > +                       for (k =3D 0; k < obj->nr_programs; k++) {
+> > +                               struct bpf_program *subprog =3D &obj->p=
+rograms[k];
+> > +
+> > +                               if (!prog_is_subprog(obj, subprog))
+> > +                                       continue;
+> > +                               if (strcmp(name, subprog->name))
+> > +                                       continue;
+> > +                               /* Enforce non-hidden, as from verifier=
+ point of
+> > +                                * view it expects global functions, wh=
+ereas the
+> > +                                * mark_btf_static fixes up linkage as =
+static.
+> > +                                */
+> > +                               if (!subprog->sym_global || subprog->ma=
+rk_btf_static) {
+> > +                                       pr_warn("prog '%s': exception c=
+allback %s must be a global non-hidden function\n",
+> > +                                               prog->name, subprog->na=
+me);
+> > +                                       return -EINVAL;
+> > +                               }
+> > +                               /* Let's see if we already saw a static=
+ exception callback with the same name */
+> > +                               if (prog->exception_cb_idx >=3D 0) {
+> > +                                       pr_warn("prog '%s': multiple su=
+bprogs with same name as exception callback '%s'\n",
+> > +                                               prog->name, subprog->na=
+me);
+> > +                                       return -EINVAL;
+> > +                               }
+> > +                               prog->exception_cb_idx =3D k;
+> > +                               break;
+> > +                       }
+> > +
+> > +                       if (prog->exception_cb_idx >=3D 0)
+> > +                               continue;
+> > +                       pr_warn("prog '%s': cannot find exception callb=
+ack '%s'\n", prog->name, name);
+> > +                       return -ENOENT;
+> > +               }
+> > +       }
+> > +skip_exception_cb:
+> > +
+> >         sanitize =3D btf_needs_sanitization(obj);
+> >         if (sanitize) {
+> >                 const void *raw_data;
+> > @@ -6270,10 +6355,10 @@ static int
+> >  bpf_object__reloc_code(struct bpf_object *obj, struct bpf_program *mai=
+n_prog,
+> >                        struct bpf_program *prog)
+> >  {
+> > -       size_t sub_insn_idx, insn_idx, new_cnt;
+> > +       size_t sub_insn_idx, insn_idx;
+> >         struct bpf_program *subprog;
+> > -       struct bpf_insn *insns, *insn;
+> >         struct reloc_desc *relo;
+> > +       struct bpf_insn *insn;
+> >         int err;
+> >
+> >         err =3D reloc_prog_func_and_line_info(obj, main_prog, prog);
+> > @@ -6582,6 +6667,25 @@ bpf_object__relocate(struct bpf_object *obj, con=
+st char *targ_btf_path)
+> >                                 prog->name, err);
+> >                         return err;
+> >                 }
+> > +
+> > +               /* Now, also append exception callback if it has not be=
+en done already. */
+> > +               if (prog->exception_cb_idx >=3D 0) {
+> > +                       struct bpf_program *subprog =3D &obj->programs[=
+prog->exception_cb_idx];
+> > +
+> > +                       /* Calling exception callback directly is disal=
+lowed, which the
+> > +                        * verifier will reject later. In case it was p=
+rocessed already,
+> > +                        * we can skip this step, otherwise for all oth=
+er valid cases we
+> > +                        * have to append exception callback now.
+> > +                        */
+> > +                       if (subprog->sub_insn_off =3D=3D 0) {
+> > +                               err =3D bpf_object__append_subprog_code=
+(obj, prog, subprog);
+> > +                               if (err)
+> > +                                       return err;
+> > +                               err =3D bpf_object__reloc_code(obj, pro=
+g, subprog);
+> > +                               if (err)
+> > +                                       return err;
+> > +                       }
+> > +               }
+> >         }
+> >         /* Process data relos for main programs */
+> >         for (i =3D 0; i < obj->nr_programs; i++) {
+> > --
+> > 2.41.0
+> >
 
