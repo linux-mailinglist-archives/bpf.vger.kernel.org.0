@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-10474-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10475-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD5507A899F
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 18:38:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C4587A89D4
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 18:57:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 864FC1C20AAD
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 16:38:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BB0D282156
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 16:57:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6219E3E471;
-	Wed, 20 Sep 2023 16:38:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A463E486;
+	Wed, 20 Sep 2023 16:57:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 818FA79EE
-	for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 16:38:04 +0000 (UTC)
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCFCCC6
-	for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 09:38:01 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-530fa34ab80so2509507a12.0
-        for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 09:38:01 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FEE83B2BE
+	for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 16:57:29 +0000 (UTC)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3D6BCF
+	for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 09:57:27 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-307d58b3efbso41604f8f.0
+        for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 09:57:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695227880; x=1695832680; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695229046; x=1695833846; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QcgJ+kBKoCdOtosFdTHh7Bh15RquvGY2tjHVZ70ZDMI=;
-        b=Lvocz/GgyOzKgTIh8iMnkH+j5GjweBaOTizrLAiKu907L2BCTQjNX63evaU7vi/mCe
-         7CRR11fg9izErfSXMKrl3MRp0dpxMNZGCW7eN9fhhN6zt4sOcCkN5Re30kFuFZy3u3Zn
-         ALvF6lzRmUpeg6Q9c8vmBPYaDLLjE4LnRCyiTVuWbvV3wa4Lsfg5DG5XWRAk9qjMxlvg
-         5Q+vfBGOywnsHoc0ZeDkm4C/m8Iu9pZGGR7Mez0MIXyio9fbkqaKGr2mVqXXSxfpa9mh
-         ge4fDZM/s/dZDRr0mOLpqEkw52AhvdvguD6Ov9Ss3AhkJEW1zREBSNXNNs3nSLRM9GVa
-         ypzw==
+        bh=c+8JOmM/KupY+uCI/JJ8jEvgy1wboB8cusxLnL1scnU=;
+        b=iTRk/eMw1eIYdp0g+HP5A3Y0lvqKepmdUJJyMfSK4mB6VEQgOD9FAiX5Jv+P6dlaqw
+         y4H7roDASI6A0h0nXVcgaVCYVYy2lC2TJJ+e2kRXrnA8nlmcpyC9Yt3GSnin2mtIJw8d
+         glWgUKe5uopsYNjwoz8Thahs8j5tiX31x4fF85EDDRluA6mEVOcsZFSUcjFnOhplzDEq
+         h7C52gQZJwE7r8NsUyXX+dWfEpjOCusuCzMuffcyLG2LZ2tZF0SgT3UqUo3W36JtTksj
+         lksTqVQsjSEFQHb5s0eRuRLx4mG6KsLkcWQzCvgWu7BYxI3ARb/awkxf5R4fZuNYZr5M
+         ZvXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695227880; x=1695832680;
+        d=1e100.net; s=20230601; t=1695229046; x=1695833846;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QcgJ+kBKoCdOtosFdTHh7Bh15RquvGY2tjHVZ70ZDMI=;
-        b=rGu2/oOIi3CjN3M8+6pLSibUSKh/nm+a/GdfZG0jHil/if1ouHQ1UCymUQddDB+XTZ
-         VQGC918sVq5DE/tSUCxEvynx5yRAcWiYAgfMM/sVH/01q09x23BMqx7CXB+2QkRBId86
-         ykNie8DE4GNV+8SBDplPH/ELKoNjBdQhic/I2R7Perd/3TKVhxjI0U6iR62/cnsmW4Iw
-         4robzHl2vtAopZZQ+PTesEqKHZ/XWFiZbAkJixCaozWxBvLrA9dWU21VCixsl/HoASQc
-         2otu6Hvq+GfdZpWbqw1s/GdtB/n1WuGDAfNiUvX3EgM1pIdxauSEEkdZLG0aPuR5kEWq
-         L/0Q==
-X-Gm-Message-State: AOJu0YyyRItIRXvfkN49J8oH+B5BpW5m8wg7KkXgNZE6AZo493VhXwzo
-	X9Fdwu2GaQt0WTVziyrldS1vG1AEhZgBaQ+o1YQ=
-X-Google-Smtp-Source: AGHT+IHn9ttZyVNUPMEu9urkUMhCnpLHrAzs1xyeoKLR7EX8zuAj5DdMB89Po69eIl0ARPS9odI8j4bctrke0eplEgw=
-X-Received: by 2002:a17:907:36c9:b0:9a9:405b:26d1 with SMTP id
- bj9-20020a17090736c900b009a9405b26d1mr8397148ejc.5.1695227880016; Wed, 20 Sep
- 2023 09:38:00 -0700 (PDT)
+        bh=c+8JOmM/KupY+uCI/JJ8jEvgy1wboB8cusxLnL1scnU=;
+        b=bGp/AhnK/ehTP1LLScyDXwF4MYR/vzKi5gxcEynVIk3mA6o9ObkVk/fl+JetP2/ulJ
+         pOBg2d0fK8XyP1q8Vun+Xsw/pxDnohk4OmRK6C5FmJa2qsVOo0/atdNO8ZOs2f5fKqJ3
+         Dmr9u+3q+IO81Um1RwPI3Aq4wMx69uTJN4oZZbV9gZuxwbkgMD0uGk/UMd94KZNYhJD2
+         UDD2tgRrlxjkbumua1lr80HC/cAG0NUiOaGSBzc/6XL+uFNxCfMUXs623A6AwkdVr4JX
+         JsHjFIi06/JEMq4ruagJ4eHZpkN7T3KWpX4DiiwMx/qQ0fLBFZCBeBjJkVaYIrotpjv6
+         o1Hg==
+X-Gm-Message-State: AOJu0YwDP92BbGmk3DqBn0wgkpQ4swOIRDsN0Fj5pO3B6/KxvF7ZpeNC
+	KXhxsX7sNO7MpgK7KKHLkQVepDRfAZvIc3mtRys=
+X-Google-Smtp-Source: AGHT+IHATuEhJYYv54wsuEBZaZcDKsGH5gGKnaraIgaX/EwlcdjyzzzCnZsH6iLlihxM7DUedTF18cCA3ePLihH4PIY=
+X-Received: by 2002:adf:ee88:0:b0:317:634c:46e9 with SMTP id
+ b8-20020adfee88000000b00317634c46e9mr2914543wro.43.1695229045937; Wed, 20 Sep
+ 2023 09:57:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,17 +63,21 @@ References: <CA+vRuzPChFNXmouzGG+wsy=6eMcfr1mFG0F3g7rbg-sedGKW3w@mail.gmail.com>
  <CAADnVQJpLAzmUfwvWBr8a_PWHYHxHw9vdAXnWB4R4PbVY4S4mw@mail.gmail.com>
  <CAEf4Bzbubu7KjBv=98BZrVnTrcfPQrnsp-g1kOYKM=kUtiqEgw@mail.gmail.com>
  <dff1cfec20d1711cb023be38dfe886bac8aac5f6.camel@gmail.com>
- <CAEf4BzbKV5eHSWk8LgQmCM1vx1N2__ANUbB137i7_7RqBOsTiQ@mail.gmail.com> <feb852b58c39fb50e3e5fdd33fa8ddf46bce3a8c.camel@gmail.com>
-In-Reply-To: <feb852b58c39fb50e3e5fdd33fa8ddf46bce3a8c.camel@gmail.com>
+ <CAP01T76duVGmnb+LQjhdKneVYs1q=ehU4yzTLmgZdG0r2ErOYQ@mail.gmail.com>
+ <a2995c1d7c01794ca9b652cdea7917cac5d98a16.camel@gmail.com>
+ <97a90da09404c65c8e810cf83c94ac703705dc0e.camel@gmail.com>
+ <CAEf4BzYg8T_Dek6T9HYjHZCuLTQT8ptAkQRxrsgaXg7-MZmHDA@mail.gmail.com>
+ <ee714151d7c840c82d79f9d12a0f51ef13b798e3.camel@gmail.com> <b9706fdd932a30f161c4c5f3c4fe4fd4d19cf9df.camel@gmail.com>
+In-Reply-To: <b9706fdd932a30f161c4c5f3c4fe4fd4d19cf9df.camel@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 20 Sep 2023 09:37:48 -0700
-Message-ID: <CAEf4Bzb-bauJ-gSVdUJdDHzFwOnGNwA4ee9OhYnq1D5sAGhDSw@mail.gmail.com>
+Date: Wed, 20 Sep 2023 09:57:13 -0700
+Message-ID: <CAEf4BzbaBjLo3yNV2kMmEcJajromuoaV4zr9TMSL8JRNkf2Jww@mail.gmail.com>
 Subject: Re: [BUG] verifier escape with iteration helpers (bpf_loop, ...)
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrew Werner <awerner32@gmail.com>, 
 	bpf <bpf@vger.kernel.org>, Andrei Matei <andreimatei1@gmail.com>, 
 	Tamir Duberstein <tamird@gmail.com>, Joanne Koong <joannelkoong@gmail.com>, kernel-team@dataexmachina.dev, 
-	Song Liu <song@kernel.org>
+	Song Liu <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -83,264 +87,213 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Sep 19, 2023 at 5:06=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+On Wed, Sep 20, 2023 at 9:20=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
 > wrote:
 >
-> On Tue, 2023-09-19 at 16:14 -0700, Andrii Nakryiko wrote:
+> On Wed, 2023-09-20 at 03:19 +0300, Eduard Zingerman wrote:
 > [...]
-> > > Hi All,
-> > >
-> > > This issue seems stalled, so I took a look over the weekend.
-> > > I have a work in progress fix, please let me know if you don't agree
-> > > with direction I'm taking or if I'm stepping on anyone's toes.
-> > >
-> > > After some analysis I decided to go with Alexei's suggestion and
-> > > implement something similar to iterators for selected set of helper
-> > > functions that accept "looping" callbacks, such as:
-> > > - bpf_loop
-> > > - bpf_for_each_map_elem
-> > > - bpf_user_ringbuf_drain
-> > > - bpf_timer_set_callback (?)
->
-> Hi Andrii, thank you for taking a look.
->
-> > As Kumar mentioned, pretty much all helpers with callbacks are either
-> > 0-1, or 0-1-many cases, so all of them (except for the async callback
-> > ones that shouldn't be accepting parent stack pointers) should be
-> > validated.
->
-> Yes, makes sense. I need to finish the fix for bpf_loop first, as it
-> seems as a good representative for many possible issues.
-
-yes, it's the most generic 0-1-many case
-
->
-> > > The sketch of the fix looks as follows:
-> > > - extend struct bpf_func_state with callback iterator state informati=
-on:
-> > >   - active/non-active flag
+> > Liveness is a precondition for all subsequent checks, so example
+> > involving precision would also involve liveness. Here is a combined
+> > example:
 > >
-> > not sure why you need this flag
->
-> Note:
->   I have a better version of the fix locally but will share it a bit late=
-r.
->   It actually depends on states_equal() discussion in the sibling thread.
->
-> In mu upgraded version I use non-zero depth as an indicator the.
-> So no separate flag in the end.
-
-great
-
->
-> > >   - depth
+> >     r8 =3D 0
+> >     fp[-16] =3D 0
+> >     r7 =3D -16
+> >     r6 =3D bpf_get_current_pid_tgid()
+> >     bpf_iter_num_new(&fp[-8], 0, 10)
+> >     while (bpf_iter_num_next(&fp[-8])) {
+> >       r6++
+> >       if (r6 !=3D 42) {
+> >         r7 =3D -32
+> >         continue;
+> >       }
+> >       r0 =3D r10
+> >       r0 +=3D r7
+> >       r8 =3D *(u64 *)(r0 + 0)
+> >     }
+> >     bpf_iter_num_destroy(&fp[-8])
+> >     return r8
 > >
-> > yep, this seems necessary
+> > (Complete source code is at the end of the email).
 > >
-> > >   - r1-r5 state at the entry to callback;
+> > The call to bpf_iter_num_next() is reachable with r7 values -16 and -32=
+.
+> > State with r7=3D-16 is visited first, at which point r7 has no read mar=
+k
+> > and is not marked precise.
+> > State with r7=3D-32 is visited second:
+> > - states_equal() for is_iter_next_insn() should ignore absence of
+> >   REG_LIVE_READ mark on r7, otherwise both states would be considered
+> >   identical;
+> > - states_equal() for is_iter_next_insn() should ignore absence of
+> >   precision mark on r7, otherwise both states would be considered
+> >   identical.
 > >
-> > not sure why you need this, this should be part of func_state already?
->
-> This was a bit tricky but I think I figured an acceptable solution w/o
-> extra copies for r1-r5. The tricky part is the structure of
-> check_helper_call():
-> - collect arguments 'meta' info & check arguments
-> - call __check_func_call():
->   - setup frame for callback;
->   - schedule next instruction index to be callback entry;
-> - reset r1-r5 in caller's frame;
-> - set r0 in caller's frame.
->
-> The problem is that check_helper_call() resets caller's r1-r5
-> immediately. I figured that this reset could be done at BPF_EXIT
-> processing for callback instead =3D> no extra copy needed.
->
-
-I guess then r0 setting would have to happen at BPF_EXIT as well,
-right? Is that a problem?
-
-> > > - extend __check_func_call() to setup callback iterator state when
-> > >   call to suitable helper function is processed;
-> >
-> > this logic is "like iterator", but it's not exactly the same, so I
-> > don't think we should reuse bpf_iter state (as you can see above with
-> > active/non-active flag, for example)
->
-> Yes, I agree, already removed this locally.
-
-cool
-
->
-> > > - extend BPF_EXIT processing (prepare_func_exit()) to queue new
-> > >   callback visit upon return from iterating callback
-> > >   (similar to process_iter_next_call());
-> >
-> > as mentioned above, we should simulate "no callback called" situation
-> > as well, don't forget about that
->
-> Yeap
->
-> > > - extend is_state_visited() to account for callback iterator hits in =
-a
-> > >   way similar to regular iterators;
-> > > - extend backtrack_insn() to correctly react to jumps from callback
-> > >   exit to callback entry.
+> > > > A possible fix is to add a special flag to states_equal() and
+> > > > conditionally ignore logic related to liveness and precision when t=
+his
+> > > > flag is set. Set this flag for is_iter_next_insn() branch above.
 > > >
-> > > I have a patch (at the end of this email) that correctly recognizes
-> > > the bpf_loop example in this thread as unsafe. However this patch has
-> > > a few deficiencies:
-> > >
-> > > - verif_scale_strobemeta_bpf_loop selftest is not passing, because
-> > >   read_map_var function invoked from the callback continuously
-> > >   increments 'payload' pointer used in subsequent iterations.
-> > >
-> > >   In order to handle such code I need to add an upper bound tracking
-> > >   for iteration depth (when such bound could be deduced).
+> > > Probably not completely ignore liveness (and maybe precision, but
+> > > let's do it one step at a time), but only at least one of the
+> > > registers or stack slots are marked as written or read in one of
+> > > old/new states? Basically, if some register/slot at the end of
+> > > iteration is read or modified, it must be important for loop
+> > > invariant, so even if the parent state says it's not read, we still
+> > > treat it as read. Can you please try that with just read/write marks
+> > > and see if anything fails?
 > >
-> > if the example is broken and really can get out of bounds, we should
-> > fix an example to be provable within bounds no matter how many
-> > iterations it was called with
->
-> For that particular case number of iterations guarantees that payload
-> pointer will not get out of bounds. It is bumped up 4 bytes on each
-> iteration, but the number of iterations and buffer size correlate to
-> avoid out of bound access.
-
-ok, good, I was trying to avoid deducing bounds on the number of
-iterations or anything like that.
-
->
-> > > - loop detection is broken for simple callback as below:
-> > >
-> > >   static int loop_callback_infinite(__u32 idx, __u64 *data)
-> > >   {
-> > >       for (;;)
-> > >           (*ctx)++;
-> > >       return 0;
-> > >   }
-> > >
-> > >   To handle such code I need to change is_state_visited() to do
-> > >   callback iterator loop/hit detection on exit from callback
-> > >   (returns are not prune points at the moment), currently it is done
-> > >   on entry.
+> > Unfortunately for the example above neither liveness nor precision
+> > marks are present when states are compared, e.g. here is the
+> > (extended) log:
 > >
-> > I'm a bit confused. What's ctx in the above example? And why loop
-> > detection doesn't detect for(;;) loop right now?
+> > 12: (85) call bpf_iter_num_next#52356
+> > ...
+> > is_iter_next (12):
+> >   old:
+> >      R0=3Dscalar() R1_rw=3Dfp-8 R6_r=3Dscalar(id=3D1) R7=3D-16 R8_r=3D0=
+ R10=3Dfp0
+> >      fp-8_r=3Diter_num(ref_id=3D2,state=3Dactive,depth=3D0) fp-16=3D000=
+00000 refs=3D2
+> >   new:
+> >      R0=3Drdonly_mem(id=3D3,ref_obj_id=3D2,off=3D0,imm=3D0) R1_w=3Dfp-8=
+ R6=3D42 R7_w=3D-32 R8=3D0 R10=3Dfp0
+> >      fp-8=3Diter_num(ref_id=3D2,state=3Dactive,depth=3D1) fp-16=3D00000=
+000 refs=3D2
+> > > hit
 >
-> It's an implementation detail for the fix sketch shared in the parent
-> email. It can catch cases like this:
+> It might be the case that I miss-read situation a bit, because there
+> is also R6 which is actually used to pick the branch. And it has read
+> mark but does not have precision mark, because jump was not predicted.
 >
->     ... any insn ...;
->     for (;;)
->         (*ctx)++;
->     return 0;
+> In general, if we hit an old state with .branches > 0:
+> - either there is an execution path "old -> safe exit";
+> - or there is a loop (not necessarily because of iterator) and old is
+>   a [grand]parent of the "cur" state.
 >
-> But cannot catch case like this:
+> In either case, "cur" state is safe to prune if:
+> - it is possible to show that it would take same jump branches as
+>   "old" state;
+> - and iteration depth differs.
 >
->     for (;;)
->         (*ctx)++;
->     return 0;
+> All registers that took part in conditional jumps should already have
+> read marks in old state. However, not all jumps could be predicted,
+> thus not all such registers are marked as precise.
 >
-> In that sketch I jump to the callback start from callback return and
-> callback entry needs two checks:
-> - iteration convergence
-> - simple looping
-> Because of the code structure only iteration convergence check was done.
-> Locally, I fixed this issue by jumping to the callback call instruction
-> instead.
+> Unfortunately, treating read marks as precision marks is not sufficient.
+> For the particular example above:
+>
+>     old: ... R6_r=3Dscalar(id=3D1) ...
+>     cur: ... R6=3D42 ...
+>
+> Here range_within() check in regsafe() would return true and old and
+> cur would still be considered identical:
+>
+>     static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_stat=
+e *rold,
+>                 struct bpf_reg_state *rcur, struct bpf_idmap *idmap)
+>     {
+>         ...
+>         switch (base_type(rold->type)) {
+>         case SCALAR_VALUE:
+>             ...
+>             if (!rold->precise)
+>                 return true;
+>             ...
+>             return range_within(rold, rcur) &&
+>                    tnum_in(rold->var_off, rcur->var_off) &&
+>                    check_scalar_ids(rold->id, rcur->id, idmap);
+>         case ...
+>         }
+>         ...
+>     }
+>
+> So it appears that there is no need to ignore liveness checks after all,
+> but I don't see a way to make non-exact scalar comparisons at the moment.
 
-wouldn't this be a problem for just any subprog if we don't check the
-looping condition on the entry instruction? Perhaps that's a separate
-issue that needs generic fix?
+Yeah, me neither. We can try something drastic like marking all
+registers in the state as precise at the beginning of
+iteration/callback execution. But I suspect that will pessimize
+verification a lot and might start rejecting valid cases.
+
+Don't know, I'm still trying to think of something that would work.
 
 >
-> > > - the callback as bellow currently causes state explosion:
-> > >
-> > >   static int precise1_callback(__u32 idx, struct precise1_ctx *ctx)
-> > >   {
-> > >       if (idx =3D=3D 0)
-> > >           ctx->a =3D 1;
-> > >       if (idx =3D=3D 1 && ctx->a =3D=3D 1)
-> > >           ctx->b =3D 1;
-> > >       return 0;
-> > >   }
+> > Note that for old state r7 value is not really important to get to exit=
+,
+> > the verification trace looks as follows:
+> > 1. ... start ...
+> > 2. bpf_iter_num_next(&fp[-8]) ;; r7=3D-16, checkpoint saved
+> > 3. r6++
+> > 4. r7 =3D -32
+> > 5. bpf_iter_num_next(&fp[-8]) ;; push new state with r7=3D-32
+> > 6. bpf_iter_num_destroy(&fp[-8])
+> > 7. return 8
 > >
-> > why state explosion? there should be a bunch of different branches
-> > (idx 0, 1, something else x ctx->a =3D 1 or not 1 and ctx->b being 1 or
-> > not), but it should be a fixed number of states? Do you know what
-> > causes the explosion?
->
-> I forgot to do mark_force_checkpoint() at callback entry. Fixed locally.
-
-ok, makes sense
-
->
+> > The r7 liveness and precision is important for state scheduled at (5)
+> > but it is not known yet, so when both states are compared marks are
+> > absent in cur and in old.
 > >
-> > >
-> > >   I'm not sure yet what to do about this, there are several possibili=
-ties:
-> > >   - tweak the order in which states are visited (need to think about =
-it);
-> > >   - check states in bpf_verifier_env::head (not explored yet) for
-> > >     equivalence and avoid enqueuing duplicate states.
-> > >
-> > > I'll proceed addressing the issues above on Monday.
-> > >
-> > > Thanks,
-> > > Eduard
-> > >
-> > > ---
-> > >
-> > > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifie=
-r.h
-> > > index a3236651ec64..5589f55e42ba 100644
-> > > --- a/include/linux/bpf_verifier.h
-> > > +++ b/include/linux/bpf_verifier.h
-> > > @@ -70,6 +70,17 @@ enum bpf_iter_state {
-> > >         BPF_ITER_STATE_DRAINED,
-> > >  };
-> > >
-> > > +struct bpf_iter {
-> > > +       /* BTF container and BTF type ID describing
-> > > +        * struct bpf_iter_<type> of an iterator state
-> > > +        */
-> > > +       struct btf *btf;
-> > > +       u32 btf_id;
-> > > +       /* packing following two fields to fit iter state into 16 byt=
-es */
-> > > +       enum bpf_iter_state state:2;
-> > > +       int depth:30;
-> > > +};
-> > > +
-> > >  struct bpf_reg_state {
-> > >         /* Ordering of fields matters.  See states_equal() */
-> > >         enum bpf_reg_type type;
-> > > @@ -115,16 +126,7 @@ struct bpf_reg_state {
-> > >                 } dynptr;
-> > >
-> > >                 /* For bpf_iter stack slots */
-> > > -               struct {
-> > > -                       /* BTF container and BTF type ID describing
-> > > -                        * struct bpf_iter_<type> of an iterator stat=
-e
-> > > -                        */
-> > > -                       struct btf *btf;
-> > > -                       u32 btf_id;
-> > > -                       /* packing following two fields to fit iter s=
-tate into 16 bytes */
-> > > -                       enum bpf_iter_state state:2;
-> > > -                       int depth:30;
-> > > -               } iter;
-> > > +               struct bpf_iter iter;
+> > ---
 > >
-> > Let's not do this, conceptually processes are similar, but bpf_iter is
-> > one thing, and this callback validation is another thing. Let's not
-> > conflate things.
+> > /* BTF FUNC records are not generated for kfuncs referenced
+> >  * from inline assembly. These records are necessary for
+> >  * libbpf to link the program. The function below is a hack
+> >  * to ensure that BTF FUNC records are generated.
+> >  */
+> > void __kfunc_btf_root(void)
+> > {
+> >       bpf_iter_num_new(0, 0, 0);
+> >       bpf_iter_num_next(0);
+> >       bpf_iter_num_destroy(0);
+> > }
 > >
-> > >
-> > >                 /* Max size from any of the above. */
-> > >                 struct {
+> > SEC("fentry/" SYS_PREFIX "sys_nanosleep")
+> > __failure
+> > __msg("20: (79) r8 =3D *(u64 *)(r0 +0)")
+> > __msg("invalid read from stack R0 off=3D-32 size=3D8")
+> > __naked int iter_next_exact(const void *ctx)
+> > {
+> >       asm volatile (
+> >               "r8 =3D 0;"
+> >               "*(u64 *)(r10 - 16) =3D r8;"
+> >               "r7 =3D -16;"
+> >               "call %[bpf_get_current_pid_tgid];"
+> >               "r6 =3D r0;"
+> >               "r1 =3D r10;"
+> >               "r1 +=3D -8;"
+> >               "r2 =3D 0;"
+> >               "r3 =3D 10;"
+> >               "call %[bpf_iter_num_new];"
+> >       "1:"
+> >               "r1 =3D r10;"
+> >               "r1 +=3D -8;\n"
+> >               "call %[bpf_iter_num_next];"
+> >               "if r0 =3D=3D 0 goto 2f;"
+> >               "r6 +=3D 1;"
+> >               "if r6 !=3D 42 goto 3f;"
+> >               "r7 =3D -32;"
+> >               "goto 1b;\n"
+> >       "3:"
+> >               "r0 =3D r10;"
+> >               "r0 +=3D r7;"
+> >               "r8 =3D *(u64 *)(r0 + 0);"
+> >               "goto 1b;\n"
+> >       "2:"
+> >               "r1 =3D r10;"
+> >               "r1 +=3D -8;"
+> >               "call %[bpf_iter_num_destroy];"
+> >               "r0 =3D r8;"
+> >               "exit;"
+> >               :
+> >               : __imm(bpf_get_current_pid_tgid),
+> >                 __imm(bpf_iter_num_new),
+> >                 __imm(bpf_iter_num_next),
+> >                 __imm(bpf_iter_num_destroy),
+> >                 __imm(bpf_probe_read_user)
+> >               : __clobber_all
+> >       );
+> > }
 > >
-> > [...]
 >
 
