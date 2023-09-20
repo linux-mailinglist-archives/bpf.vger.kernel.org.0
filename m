@@ -1,189 +1,128 @@
-Return-Path: <bpf+bounces-10452-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10453-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC96A7A83FD
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 15:55:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 989537A88B8
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 17:45:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE9D31C2098D
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 13:55:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53EB628147F
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 15:45:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EA333AC05;
-	Wed, 20 Sep 2023 13:54:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB23D3C698;
+	Wed, 20 Sep 2023 15:44:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C05538DE3;
-	Wed, 20 Sep 2023 13:54:45 +0000 (UTC)
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931DEAD;
-	Wed, 20 Sep 2023 06:54:43 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-773ae5d2b1fso377165685a.2;
-        Wed, 20 Sep 2023 06:54:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F28B43C684
+	for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 15:44:56 +0000 (UTC)
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07119B4
+	for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 08:44:55 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c328b53aeaso62725285ad.2
+        for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 08:44:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695218082; x=1695822882; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FVF06t7IZza16CFzCOJgQajEkOspYiDG67dNcLwWTqA=;
-        b=H8IMUrKBcPWPk4ZyKKQAIo53+W7GSRbli2+0RrSu45mmGdiBXKzJUVmExCnfV8SJQj
-         e7KaiyMUS6zi0rwLacOo5q6Ci8m6G4vmCt1D5Ti65ARS8+kiTjDe9fvAYOPhZIz1E5Ju
-         pSXx9rhxOJTfqcsCgoPMFCMGySTGiJevv59jo/icKKzuBj4zlMT9DGTHQC9GEKiMtdiJ
-         UPTOIlyL8OCPeM6HviFCM1xSGdY/XzRXnL4SNYd74IDaPBsQByMtfN3PBXDN7IWH/d+v
-         7rxsCqoDgiE/Yq94iwHh8WyODtXB0OLn1H5TwLpVgH2mKV2pXRVu4Qws5tgX7KlIAfue
-         gCpw==
+        d=chromium.org; s=google; t=1695224694; x=1695829494; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dQNo/7m+9++c/N59rrtD7EFgYIcDr9yhzLesZUcLlbI=;
+        b=D7KSFNsgMgUF9jumnNwcCdCpkQtizbxnfZJUCkWtLEzsQkxe2zqNNvCiKKTDhwk2Ua
+         DWNXbS5CUC68TG1vSgVtxqU2zC321cw3vRotW2zLlQC+jgXxRR3W3b1QZ/vfxqJ/Bnn+
+         xgraNgUif/bLx1zNaka762rjME3UCz4PUPFw0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695218082; x=1695822882;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FVF06t7IZza16CFzCOJgQajEkOspYiDG67dNcLwWTqA=;
-        b=Zv/uA1jnTyquaVuldl2KvfbeB97Uh4vDBSbQZLsSycO1xXNz0C48v8tQ5Gb3RiRGxV
-         NGp855YFFuTBHvYhL2CTaicU8hkMmnk1UJIo94q+kXJn/MeJW3PFwEV8HUqkN0r9or2C
-         gyHHxpC8pjxGVpEhWN2K/hb28F4gMs3t1hzntdPGSh5fYjWXJWiUNja5qB439ARcX+Id
-         xhMXm+puKfUA7FuOd9C6xXGh5Bh/swCFZ3xE56E6U32mUqZSh6Ht5hhE7CYCmvpdJyKv
-         QHsp+EMzP11DzUOTN1uAdO2Dax1orQkj+DqEuwI6gb5sFdxcuuPBJ/GHVdg3NMWl+2SQ
-         CerA==
-X-Gm-Message-State: AOJu0Yz1HZJ54nGmlWZWecUbHO5Dy31sDVm/GOqIXIl6xtUeRfZ43heB
-	zrcihNbwOZDW0MZ1ggy7Y7cIzcSC+yw=
-X-Google-Smtp-Source: AGHT+IEF8xZCVveTfM6rspnqiBn7ZNNofTz733mxQ//7oM0FYPWLnypYaEAokeajcDlKDm96sVZ/ZA==
-X-Received: by 2002:a05:620a:1407:b0:76f:98c:3f05 with SMTP id d7-20020a05620a140700b0076f098c3f05mr2500850qkj.76.1695218082632;
-        Wed, 20 Sep 2023 06:54:42 -0700 (PDT)
-Received: from localhost (193.132.150.34.bc.googleusercontent.com. [34.150.132.193])
-        by smtp.gmail.com with ESMTPSA id m10-20020ae9e00a000000b0076f35d17d06sm4812021qkk.69.2023.09.20.06.54.42
+        d=1e100.net; s=20230601; t=1695224694; x=1695829494;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dQNo/7m+9++c/N59rrtD7EFgYIcDr9yhzLesZUcLlbI=;
+        b=v9t/HA9Xy7d6ymuNpnJhlTpUQoyU95zpXQumszGkRkJqtxe52TT3wv9Pzfg6RKv4zn
+         UuX1C5c9PvsBP7W3dcUmuVmTBHUNS/b2R8LDhlSTqPw2s/e3lqA/LDBg3pltPaGlgTc4
+         1hb+vTcZaSYdtCZ9Cue3PcAPzU+fyosaSMDWDf5rOg45A7WUlxpkfn2I0ULPiVsmT4wE
+         v9TJdU3XEJz09QKq+7T7p/7TFCrNs1LcClRTZFgFhwVqmAaz2cAEm9phPad/LpvfEmXG
+         mf+6cNz2Gp8/5Wv+xQ0B/8OfIwlWJDKd27w/LTsVtimrD7if8hDzjRcktFYxgLKrvqyc
+         JNZg==
+X-Gm-Message-State: AOJu0YxqRBwnYL/fLTXwz7DQA3PUs/v99KA6bPkLMjX9Ke7MgcZRTFBy
+	Ql41hUsdv7tS+dpFLJ7faae7lUCT1FzS9PKIIjg=
+X-Google-Smtp-Source: AGHT+IHRAS+gnucMNkh5YLNn4zi1V35FmEsgOxnUBXnohSRpWJbdgtifaPuh8zXnvg0GrB8kYDJShA==
+X-Received: by 2002:a17:902:d88e:b0:1c5:ae89:e1bc with SMTP id b14-20020a170902d88e00b001c5ae89e1bcmr2398804plz.65.1695224694423;
+        Wed, 20 Sep 2023 08:44:54 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id n6-20020a170902e54600b001b694140d96sm12044869plf.170.2023.09.20.08.44.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 06:54:42 -0700 (PDT)
-Date: Wed, 20 Sep 2023 09:54:42 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: David Howells <dhowells@redhat.com>, 
- netdev@vger.kernel.org
-Cc: dhowells@redhat.com, 
- syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com, 
- Eric Dumazet <edumazet@google.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- "David S. Miller" <davem@davemloft.net>, 
- David Ahern <dsahern@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- bpf@vger.kernel.org, 
- syzkaller-bugs@googlegroups.com, 
- linux-kernel@vger.kernel.org
-Message-ID: <650af9a2aa74_37bf362941f@willemb.c.googlers.com.notmuch>
-In-Reply-To: <108791.1695199151@warthog.procyon.org.uk>
-References: <108791.1695199151@warthog.procyon.org.uk>
-Subject: Re: [PATCH net v2] ipv4, ipv6: Fix handling of transhdrlen in
- __ip{,6}_append_data()
+        Wed, 20 Sep 2023 08:44:53 -0700 (PDT)
+Date: Wed, 20 Sep 2023 08:44:53 -0700
+From: Kees Cook <keescook@chromium.org>
+To: KP Singh <kpsingh@kernel.org>
+Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+	paul@paul-moore.com, casey@schaufler-ca.com, song@kernel.org,
+	daniel@iogearbox.net, ast@kernel.org
+Subject: Re: [PATCH v3 5/5] security: Add CONFIG_SECURITY_HOOK_LIKELY
+Message-ID: <202309200840.722352CCB@keescook>
+References: <20230918212459.1937798-1-kpsingh@kernel.org>
+ <20230918212459.1937798-6-kpsingh@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230918212459.1937798-6-kpsingh@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-David Howells wrote:
-> Including the transhdrlen in length is a problem when the packet is
-> partially filled (e.g. something like send(MSG_MORE) happened previously)
-> when appending to an IPv4 or IPv6 packet as we don't want to repeat the
-> transport header or account for it twice.  This can happen under some
-> circumstances, such as splicing into an L2TP socket.
+On Mon, Sep 18, 2023 at 11:24:59PM +0200, KP Singh wrote:
+> This config influences the nature of the static key that guards the
+> static call for LSM hooks.
 > 
-> The symptom observed is a warning in __ip6_append_data():
+> When enabled, it indicates that an LSM static call slot is more likely
+> to be initialized. When disabled, it optimizes for the case when static
+> call slot is more likely to be not initialized.
 > 
->     WARNING: CPU: 1 PID: 5042 at net/ipv6/ip6_output.c:1800 __ip6_append_data.isra.0+0x1be8/0x47f0 net/ipv6/ip6_output.c:1800
+> When a major LSM like (SELinux, AppArmor, Smack etc) is active on a
+> system the system would benefit from enabling the config. However there
+> are other cases which would benefit from the config being disabled
+> (e.g. a system with a BPF LSM with no hooks enabled by default, or an
+> LSM like loadpin / yama). Ultimately, there is no one-size fits all
+> solution.
 > 
-> that occurs when MSG_SPLICE_PAGES is used to append more data to an already
-> partially occupied skbuff.  The warning occurs when 'copy' is larger than
-> the amount of data in the message iterator.  This is because the requested
-> length includes the transport header length when it shouldn't.  This can be
-> triggered by, for example:
-> 
->         sfd = socket(AF_INET6, SOCK_DGRAM, IPPROTO_L2TP);
->         bind(sfd, ...); // ::1
->         connect(sfd, ...); // ::1 port 7
->         send(sfd, buffer, 4100, MSG_MORE);
->         sendfile(sfd, dfd, NULL, 1024);
-> 
-> Fix this by deducting transhdrlen from length in ip{,6}_append_data() right
-> before we clear transhdrlen if there is already a packet that we're going
-> to try appending to.
-> 
-> Reported-by: syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/r/0000000000001c12b30605378ce8@google.com/
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Eric Dumazet <edumazet@google.com>
-> cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-> cc: "David S. Miller" <davem@davemloft.net>
-> cc: David Ahern <dsahern@kernel.org>
-> cc: Paolo Abeni <pabeni@redhat.com>
-> cc: Jakub Kicinski <kuba@kernel.org>
-> cc: netdev@vger.kernel.org
-> cc: bpf@vger.kernel.org
-> cc: syzkaller-bugs@googlegroups.com
-> Link: https://lore.kernel.org/r/75315.1695139973@warthog.procyon.org.uk/ # v1
-> ---
->  net/ipv4/ip_output.c  |    1 +
->  net/ipv6/ip6_output.c |    1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-> index 4ab877cf6d35..9646f2d9afcf 100644
-> --- a/net/ipv4/ip_output.c
-> +++ b/net/ipv4/ip_output.c
-> @@ -1354,6 +1354,7 @@ int ip_append_data(struct sock *sk, struct flowi4 *fl4,
->  		if (err)
->  			return err;
->  	} else {
-> +		length -= transhdrlen;
->  		transhdrlen = 0;
->  	}
+> with CONFIG_SECURITY_HOOK_LIKELY enabled, the inactive /
+> uninitialized case is penalized with a direct jmp (still better than
+> an indirect jmp):
+> [...]
+> index 52c9af08ad35..bd2a0dff991a 100644
+> --- a/security/Kconfig
+> +++ b/security/Kconfig
+> @@ -32,6 +32,17 @@ config SECURITY
 >  
-> diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-> index 54fc4c711f2c..6a4ce7f622e9 100644
-> --- a/net/ipv6/ip6_output.c
-> +++ b/net/ipv6/ip6_output.c
-> @@ -1888,6 +1888,7 @@ int ip6_append_data(struct sock *sk,
->  		length += exthdrlen;
->  		transhdrlen += exthdrlen;
->  	} else {
-> +		length -= transhdrlen;
->  		transhdrlen = 0;
->  	}
+>  	  If you are unsure how to answer this question, answer N.
 >  
+> +config SECURITY_HOOK_LIKELY
+> +	bool "LSM hooks are likely to be initialized"
+> +	depends on SECURITY
+> +	default y
+> +	help
+> +	  This controls the behaviour of the static keys that guard LSM hooks.
+> +	  If LSM hooks are likely to be initialized by LSMs, then one gets
+> +	  better performance by enabling this option. However, if the system is
+> +	  using an LSM where hooks are much likely to be disabled, one gets
+> +	  better performance by disabling this config.
 
-Definitely a much simpler patch, thanks.
+Since you described the situations where it's a net benefit, this could
+be captured in the Kconfig too. How about this, which tracks the "major"
+LSMs as in the DEFAULT_SECURITY choice:
 
-So the current model is that callers with non-zero transhdrlen always
-pass to __ip_append_data payload length + transhdrlen.
+	depends on SECURITY && EXPERT
+	default BPF_LSM || SECURITY_SELINUX || SECURITY_SMACK || SECURITY_TOMOYO || SECURITY_APPARMOR
 
-I do see that udp does this: ulen += sizeof(struct udphdr); This calls
-ip_make_skb if not corked, but directly ip_append_data if corked.
 
-Then __ip_append_data will use transhdrlen in its packet calculations,
-and reset that to zero after allocating the first new skb.
-
-So if corked *and* fragmentation, which would cause a new skb to be
-allocated, the next skb would incorrectly reserve udp header space,
-because the second __ip_append_data call will again pass transhdrlen.
-If so, then this patch fixes that. But that has never been reported,
-so I'm most likely misreading some part..
-
-So on the surface this makes sense to me. But I need to read it more
-closely still. The most risk-averse version would limit this change
-explicitly to MSG_SPLICE_PAGES calls.
-
-FWIW I think MSG_ZEROCOPY is somewhat immune compared to
-MSG_SPLCE_PAGES solely because it is limited to TCP, UDP and RDS
-sockets.
+-- 
+Kees Cook
 
