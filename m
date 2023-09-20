@@ -1,332 +1,348 @@
-Return-Path: <bpf+bounces-10421-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10422-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 120987A6FD1
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 02:20:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98DD17A6FD5
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 02:25:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34AA01C20985
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 00:20:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C60A2812CF
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 00:25:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E2815A5;
-	Wed, 20 Sep 2023 00:19:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2973610E6;
+	Wed, 20 Sep 2023 00:25:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D054A23
-	for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 00:19:54 +0000 (UTC)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278EFAB
-	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 17:19:52 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9a9cd066db5so828821566b.0
-        for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 17:19:52 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A39193
+	for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 00:25:29 +0000 (UTC)
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F7AAB
+	for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 17:25:26 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c00e1d4c08so43079161fa.3
+        for <bpf@vger.kernel.org>; Tue, 19 Sep 2023 17:25:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695169190; x=1695773990; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=S27RLi3gYTgX5eDiNPQ9d1UCRuuRPLJ28bXshs7WLZc=;
-        b=ndDNUZqPFguTkyA6PJTKwqNQT0x5f5sjuGqCITvJXTunlurW6YteqlbOGAVIKe7313
-         V01yQkP1DgOtVz5mxLZI8rP3DGpcx7ZjbZ0cJtVo1yar7dN0hdeZ/WL5eZbZVL+/MPJF
-         B3ikfvLFkYxIxss8T/JRsRscKpRplpU1DS4jowd7NuYkBw9WAlKgPVDZ03yuy5ffEoie
-         a1zkovMm0CZIypYr0kJO9XQqEhaVHGEUWTQ3oh9drjafYTWkRB3PXzvHvhi21UNa51FQ
-         TnWkhOC32ILMIdWJOybjyIlAAi6RX4xkXCM5I99zXM54Fyc2Il52ppc6Edj+49EynJ/V
-         Yx1Q==
+        d=gmail.com; s=20230601; t=1695169525; x=1695774325; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DrL1AGtRqiSHEskS2w8WGm7mpbhLkmXxEbQ38EN3Kho=;
+        b=Z3F8tL/3ASDawWDX6Ojj1LV1B992xXACiu2va5wmDjsxKBkKgEUl2fMhFUEah0nF1p
+         0lcYPnbxzYVhAQkeIV9Lgli4yYFJCUhzocpHxtAzgDU+Ii/+xF/SDZ0iCxCioVeP+Y+n
+         nOyXHl2wCOmTPqkoax0Lxjr6g676Y+BtQPKum3r5fwA1c/gHYHfRYG2bt63b0pJ2mZti
+         DmwSx8EclferAzGlg4HACQEEbGVJEh3DEiDDXhlQi10l9jO5TK9ZwmK2qwbvUPBq9KKP
+         pkSvRGgLoJ7CapDUrGZK7W+fqBvMY6tSZPdYLZP7OBwVMoMbVS5cXyNN5DzSOcMKjrNG
+         kK2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695169190; x=1695773990;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=S27RLi3gYTgX5eDiNPQ9d1UCRuuRPLJ28bXshs7WLZc=;
-        b=ixvDpE6zRU8dR0NcKZ9+HLzi/ARCYYLo3b0ZS047N2qCABaypENinKmBeWqQ+Bvh2d
-         m8L7/ACUGDrUZUDAD53ERWafhYpWmO2pyqHHPhNwrTxdbVR9h2H8xztd09o1sur+7dEb
-         Fg2kSlr1YaUPA7xy7VLr/x/JwlUVNE1MEmF1ImUdRbi1m7UMNQa/+ggxThBBNz3Z7qmV
-         WAdGRqoeUPllKG7eUZXGUWHWa75gm9TuLGEB2Rcu9zYzBW9wsaXK9fxrQttk4UmArbb9
-         lb8jTeWl+Pt1NVQEr8oxv06Z9ul2G4C3aMitTOz1h/+iAnmspOp3rGhhaGhQPKtDlNkx
-         4A6g==
-X-Gm-Message-State: AOJu0YypLeNzndaTSSLaNVeVNH14S6C4WQ+U+IOswd7GVy1JLUN5P2fN
-	+wEoFQX3ypYmRP36OVzo+9k=
-X-Google-Smtp-Source: AGHT+IE7A9wwvI8oj/qimifcTKCfP8vIcQZBqS56qiYFQaHZhPCyT8gwD/npUrNWLVHTNZ/kESsKMw==
-X-Received: by 2002:a17:907:2c61:b0:9a4:dd49:da3e with SMTP id ib1-20020a1709072c6100b009a4dd49da3emr605674ejc.68.1695169190427;
-        Tue, 19 Sep 2023 17:19:50 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id e10-20020a170906248a00b00993928e4d1bsm8375911ejb.24.2023.09.19.17.19.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 17:19:50 -0700 (PDT)
-Message-ID: <ee714151d7c840c82d79f9d12a0f51ef13b798e3.camel@gmail.com>
-Subject: Re: [BUG] verifier escape with iteration helpers (bpf_loop, ...)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrew Werner
- <awerner32@gmail.com>, bpf <bpf@vger.kernel.org>, Andrei Matei
- <andreimatei1@gmail.com>, Tamir Duberstein <tamird@gmail.com>, Joanne Koong
- <joannelkoong@gmail.com>, kernel-team@dataexmachina.dev, Song Liu
- <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Wed, 20 Sep 2023 03:19:48 +0300
-In-Reply-To: <CAEf4BzYg8T_Dek6T9HYjHZCuLTQT8ptAkQRxrsgaXg7-MZmHDA@mail.gmail.com>
-References:
-	  <CA+vRuzPChFNXmouzGG+wsy=6eMcfr1mFG0F3g7rbg-sedGKW3w@mail.gmail.com>
-	 <CAADnVQJpLAzmUfwvWBr8a_PWHYHxHw9vdAXnWB4R4PbVY4S4mw@mail.gmail.com>
-	 <CAEf4Bzbubu7KjBv=98BZrVnTrcfPQrnsp-g1kOYKM=kUtiqEgw@mail.gmail.com>
-	 <dff1cfec20d1711cb023be38dfe886bac8aac5f6.camel@gmail.com>
-	 <CAP01T76duVGmnb+LQjhdKneVYs1q=ehU4yzTLmgZdG0r2ErOYQ@mail.gmail.com>
-	 <a2995c1d7c01794ca9b652cdea7917cac5d98a16.camel@gmail.com>
-	 <97a90da09404c65c8e810cf83c94ac703705dc0e.camel@gmail.com>
-	 <CAEf4BzYg8T_Dek6T9HYjHZCuLTQT8ptAkQRxrsgaXg7-MZmHDA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=1e100.net; s=20230601; t=1695169525; x=1695774325;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DrL1AGtRqiSHEskS2w8WGm7mpbhLkmXxEbQ38EN3Kho=;
+        b=gmhLoFHHyaBR/kpogk+BZtlCXRtuFPU6pjsGqWHzpJ3krpqL1g3XfCJQYVcm6frKv1
+         s+loWPJSgPXmJY63JgPIXR/CaSrPt3nMAP4kxlw+MCyGwjhens4M/s8FHbDHclxHZUlo
+         RQuu1uC369kV0WQndZxeieZxYq3t6sQnR7RoeZKHvZ+FQQQOCbxwNlWrYi1H1sqzzUZD
+         twrls1tHJR1395NkEfiDsVzTyy+/OoaKM6s3ug7OiMAcqHIJD7QuCtI94M3KAVR2J9qX
+         +kp7kSfsbmzOjorFK1XaC3uUAwoG1Xm9P5Mkza2OTc9RI3A5nGCIFBdxd9j1M+cUs5OY
+         S+gA==
+X-Gm-Message-State: AOJu0YyccPkxWF3/Tlk9cA+E1nHcqwMc6zcecwwVBw+g2gX/9FVWcSRs
+	DtqL09wRDJs72mPl+xLpyIukiww2G95GMRBBUig=
+X-Google-Smtp-Source: AGHT+IHZGwrWP4CxC0KAa+DpN3vYoxcCJKM/HEf68Q7Pdmn7qCZJFSovhIH1XODwS7tWY258Rzb+0jnVBIuGChQZ7yQ=
+X-Received: by 2002:a2e:994c:0:b0:2c0:240:b564 with SMTP id
+ r12-20020a2e994c000000b002c00240b564mr714350ljj.15.1695169524762; Tue, 19 Sep
+ 2023 17:25:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
+References: <20230912233214.1518551-1-memxor@gmail.com> <20230912233214.1518551-16-memxor@gmail.com>
+In-Reply-To: <20230912233214.1518551-16-memxor@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 19 Sep 2023 17:25:13 -0700
+Message-ID: <CAEf4BzbY5CW_CFSeZBKDi6zCyFCmWkHcPBmCs65z8Vd-=cEduw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 15/17] libbpf: Add support for custom
+ exception callbacks
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Yonghong Song <yonghong.song@linux.dev>, 
+	David Vernet <void@manifault.com>, Puranjay Mohan <puranjay12@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, 2023-09-19 at 16:02 -0700, Andrii Nakryiko wrote:
-> On Tue, Sep 19, 2023 at 9:28=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.c=
-om> wrote:
-> >=20
-> > It looks like I hit a related but slightly different bug with bpf_iter_=
-next().
-> > Consider the following example:
-> >=20
-> >     SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-> >     int num_iter_bug(const void *ctx) {
-> >         struct bpf_iter_num it;                 // fp[-8] below
-> >         __u64 val =3D 0;                          // fp[-16] in the bel=
-ow
-> >         __u64 *ptr =3D &val;                      // r7 below
-> >         __u64 rnd =3D bpf_get_current_pid_tgid(); // r6 below
-> >         void *v;
-> >=20
-> >         bpf_iter_num_new(&it, 0, 10);
-> >         while ((v =3D bpf_iter_num_next(&it))) {
-> >             rnd++;
-> >             if (rnd =3D=3D 42) {
-> >                 ptr =3D (void*)(0xdead);
-> >                 continue;
-> >             }
-> >             bpf_probe_read_user(ptr, 8, (void*)(0xdeadbeef));
-> >         }
-> >         bpf_iter_num_destroy(&it);
-> >         return 0;
-> >     }
-> >=20
-> > (Unfortunately, it had to be converted to assembly to avoid compiler
-> >  clobbering loop structure, complete test case is at the end of the ema=
-il).
-> >=20
-> > The example is not safe because of 0xdead being a possible `ptr` value.
-> > However, currently it is marked as safe.
-> >=20
-> > This happens because of states_equal() usage for iterator convergence
-> > detection:
-> >=20
-> >     static int is_state_visited(struct bpf_verifier_env *env, int insn_=
-idx)
-> >         ...
-> >         while (sl)
-> >                 states_cnt++;
-> >                 if (sl->state.insn_idx !=3D insn_idx)
-> >                         goto next;
-> >=20
-> >                 if (sl->state.branches)
-> >                 ...
-> >                         if (is_iter_next_insn(env, insn_idx)) {
-> >                                 if (states_equal(env, &sl->state, cur))=
- {
-> >                         ...
-> >                                         if (iter_state->iter.state =3D=
-=3D BPF_ITER_STATE_ACTIVE)
-> >                                                 goto hit;
-> >                                 }
-> >                                 goto skip_inf_loop_check;
-> >                         }
-> >         ...
-> >=20
-> > With some additional logging I see that the following states are
-> > considered equal:
-> >=20
-> >     13: (85) call bpf_iter_num_next#59908
-> >     ...
-> >     at is_iter_next_insn(insn 13):
-> >       old state:
-> >          R0=3Dscalar() R1_rw=3Dfp-8 R6_r=3Dscalar(id=3D1) R7=3Dfp-16 R1=
-0=3Dfp0
-> >          fp-8_r=3Diter_num(ref_id=3D2,state=3Dactive,depth=3D0) fp-16=
-=3D00000000 refs=3D2
-> >       cur state:
-> >          R0=3Drdonly_mem(id=3D3,ref_obj_id=3D2,off=3D0,imm=3D0) R1_w=3D=
-fp-8 R6=3D42 R7_w=3D57005
-> >          R10=3Dfp0 fp-8=3Diter_num(ref_id=3D2,state=3Dactive,depth=3D1)=
- fp-16=3D00000000 refs=3D2
-> >     states_equal()?: true
-> >=20
-> > Note that R7=3Dfp-16 in old state vs R7_w=3D57005 in cur state.
-> > The registers are considered equal because R7 does not have a read mark=
-.
-> > However read marks are not yet finalized for old state because
-> > sl->state.branches !=3D 0. (Note: precision marks are not finalized as
-> > well, which should be a problem, but this requires another example).
->=20
-> I originally convinced myself that non-finalized precision marking is
-> fine, see the comment next to process_iter_next_call() for reasoning.
-> If you can have a dedicated example for precision that would be great.
->=20
-> As for read marks... Yep, that's a bummer. That r7 is not used after
-> the loop, so is not marked as read, and it's basically ignored for
-> loop invariant checking, which is definitely not what was intended.
+On Tue, Sep 12, 2023 at 4:32=E2=80=AFPM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> Add support to libbpf to append exception callbacks when loading a
+> program. The exception callback is found by discovering the declaration
+> tag 'exception_callback:<value>' and finding the callback in the value
+> of the tag.
+>
+> The process is done in two steps. First, for each main program, the
+> bpf_object__sanitize_and_load_btf function finds and marks its
+> corresponding exception callback as defined by the declaration tag on
+> it. Second, bpf_object__reloc_code is modified to append the indicated
+> exception callback at the end of the instruction iteration (since
+> exception callback will never be appended in that loop, as it is not
+> directly referenced).
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 114 +++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 109 insertions(+), 5 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index afc07a8f7dc7..3a6108e3238b 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -436,9 +436,11 @@ struct bpf_program {
+>         int fd;
+>         bool autoload;
+>         bool autoattach;
+> +       bool sym_global;
+>         bool mark_btf_static;
+>         enum bpf_prog_type type;
+>         enum bpf_attach_type expected_attach_type;
+> +       int exception_cb_idx;
+>
+>         int prog_ifindex;
+>         __u32 attach_btf_obj_fd;
+> @@ -765,6 +767,7 @@ bpf_object__init_prog(struct bpf_object *obj, struct =
+bpf_program *prog,
+>
+>         prog->type =3D BPF_PROG_TYPE_UNSPEC;
+>         prog->fd =3D -1;
+> +       prog->exception_cb_idx =3D -1;
+>
+>         /* libbpf's convention for SEC("?abc...") is that it's just like
+>          * SEC("abc...") but the corresponding bpf_program starts out wit=
+h
+> @@ -871,14 +874,16 @@ bpf_object__add_programs(struct bpf_object *obj, El=
+f_Data *sec_data,
+>                 if (err)
+>                         return err;
+>
+> +               if (ELF64_ST_BIND(sym->st_info) !=3D STB_LOCAL)
+> +                       prog->sym_global =3D true;
+> +
+>                 /* if function is a global/weak symbol, but has restricte=
+d
+>                  * (STV_HIDDEN or STV_INTERNAL) visibility, mark its BTF =
+FUNC
+>                  * as static to enable more permissive BPF verification m=
+ode
+>                  * with more outside context available to BPF verifier
+>                  */
+> -               if (ELF64_ST_BIND(sym->st_info) !=3D STB_LOCAL
+> -                   && (ELF64_ST_VISIBILITY(sym->st_other) =3D=3D STV_HID=
+DEN
+> -                       || ELF64_ST_VISIBILITY(sym->st_other) =3D=3D STV_=
+INTERNAL))
+> +               if (prog->sym_global && (ELF64_ST_VISIBILITY(sym->st_othe=
+r) =3D=3D STV_HIDDEN
+> +                   || ELF64_ST_VISIBILITY(sym->st_other) =3D=3D STV_INTE=
+RNAL))
+>                         prog->mark_btf_static =3D true;
+>
+>                 nr_progs++;
+> @@ -3142,6 +3147,86 @@ static int bpf_object__sanitize_and_load_btf(struc=
+t bpf_object *obj)
+>                 }
+>         }
+>
+> +       if (!kernel_supports(obj, FEAT_BTF_DECL_TAG))
+> +               goto skip_exception_cb;
+> +       for (i =3D 0; i < obj->nr_programs; i++) {
 
-Liveness is a precondition for all subsequent checks, so example
-involving precision would also involve liveness. Here is a combined
-example:
+I'm not sure why you chose to do these very inefficient three nested
+for loops, tbh. Can you please send a follow up patch to make this a
+bit more sane? There is no reason to iterate over BTF multiple times.
+In general BPF object's BTF can have tons of information (especially
+with vmlinux.h), so minimizing unnecessary linear searches here is
+worth doing.
 
-    r8 =3D 0
-    fp[-16] =3D 0
-    r7 =3D -16
-    r6 =3D bpf_get_current_pid_tgid()
-    bpf_iter_num_new(&fp[-8], 0, 10)
-    while (bpf_iter_num_next(&fp[-8])) {
-      r6++
-      if (r6 !=3D 42) {
-        r7 =3D -32
-        continue;
-      }
-      r0 =3D r10
-      r0 +=3D r7
-      r8 =3D *(u64 *)(r0 + 0)
-    }
-    bpf_iter_num_destroy(&fp[-8])
-    return r8
+How about this structure:
 
-(Complete source code is at the end of the email).
 
-The call to bpf_iter_num_next() is reachable with r7 values -16 and -32.
-State with r7=3D-16 is visited first, at which point r7 has no read mark
-and is not marked precise.
-State with r7=3D-32 is visited second:
-- states_equal() for is_iter_next_insn() should ignore absence of
-  REG_LIVE_READ mark on r7, otherwise both states would be considered
-  identical;
-- states_equal() for is_iter_next_insn() should ignore absence of
-  precision mark on r7, otherwise both states would be considered
-  identical.
+for each btf type in btf:
+   if not decl_tag and not "exception_callback:" one, continue
 
-> > A possible fix is to add a special flag to states_equal() and
-> > conditionally ignore logic related to liveness and precision when this
-> > flag is set. Set this flag for is_iter_next_insn() branch above.
->=20
-> Probably not completely ignore liveness (and maybe precision, but
-> let's do it one step at a time), but only at least one of the
-> registers or stack slots are marked as written or read in one of
-> old/new states? Basically, if some register/slot at the end of
-> iteration is read or modified, it must be important for loop
-> invariant, so even if the parent state says it's not read, we still
-> treat it as read. Can you please try that with just read/write marks
-> and see if anything fails?
+   prog_name =3D <find from decl_tag's referenced func>
+   subprog_name =3D <find from decl_Tag's name>
 
-Unfortunately for the example above neither liveness nor precision
-marks are present when states are compared, e.g. here is the
-(extended) log:
+   prog =3D find_by_name(prog_name);
+   subprog =3D find_by_name(subprog_name);
 
-12: (85) call bpf_iter_num_next#52356
-...
-is_iter_next (12):
-  old:
-     R0=3Dscalar() R1_rw=3Dfp-8 R6_r=3Dscalar(id=3D1) R7=3D-16 R8_r=3D0 R10=
-=3Dfp0
-     fp-8_r=3Diter_num(ref_id=3D2,state=3Dactive,depth=3D0) fp-16=3D0000000=
-0 refs=3D2
-  new:
-     R0=3Drdonly_mem(id=3D3,ref_obj_id=3D2,off=3D0,imm=3D0) R1_w=3Dfp-8 R6=
-=3D42 R7_w=3D-32 R8=3D0 R10=3Dfp0
-     fp-8=3Diter_num(ref_id=3D2,state=3Dactive,depth=3D1) fp-16=3D00000000 =
-refs=3D2
-> hit
+   <check conditions>
 
-Note that for old state r7 value is not really important to get to exit,
-the verification trace looks as follows:
-1. ... start ...
-2. bpf_iter_num_next(&fp[-8]) ;; r7=3D-16, checkpoint saved
-3. r6++
-4. r7 =3D -32
-5. bpf_iter_num_next(&fp[-8]) ;; push new state with r7=3D-32
-6. bpf_iter_num_destroy(&fp[-8])
-7. return 8
+   <remember idx; if it's already set, emit human-readable error and
+exit, don't rely on BPF verifier to complain >
 
-The r7 liveness and precision is important for state scheduled at (5)
-but it is not known yet, so when both states are compared marks are
-absent in cur and in old.
+Thanks.
 
----
+> +               struct bpf_program *prog =3D &obj->programs[i];
+> +               int j, k, n;
+> +
+> +               if (prog_is_subprog(obj, prog))
+> +                       continue;
+> +               n =3D btf__type_cnt(obj->btf);
+> +               for (j =3D 1; j < n; j++) {
+> +                       const char *str =3D "exception_callback:", *name;
+> +                       size_t len =3D strlen(str);
+> +                       struct btf_type *t;
+> +
+> +                       t =3D btf_type_by_id(obj->btf, j);
+> +                       if (!btf_is_decl_tag(t) || btf_decl_tag(t)->compo=
+nent_idx !=3D -1)
+> +                               continue;
+> +
+> +                       name =3D btf__str_by_offset(obj->btf, t->name_off=
+);
+> +                       if (strncmp(name, str, len))
+> +                               continue;
+> +
+> +                       t =3D btf_type_by_id(obj->btf, t->type);
+> +                       if (!btf_is_func(t) || btf_func_linkage(t) !=3D B=
+TF_FUNC_GLOBAL) {
+> +                               pr_warn("prog '%s': exception_callback:<v=
+alue> decl tag not applied to the main program\n",
+> +                                       prog->name);
+> +                               return -EINVAL;
+> +                       }
+> +                       if (strcmp(prog->name, btf__str_by_offset(obj->bt=
+f, t->name_off)))
+> +                               continue;
+> +                       /* Multiple callbacks are specified for the same =
+prog,
+> +                        * the verifier will eventually return an error f=
+or this
+> +                        * case, hence simply skip appending a subprog.
+> +                        */
+> +                       if (prog->exception_cb_idx >=3D 0) {
+> +                               prog->exception_cb_idx =3D -1;
+> +                               break;
+> +                       }
 
-/* BTF FUNC records are not generated for kfuncs referenced
- * from inline assembly. These records are necessary for
- * libbpf to link the program. The function below is a hack
- * to ensure that BTF FUNC records are generated.
- */
-void __kfunc_btf_root(void)
-{
-	bpf_iter_num_new(0, 0, 0);
-	bpf_iter_num_next(0);
-	bpf_iter_num_destroy(0);
-}
+you check this condition three times and handle it in three different
+ways, it's bizarre. Why?
 
-SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-__failure
-__msg("20: (79) r8 =3D *(u64 *)(r0 +0)")
-__msg("invalid read from stack R0 off=3D-32 size=3D8")
-__naked int iter_next_exact(const void *ctx)
-{
-	asm volatile (
-		"r8 =3D 0;"
-		"*(u64 *)(r10 - 16) =3D r8;"
-		"r7 =3D -16;"
-		"call %[bpf_get_current_pid_tgid];"
-		"r6 =3D r0;"
-		"r1 =3D r10;"
-		"r1 +=3D -8;"
-		"r2 =3D 0;"
-		"r3 =3D 10;"
-		"call %[bpf_iter_num_new];"
-	"1:"
-		"r1 =3D r10;"
-		"r1 +=3D -8;\n"
-		"call %[bpf_iter_num_next];"
-		"if r0 =3D=3D 0 goto 2f;"
-		"r6 +=3D 1;"
-		"if r6 !=3D 42 goto 3f;"
-		"r7 =3D -32;"
-		"goto 1b;\n"
-	"3:"
-		"r0 =3D r10;"
-		"r0 +=3D r7;"
-		"r8 =3D *(u64 *)(r0 + 0);"
-		"goto 1b;\n"
-	"2:"
-		"r1 =3D r10;"
-		"r1 +=3D -8;"
-		"call %[bpf_iter_num_destroy];"
-		"r0 =3D r8;"
-		"exit;"
-		:
-		: __imm(bpf_get_current_pid_tgid),
-		  __imm(bpf_iter_num_new),
-		  __imm(bpf_iter_num_next),
-		  __imm(bpf_iter_num_destroy),
-		  __imm(bpf_probe_read_user)
-		: __clobber_all
-	);
-}
 
+> +
+> +                       name +=3D len;
+> +                       if (str_is_empty(name)) {
+> +                               pr_warn("prog '%s': exception_callback:<v=
+alue> decl tag contains empty value\n",
+> +                                       prog->name);
+> +                               return -EINVAL;
+> +                       }
+> +
+> +                       for (k =3D 0; k < obj->nr_programs; k++) {
+> +                               struct bpf_program *subprog =3D &obj->pro=
+grams[k];
+> +
+> +                               if (!prog_is_subprog(obj, subprog))
+> +                                       continue;
+> +                               if (strcmp(name, subprog->name))
+> +                                       continue;
+> +                               /* Enforce non-hidden, as from verifier p=
+oint of
+> +                                * view it expects global functions, wher=
+eas the
+> +                                * mark_btf_static fixes up linkage as st=
+atic.
+> +                                */
+> +                               if (!subprog->sym_global || subprog->mark=
+_btf_static) {
+> +                                       pr_warn("prog '%s': exception cal=
+lback %s must be a global non-hidden function\n",
+> +                                               prog->name, subprog->name=
+);
+> +                                       return -EINVAL;
+> +                               }
+> +                               /* Let's see if we already saw a static e=
+xception callback with the same name */
+> +                               if (prog->exception_cb_idx >=3D 0) {
+> +                                       pr_warn("prog '%s': multiple subp=
+rogs with same name as exception callback '%s'\n",
+> +                                               prog->name, subprog->name=
+);
+> +                                       return -EINVAL;
+> +                               }
+> +                               prog->exception_cb_idx =3D k;
+> +                               break;
+> +                       }
+> +
+> +                       if (prog->exception_cb_idx >=3D 0)
+> +                               continue;
+> +                       pr_warn("prog '%s': cannot find exception callbac=
+k '%s'\n", prog->name, name);
+> +                       return -ENOENT;
+> +               }
+> +       }
+> +skip_exception_cb:
+> +
+>         sanitize =3D btf_needs_sanitization(obj);
+>         if (sanitize) {
+>                 const void *raw_data;
+> @@ -6270,10 +6355,10 @@ static int
+>  bpf_object__reloc_code(struct bpf_object *obj, struct bpf_program *main_=
+prog,
+>                        struct bpf_program *prog)
+>  {
+> -       size_t sub_insn_idx, insn_idx, new_cnt;
+> +       size_t sub_insn_idx, insn_idx;
+>         struct bpf_program *subprog;
+> -       struct bpf_insn *insns, *insn;
+>         struct reloc_desc *relo;
+> +       struct bpf_insn *insn;
+>         int err;
+>
+>         err =3D reloc_prog_func_and_line_info(obj, main_prog, prog);
+> @@ -6582,6 +6667,25 @@ bpf_object__relocate(struct bpf_object *obj, const=
+ char *targ_btf_path)
+>                                 prog->name, err);
+>                         return err;
+>                 }
+> +
+> +               /* Now, also append exception callback if it has not been=
+ done already. */
+> +               if (prog->exception_cb_idx >=3D 0) {
+> +                       struct bpf_program *subprog =3D &obj->programs[pr=
+og->exception_cb_idx];
+> +
+> +                       /* Calling exception callback directly is disallo=
+wed, which the
+> +                        * verifier will reject later. In case it was pro=
+cessed already,
+> +                        * we can skip this step, otherwise for all other=
+ valid cases we
+> +                        * have to append exception callback now.
+> +                        */
+> +                       if (subprog->sub_insn_off =3D=3D 0) {
+> +                               err =3D bpf_object__append_subprog_code(o=
+bj, prog, subprog);
+> +                               if (err)
+> +                                       return err;
+> +                               err =3D bpf_object__reloc_code(obj, prog,=
+ subprog);
+> +                               if (err)
+> +                                       return err;
+> +                       }
+> +               }
+>         }
+>         /* Process data relos for main programs */
+>         for (i =3D 0; i < obj->nr_programs; i++) {
+> --
+> 2.41.0
+>
 
