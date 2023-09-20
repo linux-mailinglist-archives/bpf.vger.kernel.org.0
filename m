@@ -1,57 +1,49 @@
-Return-Path: <bpf+bounces-10449-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10450-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3B337A819B
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 14:46:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56F637A81AB
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 14:47:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16B351C20CCC
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 12:46:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7682E1C20B71
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 12:47:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A2D331A6E;
-	Wed, 20 Sep 2023 12:46:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2EE6339B3;
+	Wed, 20 Sep 2023 12:46:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B050F328A2;
-	Wed, 20 Sep 2023 12:46:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05B74C433C9;
-	Wed, 20 Sep 2023 12:46:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 561AF328A2;
+	Wed, 20 Sep 2023 12:46:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8D5AC433CA;
+	Wed, 20 Sep 2023 12:46:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1695213986;
-	bh=yYUJGr1ekFJdAXZtWX62M+Gi8IxzUdobO7q5GulGG/0=;
+	s=korg; t=1695213989;
+	bh=GhHn7z7pT4T8Lyy/OVsC4TQSNE5PsW5IxF4LHM9Lm6o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uo485Gx5mf+c3zsZMnQo+V8QvO2AvpeWF/UtvuAP8xnTJc93e+GJT0HcN1PefhnsM
-	 s3KwnnbFAPePXiNbiwbqfUNfytSeDPR7jzkVbqRzCKcra5eEGWjTpXLKqPg1klgzB1
-	 Qz5eB6lbArS6x+/aIiCYqbAp8Ex5MvBJXKpWB3Jg=
+	b=HS0KJ3chT1Retjubs86OdDEMvBxu7zbkKziXbJlKGR4HdamQLXS1rXIgB8RMJoeZR
+	 NSK+h9Zl8oq7coDf33mYxo3jCa/H0wSbH+cmNT0XJAKs6rBD8YMEL77p9xQFzReSQS
+	 P4ynJD32fOl178ygwg6cGJ/nx+TGGVnt80eDPXFY=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	patches@lists.linux.dev,
-	James Clark <james.clark@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Ian Rogers <irogers@google.com>,
-	Jiri Olsa <jolsa@redhat.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Martin KaFai Lau <kafai@fb.com>,
+	Song Liu <song@kernel.org>,
 	Namhyung Kim <namhyung@kernel.org>,
-	Song Liu <songliubraving@fb.com>,
-	Sumanth Korikkar <sumanthk@linux.ibm.com>,
-	Thomas Richter <tmricht@linux.ibm.com>,
-	Yonghong Song <yhs@fb.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Ian Rogers <irogers@google.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
 	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
 	Arnaldo Carvalho de Melo <acme@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 071/110] perf test: Remove bash construct from stat_bpf_counters.sh test
-Date: Wed, 20 Sep 2023 13:32:09 +0200
-Message-ID: <20230920112833.087148087@linuxfoundation.org>
+Subject: [PATCH 5.15 072/110] perf test shell stat_bpf_counters: Fix test on Intel
+Date: Wed, 20 Sep 2023 13:32:10 +0200
+Message-ID: <20230920112833.126246427@linuxfoundation.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230920112830.377666128@linuxfoundation.org>
 References: <20230920112830.377666128@linuxfoundation.org>
@@ -70,73 +62,54 @@ Content-Transfer-Encoding: 8bit
 
 ------------------
 
-From: James Clark <james.clark@arm.com>
+From: Namhyung Kim <namhyung@kernel.org>
 
-[ Upstream commit c8b947642d2339ce74c6a1ce56726089539f48d9 ]
+[ Upstream commit 68ca249c964f520af7f8763e22f12bd26b57b870 ]
 
-Currently the test skips with an error because == only works in bash:
+As of now, bpf counters (bperf) don't support event groups.  But the
+default perf stat includes topdown metrics if supported (on recent Intel
+machines) which require groups.  That makes perf stat exiting.
 
-  $ ./perf test 91 -v
-  Couldn't bump rlimit(MEMLOCK), failures may take place when creating BPF maps, etc
-  91: perf stat --bpf-counters test                                   :
-  --- start ---
-  test child forked, pid 44586
-  ./tests/shell/stat_bpf_counters.sh: 26: [: -v: unexpected operator
-  test child finished with -2
-  ---- end ----
-  perf stat --bpf-counters test: Skip
+  $ sudo perf stat --bpf-counter true
+  bpf managed perf events do not yet support groups.
 
-Changing == to = does the same thing, but doesn't result in an error:
+Actually the test explicitly uses cycles event only, but it missed to
+pass the option when it checks the availability of the command.
 
-  ./perf test 91 -v
-  Couldn't bump rlimit(MEMLOCK), failures may take place when creating BPF maps, etc
-  91: perf stat --bpf-counters test                                   :
-  --- start ---
-  test child forked, pid 45833
-  Skipping: --bpf-counters not supported
-    Error: unknown option `bpf-counters'
-  [...]
-  test child finished with -2
-  ---- end ----
-  perf stat --bpf-counters test: Skip
-
-Signed-off-by: James Clark <james.clark@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: 2c0cb9f56020d2ea ("perf test: Add a shell test for 'perf stat --bpf-counters' new option")
+Reviewed-by: Song Liu <song@kernel.org>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
 Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Sumanth Korikkar <sumanthk@linux.ibm.com>
-Cc: Thomas Richter <tmricht@linux.ibm.com>
-Cc: Yonghong Song <yhs@fb.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Link: https://lore.kernel.org/r/20211028134828.65774-2-james.clark@arm.com
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20230825164152.165610-2-namhyung@kernel.org
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Stable-dep-of: 68ca249c964f ("perf test shell stat_bpf_counters: Fix test on Intel")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/tests/shell/stat_bpf_counters.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/tests/shell/stat_bpf_counters.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/tools/perf/tests/shell/stat_bpf_counters.sh b/tools/perf/tests/shell/stat_bpf_counters.sh
-index 2aed20dc22625..13473aeba489c 100755
+index 13473aeba489c..6bf24b85294c7 100755
 --- a/tools/perf/tests/shell/stat_bpf_counters.sh
 +++ b/tools/perf/tests/shell/stat_bpf_counters.sh
-@@ -23,7 +23,7 @@ compare_number()
+@@ -22,10 +22,10 @@ compare_number()
+ }
  
  # skip if --bpf-counters is not supported
- if ! perf stat --bpf-counters true > /dev/null 2>&1; then
--	if [ "$1" == "-v" ]; then
-+	if [ "$1" = "-v" ]; then
+-if ! perf stat --bpf-counters true > /dev/null 2>&1; then
++if ! perf stat -e cycles --bpf-counters true > /dev/null 2>&1; then
+ 	if [ "$1" = "-v" ]; then
  		echo "Skipping: --bpf-counters not supported"
- 		perf --no-pager stat --bpf-counters true || true
+-		perf --no-pager stat --bpf-counters true || true
++		perf --no-pager stat -e cycles --bpf-counters true || true
  	fi
+ 	exit 2
+ fi
 -- 
 2.40.1
 
