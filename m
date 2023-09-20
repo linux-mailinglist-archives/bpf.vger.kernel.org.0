@@ -1,156 +1,178 @@
-Return-Path: <bpf+bounces-10442-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10443-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 754347A760C
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 10:39:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2D007A7913
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 12:21:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FC21281BBC
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 08:39:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BEB9281861
+	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 10:21:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F41D1170B;
-	Wed, 20 Sep 2023 08:39:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19CD315AF2;
+	Wed, 20 Sep 2023 10:21:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE2811184
-	for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 08:39:24 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F30693
-	for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 01:39:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1695199162;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=+3yBpA5iz82pce6LfLZNujDLBSjE7ZVN1nK9Rsm3ufc=;
-	b=czUj6an4tmC8yvo5TCg5v68hUY+mos8NhxGUIUWLHDkmIWnT0OBj7AHmXiH4nETIcsUj+1
-	rWY5CjoohHp5KXRSB3Mf6NPY0WnNdERIfQeXy4mNW2/4U8RztNFhJHj3p6FDT8diEjFKbd
-	Wm+yOvWnd1VuywC6/NiPZZnAvwJvkf4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-169-whr9bxVyOA-yv0PPo12ZiA-1; Wed, 20 Sep 2023 04:39:15 -0400
-X-MC-Unique: whr9bxVyOA-yv0PPo12ZiA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 139D385A5BA;
-	Wed, 20 Sep 2023 08:39:14 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.216])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 5788E2156701;
-	Wed, 20 Sep 2023 08:39:12 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-To: netdev@vger.kernel.org
-cc: dhowells@redhat.com,
-    syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com,
-    Eric Dumazet <edumazet@google.com>,
-    Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-    "David S. Miller" <davem@davemloft.net>,
-    David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-    Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-    syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: [PATCH net v2] ipv4, ipv6: Fix handling of transhdrlen in __ip{,6}_append_data()
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8182D15AD6
+	for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 10:21:01 +0000 (UTC)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0929C2
+	for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 03:20:59 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9a65f9147ccso873108766b.1
+        for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 03:20:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1695205258; x=1695810058; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DiPSvOokKshBPUexjeZdWsFIcxk+jNh+RekcG+HrWWg=;
+        b=Q8EpkBsXTujeK9KdV6Ipi7CIded8Z6A0o/320eaBS2YNI9Zq5bpqELgDYnby1+9NAA
+         x0vMxlCZ2/DciYy40fAvHuWP8COzzHiVI/qd3xHjIY3GRS6EgfZ6dxRKS2/tjLVC8i0y
+         qvadDtmLzGVtCr0/a8rjv7jgIv0Fu1k67t6AGN/cjILyedNJzrP7qGX0tQ2JKlkUMaZ1
+         gaFArQimp1wcn1cCl7VEHSEEHO/NweHipL3Ft+5rqN8IUPRxvL8kPKQps/qBypjSbhAl
+         uyBZEqwxJKEGIfQVE3JyWz/MhktcREIMed/6xQo/MoBYXxgfjYjarm8FRtYy1MOpOFgo
+         pd3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695205258; x=1695810058;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DiPSvOokKshBPUexjeZdWsFIcxk+jNh+RekcG+HrWWg=;
+        b=acErflrGmJHgDP+zkxum955nLOtctYA76NVF2C4G8Snx74joKn+zpVJb4JPP/VZTGl
+         qniRNx58hu/8syAecrDPw+REk7rhtiC6pH1MhGd2A4qV0siZBZxX6MCAcOZjqfnEhJep
+         JqM3AcjukIr5dFMjdZ00cO2MZ8oOHmWMbuwyhVBfuezCl9TaVRZEA1qSZoVzUQzl6qZY
+         qdSG9O4WVvDAilfz7xr37Dqvb/QA4OTiHJfPkxDOZGazsZ8mYNrLsPvv4pBnyBrKa7fZ
+         N4p+4SXkoh01yEsfO8OC9k/pl7Pscu0VFVfP8VfXQHiiP1dUl2e8jrAk0fNl8ZOMz8BC
+         QeAQ==
+X-Gm-Message-State: AOJu0YwyFIC0gPg6ktLWtpdFu0gW33RUl3IrxzWPXHGyrwQ6+WlSYsio
+	tYXQQdEr9NpbTBroWSRi7+CqxJXCqXfonNztUGw=
+X-Google-Smtp-Source: AGHT+IH9y572ZzI5LplOgamEjCHT7V9pJ+GhfVOuSFBC7rQC9QWMtvEuhe38Ye8C0++DNoADW9M0qw==
+X-Received: by 2002:a17:907:2c4f:b0:9ad:78b7:29ea with SMTP id hf15-20020a1709072c4f00b009ad78b729eamr1394976ejc.44.1695205257896;
+        Wed, 20 Sep 2023 03:20:57 -0700 (PDT)
+Received: from cloudflare.com (79.184.124.164.ipv4.supernova.orange.pl. [79.184.124.164])
+        by smtp.gmail.com with ESMTPSA id c26-20020a170906341a00b00993470682e5sm9122587ejb.32.2023.09.20.03.20.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 03:20:57 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
+	kernel-team@cloudflare.com,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Cong Wang <cong.wang@bytedance.com>
+Subject: [PATCH bpf] bpf, sockmap: Reject sk_msg egress redirects to non-TCP sockets
+Date: Wed, 20 Sep 2023 12:20:55 +0200
+Message-ID: <20230920102055.42662-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <108790.1695199151.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 20 Sep 2023 09:39:11 +0100
-Message-ID: <108791.1695199151@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-	autolearn=unavailable autolearn_force=no version=3.4.6
+	SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Including the transhdrlen in length is a problem when the packet is
-partially filled (e.g. something like send(MSG_MORE) happened previously)
-when appending to an IPv4 or IPv6 packet as we don't want to repeat the
-transport header or account for it twice.  This can happen under some
-circumstances, such as splicing into an L2TP socket.
+With a SOCKMAP/SOCKHASH map and an sk_msg program user can steer messages
+sent from one TCP socket (s1) to actually egress from another TCP
+socket (s2):
 
-The symptom observed is a warning in __ip6_append_data():
+tcp_bpf_sendmsg(s1)		// = sk_prot->sendmsg
+  tcp_bpf_send_verdict(s1)	// __SK_REDIRECT case
+    tcp_bpf_sendmsg_redir(s2)
+      tcp_bpf_push_locked(s2)
+	tcp_bpf_push(s2)
+	  tcp_rate_check_app_limited(s2) // expects tcp_sock
+	  tcp_sendmsg_locked(s2)	 // ditto
 
-    WARNING: CPU: 1 PID: 5042 at net/ipv6/ip6_output.c:1800 __ip6_append_d=
-ata.isra.0+0x1be8/0x47f0 net/ipv6/ip6_output.c:1800
+There is a hard-coded assumption in the call-chain, that the egress
+socket (s2) is a TCP socket.
 
-that occurs when MSG_SPLICE_PAGES is used to append more data to an alread=
-y
-partially occupied skbuff.  The warning occurs when 'copy' is larger than
-the amount of data in the message iterator.  This is because the requested
-length includes the transport header length when it shouldn't.  This can b=
-e
-triggered by, for example:
+However in commit 122e6c79efe1 ("sock_map: Update sock type checks for
+UDP") we have enabled redirects to non-TCP sockets. This was done for the
+sake of BPF sk_skb programs. There was no indention to support sk_msg
+send-to-egress use case.
 
-        sfd =3D socket(AF_INET6, SOCK_DGRAM, IPPROTO_L2TP);
-        bind(sfd, ...); // ::1
-        connect(sfd, ...); // ::1 port 7
-        send(sfd, buffer, 4100, MSG_MORE);
-        sendfile(sfd, dfd, NULL, 1024);
+As a result, attempts to send-to-egress through a non-TCP socket lead to a
+crash due to invalid downcast from sock to tcp_sock:
 
-Fix this by deducting transhdrlen from length in ip{,6}_append_data() righ=
-t
-before we clear transhdrlen if there is already a packet that we're going
-to try appending to.
+ BUG: kernel NULL pointer dereference, address: 000000000000002f
+ ...
+ Call Trace:
+  <TASK>
+  ? show_regs+0x60/0x70
+  ? __die+0x1f/0x70
+  ? page_fault_oops+0x80/0x160
+  ? do_user_addr_fault+0x2d7/0x800
+  ? rcu_is_watching+0x11/0x50
+  ? exc_page_fault+0x70/0x1c0
+  ? asm_exc_page_fault+0x27/0x30
+  ? tcp_tso_segs+0x14/0xa0
+  tcp_write_xmit+0x67/0xce0
+  __tcp_push_pending_frames+0x32/0xf0
+  tcp_push+0x107/0x140
+  tcp_sendmsg_locked+0x99f/0xbb0
+  tcp_bpf_push+0x19d/0x3a0
+  tcp_bpf_sendmsg_redir+0x55/0xd0
+  tcp_bpf_send_verdict+0x407/0x550
+  tcp_bpf_sendmsg+0x1a1/0x390
+  inet_sendmsg+0x6a/0x70
+  sock_sendmsg+0x9d/0xc0
+  ? sockfd_lookup_light+0x12/0x80
+  __sys_sendto+0x10e/0x160
+  ? syscall_enter_from_user_mode+0x20/0x60
+  ? __this_cpu_preempt_check+0x13/0x20
+  ? lockdep_hardirqs_on+0x82/0x110
+  __x64_sys_sendto+0x1f/0x30
+  do_syscall_64+0x38/0x90
+  entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Reported-by: syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/0000000000001c12b30605378ce8@google.com/
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: David Ahern <dsahern@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: netdev@vger.kernel.org
-cc: bpf@vger.kernel.org
-cc: syzkaller-bugs@googlegroups.com
-Link: https://lore.kernel.org/r/75315.1695139973@warthog.procyon.org.uk/ #=
- v1
+Reject selecting a non-TCP sockets as redirect target from a BPF sk_msg
+program to prevent the crash. When attempted, user will receive an EACCES
+error from send/sendto/sendmsg() syscall.
+
+Fixes: 122e6c79efe1 ("sock_map: Update sock type checks for UDP")
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- net/ipv4/ip_output.c  |    1 +
- net/ipv6/ip6_output.c |    1 +
- 2 files changed, 2 insertions(+)
+FYI, I'm working on revamping the sockmap_listen selftest, which exercises
+some of redirect combinations, to cover the whole combination matrix so
+that we can catch these kinds of problems early on.
 
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index 4ab877cf6d35..9646f2d9afcf 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -1354,6 +1354,7 @@ int ip_append_data(struct sock *sk, struct flowi4 *f=
-l4,
- 		if (err)
- 			return err;
- 	} else {
-+		length -=3D transhdrlen;
- 		transhdrlen =3D 0;
- 	}
- =
+ net/core/sock_map.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index 54fc4c711f2c..6a4ce7f622e9 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -1888,6 +1888,7 @@ int ip6_append_data(struct sock *sk,
- 		length +=3D exthdrlen;
- 		transhdrlen +=3D exthdrlen;
- 	} else {
-+		length -=3D transhdrlen;
- 		transhdrlen =3D 0;
- 	}
- =
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index cb11750b1df5..4292c2ed1828 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -668,6 +668,8 @@ BPF_CALL_4(bpf_msg_redirect_map, struct sk_msg *, msg,
+ 	sk = __sock_map_lookup_elem(map, key);
+ 	if (unlikely(!sk || !sock_map_redirect_allowed(sk)))
+ 		return SK_DROP;
++	if (!(flags & BPF_F_INGRESS) && !sk_is_tcp(sk))
++		return SK_DROP;
+ 
+ 	msg->flags = flags;
+ 	msg->sk_redir = sk;
+@@ -1267,6 +1269,8 @@ BPF_CALL_4(bpf_msg_redirect_hash, struct sk_msg *, msg,
+ 	sk = __sock_hash_lookup_elem(map, key);
+ 	if (unlikely(!sk || !sock_map_redirect_allowed(sk)))
+ 		return SK_DROP;
++	if (!(flags & BPF_F_INGRESS) && !sk_is_tcp(sk))
++		return SK_DROP;
+ 
+ 	msg->flags = flags;
+ 	msg->sk_redir = sk;
+-- 
+2.41.0
 
 
