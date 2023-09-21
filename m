@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-10546-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10576-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B96C7A99E5
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 20:32:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 122127A9C2F
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 21:12:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 05B891C20B1E
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 18:32:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C11072828B8
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 19:12:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9201171A9;
-	Thu, 21 Sep 2023 17:27:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9D281944A;
+	Thu, 21 Sep 2023 18:17:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4043C2033B
-	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 17:27:55 +0000 (UTC)
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0679B561FA
-	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 10:27:08 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52f3ba561d9so2580675a12.1
-        for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 10:27:07 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 193BD4E26F
+	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 18:17:27 +0000 (UTC)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B59D2D53C
+	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 11:17:01 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9adb9fa7200so280080166b.0
+        for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 11:17:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695317225; x=1695922025; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695320217; x=1695925017; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=7oDIFCXg4LqRXkIEh09qhklBqeapWmuUvp+MmSXfA78=;
-        b=c/qV4X5VAzWziGbl2ysY3OxJe+VXChgL3deC9hoX4TY9zu0pxK7kGs4vqQ1nHPTifQ
-         WkMQFyVuS2pgnlw4G0Jj7AN+Gqgyo/nq4GGPrVlQMZMTEt5je3CxiOr/KmstjRg2DBsD
-         sJ83QK3+0cBh/F0qxpkXJ4Hw8hXq0ieqhPj+IKBQog0VKFH3HgICaM4oksZ7bckELmTX
-         EjGYgaNgD3ElDRw+wNrVK9OFoa8xby4A7hTEnWEfYTgRkVMDe7dCZqHJMhNJyoxc1JhF
-         0dOtPAGqfqnvY13vbtQDJR8jRX9hLXGRvTeXz+09gNirFfYWUiLBqyqXPQDVN4E3oBnj
-         Hj8A==
+        bh=Q+BSTpDGURclV71GWi0u2bIvjvtBJ8BE2Net+MXKX08=;
+        b=X+lPQ68rXWT9XP4KPVjqreriOJLZYgfBVOBc2f7dYba/N3013x91nF5/ArmS0jzARr
+         X7OYEzPsdZoWnCkhfOiXONJ3iQueXVqxpFo7rNcyFujGptAxy4PDNpKuQ1QfRUx5y44z
+         LQRKy+1YimYvwT1T4UBAo8NuROCrzDeZCw+2stl3CIPCb0mAy3ezf7tmI1pdpMNwpseO
+         zphM78SSr+gvZIILc2HLUpcu8FUAVVDr9GB1uafCraHPYr0N3gZIt9xFUv+YNQnurAGi
+         b3zvWPbHTydppeFQlp4O5isJDut8KVyRHC7VNa4IDIn3fzcpHe6FYRTScRf5cXB8n4aa
+         rP8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695317225; x=1695922025;
+        d=1e100.net; s=20230601; t=1695320217; x=1695925017;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=7oDIFCXg4LqRXkIEh09qhklBqeapWmuUvp+MmSXfA78=;
-        b=tr/kVK07GVO7UG96NaGbC/1hU3DjRmmdQedQcsw+i8uZCrlO/K59zTW2xun1HQU3mM
-         yjzTLz+nrDva8Pj5UUDo2wk4C3B4JLfTHiY1fmVRTQUfvRnCvRT56mPwsIhpLnX/HgQq
-         MMGTQOBJh7qJ7MJaq3NFK4jYAVnFBp0VXWQn1hiYLx7KDjtoC5f8Z5FccFyq2G2tSZcG
-         GQqOImPQqGNHY+fb3OkXsnYVy2QwLNassGSMY+dVh7FOqAikB77pi/Y0XsyBbc3tq8pN
-         v0xMKvV0olP5es1LZ4vrthnhPHgm3fGraN6T9HuLXNa9kKzOXQUju4Gq3G0Ylu2jWCi+
-         ZpAg==
-X-Gm-Message-State: AOJu0Yx+4AOCM9lBkU2Wmj/w14AlKT31R5ijcKWvOnYUewQHWgPJFsm0
-	HxvfBv2ocKCpRm62gQ5sxuPdPG32S4c=
-X-Google-Smtp-Source: AGHT+IGameIfbCXh8u1G8hpb9lrzt0rA89XFVayQZ26tR69m304H0LS12ZI3STyPXG+zQ8GTqfb83w==
-X-Received: by 2002:a17:906:74db:b0:9a1:b528:d0f6 with SMTP id z27-20020a17090674db00b009a1b528d0f6mr185049ejl.27.1695313424033;
-        Thu, 21 Sep 2023 09:23:44 -0700 (PDT)
+        bh=Q+BSTpDGURclV71GWi0u2bIvjvtBJ8BE2Net+MXKX08=;
+        b=ScsmQj5zsl+9TEDyiQ0UWd4qhGDeOh8qi6BUTkzZ3WnvM9YDBZJ8nyu57BV8GZF6JK
+         mAsHyk0ZmTgxD4c7VpLjOaDdwHIec1y/zVTfs8Sit9jKUuPobmSiDKAMTV39UAo+fvWC
+         UbKQZ2XiW+lBjpODyA2qXEQMNthRIIBo68FHr9wSMkd8266lJZy9mRI15YcGI7VUiU5S
+         0DdjyMBPne3G2nivVpbMLAgKUXCdL50yfoBbJsVDehyRFo720mTLVyEd14j35QbrwmZg
+         crxRzcDWDGn8C5bugCnUQ5jsr4aEAoRQHFcNjp1CVHjKN3xbKH4AnlnG2upqPa5PCu9o
+         7npQ==
+X-Gm-Message-State: AOJu0YxEoq5d5EcYdgNXv3hJRQTlI3Uh7SLXFBnu+Ze6PErq+Bwc5Nbk
+	pcXysulnGqlxmtSuMhRmkJ0=
+X-Google-Smtp-Source: AGHT+IEvjEKyChEXBucxiX4/Edz7A1QrGg+S0PPZUiJxhbCJMjXs+BvaNfWky7amp4lYsGne92MkLQ==
+X-Received: by 2002:a17:906:21c:b0:9a1:b144:30f4 with SMTP id 28-20020a170906021c00b009a1b14430f4mr625961ejd.14.1695320217115;
+        Thu, 21 Sep 2023 11:16:57 -0700 (PDT)
 Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id v12-20020a170906564c00b0099ddc81903asm1267362ejr.221.2023.09.21.09.23.42
+        by smtp.gmail.com with ESMTPSA id rp13-20020a170906d96d00b009ada9f7217asm1409404ejb.88.2023.09.21.11.16.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 09:23:43 -0700 (PDT)
-Message-ID: <4b121c3b96dcc0322ea111062ed2260d2d1d0ed7.camel@gmail.com>
+        Thu, 21 Sep 2023 11:16:56 -0700 (PDT)
+Message-ID: <52df1240415be1ee8827cb6395fd339a720e229c.camel@gmail.com>
 Subject: Re: [BUG] verifier escape with iteration helpers (bpf_loop, ...)
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrew Werner
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrew Werner
  <awerner32@gmail.com>, bpf <bpf@vger.kernel.org>, Andrei Matei
  <andreimatei1@gmail.com>, Tamir Duberstein <tamird@gmail.com>, Joanne Koong
  <joannelkoong@gmail.com>, kernel-team@dataexmachina.dev, Song Liu
  <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Thu, 21 Sep 2023 19:23:41 +0300
-In-Reply-To: <CAADnVQJO0aVJfV=8RDf5rdtjOCC-=57dmHF20fQYV9EiW2pJ2Q@mail.gmail.com>
+Date: Thu, 21 Sep 2023 21:16:55 +0300
+In-Reply-To: <CAEf4BzbUxHCLhMoPOtCC=6Y-OxkkC9GvjykC8KyKPrFxp6cLvw@mail.gmail.com>
 References: 
 	<CA+vRuzPChFNXmouzGG+wsy=6eMcfr1mFG0F3g7rbg-sedGKW3w@mail.gmail.com>
 	 <CAADnVQJpLAzmUfwvWBr8a_PWHYHxHw9vdAXnWB4R4PbVY4S4mw@mail.gmail.com>
@@ -80,6 +80,8 @@ References:
 	 <CAADnVQJn35f0UvYJ9gyFT4BfViXn8T8rPCXRAC=m_Jx_CFjrtw@mail.gmail.com>
 	 <5649df64315467c67b969e145afda8bbf7e60445.camel@gmail.com>
 	 <CAADnVQJO0aVJfV=8RDf5rdtjOCC-=57dmHF20fQYV9EiW2pJ2Q@mail.gmail.com>
+	 <4b121c3b96dcc0322ea111062ed2260d2d1d0ed7.camel@gmail.com>
+	 <CAEf4BzbUxHCLhMoPOtCC=6Y-OxkkC9GvjykC8KyKPrFxp6cLvw@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.44.4-0ubuntu2 
@@ -91,56 +93,80 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, 2023-09-21 at 05:56 -0700, Alexei Starovoitov wrote:
-[...]
-> Now I see that asm matches if (likely(r6 !=3D 42)).
-> I suspect if you use that in C code you wouldn't need to
-> write the test in asm.
-> Just a thought.
-
-Thank you this does change test behavior, however compiler still decides
-to partially unroll the loop for whatever reason. Will stick to asm
-snippets for now.
-
-> Maybe instead of brute forcing all regs to live and precise
-> we can add iter.depth check to stacksafe() such
-> that depth=3D0 !=3D depth=3D1, but
-> depth=3D1 =3D=3D depthN ?
-> (and a tweak to iter_active_depths_differ() as well)
+On Thu, 2023-09-21 at 09:35 -0700, Andrii Nakryiko wrote:
+> I've been thinking in a similar direction as Alexei, overnight. Here
+> are some raw thoughts.
 >=20
-> Then in the above r7 will be 'equivalent', but fp-8 will differ,
-> then the state with r7=3D-32 won't be pruned
-> and it will address this particular example ? or not ?
+> I think the overall approach with iter verification is sound. If we
+> loop and see an equivalent state at the entry to next loop iteration,
+> then it's safe to assume doing many iterations is safe. The problem is
+> that delayed precision and read marks make this state equivalence
+> wrong in some case. So we need to find a solution that will ensure
+> that all precision and read marks are propagated to parent state
+> before making a decision about convergence.
+>=20
+> The idea is to let verifier explore all code paths starting from
+> iteration #N, except the code paths that lead to looping into
+> iteration #N+1. I tried to do that with validating NULL case first and
+> exiting from loop on each iteration (first), but clearly that doesn't
+> capture all the cases, as Eduard have shown.
+>
+> So what if we delay convergence state checks (and then further
+> exploration at iteration #N+1) using BFS instead of DFS? That is, when
+> we are about to start new iteration and check state convergence, we
+> enqueue current state to be processed later after all the states that
+> "belong" to iteration #N are processed.
 
-This does help for the particular example, however a simple
-modification can still trick the verifier:
+This sounds correct if one iterator is involved.
 
-     ...
-     r6 =3D bpf_get_current_pid_tgid()
-     bpf_iter_num_new(&fp[-8], 0, 10)
-+    bpf_iter_num_next(&fp[-8])
-     while (bpf_iter_num_next(&fp[-8])) {
-       ...
-     }
-     ...
+> We should work out exact details on how to do this hybrid BFS+DFS, but
+> let's think carefully if this will solve the problems?
+>=20
+> I think this is conceptually similar to what Alexei proposed above.
+> Basically, we "unroll" loop verification iteration by iteration, but
+> make sure that we explore all the branching within iteration #N before
+> going one iteration deeper.
+>=20
+> Let's think if there are any cases which wouldn't be handled. And then
+> think how to implement this elegantly (e.g., some sort of queue within
+> a parent state, which sounds similar to this separate "branches"
+> counter that Alexei is proposing above).
 
-> Another idea is to add another state.branches specifically for loop body
-> and keep iterating the body until branches=3D=3D0.
-> Same concept as the verifier uses for the whole prog, but localized
-> to a loop to make sure we don't declare 'equivalent' state
-> until all paths in the loop body are explored.
+To better understand the suggestion, suppose there is some iterator
+'I' and two states:
+- state S1 where depth(I) =3D=3D N and pending instruction is "next(I)"
+- state S2 where depth(I) =3D=3D N and pending instruction is *not* "next(I=
+)"
+In such situation state S2 should be verified first, right?
+And in general, any state that is not at "next(I)" should be explored
+before S1, right?
 
-I'm not sure I understand the idea. If we count branches there always
-would be back-edges leading to new branches. Or do you suggest to not
-prune "equivalent" loop states until all basic blocks in the loop are
-visited? (So that all read marks are propagated and probably all
-precision marks).
+Such interpretation seems to be prone to deadlocks, e.g. suppose there
+are two iterators: I1 and I2, and two states:
+- state S1 with depth(I1) =3D=3D N, depth(I2) =3D=3D M, at instruction "nex=
+t(I1)";
+- state S2 with depth(I1) =3D=3D N, depth(I2) =3D=3D M, at instruction "nex=
+t(I2)".
 
-I'm still doubt range_within() check for is_iter_next_insn() case but
-can't come up with counter example.
+E.g. like in the following loop:
+
+    for (;;) {
+      if (<random condition>)
+        if (!next(it1)) break; // a
+      else
+        if (!next(it2)) break; // b
+      ...
+    }
+
+I think it is possible to get to two states here:
+- (a) it1(active, depth 0), it2(active, depth 0) at insn "next(it1)"
+- (b) it1(active, depth 0), it2(active, depth 0) at insn "next(it2)"
+
+And it is unclear which one should be processed next.
+Am I missing something?
 
