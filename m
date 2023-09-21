@@ -1,151 +1,146 @@
-Return-Path: <bpf+bounces-10550-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10546-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F6FC7A9B31
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 20:55:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B96C7A99E5
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 20:32:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B231282293
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 18:55:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 05B891C20B1E
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 18:32:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 290B719BA8;
-	Thu, 21 Sep 2023 17:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9201171A9;
+	Thu, 21 Sep 2023 17:27:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F7119BAE
-	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 17:49:23 +0000 (UTC)
-Received: from mx0a-00206402.pphosted.com (mx0a-00206402.pphosted.com [148.163.148.77])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABFB8848E
-	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 10:38:58 -0700 (PDT)
-Received: from pps.filterd (m0354651.ppops.net [127.0.0.1])
-	by mx0a-00206402.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38L3WTKJ017603;
-	Thu, 21 Sep 2023 16:08:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=default;
-	 bh=LdGdQ9kV5GKJkOita+0fy5/8Opf5YQi3H3CnGBlkkUU=; b=CY6lizIyC5kx
-	lBmN2V0UdGU7Qfb4dSw3xxqRisXnun3EPO0Dr8j+OCPCPQAopBngwXIYgHq4VV6+
-	W9DJiBGLao7sZDFBg8tzqDo+2hH7VSamj/6LvCdFOVcM46WeWMDqdMMI/GMvNSVf
-	wATbKJxH5ACjPBRFl4MRPaBkhLW4KdzqFnzbpxO5jSpDsk42IqDab4Dobc9F8Oom
-	QcvkLWKq8drRSHZw3o7l/7tefbhEviXZ08qzObFEX/yBwl3KARHzioSooTpQMH/O
-	OI7avITybsVR5dM0p/PZMj1CIpEAqFmt7aXkwo/oTtzDEIifJQZC057ThG18w/A+
-	J2gKodSS2Q==
-Received: from 04wpexch06.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60])
-	by mx0a-00206402.pphosted.com (PPS) with ESMTPS id 3t7ebwx44x-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Sep 2023 16:08:08 +0000 (GMT)
-Received: from [10.102.42.184] (10.100.11.122) by 04wpexch06.crowdstrike.sys
- (10.100.11.99) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.25; Thu, 21 Sep
- 2023 16:08:06 +0000
-Message-ID: <e8f90cab-366f-ce4c-01f0-a9c5d79b885c@crowdstrike.com>
-Date: Thu, 21 Sep 2023 09:08:05 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4043C2033B
+	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 17:27:55 +0000 (UTC)
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0679B561FA
+	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 10:27:08 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52f3ba561d9so2580675a12.1
+        for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 10:27:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695317225; x=1695922025; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=7oDIFCXg4LqRXkIEh09qhklBqeapWmuUvp+MmSXfA78=;
+        b=c/qV4X5VAzWziGbl2ysY3OxJe+VXChgL3deC9hoX4TY9zu0pxK7kGs4vqQ1nHPTifQ
+         WkMQFyVuS2pgnlw4G0Jj7AN+Gqgyo/nq4GGPrVlQMZMTEt5je3CxiOr/KmstjRg2DBsD
+         sJ83QK3+0cBh/F0qxpkXJ4Hw8hXq0ieqhPj+IKBQog0VKFH3HgICaM4oksZ7bckELmTX
+         EjGYgaNgD3ElDRw+wNrVK9OFoa8xby4A7hTEnWEfYTgRkVMDe7dCZqHJMhNJyoxc1JhF
+         0dOtPAGqfqnvY13vbtQDJR8jRX9hLXGRvTeXz+09gNirFfYWUiLBqyqXPQDVN4E3oBnj
+         Hj8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695317225; x=1695922025;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7oDIFCXg4LqRXkIEh09qhklBqeapWmuUvp+MmSXfA78=;
+        b=tr/kVK07GVO7UG96NaGbC/1hU3DjRmmdQedQcsw+i8uZCrlO/K59zTW2xun1HQU3mM
+         yjzTLz+nrDva8Pj5UUDo2wk4C3B4JLfTHiY1fmVRTQUfvRnCvRT56mPwsIhpLnX/HgQq
+         MMGTQOBJh7qJ7MJaq3NFK4jYAVnFBp0VXWQn1hiYLx7KDjtoC5f8Z5FccFyq2G2tSZcG
+         GQqOImPQqGNHY+fb3OkXsnYVy2QwLNassGSMY+dVh7FOqAikB77pi/Y0XsyBbc3tq8pN
+         v0xMKvV0olP5es1LZ4vrthnhPHgm3fGraN6T9HuLXNa9kKzOXQUju4Gq3G0Ylu2jWCi+
+         ZpAg==
+X-Gm-Message-State: AOJu0Yx+4AOCM9lBkU2Wmj/w14AlKT31R5ijcKWvOnYUewQHWgPJFsm0
+	HxvfBv2ocKCpRm62gQ5sxuPdPG32S4c=
+X-Google-Smtp-Source: AGHT+IGameIfbCXh8u1G8hpb9lrzt0rA89XFVayQZ26tR69m304H0LS12ZI3STyPXG+zQ8GTqfb83w==
+X-Received: by 2002:a17:906:74db:b0:9a1:b528:d0f6 with SMTP id z27-20020a17090674db00b009a1b528d0f6mr185049ejl.27.1695313424033;
+        Thu, 21 Sep 2023 09:23:44 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id v12-20020a170906564c00b0099ddc81903asm1267362ejr.221.2023.09.21.09.23.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 09:23:43 -0700 (PDT)
+Message-ID: <4b121c3b96dcc0322ea111062ed2260d2d1d0ed7.camel@gmail.com>
+Subject: Re: [BUG] verifier escape with iteration helpers (bpf_loop, ...)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrew Werner
+ <awerner32@gmail.com>, bpf <bpf@vger.kernel.org>, Andrei Matei
+ <andreimatei1@gmail.com>, Tamir Duberstein <tamird@gmail.com>, Joanne Koong
+ <joannelkoong@gmail.com>, kernel-team@dataexmachina.dev, Song Liu
+ <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 21 Sep 2023 19:23:41 +0300
+In-Reply-To: <CAADnVQJO0aVJfV=8RDf5rdtjOCC-=57dmHF20fQYV9EiW2pJ2Q@mail.gmail.com>
+References: 
+	<CA+vRuzPChFNXmouzGG+wsy=6eMcfr1mFG0F3g7rbg-sedGKW3w@mail.gmail.com>
+	 <CAADnVQJpLAzmUfwvWBr8a_PWHYHxHw9vdAXnWB4R4PbVY4S4mw@mail.gmail.com>
+	 <CAEf4Bzbubu7KjBv=98BZrVnTrcfPQrnsp-g1kOYKM=kUtiqEgw@mail.gmail.com>
+	 <dff1cfec20d1711cb023be38dfe886bac8aac5f6.camel@gmail.com>
+	 <CAP01T76duVGmnb+LQjhdKneVYs1q=ehU4yzTLmgZdG0r2ErOYQ@mail.gmail.com>
+	 <a2995c1d7c01794ca9b652cdea7917cac5d98a16.camel@gmail.com>
+	 <97a90da09404c65c8e810cf83c94ac703705dc0e.camel@gmail.com>
+	 <CAEf4BzYg8T_Dek6T9HYjHZCuLTQT8ptAkQRxrsgaXg7-MZmHDA@mail.gmail.com>
+	 <ee714151d7c840c82d79f9d12a0f51ef13b798e3.camel@gmail.com>
+	 <CAADnVQJn35f0UvYJ9gyFT4BfViXn8T8rPCXRAC=m_Jx_CFjrtw@mail.gmail.com>
+	 <5649df64315467c67b969e145afda8bbf7e60445.camel@gmail.com>
+	 <CAADnVQJO0aVJfV=8RDf5rdtjOCC-=57dmHF20fQYV9EiW2pJ2Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re:Re: [PATCH bpf-next 00/14] add libbpf getters for individual
- ringbuffers
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC: <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei
- Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin
- KaFai Lau <martin.lau@kernel.org>
-References: <20230914231123.193901-1-martin.kelly@crowdstrike.com>
- <CAEf4Bzai8oxP6MkyGumt08WKcdOToHrt2ZqF1bgESJ-xi+2Aag@mail.gmail.com>
-Content-Language: en-US
-From: Martin Kelly <martin.kelly@crowdstrike.com>
-In-Reply-To: <CAEf4Bzai8oxP6MkyGumt08WKcdOToHrt2ZqF1bgESJ-xi+2Aag@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.100.11.122]
-X-ClientProxiedBy: 04WPEXCH09.crowdstrike.sys (10.100.11.113) To
- 04wpexch06.crowdstrike.sys (10.100.11.99)
-X-Disclaimer: USA
-X-Proofpoint-GUID: np8l9aQma3O3pvZB2WCoP-6_Majaame1
-X-Proofpoint-ORIG-GUID: np8l9aQma3O3pvZB2WCoP-6_Majaame1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-21_13,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
- mlxscore=0 bulkscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0
- priorityscore=1501 spamscore=0 malwarescore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2308100000
- definitions=main-2309210140
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 9/20/23 18:28, Andrii Nakryiko wrote:
-> On Thu, Sep 14, 2023 at 4:12 PM Martin Kelly
-> <martin.kelly@crowdstrike.com> wrote:
->> This patch series adds a new ring__ API to libbpf exposing getters for accessing
->> the individual ringbuffers inside a struct ring_buffer. This is useful for
->> polling individually, getting available data, or similar use cases. The API
->> looks like this, and was roughly proposed by Andrii Nakryiko in another thread:
->>
->> Getting a ring struct:
->> struct ring *ring_buffer__ring(struct ring_buffer *rb, unsigned int idx);
->>
->> Using the ring struct:
->> unsigned long ring__consumer_pos(const struct ring *r);
->> unsigned long ring__producer_pos(const struct ring *r);
->> size_t ring__avail_data_size(const struct ring *r);
->> size_t ring__size(const struct ring *r);
->> int ring__map_fd(const struct ring *r);
->> int ring__consume(struct ring *r);
->>
->> Martin Kelly (14):
->>    libbpf: refactor cleanup in ring_buffer__add
->>    libbpf: switch rings to array of pointers
->>    libbpf: add ring_buffer__ring
->>    selftests/bpf: add tests for ring_buffer__ring
->>    libbpf: add ring__producer_pos, ring__consumer_pos
->>    selftests/bpf: add tests for ring__*_pos
->>    libbpf: add ring__avail_data_size
->>    selftests/bpf: add tests for ring__avail_data_size
->>    libbpf: add ring__size
->>    selftests/bpf: add tests for ring__size
->>    libbpf: add ring__map_fd
->>    selftests/bpf: add tests for ring__map_fd
->>    libbpf: add ring__consume
->>    selftests/bpf: add tests for ring__consume
->>
->>   tools/lib/bpf/libbpf.h                        | 68 +++++++++++++++
->>   tools/lib/bpf/libbpf.map                      |  7 ++
->>   tools/lib/bpf/ringbuf.c                       | 87 +++++++++++++++----
->>   .../selftests/bpf/prog_tests/ringbuf.c        | 38 +++++++-
->>   .../selftests/bpf/prog_tests/ringbuf_multi.c  | 16 ++++
->>   5 files changed, 199 insertions(+), 17 deletions(-)
->>
->> --
->> 2.34.1
->>
-> Looks mostly good, sorry for taking a while to get to these. I left a
-> few comments here and there, please address and submit v2. Try to use
-> consistent "ring buffer manager" and "ring buffer map" to distinguish
-> them in doc comments. And also please don't add new CHECK() uses to
-> selftests, we have a whole family of ASSERT_xxx() macros, please use
-> them.
+On Thu, 2023-09-21 at 05:56 -0700, Alexei Starovoitov wrote:
+[...]
+> Now I see that asm matches if (likely(r6 !=3D 42)).
+> I suspect if you use that in C code you wouldn't need to
+> write the test in asm.
+> Just a thought.
 
-Thanks, I agree with all the comments and will issue a v2 as soon as I 
-can. I noticed the ringbuffer vs ringbuffer manager discrepancy but 
-wasn't sure which phrasing was better, as the API and struct names are 
-ring_buffer and ring instead of ring_buffer_manager and ring_buffer. 
-I'll change it up to consistently refer to the parent struct as "ring 
-buffer manager".
+Thank you this does change test behavior, however compiler still decides
+to partially unroll the loop for whatever reason. Will stick to asm
+snippets for now.
 
+> Maybe instead of brute forcing all regs to live and precise
+> we can add iter.depth check to stacksafe() such
+> that depth=3D0 !=3D depth=3D1, but
+> depth=3D1 =3D=3D depthN ?
+> (and a tweak to iter_active_depths_differ() as well)
+>=20
+> Then in the above r7 will be 'equivalent', but fp-8 will differ,
+> then the state with r7=3D-32 won't be pruned
+> and it will address this particular example ? or not ?
+
+This does help for the particular example, however a simple
+modification can still trick the verifier:
+
+     ...
+     r6 =3D bpf_get_current_pid_tgid()
+     bpf_iter_num_new(&fp[-8], 0, 10)
++    bpf_iter_num_next(&fp[-8])
+     while (bpf_iter_num_next(&fp[-8])) {
+       ...
+     }
+     ...
+
+> Another idea is to add another state.branches specifically for loop body
+> and keep iterating the body until branches=3D=3D0.
+> Same concept as the verifier uses for the whole prog, but localized
+> to a loop to make sure we don't declare 'equivalent' state
+> until all paths in the loop body are explored.
+
+I'm not sure I understand the idea. If we count branches there always
+would be back-edges leading to new branches. Or do you suggest to not
+prune "equivalent" loop states until all basic blocks in the loop are
+visited? (So that all read marks are propagated and probably all
+precision marks).
+
+I'm still doubt range_within() check for is_iter_next_insn() case but
+can't come up with counter example.
 
