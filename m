@@ -1,175 +1,396 @@
-Return-Path: <bpf+bounces-10564-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10551-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBE2E7A9C71
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 21:17:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4FBE7A9C63
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 21:16:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 519291F214AD
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 19:17:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF03CB214DC
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 19:12:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23D7F4B22A;
-	Thu, 21 Sep 2023 18:11:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 782CD47C83;
+	Thu, 21 Sep 2023 17:49:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBAF43AAE
-	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 18:11:00 +0000 (UTC)
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90079A70C8
-	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 11:00:36 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c008d8fd07so21440381fa.1
-        for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 11:00:36 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9726F47345
+	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 17:49:28 +0000 (UTC)
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306CC8921A
+	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 10:39:41 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c3bd829b86so10466775ad.0
+        for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 10:39:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695319235; x=1695924035; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1695317980; x=1695922780; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xsoT1u7/u6X65xdCoAMe/73F6FG9WCFKQ1c7QYZKvWI=;
-        b=PTr4kYO/FXscwqFs1NilO9PdxcqxprdRc9fYFy4eMRBJNRf71hUsoplC9dDtHmRoU4
-         Gfk63ZtM2TY6c0OlZXS2d45S/ImAlwLCCVo83W9Hoht1+4qBlkn7vs2yPdfkQDjnXsGe
-         dzlNi9Jahk9Ey3+mhqnvJR290xyBumNpMbeEl7uNWYeaQgUDV8Fe1RflAp7pdgM3hQl+
-         K2uiMPSKkn9XsJMzhyqS1YWlYJewEuH82nb3MJaBepoQBDTsvgXC3jGI9hEVwz9pj6tU
-         WGbUYZyBeLLK13t78tlYTi/t8HYO/FbCpBOI1PEa1KpvFUjV9eLY36AZB4P26U2DxB8O
-         Vifg==
+        bh=JIXzKAbIPgAMdrr/J75OsSmRiX2G9h1FcDVG2HW/mLQ=;
+        b=iO2Y5oySH6sW0hHFp6zm+navdmhCowhkSofRSYG2NgD3tNW2AW/vkY1NQ2QwpSvZI7
+         Ss9kYu/fH9okU6icUJP6eowcobj3qFngeRf/yMTSrKvYc19rYnByNwhNRTPZA0l3Sujb
+         FM2aMYZ4saupZFq3pf5XeGnNlPycaEvtpE+9M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695319235; x=1695924035;
+        d=1e100.net; s=20230601; t=1695317980; x=1695922780;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xsoT1u7/u6X65xdCoAMe/73F6FG9WCFKQ1c7QYZKvWI=;
-        b=foeobUX3KZDVAfOLwuUjqXL+AJ7A4zFoIIWmHJ0CRkoTGkH6R8QLH/SFJs6T28uLv+
-         jziK/HPpGlLFIQpT3ZeAdbL586MOeboPOOhhbnlYhyLV9zrUfg3G6/0xExWgU4i84smr
-         FW/9AAJqEqvWvS9w/UHWzNUApVOzyHtUPzA6JyYVp2AR/NuwJc6LDAkTQbNwTqMAQ2a4
-         QhC+twKuJcD22HyXFTubHBPXdDUp9yl7BxWZeIZY8DDPgGCfxr53xRmYbhVbSRrsRDYz
-         lqZKl8GTTqyUwzOP/tv8gjZBuNjd/hoc/UlcRJQW81GnOBSH1qGZ2DbwKSHgb/BEFV76
-         4beg==
-X-Gm-Message-State: AOJu0YxdkKlWjbKKMjKP1mdarg4/8a/yvreWmUuI0n8zcHA+05Xfj/i/
-	QlOwkttfQJVEbdgkzWFq6ZkPKQy0FAHCOuWpJJs/llWeUM7GsA==
-X-Google-Smtp-Source: AGHT+IH7KvCk/GFm88oWBeAmU5yd+d0enN+IP6akjsZLA/qsKFjVnz5s4wT0iDh5yW57lqQqRTI7T3yAbrsLm7oUU34=
-X-Received: by 2002:adf:ea0e:0:b0:31f:e756:cbf9 with SMTP id
- q14-20020adfea0e000000b0031fe756cbf9mr4815022wrm.22.1695287661534; Thu, 21
- Sep 2023 02:14:21 -0700 (PDT)
+        bh=JIXzKAbIPgAMdrr/J75OsSmRiX2G9h1FcDVG2HW/mLQ=;
+        b=D9dOQJhU2Jrxw7CCKmrI7ZfpTvLnf9MpGmu9FNDZzruR97HT2aMiF/qmtoLuTwmR8k
+         Wcrr2sKdeRlyrCGnRcAxtdi5qDkclYSGPyPO9z+XXT4vJMFLWeN42TGCfpMAVS1lqsSF
+         8rbxuU3ThxDkj1+kID4173TAgR0k7y13B26k9GmPSoBF4zyQcH9G7cVdCfZ/IiLV++fF
+         jJF2wVWujrvUW7JQnZPWCdqWYeCKdwYzd9f8TLDVskRG7clEUpvhqNnTR72iSIyBlKtm
+         dmrMtAhswRg3lQ7Xgjg9JlKBBotWZfqcirU5MWUHKqwrTQQ9ki3wpDKx0DzdBRk7qDCX
+         YFkA==
+X-Gm-Message-State: AOJu0Yw68fBJb2UQuGLqOSeof4MiWptpxOHS+oh3Q/6FsMmaRjvpsRyi
+	OlhtAs2bAeEJ6oAiu00Abk4+i7v0Z46Eht3JHcAm7+uXSZ+XQP4C
+X-Google-Smtp-Source: AGHT+IH8st1497r6rxCXgCl3pJe3QM1DZ664ZKEGZ1MZUxwFv0+KKSPvrD5JRsVx54NDujq/bEjMth/wI66ferZXtQQ=
+X-Received: by 2002:a05:6300:8081:b0:121:ca90:df01 with SMTP id
+ ap1-20020a056300808100b00121ca90df01mr3796196pzc.40.1695290965950; Thu, 21
+ Sep 2023 03:09:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CA+vRuzPChFNXmouzGG+wsy=6eMcfr1mFG0F3g7rbg-sedGKW3w@mail.gmail.com>
- <CAADnVQJpLAzmUfwvWBr8a_PWHYHxHw9vdAXnWB4R4PbVY4S4mw@mail.gmail.com>
- <CAEf4Bzbubu7KjBv=98BZrVnTrcfPQrnsp-g1kOYKM=kUtiqEgw@mail.gmail.com>
- <dff1cfec20d1711cb023be38dfe886bac8aac5f6.camel@gmail.com>
- <CAP01T76duVGmnb+LQjhdKneVYs1q=ehU4yzTLmgZdG0r2ErOYQ@mail.gmail.com>
- <a2995c1d7c01794ca9b652cdea7917cac5d98a16.camel@gmail.com>
- <97a90da09404c65c8e810cf83c94ac703705dc0e.camel@gmail.com>
- <CAEf4BzYg8T_Dek6T9HYjHZCuLTQT8ptAkQRxrsgaXg7-MZmHDA@mail.gmail.com> <ee714151d7c840c82d79f9d12a0f51ef13b798e3.camel@gmail.com>
-In-Reply-To: <ee714151d7c840c82d79f9d12a0f51ef13b798e3.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 21 Sep 2023 02:14:09 -0700
-Message-ID: <CAADnVQJn35f0UvYJ9gyFT4BfViXn8T8rPCXRAC=m_Jx_CFjrtw@mail.gmail.com>
-Subject: Re: [BUG] verifier escape with iteration helpers (bpf_loop, ...)
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrew Werner <awerner32@gmail.com>, 
-	bpf <bpf@vger.kernel.org>, Andrei Matei <andreimatei1@gmail.com>, 
-	Tamir Duberstein <tamird@gmail.com>, Joanne Koong <joannelkoong@gmail.com>, kernel-team@dataexmachina.dev, 
-	Song Liu <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <20230917150752.69612-1-xukuohai@huaweicloud.com>
+ <CABRcYmJudpDA63a2Tk0=riQ0WEQFkHBBQqruDrUPM8Ws=+NtkQ@mail.gmail.com> <70dbf296-e525-ef96-b0fb-543f8e4c1226@huaweicloud.com>
+In-Reply-To: <70dbf296-e525-ef96-b0fb-543f8e4c1226@huaweicloud.com>
+From: Florent Revest <revest@chromium.org>
+Date: Thu, 21 Sep 2023 12:09:14 +0200
+Message-ID: <CABRcYmLtk8aQEzoUFw+j5Rdd-MXf-q+i7RHXZtu-skjRz11ZDw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf, arm64: Support up to 12 function arguments
+To: Xu Kuohai <xukuohai@huaweicloud.com>
+Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Will Deacon <will@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.6
+	DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Sep 19, 2023 at 5:19=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+On Thu, Sep 21, 2023 at 7:21=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.com=
 > wrote:
->
-> > >
-> > > Note that R7=3Dfp-16 in old state vs R7_w=3D57005 in cur state.
-> > > The registers are considered equal because R7 does not have a read ma=
-rk.
-> > > However read marks are not yet finalized for old state because
-> > > sl->state.branches !=3D 0.
-
-By "liveness marks are not finalized" you mean that
-regs don't have LIVE_DONE?
-That shouldn't matter to state comparison.
-It only needs to see LIVE_READ.
-LIVE_DONE is a sanity check for liveness algorithm only.
-It doesn't affect correctness.
-
-> > > (Note: precision marks are not finalized as
-> > > well, which should be a problem, but this requires another example).
+> On 9/21/2023 6:17 AM, Florent Revest wrote:
+> > On Sun, Sep 17, 2023 at 5:09=E2=80=AFPM Xu Kuohai <xukuohai@huaweicloud=
+.com> wrote:
+> >> Due to bpf only supports function arguments up to 16 bytes, according =
+to
+> >> AAPCS64, starting from the first argument, each argument is first
+> >> attempted to be loaded to 1 or 2 smallest registers from x0-x7, if the=
+re
+> >> are no enough registers to hold the entire argument, then all remainin=
+g
+> >> arguments starting from this one are pushed to the stack for passing.
 > >
-> > I originally convinced myself that non-finalized precision marking is
-> > fine, see the comment next to process_iter_next_call() for reasoning.
-> > If you can have a dedicated example for precision that would be great.
+> > If I read the section 6.8.2 of the AAPCS64 correctly, there is a
+> > corner case which I believe isn't covered by this logic.
 > >
-> > As for read marks... Yep, that's a bummer. That r7 is not used after
-> > the loop, so is not marked as read, and it's basically ignored for
-> > loop invariant checking, which is definitely not what was intended.
+> > void f(u128 a, u128 b, u128, c, u64 d, u128 e, u64 f) {}
+> > - a goes on x0 and x1
+> > - b goes on x2 and x3
+> > - c goes on x4 and x5
+> > - d goes on x6
+> > - e spills on the stack because it doesn't fit in the remaining regs
+> > - f goes on x7
+> >
 >
-> Liveness is a precondition for all subsequent checks, so example
-> involving precision would also involve liveness. Here is a combined
-> example:
+> I guess you might have overlooked rule C.13 in AAPCS64. Non-floating type=
+ arguments
+> are copied to stack under rule C.15/C.17. However, C.13 is applied before=
+ C.15/C.17,
+> which means that NGRN is set to 8 before the stack is used. That is, all =
+8 parameter
+> arguments are used up and any remaining arguments can only be passed by t=
+he stack.
 >
->     r8 =3D 0
->     fp[-16] =3D 0
->     r7 =3D -16
->     r6 =3D bpf_get_current_pid_tgid()
->     bpf_iter_num_new(&fp[-8], 0, 10)
->     while (bpf_iter_num_next(&fp[-8])) {
->       r6++
->       if (r6 !=3D 42) {
->         r7 =3D -32
->         continue;
->       }
->       r0 =3D r10
->       r0 +=3D r7
->       r8 =3D *(u64 *)(r0 + 0)
->     }
->     bpf_iter_num_destroy(&fp[-8])
->     return r8
+> C.13    The NGRN is set to 8.
 >
-> (Complete source code is at the end of the email).
+> C.14    The NSAA is rounded up to the larger of 8 or the Natural Alignmen=
+t of the
+>          argument=E2=80=99s type.
 >
-> The call to bpf_iter_num_next() is reachable with r7 values -16 and -32.
-> State with r7=3D-16 is visited first, at which point r7 has no read mark
-> and is not marked precise.
-> State with r7=3D-32 is visited second:
-> - states_equal() for is_iter_next_insn() should ignore absence of
->   REG_LIVE_READ mark on r7, otherwise both states would be considered
->   identical;
+> C.15    If the argument is a composite type then the argument is copied t=
+o memory
+>          at the adjusted NSAA. The NSAA is incremented by the size of the=
+ argument.
+>          The argument has now been allocated.
+>
+> C.16    If the size of the argument is less than 8 bytes then the size of=
+ the argument
+>          is set to 8 bytes. The effect is as if the argument was copied t=
+o the least
+>          significant bits of a 64-bit register and the remaining bits fil=
+led with
+>          unspecified values.
+>
+> C.17    The argument is copied to memory at the adjusted NSAA. The NSAA i=
+s incremented
+>          by the size of the argument. The argument has now been allocated=
+.
+>
+>
+> And the following assembly code also shows 'e' and 'f' are passed by stac=
+k.
+>
+> int func(__int128 a, __int128 b, __int128 c, int64_t d, __int128 e, int64=
+_t f)
+> {
+>          return e =3D=3D 5 || f =3D=3D 7;
+> }
+>
+> asseembly:
+>
+> func:
+>          sub     sp, sp, #64
+>          stp     x0, x1, [sp, 48]
+>          stp     x2, x3, [sp, 32]
+>          stp     x4, x5, [sp, 16]
+>          str     x6, [sp, 8]
+>          ldr     x0, [sp, 64] // ** load the low 8 bytes of e from SP + 6=
+4 **
+>          cmp     x0, 5
+>          bne     .L27
+>          ldr     x0, [sp, 72] // ** load the high 8 bytes of e from SP + =
+72 **
+>          cmp     x0, 0
+>          beq     .L22
+> .L27:
+>          ldr     x0, [sp, 80] // ** load f from SP + 80 **
+>          cmp     x0, 7
+>          bne     .L24
+> .L22:
+>          mov     w0, 1
+>          b       .L26
+> .L24:
+>          mov     w0, 0
+> .L26:
+>          add     sp, sp, 64
+>          ret
 
-I think assuming live_read on all regs in regsafe() when
-cb or iter body is being processed will have big impact
-on processed insns.
-I suspect the underlying issue is different.
+Ah, that's great! :) It keeps things easy then. Thank you for the explanati=
+on!
 
-In the first pass of the body with r7=3D-16 the 'r0 +=3D r7'
-insn should have added the read mark to r7,
-so is_iter_next_insn after 2nd pass with r7=3D-32 should reach
-case SCALAR_VALUE in regsafe().
-There we need to do something with lack of precision in r7=3D-16,
-but assume that is fixed, the 3rd iter of the loop should continue
-and 'r0 +=3D r7' in the _3rd_ iter of the loop should propagate
-read mark all the way to r7=3D-32 reg.
-I mean the parentage chain between regs should link
-regs of iterations.
-I believe the process_iter_next_call() logic maintains
-correct parentage chain, since it's just a push_stack()
-and is_state_visited() should be connecting parents.
-So in case of iter body the issue with above loop is only
-in missing precision,
-but for your cb verification code I suspect the issue is due
-to lack of parentage chain and liveness is not propagated ?
+> Although the above case is fine, the current patch does not handle rule C=
+.14 correctly.
+> For example, for the following func, an 8-byte padding is inserted betwee=
+n f and g by
+> C.14 to align g to 16 bytes, but this patch mistakenly treats it as part =
+of g.
+>
+> int func(__int128 a, __int128 b, __int128 c, int64_t d, __int128 e, int64=
+_t f, __int128 g)
+> {
+> }
+>
+> Maybe we could fix it by adding argument alignment to struct btf_func_mod=
+el, I'll
+> give it a try.
 
-I could be completely off the mark.
-The discussion is hard to follow.
-It's probably time to post raw patch and continue with code.
+Good catch!
+
+> > Maybe it would be good to add something pathological like this to the
+> > selftests ?
+> >
+>
+> OK, will do
+
+Just a thought on that topic, maybe it would be preferable to have a
+new separate test for this ? Currently we have a test for 128b long
+arguments and a test for many arguments, it's good to have these
+separate because they are two dimensions of bpf architectural support:
+if someone adds support for one xor the other feature to an arch, it's
+good to see a test go green. Since that new test would cover both long
+and many arguments, it should probably be a new test.
+
+> >> -static void save_args(struct jit_ctx *ctx, int args_off, int nregs)
+> >> +struct arg_aux {
+> >> +       /* how many args are passed through registers, the rest args a=
+re
+> >
+> > the rest of the* args
+> >
+> >> +        * passed through stack
+> >> +        */
+> >> +       int args_in_reg;
+> >
+> > Maybe args_in_regs ? since args can go in multiple regs
+> >
+> >> +       /* how many registers used for passing arguments */
+> >
+> > are* used
+> >
+> >> +       int regs_for_arg;
+> >
+> > And here regs_for_args ? Since It's the number of registers used for al=
+l args
+> >
+> >> +       /* how many stack slots used for arguments, each slot is 8 byt=
+es */
+> >
+> > are* used
+> >
+> >> +       int stack_slots_for_arg;
+> >
+> > And here stack_slots_for_args, for the same reason as above?
+> >
+> >> +};
+> >> +
+> >> +static void calc_arg_aux(const struct btf_func_model *m,
+> >> +                        struct arg_aux *a)
+> >>   {
+> >>          int i;
+> >> +       int nregs;
+> >> +       int slots;
+> >> +       int stack_slots;
+> >> +
+> >> +       /* verifier ensures m->nr_args <=3D MAX_BPF_FUNC_ARGS */
+> >> +       for (i =3D 0, nregs =3D 0; i < m->nr_args; i++) {
+> >> +               slots =3D (m->arg_size[i] + 7) / 8;
+> >> +               if (nregs + slots <=3D 8) /* passed through register ?=
+ */
+> >> +                       nregs +=3D slots;
+> >> +               else
+> >> +                       break;
+> >> +       }
+> >> +
+> >> +       a->args_in_reg =3D i;
+> >> +       a->regs_for_arg =3D nregs;
+> >>
+> >> -       for (i =3D 0; i < nregs; i++) {
+> >> -               emit(A64_STR64I(i, A64_SP, args_off), ctx);
+> >> -               args_off +=3D 8;
+> >> +       /* the rest arguments are passed through stack */
+> >> +       for (stack_slots =3D 0; i < m->nr_args; i++)
+> >> +               stack_slots +=3D (m->arg_size[i] + 7) / 8;
+> >> +
+> >> +       a->stack_slots_for_arg =3D stack_slots;
+> >> +}
+> >> +
+> >> +static void clear_garbage(struct jit_ctx *ctx, int reg, int effective=
+_bytes)
+> >> +{
+> >> +       if (effective_bytes) {
+> >> +               int garbage_bits =3D 64 - 8 * effective_bytes;
+> >> +#ifdef CONFIG_CPU_BIG_ENDIAN
+> >> +               /* garbage bits are at the right end */
+> >> +               emit(A64_LSR(1, reg, reg, garbage_bits), ctx);
+> >> +               emit(A64_LSL(1, reg, reg, garbage_bits), ctx);
+> >> +#else
+> >> +               /* garbage bits are at the left end */
+> >> +               emit(A64_LSL(1, reg, reg, garbage_bits), ctx);
+> >> +               emit(A64_LSR(1, reg, reg, garbage_bits), ctx);
+> >> +#endif
+> >>          }
+> >>   }
+> >>
+> >> -static void restore_args(struct jit_ctx *ctx, int args_off, int nregs=
+)
+> >> +static void save_args(struct jit_ctx *ctx, int bargs_off, int oargs_o=
+ff,
+> >> +                     const struct btf_func_model *m,
+> >> +                     const struct arg_aux *a,
+> >> +                     bool for_call_origin)
+> >>   {
+> >>          int i;
+> >> +       int reg;
+> >> +       int doff;
+> >> +       int soff;
+> >> +       int slots;
+> >> +       u8 tmp =3D bpf2a64[TMP_REG_1];
+> >> +
+> >> +       /* store argument registers to stack for call bpf, or restore =
+argument
+> >
+> > to* call bpf or "for the bpf program"
+> >
+>
+> Sorry for these incorrect words :(, all will be fixed in the next version=
+, thanks!
+
+No problem!
+
+> >>   static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_=
+image *im,
+> >>                                struct bpf_tramp_links *tlinks, void *o=
+rig_call,
+> >> -                             int nregs, u32 flags)
+> >> +                             const struct btf_func_model *m,
+> >> +                             const struct arg_aux *a,
+> >> +                             u32 flags)
+> >>   {
+> >>          int i;
+> >>          int stack_size;
+> >>          int retaddr_off;
+> >>          int regs_off;
+> >>          int retval_off;
+> >> -       int args_off;
+> >> +       int bargs_off;
+> >>          int nregs_off;
+> >>          int ip_off;
+> >>          int run_ctx_off;
+> >> +       int oargs_off;
+> >> +       int nregs;
+> >>          struct bpf_tramp_links *fentry =3D &tlinks[BPF_TRAMP_FENTRY];
+> >>          struct bpf_tramp_links *fexit =3D &tlinks[BPF_TRAMP_FEXIT];
+> >>          struct bpf_tramp_links *fmod_ret =3D &tlinks[BPF_TRAMP_MODIFY=
+_RETURN];
+> >> @@ -1859,19 +1951,26 @@ static int prepare_trampoline(struct jit_ctx *=
+ctx, struct bpf_tramp_image *im,
+> >>           *
+> >>           * SP + retval_off  [ return value      ] BPF_TRAMP_F_CALL_OR=
+IG or
+> >>           *                                        BPF_TRAMP_F_RET_FEN=
+TRY_RET
+> >> -        *
+> >>           *                  [ arg reg N         ]
+> >>           *                  [ ...               ]
+> >> -        * SP + args_off    [ arg reg 1         ]
+> >> +        * SP + bargs_off   [ arg reg 1         ] for bpf
+> >>           *
+> >>           * SP + nregs_off   [ arg regs count    ]
+> >>           *
+> >>           * SP + ip_off      [ traced function   ] BPF_TRAMP_F_IP_ARG =
+flag
+> >>           *
+> >>           * SP + run_ctx_off [ bpf_tramp_run_ctx ]
+> >> +        *
+> >> +        *                  [ stack arg N       ]
+> >> +        *                  [ ...               ]
+> >> +        * SP + oargs_off   [ stack arg 1       ] for original func
+> >>           */
+> >>
+> >>          stack_size =3D 0;
+> >> +       oargs_off =3D stack_size;
+> >> +       if (flags & BPF_TRAMP_F_CALL_ORIG)
+> >> +               stack_size +=3D 8 * a->stack_slots_for_arg;
+> >> +
+> >>          run_ctx_off =3D stack_size;
+> >>          /* room for bpf_tramp_run_ctx */
+> >>          stack_size +=3D round_up(sizeof(struct bpf_tramp_run_ctx), 8)=
+;
+> >> @@ -1885,9 +1984,10 @@ static int prepare_trampoline(struct jit_ctx *c=
+tx, struct bpf_tramp_image *im,
+> >>          /* room for args count */
+> >>          stack_size +=3D 8;
+> >>
+> >> -       args_off =3D stack_size;
+> >> +       bargs_off =3D stack_size;
+> >>          /* room for args */
+> >> -       stack_size +=3D nregs * 8;
+> >> +       nregs =3D a->regs_for_arg + a->stack_slots_for_arg;
+> >
+> > Maybe this name no longer makes sense ?
+>
+> OK, I'll remove it
+
+Ack
 
