@@ -1,189 +1,314 @@
-Return-Path: <bpf+bounces-10548-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10571-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFB267A9A17
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 20:36:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A6537A9C8F
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 21:21:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53546B209EB
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 18:36:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A589828338C
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 19:19:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEA4617754;
-	Thu, 21 Sep 2023 17:31:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA3D4BDDC;
+	Thu, 21 Sep 2023 18:11:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC94517744
-	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 17:31:29 +0000 (UTC)
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3916530ED
-	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 10:28:28 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99c1c66876aso148534866b.2
-        for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 10:28:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695317306; x=1695922106; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hrGSVM+r8onQIbS/fvQg7ZdNcdy6hV98KwyB8HQsmt0=;
-        b=DAQPE7+zGDHHt3qY1KFeLykNgXybsJp675EnNBPGIKF80CNCpmsqM+H6esfABtfcfC
-         xjpHjeuu7/Fq9wel0EVCQ4T4QDYQUXxQBXuHBWiSDT1+fgMRFozSP/apTvitTQdKswqV
-         DouRzQBx2bLdd7vZ7a00B8IjjQndg0W1Wdhx1SoVXYPi1Pk13xxNyc9cJH/7ay83NfWX
-         CF0DxTHcL0ZI7n6AnNsjz3dwOAdsjGgLz+zUNcpIqxRu1koWI+bc1drFDjNJIOt6fVPn
-         wy+/yZaWXC4YpHZKh+eaYAWDasrsMTXnwd/fVHrk598b8iFE7J8I8CRC6B5Se80p+tQm
-         XeFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695317306; x=1695922106;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hrGSVM+r8onQIbS/fvQg7ZdNcdy6hV98KwyB8HQsmt0=;
-        b=RkIRIBQRA1TZWTbt8YH4PRlC4sgHAAQiEddESK4TnqoX+9jrEue1MfT1PqLgQ9KWn7
-         1z7x4MWGrSn5+ggKfUY7Ml7GtWtcweLSqUiMOYepqO9Th7xdwHeWYUrePrx8ycrbevNN
-         433QfYbRLsjCbeIqeRRawXGuSo+52ib4D/1eS/sJlvgrrxqFG9jxvVQ6gpUXuECyDHu3
-         cqqH9GDpZ6klhYThl/3jpF1gUswo6XYVEKq8vBT9AlxwchMN7Eg6uROvE1oBisldddM4
-         M9YZAhhJyfb+ufZo1WYi5MwMMS34Q4TNRAMrxPdEfhI6Xc7IKNrc9+RFwqPrQtS8QbbL
-         V9tw==
-X-Gm-Message-State: AOJu0YzHBoAkrsJbIHHI84T+GXuoMKKTcvmeQm2robzjczXQ4BotW2Xo
-	t+jonDPPcMrUXrM+gV2fJ2so+/rnuR7QFq8chJc2ANhBXu4G2A==
-X-Google-Smtp-Source: AGHT+IE0AP2GIy/nVTu1t8ljZ43I6QUbz1mUA3KpGT0ks5/myvz44f9Q+DPSjlMKVqTWmq/xwBnMW60hNMQBWeTpx10=
-X-Received: by 2002:adf:d0cc:0:b0:317:61af:d64a with SMTP id
- z12-20020adfd0cc000000b0031761afd64amr4920408wrh.3.1695301004811; Thu, 21 Sep
- 2023 05:56:44 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63574BDB6;
+	Thu, 21 Sep 2023 18:11:23 +0000 (UTC)
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB15A0F5C;
+	Thu, 21 Sep 2023 10:57:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=xOUC0XEpooWY3ocUiPMl1wGP/+abFgU7mgV5A8cPiqQ=; b=ODXexeYs4hjxZmP4XDsimLt1ld
+	jIwXZ/SwJiN6T30MyTq0ozuGsVwAlUmQ8pwWTywvlnYMbx1IMxWubKbuPfadGgQSSIwH2gOsziYuk
+	h8UzpIEg6Fx2rEs96em6OXLOt3bTLyZudculxw+sa7cI5L0MrWuJXCDldONkubQeiF8MPWRXXILOw
+	ms9C4a92EZbyFjqDktlKpykZteXPXIeDVYXx8ZFIhFlbLXVU/GkWNJz8PE7sH1u/G7q7kSpl4yMa4
+	M60CIhQ4+qem2OfbubuoCyOBvPAuNp7QyPRs02HeqgsV3QwKKWx1h9aZn1hxlMHCxIebWKmwVabxV
+	WckeWJ0g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54502)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1qjJP5-0004aS-1s;
+	Thu, 21 Sep 2023 14:07:35 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1qjJOR-0003YC-Nd; Thu, 21 Sep 2023 14:06:55 +0100
+Date: Thu, 21 Sep 2023 14:06:55 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+	David E Box <david.e.box@linux.intel.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Mark Gross <markgross@kernel.org>,
+	Jose Abreu <Jose.Abreu@synopsys.com>, Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+	Jean Delvare <jdelvare@suse.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Wong Vee Khee <veekhee@apple.com>,
+	Jon Hunter <jonathanh@nvidia.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Revanth Kumar Uppala <ruppala@nvidia.com>,
+	Shenwei Wang <shenwei.wang@nxp.com>,
+	Andrey Konovalov <andrey.konovalov@linaro.org>,
+	Jochen Henneberg <jh@henneberg-systemdesign.com>,
+	David E Box <david.e.box@intel.com>,
+	Andrew Halaney <ahalaney@redhat.com>,
+	Simon Horman <simon.horman@corigine.com>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+	bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
+	Tan Tee Min <tee.min.tan@linux.intel.com>,
+	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+	Lai Peter Jun Ann <jun.ann.lai@intel.com>
+Subject: Re: [PATCH net-next v3 2/5] net: pcs: xpcs: combine C37 SGMII AN and
+ 2500BASEX for Intel mGbE controller
+Message-ID: <ZQw/7/3jOJf7BOPt@shell.armlinux.org.uk>
+References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
+ <20230921121946.3025771-3-yong.liang.choong@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CA+vRuzPChFNXmouzGG+wsy=6eMcfr1mFG0F3g7rbg-sedGKW3w@mail.gmail.com>
- <CAADnVQJpLAzmUfwvWBr8a_PWHYHxHw9vdAXnWB4R4PbVY4S4mw@mail.gmail.com>
- <CAEf4Bzbubu7KjBv=98BZrVnTrcfPQrnsp-g1kOYKM=kUtiqEgw@mail.gmail.com>
- <dff1cfec20d1711cb023be38dfe886bac8aac5f6.camel@gmail.com>
- <CAP01T76duVGmnb+LQjhdKneVYs1q=ehU4yzTLmgZdG0r2ErOYQ@mail.gmail.com>
- <a2995c1d7c01794ca9b652cdea7917cac5d98a16.camel@gmail.com>
- <97a90da09404c65c8e810cf83c94ac703705dc0e.camel@gmail.com>
- <CAEf4BzYg8T_Dek6T9HYjHZCuLTQT8ptAkQRxrsgaXg7-MZmHDA@mail.gmail.com>
- <ee714151d7c840c82d79f9d12a0f51ef13b798e3.camel@gmail.com>
- <CAADnVQJn35f0UvYJ9gyFT4BfViXn8T8rPCXRAC=m_Jx_CFjrtw@mail.gmail.com> <5649df64315467c67b969e145afda8bbf7e60445.camel@gmail.com>
-In-Reply-To: <5649df64315467c67b969e145afda8bbf7e60445.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 21 Sep 2023 05:56:33 -0700
-Message-ID: <CAADnVQJO0aVJfV=8RDf5rdtjOCC-=57dmHF20fQYV9EiW2pJ2Q@mail.gmail.com>
-Subject: Re: [BUG] verifier escape with iteration helpers (bpf_loop, ...)
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrew Werner <awerner32@gmail.com>, 
-	bpf <bpf@vger.kernel.org>, Andrei Matei <andreimatei1@gmail.com>, 
-	Tamir Duberstein <tamird@gmail.com>, Joanne Koong <joannelkoong@gmail.com>, kernel-team@dataexmachina.dev, 
-	Song Liu <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230921121946.3025771-3-yong.liang.choong@linux.intel.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Thu, Sep 21, 2023 at 4:03=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> I repeat the complete example with added instruction numbers in the
-> end of the email. As of now verifier takes the following paths:
->
->   First:
->     // First path is for "drained" iterator and is not very interesting.
->     0: (b7) r8 =3D 0                        ; R8_w=3D0
->        ...
->     2: (b7) r7 =3D -16                      ; R7_w=3D-16
->        ...
->     4: (bf) r6 =3D r0                       ; R0_w=3Dscalar(id=3D1) R6_w=
-=3Dscalar(id=3D1)
->        ...
->     12: (85) call bpf_iter_num_next#63182
->        ; R0_w=3D0 fp-8=3Diter_num(ref_id=3D2,state=3Ddrained,depth=3D0) r=
-efs=3D2
->     13: (15) if r0 =3D=3D 0x0 goto pc+8
->     22: (bf) r1 =3D r10
->        ...
->     26: (95) exit
->
->   Second:
->     // Note: at 13 a first checkpoint with "active" iterator state is rea=
-ched
->     //       this checkpoint is created for R7=3D-16 w/o read mark.
+On Thu, Sep 21, 2023 at 08:19:43PM +0800, Choong Yong Liang wrote:
+> From: "Tan, Tee Min" <tee.min.tan@linux.intel.com>
+> 
+> This commit introduces xpcs_sgmii_2500basex_features[] that combine
+> xpcs_sgmii_features[] and xpcs_2500basex_features[] for Intel mGbE
+> controller that desire to interchange the speed mode of
+> 10/100/1000/2500Mbps at runtime.
+> 
+> Also, we introduce xpcs_config_aneg_c37_sgmii_2500basex() function
 
-Thanks for detailed example.
-The analysis in my previous email was based on C code
-where I assumed the asm code generated by compiler for
-if (r6 !=3D 42)
-would be
-if (unlikely(r6 !=3D 42))
-and fallthrough insn after 'if' insn would be 'r0 =3D r10'.
-Now I see that asm matches if (likely(r6 !=3D 42)).
-I suspect if you use that in C code you wouldn't need to
-write the test in asm.
-Just a thought.
+Clause 37... SGMII? 2500base-X? Technically, clause 37 doesn't cover
+2500base-X.
 
->     from 12 to 13: R0_w=3Drdonly_mem(id=3D3,ref_obj_id=3D2,off=3D0,imm=3D=
-0) R6=3Dscalar(id=3D1)
->                    R7=3D-16 R8=3D0 R10=3Dfp0 fp-8=3Diter_num(ref_id=3D2,s=
-tate=3Dactive,depth=3D1)
->                    fp-16=3D00000000 refs=3D2
->     13: (15) if r0 =3D=3D 0x0 goto pc+8       ; R0_w=3Drdonly_mem(id=3D3,=
-ref_obj_id=3D2,off=3D0,imm=3D0) refs=3D2
->     14: (07) r6 +=3D 1                      ; R6=3Dscalar() refs=3D2
->     15: (55) if r6 !=3D 0x2a goto pc+2      ; R6=3D42 refs=3D2
->     16: (b7) r7 =3D -32                     ; R7_w=3D-32 refs=3D2
->     17: (05) goto pc-8
->     10: (bf) r1 =3D r10                     ; R1_w=3Dfp0 R10=3Dfp0 refs=
-=3D2
->     11: (07) r1 +=3D -8
->       is_iter_next (12):
->         old:
->            R0=3Dscalar() R1_rw=3Dfp-8 R6_r=3Dscalar(id=3D1) R7=3D-16 R8_r=
-=3D0 R10=3Dfp0
->            fp-8_r=3Diter_num(ref_id=3D2,state=3Dactive,depth=3D0) fp-16=
-=3D00000000 refs=3D2
->         cur:
->            R0=3Drdonly_mem(id=3D3,ref_obj_id=3D2,off=3D0,imm=3D0) R1_w=3D=
-fp-8 R6=3D42 R7_w=3D-32
->            R8=3D0 R10=3Dfp0 fp-8=3Diter_num(ref_id=3D2,state=3Dactive,dep=
-th=3D1) fp-16=3D00000000 refs=3D2
->       > hit
->     12: safe
->     // At this point R7=3D-32 but it still lacks read or precision marks,
->     // thus states_equal() called from is_state_visited() for is_iter_nex=
-t_insn()
->     // branch returns true. (I added some logging to make it clear above)
+> which is called by the xpcs_do_config() with the new AN mode:
+> DW_SGMII_2500BASEX, and this new function will proceed next-level
+> calling to perform C37 SGMII AN/2500BASEX configuration based on
+> the PHY interface updated by PHY driver.
+> 
+> Signed-off-by: Tan, Tee Min <tee.min.tan@linux.intel.com>
+> Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+> ---
+>  drivers/net/pcs/pcs-xpcs.c   | 72 ++++++++++++++++++++++++++++++------
+>  include/linux/pcs/pcs-xpcs.h |  1 +
+>  2 files changed, 62 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
+> index 4dbc21f604f2..60d90191677d 100644
+> --- a/drivers/net/pcs/pcs-xpcs.c
+> +++ b/drivers/net/pcs/pcs-xpcs.c
+> @@ -104,6 +104,21 @@ static const int xpcs_2500basex_features[] = {
+>  	__ETHTOOL_LINK_MODE_MASK_NBITS,
+>  };
+>  
+> +static const int xpcs_sgmii_2500basex_features[] = {
+> +	ETHTOOL_LINK_MODE_Pause_BIT,
+> +	ETHTOOL_LINK_MODE_Asym_Pause_BIT,
+> +	ETHTOOL_LINK_MODE_Autoneg_BIT,
+> +	ETHTOOL_LINK_MODE_10baseT_Half_BIT,
+> +	ETHTOOL_LINK_MODE_10baseT_Full_BIT,
+> +	ETHTOOL_LINK_MODE_100baseT_Half_BIT,
+> +	ETHTOOL_LINK_MODE_100baseT_Full_BIT,
+> +	ETHTOOL_LINK_MODE_1000baseT_Half_BIT,
+> +	ETHTOOL_LINK_MODE_1000baseT_Full_BIT,
 
-Maybe instead of brute forcing all regs to live and precise
-we can add iter.depth check to stacksafe() such
-that depth=3D0 !=3D depth=3D1, but
-depth=3D1 =3D=3D depthN ?
-(and a tweak to iter_active_depths_differ() as well)
+The connected PHY could be one that supports 1000baseX as well.
 
-Then in the above r7 will be 'equivalent', but fp-8 will differ,
-then the state with r7=3D-32 won't be pruned
-and it will address this particular example ? or not ?
+> +	ETHTOOL_LINK_MODE_2500baseX_Full_BIT,
+> +	ETHTOOL_LINK_MODE_2500baseT_Full_BIT,
+> +	__ETHTOOL_LINK_MODE_MASK_NBITS,
+> +};
+> +
+>  static const phy_interface_t xpcs_usxgmii_interfaces[] = {
+>  	PHY_INTERFACE_MODE_USXGMII,
+>  };
+> @@ -133,6 +148,12 @@ static const phy_interface_t xpcs_2500basex_interfaces[] = {
+>  	PHY_INTERFACE_MODE_MAX,
+>  };
+>  
+> +static const phy_interface_t xpcs_sgmii_2500basex_interfaces[] = {
+> +	PHY_INTERFACE_MODE_SGMII,
+> +	PHY_INTERFACE_MODE_2500BASEX,
+> +	PHY_INTERFACE_MODE_MAX,
+> +};
+> +
+>  enum {
+>  	DW_XPCS_USXGMII,
+>  	DW_XPCS_10GKR,
+> @@ -141,6 +162,7 @@ enum {
+>  	DW_XPCS_SGMII,
+>  	DW_XPCS_1000BASEX,
+>  	DW_XPCS_2500BASEX,
+> +	DW_XPCS_SGMII_2500BASEX,
+>  	DW_XPCS_INTERFACE_MAX,
+>  };
+>  
+> @@ -290,6 +312,7 @@ static int xpcs_soft_reset(struct dw_xpcs *xpcs,
+>  	case DW_AN_C37_SGMII:
+>  	case DW_2500BASEX:
+>  	case DW_AN_C37_1000BASEX:
+> +	case DW_SGMII_2500BASEX:
+>  		dev = MDIO_MMD_VEND2;
+>  		break;
+>  	default:
+> @@ -748,6 +771,8 @@ static int xpcs_config_aneg_c37_sgmii(struct dw_xpcs *xpcs,
+>  	if (xpcs->dev_flag == DW_DEV_TXGBE)
+>  		ret |= DW_VR_MII_DIG_CTRL1_PHY_MODE_CTRL;
+>  
+> +	/* Disable 2.5G GMII for SGMII C37 mode */
+> +	ret &= ~DW_VR_MII_DIG_CTRL1_2G5_EN;
 
-Even if it does the gut feel that it won't be enough though,
-but I wanted to mention this to brainstorm, since below:
+Do you know that this is correct for every user of this function?
 
-> The "fix" that I have locally is not really a fix. It forces "exact"
-> states comparisons for is_iter_next_insn() case:
-> 1. liveness marks are ignored;
-> 2. precision marks are ignored;
-> 3. scalars are compared using regs_exact().
+>  	ret = xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1, ret);
+>  	if (ret < 0)
+>  		return ret;
+> @@ -848,6 +873,26 @@ static int xpcs_config_2500basex(struct dw_xpcs *xpcs)
+>  	return xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL, ret);
+>  }
+>  
+> +static int xpcs_config_aneg_c37_sgmii_2500basex(struct dw_xpcs *xpcs,
+> +						unsigned int neg_mode,
+> +						phy_interface_t interface)
+> +{
+> +	int ret = -EOPNOTSUPP;
+> +
+> +	switch (interface) {
+> +	case PHY_INTERFACE_MODE_SGMII:
+> +		ret = xpcs_config_aneg_c37_sgmii(xpcs, neg_mode);
+> +		break;
+> +	case PHY_INTERFACE_MODE_2500BASEX:
+> +		ret = xpcs_config_2500basex(xpcs);
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>  int xpcs_do_config(struct dw_xpcs *xpcs, phy_interface_t interface,
+>  		   const unsigned long *advertising, unsigned int neg_mode)
+>  {
+> @@ -890,6 +935,12 @@ int xpcs_do_config(struct dw_xpcs *xpcs, phy_interface_t interface,
+>  		if (ret)
+>  			return ret;
+>  		break;
+> +	case DW_SGMII_2500BASEX:
+> +		ret = xpcs_config_aneg_c37_sgmii_2500basex(xpcs, neg_mode,
+> +							   interface);
+> +		if (ret)
+> +			return ret;
+> +		break;
+>  	default:
+>  		return -1;
+>  	}
+> @@ -1114,6 +1165,11 @@ static void xpcs_get_state(struct phylink_pcs *pcs,
+>  		}
+>  		break;
+>  	case DW_AN_C37_SGMII:
+> +	case DW_SGMII_2500BASEX:
+> +		/* 2500BASEX is not supported for in-band AN mode. */
+> +		if (state->interface == PHY_INTERFACE_MODE_2500BASEX)
+> +			break;
+> +
+>  		ret = xpcs_get_state_c37_sgmii(xpcs, state);
+>  		if (ret) {
+>  			pr_err("xpcs_get_state_c37_sgmii returned %pe\n",
+> @@ -1266,23 +1322,17 @@ static const struct xpcs_compat synopsys_xpcs_compat[DW_XPCS_INTERFACE_MAX] = {
+>  		.num_interfaces = ARRAY_SIZE(xpcs_10gbaser_interfaces),
+>  		.an_mode = DW_10GBASER,
+>  	},
+> -	[DW_XPCS_SGMII] = {
+> -		.supported = xpcs_sgmii_features,
+> -		.interface = xpcs_sgmii_interfaces,
+> -		.num_interfaces = ARRAY_SIZE(xpcs_sgmii_interfaces),
+> -		.an_mode = DW_AN_C37_SGMII,
+> -	},
 
-is too drastic.
+Doesn't this break SGMII-only support (those using DW_XPCS_SGMII) ?
 
-> It breaks a number a number of tests, because iterator "entry" states
-> are no longer equal and upper iteration bound is not tracked:
-> - iters/simplest_loop
+>  	[DW_XPCS_1000BASEX] = {
+>  		.supported = xpcs_1000basex_features,
+>  		.interface = xpcs_1000basex_interfaces,
+>  		.num_interfaces = ARRAY_SIZE(xpcs_1000basex_interfaces),
+>  		.an_mode = DW_AN_C37_1000BASEX,
+>  	},
+> -	[DW_XPCS_2500BASEX] = {
+> -		.supported = xpcs_2500basex_features,
+> -		.interface = xpcs_2500basex_interfaces,
+> -		.num_interfaces = ARRAY_SIZE(xpcs_2500basex_interfaces),
+> -		.an_mode = DW_2500BASEX,
 
-that's a clear sign that forcing 1,2,3 is a dead end.
+Doesn't this break 2500base-X only support (those using
+DW_XPCS_2500BASEX)?
 
-Another idea is to add another state.branches specifically for loop body
-and keep iterating the body until branches=3D=3D0.
-Same concept as the verifier uses for the whole prog, but localized
-to a loop to make sure we don't declare 'equivalent' state
-until all paths in the loop body are explored.
+> +	[DW_XPCS_SGMII_2500BASEX] = {
+> +		.supported = xpcs_sgmii_2500basex_features,
+> +		.interface = xpcs_sgmii_2500basex_interfaces,
+> +		.num_interfaces = ARRAY_SIZE(xpcs_sgmii_2500basex_features),
+> +		.an_mode = DW_SGMII_2500BASEX,
+>  	},
+>  };
+>  
+> diff --git a/include/linux/pcs/pcs-xpcs.h b/include/linux/pcs/pcs-xpcs.h
+> index da3a6c30f6d2..f075d2fca54a 100644
+> --- a/include/linux/pcs/pcs-xpcs.h
+> +++ b/include/linux/pcs/pcs-xpcs.h
+> @@ -19,6 +19,7 @@
+>  #define DW_2500BASEX			3
+>  #define DW_AN_C37_1000BASEX		4
+>  #define DW_10GBASER			5
+> +#define DW_SGMII_2500BASEX		6
+>  
+>  /* device vendor OUI */
+>  #define DW_OUI_WX			0x0018fc80
+> -- 
+> 2.25.1
+> 
+> 
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
