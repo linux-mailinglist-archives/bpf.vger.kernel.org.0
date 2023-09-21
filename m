@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-10596-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10597-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27B577AA47C
-	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 00:10:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE3627AA4AB
+	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 00:15:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sy.mirrors.kernel.org (Postfix) with ESMTP id 5EDCDB20A13
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 22:10:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id BDB4E286231
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 22:15:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8724820322;
-	Thu, 21 Sep 2023 22:10:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89E102032E;
+	Thu, 21 Sep 2023 22:15:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FC161947B;
-	Thu, 21 Sep 2023 22:10:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D5E4C433CB;
-	Thu, 21 Sep 2023 22:10:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FCA97F2;
+	Thu, 21 Sep 2023 22:15:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DFB4C433B6;
+	Thu, 21 Sep 2023 22:15:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695334240;
-	bh=N5hdFpyXSiGpYG0511NDyp6fv24cJcs4QSVnP7w1UAU=;
+	s=k20201202; t=1695334508;
+	bh=j+YpilMLGCC5ERDcgjdZY/UEYbvSwBxJ4mCRlrG3+go=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Wvqk0n6jq0ct52sblCUd8L/Xq8+N+SorW8zAWVSuS8RApVD17k7plQRRz/k5AtqcZ
-	 GfT0CHWwJxWi4gUehtxR+8ljjuQTqjvYKgxWb2XNuVdjKevxRu1ENJFvPX5YXAHSbF
-	 Ix9CdbGlyzCm8uVsj2Qxltwpt5fiLP3w48irVYCfZTdJDqTfRku6xjijf57j/ZypWU
-	 97yg0mO2y5J78oLs+yCmKD+nXRc3T+EFcvHppUt3wuFXOaWZdvIvQ4j8dq0mhxHV1+
-	 hn7FVpnRYo4KhRE7dodDocdh21fQMMb+Di7kRnH5vPdK32pTNVgx3GHtydByNaiHSX
-	 2EmQpYW6b+alA==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5041bb9ce51so2466137e87.1;
-        Thu, 21 Sep 2023 15:10:40 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxFcVtmEm3oEWo8idFtMNYq2G4WIU9xIxKGAeDSLaC8XzC5nHA6
-	A/Os7unXe6c0ie2bw3wFW2fEWkGcW0nssbBNJ5k=
-X-Google-Smtp-Source: AGHT+IFpnRd6TFzlAtTmG0SVL+ey3URugDNbqT5vmaLEkxDXDZHK88BxPcak1tSmyXSq9q54rWpyKjCd5XFO26LBHOk=
-X-Received: by 2002:a19:6903:0:b0:4fe:2d93:2b50 with SMTP id
- e3-20020a196903000000b004fe2d932b50mr5173357lfc.31.1695334238605; Thu, 21 Sep
- 2023 15:10:38 -0700 (PDT)
+	b=L+gPhURipQCVv5lQ6lMZEeHafe2Map2Z3SouhfPMvOq3LIN5npAvywgTLrdsrYoDw
+	 lcSQt8Ka8fmcf1d8ZM8qIlXPNumlpX3JZKdESMC/KpenaIBv7uGMi+LUkvfCfO+Vlt
+	 Ms3BphwgqclEjVmwfHiEkkrb7+Ta8zh3Ag+RqoFwGGlsIzXfHKrtVOjxsaXB9alIhH
+	 JK+MwyCKXlDL+alHW9KkokkF6FFQuanhqMW2Sdmh2NRZkCVnTo9ppIcJLwe1SwZkYz
+	 JQdTcMm4ZdnaSVT+CVcsNzzz7DKO5EXfQ9zO0FIrMF11/hIqK2vZeqyr2ZUZVULtBX
+	 NHK7vuo8iml0w==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50337b43ee6so2384844e87.3;
+        Thu, 21 Sep 2023 15:15:08 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yz6LQ7OFX4l8PRAF6m5TPSjW+jAccwG8ucpwcrP41ii8KG8riIo
+	p5zrHoy/uro0IDaCuObv8tfVteYpmks0JnVOHoE=
+X-Google-Smtp-Source: AGHT+IEOsdVYa+3bdtK+lEO/ooz4+HKzafq7xPbE1njdx3C8+57KFx3hJ2XTTULe0kNONSMtwPONNYKDgjY7yPaLcMU=
+X-Received: by 2002:a05:6512:3254:b0:503:1c07:f7f9 with SMTP id
+ c20-20020a056512325400b005031c07f7f9mr5552939lfr.29.1695334506735; Thu, 21
+ Sep 2023 15:15:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -45,9 +45,9 @@ MIME-Version: 1.0
 References: <20230918072955.2507221-1-rppt@kernel.org> <20230918072955.2507221-3-rppt@kernel.org>
 In-Reply-To: <20230918072955.2507221-3-rppt@kernel.org>
 From: Song Liu <song@kernel.org>
-Date: Thu, 21 Sep 2023 15:10:26 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4bQY5fo_+K2z4uUdd4r0wYF1eT3bAya=YqcEcmqdGXvg@mail.gmail.com>
-Message-ID: <CAPhsuW4bQY5fo_+K2z4uUdd4r0wYF1eT3bAya=YqcEcmqdGXvg@mail.gmail.com>
+Date: Thu, 21 Sep 2023 15:14:54 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7y2T+tajK71NfYhquhGJKpLpL+EoxxzqrVhEuAamDH3w@mail.gmail.com>
+Message-ID: <CAPhsuW7y2T+tajK71NfYhquhGJKpLpL+EoxxzqrVhEuAamDH3w@mail.gmail.com>
 Subject: Re: [PATCH v3 02/13] mm: introduce execmem_text_alloc() and execmem_free()
 To: Mike Rapoport <rppt@kernel.org>
 Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
@@ -76,39 +76,41 @@ ote:
 >
 [...]
 > +
-> +#include <linux/mm.h>
-> +#include <linux/vmalloc.h>
-> +#include <linux/execmem.h>
-> +#include <linux/moduleloader.h>
-> +
-> +static void *execmem_alloc(size_t size)
-> +{
-> +       return module_alloc(size);
-> +}
-> +
-> +void *execmem_text_alloc(enum execmem_type type, size_t size)
-> +{
-> +       return execmem_alloc(size);
-> +}
+> +/**
+> + * enum execmem_type - types of executable memory ranges
+> + *
+> + * There are several subsystems that allocate executable memory.
+> + * Architectures define different restrictions on placement,
+> + * permissions, alignment and other parameters for memory that can be us=
+ed
+> + * by these subsystems.
+> + * Types in this enum identify subsystems that allocate executable memor=
+y
+> + * and let architectures define parameters for ranges suitable for
+> + * allocations by each subsystem.
+> + *
+> + * @EXECMEM_DEFAULT: default parameters that would be used for types tha=
+t
+> + * are not explcitly defined.
+> + * @EXECMEM_MODULE_TEXT: parameters for module text sections
+> + * @EXECMEM_KPROBES: parameters for kprobes
+> + * @EXECMEM_FTRACE: parameters for ftrace
+> + * @EXECMEM_BPF: parameters for BPF
+> + * @EXECMEM_TYPE_MAX:
+> + */
+> +enum execmem_type {
+> +       EXECMEM_DEFAULT,
 
-execmem_text_alloc (and later execmem_data_alloc) both take "type" as
-input. I guess we can just use execmem_alloc(type, size) for everything?
+I found EXECMEM_DEFAULT more confusing than helpful.
 
-Thanks,
 Song
 
+> +       EXECMEM_MODULE_TEXT =3D EXECMEM_DEFAULT,
+> +       EXECMEM_KPROBES,
+> +       EXECMEM_FTRACE,
+> +       EXECMEM_BPF,
+> +       EXECMEM_TYPE_MAX,
+> +};
 > +
-> +void execmem_free(void *ptr)
-> +{
-> +       /*
-> +        * This memory may be RO, and freeing RO memory in an interrupt i=
-s not
-> +        * supported by vmalloc.
-> +        */
-> +       WARN_ON(in_interrupt());
-> +       vfree(ptr);
-> +}
-> --
-> 2.39.2
->
+[...]
 
