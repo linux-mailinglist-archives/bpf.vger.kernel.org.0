@@ -1,169 +1,366 @@
-Return-Path: <bpf+bounces-10502-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10503-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEB9B7A8FDD
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 01:31:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9FB77A903A
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 02:46:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A83D7281E13
-	for <lists+bpf@lfdr.de>; Wed, 20 Sep 2023 23:31:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFDF11C209C8
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 00:46:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 803DA41AA9;
-	Wed, 20 Sep 2023 23:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98585A55;
+	Thu, 21 Sep 2023 00:46:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D73F941238;
-	Wed, 20 Sep 2023 23:27:16 +0000 (UTC)
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BEFC1;
-	Wed, 20 Sep 2023 16:27:15 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-690bc3f8326so312050b3a.0;
-        Wed, 20 Sep 2023 16:27:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695252435; x=1695857235; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yRax94hCwOhKc7hyYJNfFzu7McWGtMtmigQv48BjD80=;
-        b=P3T0qKkx8YhTSLz93EYOe8wIdKi8Imz6AwDkU2iOOsAo6+nyFp3pkvu8D5Sms6l8G/
-         ns+hFRVef8FPj4XihKOEcXDk3otJ9/R7XlKvuEHjVzgMl+r0FNWf7X21uswgGLtXMAej
-         ApXj6MDEWBhf488m5pkUfhRrSB8pdtTG34u2qNX61RUdXbc8ByGqiyaWOe9Zovn3dgvm
-         EbjKcehfBaNxbPy565eHorJgpHnUbu8Si7m57rLT/YClv66/NvM2nEtbyWpNybJfeYaI
-         Pqi1xl64KgL7IWksShNnDePDcuIkyLhRHklK7azrY9XrtdNqFjocw8spGN5SAACWe2xf
-         RASg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695252435; x=1695857235;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yRax94hCwOhKc7hyYJNfFzu7McWGtMtmigQv48BjD80=;
-        b=W3UxBVpJBiOWA010wlhAubk83bpFTl8rCLKEPUlInz/5RxERrwilCWPREOBFwwPoGw
-         KKcfTw6YrwOat3n8gVlIY/5YDV95lMr70K2zlM4nMvyvTV7EUY0Uqy0wdYIPNNq5B65D
-         OGpbj6k+DyD0VDJifShVw/iT69yp7EHGmPZHCOFXgkNwq9wTP7aPZvW7oP0JSoNlKAzV
-         uBOEeNIJwINVYL6mxAgZf+MbLAP12KAuCrNrHVvbbJjAE7Fu8Lloi62kQ6VxCAJZTnFP
-         x6nfSoPwLQn1nCNC2zaMfGaBznITjkFJX/Y1TWL6+ouMve5JKgF0BP+GorcUfgEUXX+Y
-         Eftg==
-X-Gm-Message-State: AOJu0YzgrM69zfMeKrYALD1UL6FIKtbPGcHpwNFhymVFe6bKbZ+J8nlH
-	eCeGZgwTD5jiJKp3Pf+O01w=
-X-Google-Smtp-Source: AGHT+IE2WSglC5/05m2UJQ32jw5QvicrNogov53iyIgJaIh2f8lnp8E1ZEPtoukU4arciS5/A9zKCw==
-X-Received: by 2002:a05:6a20:a10b:b0:14d:4ab5:5e34 with SMTP id q11-20020a056a20a10b00b0014d4ab55e34mr4303043pzk.51.1695252434770;
-        Wed, 20 Sep 2023 16:27:14 -0700 (PDT)
-Received: from john.lan ([98.97.37.198])
-        by smtp.gmail.com with ESMTPSA id mz6-20020a17090b378600b0026b12768e46sm115362pjb.42.2023.09.20.16.27.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 16:27:14 -0700 (PDT)
-From: John Fastabend <john.fastabend@gmail.com>
-To: daniel@iogearbox.net,
-	ast@kernel.org,
-	andrii@kernel.org,
-	jakub@cloudflare.com
-Cc: john.fastabend@gmail.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH bpf 3/3] bpf: sockmap, add tests for MSG_F_PEEK
-Date: Wed, 20 Sep 2023 16:27:06 -0700
-Message-Id: <20230920232706.498747-4-john.fastabend@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20230920232706.498747-1-john.fastabend@gmail.com>
-References: <20230920232706.498747-1-john.fastabend@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB6A80F
+	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 00:46:03 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1233C6
+	for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 17:46:00 -0700 (PDT)
+Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.55])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Rrc726m6HzMlgm;
+	Thu, 21 Sep 2023 08:42:22 +0800 (CST)
+Received: from [10.67.109.184] (10.67.109.184) by
+ kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 21 Sep 2023 08:45:58 +0800
+Message-ID: <00447f8b-bfd3-4bb0-946a-beb7f9fe0f55@huawei.com>
+Date: Thu, 21 Sep 2023 08:45:57 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 6/8] bpf: Add arch_bpf_trampoline_size()
+Content-Language: en-US
+To: Song Liu <song@kernel.org>, <bpf@vger.kernel.org>
+CC: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+	<martin.lau@kernel.org>, <kernel-team@meta.com>
+References: <20230920053158.3175043-1-song@kernel.org>
+ <20230920053158.3175043-7-song@kernel.org>
+From: Pu Lehui <pulehui@huawei.com>
+In-Reply-To: <20230920053158.3175043-7-song@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.109.184]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemi500020.china.huawei.com (7.221.188.8)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Test that we can read with MSG_F_PEEK and then still get correct number
-of available bytes through FIONREAD. The recv() (without PEEK) then
-returns the bytes as expected. The recv() always worked though because
-it was just the available byte reporting that was broke before latest
-fixes.
 
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 52 +++++++++++++++++++
- 1 file changed, 52 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 064cc5e8d9ad..e8eee2b8901e 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -475,6 +475,56 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
- 		test_sockmap_drop_prog__destroy(drop);
- }
- 
-+
-+static void test_sockmap_skb_verdict_peek(void)
-+{
-+	int err, map, verdict, s, c1, p1, zero = 0, sent, recvd, avail;
-+	struct test_sockmap_pass_prog *pass;
-+	char snd[256] = "0123456789";
-+	char rcv[256] = "0";
-+
-+	pass = test_sockmap_pass_prog__open_and_load();
-+	if (!ASSERT_OK_PTR(pass, "open_and_load"))
-+		return;
-+	verdict = bpf_program__fd(pass->progs.prog_skb_verdict);
-+	map = bpf_map__fd(pass->maps.sock_map_rx);
-+
-+	err = bpf_prog_attach(verdict, map, BPF_SK_SKB_STREAM_VERDICT, 0);
-+	if (!ASSERT_OK(err, "bpf_prog_attach"))
-+		goto out;
-+
-+	s = socket_loopback(AF_INET, SOCK_STREAM);
-+	if (!ASSERT_GT(s, -1, "socket_loopback(s)"))
-+		goto out;
-+
-+	err = create_pair(s, AF_INET, SOCK_STREAM, &c1, &p1);
-+	if (!ASSERT_OK(err, "create_pairs(s)"))
-+		goto out;
-+
-+	err = bpf_map_update_elem(map, &zero, &c1, BPF_NOEXIST);
-+	if (!ASSERT_OK(err, "bpf_map_update_elem(c1)"))
-+		goto out_close;
-+
-+	sent = xsend(p1, snd, sizeof(snd), 0);
-+	ASSERT_EQ(sent, sizeof(snd), "xsend(p1)");
-+	recvd = recv(c1, rcv, sizeof(rcv), MSG_PEEK);
-+	ASSERT_EQ(recvd, sizeof(rcv), "recv(c1)");
-+	err = ioctl(c1, FIONREAD, &avail);
-+	ASSERT_OK(err, "ioctl(FIONREAD) error");
-+	ASSERT_EQ(avail, sizeof(snd), "after peek ioctl(FIONREAD)");
-+	recvd = recv(c1, rcv, sizeof(rcv), 0);
-+	ASSERT_EQ(recvd, sizeof(rcv), "recv(p0)");
-+	err = ioctl(c1, FIONREAD, &avail);
-+	ASSERT_OK(err, "ioctl(FIONREAD) error");
-+	ASSERT_EQ(avail, 0, "after read ioctl(FIONREAD)");
-+
-+out_close:
-+	close(c1);
-+	close(p1);
-+out:
-+	test_sockmap_pass_prog__destroy(pass);
-+}
-+
- void test_sockmap_basic(void)
- {
- 	if (test__start_subtest("sockmap create_update_free"))
-@@ -515,4 +565,6 @@ void test_sockmap_basic(void)
- 		test_sockmap_skb_verdict_fionread(true);
- 	if (test__start_subtest("sockmap skb_verdict fionread on drop"))
- 		test_sockmap_skb_verdict_fionread(false);
-+	if (test__start_subtest("sockmap skb_verdict msg_f_peek"))
-+		test_sockmap_skb_verdict_peek();
- }
--- 
-2.33.0
+On 2023/9/20 13:31, Song Liu wrote:
+> This helper will be used to calculate the size of the trampoline before
+> allocating the memory.
+> 
+> Signed-off-by: Song Liu <song@kernel.org>
+> ---
+>   arch/arm64/net/bpf_jit_comp.c   | 56 ++++++++++++++++++++++++---------
+>   arch/riscv/net/bpf_jit_comp64.c | 24 +++++++++-----
+>   arch/s390/net/bpf_jit_comp.c    | 52 +++++++++++++++++-------------
+>   arch/x86/net/bpf_jit_comp.c     | 40 ++++++++++++++++++++---
+>   include/linux/bpf.h             |  2 ++
+>   kernel/bpf/trampoline.c         |  6 ++++
+>   6 files changed, 131 insertions(+), 49 deletions(-)
+> 
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index d81b886ea4df..a6671253b7ed 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -2026,18 +2026,10 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+>   	return ctx->idx;
+>   }
+>   
+> -int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
+> -				void *image_end, const struct btf_func_model *m,
+> -				u32 flags, struct bpf_tramp_links *tlinks,
+> -				void *func_addr)
+> +static int btf_func_model_nregs(const struct btf_func_model *m)
+>   {
+> -	int i, ret;
+>   	int nregs = m->nr_args;
+> -	int max_insns = ((long)image_end - (long)image) / AARCH64_INSN_SIZE;
+> -	struct jit_ctx ctx = {
+> -		.image = NULL,
+> -		.idx = 0,
+> -	};
+> +	int i;
+>   
+>   	/* extra registers needed for struct argument */
+>   	for (i = 0; i < MAX_BPF_FUNC_ARGS; i++) {
+> @@ -2046,19 +2038,53 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
+>   			nregs += (m->arg_size[i] + 7) / 8 - 1;
+>   	}
+>   
+> +	return nregs;
+> +}
+> +
+> +int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
+> +			     struct bpf_tramp_links *tlinks, void *func_addr)
+> +{
+> +	struct jit_ctx ctx = {
+> +		.image = NULL,
+> +		.idx = 0,
+> +	};
+> +	struct bpf_tramp_image im;
+> +	int nregs, ret;
+> +
+> +	nregs = btf_func_model_nregs(m);
+>   	/* the first 8 registers are used for arguments */
+>   	if (nregs > 8)
+>   		return -ENOTSUPP;
+>   
+> -	ret = prepare_trampoline(&ctx, im, tlinks, func_addr, nregs, flags);
+> +	ret = prepare_trampoline(&ctx, &im, tlinks, func_addr, nregs, flags);
+>   	if (ret < 0)
+>   		return ret;
+>   
+> -	if (ret > max_insns)
+> -		return -EFBIG;
+> +	return ret < 0 ? ret : ret * AARCH64_INSN_SIZE;
+> +}
+>   
+> -	ctx.image = image;
+> -	ctx.idx = 0;
+> +int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
+> +				void *image_end, const struct btf_func_model *m,
+> +				u32 flags, struct bpf_tramp_links *tlinks,
+> +				void *func_addr)
+> +{
+> +	int ret, nregs;
+> +	struct jit_ctx ctx = {
+> +		.image = image,
+> +		.idx = 0,
+> +	};
+> +
+> +	nregs = btf_func_model_nregs(m);
+> +	/* the first 8 registers are used for arguments */
+> +	if (nregs > 8)
+> +		return -ENOTSUPP;
+> +
+> +	ret = arch_bpf_trampoline_size(m, flags, tlinks, func_addr);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (ret > ((long)image_end - (long)image))
+> +		return -EFBIG;
+>   
+>   	jit_fill_hole(image, (unsigned int)(image_end - image));
+>   	ret = prepare_trampoline(&ctx, im, tlinks, func_addr, nregs, flags);
+> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+> index ecd3ae6f4116..4de13c4aaad1 100644
+> --- a/arch/riscv/net/bpf_jit_comp64.c
+> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> @@ -1024,6 +1024,20 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
+>   	return ret;
+>   }
+>   
+> +int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
+> +			     struct bpf_tramp_links *tlinks, void *func_addr)
+> +{
+> +	struct bpf_tramp_image im;
+> +	struct rv_jit_context ctx;
+> +
+> +	ctx.ninsns = 0;
+> +	ctx.insns = NULL;
+> +	ctx.ro_insns = NULL;
+> +	ret = __arch_prepare_bpf_trampoline(&im, m, tlinks, func_addr, flags, &ctx);
+> +
+> +	return ret < 0 ? ret : ninsns_rvoff(ctx->ninsns);
+> +}
+> +
+>   int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
+>   				void *image_end, const struct btf_func_model *m,
+>   				u32 flags, struct bpf_tramp_links *tlinks,
+> @@ -1032,14 +1046,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
+>   	int ret;
+>   	struct rv_jit_context ctx;
+>   
+> -	ctx.ninsns = 0;
+> -	ctx.insns = NULL;
+> -	ctx.ro_insns = NULL;
+> -	ret = __arch_prepare_bpf_trampoline(im, m, tlinks, func_addr, flags, &ctx);
+> -	if (ret < 0)
+> -		return ret;
+> -
+> -	if (ninsns_rvoff(ret) > (long)image_end - (long)image)
+> +	ret = arch_bpf_trampoline_size(im, m, flags, tlinks, func_addr);
 
+Hi Song, there is missing check for negative return values.
+
+> +	if (ret > (long)image_end - (long)image)
+>   		return -EFBIG;
+>   
+>   	ctx.ninsns = 0;
+> diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
+> index e6a643f63ebf..8fab4795b497 100644
+> --- a/arch/s390/net/bpf_jit_comp.c
+> +++ b/arch/s390/net/bpf_jit_comp.c
+> @@ -2483,6 +2483,21 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
+>   	return 0;
+>   }
+>   
+> +int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
+> +			     struct bpf_tramp_links *tlinks, void *orig_call)
+> +{
+> +	struct bpf_tramp_image im;
+> +	struct bpf_tramp_jit tjit;
+> +	int ret;
+> +
+> +	memset(&tjit, 0, sizeof(tjit));
+> +
+> +	ret = __arch_prepare_bpf_trampoline(&im, &tjit, m, flags,
+> +					    tlinks, orig_call);
+> +
+> +	return ret < 0 ? ret : tjit.common.prg;
+> +}
+> +
+>   int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
+>   				void *image_end, const struct btf_func_model *m,
+>   				u32 flags, struct bpf_tramp_links *tlinks,
+> @@ -2490,30 +2505,23 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
+>   {
+>   	struct bpf_tramp_jit tjit;
+>   	int ret;
+> -	int i;
+>   
+> -	for (i = 0; i < 2; i++) {
+> -		if (i == 0) {
+> -			/* Compute offsets, check whether the code fits. */
+> -			memset(&tjit, 0, sizeof(tjit));
+> -		} else {
+> -			/* Generate the code. */
+> -			tjit.common.prg = 0;
+> -			tjit.common.prg_buf = image;
+> -		}
+> -		ret = __arch_prepare_bpf_trampoline(im, &tjit, m, flags,
+> -						    tlinks, func_addr);
+> -		if (ret < 0)
+> -			return ret;
+> -		if (tjit.common.prg > (char *)image_end - (char *)image)
+> -			/*
+> -			 * Use the same error code as for exceeding
+> -			 * BPF_MAX_TRAMP_LINKS.
+> -			 */
+> -			return -E2BIG;
+> -	}
+> +	ret = arch_bpf_trampoline_size(m, flags, tlinks, func_addr);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (ret > (char *)image_end - (char *)image)
+> +		/*
+> +		 * Use the same error code as for exceeding
+> +		 * BPF_MAX_TRAMP_LINKS.
+> +		 */
+> +		return -E2BIG;
+>   
+> -	return tjit.common.prg;
+> +	tjit.common.prg = 0;
+> +	tjit.common.prg_buf = image;
+> +	ret = __arch_prepare_bpf_trampoline(im, &tjit, m, flags,
+> +					    tlinks, func_addr);
+> +	return ret < 0 ? ret : tjit.common.prg;
+>   }
+>   
+>   bool bpf_jit_supports_subprog_tailcalls(void)
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 5f7528cac344..eca561621e65 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -2422,10 +2422,10 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
+>    * add rsp, 8                      // skip eth_type_trans's frame
+>    * ret                             // return to its caller
+>    */
+> -int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *image_end,
+> -				const struct btf_func_model *m, u32 flags,
+> -				struct bpf_tramp_links *tlinks,
+> -				void *func_addr)
+> +static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *image_end,
+> +					 const struct btf_func_model *m, u32 flags,
+> +					 struct bpf_tramp_links *tlinks,
+> +					 void *func_addr)
+>   {
+>   	int i, ret, nr_regs = m->nr_args, stack_size = 0;
+>   	int regs_off, nregs_off, ip_off, run_ctx_off, arg_stack_off, rbx_off;
+> @@ -2678,6 +2678,38 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>   	return ret;
+>   }
+>   
+> +int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *image_end,
+> +				const struct btf_func_model *m, u32 flags,
+> +				struct bpf_tramp_links *tlinks,
+> +				void *func_addr)
+> +{
+> +	return __arch_prepare_bpf_trampoline(im, image, image_end, m, flags, tlinks, func_addr);
+> +}
+> +
+> +int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
+> +			     struct bpf_tramp_links *tlinks, void *func_addr)
+> +{
+> +	struct bpf_tramp_image im;
+> +	void *image;
+> +	int ret;
+> +
+> +	/* Allocate a temporary buffer for __arch_prepare_bpf_trampoline().
+> +	 * This will NOT cause fragmentation in direct map, as we do not
+> +	 * call set_memory_*() on this buffer.
+> +	 */
+> +	image = bpf_jit_alloc_exec(PAGE_SIZE);
+> +	if (!image)
+> +		return -ENOMEM;
+> +
+> +	ret = __arch_prepare_bpf_trampoline(&im, image, image + PAGE_SIZE, m, flags,
+> +					    tlinks, func_addr);
+> +	bpf_jit_free_exec(image);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return ret;
+> +}
+> +
+>   static int emit_bpf_dispatcher(u8 **pprog, int a, int b, s64 *progs, u8 *image, u8 *buf)
+>   {
+>   	u8 *jg_reloc, *prog = *pprog;
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 548f3ef34ba1..5bbac549b0a0 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1087,6 +1087,8 @@ void *arch_alloc_bpf_trampoline(int size);
+>   void arch_free_bpf_trampoline(void *image, int size);
+>   void arch_protect_bpf_trampoline(void *image, int size);
+>   void arch_unprotect_bpf_trampoline(void *image, int size);
+> +int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
+> +			     struct bpf_tramp_links *tlinks, void *func_addr);
+>   
+>   u64 notrace __bpf_prog_enter_sleepable_recur(struct bpf_prog *prog,
+>   					     struct bpf_tramp_run_ctx *run_ctx);
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index 5509bdf98067..285c5b7c1ea4 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -1070,6 +1070,12 @@ void __weak arch_unprotect_bpf_trampoline(void *image, int size)
+>   	set_memory_rw((long)image, 1);
+>   }
+>   
+> +int __weak arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
+> +				    struct bpf_tramp_links *tlinks, void *func_addr)
+> +{
+> +	return -ENOTSUPP;
+> +}
+> +
+>   static int __init init_trampolines(void)
+>   {
+>   	int i;
 
