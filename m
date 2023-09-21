@@ -1,76 +1,84 @@
-Return-Path: <bpf+bounces-10553-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10564-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 371EE7A9C69
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 21:17:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBE2E7A9C71
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 21:17:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ABA74B21297
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 19:13:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 519291F214AD
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 19:17:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D123547C84;
-	Thu, 21 Sep 2023 17:49:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23D7F4B22A;
+	Thu, 21 Sep 2023 18:11:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D980141754;
-	Thu, 21 Sep 2023 17:49:36 +0000 (UTC)
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA74380FA9;
-	Thu, 21 Sep 2023 10:36:55 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3adcae1e9f6so192352b6e.0;
-        Thu, 21 Sep 2023 10:36:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBAF43AAE
+	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 18:11:00 +0000 (UTC)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90079A70C8
+	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 11:00:36 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c008d8fd07so21440381fa.1
+        for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 11:00:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695317815; x=1695922615; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pk82zE/dtTZn+xATdDbyMFOaczKW9JrERtnmCSdw+Lw=;
-        b=K4fg/8EHy+db4DQwoccC36mU1NqhJrKF/eYhzZ/UrewFXqNgXjDkCb/Iw0ZQzQnhcI
-         hKQm0ma5kXGzb/ZZ8Ec8TdyOH9Hr6Cqx/eA2wPkGYxkvLXdJWJ7k2Y8zOxouzE3rz2vf
-         bs9UNPDNuiCSiH1zydn7vFPs5HbtpjJRdECtvBQT3Hen97Mb2i4VpCzHLN47muogkAUG
-         hxwytAvbI9MS7GNJTiY6Lq+fBl5i4d1NdwO50jbqTpqq7HLCUry81rU/wYau9iY1J8A5
-         oqdh6yvcIjXAa2bibsrI5JUIy8nARKMCYOvZZoBXk+sWk2ieLfBfKK3MunkP4FzBuE0F
-         5IlA==
+        d=gmail.com; s=20230601; t=1695319235; x=1695924035; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xsoT1u7/u6X65xdCoAMe/73F6FG9WCFKQ1c7QYZKvWI=;
+        b=PTr4kYO/FXscwqFs1NilO9PdxcqxprdRc9fYFy4eMRBJNRf71hUsoplC9dDtHmRoU4
+         Gfk63ZtM2TY6c0OlZXS2d45S/ImAlwLCCVo83W9Hoht1+4qBlkn7vs2yPdfkQDjnXsGe
+         dzlNi9Jahk9Ey3+mhqnvJR290xyBumNpMbeEl7uNWYeaQgUDV8Fe1RflAp7pdgM3hQl+
+         K2uiMPSKkn9XsJMzhyqS1YWlYJewEuH82nb3MJaBepoQBDTsvgXC3jGI9hEVwz9pj6tU
+         WGbUYZyBeLLK13t78tlYTi/t8HYO/FbCpBOI1PEa1KpvFUjV9eLY36AZB4P26U2DxB8O
+         Vifg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695317815; x=1695922615;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pk82zE/dtTZn+xATdDbyMFOaczKW9JrERtnmCSdw+Lw=;
-        b=QB4fnx0UygWNMPRQXxXQI34a/tQJ/KYVSa1D6HyPLQebI9pZr2KCpdQya5vtWrU58V
-         ZSMTpJbH0EIomkwQTKzAZ8IqVprciAKVn8mzys8l6pLnKWlt/jRU4Ud90THkOyf4rf0S
-         SGa6wd0sNVfgRiJPCdMni7pOFFwsWsRnSRF973aU3eSpe5NGzP5WjBd3FXdxfHw1rj4W
-         EErnyUgUbXD0SPqe77zJbBcIME2WtDfAH2bks93DhGyywrUA5htm+BqgoIsA7RpVNCh/
-         /DH6zAPyCe4zfPyZ/I+WKmNHdQihpzCj/rP4pBLKAXA8NiflfKfkT1nZDuJx+02Yd7LK
-         YG5w==
-X-Gm-Message-State: AOJu0Ywcg0nwa6wsTGVr+E0MN6cWuMR670TtkNVT/3PHTMo/C57KSpxP
-	KCWEST7n/Y2k7zhdQ29WTMp+iDC2KfKzyvSjkGDDzgkFTdTtng==
-X-Google-Smtp-Source: AGHT+IHRvPDDapKsyXA/SXd3CeM8A0NfCkA/x3l/6T/asTQkDelvkWybsb2S6lb8D13HUDymbyk5ECSsrtYyLldm3x0=
-X-Received: by 2002:a05:6214:5001:b0:656:2e07:94cc with SMTP id
- jo1-20020a056214500100b006562e0794ccmr4570370qvb.6.1695281327519; Thu, 21 Sep
- 2023 00:28:47 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695319235; x=1695924035;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xsoT1u7/u6X65xdCoAMe/73F6FG9WCFKQ1c7QYZKvWI=;
+        b=foeobUX3KZDVAfOLwuUjqXL+AJ7A4zFoIIWmHJ0CRkoTGkH6R8QLH/SFJs6T28uLv+
+         jziK/HPpGlLFIQpT3ZeAdbL586MOeboPOOhhbnlYhyLV9zrUfg3G6/0xExWgU4i84smr
+         FW/9AAJqEqvWvS9w/UHWzNUApVOzyHtUPzA6JyYVp2AR/NuwJc6LDAkTQbNwTqMAQ2a4
+         QhC+twKuJcD22HyXFTubHBPXdDUp9yl7BxWZeIZY8DDPgGCfxr53xRmYbhVbSRrsRDYz
+         lqZKl8GTTqyUwzOP/tv8gjZBuNjd/hoc/UlcRJQW81GnOBSH1qGZ2DbwKSHgb/BEFV76
+         4beg==
+X-Gm-Message-State: AOJu0YxdkKlWjbKKMjKP1mdarg4/8a/yvreWmUuI0n8zcHA+05Xfj/i/
+	QlOwkttfQJVEbdgkzWFq6ZkPKQy0FAHCOuWpJJs/llWeUM7GsA==
+X-Google-Smtp-Source: AGHT+IH7KvCk/GFm88oWBeAmU5yd+d0enN+IP6akjsZLA/qsKFjVnz5s4wT0iDh5yW57lqQqRTI7T3yAbrsLm7oUU34=
+X-Received: by 2002:adf:ea0e:0:b0:31f:e756:cbf9 with SMTP id
+ q14-20020adfea0e000000b0031fe756cbf9mr4815022wrm.22.1695287661534; Thu, 21
+ Sep 2023 02:14:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230918093304.367826-1-tushar.vyavahare@intel.com>
-In-Reply-To: <20230918093304.367826-1-tushar.vyavahare@intel.com>
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Thu, 21 Sep 2023 09:28:36 +0200
-Message-ID: <CAJ8uoz3XiM=bKrEvfnb_y6TJv53R8-bkY1e2L0Tiad6uoTaTwQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/8] Add a test for SHARED_UMEM feature
-To: Tushar Vyavahare <tushar.vyavahare@intel.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn@kernel.org, 
-	magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
-	jonathan.lemon@gmail.com, davem@davemloft.net, kuba@kernel.org, 
-	pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, 
-	tirthendu.sarkar@intel.com
+References: <CA+vRuzPChFNXmouzGG+wsy=6eMcfr1mFG0F3g7rbg-sedGKW3w@mail.gmail.com>
+ <CAADnVQJpLAzmUfwvWBr8a_PWHYHxHw9vdAXnWB4R4PbVY4S4mw@mail.gmail.com>
+ <CAEf4Bzbubu7KjBv=98BZrVnTrcfPQrnsp-g1kOYKM=kUtiqEgw@mail.gmail.com>
+ <dff1cfec20d1711cb023be38dfe886bac8aac5f6.camel@gmail.com>
+ <CAP01T76duVGmnb+LQjhdKneVYs1q=ehU4yzTLmgZdG0r2ErOYQ@mail.gmail.com>
+ <a2995c1d7c01794ca9b652cdea7917cac5d98a16.camel@gmail.com>
+ <97a90da09404c65c8e810cf83c94ac703705dc0e.camel@gmail.com>
+ <CAEf4BzYg8T_Dek6T9HYjHZCuLTQT8ptAkQRxrsgaXg7-MZmHDA@mail.gmail.com> <ee714151d7c840c82d79f9d12a0f51ef13b798e3.camel@gmail.com>
+In-Reply-To: <ee714151d7c840c82d79f9d12a0f51ef13b798e3.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 21 Sep 2023 02:14:09 -0700
+Message-ID: <CAADnVQJn35f0UvYJ9gyFT4BfViXn8T8rPCXRAC=m_Jx_CFjrtw@mail.gmail.com>
+Subject: Re: [BUG] verifier escape with iteration helpers (bpf_loop, ...)
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrew Werner <awerner32@gmail.com>, 
+	bpf <bpf@vger.kernel.org>, Andrei Matei <andreimatei1@gmail.com>, 
+	Tamir Duberstein <tamird@gmail.com>, Joanne Koong <joannelkoong@gmail.com>, kernel-team@dataexmachina.dev, 
+	Song Liu <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
@@ -78,85 +86,90 @@ X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, 18 Sept 2023 at 11:12, Tushar Vyavahare
-<tushar.vyavahare@intel.com> wrote:
+On Tue, Sep 19, 2023 at 5:19=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> Implement a test for the SHARED_UMEM feature in this patch set and make
-> necessary changes/improvements. Ensure that the framework now supports
-> different streams for different sockets.
+> > >
+> > > Note that R7=3Dfp-16 in old state vs R7_w=3D57005 in cur state.
+> > > The registers are considered equal because R7 does not have a read ma=
+rk.
+> > > However read marks are not yet finalized for old state because
+> > > sl->state.branches !=3D 0.
 
-Thanks Tushar for contributing this new test. Had some comments in
-three of the patches. Please take a look.
+By "liveness marks are not finalized" you mean that
+regs don't have LIVE_DONE?
+That shouldn't matter to state comparison.
+It only needs to see LIVE_READ.
+LIVE_DONE is a sanity check for liveness algorithm only.
+It doesn't affect correctness.
 
-/Magnus
+> > > (Note: precision marks are not finalized as
+> > > well, which should be a problem, but this requires another example).
+> >
+> > I originally convinced myself that non-finalized precision marking is
+> > fine, see the comment next to process_iter_next_call() for reasoning.
+> > If you can have a dedicated example for precision that would be great.
+> >
+> > As for read marks... Yep, that's a bummer. That r7 is not used after
+> > the loop, so is not marked as read, and it's basically ignored for
+> > loop invariant checking, which is definitely not what was intended.
+>
+> Liveness is a precondition for all subsequent checks, so example
+> involving precision would also involve liveness. Here is a combined
+> example:
+>
+>     r8 =3D 0
+>     fp[-16] =3D 0
+>     r7 =3D -16
+>     r6 =3D bpf_get_current_pid_tgid()
+>     bpf_iter_num_new(&fp[-8], 0, 10)
+>     while (bpf_iter_num_next(&fp[-8])) {
+>       r6++
+>       if (r6 !=3D 42) {
+>         r7 =3D -32
+>         continue;
+>       }
+>       r0 =3D r10
+>       r0 +=3D r7
+>       r8 =3D *(u64 *)(r0 + 0)
+>     }
+>     bpf_iter_num_destroy(&fp[-8])
+>     return r8
+>
+> (Complete source code is at the end of the email).
+>
+> The call to bpf_iter_num_next() is reachable with r7 values -16 and -32.
+> State with r7=3D-16 is visited first, at which point r7 has no read mark
+> and is not marked precise.
+> State with r7=3D-32 is visited second:
+> - states_equal() for is_iter_next_insn() should ignore absence of
+>   REG_LIVE_READ mark on r7, otherwise both states would be considered
+>   identical;
 
-> Patch series summary:
->
-> 1: Move the packet stream from the ifobject struct to the xsk_socket_info
->    struct to enable the use of different streams for different sockets
->    This will facilitate the sending and receiving of data from multiple
->    sockets simultaneously using the SHARED_XDP_UMEM feature.
->
->    It gives flexibility of send/recive individual traffic on particular
->    socket.
->
-> 2: Rename the header file to a generic name so that it can be used by all
->    future XDP programs.
->
-> 3: Move the src_mac and dst_mac fields from the ifobject structure to the
->    xsk_socket_info structure to achieve per-socket MAC address assignment.
->    Implement the function called generate_mac_addresses() to generate MAC
->    addresses based on the required number by the framework.
->
->    Require this in order to steer traffic to various sockets in subsequent
->    patches.
->
-> 4: Improve the receive_pkt() function to enable it to receive packets from
->    multiple sockets. Define a sock_num variable to iterate through all the
->    sockets in the Rx path. Add nb_valid_entries to check that all the
->    expected number of packets are received.
->
-> 5: The pkt_set() function no longer needs the umem parameter. This commit
->    removes the umem parameter from the pkt_set() function.
->
-> 6: Iterate over all the sockets in the send pkts function. Update
->    send_pkts() to handle multiple sockets for sending packets.
->    Multiple TX sockets are utilized alternately based on the batch size
->    for improve packet transmission.
->
-> 7: Modify xsk_update_xskmap() to accept the index as an argument, enabling
->    the addition of multiple sockets to xskmap.
->
-> 8: Add a new test for testing shared umem feature. This is accomplished by
->    adding a new XDP program and using the multiple sockets. The new  XDP
->    program redirects the packets based on the destination MAC address.
->
-> Tushar Vyavahare (8):
->   selftests/xsk: move pkt_stream to the xsk_socket_info
->   selftests/xsk: rename xsk_xdp_metadata.h to xsk_xdp_common.h
->   selftests/xsk: implement a function that generates MAC addresses
->   selftests/xsk: iterate over all the sockets in the receive pkts
->     function
->   selftests/xsk: remove unnecessary parameter from pkt_set() function
->     call
->   selftests/xsk: iterate over all the sockets in the send pkts function
->   selftests/xsk: modify xsk_update_xskmap() to accept the index as an
->     argument.
->   selftests/xsk: add a test for shared umem feature
->
->  .../selftests/bpf/progs/xsk_xdp_progs.c       |  22 +-
->  tools/testing/selftests/bpf/xsk.c             |   3 +-
->  tools/testing/selftests/bpf/xsk.h             |   2 +-
->  tools/testing/selftests/bpf/xsk_xdp_common.h  |  12 +
->  .../testing/selftests/bpf/xsk_xdp_metadata.h  |   5 -
->  tools/testing/selftests/bpf/xskxceiver.c      | 524 +++++++++++-------
->  tools/testing/selftests/bpf/xskxceiver.h      |  14 +-
->  7 files changed, 376 insertions(+), 206 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/xsk_xdp_common.h
->  delete mode 100644 tools/testing/selftests/bpf/xsk_xdp_metadata.h
->
-> --
-> 2.34.1
->
->
+I think assuming live_read on all regs in regsafe() when
+cb or iter body is being processed will have big impact
+on processed insns.
+I suspect the underlying issue is different.
+
+In the first pass of the body with r7=3D-16 the 'r0 +=3D r7'
+insn should have added the read mark to r7,
+so is_iter_next_insn after 2nd pass with r7=3D-32 should reach
+case SCALAR_VALUE in regsafe().
+There we need to do something with lack of precision in r7=3D-16,
+but assume that is fixed, the 3rd iter of the loop should continue
+and 'r0 +=3D r7' in the _3rd_ iter of the loop should propagate
+read mark all the way to r7=3D-32 reg.
+I mean the parentage chain between regs should link
+regs of iterations.
+I believe the process_iter_next_call() logic maintains
+correct parentage chain, since it's just a push_stack()
+and is_state_visited() should be connecting parents.
+So in case of iter body the issue with above loop is only
+in missing precision,
+but for your cb verification code I suspect the issue is due
+to lack of parentage chain and liveness is not propagated ?
+
+I could be completely off the mark.
+The discussion is hard to follow.
+It's probably time to post raw patch and continue with code.
 
