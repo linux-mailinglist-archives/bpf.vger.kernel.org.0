@@ -1,56 +1,57 @@
-Return-Path: <bpf+bounces-10588-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10589-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC5377AA160
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 23:01:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF1E77AA183
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 23:03:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52D261F217B3
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 21:01:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C4AF1F2177A
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 21:03:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A9EB1945C;
-	Thu, 21 Sep 2023 21:01:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 646D719461;
+	Thu, 21 Sep 2023 21:03:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C65751802D
-	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 21:01:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CE5FC433C9;
-	Thu, 21 Sep 2023 21:01:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5E6F19455
+	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 21:03:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 669BEC433BC;
+	Thu, 21 Sep 2023 21:03:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695330063;
-	bh=hCh/xnZDThu8X/r1W4mPrKSTQRTLFP9JJ4UDYRkUvbw=;
+	s=k20201202; t=1695330189;
+	bh=r/TuVwhFEKZ1B76rwCgQnAm3JwMxBYE1VXH5aaXkqaE=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=DqPL41QgTABzGsEhvTxDLB7u9AiNv6mUDN2hd+WFgvFtTr60bTbKxld9+hl6yUlFN
-	 Ft1AgbQZTwybqWV7DXGNeo3s0CMlSagOOTjdPDp4pYDq07srlGRIX0MyuBLClhG9LT
-	 FDNhmmGG9IaPaaoHkvnspTMhtjraXdZURls655C+nYvvcTG3YHrxkp5ihUvmBKGO29
-	 nwyiUyA8aM3DIZXLI3Y0oWzI5CvAgx1K5vYuWq6awKAuAwegV+Sc20RFVfDFdd6Nmb
-	 8wUwXZj9Oz6wyTt5Zs2HN5OW+Q2wAQBrqGU/bTB0044W1zkyL6HqFndFw751iEBoH6
-	 ifLpItc3EXIiQ==
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50317080342so2516240e87.2;
-        Thu, 21 Sep 2023 14:01:03 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yxlq7vEISfiQWjvnA7gdj1TsxEv4vK8emXrlEpqTXEVMHP+S04e
-	F1hJ1HGawlV63Elfbsgy/vqLW3znO5xV5nEuWzQ=
-X-Google-Smtp-Source: AGHT+IFpiqWyDk5PR4hGq5PJ62am/Spvox/vLEeSXDTXmvYDCxXg7SmHSiR9Bse9DJNp2oHzW0gNcWK6TWoFJB3UsmQ=
-X-Received: by 2002:ac2:58ec:0:b0:500:75e5:a2f0 with SMTP id
- v12-20020ac258ec000000b0050075e5a2f0mr5446791lfo.51.1695330061487; Thu, 21
- Sep 2023 14:01:01 -0700 (PDT)
+	b=j9r2z+QcoMDPv2JPJG8Fzt7R4YK/AHv8eHhE9U1uCEKOA+WlTlBfI+3cNV9iuI51n
+	 nbi9rTZJMF+l1hbc6q1lisjrNtRsekNMsGamJPa19TsAd9sk8jODwv6N5GKpihqi3Z
+	 mlJn+czW6dDCX4efC1t/Lxcr0F1Dn5u+2PpuXrIjQ3v1RNRKd8tR4wAbZG6P/JiK7X
+	 dieubIWZusR0G4IuuMjWBD53PYdB+QMwhd8wedw3cVsPlW8KTlz3l/9YSYHSqvaTrL
+	 zOTNTBVNxDP07IsraayrEiPjkN5jOKvQZ9UBRodkijgLZymLHS5qsXL54jVw93nZpo
+	 DqX4had54i+zg==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5041cc983f9so2357997e87.3;
+        Thu, 21 Sep 2023 14:03:09 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yz77iOlJd+4HI9AJtrxOCnqQP8sVXj5wwuptZmHb1YMMp4Isywr
+	rm8Z82jbUK6mKXM6BWqllS8TOFlmdF8I85Gav0o=
+X-Google-Smtp-Source: AGHT+IHz8CheoTemwEiDYUng4ktMyrjZOWh9lP8YGpmkHUyyPvZ6qX/GPpvEFNGg4XNKgJseNBFPDQysQfspMYoSNKA=
+X-Received: by 2002:a05:6512:4002:b0:4fe:25bc:71f5 with SMTP id
+ br2-20020a056512400200b004fe25bc71f5mr7334207lfb.11.1695330187609; Thu, 21
+ Sep 2023 14:03:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230918212459.1937798-1-kpsingh@kernel.org> <20230918212459.1937798-2-kpsingh@kernel.org>
-In-Reply-To: <20230918212459.1937798-2-kpsingh@kernel.org>
+References: <20230918212459.1937798-1-kpsingh@kernel.org> <20230918212459.1937798-4-kpsingh@kernel.org>
+In-Reply-To: <20230918212459.1937798-4-kpsingh@kernel.org>
 From: Song Liu <song@kernel.org>
-Date: Thu, 21 Sep 2023 14:00:48 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW619HF=NNXFpiF3COzHZk3ASfUM4Dvzu5v_4dU9dwG41g@mail.gmail.com>
-Message-ID: <CAPhsuW619HF=NNXFpiF3COzHZk3ASfUM4Dvzu5v_4dU9dwG41g@mail.gmail.com>
-Subject: Re: [PATCH v3 1/5] kernel: Add helper macros for loop unrolling
+Date: Thu, 21 Sep 2023 14:02:55 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6R=h=BZr8ROTYifrG4errZ6KNLiJV0885-a8_r=+ni-g@mail.gmail.com>
+Message-ID: <CAPhsuW6R=h=BZr8ROTYifrG4errZ6KNLiJV0885-a8_r=+ni-g@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] security: Replace indirect LSM hook calls with
+ static calls
 To: KP Singh <kpsingh@kernel.org>
 Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
 	paul@paul-moore.com, keescook@chromium.org, casey@schaufler-ca.com, 
@@ -61,38 +62,29 @@ Content-Transfer-Encoding: quoted-printable
 On Mon, Sep 18, 2023 at 2:25=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote=
 :
 >
-> This helps in easily initializing blocks of code (e.g. static calls and
-> keys).
+[...]
 >
-> UNROLL(N, MACRO, __VA_ARGS__) calls MACRO N times with the first
-> argument as the index of the iteration. This allows string pasting to
-> create unique tokens for variable names, function calls etc.
+> While this patch uses static_branch_unlikely indicating that an LSM hook
+> is likely to be not present, a subsequent makes it configurable. In most
+> cases this is still a better choice as even when an LSM with one hook is
+> added, empty slots are created for all LSM hooks (especially when many
+> LSMs that do not initialize most hooks are present on the system).
 >
-> As an example:
+> There are some hooks that don't use the call_int_hook and
+> call_void_hook. These hooks are updated to use a new macro called
+> security_for_each_hook where the lsm_callback is directly invoked as an
+> indirect call. Currently, there are no performance sensitive hooks that
+> use the security_for_each_hook macro. However, if, some performance
+> sensitive hooks are discovered, these can be updated to use static calls
+> with loop unrolling as well using a custom macro.
 >
->         #include <linux/unroll.h>
->
->         #define MACRO(N, a, b)            \
->                 int add_##N(int a, int b) \
->                 {                         \
->                         return a + b + N; \
->                 }
->
->         UNROLL(2, MACRO, x, y)
->
-> expands to:
->
->         int add_0(int x, int y)
->         {
->                 return x + y + 0;
->         }
->
->         int add_1(int x, int y)
->         {
->                 return x + y + 1;
->         }
+> [1] https://lore.kernel.org/linux-security-module/20220609234601.2026362-=
+1-kpsingh@kernel.org/
 >
 > Signed-off-by: KP Singh <kpsingh@kernel.org>
 
 Acked-by: Song Liu <song@kernel.org>
+
+> ---
+[...]
 
