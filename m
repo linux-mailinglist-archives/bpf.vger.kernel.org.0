@@ -1,96 +1,70 @@
-Return-Path: <bpf+bounces-10557-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10542-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CA567A9C1E
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 21:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 943CA7A9901
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 20:09:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69528B21ECA
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 19:07:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 305A7B21427
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 18:09:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F8AF41E4A;
-	Thu, 21 Sep 2023 18:10:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC3BA3B2A1;
+	Thu, 21 Sep 2023 17:22:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7059441E37;
-	Thu, 21 Sep 2023 18:10:31 +0000 (UTC)
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43D4897F0;
-	Thu, 21 Sep 2023 10:52:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=y80U+ROzdWFAGesuJv0fAWCJugjaoZUvkVKbCL8UtRM=; b=J1yh53DeBNARTsqqU8MHBzo9Oa
-	t0+dRp/RaWdqEqR/zlkiuTCdTMvV7LfZBpgaPOo9mz3Ar25SG5iPMKXPJ1Pakv7POYEio6eyu3imp
-	Jue1paSBhwzjv0GVy6aou42CWQp6vSIlPYV8hlPJ5VHamcRnA8qcdTN4cPrFGpVz1BTCn704A78vE
-	WKxVrydWMewhT15+u9bny+bRHgeZaaqgcYNfslcWse8SCYpLZxpj04q12Qq2mZevEQIJk5Ji3lybk
-	draQ9SuAvOjf/F8wS4j1zOR8oS4A/59eybSt0kjrpVaKBQ211JZ5hMg5lAiocOJweLC8GJ5sJOtgz
-	HfWLrfPQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54404)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1qjKIb-0004k2-1O;
-	Thu, 21 Sep 2023 15:04:57 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1qjKIX-0003an-Lu; Thu, 21 Sep 2023 15:04:53 +0100
-Date: Thu, 21 Sep 2023 15:04:53 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-	David E Box <david.e.box@linux.intel.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Mark Gross <markgross@kernel.org>,
-	Jose Abreu <Jose.Abreu@synopsys.com>, Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-	Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Wong Vee Khee <veekhee@apple.com>,
-	Jon Hunter <jonathanh@nvidia.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Revanth Kumar Uppala <ruppala@nvidia.com>,
-	Shenwei Wang <shenwei.wang@nxp.com>,
-	Andrey Konovalov <andrey.konovalov@linaro.org>,
-	Jochen Henneberg <jh@henneberg-systemdesign.com>,
-	David E Box <david.e.box@intel.com>,
-	Andrew Halaney <ahalaney@redhat.com>,
-	Simon Horman <simon.horman@corigine.com>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
-	bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
-	Tan Tee Min <tee.min.tan@linux.intel.com>,
-	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-	Lai Peter Jun Ann <jun.ann.lai@intel.com>
-Subject: Re: [PATCH net-next v3 3/5] net: phy: update in-band AN mode when
- changing interface by PHY driver
-Message-ID: <ZQxNhYcusHfrJvxM@shell.armlinux.org.uk>
-References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
- <20230921121946.3025771-4-yong.liang.choong@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F191542C1C
+	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 17:22:48 +0000 (UTC)
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B184B573EA
+	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 10:18:40 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5334d78c5f6so876070a12.2
+        for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 10:18:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695316719; x=1695921519; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yMqq3AARWyXbrKYJTzEmeS3BTtZYH6TPZAZzIFbUV54=;
+        b=LW9lJsOg+/WNPL7P8AncNyXJQSYPUBqhAhWyYaGpuiheXkEpOEJLjRDiaYltslabON
+         wYiM2IWjQUJT2giLYr6y2iH+8oZzksvXLZkIDfV7yNJjjqPVb/ZWb6ZblPCI1+LPwL2h
+         SePEHehO4jjy29AJ6Wee0PJFQVAKaPMM53cNkmHbqBRv8Uvu94gQ/nYCICjxnonrWrjY
+         v41A/x/al1koXziVwnfRzvFDiHPE4HOFOK25ZYU7zJ9+fBl3/cxkscCBtanNDkNDcBEo
+         uU7VV8a1WexRClviLxJkFtrtQCa/qX36gQFSckuf802QngJadjNVK69hcBhSnyW7Mbfs
+         mtKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695316719; x=1695921519;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yMqq3AARWyXbrKYJTzEmeS3BTtZYH6TPZAZzIFbUV54=;
+        b=D4GXdbCjAV5NB1avOmXd/u13jBFFJEXdIv1mPuiDar4NNYIVZT3jqbj5pqENMnD334
+         zEWPe64jvVz2I3BVhH8L+JS2QQR3FWlNo8MQEB47lWosuzffpLDIUa1obwxtJY16j7fI
+         4FKFERjwA+rfpbc2M1/v6DhgF2Wq39nwR6aWIrdm79FPQ7KUndzbdZkLKuKJcNzEPryf
+         2nuEKAcT0rr/MEtf94HJpsVkPIP/z76VrdkUkq1QODMAKCvnQ083Rc/yrgQKtXAgTaRa
+         Zazjz+NBnzwd+ra+2JzhQ8o/5YElj6h4KJh3QeIpans/YuO1l5mp9CtNDwaiydgomRpC
+         BpKA==
+X-Gm-Message-State: AOJu0Yx//2VjVgi5upcZWwiznFkjOgHuHjpSz7BhGhTvXyzGZ3QESFBc
+	f4E1n5TlLEVCsMKF8Pb1h4D0KTl7svSM6Q==
+X-Google-Smtp-Source: AGHT+IE+s97P4m34QaccumoMdNCG8UtnFMnnXoz9nFrCZzywQN7Ck2Ou4bxfI2poENfWa35STXH38w==
+X-Received: by 2002:a17:906:5386:b0:9a1:be50:ae61 with SMTP id g6-20020a170906538600b009a1be50ae61mr4653539ejo.69.1695305236375;
+        Thu, 21 Sep 2023 07:07:16 -0700 (PDT)
+Received: from krava (253.252.164.109.static.wline.lns.sme.cust.swisscom.ch. [109.164.252.253])
+        by smtp.gmail.com with ESMTPSA id k15-20020a170906970f00b0098733a40bb7sm1090358ejx.155.2023.09.21.07.07.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 07:07:15 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 21 Sep 2023 16:07:13 +0200
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, martin.lau@kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next 6/8] bpf: Add arch_bpf_trampoline_size()
+Message-ID: <ZQxOEVFUFFgYpqtx@krava>
+References: <20230920053158.3175043-1-song@kernel.org>
+ <20230920053158.3175043-7-song@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -99,81 +73,82 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230921121946.3025771-4-yong.liang.choong@linux.intel.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20230920053158.3175043-7-song@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Sep 21, 2023 at 08:19:44PM +0800, Choong Yong Liang wrote:
-> As there is a mechanism in PHY drivers to switch the PHY interface
-> between SGMII and 2500BaseX according to link speed. In this case,
-> the in-band AN mode should be switching based on the PHY interface
-> as well, if the PHY interface has been changed/updated by PHY driver.
-> 
-> For e.g., disable in-band AN in 2500BaseX mode, or enable in-band AN
-> back for SGMII mode (10/100/1000Mbps).
-> 
-> Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+On Tue, Sep 19, 2023 at 10:31:56PM -0700, Song Liu wrote:
 
-This approach is *going* to break existing setups, sorry.
+SNIP
 
-> +/**
-> + * phylink_interface_change() - update both cfg_link_an_mode and
-> + * cur_link_an_mode when there is a change in the interface.
-> + * @phydev: pointer to &struct phy_device
-> + *
-> + * When the PHY interface switches between SGMII and 2500BaseX in
-> + * accordance with the link speed, the in-band AN mode should also switch
-> + * based on the PHY interface
-> + */
-> +static void phylink_interface_change(struct phy_device *phydev)
+> +int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
+> +			     struct bpf_tramp_links *tlinks, void *func_addr)
 > +{
-> +	struct phylink *pl = phydev->phylink;
+> +	struct bpf_tramp_image im;
+> +	void *image;
+> +	int ret;
 > +
-> +	if (pl->phy_state.interface != phydev->interface) {
-> +		/* Fallback to the correct AN mode. */
-> +		if (phy_interface_mode_is_8023z(phydev->interface) &&
-> +		    pl->cfg_link_an_mode == MLO_AN_INBAND) {
-> +			pl->cfg_link_an_mode = MLO_AN_PHY;
-> +			pl->cur_link_an_mode = MLO_AN_PHY;
+> +	/* Allocate a temporary buffer for __arch_prepare_bpf_trampoline().
+> +	 * This will NOT cause fragmentation in direct map, as we do not
+> +	 * call set_memory_*() on this buffer.
+> +	 */
+> +	image = bpf_jit_alloc_exec(PAGE_SIZE);
+> +	if (!image)
+> +		return -ENOMEM;
+> +
+> +	ret = __arch_prepare_bpf_trampoline(&im, image, image + PAGE_SIZE, m, flags,
+> +					    tlinks, func_addr);
+> +	bpf_jit_free_exec(image);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return ret;
 
-1. Why are you changing both cfg_link_an_mode (configured link AN mode)
-and cur_link_an_mode (current link AN mode) ?
+this can be just 'return ret;'
 
-The "configured" link AN mode is supposed to be whatever was configured
-at phylink creation time, and it's never supposed to change. The
-"current" link AN mode can change, but changing that must be followed
-by a major reconfiguration to ensure everything is correctly setup.
-That will happen only because the change to the current link AN mode
-can only happen when pl->phy_state.interface has changed, and the
-change of pl->phy_state.interface triggers the reconfiguration.
+jirka
 
-2. You force this behaviour on everyone, so now everyone with a SFP
-module that operates in 802.3z mode will be switched out of inband mode
-whether they want that or not. This is likely to cause some breakage.
-
-> +		} else if (pl->config->ovr_an_inband) {
-> +			pl->cfg_link_an_mode = MLO_AN_INBAND;
-> +			pl->cur_link_an_mode = MLO_AN_INBAND;
-
-Here you force inband when not 802.3z mode and ovr_an_inband is set.
-There are SFP modules that do *not* support in-band at all, and this
-will break these modules when combined with a driver that sets
-ovr_an_inband. So more breakage.
-
-Please enumerate the PHY interface modes that you are trying to support
-with this patch set, and indicate whether you want in-band for that
-mode or not, and where the restriction for whether in-band can be used
-comes from (PHY, PCS or MAC) so that it's possible to better understand
-what you're trying to achieve.
-
-Thanks.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> +}
+> +
+>  static int emit_bpf_dispatcher(u8 **pprog, int a, int b, s64 *progs, u8 *image, u8 *buf)
+>  {
+>  	u8 *jg_reloc, *prog = *pprog;
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 548f3ef34ba1..5bbac549b0a0 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1087,6 +1087,8 @@ void *arch_alloc_bpf_trampoline(int size);
+>  void arch_free_bpf_trampoline(void *image, int size);
+>  void arch_protect_bpf_trampoline(void *image, int size);
+>  void arch_unprotect_bpf_trampoline(void *image, int size);
+> +int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
+> +			     struct bpf_tramp_links *tlinks, void *func_addr);
+>  
+>  u64 notrace __bpf_prog_enter_sleepable_recur(struct bpf_prog *prog,
+>  					     struct bpf_tramp_run_ctx *run_ctx);
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index 5509bdf98067..285c5b7c1ea4 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -1070,6 +1070,12 @@ void __weak arch_unprotect_bpf_trampoline(void *image, int size)
+>  	set_memory_rw((long)image, 1);
+>  }
+>  
+> +int __weak arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
+> +				    struct bpf_tramp_links *tlinks, void *func_addr)
+> +{
+> +	return -ENOTSUPP;
+> +}
+> +
+>  static int __init init_trampolines(void)
+>  {
+>  	int i;
+> -- 
+> 2.34.1
+> 
+> 
 
