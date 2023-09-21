@@ -1,125 +1,89 @@
-Return-Path: <bpf+bounces-10515-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10516-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F23F7A9185
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 07:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CAB5D7A9234
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 09:41:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D251B208FB
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 05:12:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D7CFB207E9
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 07:41:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 886DA2106;
-	Thu, 21 Sep 2023 05:12:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03961524E;
+	Thu, 21 Sep 2023 07:40:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25CC065C
-	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 05:12:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C639C433CB
-	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 05:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EEAA3D90;
+	Thu, 21 Sep 2023 07:40:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6980EC43142;
+	Thu, 21 Sep 2023 07:40:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695273136;
-	bh=YXgZQ6Qzm1MMhypLJyFUCnHsVNGYxvGAiW2hv5qdOIs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=upRji7WXAjgKg1NH1q7a8cMRO4wAD24X00M7+z9hPlMHjL9V2gAJ7J7WP4mG5Api5
-	 Xb05+d3FtPrrTEEvYQLTmzG1OoeOMZgsYcIrGJpFKjHb+KRYZXlkigfrzJbrBWxZB4
-	 vA4WzR7gavSc+ORiJFyp0W13zTnwku+rZcCWmSpmQ2whDt0WXMnBAPP12pd6G7Ibuh
-	 EBQ0Z0xEPFdHBjZsj4QlyunZXG3vZXA7kTsV08+Me8bmh6Sy80VPma5MohOQSJLIWz
-	 NvTpQK7fS7EfT2WWFkBjor8cYfF7fr0yze7jalM6N29+ThSeawMPrm3pj7e2VcOgpp
-	 UfbanX3TIxSgQ==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-502b0d23f28so962560e87.2
-        for <bpf@vger.kernel.org>; Wed, 20 Sep 2023 22:12:16 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yz4T95o/Is8HV5XQ8rLwccOmFPrvv+MhWLCFy+RoHlihOuGREF7
-	J/9+vk5UAujLMHq8aOrpsZ28gNKtjX6hBQ0/IcE=
-X-Google-Smtp-Source: AGHT+IHCS1zHQvUXjs1uC58Cfjg1yVZOnM3W0xJIdAm7BnNhHHgkGyle+Zsu1LZQfQc8jihiW3QmWAdNlgy7DD2QeAw=
-X-Received: by 2002:ac2:5283:0:b0:502:feeb:48b2 with SMTP id
- q3-20020ac25283000000b00502feeb48b2mr3787432lfm.35.1695273134805; Wed, 20 Sep
- 2023 22:12:14 -0700 (PDT)
+	s=k20201202; t=1695282036;
+	bh=050Q5WMmZnTiDzRGfQUvp1iyQDTG+GBX9pc9ivL1p/8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=ZckeWmJnXpAMsas5kgCK6SohB/oAT0PrHQ63kFdXyd7RdNP/NglJ6y8ZqsvLj7/SY
+	 1EGbQWeWjhrBUr6mKJUfNJs8iVqo7pDRysYz+MkpPDH9YMSWFi0A/YLVM5popCYhMr
+	 TGr4dXdddFXPnG30GqBV9Lyh1DHHGrY2liAzTUzm2G0Sx5lXHmbR0vUMvm6gLPWV40
+	 eXl1338jlJSM/eYuAmhZkgmqOCy4qX9XZ9yIBAEEyAu1gTudizkgk9wo9Cy2D4PGlC
+	 gEQ/HGpTxg0jhliVQwBlK5GYgZUNMgV+yJm4EVaAqQkOSX9pllyESw+5v+/970w/1+
+	 Xx5twF5w77mww==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4F791C595C4;
+	Thu, 21 Sep 2023 07:40:36 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230920053158.3175043-1-song@kernel.org> <20230920053158.3175043-7-song@kernel.org>
- <00447f8b-bfd3-4bb0-946a-beb7f9fe0f55@huawei.com>
-In-Reply-To: <00447f8b-bfd3-4bb0-946a-beb7f9fe0f55@huawei.com>
-From: Song Liu <song@kernel.org>
-Date: Wed, 20 Sep 2023 22:12:02 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7M4BbVSDiZK=N+pZSia8xOshyVN3Y6H3X+kj8KK-E5Yg@mail.gmail.com>
-Message-ID: <CAPhsuW7M4BbVSDiZK=N+pZSia8xOshyVN3Y6H3X+kj8KK-E5Yg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 6/8] bpf: Add arch_bpf_trampoline_size()
-To: Pu Lehui <pulehui@huawei.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v2 0/3] Add missing xdp_do_flush() invocations.
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <169528203632.16376.17350345625835195632.git-patchwork-notify@kernel.org>
+Date: Thu, 21 Sep 2023 07:40:36 +0000
+References: <20230918153611.165722-1-bigeasy@linutronix.de>
+In-Reply-To: <20230918153611.165722-1-bigeasy@linutronix.de>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+ ast@kernel.org, daniel@iogearbox.net, edumazet@google.com, kuba@kernel.org,
+ hawk@kernel.org, john.fastabend@gmail.com, pabeni@redhat.com,
+ tglx@linutronix.de
 
-On Wed, Sep 20, 2023 at 5:46=E2=80=AFPM Pu Lehui <pulehui@huawei.com> wrote=
-:
->
-[...]
-> > +int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags=
-,
-> > +                          struct bpf_tramp_links *tlinks, void *func_a=
-ddr)
-> > +{
-> > +     struct bpf_tramp_image im;
-> > +     struct rv_jit_context ctx;
-> > +
-> > +     ctx.ninsns =3D 0;
-> > +     ctx.insns =3D NULL;
-> > +     ctx.ro_insns =3D NULL;
-> > +     ret =3D __arch_prepare_bpf_trampoline(&im, m, tlinks, func_addr, =
-flags, &ctx);
-> > +
-> > +     return ret < 0 ? ret : ninsns_rvoff(ctx->ninsns);
-> > +}
-> > +
-> >   int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *ima=
-ge,
-> >                               void *image_end, const struct btf_func_mo=
-del *m,
-> >                               u32 flags, struct bpf_tramp_links *tlinks=
-,
-> > @@ -1032,14 +1046,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp=
-_image *im, void *image,
-> >       int ret;
-> >       struct rv_jit_context ctx;
-> >
-> > -     ctx.ninsns =3D 0;
-> > -     ctx.insns =3D NULL;
-> > -     ctx.ro_insns =3D NULL;
-> > -     ret =3D __arch_prepare_bpf_trampoline(im, m, tlinks, func_addr, f=
-lags, &ctx);
-> > -     if (ret < 0)
-> > -             return ret;
-> > -
-> > -     if (ninsns_rvoff(ret) > (long)image_end - (long)image)
-> > +     ret =3D arch_bpf_trampoline_size(im, m, flags, tlinks, func_addr)=
-;
->
-> Hi Song, there is missing check for negative return values.
+Hello:
 
-Thanks! I will fix it in the next version.
+This series was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-Song
+On Mon, 18 Sep 2023 17:36:08 +0200 you wrote:
+> Hi,
+> 
+> I've been looking at the drivers/ XDP users and noticed that some
+> XDP_REDIRECT user don't invoke xdp_do_flush() at the end.
+> 
+> v1…v2: https://lore.kernel.org/all/20230908135748.794163-1-bigeasy@linutronix.de
+>   - Collected tags.
+>   - Dropped the #4 patch which was touching cpu_map_bpf_prog_run()
+>     because it is not needed.
+> 
+> [...]
 
-> > +     if (ret > (long)image_end - (long)image)
-> >               return -EFBIG;
-> >
-> >       ctx.ninsns =3D 0;
-> > diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.=
-c
-> > index e6a643f63ebf..8fab4795b497 100644
-> > --- a/arch/s390/net/bpf_jit_comp.c
-> > +++ b/arch/s390/net/bpf_jit_comp.c
-> > @@ -2483,6 +2483,21 @@ static int __arch_prepare_bpf_trampoline(struct =
-bpf_tramp_image *im,
-> >       return 0;
-> >   }
-[...]
+Here is the summary with links:
+  - [net,v2,1/3] net: ena: Flush XDP packets on error.
+    https://git.kernel.org/netdev/net/c/6f411fb5ca94
+  - [net,v2,2/3] bnxt_en: Flush XDP for bnxt_poll_nitroa0()'s NAPI
+    https://git.kernel.org/netdev/net/c/edc0140cc3b7
+  - [net,v2,3/3] octeontx2-pf: Do xdp_do_flush() after redirects.
+    https://git.kernel.org/netdev/net/c/70b2b6892645
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
