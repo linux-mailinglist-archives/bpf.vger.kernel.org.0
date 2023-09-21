@@ -1,70 +1,71 @@
-Return-Path: <bpf+bounces-10544-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10585-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C96A17A992E
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 20:12:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A496E7A9C15
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 21:07:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DD462829EC
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 18:12:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26BE3B21A48
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 19:06:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD27144496;
-	Thu, 21 Sep 2023 17:23:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC3CC41745;
+	Thu, 21 Sep 2023 18:59:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B26842BF4;
-	Thu, 21 Sep 2023 17:22:47 +0000 (UTC)
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414D3573CE;
-	Thu, 21 Sep 2023 10:18:33 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-690fe1d9ba1so300400b3a.0;
-        Thu, 21 Sep 2023 10:18:33 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74F911643A;
+	Thu, 21 Sep 2023 18:59:09 +0000 (UTC)
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3FC59158;
+	Thu, 21 Sep 2023 11:59:06 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-55b5a37acb6so164783a12.0;
+        Thu, 21 Sep 2023 11:59:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695316713; x=1695921513; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5q3Il3iyqMne8gqEjfUahXva7VtyYgk1IJOkOH3elkw=;
-        b=cieT2Pk3hlEbrw0pFniWYuCRBCBGNT3OKcPz3qetJQTfjtRUjJZWgAKPtX0wpGWcau
-         /+owfP1t/YKOBxlWhq2fB9AKK8NA12mHwRKmRpkORUWPtw5w47xQfZKS7UdJ61YDBVIr
-         zhjpUw1owuB3OWMYSUGL2tGjjFKWA/zsPr2m3oxqvg3t5F+ux0jV2+bsOCx9ZqObXY+a
-         WfO33dfirNtEnBIDLwOmxtqQzK/lqx+AdvzpmuPVCU9pgkEtF5UvjeonOOubXFaeSar6
-         ylZgiB1DPJTsOhcC8OhMjl+8bCdjTZYasg6cdtH1SJcfwms+0wu11obrnSOYVoK9c/mr
-         C/Sg==
+        d=gmail.com; s=20230601; t=1695322745; x=1695927545; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RM0Kr0OylFS8h4HMgyBWTdSjUbHONrsWq/2Y18Dc9+w=;
+        b=hxbPaxD0P2oGrfy2z5bsfHIihlYLMR8k2ZgadeqVqTrZVttMSOHR/4jljB1IUOXO7l
+         wEc7ZUiEe+8OjcFAECob/VCnPBXNbjXwyHsvzmo2CqzBQCaDhQdcGzmL+jfUl8YqwIie
+         TsWGNfKLYKif5sg+D/XIW6fBu1fah5BRAQPrG3EwnahRUJ28nF/ptJLacS/u8Te4VVw6
+         TQ+3sU5WH3p4n373H8GwLA9Zne9mOEgGF73MeCiGs0na/S4xk/x8j/+vNLGnFYFdowmC
+         JHKZAubdxIJ+BzsCxZvlrvCaoqrqbhtZ/8/hpP8G4CO4w4HfNh/RGNeA+lIDd4vf8Ybw
+         6FHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695316713; x=1695921513;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5q3Il3iyqMne8gqEjfUahXva7VtyYgk1IJOkOH3elkw=;
-        b=XyZtoxXSNKlRRCGCFO9GPL5W28Uhr9+C4Z5BLCNR15Qnr1XXpBZ9B/CJNS9pJvk61b
-         qRmbJSRubLrK2iEY9B7MIAhHbTlP8Mmi32r5q7zQL4Lb9Iw3pV+kMpuxeZ8Q4imbzW0C
-         2ZRKoDVfy+GxIU+NoHfseAEUUo0/TmTPUt28Pynhv/MK2RYGsV4LX6qQhzGxmRNPo4Wq
-         SJp9yO138FWCeR3syDCzn1fUVnuVn9HJWDGyJYJX1YGzjY3hS37hA1WcenO7POceMSDU
-         Zz8p12Sk827aDZ24sMJStf7aAB63aZHDt9DgHjC7KwhxBNFVJefIq1FLMDQVFWg7SKE1
-         mo6g==
-X-Gm-Message-State: AOJu0Yx64oAPCSqUlPVstMmBINB1OU/smXee+qfwwZLUTJDt6PDdvo0b
-	h4SQY024G2wjXf6gb2HDLL7F2b+TFDfnfAM1sJUWuuMMakI=
-X-Google-Smtp-Source: AGHT+IHG8NxDP/QinPs3JQlu8rvBxT1D7zqKf8WDI0BZ3NF4fzjARx7yPaFthNuIAdktLFgWb9oJLI5DtP8a8rzEVnE=
-X-Received: by 2002:a05:6214:21ab:b0:655:ebd0:1fc2 with SMTP id
- t11-20020a05621421ab00b00655ebd01fc2mr4592620qvc.5.1695278604404; Wed, 20 Sep
- 2023 23:43:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695322745; x=1695927545;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RM0Kr0OylFS8h4HMgyBWTdSjUbHONrsWq/2Y18Dc9+w=;
+        b=Zsnl1z2jnaDBMCub64WIJmNqoevlCwQWVW2PskC3/CqsLQgILwxXRZzP9OusuGQjx6
+         TiToAQfdfnCbx0Nc1fVM08Yq8gHW3rs8kNUYOpMVekQ98xnlIrb+5n3zeby7+VDLlOo4
+         QMDDc2Rdj85RR7FvmDwa9hZe+mMSuD1R5wf5fiw2he2CfR/8RoFXGzGz2HAUP/pfXIRS
+         VnOWN9a+l43A9CP7nzjWvUZK57l2tu6MgHXxSBLvP3AIjBJq1hpuLR0aS5AlLhvs8/Xi
+         ftD0qiSmFdqD+xjR138NZ8Cxa4vAAobzUDzEaeVZZvjdPaln+GtwLwA2FGFivNPwUzP/
+         DHhQ==
+X-Gm-Message-State: AOJu0Yz0wEtK+IoK8MZQifmM1lRRtMXP410BqPym4V1R+aulraiD5/xM
+	PpsDYZOsrAjDAKEMY2WHwEudZSzATEeqnaHRhZ7EjHHlWSX3o5HT
+X-Google-Smtp-Source: AGHT+IH42ZePTEEcyeAWZsr6Nka8QYq4XjZvfjMPXGICv02k5AWL9uBwUYNwDDB7UCYIumNNOxJxWgVcYVEpAl7nLhY=
+X-Received: by 2002:a05:6214:20ea:b0:64a:8d39:3378 with SMTP id
+ 10-20020a05621420ea00b0064a8d393378mr4561058qvk.4.1695279076016; Wed, 20 Sep
+ 2023 23:51:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230918093304.367826-1-tushar.vyavahare@intel.com> <20230918093304.367826-4-tushar.vyavahare@intel.com>
-In-Reply-To: <20230918093304.367826-4-tushar.vyavahare@intel.com>
+References: <20230918093304.367826-1-tushar.vyavahare@intel.com> <20230918093304.367826-5-tushar.vyavahare@intel.com>
+In-Reply-To: <20230918093304.367826-5-tushar.vyavahare@intel.com>
 From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Thu, 21 Sep 2023 08:43:13 +0200
-Message-ID: <CAJ8uoz1nLdzY3BDYwaRnYbZZvtASOWg39=Cwyy1WsfELA9WNpQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/8] selftests/xsk: implement a function that
- generates MAC addresses
+Date: Thu, 21 Sep 2023 08:51:05 +0200
+Message-ID: <CAJ8uoz15WdTgQSqSY6Bge9cjo6q8=EKf6Jf6qTvW3wajr=wk8g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/8] selftests/xsk: iterate over all the sockets
+ in the receive pkts function
 To: Tushar Vyavahare <tushar.vyavahare@intel.com>
 Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn@kernel.org, 
 	magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
@@ -72,199 +73,538 @@ Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn@kernel.org,
 	pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, 
 	tirthendu.sarkar@intel.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DATE_IN_PAST_12_24,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.6
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, 18 Sept 2023 at 11:13, Tushar Vyavahare
+On Mon, 18 Sept 2023 at 11:14, Tushar Vyavahare
 <tushar.vyavahare@intel.com> wrote:
 >
-> Move the src_mac and dst_mac fields from the ifobject structure to the
-> xsk_socket_info structure to achieve per-socket MAC address assignment.
-> Implement the function called generate_mac_addresses() to generate MAC
-> addresses based on the required number by the framework.
+> Improve the receive_pkt() function to enable it to receive packets from
+> multiple sockets. Define a sock_num variable to iterate through all the
+> sockets in the Rx path. Add nb_valid_entries to check that all the
+> expected number of packets are received.
 >
-> Require this in order to steer traffic to various sockets in subsequent
-> patches.
+> Revise the function __receive_pkts() to only inspect the receive ring
+> once, handle any received packets, and promptly return. Implement a bitma=
+p
+> to store the value of MAX_SOCKETS.
 >
 > Signed-off-by: Tushar Vyavahare <tushar.vyavahare@intel.com>
 > ---
->  tools/testing/selftests/bpf/xskxceiver.c | 45 ++++++++++++++----------
->  tools/testing/selftests/bpf/xskxceiver.h |  8 +++--
->  2 files changed, 33 insertions(+), 20 deletions(-)
+>  tools/testing/selftests/bpf/xskxceiver.c | 276 ++++++++++++++---------
+>  tools/testing/selftests/bpf/xskxceiver.h |   2 +
+>  2 files changed, 171 insertions(+), 107 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-> index ad1f7f078f5f..9f241f503eed 100644
+> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/sel=
+ftests/bpf/xskxceiver.c
+> index 9f241f503eed..cf3a723cc827 100644
 > --- a/tools/testing/selftests/bpf/xskxceiver.c
 > +++ b/tools/testing/selftests/bpf/xskxceiver.c
-> @@ -104,9 +104,6 @@
->  #include "../kselftest.h"
->  #include "xsk_xdp_common.h"
+> @@ -80,6 +80,7 @@
+>  #include <linux/if_ether.h>
+>  #include <linux/mman.h>
+>  #include <linux/netdev.h>
+> +#include <linux/bitmap.h>
+>  #include <arpa/inet.h>
+>  #include <net/if.h>
+>  #include <locale.h>
+> @@ -540,8 +541,10 @@ static int test_spec_set_mtu(struct test_spec *test,=
+ int mtu)
 >
-> -static const char *MAC1 = "\x00\x0A\x56\x9E\xEE\x62";
-> -static const char *MAC2 = "\x00\x0A\x56\x9E\xEE\x61";
-> -
->  static bool opt_verbose;
->  static bool opt_print_tests;
->  static enum test_mode opt_mode = TEST_MODE_ALL;
-> @@ -145,6 +142,18 @@ static void report_failure(struct test_spec *test)
->         test->fail = true;
+>  static void pkt_stream_reset(struct pkt_stream *pkt_stream)
+>  {
+> -       if (pkt_stream)
+> +       if (pkt_stream) {
+>                 pkt_stream->current_pkt_nb =3D 0;
+> +               pkt_stream->nb_rx_pkts =3D 0;
+> +       }
 >  }
 >
-> +static void generate_mac_addresses(const u8 *g_mac, u32 num_macs)
-> +{
-> +       u32 i, j;
-> +
-> +       for (i = 0; i < num_macs; i++) {
-> +               for (j = 0; j < ETH_ALEN; j++)
-> +                       macs[i][j] = g_mac[j];
-> +
-> +               macs[i][ETH_ALEN - 1] += i;
+>  static struct pkt *pkt_stream_get_next_tx_pkt(struct pkt_stream *pkt_str=
+eam)
+> @@ -641,14 +644,16 @@ static u32 pkt_nb_frags(u32 frame_size, struct pkt_=
+stream *pkt_stream, struct pk
+>         return nb_frags;
+>  }
+>
+> -static void pkt_set(struct xsk_umem_info *umem, struct pkt *pkt, int off=
+set, u32 len)
+> +static void pkt_set(struct pkt_stream *pkt_stream, struct pkt *pkt, int =
+offset, u32 len)
+>  {
+>         pkt->offset =3D offset;
+>         pkt->len =3D len;
+> -       if (len > MAX_ETH_JUMBO_SIZE)
+> +       if (len > MAX_ETH_JUMBO_SIZE) {
+>                 pkt->valid =3D false;
+> -       else
+> +       } else {
+>                 pkt->valid =3D true;
+> +               pkt_stream->nb_valid_entries++;
 > +       }
+>  }
+>
+>  static u32 pkt_get_buffer_len(struct xsk_umem_info *umem, u32 len)
+> @@ -670,7 +675,7 @@ static struct pkt_stream *pkt_stream_generate(struct =
+xsk_umem_info *umem, u32 nb
+>         for (i =3D 0; i < nb_pkts; i++) {
+>                 struct pkt *pkt =3D &pkt_stream->pkts[i];
+>
+> -               pkt_set(umem, pkt, 0, pkt_len);
+> +               pkt_set(pkt_stream, pkt, 0, pkt_len);
+>                 pkt->pkt_nb =3D i;
+>         }
+>
+> @@ -702,7 +707,7 @@ static void __pkt_stream_replace_half(struct ifobject=
+ *ifobj, u32 pkt_len,
+>
+>         pkt_stream =3D pkt_stream_clone(umem, ifobj->xsk->pkt_stream);
+>         for (i =3D 1; i < ifobj->xsk->pkt_stream->nb_pkts; i +=3D 2)
+> -               pkt_set(umem, &pkt_stream->pkts[i], offset, pkt_len);
+> +               pkt_set(pkt_stream, &pkt_stream->pkts[i], offset, pkt_len=
+);
+>
+>         ifobj->xsk->pkt_stream =3D pkt_stream;
+>  }
+> @@ -724,6 +729,8 @@ static void pkt_stream_receive_half(struct test_spec =
+*test)
+>         pkt_stream =3D test->ifobj_rx->xsk->pkt_stream;
+>         for (i =3D 1; i < pkt_stream->nb_pkts; i +=3D 2)
+>                 pkt_stream->pkts[i].valid =3D false;
+> +
+> +       pkt_stream->nb_valid_entries /=3D 2;
+>  }
+>
+>  static u64 pkt_get_addr(struct pkt *pkt, struct xsk_umem_info *umem)
+> @@ -797,6 +804,10 @@ static struct pkt_stream *__pkt_stream_generate_cust=
+om(struct ifobject *ifobj, s
+>
+>                 if (pkt->valid && pkt->len > pkt_stream->max_pkt_len)
+>                         pkt_stream->max_pkt_len =3D pkt->len;
+> +
+> +               if (pkt->valid)
+> +                       pkt_stream->nb_valid_entries++;
+> +
+>                 pkt_nb++;
+>         }
+>
+> @@ -1018,133 +1029,179 @@ static int complete_pkts(struct xsk_socket_info=
+ *xsk, int batch_size)
+>         return TEST_PASS;
+>  }
+>
+> -static int receive_pkts(struct test_spec *test, struct pollfd *fds)
+> +static int __receive_pkts(struct test_spec *test, struct xsk_socket_info=
+ *xsk)
+>  {
+> -       struct timeval tv_end, tv_now, tv_timeout =3D {THREAD_TMOUT, 0};
+> -       struct pkt_stream *pkt_stream =3D test->ifobj_rx->xsk->pkt_stream=
+;
+> -       struct xsk_socket_info *xsk =3D test->ifobj_rx->xsk;
+> +       u32 frags_processed =3D 0, nb_frags =3D 0, pkt_len =3D 0;
+>         u32 idx_rx =3D 0, idx_fq =3D 0, rcvd, pkts_sent =3D 0;
+> +       struct pkt_stream *pkt_stream =3D xsk->pkt_stream;
+>         struct ifobject *ifobj =3D test->ifobj_rx;
+>         struct xsk_umem_info *umem =3D xsk->umem;
+> +       struct pollfd fds =3D { };
+>         struct pkt *pkt;
+> +       u64 first_addr;
+>         int ret;
+>
+> -       ret =3D gettimeofday(&tv_now, NULL);
+> -       if (ret)
+> -               exit_with_error(errno);
+> -       timeradd(&tv_now, &tv_timeout, &tv_end);
+> -
+> -       pkt =3D pkt_stream_get_next_rx_pkt(pkt_stream, &pkts_sent);
+> -       while (pkt) {
+> -               u32 frags_processed =3D 0, nb_frags =3D 0, pkt_len =3D 0;
+> -               u64 first_addr;
+> +       fds.fd =3D xsk_socket__fd(xsk->xsk);
+> +       fds.events =3D POLLIN;
+>
+> -               ret =3D gettimeofday(&tv_now, NULL);
+> -               if (ret)
+> -                       exit_with_error(errno);
+> -               if (timercmp(&tv_now, &tv_end, >)) {
+> -                       ksft_print_msg("ERROR: [%s] Receive loop timed ou=
+t\n", __func__);
+> -                       return TEST_FAILURE;
+> -               }
+> +       ret =3D kick_rx(xsk);
+> +       if (ret)
+> +               return TEST_FAILURE;
+>
+> -               ret =3D kick_rx(xsk);
+> -               if (ret)
+> +       if (ifobj->use_poll) {
+> +               ret =3D poll(&fds, 1, POLL_TMOUT);
+> +               if (ret < 0)
+>                         return TEST_FAILURE;
+>
+> -               if (ifobj->use_poll) {
+> -                       ret =3D poll(fds, 1, POLL_TMOUT);
+> -                       if (ret < 0)
+> -                               return TEST_FAILURE;
+> -
+> -                       if (!ret) {
+> -                               if (!is_umem_valid(test->ifobj_tx))
+> -                                       return TEST_PASS;
+> -
+> -                               ksft_print_msg("ERROR: [%s] Poll timed ou=
+t\n", __func__);
+> -                               return TEST_FAILURE;
+> -                       }
+> +               if (!ret) {
+> +                       if (!is_umem_valid(test->ifobj_tx))
+> +                               return TEST_PASS;
+>
+> -                       if (!(fds->revents & POLLIN))
+> -                               continue;
+> +                       ksft_print_msg("ERROR: [%s] Poll timed out\n", __=
+func__);
+> +                       return TEST_CONTINUE;
+>                 }
+>
+> -               rcvd =3D xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE, &idx_r=
+x);
+> -               if (!rcvd)
+> -                       continue;
+> +               if (!(fds.revents & POLLIN))
+> +                       return TEST_CONTINUE;
+> +       }
+>
+> -               if (ifobj->use_fill_ring) {
+> -                       ret =3D xsk_ring_prod__reserve(&umem->fq, rcvd, &=
+idx_fq);
+> -                       while (ret !=3D rcvd) {
+> -                               if (xsk_ring_prod__needs_wakeup(&umem->fq=
+)) {
+> -                                       ret =3D poll(fds, 1, POLL_TMOUT);
+> -                                       if (ret < 0)
+> -                                               return TEST_FAILURE;
+> -                               }
+> -                               ret =3D xsk_ring_prod__reserve(&umem->fq,=
+ rcvd, &idx_fq);
+> +       rcvd =3D xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE, &idx_rx);
+> +       if (!rcvd)
+> +               return TEST_CONTINUE;
+> +
+> +       if (ifobj->use_fill_ring) {
+> +               ret =3D xsk_ring_prod__reserve(&umem->fq, rcvd, &idx_fq);
+> +               while (ret !=3D rcvd) {
+> +                       if (xsk_ring_prod__needs_wakeup(&umem->fq)) {
+> +                               ret =3D poll(&fds, 1, POLL_TMOUT);
+> +                               if (ret < 0)
+> +                                       return TEST_FAILURE;
+>                         }
+> +                       ret =3D xsk_ring_prod__reserve(&umem->fq, rcvd, &=
+idx_fq);
+>                 }
+> +       }
+>
+> -               while (frags_processed < rcvd) {
+> -                       const struct xdp_desc *desc =3D xsk_ring_cons__rx=
+_desc(&xsk->rx, idx_rx++);
+> -                       u64 addr =3D desc->addr, orig;
+> +       while (frags_processed < rcvd) {
+> +               const struct xdp_desc *desc =3D xsk_ring_cons__rx_desc(&x=
+sk->rx, idx_rx++);
+> +               u64 addr =3D desc->addr, orig;
+>
+> -                       orig =3D xsk_umem__extract_addr(addr);
+> -                       addr =3D xsk_umem__add_offset_to_addr(addr);
+> +               orig =3D xsk_umem__extract_addr(addr);
+> +               addr =3D xsk_umem__add_offset_to_addr(addr);
+>
+> +               if (!nb_frags) {
+> +                       pkt =3D pkt_stream_get_next_rx_pkt(pkt_stream, &p=
+kts_sent);
+>                         if (!pkt) {
+>                                 ksft_print_msg("[%s] received too many pa=
+ckets addr: %lx len %u\n",
+>                                                __func__, addr, desc->len)=
+;
+>                                 return TEST_FAILURE;
+>                         }
+> +               }
+>
+> -                       print_verbose("Rx: addr: %lx len: %u options: %u =
+pkt_nb: %u valid: %u\n",
+> -                                     addr, desc->len, desc->options, pkt=
+->pkt_nb, pkt->valid);
+> +               print_verbose("Rx: addr: %lx len: %u options: %u pkt_nb: =
+%u valid: %u\n",
+> +                             addr, desc->len, desc->options, pkt->pkt_nb=
+, pkt->valid);
+>
+> -                       if (!is_frag_valid(umem, addr, desc->len, pkt->pk=
+t_nb, pkt_len) ||
+> -                           !is_offset_correct(umem, pkt, addr) ||
+> -                           (ifobj->use_metadata && !is_metadata_correct(=
+pkt, umem->buffer, addr)))
+> -                               return TEST_FAILURE;
+> +               if (!is_frag_valid(umem, addr, desc->len, pkt->pkt_nb, pk=
+t_len) ||
+> +                   !is_offset_correct(umem, pkt, addr) || (ifobj->use_me=
+tadata &&
+> +                   !is_metadata_correct(pkt, umem->buffer, addr)))
+> +                       return TEST_FAILURE;
+>
+> -                       if (!nb_frags++)
+> -                               first_addr =3D addr;
+> -                       frags_processed++;
+> -                       pkt_len +=3D desc->len;
+> -                       if (ifobj->use_fill_ring)
+> -                               *xsk_ring_prod__fill_addr(&umem->fq, idx_=
+fq++) =3D orig;
+> +               if (!nb_frags++)
+> +                       first_addr =3D addr;
+> +               frags_processed++;
+> +               pkt_len +=3D desc->len;
+> +               if (ifobj->use_fill_ring)
+> +                       *xsk_ring_prod__fill_addr(&umem->fq, idx_fq++) =
+=3D orig;
+>
+> -                       if (pkt_continues(desc->options))
+> -                               continue;
+> +               if (pkt_continues(desc->options))
+> +                       continue;
+>
+> -                       /* The complete packet has been received */
+> -                       if (!is_pkt_valid(pkt, umem->buffer, first_addr, =
+pkt_len) ||
+> -                           !is_offset_correct(umem, pkt, addr))
+> -                               return TEST_FAILURE;
+> +               /* The complete packet has been received */
+> +               if (!is_pkt_valid(pkt, umem->buffer, first_addr, pkt_len)=
+ ||
+> +                   !is_offset_correct(umem, pkt, addr))
+> +                       return TEST_FAILURE;
+>
+> -                       pkt =3D pkt_stream_get_next_rx_pkt(pkt_stream, &p=
+kts_sent);
+> -                       nb_frags =3D 0;
+> -                       pkt_len =3D 0;
+> -               }
+> +               pkt_stream->nb_rx_pkts++;
+> +               nb_frags =3D 0;
+> +               pkt_len =3D 0;
+> +       }
+>
+> -               if (nb_frags) {
+> -                       /* In the middle of a packet. Start over from beg=
+inning of packet. */
+> -                       idx_rx -=3D nb_frags;
+> -                       xsk_ring_cons__cancel(&xsk->rx, nb_frags);
+> -                       if (ifobj->use_fill_ring) {
+> -                               idx_fq -=3D nb_frags;
+> -                               xsk_ring_prod__cancel(&umem->fq, nb_frags=
+);
+> -                       }
+> -                       frags_processed -=3D nb_frags;
+> +       if (nb_frags) {
+> +               /* In the middle of a packet. Start over from beginning o=
+f packet. */
+> +               idx_rx -=3D nb_frags;
+> +               xsk_ring_cons__cancel(&xsk->rx, nb_frags);
+> +               if (ifobj->use_fill_ring) {
+> +                       idx_fq -=3D nb_frags;
+> +                       xsk_ring_prod__cancel(&umem->fq, nb_frags);
+>                 }
+> +               frags_processed -=3D nb_frags;
+> +       }
+>
+> -               if (ifobj->use_fill_ring)
+> -                       xsk_ring_prod__submit(&umem->fq, frags_processed)=
+;
+> -               if (ifobj->release_rx)
+> -                       xsk_ring_cons__release(&xsk->rx, frags_processed)=
+;
+> +       if (ifobj->use_fill_ring)
+> +               xsk_ring_prod__submit(&umem->fq, frags_processed);
+> +       if (ifobj->release_rx)
+> +               xsk_ring_cons__release(&xsk->rx, frags_processed);
+> +
+> +       pthread_mutex_lock(&pacing_mutex);
+> +       pkts_in_flight -=3D pkts_sent;
+> +       pthread_mutex_unlock(&pacing_mutex);
+> +       pkts_sent =3D 0;
+
+This patch looks much bigger than it is. You have only removed the
+while loop and therefore had to change the indentation of the whole
+function. The change looks good.
+
+> +
+> +return TEST_CONTINUE;
 > +}
 > +
->  /* The payload is a word consisting of a packet sequence number in the upper
->   * 16-bits and a intra packet data sequence number in the lower 16 bits. So the 3rd packet's
->   * 5th word of data will contain the number (2<<16) | 4 as they are numbered from 0.
-> @@ -159,10 +168,10 @@ static void write_payload(void *dest, u32 pkt_nb, u32 start, u32 size)
->                 ptr[i] = htonl(pkt_nb << 16 | (i + start));
->  }
+> +bool all_packets_received(struct test_spec *test, struct xsk_socket_info=
+ *xsk, u32 sock_num,
+> +                         unsigned long *bitmap)
+> +{
+> +       struct pkt_stream *pkt_stream =3D xsk->pkt_stream;
 >
-> -static void gen_eth_hdr(struct ifobject *ifobject, struct ethhdr *eth_hdr)
-> +static void gen_eth_hdr(struct xsk_socket_info *xsk, struct ethhdr *eth_hdr)
->  {
-> -       memcpy(eth_hdr->h_dest, ifobject->dst_mac, ETH_ALEN);
-> -       memcpy(eth_hdr->h_source, ifobject->src_mac, ETH_ALEN);
-> +       memcpy(eth_hdr->h_dest, xsk->dst_mac, ETH_ALEN);
-> +       memcpy(eth_hdr->h_source, xsk->src_mac, ETH_ALEN);
->         eth_hdr->h_proto = htons(ETH_P_LOOPBACK);
->  }
->
-> @@ -445,6 +454,9 @@ static void __test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
->                                 ifobj->xsk_arr[j].pkt_stream = test->tx_pkt_stream_default;
->                         else
->                                 ifobj->xsk_arr[j].pkt_stream = test->rx_pkt_stream_default;
+> -               pthread_mutex_lock(&pacing_mutex);
+> -               pkts_in_flight -=3D pkts_sent;
+> -               pthread_mutex_unlock(&pacing_mutex);
+> -               pkts_sent =3D 0;
+> +       if (!pkt_stream) {
+> +               __test_and_set_bit((1 << sock_num), bitmap);
+> +               return false;
+> +       }
 > +
-> +                       memcpy(ifobj->xsk_arr[j].src_mac, macs[j * 2 + i % 2], ETH_ALEN);
-> +                       memcpy(ifobj->xsk_arr[j].dst_mac, macs[j * 2 + (i + 1) % 2], ETH_ALEN);
+> +       if (pkt_stream->nb_rx_pkts =3D=3D pkt_stream->nb_valid_entries) {
+> +               __test_and_set_bit((1 << sock_num), bitmap);
+> +               if (test_bit(test->nb_sockets, bitmap))
+> +                       return true;
+> +       }
+> +
+> +       return false;
+> +}
+> +
+> +static int receive_pkts(struct test_spec *test)
+> +{
+> +       struct timeval tv_end, tv_now, tv_timeout =3D {THREAD_TMOUT, 0};
+> +       u32 sock_num =3D 0;
+> +       int res, ret;
+> +
+> +       DECLARE_BITMAP(bitmap, MAX_SOCKETS);
+
+This is a declaration that should be bunched with the declarations above.
+
+> +
+> +       ret =3D gettimeofday(&tv_now, NULL);
+> +       if (ret)
+> +               exit_with_error(errno);
+> +
+> +       timeradd(&tv_now, &tv_timeout, &tv_end);
+> +
+> +       while (1) {
+> +               sock_num =3D (sock_num + 1) % test->nb_sockets;
+> +
+> +               struct xsk_socket_info *xsk =3D &test->ifobj_rx->xsk_arr[=
+sock_num];
+> +
+> +               if ((all_packets_received(test, xsk, sock_num, bitmap)))
+> +                       break;
+> +
+> +               res =3D __receive_pkts(test, xsk);
+> +               if (!(res =3D=3D TEST_PASS || res =3D=3D TEST_CONTINUE))
+> +                       return res;
+> +
+> +               ret =3D gettimeofday(&tv_now, NULL);
+> +               if (ret)
+> +                       exit_with_error(errno);
+> +
+> +               if (timercmp(&tv_now, &tv_end, >)) {
+> +                       ksft_print_msg("ERROR: [%s] Receive loop timed ou=
+t\n", __func__);
+> +                       return TEST_FAILURE;
+> +               }
+>         }
+>
+>         return TEST_PASS;
+> @@ -1577,7 +1634,6 @@ static void *worker_testapp_validate_rx(void *arg)
+>  {
+>         struct test_spec *test =3D (struct test_spec *)arg;
+>         struct ifobject *ifobject =3D test->ifobj_rx;
+> -       struct pollfd fds =3D { };
+>         int err;
+>
+>         if (test->current_step =3D=3D 1) {
+> @@ -1592,12 +1648,9 @@ static void *worker_testapp_validate_rx(void *arg)
 >                 }
 >         }
 >
-> @@ -726,16 +738,16 @@ static void pkt_stream_cancel(struct pkt_stream *pkt_stream)
->         pkt_stream->current_pkt_nb--;
->  }
->
-> -static void pkt_generate(struct ifobject *ifobject, u64 addr, u32 len, u32 pkt_nb,
-> -                        u32 bytes_written)
-> +static void pkt_generate(struct xsk_socket_info *xsk, struct xsk_umem_info *umem, u64 addr, u32 len,
-> +                        u32 pkt_nb, u32 bytes_written)
->  {
-> -       void *data = xsk_umem__get_data(ifobject->umem->buffer, addr);
-> +       void *data = xsk_umem__get_data(umem->buffer, addr);
->
->         if (len < MIN_PKT_SIZE)
->                 return;
->
->         if (!bytes_written) {
-> -               gen_eth_hdr(ifobject, data);
-> +               gen_eth_hdr(xsk, data);
->
->                 len -= PKT_HDR_SIZE;
->                 data += PKT_HDR_SIZE;
-> @@ -1209,7 +1221,7 @@ static int __send_pkts(struct ifobject *ifobject, struct pollfd *fds, bool timeo
->                                 tx_desc->options = 0;
->                         }
->                         if (pkt->valid)
-> -                               pkt_generate(ifobject, tx_desc->addr, tx_desc->len, pkt->pkt_nb,
-> +                               pkt_generate(xsk, umem, tx_desc->addr, tx_desc->len, pkt->pkt_nb,
->                                              bytes_written);
->                         bytes_written += tx_desc->len;
->
-> @@ -2120,15 +2132,11 @@ static bool hugepages_present(void)
->         return true;
->  }
->
-> -static void init_iface(struct ifobject *ifobj, const char *dst_mac, const char *src_mac,
-> -                      thread_func_t func_ptr)
-> +static void init_iface(struct ifobject *ifobj, thread_func_t func_ptr)
->  {
->         LIBBPF_OPTS(bpf_xdp_query_opts, query_opts);
->         int err;
->
-> -       memcpy(ifobj->dst_mac, dst_mac, ETH_ALEN);
-> -       memcpy(ifobj->src_mac, src_mac, ETH_ALEN);
+> -       fds.fd =3D xsk_socket__fd(ifobject->xsk->xsk);
+> -       fds.events =3D POLLIN;
 > -
->         ifobj->func_ptr = func_ptr;
+>         pthread_barrier_wait(&barr);
 >
->         err = xsk_load_xdp_programs(ifobj);
-> @@ -2391,6 +2399,7 @@ int main(int argc, char **argv)
->                 ksft_exit_xfail();
->         }
+> -       err =3D receive_pkts(test, &fds);
+> +       err =3D receive_pkts(test);
 >
-> +       generate_mac_addresses(g_mac, NUM_MAC_ADDRESSES);
+>         if (!err && ifobject->validation_func)
+>                 err =3D ifobject->validation_func(ifobject);
+> @@ -1734,9 +1787,15 @@ static int __testapp_validate_traffic(struct test_=
+spec *test, struct ifobject *i
+>                 pthread_join(t0, NULL);
+>
+>         if (test->total_steps =3D=3D test->current_step || test->fail) {
+> +               u32 i;
+> +
+>                 if (ifobj2)
+> -                       xsk_socket__delete(ifobj2->xsk->xsk);
+> -               xsk_socket__delete(ifobj1->xsk->xsk);
+> +                       for (i =3D 0; i < test->nb_sockets; i++)
+> +                               xsk_socket__delete(ifobj2->xsk_arr[i].xsk=
+);
+> +
+> +               for (i =3D 0; i < test->nb_sockets; i++)
+> +                       xsk_socket__delete(ifobj1->xsk_arr[i].xsk);
+> +
+>                 testapp_clean_xsk_umem(ifobj1);
+>                 if (ifobj2 && !ifobj2->shared_umem)
+>                         testapp_clean_xsk_umem(ifobj2);
+> @@ -1812,8 +1871,6 @@ static int swap_xsk_resources(struct ifobject *ifob=
+j_tx, struct ifobject *ifobj_
+>  {
+>         int ret;
+>
+> -       xsk_socket__delete(ifobj_tx->xsk->xsk);
+> -       xsk_socket__delete(ifobj_rx->xsk->xsk);
+>         ifobj_tx->xsk =3D &ifobj_tx->xsk_arr[1];
+>         ifobj_rx->xsk =3D &ifobj_rx->xsk_arr[1];
+>
+> @@ -1831,6 +1888,10 @@ static int testapp_xdp_prog_cleanup(struct test_sp=
+ec *test)
+>         if (testapp_validate_traffic(test))
+>                 return TEST_FAILURE;
+>
+> +       test->ifobj_tx->xsk_arr[0].pkt_stream =3D NULL;
+> +       test->ifobj_rx->xsk_arr[0].pkt_stream =3D NULL;
+> +       test->ifobj_tx->xsk_arr[1].pkt_stream =3D test->tx_pkt_stream_def=
+ault;
+> +       test->ifobj_rx->xsk_arr[1].pkt_stream =3D test->rx_pkt_stream_def=
+ault;=C2=B4
 
-Why pass down a global variable?
+Would it make more sense if this was part of the function below?
 
->         shared_netdev = (ifobj_tx->ifindex == ifobj_rx->ifindex);
->         ifobj_tx->shared_umem = shared_netdev;
->         ifobj_rx->shared_umem = shared_netdev;
-> @@ -2404,8 +2413,8 @@ int main(int argc, char **argv)
->                         modes++;
->         }
+>         if (swap_xsk_resources(test->ifobj_tx, test->ifobj_rx))
+>                 return TEST_FAILURE;
+>         return testapp_validate_traffic(test);
+> @@ -1861,6 +1922,7 @@ static int testapp_stats_tx_invalid_descs(struct te=
+st_spec *test)
+>  {
+>         pkt_stream_replace_half(test, XSK_UMEM__INVALID_FRAME_SIZE, 0);
+>         test->ifobj_tx->validation_func =3D validate_tx_invalid_descs;
+> +       test->ifobj_rx->xsk->pkt_stream->nb_valid_entries /=3D 2;
+
+Should be part of  pkt_stream_replace_half()
+
+>         return testapp_validate_traffic(test);
+>  }
 >
-> -       init_iface(ifobj_rx, MAC1, MAC2, worker_testapp_validate_rx);
-> -       init_iface(ifobj_tx, MAC2, MAC1, worker_testapp_validate_tx);
-> +       init_iface(ifobj_rx, worker_testapp_validate_rx);
-> +       init_iface(ifobj_tx, worker_testapp_validate_tx);
->
->         test_spec_init(&test, ifobj_tx, ifobj_rx, 0, &tests[0]);
->         tx_pkt_stream_default = pkt_stream_generate(ifobj_tx->umem, DEFAULT_PKT_CNT, MIN_PKT_SIZE);
-> diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-> index 06b82b39c59c..e003f9ca4692 100644
+> diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/sel=
+ftests/bpf/xskxceiver.h
+> index e003f9ca4692..aa6cccb862bc 100644
 > --- a/tools/testing/selftests/bpf/xskxceiver.h
 > +++ b/tools/testing/selftests/bpf/xskxceiver.h
-> @@ -59,6 +59,7 @@
->  #define HUGEPAGE_SIZE (2 * 1024 * 1024)
->  #define PKT_DUMP_NB_TO_PRINT 16
->  #define RUN_ALL_TESTS UINT_MAX
-> +#define NUM_MAC_ADDRESSES 4
->
->  #define print_verbose(x...) do { if (opt_verbose) ksft_print_msg(x); } while (0)
->
-> @@ -90,6 +91,8 @@ struct xsk_socket_info {
->         struct pkt_stream *pkt_stream;
->         u32 outstanding_tx;
->         u32 rxqsize;
-> +       u8 dst_mac[ETH_ALEN];
-> +       u8 src_mac[ETH_ALEN];
+> @@ -108,6 +108,8 @@ struct pkt_stream {
+>         u32 current_pkt_nb;
+>         struct pkt *pkts;
+>         u32 max_pkt_len;
+> +       u32 nb_rx_pkts;
+> +       u32 nb_valid_entries;
+>         bool verbatim;
 >  };
 >
->  struct pkt {
-> @@ -140,8 +143,6 @@ struct ifobject {
->         bool unaligned_supp;
->         bool multi_buff_supp;
->         bool multi_buff_zc_supp;
-> -       u8 dst_mac[ETH_ALEN];
-> -       u8 src_mac[ETH_ALEN];
->  };
->
->  struct test_spec {
-> @@ -168,4 +169,7 @@ pthread_mutex_t pacing_mutex = PTHREAD_MUTEX_INITIALIZER;
->
->  int pkts_in_flight;
->
-> +static const u8 g_mac[] = {0x55, 0x44, 0x33, 0x22, 0x11, 0x00};
-> +static u8 macs[NUM_MAC_ADDRESSES][ETH_ALEN] = {0};
-
-I do not think you need this last array. You already have added
-dst_mac and src_mac in the xsk_socket_info that you can use, so no
-need for this.
-
-> +
->  #endif                         /* XSKXCEIVER_H_ */
 > --
 > 2.34.1
 >
