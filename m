@@ -1,218 +1,178 @@
-Return-Path: <bpf+bounces-10602-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10603-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4C597AA53E
-	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 00:52:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13F557AA570
+	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 01:03:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sy.mirrors.kernel.org (Postfix) with ESMTP id 6A8CBB20AD7
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 22:52:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTP id 701201F21B22
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 23:03:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAE7B29404;
-	Thu, 21 Sep 2023 22:52:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2401529402;
+	Thu, 21 Sep 2023 23:03:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47CAC18B1A;
-	Thu, 21 Sep 2023 22:52:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C784EC433AD;
-	Thu, 21 Sep 2023 22:52:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B37E8168B3
+	for <bpf@vger.kernel.org>; Thu, 21 Sep 2023 23:03:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28FCBC433CB;
+	Thu, 21 Sep 2023 23:03:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695336755;
-	bh=N+rCKzD4RnGgPH16U+ccWdzVA4uu9GwvbHIaEOV8lLA=;
+	s=k20201202; t=1695337397;
+	bh=yiAJPS7cKpcCnvkdPKJifp9st2pGuTa8PlkgrYBhlyM=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=bjJNwevJA42TvkguuRjTs76ETN2R6q990VwsQaX+fVZHYFTVg3twcHMCXBi+EwswY
-	 KDvM3rQnSpp34FNwfM0U/WFpPi5sxiWBihMbkmLQVD3dMwe0w1TV/6pnGa5fK7MnRq
-	 f/RnmF4zvwavGrTVGR9fsTL6T+hC8QShKMLdwjOkeOLZk0rpJgxA2dFhnnTnVB9Xwk
-	 TCSjg9WYJ/gz4jSOZ5+6CD4cbsh3pPk93gUBjEKQnbqdin3Ors6QaTCSNo54GO47rs
-	 GROCJ3RhQnOtTsYPDlxmiEmDKgihH28meWIoUHV/vobKuLSBg7uQPTbsXHKf9QQFkj
-	 fMbBtTpx4QTiw==
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50305abe5f0so2439551e87.2;
-        Thu, 21 Sep 2023 15:52:35 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yy//vzaxhq2PC0z+wVHGEwKZ4Ke1r5YMDZ7obAXNGj3Ajce+ERv
-	D+V05edYEmk4pGL+49y5p6NzoHP4lvUy0x6hZ3E=
-X-Google-Smtp-Source: AGHT+IHrJYRcXcnBl5OYoAS68DJ303ssKI8aEm5234o+h+Cle34G5bJm6ZjjrxLZlbKjfe5M7kikSCFf7m0lncLYrfA=
-X-Received: by 2002:a05:6512:ac7:b0:500:b3e3:6fa6 with SMTP id
- n7-20020a0565120ac700b00500b3e36fa6mr7384141lfu.68.1695336753899; Thu, 21 Sep
- 2023 15:52:33 -0700 (PDT)
+	b=dX2mvSjp7wfXE1Tjc+4tIe794raC6MxcsKr547VvZA2ukL9HWXm4+F+IVphoQdfoA
+	 EX+IsZX9+I2+nUJVwEVUULMqiuy0XSPGd8jDJwSxD1VbV7OLeWJTY4punVYjqzABiq
+	 A7IAyfgVhQ+S5onKlArxFyDLtFZ8IqsFUtjT7DwO5He+wfRXe6MdZ7V6tceirA66rf
+	 ClXe7dVbQYnTgQNTLxtHI4fA7kBBNxfm3sNbD35CyFyddsmyvwNCdwbQ74gFJh82fV
+	 oPWmx04zP1k5aan/2B2JMWgzLidzncz1lbD25lrttOMIMZq+rsIaoA+J8W4W2DP43W
+	 j1i3ToXmmSHGg==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50437f39c9dso288462e87.3;
+        Thu, 21 Sep 2023 16:03:17 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yw9YNpZup638hgJcX+nY68mVvyRnuSvuIiT7ueRe6UYl2XXX5Ry
+	LJd0cLENMYFFGJrVO36xbqVBQRFKncac7YjY5UU=
+X-Google-Smtp-Source: AGHT+IGwkoTBc42qppCWTYzp8kbRv8cvjHGFQplKxNefKyB24GZRp2GsOnKoTooRX75pS1haD8jDx4Q/U1umWcFLSKg=
+X-Received: by 2002:ac2:5b1c:0:b0:503:314f:affe with SMTP id
+ v28-20020ac25b1c000000b00503314faffemr5989903lfn.17.1695337395346; Thu, 21
+ Sep 2023 16:03:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230918072955.2507221-1-rppt@kernel.org> <20230918072955.2507221-7-rppt@kernel.org>
-In-Reply-To: <20230918072955.2507221-7-rppt@kernel.org>
+References: <20230918212459.1937798-1-kpsingh@kernel.org> <20230918212459.1937798-6-kpsingh@kernel.org>
+In-Reply-To: <20230918212459.1937798-6-kpsingh@kernel.org>
 From: Song Liu <song@kernel.org>
-Date: Thu, 21 Sep 2023 15:52:21 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW73NMvdpmyrhGouQSAHEL9wRw_A+8dZ-5R4BU=UHH83cw@mail.gmail.com>
-Message-ID: <CAPhsuW73NMvdpmyrhGouQSAHEL9wRw_A+8dZ-5R4BU=UHH83cw@mail.gmail.com>
-Subject: Re: [PATCH v3 06/13] mm/execmem: introduce execmem_data_alloc()
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, Luis Chamberlain <mcgrof@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nadav Amit <nadav.amit@gmail.com>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Puranjay Mohan <puranjay12@gmail.com>, 
-	Rick Edgecombe <rick.p.edgecombe@intel.com>, Russell King <linux@armlinux.org.uk>, 
-	Steven Rostedt <rostedt@goodmis.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>, bpf@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
-	linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Date: Thu, 21 Sep 2023 16:03:02 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5LkyY8=t-yLKpS-fNWOy+yngEy96xkvajfgqA2HKLTFw@mail.gmail.com>
+Message-ID: <CAPhsuW5LkyY8=t-yLKpS-fNWOy+yngEy96xkvajfgqA2HKLTFw@mail.gmail.com>
+Subject: Re: [PATCH v3 5/5] security: Add CONFIG_SECURITY_HOOK_LIKELY
+To: KP Singh <kpsingh@kernel.org>
+Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
+	paul@paul-moore.com, keescook@chromium.org, casey@schaufler-ca.com, 
+	daniel@iogearbox.net, ast@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 18, 2023 at 12:31=E2=80=AFAM Mike Rapoport <rppt@kernel.org> wr=
-ote:
+On Mon, Sep 18, 2023 at 2:25=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote=
+:
 >
 [...]
-> diff --git a/include/linux/execmem.h b/include/linux/execmem.h
-> index 519bdfdca595..09d45ac786e9 100644
-> --- a/include/linux/execmem.h
-> +++ b/include/linux/execmem.h
-> @@ -29,6 +29,7 @@
->   * @EXECMEM_KPROBES: parameters for kprobes
->   * @EXECMEM_FTRACE: parameters for ftrace
->   * @EXECMEM_BPF: parameters for BPF
-> + * @EXECMEM_MODULE_DATA: parameters for module data sections
->   * @EXECMEM_TYPE_MAX:
->   */
->  enum execmem_type {
-> @@ -37,6 +38,7 @@ enum execmem_type {
->         EXECMEM_KPROBES,
->         EXECMEM_FTRACE,
+>    0xffffffff818f0e72 <+66>:    mov    %r14,%rdi
+>    0xffffffff818f0e75 <+69>:    mov    %ebp,%esi
+>    0xffffffff818f0e77 <+71>:    mov    %rbx,%rdx
+>    0xffffffff818f0e7a <+74>:    nopl   0x0(%rax,%rax,1)
+>    0xffffffff818f0e7f <+79>:    test   %eax,%eax
+>    0xffffffff818f0e81 <+81>:    jne    0xffffffff818f0e4d <security_file_=
+ioctl+29>
+>    0xffffffff818f0e83 <+83>:    jmp    0xffffffff818f0e49 <security_file_=
+ioctl+25>
+>    0xffffffff818f0e85 <+85>:    endbr64
+>    0xffffffff818f0e89 <+89>:    mov    %r14,%rdi
+>    0xffffffff818f0e8c <+92>:    mov    %ebp,%esi
+>    0xffffffff818f0e8e <+94>:    mov    %rbx,%rdx
+>    0xffffffff818f0e91 <+97>:    pop    %rbx
+>    0xffffffff818f0e92 <+98>:    pop    %r14
+>    0xffffffff818f0e94 <+100>:   pop    %rbp
+>    0xffffffff818f0e95 <+101>:   ret
+>
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
 
-In longer term, I think we can improve the JITed code and merge
-kprobe/ftrace/bpf. to use the same ranges. Also, do we need special
-setting for FTRACE? If not, let's just remove it.
-
->         EXECMEM_BPF,
-> +       EXECMEM_MODULE_DATA,
->         EXECMEM_TYPE_MAX,
->  };
-
-Overall, it is great that kprobe/ftrace/bpf no longer depend on modules.
-
-OTOH, I think we should merge execmem_type and existing mod_mem_type.
-Otherwise, we still need to handle page permissions in multiple places.
-What is our plan for that?
+Acked-by: Song Liu <song@kernel.org>
 
 Thanks,
 Song
 
 
+
+> ---
+>  security/Kconfig    | 11 +++++++++++
+>  security/security.c | 12 +++++++-----
+>  2 files changed, 18 insertions(+), 5 deletions(-)
 >
-> @@ -107,6 +109,23 @@ struct execmem_params *execmem_arch_params(void);
+> diff --git a/security/Kconfig b/security/Kconfig
+> index 52c9af08ad35..bd2a0dff991a 100644
+> --- a/security/Kconfig
+> +++ b/security/Kconfig
+> @@ -32,6 +32,17 @@ config SECURITY
+>
+>           If you are unsure how to answer this question, answer N.
+>
+> +config SECURITY_HOOK_LIKELY
+> +       bool "LSM hooks are likely to be initialized"
+> +       depends on SECURITY
+> +       default y
+> +       help
+> +         This controls the behaviour of the static keys that guard LSM h=
+ooks.
+> +         If LSM hooks are likely to be initialized by LSMs, then one get=
+s
+> +         better performance by enabling this option. However, if the sys=
+tem is
+> +         using an LSM where hooks are much likely to be disabled, one ge=
+ts
+> +         better performance by disabling this config.
+> +
+>  config SECURITYFS
+>         bool "Enable the securityfs filesystem"
+>         help
+> diff --git a/security/security.c b/security/security.c
+> index d1ee72e563cc..7ab0e044f83d 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -105,9 +105,9 @@ static __initdata struct lsm_info *exclusive;
+>   * Define static calls and static keys for each LSM hook.
 >   */
->  void *execmem_text_alloc(enum execmem_type type, size_t size);
 >
-> +/**
-> + * execmem_data_alloc - allocate memory for data coupled to code
-> + * @type: type of the allocation
-> + * @size: how many bytes of memory are required
-> + *
-> + * Allocates memory that will contain data coupled with executable code,
-> + * like data sections in kernel modules.
-> + *
-> + * The memory will have protections defined by architecture.
-> + *
-> + * The allocated memory will reside in an area that does not impose
-> + * restrictions on the addressing modes.
-> + *
-> + * Return: a pointer to the allocated memory or %NULL
-> + */
-> +void *execmem_data_alloc(enum execmem_type type, size_t size);
-> +
->  /**
->   * execmem_free - free executable memory
->   * @ptr: pointer to the memory that should be freed
-> diff --git a/kernel/module/main.c b/kernel/module/main.c
-> index c4146bfcd0a7..2ae83a6abf66 100644
-> --- a/kernel/module/main.c
-> +++ b/kernel/module/main.c
-> @@ -1188,25 +1188,16 @@ void __weak module_arch_freeing_init(struct modul=
-e *mod)
->  {
->  }
+> -#define DEFINE_LSM_STATIC_CALL(NUM, NAME, RET, ...)                    \
+> -       DEFINE_STATIC_CALL_NULL(LSM_STATIC_CALL(NAME, NUM),             \
+> -                               *((RET(*)(__VA_ARGS__))NULL));          \
+> +#define DEFINE_LSM_STATIC_CALL(NUM, NAME, RET, ...)               \
+> +       DEFINE_STATIC_CALL_NULL(LSM_STATIC_CALL(NAME, NUM),       \
+> +                               *((RET(*)(__VA_ARGS__))NULL));    \
+>         DEFINE_STATIC_KEY_FALSE(SECURITY_HOOK_ACTIVE_KEY(NAME, NUM));
 >
-> -static bool mod_mem_use_vmalloc(enum mod_mem_type type)
-> -{
-> -       return IS_ENABLED(CONFIG_ARCH_WANTS_MODULES_DATA_IN_VMALLOC) &&
-> -               mod_mem_type_is_core_data(type);
-> -}
-> -
->  static void *module_memory_alloc(unsigned int size, enum mod_mem_type ty=
-pe)
->  {
-> -       if (mod_mem_use_vmalloc(type))
-> -               return vzalloc(size);
-> +       if (mod_mem_type_is_data(type))
-> +               return execmem_data_alloc(EXECMEM_MODULE_DATA, size);
->         return execmem_text_alloc(EXECMEM_MODULE_TEXT, size);
->  }
+>  #define LSM_HOOK(RET, DEFAULT, NAME, ...)                              \
+> @@ -825,7 +825,8 @@ static int lsm_superblock_alloc(struct super_block *s=
+b)
+>   */
+>  #define __CALL_STATIC_VOID(NUM, HOOK, ...)                              =
+    \
+>  do {                                                                    =
+    \
+> -       if (static_branch_unlikely(&SECURITY_HOOK_ACTIVE_KEY(HOOK, NUM)))=
+ {    \
+> +       if (static_branch_maybe(CONFIG_SECURITY_HOOK_LIKELY,             =
+    \
+> +                               &SECURITY_HOOK_ACTIVE_KEY(HOOK, NUM))) { =
+    \
+>                 static_call(LSM_STATIC_CALL(HOOK, NUM))(__VA_ARGS__);    =
+    \
+>         }                                                                =
+    \
+>  } while (0);
+> @@ -837,7 +838,8 @@ do {                                                 =
+                            \
 >
->  static void module_memory_free(void *ptr, enum mod_mem_type type)
->  {
-> -       if (mod_mem_use_vmalloc(type))
-> -               vfree(ptr);
-> -       else
-> -               execmem_free(ptr);
-> +       execmem_free(ptr);
->  }
->
->  static void free_mod_mem(struct module *mod)
-> diff --git a/mm/execmem.c b/mm/execmem.c
-> index abcbd07e05ac..aeff85261360 100644
-> --- a/mm/execmem.c
-> +++ b/mm/execmem.c
-> @@ -53,11 +53,23 @@ static void *execmem_alloc(size_t size, struct execme=
-m_range *range)
->         return kasan_reset_tag(p);
->  }
->
-> +static inline bool execmem_range_is_data(enum execmem_type type)
-> +{
-> +       return type =3D=3D EXECMEM_MODULE_DATA;
-> +}
-> +
->  void *execmem_text_alloc(enum execmem_type type, size_t size)
->  {
->         return execmem_alloc(size, &execmem_params.ranges[type]);
->  }
->
-> +void *execmem_data_alloc(enum execmem_type type, size_t size)
-> +{
-> +       WARN_ON_ONCE(!execmem_range_is_data(type));
-> +
-> +       return execmem_alloc(size, &execmem_params.ranges[type]);
-> +}
-> +
->  void execmem_free(void *ptr)
->  {
->         /*
-> @@ -93,7 +105,10 @@ static void execmem_init_missing(struct execmem_param=
-s *p)
->                 struct execmem_range *r =3D &p->ranges[i];
->
->                 if (!r->start) {
-> -                       r->pgprot =3D default_range->pgprot;
-> +                       if (execmem_range_is_data(i))
-> +                               r->pgprot =3D PAGE_KERNEL;
-> +                       else
-> +                               r->pgprot =3D default_range->pgprot;
->                         r->alignment =3D default_range->alignment;
->                         r->start =3D default_range->start;
->                         r->end =3D default_range->end;
+>  #define __CALL_STATIC_INT(NUM, R, HOOK, LABEL, ...)                     =
+    \
+>  do {                                                                    =
+    \
+> -       if (static_branch_unlikely(&SECURITY_HOOK_ACTIVE_KEY(HOOK, NUM)))=
+ {  \
+> +       if (static_branch_maybe(CONFIG_SECURITY_HOOK_LIKELY,             =
+    \
+> +                               &SECURITY_HOOK_ACTIVE_KEY(HOOK, NUM))) { =
+    \
+>                 R =3D static_call(LSM_STATIC_CALL(HOOK, NUM))(__VA_ARGS__=
+);    \
+>                 if (R !=3D 0)                                            =
+      \
+>                         goto LABEL;                                      =
+    \
 > --
-> 2.39.2
+> 2.42.0.459.ge4e396fd5e-goog
 >
 
