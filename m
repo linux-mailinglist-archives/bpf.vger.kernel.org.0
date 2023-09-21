@@ -1,47 +1,56 @@
-Return-Path: <bpf+bounces-10561-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10568-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF4EB7A9C27
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 21:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 381617A9C7E
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 21:19:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB0A1280FD5
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 19:10:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B6D7282EB1
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 19:18:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B0F54A533;
-	Thu, 21 Sep 2023 18:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECD0042C0A;
+	Thu, 21 Sep 2023 18:11:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09AEE41234;
-	Thu, 21 Sep 2023 18:10:49 +0000 (UTC)
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30C8AFC0F;
-	Thu, 21 Sep 2023 11:07:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=UY8fQYMYp3LwZRz20tNRxkLAI7g3a7cNxYpuf3mT/Kg=; b=Jj9H1CAo5OpcfYVJwcTdJqLBZY
-	jkt7qTwvzs9d4PrOzIIOpo5Ze4U2L193NSUaDE/KHgnbuZ8xNxfa34RIN+9sXGBG2BE5FkVc+Jxxx
-	CIuH7mKcWvP7/ERSTfSUPFn2QFcoMbWoM78X59SOr3YOvN1VuVwOAkmixNJywIsqGbfs=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1qjJc4-0075XM-3D; Thu, 21 Sep 2023 15:21:00 +0200
-Date: Thu, 21 Sep 2023 15:21:00 +0200
-From: Andrew Lunn <andrew@lunn.ch>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BA0C43AAE;
+	Thu, 21 Sep 2023 18:11:17 +0000 (UTC)
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C313A1505;
+	Thu, 21 Sep 2023 10:57:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=CC2gkTGhITx2Tkn4hzBnyxcQlVD3H0K9p7hCx7iKc0I=; b=RX/Dh/JlHN7+Dr2mKIx1OHw08j
+	abawgMlrvxjDlsbIPFGzplofhq7VcEHhhGFZr5v8TUs2rmkpzNCwTdiU/ex1Izqw2rmGLteOf6T3b
+	rafTyBkIl6Vl7p+9BVOfWbBV6ztXErezBRlJ0k1UNn9OTHkTcAr7tQi0CZZ2getl6yCEM4qAHxcUF
+	0KrBEHNL0Z7sRA9uEwAO55WvgagpdOLapZsmOUsOq3ojQ/D5eDQ9JBA++gwR1mHYPfVN/hpVeI3CF
+	AADotTfqbGiEqrhzLlKFo3aGvIzijqZ5x69wIwORuvfZRHh61rlcTaxBdznV8HpM6ZdVxWJ73Kr2f
+	hqa/s60A==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56250)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1qjJk4-0004de-0F;
+	Thu, 21 Sep 2023 14:29:16 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1qjJjc-0003ZN-MP; Thu, 21 Sep 2023 14:28:48 +0100
+Date: Thu, 21 Sep 2023 14:28:48 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
 To: Choong Yong Liang <yong.liang.choong@linux.intel.com>
 Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
 	David E Box <david.e.box@linux.intel.com>,
 	Hans de Goede <hdegoede@redhat.com>,
 	Mark Gross <markgross@kernel.org>,
-	Jose Abreu <Jose.Abreu@synopsys.com>,
+	Jose Abreu <Jose.Abreu@synopsys.com>, Andrew Lunn <andrew@lunn.ch>,
 	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
 	"David S . Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
@@ -65,6 +74,10 @@ Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
 	Shenwei Wang <shenwei.wang@nxp.com>,
 	Andrey Konovalov <andrey.konovalov@linaro.org>,
 	Jochen Henneberg <jh@henneberg-systemdesign.com>,
+	David E Box <david.e.box@intel.com>,
+	Andrew Halaney <ahalaney@redhat.com>,
+	Simon Horman <simon.horman@corigine.com>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
 	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-stm32@st-md-mailman.stormreply.com,
 	linux-arm-kernel@lists.infradead.org,
@@ -73,11 +86,11 @@ Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
 	Tan Tee Min <tee.min.tan@linux.intel.com>,
 	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
 	Lai Peter Jun Ann <jun.ann.lai@intel.com>
-Subject: Re: [PATCH net-next v2 0/5] TSN auto negotiation between 1G and 2.5G
-Message-ID: <37fe9352-ec84-47b8-bb49-9441987ca1b9@lunn.ch>
-References: <20230804084527.2082302-1-yong.liang.choong@linux.intel.com>
- <5bd05ba2-fd88-4e5c-baed-9971ff917484@lunn.ch>
- <f9b21a9d-4ae2-1f91-b621-2e27f746f661@linux.intel.com>
+Subject: Re: [PATCH net-next v3 4/5] net: stmmac: enable Intel mGbE 1G/2.5G
+ auto-negotiation support
+Message-ID: <ZQxFEChbKJtsGm2w@shell.armlinux.org.uk>
+References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
+ <20230921121946.3025771-5-yong.liang.choong@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,26 +99,42 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f9b21a9d-4ae2-1f91-b621-2e27f746f661@linux.intel.com>
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-	autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230921121946.3025771-5-yong.liang.choong@linux.intel.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-> Hi Andrew,
-> 
-> After conducting a comprehensive study, it seems that implementing
-> out-of-band for all link modes might not be feasible. I may have missed some
-> key aspects during my analysis.
-> 
-> Would you be open to sharing a high-level idea of how we could potentially
-> make this feasible? Your insights would be greatly appreciated.
+On Thu, Sep 21, 2023 at 08:19:45PM +0800, Choong Yong Liang wrote:
+> +#if IS_ENABLED(CONFIG_INTEL_PMC_IPC)
 
-stmmac_mac_link_up() gets passed interface, speed and duplex. That
-tells you what the PHY has negotiated. Is there anything else you need
-to know?
+There shouldn't be any need to make this conditional.
 
-   Andrew
+> +static int stmmac_mac_prepare(struct phylink_config *config, unsigned int mode,
+> +			      phy_interface_t interface)
+> +{
+> +	struct net_device *ndev = to_net_dev(config->dev);
+> +	struct stmmac_priv *priv = netdev_priv(ndev);
+> +	int ret = 0;
+> +
+> +	priv->plat->phy_interface = interface;
+> +
+> +	if (priv->plat->config_serdes)
+> +		ret = priv->plat->config_serdes(ndev, priv->plat->bsp_priv);
+
+Please call this "phylink_mac_prepare" and pass the parameters that
+phylink passes you to this function, so we don't end up at a later
+date with people needing to extend this function to do other stuff,
+thus repeating mistakes from earlier.
+
+This is what has led to some very yucky code in all those
+"fix_mac_speed" implementations, with duplicated data in the BSPs
+to get the PHY mode and store it separately, etc.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
