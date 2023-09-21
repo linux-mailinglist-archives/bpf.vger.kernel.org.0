@@ -1,210 +1,149 @@
-Return-Path: <bpf+bounces-10538-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10530-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CA837A98EB
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 20:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F3CBA7A9855
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 19:41:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78097B21693
-	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 18:00:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74A80B21243
+	for <lists+bpf@lfdr.de>; Thu, 21 Sep 2023 17:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8213C41AA8;
-	Thu, 21 Sep 2023 17:22:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DA7B18C1C;
+	Thu, 21 Sep 2023 17:11:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7E33CD13;
-	Thu, 21 Sep 2023 17:22:40 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAAC354925;
-	Thu, 21 Sep 2023 10:17:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695316633; x=1726852633;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=A586LM0+gOXd/iEXjaMd75qtDywyXfu3CO1tYPaBTEU=;
-  b=EGyrJUi6MWNaAgyLgzFST1Cw8KC9HLwVF/MDSOQ1DwRqEEtMoghOcJx8
-   aBSLporeERcX2a7FzdJNv6i9tkNUQSO0E43uKg3jFHgZyND+5xO86TPOm
-   aT6RPGdn+1zAL5D6cNzUGOM/rlNhomdtuuctBKMMVgqnhjxX3ckrayL5M
-   TBCZXG4XlGkF6RAFmRCrTC+TY1DPJLLikXSztng/pwbV92B+Fhp9YNVCs
-   gPEV7+1j3eckDTE9tEn5brf2J0EEKwUaSP5CTC5NkI85EbtH4Zj5viFZY
-   G2vXiikhUY65LItYksI0n8apto+zFcMOCBFdjegAez7VmEnDwXK9Olkn3
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="444608385"
-X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="444608385"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2023 05:21:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="862442142"
-X-IronPort-AV: E=Sophos;i="6.03,165,1694761200"; 
-   d="scan'208";a="862442142"
-Received: from yongliang-ubuntu20-ilbpg12.png.intel.com ([10.88.229.33])
-  by fmsmga002.fm.intel.com with ESMTP; 21 Sep 2023 05:21:11 -0700
-From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-To: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-	David E Box <david.e.box@linux.intel.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Mark Gross <markgross@kernel.org>,
-	Jose Abreu <Jose.Abreu@synopsys.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	=?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-	Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Wong Vee Khee <veekhee@apple.com>,
-	Jon Hunter <jonathanh@nvidia.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Revanth Kumar Uppala <ruppala@nvidia.com>,
-	Shenwei Wang <shenwei.wang@nxp.com>,
-	Andrey Konovalov <andrey.konovalov@linaro.org>,
-	Jochen Henneberg <jh@henneberg-systemdesign.com>
-Cc: David E Box <david.e.box@intel.com>,
-	Andrew Halaney <ahalaney@redhat.com>,
-	Simon Horman <simon.horman@corigine.com>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	platform-driver-x86@vger.kernel.org,
-	linux-hwmon@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Voon Wei Feng <weifeng.voon@intel.com>,
-	Tan Tee Min <tee.min.tan@linux.intel.com>,
-	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-	Lai Peter Jun Ann <jun.ann.lai@intel.com>
-Subject: [PATCH net-next v3 5/5] stmmac: intel: Add 1G/2.5G auto-negotiation support for ADL-N
-Date: Thu, 21 Sep 2023 20:19:46 +0800
-Message-Id: <20230921121946.3025771-6-yong.liang.choong@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
-References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C49114F63;
+	Thu, 21 Sep 2023 17:11:21 +0000 (UTC)
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED579025;
+	Thu, 21 Sep 2023 10:11:02 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-76f2843260bso72941785a.3;
+        Thu, 21 Sep 2023 10:11:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695316262; x=1695921062; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vmAqS4POZPQ4cWVva2XsitwLpylcffcICW2xKCJAJKs=;
+        b=MRqMb0ErSrr4wYpe1itOlcjN7/APkPythWOmRjzTboiRL9JfU7RByvJ+F5O+xIFIUE
+         //9lhMbVyepYpQBzICN6lJx8Z4RsedsNuXC9qIJePcKhw/0lGnni6JIxgZY+9xXpni+/
+         e1rvMEpKozskOfDaWLuqGRHkmdtLf2IrjzyANzv8Zg/X84BcAP2f3tjmkizpd1Br3Viq
+         IhJtiFosCPVtAMeygLusVi/Emx/c9XtrNWlHtuSd/Rn6pUtp0oAWRY6PA3E4W6ibTaOD
+         l15BVKpKVTCdJn16jYhf03QerAUZ/Z6+A7hrcoy5oDhoVPVdsRNhR6bavnhvhiU4VGib
+         3HhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695316262; x=1695921062;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vmAqS4POZPQ4cWVva2XsitwLpylcffcICW2xKCJAJKs=;
+        b=T4wm7iURJMAeaggidUIV1+o/pv+Da1DiBqEulNbkY0UKyZesupg90ao9L1bma0p1P4
+         M8+pcHGb+wllbDQRel1sEFEaI6W4K4vyvLNHoNG1rvfPEFNrjlUkvZZWXZ6Gg1Ehm1Gt
+         fKnGjgfbrcWKPc8A2IsdDRoTHN5/dO6/o3GIZ975j+pR8ep3UmNOzn+8dbOowZWYbtwL
+         3CJ157xLeZFajm4FAqjOqJgO+Hi2/9/M6ZM0sHP8ZL9thhu/xS4OkQledWccUF+2Mlnl
+         YuZ3YmWSMHf9tDKZfVOG2E6n/1Vcl7iEg6xifvtVNJARbVIrUX5PvDMXaF76pMlCKmFZ
+         DQ/g==
+X-Gm-Message-State: AOJu0YwPNJI+WREc5Q+AMX58ylpzRsn68gH40hU+CkObp+wNT1Hnk9aU
+	nO2KG/WYYnmIVGUNFAA+eOzexHSZ7w92WLXbuIx2wqTx
+X-Google-Smtp-Source: AGHT+IGlJdba7Njyh19TjaAtxrKa+auxnuBas8gb+0vYCa3DLBBmCmHN8Sx2z82f9gjmZ9zPPKAz/33voSKrEqm8sUA=
+X-Received: by 2002:a1f:c886:0:b0:496:21dc:ec73 with SMTP id
+ y128-20020a1fc886000000b0049621dcec73mr5737338vkf.5.1695302243773; Thu, 21
+ Sep 2023 06:17:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-	SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <730408.1695292879@warthog.procyon.org.uk> <CANn89i+wUq5R2nFO8eGLp7=8Y5OiJ0fwjR+ES74gk1X4k9r0rw@mail.gmail.com>
+In-Reply-To: <CANn89i+wUq5R2nFO8eGLp7=8Y5OiJ0fwjR+ES74gk1X4k9r0rw@mail.gmail.com>
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date: Thu, 21 Sep 2023 09:16:48 -0400
+Message-ID: <CAF=yD-JhsNCtP7iWCL830=JWwsKHMqo4OMb9NSgReGJK7C=_0w@mail.gmail.com>
+Subject: Re: [PATCH net v3] ipv4, ipv6: Fix handling of transhdrlen in __ip{,6}_append_data()
+To: Eric Dumazet <edumazet@google.com>
+Cc: David Howells <dhowells@redhat.com>, netdev@vger.kernel.org, 
+	syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com, 
+	"David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add modphy register lane to have 1G/2.5G auto-negotiation support for
-ADL-N.
+On Thu, Sep 21, 2023 at 7:09=E2=80=AFAM Eric Dumazet <edumazet@google.com> =
+wrote:
+>
+> On Thu, Sep 21, 2023 at 12:41=E2=80=AFPM David Howells <dhowells@redhat.c=
+om> wrote:
+> >
+> >
+> > Including the transhdrlen in length is a problem when the packet is
+> > partially filled (e.g. something like send(MSG_MORE) happened previousl=
+y)
+> > when appending to an IPv4 or IPv6 packet as we don't want to repeat the
+> > transport header or account for it twice.  This can happen under some
+> > circumstances, such as splicing into an L2TP socket.
+> >
+> > The symptom observed is a warning in __ip6_append_data():
+> >
+> >     WARNING: CPU: 1 PID: 5042 at net/ipv6/ip6_output.c:1800 __ip6_appen=
+d_data.isra.0+0x1be8/0x47f0 net/ipv6/ip6_output.c:1800
+> >
+> > that occurs when MSG_SPLICE_PAGES is used to append more data to an alr=
+eady
+> > partially occupied skbuff.  The warning occurs when 'copy' is larger th=
+an
+> > the amount of data in the message iterator.  This is because the reques=
+ted
+> > length includes the transport header length when it shouldn't.  This ca=
+n be
+> > triggered by, for example:
+> >
+> >         sfd =3D socket(AF_INET6, SOCK_DGRAM, IPPROTO_L2TP);
+> >         bind(sfd, ...); // ::1
+> >         connect(sfd, ...); // ::1 port 7
+> >         send(sfd, buffer, 4100, MSG_MORE);
+> >         sendfile(sfd, dfd, NULL, 1024);
+> >
+> > Fix this by only adding transhdrlen into the length if the write queue =
+is
+> > empty in l2tp_ip6_sendmsg(), analogously to how UDP does things.
+> >
+> > l2tp_ip_sendmsg() looks like it won't suffer from this problem as it bu=
+ilds
+> > the UDP packet itself.
+> >
+> > Fixes: a32e0eec7042 ("l2tp: introduce L2TPv3 IP encapsulation support f=
+or IPv6")
+> > Reported-by: syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com
+> > Link: https://lore.kernel.org/r/0000000000001c12b30605378ce8@google.com=
+/
+> > Suggested-by: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> > Signed-off-by: David Howells <dhowells@redhat.com>
+> > cc: Eric Dumazet <edumazet@google.com>
+> > cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> > cc: "David S. Miller" <davem@davemloft.net>
+> > cc: David Ahern <dsahern@kernel.org>
+> > cc: Paolo Abeni <pabeni@redhat.com>
+> > cc: Jakub Kicinski <kuba@kernel.org>
+> > cc: netdev@vger.kernel.org
+> > cc: bpf@vger.kernel.org
+> > cc: syzkaller-bugs@googlegroups.com
+> > ---
+>
+> Looks safer indeed, thanks to you and Willem !
+>
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
----
- .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 49 ++++++++++++++++++-
- .../net/ethernet/stmicro/stmmac/dwmac-intel.h |  2 +
- 2 files changed, 50 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index a211f42914a2..bece46faa710 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -961,6 +961,53 @@ static int adls_sgmii_phy1_data(struct pci_dev *pdev,
- static struct stmmac_pci_info adls_sgmii1g_phy1_info = {
- 	.setup = adls_sgmii_phy1_data,
- };
-+
-+static int adln_common_data(struct pci_dev *pdev,
-+			    struct plat_stmmacenet_data *plat)
-+{
-+	struct intel_priv_data *intel_priv = plat->bsp_priv;
-+
-+	plat->rx_queues_to_use = 6;
-+	plat->tx_queues_to_use = 4;
-+	plat->clk_ptp_rate = 204800000;
-+
-+	plat->safety_feat_cfg->tsoee = 1;
-+	plat->safety_feat_cfg->mrxpee = 0;
-+	plat->safety_feat_cfg->mestee = 1;
-+	plat->safety_feat_cfg->mrxee = 1;
-+	plat->safety_feat_cfg->mtxee = 1;
-+	plat->safety_feat_cfg->epsi = 0;
-+	plat->safety_feat_cfg->edpp = 0;
-+	plat->safety_feat_cfg->prtyen = 0;
-+	plat->safety_feat_cfg->tmouten = 0;
-+
-+	intel_priv->tsn_lane_registers = adln_tsn_lane_registers;
-+	intel_priv->max_tsn_lane_registers = ARRAY_SIZE(adln_tsn_lane_registers);
-+
-+	return intel_mgbe_common_data(pdev, plat);
-+}
-+
-+static int adln_sgmii_phy0_data(struct pci_dev *pdev,
-+				struct plat_stmmacenet_data *plat)
-+{
-+	struct intel_priv_data *intel_priv = plat->bsp_priv;
-+
-+	plat->bus_id = 1;
-+	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->max_speed = SPEED_2500;
-+	plat->serdes_powerup = intel_serdes_powerup;
-+	plat->serdes_powerdown = intel_serdes_powerdown;
-+	plat->config_serdes = intel_config_serdes;
-+
-+	intel_priv->pid_modphy = PID_MODPHY1;
-+
-+	return adln_common_data(pdev, plat);
-+}
-+
-+static struct stmmac_pci_info adln_sgmii1g_phy0_info = {
-+	.setup = adln_sgmii_phy0_data,
-+};
-+
- static const struct stmmac_pci_func_data galileo_stmmac_func_data[] = {
- 	{
- 		.func = 6,
-@@ -1343,7 +1390,7 @@ static const struct pci_device_id intel_eth_pci_id_table[] = {
- 	{ PCI_DEVICE_DATA(INTEL, TGLH_SGMII1G_1, &tgl_sgmii1g_phy1_info) },
- 	{ PCI_DEVICE_DATA(INTEL, ADLS_SGMII1G_0, &adls_sgmii1g_phy0_info) },
- 	{ PCI_DEVICE_DATA(INTEL, ADLS_SGMII1G_1, &adls_sgmii1g_phy1_info) },
--	{ PCI_DEVICE_DATA(INTEL, ADLN_SGMII1G, &tgl_sgmii1g_phy0_info) },
-+	{ PCI_DEVICE_DATA(INTEL, ADLN_SGMII1G, &adln_sgmii1g_phy0_info) },
- 	{ PCI_DEVICE_DATA(INTEL, RPLP_SGMII1G, &tgl_sgmii1g_phy0_info) },
- 	{}
- };
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-index 093eed977ab0..2c6b50958988 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-@@ -124,8 +124,10 @@ static const struct pmc_serdes_regs pid_modphy1_2p5g_regs[] = {
- 	{}
- };
- 
-+static const int adln_tsn_lane_registers[] = {6};
- static const int ehl_tsn_lane_registers[] = {7, 8, 9, 10, 11};
- #else
-+static const int adln_tsn_lane_registers[] = {};
- static const int ehl_tsn_lane_registers[] = {};
- #endif /* CONFIG_INTEL_PMC_IPC */
- 
--- 
-2.25.1
-
+Reviewed-by: Willem de Bruijn <willemb@google.com>
 
