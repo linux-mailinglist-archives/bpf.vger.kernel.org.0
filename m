@@ -1,151 +1,201 @@
-Return-Path: <bpf+bounces-10621-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10622-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 295FC7AAE8B
-	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 11:46:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 284887AAF44
+	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 12:13:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by am.mirrors.kernel.org (Postfix) with ESMTP id A85F31F227BC
-	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 09:46:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTP id D7FFCB20A33
+	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 10:13:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 022611E52D;
-	Fri, 22 Sep 2023 09:46:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA6D1EA9A;
+	Fri, 22 Sep 2023 10:13:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9746D1D6B8;
-	Fri, 22 Sep 2023 09:46:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B323C433C7;
-	Fri, 22 Sep 2023 09:45:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695375967;
-	bh=2ZqJg/JyagscC0zGrbJOL5exgL9GpMI8zoZzbRLoF7E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=i1h9hc1vyL0d8fPYkZb5zjoNiQWrTzzy1UDHQi43TnS5vQG3oCUVHGV5CACeQmXV4
-	 hv2g/krywG9c+snlMzxsinwKjADXi0ZxxdDRv7UlO0wmcqcQ7sXGHnqsy2O4JlJvjr
-	 yBuQ+A/6MXrwNBm9vKlClwtxzXUXV5WmuR4EtFrPBmYYc+a+I8ozQkgbtzByDB74dJ
-	 Yss8T/iwWJlChVk46FIOC2IW/gzC6Mu41gGF5E+5jlyqCSsTC8xjFnOaTS69pb8igl
-	 sRcswxE7sfkCoIagyUp9JFI9cFVtwYpIpmDN3pUUkksRveUDMTmZTVBUBEwdVKjFAS
-	 LUoen6AzOSbQw==
-Date: Fri, 22 Sep 2023 10:45:52 +0100
-From: Simon Horman <horms@kernel.org>
-To: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-	David E Box <david.e.box@linux.intel.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Mark Gross <markgross@kernel.org>,
-	Jose Abreu <Jose.Abreu@synopsys.com>, Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-	Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Wong Vee Khee <veekhee@apple.com>,
-	Jon Hunter <jonathanh@nvidia.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Revanth Kumar Uppala <ruppala@nvidia.com>,
-	Shenwei Wang <shenwei.wang@nxp.com>,
-	Andrey Konovalov <andrey.konovalov@linaro.org>,
-	Jochen Henneberg <jh@henneberg-systemdesign.com>,
-	David E Box <david.e.box@intel.com>,
-	Andrew Halaney <ahalaney@redhat.com>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
-	bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
-	Tan Tee Min <tee.min.tan@linux.intel.com>,
-	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-	Lai Peter Jun Ann <jun.ann.lai@intel.com>
-Subject: Re: [PATCH net-next v3 1/5] arch: x86: Add IPC mailbox accessor
- function and add SoC register access
-Message-ID: <20230922094552.GY224399@kernel.org>
-References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
- <20230921121946.3025771-2-yong.liang.choong@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BFC61EA7C;
+	Fri, 22 Sep 2023 10:13:29 +0000 (UTC)
+Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-pr2fra01on2043.outbound.protection.outlook.com [40.107.12.43])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B51B91;
+	Fri, 22 Sep 2023 03:13:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V4GSs/gNgQjxuOmqAgpg4tFUNzBI5ibWPjVluM9WyQmgaUWVb3kTqqeqvwM9DxP2DpkPKBo6KTkAKVYvBcMcLVuadwRe8exhrE9k7ejzVGjPRR6Q7aeHIOgyYt9C6O56A4rImxHOd1p6KnXgz+WpsjuBbicQl5MATxcC5pKul3a8XThswbTk480JULFTQ3SPOPhOFdo8TfOoJcA7ojzLllPLrrZTNYdCC9VQAjTvuh5Q9Hf6DBdF4kx9ayiKMS7Gzj+N20jkOPKLpqvvLLuSTtKfUnl6oFSOyFptUw9ValFik0S0zLBZE9aawjB+p6lBaIYLPAugaLM0QQEIEQd0hw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aKyKBC06DhwCRBlehBH4loXxGa8zVBJDKD5oLFAr/SU=;
+ b=Cnucl7tNMLptuEmIV35T6vvXXdN3pmT7Dkg3/i/7wbbk35Nue9dhFWITqAdDec2NM4GLV5DYrQ5g0nkLu3+8OWxlikR+7aWkBCHLmjvTgnoL4kI2v5kZtiLjb3fWexVD8hlhcIfu8yZA1AoEzIS6JulmTRulw1T5oUyqvC1kjlJbSGP2SMTGsVMNS8tFIss+TngT9fcpCG5Zf3pZSH6Bc978JxXPIXES2z/KENUbRDkefnMCH7HRWVRanAU+oqju/62TkPsvj5NkxYz2U6N2V0P2DxumwuJUiIlIkARd61nAppC9HvpTDHFaIouO+yyup3oUGia9BIHCYiquSKbFGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aKyKBC06DhwCRBlehBH4loXxGa8zVBJDKD5oLFAr/SU=;
+ b=AlO6JPT6Y2wBHxi686V01qZFLZfm/G7PdGmO/uu9rEt+5/n7GJ2q4/i/+ab4qIZdDCJJbWtiWzVshbGaa8HyIprl6gAtOpPGeOydBNfMZk/zjISQi8SLbnW9N/QIzjIyRaXyVYqxxkSfwgw1JE+w4gqFFlq8iFmJozM+tLIYtil7liWM02hEA56axcU/UIudKhMgy611gcJpqWJmH8N0RKNTftO04M/5sr+/SxCSg4QQeCoFK0vsbFXv5Ik/UKMHD/0Q+fJyNmb8JtyuqGUYzCGNntyXd9vMxU60aku4zw6bmNw/mkdwI0pJrbww7V0wXkW2gZS3W4VIZir4QCuJEw==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by PR0P264MB3015.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1d6::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Fri, 22 Sep
+ 2023 10:13:25 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::2820:d3a6:1cdf:c60e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::2820:d3a6:1cdf:c60e%7]) with mapi id 15.20.6813.017; Fri, 22 Sep 2023
+ 10:13:25 +0000
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Song Liu <song@kernel.org>
+CC: Mike Rapoport <rppt@kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Catalin Marinas
+	<catalin.marinas@arm.com>, "David S. Miller" <davem@davemloft.net>, Dinh
+ Nguyen <dinguyen@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Helge
+ Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, Kent Overstreet
+	<kent.overstreet@linux.dev>, Luis Chamberlain <mcgrof@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>, Michael Ellerman <mpe@ellerman.id.au>, Nadav
+ Amit <nadav.amit@gmail.com>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>, Puranjay Mohan <puranjay12@gmail.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>, Russell King
+	<linux@armlinux.org.uk>, Steven Rostedt <rostedt@goodmis.org>, Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner
+	<tglx@linutronix.de>, Will Deacon <will@kernel.org>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-mips@vger.kernel.org"
+	<linux-mips@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
+	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "x86@kernel.org"
+	<x86@kernel.org>
+Subject: Re: [PATCH v3 06/13] mm/execmem: introduce execmem_data_alloc()
+Thread-Topic: [PATCH v3 06/13] mm/execmem: introduce execmem_data_alloc()
+Thread-Index: AQHZ6gIemvXxoUb2LEiShTuWJhQ1PLAl6IqAgACM8oCAABuSgIAAFcIA
+Date: Fri, 22 Sep 2023 10:13:25 +0000
+Message-ID: <c92ded27-6e14-7265-c76e-76f4f2238a35@csgroup.eu>
+References: <20230918072955.2507221-1-rppt@kernel.org>
+ <20230918072955.2507221-7-rppt@kernel.org>
+ <CAPhsuW73NMvdpmyrhGouQSAHEL9wRw_A+8dZ-5R4BU=UHH83cw@mail.gmail.com>
+ <9b73ad3d-cfda-bce5-2589-e8674a58c827@csgroup.eu>
+ <CAPhsuW4_3oYhN6LnPPyBVA4VAM=7voXKmcJNKLqiNEUboq1rnA@mail.gmail.com>
+In-Reply-To:
+ <CAPhsuW4_3oYhN6LnPPyBVA4VAM=7voXKmcJNKLqiNEUboq1rnA@mail.gmail.com>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR0P264MB3015:EE_
+x-ms-office365-filtering-correlation-id: b58f6d78-cab4-4847-c89b-08dbbb548efd
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 2zVhOMplHLhuu5ZU6pbLh0mJW/K2PZADYGflAQI6z5DccBLWAtS394Ro0MkCoEeZ1zIOF5yZW+o8IvVdIZsOEXHkd+RuXQn2aR2vK1VI8qD+ZbjIAH+ywAqhAcBem0BF+4ewPaLy6WVNqit9YxrvltyJtKy+K4DwOYbigeZKoofyfzhg2/xrXr7mZHA/EsDt5MtL3102wYSPZODWe9/MKd+UY7jyT9G3sVApUun4NSeub+XkxIoqNGQzNsTt2HdloNGIKMwHfbfU+qAaomJ3S+TM2+xP6ez9HAb193EwMKG+IOvm6JP2NyjuNn0bWdvbIgkPG5HFm2ixY3Lsr3qpl/Ztf/UbB3h1cuq2Y6T9uB0LZvomIVF4xMf0sto7cKl/2yKZgdXkKRm7MBaIfO6c3GEN8BsBYrjeKGkCnFn9JwBnkKh/PaoBgpiTipjteZM125he68ofyXmKpDc0q5UTCGyLd/QsenRGa3Ed99jfjun9V8oQ983zoA30XkMedaX46qjkKOm0CuVnhuJ7n/Hx48jLkDRb9XdMkZ0rCrhxEJgyXBKWFWhLmw1saU/bol748dgHAKKZQPRcYuM0U3tQpc2PQA3v8ZHN/bI9/81XbzSZ9XJRB77apKmnphy0mWWYCs+0gKcNu8bn0Wk2gcRtZH5PEBc6pz9DmQWRpxm9kdz8WlEB1O8Lfo99G8NQ87sQ
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(136003)(39860400002)(346002)(1800799009)(186009)(451199024)(2616005)(26005)(6916009)(316002)(4326008)(8936002)(44832011)(8676002)(5660300002)(31686004)(122000001)(71200400001)(38070700005)(38100700002)(6512007)(6506007)(6486002)(53546011)(66946007)(76116006)(91956017)(66446008)(64756008)(54906003)(66556008)(66476007)(36756003)(41300700001)(2906002)(7406005)(7416002)(478600001)(31696002)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?cXJJdHdSeWMzYUpyTXVWeVZuVUZ0S2tzYm9FWkQ4bitudUZYMEVvcFdoUXRX?=
+ =?utf-8?B?L1dvVmZveFJBWlg3aVljOFg2RHFkWWlCQmI1RWlnb24rRk5iSThTVWRtcUQy?=
+ =?utf-8?B?QWtIV3BkMktqUHNkZzlaaXlkeENqS0VLYzB4QmRZYmg2QkFEcDVlZmRvbFZn?=
+ =?utf-8?B?dnNpWW9vWHMyS09abnVhTGEyb1NlNXR2dlJsbEczSnBLbndBL0hsbHMyenBG?=
+ =?utf-8?B?Vmd2MUNhMDRmSlMwUGtPZ0ROK1JiVytoekF1Zlc1NG9Zd1RhNzdaZmJHMmFj?=
+ =?utf-8?B?dUt4Z0k5WFg0dXJwZURZOWhPRHlNcldnYVEzYkhXaHlFTjN5RFQyRXFQYThK?=
+ =?utf-8?B?REFFTUJwUWF5aFJTdWJoZjdGb2NoOGxhbjQxcFNaQUJHT1FzVXhSODlqbkhW?=
+ =?utf-8?B?Smpzenl6U3U0TkFJanJFdWpCeXE1UE1xRUxjTzRURERrazJoRW02UUNJVjhj?=
+ =?utf-8?B?K0lObEdLV1B4ZG1RN0l0djVTbGEyb0I0bU8rOTlIZTA0aDlVRFVqbEI3b3F3?=
+ =?utf-8?B?VWZXT3E1MlVmeFFuaitjV1V6OUZjM3RRNEdwb1ZPbHl4SlI1MDBEVGJ0YXl5?=
+ =?utf-8?B?eXVZMWNpSFdLd3VIOEpGUHJDY3l2SXgxaXVMcWJ0RC84QWlheWxzNUErMlgx?=
+ =?utf-8?B?MVpuZ3dLVnkyek56VTNFeTBSaDFtU1FYbzBIT1gzblIxVnVhWnIxTFN1RE5C?=
+ =?utf-8?B?Szh1NUp4VGd2dk4xOTBEVG93TXkyS2VrREVMOUFlaUc5NGI0RysxWERXWGFp?=
+ =?utf-8?B?MFQxVHVzR2NScDNjYnYwUnhzYmZUeW8zSlU4dWFJMHovcExjeWNvdXNHQlZ3?=
+ =?utf-8?B?ZUtZMURETUNTbG1hbXhGTTFvS0NmRTNBakgyandxN3NNZVBhOEgwbW9vT0cr?=
+ =?utf-8?B?cTc3N1pzOFNiZnNRcmoxMmJEano1VmNQVWtCTkRra0JOMmUyU2k5SUhKTjh5?=
+ =?utf-8?B?Q3VzZUdqOEMyRXIyV0xRZHpQSHR5RkxydFh1aUVaQ1ZSM1QrZGlPbEE1VjlS?=
+ =?utf-8?B?QlJHWVlLZ2MyT3JHK2pRYnk5bmJaanVvMVRpSDVUUjNpQmtPdkxNWHBFZ2lW?=
+ =?utf-8?B?WTU1YWR2KzY3a1p2eVVHb3BsaU1JVXV3eFZBYU04MHhlN1ZQaiswYW9WOXEx?=
+ =?utf-8?B?ZmN5MTZSaW9CK1FyclBvejYva0JIR0ExTEFyaVVuU0NPS2NOYU5aeUoyeWhv?=
+ =?utf-8?B?blFjYXF2ZEx6N0ZmQ1dNamsvUktMclZRYkRBL0hYeFBtY0ZkeWdWRkxBVzJ4?=
+ =?utf-8?B?WGxXeEF3NnpaTkhsQy9YNGNKMVJzWEFLd2dLT05CVUd2SDMzWG1aaS9lQlRh?=
+ =?utf-8?B?cUVYNCt3Qm80WTdZUGR6ZGcyS3VzZGJ3c3VXb085dVVaVE5RcXRvd2puOWdW?=
+ =?utf-8?B?eXdyYkJkYkZsQmF0Q2lKaTZLQlZoaTh2RVpzblR0YittWWlQeUord1h2d0p0?=
+ =?utf-8?B?OGs1Z0VHdVQ4ck5SZGFrK0s2aDhIMFBnM3VYaHNpK3c4WjdoZkhXQ09UTmpX?=
+ =?utf-8?B?dmlIakxsQloycnNXTHRzTzF5MUdET21XRmhNSnRldFVTeXBGb21DVzlxYUVG?=
+ =?utf-8?B?YUFhaVU1bzFtWHI0VTBCMGtGYUM4SUFxMkl1UzRnOFdGcFNNVnRGakRzQmp5?=
+ =?utf-8?B?cU4vWVdqbUt3aTRsNEFGbFdjSG9DODdCV3IwYVFxa1NkajZHOXVTK3I4VkpM?=
+ =?utf-8?B?azFCK1JnS3hoYnNIMmlWYzlSVDQvRTA1SXdaMHlDdjRuQ2lrZzgyMkRYN1dG?=
+ =?utf-8?B?N3JHaUZSME5zdjBmRnRnMmRucHJhOWMxcTBlRThTQTRDVU1nbXc5Rkd0bll0?=
+ =?utf-8?B?M25qUXdMcURQTUF1b0tvOGtGbkMyYXQ2SG5pUTVsR05Oa2NzV1Mxd0g4SHVZ?=
+ =?utf-8?B?RXFJenFtM2g4TzF2WHZ1aStjQXdOTmJ3MklJUGFWenk5TnhTRzNiY2tjRG5Q?=
+ =?utf-8?B?TjFzOFovSDgwQ1hoNmJaVExGL0hTMWw5T25qWlZzNDJOeHY5SW5hTk52dHZu?=
+ =?utf-8?B?VWtoRDhUajFrS05Gdlg3NHpOa3hDdldjTzJidjdEcDM0VDYvdTBUKzJHUkFr?=
+ =?utf-8?B?QTV4TlVWTzgxcVFLMlNZZ2VqT0FCMDRBOS9pR05MV0kwMkVBKzJ2UmlMMEl3?=
+ =?utf-8?B?bUF3UDdFSFlXZEVnSndyT3VBdFYwakNjaWx3UGVxbW5kR3VpekNKSWszNk82?=
+ =?utf-8?B?Qmc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <332ADFD079FF3747B57CDDB034F24190@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230921121946.3025771-2-yong.liang.choong@linux.intel.com>
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: b58f6d78-cab4-4847-c89b-08dbbb548efd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2023 10:13:25.3175
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: W6Mgg6k7khJTD76ZUrLoIl4imKNqlDkWAY6OY+qYmqBYwFltJ9d1l6pXLipczywMoGyPKGDwSAWYg1IRva/hUpvwX953qfea5oyV0SPcvdw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB3015
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Thu, Sep 21, 2023 at 08:19:42PM +0800, Choong Yong Liang wrote:
-> From: "David E. Box" <david.e.box@linux.intel.com>
-> 
-> - Exports intel_pmc_ipc() for host access to the PMC IPC mailbox
-> - Add support to use IPC command allows host to access SoC registers
-> through PMC firmware that are otherwise inaccessible to the host due to
-> security policies.
-> 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> Signed-off-by: Chao Qin <chao.qin@intel.com>
-> Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-
-...
-
-> diff --git a/include/linux/platform_data/x86/intel_pmc_ipc.h b/include/linux/platform_data/x86/intel_pmc_ipc.h
-> new file mode 100644
-> index 000000000000..25ba57b8a7ea
-> --- /dev/null
-> +++ b/include/linux/platform_data/x86/intel_pmc_ipc.h
-> @@ -0,0 +1,34 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Intel Core SoC Power Management Controller Header File
-> + *
-> + * Copyright (c) 2023, Intel Corporation.
-> + * All Rights Reserved.
-> + *
-> + * Authors: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-> + *          David E. Box <david.e.box@linux.intel.com>
-> + */
-> +#ifndef INTEL_PMC_IPC_H
-> +#define INTEL_PMC_IPC_H
-> +
-> +#define IPC_SOC_REGISTER_ACCESS			0xAA
-> +#define IPC_SOC_SUB_CMD_READ			0x00
-> +#define IPC_SOC_SUB_CMD_WRITE			0x01
-> +
-> +struct pmc_ipc_cmd {
-> +	u32 cmd;
-> +	u32 sub_cmd;
-> +	u32 size;
-> +	u32 wbuf[4];
-> +};
-> +
-> +/**
-> + * intel_pmc_core_ipc() - PMC IPC Mailbox accessor
-
-nit: intel_pmc_ipc()
-
-> + * @ipc_cmd:  struct pmc_ipc_cmd prepared with input to send
-> + * @rbuf:     Allocated u32[4] array for returned IPC data
-> + *
-> + * Return: 0 on success. Non-zero on mailbox error
-> + */
-> +int intel_pmc_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf);
-> +
-> +#endif /* INTEL_PMC_IPC_H */
-> -- 
-> 2.25.1
-> 
-> 
+DQoNCkxlIDIyLzA5LzIwMjMgw6AgMTA6NTUsIFNvbmcgTGl1IGEgw6ljcml0wqA6DQo+IE9uIEZy
+aSwgU2VwIDIyLCAyMDIzIGF0IDEyOjE34oCvQU0gQ2hyaXN0b3BoZSBMZXJveQ0KPiA8Y2hyaXN0
+b3BoZS5sZXJveUBjc2dyb3VwLmV1PiB3cm90ZToNCj4+DQo+Pg0KPj4NCj4+IExlIDIyLzA5LzIw
+MjMgw6AgMDA6NTIsIFNvbmcgTGl1IGEgw6ljcml0IDoNCj4+PiBPbiBNb24sIFNlcCAxOCwgMjAy
+MyBhdCAxMjozMeKAr0FNIE1pa2UgUmFwb3BvcnQgPHJwcHRAa2VybmVsLm9yZz4gd3JvdGU6DQo+
+Pj4+DQo+Pj4gWy4uLl0NCj4+Pj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvZXhlY21lbS5o
+IGIvaW5jbHVkZS9saW51eC9leGVjbWVtLmgNCj4+Pj4gaW5kZXggNTE5YmRmZGNhNTk1Li4wOWQ0
+NWFjNzg2ZTkgMTAwNjQ0DQo+Pj4+IC0tLSBhL2luY2x1ZGUvbGludXgvZXhlY21lbS5oDQo+Pj4+
+ICsrKyBiL2luY2x1ZGUvbGludXgvZXhlY21lbS5oDQo+Pj4+IEBAIC0yOSw2ICsyOSw3IEBADQo+
+Pj4+ICAgICAqIEBFWEVDTUVNX0tQUk9CRVM6IHBhcmFtZXRlcnMgZm9yIGtwcm9iZXMNCj4+Pj4g
+ICAgICogQEVYRUNNRU1fRlRSQUNFOiBwYXJhbWV0ZXJzIGZvciBmdHJhY2UNCj4+Pj4gICAgICog
+QEVYRUNNRU1fQlBGOiBwYXJhbWV0ZXJzIGZvciBCUEYNCj4+Pj4gKyAqIEBFWEVDTUVNX01PRFVM
+RV9EQVRBOiBwYXJhbWV0ZXJzIGZvciBtb2R1bGUgZGF0YSBzZWN0aW9ucw0KPj4+PiAgICAgKiBA
+RVhFQ01FTV9UWVBFX01BWDoNCj4+Pj4gICAgICovDQo+Pj4+ICAgIGVudW0gZXhlY21lbV90eXBl
+IHsNCj4+Pj4gQEAgLTM3LDYgKzM4LDcgQEAgZW51bSBleGVjbWVtX3R5cGUgew0KPj4+PiAgICAg
+ICAgICAgRVhFQ01FTV9LUFJPQkVTLA0KPj4+PiAgICAgICAgICAgRVhFQ01FTV9GVFJBQ0UsDQo+
+Pj4NCj4+PiBJbiBsb25nZXIgdGVybSwgSSB0aGluayB3ZSBjYW4gaW1wcm92ZSB0aGUgSklUZWQg
+Y29kZSBhbmQgbWVyZ2UNCj4+PiBrcHJvYmUvZnRyYWNlL2JwZi4gdG8gdXNlIHRoZSBzYW1lIHJh
+bmdlcy4gQWxzbywgZG8gd2UgbmVlZCBzcGVjaWFsDQo+Pj4gc2V0dGluZyBmb3IgRlRSQUNFPyBJ
+ZiBub3QsIGxldCdzIGp1c3QgcmVtb3ZlIGl0Lg0KPj4NCj4+IEhvdyBjYW4gd2UgZG8gdGhhdCA/
+IFNvbWUgcGxhdGZvcm1zIGxpa2UgcG93ZXJwYyByZXF1aXJlIGV4ZWN1dGFibGUNCj4+IG1lbW9y
+eSBmb3IgQlBGIGFuZCBub24tZXhlYyBtZW0gZm9yIEtQUk9CRSBzbyBpdCBjYW4ndCBiZSBpbiB0
+aGUgc2FtZQ0KPj4gYXJlYS9yYW5nZXMuDQo+IA0KPiBIbW0uLi4gbm9uLWV4ZWMgbWVtIGZvciBr
+cHJvYmVzPw0KPiANCj4gICAgICAgICBpZiAoc3RyaWN0X21vZHVsZV9yd3hfZW5hYmxlZCgpKQ0K
+PiAgICAgICAgICAgICAgICAgZXhlY21lbV9wYXJhbXMucmFuZ2VzW0VYRUNNRU1fS1BST0JFU10u
+cGdwcm90ID0gUEFHRV9LRVJORUxfUk9YOw0KPiAgICAgICAgIGVsc2UNCj4gICAgICAgICAgICAg
+ICAgIGV4ZWNtZW1fcGFyYW1zLnJhbmdlc1tFWEVDTUVNX0tQUk9CRVNdLnBncHJvdCA9IFBBR0Vf
+S0VSTkVMX0VYRUM7DQo+IA0KPiBEbyB5b3UgbWVhbiB0aGUgbGF0dGVyIGNhc2U/DQo+IA0KDQpJ
+biBmYWN0IEkgbWF5IGhhdmUgbWlzdW5kZXJzdG9vZCBwYXRjaCA5LiBJJ2xsIHByb3ZpZGUgYSBy
+ZXNwb25zZSB0aGVyZS4NCg0KQ2hyaXN0b3BoZQ0K
 
