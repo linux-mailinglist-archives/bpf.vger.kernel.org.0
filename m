@@ -1,186 +1,151 @@
-Return-Path: <bpf+bounces-10620-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10621-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32E877AADD9
-	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 11:27:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 295FC7AAE8B
+	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 11:46:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 9D600282889
-	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 09:27:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTP id A85F31F227BC
+	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 09:46:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49E351DA54;
-	Fri, 22 Sep 2023 09:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 022611E52D;
+	Fri, 22 Sep 2023 09:46:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 481E814F6F
-	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 09:27:24 +0000 (UTC)
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780CA196
-	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 02:27:23 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d81b9f0487eso2240856276.2
-        for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 02:27:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1695374842; x=1695979642; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dUsw/sfVCl6MTODztp5pfdtfeJTvlbxrkbvvWFQDC0g=;
-        b=WnSaDB/mkLML8d+v+QLa9MoiH11sNAMFhzul6W2W+ETwqSH2/W0cd58pmNmVnkfPVl
-         3+ejqRecJLKEhi2BmLpgzuXAqZXgRB3Dr+BFDtX6FIet4O4NLHwSZCPPp1DoQqvT3oLF
-         ZpPbDEb6UhlTkLg70huj6cefDtwstrwpHsH6Do0J5y1iz/khxH0czoF/sOlVZodmqjM6
-         d3EtfkQKEwNy6ICSRL0OJM1bbcWI6y5tWnNG0HHGdB7uCa5qaagVHy5LFVUT4kDQ2uJ6
-         K/Fg18ZQn0iYaVeyCottpKKFnI5GbUxjrTrdiSv8Tp343ZTbrnxBmpTvtlgAz8NxP0AJ
-         Z7pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695374842; x=1695979642;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dUsw/sfVCl6MTODztp5pfdtfeJTvlbxrkbvvWFQDC0g=;
-        b=ZX016S/2TFTicDftV4ip5/3YJarlHjO0noiVByBY1nonEMYpMcpzIciGM1/+0XcR+j
-         JhuPauAMmiXxsrxyYvYNZrzQhyCFGvN5YlbO2jkjZTykR1OUSLJlNa5JIKn8QTjDQe1e
-         /IovZk3zmqXPK/EYbjUpqkYTMcKIodO00XBdnX0hGae1u30aOOicZ7jqFHL8mxkKFvn7
-         M79qkozEX4XAW+CcnSSkeojTuBb1kqHew0r3g9K/q5PScWm5zxxT5z814XgVm0uPb75E
-         wwB0BBNSXHFryvdnCQ/xbtEENM1aFRnQMPoxk/eSuYSZrgHl1WBF3MOIIxHojbZOXZ3Y
-         dH6A==
-X-Gm-Message-State: AOJu0YyQAckLpyzKPonzLAWOMbh1pmBbWm2UChdb3huke28umB4SR/kZ
-	yVoQ301zsN2EjPUxVY/d/p3cCQTZY2+975xExNXl
-X-Google-Smtp-Source: AGHT+IHWcifQ3cnzHufT41+GtP5iVL/vJLwKoXU7wdpw+prh7kdb7xnGr3HnQxfK8sANXszV/K7RCeUQf85zVL0jqKk=
-X-Received: by 2002:a25:ad50:0:b0:d11:45d3:b25d with SMTP id
- l16-20020a25ad50000000b00d1145d3b25dmr7910229ybe.46.1695374842573; Fri, 22
- Sep 2023 02:27:22 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9746D1D6B8;
+	Fri, 22 Sep 2023 09:46:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B323C433C7;
+	Fri, 22 Sep 2023 09:45:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695375967;
+	bh=2ZqJg/JyagscC0zGrbJOL5exgL9GpMI8zoZzbRLoF7E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=i1h9hc1vyL0d8fPYkZb5zjoNiQWrTzzy1UDHQi43TnS5vQG3oCUVHGV5CACeQmXV4
+	 hv2g/krywG9c+snlMzxsinwKjADXi0ZxxdDRv7UlO0wmcqcQ7sXGHnqsy2O4JlJvjr
+	 yBuQ+A/6MXrwNBm9vKlClwtxzXUXV5WmuR4EtFrPBmYYc+a+I8ozQkgbtzByDB74dJ
+	 Yss8T/iwWJlChVk46FIOC2IW/gzC6Mu41gGF5E+5jlyqCSsTC8xjFnOaTS69pb8igl
+	 sRcswxE7sfkCoIagyUp9JFI9cFVtwYpIpmDN3pUUkksRveUDMTmZTVBUBEwdVKjFAS
+	 LUoen6AzOSbQw==
+Date: Fri, 22 Sep 2023 10:45:52 +0100
+From: Simon Horman <horms@kernel.org>
+To: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+	David E Box <david.e.box@linux.intel.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Mark Gross <markgross@kernel.org>,
+	Jose Abreu <Jose.Abreu@synopsys.com>, Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+	Jean Delvare <jdelvare@suse.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Wong Vee Khee <veekhee@apple.com>,
+	Jon Hunter <jonathanh@nvidia.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Revanth Kumar Uppala <ruppala@nvidia.com>,
+	Shenwei Wang <shenwei.wang@nxp.com>,
+	Andrey Konovalov <andrey.konovalov@linaro.org>,
+	Jochen Henneberg <jh@henneberg-systemdesign.com>,
+	David E Box <david.e.box@intel.com>,
+	Andrew Halaney <ahalaney@redhat.com>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+	bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
+	Tan Tee Min <tee.min.tan@linux.intel.com>,
+	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+	Lai Peter Jun Ann <jun.ann.lai@intel.com>
+Subject: Re: [PATCH net-next v3 1/5] arch: x86: Add IPC mailbox accessor
+ function and add SoC register access
+Message-ID: <20230922094552.GY224399@kernel.org>
+References: <20230921121946.3025771-1-yong.liang.choong@linux.intel.com>
+ <20230921121946.3025771-2-yong.liang.choong@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230912212906.3975866-3-andrii@kernel.org> <3808036a0b32a17a7fd9e7d671b5458d.paul@paul-moore.com>
- <CAEf4BzYiKhG3ZL-GGQ4fHzSu6RKx2fh2JHwcL9_XKzQBvx3Bjg@mail.gmail.com>
- <CAHC9VhSOCAb6JQJn96xgwNNMGM0mKXf64ygkj4=Yv0FA8AYR=Q@mail.gmail.com>
- <CAEf4BzZC+9GbCsG56B2Q=woq+RHQS8oMTGJSNiMFKZpOKHhKpg@mail.gmail.com> <CAHC9VhTiqhQcfDr-7mThY1kH-Fwa7NUUU8ZWZvLFVudgtO8RAA@mail.gmail.com>
-In-Reply-To: <CAHC9VhTiqhQcfDr-7mThY1kH-Fwa7NUUU8ZWZvLFVudgtO8RAA@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Fri, 22 Sep 2023 05:27:11 -0400
-Message-ID: <CAHC9VhSLtPYBVSeQGYNJ7Kqq7_M4Cgpqn1LXFiEUCx6G2YMRrg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/12] bpf: introduce BPF token object
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, keescook@chromium.org, 
-	brauner@kernel.org, lennart@poettering.net, kernel-team@meta.com, 
-	sargun@sargun.me, selinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230921121946.3025771-2-yong.liang.choong@linux.intel.com>
 
-On Thu, Sep 21, 2023 at 6:18=E2=80=AFPM Paul Moore <paul@paul-moore.com> wr=
-ote:
->
+On Thu, Sep 21, 2023 at 08:19:42PM +0800, Choong Yong Liang wrote:
+> From: "David E. Box" <david.e.box@linux.intel.com>
+> 
+> - Exports intel_pmc_ipc() for host access to the PMC IPC mailbox
+> - Add support to use IPC command allows host to access SoC registers
+> through PMC firmware that are otherwise inaccessible to the host due to
+> security policies.
+> 
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> Signed-off-by: Chao Qin <chao.qin@intel.com>
+> Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
 
 ...
 
-> Typically the LSM hook call sites end up being in the same general
-> area as the capability checks, usually just after (we want the normal
-> Linux discretionary access controls to always come first for the sake
-> of consistency).  Sticking with that approach it looks like we would
-> end up with a LSM call in bpf_prog_load() right after bpf_capable()
-> call, the only gotcha with that is the bpf_prog struct isn't populated
-> yet, but how important is that when we have the bpf_attr info (honest
-> question, I don't know the answer to this)?
->
-> Ignoring the bpf_prog struct, do you think something like this would
-> work for a hook call site (please forgive the pseudo code)?
->
->   int bpf_prog_load(...)
->   {
->          ...
->      bpf_cap =3D bpf_token_capable(token, CAP_BPF);
->      err =3D security_bpf_token(BPF_PROG_LOAD, attr, uattr_size, token);
->      if (err)
->        return err;
->     ...
->   }
->
-> Assuming this type of hook configuration, and an empty/passthrough
-> security_bpf() hook, a LSM would first see the various
-> capable()/ns_capable() checks present in bpf_token_capable() followed
-> by a BPF op check, complete with token, in the security_bpf_token()
-> hook.  Further assuming that we convert the bpf_token_new_fd() to use
-> anon_inode_getfd_secure() instead of anon_inode_getfd() and the
-> security_bpf_token() could still access the token fd via the bpf_attr
-> struct I think we could do something like this for the SELinux case
-> (more rough pseudo code):
->
->   int selinux_bpf_token(...)
->   {
->     ssid =3D current_sid();
->     if (token) {
->       /* this could be simplified with better integration
->        * in bpf_token_get_from_fd() */
->       fd =3D fdget(attr->prog_token_fd);
->       inode =3D file_inode(fd.file);
->       isec =3D selinux_inode(inode);
->       tsid =3D isec->sid;
->       fdput(fd);
->     } else
->       tsid =3D ssid;
->     switch(cmd) {
->     ...
->     case BPF_PROG_LOAD:
->       rc =3D avc_has_perm(ssid, tsid, SECCLAS_BPF, BPF__PROG_LOAD);
->       break;
->     default:
->       rc =3D 0;
->     }
->     return rc;
->   }
->
-> This would preserve the current behaviour when a token was not present:
->
->  allow @current @current : bpf { prog_load }
->
-> ... but this would change to the following if a token was present:
->
->  allow @current @DELEGATED_ANON_INODE : bpf { prog_load }
->
-> That seems reasonable to me, but I've CC'd the SELinux list on this so
-> others can sanity check the above :)
+> diff --git a/include/linux/platform_data/x86/intel_pmc_ipc.h b/include/linux/platform_data/x86/intel_pmc_ipc.h
+> new file mode 100644
+> index 000000000000..25ba57b8a7ea
+> --- /dev/null
+> +++ b/include/linux/platform_data/x86/intel_pmc_ipc.h
+> @@ -0,0 +1,34 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Intel Core SoC Power Management Controller Header File
+> + *
+> + * Copyright (c) 2023, Intel Corporation.
+> + * All Rights Reserved.
+> + *
+> + * Authors: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+> + *          David E. Box <david.e.box@linux.intel.com>
+> + */
+> +#ifndef INTEL_PMC_IPC_H
+> +#define INTEL_PMC_IPC_H
+> +
+> +#define IPC_SOC_REGISTER_ACCESS			0xAA
+> +#define IPC_SOC_SUB_CMD_READ			0x00
+> +#define IPC_SOC_SUB_CMD_WRITE			0x01
+> +
+> +struct pmc_ipc_cmd {
+> +	u32 cmd;
+> +	u32 sub_cmd;
+> +	u32 size;
+> +	u32 wbuf[4];
+> +};
+> +
+> +/**
+> + * intel_pmc_core_ipc() - PMC IPC Mailbox accessor
 
-I thought it might be helpful to add a bit more background on my
-thinking for the SELinux folks, especially since the object label used
-in the example above is a bit unusual.  As a reminder, the object
-label in the delegated case is not the current domain as it is now for
-standard BPF program loads, it is the label of the BPF delegation
-token (anonymous inode) that is created by the process/orchestrator
-that manages the namespace and explicitly enabled the BPF privilege
-delegation.  The BPF token can be labeled using the existing anonymous
-inode transition rules.
+nit: intel_pmc_ipc()
 
-First off I decided to reuse the existing permission so as not to
-break current policies.  We can always separate the PROG_LOAD
-permission into a standard and delegated permission if desired, but I
-believe we would need to gate that with a policy capability and
-preserve some form of access control for the legacy PROG_LOAD-only
-case.
-
-Preserving the PROG_LOAD permission does present a challenge with
-respect to differentiating the delegated program load from a normal
-program load while ensuring that existing policies continue to work
-and delegated operations require explicit policy adjustments.
-Changing the object label in the delegated case was the only approach
-I could think of that would satisfy all of these constraints, but I'm
-open to other ideas, tweaks, etc. and I would love to get some other
-opinions on this.
-
-Thoughts?
-
---=20
-paul-moore.com
+> + * @ipc_cmd:  struct pmc_ipc_cmd prepared with input to send
+> + * @rbuf:     Allocated u32[4] array for returned IPC data
+> + *
+> + * Return: 0 on success. Non-zero on mailbox error
+> + */
+> +int intel_pmc_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf);
+> +
+> +#endif /* INTEL_PMC_IPC_H */
+> -- 
+> 2.25.1
+> 
+> 
 
