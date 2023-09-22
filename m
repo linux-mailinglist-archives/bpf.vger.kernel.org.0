@@ -1,359 +1,155 @@
-Return-Path: <bpf+bounces-10637-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10638-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA32D7AB0AB
-	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 13:29:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C56D7AB402
+	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 16:45:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 72F12282FAE
-	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 11:29:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id 386791C2096B
+	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 14:45:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA2951F924;
-	Fri, 22 Sep 2023 11:29:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7B963D969;
+	Fri, 22 Sep 2023 14:45:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C23481F16D
-	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 11:29:22 +0000 (UTC)
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16160192;
-	Fri, 22 Sep 2023 04:29:21 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-691c05bc5aaso1561782b3a.2;
-        Fri, 22 Sep 2023 04:29:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695382160; x=1695986960; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Un+n8gtPu2H9LbD/gWmNkEsxWWkM8C1lnBzSSmQYUiM=;
-        b=IJGudsSt17I0f0TkZxOSBzk8SJG/ttozDfBKztpBpbs0BiDCUrtBTyhckTrFQY1r2a
-         1SoCIlA46/vg4U5Ct+CTX5KTn9GnjzZF/hjIKb1DSS8sbJygU4MPjXiihMdbuAJEkcmb
-         /fkIneBqcO0KBG+K2kN1cb5Hv8DHx/oAREm1+pMj0bsWAAl79g+6Cuq8RDdwTihe85lm
-         1cyiD7L76R+K8OVrNYGB6Bg0faOiSFjU0SPzENkfxjV1p4Akcm5GisIhlcTPuVosnoln
-         egsrOVqOj5GyS/hbBzXsSuElU1iGAaiaJcWbOU1aZAAHfUCdCgPJvJ5y2OV/jbkMMBOn
-         3uMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695382160; x=1695986960;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Un+n8gtPu2H9LbD/gWmNkEsxWWkM8C1lnBzSSmQYUiM=;
-        b=NEfqnMRd/68oBEyLLSF7AjctNXnwpkMpXefZPzkBxdSxnZl68Jd+Bd+K0GaDQoOUky
-         GMmzRsnjj7J9kg6pQW8PTUrMZxOqy8Me6HrO13rWB5fvkMb0vsa36m5vUvvPQpEpI8Su
-         gqgU0hy0ITFtuJKUb8pZkV6KLDPQ5Cg+7SS52kKicnD98tOyEpTDhGinpAHr4cK5OHva
-         SiVhiug6R/Bmdh4cnaZN6Dslfz2QAJN5D+5x0TZ9oKC58I5fxdaNz9ohxt7QnZi98IGW
-         gzNqMDCI5VywFWQ8e1RrX2YuTnUy4IDhiO+0estHau+ih45Mg2twgXvVIBU0hk/zc+Nf
-         rd6g==
-X-Gm-Message-State: AOJu0YzILDV9ne5VUGPqKEl+mttRG4AFSVIb6kHKp3j8JPPZU9dYMIc4
-	+ClB7v7RprMNl+TsKxuCzl4=
-X-Google-Smtp-Source: AGHT+IH3eZlhv6LvJjmd5UZXNQdXaGgqt+GUQPlIBT0xIFRh3ng3xKbjhu7DQ7c4+LzIBT0TWWGuDg==
-X-Received: by 2002:a05:6a00:2493:b0:682:4c1c:a0fc with SMTP id c19-20020a056a00249300b006824c1ca0fcmr9602277pfv.19.1695382160467;
-        Fri, 22 Sep 2023 04:29:20 -0700 (PDT)
-Received: from vultr.guest ([149.28.194.201])
-        by smtp.gmail.com with ESMTPSA id v16-20020aa78090000000b00690beda6987sm2973493pff.77.2023.09.22.04.29.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 04:29:20 -0700 (PDT)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	tj@kernel.org,
-	lizefan.x@bytedance.com,
-	hannes@cmpxchg.org,
-	yosryahmed@google.com,
-	mkoutny@suse.com
-Cc: cgroups@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 8/8] selftests/bpf: Add selftests for cgroup controller
-Date: Fri, 22 Sep 2023 11:28:46 +0000
-Message-Id: <20230922112846.4265-9-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20230922112846.4265-1-laoar.shao@gmail.com>
-References: <20230922112846.4265-1-laoar.shao@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9030E200A8
+	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 14:45:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63D45C433D9
+	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 14:45:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695393949;
+	bh=x8jhwHX1MvKQRIiqP5FKS1y+4zwiLLNB0WcOkVo6kzg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=DebYlyZnPCwNqDJg/z4MY+5QqYyRai7UI/s8h0r0YhXgi4YeTEZr2efKE8x2IJ9XM
+	 vMBTe4W5p0FJxmBv2ibcjDB4y9e6Bm+pG/VLtpN/o5BBLnXvR4sc1/mfsW4YAy1zOv
+	 uUDDm8I8dPSJruENE/rIfONmohKSxCx1wb7bPw1EVpBjbvB3UqW7gKG+50IWOOqq+N
+	 0N9mXNF+8Igr/2PfZoOMYToqexQivy48U3CLb7gtECuSF9rYgaFudTLQcC0bEMXazK
+	 tLWdftBjn4oLwXXakVA6F/N4pE7Wo8Ree/E7XPTh2gYjVP0ZdqVIcG/lGvJ6ONES2r
+	 KKDA+VhKahkew==
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-52f3ba561d9so5610024a12.1
+        for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 07:45:49 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxEH6hBM/1lpsefiD7q9niASgxHuQmqsvnNehGUy+VjreHgvu8d
+	gppl/oTnawKsgcTvmtVZgxzlv8gd4iXVPm+zvUzi7g==
+X-Google-Smtp-Source: AGHT+IHrBNWm0Cefy5SEbxPrR0DdcKeSIQe/ruLw87hb8iYwlGCKq+UrbzslqiAvXG6t6ZLsg03KQXZ864PuqaNLi7o=
+X-Received: by 2002:aa7:d819:0:b0:521:d2ab:e4df with SMTP id
+ v25-20020aa7d819000000b00521d2abe4dfmr3920764edq.19.1695393947668; Fri, 22
+ Sep 2023 07:45:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+References: <20230918212459.1937798-1-kpsingh@kernel.org> <20230918212459.1937798-3-kpsingh@kernel.org>
+ <cb67f607-3a9d-34d2-0877-a3ff957da79e@I-love.SAKURA.ne.jp>
+ <CACYkzJ5GFsgc3vzJXH34hgoTc+CEf+7rcktj0QGeQ5e8LobRcw@mail.gmail.com> <dde20522-af01-c198-5872-b19ef378f286@I-love.SAKURA.ne.jp>
+In-Reply-To: <dde20522-af01-c198-5872-b19ef378f286@I-love.SAKURA.ne.jp>
+From: KP Singh <kpsingh@kernel.org>
+Date: Fri, 22 Sep 2023 16:45:36 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ5M0Bw9S_mkFkjR_-bRsKryXh2LKiurjMX9WW-d0Mr6bg@mail.gmail.com>
+Message-ID: <CACYkzJ5M0Bw9S_mkFkjR_-bRsKryXh2LKiurjMX9WW-d0Mr6bg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/5] security: Count the LSMs enabled at compile time
+To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
+	paul@paul-moore.com, keescook@chromium.org, casey@schaufler-ca.com, 
+	song@kernel.org, daniel@iogearbox.net, ast@kernel.org, 
+	Kui-Feng Lee <sinquersw@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add selftests for cgroup controller on both cgroup1 and cgroup2.
-The result as follows,
+On Fri, Sep 22, 2023 at 1:25=E2=80=AFPM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+>
+> On 2023/09/21 22:58, KP Singh wrote:
+> > On Thu, Sep 21, 2023 at 3:21=E2=80=AFPM Tetsuo Handa
+> > <penguin-kernel@i-love.sakura.ne.jp> wrote:
+> >>
+> >> On 2023/09/19 6:24, KP Singh wrote:
+> >>> These macros are a clever trick to determine a count of the number of
+> >>> LSMs that are enabled in the config to ascertain the maximum number o=
+f
+> >>> static calls that need to be configured per LSM hook.
+> >>
+> >> As a LKM-based LSM user, indirect function calls using a linked list h=
+ave
+> >> an advantage which this series kills. There always is a situation wher=
+e a
+> >
+> >
+> >> LSM cannot be built into vmlinux (and hence has to be loaded as a LKM-=
+based
+> >> LSM) due to distributor's support policy. Therefore, honestly speaking=
+,
+> >> I don't want LSM infrastructure to define the maximum number of "slots=
+" or
+> >> "static calls"...
+> >>
+> >
+> > Yeah, LSMs are not meant to be used from a kernel module. The data
+> > structure is actually __ro_after_init. So, I am not even sure how you
+> > are using it in kernel modules (unless you are patching this out).
+> > And, if you are really patching stuff to get your out of tree LSMs to
+> > work, then you might as well add your "custom" LSM config here or just
+> > override this count.
+>
+> I'm using LKM-based LSM with any version between 2.6.0 and 6.6-rc2, witho=
+ut patching
+> __ro_after_init out. We can load LKM-based LSMs, without patching the ori=
+ginal kernel.
 
-  $ tools/testing/selftests/bpf/test_progs --name=cgroup_controller
-  #40/1    cgroup_controller/test_cgroup1_controller:OK
-  #40/2    cgroup_controller/test_invalid_cgroup_id:OK
-  #40/3    cgroup_controller/test_sleepable_prog:OK
-  #40/4    cgroup_controller/test_cgroup2_controller:OK
-  #40      cgroup_controller:OK
+Then __ro_after_init is broken in your tree and you are missing some patche=
+s.
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- .../bpf/prog_tests/cgroup_controller.c        | 149 ++++++++++++++++++
- .../bpf/progs/test_cgroup_controller.c        |  80 ++++++++++
- 2 files changed, 229 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_controller.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_cgroup_controller.c
+> And it seems to me that several proprietary security products for Linux a=
+re using
+> this trick, for LSMs for such products cannot be built into distributor's=
+ kernels...
+>
+> ----------
+> [    0.000000] Command line: BOOT_IMAGE=3D/boot/vmlinuz-6.6.0-rc2+ root=
+=3D/dev/sda1 ro vconsole.keymap=3Djp106 vconsole.font=3Dlatarcyrheb-sun16 s=
+ecurity=3Dnone sysrq_always_enabled console=3DttyS0,115200n8 console=3Dtty0=
+ LANG=3Den_US.UTF-8 init=3D/sbin/akari-init
+> (...snipped...)
+> [  147.238458] AKARI: 1.0.48   2023/05/27
+> [  147.244867] Access Keeping And Regulating Instrument registered.
+> [  147.261232] Calling /sbin/ccs-init to load policy. Please wait.
+> 239 domains. 11807 ACL entries.
+> 1938 KB used by policy.
+> [  147.768694] CCSecurity: 1.8.9   2021/04/01
+> [  147.768740] Mandatory Access Control activated.
+> ----------
+>
+> >
+> > The performance benefits here outweigh the need for a completely
+> > unsupported use case.
+>
+> LKM-based LSMs are not officially supported since 2.6.24. But people need=
+ LKM-based LSMs.
+> It is very sad that the LSM community is trying to lock out out of tree L=
+SMs
+> ( https://lkml.kernel.org/r/ec37cd2f-24ee-3273-c253-58d480569117@I-love.S=
+AKURA.ne.jp ).
+> The LSM interface is a common property for *all* Linux users.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_controller.c b/tools/testing/selftests/bpf/prog_tests/cgroup_controller.c
-new file mode 100644
-index 000000000000..f76ec1e65b2a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_controller.c
-@@ -0,0 +1,149 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023 Yafang Shao <laoar.shao@gmail.com> */
-+
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <test_progs.h>
-+#include "cgroup_helpers.h"
-+#include "test_cgroup_controller.skel.h"
-+
-+#define CGROUP2_DIR "/cgroup2_controller"
-+
-+static void bpf_cgroup1_controller(bool sleepable, __u64 cgrp_id)
-+{
-+	struct test_cgroup_controller *skel;
-+	int err;
-+
-+	skel = test_cgroup_controller__open();
-+	if (!ASSERT_OK_PTR(skel, "open"))
-+		return;
-+
-+	skel->bss->target_pid = getpid();
-+	skel->bss->ancestor_cgid = cgrp_id;
-+
-+	err = bpf_program__set_attach_target(skel->progs.fentry_run, 0, "bpf_fentry_test1");
-+	if (!ASSERT_OK(err, "fentry_set_target"))
-+		goto cleanup;
-+
-+	err = test_cgroup_controller__load(skel);
-+	if (!ASSERT_OK(err, "load"))
-+		goto cleanup;
-+
-+	/* Attach LSM prog first */
-+	if (!sleepable) {
-+		skel->links.lsm_net_cls = bpf_program__attach_lsm(skel->progs.lsm_net_cls);
-+		if (!ASSERT_OK_PTR(skel->links.lsm_net_cls, "lsm_attach"))
-+			goto cleanup;
-+	} else {
-+		skel->links.lsm_s_net_cls = bpf_program__attach_lsm(skel->progs.lsm_s_net_cls);
-+		if (!ASSERT_OK_PTR(skel->links.lsm_s_net_cls, "lsm_attach_sleepable"))
-+			goto cleanup;
-+	}
-+
-+	/* LSM prog will be triggered when attaching fentry */
-+	skel->links.fentry_run = bpf_program__attach_trace(skel->progs.fentry_run);
-+	if (cgrp_id) {
-+		ASSERT_NULL(skel->links.fentry_run, "fentry_attach_fail");
-+	} else {
-+		if (!ASSERT_OK_PTR(skel->links.fentry_run, "fentry_attach_success"))
-+			goto cleanup;
-+	}
-+
-+cleanup:
-+	test_cgroup_controller__destroy(skel);
-+}
-+
-+static void cgroup_controller_on_cgroup1(bool sleepable, bool invalid_cgid)
-+{
-+	__u64 cgrp_id;
-+	int err;
-+
-+	/* Setup cgroup1 hierarchy */
-+	err = setup_classid_environment();
-+	if (!ASSERT_OK(err, "setup_classid_environment"))
-+		return;
-+
-+	err = join_classid();
-+	if (!ASSERT_OK(err, "join_cgroup1"))
-+		goto cleanup;
-+
-+	cgrp_id = get_classid_cgroup_id();
-+	if (invalid_cgid)
-+		bpf_cgroup1_controller(sleepable, 0);
-+	else
-+		bpf_cgroup1_controller(sleepable, cgrp_id);
-+
-+cleanup:
-+	/* Cleanup cgroup1 hierarchy */
-+	cleanup_classid_environment();
-+}
-+
-+static void bpf_cgroup2_controller(__u64 cgrp_id)
-+{
-+	struct test_cgroup_controller *skel;
-+	int err;
-+
-+	skel = test_cgroup_controller__open();
-+	if (!ASSERT_OK_PTR(skel, "open"))
-+		return;
-+
-+	skel->bss->target_pid = getpid();
-+	skel->bss->ancestor_cgid = cgrp_id;
-+
-+	err = bpf_program__set_attach_target(skel->progs.fentry_run, 0, "bpf_fentry_test1");
-+	if (!ASSERT_OK(err, "fentry_set_target"))
-+		goto cleanup;
-+
-+	err = test_cgroup_controller__load(skel);
-+	if (!ASSERT_OK(err, "load"))
-+		goto cleanup;
-+
-+	skel->links.lsm_cpu = bpf_program__attach_lsm(skel->progs.lsm_cpu);
-+	if (!ASSERT_OK_PTR(skel->links.lsm_cpu, "lsm_attach"))
-+		goto cleanup;
-+
-+	skel->links.fentry_run = bpf_program__attach_trace(skel->progs.fentry_run);
-+	ASSERT_NULL(skel->links.fentry_run, "fentry_attach_fail");
-+
-+cleanup:
-+	test_cgroup_controller__destroy(skel);
-+}
-+
-+static void cgroup_controller_on_cgroup2(void)
-+{
-+	int cgrp_fd, cgrp_id, err;
-+
-+	err = setup_cgroup_environment();
-+	if (!ASSERT_OK(err, "cgrp2_env_setup"))
-+		goto cleanup;
-+
-+	cgrp_fd = test__join_cgroup(CGROUP2_DIR);
-+	if (!ASSERT_GE(cgrp_fd, 0, "cgroup_join_cgroup2"))
-+		goto cleanup;
-+
-+	err = enable_controllers(CGROUP2_DIR, "cpu");
-+	if (!ASSERT_OK(err, "cgrp2_env_setup"))
-+		goto close_fd;
-+
-+	cgrp_id = get_cgroup_id(CGROUP2_DIR);
-+	if (!ASSERT_GE(cgrp_id, 0, "cgroup2_id"))
-+		goto close_fd;
-+	bpf_cgroup2_controller(cgrp_id);
-+
-+close_fd:
-+	close(cgrp_fd);
-+cleanup:
-+	cleanup_cgroup_environment();
-+}
-+
-+void test_cgroup_controller(void)
-+{
-+	if (test__start_subtest("test_cgroup1_controller"))
-+		cgroup_controller_on_cgroup1(false, false);
-+	if (test__start_subtest("test_invalid_cgroup_id"))
-+		cgroup_controller_on_cgroup1(false, true);
-+	if (test__start_subtest("test_sleepable_prog"))
-+		cgroup_controller_on_cgroup1(true, false);
-+	if (test__start_subtest("test_cgroup2_controller"))
-+		cgroup_controller_on_cgroup2();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_cgroup_controller.c b/tools/testing/selftests/bpf/progs/test_cgroup_controller.c
-new file mode 100644
-index 000000000000..958804a34794
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_cgroup_controller.c
-@@ -0,0 +1,80 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//#endif
-+/* Copyright (C) 2023 Yafang Shao <laoar.shao@gmail.com> */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+__u64 ancestor_cgid;
-+int target_pid;
-+
-+struct cgroup *bpf_cgroup_acquire_from_id_within_controller(u64 cgid, int ssid) __ksym;
-+u64 bpf_cgroup_id_from_task_within_controller(struct task_struct *task, int ssid) __ksym;
-+u64 bpf_cgroup_ancestor_id_from_task_within_controller(struct task_struct *task,
-+						       int ssid, int level) __ksym;
-+long bpf_task_under_cgroup(struct task_struct *task, struct cgroup *ancestor) __ksym;
-+void bpf_cgroup_release(struct cgroup *p) __ksym;
-+
-+static int bpf_link_create_verify(int cmd, union bpf_attr *attr, unsigned int size, int ssid)
-+{
-+	struct cgroup *cgrp = NULL;
-+	struct task_struct *task;
-+	__u64 cgid, root_cgid;
-+	int ret = 0;
-+
-+	if (cmd != BPF_LINK_CREATE)
-+		return 0;
-+
-+	task = bpf_get_current_task_btf();
-+	/* Then it can run in parallel */
-+	if (target_pid != BPF_CORE_READ(task, pid))
-+		return 0;
-+
-+	cgrp = bpf_cgroup_acquire_from_id_within_controller(ancestor_cgid, ssid);
-+	if (!cgrp)
-+		goto out;
-+
-+	if (bpf_task_under_cgroup(task, cgrp))
-+		ret = -1;
-+	bpf_cgroup_release(cgrp);
-+
-+	cgid = bpf_cgroup_id_from_task_within_controller(task, ssid);
-+	if (cgid != ancestor_cgid)
-+		ret = 0;
-+
-+	/* The level of root cgroup is 0, and its id is always 1 */
-+	root_cgid = bpf_cgroup_ancestor_id_from_task_within_controller(task, ssid, 0);
-+	if (root_cgid != 1)
-+		ret = 0;
-+
-+out:
-+	return ret;
-+}
-+
-+SEC("lsm/bpf")
-+int BPF_PROG(lsm_net_cls, int cmd, union bpf_attr *attr, unsigned int size)
-+{
-+	return bpf_link_create_verify(cmd, attr, size, net_cls_cgrp_id);
-+}
-+
-+SEC("lsm.s/bpf")
-+int BPF_PROG(lsm_s_net_cls, int cmd, union bpf_attr *attr, unsigned int size)
-+{
-+	return bpf_link_create_verify(cmd, attr, size, net_cls_cgrp_id);
-+}
-+
-+SEC("lsm/bpf")
-+int BPF_PROG(lsm_cpu, int cmd, union bpf_attr *attr, unsigned int size)
-+{
-+	return bpf_link_create_verify(cmd, attr, size, cpu_cgrp_id);
-+}
-+
-+SEC("fentry")
-+int BPF_PROG(fentry_run)
-+{
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.30.1 (Apple Git-130)
+Again, I don't understand how this locks out out-of-tree LSMs. One can
+go and patch static calls the same way one hacked around by directly
+adding stuff to the security_hook_heads. I am not going to suggest any
+hacks here but there are pretty obvious solutions out there.;
 
+My recommendation would be to use BPF LSM for any custom MAC policy
+logic. That's the whole goal of the BPF LSM is to safely enable these
+use cases without relying on LSM internals and hacks.
+
+- KP
+
+>
+> I'm not objecting the performance benefits by replacing with static calls=
+.
+> I'm not happy that the LSM community ignores the Torvald's comment at htt=
+ps://lkml.org/lkml/2007/10/1/192
+> and does not listen to minority's voices.
+>
 
