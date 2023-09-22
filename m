@@ -1,142 +1,180 @@
-Return-Path: <bpf+bounces-10654-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10655-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F8B17AB97C
-	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 20:43:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E517F7ABAB1
+	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 22:52:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by am.mirrors.kernel.org (Postfix) with ESMTP id 9D4901F23569
-	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 18:43:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 89611281FE9
+	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 20:52:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94F3643A80;
-	Fri, 22 Sep 2023 18:43:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EBE14735E;
+	Fri, 22 Sep 2023 20:52:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C9F81E501
-	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 18:43:36 +0000 (UTC)
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C428A9
-	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 11:43:35 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c5bf7871dcso22530785ad.1
-        for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 11:43:35 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAD3747357
+	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 20:52:20 +0000 (UTC)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179781A1
+	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 13:52:18 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9ae7383b7ecso405569266b.0
+        for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 13:52:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695408215; x=1696013015; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mGwEs4lwD/Q6PpJtqh3vxLJbwSG8QN19oMXykCTRdOU=;
-        b=ngc99EL4d/5XkjnkK3Gt2GZ2siloVss1Yjx+ZYPFQGcyQQa/mtWMPz4nkEjDOJCbYW
-         /bxLD2PoXuOF7I23oMoBUAG7K0W4iKuFbbV5BQ9I1lTY2MXx+S/Bbj0Vof3chu7FTWbt
-         WlIeDWAT/k2CLMvdgI+DAX7fB5ufaW7YMkVW4DJCU9j6MzSqFe516CsX8N33ANJoJtTz
-         jIGHYDCLe9u9aO4BRCMx3Oc6rRmugPSRJBUhE8XAx6uSMk7/FLwZ8AXUa2YDucSmnHXu
-         2AzV2+DCXZicEI2/fpB44e98wXlPaPQ4WoLslGWqszbj5i9KIH0VukKhH8THF6086tKV
-         7TIQ==
+        d=gmail.com; s=20230601; t=1695415936; x=1696020736; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2uTufhaN4rpFxmUZAOST+4/jjcSrLjzCUbBCYuqd86c=;
+        b=eYI1H5SeLhfg6gR1u9ehN6S12iF+oULo5gPbB3Xoe7VmHcNvKy+YIoeepsJ1eZfln3
+         a6nrigOwKbNcJtNvlcxgEyRdgWDQ6BWI66jjZiiNtRaT+z9k9vZNQgC4n2uEvpYVMn1N
+         uJvqYISE7yTTxCv//9AtKj6GjNSSLYhUajVcN+L9iSNkNyx5YEED6RvLMMoyE0NkDqkr
+         4xzjXj5LHyiT27YecJL/3qshNLpuJjcNDXMgMEAaRA7OAQcFOrspdqVIWx8CO548v0/M
+         LhUKgH1OLpzrKrAamauQbF+oi6TP+p2B3mcGYMfSJtylT2BBnJMrBKDkLKcR2ihSAe+X
+         QXgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695408215; x=1696013015;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1695415936; x=1696020736;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mGwEs4lwD/Q6PpJtqh3vxLJbwSG8QN19oMXykCTRdOU=;
-        b=IPqj9+nSA0DzePRSPO3rTk2Il9CvG9yrl+/rzxOxF3nimup5bpvEiI0EKUtM9onsPo
-         HtBXFLL1rj0iskSZnpBaUWG3n96BfTuRIA9qtAkeuxMKsD9IMQ/qGUgvJl3GuVV5f6X0
-         GyL3sSSnDgCDf43XknGCOFUT1XCWy2GXUFuIttbNyaHBZHAoaHO/Zwn9K/3z+hFG6LJ/
-         NDAvgmPNZ0cDD7RN7QOcslX8k0MhpRP5YRSrmCw9AuTgxIQ2Avxo3+eYBT8udgtrsegT
-         rNrbj19XZeXzwHqFaualW8ywpEC3NTqoNk2Eg+RY3lR1VmliHuJpMU3TKs1edslLlDnQ
-         xKoQ==
-X-Gm-Message-State: AOJu0Yyyhd/+v3gl5wts5cp556ormigpLN4J3eQfDCBRqMa3xw05V1dm
-	o7YvPMduO0n01aZY8l2Gvac1V7lvaTk=
-X-Google-Smtp-Source: AGHT+IGfnwzfn6fy1YyhVOl95t1Ws+pb3Tna3+/4OEDy7OO3vLRjz0evZlUYL3YRd7eQLtVtwWYQTw==
-X-Received: by 2002:a17:902:e74f:b0:1c4:e69:42c3 with SMTP id p15-20020a170902e74f00b001c40e6942c3mr372887plf.43.1695408214726;
-        Fri, 22 Sep 2023 11:43:34 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c20-20020a170902c1d400b001b03a1a3151sm3842793plc.70.2023.09.22.11.43.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 11:43:33 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Fri, 22 Sep 2023 11:43:32 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	houtao1@huawei.com, Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH bpf 3/4] bpf: Ensure unit_size is matched with slab cache
- object size
-Message-ID: <97b0615e-a541-4856-ba70-be39bdcd8a8f@roeck-us.net>
-References: <20230908133923.2675053-1-houtao@huaweicloud.com>
- <20230908133923.2675053-4-houtao@huaweicloud.com>
+        bh=2uTufhaN4rpFxmUZAOST+4/jjcSrLjzCUbBCYuqd86c=;
+        b=pdCkdoF2IkL7G6hWX90iBh2SEsKcpvzzo6Oni92u4kO+urEOTrokHHxHy0zIDFbLyC
+         lBiY5ZGzHBoUgacfxmiKY64gtBzbhjrTiGmbWPPyIbGjHGQzruOM+n6mnhJEHnkbHAXJ
+         8IJam/O7ZqqRxEGWaEv3e8OXOetto8b0k4d8otE7HKHAdwdvklTz2JjkvPFFSUdfzjQ+
+         ZeXEhMNUcJyYtJ5eALxVjRoe1HCXQIbyvpEDWb2aVSc5IzmfeaJiNMKJ0OKxK4IqGkAD
+         5fz1NjL0BCQZy/b3gjsbqMZdfa+3N+kmg0SJ4zEvldEB5XCMGREqsAqu9Z75RZ7/5rL/
+         kcGw==
+X-Gm-Message-State: AOJu0YxlQqye6ns/KzmP8K8FO09EfUVcrtF1LwNe8V5v7yYC47QScJRs
+	zRINfNMn4RCzu8bAR2l6RaCv85Ha8sh/ZVMBLsqPZ8M+
+X-Google-Smtp-Source: AGHT+IGedq/Xn3rc1VOhfwZIVvE7sSEkdpRkVNGw+pS8x5zEyDwkmW9bqAuwlc2mjWNKYg5JieWkI5fZisBJU4MzyP4=
+X-Received: by 2002:a17:906:5a59:b0:9ae:5df2:2291 with SMTP id
+ my25-20020a1709065a5900b009ae5df22291mr1300581ejc.1.1695415936248; Fri, 22
+ Sep 2023 13:52:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230908133923.2675053-4-houtao@huaweicloud.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+References: <CA+vRuzPChFNXmouzGG+wsy=6eMcfr1mFG0F3g7rbg-sedGKW3w@mail.gmail.com>
+ <CAADnVQJpLAzmUfwvWBr8a_PWHYHxHw9vdAXnWB4R4PbVY4S4mw@mail.gmail.com>
+ <CAEf4Bzbubu7KjBv=98BZrVnTrcfPQrnsp-g1kOYKM=kUtiqEgw@mail.gmail.com>
+ <dff1cfec20d1711cb023be38dfe886bac8aac5f6.camel@gmail.com>
+ <CAP01T76duVGmnb+LQjhdKneVYs1q=ehU4yzTLmgZdG0r2ErOYQ@mail.gmail.com>
+ <a2995c1d7c01794ca9b652cdea7917cac5d98a16.camel@gmail.com>
+ <97a90da09404c65c8e810cf83c94ac703705dc0e.camel@gmail.com>
+ <CAEf4BzYg8T_Dek6T9HYjHZCuLTQT8ptAkQRxrsgaXg7-MZmHDA@mail.gmail.com>
+ <ee714151d7c840c82d79f9d12a0f51ef13b798e3.camel@gmail.com>
+ <CAADnVQJn35f0UvYJ9gyFT4BfViXn8T8rPCXRAC=m_Jx_CFjrtw@mail.gmail.com>
+ <5649df64315467c67b969e145afda8bbf7e60445.camel@gmail.com>
+ <CAADnVQJO0aVJfV=8RDf5rdtjOCC-=57dmHF20fQYV9EiW2pJ2Q@mail.gmail.com>
+ <4b121c3b96dcc0322ea111062ed2260d2d1d0ed7.camel@gmail.com>
+ <CAEf4BzbUxHCLhMoPOtCC=6Y-OxkkC9GvjykC8KyKPrFxp6cLvw@mail.gmail.com>
+ <52df1240415be1ee8827cb6395fd339a720e229c.camel@gmail.com>
+ <ec118c24a33fb740ecaafd9a55416d56fcb77776.camel@gmail.com>
+ <CAEf4BzZjut_JGnrqgPE0poJhMjJgtJcafRd6Z_0T0jrW3zARJw@mail.gmail.com> <44363f61c49bafa7901ae2aa43897b525805192c.camel@gmail.com>
+In-Reply-To: <44363f61c49bafa7901ae2aa43897b525805192c.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 22 Sep 2023 13:52:04 -0700
+Message-ID: <CAEf4BzZ-NGiUVw+yCRCkrPQbJAS4wMBsT3e=eYVMuintqKDKqg@mail.gmail.com>
+Subject: Re: [BUG] verifier escape with iteration helpers (bpf_loop, ...)
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrew Werner <awerner32@gmail.com>, 
+	bpf <bpf@vger.kernel.org>, Andrei Matei <andreimatei1@gmail.com>, 
+	Tamir Duberstein <tamird@gmail.com>, Joanne Koong <joannelkoong@gmail.com>, kernel-team@dataexmachina.dev, 
+	Song Liu <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
+On Fri, Sep 22, 2023 at 11:36=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>
+> On Thu, 2023-09-21 at 19:48 -0700, Andrii Nakryiko wrote:
+> > Yes, my gut feeling was that if this idea works at all, then ordering
+> > for this won't matter. The question is if the idea itself is sound.
+> > Basically, I need to convince myself that subsequent iterations won't
+> > add any new read/precise marks. You are good at counter examples, so
+> > maybe you can come up with an example where input state into iteration
+> > #1 will get more precision marks only at iteration #2 or deeper. If
+> > that's the case, then this whole idea of postponing loop convergence
+> > checks probably doesn't work.
+>
+> Consider the following code:
+>
+>     1.  SEC("fentry/" SYS_PREFIX "sys_nanosleep")
+>     2.  int num_iter_bug(const void *ctx) {
+>     3.      struct bpf_iter_num it;
+>     4.      __u64 val =3D 0;
+>     5.      __u64 *ptr =3D &val;
+>     6.      __u64 rnd =3D bpf_get_current_pid_tgid();
+>     7.
+>     8.      bpf_iter_num_new(&it, 0, 10);
+>     9.      while (bpf_iter_num_next(&it)) {
+>     10.          rnd++;
+>     11.          if (rnd =3D=3D 42) {
+>     12.              ptr =3D (void*)(0xdead);
+>     13.              continue;
+>     14.          }
+>     15.          if (!bpf_iter_num_next(&it))
+>     16.              break;
+>     17.          bpf_probe_read_user(ptr, 8, (void*)(0xdeadbeef));
+>     18.      }
+>     19.      bpf_iter_num_destroy(&it);
+>     20.      return 0;
+>     21. }
+>
+> As far as I understand the following verification paths would be
+> explored (ignoring traces with drained iterators):
+> - entry:
+>   - 8,9,10,11,12,13:
+>     - at 9 checkpoint (C1) would be created with it{.depth=3D0,.state=3Da=
+ctive},ptr=3D&val;
+>     - at 11 branch (B1) would be created with it{.depth=3D0,.state=3Dacti=
+ve},ptr=3D&val;
+>     - jump from 13 to 9 would be postponed with state
+>       it{.depth=3D0,.state=3Dactive},ptr=3D0xdead as proceeding would inc=
+rease 'it' depth;
+> - jump from 11 to 15 (branch B1):
+>   - 15:
+>     - checkpoint would be created with it{.depth=3D0,.state=3Dactive};
+>     - jump from 15 to 17 would be postponed with state
+>       it{.depth=3D0,.state=3Dactive} as proceeding would increase 'it' de=
+pth.
+> - at this point verifier would run out of paths that don't increase
+>   iterators depth and there are two choices:
+>   - (a) jump from 13 to 9 with state it{.depth=3D0,.state=3Dactive},ptr=
+=3D0xdead;
+>   - (b) jump from 15 to 17 with state it{.depth=3D0,.state=3Dactive},ptr=
+=3D&val.
+>   If (a) would be processed first there would be no read mark for
+>   'ptr' in C1 yet and verifier runs into to the same issue as with
+>   original example.
+>
+> Do I miss something or is it a legit counter-example?
+>
 
-On Fri, Sep 08, 2023 at 09:39:22PM +0800, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
-> 
-> Add extra check in bpf_mem_alloc_init() to ensure the unit_size of
-> bpf_mem_cache is matched with the object_size of underlying slab cache.
-> If these two sizes are unmatched, print a warning once and return
-> -EINVAL in bpf_mem_alloc_init(), so the mismatch can be found early and
-> the potential issue can be prevented.
-> 
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
+I think it is, yes. With the use of
 
-With this patch in place, I see the following backtrace on riscv systems.
+if (!bpf_iter_num_next(&it))
+    break;
 
-[    2.953088] bpf_mem_cache[0]: unexpected object size 128, expect 96
-[    2.953481] WARNING: CPU: 0 PID: 1 at kernel/bpf/memalloc.c:507 bpf_mem_alloc_init+0x326/0x32e
-[    2.953645] Modules linked in:
-[    2.953736] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.6.0-rc2-00244-g27bbf45eae9c #1
-[    2.953790] Hardware name: riscv-virtio,qemu (DT)
-[    2.953855] epc : bpf_mem_alloc_init+0x326/0x32e
-[    2.953891]  ra : bpf_mem_alloc_init+0x326/0x32e
-[    2.953909] epc : ffffffff8016cbd2 ra : ffffffff8016cbd2 sp : ff2000000000bd20
-[    2.953920]  gp : ffffffff81c39298 tp : ff60000002e80040 t0 : 0000000000000000
-[    2.953930]  t1 : ffffffffbbbabbc3 t2 : 635f6d656d5f6670 s0 : ff2000000000bdc0
-[    2.953940]  s1 : ffffffff8121c7da a0 : 0000000000000037 a1 : ffffffff81a93048
-[    2.953949]  a2 : 0000000000000010 a3 : 0000000000000001 a4 : 0000000000000000
-[    2.953959]  a5 : 0000000000000000 a6 : ffffffff81c4fe08 a7 : 0000000000000000
-[    2.953968]  s2 : 000000000000000b s3 : 0000000000000000 s4 : 0000000000000000
-[    2.953977]  s5 : 0000000000000000 s6 : 0000000000000100 s7 : ff5ffffffffd3128
-[    2.953986]  s8 : ffffffff81c3d1f8 s9 : 0000000000000060 s10: 0000000000000000
-[    2.953996]  s11: 0000000000000060 t3 : 0000000065a61b33 t4 : 0000000000000009
-[    2.954005]  t5 : ffffffffde180000 t6 : ff2000000000bb08
-[    2.954014] status: 0000000200000120 badaddr: 0000000000000000 cause: 0000000000000003
-[    2.954047] [<ffffffff8016cbd2>] bpf_mem_alloc_init+0x326/0x32e
-[    2.954087] [<ffffffff80e11426>] bpf_global_ma_init+0x1c/0x30
-[    2.954097] [<ffffffff8000285e>] do_one_initcall+0x5c/0x238
-[    2.954105] [<ffffffff80e011ae>] kernel_init_freeable+0x29a/0x30e
-[    2.954115] [<ffffffff80c0312c>] kernel_init+0x1e/0x112
-[    2.954124] [<ffffffff80003d82>] ret_from_fork+0xa/0x1c
+you can postpone any important markings as deep into iteration
+verification as necessary. So yeah, the idea to explore code path
+level by level won't cover all the cases, unfortunately.
 
-Copying riscv maintainers and mailing list for feedback / comments.
+> > I can't say I understand what exactly you are proposing and how you
+> > are going to determine these conservative precision marks. But I'd
+> > like to learn some new ideas, so please elaborate :)
+>
+> I'll send a follow-up email, trying to figure out what to do with pointer=
+s.
 
-Thanks,
-Guenter
+Ok, sounds good.
 
