@@ -1,123 +1,170 @@
-Return-Path: <bpf+bounces-10628-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10629-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 889FD7AB08C
-	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 13:26:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F27347AB098
+	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 13:29:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by ny.mirrors.kernel.org (Postfix) with ESMTP id 9560D1C2099D
-	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 11:26:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id A4D0D282800
+	for <lists+bpf@lfdr.de>; Fri, 22 Sep 2023 11:29:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363931F183;
-	Fri, 22 Sep 2023 11:26:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86AD51F18F;
+	Fri, 22 Sep 2023 11:29:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5B651EA8F
-	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 11:26:03 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF2AAC
-	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 04:26:01 -0700 (PDT)
-Received: from fsav117.sakura.ne.jp (fsav117.sakura.ne.jp [27.133.134.244])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 38MBPQGE017411;
-	Fri, 22 Sep 2023 20:25:26 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav117.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp);
- Fri, 22 Sep 2023 20:25:26 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 38MBPQGe017408
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Fri, 22 Sep 2023 20:25:26 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <dde20522-af01-c198-5872-b19ef378f286@I-love.SAKURA.ne.jp>
-Date: Fri, 22 Sep 2023 20:25:26 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C10001F18A
+	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 11:29:04 +0000 (UTC)
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124D118F;
+	Fri, 22 Sep 2023 04:29:03 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3ab2a0391c0so1246836b6e.1;
+        Fri, 22 Sep 2023 04:29:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695382142; x=1695986942; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eBmYJOqhxd1SazsqJY85EKAZwokTy4dGQOyg7MypJ/k=;
+        b=matmz69ZegDxdG4AsiHkPrzY4o4hx9uJZ72pFkr3JzSSPTQA/pfMwPR+YRAqrmNW1h
+         6ZM5wYGeLlNgqo8sKnIgAI4yUPmFjAxrHoswAIjRaoAll+HZCQYT+nAj6MkdscLvZpz5
+         GJCcHmem1m/RUJEBWdGMbOSfy8HvUupABRKZPzlStGWrFmBg5rbTEhYuruqQH/jUwmM4
+         Jt++HW1f3Xl1TslnbFZgbFyW/e31QmWq5PN+j/FlRj1gXSBewNhdeUjCTuvQPppOzkQn
+         ta2PlXa031TQPujFpmCpdOEDrnTPxC+qTkmtj7HNiIhdwPAX7ACXrLR6+65N3yCIDTvJ
+         yM+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695382142; x=1695986942;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eBmYJOqhxd1SazsqJY85EKAZwokTy4dGQOyg7MypJ/k=;
+        b=E1eIBu21xTJtRAOjTohyMTzBUHJCn/LoFBVW50Kn4vHEbMcj7ibpltMWlVH4Hh0U9u
+         f0OZJZMC5Ye/Wb4J67jUSbV0Lge0iRPEeiukLEO3D5f8inVUg8HOx+d8El20VZCg+Coy
+         pl6q4FiYLB6e/RLFMWBlCtdbIr0zQ77zcJ0AyjSeYjfJhfAK7TjK8KazxOHIUh4bMydQ
+         IhBpeDgTCIhgE1HQa6UaORebqNyyHOjy30GTkbFTWLoC1qsFTDGpMKOwf7KLe0LeCvSl
+         t6aOITaM3U3q/V4mh93x8biOjq/iT61VZHh/aQyCPgBHI94Q0JCzyqvUSGjrJ8s3v0eQ
+         /vmg==
+X-Gm-Message-State: AOJu0YzRPcGqm8UntQkW0Yz8ZGomcMRftmGKXB2aihjmmZ3FhSpVY/I0
+	Kf78IaHyzVjDtC4aiey7EJk=
+X-Google-Smtp-Source: AGHT+IEfgTKiqmFI0rcKEFvZPpzJey9/Ct0kV2H1czDyk8TcNiakyJvUaP90myJ2b79ArjIOCz1YkQ==
+X-Received: by 2002:a05:6808:1388:b0:3a4:2204:e9e6 with SMTP id c8-20020a056808138800b003a42204e9e6mr10207623oiw.21.1695382142195;
+        Fri, 22 Sep 2023 04:29:02 -0700 (PDT)
+Received: from vultr.guest ([149.28.194.201])
+        by smtp.gmail.com with ESMTPSA id v16-20020aa78090000000b00690beda6987sm2973493pff.77.2023.09.22.04.28.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Sep 2023 04:28:59 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	tj@kernel.org,
+	lizefan.x@bytedance.com,
+	hannes@cmpxchg.org,
+	yosryahmed@google.com,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 0/8] bpf, cgroup: Add bpf support for cgroup controller 
+Date: Fri, 22 Sep 2023 11:28:38 +0000
+Message-Id: <20230922112846.4265-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 2/5] security: Count the LSMs enabled at compile time
-Content-Language: en-US
-To: KP Singh <kpsingh@kernel.org>
-Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-        paul@paul-moore.com, keescook@chromium.org, casey@schaufler-ca.com,
-        song@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        Kui-Feng Lee <sinquersw@gmail.com>
-References: <20230918212459.1937798-1-kpsingh@kernel.org>
- <20230918212459.1937798-3-kpsingh@kernel.org>
- <cb67f607-3a9d-34d2-0877-a3ff957da79e@I-love.SAKURA.ne.jp>
- <CACYkzJ5GFsgc3vzJXH34hgoTc+CEf+7rcktj0QGeQ5e8LobRcw@mail.gmail.com>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <CACYkzJ5GFsgc3vzJXH34hgoTc+CEf+7rcktj0QGeQ5e8LobRcw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 2023/09/21 22:58, KP Singh wrote:
-> On Thu, Sep 21, 2023 at 3:21 PM Tetsuo Handa
-> <penguin-kernel@i-love.sakura.ne.jp> wrote:
->>
->> On 2023/09/19 6:24, KP Singh wrote:
->>> These macros are a clever trick to determine a count of the number of
->>> LSMs that are enabled in the config to ascertain the maximum number of
->>> static calls that need to be configured per LSM hook.
->>
->> As a LKM-based LSM user, indirect function calls using a linked list have
->> an advantage which this series kills. There always is a situation where a
-> 
-> 
->> LSM cannot be built into vmlinux (and hence has to be loaded as a LKM-based
->> LSM) due to distributor's support policy. Therefore, honestly speaking,
->> I don't want LSM infrastructure to define the maximum number of "slots" or
->> "static calls"...
->>
-> 
-> Yeah, LSMs are not meant to be used from a kernel module. The data
-> structure is actually __ro_after_init. So, I am not even sure how you
-> are using it in kernel modules (unless you are patching this out).
-> And, if you are really patching stuff to get your out of tree LSMs to
-> work, then you might as well add your "custom" LSM config here or just
-> override this count.
+Currently, BPF is primarily confined to cgroup2, with the exception of
+cgroup_iter, which supports cgroup1 fds. Unfortunately, this limitation
+prevents us from harnessing the full potential of BPF within cgroup1
+environments.
 
-I'm using LKM-based LSM with any version between 2.6.0 and 6.6-rc2, without patching
-__ro_after_init out. We can load LKM-based LSMs, without patching the original kernel.
-And it seems to me that several proprietary security products for Linux are using
-this trick, for LSMs for such products cannot be built into distributor's kernels...
+In our endeavor to seamlessly integrate BPF within our Kubernetes
+environment, which relies on cgroup1, we have been exploring the
+possibility of transitioning to cgroup2. While this transition is
+forward-looking, it poses challenges due to the necessity for numerous
+applications to adapt.
 
-----------
-[    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-6.6.0-rc2+ root=/dev/sda1 ro vconsole.keymap=jp106 vconsole.font=latarcyrheb-sun16 security=none sysrq_always_enabled console=ttyS0,115200n8 console=tty0 LANG=en_US.UTF-8 init=/sbin/akari-init
-(...snipped...)
-[  147.238458] AKARI: 1.0.48   2023/05/27
-[  147.244867] Access Keeping And Regulating Instrument registered.
-[  147.261232] Calling /sbin/ccs-init to load policy. Please wait.
-239 domains. 11807 ACL entries.
-1938 KB used by policy.
-[  147.768694] CCSecurity: 1.8.9   2021/04/01
-[  147.768740] Mandatory Access Control activated.
-----------
+While we acknowledge that cgroup2 represents the future, we also recognize
+that such transitions demand time and effort. As a result, we are
+considering an alternative approach. Instead of migrating to cgroup2, we
+are contemplating modifications to the BPF kernel code to ensure
+compatibility with cgroup1. These adjustments appear to be relatively
+minor, making this option more feasible.
 
-> 
-> The performance benefits here outweigh the need for a completely
-> unsupported use case.
+Given the widespread use of cgroup1 in container environments, this change
+would be beneficial to many users.
 
-LKM-based LSMs are not officially supported since 2.6.24. But people need LKM-based LSMs.
-It is very sad that the LSM community is trying to lock out out of tree LSMs
-( https://lkml.kernel.org/r/ec37cd2f-24ee-3273-c253-58d480569117@I-love.SAKURA.ne.jp ).
-The LSM interface is a common property for *all* Linux users.
+Based on our investigation, the optimal way to enable BPF on cgroup1 is to
+utilize the cgroup controller. The cgroup becomes active only when it has
+one or more of its controllers enabled. In production environments, a task
+is consistently managed by at least one cgroup controller. Consequently, we
+can always establish a direct link between a task and a cgroup controller,
+enabling us to perform actions based on this connection. As a consequence,
+this patchset introduces the following new kfuncs: 
 
-I'm not objecting the performance benefits by replacing with static calls.
-I'm not happy that the LSM community ignores the Torvald's comment at https://lkml.org/lkml/2007/10/1/192
-and does not listen to minority's voices.
+- bpf_cgroup_id_from_task_within_controller
+  Retrieves the cgroup ID from a task within a specific cgroup controller.
+- bpf_cgroup_acquire_from_id_within_controller
+  Acquires the cgroup from a cgroup ID within a specific cgroup controller.
+- bpf_cgroup_ancestor_id_from_task_within_controller
+  Retrieves the ancestor cgroup ID from a task within a specific cgroup
+  controller.
+
+The advantage of these new BPF kfuncs is their ability to abstract away the
+complexities of cgroup hierarchies, irrespective of whether they involve
+cgroup1 or cgroup2.
+
+In the future, we may expand controller-based support to other BPF
+functionalities, such as bpf_cgrp_storage, the attachment and detachment
+of cgroups, skb_under_cgroup, and more.
+
+Changes:
+- bpf, cgroup: Enable cgroup_array map on cgroup1
+  https://lore.kernel.org/bpf/20230903142800.3870-1-laoar.shao@gmail.com/
+
+Yafang Shao (8):
+  bpf: Fix missed rcu read lock in bpf_task_under_cgroup()
+  cgroup: Enable task_under_cgroup_hierarchy() on cgroup1
+  cgroup: Add cgroup_get_from_id_within_subsys()
+  bpf: Add new kfuncs support for cgroup controller
+  selftests/bpf: Fix issues in setup_classid_environment()
+  selftests/bpf: Add parallel support for classid
+  selftests/bpf: Add new cgroup helper get_classid_cgroup_id()
+  selftests/bpf: Add selftests for cgroup controller
+
+ include/linux/cgroup-defs.h                   |  20 +++
+ include/linux/cgroup.h                        |  31 +++-
+ kernel/bpf/helpers.c                          |  77 ++++++++-
+ kernel/cgroup/cgroup-internal.h               |  20 ---
+ kernel/cgroup/cgroup.c                        |  32 +++-
+ tools/testing/selftests/bpf/cgroup_helpers.c  |  65 ++++++--
+ tools/testing/selftests/bpf/cgroup_helpers.h  |   3 +-
+ .../bpf/prog_tests/cgroup_controller.c        | 149 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/cgroup_v1v2.c    |   2 +-
+ .../bpf/progs/test_cgroup_controller.c        |  80 ++++++++++
+ 10 files changed, 430 insertions(+), 49 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_controller.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_cgroup_controller.c
+
+-- 
+2.30.1 (Apple Git-130)
 
 
