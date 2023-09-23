@@ -1,36 +1,36 @@
-Return-Path: <bpf+bounces-10693-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10694-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D7867AC38C
-	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 18:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C9887AC399
+	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 18:24:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by am.mirrors.kernel.org (Postfix) with ESMTP id D0E411F23C43
-	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 16:21:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTP id 2C8981F23CA4
+	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 16:24:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A99FD208B3;
-	Sat, 23 Sep 2023 16:21:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0EAC208B9;
+	Sat, 23 Sep 2023 16:24:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 205631E51C;
-	Sat, 23 Sep 2023 16:21:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13699C433C7;
-	Sat, 23 Sep 2023 16:21:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 845C51EA7E;
+	Sat, 23 Sep 2023 16:24:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C213C433C8;
+	Sat, 23 Sep 2023 16:24:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695486112;
-	bh=epTBeih4MHoaHBpc48qML+P/ARMeb7d09SNlM/hQxw0=;
+	s=k20201202; t=1695486280;
+	bh=LPa0vOpCN9uFCJLwT0Mv83PIALUPvGiZjoSaYDcpsJE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ofaXj1oNTs/VBLYlvMmVzGA3HsxAlJskkj7XrUmUTDzx/0RPqgkm91Z7JgVfNThA+
-	 jF51Gkq+/u8f3Pl9hK1BmDVAsawYyQVDaZs6NfxlIM+VHJDmPuMKHs1TOy64LPBIRA
-	 iuS6IcsT1zTuxev9K6pIMvYP5Qodr6WpU9hqxXwD4ixmanyA2+kLliocF453RBJkLn
-	 2TOewMq1E/GW1XYu4R2CCfYUfUpS+zAxWOefS4IClhNx863WjbFLsgwwYry2hXBCvO
-	 tH3ho75+Hir/pB3LPn6CIdrcMEvj+m5czuQ0yH+wcE6dXhoEdwLJTXJ/XABJAw1gmy
-	 81I0fO8rK/6Jg==
-Date: Sat, 23 Sep 2023 19:20:55 +0300
+	b=XbZg7GgD8+BmM0EbIou3DUcf1HdG1quOywXNpDmhicICfIw73rq/zzU/h/vI/qZDp
+	 XFUEPcYb9UPuknO3UuH9df8jDX6Y2cSrJ80wg4ZDDFpWgi05sPMcC4MzWe2C0cyCeu
+	 nP6/UDcZM95kD65En58LM92KcpcWG3KRH0guTPfrV4zfxxO4soUJ8uiNt0flLBa+d0
+	 BLkPfitclvMDS0vd51IsKv7CF8IIIdzK9/P0gBrSPMYS98N2ZZq1Bne2bq5a34spi2
+	 CfuytAh2slWgJP4aWqKBet8FSXiJNiOrIpHAN1uhuJKdaS5HEKlew5LP5bm2Q0OAmM
+	 QvG1TNKlGHcFw==
+Date: Sat, 23 Sep 2023 19:23:40 +0300
 From: Mike Rapoport <rppt@kernel.org>
-To: Song Liu <song@kernel.org>
+To: Alexandre Ghiti <alex@ghiti.fr>
 Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
 	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
 	Catalin Marinas <catalin.marinas@arm.com>,
@@ -48,7 +48,7 @@ Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
 	Puranjay Mohan <puranjay12@gmail.com>,
 	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
@@ -59,176 +59,151 @@ Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
 	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
 	loongarch@lists.linux.dev, netdev@vger.kernel.org,
 	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v3 06/13] mm/execmem: introduce execmem_data_alloc()
-Message-ID: <20230923162055.GL3303@kernel.org>
+Subject: Re: [PATCH v3 08/13] riscv: extend execmem_params for generated code
+ allocations
+Message-ID: <20230923162340.GM3303@kernel.org>
 References: <20230918072955.2507221-1-rppt@kernel.org>
- <20230918072955.2507221-7-rppt@kernel.org>
- <CAPhsuW73NMvdpmyrhGouQSAHEL9wRw_A+8dZ-5R4BU=UHH83cw@mail.gmail.com>
+ <20230918072955.2507221-9-rppt@kernel.org>
+ <6d686c54-078d-8d71-d4e2-c754cf92c557@ghiti.fr>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW73NMvdpmyrhGouQSAHEL9wRw_A+8dZ-5R4BU=UHH83cw@mail.gmail.com>
+In-Reply-To: <6d686c54-078d-8d71-d4e2-c754cf92c557@ghiti.fr>
 
-On Thu, Sep 21, 2023 at 03:52:21PM -0700, Song Liu wrote:
-> On Mon, Sep 18, 2023 at 12:31 AM Mike Rapoport <rppt@kernel.org> wrote:
-> >
-> [...]
-> > diff --git a/include/linux/execmem.h b/include/linux/execmem.h
-> > index 519bdfdca595..09d45ac786e9 100644
-> > --- a/include/linux/execmem.h
-> > +++ b/include/linux/execmem.h
-> > @@ -29,6 +29,7 @@
-> >   * @EXECMEM_KPROBES: parameters for kprobes
-> >   * @EXECMEM_FTRACE: parameters for ftrace
-> >   * @EXECMEM_BPF: parameters for BPF
-> > + * @EXECMEM_MODULE_DATA: parameters for module data sections
-> >   * @EXECMEM_TYPE_MAX:
-> >   */
-> >  enum execmem_type {
-> > @@ -37,6 +38,7 @@ enum execmem_type {
-> >         EXECMEM_KPROBES,
-> >         EXECMEM_FTRACE,
+On Fri, Sep 22, 2023 at 12:37:07PM +0200, Alexandre Ghiti wrote:
+> Hi Mike,
 > 
-> In longer term, I think we can improve the JITed code and merge
-> kprobe/ftrace/bpf. to use the same ranges. Also, do we need special
-> setting for FTRACE? If not, let's just remove it.
-
-I don't think we need to limit how the JITed code is generated because we
-want to support fewer address space ranges for it. 
-
-As for FTRACE, now it's only needed on x86 and s390 and there it happens
-to use the same ranges as MODULES and the rest, but it still gives some
-notion of potential semantic differences and the overhead of keeping it is
-really negligible.
+> On 18/09/2023 09:29, Mike Rapoport wrote:
+> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> > 
+> > The memory allocations for kprobes and BPF on RISC-V are not placed in
+> > the modules area and these custom allocations are implemented with
+> > overrides of alloc_insn_page() and  bpf_jit_alloc_exec().
+> > 
+> > Slightly reorder execmem_params initialization to support both 32 and 64
+> > bit variants, define EXECMEM_KPROBES and EXECMEM_BPF ranges in
+> > riscv::execmem_params and drop overrides of alloc_insn_page() and
+> > bpf_jit_alloc_exec().
+> > 
+> > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> > ---
+> >   arch/riscv/kernel/module.c         | 21 ++++++++++++++++++++-
+> >   arch/riscv/kernel/probes/kprobes.c | 10 ----------
+> >   arch/riscv/net/bpf_jit_core.c      | 13 -------------
+> >   3 files changed, 20 insertions(+), 24 deletions(-)
+> > 
+> > diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+> > index 343a0edfb6dd..31505ecb5c72 100644
+> > --- a/arch/riscv/kernel/module.c
+> > +++ b/arch/riscv/kernel/module.c
+> > @@ -436,20 +436,39 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+> >   	return 0;
+> >   }
+> > -#if defined(CONFIG_MMU) && defined(CONFIG_64BIT)
+> > +#ifdef CONFIG_MMU
+> >   static struct execmem_params execmem_params __ro_after_init = {
+> >   	.ranges = {
+> >   		[EXECMEM_DEFAULT] = {
+> >   			.pgprot = PAGE_KERNEL,
+> >   			.alignment = 1,
+> >   		},
+> > +		[EXECMEM_KPROBES] = {
+> > +			.pgprot = PAGE_KERNEL_READ_EXEC,
+> > +			.alignment = 1,
+> > +		},
+> > +		[EXECMEM_BPF] = {
+> > +			.pgprot = PAGE_KERNEL,
+> > +			.alignment = 1,
+> 
+> 
+> Not entirely sure it is the same alignment (sorry did not go through the
+> entire series), but if it is, the alignment above ^ is not the same that is
+> requested by our current bpf_jit_alloc_exec() implementation which is
+> PAGE_SIZE.
  
-> >         EXECMEM_BPF,
-> > +       EXECMEM_MODULE_DATA,
-> >         EXECMEM_TYPE_MAX,
-> >  };
-> 
-> Overall, it is great that kprobe/ftrace/bpf no longer depend on modules.
-> 
-> OTOH, I think we should merge execmem_type and existing mod_mem_type.
-> Otherwise, we still need to handle page permissions in multiple places.
-> What is our plan for that?
+This literally translates vmalloc() in alloc_insn_page() to a set of
+parameters, so "1" comes from there. And using alignment of 1 with
+vmalloc() implicitly sets it to PAGE_SIZE.
 
-Maybe, but I think this is too early. There are several things missing
-before we could remove set_memory usage from modules. E.g. to use ROX
-allocations on x86 we at least should update alternatives handling and
-reach a consensus about synchronization Andy mentioned in his comments to
-v2.
- 
-> Thanks,
-> Song
-> 
-> 
-> >
-> > @@ -107,6 +109,23 @@ struct execmem_params *execmem_arch_params(void);
-> >   */
-> >  void *execmem_text_alloc(enum execmem_type type, size_t size);
-> >
-> > +/**
-> > + * execmem_data_alloc - allocate memory for data coupled to code
-> > + * @type: type of the allocation
-> > + * @size: how many bytes of memory are required
-> > + *
-> > + * Allocates memory that will contain data coupled with executable code,
-> > + * like data sections in kernel modules.
-> > + *
-> > + * The memory will have protections defined by architecture.
-> > + *
-> > + * The allocated memory will reside in an area that does not impose
-> > + * restrictions on the addressing modes.
-> > + *
-> > + * Return: a pointer to the allocated memory or %NULL
-> > + */
-> > +void *execmem_data_alloc(enum execmem_type type, size_t size);
+> > +		},
+> >   	},
+> >   };
+> >   struct execmem_params __init *execmem_arch_params(void)
+> >   {
+> > +#ifdef CONFIG_64BIT
+> >   	execmem_params.ranges[EXECMEM_DEFAULT].start = MODULES_VADDR;
+> >   	execmem_params.ranges[EXECMEM_DEFAULT].end = MODULES_END;
+> > +#else
+> > +	execmem_params.ranges[EXECMEM_DEFAULT].start = VMALLOC_START;
+> > +	execmem_params.ranges[EXECMEM_DEFAULT].end = VMALLOC_END;
+> > +#endif
 > > +
-> >  /**
-> >   * execmem_free - free executable memory
-> >   * @ptr: pointer to the memory that should be freed
-> > diff --git a/kernel/module/main.c b/kernel/module/main.c
-> > index c4146bfcd0a7..2ae83a6abf66 100644
-> > --- a/kernel/module/main.c
-> > +++ b/kernel/module/main.c
-> > @@ -1188,25 +1188,16 @@ void __weak module_arch_freeing_init(struct module *mod)
-> >  {
-> >  }
-> >
-> > -static bool mod_mem_use_vmalloc(enum mod_mem_type type)
+> > +	execmem_params.ranges[EXECMEM_KPROBES].start = VMALLOC_START;
+> > +	execmem_params.ranges[EXECMEM_KPROBES].end = VMALLOC_END;
+> > +
+> > +	execmem_params.ranges[EXECMEM_BPF].start = BPF_JIT_REGION_START;
+> > +	execmem_params.ranges[EXECMEM_BPF].end = BPF_JIT_REGION_END;
+> >   	return &execmem_params;
+> >   }
+> > diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
+> > index 2f08c14a933d..e64f2f3064eb 100644
+> > --- a/arch/riscv/kernel/probes/kprobes.c
+> > +++ b/arch/riscv/kernel/probes/kprobes.c
+> > @@ -104,16 +104,6 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
+> >   	return 0;
+> >   }
+> > -#ifdef CONFIG_MMU
+> > -void *alloc_insn_page(void)
 > > -{
-> > -       return IS_ENABLED(CONFIG_ARCH_WANTS_MODULES_DATA_IN_VMALLOC) &&
-> > -               mod_mem_type_is_core_data(type);
+> > -	return  __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
+> > -				     GFP_KERNEL, PAGE_KERNEL_READ_EXEC,
+> > -				     VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
+> > -				     __builtin_return_address(0));
+> > -}
+> > -#endif
+> > -
+> >   /* install breakpoint in text */
+> >   void __kprobes arch_arm_kprobe(struct kprobe *p)
+> >   {
+> > diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
+> > index 7b70ccb7fec3..c8a758f0882b 100644
+> > --- a/arch/riscv/net/bpf_jit_core.c
+> > +++ b/arch/riscv/net/bpf_jit_core.c
+> > @@ -218,19 +218,6 @@ u64 bpf_jit_alloc_exec_limit(void)
+> >   	return BPF_JIT_REGION_SIZE;
+> >   }
+> > -void *bpf_jit_alloc_exec(unsigned long size)
+> > -{
+> > -	return __vmalloc_node_range(size, PAGE_SIZE, BPF_JIT_REGION_START,
+> > -				    BPF_JIT_REGION_END, GFP_KERNEL,
+> > -				    PAGE_KERNEL, 0, NUMA_NO_NODE,
+> > -				    __builtin_return_address(0));
 > > -}
 > > -
-> >  static void *module_memory_alloc(unsigned int size, enum mod_mem_type type)
-> >  {
-> > -       if (mod_mem_use_vmalloc(type))
-> > -               return vzalloc(size);
-> > +       if (mod_mem_type_is_data(type))
-> > +               return execmem_data_alloc(EXECMEM_MODULE_DATA, size);
-> >         return execmem_text_alloc(EXECMEM_MODULE_TEXT, size);
-> >  }
-> >
-> >  static void module_memory_free(void *ptr, enum mod_mem_type type)
-> >  {
-> > -       if (mod_mem_use_vmalloc(type))
-> > -               vfree(ptr);
-> > -       else
-> > -               execmem_free(ptr);
-> > +       execmem_free(ptr);
-> >  }
-> >
-> >  static void free_mod_mem(struct module *mod)
-> > diff --git a/mm/execmem.c b/mm/execmem.c
-> > index abcbd07e05ac..aeff85261360 100644
-> > --- a/mm/execmem.c
-> > +++ b/mm/execmem.c
-> > @@ -53,11 +53,23 @@ static void *execmem_alloc(size_t size, struct execmem_range *range)
-> >         return kasan_reset_tag(p);
-> >  }
-> >
-> > +static inline bool execmem_range_is_data(enum execmem_type type)
-> > +{
-> > +       return type == EXECMEM_MODULE_DATA;
-> > +}
-> > +
-> >  void *execmem_text_alloc(enum execmem_type type, size_t size)
-> >  {
-> >         return execmem_alloc(size, &execmem_params.ranges[type]);
-> >  }
-> >
-> > +void *execmem_data_alloc(enum execmem_type type, size_t size)
-> > +{
-> > +       WARN_ON_ONCE(!execmem_range_is_data(type));
-> > +
-> > +       return execmem_alloc(size, &execmem_params.ranges[type]);
-> > +}
-> > +
-> >  void execmem_free(void *ptr)
-> >  {
-> >         /*
-> > @@ -93,7 +105,10 @@ static void execmem_init_missing(struct execmem_params *p)
-> >                 struct execmem_range *r = &p->ranges[i];
-> >
-> >                 if (!r->start) {
-> > -                       r->pgprot = default_range->pgprot;
-> > +                       if (execmem_range_is_data(i))
-> > +                               r->pgprot = PAGE_KERNEL;
-> > +                       else
-> > +                               r->pgprot = default_range->pgprot;
-> >                         r->alignment = default_range->alignment;
-> >                         r->start = default_range->start;
-> >                         r->end = default_range->end;
-> > --
-> > 2.39.2
-> >
+> > -void bpf_jit_free_exec(void *addr)
+> > -{
+> > -	return vfree(addr);
+> > -}
+> > -
+> >   void *bpf_arch_text_copy(void *dst, void *src, size_t len)
+> >   {
+> >   	int ret;
+> 
+> 
+> Otherwise, you can add:
+> 
+> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> 
+> Thanks,
+> 
+> Alex
+> 
+> 
 
 -- 
 Sincerely yours,
