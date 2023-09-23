@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-10678-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 458287ABDF0
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E71F57ABDF2
 	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 07:36:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id EA059282D16
-	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 05:36:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id 0A9131C20A93
+	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 05:36:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEEE246B0;
-	Sat, 23 Sep 2023 05:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF022211C;
+	Sat, 23 Sep 2023 05:36:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D20801FB0
-	for <bpf@vger.kernel.org>; Sat, 23 Sep 2023 05:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C05874693
+	for <bpf@vger.kernel.org>; Sat, 23 Sep 2023 05:36:29 +0000 (UTC)
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C610171F
-	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 22:36:10 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d85fc6261ffso3681147276.1
-        for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 22:36:10 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71BE1738
+	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 22:36:11 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d81c39acfd9so4415582276.0
+        for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 22:36:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695447368; x=1696052168; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695447371; x=1696052171; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=U3pdNCB2LsormKDmRgRav6emuDoIUkf2JUNU+RA747k=;
-        b=w9HGH3d1H4ueLvkTYf/V9zbKX8Yc6tSYtDN5zllmhvEKeshrQTVkvtl/b7xy+XuVNa
-         EJCvipKcLdQkPyDrotUG0VTu1ggww/WhaQipU9ZZZ8Bz/EV9+D2iZW+6jReCjjnbvx9f
-         UA0ocNNVEnxrHnOyE9w/BOVyR6+1BNAtmLFIFOvUX+9Qm3g+EyoEhl6xBnvzR369qaxL
-         FHm5ahOwiFYaBAn83VQGLZDqsKTmPwgKFd4sfxQK88SedFMU+g03ND7S2fvbHqSBuzNx
-         GnrH54bhndTuHF0X2zlooC/fb63utPwq6EPUXgeanq/bi104A4q4bobpPQkgwMYWxeX0
-         0goQ==
+        bh=No/3+lDiHVKRYv0Xt55G/Z9T7NmlV4cHNPo/aHaSm7Q=;
+        b=HI+b8NbgJPYE4NlauO7YWMKfK8pTBRkcjiQG+bHJZJPDGQol0H1Rq1H1qAHxi+L28b
+         Zuytsh1Nw/nT14G2fIbmJUI8hVGrKhQZME/CVW4fYI4++Qn5QEJQ4YzWJQT8NEyOCBG+
+         iwfcKNnLTKm8cVKY2yiYEjbqVyjaKjQzZJl3EoepWiSBS7p1TuZL5L25fXsy0QT8L7Pz
+         q3kr3zQoWjN8rmIMK+uTGwC5EI1fdzY0+30Gfwl0sk92XYesG1k1zUhPPzxm49ysSg14
+         uHpiiPOrkn1UbB8QrHWxNwLGpSS65zSlVe9abOKGFmL9dXP0NfbWt4zQ9WKFXugQ2Mgh
+         KmeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695447368; x=1696052168;
+        d=1e100.net; s=20230601; t=1695447371; x=1696052171;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=U3pdNCB2LsormKDmRgRav6emuDoIUkf2JUNU+RA747k=;
-        b=q3xT+f0ItX1u3xc9lQ5uWB+UGrbylpw8mnCmwX1Gk3eHZ7WyQkY4qHChsx5nCqtqLV
-         pPUrRd48mC8MctnHQpg8L0UznAcL8fj9srmin4vd60e0pCWxX/gZ0yjn5eGDoyeEXvIC
-         SdumcTeprPlEMQZ/lYv/bLRkr/o9wWMT1+x7Lrnpf5urIzHPQauCmVvxEn8s7wGb3AX2
-         TaNLfVv+85KpqVher8m5md0kvAXPbW2mdVnT11lEAyhhSqxr8mCjKkClmVmyG+ogKnOx
-         W5gkLtsguUz+0RK9q+cUUw+DK7+3O+1Kn8NRN5njmQohyjV7P5vzX3pcN8xtAwB71/aY
-         Q+2w==
-X-Gm-Message-State: AOJu0Yy92YXzLsCGoNDhopFWZEjYZEFvjKFW6wuAKDC/H44oMU1Vk0Mq
-	5EKPbSXHcniTQJ2a+AggaU995S2wHNZp
-X-Google-Smtp-Source: AGHT+IHCnNmAl4FHX9SRP9LKagjgjeFuwIZsOgArdKHwnwaZmzbMv4PHYCjxCbJouwmMwwuksIiI1+0lADIr
+        bh=No/3+lDiHVKRYv0Xt55G/Z9T7NmlV4cHNPo/aHaSm7Q=;
+        b=J/ywknd1MrT2EguJW9KXCKFcVElUBlgHhk3QtdeyK+fhPfaW/vWn4YJsXbaEBqbBjo
+         VbhmECFIVQTXX59BUm14OgNIiUFNXqflmCVsPaMsMU4JyfZmyK1l6Sx4dix4mFZfBPrh
+         pKMRsDMRsaxD/NiiPq/pamDzw/Wl4J7PKj/dTK85pr6RVzLToFt63j/t+SBeyhdzvBdj
+         /GBD4Z2NUkhAIQ+iP7JVMpq+aFuU0Pt1k2LnKqRveNBSoGGS3jwqOVXLYNIdSaCgUFLX
+         WxJqWYWx1c27cyESf1AaED/8T1+P46x8RBSA0oaAvYg0bxuCdV//9UDf+BD1GDVz+0DR
+         hgyA==
+X-Gm-Message-State: AOJu0Yw0Jf9gLjd9g5wQ7TDigoFDoAuQNdOLDP+OorVnCRE2vH0lAOw5
+	q9nICN70Lqnc0oD4FJn/NmugKqo2aiBH
+X-Google-Smtp-Source: AGHT+IGTM7Q8b3Ag4UtuwSpXj45aoEr35j9RQvQn4a5/8c4Gp7fonCA3U33uv8sbDogl59ChOBz4GGje4Wqw
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a376:2908:1c75:ff78])
- (user=irogers job=sendgmr) by 2002:a25:238d:0:b0:d78:3c2e:b186 with SMTP id
- j135-20020a25238d000000b00d783c2eb186mr10894ybj.5.1695447368466; Fri, 22 Sep
- 2023 22:36:08 -0700 (PDT)
-Date: Fri, 22 Sep 2023 22:35:11 -0700
+ (user=irogers job=sendgmr) by 2002:a25:8d12:0:b0:d85:3ef:a9d3 with SMTP id
+ n18-20020a258d12000000b00d8503efa9d3mr13253ybl.0.1695447370739; Fri, 22 Sep
+ 2023 22:36:10 -0700 (PDT)
+Date: Fri, 22 Sep 2023 22:35:12 -0700
 In-Reply-To: <20230923053515.535607-1-irogers@google.com>
-Message-Id: <20230923053515.535607-15-irogers@google.com>
+Message-Id: <20230923053515.535607-16-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,8 +61,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20230923053515.535607-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Subject: [PATCH v1 14/18] perf parse-events: Fix unlikely memory leak when
- cloning terms
+Subject: [PATCH v1 15/18] tools api: Avoid potential double free
 From: Ian Rogers <irogers@google.com>
 To: Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
 	Tom Rix <trix@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
@@ -81,32 +80,30 @@ To: Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add missing free on an error path as detected by clang-tidy.
+io__getline will free the line on error but it doesn't clear the out
+argument. This may lead to the line being freed twice, like in
+tools/perf/util/srcline.c as detected by clang-tidy.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/parse-events.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/lib/api/io.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index c56e07bd7dd6..23c027cf20ae 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -2549,8 +2549,10 @@ int parse_events_term__clone(struct parse_events_term **new,
- 		return new_term(new, &temp, /*str=*/NULL, term->val.num);
- 
- 	str = strdup(term->val.str);
--	if (!str)
-+	if (!str) {
-+		zfree(&temp.config);
- 		return -ENOMEM;
-+	}
- 	return new_term(new, &temp, str, /*num=*/0);
+diff --git a/tools/lib/api/io.h b/tools/lib/api/io.h
+index 9fc429d2852d..a77b74c5fb65 100644
+--- a/tools/lib/api/io.h
++++ b/tools/lib/api/io.h
+@@ -180,6 +180,7 @@ static inline ssize_t io__getline(struct io *io, char **line_out, size_t *line_l
+ 	return line_len;
+ err_out:
+ 	free(line);
++	*line_out = NULL;
+ 	return -ENOMEM;
  }
  
 -- 
