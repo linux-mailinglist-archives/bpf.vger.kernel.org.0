@@ -1,171 +1,226 @@
-Return-Path: <bpf+bounces-10684-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10685-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ACE57ABED1
-	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 10:21:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AAA17AC2CC
+	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 16:38:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by am.mirrors.kernel.org (Postfix) with ESMTP id 93B421F238D8
-	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 08:21:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTP id 97227B2084A
+	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 14:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40A30CA6E;
-	Sat, 23 Sep 2023 08:21:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 464851D547;
+	Sat, 23 Sep 2023 14:38:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B2B63B9
-	for <bpf@vger.kernel.org>; Sat, 23 Sep 2023 08:21:45 +0000 (UTC)
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF37198
-	for <bpf@vger.kernel.org>; Sat, 23 Sep 2023 01:21:43 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31f7638be6eso3201970f8f.3
-        for <bpf@vger.kernel.org>; Sat, 23 Sep 2023 01:21:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695457302; x=1696062102; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=sYlw6sbQ6o+up2kqcsobRya9pzMag7jmYFLxB/+1vwo=;
-        b=f8SUqs2skR+3l9hAOK2G1Y+6CJz6vqYr0I1jrjfAc9h1o2NL4+TeL8bQDq+6Ab1N8B
-         cd/vjXCtf8u4NBDzs3m7PwRW+JOgmn51gZTlU+4nZCS1ejnWcATOSUh0Fo1obEXQMhZt
-         rcgE7qk9nXZ1BYQlIuHC75pVRkFzPiaPI3ObOJ5kSW3/HdF/LtVAHijfEwzq9tz66lE7
-         QuMt2q41mO8P6W8PCoIhnJpo8oaFkXIHmwgDj+cXrynXy6eqTyqdYD/wvAd9OhWE4Lp6
-         OsXqhq3Msdc6GCCMU28s14z8yuDjxndBOt20Ga2g9CvQ6NTKQqt13wWe8ZHux0z6TtzB
-         dHnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695457302; x=1696062102;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sYlw6sbQ6o+up2kqcsobRya9pzMag7jmYFLxB/+1vwo=;
-        b=qgZahANL0tHRpekI8qsw3rqPak27OqIT5nBH+D0LveH5JUdYHSWTOVsKpRPKeygpUP
-         /yy09wqHgBvR2Hh+z87ujFYYeQIAUzcjctiOcDPIe8iX+J6u5RJchGGfKE8Uou2Mq+95
-         6QYsl2sz9KzqGrBNBVC5TVuK2MipwcRJxC+3hAJhR58a4K02qMv3/F6P9PXKfjhtwzfE
-         8DieHO2t+iTkj/Yi3S6um+SaelODafX+41loeDDkQcuuuzi1wP4jb96lGc2cKRUT0PqB
-         g4K9rXbir43crUCc7JW5gLBbS64z8POovm3sqp/yd9X3qj6Mxl1lTGt4yhNwGBwBrwCL
-         arqA==
-X-Gm-Message-State: AOJu0YxlNw4exo1HN7bLKLGytL0BLBY4hhHrPTG5Ac2PLekr5C96bQ2a
-	y90CLdAZ1rCiAvwiiZfIk38=
-X-Google-Smtp-Source: AGHT+IFM0QttIcfyAFwLutZGxUW/cuTvF7qqIFZFaYSkBgSqwLV5gIqzkMlLCLIH5Di+LpgdM0vaag==
-X-Received: by 2002:a5d:49c1:0:b0:31f:ea18:6f6b with SMTP id t1-20020a5d49c1000000b0031fea186f6bmr1350101wrs.19.1695457301945;
-        Sat, 23 Sep 2023 01:21:41 -0700 (PDT)
-Received: from krava (37-188-170-118.red.o2.cz. [37.188.170.118])
-        by smtp.gmail.com with ESMTPSA id j9-20020a5d6189000000b003142ea7a661sm6296643wru.21.2023.09.23.01.21.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Sep 2023 01:21:41 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sat, 23 Sep 2023 10:21:36 +0200
-To: Song Liu <song@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, Hou Tao <houtao1@huawei.com>,
-	bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Daniel Xu <dxu@dxuuu.xyz>
-Subject: Re: [PATCHv3 bpf-next 2/9] bpf: Add missed value to kprobe_multi
- link info
-Message-ID: <ZQ6gEHioaIwBYgwV@krava>
-References: <20230920213145.1941596-1-jolsa@kernel.org>
- <20230920213145.1941596-3-jolsa@kernel.org>
- <CAPhsuW5fn=zaayBL2R1D+rKkO5AWuPmwp1WydGkKcCD7QO6U2w@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 218D71CFA5;
+	Sat, 23 Sep 2023 14:38:09 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3D111D;
+	Sat, 23 Sep 2023 07:38:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695479888; x=1727015888;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9FgEs+W2rw9WobfIupSC05nSHa9tZRyrzcLmSdnEKaM=;
+  b=G1v9xIqkAhfEihGV2laXpUr7g1M1QuvhUxijRdkXb6gpwin46yeIbEQH
+   Cxt65qdUpu7orqgM+nQ9SmwsqNruMegqoE3MdQnA+GVuOtkkr6l8bfVTd
+   XRN57hCv+6n0WEuoRoUBAqJkc0XWwVjK17wKJTIjHKtCfJZSoxHdSVO5t
+   yT2K5z4ims10ej7lQFsNRRg0OObteEXScs7OKad5KIuNgXYbRcGIaGxqb
+   4orMr23glM8KIUhk+oXn2SOnXVm1fD654XGKBK/bU/GrM0GWB7mPE+8Zp
+   4IKbJh62KjaZ7B4ch5g/ocT9WgQXGCuhm4ySRtx3F9BNPJ/1/KS4ERGsM
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10842"; a="360408650"
+X-IronPort-AV: E=Sophos;i="6.03,171,1694761200"; 
+   d="scan'208";a="360408650"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2023 07:38:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10842"; a="697519648"
+X-IronPort-AV: E=Sophos;i="6.03,171,1694761200"; 
+   d="scan'208";a="697519648"
+Received: from lkp-server02.sh.intel.com (HELO 493f6c7fed5d) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 23 Sep 2023 07:38:02 -0700
+Received: from kbuild by 493f6c7fed5d with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qk3lB-0002Tt-30;
+	Sat, 23 Sep 2023 14:37:34 +0000
+Date: Sat, 23 Sep 2023 22:37:15 +0800
+From: kernel test robot <lkp@intel.com>
+To: John Fastabend <john.fastabend@gmail.com>, daniel@iogearbox.net,
+	ast@kernel.org, andrii@kernel.org, jakub@cloudflare.com
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	john.fastabend@gmail.com, bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH bpf 1/3] bpf: tcp_read_skb needs to pop skb regardless of
+ seq
+Message-ID: <202309232236.36lvZlKR-lkp@intel.com>
+References: <20230920232706.498747-2-john.fastabend@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW5fn=zaayBL2R1D+rKkO5AWuPmwp1WydGkKcCD7QO6U2w@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+In-Reply-To: <20230920232706.498747-2-john.fastabend@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Sep 21, 2023 at 11:52:16AM -0700, Song Liu wrote:
-> On Wed, Sep 20, 2023 at 2:32 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Add missed value to kprobe_multi link info to hold the stats of missed
-> > kprobe_multi probe.
-> >
-> > The missed counter gets incremented when fprobe fails the recursion
-> > check or there's no rethook available for return probe. In either
-> > case the attached bpf program is not executed.
-> >
-> > Acked-by: Hou Tao <houtao1@huawei.com>
-> > Reviewed-and-tested-by: Song Liu <song@kernel.org>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  include/uapi/linux/bpf.h       | 1 +
-> >  kernel/trace/bpf_trace.c       | 1 +
-> >  tools/include/uapi/linux/bpf.h | 1 +
-> >  3 files changed, 3 insertions(+)
-> >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 73b155e52204..e5216420ec73 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -6530,6 +6530,7 @@ struct bpf_link_info {
-> >                         __aligned_u64 addrs;
-> >                         __u32 count; /* in/out: kprobe_multi function count */
-> >                         __u32 flags;
-> > +                       __u64 missed;
-> 
-> This does not make bpf_link_info bigger. So if we use newer user space
-> on older kernel, the user space cannot tell whether missed == 0 or the
-> kernel doesn't support "missed". Right?
+Hi John,
 
-hum, I think that's right.. but I think that would be the case
-even if it did make bpf_link_info bigger, because we'd need to
-pass zeroed value in 'missed' field and it'd not be changed by
-older kernel
+kernel test robot noticed the following build warnings:
 
-user space could maybe check if there's 'missed field in
-bpf_link_info.perf_event.kprobe.missed ?
+[auto build test WARNING on bpf/master]
 
-jirka
+url:    https://github.com/intel-lab-lkp/linux/commits/John-Fastabend/bpf-tcp_read_skb-needs-to-pop-skb-regardless-of-seq/20230921-073209
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
+patch link:    https://lore.kernel.org/r/20230920232706.498747-2-john.fastabend%40gmail.com
+patch subject: [PATCH bpf 1/3] bpf: tcp_read_skb needs to pop skb regardless of seq
+config: um-allnoconfig (https://download.01.org/0day-ci/archive/20230923/202309232236.36lvZlKR-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230923/202309232236.36lvZlKR-lkp@intel.com/reproduce)
 
-> 
-> Thanks,
-> Song
-> 
-> >                 } kprobe_multi;
-> >                 struct {
-> >                         __u32 type; /* enum bpf_perf_event_type */
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index 279a3d370812..aec52938c703 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -2614,6 +2614,7 @@ static int bpf_kprobe_multi_link_fill_link_info(const struct bpf_link *link,
-> >         kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
-> >         info->kprobe_multi.count = kmulti_link->cnt;
-> >         info->kprobe_multi.flags = kmulti_link->flags;
-> > +       info->kprobe_multi.missed = kmulti_link->fp.nmissed;
-> >
-> >         if (!uaddrs)
-> >                 return 0;
-> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> > index 73b155e52204..e5216420ec73 100644
-> > --- a/tools/include/uapi/linux/bpf.h
-> > +++ b/tools/include/uapi/linux/bpf.h
-> > @@ -6530,6 +6530,7 @@ struct bpf_link_info {
-> >                         __aligned_u64 addrs;
-> >                         __u32 count; /* in/out: kprobe_multi function count */
-> >                         __u32 flags;
-> > +                       __u64 missed;
-> >                 } kprobe_multi;
-> >                 struct {
-> >                         __u32 type; /* enum bpf_perf_event_type */
-> > --
-> > 2.41.0
-> >
-> >
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309232236.36lvZlKR-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from net/ipv4/tcp.c:252:
+   In file included from include/linux/inet_diag.h:5:
+   In file included from include/net/netlink.h:6:
+   In file included from include/linux/netlink.h:7:
+   In file included from include/linux/skbuff.h:17:
+   In file included from include/linux/bvec.h:10:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     547 |         val = __raw_readb(PCI_IOBASE + addr);
+         |                           ~~~~~~~~~~ ^
+   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+         |                                                   ^
+   In file included from net/ipv4/tcp.c:252:
+   In file included from include/linux/inet_diag.h:5:
+   In file included from include/net/netlink.h:6:
+   In file included from include/linux/netlink.h:7:
+   In file included from include/linux/skbuff.h:17:
+   In file included from include/linux/bvec.h:10:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+         |                                                   ^
+   In file included from net/ipv4/tcp.c:252:
+   In file included from include/linux/inet_diag.h:5:
+   In file included from include/net/netlink.h:6:
+   In file included from include/linux/netlink.h:7:
+   In file included from include/linux/skbuff.h:17:
+   In file included from include/linux/bvec.h:10:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     584 |         __raw_writeb(value, PCI_IOBASE + addr);
+         |                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     692 |         readsb(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     700 |         readsw(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     708 |         readsl(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     717 |         writesb(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     726 |         writesw(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     735 |         writesl(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+>> net/ipv4/tcp.c:1625:6: warning: variable 'seq' set but not used [-Wunused-but-set-variable]
+    1625 |         u32 seq = tp->copied_seq;
+         |             ^
+   13 warnings generated.
+
+
+vim +/seq +1625 net/ipv4/tcp.c
+
+^1da177e4c3f41 Linus Torvalds 2005-04-16  1621  
+965b57b469a589 Cong Wang      2022-06-15  1622  int tcp_read_skb(struct sock *sk, skb_read_actor_t recv_actor)
+04919bed948dc2 Cong Wang      2022-06-15  1623  {
+04919bed948dc2 Cong Wang      2022-06-15  1624  	struct tcp_sock *tp = tcp_sk(sk);
+04919bed948dc2 Cong Wang      2022-06-15 @1625  	u32 seq = tp->copied_seq;
+04919bed948dc2 Cong Wang      2022-06-15  1626  	struct sk_buff *skb;
+04919bed948dc2 Cong Wang      2022-06-15  1627  	int copied = 0;
+04919bed948dc2 Cong Wang      2022-06-15  1628  
+04919bed948dc2 Cong Wang      2022-06-15  1629  	if (sk->sk_state == TCP_LISTEN)
+04919bed948dc2 Cong Wang      2022-06-15  1630  		return -ENOTCONN;
+04919bed948dc2 Cong Wang      2022-06-15  1631  
+98edede7d6d1b6 John Fastabend 2023-09-20  1632  	while ((skb = skb_peek(&sk->sk_receive_queue)) != NULL) {
+db4192a754ebd5 Cong Wang      2022-09-12  1633  		u8 tcp_flags;
+db4192a754ebd5 Cong Wang      2022-09-12  1634  		int used;
+04919bed948dc2 Cong Wang      2022-06-15  1635  
+04919bed948dc2 Cong Wang      2022-06-15  1636  		__skb_unlink(skb, &sk->sk_receive_queue);
+96628951869c0d Peilin Ye      2022-09-08  1637  		WARN_ON_ONCE(!skb_set_owner_sk_safe(skb, sk));
+db4192a754ebd5 Cong Wang      2022-09-12  1638  		tcp_flags = TCP_SKB_CB(skb)->tcp_flags;
+db4192a754ebd5 Cong Wang      2022-09-12  1639  		used = recv_actor(sk, skb);
+db4192a754ebd5 Cong Wang      2022-09-12  1640  		if (used < 0) {
+db4192a754ebd5 Cong Wang      2022-09-12  1641  			if (!copied)
+db4192a754ebd5 Cong Wang      2022-09-12  1642  				copied = used;
+db4192a754ebd5 Cong Wang      2022-09-12  1643  			break;
+db4192a754ebd5 Cong Wang      2022-09-12  1644  		}
+db4192a754ebd5 Cong Wang      2022-09-12  1645  		seq += used;
+db4192a754ebd5 Cong Wang      2022-09-12  1646  		copied += used;
+db4192a754ebd5 Cong Wang      2022-09-12  1647  
+db4192a754ebd5 Cong Wang      2022-09-12  1648  		if (tcp_flags & TCPHDR_FIN) {
+04919bed948dc2 Cong Wang      2022-06-15  1649  			++seq;
+db4192a754ebd5 Cong Wang      2022-09-12  1650  			break;
+db4192a754ebd5 Cong Wang      2022-09-12  1651  		}
+04919bed948dc2 Cong Wang      2022-06-15  1652  	}
+04919bed948dc2 Cong Wang      2022-06-15  1653  	return copied;
+04919bed948dc2 Cong Wang      2022-06-15  1654  }
+04919bed948dc2 Cong Wang      2022-06-15  1655  EXPORT_SYMBOL(tcp_read_skb);
+04919bed948dc2 Cong Wang      2022-06-15  1656  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
