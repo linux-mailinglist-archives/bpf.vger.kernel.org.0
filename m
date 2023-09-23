@@ -1,187 +1,171 @@
-Return-Path: <bpf+bounces-10683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10684-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC37E7ABE26
-	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 08:57:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ACE57ABED1
+	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 10:21:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id CBCDF282322
-	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 06:57:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTP id 93B421F238D8
+	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 08:21:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4447211C;
-	Sat, 23 Sep 2023 06:57:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40A30CA6E;
+	Sat, 23 Sep 2023 08:21:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5C76375
-	for <bpf@vger.kernel.org>; Sat, 23 Sep 2023 06:57:37 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C106199
-	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 23:57:36 -0700 (PDT)
-Received: from fsav311.sakura.ne.jp (fsav311.sakura.ne.jp [153.120.85.142])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 38N6uxYr061298;
-	Sat, 23 Sep 2023 15:56:59 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav311.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav311.sakura.ne.jp);
- Sat, 23 Sep 2023 15:56:59 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav311.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 38N6ulfZ061268
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Sat, 23 Sep 2023 15:56:59 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <ed785c86-a1d8-caff-c629-f8a50549e05b@I-love.SAKURA.ne.jp>
-Date: Sat, 23 Sep 2023 15:56:48 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B2B63B9
+	for <bpf@vger.kernel.org>; Sat, 23 Sep 2023 08:21:45 +0000 (UTC)
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF37198
+	for <bpf@vger.kernel.org>; Sat, 23 Sep 2023 01:21:43 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31f7638be6eso3201970f8f.3
+        for <bpf@vger.kernel.org>; Sat, 23 Sep 2023 01:21:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695457302; x=1696062102; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=sYlw6sbQ6o+up2kqcsobRya9pzMag7jmYFLxB/+1vwo=;
+        b=f8SUqs2skR+3l9hAOK2G1Y+6CJz6vqYr0I1jrjfAc9h1o2NL4+TeL8bQDq+6Ab1N8B
+         cd/vjXCtf8u4NBDzs3m7PwRW+JOgmn51gZTlU+4nZCS1ejnWcATOSUh0Fo1obEXQMhZt
+         rcgE7qk9nXZ1BYQlIuHC75pVRkFzPiaPI3ObOJ5kSW3/HdF/LtVAHijfEwzq9tz66lE7
+         QuMt2q41mO8P6W8PCoIhnJpo8oaFkXIHmwgDj+cXrynXy6eqTyqdYD/wvAd9OhWE4Lp6
+         OsXqhq3Msdc6GCCMU28s14z8yuDjxndBOt20Ga2g9CvQ6NTKQqt13wWe8ZHux0z6TtzB
+         dHnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695457302; x=1696062102;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sYlw6sbQ6o+up2kqcsobRya9pzMag7jmYFLxB/+1vwo=;
+        b=qgZahANL0tHRpekI8qsw3rqPak27OqIT5nBH+D0LveH5JUdYHSWTOVsKpRPKeygpUP
+         /yy09wqHgBvR2Hh+z87ujFYYeQIAUzcjctiOcDPIe8iX+J6u5RJchGGfKE8Uou2Mq+95
+         6QYsl2sz9KzqGrBNBVC5TVuK2MipwcRJxC+3hAJhR58a4K02qMv3/F6P9PXKfjhtwzfE
+         8DieHO2t+iTkj/Yi3S6um+SaelODafX+41loeDDkQcuuuzi1wP4jb96lGc2cKRUT0PqB
+         g4K9rXbir43crUCc7JW5gLBbS64z8POovm3sqp/yd9X3qj6Mxl1lTGt4yhNwGBwBrwCL
+         arqA==
+X-Gm-Message-State: AOJu0YxlNw4exo1HN7bLKLGytL0BLBY4hhHrPTG5Ac2PLekr5C96bQ2a
+	y90CLdAZ1rCiAvwiiZfIk38=
+X-Google-Smtp-Source: AGHT+IFM0QttIcfyAFwLutZGxUW/cuTvF7qqIFZFaYSkBgSqwLV5gIqzkMlLCLIH5Di+LpgdM0vaag==
+X-Received: by 2002:a5d:49c1:0:b0:31f:ea18:6f6b with SMTP id t1-20020a5d49c1000000b0031fea186f6bmr1350101wrs.19.1695457301945;
+        Sat, 23 Sep 2023 01:21:41 -0700 (PDT)
+Received: from krava (37-188-170-118.red.o2.cz. [37.188.170.118])
+        by smtp.gmail.com with ESMTPSA id j9-20020a5d6189000000b003142ea7a661sm6296643wru.21.2023.09.23.01.21.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Sep 2023 01:21:41 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Sat, 23 Sep 2023 10:21:36 +0200
+To: Song Liu <song@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, Hou Tao <houtao1@huawei.com>,
+	bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Daniel Xu <dxu@dxuuu.xyz>
+Subject: Re: [PATCHv3 bpf-next 2/9] bpf: Add missed value to kprobe_multi
+ link info
+Message-ID: <ZQ6gEHioaIwBYgwV@krava>
+References: <20230920213145.1941596-1-jolsa@kernel.org>
+ <20230920213145.1941596-3-jolsa@kernel.org>
+ <CAPhsuW5fn=zaayBL2R1D+rKkO5AWuPmwp1WydGkKcCD7QO6U2w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 2/5] security: Count the LSMs enabled at compile time
-To: KP Singh <kpsingh@kernel.org>
-Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-        paul@paul-moore.com, keescook@chromium.org, casey@schaufler-ca.com,
-        song@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        Kui-Feng Lee <sinquersw@gmail.com>
-References: <20230918212459.1937798-1-kpsingh@kernel.org>
- <20230918212459.1937798-3-kpsingh@kernel.org>
- <cb67f607-3a9d-34d2-0877-a3ff957da79e@I-love.SAKURA.ne.jp>
- <CACYkzJ5GFsgc3vzJXH34hgoTc+CEf+7rcktj0QGeQ5e8LobRcw@mail.gmail.com>
- <dde20522-af01-c198-5872-b19ef378f286@I-love.SAKURA.ne.jp>
- <CACYkzJ5M0Bw9S_mkFkjR_-bRsKryXh2LKiurjMX9WW-d0Mr6bg@mail.gmail.com>
-Content-Language: en-US
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <CACYkzJ5M0Bw9S_mkFkjR_-bRsKryXh2LKiurjMX9WW-d0Mr6bg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW5fn=zaayBL2R1D+rKkO5AWuPmwp1WydGkKcCD7QO6U2w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 2023/09/22 23:45, KP Singh wrote:
->> I'm using LKM-based LSM with any version between 2.6.0 and 6.6-rc2, without patching
->> __ro_after_init out. We can load LKM-based LSMs, without patching the original kernel.
+On Thu, Sep 21, 2023 at 11:52:16AM -0700, Song Liu wrote:
+> On Wed, Sep 20, 2023 at 2:32 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Add missed value to kprobe_multi link info to hold the stats of missed
+> > kprobe_multi probe.
+> >
+> > The missed counter gets incremented when fprobe fails the recursion
+> > check or there's no rethook available for return probe. In either
+> > case the attached bpf program is not executed.
+> >
+> > Acked-by: Hou Tao <houtao1@huawei.com>
+> > Reviewed-and-tested-by: Song Liu <song@kernel.org>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  include/uapi/linux/bpf.h       | 1 +
+> >  kernel/trace/bpf_trace.c       | 1 +
+> >  tools/include/uapi/linux/bpf.h | 1 +
+> >  3 files changed, 3 insertions(+)
+> >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 73b155e52204..e5216420ec73 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -6530,6 +6530,7 @@ struct bpf_link_info {
+> >                         __aligned_u64 addrs;
+> >                         __u32 count; /* in/out: kprobe_multi function count */
+> >                         __u32 flags;
+> > +                       __u64 missed;
 > 
-> Then __ro_after_init is broken in your tree and you are missing some patches.
+> This does not make bpf_link_info bigger. So if we use newer user space
+> on older kernel, the user space cannot tell whether missed == 0 or the
+> kernel doesn't support "missed". Right?
 
-This fact applies to vanilla upstream kernel tree; __ro_after_init is not broken and
-some patches are not missing. See https://akari.osdn.jp/1.0/chapter-3.html.en for details.
+hum, I think that's right.. but I think that would be the case
+even if it did make bpf_link_info bigger, because we'd need to
+pass zeroed value in 'missed' field and it'd not be changed by
+older kernel
 
+user space could maybe check if there's 'missed field in
+bpf_link_info.perf_event.kprobe.missed ?
 
-
->>>
->>> The performance benefits here outweigh the need for a completely
->>> unsupported use case.
->>
->> LKM-based LSMs are not officially supported since 2.6.24. But people need LKM-based LSMs.
->> It is very sad that the LSM community is trying to lock out out of tree LSMs
->> ( https://lkml.kernel.org/r/ec37cd2f-24ee-3273-c253-58d480569117@I-love.SAKURA.ne.jp ).
->> The LSM interface is a common property for *all* Linux users.
-> 
-> Again, I don't understand how this locks out out-of-tree LSMs. One can
-> go and patch static calls the same way one hacked around by directly
-> adding stuff to the security_hook_heads. I am not going to suggest any
-> hacks here but there are pretty obvious solutions out there.;
-
-The change that locks out out-of-tree LSMs (regardless of whether that LSM is LKM-based LSM
-or not) is a series including "[PATCH v15 01/11] LSM: Identify modules by more than name".
-
-I was not pushing LKM-based LSM because the LSM community wanted to make it possible to
-enable arbitrary combinations (e.g. enabling selinux and smack at the same time) before
-making it possible to use LKM-based LSMs.
-
-According to https://marc.info/?l=linux-security-module&m=123232076329805 (Jan 2009),
-Casey said that "SELinux and Smack should never be stacked in the same kernel.".
-I'm personally wondering how many users will enable selinux and smack at the same time.
-But in that post, Casey also said "You could revive the notion of loadable modules
-while you're at it." while implementing LSM Multiplexer LSM.
-
-According to https://marc.info/?l=linux-security-module&m=133055410107878 (Feb 2012),
-Casey said that support for multiple concurrent LSMs should be able to handle
-loadable/unloadable LSMs.
-The reason for removing unload support was that no in-tree users needed it, and
-out of tree use-cases are generally not supported in mainline. That is, when the
-LSM interface became static, the LSM community was not seeing the reality.
-I don't think that rmmod support for LKM-based LSMs is needed, but I believe that
-insmod support for LKM-based LSMs is needed.
-
-According to https://lkml.kernel.org/r/50ABE354.1040407@schaufler-ca.com (Nov 2012),
-Casey said that reintroducing LSMs as loadable modules is a work for another day
-and a separate battle to fight.
-
-These postings (just picked up from LSM mailing list archives matching keyword "loadable"
-and sent from Casey) indicate that the LSM community was not making changes that forever
-makes LKM-based LSMs impossible.
-
-Finally, pasting Casey's message (Feb 2016) here (because the archive did not find this post):
-
-  From: Casey Schaufler <casey@schaufler-ca.com>
-  Subject: Re: LSM as a kernel module
-  Date: Mon, 22 Feb 2016 10:17:26 -0800
-  Message-ID: <56CB50B6.6060702@schaufler-ca.com>
-  To: Roman Kubiak <r.kubiak@samsung.com>, linux-security-module@vger.kernel.org
-
-  On 2/22/2016 5:37 AM, Roman Kubiak wrote:
-  > I just wanted to make sure that it's not possible and is not planned in the future
-  > to have LSM modules loaded as .ko kernel modules. Is that true for now and the far/near future ?
-  >
-  > best regards
-  
-  Tetsuo Handa is holding out hope for loadable security modules*.
-  The work I've been doing on module stacking does not include
-  support for loadable modules, but I've committed to not making
-  it impossible. There has never really been a major issue with
-  loading a security module, although there are a host of minor
-  ones. The big problem is unloading the module and cleaning up
-  properly.
-  
-  Near term I believe that you can count on not having to worry
-  about dynamically loadable security modules. At some point in
-  the future we may have an important use case, but I don't see
-  that until before some time in the 20s.
-  
-  So now I'm curious. What are you up to that would be spoiled
-  by loadable security modules?
-  
-  
-  ---
-  * The original name for the infrastructure was indeed
-    "Loadable Security Modules". The memory management and
-    security policy implications resulted in steadily
-    diminishing support for any sort of dynamic configuration.
-    It wasn't long before "Loadable" became "Linux".
-
-But while I was waiting for "make it possible to enable arbitrary combinations" change,
-the LSM community started making changes (such as defining the maximum number of "slots"
-or "static calls" based on all LSMs are built into vmlinux) that violate Casey's promise.
-
-As a reminder to tell that I still want to make LKM-based LSM officially supported again,
-I'm responding to changes (like this patch) that are based on "any LSM must be built into
-vmlinux". Please be careful not to make changes that forever make LKM-based LSMs impossible.
-
-
+jirka
 
 > 
-> My recommendation would be to use BPF LSM for any custom MAC policy
-> logic. That's the whole goal of the BPF LSM is to safely enable these
-> use cases without relying on LSM internals and hacks.
-
-I'm fine if you can reimplement TOMOYO (or AKARI or CaitSith) using BPF LSM.
-Since BPF has many limitations, not every custom MAC policy can be implemented using BPF.
-
-The need to insmod LKM-based LSMs will remain because the LSM community will not accept
-whatever LSMs (that are publicly available) and the Linux distributors will not build
-whatever LSMs (that are publicly available) into their vmlinux.
-
-But "LSM: Identify modules by more than name" is the worst change because that change
-locks out any publicly available out of tree LSMs, far away from allowing LKM-based LSMs.
-
+> Thanks,
+> Song
+> 
+> >                 } kprobe_multi;
+> >                 struct {
+> >                         __u32 type; /* enum bpf_perf_event_type */
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 279a3d370812..aec52938c703 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -2614,6 +2614,7 @@ static int bpf_kprobe_multi_link_fill_link_info(const struct bpf_link *link,
+> >         kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
+> >         info->kprobe_multi.count = kmulti_link->cnt;
+> >         info->kprobe_multi.flags = kmulti_link->flags;
+> > +       info->kprobe_multi.missed = kmulti_link->fp.nmissed;
+> >
+> >         if (!uaddrs)
+> >                 return 0;
+> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> > index 73b155e52204..e5216420ec73 100644
+> > --- a/tools/include/uapi/linux/bpf.h
+> > +++ b/tools/include/uapi/linux/bpf.h
+> > @@ -6530,6 +6530,7 @@ struct bpf_link_info {
+> >                         __aligned_u64 addrs;
+> >                         __u32 count; /* in/out: kprobe_multi function count */
+> >                         __u32 flags;
+> > +                       __u64 missed;
+> >                 } kprobe_multi;
+> >                 struct {
+> >                         __u32 type; /* enum bpf_perf_event_type */
+> > --
+> > 2.41.0
+> >
+> >
 
