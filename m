@@ -1,189 +1,130 @@
-Return-Path: <bpf+bounces-10696-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10697-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BB127AC3AF
-	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 18:28:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70C217AC3E0
+	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 19:13:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 40E3C2821AD
-	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 16:28:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 917F3281E50
+	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 17:13:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191C0208CC;
-	Sat, 23 Sep 2023 16:28:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A3A820B07;
+	Sat, 23 Sep 2023 17:13:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 884351EA7E;
-	Sat, 23 Sep 2023 16:28:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98403C433C7;
-	Sat, 23 Sep 2023 16:28:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695486519;
-	bh=RqAizeoAgpyrjTuWTc3EPt+00fz0GKOYt3wgiu3ilxI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kdX7uAUn5A/nOh6b98KyxWdk9fFgHiJgriB/fwuK77YQxwt85ckYKTY9t3fBf62wY
-	 OdfH5+weEeIpqZEmVKOTk/M6qPAq6DbFmu80HRazp/dQJOGu5Fdotg7Z2IUrfIcHFK
-	 CzwEzww+QWurkfb1eX0LPowGymg+QANEOY5nujQK9DRlmOgfq/CMbzYwknq+dY7tnp
-	 PeA7IOMb8Twk1q2cqZZhCdVsAByDQXH6HWv6/P0+r3F48yu28WNKT0AH75egCCxIj0
-	 rSO4bYh3+oBADB8dkFnn9uQPpZxQXif883hCwsCk2af3dw5oO2O8+odTCE6fZmVuyX
-	 JCGFYC8Rtz+ZQ==
-Date: Sat, 23 Sep 2023 19:27:42 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-	"x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH v3 09/13] powerpc: extend execmem_params for kprobes
- allocations
-Message-ID: <20230923162742.GO3303@kernel.org>
-References: <20230918072955.2507221-1-rppt@kernel.org>
- <20230918072955.2507221-10-rppt@kernel.org>
- <1cb41761-29d0-5d33-b7c1-0ca3acaa810d@csgroup.eu>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE1F3208D3
+	for <bpf@vger.kernel.org>; Sat, 23 Sep 2023 17:13:16 +0000 (UTC)
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC81AF;
+	Sat, 23 Sep 2023 10:13:15 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6bc9c01e154so2787487a34.0;
+        Sat, 23 Sep 2023 10:13:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695489195; x=1696093995; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :references:in-reply-to:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tNQRIBSqSG2KJPEK+9EtrBPvHIqQMKn49uSuhd1X+8Y=;
+        b=Vfih4teScd9XsFon76MCctRPpChcSSoGkrXLPTucy9D7LTYG26rqI0urwsrk1XmdtF
+         VOXYeDbFwAFDneVHQPvHET8/THYIW2kJvMDWK4KUv+cfYPiLAatkPMbnuZgUTNiOwhH0
+         +sANsttM6RUsTmg/ND/DStmy0Tsnm+Be1Y0hyC7LKsDT1nAa1cQzvKTKOejvgTSjCJ4d
+         k42ZvXPu3awOVOYX0w4YeDTKjGxfJFj/z4Z2JuxTBuEDLJSm+1OXp1FCP1iLnGMhHALW
+         pURZkyueXQSOjPdfpXz0bQ+O4YhVJHz0PeK6sq+OKbr917o3G9ME5x3dXHSR36QxlSxm
+         v23A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695489195; x=1696093995;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :references:in-reply-to:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tNQRIBSqSG2KJPEK+9EtrBPvHIqQMKn49uSuhd1X+8Y=;
+        b=Id1NuMW2O4U0E/pfabYGqvK1RnTMLQ43MhtOn2b/bV3i0jHHrmHjFQCU03/wtUtg/s
+         EsukC6MFqyuDldDN2k9dAYYtfy+UB/l114f3zI4TgDjFNzqN+31Ge3bELeTrFHmOxjuO
+         nGYdgF30kz0wUiL7Dfru2RCsIl1TbZVKIe2CTo459CmcU6BqpiQOTfP9WfTUMZ3VnSF+
+         bu3/6C7tX34LNQ6BqOal7BWxqAOXgMwmXI+o8JzfIB0uGlvneTzkCsn+aQSmUQScradB
+         ay6i8BrFqJsq5jpostdeS9C88HHh2KHOdf/qVDUDr5Gg6Nw+zJchu/bpfYHUsFlwMD01
+         ZDjg==
+X-Gm-Message-State: AOJu0YyQ6R8MFfdLLmKMCm1F9+oEEe/fuBGWwB4qiql85p4a2ai43+Au
+	yMcZ9KId83OR4EPfa5B2jsVIoRnip5epWkcbDDc=
+X-Google-Smtp-Source: AGHT+IFc08gUJYv2ZD1BH52I5r5QIE/Wj3ftMOUO9crVh2goCY21a372wCbCsJbzp9PYf/2dd6Q7zuWo+pt0tK7CEmQ=
+X-Received: by 2002:a05:6830:2b2b:b0:6bc:aec3:6eb1 with SMTP id
+ l43-20020a0568302b2b00b006bcaec36eb1mr3929663otv.1.1695489194800; Sat, 23 Sep
+ 2023 10:13:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1cb41761-29d0-5d33-b7c1-0ca3acaa810d@csgroup.eu>
+Received: by 2002:ac9:5dc9:0:b0:4f0:1250:dd51 with HTTP; Sat, 23 Sep 2023
+ 10:13:14 -0700 (PDT)
+In-Reply-To: <CACYkzJ67gw6bvTzX6wx_OtxUXi6kpVT196CXV6XCN1AaGQuKAw@mail.gmail.com>
+References: <20230922145505.4044003-1-kpsingh@kernel.org> <20230922184224.kx4jiejmtnvfrxrq@f>
+ <CACYkzJ67gw6bvTzX6wx_OtxUXi6kpVT196CXV6XCN1AaGQuKAw@mail.gmail.com>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Sat, 23 Sep 2023 19:13:14 +0200
+Message-ID: <CAGudoHE+od5oZLVAU4z3nXCNGk6uangd+zmDEuoATmDLHeFLGQ@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] Reduce overhead of LSMs with static calls
+To: KP Singh <kpsingh@kernel.org>
+Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
+	paul@paul-moore.com, keescook@chromium.org, casey@schaufler-ca.com, 
+	song@kernel.org, daniel@iogearbox.net, ast@kernel.org, renauld@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Hi Christophe,
+On 9/23/23, KP Singh <kpsingh@kernel.org> wrote:
+> On Fri, Sep 22, 2023 at 8:42=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com>=
+ wrote:
+>>
+>> On Fri, Sep 22, 2023 at 04:55:00PM +0200, KP Singh wrote:
+>> > Since we know the address of the enabled LSM callbacks at compile time
+>> > and only
+>> > the order is determined at boot time, the LSM framework can allocate
+>> > static
+>> > calls for each of the possible LSM callbacks and these calls can be
+>> > updated once
+>> > the order is determined at boot.
+>> >
+>>
+>> Any plans to further depessimize the state by not calling into these
+>> modules if not configured?
+>>
+>> For example Debian has a milipede:
+>> CONFIG_LSM=3D"landlock,lockdown,yama,loadpin,safesetid,integrity,apparmo=
+r,selinux,smack,tomoyo,bpf"
+>>
+>> Everything is enabled (but not configured).
+>
+> If it's not configured, we won't generate static call slots and even
+> if they are in the CONFIG_LSM (or lsm=3D) they are simply ignored.
+>
 
-On Fri, Sep 22, 2023 at 10:32:46AM +0000, Christophe Leroy wrote:
-> Hi Mike,
-> 
-> Le 18/09/2023 à 09:29, Mike Rapoport a écrit :
-> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> > 
-> > powerpc overrides kprobes::alloc_insn_page() to remove writable
-> > permissions when STRICT_MODULE_RWX is on.
-> > 
-> > Add definition of EXECMEM_KRPOBES to execmem_params to allow using the
-> > generic kprobes::alloc_insn_page() with the desired permissions.
-> > 
-> > As powerpc uses breakpoint instructions to inject kprobes, it does not
-> > need to constrain kprobe allocations to the modules area and can use the
-> > entire vmalloc address space.
-> 
-> I don't understand what you mean here. Does it mean kprobe allocation 
-> doesn't need to be executable ? I don't think so based on the pgprot you 
-> set.
-> 
-> On powerpc book3s/32, vmalloc space is not executable. Only modules 
-> space is executable. X/NX cannot be set on a per page basis, it can only 
-> be set on a 256 Mbytes segment basis.
-> 
-> See commit c49643319715 ("powerpc/32s: Only leave NX unset on segments 
-> used for modules") and 6ca055322da8 ("powerpc/32s: Use dedicated segment 
-> for modules with STRICT_KERNEL_RWX") and 7bee31ad8e2f ("powerpc/32s: Fix 
-> is_module_segment() when MODULES_VADDR is defined").
-> 
-> So if your intention is still to have an executable kprobes, then you 
-> can't use vmalloc address space.
+Maybe there is a terminology mismatch here, so let me be more specific
+with tomoyo as an example.
 
-Right, and I've fixed the KPROBES range to uses the same range as MODULES.
-The commit message is stale and I need to update it.
- 
-> Christophe
-> 
-> > 
-> > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> > ---
-> >   arch/powerpc/kernel/kprobes.c | 14 --------------
-> >   arch/powerpc/kernel/module.c  | 11 +++++++++++
-> >   2 files changed, 11 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
-> > index 62228c7072a2..14c5ddec3056 100644
-> > --- a/arch/powerpc/kernel/kprobes.c
-> > +++ b/arch/powerpc/kernel/kprobes.c
-> > @@ -126,20 +126,6 @@ kprobe_opcode_t *arch_adjust_kprobe_addr(unsigned long addr, unsigned long offse
-> >   	return (kprobe_opcode_t *)(addr + offset);
-> >   }
-> >   
-> > -void *alloc_insn_page(void)
-> > -{
-> > -	void *page;
-> > -
-> > -	page = execmem_text_alloc(EXECMEM_KPROBES, PAGE_SIZE);
-> > -	if (!page)
-> > -		return NULL;
-> > -
-> > -	if (strict_module_rwx_enabled())
-> > -		set_memory_rox((unsigned long)page, 1);
-> > -
-> > -	return page;
-> > -}
-> > -
-> >   int arch_prepare_kprobe(struct kprobe *p)
-> >   {
-> >   	int ret = 0;
-> > diff --git a/arch/powerpc/kernel/module.c b/arch/powerpc/kernel/module.c
-> > index 824d9541a310..bf2c62aef628 100644
-> > --- a/arch/powerpc/kernel/module.c
-> > +++ b/arch/powerpc/kernel/module.c
-> > @@ -95,6 +95,9 @@ static struct execmem_params execmem_params __ro_after_init = {
-> >   		[EXECMEM_DEFAULT] = {
-> >   			.alignment = 1,
-> >   		},
-> > +		[EXECMEM_KPROBES] = {
-> > +			.alignment = 1,
-> > +		},
-> >   		[EXECMEM_MODULE_DATA] = {
-> >   			.alignment = 1,
-> >   		},
-> > @@ -135,5 +138,13 @@ struct execmem_params __init *execmem_arch_params(void)
-> >   
-> >   	range->pgprot = prot;
-> >   
-> > +	execmem_params.ranges[EXECMEM_KPROBES].start = VMALLOC_START;
-> > +	execmem_params.ranges[EXECMEM_KPROBES].start = VMALLOC_END;
-> > +
-> > +	if (strict_module_rwx_enabled())
-> > +		execmem_params.ranges[EXECMEM_KPROBES].pgprot = PAGE_KERNEL_ROX;
-> > +	else
-> > +		execmem_params.ranges[EXECMEM_KPROBES].pgprot = PAGE_KERNEL_EXEC;
-> > +
-> >   	return &execmem_params;
-> >   }
+In debian you have:
+CONFIG_SECURITY_TOMOYO=3Dy
 
--- 
-Sincerely yours,
-Mike.
+CONFIG_LSM, as per above, includes it on the list.
+
+At the same time debian does not ship any tooling to configure tomoyo
+-- it is compiled into the kernel but not configured to enforce
+anything.
+
+On stock kernel this results in tons of calls to
+tomoyo_init_request_info, which are quite expensive due to an
+avoidable memset thrown in, and which always return
+tomoyo_init_request_info.
+
+Does not look like your patch whacks this problem.
+
+--=20
+Mateusz Guzik <mjguzik gmail.com>
 
