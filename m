@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-10674-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10675-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E31207ABDEA
-	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 07:36:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B1847ABDEB
+	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 07:36:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 9455F282D21
-	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 05:36:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id B3AA61C2096B
+	for <lists+bpf@lfdr.de>; Sat, 23 Sep 2023 05:36:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 552E920EC;
-	Sat, 23 Sep 2023 05:36:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD7FB7F9;
+	Sat, 23 Sep 2023 05:36:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92FF181B
-	for <bpf@vger.kernel.org>; Sat, 23 Sep 2023 05:36:09 +0000 (UTC)
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6E5E43
-	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 22:36:00 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59c07ca1b44so52168407b3.3
-        for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 22:36:00 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 757D581B
+	for <bpf@vger.kernel.org>; Sat, 23 Sep 2023 05:36:15 +0000 (UTC)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2BF10C1
+	for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 22:36:03 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d85fc6261ffso3681044276.1
+        for <bpf@vger.kernel.org>; Fri, 22 Sep 2023 22:36:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695447359; x=1696052159; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695447361; x=1696052161; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=pCtwtK8xajC9XBojO6y6JASy5d+HVvOMNbjwUuJaLFE=;
-        b=LuMU0brGoqbkQFRHLWzbeHkOnf3oP4GDDOl+7qXPmfKYVrlk40SXTvAm2tiyWpwMG6
-         ucDNznBjD1+YC1tl0gUOp45nZ5ieMYQzr67TOZj5LsTc2ujuHnBQyEQQCPFJ4WekV3Pq
-         JHImKHd4XVENfqcjl7a3EphJxFIv6idTtxzaPVxj1+D6Qn39ca5xLuIq+CaWfcDcLqFw
-         F2d85dTEZ/0dM8E4R6Ue8ro02UZX/Wj873r8uEo7mf+DKMvy0rKjheX2hNgRBE8tj8Lm
-         mJGkoXIepZDXXvgYxjOqWvDCOoU3lWiv7WIc7LUc/SVYBW+WKs1R2AxVSI2ZArEY4zoE
-         xVBw==
+        bh=KS6/0u50No3rQJjH5fZIjyCOWL67f6naMZwh43hSjoQ=;
+        b=1cvJSG2D4zjG+nEiyFOhhr9uXalDS6UQkYMUKbK51HR7DxnH983zpiM3pheR+NTgj0
+         3G77+KayBqt4kYsFEFxxzaXtFpJGhwwsmbfSJwnycGRFRJVPZokpYTjGCsTBJKh7zfyW
+         e7u+G9O1RvKddrcNbO4nFc3LhEwSQpwKrYFWnU0ujSh9GQbLyRGqgHtneDdtpRestn5W
+         k6Lpq2h1BM+2OucES/2Szki9Vq/cquG3SsnM6QUhsvH5IUL/v7iFbuPhVrEkuPrmsi9a
+         CuqvZd9O2s2ZutPu4VWdWCSP8BIKML4jlg/S337z6YOWtvNlXAl15EVONKGfRyCgIj+v
+         l0+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695447359; x=1696052159;
+        d=1e100.net; s=20230601; t=1695447361; x=1696052161;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pCtwtK8xajC9XBojO6y6JASy5d+HVvOMNbjwUuJaLFE=;
-        b=wdSTjUNjI5AP1Wi7hT8PtEcoHbcdobPnPisVeg711gMThSbF4qDZ1Y1+h5GRGtP6MC
-         gMHFRuIA2QZ0siJBiFY5d6bg8DUbAQQL9RITyyAZ1VOZSjNWN8+638zDtkI+4NMpktx8
-         o4NSmd4zMpwiMhNhTMgNsio15Cm6vMWAL22iIqFyx/93ARrkKtz9pTjyHRUZtiTmeSQV
-         /unVkAkienoH0IzMXs6EICumFXrj8yhlbdyo5jYVjCnCPxuE65Bna+U48IXkjfwr617V
-         4f5UAcEvunGjndoNd2epTL9shb1dWl+yIfQlF92myzUuGQ4y7a+Y6c5nWdwadW6sVFNv
-         o1cA==
-X-Gm-Message-State: AOJu0Yzi2467YBjww6B4F+AG+R/wlftjVq+X2kvY9T5LpbTXQIMtDpFx
-	e5OenSE5aC3xRYSbjV5aUQnZEg8uEt96
-X-Google-Smtp-Source: AGHT+IFb+mlhJVRkd55x1iEq/qHM5aF05s6yk09PvbU0fJIXBSHtgAy824hVDau+Ns2A4L4kX9JpuxpfL/T9
+        bh=KS6/0u50No3rQJjH5fZIjyCOWL67f6naMZwh43hSjoQ=;
+        b=f6EMmjq2KYRTzQuxAsckZniyoUjgjz8w1AjX/ub2LFywSt8kxsMs8Dln/Bg0JdhYdL
+         amtOtQJq4SQ1mlLDvo56rZ9o82dG4hDJR6qmp5WQDQfngUA6IYA5f76LFfAVJA3kKWBf
+         UsPuRIZRCK9QOV+306lGPEHeotsLCCeh3Lxq46LFjKenz18tb2+Sn+/TXeDegXcrAH62
+         o1k6xub1IG2Cmi6YtL2pYaw5TazSZKrphcykBQScaLQTycxjQd+pzr2b6L3Zf6jsxpSe
+         4Y2Y0au14af/AejWyGrQg3Nij/aQ5/EVwQq318EOiTPrXar6c9ez/BMecNoXXGNaJJZe
+         Q9wQ==
+X-Gm-Message-State: AOJu0Yx9g1mloGISTgeBG+uIgdmAw7t+UaQxUOHGOGZ3sj4MggLJkV9M
+	4DwddMnBd6qvI8bDGs8AIZLM+vEab5yY
+X-Google-Smtp-Source: AGHT+IECwTxHbmPoI1K04GORCbxem+8maRhSeJmf/Mja5259t/O6+9DbPUULMmgIJZReDHjnxiFQ+xTHxGuS
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a376:2908:1c75:ff78])
- (user=irogers job=sendgmr) by 2002:a25:d251:0:b0:d62:7f3f:621d with SMTP id
- j78-20020a25d251000000b00d627f3f621dmr13487ybg.11.1695447359056; Fri, 22 Sep
- 2023 22:35:59 -0700 (PDT)
-Date: Fri, 22 Sep 2023 22:35:07 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:1105:b0:d81:6637:b5b2 with SMTP
+ id o5-20020a056902110500b00d816637b5b2mr14388ybu.0.1695447361524; Fri, 22 Sep
+ 2023 22:36:01 -0700 (PDT)
+Date: Fri, 22 Sep 2023 22:35:08 -0700
 In-Reply-To: <20230923053515.535607-1-irogers@google.com>
-Message-Id: <20230923053515.535607-11-irogers@google.com>
+Message-Id: <20230923053515.535607-12-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,7 +61,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20230923053515.535607-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Subject: [PATCH v1 10/18] perf dlfilter: Be defensive against potential NULL dereference
+Subject: [PATCH v1 11/18] perf hists browser: Reorder variables to reduce padding
 From: Ian Rogers <irogers@google.com>
 To: Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
 	Tom Rix <trix@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
@@ -85,30 +85,43 @@ X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-In the unlikely case of having a symbol without a mapping, avoid a
-NULL dereference that clang-tidy warns about.
+Address clang-tidy warning:
+```
+tools/perf/ui/browsers/hists.c:2416:8: warning: Excessive padding in 'struct popup_action' (8 padding bytes, where 0 is optimal).
+Optimal fields order:
+time,
+thread,
+evsel,
+fn,
+ms,
+socket,
+rstype,
+```
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/dlfilter.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/perf/ui/browsers/hists.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/dlfilter.c b/tools/perf/util/dlfilter.c
-index 1dbf27822ee2..5e54832137a9 100644
---- a/tools/perf/util/dlfilter.c
-+++ b/tools/perf/util/dlfilter.c
-@@ -52,8 +52,10 @@ static void al_to_d_al(struct addr_location *al, struct perf_dlfilter_al *d_al)
- 		d_al->sym_end = sym->end;
- 		if (al->addr < sym->end)
- 			d_al->symoff = al->addr - sym->start;
--		else
-+		else if (al->map)
- 			d_al->symoff = al->addr - map__start(al->map) - sym->start;
-+		else
-+			d_al->symoff = 0;
- 		d_al->sym_binding = sym->binding;
- 	} else {
- 		d_al->sym = NULL;
+diff --git a/tools/perf/ui/browsers/hists.c b/tools/perf/ui/browsers/hists.c
+index 70db5a717905..f02ee605bbce 100644
+--- a/tools/perf/ui/browsers/hists.c
++++ b/tools/perf/ui/browsers/hists.c
+@@ -2416,12 +2416,12 @@ static int switch_data_file(void)
+ struct popup_action {
+ 	unsigned long		time;
+ 	struct thread 		*thread;
++	struct evsel	*evsel;
++	int (*fn)(struct hist_browser *browser, struct popup_action *act);
+ 	struct map_symbol 	ms;
+ 	int			socket;
+-	struct evsel	*evsel;
+ 	enum rstype		rstype;
+ 
+-	int (*fn)(struct hist_browser *browser, struct popup_action *act);
+ };
+ 
+ static int
 -- 
 2.42.0.515.g380fc7ccd1-goog
 
