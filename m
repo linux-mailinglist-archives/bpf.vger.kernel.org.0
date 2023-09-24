@@ -1,242 +1,161 @@
-Return-Path: <bpf+bounces-10710-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10711-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AD117AC92C
-	for <lists+bpf@lfdr.de>; Sun, 24 Sep 2023 15:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F3EF7AC99C
+	for <lists+bpf@lfdr.de>; Sun, 24 Sep 2023 15:35:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by ny.mirrors.kernel.org (Postfix) with ESMTP id 04DDC1C2082B
-	for <lists+bpf@lfdr.de>; Sun, 24 Sep 2023 13:27:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id 8244D1C20863
+	for <lists+bpf@lfdr.de>; Sun, 24 Sep 2023 13:35:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 463126AD7;
-	Sun, 24 Sep 2023 13:27:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EE986FB1;
+	Sun, 24 Sep 2023 13:35:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 771E053A6
-	for <bpf@vger.kernel.org>; Sun, 24 Sep 2023 13:27:28 +0000 (UTC)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0DF1F29
-	for <bpf@vger.kernel.org>; Sun, 24 Sep 2023 06:27:25 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-405361bb93bso44474455e9.3
-        for <bpf@vger.kernel.org>; Sun, 24 Sep 2023 06:27:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695562044; x=1696166844; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cbu6rkAxfPF5il5/avof2BWEnk2QGAzA+mWNA0/uAag=;
-        b=Fgm+VuSthTeOj8xBQqgSTW3NYP+BgB+Gn3FCrpZM5VFyUN2WoDqWGkNlJZvvLTd2VP
-         5gATsxTUZG6oW5ovcYjvcCpsR7uY6ggcFC7wgenxBuCOrakvGTuBhoA7MkhwOHERP/wT
-         pbcn12/ZPGI/fizf/6+n6jkG5ieX1Qnh0iEpPMcNX3qXMUgsLuUrYRL3Ltfd8ZPb/Rdj
-         DWRWaT6AeLKZvrui6B/S1+mM82MsVVWWLABI0ySwm996WYZabXzH43ERLdN8Q7UXmYVj
-         PvUwOVUAL2jk0SI325oKJ9CB0ARR4IjdERlVRegx2jMgb+x2+3vokYH8z9CgTJkvPhwS
-         mR2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695562044; x=1696166844;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cbu6rkAxfPF5il5/avof2BWEnk2QGAzA+mWNA0/uAag=;
-        b=G0OznANEWvgDAm7WNoXHfyY4JQX4pswPbSa4HxhEbtgr6/CEUHQmAdtRO1cp4NfBKN
-         g5gnhz82OLJrcOGpCfhxpwAvg+yMT/SvlWuOWjPuqWOIylkjB88HQV938lDZjdgXR3Ww
-         6sEzFkIXEt7jgS6va3Dh6jFyjFXaI/XH6ffKeAzM9m4NBU1xrWx1Bb1PPrjQ4s/XcbDd
-         L4a9dVq+VSR8gf+45uF+xMb+B2bkhZfPS5tS6YYWE48SZVrhQQ069bKc6U6TEWMLjYqn
-         kE1TilN3D3W5ih3MJCsH06w+0mYloe5x2jbDwQswRaazgGB4ncEVGtpDynaPvSkUYaU2
-         YdFA==
-X-Gm-Message-State: AOJu0Yzwk+GCDJlZ95oWKWuz0xQph610YYykqatyFTBzBKmJKLELXsZD
-	rO5V/NF1SCxrxgP+7GZfsuMFH2B64M8=
-X-Google-Smtp-Source: AGHT+IFltB8e+9+uUhrJ+shwpZsUwTKNcbz4g8rcIxeudO2m9S7xwJr99iKnYfxiRYElPL47aTW+gA==
-X-Received: by 2002:a7b:c84e:0:b0:3fe:2b60:b24e with SMTP id c14-20020a7bc84e000000b003fe2b60b24emr3586208wml.29.1695562043693;
-        Sun, 24 Sep 2023 06:27:23 -0700 (PDT)
-Received: from krava (37-188-170-118.red.o2.cz. [37.188.170.118])
-        by smtp.gmail.com with ESMTPSA id u23-20020a05600c211700b004042dbb8925sm12418786wml.38.2023.09.24.06.27.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Sep 2023 06:27:23 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sun, 24 Sep 2023 15:27:18 +0200
-To: Jiri Olsa <olsajiri@gmail.com>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Marcus Seyfarth <m.seyfarth@gmail.com>, bpf <bpf@vger.kernel.org>,
-	clang-built-linux <llvm@lists.linux.dev>,
-	Stanislav Fomichev <sdf@google.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>
-Subject: Re: duplicate BTF_IDs leading to symbol redefinition errors?
-Message-ID: <ZRA5NjXsgRJ0kueF@krava>
-References: <ZPsJ4AAqNMchvms/@krava>
- <CAKwvOd==X0exrhmsqX1j1WFX77xe8W7xPbfiCY+Rt6abgmkMCQ@mail.gmail.com>
- <ZPuA5+HmbcdBLbIq@krava>
- <ZQLBm8sC+V53CIzD@krava>
- <CAK7LNATiHvOXiWQi9gXJO9rZbT_MFm6NddaWqoY4ykNWf+OYsQ@mail.gmail.com>
- <ZQLX3oSCk95Qf4Ma@krava>
- <CAEf4Bzb5KQ2_LmhN769ifMeSJaWfebccUasQOfQKaOd0nQ51tw@mail.gmail.com>
- <ZQQVr35crUtN1quS@krava>
- <CAEf4BzZe_27FPzMwjaU3d5gPuyXX3iTQJGzT64CCTZLEfpQUvQ@mail.gmail.com>
- <ZQcIm/TZH73IklIf@krava>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCB466AD7;
+	Sun, 24 Sep 2023 13:35:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C502AC433C8;
+	Sun, 24 Sep 2023 13:35:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695562553;
+	bh=u2nyym0I4JWAL7/jlXor9L9b2/H9LF78NMAR4qOqvVs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=WR3HudULejpxM7z1JGSFl2PFi/T4sz/uaJ3mp7dyyCDv+716gCf3gvLnXAYobf9Kr
+	 Zi99jrdnUzKSL7JBk4theF3qQVfGIzcLir6jc7so7OA3TunfJ4pI5HM9GblWuyTiKD
+	 IVOsKBE0aeRAcxxOULBBaqNdsPRueJoknqlwqsuMmUxd8sFYZ69DVPx26DeOlhabaU
+	 FUvT3NjU8tPzzxnvCDRzXnGVkjYwWwF0yOum0ZMLPUNJ5YGmNvhj2nOHczPlKlue4E
+	 fivnWFI3uVqZfCjMYnAD0nP7t3MX7LLui+0f01msEF1AcM9rakOYoAtAXFlpEMTDZc
+	 OTQtuDQ+4yLnQ==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Guo Ren <guoren@kernel.org>
+Subject: [PATCH v5 00/12] tracing: fprobe: rethook: Use ftrace_regs instead of pt_regs
+Date: Sun, 24 Sep 2023 22:35:47 +0900
+Message-Id: <169556254640.146934.5654329452696494756.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZQcIm/TZH73IklIf@krava>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Sun, Sep 17, 2023 at 04:09:31PM +0200, Jiri Olsa wrote:
+Hi,
 
-SNIP
+Here is the 5th version of the series to use ftrace_regs instead of pt_regs
+in fprobe.
+The previous version is here;
 
-> > > > This will give us time and opportunity to implement a better approach
-> > > > to .BTF_ids overall. Encoding the desired type name in the symbol name
-> > > > always felt off. Maybe it's better to encode type + name as data,
-> > > > which is discarded at the latest stage during vmlinux linking? Either
-> > >
-> > > hum, so maybe having a special section (.BTF_ids_desc below)
-> > > that would have record for each ID placed in .BTF_ids section:
-> > >
-> > > asm(                                           \
-> > > ".pushsection .BTF_ids,\"a\";        \n"       \
-> > > "1:                                  \n"       \
-> > > ".zero 4                             \n"       \
-> > > ".popsection;                        \n"       \
-> > > ".pushsection .BTF_ids_desc,\"a\";   \n"       \
-> > > ".long 1b                            \n"       \
-> > >
-> > > and somehow get prefix and name pointers in here:
-> > >
-> > > ".long prefix
-> > > ".long name
-> > >
-> > > ".popsection;                        \n");
-> > >
-> > > so resolve_btfids would iterate .BTF_ids_desc records and fix
-> > > up .BTF_ids data..
-> > >
-> > 
-> > Something like that. I don't think it's even a regression in terms of
-> > vmlinux space usage, because right now we spend as much space on
-> > storing symbol names. So just adding string pointers would be already
-> > a win due to repeating "struct", "func", etc strings.
-> > 
-> > 
-> > > we might need to do one extra link phase to get rid of the
-> > > .BTF_ids_desc secion
-> > 
-> > Hopefully we can find a way to avoid this, we already do like 3 link
-> > phases at least (for kallsyms), so doing all that on the first one and
-> > then stripping it out using link script at subsequent one would be
-> > best.
-> 
-> perhaps we could move that section under .init.data and
-> get rid of it on startup
+https://lore.kernel.org/all/169280372795.282662.9784422934484459769.stgit@devnote2/
 
-hi,
-I made first version on having extra sections that contain the
-auxiliary data for .BTF_ids section,
+In this version, I decided to use perf's own per-cpu pt_regs array to
+copy the required registers[8/12]. Thus this version adds a patch which
+adds a new ftrace_fill_perf_regs() API. So the ftrace_partial_regs() will
+be used for BPF and ftrace_fill_perf_regs() is used for perf events.
 
-new sections are:
+This also adds a fix for RISCV ftrace[1/12]. When kernel is built with
+disabling CONFIG_DYNAMIC_FTRACE_WITH_REGS on RISCV, it stores partial
+registers on the stack, but it doesn't make it fit to struct ftrace_regs.
+But since the 4th argument of ftrace_func_t is ftrace_regs *, it breaks
+the ABI. So fixing it to save registers on ftrace_regs (== pt_regs on RISCV).
 
-  .BTF_ids_data that holds type and name strings
-  .BTF_ids_desc that holds array of
+Another new patch [3/12] is adding a comment about the requirements for
+the ftrace_regs.
 
-     struct {
-       u64 addr_btf_ids;      // address to .BTF_ids section
-       u64 addr_type;         // address of type string
-       u64 addr_name;         // address of name string
-     }
+ - RISCV ftrace fix to save registers on struct ftrace_regs correctly.
+ - Document fix for the current fprobe callback prototype.
+ - Add a comment of requirement for the ftrace_regs.
+ - Simply replace pt_regs in fprobe_entry_handler with ftrace_regs.
+ - Expose ftrace_regs even if CONFIG_FUNCTION_TRACER=n.
+ - Introduce ftrace_partial_regs(). (This changes ARM64 which needs a custom
+   implementation)
+ - Introduce ftrace_fill_perf_regs() for perf pt_regs.
+ - Replace pt_regs in rethook and fprobe_exit_handler with ftrace_regs. This
+   introduce a new HAVE_PT_REGS_TO_FTRACE_REGS_CAST which means ftrace_regs is
+   just a wrapper of pt_regs (except for arm64, other architectures do this)
+ - Update fprobe-events to use ftrace_regs natively.
+ - Update bpf multi-kprobe handler use ftrace_partial_regs().
+ - Update document for new fprobe callbacks.
+ - Add notes for the $argN and $retval.
 
-it seems to work ok for vmlinux, but there' problem with kernel modules,
-because all the .BTF_ids_desc datas need to be relocated first.. and we
-don't get relocated data when reading elf object.. I'll check if we can
-relocate that ourselfs, but might be tricky to support this on other archs
+This series can be applied against the trace-v6.6-rc2 on linux-trace tree.
 
-It's all in here together with resolve_btfids change:
-  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
-  btfid_fix
+This series can also be found below branch.
 
-jirka
+https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/fprobe-ftrace-regs
 
+Thank you,
 
 ---
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 9c59409104f6..2f7518b15301 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -658,6 +658,14 @@
- 	. = ALIGN(4);							\
- 	.BTF_ids : AT(ADDR(.BTF_ids) - LOAD_OFFSET) {			\
- 		*(.BTF_ids)						\
-+	}								\
-+	. = ALIGN(4);							\
-+	.BTF_ids_data : AT(ADDR(.BTF_ids_data) - LOAD_OFFSET) {		\
-+		*(.BTF_ids_data)					\
-+	}								\
-+	. = ALIGN(4);							\
-+	.BTF_ids_desc : AT(ADDR(.BTF_ids_desc) - LOAD_OFFSET) {		\
-+		*(.BTF_ids_desc)					\
- 	}
- #else
- #define BTF
-diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-index a9cb10b0e2e9..63a4ebc7f331 100644
---- a/include/linux/btf_ids.h
-+++ b/include/linux/btf_ids.h
-@@ -34,6 +34,7 @@ struct btf_id_set8 {
- 
- #define BTF_IDS_SECTION ".BTF_ids"
- 
-+#ifdef MODULE
- #define ____BTF_ID(symbol, word)			\
- asm(							\
- ".pushsection " BTF_IDS_SECTION ",\"a\";       \n"	\
-@@ -65,6 +66,38 @@ word							\
- #define BTF_ID_FLAGS(prefix, name, ...) \
- 	__BTF_ID_FLAGS(prefix, name, ##__VA_ARGS__, 0)
- 
-+#else
-+#define __BTF_ID(type, name, word)             \
-+asm(                                           \
-+".pushsection .BTF_ids,\"a\";        \n"       \
-+"1:                                  \n"       \
-+".zero 4                             \n"       \
-+word                                           \
-+".popsection;                        \n"       \
-+".pushsection .BTF_ids_data,\"a\";   \n"       \
-+"2:                                  \n"       \
-+".string \"" #type "\"               \n"       \
-+"3:                                  \n"       \
-+".string \"" #name "\"               \n"       \
-+".popsection;                        \n"       \
-+".pushsection .BTF_ids_desc,\"a\";   \n"       \
-+".quad 1b                            \n"       \
-+".quad 2b                            \n"       \
-+".quad 3b                            \n"       \
-+".popsection;                        \n");
-+
-+#define BTF_ID(type, name) \
-+	__BTF_ID(type, name, "")
-+
-+#define ____BTF_ID_FLAGS(type, name, flags, ...) \
-+	__BTF_ID(type, name, ".long " #flags "\n")
-+#define __BTF_ID_FLAGS(type, name, flags, ...) \
-+	____BTF_ID_FLAGS(type, name, flags)
-+#define BTF_ID_FLAGS(type, name, ...) \
-+	__BTF_ID_FLAGS(type, name, ##__VA_ARGS__, 0)
-+
-+#endif /* MODULE */
-+
- /*
-  * The BTF_ID_LIST macro defines pure (unsorted) list
-  * of BTF IDs, with following layout:
+
+Masami Hiramatsu (Google) (12):
+      riscv: ftrace: Fix to pass correct ftrace_regs to ftrace_func_t functions
+      Documentation: probes: Add a new ret_ip callback parameter
+      tracing: Add a comment about the requirements of the ftrace_regs
+      fprobe: Use ftrace_regs in fprobe entry handler
+      tracing: Expose ftrace_regs regardless of CONFIG_FUNCTION_TRACER
+      fprobe: rethook: Use ftrace_regs in fprobe exit handler and rethook
+      tracing: Add ftrace_partial_regs() for converting ftrace_regs to pt_regs
+      tracing: Add ftrace_fill_perf_regs() for perf event
+      tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+      bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
+      Documentation: probes: Update fprobe document to use ftrace_regs
+      Documentation: tracing: Add a note about argument and retval access
+
+
+ Documentation/trace/fprobe.rst      |   18 +++--
+ Documentation/trace/fprobetrace.rst |    8 ++
+ Documentation/trace/kprobetrace.rst |    8 ++
+ arch/Kconfig                        |    1 
+ arch/arm64/include/asm/ftrace.h     |   18 +++++
+ arch/loongarch/Kconfig              |    1 
+ arch/loongarch/kernel/rethook.c     |   10 +--
+ arch/loongarch/kernel/rethook.h     |    4 +
+ arch/powerpc/include/asm/ftrace.h   |    7 ++
+ arch/riscv/kernel/mcount-dyn.S      |   67 ++++++++----------
+ arch/riscv/kernel/probes/rethook.c  |   12 ++-
+ arch/riscv/kernel/probes/rethook.h  |    6 +-
+ arch/s390/Kconfig                   |    1 
+ arch/s390/include/asm/ftrace.h      |    9 ++
+ arch/s390/kernel/rethook.c          |   10 ++-
+ arch/s390/kernel/rethook.h          |    2 -
+ arch/x86/Kconfig                    |    1 
+ arch/x86/include/asm/ftrace.h       |    7 ++
+ arch/x86/kernel/rethook.c           |   13 ++--
+ include/linux/fprobe.h              |    4 +
+ include/linux/ftrace.h              |  128 +++++++++++++++++++++++++++++------
+ include/linux/rethook.h             |   11 ++-
+ kernel/kprobes.c                    |   10 ++-
+ kernel/trace/Kconfig                |    9 ++
+ kernel/trace/bpf_trace.c            |   14 ++--
+ kernel/trace/fprobe.c               |   10 +--
+ kernel/trace/rethook.c              |   16 ++--
+ kernel/trace/trace_fprobe.c         |   70 +++++++++++--------
+ kernel/trace/trace_probe_tmpl.h     |    2 -
+ lib/test_fprobe.c                   |   10 +--
+ samples/fprobe/fprobe_example.c     |    4 +
+ 31 files changed, 327 insertions(+), 164 deletions(-)
+
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
