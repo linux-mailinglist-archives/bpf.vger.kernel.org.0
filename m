@@ -1,120 +1,113 @@
-Return-Path: <bpf+bounces-10761-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10762-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 402C37ADDC6
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 19:23:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B7997ADDF6
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 19:47:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id A5F2F281830
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 17:23:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTP id 1F6261F24F22
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 17:47:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BAA720B2C;
-	Mon, 25 Sep 2023 17:23:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAAED21113;
+	Mon, 25 Sep 2023 17:47:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B00B10962;
-	Mon, 25 Sep 2023 17:23:17 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB6ABC;
-	Mon, 25 Sep 2023 10:23:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695662596; x=1727198596;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=hT6cdN4DI/JlLRo4tGR4SLBS9vPB7fNcPUjEDnZP6r8=;
-  b=m16yX1docmmvliLFoY4p5GCNYRmbZxHAR3lpwK6PQTxkZv8dYitKE35M
-   DaElFzMYebXCvPzPvbtYdGklqsZ/DSbK9r8K2nPrtvtFtMc/NRqEqkNZz
-   MFnyCU3ebng0Nu63NFBLwCHL42dUp9TOU1ITBVnaBC4Q+m0FV+SqETisb
-   vg9NBQSNyhn4DywBO6zxJqwmfONzJO/g9RruDs3fMAafdOp4lj5nwKB6p
-   1unJmSQnCHZRVRXv193ZyvgxYmiHvyNpYaFdU7dr6kzQDuVJtfcZBp99/
-   8BusmbPf5wqNP8iOYiqmvHHUOgzy0xxaLbX5vHZ8G5EuUWbqeivA9Db+6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="412235618"
-X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
-   d="scan'208";a="412235618"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 10:20:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="777743198"
-X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
-   d="scan'208";a="777743198"
-Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
-  by orsmga008.jf.intel.com with ESMTP; 25 Sep 2023 10:20:54 -0700
-From: Tony Nguyen <anthony.l.nguyen@intel.com>
-To: davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	netdev@vger.kernel.org
-Cc: Kamil Maziarz <kamil.maziarz@intel.com>,
-	anthony.l.nguyen@intel.com,
-	maciej.fijalkowski@intel.com,
-	magnus.karlsson@intel.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	bpf@vger.kernel.org,
-	Chandan Kumar Rout <chandanx.rout@intel.com>
-Subject: [PATCH net] ice: don't stop netdev tx queues when setting up XSK socket
-Date: Mon, 25 Sep 2023 10:19:57 -0700
-Message-Id: <20230925171957.3448944-1-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.38.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A94F1CA9E
+	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 17:47:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2E92C433C8;
+	Mon, 25 Sep 2023 17:47:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695664063;
+	bh=Kd5DB5lD9N9X5cbnp5J7jsLmId4kH+fDVReORU0+IDc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZcB+V3TgdH6MzxVKhGXICVICPUyFCbPYSuXdFtbe6jVmY0Ja+qbPuCs8ALEe4gf8u
+	 09dfdya+O/JKqgJKTwNr7DHo+S3P4pAGLVahnxLmMqqyHJqiMAhmF7j+2WaQQ2O1S2
+	 AQDZoc9RCfn3lxnYbGOnmJat99ll720ebys7FCs0HokP9EyQLkYX4sQ3JX+Wos79wB
+	 GTBbiMaWb3imtinrQaCeLWyF6ZuKzMB5ZqVh2q4wuTNct3fnjiaAzuzC+PvbSrHTAz
+	 zwCGl9LakzazBi6/SsaKMmhDKm0AwlhaIRncuN1SXbpQmYiaxnGa0X0rpSry0EPUS9
+	 5Hj2lE8NGoBbA==
+Date: Mon, 25 Sep 2023 13:47:42 -0400
+From: Sasha Levin <sashal@kernel.org>
+To: David Sterba <dsterba@suse.cz>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Josef Bacik <josef@toxicpanda.com>,
+	Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
+	clm@fb.com, linux-btrfs@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 6.5 13/41] btrfs: do not block starts waiting on
+ previous transaction commit
+Message-ID: <ZRHHvrAf/3BIO4E+@sashalap>
+References: <20230924131529.1275335-1-sashal@kernel.org>
+ <20230924131529.1275335-13-sashal@kernel.org>
+ <20230925130112.GK13697@suse.cz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20230925130112.GK13697@suse.cz>
 
-From: Kamil Maziarz <kamil.maziarz@intel.com>
+On Mon, Sep 25, 2023 at 03:01:12PM +0200, David Sterba wrote:
+>On Sun, Sep 24, 2023 at 09:15:01AM -0400, Sasha Levin wrote:
+>> From: Josef Bacik <josef@toxicpanda.com>
+>>
+>> [ Upstream commit 77d20c685b6baeb942606a93ed861c191381b73e ]
+>>
+>> Internally I got a report of very long stalls on normal operations like
+>> creating a new file when auto relocation was running.  The reporter used
+>> the 'bpf offcputime' tracer to show that we would get stuck in
+>> start_transaction for 5 to 30 seconds, and were always being woken up by
+>> the transaction commit.
+>>
+>> Using my timing-everything script, which times how long a function takes
+>> and what percentage of that total time is taken up by its children, I
+>> saw several traces like this
+>>
+>> 1083 took 32812902424 ns
+>>         29929002926 ns 91.2110% wait_for_commit_duration
+>>         25568 ns 7.7920e-05% commit_fs_roots_duration
+>>         1007751 ns 0.00307% commit_cowonly_roots_duration
+>>         446855602 ns 1.36182% btrfs_run_delayed_refs_duration
+>>         271980 ns 0.00082% btrfs_run_delayed_items_duration
+>>         2008 ns 6.1195e-06% btrfs_apply_pending_changes_duration
+>>         9656 ns 2.9427e-05% switch_commit_roots_duration
+>>         1598 ns 4.8700e-06% btrfs_commit_device_sizes_duration
+>>         4314 ns 1.3147e-05% btrfs_free_log_root_tree_duration
+>>
+>> Here I was only tracing functions that happen where we are between
+>> START_COMMIT and UNBLOCKED in order to see what would be keeping us
+>> blocked for so long.  The wait_for_commit() we do is where we wait for a
+>> previous transaction that hasn't completed it's commit.  This can
+>> include all of the unpin work and other cleanups, which tends to be the
+>> longest part of our transaction commit.
+>>
+>> There is no reason we should be blocking new things from entering the
+>> transaction at this point, it just adds to random latency spikes for no
+>> reason.
+>>
+>> Fix this by adding a PREP stage.  This allows us to properly deal with
+>> multiple committers coming in at the same time, we retain the behavior
+>> that the winner waits on the previous transaction and the losers all
+>> wait for this transaction commit to occur.  Nothing else is blocked
+>> during the PREP stage, and then once the wait is complete we switch to
+>> COMMIT_START and all of the same behavior as before is maintained.
+>>
+>> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>> Reviewed-by: David Sterba <dsterba@suse.com>
+>> Signed-off-by: David Sterba <dsterba@suse.com>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>
+>Please postpone adding this patch to stable trees until 6.6 is
+>released. Thanks.
 
-Avoid stopping netdev tx queues during XSK setup by removing
-netif_tx_stop_queue() and netif_tx_start_queue().
-These changes prevent unnecessary stopping and starting of netdev
-transmit queues during the setup of XDP socket. Without this change,
-after stopping the XDP traffic flow tracker and then stopping
-the XDP prog - NETDEV WATCHDOG transmit queue timed out appears.
+Ack.
 
-Fixes: 2d4238f55697 ("ice: Add support for AF_XDP")
-Signed-off-by: Kamil Maziarz <kamil.maziarz@intel.com>
-Tested-by: Chandan Kumar Rout <chandanx.rout@intel.com> (A Contingent Worker at Intel)
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_xsk.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index 2a3f0834e139..cec492b827d4 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -179,7 +179,6 @@ static int ice_qp_dis(struct ice_vsi *vsi, u16 q_idx)
- 			return -EBUSY;
- 		usleep_range(1000, 2000);
- 	}
--	netif_tx_stop_queue(netdev_get_tx_queue(vsi->netdev, q_idx));
- 
- 	ice_fill_txq_meta(vsi, tx_ring, &txq_meta);
- 	err = ice_vsi_stop_tx_ring(vsi, ICE_NO_RESET, 0, tx_ring, &txq_meta);
-@@ -268,7 +267,6 @@ static int ice_qp_ena(struct ice_vsi *vsi, u16 q_idx)
- 	ice_qvec_toggle_napi(vsi, q_vector, true);
- 	ice_qvec_ena_irq(vsi, q_vector);
- 
--	netif_tx_start_queue(netdev_get_tx_queue(vsi->netdev, q_idx));
- free_buf:
- 	kfree(qg_buf);
- 	return err;
 -- 
-2.38.1
-
+Thanks,
+Sasha
 
