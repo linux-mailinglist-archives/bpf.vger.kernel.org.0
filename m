@@ -1,367 +1,223 @@
-Return-Path: <bpf+bounces-10797-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10799-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 626E87AE10F
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 23:56:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5CEB7AE111
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 23:57:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 11A4B281357
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 21:56:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id EDD341C2085A
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 21:57:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD2CD25104;
-	Mon, 25 Sep 2023 21:56:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5942E2510B;
+	Mon, 25 Sep 2023 21:57:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98CD241F0
-	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 21:56:20 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B86B116
-	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 14:56:19 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-	by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 38PKHAgv019102
-	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 14:56:18 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by m0001303.ppops.net (PPS) with ESMTPS id 3taqndx149-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 14:56:18 -0700
-Received: from twshared34392.14.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 25 Sep 2023 14:56:17 -0700
-Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
-	id 90FF124F39A01; Mon, 25 Sep 2023 14:56:06 -0700 (PDT)
-From: Song Liu <song@kernel.org>
-To: <bpf@vger.kernel.org>
-CC: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <martin.lau@kernel.org>, <kernel-team@meta.com>, <iii@linux.ibm.com>,
-        Song
- Liu <song@kernel.org>
-Subject: [PATCH v2 bpf-next 8/8] x86, bpf: Use bpf_prog_pack for bpf trampoline
-Date: Mon, 25 Sep 2023 14:53:24 -0700
-Message-ID: <20230925215324.2962716-9-song@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230925215324.2962716-1-song@kernel.org>
-References: <20230925215324.2962716-1-song@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACE56241F0
+	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 21:57:38 +0000 (UTC)
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F14112
+	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 14:57:36 -0700 (PDT)
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 2F0E4C17EB4E
+	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 14:57:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1695679056; bh=xhuHjA3IR/YXcGIbWC4fQJSP12kI+3f0B0UsnyCFp9U=;
+	h=To:CC:Date:References:In-Reply-To:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=rvMUc2o0VRXQDxziWND1iGza7HPVFa9MF7IXMT9sRrwpOHjmRgeabYP0BxijljOwx
+	 59KK+OinXDrs14IWMxG3HaYoGswOPQMth3x9BiwuGuI8+UNxJDIXR8IFqB/B9dMD5x
+	 2DUUc8c/qn9bY+KI+c14ik1vLeyzeVvxNztwICig=
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 0079CC17CEA0;
+ Mon, 25 Sep 2023 14:57:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+ t=1695679056; bh=xhuHjA3IR/YXcGIbWC4fQJSP12kI+3f0B0UsnyCFp9U=;
+ h=From:To:CC:Date:References:In-Reply-To:Subject:List-Id:
+ List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+ b=jSwunXvdTHf38coXvbUplh5ctKl9zjXy9vmF0ymldww6HTfKpAOUzD+qnasaA6NcJ
+ XuZTc5yKA9V21rtM5DqZt78LsNrAqCPrh2ny8Ocl5ctwsR3zS8oho1yiLGOymu4xQc
+ EnCajDogkMPTfeEHj/Y3fH/U9+WfCc+cqKRy2LbU=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id DF215C17CEA7
+ for <bpf@ietfa.amsl.com>; Mon, 25 Sep 2023 14:57:33 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Score: -2.108
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,MAILING_LIST_MULTI,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=microsoft.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id mK3jFQf0M92M for <bpf@ietfa.amsl.com>;
+ Mon, 25 Sep 2023 14:57:33 -0700 (PDT)
+Received: from DM6FTOPR00CU001.outbound.protection.outlook.com
+ (mail-centralusazon11020026.outbound.protection.outlook.com [52.101.61.26])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 1DFBDC17CEA0
+ for <bpf@ietf.org>; Mon, 25 Sep 2023 14:57:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oI9CQ4lmpuD5wyKdeP8k9CgYF//kvLEzGoUbkKVLRCzixTxgkQ6HeP2lvuDXTpHf/cGVdTadtA5kxOnKjVeVkYmdcgWGkQS358UKTTFnEo+rVaddpQc+I8LbtenZwq9Vj6EqZ8JtOlDIS4BiMZWPpbdDvjbAS0OdJjgXwzSdozB7p93aHy/tisZlMBkjkVachShc3lLRYQBxKkC8opF4GzgdvtzgBgCiNbGPd8H1ZRyUieBDX3qkGlHJshKe2cfnSVweQL9XplpPc1zwbJyOYcO3Nh6XmFOEfECX2+VjcF0bRG57Emw+kgrMRz/wbOQh7TufXSRqaXCJ70c7QWNjxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1lNsa3/o0Lp099/JOOwmXctRgGHSfsllsJ/mLtJKrIg=;
+ b=RyeKT9R5LT3Y5T3Fb50PTOJAesBuNAAn3Odr50XFkOJW4bu887Y7JgsnNRQD+EpdJlBUCl49FQCO5fGOVngtRJQVDV5FQ9SxJOl9/KXrx0oTxgC5wqF16Y4Umtl5C3pELAb4sDyisEqtYKt9IlOwpgPqhk9uLJLOcKjRGuRCY8JMe7u0OD/x0GHCe3t8l0DotzyjzOMrotdlCjOrU2rdjHyixPhs/zI/WYqLmuw9TyQHUX89kHQg7ghpIjhGzeW6omDIh/CgyENO+3/ad4reRxmIt7VzsDiZ/IwyybADCWC3Vv+XzuYgKpJQ5S6st1qzKcnFzjnORMRVNhb7OF2CSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1lNsa3/o0Lp099/JOOwmXctRgGHSfsllsJ/mLtJKrIg=;
+ b=ZcCv5UqW7SYhnEIhejwYRcSWswGa/MP22mzpnsrkb3VAeWCUXJbDjcL/7dKcrYWOh/Kb8irKwoiyiRR9l7sXyNMrdJkAMdE89U9HfeaCw3/N6gvEXG1tl22BxChmnvlN+wyc9CiLpWovbK2M9Xzf8i9XY7OLa1yV/a7KSalRIb4=
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com (2603:10b6:510:243::22)
+ by MW4PR21MB3805.namprd21.prod.outlook.com (2603:10b6:303:223::5)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.12; Mon, 25 Sep
+ 2023 21:57:30 +0000
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::ec5c:279e:7bfe:50e9]) by PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::ec5c:279e:7bfe:50e9%3]) with mapi id 15.20.6838.010; Mon, 25 Sep 2023
+ 21:57:30 +0000
+To: "bpf@ietf.org" <bpf@ietf.org>
+CC: bpf <bpf@vger.kernel.org>
+Thread-Topic: New Version Notification for draft-thaler-bpf-isa-02.txt
+Thread-Index: AQHZ7+NS+EVk77BJE0CfAIbYDFHGE7AsFBow
+Date: Mon, 25 Sep 2023 21:57:29 +0000
+Message-ID: <PH7PR21MB3878C2BD3D1BBF7EAE077A03A3FCA@PH7PR21MB3878.namprd21.prod.outlook.com>
+References: <169566875696.34978.17222195480011841703@ietfa.amsl.com>
+In-Reply-To: <169566875696.34978.17222195480011841703@ietfa.amsl.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=8ffb551c-f1ec-4c25-9b50-738a387f2663;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-09-25T21:47:54Z; 
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR21MB3878:EE_|MW4PR21MB3805:EE_
+x-ms-office365-filtering-correlation-id: bdb63abb-ea1b-4cd9-f146-08dbbe126a00
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dRvuZTYHyUZAu1AW/CrL+2FBklpO12Qtvz09+531odrDFsijGzgjF9uPpgVlmo+aBe03q/K6z9y7FaTNl/s7/9FkdN4tdmY3URsWn4ua7Gr0g+48pqwUNJOTcv7Z/2ZVG1AQFGoEN9W9CU3emEnW1K9cAwRQoPh9OC+0MdwsqjGHDTtmgnsSIf8TfnF6bTk8pJsaeW/T6SogOtm52J2nDuY0Px8zG55zIOXRgU0bdMw2moC/5sd8GmrqhP+AVdf8kMBfvjQD631CNZ4teGuh/GqGkG5/GA382F8M3ooCjmk7A9KfgopPGVEfoKpPwDgULdWrdqTROCFNLBeqUJ0r7/dKa1MikKiSyz2jKfE64S60/eWXaGU0oInBNkGDCQbzXIaKCEfr5Vi25kM8dFZVDa6xp4IWkIjFQrBnF9vRiXjwbClgctmjrb1pAiHXpZvi+2PcTiP8IzoVC8QMSsvTACK7xJld7FnE47aAq+RI12KZU+I0ISlUll1yxR/xqoYevCUw115z8uSKOx0m7IPrNBC5oB/loIFq/AjZNNeRmTRhG+lbrV5OrO+2a62wN2em5kANjzOzVqhnZ+xVkS/DJYvC0DbjocM5NMqvIpsA3lOrP/JKUhgYocZ8//dyGW/FEsnq17cKUEGcu2c1m0cLqHdLxTPDowSG5YRYoJ70zBRsnP+8eOuYVaX4VmEMGjoF
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:; 
+ IPV:NLI; SFV:NSPM;
+ H:PH7PR21MB3878.namprd21.prod.outlook.com; PTR:; CAT:NONE; 
+ SFS:(13230031)(376002)(39860400002)(396003)(366004)(346002)(136003)(230922051799003)(451199024)(186009)(1800799009)(55016003)(7696005)(478600001)(71200400001)(10290500003)(966005)(6506007)(9686003)(38070700005)(82960400001)(82950400001)(122000001)(38100700002)(8990500004)(8936002)(33656002)(2906002)(66556008)(316002)(86362001)(76116006)(66946007)(66476007)(4326008)(66446008)(52536014)(41300700001)(64756008)(83380400001)(8676002)(6916009)(15650500001)(5660300002);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?VeQF5kh45B3P6r6YIULKzO9lW2VRbKKxx+iIm2tPFK/ldH8ud+LGyT3U+ju8?=
+ =?us-ascii?Q?u4DdGjhcqH+C60i2CgZDVMGijrGosAHcxI+fLEZ+pCRoYYXecawvbNXILM2c?=
+ =?us-ascii?Q?VJ4ps/CMVzNFEx4w9x77ToG+Tvu5QLR4DTVmWDMTfH9hOWa9Jj2sdGls6K4q?=
+ =?us-ascii?Q?Q0LnrWIrs1IYbKFg4Lr7EokWb+D0pyiBPN/LXOGCMB6l8eeUsPEcRVoxPRrh?=
+ =?us-ascii?Q?TVITRxh313/n4GwicNzFAKZfZAU1/fKxkwA0osWj47g32Inec3BzDsGNQqzY?=
+ =?us-ascii?Q?sd2gxvSfxorxG5Lp7ueAjxwq3B4Q759p1zCNb4t6YCpMcJfV429o7KJuil6Z?=
+ =?us-ascii?Q?6Z/32yrf//YAEfOahHqu8hx8AyT2NROZpvhP1baJyWWX1qj4+0PYZWdwKdRx?=
+ =?us-ascii?Q?JPWlq7JtD3FbY0rDpPFmsWKYmwgCU3ArUK4KAzgwPi8P9IJQY11PyL0yWcBD?=
+ =?us-ascii?Q?7g2ABpn4WaNWxEBDA6/Aj9NJOL+2qHGPlRU/neusIcNl64YP3etqn/sxg5t2?=
+ =?us-ascii?Q?sBJ19+yB1b3a5QHrIe8hhUtnjhaVSHiA6dpe9AJnOsUEvOHdiyWogS/3kezr?=
+ =?us-ascii?Q?d2qCoh4V2w138dCP1uSfkQReJTmNFx8kceB4iCS1rj7rEsfojd+4bcfDCAMj?=
+ =?us-ascii?Q?8meQQfaa7z/v/spABiAths9z1rrTNozxzje7GQ6niKn9OPHx55uHeOrpOu+I?=
+ =?us-ascii?Q?17IGCq1qFCH2BEr+LRI240IGVSpV1tZs/3O7NMGsN/zLWkH4UOSFuOUhzVcg?=
+ =?us-ascii?Q?Xq9XUjFvyuXTFgpksQGsDY/DD4pzwW/1/0E+hq5HEWfbh+IlRawS9kkR4mzz?=
+ =?us-ascii?Q?mCnDIvO1yEU50GCTmso2D4hXKvg1ihd0E0KWrSP42Wy/DlW/Iyb0gfViMV5u?=
+ =?us-ascii?Q?QC/lGvx5Y1J+KQmRC0UuATMECDtRvCPhakPdIVOkNROWOGd1VESMeqvNEjmI?=
+ =?us-ascii?Q?XH+DM8w+EjUkdnTKuV+kwrioXs16XPAUanicUrxQkPmS4oPV/LPxYeZkJVJT?=
+ =?us-ascii?Q?lBbQbkSi06i5d0Cz5vrYVx8w8BkGlzlfMUemz01GuVagS+HbdFXPYrLuyrEm?=
+ =?us-ascii?Q?aDP70U4r04XCczZMues+M8R5A4fjcK07tyO4ueIyGK5yDrfMV8GDv7fcN9XO?=
+ =?us-ascii?Q?s6TCyHbKVXEzriTHSx1C/X/qkyC7MEkxRGv8UgOD01aiOAXr2pqGCj2/gwWE?=
+ =?us-ascii?Q?y9z+2fNhi22swinmD0rWycda69RpzesVAEuWkyxZpJC32qGxTRSpA+niqazE?=
+ =?us-ascii?Q?F1VR1Vbd9tgoiON3DgA+Swrc5dVeBMfikqmty5+2rpsrUJxACPD/pn+oXpx3?=
+ =?us-ascii?Q?Ti9NoqDV8rkRkhjQyDKgOUEtr6zdjiZik4LVQd+zWw82kx3J5q6AQLubLvuI?=
+ =?us-ascii?Q?CSWhEZWtroapAfuYstykLxcA2ycbOJF4retmZJai2FReY0ycvk/urHxdTWOj?=
+ =?us-ascii?Q?j2n8Y/AAkrhW4KVE5sIziZhJxB8cONI9yHGSmrH2VqtKKXObMMphgAnCNs/Q?=
+ =?us-ascii?Q?9H2yY+RTPK8LO7KF+MddygaoOHlQqfbefFmLpILoqwIwTwCgXty2cD+hriq4?=
+ =?us-ascii?Q?9/j00Jtfc5YTVGUcwW/ISl8rQyXGlRkqawqSG+L/5gQr9UjJ0WpKTozKc1vl?=
+ =?us-ascii?Q?wgs3G4MRchH9ZgJ+vdnuhX4trW7hMDV1P8QxKP9pjea4ji0JF99Ez7ADhP4n?=
+ =?us-ascii?Q?IPoOkQ=3D=3D?=
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: oyiaRB_7mRwCL58EcqurJkTDi2770fty
-X-Proofpoint-ORIG-GUID: oyiaRB_7mRwCL58EcqurJkTDi2770fty
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-25_18,2023-09-25_01,2023-05-22_02
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
-	autolearn_force=no version=3.4.6
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3878.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bdb63abb-ea1b-4cd9-f146-08dbbe126a00
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Sep 2023 21:57:29.9734 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2l+QO4sn5SXO1IApZtFExFvlSx/ev+1wHyQ6cT4zxdTKNFXw9DNgPARM6svip/HU3wZeNutSy6BhEviRu+zRRytkk0oNjYR0i1xt88pdg4Q=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB3805
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/LKzowlb0vcGECi8LKPM4qtqyokw>
+Subject: [Bpf] New Version Notification for draft-thaler-bpf-isa-02.txt
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
+ <bpf.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
+ <mailto:bpf-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
+ <mailto:bpf-request@ietf.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
+X-Original-From: Dave Thaler <dthaler@microsoft.com>
+From: Dave Thaler <dthaler=40microsoft.com@dmarc.ietf.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-There are three major changes here:
+draft-thaler-bpf-isa-02.txt is now posted in the Linux kernel repository:
+https://datatracker.ietf.org/doc/draft-thaler-bpf-isa/
 
-1. Add arch_[alloc|free]_bpf_trampoline based on bpf_prog_pack;
-2. Let arch_prepare_bpf_trampoline handle ROX input image, this requires
-   arch_prepare_bpf_trampoline allocating a temporary RW buffer;
-3. Update __arch_prepare_bpf_trampoline() to handle a RW buffer (rw_image=
-)
-   and a ROX buffer (image). This part is similar to the image/rw_image
-   logic in bpf_int_jit_compile().
+All changes in the Linux kernel repository's RST files are automatically included in this update.
 
-Signed-off-by: Song Liu <song@kernel.org>
----
- arch/x86/net/bpf_jit_comp.c | 95 +++++++++++++++++++++++++++----------
- 1 file changed, 69 insertions(+), 26 deletions(-)
+Diffs from -01 include:
+* s/eBPF/BPF (David Vernet)
+* remove ABI text (David Vernet)
+* fix BPF_NEG entry (Jose Marchesi)
+* add documentatoin for cpu=v4 instructions (Yonghong Song)
+* formalize type notation and function semantics (Will Hawkins)
+* define semantics of sign extension (Will Hawkins)
+* correct source of offset for program-local call (Will Hawkins)
+* add IANA considerations section as discussed at IETF 117 (Dave Thaler)
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 561530ef2cdb..52e1e3e57848 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -2198,7 +2198,8 @@ static void restore_regs(const struct btf_func_mode=
-l *m, u8 **prog,
-=20
- static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
- 			   struct bpf_tramp_link *l, int stack_size,
--			   int run_ctx_off, bool save_ret)
-+			   int run_ctx_off, bool save_ret,
-+			   void *image, void *rw_image)
- {
- 	u8 *prog =3D *pprog;
- 	u8 *jmp_insn;
-@@ -2226,7 +2227,7 @@ static int invoke_bpf_prog(const struct btf_func_mo=
-del *m, u8 **pprog,
- 	else
- 		EMIT4(0x48, 0x8D, 0x75, -run_ctx_off);
-=20
--	if (emit_rsb_call(&prog, bpf_trampoline_enter(p), prog))
-+	if (emit_rsb_call(&prog, bpf_trampoline_enter(p), image + (prog - (u8 *=
-)rw_image)))
- 		return -EINVAL;
- 	/* remember prog start time returned by __bpf_prog_enter */
- 	emit_mov_reg(&prog, true, BPF_REG_6, BPF_REG_0);
-@@ -2250,7 +2251,7 @@ static int invoke_bpf_prog(const struct btf_func_mo=
-del *m, u8 **pprog,
- 			       (long) p->insnsi >> 32,
- 			       (u32) (long) p->insnsi);
- 	/* call JITed bpf program or interpreter */
--	if (emit_rsb_call(&prog, p->bpf_func, prog))
-+	if (emit_rsb_call(&prog, p->bpf_func, image + (prog - (u8 *)rw_image)))
- 		return -EINVAL;
-=20
- 	/*
-@@ -2277,7 +2278,7 @@ static int invoke_bpf_prog(const struct btf_func_mo=
-del *m, u8 **pprog,
- 		EMIT3_off32(0x48, 0x8D, 0x95, -run_ctx_off);
- 	else
- 		EMIT4(0x48, 0x8D, 0x55, -run_ctx_off);
--	if (emit_rsb_call(&prog, bpf_trampoline_exit(p), prog))
-+	if (emit_rsb_call(&prog, bpf_trampoline_exit(p), image + (prog - (u8 *)=
-rw_image)))
- 		return -EINVAL;
-=20
- 	*pprog =3D prog;
-@@ -2312,14 +2313,15 @@ static int emit_cond_near_jump(u8 **pprog, void *=
-func, void *ip, u8 jmp_cond)
-=20
- static int invoke_bpf(const struct btf_func_model *m, u8 **pprog,
- 		      struct bpf_tramp_links *tl, int stack_size,
--		      int run_ctx_off, bool save_ret)
-+		      int run_ctx_off, bool save_ret,
-+		      void *image, void *rw_image)
- {
- 	int i;
- 	u8 *prog =3D *pprog;
-=20
- 	for (i =3D 0; i < tl->nr_links; i++) {
- 		if (invoke_bpf_prog(m, &prog, tl->links[i], stack_size,
--				    run_ctx_off, save_ret))
-+				    run_ctx_off, save_ret, image, rw_image))
- 			return -EINVAL;
- 	}
- 	*pprog =3D prog;
-@@ -2328,7 +2330,8 @@ static int invoke_bpf(const struct btf_func_model *=
-m, u8 **pprog,
-=20
- static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog=
-,
- 			      struct bpf_tramp_links *tl, int stack_size,
--			      int run_ctx_off, u8 **branches)
-+			      int run_ctx_off, u8 **branches,
-+			      void *image, void *rw_image)
- {
- 	u8 *prog =3D *pprog;
- 	int i;
-@@ -2339,7 +2342,8 @@ static int invoke_bpf_mod_ret(const struct btf_func=
-_model *m, u8 **pprog,
- 	emit_mov_imm32(&prog, false, BPF_REG_0, 0);
- 	emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
- 	for (i =3D 0; i < tl->nr_links; i++) {
--		if (invoke_bpf_prog(m, &prog, tl->links[i], stack_size, run_ctx_off, t=
-rue))
-+		if (invoke_bpf_prog(m, &prog, tl->links[i], stack_size, run_ctx_off, t=
-rue,
-+				    image, rw_image))
- 			return -EINVAL;
-=20
- 		/* mod_ret prog stored return value into [rbp - 8]. Emit:
-@@ -2422,7 +2426,8 @@ static int invoke_bpf_mod_ret(const struct btf_func=
-_model *m, u8 **pprog,
-  * add rsp, 8                      // skip eth_type_trans's frame
-  * ret                             // return to its caller
-  */
--static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, voi=
-d *image, void *image_end,
-+static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, voi=
-d *rw_image,
-+					 void *rw_image_end, void *image,
- 					 const struct btf_func_model *m, u32 flags,
- 					 struct bpf_tramp_links *tlinks,
- 					 void *func_addr)
-@@ -2521,7 +2526,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf=
-_tramp_image *im, void *image
- 		orig_call +=3D X86_PATCH_SIZE;
- 	}
-=20
--	prog =3D image;
-+	prog =3D rw_image;
-=20
- 	EMIT_ENDBR();
- 	/*
-@@ -2563,7 +2568,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf=
-_tramp_image *im, void *image
- 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
- 		/* arg1: mov rdi, im */
- 		emit_mov_imm64(&prog, BPF_REG_1, (long) im >> 32, (u32) (long) im);
--		if (emit_rsb_call(&prog, __bpf_tramp_enter, prog)) {
-+		if (emit_rsb_call(&prog, __bpf_tramp_enter,
-+				  image + (prog - (u8 *)rw_image))) {
- 			ret =3D -EINVAL;
- 			goto cleanup;
- 		}
-@@ -2571,7 +2577,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf=
-_tramp_image *im, void *image
-=20
- 	if (fentry->nr_links)
- 		if (invoke_bpf(m, &prog, fentry, regs_off, run_ctx_off,
--			       flags & BPF_TRAMP_F_RET_FENTRY_RET))
-+			       flags & BPF_TRAMP_F_RET_FENTRY_RET, image, rw_image))
- 			return -EINVAL;
-=20
- 	if (fmod_ret->nr_links) {
-@@ -2581,7 +2587,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf=
-_tramp_image *im, void *image
- 			return -ENOMEM;
-=20
- 		if (invoke_bpf_mod_ret(m, &prog, fmod_ret, regs_off,
--				       run_ctx_off, branches)) {
-+				       run_ctx_off, branches, image, rw_image)) {
- 			ret =3D -EINVAL;
- 			goto cleanup;
- 		}
-@@ -2602,14 +2608,14 @@ static int __arch_prepare_bpf_trampoline(struct b=
-pf_tramp_image *im, void *image
- 			EMIT2(0xff, 0xd3); /* call *rbx */
- 		} else {
- 			/* call original function */
--			if (emit_rsb_call(&prog, orig_call, prog)) {
-+			if (emit_rsb_call(&prog, orig_call, image + (prog - (u8 *)rw_image)))=
- {
- 				ret =3D -EINVAL;
- 				goto cleanup;
- 			}
- 		}
- 		/* remember return value in a stack for bpf prog to access */
- 		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
--		im->ip_after_call =3D prog;
-+		im->ip_after_call =3D image + (prog - (u8 *)rw_image);
- 		memcpy(prog, x86_nops[5], X86_PATCH_SIZE);
- 		prog +=3D X86_PATCH_SIZE;
- 	}
-@@ -2625,12 +2631,13 @@ static int __arch_prepare_bpf_trampoline(struct b=
-pf_tramp_image *im, void *image
- 		 * aligned address of do_fexit.
- 		 */
- 		for (i =3D 0; i < fmod_ret->nr_links; i++)
--			emit_cond_near_jump(&branches[i], prog, branches[i],
--					    X86_JNE);
-+			emit_cond_near_jump(&branches[i], image + (prog - (u8 *)rw_image),
-+					    image + (branches[i] - (u8 *)rw_image), X86_JNE);
- 	}
-=20
- 	if (fexit->nr_links)
--		if (invoke_bpf(m, &prog, fexit, regs_off, run_ctx_off, false)) {
-+		if (invoke_bpf(m, &prog, fexit, regs_off, run_ctx_off,
-+			       false, image, rw_image)) {
- 			ret =3D -EINVAL;
- 			goto cleanup;
- 		}
-@@ -2643,10 +2650,10 @@ static int __arch_prepare_bpf_trampoline(struct b=
-pf_tramp_image *im, void *image
- 	 * restored to R0.
- 	 */
- 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
--		im->ip_epilogue =3D prog;
-+		im->ip_epilogue =3D image + (prog - (u8 *)rw_image);
- 		/* arg1: mov rdi, im */
- 		emit_mov_imm64(&prog, BPF_REG_1, (long) im >> 32, (u32) (long) im);
--		if (emit_rsb_call(&prog, __bpf_tramp_exit, prog)) {
-+		if (emit_rsb_call(&prog, __bpf_tramp_exit, image + (prog - (u8 *)rw_im=
-age))) {
- 			ret =3D -EINVAL;
- 			goto cleanup;
- 		}
-@@ -2665,25 +2672,61 @@ static int __arch_prepare_bpf_trampoline(struct b=
-pf_tramp_image *im, void *image
- 	if (flags & BPF_TRAMP_F_SKIP_FRAME)
- 		/* skip our return address and return to parent */
- 		EMIT4(0x48, 0x83, 0xC4, 8); /* add rsp, 8 */
--	emit_return(&prog, prog);
-+	emit_return(&prog, image + (prog - (u8 *)rw_image));
- 	/* Make sure the trampoline generation logic doesn't overflow */
--	if (WARN_ON_ONCE(prog > (u8 *)image_end - BPF_INSN_SAFETY)) {
-+	if (WARN_ON_ONCE(prog > (u8 *)rw_image_end - BPF_INSN_SAFETY)) {
- 		ret =3D -EFAULT;
- 		goto cleanup;
- 	}
--	ret =3D prog - (u8 *)image + BPF_INSN_SAFETY;
-+	ret =3D prog - (u8 *)rw_image + BPF_INSN_SAFETY;
-=20
- cleanup:
- 	kfree(branches);
- 	return ret;
- }
-=20
-+void *arch_alloc_bpf_trampoline(int size)
-+{
-+	return bpf_prog_pack_alloc(size, jit_fill_hole);
-+}
-+
-+void arch_free_bpf_trampoline(void *image, int size)
-+{
-+	bpf_prog_pack_free(image, size);
-+}
-+
-+void arch_protect_bpf_trampoline(void *image, int size)
-+{
-+}
-+
-+void arch_unprotect_bpf_trampoline(void *image, int size)
-+{
-+}
-+
- int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,=
- void *image_end,
- 				const struct btf_func_model *m, u32 flags,
- 				struct bpf_tramp_links *tlinks,
- 				void *func_addr)
- {
--	return __arch_prepare_bpf_trampoline(im, image, image_end, m, flags, tl=
-inks, func_addr);
-+	void *rw_image, *tmp;
-+	int ret;
-+	u32 size =3D image_end - image;
-+
-+	rw_image =3D bpf_jit_alloc_exec(size);
-+	if (!rw_image)
-+		return -ENOMEM;
-+
-+	ret =3D __arch_prepare_bpf_trampoline(im, rw_image, rw_image + size, im=
-age, m,
-+					    flags, tlinks, func_addr);
-+	if (ret < 0)
-+		goto out;
-+
-+	tmp =3D bpf_arch_text_copy(image, rw_image, size);
-+	if (IS_ERR(tmp))
-+		ret =3D PTR_ERR(tmp);
-+out:
-+	bpf_jit_free_exec(rw_image);
-+	return ret;
- }
-=20
- int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
-@@ -2701,8 +2744,8 @@ int arch_bpf_trampoline_size(const struct btf_func_=
-model *m, u32 flags,
- 	if (!image)
- 		return -ENOMEM;
-=20
--	ret =3D __arch_prepare_bpf_trampoline(&im, image, image + PAGE_SIZE, m,=
- flags,
--					    tlinks, func_addr);
-+	ret =3D __arch_prepare_bpf_trampoline(&im, image, image + PAGE_SIZE, im=
-age,
-+					    m, flags, tlinks, func_addr);
- 	bpf_jit_free_exec(image);
- 	return ret;
- }
---=20
-2.34.1
+It took me a while to generate this update since the RST source in the Linux repository
+now includes more RST markup/directives than before, so I've had to add features into
+the rst2rfcxml conversion tool.  However, I've finally finished those feature additions
+so I submitted a draft update to match.  Let me know if anyone spots any rendering
+errors, and I plan to submit another update before IETF 118.
 
+As mentioned at IETF 117, https://github.com/ietf-wg-bpf/ebpf-docs is the github
+repository that does the conversion.
+
+Dave
+
+-- 
+Bpf mailing list
+Bpf@ietf.org
+https://www.ietf.org/mailman/listinfo/bpf
 
