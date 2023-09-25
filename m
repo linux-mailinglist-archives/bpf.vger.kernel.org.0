@@ -1,126 +1,107 @@
-Return-Path: <bpf+bounces-10767-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10768-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 864137AE034
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 22:08:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 517F17AE045
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 22:25:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sy.mirrors.kernel.org (Postfix) with ESMTP id 46857B20A6A
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 20:08:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 60ADA2816C7
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 20:24:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E30622F19;
-	Mon, 25 Sep 2023 20:08:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D45A223758;
+	Mon, 25 Sep 2023 20:24:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69A7322EED
-	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 20:08:42 +0000 (UTC)
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BAD99B;
-	Mon, 25 Sep 2023 13:08:41 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6c4e38483d2so1860490a34.1;
-        Mon, 25 Sep 2023 13:08:41 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 273AB22F12;
+	Mon, 25 Sep 2023 20:24:52 +0000 (UTC)
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC2EC0;
+	Mon, 25 Sep 2023 13:24:51 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c3d6d88231so51761905ad.0;
+        Mon, 25 Sep 2023 13:24:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695672520; x=1696277320; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lucKNU0RDlL+gBnOBSIzkQDlaCBNbwXXxr+QvoDA/74=;
-        b=lariq36/d+f/al4vHhTQbnn44OcryJfHK8thSKHlPrLFpIyU0Nc70B/A5ittPnuVhf
-         iecsQ7/6Th/REP2vmJ3T85l1y6wGuLsu/n6FPQgZhY5EjIs9EsGvuTX5PM5/Q9rvimE1
-         xRjxAdCNN+vISidhNnHY4WEo9PDuZErvcjUEZuTVN3cK0ayfDfPLg/fPrxHNLDq8jjhL
-         QFTYsciV75f3t/I0ZS6KH9gHR1Ex7G6LwZ+iZx5JAy0QpC3jQ+obhMQQUCUrPUrv1WjN
-         7Wtl1wL+YFLn/lPpQUICyoYd2tYX+t6q+1MK4O9CzHHk/Wcf5sJX+EKMtx2ykcKW5PFQ
-         q3kw==
+        d=gmail.com; s=20230601; t=1695673491; x=1696278291; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JdjM08gmoXvyztouDjrJfcBPW9vYMWj7EpOPKNnHpmc=;
+        b=YsBJ821ecTLx16nOpfytKsgoQba/WakqkTum/+ZedOp/VJB2fpYzSOHnkQJteCk8v0
+         13Ylp2KzXyJ9hr3i+oWisiSqTRYzKrEEfvcv7z58hWOi575nXdwlufDpN+wDi1HxC90y
+         RbAqJOAHeEZAcCPS60ZgIE7ZBcOdwORaQMDJZ/HmzRmwhMqvutFhaeBLT2an5lRXyOTc
+         Z9+9ih421JmXHtlGcXQxziypSDYnacaWnVceqOGlnnTfZyR9Q1J5qrWvBmnxpX+deT/l
+         phoRTCy31ugERKdX1JMDSwe5UheYtQFGRYHEtPJpJ3aGHz0N7cIwLguPX/5DK5ZmBvoR
+         +jBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695672520; x=1696277320;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1695673491; x=1696278291;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=lucKNU0RDlL+gBnOBSIzkQDlaCBNbwXXxr+QvoDA/74=;
-        b=q5hj4wjTFwWjnLDVVUCKe/hNnsB3AGEja9EBaPa3I1xkr87ZQpup2wRw+OSMmNVnh7
-         bLtOqFU2jK88xNbAkp8h0x6+IFnIzlv5jxkOEOf4YN6iBNltXEyNGnzjmc5TNC2YepV2
-         l0TCN947Wufk4Z+yBsi1m7zxHJSb35XJahg1OdZS26g9e5RFiIYf08yZsjRvsuefrfcD
-         r4JW83u5ZW0xUNqE0Marq9S1SU1aN2zEaF33EgqBxNKI984O/CY7De6yY2e7LnKTZCYE
-         N2dq1L9QDcl96EWYFwMofIW2BkGNShzRAVcr9sqBJWkMksAKXxh6rTaVwdWUJAeQQPj9
-         JYDg==
-X-Gm-Message-State: AOJu0YysvVcn5gA49u/NL7jJfRwJ2VE+YXQkymsEM5NPXhpwR8YdoxuB
-	Y4xK4pdTdak/RA0uzK/HtreHM2PI04MK1BcT8kWp9fb6
-X-Google-Smtp-Source: AGHT+IE7lqvRfNQg+VrNy2nvHedN1/dcCykJg3BOdtyADFUdUiVakRQGF9UpmrugTJZV+kbYTmCjbar6IOP7e4AOlws=
-X-Received: by 2002:a9d:7d87:0:b0:6b9:1af3:3307 with SMTP id
- j7-20020a9d7d87000000b006b91af33307mr8243104otn.17.1695672520323; Mon, 25 Sep
- 2023 13:08:40 -0700 (PDT)
+        bh=JdjM08gmoXvyztouDjrJfcBPW9vYMWj7EpOPKNnHpmc=;
+        b=HieCqwq+fmVpOcvQTicUMaQR3T7RLngdJa712Qt7OD4TaerZA4PAP0AJJHRw1mDXzm
+         Zhd3fwzlBjYJ8065mvxoforYxLxxGLX7ONo/rE8vGAKfoiRqeCKENdpjWoWkuiP56EW/
+         qJsW4wo41NrZ0TTju1gTwQL166o4xgLpfsMmtBPixBnmrq1hHrwgnnrJ9Sjx8W3F+rcl
+         J5G4J+qEda5A4aOsdALGEjfCln6ZZa/d/Zp2Uj6RneqPkYyZUyAfL7HOY0c904RmmUrm
+         UlTQQz7ObQoEfpfpCodCgOpLTXqTNQeO0EJosFI+qyp39FFQgwgTE3U7ntTHVO+aTdHy
+         q1Rw==
+X-Gm-Message-State: AOJu0YwL4x43JZU6yPVZJvojXrIc4iunHE0ZeN7RA4bHDl2zU2Tbepch
+	VpjhYccbe+kfKQ0frlm/wtw=
+X-Google-Smtp-Source: AGHT+IHcFl9Yod5+JknRWxOw5Ym67/1MHOYZPNJU/LdDNIu+n934rYU1nwDhTVQgSa5nSrjlMfTaYg==
+X-Received: by 2002:a17:902:d4cb:b0:1b9:e9b2:124b with SMTP id o11-20020a170902d4cb00b001b9e9b2124bmr6572116plg.64.1695673490665;
+        Mon, 25 Sep 2023 13:24:50 -0700 (PDT)
+Received: from john.lan ([2605:59c8:148:ba00:51e:699c:e63:c15a])
+        by smtp.gmail.com with ESMTPSA id jg6-20020a17090326c600b001c61df93afdsm2254040plb.59.2023.09.25.13.24.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 13:24:50 -0700 (PDT)
+From: John Fastabend <john.fastabend@gmail.com>
+To: daniel@iogearbox.net,
+	ast@kernel.org,
+	andrii@kernel.org,
+	jakub@cloudflare.com
+Cc: john.fastabend@gmail.com,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	edumazet@google.com
+Subject: [PATCH bpf v2 0/3] bpf, sockmap complete fixes for avail bytes
+Date: Mon, 25 Sep 2023 13:24:45 -0700
+Message-Id: <20230925202448.100920-1-john.fastabend@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Received: by 2002:ac9:5dc9:0:b0:4f0:1250:dd51 with HTTP; Mon, 25 Sep 2023
- 13:08:39 -0700 (PDT)
-In-Reply-To: <202309231925.D9C4917@keescook>
-References: <20230922145505.4044003-1-kpsingh@kernel.org> <20230922184224.kx4jiejmtnvfrxrq@f>
- <CACYkzJ67gw6bvTzX6wx_OtxUXi6kpVT196CXV6XCN1AaGQuKAw@mail.gmail.com>
- <CAGudoHE+od5oZLVAU4z3nXCNGk6uangd+zmDEuoATmDLHeFLGQ@mail.gmail.com>
- <CAGudoHFiVLmaMbFJno47_-x3Rs2tvgXNKyNznJeCq_cF8hFVvA@mail.gmail.com> <202309231925.D9C4917@keescook>
-From: Mateusz Guzik <mjguzik@gmail.com>
-Date: Mon, 25 Sep 2023 22:08:39 +0200
-Message-ID: <CAGudoHHm-ofzATMdE_HU2e0voKiQnkkcL+1+F73azxNeHCvYSA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/5] Reduce overhead of LSMs with static calls
-To: Kees Cook <keescook@chromium.org>
-Cc: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org, 
-	bpf@vger.kernel.org, paul@paul-moore.com, casey@schaufler-ca.com, 
-	song@kernel.org, daniel@iogearbox.net, ast@kernel.org, renauld@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 9/24/23, Kees Cook <keescook@chromium.org> wrote:
-> That said, I've long advocated[1] for a way to explicitly disable LSMs
-> without affecting operational ordering. I think it would be very nice to
-> be able to boot with something like:
->
-> lsm=!yama
->
-> to disable Yama. Or for your case, "lsm=!tomoyo". Right now, you have to
-> figure out what the lsm list is, and then create a new one with the
-> LSM you want disabled removed from the list. i.e. with v6.2 and later
-> check the boot log, and you'll see:
->
-> LSM: initializing lsm=lockdown,capability,landlock,yama,integrity,apparmor
->
-> If you wanted to boot with Yama removed, you'd then pass:
->
-> 	lsm=lockdown,capability,landlock,integrity,apparmor
->
-> As a boot param. But I think this is fragile since now any new LSMs will
-> be by-default disabled once a sysadmin overrides the "lsm" list. Note
-> that booting with "lsm.debug=1" will show even more details. See commit
-> 86ef3c735ec8 ("LSM: Better reporting of actual LSMs at boot").
->
-> So, if a distro has no support for an LSM but they want it _available_
-> in the kernel, they should leave it built in, but remove it from the
-> "lsm=" list. That's a reasonable bug to file against a distro...
->
+With e5c6de5fa0258 ("bpf, sockmap: Incorrectly handling copied_seq") we
+started fixing the available bytes accounting by moving copied_seq to
+where the user actually reads the bytes.
 
-Maybe I once more expressed myself poorly, I meant to say stock Debian
-does not ship any tooling for tomoyo, but the kernel has support
-compiled in.
+However we missed handling MSG_PEEK correctly and we need to ensure
+that we don't kfree_skb() a skb off the receive_queue when the
+copied_seq number is not incremented by user reads for some time.
 
-Ultimately, after stacking got implemented, it was inevitable diestros
-like Debian will enable whatever modules and expect them to not be a
-problem if not configured by userspace.
+v2: drop seq var in tcp_read_skb its no longer necessary per Jakub's
+    suggestion
 
-I don't think any form of messing with CONFIG_LSM is a viable option,
-even if you make it a boot param.
+John Fastabend (3):
+  bpf: tcp_read_skb needs to pop skb regardless of seq
+  bpf: sockmap, do not inc copied_seq when PEEK flag set
+  bpf: sockmap, add tests for MSG_F_PEEK
 
-What should happen instead is that modules which are not given any
-config don't get in the way.
+ net/ipv4/tcp.c                                |  3 +-
+ net/ipv4/tcp_bpf.c                            |  4 +-
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 52 +++++++++++++++++++
+ 3 files changed, 56 insertions(+), 3 deletions(-)
 
 -- 
-Mateusz Guzik <mjguzik gmail.com>
+2.33.0
+
 
