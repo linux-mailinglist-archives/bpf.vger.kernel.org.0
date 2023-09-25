@@ -1,169 +1,220 @@
-Return-Path: <bpf+bounces-10771-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10772-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64AC27AE04A
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 22:25:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 127D57AE08F
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 23:10:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sy.mirrors.kernel.org (Postfix) with ESMTP id 8B8A1B20A61
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 20:25:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 941D228199F
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 21:10:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BCB924204;
-	Mon, 25 Sep 2023 20:25:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16856241E4;
+	Mon, 25 Sep 2023 21:10:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A15241FE;
-	Mon, 25 Sep 2023 20:24:58 +0000 (UTC)
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD990112;
-	Mon, 25 Sep 2023 13:24:55 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c5bbb205e3so66052225ad.0;
-        Mon, 25 Sep 2023 13:24:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695673495; x=1696278295; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=26fi+axt3x0k9FrIsRxv3t9BAfLZcnBuCf6adchVtJk=;
-        b=gQk9GBuCARGuI1luKhxqBRck3PrreBKTveMDcYpEvy+uD0OLWKrTmlZoI2uceKHuK3
-         MVtu3UYcLvuc6M61qow+TN6IB3kGgqHuF+pogzBkhm1ng4HGclimfeu2fduKDVSut/7F
-         gzEeaREJj3/czZgApnqb2l+80NkjRz0GLUja21wD3LWrhgh3PZXU3Hu0Me/i9jje5qU5
-         izrDouXC+LXRQfZlxkLm5lHMHiBWM0cYbBV6HkQLqeXoOjzcY+QJketiZlT4h71eJfPe
-         ZS6qdTKJrDo7HQfMevIgqKdqwpE+zn0r5mPlhqqILLQqadOuEGESPUzlSAzlpFYRSjIH
-         PfMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695673495; x=1696278295;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=26fi+axt3x0k9FrIsRxv3t9BAfLZcnBuCf6adchVtJk=;
-        b=vH9BYDcPVrA1zWGSbqciy2TCOROdQp5yB1A7TlpWaDwqhpH05Un5yyKo1FLYZYR7Hm
-         cO4NjFtsGxIrNq0EhxepR9lgmKrBjv2aLuSU6TSUkIjzAZXSV55Rcken1X0lwSXPoq7o
-         4/Vu3gdV47T/XT3vDuTTLkmGL28nPjYTQLdcHbG/uRc6X4kzJe6xzbROoKFaBDMIwcqg
-         k58Pxz5pukKj28CCAwRPD7HgzgxauWwoMSjQeKWIX6Kz8xy0/1Mbi0wBb1MnGrPYZXIX
-         odKaTK+RXqK7svi/GRMNKXyATFwXDwZmYwsTJlkF+LANxQwSwwDynptfRVNH5G5oYaJQ
-         LN+w==
-X-Gm-Message-State: AOJu0Yw0o7xsfhQ1vDwMvSO0rJENjYksuL25dTJIdAgUGpya+j7XPAVQ
-	iSWF5B6Pa/NkqaIb366unms=
-X-Google-Smtp-Source: AGHT+IFBdeW/jjK+MhzVVLeKAQD8V0G7aMTmpM5YbPbumcBI4oViM6X+VF/zcA/NkYR+ICd80UY5wg==
-X-Received: by 2002:a17:902:ecc6:b0:1b8:b285:ec96 with SMTP id a6-20020a170902ecc600b001b8b285ec96mr10590028plh.23.1695673495348;
-        Mon, 25 Sep 2023 13:24:55 -0700 (PDT)
-Received: from john.lan ([2605:59c8:148:ba00:51e:699c:e63:c15a])
-        by smtp.gmail.com with ESMTPSA id jg6-20020a17090326c600b001c61df93afdsm2254040plb.59.2023.09.25.13.24.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 13:24:54 -0700 (PDT)
-From: John Fastabend <john.fastabend@gmail.com>
-To: daniel@iogearbox.net,
-	ast@kernel.org,
-	andrii@kernel.org,
-	jakub@cloudflare.com
-Cc: john.fastabend@gmail.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	edumazet@google.com
-Subject: [PATCH bpf v2 3/3] bpf: sockmap, add tests for MSG_F_PEEK
-Date: Mon, 25 Sep 2023 13:24:48 -0700
-Message-Id: <20230925202448.100920-4-john.fastabend@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20230925202448.100920-1-john.fastabend@gmail.com>
-References: <20230925202448.100920-1-john.fastabend@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7F411170A
+	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 21:10:23 +0000 (UTC)
+Received: from out-194.mta1.migadu.com (out-194.mta1.migadu.com [IPv6:2001:41d0:203:375::c2])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7040103
+	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 14:10:21 -0700 (PDT)
+Message-ID: <c77c5a5d-7174-4770-4ffb-ee297a28f025@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1695676219;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ofh5uRT1ry1YGH3JhVqhxQr8YzXglb833Mg4JVdgPdI=;
+	b=KnwLHpiHHVmOOSz4yWMvPTwYVQgeQob24nkeZHxAN8hYZsbbP64tYvEPw4t69qO76qRNg/
+	ghcPt9iYk5cNe66TH+R9QudDmNzHVT+slXxrd3/xtPsj7hPPylKQ2VvOQO7KQcySFH9fyr
+	YrPKudo6aIKghBY4SoeDlvFkUwIycGY=
+Date: Mon, 25 Sep 2023 14:10:12 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [RFC bpf-next v3 02/11] bpf: add struct_ops_tab to btf.
+Content-Language: en-US
+To: thinker.li@gmail.com
+Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
+ ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org
+References: <20230920155923.151136-1-thinker.li@gmail.com>
+ <20230920155923.151136-3-thinker.li@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230920155923.151136-3-thinker.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Test that we can read with MSG_F_PEEK and then still get correct number
-of available bytes through FIONREAD. The recv() (without PEEK) then
-returns the bytes as expected. The recv() always worked though because
-it was just the available byte reporting that was broke before latest
-fixes.
+On 9/20/23 8:59 AM, thinker.li@gmail.com wrote:
+> From: Kui-Feng Lee <thinker.li@gmail.com>
+> 
+> struct_ops_tab will be used to restore registered struct_ops.
+> 
+> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> ---
+>   include/linux/btf.h |  9 +++++
+>   kernel/bpf/btf.c    | 84 +++++++++++++++++++++++++++++++++++++++++++++
+>   2 files changed, 93 insertions(+)
+> 
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index 928113a80a95..5fabe23aedd2 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -571,4 +571,13 @@ static inline bool btf_type_is_struct_ptr(struct btf *btf, const struct btf_type
+>   	return btf_type_is_struct(t);
+>   }
+>   
+> +struct bpf_struct_ops;
+> +
+> +int btf_add_struct_ops_btf(struct bpf_struct_ops *st_ops,
+> +			   struct btf *btf);
+> +int btf_add_struct_ops(struct bpf_struct_ops *st_ops,
+> +		       struct module *owner);
+> +const struct bpf_struct_ops **
+> +btf_get_struct_ops(struct btf *btf, u32 *ret_cnt);
+> +
+>   #endif
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index f93e835d90af..3fb9964f8672 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -241,6 +241,12 @@ struct btf_id_dtor_kfunc_tab {
+>   	struct btf_id_dtor_kfunc dtors[];
+>   };
+>   
+> +struct btf_struct_ops_tab {
+> +	u32 cnt;
+> +	u32 capacity;
+> +	struct bpf_struct_ops *ops[];
+> +};
+> +
+>   struct btf {
+>   	void *data;
+>   	struct btf_type **types;
+> @@ -258,6 +264,7 @@ struct btf {
+>   	struct btf_kfunc_set_tab *kfunc_set_tab;
+>   	struct btf_id_dtor_kfunc_tab *dtor_kfunc_tab;
+>   	struct btf_struct_metas *struct_meta_tab;
+> +	struct btf_struct_ops_tab *struct_ops_tab;
+>   
+>   	/* split BTF support */
+>   	struct btf *base_btf;
+> @@ -1688,11 +1695,20 @@ static void btf_free_struct_meta_tab(struct btf *btf)
+>   	btf->struct_meta_tab = NULL;
+>   }
+>   
+> +static void btf_free_struct_ops_tab(struct btf *btf)
+> +{
+> +	struct btf_struct_ops_tab *tab = btf->struct_ops_tab;
+> +
+> +	kfree(tab);
+> +	btf->struct_ops_tab = NULL;
+> +}
+> +
+>   static void btf_free(struct btf *btf)
+>   {
+>   	btf_free_struct_meta_tab(btf);
+>   	btf_free_dtor_kfunc_tab(btf);
+>   	btf_free_kfunc_set_tab(btf);
+> +	btf_free_struct_ops_tab(btf);
+>   	kvfree(btf->types);
+>   	kvfree(btf->resolved_sizes);
+>   	kvfree(btf->resolved_ids);
+> @@ -8601,3 +8617,71 @@ bool btf_type_ids_nocast_alias(struct bpf_verifier_log *log,
+>   
+>   	return !strncmp(reg_name, arg_name, cmp_len);
+>   }
+> +
+> +int btf_add_struct_ops_btf(struct bpf_struct_ops *st_ops, struct btf *btf)
 
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 52 +++++++++++++++++++
- 1 file changed, 52 insertions(+)
+A few nits.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 064cc5e8d9ad..e8eee2b8901e 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -475,6 +475,56 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
- 		test_sockmap_drop_prog__destroy(drop);
- }
- 
-+
-+static void test_sockmap_skb_verdict_peek(void)
-+{
-+	int err, map, verdict, s, c1, p1, zero = 0, sent, recvd, avail;
-+	struct test_sockmap_pass_prog *pass;
-+	char snd[256] = "0123456789";
-+	char rcv[256] = "0";
-+
-+	pass = test_sockmap_pass_prog__open_and_load();
-+	if (!ASSERT_OK_PTR(pass, "open_and_load"))
-+		return;
-+	verdict = bpf_program__fd(pass->progs.prog_skb_verdict);
-+	map = bpf_map__fd(pass->maps.sock_map_rx);
-+
-+	err = bpf_prog_attach(verdict, map, BPF_SK_SKB_STREAM_VERDICT, 0);
-+	if (!ASSERT_OK(err, "bpf_prog_attach"))
-+		goto out;
-+
-+	s = socket_loopback(AF_INET, SOCK_STREAM);
-+	if (!ASSERT_GT(s, -1, "socket_loopback(s)"))
-+		goto out;
-+
-+	err = create_pair(s, AF_INET, SOCK_STREAM, &c1, &p1);
-+	if (!ASSERT_OK(err, "create_pairs(s)"))
-+		goto out;
-+
-+	err = bpf_map_update_elem(map, &zero, &c1, BPF_NOEXIST);
-+	if (!ASSERT_OK(err, "bpf_map_update_elem(c1)"))
-+		goto out_close;
-+
-+	sent = xsend(p1, snd, sizeof(snd), 0);
-+	ASSERT_EQ(sent, sizeof(snd), "xsend(p1)");
-+	recvd = recv(c1, rcv, sizeof(rcv), MSG_PEEK);
-+	ASSERT_EQ(recvd, sizeof(rcv), "recv(c1)");
-+	err = ioctl(c1, FIONREAD, &avail);
-+	ASSERT_OK(err, "ioctl(FIONREAD) error");
-+	ASSERT_EQ(avail, sizeof(snd), "after peek ioctl(FIONREAD)");
-+	recvd = recv(c1, rcv, sizeof(rcv), 0);
-+	ASSERT_EQ(recvd, sizeof(rcv), "recv(p0)");
-+	err = ioctl(c1, FIONREAD, &avail);
-+	ASSERT_OK(err, "ioctl(FIONREAD) error");
-+	ASSERT_EQ(avail, 0, "after read ioctl(FIONREAD)");
-+
-+out_close:
-+	close(c1);
-+	close(p1);
-+out:
-+	test_sockmap_pass_prog__destroy(pass);
-+}
-+
- void test_sockmap_basic(void)
- {
- 	if (test__start_subtest("sockmap create_update_free"))
-@@ -515,4 +565,6 @@ void test_sockmap_basic(void)
- 		test_sockmap_skb_verdict_fionread(true);
- 	if (test__start_subtest("sockmap skb_verdict fionread on drop"))
- 		test_sockmap_skb_verdict_fionread(false);
-+	if (test__start_subtest("sockmap skb_verdict msg_f_peek"))
-+		test_sockmap_skb_verdict_peek();
- }
--- 
-2.33.0
+'struct btf *btf' as the first argument, to be consistent with other similar btf 
+functions.
+
+This new function is not used outside of this file, so at least static. I would 
+just fold this into btf_add_struct_ops() below which currently is mostly empty 
+other than a btf_get/put.
+
+> +{
+> +	struct btf_struct_ops_tab *tab;
+> +	int i;
+> +
+> +	/* Assume this function is called for a module when the module is
+> +	 * loading.
+> +	 */
+> +
+> +	tab = btf->struct_ops_tab;
+> +	if (!tab) {
+> +		tab = kzalloc(sizeof(*tab) +
+> +			      sizeof(struct bpf_struct_ops *) * 4,
+> +			      GFP_KERNEL);
+
+nit. offsetof(struct bpf_struct_ops_tab, ops[4]).
+
+> +		if (!tab)
+> +			return -ENOMEM;
+> +		tab->capacity = 4;
+> +		btf->struct_ops_tab = tab;
+> +	}
+> +
+> +	for (i = 0; i < tab->cnt; i++)
+> +		if (tab->ops[i] == st_ops)
+> +			return -EEXIST;
+> +
+> +	if (tab->cnt == tab->capacity) {
+> +		struct btf_struct_ops_tab *new_tab;
+> +
+> +		new_tab = krealloc(tab, sizeof(*tab) +
+> +				   sizeof(struct bpf_struct_ops *) *
+> +				   tab->capacity * 2, GFP_KERNEL);
+> +		if (!new_tab)
+> +			return -ENOMEM;
+> +		tab = new_tab;
+> +		tab->capacity *= 2;
+> +		btf->struct_ops_tab = tab;
+> +	}
+> +
+> +	btf->struct_ops_tab->ops[btf->struct_ops_tab->cnt++] = st_ops;
+> +
+> +	return 0;
+> +}
+> +
+> +int btf_add_struct_ops(struct bpf_struct_ops *st_ops, struct module *owner)
+> +{
+> +	struct btf *btf = btf_get_module_btf(owner);
+> +	int ret;
+> +
+> +	if (!btf)
+> +		return -ENOENT;
+> +
+> +	ret = btf_add_struct_ops_btf(st_ops, btf);
+> +
+> +	btf_put(btf);
+> +
+> +	return ret;
+> +}
+> +
+> +const struct bpf_struct_ops **btf_get_struct_ops(struct btf *btf, u32 *ret_cnt)
+> +{
+> +	if (!btf)
+> +		return NULL;
+> +	if (!btf->struct_ops_tab)
+> +		return NULL;
+> +
+> +	*ret_cnt = btf->struct_ops_tab->cnt;
+> +	return (const struct bpf_struct_ops **)btf->struct_ops_tab->ops;
+> +}
 
 
