@@ -1,189 +1,156 @@
-Return-Path: <bpf+bounces-10819-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10820-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BD1F7AE274
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 01:37:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D6237AE28E
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 01:43:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by am.mirrors.kernel.org (Postfix) with ESMTP id 77BC41F251DC
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 23:37:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 593A52816B6
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 23:43:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47123266AB;
-	Mon, 25 Sep 2023 23:37:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52630266AE;
+	Mon, 25 Sep 2023 23:43:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76CDC266A2
-	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 23:37:52 +0000 (UTC)
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4924F116;
-	Mon, 25 Sep 2023 16:37:51 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c5bbb205e3so68392315ad.0;
-        Mon, 25 Sep 2023 16:37:51 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 452FA262A0
+	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 23:43:02 +0000 (UTC)
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EEFA10A
+	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 16:43:00 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d849df4f1ffso8924553276.0
+        for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 16:43:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695685070; x=1696289870; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cv0O21j6tEHRD16fyNBggI9xx4lBjDTEd1wZVJg2WZM=;
-        b=L5Q1e5V3Hp6CeJGnvsJTqn+neavdsMYT/SKh08CqD/fl/gIjwiBFpN8sm+LH3Td9dX
-         dEw4T9qJ7oC+KK9FPDDlw7h90kg3wZhruVNqfFvNNanGHrZ/y8ZRZKPqm3gjqUAaF9yz
-         oMeSkUGtJ1kjITdQbF7NayVFRTxFvCYVay9DxrRN85ygPoy9I/lmX+ANGJItoY546mjM
-         iYO7tzlfs/3n+Jbrtb5WxEfvtQvmpOM6yBcGRXgoEq0Tf3xd9sj8CUsFDvYtjYH4N1fj
-         12LB/3H79wR74pjvR0bDVnrSd6SySAwC9jQRH+rB/XVwin6sQKoV0a3HSiMh3zIeCQkX
-         0MTQ==
+        d=gmail.com; s=20230601; t=1695685379; x=1696290179; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+zzYefSaH1zbd8caOfCqKOGHzL7KIYrXLIh2GBygV2o=;
+        b=hW93BueOT0H9ekAiwLhVVVSQZa4iqtoFV4y/zP2E9Uo/APEouCTxKAVbX3aAdOaCcK
+         ritxYcGx0WkAl2aCaPIQs2Sm7mZ3BRl63FjcOl/rviZogF9YKBPDhLxtbR6uApv3plYz
+         8uGCWqeaBVnOUPakcWq/E6Cdbg2UVSDyFl8joeBVY26C6AUYAnFqi6bB6gvwFUcq/5Vm
+         XVKe1btEJycf+SD4orAq8z9t6dgS1k+/3OqVfHKVcyVbLgRtK2TKAXHBY3UVdSQRyvmf
+         YC1CMihezOesIcEpVg7NxOMEhCxaK3nXxEVFzVk5WFMAiAEQ4P+X50JiCVnMrhJvzHox
+         0aWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695685070; x=1696289870;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cv0O21j6tEHRD16fyNBggI9xx4lBjDTEd1wZVJg2WZM=;
-        b=fuASLi/iXRCQfU2GgZi5yOnGnxDMgfRsNlYGU4x/N3kUWboYJIKA4Pl/lLsSV1svng
-         0bQcc4M5P1pQWKqSWf+hF4YTz2pDg6V989eEi1FLiEZbFuXujvGMh6dYk5TEfpKhQgRc
-         xk6AqlONCtOoi70nvb3V9dCOliOsYRs5YLCPJcNyAYLJlF7yX3v7A3+gpUTrZQexcpWE
-         5z7wc7FhtUpycqRwdGQY+R683AJs16qkqFPqxrQj8vVjuH4uU9ynDdULPao367a6KCsn
-         yoPZPAG+fLIEgVipeQZquPt3KNG7jlaVp4ec0z682ztRWu2Z8GDSRUsmdPKYzvBMelbh
-         +5cQ==
-X-Gm-Message-State: AOJu0YyDlTHkVty0wp/pLXykg8UQetxUvRiTTj/a2sJ9CDy1zuhiQHJO
-	LKKkdlq3LzN/dgheQrttDpOs7UygpY8=
-X-Google-Smtp-Source: AGHT+IHa9xV1TKFdilYUVAPeFnWWJh1C/MYUePTZ2gl31uYYa2T6D1VFtSEKy2FCVy/eEPcCeHbNhw==
-X-Received: by 2002:a17:903:32ce:b0:1c4:3cd5:4298 with SMTP id i14-20020a17090332ce00b001c43cd54298mr11647351plr.18.1695685070177;
-        Mon, 25 Sep 2023 16:37:50 -0700 (PDT)
-Received: from localhost.localdomain (69-172-146-53.cable.teksavvy.com. [69.172.146.53])
-        by smtp.gmail.com with ESMTPSA id jj19-20020a170903049300b001b9d7c8f44dsm291286plb.182.2023.09.25.16.37.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 16:37:49 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-To: bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Cc: Tony Ambardar <Tony.Ambardar@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Subject: [PATCH bpf-next v1] bpf/selftests: improve arg parsing in test_verifier
-Date: Mon, 25 Sep 2023 16:37:02 -0700
-Message-Id: <20230925233702.19466-1-Tony.Ambardar@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1695685379; x=1696290179;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+zzYefSaH1zbd8caOfCqKOGHzL7KIYrXLIh2GBygV2o=;
+        b=VP4j/y3ky3bBlZdTOBpP3UiWJJdyWQmOUjILNE0w4RqGRNV5361VJz4w8ffHILmRhn
+         jDNbb8xIb1bOpbpn0L0XEzvYUiZKdXG/GHMfcW6/bvt1vzQA/VzQK0HxAhwffeAMvi/m
+         aytBv72bkDDYKgBPc5dIcEe904XR9JUEGSCiA1VI9PrgTqOgeREdAqf2kHyyDqPAxhqJ
+         y0Ix3KpsDC2wjD1jqKvR+90Mu9ZsS04c5g8uTbkOzEQV+Bjrle0IhHK/Z5KCg+Pt0CnH
+         8ytVlSnSIwJhzGAfq2xWsbqxGrnHqnrzIgEuyhSt8nQy4kQMrygqI6623eBx87BfDTuP
+         4pEQ==
+X-Gm-Message-State: AOJu0YwbDOVsXt7pnnMVr88QPFxjq96q/U9XDLS9YUTxStLiHIpcnLgX
+	AQkVC1UmoG2vVwEJ7OlaTEQ=
+X-Google-Smtp-Source: AGHT+IGOxDhU6a9ZxOHudob4o3yf9dSsOTJTIIubEVpRbB6au6hE7jsTT3uCGvulOq0h4LZoJvF02A==
+X-Received: by 2002:a25:ab67:0:b0:d44:af:3cce with SMTP id u94-20020a25ab67000000b00d4400af3ccemr7307912ybi.27.1695685379450;
+        Mon, 25 Sep 2023 16:42:59 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:f7cd:fd6d:2b89:f093? ([2600:1700:6cf8:1240:f7cd:fd6d:2b89:f093])
+        by smtp.gmail.com with ESMTPSA id m17-20020a258011000000b00d85abbdc93esm2347845ybk.12.2023.09.25.16.42.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 16:42:59 -0700 (PDT)
+Message-ID: <437cd950-90ad-9cf4-8cb4-caa9538fef36@gmail.com>
+Date: Mon, 25 Sep 2023 16:42:57 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC bpf-next v3 05/11] bpf: hold module for bpf_struct_ops_map.
+Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
+Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org
+References: <20230920155923.151136-1-thinker.li@gmail.com>
+ <20230920155923.151136-6-thinker.li@gmail.com>
+ <8393a1f3-b4cf-9e4c-ce76-4b09a3f1622b@linux.dev>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <8393a1f3-b4cf-9e4c-ce76-4b09a3f1622b@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Current test_verifier provides little feedback or argument validation,
-instead silently falling back to running all tests in case of user error
-or even expected use cases. Trying to do manual exploratory testing,
-switching between kernel versions (e.g. with varying tests), or working
-around problematic tests (e.g. kernel hangs/crashes) can be a frustrating
-experience.
 
-Rework argument parsing to be more robust and strict, and provide basic
-help on errors. Clamp test ranges to valid values and add an option to
-list available built-in tests ("-l"). Default "test_verifier" behaviour
-(run all tests) is unchanged and backwards-compatible. Updated examples:
 
-     $ test_verifier die die die     # previously ran all tests
-     Usage: test_verifier -l | [-v|-vv] [<tst_lo> [<tst_hi>]]
+On 9/25/23 16:23, Martin KaFai Lau wrote:
+> On 9/20/23 8:59 AM, thinker.li@gmail.com wrote:
+>> From: Kui-Feng Lee <thinker.li@gmail.com>
+>>
+>> Ensure a module doesn't go away when a struct_ops object is still alive,
+>> being a struct_ops type that is registered by the module.
+>>
+>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+>> ---
+>>   include/linux/bpf.h         | 1 +
+>>   kernel/bpf/bpf_struct_ops.c | 6 ++++++
+>>   2 files changed, 7 insertions(+)
+>>
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index 0776cb584b3f..faaec20156f1 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -1627,6 +1627,7 @@ struct bpf_struct_ops {
+>>       int (*update)(void *kdata, void *old_kdata);
+>>       int (*validate)(void *kdata);
+>>       const struct btf *btf;
+>> +    struct module *owner;
+>>       const struct btf_type *type;
+>>       const struct btf_type *value_type;
+>>       const char *name;
+>> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+>> index 7c2ef53687ef..ef8a1edec891 100644
+>> --- a/kernel/bpf/bpf_struct_ops.c
+>> +++ b/kernel/bpf/bpf_struct_ops.c
+>> @@ -632,6 +632,8 @@ static void __bpf_struct_ops_map_free(struct 
+>> bpf_map *map)
+>>   static void bpf_struct_ops_map_free(struct bpf_map *map)
+>>   {
+>> +    struct bpf_struct_ops_map *st_map = (struct bpf_struct_ops_map 
+>> *)map;
+>> +
+>>       /* The struct_ops's function may switch to another struct_ops.
+>>        *
+>>        * For example, bpf_tcp_cc_x->init() may switch to
+>> @@ -649,6 +651,7 @@ static void bpf_struct_ops_map_free(struct bpf_map 
+>> *map)
+>>        */
+>>       synchronize_rcu_mult(call_rcu, call_rcu_tasks);
+>> +    module_put(st_map->st_ops->owner);
+>>       __bpf_struct_ops_map_free(map);
+>>   }
+>> @@ -673,6 +676,9 @@ static struct bpf_map 
+>> *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+>>       if (!st_ops)
+>>           return ERR_PTR(-ENOTSUPP);
+>> +    if (!try_module_get(st_ops->owner))
+>> +        return ERR_PTR(-EINVAL);
+> 
+> The module can be gone at this point?
+> I don't think try_module_get is safe. btf_try_get_module should be used 
+> instead.
 
-     $ test_verifier 700 9999        # runs test subset from 700 to end
+At this point, it holds btf, but not module. Module can go away while
+some one still holding a refcount to the btf.
 
-Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
----
- tools/testing/selftests/bpf/test_verifier.c | 54 ++++++++++++---------
- 1 file changed, 30 insertions(+), 24 deletions(-)
+And, you are right, I should use btf_try_get_module().
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 98107e0452d3..3712b5363f60 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -10,9 +10,11 @@
- #include <endian.h>
- #include <asm/types.h>
- #include <linux/types.h>
-+#include <linux/minmax.h>
- #include <stdint.h>
- #include <stdio.h>
- #include <stdlib.h>
-+#include <ctype.h>
- #include <unistd.h>
- #include <errno.h>
- #include <string.h>
-@@ -1848,36 +1850,40 @@ int main(int argc, char **argv)
- {
- 	unsigned int from = 0, to = ARRAY_SIZE(tests);
- 	bool unpriv = !is_admin();
--	int arg = 1;
--
--	if (argc > 1 && strcmp(argv[1], "-v") == 0) {
-+	int i, arg = 1;
-+
-+	while (argc > 1 && *argv[arg] == '-') {
-+		if (strcmp(argv[arg], "-l") == 0) {
-+			for (i = from; i < to; i++)
-+				printf("#%d %s\n", i, tests[i].descr);
-+			return EXIT_SUCCESS;
-+		} else if (strcmp(argv[arg], "-v") == 0) {
-+			verbose = true;
-+			verif_log_level = 1;
-+		} else if (strcmp(argv[arg], "-vv") == 0) {
-+			verbose = true;
-+			verif_log_level = 2;
-+		} else
-+			goto out_help;
- 		arg++;
--		verbose = true;
--		verif_log_level = 1;
- 		argc--;
- 	}
--	if (argc > 1 && strcmp(argv[1], "-vv") == 0) {
--		arg++;
--		verbose = true;
--		verif_log_level = 2;
--		argc--;
--	}
--
--	if (argc == 3) {
--		unsigned int l = atoi(argv[arg]);
--		unsigned int u = atoi(argv[arg + 1]);
- 
--		if (l < to && u < to) {
--			from = l;
--			to   = u + 1;
--		}
--	} else if (argc == 2) {
--		unsigned int t = atoi(argv[arg]);
-+	for (i = 1; i <= 2 && argc > 1; i++, arg++, argc--) {
-+		unsigned int t = min(atoi(argv[arg]), ARRAY_SIZE(tests) - 1);
- 
--		if (t < to) {
-+		if (!isdigit(*argv[arg]))
-+			goto out_help;
-+		if (i == 1)
- 			from = t;
--			to   = t + 1;
--		}
-+		to = t + 1;
-+	}
-+
-+	if (argc > 1) {
-+out_help:
-+		printf("Usage: %s -l | [-v|-vv] [<tst_lo> [<tst_hi>]]\n",
-+		       argv[0]);
-+		return EXIT_FAILURE;
- 	}
- 
- 	unpriv_disabled = get_unpriv_disabled();
--- 
-2.34.1
-
+> 
+>> +
+>>       vt = st_ops->value_type;
+>>       if (attr->value_size != vt->size)
+>>           return ERR_PTR(-EINVAL);
+> 
 
