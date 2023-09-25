@@ -1,54 +1,54 @@
-Return-Path: <bpf+bounces-10804-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10805-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A5C07AE19B
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 00:16:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3F657AE1E9
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 00:50:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by ny.mirrors.kernel.org (Postfix) with ESMTP id 34FCB1C203DD
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 22:16:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 50C7E281622
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 22:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A287A2511F;
-	Mon, 25 Sep 2023 22:16:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37AC221A08;
+	Mon, 25 Sep 2023 22:50:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46AFB250FF
-	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 22:16:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A082C433CD
-	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 22:16:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4AAF14010
+	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 22:50:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30618C433C9
+	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 22:50:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695680170;
-	bh=ryuTVFj4vTtI4nTc6goek41txhkB/GD5qn2kjIqj4sA=;
+	s=k20201202; t=1695682245;
+	bh=F/OGTAcc/1HkdLFjixsWrd+pFJELaQPtXaIgtxGmHw4=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Xz5SefdyXNhGS2GjuBWmtBNMTHMxkZ4HkpIfQdM0u8U1cNhbhnCQzIjh4iwxcJ19A
-	 IAs1JFaizbW4WPRL293o5SQeLxeKgEIch3MRQ2DRAgBMWIqO1D/+1cTjLzwnjujJUA
-	 4xkYc1M5Q6DHiX49AOfagU5dn0pITOJVAVGNBtM4zWQrphYGRoBtsBnz7WTnVW/SZ5
-	 jvIi+7AA6EFa9nnYw/qmWtB4eilYDMK2lXYXjxLQigX/edTkYbBbGxH59uYL8eYFHt
-	 tjj4mKIGHciVQdgU34IBuntaprg4ZobQFJrMNaJCOc+Je3oWzl/n7JZhCYwfDvNWsp
-	 b5i2ThdIfd2Jg==
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2c131ddfc95so114844931fa.0
-        for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 15:16:09 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyCkFpM19P3q8oVqz8vI5m+XXIReXwDsWAw6GozMGzqJMk/k5Au
-	KpAi2yWXOj+c1m45X14GkL4H2qllwXtCTKGqGKs=
-X-Google-Smtp-Source: AGHT+IG07bX1hewVqeuIkJ8YDJl9RA+/Pc1SNtg/LytjZgYLyqfLTfJx2FVcJMWOfrpGFUS5CKrBynJkttw9xIZ3uU4=
-X-Received: by 2002:a19:c204:0:b0:503:72c:50cb with SMTP id
- l4-20020a19c204000000b00503072c50cbmr6687962lfc.6.1695680168271; Mon, 25 Sep
- 2023 15:16:08 -0700 (PDT)
+	b=UaUxEUuv6vMaAYJViaA778OMlKAn/mHqRedcNDSFAliM+u9AmlaJ5zvNeqFVH+TJt
+	 gjfeyRReOjIwOF4zbKSwYkiRb7voy2+LllKk6kKQpY4vG5edlIlEcWkZG2mHBBd1JY
+	 QO2XYzynkD/mOuamEemImPZWnY9A8LmKt8T6nBz/2w0AN2qTYd7+DkjgrCORF1T36W
+	 bwv0M8xQNqlmPUyv+PiDvrcLD5A1269iJaeGEwPNP/ewvmY0d0P/wgSoaevlLJjWH0
+	 S6FVuBRuoAVoKO9RsgefCY2kX2o85zJRnS544UsmqoXcalRxRLC4A52/xk7+ggXuGf
+	 hcdVcL/zYBivQ==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5043120ffbcso11276057e87.2
+        for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 15:50:45 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yys9eY8CWoPOyTmvnOnulJzwoCYoDv16s01XyevWiTVghZN2Rhp
+	zuCknTpJnWHi5fUN8uemjP1VYz8gT8G49hj+KGY=
+X-Google-Smtp-Source: AGHT+IGDsdoah2MqZB6XhwZSWquY7e0vwfXUxSH0WQ2aaNmqIRLlZn6QJkEMhc8yeZWwnTagNzcs+kbYjK2Vcs4c5d4=
+X-Received: by 2002:a05:6512:2815:b0:503:343a:829f with SMTP id
+ cf21-20020a056512281500b00503343a829fmr8621570lfb.23.1695682243384; Mon, 25
+ Sep 2023 15:50:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230908132740.718103-1-hbathini@linux.ibm.com> <20230908132740.718103-4-hbathini@linux.ibm.com>
-In-Reply-To: <20230908132740.718103-4-hbathini@linux.ibm.com>
+References: <20230908132740.718103-1-hbathini@linux.ibm.com> <20230908132740.718103-5-hbathini@linux.ibm.com>
+In-Reply-To: <20230908132740.718103-5-hbathini@linux.ibm.com>
 From: Song Liu <song@kernel.org>
-Date: Mon, 25 Sep 2023 15:15:55 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7wDqJZcDezqZOvNvWw5CeCOesgy3SnuxYRzxsB=ZbKXA@mail.gmail.com>
-Message-ID: <CAPhsuW7wDqJZcDezqZOvNvWw5CeCOesgy3SnuxYRzxsB=ZbKXA@mail.gmail.com>
-Subject: Re: [PATCH v4 3/5] powerpc/bpf: use bpf_jit_binary_pack_[alloc|finalize|free]
+Date: Mon, 25 Sep 2023 15:50:30 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6p1+mqG_soSS8q_FFio7iHGtUyyDfH5cyXs_Py8f-Pmg@mail.gmail.com>
+Message-ID: <CAPhsuW6p1+mqG_soSS8q_FFio7iHGtUyyDfH5cyXs_Py8f-Pmg@mail.gmail.com>
+Subject: Re: [PATCH v4 4/5] powerpc/code-patching: introduce patch_instructions()
 To: Hari Bathini <hbathini@linux.ibm.com>
 Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org, 
 	Michael Ellerman <mpe@ellerman.id.au>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
@@ -61,73 +61,68 @@ Content-Transfer-Encoding: quoted-printable
 On Fri, Sep 8, 2023 at 6:28=E2=80=AFAM Hari Bathini <hbathini@linux.ibm.com=
 > wrote:
 >
-> Use bpf_jit_binary_pack_alloc in powerpc jit. The jit engine first
-> writes the program to the rw buffer. When the jit is done, the program
-> is copied to the final location with bpf_jit_binary_pack_finalize.
-> With multiple jit_subprogs, bpf_jit_free is called on some subprograms
-> that haven't got bpf_jit_binary_pack_finalize() yet. Implement custom
-> bpf_jit_free() like in commit 1d5f82d9dd47 ("bpf, x86: fix freeing of
-> not-finalized bpf_prog_pack") to call bpf_jit_binary_pack_finalize(),
-> if necessary. While here, correct the misnomer powerpc64_jit_data to
-> powerpc_jit_data as it is meant for both ppc32 and ppc64.
-
-I would personally prefer to put the rename to a separate patch.
-
+> patch_instruction() entails setting up pte, patching the instruction,
+> clearing the pte and flushing the tlb. If multiple instructions need
+> to be patched, every instruction would have to go through the above
+> drill unnecessarily. Instead, introduce function patch_instructions()
+> that sets up the pte, clears the pte and flushes the tlb only once per
+> page range of instructions to be patched. This adds a slight overhead
+> to patch_instruction() call while improving the patching time for
+> scenarios where more than one instruction needs to be patched.
 >
 > Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
-> ---
->  arch/powerpc/net/bpf_jit.h        |  12 ++--
->  arch/powerpc/net/bpf_jit_comp.c   | 110 ++++++++++++++++++++++--------
->  arch/powerpc/net/bpf_jit_comp32.c |  13 ++--
->  arch/powerpc/net/bpf_jit_comp64.c |  10 +--
->  4 files changed, 98 insertions(+), 47 deletions(-)
+
+I didn't see this one when I reviewed 1/5. Please ignore that comment.
 
 [...]
 
-> @@ -220,17 +237,19 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_pro=
-g *fp)
+> @@ -307,11 +312,22 @@ static int __do_patch_instruction_mm(u32 *addr, ppc=
+_inst_t instr)
 >
->  #ifdef CONFIG_PPC64_ELF_ABI_V1
->         /* Function descriptor nastiness: Address + TOC */
-> -       ((u64 *)image)[0] =3D (u64)code_base;
-> +       ((u64 *)image)[0] =3D (u64)fcode_base;
->         ((u64 *)image)[1] =3D local_paca->kernel_toc;
->  #endif
+>         orig_mm =3D start_using_temp_mm(patching_mm);
 >
-> -       fp->bpf_func =3D (void *)image;
-> +       fp->bpf_func =3D (void *)fimage;
->         fp->jited =3D 1;
->         fp->jited_len =3D proglen + FUNCTION_DESCR_SIZE;
->
-> -       bpf_flush_icache(bpf_hdr, (u8 *)bpf_hdr + bpf_hdr->size);
+> -       err =3D __patch_instruction(addr, instr, patch_addr);
+> +       while (len > 0) {
+> +               instr =3D ppc_inst_read(code);
+> +               ilen =3D ppc_inst_len(instr);
+> +               err =3D __patch_instruction(addr, instr, patch_addr);
 
-I guess we don't need bpf_flush_icache() any more? So can we remove it
-from arch/powerpc/net/bpf_jit.h?
+It appears we are still repeating a lot of work here. For example, with
+fill_insn =3D=3D true, we don't need to repeat ppc_inst_read().
+
+Can we do this with a memcpy or memset like functions?
+
+> +               /* hwsync performed by __patch_instruction (sync) if succ=
+essful */
+> +               if (err) {
+> +                       mb();  /* sync */
+> +                       break;
+> +               }
+>
+> -       /* hwsync performed by __patch_instruction (sync) if successful *=
+/
+> -       if (err)
+> -               mb();  /* sync */
+> +               len -=3D ilen;
+> +               patch_addr =3D patch_addr + ilen;
+> +               addr =3D (void *)addr + ilen;
+> +               if (!fill_insn)
+> +                       code =3D code + ilen;
+
+It took me a while to figure out what "fill_insn" means. Maybe call it
+"repeat_input" or something?
 
 Thanks,
 Song
 
->         if (!fp->is_func || extra_pass) {
-> -               bpf_jit_binary_lock_ro(bpf_hdr);
-> +               if (bpf_jit_binary_pack_finalize(fp, fhdr, hdr)) {
-> +                       fp =3D org_fp;
-> +                       goto out_addrs;
-> +               }
->                 bpf_prog_fill_jited_linfo(fp, addrs);
->  out_addrs:
->                 kfree(addrs);
-> @@ -240,8 +259,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog =
-*fp)
->                 jit_data->addrs =3D addrs;
->                 jit_data->ctx =3D cgctx;
->                 jit_data->proglen =3D proglen;
-> -               jit_data->image =3D image;
-> -               jit_data->header =3D bpf_hdr;
-> +               jit_data->fimage =3D fimage;
-> +               jit_data->fhdr =3D fhdr;
-> +               jit_data->hdr =3D hdr;
->         }
+> +       }
 >
->  out:
-[...]
+>         /* context synchronisation performed by __patch_instruction (isyn=
+c or exception) */
+>         stop_using_temp_mm(patching_mm, orig_mm);
+> @@ -328,16 +344,21 @@ static int __do_patch_instruction_mm(u32 *addr, ppc=
+_inst_t instr)
+>         return err;
+>  }
+>
 
