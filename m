@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-10769-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10770-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 227FA7AE048
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 22:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43ED47AE049
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 22:25:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 1789F281B63
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 20:25:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id BA164281F10
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 20:25:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73E1241E8;
-	Mon, 25 Sep 2023 20:24:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A82F6241F9;
+	Mon, 25 Sep 2023 20:24:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0BB623745;
-	Mon, 25 Sep 2023 20:24:53 +0000 (UTC)
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B2110F;
-	Mon, 25 Sep 2023 13:24:52 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bdf4752c3cso49712685ad.2;
-        Mon, 25 Sep 2023 13:24:52 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDFA9241E5;
+	Mon, 25 Sep 2023 20:24:55 +0000 (UTC)
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4477F111;
+	Mon, 25 Sep 2023 13:24:54 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c465d59719so49587475ad.1;
+        Mon, 25 Sep 2023 13:24:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695673492; x=1696278292; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695673494; x=1696278294; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JdpSeygtOSjj+3E6PMEZpW/nfaq9Hsth846hxO+B4ZE=;
-        b=EoxCc4JLXW7otauAzhE31Smf5nWAHUqKX1oI+grVYWcl+Ce+5PCJ0zgaL+rLBzXLfT
-         0/I0srH+vpVjV4uxpM5q0UPkE18GivPvKxGbnGprxR9P1mqNWHq5NNfGbkO6VYEmNTQ/
-         Y2hTJ7VhAcETArOwL84R24zTiTEek4BrEKin2i5cShVHknuRsHxeftSVJbR76/Ho/+um
-         fwxNV8daWaXZ7n0pV1Zo5b6U+CQ8pMzyvnsGG2sP5Ny+C4Q02BInP5sMuNGHej4Gl4oU
-         9FV+u/bUWxwv4ajXJYHmmn/1/ulcv2XiCE799yocprNecMRzYyVJELw6ZI+NiQXOQD/k
-         /k5g==
+        bh=eGlO7iXA08+oNOe13C8SGeJOdlscizAQcKnMOa1d/SM=;
+        b=C+xaOiZlttCEA8jpW4QQUeoteVurHWgSyMPoZoTNnuRSVYQ8VdZnzEf+cO1UdNzAHD
+         lmJ8fdmgK53yjzwohGB+LPLQoV6rC9I58uHVNwuB5L/sigSgi+/YWiMwDbbsAMHS+oc5
+         sgxR4q/1ehAlHUzqHaVd8JQeeCTh9TFjt0Jrh7hfVGHgbdT612dV/t+FX7NeSKjtY9mz
+         rOvxyHB793peOQ2hjAccdmtXSqp8nPt/IyP3K3Gebi67ED/A3FC8vMjyBg4RBBMS0dTq
+         vmQHPmBDcq7wfkwzTCIYlAVKwYQSBRQIC8FRS9dir+N2Hz+0Qx8HXjO9HPi9n79SxVj+
+         Sv2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695673492; x=1696278292;
+        d=1e100.net; s=20230601; t=1695673494; x=1696278294;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JdpSeygtOSjj+3E6PMEZpW/nfaq9Hsth846hxO+B4ZE=;
-        b=kNEM7CS/nmzQRCxeVj6zvznpnKTWqyjNbbwilRuZhmnEtxtAwPBweT6Yfd/kpgSz7+
-         Lyd3nJmwAOWJeHQrKSWVzqA7JAulPh7wrhIx70J1GTnaIicBQNJPhUcofCgXPtsglPAH
-         5mkYFLlbI+93hTfoc/2TmIZXbrra3YsTaeGqRTScLjLCKwUQt0/g6cIje9J1TDLmWwCN
-         zSRqsf1iZ4hZCWDQ0n4J30s2wckxebOPj5qqk7DZ1sDQBM+bla1uzK4VeJNyEx5KC+Gx
-         4ga3gjC4Njhrpk4cTa4XkMnVceceZSYMmtrW/WgPfpgRSTNknS0/qesoYrwJxmricNmh
-         B97g==
-X-Gm-Message-State: AOJu0Yzh8k/i2GDkHHJFrK2LkmfpVwTyDxagtv26Q4jaaUf20E2US3Pq
-	5pVXcB1VtBYFizpesWhpG1o=
-X-Google-Smtp-Source: AGHT+IEIY/jhdhIwh69/vZrZC11CfTREgOTtxWJi4zJ4oUq88N8Eey6SHrjbt6r/hewTBfZ6ADqOQg==
-X-Received: by 2002:a17:902:6bc3:b0:1c3:6724:db6f with SMTP id m3-20020a1709026bc300b001c36724db6fmr4706446plt.29.1695673492142;
-        Mon, 25 Sep 2023 13:24:52 -0700 (PDT)
+        bh=eGlO7iXA08+oNOe13C8SGeJOdlscizAQcKnMOa1d/SM=;
+        b=bcm6smisATvdg86E9bThM3k079q9GAGW4FM16oFNf2EwBLY3lXcUnnz/3igxi0HPzr
+         0V2vHwbxJiBw6g55EA/VGxTWNKyF1INkOtOlxbmBb5C35M587X4Q4PM+HvtKOig/9BW9
+         swQjLHEUeQEnbUejQhX9/WrhH/b4FEu+Qmwp5zxcDBDxnEpT7erwYsb5Da8jciz8QzqN
+         bpqdudS2lTqBrxfHH64Zw4IEgEjqX1Q6x+ypQByE8eGil46YE3dt6IxE+BVRApVswFUy
+         85mVdZn5QFsPYwidcQFLRG9pCjorqP1NrjiD8WNrUnvQfsFGjoXZ1uG3qqOpqEYny9x8
+         pD1w==
+X-Gm-Message-State: AOJu0YyQkDdE3HcNN1dScLNe65ayQ+VBjeNG5PQeOen78BAhHgD2DVJn
+	yEdU0OVAffAmBoaxxQ8JQ2Y=
+X-Google-Smtp-Source: AGHT+IEf8lUeCHRUj3sx1mFKrcBRGaHkQxxAL6kyzNzA+uNr6o+AMaKp5hl1SYpXOe4iSlYOPxENDQ==
+X-Received: by 2002:a17:902:a714:b0:1c0:d5c6:748f with SMTP id w20-20020a170902a71400b001c0d5c6748fmr4896290plq.67.1695673493707;
+        Mon, 25 Sep 2023 13:24:53 -0700 (PDT)
 Received: from john.lan ([2605:59c8:148:ba00:51e:699c:e63:c15a])
-        by smtp.gmail.com with ESMTPSA id jg6-20020a17090326c600b001c61df93afdsm2254040plb.59.2023.09.25.13.24.50
+        by smtp.gmail.com with ESMTPSA id jg6-20020a17090326c600b001c61df93afdsm2254040plb.59.2023.09.25.13.24.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 13:24:51 -0700 (PDT)
+        Mon, 25 Sep 2023 13:24:53 -0700 (PDT)
 From: John Fastabend <john.fastabend@gmail.com>
 To: daniel@iogearbox.net,
 	ast@kernel.org,
@@ -63,9 +63,9 @@ Cc: john.fastabend@gmail.com,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	edumazet@google.com
-Subject: [PATCH bpf v2 1/3] bpf: tcp_read_skb needs to pop skb regardless of seq
-Date: Mon, 25 Sep 2023 13:24:46 -0700
-Message-Id: <20230925202448.100920-2-john.fastabend@gmail.com>
+Subject: [PATCH bpf v2 2/3] bpf: sockmap, do not inc copied_seq when PEEK flag set
+Date: Mon, 25 Sep 2023 13:24:47 -0700
+Message-Id: <20230925202448.100920-3-john.fastabend@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20230925202448.100920-1-john.fastabend@gmail.com>
 References: <20230925202448.100920-1-john.fastabend@gmail.com>
@@ -83,88 +83,50 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Before fix e5c6de5fa0258 tcp_read_skb() would increment the tp->copied-seq
-value. This (as described in the commit) would cause an error for apps
-because once that is incremented the application might believe there is no
-data to be read. Then some apps would stall or abort believing no data is
-available.
+When data is peek'd off the receive queue we shouldn't considered it
+copied from tcp_sock side. When we increment copied_seq this will confuse
+tcp_data_ready() because copied_seq can be arbitrarily increased. From]
+application side it results in poll() operations not waking up when
+expected.
 
-However, the fix is incomplete because it introduces another issue in
-the skb dequeue. The loop does tcp_recv_skb() in a while loop to consume
-as many skbs as possible. The problem is the call is,
+Notice tcp stack without BPF recvmsg programs also does not increment
+copied_seq.
 
-  tcp_recv_skb(sk, seq, &offset)
-
-Where 'seq' is
-
-  u32 seq = tp->copied_seq;
-
-Now we can hit a case where we've yet incremented copied_seq from BPF side,
-but then tcp_recv_skb() fails this test,
-
- if (offset < skb->len || (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN))
-
-so that instead of returning the skb we call tcp_eat_recv_skb() which frees
-the skb. This is because the routine believes the SKB has been collapsed
-per comment,
-
- /* This looks weird, but this can happen if TCP collapsing
-  * splitted a fat GRO packet, while we released socket lock
-  * in skb_splice_bits()
-  */
-
-This can't happen here we've unlinked the full SKB and orphaned it. Anyways
-it would confuse any BPF programs if the data were suddenly moved underneath
-it.
-
-To fix this situation do simpler operation and just skb_peek() the data
-of the queue followed by the unlink. It shouldn't need to check this
-condition and tcp_read_skb() reads entire skbs so there is no need to
-handle the 'offset!=0' case as we would see in tcp_read_sock().
+We broke this when we moved copied_seq into recvmsg to only update when
+actual copy was happening. But, it wasn't working correctly either before
+because the tcp_data_ready() tried to use the copied_seq value to see
+if data was read by user yet. See fixes tags.
 
 Fixes: e5c6de5fa0258 ("bpf, sockmap: Incorrectly handling copied_seq")
 Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
 Signed-off-by: John Fastabend <john.fastabend@gmail.com>
 ---
- net/ipv4/tcp.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ net/ipv4/tcp_bpf.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 0c3040a63ebd..235d77af3177 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -1622,15 +1622,13 @@ EXPORT_SYMBOL(tcp_read_sock);
- int tcp_read_skb(struct sock *sk, skb_read_actor_t recv_actor)
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index 81f0dff69e0b..327268203001 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -222,6 +222,7 @@ static int tcp_bpf_recvmsg_parser(struct sock *sk,
+ 				  int *addr_len)
  {
- 	struct tcp_sock *tp = tcp_sk(sk);
--	u32 seq = tp->copied_seq;
- 	struct sk_buff *skb;
+ 	struct tcp_sock *tcp = tcp_sk(sk);
++	int peek = flags & MSG_PEEK;
+ 	u32 seq = tcp->copied_seq;
+ 	struct sk_psock *psock;
  	int copied = 0;
--	u32 offset;
- 
- 	if (sk->sk_state == TCP_LISTEN)
- 		return -ENOTCONN;
- 
--	while ((skb = tcp_recv_skb(sk, seq, &offset)) != NULL) {
-+	while ((skb = skb_peek(&sk->sk_receive_queue)) != NULL) {
- 		u8 tcp_flags;
- 		int used;
- 
-@@ -1643,13 +1641,10 @@ int tcp_read_skb(struct sock *sk, skb_read_actor_t recv_actor)
- 				copied = used;
- 			break;
- 		}
--		seq += used;
- 		copied += used;
- 
--		if (tcp_flags & TCPHDR_FIN) {
--			++seq;
-+		if (tcp_flags & TCPHDR_FIN)
- 			break;
--		}
+@@ -311,7 +312,8 @@ static int tcp_bpf_recvmsg_parser(struct sock *sk,
+ 		copied = -EAGAIN;
  	}
- 	return copied;
- }
+ out:
+-	WRITE_ONCE(tcp->copied_seq, seq);
++	if (!peek)
++		WRITE_ONCE(tcp->copied_seq, seq);
+ 	tcp_rcv_space_adjust(sk);
+ 	if (copied > 0)
+ 		__tcp_cleanup_rbuf(sk, copied);
 -- 
 2.33.0
 
