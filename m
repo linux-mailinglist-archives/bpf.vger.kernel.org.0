@@ -1,133 +1,137 @@
-Return-Path: <bpf+bounces-10754-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10755-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EDD27AD836
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 14:46:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 325CA7AD89D
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 15:08:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by ny.mirrors.kernel.org (Postfix) with ESMTP id 304101C2082F
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 12:45:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTP id 7AEBAB20A69
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 13:07:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E64D618C30;
-	Mon, 25 Sep 2023 12:45:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287941B28F;
+	Mon, 25 Sep 2023 13:07:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3758C11C8B
-	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 12:45:54 +0000 (UTC)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E76107
-	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 05:45:52 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32008e339adso5942967f8f.2
-        for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 05:45:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1695645951; x=1696250751; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5pS4hHTm1EEOcrv+PR/KnXKIpI3hRXOYngc1s51PQAk=;
-        b=Pgt0RnsfwZc9XX8YYhXlwMSqUBjeAmuAGIAeqB8s/0HSxiyNS7p0fJRZw6bgZ/fMCI
-         64qv7gBLpsG22VMUcD6WSUmL2Dkd5mOctCPcQMJ9T3q6ev09CzSmVMkz84gZMvi4XBkl
-         eyxS28Ei4rKC/4zMwkTudGOv7FRMjfP9Zbxnf0Fwvw1ObWMxVWsTbXCD+e+EfsYVKfJZ
-         P7bZGARbuAZGEXc2Ojfp/23i8DIYF+h+nKcTlzmMeCb2t2U1jL3dj+WgegTfjhfORP5x
-         IXmOouqDeM/j5jlheYgOZ3kT3XqsrK4wR5e8DFb++SG03mWutimTJKi5zRoGfBfxBNHi
-         GjtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695645951; x=1696250751;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5pS4hHTm1EEOcrv+PR/KnXKIpI3hRXOYngc1s51PQAk=;
-        b=uQUFykOwlOhCBcwEsw0zjTDAL4Nln63A4JxJ3djD+9gCIyU75okKZnylpET2EOUWJi
-         HRUgCTQ6uNx/HeMqv3p5u40aRTCkSN2DC7cV893XhxuMH39aXMKu+POkn9nO5aA8VwGF
-         bDXob3jbRfcBxqA+pKGG4gJ5S9e4rahVgl41FQRsq2rohKpGPUmZNJP02b1kxovQWDEo
-         A3KDc0y26NAPes3yHngcEO1cxBLbBUGbMwUqZ1UudbayRTHQl2qEFwpXxESzI6wBvd34
-         XtR5lwrfSh/h0ix8KHNYBIYFiyoIFfrleDblIq9bVNHmzRkX982ahQiH/K1FVNBuQYIC
-         t0wA==
-X-Gm-Message-State: AOJu0YzdrGWHsLJd3qvCRntrShLHxNl1uiW2NL1mhv3WkawUDr20uLcC
-	r8efC2NXuXg08u2QcPJ+GDnySAftPlWtFd1g6RG7NA==
-X-Google-Smtp-Source: AGHT+IEaLT8rq2bcnfmKUTttqEPiHDTNiTGKY/UxUoDMKH8UtTQA9rcR8OrNiwySdZlgrNIpaqpyKw==
-X-Received: by 2002:a05:6000:185:b0:321:8d08:855e with SMTP id p5-20020a056000018500b003218d08855emr5391088wrx.24.1695645950778;
-        Mon, 25 Sep 2023 05:45:50 -0700 (PDT)
-Received: from ?IPV6:2a02:8011:e80c:0:b095:3966:9c75:5de? ([2a02:8011:e80c:0:b095:3966:9c75:5de])
-        by smtp.gmail.com with ESMTPSA id w10-20020adfde8a000000b0031fba0a746bsm11823765wrl.9.2023.09.25.05.45.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 05:45:50 -0700 (PDT)
-Message-ID: <0ac77924-ee79-4a41-8737-2aa88a0d7ba1@isovalent.com>
-Date: Mon, 25 Sep 2023 13:45:49 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 608E613ACF
+	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 13:07:53 +0000 (UTC)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AC19F;
+	Mon, 25 Sep 2023 06:07:51 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BC9B52184B;
+	Mon, 25 Sep 2023 13:07:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1695647269;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uogSkl/Z/WJ9T6hoo/bSUzNSf4lFK3ehh10RUHSsUbk=;
+	b=WuWEKx9uZNgebRn1eXtir9EL0GP9mnPuaumM2XM5cW+RLX12hK6xegeqM1q2kkX83OB7jJ
+	u3dUveWRAftHa6zIdyE+ykmq0sqYx1hq3we3sJ3jnrR8RocOEC6cp9olX+gwdnSgMX/IMn
+	/DTfy8hKpQJPCzfF8tEmTcH481J21jA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1695647269;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uogSkl/Z/WJ9T6hoo/bSUzNSf4lFK3ehh10RUHSsUbk=;
+	b=dZm2wZEDU14MGy4UEhTV0Ga3DgrWFnu/B+ar28xBiul6F1kx4A8yuuBn8jC5n7B5ztwP5b
+	oOqWTQwozvJo8ZBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 75B4313580;
+	Mon, 25 Sep 2023 13:07:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id H8xEGyWGEWU6BAAAMHmgww
+	(envelope-from <dsterba@suse.cz>); Mon, 25 Sep 2023 13:07:49 +0000
+Date: Mon, 25 Sep 2023 15:01:12 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Josef Bacik <josef@toxicpanda.com>,
+	Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
+	clm@fb.com, linux-btrfs@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 6.5 13/41] btrfs: do not block starts waiting on
+ previous transaction commit
+Message-ID: <20230925130112.GK13697@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20230924131529.1275335-1-sashal@kernel.org>
+ <20230924131529.1275335-13-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v5 6/9] bpftool: Add support for cgroup unix
- socket address hooks
-Content-Language: en-GB
-To: Daan De Meyer <daan.j.demeyer@gmail.com>, bpf@vger.kernel.org
-Cc: martin.lau@linux.dev, kernel-team@meta.com, netdev@vger.kernel.org
-References: <20230921120913.566702-1-daan.j.demeyer@gmail.com>
- <20230921120913.566702-7-daan.j.demeyer@gmail.com>
-From: Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20230921120913.566702-7-daan.j.demeyer@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230924131529.1275335-13-sashal@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+	SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 21/09/2023 13:09, Daan De Meyer wrote:
-> Add the necessary plumbing to hook up the new cgroup unix sockaddr
-> hooks into bpftool.
+On Sun, Sep 24, 2023 at 09:15:01AM -0400, Sasha Levin wrote:
+> From: Josef Bacik <josef@toxicpanda.com>
 > 
-> Signed-off-by: Daan De Meyer <daan.j.demeyer@gmail.com>
-> ---
->  .../bpf/bpftool/Documentation/bpftool-cgroup.rst | 16 +++++++++++++---
->  tools/bpf/bpftool/Documentation/bpftool-prog.rst |  8 +++++---
->  tools/bpf/bpftool/bash-completion/bpftool        | 14 +++++++-------
->  tools/bpf/bpftool/cgroup.c                       | 16 +++++++++-------
->  tools/bpf/bpftool/prog.c                         |  7 ++++---
->  5 files changed, 38 insertions(+), 23 deletions(-)
+> [ Upstream commit 77d20c685b6baeb942606a93ed861c191381b73e ]
 > 
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-> index bd015ec9847b..3e4f5ff24208 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-> @@ -102,21 +105,28 @@ DESCRIPTION
->  		  **post_bind6** return from bind(2) for an inet6 socket (since 4.17);
->  		  **connect4** call to connect(2) for an inet4 socket (since 4.17);
->  		  **connect6** call to connect(2) for an inet6 socket (since 4.17);
-> +		  **connectun** call to connect(2) for a unix socket (since 6.3);
->  		  **sendmsg4** call to sendto(2), sendmsg(2), sendmmsg(2) for an
->  		  unconnected udp4 socket (since 4.18);
->  		  **sendmsg6** call to sendto(2), sendmsg(2), sendmmsg(2) for an
->  		  unconnected udp6 socket (since 4.18);
-> +		  **sendmsgun** call to sendto(2), sendmsg(2), sendmmsg(2) for
-> +		  an unconnected unix socket (since 6.3);
->  		  **recvmsg4** call to recvfrom(2), recvmsg(2), recvmmsg(2) for
->  		  an unconnected udp4 socket (since 5.2);
->  		  **recvmsg6** call to recvfrom(2), recvmsg(2), recvmmsg(2) for
->  		  an unconnected udp6 socket (since 5.2);
-> +		  **recvmsgun** call to recvfrom(2), recvmsg(2), recvmmsg(2) for
-> +		  an unconnected unix socket (since 6.3);
->  		  **sysctl** sysctl access (since 5.2);
->  		  **getsockopt** call to getsockopt (since 5.3);
->  		  **setsockopt** call to setsockopt (since 5.3);
->  		  **getpeername4** call to getpeername(2) for an inet4 socket (since 5.8);
->  		  **getpeername6** call to getpeername(2) for an inet6 socket (since 5.8);
-> +		  **getpeernameun** call to getpeername(2) for a unix socket (since 6.3);
->  		  **getsockname4** call to getsockname(2) for an inet4 socket (since 5.8);
->  		  **getsockname6** call to getsockname(2) for an inet6 socket (since 5.8).
-> +		  **getsocknameun** call to getsockname(2) for a unix socket (since 6.3);
+> Internally I got a report of very long stalls on normal operations like
+> creating a new file when auto relocation was running.  The reporter used
+> the 'bpf offcputime' tracer to show that we would get stuck in
+> start_transaction for 5 to 30 seconds, and were always being woken up by
+> the transaction commit.
+> 
+> Using my timing-everything script, which times how long a function takes
+> and what percentage of that total time is taken up by its children, I
+> saw several traces like this
+> 
+> 1083 took 32812902424 ns
+>         29929002926 ns 91.2110% wait_for_commit_duration
+>         25568 ns 7.7920e-05% commit_fs_roots_duration
+>         1007751 ns 0.00307% commit_cowonly_roots_duration
+>         446855602 ns 1.36182% btrfs_run_delayed_refs_duration
+>         271980 ns 0.00082% btrfs_run_delayed_items_duration
+>         2008 ns 6.1195e-06% btrfs_apply_pending_changes_duration
+>         9656 ns 2.9427e-05% switch_commit_roots_duration
+>         1598 ns 4.8700e-06% btrfs_commit_device_sizes_duration
+>         4314 ns 1.3147e-05% btrfs_free_log_root_tree_duration
+> 
+> Here I was only tracing functions that happen where we are between
+> START_COMMIT and UNBLOCKED in order to see what would be keeping us
+> blocked for so long.  The wait_for_commit() we do is where we wait for a
+> previous transaction that hasn't completed it's commit.  This can
+> include all of the unpin work and other cleanups, which tends to be the
+> longest part of our transaction commit.
+> 
+> There is no reason we should be blocking new things from entering the
+> transaction at this point, it just adds to random latency spikes for no
+> reason.
+> 
+> Fix this by adding a PREP stage.  This allows us to properly deal with
+> multiple committers coming in at the same time, we retain the behavior
+> that the winner waits on the previous transaction and the losers all
+> wait for this transaction commit to occur.  Nothing else is blocked
+> during the PREP stage, and then once the wait is complete we switch to
+> COMMIT_START and all of the same behavior as before is maintained.
+> 
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Reviewed-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Same comment as for v4 - please update the kernel version (6.3) for the
-new entries.
-
-Bpftool changes look good otherwise.
-
-Acked-by: Quentin Monnet <quentin@isovalent.com>
+Please postpone adding this patch to stable trees until 6.6 is
+released. Thanks.
 
