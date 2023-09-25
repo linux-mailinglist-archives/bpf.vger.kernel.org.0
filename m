@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-10735-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10736-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67B707AD537
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 12:01:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83A1E7AD53B
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 12:02:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by am.mirrors.kernel.org (Postfix) with ESMTP id A8A831F24861
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 10:01:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id A01081C20930
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 10:02:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E9BF1401A;
-	Mon, 25 Sep 2023 10:01:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A5A514275;
+	Mon, 25 Sep 2023 10:02:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A94AB1426A;
-	Mon, 25 Sep 2023 10:01:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 213DD14018;
+	Mon, 25 Sep 2023 10:02:01 +0000 (UTC)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 874122683;
-	Mon, 25 Sep 2023 03:01:49 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 579C22683;
+	Mon, 25 Sep 2023 03:01:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695636109; x=1727172109;
+  t=1695636119; x=1727172119;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=dbRvVH49X8sXjq/Xsh1Weu8cJzVrIDToOE6tLkZj+yc=;
-  b=mEeeHBkAvaki+eWt/Imvfx7wQok++H3Et6AAEVYTrfODEBAIfDDsvJ0n
-   iFYT0B1fOig1Y8LpExmlxDpfJOSc6fccBhoPBIrVh6D9Iio056EWf0f8o
-   9dnDoLL4BoSI72bhRkiS3IvB1uyRzr49GMRyATCzzR6f6QpHZVFt+cXy/
-   779vI3z9Q55SYwGOxBQyRkNShgV2uqRjcY6woQRENBimBaVk+o6Yr3y/S
-   6ckr8Lw35agjsmboe9CbtyT+q/ivvo/fdNPjRXfhLCkjMCIxXlSjsaL3I
-   F4hxZmJMghUA+/sN2dFTZvbStuPNZdt+P0v6wYZZYQqUTHMZ0AcpBAQ8z
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="445325096"
+  bh=j+FsLmPDPIlfUgvJEZlMezM5WKxOD6BnwsUWyhlKOtU=;
+  b=aubzb/a2WXTdVxzMy2DgqlayI66+Pf8LNnTj+jSCGX0kMLazEarQ1ew0
+   8ZaXyhGRT4NJeNSgcepr03nU1QHHCz5r1hIOP+7uieSfvfHsprU7ccIdZ
+   9H8Y2f9y2xUKqg7RV8lN765TpTkzC6WZ/BNiPPdsryr9YBy6+WrFPY5Kk
+   MRJm/Xsvu+ZcN74J/ODQKZA/Gw14Zzuatyl8T7aEg81lB4CMLqX3qdZPv
+   5jJoM2WuqzQIkxA2iUTin2g5kKe9KTYUzcKCCiBg336zY6ntmQbViyy+F
+   ZcBTohVpG5o9p63ng2QWPL6zU5Sw+ZyFKdL669TiRWEVjwQooCUgd+GEf
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="445325147"
 X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="445325096"
+   d="scan'208";a="445325147"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 03:01:49 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 03:01:58 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="697923568"
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="697923588"
 X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="697923568"
+   d="scan'208";a="697923588"
 Received: from unknown (HELO axxiablr2..) ([10.190.162.200])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 03:01:44 -0700
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 03:01:54 -0700
 From: Tushar Vyavahare <tushar.vyavahare@intel.com>
 To: bpf@vger.kernel.org
 Cc: netdev@vger.kernel.org,
@@ -57,9 +57,9 @@ Cc: netdev@vger.kernel.org,
 	daniel@iogearbox.net,
 	tirthendu.sarkar@intel.com,
 	tushar.vyavahare@intel.com
-Subject: [PATCH bpf-next v2 2/8] selftests/xsk: rename xsk_xdp_metadata.h to xsk_xdp_common.h
-Date: Mon, 25 Sep 2023 15:52:43 +0530
-Message-Id: <20230925102249.1847195-3-tushar.vyavahare@intel.com>
+Subject: [PATCH bpf-next v2 3/8] selftests/xsk: move src_mac and dst_mac to the xsk_socket_info
+Date: Mon, 25 Sep 2023 15:52:44 +0530
+Message-Id: <20230925102249.1847195-4-tushar.vyavahare@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230925102249.1847195-1-tushar.vyavahare@intel.com>
 References: <20230925102249.1847195-1-tushar.vyavahare@intel.com>
@@ -77,62 +77,153 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Rename the header file to a generic name so that it can be used by all
-future XDP programs. Ensure that the xsk_xdp_common.h header file includes
-include guards.
+Move the src_mac and dst_mac fields from the ifobject structure to the
+xsk_socket_info structure to achieve per-socket MAC address assignment.
+
+Require this in order to steer traffic to various sockets in subsequent
+patches.
 
 Signed-off-by: Tushar Vyavahare <tushar.vyavahare@intel.com>
 ---
- tools/testing/selftests/bpf/progs/xsk_xdp_progs.c            | 2 +-
- .../selftests/bpf/{xsk_xdp_metadata.h => xsk_xdp_common.h}   | 5 +++++
- tools/testing/selftests/bpf/xskxceiver.c                     | 2 +-
- 3 files changed, 7 insertions(+), 2 deletions(-)
- rename tools/testing/selftests/bpf/{xsk_xdp_metadata.h => xsk_xdp_common.h} (55%)
+ tools/testing/selftests/bpf/xskxceiver.c | 34 +++++++++++-------------
+ tools/testing/selftests/bpf/xskxceiver.h |  7 +++--
+ 2 files changed, 21 insertions(+), 20 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c b/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
-index 24369f242853..734f231a8534 100644
---- a/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
-+++ b/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
-@@ -3,7 +3,7 @@
- 
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
--#include "xsk_xdp_metadata.h"
-+#include "xsk_xdp_common.h"
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_XSKMAP);
-diff --git a/tools/testing/selftests/bpf/xsk_xdp_metadata.h b/tools/testing/selftests/bpf/xsk_xdp_common.h
-similarity index 55%
-rename from tools/testing/selftests/bpf/xsk_xdp_metadata.h
-rename to tools/testing/selftests/bpf/xsk_xdp_common.h
-index 943133da378a..f55d61625336 100644
---- a/tools/testing/selftests/bpf/xsk_xdp_metadata.h
-+++ b/tools/testing/selftests/bpf/xsk_xdp_common.h
-@@ -1,5 +1,10 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- 
-+#ifndef XSK_XDP_COMMON_H_
-+#define XSK_XDP_COMMON_H_
-+
- struct xdp_info {
- 	__u64 count;
- } __attribute__((aligned(32)));
-+
-+#endif /* XSK_XDP_COMMON_H_ */
 diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index 16a09751b093..ad1f7f078f5f 100644
+index ad1f7f078f5f..e26f942a7b9e 100644
 --- a/tools/testing/selftests/bpf/xskxceiver.c
 +++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -102,7 +102,7 @@
- #include <bpf/bpf.h>
- #include <linux/filter.h>
+@@ -104,9 +104,6 @@
  #include "../kselftest.h"
--#include "xsk_xdp_metadata.h"
-+#include "xsk_xdp_common.h"
+ #include "xsk_xdp_common.h"
  
- static const char *MAC1 = "\x00\x0A\x56\x9E\xEE\x62";
- static const char *MAC2 = "\x00\x0A\x56\x9E\xEE\x61";
+-static const char *MAC1 = "\x00\x0A\x56\x9E\xEE\x62";
+-static const char *MAC2 = "\x00\x0A\x56\x9E\xEE\x61";
+-
+ static bool opt_verbose;
+ static bool opt_print_tests;
+ static enum test_mode opt_mode = TEST_MODE_ALL;
+@@ -159,10 +156,10 @@ static void write_payload(void *dest, u32 pkt_nb, u32 start, u32 size)
+ 		ptr[i] = htonl(pkt_nb << 16 | (i + start));
+ }
+ 
+-static void gen_eth_hdr(struct ifobject *ifobject, struct ethhdr *eth_hdr)
++static void gen_eth_hdr(struct xsk_socket_info *xsk, struct ethhdr *eth_hdr)
+ {
+-	memcpy(eth_hdr->h_dest, ifobject->dst_mac, ETH_ALEN);
+-	memcpy(eth_hdr->h_source, ifobject->src_mac, ETH_ALEN);
++	memcpy(eth_hdr->h_dest, xsk->dst_mac, ETH_ALEN);
++	memcpy(eth_hdr->h_source, xsk->src_mac, ETH_ALEN);
+ 	eth_hdr->h_proto = htons(ETH_P_LOOPBACK);
+ }
+ 
+@@ -445,6 +442,11 @@ static void __test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
+ 				ifobj->xsk_arr[j].pkt_stream = test->tx_pkt_stream_default;
+ 			else
+ 				ifobj->xsk_arr[j].pkt_stream = test->rx_pkt_stream_default;
++
++			memcpy(ifobj->xsk_arr[j].src_mac, g_mac, ETH_ALEN);
++			memcpy(ifobj->xsk_arr[j].dst_mac, g_mac, ETH_ALEN);
++			ifobj->xsk_arr[j].src_mac[5] += ((j * 2) + 0);
++			ifobj->xsk_arr[j].dst_mac[5] += ((j * 2) + 1);
+ 		}
+ 	}
+ 
+@@ -726,16 +728,16 @@ static void pkt_stream_cancel(struct pkt_stream *pkt_stream)
+ 	pkt_stream->current_pkt_nb--;
+ }
+ 
+-static void pkt_generate(struct ifobject *ifobject, u64 addr, u32 len, u32 pkt_nb,
+-			 u32 bytes_written)
++static void pkt_generate(struct xsk_socket_info *xsk, struct xsk_umem_info *umem, u64 addr, u32 len,
++			 u32 pkt_nb, u32 bytes_written)
+ {
+-	void *data = xsk_umem__get_data(ifobject->umem->buffer, addr);
++	void *data = xsk_umem__get_data(umem->buffer, addr);
+ 
+ 	if (len < MIN_PKT_SIZE)
+ 		return;
+ 
+ 	if (!bytes_written) {
+-		gen_eth_hdr(ifobject, data);
++		gen_eth_hdr(xsk, data);
+ 
+ 		len -= PKT_HDR_SIZE;
+ 		data += PKT_HDR_SIZE;
+@@ -1209,7 +1211,7 @@ static int __send_pkts(struct ifobject *ifobject, struct pollfd *fds, bool timeo
+ 				tx_desc->options = 0;
+ 			}
+ 			if (pkt->valid)
+-				pkt_generate(ifobject, tx_desc->addr, tx_desc->len, pkt->pkt_nb,
++				pkt_generate(xsk, umem, tx_desc->addr, tx_desc->len, pkt->pkt_nb,
+ 					     bytes_written);
+ 			bytes_written += tx_desc->len;
+ 
+@@ -2120,15 +2122,11 @@ static bool hugepages_present(void)
+ 	return true;
+ }
+ 
+-static void init_iface(struct ifobject *ifobj, const char *dst_mac, const char *src_mac,
+-		       thread_func_t func_ptr)
++static void init_iface(struct ifobject *ifobj, thread_func_t func_ptr)
+ {
+ 	LIBBPF_OPTS(bpf_xdp_query_opts, query_opts);
+ 	int err;
+ 
+-	memcpy(ifobj->dst_mac, dst_mac, ETH_ALEN);
+-	memcpy(ifobj->src_mac, src_mac, ETH_ALEN);
+-
+ 	ifobj->func_ptr = func_ptr;
+ 
+ 	err = xsk_load_xdp_programs(ifobj);
+@@ -2404,8 +2402,8 @@ int main(int argc, char **argv)
+ 			modes++;
+ 	}
+ 
+-	init_iface(ifobj_rx, MAC1, MAC2, worker_testapp_validate_rx);
+-	init_iface(ifobj_tx, MAC2, MAC1, worker_testapp_validate_tx);
++	init_iface(ifobj_rx, worker_testapp_validate_rx);
++	init_iface(ifobj_tx, worker_testapp_validate_tx);
+ 
+ 	test_spec_init(&test, ifobj_tx, ifobj_rx, 0, &tests[0]);
+ 	tx_pkt_stream_default = pkt_stream_generate(ifobj_tx->umem, DEFAULT_PKT_CNT, MIN_PKT_SIZE);
+diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
+index 06b82b39c59c..3d494adef792 100644
+--- a/tools/testing/selftests/bpf/xskxceiver.h
++++ b/tools/testing/selftests/bpf/xskxceiver.h
+@@ -59,6 +59,7 @@
+ #define HUGEPAGE_SIZE (2 * 1024 * 1024)
+ #define PKT_DUMP_NB_TO_PRINT 16
+ #define RUN_ALL_TESTS UINT_MAX
++#define NUM_MAC_ADDRESSES 4
+ 
+ #define print_verbose(x...) do { if (opt_verbose) ksft_print_msg(x); } while (0)
+ 
+@@ -90,6 +91,8 @@ struct xsk_socket_info {
+ 	struct pkt_stream *pkt_stream;
+ 	u32 outstanding_tx;
+ 	u32 rxqsize;
++	u8 dst_mac[ETH_ALEN];
++	u8 src_mac[ETH_ALEN];
+ };
+ 
+ struct pkt {
+@@ -140,8 +143,6 @@ struct ifobject {
+ 	bool unaligned_supp;
+ 	bool multi_buff_supp;
+ 	bool multi_buff_zc_supp;
+-	u8 dst_mac[ETH_ALEN];
+-	u8 src_mac[ETH_ALEN];
+ };
+ 
+ struct test_spec {
+@@ -168,4 +169,6 @@ pthread_mutex_t pacing_mutex = PTHREAD_MUTEX_INITIALIZER;
+ 
+ int pkts_in_flight;
+ 
++static const u8 g_mac[ETH_ALEN] = {0x55, 0x44, 0x33, 0x22, 0x11, 0x00};
++
+ #endif				/* XSKXCEIVER_H_ */
 -- 
 2.34.1
 
