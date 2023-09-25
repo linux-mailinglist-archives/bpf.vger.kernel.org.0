@@ -1,107 +1,150 @@
-Return-Path: <bpf+bounces-10802-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10803-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4B887AE192
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 00:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DE8C7AE195
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 00:14:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id A310B281654
-	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 22:13:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id C21A528162F
+	for <lists+bpf@lfdr.de>; Mon, 25 Sep 2023 22:14:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1D7A2511F;
-	Mon, 25 Sep 2023 22:13:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0E972511E;
+	Mon, 25 Sep 2023 22:14:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A46C25114
-	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 22:13:02 +0000 (UTC)
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC21116
-	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 15:13:01 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59c0dd156e5so146005057b3.3
-        for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 15:13:01 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5866124204;
+	Mon, 25 Sep 2023 22:14:40 +0000 (UTC)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C91EBC;
+	Mon, 25 Sep 2023 15:14:38 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-502e7d66c1eso12096031e87.1;
+        Mon, 25 Sep 2023 15:14:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695679981; x=1696284781; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hj+c4x1e5heMSv1Ho6FR2gxxEUO3CoPALuVd8HaS3W0=;
-        b=MiDNfdx8+SfDtFOcwlaEDKkAbqhh7dHPWPxYSzsqUM8MRBOWghs7QG0XxAbmYENTI8
-         iK5lJ3L9j29D2jKZTDp5lk8Xq2mLWHvIQfyVy9L2usVMulxU5DJBw6HVOXHSRj3bEqcz
-         SbejBLsjLcP97qO+eeUxSH8Knvrb6Yt+Y15sLvc17k34hkAwsRjRdgEH+buP36ouyO+b
-         X8meWAfLYDHwO7w8IJo5ttGbZcN//5Xt1TQb/CouQw0AadYo78VW+RXfaclsrkJPR3HH
-         pujGrv/XV27vIJ+jBL29xeIJ/NcRXhFv90h+BI1p3Ysk0CLJbNdP23Le6FJZcuLQhY/F
-         8Y+A==
+        d=gmail.com; s=20230601; t=1695680076; x=1696284876; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iM72w41jJ0uTcmpakwU36eusGXW9uEpXtWiPgSR0LzQ=;
+        b=LEiIUym7FsC+YOEQVJzf7uTcUmJ2U2nOqOL6eDI7Ot+gtBculDvwbnp7izTY2LZa/w
+         MbkOzDLPbaI49Xr8QBXOWBPhqI7BHvQvpWbFQ9n79oyylvWLqRbY2mx7k6dBnr+XvYbL
+         mYEsnekwTVfNaaaO2X44+eRuXpy9d6VPg9SQGQf19R5qt7fD1sMHVo3pCe5wB7eFL2lK
+         xpykcov5iNbZOUcVyaMJ5jz+okI+HQI80UjvTY0MzR0PpHDZn6Ep3RoF0BRmuIx8cqlE
+         GRU9uTIozrsJVHubqI8AtZWioiVDOhyq0F2eSq5Cwmve4FQn9vC6WefYZ+a1z4WOnLud
+         helA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695679981; x=1696284781;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hj+c4x1e5heMSv1Ho6FR2gxxEUO3CoPALuVd8HaS3W0=;
-        b=KaRw5l5RhPhR7qs1LpSRwPJus3p+RmcOjOPDv2ycZVWD6y9VM3z//khcWyE06vz190
-         QNOxCLGcPW/+HHkKAKtFwriptLRclpljHWoX02jD3NUOg3lXbQ+MxnrP9UnhTFm+urop
-         RYwOYE6ezGtW5VtpFVNf+puRAm8TxrRVBUxzu6RQwgRTLM8uMIbITEATqOVZJ0twKNxC
-         nhS4p9a/tH+ABH3hUCqkMAissD3Xggxx9TPSqfVwxjaFBg8QB5+Ur/R+UJHdd7OWjYaq
-         gd88xD00b2vA0QXj7LVz4f6g1Xon/WLdASNXJJeY73+b8H9XUs9cRZUcvMHaglEvFVLi
-         5SMg==
-X-Gm-Message-State: AOJu0YyfBIAslb52O419Lj5ilKLVJ43yEemS/MtrcnLVu1s1md5AvAF0
-	okKCi0AJ/kvss/Vk8jXMoiYSNvOZ/w==
-X-Google-Smtp-Source: AGHT+IFDbNY2T9PGT60kVoo0H9wHsXdAhlBB1UtRe1uiZ/2gZC4ZdOOJFxBpedexk1h/rD5oGEAHz2E6+Q==
-X-Received: from jrife.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:9f])
- (user=jrife job=sendgmr) by 2002:a25:5050:0:b0:d81:7617:a397 with SMTP id
- e77-20020a255050000000b00d817617a397mr82022ybb.9.1695679980967; Mon, 25 Sep
- 2023 15:13:00 -0700 (PDT)
-Date: Mon, 25 Sep 2023 17:12:41 -0500
-In-Reply-To: <20230921120913.566702-5-daan.j.demeyer@gmail.com>
+        d=1e100.net; s=20230601; t=1695680076; x=1696284876;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iM72w41jJ0uTcmpakwU36eusGXW9uEpXtWiPgSR0LzQ=;
+        b=UlyDTuCLvXpnkbtS9NtC4oDVbvFZscvdkTi4MYoCLen4vJ/KZmX1gvkDHYroNaLgGP
+         ffERKAXTgFw/YlnBzBQ1D7UjnM0wiBPUNQoK5tJ194hehUEuU5H2Tet6wqLHqi5HB0YA
+         SgbMznRfHt36uOjX5xBHrGzcPPta0r69LNpyDxmbS3U+EP8VM1n1cGhyXTW1qDLo/bD3
+         /61HZf5Sm/wwwAZTQNGMYZLCAFIkSJpTRTth9oYkEzlxTRhdNKSqimVInj4JbHz7LbrO
+         5+Lv+ZJKsliuBeSDA5hzecWH5CVhaaBzALE2MXUVuuWqXr9sUxzPqjY0Kz7tcei9LGT+
+         ucKA==
+X-Gm-Message-State: AOJu0YzfsxnVWqlX/uQmbM6qwyuzoe7o8R5UrdzNGNysYgHp8GsnZ5Q5
+	Hf1lhEtiR57BkgXGarmbiLE=
+X-Google-Smtp-Source: AGHT+IFKSGyuAtyHJuuBvay/ET7E6hG1fGFgiObpPOPHuDfnTn3nl26nHyxIjNZ8o2oPTofMIUtzCQ==
+X-Received: by 2002:a05:6512:b9b:b0:500:8c19:d8c6 with SMTP id b27-20020a0565120b9b00b005008c19d8c6mr7453171lfv.58.1695680076324;
+        Mon, 25 Sep 2023 15:14:36 -0700 (PDT)
+Received: from krava ([83.240.61.244])
+        by smtp.gmail.com with ESMTPSA id e9-20020a50ec89000000b0052c9f1d3cfasm6005501edr.84.2023.09.25.15.14.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 15:14:35 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 26 Sep 2023 00:14:33 +0200
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>,
+	linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v5 04/12] fprobe: Use ftrace_regs in fprobe entry handler
+Message-ID: <ZRIGSTTTYADzP7QU@krava>
+References: <169556254640.146934.5654329452696494756.stgit@devnote2>
+ <169556259571.146934.4558592076420704031.stgit@devnote2>
+ <ZRFj97DJtbXc4naO@krava>
+ <20230925211515.41d26a160c546c7bce08ac64@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20230921120913.566702-5-daan.j.demeyer@gmail.com>
-X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Message-ID: <20230925221241.2345534-1-jrife@google.com>
-Subject: Re: [PATCH bpf-next v5 4/9] bpf: Implement cgroup sockaddr hooks for
- unix sockets
-From: Jordan Rife <jrife@google.com>
-To: daan.j.demeyer@gmail.com
-Cc: bpf@vger.kernel.org, kernel-team@meta.com, martin.lau@linux.dev, 
-	netdev@vger.kernel.org, Jordan Rife <jrife@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925211515.41d26a160c546c7bce08ac64@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-> @@ -1919,6 +1936,13 @@ static int unix_dgram_sendmsg(struct socket *sock, struct msghdr *msg,
->  		goto out;
->
->  	if (msg->msg_namelen) {
-> +		err = BPF_CGROUP_RUN_PROG_UNIX_SENDMSG_LOCK(sk,
-> +							    msg->msg_name,
-> +							    &msg->msg_namelen,
-> +							    NULL);
-> +		if (err)
-> +			goto out;
-> +
->  		err = unix_validate_addr(sunaddr, msg->msg_namelen);
->  		if (err)
->  			goto out;
+On Mon, Sep 25, 2023 at 09:15:15PM +0900, Masami Hiramatsu wrote:
+> Hi Jiri,
+> 
+> On Mon, 25 Sep 2023 12:41:59 +0200
+> Jiri Olsa <olsajiri@gmail.com> wrote:
+> 
+> > On Sun, Sep 24, 2023 at 10:36:36PM +0900, Masami Hiramatsu (Google) wrote:
+> > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > 
+> > > This allows fprobes to be available with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+> > > instead of CONFIG_DYNAMIC_FTRACE_WITH_REGS, then we can enable fprobe
+> > > on arm64.
+> > > 
+> > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > Acked-by: Florent Revest <revest@chromium.org>
+> > 
+> > I was getting bpf selftests failures with this patchset and when
+> > bisecting I'm getting crash when running on top of this change
+> 
+> Thanks for bisecting!
+> 
+> > 
+> > looks like it's missing some of the regs NULL checks added later?
+> 
+> yeah, if the RIP (arch_rethook_prepare+0x0/0x30) is correct, 
+> 
+> void arch_rethook_prepare(struct rethook_node *rh, struct ftrace_regs *fregs, bool mcount)
+> 
+> RSI (the 2nd argument) is NULL. This means fregs == NULL and caused the crash.
+> I think ftrace_get_regs(fregs) for the entry handler may return NULL.
+> 
+> Ah, 
+> 
+> @@ -182,7 +182,7 @@ static void fprobe_init(struct fprobe *fp)
+>  		fp->ops.func = fprobe_kprobe_handler;
+>  	else
+>  		fp->ops.func = fprobe_handler;
+> -	fp->ops.flags |= FTRACE_OPS_FL_SAVE_REGS;
+> +	fp->ops.flags |= FTRACE_OPS_FL_SAVE_ARGS;
+>  }
+>  
+>  static int fprobe_init_rethook(struct fprobe *fp, int num)
+> 
+> This may cause the issue, it should keep REGS at this point (this must be done in
+> [9/12]). But after applying [9/12], it shouldn't be a problem... 
+> 
+> Let me check it again.
 
+that helped with the crash, I'll continue bisecting to find out
+where it breaks the tests
 
-Just an FYI, I /think/ this is going to introduce a bug similar to the one I'm
-addressing in my patch here:
-
-- https://lore.kernel.org/netdev/20230921234642.1111903-2-jrife@google.com/
-
-With this change, callers to sock_sendmsg() in kernel space would see their
-value of msg->msg_namelen change if they are using Unix sockets. While it's
-unclear if there are any real systems that would be impacted, it can't hurt to
-insulate callers from these kind of side-effects. I can update my my patch to
-account for possible changes to msg_namelen.
-
-Also, with this patch series is it possible for AF_INET BPF hooks (connect4,
-sendmsg4, connect6, etc.) to modify the address length?
+thanks,
+jirka
 
