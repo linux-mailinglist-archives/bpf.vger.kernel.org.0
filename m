@@ -1,247 +1,240 @@
-Return-Path: <bpf+bounces-10875-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10876-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC9D7AF013
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 17:56:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 951267AF017
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 17:56:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sy.mirrors.kernel.org (Postfix) with ESMTP id 4BCFEB209F6
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 15:56:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id ADA561C20865
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 15:56:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 273B130D15;
-	Tue, 26 Sep 2023 15:55:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E34D830D1B;
+	Tue, 26 Sep 2023 15:56:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 362C230D10
-	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 15:55:57 +0000 (UTC)
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1D2121
-	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 08:55:54 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9ad8a822508so1144344166b.0
-        for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 08:55:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695743753; x=1696348553; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4b8H5CuchG/00E/HglxXH60H3ur212WvpPcGDX0Kjso=;
-        b=UCSL2f7ew7hxw2HmQQQPgBNlXexng95G1swSeSojBVMxHY9lFO2F88YOYOSAlVk2x+
-         +OfciS6WRLbwVyh1i+APBDB6O9DvaBAhw7L3EPhFSdc9CLJpO+yyJ/JIsZ6alUFtHATg
-         sLAJg2LvlJxwh5N4+1zkwFuRwm3bFe3lI1EQY2BZ8MG7Yd2ZODPwVrcG9rymBtvwQHkx
-         7YeRIj5NQ+XJ5X1FHiktj/YUUvAPb8y3duGj9NAllTI9qP5mCp5DhUsYBPrbMmwtNhq3
-         nM/+7nPg8arOdXogby1EFqNytd5ueq6VbTGas9PwULx03dYLyJ+8hNZIblgQMB9Veb4s
-         3dUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695743753; x=1696348553;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4b8H5CuchG/00E/HglxXH60H3ur212WvpPcGDX0Kjso=;
-        b=sk/MmcrqXLpxsi6gziI2siKzLR9XnsCKnN5pHFd9wRQyY4KXzbdqlMXKyXJPk2LJvB
-         twolxS6++76QMuvZ/kuZDxrbFw19STFQki5j9/KxxI/Zn/k5ElSSTLJKDkFN0xXuZWZ5
-         i+bmKmM9tiezl8W5RuCWobKnW2gZLE0ITX3fI9vHl/BQxFd5KCkRdDPgTtZzy1O9xSpF
-         UBj4k90EdRnAFs7+zE8jfypfIJfyt/99v9uJ5bvxQAAauqMiRmkNe+65l9MQ7t5TqSAs
-         ff8TgFJmgGL/oAuOzLVuJ4Uv8mJfoC51dkFWGSfO3SMMaH3obOMu2/VpDPFZvpqfzlqK
-         KHkg==
-X-Gm-Message-State: AOJu0Yz9jrvqySexoUFOm0699/af2OmcR7Vz8YIEH7jZeAYk9f+ommC4
-	2WNG78wzQI1WZdbuUnJpbNs=
-X-Google-Smtp-Source: AGHT+IHRzKe4XjIn0iz6KxOgRaMvDIBn+te+BTVfF553EqYPho9xCmQq23q2qNtEv/3Hz/DHeeWrIw==
-X-Received: by 2002:a17:906:51dd:b0:9ae:62ec:f4a1 with SMTP id v29-20020a17090651dd00b009ae62ecf4a1mr8518681ejk.33.1695743753059;
-        Tue, 26 Sep 2023 08:55:53 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id sa21-20020a170906edb500b009add084a00csm7894678ejb.36.2023.09.26.08.55.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 08:55:52 -0700 (PDT)
-Message-ID: <ca9ac095cf1b3fff55eea8a3c87670a349bbfbcf.camel@gmail.com>
-Subject: Re: [BUG] verifier escape with iteration helpers (bpf_loop, ...)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrew Werner
- <awerner32@gmail.com>, bpf <bpf@vger.kernel.org>, Andrei Matei
- <andreimatei1@gmail.com>, Tamir Duberstein <tamird@gmail.com>, Joanne Koong
- <joannelkoong@gmail.com>, kernel-team@dataexmachina.dev, Song Liu
- <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Tue, 26 Sep 2023 18:55:50 +0300
-In-Reply-To: <CAEf4BzZU0MxwLfz-dGbmHbEtqVhEMTxwSG+QfwCuCv09CqLcNw@mail.gmail.com>
-References: 
-	<CA+vRuzPChFNXmouzGG+wsy=6eMcfr1mFG0F3g7rbg-sedGKW3w@mail.gmail.com>
-	 <CAADnVQJpLAzmUfwvWBr8a_PWHYHxHw9vdAXnWB4R4PbVY4S4mw@mail.gmail.com>
-	 <CAEf4Bzbubu7KjBv=98BZrVnTrcfPQrnsp-g1kOYKM=kUtiqEgw@mail.gmail.com>
-	 <dff1cfec20d1711cb023be38dfe886bac8aac5f6.camel@gmail.com>
-	 <CAP01T76duVGmnb+LQjhdKneVYs1q=ehU4yzTLmgZdG0r2ErOYQ@mail.gmail.com>
-	 <a2995c1d7c01794ca9b652cdea7917cac5d98a16.camel@gmail.com>
-	 <97a90da09404c65c8e810cf83c94ac703705dc0e.camel@gmail.com>
-	 <CAEf4BzYg8T_Dek6T9HYjHZCuLTQT8ptAkQRxrsgaXg7-MZmHDA@mail.gmail.com>
-	 <ee714151d7c840c82d79f9d12a0f51ef13b798e3.camel@gmail.com>
-	 <CAADnVQJn35f0UvYJ9gyFT4BfViXn8T8rPCXRAC=m_Jx_CFjrtw@mail.gmail.com>
-	 <5649df64315467c67b969e145afda8bbf7e60445.camel@gmail.com>
-	 <CAADnVQJO0aVJfV=8RDf5rdtjOCC-=57dmHF20fQYV9EiW2pJ2Q@mail.gmail.com>
-	 <4b121c3b96dcc0322ea111062ed2260d2d1d0ed7.camel@gmail.com>
-	 <CAEf4BzbUxHCLhMoPOtCC=6Y-OxkkC9GvjykC8KyKPrFxp6cLvw@mail.gmail.com>
-	 <52df1240415be1ee8827cb6395fd339a720e229c.camel@gmail.com>
-	 <ec118c24a33fb740ecaafd9a55416d56fcb77776.camel@gmail.com>
-	 <CAEf4BzZjut_JGnrqgPE0poJhMjJgtJcafRd6Z_0T0jrW3zARJw@mail.gmail.com>
-	 <44363f61c49bafa7901ae2aa43897b525805192c.camel@gmail.com>
-	 <CAEf4BzZ-NGiUVw+yCRCkrPQbJAS4wMBsT3e=eYVMuintqKDKqg@mail.gmail.com>
-	 <a777445dcb94c0029eb3bd3ddc96ddc493c85ad0.camel@gmail.com>
-	 <CAEf4BzZU0MxwLfz-dGbmHbEtqVhEMTxwSG+QfwCuCv09CqLcNw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16FC830CE6
+	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 15:56:45 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A571BFB
+	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 08:56:44 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38QFhupZ022198
+	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 08:56:44 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : mime-version; s=s2048-2021-q4;
+ bh=1VJBN+5mpHmZrrrQAcQEcXvZUuI6ADm/ARmmXrlknBU=;
+ b=KbG1Mb4rVzcmjftcoaWC+FMYn4zdfeh/SBrhXgqmBFhyGs+LyDiEnaEKROAY7gwjVKNJ
+ KXsq3peuElNY9hbkSZUCHwgUusp7/Gq/MPbP+hCt5n6dyomZ6f5R+5JTwk8ktLV8aUYK
+ xShtyaTX9o86G0QXjjXwGr2UXfaaHeTAGi0DpVFWq48xln33yNWTPBRuHRqKSjx5KgSH
+ GSQiLZDTEG8l8WpmavhsYAEvGmufdTI90Mj62ZrAWUnVSH7Cat004+b5JeJBI3u8QzIS
+ sjd7Y6L9jFVl5kzUzN8KUYDHHq8OWOGueI7V1HTRBzE5GNHMlrTlejXaz5Ts/t4LDYbO 3A== 
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2173.outbound.protection.outlook.com [104.47.56.173])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3tc10eh37r-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 08:56:44 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i+Ojwe7l5jV4PBPx116yffD0T6MtNOt+lYd+YgXR8SNYg7Jqdv+9nmicRqHkmsaSd+A/8ru4lemW7ueeaGTQ2SnP1z1v34GCu54KVTcer4gsHdg2HJcRWYVRnwj9BiYHcC57aG0qm0+NyNFrxIv/+mmhTcvDm+gZO9GZUbGYcwbDnv8I1WdRtILVqhO+3PaxcYXlY85Q5vSDXKADTcbhNfzuwVb/vKrOwEFX9jNe3nl+IqNYVy64qhjOZCwM2LaSx8HJ/cjKTtGhuWw+GmlgclEb49j2Sho55joYf9Vnk+hWyRGjuewIUc4zeDT+U6jVmuEIGAa0kCkVe+vOsSaSvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1VJBN+5mpHmZrrrQAcQEcXvZUuI6ADm/ARmmXrlknBU=;
+ b=AmLg5ajqB+NcBdxCWWY3ikokgOAhp4bCX5IA2OGl1uq9c36Z4xh0O0lta5bFo6TNbaiIb6vYaEih73xJXQqBZrjQAlASdahIQBWnx0BrBohdrgLbtjm+7gvebUAh1xcQ5vQvNCvEorCSKSUE3UGiRPo/ps5VUrAuTLzsm24V/jKdyGthRNN6lBhh/X7ItwngpUKaR0XQ42oWH2VuZVoZae0IuObupcYP4ZGA02+Znmp2bl4WmzaUI2tx3VzMGysu3+zVSr1YOqmkn+MBXqXyLtpXdlXLwZLfHu3is7gPB0v0t+vQD9xVfwDgLxV2k+BWBOgwodGXDEG57Pg3TxqeRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by MN6PR15MB6124.namprd15.prod.outlook.com (2603:10b6:208:472::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Tue, 26 Sep
+ 2023 15:56:41 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::e0e7:7606:7fef:f9de]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::e0e7:7606:7fef:f9de%4]) with mapi id 15.20.6813.027; Tue, 26 Sep 2023
+ 15:56:41 +0000
+From: Song Liu <songliubraving@meta.com>
+To: Ilya Leoshkevich <iii@linux.ibm.com>
+CC: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov
+	<ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko
+	<andrii@kernel.org>,
+        "martin.lau@kernel.org" <martin.lau@kernel.org>,
+        Kernel
+ Team <kernel-team@meta.com>
+Subject: Re: [PATCH v2 bpf-next 0/8] Allocate bpf trampoline on bpf_prog_pack
+Thread-Topic: [PATCH v2 bpf-next 0/8] Allocate bpf trampoline on bpf_prog_pack
+Thread-Index: AQHZ7/q7UhOYxD/Kh02AEYfvOHOSLbAtCXeAgAA6mgA=
+Date: Tue, 26 Sep 2023 15:56:41 +0000
+Message-ID: <39045A65-0A8B-464A-968B-A12F18853D66@fb.com>
+References: <20230925215324.2962716-1-song@kernel.org>
+ <898b73dfc592c4a49de4777e4776b0b8b7c6bb66.camel@linux.ibm.com>
+In-Reply-To: <898b73dfc592c4a49de4777e4776b0b8b7c6bb66.camel@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3731.700.6)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR15MB5109:EE_|MN6PR15MB6124:EE_
+x-ms-office365-filtering-correlation-id: f1e8dbce-71f3-46b9-71e3-08dbbea92ca2
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ VoadybjLSeZwCcQ2dNOZlb/A9FWH/nQI4uhzAHHfxCaDS0sl7C2Qu7gD4JyU4HW++6VBIgyBOQiaIxkbfg5e8I+M7mmdMIDVCn/jxQxS9plxR3X2DZnXgk2wnsDHUycRjjuiYEkyKgedPrwnc5VizSAfdAJDGDC0AZ12EMDpq2GnwrfR6QkomavpP0N/Gc6Xy4+aerp2VmXZrzrkT2Rn76D4+Y1Ihs3pEqT5zNNZ9GZVrbVF33HPIUlBf844auQRa4fLaarndxy3qMRvQd3tJVb7E58EtsX0o4ovGIpVEGpP6goHlmeiiabnBigDfD0fisYfgm0dn2V8pU8u41en0XXKR6fxc5U1RqYvmefXDONLw00T9+8X7p251SY8r3uMsK2uLPquYnjGsDZwPh6hNSEf3odG/cR4BINKj41hYu8bBdlYujqSZl6VSKCl8m7IKFnKxMIwb/wV8/DJ+vFRQ/tI/Dl2i3tbyvmFI0FVGAAz9sjlAXvywBT7ztt0XGF+dHXNZFq+w0VjQY0TcdJpWZNQjznZ7ihi/KP0kpYs5bOjU0Cp3X/Bq0zOIUkYY8WCeRj9MrYvLIUgvF5yTKLtWzlxBUi3RfNKoMRq4pOLyDAaUz3Q2qa+47FhfCUiFgzp
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(396003)(346002)(366004)(136003)(230922051799003)(186009)(451199024)(1800799009)(66446008)(41300700001)(6916009)(5660300002)(316002)(8676002)(8936002)(4326008)(66476007)(76116006)(66556008)(64756008)(54906003)(66946007)(91956017)(2906002)(6512007)(83380400001)(33656002)(71200400001)(53546011)(86362001)(6506007)(9686003)(122000001)(6486002)(36756003)(38070700005)(107886003)(38100700002)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?cZrB/986GFfgypf6Da9zMJAnGlgQhqanU2GedRpdf1UwKE5VA/ECGMym8jyk?=
+ =?us-ascii?Q?sgaI9RCuBXyecLd0TpyAEXu0eftQ3eLGN26jXKYrg2RiKbq/yXqU38sFmdju?=
+ =?us-ascii?Q?2vlYij9VxZtACUisesACppAGix14RopNH0Y/ubprnjjQpgQmqnxNHTypYiE0?=
+ =?us-ascii?Q?kyt/MxrkS4q8Wxb67ODTrMgQhwmoKMAI6kyAhe6jwxR8biuKXB7dZCCsG7/f?=
+ =?us-ascii?Q?Dw5sFA93uag8b9m3lhBqDSedgVk1jKXP3bppRcSNYVbgqLTK4/lgX6lDXERL?=
+ =?us-ascii?Q?AqKHwb6gTrSqem12rL0+TOwQmpXN+s7/GPCqg3hWOI5GNC26kD3uOi/BdmnO?=
+ =?us-ascii?Q?71DjSI7gAxyiQl8yixC5tS5CfpHA4fmWTTVvwIDAPG3VRviGJLAm3MYIWjuG?=
+ =?us-ascii?Q?llEdrBxSODguocvHCbqBryU/w2sKDg71h+fo95xB7jgMgGMxnc/x4ubublr8?=
+ =?us-ascii?Q?2sBZyIIS20lSc/kfCetl3tKaPnRahA2+sjjNzLTt5T2JKo8uIBREfjDYLtxr?=
+ =?us-ascii?Q?pEizmSbTfTIzn/68GmrCjKBskTQU8JpG5XhkNmYlhe1VeMMGmxjufVCYn6An?=
+ =?us-ascii?Q?dxMUM/nTnKxP8sLVUah4UH4DXadITY8HQ7c1/W149gIUFKxcMMrSWVDNhjKC?=
+ =?us-ascii?Q?axzNbsJibXdEJAR6948SQfr73wgR7ULBYBe4HTveI55gxH85EIU3hIlR3DYS?=
+ =?us-ascii?Q?2I+hZTxPY5k5TznR6W7LBLDVTbmqZS+IH7ItSS2o+7DoCkJSgYa60r22bn5j?=
+ =?us-ascii?Q?GJGmDSLzgegMvAmr/Boss/gcQyQ49BpgPKJWdEhFfvFDl12kOuKupT2mR4Uw?=
+ =?us-ascii?Q?jnqN4xZcboOZn0N8tLeXTer0+ufNeuUJQBPeKJ6LInw44tI4d+J2hkKIsi3i?=
+ =?us-ascii?Q?5zjip5ZyDsVykDeRYTMriW7FBG+nIfguBH+ggWw4UNcNajIfOuwYM0HO2f/A?=
+ =?us-ascii?Q?y7+hADJ48bpp+nKMgIQKctCSWo8VcmnDqEkpG3+xCBoT3d/Ay2ZaA2rxEP3q?=
+ =?us-ascii?Q?tLaRZd3Be5dSu2RtCOpdLc8JLewHGuzoM9hu8hpEu0pJklnnB4UMvrJYbP34?=
+ =?us-ascii?Q?ph+R2ObBgoJ3sihXzXD5GEJJn6Q0L3tGaT9znXwIymagRJTZPoZOVd+pK5jF?=
+ =?us-ascii?Q?dluY9QojHWG/dq3/ggoq+d4CKqgEv+sq/KCAcK7kl82b5x2mXhAjua6RSBiU?=
+ =?us-ascii?Q?yQ6O/mPIsqpUa6k30M53uh9q0F1UmL9GNfOdwyxoNps/ocelLV0Meeapmjmz?=
+ =?us-ascii?Q?gTnhL2bwGVhCvRUahn9zEfjXKHkrmZ/rprtH/Uv3AMEGoC7XtCrg6gFmwWQY?=
+ =?us-ascii?Q?i+QfGmE6H4kdIbr+0++Hi+QrPo6XZfSyYDOr76La/GiEDZE4sI0tScK4O9mz?=
+ =?us-ascii?Q?VaV4JaJEPv79/r1vuSxgUzBRcZDrWEwQFYkBBkTIKmvv0AJcwhBJGNxnVOyH?=
+ =?us-ascii?Q?6/yNRifHmmVZjcGU9qrUUEOoRxhAXJnu27lSqjDCcY13lhcrUJNn6e9XWzWy?=
+ =?us-ascii?Q?oizUQ2oKez1STAus81NEBds/FGgMO+CTiOWH1BwOeu+hSGe4/6w1fhUU9qKc?=
+ =?us-ascii?Q?+qybMPhcVbg42GW0QhRphTI8awfGpXS1LZO5rK8npic18pHWjSPiPbbGoyhH?=
+ =?us-ascii?Q?D79Ny/cw63iIdSKZb/KioFM=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <C8283A637B50804FB6A2DE9FD1C3B894@namprd15.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1e8dbce-71f3-46b9-71e3-08dbbea92ca2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Sep 2023 15:56:41.0386
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MwraUHPVHBK1tRPEcf4fyTnutA+YYWbJ0z2v1oHrJa3i05PnUE5e1CCFFEqPRMTnR3E6tz7n0GspSma/c4uABg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR15MB6124
+X-Proofpoint-ORIG-GUID: IHrb7pjW9HtVb4tZHH-N99fHIu-Zfg5u
+X-Proofpoint-GUID: IHrb7pjW9HtVb4tZHH-N99fHIu-Zfg5u
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-26_13,2023-09-26_01,2023-05-22_02
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, 2023-09-25 at 17:33 -0700, Andrii Nakryiko wrote:
-[...]
-> not working for this intermixed iterator case would be ok, I think
-> most practical use cases would be a properly nested loops.
->=20
-> But, compiler can actually do something like even for a proper loop.
-> E.g., something like below
->=20
-> for (; bpf_iter_num_next(&it); ) {
->    ....
-> }
->=20
-> in assembly could be layed out as
->=20
->=20
-> bpf_iter_num_next(&it);
-> ...
-> again:
-> r0 =3D bpf_iter_num_next(&it)
-> ...
-> if (r0) goto again
->=20
->=20
-> Or something along those lines. So these assumptions that the
-> iterator's next() call is happening at the same instruction is
-> problematic.
 
-For the specific example above I think it would not be an issue
-because there is still only one next() call in the loop =3D>
-there would be no stalled next() transition states.
 
-I checked disassembly for progs/iters.c and it appears that for each
-program there compiler preserves nested loops structure such that:
-- each loop is driven by a single next() call of a dedicated iterator;
-- each nested loop exit goes through destroy() for corresponding
-  iterator, meaning that outer loop's next will never see inner's loop
-  iterator as active =3D> no stalled states due to inner loop
-  processing.
+> On Sep 26, 2023, at 5:26 AM, Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+> 
+> On Mon, 2023-09-25 at 14:53 -0700, Song Liu wrote:
+>> This set enables allocating bpf trampoline from bpf_prog_pack on x86.
+>> The
+>> majority of this work, however, is the refactoring of trampoline
+>> code.
+>> This is needed because we need to handle 4 archs and 2 users
+>> (trampoline
+>> and struct_ops).
+>> 
+>> 1/8 is a dependency that is already applied to bpf tree.
+>> 2/8 through 7/8 refactors trampoline code. A few helpers are added.
+>> 8/8 finally let bpf trampoline on x86 use bpf_prog_pack.
+>> 
+>> Changes in v2:
+>> 1. Add missing changes in net/bpf/bpf_dummy_struct_ops.c.
+>> 2. Reduce one dry run in arch_prepare_bpf_trampoline. (Xu Kuohai)
+>> 3. Other small fixes.
+>> 
+>> Song Liu (8):
+>>   s390/bpf: Let arch_prepare_bpf_trampoline return program size
+>>   bpf: Let bpf_prog_pack_free handle any pointer
+>>   bpf: Adjust argument names of arch_prepare_bpf_trampoline()
+>>   bpf: Add helpers for trampoline image management
+>>   bpf, x86: Adjust arch_prepare_bpf_trampoline return value
+>>   bpf: Add arch_bpf_trampoline_size()
+>>   bpf: Use arch_bpf_trampoline_size
+>>   x86, bpf: Use bpf_prog_pack for bpf trampoline
+>> 
+>>  arch/arm64/net/bpf_jit_comp.c   |  55 +++++++++-----
+>>  arch/riscv/net/bpf_jit_comp64.c |  24 ++++---
+>>  arch/s390/net/bpf_jit_comp.c    |  43 ++++++-----
+>>  arch/x86/net/bpf_jit_comp.c     | 124 +++++++++++++++++++++++++-----
+>> --
+>>  include/linux/bpf.h             |  12 +++-
+>>  include/linux/filter.h          |   2 +-
+>>  kernel/bpf/bpf_struct_ops.c     |  19 +++--
+>>  kernel/bpf/core.c               |  21 +++---
+>>  kernel/bpf/dispatcher.c         |   5 +-
+>>  kernel/bpf/trampoline.c         |  93 ++++++++++++++++++------
+>>  net/bpf/bpf_dummy_struct_ops.c  |   7 +-
+>>  11 files changed, 277 insertions(+), 128 deletions(-)
+>> 
+>> --
+>> 2.34.1
+> 
+> Regarding the s390x part, arch_prepare_bpf_trampoline() needs to call
+> __arch_prepare_bpf_trampoline() twice: the first time in order to
+> compute various offsets, the second time to actually emit the code. So
+> I would suggest to either keep the loop or use the following fixup:
 
-Of-course, I'm not a robot and might have missed something that would
-break real implementation.
-=20
-> > Option B. "Widening"
-> > --------------------
-> >=20
-> > The trivial fix for current .branches > 0 states comparison is to
-> > force "exact" states comparisons for is_iter_next_insn() case:
-> > 1. Ignore liveness marks, as those are not finalized yet;
-> > 2. Ignore precision marks, as those are not finalized yet;
-> > 3. Use regs_exact() for scalars comparison.
-> >=20
-> > This, however, is very restrictive as it fails to verify trivial
-> > programs like (iters_looping/simplest_loop):
-> >=20
-> >     sum =3D 0;
-> >     bpf_iter_num_new(&it, 0, 10);
-> >     while (!(r0 =3D bpf_iter_num_next()))
-> >       sum +=3D *(u32 *)r0;
-> >     bpf_iter_num_destroy(&it);
-> >=20
-> > Here ever increasing bounds for "sum" prevent regs_exact() from ever
-> > returning true.
-> >=20
-> > One way to lift this limitation is to borrow something like the
-> > "widening" trick from the abstract interpretation papers mentioned
-> > earlier:
-> > - suppose there is current state C and a visited is_iter_next_insn()
-> >   state V with .branches > 0;
-> > - suppose states_equal(V, C) returns true but exact states comparison
-> >   returns false because there are scalar values not marked as precise
-> >   that differ between V and C.
-> > - copy C as C' and mark these scalars as __mark_reg_unbounded() in C';
-> > - run verification for C':
-> >   - if verification succeeds -- problem solved;
-> >   - if verification fails -- discard C' and proceed from C.
-> >=20
-> > Such algorithm should succeed for programs that don't use widened
-> > values in "precise" context.
-> >=20
-> > Looking at testcases failing with trivial fix I think that such
-> > limitations would be similar to those already present (e.g. the big
-> > comment in progs/iters.c:iter_obfuscate_counter would still apply).
-> >=20
->=20
-> This makes sense. I was originally thinking along those lines (and
-> rejected it for myself), but in a more eager (and thus restrictive)
-> way: for any scalar register where old and new register states are
-> equivalent thanks to read mark or precision bit (or rather lack of
-> precision bit), force that precision/mark in old state. But that is
-> too pessimistic for cases where we truly needed to simulate N+1 due to
-> state differences, while keeping the old state intact.
+Thanks for the test and the fix! 
 
-In other words there is a function states_equal' for comparison of
-states when old{.branches > 0}, which differs from states_equal in
-the following way:
-- considers all registers read;
-- considers all scalars precise.
+I will fold the fix in and send v3. 
+Song
 
-> What you propose with temporary C -> C' seems to be along similar
-> lines, but will give "a second chance" if something doesn't work out:
-> we'll go on N+1 instead of just failing.
+> 
+> --- a/arch/s390/net/bpf_jit_comp.c
+> +++ b/arch/s390/net/bpf_jit_comp.c
+> @@ -2645,7 +2645,15 @@ int arch_prepare_bpf_trampoline(struct
+> bpf_tramp_image *im, void *image,
+>        struct bpf_tramp_jit tjit;
+>        int ret;
+> 
+> +       /* Compute offsets. */
+>        memset(&tjit, 0, sizeof(tjit));
+> +       ret = __arch_prepare_bpf_trampoline(im, &tjit, m, flags,
+> +                                           tlinks, func_addr);
+> +       if (ret < 0)
+> +               return ret;
+> +
+> +       /* Generate the code. */
+> +       tjit.common.prg = 0;
+>        tjit.common.prg_buf = image;
+>        ret = __arch_prepare_bpf_trampoline(im, &tjit, m, flags,
+>                                            tlinks, func_addr);
+> 
+> With that:
+> 
+> Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>  # on s390x
+> 
+> for the series.
 
-Right.
-
-> But let's think about this case. Let's say in V R1 is set to 7, but
-> imprecise. In C we have R1 as 14, also imprecise. According to your
-> algorithm, we'll create C1 with R1 set to <any num>. Now I have two
-> questions:
->=20
-> 1. How do we terminate C' validation? What happens when we get back to
-> the next() call again and do states_equal() between V and C'? We just
-> assume it's correct because C' has R1 as unbounded?
-
-For the definition above states_equal'(V, C') is false, but because we
-are at checkpoint on the next iteration we would get to
-states_equal'(C', C'') where C'' is derived from C' and same rules
-would apply. If we are lucky nothing would change and there would no
-point in scheduling another traversal.
-
-> 2. Assuming yes. What if later on, V's R1 is actually forced to be
-> precise, so only if V's R1=3DP7, then it is safe. But we already
-> concluded that C' is safe based on R1 being unbounded, right? Isn't
-> that a violation?
-
-My base assumption is that:
-1. any instruction reachable from V should also be reachable from C';
-2. and that it is also guaranteed to be visited from C'.
-I cannot give a formal reasoning for (2) at the moment.
-
-In case if this assumption holds, when verification proceeds from C'
-it would eventually get to instruction for which R1 value is only safe
-when R1=3D7, if so:
-- verification of C' conjecture would fail;
-- all states derived from C' would need to be removed from
-  states stack / explored states;
-- verification should proceed from C.
-(And there is also a question of delaying read/precision propagation
- from unproven conjecture states to regular states).
-
-(Also I'm still not sure whether to use regs_exact() for scalars
- comparison instead of precision logic in states_equal').
 
