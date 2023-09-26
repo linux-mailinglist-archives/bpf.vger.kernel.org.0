@@ -1,74 +1,73 @@
-Return-Path: <bpf+bounces-10835-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10836-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B84467AE3E8
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 05:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 54FC27AE3F2
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 05:09:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 4CF88281A97
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 03:01:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id A55D2281346
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 03:09:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 178F1111B;
-	Tue, 26 Sep 2023 03:01:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D00E8139E;
+	Tue, 26 Sep 2023 03:09:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF44F7F
-	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 03:01:49 +0000 (UTC)
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C3D9F;
-	Mon, 25 Sep 2023 20:01:47 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-65af726775eso22773836d6.0;
-        Mon, 25 Sep 2023 20:01:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2615A7F
+	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 03:09:18 +0000 (UTC)
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435239F;
+	Mon, 25 Sep 2023 20:09:16 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-65b0e623189so17697216d6.1;
+        Mon, 25 Sep 2023 20:09:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695697306; x=1696302106; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695697755; x=1696302555; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Irbbz1pd7BMY5vzJH82iICB1EXsa28Rc+uh6SDLIjf8=;
-        b=ZtkXntJzn92p5jhwFrmgARLwGgMokjCfAT8lmJPI30LDfdkTb1T9jZ8aVTdKmaOm/x
-         3TVCucH61zDYCVeomgh3KzTfgCU+pVw/zv8c1RTPp5jdMYilwR6o3uclGqNgopi9bRn0
-         awpywotDc0RiJkddApNHLlwx0adHFpYgz09G8e6wfPAK/4VJ3j+oH6oTCYlyo13Lmjm3
-         aSliAqq6eQ50/X3Qw5kCrOlIi+ZAOFDZzdPvTr/YRHRpuMAbO3jgiNJxNmVCActA7BeR
-         g5kmW6T2Wr0SzLJBaFRGFcv5prW3dTTMkaSXu6o+HQ3aRY+SGCep71IL/Tfm0RLnI3Z3
-         Yw2Q==
+        bh=LHSIKUeBex5AI8uxl+C0er1czMgcQqC68b/wIooWTTM=;
+        b=GKTNcrEA5fTTZLWAYJZ/DtBxvpv0317vg7njbKqQChkBIC7y6kzJkMIHvVOY385l2y
+         GgS6hxpAJHYyYCcxR94JMcJcMrdB8q2i+7w1Xnje+Xzoxk9sz9Rpxmv/2hRurqdSkhP2
+         Wx62aFVtHk2EuMgTtbX3IoMQSV/nBEtsgAmP3P9WX6SBbMv9VLlR3UpZJzm81xebu2bc
+         oMgPPAklf+Uzm5YNQ4rIP6VuV/jufhdYcxgiPb6lD+SC5Ghrh6eEvCct96CXNI06RRqk
+         YxsmVcJUtItPrZwG9gu4PssZpqHVR4HXIDsuEo+n8LhY+NfVALlrEgzE+PLVT+tr3wX7
+         0SOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695697306; x=1696302106;
+        d=1e100.net; s=20230601; t=1695697755; x=1696302555;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Irbbz1pd7BMY5vzJH82iICB1EXsa28Rc+uh6SDLIjf8=;
-        b=LCmUeV1nwjWis0bm5Vw4LAL0e9s6npABv5OzvesW10HU8dobh5gyKhiH4dkJ7s8edw
-         vJk0l9CZxSwG3VtAGIGikKP+PMYOX3UpzaoznGxzICLsu1il93gU9XOEpmXfUBbdOewb
-         6REs0xHrVHxmGQOe9ivlKtodA8Gm2dQAjUIf0iGT+WfIO+gWJNMf8/r4Lo5TBDwXvFdG
-         UYpKo3yVlZv9is2oWkqrPi4R/Iq7rgGx2iCsGQe0wlqC9G80p+ReUt8NfYVBmqOHjvbL
-         zuMQVsTd2nDEBu/znZoTGnO5LHG1Xu5O0sGE2z8ugfIyVpz58d6TI2zdXHzwmMO3MW0Z
-         BU7Q==
-X-Gm-Message-State: AOJu0YwxwigRp8lGOkKFLJQGzBoEVcBHy0+pJJDfnAbkNGQNqS0QqjFj
-	oFFA1tTtCQri9pbPf54m9WUhClAuOrUdskVmI84=
-X-Google-Smtp-Source: AGHT+IFrTgYovBaX7C8HhhSu5hbDN5sNxb/v69YafL/y61i6YvM32e2xmCVEISSgVZbUkXzSBkCq/23E4wpY2m4gkIo=
-X-Received: by 2002:a05:6214:5b0f:b0:65b:12b1:d54f with SMTP id
- ma15-20020a0562145b0f00b0065b12b1d54fmr1749649qvb.22.1695697306651; Mon, 25
- Sep 2023 20:01:46 -0700 (PDT)
+        bh=LHSIKUeBex5AI8uxl+C0er1czMgcQqC68b/wIooWTTM=;
+        b=q23PIl2T/fV50ULk/ZcqjWU2ZfBrIB1i+PhtBY8hG3i6LCnYG9Kli9piyAIXIahoJ8
+         iKvk2QVlXaKgkQ5mOXVEXeAM+OiBBAg7RzbHfGHDgQjOKLxbwl2yELsgMKhasYUsOsJK
+         94TFauQtBzV1jDdM/9yMBTMpubTLr0W/QIZ5ERD0ibRVwsQtyFjCvczV7+568/7VRbK2
+         3NgU12AzEEm+O+l/WIqqkWS1hWq9XrAgBwJD5AlAJTtrRNlmsO9ycl8ceh//KCAfKo5F
+         Y2ksR3Aq3q0EPwdH6OFKWCNSK6gtAoQBWkkMQeuJXTagOEHWM00n64XtKeFsgp/nasEw
+         NZRg==
+X-Gm-Message-State: AOJu0YykvLa2txVC0EiJ9WDnl7jqvtbKZEkdq52e+ncgy3UaTzHKDao5
+	Qqg/jNJ39vJSJrPUrhJQREywiOTlvim3a2HAmYA=
+X-Google-Smtp-Source: AGHT+IHzfgpEIFbW4RP9NhWoFXvF1rvZJCxV6NhVkjqgl55VJzA9DeEj1oTeEDGwfFbYV1bNU7SrEsVDol3le+K2t3s=
+X-Received: by 2002:a0c:f8c9:0:b0:64f:539b:f52a with SMTP id
+ h9-20020a0cf8c9000000b0064f539bf52amr8943786qvo.20.1695697755420; Mon, 25 Sep
+ 2023 20:09:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230922112846.4265-1-laoar.shao@gmail.com> <ZQ3GQmYrYyKAg2uK@slm.duckdns.org>
- <CALOAHbA9-BT1daw-KXHtsrN=uRQyt-p6LU=BEpvF2Yk42A_Vxw@mail.gmail.com> <ZRHU6MfwqRxjBFUH@slm.duckdns.org>
-In-Reply-To: <ZRHU6MfwqRxjBFUH@slm.duckdns.org>
+References: <20230922112846.4265-1-laoar.shao@gmail.com> <9e83bda8-ea1b-75b9-c55f-61cf11b4cd83@gmail.com>
+In-Reply-To: <9e83bda8-ea1b-75b9-c55f-61cf11b4cd83@gmail.com>
 From: Yafang Shao <laoar.shao@gmail.com>
-Date: Tue, 26 Sep 2023 11:01:08 +0800
-Message-ID: <CALOAHbB3WPwz0iZNSFbQU9HyGBC9Kymhq2zV83PbEYhzmmvz4g@mail.gmail.com>
+Date: Tue, 26 Sep 2023 11:08:39 +0800
+Message-ID: <CALOAHbBAOY7dRO-gQnGXU0xdD2DdzdgX5FLx9ty=u7Q1ZEfL8w@mail.gmail.com>
 Subject: Re: [RFC PATCH bpf-next 0/8] bpf, cgroup: Add bpf support for cgroup controller
-To: Tejun Heo <tj@kernel.org>
+To: Kui-Feng Lee <sinquersw@gmail.com>
 Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
 	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
 	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com, 
+	haoluo@google.com, jolsa@kernel.org, tj@kernel.org, lizefan.x@bytedance.com, 
 	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com, 
 	cgroups@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -80,75 +79,37 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Sep 26, 2023 at 2:43=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+On Tue, Sep 26, 2023 at 2:22=E2=80=AFAM Kui-Feng Lee <sinquersw@gmail.com> =
+wrote:
 >
-> Hello,
 >
-> On Sun, Sep 24, 2023 at 02:32:14PM +0800, Yafang Shao wrote:
-> > On Sat, Sep 23, 2023 at 12:52=E2=80=AFAM Tejun Heo <tj@kernel.org> wrot=
-e:
-> > >
-> > > Hello,
-> > >
-> > > On Fri, Sep 22, 2023 at 11:28:38AM +0000, Yafang Shao wrote:
-> > > > - bpf_cgroup_id_from_task_within_controller
-> > > >   Retrieves the cgroup ID from a task within a specific cgroup cont=
-roller.
-> > > > - bpf_cgroup_acquire_from_id_within_controller
-> > > >   Acquires the cgroup from a cgroup ID within a specific cgroup con=
-troller.
-> > > > - bpf_cgroup_ancestor_id_from_task_within_controller
-> > > >   Retrieves the ancestor cgroup ID from a task within a specific cg=
-roup
-> > > >   controller.
-> > > >
-> > > > The advantage of these new BPF kfuncs is their ability to abstract =
-away the
-> > > > complexities of cgroup hierarchies, irrespective of whether they in=
-volve
-> > > > cgroup1 or cgroup2.
-> > >
-> > > I'm afraid this is more likely to bring the unnecessary complexities =
-of
-> > > cgroup1 into cgroup2.
+>
+> On 9/22/23 04:28, Yafang Shao wrote:
+> > Currently, BPF is primarily confined to cgroup2, with the exception of
+> > cgroup_iter, which supports cgroup1 fds. Unfortunately, this limitation
+> > prevents us from harnessing the full potential of BPF within cgroup1
+> > environments.
 > >
-> > I concur with the idea that we should avoid introducing the
-> > complexities of cgroup1 into cgroup2. Which specific change do you
-> > believe might introduce these complexities into cgroup2? Is it the
-> > modification within task_under_cgroup_hierarchy() or
-> > cgroup_get_from_id()?
+> > In our endeavor to seamlessly integrate BPF within our Kubernetes
+> > environment, which relies on cgroup1, we have been exploring the
+> > possibility of transitioning to cgroup2. While this transition is
+> > forward-looking, it poses challenges due to the necessity for numerous
+> > applications to adapt.
+> >
+> > While we acknowledge that cgroup2 represents the future, we also recogn=
+ize
+> > that such transitions demand time and effort. As a result, we are
+> > considering an alternative approach. Instead of migrating to cgroup2, w=
+e
+> > are contemplating modifications to the BPF kernel code to ensure
+> > compatibility with cgroup1. These adjustments appear to be relatively
+> > minor, making this option more feasible.
 >
-> The helpers you are adding only makes sense for cgroup1. e.g.
-> bpf_cgroup_ancestor_id_from_task_within_controller() makes no sense in
-> cgroup2. The ancestor ids don't change according to controllers. The only
-> thing you would ask in cgroup2 is the level at which a given controller i=
-s
-> enabled at along with the straight-forward "where am I in the hierarchy?"
-> questions. I really don't want to expose interfaces which assume that the
-> hierarchies change according to the controller in question.
+> Do you mean giving up moving to cgroup2? Or, is it just a tentative
+> solution?
 
-Makes sense.
-
->
-> Also, as pointed out before, this doesn't cover cgroup1 named hierarchies
-> which leaves out a good potion of cgroup1 use cases.
->
-> > In fact, we have the option to utilize
-> > bpf_cgroup_ancestor_id_from_task_within_controller() as a substitute
-> > for bpf_task_under_cgroup(), which allows us to sidestep the need for
-> > changes within task_under_cgroup_hierarchy() altogether.
->
-> I don't think this is the direction we should take. If you really want,
-> please tie the interface directly to the hierarchies. Don't hitch hierarc=
-hy
-> identificdation on the controllers. e.g. Introduce cgroup1 only interface
-> which takes both hierarchy ID and cgroup ID to operate on them.
-
-Thanks for your suggestion. I will think about it.
-BTW, I can't find the hierarchy ID of systemd (/sys/fs/cgroup/systemd)
-in /proc/cgroups. Is this intentional as part of the design, or might
-it be possible that we overlooked it?
-In the userspace, where can we find the hierarchy ID of a named hierarchy?
+Our transition to cgroup2 won't happen in the near future. It's a
+long-term job.
 
 --=20
 Regards
