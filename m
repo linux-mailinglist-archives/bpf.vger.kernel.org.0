@@ -1,152 +1,146 @@
-Return-Path: <bpf+bounces-10861-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10862-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E0F77AE8CD
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 11:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 001737AE99A
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 11:54:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 0EF05281894
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 09:20:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 30BA5281744
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 09:54:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DD8612B83;
-	Tue, 26 Sep 2023 09:20:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8808E1A262;
+	Tue, 26 Sep 2023 09:54:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5F2263AF
-	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 09:20:30 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB6ABE;
-	Tue, 26 Sep 2023 02:20:28 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-	by smtp-out1.suse.de (Postfix) with ESMTP id 423AD215E6;
-	Tue, 26 Sep 2023 09:20:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1695720027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9ubSji0XDPEOBVnTbBKRyr/HLsbPg3Su+gignwc5fUs=;
-	b=BbaR/gVVPxxyYnB52OZ4s1av2WTX2jiGwKOnEojCmPgU/OXetpZ+5NT6gDAUqkIimBneTo
-	8Cg05UaX1YDiFYAWe3x28j5iEeYzTAvUptDq2pkMPNTAwFNJOF57HU1pakSdn56jGbBrla
-	8yrVrG22Zf/QwglPPcH88r6Cns1dPm4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1695720027;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9ubSji0XDPEOBVnTbBKRyr/HLsbPg3Su+gignwc5fUs=;
-	b=16Eucii0LhbAGVV/yMBofHtzU1AJNU3AesM8Fa5T6kGqyXZnAMl5yt8ckJFVjOHC0l0PIU
-	gBxXMKXOdFyqFYDA==
-Received: from suse.de (mgorman.tcp.ovpn2.nue.suse.de [10.163.32.246])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by relay2.suse.de (Postfix) with ESMTPS id C2EFE2C142;
-	Tue, 26 Sep 2023 09:20:22 +0000 (UTC)
-Date: Tue, 26 Sep 2023 10:20:20 +0100
-From: Mel Gorman <mgorman@suse.de>
-To: Tejun Heo <tj@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, torvalds@linux-foundation.org,
-	mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	joshdon@google.com, brho@google.com, pjt@google.com,
-	derkling@google.com, haoluo@google.com, dvernet@meta.com,
-	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	kernel-team@meta.com, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCHSET v4] sched: Implement BPF extensible scheduler class
-Message-ID: <20230926092020.3alsvg6vwnc4g3td@suse.de>
-References: <20230711011412.100319-1-tj@kernel.org>
- <ZLrQdTvzbmi5XFeq@slm.duckdns.org>
- <20230726091752.GA3802077@hirez.programming.kicks-ass.net>
- <ZMMH1WiYlipR0byf@slm.duckdns.org>
- <20230817124457.b5dca734zcixqctu@suse.de>
- <ZOfMNEoqt45Qmo00@slm.duckdns.org>
- <ZQngsfCdj0TJbEUL@slm.duckdns.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7683134D1;
+	Tue, 26 Sep 2023 09:54:50 +0000 (UTC)
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22340BE;
+	Tue, 26 Sep 2023 02:54:48 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-27758c8f62aso2798044a91.0;
+        Tue, 26 Sep 2023 02:54:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695722087; x=1696326887; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5dnCUvijMsimGrTWPpfu5Agx/K3HlKGuGAYzpWTEyOs=;
+        b=TsfH/6QQE4Ec2oLmj0QfqoAZ1tydrsONkUzIC/NzQX8dtylhKmYZDRHfjYgchx5hBp
+         ndhfI3g/hhHmcPCjQH5OWfzcOsQjhYyKErfbUVykLhWL0jPyb5noOk0J0XtEv9Z2A1jc
+         FJh49ar4mv54Yxx549dnOdswvCqYcCeLIRzqSxSsgioyjxY+ZltqT3F3w+h1xB0/tLF7
+         G1pzChzAXZOveaI4M1D11khcPG/L4rizJ7QkuBjFUNsdw/eHKmbA5Q1GWPbXyhaHV1G1
+         P2OBbLgGPaKE2lKOv3/LCCt4uBYOsY6cFpxUVWc+6481kcD9oDewUh4lXikzf/t376Pm
+         kP2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695722087; x=1696326887;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5dnCUvijMsimGrTWPpfu5Agx/K3HlKGuGAYzpWTEyOs=;
+        b=aW59GIb1GISKY486pxNhO6aTJkpfgmUOXxCZoyBDnR2a1NOZgRk280G54m92AMJ8El
+         75ruufjz0MnOo/DIxGPdgjTPPed9a7Balt1lvyY9JM5vKbQzfJknrypBB8GJq0QODRCc
+         0xGFuRoinvaOo81s41MNhuDPe77Oc20hwIvTKPlkvZF4FQ4NyvI0rs2Nt3rqPahf9mGL
+         ygYSMjFUjy1oJ3IYm2jAW5iq/2R5BaWxlH0kMM5Vypo99UkYEjE0xNtMk5wLV2SJB47L
+         uGZaKefVvm55tk8SBL1yeDNvR0SLQexnm0njFWKNDN0I7qiPxvSjvDr/FkuvO5LG5sRb
+         tz0A==
+X-Gm-Message-State: AOJu0YwRcNCmeegEKwDppnAiXI1e8t/52hnhxQuOhLOp053d2v7w/Zyz
+	vzsGfj9iXJE4Qq/MUhgX10k4YfAT4b1zHZL0d9NvXFsmy1u6tA==
+X-Google-Smtp-Source: AGHT+IGqgqY7gPaWD8IB1m6kzpOSXZFtxJY0UbbwDIP1TXvWNzPtGlJv5iI6HrxgQw0AQqQSvihy5aN2SIsdyluNFnA=
+X-Received: by 2002:a17:90b:3ec5:b0:269:5adb:993 with SMTP id
+ rm5-20020a17090b3ec500b002695adb0993mr5938269pjb.22.1695722087455; Tue, 26
+ Sep 2023 02:54:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <ZQngsfCdj0TJbEUL@slm.duckdns.org>
+References: <20230921120913.566702-5-daan.j.demeyer@gmail.com> <20230925221241.2345534-1-jrife@google.com>
+In-Reply-To: <20230925221241.2345534-1-jrife@google.com>
+From: Daan De Meyer <daan.j.demeyer@gmail.com>
+Date: Tue, 26 Sep 2023 11:54:36 +0200
+Message-ID: <CAO8sHc=K1042abA1AVPA8Dn_cEt7-jGQgrUHSWFiUE9KXy5Chg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/9] bpf: Implement cgroup sockaddr hooks for
+ unix sockets
+To: Jordan Rife <jrife@google.com>
+Cc: bpf@vger.kernel.org, kernel-team@meta.com, martin.lau@linux.dev, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Sep 19, 2023 at 07:56:01AM -1000, Tejun Heo wrote:
-> Hello, Mel.
-> 
-> I don't think the discussion has reached a point where the points of
-> disagreements are sufficiently laid out from both sides. Do you have any
-> further thoughts?
-> 
+> > @@ -1919,6 +1936,13 @@ static int unix_dgram_sendmsg(struct socket *sock, struct msghdr *msg,
+> >               goto out;
+> >
+> >       if (msg->msg_namelen) {
+> > +             err = BPF_CGROUP_RUN_PROG_UNIX_SENDMSG_LOCK(sk,
+> > +                                                         msg->msg_name,
+> > +                                                         &msg->msg_namelen,
+> > +                                                         NULL);
+> > +             if (err)
+> > +                     goto out;
+> > +
+> >               err = unix_validate_addr(sunaddr, msg->msg_namelen);
+> >               if (err)
+> >                       goto out;
+>
+>
+> Just an FYI, I /think/ this is going to introduce a bug similar to the one I'm
+> addressing in my patch here:
+>
+> - https://lore.kernel.org/netdev/20230921234642.1111903-2-jrife@google.com/
+>
+> With this change, callers to sock_sendmsg() in kernel space would see their
+> value of msg->msg_namelen change if they are using Unix sockets. While it's
+> unclear if there are any real systems that would be impacted, it can't hurt to
+> insulate callers from these kind of side-effects. I can update my my patch to
+> account for possible changes to msg_namelen.
 
-Plenty, but I'm not sure how to reconcile this. I view pluggable scheduler
-as something that would be a future maintenance nightmare and our "lived
-experience" or "exposure bias" with respect to the expertise of users differs
-drastically. Some developers will be mostly dealing with users that have
-extensive relevant expertise, a strong incentive to maximise performance
-and full control of their stack, others do not and the time cost of
-supporting such users is high. While I can see advantages to having specific
-schedulers targeting either a specific workload or hardware configuration,
-the proliferation of such schedulers and the inevitable need to avoid
-introducing any new regressions in deployed schedulers will be cumbersome.
+That would be great! I think it makes sense to apply the same concept to unix
+sockets so insulating changes to the msg_namelen seems like the way to go.
 
-I generally worry that certain things may not have existed in the shipped
-scheduler if plugging was an option including EAS, throttling control,
-schedutil integration, big.Little, adapting to chiplets and picking preferred
-SMT siblings for turbo boost. In each case, integrating support was time
-consuming painful and a pluggable scheduler would have been a relatively
-easy out that would ultimately cost us if it was never properly integrated.
-While no one wants the pain, a few of us also want to avoid the problem
-of vendors publishing a hacky scheduler for their specific hardware and
-discontinuing the work at that point.
+> Also, with this patch series is it possible for AF_INET BPF hooks (connect4,
+> sendmsg4, connect6, etc.) to modify the address length?
 
-I see that some friction with the current state is due to tuning knobs
-moving to debugfs. FWIW, I didn't 100% agree with that move either and
-carried an out-of-tree revert that displayed warnings for a time but I
-understood the logic behind it. However, if the tuning parameters are
-insufficient, and there is good reason to change them then the answer
-is to add tuning knobs with defined semantics and document them -- not
-pluggable schedulers. We've seen something along those lines recently
-with nice_latency even if it turned into EEVDF instead of a new interface,
-so I guess we'll see how that pans out.
+This is not yet allowed. We only allow changing the unix sockaddr length at the
+moment. Maybe in the future we'd want to allow changing INET6 addr lengths
+as well but currently we don't allow this.
 
-I get most of your points. Maybe most users will not care about a pluggable
-scheduler but *some will* and they will the maintenance burden. I get your
-point as well that if there is a bug and the pluggable scheduler then the
-first step would be "reproduce without the pluggable scheduler" and again,
-you'd be right, that is a great first step *except* sometimes they can't or
-sometimes they simply won't without significant proof and that's incurs a
-maintenance burden. Even if the pluggable schedulers are GPL, there still
-is a burden to understood any scheduler that is loaded to see if it's the
-source of a problem which means. Instead of understanding a defined number
-of schedulers that are developed over time with the history in changelogs,
-we may have to understand N schedulers that may be popular and that also
-is painful. That's leaving aside the difficulty of what happens when
-more than 1 can be loaded and interacting once containers are involved
-assuming that such support would exist in the future. It's already known
-that interacting IO schedulers are a nightmare so presumably interacting
-CPU schedulers within the same host would also be zero fun.
 
-Pluggable schedulers are effectively a change that we cannot walk back
-from if it turns out to be a bad idea because it potentially comes under
-the "you cannot break userspace" rule if a particular pluggable scheduler
-becomes popular. As I strongly believe it will be a nightmare to support
-within distributions where there is almost no control over the software
-stack of managing user expectations, I'm opposed to crossing that line with
-pluggable schedulers. While my nightmare scenarios may never be realised
-and could be overblown, it'll be hard to convince me it'll not kick me in
-the face eventually.
-
--- 
-Mel Gorman
-SUSE Labs
+On Tue, 26 Sept 2023 at 00:13, Jordan Rife <jrife@google.com> wrote:
+>
+> > @@ -1919,6 +1936,13 @@ static int unix_dgram_sendmsg(struct socket *sock, struct msghdr *msg,
+> >               goto out;
+> >
+> >       if (msg->msg_namelen) {
+> > +             err = BPF_CGROUP_RUN_PROG_UNIX_SENDMSG_LOCK(sk,
+> > +                                                         msg->msg_name,
+> > +                                                         &msg->msg_namelen,
+> > +                                                         NULL);
+> > +             if (err)
+> > +                     goto out;
+> > +
+> >               err = unix_validate_addr(sunaddr, msg->msg_namelen);
+> >               if (err)
+> >                       goto out;
+>
+>
+> Just an FYI, I /think/ this is going to introduce a bug similar to the one I'm
+> addressing in my patch here:
+>
+> - https://lore.kernel.org/netdev/20230921234642.1111903-2-jrife@google.com/
+>
+> With this change, callers to sock_sendmsg() in kernel space would see their
+> value of msg->msg_namelen change if they are using Unix sockets. While it's
+> unclear if there are any real systems that would be impacted, it can't hurt to
+> insulate callers from these kind of side-effects. I can update my my patch to
+> account for possible changes to msg_namelen.
+>
+> Also, with this patch series is it possible for AF_INET BPF hooks (connect4,
+> sendmsg4, connect6, etc.) to modify the address length?
 
