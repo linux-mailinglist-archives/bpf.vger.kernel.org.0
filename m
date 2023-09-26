@@ -1,109 +1,108 @@
-Return-Path: <bpf+bounces-10882-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10883-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 082797AF2BB
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 20:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9842F7AF392
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 21:00:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id ADEB02811D4
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 18:25:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id CA681281894
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 19:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E811450E2;
-	Tue, 26 Sep 2023 18:25:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8D5348823;
+	Tue, 26 Sep 2023 19:00:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B087F42BFA
-	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 18:25:22 +0000 (UTC)
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C59136;
-	Tue, 26 Sep 2023 11:25:21 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-690d9cda925so7314401b3a.3;
-        Tue, 26 Sep 2023 11:25:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695752721; x=1696357521; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mL/CHvcHgJZFxYJYLpsg7SBW9N36wXwuTr+5AxMKYEM=;
-        b=E2ybVHOyKLtxteKkfHFCaEm8gRch9Pcx2ISqkNoq7pKtr6YRNebHLvtW2TXYfI+S/T
-         Loef4K8pn2F/umiQEIKFbsCxfCs/m+B7/nI3UuEpu6xJvwRkTqw5w4cLmd0OHL1okRPi
-         VUVi0OWVygIRga+Nuv5SqEQZlL8y0e9CbAD959hUWppZyphBQawOSp2iXGR1CYswq9ku
-         oHl8NfgH1GMb8fzhbXi73IFV3xHpdDKEFHh5h7Q8Rjpxa2XvDCgYa3M5vGndjfxWd/0v
-         ElUt9lr+gXLeIPNcwI6agw0vR18mDSfWruM753eI9wxxH6kxw3Gf9EMqyeYFuW+dexid
-         Prcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695752721; x=1696357521;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mL/CHvcHgJZFxYJYLpsg7SBW9N36wXwuTr+5AxMKYEM=;
-        b=G7p+4+IhraYECOBS1vlHwn72irjNfZiCg34ztbjuIERnOrQDnCPR5st8+SFyQgSBbj
-         M1nsN0MLSYPnTtRyo9ga8bd31Yf2mMZm/1tT1Ra9umBL1nq7Vw1hoPelkQ9kosuSICgG
-         7RkRoj0kc8MRaUMjlzhMr1buocyaXG8eNLqh2Ma7fqAbv+GExGRViRRxjNEoqNeJEhq2
-         EAFr3lZ7r2wq7SnugkOysGz7RI1s04KQgtagb94XnmdHlhDsTGQgaeOlVXyT2eZL+O34
-         A+ZGs/5EamEK13IEx6614jRfz6P3zLMjcsOCXAFCyempxVmDjFmNBcZ2JS1wCiVrzMxb
-         tIMQ==
-X-Gm-Message-State: AOJu0YzA8xHn6LxeGsrGDFlrC8aw5SJ8HtE1kiWwkxjoEyrKexjoEaEP
-	BcPARptORFfNfVESYVdO+rknKhUlaVDIJA==
-X-Google-Smtp-Source: AGHT+IGwqu5jXLn7iFSLyPz8LErf6nFqrlKwCsOwTqnm3SpYPcIQZ40TIJbwamFkfV/7oSxlMmB3iw==
-X-Received: by 2002:a05:6a00:1249:b0:692:b6e8:ce88 with SMTP id u9-20020a056a00124900b00692b6e8ce88mr8328168pfi.17.1695752721060;
-        Tue, 26 Sep 2023 11:25:21 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::4:dfcd])
-        by smtp.gmail.com with ESMTPSA id fk1-20020a056a003a8100b00682868714fdsm10674491pfb.95.2023.09.26.11.25.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 11:25:20 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 26 Sep 2023 08:25:19 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
-	haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com,
-	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com,
-	cgroups@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 0/8] bpf, cgroup: Add bpf support for cgroup
- controller
-Message-ID: <ZRMiDwYF8yDookLf@slm.duckdns.org>
-References: <20230922112846.4265-1-laoar.shao@gmail.com>
- <ZQ3GQmYrYyKAg2uK@slm.duckdns.org>
- <CALOAHbA9-BT1daw-KXHtsrN=uRQyt-p6LU=BEpvF2Yk42A_Vxw@mail.gmail.com>
- <ZRHU6MfwqRxjBFUH@slm.duckdns.org>
- <CALOAHbB3WPwz0iZNSFbQU9HyGBC9Kymhq2zV83PbEYhzmmvz4g@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0229E3B7B0
+	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 19:00:36 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403CC1BB
+	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 12:00:35 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38QIhqlB016777
+	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 12:00:35 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3tc0h1k16y-18
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 12:00:34 -0700
+Received: from twshared34392.14.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Tue, 26 Sep 2023 12:00:33 -0700
+Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
+	id 48EF02500687C; Tue, 26 Sep 2023 12:00:26 -0700 (PDT)
+From: Song Liu <song@kernel.org>
+To: <bpf@vger.kernel.org>
+CC: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <martin.lau@kernel.org>, <kernel-team@meta.com>, <iii@linux.ibm.com>,
+        <bjorn@kernel.org>, Song Liu <song@kernel.org>
+Subject: [PATCH v3 bpf-next 0/8] Allocate bpf trampoline on bpf_prog_pack
+Date: Tue, 26 Sep 2023 12:00:12 -0700
+Message-ID: <20230926190020.1111575-1-song@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALOAHbB3WPwz0iZNSFbQU9HyGBC9Kymhq2zV83PbEYhzmmvz4g@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 9KBMXjgCD0LrJ56xoG6xiCiTjYzIgaPK
+X-Proofpoint-GUID: 9KBMXjgCD0LrJ56xoG6xiCiTjYzIgaPK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-26_13,2023-09-26_01,2023-05-22_02
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello,
+This set enables allocating bpf trampoline from bpf_prog_pack on x86. The
+majority of this work, however, is the refactoring of trampoline code.
+This is needed because we need to handle 4 archs and 2 users (trampoline
+and struct_ops).
 
-On Tue, Sep 26, 2023 at 11:01:08AM +0800, Yafang Shao wrote:
-> Thanks for your suggestion. I will think about it.
-> BTW, I can't find the hierarchy ID of systemd (/sys/fs/cgroup/systemd)
-> in /proc/cgroups. Is this intentional as part of the design, or might
-> it be possible that we overlooked it?
-> In the userspace, where can we find the hierarchy ID of a named hierarchy?
+1/8 is a dependency that is already applied to bpf tree.
+2/8 through 7/8 refactors trampoline code. A few helpers are added.
+8/8 finally let bpf trampoline on x86 use bpf_prog_pack.
 
-Yeah, /proc/cgroups only prints the hierarchies which have controllers
-attached to them. The file is pretty sad in general. However,
-/proc/PID/cgroup prints all existing hierarchies along with their IDs and
-identifiers (controllers or names). Hopefully, that should be enough?
+Changes in v3:
+1. Fix bug in s390. (Thanks to Ilya Leoshkevich).
+2. Fix build error in riscv. (kernel test robot).
 
-Thanks.
+Changes in v2:
+1. Add missing changes in net/bpf/bpf_dummy_struct_ops.c.
+2. Reduce one dry run in arch_prepare_bpf_trampoline. (Xu Kuohai)
+3. Other small fixes.
 
--- 
-tejun
+Song Liu (8):
+  s390/bpf: Let arch_prepare_bpf_trampoline return program size
+  bpf: Let bpf_prog_pack_free handle any pointer
+  bpf: Adjust argument names of arch_prepare_bpf_trampoline()
+  bpf: Add helpers for trampoline image management
+  bpf, x86: Adjust arch_prepare_bpf_trampoline return value
+  bpf: Add arch_bpf_trampoline_size()
+  bpf: Use arch_bpf_trampoline_size
+  x86, bpf: Use bpf_prog_pack for bpf trampoline
+
+ arch/arm64/net/bpf_jit_comp.c   |  55 +++++++++-----
+ arch/riscv/net/bpf_jit_comp64.c |  25 ++++---
+ arch/s390/net/bpf_jit_comp.c    |  56 +++++++++------
+ arch/x86/net/bpf_jit_comp.c     | 124 +++++++++++++++++++++++++-------
+ include/linux/bpf.h             |  12 +++-
+ include/linux/filter.h          |   2 +-
+ kernel/bpf/bpf_struct_ops.c     |  19 +++--
+ kernel/bpf/core.c               |  21 +++---
+ kernel/bpf/dispatcher.c         |   5 +-
+ kernel/bpf/trampoline.c         |  93 ++++++++++++++++++------
+ net/bpf/bpf_dummy_struct_ops.c  |   7 +-
+ 11 files changed, 292 insertions(+), 127 deletions(-)
+
+--
+2.34.1
 
