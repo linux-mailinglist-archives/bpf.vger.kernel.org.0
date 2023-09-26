@@ -1,178 +1,205 @@
-Return-Path: <bpf+bounces-10869-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10870-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DD7E7AECBF
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 14:27:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44CD57AED03
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 14:41:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sy.mirrors.kernel.org (Postfix) with ESMTP id 0BA54B2099C
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 12:27:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id DCC6E281479
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 12:40:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D6D727727;
-	Tue, 26 Sep 2023 12:27:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D89266B9;
+	Tue, 26 Sep 2023 12:40:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B72A846A
-	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 12:27:06 +0000 (UTC)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C2D101
-	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 05:27:04 -0700 (PDT)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38QC6BXW005878;
-	Tue, 26 Sep 2023 12:26:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=gbDD7N+qB4LuHaVpBfYwbz7btRyLsMeJdBRDrtkfMwM=;
- b=T+jGbtISdgYbTBvXhwBz+1eh9JrTYgbKAH5awNrMGfYe2wV78ZOISAZqN+uxkTrEJO3m
- jfHzQAr1zKJVv4jOSYsB6DA37gIJ1PHAD2VYzN8MwEye4Vzhmyh+e4GOAez9NNteZ+/d
- bimcSFd4HQ/zT+IPCFsL78AEvUaWlRFTpFo5/qevfyXkab+gad1ruhw/XmjzqgUuKJ9G
- m2dIXw/dBvo2F8OidaVtL/XiHZSxvDwiiCwucwJhiFx+TlBSkrRgYBtnBRJ0dpBU3wQ8
- 4qNNNAzZKrStwMA5ISA9kg2HbUyK/lLbcW6/Dxzu84NEBUtU0hMUB049qhHknnlNpWK4 nQ== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tbxngh25m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Sep 2023 12:26:49 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38QBwRb1011003;
-	Tue, 26 Sep 2023 12:26:48 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tabukb6pb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Sep 2023 12:26:48 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38QCQkMo24052476
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 26 Sep 2023 12:26:46 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2D92B20043;
-	Tue, 26 Sep 2023 12:26:46 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E4FB720040;
-	Tue, 26 Sep 2023 12:26:45 +0000 (GMT)
-Received: from [9.155.200.166] (unknown [9.155.200.166])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 26 Sep 2023 12:26:45 +0000 (GMT)
-Message-ID: <898b73dfc592c4a49de4777e4776b0b8b7c6bb66.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 bpf-next 0/8] Allocate bpf trampoline on bpf_prog_pack
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Song Liu <song@kernel.org>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, kernel-team@meta.com
-Date: Tue, 26 Sep 2023 14:26:45 +0200
-In-Reply-To: <20230925215324.2962716-1-song@kernel.org>
-References: <20230925215324.2962716-1-song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DB956FD2
+	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 12:40:55 +0000 (UTC)
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C27EEEB;
+	Tue, 26 Sep 2023 05:40:53 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-534659061afso1271375a12.3;
+        Tue, 26 Sep 2023 05:40:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695732052; x=1696336852; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/YRY9yQJk6mtkXHIe9rZvZZaiQwNs3B0gJlBYDdShz4=;
+        b=Xi2XxTX3xArWBdetnfGWEnUDO/eXd4x1OaDIxhl499kqcPt79zew8Z1cwwPj78e1Pn
+         3EKg1kgg3O3GcUgII0zhUM8euhQUk4hqpnXWmNRWGTabQPOpbevY3NzaMiQpBNzs6FCj
+         h9XR3CI5/qW+AKUtaMkDk3TZcogGovRkFyYFBLOGkmb3qoT7PK0qjNEVYuamECXEuCxy
+         +l4IRyBbbX68NisE35YLmAR3+nL+FdkQpdFfa8vlAlQ1sChLF0PAhke3xzEwa+1A9qrk
+         hstIo8td561BQGCfogLMLTzimzzg4i45bpns3M0LO2GWjjwXEvLtHjx4hoPGpJKDZd2Y
+         7Khg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695732052; x=1696336852;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/YRY9yQJk6mtkXHIe9rZvZZaiQwNs3B0gJlBYDdShz4=;
+        b=tONfrgijPhZIp84k0qx15aaE4lo98dFBBl8ELOLhG8EodeYb6XOqhpHUG+DvXjY9Pw
+         /47e4rZf01OWflex/gNCza+VRjcTVCFH/DtDrxwPfHMQWjJeJPYxITv/BF1/l17I5GDX
+         tururvYnbq0V8XMWueUKoXA3ImL6drOWjOpexac6ybXC9QsIvQYLeeo5Yni+m6NBGxeJ
+         ajtPWpoLqBk8BaUMzI+XnZ49PHGBCRg3eCIpZNWVgCvIxGtkaxCwXBI9S0nKRoXjI/4r
+         tIihc0uPLutQNUguNEINOWxCi2LBAULCmLXGL6JLflBbjBHE8+Ael+n0HlVUubIgSLdL
+         e8+w==
+X-Gm-Message-State: AOJu0YxkQE6nqq2tWBpiFPeRXgTXBEdZMpbCJtDdcHYCzeqVmXRHfXDI
+	zIu8N0iq4g4NphYO77866E4=
+X-Google-Smtp-Source: AGHT+IF8Bdu1wgi4OEbTgX8REMmOZ0IDM7txTkRoPoTX2SZd3bXWXkaQRg0+frzvdN8lSkDNuHq7Bg==
+X-Received: by 2002:aa7:c755:0:b0:530:bbeb:571 with SMTP id c21-20020aa7c755000000b00530bbeb0571mr8885034eds.36.1695732051949;
+        Tue, 26 Sep 2023 05:40:51 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id d7-20020a056402516700b0052f3471ccf6sm6768323ede.6.2023.09.26.05.40.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 05:40:51 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 26 Sep 2023 14:40:49 +0200
+To: Tony Ambardar <tony.ambardar@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH bpf-next v1] bpf/selftests: improve arg parsing in
+ test_verifier
+Message-ID: <ZRLRUQEf7M4wa1HJ@krava>
+References: <20230925233702.19466-1-Tony.Ambardar@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9rMBVF1Y2Wp2-Ud2shJOxS_RECjgL9Sj
-X-Proofpoint-ORIG-GUID: 9rMBVF1Y2Wp2-Ud2shJOxS_RECjgL9Sj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-26_08,2023-09-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- spamscore=0 clxscore=1015 malwarescore=0 phishscore=0 adultscore=0
- mlxlogscore=734 impostorscore=0 priorityscore=1501 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309260104
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925233702.19466-1-Tony.Ambardar@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, 2023-09-25 at 14:53 -0700, Song Liu wrote:
-> This set enables allocating bpf trampoline from bpf_prog_pack on x86.
-> The
-> majority of this work, however, is the refactoring of trampoline
-> code.
-> This is needed because we need to handle 4 archs and 2 users
-> (trampoline
-> and struct_ops).
->=20
-> 1/8 is a dependency that is already applied to bpf tree.
-> 2/8 through 7/8 refactors trampoline code. A few helpers are added.
-> 8/8 finally let bpf trampoline on x86 use bpf_prog_pack.
->=20
-> Changes in v2:
-> 1. Add missing changes in net/bpf/bpf_dummy_struct_ops.c.
-> 2. Reduce one dry run in arch_prepare_bpf_trampoline. (Xu Kuohai)
-> 3. Other small fixes.
->=20
-> Song Liu (8):
-> =C2=A0 s390/bpf: Let arch_prepare_bpf_trampoline return program size
-> =C2=A0 bpf: Let bpf_prog_pack_free handle any pointer
-> =C2=A0 bpf: Adjust argument names of arch_prepare_bpf_trampoline()
-> =C2=A0 bpf: Add helpers for trampoline image management
-> =C2=A0 bpf, x86: Adjust arch_prepare_bpf_trampoline return value
-> =C2=A0 bpf: Add arch_bpf_trampoline_size()
-> =C2=A0 bpf: Use arch_bpf_trampoline_size
-> =C2=A0 x86, bpf: Use bpf_prog_pack for bpf trampoline
->=20
-> =C2=A0arch/arm64/net/bpf_jit_comp.c=C2=A0=C2=A0 |=C2=A0 55 +++++++++-----
-> =C2=A0arch/riscv/net/bpf_jit_comp64.c |=C2=A0 24 ++++---
-> =C2=A0arch/s390/net/bpf_jit_comp.c=C2=A0=C2=A0=C2=A0 |=C2=A0 43 ++++++---=
---
-> =C2=A0arch/x86/net/bpf_jit_comp.c=C2=A0=C2=A0=C2=A0=C2=A0 | 124 +++++++++=
-++++++++++++++++-----
-> --
-> =C2=A0include/linux/bpf.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 12 +++-
-> =C2=A0include/linux/filter.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 |=C2=A0=C2=A0 2 +-
-> =C2=A0kernel/bpf/bpf_struct_ops.c=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 19 +++-=
--
-> =C2=A0kernel/bpf/core.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 21 +++---
-> =C2=A0kernel/bpf/dispatcher.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 |=C2=A0=C2=A0 5 +-
-> =C2=A0kernel/bpf/trampoline.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 |=C2=A0 93 ++++++++++++++++++------
-> =C2=A0net/bpf/bpf_dummy_struct_ops.c=C2=A0 |=C2=A0=C2=A0 7 +-
-> =C2=A011 files changed, 277 insertions(+), 128 deletions(-)
->=20
-> --
+On Mon, Sep 25, 2023 at 04:37:02PM -0700, Tony Ambardar wrote:
+> Current test_verifier provides little feedback or argument validation,
+> instead silently falling back to running all tests in case of user error
+> or even expected use cases. Trying to do manual exploratory testing,
+> switching between kernel versions (e.g. with varying tests), or working
+> around problematic tests (e.g. kernel hangs/crashes) can be a frustrating
+> experience.
+> 
+> Rework argument parsing to be more robust and strict, and provide basic
+> help on errors. Clamp test ranges to valid values and add an option to
+> list available built-in tests ("-l"). Default "test_verifier" behaviour
+> (run all tests) is unchanged and backwards-compatible. Updated examples:
+> 
+>      $ test_verifier die die die     # previously ran all tests
+>      Usage: test_verifier -l | [-v|-vv] [<tst_lo> [<tst_hi>]]
+> 
+>      $ test_verifier 700 9999        # runs test subset from 700 to end
+> 
+> Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/test_verifier.c | 54 ++++++++++++---------
+>  1 file changed, 30 insertions(+), 24 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+> index 98107e0452d3..3712b5363f60 100644
+> --- a/tools/testing/selftests/bpf/test_verifier.c
+> +++ b/tools/testing/selftests/bpf/test_verifier.c
+> @@ -10,9 +10,11 @@
+>  #include <endian.h>
+>  #include <asm/types.h>
+>  #include <linux/types.h>
+> +#include <linux/minmax.h>
+
+this fails to compile
+
+  BINARY   test_verifier
+test_verifier.c:13:10: fatal error: linux/minmax.h: No such file or directory
+   13 | #include <linux/minmax.h>
+      |          ^~~~~~~~~~~~~~~~
+
+looks like you could use perhaps <linux/kernel.h> instead?
+
+jirka
+
+
+>  #include <stdint.h>
+>  #include <stdio.h>
+>  #include <stdlib.h>
+> +#include <ctype.h>
+>  #include <unistd.h>
+>  #include <errno.h>
+>  #include <string.h>
+> @@ -1848,36 +1850,40 @@ int main(int argc, char **argv)
+>  {
+>  	unsigned int from = 0, to = ARRAY_SIZE(tests);
+>  	bool unpriv = !is_admin();
+> -	int arg = 1;
+> -
+> -	if (argc > 1 && strcmp(argv[1], "-v") == 0) {
+> +	int i, arg = 1;
+> +
+> +	while (argc > 1 && *argv[arg] == '-') {
+> +		if (strcmp(argv[arg], "-l") == 0) {
+> +			for (i = from; i < to; i++)
+> +				printf("#%d %s\n", i, tests[i].descr);
+> +			return EXIT_SUCCESS;
+> +		} else if (strcmp(argv[arg], "-v") == 0) {
+> +			verbose = true;
+> +			verif_log_level = 1;
+> +		} else if (strcmp(argv[arg], "-vv") == 0) {
+> +			verbose = true;
+> +			verif_log_level = 2;
+> +		} else
+> +			goto out_help;
+>  		arg++;
+> -		verbose = true;
+> -		verif_log_level = 1;
+>  		argc--;
+>  	}
+> -	if (argc > 1 && strcmp(argv[1], "-vv") == 0) {
+> -		arg++;
+> -		verbose = true;
+> -		verif_log_level = 2;
+> -		argc--;
+> -	}
+> -
+> -	if (argc == 3) {
+> -		unsigned int l = atoi(argv[arg]);
+> -		unsigned int u = atoi(argv[arg + 1]);
+>  
+> -		if (l < to && u < to) {
+> -			from = l;
+> -			to   = u + 1;
+> -		}
+> -	} else if (argc == 2) {
+> -		unsigned int t = atoi(argv[arg]);
+> +	for (i = 1; i <= 2 && argc > 1; i++, arg++, argc--) {
+> +		unsigned int t = min(atoi(argv[arg]), ARRAY_SIZE(tests) - 1);
+>  
+> -		if (t < to) {
+> +		if (!isdigit(*argv[arg]))
+> +			goto out_help;
+> +		if (i == 1)
+>  			from = t;
+> -			to   = t + 1;
+> -		}
+> +		to = t + 1;
+> +	}
+> +
+> +	if (argc > 1) {
+> +out_help:
+> +		printf("Usage: %s -l | [-v|-vv] [<tst_lo> [<tst_hi>]]\n",
+> +		       argv[0]);
+> +		return EXIT_FAILURE;
+>  	}
+>  
+>  	unpriv_disabled = get_unpriv_disabled();
+> -- 
 > 2.34.1
-
-Regarding the s390x part, arch_prepare_bpf_trampoline() needs to call
-__arch_prepare_bpf_trampoline() twice: the first time in order to
-compute various offsets, the second time to actually emit the code. So
-I would suggest to either keep the loop or use the following fixup:
-
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -2645,7 +2645,15 @@ int arch_prepare_bpf_trampoline(struct
-bpf_tramp_image *im, void *image,
-        struct bpf_tramp_jit tjit;
-        int ret;
-=20
-+       /* Compute offsets. */
-        memset(&tjit, 0, sizeof(tjit));
-+       ret =3D __arch_prepare_bpf_trampoline(im, &tjit, m, flags,
-+                                           tlinks, func_addr);
-+       if (ret < 0)
-+               return ret;
-+
-+       /* Generate the code. */
-+       tjit.common.prg =3D 0;
-        tjit.common.prg_buf =3D image;
-        ret =3D __arch_prepare_bpf_trampoline(im, &tjit, m, flags,
-                                            tlinks, func_addr);
-
-With that:
-
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>  # on s390x
-
-for the series.
+> 
+> 
 
