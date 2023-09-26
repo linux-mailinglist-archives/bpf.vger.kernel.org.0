@@ -1,33 +1,33 @@
-Return-Path: <bpf+bounces-10872-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10873-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B44F7AEDF5
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 15:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C3D637AEDF9
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 15:30:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sy.mirrors.kernel.org (Postfix) with ESMTP id A9A69B209C2
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 13:30:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTP id 55DF1B209CC
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 13:30:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 607C528E32;
-	Tue, 26 Sep 2023 13:30:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DABFE28E36;
+	Tue, 26 Sep 2023 13:30:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04A3528E17;
-	Tue, 26 Sep 2023 13:30:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81973C433C7;
-	Tue, 26 Sep 2023 13:30:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8016428E17;
+	Tue, 26 Sep 2023 13:30:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65BF2C433C8;
+	Tue, 26 Sep 2023 13:30:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695735019;
-	bh=BuTNpWWd/UAFxk2IYQCtAIX9ygrcQeHn4Wa7NWsusII=;
+	s=k20201202; t=1695735049;
+	bh=PDbcZR8qPDhdOJhOEKqwAYz8JhEa7RPGxuFdjlVwC70=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=ldR49Xpf4JBEqZ3Rc/jRRwnz2VKTfW8HBkk6ZI6ZH+1C+iO2nM/QC0IOmZnphvQe7
-	 Kxuj91LbQt1swUkCQlMYWnMfXlikEnFqLYqAW5YsH/BvTLEvwseBEiN0hRDgBHedVe
-	 CqF2h8FbLV4DXJuoDLyeEaOK4MLZrDNkGTnDGBYy5zD4m1u3K8EU8pRzdMZjpSqxMX
-	 yreHM/bcTyES4ATxki4xFR/6EvMn/yd6DJMieYZOLSeqFHqAN2LK6FPhoZrZ7muSmf
-	 lzeQRV9Kl6CrzobN39FJfnCvS1WC8smH/V3wmqJJqy4Dkr9/qVxQzyYbhRQBURlsq8
-	 UvskYlen0NJOQ==
+	b=FIA+Tdrasc/f1J8sY5um2A/XD5UrwACQK+ZfQRk+MZKzf0k49rBfciCxJJdiLZtOK
+	 zTIemt7kNlOCYgf1bvrx7hfivIZ0XS0f1hZWaU8SZlR2pEHXnwywxVW27K63MmmtZd
+	 CYh7B47YFYJP0Exw0ruCDS1rJ4saPeEUQdHOMx+Aem3SXDw6booCMTZUaOECBU6YOq
+	 lb6xGM20F24KCNsq7SDaK9R/CbJqYswFqcSGIurxJNmE0hOWNZWXr0jvvaDqr0j4wk
+	 wbW3VUB0nxsMlz7HbVYr0OoupRaBeyFiNgp7itmAE/+eOUfJSQ5ThROpoylPdgR1p6
+	 KA7v893YSk6aA==
 From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
 To: Pu Lehui <pulehui@huaweicloud.com>, bpf@vger.kernel.org,
  linux-riscv@lists.infradead.org, netdev@vger.kernel.org
@@ -40,11 +40,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
  <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>, Luke Nelson
  <luke.r.nels@gmail.com>, Pu Lehui <pulehui@huawei.com>, Pu Lehui
  <pulehui@huaweicloud.com>
-Subject: Re: [PATCH bpf-next 0/4] Mixing bpf2bpf and tailcalls for RV64
-In-Reply-To: <20230919035711.3297256-1-pulehui@huaweicloud.com>
-References: <20230919035711.3297256-1-pulehui@huaweicloud.com>
-Date: Tue, 26 Sep 2023 15:30:14 +0200
-Message-ID: <877codoye1.fsf@all.your.base.are.belong.to.us>
+Subject: Re: [PATCH bpf-next v2 0/6] Zbb support and code simplification for
+ RV64 JIT
+In-Reply-To: <20230919035839.3297328-1-pulehui@huaweicloud.com>
+References: <20230919035839.3297328-1-pulehui@huaweicloud.com>
+Date: Tue, 26 Sep 2023 15:30:44 +0200
+Message-ID: <8734z1oyd7.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -56,21 +57,9 @@ Content-Transfer-Encoding: quoted-printable
 
 Pu Lehui <pulehui@huaweicloud.com> writes:
 
-> In the current RV64 JIT, if we just don't initialize the TCC in subprog,
-> the TCC can be propagated from the parent process to the subprocess, but
-> the TCC of the parent process cannot be restored when the subprocess
-> exits. Since the RV64 TCC is initialized before saving the callee saved
-> registers into the stack, we cannot use the callee saved register to
-> pass the TCC, otherwise the original value of the callee saved register
-> will be destroyed. So we implemented mixing bpf2bpf and tailcalls
-> similar to x86_64, i.e. using a non-callee saved register to transfer
-> the TCC between functions, and saving that register to the stack to
-> protect the TCC value. At the same time, we also consider the scenario
-> of mixing trampoline.
->
-> In addition, some code cleans are also attached to this patchset.
->
-> Tests test_bpf.ko and test_verifier have passed, as well as the relative
+> Add Zbb support [0] to optimize code size and performance of RV64 JIT.
+> Meanwhile, adjust the code for unification and simplification. Tests
+> test_bpf.ko and test_verifier have passed, as well as the relative
 > testcases of test_progs*.
 
 Apologies for the review delay. I'm travelling, and will pick it up ASAP
