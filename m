@@ -1,818 +1,492 @@
-Return-Path: <bpf+bounces-10852-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10853-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAEEE7AE56A
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 08:00:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F3D37AE595
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 08:13:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by am.mirrors.kernel.org (Postfix) with ESMTP id 2DA141F254B9
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 06:00:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id 522D41C203B2
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 06:13:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 347AA4C92;
-	Tue, 26 Sep 2023 05:59:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1BB84C93;
+	Tue, 26 Sep 2023 06:13:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9040C538A;
-	Tue, 26 Sep 2023 05:59:48 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741A3D6;
-	Mon, 25 Sep 2023 22:59:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=BIZVqZRaNiAC0t8PNEMpLHnLPep96YivTv7Xa2TuOeY=; b=JQ+7ZvmBALoX12aaGIfLq1YTi4
-	NGeAp25bz6ZiVspNKG2YQYgqrdgd7HRUcjTfCKz6LA4WlqLaUV9ymu6gWkTOYUVwqNWwrO/a0Whql
-	qdSZKUSfE/Gg9LcQE9BV/54v+HKnEod1OFFXmKjXjyZM9kriuzGfizWIK2q7TYuBWU8aubkWw3AcQ
-	7Eo6E+9enQ6ol8zkA+Eg7utik5n/wHiL0GGigv7N6vd0j0W7YXCcUsVVlcj/J9C7dnrqqHaNElQvL
-	Zjl3ioA6IHD1AX8U5nuItLgAcG9tZh5HxjcVF/L025hCiUV0YkeZl1aTMHtMVE4W5u6wgXInZm4dR
-	YGcnFcEQ==;
-Received: from mob-194-230-148-205.cgn.sunrise.net ([194.230.148.205] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1ql16k-0006of-1I; Tue, 26 Sep 2023 07:59:42 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org,
-	martin.lau@kernel.org,
-	razor@blackwall.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	john.fastabend@gmail.com,
-	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf-next 8/8] selftests/bpf: Add selftests for meta
-Date: Tue, 26 Sep 2023 07:59:13 +0200
-Message-Id: <20230926055913.9859-9-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20230926055913.9859-1-daniel@iogearbox.net>
-References: <20230926055913.9859-1-daniel@iogearbox.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06CB546A8;
+	Tue, 26 Sep 2023 06:13:31 +0000 (UTC)
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 25 Sep 2023 23:13:27 PDT
+Received: from mgamail.intel.com (unknown [192.198.163.54])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D0EDE;
+	Mon, 25 Sep 2023 23:13:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695708808; x=1727244808;
+  h=date:from:to:cc:subject:message-id;
+  bh=KwSVlQXKOSTAA9d4nwJUni4n+FXkeyT1JtBv0BlDC5o=;
+  b=OUCSxIX/XdI31k8+EH5jA7Y3++XgO5GjZRO6Q+hQe7vrP57JuBiCcaFW
+   7YbcIBY043uN0tWjH60qvOT72HzjOB34dfD0jAiEMTKbcqFE9NM8jEYbv
+   kfHZCzAzkFUuN5/BSFg7NEypROvU0MD5vVvCeWKX6iTD4IQnphw3n/feS
+   82BSiDfHh9/Sx3U5o2IM+KxA0GKK9H8jC5srlE1wUtbTaHkTNzYVxemDn
+   +sfV8yBrnFs2yVcobFLaLOuKOReEwf2EyEsr3zFE7CbdptWsLMdg6opeF
+   IJ6m9loKXHmGqnhXEfjlnW5JetIm5d7RCOjXkeKW6v8gz5gQlSOxSYblX
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="3089521"
+X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
+   d="scan'208";a="3089521"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 23:12:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="818932875"
+X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
+   d="scan'208";a="818932875"
+Received: from lkp-server02.sh.intel.com (HELO 32c80313467c) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 25 Sep 2023 23:12:21 -0700
+Received: from kbuild by 32c80313467c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ql1Iw-0002W2-3B;
+	Tue, 26 Sep 2023 06:12:18 +0000
+Date: Tue, 26 Sep 2023 14:11:55 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Memory Management List <linux-mm@kvack.org>,
+ alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org,
+ bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
+ linux-net-drivers@amd.com, netdev@vger.kernel.org
+Subject: [linux-next:master] BUILD REGRESSION
+ 8fff9184d1b5810dca5dd1a02726d4f844af88fc
+Message-ID: <202309261423.CUByojSF-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_NONE autolearn=no
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27042/Mon Sep 25 09:37:53 2023)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-Add a bigger batch of test coverage to assert correct operation of
-meta device and its BPF program management:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 8fff9184d1b5810dca5dd1a02726d4f844af88fc  Add linux-next specific files for 20230925
 
-  # ./vmtest.sh -- ./test_progs -t tc_meta
-  [...]
-  ./test_progs -t tc_meta
-  [    1.211407] bpf_testmod: loading out-of-tree module taints kernel.
-  [    1.211805] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
-  [    1.271692] tsc: Refined TSC clocksource calibration: 3407.989 MHz
-  [    1.274015] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x311fc9c9451, max_idle_ns: 440795361646 ns
-  [    1.275241] clocksource: Switched to clocksource tsc
-  #255     tc_meta_basic:OK
-  #256     tc_meta_device:OK
-  #257     tc_meta_multi_links:OK
-  #258     tc_meta_multi_opts:OK
-  #259     tc_meta_neigh_links:OK
-  Summary: 5/0 PASSED, 0 SKIPPED, 0 FAILED
-  [...]
+Error/Warning reports:
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- tools/testing/selftests/bpf/config            |   1 +
- .../selftests/bpf/prog_tests/tc_helpers.h     |   4 +
- .../selftests/bpf/prog_tests/tc_meta.c        | 650 ++++++++++++++++++
- .../selftests/bpf/progs/test_tc_link.c        |  13 +
- 4 files changed, 668 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_meta.c
+https://lore.kernel.org/oe-kbuild-all/202308282000.2XNh0K6D-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202308301211.2HHbgs2N-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202309101830.7uQV4SMc-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202309122047.cRi9yJrq-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202309130213.mSR7X2jZ-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202309192314.VBsjiIm5-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202309212121.cul1pTRa-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202309212339.hxhBu2F1-lkp@intel.com
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index e41eb33b2704..c00bac17dace 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -43,6 +43,7 @@ CONFIG_IPV6_TUNNEL=y
- CONFIG_KEYS=y
- CONFIG_LIRC=y
- CONFIG_LWTUNNEL=y
-+CONFIG_META=y
- CONFIG_MODULE_SIG=y
- CONFIG_MODULE_SRCVERSION_ALL=y
- CONFIG_MODULE_UNLOAD=y
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_helpers.h b/tools/testing/selftests/bpf/prog_tests/tc_helpers.h
-index 6c93215be8a3..03dbb10918ae 100644
---- a/tools/testing/selftests/bpf/prog_tests/tc_helpers.h
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_helpers.h
-@@ -4,6 +4,10 @@
- #define TC_HELPERS
- #include <test_progs.h>
- 
-+#ifndef loopback
-+# define loopback 1
-+#endif
-+
- static inline __u32 id_from_prog_fd(int fd)
- {
- 	struct bpf_prog_info prog_info = {};
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_meta.c b/tools/testing/selftests/bpf/prog_tests/tc_meta.c
-new file mode 100644
-index 000000000000..c528fcedd519
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_meta.c
-@@ -0,0 +1,650 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Isovalent */
-+#include <uapi/linux/if_link.h>
-+#include <net/if.h>
-+#include <test_progs.h>
-+
-+#define meta_peer "m0"
-+#define meta_name "m1"
-+
-+#define ping_addr_neigh		0x0a000002 /* 10.0.0.2 */
-+#define ping_addr_noneigh	0x0a000003 /* 10.0.0.3 */
-+
-+#include "test_tc_link.skel.h"
-+#include "netlink_helpers.h"
-+#include "tc_helpers.h"
-+
-+#define ICMP_ECHO 8
-+
-+struct icmphdr {
-+	__u8		type;
-+	__u8		code;
-+	__sum16		checksum;
-+	struct {
-+		__be16	id;
-+		__be16	sequence;
-+	} echo;
-+};
-+
-+struct iplink_req {
-+	struct nlmsghdr  n;
-+	struct ifinfomsg i;
-+	char             buf[1024];
-+};
-+
-+static int create_meta(int mode, int policy, int peer_policy, int *ifindex,
-+		       bool same_netns)
-+{
-+	struct rtnl_handle rth = { .fd = -1 };
-+	struct iplink_req req = {};
-+	struct rtattr *linkinfo, *data;
-+	const char *type = "meta";
-+	int err;
-+
-+	err = rtnl_open(&rth, 0);
-+	if (!ASSERT_OK(err, "open_rtnetlink"))
-+		return err;
-+
-+	memset(&req, 0, sizeof(req));
-+	req.n.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifinfomsg));
-+	req.n.nlmsg_flags = NLM_F_REQUEST | NLM_F_CREATE | NLM_F_EXCL;
-+	req.n.nlmsg_type = RTM_NEWLINK;
-+	req.i.ifi_family = AF_UNSPEC;
-+
-+	addattr_l(&req.n, sizeof(req), IFLA_IFNAME, meta_name,
-+		  strlen(meta_name));
-+	linkinfo = addattr_nest(&req.n, sizeof(req), IFLA_LINKINFO);
-+	addattr_l(&req.n, sizeof(req), IFLA_INFO_KIND, type, strlen(type));
-+	data = addattr_nest(&req.n, sizeof(req), IFLA_INFO_DATA);
-+	addattr32(&req.n, sizeof(req), IFLA_META_POLICY, policy);
-+	addattr32(&req.n, sizeof(req), IFLA_META_PEER_POLICY, peer_policy);
-+	addattr32(&req.n, sizeof(req), IFLA_META_MODE, mode);
-+	addattr_nest_end(&req.n, data);
-+	addattr_nest_end(&req.n, linkinfo);
-+
-+	err = rtnl_talk(&rth, &req.n, NULL);
-+	ASSERT_OK(err, "talk_rtnetlink");
-+	rtnl_close(&rth);
-+	*ifindex = if_nametoindex(meta_name);
-+
-+	ASSERT_GT(*ifindex, 0, "retrieve_ifindex");
-+	ASSERT_OK(system("ip netns add foo"), "create netns");
-+	ASSERT_OK(system("ip link set dev " meta_name " up"),
-+			 "up primary");
-+	ASSERT_OK(system("ip addr add dev " meta_name " 10.0.0.1/24"),
-+			 "addr primary");
-+	if (same_netns) {
-+		ASSERT_OK(system("ip link set dev " meta_peer " up"),
-+				 "up peer");
-+		ASSERT_OK(system("ip addr add dev " meta_peer " 10.0.0.2/24"),
-+				 "addr peer");
-+	} else {
-+		ASSERT_OK(system("ip link set " meta_peer " netns foo"),
-+				 "move peer");
-+		ASSERT_OK(system("ip netns exec foo ip link set dev "
-+				 meta_peer " up"), "up peer");
-+		ASSERT_OK(system("ip netns exec foo ip addr add dev "
-+				 meta_peer " 10.0.0.2/24"), "addr peer");
-+	}
-+	return err;
-+}
-+
-+static void destroy_meta(void)
-+{
-+	ASSERT_OK(system("ip link del dev " meta_name), "del primary");
-+	ASSERT_OK(system("ip netns del foo"), "delete netns");
-+	ASSERT_EQ(if_nametoindex(meta_name), 0, meta_name "_ifindex");
-+}
-+
-+static int __send_icmp(__u32 dest)
-+{
-+	struct sockaddr_in addr;
-+	struct icmphdr icmp;
-+	int sock, ret;
-+
-+	ret = write_sysctl("/proc/sys/net/ipv4/ping_group_range", "0 0");
-+	if (!ASSERT_OK(ret, "write_sysctl(net.ipv4.ping_group_range)"))
-+		return ret;
-+
-+	sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_ICMP);
-+	if (!ASSERT_GE(sock, 0, "icmp_socket"))
-+		return -errno;
-+
-+	ret = setsockopt(sock, SOL_SOCKET, SO_BINDTODEVICE,
-+			 meta_name, strlen(meta_name) + 1);
-+	if (!ASSERT_OK(ret, "setsockopt(SO_BINDTODEVICE)"))
-+		goto out;
-+
-+	memset(&addr, 0, sizeof(addr));
-+	addr.sin_family = AF_INET;
-+	addr.sin_addr.s_addr = htonl(dest);
-+
-+	memset(&icmp, 0, sizeof(icmp));
-+	icmp.type = ICMP_ECHO;
-+	icmp.echo.id = 1234;
-+	icmp.echo.sequence = 1;
-+
-+	ret = sendto(sock, &icmp, sizeof(icmp), 0,
-+		     (struct sockaddr *)&addr, sizeof(addr));
-+	if (!ASSERT_GE(ret, 0, "icmp_sendto"))
-+		ret = -errno;
-+	else
-+		ret = 0;
-+out:
-+	close(sock);
-+	return ret;
-+}
-+
-+static int send_icmp(void)
-+{
-+	return __send_icmp(ping_addr_neigh);
-+}
-+
-+void serial_test_tc_meta_basic(void)
-+{
-+	LIBBPF_OPTS(bpf_prog_query_opts, optq);
-+	LIBBPF_OPTS(bpf_meta_opts, optl);
-+	__u32 prog_ids[2], link_ids[2];
-+	__u32 pid1, pid2, lid1, lid2;
-+	struct test_tc_link *skel;
-+	struct bpf_link *link;
-+	int err, ifindex;
-+
-+	err = create_meta(META_L2, META_PASS, META_PASS, &ifindex, false);
-+	if (err)
-+		return;
-+
-+	skel = test_tc_link__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	pid1 = id_from_prog_fd(bpf_program__fd(skel->progs.tc1));
-+	pid2 = id_from_prog_fd(bpf_program__fd(skel->progs.tc2));
-+
-+	ASSERT_NEQ(pid1, pid2, "prog_ids_1_2");
-+
-+	assert_mprog_count_ifindex(ifindex, BPF_META_PRIMARY, 0);
-+	assert_mprog_count_ifindex(ifindex, BPF_META_PEER, 0);
-+
-+	ASSERT_EQ(skel->bss->seen_tc1, false, "seen_tc1");
-+	ASSERT_EQ(skel->bss->seen_tc2, false, "seen_tc2");
-+
-+	link = bpf_program__attach_meta(skel->progs.tc1, ifindex, false, &optl);
-+	if (!ASSERT_OK_PTR(link, "link_attach"))
-+		goto cleanup;
-+
-+	skel->links.tc1 = link;
-+
-+	lid1 = id_from_link_fd(bpf_link__fd(skel->links.tc1));
-+
-+	assert_mprog_count_ifindex(ifindex, BPF_META_PRIMARY, 1);
-+	assert_mprog_count_ifindex(ifindex, BPF_META_PEER, 0);
-+
-+	optq.prog_ids = prog_ids;
-+	optq.link_ids = link_ids;
-+
-+	memset(prog_ids, 0, sizeof(prog_ids));
-+	memset(link_ids, 0, sizeof(link_ids));
-+	optq.count = ARRAY_SIZE(prog_ids);
-+
-+	err = bpf_prog_query_opts(ifindex, BPF_META_PRIMARY, &optq);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(optq.count, 1, "count");
-+	ASSERT_EQ(optq.revision, 2, "revision");
-+	ASSERT_EQ(optq.prog_ids[0], pid1, "prog_ids[0]");
-+	ASSERT_EQ(optq.link_ids[0], lid1, "link_ids[0]");
-+	ASSERT_EQ(optq.prog_ids[1], 0, "prog_ids[1]");
-+	ASSERT_EQ(optq.link_ids[1], 0, "link_ids[1]");
-+
-+	ASSERT_EQ(send_icmp(), 0, "icmp_pkt");
-+
-+	ASSERT_EQ(skel->bss->seen_tc1, true, "seen_tc1");
-+	ASSERT_EQ(skel->bss->seen_tc2, false, "seen_tc2");
-+
-+	link = bpf_program__attach_meta(skel->progs.tc2, ifindex, true, &optl);
-+	if (!ASSERT_OK_PTR(link, "link_attach"))
-+		goto cleanup;
-+
-+	skel->links.tc2 = link;
-+
-+	lid2 = id_from_link_fd(bpf_link__fd(skel->links.tc2));
-+	ASSERT_NEQ(lid1, lid2, "link_ids_1_2");
-+
-+	skel->bss->seen_tc1 = false;
-+	skel->bss->seen_tc2 = false;
-+
-+	assert_mprog_count_ifindex(ifindex, BPF_META_PRIMARY, 1);
-+	assert_mprog_count_ifindex(ifindex, BPF_META_PEER, 1);
-+
-+	memset(prog_ids, 0, sizeof(prog_ids));
-+	memset(link_ids, 0, sizeof(link_ids));
-+	optq.count = ARRAY_SIZE(prog_ids);
-+
-+	err = bpf_prog_query_opts(ifindex, BPF_META_PEER, &optq);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(optq.count, 1, "count");
-+	ASSERT_EQ(optq.revision, 2, "revision");
-+	ASSERT_EQ(optq.prog_ids[0], pid2, "prog_ids[0]");
-+	ASSERT_EQ(optq.link_ids[0], lid2, "link_ids[0]");
-+	ASSERT_EQ(optq.prog_ids[1], 0, "prog_ids[1]");
-+	ASSERT_EQ(optq.link_ids[1], 0, "link_ids[1]");
-+
-+	ASSERT_EQ(send_icmp(), 0, "icmp_pkt");
-+
-+	ASSERT_EQ(skel->bss->seen_tc1, true, "seen_tc1");
-+	ASSERT_EQ(skel->bss->seen_tc2, true, "seen_tc2");
-+cleanup:
-+	test_tc_link__destroy(skel);
-+
-+	assert_mprog_count_ifindex(ifindex, BPF_META_PRIMARY, 0);
-+	assert_mprog_count_ifindex(ifindex, BPF_META_PEER, 0);
-+	destroy_meta();
-+}
-+
-+void serial_test_tc_meta_multi_links_target(int mode, int target)
-+{
-+	LIBBPF_OPTS(bpf_prog_query_opts, optq);
-+	LIBBPF_OPTS(bpf_meta_opts, optl);
-+	__u32 prog_ids[3], link_ids[3];
-+	__u32 pid1, pid2, lid1, lid2;
-+	bool peer = target == BPF_META_PEER;
-+	struct test_tc_link *skel;
-+	struct bpf_link *link;
-+	int err, ifindex;
-+
-+	err = create_meta(mode, META_PASS, META_PASS, &ifindex, false);
-+	if (err)
-+		return;
-+
-+	skel = test_tc_link__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	pid1 = id_from_prog_fd(bpf_program__fd(skel->progs.tc1));
-+	pid2 = id_from_prog_fd(bpf_program__fd(skel->progs.tc2));
-+
-+	ASSERT_NEQ(pid1, pid2, "prog_ids_1_2");
-+
-+	assert_mprog_count_ifindex(ifindex, target, 0);
-+
-+	ASSERT_EQ(skel->bss->seen_tc1, false, "seen_tc1");
-+	ASSERT_EQ(skel->bss->seen_eth, false, "seen_eth");
-+	ASSERT_EQ(skel->bss->seen_tc2, false, "seen_tc2");
-+
-+	link = bpf_program__attach_meta(skel->progs.tc1, ifindex, peer, &optl);
-+	if (!ASSERT_OK_PTR(link, "link_attach"))
-+		goto cleanup;
-+
-+	skel->links.tc1 = link;
-+
-+	lid1 = id_from_link_fd(bpf_link__fd(skel->links.tc1));
-+
-+	assert_mprog_count_ifindex(ifindex, target, 1);
-+
-+	optq.prog_ids = prog_ids;
-+	optq.link_ids = link_ids;
-+
-+	memset(prog_ids, 0, sizeof(prog_ids));
-+	memset(link_ids, 0, sizeof(link_ids));
-+	optq.count = ARRAY_SIZE(prog_ids);
-+
-+	err = bpf_prog_query_opts(ifindex, target, &optq);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(optq.count, 1, "count");
-+	ASSERT_EQ(optq.revision, 2, "revision");
-+	ASSERT_EQ(optq.prog_ids[0], pid1, "prog_ids[0]");
-+	ASSERT_EQ(optq.link_ids[0], lid1, "link_ids[0]");
-+	ASSERT_EQ(optq.prog_ids[1], 0, "prog_ids[1]");
-+	ASSERT_EQ(optq.link_ids[1], 0, "link_ids[1]");
-+
-+	ASSERT_EQ(send_icmp(), 0, "icmp_pkt");
-+
-+	ASSERT_EQ(skel->bss->seen_tc1, true, "seen_tc1");
-+	ASSERT_EQ(skel->bss->seen_eth, true, "seen_eth");
-+	ASSERT_EQ(skel->bss->seen_tc2, false, "seen_tc2");
-+
-+	LIBBPF_OPTS_RESET(optl,
-+		.flags = BPF_F_BEFORE,
-+		.relative_fd = bpf_program__fd(skel->progs.tc1),
-+	);
-+
-+	link = bpf_program__attach_meta(skel->progs.tc2, ifindex, peer, &optl);
-+	if (!ASSERT_OK_PTR(link, "link_attach"))
-+		goto cleanup;
-+
-+	skel->links.tc2 = link;
-+
-+	lid2 = id_from_link_fd(bpf_link__fd(skel->links.tc2));
-+	ASSERT_NEQ(lid1, lid2, "link_ids_1_2");
-+
-+	skel->bss->seen_tc1 = false;
-+	skel->bss->seen_eth = false;
-+	skel->bss->seen_tc2 = false;
-+
-+	assert_mprog_count_ifindex(ifindex, target, 2);
-+
-+	memset(prog_ids, 0, sizeof(prog_ids));
-+	memset(link_ids, 0, sizeof(link_ids));
-+	optq.count = ARRAY_SIZE(prog_ids);
-+
-+	err = bpf_prog_query_opts(ifindex, target, &optq);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(optq.count, 2, "count");
-+	ASSERT_EQ(optq.revision, 3, "revision");
-+	ASSERT_EQ(optq.prog_ids[0], pid2, "prog_ids[0]");
-+	ASSERT_EQ(optq.link_ids[0], lid2, "link_ids[0]");
-+	ASSERT_EQ(optq.prog_ids[1], pid1, "prog_ids[1]");
-+	ASSERT_EQ(optq.link_ids[1], lid1, "link_ids[1]");
-+	ASSERT_EQ(optq.prog_ids[2], 0, "prog_ids[2]");
-+	ASSERT_EQ(optq.link_ids[2], 0, "link_ids[2]");
-+
-+	ASSERT_EQ(send_icmp(), 0, "icmp_pkt");
-+
-+	ASSERT_EQ(skel->bss->seen_tc1, true, "seen_tc1");
-+	ASSERT_EQ(skel->bss->seen_eth, true, "seen_eth");
-+	ASSERT_EQ(skel->bss->seen_tc2, true, "seen_tc2");
-+cleanup:
-+	test_tc_link__destroy(skel);
-+
-+	assert_mprog_count_ifindex(ifindex, target, 0);
-+	destroy_meta();
-+}
-+
-+void serial_test_tc_meta_multi_links(void)
-+{
-+	serial_test_tc_meta_multi_links_target(META_L2, BPF_META_PRIMARY);
-+	serial_test_tc_meta_multi_links_target(META_L3, BPF_META_PRIMARY);
-+	serial_test_tc_meta_multi_links_target(META_L2, BPF_META_PEER);
-+	serial_test_tc_meta_multi_links_target(META_L3, BPF_META_PEER);
-+}
-+
-+void serial_test_tc_meta_multi_opts_target(int mode, int target)
-+{
-+	LIBBPF_OPTS(bpf_prog_attach_opts, opta);
-+	LIBBPF_OPTS(bpf_prog_detach_opts, optd);
-+	LIBBPF_OPTS(bpf_prog_query_opts, optq);
-+	__u32 pid1, pid2, fd1, fd2;
-+	__u32 prog_ids[3];
-+	struct test_tc_link *skel;
-+	int err, ifindex;
-+
-+	err = create_meta(mode, META_PASS, META_PASS, &ifindex, false);
-+	if (err)
-+		return;
-+
-+	skel = test_tc_link__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	fd1 = bpf_program__fd(skel->progs.tc1);
-+	fd2 = bpf_program__fd(skel->progs.tc2);
-+
-+	pid1 = id_from_prog_fd(fd1);
-+	pid2 = id_from_prog_fd(fd2);
-+
-+	ASSERT_NEQ(pid1, pid2, "prog_ids_1_2");
-+
-+	assert_mprog_count_ifindex(ifindex, target, 0);
-+
-+	ASSERT_EQ(skel->bss->seen_tc1, false, "seen_tc1");
-+	ASSERT_EQ(skel->bss->seen_eth, false, "seen_eth");
-+	ASSERT_EQ(skel->bss->seen_tc2, false, "seen_tc2");
-+
-+	err = bpf_prog_attach_opts(fd1, ifindex, target, &opta);
-+	if (!ASSERT_EQ(err, 0, "prog_attach"))
-+		goto cleanup;
-+
-+	assert_mprog_count_ifindex(ifindex, target, 1);
-+
-+	optq.prog_ids = prog_ids;
-+
-+	memset(prog_ids, 0, sizeof(prog_ids));
-+	optq.count = ARRAY_SIZE(prog_ids);
-+
-+	err = bpf_prog_query_opts(ifindex, target, &optq);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup_fd1;
-+
-+	ASSERT_EQ(optq.count, 1, "count");
-+	ASSERT_EQ(optq.revision, 2, "revision");
-+	ASSERT_EQ(optq.prog_ids[0], pid1, "prog_ids[0]");
-+	ASSERT_EQ(optq.prog_ids[1], 0, "prog_ids[1]");
-+
-+	ASSERT_EQ(send_icmp(), 0, "icmp_pkt");
-+
-+	ASSERT_EQ(skel->bss->seen_tc1, true, "seen_tc1");
-+	ASSERT_EQ(skel->bss->seen_eth, true, "seen_eth");
-+	ASSERT_EQ(skel->bss->seen_tc2, false, "seen_tc2");
-+
-+	LIBBPF_OPTS_RESET(opta,
-+		.flags = BPF_F_BEFORE,
-+		.relative_fd = fd1,
-+	);
-+
-+	err = bpf_prog_attach_opts(fd2, ifindex, target, &opta);
-+	if (!ASSERT_EQ(err, 0, "prog_attach"))
-+		goto cleanup_fd1;
-+
-+	skel->bss->seen_tc1 = false;
-+	skel->bss->seen_eth = false;
-+	skel->bss->seen_tc2 = false;
-+
-+	assert_mprog_count_ifindex(ifindex, target, 2);
-+
-+	memset(prog_ids, 0, sizeof(prog_ids));
-+	optq.count = ARRAY_SIZE(prog_ids);
-+
-+	err = bpf_prog_query_opts(ifindex, target, &optq);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup_fd2;
-+
-+	ASSERT_EQ(optq.count, 2, "count");
-+	ASSERT_EQ(optq.revision, 3, "revision");
-+	ASSERT_EQ(optq.prog_ids[0], pid2, "prog_ids[0]");
-+	ASSERT_EQ(optq.prog_ids[1], pid1, "prog_ids[1]");
-+	ASSERT_EQ(optq.prog_ids[2], 0, "prog_ids[2]");
-+
-+	ASSERT_EQ(send_icmp(), 0, "icmp_pkt");
-+
-+	ASSERT_EQ(skel->bss->seen_tc1, true, "seen_tc1");
-+	ASSERT_EQ(skel->bss->seen_eth, true, "seen_eth");
-+	ASSERT_EQ(skel->bss->seen_tc2, true, "seen_tc2");
-+
-+cleanup_fd2:
-+	err = bpf_prog_detach_opts(fd2, ifindex, target, &optd);
-+	ASSERT_OK(err, "prog_detach");
-+	assert_mprog_count_ifindex(ifindex, target, 1);
-+cleanup_fd1:
-+	err = bpf_prog_detach_opts(fd1, ifindex, target, &optd);
-+	ASSERT_OK(err, "prog_detach");
-+	assert_mprog_count_ifindex(ifindex, target, 0);
-+cleanup:
-+	test_tc_link__destroy(skel);
-+
-+	assert_mprog_count_ifindex(ifindex, target, 0);
-+	destroy_meta();
-+}
-+
-+void serial_test_tc_meta_multi_opts(void)
-+{
-+	serial_test_tc_meta_multi_opts_target(META_L2, BPF_META_PRIMARY);
-+	serial_test_tc_meta_multi_opts_target(META_L3, BPF_META_PRIMARY);
-+	serial_test_tc_meta_multi_opts_target(META_L2, BPF_META_PEER);
-+	serial_test_tc_meta_multi_opts_target(META_L3, BPF_META_PEER);
-+}
-+
-+void serial_test_tc_meta_device(void)
-+{
-+	LIBBPF_OPTS(bpf_prog_query_opts, optq);
-+	LIBBPF_OPTS(bpf_meta_opts, optl);
-+	__u32 prog_ids[2], link_ids[2];
-+	__u32 pid1, pid2, lid1;
-+	struct test_tc_link *skel;
-+	struct bpf_link *link;
-+	int err, ifindex, ifindex2;
-+
-+	err = create_meta(META_L3, META_PASS, META_PASS, &ifindex, true);
-+	if (err)
-+		return;
-+
-+	ifindex2 = if_nametoindex(meta_peer);
-+	ASSERT_NEQ(ifindex, ifindex2, "ifindex_1_2");
-+
-+	skel = test_tc_link__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	pid1 = id_from_prog_fd(bpf_program__fd(skel->progs.tc1));
-+	pid2 = id_from_prog_fd(bpf_program__fd(skel->progs.tc2));
-+
-+	ASSERT_NEQ(pid1, pid2, "prog_ids_1_2");
-+
-+	assert_mprog_count_ifindex(ifindex, BPF_META_PRIMARY, 0);
-+	assert_mprog_count_ifindex(ifindex, BPF_META_PEER, 0);
-+
-+	ASSERT_EQ(skel->bss->seen_tc1, false, "seen_tc1");
-+	ASSERT_EQ(skel->bss->seen_tc2, false, "seen_tc2");
-+
-+	link = bpf_program__attach_meta(skel->progs.tc1, ifindex, false, &optl);
-+	if (!ASSERT_OK_PTR(link, "link_attach"))
-+		goto cleanup;
-+
-+	skel->links.tc1 = link;
-+
-+	lid1 = id_from_link_fd(bpf_link__fd(skel->links.tc1));
-+
-+	assert_mprog_count_ifindex(ifindex, BPF_META_PRIMARY, 1);
-+	assert_mprog_count_ifindex(ifindex, BPF_META_PEER, 0);
-+
-+	optq.prog_ids = prog_ids;
-+	optq.link_ids = link_ids;
-+
-+	memset(prog_ids, 0, sizeof(prog_ids));
-+	memset(link_ids, 0, sizeof(link_ids));
-+	optq.count = ARRAY_SIZE(prog_ids);
-+
-+	err = bpf_prog_query_opts(ifindex, BPF_META_PRIMARY, &optq);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(optq.count, 1, "count");
-+	ASSERT_EQ(optq.revision, 2, "revision");
-+	ASSERT_EQ(optq.prog_ids[0], pid1, "prog_ids[0]");
-+	ASSERT_EQ(optq.link_ids[0], lid1, "link_ids[0]");
-+	ASSERT_EQ(optq.prog_ids[1], 0, "prog_ids[1]");
-+	ASSERT_EQ(optq.link_ids[1], 0, "link_ids[1]");
-+
-+	ASSERT_EQ(send_icmp(), 0, "icmp_pkt");
-+
-+	ASSERT_EQ(skel->bss->seen_tc1, true, "seen_tc1");
-+	ASSERT_EQ(skel->bss->seen_tc2, false, "seen_tc2");
-+
-+	memset(prog_ids, 0, sizeof(prog_ids));
-+	memset(link_ids, 0, sizeof(link_ids));
-+	optq.count = ARRAY_SIZE(prog_ids);
-+
-+	err = bpf_prog_query_opts(ifindex2, BPF_META_PRIMARY, &optq);
-+	ASSERT_EQ(err, -EACCES, "prog_query_should_fail");
-+
-+	err = bpf_prog_query_opts(ifindex2, BPF_META_PEER, &optq);
-+	ASSERT_EQ(err, -EACCES, "prog_query_should_fail");
-+
-+	link = bpf_program__attach_meta(skel->progs.tc2, ifindex2, true, &optl);
-+	if (!ASSERT_ERR_PTR(link, "link_attach_should_fail")) {
-+		bpf_link__destroy(link);
-+		goto cleanup;
-+	}
-+
-+	link = bpf_program__attach_meta(skel->progs.tc2, ifindex2, false, &optl);
-+	if (!ASSERT_ERR_PTR(link, "link_attach_should_fail")) {
-+		bpf_link__destroy(link);
-+		goto cleanup;
-+	}
-+
-+	assert_mprog_count_ifindex(ifindex, BPF_META_PRIMARY, 1);
-+	assert_mprog_count_ifindex(ifindex, BPF_META_PEER, 0);
-+cleanup:
-+	test_tc_link__destroy(skel);
-+
-+	assert_mprog_count_ifindex(ifindex, BPF_META_PRIMARY, 0);
-+	assert_mprog_count_ifindex(ifindex, BPF_META_PEER, 0);
-+	destroy_meta();
-+}
-+
-+void serial_test_tc_meta_neigh_links_target(int mode, int target)
-+{
-+	LIBBPF_OPTS(bpf_prog_query_opts, optq);
-+	LIBBPF_OPTS(bpf_meta_opts, optl);
-+	__u32 prog_ids[2], link_ids[2];
-+	__u32 pid1, lid1;
-+	struct test_tc_link *skel;
-+	struct bpf_link *link;
-+	int err, ifindex;
-+
-+	err = create_meta(mode, META_PASS, META_PASS, &ifindex, false);
-+	if (err)
-+		return;
-+
-+	skel = test_tc_link__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	pid1 = id_from_prog_fd(bpf_program__fd(skel->progs.tc1));
-+
-+	assert_mprog_count_ifindex(ifindex, target, 0);
-+
-+	ASSERT_EQ(skel->bss->seen_tc1, false, "seen_tc1");
-+	ASSERT_EQ(skel->bss->seen_eth, false, "seen_eth");
-+
-+	link = bpf_program__attach_meta(skel->progs.tc1, ifindex, false, &optl);
-+	if (!ASSERT_OK_PTR(link, "link_attach"))
-+		goto cleanup;
-+
-+	skel->links.tc1 = link;
-+
-+	lid1 = id_from_link_fd(bpf_link__fd(skel->links.tc1));
-+
-+	assert_mprog_count_ifindex(ifindex, target, 1);
-+
-+	optq.prog_ids = prog_ids;
-+	optq.link_ids = link_ids;
-+
-+	memset(prog_ids, 0, sizeof(prog_ids));
-+	memset(link_ids, 0, sizeof(link_ids));
-+	optq.count = ARRAY_SIZE(prog_ids);
-+
-+	err = bpf_prog_query_opts(ifindex, target, &optq);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(optq.count, 1, "count");
-+	ASSERT_EQ(optq.revision, 2, "revision");
-+	ASSERT_EQ(optq.prog_ids[0], pid1, "prog_ids[0]");
-+	ASSERT_EQ(optq.link_ids[0], lid1, "link_ids[0]");
-+	ASSERT_EQ(optq.prog_ids[1], 0, "prog_ids[1]");
-+	ASSERT_EQ(optq.link_ids[1], 0, "link_ids[1]");
-+
-+	ASSERT_EQ(__send_icmp(ping_addr_noneigh), 0, "icmp_pkt");
-+
-+	ASSERT_EQ(skel->bss->seen_tc1, true /* L2: ARP */, "seen_tc1");
-+	ASSERT_EQ(skel->bss->seen_eth, mode == META_L3, "seen_eth");
-+cleanup:
-+	test_tc_link__destroy(skel);
-+
-+	assert_mprog_count_ifindex(ifindex, target, 0);
-+	destroy_meta();
-+}
-+
-+void serial_test_tc_meta_neigh_links(void)
-+{
-+	serial_test_tc_meta_neigh_links_target(META_L2, BPF_META_PRIMARY);
-+	serial_test_tc_meta_neigh_links_target(META_L3, BPF_META_PRIMARY);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_link.c b/tools/testing/selftests/bpf/progs/test_tc_link.c
-index 30e7124c49a1..992400acb957 100644
---- a/tools/testing/selftests/bpf/progs/test_tc_link.c
-+++ b/tools/testing/selftests/bpf/progs/test_tc_link.c
-@@ -1,7 +1,11 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2023 Isovalent */
- #include <stdbool.h>
-+
- #include <linux/bpf.h>
-+#include <linux/if_ether.h>
-+
-+#include <bpf/bpf_endian.h>
- #include <bpf/bpf_helpers.h>
- 
- char LICENSE[] SEC("license") = "GPL";
-@@ -12,10 +16,19 @@ bool seen_tc3;
- bool seen_tc4;
- bool seen_tc5;
- bool seen_tc6;
-+bool seen_eth;
- 
- SEC("tc/ingress")
- int tc1(struct __sk_buff *skb)
- {
-+	struct ethhdr eth = {};
-+
-+	if (skb->protocol != __bpf_constant_htons(ETH_P_IP))
-+		goto out;
-+	if (bpf_skb_load_bytes(skb, 0, &eth, sizeof(eth)))
-+		goto out;
-+	seen_eth = eth.h_proto == bpf_htons(ETH_P_IP);
-+out:
- 	seen_tc1 = true;
- 	return TCX_NEXT;
- }
+Error/Warning: (recently discovered and may have been fixed)
+
+ERROR: modpost: "ice_cgu_get_pin_freq_supp" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
+ERROR: modpost: "ice_cgu_get_pin_name" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
+ERROR: modpost: "ice_cgu_get_pin_type" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
+ERROR: modpost: "ice_get_cgu_rclk_pin_info" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
+ERROR: modpost: "ice_get_cgu_state" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
+ERROR: modpost: "ice_is_cgu_present" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
+ERROR: modpost: "ice_is_clock_mux_present_e810t" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
+ERROR: modpost: "ice_is_phy_rclk_present" [drivers/net/ethernet/intel/ice/ice.ko] undefined!
+arc-elf-ld: xfrm_algo.c:(.text+0x46c): undefined reference to `crypto_has_aead'
+arch/x86/include/asm/string_32.h:150:25: warning: '__builtin_memcpy' writing 3 bytes into a region of size 0 overflows the destination [-Wstringop-overflow=]
+drivers/cpufreq/sti-cpufreq.c:215:50: warning: '%d' directive output may be truncated writing between 1 and 10 bytes into a region of size 2 [-Wformat-truncation=]
+drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:3887: warning: Function parameter or member 'srf_updates' not described in 'could_mpcc_tree_change_for_active_pipes'
+drivers/gpu/drm/amd/amdgpu/amdgpu_vpe.c:60:52: warning: '%s' directive output may be truncated writing up to 63 bytes into a region of size 57 [-Wformat-truncation=]
+drivers/net/ethernet/sfc/ethtool_common.c:278:32: warning: '%-24s' directive output may be truncated writing between 24 and 31 bytes into a region of size 25 [-Wformat-truncation=]
+drivers/net/ethernet/sfc/falcon/ethtool.c:229:32: warning: '%-24s' directive output may be truncated writing between 24 and 31 bytes into a region of size 25 [-Wformat-truncation=]
+drivers/net/ethernet/sfc/siena/ethtool_common.c:229:32: warning: '%-24s' directive output may be truncated writing between 24 and 31 bytes into a region of size 25 [-Wformat-truncation=]
+fs/bcachefs/bcachefs_format.h:215:25: warning: 'p' offset 3 in 'struct bkey' isn't aligned to 4 [-Wpacked-not-aligned]
+fs/bcachefs/bcachefs_format.h:217:25: warning: 'version' offset 27 in 'struct bkey' isn't aligned to 4 [-Wpacked-not-aligned]
+ice_lib.c:(.text.ice_init_feature_support+0x7c): undefined reference to `ice_is_phy_rclk_present'
+include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
+include/linux/netlink.h:116:13: warning: ') out of range, only support...' directive output truncated writing 60 bytes into a region of size between 46 and 55 [-Wformat-truncation=]
+include/linux/netlink.h:116:13: warning: 'sfc: Unsupported: only suppo...' directive output truncated writing 104 bytes into a region of size 80 [-Wformat-truncation=]
+kernel/bpf/helpers.c:1906:19: warning: no previous declaration for 'bpf_percpu_obj_new_impl' [-Wmissing-declarations]
+kernel/bpf/helpers.c:1942:18: warning: no previous declaration for 'bpf_percpu_obj_drop_impl' [-Wmissing-declarations]
+kernel/bpf/helpers.c:2477:18: warning: no previous declaration for 'bpf_throw' [-Wmissing-declarations]
+powerpc-linux-ld: ice_lib.c:(.text.ice_init_feature_support+0xd0): undefined reference to `ice_is_cgu_present'
+powerpc-linux-ld: ice_lib.c:(.text.ice_init_feature_support+0xe0): undefined reference to `ice_is_clock_mux_present_e810t'
+s390-linux-ld: drivers/net/ethernet/intel/ice/ice_lib.c:3998:(.text+0x6106): undefined reference to `ice_is_cgu_present'
+s390-linux-ld: drivers/net/ethernet/intel/ice/ice_lib.c:4000:(.text+0x6116): undefined reference to `ice_is_clock_mux_present_e810t'
+sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c:44:50: warning: '%d' directive output may be truncated writing between 1 and 11 bytes into a region of size 10 [-Wformat-truncation=]
+xfrm_algo.c:(.text+0x46c): undefined reference to `crypto_has_aead'
+
+Unverified Error/Warning (likely false positive, please contact us if interested):
+
+arch/x86/include/asm/atomic64_32.h:85:34: sparse: sparse: cast truncates bits from constant value (7fffffffffffffff becomes ffffffff)
+fs/bcachefs/journal.h:152:43: sparse: sparse: invalid access past the end of 's' (4 8)
+fs/bcachefs/journal.h:158:9: sparse: sparse: invalid access past the end of 'new' (4 8)
+fs/bcachefs/journal.h:237:58: sparse: sparse: invalid access past the end of '<noident>' (4 8)
+fs/bcachefs/journal_reclaim.c:57:33: sparse: sparse: invalid access past the end of 'new' (4 8)
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- alpha-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- arc-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   `-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|-- arc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   `-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|-- arc-defconfig
+|   |-- arc-elf-ld:xfrm_algo.c:(.text):undefined-reference-to-crypto_has_aead
+|   `-- xfrm_algo.c:(.text):undefined-reference-to-crypto_has_aead
+|-- arm-allmodconfig
+|   |-- drivers-cpufreq-sti-cpufreq.c:warning:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   |-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|   `-- sound-soc-mediatek-mt2701-mt2701-afe-clock-ctrl.c:warning:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|-- arm-allyesconfig
+|   |-- drivers-cpufreq-sti-cpufreq.c:warning:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   |-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|   `-- sound-soc-mediatek-mt2701-mt2701-afe-clock-ctrl.c:warning:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|-- arm64-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   |-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|   `-- sound-soc-mediatek-mt2701-mt2701-afe-clock-ctrl.c:warning:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|-- arm64-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   |-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|   `-- sound-soc-mediatek-mt2701-mt2701-afe-clock-ctrl.c:warning:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|-- csky-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- csky-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- csky-randconfig-001-20230925
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|-- i386-allyesconfig
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|-- i386-buildonly-randconfig-001-20230925
+|   `-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-writing-bytes-into-a-region-of-size-overflows-the-destination
+|-- i386-randconfig-004-20230925
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|-- i386-randconfig-006-20230925
+|   |-- kernel-bpf-helpers.c:warning:no-previous-declaration-for-bpf_percpu_obj_drop_impl
+|   |-- kernel-bpf-helpers.c:warning:no-previous-declaration-for-bpf_percpu_obj_new_impl
+|   `-- kernel-bpf-helpers.c:warning:no-previous-declaration-for-bpf_throw
+|-- i386-randconfig-062-20230924
+|   |-- arch-x86-include-asm-atomic64_32.h:sparse:sparse:cast-truncates-bits-from-constant-value-(7fffffffffffffff-becomes-ffffffff)
+|   |-- fs-bcachefs-journal.h:sparse:sparse:invalid-access-past-the-end-of-new-(-)
+|   |-- fs-bcachefs-journal.h:sparse:sparse:invalid-access-past-the-end-of-noident-(-)
+|   |-- fs-bcachefs-journal.h:sparse:sparse:invalid-access-past-the-end-of-s-(-)
+|   `-- fs-bcachefs-journal_reclaim.c:sparse:sparse:invalid-access-past-the-end-of-new-(-)
+|-- loongarch-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- drivers-net-ethernet-sfc-ethtool_common.c:warning:24s-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   |-- drivers-net-ethernet-sfc-falcon-ethtool.c:warning:24s-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   |-- drivers-net-ethernet-sfc-siena-ethtool_common.c:warning:24s-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- loongarch-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- drivers-net-ethernet-sfc-ethtool_common.c:warning:24s-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   |-- drivers-net-ethernet-sfc-falcon-ethtool.c:warning:24s-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   |-- drivers-net-ethernet-sfc-siena-ethtool_common.c:warning:24s-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- loongarch-defconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|-- m68k-allmodconfig
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   `-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|-- m68k-allyesconfig
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   `-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|-- microblaze-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- microblaze-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- mips-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   `-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|-- mips-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   `-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|-- openrisc-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- openrisc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- parisc-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- parisc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- powerpc-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- powerpc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- powerpc-randconfig-r002-20211004
+|   |-- ice_lib.c:(.text.ice_init_feature_support):undefined-reference-to-ice_is_phy_rclk_present
+|   |-- powerpc-linux-ld:ice_lib.c:(.text.ice_init_feature_support):undefined-reference-to-ice_is_cgu_present
+|   `-- powerpc-linux-ld:ice_lib.c:(.text.ice_init_feature_support):undefined-reference-to-ice_is_clock_mux_present_e810t
+|-- powerpc64-randconfig-003-20230925
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|-- riscv-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- riscv-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- s390-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- s390-randconfig-r035-20221206
+|   |-- s390-linux-ld:drivers-net-ethernet-intel-ice-ice_lib.c:(.text):undefined-reference-to-ice_is_cgu_present
+|   `-- s390-linux-ld:drivers-net-ethernet-intel-ice-ice_lib.c:(.text):undefined-reference-to-ice_is_clock_mux_present_e810t
+|-- sparc-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- sparc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- sparc-randconfig-001-20230925
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|-- sparc64-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- sparc64-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- x86_64-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- x86_64-randconfig-073-20230926
+|   |-- ERROR:ice_cgu_get_pin_freq_supp-drivers-net-ethernet-intel-ice-ice.ko-undefined
+|   |-- ERROR:ice_cgu_get_pin_name-drivers-net-ethernet-intel-ice-ice.ko-undefined
+|   |-- ERROR:ice_cgu_get_pin_type-drivers-net-ethernet-intel-ice-ice.ko-undefined
+|   |-- ERROR:ice_get_cgu_rclk_pin_info-drivers-net-ethernet-intel-ice-ice.ko-undefined
+|   |-- ERROR:ice_get_cgu_state-drivers-net-ethernet-intel-ice-ice.ko-undefined
+|   |-- ERROR:ice_is_cgu_present-drivers-net-ethernet-intel-ice-ice.ko-undefined
+|   |-- ERROR:ice_is_clock_mux_present_e810t-drivers-net-ethernet-intel-ice-ice.ko-undefined
+|   |-- ERROR:ice_is_phy_rclk_present-drivers-net-ethernet-intel-ice-ice.ko-undefined
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+|-- x86_64-randconfig-076-20230926
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_vpe.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
+`-- xtensa-randconfig-001-20230925
+    `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+
+elapsed time: 1453m
+
+configs tested: 107
+configs skipped: 2
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20230925   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20230925   gcc  
+i386         buildonly-randconfig-002-20230925   gcc  
+i386         buildonly-randconfig-003-20230925   gcc  
+i386         buildonly-randconfig-004-20230925   gcc  
+i386         buildonly-randconfig-005-20230925   gcc  
+i386         buildonly-randconfig-006-20230925   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20230925   gcc  
+i386                  randconfig-002-20230925   gcc  
+i386                  randconfig-003-20230925   gcc  
+i386                  randconfig-004-20230925   gcc  
+i386                  randconfig-005-20230925   gcc  
+i386                  randconfig-006-20230925   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20230925   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20230925   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-006-20230925   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-006-20230925   gcc  
+x86_64                randconfig-071-20230926   gcc  
+x86_64                randconfig-072-20230926   gcc  
+x86_64                randconfig-073-20230926   gcc  
+x86_64                randconfig-074-20230926   gcc  
+x86_64                randconfig-075-20230926   gcc  
+x86_64                randconfig-076-20230926   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
