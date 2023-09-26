@@ -1,101 +1,123 @@
-Return-Path: <bpf+bounces-10826-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10827-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CA927AE2DE
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 02:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EBCA7AE2E3
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 02:20:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 3B3892816F1
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 00:19:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id E22252814C4
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 00:20:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9852627;
-	Tue, 26 Sep 2023 00:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B5C3627;
+	Tue, 26 Sep 2023 00:20:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45C74367
-	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 00:19:45 +0000 (UTC)
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31BCE10C
-	for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 17:19:44 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d84f18e908aso8322771276.1
-        for <bpf@vger.kernel.org>; Mon, 25 Sep 2023 17:19:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695687583; x=1696292383; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=s56RwOt/5lIHenhoefTmJkKgxIldQ1FMa/AhHgXGdS4=;
-        b=lP6fMpdWaBhUdrFyEjA0PomjwtCQHgP4FlKoagIJar5MYVkSxB9RewU462nEOsWrq8
-         heKISEaiGxV6epMg2wUXBA9zRODVYJUa9O41X9Iq7faj5/KLMu87TjJsdVr4y9tKXXpw
-         i9EOsDPG0Lb/4KqqXk+9BsA2HmDMiGa/sHKyPCRWtwgtWR8QskROFbHbKYorS3DpnZ2X
-         dU3aqkWBsIbMjob7DMJh1rJR88qzQzMarHExuE7yxB7/7dzTXpi2JYQZgBVNcWtcT0S0
-         bSr1ofyG5M/5XE7Y7S9WhSeTeEFjHqcbIfS/kbJEubtGtziLcCbZ43J2KLV0FG4N8Lad
-         ELfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695687583; x=1696292383;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s56RwOt/5lIHenhoefTmJkKgxIldQ1FMa/AhHgXGdS4=;
-        b=qglAJDEIS9GtI3RIFUg42+5GSOGwiEf/Ni2qsdhZDw8b+X+gemCm5qcMDvWGEIW0g7
-         SMJqdusIMwNx75v9l97LHykUFNiPn87CHSVxSD6tJTOTLBk+3Yopb/WUWcum7XWD6Imh
-         YrhKqeydS8zKE7iKncUgnhXkJegq0wpvB2AuJ30wWlwjhVu+JWnypDrG1nLjnKkJiXnE
-         nRHbOBE+/kbBOHelBVNmhkMV+GujzfVfN/HxUISg3XV4xk8ErtsrIkDBmCYDu8S3sgEd
-         r4ZeiWB67XcgqoFuqufFGNMkkGbTLEkl86h6zOjNJfSe4orJdxU6hPLyDgh9mTlXHzYQ
-         FiUQ==
-X-Gm-Message-State: AOJu0YxQzFLSREhbcN3/nFZbTLrp0hh9NKn684WVuwb+uqkvcMS6ImD0
-	XHpgQXtAoXQJjrGQTJWhK8z42sLnfGM=
-X-Google-Smtp-Source: AGHT+IGjFRTutfoPCNqkAVJ72o9tzmaG8VU4HsR9RykBJZQo5axzxnorbgb/lUvIBgDmZchmO1RFcw==
-X-Received: by 2002:a25:55d6:0:b0:d85:38:4577 with SMTP id j205-20020a2555d6000000b00d8500384577mr6527458ybb.19.1695687583339;
-        Mon, 25 Sep 2023 17:19:43 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:f7cd:fd6d:2b89:f093? ([2600:1700:6cf8:1240:f7cd:fd6d:2b89:f093])
-        by smtp.gmail.com with ESMTPSA id h13-20020a056902008d00b00d7497467d36sm2352852ybs.45.2023.09.25.17.19.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 17:19:42 -0700 (PDT)
-Message-ID: <cbb84fbb-fc4c-69be-eb77-3f12d3dba98d@gmail.com>
-Date: Mon, 25 Sep 2023 17:19:41 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9491B366;
+	Tue, 26 Sep 2023 00:20:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BCEBC433C8;
+	Tue, 26 Sep 2023 00:20:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695687655;
+	bh=8ZXFwCIg1oGcxQ32a/Xjtx4euP4ylyONmkXQpSM8V/c=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=QPHBRHPuzL3zDK7hSy7P5KSkTOWXqVMwUlon1sr2TNZDnwdsZxCBsBMaTX7IxVEkU
+	 RQNd7BpGdKiSCXhQyWW5dJzSmjHDiqpNC7qEoBG87sX8aTwsRgN5t56Un91Rp7JkJd
+	 F8RSpw+j5Wnkpy+oCu2+jn7B9lsqKAP7e++/al9fTtzVRfOzzj6LzT34ASAqaAFdQt
+	 q1pGB2jK52y+KPiNKeDGV5xdcfnnq2yYsDVZ/fwQjlyQ5sWriUh7/6D5+Eq9X/yqVu
+	 r5vyBq9w9+OZGFRtDep/lpX+xs1UZK6k0TIQJL4aTzSgIkhBtSAeNY+KAH7Cr7sNvk
+	 qgMzYOb0FURPQ==
+Date: Tue, 26 Sep 2023 09:20:48 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
+ linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
+ Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>, Mark
+ Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v5 04/12] fprobe: Use ftrace_regs in fprobe entry
+ handler
+Message-Id: <20230926092048.5c08fb61cb99f77573f89d7b@kernel.org>
+In-Reply-To: <ZRIGSTTTYADzP7QU@krava>
+References: <169556254640.146934.5654329452696494756.stgit@devnote2>
+	<169556259571.146934.4558592076420704031.stgit@devnote2>
+	<ZRFj97DJtbXc4naO@krava>
+	<20230925211515.41d26a160c546c7bce08ac64@kernel.org>
+	<ZRIGSTTTYADzP7QU@krava>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC bpf-next v3 03/11] bpf: add register and unregister
- functions for struct_ops.
-Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
-Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org
-References: <20230920155923.151136-1-thinker.li@gmail.com>
- <20230920155923.151136-4-thinker.li@gmail.com>
- <c757e1cc-2fc9-17e1-6d34-a15e4236fe12@linux.dev>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <c757e1cc-2fc9-17e1-6d34-a15e4236fe12@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
+On Tue, 26 Sep 2023 00:14:33 +0200
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-
-On 9/25/23 16:31, Martin KaFai Lau wrote:
-> On 9/20/23 8:59 AM, thinker.li@gmail.com wrote:
->> +#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+> On Mon, Sep 25, 2023 at 09:15:15PM +0900, Masami Hiramatsu wrote:
+> > Hi Jiri,
+> > 
+> > On Mon, 25 Sep 2023 12:41:59 +0200
+> > Jiri Olsa <olsajiri@gmail.com> wrote:
+> > 
+> > > On Sun, Sep 24, 2023 at 10:36:36PM +0900, Masami Hiramatsu (Google) wrote:
+> > > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > > 
+> > > > This allows fprobes to be available with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+> > > > instead of CONFIG_DYNAMIC_FTRACE_WITH_REGS, then we can enable fprobe
+> > > > on arm64.
+> > > > 
+> > > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > > Acked-by: Florent Revest <revest@chromium.org>
+> > > 
+> > > I was getting bpf selftests failures with this patchset and when
+> > > bisecting I'm getting crash when running on top of this change
+> > 
+> > Thanks for bisecting!
+> > 
+> > > 
+> > > looks like it's missing some of the regs NULL checks added later?
+> > 
+> > yeah, if the RIP (arch_rethook_prepare+0x0/0x30) is correct, 
+> > 
+> > void arch_rethook_prepare(struct rethook_node *rh, struct ftrace_regs *fregs, bool mcount)
+> > 
+> > RSI (the 2nd argument) is NULL. This means fregs == NULL and caused the crash.
+> > I think ftrace_get_regs(fregs) for the entry handler may return NULL.
+> > 
+> > Ah, 
+> > 
+> > @@ -182,7 +182,7 @@ static void fprobe_init(struct fprobe *fp)
+> >  		fp->ops.func = fprobe_kprobe_handler;
+> >  	else
+> >  		fp->ops.func = fprobe_handler;
+> > -	fp->ops.flags |= FTRACE_OPS_FL_SAVE_REGS;
+> > +	fp->ops.flags |= FTRACE_OPS_FL_SAVE_ARGS;
+> >  }
+> >  
+> >  static int fprobe_init_rethook(struct fprobe *fp, int num)
+> > 
+> > This may cause the issue, it should keep REGS at this point (this must be done in
+> > [9/12]). But after applying [9/12], it shouldn't be a problem... 
+> > 
+> > Let me check it again.
 > 
-> CONFIG_DEBUG_INFO_BTF_MODULES is probably too restrictive. bpf_tcp_ca 
-> does not necessary need CONFIG_DEBUG_INFO_BTF_MODULES
-> 
-Make sense to me!
+> that helped with the crash, I'll continue bisecting to find out
+> where it breaks the tests
 
->> +int register_bpf_struct_ops(struct bpf_struct_ops_mod *mod);
->> +#endif
-> 
+Can you share the configuration and the test?
+I would like to reproduce it because I couldn't make it reproduced.
+
+Thank you,
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
