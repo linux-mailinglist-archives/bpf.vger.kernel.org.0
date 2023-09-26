@@ -1,117 +1,107 @@
-Return-Path: <bpf+bounces-10836-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10837-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54FC27AE3F2
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 05:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1431D7AE44A
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 05:52:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id A55D2281346
-	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 03:09:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 9BEE0281878
+	for <lists+bpf@lfdr.de>; Tue, 26 Sep 2023 03:52:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D00E8139E;
-	Tue, 26 Sep 2023 03:09:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B41A1859;
+	Tue, 26 Sep 2023 03:52:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2615A7F
-	for <bpf@vger.kernel.org>; Tue, 26 Sep 2023 03:09:18 +0000 (UTC)
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435239F;
-	Mon, 25 Sep 2023 20:09:16 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-65b0e623189so17697216d6.1;
-        Mon, 25 Sep 2023 20:09:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797BF7F;
+	Tue, 26 Sep 2023 03:52:39 +0000 (UTC)
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EEB1C9;
+	Mon, 25 Sep 2023 20:52:38 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3ab2436b57dso5060525b6e.0;
+        Mon, 25 Sep 2023 20:52:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695697755; x=1696302555; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LHSIKUeBex5AI8uxl+C0er1czMgcQqC68b/wIooWTTM=;
-        b=GKTNcrEA5fTTZLWAYJZ/DtBxvpv0317vg7njbKqQChkBIC7y6kzJkMIHvVOY385l2y
-         GgS6hxpAJHYyYCcxR94JMcJcMrdB8q2i+7w1Xnje+Xzoxk9sz9Rpxmv/2hRurqdSkhP2
-         Wx62aFVtHk2EuMgTtbX3IoMQSV/nBEtsgAmP3P9WX6SBbMv9VLlR3UpZJzm81xebu2bc
-         oMgPPAklf+Uzm5YNQ4rIP6VuV/jufhdYcxgiPb6lD+SC5Ghrh6eEvCct96CXNI06RRqk
-         YxsmVcJUtItPrZwG9gu4PssZpqHVR4HXIDsuEo+n8LhY+NfVALlrEgzE+PLVT+tr3wX7
-         0SOw==
+        d=gmail.com; s=20230601; t=1695700357; x=1696305157; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JdjM08gmoXvyztouDjrJfcBPW9vYMWj7EpOPKNnHpmc=;
+        b=cgv783Z5kdvoETuuDNXwnsM4UHaxzAXibssrTRrHMG4KYI2LmJWGo+XN5h92ub0SnR
+         7vcmpFMgN+DYSuhs6pnGxvke911N3zYxhgg9HEp+Oq22KaOKDKcq2R1fVUz1Oq1r/lzj
+         Gn1VfSFYEpSe7GbYJDz7/2yvs1t2XGsFVr5gLFfRjHvH+nR66RG6UA4He1fR24zZbFNh
+         KvvoERCu6suzAGGgvBVnyKW0YaVY2aeRBISQ9VbcBAPTMaPtOhCsBcOOUx+jn+dovBs+
+         u8SwFepyVoHAbhI9s8x5IxL/jvog3OoEbLgzbgdteMkxgUCQDt68T29bFg3fJt22C9QF
+         mwKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695697755; x=1696302555;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LHSIKUeBex5AI8uxl+C0er1czMgcQqC68b/wIooWTTM=;
-        b=q23PIl2T/fV50ULk/ZcqjWU2ZfBrIB1i+PhtBY8hG3i6LCnYG9Kli9piyAIXIahoJ8
-         iKvk2QVlXaKgkQ5mOXVEXeAM+OiBBAg7RzbHfGHDgQjOKLxbwl2yELsgMKhasYUsOsJK
-         94TFauQtBzV1jDdM/9yMBTMpubTLr0W/QIZ5ERD0ibRVwsQtyFjCvczV7+568/7VRbK2
-         3NgU12AzEEm+O+l/WIqqkWS1hWq9XrAgBwJD5AlAJTtrRNlmsO9ycl8ceh//KCAfKo5F
-         Y2ksR3Aq3q0EPwdH6OFKWCNSK6gtAoQBWkkMQeuJXTagOEHWM00n64XtKeFsgp/nasEw
-         NZRg==
-X-Gm-Message-State: AOJu0YykvLa2txVC0EiJ9WDnl7jqvtbKZEkdq52e+ncgy3UaTzHKDao5
-	Qqg/jNJ39vJSJrPUrhJQREywiOTlvim3a2HAmYA=
-X-Google-Smtp-Source: AGHT+IHzfgpEIFbW4RP9NhWoFXvF1rvZJCxV6NhVkjqgl55VJzA9DeEj1oTeEDGwfFbYV1bNU7SrEsVDol3le+K2t3s=
-X-Received: by 2002:a0c:f8c9:0:b0:64f:539b:f52a with SMTP id
- h9-20020a0cf8c9000000b0064f539bf52amr8943786qvo.20.1695697755420; Mon, 25 Sep
- 2023 20:09:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695700357; x=1696305157;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JdjM08gmoXvyztouDjrJfcBPW9vYMWj7EpOPKNnHpmc=;
+        b=CfpD2yblzFKij1xcByKvyi6G/n+ucIuNj/H7198g6o6DABaVszhMgctfjYLFGcv4/z
+         gwCSBiX8vPVuC2u/EJunWvZGQMgRs23xcqlCD+UcthYPmmdadyF1GniAAP4S6cq+Fa6w
+         nsz9/MQORcF07AE5EsqvdvpbftyC1zEk5R3/0DmFqa3iTGkjN6EZoPueDPHX0ASSjdr0
+         nD4zgxteEOaFMO2616pC02x/pF6Z5lLi9AnL4IPSxhWU0T3m3QE0RAhboxxIngmUi0D4
+         WRbq1xBpwyvUpLH3dY+d1CJY1YgKBGh0frlqeKNJ5bSsC1uTHuoHwh1uSTOFbqcMAk/p
+         slCw==
+X-Gm-Message-State: AOJu0YxugoJFPMWfikU2tYcZNIVKTAOlyOikIi63IJQDzusRPJn7O6aq
+	DB00pVB2HqgXKRa+MAKXrpU=
+X-Google-Smtp-Source: AGHT+IH3BNod6gFJDP8Q82zw3Hovz34QvgSSdg1d6qqSaJ2TIqFWqx6diC5eKWWqoIx6YxK7qDiuNg==
+X-Received: by 2002:a05:6808:34d:b0:3a8:7c67:7f5 with SMTP id j13-20020a056808034d00b003a87c6707f5mr9369162oie.1.1695700357223;
+        Mon, 25 Sep 2023 20:52:37 -0700 (PDT)
+Received: from john.lan ([2605:59c8:148:ba00:650a:2e28:f286:c10b])
+        by smtp.gmail.com with ESMTPSA id h5-20020aa786c5000000b006889511ab14sm8822575pfo.37.2023.09.25.20.52.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 20:52:36 -0700 (PDT)
+From: John Fastabend <john.fastabend@gmail.com>
+To: daniel@iogearbox.net,
+	ast@kernel.org,
+	andrii@kernel.org,
+	jakub@cloudflare.com
+Cc: john.fastabend@gmail.com,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	edumazet@google.com
+Subject: [PATCH bpf v2 0/3] bpf, sockmap complete fixes for avail bytes
+Date: Mon, 25 Sep 2023 20:52:29 -0700
+Message-Id: <20230926035233.134883-1-john.fastabend@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230922112846.4265-1-laoar.shao@gmail.com> <9e83bda8-ea1b-75b9-c55f-61cf11b4cd83@gmail.com>
-In-Reply-To: <9e83bda8-ea1b-75b9-c55f-61cf11b4cd83@gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Tue, 26 Sep 2023 11:08:39 +0800
-Message-ID: <CALOAHbBAOY7dRO-gQnGXU0xdD2DdzdgX5FLx9ty=u7Q1ZEfL8w@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/8] bpf, cgroup: Add bpf support for cgroup controller
-To: Kui-Feng Lee <sinquersw@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, tj@kernel.org, lizefan.x@bytedance.com, 
-	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com, 
-	cgroups@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Sep 26, 2023 at 2:22=E2=80=AFAM Kui-Feng Lee <sinquersw@gmail.com> =
-wrote:
->
->
->
-> On 9/22/23 04:28, Yafang Shao wrote:
-> > Currently, BPF is primarily confined to cgroup2, with the exception of
-> > cgroup_iter, which supports cgroup1 fds. Unfortunately, this limitation
-> > prevents us from harnessing the full potential of BPF within cgroup1
-> > environments.
-> >
-> > In our endeavor to seamlessly integrate BPF within our Kubernetes
-> > environment, which relies on cgroup1, we have been exploring the
-> > possibility of transitioning to cgroup2. While this transition is
-> > forward-looking, it poses challenges due to the necessity for numerous
-> > applications to adapt.
-> >
-> > While we acknowledge that cgroup2 represents the future, we also recogn=
-ize
-> > that such transitions demand time and effort. As a result, we are
-> > considering an alternative approach. Instead of migrating to cgroup2, w=
-e
-> > are contemplating modifications to the BPF kernel code to ensure
-> > compatibility with cgroup1. These adjustments appear to be relatively
-> > minor, making this option more feasible.
->
-> Do you mean giving up moving to cgroup2? Or, is it just a tentative
-> solution?
+With e5c6de5fa0258 ("bpf, sockmap: Incorrectly handling copied_seq") we
+started fixing the available bytes accounting by moving copied_seq to
+where the user actually reads the bytes.
 
-Our transition to cgroup2 won't happen in the near future. It's a
-long-term job.
+However we missed handling MSG_PEEK correctly and we need to ensure
+that we don't kfree_skb() a skb off the receive_queue when the
+copied_seq number is not incremented by user reads for some time.
 
---=20
-Regards
-Yafang
+v2: drop seq var in tcp_read_skb its no longer necessary per Jakub's
+    suggestion
+
+John Fastabend (3):
+  bpf: tcp_read_skb needs to pop skb regardless of seq
+  bpf: sockmap, do not inc copied_seq when PEEK flag set
+  bpf: sockmap, add tests for MSG_F_PEEK
+
+ net/ipv4/tcp.c                                |  3 +-
+ net/ipv4/tcp_bpf.c                            |  4 +-
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 52 +++++++++++++++++++
+ 3 files changed, 56 insertions(+), 3 deletions(-)
+
+-- 
+2.33.0
+
 
