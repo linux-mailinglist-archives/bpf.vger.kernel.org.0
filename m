@@ -1,322 +1,515 @@
-Return-Path: <bpf+bounces-10983-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10984-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8EF47B0A7A
-	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 18:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EAA2E7B0AEB
+	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 19:12:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 13D6A2821BA
-	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 16:37:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 99877281D0D
+	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 17:12:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD7F347D2;
-	Wed, 27 Sep 2023 16:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E26F4B220;
+	Wed, 27 Sep 2023 17:12:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51CF514F69
-	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 16:37:34 +0000 (UTC)
-Received: from sonic304-27.consmr.mail.ne1.yahoo.com (sonic304-27.consmr.mail.ne1.yahoo.com [66.163.191.153])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 214AB9C
-	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 09:37:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1695832651; bh=7N9S2a9BlDc74qB09A++4aSR1lRJkqjkhaOVzfYfAgg=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=AEWnsljoVZUtZErvLldLVMUu427MEeTrC8hIbuGM3ofH1L1x1Us+VU2DF5sExL0pfZUgvUmkt8XFEJ6yVIRGWIkjeapAvwRVJRKI75F94uI7G1rcewRD9p2+VoVafzjPHGgBK2/rnG2TJULJSG/oJ6YTbWjvMXypuUlQ9vtRmnfoRUnRbuCYDtka10IO/ODDttFp3qB4x/RBRPrdCq1fbl/ke9ommVM/he0MPUZUHVaR8FKg1M2s3Qv9vhQ79N6IgG4nqe9IMNWRPdeKALieZufXBUvdbTppiFWPD9u0FcRhG6Wew2DQw5tp+kn+h0k/Jdmo4D71WkCEVflJnHIb7g==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1695832651; bh=UzjUgn1j0v2J4YWQE0m8UI5svhPc8nhTsC32XRx4jkY=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=gO156L9DtCPW7HRvv8i8YU2HjIizuLh3oP0GTLfEBRLPMKzNfsbGqMq49wTqgKtKdYEmNnp8JzX1fpQJrb5c5PAZi+d3qxhX0XVBx9cPaaofQvC2ZovS5yqD7D9lPZzmLvBTXqF7QIMAZAVqxPaEQa5FuPUL3V9F8KUzoEYfy+/bsFfrS7idcKFwdyPyIow+86UvhuJFwmrXX7o8SjPfRkkIw+FpIZ5rpISWB4KHfTm0vSlnBtCo0/5lLwdqz2G32IaO9z3GViAR89icBA/LaLGb7oPXc0tr3z9dqUBGuWREsQW5Wp3DCKtide1hxWzrWMgnPJNHj7YS+t7M9IPGBg==
-X-YMail-OSG: Nh81ZOMVM1m6jVO2nuAOS_elDLlF2UaMsKUbkCdNCSFUKI_Tt6sX75KNM32iaXA
- l0yxi7MbjTKnJ4eGPcTGWhxX0QZNb2f9PS9GQcma6HCC3jU2NGpeUnYPK8GJjTAmFvu9R8R831Nl
- t4aY3V.iXI2i3vCHQ8N9v4VnueuJ6Mz_nhY9uZzPy.HC5TL9Eza.HYhfaXFUxKsNLtMag_xwqkNG
- aZw9kpnvVBH2agGfcQjNL4eaZ2Rc_9Pfz2Fg15CyHRTO3QjPFOkCfkA9aUZWHAcTqEWDj7aseRP0
- eANtW.Bqs7RMyoLECGV4.1dn9uHGPmGbNfgUz82aoHlVXkdhVI8txlG6EAHoldt5QXa05.hF15W2
- _c3v05DFMb7zaJCVNQj9yMfL1miI2hOXbQo1SnpCVgQOdj2FR7nde8o4o0jbYD.B6R5RtSIvxHru
- MR2UCW2Bzm.NBPu.zZI09lxX7fCnvqk8MbN3tFfPS3y_4GMvv7mD4OUshoQpx.Znve0Gq4naME0D
- FB2oiRgBg4R5w2llOFx0FdV_nnnE8RAprMGmFUy10iNH.wMnD15srK0VWcRJfg8rXjUtr2ejN39t
- sRquHLjjVGgCQn704vCXu1fw7cAq19c1NNS2F0D.zQP9MivfdjXdvxJyTd3tDWs9z9vbGGAIjtbx
- PrYS73ihVwF_FI29HzBVgikkhrcWodRlrjYD5JGR5cGQjPeJzTYNHHRJzeLAqeQKy9N2MXPeV5B8
- mhzK7QO0A9UZL7aexImm0VhTeBSg7aaKN3QJ0nhEraqqHynLmTD898WgnJUUPdSZwvTjdcBKzO71
- OF_REusEhTlPNHo4Ia12JaL5kET9JKs.DS_ZGc9cgueWqoEwPbGqJqm18WRN9mqVwIduwjT66FIl
- FsQ2Z54.k7ongsNhbK7nMJfbmqX3SlORUv2WRXIEKhPJMMkdgVPDdVWxMOyQ.Z5cLEpjsFh4i_Pw
- KkKsL9T8PnGwnwMLNwPZqpZAStzwqMx3vzwudOdf6DnQnWLIVmYEQsELyM0gvo8UwslYRWoCl8Y0
- ZhX7c8v1Yt6KflSQP5hAVEvD9GT07L6p5sDOneLB8CFI2hMzA09tMq.SCTQ61fzqc4UAmQu.QCUK
- QncX8QP29I5.2Z5TYmH0t6CaGFvD2.vIuTTUzmf9s.hslR676RgOz6nIwerq.2dw4XqjnQ_5ib6c
- uPwM9vimNNg8QWwVba_IVpVE.gS8yLzUtb2dYU5042OeqWQWvFeUfogCypWIJnHkyrFfI0uG7_KO
- jcD8e1Ogy6gIsRBe0Fv5ITiKTxfZ8q3l2Bo.c7TJLZZNOjo.xG3fxYCm5k0781PaJZrKFuhQzMFZ
- JeXRaLANyIhE98qtwqycliH.I7bG75Y6tiTNJu1K77W47BE5XJ5ENLYOWk_be6MjDo4Zyoj930Oo
- AKl54bhJ1kCn.8JmQrin5_4.vfhA187StGh3.l125kgjpzR6V.IS_FiHw78l7GTs9Mawwasv8n5X
- BuIY9Pj3k66lb9WjkkxvsJijjcqPtNBbZEMdefQL8I_yfxBMbipchS0Ve0NA7eGCUa_Y9g97DBEr
- pVeZknwpCvkEEkI25uFJLbsAMR5QSdN0bMcWjBFm1q0fY7hGBW5eIcqmVsMa6T92IIZ0134afDU7
- selb_JWIXns8a0PugUTPWAeXYdm5dBJ_ehWMoqejv8YE7RaXgndWtP2scJCHDaOt_7UnQFpj4MW7
- sOJ0O8XtwLtpaGRXCC3nv32x0wW6xpISl7_KlnVvWPqumbh4w0XljObwehC2efNzc2lov6Zrbgcj
- 59vpJq0g_wBNF_ov7u1qnjyNd2AAl7gNJ0BIps0RgJ1oN2jdKIv_tnuMNuBExRfp38F9gBYl7.Oi
- TbFXhVvaqwUnz4SGrHM.vG4fv76s9LKezPfUxmu9ydSRPktrHgBEAPhyGKl1uObCelTHBY2pie.u
- MbIDW7v5cyoZ9Luu9Xch5cXgrwT6EMDIXMMh8_kbp9p0UuFu91qvHiBaQYgxfAZxWPZlJhIVq543
- C6bltVr35LYmI2z6dPYl5L7.Y8FFZ8hyYaaTaxlO4nV1eIc2Citzn31HH8Y5lOcGKiBh0yYQ5a1t
- O1lMcBsECQdY3RqawZnl_Aw8BuLlALXFEG1G0Uv9icyYiYaX_B5AGfBj6o4qS69n6kOYHpfj.GXL
- SkpJZno.OMrWj6E4qp1twKw36Uj2eycxC_t7AhrG._TEHwcpA_fKZL.vLhGbv7ehwR0dhqyB.LvJ
- vUf6JbgbEjDbGbgXHjiclcnAhfJIsFwS_97rSl5x30zf8Z4ki1edJY64Z0nuXR7XrX2_laWVKEvc
- 80A--
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 10357545-7d4d-4633-9a0e-ac619ac57b86
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.ne1.yahoo.com with HTTP; Wed, 27 Sep 2023 16:37:31 +0000
-Received: by hermes--production-bf1-7cf89fd98c-ff8xs (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 5b2b4b951fd59d12f6b70c33c8cab420;
-          Wed, 27 Sep 2023 16:37:25 +0000 (UTC)
-Message-ID: <57295dac-9abd-3bac-ff5d-ccf064947162@schaufler-ca.com>
-Date: Wed, 27 Sep 2023 09:37:22 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B411262AD;
+	Wed, 27 Sep 2023 17:12:36 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D835F4;
+	Wed, 27 Sep 2023 10:12:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695834753; x=1727370753;
+  h=date:from:to:cc:subject:message-id;
+  bh=NCPXOhbStnUCYoUTamnFtenQS2tvh4Y3G22bNsdxLoM=;
+  b=YgTk6NxiGnbYQimYIZIEE4TZLVHuv3Yz9cLO/BUMoN6gJ6OnOz1RToW6
+   EDcIJKITqaswg9LvEnhhAv0OEBl6i/qy+rwWi+V/kRKmjLHCJ7bHKQv/7
+   Z5ZikO7phfhgiFAiKeFLJA42Uy31V2XI+iFMyLJsjmAr8D2Vv/ZPVsDqz
+   Q5WwohMkM1y7JAY6MVVS2z8ncuLOt91QsjkAYKJMWdPjvvEemI0Gina+Z
+   j1HaCHFolmdc5Btr2e1bW2t7nWpIHs9Ajbs52/DaExLQN2VndeyGvNhou
+   gQqgHTR+DsTQFv8/DJp4MLR9OmzmFksv4D4G1wjJZT9aKau7qpKXPvBd9
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="412791675"
+X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
+   d="scan'208";a="412791675"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 10:12:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="996230390"
+X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
+   d="scan'208";a="996230390"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 27 Sep 2023 10:12:28 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qlY5K-0000Tm-1e;
+	Wed, 27 Sep 2023 17:12:26 +0000
+Date: Thu, 28 Sep 2023 01:11:53 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Memory Management List <linux-mm@kvack.org>,
+ alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org,
+ bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+ linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
+ linux-net-drivers@amd.com, netdev@vger.kernel.org
+Subject: [linux-next:master] BUILD REGRESSION
+ 18030226a48de1fbfabf4ae16aaa2695a484254f
+Message-ID: <202309280124.SI9BbMdm-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC PATCH 1/2] LSM: Allow dynamically appendable LSM modules.
-Content-Language: en-US
-To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
- linux-security-module <linux-security-module@vger.kernel.org>,
- KP Singh <kpsingh@kernel.org>, Paul Moore <paul@paul-moore.com>,
- bpf <bpf@vger.kernel.org>
-Cc: Kees Cook <keescook@chromium.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Casey Schaufler <casey@schaufler-ca.com>
-References: <cc8e16bb-5083-01da-4a77-d251a76dc8ff@I-love.SAKURA.ne.jp>
-From: Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <cc8e16bb-5083-01da-4a77-d251a76dc8ff@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.21797 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-On 9/27/2023 8:08 AM, Tetsuo Handa wrote:
-> Recently, the LSM community is trying to make drastic changes.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 18030226a48de1fbfabf4ae16aaa2695a484254f  Add linux-next specific files for 20230927
 
-I'd call them "significant" or "important" rather than "drastic".
+Error/Warning reports:
 
-> Crispin Cowan has explained
->
->   It is Linus' comments that spurred me to want to start this undertaking.  He
->   observes that there are many different security approaches, each with their own
->   advocates.  He doesn't want to arbitrate which of them should be "the" Linux
->   security approach, and would rather that Linux can support any of them.
->
->   That is the purpose of this project:  to allow Linux to support a variety of
->   security models, so that security developers don't have to have the "my dog's
->   bigger than your dog" argument, and users can choose the security model that
->   suits their needs.
->
-> when the LSM project started [1].
->
-> However, Casey Schaufler is trying to make users difficult to choose the
-> security model that suits their needs, by requiring LSM ID value which is
-> assigned to only LSM modules that succeeded to become in-tree [2].
+https://lore.kernel.org/oe-kbuild-all/202308282000.2XNh0K6D-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202308301211.2HHbgs2N-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202308301542.li3KHkJl-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202309122047.cRi9yJrq-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202309130213.mSR7X2jZ-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202309192154.NJNpFIy5-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202309192314.VBsjiIm5-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202309212121.cul1pTRa-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202309212339.hxhBu2F1-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202309271719.sXq960r2-lkp@intel.com
 
-This statement is demonstrably false, and I'm tired of hearing it.
+Error/Warning: (recently discovered and may have been fixed)
 
-> Therefore, I'm asking Casey and Paul Moore to change their mind to allow
-> assigning LSM ID value to any LSM modules (so that users can choose the
-> security model that suits their needs) [3].
->
-> I expect that LSM ID value will be assigned to any publicly available LSM
-> modules. Otherwise, it is mostly pointless to propose this patch; there
-> will be little LSM modules to built into vmlinux; let alone dynamically
-> loading as LKM-based LSMs.
->
-> Also, KP Singh is trying to replace the linked list with static calls in
-> order to reduce overhead of indirect calls [4]. However, this change
-> assumed that any LSM modules are built-in. I don't like such assumption
-> because I still consider that LSM modules which are not built into vmlinux
-> will be wanted by users [5].
->
-> Then, Casey told me to supply my implementation of loadable security
-> modules [6]. Therefore, I post this patch as basic changes needed for
-> allowing dynamically appendable LSM modules (and an example of appendable
-> LSM modules). This patch was tested on only x86_64.
+aarch64-linux-ld: ice_dpll.c:(.text+0x1124): undefined reference to `ice_cgu_get_pin_type'
+aarch64-linux-ld: ice_dpll.c:(.text+0x122c): undefined reference to `ice_cgu_get_pin_freq_supp'
+aarch64-linux-ld: ice_lib.c:(.text+0x85a0): undefined reference to `ice_is_cgu_present'
+aarch64-linux-ld: ice_lib.c:(.text+0x85d0): undefined reference to `ice_is_clock_mux_present_e810t'
+arc-elf-ld: xfrm_algo.c:(.text+0x46c): undefined reference to `crypto_has_aead'
+arch/x86/include/asm/string_32.h:150:25: warning: '__builtin_memcpy' writing 3 bytes into a region of size 0 overflows the destination [-Wstringop-overflow=]
+drivers/cpufreq/sti-cpufreq.c:215:50: warning: '%d' directive output may be truncated writing between 1 and 10 bytes into a region of size 2 [-Wformat-truncation=]
+drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:3928: warning: Function parameter or member 'srf_updates' not described in 'could_mpcc_tree_change_for_active_pipes'
+drivers/net/ethernet/intel/ice/ice_dpll.c:1066: undefined reference to `ice_get_cgu_state'
+drivers/net/ethernet/intel/ice/ice_dpll.c:1666: undefined reference to `ice_cgu_get_pin_freq_supp'
+drivers/net/ethernet/intel/ice/ice_dpll.c:1802: undefined reference to `ice_get_cgu_rclk_pin_info'
+drivers/net/ethernet/intel/ice/ice_lib.c:3992: undefined reference to `ice_is_phy_rclk_present'
+drivers/net/ethernet/sfc/ethtool_common.c:278:32: warning: '%-24s' directive output may be truncated writing between 24 and 31 bytes into a region of size 25 [-Wformat-truncation=]
+drivers/net/ethernet/sfc/falcon/ethtool.c:229:32: warning: '%-24s' directive output may be truncated writing between 24 and 31 bytes into a region of size 25 [-Wformat-truncation=]
+drivers/net/ethernet/sfc/siena/ethtool_common.c:229:32: warning: '%-24s' directive output may be truncated writing between 24 and 31 bytes into a region of size 25 [-Wformat-truncation=]
+fs/bcachefs/bcachefs_format.h:215:25: warning: 'p' offset 3 in 'struct bkey' isn't aligned to 4 [-Wpacked-not-aligned]
+fs/bcachefs/bcachefs_format.h:217:25: warning: 'version' offset 27 in 'struct bkey' isn't aligned to 4 [-Wpacked-not-aligned]
+fs/proc/task_mmu.c:2105:3: error: implicit declaration of function 'pagemap_scan_backout_range'; did you mean 'pagemap_scan_push_range'? [-Werror=implicit-function-declaration]
+ice_dpll.c:(.text+0x1104): undefined reference to `ice_cgu_get_pin_name'
+ice_dpll.c:(.text+0x15b4): undefined reference to `ice_get_cgu_state'
+ice_dpll.c:(.text+0x2758): undefined reference to `ice_get_cgu_rclk_pin_info'
+ice_lib.c:(.text+0x855c): undefined reference to `ice_is_phy_rclk_present'
+include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
+include/linux/fortify-string.h:65:33: warning: '__builtin_strcpy' source argument is the same as destination [-Wrestrict]
+include/linux/netlink.h:116:13: warning: ') out of range, only support...' directive output truncated writing 60 bytes into a region of size between 46 and 55 [-Wformat-truncation=]
+include/linux/netlink.h:116:13: warning: 'sfc: Unsupported: only suppo...' directive output truncated writing 104 bytes into a region of size 80 [-Wformat-truncation=]
+include/linux/netlink.h:116:6: warning: ') out of range, only support...' directive output truncated writing 60 bytes into a region of size between 46 and 55 [-Wformat-truncation=]
+include/linux/netlink.h:116:6: warning: 'sfc: Unsupported: only suppo...' directive output truncated writing 104 bytes into a region of size 80 [-Wformat-truncation=]
+kernel/bpf/helpers.c:1906:19: warning: no previous declaration for 'bpf_percpu_obj_new_impl' [-Wmissing-declarations]
+kernel/bpf/helpers.c:1942:18: warning: no previous declaration for 'bpf_percpu_obj_drop_impl' [-Wmissing-declarations]
+kernel/bpf/helpers.c:2477:18: warning: no previous declaration for 'bpf_throw' [-Wmissing-declarations]
+ld: drivers/net/ethernet/intel/ice/ice_dpll.c:1646: undefined reference to `ice_cgu_get_pin_name'
+ld: drivers/net/ethernet/intel/ice/ice_dpll.c:1647: undefined reference to `ice_cgu_get_pin_type'
+ld: drivers/net/ethernet/intel/ice/ice_lib.c:3997: undefined reference to `ice_is_cgu_present'
+ld: drivers/net/ethernet/intel/ice/ice_lib.c:3999: undefined reference to `ice_is_clock_mux_present_e810t'
+sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c:44:50: warning: '%d' directive output may be truncated writing between 1 and 11 bytes into a region of size 10 [-Wformat-truncation=]
+xfrm_algo.c:(.text+0x46c): undefined reference to `crypto_has_aead'
 
-Thank you for doing so. I will be mostly off line for the next few weeks,
-and will review the proposal fully on my return. I will provide some
-initial feedback below.
+Unverified Error/Warning (likely false positive, please contact us if interested):
 
-> Question for KP Singh would be how can we allow dynamically appendable
-> LSM modules if current linked list is replaced with static calls with
-> minimal-sized array...
->
-> Link: https://marc.info/?l=linux-security-module&m=98706471912438&w=2 [1]
-> Link: https://lkml.kernel.org/r/20230912205658.3432-2-casey@schaufler-ca.com [2]
-> Link: https://lkml.kernel.org/r/6e1c25f5-b78c-8b4e-ddc3-484129c4c0ec@I-love.SAKURA.ne.jp [3]
-> Link: https://lkml.kernel.org/r/20230918212459.1937798-1-kpsingh@kernel.org [4]
-> Link: https://lkml.kernel.org/r/ed785c86-a1d8-caff-c629-f8a50549e05b@I-love.SAKURA.ne.jp [5]
-> Link: https://lkml.kernel.org/r/36c7cf74-508f-1690-f86a-bb18ec686fcf@schaufler-ca.com [6]
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> ---
->  include/linux/lsm_hooks.h |   2 +
->  security/security.c       | 107 ++++++++++++++++++++++++++++++++++++++
->  2 files changed, 109 insertions(+)
->
-> diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-> index dcb5e5b5eb13..73db3c41df26 100644
-> --- a/include/linux/lsm_hooks.h
-> +++ b/include/linux/lsm_hooks.h
-> @@ -105,6 +105,8 @@ extern char *lsm_names;
->  
->  extern void security_add_hooks(struct security_hook_list *hooks, int count,
->  				const char *lsm);
-> +extern int register_loadable_lsm(struct security_hook_list *hooks, int count,
-> +				 const char *lsm);
->  
->  #define LSM_FLAG_LEGACY_MAJOR	BIT(0)
->  #define LSM_FLAG_EXCLUSIVE	BIT(1)
-> diff --git a/security/security.c b/security/security.c
-> index 23b129d482a7..6c64b7afb251 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -74,6 +74,7 @@ const char *const lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX + 1] = {
->  };
->  
->  struct security_hook_heads security_hook_heads __ro_after_init;
-> +EXPORT_SYMBOL_GPL(security_hook_heads);
+Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml:
+drivers/staging/vme_user/vme.c:867:7-16: ERROR: iterator variable bound on line 866 cannot be NULL
+drivers/staging/vme_user/vme.c:899:13-22: ERROR: invalid reference to the index variable of the iterator on line 866
 
-Why disrupt the protection of security_hook_heads? You could easily add
+Error/Warning ids grouped by kconfigs:
 
-struct security_hook_heads security_loadable_hook_heads
-EXPORT_SYMBOL_GPL(security_loadable_hook_heads);
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- arc-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   `-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|-- arc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   `-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|-- arc-defconfig
+|   |-- arc-elf-ld:xfrm_algo.c:(.text):undefined-reference-to-crypto_has_aead
+|   `-- xfrm_algo.c:(.text):undefined-reference-to-crypto_has_aead
+|-- arm-allmodconfig
+|   |-- drivers-cpufreq-sti-cpufreq.c:warning:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   |-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|   `-- sound-soc-mediatek-mt2701-mt2701-afe-clock-ctrl.c:warning:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|-- arm-allyesconfig
+|   |-- drivers-cpufreq-sti-cpufreq.c:warning:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   |-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|   `-- sound-soc-mediatek-mt2701-mt2701-afe-clock-ctrl.c:warning:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|-- arm64-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- sound-soc-mediatek-mt2701-mt2701-afe-clock-ctrl.c:warning:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|-- arm64-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- sound-soc-mediatek-mt2701-mt2701-afe-clock-ctrl.c:warning:d-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|-- arm64-randconfig-002-20230927
+|   |-- aarch64-linux-ld:ice_dpll.c:(.text):undefined-reference-to-ice_cgu_get_pin_freq_supp
+|   |-- aarch64-linux-ld:ice_dpll.c:(.text):undefined-reference-to-ice_cgu_get_pin_type
+|   |-- aarch64-linux-ld:ice_lib.c:(.text):undefined-reference-to-ice_is_cgu_present
+|   |-- aarch64-linux-ld:ice_lib.c:(.text):undefined-reference-to-ice_is_clock_mux_present_e810t
+|   |-- ice_dpll.c:(.text):undefined-reference-to-ice_cgu_get_pin_name
+|   |-- ice_dpll.c:(.text):undefined-reference-to-ice_get_cgu_rclk_pin_info
+|   |-- ice_dpll.c:(.text):undefined-reference-to-ice_get_cgu_state
+|   |-- ice_lib.c:(.text):undefined-reference-to-ice_is_phy_rclk_present
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- csky-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- csky-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- i386-allmodconfig
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|-- i386-allyesconfig
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|-- i386-buildonly-randconfig-002-20230927
+|   |-- kernel-bpf-helpers.c:warning:no-previous-declaration-for-bpf_percpu_obj_drop_impl
+|   |-- kernel-bpf-helpers.c:warning:no-previous-declaration-for-bpf_percpu_obj_new_impl
+|   `-- kernel-bpf-helpers.c:warning:no-previous-declaration-for-bpf_throw
+|-- i386-buildonly-randconfig-006-20230927
+|   `-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-writing-bytes-into-a-region-of-size-overflows-the-destination
+|-- i386-randconfig-001-20230927
+|   |-- kernel-bpf-helpers.c:warning:no-previous-declaration-for-bpf_percpu_obj_drop_impl
+|   |-- kernel-bpf-helpers.c:warning:no-previous-declaration-for-bpf_percpu_obj_new_impl
+|   `-- kernel-bpf-helpers.c:warning:no-previous-declaration-for-bpf_throw
+|-- i386-randconfig-003-20230927
+|   `-- fs-proc-task_mmu.c:error:implicit-declaration-of-function-pagemap_scan_backout_range
+|-- i386-randconfig-051-20230927
+|   |-- drivers-staging-vme_user-vme.c:ERROR:invalid-reference-to-the-index-variable-of-the-iterator-on-line
+|   `-- drivers-staging-vme_user-vme.c:ERROR:iterator-variable-bound-on-line-cannot-be-NULL
+|-- loongarch-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-net-ethernet-sfc-ethtool_common.c:warning:24s-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   |-- drivers-net-ethernet-sfc-falcon-ethtool.c:warning:24s-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   |-- drivers-net-ethernet-sfc-siena-ethtool_common.c:warning:24s-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- loongarch-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- drivers-net-ethernet-sfc-ethtool_common.c:warning:24s-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   |-- drivers-net-ethernet-sfc-falcon-ethtool.c:warning:24s-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   |-- drivers-net-ethernet-sfc-siena-ethtool_common.c:warning:24s-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- loongarch-defconfig
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|-- loongarch-randconfig-001-20230927
+|   |-- Documentation-devicetree-bindings-mfd-qcom-pm8xxx.yaml:
+|   |-- drivers-net-ethernet-sfc-ethtool_common.c:warning:24s-directive-output-may-be-truncated-writing-between-and-bytes-into-a-region-of-size
+|   `-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|-- m68k-allmodconfig
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   `-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|-- m68k-allyesconfig
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   `-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|-- microblaze-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- microblaze-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- mips-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   `-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|-- mips-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   `-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|-- openrisc-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- openrisc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- parisc-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- parisc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- powerpc-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- powerpc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- powerpc-randconfig-003-20230927
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|-- riscv-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- riscv-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- s390-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- s390-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- sparc-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- sparc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- sparc64-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- sparc64-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- fs-bcachefs-bcachefs_format.h:warning:p-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- fs-bcachefs-bcachefs_format.h:warning:version-offset-in-struct-bkey-isn-t-aligned-to
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- sparc64-randconfig-001-20230927
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|-- x86_64-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- x86_64-buildonly-randconfig-004-20230927
+|   `-- include-linux-fortify-string.h:warning:__builtin_strcpy-source-argument-is-the-same-as-destination
+|-- x86_64-buildonly-randconfig-005-20230927
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|-- x86_64-randconfig-014-20230927
+|   |-- include-linux-netlink.h:warning:)-out-of-range-only-support...-directive-output-truncated-writing-bytes-into-a-region-of-size-between-and
+|   `-- include-linux-netlink.h:warning:sfc:Unsupported:only-suppo...-directive-output-truncated-writing-bytes-into-a-region-of-size
+|-- x86_64-randconfig-071-20230927
+|   |-- drivers-net-ethernet-intel-ice-ice_dpll.c:undefined-reference-to-ice_cgu_get_pin_freq_supp
+|   |-- drivers-net-ethernet-intel-ice-ice_dpll.c:undefined-reference-to-ice_get_cgu_rclk_pin_info
+|   |-- drivers-net-ethernet-intel-ice-ice_dpll.c:undefined-reference-to-ice_get_cgu_state
+|   |-- drivers-net-ethernet-intel-ice-ice_lib.c:undefined-reference-to-ice_is_phy_rclk_present
+|   |-- ld:drivers-net-ethernet-intel-ice-ice_dpll.c:undefined-reference-to-ice_cgu_get_pin_name
+|   |-- ld:drivers-net-ethernet-intel-ice-ice_dpll.c:undefined-reference-to-ice_cgu_get_pin_type
+|   |-- ld:drivers-net-ethernet-intel-ice-ice_lib.c:undefined-reference-to-ice_is_cgu_present
+|   `-- ld:drivers-net-ethernet-intel-ice-ice_lib.c:undefined-reference-to-ice_is_clock_mux_present_e810t
+|-- x86_64-randconfig-073-20230927
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+|-- x86_64-randconfig-076-20230927
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
+`-- xtensa-randconfig-002-20230927
+    `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:Function-parameter-or-member-srf_updates-not-described-in-could_mpcc_tree_change_for_active_pipes
 
-and add the loaded hooks there. A system that does not use loadable
-modules would be unaffected by the ability to load modules.
+elapsed time: 737m
 
->  static BLOCKING_NOTIFIER_HEAD(blocking_lsm_notifier_chain);
->  
->  static struct kmem_cache *lsm_file_cache;
-> @@ -537,6 +538,112 @@ void __init security_add_hooks(struct security_hook_list *hooks, int count,
->  	}
->  }
->  
-> +#if defined(CONFIG_STRICT_KERNEL_RWX)
-> +#define MAX_RO_PAGES 1024 /* Wild guess. Can be minimized by dynamic allocation. */
-> +static struct page *ro_pages[MAX_RO_PAGES]; /* Pages that are marked read-only. */
-> +static unsigned int ro_pages_len; /* Number of pages that are marked read-only. */
-> +
-> +/* Check whether a page containing given address does not have _PAGE_BIT_RW bit. */
-> +static bool lsm_test_page_ro(void *addr)
-> +{
-> +	unsigned int i;
-> +	int unused;
-> +	struct page *page;
-> +
-> +	page = (struct page *) lookup_address((unsigned long) addr, &unused);
-> +	if (!page)
-> +		return false;
-> +	if (test_bit(_PAGE_BIT_RW, &(page->flags)))
-> +		return true;
-> +	for (i = 0; i < ro_pages_len; i++)
-> +		if (page == ro_pages[i])
-> +			return true;
-> +	if (ro_pages_len == MAX_RO_PAGES)
-> +		return false;
-> +	ro_pages[ro_pages_len++] = page;
-> +	return true;
-> +}
-> +
-> +/* Find pages which do not have _PAGE_BIT_RW bit. */
-> +static bool check_ro_pages(struct security_hook_list *hooks, int count)
-> +{
-> +	int i;
-> +	struct hlist_head *list = &security_hook_heads.capable;
-> +
-> +	if (!copy_to_kernel_nofault(list, list, sizeof(void *)))
-> +		return true;
-> +	for (i = 0; i < count; i++) {
-> +		struct hlist_head *head = hooks[i].head;
-> +		struct security_hook_list *shp;
-> +
-> +		if (!lsm_test_page_ro(&head->first))
-> +			return false;
-> +		hlist_for_each_entry(shp, head, list)
-> +			if (!lsm_test_page_ro(&shp->list.next) ||
-> +			    !lsm_test_page_ro(&shp->list.pprev))
-> +				return false;
-> +	}
-> +	return true;
-> +}
-> +#endif
+configs tested: 135
+configs skipped: 2
 
-I'm not an expert on modern memory management, but I think introducing
-security_loadable_hook_heads would make these functions unnecessary.
-Please educate me if I'm wrong.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20230927   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                   randconfig-001-20230927   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20230927   gcc  
+i386         buildonly-randconfig-002-20230927   gcc  
+i386         buildonly-randconfig-003-20230927   gcc  
+i386         buildonly-randconfig-004-20230927   gcc  
+i386         buildonly-randconfig-005-20230927   gcc  
+i386         buildonly-randconfig-006-20230927   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20230927   gcc  
+i386                  randconfig-002-20230927   gcc  
+i386                  randconfig-003-20230927   gcc  
+i386                  randconfig-004-20230927   gcc  
+i386                  randconfig-005-20230927   gcc  
+i386                  randconfig-006-20230927   gcc  
+i386                  randconfig-011-20230927   gcc  
+i386                  randconfig-012-20230927   gcc  
+i386                  randconfig-013-20230927   gcc  
+i386                  randconfig-014-20230927   gcc  
+i386                  randconfig-015-20230927   gcc  
+i386                  randconfig-016-20230927   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20230927   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20230927   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20230927   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20230927   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20230927   gcc  
+x86_64       buildonly-randconfig-002-20230927   gcc  
+x86_64       buildonly-randconfig-003-20230927   gcc  
+x86_64       buildonly-randconfig-004-20230927   gcc  
+x86_64       buildonly-randconfig-005-20230927   gcc  
+x86_64       buildonly-randconfig-006-20230927   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20230927   gcc  
+x86_64                randconfig-002-20230927   gcc  
+x86_64                randconfig-003-20230927   gcc  
+x86_64                randconfig-004-20230927   gcc  
+x86_64                randconfig-005-20230927   gcc  
+x86_64                randconfig-006-20230927   gcc  
+x86_64                randconfig-011-20230927   gcc  
+x86_64                randconfig-012-20230927   gcc  
+x86_64                randconfig-013-20230927   gcc  
+x86_64                randconfig-014-20230927   gcc  
+x86_64                randconfig-015-20230927   gcc  
+x86_64                randconfig-016-20230927   gcc  
+x86_64                randconfig-071-20230927   gcc  
+x86_64                randconfig-072-20230927   gcc  
+x86_64                randconfig-073-20230927   gcc  
+x86_64                randconfig-074-20230927   gcc  
+x86_64                randconfig-075-20230927   gcc  
+x86_64                randconfig-076-20230927   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
 
-> +
-> +/**
-> + * register_loadable_lsm - Add a dynamically appendable module's hooks to the hook lists.
-> + * @hooks: the hooks to add
-> + * @count: the number of hooks to add
-> + * @lsm: the name of the security module
-> + *
-> + * Each dynamically appendable LSM has to register its hooks with the infrastructure.
-> + *
-> + * Assumes that this function is called from module_init() function where
-> + * call to this function is already serialized by module_mutex lock.
-> + */
-> +int register_loadable_lsm(struct security_hook_list *hooks, int count,
-> +			  const char *lsm)
-> +{
-> +	int i;
-> +	char *cp;
-> +
-> +	// TODO: Check whether proposed hooks can co-exist with already chained hooks,
-> +	//       and bail out here if one of hooks cannot co-exist...
-> +
-> +#if defined(CONFIG_STRICT_KERNEL_RWX)
-> +	// Find pages which needs to make temporarily writable.
-> +	ro_pages_len = 0;
-> +	if (!check_ro_pages(hooks, count)) {
-> +		pr_err("Can't make security_hook_heads again writable. Retry with rodata=off kernel command line option added.\n");
-> +		return -EINVAL;
-> +	}
-> +	pr_info("ro_pages_len=%d\n", ro_pages_len);
-> +#endif
-> +	// At least "capability" is already included.
-> +	cp = kasprintf(GFP_KERNEL, "%s,%s", lsm_names, lsm);
-> +	if (!cp) {
-> +		pr_err("%s - Cannot get memory.\n", __func__);
-> +		return -ENOMEM;
-> +	}
-> +#if defined(CONFIG_STRICT_KERNEL_RWX)
-> +	// Make security_hook_heads (and hooks chained) temporarily writable.
-> +	for (i = 0; i < ro_pages_len; i++)
-> +		set_bit(_PAGE_BIT_RW, &(ro_pages[i]->flags));
-> +#endif
-> +	// Register dynamically appendable module's hooks.
-> +	for (i = 0; i < count; i++) {
-> +		hooks[i].lsm = lsm;
-> +		hlist_add_tail_rcu(&hooks[i].list, hooks[i].head);
-> +	}
-> +#if defined(CONFIG_STRICT_KERNEL_RWX)
-> +	// Make security_hook_heads (and hooks chained) again read-only.
-> +	for (i = 0; i < ro_pages_len; i++)
-> +		clear_bit(_PAGE_BIT_RW, &(ro_pages[i]->flags));
-> +#endif
-> +	// TODO: Wait for reader side before kfree().
-> +	kfree(lsm_names);
-> +	lsm_names = cp;
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(register_loadable_lsm);
-
-Most of this code seems unnecessary if you use security_loadable_hook_heads.
-
-There would need to be additions in security.c to invoke the hooks in the new
-list, but that would be straightforward. Locking is another matter. I don't see
-that addressed here, and I fear that it might have prohibitive performance
-impact. Again, I'm not an expert on locking, so you'll need to seek advise
-elsewhere.
-
-On a less happy note, you haven't addressed security blobs in any way. You
-need to provide a mechanism to allow an LSM to share security blobs with
-builtin LSMs and other loadable LSMs.
-
-> +
->  int call_blocking_lsm_notifier(enum lsm_event event, void *data)
->  {
->  	return blocking_notifier_call_chain(&blocking_lsm_notifier_chain,
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
