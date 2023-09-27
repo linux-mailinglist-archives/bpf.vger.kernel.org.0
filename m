@@ -1,751 +1,207 @@
-Return-Path: <bpf+bounces-11002-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11007-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 971AD7B0F5C
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 01:02:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 142367B0F8A
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 01:21:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 08D872829C5
-	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 23:02:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id B224A28217B
+	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 23:21:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B294CFC4;
-	Wed, 27 Sep 2023 23:01:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 768B54D8E0;
+	Wed, 27 Sep 2023 23:21:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965C34CFC5
-	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 23:01:54 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A2DD122
-	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 16:01:50 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 38RLP8Sa010227
-	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 16:01:49 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by m0089730.ppops.net (PPS) with ESMTPS id 3tck005yqg-11
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 16:01:49 -0700
-Received: from twshared40933.03.prn6.facebook.com (2620:10d:c0a8:1c::1b) by
- mail.thefacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 27 Sep 2023 16:01:44 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 7113938C9A76F; Wed, 27 Sep 2023 15:59:17 -0700 (PDT)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC: <linux-fsdevel@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
-        <keescook@chromium.org>, <brauner@kernel.org>,
-        <lennart@poettering.net>, <kernel-team@meta.com>, <sargun@sargun.me>
-Subject: [PATCH v6 bpf-next 13/13] selftests/bpf: add BPF token-enabled tests
-Date: Wed, 27 Sep 2023 15:58:09 -0700
-Message-ID: <20230927225809.2049655-14-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230927225809.2049655-1-andrii@kernel.org>
-References: <20230927225809.2049655-1-andrii@kernel.org>
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: 76tJG4AvJtJQAM_aTJbIiZXpbhah65IE
-X-Proofpoint-ORIG-GUID: 76tJG4AvJtJQAM_aTJbIiZXpbhah65IE
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC4A81C6B3
+	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 23:21:14 +0000 (UTC)
+Received: from mx0b-00007101.pphosted.com (mx0b-00007101.pphosted.com [148.163.139.28])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58A2F9
+	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 16:21:12 -0700 (PDT)
+Received: from pps.filterd (m0166259.ppops.net [127.0.0.1])
+	by mx0b-00007101.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38RMaTKe025368;
+	Wed, 27 Sep 2023 23:20:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=illinois.edu; h=message-id : date :
+ from : to : subject : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=campusrelays;
+ bh=kKATYQYwrqXy2GUG5yv8QhSqwSfsC+inxXmDNh24HQs=;
+ b=XiV4iavBuaUFdkwRJYnGE8Z7YldlBqOaO5Oov5niF0GXSDTQ2f/4ulmP5bK9gBAJvKEN
+ +sMImOu/gVck0ViK53UtpqmMaCq++RceEW9XSlR16mh/PUhm4z0GUNrzQZD7a86d0HPv
+ voEaQEI2jIqbW892Sf46tRZtTknnqnR5NHMLQfeczcZFdRjiCHmVXJA5aAN3DLZS3nE5
+ 8T63fbfB1jC9SJGxUc19mPKj9ftGoXZMHXcpem5KQS2Je9oPgqNLbUWJoxCG1Q7+0/4K
+ zV6YOFrPKMwXlQnQRdoUqvxF8OT2znI5d76GXVeKfgZ/mcZtMDy/GGaXc94LkP5dnmcs 1A== 
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2175.outbound.protection.outlook.com [104.47.56.175])
+	by mx0b-00007101.pphosted.com (PPS) with ESMTPS id 3tc79dh3ry-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Sep 2023 23:20:48 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bVM+GNblZU85akW7nx+jthAvdmu9v8mzlW1JQ6+PcLwEG7a5lY5tvIj9fA11B8B9KGKPN5NXxWB9pefm39vYnrLEyPbfZ8td4+lwHNHbwj8KmWgpl8MMLov+PhB7Y3caJ7QvSRHcJ4W+zsjkAY8EGHCwV3wZ12NUcETT18i1usf/c2xcXuVo3pY/V6OSz1rfLCklhvUUOEfUb8BxG6FkH4Db9YKHjAVt1P5duTymP/xNQQk3yvdxkmGfH+R+AVwS8WHbSZQ9vqQfIsV16Hs1ft9+tGTRH9ss7q8hyEBiPkzgT68erUX2U69nXp2zVlpYPhVWq+BRv94WdNUWOeD3fg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kKATYQYwrqXy2GUG5yv8QhSqwSfsC+inxXmDNh24HQs=;
+ b=A0RH1efUUpQtP6GkaNZchMRWIn3BPNQMuQXFk+FNjU/6nfbChFpF3qmtIPBefgEoe2NxS6od8qQQGTwR3/K/LWpkW4fI0GIhiOF2GTAQoaQ7fOCmlFrPEDVpl9PhXhCHAw6brIrsR2cZVZPH+1tibybmUGrw2aCg0EEvg9M/DKr0uuZduWxU8dmLCtrqgzjpPAbA4jsR13V9D+I1E6IevLutsouGUXB9D00ynFo/8Z3ru8npZIsSOKg4VY2+lfG4TxDA7LyWzFmSXUHyReqZtqhMU+lXULWrx0AD1/UoIf8rraSQ6cLqrhB89m5RYnVasoEpRHzDJSP5inUQt1VKRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=illinois.edu; dmarc=pass action=none header.from=illinois.edu;
+ dkim=pass header.d=illinois.edu; arc=none
+Received: from BL3PR11MB6508.namprd11.prod.outlook.com (2603:10b6:208:38f::5)
+ by SJ2PR11MB7545.namprd11.prod.outlook.com (2603:10b6:a03:4cc::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Wed, 27 Sep
+ 2023 23:20:46 +0000
+Received: from BL3PR11MB6508.namprd11.prod.outlook.com
+ ([fe80::457f:dc8a:bfb1:5974]) by BL3PR11MB6508.namprd11.prod.outlook.com
+ ([fe80::457f:dc8a:bfb1:5974%7]) with mapi id 15.20.6813.017; Wed, 27 Sep 2023
+ 23:19:13 +0000
+Message-ID: <ed2a63a4-434c-4cf7-ad27-c17f75bbdf84@illinois.edu>
+Date: Wed, 27 Sep 2023 18:19:10 -0500
+User-Agent: Mozilla Thunderbird
+From: ruowenq2@illinois.edu
+To: Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, jinghao7@illinois.edu,
+        keescook@chromium.org, Mimi Zohar <zohar@linux.ibm.com>,
+        Jinghao Jia <jinghao@linux.ibm.com>
+Subject: Re: [PATCH bpf-next v3 1/1] samples/bpf: Add -fsanitize=bounds to
+ userspace programs
+References: <20230927045030.224548-1-ruowenq2@illinois.edu>
+ <20230927045030.224548-2-ruowenq2@illinois.edu> <ZRQMASduySxE+TO2@krava>
+In-Reply-To: <ZRQMASduySxE+TO2@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: CH0P220CA0023.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:610:ef::25) To BL3PR11MB6508.namprd11.prod.outlook.com
+ (2603:10b6:208:38f::5)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-27_15,2023-09-27_01,2023-05-22_02
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
-	autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL3PR11MB6508:EE_|SJ2PR11MB7545:EE_
+X-MS-Office365-Filtering-Correlation-Id: bf6613fb-4aad-48ee-cce4-08dbbfb028a3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	EXcz9/pZWuXBTDUl68rHEvNCFOw6W3TI0bvsBZjAJ+GVUAthi6bkU3np8B1rAOkF7l4kiGb8agjwzWxPXHQsOAlSu8LM7+dzRAOpYfaUx6RqSYdd1x3kfN8IqfhqYGm1OO1fLpB7u7gfFskrPnmqqo22BArz2M0yB602Zd4AaiSOtwCsnx73oXBgeiZojFFUXIxhOUmtidwCTg0oB/a+Uw7LeL58etJ7lJaASKboQtH7u9xKE8tOhHO2l0EPIc2e5pF3e9pmrhCHv73rmOmyBtOg6HOphCz4Txr4TkKTcVjR9DWZLMbA8+uKydI8YAh1E4cx3nnaFIAX9dnM0iSvQBTaxLkzJ33j7ezG78nFT/UlKyKdie8e5UJm+PbIWYgXehx5MSYna/e7TdmijZSKm9CDt9XD/Ee1A5BmRERPzHICiebDsOuN/4wPAg5PbTo1J2hmAHPGWxVfp/WGjDd1X+TerPmJiBJ8lsRPoswtHVm5uw40Aay9djUox14Hf0WD5NTFYWqQnuL5itDMuuYHSY5DZ6CtlTPDI61SpW47GLE3chEbrZ4Ak5Uaa8arZBlXYXLy+QMKXlQGWMF8Ope52ro9ufrQfCvs+uZNEliiLlYucZctU+Zfwe7dUn7pUIIvS1amUOLVsYw5oY/3gm9xjg==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL3PR11MB6508.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(136003)(39860400002)(366004)(376002)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(316002)(786003)(5660300002)(8936002)(66946007)(8676002)(41300700001)(110136005)(66556008)(66476007)(31686004)(2906002)(75432002)(53546011)(9686003)(2616005)(6506007)(31696002)(26005)(36756003)(6486002)(478600001)(86362001)(38100700002)(83380400001)(6512007)(2292003)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?aFVQQi9PelppL2ladHc4MHZRenB5d1RiU3ZqV3ltelQ3WWl1d081UGJNVnJH?=
+ =?utf-8?B?UUhWTVB6TGRwaGlqUlJPeTFiNFgxclJTQlNtejhaV2tTMGxScG1ZMmY3UW5p?=
+ =?utf-8?B?dytxU3Z0MmJHTTFDQklBV3F2NDNyN0pMTGo5VS9QSm5UUXlRNG9hTGhEZjhq?=
+ =?utf-8?B?MmRJcFVNQ3IzYzdiakNRK0VmWXhmOVFxZUU4dTJrdHRiV3VoWitWMkUyQjk3?=
+ =?utf-8?B?NXU2UUZzR2dEemFuaHl0REVVWE0zWHFnSWJ1VHIvZ2VPUW5PZlkrVWtHdkNK?=
+ =?utf-8?B?WitONTZMLy96dVpvdVZLYXE2NUY2c2pFbml1QXcrYWl0dzZReU5wd0psZGRp?=
+ =?utf-8?B?U092aE9yclpSeG1JSVpKY2lmWGpNUFlMK0JEcHROR3BJaHlvdXdYSUI1bnJu?=
+ =?utf-8?B?T3EwYzNzL2l2V2dSUGNxcjVNcXV1UUR1M0N4dXRlT2FncVpXVFd2Y2VIYlJY?=
+ =?utf-8?B?VTdCb1hOTUNzK014Mk92eEZEYWpDREdReHRPTzdQbXErbllud054L0RRWmVm?=
+ =?utf-8?B?clAyeFRLZ2w3VTRqWERCZHBFRkkyTmNySE5JNEEwNTdXeTJwL2tWS3p1VXNy?=
+ =?utf-8?B?ZFk1dkFuVmFWN2lWZkI0eGVRNlR4VWduL0Q2aVJ5VFRDUUJrWTU0MzFzbk9n?=
+ =?utf-8?B?aC9wZzNieXNmbWRsTFB4ZDZvaEVTcnpEMDk2RFlVSmVCcC9HRlRERmJESmN6?=
+ =?utf-8?B?UGx4ekY5QUlINVhnanUzTmpsR2FEdjhXdlpoUTlOWFRrSWNNZWhuME5KQWhU?=
+ =?utf-8?B?NzQyOFRsblB3VUFQSm4xYlJ3eUd6TWUyWVpKNWd6UkdWbU40cXN4V0xUUENB?=
+ =?utf-8?B?eEJ0Ny9vQVhHVTVUSkFEdmhmVVpURWthUEc0aEV1SDkzc0xVTU5BQVl3SGxL?=
+ =?utf-8?B?YlEwMWhrMkJlL0htSk4zSW1MT1RmVUhxWERsNzBKdERkMHNwZ0daYUpDSDJ1?=
+ =?utf-8?B?YkdiL1lSdWREbEViU2J3SG5leWpMUU1leFE1ZVE0ZXZ6Z2RlSU5RZThhRkF6?=
+ =?utf-8?B?VEdrS2FWYUN6UEJsRmxVYXltVytQK2QreERkT2VWNUpnQVhTTGwybE1Ld1Zs?=
+ =?utf-8?B?eUVRN1pTRUlNV0JLK2xBcmNTSXlhV2JHNjlUUlkreEd3ZzRMVFFsOUVyRWUy?=
+ =?utf-8?B?MzVGb29pZVY1ME9XeHNMVGFHTkZYNXFwVURFcWRHU2VQTTkvVTk5djhCTmR2?=
+ =?utf-8?B?VVpieWd4MSs1akxMYUxSRnl1alk1NGgrdEREYW5RR00wYjVTSTZ6U0w4dTNx?=
+ =?utf-8?B?dVlUbXovdGRIS01PYW16OHdQRS9ZUUQ0MHZEaURoNDJIc21zSkRXbnNlY3Az?=
+ =?utf-8?B?U1NEVTBxNzV6S0RZMTRnY2ZVR2lGWVJqNEdlL2dxRlRvbVh1TXRjbm1SSE5I?=
+ =?utf-8?B?RTl3bEhkUGxra0hNMXZVS1ZOUlZrRUlUVFREbTlFTms2Mkt0My93dWdVcitY?=
+ =?utf-8?B?TDNYNWpYY1NvalN1QldmSHBQZi9zKzRTRE1ZUjA5bkpKSjhQNTFobHRiUDF3?=
+ =?utf-8?B?WmQrckNPU09ZSFF5MC9KWnBLbFl6Yll1WElJN3pPcDVWRk5sVUdjMzBlUUdR?=
+ =?utf-8?B?RGYwMmdvRjhkQzZQY1kwZ0Y4V0t5bUF4Yk8vSFFVc0QyUFhxS1BrTStua1B4?=
+ =?utf-8?B?cnYxNXVhK3lQcmhOa2ZQemNLcis5WVFvTUhsNlBpWm9ZZFZoSFpXVmpTaFc0?=
+ =?utf-8?B?akpzSnBFYzFtd2plcHRpNk5OSGUyZkg5WHNPNHVMZ3h1V2RKaXBhWmFYemlX?=
+ =?utf-8?B?SUVnQWJKT1ZYR0tjZ3lqaXlUVHNza1l3M2pzanMvdnNRZmRncHdUMG5VWERy?=
+ =?utf-8?B?VjZrRDFteHZaMFlTTU5NZElPSXQvNmthd3NHUlYvT1hMY054SFZwY3RmTzd3?=
+ =?utf-8?B?NXR5OUxGKzN1Vk04dktKSVlTZVA0clF5emJRL3h6U2k2N3A3emVZUERRakJu?=
+ =?utf-8?B?SlhJVmtmOHd5SUZvaDhreHplb2l3aGF6cDB0MTdxVWNuMGdzMlRxcFBJeWM2?=
+ =?utf-8?B?eEVkV2o0TlEyWmRlaW14VmZZaUJkSHdLUHdOelFaMGlqOUoxNmNZOU4rdU5n?=
+ =?utf-8?B?WU9pSHUxQU5nOVl6eEpDQjRZMFVpOHU0U3pxbzVOUEhSV1VEMWROT01vY1By?=
+ =?utf-8?B?dWlCMVF5YUlESHhJK1FQeUVYdk9reGVFSUhyOU1lUFMzNWFMS0I0b0E2N1Ar?=
+ =?utf-8?B?Q1E9PQ==?=
+X-OriginatorOrg: illinois.edu
+X-MS-Exchange-CrossTenant-Network-Message-Id: bf6613fb-4aad-48ee-cce4-08dbbfb028a3
+X-MS-Exchange-CrossTenant-AuthSource: BL3PR11MB6508.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 23:19:13.1195
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 44467e6f-462c-4ea2-823f-7800de5434e3
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rY09QL2eTBiy9mhbhPr/WEAvku5wt0Z1ZYt+6pyiDbkddJl4nufOwRSCldWdMn93HXe3q3iRhZ8cI8MrwdMMPg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7545
+X-Proofpoint-GUID: UQ0Fk-_YScn7c4Ue90GR3WadK_f7A9G8
+X-Proofpoint-ORIG-GUID: UQ0Fk-_YScn7c4Ue90GR3WadK_f7A9G8
+X-Spam-Details: rule=cautious_plus_nq_notspam policy=cautious_plus_nq score=0 clxscore=1011
+ priorityscore=1501 mlxlogscore=999 lowpriorityscore=0 bulkscore=0
+ adultscore=0 spamscore=0 mlxscore=0 phishscore=0 suspectscore=0
+ malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2309270201
+X-Spam-Score: 0
+X-Spam-OrigSender: ruowenq2@illinois.edu
+X-Spam-Bar: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add a selftest that attempts to conceptually replicate intended BPF
-token use cases inside user namespaced container.
 
-Child process is forked. It is then put into its own userns and mountns.
-Child creates BPF FS context object and sets it up as desired. This
-ensures child userns is captures as owning userns for this instance of
-BPF FS.
 
-This context is passed back to privileged parent process through Unix
-socket, where parent creates and mounts it as a detached mount. This
-mount FD is passed back to the child to be used for BPF token creation,
-which allows otherwise privileged BPF operations to succeed inside
-userns.
+On 9/27/23 6:03 AM, Jiri Olsa <olsajiri@gmail.com> wrote:
+> On Tue, Sep 26, 2023 at 11:50:30PM -0500, ruowenq2@illinois.edu wrote:
+> > From: Ruowen Qin <ruowenq2@illinois.edu>
+> >
+> > The sanitizer flag, which is supported by both clang and gcc, would make
+> > it easier to debug array index out-of-bounds problems in these programs.
+> >
+> > Make the Makfile smarter to detect ubsan support from the compiler and
+> > add the '-fsanitize=bounds' accordingly.
+> >
+> > Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
+> > Signed-off-by: Jinghao Jia <jinghao@linux.ibm.com>
+> > Signed-off-by: Jinghao Jia <jinghao7@illinois.edu>
+> > Signed-off-by: Ruowen Qin <ruowenq2@illinois.edu>
+> > ---
+> >   samples/bpf/Makefile | 3 +++
+> >   1 file changed, 3 insertions(+)
+> >
+> > diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> > index 6c707ebcebb9..90af76fa9dd8 100644
+> > --- a/samples/bpf/Makefile
+> > +++ b/samples/bpf/Makefile
+> > @@ -169,6 +169,9 @@ endif
+> >   TPROGS_CFLAGS += -Wall -O2
+> >   TPROGS_CFLAGS += -Wmissing-prototypes
+> >   TPROGS_CFLAGS += -Wstrict-prototypes
+> > +TPROGS_CFLAGS += $(call try-run,\
+> > +	printf "int main() { return 0; }" |\
+> > +	$(CC) -Werror -fsanitize=bounds -x c - -o "$$TMP",-fsanitize=bounds,)
+> 
+> I haven't checked deeply, but could we use just cc-option? looks simpler
+> 
+> TPROGS_CFLAGS += $(call cc-option, -fsanitize=bounds)
+> 
+> jirka
 
-We validate that all of token-enabled privileged commands (BPF_BTF_LOAD,
-BPF_MAP_CREATE, and BPF_PROG_LOAD) work as intended. They should only
-succeed inside the userns if a) BPF token is provided with proper
-allowed sets of commands and types; and b) namespaces CAP_BPF and other
-privileges are set. Lacking a) or b) should lead to -EPERM failures.
+Hi, thanks for your quick reply! When checking for flags, cc-option does not execute the linker, but on Fedora, an error appears and stating that "/usr/lib64/libubsan.so.1.0.0" cannot be found during linking. So I try this seemingly cumbersome way.
 
-Based on suggested workflow by Christian Brauner ([0]).
+Ruowen
 
-  [0] https://lore.kernel.org/bpf/20230704-hochverdient-lehne-eeb9eeef785e@=
-brauner/
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../testing/selftests/bpf/prog_tests/token.c  | 629 ++++++++++++++++++
- 1 file changed, 629 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/token.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/token.c b/tools/testing=
-/selftests/bpf/prog_tests/token.c
-new file mode 100644
-index 000000000000..41cee6b4731e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/token.c
-@@ -0,0 +1,629 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+#define _GNU_SOURCE
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+#include "cap_helpers.h"
-+#include <fcntl.h>
-+#include <sched.h>
-+#include <signal.h>
-+#include <unistd.h>
-+#include <linux/filter.h>
-+#include <linux/unistd.h>
-+#include <sys/mount.h>
-+#include <sys/socket.h>
-+#include <sys/syscall.h>
-+#include <sys/un.h>
-+
-+/* copied from include/uapi/linux/mount.h, as including it conflicts with
-+ * sys/mount.h include
-+ */
-+enum fsconfig_command {
-+	FSCONFIG_SET_FLAG       =3D 0,    /* Set parameter, supplying no value */
-+	FSCONFIG_SET_STRING     =3D 1,    /* Set parameter, supplying a string va=
-lue */
-+	FSCONFIG_SET_BINARY     =3D 2,    /* Set parameter, supplying a binary bl=
-ob value */
-+	FSCONFIG_SET_PATH       =3D 3,    /* Set parameter, supplying an object b=
-y path */
-+	FSCONFIG_SET_PATH_EMPTY =3D 4,    /* Set parameter, supplying an object b=
-y (empty) path */
-+	FSCONFIG_SET_FD         =3D 5,    /* Set parameter, supplying an object b=
-y fd */
-+	FSCONFIG_CMD_CREATE     =3D 6,    /* Invoke superblock creation */
-+	FSCONFIG_CMD_RECONFIGURE =3D 7,   /* Invoke superblock reconfiguration */
-+};
-+
-+static inline int sys_fsopen(const char *fsname, unsigned flags)
-+{
-+	return syscall(__NR_fsopen, fsname, flags);
-+}
-+
-+static inline int sys_fsconfig(int fs_fd, unsigned cmd, const char *key, c=
-onst void *val, int aux)
-+{
-+	return syscall(__NR_fsconfig, fs_fd, cmd, key, val, aux);
-+}
-+
-+static inline int sys_fsmount(int fs_fd, unsigned flags, unsigned ms_flags)
-+{
-+	return syscall(__NR_fsmount, fs_fd, flags, ms_flags);
-+}
-+
-+static int drop_priv_caps(__u64 *old_caps)
-+{
-+	return cap_disable_effective((1ULL << CAP_BPF) |
-+				     (1ULL << CAP_PERFMON) |
-+				     (1ULL << CAP_NET_ADMIN) |
-+				     (1ULL << CAP_SYS_ADMIN), old_caps);
-+}
-+
-+static int restore_priv_caps(__u64 old_caps)
-+{
-+	return cap_enable_effective(old_caps, NULL);
-+}
-+
-+static int set_delegate_mask(int fs_fd, const char *key, __u64 mask)
-+{
-+	char buf[32];
-+	int err;
-+
-+	snprintf(buf, sizeof(buf), "0x%llx", (unsigned long long)mask);
-+	err =3D sys_fsconfig(fs_fd, FSCONFIG_SET_STRING, key,
-+			   mask =3D=3D ~0ULL ? "any" : buf, 0);
-+	if (err < 0)
-+		err =3D -errno;
-+	return err;
-+}
-+
-+#define zclose(fd) do { if (fd >=3D 0) close(fd); fd =3D -1; } while (0)
-+
-+struct bpffs_opts {
-+	__u64 cmds;
-+	__u64 maps;
-+	__u64 progs;
-+	__u64 attachs;
-+};
-+
-+static int setup_bpffs_fd(struct bpffs_opts *opts)
-+{
-+	int fs_fd =3D -1, err;
-+
-+	/* create VFS context */
-+	fs_fd =3D sys_fsopen("bpf", 0);
-+	if (!ASSERT_GE(fs_fd, 0, "fs_fd"))
-+		goto cleanup;
-+
-+	/* set up token delegation mount options */
-+	err =3D set_delegate_mask(fs_fd, "delegate_cmds", opts->cmds);
-+	if (!ASSERT_OK(err, "fs_cfg_cmds"))
-+		goto cleanup;
-+	err =3D set_delegate_mask(fs_fd, "delegate_maps", opts->maps);
-+	if (!ASSERT_OK(err, "fs_cfg_maps"))
-+		goto cleanup;
-+	err =3D set_delegate_mask(fs_fd, "delegate_progs", opts->progs);
-+	if (!ASSERT_OK(err, "fs_cfg_progs"))
-+		goto cleanup;
-+	err =3D set_delegate_mask(fs_fd, "delegate_attachs", opts->attachs);
-+	if (!ASSERT_OK(err, "fs_cfg_attachs"))
-+		goto cleanup;
-+
-+	return fs_fd;
-+cleanup:
-+	zclose(fs_fd);
-+	return -1;
-+}
-+
-+static int materialize_bpffs_fd(int fs_fd)
-+{
-+	int mnt_fd, err;
-+
-+	/* instantiate FS object */
-+	err =3D sys_fsconfig(fs_fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0);
-+	if (err < 0)
-+		return -errno;
-+
-+	/* create O_PATH fd for detached mount */
-+	mnt_fd =3D sys_fsmount(fs_fd, 0, 0);
-+	if (err < 0)
-+		return -errno;
-+
-+	return mnt_fd;
-+}
-+
-+/* send FD over Unix domain (AF_UNIX) socket */
-+static int sendfd(int sockfd, int fd)
-+{
-+	struct msghdr msg =3D {};
-+	struct cmsghdr *cmsg;
-+	int fds[1] =3D { fd }, err;
-+	char iobuf[1];
-+	struct iovec io =3D {
-+		.iov_base =3D iobuf,
-+		.iov_len =3D sizeof(iobuf),
-+	};
-+	union {
-+		char buf[CMSG_SPACE(sizeof(fds))];
-+		struct cmsghdr align;
-+	} u;
-+
-+	msg.msg_iov =3D &io;
-+	msg.msg_iovlen =3D 1;
-+	msg.msg_control =3D u.buf;
-+	msg.msg_controllen =3D sizeof(u.buf);
-+	cmsg =3D CMSG_FIRSTHDR(&msg);
-+	cmsg->cmsg_level =3D SOL_SOCKET;
-+	cmsg->cmsg_type =3D SCM_RIGHTS;
-+	cmsg->cmsg_len =3D CMSG_LEN(sizeof(fds));
-+	memcpy(CMSG_DATA(cmsg), fds, sizeof(fds));
-+
-+	err =3D sendmsg(sockfd, &msg, 0);
-+	if (err < 0)
-+		err =3D -errno;
-+	if (!ASSERT_EQ(err, 1, "sendmsg"))
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+/* receive FD over Unix domain (AF_UNIX) socket */
-+static int recvfd(int sockfd, int *fd)
-+{
-+	struct msghdr msg =3D {};
-+	struct cmsghdr *cmsg;
-+	int fds[1], err;
-+	char iobuf[1];
-+	struct iovec io =3D {
-+		.iov_base =3D iobuf,
-+		.iov_len =3D sizeof(iobuf),
-+	};
-+	union {
-+		char buf[CMSG_SPACE(sizeof(fds))];
-+		struct cmsghdr align;
-+	} u;
-+
-+	msg.msg_iov =3D &io;
-+	msg.msg_iovlen =3D 1;
-+	msg.msg_control =3D u.buf;
-+	msg.msg_controllen =3D sizeof(u.buf);
-+
-+	err =3D recvmsg(sockfd, &msg, 0);
-+	if (err < 0)
-+		err =3D -errno;
-+	if (!ASSERT_EQ(err, 1, "recvmsg"))
-+		return -EINVAL;
-+
-+	cmsg =3D CMSG_FIRSTHDR(&msg);
-+	if (!ASSERT_OK_PTR(cmsg, "cmsg_null") ||
-+	    !ASSERT_EQ(cmsg->cmsg_len, CMSG_LEN(sizeof(fds)), "cmsg_len") ||
-+	    !ASSERT_EQ(cmsg->cmsg_level, SOL_SOCKET, "cmsg_level") ||
-+	    !ASSERT_EQ(cmsg->cmsg_type, SCM_RIGHTS, "cmsg_type"))
-+		return -EINVAL;
-+
-+	memcpy(fds, CMSG_DATA(cmsg), sizeof(fds));
-+	*fd =3D fds[0];
-+
-+	return 0;
-+}
-+
-+static ssize_t write_nointr(int fd, const void *buf, size_t count)
-+{
-+	ssize_t ret;
-+
-+	do {
-+		ret =3D write(fd, buf, count);
-+	} while (ret < 0 && errno =3D=3D EINTR);
-+
-+	return ret;
-+}
-+
-+static int write_file(const char *path, const void *buf, size_t count)
-+{
-+	int fd;
-+	ssize_t ret;
-+
-+	fd =3D open(path, O_WRONLY | O_CLOEXEC | O_NOCTTY | O_NOFOLLOW);
-+	if (fd < 0)
-+		return -1;
-+
-+	ret =3D write_nointr(fd, buf, count);
-+	close(fd);
-+	if (ret < 0 || (size_t)ret !=3D count)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static int create_and_enter_userns(void)
-+{
-+	uid_t uid;
-+	gid_t gid;
-+	char map[100];
-+
-+	uid =3D getuid();
-+	gid =3D getgid();
-+
-+	if (unshare(CLONE_NEWUSER))
-+		return -1;
-+
-+	if (write_file("/proc/self/setgroups", "deny", sizeof("deny") - 1) &&
-+	    errno !=3D ENOENT)
-+		return -1;
-+
-+	snprintf(map, sizeof(map), "0 %d 1", uid);
-+	if (write_file("/proc/self/uid_map", map, strlen(map)))
-+		return -1;
-+
-+
-+	snprintf(map, sizeof(map), "0 %d 1", gid);
-+	if (write_file("/proc/self/gid_map", map, strlen(map)))
-+		return -1;
-+
-+	if (setgid(0))
-+		return -1;
-+
-+	if (setuid(0))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+typedef int (*child_callback_fn)(int);
-+
-+static void child(int sock_fd, struct bpffs_opts *bpffs_opts, child_callba=
-ck_fn callback)
-+{
-+	LIBBPF_OPTS(bpf_map_create_opts, map_opts);
-+	int mnt_fd =3D -1, fs_fd =3D -1, err =3D 0;
-+
-+	/* setup userns with root mappings */
-+	err =3D create_and_enter_userns();
-+	if (!ASSERT_OK(err, "create_and_enter_userns"))
-+		goto cleanup;
-+
-+	/* setup mountns to allow creating BPF FS (fsopen("bpf")) from unpriv pro=
-cess */
-+	err =3D unshare(CLONE_NEWNS);
-+	if (!ASSERT_OK(err, "create_mountns"))
-+		goto cleanup;
-+
-+	err =3D mount(NULL, "/", NULL, MS_REC | MS_PRIVATE, 0);
-+	if (!ASSERT_OK(err, "remount_root"))
-+		goto cleanup;
-+
-+	fs_fd =3D setup_bpffs_fd(bpffs_opts);
-+	if (!ASSERT_GE(fs_fd, 0, "setup_bpffs")) {
-+		err =3D -EINVAL;
-+		goto cleanup;
-+	}
-+
-+	/* pass BPF FS context object to parent */
-+	err =3D sendfd(sock_fd, fs_fd);
-+	if (!ASSERT_OK(err, "send_fs_fd"))
-+		goto cleanup;
-+
-+	/* avoid mucking around with mount namespaces and mounting at
-+	 * well-known path, just get detach-mounted BPF FS fd back from parent
-+	 */
-+	err =3D recvfd(sock_fd, &mnt_fd);
-+	if (!ASSERT_OK(err, "recv_mnt_fd"))
-+		goto cleanup;
-+
-+	/* do custom test logic with customly set up BPF FS instance */
-+	err =3D callback(mnt_fd);
-+	if (!ASSERT_OK(err, "test_callback"))
-+		goto cleanup;
-+
-+	err =3D 0;
-+cleanup:
-+	zclose(sock_fd);
-+	zclose(mnt_fd);
-+
-+	exit(-err);
-+}
-+
-+static int wait_for_pid(pid_t pid)
-+{
-+	int status, ret;
-+
-+again:
-+	ret =3D waitpid(pid, &status, 0);
-+	if (ret =3D=3D -1) {
-+		if (errno =3D=3D EINTR)
-+			goto again;
-+
-+		return -1;
-+	}
-+
-+	if (!WIFEXITED(status))
-+		return -1;
-+
-+	return WEXITSTATUS(status);
-+}
-+
-+static void parent(int child_pid, int sock_fd)
-+{
-+	int fs_fd =3D -1, mnt_fd =3D -1, err;
-+
-+	err =3D recvfd(sock_fd, &fs_fd);
-+	if (!ASSERT_OK(err, "recv_bpffs_fd"))
-+		goto cleanup;
-+
-+	mnt_fd =3D materialize_bpffs_fd(fs_fd);
-+	if (!ASSERT_GE(mnt_fd, 0, "materialize_bpffs_fd")) {
-+		err =3D -EINVAL;
-+		goto cleanup;
-+	}
-+	zclose(fs_fd);
-+
-+	/* pass BPF FS context object to parent */
-+	err =3D sendfd(sock_fd, mnt_fd);
-+	if (!ASSERT_OK(err, "send_mnt_fd"))
-+		goto cleanup;
-+	zclose(mnt_fd);
-+
-+	err =3D wait_for_pid(child_pid);
-+	ASSERT_OK(err, "waitpid_child");
-+
-+cleanup:
-+	zclose(sock_fd);
-+	zclose(fs_fd);
-+	zclose(mnt_fd);
-+
-+	if (child_pid > 0)
-+		(void)kill(child_pid, SIGKILL);
-+}
-+
-+static void subtest_userns(struct bpffs_opts *bpffs_opts, child_callback_f=
-n cb)
-+{
-+	int sock_fds[2] =3D { -1, -1 };
-+	int child_pid =3D 0, err;
-+
-+	err =3D socketpair(AF_UNIX, SOCK_STREAM, 0, sock_fds);
-+	if (!ASSERT_OK(err, "socketpair"))
-+		goto cleanup;
-+
-+	child_pid =3D fork();
-+	if (!ASSERT_GE(child_pid, 0, "fork"))
-+		goto cleanup;
-+
-+	if (child_pid =3D=3D 0) {
-+		zclose(sock_fds[0]);
-+		return child(sock_fds[1], bpffs_opts, cb);
-+
-+	} else {
-+		zclose(sock_fds[1]);
-+		return parent(child_pid, sock_fds[0]);
-+	}
-+
-+cleanup:
-+	zclose(sock_fds[0]);
-+	zclose(sock_fds[1]);
-+	if (child_pid > 0)
-+		(void)kill(child_pid, SIGKILL);
-+}
-+
-+static int userns_map_create(int mnt_fd)
-+{
-+	LIBBPF_OPTS(bpf_map_create_opts, map_opts);
-+	int err, token_fd =3D -1, map_fd =3D -1;
-+	__u64 old_caps =3D 0;
-+
-+	/* create BPF token from BPF FS mount */
-+	token_fd =3D bpf_token_create(mnt_fd, "", NULL);
-+	if (!ASSERT_GT(token_fd, 0, "token_create")) {
-+		err =3D -EINVAL;
-+		goto cleanup;
-+	}
-+
-+	/* while inside non-init userns, we need both a BPF token *and*
-+	 * CAP_BPF inside current userns to create privileged map; let's test
-+	 * that neither BPF token alone nor namespaced CAP_BPF is sufficient
-+	 */
-+	err =3D drop_priv_caps(&old_caps);
-+	if (!ASSERT_OK(err, "drop_caps"))
-+		goto cleanup;
-+
-+	/* no token, no CAP_BPF -> fail */
-+	map_opts.token_fd =3D 0;
-+	map_fd =3D bpf_map_create(BPF_MAP_TYPE_STACK, "wo_token_wo_bpf", 0, 8, 1,=
- &map_opts);
-+	if (!ASSERT_LT(map_fd, 0, "stack_map_wo_token_wo_cap_bpf_should_fail")) {
-+		err =3D -EINVAL;
-+		goto cleanup;
-+	}
-+
-+	/* token without CAP_BPF -> fail */
-+	map_opts.token_fd =3D token_fd;
-+	map_fd =3D bpf_map_create(BPF_MAP_TYPE_STACK, "w_token_wo_bpf", 0, 8, 1, =
-&map_opts);
-+	if (!ASSERT_LT(map_fd, 0, "stack_map_w_token_wo_cap_bpf_should_fail")) {
-+		err =3D -EINVAL;
-+		goto cleanup;
-+	}
-+
-+	/* get back effective local CAP_BPF (and CAP_SYS_ADMIN) */
-+	err =3D restore_priv_caps(old_caps);
-+	if (!ASSERT_OK(err, "restore_caps"))
-+		goto cleanup;
-+
-+	/* CAP_BPF without token -> fail */
-+	map_opts.token_fd =3D 0;
-+	map_fd =3D bpf_map_create(BPF_MAP_TYPE_STACK, "wo_token_w_bpf", 0, 8, 1, =
-&map_opts);
-+	if (!ASSERT_LT(map_fd, 0, "stack_map_wo_token_w_cap_bpf_should_fail")) {
-+		err =3D -EINVAL;
-+		goto cleanup;
-+	}
-+
-+	/* finally, namespaced CAP_BPF + token -> success */
-+	map_opts.token_fd =3D token_fd;
-+	map_fd =3D bpf_map_create(BPF_MAP_TYPE_STACK, "w_token_w_bpf", 0, 8, 1, &=
-map_opts);
-+	if (!ASSERT_GT(map_fd, 0, "stack_map_w_token_w_cap_bpf")) {
-+		err =3D -EINVAL;
-+		goto cleanup;
-+	}
-+
-+cleanup:
-+	zclose(token_fd);
-+	zclose(map_fd);
-+	return err;
-+}
-+
-+static int userns_btf_load(int mnt_fd)
-+{
-+	LIBBPF_OPTS(bpf_btf_load_opts, btf_opts);
-+	int err, token_fd =3D -1, btf_fd =3D -1;
-+	const void *raw_btf_data;
-+	struct btf *btf =3D NULL;
-+	__u32 raw_btf_size;
-+	__u64 old_caps =3D 0;
-+
-+	/* create BPF token from BPF FS mount */
-+	token_fd =3D bpf_token_create(mnt_fd, "", NULL);
-+	if (!ASSERT_GT(token_fd, 0, "token_create")) {
-+		err =3D -EINVAL;
-+		goto cleanup;
-+	}
-+
-+	/* while inside non-init userns, we need both a BPF token *and*
-+	 * CAP_BPF inside current userns to create privileged map; let's test
-+	 * that neither BPF token alone nor namespaced CAP_BPF is sufficient
-+	 */
-+	err =3D drop_priv_caps(&old_caps);
-+	if (!ASSERT_OK(err, "drop_caps"))
-+		goto cleanup;
-+
-+	/* setup a trivial BTF data to load to the kernel */
-+	btf =3D btf__new_empty();
-+	if (!ASSERT_OK_PTR(btf, "empty_btf"))
-+		goto cleanup;
-+
-+	ASSERT_GT(btf__add_int(btf, "int", 4, 0), 0, "int_type");
-+
-+	raw_btf_data =3D btf__raw_data(btf, &raw_btf_size);
-+	if (!ASSERT_OK_PTR(raw_btf_data, "raw_btf_data"))
-+		goto cleanup;
-+
-+	/* no token + no CAP_BPF -> failure */
-+	btf_opts.token_fd =3D 0;
-+	btf_fd =3D bpf_btf_load(raw_btf_data, raw_btf_size, &btf_opts);
-+	if (!ASSERT_LT(btf_fd, 0, "no_token_no_cap_should_fail"))
-+		goto cleanup;
-+
-+	/* token + no CAP_BPF -> failure */
-+	btf_opts.token_fd =3D token_fd;
-+	btf_fd =3D bpf_btf_load(raw_btf_data, raw_btf_size, &btf_opts);
-+	if (!ASSERT_LT(btf_fd, 0, "token_no_cap_should_fail"))
-+		goto cleanup;
-+
-+	/* get back effective local CAP_BPF (and CAP_SYS_ADMIN) */
-+	err =3D restore_priv_caps(old_caps);
-+	if (!ASSERT_OK(err, "restore_caps"))
-+		goto cleanup;
-+
-+	/* token + CAP_BPF -> success */
-+	btf_opts.token_fd =3D token_fd;
-+	btf_fd =3D bpf_btf_load(raw_btf_data, raw_btf_size, &btf_opts);
-+	if (!ASSERT_GT(btf_fd, 0, "token_and_cap_success"))
-+		goto cleanup;
-+
-+	err =3D 0;
-+cleanup:
-+	btf__free(btf);
-+	zclose(btf_fd);
-+	zclose(token_fd);
-+	return err;
-+}
-+
-+static int userns_prog_load(int mnt_fd)
-+{
-+	LIBBPF_OPTS(bpf_prog_load_opts, prog_opts);
-+	int err, token_fd =3D -1, prog_fd =3D -1;
-+	struct bpf_insn insns[] =3D {
-+		/* bpf_jiffies64() requires CAP_BPF */
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_jiffies64),
-+		/* bpf_get_current_task() requires CAP_PERFMON */
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_current_task),
-+		/* r0 =3D 0; exit; */
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	};
-+	size_t insn_cnt =3D ARRAY_SIZE(insns);
-+	__u64 old_caps =3D 0;
-+
-+	/* create BPF token from BPF FS mount */
-+	token_fd =3D bpf_token_create(mnt_fd, "", NULL);
-+	if (!ASSERT_GT(token_fd, 0, "token_create")) {
-+		err =3D -EINVAL;
-+		goto cleanup;
-+	}
-+
-+	/* validate we can successfully load BPF program with token; this
-+	 * being XDP program (CAP_NET_ADMIN) using bpf_jiffies64() (CAP_BPF)
-+	 * and bpf_get_current_task() (CAP_PERFMON) helpers validates we have
-+	 * BPF token wired properly in a bunch of places in the kernel
-+	 */
-+	prog_opts.token_fd =3D token_fd;
-+	prog_opts.expected_attach_type =3D BPF_XDP;
-+	prog_fd =3D bpf_prog_load(BPF_PROG_TYPE_XDP, "token_prog", "GPL",
-+				insns, insn_cnt, &prog_opts);
-+	if (!ASSERT_GT(prog_fd, 0, "prog_fd")) {
-+		err =3D -EPERM;
-+		goto cleanup;
-+	}
-+
-+	/* no token + caps -> failure */
-+	prog_opts.token_fd =3D 0;
-+	prog_fd =3D bpf_prog_load(BPF_PROG_TYPE_XDP, "token_prog", "GPL",
-+				insns, insn_cnt, &prog_opts);
-+	if (!ASSERT_EQ(prog_fd, -EPERM, "prog_fd_eperm")) {
-+		err =3D -EPERM;
-+		goto cleanup;
-+	}
-+
-+	err =3D drop_priv_caps(&old_caps);
-+	if (!ASSERT_OK(err, "drop_caps"))
-+		goto cleanup;
-+
-+	/* no caps + token -> failure */
-+	prog_opts.token_fd =3D token_fd;
-+	prog_fd =3D bpf_prog_load(BPF_PROG_TYPE_XDP, "token_prog", "GPL",
-+				insns, insn_cnt, &prog_opts);
-+	if (!ASSERT_EQ(prog_fd, -EPERM, "prog_fd_eperm")) {
-+		err =3D -EPERM;
-+		goto cleanup;
-+	}
-+
-+	/* no caps + no token -> definitely a failure */
-+	prog_opts.token_fd =3D 0;
-+	prog_fd =3D bpf_prog_load(BPF_PROG_TYPE_XDP, "token_prog", "GPL",
-+				insns, insn_cnt, &prog_opts);
-+	if (!ASSERT_EQ(prog_fd, -EPERM, "prog_fd_eperm")) {
-+		err =3D -EPERM;
-+		goto cleanup;
-+	}
-+
-+	err =3D 0;
-+cleanup:
-+	zclose(prog_fd);
-+	zclose(token_fd);
-+	return err;
-+}
-+
-+void test_token(void)
-+{
-+	if (test__start_subtest("map_token")) {
-+		struct bpffs_opts opts =3D {
-+			.cmds =3D 1ULL << BPF_MAP_CREATE,
-+			.maps =3D 1ULL << BPF_MAP_TYPE_STACK,
-+		};
-+
-+		subtest_userns(&opts, userns_map_create);
-+	}
-+	if (test__start_subtest("btf_token")) {
-+		struct bpffs_opts opts =3D {
-+			.cmds =3D 1ULL << BPF_BTF_LOAD,
-+		};
-+
-+		subtest_userns(&opts, userns_btf_load);
-+	}
-+	if (test__start_subtest("prog_token")) {
-+		struct bpffs_opts opts =3D {
-+			.cmds =3D 1ULL << BPF_PROG_LOAD,
-+			.progs =3D 1ULL << BPF_PROG_TYPE_XDP,
-+			.attachs =3D 1ULL << BPF_XDP,
-+		};
-+
-+		subtest_userns(&opts, userns_prog_load);
-+	}
-+}
---=20
-2.34.1
-
+> >   
+> >   TPROGS_CFLAGS += -I$(objtree)/usr/include
+> >   TPROGS_CFLAGS += -I$(srctree)/tools/testing/selftests/bpf/
+> > -- 
+> > 2.42.0
+> >
+> >
+> 
 
