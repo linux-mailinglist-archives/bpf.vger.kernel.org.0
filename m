@@ -1,161 +1,165 @@
-Return-Path: <bpf+bounces-10957-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10958-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D78647B0014
-	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 11:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B6C47B0103
+	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 11:52:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by ny.mirrors.kernel.org (Postfix) with ESMTP id CE5F91C20AD1
-	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 09:28:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id 53BD81C2080C
+	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 09:52:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E58E21A0A;
-	Wed, 27 Sep 2023 09:28:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60B95266CF;
+	Wed, 27 Sep 2023 09:52:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0240A262A3;
-	Wed, 27 Sep 2023 09:27:58 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79443EB;
-	Wed, 27 Sep 2023 02:27:56 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RwWS26kzBzrTBL;
-	Wed, 27 Sep 2023 17:25:38 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 27 Sep
- 2023 17:27:53 +0800
-From: Liu Jian <liujian56@huawei.com>
-To: <john.fastabend@gmail.com>, <jakub@cloudflare.com>, <ast@kernel.org>,
-	<daniel@iogearbox.net>, <andrii@kernel.org>, <martin.lau@linux.dev>,
-	<song@kernel.org>, <yonghong.song@linux.dev>, <kpsingh@kernel.org>,
-	<sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <dsahern@kernel.org>
-CC: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <liujian56@huawei.com>
-Subject: [PATCH bpf-next v5 7/7] selftests/bpf: add tests for verdict skmsg to closed socket
-Date: Wed, 27 Sep 2023 17:30:13 +0800
-Message-ID: <20230927093013.1951659-8-liujian56@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230927093013.1951659-1-liujian56@huawei.com>
-References: <20230927093013.1951659-1-liujian56@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8D9F15493;
+	Wed, 27 Sep 2023 09:52:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FDACC433C8;
+	Wed, 27 Sep 2023 09:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695808352;
+	bh=VXPzy64VO8OMYFUF9Lq8/LYWzjxp4777wpEdNLgLPO4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B0kcuppnDszjLUg3fyRSEmD/DynnfjEI9CetLkZBEVjlIKPs54E16VYC8A3X2L5Vx
+	 ko+aCD21e/lSSbzEC6mM7Z5RFMPEeP3snEA4ocOy856bLuZR3BtzaIs1Ep9yteBr+W
+	 lqStjHeI7rxXxxNUWY7lCp8+7No3QqMcRz0cTKXKo9TZT/7arsD+IK9h6yiRMyj/9g
+	 nDgydlSmzGKAHUeMJ/0mvx8NxNSu+ZyOUIwH7AqcIlgICz5oFeIZuvbhcRHEoE2gbK
+	 Vzt2nbHHqjl3YeWhdQEdfGeIcjcS3UXCSgIf2XSuTFhJTCv3Rofp28i/TTj9BJyU6k
+	 qa9XVKeSC2tFA==
+Date: Wed, 27 Sep 2023 11:52:27 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org, keescook@chromium.org,
+	lennart@poettering.net, kernel-team@meta.com, sargun@sargun.me
+Subject: Re: [PATCH v5 bpf-next 03/13] bpf: introduce BPF token object
+Message-ID: <20230927-kaution-ventilator-33a41ee74d63@brauner>
+References: <20230919214800.3803828-1-andrii@kernel.org>
+ <20230919214800.3803828-4-andrii@kernel.org>
+ <20230926-augen-biodiesel-fdb05e859aac@brauner>
+ <CAEf4BzaH64kkccc1P-hqQj6Mccr3Q6x059G=A95d=KfU=yBMJQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzaH64kkccc1P-hqQj6Mccr3Q6x059G=A95d=KfU=yBMJQ@mail.gmail.com>
 
-Add four tests for verdict skmsg to closed socket in sockmap_basic.c.
+> > > +#define BPF_TOKEN_INODE_NAME "bpf-token"
+> > > +
+> > > +/* Alloc anon_inode and FD for prepared token.
+> > > + * Returns fd >= 0 on success; negative error, otherwise.
+> > > + */
+> > > +int bpf_token_new_fd(struct bpf_token *token)
+> > > +{
+> > > +     return anon_inode_getfd(BPF_TOKEN_INODE_NAME, &bpf_token_fops, token, O_CLOEXEC);
+> >
+> > It's unnecessary to use the anonymous inode infrastructure for bpf
+> > tokens. It adds even more moving parts and makes reasoning about it even
+> > harder. Just keep it all in bpffs. IIRC, something like the following
+> > (broken, non-compiling draft) should work:
+> >
+> > /* bpf_token_file - get an unlinked file living in bpffs */
+> > struct file *bpf_token_file(...)
+> > {
+> >         inode = bpf_get_inode(bpffs_mnt->mnt_sb, dir, mode);
+> >         inode->i_op = &bpf_token_iop;
+> >         inode->i_fop = &bpf_token_fops;
+> >
+> >         // some other stuff you might want or need
+> >
+> >         res = alloc_file_pseudo(inode, bpffs_mnt, "bpf-token", O_RDWR, &bpf_token_fops);
+> > }
+> >
+> > Now set your private data that you might need, reserve an fd, install
+> > the file into the fdtable and return the fd. You should have an unlinked
+> > bpffs file that serves as your bpf token.
+> 
+> Just to make sure I understand. You are saying that instead of having
+> `struct bpf_token *` and passing that into internal APIs
+> (bpf_token_capable() and bpf_token_allow_xxx()), I should just pass
+> around `struct super_block *` representing BPF FS instance? Or `struct
+> bpf_mount_opts *` maybe? Or 'struct vfsmount *'? (Any preferences
+> here?). Is that right?
 
-Signed-off-by: Liu Jian <liujian56@huawei.com>
----
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 42 +++++++++++++++----
- 1 file changed, 34 insertions(+), 8 deletions(-)
+No, that's not what I meant.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 1fcfa30720c6..dabea0997982 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -476,9 +476,10 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
- 		test_sockmap_drop_prog__destroy(drop);
- }
- 
--static void test_sockmap_msg_verdict(bool is_ingress, bool is_permanent, bool is_self)
-+static void test_sockmap_msg_verdict(bool is_ingress, bool is_permanent, bool is_self,
-+				     bool target_shutdown)
- {
--	int key, sent, recvd, recv_fd;
-+	int key, sent, recvd, recv_fd, target_fd;
- 	int err, map, verdict, s, c0, c1, p0, p1;
- 	struct test_sockmap_msg_verdict *skel;
- 	char buf[256] = "0123456789";
-@@ -522,18 +523,22 @@ static void test_sockmap_msg_verdict(bool is_ingress, bool is_permanent, bool is
- 		skel->bss->skmsg_redir_flags = BPF_F_INGRESS;
- 		if (is_self) {
- 			skel->bss->skmsg_redir_key = 0;
-+			target_fd = p1;
- 			recv_fd = p1;
- 		} else {
- 			skel->bss->skmsg_redir_key = 1;
-+			target_fd = c1;
- 			recv_fd = c1;
- 		}
- 	} else {
- 		skel->bss->skmsg_redir_flags = 0;
- 		if (is_self) {
- 			skel->bss->skmsg_redir_key = 0;
-+			target_fd = p1;
- 			recv_fd = c1;
- 		} else {
- 			skel->bss->skmsg_redir_key = 2;
-+			target_fd = p0;
- 			recv_fd = c0;
- 		}
- 	}
-@@ -546,6 +551,19 @@ static void test_sockmap_msg_verdict(bool is_ingress, bool is_permanent, bool is
- 	recvd = recv_timeout(recv_fd, &buf, sizeof(buf), SOCK_NONBLOCK, IO_TIMEOUT_SEC);
- 	ASSERT_EQ(recvd, sizeof(buf), "recv_timeout(recv_fd)");
- 
-+	if (target_shutdown) {
-+		signal(SIGPIPE, SIG_IGN);
-+		close(target_fd);
-+		sent = send(p1, &buf, sizeof(buf), 0);
-+		if (is_permanent) {
-+			ASSERT_EQ(sent, -1, "xsend(p1)");
-+			ASSERT_EQ(errno, EPIPE, "xsend(p1)");
-+		} else {
-+			ASSERT_EQ(sent, sizeof(buf), "xsend(p1)");
-+		}
-+		goto out_close;
-+	}
-+
- 	sent = xsend(p1, &buf, sizeof(buf), 0);
- 	ASSERT_EQ(sent, sizeof(buf), "xsend(p1)");
- 	recvd = recv_timeout(recv_fd, &buf, sizeof(buf), SOCK_NONBLOCK, IO_TIMEOUT_SEC);
-@@ -600,15 +618,23 @@ void test_sockmap_basic(void)
- 	if (test__start_subtest("sockmap skb_verdict fionread on drop"))
- 		test_sockmap_skb_verdict_fionread(false);
- 	if (test__start_subtest("sockmap msg_verdict"))
--		test_sockmap_msg_verdict(false, false, false);
-+		test_sockmap_msg_verdict(false, false, false, false);
- 	if (test__start_subtest("sockmap msg_verdict ingress"))
--		test_sockmap_msg_verdict(true, false, false);
-+		test_sockmap_msg_verdict(true, false, false, false);
- 	if (test__start_subtest("sockmap msg_verdict permanent"))
--		test_sockmap_msg_verdict(false, true, false);
-+		test_sockmap_msg_verdict(false, true, false, false);
- 	if (test__start_subtest("sockmap msg_verdict ingress permanent"))
--		test_sockmap_msg_verdict(true, true, false);
-+		test_sockmap_msg_verdict(true, true, false, false);
- 	if (test__start_subtest("sockmap msg_verdict permanent self"))
--		test_sockmap_msg_verdict(false, true, true);
-+		test_sockmap_msg_verdict(false, true, true, false);
- 	if (test__start_subtest("sockmap msg_verdict ingress permanent self"))
--		test_sockmap_msg_verdict(true, true, true);
-+		test_sockmap_msg_verdict(true, true, true, false);
-+	if (test__start_subtest("sockmap msg_verdict permanent shutdown"))
-+		test_sockmap_msg_verdict(false, true, false, true);
-+	if (test__start_subtest("sockmap msg_verdict ingress permanent shutdown"))
-+		test_sockmap_msg_verdict(true, true, false, true);
-+	if (test__start_subtest("sockmap msg_verdict shutdown"))
-+		test_sockmap_msg_verdict(false, false, false, true);
-+	if (test__start_subtest("sockmap msg_verdict ingress shutdown"))
-+		test_sockmap_msg_verdict(true, false, false, true);
- }
--- 
-2.34.1
+So, what you're doing right now to create a bpf token file descriptor is:
 
+return anon_inode_getfd(BPF_TOKEN_INODE_NAME, &bpf_token_fops, token, O_CLOEXEC);
+
+which is using the anonymous inode infrastructure. That is an entirely
+different filesystems (glossing over details) that is best leveraged for
+stuff like kvm fds and other stuff that doesn't need or have its own
+filesytem implementation.
+
+But you do have your own filesystem implementation so why abuse another
+one to create bpf token fds when they can just be created directly from
+the bpffs instance.
+
+IOW, everything stays the same apart from the fact that bpf token fds
+are actually file descriptors referring to a detached bpffs file instead
+of an anonymous inode file. IOW, bpf tokens are actual bpffs objects
+tied to a bpffs instance.
+
+**BROKEN BROKEN BROKEN AND UGLY**
+
+int bpf_token_create(union bpf_attr *attr)
+{
+        struct inode *inode;
+        struct path path;
+        struct bpf_mount_opts *mnt_opts;
+        struct bpf_token *token;
+        struct fd fd;
+        int fd, ret;
+        struct file *file;
+
+        fd = fdget(attr->token_create.bpffs_path_fd);
+        if (!fd.file)
+                goto cleanup;
+
+        if (fd.file->f_path->dentry != fd.file->f_path->dentry->d_sb->s_root)
+                goto cleanup;
+
+        inode = bpf_get_inode(fd.file->f_path->mnt->mnt_sb, NULL, 1234123412341234);
+        if (!inode)
+                goto cleanup;
+
+        fd = get_unused_fd_flags(O_RDWR | O_CLOEXEC);
+        if (fd < 0)
+                goto cleanup;
+
+        clear_nlink(inode); /* make sure it is unlinked */
+
+        file = alloc_file_pseudo(inode, fd.file->f_path->mnt, "bpf-token", O_RDWR, &&bpf_token_fops);
+        if (IS_ERR(file))
+                goto cleanup;
+
+        token = bpf_token_alloc();
+        if (!token)
+                goto cleanup;
+
+        /* remember bpffs owning userns for future ns_capable() checks */
+        token->userns = get_user_ns(path.dentry->d_sb->s_user_ns);
+
+        mnt_opts = path.dentry->d_sb->s_fs_info;
+        token->allowed_cmds = mnt_opts->delegate_cmds;
+        token->allowed_maps = mnt_opts->delegate_maps;
+        token->allowed_progs = mnt_opts->delegate_progs;
+        token->allowed_attachs = mnt_opts->delegate_attachs;
+
+        file->private_data = token;
+        fd_install(fd, file);
+        return fd;
+
+cleanup:
+        // cleanup stuff here
+        return -SOME_ERROR;
+}
 
