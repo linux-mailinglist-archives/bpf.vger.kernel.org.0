@@ -1,92 +1,130 @@
-Return-Path: <bpf+bounces-10948-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10949-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3B927AFE48
-	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 10:26:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 832EB7AFED1
+	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 10:43:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id F32AA28386D
-	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 08:26:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 52191283F6B
+	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 08:43:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8877E1F619;
-	Wed, 27 Sep 2023 08:26:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1483A14F86;
+	Wed, 27 Sep 2023 08:43:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E579E1CA8C
-	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 08:26:24 +0000 (UTC)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B5BCE5
-	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 01:26:22 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40535597f01so105442025e9.3
-        for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 01:26:22 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABBBF4E3;
+	Wed, 27 Sep 2023 08:43:38 +0000 (UTC)
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C8595;
+	Wed, 27 Sep 2023 01:43:36 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id 2adb3069b0e04-50335f6b48dso18019447e87.3;
+        Wed, 27 Sep 2023 01:43:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1695803181; x=1696407981; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1S0sjCxK52kFrN3z+ntkDsyXc7f2ZSwIlH2uGcEEFHE=;
-        b=MjsY1UFzCnFJiWbrLbCk2UnD2khBh+xGOewUJORQO60ObfQcxtdzSuHQPVNAIEEjKG
-         JlPh40sKVA5WtENBVf9+U3//lLbDfcAUJBg5nHgYsjxtFTgWLACLGWSi72Ra5yFPOG72
-         4wkIUxXGf8l3oFswbb4ybwgJazqOvDf3qXU7ht9FlFH1oVMhdPx8/AaeVuBeiROM99s0
-         I4tpKJee2L7dvOgQpGqojxt0hY7ipF1lK5Kn8zKQdNIkoM/jZpWw0WZA7yHg85LBoNqi
-         P0d0mXahCkcuc3uwN0E7X9hM6FqWwahzOnksAskwvywDDDmjWYOlCXwLfpP8NUkUJqkA
-         McKA==
+        d=gmail.com; s=20230601; t=1695804214; x=1696409014; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=PwtEcAbL6R2gKn5wZ7HYJTbgxFR7juHhIjF0LGuvSDo=;
+        b=dhgvuOJybVMiXn7Rmw6l6vwSug730+DY8/Jl+07wN38t1ihHuLRQOoxLPoIePpxbpm
+         z3lZp5jQEvDWRv+nJnsgVbrYwiKUj+u/n98senLQ16TOjmYm672vMckN7VicT66T5jia
+         d9CjbST5Rbn6WzgQ/12WPf5ojsfFCH3JzMlKSm8q8RvQ5WJg1ZLrp1ZNkyeoIGU0sSys
+         LdENPp81XnH07MASCYXtkTIleVTWp7I1bWb5V3a2XYjhFNnTdul1M/i4KgOWDouHe475
+         xyF6m2uzkfDD+eSBOEW1G4pt/+gTHiCLNTnHw2POkRpUCStIxyz8+l2qVvQq8Bsm3qyE
+         V0UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695803181; x=1696407981;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1S0sjCxK52kFrN3z+ntkDsyXc7f2ZSwIlH2uGcEEFHE=;
-        b=OqObF2O3mrO5QKlDz5fNEXZJDQPHWS/AY7Ho5eo7FjDxKiY8Q+etrhTLMtnC3Pby45
-         8ZqZ8fkj65d1gXtcyxb1WiO0O0L64BMXgKOCZcEaWhaGGv78M22T/1ph9p+iGWVUJwRA
-         vIK4CFhkiVBSZWsDL40lR3YX0NcDJ/WcnRQigUF4d8805ZsgL1mq/yE3KzIGjK8RyOQn
-         VoUpKqrYKqCiVaCLeaHpK8qNvPXaD1qT8OlE5WYEkLWhX0X02+NWOhLgEy8pL0qJD9Fm
-         C9EeEXBBKotM65pONMgY2+BZttoQfoc8FCg717hQJmBy8MjNdzqU6H1u/BH1DsP1lGX2
-         lr+A==
-X-Gm-Message-State: AOJu0YwxYyLBQA3dqVWVkwxfsvFoWGDD5msvjrryunH42wvvofiA+uU4
-	KJZ+mR4QJPB6+1hWgnCQThI1Ew==
-X-Google-Smtp-Source: AGHT+IE6zzb2I90mS1ReUzQUROs5Vrb8LrbuqA6E5BCLAn1zWS7ShZ/X8B6/pjNXctmhlNUYeodoyw==
-X-Received: by 2002:a1c:4c1a:0:b0:405:315f:e681 with SMTP id z26-20020a1c4c1a000000b00405315fe681mr1298521wmf.40.1695803181286;
-        Wed, 27 Sep 2023 01:26:21 -0700 (PDT)
-Received: from ?IPV6:2a02:8011:e80c:0:a08f:20ed:5155:605b? ([2a02:8011:e80c:0:a08f:20ed:5155:605b])
-        by smtp.gmail.com with ESMTPSA id q25-20020a7bce99000000b00405ee9dc69esm4678136wmj.18.2023.09.27.01.26.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 01:26:21 -0700 (PDT)
-Message-ID: <5fa2a6ed-49f0-4c10-a9b4-ddc08706f759@isovalent.com>
-Date: Wed, 27 Sep 2023 09:26:20 +0100
+        d=1e100.net; s=20230601; t=1695804214; x=1696409014;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PwtEcAbL6R2gKn5wZ7HYJTbgxFR7juHhIjF0LGuvSDo=;
+        b=I6+46LChNb2zMMCbE3lQ54OZkb/BUcPqhrpH98CIJzzkdIaj34lXP1D6KpjwKJtqxx
+         rQj0eJ9QdwdZF9RrdEhuo0KwkPBAnu2IaNYdVH5Oj1UbQhkLXIK0dD2L44e4C/d/cCVS
+         UKMVzxqLgLCPTnhdaIVB978pBiY+RZnFU8UmarBJTr5hmODVpdheqWVaJONE3K8sFzIM
+         pzmznoodZDug/mY5s0a0Oq+o2PmR8rqEnIbPzsVE+RoeL50cY5WJk/iQ0YAgZktGhzfO
+         ipQn1Qwaax1vm02j0taOWW6xDuOr3d6b/VTyAvnnTm0/UeMHaP7C4lEupGfD8kOvgXJV
+         dXTA==
+X-Gm-Message-State: AOJu0YwZddO5y8NQrycg5AFyCq7asN1Qqwgq2vS8+QLl1Dxt1dLxlXbL
+	tFfdFEIqp6AmYOqGL9sOLpYGu2UkPUzuidDZrDWhvSbDPKPItw==
+X-Google-Smtp-Source: AGHT+IGcfm2JF31Iyspin6t059Z3BrG3GH0t/qYEEp4LUmG/0L19fMUfVK0aUGnB8TgBPPBhNj/XP1UHq2AkzLCbSaQ=
+X-Received: by 2002:a05:6512:2356:b0:503:3447:b704 with SMTP id
+ p22-20020a056512235600b005033447b704mr1488775lfu.0.1695804214187; Wed, 27 Sep
+ 2023 01:43:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v6 6/9] bpftool: Add support for cgroup unix
- socket address hooks
-Content-Language: en-GB
-To: Daan De Meyer <daan.j.demeyer@gmail.com>, bpf@vger.kernel.org
-Cc: martin.lau@linux.dev, kernel-team@meta.com, netdev@vger.kernel.org
-References: <20230926202753.1482200-1-daan.j.demeyer@gmail.com>
- <20230926202753.1482200-7-daan.j.demeyer@gmail.com>
-From: Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20230926202753.1482200-7-daan.j.demeyer@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CABcoxUaT2k9hWsS1tNgXyoU3E-=PuOgMn737qK984fbFmfYixQ@mail.gmail.com>
+In-Reply-To: <CABcoxUaT2k9hWsS1tNgXyoU3E-=PuOgMn737qK984fbFmfYixQ@mail.gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Wed, 27 Sep 2023 10:42:57 +0200
+Message-ID: <CAP01T74Axm22TTXSaphxZLF=mj7=PnN2SPB98UvWvGR4FW2U9Q@mail.gmail.com>
+Subject: Re: Possible kernel memory leak in bpf_timer
+To: Hsin-Wei Hung <hsinweih@uci.edu>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, 
+	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 26/09/2023 21:27, Daan De Meyer wrote:
-> Add the necessary plumbing to hook up the new cgroup unix sockaddr
-> hooks into bpftool.
-> 
-> Signed-off-by: Daan De Meyer <daan.j.demeyer@gmail.com>
+On Wed, 27 Sept 2023 at 07:32, Hsin-Wei Hung <hsinweih@uci.edu> wrote:
+>
+> Hi,
+>
+> We found a potential memory leak in bpf_timer in v5.15.26 using a
+> customized syzkaller for fuzzing bpf runtime. It can happen when
+> an arraymap is being released. An entry that has been checked by
+> bpf_timer_cancel_and_free() can again be initialized by bpf_timer_init().
+> Since both paths are almost identical between v5.15 and net-next,
+> I suspect this problem still exists. Below are kmemleak report and
+> some additional printks I inserted.
+>
+> [ 1364.081694] array_map_free_timers map:0xffffc900005a9000
+> [ 1364.081730] ____bpf_timer_init map:0xffffc900005a9000
+> timer:0xffff888001ab4080
+>
+> *no bpf_timer_cancel_and_free that will kfree struct bpf_hrtimer*
+> at 0xffff888001ab4080 is called
+>
+> [ 1383.907869] kmemleak: 1 new suspected memory leaks (see
+> /sys/kernel/debug/kmemleak)
+> BUG: memory leak
+> unreferenced object 0xffff888001ab4080 (size 96):
+>   comm "sshd", pid 279, jiffies 4295233126 (age 29.952s)
+>   hex dump (first 32 bytes):
+>     80 40 ab 01 80 88 ff ff 00 00 00 00 00 00 00 00  .@..............
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<000000009d018da0>] bpf_map_kmalloc_node+0x89/0x1a0
+>     [<00000000ebcb33fc>] bpf_timer_init+0x177/0x320
+>     [<00000000fb7e90bf>] 0xffffffffc02a0358
+>     [<000000000c89ec4f>] __cgroup_bpf_run_filter_skb+0xcbf/0x1110
+>     [<00000000fd663fc0>] ip_finish_output+0x13d/0x1f0
+>     [<00000000acb3205c>] ip_output+0x19b/0x310
+>     [<000000006b584375>] __ip_queue_xmit+0x182e/0x1ed0
+>     [<00000000b921b07e>] __tcp_transmit_skb+0x2b65/0x37f0
+>     [<0000000026104b23>] tcp_write_xmit+0xf19/0x6290
+>     [<000000006dc71bc5>] __tcp_push_pending_frames+0xaf/0x390
+>     [<00000000251b364a>] tcp_push+0x452/0x6d0
+>     [<000000008522b7d3>] tcp_sendmsg_locked+0x2567/0x3030
+>     [<0000000038c644d2>] tcp_sendmsg+0x30/0x50
+>     [<000000009fe3413f>] inet_sendmsg+0xba/0x140
+>     [<0000000034d78039>] sock_sendmsg+0x13d/0x190
+>     [<00000000f55b8db6>] sock_write_iter+0x296/0x3d0
+>
+>
 
-Acked-by: Quentin Monnet <quentin@isovalent.com>
+Does this happen on bpf-next? Things have changed around timer freeing
+since then.
+Or even sharing the reproducer for this will work. I can take a look.
 
+Thanks
 
