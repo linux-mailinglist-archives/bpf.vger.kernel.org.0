@@ -1,225 +1,321 @@
-Return-Path: <bpf+bounces-10978-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10979-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A5BC7B093E
-	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 17:48:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 103E57B0983
+	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 18:02:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sy.mirrors.kernel.org (Postfix) with ESMTP id 6EBADB20AFF
-	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 15:48:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 4F05E2821BE
+	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 16:02:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B7B48E9F;
-	Wed, 27 Sep 2023 15:48:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE3F48EB7;
+	Wed, 27 Sep 2023 16:02:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8E7B6FA2
-	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 15:48:22 +0000 (UTC)
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 239A527E47
-	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 08:48:01 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38RD3P2Q010682
-	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 08:48:01 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : mime-version; s=s2048-2021-q4;
- bh=AQ61yro3etfxUwchsx40YfjwPtfFSURP8/0PxC82x4A=;
- b=XefI996mBnUxYfhUB+wtVr5nyMt6bZmw3w8vGXxxoJWZRMZ029et+ZrO731cA1dXKbBU
- C3AyXe9LQin7eNgnN78VzhcPuCRflpc7RpjwRF93HNYARi+9BgVfeNUuyN1So/yZlepj
- mu2YrIBDHamRmvGn69AVI44LGMstX6AxJAFpVPDnjKzA3QAUXSY9Z1jRreatkybDfUYZ
- fBSsjkrULoSrHYoCYnqbGy/MzU1dJw5IiSXAwus91rEhnMDWOXpPdSqllgQ78Pu+SWgu
- JtCJHjjKuziIbS+3lku6xxgIm8GrRIS33K20OpnKEvi8fpDZAD9s/rc+irRfcJ1yN+9f 3w== 
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2045.outbound.protection.outlook.com [104.47.56.45])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3tcmxhhgvf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 08:48:00 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wk9R+R475NoSBop4kub9Edhdgc7iL41A1gHnCPt8J2pmK+eKqyqvE8MS9XFqgJUYBO1MuUc3Wy8ed19iTs+Ef3g4QTJMVdNBdGxM6yNOUwkcuy4xQ4A1+XuUUq9b5uayin9gs2GjRs3j8DWWudTLeTtST3mPsinAWHehFKrzhgnywT4p6t4qGS33/lq3EcSKZllgK8vzCZ4m2jS+gXBEXMkTgq7TBZCSxLk82BP33RI3IahKw5sR+Ptxw86XttFtMn7ez6Ooshm/pBvZwoRUx0mLnBcwJLEw8oSKJo72J5KScFyn86F7HxxGBzU5EDZrVjZVXZPNVNw0bu/y3FahQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AQ61yro3etfxUwchsx40YfjwPtfFSURP8/0PxC82x4A=;
- b=LJbroQDkz2NcgAClGuQU7SkWFONNQ2FYE0NUHCLgtgdFHRZq0KDJsKjUOtT0faxeaqGW66IJC6QKvGbTQV2DVkYOqGMRJvroty4DEBuJoYd2X8qiL2Ek3uvW+Hatcm8OT955ZECokECo8xTc5/PympFEhbjztJSLdQ5OwvjBn7lafx68Z0fteA9Y94bAucMAtWYByro4E+3/CTu1fXvZaUotWtB96Tb8J2M7JEpxgvbMeqltmzPcfMJU/uYpIvy2UaAgIuegUq00c0LtNPmvJbNkrm5GnlrFh38dwxP/DL22q0AI7knFBndywmggcLNAAOE0C7d1wRKzmPjrGIf7rg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by DM4PR15MB5520.namprd15.prod.outlook.com (2603:10b6:8:110::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Wed, 27 Sep
- 2023 15:47:55 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::e0e7:7606:7fef:f9de]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::e0e7:7606:7fef:f9de%4]) with mapi id 15.20.6813.027; Wed, 27 Sep 2023
- 15:47:54 +0000
-From: Song Liu <songliubraving@meta.com>
-To: Jiri Olsa <olsajiri@gmail.com>
-CC: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov
-	<ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko
-	<andrii@kernel.org>,
-        "martin.lau@kernel.org" <martin.lau@kernel.org>,
-        Kernel
- Team <kernel-team@meta.com>,
-        "iii@linux.ibm.com" <iii@linux.ibm.com>,
-        "bjorn@kernel.org" <bjorn@kernel.org>
-Subject: Re: [PATCH v3 bpf-next 8/8] x86, bpf: Use bpf_prog_pack for bpf
- trampoline
-Thread-Topic: [PATCH v3 bpf-next 8/8] x86, bpf: Use bpf_prog_pack for bpf
- trampoline
-Thread-Index: AQHZ8Ku8oe+zfr5cG0mBPsTWQBF2fLAuqDmAgAAqWAA=
-Date: Wed, 27 Sep 2023 15:47:54 +0000
-Message-ID: <1AA3C7C1-ACE7-4FD3-9FC6-74F9643897F8@fb.com>
-References: <20230926190020.1111575-1-song@kernel.org>
- <20230926190020.1111575-9-song@kernel.org> <ZRQrG7ve8MRKD6xT@krava>
-In-Reply-To: <ZRQrG7ve8MRKD6xT@krava>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3731.700.6)
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR15MB5109:EE_|DM4PR15MB5520:EE_
-x-ms-office365-filtering-correlation-id: eba5e3c9-07e7-4172-b5bb-08dbbf711d76
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- i2rfiwG0ZOm64mRtK/RVEwk7gJc4vjEQs3L+x/GgG6KG6CCR8BbtjlF1b2UaWxYCA7aYoPmlSOJanjeK9Wl908pLJDioTxAmPuSSP3kHsuSsmKAV4ALEcxcBEpnp8y2oHMW6QTvAWf27L+1WFkDfvjRSPkf5ccekqViElbIDQEq4uuMuNLJraeUoWz/Az0833XKw8t7h7xBinXus9E4AsLB8qWqx4dmtNtKrETGbUuG19o08niYWg+5aerTqKCP8ls/oIT9HVq2N/GbTfR+zDBVKa/FX6CYlEVFYq4Oq6tCQfZp7aTb8RD2vyDo2VuqPGtMrPI4Mh2J7YzXuvlYmu3iMWt03uuIYtkSrgNYtZKrtzGsTLzX7NH5/imcxdUR/S63whgh3rhxE8hxxk+1cki32qa4PpMnaH0J+zsyjL18XHNbe8V78WrREvGsw35VTA4LdmNuPyNR0RY711lIeODrR7v/DrjX8Y/C6GY+Cn/oqLjb4UWWKNVkeqedO94FvK18G8DdFhjt5ghlE/sv3X6dhRz44JTp2yGY6L4dgcCadG0K/E0U7bPJ15HRX23t/YxwXPTL1igzCw8A8cpcCcxrmdEl9enicWHAhVhM4oD77tdZ6abQIrlSJtfHRwFm1
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(346002)(366004)(396003)(39860400002)(230922051799003)(451199024)(186009)(1800799009)(4326008)(8676002)(8936002)(6916009)(316002)(66476007)(41300700001)(66446008)(76116006)(66946007)(91956017)(54906003)(5660300002)(64756008)(66556008)(2906002)(122000001)(38070700005)(38100700002)(83380400001)(6512007)(9686003)(33656002)(53546011)(86362001)(478600001)(6506007)(36756003)(6486002)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?e+sHf+ltKfHrnRhDRVzI9mTzdsRGlYrVUXIs81EAGKFJswItREcRyw/5fEQw?=
- =?us-ascii?Q?LV6PnFhapVpxHoOufj4+tKZKGLkNmm5NX37L2YJxq/9H7ZUJVKuEPDiHCSN2?=
- =?us-ascii?Q?g9p14L5e9WiGxZcfvdMsMeXlMVIxNQgQ+8oBBmddhop1lmExbr9waKn8dxIV?=
- =?us-ascii?Q?+geuDpqvBwe1ool2rYPvtwRHMX5QsVU4wFUgjWIa/MphRtFmTqlxFXTqsLC4?=
- =?us-ascii?Q?Uto+DQR+Bo/EphAoOtToEjY2jiPV2Y8t4XQQw6QxTwfGOzZ3bRQgVOuZokUn?=
- =?us-ascii?Q?Xp7BcBuGdx8iveLmDnD2yi7aieJDVaS1xJ355LhxupcVJEicoL7vVPpyC942?=
- =?us-ascii?Q?CxekgbTvnOLakXlcewFZvqlVGDDtMhkFuyWaLBwQUe4oLYl7AsXajKaveX8k?=
- =?us-ascii?Q?mQva1OkKGJcZ07E1RHCIEcgEcSz5VNtrbyTTYlF9sfgk8pwk44LB2ftNce11?=
- =?us-ascii?Q?D4c26frepnEzGyYWfwbJNrCwv+C+4KiGdX2qMG0hD4Hi4+Yy/8l41QoNDvHf?=
- =?us-ascii?Q?8varZyBdd4RmAICLOfevED00QsONNzGHOFbrnQkXyjffKSx4Wlqdrnd59zxj?=
- =?us-ascii?Q?wgN7EiEJOIYYwNvu4cuHxbm7MTr8ZuniYjaGX/rCZwP++X4ISNBZVmGx4Nr9?=
- =?us-ascii?Q?0ACJZDVEEEBTWogeN9fHAZ+c+3JIu9HMowC7O6kflHILcSd8CnzZo6Y3X8V+?=
- =?us-ascii?Q?TRiexUN9ZJ9VUnjiUYY6ITezDY7A4xGE98d+oi8YRSnA/KnTNBvL5f6rji96?=
- =?us-ascii?Q?WiqlNJ0hUnYF4Zdb06Lh8Kv2x9PUygcSyYiu0/XRk0/R8jGsaSomywfFpAN1?=
- =?us-ascii?Q?AJ9L/48hqzD14a59F29mKAFgDd3RA5fgbbgOS1Fvxnfymg5oTw2sKZcnadpI?=
- =?us-ascii?Q?JNaza5nvx/as5a/7ncW8PpGt+uXOI8+FgJIt49MBbMCUbZuQOXSdoUdq2aIx?=
- =?us-ascii?Q?rOj4813ETsQGjf82XkWUJP8dkJqOO53CDgKz7TB5EMH09PFTAH+ILxSso6re?=
- =?us-ascii?Q?y0PsyuS9/s6L/jZP7UEAeHp2xg7kCh4C7DwpiXrf7Z+hpgBtJTqff5+MtRhi?=
- =?us-ascii?Q?SLHFqT1yOtMs6OR42iUcHeqNn2mPoIsniZiQK5VV20D4HCKpyC7pX4FvUKBd?=
- =?us-ascii?Q?Z+tWHDaPvDVhsn3uoWTWNtzNFU9/iKxptKGy2p0EO36zELZQafuhdRu6AG26?=
- =?us-ascii?Q?7dyJIF0R+3ymJKOBb4uSIkX1068TVrnyP2MwhFBeaRlMKOVT63XOX9CQC3Of?=
- =?us-ascii?Q?Q9KsDbYMyRnjrs+NPenBqugCLJZHCYnfEqxUY9jcYS6IzSTfQhhvHhMrrriz?=
- =?us-ascii?Q?xC7xI2RWspfNy0vuJRPuuHUB7rAd51xfSPYfw7SXH7LJvryCXzB5iQLavUMB?=
- =?us-ascii?Q?zJ1/u8aySDLjCMBnhrqpAXFde4kLIShgncSqNCboMdzydauOKnZovbITIaLh?=
- =?us-ascii?Q?h7sfdguTm2epyOa6ZrG2bCpIhUVxWY5f/xvSgP3bs1BqsSQmd2w8nfD5p/34?=
- =?us-ascii?Q?Qz3w8AtH90mz0lZcso/Co65Ja870Yc60OgVw0b/kIhPI66J9VpBsAVORQ434?=
- =?us-ascii?Q?ZwEQyiY7g/y/Q73OcJj8QTmPtc4fWkdjgoJbaglbvwypkw6Kn9ncShuku+PI?=
- =?us-ascii?Q?gK2AqX9BkAaa/0TvVdTxhK8=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <F8F921064C0B9C42844734CD6E6F3818@namprd15.prod.outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E129B111AB
+	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 16:02:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52DD5C433BB
+	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 16:02:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695830565;
+	bh=WG949DcM9Bmn+f1FkPZJR87nRg6RxJn2XBd0i4CsVsk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=n7dRUxkaBspBk5ouvSIe+Y8dLPWA1jvjGfYE2phfcY7lwmU3Tfg9Xy65wO3XWNbp8
+	 ghJx39RdS2k9q2S8ZuJQokti7NvIIVoiXb7rCqT2sv/BoKrEIfoCahO7SgUyhDZ5BU
+	 iffd3xDdSvsvKPOJ7AjV9y9Gwg4RUs1/IvxhRNlI3KMni0zFPeyTSUFDFOzWB39ygb
+	 y9ry8OZN4iwFGTzBJIvsKprby0CMHLXZt1vNnPFK4Tgkmv+DGfsLDMLGNTcnnbiWta
+	 n6Mzx83vJXMJQNX7O4nxBBkqtdeZw10eZzwwTsYqnNsc/OZo4Wf5HYGGVL8zaxEFJP
+	 Q4Q4sFc2rteuQ==
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-533e7d127d4so9506424a12.3
+        for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 09:02:45 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yw0DPCxZB+a2PeJFY6CJeI1NEIj2lxh8j1CD17wYNWZES5BKVqL
+	ZQ9fKypQ2BLs7eDFErDEVm6inp/4etGc870teTm3Xg==
+X-Google-Smtp-Source: AGHT+IGBgjs/DWNJYnqy5w1/21S0WlvI8mFuiCu8zlLRjfS1tizUg02XkY9UkVad/bWh//MDleQBA1AzkzVxlMERqnY=
+X-Received: by 2002:a05:6402:38e:b0:525:469a:fc49 with SMTP id
+ o14-20020a056402038e00b00525469afc49mr2240243edv.17.1695830563511; Wed, 27
+ Sep 2023 09:02:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eba5e3c9-07e7-4172-b5bb-08dbbf711d76
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2023 15:47:54.9424
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9EwSJFTgABZi9EjIHcShH03/kL0AWs1iAbHlxV2PbjwEt3qsMMcKT1UAZ4Olg1lTnmwvtcdmqrD7PzXBHBbnlQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR15MB5520
-X-Proofpoint-ORIG-GUID: ZiyOc0QwIoWJUqDFbRl7UVpi8jpiuOKm
-X-Proofpoint-GUID: ZiyOc0QwIoWJUqDFbRl7UVpi8jpiuOKm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-27_10,2023-09-27_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+References: <cc8e16bb-5083-01da-4a77-d251a76dc8ff@I-love.SAKURA.ne.jp>
+In-Reply-To: <cc8e16bb-5083-01da-4a77-d251a76dc8ff@I-love.SAKURA.ne.jp>
+From: KP Singh <kpsingh@kernel.org>
+Date: Wed, 27 Sep 2023 18:02:32 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ5k7oYxFgWp9bz1Wmp3n6LcU39Mh-HXFWTKnZnpY-Ef7w@mail.gmail.com>
+Message-ID: <CACYkzJ5k7oYxFgWp9bz1Wmp3n6LcU39Mh-HXFWTKnZnpY-Ef7w@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/2] LSM: Allow dynamically appendable LSM modules.
+To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: linux-security-module <linux-security-module@vger.kernel.org>, 
+	Casey Schaufler <casey@schaufler-ca.com>, Paul Moore <paul@paul-moore.com>, bpf <bpf@vger.kernel.org>, 
+	Kees Cook <keescook@chromium.org>, Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Sep 27, 2023 at 5:09=E2=80=AFPM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+>
+> Recently, the LSM community is trying to make drastic changes.
+>
+> Crispin Cowan has explained
+>
+>   It is Linus' comments that spurred me to want to start this undertaking=
+.  He
+>   observes that there are many different security approaches, each with t=
+heir own
+>   advocates.  He doesn't want to arbitrate which of them should be "the" =
+Linux
+>   security approach, and would rather that Linux can support any of them.
+>
+>   That is the purpose of this project:  to allow Linux to support a varie=
+ty of
+>   security models, so that security developers don't have to have the "my=
+ dog's
+>   bigger than your dog" argument, and users can choose the security model=
+ that
+>   suits their needs.
+>
+> when the LSM project started [1].
+>
+> However, Casey Schaufler is trying to make users difficult to choose the
+> security model that suits their needs, by requiring LSM ID value which is
+> assigned to only LSM modules that succeeded to become in-tree [2].
+> Therefore, I'm asking Casey and Paul Moore to change their mind to allow
+> assigning LSM ID value to any LSM modules (so that users can choose the
+> security model that suits their needs) [3].
+>
+> I expect that LSM ID value will be assigned to any publicly available LSM
+> modules. Otherwise, it is mostly pointless to propose this patch; there
+> will be little LSM modules to built into vmlinux; let alone dynamically
+> loading as LKM-based LSMs.
+>
+> Also, KP Singh is trying to replace the linked list with static calls in
+> order to reduce overhead of indirect calls [4]. However, this change
+> assumed that any LSM modules are built-in. I don't like such assumption
+> because I still consider that LSM modules which are not built into vmlinu=
+x
+> will be wanted by users [5].
+>
+> Then, Casey told me to supply my implementation of loadable security
+> modules [6]. Therefore, I post this patch as basic changes needed for
+> allowing dynamically appendable LSM modules (and an example of appendable
+> LSM modules). This patch was tested on only x86_64.
+>
+> Question for KP Singh would be how can we allow dynamically appendable
+> LSM modules if current linked list is replaced with static calls with
+> minimal-sized array...
 
+As I suggested in the other thread:
 
-> On Sep 27, 2023, at 6:16 AM, Jiri Olsa <olsajiri@gmail.com> wrote:
-> 
-> On Tue, Sep 26, 2023 at 12:00:20PM -0700, Song Liu wrote:
-> 
-> SNIP
-> 
->> @@ -2665,25 +2672,61 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image
->> if (flags & BPF_TRAMP_F_SKIP_FRAME)
->> /* skip our return address and return to parent */
->> EMIT4(0x48, 0x83, 0xC4, 8); /* add rsp, 8 */
->> - emit_return(&prog, prog);
->> + emit_return(&prog, image + (prog - (u8 *)rw_image));
->> /* Make sure the trampoline generation logic doesn't overflow */
->> - if (WARN_ON_ONCE(prog > (u8 *)image_end - BPF_INSN_SAFETY)) {
->> + if (WARN_ON_ONCE(prog > (u8 *)rw_image_end - BPF_INSN_SAFETY)) {
->> ret = -EFAULT;
->> goto cleanup;
->> }
->> - ret = prog - (u8 *)image + BPF_INSN_SAFETY;
->> + ret = prog - (u8 *)rw_image + BPF_INSN_SAFETY;
->> 
->> cleanup:
->> kfree(branches);
->> return ret;
->> }
->> 
->> +void *arch_alloc_bpf_trampoline(int size)
->> +{
->> + return bpf_prog_pack_alloc(size, jit_fill_hole);
->> +}
->> +
->> +void arch_free_bpf_trampoline(void *image, int size)
->> +{
->> + bpf_prog_pack_free(image, size);
->> +}
->> +
->> +void arch_protect_bpf_trampoline(void *image, int size)
->> +{
->> +}
->> +
->> +void arch_unprotect_bpf_trampoline(void *image, int size)
->> +{
->> +}
-> 
-> seems bit confusing having empty non weak functions to overload
-> the weak versions IIUC
-> 
-> would maybe some other way fit better than weak functions in here?
-> like having arch specific macro to use bpf_prog_pack_alloc for
-> trampoline allocation
+https://lore.kernel.org/bpf/20230918212459.1937798-1-kpsingh@kernel.org/T/#=
+md21b9d9cc769f39e451d20364857b693d3fcb587
 
-We can also have a few flags that arch code set at init time. 
-Then we can use these flags in trampoline.c. But I don't think
-that's cleaner than current version. 
+You can add extra static call slots and fallback to a linked list
+based implementation if you have more than say N modules [1] and
+fallback to a linked list implementation [2].
 
-With more archs adopting bpf_prog_pack, I think we will be able 
-to remove these helpers soon. 
+for [1] you can just do MAX_LSM_COUNT you can just do:
 
-Thanks,
-Song
+#ifdef CONFIG_MODULAR_LSM
+#define MODULAR_LSM_ENABLED "1,1,1,1"
+#endif
 
-> 
-> feel free to disregard if you have already investigated this ;-)
+and use it in the LSM_COUNT.
 
+for [2] you can choose to export a better module API than directly
+exposing security_hook_heads.
 
+Now, comes the question of whether we need dynamically loaded LSMs, I
+am not in favor of this.Please share your limitations of BPF as you
+mentioned and what's missing to implement dynamic LSMs. My question
+still remains unanswered.
 
+Until I hear the real limitations of using BPF, it's a NAK from me.
+
+>
+> Link: https://marc.info/?l=3Dlinux-security-module&m=3D98706471912438&w=
+=3D2 [1]
+> Link: https://lkml.kernel.org/r/20230912205658.3432-2-casey@schaufler-ca.=
+com [2]
+> Link: https://lkml.kernel.org/r/6e1c25f5-b78c-8b4e-ddc3-484129c4c0ec@I-lo=
+ve.SAKURA.ne.jp [3]
+> Link: https://lkml.kernel.org/r/20230918212459.1937798-1-kpsingh@kernel.o=
+rg [4]
+> Link: https://lkml.kernel.org/r/ed785c86-a1d8-caff-c629-f8a50549e05b@I-lo=
+ve.SAKURA.ne.jp [5]
+> Link: https://lkml.kernel.org/r/36c7cf74-508f-1690-f86a-bb18ec686fcf@scha=
+ufler-ca.com [6]
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> ---
+>  include/linux/lsm_hooks.h |   2 +
+>  security/security.c       | 107 ++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 109 insertions(+)
+>
+> diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+> index dcb5e5b5eb13..73db3c41df26 100644
+> --- a/include/linux/lsm_hooks.h
+> +++ b/include/linux/lsm_hooks.h
+> @@ -105,6 +105,8 @@ extern char *lsm_names;
+>
+>  extern void security_add_hooks(struct security_hook_list *hooks, int cou=
+nt,
+>                                 const char *lsm);
+> +extern int register_loadable_lsm(struct security_hook_list *hooks, int c=
+ount,
+> +                                const char *lsm);
+>
+>  #define LSM_FLAG_LEGACY_MAJOR  BIT(0)
+>  #define LSM_FLAG_EXCLUSIVE     BIT(1)
+> diff --git a/security/security.c b/security/security.c
+> index 23b129d482a7..6c64b7afb251 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -74,6 +74,7 @@ const char *const lockdown_reasons[LOCKDOWN_CONFIDENTIA=
+LITY_MAX + 1] =3D {
+>  };
+>
+>  struct security_hook_heads security_hook_heads __ro_after_init;
+> +EXPORT_SYMBOL_GPL(security_hook_heads);
+
+Rather than exposting security_hook_heads, this should actually export
+security_hook_module_register. This should internally handle any data
+structures used and also not need the special magic that you did for
+__ro_after_init.
+
+- KP
+
+>  static BLOCKING_NOTIFIER_HEAD(blocking_lsm_notifier_chain);
+>
+>  static struct kmem_cache *lsm_file_cache;
+> @@ -537,6 +538,112 @@ void __init security_add_hooks(struct security_hook=
+_list *hooks, int count,
+>         }
+>  }
+>
+> +#if defined(CONFIG_STRICT_KERNEL_RWX)
+> +#define MAX_RO_PAGES 1024 /* Wild guess. Can be minimized by dynamic all=
+ocation. */
+> +static struct page *ro_pages[MAX_RO_PAGES]; /* Pages that are marked rea=
+d-only. */
+> +static unsigned int ro_pages_len; /* Number of pages that are marked rea=
+d-only. */
+> +
+> +/* Check whether a page containing given address does not have _PAGE_BIT=
+_RW bit. */
+> +static bool lsm_test_page_ro(void *addr)
+> +{
+> +       unsigned int i;
+> +       int unused;
+> +       struct page *page;
+> +
+> +       page =3D (struct page *) lookup_address((unsigned long) addr, &un=
+used);
+> +       if (!page)
+> +               return false;
+> +       if (test_bit(_PAGE_BIT_RW, &(page->flags)))
+> +               return true;
+> +       for (i =3D 0; i < ro_pages_len; i++)
+> +               if (page =3D=3D ro_pages[i])
+> +                       return true;
+> +       if (ro_pages_len =3D=3D MAX_RO_PAGES)
+> +               return false;
+> +       ro_pages[ro_pages_len++] =3D page;
+> +       return true;
+> +}
+> +
+> +/* Find pages which do not have _PAGE_BIT_RW bit. */
+> +static bool check_ro_pages(struct security_hook_list *hooks, int count)
+> +{
+> +       int i;
+> +       struct hlist_head *list =3D &security_hook_heads.capable;
+> +
+> +       if (!copy_to_kernel_nofault(list, list, sizeof(void *)))
+> +               return true;
+> +       for (i =3D 0; i < count; i++) {
+> +               struct hlist_head *head =3D hooks[i].head;
+> +               struct security_hook_list *shp;
+> +
+> +               if (!lsm_test_page_ro(&head->first))
+> +                       return false;
+> +               hlist_for_each_entry(shp, head, list)
+> +                       if (!lsm_test_page_ro(&shp->list.next) ||
+> +                           !lsm_test_page_ro(&shp->list.pprev))
+> +                               return false;
+> +       }
+> +       return true;
+> +}
+> +#endif
+> +
+> +/**
+> + * register_loadable_lsm - Add a dynamically appendable module's hooks t=
+o the hook lists.
+> + * @hooks: the hooks to add
+> + * @count: the number of hooks to add
+> + * @lsm: the name of the security module
+> + *
+> + * Each dynamically appendable LSM has to register its hooks with the in=
+frastructure.
+> + *
+> + * Assumes that this function is called from module_init() function wher=
+e
+> + * call to this function is already serialized by module_mutex lock.
+> + */
+> +int register_loadable_lsm(struct security_hook_list *hooks, int count,
+> +                         const char *lsm)
+> +{
+> +       int i;
+> +       char *cp;
+> +
+> +       // TODO: Check whether proposed hooks can co-exist with already c=
+hained hooks,
+> +       //       and bail out here if one of hooks cannot co-exist...
+> +
+> +#if defined(CONFIG_STRICT_KERNEL_RWX)
+> +       // Find pages which needs to make temporarily writable.
+> +       ro_pages_len =3D 0;
+> +       if (!check_ro_pages(hooks, count)) {
+> +               pr_err("Can't make security_hook_heads again writable. Re=
+try with rodata=3Doff kernel command line option added.\n");
+> +               return -EINVAL;
+> +       }
+> +       pr_info("ro_pages_len=3D%d\n", ro_pages_len);
+> +#endif
+> +       // At least "capability" is already included.
+> +       cp =3D kasprintf(GFP_KERNEL, "%s,%s", lsm_names, lsm);
+> +       if (!cp) {
+> +               pr_err("%s - Cannot get memory.\n", __func__);
+> +               return -ENOMEM;
+> +       }
+> +#if defined(CONFIG_STRICT_KERNEL_RWX)
+> +       // Make security_hook_heads (and hooks chained) temporarily writa=
+ble.
+> +       for (i =3D 0; i < ro_pages_len; i++)
+> +               set_bit(_PAGE_BIT_RW, &(ro_pages[i]->flags));
+> +#endif
+> +       // Register dynamically appendable module's hooks.
+> +       for (i =3D 0; i < count; i++) {
+> +               hooks[i].lsm =3D lsm;
+> +               hlist_add_tail_rcu(&hooks[i].list, hooks[i].head);
+> +       }
+> +#if defined(CONFIG_STRICT_KERNEL_RWX)
+> +       // Make security_hook_heads (and hooks chained) again read-only.
+> +       for (i =3D 0; i < ro_pages_len; i++)
+> +               clear_bit(_PAGE_BIT_RW, &(ro_pages[i]->flags));
+> +#endif
+> +       // TODO: Wait for reader side before kfree().
+> +       kfree(lsm_names);
+> +       lsm_names =3D cp;
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(register_loadable_lsm);
+> +
+>  int call_blocking_lsm_notifier(enum lsm_event event, void *data)
+>  {
+>         return blocking_notifier_call_chain(&blocking_lsm_notifier_chain,
+> --
+> 2.18.4
 
