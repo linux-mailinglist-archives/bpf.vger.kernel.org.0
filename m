@@ -1,68 +1,69 @@
-Return-Path: <bpf+bounces-11008-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11009-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B8BF7B0F8F
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 01:24:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3E327B0F92
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 01:30:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by ny.mirrors.kernel.org (Postfix) with ESMTP id 429601C2094A
-	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 23:24:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id EF38F282142
+	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 23:30:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A65A74D8EE;
-	Wed, 27 Sep 2023 23:24:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE01C4D8EE;
+	Wed, 27 Sep 2023 23:30:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8A41C6B3
-	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 23:24:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B6915B6
+	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 23:30:14 +0000 (UTC)
 Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17D2F4;
-	Wed, 27 Sep 2023 16:24:35 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9b2b53e17feso287939866b.3;
-        Wed, 27 Sep 2023 16:24:35 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE15AF9;
+	Wed, 27 Sep 2023 16:30:12 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9ad810be221so1573196966b.2;
+        Wed, 27 Sep 2023 16:30:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695857074; x=1696461874; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695857411; x=1696462211; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vP4F85bbzFRNqjMlm7kZPQ+nNsT3kjeP+jCG/TYrq88=;
-        b=fYmmKUjP/nq2jxphtDeohGJ2FsjtZNI7sojMyYd/0iobLIrGfdNxibVzOANkCHNLqF
-         3PjsjnHjbx+qd3xXvQGXmXrzTVBZQCcgXAHFmmOX9GbWhBQcS0g1rArKPiEwNfBLQe5p
-         AaUVoHqWWzyiXduQ+/9Klyiwp1EadC/N+f5wHRGxXzCYUuSxMOFbWaQv9zThh1qd8Hlt
-         Vsx3B7VM/+ChgGs3HCgca4+qt5eLwyQeR7PNhyixYW6o0wQKudvUqO3voCyOHyX6zjDN
-         aLSKysrZH0PDe1uM1XjL5rmysrViAEtxjow1cgD3FvFlTuSQpfTAVGMJm4osnCjAq9/T
-         1lCQ==
+        bh=ZbKiPz0S5PrH/McDrIUSrlEVbeP0Nk47uyo5DMI/g4I=;
+        b=SeNz/82i7Qtvsga7cn0qhDLDxIvpKX5CKF2MM0FSEpbvQCrXDJN/aRuUkeGx2ilvme
+         LSpSZLUapTf0sDADoC4DVdMO4msZjE1pNe+IkPoNubyJivLdp4Mo35fFQ7zctgbvoE9i
+         01SfHeJ3pWlwvp2Ay37EgtZv7GhBNUiR8AaruIhePbIn8wY9oTkyLMarnXFzqxtxWfFD
+         DTtebXPsvH/mOYdpXk15UH8wLszRYBy5tLZ+tPdUhfBkVvv5//QEKmRMC1wEU9B86Xtf
+         ZQkYbkHduGjYn3WsC8iDqiocXeJuEHSjg38QkzlffZq/rFJuc9PWwtGrFWykeJ/ISmO0
+         Oylg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695857074; x=1696461874;
+        d=1e100.net; s=20230601; t=1695857411; x=1696462211;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vP4F85bbzFRNqjMlm7kZPQ+nNsT3kjeP+jCG/TYrq88=;
-        b=SNXJgHc3f7g16EdjRbBRhuS8vTQRiTU79KYq4YSpPXubJyQAwHiYV6F87luzGCVhhz
-         jZ78jIkkBW6Jt274CmnZjnY8Gm7U1FgXcePZCTSSCZ5xjcr4wicLX7N3dtlTrWLwZwNe
-         kW0s3WlfBZo/7/gsUFr/P2uHUC5w9dNuq1v5yP65G9mblp/zUzF0xXfzC1dDbOP7YbOK
-         DoG/+4MQdo9wLK8Uu5YxqwUNJazOEvSnt0/KuOWEpLTHAkGSfnoiaAeJtmocKSNiGSSH
-         F07ABQMzCThGhbcGFtJGcrBdTobjhrlxUM7PNhOmW1FnNv2jigjYOyyWI9ciOZkFdprO
-         zxBQ==
-X-Gm-Message-State: AOJu0Ywn4T8DnyJDOLoKI0w0CUt5wZd1csfb+40S/7eEmemicilJ8tnq
-	Q8nMLKL+fIapGeTOAX+4y0YOKHNvyCpHMGTWnZC/S4MKkKQ=
-X-Google-Smtp-Source: AGHT+IGYks/ROw19A7ZBt3HAY8xGrI6pa8dgE2boz3KYtutGfXF7STZtC324zScNazvQpwGj/KHJ1t9AZBgkIK7/Pq4=
-X-Received: by 2002:a17:907:75ef:b0:9ae:594d:d3fc with SMTP id
- jz15-20020a17090775ef00b009ae594dd3fcmr2658272ejc.17.1695857073839; Wed, 27
- Sep 2023 16:24:33 -0700 (PDT)
+        bh=ZbKiPz0S5PrH/McDrIUSrlEVbeP0Nk47uyo5DMI/g4I=;
+        b=X/EPuZxiHHKmlcm3LqSjBbb/VsBKz14mrJRqZDIiM3ZhzaoZbVpAZKgwZ+EK1kpwqr
+         lYXseseX6riVYXkMlfF4avkkdufsEQqwWZig4HrDp7nYY/RbmVuPxt/Z3UDF/nWFbZ7a
+         PCWyRnyq3Uq4o5a1qMBQKPb8qeZJDdL3VN9PqsWpzPgiz4qriBqWJcbSUJc4NxV270Vo
+         DTWI7Js8giOgYmVJu6C+RXoaPVzGlknuIStgdl5XY/s5USWV1m0UAmexzQJa66dLlj8B
+         +/b0nfinobX/Y4DVL9t2yRtZ15sCPcHoKlK5vLI5stnmlKO8RTlalz/fMa+t8TRBUcH2
+         qYtA==
+X-Gm-Message-State: AOJu0Yz3oRd6Qx7MEJq29vmjKKK5s8A+t7HWVkFI7FS1uR88OX0nhPPY
+	oNWQOb2iX1QAQxG+5x0XaZJpCcDrYKr2RI18e3J0iJeH
+X-Google-Smtp-Source: AGHT+IGMZgtSJDO5/A5UvywJSZqDi9vtZAD2iymTO1Gvi6K7UC4Jxq3SEkQWmh3wV7ewOVrSWtzjeoLvop2Fs0lEmIo=
+X-Received: by 2002:a17:906:7692:b0:9a9:f042:dec0 with SMTP id
+ o18-20020a170906769200b009a9f042dec0mr2636597ejm.38.1695857411121; Wed, 27
+ Sep 2023 16:30:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230925105552.817513-1-zhouchuyi@bytedance.com> <20230925105552.817513-5-zhouchuyi@bytedance.com>
-In-Reply-To: <20230925105552.817513-5-zhouchuyi@bytedance.com>
+References: <20230925105552.817513-1-zhouchuyi@bytedance.com> <20230925105552.817513-6-zhouchuyi@bytedance.com>
+In-Reply-To: <20230925105552.817513-6-zhouchuyi@bytedance.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 27 Sep 2023 16:24:22 -0700
-Message-ID: <CAEf4BzbYgf1t8tfQJ4xwfDH-o_3n+PRMBgC4AZRLbXGM=QJtzQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/7] bpf: Introduce css open-coded iterator kfuncs
+Date: Wed, 27 Sep 2023 16:29:59 -0700
+Message-ID: <CAEf4Bzbeb+BZBNK+VU2THdJ5x5FeWp9SXVKOhLHCeFLwYijRig@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 5/7] bpf: teach the verifier to enforce
+ css_iter and task_iter in RCU CS
 To: Chuyi Zhou <zhouchuyi@bytedance.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
 	andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org, 
@@ -79,160 +80,165 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 On Mon, Sep 25, 2023 at 3:56=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.com=
 > wrote:
 >
-> This Patch adds kfuncs bpf_iter_css_{new,next,destroy} which allow
-> creation and manipulation of struct bpf_iter_css in open-coded iterator
-> style. These kfuncs actually wrapps css_next_descendant_{pre, post}.
-> css_iter can be used to:
+> css_iter and task_iter should be used in rcu section. Specifically, in
+> sleepable progs explicit bpf_rcu_read_lock() is needed before use these
+> iters. In normal bpf progs that have implicit rcu_read_lock(), it's OK to
+> use them directly.
 >
-> 1) iterating a sepcific cgroup tree with pre/post/up order
+> This patch adds a new a KF flag KF_RCU_PROTECTED for bpf_iter_task_new an=
+d
+> bpf_iter_css_new. It means the kfunc should be used in RCU CS. We check
+> whether we are in rcu cs before we want to invoke this kfunc. If the rcu
+> protection is guaranteed, we would let st->type =3D PTR_TO_STACK | MEM_RC=
+U.
+> Once user do rcu_unlock during the iteration, state MEM_RCU of regs would
+> be cleared. is_iter_reg_valid_init() will reject if reg->type is UNTRUSTE=
+D.
 >
-> 2) iterating cgroup_subsystem in BPF Prog, like
-> for_each_mem_cgroup_tree/cpuset_for_each_descendant_pre in kernel.
->
-> The API design is consistent with cgroup_iter. bpf_iter_css_new accepts
-> parameters defining iteration order and starting css. Here we also reuse
-> BPF_CGROUP_ITER_DESCENDANTS_PRE, BPF_CGROUP_ITER_DESCENDANTS_POST,
-> BPF_CGROUP_ITER_ANCESTORS_UP enums.
+> It is worth noting that currently, bpf_rcu_read_unlock does not
+> clear the state of the STACK_ITER reg, since bpf_for_each_spilled_reg
+> only considers STACK_SPILL. This patch also let bpf_for_each_spilled_reg
+> search STACK_ITER.
 >
 > Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
 > ---
->  kernel/bpf/cgroup_iter.c                      | 57 +++++++++++++++++++
->  kernel/bpf/helpers.c                          |  3 +
->  .../testing/selftests/bpf/bpf_experimental.h  |  6 ++
->  3 files changed, 66 insertions(+)
+>  include/linux/bpf_verifier.h | 19 ++++++++------
+>  include/linux/btf.h          |  1 +
+>  kernel/bpf/helpers.c         |  4 +--
+>  kernel/bpf/verifier.c        | 48 +++++++++++++++++++++++++++---------
+>  4 files changed, 50 insertions(+), 22 deletions(-)
 >
-> diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
-> index 810378f04fbc..ebc3d9471f52 100644
-> --- a/kernel/bpf/cgroup_iter.c
-> +++ b/kernel/bpf/cgroup_iter.c
-> @@ -294,3 +294,60 @@ static int __init bpf_cgroup_iter_init(void)
+
+[...]
+
+>
+> -static bool is_iter_reg_valid_init(struct bpf_verifier_env *env, struct =
+bpf_reg_state *reg,
+> +static int is_iter_reg_valid_init(struct bpf_verifier_env *env, struct b=
+pf_reg_state *reg,
+>                                    struct btf *btf, u32 btf_id, int nr_sl=
+ots)
+>  {
+>         struct bpf_func_state *state =3D func(env, reg);
+> @@ -1275,26 +1286,28 @@ static bool is_iter_reg_valid_init(struct bpf_ver=
+ifier_env *env, struct bpf_reg_
+>
+>         spi =3D iter_get_spi(env, reg, nr_slots);
+>         if (spi < 0)
+> -               return false;
+> +               return -EINVAL;
+>
+>         for (i =3D 0; i < nr_slots; i++) {
+>                 struct bpf_stack_state *slot =3D &state->stack[spi - i];
+>                 struct bpf_reg_state *st =3D &slot->spilled_ptr;
+>
+> +               if (st->type & PTR_UNTRUSTED)
+> +                       return -EPERM;
+>                 /* only main (first) slot has ref_obj_id set */
+>                 if (i =3D=3D 0 && !st->ref_obj_id)
+> -                       return false;
+> +                       return -EINVAL;
+>                 if (i !=3D 0 && st->ref_obj_id)
+> -                       return false;
+> +                       return -EINVAL;
+>                 if (st->iter.btf !=3D btf || st->iter.btf_id !=3D btf_id)
+> -                       return false;
+> +                       return -EINVAL;
+>
+>                 for (j =3D 0; j < BPF_REG_SIZE; j++)
+>                         if (slot->slot_type[j] !=3D STACK_ITER)
+> -                               return false;
+> +                               return -EINVAL;
+>         }
+>
+> -       return true;
+> +       return 0;
 >  }
 >
->  late_initcall(bpf_cgroup_iter_init);
-> +
-> +struct bpf_iter_css {
-> +       __u64 __opaque[2];
-> +       __u32 __opaque_int[1];
-> +} __attribute__((aligned(8)));
-> +
-
-same as before, __opaque[3] only
-
-
-> +struct bpf_iter_css_kern {
-> +       struct cgroup_subsys_state *start;
-> +       struct cgroup_subsys_state *pos;
-> +       int order;
-> +} __attribute__((aligned(8)));
-> +
-> +__bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
-> +               struct cgroup_subsys_state *start, enum bpf_cgroup_iter_o=
-rder order)
-
-Similarly, I wonder if we should go for a more generic "flags" argument?
-
-> +{
-> +       struct bpf_iter_css_kern *kit =3D (void *)it;
-
-empty line
-
-> +       kit->start =3D NULL;
-> +       BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) !=3D sizeof(struct =
-bpf_iter_css));
-> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) !=3D __alignof=
-__(struct bpf_iter_css));
-
-please move this up before kit->start assignment, and separate by empty lin=
-es
-
-> +       switch (order) {
-> +       case BPF_CGROUP_ITER_DESCENDANTS_PRE:
-> +       case BPF_CGROUP_ITER_DESCENDANTS_POST:
-> +       case BPF_CGROUP_ITER_ANCESTORS_UP:
-> +               break;
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +
-> +       kit->start =3D start;
-> +       kit->pos =3D NULL;
-> +       kit->order =3D order;
-> +       return 0;
-> +}
-> +
-> +__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_ite=
-r_css *it)
-> +{
-> +       struct bpf_iter_css_kern *kit =3D (void *)it;
-
-empty line
-
-> +       if (!kit->start)
-> +               return NULL;
-> +
-> +       switch (kit->order) {
-> +       case BPF_CGROUP_ITER_DESCENDANTS_PRE:
-> +               kit->pos =3D css_next_descendant_pre(kit->pos, kit->start=
-);
-> +               break;
-> +       case BPF_CGROUP_ITER_DESCENDANTS_POST:
-> +               kit->pos =3D css_next_descendant_post(kit->pos, kit->star=
-t);
-> +               break;
-> +       default:
-
-we know it's BPF_CGROUP_ITER_ANCESTORS_UP, so why not have that here explic=
-itly?
-
-> +               kit->pos =3D kit->pos ? kit->pos->parent : kit->start;
-> +       }
-> +
-> +       return kit->pos;
-
-wouldn't this implementation never return the "start" css? is that intentio=
-nal?
-
-> +}
-> +
-> +__bpf_kfunc void bpf_iter_css_destroy(struct bpf_iter_css *it)
-> +{
-> +}
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 556262c27a75..9c3af36249a2 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -2510,6 +2510,9 @@ BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_IT=
-ER_DESTROY)
->  BTF_ID_FLAGS(func, bpf_iter_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
->  BTF_ID_FLAGS(func, bpf_iter_task_next, KF_ITER_NEXT | KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_iter_task_destroy, KF_ITER_DESTROY)
-> +BTF_ID_FLAGS(func, bpf_iter_css_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
-> +BTF_ID_FLAGS(func, bpf_iter_css_next, KF_ITER_NEXT | KF_RET_NULL)
-> +BTF_ID_FLAGS(func, bpf_iter_css_destroy, KF_ITER_DESTROY)
->  BTF_ID_FLAGS(func, bpf_dynptr_adjust)
->  BTF_ID_FLAGS(func, bpf_dynptr_is_null)
->  BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
-> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testi=
-ng/selftests/bpf/bpf_experimental.h
-> index d989775dbdb5..aa247d1d81d1 100644
-> --- a/tools/testing/selftests/bpf/bpf_experimental.h
-> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
-> @@ -174,4 +174,10 @@ extern int bpf_iter_task_new(struct bpf_iter_task *i=
-t, struct task_struct *task,
->  extern struct task_struct *bpf_iter_task_next(struct bpf_iter_task *it) =
-__weak __ksym;
->  extern void bpf_iter_task_destroy(struct bpf_iter_task *it) __weak __ksy=
-m;
+>  /* Check if given stack slot is "special":
+> @@ -7503,15 +7516,20 @@ static int process_iter_arg(struct bpf_verifier_e=
+nv *env, int regno, int insn_id
+>                                 return err;
+>                 }
 >
-> +struct bpf_iter_css;
-> +extern int bpf_iter_css_new(struct bpf_iter_css *it,
-> +                               struct cgroup_subsys_state *start, enum b=
-pf_cgroup_iter_order order) __weak __ksym;
-> +extern struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css=
- *it) __weak __ksym;
-> +extern void bpf_iter_css_destroy(struct bpf_iter_css *it) __weak __ksym;
+> -               err =3D mark_stack_slots_iter(env, reg, insn_idx, meta->b=
+tf, btf_id, nr_slots);
+> +               err =3D mark_stack_slots_iter(env, meta, reg, insn_idx, m=
+eta->btf, btf_id, nr_slots);
+>                 if (err)
+>                         return err;
+>         } else {
+>                 /* iter_next() or iter_destroy() expect initialized iter =
+state*/
+> -               if (!is_iter_reg_valid_init(env, reg, meta->btf, btf_id, =
+nr_slots)) {
+> -                       verbose(env, "expected an initialized iter_%s as =
+arg #%d\n",
+> +               err =3D is_iter_reg_valid_init(env, reg, meta->btf, btf_i=
+d, nr_slots);
+> +               switch (err) {
+> +               case -EINVAL:
+
+I'd also add default: here, in case we ever emit some other error from
+is_iter_reg_valid_init()
+
+> +                       verbose(env, "expected an initialized iter_%s as =
+arg #%d or without bpf_rcu_read_lock()\n",
+>                                 iter_type_str(meta->btf, btf_id), regno);
+> -                       return -EINVAL;
+> +                       return err;
+> +               case -EPERM:
+
+I find -EPERM a bit confusing. Let's use something a bit more
+specific, e.g., -EPROTO? We are basically not following a protocol if
+we don't keep RCU-protected iterators within a single RCU region,
+right?
+
+> +                       verbose(env, "expected an RCU CS when using %s\n"=
+, meta->func_name);
+> +                       return err;
+>                 }
+>
+>                 spi =3D iter_get_spi(env, reg, nr_slots);
+> @@ -10092,6 +10110,11 @@ static bool is_kfunc_rcu(struct bpf_kfunc_call_a=
+rg_meta *meta)
+>         return meta->kfunc_flags & KF_RCU;
+>  }
+>
+> +static bool is_kfunc_rcu_protected(struct bpf_kfunc_call_arg_meta *meta)
+> +{
+> +       return meta->kfunc_flags & KF_RCU_PROTECTED;
+> +}
 > +
->  #endif
+>  static bool __kfunc_param_match_suffix(const struct btf *btf,
+>                                        const struct btf_param *arg,
+>                                        const char *suffix)
+> @@ -11428,6 +11451,7 @@ static int check_kfunc_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn,
+>         if (env->cur_state->active_rcu_lock) {
+>                 struct bpf_func_state *state;
+>                 struct bpf_reg_state *reg;
+> +               u32 clear_mask =3D (1 << STACK_SPILL) | (1 << STACK_ITER)=
+;
+>
+>                 if (in_rbtree_lock_required_cb(env) && (rcu_lock || rcu_u=
+nlock)) {
+>                         verbose(env, "Calling bpf_rcu_read_{lock,unlock} =
+in unnecessary rbtree callback\n");
+> @@ -11438,7 +11462,7 @@ static int check_kfunc_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn,
+>                         verbose(env, "nested rcu read lock (kernel functi=
+on %s)\n", func_name);
+>                         return -EINVAL;
+>                 } else if (rcu_unlock) {
+> -                       bpf_for_each_reg_in_vstate(env->cur_state, state,=
+ reg, ({
+> +                       bpf_for_each_reg_in_vstate_mask(env->cur_state, s=
+tate, reg, clear_mask, ({
+>                                 if (reg->type & MEM_RCU) {
+>                                         reg->type &=3D ~(MEM_RCU | PTR_MA=
+YBE_NULL);
+>                                         reg->type |=3D PTR_UNTRUSTED;
 > --
 > 2.20.1
 >
