@@ -1,283 +1,258 @@
-Return-Path: <bpf+bounces-10974-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10975-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93B5F7B0578
-	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 15:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E59A7B07BC
+	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 17:09:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 462F12830BD
-	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 13:32:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 9EC28281D63
+	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 15:09:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 274D0341BB;
-	Wed, 27 Sep 2023 13:32:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9176938F89;
+	Wed, 27 Sep 2023 15:09:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B12C347BD;
-	Wed, 27 Sep 2023 13:32:07 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A24136;
-	Wed, 27 Sep 2023 06:32:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695821525; x=1727357525;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=C7dr1ZrgIHOnJW+9ttlqfuOrJFB4+/hVEJYg0Q2RZoU=;
-  b=D9zkJlnc42mJhVrI0d83Umqm1m0bokhXZwJ3g3ha1aknLyCzDZ1Woi6m
-   QUn3ackvfNk9oTBccu1XG6G3CTR4EDC7snZGOXbqyz2Ews9rlCXDnyFux
-   Wj1AN/D1d6mYL0l4tv3EwFojv0XcYxisnxq2zizUiWuHwM7LthduBzaPU
-   oW8GBfH8Jp+xJPnWsON4IwsdkbNMwPoUPmGnJb0nvOyrmaNIHIpDmwClM
-   9oZRs1nM6SdytNrae+UbDNjOWwKkIgBiI2wmPYNYBEjFYhNz8MBbSRpWO
-   VNWSX6OZbhfju8Bv8k7goiqPZh9NPCcaHv+93LPsXFYW16MdfjYPnxbLv
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="448316462"
-X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="448316462"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 06:32:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="698879130"
-X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="698879130"
-Received: from unknown (HELO axxiablr2..) ([10.190.162.200])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 06:32:01 -0700
-From: Tushar Vyavahare <tushar.vyavahare@intel.com>
-To: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org,
-	bjorn@kernel.org,
-	magnus.karlsson@intel.com,
-	maciej.fijalkowski@intel.com,
-	jonathan.lemon@gmail.com,
-	davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	tirthendu.sarkar@intel.com,
-	tushar.vyavahare@intel.com
-Subject: [PATCH bpf-next v3 8/8] selftests/xsk: add a test for shared umem feature
-Date: Wed, 27 Sep 2023 19:22:41 +0530
-Message-Id: <20230927135241.2287547-9-tushar.vyavahare@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230927135241.2287547-1-tushar.vyavahare@intel.com>
-References: <20230927135241.2287547-1-tushar.vyavahare@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 076781170F
+	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 15:09:20 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5415FC;
+	Wed, 27 Sep 2023 08:09:14 -0700 (PDT)
+Received: from fsav315.sakura.ne.jp (fsav315.sakura.ne.jp [153.120.85.146])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 38RF8psY032776;
+	Thu, 28 Sep 2023 00:08:51 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav315.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav315.sakura.ne.jp);
+ Thu, 28 Sep 2023 00:08:51 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav315.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 38RF8oKG032773
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Thu, 28 Sep 2023 00:08:50 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <cc8e16bb-5083-01da-4a77-d251a76dc8ff@I-love.SAKURA.ne.jp>
+Date: Thu, 28 Sep 2023 00:08:47 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To: linux-security-module <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        KP Singh <kpsingh@kernel.org>, Paul Moore <paul@paul-moore.com>,
+        bpf <bpf@vger.kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [RFC PATCH 1/2] LSM: Allow dynamically appendable LSM modules.
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add a new test for testing shared umem feature. This is accomplished by
-adding a new XDP program and using the multiple sockets.
+Recently, the LSM community is trying to make drastic changes.
 
-The new XDP program redirects the packets based on the destination MAC
-address.
+Crispin Cowan has explained
 
-Signed-off-by: Tushar Vyavahare <tushar.vyavahare@intel.com>
+  It is Linus' comments that spurred me to want to start this undertaking.  He
+  observes that there are many different security approaches, each with their own
+  advocates.  He doesn't want to arbitrate which of them should be "the" Linux
+  security approach, and would rather that Linux can support any of them.
+
+  That is the purpose of this project:  to allow Linux to support a variety of
+  security models, so that security developers don't have to have the "my dog's
+  bigger than your dog" argument, and users can choose the security model that
+  suits their needs.
+
+when the LSM project started [1].
+
+However, Casey Schaufler is trying to make users difficult to choose the
+security model that suits their needs, by requiring LSM ID value which is
+assigned to only LSM modules that succeeded to become in-tree [2].
+Therefore, I'm asking Casey and Paul Moore to change their mind to allow
+assigning LSM ID value to any LSM modules (so that users can choose the
+security model that suits their needs) [3].
+
+I expect that LSM ID value will be assigned to any publicly available LSM
+modules. Otherwise, it is mostly pointless to propose this patch; there
+will be little LSM modules to built into vmlinux; let alone dynamically
+loading as LKM-based LSMs.
+
+Also, KP Singh is trying to replace the linked list with static calls in
+order to reduce overhead of indirect calls [4]. However, this change
+assumed that any LSM modules are built-in. I don't like such assumption
+because I still consider that LSM modules which are not built into vmlinux
+will be wanted by users [5].
+
+Then, Casey told me to supply my implementation of loadable security
+modules [6]. Therefore, I post this patch as basic changes needed for
+allowing dynamically appendable LSM modules (and an example of appendable
+LSM modules). This patch was tested on only x86_64.
+
+Question for KP Singh would be how can we allow dynamically appendable
+LSM modules if current linked list is replaced with static calls with
+minimal-sized array...
+
+Link: https://marc.info/?l=linux-security-module&m=98706471912438&w=2 [1]
+Link: https://lkml.kernel.org/r/20230912205658.3432-2-casey@schaufler-ca.com [2]
+Link: https://lkml.kernel.org/r/6e1c25f5-b78c-8b4e-ddc3-484129c4c0ec@I-love.SAKURA.ne.jp [3]
+Link: https://lkml.kernel.org/r/20230918212459.1937798-1-kpsingh@kernel.org [4]
+Link: https://lkml.kernel.org/r/ed785c86-a1d8-caff-c629-f8a50549e05b@I-love.SAKURA.ne.jp [5]
+Link: https://lkml.kernel.org/r/36c7cf74-508f-1690-f86a-bb18ec686fcf@schaufler-ca.com [6]
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 ---
- .../selftests/bpf/progs/xsk_xdp_progs.c       | 20 ++++++-
- tools/testing/selftests/bpf/xsk_xdp_common.h  |  2 +
- tools/testing/selftests/bpf/xskxceiver.c      | 55 +++++++++++++++++--
- tools/testing/selftests/bpf/xskxceiver.h      |  2 +-
- 4 files changed, 72 insertions(+), 7 deletions(-)
+ include/linux/lsm_hooks.h |   2 +
+ security/security.c       | 107 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 109 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c b/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
-index 734f231a8534..ccde6a4c6319 100644
---- a/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
-+++ b/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
-@@ -3,11 +3,12 @@
+diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+index dcb5e5b5eb13..73db3c41df26 100644
+--- a/include/linux/lsm_hooks.h
++++ b/include/linux/lsm_hooks.h
+@@ -105,6 +105,8 @@ extern char *lsm_names;
  
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
-+#include <linux/if_ether.h>
- #include "xsk_xdp_common.h"
+ extern void security_add_hooks(struct security_hook_list *hooks, int count,
+ 				const char *lsm);
++extern int register_loadable_lsm(struct security_hook_list *hooks, int count,
++				 const char *lsm);
  
- struct {
- 	__uint(type, BPF_MAP_TYPE_XSKMAP);
--	__uint(max_entries, 1);
-+	__uint(max_entries, 2);
- 	__uint(key_size, sizeof(int));
- 	__uint(value_size, sizeof(int));
- } xsk SEC(".maps");
-@@ -52,4 +53,21 @@ SEC("xdp.frags") int xsk_xdp_populate_metadata(struct xdp_md *xdp)
- 	return bpf_redirect_map(&xsk, 0, XDP_DROP);
- }
+ #define LSM_FLAG_LEGACY_MAJOR	BIT(0)
+ #define LSM_FLAG_EXCLUSIVE	BIT(1)
+diff --git a/security/security.c b/security/security.c
+index 23b129d482a7..6c64b7afb251 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -74,6 +74,7 @@ const char *const lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX + 1] = {
+ };
  
-+SEC("xdp") int xsk_xdp_shared_umem(struct xdp_md *xdp)
-+{
-+	void *data = (void *)(long)xdp->data;
-+	void *data_end = (void *)(long)xdp->data_end;
-+	struct ethhdr *eth = data;
-+
-+	if (eth + 1 > data_end)
-+		return XDP_DROP;
-+
-+	/* Redirecting packets based on the destination MAC address */
-+	idx = ((unsigned int)(eth->h_dest[5])) / 2;
-+	if (idx > MAX_SOCKETS)
-+		return XDP_DROP;
-+
-+	return bpf_redirect_map(&xsk, idx, XDP_DROP);
-+}
-+
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/xsk_xdp_common.h b/tools/testing/selftests/bpf/xsk_xdp_common.h
-index f55d61625336..5a6f36f07383 100644
---- a/tools/testing/selftests/bpf/xsk_xdp_common.h
-+++ b/tools/testing/selftests/bpf/xsk_xdp_common.h
-@@ -3,6 +3,8 @@
- #ifndef XSK_XDP_COMMON_H_
- #define XSK_XDP_COMMON_H_
+ struct security_hook_heads security_hook_heads __ro_after_init;
++EXPORT_SYMBOL_GPL(security_hook_heads);
+ static BLOCKING_NOTIFIER_HEAD(blocking_lsm_notifier_chain);
  
-+#define MAX_SOCKETS 2
-+
- struct xdp_info {
- 	__u64 count;
- } __attribute__((aligned(32)));
-diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index 0432c516a413..837e0ffbdc47 100644
---- a/tools/testing/selftests/bpf/xskxceiver.c
-+++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -651,7 +651,7 @@ static u32 pkt_get_buffer_len(struct xsk_umem_info *umem, u32 len)
- 	return ceil_u32(len, umem->frame_size) * umem->frame_size;
- }
- 
--static struct pkt_stream *pkt_stream_generate(u32 nb_pkts, u32 pkt_len)
-+static struct pkt_stream *__pkt_stream_generate(u32 nb_pkts, u32 pkt_len, u32 nb_start, u32 nb_off)
- {
- 	struct pkt_stream *pkt_stream;
- 	u32 i;
-@@ -666,12 +666,17 @@ static struct pkt_stream *pkt_stream_generate(u32 nb_pkts, u32 pkt_len)
- 		struct pkt *pkt = &pkt_stream->pkts[i];
- 
- 		pkt_set(pkt_stream, pkt, 0, pkt_len);
--		pkt->pkt_nb = i;
-+		pkt->pkt_nb = nb_start + i * nb_off;
+ static struct kmem_cache *lsm_file_cache;
+@@ -537,6 +538,112 @@ void __init security_add_hooks(struct security_hook_list *hooks, int count,
  	}
- 
- 	return pkt_stream;
  }
  
-+static struct pkt_stream *pkt_stream_generate(u32 nb_pkts, u32 pkt_len)
++#if defined(CONFIG_STRICT_KERNEL_RWX)
++#define MAX_RO_PAGES 1024 /* Wild guess. Can be minimized by dynamic allocation. */
++static struct page *ro_pages[MAX_RO_PAGES]; /* Pages that are marked read-only. */
++static unsigned int ro_pages_len; /* Number of pages that are marked read-only. */
++
++/* Check whether a page containing given address does not have _PAGE_BIT_RW bit. */
++static bool lsm_test_page_ro(void *addr)
 +{
-+	return __pkt_stream_generate(nb_pkts, pkt_len, 0, 1);
++	unsigned int i;
++	int unused;
++	struct page *page;
++
++	page = (struct page *) lookup_address((unsigned long) addr, &unused);
++	if (!page)
++		return false;
++	if (test_bit(_PAGE_BIT_RW, &(page->flags)))
++		return true;
++	for (i = 0; i < ro_pages_len; i++)
++		if (page == ro_pages[i])
++			return true;
++	if (ro_pages_len == MAX_RO_PAGES)
++		return false;
++	ro_pages[ro_pages_len++] = page;
++	return true;
 +}
 +
- static struct pkt_stream *pkt_stream_clone(struct pkt_stream *pkt_stream)
- {
- 	return pkt_stream_generate(pkt_stream->nb_pkts, pkt_stream->pkts[0].len);
-@@ -721,6 +726,24 @@ static void pkt_stream_receive_half(struct test_spec *test)
- 	pkt_stream->nb_valid_entries /= 2;
- }
- 
-+static void pkt_stream_even_odd_sequence(struct test_spec *test)
++/* Find pages which do not have _PAGE_BIT_RW bit. */
++static bool check_ro_pages(struct security_hook_list *hooks, int count)
 +{
-+	struct pkt_stream *pkt_stream;
-+	u32 i;
++	int i;
++	struct hlist_head *list = &security_hook_heads.capable;
 +
-+	for (i = 0; i < test->nb_sockets; i++) {
-+		pkt_stream = test->ifobj_tx->xsk_arr[i].pkt_stream;
-+		pkt_stream = __pkt_stream_generate(pkt_stream->nb_pkts / 2,
-+						   pkt_stream->pkts[0].len, i, 2);
-+		test->ifobj_tx->xsk_arr[i].pkt_stream = pkt_stream;
++	if (!copy_to_kernel_nofault(list, list, sizeof(void *)))
++		return true;
++	for (i = 0; i < count; i++) {
++		struct hlist_head *head = hooks[i].head;
++		struct security_hook_list *shp;
 +
-+		pkt_stream = test->ifobj_rx->xsk_arr[i].pkt_stream;
-+		pkt_stream = __pkt_stream_generate(pkt_stream->nb_pkts / 2,
-+						   pkt_stream->pkts[0].len, i, 2);
-+		test->ifobj_rx->xsk_arr[i].pkt_stream = pkt_stream;
++		if (!lsm_test_page_ro(&head->first))
++			return false;
++		hlist_for_each_entry(shp, head, list)
++			if (!lsm_test_page_ro(&shp->list.next) ||
++			    !lsm_test_page_ro(&shp->list.pprev))
++				return false;
 +	}
++	return true;
 +}
++#endif
 +
- static u64 pkt_get_addr(struct pkt *pkt, struct xsk_umem_info *umem)
- {
- 	if (!pkt->valid)
-@@ -1584,6 +1607,7 @@ static void thread_common_ops(struct test_spec *test, struct ifobject *ifobject)
- 	LIBBPF_OPTS(bpf_xdp_query_opts, opts);
- 	void *bufs;
- 	int ret;
-+	u32 i;
- 
- 	if (ifobject->umem->unaligned_mode)
- 		mmap_flags |= MAP_HUGETLB | MAP_HUGE_2MB;
-@@ -1608,9 +1632,12 @@ static void thread_common_ops(struct test_spec *test, struct ifobject *ifobject)
- 
- 	xsk_populate_fill_ring(ifobject->umem, ifobject->xsk->pkt_stream, ifobject->use_fill_ring);
- 
--	ret = xsk_update_xskmap(ifobject->xskmap, ifobject->xsk->xsk, 0);
--	if (ret)
--		exit_with_error(errno);
-+	for (i = 0; i < test->nb_sockets; i++) {
-+		ifobject->xsk = &ifobject->xsk_arr[i];
-+		ret = xsk_update_xskmap(ifobject->xskmap, ifobject->xsk->xsk, i);
-+		if (ret)
-+			exit_with_error(errno);
-+	}
- }
- 
- static void *worker_testapp_validate_tx(void *arg)
-@@ -2111,6 +2138,23 @@ static int testapp_xdp_metadata_copy(struct test_spec *test)
- 	return testapp_validate_traffic(test);
- }
- 
-+static int testapp_xdp_shared_umem(struct test_spec *test)
++/**
++ * register_loadable_lsm - Add a dynamically appendable module's hooks to the hook lists.
++ * @hooks: the hooks to add
++ * @count: the number of hooks to add
++ * @lsm: the name of the security module
++ *
++ * Each dynamically appendable LSM has to register its hooks with the infrastructure.
++ *
++ * Assumes that this function is called from module_init() function where
++ * call to this function is already serialized by module_mutex lock.
++ */
++int register_loadable_lsm(struct security_hook_list *hooks, int count,
++			  const char *lsm)
 +{
-+	struct xsk_xdp_progs *skel_rx = test->ifobj_rx->xdp_progs;
-+	struct xsk_xdp_progs *skel_tx = test->ifobj_tx->xdp_progs;
++	int i;
++	char *cp;
 +
-+	test->total_steps = 1;
-+	test->nb_sockets = 2;
++	// TODO: Check whether proposed hooks can co-exist with already chained hooks,
++	//       and bail out here if one of hooks cannot co-exist...
 +
-+	test_spec_set_xdp_prog(test, skel_rx->progs.xsk_xdp_shared_umem,
-+			       skel_tx->progs.xsk_xdp_shared_umem,
-+			       skel_rx->maps.xsk, skel_tx->maps.xsk);
-+
-+	pkt_stream_even_odd_sequence(test);
-+
-+	return testapp_validate_traffic(test);
++#if defined(CONFIG_STRICT_KERNEL_RWX)
++	// Find pages which needs to make temporarily writable.
++	ro_pages_len = 0;
++	if (!check_ro_pages(hooks, count)) {
++		pr_err("Can't make security_hook_heads again writable. Retry with rodata=off kernel command line option added.\n");
++		return -EINVAL;
++	}
++	pr_info("ro_pages_len=%d\n", ro_pages_len);
++#endif
++	// At least "capability" is already included.
++	cp = kasprintf(GFP_KERNEL, "%s,%s", lsm_names, lsm);
++	if (!cp) {
++		pr_err("%s - Cannot get memory.\n", __func__);
++		return -ENOMEM;
++	}
++#if defined(CONFIG_STRICT_KERNEL_RWX)
++	// Make security_hook_heads (and hooks chained) temporarily writable.
++	for (i = 0; i < ro_pages_len; i++)
++		set_bit(_PAGE_BIT_RW, &(ro_pages[i]->flags));
++#endif
++	// Register dynamically appendable module's hooks.
++	for (i = 0; i < count; i++) {
++		hooks[i].lsm = lsm;
++		hlist_add_tail_rcu(&hooks[i].list, hooks[i].head);
++	}
++#if defined(CONFIG_STRICT_KERNEL_RWX)
++	// Make security_hook_heads (and hooks chained) again read-only.
++	for (i = 0; i < ro_pages_len; i++)
++		clear_bit(_PAGE_BIT_RW, &(ro_pages[i]->flags));
++#endif
++	// TODO: Wait for reader side before kfree().
++	kfree(lsm_names);
++	lsm_names = cp;
++	return 0;
 +}
++EXPORT_SYMBOL_GPL(register_loadable_lsm);
 +
- static int testapp_poll_txq_tmout(struct test_spec *test)
+ int call_blocking_lsm_notifier(enum lsm_event event, void *data)
  {
- 	test->ifobj_tx->use_poll = true;
-@@ -2412,6 +2456,7 @@ static const struct test_spec tests[] = {
- 	{.name = "STAT_FILL_EMPTY", .test_func = testapp_stats_fill_empty},
- 	{.name = "XDP_PROG_CLEANUP", .test_func = testapp_xdp_prog_cleanup},
- 	{.name = "XDP_DROP_HALF", .test_func = testapp_xdp_drop},
-+	{.name = "XDP_SHARED_UMEM", .test_func = testapp_xdp_shared_umem},
- 	{.name = "XDP_METADATA_COPY", .test_func = testapp_xdp_metadata},
- 	{.name = "XDP_METADATA_COPY_MULTI_BUFF", .test_func = testapp_xdp_metadata_mb},
- 	{.name = "SEND_RECEIVE_9K_PACKETS", .test_func = testapp_send_receive_mb},
-diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-index fa409285eafd..f174df2d693f 100644
---- a/tools/testing/selftests/bpf/xskxceiver.h
-+++ b/tools/testing/selftests/bpf/xskxceiver.h
-@@ -8,6 +8,7 @@
- #include <limits.h>
- 
- #include "xsk_xdp_progs.skel.h"
-+#include "xsk_xdp_common.h"
- 
- #ifndef SOL_XDP
- #define SOL_XDP 283
-@@ -35,7 +36,6 @@
- #define TEST_SKIP 2
- #define MAX_INTERFACES 2
- #define MAX_INTERFACE_NAME_CHARS 16
--#define MAX_SOCKETS 2
- #define MAX_TEST_NAME_SIZE 48
- #define MAX_TEARDOWN_ITER 10
- #define PKT_HDR_SIZE (sizeof(struct ethhdr) + 2) /* Just to align the data in the packet */
+ 	return blocking_notifier_call_chain(&blocking_lsm_notifier_chain,
 -- 
-2.34.1
-
+2.18.4
 
