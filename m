@@ -1,51 +1,51 @@
-Return-Path: <bpf+bounces-10922-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-10923-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B431D7AFD31
-	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 09:57:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE1C97AFD2F
+	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 09:57:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 9B8B72827B7
-	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 07:57:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id 74ECD1C20904
+	for <lists+bpf@lfdr.de>; Wed, 27 Sep 2023 07:57:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4513F1CAB6;
-	Wed, 27 Sep 2023 07:57:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65FBC1CAA6;
+	Wed, 27 Sep 2023 07:57:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8211E1CA9D;
-	Wed, 27 Sep 2023 07:57:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1271CA92;
+	Wed, 27 Sep 2023 07:57:44 +0000 (UTC)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C80711D;
-	Wed, 27 Sep 2023 00:57:38 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF24BF;
+	Wed, 27 Sep 2023 00:57:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695801458; x=1727337458;
+  t=1695801462; x=1727337462;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=U4CnrcnuYoc2jJmfpS5RjlaIk68wYTv9Od645Z+g6PU=;
-  b=Wprx1bxJW3HN4r/g8i75gkTYsVvPTmmRMgFewK7qJnPTgu/im9IDVOhS
-   a/SMtflEe5Br7r6/PKP8uRB0bALg0/QDyBrFaa9jue1Z91AV/jpNzcrqM
-   lq5KYgvyvX8akaoElOCwAlJM0qWgKSE0c1P1qm8ffmPIMPuT6DCJw5TtW
-   aQHogGckQWRxm565v/TuIbrtEHpWKe4qBoETW8ge/FssJsAmQ45C7cQat
-   bIs7YCo0EW25ZwexLhCGcSXA1IDrZKpMaaVOY3YH7f0wphAmHrozyFg0A
-   XIkAgrHJjlSBAf+OZqXaDycuznbu9mAwg+1k8muCoPe2F7t94dxl6GpTC
+  bh=njlWHUXIkn2npwUEImFBXtkRxvmC/r2O/x2Uptie094=;
+  b=dSYdAvPIy9M336h+Jcz1MI21gOAO9T5WH/lLwVKn8PLQ55vPGzn7L9Zi
+   +JdKpgCmrUYg6PmnKBDcx7gdwL9yayGyYQrNwiv7qj6To4Z+7ZyjxJwK6
+   a3vVfaei3YshtTvBu4C3MWM7vgjeWroEpejL0b8DTXu84ZAhRNfyd1VV3
+   9T/nDh67Iiae0JVucnvI4hwkOL2HvW1N316kCzL2qMwyIoDp9Q25vylTS
+   5Soqhz4mXqmZ+joN1M60crhUAAJXaDsFgDaObVuvzXS5TRUA3SrVJCAPR
+   xbHtdj6/RRYKPM00aYDuZQS+eZbvCbFEzVRoOm53ZyPnWd32+eeJuFN0a
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="366817816"
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="366817840"
 X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="366817816"
+   d="scan'208";a="366817840"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 00:57:38 -0700
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 00:57:42 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="1080039380"
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="1080039407"
 X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="1080039380"
+   d="scan'208";a="1080039407"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by fmsmga005.fm.intel.com with ESMTP; 27 Sep 2023 00:57:31 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 27 Sep 2023 00:57:36 -0700
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id BE0547EAC2;
-	Wed, 27 Sep 2023 08:57:29 +0100 (IST)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 8F1097EAC0;
+	Wed, 27 Sep 2023 08:57:33 +0100 (IST)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: bpf@vger.kernel.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -76,9 +76,9 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	Tariq Toukan <tariqt@mellanox.com>,
 	Saeed Mahameed <saeedm@mellanox.com>,
 	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [RFC bpf-next v2 01/24] ice: make RX hash reading code more reusable
-Date: Wed, 27 Sep 2023 09:51:01 +0200
-Message-ID: <20230927075124.23941-2-larysa.zaremba@intel.com>
+Subject: [RFC bpf-next v2 02/24] ice: make RX HW timestamp reading code more reusable
+Date: Wed, 27 Sep 2023 09:51:02 +0200
+Message-ID: <20230927075124.23941-3-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230927075124.23941-1-larysa.zaremba@intel.com>
 References: <20230927075124.23941-1-larysa.zaremba@intel.com>
@@ -95,85 +95,148 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Previously, we only needed RX hash in skb path,
+Previously, we only needed RX HW timestamp in skb path,
 hence all related code was written with skb in mind.
 But with the addition of XDP hints via kfuncs to the ice driver,
 the same logic will be needed in .xmo_() callbacks.
 
-Separate generic process of reading RX hash from a descriptor
+Put generic process of reading RX HW timestamp from a descriptor
 into a separate function.
+Move skb-related code into another source file.
 
 Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 ---
- drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 36 +++++++++++++------
- 1 file changed, 25 insertions(+), 11 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_ptp.c      | 20 ++++++-----------
+ drivers/net/ethernet/intel/ice/ice_ptp.h      | 16 +++++++++-----
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 22 ++++++++++++++++++-
+ 3 files changed, 38 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-index c8322fb6f2b3..987050dacead 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-@@ -63,28 +63,42 @@ static enum pkt_hash_types ice_ptype_to_htype(u16 ptype)
+diff --git a/drivers/net/ethernet/intel/ice/ice_ptp.c b/drivers/net/ethernet/intel/ice/ice_ptp.c
+index 05f922d3b316..e24c17789cf5 100644
+--- a/drivers/net/ethernet/intel/ice/ice_ptp.c
++++ b/drivers/net/ethernet/intel/ice/ice_ptp.c
+@@ -2168,30 +2168,26 @@ int ice_ptp_set_ts_config(struct ice_pf *pf, struct ifreq *ifr)
  }
  
  /**
-- * ice_rx_hash - set the hash value in the skb
-+ * ice_get_rx_hash - get RX hash value from descriptor
-+ * @rx_desc: specific descriptor
-+ *
-+ * Returns hash, if present, 0 otherwise.
-+ */
-+static u32 ice_get_rx_hash(const union ice_32b_rx_flex_desc *rx_desc)
-+{
-+	const struct ice_32b_rx_flex_desc_nic *nic_mdid;
-+
-+	if (unlikely(rx_desc->wb.rxdid != ICE_RXDID_FLEX_NIC))
+- * ice_ptp_rx_hwtstamp - Check for an Rx timestamp
+- * @rx_ring: Ring to get the VSI info
++ * ice_ptp_get_rx_hwts - Get packet Rx timestamp in ns
+  * @rx_desc: Receive descriptor
+- * @skb: Particular skb to send timestamp with
++ * @rx_ring: Ring to get the cached time
+  *
+  * The driver receives a notification in the receive descriptor with timestamp.
+- * The timestamp is in ns, so we must convert the result first.
+  */
+-void
+-ice_ptp_rx_hwtstamp(struct ice_rx_ring *rx_ring,
+-		    union ice_32b_rx_flex_desc *rx_desc, struct sk_buff *skb)
++u64 ice_ptp_get_rx_hwts(const union ice_32b_rx_flex_desc *rx_desc,
++			struct ice_rx_ring *rx_ring)
+ {
+-	struct skb_shared_hwtstamps *hwtstamps;
+ 	u64 ts_ns, cached_time;
+ 	u32 ts_high;
+ 
+ 	if (!(rx_desc->wb.time_stamp_low & ICE_PTP_TS_VALID))
+-		return;
 +		return 0;
+ 
+ 	cached_time = READ_ONCE(rx_ring->cached_phctime);
+ 
+ 	/* Do not report a timestamp if we don't have a cached PHC time */
+ 	if (!cached_time)
+-		return;
++		return 0;
+ 
+ 	/* Use ice_ptp_extend_32b_ts directly, using the ring-specific cached
+ 	 * PHC value, rather than accessing the PF. This also allows us to
+@@ -2202,9 +2198,7 @@ ice_ptp_rx_hwtstamp(struct ice_rx_ring *rx_ring,
+ 	ts_high = le32_to_cpu(rx_desc->wb.flex_ts.ts_high);
+ 	ts_ns = ice_ptp_extend_32b_ts(cached_time, ts_high);
+ 
+-	hwtstamps = skb_hwtstamps(skb);
+-	memset(hwtstamps, 0, sizeof(*hwtstamps));
+-	hwtstamps->hwtstamp = ns_to_ktime(ts_ns);
++	return ts_ns;
+ }
+ 
+ /**
+diff --git a/drivers/net/ethernet/intel/ice/ice_ptp.h b/drivers/net/ethernet/intel/ice/ice_ptp.h
+index 995a57019ba7..8ebdf422752a 100644
+--- a/drivers/net/ethernet/intel/ice/ice_ptp.h
++++ b/drivers/net/ethernet/intel/ice/ice_ptp.h
+@@ -268,9 +268,8 @@ void ice_ptp_extts_event(struct ice_pf *pf);
+ s8 ice_ptp_request_ts(struct ice_ptp_tx *tx, struct sk_buff *skb);
+ enum ice_tx_tstamp_work ice_ptp_process_ts(struct ice_pf *pf);
+ 
+-void
+-ice_ptp_rx_hwtstamp(struct ice_rx_ring *rx_ring,
+-		    union ice_32b_rx_flex_desc *rx_desc, struct sk_buff *skb);
++u64 ice_ptp_get_rx_hwts(const union ice_32b_rx_flex_desc *rx_desc,
++			struct ice_rx_ring *rx_ring);
+ void ice_ptp_reset(struct ice_pf *pf);
+ void ice_ptp_prepare_for_reset(struct ice_pf *pf);
+ void ice_ptp_init(struct ice_pf *pf);
+@@ -304,9 +303,14 @@ static inline bool ice_ptp_process_ts(struct ice_pf *pf)
+ {
+ 	return true;
+ }
+-static inline void
+-ice_ptp_rx_hwtstamp(struct ice_rx_ring *rx_ring,
+-		    union ice_32b_rx_flex_desc *rx_desc, struct sk_buff *skb) { }
 +
-+	nic_mdid = (struct ice_32b_rx_flex_desc_nic *)rx_desc;
-+	return le32_to_cpu(nic_mdid->rss_hash);
++static inline u64
++ice_ptp_get_rx_hwts(const union ice_32b_rx_flex_desc *rx_desc,
++		    struct ice_rx_ring *rx_ring)
++{
++	return 0;
 +}
 +
+ static inline void ice_ptp_reset(struct ice_pf *pf) { }
+ static inline void ice_ptp_prepare_for_reset(struct ice_pf *pf) { }
+ static inline void ice_ptp_init(struct ice_pf *pf) { }
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+index 987050dacead..95c29181301b 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
++++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+@@ -184,6 +184,26 @@ ice_rx_csum(struct ice_rx_ring *ring, struct sk_buff *skb,
+ 	ring->vsi->back->hw_csum_rx_error++;
+ }
+ 
 +/**
-+ * ice_rx_hash_to_skb - set the hash value in the skb
-  * @rx_ring: descriptor ring
-  * @rx_desc: specific descriptor
-  * @skb: pointer to current skb
-  * @rx_ptype: the ptype value from the descriptor
-  */
- static void
--ice_rx_hash(struct ice_rx_ring *rx_ring, union ice_32b_rx_flex_desc *rx_desc,
--	    struct sk_buff *skb, u16 rx_ptype)
-+ice_rx_hash_to_skb(const struct ice_rx_ring *rx_ring,
-+		   const union ice_32b_rx_flex_desc *rx_desc,
-+		   struct sk_buff *skb, u16 rx_ptype)
- {
--	struct ice_32b_rx_flex_desc_nic *nic_mdid;
- 	u32 hash;
++ * ice_ptp_rx_hwts_to_skb - Put RX timestamp into skb
++ * @rx_ring: Ring to get the VSI info
++ * @rx_desc: Receive descriptor
++ * @skb: Particular skb to send timestamp with
++ *
++ * The timestamp is in ns, so we must convert the result first.
++ */
++static void
++ice_ptp_rx_hwts_to_skb(struct ice_rx_ring *rx_ring,
++		       const union ice_32b_rx_flex_desc *rx_desc,
++		       struct sk_buff *skb)
++{
++	u64 ts_ns = ice_ptp_get_rx_hwts(rx_desc, rx_ring);
++
++	*skb_hwtstamps(skb) = (struct skb_shared_hwtstamps){
++		.hwtstamp	= ns_to_ktime(ts_ns),
++	};
++}
++
+ /**
+  * ice_process_skb_fields - Populate skb header fields from Rx descriptor
+  * @rx_ring: Rx descriptor ring packet is being transacted on
+@@ -208,7 +228,7 @@ ice_process_skb_fields(struct ice_rx_ring *rx_ring,
+ 	ice_rx_csum(rx_ring, skb, rx_desc, ptype);
  
- 	if (!(rx_ring->netdev->features & NETIF_F_RXHASH))
- 		return;
- 
--	if (rx_desc->wb.rxdid != ICE_RXDID_FLEX_NIC)
--		return;
--
--	nic_mdid = (struct ice_32b_rx_flex_desc_nic *)rx_desc;
--	hash = le32_to_cpu(nic_mdid->rss_hash);
--	skb_set_hash(skb, hash, ice_ptype_to_htype(rx_ptype));
-+	hash = ice_get_rx_hash(rx_desc);
-+	if (likely(hash))
-+		skb_set_hash(skb, hash, ice_ptype_to_htype(rx_ptype));
+ 	if (rx_ring->ptp_rx)
+-		ice_ptp_rx_hwtstamp(rx_ring, rx_desc, skb);
++		ice_ptp_rx_hwts_to_skb(rx_ring, rx_desc, skb);
  }
  
  /**
-@@ -186,7 +200,7 @@ ice_process_skb_fields(struct ice_rx_ring *rx_ring,
- 		       union ice_32b_rx_flex_desc *rx_desc,
- 		       struct sk_buff *skb, u16 ptype)
- {
--	ice_rx_hash(rx_ring, rx_desc, skb, ptype);
-+	ice_rx_hash_to_skb(rx_ring, rx_desc, skb, ptype);
- 
- 	/* modifies the skb - consumes the enet header */
- 	skb->protocol = eth_type_trans(skb, rx_ring->netdev);
 -- 
 2.41.0
 
