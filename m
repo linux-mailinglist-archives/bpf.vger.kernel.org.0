@@ -1,169 +1,140 @@
-Return-Path: <bpf+bounces-11048-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11049-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B42807B1F2D
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 16:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 234357B1F78
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 16:33:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 66112282450
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 14:04:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id EB218282AA3
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 14:33:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AB113CCE6;
-	Thu, 28 Sep 2023 14:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D41DA36B0F;
+	Thu, 28 Sep 2023 14:33:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E7838BCD
-	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 14:04:09 +0000 (UTC)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E688F19D
-	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 07:04:07 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32336a30d18so4990419f8f.2
-        for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 07:04:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695909846; x=1696514646; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IdCzUZTyrhLyuWRrO5KbCvUfljCQ/8lY8UrbbuS8PLI=;
-        b=kF9J/FpxoDdoItDeZ9dplXQ0lsiAaY5tHeyXoGrh1gdmpy4DvZtCPQ7jAVk+TdxAOY
-         ZMpxMWo4ySRnbQpEZNaljXBhe8k7pCaWO8XRnbrJWKSFuYhPqwRBGICof4JMQrKTxH9Y
-         mAntTM2OYMe0rCPLxWWjB1Sih/RMD4HCZn85lI0NR6RxYcJ6o2mq69pi2y4tVz5fZm/U
-         TfjHxa8Q/hRxTIGQ/fyJk4Z+0v9XnlRVtEJg/vj45lQpGhFCzdLnWAjWQvNQDwiQR5uN
-         WIrMBNWHTK0sBj4tWceC1Z/jXQX79V6w1o4CupjL0MP6aincE/+Ue8hqZQjPJQ5mIii3
-         qZfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695909846; x=1696514646;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IdCzUZTyrhLyuWRrO5KbCvUfljCQ/8lY8UrbbuS8PLI=;
-        b=u1fu4+ytpigrOQHBrqFN9XXSnutu2Kb69z3NeVjXnm1hWk4NjP2yDCne7yXzKbxZqA
-         Bg9xRfcMqdNWvs5TpWtIBFlYn5MDnBMmeoMg9qG/ominEHy5dcaSJ/E6m6zFOICPOpQD
-         4fJz77VkUAIFZxUkU9JaYc00XiwPhM0od/61ICD4Dm+pRQqi6OEZV7cKV/KepQvuldEq
-         nKBAiPWpUB7Ai9XkHgkDdVYQHDn544+DCPzrEat73Cb7WajUHzQQbZszQrUUVHz820KB
-         or1GxXgRRk/f81ly573SpSL1merFX/8L6ky3Xp1GjvolMWirCflejZ6TAabG3PU3CkGB
-         GbBw==
-X-Gm-Message-State: AOJu0YzHoX2Ecch8tF7S3LCJTkEuiOUR0866NvwZEjCnAbURO/kTt11F
-	snrvDFotgtbtccmRv8WH97w=
-X-Google-Smtp-Source: AGHT+IGaNdBt0UkWwXqJ9AS0cDlExHjV6eIN2SLCqWPqPM/b3FAzebWdKQYNuZx9G9wYbasqHptVhg==
-X-Received: by 2002:a5d:4006:0:b0:317:50b7:2ce3 with SMTP id n6-20020a5d4006000000b0031750b72ce3mr1383156wrp.51.1695909845375;
-        Thu, 28 Sep 2023 07:04:05 -0700 (PDT)
-Received: from krava ([83.240.63.128])
-        by smtp.gmail.com with ESMTPSA id l16-20020a5d4bd0000000b003216a068d2csm19462292wrt.24.2023.09.28.07.04.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 07:04:04 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 28 Sep 2023 16:03:31 +0200
-To: Jinghao Jia <jinghao7@illinois.edu>
-Cc: Jiri Olsa <olsajiri@gmail.com>, ruowenq2@illinois.edu,
-	bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, keescook@chromium.org,
-	Mimi Zohar <zohar@linux.ibm.com>,
-	Jinghao Jia <jinghao@linux.ibm.com>
-Subject: Re: [PATCH bpf-next v3 1/1] samples/bpf: Add -fsanitize=bounds to
- userspace programs
-Message-ID: <ZRWHs3fiCZZWGTWq@krava>
-References: <20230927045030.224548-1-ruowenq2@illinois.edu>
- <20230927045030.224548-2-ruowenq2@illinois.edu>
- <ZRQMASduySxE+TO2@krava>
- <ed2a63a4-434c-4cf7-ad27-c17f75bbdf84@illinois.edu>
- <ZRU2M3wlFDpljnZq@krava>
- <299340fa-a7dc-4b56-8f5e-da058b343386@illinois.edu>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6EE43FB02;
+	Thu, 28 Sep 2023 14:32:56 +0000 (UTC)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F16D136;
+	Thu, 28 Sep 2023 07:32:49 -0700 (PDT)
+Received: from leknes.fjasle.eu ([46.142.97.250]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MCsLo-1quhcT2cAi-008oqz; Thu, 28 Sep 2023 16:23:57 +0200
+Received: from localhost.fjasle.eu (kirkenes.fjasle.eu [10.10.0.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by leknes.fjasle.eu (Postfix) with ESMTPS id 3B84A3F714;
+	Thu, 28 Sep 2023 16:23:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
+	t=1695911032; bh=rrG6e3agpf2u+xdW5EebxCgAIgDQqDDDehdHU4UpuSM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=I9VyJAHr+r6y2EtJaCNO6HBblZVQgzaUGhMwVZ6O8WP+KHQgN2FjXoRADIfysq8pF
+	 kJGLQ7huV6RT+PiTX1v6vTmKUB4n/gTFbtEy7TNQRVZegIIveW812XKAd9oFPz49Zh
+	 qFCYktXaWarLodorMHCNFp6c3VBgzUAjnYLjIA7I=
+Received: by localhost.fjasle.eu (Postfix, from userid 1000)
+	id 8CBC03B5; Thu, 28 Sep 2023 16:23:21 +0200 (CEST)
+Date: Thu, 28 Sep 2023 16:23:21 +0200
+From: Nicolas Schier <nicolas@fjasle.eu>
+To: Ian Rogers <irogers@google.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>, Tom Rix <trix@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Yicong Yang <yangyicong@hisilicon.com>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Ming Wang <wangming01@loongson.cn>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Sean Christopherson <seanjc@google.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Yanteng Si <siyanteng@loongson.cn>, Yuan Can <yuancan@huawei.com>,
+	Ravi Bangoria <ravi.bangoria@amd.com>,
+	James Clark <james.clark@arm.com>,
+	Paolo Bonzini <pbonzini@redhat.com>, llvm@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v1 01/18] gen_compile_commands: Allow the line prefix to
+ still be cmd_
+Message-ID: <ZRWMWcNKvZMgiAMR@bergen.fjasle.eu>
+References: <20230923053515.535607-1-irogers@google.com>
+ <20230923053515.535607-2-irogers@google.com>
+ <CAKwvOdmHg_43z_dTZrOLGubuBBvmHdPxSFjOWa3oWkbOp2qWWg@mail.gmail.com>
+ <CAP-5=fV6c1tWAd2GjMwn4PQN=3BXNQGz=vbonHSjRjQ3fbEL+g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <299340fa-a7dc-4b56-8f5e-da058b343386@illinois.edu>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fV6c1tWAd2GjMwn4PQN=3BXNQGz=vbonHSjRjQ3fbEL+g@mail.gmail.com>
+X-Operating-System: Debian GNU/Linux trixie/sid
+Jabber-ID: nicolas@jabber.no
+X-Provags-ID: V03:K1:WNIhYuQMIKkE8jRY9K+NatBF6dWQ4oI0AVrEW1Ph+1/B/OQCMOe
+ UYvFzVf/gYNyD6apt1zxPnOEgXzDOp9rgmnrzkCk/swgt7YBVUGMKuIlKd5Y7q2eeaVsy3G
+ UFMUULZIEOZtgVKKG1vHszO/HQPrY0TZy33PsLUS/IGIcPSHB/wyyhhSJK00ACowyMnhW4R
+ gzpdERsa8atFSBEFq+ebQ==
+UI-OutboundReport: notjunk:1;M01:P0:0GD5QClVf4o=;6KChTRklYRQjU1OUiRLjF0oQaba
+ Q5ClB5DGl1KrJvxqBBGCP3BjWUj3C+nNSvgeti9Kpl8jruRElU/2+ghj9Xf2idQYnbK+G22f2
+ fSpZfGMmFqg1/MJ6ffRU9Vzv0jIZVT0nEhBGF57L5mVxrB68Ooy0PSiZV4bU9qnoESHZfB/d+
+ bVND/uO9UCZh7BcJWQchjgBAiiMofJBBfzFhwoqqZWOXZR3eiqdtC2+hc7BAib6bbzDL3+apW
+ TyXV4TrR5zd9mF1ngiGoE7kQ+m4oFuMgwgdTIAsWviwSmLqLXuPYtAycL9zHBntIOjAn34k7X
+ aVyVy/nVU/v1qBzqUesWjukK+hy6/Rmq0qKSBAy5vjtVJQXgyGMBwQJCnIElefVUGHmQehtUp
+ AvYjzXcCuiJrVwERme+K5/vhiOu3VJM5dRX+oY84S3v0P7BSKd29Rbnl9/hywfNCmueDMzlyN
+ RAP79IkX158taGlCfN8patYPgscXYcqJ7t3Uz9jm3crYePoP20YzJoQiR4jS+bRYsZsOcp5Kn
+ bi2BC8XOxiWc1TutIgAK+44LIqOVA2InMPacw4PLokJV2/HzYsUHsvWwbgs7FvuD/2r3QrP6q
+ Gi990oi4vd++Szbxh0tnqqFIpk5iit3vYHkmI2lKiPXby33n1JUSP2XzE4GwfMsiETwNBfbl1
+ 7CeKaCFwo0ui6S0Bi9KKXBbuCLrmmshlj+18RDliU2QdGQPjTPuSx66d2ZdQNYGSalggI8J1X
+ p5Tsdl+onQ3L15Cbop5W5ObVHy0ACRVuXbUefl6dBia1ECdv9B0lsKA0O5x0u/Xs61b69jrMS
+ 0kqmcwYa1XUy6QDxEYX/WozNPmFs7nwMw9Dz5gJw6pDIkyN4lEV2ebN88aZIKfrzfT+Qhv4wh
+ 7zpsFWH1B4NXLgQ==
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Sep 28, 2023 at 04:19:02AM -0500, Jinghao Jia wrote:
+On Mon, 25 Sep 2023 09:06:11 -0700, Ian Rogers wrote:
+> On Mon, Sep 25, 2023 at 8:49 AM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Fri, Sep 22, 2023 at 10:35 PM Ian Rogers <irogers@google.com> wrote:
+> > >
+> > > Builds in tools still use the cmd_ prefix in .cmd files, so don't
+> > > require the saved part. Name the groups in the line pattern match so
+> >
+> > Is that something that can be changed in the tools/ Makefiles?
+> >
+> > I'm fine with this change, just curious where the difference comes
+> > from precisely.
+> > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 > 
-> 
-> On 9/28/23 3:15 AM, Jiri Olsa wrote:
-> > On Wed, Sep 27, 2023 at 06:19:10PM -0500, ruowenq2@illinois.edu wrote:
-> >>
-> >>
-> >> On 9/27/23 6:03 AM, Jiri Olsa <olsajiri@gmail.com> wrote:
-> >>> On Tue, Sep 26, 2023 at 11:50:30PM -0500, ruowenq2@illinois.edu wrote:
-> >>>> From: Ruowen Qin <ruowenq2@illinois.edu>
-> >>>>
-> >>>> The sanitizer flag, which is supported by both clang and gcc, would make
-> >>>> it easier to debug array index out-of-bounds problems in these programs.
-> >>>>
-> >>>> Make the Makfile smarter to detect ubsan support from the compiler and
-> >>>> add the '-fsanitize=bounds' accordingly.
-> >>>>
-> >>>> Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
-> >>>> Signed-off-by: Jinghao Jia <jinghao@linux.ibm.com>
-> >>>> Signed-off-by: Jinghao Jia <jinghao7@illinois.edu>
-> >>>> Signed-off-by: Ruowen Qin <ruowenq2@illinois.edu>
-> >>>> ---
-> >>>>   samples/bpf/Makefile | 3 +++
-> >>>>   1 file changed, 3 insertions(+)
-> >>>>
-> >>>> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> >>>> index 6c707ebcebb9..90af76fa9dd8 100644
-> >>>> --- a/samples/bpf/Makefile
-> >>>> +++ b/samples/bpf/Makefile
-> >>>> @@ -169,6 +169,9 @@ endif
-> >>>>   TPROGS_CFLAGS += -Wall -O2
-> >>>>   TPROGS_CFLAGS += -Wmissing-prototypes
-> >>>>   TPROGS_CFLAGS += -Wstrict-prototypes
-> >>>> +TPROGS_CFLAGS += $(call try-run,\
-> >>>> +	printf "int main() { return 0; }" |\
-> >>>> +	$(CC) -Werror -fsanitize=bounds -x c - -o "$$TMP",-fsanitize=bounds,)
-> >>>
-> >>> I haven't checked deeply, but could we use just cc-option? looks simpler
-> >>>
-> >>> TPROGS_CFLAGS += $(call cc-option, -fsanitize=bounds)
-> >>>
-> >>> jirka
-> >>
-> >> Hi, thanks for your quick reply! When checking for flags, cc-option does not execute the linker, but on Fedora, an error appears and stating that "/usr/lib64/libubsan.so.1.0.0" cannot be found during linking. So I try this seemingly cumbersome way.
-> > 
-> > I see, there's also ld-option, would that work?
-> > 
-> > jirka
-> > 
-> 
-> IMHO I don't think ld-option would solve the problem. It directly sends the
-> flag to the linker but -fsanitize=bounds is a compiler flag, not a linker
-> flag.
-> 
-> Basically, what's special about this case is that the feature we want to
-> probe is behind a gcc/clang flag but we do not know whether it is supported
-> until link time (e.g. the sanitizer library is missing on Fedora so we get
-> a link error).
+> I agree. The savedcmd_ change came from Masahiro in:
+> https://lore.kernel.org/lkml/20221229091501.916296-1-masahiroy@kernel.org/
+> I was reluctant to change the build logic in tools/ because of the
+> potential to break things. Maybe Masahiro/Nicolas know of issues?
 
-ok, I tested on fedora, looks good
+I haven't seen any issues related to the introduction of savedcmd_; and 
+roughly searching through tools/ I cannot find a rule that matches the 
+pattern Masahiro described in commit 92215e7a801d ("kbuild: rename 
+cmd_$@ to savedcmd_$@ in *.cmd files", 2022-12-29).  For consistency, 
+I'd like to see the build rules in tools/ re-use the ones from scripts/ 
+but as of now I don't see any necessity to introduce savedcmd in 
+tools/, yet.
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Tested-by: Jiri Olsa <jolsa@kernel.org>
-
-thanks,
-jirka
-
-> 
-> --Jinghao
-> 
-> >>
-> >> Ruowen
-> >>
-> >>>>   >   TPROGS_CFLAGS += -I$(objtree)/usr/include
-> >>>>   TPROGS_CFLAGS += -I$(srctree)/tools/testing/selftests/bpf/
-> >>>> -- > 2.42.0
-> >>>>
-> >>>>
-> >>>
+Kind regards,
+Nicolas
 
