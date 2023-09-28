@@ -1,54 +1,55 @@
-Return-Path: <bpf+bounces-11077-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11078-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CECC7B2724
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 23:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 083937B2726
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 23:09:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id F102E283791
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 21:09:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id B5EDC283796
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 21:09:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12EB4154AB;
-	Thu, 28 Sep 2023 21:09:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A4BF16405;
+	Thu, 28 Sep 2023 21:09:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B617F8839
-	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 21:09:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27EDBC433C9
-	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 21:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD9D8839
+	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 21:09:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9DF7C433CA
+	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 21:09:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695935345;
-	bh=7te1mmtwRAR7CnjCs+EpdXe/jmMMQFgw1qqKxIIPsH4=;
+	s=k20201202; t=1695935373;
+	bh=DOYtT8XqWvaKAWXjcDsdY5Ix4lfUlVYiGzpyiAu7WjA=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=tQiaTNqc8UJR/3iLTF+2e52J5yaQlugX9dYPBfhXXPbWQxi25MmCdMx7KF+e30vkP
-	 YS4h5dG+L5T7DN/0q2Ils6qcU3UTuuvvBEZHrEm20IoG46Eo6KtYAk77eRgg8pS/NN
-	 TeteGAvB/B3ggREcJXb5oAwesn4i2UeVRS4zWL0FG6FQ5fwXzCft3ERMfUa52mkBdh
-	 OgK4HATQfZEDfZWoeLR+af26s6LzcgUbHUb3vNVdv7g2l+3stqlQWM+fHXynEKi3+z
-	 9W9viwhlNIyNOWIhc9a4JMRPM7+lA7edwmDc2e9r7c6bL76jQXW4xv//G5DW9mTe64
-	 316EZnJ0z+0tg==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50317080342so22311910e87.2
-        for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 14:09:05 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzJqyGjq85maBYpApfOJ59qytDLsvr5cSBEtejdi7b6tBPC7p6d
-	Bb3HSVz91PK+oy1mzTejRoNR3bE5MHQg4y1Y2JM=
-X-Google-Smtp-Source: AGHT+IHxEtFCbxS9MI1VFWusXoUBlvfGE+D0KZwKEIE5zEdHhgaN5BXgPngRbRFOCYv1VllS5IeyhBSrtieUv01AUDc=
-X-Received: by 2002:a19:4304:0:b0:503:7c0:ae96 with SMTP id
- q4-20020a194304000000b0050307c0ae96mr1876456lfa.20.1695935343374; Thu, 28 Sep
- 2023 14:09:03 -0700 (PDT)
+	b=f21yVN3qqVFzcJWcHpLU+IS92zIlkFB7YSF0+dYLuIfZ5iGLmuJI5TRGVAsCRZwdF
+	 q03nnEXJ/YAo8dI41jE6ZhYD0KhOfoPT/HEqV1+2Ad8Vvy/oBi4LD3/YQWe08m/CvR
+	 D/CdpLsSAo+yHFZWywDb4DvdruEQ/wsLjjbKwi25n8UyU40cNv9KGt2Fa9XHxgMG8j
+	 ObQPAmYSWhFbKqZgnBTCAjjUkyCHswGt5d/dpk0T0psrjw3vemOc51W+N6otzfS8Ga
+	 mUta/H/vPYTN1/8LUuN1im04MFbCH13jHb3VF3nGliCDaF+gBeOQu8YT0w3pGqwRk/
+	 REYWWdM7n1AaA==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50444e756deso17493081e87.0
+        for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 14:09:33 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yw3ptYPP/8V91+324drx9j/Jky36dVbA10jKRaS08aICiGGQ+gA
+	TkeNzxZ1hxt6uaETW/UVU/kkMBI9JXhav8mZgvw=
+X-Google-Smtp-Source: AGHT+IHtMR6OkeIBT4okRR6COTrfyiA8wsez9F9aBZFhUSyDUgbI8N7ZIA0ELzokJn8uKzfN8L6mJ1DVH+w+tjlOFyo=
+X-Received: by 2002:a05:6512:47c:b0:503:38ef:eb54 with SMTP id
+ x28-20020a056512047c00b0050338efeb54mr2210868lfd.37.1695935372169; Thu, 28
+ Sep 2023 14:09:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230928194818.261163-1-hbathini@linux.ibm.com> <20230928194818.261163-3-hbathini@linux.ibm.com>
-In-Reply-To: <20230928194818.261163-3-hbathini@linux.ibm.com>
+References: <20230928194818.261163-1-hbathini@linux.ibm.com> <20230928194818.261163-4-hbathini@linux.ibm.com>
+In-Reply-To: <20230928194818.261163-4-hbathini@linux.ibm.com>
 From: Song Liu <song@kernel.org>
-Date: Thu, 28 Sep 2023 14:08:50 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW520Tw1eUBvAhSRrEJ5wy6x4zLjRZsNzr8Ca2U6a1_o4w@mail.gmail.com>
-Message-ID: <CAPhsuW520Tw1eUBvAhSRrEJ5wy6x4zLjRZsNzr8Ca2U6a1_o4w@mail.gmail.com>
-Subject: Re: [PATCH v5 2/5] powerpc/bpf: implement bpf_arch_text_copy
+Date: Thu, 28 Sep 2023 14:09:20 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW70FyyLnn-JUXrJke6V9srguKL6yrUP4hqW1eWcxCaZwQ@mail.gmail.com>
+Message-ID: <CAPhsuW70FyyLnn-JUXrJke6V9srguKL6yrUP4hqW1eWcxCaZwQ@mail.gmail.com>
+Subject: Re: [PATCH v5 3/5] powerpc/bpf: implement bpf_arch_text_invalidate
+ for bpf_prog_pack
 To: Hari Bathini <hbathini@linux.ibm.com>
 Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org, 
 	Michael Ellerman <mpe@ellerman.id.au>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
@@ -58,12 +59,11 @@ Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 28, 2023 at 12:48=E2=80=AFPM Hari Bathini <hbathini@linux.ibm.c=
+On Thu, Sep 28, 2023 at 12:49=E2=80=AFPM Hari Bathini <hbathini@linux.ibm.c=
 om> wrote:
 >
-> bpf_arch_text_copy is used to dump JITed binary to RX page, allowing
-> multiple BPF programs to share the same page. Use the newly introduced
-> patch_instructions() to implement it.
+> Implement bpf_arch_text_invalidate and use it to fill unused part of
+> the bpf_prog_pack with trap instructions when a BPF program is freed.
 >
 > Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
 
