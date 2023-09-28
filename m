@@ -1,33 +1,33 @@
-Return-Path: <bpf+bounces-11032-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11033-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C13657B18AD
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 12:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 06FB97B18D9
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 13:02:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 97D132822BB
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 10:55:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 5789B282563
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 11:02:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A14F3589B;
-	Thu, 28 Sep 2023 10:55:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 433F7358B4;
+	Thu, 28 Sep 2023 11:02:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E417E2E656;
-	Thu, 28 Sep 2023 10:55:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9E99C433C7;
-	Thu, 28 Sep 2023 10:55:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB05334CC3;
+	Thu, 28 Sep 2023 11:02:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2180C433C8;
+	Thu, 28 Sep 2023 11:02:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695898556;
-	bh=uF8k+xv/J7MQvU+3y3VuDDEpWfL25l0yWZxOxN+yBMQ=;
+	s=k20201202; t=1695898947;
+	bh=ja0DZ6OOOWx3SoES56Dma1x4gAPtESb30QOtChRcEZ0=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=PwKmrtS+RNkpL/btIngYXZtvsPYyF8HxJNu/OKq3SWXSVGgbQE/CYQTqNzlf7u/Vj
-	 860MkYo7ecMK7nGr/lIQKGKpNHYNmqPRHzKTHoDnvqlGDxhazpUdq3M2wj5pHtD+um
-	 Pa7GpWMPs98PsJt2ezlyuxFZpjBXRbPwIVq7ukDObKPwOtUirEODI67c+wyfNhMYtz
-	 FsRjHd0FP3x79Ln43pj+3V3/NWCEzmC9rwCErZJGkd7FIGFaI5gEGZxuU/zV8H0f35
-	 JFx1xDX0W1EfRMo7kcvHpCUqHjQrHohweznGM/NfH1hQlBpVnNca9rR3JNSxac13FA
-	 Ng3jIO3xxu5KQ==
+	b=YGywSVE8eBruJR7SW6VH+qa877kACiuvPFYhlWPsWpyEQwhOlPUZZiJP8lgcyIeKz
+	 IMfffi4oRfaeDxaCVjAbFx5CbkG+dZvhELmQ2OPXal4YefMv3xn16eRub/IWVc+UHs
+	 dUZk9eJ8oCJo9wopp746kPezpo42d/SkMaT0hMluDkmRsulJEJ17Z8+McrMn8QeaeO
+	 Vij7yL6K3uSEz/P1D9jWmso9ohW7br2MH7Msy52Xo+pP7GyrZmHRBDLoqJGBy6KcV5
+	 n4KSh/Lk+fjfcBd1+jFuyUvPgToqabjYhsiR9acFXw47J37nM+aB4PfiS+kOtndmRd
+	 PdNC7FH1qY+bQ==
 From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
 To: Pu Lehui <pulehui@huaweicloud.com>, bpf@vger.kernel.org,
  linux-riscv@lists.infradead.org, netdev@vger.kernel.org
@@ -40,13 +40,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
  <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>, Luke Nelson
  <luke.r.nels@gmail.com>, Pu Lehui <pulehui@huawei.com>, Pu Lehui
  <pulehui@huaweicloud.com>
-Subject: Re: [PATCH bpf-next v2 3/6] riscv, bpf: Simplify sext and zext
- logics in branch instructions
-In-Reply-To: <20230919035839.3297328-4-pulehui@huaweicloud.com>
+Subject: Re: [PATCH bpf-next v2 4/6] riscv, bpf: Add necessary Zbb instructions
+In-Reply-To: <20230919035839.3297328-5-pulehui@huaweicloud.com>
 References: <20230919035839.3297328-1-pulehui@huaweicloud.com>
- <20230919035839.3297328-4-pulehui@huaweicloud.com>
-Date: Thu, 28 Sep 2023 12:55:53 +0200
-Message-ID: <874jjeo9c6.fsf@all.your.base.are.belong.to.us>
+ <20230919035839.3297328-5-pulehui@huaweicloud.com>
+Date: Thu, 28 Sep 2023 13:02:23 +0200
+Message-ID: <87y1gqmugw.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,156 +59,77 @@ Pu Lehui <pulehui@huaweicloud.com> writes:
 
 > From: Pu Lehui <pulehui@huawei.com>
 >
-> There are many extension helpers in the current branch instructions, and
-> the implementation is a bit complicated. We simplify this logic through
-> two simple extension helpers with alternate register.
+> Add necessary Zbb instructions introduced by [0] to reduce code size and
+> improve performance of RV64 JIT. Meanwhile, a runtime deteted helper is
+> added to check whether the CPU supports Zbb instructions.
 >
+> Link: https://github.com/riscv/riscv-bitmanip/releases/download/1.0.0/bit=
+manip-1.0.0-38-g865e7a7.pdf [0]
+> Suggested-by: Conor Dooley <conor@kernel.org>
 > Signed-off-by: Pu Lehui <pulehui@huawei.com>
 > ---
->  arch/riscv/net/bpf_jit_comp64.c | 82 +++++++++++++--------------------
->  1 file changed, 31 insertions(+), 51 deletions(-)
+>  arch/riscv/net/bpf_jit.h | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
 >
-> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
-p64.c
-> index 4a649e195..0c6ffe11a 100644
-> --- a/arch/riscv/net/bpf_jit_comp64.c
-> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> @@ -141,6 +141,19 @@ static bool in_auipc_jalr_range(s64 val)
->  		val < ((1L << 31) - (1L << 11));
+> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+> index 8e0ef4d08..4e24fb2bd 100644
+> --- a/arch/riscv/net/bpf_jit.h
+> +++ b/arch/riscv/net/bpf_jit.h
+> @@ -18,6 +18,11 @@ static inline bool rvc_enabled(void)
+>  	return IS_ENABLED(CONFIG_RISCV_ISA_C);
 >  }
 >=20=20
-> +/* Modify rd pointer to alternate reg to avoid corrupting original reg */
-> +static void emit_sextw_alt(u8 *rd, u8 ra, struct rv_jit_context *ctx)
+> +static inline bool rvzbb_enabled(void)
 > +{
-> +	emit_sextw(ra, *rd, ctx);
-> +	*rd =3D ra;
+> +	return IS_ENABLED(CONFIG_RISCV_ISA_ZBB) && riscv_has_extension_likely(R=
+ISCV_ISA_EXT_ZBB);
 > +}
 > +
-> +static void emit_zextw_alt(u8 *rd, u8 ra, struct rv_jit_context *ctx)
-> +{
-> +	emit_zextw(ra, *rd, ctx);
-> +	*rd =3D ra;
-> +}
-> +
->  /* Emit fixed-length instructions for address */
->  static int emit_addr(u8 rd, u64 addr, bool extra_pass, struct rv_jit_con=
-text *ctx)
->  {
-> @@ -395,38 +408,6 @@ static void init_regs(u8 *rd, u8 *rs, const struct b=
-pf_insn *insn,
->  		*rs =3D bpf_to_rv_reg(insn->src_reg, ctx);
+>  enum {
+>  	RV_REG_ZERO =3D	0,	/* The constant value 0 */
+>  	RV_REG_RA =3D	1,	/* Return address */
+> @@ -727,6 +732,27 @@ static inline u16 rvc_swsp(u32 imm8, u8 rs2)
+>  	return rv_css_insn(0x6, imm, rs2, 0x2);
 >  }
 >=20=20
-> -static void emit_zext_32_rd_rs(u8 *rd, u8 *rs, struct rv_jit_context *ct=
-x)
-> -{
-> -	emit_mv(RV_REG_T2, *rd, ctx);
-> -	emit_zextw(RV_REG_T2, RV_REG_T2, ctx);
-> -	emit_mv(RV_REG_T1, *rs, ctx);
-> -	emit_zextw(RV_REG_T1, RV_REG_T1, ctx);
-> -	*rd =3D RV_REG_T2;
-> -	*rs =3D RV_REG_T1;
-> -}
-> -
-> -static void emit_sext_32_rd_rs(u8 *rd, u8 *rs, struct rv_jit_context *ct=
-x)
-> -{
-> -	emit_sextw(RV_REG_T2, *rd, ctx);
-> -	emit_sextw(RV_REG_T1, *rs, ctx);
-> -	*rd =3D RV_REG_T2;
-> -	*rs =3D RV_REG_T1;
-> -}
-> -
-> -static void emit_zext_32_rd_t1(u8 *rd, struct rv_jit_context *ctx)
-> -{
-> -	emit_mv(RV_REG_T2, *rd, ctx);
-> -	emit_zextw(RV_REG_T2, RV_REG_T2, ctx);
-> -	emit_zextw(RV_REG_T1, RV_REG_T2, ctx);
-> -	*rd =3D RV_REG_T2;
-> -}
-> -
-> -static void emit_sext_32_rd(u8 *rd, struct rv_jit_context *ctx)
-> -{
-> -	emit_sextw(RV_REG_T2, *rd, ctx);
-> -	*rd =3D RV_REG_T2;
-> -}
-> -
->  static int emit_jump_and_link(u8 rd, s64 rvoff, bool fixed_addr,
->  			      struct rv_jit_context *ctx)
->  {
-> @@ -1372,22 +1353,22 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn=
-, struct rv_jit_context *ctx,
->  		rvoff =3D rv_offset(i, off, ctx);
->  		if (!is64) {
->  			s =3D ctx->ninsns;
-> -			if (is_signed_bpf_cond(BPF_OP(code)))
-> -				emit_sext_32_rd_rs(&rd, &rs, ctx);
-> -			else
-> -				emit_zext_32_rd_rs(&rd, &rs, ctx);
-> +			if (is_signed_bpf_cond(BPF_OP(code))) {
-> +				emit_sextw_alt(&rs, RV_REG_T1, ctx);
-> +				emit_sextw_alt(&rd, RV_REG_T2, ctx);
-> +			} else {
-> +				emit_zextw_alt(&rs, RV_REG_T1, ctx);
-> +				emit_zextw_alt(&rd, RV_REG_T2, ctx);
-> +			}
->  			e =3D ctx->ninsns;
-> -
+> +/* RVZBB instrutions. */
+> +static inline u32 rvzbb_sextb(u8 rd, u8 rs1)
+> +{
+> +	return rv_i_insn(0x604, rs1, 1, rd, 0x13);
+> +}
+> +
+> +static inline u32 rvzbb_sexth(u8 rd, u8 rs1)
+> +{
+> +	return rv_i_insn(0x605, rs1, 1, rd, 0x13);
+> +}
+> +
+> +static inline u32 rvzbb_zexth(u8 rd, u8 rs)
+> +{
+> +	return rv_i_insn(0x80, rs, 4, rd, __riscv_xlen =3D=3D 64 ? 0x3b : 0x33);
 
-Please avoid changes like this.
+Encoding funcs are hard to read as it is, so let's try to be a bit more
+explicit.
 
+I would prefer a
 
->  			/* Adjust for extra insns */
->  			rvoff -=3D ninsns_rvoff(e - s);
->  		}
-> -
+  |        if (IS_ENABLED(CONFIG_64BIT))
+  |                return 64bitvariant
+  |         return 32bitvariant
+
+version.
+
+Or a 64-bit only variant elsewhere, since this series is only aimed for
+64-bit anyway.
+
+> +}
+> +
+> +static inline u32 rvzbb_rev8(u8 rd, u8 rs)
+> +{
+> +	return rv_i_insn(__riscv_xlen =3D=3D 64 ? 0x6b8 : 0x698, rs, 5, rd, 0x1=
+3);
 
 Dito.
 
->  		if (BPF_OP(code) =3D=3D BPF_JSET) {
->  			/* Adjust for and */
->  			rvoff -=3D 4;
->  			emit_and(RV_REG_T1, rd, rs, ctx);
-> -			emit_branch(BPF_JNE, RV_REG_T1, RV_REG_ZERO, rvoff,
-> -				    ctx);
-> +			emit_branch(BPF_JNE, RV_REG_T1, RV_REG_ZERO, rvoff, ctx);
->  		} else {
->  			emit_branch(BPF_OP(code), rd, rs, rvoff, ctx);
->  		}
-> @@ -1416,21 +1397,20 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn=
-, struct rv_jit_context *ctx,
->  	case BPF_JMP32 | BPF_JSLE | BPF_K:
->  		rvoff =3D rv_offset(i, off, ctx);
->  		s =3D ctx->ninsns;
-> -		if (imm) {
-> +		if (imm)
->  			emit_imm(RV_REG_T1, imm, ctx);
-> -			rs =3D RV_REG_T1;
-> -		} else {
-> -			/* If imm is 0, simply use zero register. */
-> -			rs =3D RV_REG_ZERO;
-> -		}
-> +		rs =3D imm ? RV_REG_T1 : RV_REG_ZERO;
->  		if (!is64) {
-> -			if (is_signed_bpf_cond(BPF_OP(code)))
-> -				emit_sext_32_rd(&rd, ctx);
-> -			else
-> -				emit_zext_32_rd_t1(&rd, ctx);
-> +			if (is_signed_bpf_cond(BPF_OP(code))) {
-> +				emit_sextw_alt(&rd, RV_REG_T2, ctx);
-> +				/* rs has been sign extended */
-> +			} else {
-> +				emit_zextw_alt(&rd, RV_REG_T2, ctx);
-> +				if (imm)
-> +					emit_zextw(rs, rs, ctx);
-> +			}
->  		}
->  		e =3D ctx->ninsns;
-> -
-
-Dito.
-
-Other than the formatting changes, it looks good!
 
 
 Bj=C3=B6rn
