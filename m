@@ -1,96 +1,141 @@
-Return-Path: <bpf+bounces-11016-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11017-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA3C57B1159
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 05:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 13D197B15CC
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 10:16:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 8689F281C34
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 03:56:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 86A66282880
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 08:15:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E0AA79D8;
-	Thu, 28 Sep 2023 03:56:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDB87328D9;
+	Thu, 28 Sep 2023 08:15:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D55EF5397;
-	Thu, 28 Sep 2023 03:56:05 +0000 (UTC)
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF88114;
-	Wed, 27 Sep 2023 20:56:04 -0700 (PDT)
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-79fe87cd74eso136392239f.3;
-        Wed, 27 Sep 2023 20:56:04 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C25F1FD5
+	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 08:15:54 +0000 (UTC)
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C6998
+	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 01:15:52 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9a9d82d73f9so1568924466b.3
+        for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 01:15:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695888951; x=1696493751; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=U9UeGQ9En9rIK4hkvkXFvox+LJzbN2Nw5Y2M1vKc37Y=;
+        b=ZBBFUs7+tuCywAVBgzeoDKLmWoVuO/aRAUwu9QDQDk090iN4m/5txh5hPAgdsW1VlN
+         TzVpWhsHC7zfhMH8aUjKmcCmABn3MzOr9tVO2xPOO2tG6NXBHoRLVp8aqz/xlihP50c+
+         y5DDulA6O1XVEnwF09Hg3qUvmolkg9DOrzaJygqlFSycIJ83Lt1oAoZX7YmdhwiOKgSd
+         UrSjj4G1zxreU7QWiUwLACyfMJwrE+Mk3HxK+FIYj3ScEE6f0ZPEPkaAX2uNoRPQaW7s
+         ke3Q6Apj69rJpV9mCNzU1YEzX3xwuux/OqNqSykpZa3ZVHOH8cW2KYVzf/SsETFUlcJz
+         stLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695873364; x=1696478164;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D1awcH8GbI65VhOR4QezMpihuDaAOyYBPaOUcXT8DOQ=;
-        b=PQcl133zvRgnxC12XUddAtEOnyfXcJFBjPxU/OglUJdBTC9JZ9uoJ5svtkvwja0WOs
-         jV/Nf5BoQWZN1s2wvEUorffz/Byp6zbtZKlu6arLc1N8WsLTTPiMGiIchojvjg95lRqk
-         oJtLb6Ti5KT9CtIpKRdjVaSgbFnt1Rt6HmbwsnwyCxXtfaasGyEQF7+ILQkTpLVNRORZ
-         Z6M++lkwSmxWe4G63SU4RY0i3ay1WlLJdCfgCeOI0RFjP32E8P4JtU29FvkkMEPmDy6f
-         ryOmGb5cxzRmx8JGrLcGdcGBXXR/ICrquiCxhee8f5lYkfX1UnvAirbk1L6PON82ZUSD
-         GISQ==
-X-Gm-Message-State: AOJu0YzuNTsmgRbcsT9drT+egVOWi1fKfow+UuzlzNQz66MJ7s2trxBQ
-	Stk8pSybAwwmXZyRfl+00ahmCaKe2YHvBqGQ3WA=
-X-Google-Smtp-Source: AGHT+IHago33rHQQtx98/NHeUgawaFXzjRnUzQ6yOTjvCloDy0RU925WzfS8lEsQf5BYR82jTxwhrUGYYhpO6Q6/1j8=
-X-Received: by 2002:a05:6602:21d9:b0:780:c787:637b with SMTP id
- c25-20020a05660221d900b00780c787637bmr88139ioc.0.1695873363822; Wed, 27 Sep
- 2023 20:56:03 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695888951; x=1696493751;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U9UeGQ9En9rIK4hkvkXFvox+LJzbN2Nw5Y2M1vKc37Y=;
+        b=Xe3J77+h0ShcwHZwW9iPa5eWuHtUWSfacuV/uHqbVfi96rf61XHDkj7UZZPx82HQUJ
+         /tmm1LqaGNXZtl9IM8py1vo/dHfgGR+UADN1OWFtkglcKq1R3KL2K51HNXf9BeZ5uFxn
+         vRdg496Kwktl+tHpN9Gv+0S9vCamA0DjFXrDE5/KnWplG1iyjDKqPrjx8XQ1vksBUD0c
+         dqiqdbZ8UpBJk4O64PI4EpJDYtGfn+8pAaOnHNf+YjzeXH7SifVayMDi/csJgYwZ6qUn
+         DFAKXCfyoUhYere+5o+fb/sy+MHv5dF1q8WSQQUmuyFKbb4kobxWSus+m+/m9NSxOIXh
+         94Lw==
+X-Gm-Message-State: AOJu0Yxfn+W38Dql19+gy3GyPQzqKoGYTF4mSrRu6jwA4dOR4D/BC1dF
+	WPenZIyvxgYhusgrWBzCCxI=
+X-Google-Smtp-Source: AGHT+IE/VooMn35oo2E+muvd7TNuvSe0wiqtj+nfbCE5HF9LFf3wRm+R9t62OCwwgLzUUgF0WJchkw==
+X-Received: by 2002:a17:906:32cb:b0:9a2:232f:6f85 with SMTP id k11-20020a17090632cb00b009a2232f6f85mr481430ejk.52.1695888950464;
+        Thu, 28 Sep 2023 01:15:50 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id qq23-20020a17090720d700b00993664a9987sm10422415ejb.103.2023.09.28.01.15.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 01:15:49 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 28 Sep 2023 10:15:47 +0200
+To: ruowenq2@illinois.edu
+Cc: Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, jinghao7@illinois.edu,
+	keescook@chromium.org, Mimi Zohar <zohar@linux.ibm.com>,
+	Jinghao Jia <jinghao@linux.ibm.com>
+Subject: Re: [PATCH bpf-next v3 1/1] samples/bpf: Add -fsanitize=bounds to
+ userspace programs
+Message-ID: <ZRU2M3wlFDpljnZq@krava>
+References: <20230927045030.224548-1-ruowenq2@illinois.edu>
+ <20230927045030.224548-2-ruowenq2@illinois.edu>
+ <ZRQMASduySxE+TO2@krava>
+ <ed2a63a4-434c-4cf7-ad27-c17f75bbdf84@illinois.edu>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230922234444.3115821-1-namhyung@kernel.org> <CAPhsuW6mEWJcZdYbPbqt5ArBMznzQYwHBqTpKCcsB4B0o=PSGA@mail.gmail.com>
-In-Reply-To: <CAPhsuW6mEWJcZdYbPbqt5ArBMznzQYwHBqTpKCcsB4B0o=PSGA@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Wed, 27 Sep 2023 20:55:52 -0700
-Message-ID: <CAM9d7cjUiet5kNxk=opNrhGgZ2QeqB6J5Tzok5GaEwtgiM-FEA@mail.gmail.com>
-Subject: Re: [PATCH] perf record: Fix BTF type checks in the off-cpu profiling
-To: Song Liu <song@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed2a63a4-434c-4cf7-ad27-c17f75bbdf84@illinois.edu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Sep 27, 2023 at 9:09=E2=80=AFAM Song Liu <song@kernel.org> wrote:
->
-> On Fri, Sep 22, 2023 at 4:44=E2=80=AFPM Namhyung Kim <namhyung@kernel.org=
-> wrote:
-> >
-> > The BTF func proto for a tracepoint has one more argument than the
-> > actual tracepoint function since it has a context argument at the
-> > begining.  So it should compare to 5 when the tracepoint has 4
-> > arguments.
-> >
-> >   typedef void (*btf_trace_sched_switch)(void *, bool, struct task_stru=
-ct *, struct task_struct *, unsigned int);
-> >
-> > Also, recent change in the perf tool would use a hand-written minimal
-> > vmlinux.h to generate BTF in the skeleton.  So it won't have the info
-> > of the tracepoint.  Anyway it should use the kernel's vmlinux BTF to
-> > check the type in the kernel.
-> >
-> > Fixes: b36888f71c85 ("perf record: Handle argument change in sched_swit=
-ch")
-> > Cc: Song Liu <song@kernel.org>
-> > Cc: Hao Luo <haoluo@google.com>
-> > CC: bpf@vger.kernel.org
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
->
-> Acked-by: Song Liu <song@kernel.org>
+On Wed, Sep 27, 2023 at 06:19:10PM -0500, ruowenq2@illinois.edu wrote:
+> 
+> 
+> On 9/27/23 6:03 AM, Jiri Olsa <olsajiri@gmail.com> wrote:
+> > On Tue, Sep 26, 2023 at 11:50:30PM -0500, ruowenq2@illinois.edu wrote:
+> > > From: Ruowen Qin <ruowenq2@illinois.edu>
+> > >
+> > > The sanitizer flag, which is supported by both clang and gcc, would make
+> > > it easier to debug array index out-of-bounds problems in these programs.
+> > >
+> > > Make the Makfile smarter to detect ubsan support from the compiler and
+> > > add the '-fsanitize=bounds' accordingly.
+> > >
+> > > Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
+> > > Signed-off-by: Jinghao Jia <jinghao@linux.ibm.com>
+> > > Signed-off-by: Jinghao Jia <jinghao7@illinois.edu>
+> > > Signed-off-by: Ruowen Qin <ruowenq2@illinois.edu>
+> > > ---
+> > >   samples/bpf/Makefile | 3 +++
+> > >   1 file changed, 3 insertions(+)
+> > >
+> > > diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> > > index 6c707ebcebb9..90af76fa9dd8 100644
+> > > --- a/samples/bpf/Makefile
+> > > +++ b/samples/bpf/Makefile
+> > > @@ -169,6 +169,9 @@ endif
+> > >   TPROGS_CFLAGS += -Wall -O2
+> > >   TPROGS_CFLAGS += -Wmissing-prototypes
+> > >   TPROGS_CFLAGS += -Wstrict-prototypes
+> > > +TPROGS_CFLAGS += $(call try-run,\
+> > > +	printf "int main() { return 0; }" |\
+> > > +	$(CC) -Werror -fsanitize=bounds -x c - -o "$$TMP",-fsanitize=bounds,)
+> > 
+> > I haven't checked deeply, but could we use just cc-option? looks simpler
+> > 
+> > TPROGS_CFLAGS += $(call cc-option, -fsanitize=bounds)
+> > 
+> > jirka
+> 
+> Hi, thanks for your quick reply! When checking for flags, cc-option does not execute the linker, but on Fedora, an error appears and stating that "/usr/lib64/libubsan.so.1.0.0" cannot be found during linking. So I try this seemingly cumbersome way.
 
-Applied to perf-tools-next, thanks!
+I see, there's also ld-option, would that work?
+
+jirka
+
+> 
+> Ruowen
+> 
+> > >   >   TPROGS_CFLAGS += -I$(objtree)/usr/include
+> > >   TPROGS_CFLAGS += -I$(srctree)/tools/testing/selftests/bpf/
+> > > -- > 2.42.0
+> > >
+> > >
+> > 
 
