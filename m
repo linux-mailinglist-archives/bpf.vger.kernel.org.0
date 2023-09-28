@@ -1,206 +1,124 @@
-Return-Path: <bpf+bounces-11044-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11045-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 803147B1B12
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 13:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DF967B1B6F
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 13:54:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id D287B2821B0
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 11:35:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 67992282220
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 11:54:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28A8837CA1;
-	Thu, 28 Sep 2023 11:35:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CF8A37CA4;
+	Thu, 28 Sep 2023 11:54:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D581F4FA;
-	Thu, 28 Sep 2023 11:35:29 +0000 (UTC)
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B975193;
-	Thu, 28 Sep 2023 04:35:25 -0700 (PDT)
-Received: by mail-ua1-x92b.google.com with SMTP id a1e0cc1a2514c-7b07548b085so144419241.2;
-        Thu, 28 Sep 2023 04:35:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695900924; x=1696505724; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c3oHHfr+yAdtkrxVkV3qE0VFTbMzK/MU2TZf7sFiWp8=;
-        b=LqyY8hs9A9caTY9HkGHjkatHTz13Eyh1e0RfVlzdYNHVcQ4xawfzRsb8SAF8+FiB55
-         Ap4FsCtnlvlJl2J82fGi3G1CD7hAvh/XsAG90oflQxgPUewXcJL7CgKmYy9uIROUc4Dc
-         Owrnxr9tl6aqLt0MPutbKd2IUZiLJPCOO15PEayhb2+CM/NB+2eCzdtqrNe/mgl3f9Ey
-         22kUDmDYRKNx54JbwbI66PZVQD5YMK93hwM1SDVkK+PI4+D1P1ZxmQcwB5qxTkKhQtG2
-         k0/ojp5/IJKLpS6Kabl0zX6Zt4hlo5TXU7FWxrYj3sk25whlDWt1POo7+hQgJdf8SLij
-         Gu9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695900924; x=1696505724;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c3oHHfr+yAdtkrxVkV3qE0VFTbMzK/MU2TZf7sFiWp8=;
-        b=On/1HBmpXQN+BRZXwOYsHYkrKu0GKxDigH7Z4C1iM7tmqGp9rhjdGB29TX0ashVUYy
-         O8VAnORidFZfRy0VofQJKBhW9MDodkqZC6RG61txKnh9bJN8L+GHTlJpP9omwpx35nOs
-         JWiI7qaBfom7Yo3xy0X2h9ONzW3IA0UPN7VeyU/G2oq+O9M6RbgVdfaOSQjz1h+7vURN
-         3/CKz2gJ0anV+4lQz1julFQhm7YUX83gg1IlHF0qT1gwu+snVTrU413QLSVb6BuvCbFP
-         jJGB79ovDrM5sZ+Kbxq6G6XmjbLPTsNdROk5FcvOszhqzOLvTzS0lbL7WxDqfQL9Yfu+
-         rstw==
-X-Gm-Message-State: AOJu0YxcAZH5wPZYeCE5dZBIC8GPx/+vrojlrSi0Q8Ka9bhDiZ9C+23/
-	trJ/GzfUsGRszgbcUEufquDezaPSVL0fd0F7BVM=
-X-Google-Smtp-Source: AGHT+IHhHz7xARweFavd1XDLqmOlGZR89qjTYiX4UH69lO2YZAJePIkqF9BJYGYmOq/G1/CVWLpaXpMDMsrrAqgyB+o=
-X-Received: by 2002:a67:ec16:0:b0:452:63b7:2f6d with SMTP id
- d22-20020a67ec16000000b0045263b72f6dmr830755vso.34.1695900924494; Thu, 28 Sep
- 2023 04:35:24 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14F7B18622
+	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 11:54:09 +0000 (UTC)
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0AF5F5;
+	Thu, 28 Sep 2023 04:54:07 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@strlen.de>)
+	id 1qlpah-0004NV-5c; Thu, 28 Sep 2023 13:53:59 +0200
+Date: Thu, 28 Sep 2023 13:53:59 +0200
+From: Florian Westphal <fw@strlen.de>
+To: David Wang <00107082@163.com>
+Cc: Daniel Xu <dxu@dxuuu.xyz>, Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH] uapi/netfilter: Change netfilter hook verdict code
+ definition from macro to enum
+Message-ID: <20230928115359.GB27208@breakpoint.cc>
+References: <20230904130201.14632-1-00107082@163.com>
+ <cc6e3tukgqhi5y4uhepntrpf272o652pytuynj4nijsf5bkgjq@rgnbhckr3p4w>
+ <19d2362f.5c85.18a6647817b.Coremail.00107082@163.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230928110554.34758-1-jlayton@kernel.org> <20230928110554.34758-3-jlayton@kernel.org>
-In-Reply-To: <20230928110554.34758-3-jlayton@kernel.org>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 28 Sep 2023 14:35:13 +0300
-Message-ID: <CAOQ4uxjSrgGr+6UOs4ADGYCderpQ7hAaPjNmB1DExAPLQQsHSg@mail.gmail.com>
-Subject: Re: [PATCH 87/87] fs: move i_blocks up a few places in struct inode
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, David Sterba <dsterba@suse.cz>, 
-	"Theodore Ts'o" <tytso@mit.edu>, Eric Biederman <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>, 
-	Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Mattia Dongili <malattia@linux.it>, 
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Leon Romanovsky <leon@kernel.org>, Brad Warrum <bwarrum@linux.ibm.com>, 
-	Ritu Agarwal <rituagar@linux.ibm.com>, Hans de Goede <hdegoede@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Mark Gross <markgross@kernel.org>, Jiri Slaby <jirislaby@kernel.org>, 
-	Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, 
-	Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, 
-	David Sterba <dsterba@suse.com>, David Howells <dhowells@redhat.com>, 
-	Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, 
-	Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, 
-	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Chris Mason <clm@fb.com>, 
-	Josef Bacik <josef@toxicpanda.com>, Xiubo Li <xiubli@redhat.com>, 
-	Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, 
-	Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>, Nicolas Pitre <nico@fluxnic.net>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>, 
-	Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>, 
-	Jeffle Xu <jefflexu@linux.alibaba.com>, Namjae Jeon <linkinjeon@kernel.org>, 
-	Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>, 
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Christoph Hellwig <hch@infradead.org>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Bob Peterson <rpeterso@redhat.com>, 
-	Andreas Gruenbacher <agruenba@redhat.com>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, Mike Kravetz <mike.kravetz@oracle.com>, 
-	Muchun Song <muchun.song@linux.dev>, Jan Kara <jack@suse.cz>, 
-	David Woodhouse <dwmw2@infradead.org>, Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>, 
-	Trond Myklebust <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, 
-	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>, Anton Altaparmakov <anton@tuxera.com>, 
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, 
-	Joseph Qi <joseph.qi@linux.alibaba.com>, Bob Copeland <me@bobcopeland.com>, 
-	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
-	Luis Chamberlain <mcgrof@kernel.org>, Iurii Zaikin <yzaikin@google.com>, Tony Luck <tony.luck@intel.com>, 
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>, Anders Larsen <al@alarsen.net>, Steve French <sfrench@samba.org>, 
-	Paulo Alcantara <pc@manguebit.com>, Ronnie Sahlberg <lsahlber@redhat.com>, 
-	Shyam Prasad N <sprasad@microsoft.com>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
-	Phillip Lougher <phillip@squashfs.org.uk>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Evgeniy Dushistov <dushistov@mail.ru>, 
-	Chandan Babu R <chandan.babu@oracle.com>, "Darrick J. Wong" <djwong@kernel.org>, 
-	Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, 
-	Johannes Thumshirn <jth@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, 
-	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
-	Stephen Smalley <stephen.smalley.work@gmail.com>, Eric Paris <eparis@parisplace.org>, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
-	platform-driver-x86@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linux-usb@vger.kernel.org, v9fs@lists.linux.dev, 
-	linux-afs@lists.infradead.org, autofs@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, 
-	codalist@coda.cs.cmu.edu, linux-efi@vger.kernel.org, 
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev, 
-	linux-um@lists.infradead.org, linux-mtd@lists.infradead.org, 
-	jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org, 
-	linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, 
-	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, 
-	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, 
-	linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org, 
-	samba-technical@lists.samba.org, linux-trace-kernel@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, 
-	selinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <19d2362f.5c85.18a6647817b.Coremail.00107082@163.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Sep 28, 2023 at 2:06=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
-ote:
->
-> The recent change to use discrete integers instead of struct timespec64
-> in struct inode shaved 8 bytes off of it, but it also moves the i_lock
-> into the previous cacheline, away from the fields that it protects.
->
-> Move i_blocks up above the i_lock, which moves the new 4 byte hole to
-> just after the timestamps, without changing the size of the structure.
->
+David Wang <00107082@163.com> wrote:
 
-Instead of creating an implicit hole, can you please move i_generation
-to fill the 4 bytes hole.
+Hello,
 
-It makes sense in the same cache line with i_ino and I could
-use the vacant 4 bytes hole above i_fsnotify_mask to expand the
-mask to 64bit (the 32bit event mask space is running out).
+> At 2023-09-06 00:38:02, "Daniel Xu" <dxu@dxuuu.xyz> wrote:
+> >Hi David,
+> >
+> >On Mon, Sep 04, 2023 at 09:02:02PM +0800, David Wang wrote:
+> 
+> >>  #include <linux/in6.h>
+> >>  
+> >>  /* Responses from hook functions. */
+> >> -#define NF_DROP 0
+> >> -#define NF_ACCEPT 1
+> >> -#define NF_STOLEN 2
+> >> -#define NF_QUEUE 3
+> >> -#define NF_REPEAT 4
+> >> -#define NF_STOP 5	/* Deprecated, for userspace nf_queue compatibility. */
+> >> -#define NF_MAX_VERDICT NF_STOP
+> >> +enum {
+> >> +	NF_DROP        = 0,
+> >> +	NF_ACCEPT      = 1,
+> >> +	NF_STOLEN      = 2,
+> >> +	NF_QUEUE       = 3,
+> >> +	NF_REPEAT      = 4,
+> >> +	NF_STOP        = 5,	/* Deprecated, for userspace nf_queue compatibility. */
+> >> +	NF_MAX_VERDICT = NF_STOP,
+> >> +};
+> >
+> >Switching from macro to enum works for almost all use cases, but not
+> >all. If someone if #ifdefing the symbols (which is plausible) this
+> >change would break them.
+> >
+> >I think I've seen some other networking code define both enums and
+> >macros. But it was a little ugly. Not sure if that is acceptable here or
+> >not.
+> >
+> >[...]
+> >
+> >Thanks,
+> >Daniel
+> 
+> 
+> Thanks for the review~
+> I do not have a strong reasoning to deny the possibility of breaking unexpected usage of this macros,
+> 
+> but I also agree that it is ugly to use both enum and macro at the same time.
+> 
+> Kind of don't know how to proceed from here now...
 
-Thanks,
-Amir.
+I was about to apply this as-is, but Pablo Neira would prefer to
+keep the defines as well.
 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  include/linux/fs.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index de902ff2938b..3e0fe0f52e7c 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -677,11 +677,11 @@ struct inode {
->         u32                     i_atime_nsec;
->         u32                     i_mtime_nsec;
->         u32                     i_ctime_nsec;
-> +       blkcnt_t                i_blocks;
->         spinlock_t              i_lock; /* i_blocks, i_bytes, maybe i_siz=
-e */
->         unsigned short          i_bytes;
->         u8                      i_blkbits;
->         u8                      i_write_hint;
-> -       blkcnt_t                i_blocks;
->
->  #ifdef __NEED_I_SIZE_ORDERED
->         seqcount_t              i_size_seqcount;
-> --
-> 2.41.0
->
+So, as a compromise, I would suggest to just *add*
+
+/* verdicts available to BPF are exported via vmlinux.h */
+enum {
+	NF_DROP = 0,
+	NF_ACCEPT = 1,
+};
+
+#define NF_DROP 0
+...
+
+This way BTF won't have the other verdicts, but ATM those
+cannot be used in BPF programs anyway.
+
+Would you mind making a new version of the patch?
+Otherwise I can mangle it locally here as needed.
 
