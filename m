@@ -1,166 +1,132 @@
-Return-Path: <bpf+bounces-11027-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11028-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05D3A7B1822
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 12:16:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDFCC7B185E
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 12:39:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id B2050281CCF
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 10:16:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id B1B141C209A7
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 10:39:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A02D4347DF;
-	Thu, 28 Sep 2023 10:16:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E24DF33993;
+	Thu, 28 Sep 2023 10:39:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1367E8821
-	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 10:16:18 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC5F9C
-	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 03:16:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E64C81C27;
+	Thu, 28 Sep 2023 10:39:30 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A842B12A;
+	Thu, 28 Sep 2023 03:39:27 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rx8Wt6zF2z4f3nbq
-	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 18:16:10 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgAnt9ZnUhVlrrtkBg--.57931S4;
-	Thu, 28 Sep 2023 18:16:09 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	houtao1@huawei.com
-Subject: [PATCH bpf] bpf: Use kmalloc_size_roundup() to adjust size_index
-Date: Thu, 28 Sep 2023 18:15:58 +0800
-Message-Id: <20230928101558.2594068-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Rx92b6X4fz4f3khw;
+	Thu, 28 Sep 2023 18:39:19 +0800 (CST)
+Received: from [10.67.109.184] (unknown [10.67.109.184])
+	by APP4 (Coremail) with SMTP id gCh0CgCHHd3bVxVlJRxmBg--.31819S2;
+	Thu, 28 Sep 2023 18:39:24 +0800 (CST)
+Message-ID: <8fd3cb4e-bcf0-44d4-b907-7e0795ee90ce@huaweicloud.com>
+Date: Thu, 28 Sep 2023 18:39:23 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 4/4] riscv, bpf: Mixing bpf2bpf and tailcalls
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, bpf@vger.kernel.org,
+ linux-riscv@lists.infradead.org, netdev@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>,
+ Luke Nelson <luke.r.nels@gmail.com>, Pu Lehui <pulehui@huawei.com>
+References: <20230919035711.3297256-1-pulehui@huaweicloud.com>
+ <20230919035711.3297256-5-pulehui@huaweicloud.com>
+ <87lecqobyb.fsf@all.your.base.are.belong.to.us>
+Content-Language: en-US
+From: Pu Lehui <pulehui@huaweicloud.com>
+In-Reply-To: <87lecqobyb.fsf@all.your.base.are.belong.to.us>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAnt9ZnUhVlrrtkBg--.57931S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxZF47GFWxtw4UCw1DGw4xtFb_yoW5ur1rpr
-	43tw1IyF98XFyxCr129a18u3yrWw1kG3W7Gay3X348Zry5Cr1xWrWqg3yrWFy0vrZa9a43
-	XF4DKr4Fgw4rJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:gCh0CgCHHd3bVxVlJRxmBg--.31819S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJr1UZw45CrWkGw17tw1UZFb_yoW8ZFyxpa
+	9xua17K3yvgrWSkwnFqF18JFZ5WF4fA3WYyr1aqw1Fya1UCr92gF47KF4j9a48Zrs2k3Wj
+	vF4jqa1Duw4DZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
 	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
 	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
 	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
 	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
-	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
-	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
-	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
-	vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
-	jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Hou Tao <houtao1@huawei.com>
 
-Commit d52b59315bf5 ("bpf: Adjust size_index according to the value of
-KMALLOC_MIN_SIZE") uses KMALLOC_MIN_SIZE to adjust size_index, but as
-reported by Nathan, the adjustment is not enough, because
-__kmalloc_minalign() also decides the minimal alignment of slab object
-as shown in new_kmalloc_cache() and its value may be greater than
-KMALLOC_MIN_SIZE (e.g., 64 bytes vs 8 bytes under a riscv QEMU VM).
 
-Instead of invoking __kmalloc_minalign() in bpf subsystem to find the
-maximal alignment, just using kmalloc_size_roundup() directly to get the
-corresponding slab object size for each allocation size. If these two
-sizes are unmatched, adjust size_index to select a bpf_mem_cache with
-unit_size equal to the object_size of the underlying slab cache for the
-allocation size.
+On 2023/9/28 17:59, Björn Töpel wrote:
+> Pu Lehui <pulehui@huaweicloud.com> writes:
+> 
+>> From: Pu Lehui <pulehui@huawei.com>
+>>
+>> In the current RV64 JIT, if we just don't initialize the TCC in subprog,
+>> the TCC can be propagated from the parent process to the subprocess, but
+>> the TCC of the parent process cannot be restored when the subprocess
+>> exits. Since the RV64 TCC is initialized before saving the callee saved
+>> registers into the stack, we cannot use the callee saved register to
+>> pass the TCC, otherwise the original value of the callee saved register
+>> will be destroyed. So we implemented mixing bpf2bpf and tailcalls
+>> similar to x86_64, i.e. using a non-callee saved register to transfer
+>> the TCC between functions, and saving that register to the stack to
+>> protect the TCC value. At the same time, we also consider the scenario
+>> of mixing trampoline.
+> 
+> Hi!
+> 
+> The RISC-V JIT tries to minimize the stack usage, e.g. it doesn't have a
+> fixed pro/epilogue like some of the other JITs. I think we can do better
+> here, so that the pass-TCC-via-register can be used, and the additional
+> stack access can be avoided.
+> 
+> Today, the TCC is passed via a register (a6) and can be viewed as a
+> "state" variable/transparent argument/return value. As you point out, we
+> loose this when we do a call. On (any) calls we move the TCC to a
+> callee-saved register.
+> 
+> WDYT about the following scheme:
+> 
+> 1 Pickup the arm64 bpf2bpf/tailmix mechanism of just clearing the TCC
+>    for the main program.
+> 2 For BPF helper calls, move TCC to s6, perform the call, and restore
+>    a6. Dito for kfunc calls (BPF_PSEUDO_KFUNC_CALL).
+> 3 For all other calls, a6 is passed transparently.
+> 
+> For 2 bpf_jit_get_func_addr() can be used to determine if the callee is
+> a BPF helper or not.
+> 
+> In summary; Determine in the JIT if we're leaving BPF-land, and need to
+> move the TCC to a callee-saved reg, or not, and save us a bunch of stack
+> store/loads.
+> 
 
-Fixes: 822fb26bdb55 ("bpf: Add a hint to allocated objects.")
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Closes: https://lore.kernel.org/bpf/20230914181407.GA1000274@dev-arch.thelio-3990X/
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/bpf/memalloc.c | 44 +++++++++++++++++++------------------------
- 1 file changed, 19 insertions(+), 25 deletions(-)
+Sorry, I am on holiday, will deal with it after the holiday.
 
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 1c22b90e754a..06fbb5168482 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -958,37 +958,31 @@ void notrace *bpf_mem_cache_alloc_flags(struct bpf_mem_alloc *ma, gfp_t flags)
- 	return !ret ? NULL : ret + LLIST_NODE_SZ;
- }
- 
--/* Most of the logic is taken from setup_kmalloc_cache_index_table() */
- static __init int bpf_mem_cache_adjust_size(void)
- {
--	unsigned int size, index;
-+	unsigned int size;
- 
--	/* Normally KMALLOC_MIN_SIZE is 8-bytes, but it can be
--	 * up-to 256-bytes.
-+	/* Adjusting the indexes in size_index() according to the object_size
-+	 * of underlying slab cache, so bpf_mem_alloc() will select a
-+	 * bpf_mem_cache with unit_size equal to the object_size of
-+	 * the underlying slab cache.
-+	 *
-+	 * The maximal value of KMALLOC_MIN_SIZE and __kmalloc_minalign() is
-+	 * 256-bytes, so only do adjustment for [8-bytes, 192-bytes].
- 	 */
--	size = KMALLOC_MIN_SIZE;
--	if (size <= 192)
--		index = size_index[(size - 1) / 8];
--	else
--		index = fls(size - 1) - 1;
--	for (size = 8; size < KMALLOC_MIN_SIZE && size <= 192; size += 8)
--		size_index[(size - 1) / 8] = index;
-+	for (size = 192; size >= 8; size -= 8) {
-+		unsigned int kmalloc_size, index;
- 
--	/* The minimal alignment is 64-bytes, so disable 96-bytes cache and
--	 * use 128-bytes cache instead.
--	 */
--	if (KMALLOC_MIN_SIZE >= 64) {
--		index = size_index[(128 - 1) / 8];
--		for (size = 64 + 8; size <= 96; size += 8)
--			size_index[(size - 1) / 8] = index;
--	}
-+		kmalloc_size = kmalloc_size_roundup(size);
-+		if (kmalloc_size == size)
-+			continue;
- 
--	/* The minimal alignment is 128-bytes, so disable 192-bytes cache and
--	 * use 256-bytes cache instead.
--	 */
--	if (KMALLOC_MIN_SIZE >= 128) {
--		index = fls(256 - 1) - 1;
--		for (size = 128 + 8; size <= 192; size += 8)
-+		if (kmalloc_size <= 192)
-+			index = size_index[(kmalloc_size - 1) / 8];
-+		else
-+			index = fls(kmalloc_size - 1) - 1;
-+		/* Only overwrite if necessary */
-+		if (size_index[(size - 1) / 8] != index)
- 			size_index[(size - 1) / 8] = index;
- 	}
- 
--- 
-2.29.2
+> 
+> Björn
 
 
