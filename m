@@ -1,352 +1,198 @@
-Return-Path: <bpf+bounces-11012-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11013-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71D8B7B0FCB
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 02:12:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3854C7B103A
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 03:10:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id C2C522821BE
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 00:12:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTP id 58832B209E3
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 01:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFDA6136D;
-	Thu, 28 Sep 2023 00:12:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFCE510EB;
+	Thu, 28 Sep 2023 01:10:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B4C3110B;
-	Thu, 28 Sep 2023 00:12:30 +0000 (UTC)
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B76D4A1;
-	Wed, 27 Sep 2023 17:12:27 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-534659061afso5802024a12.3;
-        Wed, 27 Sep 2023 17:12:27 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F13BC370
+	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 01:09:59 +0000 (UTC)
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D947DBF
+	for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 18:09:57 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5042bfb4fe9so19523390e87.1
+        for <bpf@vger.kernel.org>; Wed, 27 Sep 2023 18:09:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695859946; x=1696464746; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WReGbAcbMlIjoLeWp3XBRLnKQ2ZamO7erRTXM1W4SO8=;
-        b=ItWmX53iBihN12Sh5lKW4UXeV/zx09m6S7u8mXs7tC2d63W9yX+foSGDJt1ZBI6lso
-         sJewqKhpmrVpIUlox9bRIcrDOZypImwNiWFrDOlJBhsvRcULe5E0EqakxQ6OrTzjmhnA
-         D8NIvL50mOG1qRT8zlrWbYFjRQ/f+j813TTivqbyPcdWte9B3vciQOWh9v2ZqKKTV0JX
-         FTeNSS31nVeyJMNg8gIj5qgL6ZFTqijrdqvyIEeqfJ2Noec462e43+AcTBik8hWjDa4T
-         0wEvLyYQzl0s564gCm8sflTe2AjTPJkYoTXLFvaw7KrWcrd/Jpnym5LFpCbA6MOvryyV
-         AAsA==
+        d=gmail.com; s=20230601; t=1695863396; x=1696468196; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lA7+sXRSagFL3sb20TPIwI5yOYt1B4FDJBN06OC52KQ=;
+        b=kdpTqnw4L5auI3SYVkkeLaJH5A+3N6GVvuUaQmtx1pOoVPCo7kox/HCkdx4xrwMJwi
+         zlZi5XBK6nXibKvm6lAzlDG4sC3Mw1Q/SGjHjewN2jN6CFcnMl64Y7w0TLMGQyE0jsVE
+         YoryYQTBi9cOIdVtcGY73hNXTsC6hCP+oQu1JzgHfX/6rfVse+Fb6k1Ar5m2oxCR8l8a
+         eAiRdEewrYFkn0t0z4GuYMSdZTLpPnzEHq7OMvQhWdDoUW6pvTlxGActHYUVLnU4gVXP
+         uJF6MCNZ3eW1aCjuTMyxBwcwN0f7LW8Npdnk9o9LprlGhJUQr6eKHciz+mzNemz7DAQC
+         aKtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695859946; x=1696464746;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WReGbAcbMlIjoLeWp3XBRLnKQ2ZamO7erRTXM1W4SO8=;
-        b=Ft5giZzwOkeiIAveKBb8GAatvDKO7pGDli+vahR1kPlMBas+H3oue5rrwvhqilj5wo
-         RE7tJb20sS5cpYaTiGNOKgvR56c7wcwGspaSPjRKP43Bi8sCovBfXT98MCsPoSNDmtMl
-         2IOaxH5ijzP8wy9jUbaT7xXUuh75H1AcdYK4uvRsyxjZS2I6J3FOWP8GwmffjBvlesZK
-         BdF1j+Z+T8Urf8N6g27a8iCb4nW5KoIPXp91Y08amzM6jAyLYYUk5iy3PO38s4w5/wXl
-         L7K50V+k3DX1GCQDQqyBiVE/G9PesJboB4HvhLhcvO+6lgTwW085eE+XrI9C1RbsSPsB
-         OhTw==
-X-Gm-Message-State: AOJu0YxMDyjDOkE/KcJmy61eQuE3q0qjbUqOhBwCgW1c5UxpYxhlaqS7
-	LUtWXVeJ0LS/VpkYJ0oS+1RtpRTZQeaRGUJHy7A=
-X-Google-Smtp-Source: AGHT+IEIqo/cp2gILHabcShj+gFrAY9wAWb52b+II8Cp4SIS+e/Ou5FTdd6hNuoe4UYar4OyM7VZxKOS9ATKiCoeihA=
-X-Received: by 2002:a17:906:6a0d:b0:9a1:db2e:9dc0 with SMTP id
- qw13-20020a1709066a0d00b009a1db2e9dc0mr4116731ejc.44.1695859946034; Wed, 27
- Sep 2023 17:12:26 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695863396; x=1696468196;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lA7+sXRSagFL3sb20TPIwI5yOYt1B4FDJBN06OC52KQ=;
+        b=YDbrH8yf6jgs4iQIclqq1rHHSIAITzQnA6zN9n7STkyUUqehyUw3l+DVoWvEZrMenh
+         tUkag+WBJiwcjtSIiSbRAKCitkKVbkZBdHbhD6M3njgbe+5lXIccHp9d1nO6j12nMN3N
+         YrlIXgf3sHqLDnzmGj+f4/h49mXL7TMMQsyd2jCY0pJvp5ifakDHKX88DiTyCNhAKVnM
+         Yq9EqLrIbpDoIUSpDlNmsVQFVxNakFsw1o3T9jvLoNcP7EkQ4ncrwccTFutmcVTpDb+K
+         W9Om5ZegrBOH3tjGa5CG/hu+DTLkjbFVVWe7nf/g/XWrTy0YqFe4HentYwNcKcMWirSx
+         vjdw==
+X-Gm-Message-State: AOJu0YzKrhJgWXkHjFcE6c6hV9TGnKpEm5m0wd9FSkc5GmZMe8ISpboU
+	LQjFaZ7NXq93FBi4Ey+ADls=
+X-Google-Smtp-Source: AGHT+IFa3RfUbj/KvRPtnyYLukkiLbUpibeXSQQJVjWCD+COC0JYXe4hh6Ulcz0pXtf6RnWrg6MH+Q==
+X-Received: by 2002:a05:6512:713:b0:503:fee:584b with SMTP id b19-20020a056512071300b005030fee584bmr2360054lfs.13.1695863395671;
+        Wed, 27 Sep 2023 18:09:55 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id q6-20020ac246e6000000b005032ebff21asm2794809lfo.279.2023.09.27.18.09.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 18:09:54 -0700 (PDT)
+Message-ID: <d68855da2d8595ed9db812cc12db0dab80c39fc4.camel@gmail.com>
+Subject: Re: [BUG] verifier escape with iteration helpers (bpf_loop, ...)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrew Werner
+ <awerner32@gmail.com>, bpf <bpf@vger.kernel.org>, Andrei Matei
+ <andreimatei1@gmail.com>, Tamir Duberstein <tamird@gmail.com>, Joanne Koong
+ <joannelkoong@gmail.com>, kernel-team@dataexmachina.dev, Song Liu
+ <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 28 Sep 2023 04:09:53 +0300
+In-Reply-To: <CAEf4BzZ6V2B5QvjuCEU-MB8V-Fjkgv_yP839r9=NDcuFsgBOLw@mail.gmail.com>
+References: 
+	<CA+vRuzPChFNXmouzGG+wsy=6eMcfr1mFG0F3g7rbg-sedGKW3w@mail.gmail.com>
+	 <CAADnVQJpLAzmUfwvWBr8a_PWHYHxHw9vdAXnWB4R4PbVY4S4mw@mail.gmail.com>
+	 <CAEf4Bzbubu7KjBv=98BZrVnTrcfPQrnsp-g1kOYKM=kUtiqEgw@mail.gmail.com>
+	 <dff1cfec20d1711cb023be38dfe886bac8aac5f6.camel@gmail.com>
+	 <CAP01T76duVGmnb+LQjhdKneVYs1q=ehU4yzTLmgZdG0r2ErOYQ@mail.gmail.com>
+	 <a2995c1d7c01794ca9b652cdea7917cac5d98a16.camel@gmail.com>
+	 <97a90da09404c65c8e810cf83c94ac703705dc0e.camel@gmail.com>
+	 <CAEf4BzYg8T_Dek6T9HYjHZCuLTQT8ptAkQRxrsgaXg7-MZmHDA@mail.gmail.com>
+	 <ee714151d7c840c82d79f9d12a0f51ef13b798e3.camel@gmail.com>
+	 <CAADnVQJn35f0UvYJ9gyFT4BfViXn8T8rPCXRAC=m_Jx_CFjrtw@mail.gmail.com>
+	 <5649df64315467c67b969e145afda8bbf7e60445.camel@gmail.com>
+	 <CAADnVQJO0aVJfV=8RDf5rdtjOCC-=57dmHF20fQYV9EiW2pJ2Q@mail.gmail.com>
+	 <4b121c3b96dcc0322ea111062ed2260d2d1d0ed7.camel@gmail.com>
+	 <CAEf4BzbUxHCLhMoPOtCC=6Y-OxkkC9GvjykC8KyKPrFxp6cLvw@mail.gmail.com>
+	 <52df1240415be1ee8827cb6395fd339a720e229c.camel@gmail.com>
+	 <ec118c24a33fb740ecaafd9a55416d56fcb77776.camel@gmail.com>
+	 <CAEf4BzZjut_JGnrqgPE0poJhMjJgtJcafRd6Z_0T0jrW3zARJw@mail.gmail.com>
+	 <44363f61c49bafa7901ae2aa43897b525805192c.camel@gmail.com>
+	 <CAEf4BzZ-NGiUVw+yCRCkrPQbJAS4wMBsT3e=eYVMuintqKDKqg@mail.gmail.com>
+	 <a777445dcb94c0029eb3bd3ddc96ddc493c85ad0.camel@gmail.com>
+	 <CAEf4BzZU0MxwLfz-dGbmHbEtqVhEMTxwSG+QfwCuCv09CqLcNw@mail.gmail.com>
+	 <ca9ac095cf1b3fff55eea8a3c87670a349bbfbcf.camel@gmail.com>
+	 <CAEf4BzZ6V2B5QvjuCEU-MB8V-Fjkgv_yP839r9=NDcuFsgBOLw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230926055913.9859-1-daniel@iogearbox.net> <20230926055913.9859-5-daniel@iogearbox.net>
-In-Reply-To: <20230926055913.9859-5-daniel@iogearbox.net>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 27 Sep 2023 17:12:14 -0700
-Message-ID: <CAEf4BzbOD0CWrV39jOAR-DLUC8ntFVQKC9R92fp0o49VMJT0QQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/8] libbpf: Add link-based API for meta
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, martin.lau@kernel.org, 
-	razor@blackwall.org, ast@kernel.org, andrii@kernel.org, 
-	john.fastabend@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Sep 25, 2023 at 10:59=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.=
-net> wrote:
->
-> This adds bpf_program__attach_meta() API to libbpf. Overall it is very
-> similar to tcx. The API looks as following:
->
->   LIBBPF_API struct bpf_link *
->   bpf_program__attach_meta(const struct bpf_program *prog, int ifindex,
->                            bool peer_device, const struct bpf_meta_opts *=
-opts);
->
-> The struct bpf_meta_opts is done in similar way as struct bpf_tcx_opts.
-> bpf_program__attach_meta() compared to bpf_program__attach_tcx() has one
-> additional argument, that is peer_device. The latter denotes whether the
-> program should be attached to the relative peer of ifindex or whether it
-> should be attached to ifindex itself.
->
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> ---
->  tools/lib/bpf/bpf.c      | 16 +++++++++++
->  tools/lib/bpf/bpf.h      |  5 ++++
->  tools/lib/bpf/libbpf.c   | 61 ++++++++++++++++++++++++++++++++++++----
->  tools/lib/bpf/libbpf.h   | 15 ++++++++++
->  tools/lib/bpf/libbpf.map |  1 +
->  5 files changed, 92 insertions(+), 6 deletions(-)
->
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index b0f1913763a3..f1335333b63c 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -810,6 +810,22 @@ int bpf_link_create(int prog_fd, int target_fd,
->                 if (!OPTS_ZEROED(opts, tcx))
->                         return libbpf_err(-EINVAL);
->                 break;
-> +       case BPF_META_PRIMARY:
-> +       case BPF_META_PEER:
+On Tue, 2023-09-26 at 09:25 -0700, Andrii Nakryiko wrote:
+[...]
+> > In other words there is a function states_equal' for comparison of
+> > states when old{.branches > 0}, which differs from states_equal in
+> > the following way:
+> > - considers all registers read;
+> > - considers all scalars precise.
+> >
+>=20
+> Not really. The important aspect is to mark registers that were
+> required to be imprecise in old state as "required to be imprecise",
+> and if later we decide that this register has to be precise, too bad,
+> too late, game over (which is why I didn't propose it, this seems too
+> restrictive).
 
-thinking out loud: should this be expected_attach_type during program
-load? Or is it going to be common for primary and peer to be exactly
-the same instance of a BPF program? If BPF_META_PRIMARY or
-BPF_META_PEER is expected_attach_type, it seems to be a more natural
-API where you'll be just saying "bpf_program__attach_meta(prog,
-ifindex)" and whether it's primary or peer will be determined by SEC()
-definition (SEC("meta/primary") vs SEC("meta/peer"))?
+Could you please elaborate a bit? What's wrong with the following:
+Suppose I see a register R that differs between V and C an is not
+precise in both. I fork C as C', mark R unbound in C' and proceed with
+C' verification. At some point during that verification I see that
+some precise R's value is necessary, thus C' verification fails.
+If that happens verification resumes from C, otherwise C is discarded.
+I also postpone read and precision marks propagation from C' to it's
+parent until C' verification succeeds (if it succeeds).
 
-> +               relative_fd =3D OPTS_GET(opts, meta.relative_fd, 0);
-> +               relative_id =3D OPTS_GET(opts, meta.relative_id, 0);
-> +               if (relative_fd && relative_id)
-> +                       return libbpf_err(-EINVAL);
-> +               if (relative_id) {
-> +                       attr.link_create.meta.relative_id =3D relative_id=
-;
-> +                       attr.link_create.flags |=3D BPF_F_ID;
-> +               } else {
-> +                       attr.link_create.meta.relative_fd =3D relative_fd=
-;
-> +               }
-> +               attr.link_create.meta.expected_revision =3D OPTS_GET(opts=
-, meta.expected_revision, 0);
-> +               if (!OPTS_ZEROED(opts, meta))
-> +                       return libbpf_err(-EINVAL);
-> +               break;
->         default:
->                 if (!OPTS_ZEROED(opts, flags))
->                         return libbpf_err(-EINVAL);
-> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> index 74c2887cfd24..175cfb95a175 100644
-> --- a/tools/lib/bpf/bpf.h
-> +++ b/tools/lib/bpf/bpf.h
-> @@ -415,6 +415,11 @@ struct bpf_link_create_opts {
->                         __u32 relative_id;
->                         __u64 expected_revision;
->                 } tcx;
-> +               struct {
-> +                       __u32 relative_fd;
-> +                       __u32 relative_id;
-> +                       __u64 expected_revision;
-> +               } meta;
->         };
->         size_t :0;
->  };
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index b4758e54a815..4d4da8ba2179 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -121,6 +121,8 @@ static const char * const attach_type_name[] =3D {
->         [BPF_TCX_INGRESS]               =3D "tcx_ingress",
->         [BPF_TCX_EGRESS]                =3D "tcx_egress",
->         [BPF_TRACE_UPROBE_MULTI]        =3D "trace_uprobe_multi",
-> +       [BPF_META_PRIMARY]              =3D "meta",
-> +       [BPF_META_PEER]                 =3D "meta",
->  };
->
->  static const char * const link_type_name[] =3D {
-> @@ -137,6 +139,7 @@ static const char * const link_type_name[] =3D {
->         [BPF_LINK_TYPE_NETFILTER]               =3D "netfilter",
->         [BPF_LINK_TYPE_TCX]                     =3D "tcx",
->         [BPF_LINK_TYPE_UPROBE_MULTI]            =3D "uprobe_multi",
-> +       [BPF_LINK_TYPE_META]                    =3D "meta",
->  };
->
->  static const char * const map_type_name[] =3D {
-> @@ -8910,6 +8913,7 @@ static const struct bpf_sec_def section_defs[] =3D =
-{
->         SEC_DEF("tc",                   SCHED_CLS, 0, SEC_NONE), /* depre=
-cated / legacy, use tcx */
->         SEC_DEF("classifier",           SCHED_CLS, 0, SEC_NONE), /* depre=
-cated / legacy, use tcx */
->         SEC_DEF("action",               SCHED_ACT, 0, SEC_NONE), /* depre=
-cated / legacy, use tcx */
-> +       SEC_DEF("meta",                 SCHED_CLS, 0, SEC_NONE),
->         SEC_DEF("tracepoint+",          TRACEPOINT, 0, SEC_NONE, attach_t=
-p),
->         SEC_DEF("tp+",                  TRACEPOINT, 0, SEC_NONE, attach_t=
-p),
->         SEC_DEF("raw_tracepoint+",      RAW_TRACEPOINT, 0, SEC_NONE, atta=
-ch_raw_tp),
-> @@ -12019,11 +12023,11 @@ static int attach_lsm(const struct bpf_program =
-*prog, long cookie, struct bpf_li
->  }
->
->  static struct bpf_link *
-> -bpf_program_attach_fd(const struct bpf_program *prog,
-> -                     int target_fd, const char *target_name,
-> -                     const struct bpf_link_create_opts *opts)
-> +bpf_program_attach_fd_type(const struct bpf_program *prog,
-> +                          int target_fd, const char *target_name,
-> +                          enum bpf_attach_type attach_type,
-> +                          const struct bpf_link_create_opts *opts)
->  {
-> -       enum bpf_attach_type attach_type;
->         char errmsg[STRERR_BUFSIZE];
->         struct bpf_link *link;
->         int prog_fd, link_fd;
-> @@ -12038,8 +12042,6 @@ bpf_program_attach_fd(const struct bpf_program *p=
-rog,
->         if (!link)
->                 return libbpf_err_ptr(-ENOMEM);
->         link->detach =3D &bpf_link__detach_fd;
-> -
-> -       attach_type =3D bpf_program__expected_attach_type(prog);
->         link_fd =3D bpf_link_create(prog_fd, target_fd, attach_type, opts=
-);
->         if (link_fd < 0) {
->                 link_fd =3D -errno;
-> @@ -12053,6 +12055,16 @@ bpf_program_attach_fd(const struct bpf_program *=
-prog,
->         return link;
->  }
->
-> +static struct bpf_link *
-> +bpf_program_attach_fd(const struct bpf_program *prog,
-> +                     int target_fd, const char *target_name,
-> +                     const struct bpf_link_create_opts *opts)
-> +{
-> +       return bpf_program_attach_fd_type(prog, target_fd, target_name,
-> +                                         bpf_program__expected_attach_ty=
-pe(prog),
-> +                                         opts);
-> +}
-> +
->  struct bpf_link *
->  bpf_program__attach_cgroup(const struct bpf_program *prog, int cgroup_fd=
-)
->  {
-> @@ -12106,6 +12118,43 @@ bpf_program__attach_tcx(const struct bpf_program=
- *prog, int ifindex,
->         return bpf_program_attach_fd(prog, ifindex, "tcx", &link_create_o=
-pts);
->  }
->
-> +struct bpf_link *
-> +bpf_program__attach_meta(const struct bpf_program *prog, int ifindex,
-> +                        bool peer_device, const struct bpf_meta_opts *op=
-ts)
+[...]
+> 1. If V and C (using your terminology from earlier, where V is the old
+> parent state at some next() call instruction, and C is the current one
+> on the same instruction) are different -- we just keep going. So
+> always try to explore different input states for the loop.
+>=20
+> 2. But if V and C are equivalent, it's too early to conclude anything.
+> So enqueue C for later in a separate BFS queue (and perhaps that queue
+> is per-instruction, actually; or maybe even per-state, not sure), and
+> keep exploring all the other pending queues from the (global) DFS
+> queue, until we get back to state V again. At that point we need to
+> start looking at postponed states for that V state. But this time we
+> should be sure that precision and read marks are propagated from all
+> those terminatable code paths.
+>=20
+> Basically, this tries to make sure that we do mark every register that
+> is important for all the branching decision making, memory
+> dereferences, etc. And just avoids going into endless loops with the
+> same input conditions.
+>=20
+> Give it some fresh thought and let's see if we are missing something
+> again. Thanks!
 
-you mentioned that there are plans to also support cases where there
-is no primary-peer. Is that going to be a primary-only setup or will
-it be some third option? If the latter, should this `bool peer_device`
-be an enum then?
+This should work for examples we've seen so far.
+Why do you think a separate per-instruction queue is necessary?
+The way I read it the following algorithm should suffice:
+- add a field bpf_verifier_env::iter_head similar to 'head' but for
+  postponed looping states;
+- add functions push_iter_stack(), pop_iter_stack() similar to
+  push_stack() and pop_stack();
+- modify is_state_visited() as follows:
 
-> +{
-> +       LIBBPF_OPTS(bpf_link_create_opts, link_create_opts);
-> +       enum bpf_attach_type attach_type;
-> +       __u32 relative_id;
-> +       int relative_fd;
-> +
-> +       if (!OPTS_VALID(opts, bpf_meta_opts))
-> +               return libbpf_err_ptr(-EINVAL);
-> +
-> +       relative_id =3D OPTS_GET(opts, relative_id, 0);
-> +       relative_fd =3D OPTS_GET(opts, relative_fd, 0);
-> +       attach_type =3D peer_device ? BPF_META_PEER : BPF_META_PRIMARY;
-> +
-> +       /* validate we don't have unexpected combinations of non-zero fie=
-lds */
-> +       if (!ifindex) {
-> +               pr_warn("prog '%s': target netdevice ifindex cannot be ze=
-ro\n",
-> +                       prog->name);
-> +               return libbpf_err_ptr(-EINVAL);
-> +       }
-> +       if (relative_fd && relative_id) {
-> +               pr_warn("prog '%s': relative_fd and relative_id cannot be=
- set at the same time\n",
-> +                       prog->name);
-> +               return libbpf_err_ptr(-EINVAL);
-> +       }
-> +
-> +       link_create_opts.meta.expected_revision =3D OPTS_GET(opts, expect=
-ed_revision, 0);
-> +       link_create_opts.meta.relative_fd =3D relative_fd;
-> +       link_create_opts.meta.relative_id =3D relative_id;
-> +       link_create_opts.flags =3D OPTS_GET(opts, flags, 0);
-> +
-> +       return bpf_program_attach_fd_type(prog, ifindex, "meta", attach_t=
-ype,
-> +                                         &link_create_opts);
-> +}
-> +
->  struct bpf_link *bpf_program__attach_freplace(const struct bpf_program *=
-prog,
->                                               int target_fd,
->                                               const char *attach_func_nam=
-e)
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 0e52621cba43..827d29cf9a06 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -800,6 +800,21 @@ LIBBPF_API struct bpf_link *
->  bpf_program__attach_tcx(const struct bpf_program *prog, int ifindex,
->                         const struct bpf_tcx_opts *opts);
->
-> +struct bpf_meta_opts {
-> +       /* size of this struct, for forward/backward compatibility */
-> +       size_t sz;
-> +       __u32 flags;
-> +       __u32 relative_fd;
-> +       __u32 relative_id;
-> +       __u64 expected_revision;
+ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ {
+     ...
+     while (sl) {
+         ...
+         if (sl->state.branches) {
+             ...
+             if (is_iter_next_insn(env, insn_idx)) {
+                 if (states_equal(env, &sl->state, cur)) {
+                     ...
+                     iter_state =3D &func(env, iter_reg)->stack[spi].spille=
+d_ptr;
+                     if (iter_state->iter.state =3D=3D BPF_ITER_STATE_ACTIV=
+E) {
++                        // Don't want to proceed with 'cur' verification,
++                        // push it to iters queue to check again if states
++                        // are still equal after env->head is exahusted.
++                        if (env->stack_size !=3D 0)
++                            push_iter_stack(env, cur, ...);
+                         goto hit;
+                     }
+                 }
+                 goto skip_inf_loop_check;
+             }
+     ...
+ }
+=20
+- modify do_check() to do pop_iter_stack() if pop_stack() is
+  exhausted, the popped state would get into is_state_visited() and
+  checked against old state, which at that moment should have all
+  read/precision masks that env->head could have provided.
 
-nit: move flags to be the last, so we don't have that padding before
-expected_revision?
-
-
-> +       size_t :0;
-> +};
-> +#define bpf_meta_opts__last_field expected_revision
-> +
-> +LIBBPF_API struct bpf_link *
-> +bpf_program__attach_meta(const struct bpf_program *prog, int ifindex,
-> +                        bool peer_device, const struct bpf_meta_opts *op=
-ts);
-> +
->  struct bpf_map;
->
->  LIBBPF_API struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_=
-map *map);
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 57712321490f..2dd4fe2cba3d 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -397,6 +397,7 @@ LIBBPF_1.3.0 {
->                 bpf_obj_pin_opts;
->                 bpf_object__unpin;
->                 bpf_prog_detach_opts;
-> +               bpf_program__attach_meta;
->                 bpf_program__attach_netfilter;
->                 bpf_program__attach_tcx;
->                 bpf_program__attach_uprobe_multi;
-> --
-> 2.34.1
->
+After working on "widening conjectures" implementation a bit this
+approach seems to be much simpler. Need to think harder if I can break it.
 
