@@ -1,269 +1,176 @@
-Return-Path: <bpf+bounces-11068-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11069-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1122D7B2673
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 22:21:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FD917B267F
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 22:24:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sy.mirrors.kernel.org (Postfix) with ESMTP id E08AAB20B7E
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 20:21:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id D574D282E9D
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 20:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 915F94E28B;
-	Thu, 28 Sep 2023 20:21:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F356D4CFC5;
+	Thu, 28 Sep 2023 20:24:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 192ED48E87;
-	Thu, 28 Sep 2023 20:21:40 +0000 (UTC)
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8728219F;
-	Thu, 28 Sep 2023 13:21:38 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.nyi.internal (Postfix) with ESMTP id 10FFD5C010B;
-	Thu, 28 Sep 2023 16:21:36 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Thu, 28 Sep 2023 16:21:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm1; t=1695932496; x=1696018896; bh=35
-	hGd5DtemMMIKF1Zr0cZ5jy7ToQQid1yaZKtlkxNu4=; b=kYePS9tb7iX4DfdsrP
-	KSG5kIGZHZ6II373RLg/R6yievFf5ZYxGwh2bHABIynK2hkA52tpJp3Oqt6Z3WOr
-	EqKj++ONhEZxtgYMqLWXCzvXzNYTY67C+FNTS8BO7KmsYa1dEu2LxNvTTGge5dTC
-	98J8ERH0LgbaCs96bDreSwTyXJA52oIcXMJdWw5N86IHuBkNDy0oNr/0YRW4bAe/
-	0M4666MlVq40oMzm+hOyKlTRfSVgmNV/d/3Ff0cJaJ0SNIaaJnTv2IECtjx7okcZ
-	2oTzttml5wZkULDWHm+AqgNYcCGYK4B55B9Z6uwZLoNIrGvBjakjMQdqnYhny59X
-	c+DA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm2; t=1695932496; x=1696018896; bh=35hGd5DtemMMI
-	KF1Zr0cZ5jy7ToQQid1yaZKtlkxNu4=; b=Mi38mWEo6Tol35uWyjeJmmWCT6PhB
-	HqHdQW8+/vTI7Qw8Bqjnf4yascDSnQ3TwDDgcbk0sbZbyRT57QkzfpVhTvQ8tyG/
-	LToaN9PzpBS9QrAj9YMndKxYandOQbuYzjXUqBNmiENTlTffglDnwu2iuDr2TsU+
-	/NNGLhQAXePxiL0pEdoLHMSXcoqi6N/AkRauYrgRvDxZcWexBs/kQpWi1R5l+oVf
-	it+YrCNEgaozEQG8vQeVMxdjNU22qXU18zXjjUwBmzzgDSvsRTJJPv6DyBI9Pzys
-	O8qdOCiu0Uk7vB8Y73BLyFXAFOIxbyg1bikunx6mKyaqpJQGWudajkQ0A==
-X-ME-Sender: <xms:T-AVZXL3VaPyWViVEJgM3yExxV-dwzqvVS-FZAOgHbMjfs78IaNp2A>
-    <xme:T-AVZbLj-AjwUM1fYc_IF46JFhXtrQoib8RbARgHo3iYEEvHQtVh1hDhJXxy9TfON
-    Oh1HgE-A4WCFJQzSj0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrtddtgdduudejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:T-AVZfs2A6qgNC9q-Lgew5QpLTG6DfFGYM3yBsc6aJA3RBohmNNTbA>
-    <xmx:T-AVZQZXC-VhrDIz8AYhFJ3sygxqV6IDLpvW50oXyZEvi4CB1UyOSA>
-    <xmx:T-AVZeY1z19-8JCLhF1ER_yDksvGyMLWs3MGVsw1t9smfaE7ndMYdw>
-    <xmx:UOAVZQYAMlK7auUTlutzfZRoDi91DxEaPpUdggLB7gVAJPc0VTm_bQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 360CCB60089; Thu, 28 Sep 2023 16:21:35 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 938606FB5
+	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 20:24:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90432C433C7;
+	Thu, 28 Sep 2023 20:24:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695932662;
+	bh=SlOuoQn/8Al4k/7Si7CZD1d46I2Ly+emoNkcQOfYzwU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Fh11ktqcrosvCgKSL/WuLbRYRGL/PL5p/drSGFx2Pmw+edsH05/45jNkvMsZHPmUi
+	 Gth1HZyGlo9BeEvvB812P0yyO8KJXxMVhw2+xJgAgOUFZg40JhuQX08DmCybXvDWFJ
+	 26pINhZR0O33Tm8UeH/E3UIJgrMNM7AGyMcXBgcf/oTEucBiRbkQoBW5gxmEmpfXS/
+	 pa94oFYiYptTBvaupJxjTIJWzKMsJR+PX/oG4a9dzG/EXmREvZhVbxdwiSGyHy+x3k
+	 L/8Znzo62iBE1mXC4GtZi52bItF+bAFwk4hE+zs6TmkYDQj+qvwYvxzCPTUrajp9Gn
+	 B6Yb5/c5BaGcA==
+From: KP Singh <kpsingh@kernel.org>
+To: linux-security-module@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: paul@paul-moore.com,
+	keescook@chromium.org,
+	casey@schaufler-ca.com,
+	song@kernel.org,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	kpsingh@kernel.org,
+	renauld@google.com
+Subject: [PATCH v5 0/5] Reduce overhead of LSMs with static calls
+Date: Thu, 28 Sep 2023 22:24:05 +0200
+Message-ID: <20230928202410.3765062-1-kpsingh@kernel.org>
+X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <ded0ef74-bdad-42f2-b0a7-5d867e446c19@app.fastmail.com>
-In-Reply-To: <6a6f37d16b55a3003af3f3dbb7778a367f68cd8d.camel@kernel.org>
-References: <20230928110554.34758-1-jlayton@kernel.org>
- <20230928110554.34758-2-jlayton@kernel.org>
- <6020d6e7-b187-4abb-bf38-dc09d8bd0f6d@app.fastmail.com>
- <af047e4a1c6947c59d4a13d4ae221c784a5386b4.camel@kernel.org>
- <20230928171943.GK11439@frogsfrogsfrogs>
- <6a6f37d16b55a3003af3f3dbb7778a367f68cd8d.camel@kernel.org>
-Date: Thu, 28 Sep 2023 16:21:12 -0400
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Jeff Layton" <jlayton@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>
-Cc: "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Christian Brauner" <brauner@kernel.org>,
- "Linus Torvalds" <torvalds@linux-foundation.org>,
- "David Sterba" <dsterba@suse.cz>, "Amir Goldstein" <amir73il@gmail.com>,
- "Theodore Ts'o" <tytso@mit.edu>,
- "Eric W. Biederman" <ebiederm@xmission.com>,
- "Kees Cook" <keescook@chromium.org>, "Jeremy Kerr" <jk@ozlabs.org>,
- "Michael Ellerman" <mpe@ellerman.id.au>,
- "Nicholas Piggin" <npiggin@gmail.com>,
- "Christophe Leroy" <christophe.leroy@csgroup.eu>,
- "Heiko Carstens" <hca@linux.ibm.com>,
- "Vasily Gorbik" <gor@linux.ibm.com>,
- "Alexander Gordeev" <agordeev@linux.ibm.com>,
- "Christian Borntraeger" <borntraeger@linux.ibm.com>,
- "Sven Schnelle" <svens@linux.ibm.com>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- =?UTF-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
- "Todd Kjos" <tkjos@android.com>, "Martijn Coenen" <maco@android.com>,
- "Joel Fernandes" <joel@joelfernandes.org>,
- "Carlos Llamas" <cmllamas@google.com>,
- "Suren Baghdasaryan" <surenb@google.com>,
- "Mattia Dongili" <malattia@linux.it>,
- "Dennis Dalessandro" <dennis.dalessandro@cornelisnetworks.com>,
- "Jason Gunthorpe" <jgg@ziepe.ca>, "Leon Romanovsky" <leon@kernel.org>,
- "Brad Warrum" <bwarrum@linux.ibm.com>,
- "Ritu Agarwal" <rituagar@linux.ibm.com>,
- "Hans de Goede" <hdegoede@redhat.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- "Mark Gross" <markgross@kernel.org>, "Jiri Slaby" <jirislaby@kernel.org>,
- "Eric Van Hensbergen" <ericvh@kernel.org>,
- "Latchesar Ionkov" <lucho@ionkov.net>,
- "Dominique Martinet" <asmadeus@codewreck.org>,
- "Christian Schoenebeck" <linux_oss@crudebyte.com>,
- "David Sterba" <dsterba@suse.com>, "David Howells" <dhowells@redhat.com>,
- "Marc Dionne" <marc.dionne@auristor.com>, "Ian Kent" <raven@themaw.net>,
- "Luis de Bethencourt" <luisbg@kernel.org>,
- "Salah Triki" <salah.triki@gmail.com>,
- "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
- "Chris Mason" <clm@fb.com>, "Josef Bacik" <josef@toxicpanda.com>,
- "Xiubo Li" <xiubli@redhat.com>, "Ilya Dryomov" <idryomov@gmail.com>,
- "Jan Harkes" <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
- "Joel Becker" <jlbec@evilplan.org>, "Christoph Hellwig" <hch@lst.de>,
- "Nicolas Pitre" <nico@fluxnic.net>,
- "Rafael J . Wysocki" <rafael@kernel.org>,
- "Ard Biesheuvel" <ardb@kernel.org>, "Gao Xiang" <xiang@kernel.org>,
- "Chao Yu" <chao@kernel.org>, "Yue Hu" <huyue2@coolpad.com>,
- "Jeffle Xu" <jefflexu@linux.alibaba.com>,
- "Namjae Jeon" <linkinjeon@kernel.org>,
- "Sungjong Seo" <sj1557.seo@samsung.com>, "Jan Kara" <jack@suse.com>,
- "Andreas Dilger" <adilger.kernel@dilger.ca>,
- "Jaegeuk Kim" <jaegeuk@kernel.org>,
- "OGAWA Hirofumi" <hirofumi@mail.parknet.co.jp>,
- "Christoph Hellwig" <hch@infradead.org>,
- "Miklos Szeredi" <miklos@szeredi.hu>,
- "Bob Peterson" <rpeterso@redhat.com>,
- "Andreas Gruenbacher" <agruenba@redhat.com>,
- "Richard Weinberger" <richard@nod.at>,
- "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- "Johannes Berg" <johannes@sipsolutions.net>,
- "Mikulas Patocka" <mikulas@artax.karlin.mff.cuni.cz>,
- "Mike Kravetz" <mike.kravetz@oracle.com>,
- "Muchun Song" <muchun.song@linux.dev>, "Jan Kara" <jack@suse.cz>,
- "David Woodhouse" <dwmw2@infradead.org>,
- "Dave Kleikamp" <shaggy@kernel.org>, "Tejun Heo" <tj@kernel.org>,
- "Trond Myklebust" <trond.myklebust@hammerspace.com>,
- "Anna Schumaker" <anna@kernel.org>,
- "Chuck Lever" <chuck.lever@oracle.com>, "Neil Brown" <neilb@suse.de>,
- "Olga Kornievskaia" <kolga@netapp.com>, "Dai Ngo" <Dai.Ngo@oracle.com>,
- "Tom Talpey" <tom@talpey.com>,
- "Ryusuke Konishi" <konishi.ryusuke@gmail.com>,
- "Anton Altaparmakov" <anton@tuxera.com>,
- "Konstantin Komarov" <almaz.alexandrovich@paragon-software.com>,
- "Mark Fasheh" <mark@fasheh.com>,
- "Joseph Qi" <joseph.qi@linux.alibaba.com>,
- "Bob Copeland" <me@bobcopeland.com>,
- "Mike Marshall" <hubcap@omnibond.com>,
- "Martin Brandenburg" <martin@omnibond.com>,
- "Luis Chamberlain" <mcgrof@kernel.org>,
- "Iurii Zaikin" <yzaikin@google.com>, "Tony Luck" <tony.luck@intel.com>,
- "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
- "Anders Larsen" <al@alarsen.net>, "Steve French" <sfrench@samba.org>,
- "Paulo Alcantara" <pc@manguebit.com>,
- "Ronnie Sahlberg" <lsahlber@redhat.com>,
- "Shyam Prasad N" <sprasad@microsoft.com>,
- "Sergey Senozhatsky" <senozhatsky@chromium.org>,
- "Phillip Lougher" <phillip@squashfs.org.uk>,
- "Steven Rostedt" <rostedt@goodmis.org>,
- "Masami Hiramatsu" <mhiramat@kernel.org>,
- "Evgeniy Dushistov" <dushistov@mail.ru>,
- "Chandan Babu R" <chandan.babu@oracle.com>,
- "Damien Le Moal" <dlemoal@kernel.org>,
- "Naohiro Aota" <naohiro.aota@wdc.com>,
- "Johannes Thumshirn" <jth@kernel.org>,
- "Alexei Starovoitov" <ast@kernel.org>,
- "Daniel Borkmann" <daniel@iogearbox.net>,
- "Andrii Nakryiko" <andrii@kernel.org>,
- "Martin KaFai Lau" <martin.lau@linux.dev>, "Song Liu" <song@kernel.org>,
- "Yonghong Song" <yonghong.song@linux.dev>,
- "John Fastabend" <john.fastabend@gmail.com>,
- "KP Singh" <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@google.com>,
- "Hao Luo" <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>,
- "Hugh Dickins" <hughd@google.com>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "David S . Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>,
- "John Johansen" <john.johansen@canonical.com>,
- "Paul Moore" <paul@paul-moore.com>, "James Morris" <jmorris@namei.org>,
- "Serge E. Hallyn" <serge@hallyn.com>,
- "Stephen Smalley" <stephen.smalley.work@gmail.com>,
- "Eric Paris" <eparis@parisplace.org>, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
- platform-driver-x86@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
- v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
- autofs@vger.kernel.org, linux-btrfs@vger.kernel.org,
- ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu,
- linux-efi@vger.kernel.org, linux-erofs@lists.ozlabs.org,
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- gfs2@lists.linux.dev, linux-um@lists.infradead.org,
- linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
- linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
- ocfs2-devel@lists.linux.dev, linux-karma-devel@lists.sourceforge.net,
- devel@lists.orangefs.org, linux-unionfs@vger.kernel.org,
- linux-hardening@vger.kernel.org, reiserfs-devel@vger.kernel.org,
- linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
- linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
- bpf@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
- apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
- selinux@vger.kernel.org
-Subject: Re: [PATCH 86/87] fs: switch timespec64 fields in inode to discrete integers
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 8bit
 
-On Thu, Sep 28, 2023, at 13:40, Jeff Layton wrote:
-> On Thu, 2023-09-28 at 10:19 -0700, Darrick J. Wong wrote:
->>
->> > I remember seeing those patches go by. I don't remember that change
->> > being NaK'ed, but I wasn't paying close attention at the time 
->> > 
->> > Looking at it objectively now, I think it's worth it to recover 8 bytes
->> > per inode and open a 4 byte hole that Amir can use to grow the
->> > i_fsnotify_mask. We might even able to shave off another 12 bytes
->> > eventually if we can move to a single 64-bit word per timestamp. 
->> 
->> I don't think you can, since btrfs timestamps utilize s64 seconds
->> counting in both directions from the Unix epoch.  They also support ns
->> resolution:
->> 
->> 	struct btrfs_timespec {
->> 		__le64 sec;
->> 		__le32 nsec;
->> 	} __attribute__ ((__packed__));
->> 
->
-> Correct. We'd lose some fidelity in currently stored timestamps, but as
-> Linus and Ted pointed out, anything below ~100ns granularity is
-> effectively just noise, as that's the floor overhead for calling into
-> the kernel. It's hard to argue that any application needs that sort of
-> timestamp resolution, at least with contemporary hardware. 
+# Background
 
-There are probably applications that have come up with creative
-ways to use the timestamp fields of file systems that 94 bits
-of data, with both the MSB of the seconds and the LSB of the
-nanoseconds carrying information that they expect to be preserved.
+LSM hooks (callbacks) are currently invoked as indirect function calls. These
+callbacks are registered into a linked list at boot time as the order of the
+LSMs can be configured on the kernel command line with the "lsm=" command line
+parameter.
 
-Dropping any information in the nanoseconds other than the top two
-bits would trivially change the 'ls -t' output when two files have
-the same timestamp in one kernel but slightly different timestamps
-in another one. For large values of 'tv_sec', there are fewer
-obvious things that break, but if current kernels are able to
-retrieve arbitrary times that were stored with utimensat(), then we
-should probably make sure future kernels can see the same.
+Indirect function calls have a high overhead due to retpoline mitigation for
+various speculative execution attacks.
 
-        Arnd
+Retpolines remain relevant even with newer generation CPUs as recently
+discovered speculative attacks, like Spectre BHB need Retpolines to mitigate
+against branch history injection and still need to be used in combination with
+newer mitigation features like eIBRS.
+
+This overhead is especially significant for the "bpf" LSM which allows the user
+to implement LSM functionality with eBPF program. In order to facilitate this
+the "bpf" LSM provides a default callback for all LSM hooks. When enabled,
+the "bpf" LSM incurs an unnecessary / avoidable indirect call. This is
+especially bad in OS hot paths (e.g. in the networking stack).
+This overhead prevents the adoption of bpf LSM on performance critical
+systems, and also, in general, slows down all LSMs.
+
+Since we know the address of the enabled LSM callbacks at compile time and only
+the order is determined at boot time, the LSM framework can allocate static
+calls for each of the possible LSM callbacks and these calls can be updated once
+the order is determined at boot.
+
+This series is a respin of the RFC proposed by Paul Renauld (renauld@google.com)
+and Brendan Jackman (jackmanb@google.com) [1]
+
+# Performance improvement
+
+With this patch-set some syscalls with lots of LSM hooks in their path
+benefitted at an average of ~3% and I/O and Pipe based system calls benefitting
+the most.
+
+Here are the results of the relevant Unixbench system benchmarks with BPF LSM
+and SELinux enabled with default policies enabled with and without these
+patches.
+
+Benchmark                                               Delta(%): (+ is better)
+===============================================================================
+Execl Throughput                                             +1.9356
+File Write 1024 bufsize 2000 maxblocks                       +6.5953
+Pipe Throughput                                              +9.5499
+Pipe-based Context Switching                                 +3.0209
+Process Creation                                             +2.3246
+Shell Scripts (1 concurrent)                                 +1.4975
+System Call Overhead                                         +2.7815
+System Benchmarks Index Score (Partial Only):                +3.4859
+
+In the best case, some syscalls like eventfd_create benefitted to about ~10%.
+The full analysis can be viewed at https://kpsingh.ch/lsm-perf
+
+[1] https://lore.kernel.org/linux-security-module/20200820164753.3256899-1-jackmanb@chromium.org/
+
+
+# BPF LSM Side effects
+
+Patch 4 of the series also addresses the issues with the side effects of the
+default value return values of the BPF LSM callbacks and also removes the
+overheads associated with them making it deployable at hyperscale.
+
+# v4 -> v5
+
+* Rebase to linux-next/master
+* Fixed the case where MAX_LSM_COUNT comes to zero when just CONFIG_SECURITY
+  is compiled in without any other LSM enabled as reported here:
+
+  https://lore.kernel.org/bpf/202309271206.d7fb60f9-oliver.sang@intel.com
+
+# v3 -> v4
+
+* Refactor LSM count macros to use COUNT_ARGS
+* Change CONFIG_SECURITY_HOOK_LIKELY likely's default value to be based on
+  the LSM enabled and have it depend on CONFIG_EXPERT. There are a lot of subtle
+  options behind CONFIG_EXPERT and this should, hopefully alleviate concerns
+  about yet another knob.
+* __randomize_layout for struct lsm_static_call and, in addition to the cover
+  letter add performance numbers to 3rd patch and some minor commit message
+  updates.
+* Rebase to linux-next.
+
+# v2 -> v3
+
+* Fixed a build issue on archs which don't have static calls and enable
+  CONFIG_SECURITY.
+* Updated the LSM_COUNT macros based on Andrii's suggestions.
+* Changed the security_ prefix to lsm_prefix based on Casey's suggestion.
+* Inlined static_branch_maybe into lsm_for_each_hook on Kees' feedback.
+
+# v1 -> v2 (based on linux-next, next-20230614)
+
+* Incorporated suggestions from Kees
+* Changed the way MAX_LSMs are counted from a binary based generator to a clever header.
+* Add CONFIG_SECURITY_HOOK_LIKELY to configure the likelihood of LSM hooks.
+
+
+KP Singh (5):
+  kernel: Add helper macros for loop unrolling
+  security: Count the LSMs enabled at compile time
+  security: Replace indirect LSM hook calls with static calls
+  bpf: Only enable BPF LSM hooks when an LSM program is attached
+  security: Add CONFIG_SECURITY_HOOK_LIKELY
+
+ include/linux/bpf.h       |   1 +
+ include/linux/bpf_lsm.h   |   5 +
+ include/linux/lsm_count.h | 114 ++++++++++++++++++++
+ include/linux/lsm_hooks.h |  81 +++++++++++++--
+ include/linux/unroll.h    |  36 +++++++
+ kernel/bpf/trampoline.c   |  29 +++++-
+ security/Kconfig          |  11 ++
+ security/bpf/hooks.c      |  25 ++++-
+ security/security.c       | 213 +++++++++++++++++++++++++-------------
+ 9 files changed, 432 insertions(+), 83 deletions(-)
+ create mode 100644 include/linux/lsm_count.h
+ create mode 100644 include/linux/unroll.h
+
+-- 
+2.42.0.582.g8ccd20d70d-goog
+
 
