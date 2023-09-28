@@ -1,258 +1,165 @@
-Return-Path: <bpf+bounces-11040-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11041-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A9BA7B19E5
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 13:06:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE3FA7B1A03
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 13:08:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id E839D282902
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 11:06:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id BDD2C1C20A94
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 11:08:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62880374E2;
-	Thu, 28 Sep 2023 11:06:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FA36374DA;
+	Thu, 28 Sep 2023 11:08:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E354C37156;
-	Thu, 28 Sep 2023 11:06:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF540C4160E;
-	Thu, 28 Sep 2023 11:06:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206163715E;
+	Thu, 28 Sep 2023 11:08:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2766EC433C9;
+	Thu, 28 Sep 2023 11:08:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695899200;
-	bh=KcEb7Ur9VnfCswhdPaiHlW6A+8Un/231FkVSjN0vVmY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LIvJMQV9gV0uW8yl32NSd4yb2599TLMQSz3pZ7A8RvzTMK+/pPweiGT83QuRE6Ap1
-	 RJ4tHrEtdELF24JEcAXBlbRxCLgD4fFKMvaVxDYJKFUi3JGR08fTlWqCpRUQLEU1eL
-	 PLdctIni/gLihdwFGrq6SVBHRpLIcoURicUh3JGLAt4t51ztAQPhDNYHtf1HHGTOrp
-	 XAB3XmZIrDME0ElXf57Dd8FtxB0Uiap7czp3ZlR45ObMUeHSnxd6fREH7G/U4RgfCh
-	 xv1/nw1L9/w3ErqEe74BXlZqblyXh/mVR1R03Etd6mg/RnXyu8EBj+lRYoEkTAJg+R
-	 yYzEQo7GNicAA==
-From: Jeff Layton <jlayton@kernel.org>
-To: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	David Sterba <dsterba@suse.cz>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Kees Cook <keescook@chromium.org>,
-	Jeremy Kerr <jk@ozlabs.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>,
-	Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Carlos Llamas <cmllamas@google.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Mattia Dongili <malattia@linux.it>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Brad Warrum <bwarrum@linux.ibm.com>,
-	Ritu Agarwal <rituagar@linux.ibm.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Mark Gross <markgross@kernel.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	David Sterba <dsterba@suse.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Ian Kent <raven@themaw.net>,
-	Luis de Bethencourt <luisbg@kernel.org>,
-	Salah Triki <salah.triki@gmail.com>,
-	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
-	Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Xiubo Li <xiubli@redhat.com>,
-	Ilya Dryomov <idryomov@gmail.com>,
-	Jan Harkes <jaharkes@cs.cmu.edu>,
-	coda@cs.cmu.edu,
-	Joel Becker <jlbec@evilplan.org>,
-	Christoph Hellwig <hch@lst.de>,
-	Nicolas Pitre <nico@fluxnic.net>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Gao Xiang <xiang@kernel.org>,
-	Chao Yu <chao@kernel.org>,
-	Yue Hu <huyue2@coolpad.com>,
-	Jeffle Xu <jefflexu@linux.alibaba.com>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Sungjong Seo <sj1557.seo@samsung.com>,
-	Jan Kara <jack@suse.com>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Christoph Hellwig <hch@infradead.org>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Bob Peterson <rpeterso@redhat.com>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Jan Kara <jack@suse.cz>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Dave Kleikamp <shaggy@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	Anna Schumaker <anna@kernel.org>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Neil Brown <neilb@suse.de>,
-	Olga Kornievskaia <kolga@netapp.com>,
-	Dai Ngo <Dai.Ngo@oracle.com>,
-	Tom Talpey <tom@talpey.com>,
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-	Anton Altaparmakov <anton@tuxera.com>,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Mark Fasheh <mark@fasheh.com>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Bob Copeland <me@bobcopeland.com>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Iurii Zaikin <yzaikin@google.com>,
-	Tony Luck <tony.luck@intel.com>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	Anders Larsen <al@alarsen.net>,
-	Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.com>,
-	Ronnie Sahlberg <lsahlber@redhat.com>,
-	Shyam Prasad N <sprasad@microsoft.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Phillip Lougher <phillip@squashfs.org.uk>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Evgeniy Dushistov <dushistov@mail.ru>,
-	Chandan Babu R <chandan.babu@oracle.com>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	Johannes Thumshirn <jth@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Hugh Dickins <hughd@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	John Johansen <john.johansen@canonical.com>,
-	Paul Moore <paul@paul-moore.com>,
-	James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Eric Paris <eparis@parisplace.org>
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-s390@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	v9fs@lists.linux.dev,
-	linux-afs@lists.infradead.org,
-	autofs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org,
-	codalist@coda.cs.cmu.edu,
-	linux-efi@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	gfs2@lists.linux.dev,
-	linux-um@lists.infradead.org,
-	linux-mtd@lists.infradead.org,
-	jfs-discussion@lists.sourceforge.net,
-	linux-nfs@vger.kernel.org,
-	linux-nilfs@vger.kernel.org,
-	linux-ntfs-dev@lists.sourceforge.net,
-	ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev,
-	linux-karma-devel@lists.sourceforge.net,
-	devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	reiserfs-devel@vger.kernel.org,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	apparmor@lists.ubuntu.com,
-	linux-security-module@vger.kernel.org,
-	selinux@vger.kernel.org
-Subject: [PATCH 87/87] fs: move i_blocks up a few places in struct inode
-Date: Thu, 28 Sep 2023 07:05:54 -0400
-Message-ID: <20230928110554.34758-3-jlayton@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230928110554.34758-1-jlayton@kernel.org>
-References: <20230928110554.34758-1-jlayton@kernel.org>
+	s=k20201202; t=1695899293;
+	bh=0sL8RCBSm5AJGYaXOgQaGuqOaK3gCtO5ozWYMZg9Syc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=qJcJYfprelsc2r0GYWq1Jaa3nLRh/GYED6eLIgjfyn0rxDT8+VZjOvYs2ZZu6LjE1
+	 VRShZmZMQ7R1QKZP6BWkfWLeLjlKyknxplXOBavJNZP7besHqEL4LF8eXcxT2lZdLE
+	 lYrg5KlR5UICZWe6B+SiMtzDLAYeAZWlRo0rw6UyI5UEu/5ybj5LVzp/5s6rHrJHGA
+	 3Cuh52pWs1qLeZfLJnuGSjvxY+KOMQH9OSgevp42Iq9enHQy/KNvCBoiKnBydYDkYc
+	 HdwDCXNDowk+QvhzSvLIWRojTyH6CIK6hW8TpAohB4tbmoPA1yEwSGDwL2QTZQMRRZ
+	 +8ywwdKWidcMQ==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Pu Lehui <pulehui@huaweicloud.com>, bpf@vger.kernel.org,
+ linux-riscv@lists.infradead.org, netdev@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+ <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
+ <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>, Luke Nelson
+ <luke.r.nels@gmail.com>, Pu Lehui <pulehui@huawei.com>, Pu Lehui
+ <pulehui@huaweicloud.com>
+Subject: Re: [PATCH bpf-next v2 6/6] riscv, bpf: Optimize bswap insns with
+ Zbb support
+In-Reply-To: <20230919035839.3297328-7-pulehui@huaweicloud.com>
+References: <20230919035839.3297328-1-pulehui@huaweicloud.com>
+ <20230919035839.3297328-7-pulehui@huaweicloud.com>
+Date: Thu, 28 Sep 2023 13:08:10 +0200
+Message-ID: <87pm22mu79.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-The recent change to use discrete integers instead of struct timespec64
-in struct inode shaved 8 bytes off of it, but it also moves the i_lock
-into the previous cacheline, away from the fields that it protects.
+Pu Lehui <pulehui@huaweicloud.com> writes:
 
-Move i_blocks up above the i_lock, which moves the new 4 byte hole to
-just after the timestamps, without changing the size of the structure.
+> From: Pu Lehui <pulehui@huawei.com>
+>
+> Optimize bswap instructions by rev8 Zbb instruction conbined with srli
+> instruction. And Optimize 16-bit zero-extension with Zbb support.
+>
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> ---
+>  arch/riscv/net/bpf_jit.h        | 67 +++++++++++++++++++++++++++++++++
+>  arch/riscv/net/bpf_jit_comp64.c | 50 +-----------------------
+>  2 files changed, 69 insertions(+), 48 deletions(-)
+>
+> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+> index 944bdd6e4..a04eed672 100644
+> --- a/arch/riscv/net/bpf_jit.h
+> +++ b/arch/riscv/net/bpf_jit.h
+> @@ -1135,12 +1135,79 @@ static inline void emit_sextw(u8 rd, u8 rs, struc=
+t rv_jit_context *ctx)
+>  	emit_addiw(rd, rs, 0, ctx);
+>  }
+>=20=20
+> +static inline void emit_zexth(u8 rd, u8 rs, struct rv_jit_context *ctx)
+> +{
+> +	if (rvzbb_enabled()) {
+> +		emit(rvzbb_zexth(rd, rs), ctx);
+> +	} else {
+> +		emit_slli(rd, rs, 48, ctx);
+> +		emit_srli(rd, rd, 48, ctx);
+> +	}
+> +}
+> +
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- include/linux/fs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Prefer early-exit.
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index de902ff2938b..3e0fe0f52e7c 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -677,11 +677,11 @@ struct inode {
- 	u32			i_atime_nsec;
- 	u32			i_mtime_nsec;
- 	u32			i_ctime_nsec;
-+	blkcnt_t		i_blocks;
- 	spinlock_t		i_lock;	/* i_blocks, i_bytes, maybe i_size */
- 	unsigned short          i_bytes;
- 	u8			i_blkbits;
- 	u8			i_write_hint;
--	blkcnt_t		i_blocks;
- 
- #ifdef __NEED_I_SIZE_ORDERED
- 	seqcount_t		i_size_seqcount;
--- 
-2.41.0
+>  static inline void emit_zextw(u8 rd, u8 rs, struct rv_jit_context *ctx)
+>  {
+>  	emit_slli(rd, rs, 32, ctx);
+>  	emit_srli(rd, rd, 32, ctx);
+>  }
+>=20=20
+> +static inline void emit_bswap(u8 rd, s32 imm, struct rv_jit_context *ctx)
+> +{
+> +	if (rvzbb_enabled()) {
+> +		int bits =3D 64 - imm;
+> +
+> +		emit(rvzbb_rev8(rd, rd), ctx);
+> +		if (bits)
+> +			emit_srli(rd, rd, bits, ctx);
+> +	} else {
+> +		emit_li(RV_REG_T2, 0, ctx);
+> +
+> +		emit_andi(RV_REG_T1, rd, 0xff, ctx);
+> +		emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
+> +		emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
+> +		emit_srli(rd, rd, 8, ctx);
+> +		if (imm =3D=3D 16)
+> +			goto out_be;
+> +
+> +		emit_andi(RV_REG_T1, rd, 0xff, ctx);
+> +		emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
+> +		emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
+> +		emit_srli(rd, rd, 8, ctx);
+> +
+> +		emit_andi(RV_REG_T1, rd, 0xff, ctx);
+> +		emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
+> +		emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
+> +		emit_srli(rd, rd, 8, ctx);
+> +		if (imm =3D=3D 32)
+> +			goto out_be;
+> +
+> +		emit_andi(RV_REG_T1, rd, 0xff, ctx);
+> +		emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
+> +		emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
+> +		emit_srli(rd, rd, 8, ctx);
+> +
+> +		emit_andi(RV_REG_T1, rd, 0xff, ctx);
+> +		emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
+> +		emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
+> +		emit_srli(rd, rd, 8, ctx);
+> +
+> +		emit_andi(RV_REG_T1, rd, 0xff, ctx);
+> +		emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
+> +		emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
+> +		emit_srli(rd, rd, 8, ctx);
+> +
+> +		emit_andi(RV_REG_T1, rd, 0xff, ctx);
+> +		emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
+> +		emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
+> +		emit_srli(rd, rd, 8, ctx);
+> +out_be:
+> +		emit_andi(RV_REG_T1, rd, 0xff, ctx);
+> +		emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
+> +
+> +		emit_mv(rd, RV_REG_T2, ctx);
+> +	}
+> +}
 
+Definitely early-exit for this one!
+
+This function really show-cases why ZBB is nice! ;-)
+
+I'll take the next rev of series for a test!
+
+
+Bj=C3=B6rn
 
