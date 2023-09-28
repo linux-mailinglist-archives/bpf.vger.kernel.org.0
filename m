@@ -1,243 +1,142 @@
-Return-Path: <bpf+bounces-11050-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11051-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 117317B21BC
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 17:48:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FCA57B2203
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 18:17:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id C62952832BB
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 15:48:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTP id 6233FB20CA7
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 16:17:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7A34F15C;
-	Thu, 28 Sep 2023 15:48:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06A851229;
+	Thu, 28 Sep 2023 16:17:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 579B84F145;
-	Thu, 28 Sep 2023 15:48:42 +0000 (UTC)
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9BD0EB;
-	Thu, 28 Sep 2023 08:48:39 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.nyi.internal (Postfix) with ESMTP id 4F0615C0DBB;
-	Thu, 28 Sep 2023 11:48:39 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Thu, 28 Sep 2023 11:48:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm1; t=1695916119; x=1696002519; bh=AE
-	M/fDbI9O0BImAELzI+hfXsnObtdXB3nh8ZZCXXqn0=; b=rYRrfUWcGURzZi2Kx3
-	x77+TyShR9Sib8UhEkjRsEvF3DnYBPdVY6rzWwYeuhr4tdntul3oHtfVUF/z6EV2
-	heYFaG3+Ohoslr/oEpgzvbQj8Ap/BO0Uo8fukRIGEYSG2EFeIuADh6kTnG/e/ZnK
-	WKoyOI7jTOa1WvXs1EnNIde2dL42+ityLyFsYeIVnenJ8nJu5KRjOGJhaF2H5eLA
-	4Rc3nmIeAUGsRgwN8l/vUa6uyPahwW8/lYYQtjTd1GdPmcRjEc4yki4fcm3o+0bg
-	CM1ceI9x2XAIhPoWvIWcG7Pse0IJVI89HVvLU8Sx5WjoReHRv+R8kwtcD43rgTqO
-	1Txg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm2; t=1695916119; x=1696002519; bh=AEM/fDbI9O0BI
-	mAELzI+hfXsnObtdXB3nh8ZZCXXqn0=; b=SVhvpMNNu2832r96OQM+NAupTyZUu
-	9ApC30lDjAFYMGWGRYhGk9Ktw4UV75/4wX1D/NFDsHe0J/F4WGv8mVpKtbEtvn7p
-	Rmjsr58zIcRx0QQa/XsGbKIRMC4kmp2y+lV4iGP4YPyx6mdJFfcRgxpTGWbUkYul
-	fg2q9Uk1M3TSIwSOpuuTWD6z9oXV7akZjN8oooViePicLGd71ehHsuxX95jowg+t
-	sIH70F+Njj7J5uzvO8LCP4IepniwS53HFBN7DFlHjczusBIIb6hJ6o+OFnMH7yBO
-	ef+exyTTPsXWvxZc+NE+84UqAYqQq2LcMfq4tomSwJikU7iHJ9es8eYXA==
-X-ME-Sender: <xms:VqAVZTp80fxHAbyOrOLozy8oSIIHqQ8-uQi65BHGMCHFY2uP19KKDw>
-    <xme:VqAVZdocPPRCkDqLMsDAsTzMnCL_hi_3AeWHiaLGnH49qHHA2EbULHHp32fE-IqJO
-    LKNp0MKQfoi5rOEkGs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrtddtgdeifecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeevhfffledtgeehfeffhfdtgedvheejtdfgkeeuvefgudffteettdekkeeufeeh
-    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:VqAVZQN93Juw9XiE898XRfbgEHqEl2cwevHPLOiPOvmsMuT6V2Wjwg>
-    <xmx:VqAVZW5Y2ZL47jAZLy1P_hatPiBd5qOL0KmpEAGxRBZoBCe3-Rqhfw>
-    <xmx:VqAVZS4_qfE88pGkCU7hjxlJPieMhGBt0fgKWeWdE9tfpBrYfI6xdw>
-    <xmx:V6AVZa6XYaRu-pt9bUmgxdeIF3j6xxqNhfjqV2pVTPKFlHygW6TLhA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id BE4B9B60089; Thu, 28 Sep 2023 11:48:38 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5557113AFB;
+	Thu, 28 Sep 2023 16:17:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 601E1C433C8;
+	Thu, 28 Sep 2023 16:17:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695917849;
+	bh=dDlJclctJebD1exFPzxNAZrB7CQjcpVHlD7ElW0MgAw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fssBEPbw9W11EX4fKT2YjN4xVBR9E4vNZDA1X2y4drhUW8Bjk3Z9zAxW5o8wwBEad
+	 JeDFtQ0g38ymn6Q1QguLfri9a9El0WiROYUxy/kHjgAZXvSd4+QfNXVDIR0O9otK/s
+	 AVO4cha55o9JqXtpDNIn6uLQaR9A/DxPG4liRa1nHhXy9peftFZ2YMbjaewjeRRfHj
+	 iaHi8wG1WfykOpc4NYCtvJmDBr9mfame119bQAB1Vn7Wi+qpPu4KD11kXPq1d668i1
+	 QCydqFcEOv1E6KXpIvQGzXiYiyu+XEAxVqR7nuS94wWiZKfrVfr+jmcHW4JZJQTwM/
+	 JnyvUk+qktCcA==
+Date: Thu, 28 Sep 2023 18:17:25 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Cc: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	netdev@vger.kernel.org, bpf@vger.kernel.org,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	David Ahern <dsahern@kernel.org>
+Subject: Re: Persisting mounts between 'ip netns' invocations
+Message-ID: <20230928-geldbeschaffung-gekehrt-81ed7fba768d@brauner>
+References: <87a5t68zvw.fsf@toke.dk>
+ <2aa087b5-cbcf-e736-00d4-d962a9deda75@6wind.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <6020d6e7-b187-4abb-bf38-dc09d8bd0f6d@app.fastmail.com>
-In-Reply-To: <20230928110554.34758-2-jlayton@kernel.org>
-References: <20230928110554.34758-1-jlayton@kernel.org>
- <20230928110554.34758-2-jlayton@kernel.org>
-Date: Thu, 28 Sep 2023 11:48:16 -0400
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Jeff Layton" <jlayton@kernel.org>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Christian Brauner" <brauner@kernel.org>,
- "Linus Torvalds" <torvalds@linux-foundation.org>,
- "David Sterba" <dsterba@suse.cz>, "Amir Goldstein" <amir73il@gmail.com>,
- "Theodore Ts'o" <tytso@mit.edu>,
- "Eric W. Biederman" <ebiederm@xmission.com>,
- "Kees Cook" <keescook@chromium.org>, "Jeremy Kerr" <jk@ozlabs.org>,
- "Michael Ellerman" <mpe@ellerman.id.au>,
- "Nicholas Piggin" <npiggin@gmail.com>,
- "Christophe Leroy" <christophe.leroy@csgroup.eu>,
- "Heiko Carstens" <hca@linux.ibm.com>,
- "Vasily Gorbik" <gor@linux.ibm.com>,
- "Alexander Gordeev" <agordeev@linux.ibm.com>,
- "Christian Borntraeger" <borntraeger@linux.ibm.com>,
- "Sven Schnelle" <svens@linux.ibm.com>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- =?UTF-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
- "Todd Kjos" <tkjos@android.com>, "Martijn Coenen" <maco@android.com>,
- "Joel Fernandes" <joel@joelfernandes.org>,
- "Carlos Llamas" <cmllamas@google.com>,
- "Suren Baghdasaryan" <surenb@google.com>,
- "Mattia Dongili" <malattia@linux.it>,
- "Dennis Dalessandro" <dennis.dalessandro@cornelisnetworks.com>,
- "Jason Gunthorpe" <jgg@ziepe.ca>, "Leon Romanovsky" <leon@kernel.org>,
- "Brad Warrum" <bwarrum@linux.ibm.com>,
- "Ritu Agarwal" <rituagar@linux.ibm.com>,
- "Hans de Goede" <hdegoede@redhat.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- "Mark Gross" <markgross@kernel.org>, "Jiri Slaby" <jirislaby@kernel.org>,
- "Eric Van Hensbergen" <ericvh@kernel.org>,
- "Latchesar Ionkov" <lucho@ionkov.net>,
- "Dominique Martinet" <asmadeus@codewreck.org>,
- "Christian Schoenebeck" <linux_oss@crudebyte.com>,
- "David Sterba" <dsterba@suse.com>, "David Howells" <dhowells@redhat.com>,
- "Marc Dionne" <marc.dionne@auristor.com>, "Ian Kent" <raven@themaw.net>,
- "Luis de Bethencourt" <luisbg@kernel.org>,
- "Salah Triki" <salah.triki@gmail.com>,
- "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
- "Chris Mason" <clm@fb.com>, "Josef Bacik" <josef@toxicpanda.com>,
- "Xiubo Li" <xiubli@redhat.com>, "Ilya Dryomov" <idryomov@gmail.com>,
- "Jan Harkes" <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
- "Joel Becker" <jlbec@evilplan.org>, "Christoph Hellwig" <hch@lst.de>,
- "Nicolas Pitre" <nico@fluxnic.net>,
- "Rafael J . Wysocki" <rafael@kernel.org>,
- "Ard Biesheuvel" <ardb@kernel.org>, "Gao Xiang" <xiang@kernel.org>,
- "Chao Yu" <chao@kernel.org>, "Yue Hu" <huyue2@coolpad.com>,
- "Jeffle Xu" <jefflexu@linux.alibaba.com>,
- "Namjae Jeon" <linkinjeon@kernel.org>,
- "Sungjong Seo" <sj1557.seo@samsung.com>, "Jan Kara" <jack@suse.com>,
- "Andreas Dilger" <adilger.kernel@dilger.ca>,
- "Jaegeuk Kim" <jaegeuk@kernel.org>,
- "OGAWA Hirofumi" <hirofumi@mail.parknet.co.jp>,
- "Christoph Hellwig" <hch@infradead.org>,
- "Miklos Szeredi" <miklos@szeredi.hu>,
- "Bob Peterson" <rpeterso@redhat.com>,
- "Andreas Gruenbacher" <agruenba@redhat.com>,
- "Richard Weinberger" <richard@nod.at>,
- "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- "Johannes Berg" <johannes@sipsolutions.net>,
- "Mikulas Patocka" <mikulas@artax.karlin.mff.cuni.cz>,
- "Mike Kravetz" <mike.kravetz@oracle.com>,
- "Muchun Song" <muchun.song@linux.dev>, "Jan Kara" <jack@suse.cz>,
- "David Woodhouse" <dwmw2@infradead.org>,
- "Dave Kleikamp" <shaggy@kernel.org>, "Tejun Heo" <tj@kernel.org>,
- "Trond Myklebust" <trond.myklebust@hammerspace.com>,
- "Anna Schumaker" <anna@kernel.org>,
- "Chuck Lever" <chuck.lever@oracle.com>, "Neil Brown" <neilb@suse.de>,
- "Olga Kornievskaia" <kolga@netapp.com>, "Dai Ngo" <Dai.Ngo@oracle.com>,
- "Tom Talpey" <tom@talpey.com>,
- "Ryusuke Konishi" <konishi.ryusuke@gmail.com>,
- "Anton Altaparmakov" <anton@tuxera.com>,
- "Konstantin Komarov" <almaz.alexandrovich@paragon-software.com>,
- "Mark Fasheh" <mark@fasheh.com>,
- "Joseph Qi" <joseph.qi@linux.alibaba.com>,
- "Bob Copeland" <me@bobcopeland.com>,
- "Mike Marshall" <hubcap@omnibond.com>,
- "Martin Brandenburg" <martin@omnibond.com>,
- "Luis Chamberlain" <mcgrof@kernel.org>,
- "Iurii Zaikin" <yzaikin@google.com>, "Tony Luck" <tony.luck@intel.com>,
- "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
- "Anders Larsen" <al@alarsen.net>, "Steve French" <sfrench@samba.org>,
- "Paulo Alcantara" <pc@manguebit.com>,
- "Ronnie Sahlberg" <lsahlber@redhat.com>,
- "Shyam Prasad N" <sprasad@microsoft.com>,
- "Sergey Senozhatsky" <senozhatsky@chromium.org>,
- "Phillip Lougher" <phillip@squashfs.org.uk>,
- "Steven Rostedt" <rostedt@goodmis.org>,
- "Masami Hiramatsu" <mhiramat@kernel.org>,
- "Evgeniy Dushistov" <dushistov@mail.ru>,
- "Chandan Babu R" <chandan.babu@oracle.com>,
- "Darrick J. Wong" <djwong@kernel.org>,
- "Damien Le Moal" <dlemoal@kernel.org>,
- "Naohiro Aota" <naohiro.aota@wdc.com>,
- "Johannes Thumshirn" <jth@kernel.org>,
- "Alexei Starovoitov" <ast@kernel.org>,
- "Daniel Borkmann" <daniel@iogearbox.net>,
- "Andrii Nakryiko" <andrii@kernel.org>,
- "Martin KaFai Lau" <martin.lau@linux.dev>, "Song Liu" <song@kernel.org>,
- "Yonghong Song" <yonghong.song@linux.dev>,
- "John Fastabend" <john.fastabend@gmail.com>,
- "KP Singh" <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@google.com>,
- "Hao Luo" <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>,
- "Hugh Dickins" <hughd@google.com>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "David S . Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>,
- "John Johansen" <john.johansen@canonical.com>,
- "Paul Moore" <paul@paul-moore.com>, "James Morris" <jmorris@namei.org>,
- "Serge E. Hallyn" <serge@hallyn.com>,
- "Stephen Smalley" <stephen.smalley.work@gmail.com>,
- "Eric Paris" <eparis@parisplace.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org, platform-driver-x86@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
- linux-afs@lists.infradead.org, autofs@vger.kernel.org,
- linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
- codalist@coda.cs.cmu.edu, linux-efi@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev,
- linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
- jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
- linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
- ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
- linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
- linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
- reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
- samba-technical@lists.samba.org, linux-trace-kernel@vger.kernel.org,
- linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
- Netdev <netdev@vger.kernel.org>, apparmor@lists.ubuntu.com,
- linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Subject: Re: [PATCH 86/87] fs: switch timespec64 fields in inode to discrete integers
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2aa087b5-cbcf-e736-00d4-d962a9deda75@6wind.com>
 
-On Thu, Sep 28, 2023, at 07:05, Jeff Layton wrote:
-> This shaves 8 bytes off struct inode, according to pahole.
->
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+On Thu, Sep 28, 2023 at 11:54:23AM +0200, Nicolas Dichtel wrote:
+> + Eric
+> 
+> Le 28/09/2023 à 10:29, Toke Høiland-Jørgensen a écrit :
+> > Hi everyone
+> > 
+> > I recently ran into this problem again, and so I figured I'd ask if
+> > anyone has any good idea how to solve it:
+> > 
+> > When running a command through 'ip netns exec', iproute2 will
+> > "helpfully" create a new mount namespace and remount /sys inside it,
+> > AFAICT to make sure /sys/class/net/* refers to the right devices inside
+> > the namespace. This makes sense, but unfortunately it has the side
+> > effect that no mount commands executed inside the ns persist. In
+> > particular, this makes it difficult to work with bpffs; even when
+> > mounting a bpffs inside the ns, it will disappear along with the
+> > namespace as soon as the process exits.
+> > 
+> > To illustrate:
+> > 
+> > # ip netns exec <nsname> bpftool map pin id 2 /sys/fs/bpf/mymap
+> > # ip netns exec <nsname> ls /sys/fs/bpf
+> > <nothing>
+> > 
+> > This happens because namespaces are cleaned up as soon as they have no
+> > processes, unless they are persisted by some other means. For the
+> > network namespace itself, iproute2 will bind mount /proc/self/ns/net to
+> > /var/run/netns/<nsname> (in the root mount namespace) to persist the
+> > namespace. I tried implementing something similar for the mount
+> > namespace, but that doesn't work; I can't manually bind mount the 'mnt'
+> > ns reference either:
+> > 
+> > # mount -o bind /proc/104444/ns/mnt /var/run/netns/mnt/testns
+> > mount: /run/netns/mnt/testns: wrong fs type, bad option, bad superblock on /proc/104444/ns/mnt, missing codepage or helper program, or other error.
+> >        dmesg(1) may have more information after failed mount system call.
+> > 
+> > When running strace on that mount command, it seems the move_mount()
+> > syscall returns EINVAL, which, AFAICT, is because the mount namespace
+> > file references itself as its namespace, which means it can't be
+> > bind-mounted into the containing mount namespace.
+> > 
+> > So, my question is, how to overcome this limitation? I know it's
+> > possible to get a reference to the namespace of a running process, but
+> > there is no guarantee there is any processes running inside the
+> > namespace (hence the persisting bind mount for the netns). So is there
+> > some other way to persist the mount namespace reference, so we can pick
+> > it back up on the next 'ip netns' invocation?
+> > 
+> > Hoping someone has a good idea :)
+> We ran into similar problems. The only solution we found was to use nsenter
+> instead of 'ip netns exec'.
+> 
+> To be able to bind mount a mount namespace on a file, the directory of this file
+> should be private. For example:
+> 
+> mkdir -p /run/foo
+> mount --make-rshared /
+> mount --bind /run/foo /run/foo
+> mount --make-private /run/foo
+> touch /run/foo/ns
+> unshare --mount --propagation=slave -- sh -c 'yes $$ 2>/dev/null' | {
+>         read -r pid &&
+>         mount --bind /proc/$pid/ns/mnt /run/foo/ns
+> }
+> nsenter --mount=/run/foo/ns ls /
+> 
+> But this doesn't work under 'ip netns exec'.
 
-FWIW, this is similar to the approach that Deepa suggested
-back in 2016:
+Afaiu, each ip netns exec invocation allocates a new mount namespace.
+If you run multiple concurrent ip netns exec command and leave them
+around then they all get a separate mount namespace. Not sure what the
+design behind that was. So even if you could persist the mount namespace
+of one there's still no way for ip netns exec to pick that up iiuc.
 
-https://lore.kernel.org/lkml/1452144972-15802-3-git-send-email-deepa.kernel@gmail.com/
+So imho, the solution is to change ip netns exec to persist a mount
+namespace and netns namespace pair. unshare does this easily via:
 
-It was NaKed at the time because of the added complexity,
-though it would have been much easier to do it then,
-as we had to touch all the timespec references anyway.
+sudo mkdir /run/mntns
+sudo mount --bind /run/mntns /run/mntns
+sudo mount --make-slave /run/mntns
 
-The approach still seems ok to me, but I'm not sure it's worth
-doing it now if we didn't do it then.
+sudo mkdir /run/netns
 
-     Arnd
+sudo touch /run/mntns/mnt1
+sudo touch /run/netns/net1
+
+sudo unshare --mount=/run/mntns/mnt1 --net=/run/netns/net1 true
+
+So I'd probably patch iproute2.
 
