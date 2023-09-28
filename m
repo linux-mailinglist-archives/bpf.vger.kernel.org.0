@@ -1,174 +1,152 @@
-Return-Path: <bpf+bounces-11083-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11084-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BE817B278C
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 23:30:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AA607B2795
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 23:35:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id B4B2C283B2C
-	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 21:30:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTP id 21927B20C06
+	for <lists+bpf@lfdr.de>; Thu, 28 Sep 2023 21:35:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 693F217729;
-	Thu, 28 Sep 2023 21:30:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3B6117730;
+	Thu, 28 Sep 2023 21:35:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B35914001;
-	Thu, 28 Sep 2023 21:30:30 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F80FF3;
-	Thu, 28 Sep 2023 14:30:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=m8sK3Zzg8Y3kMhl6zoDiScV4o6VUiMGPryZgC1qke/M=; b=OOOMWPvRb5JnoumnReDG9xvx+V
-	CaydBqjpjYPr5cKNZl1lEMw/Dvbu4hT1bSBapX81sXFD+10gGKylbTypq6M9X8xcvUUMncpyqNCcf
-	G0pFyxmq18dTOJCTq2Iqwq+7JVNxHnwnwkEDZQjcDqfGRIRGcdvt/WfHT4DCMzsdw/WTknxMXO90M
-	EDqxd4s6bYiDalX3DARt1r3VQma0qVmCpY9qZbYRK9asIqKCZkpQNVu8BVdj3sG36CUxtXvNysDPC
-	LL8pjqcm30EsxkSZeRm1BhJznSjsdX8MsS9MWS9w57PB5PKBhFWNJh9h96qEb9218VZQZhicibcjB
-	DOfysf2Q==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qlyaY-000EFT-Mq; Thu, 28 Sep 2023 23:30:26 +0200
-Received: from [178.197.248.41] (helo=linux.home)
-	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qlyaY-000Wfn-9q; Thu, 28 Sep 2023 23:30:26 +0200
-Subject: Re: [PATCH bpf-next 4/8] libbpf: Add link-based API for meta
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, martin.lau@kernel.org,
- razor@blackwall.org, ast@kernel.org, andrii@kernel.org,
- john.fastabend@gmail.com
-References: <20230926055913.9859-1-daniel@iogearbox.net>
- <20230926055913.9859-5-daniel@iogearbox.net>
- <CAEf4BzbOD0CWrV39jOAR-DLUC8ntFVQKC9R92fp0o49VMJT0QQ@mail.gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <bd6e4f9a-2bef-318b-740e-b0eea7c0a519@iogearbox.net>
-Date: Thu, 28 Sep 2023 23:30:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF9A16431
+	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 21:35:05 +0000 (UTC)
+Received: from NAM06-DM3-obe.outbound.protection.outlook.com (mail-dm3nam06on2136.outbound.protection.outlook.com [40.107.64.136])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB7AE19E
+	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 14:35:02 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bAJ+w6tD4R7PN4nejww3dQhd20hb1zdMbiIeXvDizMdOHeZb2IxoW9udamwCjMD5UpJpfjEr0ewle334vzdvaz3TG6gQ75zCbWAEAfOe0W4VnwAVm+b8BnaLM+m9XV8xHL7cDhcQF9uNta/2n/3JCqBBvasubOmGY3yPtdy/CXiPFpwlv7XXdpXWG3a0toTpMwXyD8zLOaqP80GvYwtenMsgzJA4cS3RUuqnG5NHDEic9X9MQy+4GKK0pRhXFRrvHspQzP19n8GH0awht70h5ND23p0Vp7QL7HGFqWMdJHqX2mXKZGbko90WOntZq7We61SpVGrwshOVxaUU3GlhcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=B9c1oThLo2DhADgwcr4+m03cg9zWbjVSjw5nPZIAwjk=;
+ b=Ydw3lT3jxznkJgM1NFsRd91lX0acsCezsM7gKifdPV8I9tk1Bmtu/nFvzUv5IBvxOvFr7YInHpqGRgSkBJN06SiAl6DCIkOJPagFiKaqNUH2qJJR2HoE4/Rs32hrJAQ00c9NQtb8UIQSfZDbeRkAsshngCQ49esJhqGUVAsw/ddTF+kliYR1gSyrVoh4zUFg46T4sWE1v9lOL4mBVWs+gEYzVnoriCDsit74mxIDvfEer+4M4ToKDRMkM9cf9hK9YGapxN+X13NAYHRWmSINnuvACmcYBq/9DOu5JsyfbVJAUwT+uo4qQC29td1fsRBjQRblo4Oj9Le3s/o3K65e+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B9c1oThLo2DhADgwcr4+m03cg9zWbjVSjw5nPZIAwjk=;
+ b=PFIkP1LchpuHNWi9YKSmRiXxN6triI/5bZ3wRoOUdFA9vX5PUD/Tl1Sr5qqhrCIah/9/MWKdJyYjh0N19cGU2vqyyFPYC349C1Ovm7lIS3i1tlmdMbl6L9MY+UGouL5NqrK23C7k0UjJnvsww6/CGablfmLLbw/KOTCQ9O4be9U=
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com (2603:10b6:510:243::22)
+ by SN3PEPF00013D7A.namprd21.prod.outlook.com (2603:10b6:82c:400:0:4:0:10)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.12; Thu, 28 Sep
+ 2023 21:35:00 +0000
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::ec5c:279e:7bfe:50e9]) by PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::ec5c:279e:7bfe:50e9%3]) with mapi id 15.20.6838.010; Thu, 28 Sep 2023
+ 21:35:00 +0000
+From: Dave Thaler <dthaler@microsoft.com>
+To: Yonghong Song <yonghong.song@linux.dev>
+CC: "bpf@ietf.org" <bpf@ietf.org>, bpf <bpf@vger.kernel.org>
+Subject: BPF_ALU | BPF_MOVSX with offset = 32?
+Thread-Topic: BPF_ALU | BPF_MOVSX with offset = 32?
+Thread-Index: AdnyU2uWdXKmAeaFSoSZjtj4SC4uVQ==
+Date: Thu, 28 Sep 2023 21:35:00 +0000
+Message-ID:
+ <PH7PR21MB3878516D62B3AFA921A999F1A3C1A@PH7PR21MB3878.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=64edff80-3414-43a4-81f7-03e2114d4012;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-09-28T21:30:21Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR21MB3878:EE_|SN3PEPF00013D7A:EE_
+x-ms-office365-filtering-correlation-id: ced44104-4389-4992-52e6-08dbc06ac4b5
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ tD5YQSWOFO0dEowJzAgDrffNSbA6Yb77mYzkVS74yMelEsKVIiAvB5c07p4+8hlJc8D21lUc/SuyJMp754n2k5NnCrmieZfEDSBIs+Gqt+B8rqFdYpCFqg21qO16nHhzFPOcs0JL+zNrEdQ3O5qGVhzqgwSMl9J0yyQkggpjtPpE7arFHBtp9c4CEzXip/OpCdg3olfqnnSd41IlaNAQllvzlqte7bbDF5Ja4asw87a8uqu24kBFPJpw5+ofpp6D15pnhF+YRw8QvGbPTBeS7d4A4cLTKIox1X3AynBYvvjzVp/MuXlZP4XrgFqD7EV5OV7zQfU1Wj8C32bPHnJh7iqDngdjutQFcjo9kfW1eIkltB97CTrraEJSyaIWXKFms6ngXS7um5LZlSovkKvg7tXeC8pM4hwpp/8IlnA95n4XgWMGVyOjKCa+xkzGLIadvUSpHFGHxOkLA1tJ2wZpIYrI0+wXCj+HlsDX3lsez3jpnfw9CzRpwKBpJ9+nUz0CLtmKGz2MwmwCzkwHK1+DM2o/FfYNY7h3tKZrE8Ays2DFp2DMyKJHcVIq+d/gAl8Vhdx90vJ9kb2+kY1riHw8yaM3mWL/fF7CtbgCsFHhvmzmntdkaBVFn6bjjBBCiNG7LA6z9SAuli7bm9uu6sxIMd5L1EYCuZ8Pos790MBvRys=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3878.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(376002)(136003)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(41300700001)(316002)(4326008)(8676002)(6916009)(8936002)(71200400001)(2906002)(5660300002)(54906003)(64756008)(66946007)(66556008)(66476007)(66446008)(76116006)(4744005)(52536014)(10290500003)(478600001)(55016003)(82950400001)(82960400001)(86362001)(9686003)(8990500004)(6506007)(38100700002)(38070700005)(122000001)(33656002)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?I68VPOhAtJWA1sh7xQiqFFOkox2Fc1/0pjY8TaGbMMoB40WmvAzijRm5bix0?=
+ =?us-ascii?Q?TfhQKDnb4Tc+ES8i21asU8Mq7r6FszKOIFQno+87HbSd7SsFj0rWe2dmPtNU?=
+ =?us-ascii?Q?LfQwwTnO5FwyDCNjyXG+73Uq2vk3O8BGzMb1mxE5/bGv8INgnYIdFUattyNt?=
+ =?us-ascii?Q?uFKtDpw3W5fFaFymoSeyALgna5etyAhAsv/bltxCuvVISvXOYOpCQ7uZioTg?=
+ =?us-ascii?Q?KAUagRgp9BynOpot3da5cyeCDLkcySIusBeDPno0ApbKYBh2CvbNR2cxmboc?=
+ =?us-ascii?Q?1MjlXoUYjnoeiEV1UljBxELGMN2ONMaK09OoY7tws2TJ+Mw+n68C5WHa2tt/?=
+ =?us-ascii?Q?B7YGKn6iEb2GQAAy5ySl2NkNRqkw+v2qpk3/GIhqf+ta0rLfA482l5BSNZDb?=
+ =?us-ascii?Q?rddnxTaoN8BueHUnIoZOUjHWn5yw2V2fC6yJUc5VX9zOnCq9dgSaGlXRJmTj?=
+ =?us-ascii?Q?OMqKXPZUugjBGECMdfd2RYoX7dVsaXeU7x60KEdjiF4bKgo5BmDhprM8ryVl?=
+ =?us-ascii?Q?mdsBxqSx8b5nIEjOYNxaxQ9+CubzKRdKMmwFUXSBzB9s0jCdRN7Hrsy8hSLK?=
+ =?us-ascii?Q?V78rUXxL9h63du9C5HDAUTJ7NqHYNGYgygTLF+Ah1zlKWDpK2ir9xTBm83v7?=
+ =?us-ascii?Q?iPGbHfCr/S9mXvD0Bc+O2cWy9uShFcBP8I6ddMATMrp5gxlBCjdx+ThabjNv?=
+ =?us-ascii?Q?QpK5XB5cQQqaY7CknjwcEYgHO4XrcASyEcXLyQH5aWtTicXwMwsR23RMWVzG?=
+ =?us-ascii?Q?MEY032KxIsuz/hUaa4NEWwg6hiHwtDYpq0BJ3fCKV+oRI3uNdRK/uIUDzC9V?=
+ =?us-ascii?Q?KWfnf/8zPcWMwvtz2w2sx0lKfzGgblwvx1KQYAVYAFwnAFJY0964vrg7r3H0?=
+ =?us-ascii?Q?T2lr2EikCmdscH5CGbjYFr5ySWvL8/ZX1/RYugDP3ONI25CSs6hS7Dq2pbxi?=
+ =?us-ascii?Q?2R0ejRZ34tdIgDmPMk9dwbAeJhovTKzLrxH++GuhIWQYgrKTpx4VI6dqtWuZ?=
+ =?us-ascii?Q?BeHEznHbqZvt/nRuU3xjEQBRuNpUtaQrVybWD2cA1rOyqrXlW22b8gMS9P06?=
+ =?us-ascii?Q?O+9ukas5VXps422LTEWfDEle/JF2RgtKewIeVfMzzuSXGT71cuIeJ686P7IH?=
+ =?us-ascii?Q?+TPaMiRBTiLe02+ONAiXjNe3WsDwCii2hC7OSyo6PhcO2zXYNG8gpBhXMKbw?=
+ =?us-ascii?Q?UKU3nmefzE3Ea69zJdJD6tPs8/oZfdHCtU3rK2KdcIe7eSDd1gLQwoZSFkgv?=
+ =?us-ascii?Q?d1vDlSy5RFo3NhNAyycDcv+b08cc42pynx4ASMex4iPvPzGyW4RNNxr6c/TH?=
+ =?us-ascii?Q?f5khuVvPrX0d1yEkC55lk9/ql6syEJscu8QVapfXJlETDnaz9sJ5VoUjjhzN?=
+ =?us-ascii?Q?7eYYQhJ8yfP98/FOJUd217wRv2YBNJ3PUIoYirzVK89ebByUoRqCkIz2w+Nr?=
+ =?us-ascii?Q?ZwdZhxB1oNV61oZOY6ISrRtOI46m5nkSrjIMXBDo3nvtNboC9OWqsC2YGTyO?=
+ =?us-ascii?Q?lGLF9nxEayuZ98bvNY8e8K4jI+SkF3ui5bMWVmgBwVf/mId2aZy/hiq6nizG?=
+ =?us-ascii?Q?wTDX2hZmkEzn2n4p8iQzCEc1Gx/d9Hg1EgPGNMAyULBYknDeDhz7PRDQvdiB?=
+ =?us-ascii?Q?RPQgFHoZEU+GbG67h+f5sa8sv4b05cbqid5lyKrNv3gI8WHcjVpisFoccgmZ?=
+ =?us-ascii?Q?fz+65A=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzbOD0CWrV39jOAR-DLUC8ntFVQKC9R92fp0o49VMJT0QQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27045/Thu Sep 28 09:39:25 2023)
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3878.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ced44104-4389-4992-52e6-08dbc06ac4b5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2023 21:35:00.1715
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3iBt8nv1KxGQ2o5FA2oad0aQwtcKpuYM3WtVweg9GgfvMLIJh2bfcxACZjOIjoW55TkbGYd9sHIi1pQ9g2LCquHMnHV3Tj8Vd/PuyUpmcf8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN3PEPF00013D7A
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+	autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 9/28/23 2:12 AM, Andrii Nakryiko wrote:
-> On Mon, Sep 25, 2023 at 10:59 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-[...]
->> +struct bpf_link *
->> +bpf_program__attach_meta(const struct bpf_program *prog, int ifindex,
->> +                        bool peer_device, const struct bpf_meta_opts *opts)
-> 
-> you mentioned that there are plans to also support cases where there
-> is no primary-peer. Is that going to be a primary-only setup or will
-> it be some third option? If the latter, should this `bool peer_device`
-> be an enum then?
+In re-reading the instruction-set.rst changes for sign extensions, there is=
+ one ambiguity
+regarding BPF_ALU | BPF_MOVSX with offset =3D 32.
 
-Agree, enum is more flexible either way, will change it to that.
+Is it:
+a) Undefined (not a permitted instruction), or
+b) Defined as being synonymous with BPF_ALU | BPF_MOV?
 
->> +{
->> +       LIBBPF_OPTS(bpf_link_create_opts, link_create_opts);
->> +       enum bpf_attach_type attach_type;
->> +       __u32 relative_id;
->> +       int relative_fd;
->> +
->> +       if (!OPTS_VALID(opts, bpf_meta_opts))
->> +               return libbpf_err_ptr(-EINVAL);
->> +
->> +       relative_id = OPTS_GET(opts, relative_id, 0);
->> +       relative_fd = OPTS_GET(opts, relative_fd, 0);
->> +       attach_type = peer_device ? BPF_META_PEER : BPF_META_PRIMARY;
->> +
->> +       /* validate we don't have unexpected combinations of non-zero fields */
->> +       if (!ifindex) {
->> +               pr_warn("prog '%s': target netdevice ifindex cannot be zero\n",
->> +                       prog->name);
->> +               return libbpf_err_ptr(-EINVAL);
->> +       }
->> +       if (relative_fd && relative_id) {
->> +               pr_warn("prog '%s': relative_fd and relative_id cannot be set at the same time\n",
->> +                       prog->name);
->> +               return libbpf_err_ptr(-EINVAL);
->> +       }
->> +
->> +       link_create_opts.meta.expected_revision = OPTS_GET(opts, expected_revision, 0);
->> +       link_create_opts.meta.relative_fd = relative_fd;
->> +       link_create_opts.meta.relative_id = relative_id;
->> +       link_create_opts.flags = OPTS_GET(opts, flags, 0);
->> +
->> +       return bpf_program_attach_fd_type(prog, ifindex, "meta", attach_type,
->> +                                         &link_create_opts);
->> +}
->> +
->>   struct bpf_link *bpf_program__attach_freplace(const struct bpf_program *prog,
->>                                                int target_fd,
->>                                                const char *attach_func_name)
->> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
->> index 0e52621cba43..827d29cf9a06 100644
->> --- a/tools/lib/bpf/libbpf.h
->> +++ b/tools/lib/bpf/libbpf.h
->> @@ -800,6 +800,21 @@ LIBBPF_API struct bpf_link *
->>   bpf_program__attach_tcx(const struct bpf_program *prog, int ifindex,
->>                          const struct bpf_tcx_opts *opts);
->>
->> +struct bpf_meta_opts {
->> +       /* size of this struct, for forward/backward compatibility */
->> +       size_t sz;
->> +       __u32 flags;
->> +       __u32 relative_fd;
->> +       __u32 relative_id;
->> +       __u64 expected_revision;
-> 
-> nit: move flags to be the last, so we don't have that padding before
-> expected_revision?
+The table implies (b) when it says:
+> BPF_MOVSX  0xb0   8/16/32  dst =3D (s8,s16,s32)src
 
-Sounds good, will do.
+But the following text could be interpreted as ():
+> ``BPF_ALU | BPF_MOVSX`` :term:`sign extends<Sign Extend>` 8-bit and 16-bi=
+t operands into 32
+> bit operands, and zeroes the remaining upper 32 bits.
 
->> +       size_t :0;
->> +};
->> +#define bpf_meta_opts__last_field expected_revision
->> +
->> +LIBBPF_API struct bpf_link *
->> +bpf_program__attach_meta(const struct bpf_program *prog, int ifindex,
->> +                        bool peer_device, const struct bpf_meta_opts *opts);
->> +
->>   struct bpf_map;
->>
->>   LIBBPF_API struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map);
->> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
->> index 57712321490f..2dd4fe2cba3d 100644
->> --- a/tools/lib/bpf/libbpf.map
->> +++ b/tools/lib/bpf/libbpf.map
->> @@ -397,6 +397,7 @@ LIBBPF_1.3.0 {
->>                  bpf_obj_pin_opts;
->>                  bpf_object__unpin;
->>                  bpf_prog_detach_opts;
->> +               bpf_program__attach_meta;
->>                  bpf_program__attach_netfilter;
->>                  bpf_program__attach_tcx;
->>                  bpf_program__attach_uprobe_multi;
->> --
->> 2.34.1
->>
+There's no reason I can think of to use it, given it's synonymous but if gi=
+ven a BPF program that
+uses it, should it be rejected by a verifier/disassembler/etc.?  Or treated=
+ as valid?
 
+Dave
 
