@@ -1,50 +1,49 @@
-Return-Path: <bpf+bounces-11132-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11133-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 252A57B3B5C
-	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 22:43:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ED1E7B3B64
+	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 22:43:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sy.mirrors.kernel.org (Postfix) with ESMTP id 6AFF9B20B66
-	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 20:43:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id D3386283025
+	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 20:43:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A8D37150;
-	Fri, 29 Sep 2023 20:43:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A79E842C1C;
+	Fri, 29 Sep 2023 20:43:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 136AF8F62;
-	Fri, 29 Sep 2023 20:43:17 +0000 (UTC)
-Received: from BN3PR00CU001.outbound.protection.outlook.com (mail-eastus2azon11020017.outbound.protection.outlook.com [52.101.56.17])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C4F1AA;
-	Fri, 29 Sep 2023 13:43:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4001C8EA;
+	Fri, 29 Sep 2023 20:43:34 +0000 (UTC)
+Received: from BN3PR00CU001.outbound.protection.outlook.com (mail-eastus2azon11020022.outbound.protection.outlook.com [52.101.56.22])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971C81AE;
+	Fri, 29 Sep 2023 13:43:33 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ALJ+mWKhoXa4J4C4ng2WSfW/McOL3VSDN9mKgChRJsp/RUCQrzxbP9DlXhgoIGCAVzmAIhBPBP373iYTWX8EXXaK4T8l8IRIYr1ng+0f4NvJSs5AsKPkUkn8MAuEo953EFw4ARDkAAlT/oYRD4ej+S/2lIzj1xkt3H1yCyweIGlgzj17n+dEKw+r93eGLw9tkDtCL12Ihc94Mj1AAZFh5acx0WSbRtRS7iouzk8KHpg23tjf0ExX9JxIK6dJsqN6w91CA2kBkEOvggn6mUSg9CYK1V1n5FRSWog5X4CVeRfj66Ng4xWBDMNKmPmWJacjOIsoR1Znpx2Lf2r1Xry45A==
+ b=fxoKmNPpRvlnSW7rJuO2FFROhBC/eQj5919hGzMGhnQSouxT+sn3b98DvKe0zuFNvNMa0Fm0agLb037YrdE8Wb4Ftwfgpeq0oLSSRbeQSYYJH4QDjv3LyW8x2kYPESp+Y9AVTrLb/YkI3UzwQ0bEyPxxvmMNyvX/Op9nOzoPj9N8PgNVdqSBB70T+zYYgwB/i2mDK7JVxaORzr8jZXNi7qmOkvDYIZOHko9kLWqFzYPyBI2RL5VRnFNjxRWUpLypgMAdkdk/bNmZi1AUzPYNVVnnWOVo8RpWfiPboWk3OxVYERPYXZsoCzcotD+n8gyI0yCX9SuQe4b0pyVcNzyOpg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dxT8qLiEFsyVUsdKnnu4mDC0v1cHYjdqSUmOxEJXQs8=;
- b=CichUJnYcNuRUrM1an7WSeYUKyckXcqLQN9KzuTxF3xDBcWnqpbV4JWOccsbjCRQw6RJTH8C8++WLHgDJ5U9O2t2dPeIAZaa7hH+uOetEUs8vXwPGHjHPBPOvbrxa375A1st3MrI1eTkmKkEoeNXksdGKnskMJ/9powNUSdFz3O7u2AdNqse3GtR/bTf4XsEruWBICoha6WCa2I90t0CEcsJWHpxp7I/E3hdEttF+WK7f9/AKOoh/knNfehbyTohcBDleE0/Pq5x7ugQrc4Fa7KJS/WyE2kYK3aN+Zxdz1K37sHqp+2Q99bTkySRWLndGdsq9su7ow8StGlTPXpJeA==
+ bh=xXFNeo5UWEafj2CY2GwEkJpsUM73DhTAB01Uavi+FFs=;
+ b=SfKDarQapz4RH6VRdOpy5adYcKppSukhZ2o5QcnrkDmdfKi4jbnw2yrvE1NtIPubvWf/0neTDH86iH+eD5gBwWQdspW36XQA+8JjwJ+D7ZlGhruApCYvVF2VR5v5S+ZnIVl5blIiRVFlhPW370VcjgaqN3JUyJ6O3CueHc+Xknpq3rhO5+tuGSxI6lNKwc2ynr94CFZiCkaDSl7Kxq44uSh+yzf9ZtYaV/E1yiuGPwVvaFCQuXEhbG5mKpFxVKdbsGdYVbIQmRFwssUEct0ZAKckzFocNOxqYEYqbKKsNry+uM3D+ifShNMeso/jyaLJNYxJu2f42gVjrfhYL1s7Uw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microsoft.com; dmarc=pass action=none
  header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dxT8qLiEFsyVUsdKnnu4mDC0v1cHYjdqSUmOxEJXQs8=;
- b=DDXdn6M9lI5ZJTi4E76/SRtzkn3tksmVu7WR4bb5UXPu1i56MFMyU4eERXHb4o+OYpAiD7dbjUNSzkSH3/i/YuCLiJiCQdYHv5hjWiww6zFCyr8ZWZMvkNCIxTATkiMrOwHhwb3CI91dQ9tZa65324lybQNt6/jWCg06iVcEHFc=
+ bh=xXFNeo5UWEafj2CY2GwEkJpsUM73DhTAB01Uavi+FFs=;
+ b=aN8BT7h/2SWY10GFEvp/iTlaYml+n8H+L7XdO5bnO3S6uF4qKmvgITfuQwtU4kTzFwi6s73xK8QAEA1Ej6rnDbBqOMGek2vktWKJf4zIOQ9TsOP5d76O/IqKuzwYng1f4WJiTfh/Kovt3BYJ/nhau++e/FJqfC5+gMdwLQLaYLI=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=microsoft.com;
 Received: from BY5PR21MB1443.namprd21.prod.outlook.com (2603:10b6:a03:21f::18)
- by MW4PR21MB1969.namprd21.prod.outlook.com (2603:10b6:303:7c::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.8; Fri, 29 Sep
- 2023 20:43:13 +0000
+ by DM4PR21MB3178.namprd21.prod.outlook.com (2603:10b6:8:66::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6863.9; Fri, 29 Sep 2023 20:43:28 +0000
 Received: from BY5PR21MB1443.namprd21.prod.outlook.com
  ([fe80::1d4f:5006:aed7:78aa]) by BY5PR21MB1443.namprd21.prod.outlook.com
  ([fe80::1d4f:5006:aed7:78aa%6]) with mapi id 15.20.6863.016; Fri, 29 Sep 2023
- 20:43:13 +0000
+ 20:43:28 +0000
 From: Haiyang Zhang <haiyangz@microsoft.com>
 To: linux-hyperv@vger.kernel.org,
 	netdev@vger.kernel.org
@@ -72,11 +71,14 @@ Cc: haiyangz@microsoft.com,
 	hawk@kernel.org,
 	tglx@linutronix.de,
 	shradhagupta@linux.microsoft.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net,v2, 0/3] net: mana: Fix some TX processing bugs
-Date: Fri, 29 Sep 2023 13:42:24 -0700
-Message-Id: <1696020147-14989-1-git-send-email-haiyangz@microsoft.com>
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH net,v2, 1/3] net: mana: Fix TX CQE error handling
+Date: Fri, 29 Sep 2023 13:42:25 -0700
+Message-Id: <1696020147-14989-2-git-send-email-haiyangz@microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1696020147-14989-1-git-send-email-haiyangz@microsoft.com>
+References: <1696020147-14989-1-git-send-email-haiyangz@microsoft.com>
 Content-Type: text/plain
 X-ClientProxiedBy: MW4PR03CA0209.namprd03.prod.outlook.com
  (2603:10b6:303:b8::34) To BY5PR21MB1443.namprd21.prod.outlook.com
@@ -90,56 +92,56 @@ MIME-Version: 1.0
 Sender: LKML haiyangz <lkmlhyz@microsoft.com>
 X-MS-Exchange-MessageSentRepresentingType: 2
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR21MB1443:EE_|MW4PR21MB1969:EE_
-X-MS-Office365-Filtering-Correlation-Id: 762f0d67-afce-4c13-f28f-08dbc12cb2d4
+X-MS-TrafficTypeDiagnostic: BY5PR21MB1443:EE_|DM4PR21MB3178:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6a6ddd9a-4a7e-432d-2538-08dbc12cbc5c
 X-LD-Processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
- U9SfSOUEzu8ckqbodITsATG1ND+A4+AVWU65gWf/c2JDjBAi4+umnOmZSiO1HLxyThL6nwavTClFQh/ztw2DPqWbMFtl7Yzv8SXnkEMEUzh8V70prv5kdvnaLG5ON1tXNwVUEEddjhA49HW7oixSBEBfMIJYp37U+Alot+pEmHXbog/r4UaHja8EtFHlRov9ilBjyGnq9DDQ0LRzOeUVFuJUVps6sgM+gD6lyk7kpFSicGli6j9AP6iLzYazx/cc/Aufk4Gq2jXq1ia5khXhzebvO1F8/NWlxkpNFJihCb/jhawUYeaPB3qSHTat1r54gzwDkHw/nDJLAOU/40qWvl4IW51eBaUoesFdMXBJJT38/rFIr3zhTFHX6cvEAwZBpAzAO/BsOzUBc1xdKLoI/BFpqO9wccEyg0SKyx4qaNEgUkqjdeEH4wfuHTXv3Hpxc+J/SpjT/vZ2NxzU3o2o4BIJNuJih3vIxbd6nkvFqL/99OoKh6e28+jSryRBrar1NSDHtPPC/tv7ZyHSRrkmAkeLs9msEhc+IdHM29JVzO3VKIzMYOOnqXdC736cL3B/4op4Zf76rONiEcgdY3faaH11FdTUD7CUxIlT+iLymN+vGGqi1uQJvllQg6QGFiHm9w17nWukmsgMb79atXQaP1dRPhgiRbGitUglWjQwv7g=
+ ky+aIH9ovTI61fWaAC/99ga6zf9/lFpHnIu/DCch6iYZPwpGMNsJ9mVG++KjfDcrWaOrWHhtkGZ+zjacGLTilZVPHgC0qTjoaRnnpgWREOJA6J8Swm3PnGN8vmwmpAybmqnhlUQPo3sGFoQXZTmFC2j2YbzDi5CNtXwqFakIogyQ6Au5CuJI3l4I4BcAIeWr02gs4qNTIITBjte+qZ8joFgKZB3a2c2k3bgdu4Z0mF/dsmwZRrm2NQcPbF315jM3cWeh4QSvu0WCdWIMQ1X0clUwpIFMbtgDNqvvfXUsml9aRuJTTSRIhp1stNWfpV4+9B1wdJQ1R80y2TDgvMje7aGx9WoF74RmhRmDCKxl60EC1JP47YeNLnagLV1Tv9Zgx7JbS1DTovNAYRXAELj9n/lSlWNSC219j3WPDBO0o+47y77yi+YGeQeUPkdBiWW8qlZVC2UxjsyH8sFAV3kdBqDtHR8S0/T7eHojsiXlOWVyd1W4gv/aoiPDtRMX2lse+sxk1fSMf2QXjES5OCl+ZoQhP5/ejUFz9kp23DgrEi0Xih2CTMQnX1d6XIHae7wokWh41wY1d9SR58gtZdRDAs9yHn4/RV2XOztLDV5Yv0eJ3Lj2byeBvlP2x5HIM/rZFtVog38np4RYiYwAp4Cj2qw58Hu3DxudOApFSuo2SiY=
 X-Forefront-Antispam-Report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1443.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(366004)(396003)(346002)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(7416002)(4744005)(6512007)(2906002)(82960400001)(82950400001)(5660300002)(52116002)(6506007)(6486002)(7846003)(2616005)(26005)(83380400001)(36756003)(6666004)(478600001)(41300700001)(38350700002)(38100700002)(8936002)(8676002)(316002)(4326008)(10290500003)(66946007)(66476007)(66556008);DIR:OUT;SFP:1102;
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1443.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(39860400002)(366004)(396003)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(7416002)(2906002)(6486002)(10290500003)(41300700001)(8676002)(66556008)(66946007)(8936002)(5660300002)(4326008)(66476007)(6666004)(478600001)(6512007)(7846003)(6506007)(52116002)(26005)(2616005)(316002)(83380400001)(38100700002)(36756003)(82960400001)(82950400001)(38350700002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
- =?us-ascii?Q?MAdgxnYgJKQzrAq0Epfrh2vBKUiafZOuC6hH43ypCDT9nFRQsAva0uAArE1V?=
- =?us-ascii?Q?xU/tnGrqP7C94LArsHayqpxXB6HmHPAoCyCMiShRxnWgBuVGVdRvvBZuE69u?=
- =?us-ascii?Q?2LsaJSULrysWoPbrhTa+VyvngH47BS863wT0Al0n8dqyyF29E3PTokW7ls39?=
- =?us-ascii?Q?u43J95efKnW2hKJD9+GCYHoG6ICIT6mcN8u5IYUauQJcD64ev2qGoh5LJmbo?=
- =?us-ascii?Q?eT2gLXxdu2gTAwmeKZD4Gz5mxKxD2ioia9haBPyfIllVtbrea0SXp2cA4nWJ?=
- =?us-ascii?Q?Kqp0zMLKCuaDh6Gm3Y3A7rbqfCCif/qw9ckDebPlblADY8iv5GH7luonltEJ?=
- =?us-ascii?Q?Ak4tZ3MCpVwO6NGUIWdnIe9wbdOt2BEGCz057nCiAfnbutBkdOsXyoVB7247?=
- =?us-ascii?Q?YALWGjVekHiL7j6MMWKBGGNjlIfPNe+GpiG1Aaba6AIKMMBSmeoIrlsWVJwj?=
- =?us-ascii?Q?0pFM78s4/sdTvCujKweGsIbgbi0mUiz6RL/OgIZKEDTjbDxruB1DOxpv+gJn?=
- =?us-ascii?Q?0apE+Jxnkm2GPYSWXAwK0j68k+b8zmgOdZUc6jts8K6BwfeALioHq7oZRCry?=
- =?us-ascii?Q?IITx7un54Wa8Jl0UnczWvPdVCAL0yKcH0kHFqtnu7i2BxJigH1gJOascyR2V?=
- =?us-ascii?Q?Hirpo2N5U0SI2rA1Q1dSj7KpzHDDOLgWi55ZlPSlmOg3Mr/yJOTnQTkW08Cg?=
- =?us-ascii?Q?FGGb32AKRoQhOMtrk3YCvqa+EN7/sjMr0vQwpUGOZRikoCMl4N1T0fsig9AB?=
- =?us-ascii?Q?GQIWmWCRMHPvbSlTcQUrGRplDkOQa679AoqxkCVxwSpAOP96tHSbco++YxJq?=
- =?us-ascii?Q?qoP3xEoCWT4pzQ2SvMYbgZZEP1CJtK5knoCrbvF8tyksgjPUgL1pn9/HN9kb?=
- =?us-ascii?Q?nII45v6GUfa1kcH3qgzJBZ3SrLbGukKNYRqqYDIZ5QcZA+TLqALvStV370g1?=
- =?us-ascii?Q?UO8X/7Td8zQAwEjKVTev3IQB2T0qliylzsBSk4QgVd9ALhh8rLVFLq9zYOaV?=
- =?us-ascii?Q?JUr+FQbCmeyC4Ww1GqMkVoO0W6mPLdviYhDZE/cdSy//W/fiF15Uf6IcZ05z?=
- =?us-ascii?Q?x5VIgtBK2RvaX6SLKZn23tE8l0iIp0r8Yr5mH2Za2pl3u2NnPgCw2t9lx3xD?=
- =?us-ascii?Q?uCB6UKaqoMN5/3BFL8FY2JcIfbVEzpwmvMGOCr4Y7047GMf6s2noHgiOcf4o?=
- =?us-ascii?Q?FeBmCmJc2VxN/Mg+GG1jsMEtlNV/ED1SguBzATOWD6f8TaErZLXN5K82O6Lx?=
- =?us-ascii?Q?c2anfBkFLr71m3p/oKvKo5puzBuvEpB1sLm9twEQ1awpawbDev9wUtdkDzjI?=
- =?us-ascii?Q?IXGig4NjwzmeFxdkVpsPHT2k9RZUvObbQ/KThvfmya9cxVGAiK9mzeiPp8sN?=
- =?us-ascii?Q?DCKH7jScYTWR57IDHkGcJE4a2V6HpATHlx4mzgrNJ2KoySxUxEF9pmWYrxLu?=
- =?us-ascii?Q?y0mVs5l6QRAKbyPMgTdGZ0Hn3sF4U/gXyIR81ZP/k3JyTZrf++y6nf85TTpv?=
- =?us-ascii?Q?VptC4UBQ4IyjEGc9UAU/8KW2mTI9UatD59eAZCv2Xnzq7EcFEEouDClzGuhQ?=
- =?us-ascii?Q?c57vsiqCb19jS1mnHrHy3IG5Wwnn9d7BSHLNDirP?=
+ =?us-ascii?Q?aP9P2sunhKLjtjERB5cKXaO4KdYqGcKRlWBwj8L4gB3DiYctQ+WmgzTAVB3S?=
+ =?us-ascii?Q?4LKuKQlUviDTP+kDPBy7PfVr5niW30LvTjDN03MQ+APdniTWAmlbHiYsRKHT?=
+ =?us-ascii?Q?rqDp/H+le8C1NwuWcE/VCWX5kmckrCZ03LbAZT7ShYX5aIf7CUjqLdwwREv/?=
+ =?us-ascii?Q?hGVnAkomFvMox8HKkyBZmkcSm/K1nrv7cAF6bFbxlJWskqtKA+FGsFfn10HH?=
+ =?us-ascii?Q?1ObiZgU60h3Aujpeo8dVcPa7Dko9zcRu7AdvCq8vQWsIOZjbuqzV81kzHAsd?=
+ =?us-ascii?Q?aY3QoFXgMEvlKuYf2qa4yZI9p++FGCbaE35swhTwvx79P6tMRb8X1aWM38mt?=
+ =?us-ascii?Q?rbbhBWFjxL7A8DCXsoHueSqtrjHIc6ObEhPnRpzqK6BNQjpTRhW7CupSUrW4?=
+ =?us-ascii?Q?JzR0BVBRTpFg5eSGNIXPO5Gbx4U5pe61UttSPbKV3Sk9v0kfar72ITL0jQlf?=
+ =?us-ascii?Q?7IleLo/R4wRnmf2PWhfyyFB+IJB66G5NQY3WjFCIOVoVrEXczVD9h2Cy+7fF?=
+ =?us-ascii?Q?t11K6I0DM4kQbjKEAJeJeIYT3LJRSCztdbiNCJOd3yZKUTEUAx/qEsf9LjPA?=
+ =?us-ascii?Q?DGAQbOz+IUGpucl4Ogj6PtEVSdbdbsRK8WQlpUM34GTui8GZl9a2h2mMd1Sf?=
+ =?us-ascii?Q?2mPZD0ltZTCAKCf9oq8uTjhgUyNlOl/L3t4AUy6540MJvw4VU6TSzrT4gslD?=
+ =?us-ascii?Q?MV2YKIUJcwndKmBm8ltS+KbHfxrfNIVUNKJ/uIVpB7ORuWtGscxjRJQFwwlB?=
+ =?us-ascii?Q?XSJ7VegmUVtkZPmWpEMbAzf/nVa+kD+aKTSNDhnsSXobv3axHlyOwvlgj3zI?=
+ =?us-ascii?Q?QPRsg5dXf95Tw9nva/8O1ub4ZG7ye9hZBij91SmKVJS3jn9H3Ey5cJKwSNhJ?=
+ =?us-ascii?Q?CzibsZWpR3kAIgI5e8eOTn+XMAUu1zLmq7RVl1x+RH+D/U49lBVgZN1nYwWA?=
+ =?us-ascii?Q?gyxPLe3jdv1xUCkDtjAu1nGMz3hlXtNhR7FAhdCSjsQaiqsUhbpAEEzYChSt?=
+ =?us-ascii?Q?s10C2D68B0e3nrI83vG0ji/o6irp82+1UsdwwCI4w/S6I5pPzNGqCN3yn4XT?=
+ =?us-ascii?Q?is+9SuGT1eGHE7FMdOvKXfn5xoAKpIswVf6Ow4NwAsoWk61nr1yZzVPaCaV8?=
+ =?us-ascii?Q?+riMUHXIDs3gAqWly2K8Cts9xLshTnKmkjFphQJQlfO9DWzj40YC6e5KV3fa?=
+ =?us-ascii?Q?m97e9R7wbiYSwOxQKO5s+xm5jXCG/vMzsbffouB6PMxmf06GBIlpIKrnyiUI?=
+ =?us-ascii?Q?V/eksz+bMMk3y5XcPU0/QeuDJaC8+DL//QPSc93HfGPx59lTiQ50hBWPzO/G?=
+ =?us-ascii?Q?94V7q/coZGwbuY++eOL9ADyvKOPJDMqHfQPhIo1FPSvI/xx7Kyk9gaZMG/L9?=
+ =?us-ascii?Q?IKa2ap4XqVaeqDNriEyLmR/3wLdVTjPtGQzMsdAKSRw2ETS25kER0N/wTgS2?=
+ =?us-ascii?Q?kfk2uCl41FywyH3lUVB7/4bdCnqSgGoTcWEy7dL3p/03i6mVi6MDeImYrfQG?=
+ =?us-ascii?Q?uPgp6aCq8azd9zIZzkzCd+ZIhpsfTrL2bmnJIOr2UP6oPuExIYBpTF/TYbjS?=
+ =?us-ascii?Q?g4vou4F+n8jRvUSJlLWLbjPIJfpBxE0TBbAJ4z/x?=
 X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 762f0d67-afce-4c13-f28f-08dbc12cb2d4
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a6ddd9a-4a7e-432d-2538-08dbc12cbc5c
 X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1443.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2023 20:43:13.3011
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2023 20:43:28.7197
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /DG4CUhcZ7n4NKEoU9k9BX09IP1qFP6rzhQefoUTNc5VqFdUAHmsBQdHde/T7lrL+G4kAiErSVlDSA1ooK+iWQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1969
+X-MS-Exchange-CrossTenant-UserPrincipalName: LRCpiBE8wU+d3Qiwl6wRtoYo4uVB6sNfUebSbgYkjJw+yjP64YOvwwS6RvZSQPzkfYfJKxe6t7E+nKO9Ku1j0A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR21MB3178
 X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
 	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
@@ -147,18 +149,56 @@ X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Fix TX processing bugs on error handling, tso_bytes calculation,
-and sge0 size.
+For an unknown TX CQE error type (probably from a newer hardware),
+still free the SKB, update the queue tail, etc., otherwise the
+accounting will be wrong.
 
-Haiyang Zhang (3):
-  net: mana: Fix TX CQE error handling
-  net: mana: Fix the tso_bytes calculation
-  net: mana: Fix oversized sge0 for GSO packets
+Also, TX errors can be triggered by injecting corrupted packets, so
+replace the WARN_ONCE to ratelimited error logging.
 
- drivers/net/ethernet/microsoft/mana/mana_en.c | 211 ++++++++++++------
- include/net/mana/mana.h                       |   5 +-
- 2 files changed, 149 insertions(+), 67 deletions(-)
+Cc: stable@vger.kernel.org
+Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
+Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
+---
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 4a16ebff3d1d..5cdcf7561b38 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -1317,19 +1317,23 @@ static void mana_poll_tx_cq(struct mana_cq *cq)
+ 		case CQE_TX_VPORT_IDX_OUT_OF_RANGE:
+ 		case CQE_TX_VPORT_DISABLED:
+ 		case CQE_TX_VLAN_TAGGING_VIOLATION:
+-			WARN_ONCE(1, "TX: CQE error %d: ignored.\n",
+-				  cqe_oob->cqe_hdr.cqe_type);
++			if (net_ratelimit())
++				netdev_err(ndev, "TX: CQE error %d\n",
++					   cqe_oob->cqe_hdr.cqe_type);
++
+ 			apc->eth_stats.tx_cqe_err++;
+ 			break;
+ 
+ 		default:
+-			/* If the CQE type is unexpected, log an error, assert,
+-			 * and go through the error path.
++			/* If the CQE type is unknown, log an error,
++			 * and still free the SKB, update tail, etc.
+ 			 */
+-			WARN_ONCE(1, "TX: Unexpected CQE type %d: HW BUG?\n",
+-				  cqe_oob->cqe_hdr.cqe_type);
++			if (net_ratelimit())
++				netdev_err(ndev, "TX: unknown CQE type %d\n",
++					   cqe_oob->cqe_hdr.cqe_type);
++
+ 			apc->eth_stats.tx_cqe_unknown_type++;
+-			return;
++			break;
+ 		}
+ 
+ 		if (WARN_ON_ONCE(txq->gdma_txq_id != completions[i].wq_num))
 -- 
 2.25.1
 
