@@ -1,192 +1,68 @@
-Return-Path: <bpf+bounces-11097-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11098-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AAA27B2C53
-	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 08:32:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 847617B2D71
+	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 10:04:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 4E20A282C68
-	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 06:32:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id 4E9091C20BE4
+	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 08:04:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C493E883A;
-	Fri, 29 Sep 2023 06:32:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA306C8EA;
+	Fri, 29 Sep 2023 08:04:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 918BB210D
-	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 06:32:44 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0498D1BD
-	for <bpf@vger.kernel.org>; Thu, 28 Sep 2023 23:32:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1695969160;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6sGP1uczCLU0843N+bG6IAXvwld3ke34VDTuCS/8Xis=;
-	b=QfLli2RezFuzuYFUgiGU17ZY3yZof8og5eXQgg41uRBce+R+SF5jlwYw/zoewce3GNE95k
-	FQhShP9MkF1zxG7sayZXtYdY6R8eTI7Ey17VrfTkfbvMA070dcyYdtie1qE73cd9DZRKP5
-	OwetVQNKKrZrBclOEFPqJeXsjPxxUsA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-621-ZDrwgJ6cPKG_Kpsdvt5HQg-1; Fri, 29 Sep 2023 02:32:36 -0400
-X-MC-Unique: ZDrwgJ6cPKG_Kpsdvt5HQg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0AC838002B2;
-	Fri, 29 Sep 2023 06:32:34 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.226])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 8C9AA401027;
-	Fri, 29 Sep 2023 06:32:10 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <6a6f37d16b55a3003af3f3dbb7778a367f68cd8d.camel@kernel.org>
-References: <6a6f37d16b55a3003af3f3dbb7778a367f68cd8d.camel@kernel.org> <20230928110554.34758-1-jlayton@kernel.org> <20230928110554.34758-2-jlayton@kernel.org> <6020d6e7-b187-4abb-bf38-dc09d8bd0f6d@app.fastmail.com> <af047e4a1c6947c59d4a13d4ae221c784a5386b4.camel@kernel.org> <20230928171943.GK11439@frogsfrogsfrogs>
-To: Jeff Layton <jlayton@kernel.org>
-cc: "Darrick J. Wong" <djwong@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-    Alexander Viro <viro@zeniv.linux.org.uk>,
-    Christian Brauner <brauner@kernel.org>,
-    Linus Torvalds <torvalds@linux-foundation.org>,
-    David Sterba <dsterba@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-    Theodore Ts'o <tytso@mit.edu>,
-    "Eric W.
- Biederman" <ebiederm@xmission.com>,
-    Kees Cook <keescook@chromium.org>, Jeremy Kerr <jk@ozlabs.org>,
-    Michael Ellerman <mpe@ellerman.id.au>,
-    Nicholas Piggin <npiggin@gmail.com>,
-    Christophe Leroy <christophe.leroy@csgroup.eu>,
-    Heiko Carstens <hca@linux.ibm.com>,
-    Vasily Gorbik <gor@linux.ibm.com>,
-    Alexander Gordeev <agordeev@linux.ibm.com>,
-    Christian Borntraeger <borntraeger@linux.ibm.com>,
-    Sven Schnelle <svens@linux.ibm.com>,
-    Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-    Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
-    Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-    Joel Fernandes <joel@joelfernandes.org>,
-    Carlos Llamas <cmllamas@google.com>,
-    Suren Baghdasaryan <surenb@google.com>,
-    Mattia Dongili <malattia@linux.it>,
-    Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-    Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-    Brad Warrum <bwarrum@linux.ibm.com>,
-    Ritu Agarwal <rituagar@linux.ibm.com>,
-    Hans de Goede <hdegoede@redhat.com>,
-    Ilpo =?utf-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-    Mark Gross <markgross@kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
-    Eric Van Hensbergen <ericvh@kernel.org>,
-    Latchesar Ionkov <lucho@ionkov.net>,
-    Dominique Martinet <asmadeus@codewreck.org>,
-    Christian Schoenebeck <linux_oss@crudebyte.com>,
-    David Sterba <dsterba@suse.com>, David Howells <dhowells@redhat.com>,
-    Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>,
-    Luis de Bethencourt <luisbg@kernel.org>,
-    Salah Triki <salah.triki@gmail.com>,
-    "Tigran
- A. Aivazian" <aivazian.tigran@gmail.com>,
-    Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-    Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
-    Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-    Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
-    Nicolas Pitre <nico@fluxnic.net>,
-    "Rafael J . Wysocki" <rafael@kernel.org>,
-    Ard Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>,
-    Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-    Jeffle Xu <jefflexu@linux.alibaba.com>,
-    Namjae Jeon <linkinjeon@kernel.org>,
-    Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>,
-    Andreas Dilger <adilger.kernel@dilger.ca>,
-    Jaegeuk Kim <jaegeuk@kernel.org>,
-    OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-    Christoph Hellwig <hch@infradead.org>,
-    Miklos Szeredi <miklos@szeredi.hu>,
-    Bob Peterson <rpeterso@redhat.com>,
-    Andreas Gruenbacher <agruenba@redhat.com>,
-    Richard Weinberger <richard@nod.at>,
-    Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-    Johannes Berg <johannes@sipsolutions.net>,
-    Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-    Mike Kravetz <mike.kravetz@oracle.com>,
-    Muchun Song <muchun.song@linux.dev>, Jan Kara <jack@suse.cz>,
-    David Woodhouse <dwmw2@infradead.org>,
-    Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>,
-    Trond Myklebust <trond.myklebust@hammerspace.com>,
-    Anna Schumaker <anna@kernel.org>,
-    Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
-    Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>,
-    Tom Talpey <tom@talpey.com>,
-    Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-    Anton Altaparmakov <anton@tuxera.com>,
-    Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-    Mark Fasheh <mark@fasheh.com>,
-    Joseph Qi <joseph.qi@linux.alibaba.com>,
-    Bob Copeland <me@bobcopeland.com>,
-    Mike Marshall <hubcap@omnibond.com>,
-    Martin Brandenburg <martin@omnibond.com>,
-    Luis Chamberlain <mcgrof@kernel.org>,
-    Iurii Zaikin <yzaikin@google.com>, Tony Luck <tony.luck@intel.com>,
-    "Guilherme G.
- Piccoli" <gpiccoli@igalia.com>,
-    Anders Larsen <al@alarsen.net>, Steve French <sfrench@samba.org>,
-    Paulo Alcantara <pc@manguebit.com>,
-    Ronnie Sahlberg <lsahlber@redhat.com>,
-    Shyam Prasad N <sprasad@microsoft.com>,
-    Sergey Senozhatsky <senozhatsky@chromium.org>,
-    Phillip Lougher <phillip@squashfs.org.uk>,
-    Steven Rostedt <rostedt@goodmis.org>,
-    Masami Hiramatsu <mhiramat@kernel.org>,
-    Evgeniy Dushistov <dushistov@mail.ru>,
-    Chandan Babu R <chandan.babu@oracle.com>,
-    Damien Le Moal <dlemoal@kernel.org>,
-    Naohiro Aota <naohiro.aota@wdc.com>,
-    Johannes Thumshirn <jth@kernel.org>,
-    Alexei Starovoitov <ast@kernel.org>,
-    Daniel Borkmann <daniel@iogearbox.net>,
-    Andrii Nakryiko <andrii@kernel.org>,
-    Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-    Yonghong Song <yonghong.song@linux.dev>,
-    John Fastabend <john.fastabend@gmail.com>,
-    KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-    Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-    Hugh Dickins <hughd@google.com>,
-    Andrew Morton <akpm@linux-foundation.org>,
-    "David S .
- Miller" <davem@davemloft.net>,
-    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-    Paolo Abeni <pabeni@redhat.com>,
-    John Johansen <john.johansen@canonical.com>,
-    Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-    "Serge E. Hallyn" <serge@hallyn.com>,
-    Stephen Smalley <stephen.smalley.work@gmail.com>,
-    Eric Paris <eparis@parisplace.org>, linux-fsdevel@vger.kernel.org,
-    linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-    linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-    platform-driver-x86@vger.kernel.org, linux-rdma@vger.kernel.org,
-    linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-    v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-    autofs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-    ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu,
-    linux-efi@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-    linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-    gfs2@lists.linux.dev, linux-um@lists.infradead.org,
-    linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
-    linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
-    linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
-    ocfs2-devel@lists.linux.dev, linux-karma-devel@lists.sourceforge.net,
-    devel@lists.orangefs.org, linux-unionfs@vger.kernel.org,
-    linux-hardening@vger.kernel.org, reiserfs-devel@vger.kernel.org,
-    linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-    linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-    bpf@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-    apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
-    selinux@vger.kernel.org
-Subject: Re: [PATCH 86/87] fs: switch timespec64 fields in inode to discrete integers
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE4ABC2D4
+	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 08:04:21 +0000 (UTC)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738E81A5
+	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 01:04:20 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-533cbbd0153so14171978a12.0
+        for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 01:04:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1695974659; x=1696579459; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=3BtaexmYkjplHFsMDid295szgBs8UBajcfrSgOPKauc=;
+        b=IVP9t89Nf76gDoh7u+xZh07O4jTFUwkY2WQSrtrT4JrNyeQtCcPoiHSyTJO/wUlCzL
+         slP8mQ5blwFjSvpKqJEAUmjL/FU6q+5TgCBI1Fp5vFEQAHY+WVjMMbbXOlMr80QFpPxy
+         q+9pfs8cUTA++ou50tavq4h1E6MUNEUNylYbiKioFn0ZsRahmkFcZFwdp/tS4CNuw8UE
+         kh3r6DTwc+BXzDkeoiLIsATcwwUCYbFsXlHRXG1TMoO2dzDaZp+rrPwUqcQCnnwDGXFv
+         esalcC9l8EnnSKSU0CEdiPQ8vv+/qdzXKoyHnEY+XpEzucngtf/bbIsoGvtcON9EcYzq
+         AXLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695974659; x=1696579459;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3BtaexmYkjplHFsMDid295szgBs8UBajcfrSgOPKauc=;
+        b=BVJCQvgYLJjOa9QT1YMLCfIXrzy/lB32/i+wcolvwH1INb/zj7Gw34N8lzXcPk7bgK
+         ubymrLtNyFRk1WmtvGo7uMmoYo3nnaxNoT+CQFNYkTfLu4CXyT5Mwdo2Dy+FKuGDvfaM
+         Ig0IDaADScYI1ciSG6tw6YhpMRhJ++CPXgwX0SnQKbkr92Y338Xti8QlV7Z6dt3OPaQ5
+         fEg0/UODEbAoBgq2OyEUN2nN4xVpzw1F66eUFzc3yVltVSSCn6WuvAC/Ni37MyvnFYqy
+         kABHnW67a5QyFnV1ktT7GPKoIMVsTYnXvR6/MagCsnAanPeOZEeNFi+rUgtHxCrVQOWX
+         wzrA==
+X-Gm-Message-State: AOJu0YyG/xyRuXObxGYsLo4M9IAkfkNIFrz2GrGsN+OW7hB0JezqFt0G
+	ZWxX+XXdHkYlM8jsXg7apGurww==
+X-Google-Smtp-Source: AGHT+IHxRPKLDiFlVladtRrAPh0tbXcK+zBdKj2xQlR2G4AeFCg5MSNU/8Zt/FN1IsWIizJP09+/qQ==
+X-Received: by 2002:a17:906:3116:b0:9ae:3c6c:6ecd with SMTP id 22-20020a170906311600b009ae3c6c6ecdmr3369888ejx.19.1695974658919;
+        Fri, 29 Sep 2023 01:04:18 -0700 (PDT)
+Received: from cloudflare.com (79.184.153.47.ipv4.supernova.orange.pl. [79.184.153.47])
+        by smtp.gmail.com with ESMTPSA id kg28-20020a17090776fc00b0099b921de301sm12049940ejc.159.2023.09.29.01.04.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 01:04:18 -0700 (PDT)
+References: <20230926035300.135096-1-john.fastabend@gmail.com>
+User-agent: mu4e 1.6.10; emacs 28.2
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, edumazet@google.com
+Subject: Re: [PATCH bpf v3 0/3] bpf, sockmap complete fixes for avail bytes
+Date: Fri, 29 Sep 2023 10:02:55 +0200
+In-reply-to: <20230926035300.135096-1-john.fastabend@gmail.com>
+Message-ID: <87fs2xflrw.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -194,30 +70,40 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
-Date: Fri, 29 Sep 2023 07:32:09 +0100
-Message-ID: <636661.1695969129@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Mon, Sep 25, 2023 at 08:52 PM -07, John Fastabend wrote:
+> With e5c6de5fa0258 ("bpf, sockmap: Incorrectly handling copied_seq") we
+> started fixing the available bytes accounting by moving copied_seq to
+> where the user actually reads the bytes.
+>
+> However we missed handling MSG_PEEK correctly and we need to ensure
+> that we don't kfree_skb() a skb off the receive_queue when the
+> copied_seq number is not incremented by user reads for some time.
+>
+> v2: drop seq var in tcp_read_skb its no longer necessary per Jakub's
+>     suggestion
 
-Jeff Layton <jlayton@kernel.org> wrote:
+Credit goes to Simon Horman.
 
-> Correct. We'd lose some fidelity in currently stored timestamps, but as
-> Linus and Ted pointed out, anything below ~100ns granularity is
-> effectively just noise, as that's the floor overhead for calling into
-> the kernel. It's hard to argue that any application needs that sort of
-> timestamp resolution, at least with contemporary hardware. 
+> v3: drop tcp_sock as well its also not used anymore. sorry for the extra
+>     noise there.
+>
+> John Fastabend (3):
+>   bpf: tcp_read_skb needs to pop skb regardless of seq
+>   bpf: sockmap, do not inc copied_seq when PEEK flag set
+>   bpf: sockmap, add tests for MSG_F_PEEK
+>
+>  net/ipv4/tcp.c                                | 10 +---
+>  net/ipv4/tcp_bpf.c                            |  4 +-
+>  .../selftests/bpf/prog_tests/sockmap_basic.c  | 52 +++++++++++++++++++
+>  3 files changed, 57 insertions(+), 9 deletions(-)
 
-Albeit with the danger of making Steve French very happy;-), would it make
-sense to switch internally to Microsoft-style 64-bit timestamps with their
-100ns granularity?
+For the series:
 
-David
-
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
 
