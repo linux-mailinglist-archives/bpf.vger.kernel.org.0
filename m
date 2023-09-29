@@ -1,255 +1,183 @@
-Return-Path: <bpf+bounces-11142-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11143-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99EA57B3BF7
-	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 23:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 242E97B3BF9
+	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 23:30:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by ny.mirrors.kernel.org (Postfix) with ESMTP id 9A6B21C20A43
-	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 21:29:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id 2AB481C20869
+	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 21:30:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBEAA6728C;
-	Fri, 29 Sep 2023 21:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 974C46728D;
+	Fri, 29 Sep 2023 21:30:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7B556669B
-	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 21:29:23 +0000 (UTC)
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17EF1AB;
-	Fri, 29 Sep 2023 14:29:21 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-533cbbd0153so15659975a12.0;
-        Fri, 29 Sep 2023 14:29:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696022960; x=1696627760; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ulc+lDz0cmLjLptsbHUWL0O/uVNoSf1Xc1Or5n5xvRo=;
-        b=ZDR4Qq2pe40f0N34LNncp+9fMDtAh1Kxz3D1LbpJeLH8GEPtCRlp0hHfvess7gxAcx
-         oPb5NFOuoaca3pW91SvI53x86/d7phv6sNCAJ9gkRlQNp36IIc9gbtaxDprBibpnf4Vm
-         SQh209rtfNdbXJyKLhdP8rf50I22Yw40DfQWDC8lZ/LYn/ovW8myqkyW5nofSR1STujt
-         Dxv/cWYnqNPX7WzHAUHzU3XV2/NyFeAbp1A4VjvgBwEAjzLMBVtBSzOYq/QWU4gGcDGX
-         AE3eE5TUa4+Bdqof53vbEx+kPqGlxS/sLyPVg17e2TJd1axb6SVuuYRh8PwoJXEKQQdU
-         qbFA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 596616669B
+	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 21:30:48 +0000 (UTC)
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E8B1AB
+	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 14:30:45 -0700 (PDT)
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 6D664421D0
+	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 21:30:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1696023043;
+	bh=fv2iCeZ2NmNQFv4pKAf5lzvluEcz2y7p9+53OPsfRqU=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=JGpLQjfwzGFFrxUn8ar2YgYbbxEprSQ/kniudfCUj9hZqLWTZr6/8jBR8c6mSiCIr
+	 AQJ1cBfoDJdV9EM28ahqsLN90VuhuX2ZtSnGYhYOJQrPWHf2nCxe/ryUed37Bk/adO
+	 /hgNb73rq1x5eafkNR439XfuoYekXIohfzk2/9QKWkdsHq6u/u0fbzg9iqsweouJhI
+	 Q+HPfdBm5+jFgBVXNIoZnm8j7sthptQOpIjZkgjAqwKXJdDpcgfFnqy1AYcIZnCUho
+	 V522h9LS9gbWnFLY70YotNI8r/NtCL+T9QsJPOC0ksO0/V28IcG6WWplLRA7qK4BbF
+	 kbVEbXNLjHj5Q==
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-41977b9970dso16960501cf.3
+        for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 14:30:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696022960; x=1696627760;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ulc+lDz0cmLjLptsbHUWL0O/uVNoSf1Xc1Or5n5xvRo=;
-        b=IgdhL2Fn2v6KIhEJjRRCaMvKloA/QdVGS30Oam+EGEeyrXuLXuuL/uoqTE4CJ3qtzd
-         /sFRnK1cgq1uuApIrEno4ZjNOnFRsYNpp7XQePwixJsKNgrNEhk1aZKjVV2fwHxpXQju
-         u1JpdC2Pma0HzXJUTw4X7gRqWv6Lf0fXWCyahIufnZbkU37kSwO6loUXxOL2IF+qOccQ
-         0pndltEMXa2JWrbPiQep9+Rrer1QQ4Lj3ACJ/aX9VUg0CBUgudzIqI31hKTZ1Ikpe71t
-         Bm3WeuixSYXmew7KfNRnqUR42jPHSnMp16mZVXqqggRT3YItkm5RkoZEVaecq2H1jjEM
-         g7lQ==
-X-Gm-Message-State: AOJu0YwFeERGoNkEf+PZlbeYPYR//5F0QQ5M4/mKrzBstWe7eGaMjj6j
-	oE5rKXtK2JMEnSwFqOW8UUUbKLjT5/hCnmmZE5w=
-X-Google-Smtp-Source: AGHT+IGlgptbueMHq7HzNbGa7p2NENix24xgxoIdRp14aXNwHNTx1rxfuqHRSLYlMCZxust4BW0Y2wD5VE2SKqePXtc=
-X-Received: by 2002:aa7:d648:0:b0:534:2e79:6b04 with SMTP id
- v8-20020aa7d648000000b005342e796b04mr4794500edr.14.1696022960015; Fri, 29 Sep
- 2023 14:29:20 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696023041; x=1696627841;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fv2iCeZ2NmNQFv4pKAf5lzvluEcz2y7p9+53OPsfRqU=;
+        b=Evz7XDN/GFR1jrhNGBhqFK7FusHFhLe9JFuw+GaKIUjNeERW1aMVS1/0lI6yfv1uTW
+         jUbefrgeZFyvigv/GNjXcYuVwRijbo8cwnQsPVeLNIIaA+9zZ/pKnxRHWM4wYw3aK7A3
+         v4yvQB9ortMVszLXB9v3wAHOMuxUo+7hW1KKGw62AhR/YcxyNnofgwO+7h2dzwPzVDKF
+         V06avFdu9Z6NR5ANYtw+v0bsUMElDyQtdHI3rvhnv4qVvGVWEYIvPKJCx5t5duLwkIEA
+         y90U4ycxd1XmbZsAUQjlBFNDgfufgfH6Br1TuGC8E4Sa5VO1bGLkPasx2vnBx8aYY/uH
+         o34A==
+X-Gm-Message-State: AOJu0YxQ/UKw6uJrfhbz65G5NqcYjpjY7bM2AWx0osZG1KK48pMf8Tzw
+	Tw9mvldZZzQKWFEsMm/mo4veSdd4575Ao8GRkd+/gZHJZeXcELppVC598RyP2i212JvTcV+ca8E
+	l00IWsYEDtZJ3OP7o6VNhFk9O+Q1XPirUtPau6NwY6utjww==
+X-Received: by 2002:a05:622a:1ce:b0:419:6a24:ef97 with SMTP id t14-20020a05622a01ce00b004196a24ef97mr6778027qtw.2.1696023041377;
+        Fri, 29 Sep 2023 14:30:41 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHgTRvMfSDpwi6xBtds14Ynjqo/IMbUPblRJ3qCioAimIh+rowpsGMBUiq3MZp2wXIzJwpzGHp/X0KODFTBJHc=
+X-Received: by 2002:a05:622a:1ce:b0:419:6a24:ef97 with SMTP id
+ t14-20020a05622a01ce00b004196a24ef97mr6778020qtw.2.1696023041148; Fri, 29 Sep
+ 2023 14:30:41 -0700 (PDT)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 29 Sep 2023 14:30:40 -0700
+From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <20230928101558.2594068-1-houtao@huaweicloud.com>
+References: <20230928101558.2594068-1-houtao@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20230925105552.817513-1-zhouchuyi@bytedance.com>
- <20230925105552.817513-5-zhouchuyi@bytedance.com> <CAEf4BzbYgf1t8tfQJ4xwfDH-o_3n+PRMBgC4AZRLbXGM=QJtzQ@mail.gmail.com>
- <27b57638-48db-7082-2b53-93d84e423350@bytedance.com>
-In-Reply-To: <27b57638-48db-7082-2b53-93d84e423350@bytedance.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 29 Sep 2023 14:29:08 -0700
-Message-ID: <CAEf4Bza68mRn0KpOX2k7PtbXvO-uYzKHhQ=C8J+zyNS6WTFPpA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/7] bpf: Introduce css open-coded iterator kfuncs
-To: Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org, 
-	linux-kernel@vger.kernel.org
+Mime-Version: 1.0
+Date: Fri, 29 Sep 2023 14:30:40 -0700
+Message-ID: <CAJM55Z-Qkc5+BzwB3d_7OcSLt+1u_Cu37=suqW1scxiRDaynmg@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Use kmalloc_size_roundup() to adjust size_index
+To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Nathan Chancellor <nathan@kernel.org>, 
+	Guenter Roeck <linux@roeck-us.net>, houtao1@huawei.com, 
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Sep 27, 2023 at 7:51=E2=80=AFPM Chuyi Zhou <zhouchuyi@bytedance.com=
-> wrote:
+Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
 >
-> Hello,
+> Commit d52b59315bf5 ("bpf: Adjust size_index according to the value of
+> KMALLOC_MIN_SIZE") uses KMALLOC_MIN_SIZE to adjust size_index, but as
+> reported by Nathan, the adjustment is not enough, because
+> __kmalloc_minalign() also decides the minimal alignment of slab object
+> as shown in new_kmalloc_cache() and its value may be greater than
+> KMALLOC_MIN_SIZE (e.g., 64 bytes vs 8 bytes under a riscv QEMU VM).
 >
-> =E5=9C=A8 2023/9/28 07:24, Andrii Nakryiko =E5=86=99=E9=81=93:
-> > On Mon, Sep 25, 2023 at 3:56=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance=
-.com> wrote:
-> >>
-> >> This Patch adds kfuncs bpf_iter_css_{new,next,destroy} which allow
-> >> creation and manipulation of struct bpf_iter_css in open-coded iterato=
-r
-> >> style. These kfuncs actually wrapps css_next_descendant_{pre, post}.
-> >> css_iter can be used to:
-> >>
-> >> 1) iterating a sepcific cgroup tree with pre/post/up order
-> >>
-> >> 2) iterating cgroup_subsystem in BPF Prog, like
-> >> for_each_mem_cgroup_tree/cpuset_for_each_descendant_pre in kernel.
-> >>
-> >> The API design is consistent with cgroup_iter. bpf_iter_css_new accept=
-s
-> >> parameters defining iteration order and starting css. Here we also reu=
-se
-> >> BPF_CGROUP_ITER_DESCENDANTS_PRE, BPF_CGROUP_ITER_DESCENDANTS_POST,
-> >> BPF_CGROUP_ITER_ANCESTORS_UP enums.
-> >>
-> >> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
-> >> ---
-> >>   kernel/bpf/cgroup_iter.c                      | 57 +++++++++++++++++=
-++
-> >>   kernel/bpf/helpers.c                          |  3 +
-> >>   .../testing/selftests/bpf/bpf_experimental.h  |  6 ++
-> >>   3 files changed, 66 insertions(+)
-> >>
-> >> diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
-> >> index 810378f04fbc..ebc3d9471f52 100644
-> >> --- a/kernel/bpf/cgroup_iter.c
-> >> +++ b/kernel/bpf/cgroup_iter.c
-> >> @@ -294,3 +294,60 @@ static int __init bpf_cgroup_iter_init(void)
-> >>   }
-> >>
-> >>   late_initcall(bpf_cgroup_iter_init);
-> >> +
-> >> +struct bpf_iter_css {
-> >> +       __u64 __opaque[2];
-> >> +       __u32 __opaque_int[1];
-> >> +} __attribute__((aligned(8)));
-> >> +
-> >
-> > same as before, __opaque[3] only
-> >
-> >
-> >> +struct bpf_iter_css_kern {
-> >> +       struct cgroup_subsys_state *start;
-> >> +       struct cgroup_subsys_state *pos;
-> >> +       int order;
-> >> +} __attribute__((aligned(8)));
-> >> +
-> >> +__bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
-> >> +               struct cgroup_subsys_state *start, enum bpf_cgroup_ite=
-r_order order)
-> >
-> > Similarly, I wonder if we should go for a more generic "flags" argument=
-?
-> >
-> >> +{
-> >> +       struct bpf_iter_css_kern *kit =3D (void *)it;
-> >
-> > empty line
-> >
-> >> +       kit->start =3D NULL;
-> >> +       BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) !=3D sizeof(stru=
-ct bpf_iter_css));
-> >> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) !=3D __alig=
-nof__(struct bpf_iter_css));
-> >
-> > please move this up before kit->start assignment, and separate by empty=
- lines
-> >
-> >> +       switch (order) {
-> >> +       case BPF_CGROUP_ITER_DESCENDANTS_PRE:
-> >> +       case BPF_CGROUP_ITER_DESCENDANTS_POST:
-> >> +       case BPF_CGROUP_ITER_ANCESTORS_UP:
-> >> +               break;
-> >> +       default:
-> >> +               return -EINVAL;
-> >> +       }
-> >> +
-> >> +       kit->start =3D start;
-> >> +       kit->pos =3D NULL;
-> >> +       kit->order =3D order;
-> >> +       return 0;
-> >> +}
-> >> +
-> >> +__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_=
-iter_css *it)
-> >> +{
-> >> +       struct bpf_iter_css_kern *kit =3D (void *)it;
-> >
-> > empty line
-> >
-> >> +       if (!kit->start)
-> >> +               return NULL;
-> >> +
-> >> +       switch (kit->order) {
-> >> +       case BPF_CGROUP_ITER_DESCENDANTS_PRE:
-> >> +               kit->pos =3D css_next_descendant_pre(kit->pos, kit->st=
-art);
-> >> +               break;
-> >> +       case BPF_CGROUP_ITER_DESCENDANTS_POST:
-> >> +               kit->pos =3D css_next_descendant_post(kit->pos, kit->s=
-tart);
-> >> +               break;
-> >> +       default:
-> >
-> > we know it's BPF_CGROUP_ITER_ANCESTORS_UP, so why not have that here ex=
-plicitly?
-> >
-> >> +               kit->pos =3D kit->pos ? kit->pos->parent : kit->start;
-> >> +       }
-> >> +
-> >> +       return kit->pos;
-> >
-> > wouldn't this implementation never return the "start" css? is that inte=
-ntional?
-> >
->
-> Thanks for the review.
->
-> This implementation actually would return the "start" css.
->
-> 1. BPF_CGROUP_ITER_DESCENDANTS_PRE:
-> 1.1 when we first call next(), css_next_descendant_pre(NULL, kit->start)
-> will return kit->start.
-> 1.2 second call next(), css_next_descendant_pre(kit->start, kit->start)
-> would return a first valid child under kit->start with pre-order
-> 1.3 third call next, css_next_descendant_pre(last_valid_child,
-> kit->start) would return the next valid child
-> ...
-> util css_next_descendant_pre return a NULL pointer, which means we have
-> visited all valid child including "start" css itself.
->
-> The above logic is equal to macro 'css_for_each_descendant_pre' in kernel=
-.
->
-> Same, BPF_CGROUP_ITER_DESCENDANTS_POST is equal to macro
-> 'css_for_each_descendant_post' which would return 'start' css when we
-> have visited all valid child.
->
-> 2. BPF_CGROUP_ITER_ANCESTORS_UP
-> 2.1 when we fisrt call next(), kit->pos is NULL, and we would return
-> kit->start.
->
->
-> The selftest in patch7 whould check:
-> 1. when we use BPF_CGROUP_ITER_DESCENDANTS_PRE to iterate a cgroup tree,
-> the first cgroup we visted should be root('start') cgroup.
-> 2. when we use BPF_CGROUP_ITER_DESCENDANTS_POST to iterate a cgroup
-> tree, the last cgroup we visited should be root('start') cgroup.
->
->
-> Am I miss something important?
->
+> Instead of invoking __kmalloc_minalign() in bpf subsystem to find the
+> maximal alignment, just using kmalloc_size_roundup() directly to get the
+> corresponding slab object size for each allocation size. If these two
+> sizes are unmatched, adjust size_index to select a bpf_mem_cache with
+> unit_size equal to the object_size of the underlying slab cache for the
+> allocation size.
 
-No, again, my bad, I didn't trace the logic completely before asking.
-All makes sense with kit->pos being initialized to NULL. Thanks for
-elaborating!
+I applied this to 6.6-rc3 and it fixes the warning on my Nezha board (Allwinner
+D1) and also boots fine on my VisionFive 2 (JH7110) which didn't show the error
+before. I didn't do any other testing beyond that though, but for basic boot
+testing:
 
+Tested-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+
+> Fixes: 822fb26bdb55 ("bpf: Add a hint to allocated objects.")
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Closes: https://lore.kernel.org/bpf/20230914181407.GA1000274@dev-arch.thelio-3990X/
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+>  kernel/bpf/memalloc.c | 44 +++++++++++++++++++------------------------
+>  1 file changed, 19 insertions(+), 25 deletions(-)
 >
-> Thanks.
+> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+> index 1c22b90e754a..06fbb5168482 100644
+> --- a/kernel/bpf/memalloc.c
+> +++ b/kernel/bpf/memalloc.c
+> @@ -958,37 +958,31 @@ void notrace *bpf_mem_cache_alloc_flags(struct bpf_mem_alloc *ma, gfp_t flags)
+>  	return !ret ? NULL : ret + LLIST_NODE_SZ;
+>  }
 >
+> -/* Most of the logic is taken from setup_kmalloc_cache_index_table() */
+>  static __init int bpf_mem_cache_adjust_size(void)
+>  {
+> -	unsigned int size, index;
+> +	unsigned int size;
 >
+> -	/* Normally KMALLOC_MIN_SIZE is 8-bytes, but it can be
+> -	 * up-to 256-bytes.
+> +	/* Adjusting the indexes in size_index() according to the object_size
+> +	 * of underlying slab cache, so bpf_mem_alloc() will select a
+> +	 * bpf_mem_cache with unit_size equal to the object_size of
+> +	 * the underlying slab cache.
+> +	 *
+> +	 * The maximal value of KMALLOC_MIN_SIZE and __kmalloc_minalign() is
+> +	 * 256-bytes, so only do adjustment for [8-bytes, 192-bytes].
+>  	 */
+> -	size = KMALLOC_MIN_SIZE;
+> -	if (size <= 192)
+> -		index = size_index[(size - 1) / 8];
+> -	else
+> -		index = fls(size - 1) - 1;
+> -	for (size = 8; size < KMALLOC_MIN_SIZE && size <= 192; size += 8)
+> -		size_index[(size - 1) / 8] = index;
+> +	for (size = 192; size >= 8; size -= 8) {
+> +		unsigned int kmalloc_size, index;
+>
+> -	/* The minimal alignment is 64-bytes, so disable 96-bytes cache and
+> -	 * use 128-bytes cache instead.
+> -	 */
+> -	if (KMALLOC_MIN_SIZE >= 64) {
+> -		index = size_index[(128 - 1) / 8];
+> -		for (size = 64 + 8; size <= 96; size += 8)
+> -			size_index[(size - 1) / 8] = index;
+> -	}
+> +		kmalloc_size = kmalloc_size_roundup(size);
+> +		if (kmalloc_size == size)
+> +			continue;
+>
+> -	/* The minimal alignment is 128-bytes, so disable 192-bytes cache and
+> -	 * use 256-bytes cache instead.
+> -	 */
+> -	if (KMALLOC_MIN_SIZE >= 128) {
+> -		index = fls(256 - 1) - 1;
+> -		for (size = 128 + 8; size <= 192; size += 8)
+> +		if (kmalloc_size <= 192)
+> +			index = size_index[(kmalloc_size - 1) / 8];
+> +		else
+> +			index = fls(kmalloc_size - 1) - 1;
+> +		/* Only overwrite if necessary */
+> +		if (size_index[(size - 1) / 8] != index)
+>  			size_index[(size - 1) / 8] = index;
+>  	}
 >
 
