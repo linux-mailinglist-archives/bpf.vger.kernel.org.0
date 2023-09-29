@@ -1,160 +1,166 @@
-Return-Path: <bpf+bounces-11109-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11110-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCDF97B34EC
-	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 16:29:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E736A7B3639
+	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 17:01:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 8252A28248A
-	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 14:29:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id E59451C2097A
+	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 15:01:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0478B51228;
-	Fri, 29 Sep 2023 14:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ACC2516E7;
+	Fri, 29 Sep 2023 15:01:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33D3A4F124
-	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 14:29:22 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BD2F9
-	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 07:29:21 -0700 (PDT)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 5F12BC13AE50
-	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 07:29:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1695997759; bh=9gKsGjj2Fvj10Gg8NL/+ZaghyA5FkfVhUgr0gOaMfpo=;
-	h=From:Date:To:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe;
-	b=I/OFGeZTX9ONzPbfJj0uKm57lfLbnpGvIaqQFsCVsC6rw8979r4gq5QnKgJNGED9f
-	 A7Y8Hi8nZ/bAfVytLEoFAw+z/Arhg7lI503QlQtcI5ThF3ZP63udwiM1R++ChnKVzy
-	 ItXw6FWgM8sZOOaLe0Dp1TvcTm3IYJADZKqpDg+Y=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Fri Sep 29 07:29:19 2023
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 2F4BDC151068;
-	Fri, 29 Sep 2023 07:29:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1695997759; bh=9gKsGjj2Fvj10Gg8NL/+ZaghyA5FkfVhUgr0gOaMfpo=;
-	h=From:Date:To:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe;
-	b=I/OFGeZTX9ONzPbfJj0uKm57lfLbnpGvIaqQFsCVsC6rw8979r4gq5QnKgJNGED9f
-	 A7Y8Hi8nZ/bAfVytLEoFAw+z/Arhg7lI503QlQtcI5ThF3ZP63udwiM1R++ChnKVzy
-	 ItXw6FWgM8sZOOaLe0Dp1TvcTm3IYJADZKqpDg+Y=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 13872C14CE45
- for <bpf@ietfa.amsl.com>; Fri, 29 Sep 2023 07:29:18 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -2.105
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=gmail.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 8TujGA8lxeNF for <bpf@ietfa.amsl.com>;
- Fri, 29 Sep 2023 07:29:14 -0700 (PDT)
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com
- [IPv6:2607:f8b0:4864:20::432])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 41491C14CE38
- for <bpf@ietf.org>; Fri, 29 Sep 2023 07:29:14 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id
- d2e1a72fcca58-692a9bc32bcso10681428b3a.2
- for <bpf@ietf.org>; Fri, 29 Sep 2023 07:29:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1695997752; x=1696602552; darn=ietf.org;
- h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
- :date:message-id:reply-to;
- bh=nvalNltjLz9adeyezSdNpn/HXtzEYyQkHd66K+vSLkw=;
- b=lxEGy+NhcvKWNC+n45B7bUsCgOkFllHdpcPhNKPJOZjqbmC8BUXkbksv2f1777Lp0O
- 7BKF9elphAmo4tOU9DCiISMNaDw0SOfJR6gJo6EiPR07KjM/pwOrefLp0/NqF3cdjeMj
- ejJqLjvfnK4q1YqeSonUVAuIf55DOQeswWyo70JxxbDN0L4ks75GunNR7leq2cA344zr
- DOhjiPKyRqCzl1NhFjnYQTrK6za6+ORINQ4sFQydj08YiLSI5NvltQCxEs/5ooSogJZI
- G8ueJNL14hHvXS5XXJ8HR6FOIazJyW/xbbwRpR2ZQEl66tcA0jY8OcqQUm542FtZt8jy
- 0snA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1695997752; x=1696602552;
- h=to:subject:message-id:date:from:mime-version:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=nvalNltjLz9adeyezSdNpn/HXtzEYyQkHd66K+vSLkw=;
- b=Xb32gwEXHas1uu5qBrcFPU3bVf1ZC34LZlnx040k0NSHUv6k93ve/FP1eMqyfUlCMi
- pShgGFkFtLFnzKJ4lbSfa7qV8NDS0jvZMqtab8A/mSKBzILefttn6ntWVle9Mx6NgljZ
- Uz0WgHKUhu6sqmaeWLM3BjTtPMNeN6UDMZ6AifHX4FZg8IyIwfPHEP5decQsncNuvP+y
- lG59CYgMAI1w4TxJ+pBGfBOYSUWpl1/63GssOjWBYy+z7fJHlhPNh3ez2H82gzMj/5WD
- F6Ah4XAp4o5okvtygPS1UNbBz23HVfvcqye2lFY0lbMp6/mUIgY6QmskF/3QhxVbvrat
- BAlg==
-X-Gm-Message-State: AOJu0YyLw9L9+IocgZ6uyA+CVPhAZrHZ7SU7AygWdVaX9yW53VPCpLXN
- UUJMJDOizb0djaSY7//9gA63MGXJkx8tEpKgS4PmtvWZ1H2bjA==
-X-Google-Smtp-Source: AGHT+IEP1cqow5L1B9jqg4bj57a7SPzdNh0rz4AFtBVdAOGkLwmnUVZkoJ0JhXuqkh/Cz1r6JczroUTGAulES8FLyTE=
-X-Received: by 2002:a05:6a20:9143:b0:15e:b8a1:57b9 with SMTP id
- x3-20020a056a20914300b0015eb8a157b9mr4816514pzc.24.1695997752257; Fri, 29 Sep
- 2023 07:29:12 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE8C34122F;
+	Fri, 29 Sep 2023 15:00:58 +0000 (UTC)
+Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F319F9;
+	Fri, 29 Sep 2023 08:00:56 -0700 (PDT)
+Received: from in02.mta.xmission.com ([166.70.13.52]:53548)
+	by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1qmEz8-007D2d-PZ; Fri, 29 Sep 2023 09:00:54 -0600
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:40164 helo=email.froward.int.ebiederm.org.xmission.com)
+	by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1qmEz7-00H1Pg-Mc; Fri, 29 Sep 2023 09:00:54 -0600
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Cc: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+  netdev@vger.kernel.org,
+  bpf@vger.kernel.org,  David Ahern <dsahern@kernel.org>,  Christian
+ Brauner <brauner@kernel.org>
+References: <87a5t68zvw.fsf@toke.dk>
+	<2aa087b5-cbcf-e736-00d4-d962a9deda75@6wind.com>
+Date: Fri, 29 Sep 2023 10:00:31 -0500
+In-Reply-To: <2aa087b5-cbcf-e736-00d4-d962a9deda75@6wind.com> (Nicolas
+	Dichtel's message of "Thu, 28 Sep 2023 11:54:23 +0200")
+Message-ID: <87h6ndausw.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Suresh Krishnan <suresh.krishnan@gmail.com>
-Date: Fri, 29 Sep 2023 07:28:59 -0700
-Message-ID: <CA+MHpBoHdG4ptYsdeHaEUNqmyPYYgavWUpMbVW5zzOzUoLUJMw@mail.gmail.com>
-To: bpf@ietf.org, bpf <bpf@vger.kernel.org>
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/pAY8uvXt_IxmIekVEqap4rT_qSQ>
-Subject: [Bpf] Call for WG adoption: draft-thaler-bpf-isa-02
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-XM-SPF: eid=1qmEz7-00H1Pg-Mc;;;mid=<87h6ndausw.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX19i61uUz5S+JYlKIWRx48DML114NPDRlpM=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Nicolas Dichtel <nicolas.dichtel@6wind.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 531 ms - load_scoreonly_sql: 0.09 (0.0%),
+	signal_user_changed: 11 (2.0%), b_tie_ro: 9 (1.7%), parse: 1.42 (0.3%),
+	 extract_message_metadata: 14 (2.6%), get_uri_detail_list: 2.2 (0.4%),
+	tests_pri_-2000: 5 (1.0%), tests_pri_-1000: 2.7 (0.5%),
+	tests_pri_-950: 1.31 (0.2%), tests_pri_-900: 1.05 (0.2%),
+	tests_pri_-200: 0.85 (0.2%), tests_pri_-100: 3.9 (0.7%),
+	tests_pri_-90: 148 (27.9%), check_bayes: 145 (27.3%), b_tokenize: 9
+	(1.6%), b_tok_get_all: 8 (1.5%), b_comp_prob: 2.8 (0.5%),
+	b_tok_touch_all: 121 (22.9%), b_finish: 0.93 (0.2%), tests_pri_0: 323
+	(60.8%), check_dkim_signature: 0.75 (0.1%), check_dkim_adsp: 13 (2.5%),
+	 poll_dns_idle: 0.06 (0.0%), tests_pri_10: 1.95 (0.4%), tests_pri_500:
+	13 (2.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: Persisting mounts between 'ip netns' invocations
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 
-Hi all,
-  This draft has been presented at the bpf meetings and has received
-significant feedback both at the meetings and on/off list. Dave has
-published a new revision that addresses all the comments, and has
-requested WG adoption of the draft. This call is being initiated to
-determine whether there is WG consensus towards adoption of
-draft-thaler-bpf-isa-02 as a bpf WG draft. This draft is expected to
-address the WG deliverable
+Nicolas Dichtel <nicolas.dichtel@6wind.com> writes:
 
-"[PS] the BPF instruction set architecture (ISA) that defines the
-instructions and low-level virtual machine for BPF programs"
+> + Eric
+>
+> Le 28/09/2023 =C3=A0 10:29, Toke H=C3=B8iland-J=C3=B8rgensen a =C3=A9crit=
+=C2=A0:
+>> Hi everyone
+>>=20
+>> I recently ran into this problem again, and so I figured I'd ask if
+>> anyone has any good idea how to solve it:
+>>=20
+>> When running a command through 'ip netns exec', iproute2 will
+>> "helpfully" create a new mount namespace and remount /sys inside it,
+>> AFAICT to make sure /sys/class/net/* refers to the right devices inside
+>> the namespace. This makes sense, but unfortunately it has the side
+>> effect that no mount commands executed inside the ns persist. In
+>> particular, this makes it difficult to work with bpffs; even when
+>> mounting a bpffs inside the ns, it will disappear along with the
+>> namespace as soon as the process exits.
+>>=20
+>> To illustrate:
+>>=20
+>> # ip netns exec <nsname> bpftool map pin id 2 /sys/fs/bpf/mymap
+>> # ip netns exec <nsname> ls /sys/fs/bpf
+>> <nothing>
+>>=20
+>> This happens because namespaces are cleaned up as soon as they have no
+>> processes, unless they are persisted by some other means. For the
+>> network namespace itself, iproute2 will bind mount /proc/self/ns/net to
+>> /var/run/netns/<nsname> (in the root mount namespace) to persist the
+>> namespace. I tried implementing something similar for the mount
+>> namespace, but that doesn't work; I can't manually bind mount the 'mnt'
+>> ns reference either:
+>>=20
+>> # mount -o bind /proc/104444/ns/mnt /var/run/netns/mnt/testns
+>> mount: /run/netns/mnt/testns: wrong fs type, bad option, bad superblock =
+on /proc/104444/ns/mnt, missing codepage or helper program, or other error.
+>>        dmesg(1) may have more information after failed mount system call.
+>>=20
+>> When running strace on that mount command, it seems the move_mount()
+>> syscall returns EINVAL, which, AFAICT, is because the mount namespace
+>> file references itself as its namespace, which means it can't be
+>> bind-mounted into the containing mount namespace.
+>>=20
+>> So, my question is, how to overcome this limitation? I know it's
+>> possible to get a reference to the namespace of a running process, but
+>> there is no guarantee there is any processes running inside the
+>> namespace (hence the persisting bind mount for the netns). So is there
+>> some other way to persist the mount namespace reference, so we can pick
+>> it back up on the next 'ip netns' invocation?
+>>=20
+>> Hoping someone has a good idea :)
+> We ran into similar problems. The only solution we found was to use nsent=
+er
+> instead of 'ip netns exec'.
+>
+> To be able to bind mount a mount namespace on a file, the directory of th=
+is file
+> should be private. For example:
+>
+> mkdir -p /run/foo
+> mount --make-rshared /
+> mount --bind /run/foo /run/foo
+> mount --make-private /run/foo
+> touch /run/foo/ns
+> unshare --mount --propagation=3Dslave -- sh -c 'yes $$ 2>/dev/null' | {
+>         read -r pid &&
+>         mount --bind /proc/$pid/ns/mnt /run/foo/ns
+> }
+> nsenter --mount=3D/run/foo/ns ls /
+>
+> But this doesn't work under 'ip netns exec'.
 
-The draft is available at
+My goal in writing "ip netns exec" was to be a compatibility layer for
+applications that are not aware of multiple network namespaces.
 
-(HTML) https://datatracker.ietf.org/doc/html/draft-thaler-bpf-isa-02
-(Plaintext) https://www.ietf.org/archive/id/draft-thaler-bpf-isa-02.txt
+My gut says to recommend you stop using the compatibility shim and have
+your applications become network namespace aware (as it appears the
+already partially are).
 
-Please state whether or not you're in favor of the adoption by
-replying to this email. If you are not in favor, please also state
-your objections in your response. This adoption call will conclude on
-Friday October 13 2023 (AoE) .
+Beyond that I can not give advice unless I understand why you are
+attempting to persist mounts that depend upon the network namespace.
 
-Regards
-Suresh & David
-
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+Eric
 
