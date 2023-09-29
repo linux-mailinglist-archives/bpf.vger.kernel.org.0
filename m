@@ -1,43 +1,42 @@
-Return-Path: <bpf+bounces-11103-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11104-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 938B87B2F3B
-	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 11:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8339D7B2F80
+	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 11:45:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 12D8F284DC1
-	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 09:33:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 7AA93284D49
+	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 09:45:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4945154AC;
-	Fri, 29 Sep 2023 09:33:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0E3156C6;
+	Fri, 29 Sep 2023 09:45:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE7C11730;
-	Fri, 29 Sep 2023 09:33:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D9F8C433C8;
-	Fri, 29 Sep 2023 09:32:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8438B14F65;
+	Fri, 29 Sep 2023 09:45:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CB9BC433C8;
+	Fri, 29 Sep 2023 09:44:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695980011;
-	bh=5rEQjJQmUmhQcZE/S/zbC0z+O4aP1HcivNZvR+uMTdw=;
+	s=k20201202; t=1695980717;
+	bh=oQTvAmCkCsoaLNjfsaMUmlY4D/qoWr90XSuheIQAYtc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=j3Z7MPGXgH3qxJhUlGKswKaevoMz5lRlYfLKv517rB572Uft036HOzVnh6y+Fta2y
-	 IoP7pRk6lJWa27fv+jFujIlmXsGfS+YQww12NsbvPCYDl6f8XCPE+CtURkcHaeicsG
-	 yrkS/+0BXoBXAhDuBIWkGS4iWyGcgZc4uj5K1I6XTsFJQGfVSUCd06bbdxYUiSeitY
-	 kWvaORdHP4IXSdIX2Ck5PihMbYV+j7YqPan4YQc6tbETcfSrUPTc518VDuKuEt3jeG
-	 gYpsCzcJzJ2TfBOID0I9Ah10OPTMXVGJPcaLChcuIuOHlJVeXlo8F4Hi+JnhGg6W4h
-	 6HAwcZKgDftHQ==
-Date: Fri, 29 Sep 2023 11:32:49 +0200
+	b=WlV6Iok6t6x6wqtPDr2u2AsUWg4hMLM7cqaWPUDEeTpPDmS0JTVgMZlUl0HPmoBuT
+	 /MtXZyL5oovwNZMVTtYCnXU5O+6UqBVLwaqKXfjDA7Gi3QJjfoFg0kuMJ76nbuwBFl
+	 FM+QH0bvVjfmuBVMp9s5CgN9psq1cDgIpp1TcndUbm+j24otqfdnexR7nd6Jf+tuT9
+	 QFRyk1BHauhj4nL9X9E976w/vvMYaEWzc8Ucm1v15cgYx/ItXrPfVSX9rwflr20Upl
+	 1p24LfpWvr++mxmy87xjKVxbcTxjBWdURGxp63tvXsg372LYC0Zasv3SIGFC2AHpa8
+	 8VA1Ctle4jMgQ==
+Date: Fri, 29 Sep 2023 11:44:15 +0200
 From: Christian Brauner <brauner@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Jeff Layton <jlayton@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Alexander Viro <viro@zeniv.linux.org.uk>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
 	David Sterba <dsterba@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
 	Theodore Ts'o <tytso@mit.edu>,
-	Eric Biederman <ebiederm@xmission.com>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
 	Kees Cook <keescook@chromium.org>, Jeremy Kerr <jk@ozlabs.org>,
-	Arnd Bergmann <arnd@arndb.de>,
 	Michael Ellerman <mpe@ellerman.id.au>,
 	Nicholas Piggin <npiggin@gmail.com>,
 	Christophe Leroy <christophe.leroy@csgroup.eu>,
@@ -76,7 +75,7 @@ Cc: Jeff Layton <jlayton@kernel.org>,
 	Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
 	Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
 	Nicolas Pitre <nico@fluxnic.net>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
 	Ard Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>,
 	Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
 	Jeffle Xu <jefflexu@linux.alibaba.com>,
@@ -137,7 +136,7 @@ Cc: Jeff Layton <jlayton@kernel.org>,
 	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
 	Hugh Dickins <hughd@google.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	"David S. Miller" <davem@davemloft.net>,
+	"David S . Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
 	John Johansen <john.johansen@canonical.com>,
@@ -164,13 +163,15 @@ Cc: Jeff Layton <jlayton@kernel.org>,
 	reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
 	samba-technical@lists.samba.org, linux-trace-kernel@vger.kernel.org,
 	linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, apparmor@lists.ubuntu.com,
+	Netdev <netdev@vger.kernel.org>, apparmor@lists.ubuntu.com,
 	linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Subject: Re: [PATCH 87/87] fs: move i_blocks up a few places in struct inode
-Message-ID: <20230929-keimt-umspannen-bfd12d2c2033@brauner>
+Subject: Re: [PATCH 86/87] fs: switch timespec64 fields in inode to discrete
+ integers
+Message-ID: <20230929-yuppie-unzweifelhaft-434bf13bc964@brauner>
 References: <20230928110554.34758-1-jlayton@kernel.org>
- <20230928110554.34758-3-jlayton@kernel.org>
- <CAHk-=wij_42Q9WHY898r-gugmT5c-1JJKRh3C+nTUd1hc1aeqQ@mail.gmail.com>
+ <20230928110554.34758-2-jlayton@kernel.org>
+ <6020d6e7-b187-4abb-bf38-dc09d8bd0f6d@app.fastmail.com>
+ <af047e4a1c6947c59d4a13d4ae221c784a5386b4.camel@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -179,32 +180,27 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wij_42Q9WHY898r-gugmT5c-1JJKRh3C+nTUd1hc1aeqQ@mail.gmail.com>
+In-Reply-To: <af047e4a1c6947c59d4a13d4ae221c784a5386b4.camel@kernel.org>
 
-On Thu, Sep 28, 2023 at 10:41:34AM -0700, Linus Torvalds wrote:
-> On Thu, 28 Sept 2023 at 04:06, Jeff Layton <jlayton@kernel.org> wrote:
-> >
-> > Move i_blocks up above the i_lock, which moves the new 4 byte hole to
-> > just after the timestamps, without changing the size of the structure.
-> 
-> I'm sure others have mentioned this, but 'struct inode' is marked with
-> __randomize_layout, so the actual layout may end up being very
-> different.
-> 
-> I'm personally not convinced the whole structure randomization is
-> worth it - it's easy enough to figure out for any distro kernel since
-> the seed has to be the same across machines for modules to work, so
-> even if the seed isn't "public", any layout is bound to be fairly
-> easily discoverable.
-> 
-> So the whole randomization only really works for private kernel
-> builds, and it adds this kind of pain where "optimizing" the structure
-> layout is kind of pointless depending on various options.
-> 
-> I certainly *hope* no distro enables that pointless thing, but it's a worry.
+> It is a lot of churn though.
 
-They don't last we checked. Just last cycle we moved stuff in struct
-file around to optimize things and we explicitly said we don't give a
-damn about struct randomization. Anyone who enables this will bleed
-performance pretty badly, I would reckon.
+I think that i_{a,c,m}time shouldn't be accessed directly by
+filesystems same as no filesystem should really access i_{g,u}id which
+we also provide i_{g,u}id_{read,write}() accessors for. The mode is
+another example where really most often should use helpers because of all
+the set*id stripping that we need to do (and the bugs that we had
+because of this...).
+
+The interdependency between ctime and mtime is enough to hide this in
+accessors. The other big advantage is simply grepability. So really I
+would like to see this change even without the type switch.
+
+In other words, there's no need to lump the two changes together. Do the
+conversion part and we can argue about the switch to discrete integers
+separately.
+
+The other adavantage is that we have a cycle to see any possible
+regression from the conversion.
+
+Thoughts anyone?
 
