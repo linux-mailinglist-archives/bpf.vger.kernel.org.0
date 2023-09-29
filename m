@@ -1,168 +1,210 @@
-Return-Path: <bpf+bounces-11136-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11137-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 378E17B3BB1
-	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 23:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AF697B3BB9
+	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 23:03:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id E732B282056
-	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 21:01:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id E26D72831B6
+	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 21:03:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72AE366DEC;
-	Fri, 29 Sep 2023 21:01:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8321B66DFE;
+	Fri, 29 Sep 2023 21:03:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B8DF8F4A
-	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 21:01:01 +0000 (UTC)
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2AE1A7
-	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 14:00:59 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32615eaa312so713284f8f.2
-        for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 14:00:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696021257; x=1696626057; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=187HD4gBn36XDqZJcZdh6OqPHZPxl2IR6ZKEs5lHtAU=;
-        b=dkQUsDKGs6L17EJovzqwdAlnDjlr4oO8ss5q3YxWs27xwfdMKGRaQBbtH7YShVlPJr
-         ovYzGyrwigr8mnhZzH9/UzVbcBOB7bbsWwxrjyIcaqaaCjOj+VfhzYq8HIPCVzq5GpZL
-         rRI1ADuE1i4GglmFZpnBzjtXH9v9anqDUDiEqF6aNgFVXhtHZEO8eR1M94pSu6XFeBGP
-         XFEzY6ByOxiOVGz+QoQgwNtUQhsqoMqVlemuvrovYZa9n3l9DbRDysg9mU2RcBL3YdB1
-         6saVeOMH40BZZGHMV/XzpKTdsGELP/Hv2Gfj+oCKMMe10wRnzb3wFHVlyyMbxfEEP72h
-         qBUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696021257; x=1696626057;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=187HD4gBn36XDqZJcZdh6OqPHZPxl2IR6ZKEs5lHtAU=;
-        b=ji9yBsKv45yDlLHZs4/0Bposgrn3mXWPsK2+JW0NHPBynra+SpIH3KzgSe9FgCaOeL
-         fmzQxsPsGWl7QwKtSOnHXPTcgGZ6GJJ04AxxxF5nkv/PM6FBiWG7aG+kr/0tESqh9XPg
-         Bl0BTTV22pjZ3Eigw3bZF2GC3IivTRExA52Wql/J4Nw8wRHG7OZdSJVjdKwtCaPQ2TI4
-         HoBmP1B0b5oIZWoUT1LAzgDbXOFM8UguSWB7g7Ov8AbYV9CIJ1IpAn+f1Hk53ynG6T6s
-         IsE/eV2G/z2bZcLF+kiMg8VSAwH4YnPvGZQgHcCI285Wpt9EQNzIkVji/1mufl7vsBP3
-         ATMQ==
-X-Gm-Message-State: AOJu0YzQTvEesArRHcSzMfeDpVLyGG9Fj1pbvX7maFZp/sPke+MG9DXy
-	TnFqsUAMYy4V0kekieR4GSoUORKVnaYnXAiameE=
-X-Google-Smtp-Source: AGHT+IEn5b33M5VNWmFOfShYcwTQtHJHZl8Azr+27+en/odENn1umR5EQxSbtqCOR/mg0cTW/5by6jAa30JiFNep9AE=
-X-Received: by 2002:adf:d0c1:0:b0:320:28e:b638 with SMTP id
- z1-20020adfd0c1000000b00320028eb638mr4758101wrh.36.1696021257331; Fri, 29 Sep
- 2023 14:00:57 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C939521B5
+	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 21:03:22 +0000 (UTC)
+Received: from BN3PR00CU001.outbound.protection.outlook.com (mail-eastus2azon11020019.outbound.protection.outlook.com [52.101.56.19])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9931A7
+	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 14:03:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=irPSuL4ae/vlsQtrOXXvzNHSBG5z5tOK2yEhFxPbotHaAiGz90/4biZBsXpk8ZhjtOaYDCA4WW9athya6leXG5EDg1ONSd4M0wmPJuEZiqa7UBTt5d8ZZQeRcS8nX0mG4IQRTI2uLPH7sz+y+gMbXH7l2Z+BJPgMMEllvd17fwcTD2OlKfN690aVIvrtpERNUVXYEQ0FGFDmxsw5voe0N/MSf7q56rtKPtUOz6mO502ynAPI85Kr840pAP9XJ7ml26j7lIJ+SrTIIHNj5KIk6vLMowTlyoiLUQvWAnecGu5Gp1Ng/dAc+gZC8HnHyoXUek+K+dPWCgcpn1CEX5BvFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hgZg/Nku+VsvJh1T+ZQLrpNf5gpHOOg8/b2mdqtLOxw=;
+ b=ZnG08TmuAIQlRBml+9RBmHahjMmUQgJuH+lmsjAfPPtGqy0dCs+4H5AoKCBBQG2DpBfPLej6SbeZbQH6ivB9/z6Zn2ViD0bZR7dSg/2KQLAdTjijbzlGo1+PHd2yhn1VYrcgC0awDjZi9+qtChZElw2oCDvy/wdLmGTB1YOKi+3HEtroYE50w3cBX4p5ovzmkhCUUI4uLRFrrwtcy66xslU04GCnWNJNXJdpjf/4aTr9H4s03sjtHWH3CfFDrY76/+ujE8xItRXI8/7Ws5EqL5sBxArJuzUtou0rCKSOBLoQW40JZjPgY8j1lnwVfUTpjO1/LyPp7ERVViTZaodN+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hgZg/Nku+VsvJh1T+ZQLrpNf5gpHOOg8/b2mdqtLOxw=;
+ b=UC7gbH7pMvYPAw4V2ZRRPcEZHtzP+bA4pMmdYmoRXZdRSUP3ogH0FBEN+LjMY2Lo+ghbqsk5xO7hPpCZ5+t3wgf0dLdcxuSBA8VFzrvvnj38tS1qir2vO2/MtkzJMIZcbI5ekDMFZsCHN20Ioj4BlxokB4HGvbXmrFhBujAQMoE=
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com (2603:10b6:510:243::22)
+ by LV2PR21MB3398.namprd21.prod.outlook.com (2603:10b6:408:14c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.12; Fri, 29 Sep
+ 2023 21:03:17 +0000
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::ec5c:279e:7bfe:50e9]) by PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::ec5c:279e:7bfe:50e9%3]) with mapi id 15.20.6838.010; Fri, 29 Sep 2023
+ 21:03:17 +0000
+From: Dave Thaler <dthaler@microsoft.com>
+To: "bpf@ietf.org" <bpf@ietf.org>
+CC: "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Signed modulo operations
+Thread-Topic: Signed modulo operations
+Thread-Index: AQHZ8xhezjXHV8CmzkqNy5GI26QKLg==
+Date: Fri, 29 Sep 2023 21:03:17 +0000
+Message-ID:
+ <PH7PR21MB387814B98538D7D23A611E89A3C0A@PH7PR21MB3878.namprd21.prod.outlook.com>
+References: <20220927185958.14995-1-dthaler1968@googlemail.com>
+ <20220927185958.14995-7-dthaler1968@googlemail.com>
+ <20220930205211.tb26v4rzhqrgog2h@macbook-pro-4.dhcp.thefacebook.com>
+ <DM4PR21MB3440CDB9D8E325CBEA20FFA7A3569@DM4PR21MB3440.namprd21.prod.outlook.com>
+ <20220930215914.rzedllnce7klucey@macbook-pro-4.dhcp.thefacebook.com>
+ <DM4PR21MB34402522B614257706D2F785A3569@DM4PR21MB3440.namprd21.prod.outlook.com>
+In-Reply-To:
+ <DM4PR21MB34402522B614257706D2F785A3569@DM4PR21MB3440.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=17d2a68b-d1b9-4c64-b84a-8c7414aa9153;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2022-09-30T22:38:54Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR21MB3878:EE_|LV2PR21MB3398:EE_
+x-ms-office365-filtering-correlation-id: 191e2c5f-8975-4adb-1159-08dbc12f80f0
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ rWOSt8kujpZ9bP3D4ObG2M8o6poo8xGAA6sU1zovMgUiext5AXe+APSMZa/36/hHsTx6JBFLa80hJHhp1i9hxXqwh1D9nzKzGUbR3yhKhvtAP4syW+o6jyeBLuPiN++1kIsvhpgaV2W151Ms0cus0f7VRCM85f0T9Ok/DJeR9AtZ5SHnCnRaB1gBBJEPUmGRje5C51QUKCjpKZRaV2hrAMy9uKhoDAzzJ0nX55tAF1JmrJRmBuz2ZIU6B0LDapxRJENrpVXQ090U0/4ZPt1La4MDXmsnllPIlSBX0Ef+K7hpOQJcMvNxGzJMOIH5beWQmASUymbUxQR7rW5XNz8SPnJkqolsUR09U1Qca94LshsWI3SXSFV7C/S7xZy+c8uBrdZ0KS+DVYSCdcWESc28XWemC30AzrB4re7FH73e3FSFTBnMTE6hMTt3IRpcIiICuTiupwysW1sN/UgGYiA9TBRXo7CK5gMVv5VuPgn2bR42HBaR4w0u+klg3BRYpZrGL9HqG6RrzkoB+OQBOCehCRV+tP/6pPca9gM8EWMhAamQFvVf5ZwE30J0vFVGjKnImIqQyRVDP8qayL3jmFatCf7pn8AYix7gvYeRtTjegXLuPj2JNjEV0PYPBcg8mImxsmm22Dzd0UYYump27HyTpQ==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3878.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(366004)(346002)(396003)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(83380400001)(3480700007)(7696005)(966005)(71200400001)(82950400001)(478600001)(10290500003)(38100700002)(41300700001)(86362001)(8990500004)(2906002)(33656002)(82960400001)(53546011)(316002)(66476007)(64756008)(66556008)(76116006)(66446008)(66946007)(6506007)(122000001)(6916009)(9686003)(55016003)(38070700005)(26005)(4326008)(8676002)(8936002)(7116003)(52536014)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?8Olu5/3FxswgUxUQVn4cnDiuWt8olQlT/YSyKFicTL3RVsRjP0l2366f3LEJ?=
+ =?us-ascii?Q?cSKTW9kBvEevk21m+Ucq/2P1/a3yCEpwDUKq00MBtb6TJkk2aS+2KlhjMN0+?=
+ =?us-ascii?Q?+ygDvmIYw+EYqx9Ir9i6FsUvX6+AewCmPTf8A83IM/ymU+ZhXDOLEUc2yt31?=
+ =?us-ascii?Q?BL2ETmj4uEmTZ8kitpg/KcITqlDeCC7Y5O4ycbym/MR+blaZ6mzkHMFKoydm?=
+ =?us-ascii?Q?kYxJWnkdpNqZ4OZTDF1dguNOc/iqhp0NdOq9zAWaGd68uiR3BvAtnjLY6QpW?=
+ =?us-ascii?Q?5Jf4C0QHORzVJH2kBb0XPyc0td9TN1pHGMxbx7Qb6A4T+rJ0IUVZe3VEvk/p?=
+ =?us-ascii?Q?HZCHunKZ5/aaW5TMUBU6ImO5Uq2mK1PtFC01IaA+xhIA6WZJ6HywJCUYaV8T?=
+ =?us-ascii?Q?NeTIigah2ZtvMKU4LS+95aDFwD3AM7GvXkKp5GdtNfDdEk93zvxYIJlzHdx3?=
+ =?us-ascii?Q?NEjrnZI9LlryQwtm/+sNDy/M8Hs1Ir+KUsosJUYmza5ppKASVUpj3S2cWWNO?=
+ =?us-ascii?Q?MzmFJiekvx0WlfOBETMm/BuvSqR79q0jeQG3N0OjfUs+KiEnBwk0bwuvzeBy?=
+ =?us-ascii?Q?/8X99/as6C8dgrhCK7C/5EAmQXlhY39byRFbTNja9hlBp6MkAKnApwWfVHPD?=
+ =?us-ascii?Q?i6ORaRtGqeiCewlV7zDMTEY5eqB8VoRpEfOb30om7MdZckpspC1Szd9gIByg?=
+ =?us-ascii?Q?oJJelZKN1LaSbtPM0cTN7m3dXjUApGcv05u4AOlOGffuUigzxCVxJWqw+Ljh?=
+ =?us-ascii?Q?kGcsK1GFvza+lNP2HHCUTOQcDIAqn113dckTvez8zGSk1n8Hv9dLVyGRSyzG?=
+ =?us-ascii?Q?oze/Gtfig3nlO8eOfT6BnARJZYTjolguix3s6LrYebfppVRM9oLXTqCKs6MN?=
+ =?us-ascii?Q?I8budX5xA935ZRcdaR7KlL3Kv2NGK0jJ5KCDeA/bhuf5VTlRmdMrz3Zjgk4r?=
+ =?us-ascii?Q?FSu32U1xkxaBHJBMUdeqjv1EN78pTJRPxKcnkUt1ZCAjE/rKb/tcaydN+xkl?=
+ =?us-ascii?Q?vQgFi5G8NZCZAN3aqNcCoT1xQLkUGGTpcxh4Fop3BtJCQsF4huEzDeZ0lto7?=
+ =?us-ascii?Q?wzeWvIdIrDQrqO4VtvC3XBvaT6m0uEDA99ARaJi2y6GY1PWIjQutjw8EzpJU?=
+ =?us-ascii?Q?bwa+QH/bbyJFJqV8a5cYY60GIqULL/pDt70mWoy4sDRGANXxbTi8PoUH5DJB?=
+ =?us-ascii?Q?OfavqormaOBGK1EBSAuIicV3GCwPBJOkmmyONOL5MN6L47QrWlOD9wSd328M?=
+ =?us-ascii?Q?YN4S1ZDQGObJT76ZnppODxd5gp9OcsliBuTN7qPQNmWdgWVTFvoN0Ood9O/w?=
+ =?us-ascii?Q?G/rxXa76f+sP1DH8Xu7/1wHrMRK5fxFTrzGOJ5rJfmus3MNcQZasF1+0CVGe?=
+ =?us-ascii?Q?/Qp+15ER7CPYsXfAfKZV1EF8Rb+jOM3vEwsGa/xanL11GMAlFpmmJRSBCBGq?=
+ =?us-ascii?Q?d1iOSvM8NmyhcGn7OXxji8jlMmHAqs6GMdJpblgv4v1AmRakkwSC1Oj3uKyF?=
+ =?us-ascii?Q?qCpXQE3A+Jt2l3H+477xZjR8ACty2kOiF5SL+W9toYAQyUreqKDlnkiGgMer?=
+ =?us-ascii?Q?lMbHeklDo/Brc20EuYFjFOwiba0TnNivt/xws5j2aS/a+8m/5K0ghJ4Q9AW+?=
+ =?us-ascii?Q?CA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230908133923.2675053-1-houtao@huaweicloud.com>
- <20230908133923.2675053-4-houtao@huaweicloud.com> <97b0615e-a541-4856-ba70-be39bdcd8a8f@roeck-us.net>
- <CAJM55Z_76dsTxVEfaxif5H7Rdg_AQmjuscNuB2tLbZoVsWdgEQ@mail.gmail.com> <CA+V-a8u8EcFP_PmFB_KJ2t-x9Xn6EsFKeNR3AnfHse9OqApDkw@mail.gmail.com>
-In-Reply-To: <CA+V-a8u8EcFP_PmFB_KJ2t-x9Xn6EsFKeNR3AnfHse9OqApDkw@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 29 Sep 2023 14:00:45 -0700
-Message-ID: <CAADnVQ+wyrfc0HDFZNh8KB=L8Hd-gNTCjzr=WhQbaGjVt7TKJQ@mail.gmail.com>
-Subject: Re: [PATCH bpf 3/4] bpf: Ensure unit_size is matched with slab cache
- object size
-To: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc: Emil Renner Berthing <emil.renner.berthing@canonical.com>, Guenter Roeck <linux@roeck-us.net>, 
-	Hou Tao <houtao@huaweicloud.com>, bpf <bpf@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Hou Tao <houtao1@huawei.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3878.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 191e2c5f-8975-4adb-1159-08dbc12f80f0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2023 21:03:17.3601
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: itZr7TS4RaJeZ5WLyxxlFgpE8P4AEU0p048AP0i0yYr0QdmBY5UEqOHztacc+tQSCAGbCwl6axIrz2hqXrXg0BTCo2QDIWN555h5rk9MZdM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR21MB3398
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Sep 29, 2023 at 1:24=E2=80=AFPM Lad, Prabhakar
-<prabhakar.csengg@gmail.com> wrote:
->
-> On Fri, Sep 29, 2023 at 7:52=E2=80=AFPM Emil Renner Berthing
-> <emil.renner.berthing@canonical.com> wrote:
-> >
-> > Guenter Roeck wrote:
-> > > Hi,
-> > >
-> > > On Fri, Sep 08, 2023 at 09:39:22PM +0800, Hou Tao wrote:
-> > > > From: Hou Tao <houtao1@huawei.com>
-> > > >
-> > > > Add extra check in bpf_mem_alloc_init() to ensure the unit_size of
-> > > > bpf_mem_cache is matched with the object_size of underlying slab ca=
-che.
-> > > > If these two sizes are unmatched, print a warning once and return
-> > > > -EINVAL in bpf_mem_alloc_init(), so the mismatch can be found early=
- and
-> > > > the potential issue can be prevented.
-> > > >
-> > > > Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> > > > Signed-off-by: Hou Tao <houtao1@huawei.com>
-> > >
-> > > With this patch in place, I see the following backtrace on riscv syst=
-ems.
-> > >
-> > > [    2.953088] bpf_mem_cache[0]: unexpected object size 128, expect 9=
-6
-> > > [    2.953481] WARNING: CPU: 0 PID: 1 at kernel/bpf/memalloc.c:507 bp=
-f_mem_alloc_init+0x326/0x32e
-> > > [    2.953645] Modules linked in:
-> > > [    2.953736] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.6.0-rc2-00=
-244-g27bbf45eae9c #1
-> > > [    2.953790] Hardware name: riscv-virtio,qemu (DT)
-> > > [    2.953855] epc : bpf_mem_alloc_init+0x326/0x32e
-> > > [    2.953891]  ra : bpf_mem_alloc_init+0x326/0x32e
-> > > [    2.953909] epc : ffffffff8016cbd2 ra : ffffffff8016cbd2 sp : ff20=
-00000000bd20
-> > > [    2.953920]  gp : ffffffff81c39298 tp : ff60000002e80040 t0 : 0000=
-000000000000
-> > > [    2.953930]  t1 : ffffffffbbbabbc3 t2 : 635f6d656d5f6670 s0 : ff20=
-00000000bdc0
-> > > [    2.953940]  s1 : ffffffff8121c7da a0 : 0000000000000037 a1 : ffff=
-ffff81a93048
-> > > [    2.953949]  a2 : 0000000000000010 a3 : 0000000000000001 a4 : 0000=
-000000000000
-> > > [    2.953959]  a5 : 0000000000000000 a6 : ffffffff81c4fe08 a7 : 0000=
-000000000000
-> > > [    2.953968]  s2 : 000000000000000b s3 : 0000000000000000 s4 : 0000=
-000000000000
-> > > [    2.953977]  s5 : 0000000000000000 s6 : 0000000000000100 s7 : ff5f=
-fffffffd3128
-> > > [    2.953986]  s8 : ffffffff81c3d1f8 s9 : 0000000000000060 s10: 0000=
-000000000000
-> > > [    2.953996]  s11: 0000000000000060 t3 : 0000000065a61b33 t4 : 0000=
-000000000009
-> > > [    2.954005]  t5 : ffffffffde180000 t6 : ff2000000000bb08
-> > > [    2.954014] status: 0000000200000120 badaddr: 0000000000000000 cau=
-se: 0000000000000003
-> > > [    2.954047] [<ffffffff8016cbd2>] bpf_mem_alloc_init+0x326/0x32e
-> > > [    2.954087] [<ffffffff80e11426>] bpf_global_ma_init+0x1c/0x30
-> > > [    2.954097] [<ffffffff8000285e>] do_one_initcall+0x5c/0x238
-> > > [    2.954105] [<ffffffff80e011ae>] kernel_init_freeable+0x29a/0x30e
-> > > [    2.954115] [<ffffffff80c0312c>] kernel_init+0x1e/0x112
-> > > [    2.954124] [<ffffffff80003d82>] ret_from_fork+0xa/0x1c
-> > >
-> > > Copying riscv maintainers and mailing list for feedback / comments.
-> >
-> > If it makes a difference I also see this with 6.6-rc3 on my Nezha board
-> > (Allwinner D1), but not on my VisionFive 2 (JH7110) running the same ke=
-rnel.
-> >
->
-> Adding one more RISC-V board (Renesas RZ/Five) to list where I see this i=
-ssue:
+In the email discussion below, we concluded it wasn't relevant at the time =
+because
+there were no signed modulo instructions.  However, now there is and I beli=
+eve the
+ambiguity in the current spec needs to be addressed.
 
-Could you please help test the proposed fix:
-https://patchwork.kernel.org/project/netdevbpf/patch/20230928101558.2594068=
--1-houtao@huaweicloud.com/
+> -----Original Message-----
+> From: Dave Thaler
+> Sent: Friday, September 30, 2022 3:42 PM
+> To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Cc: dthaler1968@googlemail.com; bpf@vger.kernel.org
+> Subject: RE: [PATCH 07/15] ebpf-docs: Fix modulo zero, division by zero,
+> overflow, and underflow
+>=20
+> > -----Original Message-----
+> > From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > Sent: Friday, September 30, 2022 2:59 PM
+> > To: Dave Thaler <dthaler@microsoft.com>
+> > Cc: dthaler1968@googlemail.com; bpf@vger.kernel.org
+> > Subject: Re: [PATCH 07/15] ebpf-docs: Fix modulo zero, division by
+> > zero, overflow, and underflow
+> >
+> > On Fri, Sep 30, 2022 at 09:54:17PM +0000, Dave Thaler wrote:
+> > > [...]
+> > > > > +Also note that the modulo operation often varies by language
+> > > > > +when the dividend or divisor are negative, where Python, Ruby, e=
+tc.
+> > > > > +differ from C, Go, Java, etc. This specification requires that
+> > > > > +modulo use truncated division (where -13 % 3 =3D=3D -1) as
+> > > > > +implemented in C, Go,
+> > > > > +etc.:
+> > > > > +
+> > > > > +   a % n =3D a - n * trunc(a / n)
+> > > > > +
+> > > >
+> > > > Interesting bit of info, but I'm not sure how it relates to the ISA=
+ doc.
+> > >
+> > > It's because there's multiple definitions of modulo out there as the
+> > > paragraph notes, which differ in what they do with negative numbers.
+> > > The ISA defines the modulo operation as being the specific version ab=
+ove.
+> > > If you tried to implement the ISA in say Python and didn't know
+> > > that, you'd have a non-compliant implementation.
+> >
+> > Is it because the languages have weird rules to pick between signed vs
+> > unsigned mod?
+> > At least from llvm pov the smod and umod have fixed behavior.
+>=20
+> It's because there's different mathematical definitions and different lan=
+guages
+> have chosen different definitions.  E.g., languages/libraries that follow=
+ Knuth
+> use a different mathematical definition than C uses.  For details see:
+>=20
+> https://en.wikipedia.org/wiki/Modulo_operation#Variants_of_the_definition
+>=20
+> https://torstencurdt.com/tech/posts/modulo-of-negative-numbers/
+>=20
+> Dave
+
+Perhaps text like the proposed snippet quoted in the exchange above should =
+be
+added around the new text that now appears in the doc, i.e. the ambiguous t=
+ext
+is currently:
+> For signed operations (``BPF_SDIV`` and ``BPF_SMOD``), for ``BPF_ALU``,
+> 'imm' is interpreted as a 32-bit signed value. For ``BPF_ALU64``, 'imm'
+> is first :term:`sign extended<Sign Extend>` from 32 to 64 bits, and then
+> interpreted as a 64-bit signed value. =20
+
+Dave
+
 
