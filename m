@@ -1,351 +1,426 @@
-Return-Path: <bpf+bounces-11100-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11101-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D46387B2DF9
-	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 10:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 572687B2E96
+	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 10:56:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 987C228341B
-	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 08:39:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id EC6FB284D48
+	for <lists+bpf@lfdr.de>; Fri, 29 Sep 2023 08:56:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBB95F9F3;
-	Fri, 29 Sep 2023 08:39:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66C171171B;
+	Fri, 29 Sep 2023 08:56:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 232828BE7
-	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 08:39:10 +0000 (UTC)
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2083.outbound.protection.outlook.com [40.107.9.83])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5ADCD9
-	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 01:39:05 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g9jJSJCN3sxfvd+Mtb2oPrf5OS+s5iKHd9GCjp7449glbRSTmD8PR/bEMRwYA8Is5cfsTfOBiU4oHsC8G5ZDtQ/5XjoVNGn1GkCNWdFudR873iNBrNQG5jPDxBKCVSUD0e4sEGYnHUYG+qF6VjfEIRtOWGZ9afbyI+gcgKQsYTSKULXlFG2mrSr39SPVQSRsPU9PKtbPhcTP09n/117GYM4w3WwK2VA3HYAjHnRF/B1o1EMrMKFF37oz5u2WTfiWBGDwDtDHTBGRLgz5WPrQoGBIBTTpCdosNxn1isV9Jf9ZkLaaP8Yqhf+sSkTi24ZCWuzbuPH5Qy2NVwl6c8+26A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EJF/QZbgp5u/zi6X0D78GvhrSTe59Vba+ExzGPamOWA=;
- b=MeM/HNlG4v7lz2XFfveAjCCdQnBqLDFOtmaJKfT+SM6X/CNAZlrgSXWUwXc7sbLPWhRcc1ZwopHrP02our6J0ytEjC/EFfKfxB6IYv8ccpmkFmPC8f4dpCJkUMAcnGFaykYo5ZXeYxYX+9UYa0Ma2p8guYl1NkZGObCkAQKMBQldRS8swYujp7qPU/SLOQqlqCUFjHihRO9jlyyitl4gGtW2QRCPUTk8w8/SSBipE/tAF05sglYlcaDOqEttbMVPrXUotyZGLvrDWHZMXX8ne30glUoBrgzzJKiyQUg00A2X2QnP8Zj8VTRrbUuZIoO3ilxWicW4OIkaUgQZC+S4pQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EJF/QZbgp5u/zi6X0D78GvhrSTe59Vba+ExzGPamOWA=;
- b=D9PPY4rultgo/JXdcjreBP2/FLGy+AayNVCz7RqQCsXgt2WyvtuESHVLBk7QLehVb7BQZTtIjdNntWqidT4hE3eDzhlZbAWiXguCvUfxwfxSD2wgCvj1a8faKkcK6bAQeZLHWhTV6lJ8TLCXtMgJt4Je5V8fGk+O2lkOwGiXW/hWQ0H8yz2fzoE93aH/lnd67SSPH5v4F9lDGjm7gfyhei3IoJlXXjOX+HB0OLMF7rG5DI5+xrRQQeTs7VLulSEEJe1GljRkZ0wi07r3xuthG72rJbTixNYiRQ82rD2j+m8LC7xa7OE4ZvvKMvOr4vZQsSdiWALo1OOQIYaQvXw25w==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by MR1P264MB2996.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:3d::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.24; Fri, 29 Sep
- 2023 08:39:00 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::27df:697c:bd7d:774f]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::27df:697c:bd7d:774f%6]) with mapi id 15.20.6838.024; Fri, 29 Sep 2023
- 08:39:00 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Hari Bathini <hbathini@linux.ibm.com>, linuxppc-dev
-	<linuxppc-dev@lists.ozlabs.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-CC: Michael Ellerman <mpe@ellerman.id.au>, "Naveen N. Rao"
-	<naveen.n.rao@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Song
- Liu <songliubraving@fb.com>
-Subject: Re: [PATCH v5 1/5] powerpc/code-patching: introduce
- patch_instructions()
-Thread-Topic: [PATCH v5 1/5] powerpc/code-patching: introduce
- patch_instructions()
-Thread-Index: AQHZ8kTCgBxns9+6GUWs9mpAbtfsI7AxfD0A
-Date: Fri, 29 Sep 2023 08:39:00 +0000
-Message-ID: <0ca42eae-b25c-c3c0-43d3-7acc653aa53c@csgroup.eu>
-References: <20230928194818.261163-1-hbathini@linux.ibm.com>
- <20230928194818.261163-2-hbathini@linux.ibm.com>
-In-Reply-To: <20230928194818.261163-2-hbathini@linux.ibm.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MR1P264MB2996:EE_
-x-ms-office365-filtering-correlation-id: aa74ca27-9791-4b11-fe60-08dbc0c78764
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- CxxHavMLqVURkwq3GXqaVcE5hoFU5WiArAPwvJ9myZyOWXYhtFn9fJ0A3G0d1RiE2VdQW7AWBf3jcCbt4P+6iPNa4kQm7X6lbjitpIEOrusOZ7pY39zn5YPxxZKV8KMlzFPzdqFyM5mmiCOzemH0Sne+uX8JJE3SC/mp41CHTrmfpU96WJ7aXAZO7DEBCFfxgNIqYRWSFf4r2mzvm6v8O+Ovlk6NPChqxLcZiJ/Q2pJ0/+jzOITg9Vy3YoprL/BbFnwWZHAFouXUPQjyOK6dteuDINzKNa53ycwI48FQNfPPlqD/FnlchuzLaOq0yM4kIUtyk4/KPq8A62dE8V0kCGYe0N8Z8IxcOZw2UVl6OR/XWRY8ekPJ6ySvO7qdo0NCGau6u9EasA742V3d3+dnDFomSXhky88ICFbD2k52nZ67KkrKiFrHyxwkA6hJBFoz1O2VXfkPMs1Y2tOGVYr2QCvmLi5Z7WTTvr+7A74+BiuKSrIYp8yPLfFflJ+WqpDqkVLnrk135Fee9wuIbO6uah3IixiZxwNqV+x82z5rmKzLS8McIaqMhiMCuBWQVyeq0FH8hW1RAEnLYjNr+U4hXEM7HbVBX+O8Obz/R28zg7/NxWhh2FoUTO5snzjOQHko6AgbvY6Whp85SDyRYzlrN4UiEQNSnrfBdsAskJIDa8YDANHwOPLzQp9CuMwgbs3K
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(39850400004)(366004)(136003)(396003)(230922051799003)(186009)(451199024)(64100799003)(1800799009)(2906002)(6512007)(71200400001)(6506007)(38100700002)(38070700005)(2616005)(66556008)(110136005)(6486002)(76116006)(478600001)(31696002)(86362001)(83380400001)(54906003)(66446008)(66476007)(66946007)(64756008)(66574015)(30864003)(91956017)(122000001)(44832011)(36756003)(5660300002)(316002)(41300700001)(8676002)(8936002)(4326008)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?bkd2OFArRTF4SkVwVVhxNExtZHdzeTFveXJtQUQ1enU0aG1LQXlTU0tRL1Fv?=
- =?utf-8?B?TFJwUnBuS2xFRDluT3YrUEFteXF5OUFiMlY4OCtKNGEveWlFQXMzZU5NYkdU?=
- =?utf-8?B?VmQ1N2pjQllnaVR1QitQRlZpM0l5VXdzWnI5cjNvb1ZIYUxUK3Jpdk81L295?=
- =?utf-8?B?eUtHY0xpbkczOGFlM3NSL1RGMitUOG5NY3lCdDV1bEFTWnNLMFQrc3I4ZkNG?=
- =?utf-8?B?aVJoMGhVSEEraGZBZzJ0YjViVDM4T1pnQUYvc0JVc1FZUnBoMjRLQW54K2lB?=
- =?utf-8?B?cjZBb3JvVC9IOVB4Y0NOdjZKT0lRTTNsdVhxdHJ0U05DTUFVR3JSblVoNVBl?=
- =?utf-8?B?QnVjVUpxaTExZVRBMlBLNkI0bVN4WEtWVFVrUGFyWEV2V3ZobStBK1kwS0lx?=
- =?utf-8?B?Z2x4SitHTFBWbUN5clg2M2kvMm5hZkVnNllrV1JiMHRPaktTK0lST1VIa0x6?=
- =?utf-8?B?Umd4UVlUbUVVWnFZa3RaejhzRWlacXBtckRjVlY4VzJROUIyNzllNWd5Mjl1?=
- =?utf-8?B?N2dYL1JiRldzZ0x2cUNRWUxWS01XWGhDUG9vZkV0UGVoOXArcTNxanY5K1Qy?=
- =?utf-8?B?RWVHN2FEa2pnTjV6U055QmlGMm1Md0Uzd1F0S1RuZitpeUtDY28xSVo5eEtG?=
- =?utf-8?B?dm1XaVRQWUN3NGRFQzlId1BEZStXVno1MjZNV2NkNXZJMkJBajFmampva3Nw?=
- =?utf-8?B?cWVpdWgzTmxjd2FpQ2tNMjdqZTUwQmNNU05RUlRvZ2liQjFlcCtoNU43cEF3?=
- =?utf-8?B?VGp6SlJCUDd5SXFlRTJBMmRFdWpnMmRlM21BRnZrZEhHNUI3WEJuZzhCQVo2?=
- =?utf-8?B?WmEwbG9jbnhJWVpYcWl2SWpRUkRvZHZqVjdjdDhoZGpoYzBlaWN3NkxqanZK?=
- =?utf-8?B?MlZlNEVvR256b1NFbGR5Z2lONUdkcG1YYzRSbWREQiszenNCeWQycGR2cVlY?=
- =?utf-8?B?NzdWMmRPWjhCV3VUbzhKa0txL0tuK1RuOUc5WVU3djIyV0xmN0M1WmVHM2ZB?=
- =?utf-8?B?cExTK1c3dEJPOUh2U1VDV1d4cEVLYi9FWlNBUUE1MDVPOENSczEyVjByM2Nh?=
- =?utf-8?B?UkZ2OVFuWmlvdUxEOFYxSHVlRFYzN0dxVWduOW85K1A0Mmd3ek1lblNzWThT?=
- =?utf-8?B?Qm5uaEhkM1ZQZk1Wc3BmTzZSYjNTMDBvdHMxNzhOem50QklmS2Y0QjZzSmlS?=
- =?utf-8?B?Si9Ta2o5NHhWQUJLZkhpMjVBb0ZQVWxPUkVvWHF6OXdOWWpqazdqSDZKT0Zo?=
- =?utf-8?B?M0NmQW9PZDZuZDlVT0M0cFhyVjh1MUtrQllvNUlxYnlDRk9RdGtqMWhGTGpj?=
- =?utf-8?B?Z3pIdU1ObDVmWm5lZVR1cGtXODhRdTJ1RzF4aVNqcnhRanBsLy9vcHhDemJj?=
- =?utf-8?B?Yk9EYjZTOXF3M1MvdkY0V3d3WFpOR2hFN3RKcUpCbWVDUXRCQ2VtbUNYQU56?=
- =?utf-8?B?bzdtVDRERG4zK0JDV29VdE0zRUpxa25ydmcxZDN0bUtXNjhmdUhyMXBsZjFv?=
- =?utf-8?B?KzZMYzJtbnIySU1Da081QVV1WUliRWRWTUc2aXhwdmU4MnYySU5jcm12WnJi?=
- =?utf-8?B?R1o4OVcvb0RZOVowQVlxWjFJZDJ5bUtxNGcwcWpYQ0orcHBvVTNNcWZ5UGlW?=
- =?utf-8?B?eE1TSjQ4aTN3TmhQN0V1UkRZdGJ0MUtkR2pCbGhIL2NtYU01S3J4NHNXNnBz?=
- =?utf-8?B?L0orNStGVXp6M3YrM1JxVHFDVUFqTG5zT3pKam5ickcxR0N6KzJ6eWp6SU9G?=
- =?utf-8?B?QU0xTExuZVFUY0RTbWxQV0llUWZOU1FYbWhsa1lUVzNaWXI5enVSZkhGbHBa?=
- =?utf-8?B?ZHJCU2RtVGFtQnJoUGlubktrVGxIdmNBYWVtemowRUpURFlTU2hvRncvYnlx?=
- =?utf-8?B?NFY4aVpJWmRlN1hKTVRWTWhoeW50amM3R25LY3VKU1BYNlU2blFiL0E0Y3Nl?=
- =?utf-8?B?eFF2REZ1QjhFeWZicjJTaHU2bk1STjRPQU5RWWJUTVczWThxcGJ4T1hJQlBl?=
- =?utf-8?B?ckVwb0RRMkhLdXlkdFlPZEdUbVdtTjdwQ1pwSFVzRjAvYjMzZXlnRGdITmdk?=
- =?utf-8?B?Z2t5emU3SVBQSzZYV3phNEpWbHVxUjVLZmhGNjJYRWVBTG1JSEdaSjllVHZH?=
- =?utf-8?B?QTNkRjI1Q2orcVZ6dWUyNmdBblFhSFRlOVFnR2swekxkb2pnUmRUNU1VMDR0?=
- =?utf-8?B?dUVOYmFmQjQ4aXJvTEY2TXJpVEI3NXJpaXJsazk4alByUklaV0wraGIwcjAx?=
- =?utf-8?B?NU1XbnVUOXFqVnJEUnBha2NWR1hBPT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5FF61743E67FF3428ECC69B0EDF7E25B@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2E7911705;
+	Fri, 29 Sep 2023 08:56:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDE2AC433CA;
+	Fri, 29 Sep 2023 08:56:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695977807;
+	bh=SD7l0nyVVmDJ7bIEVQuAI+9P3Ib1c0jw7RfKBKWMhno=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JXzGhWrV++4SaPX5VZXC3PQB/pv3rEAof8DomnOjhil8mjh7IdImqGgBJcFfVyZ2s
+	 qXMQTj5MnWrY9bYEutrSGAHDwku/ci+PtOYSOkxmXzMLqjttzf+6gL6C8Gia5IRmRN
+	 S0IO3GDaBfn+SFwqBwUlKDgVnYZ9e4t8CW04xz3gcyk4NaeNseTut1lN+1RblLRD1T
+	 x03APGwrZgLJXw222u8t4Rdepc12Zzh7rJpoupZYik7wtNeaeOXOvik00XwQUqTU7a
+	 EYipdhfOTIZoFGg0pDrb/jZgLD0SwMIJg8/4e0bNrnzAluJuG2G85DDuePQjqoB2k3
+	 OdavWhcvGolSA==
+Date: Fri, 29 Sep 2023 10:56:40 +0200
+From: Simon Horman <horms@kernel.org>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	decui@microsoft.com, kys@microsoft.com, paulros@microsoft.com,
+	olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
+	wei.liu@kernel.org, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, leon@kernel.org, longli@microsoft.com,
+	ssengar@linux.microsoft.com, linux-rdma@vger.kernel.org,
+	daniel@iogearbox.net, john.fastabend@gmail.com, bpf@vger.kernel.org,
+	ast@kernel.org, sharmaajay@microsoft.com, hawk@kernel.org,
+	tglx@linutronix.de, shradhagupta@linux.microsoft.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net, 3/3] net: mana: Fix oversized sge0 for GSO packets
+Message-ID: <ZRaRSKQDyfkhxYmY@kernel.org>
+References: <1695519107-24139-1-git-send-email-haiyangz@microsoft.com>
+ <1695519107-24139-4-git-send-email-haiyangz@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa74ca27-9791-4b11-fe60-08dbc0c78764
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2023 08:39:00.5361
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Kli+hxpVILUJLilrW4gnZLoa+9QBCXbyjpWDs6RiaXyuFwR+4ah/QyhErGWHR2IOqFVvw1gQsNwT5K8JkAf0mpiZOXwZ71QpRbiF0Cqy654=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB2996
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1695519107-24139-4-git-send-email-haiyangz@microsoft.com>
 
-DQoNCkxlIDI4LzA5LzIwMjMgw6AgMjE6NDgsIEhhcmkgQmF0aGluaSBhIMOpY3JpdMKgOg0KPiBw
-YXRjaF9pbnN0cnVjdGlvbigpIGVudGFpbHMgc2V0dGluZyB1cCBwdGUsIHBhdGNoaW5nIHRoZSBp
-bnN0cnVjdGlvbiwNCj4gY2xlYXJpbmcgdGhlIHB0ZSBhbmQgZmx1c2hpbmcgdGhlIHRsYi4gSWYg
-bXVsdGlwbGUgaW5zdHJ1Y3Rpb25zIG5lZWQNCj4gdG8gYmUgcGF0Y2hlZCwgZXZlcnkgaW5zdHJ1
-Y3Rpb24gd291bGQgaGF2ZSB0byBnbyB0aHJvdWdoIHRoZSBhYm92ZQ0KPiBkcmlsbCB1bm5lY2Vz
-c2FyaWx5LiBJbnN0ZWFkLCBpbnRyb2R1Y2UgZnVuY3Rpb24gcGF0Y2hfaW5zdHJ1Y3Rpb25zKCkN
-Cj4gdGhhdCBzZXRzIHVwIHRoZSBwdGUsIGNsZWFycyB0aGUgcHRlIGFuZCBmbHVzaGVzIHRoZSB0
-bGIgb25seSBvbmNlIHBlcg0KPiBwYWdlIHJhbmdlIG9mIGluc3RydWN0aW9ucyB0byBiZSBwYXRj
-aGVkLiBUaGlzIGFkZHMgYSBzbGlnaHQgb3ZlcmhlYWQNCj4gdG8gcGF0Y2hfaW5zdHJ1Y3Rpb24o
-KSBjYWxsIHdoaWxlIGltcHJvdmluZyB0aGUgcGF0Y2hpbmcgdGltZSBmb3INCj4gc2NlbmFyaW9z
-IHdoZXJlIG1vcmUgdGhhbiBvbmUgaW5zdHJ1Y3Rpb24gbmVlZHMgdG8gYmUgcGF0Y2hlZC4NCg0K
-T24gbXkgcG93ZXJwYzh4eCwgdGhpcyBwYXRjaCBsZWFkcyB0byBhbiBpbmNyZWFzZSBvZiBhYm91
-dCA4JSBvZiB0aGUgDQp0aW1lIG5lZWRlZCB0byBhY3RpdmF0ZSBmdHJhY2UgZnVuY3Rpb24gdHJh
-Y2VyLg0KDQpUaGUgcHJvYmxlbSBpcyBpdCBjb21wbGV4aWZpZXMgcGF0Y2hfaW5zdHJ1Y3Rpb24o
-KS4NCg0KQmVmb3JlIHlvdXIgcGF0Y2g6DQoNCjAwMDAwMjM0IDxwYXRjaF9pbnN0cnVjdGlvbj46
-DQogIDIzNDoJNDggMDAgMDAgNmMgCWIgICAgICAgMmEwIDxwYXRjaF9pbnN0cnVjdGlvbisweDZj
-Pg0KICAyMzg6CTdjIGUwIDAwIGE2IAltZm1zciAgIHI3DQogIDIzYzoJN2MgNTEgMTMgYTYgCW10
-c3ByICAgODEscjINCiAgMjQwOgkzZCA0MCAwMCAwMCAJbGlzICAgICByMTAsMA0KCQkJMjQyOiBS
-X1BQQ19BRERSMTZfSEEJLmRhdGENCiAgMjQ0OgkzOSA0YSAwMCAwMCAJYWRkaSAgICByMTAscjEw
-LDANCgkJCTI0NjogUl9QUENfQUREUjE2X0xPCS5kYXRhDQogIDI0ODoJN2MgNjkgMWIgNzggCW1y
-ICAgICAgcjkscjMNCiAgMjRjOgkzZCAyOSA0MCAwMCAJYWRkaXMgICByOSxyOSwxNjM4NA0KICAy
-NTA6CTgxIDBhIDAwIDA4IAlsd3ogICAgIHI4LDgocjEwKQ0KICAyNTQ6CTU1IDI5IDAwIDI2IAlj
-bHJyd2kgIHI5LHI5LDEyDQogIDI1ODoJODEgNGEgMDAgMDQgCWx3eiAgICAgcjEwLDQocjEwKQ0K
-ICAyNWM6CTYxIDI5IDAxIDI1IAlvcmkgICAgIHI5LHI5LDI5Mw0KICAyNjA6CTkxIDI4IDAwIDAw
-IAlzdHcgICAgIHI5LDAocjgpDQogIDI2NDoJNTUgNDkgMDAgMjYgCWNscnJ3aSAgcjkscjEwLDEy
-DQogIDI2ODoJNTAgNmEgMDUgM2UgCXJsd2ltaSAgcjEwLHIzLDAsMjAsMzENCiAgMjZjOgk5MCA4
-YSAwMCAwMCAJc3R3ICAgICByNCwwKHIxMCkNCiAgMjcwOgk3YyAwMCA1MCA2YyAJZGNic3QgICAw
-LHIxMA0KICAyNzQ6CTdjIDAwIDA0IGFjIAlod3N5bmMNCiAgMjc4Ogk3YyAwMCAxZiBhYyAJaWNi
-aSAgICAwLHIzDQogIDI3YzoJN2MgMDAgMDQgYWMgCWh3c3luYw0KICAyODA6CTRjIDAwIDAxIDJj
-IAlpc3luYw0KICAyODQ6CTM4IDYwIDAwIDAwIAlsaSAgICAgIHIzLDANCiAgMjg4OgkzOSA0MCAw
-MCAwMCAJbGkgICAgICByMTAsMA0KICAyOGM6CTkxIDQ4IDAwIDAwIAlzdHcgICAgIHIxMCwwKHI4
-KQ0KICAyOTA6CTdjIDAwIDRhIDY0IAl0bGJpZSAgIHI5LHIwDQogIDI5NDoJN2MgMDAgMDQgYWMg
-CWh3c3luYw0KICAyOTg6CTdjIGUwIDAxIDI0IAltdG1zciAgIHI3DQogIDI5YzoJNGUgODAgMDAg
-MjAgCWJscg0KICAyYTA6CTkwIDgzIDAwIDAwIAlzdHcgICAgIHI0LDAocjMpDQogIDJhNDoJN2Mg
-MDAgMTggNmMgCWRjYnN0ICAgMCxyMw0KICAyYTg6CTdjIDAwIDA0IGFjIAlod3N5bmMNCiAgMmFj
-Ogk3YyAwMCAxZiBhYyAJaWNiaSAgICAwLHIzDQogIDJiMDoJN2MgMDAgMDQgYWMgCWh3c3luYw0K
-ICAyYjQ6CTRjIDAwIDAxIDJjIAlpc3luYw0KICAyYjg6CTM4IDYwIDAwIDAwIAlsaSAgICAgIHIz
-LDANCiAgMmJjOgk0ZSA4MCAwMCAyMCAJYmxyDQogIDJjMDoJMzggNjAgZmYgZmYgCWxpICAgICAg
-cjMsLTENCiAgMmM0Ogk0YiBmZiBmZiBjNCAJYiAgICAgICAyODggPHBhdGNoX2luc3RydWN0aW9u
-KzB4NTQ+DQogIDJjODoJMzggNjAgZmYgZmYgCWxpICAgICAgcjMsLTENCiAgMmNjOgk0ZSA4MCAw
-MCAyMCAJYmxyDQoNCg0KQWZ0ZXIgeW91IHBhdGNoOg0KDQowMDAwMDIwYyA8X19kb19wYXRjaF9p
-bnN0cnVjdGlvbnM+Og0KICAyMGM6CTk0IDIxIGZmIGUwIAlzdHd1ICAgIHIxLC0zMihyMSkNCiAg
-MjEwOgkzZCA0MCAwMCAwMCAJbGlzICAgICByMTAsMA0KCQkJMjEyOiBSX1BQQ19BRERSMTZfSEEJ
-LmRhdGENCiAgMjE0Ogk5MyA4MSAwMCAxMCAJc3R3ICAgICByMjgsMTYocjEpDQogIDIxODoJOTMg
-YzEgMDAgMTggCXN0dyAgICAgcjMwLDI0KHIxKQ0KICAyMWM6CTkzIGExIDAwIDE0IAlzdHcgICAg
-IHIyOSwyMChyMSkNCiAgMjIwOgk5MyBlMSAwMCAxYyAJc3R3ICAgICByMzEsMjgocjEpDQogIDIy
-NDoJMzkgNGEgMDAgMDAgCWFkZGkgICAgcjEwLHIxMCwwDQoJCQkyMjY6IFJfUFBDX0FERFIxNl9M
-TwkuZGF0YQ0KICAyMjg6CTdjIDY5IDFiIDc4IAltciAgICAgIHI5LHIzDQogIDIyYzoJN2MgYmUg
-MmIgNzkgCW1yLiAgICAgcjMwLHI1DQogIDIzMDoJM2QgMjkgNDAgMDAgCWFkZGlzICAgcjkscjks
-MTYzODQNCiAgMjM0Ogk4MyBlYSAwMCAwNCAJbHd6ICAgICByMzEsNChyMTApDQogIDIzODoJODMg
-YWEgMDAgMDggCWx3eiAgICAgcjI5LDgocjEwKQ0KICAyM2M6CTU1IDI5IDAwIDI2IAljbHJyd2kg
-IHI5LHI5LDEyDQogIDI0MDoJNjEgMjkgMDEgMjUgCW9yaSAgICAgcjkscjksMjkzDQogIDI0NDoJ
-NTcgZmMgMDAgMjYgCWNscnJ3aSAgcjI4LHIzMSwxMg0KICAyNDg6CTkxIDNkIDAwIDAwIAlzdHcg
-ICAgIHI5LDAocjI5KQ0KICAyNGM6CTUwIDdmIDA1IDNlIAlybHdpbWkgIHIzMSxyMywwLDIwLDMx
-DQogIDI1MDoJNDAgODIgMDAgNGMgCWJuZSAgICAgMjljIDxfX2RvX3BhdGNoX2luc3RydWN0aW9u
-cysweDkwPg0KICAyNTQ6CTgxIDI0IDAwIDAwIAlsd3ogICAgIHI5LDAocjQpDQogIDI1ODoJOTEg
-M2YgMDAgMDAgCXN0dyAgICAgcjksMChyMzEpDQogIDI1YzoJN2MgMDAgZjggNmMgCWRjYnN0ICAg
-MCxyMzENCiAgMjYwOgk3YyAwMCAwNCBhYyAJaHdzeW5jDQogIDI2NDoJN2MgMDAgMWYgYWMgCWlj
-YmkgICAgMCxyMw0KICAyNjg6CTdjIDAwIDA0IGFjIAlod3N5bmMNCiAgMjZjOgk0YyAwMCAwMSAy
-YyAJaXN5bmMNCiAgMjcwOgkzOCA2MCAwMCAwMCAJbGkgICAgICByMywwDQogIDI3NDoJMzkgMjAg
-MDAgMDAgCWxpICAgICAgcjksMA0KICAyNzg6CTkxIDNkIDAwIDAwIAlzdHcgICAgIHI5LDAocjI5
-KQ0KICAyN2M6CTdjIDAwIGUyIDY0IAl0bGJpZSAgIHIyOCxyMA0KICAyODA6CTdjIDAwIDA0IGFj
-IAlod3N5bmMNCiAgMjg0Ogk4MyA4MSAwMCAxMCAJbHd6ICAgICByMjgsMTYocjEpDQogIDI4ODoJ
-ODMgYTEgMDAgMTQgCWx3eiAgICAgcjI5LDIwKHIxKQ0KICAyOGM6CTgzIGMxIDAwIDE4IAlsd3og
-ICAgIHIzMCwyNChyMSkNCiAgMjkwOgk4MyBlMSAwMCAxYyAJbHd6ICAgICByMzEsMjgocjEpDQog
-IDI5NDoJMzggMjEgMDAgMjAgCWFkZGkgICAgcjEscjEsMzINCiAgMjk4Ogk0ZSA4MCAwMCAyMCAJ
-YmxyDQogIDI5YzoJMmMgMDYgMDAgMDAgCWNtcHdpICAgcjYsMA0KICAyYTA6CTdjIDA4IDAyIGE2
-IAltZmxyICAgIHIwDQogIDJhNDoJOTAgMDEgMDAgMjQgCXN0dyAgICAgcjAsMzYocjEpDQogIDJh
-ODoJNDAgODIgMDAgMjQgCWJuZSAgICAgMmNjIDxfX2RvX3BhdGNoX2luc3RydWN0aW9ucysweGMw
-Pg0KICAyYWM6CTdmIGUzIGZiIDc4IAltciAgICAgIHIzLHIzMQ0KICAyYjA6CTQ4IDAwIDAwIDAx
-IAlibCAgICAgIDJiMCA8X19kb19wYXRjaF9pbnN0cnVjdGlvbnMrMHhhND4NCgkJCTJiMDogUl9Q
-UENfUkVMMjQJbWVtY3B5DQogIDJiNDoJN2MgOWYgZjIgMTQgCWFkZCAgICAgcjQscjMxLHIzMA0K
-ICAyYjg6CTdmIGUzIGZiIDc4IAltciAgICAgIHIzLHIzMQ0KICAyYmM6CTQ4IDAwIDAwIDAxIAli
-bCAgICAgIDJiYyA8X19kb19wYXRjaF9pbnN0cnVjdGlvbnMrMHhiMD4NCgkJCTJiYzogUl9QUENf
-UkVMMjQJZmx1c2hfaWNhY2hlX3JhbmdlDQogIDJjMDoJODAgMDEgMDAgMjQgCWx3eiAgICAgcjAs
-MzYocjEpDQogIDJjNDoJN2MgMDggMDMgYTYgCW10bHIgICAgcjANCiAgMmM4Ogk0YiBmZiBmZiBh
-OCAJYiAgICAgICAyNzAgPF9fZG9fcGF0Y2hfaW5zdHJ1Y3Rpb25zKzB4NjQ+DQogIDJjYzoJODAg
-ODQgMDAgMDAgCWx3eiAgICAgcjQsMChyNCkNCiAgMmQwOgk1NyBjNSBmMCBiZSAJc3J3aSAgICBy
-NSxyMzAsMg0KICAyZDQ6CTdmIGUzIGZiIDc4IAltciAgICAgIHIzLHIzMQ0KICAyZDg6CTQ4IDAw
-IDAwIDAxIAlibCAgICAgIDJkOCA8X19kb19wYXRjaF9pbnN0cnVjdGlvbnMrMHhjYz4NCgkJCTJk
-ODogUl9QUENfUkVMMjQJbWVtc2V0MzINCiAgMmRjOgk0YiBmZiBmZiBkOCAJYiAgICAgICAyYjQg
-PF9fZG9fcGF0Y2hfaW5zdHJ1Y3Rpb25zKzB4YTg+DQogIDJlMDoJMzggNjAgZmYgZmYgCWxpICAg
-ICAgcjMsLTENCiAgMmU0Ogk0YiBmZiBmZiA5MCAJYiAgICAgICAyNzQgPF9fZG9fcGF0Y2hfaW5z
-dHJ1Y3Rpb25zKzB4Njg+DQoNCi4uLg0KDQowMDAwMDMxMCA8cGF0Y2hfaW5zdHJ1Y3Rpb24+Og0K
-ICAzMTA6CTk0IDIxIGZmIGUwIAlzdHd1ICAgIHIxLC0zMihyMSkNCiAgMzE0Ogk5MCA4MSAwMCAw
-OCAJc3R3ICAgICByNCw4KHIxKQ0KICAzMTg6CTQ4IDAwIDAwIDQwIAliICAgICAgIDM1OCA8cGF0
-Y2hfaW5zdHJ1Y3Rpb24rMHg0OD4NCiAgMzFjOgk3YyAwOCAwMiBhNiAJbWZsciAgICByMA0KICAz
-MjA6CTkwIDAxIDAwIDI0IAlzdHcgICAgIHIwLDM2KHIxKQ0KICAzMjQ6CTkzIGUxIDAwIDFjIAlz
-dHcgICAgIHIzMSwyOChyMSkNCiAgMzI4Ogk3ZiBlMCAwMCBhNiAJbWZtc3IgICByMzENCiAgMzJj
-Ogk3YyA1MSAxMyBhNiAJbXRzcHIgICA4MSxyMg0KICAzMzA6CTM4IGMwIDAwIDAwIAlsaSAgICAg
-IHI2LDANCiAgMzM0OgkzOCA4MSAwMCAwOCAJYWRkaSAgICByNCxyMSw4DQogIDMzODoJMzggYTAg
-MDAgMDAgCWxpICAgICAgcjUsMA0KICAzM2M6CTRiIGZmIGZlIGQxIAlibCAgICAgIDIwYyA8X19k
-b19wYXRjaF9pbnN0cnVjdGlvbnM+DQogIDM0MDoJN2YgZTAgMDEgMjQgCW10bXNyICAgcjMxDQog
-IDM0NDoJODAgMDEgMDAgMjQgCWx3eiAgICAgcjAsMzYocjEpDQogIDM0ODoJODMgZTEgMDAgMWMg
-CWx3eiAgICAgcjMxLDI4KHIxKQ0KICAzNGM6CTdjIDA4IDAzIGE2IAltdGxyICAgIHIwDQogIDM1
-MDoJMzggMjEgMDAgMjAgCWFkZGkgICAgcjEscjEsMzINCiAgMzU0Ogk0ZSA4MCAwMCAyMCAJYmxy
-DQogIDM1ODoJODEgMjEgMDAgMDggCWx3eiAgICAgcjksOChyMSkNCiAgMzVjOgk5MSAyMyAwMCAw
-MCAJc3R3ICAgICByOSwwKHIzKQ0KICAzNjA6CTdjIDAwIDE4IDZjIAlkY2JzdCAgIDAscjMNCiAg
-MzY0Ogk3YyAwMCAwNCBhYyAJaHdzeW5jDQogIDM2ODoJN2MgMDAgMWYgYWMgCWljYmkgICAgMCxy
-Mw0KICAzNmM6CTdjIDAwIDA0IGFjIAlod3N5bmMNCiAgMzcwOgk0YyAwMCAwMSAyYyAJaXN5bmMN
-CiAgMzc0OgkzOCA2MCAwMCAwMCAJbGkgICAgICByMywwDQogIDM3ODoJNGIgZmYgZmYgZDggCWIg
-ICAgICAgMzUwIDxwYXRjaF9pbnN0cnVjdGlvbisweDQwPg0KICAzN2M6CTM4IDYwIGZmIGZmIAls
-aSAgICAgIHIzLC0xDQogIDM4MDoJNGIgZmYgZmYgZDAgCWIgICAgICAgMzUwIDxwYXRjaF9pbnN0
-cnVjdGlvbisweDQwPg0KDQoNCkNocmlzdG9waGUNCg0KPiANCj4gU2lnbmVkLW9mZi1ieTogSGFy
-aSBCYXRoaW5pIDxoYmF0aGluaUBsaW51eC5pYm0uY29tPg0KPiAtLS0NCj4gICBhcmNoL3Bvd2Vy
-cGMvaW5jbHVkZS9hc20vY29kZS1wYXRjaGluZy5oIHwgIDEgKw0KPiAgIGFyY2gvcG93ZXJwYy9s
-aWIvY29kZS1wYXRjaGluZy5jICAgICAgICAgfCA5MyArKysrKysrKysrKysrKysrKysrKystLS0N
-Cj4gICAyIGZpbGVzIGNoYW5nZWQsIDg1IGluc2VydGlvbnMoKyksIDkgZGVsZXRpb25zKC0pDQo+
-IA0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL2NvZGUtcGF0Y2hpbmcu
-aCBiL2FyY2gvcG93ZXJwYy9pbmNsdWRlL2FzbS9jb2RlLXBhdGNoaW5nLmgNCj4gaW5kZXggM2Y4
-ODE1NDhmYjYxLi40M2E0YWVkZmE3MDMgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvcG93ZXJwYy9pbmNs
-dWRlL2FzbS9jb2RlLXBhdGNoaW5nLmgNCj4gKysrIGIvYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNt
-L2NvZGUtcGF0Y2hpbmcuaA0KPiBAQCAtNzQsNiArNzQsNyBAQCBpbnQgY3JlYXRlX2NvbmRfYnJh
-bmNoKHBwY19pbnN0X3QgKmluc3RyLCBjb25zdCB1MzIgKmFkZHIsDQo+ICAgaW50IHBhdGNoX2Jy
-YW5jaCh1MzIgKmFkZHIsIHVuc2lnbmVkIGxvbmcgdGFyZ2V0LCBpbnQgZmxhZ3MpOw0KPiAgIGlu
-dCBwYXRjaF9pbnN0cnVjdGlvbih1MzIgKmFkZHIsIHBwY19pbnN0X3QgaW5zdHIpOw0KPiAgIGlu
-dCByYXdfcGF0Y2hfaW5zdHJ1Y3Rpb24odTMyICphZGRyLCBwcGNfaW5zdF90IGluc3RyKTsNCj4g
-K2ludCBwYXRjaF9pbnN0cnVjdGlvbnModm9pZCAqYWRkciwgdm9pZCAqY29kZSwgc2l6ZV90IGxl
-biwgYm9vbCByZXBlYXRfaW5zdHIpOw0KPiAgIA0KPiAgIHN0YXRpYyBpbmxpbmUgdW5zaWduZWQg
-bG9uZyBwYXRjaF9zaXRlX2FkZHIoczMyICpzaXRlKQ0KPiAgIHsNCj4gZGlmZiAtLWdpdCBhL2Fy
-Y2gvcG93ZXJwYy9saWIvY29kZS1wYXRjaGluZy5jIGIvYXJjaC9wb3dlcnBjL2xpYi9jb2RlLXBh
-dGNoaW5nLmMNCj4gaW5kZXggYjAwMTEyZDdhZDQ2Li40ZmYwMDJiYzQxZjYgMTAwNjQ0DQo+IC0t
-LSBhL2FyY2gvcG93ZXJwYy9saWIvY29kZS1wYXRjaGluZy5jDQo+ICsrKyBiL2FyY2gvcG93ZXJw
-Yy9saWIvY29kZS1wYXRjaGluZy5jDQo+IEBAIC0yNzgsNyArMjc4LDM2IEBAIHN0YXRpYyB2b2lk
-IHVubWFwX3BhdGNoX2FyZWEodW5zaWduZWQgbG9uZyBhZGRyKQ0KPiAgIAlmbHVzaF90bGJfa2Vy
-bmVsX3JhbmdlKGFkZHIsIGFkZHIgKyBQQUdFX1NJWkUpOw0KPiAgIH0NCj4gICANCj4gLXN0YXRp
-YyBpbnQgX19kb19wYXRjaF9pbnN0cnVjdGlvbl9tbSh1MzIgKmFkZHIsIHBwY19pbnN0X3QgaW5z
-dHIpDQo+ICtzdGF0aWMgaW50IF9fcGF0Y2hfaW5zdHJ1Y3Rpb25zKHUzMiAqcGF0Y2hfYWRkciwg
-dm9pZCAqY29kZSwgc2l6ZV90IGxlbiwgYm9vbCByZXBlYXRfaW5zdHIpDQo+ICt7DQo+ICsJdW5z
-aWduZWQgbG9uZyBzdGFydCA9ICh1bnNpZ25lZCBsb25nKXBhdGNoX2FkZHI7DQo+ICsNCj4gKwkv
-KiBSZXBlYXQgaW5zdHJ1Y3Rpb24gKi8NCj4gKwlpZiAocmVwZWF0X2luc3RyKSB7DQo+ICsJCXBw
-Y19pbnN0X3QgaW5zdHIgPSBwcGNfaW5zdF9yZWFkKGNvZGUpOw0KPiArDQo+ICsJCWlmIChwcGNf
-aW5zdF9wcmVmaXhlZChpbnN0cikpIHsNCj4gKwkJCXU2NCB2YWwgPSBwcGNfaW5zdF9hc191bG9u
-ZyhpbnN0cik7DQo+ICsNCj4gKwkJCW1lbXNldDY0KCh1aW50NjRfdCAqKXBhdGNoX2FkZHIsIHZh
-bCwgbGVuIC8gOCk7DQo+ICsJCX0gZWxzZSB7DQo+ICsJCQl1MzIgdmFsID0gcHBjX2luc3RfdmFs
-KGluc3RyKTsNCj4gKw0KPiArCQkJbWVtc2V0MzIocGF0Y2hfYWRkciwgdmFsLCBsZW4gLyA0KTsN
-Cj4gKwkJfQ0KPiArCX0gZWxzZQ0KPiArCQltZW1jcHkocGF0Y2hfYWRkciwgY29kZSwgbGVuKTsN
-Cj4gKw0KPiArCXNtcF93bWIoKTsJLyogc21wIHdyaXRlIGJhcnJpZXIgKi8NCj4gKwlmbHVzaF9p
-Y2FjaGVfcmFuZ2Uoc3RhcnQsIHN0YXJ0ICsgbGVuKTsNCj4gKwlyZXR1cm4gMDsNCj4gK30NCj4g
-Kw0KPiArLyoNCj4gKyAqIEEgcGFnZSBpcyBtYXBwZWQgYW5kIGluc3RydWN0aW9ucyB0aGF0IGZp
-dCB0aGUgcGFnZSBhcmUgcGF0Y2hlZC4NCj4gKyAqIEFzc3VtZXMgJ2xlbicgdG8gYmUgKFBBR0Vf
-U0laRSAtIG9mZnNldF9pbl9wYWdlKGFkZHIpKSBvciBiZWxvdy4NCj4gKyAqLw0KPiArc3RhdGlj
-IGludCBfX2RvX3BhdGNoX2luc3RydWN0aW9uc19tbSh1MzIgKmFkZHIsIHZvaWQgKmNvZGUsIHNp
-emVfdCBsZW4sIGJvb2wgcmVwZWF0X2luc3RyKQ0KPiAgIHsNCj4gICAJaW50IGVycjsNCj4gICAJ
-dTMyICpwYXRjaF9hZGRyOw0KPiBAQCAtMzA3LDExICszMzYsMTUgQEAgc3RhdGljIGludCBfX2Rv
-X3BhdGNoX2luc3RydWN0aW9uX21tKHUzMiAqYWRkciwgcHBjX2luc3RfdCBpbnN0cikNCj4gICAN
-Cj4gICAJb3JpZ19tbSA9IHN0YXJ0X3VzaW5nX3RlbXBfbW0ocGF0Y2hpbmdfbW0pOw0KPiAgIA0K
-PiAtCWVyciA9IF9fcGF0Y2hfaW5zdHJ1Y3Rpb24oYWRkciwgaW5zdHIsIHBhdGNoX2FkZHIpOw0K
-PiArCS8qIFNpbmdsZSBpbnN0cnVjdGlvbiBjYXNlLiAqLw0KPiArCWlmIChsZW4gPT0gMCkgew0K
-PiArCQllcnIgPSBfX3BhdGNoX2luc3RydWN0aW9uKGFkZHIsICoocHBjX2luc3RfdCAqKWNvZGUs
-IHBhdGNoX2FkZHIpOw0KPiAgIA0KPiAtCS8qIGh3c3luYyBwZXJmb3JtZWQgYnkgX19wYXRjaF9p
-bnN0cnVjdGlvbiAoc3luYykgaWYgc3VjY2Vzc2Z1bCAqLw0KPiAtCWlmIChlcnIpDQo+IC0JCW1i
-KCk7ICAvKiBzeW5jICovDQo+ICsJCS8qIGh3c3luYyBwZXJmb3JtZWQgYnkgX19wYXRjaF9pbnN0
-cnVjdGlvbiAoc3luYykgaWYgc3VjY2Vzc2Z1bCAqLw0KPiArCQlpZiAoZXJyKQ0KPiArCQkJbWIo
-KTsgIC8qIHN5bmMgKi8NCj4gKwl9IGVsc2UNCj4gKwkJZXJyID0gX19wYXRjaF9pbnN0cnVjdGlv
-bnMocGF0Y2hfYWRkciwgY29kZSwgbGVuLCByZXBlYXRfaW5zdHIpOw0KPiAgIA0KPiAgIAkvKiBj
-b250ZXh0IHN5bmNocm9uaXNhdGlvbiBwZXJmb3JtZWQgYnkgX19wYXRjaF9pbnN0cnVjdGlvbiAo
-aXN5bmMgb3IgZXhjZXB0aW9uKSAqLw0KPiAgIAlzdG9wX3VzaW5nX3RlbXBfbW0ocGF0Y2hpbmdf
-bW0sIG9yaWdfbW0pOw0KPiBAQCAtMzI4LDcgKzM2MSwxMSBAQCBzdGF0aWMgaW50IF9fZG9fcGF0
-Y2hfaW5zdHJ1Y3Rpb25fbW0odTMyICphZGRyLCBwcGNfaW5zdF90IGluc3RyKQ0KPiAgIAlyZXR1
-cm4gZXJyOw0KPiAgIH0NCj4gICANCj4gLXN0YXRpYyBpbnQgX19kb19wYXRjaF9pbnN0cnVjdGlv
-bih1MzIgKmFkZHIsIHBwY19pbnN0X3QgaW5zdHIpDQo+ICsvKg0KPiArICogQSBwYWdlIGlzIG1h
-cHBlZCBhbmQgaW5zdHJ1Y3Rpb25zIHRoYXQgZml0IHRoZSBwYWdlIGFyZSBwYXRjaGVkLg0KPiAr
-ICogQXNzdW1lcyAnbGVuJyB0byBiZSAoUEFHRV9TSVpFIC0gb2Zmc2V0X2luX3BhZ2UoYWRkcikp
-IG9yIGJlbG93Lg0KPiArICovDQo+ICtzdGF0aWMgaW50IF9fZG9fcGF0Y2hfaW5zdHJ1Y3Rpb25z
-KHUzMiAqYWRkciwgdm9pZCAqY29kZSwgc2l6ZV90IGxlbiwgYm9vbCByZXBlYXRfaW5zdHIpDQo+
-ICAgew0KPiAgIAlpbnQgZXJyOw0KPiAgIAl1MzIgKnBhdGNoX2FkZHI7DQo+IEBAIC0zNDUsNyAr
-MzgyLDExIEBAIHN0YXRpYyBpbnQgX19kb19wYXRjaF9pbnN0cnVjdGlvbih1MzIgKmFkZHIsIHBw
-Y19pbnN0X3QgaW5zdHIpDQo+ICAgCWlmIChyYWRpeF9lbmFibGVkKCkpDQo+ICAgCQlhc20gdm9s
-YXRpbGUoInB0ZXN5bmMiOiA6IDoibWVtb3J5Iik7DQo+ICAgDQo+IC0JZXJyID0gX19wYXRjaF9p
-bnN0cnVjdGlvbihhZGRyLCBpbnN0ciwgcGF0Y2hfYWRkcik7DQo+ICsJLyogU2luZ2xlIGluc3Ry
-dWN0aW9uIGNhc2UuICovDQo+ICsJaWYgKGxlbiA9PSAwKQ0KPiArCQllcnIgPSBfX3BhdGNoX2lu
-c3RydWN0aW9uKGFkZHIsICoocHBjX2luc3RfdCAqKWNvZGUsIHBhdGNoX2FkZHIpOw0KPiArCWVs
-c2UNCj4gKwkJZXJyID0gX19wYXRjaF9pbnN0cnVjdGlvbnMocGF0Y2hfYWRkciwgY29kZSwgbGVu
-LCByZXBlYXRfaW5zdHIpOw0KPiAgIA0KPiAgIAlwdGVfY2xlYXIoJmluaXRfbW0sIHRleHRfcG9r
-ZV9hZGRyLCBwdGUpOw0KPiAgIAlmbHVzaF90bGJfa2VybmVsX3JhbmdlKHRleHRfcG9rZV9hZGRy
-LCB0ZXh0X3Bva2VfYWRkciArIFBBR0VfU0laRSk7DQo+IEBAIC0zNjksMTUgKzQxMCw0OSBAQCBp
-bnQgcGF0Y2hfaW5zdHJ1Y3Rpb24odTMyICphZGRyLCBwcGNfaW5zdF90IGluc3RyKQ0KPiAgIA0K
-PiAgIAlsb2NhbF9pcnFfc2F2ZShmbGFncyk7DQo+ICAgCWlmIChtbV9wYXRjaF9lbmFibGVkKCkp
-DQo+IC0JCWVyciA9IF9fZG9fcGF0Y2hfaW5zdHJ1Y3Rpb25fbW0oYWRkciwgaW5zdHIpOw0KPiAr
-CQllcnIgPSBfX2RvX3BhdGNoX2luc3RydWN0aW9uc19tbShhZGRyLCAmaW5zdHIsIDAsIGZhbHNl
-KTsNCj4gICAJZWxzZQ0KPiAtCQllcnIgPSBfX2RvX3BhdGNoX2luc3RydWN0aW9uKGFkZHIsIGlu
-c3RyKTsNCj4gKwkJZXJyID0gX19kb19wYXRjaF9pbnN0cnVjdGlvbnMoYWRkciwgJmluc3RyLCAw
-LCBmYWxzZSk7DQo+ICAgCWxvY2FsX2lycV9yZXN0b3JlKGZsYWdzKTsNCj4gICANCj4gICAJcmV0
-dXJuIGVycjsNCj4gICB9DQo+ICAgTk9LUFJPQkVfU1lNQk9MKHBhdGNoX2luc3RydWN0aW9uKTsN
-Cj4gICANCj4gKy8qDQo+ICsgKiBQYXRjaCAnYWRkcicgd2l0aCAnbGVuJyBieXRlcyBvZiBpbnN0
-cnVjdGlvbnMgZnJvbSAnY29kZScuDQo+ICsgKg0KPiArICogSWYgcmVwZWF0X2luc3RyIGlzIHRy
-dWUsIHRoZSBzYW1lIGluc3RydWN0aW9uIGlzIGZpbGxlZCBmb3INCj4gKyAqICdsZW4nIGJ5dGVz
-Lg0KPiArICovDQo+ICtpbnQgcGF0Y2hfaW5zdHJ1Y3Rpb25zKHZvaWQgKmFkZHIsIHZvaWQgKmNv
-ZGUsIHNpemVfdCBsZW4sIGJvb2wgcmVwZWF0X2luc3RyKQ0KPiArew0KPiArCXVuc2lnbmVkIGxv
-bmcgZmxhZ3M7DQo+ICsJc2l6ZV90IHBsZW47DQo+ICsJaW50IGVycjsNCj4gKw0KPiArCXdoaWxl
-IChsZW4gPiAwKSB7DQo+ICsJCXBsZW4gPSBtaW5fdChzaXplX3QsIFBBR0VfU0laRSAtIG9mZnNl
-dF9pbl9wYWdlKGFkZHIpLCBsZW4pOw0KPiArDQo+ICsJCWxvY2FsX2lycV9zYXZlKGZsYWdzKTsN
-Cj4gKwkJaWYgKG1tX3BhdGNoX2VuYWJsZWQoKSkNCj4gKwkJCWVyciA9IF9fZG9fcGF0Y2hfaW5z
-dHJ1Y3Rpb25zX21tKGFkZHIsIGNvZGUsIHBsZW4sIHJlcGVhdF9pbnN0cik7DQo+ICsJCWVsc2UN
-Cj4gKwkJCWVyciA9IF9fZG9fcGF0Y2hfaW5zdHJ1Y3Rpb25zKGFkZHIsIGNvZGUsIHBsZW4sIHJl
-cGVhdF9pbnN0cik7DQo+ICsJCWxvY2FsX2lycV9yZXN0b3JlKGZsYWdzKTsNCj4gKwkJaWYgKGVy
-cikNCj4gKwkJCWJyZWFrOw0KPiArDQo+ICsJCWxlbiAtPSBwbGVuOw0KPiArCQlhZGRyID0gYWRk
-ciArIHBsZW47DQo+ICsJCWlmICghcmVwZWF0X2luc3RyKQ0KPiArCQkJY29kZSA9IGNvZGUgKyBw
-bGVuOw0KPiArCX0NCj4gKw0KPiArCXJldHVybiBlcnI7DQo+ICt9DQo+ICtOT0tQUk9CRV9TWU1C
-T0wocGF0Y2hfaW5zdHJ1Y3Rpb25zKTsNCj4gKw0KPiAgIGludCBwYXRjaF9icmFuY2godTMyICph
-ZGRyLCB1bnNpZ25lZCBsb25nIHRhcmdldCwgaW50IGZsYWdzKQ0KPiAgIHsNCj4gICAJcHBjX2lu
-c3RfdCBpbnN0cjsNCg==
+On Sat, Sep 23, 2023 at 06:31:47PM -0700, Haiyang Zhang wrote:
+> Handle the case when GSO SKB linear length is too large.
+> 
+> MANA NIC requires GSO packets to put only the header part to SGE0,
+> otherwise the TX queue may stop at the HW level.
+> 
+> So, use 2 SGEs for the skb linear part which contains more than the
+> packet header.
+> 
+> Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
+> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+
+Hi Haiyang Zhang,
+
+thanks for your patch.
+Please find some feedback inline.
+
+> ---
+>  drivers/net/ethernet/microsoft/mana/mana_en.c | 186 ++++++++++++------
+>  include/net/mana/mana.h                       |   5 +-
+>  2 files changed, 134 insertions(+), 57 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> index 86e724c3eb89..0a3879163b56 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> @@ -91,63 +91,136 @@ static unsigned int mana_checksum_info(struct sk_buff *skb)
+>  	return 0;
+>  }
+>  
+> +static inline void mana_add_sge(struct mana_tx_package *tp,
+> +				struct mana_skb_head *ash, int sg_i,
+> +				dma_addr_t da, int sge_len, u32 gpa_mkey)
+
+Please don't use inline for code in .c files unless there
+is a demonstrable reason to do so: in general, the compiler should be
+left to inline code as it sees fit.
+
+> +{
+> +	ash->dma_handle[sg_i] = da;
+> +	ash->size[sg_i] = sge_len;
+> +
+> +	tp->wqe_req.sgl[sg_i].address = da;
+> +	tp->wqe_req.sgl[sg_i].mem_key = gpa_mkey;
+> +	tp->wqe_req.sgl[sg_i].size = sge_len;
+> +}
+> +
+>  static int mana_map_skb(struct sk_buff *skb, struct mana_port_context *apc,
+> -			struct mana_tx_package *tp)
+> +			struct mana_tx_package *tp, int gso_hs)
+>  {
+>  	struct mana_skb_head *ash = (struct mana_skb_head *)skb->head;
+> +	int hsg = 1; /* num of SGEs of linear part */
+>  	struct gdma_dev *gd = apc->ac->gdma_dev;
+> +	int skb_hlen = skb_headlen(skb);
+> +	int sge0_len, sge1_len = 0;
+>  	struct gdma_context *gc;
+>  	struct device *dev;
+>  	skb_frag_t *frag;
+>  	dma_addr_t da;
+> +	int sg_i;
+>  	int i;
+>  
+>  	gc = gd->gdma_context;
+>  	dev = gc->dev;
+> -	da = dma_map_single(dev, skb->data, skb_headlen(skb), DMA_TO_DEVICE);
+>  
+> +	if (gso_hs && gso_hs < skb_hlen) {
+> +		sge0_len = gso_hs;
+> +		sge1_len = skb_hlen - gso_hs;
+> +	} else {
+> +		sge0_len = skb_hlen;
+> +	}
+> +
+> +	da = dma_map_single(dev, skb->data, sge0_len, DMA_TO_DEVICE);
+>  	if (dma_mapping_error(dev, da))
+>  		return -ENOMEM;
+>  
+> -	ash->dma_handle[0] = da;
+> -	ash->size[0] = skb_headlen(skb);
+> +	mana_add_sge(tp, ash, 0, da, sge0_len, gd->gpa_mkey);
+>  
+> -	tp->wqe_req.sgl[0].address = ash->dma_handle[0];
+> -	tp->wqe_req.sgl[0].mem_key = gd->gpa_mkey;
+> -	tp->wqe_req.sgl[0].size = ash->size[0];
+> +	if (sge1_len) {
+> +		sg_i = 1;
+> +		da = dma_map_single(dev, skb->data + sge0_len, sge1_len,
+> +				    DMA_TO_DEVICE);
+> +		if (dma_mapping_error(dev, da))
+> +			goto frag_err;
+> +
+> +		mana_add_sge(tp, ash, sg_i, da, sge1_len, gd->gpa_mkey);
+> +		hsg = 2;
+> +	}
+>  
+>  	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
+> +		sg_i = hsg + i;
+> +
+>  		frag = &skb_shinfo(skb)->frags[i];
+>  		da = skb_frag_dma_map(dev, frag, 0, skb_frag_size(frag),
+>  				      DMA_TO_DEVICE);
+> -
+>  		if (dma_mapping_error(dev, da))
+>  			goto frag_err;
+>  
+> -		ash->dma_handle[i + 1] = da;
+> -		ash->size[i + 1] = skb_frag_size(frag);
+> -
+> -		tp->wqe_req.sgl[i + 1].address = ash->dma_handle[i + 1];
+> -		tp->wqe_req.sgl[i + 1].mem_key = gd->gpa_mkey;
+> -		tp->wqe_req.sgl[i + 1].size = ash->size[i + 1];
+> +		mana_add_sge(tp, ash, sg_i, da, skb_frag_size(frag),
+> +			     gd->gpa_mkey);
+>  	}
+>  
+>  	return 0;
+>  
+>  frag_err:
+> -	for (i = i - 1; i >= 0; i--)
+> -		dma_unmap_page(dev, ash->dma_handle[i + 1], ash->size[i + 1],
+> +	for (i = sg_i - 1; i >= hsg; i--)
+> +		dma_unmap_page(dev, ash->dma_handle[i], ash->size[i],
+>  			       DMA_TO_DEVICE);
+>  
+> -	dma_unmap_single(dev, ash->dma_handle[0], ash->size[0], DMA_TO_DEVICE);
+> +	for (i = hsg - 1; i >= 0; i--)
+> +		dma_unmap_single(dev, ash->dma_handle[i], ash->size[i],
+> +				 DMA_TO_DEVICE);
+>  
+>  	return -ENOMEM;
+>  }
+>  
+> +/* Handle the case when GSO SKB linear length is too large.
+> + * MANA NIC requires GSO packets to put only the packet header to SGE0.
+> + * So, we need 2 SGEs for the skb linear part which contains more than the
+> + * header.
+> + */
+> +static inline int mana_fix_skb_head(struct net_device *ndev,
+> +				    struct sk_buff *skb, int gso_hs,
+> +				    u32 *num_sge)
+> +{
+> +	int skb_hlen = skb_headlen(skb);
+> +
+> +	if (gso_hs < skb_hlen) {
+> +		*num_sge = 2 + skb_shinfo(skb)->nr_frags;
+> +	} else if (gso_hs > skb_hlen) {
+> +		if (net_ratelimit())
+> +			netdev_err(ndev,
+> +				   "TX nonlinear head: hs:%d, skb_hlen:%d\n",
+> +				   gso_hs, skb_hlen);
+> +
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+
+nit: I think it would be slightly nicer if the num_sge parameter of this
+function was removed and it returned negative values on error (already
+the case) and positive values, representing the number f segments, on success.
+
+> +}
+> +
+> +/* Get the GSO packet's header size */
+> +static inline int mana_get_gso_hs(struct sk_buff *skb)
+> +{
+> +	int gso_hs;
+> +
+> +	if (skb->encapsulation) {
+> +		gso_hs = skb_inner_tcp_all_headers(skb);
+> +	} else {
+> +		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
+> +			gso_hs = skb_transport_offset(skb) +
+> +				 sizeof(struct udphdr);
+> +		} else {
+> +			gso_hs = skb_tcp_all_headers(skb);
+> +		}
+> +	}
+> +
+> +	return gso_hs;
+> +}
+> +
+>  netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>  {
+>  	enum mana_tx_pkt_format pkt_fmt = MANA_SHORT_PKT_FMT;
+>  	struct mana_port_context *apc = netdev_priv(ndev);
+> +	int gso_hs = 0; /* zero for non-GSO pkts */
+>  	u16 txq_idx = skb_get_queue_mapping(skb);
+>  	struct gdma_dev *gd = apc->ac->gdma_dev;
+>  	bool ipv4 = false, ipv6 = false;
+> @@ -159,7 +232,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>  	struct mana_txq *txq;
+>  	struct mana_cq *cq;
+>  	int err, len;
+> -	u16 ihs;
+>  
+>  	if (unlikely(!apc->port_is_up))
+>  		goto tx_drop;
+> @@ -209,19 +281,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>  	pkg.wqe_req.client_data_unit = 0;
+>  
+>  	pkg.wqe_req.num_sge = 1 + skb_shinfo(skb)->nr_frags;
+> -	WARN_ON_ONCE(pkg.wqe_req.num_sge > MAX_TX_WQE_SGL_ENTRIES);
+> -
+> -	if (pkg.wqe_req.num_sge <= ARRAY_SIZE(pkg.sgl_array)) {
+> -		pkg.wqe_req.sgl = pkg.sgl_array;
+> -	} else {
+> -		pkg.sgl_ptr = kmalloc_array(pkg.wqe_req.num_sge,
+> -					    sizeof(struct gdma_sge),
+> -					    GFP_ATOMIC);
+> -		if (!pkg.sgl_ptr)
+> -			goto tx_drop_count;
+> -
+> -		pkg.wqe_req.sgl = pkg.sgl_ptr;
+> -	}
+
+It is unclear to me why this logic has moved from here to further
+down in this function. Is it to avoid some cases where
+alloation has to be unwond on error (when mana_fix_skb_head() fails) ?
+If so, this feels more like an optimisation than a fix.
+
+>  
+>  	if (skb->protocol == htons(ETH_P_IP))
+>  		ipv4 = true;
+> @@ -229,6 +288,23 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>  		ipv6 = true;
+>  
+>  	if (skb_is_gso(skb)) {
+> +		gso_hs = mana_get_gso_hs(skb);
+> +
+> +		if (mana_fix_skb_head(ndev, skb, gso_hs, &pkg.wqe_req.num_sge))
+> +			goto tx_drop_count;
+> +
+> +		if (skb->encapsulation) {
+> +			u64_stats_update_begin(&tx_stats->syncp);
+> +			tx_stats->tso_inner_packets++;
+> +			tx_stats->tso_inner_bytes += skb->len - gso_hs;
+> +			u64_stats_update_end(&tx_stats->syncp);
+> +		} else {
+> +			u64_stats_update_begin(&tx_stats->syncp);
+> +			tx_stats->tso_packets++;
+> +			tx_stats->tso_bytes += skb->len - gso_hs;
+> +			u64_stats_update_end(&tx_stats->syncp);
+> +		}
+
+nit: I wonder if this could be slightly more succinctly written as:
+
+		u64_stats_update_begin(&tx_stats->syncp);
+		if (skb->encapsulation) {
+			tx_stats->tso_inner_packets++;
+			tx_stats->tso_inner_bytes += skb->len - gso_hs;
+		} else {
+			tx_stats->tso_packets++;
+			tx_stats->tso_bytes += skb->len - gso_hs;
+		}
+		u64_stats_update_end(&tx_stats->syncp);
+
+Also, it is unclear to me why the stats logic is moved here from
+futher down in the same block. It feels more like a clean-up than a fix
+(as, btw, is my suggestion immediately above).
+
+> +
+>  		pkg.tx_oob.s_oob.is_outer_ipv4 = ipv4;
+>  		pkg.tx_oob.s_oob.is_outer_ipv6 = ipv6;
+>  
+> @@ -252,26 +328,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>  						 &ipv6_hdr(skb)->daddr, 0,
+>  						 IPPROTO_TCP, 0);
+>  		}
+> -
+> -		if (skb->encapsulation) {
+> -			ihs = skb_inner_tcp_all_headers(skb);
+> -			u64_stats_update_begin(&tx_stats->syncp);
+> -			tx_stats->tso_inner_packets++;
+> -			tx_stats->tso_inner_bytes += skb->len - ihs;
+> -			u64_stats_update_end(&tx_stats->syncp);
+> -		} else {
+> -			if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
+> -				ihs = skb_transport_offset(skb) + sizeof(struct udphdr);
+> -			} else {
+> -				ihs = skb_tcp_all_headers(skb);
+> -			}
+> -
+> -			u64_stats_update_begin(&tx_stats->syncp);
+> -			tx_stats->tso_packets++;
+> -			tx_stats->tso_bytes += skb->len - ihs;
+> -			u64_stats_update_end(&tx_stats->syncp);
+> -		}
+> -
+>  	} else if (skb->ip_summed == CHECKSUM_PARTIAL) {
+>  		csum_type = mana_checksum_info(skb);
+>  
+> @@ -294,11 +350,25 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>  		} else {
+>  			/* Can't do offload of this type of checksum */
+>  			if (skb_checksum_help(skb))
+> -				goto free_sgl_ptr;
+> +				goto tx_drop_count;
+>  		}
+>  	}
+>  
+> -	if (mana_map_skb(skb, apc, &pkg)) {
+> +	WARN_ON_ONCE(pkg.wqe_req.num_sge > MAX_TX_WQE_SGL_ENTRIES);
+> +
+> +	if (pkg.wqe_req.num_sge <= ARRAY_SIZE(pkg.sgl_array)) {
+> +		pkg.wqe_req.sgl = pkg.sgl_array;
+> +	} else {
+> +		pkg.sgl_ptr = kmalloc_array(pkg.wqe_req.num_sge,
+> +					    sizeof(struct gdma_sge),
+> +					    GFP_ATOMIC);
+> +		if (!pkg.sgl_ptr)
+> +			goto tx_drop_count;
+> +
+> +		pkg.wqe_req.sgl = pkg.sgl_ptr;
+> +	}
+> +
+> +	if (mana_map_skb(skb, apc, &pkg, gso_hs)) {
+>  		u64_stats_update_begin(&tx_stats->syncp);
+>  		tx_stats->mana_map_err++;
+>  		u64_stats_update_end(&tx_stats->syncp);
+> @@ -1255,12 +1325,18 @@ static void mana_unmap_skb(struct sk_buff *skb, struct mana_port_context *apc)
+>  {
+>  	struct mana_skb_head *ash = (struct mana_skb_head *)skb->head;
+>  	struct gdma_context *gc = apc->ac->gdma_dev->gdma_context;
+> +	int hsg = 1; /* num of SGEs of linear part */
+>  	struct device *dev = gc->dev;
+>  	int i;
+>  
+> -	dma_unmap_single(dev, ash->dma_handle[0], ash->size[0], DMA_TO_DEVICE);
+> +	if (skb_is_gso(skb) && skb_headlen(skb) > ash->size[0])
+> +		hsg = 2;
+
+nit: Maybe this is nicer?
+
+	/* num of SGEs of linear part */
+	hsg = (skb_is_gso(skb) && skb_headlen(skb) > ash->size[0]) ? 2 : 1;
+
+> +
+> +	for (i = 0; i < hsg; i++)
+> +		dma_unmap_single(dev, ash->dma_handle[i], ash->size[i],
+> +				 DMA_TO_DEVICE);
+>  
+> -	for (i = 1; i < skb_shinfo(skb)->nr_frags + 1; i++)
+> +	for (i = hsg; i < skb_shinfo(skb)->nr_frags + hsg; i++)
+>  		dma_unmap_page(dev, ash->dma_handle[i], ash->size[i],
+>  			       DMA_TO_DEVICE);
+>  }
+> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+> index 9f70b4332238..4d43adf18606 100644
+> --- a/include/net/mana/mana.h
+> +++ b/include/net/mana/mana.h
+> @@ -103,9 +103,10 @@ struct mana_txq {
+>  
+>  /* skb data and frags dma mappings */
+>  struct mana_skb_head {
+> -	dma_addr_t dma_handle[MAX_SKB_FRAGS + 1];
+> +	/* GSO pkts may have 2 SGEs for the linear part*/
+> +	dma_addr_t dma_handle[MAX_SKB_FRAGS + 2];
+>  
+> -	u32 size[MAX_SKB_FRAGS + 1];
+> +	u32 size[MAX_SKB_FRAGS + 2];
+>  };
+>  
+>  #define MANA_HEADROOM sizeof(struct mana_skb_head)
+> -- 
+> 2.25.1
+> 
+> 
 
