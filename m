@@ -1,155 +1,96 @@
-Return-Path: <bpf+bounces-11152-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11153-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2A0A7B3E97
-	for <lists+bpf@lfdr.de>; Sat, 30 Sep 2023 08:10:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B64BE7B3FA5
+	for <lists+bpf@lfdr.de>; Sat, 30 Sep 2023 11:14:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by ny.mirrors.kernel.org (Postfix) with ESMTP id C07C71C208D8
-	for <lists+bpf@lfdr.de>; Sat, 30 Sep 2023 06:10:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 07373282012
+	for <lists+bpf@lfdr.de>; Sat, 30 Sep 2023 09:14:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE330539A;
-	Sat, 30 Sep 2023 06:10:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92587946F;
+	Sat, 30 Sep 2023 09:14:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21E935247
-	for <bpf@vger.kernel.org>; Sat, 30 Sep 2023 06:10:06 +0000 (UTC)
-X-Greylist: delayed 147 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 29 Sep 2023 23:10:03 PDT
-Received: from smtp.zfn.uni-bremen.de (smtp.zfn.uni-bremen.de [IPv6:2001:638:708:32::21])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDB31A7
-	for <bpf@vger.kernel.org>; Fri, 29 Sep 2023 23:10:02 -0700 (PDT)
-Received: from smtpclient.apple (eduroam-pool10-224.wlan.uni-bremen.de [134.102.90.223])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.zfn.uni-bremen.de (Postfix) with ESMTPSA id 4RyGw24ZCTzDCcm;
-	Sat, 30 Sep 2023 08:07:30 +0200 (CEST)
-Content-Type: text/plain;
-	charset=utf-8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AB9A23AA;
+	Sat, 30 Sep 2023 09:14:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D3BDC433C7;
+	Sat, 30 Sep 2023 09:14:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1696065282;
+	bh=IDH9i4ossG8fiz9uTqL/nI6nmle6vBA4f7lhXd87Uxw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Rm9SNykJQwdTVW6S+Rf801ssab1h5iVg8gzKgmoRtFEW4Gs155ybnm+rBuwmhe/wo
+	 ItrleESvVOeL0vTQJuHBxCkj8xmEBUEOEZ0vkQ2MOmwnNrOpXHIXAni0aewiGrx6OZ
+	 xqz/ajf48Q8tqaV6nFOwuUovw9OxlzKfu3rhwjT0vI1sR3aUmvKBmC3Fa233NAFHi5
+	 p0epjZiJZ+tvH+uo3MTRZVjE9gbw5Rn+Cmu8I94npTDDhnx+OV8yiZg90Nt2a/iDHc
+	 5JgNvnNXsyV9LE1MDj3pA/VQcAbLuJhxdr047t8cmFyKwNaQ/IYSKQ0kH7ecurl1lW
+	 Io1hmHa9fALOg==
+Date: Sat, 30 Sep 2023 18:14:35 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v5 00/12] tracing: fprobe: rethook: Use ftrace_regs
+ instead of pt_regs
+Message-Id: <20230930181435.6663ef5a6ad718548a1e414a@kernel.org>
+In-Reply-To: <CAADnVQ+HCLx+QUE88uVxeBNYFY4D=2-HADOU1C_czT1S1sRHgA@mail.gmail.com>
+References: <169556254640.146934.5654329452696494756.stgit@devnote2>
+	<20230929102115.09c015b9af03e188f1fbb25c@kernel.org>
+	<CAADnVQ+HCLx+QUE88uVxeBNYFY4D=2-HADOU1C_czT1S1sRHgA@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
-Subject: Re: [Bpf] Signed modulo operations
-From: Carsten Bormann <cabo@tzi.org>
-In-Reply-To: <PH7PR21MB387814B98538D7D23A611E89A3C0A@PH7PR21MB3878.namprd21.prod.outlook.com>
-Date: Sat, 30 Sep 2023 08:07:20 +0200
-Cc: "bpf@ietf.org" <bpf@ietf.org>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2E2AEB25-CD5D-4F1F-80D5-42715BC69ACF@tzi.org>
-References: <20220927185958.14995-1-dthaler1968@googlemail.com>
- <20220927185958.14995-7-dthaler1968@googlemail.com>
- <20220930205211.tb26v4rzhqrgog2h@macbook-pro-4.dhcp.thefacebook.com>
- <DM4PR21MB3440CDB9D8E325CBEA20FFA7A3569@DM4PR21MB3440.namprd21.prod.outlook.com>
- <20220930215914.rzedllnce7klucey@macbook-pro-4.dhcp.thefacebook.com>
- <DM4PR21MB34402522B614257706D2F785A3569@DM4PR21MB3440.namprd21.prod.outlook.com>
- <PH7PR21MB387814B98538D7D23A611E89A3C0A@PH7PR21MB3878.namprd21.prod.outlook.com>
-To: Dave Thaler <dthaler=40microsoft.com@dmarc.ietf.org>
-X-Mailer: Apple Mail (2.3731.700.6)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-I didn=E2=80=99t follow the whole discussion, but it maybe it's worth =
-pointing out that C=E2=80=99s % is not a modulo operator, but a =
-remainder operator.
+On Fri, 29 Sep 2023 17:12:07 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-Gr=C3=BC=C3=9Fe, Carsten
+> On Thu, Sep 28, 2023 at 6:21 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> >
+> > Thus, what I need is to make fprobe to use function-graph tracer's shadow
+> > stack and trampoline instead of rethook. This may need to generalize its
+> > interface so that we can share it between fprobe and function-graph tracer,
+> > but we don't need to involve rethook and kretprobes anymore.
+> 
+> ...
+> 
+> > And need to add patches
+> >
+> >  - Introduce a generized function exit hook interface for ftrace.
+> >  - Replace rethook in fprobe with the function exit hook interface.
+> 
+> you mean that rethook will be removed after that?
 
+No, it is too late. rethook is deeply integrated with kretprobe.
+So when we remove the kretprobe, rethook will be removed too.
+(fprobe and kretprobe provides similar functionality, so we can
+move to fprobe)
 
-> On 29. Sep 2023, at 23:03, Dave Thaler =
-<dthaler=3D40microsoft.com@dmarc.ietf.org> wrote:
->=20
-> In the email discussion below, we concluded it wasn't relevant at the =
-time because
-> there were no signed modulo instructions.  However, now there is and I =
-believe the
-> ambiguity in the current spec needs to be addressed.
->=20
->> -----Original Message-----
->> From: Dave Thaler
->> Sent: Friday, September 30, 2022 3:42 PM
->> To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
->> Cc: dthaler1968@googlemail.com; bpf@vger.kernel.org
->> Subject: RE: [PATCH 07/15] ebpf-docs: Fix modulo zero, division by =
-zero,
->> overflow, and underflow
->>=20
->>> -----Original Message-----
->>> From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
->>> Sent: Friday, September 30, 2022 2:59 PM
->>> To: Dave Thaler <dthaler@microsoft.com>
->>> Cc: dthaler1968@googlemail.com; bpf@vger.kernel.org
->>> Subject: Re: [PATCH 07/15] ebpf-docs: Fix modulo zero, division by
->>> zero, overflow, and underflow
->>>=20
->>> On Fri, Sep 30, 2022 at 09:54:17PM +0000, Dave Thaler wrote:
->>>> [...]
->>>>>> +Also note that the modulo operation often varies by language
->>>>>> +when the dividend or divisor are negative, where Python, Ruby, =
-etc.
->>>>>> +differ from C, Go, Java, etc. This specification requires that
->>>>>> +modulo use truncated division (where -13 % 3 =3D=3D -1) as
->>>>>> +implemented in C, Go,
->>>>>> +etc.:
->>>>>> +
->>>>>> +   a % n =3D a - n * trunc(a / n)
->>>>>> +
->>>>>=20
->>>>> Interesting bit of info, but I'm not sure how it relates to the =
-ISA doc.
->>>>=20
->>>> It's because there's multiple definitions of modulo out there as =
-the
->>>> paragraph notes, which differ in what they do with negative =
-numbers.
->>>> The ISA defines the modulo operation as being the specific version =
-above.
->>>> If you tried to implement the ISA in say Python and didn't know
->>>> that, you'd have a non-compliant implementation.
->>>=20
->>> Is it because the languages have weird rules to pick between signed =
-vs
->>> unsigned mod?
->>> At least from llvm pov the smod and umod have fixed behavior.
->>=20
->> It's because there's different mathematical definitions and different =
-languages
->> have chosen different definitions.  E.g., languages/libraries that =
-follow Knuth
->> use a different mathematical definition than C uses.  For details =
-see:
->>=20
->> =
-https://en.wikipedia.org/wiki/Modulo_operation#Variants_of_the_definition
->>=20
->> https://torstencurdt.com/tech/posts/modulo-of-negative-numbers/
->>=20
->> Dave
->=20
-> Perhaps text like the proposed snippet quoted in the exchange above =
-should be
-> added around the new text that now appears in the doc, i.e. the =
-ambiguous text
-> is currently:
->> For signed operations (``BPF_SDIV`` and ``BPF_SMOD``), for =
-``BPF_ALU``,
->> 'imm' is interpreted as a 32-bit signed value. For ``BPF_ALU64``, =
-'imm'
->> is first :term:`sign extended<Sign Extend>` from 32 to 64 bits, and =
-then
->> interpreted as a 64-bit signed value. =20
->=20
-> Dave
->=20
-> --=20
-> Bpf mailing list
-> Bpf@ietf.org
-> https://www.ietf.org/mailman/listinfo/bpf
+Even though, objpool(*) itself might be kept for some other use
+cases. As far as I can see, ftrace_ret_stack can not provide a context
+local storage between entry -> exit callbacks. (so this feature must
+be dropped from fprobe)
 
+(*) https://lore.kernel.org/all/20230905015255.81545-1-wuqiang.matt@bytedance.com/
+
+Thank you,
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
