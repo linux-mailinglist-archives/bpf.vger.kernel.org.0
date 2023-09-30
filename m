@@ -1,64 +1,67 @@
-Return-Path: <bpf+bounces-11165-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11166-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B74767B42F6
-	for <lists+bpf@lfdr.de>; Sat, 30 Sep 2023 20:19:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54F8F7B43A4
+	for <lists+bpf@lfdr.de>; Sat, 30 Sep 2023 22:40:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by ny.mirrors.kernel.org (Postfix) with ESMTP id D37951C20C16
-	for <lists+bpf@lfdr.de>; Sat, 30 Sep 2023 18:19:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 8020C283050
+	for <lists+bpf@lfdr.de>; Sat, 30 Sep 2023 20:40:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1C9C18C0A;
-	Sat, 30 Sep 2023 18:19:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6101718C3C;
+	Sat, 30 Sep 2023 20:40:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F57818B11;
-	Sat, 30 Sep 2023 18:19:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D97A7C433C7;
-	Sat, 30 Sep 2023 18:19:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696097993;
-	bh=VkV7TjXZJnym2EdSAsMapvwnoXQMIzv/8uo4dDQrWTg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vBOmrl8788GbnxHeP93j29wo1oJzATYxI9FNfCZ+5dQrB5Zfl32IFQxHVQs5Mezw4
-	 qg4RET03lYP+nNNp3ZdBfn1/I+8fe6faywJo5j1LwYGiD25oZBdcYV96BAuVW4pESV
-	 GDtUHZblaXnXYqGPF0Pslim6HYcSh6fffRQ68Pu7xz6OVXQyZBGoUcSu2nuRiaZzGc
-	 7Uca+FJvj0NT2Wsy+d5XaonAEHbaAVVuahl6HFm6KNFjvbcR0u4DoemNLVz5GL9tN6
-	 zaEfh4YeXokL6XoDUQxIW3dFzXWGDnJhyFZ2ljWi8VeWvXW0ApGHMrjgx2mhFcrFzz
-	 TsWCHsXKX6Q4A==
-Date: Sat, 30 Sep 2023 20:19:46 +0200
-From: Simon Horman <horms@kernel.org>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	Dexuan Cui <decui@microsoft.com>, KY Srinivasan <kys@microsoft.com>,
-	Paul Rosswurm <paulros@microsoft.com>,
-	"olaf@aepfle.de" <olaf@aepfle.de>, vkuznets <vkuznets@redhat.com>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	"leon@kernel.org" <leon@kernel.org>, Long Li <longli@microsoft.com>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"ast@kernel.org" <ast@kernel.org>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	"hawk@kernel.org" <hawk@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net, 3/3] net: mana: Fix oversized sge0 for GSO packets
-Message-ID: <20230930181946.GG92317@kernel.org>
-References: <1695519107-24139-1-git-send-email-haiyangz@microsoft.com>
- <1695519107-24139-4-git-send-email-haiyangz@microsoft.com>
- <ZRaRSKQDyfkhxYmY@kernel.org>
- <PH7PR21MB311698B8C2107E66890F6C7ECAC0A@PH7PR21MB3116.namprd21.prod.outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD8D918C20
+	for <bpf@vger.kernel.org>; Sat, 30 Sep 2023 20:40:19 +0000 (UTC)
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F99BCA
+	for <bpf@vger.kernel.org>; Sat, 30 Sep 2023 13:40:18 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6910ea9cddbso13325843b3a.0
+        for <bpf@vger.kernel.org>; Sat, 30 Sep 2023 13:40:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696106418; x=1696711218; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/fXBByQPl8KY7eiFEi5g6L19V9juEXVrdMizugwt5T4=;
+        b=UCapHfXuAQofwKnuRppIQtd8zlMH0w/4XEYYCviKk7tevL8rzYJ9Wgt/QqjQ9tcSP1
+         G2jv1WU/OvcHrYjdNfxTrpCxKlTxDHjyRS0FhCt6LkteUtHeCaE0II0nxdGesZq3ZpE2
+         +eUpzxfCVrpwuft3reOSlho+coG7y4SaxUO6Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696106418; x=1696711218;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/fXBByQPl8KY7eiFEi5g6L19V9juEXVrdMizugwt5T4=;
+        b=c1vpL5soxPbyxf+OVGyKBMtuh3k45KRS+R02GlIn1nImkAdU5KKj8TMKXL3K3525/O
+         EHWGbeSAnIK5FknfBNBtJmA5ZahvG6gd/Xtu454o0LyE6K1HvUFVrvM8Bjg2s9jofaBs
+         vwODGFjX4Sbnb0ucaFjGgdq3fhJOxAum+FFbjJxHHp05Oq7fao40q95o338nig+2Ma1h
+         i5WG4TA20S7Cx6tZ93a534ni7lkTwGWHSh6CvyA/vzIjRo8m0hZMSqp/C9O8O425Ovd7
+         lEDeuoSt7L4rccsEqOTE5hCUaOWxSIozUtWMXWIdXTfoh6QitS0NBYWMdZ54lWxdcyop
+         P/CQ==
+X-Gm-Message-State: AOJu0YxAFWh2JVscAbTp+Gap7uyPN+b7R/03X4zlZa9x5o4h1hANj+q2
+	QyI9rQQwQSyrzOt7ROIcg5EsZEWeCOrHjR2AWtc=
+X-Google-Smtp-Source: AGHT+IHkTbEpe8NOY7N2PNQrvQoHeBby2OJO5lF43caE809j96ZmiK/fEidsdab5v6MBMYeNGYv2cg==
+X-Received: by 2002:a05:6a20:3d85:b0:133:f0b9:856d with SMTP id s5-20020a056a203d8500b00133f0b9856dmr9963086pzi.17.1696106417880;
+        Sat, 30 Sep 2023 13:40:17 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id e24-20020a62aa18000000b0068ff6d21563sm17490177pff.148.2023.09.30.13.40.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Sep 2023 13:40:17 -0700 (PDT)
+Date: Sat, 30 Sep 2023 13:40:14 -0700
+From: Kees Cook <keescook@chromium.org>
+To: kernel test robot <lkp@intel.com>
+Cc: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org,
+	bpf@vger.kernel.org, oe-kbuild-all@lists.linux.dev,
+	paul@paul-moore.com, casey@schaufler-ca.com, song@kernel.org,
+	daniel@iogearbox.net, ast@kernel.org, renauld@google.com
+Subject: Re: [PATCH v5 3/5] security: Replace indirect LSM hook calls with
+ static calls
+Message-ID: <202309301339.8196ECC78@keescook>
+References: <20230928202410.3765062-4-kpsingh@kernel.org>
+ <202309302332.1mxVwb0U-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,97 +70,76 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PH7PR21MB311698B8C2107E66890F6C7ECAC0A@PH7PR21MB3116.namprd21.prod.outlook.com>
+In-Reply-To: <202309302332.1mxVwb0U-lkp@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Fri, Sep 29, 2023 at 04:11:15PM +0000, Haiyang Zhang wrote:
-
-...
-
-> > > @@ -209,19 +281,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb,
-> > struct net_device *ndev)
-> > >  	pkg.wqe_req.client_data_unit = 0;
-> > >
-> > >  	pkg.wqe_req.num_sge = 1 + skb_shinfo(skb)->nr_frags;
-> > > -	WARN_ON_ONCE(pkg.wqe_req.num_sge >
-> > MAX_TX_WQE_SGL_ENTRIES);
-> > > -
-> > > -	if (pkg.wqe_req.num_sge <= ARRAY_SIZE(pkg.sgl_array)) {
-> > > -		pkg.wqe_req.sgl = pkg.sgl_array;
-> > > -	} else {
-> > > -		pkg.sgl_ptr = kmalloc_array(pkg.wqe_req.num_sge,
-> > > -					    sizeof(struct gdma_sge),
-> > > -					    GFP_ATOMIC);
-> > > -		if (!pkg.sgl_ptr)
-> > > -			goto tx_drop_count;
-> > > -
-> > > -		pkg.wqe_req.sgl = pkg.sgl_ptr;
-> > > -	}
-> > 
-> > It is unclear to me why this logic has moved from here to further
-> > down in this function. Is it to avoid some cases where
-> > alloation has to be unwond on error (when mana_fix_skb_head() fails) ?
-> > If so, this feels more like an optimisation than a fix.
-> mana_fix_skb_head() may add one more sge (success case) so the sgl 
-> allocation should be done later. Otherwise, we need to free / re-allocate 
-> the array later.
-
-Understood, thanks for the clarification.
-
-> > >  	if (skb->protocol == htons(ETH_P_IP))
-> > >  		ipv4 = true;
-> > > @@ -229,6 +288,23 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb,
-> > struct net_device *ndev)
-> > >  		ipv6 = true;
-> > >
-> > >  	if (skb_is_gso(skb)) {
-> > > +		gso_hs = mana_get_gso_hs(skb);
-> > > +
-> > > +		if (mana_fix_skb_head(ndev, skb, gso_hs,
-> > &pkg.wqe_req.num_sge))
-> > > +			goto tx_drop_count;
-> > > +
-> > > +		if (skb->encapsulation) {
-> > > +			u64_stats_update_begin(&tx_stats->syncp);
-> > > +			tx_stats->tso_inner_packets++;
-> > > +			tx_stats->tso_inner_bytes += skb->len - gso_hs;
-> > > +			u64_stats_update_end(&tx_stats->syncp);
-> > > +		} else {
-> > > +			u64_stats_update_begin(&tx_stats->syncp);
-> > > +			tx_stats->tso_packets++;
-> > > +			tx_stats->tso_bytes += skb->len - gso_hs;
-> > > +			u64_stats_update_end(&tx_stats->syncp);
-> > > +		}
-> > 
-> > nit: I wonder if this could be slightly more succinctly written as:
-> > 
-> > 		u64_stats_update_begin(&tx_stats->syncp);
-> > 		if (skb->encapsulation) {
-> > 			tx_stats->tso_inner_packets++;
-> > 			tx_stats->tso_inner_bytes += skb->len - gso_hs;
-> > 		} else {
-> > 			tx_stats->tso_packets++;
-> > 			tx_stats->tso_bytes += skb->len - gso_hs;
-> > 		}
-> > 		u64_stats_update_end(&tx_stats->syncp);
-> > 
-> Yes it can be written this way:)
+On Sun, Oct 01, 2023 at 12:13:06AM +0800, kernel test robot wrote:
+> Hi KP,
 > 
-> > Also, it is unclear to me why the stats logic is moved here from
-> > futher down in the same block. It feels more like a clean-up than a fix
-> > (as, btw, is my suggestion immediately above).
-> Since we need to calculate the gso_hs and fix head earlier than the stats and 
-> some other work, I move it immediately after skb_is_gso(skb).
-> The gso_hs calculation was part of the tx_stats block, so the tx_stats is moved 
-> together to remain close to the gso_hs calculation to keep readability.
+> kernel test robot noticed the following build errors:
+> 
+> [auto build test ERROR on bpf-next/master]
+> [also build test ERROR on bpf/master pcmoore-selinux/next linus/master v6.6-rc3 next-20230929]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/KP-Singh/kernel-Add-helper-macros-for-loop-unrolling/20230929-042610
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+> patch link:    https://lore.kernel.org/r/20230928202410.3765062-4-kpsingh%40kernel.org
+> patch subject: [PATCH v5 3/5] security: Replace indirect LSM hook calls with static calls
+> config: i386-randconfig-001-20230930 (https://download.01.org/0day-ci/archive/20230930/202309302332.1mxVwb0U-lkp@intel.com/config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230930/202309302332.1mxVwb0U-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202309302332.1mxVwb0U-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>):
+> 
+> >> security/security.c:139:1: error: Only string constants are supported as initializers for randomized structures with flexible arrays
+>      139 | };
+>          | ^
 
-I agree it is nice the way you have it.
-I was mainly thinking that the diffstat could be made smaller,
-which might be beneficial to a fix. But I have no strong feelings on that.
+Uuh, where is there a flexible array here?
 
-> > > +
-> > >  		pkg.tx_oob.s_oob.is_outer_ipv4 = ipv4;
-> > >  		pkg.tx_oob.s_oob.is_outer_ipv6 = ipv6;
-> > >
+> vim +139 security/security.c
+> 
+>    118	
+>    119	/*
+>    120	 * Initialise a table of static calls for each LSM hook.
+>    121	 * DEFINE_STATIC_CALL_NULL invocation above generates a key (STATIC_CALL_KEY)
+>    122	 * and a trampoline (STATIC_CALL_TRAMP) which are used to call
+>    123	 * __static_call_update when updating the static call.
+>    124	 */
+>    125	struct lsm_static_calls_table static_calls_table __ro_after_init = {
+>    126	#define INIT_LSM_STATIC_CALL(NUM, NAME)					\
+>    127		(struct lsm_static_call) {					\
+>    128			.key = &STATIC_CALL_KEY(LSM_STATIC_CALL(NAME, NUM)),	\
+>    129			.trampoline = LSM_HOOK_TRAMP(NAME, NUM),		\
+>    130			.active = &SECURITY_HOOK_ACTIVE_KEY(NAME, NUM),		\
+>    131		},
+>    132	#define LSM_HOOK(RET, DEFAULT, NAME, ...)				\
+>    133		.NAME = {							\
+>    134			LSM_DEFINE_UNROLL(INIT_LSM_STATIC_CALL, NAME)		\
+>    135		},
+>    136	#include <linux/lsm_hook_defs.h>
+>    137	#undef LSM_HOOK
+>    138	#undef INIT_LSM_STATIC_CALL
+>  > 139	};
+>    140	
 
-...
+*confused*
+
+-Kees
+
+-- 
+Kees Cook
 
