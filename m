@@ -1,125 +1,209 @@
-Return-Path: <bpf+bounces-11217-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11220-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 687EB7B5A7A
-	for <lists+bpf@lfdr.de>; Mon,  2 Oct 2023 20:50:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 059977B5BA4
+	for <lists+bpf@lfdr.de>; Mon,  2 Oct 2023 21:54:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 15C50281AC8
-	for <lists+bpf@lfdr.de>; Mon,  2 Oct 2023 18:50:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id 173D51C2074E
+	for <lists+bpf@lfdr.de>; Mon,  2 Oct 2023 19:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 053F21F176;
-	Mon,  2 Oct 2023 18:50:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D97200AF;
+	Mon,  2 Oct 2023 19:54:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CD2B1D54F
-	for <bpf@vger.kernel.org>; Mon,  2 Oct 2023 18:50:41 +0000 (UTC)
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC974B0
-	for <bpf@vger.kernel.org>; Mon,  2 Oct 2023 11:50:38 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-7740c8509c8so7751785a.3
-        for <bpf@vger.kernel.org>; Mon, 02 Oct 2023 11:50:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696272638; x=1696877438; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CWhlgKqTrjbQF0dckh+X6aNFF9b4rYOB+cG0XKPis4I=;
-        b=zlArfdiUOOxnp1vq1Hx3NKuLZfLXCQdi/Ozh5tIFy1ae8ry0jd0EMxSMkpfw5uO5m9
-         C4qUxCDdYoMPd6kWJHQ70J5PySuJBmph66CZZ+O+H0qZgwYmmyhb47EuXAS9vg8NLzON
-         bH5K6jfLGhf0+pIzTFerUDX0c06eaJnNGuM7T+uGfQolcekk+NzaesbsPFNA1cs5kCuF
-         BWjrEM6kcsFRQ84wX8M7GpJHTVtljMjv18KCbVfYPpee1nQH4Fs6qWWvALrnTXrFIuic
-         2WBSpUnG32h7KJkBx6bI/LBGyB7W6Oe3mNXawZSbIeZojEyS1+m/XyKWTz3lkz6RTG7l
-         nW6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696272638; x=1696877438;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CWhlgKqTrjbQF0dckh+X6aNFF9b4rYOB+cG0XKPis4I=;
-        b=Sl46pGxgUdTO3v76MOd3wC8yt7E3IBNzpYP2m6UDPRALRxu41aBBoTAabDYCHHo5Ao
-         KGxD/6imQI+FfL9bStZqZsjt0VZVJdAs1GkjyfCm883mHVl1Gg/PhU3jQK2njit4Epab
-         brbPy+h/EPeD1P359WkJtdcSLS8TCZTsHHHzO5tGd2FT8VfIx6K7UHJG5p/ZqxIOY+ZV
-         rngNXxxlDkfXJCvp4v4skJvuxCK77r4UgbAqtn3vQ2vig1/tWonb37dEgb7oy05U1XLY
-         f9yed1QPI5JyDErJQy4NxuIg2Pps+9AxvhXC2IXLBJtAGilp3TT4JzsHoJlZafOYUXF1
-         wZiA==
-X-Gm-Message-State: AOJu0YyUwzTMECxz7wcAraoSUraK8wmMQh7BLLcWc/N3hpRhXoS9y+V0
-	C8unyAbVtNfV2tGM3KB22U4g0Q==
-X-Google-Smtp-Source: AGHT+IE8dGMTkW1zzanpZHGg8oyg+mTfR48kvxmCI7TXQHg7zAjDrWq6zBxZfRbqzs4TqU6JV8F+iA==
-X-Received: by 2002:a05:620a:2905:b0:773:ca55:e836 with SMTP id m5-20020a05620a290500b00773ca55e836mr12333975qkp.8.1696272637762;
-        Mon, 02 Oct 2023 11:50:37 -0700 (PDT)
-Received: from [192.168.1.31] (d-65-175-157-166.nh.cpe.atlanticbb.net. [65.175.157.166])
-        by smtp.gmail.com with ESMTPSA id v15-20020ae9e30f000000b0077263636a95sm4611503qkf.93.2023.10.02.11.50.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 11:50:37 -0700 (PDT)
-Message-ID: <235e7365-2fe3-4bfa-ab11-1dc955d70042@google.com>
-Date: Mon, 2 Oct 2023 14:50:34 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 903461F955
+	for <bpf@vger.kernel.org>; Mon,  2 Oct 2023 19:54:01 +0000 (UTC)
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 005A3AD
+	for <bpf@vger.kernel.org>; Mon,  2 Oct 2023 12:53:59 -0700 (PDT)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 392JXUYs008271
+	for <bpf@vger.kernel.org>; Mon, 2 Oct 2023 12:53:59 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=ws8vhTFN5UXHNlqtyxcBCQaETEVM0wKEuMahkaP5N94=;
+ b=alxxkpr2r3Mdbiy1qRSTjSIZvkZjzTeKlYHFccrkNih6u9gRllqFc/yjdlXdVGOijYT9
+ JDG0x3YVsCBM+LNv5KFei+o7yOle4BgiQ59Gex7eV6HrNQDw4yVCyejYa/mhM4L91zaa
+ 3TC20euZq+zehTlw0vzygsLd5oyAFd0pDVU= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3tfng8r8v7-4
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Mon, 02 Oct 2023 12:53:59 -0700
+Received: from twshared1579.04.ash8.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Mon, 2 Oct 2023 12:53:55 -0700
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+	id 7F25225218270; Mon,  2 Oct 2023 12:53:43 -0700 (PDT)
+From: Dave Marchevsky <davemarchevsky@fb.com>
+To: <bpf@vger.kernel.org>
+CC: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann
+	<daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau
+	<martin.lau@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Dave Marchevsky
+	<davemarchevsky@fb.com>
+Subject: [PATCH v4 bpf-next 0/3] Open-coded task_vma iter
+Date: Mon, 2 Oct 2023 12:53:38 -0700
+Message-ID: <20231002195341.2940874-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.34.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: fG1MOiuGFnqalSuZEjOOSV1_i7iUCMxF
+X-Proofpoint-ORIG-GUID: fG1MOiuGFnqalSuZEjOOSV1_i7iUCMxF
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: bpf indirect calls
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Matt Bobrowski <mattbobrowski@google.com>,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>,
- Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
- Yonghong Song <yhs@fb.com>, Marek Majkowski <marek@cloudflare.com>,
- Lorenz Bauer <lmb@cloudflare.com>, Alan Maguire <alan.maguire@oracle.com>,
- Jesper Dangaard Brouer <brouer@redhat.com>,
- David Miller <davem@davemloft.net>,
- Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <157046883614.2092443.9861796174814370924.stgit@alrua-x1>
- <20191007204234.p2bh6sul2uakpmnp@ast-mbp.dhcp.thefacebook.com>
- <87sgo3lkx9.fsf@toke.dk>
- <20191009015117.pldowv6n3k5p3ghr@ast-mbp.dhcp.thefacebook.com>
- <87o8yqjqg0.fsf@toke.dk>
- <20191010044156.2hno4sszysu3c35g@ast-mbp.dhcp.thefacebook.com>
- <87v9srijxa.fsf@toke.dk> <20191016022849.weomgfdtep4aojpm@ast-mbp>
- <8736fshk7b.fsf@toke.dk> <20191019200939.kiwuaj7c4bg25vqs@ast-mbp>
- <ZRQtsyYM810Oh4px@google.com>
- <CAADnVQJpCe9e2Qrnsaj4+ab47z00-bEYyHhN_mmpCh4+9i17vQ@mail.gmail.com>
-From: Barret Rhoden <brho@google.com>
-In-Reply-To: <CAADnVQJpCe9e2Qrnsaj4+ab47z00-bEYyHhN_mmpCh4+9i17vQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-02_14,2023-10-02_01,2023-05-22_02
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 9/29/23 17:06, Alexei Starovoitov wrote:
-> For certain cases like your example above it's relatively easy to add 
-> such support, but before we do that please describe the full use case 
-> that you wanted to implement with indirect calls.
+At Meta we have a profiling daemon which periodically collects
+information on many hosts. This collection usually involves grabbing
+stacks (user and kernel) using perf_event BPF progs and later symbolicating
+them. For user stacks we try to use BPF_F_USER_BUILD_ID and rely on
+remote symbolication, but BPF_F_USER_BUILD_ID doesn't always succeed. In
+those cases we must fall back to digging around in /proc/PID/maps to map
+virtual address to (binary, offset). The /proc/PID/maps digging does not
+occur synchronously with stack collection, so the process might already
+be gone, in which case it won't have /proc/PID/maps and we will fail to
+symbolicate.
 
-I'll likely want some sort of indirect call for nesting schedulers in 
-sched_ext / ghost.  Specifically, when we're running pick_next_task or 
-any thread event handler (e.g. wakeup), we're picturing having a 
-dispatch layer that picks which bpf agent to pass that off to, *and* get 
-a response from the call.  Based on that response, we could possibly 
-call someone else.
+This 'exited process problem' doesn't occur very often as
+most of the prod services we care to profile are long-lived daemons, but
+there are enough usecases to warrant a workaround: a BPF program which
+can be optionally loaded at data collection time and essentially walks
+/proc/PID/maps. Currently this is done by walking the vma list:
 
-In this scenario, there'd be a 'base layer' BPF prog that handles 
-pick_next_task from the kernel.  That base layer would choose which 
-subprogram to query for its pick_next_task.  Depending on whether or not 
-that subprogram has a task to run, the base layer may or may not want to 
-run some other BPF program.
+  struct vm_area_struct* mmap =3D BPF_CORE_READ(mm, mmap);
+  mmap_next =3D BPF_CORE_READ(rmap, vm_next); /* in a loop */
 
-I'm not sure if an indirect call is what I'm looking for here, but it 
-sounds somewhat related.  The difference might be that I'd like to call 
-a function from a different BPF program, if that's possible.
+Since commit 763ecb035029 ("mm: remove the vma linked list") there's no
+longer a vma linked list to walk. Walking the vma maple tree is not as
+simple as hopping struct vm_area_struct->vm_next. Luckily,
+commit f39af05949a4 ("mm: add VMA iterator"), another commit in that series,
+added struct vma_iterator and for_each_vma macro for easy vma iteration. If
+similar functionality was exposed to BPF programs, it would be perfect for =
+our
+usecase.
 
-Thanks,
-Barret
+This series adds such functionality, specifically a BPF equivalent of
+for_each_vma using the open-coded iterator style.
 
+Notes:
+  * This approach was chosen after discussion on a previous series [0] which
+    attempted to solve the same problem by adding a BPF_F_VMA_NEXT flag to
+    bpf_find_vma.
+  * Unlike the task_vma bpf_iter, the open-coded iterator kfuncs here do not
+    drop the vma read lock between iterations. See Alexei's response in [0].
+  * The [vsyscall] page isn't really part of task->mm's vmas, but
+    /proc/PID/maps returns information about it anyways. The vma iter added
+    here does not do the same. See comment on selftest in patch 3.
+  * bpf_iter_task_vma allocates a _data struct which contains - among other
+    things - struct vma_iterator, using BPF allocator and keeps a pointer to
+    the bpf_iter_task_vma_data. This is done in order to prevent changes to
+    struct ma_state - which is wrapped by struct vma_iterator - from
+    necessitating changes to uapi struct bpf_iter_task_vma.
+
+Changelog:
+
+v3 -> v4: https://lore.kernel.org/bpf/20230822050558.2937659-1-davemarchevs=
+ky@fb.com/
+
+Patch 1 ("bpf: Don't explicitly emit BTF for struct btf_iter_num")
+  * Add Andrii ack
+Patch 2 ("bpf: Introduce task_vma open-coded iterator kfuncs")
+  * Mark bpf_iter_task_vma_new args KF_RCU and remove now-unnecessary !task
+    check (Yonghong)
+    * Although KF_RCU is a function-level flag, in reality it only applies =
+to
+      the task_struct *task parameter, as the other two params are a scalar=
+ int
+      and a specially-handled KF_ARG_PTR_TO_ITER
+   * Remove struct bpf_iter_task_vma definition from uapi headers, define in
+     kernel/bpf/task_iter.c instead (Andrii)
+Patch 3 ("selftests/bpf: Add tests for open-coded task_vma iter")
+  * Use a local var when looping over vmas to track map idx. Update vmas_se=
+en
+    global after done iterating. Don't start iterating or update vmas_seen =
+if
+    vmas_seen global is nonzero. (Andrii)
+  * Move getpgid() call to correct spot - above skel detach. (Andrii)
+
+v2 -> v3: https://lore.kernel.org/bpf/20230821173415.1970776-1-davemarchevs=
+ky@fb.com/
+
+Patch 1 ("bpf: Don't explicitly emit BTF for struct btf_iter_num")
+  * Add Yonghong ack
+
+Patch 2 ("bpf: Introduce task_vma open-coded iterator kfuncs")
+  * UAPI bpf header and tools/ version should match
+  * Add bpf_iter_task_vma_kern_data which bpf_iter_task_vma_kern points to,
+    bpf_mem_alloc/free it instead of just vma_iterator. (Alexei)
+    * Inner data ptr =3D=3D NULL implies initialization failed
+
+
+v1 -> v2: https://lore.kernel.org/bpf/20230810183513.684836-1-davemarchevsk=
+y@fb.com/
+  * Patch 1
+    * Now removes the unnecessary BTF_TYPE_EMIT instead of changing the
+      type (Yonghong)
+  * Patch 2
+    * Don't do unnecessary BTF_TYPE_EMIT (Yonghong)
+    * Bump task refcount to prevent ->mm reuse (Yonghong)
+    * Keep a pointer to vma_iterator in bpf_iter_task_vma, alloc/free
+      via BPF mem allocator (Yonghong, Stanislav)
+  * Patch 3
+
+Patch summary:
+  * Patch 1 is a tiny fix I ran into while implementing the vma iter in this
+    series. It can be applied independently.
+  * Patch 2 is the meat of the implementation
+  * Patch 3 adds tests for the new functionality
+    * Existing iter tests exercise failure cases (e.g. prog that doesn't ca=
+ll
+      _destroy()). I didn't replicate them in this series, but am happy to =
+add
+      them in v2 if folks feel that it would be worthwhile.
+
+  [0]: https://lore.kernel.org/bpf/20230801145414.418145-1-davemarchevsky@f=
+b.com/
+
+Dave Marchevsky (3):
+  bpf: Don't explicitly emit BTF for struct btf_iter_num
+  bpf: Introduce task_vma open-coded iterator kfuncs
+  selftests/bpf: Add tests for open-coded task_vma iter
+
+ kernel/bpf/bpf_iter.c                         |  2 -
+ kernel/bpf/helpers.c                          |  3 +
+ kernel/bpf/task_iter.c                        | 85 +++++++++++++++++++
+ tools/lib/bpf/bpf_helpers.h                   |  8 ++
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 26 +++---
+ .../testing/selftests/bpf/prog_tests/iters.c  | 71 ++++++++++++++++
+ ...f_iter_task_vma.c =3D> bpf_iter_task_vmas.c} |  0
+ .../selftests/bpf/progs/iters_task_vma.c      | 63 ++++++++++++++
+ 8 files changed, 243 insertions(+), 15 deletions(-)
+ rename tools/testing/selftests/bpf/progs/{bpf_iter_task_vma.c =3D> bpf_ite=
+r_task_vmas.c} (100%)
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_task_vma.c
+
+--=20
+2.34.1
 
