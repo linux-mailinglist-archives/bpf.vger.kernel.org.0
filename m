@@ -1,103 +1,197 @@
-Return-Path: <bpf+bounces-11209-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11210-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 190287B5548
-	for <lists+bpf@lfdr.de>; Mon,  2 Oct 2023 16:35:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E6167B556B
+	for <lists+bpf@lfdr.de>; Mon,  2 Oct 2023 16:48:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by ny.mirrors.kernel.org (Postfix) with ESMTP id 25DF51C209B6
-	for <lists+bpf@lfdr.de>; Mon,  2 Oct 2023 14:35:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 5A590282C38
+	for <lists+bpf@lfdr.de>; Mon,  2 Oct 2023 14:48:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B489D199D9;
-	Mon,  2 Oct 2023 14:35:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 856241A701;
+	Mon,  2 Oct 2023 14:48:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 266E2CA5D
-	for <bpf@vger.kernel.org>; Mon,  2 Oct 2023 14:35:28 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE3E111
-	for <bpf@vger.kernel.org>; Mon,  2 Oct 2023 07:35:26 -0700 (PDT)
-Received: from fsav117.sakura.ne.jp (fsav117.sakura.ne.jp [27.133.134.244])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 392EYtHl047040;
-	Mon, 2 Oct 2023 23:34:55 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav117.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp);
- Mon, 02 Oct 2023 23:34:55 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 392EYtSw047032
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Mon, 2 Oct 2023 23:34:55 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <29ada58d-29e1-14ef-a59e-1d099c1dd301@I-love.SAKURA.ne.jp>
-Date: Mon, 2 Oct 2023 23:34:55 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176F319BCF
+	for <bpf@vger.kernel.org>; Mon,  2 Oct 2023 14:48:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86C2DC433C7;
+	Mon,  2 Oct 2023 14:48:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1696258086;
+	bh=HHXocg/UqDLTpBTms/VMzX03y/J3TDNJKoUjdrxZ1l0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SxqRp350bCXrlLYTCXAC17UQCCmm51+C+6kQ9mkjWoxlB9MTfh5N0bCKg2/EnnjcT
+	 f885QQtuJrMdAMYs/2pQiLF6l+SU2plFx76+tNDHdskSW6EbAUq9cvw2VIB9dYBVMx
+	 5dQfl2E/QIlaUl93d9aSRNJpP5epZTeelI9WF5qvUxTm2WMzSsxx1La69ysKCKBIhr
+	 78VGgPpD3mrWViQouPWR/BU+gxZaAHtgnQU+D8CebnD30jJCzB8lfZ1rEwrlUorFPm
+	 8nzsS3U0yc5+hj7igp3Ym6oyiNOUYyghmqaWqB08Blj1GEmCen4MWqnRBT+TQ6gL6X
+	 bD9xQdW5ANvgQ==
+Date: Mon, 2 Oct 2023 16:48:01 +0200
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Jiri Kosina <jikos@kernel.org>, 
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>, Shuah Khan <shuah@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] selftests/hid: fix building for older kernels
+Message-ID: <lhb7u2lg7fv2wx3kzrboftqcdtmbjvbzz7zssfn5mho72hcrvj@i53fzzis7b4q>
+References: <20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com>
+ <CAFhGd8pEv32zp4RDsj_jeBjzP5hcsf4dP4Knueiw_UM8ZsqcKw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 2/5] security: Count the LSMs enabled at compile time
-Content-Language: en-US
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To: Casey Schaufler <casey@schaufler-ca.com>
-Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-        paul@paul-moore.com, keescook@chromium.org, song@kernel.org,
-        daniel@iogearbox.net, ast@kernel.org,
-        Kui-Feng Lee <sinquersw@gmail.com>, KP Singh <kpsingh@kernel.org>
-References: <20230918212459.1937798-1-kpsingh@kernel.org>
- <20230918212459.1937798-3-kpsingh@kernel.org>
- <cb67f607-3a9d-34d2-0877-a3ff957da79e@I-love.SAKURA.ne.jp>
- <CACYkzJ5GFsgc3vzJXH34hgoTc+CEf+7rcktj0QGeQ5e8LobRcw@mail.gmail.com>
- <dde20522-af01-c198-5872-b19ef378f286@I-love.SAKURA.ne.jp>
- <CACYkzJ5M0Bw9S_mkFkjR_-bRsKryXh2LKiurjMX9WW-d0Mr6bg@mail.gmail.com>
- <ed785c86-a1d8-caff-c629-f8a50549e05b@I-love.SAKURA.ne.jp>
- <CACYkzJ4TLCMFEa5h-iEVC-58cakjduw44c-ct64SgBe0_jFKuQ@mail.gmail.com>
- <6a80711e-edc4-9fab-6749-f1efa9e4231e@I-love.SAKURA.ne.jp>
- <CACYkzJ4AGRcqLPqWY65OC778EPaUwTBpyOMfiVBXa4EmnHTXGQ@mail.gmail.com>
- <c1683052-aa5a-e0d5-25ae-40316273ed1b@I-love.SAKURA.ne.jp>
- <d9765991-45bb-ba9a-18d4-d29eab3e29b9@schaufler-ca.com>
- <f739db5c-7d76-7a86-c4b5-794eeffd6a2d@I-love.SAKURA.ne.jp>
-In-Reply-To: <f739db5c-7d76-7a86-c4b5-794eeffd6a2d@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFhGd8pEv32zp4RDsj_jeBjzP5hcsf4dP4Knueiw_UM8ZsqcKw@mail.gmail.com>
 
-On 2023/10/02 19:56, Tetsuo Handa wrote:
->> This is exactly the solution I have been contemplating since this
->> discussion began. It will address the bulk of the issue. I'm almost
->> mad/crazy enough to produce the patch to demonstrate it. Almost.
+On Sep 26 2023, Justin Stitt wrote:
+> Hey all,
 > 
-> Yes, please show us one.
+> Gentle ping on this patch. Looking to get this patch and [1] slated
+> for 6.7 wherein we can start getting cleaner kselftests builds.
+> 
+> I do not think I am able to successfully run the hid/bpf selftests due
+> to my kernel version being too low (and an inability to upgrade it as
+> I'm on a corp rolling release). I'd appreciate some insight on how to
+> get the tests running or if someone could actually build+run the tests
+> with this patch applied.
 
-If "[PATCH v15 01/11] LSM: Identify modules by more than name" does not allow LKM-based
-LSMs (which are likely out-of-tree) to have stable LSM ID values, lsm_list_modules()
-provided by "[PATCH v15 05/11] LSM: Create lsm_list_modules system call" cannot report
-stable string names. And "[PATCH v15 11/11] LSM: selftests for Linux Security Module
-syscalls" cannot work on LKM-based LSMs.
+I wanted to apply this series today, but it failed my own CI now with
+the enums being already defined:
+https://gitlab.freedesktop.org/bentiss/hid/-/jobs/49754306
 
-Then, how are LKM-based LSMs activated? LKM-based LSMs can use LSM hooks but cannot use
-(or show up in) lsm_get_self_attr()/lsm_set_self_attr()/lsm_list_modules() syscalls?
-That looks quite strange, for the title of "[PATCH v15 01/11]" is not "LSM: Identify only
-built-in and in-tree modules by more than name".
+I'll probably squash the following patch in 1/3, would you mind giving
+it a test?
 
-If you think about allowing LKM-based LSMs a bit, you will find that how can the current policy
-be compatible. We cannot introduce lsm_get_self_attr()/lsm_set_self_attr()/lsm_list_modules()
-syscalls without admitting stable LSM ID values being assigned to any publicly available LSMs.
+---
+From 37feca6c0e84705ad65e621643206c287b63bb0a Mon Sep 17 00:00:00 2001
+From: Benjamin Tissoires <bentiss@kernel.org>
+Date: Mon, 2 Oct 2023 15:37:18 +0200
+Subject: [PATCH] fix selftests/hid: ensure we can compile the tests on kernels
+ pre-6.3
 
-Simple notification to the LSM community has to be the only requirement for assigning
-stable LSM ID values. You should not distinguish in-tree and not-in-tree LSMs regarding
-"[PATCH v15 00/11] LSM: Three basic syscalls". Otherwise, the attempt to introduce these
-syscalls is a regression that will harm LKM-based LSMs.
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+---
+ .../selftests/hid/progs/hid_bpf_helpers.h     | 30 ++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
 
+diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+index ab3b18ba48c4..feed5a991e05 100644
+--- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
++++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+@@ -5,16 +5,44 @@
+ #ifndef __HID_BPF_HELPERS_H
+ #define __HID_BPF_HELPERS_H
+ 
+-/* "undefine" structs in vmlinux.h, because we "override" them below */
++/* "undefine" structs and enums in vmlinux.h, because we "override" them below */
+ #define hid_bpf_ctx hid_bpf_ctx___not_used
+ #define hid_report_type hid_report_type___not_used
+ #define hid_class_request hid_class_request___not_used
+ #define hid_bpf_attach_flags hid_bpf_attach_flags___not_used
++#define HID_INPUT_REPORT         HID_INPUT_REPORT___not_used
++#define HID_OUTPUT_REPORT        HID_OUTPUT_REPORT___not_used
++#define HID_FEATURE_REPORT       HID_FEATURE_REPORT___not_used
++#define HID_REPORT_TYPES         HID_REPORT_TYPES___not_used
++#define HID_REQ_GET_REPORT       HID_REQ_GET_REPORT___not_used
++#define HID_REQ_GET_IDLE         HID_REQ_GET_IDLE___not_used
++#define HID_REQ_GET_PROTOCOL     HID_REQ_GET_PROTOCOL___not_used
++#define HID_REQ_SET_REPORT       HID_REQ_SET_REPORT___not_used
++#define HID_REQ_SET_IDLE         HID_REQ_SET_IDLE___not_used
++#define HID_REQ_SET_PROTOCOL     HID_REQ_SET_PROTOCOL___not_used
++#define HID_BPF_FLAG_NONE        HID_BPF_FLAG_NONE___not_used
++#define HID_BPF_FLAG_INSERT_HEAD HID_BPF_FLAG_INSERT_HEAD·___not_used
++#define HID_BPF_FLAG_MAX         HID_BPF_FLAG_MAX___not_used
++
+ #include "vmlinux.h"
++
+ #undef hid_bpf_ctx
+ #undef hid_report_type
+ #undef hid_class_request
+ #undef hid_bpf_attach_flags
++#undef HID_INPUT_REPORT
++#undef HID_OUTPUT_REPORT
++#undef HID_FEATURE_REPORT
++#undef HID_REPORT_TYPES
++#undef HID_REQ_GET_REPORT
++#undef HID_REQ_GET_IDLE
++#undef HID_REQ_GET_PROTOCOL
++#undef HID_REQ_SET_REPORT
++#undef HID_REQ_SET_IDLE
++#undef HID_REQ_SET_PROTOCOL
++#undef HID_BPF_FLAG_NONE
++#undef HID_BPF_FLAG_INSERT_HEAD
++#undef HID_BPF_FLAG_MAX
+ 
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+-- 
+2.41.0
+---
+
+Cheers,
+Benjamin
+
+> 
+> On Sat, Sep 9, 2023 at 7:22 AM Justin Stitt <justinstitt@google.com> wrote:
+> >
+> > Hi, I am sending this series on behalf of myself and Benjamin Tissoires. There
+> > existed an initial n=3 patch series which was later expanded to n=4 and
+> > is now back to n=3 with some fixes added in and rebased against
+> > mainline.
+> >
+> > This patch series aims to ensure that the hid/bpf selftests can be built
+> > without errors.
+> >
+> > Here's Benjamin's initial cover letter for context:
+> > |  These fixes have been triggered by [0]:
+> > |  basically, if you do not recompile the kernel first, and are
+> > |  running on an old kernel, vmlinux.h doesn't have the required
+> > |  symbols and the compilation fails.
+> > |
+> > |  The tests will fail if you run them on that very same machine,
+> > |  of course, but the binary should compile.
+> > |
+> > |  And while I was sorting out why it was failing, I realized I
+> > |  could do a couple of improvements on the Makefile.
+> > |
+> > |  [0] https://lore.kernel.org/linux-input/56ba8125-2c6f-a9c9-d498-0ca1c153dcb2@redhat.com/T/#t
+> >
+> > Changes from v1 -> v2:
+> > - roll Justin's fix into patch 1/3
+> > - add __attribute__((preserve_access_index)) (thanks Eduard)
+> > - rebased onto mainline (2dde18cd1d8fac735875f2e4987f11817cc0bc2c)
+> > - Link to v1: https://lore.kernel.org/all/20230825-wip-selftests-v1-0-c862769020a8@kernel.org/
+> >
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/1698
+> > Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/61
+> > ---
+> > Benjamin Tissoires (3):
+> >       selftests/hid: ensure we can compile the tests on kernels pre-6.3
+> >       selftests/hid: do not manually call headers_install
+> >       selftests/hid: force using our compiled libbpf headers
+> >
+> >  tools/testing/selftests/hid/Makefile               | 10 ++---
+> >  tools/testing/selftests/hid/progs/hid.c            |  3 --
+> >  .../testing/selftests/hid/progs/hid_bpf_helpers.h  | 49 ++++++++++++++++++++++
+> >  3 files changed, 53 insertions(+), 9 deletions(-)
+> > ---
+> > base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+> > change-id: 20230908-kselftest-09-08-56d7f4a8d5c4
+> >
+> > Best regards,
+> > --
+> > Justin Stitt <justinstitt@google.com>
+> >
+> 
+> [1]: https://lore.kernel.org/all/20230912-kselftest-param_test-c-v1-1-80a6cffc7374@google.com/
+> 
+> Thanks
+> Justin
 
