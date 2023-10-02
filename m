@@ -1,143 +1,172 @@
-Return-Path: <bpf+bounces-11185-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11186-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C89A77B50C1
-	for <lists+bpf@lfdr.de>; Mon,  2 Oct 2023 12:57:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BEDD7B50D9
+	for <lists+bpf@lfdr.de>; Mon,  2 Oct 2023 13:06:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id F29832829B0
-	for <lists+bpf@lfdr.de>; Mon,  2 Oct 2023 10:57:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id EC21D2826C7
+	for <lists+bpf@lfdr.de>; Mon,  2 Oct 2023 11:06:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AB3010A06;
-	Mon,  2 Oct 2023 10:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ED1110A12;
+	Mon,  2 Oct 2023 11:06:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FE9910940
-	for <bpf@vger.kernel.org>; Mon,  2 Oct 2023 10:57:22 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B34ABD
-	for <bpf@vger.kernel.org>; Mon,  2 Oct 2023 03:57:19 -0700 (PDT)
-Received: from fsav312.sakura.ne.jp (fsav312.sakura.ne.jp [153.120.85.143])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 392AuiCr096873;
-	Mon, 2 Oct 2023 19:56:44 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav312.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav312.sakura.ne.jp);
- Mon, 02 Oct 2023 19:56:44 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav312.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 392AuigO096870
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Mon, 2 Oct 2023 19:56:44 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <f739db5c-7d76-7a86-c4b5-794eeffd6a2d@I-love.SAKURA.ne.jp>
-Date: Mon, 2 Oct 2023 19:56:44 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71AAC101F2
+	for <bpf@vger.kernel.org>; Mon,  2 Oct 2023 11:06:33 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855EEB3
+	for <bpf@vger.kernel.org>; Mon,  2 Oct 2023 04:06:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1696244790;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DYYchr75lPgIPVF4yIojNv4/SPtia6FPTBRWZDFa/Bo=;
+	b=NJCiiFVeURy8dKmZA+Qf72P+nAxmSRTVY4+qdj9Obvm8MaYeLrEXsQGy0fsSr3QwS6rrB7
+	f6nD7vrz+qHyw1WQWhjyqxk3cu9Z88NBXzMs721bGa04Dts9SUGMX0jjLtxE7z4V6M3CNW
+	/crtFwuoHysBGzzPbwuGexxJ02srrU0=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-437-BCrJCKfmP7ipLUTBN-UXiw-1; Mon, 02 Oct 2023 07:06:19 -0400
+X-MC-Unique: BCrJCKfmP7ipLUTBN-UXiw-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9ae5f4ebe7eso330914866b.0
+        for <bpf@vger.kernel.org>; Mon, 02 Oct 2023 04:06:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696244778; x=1696849578;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DYYchr75lPgIPVF4yIojNv4/SPtia6FPTBRWZDFa/Bo=;
+        b=CE4A98AuqKVJCh7qARKC2qIm9xyLtgcz8bOaHGW7GhQ13Ilgaffpc4Ut0V/O6ZBt/P
+         PmCRFcqrhXiB+YwcvJ/PZcB1fvAf018PJQKp7se3z1SBH8JZOqZPzU9lbj5MVdytYW6X
+         DvnFXdXbYP+Kgq8KwLNXeY/T7calJeYdcjmbckeiqqBnYBlDLKtQpTuIdzKnuLhjc61i
+         0eNBD98OuPKWkuhPm+rsaDDqX6Sxub4BkIgz1HlFd72ZY5C1EuOh29LMR7jyXcP1bAbi
+         E0P4qyOCeX6eWju8z4zb9V1cvKRmYH07n21DyO3qXVY74zV9g7yajbo2Smg04wfDmGp1
+         3Ebg==
+X-Gm-Message-State: AOJu0Yyyho3DiEk0CA90tk6u3Lr3SoWGUVG9OHXAmU62WVMVRxo+d6MS
+	xpkia8IY6/kakFCzP8rRdokVHMIikwgAETjCRnNdvlelIKf+jKo46DFQJVZxZF08Fehpd8oWzxU
+	RZjwznJw6zJkK
+X-Received: by 2002:a17:906:7389:b0:9a1:d915:6372 with SMTP id f9-20020a170906738900b009a1d9156372mr9245947ejl.4.1696244778123;
+        Mon, 02 Oct 2023 04:06:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFp+BfMhEWzXVb16vyxNML0UzJNiL7gyOvkLvcAWIYrSoBIAxKDqcE8idRquVxsjJRV7hR2hQ==
+X-Received: by 2002:a17:906:7389:b0:9a1:d915:6372 with SMTP id f9-20020a170906738900b009a1d9156372mr9245928ejl.4.1696244777775;
+        Mon, 02 Oct 2023 04:06:17 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-225-130.dyn.eolo.it. [146.241.225.130])
+        by smtp.gmail.com with ESMTPSA id o24-20020a1709064f9800b0099cce6f7d50sm16963982eju.64.2023.10.02.04.06.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 04:06:17 -0700 (PDT)
+Message-ID: <5a56953293ae90a1e20a414a44f45a94ee971792.camel@redhat.com>
+Subject: Re: [PATCH v5 0/5] Reduce overhead of LSMs with static calls
+From: Paolo Abeni <pabeni@redhat.com>
+To: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org, 
+	bpf@vger.kernel.org
+Cc: paul@paul-moore.com, keescook@chromium.org, casey@schaufler-ca.com, 
+	song@kernel.org, daniel@iogearbox.net, ast@kernel.org, renauld@google.com
+Date: Mon, 02 Oct 2023 13:06:15 +0200
+In-Reply-To: <20230928202410.3765062-1-kpsingh@kernel.org>
+References: <20230928202410.3765062-1-kpsingh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 2/5] security: Count the LSMs enabled at compile time
-Content-Language: en-US
-To: Casey Schaufler <casey@schaufler-ca.com>, KP Singh <kpsingh@kernel.org>
-Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-        paul@paul-moore.com, keescook@chromium.org, song@kernel.org,
-        daniel@iogearbox.net, ast@kernel.org,
-        Kui-Feng Lee <sinquersw@gmail.com>
-References: <20230918212459.1937798-1-kpsingh@kernel.org>
- <20230918212459.1937798-3-kpsingh@kernel.org>
- <cb67f607-3a9d-34d2-0877-a3ff957da79e@I-love.SAKURA.ne.jp>
- <CACYkzJ5GFsgc3vzJXH34hgoTc+CEf+7rcktj0QGeQ5e8LobRcw@mail.gmail.com>
- <dde20522-af01-c198-5872-b19ef378f286@I-love.SAKURA.ne.jp>
- <CACYkzJ5M0Bw9S_mkFkjR_-bRsKryXh2LKiurjMX9WW-d0Mr6bg@mail.gmail.com>
- <ed785c86-a1d8-caff-c629-f8a50549e05b@I-love.SAKURA.ne.jp>
- <CACYkzJ4TLCMFEa5h-iEVC-58cakjduw44c-ct64SgBe0_jFKuQ@mail.gmail.com>
- <6a80711e-edc4-9fab-6749-f1efa9e4231e@I-love.SAKURA.ne.jp>
- <CACYkzJ4AGRcqLPqWY65OC778EPaUwTBpyOMfiVBXa4EmnHTXGQ@mail.gmail.com>
- <c1683052-aa5a-e0d5-25ae-40316273ed1b@I-love.SAKURA.ne.jp>
- <d9765991-45bb-ba9a-18d4-d29eab3e29b9@schaufler-ca.com>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <d9765991-45bb-ba9a-18d4-d29eab3e29b9@schaufler-ca.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 2023/10/02 0:00, Casey Schaufler wrote:
-> On 10/1/2023 3:51 AM, Tetsuo Handa wrote:
->> On 2023/09/25 20:22, KP Singh wrote:
->>>> It is Casey's commitment that the LSM infrastructure will not forbid LKM-based LSMs.
->>>> We will start allowing LKM-based LSMs. But it is not clear how we can make it possible to
->>>> allow LKM-based LSMs.
->>> I think this needs to be discussed if and when we allow LKM based LSMs.
->> It is *now* (i.e. before your proposal is accepted) that we need to discuss.
->>
->>> One needs to know MAX_LSM_COUNT at compile time (not via kernel
->>> command line), I really suggest you try out your suggestions before
->>> posting them. I had explained this to you earlier, you still chose to
->>> ignore and keep suggesting stuff that does not work.
->> Your proposal needs to know MAX_LSM_COUNT at compile time, that's why
->> we need to discuss now.
->>
->>> We will see when this happens. I don't think it's a difficult problem
->>> and there are many ways to implement this:
->>>
->>> * Add a new slot(s) for modular LSMs (One can add up to N fast modular LSMs)
->>> * Fallback to a linked list for modular LSMs, that's not a complexity.
->>> There are serious performance gains and I think it's a fair trade-off.
->>> This isn't even complex.
->> That won't help at all.
-> 
-> This is exactly the solution I have been contemplating since this
-> discussion began. It will address the bulk of the issue. I'm almost
-> mad/crazy enough to produce the patch to demonstrate it. Almost.
+On Thu, 2023-09-28 at 22:24 +0200, KP Singh wrote:
+> # Background
+>=20
+> LSM hooks (callbacks) are currently invoked as indirect function calls. T=
+hese
+> callbacks are registered into a linked list at boot time as the order of =
+the
+> LSMs can be configured on the kernel command line with the "lsm=3D" comma=
+nd line
+> parameter.
+>=20
+> Indirect function calls have a high overhead due to retpoline mitigation =
+for
+> various speculative execution attacks.
+>=20
+> Retpolines remain relevant even with newer generation CPUs as recently
+> discovered speculative attacks, like Spectre BHB need Retpolines to mitig=
+ate
+> against branch history injection and still need to be used in combination=
+ with
+> newer mitigation features like eIBRS.
+>=20
+> This overhead is especially significant for the "bpf" LSM which allows th=
+e user
+> to implement LSM functionality with eBPF program. In order to facilitate =
+this
+> the "bpf" LSM provides a default callback for all LSM hooks. When enabled=
+,
+> the "bpf" LSM incurs an unnecessary / avoidable indirect call. This is
+> especially bad in OS hot paths (e.g. in the networking stack).
+> This overhead prevents the adoption of bpf LSM on performance critical
+> systems, and also, in general, slows down all LSMs.
+>=20
+> Since we know the address of the enabled LSM callbacks at compile time an=
+d only
+> the order is determined at boot time, the LSM framework can allocate stat=
+ic
+> calls for each of the possible LSM callbacks and these calls can be updat=
+ed once
+> the order is determined at boot.
+>=20
+> This series is a respin of the RFC proposed by Paul Renauld (renauld@goog=
+le.com)
+> and Brendan Jackman (jackmanb@google.com) [1]
+>=20
+> # Performance improvement
+>=20
+> With this patch-set some syscalls with lots of LSM hooks in their path
+> benefitted at an average of ~3% and I/O and Pipe based system calls benef=
+itting
+> the most.
+>=20
+> Here are the results of the relevant Unixbench system benchmarks with BPF=
+ LSM
+> and SELinux enabled with default policies enabled with and without these
+> patches.
+>=20
+> Benchmark                                               Delta(%): (+ is b=
+etter)
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> Execl Throughput                                             +1.9356
+> File Write 1024 bufsize 2000 maxblocks                       +6.5953
+> Pipe Throughput                                              +9.5499
+> Pipe-based Context Switching                                 +3.0209
+> Process Creation                                             +2.3246
+> Shell Scripts (1 concurrent)                                 +1.4975
+> System Call Overhead                                         +2.7815
+> System Benchmarks Index Score (Partial Only):                +3.4859
 
-Yes, please show us one. I'm fine if the mechanism which allows LKM-based LSMs
-cannot be disabled via the kernel configuration options.
+FTR, I also measure a ~3% tput improvement in UDP stream test over
+loopback.
 
-I really want a commitment that none of the LSM community objects revival of
-LKM-based LSMs. I'm worrying that some of the LSM community objects revival of
-LKM-based LSMs because adding extra slots and/or linked list is e.g. an overhead,
-increases attack surface etc.
+@KP Singh, I would have appreciated being cc-ed here, since I provided
+feedback on a previous revision (as soon as I learned of this effort).
 
-Let's consider the Microsoft Windows operating system. Many security vendors are
-offering security software which can run without recompiling the Windows OS.
+Cheers,
 
-But what about Linux? Security vendors cannot trivially add a security mechanism
-because LKM-based LSMs are not supported since 2.6.24. As a result, some chose
-hijacking LSM hooks, and others chose overwriting system call tables.
-
-The Linux kernel is there for providing what the user needs. What about the LSM
-infrastructure? The LSM infrastructure is too much evolving towards in-tree and
-built-in security mechanisms.
-
-The consequence of such evolving will be "Limited Security Modes" where users cannot
-use what they need. New ideas cannot be easily tried if rebuild of vmlinux is
-inevitable, which will also prevent a breath of fresh ideas from reaching the LSM
-community.
-
-Never "discussed *if* we allow LKM based LSMs", for the LSM community cannot
-afford accepting whatever LSMs and the Linux distributors cannot afford enabling
-whatever LSMs.
-
-I'm not speaking for the security vendors. I'm speaking from the point of view of
-minority/out-of-tree users.
-
-> There are still a bunch of details (e.g. shared blobs) that it doesn't
-> address. On the other hand, your memory management magic doesn't
-> address those issues either.
-
-Security is always trial-and-error. Just give all Linux users chances to continue
-trial-and-error. You don't need to forbid LKM-based LSMs just because blob management
-is not addressed. Please open the LSM infrastructure to anyone.
+Paolo
 
 
