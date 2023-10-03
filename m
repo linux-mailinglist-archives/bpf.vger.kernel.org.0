@@ -1,174 +1,116 @@
-Return-Path: <bpf+bounces-11300-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11301-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B00F7B7196
-	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 21:15:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 547B47B7231
+	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 22:05:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sy.mirrors.kernel.org (Postfix) with ESMTP id 44B14B208DA
-	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 19:15:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id CB576281320
+	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 20:05:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08ECD3CD02;
-	Tue,  3 Oct 2023 19:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBA2D3CD1A;
+	Tue,  3 Oct 2023 20:05:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30F4F3CCED
-	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 19:15:10 +0000 (UTC)
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1B5AB
-	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 12:15:09 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59c09bcf078so20975407b3.1
-        for <bpf@vger.kernel.org>; Tue, 03 Oct 2023 12:15:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696360509; x=1696965309; darn=vger.kernel.org;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6N4htVJIGGb5h3erLQS3Hd93PuTJER9wVr3iHSknNQY=;
-        b=UFcwdhuuCbyuM9r8KJhOm8K7BhN5+pS+CtOGM3l/0IvsEnA1tiC2mnu9jFWkcHE/Kb
-         TWEYpPbi2vdIyHbih0y68SHVGdX6K2QTn+EQWvNGfdUAInEbMZg0SHy/cTNiZCum7tXg
-         mQFUVSoBm2LnKHNel8V6j1Otww5Tcp31ZCaws2QrQgLBbhg/k6kcfND8goBaLj1wwlk6
-         pRXsQtmbmzdiNHPnjbBbqbfZnnYwgljubGwP8Czu4QITDq2qq+2KLPxTddEvDnACl1Jc
-         WtufP0K18NXD+QJtLRj6uwJm7lMiVYV1coCOjKbBac1DZXa69AIb9LUuz23i6K45F5iu
-         /gLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696360509; x=1696965309;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6N4htVJIGGb5h3erLQS3Hd93PuTJER9wVr3iHSknNQY=;
-        b=kYEDoGkqLw3rZA2iQmmTXZwQ7QMa2GM/8N/MBvr0e5x+L293/iJg7v+pBAh29f16TM
-         cQPe4gSLb33dNNO18viQVkUUkyHemvzWOqLEjHi+4PMAX+jUQ7KCbp+9gGwwfjIX1+cv
-         Qp18rVJhi0wPgm4KWbP466z3TLVsb+5o/rnPexF42/gLRTTHJlwbdq1yWJG80WVunh2p
-         KhENzn52xBFCQc4Sh2Z8XD88/K0xHvlRi2DO2oMi/ttLSMVg3kfxzDET+toJQa3usPLW
-         vjgLEJAl33atXSo0YrogSRpFkt8teKzQ/alH1nY4t3otNusonAd2m7knuFzx/E8VSL+/
-         nd6Q==
-X-Gm-Message-State: AOJu0Yw7n2NWYV53gLmDRLqcAtTF9CQbZ7hZp1v7ZSdth3cUib6mbZOS
-	BKLZoiaWfuZptRH94V8uci/363IekTW/
-X-Google-Smtp-Source: AGHT+IEYZ1pBWCmXLN1j2N35fPF2rv8nARnMlWixIYVn+j22HysMgdNODZ6bnzSYzPGqFXn01/UUVNBsXHhZ
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:51d:1f25:c2d8:4514])
- (user=irogers job=sendgmr) by 2002:a81:d444:0:b0:59b:ebe0:9fcd with SMTP id
- g4-20020a81d444000000b0059bebe09fcdmr9061ywl.7.1696360508657; Tue, 03 Oct
- 2023 12:15:08 -0700 (PDT)
-Date: Tue,  3 Oct 2023 12:14:12 -0700
-In-Reply-To: <20231003191412.3171385-1-irogers@google.com>
-Message-Id: <20231003191412.3171385-2-irogers@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D028C3B797
+	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 20:05:03 +0000 (UTC)
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3B7AB
+	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 13:05:01 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 393JPwpr027688
+	for <bpf@vger.kernel.org>; Tue, 3 Oct 2023 13:05:00 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3tg7c23syd-3
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Tue, 03 Oct 2023 13:05:00 -0700
+Received: from twshared29562.14.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Tue, 3 Oct 2023 13:04:57 -0700
+Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
+	id 655082562E56D; Tue,  3 Oct 2023 13:04:53 -0700 (PDT)
+From: Song Liu <song@kernel.org>
+To: <bpf@vger.kernel.org>
+CC: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <martin.lau@kernel.org>, <kernel-team@meta.com>,
+        Song Liu <song@kernel.org>, Tejun Heo <tj@kernel.org>
+Subject: [PATCH bpf-next] bpf: Avoid unnecessary -EBUSY from htab_lock_bucket
+Date: Tue, 3 Oct 2023 13:04:34 -0700
+Message-ID: <20231003200434.3154797-1-song@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231003191412.3171385-1-irogers@google.com>
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Subject: [PATCH v2 2/2] bpftool: Align bpf_load_and_run_opts insns and data
-From: Ian Rogers <irogers@google.com>
-To: Quentin Monnet <quentin@isovalent.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: pb00e5K4EJHSphSuIbDUaWc7MfTbInox
+X-Proofpoint-ORIG-GUID: pb00e5K4EJHSphSuIbDUaWc7MfTbInox
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-03_17,2023-10-02_01,2023-05-22_02
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-A C string lacks alignment so use aligned arrays to avoid potential
-alignment problems. Switch to using sizeof (less 1 for the \0
-terminator) rather than a hardcode size constant.
+htab_lock_bucket uses the following logic to avoid recursion:
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
-I was unable to find a test case for this part of the codegen using
-Linux perf and libbpf tools code bases.
----
- tools/bpf/bpftool/gen.c | 43 ++++++++++++++++++++++-------------------
- 1 file changed, 23 insertions(+), 20 deletions(-)
+1. preempt_disable();
+2. check percpu counter htab->map_locked[hash] for recursion;
+   2.1. if map_lock[hash] is already taken, return -BUSY;
+3. raw_spin_lock_irqsave();
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index b8ebcee9bc56..e9a59b254c66 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -708,17 +708,22 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 
- 		codegen("\
- 		\n\
--			skel->%1$s = skel_prep_map_data((void *)\"\\	    \n\
--		", ident);
-+			{						    \n\
-+				static const char data[] __attribute__((aligned__(8))) = \"\\\n\
-+		");
- 		mmap_data = bpf_map__initial_value(map, &mmap_size);
- 		print_hex(mmap_data, mmap_size);
- 		codegen("\
- 		\n\
--		\", %1$zd, %2$zd);					    \n\
--			if (!skel->%3$s)				    \n\
--				goto cleanup;				    \n\
--			skel->maps.%3$s.initial_value = (__u64) (long) skel->%3$s;\n\
--		", bpf_map_mmap_sz(map), mmap_size, ident);
-+		\";							    \n\
-+									    \n\
-+				skel->%1$s = skel_prep_map_data((void *)data, %2$zd,\n\
-+								sizeof(data) - 1);\n\
-+				if (!skel->%1$s)			    \n\
-+					goto cleanup;			    \n\
-+				skel->maps.%1$s.initial_value = (__u64) (long) skel->%1$s;\n\
-+			}						    \n \
-+		", ident, bpf_map_mmap_sz(map));
+However, if an IRQ hits between 2 and 3, BPF programs attached to the IRQ
+logic will not able to access the same hash of the hashtab and get -EBUSY=
+.
+This -EBUSY is not really necessary. Fix it by disabling IRQ before
+checking map_locked:
+
+1. preempt_disable();
+2. local_irq_save();
+3. check percpu counter htab->map_locked[hash] for recursion;
+   3.1. if map_lock[hash] is already taken, return -BUSY;
+4. raw_spin_lock().
+
+Suggested-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Song Liu <song@kernel.org>
+---
+ kernel/bpf/hashtab.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index a8c7e1c5abfa..347af4476662 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -155,13 +155,15 @@ static inline int htab_lock_bucket(const struct bpf=
+_htab *htab,
+ 	hash =3D hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets - 1);
+=20
+ 	preempt_disable();
++	local_irq_save(flags);
+ 	if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) !=3D 1)) =
+{
+ 		__this_cpu_dec(*(htab->map_locked[hash]));
++		local_irq_restore(flags);
+ 		preempt_enable();
+ 		return -EBUSY;
  	}
- 	codegen("\
- 		\n\
-@@ -733,32 +738,30 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 		{							    \n\
- 			struct bpf_load_and_run_opts opts = {};		    \n\
- 			int err;					    \n\
--									    \n\
--			opts.ctx = (struct bpf_loader_ctx *)skel;	    \n\
--			opts.data_sz = %2$d;				    \n\
--			opts.data = (void *)\"\\			    \n\
-+			static const char opts_data[] __attribute__((aligned__(8))) = \"\\\n\
- 		",
--		obj_name, opts.data_sz);
-+		obj_name);
- 	print_hex(opts.data, opts.data_sz);
- 	codegen("\
- 		\n\
- 		\";							    \n\
-+			static const char opts_insn[] __attribute__((aligned__(8))) = \"\\\n\
- 		");
--
--	codegen("\
--		\n\
--			opts.insns_sz = %d;				    \n\
--			opts.insns = (void *)\"\\			    \n\
--		",
--		opts.insns_sz);
- 	print_hex(opts.insns, opts.insns_sz);
- 	codegen("\
- 		\n\
- 		\";							    \n\
-+									    \n\
-+			opts.ctx = (struct bpf_loader_ctx *)skel;	    \n\
-+			opts.data_sz = sizeof(opts_data) - 1;		    \n\
-+			opts.data = (void *)opts_data;			    \n\
-+			opts.insns_sz = sizeof(opts_insn) - 1;		    \n\
-+			opts.insns = (void *)opts_insn;			    \n\
-+									    \n\
- 			err = bpf_load_and_run(&opts);			    \n\
- 			if (err < 0)					    \n\
- 				return err;				    \n\
--		", obj_name);
-+		");
- 	bpf_object__for_each_map(map, obj) {
- 		const char *mmap_flags;
- 
--- 
-2.42.0.582.g8ccd20d70d-goog
+=20
+-	raw_spin_lock_irqsave(&b->raw_lock, flags);
++	raw_spin_lock(&b->raw_lock);
+ 	*pflags =3D flags;
+=20
+ 	return 0;
+--=20
+2.34.1
 
 
