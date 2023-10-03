@@ -1,257 +1,138 @@
-Return-Path: <bpf+bounces-11321-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11322-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1B2A7B7422
-	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 00:35:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75BB07B742B
+	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 00:37:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 209F1280CAA
-	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 22:35:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTP id CBB6BB20979
+	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 22:37:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0908131A96;
-	Tue,  3 Oct 2023 22:35:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 524D03D3A5;
+	Tue,  3 Oct 2023 22:37:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3561379
-	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 22:35:11 +0000 (UTC)
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCAEAF
-	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 15:35:09 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9a65f9147ccso261346666b.1
-        for <bpf@vger.kernel.org>; Tue, 03 Oct 2023 15:35:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696372508; x=1696977308; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=It7Xi0oiD+rM83TcJHmcj911Rk0KwZSdh5qD12BcX2k=;
-        b=OwTDMkdDhx4AcJ5v2PF48k5IeFyXS0QQTqWYCrdXl4uUB2BsFQeDbs00rJZ/7x8SPk
-         5De0FQ1wHsCxVbiUQtze83KK/zqsdBQrcehqHoFD4kRzQoHI9NpJwEOXNVSZ9y9oGe7r
-         JoAK+EKmXEiCmv/i/2l8r1bPrAxcIu3nwbd6OZGNI7Sq1xF8QlSq6gwbKZKFxbRTi/LN
-         UXUGhFBN6O4yHCDSnbtbFzax9tzdoJY2ze8VaU3xLJXPWSa3fN3KIBW8o+xGL97aUg3i
-         CsQ7oRBaghLz78/RsEGhQHfmjDvsf7f82pscZUHSMMoetvlh10bcoBXS0hN3+BXr1KvH
-         gPfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696372508; x=1696977308;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=It7Xi0oiD+rM83TcJHmcj911Rk0KwZSdh5qD12BcX2k=;
-        b=dmc1wG/O+RYsHFubXNZiZiZqJZVEAnMDs4TpQEFGRUf1y/z+mBLrqwxVosxaF/+mY/
-         AFjmYbInS7zYU95Q8CcStl/CZwMImRvcI1jUuzEFdHupCpos3Fom+MacHllCh711gxA0
-         UflS3VYHaBHUbhGVyb049xmf23bTE0Z+KLqpOxO8n1RT9ly880o4mYhNGL/lpIR/Zubp
-         xZY5Gb7Ds0Cg/QqGgbwXvoeqkh+xegZIy9Du8i51booh8CTF8w/KH1ifPB0GekJVaL4e
-         lbXGeK/Ek4MEBjC2RoV6r/uhG5rcwgo/QaRy689aDv4Gj4Vmg5E46miavBL4o1J+GWBo
-         u78Q==
-X-Gm-Message-State: AOJu0YzCOGee1F/hPdyobJ7Edt0KgBJjFbhwW/akY98CN6/mQnBFFfWg
-	tWkw4iYLQtiNs9kH00E2Jp88VHpMkn690PttWAfhBg==
-X-Google-Smtp-Source: AGHT+IHBY9DipGSWqL52LM/MHQoLGvY1Km3Touj8d7gcQ7WH3o0AQ6vExMuZKH7wROcqEwJcnojm86N5ig2Ram4x/34=
-X-Received: by 2002:a17:907:b1a:b0:9b6:5a86:2926 with SMTP id
- h26-20020a1709070b1a00b009b65a862926mr419738ejl.62.1696372507814; Tue, 03 Oct
- 2023 15:35:07 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F064C379
+	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 22:37:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AC90C433D9
+	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 22:37:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1696372641;
+	bh=KxmEzSzxbEP3c6J4I4EALWwf02oTZOOOjhiXL5jE1Mc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=IIbezD1mc91A116S8nYUCVSmA0hlSzp213AKDvYkT4pM/XMBua6f7e4TNgUfdDp5F
+	 C0GEhu4Cm7QPM8ylaaGu0lZ50O/e94fECjQuEjiqVqdRH6/N13E6GQkJB0D6zmUM3V
+	 ZCxswon8VXoORDXHk7KkfuRUOOthjezYNVXk8up1t4F9KOX6VqOL7RIjQFMZ2kUePF
+	 HCAuE26QjNulZA5CuG55q6Ma9dNqV4QblU5dD9FqNXCqFPCb0wRisLekd4eu8Zip0N
+	 R5/j/BFBjHN4nft8UgRpqn8sU6eF2Rr3HjGdrkFSXwNLS4Eu82SO7PBHxeFcEf38rc
+	 UvY5+G+tZbBIw==
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2c15463ddd4so16331861fa.3
+        for <bpf@vger.kernel.org>; Tue, 03 Oct 2023 15:37:21 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzqLrFKGmAoH26gg+vtI9wqZRhYsaIWiVWT/rrYdP8OpIHMWR5y
+	aMAK205+g5JvtrdVHYWMGOSgVNkXZnJrFzi+GGY=
+X-Google-Smtp-Source: AGHT+IHuZ+veBmYkdY01lI9Ik73ekTRL1mKsB2FtR+3tapRT7WNj2d89touH4L1ZIWtmgHVes3dqkFOAhG8ijCYyd9Y=
+X-Received: by 2002:a05:6512:2118:b0:503:18c3:d87a with SMTP id
+ q24-20020a056512211800b0050318c3d87amr445589lfr.21.1696372639673; Tue, 03 Oct
+ 2023 15:37:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com>
- <CAFhGd8pEv32zp4RDsj_jeBjzP5hcsf4dP4Knueiw_UM8ZsqcKw@mail.gmail.com> <lhb7u2lg7fv2wx3kzrboftqcdtmbjvbzz7zssfn5mho72hcrvj@i53fzzis7b4q>
-In-Reply-To: <lhb7u2lg7fv2wx3kzrboftqcdtmbjvbzz7zssfn5mho72hcrvj@i53fzzis7b4q>
-From: Justin Stitt <justinstitt@google.com>
-Date: Tue, 3 Oct 2023 15:34:54 -0700
-Message-ID: <CAFhGd8pTDfgQ+uTTQpMUnyfwbTgf_Hi7hv0ZQP4Vao_fqEvB5A@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] selftests/hid: fix building for older kernels
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
-	Shuah Khan <shuah@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, linux-input@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
+References: <20231003200434.3154797-1-song@kernel.org> <CAEf4BzZ3iWhdtGSR326zKx0CUUHkO4mQA4ie2sY51SSTUqHM=g@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ3iWhdtGSR326zKx0CUUHkO4mQA4ie2sY51SSTUqHM=g@mail.gmail.com>
+From: Song Liu <song@kernel.org>
+Date: Tue, 3 Oct 2023 15:37:07 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6-ZgttuDGaf1gTZmqkQRyvsYd7FUfrAWQRL5ie1+fRPw@mail.gmail.com>
+Message-ID: <CAPhsuW6-ZgttuDGaf1gTZmqkQRyvsYd7FUfrAWQRL5ie1+fRPw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Avoid unnecessary -EBUSY from htab_lock_bucket
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@kernel.org, kernel-team@meta.com, 
+	Tejun Heo <tj@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-On Mon, Oct 2, 2023 at 7:48=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.o=
-rg> wrote:
+On Tue, Oct 3, 2023 at 3:31=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Sep 26 2023, Justin Stitt wrote:
-> > Hey all,
+> On Tue, Oct 3, 2023 at 1:05=E2=80=AFPM Song Liu <song@kernel.org> wrote:
 > >
-> > Gentle ping on this patch. Looking to get this patch and [1] slated
-> > for 6.7 wherein we can start getting cleaner kselftests builds.
+> > htab_lock_bucket uses the following logic to avoid recursion:
 > >
-> > I do not think I am able to successfully run the hid/bpf selftests due
-> > to my kernel version being too low (and an inability to upgrade it as
-> > I'm on a corp rolling release). I'd appreciate some insight on how to
-> > get the tests running or if someone could actually build+run the tests
-> > with this patch applied.
->
-> I wanted to apply this series today, but it failed my own CI now with
-> the enums being already defined:
-> https://gitlab.freedesktop.org/bentiss/hid/-/jobs/49754306
->
-> I'll probably squash the following patch in 1/3, would you mind giving
-> it a test?
-
-Works for me with this incantation:
-$ make LLVM=3D1 -j128 ARCH=3Dx86_64 mrproper headers && make LLVM=3D1 -j128
-ARCH=3Dx86_64 -C tools/testing/selftests TARGETS=3Dhid
-...
----> BINARY   hid_bpf
-
-Although, the tests expectedly fail.
-
-Looks good to me.
-
->
-> ---
-> From 37feca6c0e84705ad65e621643206c287b63bb0a Mon Sep 17 00:00:00 2001
-> From: Benjamin Tissoires <bentiss@kernel.org>
-> Date: Mon, 2 Oct 2023 15:37:18 +0200
-> Subject: [PATCH] fix selftests/hid: ensure we can compile the tests on ke=
-rnels
->  pre-6.3
->
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> ---
->  .../selftests/hid/progs/hid_bpf_helpers.h     | 30 ++++++++++++++++++-
->  1 file changed, 29 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tools/=
-testing/selftests/hid/progs/hid_bpf_helpers.h
-> index ab3b18ba48c4..feed5a991e05 100644
-> --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> @@ -5,16 +5,44 @@
->  #ifndef __HID_BPF_HELPERS_H
->  #define __HID_BPF_HELPERS_H
->
-> -/* "undefine" structs in vmlinux.h, because we "override" them below */
-> +/* "undefine" structs and enums in vmlinux.h, because we "override" them=
- below */
->  #define hid_bpf_ctx hid_bpf_ctx___not_used
->  #define hid_report_type hid_report_type___not_used
->  #define hid_class_request hid_class_request___not_used
->  #define hid_bpf_attach_flags hid_bpf_attach_flags___not_used
-> +#define HID_INPUT_REPORT         HID_INPUT_REPORT___not_used
-> +#define HID_OUTPUT_REPORT        HID_OUTPUT_REPORT___not_used
-> +#define HID_FEATURE_REPORT       HID_FEATURE_REPORT___not_used
-> +#define HID_REPORT_TYPES         HID_REPORT_TYPES___not_used
-> +#define HID_REQ_GET_REPORT       HID_REQ_GET_REPORT___not_used
-> +#define HID_REQ_GET_IDLE         HID_REQ_GET_IDLE___not_used
-> +#define HID_REQ_GET_PROTOCOL     HID_REQ_GET_PROTOCOL___not_used
-> +#define HID_REQ_SET_REPORT       HID_REQ_SET_REPORT___not_used
-> +#define HID_REQ_SET_IDLE         HID_REQ_SET_IDLE___not_used
-> +#define HID_REQ_SET_PROTOCOL     HID_REQ_SET_PROTOCOL___not_used
-> +#define HID_BPF_FLAG_NONE        HID_BPF_FLAG_NONE___not_used
-> +#define HID_BPF_FLAG_INSERT_HEAD HID_BPF_FLAG_INSERT_HEAD=C2=B7___not_us=
-ed
-> +#define HID_BPF_FLAG_MAX         HID_BPF_FLAG_MAX___not_used
-> +
->  #include "vmlinux.h"
-> +
->  #undef hid_bpf_ctx
->  #undef hid_report_type
->  #undef hid_class_request
->  #undef hid_bpf_attach_flags
-> +#undef HID_INPUT_REPORT
-> +#undef HID_OUTPUT_REPORT
-> +#undef HID_FEATURE_REPORT
-> +#undef HID_REPORT_TYPES
-> +#undef HID_REQ_GET_REPORT
-> +#undef HID_REQ_GET_IDLE
-> +#undef HID_REQ_GET_PROTOCOL
-> +#undef HID_REQ_SET_REPORT
-> +#undef HID_REQ_SET_IDLE
-> +#undef HID_REQ_SET_PROTOCOL
-> +#undef HID_BPF_FLAG_NONE
-> +#undef HID_BPF_FLAG_INSERT_HEAD
-> +#undef HID_BPF_FLAG_MAX
->
->  #include <bpf/bpf_helpers.h>
->  #include <bpf/bpf_tracing.h>
-> --
-> 2.41.0
-> ---
->
-> Cheers,
-> Benjamin
->
+> > 1. preempt_disable();
+> > 2. check percpu counter htab->map_locked[hash] for recursion;
+> >    2.1. if map_lock[hash] is already taken, return -BUSY;
+> > 3. raw_spin_lock_irqsave();
 > >
-> > On Sat, Sep 9, 2023 at 7:22=E2=80=AFAM Justin Stitt <justinstitt@google=
-.com> wrote:
-> > >
-> > > Hi, I am sending this series on behalf of myself and Benjamin Tissoir=
-es. There
-> > > existed an initial n=3D3 patch series which was later expanded to n=
-=3D4 and
-> > > is now back to n=3D3 with some fixes added in and rebased against
-> > > mainline.
-> > >
-> > > This patch series aims to ensure that the hid/bpf selftests can be bu=
-ilt
-> > > without errors.
-> > >
-> > > Here's Benjamin's initial cover letter for context:
-> > > |  These fixes have been triggered by [0]:
-> > > |  basically, if you do not recompile the kernel first, and are
-> > > |  running on an old kernel, vmlinux.h doesn't have the required
-> > > |  symbols and the compilation fails.
-> > > |
-> > > |  The tests will fail if you run them on that very same machine,
-> > > |  of course, but the binary should compile.
-> > > |
-> > > |  And while I was sorting out why it was failing, I realized I
-> > > |  could do a couple of improvements on the Makefile.
-> > > |
-> > > |  [0] https://lore.kernel.org/linux-input/56ba8125-2c6f-a9c9-d498-0c=
-a1c153dcb2@redhat.com/T/#t
-> > >
-> > > Changes from v1 -> v2:
-> > > - roll Justin's fix into patch 1/3
-> > > - add __attribute__((preserve_access_index)) (thanks Eduard)
-> > > - rebased onto mainline (2dde18cd1d8fac735875f2e4987f11817cc0bc2c)
-> > > - Link to v1: https://lore.kernel.org/all/20230825-wip-selftests-v1-0=
--c862769020a8@kernel.org/
-> > >
-> > > Link: https://github.com/ClangBuiltLinux/linux/issues/1698
-> > > Link: https://github.com/ClangBuiltLinux/continuous-integration2/issu=
-es/61
-> > > ---
-> > > Benjamin Tissoires (3):
-> > >       selftests/hid: ensure we can compile the tests on kernels pre-6=
-.3
-> > >       selftests/hid: do not manually call headers_install
-> > >       selftests/hid: force using our compiled libbpf headers
-> > >
-> > >  tools/testing/selftests/hid/Makefile               | 10 ++---
-> > >  tools/testing/selftests/hid/progs/hid.c            |  3 --
-> > >  .../testing/selftests/hid/progs/hid_bpf_helpers.h  | 49 ++++++++++++=
-++++++++++
-> > >  3 files changed, 53 insertions(+), 9 deletions(-)
-> > > ---
-> > > base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-> > > change-id: 20230908-kselftest-09-08-56d7f4a8d5c4
-> > >
-> > > Best regards,
-> > > --
-> > > Justin Stitt <justinstitt@google.com>
-> > >
+> > However, if an IRQ hits between 2 and 3, BPF programs attached to the I=
+RQ
+> > logic will not able to access the same hash of the hashtab and get -EBU=
+SY.
+> > This -EBUSY is not really necessary. Fix it by disabling IRQ before
+> > checking map_locked:
 > >
-> > [1]: https://lore.kernel.org/all/20230912-kselftest-param_test-c-v1-1-8=
-0a6cffc7374@google.com/
+> > 1. preempt_disable();
+> > 2. local_irq_save();
+> > 3. check percpu counter htab->map_locked[hash] for recursion;
+> >    3.1. if map_lock[hash] is already taken, return -BUSY;
+> > 4. raw_spin_lock().
 > >
-> > Thanks
-> > Justin
+> > Suggested-by: Tejun Heo <tj@kernel.org>
+> > Signed-off-by: Song Liu <song@kernel.org>
+> > ---
+> >  kernel/bpf/hashtab.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> > index a8c7e1c5abfa..347af4476662 100644
+> > --- a/kernel/bpf/hashtab.c
+> > +++ b/kernel/bpf/hashtab.c
+> > @@ -155,13 +155,15 @@ static inline int htab_lock_bucket(const struct b=
+pf_htab *htab,
+> >         hash =3D hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_bucke=
+ts - 1);
+> >
+> >         preempt_disable();
+> > +       local_irq_save(flags);
+> >         if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) !=
+=3D 1)) {
+> >                 __this_cpu_dec(*(htab->map_locked[hash]));
+> > +               local_irq_restore(flags);
+> >                 preempt_enable();
+> >                 return -EBUSY;
+> >         }
+> >
+> > -       raw_spin_lock_irqsave(&b->raw_lock, flags);
+> > +       raw_spin_lock(&b->raw_lock);
+> >         *pflags =3D flags;
+> >
+>
+> I might be wrong, but I think it's dangerous to have raw_spin_lock() +
+> raw_spin_unlock_irqrestore() (in htab_unlock_bucket). Looking at the
+> implementation of raw_spin_lock_irqsave() and
+> raw_spin_unlock_irqrestore(), they do their own
+> preempt_disable/preempt_enable, and so with your change I think we
+> have imbalance, one preempt_disable() in htab_lock_bucket(), but two
+> preempt_enable (one explicit in htab_unlock_bucket, and one implicit
+> inside raw_spin_unlock_irqrestore).
+>
+> I'd say let's use plain raw_spin_unlock() + explicit
+> local_irq_restore(flags) in htab_unlock_bucket?
 
-Thanks
-Justin
+Yeah, there is actually a similar window in htab_unlock_bucket(). Let's
+also close that.
+
+Thanks,
+Song
+
+>
+>
+> >         return 0;
+> > --
+> > 2.34.1
+> >
 
