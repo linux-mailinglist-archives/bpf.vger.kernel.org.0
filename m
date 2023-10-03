@@ -1,290 +1,320 @@
-Return-Path: <bpf+bounces-11282-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11283-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BFEA7B6CA8
-	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 17:09:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BB017B6D38
+	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 17:34:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by ny.mirrors.kernel.org (Postfix) with ESMTP id 841B81C20869
-	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 15:09:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id F3433281509
+	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 15:33:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51B92347D7;
-	Tue,  3 Oct 2023 15:09:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA82B36AF1;
+	Tue,  3 Oct 2023 15:33:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E59FA347B7
-	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 15:09:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C82CC433CB
-	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 15:09:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696345763;
-	bh=xili5ahztGCigSuWtN2klBzlj5tALq8D+QHJ5FTEeG8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ok+Zobs9ANL3MKJxt9DwwVfhBsX4CYzTA64QHQ4hV3p1Nh27dBWsyXFCuaIdB8TX0
-	 hpRcO1Le/mp3BQaHsMn4kAg+GfY1lH1x7jG5w+UFCCOVb/i6n8p+E5ZGF6n5wa0VbS
-	 QpMvLFgSNdK5Xh2ExAI+5gNLeOoRewAtK10OntisrpUSiNe6Gt/cKPGha2IpuqSZfU
-	 OueGQRnjmlHToRy/R8ZtEA0fg7ATx7u9PXQmZ3d7xq+yraBba0iHfHamWYSqgAUyLK
-	 wAEmUiyC0VXiImZ/JOg9F0xbTcr8bD9ipFalkaGLBpmT5SCRA7eZsD6U0ZhrXrz2ef
-	 UPZF15Ueddpww==
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-53639fb0ba4so1815147a12.0
-        for <bpf@vger.kernel.org>; Tue, 03 Oct 2023 08:09:23 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyLlcybKY3fbMpYfCYyw1flTEkaAa/nrgrbF+jd2XqNushpp4aT
-	ZkIUGxXUXKkj1lKoB/2uQ3DwY5NxMquJxlIy4zuO/g==
-X-Google-Smtp-Source: AGHT+IHI3ARey7PwaGYuDokjykmLRJO8o+a20vQHodc/VeYToF8aS6AdCE338+Jz53lL+HrCW7eBZBeS3+NMDhKQ8j4=
-X-Received: by 2002:aa7:d5c4:0:b0:533:4f9b:67c8 with SMTP id
- d4-20020aa7d5c4000000b005334f9b67c8mr13137081eds.16.1696345761707; Tue, 03
- Oct 2023 08:09:21 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60FBC328DF
+	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 15:33:54 +0000 (UTC)
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68190AB
+	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 08:33:52 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5044dd5b561so1265206e87.1
+        for <bpf@vger.kernel.org>; Tue, 03 Oct 2023 08:33:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696347230; x=1696952030; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=F8xIQzJty4+9K8/+BMP+c0isEPX6YD2aMBdd/lN9Zmo=;
+        b=AqJaWO8fE7/y7/MaMnAwAGIMlj4a3LjjYLYDBoGvlgcYjXTbLhJzR/uK8/Eu1FYrlo
+         pKESWWz6XKf8SLm8oAsU0AfvEj8oTLWvW9ame1RYjaRjw2gVyRwoH8MtNzH3WrRm9C3F
+         72PNIl1F1fFsBrbesZTIre0ZOMG7Eih9s6Ywhr7h04hlGySUl94uIjeVJ45m0j0/u/iE
+         NmjEqzpWvxb5RVnignZ8JllizP449qH41ns0DxrN4uKduuzKWdMKosQAPWFgWiF/+cFQ
+         QOtdrEUgBCsgOe2zBg2hlPUolbHb22/4MoGMCP1omqbMjVNOuJvmPdxmLI7wOqkjVdOc
+         UuPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696347230; x=1696952030;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F8xIQzJty4+9K8/+BMP+c0isEPX6YD2aMBdd/lN9Zmo=;
+        b=saXD40nIsJwJKe1SNqccp3xxNWCmVfBCTK54kUjxDYWY+EckpGAsw1JjjJZc/ELupc
+         pHYgKtvZexYS7gCUVYXOmWZcTg7h3t6ZNi7ak7WYw+psHT2kIWkpn+mhCLqbg04VpxG7
+         DYQqaidtQ0iNHOLosnAllApcmaZkNsBGxSM7wOgzEkwR5zc3y6A1otfdAEyesSIb32Zs
+         9oC5Jauu3eAKKxJ/YoJJ9+3Fj1exE2hgj0PnewiaZvIo1Xe0EN3IRGrMs3sstX4EiWD0
+         FjPmli+W7LPGaA7nILgc6azrCunqfqWLJwRYhGMo1et4uCswxYeT9jrDuMbVSVWpzGSO
+         BY4Q==
+X-Gm-Message-State: AOJu0YzH7StoIf/GmZXUjpuwBfGTE+oWrJdM9NYAcZ3H3EsnUv9i66Ue
+	X022ZFzwcQDThQS21a8E4ci4NIB7mBrSLza1
+X-Google-Smtp-Source: AGHT+IF3jNCBVqazF/odZduYj2zSj8EC7i2Po5Ug/J1jJi6HokKEcJnSoem1643WUErIc1LKULar4g==
+X-Received: by 2002:a05:6512:4019:b0:502:d84d:e893 with SMTP id br25-20020a056512401900b00502d84de893mr14709082lfb.36.1696347230124;
+        Tue, 03 Oct 2023 08:33:50 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id a8-20020ac25208000000b004fe461aab36sm225636lfl.129.2023.10.03.08.33.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 08:33:49 -0700 (PDT)
+Message-ID: <8b75e01d27696cd6661890e49bdc06b1e96092c7.camel@gmail.com>
+Subject: Re: [BUG] verifier escape with iteration helpers (bpf_loop, ...)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrew Werner
+ <awerner32@gmail.com>, bpf <bpf@vger.kernel.org>, Andrei Matei
+ <andreimatei1@gmail.com>, Tamir Duberstein <tamird@gmail.com>, Joanne Koong
+ <joannelkoong@gmail.com>, kernel-team@dataexmachina.dev, Song Liu
+ <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Tue, 03 Oct 2023 18:33:48 +0300
+In-Reply-To: <CAADnVQL5ausgq5ERiMKn+Y-Nrp32e2WTq3s5JVJCDojsR0ZF+A@mail.gmail.com>
+References: 
+	<CA+vRuzPChFNXmouzGG+wsy=6eMcfr1mFG0F3g7rbg-sedGKW3w@mail.gmail.com>
+	 <CAADnVQJpLAzmUfwvWBr8a_PWHYHxHw9vdAXnWB4R4PbVY4S4mw@mail.gmail.com>
+	 <CAEf4Bzbubu7KjBv=98BZrVnTrcfPQrnsp-g1kOYKM=kUtiqEgw@mail.gmail.com>
+	 <dff1cfec20d1711cb023be38dfe886bac8aac5f6.camel@gmail.com>
+	 <CAP01T76duVGmnb+LQjhdKneVYs1q=ehU4yzTLmgZdG0r2ErOYQ@mail.gmail.com>
+	 <a2995c1d7c01794ca9b652cdea7917cac5d98a16.camel@gmail.com>
+	 <97a90da09404c65c8e810cf83c94ac703705dc0e.camel@gmail.com>
+	 <CAEf4BzYg8T_Dek6T9HYjHZCuLTQT8ptAkQRxrsgaXg7-MZmHDA@mail.gmail.com>
+	 <ee714151d7c840c82d79f9d12a0f51ef13b798e3.camel@gmail.com>
+	 <CAADnVQJn35f0UvYJ9gyFT4BfViXn8T8rPCXRAC=m_Jx_CFjrtw@mail.gmail.com>
+	 <5649df64315467c67b969e145afda8bbf7e60445.camel@gmail.com>
+	 <CAADnVQJO0aVJfV=8RDf5rdtjOCC-=57dmHF20fQYV9EiW2pJ2Q@mail.gmail.com>
+	 <4b121c3b96dcc0322ea111062ed2260d2d1d0ed7.camel@gmail.com>
+	 <CAEf4BzbUxHCLhMoPOtCC=6Y-OxkkC9GvjykC8KyKPrFxp6cLvw@mail.gmail.com>
+	 <52df1240415be1ee8827cb6395fd339a720e229c.camel@gmail.com>
+	 <ec118c24a33fb740ecaafd9a55416d56fcb77776.camel@gmail.com>
+	 <CAEf4BzZjut_JGnrqgPE0poJhMjJgtJcafRd6Z_0T0jrW3zARJw@mail.gmail.com>
+	 <44363f61c49bafa7901ae2aa43897b525805192c.camel@gmail.com>
+	 <CAEf4BzZ-NGiUVw+yCRCkrPQbJAS4wMBsT3e=eYVMuintqKDKqg@mail.gmail.com>
+	 <a777445dcb94c0029eb3bd3ddc96ddc493c85ad0.camel@gmail.com>
+	 <CAEf4BzZU0MxwLfz-dGbmHbEtqVhEMTxwSG+QfwCuCv09CqLcNw@mail.gmail.com>
+	 <ca9ac095cf1b3fff55eea8a3c87670a349bbfbcf.camel@gmail.com>
+	 <CAEf4BzZ6V2B5QvjuCEU-MB8V-Fjkgv_yP839r9=NDcuFsgBOLw@mail.gmail.com>
+	 <d68855da2d8595ed9db812cc12db0dab80c39fc4.camel@gmail.com>
+	 <CAADnVQJbKf5PgL5fokJAB4y5+5iqKd17W9e0P6q=vJPQM+9NJQ@mail.gmail.com>
+	 <9dd331b31755632f0528bfb1d0acbf904cedbd98.camel@gmail.com>
+	 <CAADnVQLNAzjTpyE7UcnD0Q0-p4fvL6u_3_B54o6ttBBvBv7rFw@mail.gmail.com>
+	 <680e69504eabbae2abd5e9e2b745319c561c86ef.camel@gmail.com>
+	 <CAADnVQL5ausgq5ERiMKn+Y-Nrp32e2WTq3s5JVJCDojsR0ZF+A@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cc8e16bb-5083-01da-4a77-d251a76dc8ff@I-love.SAKURA.ne.jp>
- <CACYkzJ5k7oYxFgWp9bz1Wmp3n6LcU39Mh-HXFWTKnZnpY-Ef7w@mail.gmail.com>
- <153e7c39-d2e2-db31-68cd-cb05eb2d46db@I-love.SAKURA.ne.jp>
- <CACYkzJ79fvoQW5uqavdLV=N8zw6uern8m-6cM44YYFDhJF248A@mail.gmail.com> <f249c8f0-e053-066b-edc5-59a1a00a0868@I-love.SAKURA.ne.jp>
-In-Reply-To: <f249c8f0-e053-066b-edc5-59a1a00a0868@I-love.SAKURA.ne.jp>
-From: KP Singh <kpsingh@kernel.org>
-Date: Tue, 3 Oct 2023 17:09:10 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ7kzXGcjRdyaOWCaigPWcKXU7_KW_bFg9ptrnwAeJ2AgQ@mail.gmail.com>
-Message-ID: <CACYkzJ7kzXGcjRdyaOWCaigPWcKXU7_KW_bFg9ptrnwAeJ2AgQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] LSM: Allow dynamically appendable LSM modules.
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: linux-security-module <linux-security-module@vger.kernel.org>, 
-	Casey Schaufler <casey@schaufler-ca.com>, Paul Moore <paul@paul-moore.com>, bpf <bpf@vger.kernel.org>, 
-	Kees Cook <keescook@chromium.org>, Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Tue, Oct 3, 2023 at 4:28=E2=80=AFPM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
+On Mon, 2023-10-02 at 17:05 -0700, Alexei Starovoitov wrote:
+[...]
+> > Consider that we get to the environment state where:
+> > - all env->head states are exhausted;
+> > - all potentially looping states (stored in as a separate set of
+> >   states instead of env->head) are states_equal() to some already
+> >   explored state.
+> >=20
+> > I argue that if such environment state is reached the program should
+> > be safe, because:
+> > - Each looping state L is a sub-state of some explored state V and
+> >   every path from V leads to either safe exit or another loop.
+> > - Iterator loops are guaranteed to exit eventually.
+>=20
+> It sounds correct, but I don't like that the new mechanism
+> with two stacks of states completely changes the way the verifier works.
+> The check you proposed:
+> if (env->stack_size !=3D 0)
+>       push_iter_stack()
+> rings alarm bells.
+>=20
+> env->stack_size =3D=3D 0 (same as env->head exhausted) means we're done
+> with verification (ignoring bpf_exit in callbacks and subprogs).
+> So above check looks like a hack for something that I don't understand ye=
+t.
+> Also there could be branches in the code before and after iter loop.
+> With "opportunistic" states_equal() for looping states and delayed
+> reschedule_loop_states() to throw states back at the verifier
+> the whole verification model is non comprehensible (at least to me).
+> The stack + iter_stack + reschedule_loop_states means that in the followi=
+ng:
+> foo()
+> {
+>   br1 // some if() {...} block
+>   loop {
+>     br2
+>   }
+>   br3
+> }
+>=20
+> the normal verifier pop_stack logic will check br3 and br1,
+> but br2 may or may not be checked depending on "luck" of states_equal
+> and looping states that will be in iter_stack.
+> Then the verifier will restart from checking loop-ing states.
 >
-> On 2023/10/01 23:43, KP Singh wrote:
-> >>> Now, comes the question of whether we need dynamically loaded LSMs, I
-> >>> am not in favor of this. Please share your limitations of BPF as you
-> >>> mentioned and what's missing to implement dynamic LSMs. My question
-> >>> still remains unanswered.
-> >>>
-> >>> Until I hear the real limitations of using BPF, it's a NAK from me.
-> >>
-> >> Simple questions that TOMOYO/AKARI/CaitSith LSMs depend:
-> >>
-> >>   Q1: How can the BPF allow allocating permanent memory (e.g. kmalloc(=
-)) that remains
-> >>       the lifetime of the kernel (e.g. before starting the global init=
- process till
-> >>       the content of RAM is lost by stopping electric power supply) ?
-> >
-> > This is very much possible using global BPF maps. Maps can be "pinned"
-> > so that they remain allocated until explicitly freed [or RAM is lost
-> > by stopping electric power supply"]
-> >
-> > Here's an example of BPF program that allocates maps:
-> >
-> >     https://elixir.bootlin.com/linux/latest/source/tools/testing/selfte=
-sts/bpf/progs/test_pinning.c#L26
-> >
-> > and the corresponding userspace code that does the pinning:
-> >
-> >     https://elixir.bootlin.com/linux/latest/source/tools/testing/selfte=
-sts/bpf/prog_tests/pinning.c
+> If they somehow go past the end of the loop all kinds of things go crazy.
+> update_branch_counts() might warn, propagate_liveness, propagate_precisio=
+n
+> will do nonsensical things.
+
+When I put states to the loop stack I do copy_verifier_state() and
+increase .branches counter for each state parent, so this should not
+trigger warnings with update_branch_counts(). Logically, any state
+that has a loop state as it's grandchild is not verified to be safe
+until loops steady state is achieved, thus such states could not be
+used for states pruning and it is correct to keep their branch
+counters > 0.
+
+propagate_liveness() and propagate_precision() should not be called
+for the delayed states (work-in-progress I'll update the patch).
+Behavior for non-delayed states should not be altered by these changes.
+
+> This out-of-order state processing distorts the existing model so
+> much that I don't see how we can reason about these two stacks verificati=
+on.
+
+Iterators (and callbacks) try to diverge from regular verification
+logic of visiting all possible paths by making some general
+assumptions about loop bodies. There is no way to verify safety of
+such bodies w/o computing steady states.
+
+> I think the cleaner solution is to keep current single stack model.
+> In the above example the verifier would reach the end, then check br3,
+> then check br2,
+> then we need to split branches counter somehow, so that we can
+> compare loop iter states with previous visited states that are known
+> to be safe.
+> In visited states we explored everything in br3 and in br2,
+> so no concerns that some path inside the loop or after the loop
+> missed precision or liveness.
 >
-> I know nothing about BPF. But that looks "allocate once" (i.e. almost "st=
-atic char buf[SIZE]").
+> Maybe we can split branches counter into branches due to 'if' blocks
+> and branches due to process_iter_next_call().
+> If there are pending process_iter_next_call-caused states it's still
+> ok to call states_equal on such visited states.
 
-Happy to help you here!
+Using a stack forces DFS states traversal, if there is a loop state
+with branching this is prone to infinite nesting, e.g.:
 
-> What I expected is "allocate memory where amount is determined at runtime=
-" (e.g. alloc(), realloc()).
+  0. // Complete assembly code is in the end of the email.
+  1. while (next(i)) {
+  2.   if (random())
+  3.     continue;
+  4.   r0 +=3D 0;
+  5. }
 
-One can use dynamically sized allocations on the ring buffer with
-dynamic pointers:
+Would lead to an infinite loop when using the patch shared in [1].
+At (2) verifier would always create a state with {.loop_state=3Dfalse},
+thus checkpoint state at (1) would always have
+`sl->branches !=3D sl->state.looping_states`:
+- looping state is current one,
+- non-looping state is the "else" branch scheduled in (2).
+Therefore checkpoint in (1) is not eligible for pruning and verifier
+would eagerly descend via path 1,2,3,1,2,3,...
 
-http://vger.kernel.org/bpfconf2022_material/lsfmmbpf2022-dynptr.pdf
+I don't think this is a quirk of the patch, with only a single stack
+there are no means to postpone exploration.
 
-Furthermore, there are some use cases that seemingly need dynamic
-memory allocation but not really. e.g. there was a need to audit
-command line arguments and while it seems dynamic and one can chunk
-the allocation to finite sizes, put these on a ring buffer and process
-the chunks.
+Note, that removal of `elem->st.looping_state =3D false;` from
+push_stack() is not safe either, precision marks and unsafe values
+could be concealed in nested iteration states as shown in example [2],
+so we are risking pruning some states too early.
 
-It would be nice to see more details of where the dynamic allocation
-is needed. Security blobs are allocated dynamically but have a fixed
-size.
+[1] https://lore.kernel.org/bpf/CAADnVQJ3=3Dx8hfv7d29FQ-ckzh9=3DMXo54cnFShF=
+p=3DeG0fJjdDow@mail.gmail.com/T/#m8fc0fc3e338f57845f9fb65e0c3798a2ef5fb2e7
+[2] https://lore.kernel.org/bpf/CAADnVQJ3=3Dx8hfv7d29FQ-ckzh9=3DMXo54cnFShF=
+p=3DeG0fJjdDow@mail.gmail.com/T/#m6014e44a00ab7732890c13b83b5497f8d856fc81
 
->
-> >
-> > Specifically for LSMs, we also added support for security blobs which
-> > are tied to a particular object and are free with the object, have a
-> > look at the storage which is allocated in the program:
-> >
-> >    https://elixir.bootlin.com/linux/latest/source/tools/testing/selftes=
-ts/bpf/progs/local_storage.c#L79
-> >
-> > Again, code and context on what you want to do will let me help you mor=
-e here.
->
-> I don't have any BPF code.
-> I have several LKM-based LSMs in https://osdn.net/projects/akari/scm/svn/=
-tree/head/branches/ .
+---
 
-Thanks for the pointers, I will read through them.
+In theory, loops steady state does not have to be tracked globally it
+can be tracked per some key states, e.g. entry states for top-level loops:
+- at the entry state E for a top level loop:
+  - establish a separate regular and loop state stacks: E.stack, E.loop_sta=
+ck;
+  - add E to explored states as a checkpoint and continue verification
+    from E' a copy of E (at this point E branches counter is > 0);
+- in is_state_visited() / .branches > 0 / is_bpf_next_insn():
+  - only consider current state C for states_equal(V, C) if V and C
+    have a common grandparent E;
+  - use E.loop_stack to delay C;
+- use same logic for steady state as before:
+  - E.stack should be exhausted;
+  - states in E.loop_stack should all be states_equal() to some
+    explored state V that has E as it's grandparent.
+- if such steady state is achieved E's loop states could be dropped
+  and branches counter for E could be set to 0, thus opening it up for
+  regular states pruning.
+ =20
+Such logic would make verification of loops more similar to
+verification of regular conditionals, e.g.:
 
->
-> >
-> >>
-> >>   Q2: How can the BPF allow interacting with other process (e.g. inter=
- process communication
-> >>       using read()/write()) which involves opening some file on the fi=
-lesystem and sleeping
-> >>       for arbitrary duration?
-> >
-> > The BPF program runs in the kernel context, so yes all of this is
-> > possible. IPC can be done with the bpf_ring_buffer / maps and BPF also
-> > has the ability to send signals. One can poll on the ring buffer on
-> > events and data from the BPF program and do a lots of things.
->
-> OK, BPF allows sleeping operations; that's good.
->
-> Some of core requirements for implementing TOMOYO/AKARI/CaitSith-like pro=
-grams
-> using BPF will be:
->
->   The program registered cannot be stopped/removed by the root user.
->   This is made possible by either building the program into vmlinux or lo=
-ading
->   the program as a LKM without module_exit() callback. Is it possible to =
-guaranee
->   that a BPF program cannot be stopped/removed by user's operations?
+  foo() {
+    if (random()) {
+      r0 =3D 0;  // branch B1
+    } else {
+      r0 =3D 42; // branch B2
+    }
+    i =3D iter_new();
+    // loop entry E
+    while (iter_next()) {
+      // loop body LB
+      do_something();
+    }
+  }
 
-Yes, there is a security_bpf hook where a BPF MAC policy can be
-implemented and other LSMs do that already.
+Here verifier would first visit path B1,E,LB, second visit to LB would
+be delayed and steady state for E would be declared, E.branches would
+be set to 0. Then path B1,E would be visited and declared safe as E is
+eligible for states pruning.
 
->
->   The program registered cannot be terminated by safety mechanisms (e.g. =
-excessive
->   CPU time consumption). Are there mechanisms in BPF that wouldn't have t=
-erminated
->   a program if the program were implemented as a LKM rather than a BPF pr=
-ogram?
->
+This gives more opportunities for states pruning and makes user's
+reasoning about iterators verification similar to user's reasoning
+about regular loops verification.
+But it adds some more complexity to the implementation
+(albeit, I think it's not much, env->head becomes a stack of stacks
+ and a few other tweaks).
 
-The kernel does not terminate BPF LSM programs, once a BPF program is
-loaded and attached to the LSM hook, it's JITed into a native code.
-From there onwards, as far as the kernel is concerned it's just like
-any other kernel function.
+---
 
->   Ideally, the BPF program is built into vmlinux and is started before th=
-e global init
->   process starts. (But whether building into vmlinux is possible does not=
- matter here
->   because I have trouble building into vmlinux. As a fallback, when we ca=
-n start matters.)
->   When is the earliest timing for starting a BPF program that must remain=
- till stopping
-
-The kernel actually supports preloading certain BPF programs during early i=
-nit.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=
-=3D0bc23a1d1c8a1b4a5e4b973a7a80a6d067bd3eef
-
-This allows you to preload before init.
-
-
->   electric power supply? Is that when /init in a initramfs starts? Is tha=
-t when init=3D
->   kernel command line option is processed? More later than when init=3D i=
-s processed?
-
-Also, It depends on whether you trust init or not (e.g. if the init
-blob is somehow appraised and measured, then you can trust it to load
-the right BPF LSM programs). and then you can choose to not preload
-bpf programs in the kernel, rather load them sometime early in /init.
-
->
->   Amount of memory needed for managing data is not known at compile time.=
- Thus, I need
->   kmalloc()-like memory allocation mechanism rather than allocating from =
-some pool, and
->   manage chunk of memory regions using linked list. Does BPF have kmalloc=
-()-like memory
->   allocation mechanism that allows allocating up to 32KB (8 pages if PAGE=
-_SIZE=3D4096).
->
-
-You use the ring buffer as a large pool and use dynamic pointers to
-carve chunks out of it, if truly dynamic memory is needed.
-
-> And maybe somewhere documented question:
->
->   What kernel functions can a BPF program call / what kernel data can a B=
-PF program access?
-
-BPF programs can access kernel data dynamically (accesses relocated at
-load time without needing a recompile) There are lot of good details
-in:
-
-https://nakryiko.com/posts/bpf-core-reference-guide/
-
-
->   The tools/testing/selftests/bpf/progs/test_d_path.c suggests that a BPF=
- program can call
->   d_path() defined in fs/d_path.c . But is that because d_path() is marke=
-d as EXPORT_SYMBOL() ?
->   Or can a BPF program call almost all functions (like SystemTap script c=
-an insert hooks into
->   almost all functions)? Even functions / data in LKM can be accessed by =
-a BPF program?
->
-
-It's not all kernel functions, but there is a wide range of helpers
-and kfuncs (examples in tools/testing/selftests/bpf) and if there is
-something missing, we will help you.
-
->
->
-> On 2023/10/02 22:04, KP Singh wrote:
-> >>> There are still a bunch of details (e.g. shared blobs) that it doesn'=
-t
-> >>> address. On the other hand, your memory management magic doesn't
-> >>> address those issues either.
-> >>
-> >> Security is always trial-and-error. Just give all Linux users chances =
-to continue
-> >> trial-and-error. You don't need to forbid LKM-based LSMs just because =
-blob management
-> >> is not addressed. Please open the LSM infrastructure to anyone.
-> >
-> > It already is, the community is already using BPF LSM.
-> >
-> > e.g. https://github.com/linux-lock/bpflock
-> >
->
-> Thank you for an example. But the project says
->
->   bpflock is not a mandatory access control labeling solution, and it doe=
-s not
->   intent to replace AppArmor, SELinux, and other MAC solutions. bpflock u=
-ses a
->   simple declarative security profile.
->
-> which is different from what I want to know (whether it is realistic to
-> implement TOMOYO/AKARI/CaitSith-like programs using BPF).
-
-Agreed, I was sharing it more as a code sample. There is an
-interesting talk by Meta at LPC which I quite excited about in this
-space:
-
-https://lpc.events/event/17/contributions/1602/
-
-These are just examples of flexible MAC implementations using BPF.
-
-- KP
-
-- KP
->
+SEC("?raw_tp")
+__success
+__naked int loop1(void)
+{
+ 	asm volatile (
+		"r1 =3D r10;"
+		"r1 +=3D -8;"
+		"r2 =3D 0;"
+		"r3 =3D 10;"
+		"call %[bpf_iter_num_new];"
+	"loop_%=3D:"
+		"r1 =3D r10;"
+		"r1 +=3D -8;"
+		"call %[bpf_iter_num_next];"
+		"if r0 =3D=3D 0 goto loop_end_%=3D;"
+		"call %[bpf_get_prandom_u32];"
+		"if r0 !=3D 42 goto loop_%=3D;"
+		"r0 +=3D 0;"
+		"goto loop_%=3D;"
+	"loop_end_%=3D:"
+		"r1 =3D r10;"
+		"r1 +=3D -8;"
+		"call %[bpf_iter_num_destroy];"
+		"r0 =3D 0;"
+		"exit;"
+		:
+		: __imm(bpf_get_prandom_u32),
+		  __imm(bpf_iter_num_new),
+		  __imm(bpf_iter_num_next),
+		  __imm(bpf_iter_num_destroy)
+		: __clobber_all
+	);
+}
 
