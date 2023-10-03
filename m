@@ -1,192 +1,306 @@
-Return-Path: <bpf+bounces-11312-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11313-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEF717B7247
-	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 22:06:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 164627B736E
+	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 23:36:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by am.mirrors.kernel.org (Postfix) with ESMTP id 4E4B91F21465
-	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 20:06:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id E7C3A2815EB
+	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 21:36:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D77E33D39A;
-	Tue,  3 Oct 2023 20:05:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A193D3D98C;
+	Tue,  3 Oct 2023 21:36:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0AF43D3BE
-	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 20:05:46 +0000 (UTC)
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 561CAC6
-	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 13:05:45 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5789f2f13fcso919568a12.3
-        for <bpf@vger.kernel.org>; Tue, 03 Oct 2023 13:05:45 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E41F3D974
+	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 21:36:48 +0000 (UTC)
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F579E
+	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 14:36:46 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-d84d883c1b6so268192276.0
+        for <bpf@vger.kernel.org>; Tue, 03 Oct 2023 14:36:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696363545; x=1696968345; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ddjKpJ/j1G+ZcWV9ZUKV5M/PQS+TN4o9oLf/XIDMvT0=;
-        b=uMPCL5NRNRfHmw0XX3oC3uxrjJjzU5w36ACc77qsx6DEgFS2+G0aKUW+X9PmyaFm5t
-         Jlis7a3/cnJBRpfe2acZYfznbhsfa0wN1Ys9/1Ohckq//ZXhLcPYnkpw6gzJ6d4u1Hne
-         BH1RAYfCXZLdB+Lbc7MnXU7N3Z14KjWQHHRoqL4JhM96rITwfaKI28yQe7tWaR1NcQZV
-         FHfMwyS9NkH4cK1/WB2Lr/Bsr6z6qU/JxBSRvfjwkGF0HoyuQubJjYac/i6DfEUqE/Af
-         aOrmITU7zwoNYasli86XFVY5/dfO16L2tHV6hirY7ktWEjw/hunpZNDof+AmBCRO2MaC
-         +D5g==
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1696369005; x=1696973805; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R0mJ3IHM8Yjc4xcZDToFg2+jf4wsXO7IZrU1MLYvRto=;
+        b=T7k6MnnHlIp9Htu6DSKjOFrG9a+m3aDgVlVDm1ZxDh624YVup65gxsgtr4/zJMqhSu
+         sUMcfxptAcCDdZIipwlgc7O08/VgXKu4Pw/Dh29tkHHCvs7HUmqUnZbq2bc0SNQCGVsY
+         k/xD9YJgr0EShyTGSp5eLbRVizveCq16BPz7vbktWVexltEnU+Tb3wZttnklsOe4P4qA
+         RcdJFlOiVi95r4WdcHzgPshEmj3VreeolxzasDIH3nR8Er3+bbJnooIQNq4aTUHswm7u
+         AUhWvSQduzNHjrhp6PPUMnVBlpWt6BI/z3buJCaI2bl8mUqW+uUtsJXMuVu2DcqPONx0
+         n1cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696363545; x=1696968345;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ddjKpJ/j1G+ZcWV9ZUKV5M/PQS+TN4o9oLf/XIDMvT0=;
-        b=qjkNhSAkck6s+1zIdMtc8G3xDeZHfpLQDoNtLpZEm6OTOlM+1LwymU/letO2S1fWav
-         IkUYJznOUA5Lawj2MfQPLH16KYOptQIz3mB27mULXm4/eevYVYJUVhI8XKu8ZOA9QtbD
-         PR8rpekNnn/ramX7pN2FucVIs8GPViUgNVvGRddc7WZjhVXqkiVBvxag6G9CwCNOmKXV
-         XHQTdDdGjTB1cIL+mS/lDe1WrSV1Sddn3DVvumE62bqHQbOboTVTLXzIqLDSwhYugkxy
-         3naR35mfbiEIsyb6eL2SZITVCKuGTRrLkj3EuqrZwc0Dpb+JLYs1119BiBhlh0mWiTZ4
-         w5Cw==
-X-Gm-Message-State: AOJu0YyNMmCNLuwZ3PomLpotvn7dYDLQX5J7jaW4EcIbdIl7146fZlvL
-	DsvTWaiU+sNFZoCICRMp6de86hgK3P6dIXLZkifXmN08L13Oa5mS4/T4e6nFWC3GjKGtMDRXOLc
-	epSTZS35XjBG35xtWWMFzj1LA2PDX1mUQo6XT/KqYHkoBy/zIjQ==
-X-Google-Smtp-Source: AGHT+IHXFrX38JHtyz5X3PE83Rd8dAQVVm4RG96h1vPXKxzvU3mGdy870f7x45uhm+p3usn+E2TiKR4=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:6d86:0:b0:566:1c6:139b with SMTP id
- i128-20020a636d86000000b0056601c6139bmr2233pgc.8.1696363543796; Tue, 03 Oct
- 2023 13:05:43 -0700 (PDT)
-Date: Tue,  3 Oct 2023 13:05:22 -0700
-In-Reply-To: <20231003200522.1914523-1-sdf@google.com>
+        d=1e100.net; s=20230601; t=1696369005; x=1696973805;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R0mJ3IHM8Yjc4xcZDToFg2+jf4wsXO7IZrU1MLYvRto=;
+        b=EEO14vdEOXq9F2zf8pfj7rigjN1kKIyzzeJqDz3g69Bc1OIjI8Ox3NRq3Pc/42SYl1
+         Sqerx0xqGBz46LX5vd72Ab0i/WPntDkEyLVIV5Lo3ITVLB+NC70J3Ue9NkHYbvyxWoa5
+         KN78ZpGtOEBIEdTizOyFwQWiQNsIrjIrPMGHuYxqrzRio/+jYhyU9mCdbDmyzMds0kkq
+         qAc6Et4AyQxyY1nUve+k5gMEkk6EHotrAwuzXwy2swOT54WcKSMtgYNT/mhsd7vs5rVV
+         aB9fkWO8D85kXfnWUSgxlTbWYxeiWYLJ5ZKLuEPNF25ZArSyevJuTEF6jyy54v/qwIDh
+         3aFg==
+X-Gm-Message-State: AOJu0YwwVANYSWo+/d2QZvBRyx1rzOUHM5T98v/1wM3/Kecuv7Qtd5nd
+	PDhjK4kkMbgy/1aU86yeZO/pYsy9KM0+QtscbXhunA==
+X-Google-Smtp-Source: AGHT+IGEJCzz4naJCJ70efJt/yefLN0e2PznczrFBd7G7+5B+1/T0y/jV20IuuX/3H/2eZ3/HlDOKVK3eNJK6xx6R6o=
+X-Received: by 2002:a25:b20d:0:b0:d71:c79c:86c1 with SMTP id
+ i13-20020a25b20d000000b00d71c79c86c1mr2726260ybj.32.1696369005137; Tue, 03
+ Oct 2023 14:36:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231003200522.1914523-1-sdf@google.com>
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <20231003200522.1914523-11-sdf@google.com>
-Subject: [PATCH bpf-next v3 10/10] xsk: document tx_metadata_len layout
-From: Stanislav Fomichev <sdf@google.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	kuba@kernel.org, toke@kernel.org, willemb@google.com, dsahern@kernel.org, 
-	magnus.karlsson@intel.com, bjorn@kernel.org, maciej.fijalkowski@intel.com, 
-	hawk@kernel.org, yoong.siang.song@intel.com, netdev@vger.kernel.org, 
-	xdp-hints@xdp-project.net
+MIME-Version: 1.0
+References: <20230919145951.352548-1-victor@mojatatu.com> <beb5e6f3-e2a1-637d-e06d-247b36474e95@iogearbox.net>
+ <CAM0EoMncgehpwCOxaUUKhOP7V0DyJtbDP9Q5aUkMG2h5dmfQJA@mail.gmail.com>
+ <97f318a1-072d-80c2-7de7-6d0d71ca0b10@iogearbox.net> <CAM0EoMnPVxYA=7jn6AU7D3cJJbY5eeMLOxCrj4UJcFr=pCZ+Aw@mail.gmail.com>
+ <1df2e804-5d58-026c-5daa-413a3605c129@iogearbox.net> <CAM0EoM=SH8i_-veiyUtT6Wd4V7DxNm-tF9sP2BURqN5B2yRRVQ@mail.gmail.com>
+ <cb4db95b-89ff-02ef-f36f-7a8b0edc5863@iogearbox.net> <CAM0EoMkYCaxHT22-b8N6u7A=2SUydNp9vDcio29rPrHibTVH5Q@mail.gmail.com>
+ <96532f62-6927-326c-8470-daa1c4ab9699@iogearbox.net>
+In-Reply-To: <96532f62-6927-326c-8470-daa1c4ab9699@iogearbox.net>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Tue, 3 Oct 2023 17:36:33 -0400
+Message-ID: <CAM0EoMkUFcw7k0vX3oH8SHDoXW=DD-h2MkUE-3_MssXvP_uJbA@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/1] net/sched: Disambiguate verdict from return code
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Victor Nogueira <victor@mojatatu.com>, xiyou.wangcong@gmail.com, jiri@resnulli.us, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	paulb@nvidia.com, netdev@vger.kernel.org, kernel@mojatatu.com, 
+	martin.lau@linux.dev, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-	autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-- how to use
-- how to query features
-- pointers to the examples
+On Tue, Oct 3, 2023 at 9:49=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.ne=
+t> wrote:
+>
+> On 10/3/23 2:46 PM, Jamal Hadi Salim wrote:
+> > On Tue, Oct 3, 2023 at 5:00=E2=80=AFAM Daniel Borkmann <daniel@iogearbo=
+x.net> wrote:
+> >> On 10/2/23 9:54 PM, Jamal Hadi Salim wrote:
+> >>> On Fri, Sep 29, 2023 at 11:48=E2=80=AFAM Daniel Borkmann <daniel@ioge=
+arbox.net> wrote:
+> >>>> On 9/26/23 1:01 AM, Jamal Hadi Salim wrote:
+> >>>>> On Fri, Sep 22, 2023 at 4:12=E2=80=AFAM Daniel Borkmann <daniel@iog=
+earbox.net> wrote:
+> >>>>>> On 9/20/23 1:20 AM, Jamal Hadi Salim wrote:
+> >>>>>>> On Tue, Sep 19, 2023 at 6:15=E2=80=AFPM Daniel Borkmann <daniel@i=
+ogearbox.net> wrote:
+> >>>>>>>> On 9/19/23 4:59 PM, Victor Nogueira wrote:
+> >>>> [...]
+> >>>>>>
+> >>>>>> In the above case we don't have 'internal' errors which you want t=
+o trace, so I would
+> >>>>>> also love to avoid the cost of zeroing struct tcf_result res which=
+ should be 3x 8b for
+> >>>>>> every packet.
+> >>>>>
+> >>>>> We can move the zeroing inside tc_run() but we declare it in the sa=
+me
+> >>>>> spot as we do right now. You will still need to set res.verdict as
+> >>>>> above.
+> >>>>> Would that work for you?
+> >>>>
+> >>>> What I'm not following is that with the below you can avoid the unne=
+cessary
+> >>>> fast path cost (which is only for corner case which is almost never =
+hit) and
+> >>>> get even better visibility. Are you saying it doesn't work?
+> >>>
+> >>> I am probably missing something:
+> >>> -1/UNSPEC is a legit errno. And the main motivation here for this
+> >>> patch is to disambiguate if it was -EPERM vs UNSPEC
+> >>> Maybe that is what you are calling a "corner case"?
+> >>
+> >> Yes, but what is the use-case to ever return a -EPERM from the fast-pa=
+th? This can
+> >> be audited for the code in the tree and therefore avoided so that you =
+never run into
+> >> this problem.
+> >
+> > I am sorry but i am not in favor of this approach.
+> > You are suggesting audits are the way to go forward when in fact lack
+> > of said audits is what got us in this trouble with syzkaller to begin
+> > with. We cant rely on tribal knowledge to be able to spot these
+> > discrepancies. The elder of the tribe may move to a different mountain
+> > at some point and TheLinuxWay(tm) is cutnpaste, so i dont see this as
+> > long term good for maintainance. We have a clear distinction between
+> > an error vs verdict - lets use that.
+> > We really dont want to make this a special case just for eBPF and how
+> > to make it a happy world for eBPF at the cost of everyone else. I made
+> > a suggestion of leaving tcx alone, you can do your own thing there;
+> > but for tc_run my view is we should keep it generic.
+>
+> Jamal, before you come to early conclusions, it would be great if you als=
+o
+> read until the end of the email, because what I suggested below *is* gene=
+ric
+> and with less churn throughout the code base.
+>
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- Documentation/networking/index.rst           |  1 +
- Documentation/networking/xsk-tx-metadata.rst | 77 ++++++++++++++++++++
- 2 files changed, 78 insertions(+)
- create mode 100644 Documentation/networking/xsk-tx-metadata.rst
+I did look, Daniel. You are lumping all the error codes into one -
+which doesnt change my view on disambiguation. If i was to debug
+closely and run kprobe now i am seeing only one error code
+TC_ACT_ABORT instead of -EINVAL vs -ENOMEM, etc. Easier for me to find
+the source manually (and possibly even better with Andrii's tool i saw
+once if it would work in the datapath - iirc, i think it prints return
+codes on the code paths).
 
-diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
-index 5b75c3f7a137..9b2accb48df7 100644
---- a/Documentation/networking/index.rst
-+++ b/Documentation/networking/index.rst
-@@ -123,6 +123,7 @@ Refer to :ref:`netdev-FAQ` for a guide on netdev development process specifics.
-    xfrm_sync
-    xfrm_sysctl
-    xdp-rx-metadata
-+   xsk-tx-metadata
- 
- .. only::  subproject and html
- 
-diff --git a/Documentation/networking/xsk-tx-metadata.rst b/Documentation/networking/xsk-tx-metadata.rst
-new file mode 100644
-index 000000000000..b7289f06745c
---- /dev/null
-+++ b/Documentation/networking/xsk-tx-metadata.rst
-@@ -0,0 +1,77 @@
-+==================
-+AF_XDP TX Metadata
-+==================
-+
-+This document describes how to enable offloads when transmitting packets
-+via :doc:`af_xdp`. Refer to :doc:`xdp-rx-metadata` on how to access similar
-+metadata on the receive side.
-+
-+General Design
-+==============
-+
-+The headroom for the metadata is reserved via ``tx_metadata_len`` in
-+``struct xdp_umem_reg``. The metadata length is therefore the same for
-+every socket that shares the same umem. The metadata layout is a fixed UAPI,
-+refer to ``union xsk_tx_metadata`` in ``include/uapi/linux/if_xdp.h``.
-+Thus, generally, the ``tx_metadata_len`` field above should contain
-+``sizeof(union xsk_tx_metadata)``.
-+
-+The headroom and the metadata itself should be located right before
-+``xdp_desc->addr`` in the umem frame. Within a frame, the metadata
-+layout is as follows::
-+
-+           tx_metadata_len
-+     /                         \
-+    +-----------------+---------+----------------------------+
-+    | xsk_tx_metadata | padding |          payload           |
-+    +-----------------+---------+----------------------------+
-+                                ^
-+                                |
-+                          xdp_desc->addr
-+
-+An AF_XDP application can request headrooms larger than ``sizeof(struct
-+xsk_tx_metadata)``. The kernel will ignore the padding (and will still
-+use ``xdp_desc->addr - tx_metadata_len`` to locate
-+the ``xsk_tx_metadata``). For the frames that shouldn't carry
-+any metadata (i.e., the ones that don't have ``XDP_TX_METADATA`` option),
-+the metadata area is ignored by the kernel as well.
-+
-+The flags field enables the particular offload:
-+
-+- ``XDP_TX_METADATA_TIMESTAMP``: requests the device to put transmission
-+  timestamp into ``tx_timestamp`` field of ``union xsk_tx_metadata``.
-+- ``XDP_TX_METADATA_CHECKSUM``: requests the device to calculate L4
-+  checksum. ``csum_start`` specifies byte offset of there the checksumming
-+  should start and ``csum_offset`` specifies byte offset where the
-+  device should store the computed checksum.
-+- ``XDP_TX_METADATA_CHECKSUM_SW``: requests checksum calculation to
-+  be done in software; this mode works only in ``XSK_COPY`` mode and
-+  is mostly intended for testing. Do not enable this option, it
-+  will negatively affect performance.
-+
-+Besides the flags above, in order to trigger the offloads, the first
-+packet's ``struct xdp_desc`` descriptor should set ``XDP_TX_METADATA``
-+bit in the ``options`` field. Also not that in a multi-buffer packet
-+only the first chunk should carry the metadata.
-+
-+Querying Device Capabilities
-+============================
-+
-+Every devices exports its offloads capabilities via netlink netdev family.
-+Refer to ``xsk-flags`` features bitmask in
-+``Documentation/netlink/specs/netdev.yaml``.
-+
-+- ``tx-timestamp``: device supports ``XDP_TX_METADATA_TIMESTAMP``
-+- ``tx-checksum``: device supports ``XDP_TX_METADATA_CHECKSUM``
-+
-+Note that every devices supports ``XDP_TX_METADATA_CHECKSUM_SW`` when
-+running in ``XSK_COPY`` mode.
-+
-+See ``tools/net/ynl/samples/netdev.c`` on how to query this information.
-+
-+Example
-+=======
-+
-+See ``tools/testing/selftests/bpf/xdp_hw_metadata.c`` for an example
-+program that handles TX metadata. Also see https://github.com/fomichev/xskgen
-+for a more bare-bones example.
--- 
-2.42.0.582.g8ccd20d70d-goog
+cheers,
+jamal
 
+> >>> There are two options in my mind right now (since you are guaranteed
+> >>> in tcx_run you will never return anything below UNSPEC):
+> >>> 1) we just have the switch statement invocation inside an inline
+> >>> function and you can pass it sch_ret (for tcx case) and we'll pass it
+> >>> res.verdit for tc_run() case.
+> >>> 2) is something is we leave tcx_run alone and we have something along
+> >>> the lines of:
+> >>>
+> >>> --------------
+> >>> diff --git a/net/core/dev.c b/net/core/dev.c
+> >>> index 1450f4741d9b..93613bce647c 100644
+> >>> --- a/net/core/dev.c
+> >>> +++ b/net/core/dev.c
+> >>> @@ -3985,7 +3985,7 @@ sch_handle_ingress(struct sk_buff *skb, struct
+> >>> packet_type **pt_prev, int *ret,
+> >>>                      struct net_device *orig_dev, bool *another)
+> >>>    {
+> >>>           struct bpf_mprog_entry *entry =3D
+> >>> rcu_dereference_bh(skb->dev->tcx_ingress);
+> >>> -       struct tcf_result res =3D {0};
+> >>> +       struct tcf_result res;
+> >>>           int sch_ret;
+> >>>
+> >>>           if (!entry)
+> >>> @@ -4003,14 +4003,16 @@ sch_handle_ingress(struct sk_buff *skb, struc=
+t
+> >>> packet_type **pt_prev, int *ret,
+> >>>                   if (sch_ret !=3D TC_ACT_UNSPEC)
+> >>>                           goto ingress_verdict;
+> >>>           }
+> >>> +
+> >>> +       res.verdict =3D 0;
+> >>>           sch_ret =3D tc_run(tcx_entry(entry), skb, &res);
+> >>>           if (sch_ret < 0) {
+> >>>                   kfree_skb_reason(skb, SKB_DROP_REASON_TC_INGRESS_ER=
+ROR);
+> >>>                   *ret =3D NET_RX_DROP;
+> >>>                   return NULL;
+> >>>           }
+> >>> +       sch_ret =3D res.verdict;
+> >>>    ingress_verdict:
+> >>> -       switch (res.verdict) {
+> >>> +       switch (sch_ret) {
+> >>>           case TC_ACT_REDIRECT:
+> >>>                   /* skb_mac_header check was done by BPF, so we can
+> >>> safely
+> >>>                    * push the L2 header back before redirecting to an=
+other
+> >>> -----------
+> >>>
+> >>> on the drop reason - our thinking is to support drop_watch alongside
+> >>> tracepoint given kfree_skb_reason exists already; if i am not mistake=
+n
+> >>> what you suggested would require us to create a new tracepoint?
+> >>
+> >> So if the only thing you really care about is the different drop reaso=
+n for
+> >> kfree_skb_reason, then I still don't follow why you need to drag this =
+into
+> >> struct tcf_result. This can be done in a much simpler and more efficie=
+nt way
+> >> like the following:
+> >>
+> >> diff --git a/include/net/dropreason-core.h b/include/net/dropreason-co=
+re.h
+> >> index a587e83fc169..b1c069c8e7f2 100644
+> >> --- a/include/net/dropreason-core.h
+> >> +++ b/include/net/dropreason-core.h
+> >> @@ -80,6 +80,8 @@
+> >>          FN(IPV6_NDISC_BAD_OPTIONS)      \
+> >>          FN(IPV6_NDISC_NS_OTHERHOST)     \
+> >>          FN(QUEUE_PURGE)                 \
+> >> +       FN(TC_EGRESS_ERROR)             \
+> >> +       FN(TC_INGRESS_ERROR)            \
+> >>          FNe(MAX)
+> >>
+> >>    /**
+> >> @@ -345,6 +347,10 @@ enum skb_drop_reason {
+> >>          SKB_DROP_REASON_IPV6_NDISC_NS_OTHERHOST,
+> >>          /** @SKB_DROP_REASON_QUEUE_PURGE: bulk free. */
+> >>          SKB_DROP_REASON_QUEUE_PURGE,
+> >> +       /** @SKB_DROP_REASON_TC_EGRESS_ERROR: dropped in TC egress HOO=
+K due to error */
+> >> +       SKB_DROP_REASON_TC_EGRESS_ERROR,
+> >> +       /** @SKB_DROP_REASON_TC_INGRESS_ERROR: dropped in TC ingress H=
+OOK due to error */
+> >> +       SKB_DROP_REASON_TC_INGRESS_ERROR,
+> >>          /**
+> >>           * @SKB_DROP_REASON_MAX: the maximum of core drop reasons, wh=
+ich
+> >>           * shouldn't be used as a real 'reason' - only for tracing co=
+de gen
+> >> diff --git a/include/net/pkt_cls.h b/include/net/pkt_cls.h
+> >> index f308e8268651..cd2444dd3745 100644
+> >> --- a/include/net/pkt_cls.h
+> >> +++ b/include/net/pkt_cls.h
+> >> @@ -10,6 +10,7 @@
+> >>
+> >>    /* TC action not accessible from user space */
+> >>    #define TC_ACT_CONSUMED               (TC_ACT_VALUE_MAX + 1)
+> >> +#define TC_ACT_ABORT           (TC_ACT_VALUE_MAX + 2)
+> >>
+> >>    /* Basic packet classifier frontend definitions. */
+> >>
+> >> diff --git a/net/core/dev.c b/net/core/dev.c
+> >> index 85df22f05c38..3abb4d71c170 100644
+> >> --- a/net/core/dev.c
+> >> +++ b/net/core/dev.c
+> >> @@ -4011,7 +4011,10 @@ sch_handle_ingress(struct sk_buff *skb, struct =
+packet_type **pt_prev, int *ret,
+> >>                  *ret =3D NET_RX_SUCCESS;
+> >>                  return NULL;
+> >>          case TC_ACT_SHOT:
+> >> -               kfree_skb_reason(skb, SKB_DROP_REASON_TC_INGRESS);
+> >> +       case TC_ACT_ABORT:
+> >> +               kfree_skb_reason(skb, likely(sch_ret =3D=3D TC_ACT_SHO=
+T) ?
+> >> +                                SKB_DROP_REASON_TC_INGRESS :
+> >> +                                SKB_DROP_REASON_TC_INGRESS_ERROR);
+> >>                  *ret =3D NET_RX_DROP;
+> >>                  return NULL;
+> >>          /* used by tc_run */
+> >> @@ -4054,7 +4057,10 @@ sch_handle_egress(struct sk_buff *skb, int *ret=
+, struct net_device *dev)
+> >>                  *ret =3D NET_XMIT_SUCCESS;
+> >>                  return NULL;
+> >>          case TC_ACT_SHOT:
+> >> -               kfree_skb_reason(skb, SKB_DROP_REASON_TC_EGRESS);
+> >> +       case TC_ACT_ABORT:
+> >> +               kfree_skb_reason(skb, likely(sch_ret =3D=3D TC_ACT_SHO=
+T) ?
+> >> +                                SKB_DROP_REASON_TC_EGRESS :
+> >> +                                SKB_DROP_REASON_TC_EGRESS_ERROR);
+> >>                  *ret =3D NET_XMIT_DROP;
+> >>                  return NULL;
+> >>          /* used by tc_run */
+> >>
+> >> Then you just return the internal TC_ACT_ABORT code for internal 'exce=
+ptions',
+> >> and you'll get the same result to make it observable for dropwatch.
+> >>
+> >> Thanks,
+> >> Daniel
+>
 
