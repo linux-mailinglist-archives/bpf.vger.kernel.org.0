@@ -1,306 +1,247 @@
-Return-Path: <bpf+bounces-11313-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11314-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 164627B736E
-	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 23:36:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5D997B7389
+	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 23:52:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id E7C3A2815EB
-	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 21:36:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 1AEA0281346
+	for <lists+bpf@lfdr.de>; Tue,  3 Oct 2023 21:52:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A193D3D98C;
-	Tue,  3 Oct 2023 21:36:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AC703D992;
+	Tue,  3 Oct 2023 21:52:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E41F3D974
-	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 21:36:48 +0000 (UTC)
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F579E
-	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 14:36:46 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-d84d883c1b6so268192276.0
-        for <bpf@vger.kernel.org>; Tue, 03 Oct 2023 14:36:46 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DE1A3D3BF
+	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 21:52:13 +0000 (UTC)
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B122A1
+	for <bpf@vger.kernel.org>; Tue,  3 Oct 2023 14:52:11 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5042bfb4fe9so1645848e87.1
+        for <bpf@vger.kernel.org>; Tue, 03 Oct 2023 14:52:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1696369005; x=1696973805; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R0mJ3IHM8Yjc4xcZDToFg2+jf4wsXO7IZrU1MLYvRto=;
-        b=T7k6MnnHlIp9Htu6DSKjOFrG9a+m3aDgVlVDm1ZxDh624YVup65gxsgtr4/zJMqhSu
-         sUMcfxptAcCDdZIipwlgc7O08/VgXKu4Pw/Dh29tkHHCvs7HUmqUnZbq2bc0SNQCGVsY
-         k/xD9YJgr0EShyTGSp5eLbRVizveCq16BPz7vbktWVexltEnU+Tb3wZttnklsOe4P4qA
-         RcdJFlOiVi95r4WdcHzgPshEmj3VreeolxzasDIH3nR8Er3+bbJnooIQNq4aTUHswm7u
-         AUhWvSQduzNHjrhp6PPUMnVBlpWt6BI/z3buJCaI2bl8mUqW+uUtsJXMuVu2DcqPONx0
-         n1cA==
+        d=gmail.com; s=20230601; t=1696369929; x=1696974729; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=KvMi7fQJymeBC0ZVXu8IfR0drKrF4YOv2pRnGe31Z1I=;
+        b=Y+M8DiloLD83IDSM6Y7YU+ypFa7mFDBMF3E1TreQP/XgBXoTseCh+JksZIOr83IAU5
+         9R7euO6l1oK06BDzL9u+3EMgp2ku/M5KyZmgphuNuxIR5izjz+9wttrpHbrjhEInJYQG
+         uzA+wLWHORTgPepr8G1e5kxgj9M0l+CJf6ad2st3D4qT7CUAH4xVNPYlgMd9LrifL1Uy
+         /7VyAiThPe6oH5GrkSjrOWkS+dohjj1keo6RHOdLP6eyDGOrmGZ736xNebCjFX4A0Dge
+         3sUPE2q1v23e8FdK3k4CRqLsOexX5L2Vy0Q0H+q9dC/KM5drlTTm0V1WgyEa7ZK0eBMH
+         0aJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696369005; x=1696973805;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R0mJ3IHM8Yjc4xcZDToFg2+jf4wsXO7IZrU1MLYvRto=;
-        b=EEO14vdEOXq9F2zf8pfj7rigjN1kKIyzzeJqDz3g69Bc1OIjI8Ox3NRq3Pc/42SYl1
-         Sqerx0xqGBz46LX5vd72Ab0i/WPntDkEyLVIV5Lo3ITVLB+NC70J3Ue9NkHYbvyxWoa5
-         KN78ZpGtOEBIEdTizOyFwQWiQNsIrjIrPMGHuYxqrzRio/+jYhyU9mCdbDmyzMds0kkq
-         qAc6Et4AyQxyY1nUve+k5gMEkk6EHotrAwuzXwy2swOT54WcKSMtgYNT/mhsd7vs5rVV
-         aB9fkWO8D85kXfnWUSgxlTbWYxeiWYLJ5ZKLuEPNF25ZArSyevJuTEF6jyy54v/qwIDh
-         3aFg==
-X-Gm-Message-State: AOJu0YwwVANYSWo+/d2QZvBRyx1rzOUHM5T98v/1wM3/Kecuv7Qtd5nd
-	PDhjK4kkMbgy/1aU86yeZO/pYsy9KM0+QtscbXhunA==
-X-Google-Smtp-Source: AGHT+IGEJCzz4naJCJ70efJt/yefLN0e2PznczrFBd7G7+5B+1/T0y/jV20IuuX/3H/2eZ3/HlDOKVK3eNJK6xx6R6o=
-X-Received: by 2002:a25:b20d:0:b0:d71:c79c:86c1 with SMTP id
- i13-20020a25b20d000000b00d71c79c86c1mr2726260ybj.32.1696369005137; Tue, 03
- Oct 2023 14:36:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696369929; x=1696974729;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KvMi7fQJymeBC0ZVXu8IfR0drKrF4YOv2pRnGe31Z1I=;
+        b=TIydlHQKBIIpV10G0vGNCEevEhw8/QP9cV9mdZAIS7YILWzbCNmmffoCDJSxomvcXm
+         ZsES16DSc6oNp9G+AVlQZTEkZFrSxNbW/hzuMQ4BmYExjdAGi6cmuagYDc+R+Ci4vpap
+         OYg9dFYqp8l80okRmq5oyAzrElFUAYN5UwjmwepNvUvoEt8RqhhA8BODT9wc1O7zdkz8
+         GA0AVhe6fNot9ve6VHeb1mL650K6LNRhfAuDjY8UV8Zovt300iZ3BVTHLNzJGv8ZE2zZ
+         NFU/ypK4o6Z3DJf4Ka6+kFD53Py4KG5W/jloQUQM4N7j12AZvVNKx6sX7BcNaMblQnjW
+         yazQ==
+X-Gm-Message-State: AOJu0YyWYvz7cowOAOcWMhdH3anfsRCImve/viUklwPdCjvECvXuz0zm
+	waOL3bP0DqABU805vSoR4Ug=
+X-Google-Smtp-Source: AGHT+IGlpT4feWDTzQa1KIqnutCuQg63bdHq7y9EVKQD5O9hhKts84F+iiDJr5n6gLSfcIGr7hLx+g==
+X-Received: by 2002:a05:6512:3ca4:b0:500:b5db:990b with SMTP id h36-20020a0565123ca400b00500b5db990bmr468959lfv.47.1696369929073;
+        Tue, 03 Oct 2023 14:52:09 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id l8-20020ac24308000000b004fe10276bbfsm330778lfh.296.2023.10.03.14.52.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 14:52:08 -0700 (PDT)
+Message-ID: <5b7f4b6199decf266a9218b674c232662ed13db5.camel@gmail.com>
+Subject: Re: [BUG] verifier escape with iteration helpers (bpf_loop, ...)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrew Werner
+ <awerner32@gmail.com>, bpf <bpf@vger.kernel.org>, Andrei Matei
+ <andreimatei1@gmail.com>, Tamir Duberstein <tamird@gmail.com>, Joanne Koong
+ <joannelkoong@gmail.com>, kernel-team@dataexmachina.dev, Song Liu
+ <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Wed, 04 Oct 2023 00:52:07 +0300
+In-Reply-To: <CAADnVQLTe2=K1nTk+Ry8WmBU1C724paoT8p8_7jYL9oymchp_A@mail.gmail.com>
+References: 
+	<CA+vRuzPChFNXmouzGG+wsy=6eMcfr1mFG0F3g7rbg-sedGKW3w@mail.gmail.com>
+	 <CAADnVQJpLAzmUfwvWBr8a_PWHYHxHw9vdAXnWB4R4PbVY4S4mw@mail.gmail.com>
+	 <CAEf4Bzbubu7KjBv=98BZrVnTrcfPQrnsp-g1kOYKM=kUtiqEgw@mail.gmail.com>
+	 <dff1cfec20d1711cb023be38dfe886bac8aac5f6.camel@gmail.com>
+	 <CAP01T76duVGmnb+LQjhdKneVYs1q=ehU4yzTLmgZdG0r2ErOYQ@mail.gmail.com>
+	 <a2995c1d7c01794ca9b652cdea7917cac5d98a16.camel@gmail.com>
+	 <97a90da09404c65c8e810cf83c94ac703705dc0e.camel@gmail.com>
+	 <CAEf4BzYg8T_Dek6T9HYjHZCuLTQT8ptAkQRxrsgaXg7-MZmHDA@mail.gmail.com>
+	 <ee714151d7c840c82d79f9d12a0f51ef13b798e3.camel@gmail.com>
+	 <CAADnVQJn35f0UvYJ9gyFT4BfViXn8T8rPCXRAC=m_Jx_CFjrtw@mail.gmail.com>
+	 <5649df64315467c67b969e145afda8bbf7e60445.camel@gmail.com>
+	 <CAADnVQJO0aVJfV=8RDf5rdtjOCC-=57dmHF20fQYV9EiW2pJ2Q@mail.gmail.com>
+	 <4b121c3b96dcc0322ea111062ed2260d2d1d0ed7.camel@gmail.com>
+	 <CAEf4BzbUxHCLhMoPOtCC=6Y-OxkkC9GvjykC8KyKPrFxp6cLvw@mail.gmail.com>
+	 <52df1240415be1ee8827cb6395fd339a720e229c.camel@gmail.com>
+	 <ec118c24a33fb740ecaafd9a55416d56fcb77776.camel@gmail.com>
+	 <CAEf4BzZjut_JGnrqgPE0poJhMjJgtJcafRd6Z_0T0jrW3zARJw@mail.gmail.com>
+	 <44363f61c49bafa7901ae2aa43897b525805192c.camel@gmail.com>
+	 <CAEf4BzZ-NGiUVw+yCRCkrPQbJAS4wMBsT3e=eYVMuintqKDKqg@mail.gmail.com>
+	 <a777445dcb94c0029eb3bd3ddc96ddc493c85ad0.camel@gmail.com>
+	 <CAEf4BzZU0MxwLfz-dGbmHbEtqVhEMTxwSG+QfwCuCv09CqLcNw@mail.gmail.com>
+	 <ca9ac095cf1b3fff55eea8a3c87670a349bbfbcf.camel@gmail.com>
+	 <CAEf4BzZ6V2B5QvjuCEU-MB8V-Fjkgv_yP839r9=NDcuFsgBOLw@mail.gmail.com>
+	 <d68855da2d8595ed9db812cc12db0dab80c39fc4.camel@gmail.com>
+	 <CAADnVQJbKf5PgL5fokJAB4y5+5iqKd17W9e0P6q=vJPQM+9NJQ@mail.gmail.com>
+	 <9dd331b31755632f0528bfb1d0acbf904cedbd98.camel@gmail.com>
+	 <CAADnVQLNAzjTpyE7UcnD0Q0-p4fvL6u_3_B54o6ttBBvBv7rFw@mail.gmail.com>
+	 <680e69504eabbae2abd5e9e2b745319c561c86ef.camel@gmail.com>
+	 <CAADnVQL5ausgq5ERiMKn+Y-Nrp32e2WTq3s5JVJCDojsR0ZF+A@mail.gmail.com>
+	 <8b75e01d27696cd6661890e49bdc06b1e96092c7.camel@gmail.com>
+	 <CAADnVQLTe2=K1nTk+Ry8WmBU1C724paoT8p8_7jYL9oymchp_A@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230919145951.352548-1-victor@mojatatu.com> <beb5e6f3-e2a1-637d-e06d-247b36474e95@iogearbox.net>
- <CAM0EoMncgehpwCOxaUUKhOP7V0DyJtbDP9Q5aUkMG2h5dmfQJA@mail.gmail.com>
- <97f318a1-072d-80c2-7de7-6d0d71ca0b10@iogearbox.net> <CAM0EoMnPVxYA=7jn6AU7D3cJJbY5eeMLOxCrj4UJcFr=pCZ+Aw@mail.gmail.com>
- <1df2e804-5d58-026c-5daa-413a3605c129@iogearbox.net> <CAM0EoM=SH8i_-veiyUtT6Wd4V7DxNm-tF9sP2BURqN5B2yRRVQ@mail.gmail.com>
- <cb4db95b-89ff-02ef-f36f-7a8b0edc5863@iogearbox.net> <CAM0EoMkYCaxHT22-b8N6u7A=2SUydNp9vDcio29rPrHibTVH5Q@mail.gmail.com>
- <96532f62-6927-326c-8470-daa1c4ab9699@iogearbox.net>
-In-Reply-To: <96532f62-6927-326c-8470-daa1c4ab9699@iogearbox.net>
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Date: Tue, 3 Oct 2023 17:36:33 -0400
-Message-ID: <CAM0EoMkUFcw7k0vX3oH8SHDoXW=DD-h2MkUE-3_MssXvP_uJbA@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/1] net/sched: Disambiguate verdict from return code
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Victor Nogueira <victor@mojatatu.com>, xiyou.wangcong@gmail.com, jiri@resnulli.us, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	paulb@nvidia.com, netdev@vger.kernel.org, kernel@mojatatu.com, 
-	martin.lau@linux.dev, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Oct 3, 2023 at 9:49=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.ne=
-t> wrote:
->
-> On 10/3/23 2:46 PM, Jamal Hadi Salim wrote:
-> > On Tue, Oct 3, 2023 at 5:00=E2=80=AFAM Daniel Borkmann <daniel@iogearbo=
-x.net> wrote:
-> >> On 10/2/23 9:54 PM, Jamal Hadi Salim wrote:
-> >>> On Fri, Sep 29, 2023 at 11:48=E2=80=AFAM Daniel Borkmann <daniel@ioge=
-arbox.net> wrote:
-> >>>> On 9/26/23 1:01 AM, Jamal Hadi Salim wrote:
-> >>>>> On Fri, Sep 22, 2023 at 4:12=E2=80=AFAM Daniel Borkmann <daniel@iog=
-earbox.net> wrote:
-> >>>>>> On 9/20/23 1:20 AM, Jamal Hadi Salim wrote:
-> >>>>>>> On Tue, Sep 19, 2023 at 6:15=E2=80=AFPM Daniel Borkmann <daniel@i=
-ogearbox.net> wrote:
-> >>>>>>>> On 9/19/23 4:59 PM, Victor Nogueira wrote:
-> >>>> [...]
-> >>>>>>
-> >>>>>> In the above case we don't have 'internal' errors which you want t=
-o trace, so I would
-> >>>>>> also love to avoid the cost of zeroing struct tcf_result res which=
- should be 3x 8b for
-> >>>>>> every packet.
-> >>>>>
-> >>>>> We can move the zeroing inside tc_run() but we declare it in the sa=
-me
-> >>>>> spot as we do right now. You will still need to set res.verdict as
-> >>>>> above.
-> >>>>> Would that work for you?
-> >>>>
-> >>>> What I'm not following is that with the below you can avoid the unne=
-cessary
-> >>>> fast path cost (which is only for corner case which is almost never =
-hit) and
-> >>>> get even better visibility. Are you saying it doesn't work?
-> >>>
-> >>> I am probably missing something:
-> >>> -1/UNSPEC is a legit errno. And the main motivation here for this
-> >>> patch is to disambiguate if it was -EPERM vs UNSPEC
-> >>> Maybe that is what you are calling a "corner case"?
-> >>
-> >> Yes, but what is the use-case to ever return a -EPERM from the fast-pa=
-th? This can
-> >> be audited for the code in the tree and therefore avoided so that you =
-never run into
-> >> this problem.
-> >
-> > I am sorry but i am not in favor of this approach.
-> > You are suggesting audits are the way to go forward when in fact lack
-> > of said audits is what got us in this trouble with syzkaller to begin
-> > with. We cant rely on tribal knowledge to be able to spot these
-> > discrepancies. The elder of the tribe may move to a different mountain
-> > at some point and TheLinuxWay(tm) is cutnpaste, so i dont see this as
-> > long term good for maintainance. We have a clear distinction between
-> > an error vs verdict - lets use that.
-> > We really dont want to make this a special case just for eBPF and how
-> > to make it a happy world for eBPF at the cost of everyone else. I made
-> > a suggestion of leaving tcx alone, you can do your own thing there;
-> > but for tc_run my view is we should keep it generic.
->
-> Jamal, before you come to early conclusions, it would be great if you als=
-o
-> read until the end of the email, because what I suggested below *is* gene=
-ric
-> and with less churn throughout the code base.
->
+On Tue, 2023-10-03 at 11:50 -0700, Alexei Starovoitov wrote:
+> On Tue, Oct 3, 2023 at 8:33=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+> >=20
+> > When I put states to the loop stack I do copy_verifier_state() and
+> > increase .branches counter for each state parent, so this should not
+> > trigger warnings with update_branch_counts().
+>=20
+> No warn doesn't mean it's correct.
+> I suspect what your reschedule_loop_states() will increase
+> branches from 0 to 1.
+> Which is equivalent to increasing refcnt from zero. Not good.
 
-I did look, Daniel. You are lumping all the error codes into one -
-which doesnt change my view on disambiguation. If i was to debug
-closely and run kprobe now i am seeing only one error code
-TC_ACT_ABORT instead of -EINVAL vs -ENOMEM, etc. Easier for me to find
-the source manually (and possibly even better with Andrii's tool i saw
-once if it would work in the datapath - iirc, i think it prints return
-codes on the code paths).
+Not really, here is how I modified bpf_verifier_env:
 
-cheers,
-jamal
+    struct bpf_verifier_state_stack {
+        struct bpf_verifier_stack_elem *head; /* stack of verifier states t=
+o be processed */
+        int size;                             /* number of states to be pro=
+cessed */
+    };
+   =20
+    struct bpf_verifier_env {
+        ...
+        struct bpf_verifier_state_stack stack;
+        struct bpf_verifier_state_stack loop_stack;
+        ...
+    }
 
-> >>> There are two options in my mind right now (since you are guaranteed
-> >>> in tcx_run you will never return anything below UNSPEC):
-> >>> 1) we just have the switch statement invocation inside an inline
-> >>> function and you can pass it sch_ret (for tcx case) and we'll pass it
-> >>> res.verdit for tc_run() case.
-> >>> 2) is something is we leave tcx_run alone and we have something along
-> >>> the lines of:
-> >>>
-> >>> --------------
-> >>> diff --git a/net/core/dev.c b/net/core/dev.c
-> >>> index 1450f4741d9b..93613bce647c 100644
-> >>> --- a/net/core/dev.c
-> >>> +++ b/net/core/dev.c
-> >>> @@ -3985,7 +3985,7 @@ sch_handle_ingress(struct sk_buff *skb, struct
-> >>> packet_type **pt_prev, int *ret,
-> >>>                      struct net_device *orig_dev, bool *another)
-> >>>    {
-> >>>           struct bpf_mprog_entry *entry =3D
-> >>> rcu_dereference_bh(skb->dev->tcx_ingress);
-> >>> -       struct tcf_result res =3D {0};
-> >>> +       struct tcf_result res;
-> >>>           int sch_ret;
-> >>>
-> >>>           if (!entry)
-> >>> @@ -4003,14 +4003,16 @@ sch_handle_ingress(struct sk_buff *skb, struc=
-t
-> >>> packet_type **pt_prev, int *ret,
-> >>>                   if (sch_ret !=3D TC_ACT_UNSPEC)
-> >>>                           goto ingress_verdict;
-> >>>           }
-> >>> +
-> >>> +       res.verdict =3D 0;
-> >>>           sch_ret =3D tc_run(tcx_entry(entry), skb, &res);
-> >>>           if (sch_ret < 0) {
-> >>>                   kfree_skb_reason(skb, SKB_DROP_REASON_TC_INGRESS_ER=
-ROR);
-> >>>                   *ret =3D NET_RX_DROP;
-> >>>                   return NULL;
-> >>>           }
-> >>> +       sch_ret =3D res.verdict;
-> >>>    ingress_verdict:
-> >>> -       switch (res.verdict) {
-> >>> +       switch (sch_ret) {
-> >>>           case TC_ACT_REDIRECT:
-> >>>                   /* skb_mac_header check was done by BPF, so we can
-> >>> safely
-> >>>                    * push the L2 header back before redirecting to an=
-other
-> >>> -----------
-> >>>
-> >>> on the drop reason - our thinking is to support drop_watch alongside
-> >>> tracepoint given kfree_skb_reason exists already; if i am not mistake=
-n
-> >>> what you suggested would require us to create a new tracepoint?
-> >>
-> >> So if the only thing you really care about is the different drop reaso=
-n for
-> >> kfree_skb_reason, then I still don't follow why you need to drag this =
-into
-> >> struct tcf_result. This can be done in a much simpler and more efficie=
-nt way
-> >> like the following:
-> >>
-> >> diff --git a/include/net/dropreason-core.h b/include/net/dropreason-co=
-re.h
-> >> index a587e83fc169..b1c069c8e7f2 100644
-> >> --- a/include/net/dropreason-core.h
-> >> +++ b/include/net/dropreason-core.h
-> >> @@ -80,6 +80,8 @@
-> >>          FN(IPV6_NDISC_BAD_OPTIONS)      \
-> >>          FN(IPV6_NDISC_NS_OTHERHOST)     \
-> >>          FN(QUEUE_PURGE)                 \
-> >> +       FN(TC_EGRESS_ERROR)             \
-> >> +       FN(TC_INGRESS_ERROR)            \
-> >>          FNe(MAX)
-> >>
-> >>    /**
-> >> @@ -345,6 +347,10 @@ enum skb_drop_reason {
-> >>          SKB_DROP_REASON_IPV6_NDISC_NS_OTHERHOST,
-> >>          /** @SKB_DROP_REASON_QUEUE_PURGE: bulk free. */
-> >>          SKB_DROP_REASON_QUEUE_PURGE,
-> >> +       /** @SKB_DROP_REASON_TC_EGRESS_ERROR: dropped in TC egress HOO=
-K due to error */
-> >> +       SKB_DROP_REASON_TC_EGRESS_ERROR,
-> >> +       /** @SKB_DROP_REASON_TC_INGRESS_ERROR: dropped in TC ingress H=
-OOK due to error */
-> >> +       SKB_DROP_REASON_TC_INGRESS_ERROR,
-> >>          /**
-> >>           * @SKB_DROP_REASON_MAX: the maximum of core drop reasons, wh=
-ich
-> >>           * shouldn't be used as a real 'reason' - only for tracing co=
-de gen
-> >> diff --git a/include/net/pkt_cls.h b/include/net/pkt_cls.h
-> >> index f308e8268651..cd2444dd3745 100644
-> >> --- a/include/net/pkt_cls.h
-> >> +++ b/include/net/pkt_cls.h
-> >> @@ -10,6 +10,7 @@
-> >>
-> >>    /* TC action not accessible from user space */
-> >>    #define TC_ACT_CONSUMED               (TC_ACT_VALUE_MAX + 1)
-> >> +#define TC_ACT_ABORT           (TC_ACT_VALUE_MAX + 2)
-> >>
-> >>    /* Basic packet classifier frontend definitions. */
-> >>
-> >> diff --git a/net/core/dev.c b/net/core/dev.c
-> >> index 85df22f05c38..3abb4d71c170 100644
-> >> --- a/net/core/dev.c
-> >> +++ b/net/core/dev.c
-> >> @@ -4011,7 +4011,10 @@ sch_handle_ingress(struct sk_buff *skb, struct =
-packet_type **pt_prev, int *ret,
-> >>                  *ret =3D NET_RX_SUCCESS;
-> >>                  return NULL;
-> >>          case TC_ACT_SHOT:
-> >> -               kfree_skb_reason(skb, SKB_DROP_REASON_TC_INGRESS);
-> >> +       case TC_ACT_ABORT:
-> >> +               kfree_skb_reason(skb, likely(sch_ret =3D=3D TC_ACT_SHO=
-T) ?
-> >> +                                SKB_DROP_REASON_TC_INGRESS :
-> >> +                                SKB_DROP_REASON_TC_INGRESS_ERROR);
-> >>                  *ret =3D NET_RX_DROP;
-> >>                  return NULL;
-> >>          /* used by tc_run */
-> >> @@ -4054,7 +4057,10 @@ sch_handle_egress(struct sk_buff *skb, int *ret=
-, struct net_device *dev)
-> >>                  *ret =3D NET_XMIT_SUCCESS;
-> >>                  return NULL;
-> >>          case TC_ACT_SHOT:
-> >> -               kfree_skb_reason(skb, SKB_DROP_REASON_TC_EGRESS);
-> >> +       case TC_ACT_ABORT:
-> >> +               kfree_skb_reason(skb, likely(sch_ret =3D=3D TC_ACT_SHO=
-T) ?
-> >> +                                SKB_DROP_REASON_TC_EGRESS :
-> >> +                                SKB_DROP_REASON_TC_EGRESS_ERROR);
-> >>                  *ret =3D NET_XMIT_DROP;
-> >>                  return NULL;
-> >>          /* used by tc_run */
-> >>
-> >> Then you just return the internal TC_ACT_ABORT code for internal 'exce=
-ptions',
-> >> and you'll get the same result to make it observable for dropwatch.
-> >>
-> >> Thanks,
-> >> Daniel
+Here env->stack is used for DFS traversal and env->loop_stack is used
+to delay verification of the loop states.
+
+When bpf_iter_next() is reached in state C and states_equal() shows
+that there is potentially equivalent state V:
+- copy C' of C is created sing copy_verifier_state(), it updates all
+  branch counters up the ownership chain as with any other state;
+- C' is put to env->loop_stack.
+
+The reschedule_loop_states() [1] loops over states in loop_stack to
+see if there are states that no longer have equivalent state, such
+states are removed from env->loop_stack and put to env->stack.
+This is done without branch counters update, so at any point in time
+parent states have loop state accounted for in their branch counters.
+Branch counter *never* transitions from 1 to 0 and than to 1 again
+during this process.
+
+[1] https://github.com/kernel-patches/bpf/compare/bpf-next_base...eddyz87:b=
+pf:iters-bug-delayed-traversal#diff-edbb57adf10d1ce1fbb830a34fa92712fd01db1=
+fbd9b6f2504001eb7bcc7b9d0R16823
+
+> > Logically, any state
+> > that has a loop state as it's grandchild is not verified to be safe
+> > until loops steady state is achieved, thus such states could not be
+> > used for states pruning and it is correct to keep their branch
+> > counters > 0.
+>=20
+> Correct.
 >
+> > propagate_liveness() and propagate_precision() should not be called
+> > for the delayed states (work-in-progress I'll update the patch).
+> > Behavior for non-delayed states should not be altered by these changes.
+>=20
+> I disagree. Delayed states should not have different propagation rules.
+
+Upon first discovery the loop state C is states_equal to some state V,
+precision and read marks are not yet finalized and thus states_equal(V, C)
+become false at some point. Also, C should not be used for states pruning.
+Thus, there is no need to propagate liveness and precision from V to C
+at this point.
+
+It is possible and correct to propagate liveness and precision from V
+to C when loop steady state is achieved, as at that point we know for
+sure that C is a sub-state of V. However, currently loop states are
+tracked globally and no states are processed after loops steady state
+is reached, hence I don't do liveness and precision propagation.
+
+On the other hand, if loop steady state would be tracked non-globally
+e.g. for top level loop headers as I wrote in the other email today,
+propagation of liveness and precision information would make sense,
+as these states could be used for state pruning later.
+
+> Iterators and callbacks should not be special.
+> They are no different than bounded loops
+> and their verification shouldn't be much different.
+> Bounded loops have constant upper bound while
+> iterators do not, so they have to converge based on state
+> equivalence, but the verifier still has to do DFS and discover
+> all possible paths, propagate precision and liveness before
+> considering two states equivalent.
+> It does this today for bounded loops and should do the same
+> for iterators.
+> The question is how to do it.
+> Delaying states and breaking DFS assumptions is a non starter.
+
+I think that absence of bound is a fundamental difference.
+
+On each verification path of a bounded loop there is always a precise
+value that at some point triggers loop termination. There is no need
+for states equivalence checks (except for verification performance).
+
+Each verification path of iterator or callback based loop is logically
+an infinite series of states. In order to terminate verification of
+such path it is necessary to:
+- either find some prior state V identical to current state C;
+- or find some prior state V such that current state C is a sub-state of V.
+
+Terminating infinite series by identical state turns out to be very
+limiting in practice.
+
+On the other hand, sub-state check requires finalization of read and
+precision marks in V. We've seen that such marks could be concealed at
+an unknown depth. In addition, state V might be a parent state for
+multiple grandchildren contributing to precision and read marks.
+These grandchildren states are created when conditional jumps are
+processed on possibly different iteration depths.
+
+The necessity to visit all grandchildren states of V leads to
+necessity of mixed DFS and BFS traversal of the loop states.
+
+(In fact, this is not a special case but a generalization,
+ bounded loops processing could be done within the same framework).
+
+> I see now that my 2nd hack is still buggy.
+> Differentiating state with branches vs looping_states counters
+> doesn't seem to work in all cases.
+> Your loop_state_deps1 demonstrates that. It's a great test.
+
+I'm glad this test is useful.
 
