@@ -1,203 +1,97 @@
-Return-Path: <bpf+bounces-11387-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11388-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 722F57B84EB
-	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 18:23:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF9057B85BC
+	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 18:53:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 75C4F281D75
-	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 16:23:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id 03DF01C2099B
+	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 16:53:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 722B51C288;
-	Wed,  4 Oct 2023 16:23:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DD811C69F;
+	Wed,  4 Oct 2023 16:53:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FA2D1BDF8
-	for <bpf@vger.kernel.org>; Wed,  4 Oct 2023 16:23:48 +0000 (UTC)
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3440DD;
-	Wed,  4 Oct 2023 09:23:46 -0700 (PDT)
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1c7373cff01so8926395ad.1;
-        Wed, 04 Oct 2023 09:23:46 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2C81C2AB
+	for <bpf@vger.kernel.org>; Wed,  4 Oct 2023 16:53:17 +0000 (UTC)
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D790DA7
+	for <bpf@vger.kernel.org>; Wed,  4 Oct 2023 09:53:14 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-4510182fe69so12673137.3
+        for <bpf@vger.kernel.org>; Wed, 04 Oct 2023 09:53:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696438394; x=1697043194; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=trfPvWlc2Z4z1gMaB+tLFdm/beJC1nNivy0/WxwIxQ0=;
+        b=bNXQXmV0zD08F6kKmpGWVHS9LZQTmtobzoonvvPknnc+av5IWlE5IOzLD1VyE6Ajrp
+         6EwbW9JZJnFkMByayCOFR9ZwgPLnfG3roV0UuuPVZrZBDogxyUTwK5+BEj3lxUrq3YjA
+         GZCSwzqicVUzcLaaKGFEaDLjcTGYM3mtrTu/Sol5qdhsJ6RSgZgQnMD7cPWPC2/SMGzo
+         sl4VCrb+bLBAJPdwhYxdPFP74E1PHHTxaVRx/WiSzwioXf/TZPl8D0+8hOsY9KBgj3YR
+         A+AJJ6FMMYg6h3fPTPW/LapnEdQYJjOvcPb3lP277yo7YKijsAeQDU7DeDO4rVM6zUZ5
+         O/FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696436626; x=1697041426;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696438394; x=1697043194;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5UKCTZgVGrulhdraSlhbTYsV8kK+VRjs1vrD9smtWEA=;
-        b=vB4N66mRirLGv6dgREwAcY6L71WzNJnvhxE6Jz57vRoALBx/fzUVp9Hz2MDVSUQxqw
-         cpoCzFJirVtISjBgO52aYvYwX5pnXu1oh12pLW4GdeXomdms45zuxZbmnHE41FhMBYF6
-         lI2yO3zSJ5p+KhMGuVwAWiKcZH8vQd4PKRijdc8OtGjPxp79m+Dc/XTE9xBa0MG//4+w
-         HVU0lczWnMJW4Ko4SjTTx0VTe9OLyYjEtDhGIivYeYR2wxSg2+X6neobKapmaJBcjGf0
-         kOpGDNNz5QupjvFjQJMnSKrBO0SyirikOO2Rvb17kpUhIG0RE8am6e7+OcKgAkmsj3lD
-         fSfw==
-X-Gm-Message-State: AOJu0Yw04MObEZk4vHpZ2J4hHk8MhmBRbtQYKombSV0imbVPdWFU4u9s
-	jnZyQZ+P0qOinGkNEZ82qdvypVYx7A1Zdd47
-X-Google-Smtp-Source: AGHT+IHLkAp3b7hL+a5kiRgY1gHscZbfyh1JA/QtpnIHly2yIEfLAmOfZvi/YhdtSRjRTEFDX6mdoQ==
-X-Received: by 2002:a17:903:493:b0:1c0:bcbc:d66 with SMTP id jj19-20020a170903049300b001c0bcbc0d66mr133903plb.7.1696436626160;
-        Wed, 04 Oct 2023 09:23:46 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::4:3ce7])
-        by smtp.gmail.com with ESMTPSA id u6-20020a170902e80600b001c55e13bf39sm3904422plg.275.2023.10.04.09.23.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 09:23:45 -0700 (PDT)
-From: David Vernet <void@manifault.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next v2 2/2] bpf/selftests: Test pinning bpf timer to a core
-Date: Wed,  4 Oct 2023 11:23:39 -0500
-Message-ID: <20231004162339.200702-3-void@manifault.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231004162339.200702-1-void@manifault.com>
-References: <20231004162339.200702-1-void@manifault.com>
+        bh=trfPvWlc2Z4z1gMaB+tLFdm/beJC1nNivy0/WxwIxQ0=;
+        b=QXp760ex/VIcTn+YRzkBdU/eBuyv6UJ6X+ac8/L06HXJ6JhvRri/Kx3x5b/ZYnfTad
+         22yrFzzPPayGhMsPgoFgjEiy3T8iHUqA9s5+HDuu9wDtAk2ietU74gAskAysTUReprjC
+         xd1+20CScafLgKNrPWZYj8OtUKJ8JczOxfZo1VYYL+w4QbQQRZJwm5IlCk0d5P8f1UyY
+         vRzhBCOymUjTpVy84igLKmMJ9Tcz1IIk5kQiKB8WTO5VcEmtMfzc5Xfh8gtICifH5qmP
+         tJv3bIzmPEx/ggMcVQyEZF3ow3OdEymfgZpldMtiMv8iQ/QP9C6ePcLzb2x8byUrd3qU
+         yWag==
+X-Gm-Message-State: AOJu0YyN0gWCOcFEK7YU4dSchnFz7ByGbTUaCQEaWsiCdLEQwDKtT56X
+	aNeBAyJ6BkDhG9TyoQAIbLvG5L5SduLspYOe5OJ0WA==
+X-Google-Smtp-Source: AGHT+IEWCgvkfIvZj/B7L0SlMZXQCDSAI4lzHhqLl6NWb7K31ZFWxOCgbPKOxLXuc0v3xopPwsLqVue5HwUql+5JYvU=
+X-Received: by 2002:a67:eb49:0:b0:44e:9f69:fa52 with SMTP id
+ x9-20020a67eb49000000b0044e9f69fa52mr2366498vso.22.1696438393670; Wed, 04 Oct
+ 2023 09:53:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
+References: <20231004110905.49024-1-bjorn@kernel.org>
+In-Reply-To: <20231004110905.49024-1-bjorn@kernel.org>
+From: Sami Tolvanen <samitolvanen@google.com>
+Date: Wed, 4 Oct 2023 09:52:35 -0700
+Message-ID: <CABCJKue8MW8dsrPG0PFC245jBRFx00JqcCEjzs=Os3TXwkcWFA@mail.gmail.com>
+Subject: Re: [PATCH bpf 0/3] libbpf/selftests syscall wrapper fixes for RISC-V
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Now that we support pinning a BPF timer to the current core, we should
-test it with some selftests. This patch adds two new testcases to the
-timer suite, which verifies that a BPF timer both with and without
-BPF_F_TIMER_ABS, can be pinned to the calling core with
-BPF_F_TIMER_CPU_PIN.
+Hi Bj=C3=B6rn,
 
-Acked-by: Song Liu <song@kernel.org>
-Signed-off-by: David Vernet <void@manifault.com>
----
- .../testing/selftests/bpf/prog_tests/timer.c  |  4 ++
- tools/testing/selftests/bpf/progs/timer.c     | 63 ++++++++++++++++++-
- 2 files changed, 66 insertions(+), 1 deletion(-)
+On Wed, Oct 4, 2023 at 4:09=E2=80=AFAM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.=
+org> wrote:
+>
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+>
+> Commit 08d0ce30e0e4 ("riscv: Implement syscall wrappers") introduced
+> some regressions in libbpf, and the kselftests BPF suite, which are
+> fixed with these three patches.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/timer.c b/tools/testing/selftests/bpf/prog_tests/timer.c
-index 290c21dbe65a..d8bc838445ec 100644
---- a/tools/testing/selftests/bpf/prog_tests/timer.c
-+++ b/tools/testing/selftests/bpf/prog_tests/timer.c
-@@ -14,6 +14,7 @@ static int timer(struct timer *timer_skel)
- 
- 	ASSERT_EQ(timer_skel->data->callback_check, 52, "callback_check1");
- 	ASSERT_EQ(timer_skel->data->callback2_check, 52, "callback2_check1");
-+	ASSERT_EQ(timer_skel->bss->pinned_callback_check, 0, "pinned_callback_check1");
- 
- 	prog_fd = bpf_program__fd(timer_skel->progs.test1);
- 	err = bpf_prog_test_run_opts(prog_fd, &topts);
-@@ -32,6 +33,9 @@ static int timer(struct timer *timer_skel)
- 	/* check that timer_cb3() was executed twice */
- 	ASSERT_EQ(timer_skel->bss->abs_data, 12, "abs_data");
- 
-+	/* check that timer_cb_pinned() was executed twice */
-+	ASSERT_EQ(timer_skel->bss->pinned_callback_check, 2, "pinned_callback_check");
-+
- 	/* check that there were no errors in timer execution */
- 	ASSERT_EQ(timer_skel->bss->err, 0, "err");
- 
-diff --git a/tools/testing/selftests/bpf/progs/timer.c b/tools/testing/selftests/bpf/progs/timer.c
-index 9a16d95213e1..8b946c8188c6 100644
---- a/tools/testing/selftests/bpf/progs/timer.c
-+++ b/tools/testing/selftests/bpf/progs/timer.c
-@@ -51,7 +51,7 @@ struct {
- 	__uint(max_entries, 1);
- 	__type(key, int);
- 	__type(value, struct elem);
--} abs_timer SEC(".maps");
-+} abs_timer SEC(".maps"), soft_timer_pinned SEC(".maps"), abs_timer_pinned SEC(".maps");
- 
- __u64 bss_data;
- __u64 abs_data;
-@@ -59,6 +59,8 @@ __u64 err;
- __u64 ok;
- __u64 callback_check = 52;
- __u64 callback2_check = 52;
-+__u64 pinned_callback_check;
-+__s32 pinned_cpu;
- 
- #define ARRAY 1
- #define HTAB 2
-@@ -329,3 +331,62 @@ int BPF_PROG2(test3, int, a)
- 
- 	return 0;
- }
-+
-+/* callback for pinned timer */
-+static int timer_cb_pinned(void *map, int *key, struct bpf_timer *timer)
-+{
-+	__s32 cpu = bpf_get_smp_processor_id();
-+
-+	if (cpu != pinned_cpu)
-+		err |= 16384;
-+
-+	pinned_callback_check++;
-+	return 0;
-+}
-+
-+static void test_pinned_timer(bool soft)
-+{
-+	int key = 0;
-+	void *map;
-+	struct bpf_timer *timer;
-+	__u64 flags = BPF_F_TIMER_CPU_PIN;
-+	__u64 start_time;
-+
-+	if (soft) {
-+		map = &soft_timer_pinned;
-+		start_time = 0;
-+	} else {
-+		map = &abs_timer_pinned;
-+		start_time = bpf_ktime_get_boot_ns();
-+		flags |= BPF_F_TIMER_ABS;
-+	}
-+
-+	timer = bpf_map_lookup_elem(map, &key);
-+	if (timer) {
-+		if (bpf_timer_init(timer, map, CLOCK_BOOTTIME) != 0)
-+			err |= 4096;
-+		bpf_timer_set_callback(timer, timer_cb_pinned);
-+		pinned_cpu = bpf_get_smp_processor_id();
-+		bpf_timer_start(timer, start_time + 1000, flags);
-+	} else {
-+		err |= 8192;
-+	}
-+}
-+
-+SEC("fentry/bpf_fentry_test4")
-+int BPF_PROG2(test4, int, a)
-+{
-+	bpf_printk("test4");
-+	test_pinned_timer(true);
-+
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test5")
-+int BPF_PROG2(test5, int, a)
-+{
-+	bpf_printk("test5");
-+	test_pinned_timer(false);
-+
-+	return 0;
-+}
--- 
-2.41.0
+This series looks good to me. Thanks for fixing the issues!
 
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+
+Sami
 
