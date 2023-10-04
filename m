@@ -1,102 +1,100 @@
-Return-Path: <bpf+bounces-11377-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11378-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC23B7B818C
-	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 16:00:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EA907B81BF
+	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 16:05:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 9E428281A97
-	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 14:00:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTP id E01631C20444
+	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 14:05:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C7AC15EA9;
-	Wed,  4 Oct 2023 14:00:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C6E315EB8;
+	Wed,  4 Oct 2023 14:05:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C72DD3FF1;
-	Wed,  4 Oct 2023 14:00:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0377BC433C8;
-	Wed,  4 Oct 2023 14:00:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696428006;
-	bh=JkCPUsuUI3/3l9L6acemPj6CRuOU0mfuQCrxMIBBSag=;
-	h=From:To:Cc:Subject:Date:From;
-	b=RVWUozDKYLmqLmtB9ewVdKCS98Z5J9W8/4mez/LppskXXm+JuV9FT2FKLhDvgYW3v
-	 Osysc9ZAHRrfHw9PRcyUbV93S3c4vhap9kdti4w3/+BOaxXBdqMRqD//ffSO+cu6Zz
-	 K5vI1QG/is19xUbLfEH80VNrxpd2B/at91m1VULfCxak0AwBcAp/T7/NCBq8ci4Mtl
-	 LxJKeXBmoABgN2zmR7gHpGypo2maq7umGjsW1wDBid03gObx/ZXDbEClUmR8AtO64f
-	 4AVV/410BO3T3rIEmQW4q/O7YAR7dOrifJMQIvyZvQTh0uwBbAP3XI57cYWKKE85e8
-	 uebONMAHtHTQw==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Quentin Monnet <quentin@isovalent.com>
-Cc: Dmitry Goncharov <dgoncharov@users.sf.net>,
-	linux-perf-users@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Namhyung Kim <namhyung@kernel.org>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Ian Rogers <irogers@google.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <a.p.zijlstra@chello.nl>
-Subject: [PATCH] tools/build: Fix -s detection code for new make
-Date: Wed,  4 Oct 2023 15:59:56 +0200
-Message-ID: <20231004135956.987903-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.41.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E068715E91
+	for <bpf@vger.kernel.org>; Wed,  4 Oct 2023 14:05:26 +0000 (UTC)
+X-Greylist: delayed 115 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 04 Oct 2023 07:05:25 PDT
+Received: from alerce.blitiri.com.ar (alerce.blitiri.com.ar [IPv6:2001:bc8:228b:9000::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE3DA1
+	for <bpf@vger.kernel.org>; Wed,  4 Oct 2023 07:05:24 -0700 (PDT)
+Received: from [IPV6:2a02:8109:aa40:4e0:b5c6:9671:3477:8fde]
+	by sdfg.com.ar (chasquid) with ESMTPSA
+	tls TLS_AES_128_GCM_SHA256
+	(over submission+TLS, TLS-1.3, envelope from "rodrigo@sdfg.com.ar")
+	; Wed, 04 Oct 2023 14:03:25 +0000
+Message-ID: <14c52402-ebc8-4425-9871-1663a87182ef@sdfg.com.ar>
+Date: Wed, 4 Oct 2023 16:03:24 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/2] seccomp: Split set filter into two steps
+To: Hengqi Chen <hengqi.chen@gmail.com>, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+Cc: keescook@chromium.org, luto@amacapital.net, wad@chromium.org,
+ alexyonghe@tencent.com, Alban Crequy <albancrequy@linux.microsoft.com>
+References: <20231003083836.100706-1-hengqi.chen@gmail.com>
+Content-Language: en-US
+From: Rodrigo Campos <rodrigo@sdfg.com.ar>
+In-Reply-To: <20231003083836.100706-1-hengqi.chen@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-As Dmitry described in [1] changelog the current way of detecting
--s option is broken for new make.
+On 10/3/23 10:38, Hengqi Chen wrote:
+> This patchset introduces two new operations which essentially
+> splits the SECCOMP_SET_MODE_FILTER process into two steps:
+> SECCOMP_LOAD_FILTER and SECCOMP_ATTACH_FILTER.
+> 
+> The SECCOMP_LOAD_FILTER loads the filter and returns a fd
+> which can be pinned to bpffs. This extends the lifetime of the
+> filter and thus can be reused by different processes.
 
-Changing the tools/build -s option detection the same way as it was
-fixed for root Makefile in [1].
+A quick question to see if handling something else too is 
+possible/reasonable to do here too.
 
-[1] 4bf73588165b ("kbuild: Port silent mode detection to future gnu make.")
+Let me explain our use case first.
 
-Cc: Dmitry Goncharov <dgoncharov@users.sf.net>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/build/Makefile.build | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+For us (Alban in cc) it would be great if we can extend the lifetime of 
+the fd returned, so the process managing a seccomp notification in 
+userspace can easly crash or be updated. Today, if the agent that got 
+the fd crashes, all the "notify-syscalls" return ENOSYS in the target 
+process.
 
-diff --git a/tools/build/Makefile.build b/tools/build/Makefile.build
-index fac42486a8cf..5fb3fb3d97e0 100644
---- a/tools/build/Makefile.build
-+++ b/tools/build/Makefile.build
-@@ -20,7 +20,15 @@ else
-   Q=@
- endif
- 
--ifneq ($(findstring s,$(filter-out --%,$(MAKEFLAGS))),)
-+# If the user is running make -s (silent mode), suppress echoing of commands
-+# make-4.0 (and later) keep single letter options in the 1st word of MAKEFLAGS.
-+ifeq ($(filter 3.%,$(MAKE_VERSION)),)
-+short-opts := $(firstword -$(MAKEFLAGS))
-+else
-+short-opts := $(filter-out --%,$(MAKEFLAGS))
-+endif
-+
-+ifneq ($(findstring s,$(short-opts)),)
-   quiet=silent_
- endif
- 
--- 
-2.41.0
+Our use case is we created a seccomp agent to use in Kubernetes 
+(github.com/kinvolk/seccompagent) and we need to handle either the agent 
+crashing or upgrading it. We were thinking tricks to have another 
+container that just stores fds and make sure that never crashes, but it 
+is not ideal (we checked tricks to use systemd to store our fds, but it 
+is not simpler either to use from containers).
 
+If the agent crashes today, all the syscalls return ENOSYS. It will be 
+great if we can make the process doing the syscall just wait until a new 
+process to handle the notifications is up and the syscalls done in the 
+meantime are just queued. A mode of saying "if the agent crashes, just 
+queue notifications, one agent to pick them up will come back soon" (we 
+can of course limit reasonably the notification queue).
+
+It seems the split here would not just work for that use case. I think 
+we would need to pin the attachment.
+
+Do you think handling that is something reasonable to do in this series too?
+
+I'll be afk until end next week. I'll catch up as soon as I'm back with 
+internet :)
+
+
+
+Best,
+Rodrigo
 
