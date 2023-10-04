@@ -1,204 +1,163 @@
-Return-Path: <bpf+bounces-11353-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11354-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB3B67B7C94
-	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 11:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D70D7B7D6B
+	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 12:40:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 7044F281661
-	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 09:50:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id D6D202815BA
+	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 10:40:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042CD10A37;
-	Wed,  4 Oct 2023 09:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7846311182;
+	Wed,  4 Oct 2023 10:40:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12FAC10953
-	for <bpf@vger.kernel.org>; Wed,  4 Oct 2023 09:50:02 +0000 (UTC)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CDDAC
-	for <bpf@vger.kernel.org>; Wed,  4 Oct 2023 02:50:00 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50305abe5f0so2325235e87.2
-        for <bpf@vger.kernel.org>; Wed, 04 Oct 2023 02:49:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696412998; x=1697017798; darn=vger.kernel.org;
-        h=mime-version:user-agent:autocrypt:references:in-reply-to:date:cc:to
-         :from:subject:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=WaqABCba+h5Kkdv9mMZsi1R5T6BxGKMMp1DcRAtZMDQ=;
-        b=LZeEsh6Chxib7jXPxyaIqwanB1dr8970KTN/8FuA1ZkJ4H6Rt8Ez7/FY/K/g34GSkZ
-         ozE7Msy2BkWQUId1OFMniATW+TMUIGHdjflmk/0pROYerQkjIl4kexaVzCrIl4eqcDZu
-         Pu+l4zdYmYGO+RrKx75IJsE6L0B2etc/l/2HWqmwxeH8TyZ+RxBf4Gk9qLi33m2S2ZXj
-         DFfDhJHXXPGNQvSZVL5A/7Jlp58sdi0VIWPVy08yDI/Bcf5bXnQReGLbfVpicIwGSF2I
-         gaf0sJqZ4gewvMdwSBg3d6ACUfj9icuB5GGM51iq28URqySIJ61qqerYB7qlxBic1ACj
-         teBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696412998; x=1697017798;
-        h=mime-version:user-agent:autocrypt:references:in-reply-to:date:cc:to
-         :from:subject:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WaqABCba+h5Kkdv9mMZsi1R5T6BxGKMMp1DcRAtZMDQ=;
-        b=TisssODcYnqHmPElm62AKE9DkIgdkuTo8gs/o0gBDzDmuZbQIguUyJ1ZFX4afsMNkG
-         Awo8DexrNDrZSBGrHzTcTcgBnaPWAoy3rVk/EDUZkMfGACC8S1/P1Yvx2O142MnAL2HA
-         OGJfGa1QoCJ9J6x2HBS7fqFvfgw0UHxAXnJ9A/PsBzqpq2pbbTeKeKqCg1iASFt0QRCe
-         6161fwuGaV2yncJLhm3l755pgPCvpIOo+Nahr05/g7YyYtkT6FY5ivWvzmrQGO+ADkxz
-         MoOqUvmEX/WHa6m7GW+gzs9w31/cNWFxbLdgTTUV1dZ1ddwgAnHtWSGWjuL1Togw9Iie
-         sAkg==
-X-Gm-Message-State: AOJu0YxuinK++7jMJlVioNeBoyToRnPzkeQ7V4Pc03cKMNT2Zkm6MFAS
-	K+AjR1QPhoac7CWs4imE3ZMkIjKQj3T2Eg==
-X-Google-Smtp-Source: AGHT+IFp9pxXCxSmFsnjkQFfP5V6iBpDCtMnQt/gEzHLuQrHIWh9Abc6ZMPlVTT1+DD3DnkO+R+Vjw==
-X-Received: by 2002:a05:6512:118f:b0:500:adbd:43e9 with SMTP id g15-20020a056512118f00b00500adbd43e9mr1861817lfr.15.1696412997942;
-        Wed, 04 Oct 2023 02:49:57 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id d24-20020ac241d8000000b0050089b26eb0sm526120lfi.132.2023.10.04.02.49.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 02:49:57 -0700 (PDT)
-Message-ID: <dd7034bb8f51807d812487dd65aff2f909382ff1.camel@gmail.com>
-Subject: Re: [BUG] verifier escape with iteration helpers (bpf_loop, ...)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrew Werner
- <awerner32@gmail.com>, bpf <bpf@vger.kernel.org>, Andrei Matei
- <andreimatei1@gmail.com>, Tamir Duberstein <tamird@gmail.com>, Joanne Koong
- <joannelkoong@gmail.com>, kernel-team@dataexmachina.dev, Song Liu
- <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Wed, 04 Oct 2023 12:49:55 +0300
-In-Reply-To: <CAADnVQK9OjhmXOUSUy4=ZvwUiPBmtB=g99=OcOCnT6ZqsPCJGA@mail.gmail.com>
-References: 
-	<CAADnVQJbKf5PgL5fokJAB4y5+5iqKd17W9e0P6q=vJPQM+9NJQ@mail.gmail.com>
-	 <9dd331b31755632f0528bfb1d0acbf904cedbd98.camel@gmail.com>
-	 <CAADnVQLNAzjTpyE7UcnD0Q0-p4fvL6u_3_B54o6ttBBvBv7rFw@mail.gmail.com>
-	 <680e69504eabbae2abd5e9e2b745319c561c86ef.camel@gmail.com>
-	 <CAADnVQL5ausgq5ERiMKn+Y-Nrp32e2WTq3s5JVJCDojsR0ZF+A@mail.gmail.com>
-	 <8b75e01d27696cd6661890e49bdc06b1e96092c7.camel@gmail.com>
-	 <CAADnVQLTe2=K1nTk+Ry8WmBU1C724paoT8p8_7jYL9oymchp_A@mail.gmail.com>
-	 <5b7f4b6199decf266a9218b674c232662ed13db5.camel@gmail.com>
-	 <20231003230820.iazvofhysfmurwon@MacBook-Pro-49.local>
-	 <3d88ede5cbe38ae96be0c148770454b2344fdcce.camel@gmail.com>
-	 <20231004025731.ft7xjnr2nxdhxjq5@MacBook-Pro-49.local>
-	 <CAADnVQK9OjhmXOUSUy4=ZvwUiPBmtB=g99=OcOCnT6ZqsPCJGA@mail.gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: multipart/mixed; boundary="=-I7sf5AKhnRvgCYTyaHin"
-User-Agent: Evolution 3.50.0 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A421D107AA
+	for <bpf@vger.kernel.org>; Wed,  4 Oct 2023 10:40:39 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38224D7;
+	Wed,  4 Oct 2023 03:40:35 -0700 (PDT)
+Received: from fsav119.sakura.ne.jp (fsav119.sakura.ne.jp [27.133.134.246])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 394AeKWa009257;
+	Wed, 4 Oct 2023 19:40:20 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav119.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp);
+ Wed, 04 Oct 2023 19:40:20 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 394AeBUa009214
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Wed, 4 Oct 2023 19:40:20 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <36776914-189b-3f51-9b56-b4273a625005@I-love.SAKURA.ne.jp>
+Date: Wed, 4 Oct 2023 19:40:09 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC PATCH 1/2] LSM: Allow dynamically appendable LSM modules.
+Content-Language: en-US
+To: Casey Schaufler <casey@schaufler-ca.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        KP Singh <kpsingh@kernel.org>, Paul Moore <paul@paul-moore.com>,
+        bpf <bpf@vger.kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <cc8e16bb-5083-01da-4a77-d251a76dc8ff@I-love.SAKURA.ne.jp>
+ <57295dac-9abd-3bac-ff5d-ccf064947162@schaufler-ca.com>
+ <b2cd749e-a716-1a13-6550-44a232deac25@I-love.SAKURA.ne.jp>
+ <1b9f0e3f-0ff3-5b2d-19fa-dfa83afab8a6@schaufler-ca.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <1b9f0e3f-0ff3-5b2d-19fa-dfa83afab8a6@schaufler-ca.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
---=-I7sf5AKhnRvgCYTyaHin
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 2023/10/02 0:19, Casey Schaufler wrote:
+>> I'm fine if security_loadable_hook_heads() (and related code) cannot be
+>> disabled by the kernel configuration.
+> 
+> CONFIG_SECURITY ensures that you will be unhappy.
 
-On Tue, 2023-10-03 at 22:50 -0700, Alexei Starovoitov wrote:
-> On Tue, Oct 3, 2023 at 7:57=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >=20
-> > ok. discard that idea.
->=20
-> Attached is a 3rd version of the same idea I argued earlier.
-> Let normal DFS go as normal,
-> do states_equal() on V which has 1 looping branch remain
-> and all other explored.
-> To achieve that when iter_next() is seen do parent->looping_states +=3D 2=
-;
->=20
-> then when processing any children do parent->looping_states++;
-> in the correct parent.
-> Since there could be many intermediate states have to walk back
-> parentage chain to increment correct parent.
-> When the state reaches bpf_exit or safety, walk back
-> the parentage chain and do looping_states--.
-> The state is ok to use in states_equal() if looping_states=3D=3D1.
+I don't care about Linux distributors who chose CONFIG_SECURITY=n in their
+kernel configurations. What I'm saying is that security_loadable_hook_heads
+(and related code) do not depend on some build-time configuration. Also, I
+don't care about Linux distributors who patch their kernel source code in
+order to remove security_loadable_hook_heads (and related code) before
+building their kernels.
 
-But what if each next iteration spawns more than two looping states?
-E.g. for the following example:
+But if a kernel is targeted for specific environment where out-of-tree LKMs
+(e.g. storage driver, filesystems) are not required, the person/organization
+who builds that kernel can protect that kernel from out-of-tree LKMs
+(including LKM-based LSMs) by enforcing module signing functionality.
 
-  0. // full test attached as a patch
-  1. while (next(i)) {
-  2.   if (random())
-  3.     continue;
-  4.   if (random())
-  5.     continue;
-  6.   if (random())
-  7.     continue;
-  8.   r0 +=3D 0;
-  9. }
+Also if a kernel is ultimately targeted for specific environment where LKM
+support is not required, the person/organization who builds that kernel can
+protect that kernel from out-of-tree LKMs (including LKM-based LSMs) by
+disabling loadable module functionality.
 
-For me it bails out with the following message:
+Linux distributors that I want to run LSMs are generally trying to support
+as much users/environments as possible. The combination of enabling loadable
+module functionality and not enforcing module signing functionality is a good
+balance for that purpose.
 
-    run_subtest:FAIL:unexpected_load_failure unexpected error: -28
-    ....
-    The sequence of 8193 jumps is too complex.
-    processed 49161 insns (limit 1000000) max_states_per_insn 4 total_state=
-s 2735 peak_states 2735 mark_read 2
+> Even setting that aside, it's the developer's job to sell the code to
+> the communities involved. I could rant at certain distros for not including
+> Smack, but until such time as I've made doing that attractive it really
+> doesn't make any sense to do so. You don't think I've spent years on stacking
+> because I want to run Android containers on Ubuntu, do you?
 
-(I bumped insn complexity limit back to 1,000,000).
+Which one ("the LSM community" or "the Linux distributors") do you mean by
+"the communities involved" ?
 
-> With this patch all existing iter tests still pass,
-> and all Ed's special tests pass or fail as needed.
-> Ex: loop_state_deps1 is rejected with misaligned stack,
-> loop1 loads with success, num_iter_bug fails with bad pointer.
+For out-of-tree LKMs (e.g. storage driver, filesystems) that can be loaded as
+a loadable kernel module, the provider/developer can directly sell the code to
+end users (i.e. they can sell without being accepted by the upstream Linux
+community and being enabled by the Linux distributors' kernel configurations).
 
-Are you sure that correct version of the patch was shared?
-I get the following log for loop_state_deps1:
+But for out-of-tree LSMs that cannot be loaded as a loadable kernel module,
+the provider/developer currently cannot directly sell the code to end users.
 
-    run_subtest:FAIL:unexpected_load_success unexpected success: 0
-    from 21 to 22: safe
-    ...
-    update_br2 80c0 branches=3D0/0
-    processed 75 insns (limit 1000000) max_states_per_insn 2 total_states 2=
-9 peak_states 29 mark_read 9
-    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-    #104/26  iters/loop_state_deps1:FAIL
+You said
 
-The test case is marked as safe.
-iter_precision_fixed_point{1,2} and num_iter_bug work as expected.
+  This makes it sound like LSMs are always developed for corporate use.
+  While that is generally true, we should acknowledge that the "sponsor"
+  of an LSM could be a corporation/government, a foundation or a hobbyist.
+  A large, comprehensive LSM from a billion dollar corporation in support
+  of a specific product should require more commitment than a small, targeted
+  LSM of general interest from joe@schlobotnit.org. I trust that we would
+  have the wisdom to make such a distinction, but I don't think we want to
+  scare off developers by making it sound like an LSM is something that only
+  a corporation can provide a support plan for.
 
---=-I7sf5AKhnRvgCYTyaHin
-Content-Disposition: attachment; filename="hydra1.patch"
-Content-Type: text/x-patch; name="hydra1.patch"; charset="UTF-8"
-Content-Transfer-Encoding: base64
+at https://lkml.kernel.org/r/847729f6-99a6-168e-92a6-b1cff1e6b97f@schaufler-ca.com .
 
-ZGlmZiAtLWdpdCBhL2tlcm5lbC9icGYvdmVyaWZpZXIuYyBiL2tlcm5lbC9icGYvdmVyaWZpZXIu
-YwppbmRleCAwMTljOGRkZTVmYTIuLmNmOTA0MWZhYzI3MiAxMDA2NDQKLS0tIGEva2VybmVsL2Jw
-Zi92ZXJpZmllci5jCisrKyBiL2tlcm5lbC9icGYvdmVyaWZpZXIuYwpAQCAtMTY4MjEsNyArMTY4
-MjEsNyBAQCBzdGF0aWMgaW50IGRvX2NoZWNrKHN0cnVjdCBicGZfdmVyaWZpZXJfZW52ICplbnYp
-CiAJCWluc24gPSAmaW5zbnNbZW52LT5pbnNuX2lkeF07CiAJCWNsYXNzID0gQlBGX0NMQVNTKGlu
-c24tPmNvZGUpOwogCi0JCWlmICgrK2Vudi0+aW5zbl9wcm9jZXNzZWQgPiAxMDAwKSB7Ly9CUEZf
-Q09NUExFWElUWV9MSU1JVF9JTlNOUykgeworCQlpZiAoKytlbnYtPmluc25fcHJvY2Vzc2VkID4g
-QlBGX0NPTVBMRVhJVFlfTElNSVRfSU5TTlMpIHsKIAkJCXZlcmJvc2UoZW52LAogCQkJCSJCUEYg
-cHJvZ3JhbSBpcyB0b28gbGFyZ2UuIFByb2Nlc3NlZCAlZCBpbnNuXG4iLAogCQkJCWVudi0+aW5z
-bl9wcm9jZXNzZWQpOwpkaWZmIC0tZ2l0IGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3By
-b2dzL2l0ZXJzLmMgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ3MvaXRlcnMuYwpp
-bmRleCA5YWRkNzFkNzlhM2EuLmYwODI4OGMwYjc0YSAxMDA2NDQKLS0tIGEvdG9vbHMvdGVzdGlu
-Zy9zZWxmdGVzdHMvYnBmL3Byb2dzL2l0ZXJzLmMKKysrIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVz
-dHMvYnBmL3Byb2dzL2l0ZXJzLmMKQEAgLTk5MSw0ICs5OTEsNDIgQEAgaW50IG51bV9pdGVyX2J1
-Zyhjb25zdCB2b2lkICpjdHgpIHsKICAgICAgcmV0dXJuIDA7CiB9CiAKK1NFQygiP3Jhd190cCIp
-CitfX3N1Y2Nlc3MKK19fbmFrZWQgaW50IGh5ZHJhMSh2b2lkKQoreworCWFzbSB2b2xhdGlsZSAo
-CisJCSJyMSA9IHIxMDsiCisJCSJyMSArPSAtODsiCisJCSJyMiA9IDA7IgorCQkicjMgPSAxMDsi
-CisJCSJjYWxsICVbYnBmX2l0ZXJfbnVtX25ld107IgorCSJsb29wXyU9OiIKKwkJInIxID0gcjEw
-OyIKKwkJInIxICs9IC04OyIKKwkJImNhbGwgJVticGZfaXRlcl9udW1fbmV4dF07IgorCQkiaWYg
-cjAgPT0gMCBnb3RvIGxvb3BfZW5kXyU9OyIKKwkJImNhbGwgJVticGZfZ2V0X3ByYW5kb21fdTMy
-XTsiCisJCSJpZiByMCAhPSA0MiBnb3RvIGxvb3BfJT07IgorCQkiY2FsbCAlW2JwZl9nZXRfcHJh
-bmRvbV91MzJdOyIKKwkJImlmIHIwICE9IDQyIGdvdG8gbG9vcF8lPTsiCisJCSJjYWxsICVbYnBm
-X2dldF9wcmFuZG9tX3UzMl07IgorCQkiaWYgcjAgIT0gNDIgZ290byBsb29wXyU9OyIKKwkJInIw
-ICs9IDA7IgorCQkiZ290byBsb29wXyU9OyIKKwkibG9vcF9lbmRfJT06IgorCQkicjEgPSByMTA7
-IgorCQkicjEgKz0gLTg7IgorCQkiY2FsbCAlW2JwZl9pdGVyX251bV9kZXN0cm95XTsiCisJCSJy
-MCA9IDA7IgorCQkiZXhpdDsiCisJCToKKwkJOiBfX2ltbShicGZfZ2V0X3ByYW5kb21fdTMyKSwK
-KwkJICBfX2ltbShicGZfaXRlcl9udW1fbmV3KSwKKwkJICBfX2ltbShicGZfaXRlcl9udW1fbmV4
-dCksCisJCSAgX19pbW0oYnBmX2l0ZXJfbnVtX2Rlc3Ryb3kpCisJCTogX19jbG9iYmVyX2FsbAor
-CSk7Cit9CisKIGNoYXIgX2xpY2Vuc2VbXSBTRUMoImxpY2Vuc2UiKSA9ICJHUEwiOwo=
+But "it's the developer's job to sell the code to the communities involved" is
+too hard for alone developer who can write a code and provide support for that code
+but cannot afford doing activities for selling that code (e.g. limited involvement
+with communities).
 
+Your "it's the developer's job" comment sounds like "LSMs are always developed by
+those corporation/government who has much involvement with communities" which
+scares off developers who can't afford doing activities for selling that code.
 
---=-I7sf5AKhnRvgCYTyaHin--
+>>> On a less happy note, you haven't addressed security blobs in any way. You
+>>> need to provide a mechanism to allow an LSM to share security blobs with
+>>> builtin LSMs and other loadable LSMs.
+>> Not all LKM-based LSMs need to use security blobs.
+> 
+> If you only want to support "minor" LSMs, those that don't use shared blobs,
+> the loadable list implementation will suit you just fine. And because you won't
+> be using any of the LSM infrastructure that needs the LSM ID, that won't be
+> an issue.
+
+Minor LSMs can work without using shared blobs managed by the LSM infrastructure.
+AKARI/CaitSith are LKM-based LSMs that do not need to use shared blobs managed by
+the LSM infrastructure. TOMOYO does not need an LSM ID value, but you are trying
+to make an LSM ID mandatory for using the LSM infrastructure.
+
+> You can make something that will work. Whether you can sell it upstream will
+> depend on any number of factors. But working code is always a great start.
+
+Selling a code to the upstream is not sufficient for allowing end users to use
+that code.
+
+For https://bugzilla.redhat.com/show_bug.cgi?id=542986 case, the reason that Red Hat
+does not enable Smack/TOMOYO/AppArmor is "Smack/TOMOYO/AppArmor are not attractive".
+
+After all, requiring any LSMs to be built-in is an unreasonable barrier compared to
+other LKMs (e.g. storage driver, filesystems).
+
 
