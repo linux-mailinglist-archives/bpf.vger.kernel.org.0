@@ -1,278 +1,488 @@
-Return-Path: <bpf+bounces-11389-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11390-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 948C27B8659
-	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 19:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C9097B86EB
+	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 19:48:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id 4CF692818D3
-	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 17:21:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 400D128183A
+	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 17:48:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AE331CAB3;
-	Wed,  4 Oct 2023 17:21:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50EE71D523;
+	Wed,  4 Oct 2023 17:48:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A4F11B27D
-	for <bpf@vger.kernel.org>; Wed,  4 Oct 2023 17:21:28 +0000 (UTC)
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422C89E
-	for <bpf@vger.kernel.org>; Wed,  4 Oct 2023 10:21:26 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5363227cc80so4089795a12.3
-        for <bpf@vger.kernel.org>; Wed, 04 Oct 2023 10:21:26 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB631CF90
+	for <bpf@vger.kernel.org>; Wed,  4 Oct 2023 17:48:12 +0000 (UTC)
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D16BB9E
+	for <bpf@vger.kernel.org>; Wed,  4 Oct 2023 10:48:10 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-565ece76be4so9104a12.2
+        for <bpf@vger.kernel.org>; Wed, 04 Oct 2023 10:48:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696440085; x=1697044885; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2O7d23g7y7F1jEVdZuw5V47KMhAH4ctukL8CH1bIYIc=;
-        b=YzOD3RXY8kDJmsKd9s2bbnpRuidH2yTfl4b1bn33WjMvIFc0opR56L9gmjxAIc0p0W
-         CLlRBdyNfpSOwBi5SNWxknG1Q6/kDHAIRVudJ9m+40jphIi2mQ8fngl3vlVV/TTS+V90
-         H/SjIYZLp/+nAvPezR+MZgJLfOeqrKoab9bw/jl/hr/U1/1v03VIXRa+IB1BVyBhjZlA
-         vOQojENgS9lym2WPEqKIGJkOywaRKVMmfyRvaYtg4H6bABrXEGBIRnii85YFbz85ULps
-         P449E+I5RXnUNCvjip5OG+Cb/xSHq52CsZliG1JEudhx+/z42YCJUOCjtEr5LBFXf8YL
-         /BGw==
+        d=google.com; s=20230601; t=1696441690; x=1697046490; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EZuTpjEB8ebzei/asemc2VF/5hqQqJ6KjjFoNoheXV0=;
+        b=F/jODVzgF52HqDJzc7Rk7e4fMqk5ogPZVbya1HFunYxCph7stXTLAT03lzNeKgK2Is
+         uoHo5+Ii3fOt6bSmTeONRzOnyN44a4xIV3VK6tYvSKash3XUCIguYmeHHHZ2UxUE6ojh
+         DvYTURs0gYrFfgAU2WmfWFP1lusTyuFQ4+e4kfZT4yAk8hEq2TOA+zBQWNkOzoyGym1W
+         eLeb4mcxhnma+xvAgofVjdDaXVkeQvvhor861tZyZrSEnELrxCfwQ8CT0LwKZZtAncje
+         7fUXrvpm9O/DZNik67vw02n1Nr5mq+bQYpypGT5ozIJOmc+F9PK9HdUF1QbIGA0cgWc5
+         uYYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696440085; x=1697044885;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2O7d23g7y7F1jEVdZuw5V47KMhAH4ctukL8CH1bIYIc=;
-        b=hOgdNLSLi23BvsDF9kOXeiAUV0f9tMbCLtyU8jYaQZn3xMv5xh1BhASyunjCpgTXgv
-         CWqA+iwM0HrNDbWrYlRcQpm0e36jZGktz+NE9n2qJSAaFAXq7e6WZZIF3aMtlqW0/83T
-         x7uddf/1lphfXnXGTR090c8T7CdiLBjWN3RyhdjBTCi05IJMN6PnZ5b2tiAuu8Fzjj0J
-         iHeFv5bLSrFpDYv9vdIYllfSdn0Phf4/lvYvRgVg3t3DFhhvQQ1wKVZSE0jXkNFUVG2x
-         W00NZrp9iLGQPJVSDcFyC/lWTT+5L7jDrIJreWqXjnL2HrdeMVE0Jjkv5FHHEpF9PJaE
-         To2A==
-X-Gm-Message-State: AOJu0Yzz+5r8iyO9e10DkIo7gdbWqAqqM3r8jWAik+EXt0ZR4LCPHZJF
-	N/LieolDD9K7GpQAfNIuyJ1BXd99fPn8u7NsekY=
-X-Google-Smtp-Source: AGHT+IFdxB0IpCJuwwn/b9rqrJr2pa2e53YMkYg4uxpJG920AM2JanSZ7cFWhYoUpaTeHofpV+0jqn+lcxLTgVgFgdA=
-X-Received: by 2002:a50:ec93:0:b0:533:97c:8413 with SMTP id
- e19-20020a50ec93000000b00533097c8413mr2631449edr.25.1696440084296; Wed, 04
- Oct 2023 10:21:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696441690; x=1697046490;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EZuTpjEB8ebzei/asemc2VF/5hqQqJ6KjjFoNoheXV0=;
+        b=ZkvyQmPs982zU60YGec05fVfYh7fUNjt8292VP5+eAGfeVshkJL11QL9WwmXqZd8VX
+         tD1jr84kmG96CxLen5fJoe5VjTiApI+C6ETtfwB4X9tyxwRAyaMzVxTrlFnM5ZswN2S+
+         6eO2SroTCKC12DAhJhvgvzH5tRNkr2XTm30pJ0Y/rh+wKCfojvykMVuId1REOClTR2dm
+         ja+gPjn4H4MACJkkaX57gnZmUycnFMro1qkc6IaAS88IzT5I/sAr7Nh5EXXIx+pyFlou
+         LyrwehRJwQleSaEshep1P/uKzA7d+Qt/KvsQhb33HxW6bLI/zq3wL1aQJFuLnCQkYPhV
+         7Xnw==
+X-Gm-Message-State: AOJu0Yw0+rL2si2+sVYDa+hZ0meIjqc6khFnS6/pzgzrhMnz1V6ZYmG7
+	28EWaeSlJCzwSh6QmEh7Azv707Q=
+X-Google-Smtp-Source: AGHT+IEgFB3LGS+IO9p8pnG7S7wfnPHQEq4r8PP5r7FJhg8QQeBegN95VNc6BUAGRbfZLGI9Uk46U2o=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a63:6d8d:0:b0:589:36b2:a691 with SMTP id
+ i135-20020a636d8d000000b0058936b2a691mr39586pgc.7.1696441690188; Wed, 04 Oct
+ 2023 10:48:10 -0700 (PDT)
+Date: Wed, 4 Oct 2023 10:48:08 -0700
+In-Reply-To: <PH0PR11MB583036756C64ED287ECA2344D8CBA@PH0PR11MB5830.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231004001750.2939898-1-andrii@kernel.org> <20231004001750.2939898-2-andrii@kernel.org>
- <ZR0h12W2AHvquBWv@krava>
-In-Reply-To: <ZR0h12W2AHvquBWv@krava>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 4 Oct 2023 10:21:12 -0700
-Message-ID: <CAEf4Bzag+5_r05t7p2N-XiWykT51U5x4ov7YSa0NGVJrGpo6UQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] selftests/bpf: support building selftests in
- optimized -O2 mode
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+Mime-Version: 1.0
+References: <20231003200522.1914523-1-sdf@google.com> <20231003200522.1914523-3-sdf@google.com>
+ <PH0PR11MB583036756C64ED287ECA2344D8CBA@PH0PR11MB5830.namprd11.prod.outlook.com>
+Message-ID: <ZR2lNjyyNZO4aQP0@google.com>
+Subject: Re: [PATCH bpf-next v3 02/10] xsk: add TX timestamp and TX checksum
+ offload support
+From: Stanislav Fomichev <sdf@google.com>
+To: yoong.siang.song@intel.com
+Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>, 
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, "andrii@kernel.org" <andrii@kernel.org>, 
+	"martin.lau@linux.dev" <martin.lau@linux.dev>, "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>, 
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
+	"haoluo@google.com" <haoluo@google.com>, "jolsa@kernel.org" <jolsa@kernel.org>, 
+	"kuba@kernel.org" <kuba@kernel.org>, "toke@kernel.org" <toke@kernel.org>, 
+	"willemb@google.com" <willemb@google.com>, "dsahern@kernel.org" <dsahern@kernel.org>, magnus.karlsson@intel.com, 
+	"bjorn@kernel.org" <bjorn@kernel.org>, maciej.fijalkowski@intel.com, 
+	"hawk@kernel.org" <hawk@kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+	"xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Oct 4, 2023 at 1:27=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrote=
-:
->
-> On Tue, Oct 03, 2023 at 05:17:49PM -0700, Andrii Nakryiko wrote:
-> > Add support for building selftests with -O2 level of optimization, whic=
-h
-> > allows more compiler warnings detection (like lots of potentially
-> > uninitialized usage), but also is useful to have a faster-running test
-> > for some CPU-intensive tests.
+On 10/04, Song, Yoong Siang wrote:
+> On Wednesday, October 4, 2023 4:05 AM Stanislav Fomichev <sdf@google.com> wrote:
+> >This change actually defines the (initial) metadata layout that should be used by
+> >AF_XDP userspace (xsk_tx_metadata).
+> >The first field is flags which requests appropriate offloads, followed by the offload-
+> >specific fields. The supported per-device offloads are exported via netlink (new
+> >xsk-flags).
 > >
-> > One can build optimized versions of libbpf and selftests by running:
+> >The offloads themselves are still implemented in a bit of a framework-y fashion
+> >that's left from my initial kfunc attempt.
+> >I'm introducing new xsk_tx_metadata_ops which drivers are supposed to
+> >implement. The drivers are also supposed to call
+> >xsk_tx_metadata_request/xsk_tx_metadata_complete in the right places. Since
+> >xsk_tx_metadata_{request,_complete}
+> >are static inline, we don't incur any extra overhead doing indirect calls.
 > >
-> >   $ make RELEASE=3D1
+> >The benefit of this scheme is as follows:
+> >- keeps all metadata layout parsing away from driver code
+> >- makes it easy to grep and see which drivers implement what
+> >- don't need any extra flags to maintain to keep track of what
+> >  offloads are implemented; if the callback is implemented - the offload
+> >  is supported (used by netlink reporting code)
 > >
-> > There is a measurable speed up of about 10 seconds for me locally,
-> > though it's mostly capped by non-parallelized serial tests. User CPU
-> > time goes down by total 40 seconds, from 1m10s to 0m28s.
+> >Two offloads are defined right now:
+> >1. XDP_TX_METADATA_CHECKSUM: skb-style csum_start+csum_offset 2.
+> >XDP_TX_METADATA_TIMESTAMP: writes TX timestamp back into metadata
+> >   area upon completion (tx_timestamp field)
 > >
-> > Unoptimized build (-O0)
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > Summary: 430/3544 PASSED, 25 SKIPPED, 4 FAILED
+> >The offloads are also implemented for copy mode:
+> >1. Extra XDP_TX_METADATA_CHECKSUM_SW to trigger skb_checksum_help; this
+> >   might be useful as a reference implementation and for testing 2.
+> >XDP_TX_METADATA_TIMESTAMP writes SW timestamp from the skb
+> >   destructor (note I'm reusing hwtstamps to pass metadata pointer)
 > >
-> > real    1m59.937s
-> > user    1m10.877s
-> > sys     3m14.880s
+> >The struct is forward-compatible and can be extended in the future by appending
+> >more fields.
 > >
-> > Optimized build (-O2)
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > Summary: 425/3543 PASSED, 25 SKIPPED, 9 FAILED
+> >Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> >---
+> > Documentation/netlink/specs/netdev.yaml | 19 ++++++
+> > include/linux/netdevice.h               | 27 +++++++++
+> > include/linux/skbuff.h                  | 14 ++++-
+> > include/net/xdp_sock.h                  | 80 +++++++++++++++++++++++++
+> > include/net/xdp_sock_drv.h              | 13 ++++
+> > include/net/xsk_buff_pool.h             |  6 ++
+> > include/uapi/linux/if_xdp.h             | 40 +++++++++++++
+> > include/uapi/linux/netdev.h             | 16 +++++
+> > net/core/netdev-genl.c                  | 12 +++-
+> > net/xdp/xsk.c                           | 39 ++++++++++++
+> > net/xdp/xsk_queue.h                     |  2 +-
+> > tools/include/uapi/linux/if_xdp.h       | 54 +++++++++++++++--
+> > tools/include/uapi/linux/netdev.h       | 16 +++++
+> > tools/net/ynl/generated/netdev-user.c   | 19 ++++++
+> > tools/net/ynl/generated/netdev-user.h   |  3 +
+> > 15 files changed, 352 insertions(+), 8 deletions(-)
 > >
-> > real    1m50.540s
-> > user    0m28.406s
-> > sys     3m13.198s
->
-> hi,
-> I get following error when running selftest compiled with RELEASE=3D1
->
-> # ./test_progs -t attach_probe/manual-legacy
-> test_attach_probe:PASS:skel_open 0 nsec
-> test_attach_probe:PASS:skel_load 0 nsec
-> test_attach_probe:PASS:check_bss 0 nsec
-> test_attach_probe:PASS:uprobe_ref_ctr_cleanup 0 nsec
-> test_attach_probe_manual:PASS:skel_kprobe_manual_open_and_load 0 nsec
-> test_attach_probe_manual:PASS:uprobe_offset 0 nsec
-> test_attach_probe_manual:PASS:attach_kprobe 0 nsec
-> test_attach_probe_manual:PASS:attach_kretprobe 0 nsec
-> test_attach_probe_manual:PASS:attach_uprobe 0 nsec
-> test_attach_probe_manual:PASS:attach_uretprobe 0 nsec
-> libbpf: failed to add legacy uprobe event for /proc/self/exe:0x19020: -17
-> libbpf: prog 'handle_uprobe_byname': failed to create uprobe '/proc/self/=
-exe:0x19020' perf event: File exists
-> test_attach_probe_manual:FAIL:attach_uprobe_byname unexpected error: -17
-> #8/2     attach_probe/manual-legacy:FAIL
-> #8       attach_probe:FAIL
->
->
-> it looks like -O2 can merge some of the trigger functions:
->
->         [root@qemu bpf]# nm test_progs | grep trigger_func
->         0000000000558f30 t autoattach_trigger_func.constprop.0
->         000000000041d240 t trigger_func
->         0000000000419020 t trigger_func
->         0000000000420e70 t trigger_func
->         0000000000507aa0 t trigger_func
->         0000000000419020 t trigger_func2
->         0000000000419020 t trigger_func3
->         0000000000419030 t trigger_func4
->         [root@qemu bpf]# nm test_progs | grep 0000000000419020
->         0000000000419020 t trigger_func
->         0000000000419020 t trigger_func2
->         0000000000419020 t trigger_func3
->
-> I got more tests fails, but I suspect it's all for similar
-> reason like above
->
+> >diff --git a/Documentation/netlink/specs/netdev.yaml
+> >b/Documentation/netlink/specs/netdev.yaml
+> >index c46fcc78fc04..3735c26c8646 100644
+> >--- a/Documentation/netlink/specs/netdev.yaml
+> >+++ b/Documentation/netlink/specs/netdev.yaml
+> >@@ -55,6 +55,19 @@ name: netdev
+> >         name: hash
+> >         doc:
+> >           Device is capable of exposing receive packet hash via
+> >bpf_xdp_metadata_rx_hash().
+> >+  -
+> >+    type: flags
+> >+    name: xsk-flags
+> >+    render-max: true
+> >+    entries:
+> >+      -
+> >+        name: tx-timestamp
+> >+        doc:
+> >+          HW timestamping egress packets is supported by the driver.
+> >+      -
+> >+        name: tx-checksum
+> >+        doc:
+> >+          L3 checksum HW offload is supported by the driver.
+> >
+> > attribute-sets:
+> >   -
+> >@@ -88,6 +101,11 @@ name: netdev
+> >         type: u64
+> >         enum: xdp-rx-metadata
+> >         enum-as-flags: true
+> >+      -
+> >+        name: xsk-features
+> >+        doc: Bitmask of enabled AF_XDP features.
+> >+        type: u64
+> >+        enum: xsk-flags
+> >
+> > operations:
+> >   list:
+> >@@ -105,6 +123,7 @@ name: netdev
+> >             - xdp-features
+> >             - xdp-zc-max-segs
+> >             - xdp-rx-metadata-features
+> >+            - xsk-features
+> >       dump:
+> >         reply: *dev-all
+> >     -
+> >diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h index
+> >7e520c14eb8c..0e1cb026cbe5 100644
+> >--- a/include/linux/netdevice.h
+> >+++ b/include/linux/netdevice.h
+> >@@ -1650,6 +1650,31 @@ struct net_device_ops {
+> > 						    struct netlink_ext_ack
+> >*extack);  };
+> >
+> >+/*
+> >+ * This structure defines the AF_XDP TX metadata hooks for network devices.
+> >+ * The following hooks can be defined; unless noted otherwise, they are
+> >+ * optional and can be filled with a null pointer.
+> >+ *
+> >+ * int (*tmo_request_timestamp)(void *priv)
 
-yes, I didn't say that -O2 version passes all tests :) at least there
-are complicated USDT cases under -O2 which libbpf can't support (if I
-remember correctly, it was offset relative to global symbol case). But
-it's the first step. And once we have ability to build with RELEASE=3D1,
-we can add it as a separate test in CI and catch more of these
-uninitialized usage errors. Initially we can denylist tests that are
-broken due to -O2 and work to fix them.
+[..]
+ 
+> Should be "void" instead of "int"
+> 
+> >+ *     This function is called when AF_XDP frame requested egress timestamp.
+> >+ *
+> >+ * int (*tmo_fill_timestamp)(void *priv)
+> 
+> Should be "u64" instead of "int"
+> 
+> >+ *     This function is called when AF_XDP frame, that had requested
+> >+ *     egress timestamp, received a completion. The hook needs to return
+> >+ *     the actual HW timestamp.
+> >+ *
+> >+ * int (*tmo_request_checksum)(u16 csum_start, u16 csum_offset, void *priv)
+> 
+> Should be "void" instead of "int"
 
-> jirka
->
->
+Oh, good catch, will update these doc entries!
+
+> >+ *     This function is called when AF_XDP frame requested HW checksum
+> >+ *     offload. csum_start indicates position where checksumming should start.
+> >+ *     csum_offset indicates position where checksum should be stored.
+> >+ *
+> >+ */
+> >+struct xsk_tx_metadata_ops {
+> >+	void	(*tmo_request_timestamp)(void *priv);
+> >+	u64	(*tmo_fill_timestamp)(void *priv);
+> >+	void	(*tmo_request_checksum)(u16 csum_start, u16 csum_offset, void
+> >*priv);
+> >+};
+> >+
+> > /**
+> >  * enum netdev_priv_flags - &struct net_device priv_flags
+> >  *
+> >@@ -1838,6 +1863,7 @@ enum netdev_ml_priv_type {
+> >  *	@netdev_ops:	Includes several pointers to callbacks,
+> >  *			if one wants to override the ndo_*() functions
+> >  *	@xdp_metadata_ops:	Includes pointers to XDP metadata callbacks.
+> >+ *	@xsk_tx_metadata_ops:	Includes pointers to AF_XDP TX
+> >metadata callbacks.
+> >  *	@ethtool_ops:	Management operations
+> >  *	@l3mdev_ops:	Layer 3 master device operations
+> >  *	@ndisc_ops:	Includes callbacks for different IPv6 neighbour
+> >@@ -2097,6 +2123,7 @@ struct net_device {
+> > 	unsigned long long	priv_flags;
+> > 	const struct net_device_ops *netdev_ops;
+> > 	const struct xdp_metadata_ops *xdp_metadata_ops;
+> >+	const struct xsk_tx_metadata_ops *xsk_tx_metadata_ops;
+> > 	int			ifindex;
+> > 	unsigned short		gflags;
+> > 	unsigned short		hard_header_len;
+> >diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h index
+> >4174c4b82d13..444d35dcd690 100644
+> >--- a/include/linux/skbuff.h
+> >+++ b/include/linux/skbuff.h
+> >@@ -566,6 +566,15 @@ struct ubuf_info_msgzc {  int
+> >mm_account_pinned_pages(struct mmpin *mmp, size_t size);  void
+> >mm_unaccount_pinned_pages(struct mmpin *mmp);
 > >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  tools/testing/selftests/bpf/Makefile | 14 ++++++++------
-> >  1 file changed, 8 insertions(+), 6 deletions(-)
+> >+/* Preserve some data across TX submission and completion.
+> >+ *
+> >+ * Note, this state is stored in the driver. Extending the layout
+> >+ * might need some special care.
+> >+ */
+> >+struct xsk_tx_metadata_compl {
+> >+	__u64 *tx_timestamp;
+> >+};
+> >+
+> > /* This data is invariant across clones and lives at
+> >  * the end of the header data, ie. at skb->end.
+> >  */
+> >@@ -578,7 +587,10 @@ struct skb_shared_info {
+> > 	/* Warning: this field is not always filled in (UFO)! */
+> > 	unsigned short	gso_segs;
+> > 	struct sk_buff	*frag_list;
+> >-	struct skb_shared_hwtstamps hwtstamps;
+> >+	union {
+> >+		struct skb_shared_hwtstamps hwtstamps;
+> >+		struct xsk_tx_metadata_compl xsk_meta;
+> >+	};
+> > 	unsigned int	gso_type;
+> > 	u32		tskey;
 > >
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selft=
-ests/bpf/Makefile
-> > index a25e262dbc69..55d1b1848e6c 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -27,7 +27,9 @@ endif
-> >  BPF_GCC              ?=3D $(shell command -v bpf-gcc;)
-> >  SAN_CFLAGS   ?=3D
-> >  SAN_LDFLAGS  ?=3D $(SAN_CFLAGS)
-> > -CFLAGS +=3D -g -O0 -rdynamic                                          =
- \
-> > +RELEASE              ?=3D
-> > +OPT_FLAGS    ?=3D $(if $(RELEASE),-O2,-O0)
-> > +CFLAGS +=3D -g $(OPT_FLAGS) -rdynamic                                 =
- \
-> >         -Wall -Werror                                                 \
-> >         $(GENFLAGS) $(SAN_CFLAGS)                                     \
-> >         -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)          \
-> > @@ -241,7 +243,7 @@ $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL=
-) $(RUNQSLOWER_OUTPUT)
-> >                   BPFTOOL_OUTPUT=3D$(HOST_BUILD_DIR)/bpftool/          =
-        \
-> >                   BPFOBJ_OUTPUT=3D$(BUILD_DIR)/libbpf                  =
-        \
-> >                   BPFOBJ=3D$(BPFOBJ) BPF_INCLUDE=3D$(INCLUDE_DIR)      =
-          \
-> > -                 EXTRA_CFLAGS=3D'-g -O0 $(SAN_CFLAGS)'                =
-        \
-> > +                 EXTRA_CFLAGS=3D'-g $(OPT_FLAGS) $(SAN_CFLAGS)'       =
-        \
-> >                   EXTRA_LDFLAGS=3D'$(SAN_LDFLAGS)' &&                  =
-        \
-> >                   cp $(RUNQSLOWER_OUTPUT)runqslower $@
+> >diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h index
+> >caa1f04106be..29427a69784d 100644
+> >--- a/include/net/xdp_sock.h
+> >+++ b/include/net/xdp_sock.h
+> >@@ -92,6 +92,74 @@ int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff
+> >*xdp);  int __xsk_map_redirect(struct xdp_sock *xs, struct xdp_buff *xdp);  void
+> >__xsk_map_flush(void);
 > >
-> > @@ -279,7 +281,7 @@ $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch]=
- $(BPFTOOLDIR)/Makefile)    \
-> >                   $(HOST_BPFOBJ) | $(HOST_BUILD_DIR)/bpftool
-> >       $(Q)$(MAKE) $(submake_extras)  -C $(BPFTOOLDIR)                  =
-      \
-> >                   ARCH=3D CROSS_COMPILE=3D CC=3D"$(HOSTCC)" LD=3D"$(HOS=
-TLD)"         \
-> > -                 EXTRA_CFLAGS=3D'-g -O0'                              =
-        \
-> > +                 EXTRA_CFLAGS=3D'-g $(OPT_FLAGS)'                     =
-        \
-> >                   OUTPUT=3D$(HOST_BUILD_DIR)/bpftool/                  =
-        \
-> >                   LIBBPF_OUTPUT=3D$(HOST_BUILD_DIR)/libbpf/            =
-        \
-> >                   LIBBPF_DESTDIR=3D$(HOST_SCRATCH_DIR)/                =
-        \
-> > @@ -290,7 +292,7 @@ $(CROSS_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $=
-(BPFTOOLDIR)/Makefile) \
-> >                   $(BPFOBJ) | $(BUILD_DIR)/bpftool
-> >       $(Q)$(MAKE) $(submake_extras)  -C $(BPFTOOLDIR)                  =
-       \
-> >                   ARCH=3D$(ARCH) CROSS_COMPILE=3D$(CROSS_COMPILE)      =
-           \
-> > -                 EXTRA_CFLAGS=3D'-g -O0'                              =
-         \
-> > +                 EXTRA_CFLAGS=3D'-g $(OPT_FLAGS)'                     =
-         \
-> >                   OUTPUT=3D$(BUILD_DIR)/bpftool/                       =
-         \
-> >                   LIBBPF_OUTPUT=3D$(BUILD_DIR)/libbpf/                 =
-         \
-> >                   LIBBPF_DESTDIR=3D$(SCRATCH_DIR)/                     =
-         \
-> > @@ -313,7 +315,7 @@ $(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Ma=
-kefile)                       \
-> >          $(APIDIR)/linux/bpf.h                                         =
-      \
-> >          | $(BUILD_DIR)/libbpf
-> >       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=3D$(BUILD_DIR)/=
-libbpf/ \
-> > -                 EXTRA_CFLAGS=3D'-g -O0 $(SAN_CFLAGS)'                =
-        \
-> > +                 EXTRA_CFLAGS=3D'-g $(OPT_FLAGS) $(SAN_CFLAGS)'       =
-        \
-> >                   EXTRA_LDFLAGS=3D'$(SAN_LDFLAGS)'                     =
-        \
-> >                   DESTDIR=3D$(SCRATCH_DIR) prefix=3D all install_header=
-s
+> >+/**
+> >+ *  xsk_tx_metadata_to_compl - Save enough relevant metadata
+> >+information
+> >+ *  to perform tx completion in the future.
+> >+ *  @meta: pointer to AF_XDP metadata area
+> >+ *  @compl: pointer to output struct xsk_tx_metadata_to_compl
+> >+ *
+> >+ *  This function should be called by the networking device when
+> >+ *  it prepares AF_XDP egress packet. The value of @compl should be
+> >+stored
+> >+ *  and passed to xsk_tx_metadata_complete upon TX completion.
+> >+ */
+> >+static inline void xsk_tx_metadata_to_compl(struct xsk_tx_metadata *meta,
+> >+					    struct xsk_tx_metadata_compl
+> >*compl) {
+> >+	if (!meta)
+> >+		return;
+> >+
+> >+	if (meta->flags & XDP_TX_METADATA_TIMESTAMP)
+> >+		compl->tx_timestamp = &meta->completion.tx_timestamp;
+> >+	else
+> >+		compl->tx_timestamp = NULL;
+> >+}
+> >+
+> >+/**
+> >+ *  xsk_tx_metadata_request - Evaluate AF_XDP TX metadata at submission
+> >+ *  and call appropriate xsk_tx_metadata_ops operation.
+> >+ *  @meta: pointer to AF_XDP metadata area
+> >+ *  @ops: pointer to struct xsk_tx_metadata_ops
+> >+ *  @priv: pointer to driver-private aread
+> >+ *
+> >+ *  This function should be called by the networking device when
+> >+ *  it prepares AF_XDP egress packet.
+> >+ */
+> >+static inline void xsk_tx_metadata_request(const struct xsk_tx_metadata *meta,
+> >+					   const struct xsk_tx_metadata_ops
+> >*ops,
+> >+					   void *priv)
+> >+{
+> >+	if (!meta)
+> >+		return;
+> >+
+> >+	if (ops->tmo_request_timestamp)
+> >+		if (meta->flags & XDP_TX_METADATA_TIMESTAMP)
+> >+			ops->tmo_request_timestamp(priv);
+> >+
+> >+	if (ops->tmo_request_checksum)
+> >+		if (meta->flags & XDP_TX_METADATA_CHECKSUM)
+> >+			ops->tmo_request_checksum(meta->csum_start, meta-
+> >>csum_offset,
+> >+priv); }
+> >+
+> >+/**
+> >+ *  xsk_tx_metadata_complete - Evaluate AF_XDP TX metadata at
+> >+completion
+> >+ *  and call appropriate xsk_tx_metadata_ops operation.
+> >+ *  @compl: pointer to completion metadata produced from
+> >+xsk_tx_metadata_to_compl
+> >+ *  @ops: pointer to struct xsk_tx_metadata_ops
+> >+ *  @priv: pointer to driver-private aread
+> >+ *
+> >+ *  This function should be called by the networking device upon
+> >+ *  AF_XDP egress completion.
+> >+ */
+> >+static inline void xsk_tx_metadata_complete(struct xsk_tx_metadata_compl
+> >*compl,
+> >+					    const struct xsk_tx_metadata_ops
+> >*ops,
+> >+					    void *priv)
+> >+{
+> >+	if (!compl)
+> >+		return;
+> >+
+> >+	*compl->tx_timestamp = ops->tmo_fill_timestamp(priv); }
+> >+
+> > #else
 > >
-> > @@ -322,7 +324,7 @@ $(HOST_BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDI=
-R)/Makefile)                  \
-> >               $(APIDIR)/linux/bpf.h                                    =
-      \
-> >               | $(HOST_BUILD_DIR)/libbpf
-> >       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR)                       =
-      \
-> > -                 EXTRA_CFLAGS=3D'-g -O0' ARCH=3D CROSS_COMPILE=3D     =
-            \
-> > +                 EXTRA_CFLAGS=3D'-g $(OPT_FLAGS)' ARCH=3D CROSS_COMPIL=
-E=3D        \
-> >                   OUTPUT=3D$(HOST_BUILD_DIR)/libbpf/                   =
-        \
-> >                   CC=3D"$(HOSTCC)" LD=3D"$(HOSTLD)"                    =
-          \
-> >                   DESTDIR=3D$(HOST_SCRATCH_DIR)/ prefix=3D all install_=
-headers
-> > --
-> > 2.34.1
+> > static inline int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp) @@ -
+> >108,6 +176,18 @@ static inline void __xsk_map_flush(void)  {  }
 > >
+> >+static inline void xsk_tx_metadata_request(struct xsk_tx_metadata *meta,
+> >+					   const struct xsk_tx_metadata_ops
+> >*ops,
+> >+					   void *priv)
+> >+{
+> >+}
+> >+
+> >+static inline void xsk_tx_metadata_complete(struct xsk_tx_metadata_compl
+> >*compl,
+> >+					    const struct xsk_tx_metadata_ops
+> >*ops,
+> >+					    void *priv)
+> >+{
+> >+}
+> >+
+> > #endif /* CONFIG_XDP_SOCKETS */
 > >
+> > #endif /* _LINUX_XDP_SOCK_H */
+> >diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h index
+> >1f6fc8c7a84c..e2558ac3e195 100644
+> >--- a/include/net/xdp_sock_drv.h
+> >+++ b/include/net/xdp_sock_drv.h
+> >@@ -165,6 +165,14 @@ static inline void *xsk_buff_raw_get_data(struct
+> >xsk_buff_pool *pool, u64 addr)
+> > 	return xp_raw_get_data(pool, addr);
+> > }
+> >
+> >+static inline struct xsk_tx_metadata *xsk_buff_get_metadata(struct
+> >+xsk_buff_pool *pool, u64 addr) {
+> >+	if (!pool->tx_metadata_len)
+> >+		return NULL;
+> >+
+> >+	return xp_raw_get_data(pool, addr) - pool->tx_metadata_len; }
+> >+
+> > static inline void xsk_buff_dma_sync_for_cpu(struct xdp_buff *xdp, struct
+> >xsk_buff_pool *pool)  {
+> > 	struct xdp_buff_xsk *xskb = container_of(xdp, struct xdp_buff_xsk, xdp);
+> >@@ -324,6 +332,11 @@ static inline void *xsk_buff_raw_get_data(struct
+> >xsk_buff_pool *pool, u64 addr)
+> > 	return NULL;
+> > }
+> >
+> >+static inline struct xsk_tx_metadata *xsk_buff_get_metadata(struct
+> >+xsk_buff_pool *pool, u64 addr) {
+> >+	return NULL;
+> >+}
+> >+
+> > static inline void xsk_buff_dma_sync_for_cpu(struct xdp_buff *xdp, struct
+> >xsk_buff_pool *pool)  {  } diff --git a/include/net/xsk_buff_pool.h
+> >b/include/net/xsk_buff_pool.h index 1985ffaf9b0c..97f5cc10d79e 100644
+> >--- a/include/net/xsk_buff_pool.h
+> >+++ b/include/net/xsk_buff_pool.h
+> >@@ -33,6 +33,7 @@ struct xdp_buff_xsk {
+> > };
+> >
+> > #define XSK_CHECK_PRIV_TYPE(t) BUILD_BUG_ON(sizeof(t) > offsetofend(struct
+> >xdp_buff_xsk, cb))
+> >+#define XSK_TX_COMPL_FITS(t) BUILD_BUG_ON(sizeof(struct
+> >+xsk_tx_metadata_compl) > sizeof(t))
+> >
+> > struct xsk_dma_map {
+> > 	dma_addr_t *dma_pages;
+> >@@ -234,4 +235,9 @@ static inline u64 xp_get_handle(struct xdp_buff_xsk *xskb)
+> > 	return xskb->orig_addr + (offset <<
+> >XSK_UNALIGNED_BUF_OFFSET_SHIFT);  }
+> >
+> >+static inline bool xp_tx_metadata_enabled(const struct xsk_buff_pool
+> >+*pool) {
+> >+	return pool->tx_metadata_len > 0;
+> >+}
+> >+
+> > #endif /* XSK_BUFF_POOL_H_ */
+> >diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h index
+> >2ecf79282c26..ecfd67988283 100644
+> >--- a/include/uapi/linux/if_xdp.h
+> >+++ b/include/uapi/linux/if_xdp.h
+> >@@ -106,6 +106,43 @@ struct xdp_options {  #define
+> >XSK_UNALIGNED_BUF_ADDR_MASK \
+> > 	((1ULL << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1)
+> >
+> >+/* Request transmit timestamp. Upon completion, put it into
+> >+tx_timestamp
+> >+ * field of struct xsk_tx_metadata.
+> >+ */
+> >+#define XDP_TX_METADATA_TIMESTAMP		(1 << 0)
+
+[..]
+
+> Suggestion from checkpatch.pl:
+> CHECK: Prefer using the BIT macro
+> 
+> >+
+> >+/* Request transmit checksum offload. Checksum start position and
+> >+offset
+> >+ * are communicated via csum_start and csum_offset fields of struct
+> >+ * xsk_tx_metadata.
+> >+ */
+> >+#define XDP_TX_METADATA_CHECKSUM		(1 << 1)
+> 
+> Suggestion from checkpatch.pl:
+> CHECK: Prefer using the BIT macro
+> 
+> >+
+> >+/* Force checksum calculation in software. Can be used for testing or
+> >+ * working around potential HW issues. This option causes performance
+> >+ * degradation and only works in XDP_COPY mode.
+> >+ */
+> >+#define XDP_TX_METADATA_CHECKSUM_SW		(1 << 2)
+> 
+> Suggestion from checkpatch.pl:
+> CHECK: Prefer using the BIT macro
+
+Will do! Hopefully nothing breaks, let me check...
 
