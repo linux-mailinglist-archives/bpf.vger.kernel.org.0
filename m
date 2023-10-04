@@ -1,267 +1,228 @@
-Return-Path: <bpf+bounces-11400-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11401-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72C297B8BB4
-	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 20:56:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2D747B8DD5
+	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 22:09:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sy.mirrors.kernel.org (Postfix) with ESMTP id 475C7B20A17
-	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 18:56:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTP id 482191F23065
+	for <lists+bpf@lfdr.de>; Wed,  4 Oct 2023 20:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76284219F9;
-	Wed,  4 Oct 2023 18:56:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20A2D224E5;
+	Wed,  4 Oct 2023 20:09:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NqVtdmXP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Dkvbo4ZI"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB58020B05;
-	Wed,  4 Oct 2023 18:56:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 675C9C433D9;
-	Wed,  4 Oct 2023 18:56:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696445777;
-	bh=iC7KwsOJJL3kT0M8KubHc+xTYSGXLa7gjxgf1YgvBK8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NqVtdmXPTE3K9q9deuJTm/G7a71zUKszCFqZsp5GIQNtA7H7/+QIS49PlOMCUfFNJ
-	 1ydyxG0x0Zhc5NXKKvQZoNb0pMC2bwR6porAQ3qOkvHn+oCaXipMdg5DIlUK6kK3dJ
-	 /qGaNm9SdmE2IDbECVrjFagXBbmQuihBc1Xhxlya1LZKKRDWQwFqYqNeRTG4/PcP8U
-	 fjxjbvBWhJKav9Mn2S5Lw52vmEkf02EL+EOCc8xxck+JdDNrgRWXBSojP+3KV6r6+j
-	 osY5RvD+bQgIMRf1FSVwxbtgizfCN1brIMaKXTHpZ/pGKsilyXHn7K+ZkEvj2U6B0B
-	 tzn7voxPB+lnw==
-From: Jeff Layton <jlayton@kernel.org>
-To: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	David Sterba <dsterba@suse.cz>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Kees Cook <keescook@chromium.org>,
-	Jeremy Kerr <jk@ozlabs.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>,
-	Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Carlos Llamas <cmllamas@google.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Mattia Dongili <malattia@linux.it>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Brad Warrum <bwarrum@linux.ibm.com>,
-	Ritu Agarwal <rituagar@linux.ibm.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Mark Gross <markgross@kernel.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	David Sterba <dsterba@suse.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Ian Kent <raven@themaw.net>,
-	Luis de Bethencourt <luisbg@kernel.org>,
-	Salah Triki <salah.triki@gmail.com>,
-	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
-	Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Xiubo Li <xiubli@redhat.com>,
-	Ilya Dryomov <idryomov@gmail.com>,
-	Jan Harkes <jaharkes@cs.cmu.edu>,
-	coda@cs.cmu.edu,
-	Joel Becker <jlbec@evilplan.org>,
-	Christoph Hellwig <hch@lst.de>,
-	Nicolas Pitre <nico@fluxnic.net>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Gao Xiang <xiang@kernel.org>,
-	Chao Yu <chao@kernel.org>,
-	Yue Hu <huyue2@coolpad.com>,
-	Jeffle Xu <jefflexu@linux.alibaba.com>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Sungjong Seo <sj1557.seo@samsung.com>,
-	Jan Kara <jack@suse.com>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Christoph Hellwig <hch@infradead.org>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Bob Peterson <rpeterso@redhat.com>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Jan Kara <jack@suse.cz>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Dave Kleikamp <shaggy@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	Anna Schumaker <anna@kernel.org>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Neil Brown <neilb@suse.de>,
-	Olga Kornievskaia <kolga@netapp.com>,
-	Dai Ngo <Dai.Ngo@oracle.com>,
-	Tom Talpey <tom@talpey.com>,
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-	Anton Altaparmakov <anton@tuxera.com>,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Mark Fasheh <mark@fasheh.com>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Bob Copeland <me@bobcopeland.com>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Iurii Zaikin <yzaikin@google.com>,
-	Tony Luck <tony.luck@intel.com>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	Anders Larsen <al@alarsen.net>,
-	Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.com>,
-	Ronnie Sahlberg <lsahlber@redhat.com>,
-	Shyam Prasad N <sprasad@microsoft.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Phillip Lougher <phillip@squashfs.org.uk>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Evgeniy Dushistov <dushistov@mail.ru>,
-	Chandan Babu R <chandan.babu@oracle.com>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	Johannes Thumshirn <jth@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Hugh Dickins <hughd@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	John Johansen <john.johansen@canonical.com>,
-	Paul Moore <paul@paul-moore.com>,
-	James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Eric Paris <eparis@parisplace.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Brian Foster <bfoster@redhat.com>
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-s390@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	v9fs@lists.linux.dev,
-	linux-afs@lists.infradead.org,
-	autofs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org,
-	codalist@coda.cs.cmu.edu,
-	linux-efi@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	gfs2@lists.linux.dev,
-	linux-um@lists.infradead.org,
-	linux-mtd@lists.infradead.org,
-	jfs-discussion@lists.sourceforge.net,
-	linux-nfs@vger.kernel.org,
-	linux-nilfs@vger.kernel.org,
-	linux-ntfs-dev@lists.sourceforge.net,
-	ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev,
-	linux-karma-devel@lists.sourceforge.net,
-	devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	reiserfs-devel@vger.kernel.org,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	apparmor@lists.ubuntu.com,
-	linux-security-module@vger.kernel.org,
-	selinux@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org
-Subject: [PATCH v2 89/89] fs: move i_generation into new hole created after timestamp conversion
-Date: Wed,  4 Oct 2023 14:55:30 -0400
-Message-ID: <20231004185530.82088-3-jlayton@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231004185530.82088-1-jlayton@kernel.org>
-References: <20231004185530.82088-1-jlayton@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347901B27F
+	for <bpf@vger.kernel.org>; Wed,  4 Oct 2023 20:09:21 +0000 (UTC)
+Received: from out-210.mta1.migadu.com (out-210.mta1.migadu.com [95.215.58.210])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB40A6
+	for <bpf@vger.kernel.org>; Wed,  4 Oct 2023 13:09:19 -0700 (PDT)
+Message-ID: <5bef21a3-18c0-e335-d64e-bcd6f1e304a4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1696450157;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cKEG8DFxglAjCKMotH39BW8Hr+L7HodS9zAdAitsPcY=;
+	b=Dkvbo4ZIzPQnEkEotqu8FSHyTkuh9rE4upGmTV1wDu0WhcyvBz38tnh7AD47apGmAHStZN
+	NwCHJPB63CUJhhz2s77gfi1TJY5c+UoDujp4jaTl5re5BMqa/m8TlBOVJLj5PXUas87ckF
+	ebh8Iem9+JIzIbmiR7EozvklPU+eUAc=
+Date: Wed, 4 Oct 2023 13:09:12 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v2 1/2] bpf: Derive source IP addr via
+ bpf_*_fib_lookup()
+Content-Language: en-US
+To: Martynas Pumputis <m@lambda.lt>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+ Nikolay Aleksandrov <razor@blackwall.org>, bpf@vger.kernel.org
+References: <20231003071013.824623-1-m@lambda.lt>
+ <20231003071013.824623-2-m@lambda.lt>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20231003071013.824623-2-m@lambda.lt>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-The recent change to use discrete integers instead of struct timespec64
-shaved 8 bytes off of struct inode, but it also moves the i_lock
-into the previous cacheline, away from the fields that it protects.
+On 10/3/23 12:10 AM, Martynas Pumputis wrote:
+> Extend the bpf_fib_lookup() helper by making it to return the source
+> IPv4/IPv6 address if the BPF_FIB_LOOKUP_SET_SRC flag is set.
+> 
+> For example, the following snippet can be used to derive the desired
+> source IP address:
+> 
+>      struct bpf_fib_lookup p = { .ipv4_dst = ip4->daddr };
+> 
+>      ret = bpf_skb_fib_lookup(skb, p, sizeof(p),
+>              BPF_FIB_LOOKUP_SET_SRC | BPF_FIB_LOOKUP_SKIP_NEIGH);
+>      if (ret != BPF_FIB_LKUP_RET_SUCCESS)
+>          return TC_ACT_SHOT;
+> 
+>      /* the p.ipv4_src now contains the source address */
+> 
+> The inability to derive the proper source address may cause malfunctions
+> in BPF-based dataplanes for hosts containing netdevs with more than one
+> routable IP address or for multi-homed hosts.
+> 
+> For example, Cilium implements packet masquerading in BPF. If an
+> egressing netdev to which the Cilium's BPF prog is attached has
+> multiple IP addresses, then only one [hardcoded] IP address can be used for
+> masquerading. This breaks connectivity if any other IP address should have
+> been selected instead, for example, when a public and private addresses
+> are attached to the same egress interface.
+> 
+> The change was tested with Cilium [1].
+> 
+> Nikolay Aleksandrov helped to figure out the IPv6 addr selection.
+> 
+> [1]: https://github.com/cilium/cilium/pull/28283
+> 
+> Signed-off-by: Martynas Pumputis <m@lambda.lt>
+> ---
+>   include/net/ipv6_stubs.h       |  5 +++++
+>   include/uapi/linux/bpf.h       |  9 +++++++++
+>   net/core/filter.c              | 19 ++++++++++++++++++-
+>   net/ipv6/af_inet6.c            |  1 +
+>   tools/include/uapi/linux/bpf.h | 10 ++++++++++
+>   5 files changed, 43 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/net/ipv6_stubs.h b/include/net/ipv6_stubs.h
+> index c48186bf4737..21da31e1dff5 100644
+> --- a/include/net/ipv6_stubs.h
+> +++ b/include/net/ipv6_stubs.h
+> @@ -85,6 +85,11 @@ struct ipv6_bpf_stub {
+>   			       sockptr_t optval, unsigned int optlen);
+>   	int (*ipv6_getsockopt)(struct sock *sk, int level, int optname,
+>   			       sockptr_t optval, sockptr_t optlen);
+> +	int (*ipv6_dev_get_saddr)(struct net *net,
+> +				  const struct net_device *dst_dev,
+> +				  const struct in6_addr *daddr,
+> +				  unsigned int prefs,
+> +				  struct in6_addr *saddr);
+>   };
+>   extern const struct ipv6_bpf_stub *ipv6_bpf_stub __read_mostly;
+>   
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 0448700890f7..a6bf686eecbc 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3257,6 +3257,10 @@ union bpf_attr {
+>    *			and *params*->smac will not be set as output. A common
+>    *			use case is to call **bpf_redirect_neigh**\ () after
+>    *			doing **bpf_fib_lookup**\ ().
+> + *		**BPF_FIB_LOOKUP_SET_SRC**
+> + *			Derive and set source IP addr in *params*->ipv{4,6}_src
+> + *			for the nexthop. If the src addr cannot be derived,
+> + *			**BPF_FIB_LKUP_RET_NO_SRC_ADDR** is returned.
+>    *
+>    *		*ctx* is either **struct xdp_md** for XDP programs or
+>    *		**struct sk_buff** tc cls_act programs.
+> @@ -6953,6 +6957,7 @@ enum {
+>   	BPF_FIB_LOOKUP_OUTPUT  = (1U << 1),
+>   	BPF_FIB_LOOKUP_SKIP_NEIGH = (1U << 2),
+>   	BPF_FIB_LOOKUP_TBID    = (1U << 3),
+> +	BPF_FIB_LOOKUP_SET_SRC = (1U << 4),
 
-Move i_generation above the i_lock, which moves the new 4 byte hole to
-just after the i_fsnotify_mask in my setup.
+bikeshedding: Shorten it to BPF_FIB_LOOKUP_SRC?
 
-Suggested-by: Amir Goldstein <amir73il@gmail.com>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- include/linux/fs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>   };
+>   
+>   enum {
+> @@ -6965,6 +6970,7 @@ enum {
+>   	BPF_FIB_LKUP_RET_UNSUPP_LWT,   /* fwd requires encapsulation */
+>   	BPF_FIB_LKUP_RET_NO_NEIGH,     /* no neighbor entry for nh */
+>   	BPF_FIB_LKUP_RET_FRAG_NEEDED,  /* fragmentation required to fwd */
+> +	BPF_FIB_LKUP_RET_NO_SRC_ADDR,  /* failed to derive IP src addr */
+>   };
+>   
+>   struct bpf_fib_lookup {
+> @@ -6999,6 +7005,9 @@ struct bpf_fib_lookup {
+>   		__u32	rt_metric;
+>   	};
+>   
+> +	/* input: source address to consider for lookup
+> +	 * output: source address result from lookup
+> +	 */
+>   	union {
+>   		__be32		ipv4_src;
+>   		__u32		ipv6_src[4];  /* in6_addr; network order */
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index a094694899c9..f3777ef1840b 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -5850,6 +5850,9 @@ static int bpf_ipv4_fib_lookup(struct net *net, struct bpf_fib_lookup *params,
+>   	params->rt_metric = res.fi->fib_priority;
+>   	params->ifindex = dev->ifindex;
+>   
+> +	if (flags & BPF_FIB_LOOKUP_SET_SRC)
+> +		params->ipv4_src = fib_result_prefsrc(net, &res);
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 485b5e21c8e5..686c9f33e725 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -677,6 +677,7 @@ struct inode {
- 	u32			i_atime_nsec;
- 	u32			i_mtime_nsec;
- 	u32			i_ctime_nsec;
-+	u32			i_generation;
- 	spinlock_t		i_lock;	/* i_blocks, i_bytes, maybe i_size */
- 	unsigned short          i_bytes;
- 	u8			i_blkbits;
-@@ -733,7 +734,6 @@ struct inode {
- 		unsigned		i_dir_seq;
- 	};
- 
--	__u32			i_generation;
- 
- #ifdef CONFIG_FSNOTIFY
- 	__u32			i_fsnotify_mask; /* all events this inode cares about */
--- 
-2.41.0
+Does it need to check 0 and return BPF_FIB_LKUP_RET_NO_SRC_ADDR for v4 also,
+or the fib_result_prefsrc does not fail?
+
+> +
+>   	/* xdp and cls_bpf programs are run in RCU-bh so
+>   	 * rcu_read_lock_bh is not needed here
+>   	 */
+> @@ -5992,6 +5995,19 @@ static int bpf_ipv6_fib_lookup(struct net *net, struct bpf_fib_lookup *params,
+>   	params->rt_metric = res.f6i->fib6_metric;
+>   	params->ifindex = dev->ifindex;
+>   
+> +	if (flags & BPF_FIB_LOOKUP_SET_SRC) {
+> +		if (res.f6i->fib6_prefsrc.plen) {
+> +			*(struct in6_addr *)params->ipv6_src = res.f6i->fib6_prefsrc.addr;
+> +		} else {
+> +			err = ipv6_bpf_stub->ipv6_dev_get_saddr(net, dev,
+> +								&fl6.daddr, 0,
+> +								(struct in6_addr *)
+> +								params->ipv6_src);
+> +			if (err)
+> +				return BPF_FIB_LKUP_RET_NO_SRC_ADDR;
+
+This error also implies BPF_FIB_LKUP_RET_NO_NEIGH. I don't have a clean way of 
+improving the API. May be others have some ideas.
+
+Considering dev has no saddr is probably (?) an unlikely case, it should be ok 
+to leave it as is but at least a comment in the uapi will be needed. Otherwise, 
+the bpf prog may use the 0 dmac as-is.
+
+I feel the current bpf_ipv[46]_fib_lookup helper is doing many things in one 
+function and then requires different BPF_FIB_LOOKUP_* bits to select what/how to 
+do. In the future, it may be worth to consider breaking it into smaller 
+kfunc(s). e.g. the __ipv[46]_neigh_lookup could be in its own kfunc.
+
+> +		}
+> +	}
+> +
+>   	if (flags & BPF_FIB_LOOKUP_SKIP_NEIGH)
+>   		goto set_fwd_params;
+>   
+> @@ -6010,7 +6026,8 @@ static int bpf_ipv6_fib_lookup(struct net *net, struct bpf_fib_lookup *params,
+>   #endif
+>   
+>   #define BPF_FIB_LOOKUP_MASK (BPF_FIB_LOOKUP_DIRECT | BPF_FIB_LOOKUP_OUTPUT | \
+> -			     BPF_FIB_LOOKUP_SKIP_NEIGH | BPF_FIB_LOOKUP_TBID)
+> +			     BPF_FIB_LOOKUP_SKIP_NEIGH | BPF_FIB_LOOKUP_TBID | \
+> +			     BPF_FIB_LOOKUP_SET_SRC)
+>   
+>   BPF_CALL_4(bpf_xdp_fib_lookup, struct xdp_buff *, ctx,
+>   	   struct bpf_fib_lookup *, params, int, plen, u32, flags)
+
 
 
