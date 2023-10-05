@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-11438-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11441-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 489AE7B9D79
-	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 15:45:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB2967B9DA4
+	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 15:52:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sy.mirrors.kernel.org (Postfix) with ESMTP id 438F7B209ED
-	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 13:45:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 76E87282EB5
+	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 13:52:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A286224D6;
-	Thu,  5 Oct 2023 13:45:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F840262A4;
+	Thu,  5 Oct 2023 13:52:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7911F60C
-	for <bpf@vger.kernel.org>; Thu,  5 Oct 2023 13:45:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CBD725119
+	for <bpf@vger.kernel.org>; Thu,  5 Oct 2023 13:52:05 +0000 (UTC)
 Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7DA28123
-	for <bpf@vger.kernel.org>; Thu,  5 Oct 2023 06:45:31 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-	by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 3950CaE4025726
-	for <bpf@vger.kernel.org>; Wed, 4 Oct 2023 20:24:09 -0700
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2B6469B
+	for <bpf@vger.kernel.org>; Thu,  5 Oct 2023 06:52:03 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 395318KG004297
+	for <bpf@vger.kernel.org>; Wed, 4 Oct 2023 23:32:02 -0700
 Received: from maileast.thefacebook.com ([163.114.130.16])
-	by m0001303.ppops.net (PPS) with ESMTPS id 3th7gma7m3-8
+	by m0089730.ppops.net (PPS) with ESMTPS id 3thmv4s7w2-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 04 Oct 2023 20:24:09 -0700
-Received: from twshared27355.37.frc1.facebook.com (2620:10d:c0a8:1c::11) by
+	for <bpf@vger.kernel.org>; Wed, 04 Oct 2023 23:32:01 -0700
+Received: from twshared19681.14.frc2.facebook.com (2620:10d:c0a8:1c::11) by
  mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 4 Oct 2023 20:24:07 -0700
+ 15.1.2507.23; Wed, 4 Oct 2023 23:32:01 -0700
 Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
-	id D4FCD2576602D; Wed,  4 Oct 2023 20:23:55 -0700 (PDT)
+	id 0B213257863C4; Wed,  4 Oct 2023 23:31:54 -0700 (PDT)
 From: Song Liu <song@kernel.org>
 To: <bpf@vger.kernel.org>
 CC: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
         <martin.lau@kernel.org>, <kernel-team@meta.com>,
         Song Liu <song@kernel.org>, Tejun Heo <tj@kernel.org>
 Subject: [PATCH v3 bpf-next] bpf: Avoid unnecessary -EBUSY from htab_lock_bucket
-Date: Wed, 4 Oct 2023 20:23:50 -0700
-Message-ID: <20231005032350.1877318-1-song@kernel.org>
+Date: Wed, 4 Oct 2023 23:31:52 -0700
+Message-ID: <20231005063152.3205800-1-song@kernel.org>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -51,11 +51,11 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: IRBa_xTQ0vjOMafR_GhsjcIFwN_U2oe3
-X-Proofpoint-ORIG-GUID: IRBa_xTQ0vjOMafR_GhsjcIFwN_U2oe3
+X-Proofpoint-GUID: GZYTZUNP-H9g7lwQIfiiD5cqx_e1XR0_
+X-Proofpoint-ORIG-GUID: GZYTZUNP-H9g7lwQIfiiD5cqx_e1XR0_
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-04_13,2023-10-02_01,2023-05-22_02
+ definitions=2023-10-05_03,2023-10-02_01,2023-05-22_02
 X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
 	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
