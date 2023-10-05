@@ -1,120 +1,140 @@
-Return-Path: <bpf+bounces-11454-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11455-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 714157BA357
-	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 17:54:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FF317BA35B
+	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 17:55:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by ny.mirrors.kernel.org (Postfix) with ESMTP id 5A13D1C208F8
-	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 15:54:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 3532E2822B3
+	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 15:55:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D9530D04;
-	Thu,  5 Oct 2023 15:54:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B5B230F9D;
+	Thu,  5 Oct 2023 15:55:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="RdPs6bZC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K2co4MVX"
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D34330D05
-	for <bpf@vger.kernel.org>; Thu,  5 Oct 2023 15:54:31 +0000 (UTC)
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DEC25EC86
-	for <bpf@vger.kernel.org>; Thu,  5 Oct 2023 08:54:07 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3231dff4343so750031f8f.0
-        for <bpf@vger.kernel.org>; Thu, 05 Oct 2023 08:54:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1696521246; x=1697126046; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=F9jgX1V/4Lt7reawNBa64mpmNNW6z5NJmtuZCopzjTg=;
-        b=RdPs6bZCzTnzBDxtlGbBLZYrAXpWrVAqfCJrQjL459cvkqcCFqNtPhHtRBAwn5I8kH
-         nfQAuZhDmuHS1+nDaiCuiLbJR2h1BieddU2ZSBvOt67/EnEtUp3zHl6333g5L3aRABeI
-         c84o55OR0SNgsy338YXtivt4XS5bwzlDpJA5FfaRnPufkbpPg3bOgAdOvCKXtnTihsMj
-         RXxgmzCCTuwjZ1aJD/7JkbJuC6sN/RMEnf3E9Uf/CUT2/2GplY8b1XT8JZFgF/20KZim
-         hBAxChOohMgtPD7eTpDlABCwibgKK+0BuXdrGfpW9kfJNuxzQRyR9eN9OXuBq0WWzjvX
-         J0AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696521246; x=1697126046;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F9jgX1V/4Lt7reawNBa64mpmNNW6z5NJmtuZCopzjTg=;
-        b=WuCp1GfffXzkMq7gPVoq7kHTyo+xpwda9obUnq4aMgNXH4BdXlTGs6KJ9Q291oiYgB
-         EgqWAlYbveizQfeWTO6+CREPoJQKWFEQ7ESBCnEFxZBS1XDwPkdvAgShpvrt3gEqiMHM
-         mNQAqi2ZCUfQ8tJaTDCWd+VgFoReSNYPd1w89DHebcFBgSfL6hlIlY4A5lsXX1wbTV+6
-         DcQppC0hM3Eh5YgvFmVzR3u1Yaka8RVKG8bi7Ip5gReq2hUq1w2eSc6H5cAGO7na8/3B
-         ovjgmKMZzOg/firWbIIzCeTcelff1Y+UlAzzvArSjXqnm6T6AQ0KD6zVjuvxv9avUFDv
-         YQKQ==
-X-Gm-Message-State: AOJu0YxaSpJ73LE2P94CCoHAhyXHQeQu0EIzSfHnD3O56dKmPWXpeKDI
-	gCMxCsHhoh2iaDn3visiztjpfw==
-X-Google-Smtp-Source: AGHT+IH2BebPRq+/LzX2/VVJ5f5eYcre8Nkr1mAjsJbh/Lmum/1uCIr+dEfwSuRrKcNBSRmGFfuaog==
-X-Received: by 2002:a5d:4e42:0:b0:313:f75b:c552 with SMTP id r2-20020a5d4e42000000b00313f75bc552mr2619252wrt.15.1696521246096;
-        Thu, 05 Oct 2023 08:54:06 -0700 (PDT)
-Received: from ?IPV6:2a02:8011:e80c:0:4a49:8ee5:5e5c:cfd5? ([2a02:8011:e80c:0:4a49:8ee5:5e5c:cfd5])
-        by smtp.gmail.com with ESMTPSA id p3-20020a5d4583000000b0032008f99216sm2070696wrq.96.2023.10.05.08.54.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 08:54:05 -0700 (PDT)
-Message-ID: <173829f3-817e-4937-808f-7f9bfc22207f@isovalent.com>
-Date: Thu, 5 Oct 2023 16:54:04 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA08230CF1
+	for <bpf@vger.kernel.org>; Thu,  5 Oct 2023 15:55:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24067C433C7;
+	Thu,  5 Oct 2023 15:55:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1696521354;
+	bh=SIPC1Mp73EwXkbAN9/gPbN2F1Z6TDFvdzsTQ4ZY03dQ=;
+	h=From:Subject:Date:To:Cc:From;
+	b=K2co4MVXsX0raEVNhAq0awY8LcG3w5yI3l/wZnyZGfRLAvT80ZDEBcvv6YITvjYcr
+	 00kAgKOtuXE/ux1hJ1BBKx9eXlkkwRHxsVeCFhPSvjhincMHBw/95lUk+VJO3Wh1hm
+	 PFzrTDj4pxS6Dx1UyPC85fCLY3uuHXdhiu4/kUY8x2GhLResTjE59krrYYyzlJBCoN
+	 KNanDzJjsDlXScvlil9vp5+ItLR5weKcbmZb6xfRgaYgeREFfUHZQkg3LHNE4WWLe1
+	 sBEdBd1IhduYAJKbkhu6lInk437bomEoTvufvi1DArLKLwMoYFT3a9DlUfQgLC5EfS
+	 WyHUqIYNgh6+A==
+From: Benjamin Tissoires <bentiss@kernel.org>
+Subject: [PATCH v3 0/3] selftests/hid: assorted fixes
+Date: Thu, 05 Oct 2023 17:55:31 +0200
+Message-Id: <20230825-wip-selftests-v3-0-639963c54109@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] bpftool: Align bpf_load_and_run_opts insns and
- data
-Content-Language: en-GB
-To: Ian Rogers <irogers@google.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231004222323.3503030-1-irogers@google.com>
- <20231004222323.3503030-2-irogers@google.com>
-From: Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20231004222323.3503030-2-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+X-B4-Tracking: v=1; b=H4sIAHPcHmUC/3WNyw6CMBBFf4V07ZgyWF4r/8OwKDhAY1PIDKKG8
+ O9W9i7PSe49mxJiR6LqZFNMqxM3hQjZKVHdaMNA4O6RFWrMdIkGXm4GId8vJItAZQujsTW5uaC
+ Km9YKQcs2dGNchaf3Uc5MvXsfkVsTeXSyTPw5mmv6s//u1xQ0dGWORV5p1La8PogD+fPEg2r2f
+ f8CxcY7E8AAAAA=
+To: Jiri Kosina <jikos@kernel.org>, 
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
+ Shuah Khan <shuah@kernel.org>, Justin Stitt <justinstitt@google.com>, 
+ Nick Desaulniers <ndesaulniers@google.com>, 
+ Eduard Zingerman <eddyz87@gmail.com>
+Cc: linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+ Benjamin Tissoires <bentiss@kernel.org>, 
+ Shuah Khan <skhan@linuxfoundation.org>
+X-Mailer: b4 0.12.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696521351; l=2800;
+ i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
+ bh=SIPC1Mp73EwXkbAN9/gPbN2F1Z6TDFvdzsTQ4ZY03dQ=;
+ b=zaZ5m2UhLY7gtQNNTXMahtti4JXH9dKv4AZSJBR7TtloTNTI+kYJC5Wfua8smGDoNT4eHkXk0
+ y/Wwat3hT3lD9/tB8vwSij82GRiVd266JJsMbZ0kNt6qUmmNC8U4Ijx
+X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
+ pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-On 04/10/2023 23:23, Ian Rogers wrote:
-> A C string lacks alignment so use aligned arrays to avoid potential
-> alignment problems. Switch to using sizeof (less 1 for the \0
-> terminator) rather than a hardcode size constant.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/bpf/bpftool/gen.c | 47 ++++++++++++++++++++++-------------------
->  1 file changed, 25 insertions(+), 22 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index b8ebcee9bc56..7a545dcabe38 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-> @@ -408,8 +408,8 @@ static void codegen(const char *template, ...)
->  		/* skip baseline indentation tabs */
->  		for (n = skip_tabs; n > 0; n--, src++) {
->  			if (*src != '\t') {
-> -				p_err("not enough tabs at pos %td in template '%s'",
-> -				      src - template - 1, template);
-> +				p_err("not enough tabs at pos %td in template '%s'\n'%s'",
-> +					src - template - 1, template, src);
+And this is the last(?) revision of this series which should now compile
+with or without CONFIG_HID_BPF set.
 
-Nit: This line is no longer aligned with the opening parenthesis.
+I had to do changes because [1] was failing
 
-Other than that:
+Nick, I kept your Tested-by, even if I made small changes in 1/3. Feel
+free to shout if you don't want me to keep it.
 
-Acked-by: Quentin Monnet <quenti@isovalent.com>
+Eduard, You helped us a lot in the review of v1 but never sent your
+Reviewed-by or Acked-by. Do you want me to add one?
+
+Cheers,
+Benjamin
+
+[1] https://gitlab.freedesktop.org/bentiss/hid/-/jobs/49754306
+
+For reference, the v2 cover letter:
+
+| Hi, I am sending this series on behalf of myself and Benjamin Tissoires. There
+| existed an initial n=3 patch series which was later expanded to n=4 and
+| is now back to n=3 with some fixes added in and rebased against
+| mainline.
+|
+| This patch series aims to ensure that the hid/bpf selftests can be built
+| without errors.
+|
+| Here's Benjamin's initial cover letter for context:
+| |  These fixes have been triggered by [0]:
+| |  basically, if you do not recompile the kernel first, and are
+| |  running on an old kernel, vmlinux.h doesn't have the required
+| |  symbols and the compilation fails.
+| |
+| |  The tests will fail if you run them on that very same machine,
+| |  of course, but the binary should compile.
+| |
+| |  And while I was sorting out why it was failing, I realized I
+| |  could do a couple of improvements on the Makefile.
+| |
+| |  [0] https://lore.kernel.org/linux-input/56ba8125-2c6f-a9c9-d498-0ca1c153dcb2@redhat.com/T/#t
+
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+---
+Changes in v3:
+- Also overwrite all of the enum symbols in patch 1/3
+- Link to v2: https://lore.kernel.org/r/20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com
+
+Changes in v2:
+- roll Justin's fix into patch 1/3
+- add __attribute__((preserve_access_index)) (thanks Eduard)
+- rebased onto mainline (2dde18cd1d8fac735875f2e4987f11817cc0bc2c)
+- Link to v1: https://lore.kernel.org/r/20230825-wip-selftests-v1-0-c862769020a8@kernel.org
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/1698
+Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/61
+
+---
+Benjamin Tissoires (3):
+      selftests/hid: ensure we can compile the tests on kernels pre-6.3
+      selftests/hid: do not manually call headers_install
+      selftests/hid: force using our compiled libbpf headers
+
+ tools/testing/selftests/hid/Makefile               | 10 ++-
+ tools/testing/selftests/hid/progs/hid.c            |  3 -
+ .../testing/selftests/hid/progs/hid_bpf_helpers.h  | 77 ++++++++++++++++++++++
+ 3 files changed, 81 insertions(+), 9 deletions(-)
+---
+base-commit: 29aa98d0fe013e2ab62aae4266231b7fb05d47a2
+change-id: 20230825-wip-selftests-9a7502b56542
+
+Best regards,
+-- 
+Benjamin Tissoires <bentiss@kernel.org>
+
 
