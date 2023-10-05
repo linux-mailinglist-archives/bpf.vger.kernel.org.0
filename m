@@ -1,120 +1,96 @@
-Return-Path: <bpf+bounces-11463-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11464-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F19547BA767
-	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 19:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E18F7BA77E
+	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 19:16:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sv.mirrors.kernel.org (Postfix) with ESMTP id A039F281E6D
-	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 17:13:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id BA109281F20
+	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 17:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7CD638F80;
-	Thu,  5 Oct 2023 17:13:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79A4E38FA5;
+	Thu,  5 Oct 2023 17:16:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vN++5Qm9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OQgZ4R74"
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 064AB358B5
-	for <bpf@vger.kernel.org>; Thu,  5 Oct 2023 17:13:44 +0000 (UTC)
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73221BC2
-	for <bpf@vger.kernel.org>; Thu,  5 Oct 2023 10:13:43 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a23fed55d7so17193227b3.2
-        for <bpf@vger.kernel.org>; Thu, 05 Oct 2023 10:13:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696526023; x=1697130823; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/omlxDHCfwpahe9/8c3dPOYRcAgh7OQ4Gdfxm46yJSk=;
-        b=vN++5Qm9aqeqvVV6hhI+yVLG2hbk7TlMWYaUzu09/E8C3oy+X/xxzWtwHnFqRJUuQn
-         buffGuth8hKOViVABbdWfhiBcp1BfqOlOf7R2DynjBFLm6ac2oDEwGpVXpBGNkIJ9ypZ
-         CgvPfRWQY78dDnlQ7KL6E+YQGxNQAt8NuOc/pQq/S1QAFYWIDlRqkWysRZ4KEIxoH1DS
-         fGJoAQy0btMJwuQHmqX5u1w46hczleuL/oL22+H9xxnGjGrI7WziVQ8F90tcEZARk/i4
-         z/bWDYCa2M42vZKh0oU0JexXV777IdQqEkInsdjMuDtNM4np1hQAtWCPvrzNT2Z2nL8l
-         dGCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696526023; x=1697130823;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/omlxDHCfwpahe9/8c3dPOYRcAgh7OQ4Gdfxm46yJSk=;
-        b=p4ENAPlSc9Rw/UIrsbb7Pn37C7ymoegwrK+71xZWsoHoRDxbMkcASn/3cFb9zYwzw4
-         ZsM3thOoJWi7ZPVoxmCeLAIh5dZQwxcbmzavh5tt6ci+M5/LyHzWUuJAaX5WEDefleUY
-         az/pD/oobpCC7i21jAesER9/MaU/uR+3JcFBUKyCNYqGgeW75ybFFgEFokfDhUVV75wu
-         93t95gbblTJcUa0cSHBsLAXZVbr0H7ogmEU8thpF2Yvv2sWr4A1cTKIj+DDmGw+6ILRc
-         rCBHc+kUJ3dv1Wgf9lwyam3+nrZjXRIaKamLMfMMKMZw3hrDOQV13zkJfceuyPkPl3a9
-         QXcA==
-X-Gm-Message-State: AOJu0YwjAJBVAUgPSkkYBvsWYgEjbxC1t+PcoGZt6K95dz6XubhGMcV5
-	EaO+waaBnXhvQpRykOoEw6JevR0=
-X-Google-Smtp-Source: AGHT+IGsFsx2Mojp5kVJso71Q3aisy60LP1GCjAS11QWB/pkxB/FxhCRYkZbUF5Gqji6qMiAh4qD3eo=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a81:8d49:0:b0:592:8069:540a with SMTP id
- w9-20020a818d49000000b005928069540amr101738ywj.8.1696526023011; Thu, 05 Oct
- 2023 10:13:43 -0700 (PDT)
-Date: Thu, 5 Oct 2023 10:13:40 -0700
-In-Reply-To: <20231005083953.1281-2-laoar.shao@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6911358B5;
+	Thu,  5 Oct 2023 17:16:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6398EC433CA;
+	Thu,  5 Oct 2023 17:16:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1696526166;
+	bh=6TQPomYGzW80iUud7BEbLiiItfun6wvVQP2bFLm/bWs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=OQgZ4R74PH/6FVF4WXTtHbAPY4fs3kBrO1oPh4677MYWPjNQRLnppFa63YkDQtCZV
+	 lDT+5a+MV1b275EQ5LYdUwoj2juDbcHv3LlqDGJhZlkg6CnMLpXX2NbCoSAdhiQevH
+	 J0VuMf0Jp7gW6AjCHUnH2ScMM6/y60bnSr3nJI38IKuFSw/ExgOy7xj6bIRIfWZ4mr
+	 AftudFVaHtmN05gZZa1Vqfu65P64Cv+Ri8n3duDa3yt1/1XeCJ94VduIV9OWCQHkjz
+	 LU5JbVwIB7UJ2HDjLDyrt2gCs5iPYbaJ6JZS9pqZCy1v/XIr/kbfl1vVhKJiT9bEiX
+	 rMPagj8eXtI1A==
+Date: Thu, 5 Oct 2023 10:16:04 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: Larysa Zaremba <larysa.zaremba@intel.com>, <bpf@vger.kernel.org>,
+ <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+ <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+ <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+ <haoluo@google.com>, <jolsa@kernel.org>, David Ahern <dsahern@gmail.com>,
+ Willem de Bruijn <willemb@google.com>, Jesper Dangaard Brouer
+ <brouer@redhat.com>, Anatoly Burakov <anatoly.burakov@intel.com>,
+ "Alexander Lobakin" <alexandr.lobakin@intel.com>, Magnus Karlsson
+ <magnus.karlsson@gmail.com>, Maryam Tahhan <mtahhan@redhat.com>,
+ <xdp-hints@xdp-project.net>, <netdev@vger.kernel.org>, Willem de Bruijn
+ <willemdebruijn.kernel@gmail.com>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, Simon Horman <simon.horman@corigine.com>,
+ Tariq Toukan <tariqt@mellanox.com>, Saeed Mahameed <saeedm@mellanox.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: Re: [xdp-hints] Re: [RFC bpf-next v2 09/24] xdp: Add VLAN tag hint
+Message-ID: <20231005101604.33b382d8@kernel.org>
+In-Reply-To: <e4bbe997-326f-b6cf-b6d6-f0a24f5aef39@intel.com>
+References: <20230927075124.23941-1-larysa.zaremba@intel.com>
+	<20230927075124.23941-10-larysa.zaremba@intel.com>
+	<20231003053519.74ae8938@kernel.org>
+	<8e9d830b-556b-b8e6-45df-0bf7971b4237@intel.com>
+	<20231004110850.5501cd52@kernel.org>
+	<e4bbe997-326f-b6cf-b6d6-f0a24f5aef39@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231005083953.1281-1-laoar.shao@gmail.com> <20231005083953.1281-2-laoar.shao@gmail.com>
-Message-ID: <ZR7uxCMaWlfEBkBJ@google.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add selftest for sleepable bpf_task_under_cgroup()
-From: Stanislav Fomichev <sdf@google.com>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, haoluo@google.com, 
-	jolsa@kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 10/05, Yafang Shao wrote:
-> The result as follows,
+On Thu, 5 Oct 2023 18:58:33 +0200 Alexander Lobakin wrote:
+> > No unsharing - you can still strip it in the driver.  
 > 
->   $ tools/testing/selftests/bpf/test_progs --name=task_under_cgroup
->   #237     task_under_cgroup:OK
->   Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> And no error messages in dmesg.
-> 
-> Without the prev patch, there will be RCU warnings in dmesg.
-> 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> ---
->  .../selftests/bpf/prog_tests/task_under_cgroup.c   |  8 +++++--
->  .../selftests/bpf/progs/test_task_under_cgroup.c   | 28 +++++++++++++++++++++-
->  2 files changed, 33 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c b/tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c
-> index 4224727..d1a5a5c 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c
-> @@ -30,8 +30,12 @@ void test_task_under_cgroup(void)
->  	if (!ASSERT_OK(ret, "test_task_under_cgroup__load"))
->  		goto cleanup;
->  
-> -	ret = test_task_under_cgroup__attach(skel);
-> -	if (!ASSERT_OK(ret, "test_task_under_cgroup__attach"))
-> +	skel->links.lsm_run = bpf_program__attach_lsm(skel->progs.lsm_run);
-> +	if (!ASSERT_OK_PTR(skel->links.lsm_run, "attach_lsm"))
-> +		goto cleanup;
-> +
+> Nobody manually strips VLAN tags in the drivers. You either have HW
+> stripping or pass VLAN-tagged skb to the stack, so that skb_vlan_untag()
+> takes care of it.
 
-So we rely on the second attach here to trigger the program above?
-Maybe add a comment? Otherwise we might risk loosing this dependency
-after some refactoring...
+Isn't it just a case of circular logic tho?
+We don't optimize the stack for SW stripping because HW does it.
+Then HW does it because SW is not optimized.
 
-Other than that, both patches look good to me, feel free to use for both
-if/when you resend:
+> > Do you really think that for XDP kfunc call will be cheaper?  
+> 
+> Wait, you initially asked:
+> 
+> * discussion about the validity of VLAN stripping as an offload?
+> * Do people actually care about having it enabled?
+> 
+> I did read this as "do we still need HW VLAN stripping in general?", not
+> only for XDP. So I replied for "in general" -- yes.
+> Forcefully disabling stripping when XDP is active is obscure IMO, let
+> the user decide.
 
-Acked-by: Stanislav Fomichev <sdf@google.com>
+Every time I'm involved in conversations about NIC datapath host
+interfaces I cringe at this stupid VLAN offload. Maybe I'm too
+daft to understand it's amazing value but we just shift 2B from
+the packet to the descriptor and then we have to worry about all
+the corner cases that come from vlan stacking :(
 
