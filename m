@@ -1,154 +1,140 @@
-Return-Path: <bpf+bounces-11435-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11438-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D52E7B9CBA
-	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 13:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 489AE7B9D79
+	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 15:45:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sy.mirrors.kernel.org (Postfix) with ESMTP id B10B1B20996
-	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 11:26:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTP id 438F7B209ED
+	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 13:45:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3683F12B9B;
-	Thu,  5 Oct 2023 11:26:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sxSa8gwE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A286224D6;
+	Thu,  5 Oct 2023 13:45:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A31311CA6
-	for <bpf@vger.kernel.org>; Thu,  5 Oct 2023 11:26:26 +0000 (UTC)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD1524E8C
-	for <bpf@vger.kernel.org>; Thu,  5 Oct 2023 04:26:24 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-406402933edso7296705e9.2
-        for <bpf@vger.kernel.org>; Thu, 05 Oct 2023 04:26:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696505183; x=1697109983; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OIoVj/vy/Hhfr+/0m/hFD6cIq0HW6TEhAF0rpYQmF/Q=;
-        b=sxSa8gwEU2bJQV8BFuRm8xcA9prs1pTumWXh6IjDwCcIcms9rJjmGt7LfNez0S6XSn
-         pkpI8Gx+xLfo7cx5cjcxo7b7t/BGcuQPLUJQAX0tzzXIkI9hkPp3u4PlwVOXiSXqbHZm
-         EPSkxhT5mvtU499qw/Ci794aLOROpTQZ2v8O5EJRUp078hPb2C47Y1rVsuMb2xWSP6kp
-         YeZM+zZ23xHpm+Ae0IhWsOdx3AANVYm+ormTc/+7QcehhjP7JletgwinC94yDAljdA7E
-         J+IrJ513ji8+BpOxjuAUL2/NXwO1TBU7gVm/vpQJkmre+fF3HOlr/NylFGbS9a2lVNs2
-         Gq4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696505183; x=1697109983;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OIoVj/vy/Hhfr+/0m/hFD6cIq0HW6TEhAF0rpYQmF/Q=;
-        b=xD41yUQq7nU8XzMJw4wxC7xu/Qv2zWVfFSu9I9glCSYUvJUQGGRoBouNgxjMDivdtu
-         c5QdEiplLf/OxjN6f5HqEaGpYE4W3g9m4Pk7vYkQfnShJUwnQI599/5fxyco2q5NNRwn
-         8OrA7DAzHhYnI6oHfD+UdPw7ZmuJ0VT4MobGir9SRSEnCA8dO1aRT2wQrtVsQwp6ksm5
-         7kdm5bSQjHLECqPsfsKlSHseh9cwA/2dKItkXMjWPZbY/QzUV75XcVJEX38vggFpBsS2
-         8t9bvWK771Ya0OIK20PYTg9QstonMB3ddhTJE3uHDxYkdqURFimdG910BxHGT3K96dPN
-         CmCQ==
-X-Gm-Message-State: AOJu0Yw0kjSKQUb/Fise7NkjcyCuFw9D5foUej6DVkxt0giiT5PND68b
-	F9M3mo6rFiUJCwIvRDfoA0fzvGF2TViCHqyXivA=
-X-Google-Smtp-Source: AGHT+IHV/0U0tPheZ+n2tRuJTVjDaXfN/KItCLS2BjT7QFkuspBqhUW2+Fo63oVhCbRZkWcVtLYIiw==
-X-Received: by 2002:a5d:5912:0:b0:31f:f11b:8b68 with SMTP id v18-20020a5d5912000000b0031ff11b8b68mr4011493wrd.71.1696505183048;
-        Thu, 05 Oct 2023 04:26:23 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id k12-20020a5d628c000000b003233a31a467sm1578885wru.34.2023.10.05.04.26.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 04:26:22 -0700 (PDT)
-Date: Thu, 5 Oct 2023 14:26:19 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: brauner@kernel.org
-Cc: bpf@vger.kernel.org
-Subject: [bug report] file: convert to SLAB_TYPESAFE_BY_RCU
-Message-ID: <abcd771c-61f8-479b-ab15-af2f5b3ce896@moroto.mountain>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7911F60C
+	for <bpf@vger.kernel.org>; Thu,  5 Oct 2023 13:45:32 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7DA28123
+	for <bpf@vger.kernel.org>; Thu,  5 Oct 2023 06:45:31 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+	by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 3950CaE4025726
+	for <bpf@vger.kernel.org>; Wed, 4 Oct 2023 20:24:09 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by m0001303.ppops.net (PPS) with ESMTPS id 3th7gma7m3-8
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Wed, 04 Oct 2023 20:24:09 -0700
+Received: from twshared27355.37.frc1.facebook.com (2620:10d:c0a8:1c::11) by
+ mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Wed, 4 Oct 2023 20:24:07 -0700
+Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
+	id D4FCD2576602D; Wed,  4 Oct 2023 20:23:55 -0700 (PDT)
+From: Song Liu <song@kernel.org>
+To: <bpf@vger.kernel.org>
+CC: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <martin.lau@kernel.org>, <kernel-team@meta.com>,
+        Song Liu <song@kernel.org>, Tejun Heo <tj@kernel.org>
+Subject: [PATCH v3 bpf-next] bpf: Avoid unnecessary -EBUSY from htab_lock_bucket
+Date: Wed, 4 Oct 2023 20:23:50 -0700
+Message-ID: <20231005032350.1877318-1-song@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: IRBa_xTQ0vjOMafR_GhsjcIFwN_U2oe3
+X-Proofpoint-ORIG-GUID: IRBa_xTQ0vjOMafR_GhsjcIFwN_U2oe3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-04_13,2023-10-02_01,2023-05-22_02
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello Christian Brauner,
+htab_lock_bucket uses the following logic to avoid recursion:
 
-The patch d089d9d056c0: "file: convert to SLAB_TYPESAFE_BY_RCU" from
-Sep 29, 2023 (linux-next), leads to the following Smatch static
-checker warning:
+1. preempt_disable();
+2. check percpu counter htab->map_locked[hash] for recursion;
+   2.1. if map_lock[hash] is already taken, return -BUSY;
+3. raw_spin_lock_irqsave();
 
-	kernel/bpf/task_iter.c:302 task_file_seq_get_next()
-	warn: ignoring unreachable code.
+However, if an IRQ hits between 2 and 3, BPF programs attached to the IRQ
+logic will not able to access the same hash of the hashtab and get -EBUSY=
+.
+This -EBUSY is not really necessary. Fix it by disabling IRQ before
+checking map_locked:
 
-kernel/bpf/task_iter.c
-    258 static struct file *
-    259 task_file_seq_get_next(struct bpf_iter_seq_task_file_info *info)
-    260 {
-    261         u32 saved_tid = info->tid;
-    262         struct task_struct *curr_task;
-    263         unsigned int curr_fd = info->fd;
-    264 
-    265         /* If this function returns a non-NULL file object,
-    266          * it held a reference to the task/file.
-    267          * Otherwise, it does not hold any reference.
-    268          */
-    269 again:
-    270         if (info->task) {
-    271                 curr_task = info->task;
-    272                 curr_fd = info->fd;
-    273         } else {
-    274                 curr_task = task_seq_get_next(&info->common, &info->tid, true);
-    275                 if (!curr_task) {
-    276                         info->task = NULL;
-    277                         return NULL;
-    278                 }
-    279 
-    280                 /* set info->task */
-    281                 info->task = curr_task;
-    282                 if (saved_tid == info->tid)
-    283                         curr_fd = info->fd;
-    284                 else
-    285                         curr_fd = 0;
-    286         }
-    287 
-    288         rcu_read_lock();
-    289         for (;; curr_fd++) {
-    290                 struct file *f;
-    291                 f = task_lookup_next_fdget_rcu(curr_task, &curr_fd);
-    292                 if (!f)
-    293                         continue;
+1. preempt_disable();
+2. local_irq_save();
+3. check percpu counter htab->map_locked[hash] for recursion;
+   3.1. if map_lock[hash] is already taken, return -BUSY;
+4. raw_spin_lock().
 
-Should this be a break?
+Similarly, use raw_spin_unlock() and local_irq_restore() in
+htab_unlock_bucket().
 
-    294 
-    295                 /* set info->fd */
-    296                 info->fd = curr_fd;
-    297                 rcu_read_unlock();
-    298                 return f;
-    299         }
-    300 
-    301         /* the current task is done, go to the next task */
---> 302         rcu_read_unlock();
+Suggested-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Song Liu <song@kernel.org>
 
-Unreachable
+---
+Changes in v3:
+1. Use raw_local_irq_* APIs instead.
 
-    303         put_task_struct(curr_task);
-    304 
-    305         if (info->common.type == BPF_TASK_ITER_TID) {
-    306                 info->task = NULL;
-    307                 return NULL;
-    308         }
-    309 
-    310         info->task = NULL;
-    311         info->fd = 0;
-    312         saved_tid = ++(info->tid);
-    313         goto again;
-    314 }
+Changes in v2:
+1. Use raw_spin_unlock() and local_irq_restore() in htab_unlock_bucket().
+   (Andrii)
+---
+ kernel/bpf/hashtab.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-regards,
-dan carpenter
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index a8c7e1c5abfa..74c8d1b41dd5 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -155,13 +155,15 @@ static inline int htab_lock_bucket(const struct bpf=
+_htab *htab,
+ 	hash =3D hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets - 1);
+=20
+ 	preempt_disable();
++	raw_local_irq_save(flags);
+ 	if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) !=3D 1)) =
+{
+ 		__this_cpu_dec(*(htab->map_locked[hash]));
++		raw_local_irq_restore(flags);
+ 		preempt_enable();
+ 		return -EBUSY;
+ 	}
+=20
+-	raw_spin_lock_irqsave(&b->raw_lock, flags);
++	raw_spin_lock(&b->raw_lock);
+ 	*pflags =3D flags;
+=20
+ 	return 0;
+@@ -172,8 +174,9 @@ static inline void htab_unlock_bucket(const struct bp=
+f_htab *htab,
+ 				      unsigned long flags)
+ {
+ 	hash =3D hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets - 1);
+-	raw_spin_unlock_irqrestore(&b->raw_lock, flags);
++	raw_spin_unlock(&b->raw_lock);
+ 	__this_cpu_dec(*(htab->map_locked[hash]));
++	raw_local_irq_restore(flags);
+ 	preempt_enable();
+ }
+=20
+--=20
+2.34.1
+
 
