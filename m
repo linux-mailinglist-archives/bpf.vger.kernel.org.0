@@ -1,73 +1,73 @@
-Return-Path: <bpf+bounces-11479-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11480-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C39217BAB5B
-	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 22:18:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01ED77BAB64
+	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 22:20:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sy.mirrors.kernel.org (Postfix) with ESMTP id 9D815B209EB
-	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 20:18:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTP id 00C3C282239
+	for <lists+bpf@lfdr.de>; Thu,  5 Oct 2023 20:20:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA88B41E3F;
-	Thu,  5 Oct 2023 20:18:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021F941E45;
+	Thu,  5 Oct 2023 20:20:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lambda.lt header.i=@lambda.lt header.b="V39Wov9D";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Wpm9wjfn"
+	dkim=pass (2048-bit key) header.d=lambda.lt header.i=@lambda.lt header.b="dKEECoC2";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Z+g+Mp1n"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985C84174F;
-	Thu,  5 Oct 2023 20:18:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B8454176D;
+	Thu,  5 Oct 2023 20:20:29 +0000 (UTC)
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696309F;
-	Thu,  5 Oct 2023 13:18:10 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BD298;
+	Thu,  5 Oct 2023 13:20:27 -0700 (PDT)
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.nyi.internal (Postfix) with ESMTP id 1FEF85C0429;
-	Thu,  5 Oct 2023 16:18:07 -0400 (EDT)
+	by mailout.nyi.internal (Postfix) with ESMTP id 558585C04D2;
+	Thu,  5 Oct 2023 16:20:27 -0400 (EDT)
 Received: from imap43 ([10.202.2.93])
-  by compute6.internal (MEProxy); Thu, 05 Oct 2023 16:18:07 -0400
+  by compute6.internal (MEProxy); Thu, 05 Oct 2023 16:20:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lambda.lt; h=cc
 	:cc:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm1; t=1696537087; x=1696623487; bh=xc
-	GEVcpZ/lKGP4/o+zI/bWDktQxyuUosIyx4qc3jYek=; b=V39Wov9DqVykP+PJ1/
-	WKQPuMWnybkmfn6eHKw0enF9sIlIGZd0bE5vpg/a5LiHI2Tv2mZEWUl470DFH9hD
-	fz9EyHjDgvK7X+vJcMZd4rPbHfziFBf2q2F5w1I8fzNxU2tQuR2zzT9jjT/ruoWc
-	9GaSiSOWWCT65ijbuVvFPnt1d8Eq9+edY+gaSrf7RTp0On2L0sEnjyTdMya/yZNE
-	pZ5XZ7rgJN7qGJxAZqqT3c2GvT4MMSah/Q9Qj71Iv3dM2Ev/HgPZ6k4m0vlzz/ON
-	9IoyESQHWeGcTaVq3fRXI0BcK1l7Iu5vrMPUuOMSHIyH3OMx7O6xrXSx+BGIisAT
-	jnxg==
+	:subject:subject:to:to; s=fm1; t=1696537227; x=1696623627; bh=7q
+	DwL5nQoNfO0uEcE4w1PDX0y9Y5YfF15iKr60JbeoE=; b=dKEECoC2+XpmQ6lcqD
+	i9SKP6srKUnYeRZ8upjjaHP0Ucer7KruKDBtv3ThiLGlZyqwFtj8qQW2sspJRVdg
+	m0K+Gki8hMZ1OS8uWC8u/i+jE/fzjc+mG/kRClrAAaAd+s194doBbAZfSal0cYO5
+	SUPyIf0tEIpDdLoimVgzZ5giCSn2PInSMhBpai2Q/9srGVCdU13VrzdpTwA08zv8
+	qRLm+zQIUB20kFAsCZpNj0sadidu+jBvDgPUZlVgndcpY5Wr5M+WZKejTuSSphDN
+	S/DqBXOcXQkGrVIn5Bnrcm8EfBCc8Gr1Iia6XQ+wbDikNZ9JFVn/hTbl0wwrhM3d
+	z1sQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:sender:subject
 	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm2; t=1696537087; x=1696623487; bh=xcGEVcpZ/lKGP
-	4/o+zI/bWDktQxyuUosIyx4qc3jYek=; b=Wpm9wjfnlHrthsD7tRALjjMEMQca/
-	nQEZ9hJovkUbjS9V7QRh5wRv4v9eht7cqZBB3Y9AW1BURJ9jB7W3q1AerNyysuSC
-	ErAJI0VkdegeBpcBmelt+Nk3Vf8oerEdpvffNY1GC9EpvFl/i0jsZsfVhAdCFGd3
-	vBmgv84s//aDjqc1UCjwqzAEEgcdUVZHfA6OHo+8yvS+8PxGpQnBIf+ViuPQvo27
-	Mw2/n7NS3OmKGJSS7SVjkMcEjyEPCi2d474qVRZ48VGAF3kd0Tqe+BWs3JG3TDib
-	nH8YhSAUfKFA0gKJ+WIPJ+45XyRAKUZrIRLP5YKsblhlBhsSdVzp6qJ1g==
-X-ME-Sender: <xms:_hkfZQhuLJRUSdNOn1tQeVb5yOzhbdFCQ2x-BGg0AM2TfGc4OD2S0w>
-    <xme:_hkfZZAlHKmTSWCNdIdwRcOo_0O6IY_2K02AyM6Uc0fbmuVK9GpD1VvsDi3FPoYb9
-    ZSWN7vw1eJ_hhgYc7Y>
+	:x-sasl-enc; s=fm2; t=1696537227; x=1696623627; bh=7qDwL5nQoNfO0
+	uEcE4w1PDX0y9Y5YfF15iKr60JbeoE=; b=Z+g+Mp1nFFjO88sGUV336Sli5beE0
+	nlpKPDjDORGOPNTXBs1PX7Tl6KoRVXXt31FxR7Eo+oaakvg9bC5IeouTDhwQa1IT
+	sW1AYf/Ap3qPIucw8Qt9DDc4w4jzm4+YdgI1WWb3R+8HomAouXLyV8ithm21l7cm
+	26nK79fnQymQXvzLYPpxJ32ct+S2M1nFJHB9nUnGQiiGPKCgGhBuWYsFOonB5iGF
+	4AHGUNobkdjwaIXcPEcsq0r/w94X0AIrSWZlcLyjSYdga3tMxO/tRclTvH+zuB/A
+	B9FfQlpvkn3skYmz5kQC5bQZ5cMw+JixQiP1B2xOQnHYOP81j+5ESNVFg==
+X-ME-Sender: <xms:ixofZb6qHtDZsRKvPdzVyYCiEXaePUWy9MxD2SbgV4wubGUnOaIjDg>
+    <xme:ixofZQ6Dk53hPqI8blKfP8lpZXjARKh9HpnDIVC6Zgp4rRyzP1xi3Pa23qK7fNb_L
+    pUJVwnbPahdLb9usrc>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrgeeggddugeefucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpeforghr
-    thihnhgrshcuoehmsehlrghmsggurgdrlhhtqeenucggtffrrghtthgvrhhnpeffvdejie
-    dtgfegkeetjedvhfeuieevuefhvdefveduleffveevjefgveekjeehheenucffohhmrghi
-    nhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepmheslhgrmhgsuggrrdhlth
-X-ME-Proxy: <xmx:_hkfZYG228JjlhikLXDA2-Y27ZDJmsVTo2cgdR6Wo-OprN6PSMX8Kw>
-    <xmx:_hkfZRQHVL_JjPURrOZpu4ilk9JtLHjg53chrZUH2kKEupufiVVsng>
-    <xmx:_hkfZdy_1g81guML5hbJ5ccwo0tCgNl4867Otpizi5ECtE_uYseRCA>
-    <xmx:_xkfZY9sb4fCPIIAqNDAdmA4WHWr5M5d_i8uR2GGJvXKL4chYUfMAg>
+    thihnhgrshcuoehmsehlrghmsggurgdrlhhtqeenucggtffrrghtthgvrhhnpeduueekje
+    effeejvdeitdevgfekjeegfeduueffveeikeeifeelffevieefueduieenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmsehlrghmsggurgdrlh
+    ht
+X-ME-Proxy: <xmx:ixofZSe51YuPqRnbr5nPocQEye3f7sPsTiSFvCMUudljLPBszwAoHg>
+    <xmx:ixofZcJLMFXVxWhT6XEShNOXiPaqOtvjY-fVttrb2e-CsV1X_MrbPw>
+    <xmx:ixofZfJRvPhDCjdkVznIZ53DQ6Cgkgem0RAk-Ww91v5M9UMzenP36A>
+    <xmx:ixofZWXr8OmmUDZVylqANLFsFtiYfXMyA1vCD6JYKraWEsIv4Va5dA>
 Feedback-ID: i215944fb:Fastmail
 Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 930F72D42D87; Thu,  5 Oct 2023 16:18:06 -0400 (EDT)
+	id 0D7F82D42D87; Thu,  5 Oct 2023 16:20:27 -0400 (EDT)
 X-Mailer: MessagingEngine.com Webmail Interface
 User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
 Precedence: bulk
@@ -76,17 +76,17 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <e7b992e3-8059-4058-8561-cb017c200c8d@app.fastmail.com>
-In-Reply-To: <5bef21a3-18c0-e335-d64e-bcd6f1e304a4@linux.dev>
+Message-Id: <203643c3-4ea5-40a8-bd74-d4bde8deba2d@app.fastmail.com>
+In-Reply-To: <4f49a99a-bd46-ef77-036c-81b308f2ee92@linux.dev>
 References: <20231003071013.824623-1-m@lambda.lt>
- <20231003071013.824623-2-m@lambda.lt>
- <5bef21a3-18c0-e335-d64e-bcd6f1e304a4@linux.dev>
-Date: Thu, 05 Oct 2023 22:16:53 +0200
+ <20231003071013.824623-3-m@lambda.lt>
+ <4f49a99a-bd46-ef77-036c-81b308f2ee92@linux.dev>
+Date: Thu, 05 Oct 2023 22:19:48 +0200
 From: Martynas <m@lambda.lt>
 To: "Martin KaFai Lau" <martin.lau@linux.dev>
 Cc: "Daniel Borkmann" <daniel@iogearbox.net>, netdev <netdev@vger.kernel.org>,
  "Nikolay Aleksandrov" <razor@blackwall.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf v2 1/2] bpf: Derive source IP addr via bpf_*_fib_lookup()
+Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: Add BPF_FIB_LOOKUP_SET_SRC tests
 Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -95,184 +95,187 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Thanks for the review.
 
-On Wed, Oct 4, 2023, at 10:09 PM, Martin KaFai Lau wrote:
+
+On Thu, Oct 5, 2023, at 12:02 AM, Martin KaFai Lau wrote:
 > On 10/3/23 12:10 AM, Martynas Pumputis wrote:
->> Extend the bpf_fib_lookup() helper by making it to return the source
->> IPv4/IPv6 address if the BPF_FIB_LOOKUP_SET_SRC flag is set.
+>> This patch extends the existing fib_lookup test suite by adding two test
+>> cases (for each IP family):
 >> 
->> For example, the following snippet can be used to derive the desired
->> source IP address:
->> 
->>      struct bpf_fib_lookup p = { .ipv4_dst = ip4->daddr };
->> 
->>      ret = bpf_skb_fib_lookup(skb, p, sizeof(p),
->>              BPF_FIB_LOOKUP_SET_SRC | BPF_FIB_LOOKUP_SKIP_NEIGH);
->>      if (ret != BPF_FIB_LKUP_RET_SUCCESS)
->>          return TC_ACT_SHOT;
->> 
->>      /* the p.ipv4_src now contains the source address */
->> 
->> The inability to derive the proper source address may cause malfunctions
->> in BPF-based dataplanes for hosts containing netdevs with more than one
->> routable IP address or for multi-homed hosts.
->> 
->> For example, Cilium implements packet masquerading in BPF. If an
->> egressing netdev to which the Cilium's BPF prog is attached has
->> multiple IP addresses, then only one [hardcoded] IP address can be used for
->> masquerading. This breaks connectivity if any other IP address should have
->> been selected instead, for example, when a public and private addresses
->> are attached to the same egress interface.
->> 
->> The change was tested with Cilium [1].
->> 
->> Nikolay Aleksandrov helped to figure out the IPv6 addr selection.
->> 
->> [1]: https://github.com/cilium/cilium/pull/28283
+>> * Test source IP selection when default route is used.
+>
+> It will be helpful to reword "default route". I was looking in the patch for a 
+> new route addition like "default via xxx". I think the test is reusing the 
+> existing prefix route "/24" and "/64".  This is to test the address selection 
+> from the dev.
+>
+
+Yep, I will change to that.
+
+>> * Test source IP selection when an IP route has a preferred src IP addr.
 >> 
 >> Signed-off-by: Martynas Pumputis <m@lambda.lt>
 >> ---
->>   include/net/ipv6_stubs.h       |  5 +++++
->>   include/uapi/linux/bpf.h       |  9 +++++++++
->>   net/core/filter.c              | 19 ++++++++++++++++++-
->>   net/ipv6/af_inet6.c            |  1 +
->>   tools/include/uapi/linux/bpf.h | 10 ++++++++++
->>   5 files changed, 43 insertions(+), 1 deletion(-)
+>>   .../selftests/bpf/prog_tests/fib_lookup.c     | 76 +++++++++++++++++--
+>>   1 file changed, 70 insertions(+), 6 deletions(-)
 >> 
->> diff --git a/include/net/ipv6_stubs.h b/include/net/ipv6_stubs.h
->> index c48186bf4737..21da31e1dff5 100644
->> --- a/include/net/ipv6_stubs.h
->> +++ b/include/net/ipv6_stubs.h
->> @@ -85,6 +85,11 @@ struct ipv6_bpf_stub {
->>   			       sockptr_t optval, unsigned int optlen);
->>   	int (*ipv6_getsockopt)(struct sock *sk, int level, int optname,
->>   			       sockptr_t optval, sockptr_t optlen);
->> +	int (*ipv6_dev_get_saddr)(struct net *net,
->> +				  const struct net_device *dst_dev,
->> +				  const struct in6_addr *daddr,
->> +				  unsigned int prefs,
->> +				  struct in6_addr *saddr);
->>   };
->>   extern const struct ipv6_bpf_stub *ipv6_bpf_stub __read_mostly;
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/fib_lookup.c b/tools/testing/selftests/bpf/prog_tests/fib_lookup.c
+>> index 2fd05649bad1..1b0ab1dbd4f1 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/fib_lookup.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/fib_lookup.c
+>> @@ -11,9 +11,13 @@
 >>   
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 0448700890f7..a6bf686eecbc 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -3257,6 +3257,10 @@ union bpf_attr {
->>    *			and *params*->smac will not be set as output. A common
->>    *			use case is to call **bpf_redirect_neigh**\ () after
->>    *			doing **bpf_fib_lookup**\ ().
->> + *		**BPF_FIB_LOOKUP_SET_SRC**
->> + *			Derive and set source IP addr in *params*->ipv{4,6}_src
->> + *			for the nexthop. If the src addr cannot be derived,
->> + *			**BPF_FIB_LKUP_RET_NO_SRC_ADDR** is returned.
->>    *
->>    *		*ctx* is either **struct xdp_md** for XDP programs or
->>    *		**struct sk_buff** tc cls_act programs.
->> @@ -6953,6 +6957,7 @@ enum {
->>   	BPF_FIB_LOOKUP_OUTPUT  = (1U << 1),
->>   	BPF_FIB_LOOKUP_SKIP_NEIGH = (1U << 2),
->>   	BPF_FIB_LOOKUP_TBID    = (1U << 3),
->> +	BPF_FIB_LOOKUP_SET_SRC = (1U << 4),
+>>   #define NS_TEST			"fib_lookup_ns"
+>>   #define IPV6_IFACE_ADDR		"face::face"
+>> +#define IPV6_IFACE_ADDR_SEC	"cafe::cafe"
 >
-> bikeshedding: Shorten it to BPF_FIB_LOOKUP_SRC?
+> SEC stands for secondary?
+>
+
+Yep, for secondary. IPV6_IFACE_ADDR_SECONDARY felt a bit too long.
+
+>> +#define IPV6_ADDR_DST		"face::3"
+>>   #define IPV6_NUD_FAILED_ADDR	"face::1"
+>>   #define IPV6_NUD_STALE_ADDR	"face::2"
+>>   #define IPV4_IFACE_ADDR		"10.0.0.254"
+>> +#define IPV4_IFACE_ADDR_SEC	"10.1.0.254"
+>> +#define IPV4_ADDR_DST		"10.2.0.254"
+>>   #define IPV4_NUD_FAILED_ADDR	"10.0.0.1"
+>>   #define IPV4_NUD_STALE_ADDR	"10.0.0.2"
+>>   #define IPV4_TBID_ADDR		"172.0.0.254"
+>> @@ -31,6 +35,8 @@ struct fib_lookup_test {
+>>   	const char *desc;
+>>   	const char *daddr;
+>>   	int expected_ret;
+>> +	const char *expected_ipv4_src;
+>> +	const char *expected_ipv6_src;
+>
+> Instead of two members, can it be one "expected_src" member which is 
+> v4/v6 
+> agnoastic (similar to the "daddr" above)? The logic needs to be a 
+> little smarter 
+> for one time but the future test additions will be easier and less 
+> error prone.
+>
 
 SGTM.
 
->
+>>   	int lookup_flags;
+>>   	__u32 tbid;
+>>   	__u8 dmac[6];
+>> @@ -69,6 +75,22 @@ static const struct fib_lookup_test tests[] = {
+>>   	  .daddr = IPV6_TBID_DST, .expected_ret = BPF_FIB_LKUP_RET_SUCCESS,
+>>   	  .lookup_flags = BPF_FIB_LOOKUP_DIRECT | BPF_FIB_LOOKUP_TBID, .tbid = 100,
+>>   	  .dmac = DMAC_INIT2, },
+>> +	{ .desc = "IPv4 set src addr",
+>> +	  .daddr = IPV4_NUD_FAILED_ADDR, .expected_ret = BPF_FIB_LKUP_RET_SUCCESS,
+>> +	  .expected_ipv4_src = IPV4_IFACE_ADDR,
+>> +	  .lookup_flags = BPF_FIB_LOOKUP_SET_SRC | BPF_FIB_LOOKUP_SKIP_NEIGH, },
+>> +	{ .desc = "IPv6 set src addr",
+>> +	  .daddr = IPV6_NUD_FAILED_ADDR, .expected_ret = BPF_FIB_LKUP_RET_SUCCESS,
+>> +	  .expected_ipv6_src = IPV6_IFACE_ADDR,
+>> +	  .lookup_flags = BPF_FIB_LOOKUP_SET_SRC | BPF_FIB_LOOKUP_SKIP_NEIGH, },
+>> +	{ .desc = "IPv4 set prefsrc addr from route",
+>> +	  .daddr = IPV4_ADDR_DST, .expected_ret = BPF_FIB_LKUP_RET_SUCCESS,
+>> +	  .expected_ipv4_src = IPV4_IFACE_ADDR_SEC,
+>> +	  .lookup_flags = BPF_FIB_LOOKUP_SET_SRC | BPF_FIB_LOOKUP_SKIP_NEIGH, },
+>> +	{ .desc = "IPv6 set prefsrc addr route",
+>> +	  .daddr = IPV6_ADDR_DST, .expected_ret = BPF_FIB_LKUP_RET_SUCCESS,
+>> +	  .expected_ipv6_src = IPV6_IFACE_ADDR_SEC,
+>> +	  .lookup_flags = BPF_FIB_LOOKUP_SET_SRC | BPF_FIB_LOOKUP_SKIP_NEIGH, },
 >>   };
 >>   
->>   enum {
->> @@ -6965,6 +6970,7 @@ enum {
->>   	BPF_FIB_LKUP_RET_UNSUPP_LWT,   /* fwd requires encapsulation */
->>   	BPF_FIB_LKUP_RET_NO_NEIGH,     /* no neighbor entry for nh */
->>   	BPF_FIB_LKUP_RET_FRAG_NEEDED,  /* fragmentation required to fwd */
->> +	BPF_FIB_LKUP_RET_NO_SRC_ADDR,  /* failed to derive IP src addr */
->>   };
+>>   static int ifindex;
+>> @@ -97,6 +119,13 @@ static int setup_netns(void)
+>>   	SYS(fail, "ip neigh add %s dev veth1 nud failed", IPV4_NUD_FAILED_ADDR);
+>>   	SYS(fail, "ip neigh add %s dev veth1 lladdr %s nud stale", IPV4_NUD_STALE_ADDR, DMAC);
 >>   
->>   struct bpf_fib_lookup {
->> @@ -6999,6 +7005,9 @@ struct bpf_fib_lookup {
->>   		__u32	rt_metric;
->>   	};
->>   
->> +	/* input: source address to consider for lookup
->> +	 * output: source address result from lookup
->> +	 */
->>   	union {
->>   		__be32		ipv4_src;
->>   		__u32		ipv6_src[4];  /* in6_addr; network order */
->> diff --git a/net/core/filter.c b/net/core/filter.c
->> index a094694899c9..f3777ef1840b 100644
->> --- a/net/core/filter.c
->> +++ b/net/core/filter.c
->> @@ -5850,6 +5850,9 @@ static int bpf_ipv4_fib_lookup(struct net *net, struct bpf_fib_lookup *params,
->>   	params->rt_metric = res.fi->fib_priority;
->>   	params->ifindex = dev->ifindex;
->>   
->> +	if (flags & BPF_FIB_LOOKUP_SET_SRC)
->> +		params->ipv4_src = fib_result_prefsrc(net, &res);
->
-> Does it need to check 0 and return BPF_FIB_LKUP_RET_NO_SRC_ADDR for v4 also,
-> or the fib_result_prefsrc does not fail?
-
-From inspecting the other usages of the function - it does not fail.
-
->
+>> +	/* Setup for prefsrc IP addr selection */
+>> +	SYS(fail, "ip addr add %s/24 dev veth1", IPV4_IFACE_ADDR_SEC);
+>> +	SYS(fail, "ip route add %s/32 dev veth1 src %s", IPV4_ADDR_DST, IPV4_IFACE_ADDR_SEC);
 >> +
->>   	/* xdp and cls_bpf programs are run in RCU-bh so
->>   	 * rcu_read_lock_bh is not needed here
->>   	 */
->> @@ -5992,6 +5995,19 @@ static int bpf_ipv6_fib_lookup(struct net *net, struct bpf_fib_lookup *params,
->>   	params->rt_metric = res.f6i->fib6_metric;
->>   	params->ifindex = dev->ifindex;
+>> +	SYS(fail, "ip addr add %s/64 dev veth1 nodad", IPV6_IFACE_ADDR_SEC);
+>> +	SYS(fail, "ip route add %s/128 dev veth1 src %s", IPV6_ADDR_DST, IPV6_IFACE_ADDR_SEC);
+>> +
+>>   	/* Setup for tbid lookup tests */
+>>   	SYS(fail, "ip addr add %s/24 dev veth2", IPV4_TBID_ADDR);
+>>   	SYS(fail, "ip route del %s/24 dev veth2", IPV4_TBID_NET);
+>> @@ -133,9 +162,12 @@ static int set_lookup_params(struct bpf_fib_lookup *params, const struct fib_loo
 >>   
->> +	if (flags & BPF_FIB_LOOKUP_SET_SRC) {
->> +		if (res.f6i->fib6_prefsrc.plen) {
->> +			*(struct in6_addr *)params->ipv6_src = res.f6i->fib6_prefsrc.addr;
->> +		} else {
->> +			err = ipv6_bpf_stub->ipv6_dev_get_saddr(net, dev,
->> +								&fl6.daddr, 0,
->> +								(struct in6_addr *)
->> +								params->ipv6_src);
->> +			if (err)
->> +				return BPF_FIB_LKUP_RET_NO_SRC_ADDR;
->
-> This error also implies BPF_FIB_LKUP_RET_NO_NEIGH. I don't have a clean way of 
-> improving the API. May be others have some ideas.
->
-> Considering dev has no saddr is probably (?) an unlikely case, it should be ok 
-> to leave it as is but at least a comment in the uapi will be needed. Otherwise, 
-> the bpf prog may use the 0 dmac as-is.
-
-I expect that a user of the helper checks that err == 0 before using any of the output params.
-
->
-> I feel the current bpf_ipv[46]_fib_lookup helper is doing many things 
-> in one 
-> function and then requires different BPF_FIB_LOOKUP_* bits to select 
-> what/how to 
-> do. In the future, it may be worth to consider breaking it into smaller 
-> kfunc(s). e.g. the __ipv[46]_neigh_lookup could be in its own kfunc.
->
-
-Yep, good idea. At least it seems that the neigh lookup could live in its own function.
-
+>>   	if (inet_pton(AF_INET6, test->daddr, params->ipv6_dst) == 1) {
+>>   		params->family = AF_INET6;
+>> -		ret = inet_pton(AF_INET6, IPV6_IFACE_ADDR, params->ipv6_src);
+>> -		if (!ASSERT_EQ(ret, 1, "inet_pton(IPV6_IFACE_ADDR)"))
+>> -			return -1;
+>> +		if (!(test->lookup_flags & BPF_FIB_LOOKUP_SET_SRC)) {
+>> +			ret = inet_pton(AF_INET6, IPV6_IFACE_ADDR, params->ipv6_src);
+>> +			if (!ASSERT_EQ(ret, 1, "inet_pton(IPV6_IFACE_ADDR)"))
+>> +				return -1;
 >> +		}
->> +	}
 >> +
->>   	if (flags & BPF_FIB_LOOKUP_SKIP_NEIGH)
->>   		goto set_fwd_params;
+>>   		return 0;
+>>   	}
 >>   
->> @@ -6010,7 +6026,8 @@ static int bpf_ipv6_fib_lookup(struct net *net, struct bpf_fib_lookup *params,
->>   #endif
+>> @@ -143,9 +175,12 @@ static int set_lookup_params(struct bpf_fib_lookup *params, const struct fib_loo
+>>   	if (!ASSERT_EQ(ret, 1, "convert IP[46] address"))
+>>   		return -1;
+>>   	params->family = AF_INET;
+>> -	ret = inet_pton(AF_INET, IPV4_IFACE_ADDR, &params->ipv4_src);
+>> -	if (!ASSERT_EQ(ret, 1, "inet_pton(IPV4_IFACE_ADDR)"))
+>> -		return -1;
+>> +
+>> +	if (!(test->lookup_flags & BPF_FIB_LOOKUP_SET_SRC)) {
+>> +		ret = inet_pton(AF_INET, IPV4_IFACE_ADDR, &params->ipv4_src);
+>> +		if (!ASSERT_EQ(ret, 1, "inet_pton(IPV4_IFACE_ADDR)"))
+>> +			return -1;
+>> +	}
 >>   
->>   #define BPF_FIB_LOOKUP_MASK (BPF_FIB_LOOKUP_DIRECT | BPF_FIB_LOOKUP_OUTPUT | \
->> -			     BPF_FIB_LOOKUP_SKIP_NEIGH | BPF_FIB_LOOKUP_TBID)
->> +			     BPF_FIB_LOOKUP_SKIP_NEIGH | BPF_FIB_LOOKUP_TBID | \
->> +			     BPF_FIB_LOOKUP_SET_SRC)
+>>   	return 0;
+>>   }
+>> @@ -207,6 +242,35 @@ void test_fib_lookup(void)
+>>   		ASSERT_EQ(skel->bss->fib_lookup_ret, tests[i].expected_ret,
+>>   			  "fib_lookup_ret");
 >>   
->>   BPF_CALL_4(bpf_xdp_fib_lookup, struct xdp_buff *, ctx,
->>   	   struct bpf_fib_lookup *, params, int, plen, u32, flags)
+>> +		if (tests[i].expected_ipv4_src) {
+>> +			__be32 expected_ipv4_src;
+>> +
+>> +			ret = inet_pton(AF_INET, tests[i].expected_ipv4_src,
+>> +					&expected_ipv4_src);
+>> +			ASSERT_EQ(ret, 1, "inet_pton(expected_ipv4_src)");
+>> +
+>> +			ASSERT_EQ(fib_params->ipv4_src, expected_ipv4_src,
+>> +			  "fib_lookup ipv4 src");
+>> +		}
+>> +		if (tests[i].expected_ipv6_src) {
+>> +			__u32 expected_ipv6_src[4];
+>> +
+>> +			ret = inet_pton(AF_INET6, tests[i].expected_ipv6_src,
+>> +					expected_ipv6_src);
+>> +			ASSERT_EQ(ret, 1, "inet_pton(expected_ipv6_src)");
+>> +
+>> +			ret = memcmp(expected_ipv6_src, fib_params->ipv6_src,
+>> +				     sizeof(fib_params->ipv6_src));
+>> +			if (!ASSERT_EQ(ret, 0, "fib_lookup ipv6 src")) {
+>> +				char src_ip6[64];
+>> +
+>> +				inet_ntop(AF_INET6, fib_params->ipv6_src, src_ip6,
+>> +					  sizeof(src_ip6));
+>> +				printf("ipv6 expected %s actual %s ",
+>> +				       tests[i].expected_ipv6_src, src_ip6);
+>> +			}
+>> +		}
+>
+> nit. Move the v4/v6 expected_src comparison to a static function, 
+> potentially 
+> done in a v4/v6 agnostic way mentioned in the above 
+> expected_ipv[46]_src comment.
+>
+>
+
+SGTM.
+
+>> +
+>>   		ret = memcmp(tests[i].dmac, fib_params->dmac, sizeof(tests[i].dmac));
+>>   		if (!ASSERT_EQ(ret, 0, "dmac not match")) {
+>>   			char expected[18], actual[18];
 
