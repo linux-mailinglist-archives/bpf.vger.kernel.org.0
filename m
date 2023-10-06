@@ -1,136 +1,153 @@
-Return-Path: <bpf+bounces-11554-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11555-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29B057BBE39
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 19:59:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E51F77BBE7A
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 20:13:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED8F51C20AC0
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 17:59:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C479F282163
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 18:13:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84D8234CE5;
-	Fri,  6 Oct 2023 17:59:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B673536B04;
+	Fri,  6 Oct 2023 18:13:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="iDPMpCpw";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="D4KZyUE4"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="BOWZxJeS"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C30A34198;
-	Fri,  6 Oct 2023 17:59:50 +0000 (UTC)
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38D7BE;
-	Fri,  6 Oct 2023 10:59:49 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id 3C72F5C02DF;
-	Fri,  6 Oct 2023 13:59:49 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 06 Oct 2023 13:59:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm1; t=1696615189; x=1696701589; bh=LU
-	R07i/CoESe7pjWusXonCUaiL+SxGLf47l6Wv1tu/w=; b=iDPMpCpws5+opJ0cJR
-	mVm7Oaitor5ON6fRkKhILbj1ctyrxTQTRSsyU5K/bpHZ8/6N1h++vEaGiWvODID9
-	H319RMNd314Nns3TdL7+JJa5cgP6wy8drzlqdLezU0ROSvZkLPYVYRs3Uggn059c
-	S8OwLEYoTnu7T/LGaumHLrNEKWxU1jcnYhJSxMYxYF3XCu/yzOcnbXfWpBNpfz+a
-	gJ0imzuso0yUNLZGd9eJ9Vfx77awoR+d2IRr8GDmb5TxTkdNpEq0dFaTYisTbFLb
-	ARZRVYwm36zJnaeTNq61GIvYZP07WOkGVF6bsRpB30ptGkSeGcvhanrD0jJmSNGZ
-	EV/A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm2; t=1696615189; x=1696701589; bh=LUR07i/CoESe7
-	pjWusXonCUaiL+SxGLf47l6Wv1tu/w=; b=D4KZyUE4v1vOMLpbZpBek+IGDl1Q2
-	loqhf1k0j6U26VFd6c+UNikD1CQJ1GMrIzHlRt1Vul5rlWZJVOp6CZPMUmmtPelf
-	ZPLY0J9GLD3v61sGplSCUDCwqwULfqbYPiZ0EF1VSCgERm6ip50jylXDglbKZG65
-	6rhnWlJjfKg1fEGBcQVesY5Kp3ovJzPF5hUGzBpMbQlw3uI4wjRvZb6vFoi5zNDW
-	USV9BZ/uAhVAFSt53pyGiC1Kj5Au4PDtfw5gfer9CpQXfvLYaqgwZLjXVgie0ZH+
-	ONSFknMrt6H9NLkN3Cq/z0tLVn5Ow+Wj6oKWIVYV/5OxD7w39P0iIYkQQ==
-X-ME-Sender: <xms:FEsgZV-SH8thipwzI3rvLubXy2r9TxZnuz3pR98Y2wIj1HkDfD8dKA>
-    <xme:FEsgZZvIfHPGUR_XsBSOlJrnGYpxufXSXEORHrCV5iBziWOYJX40flDCl-k782f-R
-    k7-sJHPlMcIHQHXGg>
-X-ME-Received: <xmr:FEsgZTAEoZiJb4HWtcLZ3-FQCuKfyf7CMCNjqzYq_vujy5I28D_OeNw5fK0X4CDACT0xfizBwMSEOjWV6K0C34P-YgHZbng-FAYdA3U>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrgeeigdduudejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
-    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
-    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:FEsgZZdUdWefjYIAp6yI_pworw8nfNPycqX05xoix3vma4Bm2sja6w>
-    <xmx:FEsgZaNybKAv-qBUShHn8OJJ9E-myR4ki3GGoY_2rwiaklXoSfPCbg>
-    <xmx:FEsgZbndVUZbNoOvnRET1QNARggLCxZbTjb71Pb97SYPIc-KwPq5ww>
-    <xmx:FUsgZWmYPynFNQQyCgrFIOxHkjbjDCsyRHbln5nliph2kucPePA1zw>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 6 Oct 2023 13:59:47 -0400 (EDT)
-Date: Fri, 6 Oct 2023 11:59:46 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, 
-	Jamal Hadi Salim <jhs@mojatatu.com>, Victor Nogueira <victor@mojatatu.com>, xiyou.wangcong@gmail.com, 
-	jiri@resnulli.us, davem@davemloft.net, edumazet@google.com, pabeni@redhat.com, 
-	paulb@nvidia.com, netdev@vger.kernel.org, kernel@mojatatu.com, 
-	martin.lau@linux.dev, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 1/1] net/sched: Disambiguate verdict from return
- code
-Message-ID: <ncblypbr7vshhgeuuxxvs6k7lapu4ooxyiecqn3yitlhnmw5bl@tdjlc4s4tgvj>
-References: <1df2e804-5d58-026c-5daa-413a3605c129@iogearbox.net>
- <CAM0EoM=SH8i_-veiyUtT6Wd4V7DxNm-tF9sP2BURqN5B2yRRVQ@mail.gmail.com>
- <cb4db95b-89ff-02ef-f36f-7a8b0edc5863@iogearbox.net>
- <CAM0EoMkYCaxHT22-b8N6u7A=2SUydNp9vDcio29rPrHibTVH5Q@mail.gmail.com>
- <96532f62-6927-326c-8470-daa1c4ab9699@iogearbox.net>
- <CAM0EoMkUFcw7k0vX3oH8SHDoXW=DD-h2MkUE-3_MssXvP_uJbA@mail.gmail.com>
- <2ce3a5a1-375d-43a6-052d-d44d7b4a4bf8@iogearbox.net>
- <20231006063233.74345d36@kernel.org>
- <686dd999-bee4-ecf8-8dc4-c85a098c4a92@iogearbox.net>
- <20231006071215.4a28b348@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 340D72AB3B
+	for <bpf@vger.kernel.org>; Fri,  6 Oct 2023 18:13:23 +0000 (UTC)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C824BF
+	for <bpf@vger.kernel.org>; Fri,  6 Oct 2023 11:13:22 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 396IC3kl027033;
+	Fri, 6 Oct 2023 18:13:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=uG89KsPrCmOIbR7tpcHiLM6LXCzlK59QVw5m4kwOAjg=;
+ b=BOWZxJeS8DSAkFT9+9xNfEabc6F1FrTZkLs7dctXDho+KFz/y16nwyW5C5n6oYoyks+H
+ Um2v4PiTdZcJiLOv+ywZ95bqb6kazDleeqG0HomUDExbDOMw+2GmDnELiMuLg2EvMJLI
+ Vaayg9y437+ry3S0H/oRMfnBLKq7YkmiG+02ALur0zEh5UHo4XqfLGYsVkPQ/LGxYMZw
+ Tsj+ANnETVeEnrWeNPI9D5T5zqdq9uL2olsATszr0+P8sLfeXEtFv9QbfNxaTo+qEHpE
+ Rv5hR5+6qF5eGEpW8CWgVCMy6mupkQHj+4F6nJT4JDeleNe72VQCxT5X6ywEmD/u4pk+ RQ== 
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tjqa980wv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 06 Oct 2023 18:13:03 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 396HmNMK007428;
+	Fri, 6 Oct 2023 18:12:50 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3teygn3cxx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 06 Oct 2023 18:12:49 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 396IClr724838844
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 6 Oct 2023 18:12:48 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DD26020040;
+	Fri,  6 Oct 2023 18:12:47 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 612A42004D;
+	Fri,  6 Oct 2023 18:12:46 +0000 (GMT)
+Received: from [9.43.70.9] (unknown [9.43.70.9])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  6 Oct 2023 18:12:46 +0000 (GMT)
+Message-ID: <159f0096-5b39-04c4-aaea-64e0742fb192@linux.ibm.com>
+Date: Fri, 6 Oct 2023 23:42:45 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231006071215.4a28b348@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5 1/5] powerpc/code-patching: introduce
+ patch_instructions()
+Content-Language: en-US
+To: Song Liu <song@kernel.org>
+Cc: Song Liu <songliubraving@fb.com>, Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, bpf@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+References: <20230928194818.261163-1-hbathini@linux.ibm.com>
+ <20230928194818.261163-2-hbathini@linux.ibm.com>
+ <CAPhsuW6o+4STm0AUviP_M8c-xK9Y7Uzke1zouEsEreggVBofkw@mail.gmail.com>
+From: Hari Bathini <hbathini@linux.ibm.com>
+In-Reply-To: <CAPhsuW6o+4STm0AUviP_M8c-xK9Y7Uzke1zouEsEreggVBofkw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: SoWxSm9TO-cFq6udCp4aS4lULbVqSwyU
+X-Proofpoint-ORIG-GUID: SoWxSm9TO-cFq6udCp4aS4lULbVqSwyU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-06_15,2023-10-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ mlxscore=0 adultscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=582
+ spamscore=0 priorityscore=1501 malwarescore=0 clxscore=1015 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310060137
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
+	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Oct 06, 2023 at 07:12:15AM -0700, Jakub Kicinski wrote:
-> On Fri, 6 Oct 2023 15:49:18 +0200 Daniel Borkmann wrote:
-> > > Which will no longer work with the "pack multiple values into
-> > > the reason" scheme of subsys-specific values :(  
-> > 
-> > Too bad, do you happen to know why it won't work? 
+Thanks for the review, Song.
+
+On 29/09/23 2:38 am, Song Liu wrote:
+> On Thu, Sep 28, 2023 at 12:48 PM Hari Bathini <hbathini@linux.ibm.com> wrote:
+>>
+>> patch_instruction() entails setting up pte, patching the instruction,
+>> clearing the pte and flushing the tlb. If multiple instructions need
+>> to be patched, every instruction would have to go through the above
+>> drill unnecessarily. Instead, introduce function patch_instructions()
+>> that sets up the pte, clears the pte and flushes the tlb only once per
+>> page range of instructions to be patched. This adds a slight overhead
+>> to patch_instruction() call while improving the patching time for
+>> scenarios where more than one instruction needs to be patched.
+>>
+>> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
 > 
-> I'm just guessing but the reason is enum skb_drop_reason
-> and the values of subsystem specific reasons won't be part
-> of that enum.
+> Acked-by: Song Liu <song@kernel.org>
+> 
+> With a nit below.
+> 
+> [...]
+>> +/*
+>> + * A page is mapped and instructions that fit the page are patched.
+>> + * Assumes 'len' to be (PAGE_SIZE - offset_in_page(addr)) or below.
+>> + */
+>> +static int __do_patch_instructions_mm(u32 *addr, void *code, size_t len, bool repeat_instr)
+>>   {
+>>          int err;
+>>          u32 *patch_addr;
+>> @@ -307,11 +336,15 @@ static int __do_patch_instruction_mm(u32 *addr, ppc_inst_t instr)
+>>
+>>          orig_mm = start_using_temp_mm(patching_mm);
+>>
+>> -       err = __patch_instruction(addr, instr, patch_addr);
+>> +       /* Single instruction case. */
+>> +       if (len == 0) {
+>> +               err = __patch_instruction(addr, *(ppc_inst_t *)code, patch_addr);
+> 
+> len == 0 for single instruction is a little weird to me. How about we just use
+> len == 4 or 8 depending on the instruction to patch?
 
-Yeah, looks like the subsystem reasons are different enums right?
-There's probably a way to still support it in bpftrace but it might take
-some minor changes and/or ugly conditionals in scripts.
+Yeah. Looks a bit weird but it avoids the need to call ppc_inst_read()
+& ppc_inst_len(). A comment explaining why this weird check could
+have been better though..
 
-But I also wonder: why are the subsystem error codes not included into
-`enum skb_drop_reason`? It looks like the enum space is partitioned
-already. And the modules have already registered themselves into core
-kernel (in `enum skb_drop_reason_subsys`). So even if modules are
-compiled out there are still hints of it laying around vmlinux.
-
-Thanks,
-Daniel
-
-[..]
+Thanks
+Hari
 
