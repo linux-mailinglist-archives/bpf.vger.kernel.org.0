@@ -1,44 +1,44 @@
-Return-Path: <bpf+bounces-11563-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11562-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2113C7BBF95
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 21:10:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2721C7BBF94
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 21:10:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 353D91C20BA4
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 19:10:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A65B1C20A9D
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 19:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C7073E46A;
-	Fri,  6 Oct 2023 19:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B7913C69E;
+	Fri,  6 Oct 2023 19:10:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="i/avGYiQ"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="J+10qyvG"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 229DF3AC2E;
-	Fri,  6 Oct 2023 19:10:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 242E9200D5;
+	Fri,  6 Oct 2023 19:10:19 +0000 (UTC)
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D1DB9;
-	Fri,  6 Oct 2023 12:10:19 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0DFBAD;
+	Fri,  6 Oct 2023 12:10:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=RbZNONu5gInerpLX+fVfpeTjKYHISNx3MMfUkZ8hEps=; b=i/avGYiQJOMTxcHpTrXpjyMAnb
-	kGOQr9abYXOPPzU7PaUiTCE8UyzfeBdskRJiYxPgouV8UmperjrD6l1ZbklghfV0Tn8Z1jQi8Yd44
-	2e+1H3NSeFC2RH7GlW7xVMFZhH9iDDzbQCmpx9fx0ngoT56MyPaVupCLv2GrOhLQE+K3UujhrAn3R
-	8kEfN3nQEspRLpqZqz/gbc9iVTPDsOcoHXpj71VhqXRkkSyA/nW6x4AyBM9H94rBAnCZVtOf+z8ln
-	VsMB9XOY3HoeF1UQ2HfRdFeejiyuHo7d9lhUng+GUuooweRbd3xCgFGbaf+5TWEk4tPlYPQWm/XXw
-	1eJvXC6g==;
+	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=ezuIapr+ECwuHDlGPgUs5rtVXAdvMq2f7A+v7bYW0ow=; b=J+10qyvGuR7c6DiyxNFSiE9IAH
+	NuvZGhTYHt87BQOvrOV2QcvT5shWXckISbOLnhRxuWJE7r3ujqTsGfBSD52eXYUx+qt1JBiW25JYa
+	R1Vqlc7sPGdfcpAMRnUp1Hk9wIFze/WFkSGyrY20tmqUIFoST/cEhBLTxPrlUJYZfpzkI769vdVVd
+	1eTiXnzgcsrPrUNxxpP5Su4duxvcu7Cy5qK13IWfu1twLE6OL+treSkJFCD+tnBS9LeUXeFCNq7Ut
+	G+kvRzciE02xJ2j+gXx2PZUagGTTthu7LKuvV9jo/L3T6c3qAqp/2uJu4th05r/iCoxc5CveJBPx3
+	CSrgzdgw==;
 Received: from 17.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.17] helo=localhost)
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1qoqDD-0009PX-0g; Fri, 06 Oct 2023 21:10:11 +0200
+	id 1qoqDD-0009Pf-NS; Fri, 06 Oct 2023 21:10:11 +0200
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: kuba@kernel.org
 Cc: netdev@vger.kernel.org,
@@ -48,10 +48,12 @@ Cc: netdev@vger.kernel.org,
 	martin.lau@linux.dev,
 	dxu@dxuuu.xyz,
 	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH net-next 1/2] net, tc: Make tc-related drop reason more flexible
-Date: Fri,  6 Oct 2023 21:09:55 +0200
-Message-Id: <20231006190956.18810-1-daniel@iogearbox.net>
+Subject: [PATCH net-next 2/2] net, tc: Add tc_set_drop_reason for {__,}tcf_classify
+Date: Fri,  6 Oct 2023 21:09:56 +0200
+Message-Id: <20231006190956.18810-2-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20231006190956.18810-1-daniel@iogearbox.net>
+References: <20231006190956.18810-1-daniel@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,183 +69,126 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Currently, the kfree_skb_reason() in sch_handle_{ingress,egress}() can only
-express a basic SKB_DROP_REASON_TC_INGRESS or SKB_DROP_REASON_TC_EGRESS reason.
+Add an initial user for the newly added tc_set_drop_reason() helper to set the
+drop reason for internal errors leading to TC_ACT_SHOT inside {__,}tcf_classify().
 
-Victor kicked-off an initial proposal to make this more flexible by disambiguating
-verdict from return code by moving the verdict into struct tcf_result and
-letting tcf_classify() return a negative error. If hit, then two new drop
-reasons were added in the proposal, that is SKB_DROP_REASON_TC_INGRESS_ERROR
-as well as SKB_DROP_REASON_TC_EGRESS_ERROR. Further analysis of the actual
-error codes would have required to attach to tcf_classify via kprobe/kretprobe
-to more deeply debug skb and the returned error.
-
-In order to make the kfree_skb_reason() in sch_handle_{ingress,egress}() more
-extensible, it can be addressed in a more straight forward way, that is: Instead
-of placing the verdict into struct tcf_result, we can just put the drop reason
-in there, which does not require changes throughout various classful schedulers
-given the existing verdict logic can stay as is.
-
-Then, SKB_DROP_REASON_TC_ERROR{,_*} can be added to the enum skb_drop_reason
-to disambiguate between an error or an intentional drop. New drop reason error
-codes can be added successively to the tc code base.
-
-For internal error locations which have not yet been annotated with a
-SKB_DROP_REASON_TC_ERROR{,_*}, the fallback is SKB_DROP_REASON_TC_INGRESS and
-SKB_DROP_REASON_TC_EGRESS, respectively. Generic errors could be marked with a
-SKB_DROP_REASON_TC_ERROR code until they are converted to more specific ones
-if it is found that they would be useful for troubleshooting.
-
-While drop reasons have infrastructure for subsystem specific error codes which
-are currently used by mac80211 and ovs, Jakub mentioned that it is preferred
-for tc to use the enum skb_drop_reason core codes given it is a better fit and
-currently the tooling support is better.
-
-With regards to the latter:
-
-  [...] I think Alastair (bpftrace) is working on auto-prettifying enums when
-  bpftrace outputs maps. So we can do something like:
-
-  $ bpftrace -e 'tracepoint:skb:kfree_skb { @[args->reason] = count(); }'
-  Attaching 1 probe...
-  ^C
-
-  @[SKB_DROP_REASON_TC_INGRESS]: 2
-  @[SKB_CONSUMED]: 34
-
-  ^^^^^^^^^^^^ names!!
-
-  Auto-magically. [...]
-
-Add a small helper tc_set_drop_reason() which can be used to set the drop reason
-into tcf_result.
+Right now this only adds a very basic SKB_DROP_REASON_TC_ERROR as a generic
+fallback indicator to mark drop locations. Where needed, such locations can be
+converted to more specific codes, for example, when hitting the reclassification
+limit, etc.
 
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Cc: Jamal Hadi Salim <jhs@mojatatu.com>
 Cc: Victor Nogueira <victor@mojatatu.com>
 Cc: Jakub Kicinski <kuba@kernel.org>
-Link: https://lore.kernel.org/netdev/20231006063233.74345d36@kernel.org
 ---
- include/net/sch_generic.h |  9 +++++++--
- net/core/dev.c            | 15 ++++++++++-----
- 2 files changed, 17 insertions(+), 7 deletions(-)
+ [ Victor, I presume you'll follow-up with replacing to more specific codes. ]
 
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index c7318c73cfd6..90774cb2ac03 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -324,7 +324,6 @@ struct Qdisc_ops {
- 	struct module		*owner;
- };
+ include/net/dropreason-core.h |  3 +++
+ net/sched/cls_api.c           | 26 ++++++++++++++++++++------
+ 2 files changed, 23 insertions(+), 6 deletions(-)
+
+diff --git a/include/net/dropreason-core.h b/include/net/dropreason-core.h
+index a587e83fc169..845dce805de7 100644
+--- a/include/net/dropreason-core.h
++++ b/include/net/dropreason-core.h
+@@ -80,6 +80,7 @@
+ 	FN(IPV6_NDISC_BAD_OPTIONS)	\
+ 	FN(IPV6_NDISC_NS_OTHERHOST)	\
+ 	FN(QUEUE_PURGE)			\
++	FN(TC_ERROR)			\
+ 	FNe(MAX)
  
--
- struct tcf_result {
- 	union {
- 		struct {
-@@ -332,8 +331,8 @@ struct tcf_result {
- 			u32		classid;
- 		};
- 		const struct tcf_proto *goto_tp;
--
- 	};
-+	enum skb_drop_reason		drop_reason;
- };
+ /**
+@@ -345,6 +346,8 @@ enum skb_drop_reason {
+ 	SKB_DROP_REASON_IPV6_NDISC_NS_OTHERHOST,
+ 	/** @SKB_DROP_REASON_QUEUE_PURGE: bulk free. */
+ 	SKB_DROP_REASON_QUEUE_PURGE,
++	/** @SKB_DROP_REASON_TC_ERROR: generic internal tc error. */
++	SKB_DROP_REASON_TC_ERROR,
+ 	/**
+ 	 * @SKB_DROP_REASON_MAX: the maximum of core drop reasons, which
+ 	 * shouldn't be used as a real 'reason' - only for tracing code gen
+diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+index a193cc7b3241..a8e46580a49f 100644
+--- a/net/sched/cls_api.c
++++ b/net/sched/cls_api.c
+@@ -1681,12 +1681,16 @@ static inline int __tcf_classify(struct sk_buff *skb,
+ 			 * time we got here with a cookie from hardware.
+ 			 */
+ 			if (unlikely(n->tp != tp || n->tp->chain != n->chain ||
+-				     !tp->ops->get_exts))
++				     !tp->ops->get_exts)) {
++				tc_set_drop_reason(res, SKB_DROP_REASON_TC_ERROR);
+ 				return TC_ACT_SHOT;
++			}
  
- struct tcf_chain;
-@@ -667,6 +666,12 @@ static inline int tc_classid_to_hwtc(struct net_device *dev, u32 classid)
- 	return (hwtc < netdev_get_num_tc(dev)) ? hwtc : -EINVAL;
- }
+ 			exts = tp->ops->get_exts(tp, n->handle);
+-			if (unlikely(!exts || n->exts != exts))
++			if (unlikely(!exts || n->exts != exts)) {
++				tc_set_drop_reason(res, SKB_DROP_REASON_TC_ERROR);
+ 				return TC_ACT_SHOT;
++			}
  
-+static inline void tc_set_drop_reason(struct tcf_result *res,
-+				      enum skb_drop_reason reason)
-+{
-+	res->drop_reason = reason;
-+}
-+
- int qdisc_class_hash_init(struct Qdisc_class_hash *);
- void qdisc_class_hash_insert(struct Qdisc_class_hash *,
- 			     struct Qdisc_class_common *);
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 606a366cc209..664426285fa3 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -3910,7 +3910,8 @@ EXPORT_SYMBOL_GPL(netdev_xmit_skip_txqueue);
- #endif /* CONFIG_NET_EGRESS */
+ 			n = NULL;
+ 			err = tcf_exts_exec_ex(skb, exts, act_index, res);
+@@ -1712,8 +1716,10 @@ static inline int __tcf_classify(struct sk_buff *skb,
+ 			return err;
+ 	}
  
- #ifdef CONFIG_NET_XGRESS
--static int tc_run(struct tcx_entry *entry, struct sk_buff *skb)
-+static int tc_run(struct tcx_entry *entry, struct sk_buff *skb,
-+		  enum skb_drop_reason *drop_reason)
- {
- 	int ret = TC_ACT_UNSPEC;
+-	if (unlikely(n))
++	if (unlikely(n)) {
++		tc_set_drop_reason(res, SKB_DROP_REASON_TC_ERROR);
+ 		return TC_ACT_SHOT;
++	}
+ 
+ 	return TC_ACT_UNSPEC; /* signal: continue lookup */
  #ifdef CONFIG_NET_CLS_ACT
-@@ -3922,12 +3923,14 @@ static int tc_run(struct tcx_entry *entry, struct sk_buff *skb)
- 
- 	tc_skb_cb(skb)->mru = 0;
- 	tc_skb_cb(skb)->post_ct = false;
-+	res.drop_reason = *drop_reason;
- 
- 	mini_qdisc_bstats_cpu_update(miniq, skb);
- 	ret = tcf_classify(skb, miniq->block, miniq->filter_list, &res, false);
- 	/* Only tcf related quirks below. */
- 	switch (ret) {
- 	case TC_ACT_SHOT:
-+		*drop_reason = res.drop_reason;
- 		mini_qdisc_qstats_cpu_drop(miniq);
- 		break;
- 	case TC_ACT_OK:
-@@ -3977,6 +3980,7 @@ sch_handle_ingress(struct sk_buff *skb, struct packet_type **pt_prev, int *ret,
- 		   struct net_device *orig_dev, bool *another)
- {
- 	struct bpf_mprog_entry *entry = rcu_dereference_bh(skb->dev->tcx_ingress);
-+	enum skb_drop_reason drop_reason = SKB_DROP_REASON_TC_INGRESS;
- 	int sch_ret;
- 
- 	if (!entry)
-@@ -3994,7 +3998,7 @@ sch_handle_ingress(struct sk_buff *skb, struct packet_type **pt_prev, int *ret,
- 		if (sch_ret != TC_ACT_UNSPEC)
- 			goto ingress_verdict;
+@@ -1723,6 +1729,7 @@ static inline int __tcf_classify(struct sk_buff *skb,
+ 				       tp->chain->block->index,
+ 				       tp->prio & 0xffff,
+ 				       ntohs(tp->protocol));
++		tc_set_drop_reason(res, SKB_DROP_REASON_TC_ERROR);
+ 		return TC_ACT_SHOT;
  	}
--	sch_ret = tc_run(tcx_entry(entry), skb);
-+	sch_ret = tc_run(tcx_entry(entry), skb, &drop_reason);
- ingress_verdict:
- 	switch (sch_ret) {
- 	case TC_ACT_REDIRECT:
-@@ -4011,7 +4015,7 @@ sch_handle_ingress(struct sk_buff *skb, struct packet_type **pt_prev, int *ret,
- 		*ret = NET_RX_SUCCESS;
- 		return NULL;
- 	case TC_ACT_SHOT:
--		kfree_skb_reason(skb, SKB_DROP_REASON_TC_INGRESS);
-+		kfree_skb_reason(skb, drop_reason);
- 		*ret = NET_RX_DROP;
- 		return NULL;
- 	/* used by tc_run */
-@@ -4032,6 +4036,7 @@ static __always_inline struct sk_buff *
- sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *dev)
- {
- 	struct bpf_mprog_entry *entry = rcu_dereference_bh(dev->tcx_egress);
-+	enum skb_drop_reason drop_reason = SKB_DROP_REASON_TC_EGRESS;
- 	int sch_ret;
  
- 	if (!entry)
-@@ -4045,7 +4050,7 @@ sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *dev)
- 		if (sch_ret != TC_ACT_UNSPEC)
- 			goto egress_verdict;
- 	}
--	sch_ret = tc_run(tcx_entry(entry), skb);
-+	sch_ret = tc_run(tcx_entry(entry), skb, &drop_reason);
- egress_verdict:
- 	switch (sch_ret) {
- 	case TC_ACT_REDIRECT:
-@@ -4054,7 +4059,7 @@ sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *dev)
- 		*ret = NET_XMIT_SUCCESS;
- 		return NULL;
- 	case TC_ACT_SHOT:
--		kfree_skb_reason(skb, SKB_DROP_REASON_TC_EGRESS);
-+		kfree_skb_reason(skb, drop_reason);
- 		*ret = NET_XMIT_DROP;
- 		return NULL;
- 	/* used by tc_run */
+@@ -1759,8 +1766,10 @@ int tcf_classify(struct sk_buff *skb,
+ 			if (ext->act_miss) {
+ 				n = tcf_exts_miss_cookie_lookup(ext->act_miss_cookie,
+ 								&act_index);
+-				if (!n)
++				if (!n) {
++					tc_set_drop_reason(res, SKB_DROP_REASON_TC_ERROR);
+ 					return TC_ACT_SHOT;
++				}
+ 
+ 				chain = n->chain_index;
+ 			} else {
+@@ -1768,8 +1777,10 @@ int tcf_classify(struct sk_buff *skb,
+ 			}
+ 
+ 			fchain = tcf_chain_lookup_rcu(block, chain);
+-			if (!fchain)
++			if (!fchain) {
++				tc_set_drop_reason(res, SKB_DROP_REASON_TC_ERROR);
+ 				return TC_ACT_SHOT;
++			}
+ 
+ 			/* Consume, so cloned/redirect skbs won't inherit ext */
+ 			skb_ext_del(skb, TC_SKB_EXT);
+@@ -1788,8 +1799,11 @@ int tcf_classify(struct sk_buff *skb,
+ 			struct tc_skb_cb *cb = tc_skb_cb(skb);
+ 
+ 			ext = tc_skb_ext_alloc(skb);
+-			if (WARN_ON_ONCE(!ext))
++			if (WARN_ON_ONCE(!ext)) {
++				tc_set_drop_reason(res, SKB_DROP_REASON_TC_ERROR);
+ 				return TC_ACT_SHOT;
++			}
++
+ 			ext->chain = last_executed_chain;
+ 			ext->mru = cb->mru;
+ 			ext->post_ct = cb->post_ct;
 -- 
 2.34.1
 
