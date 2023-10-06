@@ -1,362 +1,364 @@
-Return-Path: <bpf+bounces-11550-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11551-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9162D7BBE22
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 19:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D1077BBE2A
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 19:58:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39AEC281DA1
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 17:57:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7AB1282161
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 17:57:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13F4E341AA;
-	Fri,  6 Oct 2023 17:57:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k77RpzgK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89810347AA;
+	Fri,  6 Oct 2023 17:57:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C34921170C
-	for <bpf@vger.kernel.org>; Fri,  6 Oct 2023 17:57:14 +0000 (UTC)
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDE6F2
-	for <bpf@vger.kernel.org>; Fri,  6 Oct 2023 10:57:11 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53b32dca0bfso1751640a12.0
-        for <bpf@vger.kernel.org>; Fri, 06 Oct 2023 10:57:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696615030; x=1697219830; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+jeSld0LeQYuQj6BpGu85VOXz+hxt7tq3152nmt2/x0=;
-        b=k77RpzgKwfbbpcGubxq9HrwZCCKTyvkHjq73IFi/Bm6ch0GPZcio8gWN4Xdg8jLA6S
-         RaAxnll108CV1ceQ5Za2KUJFl/s5hcxEZtFjVl/O5cTaLnuiaGa0ie/SyJoVVNcfFBU6
-         99yTZbhBuuxI3JoxZ7tyehPva11so4levI914Xz5/Z4YW8a53OsBiC2xALSFTKsOisb5
-         MyHedoWo8GVDFry+TGrjmfRRPhDodwGVMvEC0IbeMt/wAUdvA7H/F0Gl48TlRwNTU3PX
-         KnoRp6WGqFYqooXeIMy748CF3UJQJXMdm6tWRfeMmtVs3nnYDYuKVxKRv3dB+qzd/uYU
-         5DOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696615030; x=1697219830;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+jeSld0LeQYuQj6BpGu85VOXz+hxt7tq3152nmt2/x0=;
-        b=Hl1WkwkRxWN8Df5PwvgkxyOKB+w76j2dl3pTZfEaMeqvcEGKl3FV5vMQhrpobHef1T
-         DH1T3t2kmmmGV42CUH1nohc1RrXkH9STuLvgBQ2UZuXOoNMrj0JEJ2djkgm+Pf2V+BMj
-         olYJhrJl7Za0LoiSkDcF0uSNdGWcYR3JnGhcNRV05Q8FLwQba77fExvD6BgPoljVZXD4
-         M/D7FH3JTJwZpnTDBsYn4J7Ac3Fa2ki/OttL9lyASeqHVppRxRt9HTBelKzy0pyGWr3k
-         Sw/CGs0Ltn4RjUc9Il1Hh8THguJxvB0YKxyZRF8MU2/+O15NhNX2asAnoYz+kyXb9VyA
-         csDA==
-X-Gm-Message-State: AOJu0YziR4uYYBFk3abG8z6rC0YOE3yLpTjCbexCDSULB4QLarUe1NvW
-	hei2E9As0rksY3gXkrQxtnHLOZYLgtvEfBR+LCE=
-X-Google-Smtp-Source: AGHT+IFgDpqUJuQVyb2l1MCzugD7IR3bYFrpQHpK4r5crxoIxUfy+vpGWm/nJkMlXrKCaWYE6/dSsbUv3ni093tY3RM=
-X-Received: by 2002:a05:6402:35ca:b0:52e:3ce8:e333 with SMTP id
- z10-20020a05640235ca00b0052e3ce8e333mr4405428edc.18.1696615030160; Fri, 06
- Oct 2023 10:57:10 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 496D234191
+	for <bpf@vger.kernel.org>; Fri,  6 Oct 2023 17:57:55 +0000 (UTC)
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9749CE
+	for <bpf@vger.kernel.org>; Fri,  6 Oct 2023 10:57:52 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 396EAqJJ009124
+	for <bpf@vger.kernel.org>; Fri, 6 Oct 2023 10:57:52 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3tj6dfg1d6-13
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Fri, 06 Oct 2023 10:57:51 -0700
+Received: from twshared11278.41.prn1.facebook.com (2620:10d:c0a8:1c::11) by
+ mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Fri, 6 Oct 2023 10:57:50 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id 05550394AC8E1; Fri,  6 Oct 2023 10:57:44 -0700 (PDT)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>, Jiri Olsa <jolsa@kernel.org>
+Subject: [PATCH v2 bpf-next 1/3] selftests/bpf: fix compiler warnings reported in -O2 mode
+Date: Fri, 6 Oct 2023 10:57:42 -0700
+Message-ID: <20231006175744.3136675-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231004001750.2939898-1-andrii@kernel.org> <20231004001750.2939898-2-andrii@kernel.org>
- <ZR0h12W2AHvquBWv@krava> <CAEf4Bzag+5_r05t7p2N-XiWykT51U5x4ov7YSa0NGVJrGpo6UQ@mail.gmail.com>
- <ZR5jfh939hHLtnED@krava> <e4993aa4-2162-b227-d14e-6d521931c6e0@oracle.com> <CAEf4BzbJwHJDF1ZmNrWXRfg1OTr3pt4sfCfp8xBwu9P5TUY6Uw@mail.gmail.com>
-In-Reply-To: <CAEf4BzbJwHJDF1ZmNrWXRfg1OTr3pt4sfCfp8xBwu9P5TUY6Uw@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 6 Oct 2023 10:56:59 -0700
-Message-ID: <CAEf4BzZccnUNO=OG7=Nuwhns3JLBFBDCUXXR_30JzMAd5mLk=g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] selftests/bpf: support building selftests in
- optimized -O2 mode
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org, 
-	kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: zffCiSk8lTsd2nXFimJwTfzceCAjal5o
+X-Proofpoint-ORIG-GUID: zffCiSk8lTsd2nXFimJwTfzceCAjal5o
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-06_14,2023-10-06_01,2023-05-22_02
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Oct 6, 2023 at 10:55=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Oct 5, 2023 at 2:04=E2=80=AFAM Alan Maguire <alan.maguire@oracle.=
-com> wrote:
-> >
-> > On 05/10/2023 08:19, Jiri Olsa wrote:
-> > > On Wed, Oct 04, 2023 at 10:21:12AM -0700, Andrii Nakryiko wrote:
-> > >> On Wed, Oct 4, 2023 at 1:27=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com=
-> wrote:
-> > >>>
-> > >>> On Tue, Oct 03, 2023 at 05:17:49PM -0700, Andrii Nakryiko wrote:
-> > >>>> Add support for building selftests with -O2 level of optimization,=
- which
-> > >>>> allows more compiler warnings detection (like lots of potentially
-> > >>>> uninitialized usage), but also is useful to have a faster-running =
-test
-> > >>>> for some CPU-intensive tests.
-> > >>>>
-> > >>>> One can build optimized versions of libbpf and selftests by runnin=
-g:
-> > >>>>
-> > >>>>   $ make RELEASE=3D1
-> > >>>>
-> > >>>> There is a measurable speed up of about 10 seconds for me locally,
-> > >>>> though it's mostly capped by non-parallelized serial tests. User C=
-PU
-> > >>>> time goes down by total 40 seconds, from 1m10s to 0m28s.
-> > >>>>
-> > >>>> Unoptimized build (-O0)
-> > >>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> > >>>> Summary: 430/3544 PASSED, 25 SKIPPED, 4 FAILED
-> > >>>>
-> > >>>> real    1m59.937s
-> > >>>> user    1m10.877s
-> > >>>> sys     3m14.880s
-> > >>>>
-> > >>>> Optimized build (-O2)
-> > >>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > >>>> Summary: 425/3543 PASSED, 25 SKIPPED, 9 FAILED
-> > >>>>
-> > >>>> real    1m50.540s
-> > >>>> user    0m28.406s
-> > >>>> sys     3m13.198s
-> > >>>
-> > >>> hi,
-> > >>> I get following error when running selftest compiled with RELEASE=
-=3D1
-> > >>>
-> > >>> # ./test_progs -t attach_probe/manual-legacy
-> > >>> test_attach_probe:PASS:skel_open 0 nsec
-> > >>> test_attach_probe:PASS:skel_load 0 nsec
-> > >>> test_attach_probe:PASS:check_bss 0 nsec
-> > >>> test_attach_probe:PASS:uprobe_ref_ctr_cleanup 0 nsec
-> > >>> test_attach_probe_manual:PASS:skel_kprobe_manual_open_and_load 0 ns=
-ec
-> > >>> test_attach_probe_manual:PASS:uprobe_offset 0 nsec
-> > >>> test_attach_probe_manual:PASS:attach_kprobe 0 nsec
-> > >>> test_attach_probe_manual:PASS:attach_kretprobe 0 nsec
-> > >>> test_attach_probe_manual:PASS:attach_uprobe 0 nsec
-> > >>> test_attach_probe_manual:PASS:attach_uretprobe 0 nsec
-> > >>> libbpf: failed to add legacy uprobe event for /proc/self/exe:0x1902=
-0: -17
-> > >>> libbpf: prog 'handle_uprobe_byname': failed to create uprobe '/proc=
-/self/exe:0x19020' perf event: File exists
-> > >>> test_attach_probe_manual:FAIL:attach_uprobe_byname unexpected error=
-: -17
-> > >>> #8/2     attach_probe/manual-legacy:FAIL
-> > >>> #8       attach_probe:FAIL
-> > >>>
-> > >>>
-> > >>> it looks like -O2 can merge some of the trigger functions:
-> > >>>
-> > >>>         [root@qemu bpf]# nm test_progs | grep trigger_func
-> > >>>         0000000000558f30 t autoattach_trigger_func.constprop.0
-> > >>>         000000000041d240 t trigger_func
-> > >>>         0000000000419020 t trigger_func
-> > >>>         0000000000420e70 t trigger_func
-> > >>>         0000000000507aa0 t trigger_func
-> > >>>         0000000000419020 t trigger_func2
-> > >>>         0000000000419020 t trigger_func3
-> > >>>         0000000000419030 t trigger_func4
-> > >>>         [root@qemu bpf]# nm test_progs | grep 0000000000419020
-> > >>>         0000000000419020 t trigger_func
-> > >>>         0000000000419020 t trigger_func2
-> > >>>         0000000000419020 t trigger_func3
-> > >>>
-> > >>> I got more tests fails, but I suspect it's all for similar
-> > >>> reason like above
-> > >>>
-> > >>
-> >
-> > This one is an interesting failure that definitely seems worth fixing;
-> > as above trigger_func2 and trigger_func3 were merged it looks like, and
-> > the legacy perf_event_kprobe_open_legacy()-based attach failed due to
-> > add_uprobe_event_legacy() failing. The latter seems to be down to the
-> > way that gen_uprobe_legacy_event_name() constructs legacy event names
-> > via pid, binary_path and offset. In this case it will construct the
-> > same name for trigger_func2 and trigger_func3, hence the -EEXIST.
-> >
-> > It _seems_ like a fix here would be to add an optional func_name to
-> > gen_uprobe_legacy_event_name(). At least it appears that the non-legacy
-> > attach handles this case, which is great. Regardless, we can follow
-> > up with some of this stuff later.
->
-> Yeah, let's fix this up as a follow up. I'm not sure about using
-> function name as part of uprobe name, mostly because these symbol
-> names can be super long, and I don't know what's kernel size limits.
-> So we probably want to keep them bounded in size. Having said that,
-> seems like we use binary path and we also don't sanitize that. So I
+Fix a bunch of potentially unitialized variable usage warnings that are
+reported by GCC in -O2 mode. Also silence overzealous stringop-truncation
+class of warnings.
 
-Scratch that, we do sanitization at the end (I don't know how I missed
-it the first time), so the concern is only about the potentially very
-large binary path length.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/testing/selftests/bpf/Makefile                      | 4 +++-
+ .../selftests/bpf/map_tests/map_in_map_batch_ops.c        | 4 ++--
+ tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c | 4 ++--
+ tools/testing/selftests/bpf/prog_tests/connect_ping.c     | 4 ++--
+ tools/testing/selftests/bpf/prog_tests/linked_list.c      | 2 +-
+ tools/testing/selftests/bpf/prog_tests/lwt_helpers.h      | 3 ++-
+ tools/testing/selftests/bpf/prog_tests/queue_stack_map.c  | 2 +-
+ tools/testing/selftests/bpf/prog_tests/sockmap_basic.c    | 8 ++++----
+ tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h  | 2 +-
+ tools/testing/selftests/bpf/prog_tests/sockmap_listen.c   | 4 ++--
+ tools/testing/selftests/bpf/prog_tests/xdp_metadata.c     | 2 +-
+ tools/testing/selftests/bpf/test_loader.c                 | 4 ++--
+ tools/testing/selftests/bpf/xdp_features.c                | 4 ++--
+ tools/testing/selftests/bpf/xdp_hw_metadata.c             | 2 +-
+ tools/testing/selftests/bpf/xskxceiver.c                  | 2 +-
+ 15 files changed, 27 insertions(+), 24 deletions(-)
 
-I think either way we should have a global counter for all uprobes to
-avoid any probability of a naming conflict.
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+index 12a60521d624..99f66bdf7698 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -27,7 +27,9 @@ endif
+ BPF_GCC		?=3D $(shell command -v bpf-gcc;)
+ SAN_CFLAGS	?=3D
+ SAN_LDFLAGS	?=3D $(SAN_CFLAGS)
+-CFLAGS +=3D -g -O0 -rdynamic -Wall -Werror $(GENFLAGS) $(SAN_CFLAGS)	\
++CFLAGS +=3D -g -O0 -rdynamic						\
++	  -Wall -Werror 						\
++	  $(GENFLAGS) $(SAN_CFLAGS)					\
+ 	  -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)		\
+ 	  -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
+ LDFLAGS +=3D $(SAN_LDFLAGS)
+diff --git a/tools/testing/selftests/bpf/map_tests/map_in_map_batch_ops.c=
+ b/tools/testing/selftests/bpf/map_tests/map_in_map_batch_ops.c
+index 16f1671e4bde..66191ae9863c 100644
+--- a/tools/testing/selftests/bpf/map_tests/map_in_map_batch_ops.c
++++ b/tools/testing/selftests/bpf/map_tests/map_in_map_batch_ops.c
+@@ -33,11 +33,11 @@ static void create_inner_maps(enum bpf_map_type map_t=
+ype,
+ {
+ 	int map_fd, map_index, ret;
+ 	__u32 map_key =3D 0, map_id;
+-	char map_name[15];
++	char map_name[16];
+=20
+ 	for (map_index =3D 0; map_index < OUTER_MAP_ENTRIES; map_index++) {
+ 		memset(map_name, 0, sizeof(map_name));
+-		sprintf(map_name, "inner_map_fd_%d", map_index);
++		snprintf(map_name, sizeof(map_name), "inner_map_fd_%d", map_index);
+ 		map_fd =3D bpf_map_create(map_type, map_name, sizeof(__u32),
+ 					sizeof(__u32), 1, NULL);
+ 		CHECK(map_fd < 0,
+diff --git a/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c b/=
+tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
+index d2d9e965eba5..053f4d6da77a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
++++ b/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
+@@ -193,8 +193,8 @@ static int setup_progs(struct bloom_filter_map **out_=
+skel, __u32 **out_rand_vals
+=20
+ void test_bloom_filter_map(void)
+ {
+-	__u32 *rand_vals, nr_rand_vals;
+-	struct bloom_filter_map *skel;
++	__u32 *rand_vals =3D NULL, nr_rand_vals =3D 0;
++	struct bloom_filter_map *skel =3D NULL;
+ 	int err;
+=20
+ 	test_fail_cases();
+diff --git a/tools/testing/selftests/bpf/prog_tests/connect_ping.c b/tool=
+s/testing/selftests/bpf/prog_tests/connect_ping.c
+index 289218c2216c..40fe571f2fe7 100644
+--- a/tools/testing/selftests/bpf/prog_tests/connect_ping.c
++++ b/tools/testing/selftests/bpf/prog_tests/connect_ping.c
+@@ -28,9 +28,9 @@ static void subtest(int cgroup_fd, struct connect_ping =
+*skel,
+ 		.sin6_family =3D AF_INET6,
+ 		.sin6_addr =3D IN6ADDR_LOOPBACK_INIT,
+ 	};
+-	struct sockaddr *sa;
++	struct sockaddr *sa =3D NULL;
+ 	socklen_t sa_len;
+-	int protocol;
++	int protocol =3D -1;
+ 	int sock_fd;
+=20
+ 	switch (family) {
+diff --git a/tools/testing/selftests/bpf/prog_tests/linked_list.c b/tools=
+/testing/selftests/bpf/prog_tests/linked_list.c
+index db3bf6bbe01a..69dc31383b78 100644
+--- a/tools/testing/selftests/bpf/prog_tests/linked_list.c
++++ b/tools/testing/selftests/bpf/prog_tests/linked_list.c
+@@ -268,7 +268,7 @@ static struct btf *init_btf(void)
+=20
+ static void list_and_rb_node_same_struct(bool refcount_field)
+ {
+-	int bpf_rb_node_btf_id, bpf_refcount_btf_id, foo_btf_id;
++	int bpf_rb_node_btf_id, bpf_refcount_btf_id =3D 0, foo_btf_id;
+ 	struct btf *btf;
+ 	int id, err;
+=20
+diff --git a/tools/testing/selftests/bpf/prog_tests/lwt_helpers.h b/tools=
+/testing/selftests/bpf/prog_tests/lwt_helpers.h
+index 61333f2a03f9..e9190574e79f 100644
+--- a/tools/testing/selftests/bpf/prog_tests/lwt_helpers.h
++++ b/tools/testing/selftests/bpf/prog_tests/lwt_helpers.h
+@@ -49,7 +49,8 @@ static int open_tuntap(const char *dev_name, bool need_=
+mac)
+ 		return -1;
+=20
+ 	ifr.ifr_flags =3D IFF_NO_PI | (need_mac ? IFF_TAP : IFF_TUN);
+-	memcpy(ifr.ifr_name, dev_name, IFNAMSIZ);
++	strncpy(ifr.ifr_name, dev_name, IFNAMSIZ - 1);
++	ifr.ifr_name[IFNAMSIZ - 1] =3D '\0';
+=20
+ 	err =3D ioctl(fd, TUNSETIFF, &ifr);
+ 	if (!ASSERT_OK(err, "ioctl(TUNSETIFF)")) {
+diff --git a/tools/testing/selftests/bpf/prog_tests/queue_stack_map.c b/t=
+ools/testing/selftests/bpf/prog_tests/queue_stack_map.c
+index 722c5f2a7776..a043af9cd6d9 100644
+--- a/tools/testing/selftests/bpf/prog_tests/queue_stack_map.c
++++ b/tools/testing/selftests/bpf/prog_tests/queue_stack_map.c
+@@ -14,7 +14,7 @@ static void test_queue_stack_map_by_type(int type)
+ 	int i, err, prog_fd, map_in_fd, map_out_fd;
+ 	char file[32], buf[128];
+ 	struct bpf_object *obj;
+-	struct iphdr iph;
++	struct iphdr iph =3D {};
+ 	LIBBPF_OPTS(bpf_test_run_opts, topts,
+ 		.data_in =3D &pkt_v4,
+ 		.data_size_in =3D sizeof(pkt_v4),
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/too=
+ls/testing/selftests/bpf/prog_tests/sockmap_basic.c
+index 064cc5e8d9ad..2535d0653cc8 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+@@ -359,7 +359,7 @@ static void test_sockmap_progs_query(enum bpf_attach_=
+type attach_type)
+ static void test_sockmap_skb_verdict_shutdown(void)
+ {
+ 	struct epoll_event ev, events[MAX_EVENTS];
+-	int n, err, map, verdict, s, c1, p1;
++	int n, err, map, verdict, s, c1 =3D -1, p1 =3D -1;
+ 	struct test_sockmap_pass_prog *skel;
+ 	int epollfd;
+ 	int zero =3D 0;
+@@ -414,9 +414,9 @@ static void test_sockmap_skb_verdict_shutdown(void)
+ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
+ {
+ 	int expected, zero =3D 0, sent, recvd, avail;
+-	int err, map, verdict, s, c0, c1, p0, p1;
+-	struct test_sockmap_pass_prog *pass;
+-	struct test_sockmap_drop_prog *drop;
++	int err, map, verdict, s, c0 =3D -1, c1 =3D -1, p0 =3D -1, p1 =3D -1;
++	struct test_sockmap_pass_prog *pass =3D NULL;
++	struct test_sockmap_drop_prog *drop =3D NULL;
+ 	char buf[256] =3D "0123456789";
+=20
+ 	if (pass_prog) {
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h b/t=
+ools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
+index 36d829a65aa4..e880f97bc44d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
+@@ -378,7 +378,7 @@ static inline int enable_reuseport(int s, int progfd)
+ static inline int socket_loopback_reuseport(int family, int sotype, int =
+progfd)
+ {
+ 	struct sockaddr_storage addr;
+-	socklen_t len;
++	socklen_t len =3D 0;
+ 	int err, s;
+=20
+ 	init_addr_loopback(family, &addr, &len);
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/to=
+ols/testing/selftests/bpf/prog_tests/sockmap_listen.c
+index 8df8cbb447f1..e08e590b2cf8 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+@@ -73,7 +73,7 @@ static void test_insert_bound(struct test_sockmap_liste=
+n *skel __always_unused,
+ 			      int family, int sotype, int mapfd)
+ {
+ 	struct sockaddr_storage addr;
+-	socklen_t len;
++	socklen_t len =3D 0;
+ 	u32 key =3D 0;
+ 	u64 value;
+ 	int err, s;
+@@ -871,7 +871,7 @@ static void test_msg_redir_to_listening(struct test_s=
+ockmap_listen *skel,
+=20
+ static void redir_partial(int family, int sotype, int sock_map, int pars=
+er_map)
+ {
+-	int s, c0, c1, p0, p1;
++	int s, c0 =3D -1, c1 =3D -1, p0 =3D -1, p1 =3D -1;
+ 	int err, n, key, value;
+ 	char buf[] =3D "abc";
+=20
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tool=
+s/testing/selftests/bpf/prog_tests/xdp_metadata.c
+index 626c461fa34d..4439ba9392f8 100644
+--- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+@@ -226,7 +226,7 @@ static int verify_xsk_metadata(struct xsk *xsk)
+ 	__u64 comp_addr;
+ 	void *data;
+ 	__u64 addr;
+-	__u32 idx;
++	__u32 idx =3D 0;
+ 	int ret;
+=20
+ 	ret =3D recvfrom(xsk_socket__fd(xsk->socket), NULL, 0, MSG_DONTWAIT, NU=
+LL, NULL);
+diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/se=
+lftests/bpf/test_loader.c
+index b4edd8454934..37ffa57f28a1 100644
+--- a/tools/testing/selftests/bpf/test_loader.c
++++ b/tools/testing/selftests/bpf/test_loader.c
+@@ -69,7 +69,7 @@ static int tester_init(struct test_loader *tester)
+ {
+ 	if (!tester->log_buf) {
+ 		tester->log_buf_sz =3D TEST_LOADER_LOG_BUF_SZ;
+-		tester->log_buf =3D malloc(tester->log_buf_sz);
++		tester->log_buf =3D calloc(tester->log_buf_sz, 1);
+ 		if (!ASSERT_OK_PTR(tester->log_buf, "tester_log_buf"))
+ 			return -ENOMEM;
+ 	}
+@@ -538,7 +538,7 @@ void run_subtest(struct test_loader *tester,
+ 		 bool unpriv)
+ {
+ 	struct test_subspec *subspec =3D unpriv ? &spec->unpriv : &spec->priv;
+-	struct bpf_program *tprog, *tprog_iter;
++	struct bpf_program *tprog =3D NULL, *tprog_iter;
+ 	struct test_spec *spec_iter;
+ 	struct cap_state caps =3D {};
+ 	struct bpf_object *tobj;
+diff --git a/tools/testing/selftests/bpf/xdp_features.c b/tools/testing/s=
+elftests/bpf/xdp_features.c
+index b449788fbd39..595c79141cf3 100644
+--- a/tools/testing/selftests/bpf/xdp_features.c
++++ b/tools/testing/selftests/bpf/xdp_features.c
+@@ -360,9 +360,9 @@ static int recv_msg(int sockfd, void *buf, size_t buf=
+size, void *val,
+ static int dut_run(struct xdp_features *skel)
+ {
+ 	int flags =3D XDP_FLAGS_UPDATE_IF_NOEXIST | XDP_FLAGS_DRV_MODE;
+-	int state, err, *sockfd, ctrl_sockfd, echo_sockfd;
++	int state, err =3D 0, *sockfd, ctrl_sockfd, echo_sockfd;
+ 	struct sockaddr_storage ctrl_addr;
+-	pthread_t dut_thread;
++	pthread_t dut_thread =3D 0;
+ 	socklen_t addrlen;
+=20
+ 	sockfd =3D start_reuseport_server(AF_INET6, SOCK_STREAM, NULL,
+diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testin=
+g/selftests/bpf/xdp_hw_metadata.c
+index 613321eb84c1..17c980138796 100644
+--- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
++++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+@@ -234,7 +234,7 @@ static int verify_metadata(struct xsk *rx_xsk, int rx=
+q, int server_fd, clockid_t
+ 	struct pollfd fds[rxq + 1];
+ 	__u64 comp_addr;
+ 	__u64 addr;
+-	__u32 idx;
++	__u32 idx =3D 0;
+ 	int ret;
+ 	int i;
+=20
+diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/sel=
+ftests/bpf/xskxceiver.c
+index 837e0ffbdc47..591ca9637b23 100644
+--- a/tools/testing/selftests/bpf/xskxceiver.c
++++ b/tools/testing/selftests/bpf/xskxceiver.c
+@@ -1049,7 +1049,7 @@ static int __receive_pkts(struct test_spec *test, s=
+truct xsk_socket_info *xsk)
+ 	struct xsk_umem_info *umem =3D xsk->umem;
+ 	struct pollfd fds =3D { };
+ 	struct pkt *pkt;
+-	u64 first_addr;
++	u64 first_addr =3D 0;
+ 	int ret;
+=20
+ 	fds.fd =3D xsk_socket__fd(xsk->xsk);
+--=20
+2.34.1
 
-> think we should try to fix all that as a follow up: sanitize and maybe
-> truncate binary_path, and generally make sure that each uprobe name is
-> unique (probably with atomic counter). This atomic static counter will
-> take care of all such issues, right? Maybe we should drop the binary
-> path from the uprobe name altogether with that?
->
-> Either way, thanks for taking a deeper look into failures!
->
-> >
-> > >> yes, I didn't say that -O2 version passes all tests :) at least ther=
-e
-> > >> are complicated USDT cases under -O2 which libbpf can't support (if =
-I
-> > >> remember correctly, it was offset relative to global symbol case). B=
-ut
-> > >> it's the first step. And once we have ability to build with RELEASE=
-=3D1,
-> > >> we can add it as a separate test in CI and catch more of these
-> > >> uninitialized usage errors. Initially we can denylist tests that are
-> > >> broken due to -O2 and work to fix them.
-> > >
-> >
-> > Sounds good to me; it's a great change as we're more likely to hit
-> > more problems that users run into.
->
-> yep
->
-> >
-> > For the series:
-> >
-> > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> >
-> > > I see ;-) sounds good
-> > >
-> > > Acked-by: Jiri Olsa <jolsa@kernel.org>
-> > >
-> > > jirka
-> > >
-> > >>
-> > >>> jirka
-> > >>>
-> > >>>
-> > >>>>
-> > >>>> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > >>>> ---
-> > >>>>  tools/testing/selftests/bpf/Makefile | 14 ++++++++------
-> > >>>>  1 file changed, 8 insertions(+), 6 deletions(-)
-> > >>>>
-> > >>>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/=
-selftests/bpf/Makefile
-> > >>>> index a25e262dbc69..55d1b1848e6c 100644
-> > >>>> --- a/tools/testing/selftests/bpf/Makefile
-> > >>>> +++ b/tools/testing/selftests/bpf/Makefile
-> > >>>> @@ -27,7 +27,9 @@ endif
-> > >>>>  BPF_GCC              ?=3D $(shell command -v bpf-gcc;)
-> > >>>>  SAN_CFLAGS   ?=3D
-> > >>>>  SAN_LDFLAGS  ?=3D $(SAN_CFLAGS)
-> > >>>> -CFLAGS +=3D -g -O0 -rdynamic                                     =
-      \
-> > >>>> +RELEASE              ?=3D
-> > >>>> +OPT_FLAGS    ?=3D $(if $(RELEASE),-O2,-O0)
-> > >>>> +CFLAGS +=3D -g $(OPT_FLAGS) -rdynamic                            =
-      \
-> > >>>>         -Wall -Werror                                             =
-    \
-> > >>>>         $(GENFLAGS) $(SAN_CFLAGS)                                 =
-    \
-> > >>>>         -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)      =
-    \
-> > >>>> @@ -241,7 +243,7 @@ $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BP=
-FTOOL) $(RUNQSLOWER_OUTPUT)
-> > >>>>                   BPFTOOL_OUTPUT=3D$(HOST_BUILD_DIR)/bpftool/     =
-             \
-> > >>>>                   BPFOBJ_OUTPUT=3D$(BUILD_DIR)/libbpf             =
-             \
-> > >>>>                   BPFOBJ=3D$(BPFOBJ) BPF_INCLUDE=3D$(INCLUDE_DIR) =
-               \
-> > >>>> -                 EXTRA_CFLAGS=3D'-g -O0 $(SAN_CFLAGS)'           =
-             \
-> > >>>> +                 EXTRA_CFLAGS=3D'-g $(OPT_FLAGS) $(SAN_CFLAGS)'  =
-             \
-> > >>>>                   EXTRA_LDFLAGS=3D'$(SAN_LDFLAGS)' &&             =
-             \
-> > >>>>                   cp $(RUNQSLOWER_OUTPUT)runqslower $@
-> > >>>>
-> > >>>> @@ -279,7 +281,7 @@ $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*=
-.[ch] $(BPFTOOLDIR)/Makefile)    \
-> > >>>>                   $(HOST_BPFOBJ) | $(HOST_BUILD_DIR)/bpftool
-> > >>>>       $(Q)$(MAKE) $(submake_extras)  -C $(BPFTOOLDIR)             =
-           \
-> > >>>>                   ARCH=3D CROSS_COMPILE=3D CC=3D"$(HOSTCC)" LD=3D"=
-$(HOSTLD)"         \
-> > >>>> -                 EXTRA_CFLAGS=3D'-g -O0'                         =
-             \
-> > >>>> +                 EXTRA_CFLAGS=3D'-g $(OPT_FLAGS)'                =
-             \
-> > >>>>                   OUTPUT=3D$(HOST_BUILD_DIR)/bpftool/             =
-             \
-> > >>>>                   LIBBPF_OUTPUT=3D$(HOST_BUILD_DIR)/libbpf/       =
-             \
-> > >>>>                   LIBBPF_DESTDIR=3D$(HOST_SCRATCH_DIR)/           =
-             \
-> > >>>> @@ -290,7 +292,7 @@ $(CROSS_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[=
-ch] $(BPFTOOLDIR)/Makefile) \
-> > >>>>                   $(BPFOBJ) | $(BUILD_DIR)/bpftool
-> > >>>>       $(Q)$(MAKE) $(submake_extras)  -C $(BPFTOOLDIR)             =
-            \
-> > >>>>                   ARCH=3D$(ARCH) CROSS_COMPILE=3D$(CROSS_COMPILE) =
-                \
-> > >>>> -                 EXTRA_CFLAGS=3D'-g -O0'                         =
-              \
-> > >>>> +                 EXTRA_CFLAGS=3D'-g $(OPT_FLAGS)'                =
-              \
-> > >>>>                   OUTPUT=3D$(BUILD_DIR)/bpftool/                  =
-              \
-> > >>>>                   LIBBPF_OUTPUT=3D$(BUILD_DIR)/libbpf/            =
-              \
-> > >>>>                   LIBBPF_DESTDIR=3D$(SCRATCH_DIR)/                =
-              \
-> > >>>> @@ -313,7 +315,7 @@ $(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDI=
-R)/Makefile)                       \
-> > >>>>          $(APIDIR)/linux/bpf.h                                    =
-           \
-> > >>>>          | $(BUILD_DIR)/libbpf
-> > >>>>       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=3D$(BUILD_=
-DIR)/libbpf/ \
-> > >>>> -                 EXTRA_CFLAGS=3D'-g -O0 $(SAN_CFLAGS)'           =
-             \
-> > >>>> +                 EXTRA_CFLAGS=3D'-g $(OPT_FLAGS) $(SAN_CFLAGS)'  =
-             \
-> > >>>>                   EXTRA_LDFLAGS=3D'$(SAN_LDFLAGS)'                =
-             \
-> > >>>>                   DESTDIR=3D$(SCRATCH_DIR) prefix=3D all install_h=
-eaders
-> > >>>>
-> > >>>> @@ -322,7 +324,7 @@ $(HOST_BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(=
-BPFDIR)/Makefile)                  \
-> > >>>>               $(APIDIR)/linux/bpf.h                               =
-           \
-> > >>>>               | $(HOST_BUILD_DIR)/libbpf
-> > >>>>       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR)                  =
-           \
-> > >>>> -                 EXTRA_CFLAGS=3D'-g -O0' ARCH=3D CROSS_COMPILE=3D=
-                 \
-> > >>>> +                 EXTRA_CFLAGS=3D'-g $(OPT_FLAGS)' ARCH=3D CROSS_C=
-OMPILE=3D        \
-> > >>>>                   OUTPUT=3D$(HOST_BUILD_DIR)/libbpf/              =
-             \
-> > >>>>                   CC=3D"$(HOSTCC)" LD=3D"$(HOSTLD)"               =
-               \
-> > >>>>                   DESTDIR=3D$(HOST_SCRATCH_DIR)/ prefix=3D all ins=
-tall_headers
-> > >>>> --
-> > >>>> 2.34.1
-> > >>>>
-> > >>>>
-> > >
 
