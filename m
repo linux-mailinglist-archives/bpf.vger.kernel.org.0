@@ -1,89 +1,79 @@
-Return-Path: <bpf+bounces-11518-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11519-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53D617BB221
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 09:28:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 737187BB288
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 09:45:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 829C31C20A23
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 07:28:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 616441C209DF
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 07:45:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB4036AA2;
-	Fri,  6 Oct 2023 07:28:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8A5C6FB4;
+	Fri,  6 Oct 2023 07:45:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AYRR1rKo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Crbujns6"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36DF463DA
-	for <bpf@vger.kernel.org>; Fri,  6 Oct 2023 07:28:02 +0000 (UTC)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87B6F0;
-	Fri,  6 Oct 2023 00:27:58 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c136ee106so322831966b.1;
-        Fri, 06 Oct 2023 00:27:58 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A377253AC;
+	Fri,  6 Oct 2023 07:45:50 +0000 (UTC)
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28FCE4;
+	Fri,  6 Oct 2023 00:45:48 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-5046bf37ec1so2421000e87.1;
+        Fri, 06 Oct 2023 00:45:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696577277; x=1697182077; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3d1IEyUt5G0QrNV2XhIWZuD9qpRkSka5plbUV+63i40=;
-        b=AYRR1rKo2H5GUJyWiY8vFLl6YULBzD5oCHWgJzQqwJIpAcqqO8s4cWXVRBCs0zJDcm
-         FHQoocI4xRkRik5mNy9SUzOenY/yuhmfNrhFDO9ug+hxNsi4/IfehB/xMaR8Rns6MoVc
-         fK1zYFugIvCO/dHx3tFiPCiSru4pO1grMW6PstMGkaGH7mczRFpXIB+IgLpPBiIgRYPf
-         MxHSaI+ZyTpdJaZOq5UTOGpoTSh1/KaRmWRksMtgGwVyfRrIeN6rOFG7xH4PxMWCHxIM
-         GMeQTnjqcVjTuK7Jyuhvidx51d46G7X5A4Ftbbf83DjanpMg0VEe8jJRrShdkX2dkwtV
-         Jf/w==
+        d=gmail.com; s=20230601; t=1696578346; x=1697183146; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ndAkOLmTR8pIx9PhgWna+UHCuui9zHe2W0fVk45Y+M4=;
+        b=Crbujns6CnaD+W4Mms7zlvEeRHkNAGFfu+XILnwC8hYJLXeqg05T1ZEh2lS7khirfg
+         PNV5PNDLmlw2OCu+3piOtfGUlZhbYR9V1pZNSBRBBBB9OSyGqxxY2DAlCXRCnKngrhU4
+         glhCx/b8no6yQI8/dWNTr4auDItgq9jVi61Kt+rdpJpoJYXBMybaJyPTiDmqgOw45hS6
+         UmHxR/jOck8bbVRcEWPLt0sAvVDSNeCM+AZwAyh3ERfXxxUSFageGOlEccJTntUdlX5P
+         fYldk0t7DFEpxjZWw9XuMGTeHD2ufgsIp98/QE9tzf5jJ0DpJOSbSuClXzYAApJnpFXN
+         6igw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696577277; x=1697182077;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3d1IEyUt5G0QrNV2XhIWZuD9qpRkSka5plbUV+63i40=;
-        b=WvAJw83DVwzdfw+45YUq7ev/i4ujuZRpf1Xhf7+/kDZh05CnjTm8ZvJORr1hrICKmb
-         XJH0oOFi8ZMRKykQIG0q3tR5FA6ZQURBnZqaZUCCzaX3zpON31fSoEXrqGfL7MGdDHiB
-         OECMJVbo+SgFGhbIyMRXcIjIzhY/sqgTNcj/C56m47JobTmyIkFmJ210xu89q1JFv0EZ
-         /G3TwkpwhFFaWxaPHs/8+BUsAGQudwbEu8tboJzoEmyjUiZmVb/5uHNI/15geFLNiTPX
-         3gYTzfuI1AtBr6VQLSSSbPUGb3/lSX0KFZzEBsy9NLo+9Jf4DyREIZj/Isov7012BhG2
-         JBDQ==
-X-Gm-Message-State: AOJu0YxZWxQ2Paypv8PZojmeqjV4n0H5epsnzUvtSnOleo/L1F6SfTLs
-	UyuGS06j+dpeZv5kh5RSy0HTn7+0WsQ=
-X-Google-Smtp-Source: AGHT+IHrYGfzZeh1vJuc/LjDGdWJ4+7IpX8/bcxLxEEbaL/2vqfKa1DuaHUU0jNxcpeamtXj+Cw60Q==
-X-Received: by 2002:a17:906:cc15:b0:9ad:ef31:6ef6 with SMTP id ml21-20020a170906cc1500b009adef316ef6mr6752160ejb.20.1696577276969;
-        Fri, 06 Oct 2023 00:27:56 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id gx13-20020a170906f1cd00b009ad8d444be4sm2411412ejb.43.2023.10.06.00.27.55
+        d=1e100.net; s=20230601; t=1696578346; x=1697183146;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ndAkOLmTR8pIx9PhgWna+UHCuui9zHe2W0fVk45Y+M4=;
+        b=CYDQ9vF2pBpj9NzwDce/hR2h27ZEwR7aJOUPXJdl3xExApKUT70MiA7qgg8fNxMAc7
+         /m2HB6I1UZFC8Lp26uadVxHwXO9vzO8n0Zo4y4VCdRyK4lK+XedR7/bT16c484p9e6Cb
+         EWUCd/qrmyRhd/pxrMa60W7CIikYd3M2x35b9Wy/ikzQoT02X6QPWVpsqr6tmtWkNe9B
+         kvQFgiWJuVqRTUkdWsilDaVybtapdWRA36NUSSG/iF6RdnKEtUOsAw+OGXWeDAk1tGlj
+         /FZelACyaqtdqeUyHrKQ9ZEEpeTo6Yw7g5lXs8ra1rWu3V8IBwqGyjJXS4pYA/FZxenU
+         pN5g==
+X-Gm-Message-State: AOJu0YxJm9y02vCLQPRJ2EgbfwWZdVksTukmK/INMFTc53I5rYF2w7yg
+	MMl2xcp8TRyTwDrqba+j1wE7i78vxrh22guB
+X-Google-Smtp-Source: AGHT+IF/vtGU/Smj+FOW1hmdz6AIKb18Fszj5TY8Dl7UI9Cdfyn7WWIcdDb2vscu0yxelFr8awKKcA==
+X-Received: by 2002:a19:e05b:0:b0:503:56e:ae4 with SMTP id g27-20020a19e05b000000b00503056e0ae4mr6413507lfj.38.1696578346149;
+        Fri, 06 Oct 2023 00:45:46 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:a03f:864b:8201:e534:34f4:1c34:8de7])
+        by smtp.googlemail.com with ESMTPSA id k22-20020a7bc416000000b00404719b05b5sm3126888wmi.27.2023.10.06.00.45.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 00:27:56 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 6 Oct 2023 09:27:54 +0200
-To: KP Singh <kpsingh@kernel.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, linux-security-module@vger.kernel.org,
-	bpf@vger.kernel.org, paul@paul-moore.com, keescook@chromium.org,
-	casey@schaufler-ca.com, song@kernel.org, daniel@iogearbox.net,
-	ast@kernel.org, renauld@google.com
-Subject: Re: [PATCH v5 4/5] bpf: Only enable BPF LSM hooks when an LSM
- program is attached
-Message-ID: <ZR+2+gQ3B3tgFI/8@krava>
-References: <20230928202410.3765062-1-kpsingh@kernel.org>
- <20230928202410.3765062-5-kpsingh@kernel.org>
- <ZR5vSyyNGBb8TvNH@krava>
- <CACYkzJ69x9jX3scjSA7zT99CJoM+eG6FDQdBT-SCxm47a6UEoA@mail.gmail.com>
- <CACYkzJ7Q0NEc9HThS1DZr0pMC+zO0GSToWmwQkTgXTeDs5VKaw@mail.gmail.com>
- <ZR6/iMnfl1q6Hf9I@krava>
- <CACYkzJ7aeBjMFTrBPf5u-Wib0Jk=rOX31yeBT5koUt=iYUF2MA@mail.gmail.com>
+        Fri, 06 Oct 2023 00:45:45 -0700 (PDT)
+From: Daan De Meyer <daan.j.demeyer@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Daan De Meyer <daan.j.demeyer@gmail.com>,
+	martin.lau@linux.dev,
+	kernel-team@meta.com,
+	netdev@vger.kernel.org
+Subject: [PATCH bpf-next v9 0/9] Add cgroup sockaddr hooks for unix sockets
+Date: Fri,  6 Oct 2023 09:44:54 +0200
+Message-ID: <20231006074530.892825-1-daan.j.demeyer@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACYkzJ7aeBjMFTrBPf5u-Wib0Jk=rOX31yeBT5koUt=iYUF2MA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -91,110 +81,171 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Oct 05, 2023 at 06:07:28PM +0200, KP Singh wrote:
+Changes since v8:
 
-SNIP
+* Added missing test programs to last patch
 
-> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> index df9699bce372..4f31384b5637 100644
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -511,11 +511,30 @@ static enum bpf_tramp_prog_type
-> bpf_attach_type_to_tramp(struct bpf_prog *prog)
->         }
->  }
-> 
-> +static void bpf_trampoline_toggle_lsm(struct bpf_trampoline *tr,
-> +                                     enum bpf_tramp_prog_type kind)
-> +{
-> +       struct bpf_tramp_link *link;
-> +       volatile bool found = false;
-> +
-> +       /* Loop through the links and if any LSM program is attached, ensure
-> +        * that the hook is enabled.
-> +        */
-> +       hlist_for_each_entry(link, &tr->progs_hlist[kind], tramp_hlist) {
-> +               if (link->link.prog->type == BPF_PROG_TYPE_LSM) {
-> +                       found  = true;
-> +                       break;
-> +               }
-> +       }
-> +
-> +       bpf_lsm_toggle_hook(tr->func.addr, found);
-> +}
-> +
->  static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link,
-> struct bpf_trampoline *tr)
->  {
->         enum bpf_tramp_prog_type kind;
->         struct bpf_tramp_link *link_exiting;
-> -       int err = 0, num_lsm_progs = 0;
-> +       int err = 0;
->         int cnt = 0, i;
-> 
->         kind = bpf_attach_type_to_tramp(link->link.prog);
-> @@ -547,15 +566,14 @@ static int __bpf_trampoline_link_prog(struct
-> bpf_tramp_link *link, struct bpf_tr
->                 /* prog already linked */
->                 return -EBUSY;
-> 
-> -               if (link_exiting->link.prog->type == BPF_PROG_TYPE_LSM)
-> -                       num_lsm_progs++;
->         }
-> 
-> -       if (!num_lsm_progs && link->link.prog->type == BPF_PROG_TYPE_LSM)
-> -               bpf_lsm_toggle_hook(tr->func.addr, true);
-> -
->         hlist_add_head(&link->tramp_hlist, &tr->progs_hlist[kind]);
->         tr->progs_cnt[kind]++;
-> +
-> +       if (link->link.prog->type == BPF_PROG_TYPE_LSM)
-> +               bpf_trampoline_toggle_lsm(tr, kind);
+Changes since v7:
 
-how about keeping BPF_PROG_TYPE_LSM progs type count of attached programs
-in bpf_trampoline and toggle lsm on first coming in and last going out?
+* Fixed formatting nit in comment
+* Renamed from cgroup/connectun to cgroup/connect_unix (and similar for all
+  other hooks)
 
-also the trampoline attach is actually made in bpf_trampoline_update,
-so I wonder it'd make more sense to put it in there, but it's already
-complicated, so it actually might be easier in here
+Changes since v6:
 
-jirka
+* Actually removed bpf_bind() helper for AF_UNIX hooks.
+* Fixed merge conflict
+* Updated comment to mention uaddrlen is read-only for AF_INET[6]
+* Removed unnecessary forward declaration of struct sock_addr_test
+* Removed unused BPF_CGROUP_RUN_PROG_UNIX_CONNECT()
+* Fixed formatting nit reported by checkpatch
+* Added more information to commit message about recvmsg() on connected socket
 
-> +
->         err = bpf_trampoline_update(tr, true /* lock_direct_mutex */);
->         if (err) {
->                 hlist_del_init(&link->tramp_hlist);
-> @@ -578,7 +596,6 @@ static int __bpf_trampoline_unlink_prog(struct
-> bpf_tramp_link *link, struct bpf_
->  {
->         struct bpf_tramp_link *link_exiting;
->         enum bpf_tramp_prog_type kind;
-> -       bool lsm_link_found = false;
->         int err, num_lsm_progs = 0;
-> 
->         kind = bpf_attach_type_to_tramp(link->link.prog);
-> @@ -595,18 +612,14 @@ static int __bpf_trampoline_unlink_prog(struct
-> bpf_tramp_link *link, struct bpf_
->                                      tramp_hlist) {
->                         if (link_exiting->link.prog->type == BPF_PROG_TYPE_LSM)
->                                 num_lsm_progs++;
-> -
-> -                       if (link_exiting->link.prog == link->link.prog)
-> -                               lsm_link_found = true;
->                 }
->         }
-> 
->         hlist_del_init(&link->tramp_hlist);
->         tr->progs_cnt[kind]--;
-> 
-> -       if (lsm_link_found && num_lsm_progs == 1)
-> -               bpf_lsm_toggle_hook(tr->func.addr, false);
-> -
-> +       if (link->link.prog->type == BPF_PROG_TYPE_LSM)
-> +               bpf_trampoline_toggle_lsm(tr, kind);
->         return bpf_trampoline_update(tr, true /* lock_direct_mutex */);
->  }
-> 
-> 
-> - KP
+Changes since v5:
+
+* Fixed kernel version in bpftool documentation (6.3 => 6.7).
+* Added connection mode socket recvmsg() test.
+* Removed bpf_bind() helper for AF_UNIX hooks.
+* Added missing getpeernameun and getsocknameun BPF test programs.
+* Added note for bind() test being unused currently.
+
+Changes since v4:
+
+* Dropped support for intercepting bind() as when using bind() with unix sockets
+  and a pathname sockaddr, bind() will create an inode in the filesystem that
+  needs to be cleaned up. If the address is rewritten, users might try to clean
+  up the wrong file and leak the actual socket file in the filesystem.
+* Changed bpf_sock_addr_set_unix_addr() to use BTF_KFUNC_HOOK_CGROUP_SKB instead
+  of BTF_KFUNC_HOOK_COMMON.
+* Removed unix socket related changes from BPF_CGROUP_PRE_CONNECT_ENABLED() as
+  unix sockets do not support pre-connect.
+* Added tests for getpeernameun and getsocknameun hooks.
+* We now disallow an empty sockaddr in bpf_sock_addr_set_unix_addr() similar to
+  unix_validate_addr().
+* Removed unnecessary cgroup_bpf_enabled() checks
+* Removed unnecessary error checks
+
+Changes since v3:
+
+* Renamed bpf_sock_addr_set_addr() to bpf_sock_addr_set_unix_addr() and
+  made it only operate on AF_UNIX sockaddrs. This is because for the other
+  families, users usually want to configure more than just the address so
+  a generic interface will not fit the bill here. e.g. for AF_INET and AF_INET6,
+  users would generally also want to be able to configure the port which the
+  current interface doesn't support. So we expose an AF_UNIX specific function
+  instead.
+* Made the tests in the new sock addr tests more generic (similar to test_sock_addr.c),
+  this should make it easier to migrate the other sock addr tests in the future.
+* Removed the new kfunc hook and attached to BTF_KFUNC_HOOK_COMMON instead
+* Set uaddrlen to 0 when the family is AF_UNSPEC
+* Pass in the addrlen to the hook from IPv6 code
+* Fixed mount directory mkdir() to ignore EEXIST
+
+Changes since v2:
+
+* Configuring the sock addr is now done via a new kfunc bpf_sock_addr_set()
+* The addrlen is exposed as u32 in bpf_sock_addr_kern
+* Selftests are updated to use the new kfunc
+* Selftests are now added as a new sock_addr test in prog_tests/
+* Added BTF_KFUNC_HOOK_SOCK_ADDR for BPF_PROG_TYPE_CGROUP_SOCK_ADDR
+* __cgroup_bpf_run_filter_sock_addr() now returns the modified addrlen
+
+Changes since v1:
+
+* Split into multiple patches instead of one single patch
+* Added unix support for all socket address hooks instead of only connect()
+* Switched approach to expose the socket address length to the bpf hook
+instead of recalculating the socket address length in kernelspace to
+properly support abstract unix socket addresses
+* Modified socket address hook tests to calculate the socket address length
+once and pass it around everywhere instead of recalculating the actual unix
+socket address length on demand.
+* Added some missing section name tests for getpeername()/getsockname()
+
+This patch series extends the cgroup sockaddr hooks to include support for unix
+sockets. To add support for unix sockets, struct bpf_sock_addr_kern is extended
+to expose the socket address length to the bpf program. Along with that, a new
+kfunc bpf_sock_addr_set_unix_addr() is added to safely allow modifying an
+AF_UNIX sockaddr from bpf programs.
+
+I intend to use these new hooks in systemd to reimplement the LogNamespace=
+feature, which allows running multiple instances of systemd-journald to
+process the logs of different services. systemd-journald also processes
+syslog messages, so currently, using log namespaces means all services running
+in the same log namespace have to live in the same private mount namespace
+so that systemd can mount the journal namespace's associated syslog socket
+over /dev/log to properly direct syslog messages from all services running
+in that log namespace to the correct systemd-journald instance. We want to
+relax this requirement so that processes running in disjoint mount namespaces
+can still run in the same log namespace. To achieve this, we can use these
+new hooks to rewrite the socket address of any connect(), sendto(), ...
+syscalls to /dev/log to the socket address of the journal namespace's syslog
+socket instead, which will transparently do the redirection without requiring
+use of a mount namespace and mounting over /dev/log.
+
+Aside from the above usecase, these hooks can more generally be used to
+transparently redirect unix sockets to different addresses as required by
+services.
+
+Daan De Meyer (9):
+  selftests/bpf: Add missing section name tests for
+    getpeername/getsockname
+  bpf: Propagate modified uaddrlen from cgroup sockaddr programs
+  bpf: Add bpf_sock_addr_set_unix_addr() to allow writing unix sockaddr
+    from bpf
+  bpf: Implement cgroup sockaddr hooks for unix sockets
+  libbpf: Add support for cgroup unix socket address hooks
+  bpftool: Add support for cgroup unix socket address hooks
+  documentation/bpf: Document cgroup unix socket address hooks
+  selftests/bpf: Make sure mount directory exists
+  selftests/bpf: Add tests for cgroup unix socket address hooks
+
+ Documentation/bpf/libbpf/program_types.rst    |  10 +
+ include/linux/bpf-cgroup-defs.h               |   5 +
+ include/linux/bpf-cgroup.h                    |  90 +--
+ include/linux/filter.h                        |   1 +
+ include/uapi/linux/bpf.h                      |  13 +-
+ kernel/bpf/btf.c                              |   1 +
+ kernel/bpf/cgroup.c                           |  31 +-
+ kernel/bpf/syscall.c                          |  15 +
+ kernel/bpf/verifier.c                         |   5 +-
+ net/core/filter.c                             |  48 +-
+ net/ipv4/af_inet.c                            |   7 +-
+ net/ipv4/ping.c                               |   2 +-
+ net/ipv4/tcp_ipv4.c                           |   2 +-
+ net/ipv4/udp.c                                |   9 +-
+ net/ipv6/af_inet6.c                           |   9 +-
+ net/ipv6/ping.c                               |   2 +-
+ net/ipv6/tcp_ipv6.c                           |   2 +-
+ net/ipv6/udp.c                                |   6 +-
+ net/unix/af_unix.c                            |  36 +-
+ .../bpftool/Documentation/bpftool-cgroup.rst  |  16 +-
+ .../bpftool/Documentation/bpftool-prog.rst    |   8 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |  14 +-
+ tools/bpf/bpftool/cgroup.c                    |  16 +-
+ tools/bpf/bpftool/prog.c                      |   7 +-
+ tools/include/uapi/linux/bpf.h                |  13 +-
+ tools/lib/bpf/libbpf.c                        |  10 +
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |  14 +
+ tools/testing/selftests/bpf/cgroup_helpers.c  |   5 +
+ tools/testing/selftests/bpf/network_helpers.c |  34 +
+ tools/testing/selftests/bpf/network_helpers.h |   1 +
+ .../selftests/bpf/prog_tests/section_names.c  |  45 ++
+ .../selftests/bpf/prog_tests/sock_addr.c      | 612 ++++++++++++++++++
+ .../selftests/bpf/progs/connect_unix_prog.c   |  40 ++
+ .../bpf/progs/getpeername_unix_prog.c         |  39 ++
+ .../bpf/progs/getsockname_unix_prog.c         |  39 ++
+ .../selftests/bpf/progs/recvmsg_unix_prog.c   |  39 ++
+ .../selftests/bpf/progs/sendmsg_unix_prog.c   |  40 ++
+ 37 files changed, 1193 insertions(+), 93 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sock_addr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/connect_unix_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/getpeername_unix_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/getsockname_unix_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/recvmsg_unix_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/sendmsg_unix_prog.c
+
+--
+2.41.0
+
 
