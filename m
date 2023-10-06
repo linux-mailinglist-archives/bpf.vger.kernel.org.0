@@ -1,294 +1,233 @@
-Return-Path: <bpf+bounces-11544-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11545-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B4947BBC9B
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 18:24:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 809837BBD2A
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 18:46:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B5A928239F
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 16:24:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81A101C20957
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 16:46:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15D4328DD6;
-	Fri,  6 Oct 2023 16:24:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CE7F28DBD;
+	Fri,  6 Oct 2023 16:46:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dRw9iSBC"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="P/Lq5saE"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7818286A1
-	for <bpf@vger.kernel.org>; Fri,  6 Oct 2023 16:23:57 +0000 (UTC)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16AEC9E
-	for <bpf@vger.kernel.org>; Fri,  6 Oct 2023 09:23:55 -0700 (PDT)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 396GMxUr021812;
-	Fri, 6 Oct 2023 16:23:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=WOKqt6dQE0XRrNy/SZjYka7p63UOD56p9AcXGcPLwqQ=;
- b=dRw9iSBCiIFBa+/I4OEvLkQ4d8ODex496JmOJuiQfnqGBlwuIBUhfBdehBjzwih1LuVW
- MyKlcbmgR3rjmIV53pCQRL97/Q4ksww7/LAWpDNSJVIUQfhqcKNrljPPlb1l7/uVZbVL
- LmSThbRzq8Q9P5bGMQQdEcY18DkzrADTe1Iqfjas+S4y+/eCaB+Tt5rjF4AdCGY8Y1Ae
- 7NXErL6JtDXBf6s/ad0c/0HTnIQnzgPtwdy0QdELZtdpoGFEj0evqgPWPKh0uBRtAbyz
- zowkeyYBXWrWj6fj69YUFIQ046sX2gqTwD6VdXtRkHbh4cK9fXNvwo3UJ9zpPuZupQyy +w== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tjnpy015a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 06 Oct 2023 16:23:30 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 396FrQgP025083;
-	Fri, 6 Oct 2023 16:23:26 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3texd0s65a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 06 Oct 2023 16:23:26 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 396GN1dV35717578
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 6 Oct 2023 16:23:01 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DE1782005A;
-	Fri,  6 Oct 2023 16:23:00 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9189A20063;
-	Fri,  6 Oct 2023 16:22:58 +0000 (GMT)
-Received: from [9.43.24.22] (unknown [9.43.24.22])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  6 Oct 2023 16:22:58 +0000 (GMT)
-Message-ID: <bef1d46a-33bb-62da-544a-06183f60cf42@linux.ibm.com>
-Date: Fri, 6 Oct 2023 21:52:57 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E557BE4F
+	for <bpf@vger.kernel.org>; Fri,  6 Oct 2023 16:46:14 +0000 (UTC)
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9231BD6
+	for <bpf@vger.kernel.org>; Fri,  6 Oct 2023 09:44:48 -0700 (PDT)
+Received: by mail-ua1-x929.google.com with SMTP id a1e0cc1a2514c-7b0a569e2f5so880379241.3
+        for <bpf@vger.kernel.org>; Fri, 06 Oct 2023 09:44:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696610679; x=1697215479; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kcwTHXgRnZuhbGDE1wxh+CjRdtVciqpN6ZjARirGVYw=;
+        b=P/Lq5saEd+zjbPOBqSQ4JS1opQS7S3KSaCi9FNHFgOx5jJ9PYv9H5Ck+ZkzBDH4sTW
+         Mx7+AyPd2CPuWlwRrgzBjp/BemlTA9MsPtb/+KXT4ajK1xR9P945Ya5kOlu8FdMVtoR0
+         zefwAVqPP9fKOxSoV4KqQe9QMlTHoREgDXpDzq8fq7zUDcqO3v0DD0D1JHV8+tcLg0SI
+         XGUhg/UTLIB4aXJTXU5OzSI4OfY33FZ+1YwN2bNBCrNHlx6ZIyt3lJ3aoKKsC3gup1bA
+         ggIGBsASmNzY+IP3geoK4P000sfrnvwF5xaQ82cpCr0LRdAulmW5+kyn8B+XDtLH4DlM
+         RZqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696610679; x=1697215479;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kcwTHXgRnZuhbGDE1wxh+CjRdtVciqpN6ZjARirGVYw=;
+        b=L9v7h6JiAl2mhYrjlyEALGeaP5rxkshBia1LQEAthGbIFWeqc9GsZHPDHMIJUXSj31
+         021I2wb+ut/TGxwkRoDbD5ZmDxoF0t7NKzuZJJamU2qo0x8uzlb5kV1LDHMjBiB38838
+         2DXgb+Au3mEEcfxxhLP27BHu42nEboYqulfezOuLJf524gNcB5skZmEL87M1XCl299ub
+         rlYIqiDbEMV70EuUVjESGnOlPeq2rYYb6n59wW+cOT0X1MyF5F9CtoIb+/dZlX4zn3Js
+         lexI8MG40/dZCDgEx7Z6/6EY2m0zNcEoosmUpSzhWyshRwCGqq5+sOGwZvTrc6C8O3JB
+         /qQA==
+X-Gm-Message-State: AOJu0Yz0oQdxFfuLz8DiBzvdK4CsW1XLcMrUBlpIRhfCqlGvPk8FtMvD
+	TDwTopFDwN7H1nADCIlV0wgoNNALkNDm6l8vI4s8nQ==
+X-Google-Smtp-Source: AGHT+IG4Yn8cgBfHyS7Szw/jWC8lUYghgZmDRjdjhb38GRwlD9L0RFSF6I4zdqDlgIdghGEy2OhAsxEOvXHMTwDD3Lo=
+X-Received: by 2002:a1f:ec83:0:b0:49a:a3ee:d280 with SMTP id
+ k125-20020a1fec83000000b0049aa3eed280mr8321722vkh.16.1696610678651; Fri, 06
+ Oct 2023 09:44:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 1/5] powerpc/code-patching: introduce
- patch_instructions()
-To: Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Song Liu <songliubraving@fb.com>
-References: <20230928194818.261163-1-hbathini@linux.ibm.com>
- <20230928194818.261163-2-hbathini@linux.ibm.com>
- <0ca42eae-b25c-c3c0-43d3-7acc653aa53c@csgroup.eu>
-Content-Language: en-US
-From: Hari Bathini <hbathini@linux.ibm.com>
-In-Reply-To: <0ca42eae-b25c-c3c0-43d3-7acc653aa53c@csgroup.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: oW1AnRQH70XdqLp07mYbEbBv1LSU73Qs
-X-Proofpoint-ORIG-GUID: oW1AnRQH70XdqLp07mYbEbBv1LSU73Qs
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-06_12,2023-10-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
- suspectscore=0 adultscore=0 mlxlogscore=780 impostorscore=0 malwarescore=0
- bulkscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310060123
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
+References: <20231005145814.83122-1-hffilwlqm@gmail.com> <20231005145814.83122-2-hffilwlqm@gmail.com>
+ <ZR763xGlqqu2gb41@google.com> <787e2f5e-41b3-0793-97e3-a6566c2b34bf@gmail.com>
+In-Reply-To: <787e2f5e-41b3-0793-97e3-a6566c2b34bf@gmail.com>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Fri, 6 Oct 2023 09:44:27 -0700
+Message-ID: <CAKH8qBtjbEdCVyHr7seTFYcgNRF_uzGW761GVH-5Q81=HuLGuw@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 1/3] bpf, x64: Fix tailcall hierarchy
+To: Leon Hwang <hffilwlqm@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, maciej.fijalkowski@intel.com, jakub@cloudflare.com, 
+	iii@linux.ibm.com, hengqi.chen@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+	USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Christophe,
+On Thu, Oct 5, 2023 at 6:43=E2=80=AFPM Leon Hwang <hffilwlqm@gmail.com> wro=
+te:
+>
+>
+>
+> On 6/10/23 02:05, Stanislav Fomichev wrote:
+> > On 10/05, Leon Hwang wrote:
+> >> From commit ebf7d1f508a73871 ("bpf, x64: rework pro/epilogue and tailc=
+all
+> >> handling in JIT"), the tailcall on x64 works better than before.
+> >>
+> >> From commit e411901c0b775a3a ("bpf: allow for tailcalls in BPF subprog=
+rams
+> >> for x64 JIT"), tailcall is able to run in BPF subprograms on x64.
+> >>
+> >> How about:
+> >>
+> >> 1. More than 1 subprograms are called in a bpf program.
+> >> 2. The tailcalls in the subprograms call the bpf program.
+> >>
+> >> Because of missing tail_call_cnt back-propagation, a tailcall hierarch=
+y
+> >> comes up. And MAX_TAIL_CALL_CNT limit does not work for this case.
+> >>
+> >> As we know, in tail call context, the tail_call_cnt propagates by stac=
+k
+> >> and rax register between BPF subprograms. So, propagating tail_call_cn=
+t
+> >> pointer by stack and rax register makes tail_call_cnt as like a global
+> >> variable, in order to make MAX_TAIL_CALL_CNT limit works for tailcall
+> >> hierarchy cases.
+> >>
+> >> Before jumping to other bpf prog, load tail_call_cnt from the pointer
+> >> and then compare with MAX_TAIL_CALL_CNT. Finally, increment
+> >> tail_call_cnt by the pointer.
+> >>
+> >> But, where does tail_call_cnt store?
+> >>
+> >> It stores on the stack of uppest-hierarchy-layer bpf prog, like
+> >>
+> >>  |  STACK  |
+> >>  +---------+ RBP
+> >>  |         |
+> >>  |         |
+> >>  |         |
+> >>  | tcc_ptr |
+> >>  |   tcc   |
+> >>  |   rbx   |
+> >>  +---------+ RSP
+> >>
+> >> Why not back-propagate tail_call_cnt?
+> >>
+> >> It's because it's vulnerable to back-propagate it. It's unable to work
+> >> well with the following case.
+> >>
+> >> int prog1();
+> >> int prog2();
+> >>
+> >> prog1 is tail caller, and prog2 is tail callee. If we do back-propagat=
+e
+> >> tail_call_cnt at the epilogue of prog2, can prog2 run standalone at th=
+e
+> >> same time? The answer is NO. Otherwise, there will be a register to be
+> >> polluted, which will make kernel crash.
+> >>
+> >> Can tail_call_cnt store at other place instead of the stack of bpf pro=
+g?
+> >>
+> >> I'm not able to infer a better place to store tail_call_cnt. It's not =
+a
+> >> working inference to store it at ctx or on the stack of bpf prog's
+> >> caller.
+> >>
+> >> Fixes: ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handl=
+ing in JIT")
+> >> Fixes: e411901c0b77 ("bpf: allow for tailcalls in BPF subprograms for =
+x64 JIT")
+> >> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
+> >> ---
+> >>  arch/x86/net/bpf_jit_comp.c | 120 +++++++++++++++++++++++------------=
+-
+> >>  1 file changed, 76 insertions(+), 44 deletions(-)
+> >>
+> >> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> >> index 8c10d9abc2394..8ad6368353c2b 100644
+> >> --- a/arch/x86/net/bpf_jit_comp.c
+> >> +++ b/arch/x86/net/bpf_jit_comp.c
+> >> @@ -256,7 +256,7 @@ struct jit_context {
+> >>  /* Number of bytes emit_patch() needs to generate instructions */
+> >>  #define X86_PATCH_SIZE              5
+> >>  /* Number of bytes that will be skipped on tailcall */
+> >> -#define X86_TAIL_CALL_OFFSET        (11 + ENDBR_INSN_SIZE)
+> >> +#define X86_TAIL_CALL_OFFSET        (24 + ENDBR_INSN_SIZE)
+> >>
+> >>  static void push_r12(u8 **pprog)
+> >>  {
+> >> @@ -304,6 +304,25 @@ static void pop_callee_regs(u8 **pprog, bool *cal=
+lee_regs_used)
+> >>      *pprog =3D prog;
+> >>  }
+> >>
+> >
+> > [..]
+> >
+> >> +static void emit_nops(u8 **pprog, int len)
+> >> +{
+> >> +    u8 *prog =3D *pprog;
+> >> +    int i, noplen;
+> >> +
+> >> +    while (len > 0) {
+> >> +            noplen =3D len;
+> >> +
+> >> +            if (noplen > ASM_NOP_MAX)
+> >> +                    noplen =3D ASM_NOP_MAX;
+> >> +
+> >> +            for (i =3D 0; i < noplen; i++)
+> >> +                    EMIT1(x86_nops[noplen][i]);
+> >> +            len -=3D noplen;
+> >> +    }
+> >> +
+> >> +    *pprog =3D prog;
+> >> +}
+> >
+> > From high level - makes sense to me.
+> > I'll leave a thorough review to the people who understand more :-)
+> > I see Maciej commenting on your original "Fix tailcall infinite loop"
+> > series.
+>
+> Welcome for your review.
+>
+> >
+> > One suggestion I have is: the changes to 'memcpy(prog, x86_nops[5],
+> > X86_PATCH_SIZE);' and this emit_nops move here don't seem like
+> > they actually belong to this patch. Maybe do them separately?
+>
+> Moving emit_nops here is for them:
+>
+> +                       /* Keep the same instruction layout. */
+> +                       emit_nops(&prog, 3);
+> +                       emit_nops(&prog, 6);
+> +                       emit_nops(&prog, 6);
+>
+> and do the changes to 'memcpy(prog, x86_nops[5], X86_PATCH_SIZE);' BTW.
 
-
-On 29/09/23 2:09 pm, Christophe Leroy wrote:
-> 
-> 
-> Le 28/09/2023 à 21:48, Hari Bathini a écrit :
->> patch_instruction() entails setting up pte, patching the instruction,
->> clearing the pte and flushing the tlb. If multiple instructions need
->> to be patched, every instruction would have to go through the above
->> drill unnecessarily. Instead, introduce function patch_instructions()
->> that sets up the pte, clears the pte and flushes the tlb only once per
->> page range of instructions to be patched. This adds a slight overhead
->> to patch_instruction() call while improving the patching time for
->> scenarios where more than one instruction needs to be patched.
-> 
-> On my powerpc8xx, this patch leads to an increase of about 8% of the
-> time needed to activate ftrace function tracer.
-
-Interesting! My observation on ppc64le was somewhat different.
-With single cpu, average ticks were almost similar with and without
-the patch (~1580). I saw a performance degradation of less than
-0.6% without vs with this patch to activate function tracer.
-
-Ticks to activate function tracer in 15 attempts without
-this patch (avg: 108734089):
-106619626
-111712292
-111030404
-111021344
-111313530
-106253773
-107156175
-106887038
-107215379
-108646636
-108040287
-108311770
-107842343
-106894310
-112066423
-
-Ticks to activate function tracer in 15 attempts with
-this patch (avg: 109328578):
-109378357
-108794095
-108595381
-107622142
-110689418
-107287276
-107132093
-112540481
-111311830
-112608265
-102883923
-112054554
-111762570
-109874309
-107393979
-
-I used the below patch for the experiment:
-
-diff --git a/arch/powerpc/lib/code-patching.c 
-b/arch/powerpc/lib/code-patching.c
-index b00112d7ad4..0979d12d00c 100644
---- a/arch/powerpc/lib/code-patching.c
-+++ b/arch/powerpc/lib/code-patching.c
-@@ -19,6 +19,10 @@
-  #include <asm/page.h>
-  #include <asm/code-patching.h>
-  #include <asm/inst.h>
-+#include <asm/time.h>
-+
-+unsigned long patching_time;
-+unsigned long num_times;
-
-  static int __patch_instruction(u32 *exec_addr, ppc_inst_t instr, u32 
-*patch_addr)
-  {
-@@ -353,7 +357,7 @@ static int __do_patch_instruction(u32 *addr, 
-ppc_inst_t instr)
-  	return err;
-  }
-
--int patch_instruction(u32 *addr, ppc_inst_t instr)
-+int ___patch_instruction(u32 *addr, ppc_inst_t instr)
-  {
-  	int err;
-  	unsigned long flags;
-@@ -376,6 +380,19 @@ int patch_instruction(u32 *addr, ppc_inst_t instr)
-
-  	return err;
-  }
-+
-+int patch_instruction(u32 *addr, ppc_inst_t instr)
-+{
-+	u64 start;
-+	int err;
-+
-+	start = get_tb();
-+	err = ___patch_instruction(addr, instr);
-+	patching_time += (get_tb() - start);
-+	num_times++;
-+
-+	return err;
-+}
-  NOKPROBE_SYMBOL(patch_instruction);
-
-  int patch_branch(u32 *addr, unsigned long target, int flags)
-diff --git a/kernel/ksysfs.c b/kernel/ksysfs.c
-index 1d4bc493b2f..f52694cfeab 100644
---- a/kernel/ksysfs.c
-+++ b/kernel/ksysfs.c
-@@ -35,6 +35,18 @@ static struct kobj_attribute _name##_attr = 
-__ATTR_RO(_name)
-  #define KERNEL_ATTR_RW(_name) \
-  static struct kobj_attribute _name##_attr = __ATTR_RW(_name)
-
-+unsigned long patch_avgtime;
-+extern unsigned long patching_time;
-+extern unsigned long num_times;
-+
-+static ssize_t patching_avgtime_show(struct kobject *kobj,
-+				     struct kobj_attribute *attr, char *buf)
-+{
-+	patch_avgtime = patching_time / num_times;
-+	return sysfs_emit(buf, "%lu\n", patch_avgtime);
-+}
-+KERNEL_ATTR_RO(patching_avgtime);
-+
-  /* current uevent sequence number */
-  static ssize_t uevent_seqnum_show(struct kobject *kobj,
-  				  struct kobj_attribute *attr, char *buf)
-@@ -250,6 +262,7 @@ struct kobject *kernel_kobj;
-  EXPORT_SYMBOL_GPL(kernel_kobj);
-
-  static struct attribute * kernel_attrs[] = {
-+	&patching_avgtime_attr.attr,
-  	&fscaps_attr.attr,
-  	&uevent_seqnum_attr.attr,
-  	&cpu_byteorder_attr.attr,
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index abaaf516fca..5eb950bcab9 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -50,6 +50,7 @@
-  #include <linux/workqueue.h>
-
-  #include <asm/setup.h> /* COMMAND_LINE_SIZE */
-+#include <asm/time.h>
-
-  #include "trace.h"
-  #include "trace_output.h"
-@@ -6517,6 +6518,7 @@ int tracing_set_tracer(struct trace_array *tr, 
-const char *buf)
-  	bool had_max_tr;
-  #endif
-  	int ret = 0;
-+	u64 start;
-
-  	mutex_lock(&trace_types_lock);
-
-@@ -6536,6 +6538,10 @@ int tracing_set_tracer(struct trace_array *tr, 
-const char *buf)
-  		ret = -EINVAL;
-  		goto out;
-  	}
-+
-+	pr_warn("Current tracer: %s, Changing to tracer: %s\n",
-+		tr->current_trace->name, t->name);
-+	start = get_tb();
-  	if (t == tr->current_trace)
-  		goto out;
-
-@@ -6614,6 +6620,7 @@ int tracing_set_tracer(struct trace_array *tr, 
-const char *buf)
-  	tr->current_trace->enabled++;
-  	trace_branch_enable(tr);
-   out:
-+	pr_warn("Time taken to enable tracer is %llu\n", (get_tb() - start));
-  	mutex_unlock(&trace_types_lock);
-
-  	return ret;
-
-Thanks
-Hari
+Right, I'm saying that you can do the move + replace memcpy in a
+separate (first) patch to make the patch with the actual changes a bit
+smaller.
+But that's not strictly required, up to you.
 
