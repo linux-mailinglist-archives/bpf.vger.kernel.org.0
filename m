@@ -1,155 +1,177 @@
-Return-Path: <bpf+bounces-11567-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11568-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E39D7BC020
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 22:17:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D1F37BC035
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 22:20:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92D132820B4
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 20:17:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 857CC282043
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 20:20:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CE0C436A5;
-	Fri,  6 Oct 2023 20:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0B5D43ABB;
+	Fri,  6 Oct 2023 20:20:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="glIQtzsV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PDVVEFv8"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DAD941E38
-	for <bpf@vger.kernel.org>; Fri,  6 Oct 2023 20:17:09 +0000 (UTC)
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C109ABF
-	for <bpf@vger.kernel.org>; Fri,  6 Oct 2023 13:17:03 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6907e44665bso2232833b3a.1
-        for <bpf@vger.kernel.org>; Fri, 06 Oct 2023 13:17:03 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 195013D38E
+	for <bpf@vger.kernel.org>; Fri,  6 Oct 2023 20:20:27 +0000 (UTC)
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD80DC2;
+	Fri,  6 Oct 2023 13:20:24 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-533edb5ac54so4726432a12.0;
+        Fri, 06 Oct 2023 13:20:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696623423; x=1697228223; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SYgd9NJoGeVd+4g2HyXZYAbiV1zNgq5LXMke4LgVM60=;
-        b=glIQtzsVltLJbPBFndOe3pOHcLeCDAEaLQ22HcKgV7jpj++ELRZ/kKVwxirUVEiOTG
-         XzsD49z7sXHoG6Dy3IQLvFSdAgQ7FpKTlvC6aIwAfsIJUrFsOVz7EXZcExrW0GapI4j0
-         ln04IfZjypBCNGI6nwYayqP8K/oW387tby1h8=
+        d=gmail.com; s=20230601; t=1696623623; x=1697228423; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cKhoOovJJCN2upy+4Afr69/fh1TMRJWzCU1Zea4v2kE=;
+        b=PDVVEFv8gIqFq3oHh6twa4sOauegXiPp1XL2qFvuk4iVzNTRZ6oq3rZkp7Bka9I+sK
+         PCiZSFtltVr6V+8+7tldooPU/9lFOtNYRvo0v+jZQeFqUJMxMMZGnxet+hejOD1NFukw
+         Lt27bTLn95cP2puvOjEoUVuchnjR3UsTdxt0nuF03uZ8TZOnxT/DFmtj1iYM4juCgOUQ
+         gCcWXwuyMI0m9JDXYFIzX07JlLNxfneB4Ey/SjbV3CcQEZwMFNVwV9LuTkxEFIBzC88P
+         FsAdawsRrHjmV8shCfeBozXd1nP54fBF0xX+NDLmRWC0qims9FPiXWwP+0ea8kEqzufN
+         FmNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696623423; x=1697228223;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SYgd9NJoGeVd+4g2HyXZYAbiV1zNgq5LXMke4LgVM60=;
-        b=tR/J4w6lRKid8cNTtRNN7IriNkVO3zkjg25Q6+gPQHb7fNEDftk+QyFyq0KxEpL1PF
-         ZpRX87nip5AX4W43kddu8YdPZlTMGhw+rU8pWa1bOe7qOcqXU+e+whc+kWxmyggyk+za
-         25WcYjYlmacBo8jvH69M+8DBRYgHqle8O+UBmrHg/yDst/67NNdt+TglXI8W3BDjK8Eo
-         VFa/cPLnkEdvr4NfWA2GvunIQUS1Qq8p+nUrQREeGYO5qTTwqK+I/UON907CvWdzlmMf
-         q9MNyOff073Uce8OXMo+FbzQ20nPuSa8mhntrIpZIBwiJMv1uDzuk9mhjSivhMHsBqVk
-         9QXg==
-X-Gm-Message-State: AOJu0YzqD42OMtjax3UwHJmz/jCd6SVjrBV89Sr6w8DG5+dPdYr5BFO5
-	WIpJQpo8GLmAKSzKAWv1omQVww==
-X-Google-Smtp-Source: AGHT+IHNx7VkfRUNypD93pqsPmMMdOU2NO3A55MZeXkGPOgFGJWdkVlpQzoHs03ZJTKJS6nWutO5pQ==
-X-Received: by 2002:a05:6a20:324d:b0:14d:7511:1c2 with SMTP id hm13-20020a056a20324d00b0014d751101c2mr8303161pzc.55.1696623423132;
-        Fri, 06 Oct 2023 13:17:03 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id w18-20020aa78592000000b0064f76992905sm1879945pfn.202.2023.10.06.13.17.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 13:17:02 -0700 (PDT)
-From: Kees Cook <keescook@chromium.org>
-To: Song Liu <song@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Tom Rix <trix@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH] bpf: Annotate struct bpf_stack_map with __counted_by
-Date: Fri,  6 Oct 2023 13:17:00 -0700
-Message-Id: <20231006201657.work.531-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1696623623; x=1697228423;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cKhoOovJJCN2upy+4Afr69/fh1TMRJWzCU1Zea4v2kE=;
+        b=WSUUrYI6F3aMXbVJX+vjmViYDuM1YekvqaOKTQ5rfxlRwnI++CYVjRj9hUDASkpC4T
+         V3Ha0N50xZzzoslRX+/e5ESjknc/092ML1ns2LonCcVJEcsBAPQXpNoAVcVC81ls38ad
+         sHJRs+Csxis2/f4iCrtwWU6pvYeGCpuGjpj2alOWm0eN87UK0N4razyZoJpHj5ERKSN3
+         DuuYpUjaCDdok95Le31IjjqMbfd17w1UFo0+dCZ/3t/ytTl51A3CfBjfF80vCGQfV9Ot
+         jGc8IGe8ri03fjd8J8OCuIXml1dBAXLGSTrB9QU19FsPDhUywCmbvy/4QMz3Z0Pe70Fw
+         yrRQ==
+X-Gm-Message-State: AOJu0YzlNbJAQFpAkGjiuEAqRrtDDR9/bnc2yfCPT2eZ71K4EaEMvWih
+	Td5HgBTzQhVT81ORUckAXUeiKyib1eK/PdEfN4TEf1yxNCs=
+X-Google-Smtp-Source: AGHT+IFzBm9NPnRnmS8KzfFV5+HqYcGQ+gqqDuIW64le9nHxHtHRtiylHsLDpMMTFMiBw97Ki6fkalJg7XGv9Jw0h1g=
+X-Received: by 2002:aa7:d151:0:b0:530:db58:61c8 with SMTP id
+ r17-20020aa7d151000000b00530db5861c8mr8699991edo.23.1696623622922; Fri, 06
+ Oct 2023 13:20:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1619; i=keescook@chromium.org;
- h=from:subject:message-id; bh=Cn0rZ3uKUzlAqWZVBxaI1s9wb/BhJmGzsMuyAyrT7Jg=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlIGs8PUE7GHQQH9B2FtvPO9v/D7n9b+rl68H2W
- RKqjf8h0JKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZSBrPAAKCRCJcvTf3G3A
- JtaTEACURo4jMkXwmgS7m4ShxZQ4TwAfA6ZzmjYsh6vYRU9jgLzxlVmFZGarKW2zf9Cv86qoTQB
- OuLpPhBaNyLhx6zEvR7V9tnxUwEkqNowljuks8/uiTM7dKUMCX8mPrr0W8i7NY3rag314m42553
- 4Qg7E6CGkIv9FjnVwEy+WwyO4gtQ9T6LSBaDiqznryLw4DMRHSPX5FY1RreXN0hu2KlSN6NE/95
- 6y+nhBnSpe5AG0WcCaKwduCSLQAYDwu5gSLTQC8ufTlI+8wLVB9RxmJVplQ6ifVtmjwG0mal2Q9
- g4CWK58aEl82E6jwl1ibHfcGfj1BOPSrjGWgcVRQGS4Oz95mMtS36TUv3GF/NGMEYbeVMSAOYF/
- dZ+ZDcDelDkkrftFCQ0GblqS/FPjlacGmdkA99CUVIKR0c9Dwzz2pJCPVrLvu/vVGqSoU2DKd2O
- S/u5edTIQKXF+6S74bRXmCTvYDFgRzeDFVbxJ/gKxodnhRJZOwKgzpFeqz2h5A2DjvMkysoTOLr
- QgNDS9ZfejJ6ptqnkCoFaLOYYEdwTTjLQ/2vQ0ruMLTLZWT6fYMQYrP/Cd9bfrPxcuNg6YA1iqv
- 5A2La5ev+YTxG4cMliYTclB/18XZ5/C74z+hmZYBC6SCICu7BofIrV+WBsrWOqzu+iMD2dRwPe0
- DtdkIXf jUFo8IGQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+References: <20231005220324.3635499-1-irogers@google.com>
+In-Reply-To: <20231005220324.3635499-1-irogers@google.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 6 Oct 2023 13:20:11 -0700
+Message-ID: <CAEf4Bza0YGVW0G-oO3h1j0L0ytiKsn-pRbuqU39C2wO0VP__BA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] bpftool: Align output skeleton ELF code
+To: Ian Rogers <irogers@google.com>
+Cc: Quentin Monnet <quentin@isovalent.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Alan Maguire <alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+On Thu, Oct 5, 2023 at 3:03=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> libbpf accesses the ELF data requiring at least 8 byte alignment,
+> however, the data is generated into a C string that doesn't guarantee
+> alignment. Fix this by assigning to an aligned char array. Use sizeof
+> on the array, less one for the \0 terminator, rather than generating a
+> constant.
+>
+> Fixes: a6cc6b34b93e ("bpftool: Provide a helper method for accessing skel=
+eton's embedded ELF data")
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> Acked-by: Quentin Monnet <quentin@isovalent.com>
+> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  tools/bpf/bpftool/gen.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+>
+> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> index 2883660d6b67..b8ebcee9bc56 100644
+> --- a/tools/bpf/bpftool/gen.c
+> +++ b/tools/bpf/bpftool/gen.c
+> @@ -1209,7 +1209,7 @@ static int do_skeleton(int argc, char **argv)
+>         codegen("\
+>                 \n\
+>                                                                          =
+   \n\
+> -                       s->data =3D (void *)%2$s__elf_bytes(&s->data_sz);=
+     \n\
+> +                       s->data =3D (void *)%1$s__elf_bytes(&s->data_sz);=
+     \n\
 
-As found with Coccinelle[1], add __counted_by for struct bpf_stack_map.
+Seems like you based this on top of bpf tree, can you please rebase
+onto bpf-next, it has a small change here and I can't apply it cleanly
+anymore. Other than that it looks good. Thanks!
 
-Cc: Song Liu <song@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Yonghong Song <yonghong.song@linux.dev>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: Hao Luo <haoluo@google.com>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: bpf@vger.kernel.org
-Cc: linux-hardening@vger.kernel.org
-Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- kernel/bpf/stackmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 458bb80b14d5..d6b277482085 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -28,7 +28,7 @@ struct bpf_stack_map {
- 	void *elems;
- 	struct pcpu_freelist freelist;
- 	u32 n_buckets;
--	struct stack_map_bucket *buckets[];
-+	struct stack_map_bucket *buckets[] __counted_by(n_buckets);
- };
- 
- static inline bool stack_map_use_build_id(struct bpf_map *map)
--- 
-2.34.1
-
+>                                                                          =
+   \n\
+>                         obj->skeleton =3D s;                             =
+     \n\
+>                         return 0;                                        =
+   \n\
+> @@ -1218,12 +1218,12 @@ static int do_skeleton(int argc, char **argv)
+>                         return err;                                      =
+   \n\
+>                 }                                                        =
+   \n\
+>                                                                          =
+   \n\
+> -               static inline const void *%2$s__elf_bytes(size_t *sz)    =
+   \n\
+> +               static inline const void *%1$s__elf_bytes(size_t *sz)    =
+   \n\
+>                 {                                                        =
+   \n\
+> -                       *sz =3D %1$d;                                    =
+     \n\
+> -                       return (const void *)\"\\                        =
+   \n\
+> -               "
+> -               , file_sz, obj_name);
+> +                       static const char data[] __attribute__((__aligned=
+__(8))) =3D \"\\\n\
+> +               ",
+> +               obj_name
+> +       );
+>
+>         /* embed contents of BPF object file */
+>         print_hex(obj_data, file_sz);
+> @@ -1231,6 +1231,9 @@ static int do_skeleton(int argc, char **argv)
+>         codegen("\
+>                 \n\
+>                 \";                                                      =
+   \n\
+> +                                                                        =
+   \n\
+> +                       *sz =3D sizeof(data) - 1;                        =
+     \n\
+> +                       return (const void *)data;                       =
+   \n\
+>                 }                                                        =
+   \n\
+>                                                                          =
+   \n\
+>                 #ifdef __cplusplus                                       =
+   \n\
+> --
+> 2.42.0.609.gbb76f46606-goog
+>
 
