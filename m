@@ -1,81 +1,80 @@
-Return-Path: <bpf+bounces-11517-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11518-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E6CD7BB1FB
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 09:09:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53D617BB221
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 09:28:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7D8A28226D
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 07:09:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 829C31C20A23
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 07:28:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC3063C6;
-	Fri,  6 Oct 2023 07:09:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB4036AA2;
+	Fri,  6 Oct 2023 07:28:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wkfpe55G"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AYRR1rKo"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE89DEBB;
-	Fri,  6 Oct 2023 07:09:44 +0000 (UTC)
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8E2F2;
-	Fri,  6 Oct 2023 00:09:42 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99de884ad25so320935666b.3;
-        Fri, 06 Oct 2023 00:09:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36DF463DA
+	for <bpf@vger.kernel.org>; Fri,  6 Oct 2023 07:28:02 +0000 (UTC)
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87B6F0;
+	Fri,  6 Oct 2023 00:27:58 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c136ee106so322831966b.1;
+        Fri, 06 Oct 2023 00:27:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696576181; x=1697180981; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=V5ladE5tkTaw6kg06jFlVzHqN5oLjCVd34OCxyKLMKo=;
-        b=Wkfpe55GrPAvLwktd4peSsGxo8mvBHJBkOxUeMIMg6OWyLIqp7l+vIhpO8iBcMoP1K
-         1OO5Ty+22T9tU9mDDFSi0XaB+oaIdaeLSM7rRj2wGHmAn520zEAZmcJc2dyephNj+JMY
-         A12M0ZhJKfE/H4EXOKZw5Qiez3sx10z6DZgXIoi2h+HItuEMkifC5KOuxuHp9mkztsJd
-         nNbc1ZPMFClPWrNWnOfJHG0d0rQ58yC3tjM/IC7M/Tpxd4AvjMRLlyDwrzV7QK8MRYbx
-         xeCsvwashLlXpiGQjrAQTxqyrDft8y1ebveN2EaeEqdmFt7EtCrBJfAVEOl9Vl/I0ctb
-         STwA==
+        d=gmail.com; s=20230601; t=1696577277; x=1697182077; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3d1IEyUt5G0QrNV2XhIWZuD9qpRkSka5plbUV+63i40=;
+        b=AYRR1rKo2H5GUJyWiY8vFLl6YULBzD5oCHWgJzQqwJIpAcqqO8s4cWXVRBCs0zJDcm
+         FHQoocI4xRkRik5mNy9SUzOenY/yuhmfNrhFDO9ug+hxNsi4/IfehB/xMaR8Rns6MoVc
+         fK1zYFugIvCO/dHx3tFiPCiSru4pO1grMW6PstMGkaGH7mczRFpXIB+IgLpPBiIgRYPf
+         MxHSaI+ZyTpdJaZOq5UTOGpoTSh1/KaRmWRksMtgGwVyfRrIeN6rOFG7xH4PxMWCHxIM
+         GMeQTnjqcVjTuK7Jyuhvidx51d46G7X5A4Ftbbf83DjanpMg0VEe8jJRrShdkX2dkwtV
+         Jf/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696576181; x=1697180981;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1696577277; x=1697182077;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=V5ladE5tkTaw6kg06jFlVzHqN5oLjCVd34OCxyKLMKo=;
-        b=UQxF0lsFqns816LKH7CWRuez/eTQ8CS7Y4b4xfRkSw6VGvqqm+HWQl7hNu+7BTLFBW
-         w92FHB11AQa+NVBic0DJ6uxi6k2+LOjXEQ0p3LDsCMTyDMSjKLnk26dlXmUj8E8XpGwV
-         S+wOMbBHCRKwjolf40ocjb04o1pwZLKoVK8ARCJtZj1tZzSKN76nTRh3jhshL+bYUUMj
-         2OPUM7/d2ytLKmbLp5SlZ7Th3dEnR6bjOB700AtJVnLaMyLD8j1vKaUjr0BbQqfo2hPd
-         ZWTrAgrzBDRWY98Kok1pg9i2qPnzbpLCAPGlXPUKEEeU6dF1MK4s0bADdQbxTc6/5Jxg
-         W52g==
-X-Gm-Message-State: AOJu0YzSVt04aBn82zZQNVWkg5eUYamGk9OwivN2evdWd8rPM2Cx8CVJ
-	kdz8jE7OQn/5TFyi4q/zsWQdZ25avbLLhuPk
-X-Google-Smtp-Source: AGHT+IEhkKlWhY9En4mCZRCfskhgcjCs7rAtjGq2BhW+LxJgq8JJ78L9ycc/ObnygNJjxQHecLZ7+A==
-X-Received: by 2002:a05:6512:282b:b0:505:7371:ec83 with SMTP id cf43-20020a056512282b00b005057371ec83mr7661985lfb.48.1696576169648;
-        Fri, 06 Oct 2023 00:09:29 -0700 (PDT)
-Received: from akanner-r14. ([77.222.24.57])
-        by smtp.gmail.com with ESMTPSA id r26-20020ac25a5a000000b00502c6dc612fsm184811lfn.219.2023.10.06.00.09.25
+        bh=3d1IEyUt5G0QrNV2XhIWZuD9qpRkSka5plbUV+63i40=;
+        b=WvAJw83DVwzdfw+45YUq7ev/i4ujuZRpf1Xhf7+/kDZh05CnjTm8ZvJORr1hrICKmb
+         XJH0oOFi8ZMRKykQIG0q3tR5FA6ZQURBnZqaZUCCzaX3zpON31fSoEXrqGfL7MGdDHiB
+         OECMJVbo+SgFGhbIyMRXcIjIzhY/sqgTNcj/C56m47JobTmyIkFmJ210xu89q1JFv0EZ
+         /G3TwkpwhFFaWxaPHs/8+BUsAGQudwbEu8tboJzoEmyjUiZmVb/5uHNI/15geFLNiTPX
+         3gYTzfuI1AtBr6VQLSSSbPUGb3/lSX0KFZzEBsy9NLo+9Jf4DyREIZj/Isov7012BhG2
+         JBDQ==
+X-Gm-Message-State: AOJu0YxZWxQ2Paypv8PZojmeqjV4n0H5epsnzUvtSnOleo/L1F6SfTLs
+	UyuGS06j+dpeZv5kh5RSy0HTn7+0WsQ=
+X-Google-Smtp-Source: AGHT+IHrYGfzZeh1vJuc/LjDGdWJ4+7IpX8/bcxLxEEbaL/2vqfKa1DuaHUU0jNxcpeamtXj+Cw60Q==
+X-Received: by 2002:a17:906:cc15:b0:9ad:ef31:6ef6 with SMTP id ml21-20020a170906cc1500b009adef316ef6mr6752160ejb.20.1696577276969;
+        Fri, 06 Oct 2023 00:27:56 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id gx13-20020a170906f1cd00b009ad8d444be4sm2411412ejb.43.2023.10.06.00.27.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 00:09:28 -0700 (PDT)
-Message-ID: <651fb2a8.c20a0220.8d6c3.0fd9@mx.google.com>
-X-Google-Original-Message-ID: <ZR+yfWLkv4rrr0i6@akanner-r14.>
-Date: Fri, 6 Oct 2023 10:09:20 +0300
-From: Andrew Kanner <andrew.kanner@gmail.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: linux-kernel-mentees@lists.linuxfoundation.org, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzbot+fae676d3cf469331fc89@syzkaller.appspotmail.com,
-	syzbot+b132693e925cbbd89e26@syzkaller.appspotmail.com,
-	bjorn@kernel.org, magnus.karlsson@intel.com,
-	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, aleksander.lobakin@intel.com,
-	xuanzhuo@linux.alibaba.com, ast@kernel.org, hawk@kernel.org,
-	john.fastabend@gmail.com, daniel@iogearbox.net
-Subject: Re: [PATCH bpf v3] net/xdp: fix zero-size allocation warning in
- xskq_create()
-References: <20231005193548.515-1-andrew.kanner@gmail.com>
- <7aa47549-5a95-22d7-1d03-ffdd251cec6d@linux.dev>
+        Fri, 06 Oct 2023 00:27:56 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 6 Oct 2023 09:27:54 +0200
+To: KP Singh <kpsingh@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, linux-security-module@vger.kernel.org,
+	bpf@vger.kernel.org, paul@paul-moore.com, keescook@chromium.org,
+	casey@schaufler-ca.com, song@kernel.org, daniel@iogearbox.net,
+	ast@kernel.org, renauld@google.com
+Subject: Re: [PATCH v5 4/5] bpf: Only enable BPF LSM hooks when an LSM
+ program is attached
+Message-ID: <ZR+2+gQ3B3tgFI/8@krava>
+References: <20230928202410.3765062-1-kpsingh@kernel.org>
+ <20230928202410.3765062-5-kpsingh@kernel.org>
+ <ZR5vSyyNGBb8TvNH@krava>
+ <CACYkzJ69x9jX3scjSA7zT99CJoM+eG6FDQdBT-SCxm47a6UEoA@mail.gmail.com>
+ <CACYkzJ7Q0NEc9HThS1DZr0pMC+zO0GSToWmwQkTgXTeDs5VKaw@mail.gmail.com>
+ <ZR6/iMnfl1q6Hf9I@krava>
+ <CACYkzJ7aeBjMFTrBPf5u-Wib0Jk=rOX31yeBT5koUt=iYUF2MA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,7 +83,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7aa47549-5a95-22d7-1d03-ffdd251cec6d@linux.dev>
+In-Reply-To: <CACYkzJ7aeBjMFTrBPf5u-Wib0Jk=rOX31yeBT5koUt=iYUF2MA@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -92,77 +91,110 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Oct 05, 2023 at 06:00:46PM -0700, Martin KaFai Lau wrote:
-[...]
-> > diff --git a/net/xdp/xsk_queue.c b/net/xdp/xsk_queue.c
-> > index f8905400ee07..c7e8bbb12752 100644
-> > --- a/net/xdp/xsk_queue.c
-> > +++ b/net/xdp/xsk_queue.c
-> > @@ -34,6 +34,11 @@ struct xsk_queue *xskq_create(u32 nentries, bool umem_queue)
-> >   	q->ring_mask = nentries - 1;
-> >   	size = xskq_get_ring_size(q, umem_queue);
-> > +	if (unlikely(size == SIZE_MAX)) {
+On Thu, Oct 05, 2023 at 06:07:28PM +0200, KP Singh wrote:
+
+SNIP
+
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index df9699bce372..4f31384b5637 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -511,11 +511,30 @@ static enum bpf_tramp_prog_type
+> bpf_attach_type_to_tramp(struct bpf_prog *prog)
+>         }
+>  }
 > 
-> What if "size" is SIZE_MAX-1? Would it still overflow the PAGE_ALIGN below?
+> +static void bpf_trampoline_toggle_lsm(struct bpf_trampoline *tr,
+> +                                     enum bpf_tramp_prog_type kind)
+> +{
+> +       struct bpf_tramp_link *link;
+> +       volatile bool found = false;
+> +
+> +       /* Loop through the links and if any LSM program is attached, ensure
+> +        * that the hook is enabled.
+> +        */
+> +       hlist_for_each_entry(link, &tr->progs_hlist[kind], tramp_hlist) {
+> +               if (link->link.prog->type == BPF_PROG_TYPE_LSM) {
+> +                       found  = true;
+> +                       break;
+> +               }
+> +       }
+> +
+> +       bpf_lsm_toggle_hook(tr->func.addr, found);
+> +}
+> +
+>  static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link,
+> struct bpf_trampoline *tr)
+>  {
+>         enum bpf_tramp_prog_type kind;
+>         struct bpf_tramp_link *link_exiting;
+> -       int err = 0, num_lsm_progs = 0;
+> +       int err = 0;
+>         int cnt = 0, i;
 > 
-> > +		kfree(q);
-> > +		return NULL;
-> > +	}
-> > +
-> >   	size = PAGE_ALIGN(size);
-> >   	q->ring = vmalloc_user(size);
+>         kind = bpf_attach_type_to_tramp(link->link.prog);
+> @@ -547,15 +566,14 @@ static int __bpf_trampoline_link_prog(struct
+> bpf_tramp_link *link, struct bpf_tr
+>                 /* prog already linked */
+>                 return -EBUSY;
 > 
+> -               if (link_exiting->link.prog->type == BPF_PROG_TYPE_LSM)
+> -                       num_lsm_progs++;
+>         }
+> 
+> -       if (!num_lsm_progs && link->link.prog->type == BPF_PROG_TYPE_LSM)
+> -               bpf_lsm_toggle_hook(tr->func.addr, true);
+> -
+>         hlist_add_head(&link->tramp_hlist, &tr->progs_hlist[kind]);
+>         tr->progs_cnt[kind]++;
+> +
+> +       if (link->link.prog->type == BPF_PROG_TYPE_LSM)
+> +               bpf_trampoline_toggle_lsm(tr, kind);
 
-I asked myself the same question before v1. E.g. thinking about the
-check: (size > SIZE_MAX - PAGE_SIZE + 1)
+how about keeping BPF_PROG_TYPE_LSM progs type count of attached programs
+in bpf_trampoline and toggle lsm on first coming in and last going out?
 
-But xskq_create() is called after the check for
-!is_power_of_2(entries) in xsk_init_queue(). So I tried the same
-reproducer and divided the (nentries) value by 2 in a loop - it hits
-either SIZE_MAX case or the normal cases without overflow (sometimes
-throwing vmalloc error complaining about size which exceed total pages
-in my arm setup).
+also the trampoline attach is actually made in bpf_trampoline_update,
+so I wonder it'd make more sense to put it in there, but it's already
+complicated, so it actually might be easier in here
 
-So I can't see a way size will be SIZE_MAX-1, etc. Correct me if I'm
-wrong, please.
+jirka
 
-PS: In the output below the first 2 values of (nentries) hit SIZE_MAX
-case, the rest hit the normal case, vmalloc_user() is complaining
-about 1 allocation:
-
-0x20000000
-0x10000000
-0x8000000
-[   41.759195][ T2807] pre PAGE_ALIGN size = 2147483968 (0x80000140), PAGE_SIZE = 4096 (0x1000)
-[   41.759621][ T2807] repro-iter: vmalloc error: size 2147487744, exceeds total pages, mode:0xdc0(GFP_KERNEL|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
-[...]
-0x4000000
-0x2000000
-0x1000000
-0x800000
-0x400000
-0x200000
-0x100000
-0x80000
-0x40000
-0x20000
-0x10000
-0x8000
-0x4000
-0x2000
-0x1000
-0x800
-0x400
-0x200
-0x100
-0x80
-0x40
-0x20
-0x10
-0x8
-0x4
-0x2
-
--- 
-Andrew Kanner
+> +
+>         err = bpf_trampoline_update(tr, true /* lock_direct_mutex */);
+>         if (err) {
+>                 hlist_del_init(&link->tramp_hlist);
+> @@ -578,7 +596,6 @@ static int __bpf_trampoline_unlink_prog(struct
+> bpf_tramp_link *link, struct bpf_
+>  {
+>         struct bpf_tramp_link *link_exiting;
+>         enum bpf_tramp_prog_type kind;
+> -       bool lsm_link_found = false;
+>         int err, num_lsm_progs = 0;
+> 
+>         kind = bpf_attach_type_to_tramp(link->link.prog);
+> @@ -595,18 +612,14 @@ static int __bpf_trampoline_unlink_prog(struct
+> bpf_tramp_link *link, struct bpf_
+>                                      tramp_hlist) {
+>                         if (link_exiting->link.prog->type == BPF_PROG_TYPE_LSM)
+>                                 num_lsm_progs++;
+> -
+> -                       if (link_exiting->link.prog == link->link.prog)
+> -                               lsm_link_found = true;
+>                 }
+>         }
+> 
+>         hlist_del_init(&link->tramp_hlist);
+>         tr->progs_cnt[kind]--;
+> 
+> -       if (lsm_link_found && num_lsm_progs == 1)
+> -               bpf_lsm_toggle_hook(tr->func.addr, false);
+> -
+> +       if (link->link.prog->type == BPF_PROG_TYPE_LSM)
+> +               bpf_trampoline_toggle_lsm(tr, kind);
+>         return bpf_trampoline_update(tr, true /* lock_direct_mutex */);
+>  }
+> 
+> 
+> - KP
 
