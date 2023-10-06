@@ -1,115 +1,398 @@
-Return-Path: <bpf+bounces-11533-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11534-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B15C7BB495
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 11:54:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A1007BB53E
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 12:31:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 420051C20A45
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 09:54:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E03E282329
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 10:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A85514288;
-	Fri,  6 Oct 2023 09:54:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C00D915AD6;
+	Fri,  6 Oct 2023 10:31:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="AGTn51nc"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Hc6QqXwW"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7163134A1;
-	Fri,  6 Oct 2023 09:54:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0376C433C7;
-	Fri,  6 Oct 2023 09:54:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1696586050;
-	bh=1xkOaZgWTt8wM/d9FQ2QJPZz89Bgl30gT4xlvIoDSR4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AGTn51ncWAoBhlIUu33RX+rKn2oQQgVhGVeCpcshlIqYB1rBwr5ngl/4+VJkeXiXf
-	 kLgJhsj74qQC1qhpAf76lusF2fBpNk4UIcY/XSIpEPBPtZoivBL+jmB1fie62e241P
-	 JD618flh3vleOkj5QJE5EyI04iXSTY/Q6PBdAe9o=
-Date: Fri, 6 Oct 2023 11:54:07 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Hou Tao <houtao1@huawei.com>,
-	stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, bpf <bpf@vger.kernel.org>,
-	Anders Roxell <anders.roxell@linaro.org>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Subject: Re: [PATCH 6.5 000/321] 6.5.6-rc1 review
-Message-ID: <2023100643-unicycle-plenty-f4a3@gregkh>
-References: <20231004175229.211487444@linuxfoundation.org>
- <CA+G9fYuE9Pu3QCVDywA8Ss-41jVfiy2e2kpxjhpTe3CRgmZkBw@mail.gmail.com>
- <CA+G9fYvHPnba-0=uGS70EjcPgHht13j3s-_fmd2=srL0xyPjNg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82C011172B
+	for <bpf@vger.kernel.org>; Fri,  6 Oct 2023 10:31:11 +0000 (UTC)
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2043.outbound.protection.outlook.com [40.107.105.43])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22E1FC;
+	Fri,  6 Oct 2023 03:31:08 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZZ8lgAMea0YlJ8afVTsM5cDfCTvkaLTL0JUp223ZKDmqzL3PsJ5678BQ6XUNii5V6gvfZxJjxlQouSQWLehHKcCUcWapQMottIWZYSZv1RYc9gMD8ZbWB8E+Drc7HhWNpyoqXg9tjd/0jDV4YmQoxtLSZvcwNgZclhxH/x7DzdRCBsYU8VvN9nrolAljUXP7O1V4gXHViPIFgaS4BEuu6nw4TUKZ7U9M5zf72kN3xyIHY9sNxZZkh/n6uFP+NJHAPr5I09L4on4ffSWCvFLtZ/yGS6WGeLclunVZz4g6th/Ayw6Pt11nB16g+jqF1kZBsLqCLBDlXP/15g6eE0ubTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QYTAALXat5Yuil7FifOlAdx+XWTXfwuHRVSQo9PzU/I=;
+ b=mJTzNqzAetfEC/FI1iXMW8xJwrWWYwmi+H5YkP4hlyRXENduo0IYoQi7DXptkmBIAET/vGe7x6PWE1k9r3meYYI4c9cJgs0rPCN4fwJ5RNzNO3+w7Yhz3RQWNsnQpe47CyA0EVcK/3Oiyp97N3BBAtqcBMVvhQ692x06LOtztJeHaFbGyydTt0h5+UcibSHj3+GdXJYvc4SeUcwZWXu5y8MHu926PSkfnfiHJa8CYUS4hjZXyAoHquYZ2k9CUqakQ0aB6vjCwL+dqsNJSTaPTYiFFiVueZUbYX9vOaF+5SYCv0IIqsiqOzUS54zNB9lQPPcH68wThctT6fn6xDIbWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QYTAALXat5Yuil7FifOlAdx+XWTXfwuHRVSQo9PzU/I=;
+ b=Hc6QqXwWtJZivRZKI1qWO/CEMHTX6f9YNDEFmRZtKXdWl3sKOVXIw3woS6jXdP8W9oG1NSyyVZy1pP254wj/eqocydOBS6ZLgdWX1VJ7n+oPPGjvU/ldksQ0Hjvf6wz4mkufyZFai5pmK35TlrXYPVtvIRv9EN1nO8znJXbM9Gv+NEph/Ex+VPZ17uKEIvi7CRtOnpyTxGBX3KjVOAME0UQbnHX9IDt5bPKOAEplQMK8qA2rtJ/Z5ZqLz3Omzso4soicBSm5mUXlF7JdbFXJ9mx1RnIL/viAIEC/cJrazbDbl2BCJq/rcealhW/4dEvA/ahTv1i9WWzliSYMHCtw4g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from HE1PR0402MB3497.eurprd04.prod.outlook.com (2603:10a6:7:83::14)
+ by DB9PR04MB9703.eurprd04.prod.outlook.com (2603:10a6:10:302::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.38; Fri, 6 Oct
+ 2023 10:31:03 +0000
+Received: from HE1PR0402MB3497.eurprd04.prod.outlook.com
+ ([fe80::3852:4f89:9891:73c8]) by HE1PR0402MB3497.eurprd04.prod.outlook.com
+ ([fe80::3852:4f89:9891:73c8%3]) with mapi id 15.20.6838.030; Fri, 6 Oct 2023
+ 10:31:03 +0000
+From: Geliang Tang <geliang.tang@suse.com>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Cc: Geliang Tang <geliang.tang@suse.com>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v3] selftests/bpf: Add pairs_redir_to_connected helper
+Date: Fri,  6 Oct 2023 18:32:16 +0800
+Message-Id: <54bb28dcf764e7d4227ab160883931d2173f4f3d.1696588133.git.geliang.tang@suse.com>
+X-Mailer: git-send-email 2.35.3
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG3P274CA0008.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::20)
+ To HE1PR0402MB3497.eurprd04.prod.outlook.com (2603:10a6:7:83::14)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYvHPnba-0=uGS70EjcPgHht13j3s-_fmd2=srL0xyPjNg@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HE1PR0402MB3497:EE_|DB9PR04MB9703:EE_
+X-MS-Office365-Filtering-Correlation-Id: d4efa0ad-06bc-4f9e-0d78-08dbc65756fd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	pwXTfrUwokqeiblF9ykGvBWUwa6OK6V9ljaecCgu9P4FFrXAWE+Ma+MTT5BlAt19NMDrbCXimiHJcGdmsUyyjRzf5k1Q/Mc3F+MLWCwtip8nlTDK6YQHMzdO7+8nwLYUmFBOZHGpODotIq5w5yospqcSt5i7lB+gvqX3MtH74YhM1pCSG3IpGOMQXcHlxAsvjHSE3XfcS+fo4+4uxRuHRSxyvJ6e5pg8xQTumGTSAt9YyhTqqawI1AprVkjxZq4a3FmywH6vA21sEoZs1qWT6um52raqNTLeZa9CmIZSlb9P1iVZsEw/E6zr0UzlntnIAbxMY4nmK5GJDJLAoAUQ2Q2MQXsVt27Cio+4Vxl0qRzD2b/7AeW0S3rjS2mfodoPmBmvT+jhLz6BLmqtZT7X676dQFOhix+WqMNc19vVuaqf0Z6AP+86eexJZeuJ+cCqW1M0kARTRBI5JtYLY3OfZl8Z2ozbmLkl92iFXMp7thh1+fMPHNsTkSfvh+8jIAIYvDZFNORcpQJSjJbKjq71mNqdORSGoJF+M3UtLU7UtXJ9Z6/lcEJ0xkuPr24/mwTX5BAQSln3oUP62McVZtgybznt9Mr9lFUnj6l7vI7N7sg=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3497.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(346002)(39860400002)(136003)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(83380400001)(6506007)(6666004)(6512007)(6486002)(478600001)(86362001)(38100700002)(921005)(316002)(7416002)(41300700001)(2906002)(2616005)(26005)(36756003)(44832011)(66946007)(66556008)(66476007)(5660300002)(110136005)(4326008)(8936002)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?W1jZejdf+SYiUNEuB+bJqbWs5GfANB+jxjwTvODzuV2Dgi9wG0vWTua1c6r/?=
+ =?us-ascii?Q?vnBxc+HqNJSLsuQWonG5YhPkpg8IOLw0MG6cXNSwWEJwF4eWhdSrvnT5hA/A?=
+ =?us-ascii?Q?w1pspGUlM0vQq4e0AJTAk+GNH9oOIJMDMo7LMH7t7KO+nl7uK5j7Y0i2ihWg?=
+ =?us-ascii?Q?UY6M30fCRurXufRd021kPEO/87FZExwzHmuhqdAkcOQmiP0cxWKgV977RBTR?=
+ =?us-ascii?Q?BmMr2/A9I8nF4TJxd4s8RlDlLQ+PW+1MLx3PXnoLrwxuIF24UjAo4zxH/B7C?=
+ =?us-ascii?Q?E6thKUy9aviQeCp9pO91CQyjAGXi6fcaWS7W5TB1QRKXr8FL/rTFTZ33Sppb?=
+ =?us-ascii?Q?XV2XsYZhikMdJ9cKToH2GUV8uRURsEcBga/HDLMf/aeEj3lOZVdO9SHD5uQH?=
+ =?us-ascii?Q?cZu0ldiOia2lNXOKhEMhkDERul53qKhCEzBycP/UPH25kprZNVBSrbydUowr?=
+ =?us-ascii?Q?3Z0rJnRsfcrNTbmaBOB5T/9DP23OKd7b/M+Vyrtnm041tZ/dM4z7bDnb2/pY?=
+ =?us-ascii?Q?eJrnDo8AvY/q4Vk0gngcgVZhHq+6aLOA5blpi3AZGKyCNPaFRyd7LA9GgdGM?=
+ =?us-ascii?Q?QLvCAy0Rx5fRcWsn1K53xl62nxgcpcbfAxQO4BKpV5lJD/VonkK8pHVnI3UF?=
+ =?us-ascii?Q?jOAZLkmhKieXbpIGcViwAZWlfc/wtIXQmEuvDCDaAMELD0wWBK6TQGKVxHgi?=
+ =?us-ascii?Q?oMaJLn0K+bJAa4IBdy1CiagX4WnqXRv2CqiSZpGH73fcS9SR3BGvczLCG1aC?=
+ =?us-ascii?Q?+5ONSJKIba0rIlBYLbNjGFl3uH6STdx9pTZV8op0RKjAuVWVQ78pB7qtYnf7?=
+ =?us-ascii?Q?uDAotHQYPTbJbJQS5WQWzHW0ZMso4AZGV2WL8IcynCGUSpIKmPOKfmbMAM4B?=
+ =?us-ascii?Q?9DwZe3sj2avnRl+nU3nzRU6bNC8cTmNXtpOHSbEq24JRlRbC2tA3s5ZGGgrw?=
+ =?us-ascii?Q?rnWfLDNkW7xpB86EnTIwQO0MV4MwrYa8HbDPD2wXBB9cirDA1WEuyd0iZlYF?=
+ =?us-ascii?Q?y8YWiFgjmywLPoJ/k4CAewh2VEpwzgfuB+yprh0m8bQy7NCl2q4GutPv6kny?=
+ =?us-ascii?Q?l9dgNNl64m9lLdS5uwQ9ep2zILWXDfF4rRF5vah+WzKa7SVFU/KSGUSYa7WY?=
+ =?us-ascii?Q?OOc6rIS6082swHW9MQjTsLrOZszplBrdt0n2LikzKDoJl3qiz1bs0rPO7ep+?=
+ =?us-ascii?Q?wQIqNGqdaOhv/kKo0hYkSGPJK1nvKfXKTy9AXQ3Msp9dk9PHtYbYQznxrg2W?=
+ =?us-ascii?Q?zs7vItlsZqjV/7zbXJ2ZgcXY4WQqaftDVKXQ/9r3R/iREaaadtM2IQiPaZND?=
+ =?us-ascii?Q?k90Y0Bo7qgn343hAD6r94qgEoQOpR/NQ0EDR/wcFDTZ977neAZKwC3QkiSrj?=
+ =?us-ascii?Q?c1bJwmaIVpBjYgv8odVj48sp4brvP2onkplwQgZsIQVZgrJ9bhyaJVdw2zEm?=
+ =?us-ascii?Q?ZFYrXSE0nw5OTxA9qlsnTQ3Zvs4zEpTCJiTlxnPtJ5eIJQr6WjTqeVX/zvZi?=
+ =?us-ascii?Q?eWWaoVxhGR0tXRAw8XqerNWZTHii0iw6mGl7qcbeeDIjStOMHGJPN9msF1ps?=
+ =?us-ascii?Q?DPigfuTYVX1usQENsu4l19rfjGJ5hCq25NqIYbxo?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d4efa0ad-06bc-4f9e-0d78-08dbc65756fd
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3497.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2023 10:31:03.0248
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: p0M3utixOAMVkVtbANCGD2l+9nyzEQrY77Evsn/gd8gK5ulayXt8CAZjzDL22kordEgUOXvQPLZx1tj+Ewlk/g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9703
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Thu, Oct 05, 2023 at 08:25:02PM +0530, Naresh Kamboju wrote:
-> On Thu, 5 Oct 2023 at 11:05, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> >
-> > On Wed, 4 Oct 2023 at 23:53, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > This is the start of the stable review cycle for the 6.5.6 release.
-> > > There are 321 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > >
-> > > Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
-> > > Anything received after that time might be too late.
-> > >
-> > > The whole patch series can be found in one patch at:
-> > >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.6-rc1.gz
-> > > or in the git tree and branch at:
-> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> > > and the diffstat can be found below.
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> >
-> > The following kernel warning was noticed on qemu-armv7 while booting
-> > with kselftest merge configs enabled build on stable-rc 6.5.6-rc1.
-> >
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> >
-> > > Hou Tao <houtao1@huawei.com>
-> > >     bpf: Ensure unit_size is matched with slab cache object size
-> >
-> >
-> > bpf: Ensure unit_size is matched with slab cache object size
-> > [ Upstream commit c930472552022bd09aab3cd946ba3f243070d5c7 ]
-> >
-> > [    2.525383] ------------[ cut here ]------------
-> > [    2.525743] WARNING: CPU: 0 PID: 1 at kernel/bpf/memalloc.c:385
-> > bpf_mem_alloc_init+0x3b0/0x3b4
-> > [    2.527241] bpf_mem_cache[0]: unexpected object size 128, expect 96
-> 
-> 
-> Anders investigated this report and picked up the following patches to
-> solve the reported problem.
-> 
-> d52b59315bf5e bpf: Adjust size_index according to the value of KMALLOC_MIN_SIZE
-> b1d53958b6931 bpf: Don't prefill for unused bpf_mem_cache
-> c930472552022 bpf: Ensure unit_size is matched with slab cache object size
+Extract duplicate code from these four functions
 
-Those do not all apply cleanly to the tree, so I've dropped the one
-offending commit instead for 6.5.y and 6.1.y.
+ unix_redir_to_connected()
+ udp_redir_to_connected()
+ inet_unix_redir_to_connected()
+ unix_inet_redir_to_connected()
 
-thanks,
+to generate a new helper pairs_redir_to_connected(). Create the
+different socketpairs in these four functions, then pass the
+socketpairs info to the new common helper to do the connections.
 
-greg k-h
+Signed-off-by: Geliang Tang <geliang.tang@suse.com>
+---
+ v3:
+ - move xclose() out of pairs_redir_to_connected.
+
+ v2:
+ - rename c0/c1 to cli0/cli1, p0/p1 to peer0/perr1 as Daniel suggested.
+---
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 146 ++++--------------
+ 1 file changed, 31 insertions(+), 115 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+index 8df8cbb447f1..259caffda97a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+@@ -1336,53 +1336,59 @@ static void test_redir(struct test_sockmap_listen *skel, struct bpf_map *map,
+ 	}
+ }
+ 
+-static void unix_redir_to_connected(int sotype, int sock_mapfd,
+-			       int verd_mapfd, enum redir_mode mode)
++static void pairs_redir_to_connected(int cli0, int peer0, int cli1, int peer1,
++				     int sock_mapfd, int verd_mapfd, enum redir_mode mode)
+ {
+ 	const char *log_prefix = redir_mode_str(mode);
+-	int c0, c1, p0, p1;
+ 	unsigned int pass;
+ 	int err, n;
+-	int sfd[2];
+ 	u32 key;
+ 	char b;
+ 
+ 	zero_verdict_count(verd_mapfd);
+ 
+-	if (socketpair(AF_UNIX, sotype | SOCK_NONBLOCK, 0, sfd))
+-		return;
+-	c0 = sfd[0], p0 = sfd[1];
+-
+-	if (socketpair(AF_UNIX, sotype | SOCK_NONBLOCK, 0, sfd))
+-		goto close0;
+-	c1 = sfd[0], p1 = sfd[1];
+-
+-	err = add_to_sockmap(sock_mapfd, p0, p1);
++	err = add_to_sockmap(sock_mapfd, peer0, peer1);
+ 	if (err)
+-		goto close;
++		return;
+ 
+-	n = write(c1, "a", 1);
++	n = write(cli1, "a", 1);
+ 	if (n < 0)
+ 		FAIL_ERRNO("%s: write", log_prefix);
+ 	if (n == 0)
+ 		FAIL("%s: incomplete write", log_prefix);
+ 	if (n < 1)
+-		goto close;
++		return;
+ 
+ 	key = SK_PASS;
+ 	err = xbpf_map_lookup_elem(verd_mapfd, &key, &pass);
+ 	if (err)
+-		goto close;
++		return;
+ 	if (pass != 1)
+ 		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
+ 
+-	n = recv_timeout(mode == REDIR_INGRESS ? p0 : c0, &b, 1, 0, IO_TIMEOUT_SEC);
++	n = recv_timeout(mode == REDIR_INGRESS ? peer0 : cli0, &b, 1, 0, IO_TIMEOUT_SEC);
+ 	if (n < 0)
+ 		FAIL_ERRNO("%s: recv_timeout", log_prefix);
+ 	if (n == 0)
+ 		FAIL("%s: incomplete recv", log_prefix);
++}
++
++static void unix_redir_to_connected(int sotype, int sock_mapfd,
++			       int verd_mapfd, enum redir_mode mode)
++{
++	int c0, c1, p0, p1;
++	int sfd[2];
++
++	if (socketpair(AF_UNIX, sotype | SOCK_NONBLOCK, 0, sfd))
++		return;
++	c0 = sfd[0], p0 = sfd[1];
++
++	if (socketpair(AF_UNIX, sotype | SOCK_NONBLOCK, 0, sfd))
++		goto close0;
++	c1 = sfd[0], p1 = sfd[1];
++
++	pairs_redir_to_connected(c0, p0, c1, p1, sock_mapfd, verd_mapfd, mode);
+ 
+-close:
+ 	xclose(c1);
+ 	xclose(p1);
+ close0:
+@@ -1661,14 +1667,8 @@ static int inet_socketpair(int family, int type, int *s, int *c)
+ static void udp_redir_to_connected(int family, int sock_mapfd, int verd_mapfd,
+ 				   enum redir_mode mode)
+ {
+-	const char *log_prefix = redir_mode_str(mode);
+ 	int c0, c1, p0, p1;
+-	unsigned int pass;
+-	int err, n;
+-	u32 key;
+-	char b;
+-
+-	zero_verdict_count(verd_mapfd);
++	int err;
+ 
+ 	err = inet_socketpair(family, SOCK_DGRAM, &p0, &c0);
+ 	if (err)
+@@ -1677,32 +1677,8 @@ static void udp_redir_to_connected(int family, int sock_mapfd, int verd_mapfd,
+ 	if (err)
+ 		goto close_cli0;
+ 
+-	err = add_to_sockmap(sock_mapfd, p0, p1);
+-	if (err)
+-		goto close_cli1;
+-
+-	n = write(c1, "a", 1);
+-	if (n < 0)
+-		FAIL_ERRNO("%s: write", log_prefix);
+-	if (n == 0)
+-		FAIL("%s: incomplete write", log_prefix);
+-	if (n < 1)
+-		goto close_cli1;
+-
+-	key = SK_PASS;
+-	err = xbpf_map_lookup_elem(verd_mapfd, &key, &pass);
+-	if (err)
+-		goto close_cli1;
+-	if (pass != 1)
+-		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
++	pairs_redir_to_connected(c0, p0, c1, p1, sock_mapfd, verd_mapfd, mode);
+ 
+-	n = recv_timeout(mode == REDIR_INGRESS ? p0 : c0, &b, 1, 0, IO_TIMEOUT_SEC);
+-	if (n < 0)
+-		FAIL_ERRNO("%s: recv_timeout", log_prefix);
+-	if (n == 0)
+-		FAIL("%s: incomplete recv", log_prefix);
+-
+-close_cli1:
+ 	xclose(c1);
+ 	xclose(p1);
+ close_cli0:
+@@ -1747,15 +1723,9 @@ static void test_udp_redir(struct test_sockmap_listen *skel, struct bpf_map *map
+ static void inet_unix_redir_to_connected(int family, int type, int sock_mapfd,
+ 					int verd_mapfd, enum redir_mode mode)
+ {
+-	const char *log_prefix = redir_mode_str(mode);
+ 	int c0, c1, p0, p1;
+-	unsigned int pass;
+-	int err, n;
+ 	int sfd[2];
+-	u32 key;
+-	char b;
+-
+-	zero_verdict_count(verd_mapfd);
++	int err;
+ 
+ 	if (socketpair(AF_UNIX, SOCK_DGRAM | SOCK_NONBLOCK, 0, sfd))
+ 		return;
+@@ -1765,32 +1735,8 @@ static void inet_unix_redir_to_connected(int family, int type, int sock_mapfd,
+ 	if (err)
+ 		goto close;
+ 
+-	err = add_to_sockmap(sock_mapfd, p0, p1);
+-	if (err)
+-		goto close_cli1;
+-
+-	n = write(c1, "a", 1);
+-	if (n < 0)
+-		FAIL_ERRNO("%s: write", log_prefix);
+-	if (n == 0)
+-		FAIL("%s: incomplete write", log_prefix);
+-	if (n < 1)
+-		goto close_cli1;
+-
+-	key = SK_PASS;
+-	err = xbpf_map_lookup_elem(verd_mapfd, &key, &pass);
+-	if (err)
+-		goto close_cli1;
+-	if (pass != 1)
+-		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
+-
+-	n = recv_timeout(mode == REDIR_INGRESS ? p0 : c0, &b, 1, 0, IO_TIMEOUT_SEC);
+-	if (n < 0)
+-		FAIL_ERRNO("%s: recv_timeout", log_prefix);
+-	if (n == 0)
+-		FAIL("%s: incomplete recv", log_prefix);
++	pairs_redir_to_connected(c0, p0, c1, p1, sock_mapfd, verd_mapfd, mode);
+ 
+-close_cli1:
+ 	xclose(c1);
+ 	xclose(p1);
+ close:
+@@ -1827,15 +1773,9 @@ static void inet_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
+ static void unix_inet_redir_to_connected(int family, int type, int sock_mapfd,
+ 					int verd_mapfd, enum redir_mode mode)
+ {
+-	const char *log_prefix = redir_mode_str(mode);
+ 	int c0, c1, p0, p1;
+-	unsigned int pass;
+-	int err, n;
+ 	int sfd[2];
+-	u32 key;
+-	char b;
+-
+-	zero_verdict_count(verd_mapfd);
++	int err;
+ 
+ 	err = inet_socketpair(family, SOCK_DGRAM, &p0, &c0);
+ 	if (err)
+@@ -1845,32 +1785,8 @@ static void unix_inet_redir_to_connected(int family, int type, int sock_mapfd,
+ 		goto close_cli0;
+ 	c1 = sfd[0], p1 = sfd[1];
+ 
+-	err = add_to_sockmap(sock_mapfd, p0, p1);
+-	if (err)
+-		goto close;
+-
+-	n = write(c1, "a", 1);
+-	if (n < 0)
+-		FAIL_ERRNO("%s: write", log_prefix);
+-	if (n == 0)
+-		FAIL("%s: incomplete write", log_prefix);
+-	if (n < 1)
+-		goto close;
+-
+-	key = SK_PASS;
+-	err = xbpf_map_lookup_elem(verd_mapfd, &key, &pass);
+-	if (err)
+-		goto close;
+-	if (pass != 1)
+-		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
+-
+-	n = recv_timeout(mode == REDIR_INGRESS ? p0 : c0, &b, 1, 0, IO_TIMEOUT_SEC);
+-	if (n < 0)
+-		FAIL_ERRNO("%s: recv_timeout", log_prefix);
+-	if (n == 0)
+-		FAIL("%s: incomplete recv", log_prefix);
++	pairs_redir_to_connected(c0, p0, c1, p1, sock_mapfd, verd_mapfd, mode);
+ 
+-close:
+ 	xclose(c1);
+ 	xclose(p1);
+ close_cli0:
+-- 
+2.35.3
+
 
