@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-11526-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11527-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 226F97BB299
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 09:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C3A727BB29B
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 09:46:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C904D28275E
-	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 07:46:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C7D12826B2
+	for <lists+bpf@lfdr.de>; Fri,  6 Oct 2023 07:46:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 838C1125B3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD5212B9A;
 	Fri,  6 Oct 2023 07:46:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="er8LMOAp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="grGAp/cS"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 765F4E57C;
-	Fri,  6 Oct 2023 07:45:59 +0000 (UTC)
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6E3F0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC777469;
+	Fri,  6 Oct 2023 07:46:00 +0000 (UTC)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCFDEA;
 	Fri,  6 Oct 2023 00:45:57 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bff776fe0bso23117851fa.0;
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40566f89f6eso17478565e9.3;
         Fri, 06 Oct 2023 00:45:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696578355; x=1697183155; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696578356; x=1697183156; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4IuQAasmwLodP6MR9msfs02386+4ZzrUnvc4SbKOh5k=;
-        b=er8LMOApltxKPc6B5oGhkw2CqzTxmKWn6rubbEWdRDWB+yBFrfg3F+gWqoWZ5hcs0C
-         +4sDS7lKFMCKp4tLsyAE2KjgsAGhF/RYJBvf7+orQfXS14j3YiWJyiosGpvQaP89okwR
-         IkLoDX9vm1CqFv3G8yh+lPDa43J9fPi+1OCvYA49UW3W0QDy0vR1REaawyzS5ohozIxx
-         J1PDqxDt9wj1V24Wmkx+axR6dU3Hh08uXKOZKBVJKE8jAmFI+SZV8o7gejeJg8xOv0tb
-         /muIOrJZ0995HWHLienu/dR8kuDOzNU0uvTF7ThoItT+KBpxlvR+F0PvGSMPKfKA5KGm
-         px9w==
+        bh=7YjuVQHIQgD5W10M1uWpzIJVt7wmnvOPH+yvmEP+NAo=;
+        b=grGAp/cSaVNe6PplCRUdD/xiAZTqb1hGMVWBlXoBc9FofQ83oW3gz1XTZQiXLgw1mn
+         kne2afYhoT+e1hAsMdq1YMJ02AG0NO4yNsWOQVxug1Jkp3+hYydMO6O/ROQqtabEZ/Q8
+         vZsKVL0wRswU6lu6q1UFX1+IVSGThd4mCeXcSxAIigZXWCOQJ0ZEjvmxsZN2rEPEpKBm
+         TaWP6AuesZWoOxyXafhxs+8sx0SRpvFepx2T5Z2GlUFsPZ1yC5myICOVzFNw45y60aoe
+         2toA48pMNwAuooHQ9/SD6+xtYIefcpUkmHAtVR3KDPHOg9sUcFcAeJAcAxePKpp0KsOb
+         pxrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696578355; x=1697183155;
+        d=1e100.net; s=20230601; t=1696578356; x=1697183156;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4IuQAasmwLodP6MR9msfs02386+4ZzrUnvc4SbKOh5k=;
-        b=p8BU9HBgNJbYvYTpeNVgfgBui44Ah8EqyfuVIDOGpi90k7E1CjtSErvLLgE+znB6gU
-         PHS1kY1hbP6EERmyAyRpBrgyVqEBRHXpqcXTLskJ4D6DiNu4IUqri+W6up460fcQZuwu
-         sahg1dwR7o88+kZl3++bIq2pHy9jlHXr5nytr5qh6IX3shyu71fdM6IfwDFBs5uJXjii
-         qG2TKnpct2gzpY46wVqHMaiQ9d9hZT7OsjQmnKYQHikvCn0mQp8Rp6Xk4WhEDx/UA/u1
-         MlzWqLzeFltvvAmq5w4tre/7FnMZqG7bID2OF7zxi6zIl3R50MkfWhV5X+KJ/OuDTRBS
-         BWiA==
-X-Gm-Message-State: AOJu0YwIxUs1bbdneqYuv9KasB2Z6YY0yDyXhBnnIivzRqAlgyg88Pur
-	i/ZZx2MSXJNRHzW78pQNm0726Ab4AlfGHDbM
-X-Google-Smtp-Source: AGHT+IFDKDozHSkiL5NvKLKE69cnB93rHcBpzilDcYnJD/qVUOKdX5fLY+AZGTzowwTM9KIK0mI6zg==
-X-Received: by 2002:a05:6512:ac5:b0:503:2eaf:1659 with SMTP id n5-20020a0565120ac500b005032eaf1659mr8678047lfu.41.1696578355016;
+        bh=7YjuVQHIQgD5W10M1uWpzIJVt7wmnvOPH+yvmEP+NAo=;
+        b=NSHZba5wlnVGQ/bDwsiAIiHYh+V6YX4Nk71Y8ft7f+3oIbfetrWKjJp7ur0EmvFMKy
+         fpTy0UWIugGEoUDpXSJu58x+xXWMyYjNOJNB67SbTXdIOe8iCT8iHF0RjkQL/7Le0zD7
+         ids51ueFs5IOx33m7/TPzogCyd46Gy3hfYfUPYrvKlO4hwdcwTOSX0MRLwJlw8r3BWLH
+         eYku0gHyajrny/oPJ/3mLy5k+IJHeFa6cOWuf/gUXGVGouZnqQgo4fYhJLkhkvE7GvMR
+         ccOmcFJT5ycxCNeYcOnIRuMQcMTGJj9IdNGJaRNpbfVwAdA9eyBYpMeySoPpzxDy85o+
+         ROzQ==
+X-Gm-Message-State: AOJu0Yw2YXDXFgD7nyHRAEp67Yzwt6NHxfIVa5qvJW+8tfVcdnr4wglc
+	EEhoB6fGm+Dhfo9OwwfSFIwQ78Edz4wPIQPA
+X-Google-Smtp-Source: AGHT+IGixg2GXB3fWZFkTY3WA7q0yarvmrSMgdH9suXu8AZRL5jk34L89PwOXZxjid/2i9qZiZBqMQ==
+X-Received: by 2002:a7b:c4d6:0:b0:400:419c:bbde with SMTP id g22-20020a7bc4d6000000b00400419cbbdemr6757433wmk.18.1696578355984;
         Fri, 06 Oct 2023 00:45:55 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:a03f:864b:8201:e534:34f4:1c34:8de7])
-        by smtp.googlemail.com with ESMTPSA id k22-20020a7bc416000000b00404719b05b5sm3126888wmi.27.2023.10.06.00.45.54
+        by smtp.googlemail.com with ESMTPSA id k22-20020a7bc416000000b00404719b05b5sm3126888wmi.27.2023.10.06.00.45.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 00:45:54 -0700 (PDT)
+        Fri, 06 Oct 2023 00:45:55 -0700 (PDT)
 From: Daan De Meyer <daan.j.demeyer@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Daan De Meyer <daan.j.demeyer@gmail.com>,
 	martin.lau@linux.dev,
 	kernel-team@meta.com,
 	netdev@vger.kernel.org
-Subject: [PATCH bpf-next v9 7/9] documentation/bpf: Document cgroup unix socket address hooks
-Date: Fri,  6 Oct 2023 09:45:01 +0200
-Message-ID: <20231006074530.892825-8-daan.j.demeyer@gmail.com>
+Subject: [PATCH bpf-next v9 8/9] selftests/bpf: Make sure mount directory exists
+Date: Fri,  6 Oct 2023 09:45:02 +0200
+Message-ID: <20231006074530.892825-9-daan.j.demeyer@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231006074530.892825-1-daan.j.demeyer@gmail.com>
 References: <20231006074530.892825-1-daan.j.demeyer@gmail.com>
@@ -84,35 +84,31 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Update the documentation to mention the new cgroup unix sockaddr
-hooks.
+The mount directory for the selftests cgroup tree might
+not exist so let's make sure it does exist by creating
+it ourselves if it doesn't exist.
 
 Signed-off-by: Daan De Meyer <daan.j.demeyer@gmail.com>
 ---
- Documentation/bpf/libbpf/program_types.rst | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ tools/testing/selftests/bpf/cgroup_helpers.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/bpf/libbpf/program_types.rst b/Documentation/bpf/libbpf/program_types.rst
-index ad4d4d5eecb0..63bb88846e50 100644
---- a/Documentation/bpf/libbpf/program_types.rst
-+++ b/Documentation/bpf/libbpf/program_types.rst
-@@ -56,6 +56,16 @@ described in more detail in the footnotes.
- |                                           | ``BPF_CGROUP_UDP6_RECVMSG``            | ``cgroup/recvmsg6``              |           |
- +                                           +----------------------------------------+----------------------------------+-----------+
- |                                           | ``BPF_CGROUP_UDP6_SENDMSG``            | ``cgroup/sendmsg6``              |           |
-+|                                           +----------------------------------------+----------------------------------+-----------+
-+|                                           | ``BPF_CGROUP_UNIX_CONNECT``            | ``cgroup/connect_unix``          |           |
-+|                                           +----------------------------------------+----------------------------------+-----------+
-+|                                           | ``BPF_CGROUP_UNIX_SENDMSG``            | ``cgroup/sendmsg_unix``          |           |
-+|                                           +----------------------------------------+----------------------------------+-----------+
-+|                                           | ``BPF_CGROUP_UNIX_RECVMSG``            | ``cgroup/recvmsg_unix``          |           |
-+|                                           +----------------------------------------+----------------------------------+-----------+
-+|                                           | ``BPF_CGROUP_UNIX_GETPEERNAME``        | ``cgroup/getpeername_unix``      |           |
-+|                                           +----------------------------------------+----------------------------------+-----------+
-+|                                           | ``BPF_CGROUP_UNIX_GETSOCKNAME``        | ``cgroup/getsockname_unix``      |           |
- +-------------------------------------------+----------------------------------------+----------------------------------+-----------+
- | ``BPF_PROG_TYPE_CGROUP_SOCK``             | ``BPF_CGROUP_INET4_POST_BIND``         | ``cgroup/post_bind4``            |           |
- +                                           +----------------------------------------+----------------------------------+-----------+
+diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
+index 24ba56d42f2d..5b1da2a32ea7 100644
+--- a/tools/testing/selftests/bpf/cgroup_helpers.c
++++ b/tools/testing/selftests/bpf/cgroup_helpers.c
+@@ -199,6 +199,11 @@ int setup_cgroup_environment(void)
+ 
+ 	format_cgroup_path(cgroup_workdir, "");
+ 
++	if (mkdir(CGROUP_MOUNT_PATH, 0777) && errno != EEXIST) {
++		log_err("mkdir mount");
++		return 1;
++	}
++
+ 	if (unshare(CLONE_NEWNS)) {
+ 		log_err("unshare");
+ 		return 1;
 -- 
 2.41.0
 
