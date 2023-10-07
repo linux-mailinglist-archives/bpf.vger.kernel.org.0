@@ -1,77 +1,66 @@
-Return-Path: <bpf+bounces-11638-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11639-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9510E7BC8F5
-	for <lists+bpf@lfdr.de>; Sat,  7 Oct 2023 17:58:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC73E7BC8FD
+	for <lists+bpf@lfdr.de>; Sat,  7 Oct 2023 18:06:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6F451C20A9E
-	for <lists+bpf@lfdr.de>; Sat,  7 Oct 2023 15:58:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D37FE1C20A3F
+	for <lists+bpf@lfdr.de>; Sat,  7 Oct 2023 16:06:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E46031A83;
-	Sat,  7 Oct 2023 15:57:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB571328A9;
+	Sat,  7 Oct 2023 16:06:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dgjaHjZf"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IKLN4L94"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6698E2E648
-	for <bpf@vger.kernel.org>; Sat,  7 Oct 2023 15:57:56 +0000 (UTC)
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409E5B9;
-	Sat,  7 Oct 2023 08:57:55 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-577e62e2adfso2012293a12.2;
-        Sat, 07 Oct 2023 08:57:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696694275; x=1697299075; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YqV8KtIkUDb0Wc1yq1sRlVDydB3Tj3UfRPNMUmN2hVY=;
-        b=dgjaHjZfkMFOB7GGxYC3VsF0DZTdCAQmXAi+We6rmjz0hvDmcPSRge7SQInUgIWIkr
-         OnIlwQELnqvLBuKlMGGMsC8JscwGcUq2eCVdjLt23hneCUUHJADyzbMlAasE6o3KR1mY
-         X9UyAzpakYbugvWfVleiUms+d9hOHK0UYcdnRNEW3SyS7YCgfNFxEeenPzRaS3V4TSas
-         8XuM6nevxurN6bseHa3ZFKrc5tTq5L5aaVz/NGR3ujnKtR7DQkjujrnBzmALq3Wd5xAP
-         Iha9rV2yH0xS7FTmVr/Ij4mp6b6QHK1kmDuy00/0Q8AyiHL0mTBRd35ZNW7XtKUM0qqP
-         NWPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696694275; x=1697299075;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YqV8KtIkUDb0Wc1yq1sRlVDydB3Tj3UfRPNMUmN2hVY=;
-        b=bvETHUvjHXZRl+dBvD5tl/U3wXcCX8n2X0I3pJPRspsL7uOwxZ0sv90D8kXkHtAq99
-         1ahaiw3fslw3Ak/ZKBezcfZZ0JOAlm6iwFDKvX4YHcCzr8RixBju8HYFVbFDv+phLCnC
-         yzBtqP+icGMsLGl2j5ambUorv5VYuC+Y69y3q+PMKY6/vo24SSBDGoXAttfqc3P7gKk6
-         z+szcnsZP4KukLGHZRzfjVizqU/I0p32Hgvl4xkdSS0wGEemeTGTGo6IO085HH3J+qDM
-         1WnrfWrfbVsCek+FnvK9GKzmAo/cR6x/nf9KrHTDs12ZgrYKukL8XCHxunrodE4gdEY/
-         HjRA==
-X-Gm-Message-State: AOJu0YzBBLVp+CmmMUgCpBE0rB0Xkovi2c6p8RnRb1NL960+/TYPMlc9
-	Vn7dmj0QDFAgJtRptIzDS58=
-X-Google-Smtp-Source: AGHT+IFN/gZY0+BJYYYR2WuThcx4S5VRT6cPHJ62Sqfs7KdKnp5mzkw0doBmVczEp+X5k3Z9wN/hTw==
-X-Received: by 2002:a17:90a:b283:b0:274:c637:4b97 with SMTP id c3-20020a17090ab28300b00274c6374b97mr9958823pjr.16.1696694274640;
-        Sat, 07 Oct 2023 08:57:54 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::4:cced])
-        by smtp.gmail.com with ESMTPSA id o24-20020a17090ad25800b00276b60aa43bsm7179307pjw.17.2023.10.07.08.57.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Oct 2023 08:57:54 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Sat, 7 Oct 2023 05:57:52 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
-	haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com,
-	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com,
-	sinquersw@gmail.com, cgroups@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 3/8] bpf: Add kfuncs for cgroup1 hierarchy
-Message-ID: <ZSGAACHHNAYbk34i@slm.duckdns.org>
-References: <20231007140304.4390-1-laoar.shao@gmail.com>
- <20231007140304.4390-4-laoar.shao@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04B130FBD
+	for <bpf@vger.kernel.org>; Sat,  7 Oct 2023 16:06:15 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C257FB9;
+	Sat,  7 Oct 2023 09:06:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696694773; x=1728230773;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=n5AFnPXEzN+QKzdl9114Nc4MT/H4AlQFbFyb9f0tsJE=;
+  b=IKLN4L94kWQMYIE+DJRjPfVcVm/l2fUX3Wh71EeD5dcKJipJ1mzOSB/K
+   cuLY/Qslb4Bjw5Teu99r1GMz08DnOKo1LEPE6lesxx/01C/q598hN/mZl
+   3r+7XSC2Pq+5YW4ysy8Ol2IySB1hH3JdgWpAgErK+CkP8Ty80flMXT+6p
+   4kj8zOJB3Z7WcTsdl1YrfzXnJEC4O81yLgQijvx/9uJgQAfD/T2Ty0jXx
+   6bHHbcsYSR8VMRVrVYdLnjherN/qE5Z1WPlXmUXqIjVc3W1kcinfjKN8b
+   tqH6YldVdaRqpGeMZt1Yd3KvM3vZy5wQdfDrk/XdM4bSyVOK8kUYEwcHV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10856"; a="387806740"
+X-IronPort-AV: E=Sophos;i="6.03,206,1694761200"; 
+   d="scan'208";a="387806740"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 09:06:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10856"; a="702413998"
+X-IronPort-AV: E=Sophos;i="6.03,206,1694761200"; 
+   d="scan'208";a="702413998"
+Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 07 Oct 2023 09:06:10 -0700
+Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qp9oe-0004XN-0m;
+	Sat, 07 Oct 2023 16:06:08 +0000
+Date: Sun, 8 Oct 2023 00:05:40 +0800
+From: kernel test robot <lkp@intel.com>
+To: Chuyi Zhou <zhouchuyi@bytedance.com>, bpf@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
+	linux-kernel@vger.kernel.org, Chuyi Zhou <zhouchuyi@bytedance.com>
+Subject: Re: [PATCH bpf-next v4 4/8] bpf: Introduce css open-coded iterator
+ kfuncs
+Message-ID: <202310072337.CzRlbffm-lkp@intel.com>
+References: <20231007124522.34834-5-zhouchuyi@bytedance.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -80,45 +69,117 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231007140304.4390-4-laoar.shao@gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231007124522.34834-5-zhouchuyi@bytedance.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, Oct 07, 2023 at 02:02:59PM +0000, Yafang Shao wrote:
-> +
-> +/**
-> + * bpf_task_cgroup_id_within_hierarchy - Retrieves the associated cgroup ID of a
-> + * task within a specific cgroup1 hierarchy.
-> + * @task: The target task
-> + * @hierarchy_id: The ID of a cgroup1 hierarchy
-> + */
-> +__bpf_kfunc u64 bpf_task_cgroup1_id_within_hierarchy(struct task_struct *task, int hierarchy_id)
-> +{
-> +	return task_cgroup1_id_within_hierarchy(task, hierarchy_id);
-> +}
-> +
-> +/**
-> + * bpf_task_ancestor_cgroup_id_within_hierarchy - Retrieves the associated
-> + * ancestor cgroup ID of a task within a specific cgroup1 hierarchy.
-> + * @task: The target task
-> + * @hierarchy_id: The ID of a cgroup1 hierarchy
-> + * @ancestor_level: The cgroup level of the ancestor in the cgroup1 hierarchy
-> + */
-> +__bpf_kfunc u64 bpf_task_ancestor_cgroup1_id_within_hierarchy(struct task_struct *task,
-> +							      int hierarchy_id, int ancestor_level)
-> +{
-> +	return task_ancestor_cgroup1_id_within_hierarchy(task, hierarchy_id, ancestor_level);
-> +}
+Hi Chuyi,
 
-The same here. Please make one helper that returns a kptr and then let the
-user call bpf_cgroup_ancestor() if desired.
+kernel test robot noticed the following build warnings:
 
-Thanks.
+[auto build test WARNING on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Chuyi-Zhou/cgroup-Prepare-for-using-css_task_iter_-in-BPF/20231007-204750
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20231007124522.34834-5-zhouchuyi%40bytedance.com
+patch subject: [PATCH bpf-next v4 4/8] bpf: Introduce css open-coded iterator kfuncs
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231007/202310072337.CzRlbffm-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231007/202310072337.CzRlbffm-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310072337.CzRlbffm-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> kernel/bpf/cgroup_iter.c:308:17: warning: no previous prototype for 'bpf_iter_css_new' [-Wmissing-prototypes]
+     308 | __bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
+         |                 ^~~~~~~~~~~~~~~~
+>> kernel/bpf/cgroup_iter.c:332:41: warning: no previous prototype for 'bpf_iter_css_next' [-Wmissing-prototypes]
+     332 | __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css *it)
+         |                                         ^~~~~~~~~~~~~~~~~
+>> kernel/bpf/cgroup_iter.c:353:18: warning: no previous prototype for 'bpf_iter_css_destroy' [-Wmissing-prototypes]
+     353 | __bpf_kfunc void bpf_iter_css_destroy(struct bpf_iter_css *it)
+         |                  ^~~~~~~~~~~~~~~~~~~~
+   In file included from <command-line>:
+   kernel/bpf/cgroup_iter.c: In function 'bpf_iter_css_new':
+   include/linux/compiler_types.h:425:45: error: call to '__compiletime_assert_320' declared with attribute error: BUILD_BUG_ON failed: sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css)
+     425 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                             ^
+   include/linux/compiler_types.h:406:25: note: in definition of macro '__compiletime_assert'
+     406 |                         prefix ## suffix();                             \
+         |                         ^~~~~~
+   include/linux/compiler_types.h:425:9: note: in expansion of macro '_compiletime_assert'
+     425 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+         |         ^~~~~~~~~~~~~~~~
+   kernel/bpf/cgroup_iter.c:313:9: note: in expansion of macro 'BUILD_BUG_ON'
+     313 |         BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css));
+         |         ^~~~~~~~~~~~
+
+
+vim +/bpf_iter_css_new +308 kernel/bpf/cgroup_iter.c
+
+   307	
+ > 308	__bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
+   309			struct cgroup_subsys_state *start, unsigned int flags)
+   310	{
+   311		struct bpf_iter_css_kern *kit = (void *)it;
+   312	
+   313		BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css));
+   314		BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) != __alignof__(struct bpf_iter_css));
+   315	
+   316		kit->start = NULL;
+   317		switch (flags) {
+   318		case BPF_CGROUP_ITER_DESCENDANTS_PRE:
+   319		case BPF_CGROUP_ITER_DESCENDANTS_POST:
+   320		case BPF_CGROUP_ITER_ANCESTORS_UP:
+   321			break;
+   322		default:
+   323			return -EINVAL;
+   324		}
+   325	
+   326		kit->start = start;
+   327		kit->pos = NULL;
+   328		kit->flags = flags;
+   329		return 0;
+   330	}
+   331	
+ > 332	__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css *it)
+   333	{
+   334		struct bpf_iter_css_kern *kit = (void *)it;
+   335	
+   336		if (!kit->start)
+   337			return NULL;
+   338	
+   339		switch (kit->flags) {
+   340		case BPF_CGROUP_ITER_DESCENDANTS_PRE:
+   341			kit->pos = css_next_descendant_pre(kit->pos, kit->start);
+   342			break;
+   343		case BPF_CGROUP_ITER_DESCENDANTS_POST:
+   344			kit->pos = css_next_descendant_post(kit->pos, kit->start);
+   345			break;
+   346		case BPF_CGROUP_ITER_ANCESTORS_UP:
+   347			kit->pos = kit->pos ? kit->pos->parent : kit->start;
+   348		}
+   349	
+   350		return kit->pos;
+   351	}
+   352	
+ > 353	__bpf_kfunc void bpf_iter_css_destroy(struct bpf_iter_css *it)
 
 -- 
-tejun
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
