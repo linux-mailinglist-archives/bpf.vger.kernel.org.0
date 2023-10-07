@@ -1,297 +1,106 @@
-Return-Path: <bpf+bounces-11635-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11636-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC8597BC8B7
-	for <lists+bpf@lfdr.de>; Sat,  7 Oct 2023 17:44:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF1DE7BC8EC
+	for <lists+bpf@lfdr.de>; Sat,  7 Oct 2023 17:50:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 656EE281E22
-	for <lists+bpf@lfdr.de>; Sat,  7 Oct 2023 15:44:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C88E31C20949
+	for <lists+bpf@lfdr.de>; Sat,  7 Oct 2023 15:50:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFABF2E649;
-	Sat,  7 Oct 2023 15:44:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2360E30FBD;
+	Sat,  7 Oct 2023 15:50:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JZ5lG7eY";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vusX5U7t"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NVc0hYUU"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 264D418B14;
-	Sat,  7 Oct 2023 15:43:59 +0000 (UTC)
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7511DBC;
-	Sat,  7 Oct 2023 08:43:57 -0700 (PDT)
-Date: Sat, 7 Oct 2023 17:43:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1696693434;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ftjn9hftMk0GzKM8XO4hdCrhh+xbt/KTtiFleTmD9SM=;
-	b=JZ5lG7eYwwGRK1y8ba/5D1N7MTHj79NvScn9Aq7imfoGmPdT4s1IOAZ2GTpT39S/z8r9q/
-	fLf13NsC9MSPsViLvAJ6pkQQXeTJjXcOsktMrUVeQz+jzHOPakCOqUzzw9P39qAgGCcMsY
-	jmZmYLQ6+LHLdhfEhk9lTAkd8vx7apslfrd/hQIM85LcO8WkKyBG0Bw/VA6r87zw8QPK7m
-	HOFIZ3OIDUaJ3FYuoNm3bU0HdmqfeiPwa5LZnaZ78Ptw/1ULf8ahaeA/U+ZcraP5a4552p
-	DZQu7qX9BPkE4VurnkTIODFihVW7WXSHP7xMf8KbNBy3F7Lb+3mDSeqUATUOhQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1696693434;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ftjn9hftMk0GzKM8XO4hdCrhh+xbt/KTtiFleTmD9SM=;
-	b=vusX5U7tZixJYr3Gi9kDBn1V4sEdRYg4KP8ZPYQqOQLUG3DrtnG389Ig7qno4IEJQe/fFT
-	Pxc+DkIaEAW/m7BA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>, Hao Luo <haoluo@google.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Paolo Abeni <pabeni@redhat.com>, Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: [PATCH bpf-next v3] net: Add a warning if NAPI cb missed
- xdp_do_flush().
-Message-ID: <20231007154351.UvncuBMF@linutronix.de>
-References: <20230929165825.RvwBYGP1@linutronix.de>
- <20231004070926.5b4ba04c@kernel.org>
- <20231006154933.mQgxQHHt@linutronix.de>
- <20231006123139.5203444e@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01E9630F8A
+	for <bpf@vger.kernel.org>; Sat,  7 Oct 2023 15:50:41 +0000 (UTC)
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4EF9BF;
+	Sat,  7 Oct 2023 08:50:40 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3af604c3f8fso2098734b6e.1;
+        Sat, 07 Oct 2023 08:50:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696693840; x=1697298640; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bRb4xyVggbiNdF/CuWm/83mjhA2PGKIdFUSg0RWfnOE=;
+        b=NVc0hYUUBqTebhXu5sTTZTz9hNNpT7vy+t73CmmHG1D/fIBDRsQGl7zMjQ0XfnLff8
+         Y/vWbrZaiecPfW24b1R3e8cbmv0r0pvkp/8eZu7Gt5sbBw1c+Y59elP0zpb7qp3wyXIz
+         dqKnUwOGYBpmQlLJevqNHjTd2cIF39v7FpURQJLeWA5tb2RwkDG+IwSdkqwHE2zmFjFX
+         iehEWtviuK3UPD1vx8WvanKYCkzEoQH/tzSxb15gzeduQlyYIab/OVz1QJN4Igg9WV6H
+         3t9mBL1Vz4Niuh9761lm4wmaLgvw1Ka5WKVzYGn8nmPVsZ2+k9nnB9tQcxvdmVPYGYKC
+         5Deg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696693840; x=1697298640;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bRb4xyVggbiNdF/CuWm/83mjhA2PGKIdFUSg0RWfnOE=;
+        b=dsTn788J/CoHMCk5p7SDXxemyk+n7+l5NQ4MqaDDjwcxL/Bxd0sT/c31Lv5h0SxTut
+         L7MjBos9N3QtxKAbz5f0mhVqKen3mYjtQ9wAWfnga+Pjmsw/+0tE757MNLQO4BR9LIUd
+         PwYFyRYWrVjSHQCGNK7/2ttPkC4XgPHPfCYKVXwcuH1QH1wXeVRc1dhqbQ6ioIhFP/T7
+         kRzbY2KZx0iw2qv2pw6RATJJC79l7hR1oCe3WFvVxVFEQpWUdq87cEm1rgFNftZTjXfo
+         07FqFlTQQ4YJ7ICi3UilbQZqj3sFVORSZ6p5JAue07PFbXaHTtZIvevMQbnrdG1xtug6
+         cE6A==
+X-Gm-Message-State: AOJu0YzUASP+ae1A6sXz7UtNMYZmN1uXWPD6DtT6Pv520igWNwPuli72
+	6Vd8nbEQvxJU91C744TQJfE=
+X-Google-Smtp-Source: AGHT+IGKDslXMsVHZ8g50T+5zfWAxU0NHbnVre1UM1pKyhAb/W4tJK9zhKPyMcfFooUpuTTGNyvT6A==
+X-Received: by 2002:a05:6358:988d:b0:143:723:8f89 with SMTP id q13-20020a056358988d00b0014307238f89mr13481795rwa.4.1696693840007;
+        Sat, 07 Oct 2023 08:50:40 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:cced])
+        by smtp.gmail.com with ESMTPSA id d6-20020a17090ad3c600b00256799877ffsm5313614pjw.47.2023.10.07.08.50.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Oct 2023 08:50:39 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Sat, 7 Oct 2023 05:50:37 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+	haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com,
+	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com,
+	sinquersw@gmail.com, cgroups@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 1/8] cgroup: Don't have to hold cgroup_mutex
+ in task_cgroup_from_root()
+Message-ID: <ZSF-TeyAxq6xqcII@slm.duckdns.org>
+References: <20231007140304.4390-1-laoar.shao@gmail.com>
+ <20231007140304.4390-2-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231006123139.5203444e@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231007140304.4390-2-laoar.shao@gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-A few drivers were missing a xdp_do_flush() invocation after
-XDP_REDIRECT.
+On Sat, Oct 07, 2023 at 02:02:57PM +0000, Yafang Shao wrote:
+> The task cannot modify cgroups if we have already acquired the
+> css_set_lock, thus eliminating the need to hold the cgroup_mutex. Following
+> this change, task_cgroup_from_root() can be employed in non-sleepable contexts.
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 
-Add three helper functions each for one of the per-CPU lists. Return
-true if the per-CPU list is non-empty and flush the list.
-Add xdp_do_check_flushed() which invokes each helper functions and
-creats a warning if one of the functions had a non-empty list.
-Hide everything behind CONFIG_DEBUG_NET.
+Maybe just drop lockdep_assert_held(&cgroup_mutex) from
+cset_cgroup_from_root()?
 
-Suggested-by: Jesper Dangaard Brouer <hawk@kernel.org>
-Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-Acked-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
-v2=E2=80=A6v3:
-  - Collected Reviewed/Acked from the list.
-  - Added an include dev.h to filter.c, the robot pointed out a missing
-    prototype.
+Thanks.
 
-v1=E2=80=A6v2:
-  - Moved xdp_do_check_flushed() to net/core/dev.h.
-  - Stripped __ from function names.
-  - Removed empty lines within an ifdef block.
-  - xdp_do_check_flushed() is now behind CONFIG_DEBUG_NET &&
-    CONFIG_BPF_SYSCALL. dev_check_flush and cpu_map_check_flush are now
-    only behind CONFIG_DEBUG_NET. They have no empty inline function for
-    the !CONFIG_DEBUG_NET case since they are only called in
-    CONFIG_DEBUG_NET case.
-
- include/linux/bpf.h    |  3 +++
- include/net/xdp_sock.h |  9 +++++++++
- kernel/bpf/cpumap.c    | 10 ++++++++++
- kernel/bpf/devmap.c    | 10 ++++++++++
- net/core/dev.c         |  2 ++
- net/core/dev.h         |  6 ++++++
- net/core/filter.c      | 16 ++++++++++++++++
- net/xdp/xsk.c          | 10 ++++++++++
- 8 files changed, 66 insertions(+)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index a34ac7f00c86c..584adabd411fc 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2478,6 +2478,9 @@ void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, voi=
-d *data,
- 		     enum bpf_dynptr_type type, u32 offset, u32 size);
- void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr);
- void bpf_dynptr_set_rdonly(struct bpf_dynptr_kern *ptr);
-+
-+bool dev_check_flush(void);
-+bool cpu_map_check_flush(void);
- #else /* !CONFIG_BPF_SYSCALL */
- static inline struct bpf_prog *bpf_prog_get(u32 ufd)
- {
-diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-index 69b472604b86f..7dd0df2f6f8e6 100644
---- a/include/net/xdp_sock.h
-+++ b/include/net/xdp_sock.h
-@@ -109,4 +109,13 @@ static inline void __xsk_map_flush(void)
-=20
- #endif /* CONFIG_XDP_SOCKETS */
-=20
-+#if defined(CONFIG_XDP_SOCKETS) && defined(CONFIG_DEBUG_NET)
-+bool xsk_map_check_flush(void);
-+#else
-+static inline bool xsk_map_check_flush(void)
-+{
-+	return false;
-+}
-+#endif
-+
- #endif /* _LINUX_XDP_SOCK_H */
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index e42a1bdb7f536..8a0bb80fe48a3 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -764,6 +764,16 @@ void __cpu_map_flush(void)
- 	}
- }
-=20
-+#ifdef CONFIG_DEBUG_NET
-+bool cpu_map_check_flush(void)
-+{
-+	if (list_empty(this_cpu_ptr(&cpu_map_flush_list)))
-+		return false;
-+	__cpu_map_flush();
-+	return true;
-+}
-+#endif
-+
- static int __init cpu_map_init(void)
- {
- 	int cpu;
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 4d42f6ed6c11a..a936c704d4e77 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -418,6 +418,16 @@ void __dev_flush(void)
- 	}
- }
-=20
-+#ifdef CONFIG_DEBUG_NET
-+bool dev_check_flush(void)
-+{
-+	if (list_empty(this_cpu_ptr(&dev_flush_list)))
-+		return false;
-+	__dev_flush();
-+	return true;
-+}
-+#endif
-+
- /* Elements are kept alive by RCU; either by rcu_read_lock() (from syscall=
-) or
-  * by local_bh_disable() (from XDP calls inside NAPI). The
-  * rcu_read_lock_bh_held() below makes lockdep accept both.
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 606a366cc2095..9273b12ecf6fa 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -6526,6 +6526,8 @@ static int __napi_poll(struct napi_struct *n, bool *r=
-epoll)
- 	if (test_bit(NAPI_STATE_SCHED, &n->state)) {
- 		work =3D n->poll(n, weight);
- 		trace_napi_poll(n, work, weight);
-+
-+		xdp_do_check_flushed(n);
- 	}
-=20
- 	if (unlikely(work > weight))
-diff --git a/net/core/dev.h b/net/core/dev.h
-index e075e198092cc..f66125857af77 100644
---- a/net/core/dev.h
-+++ b/net/core/dev.h
-@@ -136,4 +136,10 @@ static inline void netif_set_gro_ipv4_max_size(struct =
-net_device *dev,
- }
-=20
- int rps_cpumask_housekeeping(struct cpumask *mask);
-+
-+#if defined(CONFIG_DEBUG_NET) && defined(CONFIG_BPF_SYSCALL)
-+void xdp_do_check_flushed(struct napi_struct *napi);
-+#else
-+static inline void xdp_do_check_flushed(struct napi_struct *napi) { }
-+#endif
- #endif
-diff --git a/net/core/filter.c b/net/core/filter.c
-index a094694899c99..af2d34d5e1815 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -82,6 +82,8 @@
- #include <net/mptcp.h>
- #include <net/netfilter/nf_conntrack_bpf.h>
-=20
-+#include "dev.h"
-+
- static const struct bpf_func_proto *
- bpf_sk_base_func_proto(enum bpf_func_id func_id);
-=20
-@@ -4207,6 +4209,20 @@ void xdp_do_flush(void)
- }
- EXPORT_SYMBOL_GPL(xdp_do_flush);
-=20
-+#if defined(CONFIG_DEBUG_NET) && defined(CONFIG_BPF_SYSCALL)
-+void xdp_do_check_flushed(struct napi_struct *napi)
-+{
-+	bool ret;
-+
-+	ret =3D dev_check_flush();
-+	ret |=3D cpu_map_check_flush();
-+	ret |=3D xsk_map_check_flush();
-+
-+	WARN_ONCE(ret, "Missing xdp_do_flush() invocation after NAPI by %ps\n",
-+		  napi->poll);
-+}
-+#endif
-+
- void bpf_clear_redirect_map(struct bpf_map *map)
- {
- 	struct bpf_redirect_info *ri;
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index f5e96e0d6e01d..ba070fd37d244 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -391,6 +391,16 @@ void __xsk_map_flush(void)
- 	}
- }
-=20
-+#ifdef CONFIG_DEBUG_NET
-+bool xsk_map_check_flush(void)
-+{
-+	if (list_empty(this_cpu_ptr(&xskmap_flush_list)))
-+		return false;
-+	__xsk_map_flush();
-+	return true;
-+}
-+#endif
-+
- void xsk_tx_completed(struct xsk_buff_pool *pool, u32 nb_entries)
- {
- 	xskq_prod_submit_n(pool->cq, nb_entries);
---=20
-2.42.0
-
+-- 
+tejun
 
