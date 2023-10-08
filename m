@@ -1,123 +1,116 @@
-Return-Path: <bpf+bounces-11662-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11663-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBEE77BCF67
-	for <lists+bpf@lfdr.de>; Sun,  8 Oct 2023 19:27:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B71A7BCF9B
+	for <lists+bpf@lfdr.de>; Sun,  8 Oct 2023 20:37:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A12732816BC
-	for <lists+bpf@lfdr.de>; Sun,  8 Oct 2023 17:27:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93B361C20948
+	for <lists+bpf@lfdr.de>; Sun,  8 Oct 2023 18:37:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10CD2171C5;
-	Sun,  8 Oct 2023 17:27:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7D41772A;
+	Sun,  8 Oct 2023 18:37:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SLWpFHZG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bw2CaHJV"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25BA02584;
-	Sun,  8 Oct 2023 17:27:47 +0000 (UTC)
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D78A6;
-	Sun,  8 Oct 2023 10:27:46 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-578d791dd91so2746068a12.0;
-        Sun, 08 Oct 2023 10:27:46 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D5022CA9;
+	Sun,  8 Oct 2023 18:37:35 +0000 (UTC)
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6230AC;
+	Sun,  8 Oct 2023 11:37:33 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-49618e09f16so1256513e0c.2;
+        Sun, 08 Oct 2023 11:37:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696786066; x=1697390866; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/ZGLXpSeHTyTN+UoEg8u0H22R2bS1dweVih/YvudmVs=;
-        b=SLWpFHZGCOU4A43wLyELjruJHYxA6Gn1EKKBJ9QXNOws15Bedg3crD94hxWkxOBXR5
-         R5RBukteq165wfPsTMd5B4WHHWnzNEaKn2hVLZw42uAm0F/C2IJ8hZgPJtuIRz5KRlS2
-         mtKHVGkb6FqAMekiLpAmvkiqGKsjB3ORov4Qf7Q62TbIByJBBgVqlhzmqSLtTeia/w6Z
-         ju33WaRjFq849j4yS6R6xVzEdNRwfGHSfciLB/GDGj25aA7yQKqFlH/EBZWf0RUc698c
-         CxkvHSZhISsw3hHsSA/TvbrMM6eA3vBVZ8QZsnvLWO6O4ENeiyL+LEbQuQEdfMfBrzXn
-         7ZbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696786066; x=1697390866;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1696790253; x=1697395053; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/ZGLXpSeHTyTN+UoEg8u0H22R2bS1dweVih/YvudmVs=;
-        b=COh52qxYlSduL4HckPYou5SASGuo7pAoBOuq+gjPmU9DQ5AhZ5BVbf3s7TgOoj65UM
-         WuqZ2vjZtck/GfENTsJ816GL66eVnlnYvIA545GAYFHHfKVWW00AzyNLkGO/HBJUOFF4
-         wL8FMy+P8HRI2KHW7LUU9xLDLz7UJ1M/iAeB2lHIPV5LPw5Uvp+MmMQd2ys3FQN+c4Xu
-         Td0E0N8K/MseNeL2CQX691ZKkohzYwc4kJ41jOO/HkFhZ6SLF36AHzSc9JCjQZdtpcqG
-         MIYwtBza6YjYg3r3jLpYLBhg3bQbeiCg26yCgfqb6ACkEy3cQBb0QR+ZcNcvVKU0SBx5
-         +F3Q==
-X-Gm-Message-State: AOJu0YxudVwGm5couB1CMfdFCOwCB7A3ATwIVLh47iYerkZX0mLGDEty
-	FmYWpjfEmUNA/e87+gSUkpk=
-X-Google-Smtp-Source: AGHT+IEQ2vz0NYz8fDEodyJttxl3/XTmHdiCyCSNVeF+0ore8SauGpgWFosQcvm1JisLYQCaCZMSYg==
-X-Received: by 2002:a17:90b:3b43:b0:26b:374f:97c2 with SMTP id ot3-20020a17090b3b4300b0026b374f97c2mr17108180pjb.6.1696786066166;
-        Sun, 08 Oct 2023 10:27:46 -0700 (PDT)
-Received: from localhost ([2601:647:5b81:12a0:a3e9:5a65:be6:12db])
-        by smtp.gmail.com with ESMTPSA id v5-20020a17090a520500b002749a99318csm6762867pjh.26.2023.10.08.10.27.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Oct 2023 10:27:45 -0700 (PDT)
-Date: Sun, 8 Oct 2023 10:27:44 -0700
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: kuba@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-	jhs@mojatatu.com, victor@mojatatu.com, martin.lau@linux.dev,
-	dxu@dxuuu.xyz
-Subject: Re: [PATCH net-next 1/2] net, tc: Make tc-related drop reason more
- flexible
-Message-ID: <ZSLmkPxB9mHBT52v@pop-os.localdomain>
-References: <20231006190956.18810-1-daniel@iogearbox.net>
+        bh=XeJ1AX0Emm0B1MNXW9ufDQ+zSWl6WDvAagaRLQUTatk=;
+        b=bw2CaHJV30W1P8hD9Sxix6Raciuwqe4hW0Uk0mlEYlzd4OnuO5uc7GuIHkz0hbHfTK
+         RQNJ7ycAjlpUYPmJ7Zp4Vo6l/OEQfi1YZkMhxrDvsNUL6B5C6GdunbC/oAcekOHT/AIO
+         RT+yUssx6Vta3fHXs+lPFlhJ5PIZtHmw7Fj7/hicQDhLH7xSJyLZXBX7Twj2ZIzm08Xp
+         XvnSmZZG5yoXH+BiOry4Pzc/k1Dq3tdrCIm21aw4kTB7pR1B91fzk/s9sUZGhDtoUVre
+         i3g8QculUQYsY7ufD/DfMtzkzPBGw3IMo9OKizsufXdIasJuD8Z0y1K0EzMp/PQrhNuH
+         ziGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696790253; x=1697395053;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XeJ1AX0Emm0B1MNXW9ufDQ+zSWl6WDvAagaRLQUTatk=;
+        b=wD3nZzd6qpSJKuO+gHs5SSVQPdeZLT8WTQRqz57JgzF3OkHlXF2tJZS4DPDBbAAn6N
+         lshIHjgGFM6mU9ol6e0j7S0wO27xQQ7xPAx3iwkb3+Zj0nWfbmV6jLXk0FI6aWfaAQZ4
+         WhtnG4+IIQpxe0tMlv4V/E1vE+QJ/0ryp+XOctTn2vxf2AOcnpzK4F5AJMuXG24DQga/
+         /hQRx3P8LyaE0+qQ/rIDGAYaWXDpmfSnzpyAoIgORaVUY57LKpOulF46onLPniZvoDYj
+         vy1XKWwMxBQM3zbY2eGOHMlkJjfJ4e5SEQ0eCyh8Az3QIfnmFD38YLExsmie7SDWaX8E
+         cHIA==
+X-Gm-Message-State: AOJu0Yy6D2HJI+U6iNnEEBUaFx6vEJV446fVJ30B9k5ikROq8oJBMw8r
+	240EpahogR6axyPvsHI7f/2yo91KyMbGyc0kg/U=
+X-Google-Smtp-Source: AGHT+IHSB43dF0pLQwl5fSHzzvgSOaQuNELTv/vnarvg9JxIB3dWUKmxutdHnh4vUjKSphH5Pexh5TnlfPVFyCr7FY4=
+X-Received: by 2002:a1f:e641:0:b0:48f:8891:29d9 with SMTP id
+ d62-20020a1fe641000000b0048f889129d9mr10186430vkh.13.1696790252736; Sun, 08
+ Oct 2023 11:37:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231006190956.18810-1-daniel@iogearbox.net>
+References: <20231008052101.144422-1-akihiko.odaki@daynix.com>
+In-Reply-To: <20231008052101.144422-1-akihiko.odaki@daynix.com>
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date: Sun, 8 Oct 2023 20:36:56 +0200
+Message-ID: <CAF=yD-LnqYQ2qdiV+oygfHq5ZQb7QaSZ81XikzKjY8unfCTGRQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/7] tun: Introduce virtio-net hashing feature
+To: Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc: Jason Wang <jasowang@redhat.com>, "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	virtualization@lists.linux-foundation.org, linux-kselftest@vger.kernel.org, 
+	bpf@vger.kernel.org, davem@davemloft.net, kuba@kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, 
+	yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	rdunlap@infradead.org, willemb@google.com, gustavoars@kernel.org, 
+	herbert@gondor.apana.org.au, steffen.klassert@secunet.com, nogikh@google.com, 
+	pablo@netfilter.org, decui@microsoft.com, cai@lca.pw, jakub@cloudflare.com, 
+	elver@google.com, pabeni@redhat.com, 
+	Yuri Benditovich <yuri.benditovich@daynix.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Oct 06, 2023 at 09:09:55PM +0200, Daniel Borkmann wrote:
-> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-> index c7318c73cfd6..90774cb2ac03 100644
-> --- a/include/net/sch_generic.h
-> +++ b/include/net/sch_generic.h
-> @@ -324,7 +324,6 @@ struct Qdisc_ops {
->  	struct module		*owner;
->  };
->  
-> -
->  struct tcf_result {
->  	union {
->  		struct {
-> @@ -332,8 +331,8 @@ struct tcf_result {
->  			u32		classid;
->  		};
->  		const struct tcf_proto *goto_tp;
-> -
->  	};
-> +	enum skb_drop_reason		drop_reason;
->  };
->  
->  struct tcf_chain;
-> @@ -667,6 +666,12 @@ static inline int tc_classid_to_hwtc(struct net_device *dev, u32 classid)
->  	return (hwtc < netdev_get_num_tc(dev)) ? hwtc : -EINVAL;
->  }
->  
-> +static inline void tc_set_drop_reason(struct tcf_result *res,
-> +				      enum skb_drop_reason reason)
-> +{
-> +	res->drop_reason = reason;
-> +}
-> +
+On Sun, Oct 8, 2023 at 7:21=E2=80=AFAM Akihiko Odaki <akihiko.odaki@daynix.=
+com> wrote:
+>
+> virtio-net have two usage of hashes: one is RSS and another is hash
+> reporting. Conventionally the hash calculation was done by the VMM.
+> However, computing the hash after the queue was chosen defeats the
+> purpose of RSS.
+>
+> Another approach is to use eBPF steering program. This approach has
+> another downside: it cannot report the calculated hash due to the
+> restrictive nature of eBPF.
+>
+> Introduce the code to compute hashes to the kernel in order to overcome
+> thse challenges.
+>
+> An alternative solution is to extend the eBPF steering program so that it
+> will be able to report to the userspace, but it makes little sense to
+> allow to implement different hashing algorithms with eBPF since the hash
+> value reported by virtio-net is strictly defined by the specification.
 
-Since this helper is for TC filters and actions, include/net/pkt_cls.h
-is a better place for it?
+But using the existing BPF steering may have the benefit of requiring
+a lot less new code.
 
+There is ample precedence for BPF programs that work this way. The
+flow dissector comes to mind.
 
