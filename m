@@ -1,131 +1,191 @@
-Return-Path: <bpf+bounces-11647-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11648-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C74487BCBC0
-	for <lists+bpf@lfdr.de>; Sun,  8 Oct 2023 04:38:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3246D7BCBC4
+	for <lists+bpf@lfdr.de>; Sun,  8 Oct 2023 04:46:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 039A21C20A46
-	for <lists+bpf@lfdr.de>; Sun,  8 Oct 2023 02:38:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BEC4281A24
+	for <lists+bpf@lfdr.de>; Sun,  8 Oct 2023 02:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84C9E15C4;
-	Sun,  8 Oct 2023 02:38:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dboDLNGJ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E31915DA;
+	Sun,  8 Oct 2023 02:46:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACEB264A
-	for <bpf@vger.kernel.org>; Sun,  8 Oct 2023 02:38:14 +0000 (UTC)
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C74BA;
-	Sat,  7 Oct 2023 19:38:13 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-65b02e42399so20806446d6.3;
-        Sat, 07 Oct 2023 19:38:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696732692; x=1697337492; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=86WyTUgqN5Dtt65DGNX3FHZX1R93hWr/AkDXdY/Ehyw=;
-        b=dboDLNGJSP1ZG30AFPl9G/nqC5/eBAYutz/Xq0mZRm/RD/qxLOihwWTUUAJdZ4FGgF
-         oUXb3cjdrabn6BhQ8jRZukF21i9ISjAYVUlz8gTJiSOwAGKOoa/vSzAbodoQeJn6Zdny
-         +eALTHP7zRh7DHOS9Y0RZVTzkgkCLiX2SnaN/AldJqExdW7Ve4AC3wmH6teGGo3HG9BB
-         SN8JaUG4tvtssRYGDoDtuUTSOuxBYnh/uXX5IztzvMISZO4xH+ktcwffIS6PcbT/TWLX
-         6W8EyYWdY3+RzUSphrBOz3LRALflSwO02dPv5Ian0b8F/tuWH1LYzqPYDL9TvURCll1m
-         8i4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696732692; x=1697337492;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=86WyTUgqN5Dtt65DGNX3FHZX1R93hWr/AkDXdY/Ehyw=;
-        b=rMinfTXNNb/wI74BAm3DIZ3r2TVIyf6ujssuvtIjt6sfL2oi7oyqiB4CBi0shcEJ3f
-         wspI8RdmdRcHRrpZJvx1bQ590hWWAwSWb3Aj38kaE3WiMKAjLZ8zoFaq3nh2zrDxHu4u
-         pGvubFLrRd6fe/x8lpGiZGi0vd/XySKq4pXZBvEYv0yCyR/1LHT5zD8+Hun9Xx6DI/l2
-         w0wEqidRlAlAQT9VMM1wErxbDH9iXP5jN5Z2ejnFfEpAhZrTn691zpyxJ96h2CUpbAvy
-         tlzeHaSu81I3GjuDXVoEOvObQj7MExjmmeRb8XSs72sxp0s+eHkEierFAVkPz8Idqy6u
-         2ruQ==
-X-Gm-Message-State: AOJu0Yz2oSSzaRiYj8yNT8PLK5cltiJ809aoMlWmy+6EUi5GZZTJyImE
-	f3YS4WhJb+FbsFMbTyI+8VCK9zbOb+B3SrzAbYI=
-X-Google-Smtp-Source: AGHT+IGfVgcmJtRnnO44XdFCEgPpsKv4E4c7Pt/RgyhWSK10IrLPZslHUhm5O6hixiVrFdQ5CJaULcGAowZNF1Kc3rA=
-X-Received: by 2002:a05:6214:5709:b0:668:d7e3:8460 with SMTP id
- qn9-20020a056214570900b00668d7e38460mr14234698qvb.26.1696732692629; Sat, 07
- Oct 2023 19:38:12 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C4F0188;
+	Sun,  8 Oct 2023 02:46:10 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A62BA;
+	Sat,  7 Oct 2023 19:46:08 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4S363q2wrLz4f3jHs;
+	Sun,  8 Oct 2023 10:45:59 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP3 (Coremail) with SMTP id _Ch0CgA3kVDoFyJlWGsRCQ--.44242S2;
+	Sun, 08 Oct 2023 10:46:04 +0800 (CST)
+Subject: Re: Possible kernel memory leak in bpf_timer
+To: Hsin-Wei Hung <hsinweih@uci.edu>
+References: <CABcoxUaT2k9hWsS1tNgXyoU3E-=PuOgMn737qK984fbFmfYixQ@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Network Development <netdev@vger.kernel.org>,
+ bpf <bpf@vger.kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Message-ID: <8bf09dbd-670d-a666-8dcd-fc3406fa7ada@huaweicloud.com>
+Date: Sun, 8 Oct 2023 10:46:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231007140304.4390-1-laoar.shao@gmail.com> <20231007140304.4390-4-laoar.shao@gmail.com>
- <ZSGAACHHNAYbk34i@slm.duckdns.org>
-In-Reply-To: <ZSGAACHHNAYbk34i@slm.duckdns.org>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Sun, 8 Oct 2023 10:37:36 +0800
-Message-ID: <CALOAHbBDAT2QdKeWDCNLkc7Q8L9R57PF=nnTM6nzbpAyGx_8MQ@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 3/8] bpf: Add kfuncs for cgroup1 hierarchy
-To: Tejun Heo <tj@kernel.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com, 
-	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com, 
-	sinquersw@gmail.com, cgroups@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+In-Reply-To: <CABcoxUaT2k9hWsS1tNgXyoU3E-=PuOgMn737qK984fbFmfYixQ@mail.gmail.com>
+Content-Type: multipart/mixed;
+ boundary="------------15FD206F8C6B3786C1BC745E"
+Content-Language: en-US
+X-CM-TRANSID:_Ch0CgA3kVDoFyJlWGsRCQ--.44242S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXrWftFWrWr47Cw4xKrWfXwb_yoW5Ww45pr
+	W8Cw47CrW8Jr48Aw4Utr1kJry5tw1UC3WUJr1rJF1UZr1xWF1jgF17Wr4jgF45Jrs7Jr17
+	Xw1vq34Fvw1UJaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487M2AExVA0xI801c8C04v7Mc02
+	F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI
+	0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4xvF2IEb7IF0Fy26I8I
+	3I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x
+	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
+	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
+	04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
+	CY1x0267AKxVW8JVW8Jr1l6VACY4xI67k04243AbIYCTnIWIevJa73UjIFyTuYvjxUFyxR
+	DUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+	MAY_BE_FORGED,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+	autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, Oct 7, 2023 at 11:57=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> On Sat, Oct 07, 2023 at 02:02:59PM +0000, Yafang Shao wrote:
-> > +
-> > +/**
-> > + * bpf_task_cgroup_id_within_hierarchy - Retrieves the associated cgro=
-up ID of a
-> > + * task within a specific cgroup1 hierarchy.
-> > + * @task: The target task
-> > + * @hierarchy_id: The ID of a cgroup1 hierarchy
-> > + */
-> > +__bpf_kfunc u64 bpf_task_cgroup1_id_within_hierarchy(struct task_struc=
-t *task, int hierarchy_id)
-> > +{
-> > +     return task_cgroup1_id_within_hierarchy(task, hierarchy_id);
-> > +}
-> > +
-> > +/**
-> > + * bpf_task_ancestor_cgroup_id_within_hierarchy - Retrieves the associ=
-ated
-> > + * ancestor cgroup ID of a task within a specific cgroup1 hierarchy.
-> > + * @task: The target task
-> > + * @hierarchy_id: The ID of a cgroup1 hierarchy
-> > + * @ancestor_level: The cgroup level of the ancestor in the cgroup1 hi=
-erarchy
-> > + */
-> > +__bpf_kfunc u64 bpf_task_ancestor_cgroup1_id_within_hierarchy(struct t=
-ask_struct *task,
-> > +                                                           int hierarc=
-hy_id, int ancestor_level)
-> > +{
-> > +     return task_ancestor_cgroup1_id_within_hierarchy(task, hierarchy_=
-id, ancestor_level);
-> > +}
->
-> The same here. Please make one helper that returns a kptr and then let th=
-e
-> user call bpf_cgroup_ancestor() if desired.
+This is a multi-part message in MIME format.
+--------------15FD206F8C6B3786C1BC745E
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 
-Sure, will do it.
+Hi,
 
---=20
-Regards
-Yafang
+On 9/27/2023 1:32 PM, Hsin-Wei Hung wrote:
+> Hi,
+>
+> We found a potential memory leak in bpf_timer in v5.15.26 using a
+> customized syzkaller for fuzzing bpf runtime. It can happen when
+> an arraymap is being released. An entry that has been checked by
+> bpf_timer_cancel_and_free() can again be initialized by bpf_timer_init().
+> Since both paths are almost identical between v5.15 and net-next,
+> I suspect this problem still exists. Below are kmemleak report and
+> some additional printks I inserted.
+>
+> [ 1364.081694] array_map_free_timers map:0xffffc900005a9000
+> [ 1364.081730] ____bpf_timer_init map:0xffffc900005a9000
+> timer:0xffff888001ab4080
+>
+> *no bpf_timer_cancel_and_free that will kfree struct bpf_hrtimer*
+> at 0xffff888001ab4080 is called
+
+I think the kmemleak happened as follows:
+
+bpf_timer_init()
+  lock timer->lock
+    read timer->timer as NULL
+    read map->usercnt != 0
+
+                bpf_map_put_uref()
+                  // map->usercnt = 0
+                  atomic_dec_and_test(map->usercnt)
+                    array_map_free_timers()
+                    // just return and lead to mem leak
+                    find timer->timer is NULL
+
+    t = bpf_map_kmalloc_node()
+    timer->timer = t
+  unlock timer->lock
+
+Could you please try the attached patch to check whether the kmemleak
+problem has been fixed ?
+
+>
+> [ 1383.907869] kmemleak: 1 new suspected memory leaks (see
+> /sys/kernel/debug/kmemleak)
+> BUG: memory leak
+> unreferenced object 0xffff888001ab4080 (size 96):
+>   comm "sshd", pid 279, jiffies 4295233126 (age 29.952s)
+>   hex dump (first 32 bytes):
+>     80 40 ab 01 80 88 ff ff 00 00 00 00 00 00 00 00  .@..............
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<000000009d018da0>] bpf_map_kmalloc_node+0x89/0x1a0
+>     [<00000000ebcb33fc>] bpf_timer_init+0x177/0x320
+>     [<00000000fb7e90bf>] 0xffffffffc02a0358
+>     [<000000000c89ec4f>] __cgroup_bpf_run_filter_skb+0xcbf/0x1110
+>     [<00000000fd663fc0>] ip_finish_output+0x13d/0x1f0
+>     [<00000000acb3205c>] ip_output+0x19b/0x310
+>     [<000000006b584375>] __ip_queue_xmit+0x182e/0x1ed0
+>     [<00000000b921b07e>] __tcp_transmit_skb+0x2b65/0x37f0
+>     [<0000000026104b23>] tcp_write_xmit+0xf19/0x6290
+>     [<000000006dc71bc5>] __tcp_push_pending_frames+0xaf/0x390
+>     [<00000000251b364a>] tcp_push+0x452/0x6d0
+>     [<000000008522b7d3>] tcp_sendmsg_locked+0x2567/0x3030
+>     [<0000000038c644d2>] tcp_sendmsg+0x30/0x50
+>     [<000000009fe3413f>] inet_sendmsg+0xba/0x140
+>     [<0000000034d78039>] sock_sendmsg+0x13d/0x190
+>     [<00000000f55b8db6>] sock_write_iter+0x296/0x3d0
+>
+>
+> Thanks,
+> Hsin-Wei (Amery)
+>
+>
+> .
+
+
+--------------15FD206F8C6B3786C1BC745E
+Content-Type: text/plain; charset=UTF-8;
+ name="0001-bpf-Check-map-usercnt-again-after-timer-timer-is-ass.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename*0="0001-bpf-Check-map-usercnt-again-after-timer-timer-is-ass.pa";
+ filename*1="tch"
+
+RnJvbSAwODc1ZjBkZTc2ZTk4MGVjNWQ2N2JiNmFmMmNkZjgyNWQ0NTU5Yjk2IE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBIb3UgVGFvIDxob3V0YW8xQGh1YXdlaS5jb20+CkRh
+dGU6IFN1biwgOCBPY3QgMjAyMyAxMDozNjozNCArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIGJw
+ZjogQ2hlY2sgbWFwLT51c2VyY250IGFnYWluIGFmdGVyIHRpbWVyLT50aW1lciBpcyBhc3Np
+Z25lZAoKU2lnbmVkLW9mZi1ieTogSG91IFRhbyA8aG91dGFvMUBodWF3ZWkuY29tPgotLS0K
+IGtlcm5lbC9icGYvaGVscGVycy5jIHwgOSArKysrKysrKysKIDEgZmlsZSBjaGFuZ2VkLCA5
+IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9rZXJuZWwvYnBmL2hlbHBlcnMuYyBiL2tl
+cm5lbC9icGYvaGVscGVycy5jCmluZGV4IDZmNjAwY2M5NWNjZC4uNzdkM2RlYjJlNTc2IDEw
+MDY0NAotLS0gYS9rZXJuZWwvYnBmL2hlbHBlcnMuYworKysgYi9rZXJuZWwvYnBmL2hlbHBl
+cnMuYwpAQCAtMTEzOCw4ICsxMTM4LDE3IEBAIEJQRl9DQUxMXzMoYnBmX3RpbWVyX2luaXQs
+IHN0cnVjdCBicGZfdGltZXJfa2VybiAqLCB0aW1lciwgc3RydWN0IGJwZl9tYXAgKiwgbWFw
+CiAJaHJ0aW1lcl9pbml0KCZ0LT50aW1lciwgY2xvY2tpZCwgSFJUSU1FUl9NT0RFX1JFTF9T
+T0ZUKTsKIAl0LT50aW1lci5mdW5jdGlvbiA9IGJwZl90aW1lcl9jYjsKIAl0aW1lci0+dGlt
+ZXIgPSB0OworCS8qIEd1YXJhbnRlZSB0aW1lci0+dGltZXIgaXMgdmlzaWJsZSB0byBicGZf
+dGltZXJfY2FuY2VsX2FuZF9mcmVlKCkgKi8KKwlzbXBfbWJfX2JlZm9yZV9hdG9taWMoKTsK
+KwlpZiAoIWF0b21pYzY0X3JlYWQoJm1hcC0+dXNlcmNudCkpIHsKKwkJdGltZXItPnRpbWVy
+ID0gTlVMTDsKKwkJcmV0ID0gLUVQRVJNOworCQlnb3RvIG91dDsKKwl9CisJdCA9IE5VTEw7
+CiBvdXQ6CiAJX19icGZfc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmdGltZXItPmxvY2spOwor
+CWtmcmVlKHQpOwogCXJldHVybiByZXQ7CiB9CiAKLS0gCjIuMjkuMgoK
+--------------15FD206F8C6B3786C1BC745E--
+
 
