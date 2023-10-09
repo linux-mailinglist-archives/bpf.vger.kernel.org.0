@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-11709-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11710-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F9EF7BDDA9
-	for <lists+bpf@lfdr.de>; Mon,  9 Oct 2023 15:12:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 868637BDE93
+	for <lists+bpf@lfdr.de>; Mon,  9 Oct 2023 15:20:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FB6B1C20A5F
-	for <lists+bpf@lfdr.de>; Mon,  9 Oct 2023 13:12:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2E5E281626
+	for <lists+bpf@lfdr.de>; Mon,  9 Oct 2023 13:20:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D7B0199CC;
-	Mon,  9 Oct 2023 13:12:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2B351A712;
+	Mon,  9 Oct 2023 13:20:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="YIFaVFFQ"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="AU18+69z"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7251F19463;
-	Mon,  9 Oct 2023 13:12:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4F56C433D9;
-	Mon,  9 Oct 2023 13:12:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4408D199B3;
+	Mon,  9 Oct 2023 13:20:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20AA8C433C7;
+	Mon,  9 Oct 2023 13:20:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1696857122;
-	bh=9L3hKRzI/P3uNpl0DlP2vKfh8GtpCVeavauyfqVfjVk=;
+	s=korg; t=1696857642;
+	bh=UnyjlSvQVB3DGfpI/beuXUaZ3xYBsdrP9S0xsRnnsUI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YIFaVFFQjVT/5n2CNTT5rHpC3vHbHMz70E0vPR9sjnwP3RxmWNAKv4gX/HHf4v1JV
-	 R+Z4+Al3e13JjktRPKqsKVG5YrsX2gJMfB1bLJG8pEpjS+KHt5WjPB6yYZiFkAiI+d
-	 J6bfBvohJ/cqOFy8I0o7HH4oSF5tPFWpjZlDFWy4=
+	b=AU18+69zHVakMjncr65+jWfobSHl3zTQMXnru2oiKQrslOZedEiG4YbpMPj9qHRvz
+	 yt0/OGR4po2SH0Q0ZWHbpoBWi7ztK5ImhX14W4hH6Mt3mzt8gdXQOipYUHgRVUgrNh
+	 5f4I6MfiysEnVCwzIo0flZKkiOe8bjWMMjnSy0io=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -45,12 +45,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	bpf@vger.kernel.org,
 	syzkaller-bugs@googlegroups.com,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.5 104/163] ipv4, ipv6: Fix handling of transhdrlen in __ip{,6}_append_data()
-Date: Mon,  9 Oct 2023 15:01:08 +0200
-Message-ID: <20231009130126.900091583@linuxfoundation.org>
+Subject: [PATCH 6.1 111/162] ipv4, ipv6: Fix handling of transhdrlen in __ip{,6}_append_data()
+Date: Mon,  9 Oct 2023 15:01:32 +0200
+Message-ID: <20231009130125.993798269@linuxfoundation.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231009130124.021290599@linuxfoundation.org>
-References: <20231009130124.021290599@linuxfoundation.org>
+In-Reply-To: <20231009130122.946357448@linuxfoundation.org>
+References: <20231009130122.946357448@linuxfoundation.org>
 User-Agent: quilt/0.67
 X-stable: review
 X-Patchwork-Hint: ignore
@@ -62,7 +62,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-6.5-stable review patch.  If anyone has any objections, please let me know.
+6.1-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -120,10 +120,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/net/l2tp/l2tp_ip6.c b/net/l2tp/l2tp_ip6.c
-index ed8ebb6f59097..11f3d375cec00 100644
+index bce4132b0a5c8..314ec3a51e8de 100644
 --- a/net/l2tp/l2tp_ip6.c
 +++ b/net/l2tp/l2tp_ip6.c
-@@ -507,7 +507,6 @@ static int l2tp_ip6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+@@ -510,7 +510,6 @@ static int l2tp_ip6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
  	 */
  	if (len > INT_MAX - transhdrlen)
  		return -EMSGSIZE;
@@ -131,7 +131,7 @@ index ed8ebb6f59097..11f3d375cec00 100644
  
  	/* Mirror BSD error message compatibility */
  	if (msg->msg_flags & MSG_OOB)
-@@ -628,6 +627,7 @@ static int l2tp_ip6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+@@ -631,6 +630,7 @@ static int l2tp_ip6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
  
  back_from_confirm:
  	lock_sock(sk);
