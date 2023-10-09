@@ -1,138 +1,91 @@
-Return-Path: <bpf+bounces-11713-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11714-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C9AA7BDF45
-	for <lists+bpf@lfdr.de>; Mon,  9 Oct 2023 15:28:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6224F7BDF7C
+	for <lists+bpf@lfdr.de>; Mon,  9 Oct 2023 15:30:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F24B0281818
-	for <lists+bpf@lfdr.de>; Mon,  9 Oct 2023 13:28:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 857F91C20B23
+	for <lists+bpf@lfdr.de>; Mon,  9 Oct 2023 13:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F197927EF5;
-	Mon,  9 Oct 2023 13:28:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1071731A8D;
+	Mon,  9 Oct 2023 13:30:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KXDAW8bq"
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C9384691;
-	Mon,  9 Oct 2023 13:28:13 +0000 (UTC)
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03BCFE0;
-	Mon,  9 Oct 2023 06:28:11 -0700 (PDT)
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-99de884ad25so811721666b.3;
-        Mon, 09 Oct 2023 06:28:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696858083; x=1697462883;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SvOpy4MMRVXFozGEKzx2uKL7AJqMO6msRg8vYHCWpik=;
-        b=U3txsWeEP5cFMwMg7xnnIvD9FvSNjcYInn7xljNViaLy2Lhdxxy79ywOYsSvwpf7ZO
-         qZNqcNLlm9RB10tAWLKFXZ22l+oPUn8LNY/UV3fmsgMi4+Hy78PPKN9jusSDKP+LAGv7
-         6UUeVBdB0FusXKVFisPGWXoHMbsmWJG8ZvXmPFA8Bii2d7j+xGhv9EsD7UDRvtatpI9U
-         ol3OUZydt+k7KlrzGAnK0lYxL9yuYMeIHmI52lAMy8nlfB7Hyw50cA8qtDFt2Qp4fWrs
-         5ZNFGeejWe/Qi+dmqUu/jZdQ+lQyTIHIhyDRrP1/enTizww6Fvcx0SqVmPWyJurogXBm
-         EsCw==
-X-Gm-Message-State: AOJu0Yx8PXQwet65AL62PbR7aiQhWAPBz4Uk7tRAT7wNJM7CJOk2B44w
-	WnkfDCiHuV6yO3Z/jcifdX26ghghq4w=
-X-Google-Smtp-Source: AGHT+IHSl8Z0n50bbqSTqzgwk6CvvJJXLT64VDWnrIQthn51Xs+VGG7cTHvCJeni8WLsNTxhw728aQ==
-X-Received: by 2002:a17:907:c205:b0:9a5:c54f:da1c with SMTP id ti5-20020a170907c20500b009a5c54fda1cmr14068351ejc.47.1696858082831;
-        Mon, 09 Oct 2023 06:28:02 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-015.fbsv.net. [2a03:2880:31ff:f::face:b00c])
-        by smtp.gmail.com with ESMTPSA id p6-20020a1709061b4600b0098e2969ed44sm6693523ejg.45.2023.10.09.06.28.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 06:28:02 -0700 (PDT)
-Date: Mon, 9 Oct 2023 06:28:00 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, sdf@google.com, axboe@kernel.dk,
-	asml.silence@gmail.com, martin.lau@linux.dev, krisman@suse.de,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, io-uring@vger.kernel.org, pabeni@redhat.com
-Subject: Re: [PATCH v4 00/10] io_uring: Initial support for {s,g}etsockopt
- commands
-Message-ID: <ZSP/4GVaQiFuDizz@gmail.com>
-References: <20230904162504.1356068-1-leitao@debian.org>
- <20230905154951.0d0d3962@kernel.org>
- <ZSArfLaaGcfd8LH8@gmail.com>
- <CAF=yD-Lr3238obe-_omnPBvgdv2NLvdK5be-5F7YyV3H7BkhSg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E7A49CA51;
+	Mon,  9 Oct 2023 13:30:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1135BC433CB;
+	Mon,  9 Oct 2023 13:30:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1696858226;
+	bh=C39SPpzW99vurbXbnnvIqZlQvyv6UcGtJqYlt3AsiaU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=KXDAW8bqXCIGms7jk5QAOFHZd2FZbviViTXgR5WMHGGl8Qxd5MXTHhJGS+27kOzC2
+	 vXuPUOi3QVwJWRBH87coO+uUp8ifGFD4thAJoTtyxwxck3Bgg+mwPR1YB35rPl7C/5
+	 ypRUmyLRSuwc4CWpa7XVXIQWrVsr03NMXAcXA6Tja6liZGY2BDou003VnYJd6FMnvx
+	 Qd+tmyXnPR5oB36DVJqOVqi4+P/pg4QEoYnMpgjW0e/xrV8LAznH+c1kf48cC8xgyd
+	 TvxBmz/OB7BeZUwCdUksPIw+wvpSjV6CSyn9lYh94ocSq30j4VsWlpslNzE8hThmf0
+	 ruAWACqdmhm0Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E7E12E11F46;
+	Mon,  9 Oct 2023 13:30:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF=yD-Lr3238obe-_omnPBvgdv2NLvdK5be-5F7YyV3H7BkhSg@mail.gmail.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Subject: Re: [PATCH bpf 0/2] riscv, bpf: Properly sign-extend return values
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <169685822594.15728.14523871698572342357.git-patchwork-notify@kernel.org>
+Date: Mon, 09 Oct 2023 13:30:25 +0000
+References: <20231004120706.52848-1-bjorn@kernel.org>
+In-Reply-To: <20231004120706.52848-1-bjorn@kernel.org>
+To: =?utf-8?b?QmrDtnJuIFTDtnBlbCA8Ympvcm5Aa2VybmVsLm9yZz4=?=@codeaurora.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, pulehui@huawei.com,
+ bjorn@rivosinc.com, linux-kernel@vger.kernel.org, luke.r.nels@gmail.com,
+ xi.wang@gmail.com, linux-riscv@lists.infradead.org
 
-On Mon, Oct 09, 2023 at 03:11:05AM -0700, Willem de Bruijn wrote:
-> On Fri, Oct 6, 2023 at 10:45 AM Breno Leitao <leitao@debian.org> wrote:
-> > Let me first back up and state where we are, and what is the current
-> > situation:
-> >
-> > 1) __sys_getsockopt() uses __user pointers for both optval and optlen
-> > 2) For io_uring command, Jens[1] suggested we get optlen from the io_uring
-> > sqe, which is a kernel pointer/value.
-> >
-> > Thus, we need to make the common code (callbacks) able to handle __user
-> > and kernel pointers (for optlen, at least).
-> >
-> > From a proto_ops callback perspective, ->setsockopt() uses sockptr.
-> >
-> >           int             (*setsockopt)(struct socket *sock, int level,
-> >                                         int optname, sockptr_t optval,
-> >                                         unsigned int optlen);
-> >
-> > Getsockopt() uses sockptr() for level=SOL_SOCKET:
-> >
-> >         int sk_getsockopt(struct sock *sk, int level, int optname,
-> >                     sockptr_t optval, sockptr_t optlen)
-> >
-> > But not for the other levels:
-> >
-> >         int             (*getsockopt)(struct socket *sock, int level,
-> >                                       int optname, char __user *optval, int __user *optlen);
-> >
-> >
-> > That said, if this patchset shouldn't use sockptr anymore, what is the
-> > recommendation?
-> >
-> > If we move this patchset to use iov_iter instead of sockptr, then I
-> > understand we want to move *all* these callbacks to use iov_vec. Is this
-> > the right direction?
-> >
-> > Thanks for the guidance!
-> >
-> > [1] https://lore.kernel.org/all/efe602f1-8e72-466c-b796-0083fd1c6d82@kernel.dk/
-> 
-> Since sockptr_t is already used by __sys_setsockopt and
-> __sys_setsockopt, patches 1 and 2 don't introduce any new sockptr code
-> paths.
-> 
-> setsockopt callbacks also already use sockptr as of commit
-> a7b75c5a8c41 ("net: pass a sockptr_t into ->setsockopt").
-> 
-> getsockopt callbacks do take user pointers, just not sockptr.
-> 
-> Is the only issue right now the optlen kernel pointer?
+Hello:
 
-Correct. The current discussion is only related to optlen in the
-getsockopt() callbacks (invoked when level != SOL_SOCKET). Everything
-else (getsockopt(level=SOL_SOCKET..) and setsockopt) is using sockptr.
+This series was applied to bpf/bpf.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-Is it bad if we review/merge this code as is (using sockptr), and start
-the iov_iter/getsockopt() refactor in a follow-up thread?
+On Wed,  4 Oct 2023 14:07:04 +0200 you wrote:
+> From: Björn Töpel <bjorn@rivosinc.com>
+> 
+> The RISC-V architecture does not expose sub-registers, and hold all
+> 32-bit values in a sign-extended format [1] [2]:
+> 
+>   | The compiler and calling convention maintain an invariant that all
+>   | 32-bit values are held in a sign-extended format in 64-bit
+>   | registers. Even 32-bit unsigned integers extend bit 31 into bits
+>   | 63 through 32. Consequently, conversion between unsigned and
+>   | signed 32-bit integers is a no-op, as is conversion from a signed
+>   | 32-bit integer to a signed 64-bit integer.
+> 
+> [...]
 
-Thanks!
+Here is the summary with links:
+  - [bpf,1/2] riscv, bpf: Sign-extend return values
+    https://git.kernel.org/bpf/bpf/c/2f1b0d3d7331
+  - [bpf,2/2] riscv, bpf: Track both a0 (RISC-V ABI) and a5 (BPF) return values
+    https://git.kernel.org/bpf/bpf/c/7112cd26e606
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
