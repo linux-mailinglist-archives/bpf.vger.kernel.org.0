@@ -1,127 +1,197 @@
-Return-Path: <bpf+bounces-11726-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11727-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41D7F7BE3F7
-	for <lists+bpf@lfdr.de>; Mon,  9 Oct 2023 17:10:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFD797BE541
+	for <lists+bpf@lfdr.de>; Mon,  9 Oct 2023 17:45:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C520A281939
-	for <lists+bpf@lfdr.de>; Mon,  9 Oct 2023 15:10:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19EF61C209F7
+	for <lists+bpf@lfdr.de>; Mon,  9 Oct 2023 15:45:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6FF6358A9;
-	Mon,  9 Oct 2023 15:09:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7407D374DF;
+	Mon,  9 Oct 2023 15:45:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZnayWCvn"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1T9y0OuY"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19B32358A2
-	for <bpf@vger.kernel.org>; Mon,  9 Oct 2023 15:09:55 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5541BB4;
-	Mon,  9 Oct 2023 08:09:54 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B3D6221883;
-	Mon,  9 Oct 2023 15:09:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1696864192; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ISQ9n4D5T3P8ooumknvc+YiFO0JDSQRXu8nxDrWSZQQ=;
-	b=ZnayWCvnMF9L+nOSQ/u0lRORq0pD9+ifKV4GqLv9wH7Z5tc1ily0R1cd6V7h0m0JWlkPKP
-	MglvcvQ4TdGnmeKxfB3ROOGJbNlYwmKuqqyUxzGOWPmlSHlhdVEv3VfQYmdL6Py2OiS9kk
-	ehffi4TuE0QPZBYHC9UV/EOCEo4SFr0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3B4BE13905;
-	Mon,  9 Oct 2023 15:09:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id t/q1AMAXJGW6JgAAMHmgww
-	(envelope-from <mpdesouza@suse.com>); Mon, 09 Oct 2023 15:09:52 +0000
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
-To: shuah@kernel.org,
-	corbet@lwn.net,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH] Documentation: kselftests: Remove references to bpf tests
-Date: Mon,  9 Oct 2023 12:09:29 -0300
-Message-ID: <20231009150929.25953-1-mpdesouza@suse.com>
-X-Mailer: git-send-email 2.42.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 494E235887
+	for <bpf@vger.kernel.org>; Mon,  9 Oct 2023 15:45:41 +0000 (UTC)
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39DFC6
+	for <bpf@vger.kernel.org>; Mon,  9 Oct 2023 08:45:38 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-5032a508e74so6514e87.1
+        for <bpf@vger.kernel.org>; Mon, 09 Oct 2023 08:45:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696866337; x=1697471137; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TfVtaRDig7D+Ty8+FieODZ141554VQ+ssPrPXjaViV4=;
+        b=1T9y0OuY4Di/oPxX0WRkVnisYCrqkSCYzZQq9xCp9RXvy8nqDtVzKAulHk6kp6Gy4L
+         jYG3SH1aWScJg70xupLLk15aUiHX2iyKQk6I0qIR0kqlbPHRVaaLdEiVYd2gpXxd39MH
+         UZ1cVpStnD8B78VPKr+IxYOgHbEJtdGm3EoJa81rt7wAcdtsmwypTl3iwKmHkmOWFJc5
+         CEc8eDEt00CKygbmJ/fx0qLgo0v48EquWrGZ+OuM0TTLLjMzAk+CkXpkNidUIteeTSR+
+         /R8OKSWgPvo5NPagTC10rzoMaYImlJb4ccp+cxKpinSBIZaj9jy0nRQFov2hG6hueQMF
+         2JSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696866337; x=1697471137;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TfVtaRDig7D+Ty8+FieODZ141554VQ+ssPrPXjaViV4=;
+        b=Q7EvCVE6pmnNd+GCee+e9BeZ1kkKPKe+YOPx4Uip8cmKH8lZXh3kMZDct0RQ1+OOLp
+         Hipx4UlFzLs9NDxsCPfqnu/7QDnjNCyWq8I12XZ3JBfo7zZcnrD+4I8ADZb+Somw4GLD
+         JhzBGCaRLL7OD+L4joHwLj5pGL8HuXCzwF0uCPNq6ZIrNZ+SqPZi6/r97irBQsiJK8u7
+         D/oZ569yxOZCAY0O+JipM3S/2cItJmsn/HIIO3nvsMG20lFgKgOA5hpy3++eyoDESVB9
+         AhOlWEl2v0YRcklJur0NBf65GxAvSJS8T4+GuT0fdnSMVmWx3ksCfyVZah+GIlEu+tLZ
+         Ty3A==
+X-Gm-Message-State: AOJu0YwVKmeKKDuXht89vGGHz+KFrqeRFCZ2ODhJ4ju6peJgOT8Vxlqi
+	hCLJdKpvVLnm9hV1FV78I6BGMY020EnAEU4LFqR5TQ==
+X-Google-Smtp-Source: AGHT+IHyqimkAN/ZGin5q4+q2QxBs1Lei/HTv3/YCpCfU6KTN/Jvvy/WxyiYZnOsxUwM84s6ifYLH255oUoVtofxu+M=
+X-Received: by 2002:ac2:51a5:0:b0:501:a2b9:6046 with SMTP id
+ f5-20020ac251a5000000b00501a2b96046mr220584lfk.7.1696866336692; Mon, 09 Oct
+ 2023 08:45:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231005230851.3666908-1-irogers@google.com> <20231005230851.3666908-5-irogers@google.com>
+ <CAM9d7ch4SLLbORdhkanCoPQZX=f-p-HxsYX2YWYbtLR4beD4wg@mail.gmail.com>
+In-Reply-To: <CAM9d7ch4SLLbORdhkanCoPQZX=f-p-HxsYX2YWYbtLR4beD4wg@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Mon, 9 Oct 2023 08:45:25 -0700
+Message-ID: <CAP-5=fXtx20VWAVpxAB-HHONx-8MUQKyFm9iSf7ohNBhoESoYg@mail.gmail.com>
+Subject: Re: [PATCH v2 04/18] perf hisi-ptt: Fix potential memory leak
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Tom Rix <trix@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Yicong Yang <yangyicong@hisilicon.com>, 
+	Jonathan Cameron <jonathan.cameron@huawei.com>, Yang Jihong <yangjihong1@huawei.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Ming Wang <wangming01@loongson.cn>, 
+	Huacai Chen <chenhuacai@kernel.org>, Sean Christopherson <seanjc@google.com>, 
+	K Prateek Nayak <kprateek.nayak@amd.com>, Yanteng Si <siyanteng@loongson.cn>, 
+	Yuan Can <yuancan@huawei.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
+	James Clark <james.clark@arm.com>, llvm@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Currently the bpf selftests are skipped by default, so is someone would
-like to run the tests one would need to run:
-  $ make TARGETS=bpf SKIP_TARGETS="" kselftest
+On Sun, Oct 8, 2023 at 10:41=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> On Thu, Oct 5, 2023 at 4:09=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+> >
+> > Fix clang-tidy found potential memory leak and unread value:
+> > ```
+> > tools/perf/util/hisi-ptt.c:108:3: warning: Value stored to 'data_offset=
+' is never read [clang-analyzer-deadcode.DeadStores]
+> >                 data_offset =3D 0;
+> >                 ^             ~
+> > tools/perf/util/hisi-ptt.c:108:3: note: Value stored to 'data_offset' i=
+s never read
+> >                 data_offset =3D 0;
+> >                 ^             ~
+> > tools/perf/util/hisi-ptt.c:112:12: warning: Potential leak of memory po=
+inted to by 'data' [clang-analyzer-unix.Malloc]
+> >                         return -errno;
+> >                                 ^
+> > /usr/include/errno.h:38:18: note: expanded from macro 'errno'
+> >                  ^
+> > tools/perf/util/hisi-ptt.c:100:15: note: Memory is allocated
+> >         void *data =3D malloc(size);
+> >                      ^~~~~~~~~~~~
+> > tools/perf/util/hisi-ptt.c:104:6: note: Assuming 'data' is non-null
+> >         if (!data)
+> >             ^~~~~
+> > tools/perf/util/hisi-ptt.c:104:2: note: Taking false branch
+> >         if (!data)
+> >         ^
+> > tools/perf/util/hisi-ptt.c:107:6: note: Assuming the condition is false
+> >         if (perf_data__is_pipe(session->data)) {
+> >             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > tools/perf/util/hisi-ptt.c:107:2: note: Taking false branch
+> >         if (perf_data__is_pipe(session->data)) {
+> >         ^
+> > tools/perf/util/hisi-ptt.c:111:7: note: Assuming the condition is true
+> >                 if (data_offset =3D=3D -1)
+> >                     ^~~~~~~~~~~~~~~~~
+> > tools/perf/util/hisi-ptt.c:111:3: note: Taking true branch
+> >                 if (data_offset =3D=3D -1)
+> >                 ^
+> > tools/perf/util/hisi-ptt.c:112:12: note: Potential leak of memory point=
+ed to by 'data'
+> >                         return -errno;
+> >                                 ^
+> > /usr/include/errno.h:38:18: note: expanded from macro 'errno'
+> > ```
+>
+> We already have
+>
+>   https://lore.kernel.org/r/20230930072719.1267784-1-visitorckw@gmail.com
 
-To overwrite the SKIP_TARGETS that defines bpf by default. Also,
-following the BPF instructions[1], to run the bpf selftests one would
-need to enter in the tools/testing/selftests/bpf/ directory, and then
-run make, which is not the standard way to run selftests per it's
-documentation.
+Agreed. There is a written to but not read addressed in this one, but
+I think that is okay to clean up later and to drop this patch.
 
-For the reasons above stop mentioning bpf in the kselftests as examples
-of how to run a test suite.
+Thanks,
+Ian
 
-[1]: Documentation/bpf/bpf_devel_QA.rst
-
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- Documentation/dev-tools/kselftest.rst | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/dev-tools/kselftest.rst b/Documentation/dev-tools/kselftest.rst
-index deede972f254..ab376b316c36 100644
---- a/Documentation/dev-tools/kselftest.rst
-+++ b/Documentation/dev-tools/kselftest.rst
-@@ -112,7 +112,7 @@ You can specify multiple tests to skip::
- You can also specify a restricted list of tests to run together with a
- dedicated skiplist::
- 
--  $  make TARGETS="bpf breakpoints size timers" SKIP_TARGETS=bpf kselftest
-+  $  make TARGETS="breakpoints size timers" SKIP_TARGETS=size kselftest
- 
- See the top-level tools/testing/selftests/Makefile for the list of all
- possible targets.
-@@ -165,7 +165,7 @@ To see the list of available tests, the `-l` option can be used::
- The `-c` option can be used to run all the tests from a test collection, or
- the `-t` option for specific single tests. Either can be used multiple times::
- 
--   $ ./run_kselftest.sh -c bpf -c seccomp -t timers:posix_timers -t timer:nanosleep
-+   $ ./run_kselftest.sh -c size -c seccomp -t timers:posix_timers -t timer:nanosleep
- 
- For other features see the script usage output, seen with the `-h` option.
- 
-@@ -210,7 +210,7 @@ option is supported, such as::
- tests by using variables specified in `Running a subset of selftests`_
- section::
- 
--    $ make -C tools/testing/selftests gen_tar TARGETS="bpf" FORMAT=.xz
-+    $ make -C tools/testing/selftests gen_tar TARGETS="size" FORMAT=.xz
- 
- .. _tar's auto-compress: https://www.gnu.org/software/tar/manual/html_node/gzip.html#auto_002dcompress
- 
--- 
-2.42.0
-
+> Thanks,
+> Namhyung
+>
+>
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/util/hisi-ptt.c | 12 ++++++------
+> >  1 file changed, 6 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/tools/perf/util/hisi-ptt.c b/tools/perf/util/hisi-ptt.c
+> > index 45b614bb73bf..ea297329c526 100644
+> > --- a/tools/perf/util/hisi-ptt.c
+> > +++ b/tools/perf/util/hisi-ptt.c
+> > @@ -98,18 +98,18 @@ static int hisi_ptt_process_auxtrace_event(struct p=
+erf_session *session,
+> >         int fd =3D perf_data__fd(session->data);
+> >         int size =3D event->auxtrace.size;
+> >         void *data =3D malloc(size);
+> > -       off_t data_offset;
+> >         int err;
+> >
+> >         if (!data)
+> >                 return -errno;
+> >
+> > -       if (perf_data__is_pipe(session->data)) {
+> > -               data_offset =3D 0;
+> > -       } else {
+> > -               data_offset =3D lseek(fd, 0, SEEK_CUR);
+> > -               if (data_offset =3D=3D -1)
+> > +       if (!perf_data__is_pipe(session->data)) {
+> > +               off_t data_offset =3D lseek(fd, 0, SEEK_CUR);
+> > +
+> > +               if (data_offset =3D=3D -1) {
+> > +                       free(data);
+> >                         return -errno;
+> > +               }
+> >         }
+> >
+> >         err =3D readn(fd, data, size);
+> > --
+> > 2.42.0.609.gbb76f46606-goog
+> >
 
