@@ -1,332 +1,266 @@
-Return-Path: <bpf+bounces-11680-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11681-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AFC97BD3EE
-	for <lists+bpf@lfdr.de>; Mon,  9 Oct 2023 08:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 915037BD4D5
+	for <lists+bpf@lfdr.de>; Mon,  9 Oct 2023 10:05:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 270301C20AFD
-	for <lists+bpf@lfdr.de>; Mon,  9 Oct 2023 06:57:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D6771C20B01
+	for <lists+bpf@lfdr.de>; Mon,  9 Oct 2023 08:05:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE2FFFBE9;
-	Mon,  9 Oct 2023 06:57:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7DB14AB2;
+	Mon,  9 Oct 2023 08:05:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GQC7c5zb"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0F01BE52;
-	Mon,  9 Oct 2023 06:57:48 +0000 (UTC)
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0D8A3;
-	Sun,  8 Oct 2023 23:57:47 -0700 (PDT)
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-278fde50024so3911362a91.1;
-        Sun, 08 Oct 2023 23:57:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C41C1173D;
+	Mon,  9 Oct 2023 08:05:17 +0000 (UTC)
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDBE8BA;
+	Mon,  9 Oct 2023 01:05:15 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7b102a6565eso1371980241.0;
+        Mon, 09 Oct 2023 01:05:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696838715; x=1697443515; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7ti/HWPE0cWzwTmuERRmavIjosKwcUVbmnHFfLYzgBc=;
+        b=GQC7c5zbtVdpihkWjgWQEiKc1SXEzeGO89ZZeIwDCHr7hgKoTK/ziZnAyZ7Iaiw6ts
+         txbGQQoyeJ+3GHaQMzN4VAO+21Yl0Z0AAvNI2+PadF3zkqVtTJt/+vY/tlsKLQRRSUOa
+         z+3IMJE771O7jMdyzL1sqbtsEgPmTrzfwZrsvgl1NRHvYB4szqJlgD5onGBJHcBij1CW
+         x/KFMwjONFIbcPz2ona1LLfSgqeBp5VxQqUARUFCmipJNmYFU32EDFNai0LvPXNUwfMv
+         Pvs154Zg4YuIvkKmFlnXD/Al0XhwNu4UFVhUMY/1zSpwvIRSW3iMnQU6ezkgaOtkvq1N
+         372Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696834666; x=1697439466;
+        d=1e100.net; s=20230601; t=1696838715; x=1697443515;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NJS+WW4cuCDjk8wiGEOmjzB/AsEq+gw5dUopoJp/L9I=;
-        b=c5KdHC57ymKVGQSvaHr1YeXcqqwZeLOx2JNE1wbTmU7zzdLR82U7mrfeTZ7ZLiDGb5
-         7AFyMk48B0YLzMJuAwPQl1RzQ8THEKhWZrt1h7c4UQ2qdilYnD/yvE/XPteWHVrYRkC0
-         ZPLdxcn8vc2Kb2lcsWm6nk1wgmkMic6I6vvP+0MhVDCRWoHqQEbhXSuvC/X5p6CSR2W7
-         VK1mnnCPtqrK/RNE+N4pg4+F1J6rikL8A0Cnil00TEQJjjqx5EYJdNoo8UqnLCDrLw3k
-         RnK1Xrl0+j6mdYWtX348Wu1T2I3NfWM0jCpE4gBO2yY/gCEKGi6C24ZlHosHUKdAokAI
-         NOmg==
-X-Gm-Message-State: AOJu0Yzw+4va2iPfCrfKKmussav6IZVIUWAylU1Zc5LZgFavqxTxBlkw
-	7y6Ede+GqxDF3Dag/5qRxP0kN9uBfA4u08BB0PM=
-X-Google-Smtp-Source: AGHT+IHXDstWDIhlW/S4bsymJirCqCBInGZVRXyjHfslyOtLbNqbOvsSRor3/F2SZ3hUb4HZKk1bXdnh057wT6n2BHw=
-X-Received: by 2002:a17:90a:e557:b0:277:3379:ce04 with SMTP id
- ei23-20020a17090ae55700b002773379ce04mr16019603pjb.18.1696834666501; Sun, 08
- Oct 2023 23:57:46 -0700 (PDT)
+        bh=7ti/HWPE0cWzwTmuERRmavIjosKwcUVbmnHFfLYzgBc=;
+        b=sZbMOD/kDT152a2CXGMa7wJfdGiP1MB0MPD0hMW8lJ3UdaJ/nMbO58abhTfEUEOzeU
+         wP6GoPoUrx5ZUpmOyBGjR3p7muyaEZfZle56eVNBcVhRpr9YMqoq5Y1/ObDxTxuJAtzF
+         faiN68MXl5pkIjr2mkoz+AceqEwnZ92qi+XlCrdq+WPYplcOqGMws5Bow2bpS15I+cJB
+         E5mJpLF1mpXFAO78/xj/Cc0ED6FDuXfxrgrMx56G4DzLfZYLWjo72U6zx64V/wKv5TpK
+         FFGo9HmAdmwrDeY2YlNY5WSG92mvN4kb9oTa5SWxJ6+WeiojVh0uMlDadUJr/SLNVW7U
+         sbaw==
+X-Gm-Message-State: AOJu0YyWm9jjLFeajsKXIBiixQ35tBWdSq0N2Pl2hDwofn1oxb7LCfS/
+	XK7Evg8t6uUS3TBF9tUCDNHztstAH56IfV3BXUU=
+X-Google-Smtp-Source: AGHT+IH9+0duN/DwJjTcz6PvfXQkVycNSPtz3xjugo2P/Xn5/hpapbonbt+oqUiI8Gfbij3OwxzuDU9Lm7C6lPyTWNg=
+X-Received: by 2002:a67:bb06:0:b0:44e:9674:7781 with SMTP id
+ m6-20020a67bb06000000b0044e96747781mr13044529vsn.15.1696838714812; Mon, 09
+ Oct 2023 01:05:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231005230851.3666908-1-irogers@google.com> <20231005230851.3666908-18-irogers@google.com>
-In-Reply-To: <20231005230851.3666908-18-irogers@google.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Sun, 8 Oct 2023 23:57:35 -0700
-Message-ID: <CAM9d7cj=au3DVNqA0OYU_9eu=R9kTz6SQrtfKuSGnrm=FAY=CA@mail.gmail.com>
-Subject: Re: [PATCH v2 17/18] perf header: Fix various error path memory leaks
-To: Ian Rogers <irogers@google.com>
-Cc: Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Tom Rix <trix@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Yicong Yang <yangyicong@hisilicon.com>, 
-	Jonathan Cameron <jonathan.cameron@huawei.com>, Yang Jihong <yangjihong1@huawei.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Ming Wang <wangming01@loongson.cn>, 
-	Huacai Chen <chenhuacai@kernel.org>, Sean Christopherson <seanjc@google.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, Yanteng Si <siyanteng@loongson.cn>, 
-	Yuan Can <yuancan@huawei.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
-	James Clark <james.clark@arm.com>, llvm@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+References: <20231008052101.144422-1-akihiko.odaki@daynix.com>
+ <20231008052101.144422-6-akihiko.odaki@daynix.com> <CAF=yD-LdwcXKK66s5gvJNOH8qCWRt3SvEL-GkkVif=kkOaYGhg@mail.gmail.com>
+ <8f4ad5bc-b849-4ef4-ac1f-8d5a796205e9@daynix.com> <CAF=yD-+DjDqE9iBu+PvbeBby=C4CCwG=fMFONQONrsErmps3ww@mail.gmail.com>
+ <286508a3-3067-456d-8bbf-176b00dcc0c6@daynix.com>
+In-Reply-To: <286508a3-3067-456d-8bbf-176b00dcc0c6@daynix.com>
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date: Mon, 9 Oct 2023 03:04:37 -0500
+Message-ID: <CAF=yD-+syCSJz_wp25rEaHTXMFRHgLh1M-uTdNWPb4fnrKgpFw@mail.gmail.com>
+Subject: Re: [RFC PATCH 5/7] tun: Introduce virtio-net hashing feature
+To: Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc: Jason Wang <jasowang@redhat.com>, "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	virtualization@lists.linux-foundation.org, linux-kselftest@vger.kernel.org, 
+	bpf@vger.kernel.org, davem@davemloft.net, kuba@kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, 
+	yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	rdunlap@infradead.org, willemb@google.com, gustavoars@kernel.org, 
+	herbert@gondor.apana.org.au, steffen.klassert@secunet.com, nogikh@google.com, 
+	pablo@netfilter.org, decui@microsoft.com, jakub@cloudflare.com, 
+	elver@google.com, pabeni@redhat.com, 
+	Yuri Benditovich <yuri.benditovich@daynix.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Oct 5, 2023 at 4:09=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
+On Sun, Oct 8, 2023 at 3:46=E2=80=AFPM Akihiko Odaki <akihiko.odaki@daynix.=
+com> wrote:
 >
-> Memory leaks were detected by clang-tidy.
+> On 2023/10/09 5:08, Willem de Bruijn wrote:
+> > On Sun, Oct 8, 2023 at 10:04=E2=80=AFPM Akihiko Odaki <akihiko.odaki@da=
+ynix.com> wrote:
+> >>
+> >> On 2023/10/09 4:07, Willem de Bruijn wrote:
+> >>> On Sun, Oct 8, 2023 at 7:22=E2=80=AFAM Akihiko Odaki <akihiko.odaki@d=
+aynix.com> wrote:
+> >>>>
+> >>>> virtio-net have two usage of hashes: one is RSS and another is hash
+> >>>> reporting. Conventionally the hash calculation was done by the VMM.
+> >>>> However, computing the hash after the queue was chosen defeats the
+> >>>> purpose of RSS.
+> >>>>
+> >>>> Another approach is to use eBPF steering program. This approach has
+> >>>> another downside: it cannot report the calculated hash due to the
+> >>>> restrictive nature of eBPF.
+> >>>>
+> >>>> Introduce the code to compute hashes to the kernel in order to overc=
+ome
+> >>>> thse challenges. An alternative solution is to extend the eBPF steer=
+ing
+> >>>> program so that it will be able to report to the userspace, but it m=
+akes
+> >>>> little sense to allow to implement different hashing algorithms with
+> >>>> eBPF since the hash value reported by virtio-net is strictly defined=
+ by
+> >>>> the specification.
+> >>>>
+> >>>> The hash value already stored in sk_buff is not used and computed
+> >>>> independently since it may have been computed in a way not conforman=
+t
+> >>>> with the specification.
+> >>>>
+> >>>> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
+> >>>> ---
+> >>>
+> >>>> +static const struct tun_vnet_hash_cap tun_vnet_hash_cap =3D {
+> >>>> +       .max_indirection_table_length =3D
+> >>>> +               TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH,
+> >>>> +
+> >>>> +       .types =3D VIRTIO_NET_SUPPORTED_HASH_TYPES
+> >>>> +};
+> >>>
+> >>> No need to have explicit capabilities exchange like this? Tun either
+> >>> supports all or none.
+> >>
+> >> tun does not support VIRTIO_NET_RSS_HASH_TYPE_IP_EX,
+> >> VIRTIO_NET_RSS_HASH_TYPE_TCP_EX, and VIRTIO_NET_RSS_HASH_TYPE_UDP_EX.
+> >>
+> >> It is because the flow dissector does not support IPv6 extensions. The
+> >> specification is also vague, and does not tell how many TLVs should be
+> >> consumed at most when interpreting destination option header so I chos=
+e
+> >> to avoid adding code for these hash types to the flow dissector. I dou=
+bt
+> >> anyone will complain about it since nobody complains for Linux.
+> >>
+> >> I'm also adding this so that we can extend it later.
+> >> max_indirection_table_length may grow for systems with 128+ CPUs, or
+> >> types may have other bits for new protocols in the future.
+> >>
+> >>>
+> >>>>           case TUNSETSTEERINGEBPF:
+> >>>> -               ret =3D tun_set_ebpf(tun, &tun->steering_prog, argp)=
+;
+> >>>> +               bpf_ret =3D tun_set_ebpf(tun, &tun->steering_prog, a=
+rgp);
+> >>>> +               if (IS_ERR(bpf_ret))
+> >>>> +                       ret =3D PTR_ERR(bpf_ret);
+> >>>> +               else if (bpf_ret)
+> >>>> +                       tun->vnet_hash.flags &=3D ~TUN_VNET_HASH_RSS=
+;
+> >>>
+> >>> Don't make one feature disable another.
+> >>>
+> >>> TUNSETSTEERINGEBPF and TUNSETVNETHASH are mutually exclusive
+> >>> functions. If one is enabled the other call should fail, with EBUSY
+> >>> for instance.
+> >>>
+> >>>> +       case TUNSETVNETHASH:
+> >>>> +               len =3D sizeof(vnet_hash);
+> >>>> +               if (copy_from_user(&vnet_hash, argp, len)) {
+> >>>> +                       ret =3D -EFAULT;
+> >>>> +                       break;
+> >>>> +               }
+> >>>> +
+> >>>> +               if (((vnet_hash.flags & TUN_VNET_HASH_REPORT) &&
+> >>>> +                    (tun->vnet_hdr_sz < sizeof(struct virtio_net_hd=
+r_v1_hash) ||
+> >>>> +                     !tun_is_little_endian(tun))) ||
+> >>>> +                    vnet_hash.indirection_table_mask >=3D
+> >>>> +                    TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH) {
+> >>>> +                       ret =3D -EINVAL;
+> >>>> +                       break;
+> >>>> +               }
+> >>>> +
+> >>>> +               argp =3D (u8 __user *)argp + len;
+> >>>> +               len =3D (vnet_hash.indirection_table_mask + 1) * 2;
+> >>>> +               if (copy_from_user(vnet_hash_indirection_table, argp=
+, len)) {
+> >>>> +                       ret =3D -EFAULT;
+> >>>> +                       break;
+> >>>> +               }
+> >>>> +
+> >>>> +               argp =3D (u8 __user *)argp + len;
+> >>>> +               len =3D virtio_net_hash_key_length(vnet_hash.types);
+> >>>> +
+> >>>> +               if (copy_from_user(vnet_hash_key, argp, len)) {
+> >>>> +                       ret =3D -EFAULT;
+> >>>> +                       break;
+> >>>> +               }
+> >>>
+> >>> Probably easier and less error-prone to define a fixed size control
+> >>> struct with the max indirection table size.
+> >>
+> >> I made its size variable because the indirection table and key may gro=
+w
+> >> in the future as I wrote above.
+> >>
+> >>>
+> >>> Btw: please trim the CC: list considerably on future patches.
+> >>
+> >> I'll do so in the next version with the TUNSETSTEERINGEBPF change you
+> >> proposed.
+> >
+> > To be clear: please don't just resubmit with that one change.
+> >
+> > The skb and cb issues are quite fundamental issues that need to be reso=
+lved.
+> >
+> > I'd like to understand why adjusting the existing BPF feature for this
+> > exact purpose cannot be amended to return the key it produced.
 >
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/header.c | 63 ++++++++++++++++++++++++----------------
->  1 file changed, 38 insertions(+), 25 deletions(-)
+> eBPF steering program is not designed for this particular problem in my
+> understanding. It was introduced to derive hash values with an
+> understanding of application-specific semantics of packets instead of
+> generic IP/TCP/UDP semantics.
 >
-> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> index d812e1e371a7..41b78e40b22b 100644
-> --- a/tools/perf/util/header.c
-> +++ b/tools/perf/util/header.c
-> @@ -2598,8 +2598,10 @@ static int process_cpu_topology(struct feat_fd *ff=
-, void *data __maybe_unused)
->                         goto error;
+> This problem is rather different in terms that the hash derivation is
+> strictly defined by virtio-net. I don't think it makes sense to
+> introduce the complexity of BPF when you always run the same code.
 >
->                 /* include a NULL character at the end */
-> -               if (strbuf_add(&sb, str, strlen(str) + 1) < 0)
-> +               if (strbuf_add(&sb, str, strlen(str) + 1) < 0) {
-> +                       free(str);
->                         goto error;
-> +               }
->                 size +=3D string_size(str);
->                 free(str);
->         }
-> @@ -2617,8 +2619,10 @@ static int process_cpu_topology(struct feat_fd *ff=
-, void *data __maybe_unused)
->                         goto error;
->
->                 /* include a NULL character at the end */
-> -               if (strbuf_add(&sb, str, strlen(str) + 1) < 0)
-> +               if (strbuf_add(&sb, str, strlen(str) + 1) < 0) {
-> +                       free(str);
->                         goto error;
-> +               }
->                 size +=3D string_size(str);
->                 free(str);
->         }
-> @@ -2681,8 +2685,10 @@ static int process_cpu_topology(struct feat_fd *ff=
-, void *data __maybe_unused)
->                         goto error;
->
->                 /* include a NULL character at the end */
-> -               if (strbuf_add(&sb, str, strlen(str) + 1) < 0)
-> +               if (strbuf_add(&sb, str, strlen(str) + 1) < 0) {
-> +                       free(str);
->                         goto error;
-> +               }
->                 size +=3D string_size(str);
->                 free(str);
->         }
+> It can utilize the existing flow dissector and also make it easier to
+> use for the userspace by implementing this in the kernel.
 
-For these cases, it'd be simpler to free it in the error path.
+Ok. There does appear to be overlap in functionality. But it might be
+easier to deploy to just have standard Toeplitz available without
+having to compile and load an eBPF program.
 
+As for the sk_buff and cb[] changes. The first is really not needed.
+sk_buff simply would not scale if every edge case needs a few bits.
 
-> @@ -2736,10 +2742,9 @@ static int process_numa_topology(struct feat_fd *f=
-f, void *data __maybe_unused)
->                         goto error;
->
->                 n->map =3D perf_cpu_map__new(str);
-> +               free(str);
->                 if (!n->map)
->                         goto error;
-> -
-> -               free(str);
->         }
->         ff->ph->env.nr_numa_nodes =3D nr;
->         ff->ph->env.numa_nodes =3D nodes;
-> @@ -2913,10 +2918,10 @@ static int process_cache(struct feat_fd *ff, void=
- *data __maybe_unused)
->                 return -1;
->
->         for (i =3D 0; i < cnt; i++) {
-> -               struct cpu_cache_level c;
-> +               struct cpu_cache_level *c =3D &caches[i];
->
->                 #define _R(v)                                           \
-> -                       if (do_read_u32(ff, &c.v))\
-> +                       if (do_read_u32(ff, &c->v))                     \
->                                 goto out_free_caches;                   \
->
->                 _R(level)
-> @@ -2926,22 +2931,25 @@ static int process_cache(struct feat_fd *ff, void=
- *data __maybe_unused)
->                 #undef _R
->
->                 #define _R(v)                                   \
-> -                       c.v =3D do_read_string(ff);               \
-> -                       if (!c.v)                               \
-> -                               goto out_free_caches;
-> +                       c->v =3D do_read_string(ff);              \
-> +                       if (!c->v)                              \
-> +                               goto out_free_caches;           \
->
->                 _R(type)
->                 _R(size)
->                 _R(map)
->                 #undef _R
-> -
-> -               caches[i] =3D c;
->         }
->
->         ff->ph->env.caches =3D caches;
->         ff->ph->env.caches_cnt =3D cnt;
->         return 0;
->  out_free_caches:
-> +       for (i =3D 0; i < cnt; i++) {
-> +               free(caches[i].type);
-> +               free(caches[i].size);
-> +               free(caches[i].map);
-> +       }
->         free(caches);
->         return -1;
->  }
+For the control block, generally it is not safe to use that across
+layers. In this case, between qdisc enqueue of a given device and
+ndo_start_xmit of that device, I suppose it is. Though uncommon. I
+wonder if there is any precedent.
 
-Looks ok.
+The data will have to be stored in the skb somewhere. A simpler option
+is just skb->hash? This code would use skb_get_hash, if it would
+always produce a Toeplitz hash, anyway.
 
-
-> @@ -3585,18 +3593,16 @@ static int perf_header__adds_write(struct perf_he=
-ader *header,
->                                    struct feat_copier *fc)
->  {
->         int nr_sections;
-> -       struct feat_fd ff;
-> +       struct feat_fd ff =3D {
-> +               .fd  =3D fd,
-> +               .ph =3D header,
-> +       };
-
-I'm fine with this change.
-
-
->         struct perf_file_section *feat_sec, *p;
->         int sec_size;
->         u64 sec_start;
->         int feat;
->         int err;
->
-> -       ff =3D (struct feat_fd){
-> -               .fd  =3D fd,
-> -               .ph =3D header,
-> -       };
-> -
->         nr_sections =3D bitmap_weight(header->adds_features, HEADER_FEAT_=
-BITS);
->         if (!nr_sections)
->                 return 0;
-> @@ -3623,6 +3629,7 @@ static int perf_header__adds_write(struct perf_head=
-er *header,
->         err =3D do_write(&ff, feat_sec, sec_size);
->         if (err < 0)
->                 pr_debug("failed to write feature section\n");
-> +       free(ff.buf);
-
-But it looks like false alarams.  Since the feat_fd has fd
-and no buf, it won't allocate the buffer in do_write() and
-just use __do_write_fd().  So no need to free the buf.
-
-Thanks,
-Namhyung
-
-
->         free(feat_sec);
->         return err;
->  }
-> @@ -3630,11 +3637,11 @@ static int perf_header__adds_write(struct perf_he=
-ader *header,
->  int perf_header__write_pipe(int fd)
->  {
->         struct perf_pipe_file_header f_header;
-> -       struct feat_fd ff;
-> +       struct feat_fd ff =3D {
-> +               .fd =3D fd,
-> +       };
->         int err;
->
-> -       ff =3D (struct feat_fd){ .fd =3D fd };
-> -
->         f_header =3D (struct perf_pipe_file_header){
->                 .magic     =3D PERF_MAGIC,
->                 .size      =3D sizeof(f_header),
-> @@ -3645,7 +3652,7 @@ int perf_header__write_pipe(int fd)
->                 pr_debug("failed to write perf pipe header\n");
->                 return err;
->         }
-> -
-> +       free(ff.buf);
->         return 0;
->  }
->
-> @@ -3658,11 +3665,12 @@ static int perf_session__do_write_header(struct p=
-erf_session *session,
->         struct perf_file_attr   f_attr;
->         struct perf_header *header =3D &session->header;
->         struct evsel *evsel;
-> -       struct feat_fd ff;
-> +       struct feat_fd ff =3D {
-> +               .fd =3D fd,
-> +       };
->         u64 attr_offset;
->         int err;
->
-> -       ff =3D (struct feat_fd){ .fd =3D fd};
->         lseek(fd, sizeof(f_header), SEEK_SET);
->
->         evlist__for_each_entry(session->evlist, evsel) {
-> @@ -3670,6 +3678,7 @@ static int perf_session__do_write_header(struct per=
-f_session *session,
->                 err =3D do_write(&ff, evsel->core.id, evsel->core.ids * s=
-izeof(u64));
->                 if (err < 0) {
->                         pr_debug("failed to write perf header\n");
-> +                       free(ff.buf);
->                         return err;
->                 }
->         }
-> @@ -3695,6 +3704,7 @@ static int perf_session__do_write_header(struct per=
-f_session *session,
->                 err =3D do_write(&ff, &f_attr, sizeof(f_attr));
->                 if (err < 0) {
->                         pr_debug("failed to write perf header attribute\n=
-");
-> +                       free(ff.buf);
->                         return err;
->                 }
->         }
-> @@ -3705,8 +3715,10 @@ static int perf_session__do_write_header(struct pe=
-rf_session *session,
->
->         if (at_exit) {
->                 err =3D perf_header__adds_write(header, evlist, fd, fc);
-> -               if (err < 0)
-> +               if (err < 0) {
-> +                       free(ff.buf);
->                         return err;
-> +               }
->         }
->
->         f_header =3D (struct perf_file_header){
-> @@ -3728,6 +3740,7 @@ static int perf_session__do_write_header(struct per=
-f_session *session,
->
->         lseek(fd, 0, SEEK_SET);
->         err =3D do_write(&ff, &f_header, sizeof(f_header));
-> +       free(ff.buf);
->         if (err < 0) {
->                 pr_debug("failed to write perf header\n");
->                 return err;
-> --
-> 2.42.0.609.gbb76f46606-goog
->
+> >
+> > As you point out, the C flow dissector is insufficient. The BPF flow
+> > dissector does not have this problem. The same argument would go for
+> > the pre-existing BPF steering program.
+> It is possible to extend the C flow dissector just as it is possible to
+> implement a BPF flow dissector. The more serious problem is that
+> virtio-net specification (and Microsoft RSS it follows) does not tell
+> how to implement IPv6 extension support.
 
