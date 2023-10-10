@@ -1,291 +1,541 @@
-Return-Path: <bpf+bounces-11815-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11816-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7208E7C01C5
-	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 18:35:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DBF47C01F9
+	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 18:51:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F8611C20D69
-	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 16:35:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFF671C20DD0
+	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 16:51:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD8E02FE0E;
-	Tue, 10 Oct 2023 16:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C5916FD2;
+	Tue, 10 Oct 2023 16:51:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H9ucY0Zr"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="AMhsL1Wt"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C30D2FE01
-	for <bpf@vger.kernel.org>; Tue, 10 Oct 2023 16:35:47 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C368E;
-	Tue, 10 Oct 2023 09:35:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696955746; x=1728491746;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=00orKZ10ktIIVdPT28ukB5GSc3X9GzTL+hncMwkoJnA=;
-  b=H9ucY0ZrQm7ZeDu9+/X8uaUq8lmlpzqwjCwd8TTVCR9/IWnPHKtyOoJW
-   hSMPM/yjuKWTDrI1dJDJ+2HMeE7zsKmxwuSMDF+H5JS3MYDbPeUN+6Sbn
-   0fPDoztDjdGjneAcwgK4y+rzUDRJEwou8BQmSMbJoOU6vZ94RtJ9W6y+A
-   szlM08H9swt+f8UXIh5+kkR3+4/ShOhIj+QWJRcOOIERlGQlK2zVgDwsf
-   d9mwHpkczUudtqGoI9XGlMHbGUpGJWHqsjTq9hykmRiWfLP2TUXj4pxvA
-   sf5AQoDgL7hfzXTLAFRQ0ZRjrHtmzZ5xPaqK3G/W8WRSoCnk4kcq69sLb
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="6007792"
-X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
-   d="scan'208";a="6007792"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 09:35:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="1000765311"
-X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
-   d="scan'208";a="1000765311"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Oct 2023 09:35:42 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 10 Oct 2023 09:35:42 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 10 Oct 2023 09:35:41 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Tue, 10 Oct 2023 09:35:41 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.41) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB8A2FE22;
+	Tue, 10 Oct 2023 16:51:01 +0000 (UTC)
+Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE277DB;
+	Tue, 10 Oct 2023 09:50:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1696956658; x=1728492658;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=U+GD+ccU0M5aAIYzUeQZbl97+pWOGtXZOgKe0hpb44c=;
+  b=AMhsL1Wt/SM7fIvrHsG5OFsjLwBSW0dhfCL6qA+2rLy4MJTp/JpgALi4
+   Rm2/QXcSVUG2OGzLSTJLSD/JihLX91NF2ZMATaxXBFp14OLQnhuzYP5oq
+   Wq0gMHFF6jLcNBf2f2DdQ14Rqiycw2piNN/lMdRIzMz3UBXg4mxUXPey0
+   U=;
+X-IronPort-AV: E=Sophos;i="6.03,213,1694736000"; 
+   d="scan'208";a="588268501"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-617e30c2.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 16:50:56 +0000
+Received: from EX19MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+	by email-inbound-relay-iad-1a-m6i4x-617e30c2.us-east-1.amazon.com (Postfix) with ESMTPS id 81EB962A2A;
+	Tue, 10 Oct 2023 16:50:54 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Tue, 10 Oct 2023 09:35:41 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O+ZPZN3QflhEXE3zyh0I4N6mLN1lz+S2C/dYLIwTBsiaXrfi3ZmkYtarbdHWdMOnbH35qSLfB+Kg2nkeaA0aASg9o+07GXPHZFoVdIPnd4jTBzWuhsplh2aKsqafRhM5rwZuR41kI8a4bgXrpALi1uwrgR3S3zGqSod9TkWMZsCvBdnKCvti23z3E8p4RBi8rX8Q0VciROXecCld7vonrmuU0VIeFPF2DurwYEImNlKpmm5f0w4Y/ZflFO7fHqwyZuU94r9aSlOmtMGP/Lq1f7qhvVTF8eQWzlQvVjTcZH/8BjfrfNrzfxylZpgLhQBlf1b7QR/Pw4UkDupagN7BiQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fBjcGlxO/T/AQSj2VbZrt/N6dhjH4a5bBMR8hFFD4us=;
- b=OKCz1Nvtf3pY4q2lbjBDuyAHsiJuXsBELb55IikEeaFJOec8MThoGmPlbbltx+gSnUCbOkduWz4fxahN9ufKL5pY56Hpbz60b5S4ZFM+aiVBnFu5IzzEWPSS+gA17rqAjr2I4jKPDs3LmEkUSNrrBOQkKJoSNLCOLF0yaqq5avCRc4ckKiAPSqBdziRyMP3n8GM/tIlN0RNyqecAvV5VC7ZmCOMu11WPldK1HY+pKPMDCnVMmHqS2jTfcQdyxUA98PetIi7yvkbyKXnE9OYZ/DFtXaQce3qvqCikPpbZxppl3iEvBLeqON1fWU9yo5MlbXSi0w6uUJXCBno8RTaOBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
- by DM3PR11MB8733.namprd11.prod.outlook.com (2603:10b6:0:40::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6863.38; Tue, 10 Oct 2023 16:35:40 +0000
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::f8f4:bed2:b2f8:cb6b]) by DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::f8f4:bed2:b2f8:cb6b%3]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
- 16:35:40 +0000
-Date: Tue, 10 Oct 2023 18:35:31 +0200
-From: Larysa Zaremba <larysa.zaremba@intel.com>
-To: Stanislav Fomichev <sdf@google.com>
-CC: <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, "Alexei
- Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii
- Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, "Yonghong Song"
-	<yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa
-	<jolsa@kernel.org>, <linux-kernel@vger.kernel.org>, Maciej Fijalkowski
-	<maciej.fijalkowski@intel.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: add options and frags to
- xdp_hw_metadata
-Message-ID: <ZSV9U0ti8otbZKen@lzaremba-mobl.ger.corp.intel.com>
-References: <20231009160520.20831-1-larysa.zaremba@intel.com>
- <ZSQvMr3-lY9uTzn_@google.com>
- <ZST8OTwh+6y1S170@lzaremba-mobl.ger.corp.intel.com>
- <ZSV2HwOhuNr3XLbv@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZSV2HwOhuNr3XLbv@google.com>
-X-ClientProxiedBy: WA1P291CA0023.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:19::7) To DS0PR11MB7529.namprd11.prod.outlook.com
- (2603:10b6:8:141::20)
+ 15.2.1118.37; Tue, 10 Oct 2023 16:50:45 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.187.171.11) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Tue, 10 Oct 2023 16:50:42 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <daan.j.demeyer@gmail.com>
+CC: <bpf@vger.kernel.org>, <kernel-team@meta.com>, <martin.lau@linux.dev>,
+	<netdev@vger.kernel.org>, <kuniyu@amazon.com>
+Subject: Re: [PATCH bpf-next v9 2/9] bpf: Propagate modified uaddrlen from cgroup sockaddr programs
+Date: Tue, 10 Oct 2023 09:50:34 -0700
+Message-ID: <20231010165034.3539-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20231006074530.892825-3-daan.j.demeyer@gmail.com>
+References: <20231006074530.892825-3-daan.j.demeyer@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|DM3PR11MB8733:EE_
-X-MS-Office365-Filtering-Correlation-Id: f6e4b677-7859-4837-2244-08dbc9aef06f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lf808aRjst10F/MJRW4IrU2N8OAJ4pdZZ1AuzIxvIe2foEblTsw6OH33gFdI8NEi7DVHDdzr3zs7A6tPbTfdALyHJYvPSbxWBNNAkAnoHI8DIfH/a11/zlQB5x5JGxMhWSNPnTy3MtefWxvnyUpw1n52Cj6zJ/BmPlo6+jK+7IDTQlFPOi3iZbxaALzVcyZ9/o93oP0ISdcifrv6WCTaWgYxaeqmGVetwsuG3s5JJxWZyzOGVeXs+vZBjWWGnTUB9lo9gXNwSdFPJ8xCbbqqBVZg4nvZ24sElG3AX2QOaFv/n7jEFMLDJOuRIGyaPVfdUgAPsNEJwl7qj6I5FHwtrMD2NtSMDD5yImZ3vM8qjbzAICDhUmKah6lGVIg+quKNBoTigaLn+9cWvca1oFt3UqCaagqfkNFNb35TF1nlefAvsvvyzxmcqE5hkXF4tHB+vD8uFHPQmvLsjQtRyJQo0IZpyPMC+oZB3Pvhudgm0nssf+sRW1zzpyteLRWCWLXH7eEHPdVfJF6yH9q/+dFhrbWHJpMvcRVcbsZuWltIB06QOsIf7HvRXicBM70LMw8FDswfFGGKPL5IwQn4tNvHbA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(396003)(136003)(39860400002)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(83380400001)(107886003)(6666004)(478600001)(6512007)(6506007)(38100700002)(66556008)(54906003)(6486002)(966005)(26005)(66946007)(66476007)(6916009)(316002)(41300700001)(44832011)(4326008)(8936002)(8676002)(5660300002)(82960400001)(7416002)(2906002)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?kygrb6Q94iQdQ0TedGcohm6r1zrH28ZpA5IrNLoD2Sg7crcaTcMOj9VnNxUU?=
- =?us-ascii?Q?2GVkIy324vW/OnSM5sjKni1vGbZgXFtTV1pWB1gXVd6yior0UGDdJv3NvkUY?=
- =?us-ascii?Q?tb4PI30TEJILBx3sQuqEX1TSNtuCNQEZPhScqgpczo0ZDbZy7Bf8GObSaKJO?=
- =?us-ascii?Q?ZJ0Ik8T3B3SEdJiNTzBGm84TFfxWU7fI4DG7LG+vdUscWqKpJ1Z03QNYqsQM?=
- =?us-ascii?Q?B3YakhJKk8wrnhL2QKpBWJEXSzvxQLfB1wqf+3b+GeX9izAQmWrGE7wJLk+a?=
- =?us-ascii?Q?0+9m+lb1tCDLaahkHa6lLQ0ROCp240rRwCZNielysoxl5/t0n65wRxYwMk7q?=
- =?us-ascii?Q?CAp4Bidpd3Ntk3OKUfGfi2VBga8cTDLqu7nFIe2ilo0gwnu45hulWGTUKzPg?=
- =?us-ascii?Q?4vuxkY6z8S+3XbF2qFHPgDBgQ9xhbLz4UHaAgJpDqMNKpa2SWnvlQS6YTTB2?=
- =?us-ascii?Q?pMEzcBoQ/xCvwnNivYfsFDCBLkFGag399IJR1cEVCl1IFKJciV7lBjXo8X2Z?=
- =?us-ascii?Q?TK+p6aK0huqc1axmXPbMx0Y2ho7RAZ5OK67fyA2vgZdKama7B9EJn/ccMYwe?=
- =?us-ascii?Q?6kB3YD55vJLA+7HKoc35mjGCNQWitJ2+xLwx6xqYmyhXRw5wNXLOUK9RZk1l?=
- =?us-ascii?Q?e7oUT0qNgrhSFyNhZHRjOQtoMhqeOhPCamfrBeMB54CBUSbDEUSsGvql5+Dq?=
- =?us-ascii?Q?Ixu1SLOEf8xKQmQ5HOtqoWZhxyE+1Dl+ogpcD+gRwH17mqnEH99sSb+V0Xp/?=
- =?us-ascii?Q?3ZhTKk8RcgIW94iXauRz6Zz6vXVKTTWYfuD/eURp1GFfVb1VmfxdZbQ9VRXY?=
- =?us-ascii?Q?nS7kCWQzTwP4j02e+p6zXzDqg2Xk3v0ed2giEic4KF4g82kI6vRBWOJhlhms?=
- =?us-ascii?Q?GVWa66Mv4Q28TARxuVLub6qZOGBGTkwO0j9+zX/xjs+RAkoZUZFVpQ/Jga7c?=
- =?us-ascii?Q?GNkp0NOZYDljF60xUgwBzENgxMbNMAQ66DFnkP5neTptbEh+E0voywo+7VA5?=
- =?us-ascii?Q?pNO+XIFsh4AJxKsSkeoHCu8jRLhZ8tXik8lEqBIpUmwfrOAbsulj3olxnQT7?=
- =?us-ascii?Q?aGYyD+m2ZGjQS34LmyHB3/A/eGyzcRZgMHIWHSpXOuOWGw36i4Co0D3E1B/N?=
- =?us-ascii?Q?bsqoQADcAyPvIxBpfTNrX+mg/OcsF8Iv129JXIfUSAV+wIy3tH69Z82tAsU8?=
- =?us-ascii?Q?+A9kJ+mw3AH2IWpJT2PZnY0+3aS09iO0RmDx8K8ZCTU+T1JGUiiKkQiFCx3p?=
- =?us-ascii?Q?dxiWg9sE+Y6nrAtnPnSjDnlcvSA31bLkWVxcCKLHHpo7I/1XKms5190AMK6P?=
- =?us-ascii?Q?C9/fx32VAPXcjTIJtwUDVycfHWdezjdgeBZOveZN6iXIAkCd6gnwSMhRtHRX?=
- =?us-ascii?Q?QZuKxCBFL09MQVT1vCQ/XTNNQRuqYIyZBhQ0TLAsJ9H3r07qHxVPZv4FLmTN?=
- =?us-ascii?Q?M4e8suw/9GktvM9M2b1U6yJIFbccX80lhBG5dMFREzJFRPNuWLPNH2sWlkei?=
- =?us-ascii?Q?wdDpjaa5mUm6RcOCkqOzGXqw7JWSngxCpzQXSsAEeUVXe9F4+y7/KlBJedf+?=
- =?us-ascii?Q?myt3zd6M0RKjolexqWIwbQDtZzReNck5q0SfR25y6zh7QwE6ZJ+I4LQdL9YI?=
- =?us-ascii?Q?gw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6e4b677-7859-4837-2244-08dbc9aef06f
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 16:35:39.9472
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Kl1dz4dPZHp9TFIJ43aAWq8oXTSyWvTJ6m6m8Lc/7MhEC2/wx3qUYn2bd9e8k2pnL4C1PisF5lN69NPlk+8i1kQSojjyEgDG5YHSEa+AJ7Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR11MB8733
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.187.171.11]
+X-ClientProxiedBy: EX19D033UWA002.ant.amazon.com (10.13.139.10) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Precedence: Bulk
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Oct 10, 2023 at 09:04:47AM -0700, Stanislav Fomichev wrote:
-> On 10/10, Larysa Zaremba wrote:
-> > On Mon, Oct 09, 2023 at 09:49:54AM -0700, Stanislav Fomichev wrote:
-> > > On 10/09, Larysa Zaremba wrote:
-> > > > This is a follow-up to the commit 9b2b86332a9b ("bpf: Allow to use kfunc
-> > > > XDP hints and frags together").
-> > > > 
-> > > > The are some possible implementations problems that may arise when
-> > > > providing metadata specifically for multi-buffer packets, therefore there
-> > > > must be a possibility to test such option separately.
-> > > > 
-> > > > Add an option to use multi-buffer AF_XDP xdp_hw_metadata and mark used XDP
-> > > > program as capable to use frags.
-> > > > 
-> > > > As for now, xdp_hw_metadata accepts no options, so add simple option
-> > > > parsing logic and a help message.
-> > > > 
-> > > > For quick reference, also add an ingress packet generation command to the
-> > > > help message. The command comes from [0].
-> > > > 
-> > > > Example of output for multi-buffer packet:
-> > > > 
-> > > > xsk_ring_cons__peek: 1
-> > > > 0xead018: rx_desc[15]->addr=10000000000f000 addr=f100 comp_addr=f000
-> > > > rx_hash: 0x5789FCBB with RSS type:0x29
-> > > > rx_timestamp:  1696856851535324697 (sec:1696856851.5353)
-> > > > XDP RX-time:   1696856843158256391 (sec:1696856843.1583)
-> > > > 	delta sec:-8.3771 (-8377068.306 usec)
-> > > > AF_XDP time:   1696856843158413078 (sec:1696856843.1584)
-> > > > 	delta sec:0.0002 (156.687 usec)
-> > > > 0xead018: complete idx=23 addr=f000
-> > > > xsk_ring_cons__peek: 1
-> > > > 0xead018: rx_desc[16]->addr=100000000008000 addr=8100 comp_addr=8000
-> > > > 0xead018: complete idx=24 addr=8000
-> > > > xsk_ring_cons__peek: 1
-> > > > 0xead018: rx_desc[17]->addr=100000000009000 addr=9100 comp_addr=9000 EoP
-> > > > 0xead018: complete idx=25 addr=9000
-> > > > 
-> > > > Metadata is printed for the first packet only.
-> > > > 
-> > > > [0] https://lore.kernel.org/all/20230119221536.3349901-18-sdf@google.com/
-> > > > 
-> > > > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> > > > ---
-> > > >  .../selftests/bpf/progs/xdp_hw_metadata.c     |  2 +-
-> > > >  tools/testing/selftests/bpf/xdp_hw_metadata.c | 92 ++++++++++++++++---
-> > > >  2 files changed, 79 insertions(+), 15 deletions(-)
-> > > > 
-> > > > diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> > > > index 63d7de6c6bbb..8767d919c881 100644
-> > > > --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> > > > +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> > > > @@ -21,7 +21,7 @@ extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
-> > > >  extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
-> > > >  				    enum xdp_rss_hash_type *rss_type) __ksym;
-> > > >  
-> > > > -SEC("xdp")
-> > > > +SEC("xdp.frags")
-> > > >  int rx(struct xdp_md *ctx)
-> > > >  {
-> > > >  	void *data, *data_meta, *data_end;
-> > > > diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> > > > index 17c980138796..25225720346b 100644
-> > > > --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> > > > +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> > > > @@ -26,6 +26,7 @@
-> > > >  #include <linux/sockios.h>
-> > > >  #include <sys/mman.h>
-> > > >  #include <net/if.h>
-> > > > +#include <ctype.h>
-> > > >  #include <poll.h>
-> > > >  #include <time.h>
-> > > >  
-> > > > @@ -49,19 +50,29 @@ struct xsk {
-> > > >  struct xdp_hw_metadata *bpf_obj;
-> > > >  struct xsk *rx_xsk;
-> > > >  const char *ifname;
-> > > > +bool use_frags;
-> > > >  int ifindex;
-> > > >  int rxq;
-> > > >  
-> > > >  void test__fail(void) { /* for network_helpers.c */ }
-> > > >  
-> > > > -static int open_xsk(int ifindex, struct xsk *xsk, __u32 queue_id)
-> > > > +static struct xsk_socket_config gen_socket_config(void)
-> > > >  {
-> > > > -	int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
-> > > > -	const struct xsk_socket_config socket_config = {
-> > > > +	struct xsk_socket_config socket_config = {
-> > > >  		.rx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
-> > > >  		.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
-> > > >  		.bind_flags = XDP_COPY,
-> > > >  	};
-> > > > +
-> > > > +	if (use_frags)
-> > > > +		socket_config.bind_flags |= XDP_USE_SG;
-> > > > +	return socket_config;
-> > > > +}
-> > > 
-> > > nit: why not drop const from socket_config and add this 'if (use_frags)'
-> > > directly to open_xsk? Not sure separate function really buys us anything?
-> > >
-> > 
-> > Considering there will also be ZC/copy option, I thought it would be good to 
-> > separate socket config creation. After giving this a sencond thought though, 
-> > for now options would control bind_flags only. What do you this about removing 
-> > gen_socket_config(), but introducing get_bind_flags()?
+From: Daan De Meyer <daan.j.demeyer@gmail.com>
+Date: Fri,  6 Oct 2023 09:44:56 +0200
+> As prep for adding unix socket support to the cgroup sockaddr hooks,
+> let's propagate the sockaddr length back to the caller after running
+> a bpf cgroup sockaddr hook program. While not important for AF_INET or
+> AF_INET6, the sockaddr length is important when working with AF_UNIX
+> sockaddrs as the size of the sockaddr cannot be determined just from the
+> address family or the sockaddr's contents.
 > 
-> In my pending series [0] I ended up adding bind_flags argument
-> to open_xsk. Maybe do the same here? This also lets you drop
-> global use_frags (if you move option parsing directly into main).
+> __cgroup_bpf_run_filter_sock_addr() is modified to take the uaddrlen as
+> an input/output argument. After running the program, the modified sockaddr
+> length is stored in the uaddrlen pointer.
 > 
-> Or maybe add global bind_flags if you want to keep separate parsing
-> routine (read_args)? Doesn't seem like we get anything by storing
-> separate use_flags/use_copy and then construct bind_flags via extra
-> get_bind_flags()?
->
+> Signed-off-by: Daan De Meyer <daan.j.demeyer@gmail.com>
+> ---
+>  include/linux/bpf-cgroup.h | 73 +++++++++++++++++++-------------------
+>  include/linux/filter.h     |  1 +
+>  kernel/bpf/cgroup.c        | 20 +++++++++--
+>  net/ipv4/af_inet.c         |  7 ++--
+>  net/ipv4/ping.c            |  2 +-
+>  net/ipv4/tcp_ipv4.c        |  2 +-
+>  net/ipv4/udp.c             |  9 +++--
+>  net/ipv6/af_inet6.c        |  9 ++---
+>  net/ipv6/ping.c            |  2 +-
+>  net/ipv6/tcp_ipv6.c        |  2 +-
+>  net/ipv6/udp.c             |  6 ++--
+>  11 files changed, 78 insertions(+), 55 deletions(-)
+> 
+> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+> index 8506690dbb9c..31561e789715 100644
+> --- a/include/linux/bpf-cgroup.h
+> +++ b/include/linux/bpf-cgroup.h
+> @@ -120,6 +120,7 @@ int __cgroup_bpf_run_filter_sk(struct sock *sk,
+>  
+>  int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+>  				      struct sockaddr *uaddr,
+> +				      int *uaddrlen,
+>  				      enum cgroup_bpf_attach_type atype,
+>  				      void *t_ctx,
+>  				      u32 *flags);
+> @@ -230,22 +231,22 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
+>  #define BPF_CGROUP_RUN_PROG_INET6_POST_BIND(sk)				       \
+>  	BPF_CGROUP_RUN_SK_PROG(sk, CGROUP_INET6_POST_BIND)
+>  
+> -#define BPF_CGROUP_RUN_SA_PROG(sk, uaddr, atype)				       \
+> +#define BPF_CGROUP_RUN_SA_PROG(sk, uaddr, uaddrlen, atype)		       \
+>  ({									       \
+>  	int __ret = 0;							       \
+>  	if (cgroup_bpf_enabled(atype))					       \
+> -		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, atype,     \
+> -							  NULL, NULL);	       \
+> +		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, uaddrlen, \
+> +							  atype, NULL, NULL);  \
+>  	__ret;								       \
+>  })
+>  
+> -#define BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, atype, t_ctx)		       \
+> +#define BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, atype, t_ctx)	       \
+>  ({									       \
+>  	int __ret = 0;							       \
+>  	if (cgroup_bpf_enabled(atype))	{				       \
+>  		lock_sock(sk);						       \
+> -		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, atype,     \
+> -							  t_ctx, NULL);	       \
+> +		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, uaddrlen, \
+> +							  atype, t_ctx, NULL); \
+>  		release_sock(sk);					       \
+>  	}								       \
+>  	__ret;								       \
+> @@ -256,14 +257,14 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
+>   * (at bit position 0) is to indicate CAP_NET_BIND_SERVICE capability check
+>   * should be bypassed (BPF_RET_BIND_NO_CAP_NET_BIND_SERVICE).
+>   */
+> -#define BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr, atype, bind_flags)	       \
+> +#define BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr, uaddrlen, atype, bind_flags) \
+>  ({									       \
+>  	u32 __flags = 0;						       \
+>  	int __ret = 0;							       \
+>  	if (cgroup_bpf_enabled(atype))	{				       \
+>  		lock_sock(sk);						       \
+> -		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, atype,     \
+> -							  NULL, &__flags);     \
+> +		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, uaddrlen, \
+> +							  atype, NULL, &__flags); \
+>  		release_sock(sk);					       \
+>  		if (__flags & BPF_RET_BIND_NO_CAP_NET_BIND_SERVICE)	       \
+>  			*bind_flags |= BIND_NO_CAP_NET_BIND_SERVICE;	       \
+> @@ -276,29 +277,29 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
+>  	  cgroup_bpf_enabled(CGROUP_INET6_CONNECT)) &&		       \
+>  	 (sk)->sk_prot->pre_connect)
+>  
+> -#define BPF_CGROUP_RUN_PROG_INET4_CONNECT(sk, uaddr)			       \
+> -	BPF_CGROUP_RUN_SA_PROG(sk, uaddr, CGROUP_INET4_CONNECT)
+> +#define BPF_CGROUP_RUN_PROG_INET4_CONNECT(sk, uaddr, uaddrlen)			\
+> +	BPF_CGROUP_RUN_SA_PROG(sk, uaddr, uaddrlen, CGROUP_INET4_CONNECT)
 
-I like the option with global bind_flags.
-  
-> 0: https://lore.kernel.org/bpf/20231003200522.1914523-10-sdf@google.com/
+Do we need to pass uaddrlen for INET[46] cases ?
+
+The size of AF_INET6? addr is fixed, and we actually need not read
+uaddrlen.  Then, we can pass NULL as uaddrlen so that we need not
+change the callers of these macros.  Also, it would be clearer that
+INET[46] macros do not use uaddrlen.
+
+  #define BPF_CGROUP_RUN_PROG_INET4_CONNECT(sk, uaddr) \
+  -     BPF_CGROUP_RUN_SA_PROG(sk, uaddr, CGROUP_INET4_CONNECT)
+  +     BPF_CGROUP_RUN_SA_PROG(sk, uaddr, NULL, CGROUP_INET4_CONNECT)
+
+
+>  
+> -#define BPF_CGROUP_RUN_PROG_INET6_CONNECT(sk, uaddr)			       \
+> -	BPF_CGROUP_RUN_SA_PROG(sk, uaddr, CGROUP_INET6_CONNECT)
+> +#define BPF_CGROUP_RUN_PROG_INET6_CONNECT(sk, uaddr, uaddrlen)			\
+> +	BPF_CGROUP_RUN_SA_PROG(sk, uaddr, uaddrlen, CGROUP_INET6_CONNECT)
+>  
+> -#define BPF_CGROUP_RUN_PROG_INET4_CONNECT_LOCK(sk, uaddr)		       \
+> -	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, CGROUP_INET4_CONNECT, NULL)
+> +#define BPF_CGROUP_RUN_PROG_INET4_CONNECT_LOCK(sk, uaddr, uaddrlen)		\
+> +	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, CGROUP_INET4_CONNECT, NULL)
+>  
+> -#define BPF_CGROUP_RUN_PROG_INET6_CONNECT_LOCK(sk, uaddr)		       \
+> -	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, CGROUP_INET6_CONNECT, NULL)
+> +#define BPF_CGROUP_RUN_PROG_INET6_CONNECT_LOCK(sk, uaddr, uaddrlen)		\
+> +	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, CGROUP_INET6_CONNECT, NULL)
+>  
+> -#define BPF_CGROUP_RUN_PROG_UDP4_SENDMSG_LOCK(sk, uaddr, t_ctx)		       \
+> -	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, CGROUP_UDP4_SENDMSG, t_ctx)
+> +#define BPF_CGROUP_RUN_PROG_UDP4_SENDMSG_LOCK(sk, uaddr, uaddrlen, t_ctx)	\
+> +	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, CGROUP_UDP4_SENDMSG, t_ctx)
+>  
+> -#define BPF_CGROUP_RUN_PROG_UDP6_SENDMSG_LOCK(sk, uaddr, t_ctx)		       \
+> -	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, CGROUP_UDP6_SENDMSG, t_ctx)
+> +#define BPF_CGROUP_RUN_PROG_UDP6_SENDMSG_LOCK(sk, uaddr, uaddrlen, t_ctx)	\
+> +	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, CGROUP_UDP6_SENDMSG, t_ctx)
+>  
+> -#define BPF_CGROUP_RUN_PROG_UDP4_RECVMSG_LOCK(sk, uaddr)			\
+> -	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, CGROUP_UDP4_RECVMSG, NULL)
+> +#define BPF_CGROUP_RUN_PROG_UDP4_RECVMSG_LOCK(sk, uaddr, uaddrlen)		\
+> +	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, CGROUP_UDP4_RECVMSG, NULL)
+>  
+> -#define BPF_CGROUP_RUN_PROG_UDP6_RECVMSG_LOCK(sk, uaddr)			\
+> -	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, CGROUP_UDP6_RECVMSG, NULL)
+> +#define BPF_CGROUP_RUN_PROG_UDP6_RECVMSG_LOCK(sk, uaddr, uaddrlen)		\
+> +	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, CGROUP_UDP6_RECVMSG, NULL)
+>  
+>  /* The SOCK_OPS"_SK" macro should be used when sock_ops->sk is not a
+>   * fullsock and its parent fullsock cannot be traced by
+> @@ -477,24 +478,24 @@ static inline int bpf_percpu_cgroup_storage_update(struct bpf_map *map,
+>  }
+>  
+>  #define cgroup_bpf_enabled(atype) (0)
+> -#define BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, atype, t_ctx) ({ 0; })
+> -#define BPF_CGROUP_RUN_SA_PROG(sk, uaddr, atype) ({ 0; })
+> +#define BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, atype, t_ctx) ({ 0; })
+> +#define BPF_CGROUP_RUN_SA_PROG(sk, uaddr, uaddrlen, atype) ({ 0; })
+>  #define BPF_CGROUP_PRE_CONNECT_ENABLED(sk) (0)
+>  #define BPF_CGROUP_RUN_PROG_INET_INGRESS(sk,skb) ({ 0; })
+>  #define BPF_CGROUP_RUN_PROG_INET_EGRESS(sk,skb) ({ 0; })
+>  #define BPF_CGROUP_RUN_PROG_INET_SOCK(sk) ({ 0; })
+>  #define BPF_CGROUP_RUN_PROG_INET_SOCK_RELEASE(sk) ({ 0; })
+> -#define BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr, atype, flags) ({ 0; })
+> +#define BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr, uaddrlen, atype, flags) ({ 0; })
+>  #define BPF_CGROUP_RUN_PROG_INET4_POST_BIND(sk) ({ 0; })
+>  #define BPF_CGROUP_RUN_PROG_INET6_POST_BIND(sk) ({ 0; })
+> -#define BPF_CGROUP_RUN_PROG_INET4_CONNECT(sk, uaddr) ({ 0; })
+> -#define BPF_CGROUP_RUN_PROG_INET4_CONNECT_LOCK(sk, uaddr) ({ 0; })
+> -#define BPF_CGROUP_RUN_PROG_INET6_CONNECT(sk, uaddr) ({ 0; })
+> -#define BPF_CGROUP_RUN_PROG_INET6_CONNECT_LOCK(sk, uaddr) ({ 0; })
+> -#define BPF_CGROUP_RUN_PROG_UDP4_SENDMSG_LOCK(sk, uaddr, t_ctx) ({ 0; })
+> -#define BPF_CGROUP_RUN_PROG_UDP6_SENDMSG_LOCK(sk, uaddr, t_ctx) ({ 0; })
+> -#define BPF_CGROUP_RUN_PROG_UDP4_RECVMSG_LOCK(sk, uaddr) ({ 0; })
+> -#define BPF_CGROUP_RUN_PROG_UDP6_RECVMSG_LOCK(sk, uaddr) ({ 0; })
+> +#define BPF_CGROUP_RUN_PROG_INET4_CONNECT(sk, uaddr, uaddrlen) ({ 0; })
+> +#define BPF_CGROUP_RUN_PROG_INET4_CONNECT_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+> +#define BPF_CGROUP_RUN_PROG_INET6_CONNECT(sk, uaddr, uaddrlen) ({ 0; })
+> +#define BPF_CGROUP_RUN_PROG_INET6_CONNECT_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+> +#define BPF_CGROUP_RUN_PROG_UDP4_SENDMSG_LOCK(sk, uaddr, uaddrlen, t_ctx) ({ 0; })
+> +#define BPF_CGROUP_RUN_PROG_UDP6_SENDMSG_LOCK(sk, uaddr, uaddrlen, t_ctx) ({ 0; })
+> +#define BPF_CGROUP_RUN_PROG_UDP4_RECVMSG_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+> +#define BPF_CGROUP_RUN_PROG_UDP6_RECVMSG_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+>  #define BPF_CGROUP_RUN_PROG_SOCK_OPS(sock_ops) ({ 0; })
+>  #define BPF_CGROUP_RUN_PROG_DEVICE_CGROUP(atype, major, minor, access) ({ 0; })
+>  #define BPF_CGROUP_RUN_PROG_SYSCTL(head,table,write,buf,count,pos) ({ 0; })
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index 27406aee2d40..a3c74fbe848b 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -1335,6 +1335,7 @@ struct bpf_sock_addr_kern {
+>  	 */
+>  	u64 tmp_reg;
+>  	void *t_ctx;	/* Attach type specific context. */
+> +	u32 uaddrlen;
+>  };
+>  
+>  struct bpf_sock_ops_kern {
+> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> index 03b3d4492980..e6af22316909 100644
+> --- a/kernel/bpf/cgroup.c
+> +++ b/kernel/bpf/cgroup.c
+> @@ -1450,6 +1450,9 @@ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sk);
+>   *                                       provided by user sockaddr
+>   * @sk: sock struct that will use sockaddr
+>   * @uaddr: sockaddr struct provided by user
+> + * @uaddrlen: Pointer to the size of the sockaddr struct provided by user. It is
+> + *            read-only for AF_INET[6] uaddr but can be modified for AF_UNIX
+> + *            uaddr.
+>   * @atype: The type of program to be executed
+>   * @t_ctx: Pointer to attach type specific context
+>   * @flags: Pointer to u32 which contains higher bits of BPF program
+> @@ -1462,6 +1465,7 @@ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sk);
+>   */
+>  int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+>  				      struct sockaddr *uaddr,
+> +				      int *uaddrlen,
+>  				      enum cgroup_bpf_attach_type atype,
+>  				      void *t_ctx,
+>  				      u32 *flags)
+> @@ -1473,6 +1477,7 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+>  	};
+>  	struct sockaddr_storage unspec;
+>  	struct cgroup *cgrp;
+> +	int ret;
+>  
+>  	/* Check socket family since not all sockets represent network
+>  	 * endpoint (e.g. AF_UNIX).
+> @@ -1483,11 +1488,20 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+>  	if (!ctx.uaddr) {
+>  		memset(&unspec, 0, sizeof(unspec));
+>  		ctx.uaddr = (struct sockaddr *)&unspec;
+> -	}
+> +		ctx.uaddrlen = 0;
+> +	} else if (uaddrlen)
+> +		ctx.uaddrlen = *uaddrlen;
+> +	else
+> +		return -EINVAL;
+
+When could uaddrlen be NULL ?
+
+
+>  
+>  	cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+> -	return bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run,
+> -				     0, flags);
+> +	ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run,
+> +				    0, flags);
+> +
+> +	if (!ret && uaddrlen)
+> +		*uaddrlen = ctx.uaddrlen;
+
+Now uaddrlen seems always non-NULL, so can't we pass NULL for INET
+macros to save hunks below.
+
+
+> +
+> +	return ret;
+>  }
+>  EXPORT_SYMBOL(__cgroup_bpf_run_filter_sock_addr);
+>  
+> diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+> index 3d2e30e20473..7e27ad37b939 100644
+> --- a/net/ipv4/af_inet.c
+> +++ b/net/ipv4/af_inet.c
+> @@ -452,7 +452,7 @@ int inet_bind_sk(struct sock *sk, struct sockaddr *uaddr, int addr_len)
+>  	/* BPF prog is run before any checks are done so that if the prog
+>  	 * changes context in a wrong way it will be caught.
+>  	 */
+> -	err = BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr,
+> +	err = BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr, &addr_len,
+>  						 CGROUP_INET4_BIND, &flags);
+>  	if (err)
+>  		return err;
+> @@ -788,6 +788,7 @@ int inet_getname(struct socket *sock, struct sockaddr *uaddr,
+>  	struct sock *sk		= sock->sk;
+>  	struct inet_sock *inet	= inet_sk(sk);
+>  	DECLARE_SOCKADDR(struct sockaddr_in *, sin, uaddr);
+> +	int sin_addr_len = sizeof(*sin);
+>  
+>  	sin->sin_family = AF_INET;
+>  	lock_sock(sk);
+> @@ -800,7 +801,7 @@ int inet_getname(struct socket *sock, struct sockaddr *uaddr,
+>  		}
+>  		sin->sin_port = inet->inet_dport;
+>  		sin->sin_addr.s_addr = inet->inet_daddr;
+> -		BPF_CGROUP_RUN_SA_PROG(sk, (struct sockaddr *)sin,
+> +		BPF_CGROUP_RUN_SA_PROG(sk, (struct sockaddr *)sin, &sin_addr_len,
+>  				       CGROUP_INET4_GETPEERNAME);
+>  	} else {
+>  		__be32 addr = inet->inet_rcv_saddr;
+> @@ -808,7 +809,7 @@ int inet_getname(struct socket *sock, struct sockaddr *uaddr,
+>  			addr = inet->inet_saddr;
+>  		sin->sin_port = inet->inet_sport;
+>  		sin->sin_addr.s_addr = addr;
+> -		BPF_CGROUP_RUN_SA_PROG(sk, (struct sockaddr *)sin,
+> +		BPF_CGROUP_RUN_SA_PROG(sk, (struct sockaddr *)sin, &sin_addr_len,
+>  				       CGROUP_INET4_GETSOCKNAME);
+>  	}
+>  	release_sock(sk);
+> diff --git a/net/ipv4/ping.c b/net/ipv4/ping.c
+> index 4dd809b7b188..2887177822c9 100644
+> --- a/net/ipv4/ping.c
+> +++ b/net/ipv4/ping.c
+> @@ -301,7 +301,7 @@ static int ping_pre_connect(struct sock *sk, struct sockaddr *uaddr,
+>  	if (addr_len < sizeof(struct sockaddr_in))
+>  		return -EINVAL;
+>  
+> -	return BPF_CGROUP_RUN_PROG_INET4_CONNECT_LOCK(sk, uaddr);
+> +	return BPF_CGROUP_RUN_PROG_INET4_CONNECT_LOCK(sk, uaddr, &addr_len);
+>  }
+>  
+>  /* Checks the bind address and possibly modifies sk->sk_bound_dev_if. */
+> diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+> index f13eb7e23d03..7c18dd3ce011 100644
+> --- a/net/ipv4/tcp_ipv4.c
+> +++ b/net/ipv4/tcp_ipv4.c
+> @@ -194,7 +194,7 @@ static int tcp_v4_pre_connect(struct sock *sk, struct sockaddr *uaddr,
+>  
+>  	sock_owned_by_me(sk);
+>  
+> -	return BPF_CGROUP_RUN_PROG_INET4_CONNECT(sk, uaddr);
+> +	return BPF_CGROUP_RUN_PROG_INET4_CONNECT(sk, uaddr, &addr_len);
+>  }
+>  
+>  /* This will initiate an outgoing connection. */
+> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> index c3ff984b6354..7b21a51dd25a 100644
+> --- a/net/ipv4/udp.c
+> +++ b/net/ipv4/udp.c
+> @@ -1143,7 +1143,9 @@ int udp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+>  
+>  	if (cgroup_bpf_enabled(CGROUP_UDP4_SENDMSG) && !connected) {
+>  		err = BPF_CGROUP_RUN_PROG_UDP4_SENDMSG_LOCK(sk,
+> -					    (struct sockaddr *)usin, &ipc.addr);
+> +					    (struct sockaddr *)usin,
+> +					    &msg->msg_namelen,
+> +					    &ipc.addr);
+>  		if (err)
+>  			goto out_free;
+>  		if (usin) {
+> @@ -1865,7 +1867,8 @@ int udp_recvmsg(struct sock *sk, struct msghdr *msg, size_t len, int flags,
+>  		*addr_len = sizeof(*sin);
+>  
+>  		BPF_CGROUP_RUN_PROG_UDP4_RECVMSG_LOCK(sk,
+> -						      (struct sockaddr *)sin);
+> +						      (struct sockaddr *)sin,
+> +						      addr_len);
+>  	}
+>  
+>  	if (udp_test_bit(GRO_ENABLED, sk))
+> @@ -1904,7 +1907,7 @@ int udp_pre_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
+>  	if (addr_len < sizeof(struct sockaddr_in))
+>  		return -EINVAL;
+>  
+> -	return BPF_CGROUP_RUN_PROG_INET4_CONNECT_LOCK(sk, uaddr);
+> +	return BPF_CGROUP_RUN_PROG_INET4_CONNECT_LOCK(sk, uaddr, &addr_len);
+>  }
+>  EXPORT_SYMBOL(udp_pre_connect);
+>  
+> diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
+> index c6ad0d6e99b5..f5817f8150dd 100644
+> --- a/net/ipv6/af_inet6.c
+> +++ b/net/ipv6/af_inet6.c
+> @@ -454,7 +454,7 @@ int inet6_bind_sk(struct sock *sk, struct sockaddr *uaddr, int addr_len)
+>  	/* BPF prog is run before any checks are done so that if the prog
+>  	 * changes context in a wrong way it will be caught.
+>  	 */
+> -	err = BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr,
+> +	err = BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr, &addr_len,
+>  						 CGROUP_INET6_BIND, &flags);
+>  	if (err)
+>  		return err;
+> @@ -520,6 +520,7 @@ int inet6_getname(struct socket *sock, struct sockaddr *uaddr,
+>  		  int peer)
+>  {
+>  	struct sockaddr_in6 *sin = (struct sockaddr_in6 *)uaddr;
+> +	int sin_addr_len = sizeof(*sin);
+>  	struct sock *sk = sock->sk;
+>  	struct inet_sock *inet = inet_sk(sk);
+>  	struct ipv6_pinfo *np = inet6_sk(sk);
+> @@ -539,7 +540,7 @@ int inet6_getname(struct socket *sock, struct sockaddr *uaddr,
+>  		sin->sin6_addr = sk->sk_v6_daddr;
+>  		if (inet6_test_bit(SNDFLOW, sk))
+>  			sin->sin6_flowinfo = np->flow_label;
+> -		BPF_CGROUP_RUN_SA_PROG(sk, (struct sockaddr *)sin,
+> +		BPF_CGROUP_RUN_SA_PROG(sk, (struct sockaddr *)sin, &sin_addr_len,
+>  				       CGROUP_INET6_GETPEERNAME);
+>  	} else {
+>  		if (ipv6_addr_any(&sk->sk_v6_rcv_saddr))
+> @@ -547,13 +548,13 @@ int inet6_getname(struct socket *sock, struct sockaddr *uaddr,
+>  		else
+>  			sin->sin6_addr = sk->sk_v6_rcv_saddr;
+>  		sin->sin6_port = inet->inet_sport;
+> -		BPF_CGROUP_RUN_SA_PROG(sk, (struct sockaddr *)sin,
+> +		BPF_CGROUP_RUN_SA_PROG(sk, (struct sockaddr *)sin, &sin_addr_len,
+>  				       CGROUP_INET6_GETSOCKNAME);
+>  	}
+>  	sin->sin6_scope_id = ipv6_iface_scope_id(&sin->sin6_addr,
+>  						 sk->sk_bound_dev_if);
+>  	release_sock(sk);
+> -	return sizeof(*sin);
+> +	return sin_addr_len;
+>  }
+>  EXPORT_SYMBOL(inet6_getname);
+>  
+> diff --git a/net/ipv6/ping.c b/net/ipv6/ping.c
+> index e8fb0d275cc2..d2098dd4ceae 100644
+> --- a/net/ipv6/ping.c
+> +++ b/net/ipv6/ping.c
+> @@ -56,7 +56,7 @@ static int ping_v6_pre_connect(struct sock *sk, struct sockaddr *uaddr,
+>  	if (addr_len < SIN6_LEN_RFC2133)
+>  		return -EINVAL;
+>  
+> -	return BPF_CGROUP_RUN_PROG_INET6_CONNECT_LOCK(sk, uaddr);
+> +	return BPF_CGROUP_RUN_PROG_INET6_CONNECT_LOCK(sk, uaddr, &addr_len);
+>  }
+>  
+>  static int ping_v6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+> diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+> index 94afb8d0f2d0..3a1e76a2d33e 100644
+> --- a/net/ipv6/tcp_ipv6.c
+> +++ b/net/ipv6/tcp_ipv6.c
+> @@ -135,7 +135,7 @@ static int tcp_v6_pre_connect(struct sock *sk, struct sockaddr *uaddr,
+>  
+>  	sock_owned_by_me(sk);
+>  
+> -	return BPF_CGROUP_RUN_PROG_INET6_CONNECT(sk, uaddr);
+> +	return BPF_CGROUP_RUN_PROG_INET6_CONNECT(sk, uaddr, &addr_len);
+>  }
+>  
+>  static int tcp_v6_connect(struct sock *sk, struct sockaddr *uaddr,
+> diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
+> index 5e9312eefed0..622b10a549f7 100644
+> --- a/net/ipv6/udp.c
+> +++ b/net/ipv6/udp.c
+> @@ -410,7 +410,8 @@ int udpv6_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
+>  		*addr_len = sizeof(*sin6);
+>  
+>  		BPF_CGROUP_RUN_PROG_UDP6_RECVMSG_LOCK(sk,
+> -						      (struct sockaddr *)sin6);
+> +						      (struct sockaddr *)sin6,
+> +						      addr_len);
+>  	}
+>  
+>  	if (udp_test_bit(GRO_ENABLED, sk))
+> @@ -1157,7 +1158,7 @@ static int udpv6_pre_connect(struct sock *sk, struct sockaddr *uaddr,
+>  	if (addr_len < SIN6_LEN_RFC2133)
+>  		return -EINVAL;
+>  
+> -	return BPF_CGROUP_RUN_PROG_INET6_CONNECT_LOCK(sk, uaddr);
+> +	return BPF_CGROUP_RUN_PROG_INET6_CONNECT_LOCK(sk, uaddr, &addr_len);
+>  }
+>  
+>  /**
+> @@ -1510,6 +1511,7 @@ int udpv6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+>  	if (cgroup_bpf_enabled(CGROUP_UDP6_SENDMSG) && !connected) {
+>  		err = BPF_CGROUP_RUN_PROG_UDP6_SENDMSG_LOCK(sk,
+>  					   (struct sockaddr *)sin6,
+> +					   &addr_len,
+>  					   &fl6->saddr);
+>  		if (err)
+>  			goto out_no_dst;
+> -- 
+> 2.41.0
 
