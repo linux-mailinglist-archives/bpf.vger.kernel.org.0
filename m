@@ -1,302 +1,211 @@
-Return-Path: <bpf+bounces-11792-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11794-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B63EA7BF372
-	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 08:57:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A56B17BF3B7
+	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 09:03:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C6BC281E45
-	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 06:57:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D20DF1C20C6C
+	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 07:03:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8F71947D;
-	Tue, 10 Oct 2023 06:57:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JjTB7ai8";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3nSWcial"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46BF1BE47;
+	Tue, 10 Oct 2023 07:03:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F93BA43;
-	Tue, 10 Oct 2023 06:57:53 +0000 (UTC)
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 588D09E;
-	Mon,  9 Oct 2023 23:57:51 -0700 (PDT)
-Date: Tue, 10 Oct 2023 08:57:45 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1696921069;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ocBRzcNMIXw6sB6Dlrdgxxq3UgUm//dm8YBA/u9nzME=;
-	b=JjTB7ai863jcZx4MDNQNBo093ozlRT5rwjZPL3EYCkrjBbZptjiDAbin+yas6+dPdt1QuI
-	OTiVlEQW5TrAVhz4SCuA2EuyudPuxU97uCJaG5t44kFQZbbBo0vYsbk1BEEp+euW37+0Pg
-	G0AJJ33EtJreH5NM5DHY0y62KhxvzQc8Yz8XpM0VbfZURPTvzGbXmm2NfWWtz9s/E1/8zr
-	lGajOpoCa6lwt3+1GIiBM2euVEis0RvrwPzJWSArmkK3S8HVX+GN4KRUOBdzzvir58I1ck
-	8n4jDi7SgIPut1AAkWXMn7g8CFkOL/d7l7l0KlHr+YBaWbp+hqnTzzejgxdx+g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1696921069;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ocBRzcNMIXw6sB6Dlrdgxxq3UgUm//dm8YBA/u9nzME=;
-	b=3nSWcialgU2AqSNY3kCDgz8WJuZCZNrQJwfjHHZiOUxR3iNZ6tJEd3biU4wn5nA3fAQFb9
-	qKpkrMjBxC9H/CDw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>, Hao Luo <haoluo@google.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Paolo Abeni <pabeni@redhat.com>, Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: [PATCH bpf-next -v4] net: Add a warning if NAPI cb missed
- xdp_do_flush().
-Message-ID: <20231010065745.lJLYdf_X@linutronix.de>
-References: <20230929165825.RvwBYGP1@linutronix.de>
- <20231004070926.5b4ba04c@kernel.org>
- <20231006154933.mQgxQHHt@linutronix.de>
- <20231006123139.5203444e@kernel.org>
- <20231007154351.UvncuBMF@linutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F68B9467
+	for <bpf@vger.kernel.org>; Tue, 10 Oct 2023 07:03:41 +0000 (UTC)
+X-Greylist: delayed 208 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 10 Oct 2023 00:03:35 PDT
+Received: from cmccmta2.chinamobile.com (cmccmta2.chinamobile.com [111.22.67.135])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id CD26392;
+	Tue, 10 Oct 2023 00:03:34 -0700 (PDT)
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
+	by rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee76524f673dda-d9616;
+	Tue, 10 Oct 2023 15:00:05 +0800 (CST)
+X-RM-TRANSID:2ee76524f673dda-d9616
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from ubuntu.localdomain (unknown[10.54.5.252])
+	by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee36524f67471b-d4b7c;
+	Tue, 10 Oct 2023 15:00:05 +0800 (CST)
+X-RM-TRANSID:2ee36524f67471b-d4b7c
+From: zhujun2 <zhujun2@cmss.chinamobile.com>
+To: shuah@kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	andrii@kernel.org,
+	zhujun2@cmss.chinamobile.com
+Subject: [PATCH] selftests: bpf: remove unused variables
+Date: Tue, 10 Oct 2023 00:00:01 -0700
+Message-Id: <20231010070001.10125-1-zhujun2@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231007154351.UvncuBMF@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-A few drivers were missing a xdp_do_flush() invocation after
-XDP_REDIRECT.
+These variables are never referenced in the code, just remove them.
 
-Add three helper functions each for one of the per-CPU lists. Return
-true if the per-CPU list is non-empty and flush the list.
-Add xdp_do_check_flushed() which invokes each helper functions and
-creates a warning if one of the functions had a non-empty list.
-Hide everything behind CONFIG_DEBUG_NET.
-
-Suggested-by: Jesper Dangaard Brouer <hawk@kernel.org>
-Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-Acked-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: zhujun2 <zhujun2@cmss.chinamobile.com>
 ---
-v3=E2=80=A6v4:
-  - s/creats/creates as per Simon Horman.
+ tools/testing/selftests/bpf/prog_tests/atomic_bounds.c      | 1 -
+ tools/testing/selftests/bpf/prog_tests/kfree_skb.c          | 2 --
+ tools/testing/selftests/bpf/prog_tests/perf_branches.c      | 6 +-----
+ .../testing/selftests/bpf/prog_tests/probe_read_user_str.c  | 4 ++--
+ tools/testing/selftests/bpf/prog_tests/test_overhead.c      | 4 ++--
+ tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c       | 1 -
+ 6 files changed, 5 insertions(+), 13 deletions(-)
 
-v2=E2=80=A6v3:
-  - Collected Reviewed/Acked from the list.
-  - Added an include dev.h to filter.c, the robot pointed out a missing
-    prototype.
+diff --git a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
+index 69bd7853e..4715cde38 100644
+--- a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
++++ b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
+@@ -7,7 +7,6 @@
+ void test_atomic_bounds(void)
+ {
+ 	struct atomic_bounds *skel;
+-	__u32 duration = 0;
+ 
+ 	skel = atomic_bounds__open_and_load();
+ 	if (CHECK(!skel, "skel_load", "couldn't load program\n"))
+diff --git a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
+index c07991544..b0992a9ed 100644
+--- a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
++++ b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
+@@ -20,7 +20,6 @@ static void on_sample(void *ctx, int cpu, void *data, __u32 size)
+ {
+ 	struct meta *meta = (struct meta *)data;
+ 	struct ipv6_packet *pkt_v6 = data + sizeof(*meta);
+-	int duration = 0;
+ 
+ 	if (CHECK(size != 72 + sizeof(*meta), "check_size", "size %u != %zu\n",
+ 		  size, 72 + sizeof(*meta)))
+@@ -65,7 +64,6 @@ void serial_test_kfree_skb(void)
+ 	struct perf_buffer *pb = NULL;
+ 	int err, prog_fd;
+ 	bool passed = false;
+-	__u32 duration = 0;
+ 	const int zero = 0;
+ 	bool test_ok[2];
+ 
+diff --git a/tools/testing/selftests/bpf/prog_tests/perf_branches.c b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
+index bc24f8333..0942b9891 100644
+--- a/tools/testing/selftests/bpf/prog_tests/perf_branches.c
++++ b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
+@@ -13,7 +13,6 @@ static void check_good_sample(struct test_perf_branches *skel)
+ 	int required_size = skel->bss->required_size_out;
+ 	int written_stack = skel->bss->written_stack_out;
+ 	int pbe_size = sizeof(struct perf_branch_entry);
+-	int duration = 0;
+ 
+ 	if (CHECK(!skel->bss->valid, "output not valid",
+ 		 "no valid sample from prog"))
+@@ -43,7 +42,6 @@ static void check_bad_sample(struct test_perf_branches *skel)
+ 	int written_global = skel->bss->written_global_out;
+ 	int required_size = skel->bss->required_size_out;
+ 	int written_stack = skel->bss->written_stack_out;
+-	int duration = 0;
+ 
+ 	if (CHECK(!skel->bss->valid, "output not valid",
+ 		 "no valid sample from prog"))
+@@ -61,7 +59,7 @@ static void test_perf_branches_common(int perf_fd,
+ 				      void (*cb)(struct test_perf_branches *))
+ {
+ 	struct test_perf_branches *skel;
+-	int err, i, duration = 0;
++	int err, i;
+ 	bool detached = false;
+ 	struct bpf_link *link;
+ 	volatile int j = 0;
+@@ -102,7 +100,6 @@ static void test_perf_branches_common(int perf_fd,
+ static void test_perf_branches_hw(void)
+ {
+ 	struct perf_event_attr attr = {0};
+-	int duration = 0;
+ 	int pfd;
+ 
+ 	/* create perf event */
+@@ -143,7 +140,6 @@ static void test_perf_branches_hw(void)
+ static void test_perf_branches_no_hw(void)
+ {
+ 	struct perf_event_attr attr = {0};
+-	int duration = 0;
+ 	int pfd;
+ 
+ 	/* create perf event */
+diff --git a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+index e41929813..a7c6ad8d6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
++++ b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+@@ -9,7 +9,7 @@ static const char str3[] = "mestringblubblubblubblubblub";
+ static int test_one_str(struct test_probe_read_user_str *skel, const char *str,
+ 			size_t len)
+ {
+-	int err, duration = 0;
++	int err;
+ 	char buf[256];
+ 
+ 	/* Ensure bytes after string are ones */
+@@ -44,7 +44,7 @@ static int test_one_str(struct test_probe_read_user_str *skel, const char *str,
+ void test_probe_read_user_str(void)
+ {
+ 	struct test_probe_read_user_str *skel;
+-	int err, duration = 0;
++	int err;
+ 
+ 	skel = test_probe_read_user_str__open_and_load();
+ 	if (CHECK(!skel, "test_probe_read_user_str__open_and_load",
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_overhead.c b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
+index f27013e38..6161009df 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_overhead.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
+@@ -17,7 +17,7 @@ static __u64 time_get_ns(void)
+ 
+ static int test_task_rename(const char *prog)
+ {
+-	int i, fd, duration = 0, err;
++	int i, fd, err;
+ 	char buf[] = "test_overhead";
+ 	__u64 start_time;
+ 
+@@ -66,7 +66,7 @@ void test_test_overhead(void)
+ 	struct bpf_program *fentry_prog, *fexit_prog;
+ 	struct bpf_object *obj;
+ 	struct bpf_link *link;
+-	int err, duration = 0;
++	int err;
+ 	char comm[16] = {};
+ 
+ 	if (CHECK_FAIL(prctl(PR_GET_NAME, comm, 0L, 0L, 0L)))
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c b/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
+index 8b50a992d..5af434353 100644
+--- a/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
+@@ -40,7 +40,6 @@ static bool expect_str(char *buf, size_t size, const char *str, const char *name
+ {
+ 	static char escbuf_expected[CMD_OUT_BUF_SIZE * 4];
+ 	static char escbuf_actual[CMD_OUT_BUF_SIZE * 4];
+-	static int duration = 0;
+ 	bool ok;
+ 
+ 	ok = size == strlen(str) && !memcmp(buf, str, size);
+-- 
+2.17.1
 
-v1=E2=80=A6v2:
-  - Moved xdp_do_check_flushed() to net/core/dev.h.
-  - Stripped __ from function names.
-  - Removed empty lines within an ifdef block.
-  - xdp_do_check_flushed() is now behind CONFIG_DEBUG_NET &&
-    CONFIG_BPF_SYSCALL. dev_check_flush and cpu_map_check_flush are now
-    only behind CONFIG_DEBUG_NET. They have no empty inline function for
-    the !CONFIG_DEBUG_NET case since they are only called in
-    CONFIG_DEBUG_NET case.
 
- include/linux/bpf.h    |  3 +++
- include/net/xdp_sock.h |  9 +++++++++
- kernel/bpf/cpumap.c    | 10 ++++++++++
- kernel/bpf/devmap.c    | 10 ++++++++++
- net/core/dev.c         |  2 ++
- net/core/dev.h         |  6 ++++++
- net/core/filter.c      | 16 ++++++++++++++++
- net/xdp/xsk.c          | 10 ++++++++++
- 8 files changed, 66 insertions(+)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index a34ac7f00c86c..584adabd411fc 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2478,6 +2478,9 @@ void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, voi=
-d *data,
- 		     enum bpf_dynptr_type type, u32 offset, u32 size);
- void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr);
- void bpf_dynptr_set_rdonly(struct bpf_dynptr_kern *ptr);
-+
-+bool dev_check_flush(void);
-+bool cpu_map_check_flush(void);
- #else /* !CONFIG_BPF_SYSCALL */
- static inline struct bpf_prog *bpf_prog_get(u32 ufd)
- {
-diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-index 69b472604b86f..7dd0df2f6f8e6 100644
---- a/include/net/xdp_sock.h
-+++ b/include/net/xdp_sock.h
-@@ -109,4 +109,13 @@ static inline void __xsk_map_flush(void)
-=20
- #endif /* CONFIG_XDP_SOCKETS */
-=20
-+#if defined(CONFIG_XDP_SOCKETS) && defined(CONFIG_DEBUG_NET)
-+bool xsk_map_check_flush(void);
-+#else
-+static inline bool xsk_map_check_flush(void)
-+{
-+	return false;
-+}
-+#endif
-+
- #endif /* _LINUX_XDP_SOCK_H */
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index e42a1bdb7f536..8a0bb80fe48a3 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -764,6 +764,16 @@ void __cpu_map_flush(void)
- 	}
- }
-=20
-+#ifdef CONFIG_DEBUG_NET
-+bool cpu_map_check_flush(void)
-+{
-+	if (list_empty(this_cpu_ptr(&cpu_map_flush_list)))
-+		return false;
-+	__cpu_map_flush();
-+	return true;
-+}
-+#endif
-+
- static int __init cpu_map_init(void)
- {
- 	int cpu;
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 4d42f6ed6c11a..a936c704d4e77 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -418,6 +418,16 @@ void __dev_flush(void)
- 	}
- }
-=20
-+#ifdef CONFIG_DEBUG_NET
-+bool dev_check_flush(void)
-+{
-+	if (list_empty(this_cpu_ptr(&dev_flush_list)))
-+		return false;
-+	__dev_flush();
-+	return true;
-+}
-+#endif
-+
- /* Elements are kept alive by RCU; either by rcu_read_lock() (from syscall=
-) or
-  * by local_bh_disable() (from XDP calls inside NAPI). The
-  * rcu_read_lock_bh_held() below makes lockdep accept both.
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 606a366cc2095..9273b12ecf6fa 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -6526,6 +6526,8 @@ static int __napi_poll(struct napi_struct *n, bool *r=
-epoll)
- 	if (test_bit(NAPI_STATE_SCHED, &n->state)) {
- 		work =3D n->poll(n, weight);
- 		trace_napi_poll(n, work, weight);
-+
-+		xdp_do_check_flushed(n);
- 	}
-=20
- 	if (unlikely(work > weight))
-diff --git a/net/core/dev.h b/net/core/dev.h
-index e075e198092cc..f66125857af77 100644
---- a/net/core/dev.h
-+++ b/net/core/dev.h
-@@ -136,4 +136,10 @@ static inline void netif_set_gro_ipv4_max_size(struct =
-net_device *dev,
- }
-=20
- int rps_cpumask_housekeeping(struct cpumask *mask);
-+
-+#if defined(CONFIG_DEBUG_NET) && defined(CONFIG_BPF_SYSCALL)
-+void xdp_do_check_flushed(struct napi_struct *napi);
-+#else
-+static inline void xdp_do_check_flushed(struct napi_struct *napi) { }
-+#endif
- #endif
-diff --git a/net/core/filter.c b/net/core/filter.c
-index a094694899c99..af2d34d5e1815 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -82,6 +82,8 @@
- #include <net/mptcp.h>
- #include <net/netfilter/nf_conntrack_bpf.h>
-=20
-+#include "dev.h"
-+
- static const struct bpf_func_proto *
- bpf_sk_base_func_proto(enum bpf_func_id func_id);
-=20
-@@ -4207,6 +4209,20 @@ void xdp_do_flush(void)
- }
- EXPORT_SYMBOL_GPL(xdp_do_flush);
-=20
-+#if defined(CONFIG_DEBUG_NET) && defined(CONFIG_BPF_SYSCALL)
-+void xdp_do_check_flushed(struct napi_struct *napi)
-+{
-+	bool ret;
-+
-+	ret =3D dev_check_flush();
-+	ret |=3D cpu_map_check_flush();
-+	ret |=3D xsk_map_check_flush();
-+
-+	WARN_ONCE(ret, "Missing xdp_do_flush() invocation after NAPI by %ps\n",
-+		  napi->poll);
-+}
-+#endif
-+
- void bpf_clear_redirect_map(struct bpf_map *map)
- {
- 	struct bpf_redirect_info *ri;
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index f5e96e0d6e01d..ba070fd37d244 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -391,6 +391,16 @@ void __xsk_map_flush(void)
- 	}
- }
-=20
-+#ifdef CONFIG_DEBUG_NET
-+bool xsk_map_check_flush(void)
-+{
-+	if (list_empty(this_cpu_ptr(&xskmap_flush_list)))
-+		return false;
-+	__xsk_map_flush();
-+	return true;
-+}
-+#endif
-+
- void xsk_tx_completed(struct xsk_buff_pool *pool, u32 nb_entries)
- {
- 	xskq_prod_submit_n(pool->cq, nb_entries);
---=20
-2.42.0
 
 
