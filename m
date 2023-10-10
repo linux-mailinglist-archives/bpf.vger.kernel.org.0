@@ -1,211 +1,173 @@
-Return-Path: <bpf+bounces-11794-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11793-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A56B17BF3B7
-	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 09:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 81DCF7BF39B
+	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 09:02:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D20DF1C20C6C
-	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 07:03:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AA471C20BF1
+	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 07:02:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46BF1BE47;
-	Tue, 10 Oct 2023 07:03:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10258BA57;
+	Tue, 10 Oct 2023 07:02:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AFzV2OgP"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F68B9467
-	for <bpf@vger.kernel.org>; Tue, 10 Oct 2023 07:03:41 +0000 (UTC)
-X-Greylist: delayed 208 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 10 Oct 2023 00:03:35 PDT
-Received: from cmccmta2.chinamobile.com (cmccmta2.chinamobile.com [111.22.67.135])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id CD26392;
-	Tue, 10 Oct 2023 00:03:34 -0700 (PDT)
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
-	by rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee76524f673dda-d9616;
-	Tue, 10 Oct 2023 15:00:05 +0800 (CST)
-X-RM-TRANSID:2ee76524f673dda-d9616
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from ubuntu.localdomain (unknown[10.54.5.252])
-	by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee36524f67471b-d4b7c;
-	Tue, 10 Oct 2023 15:00:05 +0800 (CST)
-X-RM-TRANSID:2ee36524f67471b-d4b7c
-From: zhujun2 <zhujun2@cmss.chinamobile.com>
-To: shuah@kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	andrii@kernel.org,
-	zhujun2@cmss.chinamobile.com
-Subject: [PATCH] selftests: bpf: remove unused variables
-Date: Tue, 10 Oct 2023 00:00:01 -0700
-Message-Id: <20231010070001.10125-1-zhujun2@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCD1C63DF
+	for <bpf@vger.kernel.org>; Tue, 10 Oct 2023 07:02:34 +0000 (UTC)
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52A19E;
+	Tue, 10 Oct 2023 00:02:32 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-690fa0eea3cso4774701b3a.0;
+        Tue, 10 Oct 2023 00:02:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696921352; x=1697526152; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J7TlUT4iA6Enp4+NnUvxoflcvwXu+Bej6qibbzSZJLY=;
+        b=AFzV2OgPcf8qKyls0ZOZc3l1Klwpfcz83sW43SmmDe2Wvbn4/MXRdrWSw0v+dDttVq
+         KXihX621s3L9mbj74jppR70mlDBnNvUse5woXZPPV2zJy7dnYSTkVH6CjS3jdCzjErTr
+         rNJKxD6NJFKx1sExNXIUj4pwBEpp1PfniFGpRBfDjRxEIkQPeipCNmPNZu1lsUBQKMeP
+         3HvK5nWgxXCXJRtKcEh2leHkOHEUtuDwjSRrlkxI3J5G83wG2x4p5pVdtpZmC2xvVpAq
+         t26/hZaHgI2ujJcZGyDZB2Quwt4ySnNAq2N58ipkqwOUQAQYrd1YkDBDg9RpQu7QkQr5
+         CTeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696921352; x=1697526152;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=J7TlUT4iA6Enp4+NnUvxoflcvwXu+Bej6qibbzSZJLY=;
+        b=lR1xwZox5MekU8MkbiEIz1q2k5BEGJFoIhASMS/atXlbWC1q6MgLF86OnhSwNhtOKS
+         BJuEUOVyzBGi9E9CBEEUTbxVeqMGxVDcYUrtGnBkjAEJOCiA+eoKK1DfOmzMvsnDhaQD
+         mVg+vIXvTDMuepLQakWrFQn6/+razpHqPC7A2wdu9dkjuY6v/2U1JjOj6vH0dBRpGb1F
+         FxravH5+0rTcnKDxBVwvadS5U7B5a+HqIMGFNsgyyvd8K9qx5xYy18DH0NUBEP8TdClB
+         1nLQlGzmCrWHrFmtbUotRi18U1fuRETNFnq8y9vTOtPxjnbnLzELOy8suSRPO4tqSZAs
+         /EqQ==
+X-Gm-Message-State: AOJu0YweI6/fLb9oEDyHlHNoVpqM0ZCKptMM73q1p+oWxhfIE+icg3oY
+	g3duGKBAtOEZcKw2F/NbY97TlhM1kUY=
+X-Google-Smtp-Source: AGHT+IEJdCgB6VlU/kck/9RNK712UtUdnMajU8Cf9zT5nkdzujAEkzTqhz64lxxFuH1tDxotuB6UMA==
+X-Received: by 2002:a05:6a21:3284:b0:16b:79b3:222b with SMTP id yt4-20020a056a21328400b0016b79b3222bmr14874878pzb.34.1696921352101;
+        Tue, 10 Oct 2023 00:02:32 -0700 (PDT)
+Received: from localhost ([98.97.32.4])
+        by smtp.gmail.com with ESMTPSA id y17-20020a056a001c9100b0068fcc7f6b00sm1236452pfw.74.2023.10.10.00.02.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 00:02:22 -0700 (PDT)
+Date: Tue, 10 Oct 2023 00:02:15 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Hao Sun <sunhao.th@gmail.com>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@google.com>, 
+ Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>
+Cc: bpf@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Hao Sun <sunhao.th@gmail.com>
+Message-ID: <6524f6f77b896_66abc2084d@john.notmuch>
+In-Reply-To: <20231009-jmp-into-reserved-fields-v1-1-d8006e2ac1f6@gmail.com>
+References: <20231009-jmp-into-reserved-fields-v1-1-d8006e2ac1f6@gmail.com>
+Subject: RE: [PATCH bpf-next] Detect jumping to reserved code during
+ check_cfg()
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-These variables are never referenced in the code, just remove them.
+Hao Sun wrote:
+> Currently, we don't check if the branch-taken of a jump is reserved code of
+> ld_imm64. Instead, such a issue is captured in check_ld_imm(). The verifier
+> gives the following log in such case:
+> 
+> func#0 @0
+> 0: R1=ctx(off=0,imm=0) R10=fp0
+> 0: (18) r4 = 0xffff888103436000       ; R4_w=map_ptr(off=0,ks=4,vs=128,imm=0)
+> 2: (18) r1 = 0x1d                     ; R1_w=29
+> 4: (55) if r4 != 0x0 goto pc+4        ; R4_w=map_ptr(off=0,ks=4,vs=128,imm=0)
+> 5: (1c) w1 -= w1                      ; R1_w=0
+> 6: (18) r5 = 0x32                     ; R5_w=50
+> 8: (56) if w5 != 0xfffffff4 goto pc-2
+> mark_precise: frame0: last_idx 8 first_idx 0 subseq_idx -1
+> mark_precise: frame0: regs=r5 stack= before 6: (18) r5 = 0x32
+> 7: R5_w=50
+> 7: BUG_ld_00
+> invalid BPF_LD_IMM insn
+> 
+> Here the verifier rejects the program because it thinks insn at 7 is an
+> invalid BPF_LD_IMM, but such a error log is not accurate since the issue
+> is jumping to reserved code not because the program contains invalid insn.
+> Therefore, make the verifier check the jump target during check_cfg(). For
+> the same program, the verifier reports the following log:
 
-Signed-off-by: zhujun2 <zhujun2@cmss.chinamobile.com>
----
- tools/testing/selftests/bpf/prog_tests/atomic_bounds.c      | 1 -
- tools/testing/selftests/bpf/prog_tests/kfree_skb.c          | 2 --
- tools/testing/selftests/bpf/prog_tests/perf_branches.c      | 6 +-----
- .../testing/selftests/bpf/prog_tests/probe_read_user_str.c  | 4 ++--
- tools/testing/selftests/bpf/prog_tests/test_overhead.c      | 4 ++--
- tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c       | 1 -
- 6 files changed, 5 insertions(+), 13 deletions(-)
+I think we at least would want a test case for this. Also how did you create
+this case? Is it just something you did manually and noticed a strange error?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
-index 69bd7853e..4715cde38 100644
---- a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
-+++ b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
-@@ -7,7 +7,6 @@
- void test_atomic_bounds(void)
- {
- 	struct atomic_bounds *skel;
--	__u32 duration = 0;
- 
- 	skel = atomic_bounds__open_and_load();
- 	if (CHECK(!skel, "skel_load", "couldn't load program\n"))
-diff --git a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-index c07991544..b0992a9ed 100644
---- a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-@@ -20,7 +20,6 @@ static void on_sample(void *ctx, int cpu, void *data, __u32 size)
- {
- 	struct meta *meta = (struct meta *)data;
- 	struct ipv6_packet *pkt_v6 = data + sizeof(*meta);
--	int duration = 0;
- 
- 	if (CHECK(size != 72 + sizeof(*meta), "check_size", "size %u != %zu\n",
- 		  size, 72 + sizeof(*meta)))
-@@ -65,7 +64,6 @@ void serial_test_kfree_skb(void)
- 	struct perf_buffer *pb = NULL;
- 	int err, prog_fd;
- 	bool passed = false;
--	__u32 duration = 0;
- 	const int zero = 0;
- 	bool test_ok[2];
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/perf_branches.c b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
-index bc24f8333..0942b9891 100644
---- a/tools/testing/selftests/bpf/prog_tests/perf_branches.c
-+++ b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
-@@ -13,7 +13,6 @@ static void check_good_sample(struct test_perf_branches *skel)
- 	int required_size = skel->bss->required_size_out;
- 	int written_stack = skel->bss->written_stack_out;
- 	int pbe_size = sizeof(struct perf_branch_entry);
--	int duration = 0;
- 
- 	if (CHECK(!skel->bss->valid, "output not valid",
- 		 "no valid sample from prog"))
-@@ -43,7 +42,6 @@ static void check_bad_sample(struct test_perf_branches *skel)
- 	int written_global = skel->bss->written_global_out;
- 	int required_size = skel->bss->required_size_out;
- 	int written_stack = skel->bss->written_stack_out;
--	int duration = 0;
- 
- 	if (CHECK(!skel->bss->valid, "output not valid",
- 		 "no valid sample from prog"))
-@@ -61,7 +59,7 @@ static void test_perf_branches_common(int perf_fd,
- 				      void (*cb)(struct test_perf_branches *))
- {
- 	struct test_perf_branches *skel;
--	int err, i, duration = 0;
-+	int err, i;
- 	bool detached = false;
- 	struct bpf_link *link;
- 	volatile int j = 0;
-@@ -102,7 +100,6 @@ static void test_perf_branches_common(int perf_fd,
- static void test_perf_branches_hw(void)
- {
- 	struct perf_event_attr attr = {0};
--	int duration = 0;
- 	int pfd;
- 
- 	/* create perf event */
-@@ -143,7 +140,6 @@ static void test_perf_branches_hw(void)
- static void test_perf_branches_no_hw(void)
- {
- 	struct perf_event_attr attr = {0};
--	int duration = 0;
- 	int pfd;
- 
- 	/* create perf event */
-diff --git a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-index e41929813..a7c6ad8d6 100644
---- a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-+++ b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-@@ -9,7 +9,7 @@ static const char str3[] = "mestringblubblubblubblubblub";
- static int test_one_str(struct test_probe_read_user_str *skel, const char *str,
- 			size_t len)
- {
--	int err, duration = 0;
-+	int err;
- 	char buf[256];
- 
- 	/* Ensure bytes after string are ones */
-@@ -44,7 +44,7 @@ static int test_one_str(struct test_probe_read_user_str *skel, const char *str,
- void test_probe_read_user_str(void)
- {
- 	struct test_probe_read_user_str *skel;
--	int err, duration = 0;
-+	int err;
- 
- 	skel = test_probe_read_user_str__open_and_load();
- 	if (CHECK(!skel, "test_probe_read_user_str__open_and_load",
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_overhead.c b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-index f27013e38..6161009df 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-@@ -17,7 +17,7 @@ static __u64 time_get_ns(void)
- 
- static int test_task_rename(const char *prog)
- {
--	int i, fd, duration = 0, err;
-+	int i, fd, err;
- 	char buf[] = "test_overhead";
- 	__u64 start_time;
- 
-@@ -66,7 +66,7 @@ void test_test_overhead(void)
- 	struct bpf_program *fentry_prog, *fexit_prog;
- 	struct bpf_object *obj;
- 	struct bpf_link *link;
--	int err, duration = 0;
-+	int err;
- 	char comm[16] = {};
- 
- 	if (CHECK_FAIL(prctl(PR_GET_NAME, comm, 0L, 0L, 0L)))
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c b/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
-index 8b50a992d..5af434353 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
-@@ -40,7 +40,6 @@ static bool expect_str(char *buf, size_t size, const char *str, const char *name
- {
- 	static char escbuf_expected[CMD_OUT_BUF_SIZE * 4];
- 	static char escbuf_actual[CMD_OUT_BUF_SIZE * 4];
--	static int duration = 0;
- 	bool ok;
- 
- 	ok = size == strlen(str) && !memcmp(buf, str, size);
--- 
-2.17.1
-
-
-
+> 
+> func#0 @0
+> jump to reserved code from insn 8 to 7
+> 
+> ---
+> 
+> 
+> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+> ---
+>  kernel/bpf/verifier.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index eed7350e15f4..725ac0b464cf 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -14980,6 +14980,7 @@ static int push_insn(int t, int w, int e, struct bpf_verifier_env *env,
+>  {
+>  	int *insn_stack = env->cfg.insn_stack;
+>  	int *insn_state = env->cfg.insn_state;
+> +	struct bpf_insn *insns = env->prog->insnsi;
+>  
+>  	if (e == FALLTHROUGH && insn_state[t] >= (DISCOVERED | FALLTHROUGH))
+>  		return DONE_EXPLORING;
+> @@ -14993,6 +14994,12 @@ static int push_insn(int t, int w, int e, struct bpf_verifier_env *env,
+>  		return -EINVAL;
+>  	}
+>  
+> +	if (e == BRANCH && insns[w].code == 0) {
+> +		verbose_linfo(env, t, "%d", t);
+> +		verbose(env, "jump to reserved code from insn %d to %d\n", t, w);
+> +		return -EINVAL;
+> +	}
+> +
+>  	if (e == BRANCH) {
+>  		/* mark branch target for state pruning */
+>  		mark_prune_point(env, w);
+> 
+> ---
+> base-commit: 3157b7ce14bbf468b0ca8613322a05c37b5ae25d
+> change-id: 20231009-jmp-into-reserved-fields-fc1a98a8e7dc
+> 
+> Best regards,
+> -- 
+> Hao Sun <sunhao.th@gmail.com>
+> 
 
