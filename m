@@ -1,78 +1,63 @@
-Return-Path: <bpf+bounces-11839-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11836-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D7177C4150
-	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 22:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ED5367C410A
+	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 22:20:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79B1D1C20E56
-	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 20:35:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D30931C20E46
+	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 20:20:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A25C4315B2;
-	Tue, 10 Oct 2023 20:35:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACCFF31581;
+	Tue, 10 Oct 2023 20:20:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dgTCCo39"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="C491yruG"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B334208D9
-	for <bpf@vger.kernel.org>; Tue, 10 Oct 2023 20:35:38 +0000 (UTC)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69BF91
-	for <bpf@vger.kernel.org>; Tue, 10 Oct 2023 13:35:35 -0700 (PDT)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39AKU3IA025190;
-	Tue, 10 Oct 2023 20:35:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=G/mfDxEp03rPYb6uh3oLP2Pn4fyAG4lWQ5YC8+LNxLo=;
- b=dgTCCo395fACM6h7T6klkICtuQ9wHQ+MFKPXG2Iu8Kd6oPk/x1wsEXylZtJvVxdkCjgh
- tHWqdCIXeWucabnekLvmkSKKbEBjeUIl3rom+cfC21Vtj+NBWY+8m0b/GtBmug106xnu
- ZvHOn1DeLVNGFnN4zNmGZ1U7c4VqaFMbeW4anJEiwZa5QSrEw77F2gXekogEiyEKGd0s
- ZGwpCsAZnoy57mt/05Jeg6fxb7bZP/cX6XCWjkKXJddQEWx6pe5MP0DVKjrOdaJ0vYdM
- xmaHkjuKP7IDQ1Ie9psA3mklZ643C2jAQDimd+UFB+a+y/WSDu7sbN8BWnc4s91e+iAH oQ== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tndq1g85k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 10 Oct 2023 20:35:22 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39AJ8teg028188;
-	Tue, 10 Oct 2023 20:35:22 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkj1y34x2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 10 Oct 2023 20:35:21 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39AKZI4T43319716
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 10 Oct 2023 20:35:18 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2FCB42004B;
-	Tue, 10 Oct 2023 20:35:18 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 86FA62004E;
-	Tue, 10 Oct 2023 20:35:17 +0000 (GMT)
-Received: from heavy.boeblingen.de.ibm.com (unknown [9.171.0.76])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 10 Oct 2023 20:35:17 +0000 (GMT)
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>, Song Liu <song@kernel.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf 2/2] s390/bpf: Fix unwinding past the trampoline
-Date: Tue, 10 Oct 2023 22:20:10 +0200
-Message-ID: <20231010203512.385819-3-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231010203512.385819-1-iii@linux.ibm.com>
-References: <20231010203512.385819-1-iii@linux.ibm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 641F12745F;
+	Tue, 10 Oct 2023 20:20:48 +0000 (UTC)
+Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9BDEB8;
+	Tue, 10 Oct 2023 13:20:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1696969247; x=1728505247;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=o4u11zrx7eA11CZzeyTu4a0TO7Mfy7hjPMsW7SqOWgU=;
+  b=C491yruGHLAoAl9Wa6Tqk+xpDVAX0NgDZzvvk38aYKGrxO+8YhafPGBz
+   3iDe3r8mIS5oGHiN8SjlK6NZd+cb+2TzFOS14WiIp2lzELrfFd5HXKW4i
+   qsakhXG/JBYVLNU0QfKQ6f/vXC7gYCCoaSM1gQVehKYKHroN9BYA8EkXO
+   E=;
+X-IronPort-AV: E=Sophos;i="6.03,213,1694736000"; 
+   d="scan'208";a="363425396"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-ed19f671.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 20:20:43 +0000
+Received: from EX19MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+	by email-inbound-relay-pdx-2b-m6i4x-ed19f671.us-west-2.amazon.com (Postfix) with ESMTPS id 2FC9B80760;
+	Tue, 10 Oct 2023 20:20:42 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Tue, 10 Oct 2023 20:20:40 +0000
+Received: from 88665a182662.ant.amazon.com (10.187.171.11) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Tue, 10 Oct 2023 20:20:37 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <martin.lau@linux.dev>
+CC: <bpf@vger.kernel.org>, <daan.j.demeyer@gmail.com>, <kernel-team@meta.com>,
+	<kuniyu@amazon.com>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v9 3/9] bpf: Add bpf_sock_addr_set_unix_addr() to allow writing unix sockaddr from bpf
+Date: Tue, 10 Oct 2023 13:20:30 -0700
+Message-ID: <20231010202030.32676-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <bdffefed-8945-e5ac-052d-0f0b49a30d39@linux.dev>
+References: <bdffefed-8945-e5ac-052d-0f0b49a30d39@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -80,102 +65,41 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: yu7UX69sPGUvQy7AcbpOatKFODqtF7Re
-X-Proofpoint-GUID: yu7UX69sPGUvQy7AcbpOatKFODqtF7Re
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-10_16,2023-10-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 bulkscore=0 impostorscore=0 adultscore=0 spamscore=0
- mlxscore=0 lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310100159
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.187.171.11]
+X-ClientProxiedBy: EX19D043UWC001.ant.amazon.com (10.13.139.202) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Precedence: Bulk
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-When functions called by the trampoline panic, the backtrace that is
-printed stops at the trampoline, because the trampoline does not store
-its caller's frame address (backchain) on stack; it also stores the
-return address at a wrong location.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Date: Tue, 10 Oct 2023 13:07:54 -0700
+> On 10/10/23 10:00 AM, Kuniyuki Iwashima wrote:
+> >> +__bpf_kfunc int bpf_sock_addr_set_unix_addr(struct bpf_sock_addr_kern *sa_kern,
+> >> +					    const u8 *addr, u32 addrlen__sz)
+> > I'd rename addrlen__sz to sun_path_len or something else because the
+> > conventional addrlen for AF_UNIX contains offsetof(struct sockaddr_un,
+> > sun_path).
+> 
+> The "__sz" suffix is required by the verifier. It is the size of the preceding 
+> argument "addr". While at it, addrlen__sz should be just "addr__sz" (or 
+> sun_path__sz, depending on what name is decided here) for consistency with other 
+> kfunc.
 
-Store both the same way as is already done for the regular eBPF
-programs.
+I didn't know that, thank you!
 
-Fixes: 528eb2cb87bc ("s390/bpf: Implement arch_prepare_bpf_trampoline()")
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- arch/s390/net/bpf_jit_comp.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index 8955bc80270a..082b913f214e 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -2205,6 +2205,7 @@ struct bpf_tramp_jit {
- 				 * func_addr's original caller
- 				 */
- 	int stack_size;		/* Trampoline stack size */
-+	int backchain_off;	/* Offset of backchain */
- 	int stack_args_off;	/* Offset of stack arguments for calling
- 				 * func_addr, has to be at the top
- 				 */
-@@ -2225,9 +2226,10 @@ struct bpf_tramp_jit {
- 				 * for __bpf_prog_enter() return value and
- 				 * func_addr respectively
- 				 */
--	int r14_off;		/* Offset of saved %r14 */
- 	int run_ctx_off;	/* Offset of struct bpf_tramp_run_ctx */
- 	int tccnt_off;		/* Offset of saved tailcall counter */
-+	int r14_off;		/* Offset of saved %r14, has to be at the
-+				 * bottom */
- 	int do_fexit;		/* do_fexit: label */
- };
- 
-@@ -2386,8 +2388,12 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 	 * Calculate the stack layout.
- 	 */
- 
--	/* Reserve STACK_FRAME_OVERHEAD bytes for the callees. */
-+	/*
-+	 * Allocate STACK_FRAME_OVERHEAD bytes for the callees. As the s390x
-+	 * ABI requires, put our backchain at the end of the allocated memory.
-+	 */
- 	tjit->stack_size = STACK_FRAME_OVERHEAD;
-+	tjit->backchain_off = tjit->stack_size - sizeof(u64);
- 	tjit->stack_args_off = alloc_stack(tjit, nr_stack_args * sizeof(u64));
- 	tjit->reg_args_off = alloc_stack(tjit, nr_reg_args * sizeof(u64));
- 	tjit->ip_off = alloc_stack(tjit, sizeof(u64));
-@@ -2395,10 +2401,10 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 	tjit->bpf_args_off = alloc_stack(tjit, nr_bpf_args * sizeof(u64));
- 	tjit->retval_off = alloc_stack(tjit, sizeof(u64));
- 	tjit->r7_r8_off = alloc_stack(tjit, 2 * sizeof(u64));
--	tjit->r14_off = alloc_stack(tjit, sizeof(u64));
- 	tjit->run_ctx_off = alloc_stack(tjit,
- 					sizeof(struct bpf_tramp_run_ctx));
- 	tjit->tccnt_off = alloc_stack(tjit, sizeof(u64));
-+	tjit->r14_off = alloc_stack(tjit, sizeof(u64) * 2);
- 	/*
- 	 * In accordance with the s390x ABI, the caller has allocated
- 	 * STACK_FRAME_OVERHEAD bytes for us. 8 of them contain the caller's
-@@ -2407,8 +2413,13 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 	tjit->stack_size -= STACK_FRAME_OVERHEAD - sizeof(u64);
- 	tjit->orig_stack_args_off = tjit->stack_size + STACK_FRAME_OVERHEAD;
- 
-+	/* lgr %r1,%r15 */
-+	EMIT4(0xb9040000, REG_1, REG_15);
- 	/* aghi %r15,-stack_size */
- 	EMIT4_IMM(0xa70b0000, REG_15, -tjit->stack_size);
-+	/* stg %r1,backchain_off(%r15) */
-+	EMIT6_DISP_LH(0xe3000000, 0x0024, REG_1, REG_0, REG_15,
-+		      tjit->backchain_off);
- 	/* mvc tccnt_off(4,%r15),stack_size+STK_OFF_TCCNT(%r15) */
- 	_EMIT6(0xd203f000 | tjit->tccnt_off,
- 	       0xf000 | (tjit->stack_size + STK_OFF_TCCNT));
--- 
-2.41.0
+> 
+> I don't have strong preference on the argument name. However, if it is 
+> sun_path__sz, then the preceding argument should be renamed to "sun_path" also 
+> for consistency reason and then the kfunc should probably be renamed to 
+> bpf_sock_addr_set_sun_path.
 
+I prefer sun_path, sun_path__sz, and bpf_sock_addr_set_sun_path() that are
+clearer and consistent with uAPI, sockaddr_un.sun_path.
 
