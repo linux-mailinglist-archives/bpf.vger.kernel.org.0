@@ -1,359 +1,150 @@
-Return-Path: <bpf+bounces-11786-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11788-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A29C7BF261
-	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 07:45:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28D737BF268
+	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 07:46:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 763281C20DA6
-	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 05:45:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D75E3281DC7
+	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 05:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22B258F74;
-	Tue, 10 Oct 2023 05:45:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DED6F9444;
+	Tue, 10 Oct 2023 05:46:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RpADoLv0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZN8RcoiF"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94FBF8F65
-	for <bpf@vger.kernel.org>; Tue, 10 Oct 2023 05:45:40 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE5FA3
-	for <bpf@vger.kernel.org>; Mon,  9 Oct 2023 22:45:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1696916737;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P+I2EY4NGx452ATYzw4Kz0XF6aTAAXvBTqSjZlE93qM=;
-	b=RpADoLv0vfxwvMfGJ7suyhF9X/y1TBDezYf+eiHfzI9wrhlsRs1lX1CcMFLInGMIs14IFC
-	r5DvbFrg0QszMoVvrfSSE4mGbITRNFqKROgQLyNS/9/eKQz1wsTTzgLR/tmKi1NFXfgwYn
-	CUhSrPisAmj8+Q+Xjf5rGmXM0/KvtYQ=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-628-72i6j0SNNv2qCPKHzBD0tg-1; Tue, 10 Oct 2023 01:45:26 -0400
-X-MC-Unique: 72i6j0SNNv2qCPKHzBD0tg-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-5042bc93273so4588484e87.1
-        for <bpf@vger.kernel.org>; Mon, 09 Oct 2023 22:45:26 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4E4C63A5;
+	Tue, 10 Oct 2023 05:46:23 +0000 (UTC)
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84ED2AC;
+	Mon,  9 Oct 2023 22:46:20 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-690d8fb3b7eso4668248b3a.1;
+        Mon, 09 Oct 2023 22:46:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696916780; x=1697521580; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=uvYgbd6jsaxRvqO2oO/xtebxfgxyUR4b8FU8FPolyTQ=;
+        b=ZN8RcoiFcfC24Na+zm1RWNKXxgNC+ERmTsykvdk5lHRzskZIHpn0QPFpwoLyY9W1He
+         JP1zK+ypaNrrOynnWG5SkMFDFTCJq7MTnVyRf7S0KvHJEOwl/x6rqD+2UQ+RPsNUBFqJ
+         3s6PUZKFkvf3Vbub/LHMobbu8aRF3u1GveLMIr9o+P3uWfuhqk8b6eMhrzNIkNBE2ZlZ
+         yg1rrQPdKTKAZ+vdgu4nzev/hNXT7OQNOphw4hcPid4Mx0Yv5XbWdlIeehZZhLPO/g66
+         34YJDM3slFHTzVu/LOpi8Asn6Qb0MUAj1J1Tw83jBdkeOJGrPFwFDPjIG6/YYJ1HLTk/
+         E3kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696916725; x=1697521525;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P+I2EY4NGx452ATYzw4Kz0XF6aTAAXvBTqSjZlE93qM=;
-        b=MQyp3EIVrYhnw51E/PJcqmEhLfwBUpmdeNL53obbEDFdn572bewAUR6QNmMbUCtxij
-         krdW//tB8QpfakwTqJK5jIo03xMbBE2P+zKuZwaxP2YK1MmIFrAx3FsgdBkXsmNlGCcp
-         E5MRkeZyOYe3NfTrq0yB/2+pY3ett8D6l0/T+Yx4jwBl+YqzVDVa0brpPvTDSXBxzota
-         PfrfBtK4t18bsSAQPknV+P5e3JcuhcEmQfYTs6cfTdK5ZWdhqXmgbF9TIqSDPR+je0QN
-         4ULuYifovsMbooqOfwKsshAsFR+/dFdL1I8muj/uo0U3wRoCKyA6GEKLKhxFsU3V9FZY
-         cQfQ==
-X-Gm-Message-State: AOJu0YxHcOqRShh+pcLlBfcwqlp8CVYrJBOpdTiWxaGQTlCV66n43X5u
-	/q5+nKFqgXbHYsojZaMUFPVdIMqEAhbk3Db/FTj/sXGAXYZj+hat0Jnd4ggCQUe77tySlnxz1HM
-	3Ts89hxWR+oevj/8TjRE6MP81mGM6
-X-Received: by 2002:a05:6512:ea9:b0:500:b2f6:592 with SMTP id bi41-20020a0565120ea900b00500b2f60592mr18281191lfb.50.1696916725103;
-        Mon, 09 Oct 2023 22:45:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF+pwNtTVbI2Ms4EjKlIUtAy5k+rLiIL3TUr1dcb8YFsqYJmXGlmcetJxkpWxQ3ditYPytVqKZpNg5+JzyWzwk=
-X-Received: by 2002:a05:6512:ea9:b0:500:b2f6:592 with SMTP id
- bi41-20020a0565120ea900b00500b2f60592mr18281158lfb.50.1696916724673; Mon, 09
- Oct 2023 22:45:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696916780; x=1697521580;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uvYgbd6jsaxRvqO2oO/xtebxfgxyUR4b8FU8FPolyTQ=;
+        b=RFlXnD7AZXyMhLpsBhN93xCJ2mhaXvgdq2PWCoK/NQBn/xe1r6bmO6N2uy59GoeV1P
+         K1e+IQYPznne2gig7KmTy3HUQILzXkAF1lS45WIsiMxEvxJAcaQup3lE+AOLvO/ghaE9
+         cCY3ix1o90SyZUQIJ+me0SDX31pK9f0mp+bcXD0dfBkpfyEHtTu5pTQNaW4H+VuWJ2rU
+         NdR/Wk3VVT/2GDwoA0o9b2vZxqoO5EpxmP80LegaU5GnLv8IRfyrxf06GTf5+rC4FmJf
+         2IakXHI58h4kGFB7kFf9OatgjGI+z5DSAlzNvg1SqDzCj5UzcIFPlWF+E08VV6v0rc05
+         Xlfg==
+X-Gm-Message-State: AOJu0YzFt+KBGUBrTRGSgVcYJWTsj1sJ+1TS7MQRMzh4xaA9u+T6uCnK
+	NqkpTorDThJCaPI/jCzyoiQ=
+X-Google-Smtp-Source: AGHT+IGSXYrNljbSBZ8JLJG1lxLjBrIBoLUDtOS6inCVelawQFY9TLT3ojme9OmifOlqQQgRQPlURA==
+X-Received: by 2002:a05:6a21:a5a8:b0:152:6b63:f1e5 with SMTP id gd40-20020a056a21a5a800b001526b63f1e5mr24226512pzc.38.1696916779861;
+        Mon, 09 Oct 2023 22:46:19 -0700 (PDT)
+Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:2749:d38c:68c4:434f])
+        by smtp.gmail.com with ESMTPSA id u10-20020a170902b28a00b001c60a2b5c61sm10590084plr.134.2023.10.09.22.46.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 22:46:19 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>
+Cc: Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	bpf@vger.kernel.org
+Subject: [PATCH v2 1/2] perf lock contention: Clear lock addr after use
+Date: Mon,  9 Oct 2023 22:46:16 -0700
+Message-ID: <20231010054617.1901616-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231008052101.144422-1-akihiko.odaki@daynix.com>
- <20231008052101.144422-6-akihiko.odaki@daynix.com> <CAF=yD-LdwcXKK66s5gvJNOH8qCWRt3SvEL-GkkVif=kkOaYGhg@mail.gmail.com>
- <8f4ad5bc-b849-4ef4-ac1f-8d5a796205e9@daynix.com> <CAF=yD-+DjDqE9iBu+PvbeBby=C4CCwG=fMFONQONrsErmps3ww@mail.gmail.com>
- <286508a3-3067-456d-8bbf-176b00dcc0c6@daynix.com> <CAF=yD-+syCSJz_wp25rEaHTXMFRHgLh1M-uTdNWPb4fnrKgpFw@mail.gmail.com>
- <8711b549-094d-4be2-b7af-bd93b7516c05@daynix.com> <CAF=yD-+M75o2=yDy5d03fChuNTeeTRkUU7rPRG1i6O9aZGhLmQ@mail.gmail.com>
- <695a0611-2b19-49f9-8d32-cfea3b7df0b2@daynix.com> <CAF=yD-+_PLPt9qfXy1Ljr=Lou0W8hCJLi6HwPcZYCjJy+SKtbA@mail.gmail.com>
- <5baab0cf-7adf-475d-8968-d46ddd179f9a@daynix.com> <CAF=yD-KjvycgFrfKu5CgGGWU-3HbyXt_APQy4tqZgNtJwAUKzg@mail.gmail.com>
- <8f3ed081-134c-45a0-9208-c1cab29cdf37@daynix.com>
-In-Reply-To: <8f3ed081-134c-45a0-9208-c1cab29cdf37@daynix.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Tue, 10 Oct 2023 13:45:11 +0800
-Message-ID: <CACGkMEv0tpn4YsJhXXnoispYx2-VBimFAtFmf85Uo=5=6taVuw@mail.gmail.com>
-Subject: Re: [RFC PATCH 5/7] tun: Introduce virtio-net hashing feature
-To: Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, "Michael S. Tsirkin" <mst@redhat.com>, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
-	virtualization@lists.linux-foundation.org, linux-kselftest@vger.kernel.org, 
-	bpf@vger.kernel.org, davem@davemloft.net, kuba@kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, 
-	yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	rdunlap@infradead.org, willemb@google.com, gustavoars@kernel.org, 
-	herbert@gondor.apana.org.au, steffen.klassert@secunet.com, nogikh@google.com, 
-	pablo@netfilter.org, decui@microsoft.com, jakub@cloudflare.com, 
-	elver@google.com, pabeni@redhat.com, 
-	Yuri Benditovich <yuri.benditovich@daynix.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Oct 10, 2023 at 9:52=E2=80=AFAM Akihiko Odaki <akihiko.odaki@daynix=
-.com> wrote:
->
-> On 2023/10/09 19:44, Willem de Bruijn wrote:
-> > On Mon, Oct 9, 2023 at 3:12=E2=80=AFAM Akihiko Odaki <akihiko.odaki@day=
-nix.com> wrote:
-> >>
-> >> On 2023/10/09 19:06, Willem de Bruijn wrote:
-> >>> On Mon, Oct 9, 2023 at 3:02=E2=80=AFAM Akihiko Odaki <akihiko.odaki@d=
-aynix.com> wrote:
-> >>>>
-> >>>> On 2023/10/09 18:57, Willem de Bruijn wrote:
-> >>>>> On Mon, Oct 9, 2023 at 3:57=E2=80=AFAM Akihiko Odaki <akihiko.odaki=
-@daynix.com> wrote:
-> >>>>>>
-> >>>>>> On 2023/10/09 17:04, Willem de Bruijn wrote:
-> >>>>>>> On Sun, Oct 8, 2023 at 3:46=E2=80=AFPM Akihiko Odaki <akihiko.oda=
-ki@daynix.com> wrote:
-> >>>>>>>>
-> >>>>>>>> On 2023/10/09 5:08, Willem de Bruijn wrote:
-> >>>>>>>>> On Sun, Oct 8, 2023 at 10:04=E2=80=AFPM Akihiko Odaki <akihiko.=
-odaki@daynix.com> wrote:
-> >>>>>>>>>>
-> >>>>>>>>>> On 2023/10/09 4:07, Willem de Bruijn wrote:
-> >>>>>>>>>>> On Sun, Oct 8, 2023 at 7:22=E2=80=AFAM Akihiko Odaki <akihiko=
-.odaki@daynix.com> wrote:
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> virtio-net have two usage of hashes: one is RSS and another =
-is hash
-> >>>>>>>>>>>> reporting. Conventionally the hash calculation was done by t=
-he VMM.
-> >>>>>>>>>>>> However, computing the hash after the queue was chosen defea=
-ts the
-> >>>>>>>>>>>> purpose of RSS.
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> Another approach is to use eBPF steering program. This appro=
-ach has
-> >>>>>>>>>>>> another downside: it cannot report the calculated hash due t=
-o the
-> >>>>>>>>>>>> restrictive nature of eBPF.
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> Introduce the code to compute hashes to the kernel in order =
-to overcome
-> >>>>>>>>>>>> thse challenges. An alternative solution is to extend the eB=
-PF steering
-> >>>>>>>>>>>> program so that it will be able to report to the userspace, =
-but it makes
-> >>>>>>>>>>>> little sense to allow to implement different hashing algorit=
-hms with
-> >>>>>>>>>>>> eBPF since the hash value reported by virtio-net is strictly=
- defined by
-> >>>>>>>>>>>> the specification.
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> The hash value already stored in sk_buff is not used and com=
-puted
-> >>>>>>>>>>>> independently since it may have been computed in a way not c=
-onformant
-> >>>>>>>>>>>> with the specification.
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
-> >>>>>>>>>>>> ---
-> >>>>>>>>>>>
-> >>>>>>>>>>>> +static const struct tun_vnet_hash_cap tun_vnet_hash_cap =3D=
- {
-> >>>>>>>>>>>> +       .max_indirection_table_length =3D
-> >>>>>>>>>>>> +               TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH,
-> >>>>>>>>>>>> +
-> >>>>>>>>>>>> +       .types =3D VIRTIO_NET_SUPPORTED_HASH_TYPES
-> >>>>>>>>>>>> +};
-> >>>>>>>>>>>
-> >>>>>>>>>>> No need to have explicit capabilities exchange like this? Tun=
- either
-> >>>>>>>>>>> supports all or none.
-> >>>>>>>>>>
-> >>>>>>>>>> tun does not support VIRTIO_NET_RSS_HASH_TYPE_IP_EX,
-> >>>>>>>>>> VIRTIO_NET_RSS_HASH_TYPE_TCP_EX, and VIRTIO_NET_RSS_HASH_TYPE_=
-UDP_EX.
-> >>>>>>>>>>
-> >>>>>>>>>> It is because the flow dissector does not support IPv6 extensi=
-ons. The
-> >>>>>>>>>> specification is also vague, and does not tell how many TLVs s=
-hould be
-> >>>>>>>>>> consumed at most when interpreting destination option header s=
-o I chose
-> >>>>>>>>>> to avoid adding code for these hash types to the flow dissecto=
-r. I doubt
-> >>>>>>>>>> anyone will complain about it since nobody complains for Linux=
-.
-> >>>>>>>>>>
-> >>>>>>>>>> I'm also adding this so that we can extend it later.
-> >>>>>>>>>> max_indirection_table_length may grow for systems with 128+ CP=
-Us, or
-> >>>>>>>>>> types may have other bits for new protocols in the future.
-> >>>>>>>>>>
-> >>>>>>>>>>>
-> >>>>>>>>>>>>               case TUNSETSTEERINGEBPF:
-> >>>>>>>>>>>> -               ret =3D tun_set_ebpf(tun, &tun->steering_pro=
-g, argp);
-> >>>>>>>>>>>> +               bpf_ret =3D tun_set_ebpf(tun, &tun->steering=
-_prog, argp);
-> >>>>>>>>>>>> +               if (IS_ERR(bpf_ret))
-> >>>>>>>>>>>> +                       ret =3D PTR_ERR(bpf_ret);
-> >>>>>>>>>>>> +               else if (bpf_ret)
-> >>>>>>>>>>>> +                       tun->vnet_hash.flags &=3D ~TUN_VNET_=
-HASH_RSS;
-> >>>>>>>>>>>
-> >>>>>>>>>>> Don't make one feature disable another.
-> >>>>>>>>>>>
-> >>>>>>>>>>> TUNSETSTEERINGEBPF and TUNSETVNETHASH are mutually exclusive
-> >>>>>>>>>>> functions. If one is enabled the other call should fail, with=
- EBUSY
-> >>>>>>>>>>> for instance.
-> >>>>>>>>>>>
-> >>>>>>>>>>>> +       case TUNSETVNETHASH:
-> >>>>>>>>>>>> +               len =3D sizeof(vnet_hash);
-> >>>>>>>>>>>> +               if (copy_from_user(&vnet_hash, argp, len)) {
-> >>>>>>>>>>>> +                       ret =3D -EFAULT;
-> >>>>>>>>>>>> +                       break;
-> >>>>>>>>>>>> +               }
-> >>>>>>>>>>>> +
-> >>>>>>>>>>>> +               if (((vnet_hash.flags & TUN_VNET_HASH_REPORT=
-) &&
-> >>>>>>>>>>>> +                    (tun->vnet_hdr_sz < sizeof(struct virti=
-o_net_hdr_v1_hash) ||
-> >>>>>>>>>>>> +                     !tun_is_little_endian(tun))) ||
-> >>>>>>>>>>>> +                    vnet_hash.indirection_table_mask >=3D
-> >>>>>>>>>>>> +                    TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LEN=
-GTH) {
-> >>>>>>>>>>>> +                       ret =3D -EINVAL;
-> >>>>>>>>>>>> +                       break;
-> >>>>>>>>>>>> +               }
-> >>>>>>>>>>>> +
-> >>>>>>>>>>>> +               argp =3D (u8 __user *)argp + len;
-> >>>>>>>>>>>> +               len =3D (vnet_hash.indirection_table_mask + =
-1) * 2;
-> >>>>>>>>>>>> +               if (copy_from_user(vnet_hash_indirection_tab=
-le, argp, len)) {
-> >>>>>>>>>>>> +                       ret =3D -EFAULT;
-> >>>>>>>>>>>> +                       break;
-> >>>>>>>>>>>> +               }
-> >>>>>>>>>>>> +
-> >>>>>>>>>>>> +               argp =3D (u8 __user *)argp + len;
-> >>>>>>>>>>>> +               len =3D virtio_net_hash_key_length(vnet_hash=
-.types);
-> >>>>>>>>>>>> +
-> >>>>>>>>>>>> +               if (copy_from_user(vnet_hash_key, argp, len)=
-) {
-> >>>>>>>>>>>> +                       ret =3D -EFAULT;
-> >>>>>>>>>>>> +                       break;
-> >>>>>>>>>>>> +               }
-> >>>>>>>>>>>
-> >>>>>>>>>>> Probably easier and less error-prone to define a fixed size c=
-ontrol
-> >>>>>>>>>>> struct with the max indirection table size.
-> >>>>>>>>>>
-> >>>>>>>>>> I made its size variable because the indirection table and key=
- may grow
-> >>>>>>>>>> in the future as I wrote above.
-> >>>>>>>>>>
-> >>>>>>>>>>>
-> >>>>>>>>>>> Btw: please trim the CC: list considerably on future patches.
-> >>>>>>>>>>
-> >>>>>>>>>> I'll do so in the next version with the TUNSETSTEERINGEBPF cha=
-nge you
-> >>>>>>>>>> proposed.
-> >>>>>>>>>
-> >>>>>>>>> To be clear: please don't just resubmit with that one change.
-> >>>>>>>>>
-> >>>>>>>>> The skb and cb issues are quite fundamental issues that need to=
- be resolved.
-> >>>>>>>>>
-> >>>>>>>>> I'd like to understand why adjusting the existing BPF feature f=
-or this
-> >>>>>>>>> exact purpose cannot be amended to return the key it produced.
-> >>>>>>>>
-> >>>>>>>> eBPF steering program is not designed for this particular proble=
-m in my
-> >>>>>>>> understanding. It was introduced to derive hash values with an
-> >>>>>>>> understanding of application-specific semantics of packets inste=
-ad of
-> >>>>>>>> generic IP/TCP/UDP semantics.
-> >>>>>>>>
-> >>>>>>>> This problem is rather different in terms that the hash derivati=
-on is
-> >>>>>>>> strictly defined by virtio-net. I don't think it makes sense to
-> >>>>>>>> introduce the complexity of BPF when you always run the same cod=
-e.
-> >>>>>>>>
-> >>>>>>>> It can utilize the existing flow dissector and also make it easi=
-er to
-> >>>>>>>> use for the userspace by implementing this in the kernel.
-> >>>>>>>
-> >>>>>>> Ok. There does appear to be overlap in functionality. But it migh=
-t be
-> >>>>>>> easier to deploy to just have standard Toeplitz available without
-> >>>>>>> having to compile and load an eBPF program.
-> >>>>>>>
-> >>>>>>> As for the sk_buff and cb[] changes. The first is really not need=
-ed.
-> >>>>>>> sk_buff simply would not scale if every edge case needs a few bit=
-s.
-> >>>>>>
-> >>>>>> An alternative is to move the bit to cb[] and clear it for every c=
-ode
-> >>>>>> paths that lead to ndo_start_xmit(), but I'm worried that it is er=
-ror-prone.
-> >>>>>>
-> >>>>>> I think we can put the bit in sk_buff for now. We can implement th=
-e
-> >>>>>> alternative when we are short of bits.
-> >>>>>
-> >>>>> I disagree. sk_buff fields add a cost to every code path. They cann=
-ot
-> >>>>> be added for every edge case.
-> >>>>
-> >>>> It only takes an unused bit and does not grow the sk_buff size so I
-> >>>> think it has practically no cost for now.
-> >>>
-> >>> The problem is that that thinking leads to death by a thousand cuts.
-> >>>
-> >>> "for now" forces the cost of having to think hard how to avoid growin=
-g
-> >>> sk_buff onto the next person. Let's do it right from the start.
-> >>
-> >> I see. I described an alternative to move the bit to cb[] and clear it
-> >> in all code paths that leads to ndo_start_xmit() earlier. Does that
-> >> sound good to you?
-> >
-> > If you use the control block to pass information between
-> > __dev_queue_xmit on the tun device and tun_net_xmit, using gso_skb_cb,
-> > the field can be left undefined in all non-tun paths. tun_select_queue
-> > can initialize.
->
-> The problem is that tun_select_queue() is not always called.
-> netdev_core_pick_tx() ensures dev->real_num_tx_queues !=3D 1 before
-> calling it, but this variable may change later and result in a race
-> condition. Another case is that XDP with predefined queue.
->
-> >
-> > I would still use skb->hash to encode the hash. That hash type of that
-> > field is not strictly defined. It can be siphash from ___skb_get_hash
-> > or a device hash, which most likely also uses Toeplitz. Then you also
-> > don't run into the problem of growing the struct size.
->
-> I'm concerned exactly because it's not strictly defined. Someone may
-> decide to overwrite it later if we are not cautious enough. qdisc_skb_cb
-> also has sufficient space to contain both of the hash value and type.
+It checks the current lock to calculated the delta of contention time.
+The address is saved in the tstamp map which is allocated at begining of
+contention and released at end of contention.
 
-How about using skb extensions?
+But it's possible for bpf_map_delete_elem() to fail.  In that case, the
+element in the tstamp map kept for the current lock and it makes the
+next contention for the same lock tracked incorrectly.  Specificially
+the next contention begin will see the existing element for the task and
+it'd just return.  Then the next contention end will see the element and
+calculate the time using the timestamp for the previous begin.
 
-Thanks
+This can result in a large value for two small contentions happened from
+time to time.  Let's clear the lock address so that it can be updated
+next time even if the bpf_map_delete_elem() failed.
 
->
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/bpf_skel/lock_contention.bpf.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+index 4900a5dfb4a4..b11179452e19 100644
+--- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
++++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+@@ -389,6 +389,7 @@ int contention_end(u64 *ctx)
+ 
+ 	duration = bpf_ktime_get_ns() - pelem->timestamp;
+ 	if ((__s64)duration < 0) {
++		pelem->lock = 0;
+ 		bpf_map_delete_elem(&tstamp, &pid);
+ 		__sync_fetch_and_add(&time_fail, 1);
+ 		return 0;
+@@ -422,6 +423,7 @@ int contention_end(u64 *ctx)
+ 	data = bpf_map_lookup_elem(&lock_stat, &key);
+ 	if (!data) {
+ 		if (data_map_full) {
++			pelem->lock = 0;
+ 			bpf_map_delete_elem(&tstamp, &pid);
+ 			__sync_fetch_and_add(&data_fail, 1);
+ 			return 0;
+@@ -445,6 +447,7 @@ int contention_end(u64 *ctx)
+ 				data_map_full = 1;
+ 			__sync_fetch_and_add(&data_fail, 1);
+ 		}
++		pelem->lock = 0;
+ 		bpf_map_delete_elem(&tstamp, &pid);
+ 		return 0;
+ 	}
+@@ -458,6 +461,7 @@ int contention_end(u64 *ctx)
+ 	if (data->min_time > duration)
+ 		data->min_time = duration;
+ 
++	pelem->lock = 0;
+ 	bpf_map_delete_elem(&tstamp, &pid);
+ 	return 0;
+ }
+-- 
+2.42.0.609.gbb76f46606-goog
 
 
