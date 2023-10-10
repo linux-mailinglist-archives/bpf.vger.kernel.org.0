@@ -1,57 +1,58 @@
-Return-Path: <bpf+bounces-11797-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11798-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAD517BF4FF
-	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 09:56:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00A737BF532
+	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 10:02:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3323C281CEB
-	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 07:56:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E342A1C20C24
+	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 08:02:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E03A14F6D;
-	Tue, 10 Oct 2023 07:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7018814F92;
+	Tue, 10 Oct 2023 08:01:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="lwXgjzTc"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="HimaW3ME"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 885E74435
-	for <bpf@vger.kernel.org>; Tue, 10 Oct 2023 07:56:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1EBF3D9F
+	for <bpf@vger.kernel.org>; Tue, 10 Oct 2023 08:01:55 +0000 (UTC)
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89DF891;
-	Tue, 10 Oct 2023 00:56:41 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D296592;
+	Tue, 10 Oct 2023 01:01:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
 	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=F3J7/sD9MnoAxBVvtMX9s8ZlPemFuT1rR2twFtWmelo=; b=lwXgjzTcYUgKc9Ar1zv62glWnE
-	qG7MR0438bkr0VRcBxMCsnSqZvm9G2p/2z2aVWyd0tf5TUfgj4bhxNa0qI1vP/coZ4Z09HJJwaKaE
-	06nORU4TikE/mHz0g02Y4YFmRXn+vImHUcPcQt+fRo7Z9mtuNYF8UnDoergShTF0mKjrwQxrwPcQf
-	Xb5s2ASm8kyW66a/tI+zbQjsTVeXfD8o9smrw1Wfb+lzLr7vbNOAckphy+TnGRMo1sB5pO9EF6qJx
-	/3jc8MSL0ZLy6dKaFMJv5aEmOWTxMNQynV2IhU537cDIhjq2/yvSDIwfc7m8KyD013gnr8bGewee7
-	cz13/8Qw==;
+	bh=QM5Im+7k5GpQA/JxbJgORC477jL0+OQeMFKuqizFCv0=; b=HimaW3MEuVu9hIyFdVUHaS9/Mz
+	3vW+IpvgwTDGEpiu3fRopt4gwLwu7QR6pTroCqHtp9VWuy/jSf7T4a4KBrHQclHYC5lN8TFngSck3
+	cd6nf91a41FyK3G+2LbUYztywiE17/LR97+bNRXEXFASbPd6SbFCyJ8Iul1PmaD9l5nshTbJC5wso
+	i6eI8HPopLF77xx7G/mpkYZNiY3/QRdLVa91l6Bpp4fXphDw/mokWbb+/qYvXSiw9uNJaiI9sV7ja
+	wJ4ipg10tL/ygP5CzdhD7YvHq2AMaeiA1XYCytHU2+wGzD8jpkpU9mUwriuJIH7mnYHUYTIi8UZ5c
+	GdQS0PCA==;
 Received: from sslproxy03.your-server.de ([88.198.220.132])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1qq7bR-000Nq6-OI; Tue, 10 Oct 2023 09:56:30 +0200
+	id 1qq7ge-000OeD-3m; Tue, 10 Oct 2023 10:01:52 +0200
 Received: from [178.197.249.27] (helo=linux.home)
 	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1qq7bR-000UjG-Bk; Tue, 10 Oct 2023 09:56:29 +0200
-Subject: Re: [PATCH] selftests: bpf: remove unused variables
-To: zhujun2 <zhujun2@cmss.chinamobile.com>, shuah@kernel.org
-Cc: ast@kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- andrii@kernel.org
-References: <20231010070001.10125-1-zhujun2@cmss.chinamobile.com>
+	id 1qq7gd-000Lqg-Qs; Tue, 10 Oct 2023 10:01:51 +0200
+Subject: Re: [PATCH bpf-next v4 0/8] Add Open-coded task, css_task and css
+ iters
+To: Chuyi Zhou <zhouchuyi@bytedance.com>, bpf@vger.kernel.org
+Cc: ast@kernel.org, andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231007124522.34834-1-zhouchuyi@bytedance.com>
 From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <2e4c17ac-9a61-4901-8f98-c783242eec28@iogearbox.net>
-Date: Tue, 10 Oct 2023 09:56:28 +0200
+Message-ID: <d25f9b70-e958-c229-c275-95ed664bf0ed@iogearbox.net>
+Date: Tue, 10 Oct 2023 10:01:51 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 Precedence: bulk
@@ -60,7 +61,7 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231010070001.10125-1-zhujun2@cmss.chinamobile.com>
+In-Reply-To: <20231007124522.34834-1-zhouchuyi@bytedance.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -73,19 +74,81 @@ X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 10/10/23 9:00 AM, zhujun2 wrote:
-> These variables are never referenced in the code, just remove them.
+On 10/7/23 2:45 PM, Chuyi Zhou wrote:
+> Hi,
 > 
-> Signed-off-by: zhujun2 <zhujun2@cmss.chinamobile.com>
-> ---
->   tools/testing/selftests/bpf/prog_tests/atomic_bounds.c      | 1 -
->   tools/testing/selftests/bpf/prog_tests/kfree_skb.c          | 2 --
->   tools/testing/selftests/bpf/prog_tests/perf_branches.c      | 6 +-----
->   .../testing/selftests/bpf/prog_tests/probe_read_user_str.c  | 4 ++--
->   tools/testing/selftests/bpf/prog_tests/test_overhead.c      | 4 ++--
->   tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c       | 1 -
->   6 files changed, 5 insertions(+), 13 deletions(-)
+> This is version 4 of task, css_task and css iters support.
+> Thanks for your review!
+> 
+> --- Changelog ---
+> 
+> v3 -> v4:https://lore.kernel.org/all/20230925105552.817513-1-zhouchuyi@bytedance.com/
+> 
+> * Address all the comments from Andrii in patch-3 ~ patch-6
+> * Collect Tejun's ack
+> * Add a extra patch to rename bpf_iter_task.c to bpf_iter_tasks.c
+> * Seperate three BPF program files for selftests (iters_task.c iters_css_task.c iters_css.c)
 
-You did not even try to compile-test it, otherwise you would have noticed that the
-build fails after your patches..
+This fails to build BPF selftests:
+
+[...]
+  /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:166:6: error: variable 'skel' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
+           if (!ASSERT_OK(err, "setup_cgroup_environment"))
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:190:26: note: uninitialized use occurs here
+           iters_css_task__destroy(skel);
+                                   ^~~~
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:166:2: note: remove the 'if' if its condition is always false
+           if (!ASSERT_OK(err, "setup_cgroup_environment"))
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:162:6: error: variable 'skel' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
+           if (!ASSERT_GE(cg_fd, 0, "cg_create"))
+     TEST-OBJ [test_progs] xdp.test.o
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:190:26: note: uninitialized use occurs here
+           iters_css_task__destroy(skel);
+                                   ^~~~
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:162:2: note: remove the 'if' if its condition is always false
+           if (!ASSERT_GE(cg_fd, 0, "cg_create"))
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:159:6: error: variable 'skel' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
+           if (!ASSERT_OK(err, "setup_cgroup_environment"))
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:190:26: note: uninitialized use occurs here
+           iters_css_task__destroy(skel);
+                                   ^~~~
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:159:2: note: remove the 'if' if its condition is always false
+           if (!ASSERT_OK(err, "setup_cgroup_environment"))
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:154:29: note: initialize the variable 'skel' to silence this warning
+           struct iters_css_task *skel;
+                                      ^
+                                       = NULL
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:213:7: error: variable 'skel' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
+                   if (!ASSERT_GE(cgs[i].fd, 0, "cg_create"))
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:244:21: note: uninitialized use occurs here
+           iters_css__destroy(skel);
+                              ^~~~
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:213:3: note: remove the 'if' if its condition is always false
+                   if (!ASSERT_GE(cgs[i].fd, 0, "cg_create"))
+                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:209:6: error: variable 'skel' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
+           if (!ASSERT_OK(err, "setup_cgroup_environment"))
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:244:21: note: uninitialized use occurs here
+           iters_css__destroy(skel);
+                              ^~~~
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:209:2: note: remove the 'if' if its condition is always false
+           if (!ASSERT_OK(err, "setup_cgroup_environment"))
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:195:24: note: initialize the variable 'skel' to silence this warning
+           struct iters_css *skel;
+                                 ^
+                                  = NULL
+   5 errors generated.
+   make: *** [Makefile:605: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/iters.test.o] Error 1
+   make: *** Waiting for unfinished jobs....
+   make: Leaving directory '/tmp/work/bpf/bpf/tools/testing/selftests/bpf'
+   Error: Process completed with exit code 2.
 
