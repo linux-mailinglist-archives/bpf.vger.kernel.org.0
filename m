@@ -1,309 +1,309 @@
-Return-Path: <bpf+bounces-11842-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11843-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D1527C4245
-	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 23:20:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 969257C437D
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 00:09:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0A7A1C20DA2
-	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 21:20:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85E7A281E7F
+	for <lists+bpf@lfdr.de>; Tue, 10 Oct 2023 22:09:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FF65225DE;
-	Tue, 10 Oct 2023 21:20:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FDB06119;
+	Tue, 10 Oct 2023 22:09:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="Xa3B6S4F"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YXnzN+Sl"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A101A28EC
-	for <bpf@vger.kernel.org>; Tue, 10 Oct 2023 21:20:15 +0000 (UTC)
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519E99B
-	for <bpf@vger.kernel.org>; Tue, 10 Oct 2023 14:20:12 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d9a58f5f33dso1327584276.1
-        for <bpf@vger.kernel.org>; Tue, 10 Oct 2023 14:20:12 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D836432C61
+	for <bpf@vger.kernel.org>; Tue, 10 Oct 2023 22:09:49 +0000 (UTC)
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0B694;
+	Tue, 10 Oct 2023 15:09:47 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c871a095ceso46400085ad.2;
+        Tue, 10 Oct 2023 15:09:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1696972811; x=1697577611; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l5WnvZdCnoM58J1wFevooPtZFhGHwe1PvsjVxfIMlrQ=;
-        b=Xa3B6S4FoNNOJkLolu/6hpaaiFcTJRpQcG2QS6rUW63xDa3sR902LM9KB/JySIt1l+
-         uo6aTQ+5Teh+r3nhZLJLMaj5cXakz20jDVnhsQS5QyXizjh8pZedG868l/t+3BSGWxt7
-         vwCzMv9lzI6j11/FmTchKHaaK7//Dkkg4IfP/KNrp6kpc6n/1R/iw5UBad6ic0/OHak5
-         xnW87RD94VeGppYkEv1NRtGK79uy0eQCWpwJ8K/mqX6awoZ/ByoHzehu5CDSMsTdb3Ds
-         PecDuB6i4ioeRNz/htjWpUZ24eQz08SLDcdWrUSZ+39o9UN0OwRx9+Z0zYNkkmnFXXHa
-         zlHQ==
+        d=gmail.com; s=20230601; t=1696975787; x=1697580587; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ocMIZwsPwAUeO+we0n8h8enjCQGDDQ9xd1KmXD5+ghs=;
+        b=YXnzN+Sl4ITgQIzxEXcTy8t85OIg7wc1YIa8C/e25dPM/w1PItuhmGpJz93uj/3dLp
+         5PQJtEuWFhgLZyIXjUQzD/O8iTLyunt+v3gQTDuFiyT/AFrJqym7zs4fQWkX7kQVLgN/
+         /EAHjRIhphMX9ydpp3Qi05HQFydnx9Ov0Pn2Qw3/1l/W8AhwydMwYbcG2yV4YeWXUDwt
+         8qnQOrosJxFaDoXcwkcU9eNZClqXHqtKJm0F8SVoj/5K7Tic503cHKFvBh0NeipcBELd
+         hxPeSWlxErEjkD5hE1dLnL/dTlTppbECnxtIuBkSa81ufPuHyO2KnwGONHB9of5IReA/
+         uE7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696972811; x=1697577611;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l5WnvZdCnoM58J1wFevooPtZFhGHwe1PvsjVxfIMlrQ=;
-        b=jECkIuif8jZY/DDdrfEiokTQsU/muFJ4Qdp2Pedn8NiIHcCoRCiDPwIKwwH2mTbISH
-         GGLZE4UG0LocKeNvjKkupYZKQK/jpArkjyKWEe5GT0SZ3YXAWcaxgTp61/NLe880PiNF
-         jtTCcJxb1ey1iRpGA98ArHNVisQnSJYmFgXMZTnjx4Zffj1FtLa0Lu8RbQFQ7Vzfn/Uj
-         tYJkD0lK+/l/sV5egqaeTKQMm+nFfkB/FB7hIWHFamFDyabIh62pllD7yGUrjPVEeiH3
-         9GW3W3oPRxDNVn8kRIrz3VlZBWG3Gy41g7kIy92qrtS/ZEbq+xANx8xkrZ3GmmhV6vOg
-         DI1Q==
-X-Gm-Message-State: AOJu0YwwmcgLuQmfMV115zQmub4jyEhJoL+kYD3s7B4dfGPb4cUKNzgx
-	7A9EigjESfR0SShB3tuDHgLVJR0RP0D39xLz8BFL
-X-Google-Smtp-Source: AGHT+IF625SGysDbsQ+Cvj60L41qzvjjwZ4GrMKwK623Ur1RKSHKqJcNcRxnrMbipgypR7FJzfoKE1Htra2884IwPZA=
-X-Received: by 2002:a25:c785:0:b0:d84:a6e8:9b9 with SMTP id
- w127-20020a25c785000000b00d84a6e809b9mr20105448ybe.28.1696972810186; Tue, 10
- Oct 2023 14:20:10 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696975787; x=1697580587;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ocMIZwsPwAUeO+we0n8h8enjCQGDDQ9xd1KmXD5+ghs=;
+        b=H8o9FdjxKVb9alo7dPz2CLtuYU9T6Nu0LfF8tDf3Ynpz04FpM0UY83a7CPVplxYc72
+         7IByukzBpFgHmI3l6Shj/Fwj52xikWbYJTQCCu1Up+/a/93ckqe5KO4WO1CDcOTBLT5P
+         qLHTre0wWXR02d5n7oW9s28yIMVTlwxnATm+s5fvYFp0EoV5rNSIqQxZbrD4MV3Iq7o0
+         BbfJQirD+LcnW9Ny0EeFtBGnutKNOHSfFSZlb70F8JzyC7m0+OGH7ivF6d5z/7XxbpDO
+         gBR7UGBRai9r6YPHh38HShdtmMqc+c6x+QRQOup3y2Kzdr54h+SJ2+dRWGkYdBTXBVQ6
+         DOPg==
+X-Gm-Message-State: AOJu0YzDa4HLlAY8ohouVn/W3TRuM7iE/tABbi0794Di1fWCvyAFidWt
+	Kq9oX3vCLTBUn9cocq2/GsA=
+X-Google-Smtp-Source: AGHT+IGYndRyzIltdZjrYXp8OxEgKRpla2c8nWRYsKM6UiuFsBzYoAWF+zwa4GoI4dKfgWGxQwEncA==
+X-Received: by 2002:a17:902:c947:b0:1c7:4a8a:32d1 with SMTP id i7-20020a170902c94700b001c74a8a32d1mr20484919pla.28.1696975786727;
+        Tue, 10 Oct 2023 15:09:46 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:cced])
+        by smtp.gmail.com with ESMTPSA id ji2-20020a170903324200b001c75f94b0b0sm12342152plb.213.2023.10.10.15.09.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 15:09:46 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 10 Oct 2023 12:09:44 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Mel Gorman <mgorman@suse.de>
+Cc: Peter Zijlstra <peterz@infradead.org>, torvalds@linux-foundation.org,
+	mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+	joshdon@google.com, brho@google.com, pjt@google.com,
+	derkling@google.com, haoluo@google.com, dvernet@meta.com,
+	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	kernel-team@meta.com, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCHSET v4] sched: Implement BPF extensible scheduler class
+Message-ID: <ZSXLqNKajmeFRT8x@slm.duckdns.org>
+References: <20230711011412.100319-1-tj@kernel.org>
+ <ZLrQdTvzbmi5XFeq@slm.duckdns.org>
+ <20230726091752.GA3802077@hirez.programming.kicks-ass.net>
+ <ZMMH1WiYlipR0byf@slm.duckdns.org>
+ <20230817124457.b5dca734zcixqctu@suse.de>
+ <ZOfMNEoqt45Qmo00@slm.duckdns.org>
+ <ZQngsfCdj0TJbEUL@slm.duckdns.org>
+ <20230926092020.3alsvg6vwnc4g3td@suse.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230912212906.3975866-3-andrii@kernel.org> <3808036a0b32a17a7fd9e7d671b5458d.paul@paul-moore.com>
- <CAEf4BzYiKhG3ZL-GGQ4fHzSu6RKx2fh2JHwcL9_XKzQBvx3Bjg@mail.gmail.com>
- <CAHC9VhSOCAb6JQJn96xgwNNMGM0mKXf64ygkj4=Yv0FA8AYR=Q@mail.gmail.com>
- <CAEf4BzZC+9GbCsG56B2Q=woq+RHQS8oMTGJSNiMFKZpOKHhKpg@mail.gmail.com>
- <CAHC9VhTiqhQcfDr-7mThY1kH-Fwa7NUUU8ZWZvLFVudgtO8RAA@mail.gmail.com> <CAEf4BzZ8RvGwzVfm-EN1qdDiTv3Q2eYxBKOdBgGT96XzcvJCpw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ8RvGwzVfm-EN1qdDiTv3Q2eYxBKOdBgGT96XzcvJCpw@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 10 Oct 2023 17:19:59 -0400
-Message-ID: <CAHC9VhTp-YPRi8NzCr4_GT8BiWUcpQ4RrYqVQNE1HZwFOOffMg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/12] bpf: introduce BPF token object
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, keescook@chromium.org, 
-	brauner@kernel.org, lennart@poettering.net, kernel-team@meta.com, 
-	sargun@sargun.me, selinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230926092020.3alsvg6vwnc4g3td@suse.de>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Sep 22, 2023 at 6:35=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> On Thu, Sep 21, 2023 at 3:18=E2=80=AFPM Paul Moore <paul@paul-moore.com> =
-wrote:
-> > On Fri, Sep 15, 2023 at 4:59=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > > On Thu, Sep 14, 2023 at 5:55=E2=80=AFPM Paul Moore <paul@paul-moore.c=
-om> wrote:
-> > > > On Thu, Sep 14, 2023 at 1:31=E2=80=AFPM Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > On Wed, Sep 13, 2023 at 2:46=E2=80=AFPM Paul Moore <paul@paul-moo=
-re.com> wrote:
-> > > > > >
-> > > > > > On Sep 12, 2023 Andrii Nakryiko <andrii.nakryiko@gmail.com> wro=
-te:
+Hello, Mel.
 
-...
+On Tue, Sep 26, 2023 at 10:20:20AM +0100, Mel Gorman wrote:
+> Plenty, but I'm not sure how to reconcile this. I view pluggable scheduler
+> as something that would be a future maintenance nightmare and our "lived
+> experience" or "exposure bias" with respect to the expertise of users differs
+> drastically. Some developers will be mostly dealing with users that have
+> extensive relevant expertise, a strong incentive to maximise performance
+> and full control of their stack, others do not and the time cost of
+> supporting such users is high.
 
-> > > > > > I mentioned this a while back, likely in the other threads wher=
-e this
-> > > > > > token-based approach was only being discussed in general terms,=
- but I
-> > > > > > think we want to have a LSM hook at the point of initial token
-> > > > > > delegation for this and a hook when the token is used.  My init=
-ial
-> > > > > > thinking is that we should be able to address the former with a=
- hook
-> > > > > > in bpf_fill_super() and the latter either in bpf_token_get_from=
-_fd()
-> > > > > > or bpf_token_allow_XXX(); bpf_token_get_from_fd() would be simp=
-ler,
-> > > > > > but it doesn't allow for much in the way of granularity.  Inser=
-ting the
-> > > > > > LSM hooks in bpf_token_allow_XXX() would also allow the BPF cod=
-e to fall
-> > > > > > gracefully fallback to the system-wide checks if the LSM denied=
- the
-> > > > > > requested access whereas an access denial in bpf_token_get_from=
-_fd()
-> > > > > > denial would cause the operation to error out.
-> > > > >
-> > > > > I think the bpf_fill_super() LSM hook makes sense, but I thought
-> > > > > someone mentioned that we already have some generic LSM hook for
-> > > > > validating mounts? If we don't, I can certainly add one for BPF F=
-S
-> > > > > specifically.
-> > > >
-> > > > We do have security_sb_mount(), but that is a generic mount operati=
-on
-> > > > access control and not well suited for controlling the mount-based
-> > > > capability delegation that you are proposing here.  However, if you=
- or
-> > > > someone else has a clever way to make security_sb_mount() work for
-> > > > this purpose I would be very happy to review that code.
-> > >
-> > > To be honest, I'm a bit out of my depth here, as I don't know the
-> > > mounting parts well. Perhaps someone from VFS side can advise. But
-> > > regardless, I have no problem adding a new LSM hook as well, ideally
-> > > not very BPF-specific. If you have a specific form of it in mind, I'd
-> > > be curious to see it and implement it.
-> >
-> > I agree that there can be benefits to generalized LSM hooks, but in
-> > this hook I think it may need to be BPF specific simply because the
-> > hook would be dealing with the specific concept of delegating BPF
-> > permissions.
->
-> Sure. As an alternative, if this is about controlling BPF delegation,
-> instead of doing mount-time checks and LSM hook, perhaps we can add a
-> new LSM hook to BPF_CREATE_TOKEN, just like we have ones for
-> BPF_MAP_CREATE and BPF_PROG_LOAD. That will enable controlling
-> delegation more directly when it is actually attempted to be used.
+My experience working for distros is shorter and less extensive than yours
+but I believe I can appreciate the pain points to some degree. Getting
+dropped into an enterprise software problem where most of the environment is
+walled off can get really frustrating and pluggable schedulers can add
+unfamiliar problems on top.
 
-I'm also going to reply to the v6 patchset, but I thought there were
-some important points in this thread that were worth responding to
-here so that it would have the context of our previous discussion.
+That said, I'd like to reiterate two counter points:
 
-So yes, from an LSM perspective we are concerned with who grants the
-delegation (creates the token) and who leverages that token to do
-work.  When this patchset was still using anonymous inodes, marking
-and controlling token creation was relatively easy as we have existing
-hooks/control-points for anonymous inodes which take into account the
-anonymous inode class/type, e.g. bpffs.  Now that this patchset is
-using a regular bpffs inode we may need to do some additional work so
-that we can mark the bpffs token inode as a "token" so that we can
-later distinguish it from an ordinary bpffs inode; it might also serve
-as a convenient place to control creation of the token, but as you
-have already mentioned we could also control this from the existing
-security_bpf(BPF_CREATE_TOKEN, ...) hook at the top of __sys_bpf().
+First, there are multiple substantial non-distro communities that use and
+work on the kernel. Hyper-scalers that operate huge fleets of machines such
+as Google and Meta among others, public cloud operators such as Amazon and
+Google, hardware projects including smartphones, watches, VR headsets and so
+on.
 
-Anyway, more on this in the v6 patchset.
+Because these communities tend to have more vertical integration across the
+software stack and extremely high usage fan-out, development resource
+allocation and the boundaries of what can be reasonably tried are different
+from distros. In addition, the cost of failing to exploit optimization
+opportunities is very direct and often extremely high. The cost-benefit
+balance is pretty one sided in the favorable direction for these
+communities.
 
-> > I haven't taken the time to write up any hook patches yet as I wanted
-> > to discuss it with you and the others on the To/CC line, but it seems
-> > like we are roughly on the same page, at least with the initial
-> > delegation hook, so I can put something together if you aren't
-> > comfortable working on this (more on this below) ...
->
-> I'd appreciate the help from the SELinux side specifically, yes. I'm
-> absolutely OK to add a few new LSM hooks, though.
+Second, if a distro chooses to support sched_ext, there will be new kinds of
+problems but that wouldn't be for nothing. While there will be stupid cases,
+overall, the new problems will be there because users can now do things that
+they couldn't do before. As I wrote before, in principle at least, adding
+more capabilities should be a mutually beneficial proposition for both the
+distros and their users.
 
-I just want to say again that I'm very happy we can work together to
-make sure everything is covered :)
+> While I can see advantages to having specific
+> schedulers targeting either a specific workload or hardware configuration,
+> the proliferation of such schedulers and the inevitable need to avoid
+> introducing any new regressions in deployed schedulers will be cumbersome.
 
-> > > > > As for the bpf_token_allow_xxx(). This feels a bit too specific a=
-nd
-> > > > > narrow-focused. What if we later add yet another dimension for BP=
-F FS
-> > > > > and token? Do we need to introduce yet another LSM for each such =
-case?
-> > > >
-> > > > [I'm assuming you meant new LSM *hook*]
-> > >
-> > > yep, of course, sorry about using terminology sloppily
-> > >
-> > > > Possibly.  There are also some other issues which I've been thinkin=
-g
-> > > > about along these lines, specifically the fact that the
-> > > > capability/command delegation happens after the existing
-> > > > security_bpf() hook is called which makes things rather awkward fro=
-m a
-> > > > LSM perspective: the LSM would first need to allow the process acce=
-ss
-> > > > to the desired BPF op using it's current LSM specific security
-> > > > attributes (e.g. SELinux security domain, etc.) and then later
-> > > > consider the op in the context of the delegated access control righ=
-ts
-> > > > (if the LSM decides to support those hooks).
-> > > >
-> > > > I suspect that if we want to make this practical we would need to
-> > > > either move some of the token code up into __sys_bpf() so we could
-> > > > have a better interaction with security_bpf(), or we need to consid=
-er
-> > > > moving the security_bpf() call into the op specific functions.  I'm
-> > > > still thinking on this (lots of reviews to get through this week), =
-but
-> > > > I'm hoping there is a better way because I'm not sure I like either
-> > > > option very much.
-> > >
-> > > Yes, security_bpf() is happening extremely early and is lacking a lot
-> > > of context. I'm not sure if moving it around is a good idea as it
-> > > basically changes its semantics.
-> >
-> > There are a couple of things that make this not quite as scary as it
-> > may seem.  The first is that currently only SELinux implements a
-> > security_bpf() hook and the implementation is rather simplistic in
-> > terms of what information it requires to perform the existing access
-> > controls; decomposing the single security_bpf() call site into
-> > multiple op specific calls, perhaps with some op specific hooks,
-> > should be doable without causing major semantic changes.  The second
-> > thing is that we could augment the existing security_bpf() hook and
-> > call site with a new LSM hook(s) that are called from the op specific
-> > call sites; this would allow those LSMs that desire the current
-> > semantics to use the existing security_bpf() hook and those that wish
-> > to use the new semantics could implement the new hook(s).  This is
-> > very similar to the pathname-based and inode-based hooks in the VFS
-> > layer, some LSMs choose to implement pathname-based security and use
-> > one set of hooks, while others implement a label-based security
-> > mechanism and use a different set of hooks.
->
-> Agreed. I think new LSM hooks that are operation-specific make a lot
-> of sense. I'd probably not touch existing security_bpf(), it's an
-> early-entry LSM hook for anything bpf() syscall-specific. This might
-> be very useful in some cases, probably.
->
-> > > But adding a new set of coherent LSM
-> > > hooks per each appropriate BPF operation with good context to make
-> > > decisions sounds like a good improvement. E.g., for BPF_PROG_LOAD, we
-> > > can have LSM hook after struct bpf_prog is allocated, bpf_token is
-> > > available, attributes are sanity checked. All that together is a very
-> > > useful and powerful context that can be used both by more fixed LSM
-> > > policies (like SELinux), and very dynamic user-defined BPF LSM
-> > > programs.
-> >
-> > This is where it is my turn to mention that I'm getting a bit out of
-> > my depth, but I'm hopeful that the two of us can keep each other from
-> > drowning :)
-> >
-> > Typically the LSM hook call sites end up being in the same general
-> > area as the capability checks, usually just after (we want the normal
-> > Linux discretionary access controls to always come first for the sake
-> > of consistency).  Sticking with that approach it looks like we would
-> > end up with a LSM call in bpf_prog_load() right after bpf_capable()
-> > call, the only gotcha with that is the bpf_prog struct isn't populated
-> > yet, but how important is that when we have the bpf_attr info (honest
-> > question, I don't know the answer to this)?
->
-> Ok, so I agree in general about having LSM hooks close to capability
-> checks, but at least specifically for BPF_PROG_CREATE, it won't work.
-> This bpf_capable() check you mention. This is just one check. If you
-> look into bpf_prog_load() in kernel/bpf/syscall.c, you'll see that we
-> can also check CAP_PERFMON, CAP_NET_ADMIN, and CAP_SYS_ADMIN, in
-> addition to CAP_BPF, based on various aspects (like program type +
-> subtype).
+I'm having a bit of a hard time following here. If someone (or group) writes
+a custom scheduler, they'd be responsible for maintaining that, right? It
+shouldn't significantly increase the maintenance burden somewhere centrally.
+FUSE can be an imperfect analogy. There are numerous FUSE implementations.
+While they sometimes expose shared underlying issues, the proliferation
+doesn't usually lead to huge extra maintenance overhead.
 
-That's a fair point.
+If you're referring to the maintenance of sched_ext itself, yes, people
+would get sad if things get slower or break and we'd want to avoid such
+situations if we reasonably can. However, we absolutely can make breaking
+changes if necessary. Here, BCC tools can serve as the imperfect analogy
+(other BPF use cases often share similar characteristics). BCC tools are
+coupled with the kernel in more fragile and opportunistic ways than
+sched_ext, and some of them do break as the kernel code changes. However,
+they get patched up pretty quickly and don't have any problem maintaining a
+thriving ecosystem. This sort of arrangement isn't rare - browser, desktop,
+even editor plugins are often like this.
 
-> So for such a complex BPF_PROG_CREATE operation I think we
-> should deviate a bit and place LSM in a logical place that would
-> enable doing LSM enforcement with lots of relevant information, but
-> before doing anything dangerous or expensive.
->
-> For BPF_PROG_LOAD that place seems to be right before bpf_check(),
-> which is BPF verification ...
+Another point which may be worth considering is that there is an innate
+drive towards consolidation even in open ecosystems. In most cases, over
+time, a large number of experiments will be boiled down to a small number of
+winners. Many people end up having similar needs and sooner or later
+something becomes dominant in the area. While I don't have a crystal ball, I
+don't think sched_ext schedulers are going to be much different - there will
+probably be a handful that are both useful in some niches and well
+maintained against the backdrop of many one-off and experimental ones. A bit
+messy maybe, but not overwhelming. Most projects flourish in similar
+situations.
 
-> ... Right now we have `security_bpf_prog_alloc(prog->aux);`, which is
-> almost in the ideal place, but provides prog->aux instead of program
-> itself (not sure why), and doesn't provide bpf_attr and bpf_token.
->
-> So I'm thinking that maybe we get rid of bpf_prog_alloc() in favor of
-> new security_bpf_prog_load(prog, &attr, token)?
+> I generally worry that certain things may not have existed in the shipped
+> scheduler if plugging was an option including EAS, throttling control,
+> schedutil integration, big.Little, adapting to chiplets and picking preferred
+> SMT siblings for turbo boost. In each case, integrating support was time
+> consuming painful and a pluggable scheduler would have been a relatively
+> easy out that would ultimately cost us if it was never properly integrated.
+> While no one wants the pain, a few of us also want to avoid the problem
+> of vendors publishing a hacky scheduler for their specific hardware and
+> discontinuing the work at that point.
 
-That sounds reasonable.  We'll need to make sure we update the docs
-for that LSM hook to indicate that it performs both allocation of the
-LSM's BPF program state (it's current behavior), as well as access
-control for BPF program loads both with and without delegation.
+There are two diametric approaches. Currently, in the scheduler, everyone is
+forced to work on a single implementation so that all the efforts and energy
+can be captured in one place. Let's call this the funneling model. The
+opposite would be the open model, where a common framework is laid out and
+there are multiple competing implementations.
 
-I think those are the big points worth wrapping up here in this
-thread, I'll move the rest over to the v6 patchset.
+As with anything, there are pros and cons to both approaches and the long
+term outcome can sometimes be counter-intuitive. For example, if a project
+is funneled too hard, it's unlikely to grow a large and diverse pool of
+contributors as there just isn't enough space to accommodate them. This
+limits the contributor pool which in turn fortifies the justification for
+funneling everyone into one thing, creating a feedback loop.
 
---=20
-paul-moore.com
+When development effort is perceived as finite zero-sum resource, this way
+of describing the situation makes sense - "Had that developer not been
+forced to work on this code base, we would have lost this feature."
+
+Putting the other end into a similar proposition may be useful in seeing the
+inherent trade-off - "What new ideas and talents are we missing out on by
+constricting the contributor pool?"
+
+As I mentioned before, the closest analogy I can think of is filesystems.
+It's not an apples-to-apples comparison of course but there easily are an
+order of magnitude more developers working on filesystems compared to
+scheduling. Sure, a lot of efforts are diffused and duplicated but in the
+long run we benefit so much more by letting people explore the problem
+space, compete, copy from and improve upon each other.
+
+Given how much both the machines and workloads have changed, we should be
+trying wilder things a lot more and we can't do that with the funneled
+model.
+
+> I see that some friction with the current state is due to tuning knobs
+> moving to debugfs. FWIW, I didn't 100% agree with that move either and
+> carried an out-of-tree revert that displayed warnings for a time but I
+> understood the logic behind it. However, if the tuning parameters are
+> insufficient, and there is good reason to change them then the answer
+> is to add tuning knobs with defined semantics and document them -- not
+> pluggable schedulers. We've seen something along those lines recently
+> with nice_latency even if it turned into EEVDF instead of a new interface,
+> so I guess we'll see how that pans out.
+
+That only works if we assume that most of what we want to try can be
+reasonably covered by parameterizing EEVDF. The argument for sched_ext is
+that there are a lot more radical things we can and should be trying. For
+example, if we have many dozens of CPUs and workloads which are logically
+grouped, it may make more sense to allocate CPUs to workloads rather than
+scheduling each task's slice. Or given the close distance within a LLC
+domain and non-uniform LLC layouts on some chiplet processors, task-to-CPU
+stickiness maybe doesn’t matter anymore while spilling across multiple CCXs
+can benefit from application-side hinting. Or given that CPU time has become
+a lot flimsier as a way to measure CPU utilization, we should experiment
+with different metrics which may or may not include wallclock times. Or,
+given the proliferation of async frameworks in userspace, working closely
+with async runtime could be pretty interesting.
+
+That's too big a surface to cover by parametrizing EEVDF in any reasonable
+way. Once we know what's really useful, some part can likely be incorporated
+with well-defined interface but we don't know what this should look like yet
+and it's pretty difficult to find out without an easy way to experiment.
+
+> I get most of your points. Maybe most users will not care about a pluggable
+> scheduler but *some will* and they will the maintenance burden. I get your
+> point as well that if there is a bug and the pluggable scheduler then the
+> first step would be "reproduce without the pluggable scheduler" and again,
+> you'd be right, that is a great first step *except* sometimes they can't or
+> sometimes they simply won't without significant proof and that's incurs a
+> maintenance burden. Even if the pluggable schedulers are GPL, there still
+> is a burden to understood any scheduler that is loaded to see if it's the
+> source of a problem which means. Instead of understanding a defined number
+> of schedulers that are developed over time with the history in changelogs,
+> we may have to understand N schedulers that may be popular and that also
+> is painful. That's leaving aside the difficulty of what happens when
+> more than 1 can be loaded and interacting once containers are involved
+> assuming that such support would exist in the future. It's already known
+> that interacting IO schedulers are a nightmare so presumably interacting
+> CPU schedulers within the same host would also be zero fun.
+
+We should do a better job of clarifying and enforcing which IO controllers
+and schedulers can be employed together, but here's the same question turned
+around. What'd it be like if cfq had been deemed the only allowable IO
+scheduler while the underlying hardware was going through rapid
+developments? The IO schedulers and controllers being pluggable makes the
+overall scene more complicated but that's also what allowed the block layer
+to quickly adapt to the new hardware reality.
+
+> Pluggable schedulers are effectively a change that we cannot walk back
+> from if it turns out to be a bad idea because it potentially comes under
+> the "you cannot break userspace" rule if a particular pluggable scheduler
+> becomes popular.
+
+I believe the track record of BPF use cases provides pretty strong evidence
+against this. There are a lot more tools and usages which depend on kernel
+internals now than several years ago, but that hasn't really gotten in the
+way of kernel evolving in any meaningful way. We need to manage the
+expectations as necessary but I believe the recent history has shown that
+this concern doesn't really match reality.
+
+> As I strongly believe it will be a nightmare to support
+> within distributions where there is almost no control over the software
+> stack of managing user expectations, I'm opposed to crossing that line with
+> pluggable schedulers. While my nightmare scenarios may never be realised
+> and could be overblown, it'll be hard to convince me it'll not kick me in
+> the face eventually.
+
+I agree that this may add support cost to distros and we should take
+measures to limit that (e.g. make it evident which scheduler\[s\] have been
+active and we’d be happy to take any suggestions), but we can't just look at
+the costs. What benefits other parts of the industry are going to benefit
+enterprise users too. If enterprise customers want to use sched_ext, their
+reasons wouldn't be all that different from other industries.
+
+Taking a further step back. You're asking "What's the cost that sched_ext
+will add in terms of maintenance and support?" The question I'd like to
+counter with is "How much are we missing out on by making it difficult to
+explore and experiment in the scheduling space?" Opportunity costs are
+usually more challenging to factor in but they're costs all the same at the
+end of the day.
+
+Thanks.
+
+-- 
+tejun
 
