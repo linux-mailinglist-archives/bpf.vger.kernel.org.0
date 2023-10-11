@@ -1,400 +1,141 @@
-Return-Path: <bpf+bounces-11893-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11903-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D73597C4ECD
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 11:28:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F0E87C4EEE
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 11:29:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C92E282334
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 09:28:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F5331C20F2C
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 09:29:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D79771E52B;
-	Wed, 11 Oct 2023 09:27:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1819C1D530;
+	Wed, 11 Oct 2023 09:29:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nKgb3IdO"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA88F1E508;
-	Wed, 11 Oct 2023 09:27:49 +0000 (UTC)
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9C6A7;
-	Wed, 11 Oct 2023 02:27:46 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R491e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VtwJVey_1697016462;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VtwJVey_1697016462)
-          by smtp.aliyun-inc.com;
-          Wed, 11 Oct 2023 17:27:42 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: virtualization@lists.linux-foundation.org
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH vhost 12/22] virtio_net: xsk: bind/unbind xsk
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E459D1CFA3
+	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 09:29:24 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C280F9C;
+	Wed, 11 Oct 2023 02:29:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697016563; x=1728552563;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=uOn9nCRKML7IrJqltDC1Cnn+y4rvEVeFVa1KlsqUdw8=;
+  b=nKgb3IdO5KhdhbGRHSnZ45XA9BjS5Q0gwdp2TUlvYaELznpfqkqeqA5j
+   a7r4e7aYWtkeuB+Ajz2YEBS7uiyW8+eQkJScuZrwTL1MsFEgvynOfx1u8
+   4FDe5v6IN4PXH2r7QYEdoUbpYvMWZa6Yynq2/rcsEKlOQLJcR9qfmsaVB
+   QXgnGvQ4XD9gsQpRRJCoAIAlUT5G6kgDhaqirEB12kAdzvsFnYC6FTv2K
+   OfvEQcbdbIECyen7SdQYBiOwh5mTnxYMVhq0RUrZWFErNDSCWrSykWycL
+   f/ztYYVPmHtf0mQqF3+P/1ab6KdcMbdnSKxv3RHQ8/doyH8aO+zpcDFnN
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="364903691"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="364903691"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 02:29:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="753753766"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="753753766"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 11 Oct 2023 02:29:10 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qqVWK-00024F-1o;
+	Wed, 11 Oct 2023 09:28:59 +0000
 Date: Wed, 11 Oct 2023 17:27:18 +0800
-Message-Id: <20231011092728.105904-13-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
-In-Reply-To: <20231011092728.105904-1-xuanzhuo@linux.alibaba.com>
-References: <20231011092728.105904-1-xuanzhuo@linux.alibaba.com>
+From: kernel test robot <lkp@intel.com>
+To: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, paul@paul-moore.com,
+	keescook@chromium.org, casey@schaufler-ca.com, song@kernel.org,
+	daniel@iogearbox.net, ast@kernel.org, kpsingh@kernel.org,
+	renauld@google.com, pabeni@redhat.com
+Subject: Re: [PATCH v6 3/5] security: Replace indirect LSM hook calls with
+ static calls
+Message-ID: <202310111711.wLbijitj-lkp@intel.com>
+References: <20231006204701.549230-4-kpsingh@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Git-Hash: 7e791d85ef9e
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231006204701.549230-4-kpsingh@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This patch implement the logic of bind/unbind xsk pool to sq and rq.
+Hi KP,
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/virtio/Makefile     |   2 +-
- drivers/net/virtio/main.c       |  10 +-
- drivers/net/virtio/virtio_net.h |  18 ++++
- drivers/net/virtio/xsk.c        | 186 ++++++++++++++++++++++++++++++++
- drivers/net/virtio/xsk.h        |   7 ++
- 5 files changed, 216 insertions(+), 7 deletions(-)
- create mode 100644 drivers/net/virtio/xsk.c
- create mode 100644 drivers/net/virtio/xsk.h
+kernel test robot noticed the following build errors:
 
-diff --git a/drivers/net/virtio/Makefile b/drivers/net/virtio/Makefile
-index 15ed7c97fd4f..8c2a884d2dba 100644
---- a/drivers/net/virtio/Makefile
-+++ b/drivers/net/virtio/Makefile
-@@ -5,4 +5,4 @@
- 
- obj-$(CONFIG_VIRTIO_NET) += virtio_net.o
- 
--virtio_net-y := main.o
-+virtio_net-y := main.o xsk.o
-diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
-index ad47ab2d74a2..a4e63c55ba1f 100644
---- a/drivers/net/virtio/main.c
-+++ b/drivers/net/virtio/main.c
-@@ -8,7 +8,6 @@
- #include <linux/etherdevice.h>
- #include <linux/module.h>
- #include <linux/virtio.h>
--#include <linux/virtio_net.h>
- #include <linux/bpf.h>
- #include <linux/bpf_trace.h>
- #include <linux/scatterlist.h>
-@@ -139,9 +138,6 @@ struct virtio_net_common_hdr {
- 	};
- };
- 
--static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
--static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
--
- static void *xdp_to_ptr(struct xdp_frame *ptr)
- {
- 	return (void *)((unsigned long)ptr | VIRTIO_XDP_FLAG);
-@@ -3676,6 +3672,8 @@ static int virtnet_xdp(struct net_device *dev, struct netdev_bpf *xdp)
- 	switch (xdp->command) {
- 	case XDP_SETUP_PROG:
- 		return virtnet_xdp_set(dev, xdp->prog, xdp->extack);
-+	case XDP_SETUP_XSK_POOL:
-+		return virtnet_xsk_pool_setup(dev, xdp);
- 	default:
- 		return -EINVAL;
- 	}
-@@ -3861,7 +3859,7 @@ static void free_receive_page_frags(struct virtnet_info *vi)
- 		}
- }
- 
--static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
-+void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
- {
- 	if (!virtnet_is_xdp_frame(buf))
- 		dev_kfree_skb(buf);
-@@ -3869,7 +3867,7 @@ static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
- 		xdp_return_frame(virtnet_ptr_to_xdp(buf));
- }
- 
--static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf)
-+void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf)
- {
- 	struct virtnet_info *vi = vq->vdev->priv;
- 	int i = vq2rxq(vq);
-diff --git a/drivers/net/virtio/virtio_net.h b/drivers/net/virtio/virtio_net.h
-index 9cb9b16bb0d3..0603033b76a0 100644
---- a/drivers/net/virtio/virtio_net.h
-+++ b/drivers/net/virtio/virtio_net.h
-@@ -5,6 +5,8 @@
- 
- #include <linux/ethtool.h>
- #include <linux/average.h>
-+#include <linux/virtio_net.h>
-+#include <net/xdp_sock_drv.h>
- 
- #define VIRTIO_XDP_FLAG	BIT(0)
- #define VIRTIO_XMIT_DATA_MASK (VIRTIO_XDP_FLAG)
-@@ -94,6 +96,11 @@ struct virtnet_sq {
- 	bool do_dma;
- 
- 	struct virtnet_sq_dma_head dmainfo;
-+	struct {
-+		struct xsk_buff_pool __rcu *pool;
-+
-+		dma_addr_t hdr_dma_address;
-+	} xsk;
- };
- 
- /* Internal representation of a receive virtqueue */
-@@ -134,6 +141,13 @@ struct virtnet_rq {
- 
- 	/* Do dma by self */
- 	bool do_dma;
-+
-+	struct {
-+		struct xsk_buff_pool __rcu *pool;
-+
-+		/* xdp rxq used by xsk */
-+		struct xdp_rxq_info xdp_rxq;
-+	} xsk;
- };
- 
- struct virtnet_info {
-@@ -218,6 +232,8 @@ struct virtnet_info {
- 	struct failover *failover;
- };
- 
-+#include "xsk.h"
-+
- static inline bool virtnet_is_xdp_frame(void *ptr)
- {
- 	return (unsigned long)ptr & VIRTIO_XDP_FLAG;
-@@ -309,4 +325,6 @@ void virtnet_tx_pause(struct virtnet_info *vi, struct virtnet_sq *sq);
- void virtnet_tx_resume(struct virtnet_info *vi, struct virtnet_sq *sq);
- int virtnet_sq_set_premapped(struct virtnet_sq *sq);
- void virtnet_sq_unset_premapped(struct virtnet_sq *sq);
-+void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
-+void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
- #endif
-diff --git a/drivers/net/virtio/xsk.c b/drivers/net/virtio/xsk.c
-new file mode 100644
-index 000000000000..adbaefb77480
---- /dev/null
-+++ b/drivers/net/virtio/xsk.c
-@@ -0,0 +1,186 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * virtio-net xsk
-+ */
-+
-+#include "virtio_net.h"
-+
-+static struct virtio_net_hdr_mrg_rxbuf xsk_hdr;
-+
-+static int virtnet_rq_bind_xsk_pool(struct virtnet_info *vi, struct virtnet_rq *rq,
-+				    struct xsk_buff_pool *pool)
-+{
-+	int err, qindex;
-+
-+	qindex = rq - vi->rq;
-+
-+	if (pool) {
-+		err = xdp_rxq_info_reg(&rq->xsk.xdp_rxq, vi->dev, qindex, rq->napi.napi_id);
-+		if (err < 0)
-+			return err;
-+
-+		err = xdp_rxq_info_reg_mem_model(&rq->xsk.xdp_rxq,
-+						 MEM_TYPE_XSK_BUFF_POOL, NULL);
-+		if (err < 0) {
-+			xdp_rxq_info_unreg(&rq->xsk.xdp_rxq);
-+			return err;
-+		}
-+
-+		xsk_pool_set_rxq_info(pool, &rq->xsk.xdp_rxq);
-+	} else {
-+		xdp_rxq_info_unreg(&rq->xsk.xdp_rxq);
-+	}
-+
-+	virtnet_rx_pause(vi, rq);
-+
-+	err = virtqueue_reset(rq->vq, virtnet_rq_free_unused_buf);
-+	if (err)
-+		netdev_err(vi->dev, "reset rx fail: rx queue index: %d err: %d\n", qindex, err);
-+
-+	if (pool && err)
-+		xdp_rxq_info_unreg(&rq->xsk.xdp_rxq);
-+	else
-+		rcu_assign_pointer(rq->xsk.pool, pool);
-+
-+	virtnet_rx_resume(vi, rq);
-+
-+	return err;
-+}
-+
-+static int virtnet_sq_bind_xsk_pool(struct virtnet_info *vi,
-+				    struct virtnet_sq *sq,
-+				    struct xsk_buff_pool *pool)
-+{
-+	int err, qindex;
-+
-+	qindex = sq - vi->sq;
-+
-+	virtnet_tx_pause(vi, sq);
-+
-+	err = virtqueue_reset(sq->vq, virtnet_sq_free_unused_buf);
-+	if (err)
-+		netdev_err(vi->dev, "reset tx fail: tx queue index: %d err: %d\n", qindex, err);
-+
-+	if (pool) {
-+		if (!err)
-+			err = virtnet_sq_set_premapped(sq);
-+
-+		if (!err)
-+			rcu_assign_pointer(sq->xsk.pool, pool);
-+	} else {
-+		rcu_assign_pointer(sq->xsk.pool, NULL);
-+		virtnet_sq_unset_premapped(sq);
-+	}
-+
-+	virtnet_tx_resume(vi, sq);
-+
-+	return err;
-+}
-+
-+static int virtnet_xsk_pool_enable(struct net_device *dev,
-+				   struct xsk_buff_pool *pool,
-+				   u16 qid)
-+{
-+	struct virtnet_info *vi = netdev_priv(dev);
-+	struct virtnet_rq *rq;
-+	struct virtnet_sq *sq;
-+	struct device *dma_dev;
-+	dma_addr_t hdr_dma;
-+	int err;
-+
-+	/* In big_packets mode, xdp cannot work, so there is no need to
-+	 * initialize xsk of rq.
-+	 */
-+	if (vi->big_packets && !vi->mergeable_rx_bufs)
-+		return -ENOENT;
-+
-+	if (qid >= vi->curr_queue_pairs)
-+		return -EINVAL;
-+
-+	sq = &vi->sq[qid];
-+	rq = &vi->rq[qid];
-+
-+	/* xsk tx zerocopy depend on the tx napi.
-+	 *
-+	 * All xsk packets are actually consumed and sent out from the xsk tx
-+	 * queue under the tx napi mechanism.
-+	 */
-+	if (!sq->napi.weight)
-+		return -EPERM;
-+
-+	if (!rq->do_dma)
-+		return -EPERM;
-+
-+	if (virtqueue_dma_dev(rq->vq) != virtqueue_dma_dev(sq->vq))
-+		return -EPERM;
-+
-+	dma_dev = virtqueue_dma_dev(rq->vq);
-+	if (!dma_dev)
-+		return -EPERM;
-+
-+	hdr_dma = dma_map_single(dma_dev, &xsk_hdr, vi->hdr_len, DMA_TO_DEVICE);
-+	if (dma_mapping_error(dma_dev, hdr_dma))
-+		return -ENOMEM;
-+
-+	err = xsk_pool_dma_map(pool, dma_dev, 0);
-+	if (err)
-+		goto err_xsk_map;
-+
-+	err = virtnet_rq_bind_xsk_pool(vi, rq, pool);
-+	if (err)
-+		goto err_rq;
-+
-+	err = virtnet_sq_bind_xsk_pool(vi, sq, pool);
-+	if (err)
-+		goto err_sq;
-+
-+	sq->xsk.hdr_dma_address = hdr_dma;
-+
-+	return 0;
-+
-+err_sq:
-+	virtnet_rq_bind_xsk_pool(vi, rq, NULL);
-+err_rq:
-+	xsk_pool_dma_unmap(pool, 0);
-+err_xsk_map:
-+	dma_unmap_single(dma_dev, hdr_dma, vi->hdr_len, DMA_TO_DEVICE);
-+	return err;
-+}
-+
-+static int virtnet_xsk_pool_disable(struct net_device *dev, u16 qid)
-+{
-+	struct virtnet_info *vi = netdev_priv(dev);
-+	struct device *dma_dev;
-+	struct virtnet_rq *rq;
-+	struct virtnet_sq *sq;
-+	int err1, err2;
-+
-+	if (qid >= vi->curr_queue_pairs)
-+		return -EINVAL;
-+
-+	sq = &vi->sq[qid];
-+	rq = &vi->rq[qid];
-+
-+	dma_dev = virtqueue_dma_dev(rq->vq);
-+
-+	dma_unmap_single(dma_dev, sq->xsk.hdr_dma_address, vi->hdr_len, DMA_TO_DEVICE);
-+
-+	xsk_pool_dma_unmap(sq->xsk.pool, 0);
-+
-+	/* Sync with the XSK wakeup and with NAPI. */
-+	synchronize_net();
-+
-+	err1 = virtnet_sq_bind_xsk_pool(vi, sq, NULL);
-+	err2 = virtnet_rq_bind_xsk_pool(vi, rq, NULL);
-+
-+	return err1 | err2;
-+}
-+
-+int virtnet_xsk_pool_setup(struct net_device *dev, struct netdev_bpf *xdp)
-+{
-+	if (xdp->xsk.pool)
-+		return virtnet_xsk_pool_enable(dev, xdp->xsk.pool,
-+					       xdp->xsk.queue_id);
-+	else
-+		return virtnet_xsk_pool_disable(dev, xdp->xsk.queue_id);
-+}
-diff --git a/drivers/net/virtio/xsk.h b/drivers/net/virtio/xsk.h
-new file mode 100644
-index 000000000000..1918285c310c
---- /dev/null
-+++ b/drivers/net/virtio/xsk.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+
-+#ifndef __XSK_H__
-+#define __XSK_H__
-+
-+int virtnet_xsk_pool_setup(struct net_device *dev, struct netdev_bpf *xdp);
-+#endif
+[auto build test ERROR on bpf-next/master]
+[also build test ERROR on bpf/master pcmoore-selinux/next linus/master v6.6-rc5 next-20231010]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/KP-Singh/kernel-Add-helper-macros-for-loop-unrolling/20231007-044922
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20231006204701.549230-4-kpsingh%40kernel.org
+patch subject: [PATCH v6 3/5] security: Replace indirect LSM hook calls with static calls
+config: i386-randconfig-014-20231011 (https://download.01.org/0day-ci/archive/20231011/202310111711.wLbijitj-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231011/202310111711.wLbijitj-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310111711.wLbijitj-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> security/security.c:139:1: error: Only string constants are supported as initializers for randomized structures with flexible arrays
+    };
+    ^
+
+
+vim +139 security/security.c
+
+   118	
+   119	/*
+   120	 * Initialise a table of static calls for each LSM hook.
+   121	 * DEFINE_STATIC_CALL_NULL invocation above generates a key (STATIC_CALL_KEY)
+   122	 * and a trampoline (STATIC_CALL_TRAMP) which are used to call
+   123	 * __static_call_update when updating the static call.
+   124	 */
+   125	struct lsm_static_calls_table static_calls_table __ro_after_init = {
+   126	#define INIT_LSM_STATIC_CALL(NUM, NAME)					\
+   127		(struct lsm_static_call) {					\
+   128			.key = &STATIC_CALL_KEY(LSM_STATIC_CALL(NAME, NUM)),	\
+   129			.trampoline = LSM_HOOK_TRAMP(NAME, NUM),		\
+   130			.active = &SECURITY_HOOK_ACTIVE_KEY(NAME, NUM),		\
+   131		},
+   132	#define LSM_HOOK(RET, DEFAULT, NAME, ...)				\
+   133		.NAME = {							\
+   134			LSM_DEFINE_UNROLL(INIT_LSM_STATIC_CALL, NAME)		\
+   135		},
+   136	#include <linux/lsm_hook_defs.h>
+   137	#undef LSM_HOOK
+   138	#undef INIT_LSM_STATIC_CALL
+ > 139	};
+   140	
+
 -- 
-2.32.0.3.g01195cf9f
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
