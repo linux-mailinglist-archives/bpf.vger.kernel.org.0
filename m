@@ -1,234 +1,144 @@
-Return-Path: <bpf+bounces-11868-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11869-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 413067C4B91
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 09:17:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABD507C4DEC
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 11:01:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63DF61C20D36
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 07:17:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D10BE1C20E22
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 09:01:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39B3918E14;
-	Wed, 11 Oct 2023 07:17:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27D951A70E;
+	Wed, 11 Oct 2023 09:01:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TNoW/9pZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e18sClmE"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0C818C2D
-	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 07:17:38 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD0090;
-	Wed, 11 Oct 2023 00:17:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697008656; x=1728544656;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BXg2wEQCreA5bYXJyzy3HRYJ0Jes4DTVCpbQGgIvo8w=;
-  b=TNoW/9pZI6wxJ4+E59pshqtWudaxIiXF6T4533d7l0VNuXfrAjpyUq6o
-   GrMFYX0mfQzJrA7GESKRxmfPbUh2Ngqc6rc6y0wdF/bk2rLqdi2Pxdnpg
-   UxWxMuwqbf18UL/Sx97wQBDHmcIn9WPN1MKuL02fzZQFXQ3FcrFxAVQL3
-   NOVaXtuRYunNCvDnBi2AiwLhFv5ob1LSR23t1wXSUTdPAq0W0DSauTRFV
-   DWtxmXBb7WWcmJFq6kBNnzRRT4bnvVnggiPQ6OdMqGYQ1NwOnMue91BPh
-   Hk6Q5EoRK9bhrm2J50MSLoRYHJG5/56a2lCIcNjCLvVQXykNDIx43OTWy
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="3190302"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="3190302"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 00:17:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="747350894"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="747350894"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 11 Oct 2023 00:17:32 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qqTTF-0001u5-3B;
-	Wed, 11 Oct 2023 07:17:29 +0000
-Date: Wed, 11 Oct 2023 15:16:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: Hengqi Chen <hengqi.chen@gmail.com>, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	keescook@chromium.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, luto@amacapital.net, wad@chromium.org,
-	alexyonghe@tencent.com, hengqi.chen@gmail.com
-Subject: Re: [PATCH 2/4] seccomp, bpf: Introduce SECCOMP_LOAD_FILTER operation
-Message-ID: <202310111556.DzEDzt3Z-lkp@intel.com>
-References: <20231009124046.74710-3-hengqi.chen@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C991A594
+	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 09:01:13 +0000 (UTC)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE81E9;
+	Wed, 11 Oct 2023 02:01:11 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-4054f790190so64742855e9.2;
+        Wed, 11 Oct 2023 02:01:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697014869; x=1697619669; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uSR6qPmHCfHgxPs78KqEiNeIJSUPA1Iy3U8H+7sLIdE=;
+        b=e18sClmEv8bDilKp+kWugUJLk9uaMlfTo/EC35+r27g0KP7zC00c9eKarqnzG9kZRC
+         c4RiSovtL346oSaETG5d3mHsWWiGEkrvDGbrE2oYAstMvPVj2A9aeR2Nh9vr0MHbTec1
+         PhxCuUmvW5d8/E481N0XYZLO1CxVvF0dZkX2sAgLJbgZDXSP+vuQzojQH/73aQTNpO9e
+         fyUW6A1kiXz8UKU/z5aiH/hORmvTLiMIj3sOiXE+2RBh7uxgmycf2hhLo3ASoVSeIraE
+         566tINjcmt9l8+YL1+dNQc0itC+Rl+O9tK5qRLAD2jeLLz9kKtDMR1BWzWRndGaDzYLl
+         Fcmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697014869; x=1697619669;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uSR6qPmHCfHgxPs78KqEiNeIJSUPA1Iy3U8H+7sLIdE=;
+        b=lw0+gebakNoyUdqDtAymO+Mkr8lI/rAsXd1ARmpz8YOQ6QPvrWQsofalz3apM4DXpn
+         DLxcoH82yoXj8v7bjp5mn6kywH0DoR3wnj7lAfofJL6dFnnvpV8PtIrtDA8kMwpAE6s+
+         Vo5bRUl5NYTNdmTbcMLXxRSjWKi9VIHObRwz0JU5LlB7RodloZ7KgS4jCuLsKo8rnIny
+         +ajZJIBZl3jPnoyiGHzizx5ePDr+Wm2A3gIiNb2lO08NEEytuf/6WZ6hfdYhxmU6NLb7
+         G+sYcHOa/hnwMBvBdgg8+CWj9G94b5imrknj5ceusWwF92cbWeDGcomMkEvkc8xTOibe
+         xa4w==
+X-Gm-Message-State: AOJu0YwM5TTnPD7XN5WGLW0MyWTV62n1K1AoJyyvvGUGHcnJA8AJ5M0z
+	M1WmvGC8WesffNfp2FZQoA==
+X-Google-Smtp-Source: AGHT+IEIG8Y3yVGZcisTYyYxgj03GBR4cJbEz6fBw58wL/IqrHbqh+k4TVwsApcJqyBqf+zntRI8sw==
+X-Received: by 2002:adf:ef8f:0:b0:31f:a718:4cb6 with SMTP id d15-20020adfef8f000000b0031fa7184cb6mr16152770wro.46.1697014869141;
+        Wed, 11 Oct 2023 02:01:09 -0700 (PDT)
+Received: from amdsuplus2.inf.ethz.ch (amdsuplus2.inf.ethz.ch. [129.132.31.88])
+        by smtp.gmail.com with ESMTPSA id e28-20020adfa45c000000b0032d892e70b4sm554100wra.37.2023.10.11.02.01.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 02:01:08 -0700 (PDT)
+From: Hao Sun <sunhao.th@gmail.com>
+Subject: [PATCH bpf-next v3 0/3] bpf: Detect jumping to reserved code of
+ ld_imm64
+Date: Wed, 11 Oct 2023 11:00:11 +0200
+Message-Id: <20231011-jmp-into-reserved-fields-v3-0-97d2aa979788@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009124046.74710-3-hengqi.chen@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABxkJmUC/4XNwQ6CMBAE0F8xPbumWxTBk/9hPNR2C2uAkpY0G
+ MK/23DipMfJZN4sIlJgiuJ2WESgxJH9kENxPAjT6qEhYJuzUFIVKGUN734EHiYPgfI0kQXH1Nk
+ IzqCuK13R1RqR52Mgx/NGP8RrdDDQPIlnblqOkw+f7TPh1v/nEwKCraQsSWmDrrw3vebuZHy/o
+ UntIJQ/IJWhwtqLrs8WSeEeWtf1CxER/rETAQAA
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Hao Sun <sunhao.th@gmail.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697014868; l=1797;
+ i=sunhao.th@gmail.com; s=20231009; h=from:subject:message-id;
+ bh=PpW/LKH+HLXhoabm69yqJb+fF47MmoM9puktgjEaSYI=;
+ b=GS/2dRweWp4nJ6UMKn6Y4WkIYZnMOux/3qiieewtbYuYG+DBMP8CfccfWTwVuD9tDWKP97ro8
+ c0pPn/iqDDiCdy2NsSxig8BDB6s2NEZeG/UND4jZW0+ZBhLVuQa5DQ5
+X-Developer-Key: i=sunhao.th@gmail.com; a=ed25519;
+ pk=AHFxrImGtyqXOuw4f5xTNh4PGReb7hzD86ayyTZCXd4=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Hengqi,
+Currently, the verifier rejects a program jumping to reserved code with
+the log "invalid BPF_LD_IMM" in check_ld_imm(), which in not accurate,
+because the program does not contain any invalid insns. The root cause
+is that the verifier does not detect such jump, thus the reserved code
+is passed to check_ld_imm().
 
-kernel test robot noticed the following build errors:
+The first patch makes the verifier detect jump to reserved code during
+check_cfg(). Because jump to reserved code is just like jump out bound,
+both break the CFG integrity immediately. The second makes the verifier
+report internal error if it sees an invlid ld_imm64 in check_ld_imm(),
+because we already have bpf_opcode_in_insntable() to check the validity
+of insn code. The third patch adapts existing tests to make them pass,
+and add a new case to test backward jump to reserved code.
 
-[auto build test ERROR on kees/for-next/seccomp]
-[also build test ERROR on bpf-next/master bpf/master kees/for-next/pstore kees/for-next/kspp linus/master v6.6-rc5 next-20231010]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Signed-off-by: Hao Sun <sunhao.th@gmail.com>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Hengqi-Chen/seccomp-Refactor-filter-copy-create-for-reuse/20231010-100354
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/seccomp
-patch link:    https://lore.kernel.org/r/20231009124046.74710-3-hengqi.chen%40gmail.com
-patch subject: [PATCH 2/4] seccomp, bpf: Introduce SECCOMP_LOAD_FILTER operation
-config: um-allyesconfig (https://download.01.org/0day-ci/archive/20231011/202310111556.DzEDzt3Z-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231011/202310111556.DzEDzt3Z-lkp@intel.com/reproduce)
+---
+Changes in v3:
+- Separate changes to different commits, change verifier log
+- Link to v2: https://lore.kernel.org/r/20231010-jmp-into-reserved-fields-v2-1-3dd5a94d1e21@gmail.com
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310111556.DzEDzt3Z-lkp@intel.com/
+Changes in v2:
+- Adjust existing test cases
+- Link to v1: https://lore.kernel.org/bpf/20231009-jmp-into-reserved-fields-v1-1-d8006e2ac1f6@gmail.com/
 
-All errors (new ones prefixed by >>):
+---
+Hao Sun (3):
+      bpf: Detect jumping to reserved code during check_cfg()
+      bpf: Report internal error on incorrect ld_imm64 in check_ld_imm()
+      bpf: Adapt and add tests for detecting jump to reserved code
 
-   In file included from kernel/seccomp.c:29:
-   In file included from include/linux/syscalls.h:90:
-   In file included from include/trace/syscall.h:7:
-   In file included from include/linux/trace_events.h:9:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/um/include/asm/hardirq.h:5:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/um/include/asm/io.h:24:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __raw_readb(PCI_IOBASE + addr);
-                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-                                                     ^
-   In file included from kernel/seccomp.c:29:
-   In file included from include/linux/syscalls.h:90:
-   In file included from include/trace/syscall.h:7:
-   In file included from include/linux/trace_events.h:9:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/um/include/asm/hardirq.h:5:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/um/include/asm/io.h:24:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-                                                     ^
-   In file included from kernel/seccomp.c:29:
-   In file included from include/linux/syscalls.h:90:
-   In file included from include/trace/syscall.h:7:
-   In file included from include/linux/trace_events.h:9:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/um/include/asm/hardirq.h:5:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/um/include/asm/io.h:24:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writeb(value, PCI_IOBASE + addr);
-                               ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsb(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsw(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsl(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesb(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
-   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesw(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
-   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesl(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
->> kernel/seccomp.c:2046:8: error: implicit declaration of function 'security_bpf_prog_alloc' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           ret = security_bpf_prog_alloc(prog->aux);
-                 ^
-   kernel/seccomp.c:2046:8: note: did you mean 'security_msg_msg_alloc'?
-   include/linux/security.h:1245:19: note: 'security_msg_msg_alloc' declared here
-   static inline int security_msg_msg_alloc(struct msg_msg *msg)
-                     ^
->> kernel/seccomp.c:2056:8: error: implicit declaration of function 'bpf_prog_new_fd' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           ret = bpf_prog_new_fd(prog);
-                 ^
-   12 warnings and 2 errors generated.
+ kernel/bpf/verifier.c                           | 11 +++++++++--
+ tools/testing/selftests/bpf/verifier/ld_imm64.c | 16 ++++++++++++----
+ 2 files changed, 21 insertions(+), 6 deletions(-)
+---
+base-commit: 3157b7ce14bbf468b0ca8613322a05c37b5ae25d
+change-id: 20231009-jmp-into-reserved-fields-fc1a98a8e7dc
 
-
-vim +/security_bpf_prog_alloc +2046 kernel/seccomp.c
-
-  2031	
-  2032	static long seccomp_load_filter(const char __user *filter)
-  2033	{
-  2034		struct sock_fprog fprog;
-  2035		struct bpf_prog *prog;
-  2036		int ret;
-  2037	
-  2038		ret = seccomp_copy_user_filter(filter, &fprog);
-  2039		if (ret)
-  2040			return ret;
-  2041	
-  2042		ret = seccomp_prepare_prog(&prog, &fprog);
-  2043		if (ret)
-  2044			return ret;
-  2045	
-> 2046		ret = security_bpf_prog_alloc(prog->aux);
-  2047		if (ret) {
-  2048			bpf_prog_free(prog);
-  2049			return ret;
-  2050		}
-  2051	
-  2052		prog->aux->user = get_current_user();
-  2053		atomic64_set(&prog->aux->refcnt, 1);
-  2054		prog->type = BPF_PROG_TYPE_SECCOMP;
-  2055	
-> 2056		ret = bpf_prog_new_fd(prog);
-  2057		if (ret < 0)
-  2058			bpf_prog_put(prog);
-  2059		return ret;
-  2060	}
-  2061	#else
-  2062	static inline long seccomp_set_mode_filter(unsigned int flags,
-  2063						   const char __user *filter)
-  2064	{
-  2065		return -EINVAL;
-  2066	}
-  2067	
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Hao Sun <sunhao.th@gmail.com>
+
 
