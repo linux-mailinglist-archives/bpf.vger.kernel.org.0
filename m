@@ -1,199 +1,134 @@
-Return-Path: <bpf+bounces-11946-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11947-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2AA47C5AFF
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 20:14:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0D187C5B6D
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 20:38:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07A121C20FA6
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 18:14:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EDBD28232B
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 18:38:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78C6922312;
-	Wed, 11 Oct 2023 18:14:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C91301D524;
+	Wed, 11 Oct 2023 18:38:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aCCBJ7fS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f+yw66D8"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018BD22306;
-	Wed, 11 Oct 2023 18:14:14 +0000 (UTC)
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915AA9D;
-	Wed, 11 Oct 2023 11:14:13 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3296b49c546so104431f8f.3;
-        Wed, 11 Oct 2023 11:14:13 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D57822231D;
+	Wed, 11 Oct 2023 18:38:02 +0000 (UTC)
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B824C94;
+	Wed, 11 Oct 2023 11:38:01 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so94599a12.1;
+        Wed, 11 Oct 2023 11:38:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697048052; x=1697652852; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=F7TS+RaEJbB7+7d5gDLjd+koKDndSt/GnmuFIJ1o+Jg=;
-        b=aCCBJ7fSghTUKZeXhpjd/B8GbOrj5/5EV+Vlioyyx9rFchV5rZ4Q3LKsw07ZB5c1YT
-         gRE4XF0XIUDd+6ZbuaKkVj7UurnvOciPhYBy78LfM8B7qBmY3nyON9u4lhMOEfShIxna
-         Mtt0yGHu6UI3C8yyaPrEW2sdCRPlN2v6f5kEO8uwm9I8FdTikPKTmO9sWFAEI00gjK0V
-         n1c3j3KaoEDWkaB0QraxqCuX/dQJqJZ90M06aofX9vWZXtx2FDO545Q98Q22/UfawpRd
-         1H5Ee+2yXE1k6v4v4edA9bm9UHbQtp05wOauEqczaj38aA/uvUJhIq+hCI7VF4C2I/vf
-         kT4g==
+        d=gmail.com; s=20230601; t=1697049481; x=1697654281; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2qbuE0qZp1qf7eX2ASC5DKh4tyeMrec4ZbV962Q/SxY=;
+        b=f+yw66D8mAFKWZdhReiaSj1DXlrx4zlQ2XhAuq0+xkqWr8Cpcx123lAwnHUT3CvHEt
+         tLPhlRNxcJVoSE9dmSqXitm3yV6JEz4fAscEUnaajwGafGMI9ypAD9+1ZBXbAk9zvMSz
+         6V0BI1CSrtKOBYQZIA2QJhfzkCBYwR1PwawL8UyYtVzxoux4dKuRQYtdhMkrlu0XAaBp
+         URqxzDzlsNOCGmqLFl3HSUtGrswIKWIJfKnvitzpAPXVyW/4YE8M3ddbvBPiCsbEUNW3
+         fENkKGIq+7EiDTtUfIF+/E5mnRAD/ItssSpziVw+I7FBujBl20cZQHVmCuzopjIRS6Yt
+         UroQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697048052; x=1697652852;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F7TS+RaEJbB7+7d5gDLjd+koKDndSt/GnmuFIJ1o+Jg=;
-        b=JZfxmxMbv0EyBucUB6eadAbj9PUBLXHRq0wuf42Cg2Ci2X/4R1YPOfVDP/G5llveVG
-         ZBusDk3/JOON6IzboG52NSGVyYFVa5K5VL2C8RcgoBwdZGxsyArSTXsVFcHXIGScERfQ
-         9U5Sade5A1WA/voKZPuIs339UXiu4N6V3FfqXp0zSNinqDTyT9WYL9k70EM6/IBjaVZP
-         rh5UxzlzIJ582uMSC59d/Qqhj68ATvWbczQtnxe5V7vedhZGSQ24u2In7LXLSI0eUnF5
-         06Im/janDdDRViGQrp2mGijyXHuN0xO9SEiJ4pyeile+ix5+9rChdj1DfENx5wszW+qA
-         ZudA==
-X-Gm-Message-State: AOJu0YyEL+utDFNER+qvdd/OUQTuXEexivitoHpRDVheZeea5mvwYiJn
-	hA4pUMhQQz93myUF6Vd6kN4=
-X-Google-Smtp-Source: AGHT+IFv4S4WUlVw96jvYX9WVjLTJEQQiPuTwG+QUFDRmpY26gHHcgPdhYQ+AOKeY4se6H/9yrLzZw==
-X-Received: by 2002:a5d:6c69:0:b0:32c:eeee:d438 with SMTP id r9-20020a5d6c69000000b0032ceeeed438mr5956021wrz.54.1697048051663;
-        Wed, 11 Oct 2023 11:14:11 -0700 (PDT)
-Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.gmail.com with ESMTPSA id 9-20020a05600c020900b003feea62440bsm17359617wmi.43.2023.10.11.11.14.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 11:14:10 -0700 (PDT)
-Date: Wed, 11 Oct 2023 19:14:10 +0100
-From: Lorenzo Stoakes <lstoakes@gmail.com>
-To: Jan Kara <jack@suse.cz>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Hugh Dickins <hughd@google.com>, Andy Lutomirski <luto@kernel.org>,
-	linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] mm: enforce the mapping_map_writable() check
- after call_mmap()
-Message-ID: <512d8089-759c-47b7-864d-f4a38a9eacf3@lucifer.local>
-References: <cover.1696709413.git.lstoakes@gmail.com>
- <d2748bc4077b53c60bcb06fccaf976cb2afee345.1696709413.git.lstoakes@gmail.com>
- <20231011094627.3xohlpe4gm2idszm@quack3>
+        d=1e100.net; s=20230601; t=1697049481; x=1697654281;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2qbuE0qZp1qf7eX2ASC5DKh4tyeMrec4ZbV962Q/SxY=;
+        b=ZjUOIuhVj/1t6t0mahNhF9YxYsZao7VYKbdwCZ716gEVBKVttnOnWNL551xI6EfKEh
+         5A1/63j/Az8pX34tng0AjhbmUsWcws5RfipvF55tPzV0bCt64UZLs+1KM5rFeYybgJUi
+         hFY/4Mhjd9/kCryt6dmCGIy/rmKS0hrb+9jex1l9+P0zcPaRZpg7HWGLf7H/MY2f+g8R
+         PHL5rMJkf/m9SGHk+q0DDEbD1D8+LkxM/UQTNYTpxsJs9LuFcHyyH9koR9e4fAgJjI3k
+         WVJKtRqNDY/mIAd6ryMVHRc31nNVidfcwHf08OouCPd11BBWIzCUUYdb4CPtrs487Ik6
+         iuZQ==
+X-Gm-Message-State: AOJu0Yyk9jM8nAvHeVtUSPMOZfALXgu4Pf7qgJ85LsQx9cHIaZ3mwBAE
+	I8IVecbasgoNEz5wphLn3Kn4xVzNQ6q4eJTcQ8g=
+X-Google-Smtp-Source: AGHT+IEjPLZKDBeQsntoeGYQknxssRzGxivfimhGeUylrDZDEQk5Y660SpMUMXLAe08Vxf5dAvW9h2HXmHQZuYppvi0=
+X-Received: by 2002:a17:90a:d718:b0:27d:853:9109 with SMTP id
+ y24-20020a17090ad71800b0027d08539109mr2026445pju.20.1697049481081; Wed, 11
+ Oct 2023 11:38:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011094627.3xohlpe4gm2idszm@quack3>
+References: <20231011170321.73950-3-daan.j.demeyer@gmail.com> <20231011173528.41599-1-kuniyu@amazon.com>
+In-Reply-To: <20231011173528.41599-1-kuniyu@amazon.com>
+From: Daan De Meyer <daan.j.demeyer@gmail.com>
+Date: Wed, 11 Oct 2023 20:37:49 +0200
+Message-ID: <CAO8sHc=FfDo_LnpV_tF5aPF4BjpWkQk2jLxLWH50X0JzSQ+s6Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v10 2/9] bpf: Propagate modified uaddrlen from
+ cgroup sockaddr programs
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: bpf@vger.kernel.org, kernel-team@meta.com, martin.lau@linux.dev, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Oct 11, 2023 at 11:46:27AM +0200, Jan Kara wrote:
-> On Sat 07-10-23 21:51:01, Lorenzo Stoakes wrote:
-> > In order for an F_SEAL_WRITE sealed memfd mapping to have an opportunity to
-> > clear VM_MAYWRITE in seal_check_write() we must be able to invoke either
-> > the shmem_mmap() or hugetlbfs_file_mmap() f_ops->mmap() handler to do so.
+> > @@ -1483,11 +1488,18 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+> >       if (!ctx.uaddr) {
+> >               memset(&unspec, 0, sizeof(unspec));
+> >               ctx.uaddr = (struct sockaddr *)&unspec;
+> > -     }
+> > +             ctx.uaddrlen = 0;
+> > +     } else
+> > +             ctx.uaddrlen = *uaddrlen;
 > >
-> > We would otherwise fail the mapping_map_writable() check before we had
-> > the opportunity to clear VM_MAYWRITE.
-> >
-> > However, the existing logic in mmap_region() performs this check BEFORE
-> > calling call_mmap() (which invokes file->f_ops->mmap()). We must enforce
-> > this check AFTER the function call.
-> >
-> > In order to avoid any risk of breaking call_mmap() handlers which assume
-> > this will have been done first, we continue to mark the file writable
-> > first, simply deferring enforcement of it failing until afterwards.
-> >
-> > This enables mmap(..., PROT_READ, MAP_SHARED, fd, 0) mappings for memfd's
-> > sealed via F_SEAL_WRITE to succeed, whereas previously they were not
-> > permitted.
-> >
-> > Link: https://bugzilla.kernel.org/show_bug.cgi?id=217238
-> > Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
->
-> ...
->
-> > diff --git a/mm/mmap.c b/mm/mmap.c
-> > index 6f6856b3267a..9fbee92aaaee 100644
-> > --- a/mm/mmap.c
-> > +++ b/mm/mmap.c
-> > @@ -2767,17 +2767,25 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
-> >  	vma->vm_pgoff = pgoff;
-> >
-> >  	if (file) {
-> > -		if (is_shared_maywrite(vm_flags)) {
-> > -			error = mapping_map_writable(file->f_mapping);
-> > -			if (error)
-> > -				goto free_vma;
-> > -		}
-> > +		int writable_error = 0;
+> >       cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+> > -     return bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run,
+> > -                                  0, flags);
+> > +     ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run,
+> > +                                 0, flags);
 > > +
-> > +		if (vma_is_shared_maywrite(vma))
-> > +			writable_error = mapping_map_writable(file->f_mapping);
+> > +     if (!ret && uaddrlen)
+>
+> nit: no need to check uaddrlen here or maybe check ctx.uaddrlen.
+
+Are you sure? uaddrlen can still be NULL if uaddr is also NULL
+
+
+On Wed, 11 Oct 2023 at 19:35, Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
+>
+> From: Daan De Meyer <daan.j.demeyer@gmail.com>
+> Date: Wed, 11 Oct 2023 19:03:11 +0200
+> [...]
+> > @@ -1483,11 +1488,18 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+> >       if (!ctx.uaddr) {
+> >               memset(&unspec, 0, sizeof(unspec));
+> >               ctx.uaddr = (struct sockaddr *)&unspec;
+> > -     }
+> > +             ctx.uaddrlen = 0;
+> > +     } else
+> > +             ctx.uaddrlen = *uaddrlen;
 > >
-> >  		vma->vm_file = get_file(file);
-> >  		error = call_mmap(file, vma);
-> >  		if (error)
-> >  			goto unmap_and_free_vma;
-> >
-> > +		/*
-> > +		 * call_mmap() may have changed VMA flags, so retry this check
-> > +		 * if it failed before.
-> > +		 */
-> > +		if (writable_error && vma_is_shared_maywrite(vma)) {
-> > +			error = writable_error;
-> > +			goto close_and_free_vma;
-> > +		}
->
-> Hum, this doesn't quite give me a peace of mind ;). One bug I can see is
-> that if call_mmap() drops the VM_MAYWRITE flag, we seem to forget to drop
-> i_mmap_writeable counter here?
-
-This wouldn't be applicable in the F_SEAL_WRITE case, as the
-i_mmap_writable counter would already have been decremented, and thus an
-error would arise causing no further decrement, and everything would work
-fine.
-
-It'd be very odd for something to be writable here but the driver to make
-it not writable. But we do need to account for this.
-
->
-> I've checked why your v2 version broke i915 and I think the reason maybe
-> has nothing to do with i915. Just in case call_mmap() failed, it ended up
-> jumping to unmap_and_free_vma which calls mapping_unmap_writable() but we
-> didn't call mapping_map_writable() yet so the counter became imbalanced.
-
-yeah that must be the cause, I thought perhaps somehow
-__remove_shared_vm_struct() got invoked by i915_gem_mmap() but I didn't
-trace it through to see if it was possible.
-
-Looking at it again, i don't think that is possible, as we hold a mmap/vma
-write lock, and the only operations that can cause
-__remove_shared_vm_struct() to run are things that would not be able to do
-so with this lock held.
-
->
-> So I'd be for returning to v2 version, just fix up the error handling
-> paths...
-
-So in conclusion, I agree, this is the better approach. Will respin in v4.
-
->
-> 								Honza
->
->
+> >       cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+> > -     return bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run,
+> > -                                  0, flags);
+> > +     ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run,
+> > +                                 0, flags);
 > > +
-> >  		/*
-> >  		 * Expansion is handled above, merging is handled below.
-> >  		 * Drivers should not alter the address of the VMA.
-> > --
-> > 2.42.0
+> > +     if (!ret && uaddrlen)
+>
+> nit: no need to check uaddrlen here or maybe check ctx.uaddrlen.
+>
+>
+> > +             *uaddrlen = ctx.uaddrlen;
+> > +
+> > +     return ret;
+> >  }
+> >  EXPORT_SYMBOL(__cgroup_bpf_run_filter_sock_addr);
 > >
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
 
