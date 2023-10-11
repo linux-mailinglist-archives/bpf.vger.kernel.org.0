@@ -1,31 +1,31 @@
-Return-Path: <bpf+bounces-11881-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11880-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DBE17C4EA0
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 11:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 26C3E7C4E9B
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 11:27:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9E4328273A
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 09:27:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2CB6282549
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 09:27:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 814A81D531;
-	Wed, 11 Oct 2023 09:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E5CD1CFA1;
+	Wed, 11 Oct 2023 09:27:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 690921C2A9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EF261C2A4;
 	Wed, 11 Oct 2023 09:27:35 +0000 (UTC)
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9748C9C;
-	Wed, 11 Oct 2023 02:27:31 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VtwGXXu_1697016448;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VtwGXXu_1697016448)
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD02A4;
+	Wed, 11 Oct 2023 02:27:32 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VtwJVZv_1697016449;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VtwJVZv_1697016449)
           by smtp.aliyun-inc.com;
-          Wed, 11 Oct 2023 17:27:29 +0800
+          Wed, 11 Oct 2023 17:27:30 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: virtualization@lists.linux-foundation.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -41,10 +41,12 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	John Fastabend <john.fastabend@gmail.com>,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH vhost 00/22] virtio-net: support AF_XDP zero copy
-Date: Wed, 11 Oct 2023 17:27:06 +0800
-Message-Id: <20231011092728.105904-1-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH vhost 01/22] virtio_ring: virtqueue_set_dma_premapped support disable
+Date: Wed, 11 Oct 2023 17:27:07 +0800
+Message-Id: <20231011092728.105904-2-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
+In-Reply-To: <20231011092728.105904-1-xuanzhuo@linux.alibaba.com>
+References: <20231011092728.105904-1-xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,104 +62,72 @@ X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-## AF_XDP
+virtqueue_set_dma_premapped() adds a new parameter to disable the
+virtqueue premapped mode.
 
-XDP socket(AF_XDP) is an excellent bypass kernel network framework. The zero
-copy feature of xsk (XDP socket) needs to be supported by the driver. The
-performance of zero copy is very good. mlx5 and intel ixgbe already support
-this feature, This patch set allows virtio-net to support xsk's zerocopy xmit
-feature.
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+---
+ drivers/net/virtio_net.c     |  2 +-
+ drivers/virtio/virtio_ring.c | 11 ++++++++---
+ include/linux/virtio.h       |  2 +-
+ 3 files changed, 10 insertions(+), 5 deletions(-)
 
-At present, we have completed some preparation:
-
-1. vq-reset (virtio spec and kernel code)
-2. virtio-core premapped dma
-3. virtio-net xdp refactor
-
-So it is time for Virtio-Net to complete the support for the XDP Socket
-Zerocopy.
-
-Virtio-net can not increase the queue num at will, so xsk shares the queue with
-kernel.
-
-On the other hand, Virtio-Net does not support generate interrupt from driver
-manually, so when we wakeup tx xmit, we used some tips. If the CPU run by TX
-NAPI last time is other CPUs, use IPI to wake up NAPI on the remote CPU. If it
-is also the local CPU, then we wake up napi directly.
-
-This patch set includes some refactor to the virtio-net to let that to support
-AF_XDP.
-
-## performance
-
-ENV: Qemu with vhost-user(polling mode).
-
-Sockperf: https://github.com/Mellanox/sockperf
-I use this tool to send udp packet by kernel syscall.
-
-xmit command: sockperf tp -i 10.0.3.1 -t 1000
-
-I write a tool that sends udp packets or recvs udp packets by AF_XDP.
-
-                  | Guest APP CPU |Guest Softirq CPU | UDP PPS
-------------------|---------------|------------------|------------
-xmit by syscall   |   100%        |                  |   676,915
-xmit by xsk       |   59.1%       |   100%           | 5,447,168
-recv by syscall   |   60%         |   100%           |   932,288
-recv by xsk       |   35.7%       |   100%           | 3,343,168
-
-## maintain
-
-I am currently a reviewer for virtio-net. I commit to maintain AF_XDP support in
-virtio-net.
-
-Please review.
-
-Thanks.
-Xuan Zhuo (22):
-  virtio_ring: virtqueue_set_dma_premapped support disable
-  virtio_ring: introduce virtqueue_dma_[un]map_page_attrs
-  virtio_net: rename free_old_xmit_skbs to free_old_xmit
-  virtio_net: unify the code for recycling the xmit ptr
-  virtio_net: independent directory
-  virtio_net: move to virtio_net.h
-  virtio_net: add prefix virtnet to all struct/api inside virtio_net.h
-  virtio_net: virtnet_poll_tx support rescheduled
-  virtio_net: separate virtnet_rx_resize()
-  virtio_net: separate virtnet_tx_resize()
-  virtio_net: sq support premapped mode
-  virtio_net: xsk: bind/unbind xsk
-  virtio_net: xsk: prevent disable tx napi
-  virtio_net: xsk: tx: support tx
-  virtio_net: xsk: tx: support wakeup
-  virtio_net: xsk: tx: virtnet_free_old_xmit() distinguishes xsk buffer
-  virtio_net: xsk: tx: virtnet_sq_free_unused_buf() check xsk buffer
-  virtio_net: xsk: rx: introduce add_recvbuf_xsk()
-  virtio_net: xsk: rx: introduce receive_xsk() to recv xsk buffer
-  virtio_net: xsk: rx: virtnet_rq_free_unused_buf() check xsk buffer
-  virtio_net: update tx timeout record
-  virtio_net: xdp_features add NETDEV_XDP_ACT_XSK_ZEROCOPY
-
- MAINTAINERS                                 |   2 +-
- drivers/net/Kconfig                         |   8 +-
- drivers/net/Makefile                        |   2 +-
- drivers/net/virtio/Kconfig                  |  13 +
- drivers/net/virtio/Makefile                 |   8 +
- drivers/net/{virtio_net.c => virtio/main.c} | 644 +++++++++-----------
- drivers/net/virtio/virtio_net.h             | 360 +++++++++++
- drivers/net/virtio/xsk.c                    | 545 +++++++++++++++++
- drivers/net/virtio/xsk.h                    |  32 +
- drivers/virtio/virtio_ring.c                |  63 +-
- include/linux/virtio.h                      |   9 +-
- 11 files changed, 1315 insertions(+), 371 deletions(-)
- create mode 100644 drivers/net/virtio/Kconfig
- create mode 100644 drivers/net/virtio/Makefile
- rename drivers/net/{virtio_net.c => virtio/main.c} (92%)
- create mode 100644 drivers/net/virtio/virtio_net.h
- create mode 100644 drivers/net/virtio/xsk.c
- create mode 100644 drivers/net/virtio/xsk.h
-
---
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index fe7f314d65c9..6b5f47ebf9b2 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -737,7 +737,7 @@ static void virtnet_rq_set_premapped(struct virtnet_info *vi)
+ 		return;
+ 
+ 	for (i = 0; i < vi->max_queue_pairs; i++) {
+-		if (virtqueue_set_dma_premapped(vi->rq[i].vq))
++		if (virtqueue_set_dma_premapped(vi->rq[i].vq, true))
+ 			continue;
+ 
+ 		vi->rq[i].do_dma = true;
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 51d8f3299c10..b3ded56722f4 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -2784,7 +2784,7 @@ EXPORT_SYMBOL_GPL(virtqueue_resize);
+  * 0: success.
+  * -EINVAL: vring does not use the dma api, so we can not enable premapped mode.
+  */
+-int virtqueue_set_dma_premapped(struct virtqueue *_vq)
++int virtqueue_set_dma_premapped(struct virtqueue *_vq, bool mode)
+ {
+ 	struct vring_virtqueue *vq = to_vvq(_vq);
+ 	u32 num;
+@@ -2803,8 +2803,13 @@ int virtqueue_set_dma_premapped(struct virtqueue *_vq)
+ 		return -EINVAL;
+ 	}
+ 
+-	vq->premapped = true;
+-	vq->do_unmap = false;
++	if (mode) {
++		vq->premapped = true;
++		vq->do_unmap = false;
++	} else {
++		vq->premapped = false;
++		vq->do_unmap = vq->use_dma_api;
++	}
+ 
+ 	END_USE(vq);
+ 
+diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+index 4cc614a38376..1cf7b004348b 100644
+--- a/include/linux/virtio.h
++++ b/include/linux/virtio.h
+@@ -81,7 +81,7 @@ bool virtqueue_enable_cb(struct virtqueue *vq);
+ 
+ unsigned virtqueue_enable_cb_prepare(struct virtqueue *vq);
+ 
+-int virtqueue_set_dma_premapped(struct virtqueue *_vq);
++int virtqueue_set_dma_premapped(struct virtqueue *_vq, bool mode);
+ 
+ bool virtqueue_poll(struct virtqueue *vq, unsigned);
+ 
+-- 
 2.32.0.3.g01195cf9f
 
 
