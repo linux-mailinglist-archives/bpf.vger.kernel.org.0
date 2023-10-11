@@ -1,194 +1,160 @@
-Return-Path: <bpf+bounces-11921-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11922-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B3367C57CF
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 17:11:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C05A67C580C
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 17:27:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E7F3282444
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 15:11:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06BFE1C20CAF
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 15:27:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF65D2031C;
-	Wed, 11 Oct 2023 15:11:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFCCA208AD;
+	Wed, 11 Oct 2023 15:27:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1+XlyBtv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="joNvXrSH"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F88818B04
-	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 15:11:22 +0000 (UTC)
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8091A9
-	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 08:11:18 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c9d4f08d7cso60165ad.0
-        for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 08:11:18 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82CAC208A5
+	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 15:27:39 +0000 (UTC)
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1E998
+	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 08:27:37 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c9a1762b43so26238235ad.1
+        for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 08:27:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697037078; x=1697641878; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ysq39f+RxeDX0QxC2g4cZxAZIgMWhz132Glg6XcD8zQ=;
-        b=1+XlyBtvlLoKGwmtBONU4oGiB3nbY3ZkaSIc6DrJsXlozmjgauAuKB9/VfZmP279Lf
-         NmAjve4A+YsfP9P3x6Z6zeayx0TRWAMEiaItASA9rStC442xFjhlEFSlcXibhZDgTY7T
-         FUEiml5OhDE8rX2RWqCE45O5FWG3eOaSkyOm5f7Giay9w+DbxxmE+1vXOBvUzBHFIEnd
-         s3c0Xm7LqupOXFobMF8SKpdwEmSdVavv80w1LSncTxuvq7kzNvI+HzEg9eINhGIm7Ncp
-         6oUJhPvc2JfvOc0jKPLovblnh88XWRVQFsAnVov4ip9ZDoiZtU7TGrKR9qfitlGaGeaD
-         FEkA==
+        d=gmail.com; s=20230601; t=1697038057; x=1697642857; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=64Z4x6ukUPpDEtdavmCNh2ZUoIRmjwxl5HBoqHNsom4=;
+        b=joNvXrSHHah88mgrwUTiwFRQAYeBiBSJYIbi8Wx2rqL/h9PsdDEepFe+gVbq/u7MDD
+         pFSjbr4XNNYQ930Bf7bNOayWgjI8YqEWs4Ms++en58gYUUqQDIfpz6XQCz2ucaOe3q2K
+         YhsJ+lydF2mrn1Z8PVLY1vN9xIAJJ4vrHvsEY6JijfDkkfrTxVGjQMgQ9t9pEqYWRgXc
+         Nz3uFA/T0QMCdx5FOKhnb9XfPe1BWPl3GTWNeOZIK73azSD1xngCiK9iNEqHAUswk3Wz
+         lBvtxH06N642+6eDVZ+bgO8g+79FUzEqKy6sA+P9wfmhL+rrouLsry1tidDxEmuHJNew
+         5l6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697037078; x=1697641878;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ysq39f+RxeDX0QxC2g4cZxAZIgMWhz132Glg6XcD8zQ=;
-        b=K28Qe1/yYYDeXcIgi+TlO2cCqIXmbB21l3UuO11KZHrbsaV9lmGtOqO26lGCMlUm0O
-         iESdKWhvPqepTRD7oITcBmke4Iez9anDHto2xVPTiWTgPYw7+G2QOnKcu1pQFJ0w3bIk
-         hk7+PC+k11b1bhNo8o+Iidr3h8SioxJXkzlzuxiMQHosKDaJG2VyNphGwO9GFc9AA03O
-         qutuFr6OKMO3fUyYqRBghyTFrk7EbUnQYVBM1A3NPNGcwfwPGNf3s1KynLZm87TlcKjT
-         0ZmTeRrRIRMoEEWfaAC4+MSoT3g9iq3v9EgBhorsGBxhnwbkaE7bY2J6+tLCQw+a6Si/
-         NG5Q==
-X-Gm-Message-State: AOJu0YwvDoZN693jleN/lBh85J67W75+Q3Jlo78gFOD/8yjBGNE780+D
-	yGK1b3p3PCwLaa0nAtAPRK0XeWz4ThWc2QKzFjt+VA==
-X-Google-Smtp-Source: AGHT+IE+7M622fVnoDLgJHtsFi0t4ael64syMh6Fu5jaC4A4ui2zUGTpZ++FeUNQsKe7If7WQC+EoGIipP1ya8Ox4w0=
-X-Received: by 2002:a17:902:c641:b0:1c7:47ca:f075 with SMTP id
- s1-20020a170902c64100b001c747caf075mr197756pls.15.1697037078136; Wed, 11 Oct
- 2023 08:11:18 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697038057; x=1697642857;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=64Z4x6ukUPpDEtdavmCNh2ZUoIRmjwxl5HBoqHNsom4=;
+        b=YZLMt+50HHHjMxfCPcL86P1iIDE4vzD3PvRiS72EEIjZRWV5mBJ1T9ZKE2ZUt682IE
+         nvTKOY6Ch/aEuqPwV3NBja4p+bCyq45GjkrLeaGx+lqmtlB+RuNyfvtkezvW3RGy4XbW
+         UUTu2TsoGtD3EByn/JpJNRDWC9Fgf5jzdabZ93fh8M2bzjNPJjTP0FXux3R4aPwL+cxH
+         bsXTJ05uFv0f4jGSzYxcI7g82YarNdAnIDM0Dcsu2o68hJMc7y/m1+Cc2+JJZgNWw4l4
+         51+Rg6bvQCMUcqNL69iFqb7+wDzDEE9pAfVlv8T9UQgFq8Y+DKIL8+LW9qii4pIjcyli
+         cAhA==
+X-Gm-Message-State: AOJu0YxKt5Z9WEN2YxeIYqBnVaB3l9EhOalOLJj3I8w9q+UR3pTrrb36
+	s9NF8vewhugZas2aiGHYRfTBQP+SAA0gMQ==
+X-Google-Smtp-Source: AGHT+IFwy1Pi1hqLcn+KeVBBC5/loJl9hzHMlqGVErIAcJmsQx25osTMoX5dNG/pBkNXQ1US6261ZA==
+X-Received: by 2002:a17:902:a404:b0:1c3:323f:f531 with SMTP id p4-20020a170902a40400b001c3323ff531mr18231758plq.20.1697038056914;
+        Wed, 11 Oct 2023 08:27:36 -0700 (PDT)
+Received: from localhost.localdomain (bb119-74-148-123.singnet.com.sg. [119.74.148.123])
+        by smtp.gmail.com with ESMTPSA id jf3-20020a170903268300b001c755810f89sm14092070plb.181.2023.10.11.08.27.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 08:27:36 -0700 (PDT)
+From: Leon Hwang <hffilwlqm@gmail.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	maciej.fijalkowski@intel.com,
+	jakub@cloudflare.com,
+	iii@linux.ibm.com,
+	hengqi.chen@gmail.com,
+	hffilwlqm@gmail.com
+Subject: [RFC PATCH bpf-next v2 0/4] bpf, x64: Fix tailcall hierarchy
+Date: Wed, 11 Oct 2023 23:27:21 +0800
+Message-ID: <20231011152725.95895-1-hffilwlqm@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0000000000001db97f06075bf98b@google.com> <20231010142050.GA128254@cmpxchg.org>
-In-Reply-To: <20231010142050.GA128254@cmpxchg.org>
-From: Aleksandr Nogikh <nogikh@google.com>
-Date: Wed, 11 Oct 2023 17:11:06 +0200
-Message-ID: <CANp29Y75YE2Z6HDJ=OJ0RhPjniEzja6jx9QQ0PGrtqLkpjoUww@mail.gmail.com>
-Subject: Re: [syzbot] [cgroups?] [mm?] WARNING in mem_cgroup_migrate
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: syzbot <syzbot+831ba898b5db8d5617ea@syzkaller.appspotmail.com>, 
-	akpm@linux-foundation.org, bpf@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, 
-	muchun.song@linux.dev, roman.gushchin@linux.dev, shakeelb@google.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-	autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+	HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Oct 10, 2023 at 4:20=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> This is the earlier version of the hugetlb cgroup accounting patches
-> that trigger on an uncharged hugetlbfs:
->
->   7547          /*
->   7548           * Note that it is normal to see !memcg for a hugetlb fol=
-io.
->   7549           * It could have been allocated when memory_hugetlb_accou=
-nting was not
->   7550           * selected, for e.g.
->   7551           */
->   7552          VM_WARN_ON_ONCE_FOLIO(!memcg, old);
->
-> It's been fixed in the revision that's in the latest next release:
->
->   7539          /*
->   7540           * Note that it is normal to see !memcg for a hugetlb fol=
-io.
->   7541           * For e.g, itt could have been allocated when memory_hug=
-etlb_accounting
->   7542           * was not selected.
->   7543           */
->   7544          VM_WARN_ON_ONCE_FOLIO(!folio_test_hugetlb(old) && !memcg,=
- old);
->   7545          if (!memcg)
->   7546                  return;
->
-> > Modules linked in:
-> > CPU: 1 PID: 5208 Comm: syz-executor.1 Not tainted 6.6.0-rc4-next-202310=
-05-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
- Google 09/06/2023
-> > RIP: 0010:mem_cgroup_migrate+0x2fa/0x390 mm/memcontrol.c:7552
-> > Code: f7 ff e9 36 ff ff ff 80 3d 84 b2 d1 0c 00 0f 85 54 ff ff ff 48 c7=
- c6 a0 9e 9b 8a 48 89 ef e8 0d 5c df ff c6 05 68 b2 d1 0c 01 <0f> 0b e9 37 =
-ff ff ff 48 c7 c6 e0 9a 9b 8a 48 89 df e8 f0 5b df ff
-> > RSP: 0018:ffffc90004b2fa38 EFLAGS: 00010246
-> > RAX: 0000000000040000 RBX: ffffea0005338000 RCX: ffffc90005439000
-> > RDX: 0000000000040000 RSI: ffffffff81e76463 RDI: ffffffff8ae96da0
-> > RBP: ffffea0001d98000 R08: 0000000000000000 R09: fffffbfff1d9db9a
-> > R10: ffffffff8ecedcd7 R11: 0000000000000000 R12: 0000000000000000
-> > R13: 0000000000000200 R14: 0000000000000000 R15: ffffea0001d98018
-> > FS:  00007fc15e89d6c0(0000) GS:ffff8880b9900000(0000) knlGS:00000000000=
-00000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 0000001b31820000 CR3: 000000007f5e1000 CR4: 00000000003506f0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >  <TASK>
-> >  hugetlbfs_migrate_folio fs/hugetlbfs/inode.c:1066 [inline]
-> >  hugetlbfs_migrate_folio+0xd0/0x120 fs/hugetlbfs/inode.c:1049
-> >  move_to_new_folio+0x183/0x690 mm/migrate.c:966
-> >  unmap_and_move_huge_page mm/migrate.c:1428 [inline]
-> >  migrate_hugetlbs mm/migrate.c:1546 [inline]
-> >  migrate_pages+0x16ac/0x27c0 mm/migrate.c:1900
-> >  migrate_to_node mm/mempolicy.c:1072 [inline]
-> >  do_migrate_pages+0x43e/0x690 mm/mempolicy.c:1171
-> >  kernel_migrate_pages+0x59b/0x780 mm/mempolicy.c:1682
-> >  __do_sys_migrate_pages mm/mempolicy.c:1700 [inline]
-> >  __se_sys_migrate_pages mm/mempolicy.c:1696 [inline]
-> >  __x64_sys_migrate_pages+0x96/0x100 mm/mempolicy.c:1696
-> >  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-> >  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
-> >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> > RIP: 0033:0x7fc15da7cae9
-> > Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89=
- f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 =
-ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-> > RSP: 002b:00007fc15e89d0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000100
-> > RAX: ffffffffffffffda RBX: 00007fc15db9bf80 RCX: 00007fc15da7cae9
-> > RDX: 0000000020000340 RSI: 0000000000000080 RDI: 0000000000000000
-> > RBP: 00007fc15dac847a R08: 0000000000000000 R09: 0000000000000000
-> > R10: 00000000200003c0 R11: 0000000000000246 R12: 0000000000000000
-> > R13: 000000000000000b R14: 00007fc15db9bf80 R15: 00007ffd87d7c058
-> >  </TASK>
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >
-> > If the bug is already fixed, let syzbot know by replying with:
-> > #syz fix: exact-commit-title
->
-> #syz fix: next-20231010
->
+This patchset fixes a tailcall hierarchy issue with a better solution than v1[0].
 
-Thanks for sharing the info and updating the issue!
+v1 solution stores tail_call_cnt on the stack of bpf prog:
 
-If there's no fixing commit (the faulty series is dropped or
-replaced), it's better to just invalidate the report:
+    |  STACK  |
+    +---------+ RBP
+    |         |
+    |         |
+    |         |
+ +--| tcc_ptr |
+ +->|   tcc   |
+    |   rbx   |
+    +---------+ RSP
 
-#syz invalid
+v2 solution stores tail_call_cnt on the stack of bpf prog's caller:
 
-Otherwise, as in this case, syzbot would start looking for the
-"next-20231010" commit (and won't find it because it's a tag) and,
-after some time, start complaining that no such commit is reachable
-from any of the master branches of the tested trees.
+    |  STACK  |
+    |         |
+    |   rip   |
+ +->|   tcc   |
+ |  |   rip   |
+ |  |   rbp   |
+ |  +---------+ RBP
+ |  |         |
+ |  |         |
+ |  |         |
+ +--| tcc_ptr |
+    |   rbx   |
+    +---------+ RSP
 
---=20
-Aleksandr
+With this change, it requires less instructions to resolve this issue.
+
+For more resolving details, please read the following patches.
+
+The issue is confirmed in the discussions of "bpf, x64: Fix tailcall infinite
+loop"[1].
+
+Currently, I only resolve this issue on x86. The ones on arm64, s390x and
+loongarch are waiting to be resolved. So, the ci pipeline fails to run for this
+issue fixing.
+
+Hopefully, this issue on s390x and arm64 will be resolved soon.
+
+v1 -> v2:
+  * address comments from Stanislav
+    * Separate moving emit_nops() as first patch.
+
+Links:
+[0] https://lore.kernel.org/bpf/20231005145814.83122-1-hffilwlqm@gmail.com/
+[1] https://lore.kernel.org/bpf/6203dd01-789d-f02c-5293-def4c1b18aef@gmail.com/
+
+Leon Hwang (4):
+  bpf, x64: Emit nops for X86_PATCH
+  bpf, x64: Fix tailcall hierarchy
+  bpf, x64: Load tail_call_cnt pointer
+  selftests/bpf: Add testcases for tailcall hierarchy fixing
+
+ arch/x86/net/bpf_jit_comp.c                   |  99 +++--
+ .../selftests/bpf/prog_tests/tailcalls.c      | 418 ++++++++++++++++++
+ .../bpf/progs/tailcall_bpf2bpf_hierarchy1.c   |  34 ++
+ .../bpf/progs/tailcall_bpf2bpf_hierarchy2.c   |  55 +++
+ .../bpf/progs/tailcall_bpf2bpf_hierarchy3.c   |  46 ++
+ 5 files changed, 606 insertions(+), 46 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy1.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy2.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy3.c
+
+
+base-commit: 644b54d80d572438a815c05b1bab2b7871e1e5a1
+-- 
+2.41.0
+
 
