@@ -1,178 +1,195 @@
-Return-Path: <bpf+bounces-11918-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11919-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0C2E7C5679
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 16:15:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 911687C56D1
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 16:29:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D81BD1C20F6F
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 14:15:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C18B11C20EC6
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 14:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78EC220327;
-	Wed, 11 Oct 2023 14:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5AF2033D;
+	Wed, 11 Oct 2023 14:29:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g1dNhFwo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DTPBFArj"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B0D200BC;
-	Wed, 11 Oct 2023 14:15:48 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E827192;
-	Wed, 11 Oct 2023 07:15:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697033743; x=1728569743;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DuNvaLmuSBpRQ/OE9jIM2FpK9gH/+55vqfRXvHb1aOE=;
-  b=g1dNhFwoFIs7RHU5h3KQ44AATkF0kyJGjDd9GPYUt2OR6fuzOB5WKkLX
-   dTPCFUnxbbQsuPklDSpv72fMf6Nqg90N3PHJ3k0g02/2qiGcuxRdNoBL2
-   SQ9oc/P9a9/SjshxzAdCGAKfByuDXprxUXtjk/WtduvZ4+TTbKYWYJ9xo
-   t9aTi5dx3wZh+iY+AsmyW79QS1j3i0rAX2Dyo2FUg0SzgrJCT5RzuawCX
-   j1yAT7oST57bf6/FGl1uNhqnU/xQ80Omf0077GY2kPjSGpaXJ1cBz/Q4/
-   Pj9aElb9PpS1XnWRCuu2L8l+GbpDCy9/9JbSATn2mts4LXXVfaamx2/gN
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="364036253"
-X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
-   d="scan'208";a="364036253"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 07:15:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="877693397"
-X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
-   d="scan'208";a="877693397"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 11 Oct 2023 07:15:37 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qqZzF-0002ID-2k;
-	Wed, 11 Oct 2023 14:15:15 +0000
-Date: Wed, 11 Oct 2023 22:13:17 +0800
-From: kernel test robot <lkp@intel.com>
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	virtualization@lists.linux-foundation.org
-Cc: oe-kbuild-all@lists.linux.dev, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH vhost 01/22] virtio_ring: virtqueue_set_dma_premapped
- support disable
-Message-ID: <202310112204.h03TUDpH-lkp@intel.com>
-References: <20231011092728.105904-2-xuanzhuo@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24F222032C
+	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 14:29:34 +0000 (UTC)
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECCE690
+	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 07:29:31 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50325ce89e9so9160459e87.0
+        for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 07:29:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697034570; x=1697639370; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qJDQD0YO+1hmRPj2gjzPqkberRxZIp9HO672Ebr5SVs=;
+        b=DTPBFArjub7eQ2mxIxs/vgwUNrYRGMw9ggzTdhx5TLZgrx1pKJXbAeSurHFw662WID
+         3bJB/bTTFhqH9Lj8X6pabFCx8WIdhWCXrp8xcYSkkAAdw8CjzCXQIXrCCNSgL+7DrU0Z
+         p91pFwIxant1UNVdmcgnP+ESwGFHVQ2UNROKQxYwdyXGEoFIqMFKW0PC71fOlgYyUM14
+         jRYVNJbec2hT4Y0ey+f0pLn0v2+gam/PwIJVzao4mGzN/VYgk50+fbR6JuKNUTuJtHVT
+         eKuR3o0cZt31MpnFBiYhbR3FCZDRrmKSoBlaXQjrUgEqf7ppqbbe+ILk37Np9IBBzrHE
+         kHHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697034570; x=1697639370;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qJDQD0YO+1hmRPj2gjzPqkberRxZIp9HO672Ebr5SVs=;
+        b=PA8zcXoE06TWizS5RUcw4a2IH8xt77hBC1STBiNT9mCoUQMazpNucLCecP4qyTr0LM
+         i+x8VdaDK1XngxPG+nR9h+EXmqp4qhRu7D6ykrziu86AReHqbSL9/xo3Nf5AfuPUb41g
+         +RQCMA1cCj3/cVZUBxf2yjwxXthLTu3j1uVYOPbbrzrzdfvQQjkZxSNCVgZoHZVZcXPr
+         SLuYBHwn0ScHZ88CT/xReYIFmgMXvLOV8TVjGNVo34I+3xh3S/7hBkjCj4l/YeXJSFMK
+         jnlcg1dci0I+bupcToyX/k0ZPYb1YoiU1MZs3Oj0W5BlBCpTqVx2U2drZay9Lq3WilzT
+         vR1Q==
+X-Gm-Message-State: AOJu0YxbulOFFD6ICq28NFXQ0YwWAhf87ZgDjga3Y51QJYsHa6O+SwQo
+	OqndvrggAZp16CdrcJke9taINCf4yPnBUnpyblpnsXE4hFttkw4U
+X-Google-Smtp-Source: AGHT+IGvpsYxD60ppYTEpXFCxXgv/0qAuvtG9murFtrfy8bO9HjYOUJ9widfOB70iHhjBWly6NJCO3PINQAE8KVmIWs=
+X-Received: by 2002:ac2:4add:0:b0:506:947f:6b75 with SMTP id
+ m29-20020ac24add000000b00506947f6b75mr7882826lfp.14.1697034569905; Wed, 11
+ Oct 2023 07:29:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011092728.105904-2-xuanzhuo@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+References: <202310111838.46ff5b6a-oliver.sang@intel.com> <CANk7y0g-iaZfWCae=sJA34H39x7DcNBCaNF8yjXCy0RQhX5-vA@mail.gmail.com>
+In-Reply-To: <CANk7y0g-iaZfWCae=sJA34H39x7DcNBCaNF8yjXCy0RQhX5-vA@mail.gmail.com>
+From: Puranjay Mohan <puranjay12@gmail.com>
+Date: Wed, 11 Oct 2023 16:29:18 +0200
+Message-ID: <CANk7y0jMMuqL12zGL-6Yvb2=4h15mHdMp3e8n-Sd+pHRj8wXxg@mail.gmail.com>
+Subject: Re: [linux-next:master] [bpf/tests] daabb2b098: kernel-selftests.net.test_bpf.sh.fail
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, 
+	Linux Memory Management List <linux-mm@kvack.org>, Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org, 
+	oliver.sang@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Xuan,
+Hi Yonghong,
 
-kernel test robot noticed the following build warnings:
+On Wed, Oct 11, 2023 at 4:01=E2=80=AFPM Puranjay Mohan <puranjay12@gmail.co=
+m> wrote:
+>
+> On Wed, Oct 11, 2023 at 3:20=E2=80=AFPM kernel test robot <oliver.sang@in=
+tel.com> wrote:
+> >
+> >
+> > hi, Puranjay Mohan,
+> >
+> > we reported same issue when this commit is a review patch as:
+> > https://lore.kernel.org/all/202309261451.8934f9ad-oliver.sang@intel.com=
+/
+> >
+> > now we noticed this commit is in linux-next/master and we still observe=
+d
+> > failure.
+> >
+> > is there any requirements to run new tests? Thanks
+> >
+> >
+> > Hello,
+> >
+> > kernel test robot noticed "kernel-selftests.net.test_bpf.sh.fail" on:
+> >
+> > commit: daabb2b098e04753fa3d1b1feed13e5a61bef61c ("bpf/tests: add tests=
+ for cpuv4 instructions")
+> > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> >
+> > [test failed on linux-next/master 719136e5c24768ebdf80b9daa53facebbdd37=
+7c3]
+> >
+> > in testcase: kernel-selftests
+> > version: kernel-selftests-x86_64-60acb023-1_20230329
+> > with following parameters:
+> >
+> >         group: net
+> >
+> >
+> >
+> > compiler: gcc-12
+> > test machine: 36 threads 1 sockets Intel(R) Core(TM) i9-10980XE CPU @ 3=
+.00GHz (Cascade Lake) with 32G memory
+> >
+> > (please refer to attached dmesg/kmsg for entire log/backtrace)
+> >
+> >
+> >
+> > If you fix the issue in a separate patch/commit (i.e. not just a new ve=
+rsion of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <oliver.sang@intel.com>
+> > | Closes: https://lore.kernel.org/oe-lkp/202310111838.46ff5b6a-oliver.s=
+ang@intel.com
+> >
+> >
+> >
+> > ....
+> > # timeout set to 1500
+> > # selftests: net: test_bpf.sh
+> > # test_bpf: [FAIL]
+> > not ok 13 selftests: net: test_bpf.sh # exit=3D1
+> > ....
+>
+> The test "ALU_MOVSX | BPF_W" is failing for x86_64. This is a new test
+> added by my patch.
+> This is how the test looks:
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.6-rc5 next-20231011]
-[cannot apply to mst-vhost/linux-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+As you have worked more on cpu=3Dv4 instructions.
+Is it a requirement that MOVSX32 can only have offset =3D 8/16 and never 32=
+.
+I know that MOVSX32 with offset=3D32 is equivalent to normal MOV32.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Xuan-Zhuo/virtio_ring-virtqueue_set_dma_premapped-support-disable/20231011-180709
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20231011092728.105904-2-xuanzhuo%40linux.alibaba.com
-patch subject: [PATCH vhost 01/22] virtio_ring: virtqueue_set_dma_premapped support disable
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231011/202310112204.h03TUDpH-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231011/202310112204.h03TUDpH-lkp@intel.com/reproduce)
+If this is a requirement then the below test is running an invalid
+instruction and we can remove it from test_bpf.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310112204.h03TUDpH-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/virtio/virtio_ring.c:2788: warning: Function parameter or member 'mode' not described in 'virtqueue_set_dma_premapped'
-
-
-vim +2788 drivers/virtio/virtio_ring.c
-
-c790e8e1817f1a Xuan Zhuo 2022-08-01  2765  
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2766  /**
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2767   * virtqueue_set_dma_premapped - set the vring premapped mode
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2768   * @_vq: the struct virtqueue we're talking about.
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2769   *
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2770   * Enable the premapped mode of the vq.
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2771   *
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2772   * The vring in premapped mode does not do dma internally, so the driver must
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2773   * do dma mapping in advance. The driver must pass the dma_address through
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2774   * dma_address of scatterlist. When the driver got a used buffer from
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2775   * the vring, it has to unmap the dma address.
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2776   *
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2777   * This function must be called immediately after creating the vq, or after vq
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2778   * reset, and before adding any buffers to it.
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2779   *
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2780   * Caller must ensure we don't call this with other virtqueue operations
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2781   * at the same time (except where noted).
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2782   *
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2783   * Returns zero or a negative error.
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2784   * 0: success.
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2785   * -EINVAL: vring does not use the dma api, so we can not enable premapped mode.
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2786   */
-f8d1a236ad114f Xuan Zhuo 2023-10-11  2787  int virtqueue_set_dma_premapped(struct virtqueue *_vq, bool mode)
-8daafe9ebbd21a Xuan Zhuo 2023-08-10 @2788  {
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2789  	struct vring_virtqueue *vq = to_vvq(_vq);
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2790  	u32 num;
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2791  
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2792  	START_USE(vq);
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2793  
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2794  	num = vq->packed_ring ? vq->packed.vring.num : vq->split.vring.num;
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2795  
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2796  	if (num != vq->vq.num_free) {
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2797  		END_USE(vq);
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2798  		return -EINVAL;
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2799  	}
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2800  
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2801  	if (!vq->use_dma_api) {
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2802  		END_USE(vq);
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2803  		return -EINVAL;
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2804  	}
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2805  
-f8d1a236ad114f Xuan Zhuo 2023-10-11  2806  	if (mode) {
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2807  		vq->premapped = true;
-b319940f83c21b Xuan Zhuo 2023-08-10  2808  		vq->do_unmap = false;
-f8d1a236ad114f Xuan Zhuo 2023-10-11  2809  	} else {
-f8d1a236ad114f Xuan Zhuo 2023-10-11  2810  		vq->premapped = false;
-f8d1a236ad114f Xuan Zhuo 2023-10-11  2811  		vq->do_unmap = vq->use_dma_api;
-f8d1a236ad114f Xuan Zhuo 2023-10-11  2812  	}
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2813  
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2814  	END_USE(vq);
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2815  
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2816  	return 0;
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2817  }
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2818  EXPORT_SYMBOL_GPL(virtqueue_set_dma_premapped);
-8daafe9ebbd21a Xuan Zhuo 2023-08-10  2819  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> {
+>                 "ALU_MOVSX | BPF_W",
+>                 .u.insns_int =3D {
+>                         BPF_LD_IMM64(R2, 0x00000000deadbeefLL),
+>                         BPF_LD_IMM64(R3, 0xdeadbeefdeadbeefLL),
+>                         BPF_MOVSX32_REG(R1, R3, 32),
+>                         BPF_JMP_REG(BPF_JEQ, R2, R1, 2),
+>                         BPF_MOV32_IMM(R0, 2),
+>                         BPF_EXIT_INSN(),
+>                         BPF_MOV32_IMM(R0, 1),
+>                         BPF_EXIT_INSN(),
+>                 },
+>                 INTERNAL,
+>                 { },
+>                 { { 0, 0x1 } },
+>  }
+>
+> I am creating a build for testing on my end.
+>
+> >
+> >
+> >
+> > The kernel config and materials to reproduce are available at:
+> > https://download.01.org/0day-ci/archive/20231011/202310111838.46ff5b6a-=
+oliver.sang@intel.com
+> >
+> >
+> >
+> > --
+> > 0-DAY CI Kernel Test Service
+> > https://github.com/intel/lkp-tests/wiki
+> >
+>
+> Thanks,
+> Puranjay
 
