@@ -1,338 +1,289 @@
-Return-Path: <bpf+bounces-11853-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11854-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A17B7C47DC
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 04:35:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 412007C47E8
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 04:42:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C29BC281FE6
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 02:35:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 626701C20E2B
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 02:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87746612E;
-	Wed, 11 Oct 2023 02:35:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0700A4688;
+	Wed, 11 Oct 2023 02:42:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BCwdqKcy"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B175610D;
-	Wed, 11 Oct 2023 02:35:20 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB54F94;
-	Tue, 10 Oct 2023 19:35:17 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4S4xh01RqDz4f3lg4;
-	Wed, 11 Oct 2023 10:35:12 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgA3jUzfCSZlasr_CQ--.47802S2;
-	Wed, 11 Oct 2023 10:35:14 +0800 (CST)
-Subject: Re: [PATCH v6 bpf-next 03/13] bpf: introduce BPF token object
-To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
- netdev@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org,
- keescook@chromium.org, brauner@kernel.org, lennart@poettering.net,
- kernel-team@meta.com, sargun@sargun.me
-References: <20230927225809.2049655-1-andrii@kernel.org>
- <20230927225809.2049655-4-andrii@kernel.org>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <be371dfe-d297-7de3-0812-eb069232f410@huaweicloud.com>
-Date: Wed, 11 Oct 2023 10:35:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 067F46108
+	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 02:42:50 +0000 (UTC)
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AEF49D;
+	Tue, 10 Oct 2023 19:42:48 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-53d9b94731aso2096154a12.1;
+        Tue, 10 Oct 2023 19:42:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696992167; x=1697596967; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=id44sh06sB+VzUBOjFeGvj0/2qgnTKDwavEKyMyAfT8=;
+        b=BCwdqKcyDt0sXI1J+5NqANmhZer7jYfnxy2jW2bL/5T75TUoRuBpZKwc3YwnNF6ryV
+         vFqyWSuCodt04lgNeezExMwt0BnxiZ9M/MIK1lDVyAMykBZOyFm5EJK+6PTrp9pcx937
+         7SNNvCJMU1Ud7jmlUXkfHlEl/1zashQ459GulCIoZOrnt3p56uBSwFGUGUWkHoc0Rc4S
+         KHcufuk6H7oTrg+nvdW6IleD5g7hAjEVQPO93mwArRp9BUEHcI76j8rq+RAVi6Rei3PQ
+         sBEEyh4O0S+OTDTfSkqRpbQ+2Y9hECkL2yVt1o0kJwvTSf8apU+2F4w/08U14yqMN+/a
+         6SEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696992167; x=1697596967;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=id44sh06sB+VzUBOjFeGvj0/2qgnTKDwavEKyMyAfT8=;
+        b=hIh86MIJ3nf6CEiI5zW6Kg4RIF/+PSrD+d6iLL/9+dQgyEx4hCQpCVNhZKtQpoYkpw
+         4SBRZhfEW06mfHBb7JxfJYqT2Dk8lYEO/P7H1qisktAY0ZnVjgCD0UoNQPIA5ZNN5hvg
+         AzmQ2x9JD2ydCUpp2XUkxqhUB4/nc0J3HHWK0nVwF+PlX9pV/5Fee6iJHhYHOM7Iwd4f
+         Scd6z2zH1M3g442UhgrBbjhKLtv3507t35AZ8f3W2RgPpeyq1lF4Mi+ei5LhGTuPQgza
+         H9/hZAA7KvVVmWVq3AxCZ5BJJ5PTyEM7BHO37RamgP96yS1LnY/XNwvrLZygRwXUQAcm
+         lzMw==
+X-Gm-Message-State: AOJu0YwHDGCiP6ji+yPIlHCEjtcBYltOIWhdm4vm6IjrBScT3lsDByIs
+	i3iaRNu7AGRLp71lszLjkMTz2LyNjP9k8HgtnT0=
+X-Google-Smtp-Source: AGHT+IFXL2f2HcXw1v9fo8Al4YHu9PNbmoZ0LGms3MQSxml82cjRQOQmLoBzCI5tQZLJESozCprpyInq79kn/zKKi9A=
+X-Received: by 2002:aa7:c904:0:b0:525:7f37:e87a with SMTP id
+ b4-20020aa7c904000000b005257f37e87amr18005344edt.16.1696992166517; Tue, 10
+ Oct 2023 19:42:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230927225809.2049655-4-andrii@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:_Ch0CgA3jUzfCSZlasr_CQ--.47802S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3AFyxJrWDXrW5WrWDXFyUAwb_yoWfJFW3pF
-	4rJFyjkr48JrW0gFn2qa18ZF1Fkw4DX3yUWrWUWryfArsFq3s2gFyFgFWa9F4ftr1Uu34I
-	qFs09398Wr9rZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IU1zuWJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-	autolearn=ham autolearn_force=no version=3.4.6
+References: <20231009-jmp-into-reserved-fields-v1-1-d8006e2ac1f6@gmail.com>
+ <6524f6f77b896_66abc2084d@john.notmuch> <92f824ec-9538-501c-e63e-8483ffe14bad@iogearbox.net>
+In-Reply-To: <92f824ec-9538-501c-e63e-8483ffe14bad@iogearbox.net>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 10 Oct 2023 19:42:35 -0700
+Message-ID: <CAEf4Bza2s=JwR8b6d_x+bj5Y7iZ+ZDOMOJRNwcXF1ATWzHCxcA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] Detect jumping to reserved code during check_cfg()
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: John Fastabend <john.fastabend@gmail.com>, Hao Sun <sunhao.th@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
-
-On 9/28/2023 6:57 AM, Andrii Nakryiko wrote:
-> Add new kind of BPF kernel object, BPF token. BPF token is meant to
-> allow delegating privileged BPF functionality, like loading a BPF
-> program or creating a BPF map, from privileged process to a *trusted*
-> unprivileged process, all while have a good amount of control over which
-> privileged operations could be performed using provided BPF token.
+On Tue, Oct 10, 2023 at 1:33=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
 >
-> This is achieved through mounting BPF FS instance with extra delegation
-> mount options, which determine what operations are delegatable, and also
-> constraining it to the owning user namespace (as mentioned in the
-> previous patch).
-SNIP
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 70bfa997e896..78692911f4a0 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -847,6 +847,37 @@ union bpf_iter_link_info {
->   *		Returns zero on success. On error, -1 is returned and *errno*
->   *		is set appropriately.
->   *
-> + * BPF_TOKEN_CREATE
-> + *	Description
-> + *		Create BPF token with embedded information about what
-> + *		BPF-related functionality it allows:
-> + *		- a set of allowed bpf() syscall commands;
-> + *		- a set of allowed BPF map types to be created with
-> + *		BPF_MAP_CREATE command, if BPF_MAP_CREATE itself is allowed;
-> + *		- a set of allowed BPF program types and BPF program attach
-> + *		types to be loaded with BPF_PROG_LOAD command, if
-> + *		BPF_PROG_LOAD itself is allowed.
-> + *
-> + *		BPF token is created (derived) from an instance of BPF FS,
-> + *		assuming it has necessary delegation mount options specified.
-> + *		BPF FS mount is specified with openat()-style path FD + string.
-> + *		This BPF token can be passed as an extra parameter to various
-> + *		bpf() syscall commands to grant BPF subsystem functionality to
-> + *		unprivileged processes.
-> + *
-> + *		When created, BPF token is "associated" with the owning
-> + *		user namespace of BPF FS instance (super block) that it was
-> + *		derived from, and subsequent BPF operations performed with
-> + *		BPF token would be performing capabilities checks (i.e.,
-> + *		CAP_BPF, CAP_PERFMON, CAP_NET_ADMIN, CAP_SYS_ADMIN) within
-> + *		that user namespace. Without BPF token, such capabilities
-> + *		have to be granted in init user namespace, making bpf()
-> + *		syscall incompatible with user namespace, for the most part.
-> + *
-> + *	Return
-> + *		A new file descriptor (a nonnegative integer), or -1 if an
-> + *		error occurred (in which case, *errno* is set appropriately).
-> + *
->   * NOTES
->   *	eBPF objects (maps and programs) can be shared between processes.
->   *
-> @@ -901,6 +932,8 @@ enum bpf_cmd {
->  	BPF_ITER_CREATE,
->  	BPF_LINK_DETACH,
->  	BPF_PROG_BIND_MAP,
-> +	BPF_TOKEN_CREATE,
-> +	__MAX_BPF_CMD,
->  };
->  
->  enum bpf_map_type {
-> @@ -1694,6 +1727,12 @@ union bpf_attr {
->  		__u32		flags;		/* extra flags */
->  	} prog_bind_map;
->  
-> +	struct { /* struct used by BPF_TOKEN_CREATE command */
-> +		__u32		flags;
-> +		__u32		bpffs_path_fd;
-> +		__u64		bpffs_pathname;
+> On 10/10/23 9:02 AM, John Fastabend wrote:
+> > Hao Sun wrote:
+> >> Currently, we don't check if the branch-taken of a jump is reserved co=
+de of
+> >> ld_imm64. Instead, such a issue is captured in check_ld_imm(). The ver=
+ifier
+> >> gives the following log in such case:
+> >>
+> >> func#0 @0
+> >> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
+> >> 0: (18) r4 =3D 0xffff888103436000       ; R4_w=3Dmap_ptr(off=3D0,ks=3D=
+4,vs=3D128,imm=3D0)
+> >> 2: (18) r1 =3D 0x1d                     ; R1_w=3D29
+> >> 4: (55) if r4 !=3D 0x0 goto pc+4        ; R4_w=3Dmap_ptr(off=3D0,ks=3D=
+4,vs=3D128,imm=3D0)
+> >> 5: (1c) w1 -=3D w1                      ; R1_w=3D0
+> >> 6: (18) r5 =3D 0x32                     ; R5_w=3D50
+> >> 8: (56) if w5 !=3D 0xfffffff4 goto pc-2
+> >> mark_precise: frame0: last_idx 8 first_idx 0 subseq_idx -1
+> >> mark_precise: frame0: regs=3Dr5 stack=3D before 6: (18) r5 =3D 0x32
+> >> 7: R5_w=3D50
+> >> 7: BUG_ld_00
+> >> invalid BPF_LD_IMM insn
+> >>
+> >> Here the verifier rejects the program because it thinks insn at 7 is a=
+n
+> >> invalid BPF_LD_IMM, but such a error log is not accurate since the iss=
+ue
+> >> is jumping to reserved code not because the program contains invalid i=
+nsn.
+> >> Therefore, make the verifier check the jump target during check_cfg().=
+ For
+> >> the same program, the verifier reports the following log:
+> >
+> > I think we at least would want a test case for this. Also how did you c=
+reate
+> > this case? Is it just something you did manually and noticed a strange =
+error?
+>
+> Curious as well.
+>
+> We do have test cases which try to jump into the middle of a double insn =
+as can
+> be seen that this patch breaks BPF CI with regards to log mismatch below =
+(which
+> still needs to be adapted, too). Either way, it probably doesn't hurt to =
+also add
+> the above snippet as a test.
+>
+> Hao, as I understand, the patch here is an usability improvement (not a f=
+ix per se)
+> where we reject such cases earlier during cfg check rather than at a late=
+r point
+> where we validate ld_imm instruction. Or are there cases you found which =
+were not
+> yet captured via current check_ld_imm()?
+>
+> test_verifier failure log :
+>
+>    #458/u test1 ld_imm64 FAIL
+>    Unexpected verifier log!
+>    EXP: R1 pointer comparison
+>    RES:
+>    FAIL
+>    Unexpected error message!
+>         EXP: R1 pointer comparison
+>         RES: jump to reserved code from insn 0 to 2
+>    verification time 22 usec
+>    stack depth 0
+>    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
+ peak_states 0 mark_read 0
+>
+>    jump to reserved code from insn 0 to 2
+>    verification time 22 usec
+>    stack depth 0
+>    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
+ peak_states 0 mark_read 0
+>    #458/p test1 ld_imm64 FAIL
+>    Unexpected verifier log!
+>    EXP: invalid BPF_LD_IMM insn
+>    RES:
+>    FAIL
+>    Unexpected error message!
+>         EXP: invalid BPF_LD_IMM insn
+>         RES: jump to reserved code from insn 0 to 2
+>    verification time 9 usec
+>    stack depth 0
+>    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
+ peak_states 0 mark_read 0
+>
+>    jump to reserved code from insn 0 to 2
+>    verification time 9 usec
+>    stack depth 0
+>    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
+ peak_states 0 mark_read 0
+>    #459/u test2 ld_imm64 FAIL
+>    Unexpected verifier log!
+>    EXP: R1 pointer comparison
+>    RES:
+>    FAIL
+>    Unexpected error message!
+>         EXP: R1 pointer comparison
+>         RES: jump to reserved code from insn 0 to 2
+>    verification time 11 usec
+>    stack depth 0
+>    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
+ peak_states 0 mark_read 0
+>
+>    jump to reserved code from insn 0 to 2
+>    verification time 11 usec
+>    stack depth 0
+>    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
+ peak_states 0 mark_read 0
+>    #459/p test2 ld_imm64 FAIL
+>    Unexpected verifier log!
+>    EXP: invalid BPF_LD_IMM insn
+>    RES:
+>    FAIL
+>    Unexpected error message!
+>         EXP: invalid BPF_LD_IMM insn
+>         RES: jump to reserved code from insn 0 to 2
+>    verification time 8 usec
+>    stack depth 0
+>    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
+ peak_states 0 mark_read 0
+>
+>    jump to reserved code from insn 0 to 2
+>    verification time 8 usec
+>    stack depth 0
+>    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
+ peak_states 0 mark_read 0
+>    #460/u test3 ld_imm64 OK
+>
+> >> func#0 @0
+> >> jump to reserved code from insn 8 to 7
+> >>
+> >> ---
+> >>
+> >>
+> >> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+>
+> nit: This needs to be before the "---" line.
+>
+> >> ---
+> >>   kernel/bpf/verifier.c | 7 +++++++
+> >>   1 file changed, 7 insertions(+)
+> >>
+> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> >> index eed7350e15f4..725ac0b464cf 100644
+> >> --- a/kernel/bpf/verifier.c
+> >> +++ b/kernel/bpf/verifier.c
+> >> @@ -14980,6 +14980,7 @@ static int push_insn(int t, int w, int e, stru=
+ct bpf_verifier_env *env,
+> >>   {
+> >>      int *insn_stack =3D env->cfg.insn_stack;
+> >>      int *insn_state =3D env->cfg.insn_state;
+> >> +    struct bpf_insn *insns =3D env->prog->insnsi;
+> >>
+> >>      if (e =3D=3D FALLTHROUGH && insn_state[t] >=3D (DISCOVERED | FALL=
+THROUGH))
+> >>              return DONE_EXPLORING;
+> >> @@ -14993,6 +14994,12 @@ static int push_insn(int t, int w, int e, str=
+uct bpf_verifier_env *env,
+> >>              return -EINVAL;
+> >>      }
+> >>
+> >> +    if (e =3D=3D BRANCH && insns[w].code =3D=3D 0) {
+> >> +            verbose_linfo(env, t, "%d", t);
+> >> +            verbose(env, "jump to reserved code from insn %d to %d\n"=
+, t, w);
+> >> +            return -EINVAL;
+> >> +    }
+>
+> Other than that, lgtm.
 
-Because bppfs_pathname is a string pointer, so __aligned_u64 is preferred.
-> +	} token_create;
-> +
->  } __attribute__((aligned(8)));
->  
->  /* The description below is an attempt at providing documentation to eBPF
-> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> index f526b7573e97..4ce95acfcaa7 100644
-> --- a/kernel/bpf/Makefile
-> +++ b/kernel/bpf/Makefile
-> @@ -6,7 +6,7 @@ cflags-nogcse-$(CONFIG_X86)$(CONFIG_CC_IS_GCC) := -fno-gcse
->  endif
->  CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-nogcse-yy)
->  
-> -obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o log.o
-> +obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o log.o token.o
->  obj-$(CONFIG_BPF_SYSCALL) += bpf_iter.o map_iter.o task_iter.o prog_iter.o link_iter.o
->  obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o bloom_filter.o
->  obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
-> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-> index 24b3faf901f4..de1fdf396521 100644
-> --- a/kernel/bpf/inode.c
-> +++ b/kernel/bpf/inode.c
-> @@ -99,9 +99,9 @@ static const struct inode_operations bpf_prog_iops = { };
->  static const struct inode_operations bpf_map_iops  = { };
->  static const struct inode_operations bpf_link_iops  = { };
->  
-> -static struct inode *bpf_get_inode(struct super_block *sb,
-> -				   const struct inode *dir,
-> -				   umode_t mode)
-> +struct inode *bpf_get_inode(struct super_block *sb,
-> +			    const struct inode *dir,
-> +			    umode_t mode)
->  {
->  	struct inode *inode;
->  
-> @@ -603,11 +603,13 @@ static int bpf_show_options(struct seq_file *m, struct dentry *root)
->  {
->  	struct bpf_mount_opts *opts = root->d_sb->s_fs_info;
->  	umode_t mode = d_inode(root)->i_mode & S_IALLUGO & ~S_ISVTX;
-> +	u64 mask;
->  
->  	if (mode != S_IRWXUGO)
->  		seq_printf(m, ",mode=%o", mode);
->  
-> -	if (opts->delegate_cmds == ~0ULL)
-> +	mask = (1ULL << __MAX_BPF_CMD) - 1;
-> +	if ((opts->delegate_cmds & mask) == mask)
->  		seq_printf(m, ",delegate_cmds=any");
+We do rely quite a lot on verifier not complaining eagerly about some
+potentially invalid instructions if it's provable that some portion of
+the code won't ever be reached (think using .rodata variables for
+feature gating, poisoning intructions due to failed CO-RE relocation,
+which libbpf does actively, except it's using a call to non-existing
+helper). As such, check_cfg() is a wrong place to do such validity
+checks because some of the branches might never be run and validated
+in practice.
 
-Should we add a BUILD_BUG_ON assertion to guarantee __MAX_BPF_CMD is
-less than sizeof(u64) * 8 ?
->  	else if (opts->delegate_cmds)
->  		seq_printf(m, ",delegate_cmds=0x%llx", opts->delegate_cmds);
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 7445dad01fb3..b47791a80930 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -5304,6 +5304,20 @@ static int bpf_prog_bind_map(union bpf_attr *attr)
->  	return ret;
->  }
->  
-> +#define BPF_TOKEN_CREATE_LAST_FIELD token_create.bpffs_pathname
-> +
-> +static int token_create(union bpf_attr *attr)
-> +{
-> +	if (CHECK_ATTR(BPF_TOKEN_CREATE))
-> +		return -EINVAL;
-> +
-> +	/* no flags are supported yet */
-> +	if (attr->token_create.flags)
-> +		return -EINVAL;
-> +
-> +	return bpf_token_create(attr);
-> +}
-> +
->  static int __sys_bpf(int cmd, bpfptr_t uattr, unsigned int size)
->  {
->  	union bpf_attr attr;
-> @@ -5437,6 +5451,9 @@ static int __sys_bpf(int cmd, bpfptr_t uattr, unsigned int size)
->  	case BPF_PROG_BIND_MAP:
->  		err = bpf_prog_bind_map(&attr);
->  		break;
-> +	case BPF_TOKEN_CREATE:
-> +		err = token_create(&attr);
-> +		break;
->  	default:
->  		err = -EINVAL;
->  		break;
-> diff --git a/kernel/bpf/token.c b/kernel/bpf/token.c
-> new file mode 100644
-> index 000000000000..779aad5007a3
-> --- /dev/null
-> +++ b/kernel/bpf/token.c
-SNIP
-> +#define BPF_TOKEN_INODE_NAME "bpf-token"
-> +
-> +static const struct inode_operations bpf_token_iops = { };
-> +
-> +static const struct file_operations bpf_token_fops = {
-> +	.release	= bpf_token_release,
-> +	.show_fdinfo	= bpf_token_show_fdinfo,
-> +};
-> +
-> +int bpf_token_create(union bpf_attr *attr)
-> +{
-> +	struct bpf_mount_opts *mnt_opts;
-> +	struct bpf_token *token = NULL;
-> +	struct inode *inode;
-> +	struct file *file;
-> +	struct path path;
-> +	umode_t mode;
-> +	int err, fd;
-> +
-> +	err = user_path_at(attr->token_create.bpffs_path_fd,
-> +			   u64_to_user_ptr(attr->token_create.bpffs_pathname),
-> +			   LOOKUP_FOLLOW | LOOKUP_EMPTY, &path);
-> +	if (err)
-> +		return err;
+This seems like a pretty obscure case of fuzzer generated test with
+random jumps into the middle of ldimm64 instruction. I think the tool
+should be able to avoid this or handle verifier log just fine in such
+situations. On the other hand, valid code generated by compilers will
+never have such jumps.
 
-Need to check the mount is a bpffs mount instead of other filesystem mount.
-> +
-> +	if (path.mnt->mnt_root != path.dentry) {
-> +		err = -EINVAL;
-> +		goto out_path;
-> +	}
-> +	err = path_permission(&path, MAY_ACCESS);
-> +	if (err)
-> +		goto out_path;
-> +
-> +	mode = S_IFREG | ((S_IRUSR | S_IWUSR) & ~current_umask());
-> +	inode = bpf_get_inode(path.mnt->mnt_sb, NULL, mode);
-> +	if (IS_ERR(inode)) {
-> +		err = PTR_ERR(inode);
-> +		goto out_path;
-> +	}
-> +
-> +	inode->i_op = &bpf_token_iops;
-> +	inode->i_fop = &bpf_token_fops;
-> +	clear_nlink(inode); /* make sure it is unlinked */
-> +
-> +	file = alloc_file_pseudo(inode, path.mnt, BPF_TOKEN_INODE_NAME, O_RDWR, &bpf_token_fops);
-> +	if (IS_ERR(file)) {
-> +		iput(inode);
-> +		err = PTR_ERR(file);
-> +		goto out_file;
+So perhaps we can improve existing "invalid BPF_LD_IMM insn" message,
+but let's not teach check_cfg() more checks than necessary?
 
-goto out_path ?
-> +	}
-> +
-> +	token = bpf_token_alloc();
-> +	if (!token) {
-> +		err = -ENOMEM;
-> +		goto out_file;
-> +	}
-> +
-> +	/* remember bpffs owning userns for future ns_capable() checks */
-> +	token->userns = get_user_ns(path.dentry->d_sb->s_user_ns);
-> +
-> +	mnt_opts = path.dentry->d_sb->s_fs_info;
-> +	token->allowed_cmds = mnt_opts->delegate_cmds;
-> +
-> +	fd = get_unused_fd_flags(O_CLOEXEC);
-> +	if (fd < 0) {
-> +		err = fd;
-> +		goto out_token;
-> +	}
-> +
-> +	file->private_data = token;
-> +	fd_install(fd, file);
-> +
-> +	path_put(&path);
-> +	return fd;
-> +
-> +out_token:
-> +	bpf_token_free(token);
-> +out_file:
-> +	fput(file);
-> +out_path:
-> +	path_put(&path);
-> +	return err;
-> +}
-> +
-.
-
+>
+> >>      if (e =3D=3D BRANCH) {
+> >>              /* mark branch target for state pruning */
+> >>              mark_prune_point(env, w);
+> >>
+>
 
