@@ -1,260 +1,194 @@
-Return-Path: <bpf+bounces-11920-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11921-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02F747C5756
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 16:50:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B3367C57CF
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 17:11:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33E521C20F53
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 14:50:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E7F3282444
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 15:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEF0718AF8;
-	Wed, 11 Oct 2023 14:50:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF65D2031C;
+	Wed, 11 Oct 2023 15:11:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="GMRqCZtF"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1+XlyBtv"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55DE11D68F
-	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 14:50:13 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FDB090;
-	Wed, 11 Oct 2023 07:50:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=0aQhKrb4/+Xz4qVKIM0Ni2OXXGUwXMSHkhmb0dr/HI8=; b=GMRqCZtFYuT29eLIyGZ01UZv5c
-	gP7ASRlMKnQPbIcRLKCnxfO/uZ+io0b+prSrCY9nJyXXsV+y3Yu5hGoLb6/Dp2ZcGuGOXLnCRrcVG
-	7dHEWCyx3CPka+d6/IdN58HH4K32As7jX4Jjnp6DHvsS3b3d0t8iJg+X6iucx85PKDhwExnvuQpLr
-	hHYUoJIUmijxEE+jo7ZZ7X1WG0XMFmG7O15xVeDp1bqSh1O5DDZxroAoihS4BaUYKATfH/KGb33am
-	0H1LNM40etqqiwGGi/lo8GiZwFTwGG0uDU7W3eRoXI6pLD5j61l/CJ84ync02ff3JKHCZ0SXv5bux
-	0+AATayg==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qqaXC-000MiE-6e; Wed, 11 Oct 2023 16:50:02 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qqaXB-000KHF-6t; Wed, 11 Oct 2023 16:50:01 +0200
-Subject: Re: [PATCH bpf-next] Detect jumping to reserved code during
- check_cfg()
-To: Hao Sun <sunhao.th@gmail.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: John Fastabend <john.fastabend@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231009-jmp-into-reserved-fields-v1-1-d8006e2ac1f6@gmail.com>
- <6524f6f77b896_66abc2084d@john.notmuch>
- <92f824ec-9538-501c-e63e-8483ffe14bad@iogearbox.net>
- <CAEf4Bza2s=JwR8b6d_x+bj5Y7iZ+ZDOMOJRNwcXF1ATWzHCxcA@mail.gmail.com>
- <CACkBjsZiaXTANv=c5QE3OvcB=KUgdFuMY8O4ft4Q3h6dDNVarg@mail.gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <79dd71a5-446d-9b05-7d37-40e49bbf04ae@iogearbox.net>
-Date: Wed, 11 Oct 2023 16:50:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F88818B04
+	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 15:11:22 +0000 (UTC)
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8091A9
+	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 08:11:18 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c9d4f08d7cso60165ad.0
+        for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 08:11:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697037078; x=1697641878; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ysq39f+RxeDX0QxC2g4cZxAZIgMWhz132Glg6XcD8zQ=;
+        b=1+XlyBtvlLoKGwmtBONU4oGiB3nbY3ZkaSIc6DrJsXlozmjgauAuKB9/VfZmP279Lf
+         NmAjve4A+YsfP9P3x6Z6zeayx0TRWAMEiaItASA9rStC442xFjhlEFSlcXibhZDgTY7T
+         FUEiml5OhDE8rX2RWqCE45O5FWG3eOaSkyOm5f7Giay9w+DbxxmE+1vXOBvUzBHFIEnd
+         s3c0Xm7LqupOXFobMF8SKpdwEmSdVavv80w1LSncTxuvq7kzNvI+HzEg9eINhGIm7Ncp
+         6oUJhPvc2JfvOc0jKPLovblnh88XWRVQFsAnVov4ip9ZDoiZtU7TGrKR9qfitlGaGeaD
+         FEkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697037078; x=1697641878;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ysq39f+RxeDX0QxC2g4cZxAZIgMWhz132Glg6XcD8zQ=;
+        b=K28Qe1/yYYDeXcIgi+TlO2cCqIXmbB21l3UuO11KZHrbsaV9lmGtOqO26lGCMlUm0O
+         iESdKWhvPqepTRD7oITcBmke4Iez9anDHto2xVPTiWTgPYw7+G2QOnKcu1pQFJ0w3bIk
+         hk7+PC+k11b1bhNo8o+Iidr3h8SioxJXkzlzuxiMQHosKDaJG2VyNphGwO9GFc9AA03O
+         qutuFr6OKMO3fUyYqRBghyTFrk7EbUnQYVBM1A3NPNGcwfwPGNf3s1KynLZm87TlcKjT
+         0ZmTeRrRIRMoEEWfaAC4+MSoT3g9iq3v9EgBhorsGBxhnwbkaE7bY2J6+tLCQw+a6Si/
+         NG5Q==
+X-Gm-Message-State: AOJu0YwvDoZN693jleN/lBh85J67W75+Q3Jlo78gFOD/8yjBGNE780+D
+	yGK1b3p3PCwLaa0nAtAPRK0XeWz4ThWc2QKzFjt+VA==
+X-Google-Smtp-Source: AGHT+IE+7M622fVnoDLgJHtsFi0t4ael64syMh6Fu5jaC4A4ui2zUGTpZ++FeUNQsKe7If7WQC+EoGIipP1ya8Ox4w0=
+X-Received: by 2002:a17:902:c641:b0:1c7:47ca:f075 with SMTP id
+ s1-20020a170902c64100b001c747caf075mr197756pls.15.1697037078136; Wed, 11 Oct
+ 2023 08:11:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CACkBjsZiaXTANv=c5QE3OvcB=KUgdFuMY8O4ft4Q3h6dDNVarg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27058/Wed Oct 11 09:39:37 2023)
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+References: <0000000000001db97f06075bf98b@google.com> <20231010142050.GA128254@cmpxchg.org>
+In-Reply-To: <20231010142050.GA128254@cmpxchg.org>
+From: Aleksandr Nogikh <nogikh@google.com>
+Date: Wed, 11 Oct 2023 17:11:06 +0200
+Message-ID: <CANp29Y75YE2Z6HDJ=OJ0RhPjniEzja6jx9QQ0PGrtqLkpjoUww@mail.gmail.com>
+Subject: Re: [syzbot] [cgroups?] [mm?] WARNING in mem_cgroup_migrate
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: syzbot <syzbot+831ba898b5db8d5617ea@syzkaller.appspotmail.com>, 
+	akpm@linux-foundation.org, bpf@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, 
+	muchun.song@linux.dev, roman.gushchin@linux.dev, shakeelb@google.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 10/11/23 8:46 AM, Hao Sun wrote:
-> On Wed, Oct 11, 2023 at 4:42 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
->> On Tue, Oct 10, 2023 at 1:33 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>> On 10/10/23 9:02 AM, John Fastabend wrote:
->>>> Hao Sun wrote:
->>>>> Currently, we don't check if the branch-taken of a jump is reserved code of
->>>>> ld_imm64. Instead, such a issue is captured in check_ld_imm(). The verifier
->>>>> gives the following log in such case:
->>>>>
->>>>> func#0 @0
->>>>> 0: R1=ctx(off=0,imm=0) R10=fp0
->>>>> 0: (18) r4 = 0xffff888103436000       ; R4_w=map_ptr(off=0,ks=4,vs=128,imm=0)
->>>>> 2: (18) r1 = 0x1d                     ; R1_w=29
->>>>> 4: (55) if r4 != 0x0 goto pc+4        ; R4_w=map_ptr(off=0,ks=4,vs=128,imm=0)
->>>>> 5: (1c) w1 -= w1                      ; R1_w=0
->>>>> 6: (18) r5 = 0x32                     ; R5_w=50
->>>>> 8: (56) if w5 != 0xfffffff4 goto pc-2
->>>>> mark_precise: frame0: last_idx 8 first_idx 0 subseq_idx -1
->>>>> mark_precise: frame0: regs=r5 stack= before 6: (18) r5 = 0x32
->>>>> 7: R5_w=50
->>>>> 7: BUG_ld_00
->>>>> invalid BPF_LD_IMM insn
->>>>>
->>>>> Here the verifier rejects the program because it thinks insn at 7 is an
->>>>> invalid BPF_LD_IMM, but such a error log is not accurate since the issue
->>>>> is jumping to reserved code not because the program contains invalid insn.
->>>>> Therefore, make the verifier check the jump target during check_cfg(). For
->>>>> the same program, the verifier reports the following log:
->>>>
->>>> I think we at least would want a test case for this. Also how did you create
->>>> this case? Is it just something you did manually and noticed a strange error?
->>>
->>> Curious as well.
->>>
->>> We do have test cases which try to jump into the middle of a double insn as can
->>> be seen that this patch breaks BPF CI with regards to log mismatch below (which
->>> still needs to be adapted, too). Either way, it probably doesn't hurt to also add
->>> the above snippet as a test.
->>>
->>> Hao, as I understand, the patch here is an usability improvement (not a fix per se)
->>> where we reject such cases earlier during cfg check rather than at a later point
->>> where we validate ld_imm instruction. Or are there cases you found which were not
->>> yet captured via current check_ld_imm()?
->>>
->>> test_verifier failure log :
->>>
->>>     #458/u test1 ld_imm64 FAIL
->>>     Unexpected verifier log!
->>>     EXP: R1 pointer comparison
->>>     RES:
->>>     FAIL
->>>     Unexpected error message!
->>>          EXP: R1 pointer comparison
->>>          RES: jump to reserved code from insn 0 to 2
->>>     verification time 22 usec
->>>     stack depth 0
->>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
->>>
->>>     jump to reserved code from insn 0 to 2
->>>     verification time 22 usec
->>>     stack depth 0
->>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
->>>     #458/p test1 ld_imm64 FAIL
->>>     Unexpected verifier log!
->>>     EXP: invalid BPF_LD_IMM insn
->>>     RES:
->>>     FAIL
->>>     Unexpected error message!
->>>          EXP: invalid BPF_LD_IMM insn
->>>          RES: jump to reserved code from insn 0 to 2
->>>     verification time 9 usec
->>>     stack depth 0
->>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
->>>
->>>     jump to reserved code from insn 0 to 2
->>>     verification time 9 usec
->>>     stack depth 0
->>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
->>>     #459/u test2 ld_imm64 FAIL
->>>     Unexpected verifier log!
->>>     EXP: R1 pointer comparison
->>>     RES:
->>>     FAIL
->>>     Unexpected error message!
->>>          EXP: R1 pointer comparison
->>>          RES: jump to reserved code from insn 0 to 2
->>>     verification time 11 usec
->>>     stack depth 0
->>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
->>>
->>>     jump to reserved code from insn 0 to 2
->>>     verification time 11 usec
->>>     stack depth 0
->>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
->>>     #459/p test2 ld_imm64 FAIL
->>>     Unexpected verifier log!
->>>     EXP: invalid BPF_LD_IMM insn
->>>     RES:
->>>     FAIL
->>>     Unexpected error message!
->>>          EXP: invalid BPF_LD_IMM insn
->>>          RES: jump to reserved code from insn 0 to 2
->>>     verification time 8 usec
->>>     stack depth 0
->>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
->>>
->>>     jump to reserved code from insn 0 to 2
->>>     verification time 8 usec
->>>     stack depth 0
->>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
->>>     #460/u test3 ld_imm64 OK
->>>
->>>>> func#0 @0
->>>>> jump to reserved code from insn 8 to 7
->>>>>
->>>>> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
->>>
->>> nit: This needs to be before the "---" line.
->>>
->>>>> ---
->>>>>    kernel/bpf/verifier.c | 7 +++++++
->>>>>    1 file changed, 7 insertions(+)
->>>>>
->>>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>>>> index eed7350e15f4..725ac0b464cf 100644
->>>>> --- a/kernel/bpf/verifier.c
->>>>> +++ b/kernel/bpf/verifier.c
->>>>> @@ -14980,6 +14980,7 @@ static int push_insn(int t, int w, int e, struct bpf_verifier_env *env,
->>>>>    {
->>>>>       int *insn_stack = env->cfg.insn_stack;
->>>>>       int *insn_state = env->cfg.insn_state;
->>>>> +    struct bpf_insn *insns = env->prog->insnsi;
->>>>>
->>>>>       if (e == FALLTHROUGH && insn_state[t] >= (DISCOVERED | FALLTHROUGH))
->>>>>               return DONE_EXPLORING;
->>>>> @@ -14993,6 +14994,12 @@ static int push_insn(int t, int w, int e, struct bpf_verifier_env *env,
->>>>>               return -EINVAL;
->>>>>       }
->>>>>
->>>>> +    if (e == BRANCH && insns[w].code == 0) {
->>>>> +            verbose_linfo(env, t, "%d", t);
->>>>> +            verbose(env, "jump to reserved code from insn %d to %d\n", t, w);
->>>>> +            return -EINVAL;
->>>>> +    }
->>>
->>> Other than that, lgtm.
->>
->> We do rely quite a lot on verifier not complaining eagerly about some
->> potentially invalid instructions if it's provable that some portion of
->> the code won't ever be reached (think using .rodata variables for
->> feature gating, poisoning intructions due to failed CO-RE relocation,
->> which libbpf does actively, except it's using a call to non-existing
->> helper). As such, check_cfg() is a wrong place to do such validity
->> checks because some of the branches might never be run and validated
->> in practice.
-> 
-> Don't really agree. Jump to the middle of ld_imm64 is just like jumping
-> out of bounds, both break the CFG integrity immediately. For those
-> apparently incorrect  jumps, rejecting early makes everything simple;
-> otherwise, we probably need some rewrite in the end.
+On Tue, Oct 10, 2023 at 4:20=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> This is the earlier version of the hugetlb cgroup accounting patches
+> that trigger on an uncharged hugetlbfs:
+>
+>   7547          /*
+>   7548           * Note that it is normal to see !memcg for a hugetlb fol=
+io.
+>   7549           * It could have been allocated when memory_hugetlb_accou=
+nting was not
+>   7550           * selected, for e.g.
+>   7551           */
+>   7552          VM_WARN_ON_ONCE_FOLIO(!memcg, old);
+>
+> It's been fixed in the revision that's in the latest next release:
+>
+>   7539          /*
+>   7540           * Note that it is normal to see !memcg for a hugetlb fol=
+io.
+>   7541           * For e.g, itt could have been allocated when memory_hug=
+etlb_accounting
+>   7542           * was not selected.
+>   7543           */
+>   7544          VM_WARN_ON_ONCE_FOLIO(!folio_test_hugetlb(old) && !memcg,=
+ old);
+>   7545          if (!memcg)
+>   7546                  return;
+>
+> > Modules linked in:
+> > CPU: 1 PID: 5208 Comm: syz-executor.1 Not tainted 6.6.0-rc4-next-202310=
+05-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
+ Google 09/06/2023
+> > RIP: 0010:mem_cgroup_migrate+0x2fa/0x390 mm/memcontrol.c:7552
+> > Code: f7 ff e9 36 ff ff ff 80 3d 84 b2 d1 0c 00 0f 85 54 ff ff ff 48 c7=
+ c6 a0 9e 9b 8a 48 89 ef e8 0d 5c df ff c6 05 68 b2 d1 0c 01 <0f> 0b e9 37 =
+ff ff ff 48 c7 c6 e0 9a 9b 8a 48 89 df e8 f0 5b df ff
+> > RSP: 0018:ffffc90004b2fa38 EFLAGS: 00010246
+> > RAX: 0000000000040000 RBX: ffffea0005338000 RCX: ffffc90005439000
+> > RDX: 0000000000040000 RSI: ffffffff81e76463 RDI: ffffffff8ae96da0
+> > RBP: ffffea0001d98000 R08: 0000000000000000 R09: fffffbfff1d9db9a
+> > R10: ffffffff8ecedcd7 R11: 0000000000000000 R12: 0000000000000000
+> > R13: 0000000000000200 R14: 0000000000000000 R15: ffffea0001d98018
+> > FS:  00007fc15e89d6c0(0000) GS:ffff8880b9900000(0000) knlGS:00000000000=
+00000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000001b31820000 CR3: 000000007f5e1000 CR4: 00000000003506f0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  <TASK>
+> >  hugetlbfs_migrate_folio fs/hugetlbfs/inode.c:1066 [inline]
+> >  hugetlbfs_migrate_folio+0xd0/0x120 fs/hugetlbfs/inode.c:1049
+> >  move_to_new_folio+0x183/0x690 mm/migrate.c:966
+> >  unmap_and_move_huge_page mm/migrate.c:1428 [inline]
+> >  migrate_hugetlbs mm/migrate.c:1546 [inline]
+> >  migrate_pages+0x16ac/0x27c0 mm/migrate.c:1900
+> >  migrate_to_node mm/mempolicy.c:1072 [inline]
+> >  do_migrate_pages+0x43e/0x690 mm/mempolicy.c:1171
+> >  kernel_migrate_pages+0x59b/0x780 mm/mempolicy.c:1682
+> >  __do_sys_migrate_pages mm/mempolicy.c:1700 [inline]
+> >  __se_sys_migrate_pages mm/mempolicy.c:1696 [inline]
+> >  __x64_sys_migrate_pages+0x96/0x100 mm/mempolicy.c:1696
+> >  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+> >  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+> >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > RIP: 0033:0x7fc15da7cae9
+> > Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89=
+ f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 =
+ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+> > RSP: 002b:00007fc15e89d0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000100
+> > RAX: ffffffffffffffda RBX: 00007fc15db9bf80 RCX: 00007fc15da7cae9
+> > RDX: 0000000020000340 RSI: 0000000000000080 RDI: 0000000000000000
+> > RBP: 00007fc15dac847a R08: 0000000000000000 R09: 0000000000000000
+> > R10: 00000000200003c0 R11: 0000000000000246 R12: 0000000000000000
+> > R13: 000000000000000b R14: 00007fc15db9bf80 R15: 00007ffd87d7c058
+> >  </TASK>
+> >
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> >
+> > If the bug is already fixed, let syzbot know by replying with:
+> > #syz fix: exact-commit-title
+>
+> #syz fix: next-20231010
+>
 
-Could you elaborate on the 'breaking CFG integrity immediately'? This was
-what I was trying to gather earlier with log improvement vs actual fix.
+Thanks for sharing the info and updating the issue!
 
-Do you mean /potentially/ breaking CFG integrity, if, say, we had a double
-insn jump in future and there is a back-jump to the 2nd part of the insn?
+If there's no fixing commit (the faulty series is dropped or
+replaced), it's better to just invalidate the report:
 
-> Also, as you mentioned, libbpf relies on non-existing helpers, not jump
-> to the middle of ld_imm64. It seems better and easier to not leave this
-> hole.
+#syz invalid
 
-Thanks,
-Daniel
+Otherwise, as in this case, syzbot would start looking for the
+"next-20231010" commit (and won't find it because it's a tag) and,
+after some time, start complaining that no such commit is reachable
+from any of the master branches of the tested trees.
+
+--=20
+Aleksandr
 
