@@ -1,553 +1,311 @@
-Return-Path: <bpf+bounces-11928-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11929-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B82157C5902
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 18:20:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F0D47C591A
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 18:28:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBDE11C20EF2
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 16:20:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9ACDA1C20C26
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 16:28:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DDE03C691;
-	Wed, 11 Oct 2023 16:20:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1600D3D3B9;
+	Wed, 11 Oct 2023 16:28:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="WhhrFNTA";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="ovpPG+1Y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MuNRm9KL"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 828BB30F88;
-	Wed, 11 Oct 2023 16:20:23 +0000 (UTC)
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AD193;
-	Wed, 11 Oct 2023 09:20:20 -0700 (PDT)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BGErml013909;
-	Wed, 11 Oct 2023 16:19:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=g6X9GaeBUNvsr1oIgH1dkcmdZAuZZNLSI0QqdqguSYk=;
- b=WhhrFNTAB9AxmPuCCeDT2iRZK9nnplK1eQv/dT61MT+Mf6ahLTRJOi0sVNo9YKLrFFtg
- GTBAtviBkbVIPadN4VF7Tjy03QVDAC96EjuekG8ppc0dv9h4wLS/oUgY9LVUC2Xp2cfm
- WPiufh06bk3MCqQrSnzUxYbwH0KZ/h2DukfJ3dxO3HGF7RtV2Qm1/PcPPcdq/deAPNY+
- k6UyD3AYh1yzAjEADPMV2hr0/LmOKuPpg1YQUuuDZsi0Gw+BF46rbmQowyZdbdE5NdQ7
- dCXh6dT9thzquysTMj7FJT05oQFds1cObuS4WstbBoQ0xzWU1eRbnnLwvb66CApuEWy8 6Q== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tmh90wyjy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 11 Oct 2023 16:19:42 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39BF8fkX035358;
-	Wed, 11 Oct 2023 16:19:41 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tjwsejt9x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 11 Oct 2023 16:19:41 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UOOBgs1Q+jTOumb3in50p0E42WIy1zTBwNXc1gE31HtsoOeb5r2e1PUPbNl67K+/ZOxoha2tqHZ0/Sk1ArZJogM9c7ZHGKC5rUXFYOOzj2e0LhuiwEkOfIQ91ItqVwt8DEdpt1JXQiAK/xCyn8gOJCfRzjfIsoFrTU+vy12LVgFA88td41YIHnSXQ9H593Tt6xwxkCt86VjA/aaPLs8pPPiy+b5b1Lfo3ltEWncN/NVYW/gEfVInllETYwJNn12bw6VR4Z/GUlZ90fyPPdg6P3yhnp1fhKUKoybb5UynDPT5SFXkHCsX18Cy7fJ8yQSGIMp8Ks9LK2Vw+eDRNo1LnA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=g6X9GaeBUNvsr1oIgH1dkcmdZAuZZNLSI0QqdqguSYk=;
- b=b3fVdltgd0iJtyqP2DgI0Kol1C8zbdO76fsRaxEPF28sP7D7ieq0CPLfWNn2/iO6Igq3/uJtBGbVsWwb5b5+4kf7iLDvt37H87kW3Ki4d5VK/ZB7ACewVG0aaW0tLC1jaZYaZgusj58Q+xk4T6zVkGLa9NIE9Gr+jkO6ZXC5tF7vsGWDNOiLVCpy8rPH+RJL62aD8cXJsa7LjMX0n0zPwpLzMKxgBjgyVX72M0AA794A6GdFb0A1WBVXh5LQT8yi3SXOM82Cy6mwL5C7Vup1ICPBLhUYv8ZIjy/iCfsR/k80e/yAQoEfPpioup5zK845A4qmdg4J/cZfrvBr/QCNEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7BB9315BF
+	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 16:28:35 +0000 (UTC)
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E808F
+	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 09:28:33 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b9338e4695so91179891fa.2
+        for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 09:28:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g6X9GaeBUNvsr1oIgH1dkcmdZAuZZNLSI0QqdqguSYk=;
- b=ovpPG+1Y18tS0FaRZCewwMtt0Yb3z55lJlKOcFVuSXvvN0p/RfexiWqXeDEiETai7leFggoEes7tojAVtCQjVT3qaVsVoEzGP/nCfpaGZeoxuW4Hz34m8fOKGulW25YrWW36AY3BV9k+83SAKh5tI37yVfVRsWRFFmNICKW8bSE=
-Received: from DS7PR10MB5278.namprd10.prod.outlook.com (2603:10b6:5:3a5::9) by
- DM4PR10MB6061.namprd10.prod.outlook.com (2603:10b6:8:b5::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6863.36; Wed, 11 Oct 2023 16:19:38 +0000
-Received: from DS7PR10MB5278.namprd10.prod.outlook.com
- ([fe80::9914:632d:759e:f34]) by DS7PR10MB5278.namprd10.prod.outlook.com
- ([fe80::9914:632d:759e:f34%7]) with mapi id 15.20.6863.043; Wed, 11 Oct 2023
- 16:19:38 +0000
-Message-ID: <3fdfffc5-6fd2-1fa4-c523-04333c538d49@oracle.com>
-Date: Wed, 11 Oct 2023 17:19:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] bpf/btf: Move tracing BTF APIs to the BTF library
-Content-Language: en-GB
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-References: <169694605862.516358.5321950027838863987.stgit@devnote2>
-From: Alan Maguire <alan.maguire@oracle.com>
-In-Reply-To: <169694605862.516358.5321950027838863987.stgit@devnote2>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P123CA0355.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:18d::18) To DS7PR10MB5278.namprd10.prod.outlook.com
- (2603:10b6:5:3a5::9)
+        d=gmail.com; s=20230601; t=1697041711; x=1697646511; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=KRWmiXe+sOi5SuBOgRgyTOCAK/vWlcAh/8eiBipZzN8=;
+        b=MuNRm9KLbgHqIK1sAiemcs9CuVmXA9Dr1Bk26kCU7H/QesSZFkfjgGyZnT66GyFfFw
+         odrwdW+Vj4k+4DwhQeEgOzL7gSQGhvMWv0N5i8zuPJRxVOZlu6jsdwOCOzBnOpF9iGoW
+         z+JPBeGInz8A6R/+fRnlOArcYIau2Y73M4FK+H0G9p7z1iQz3MQH124IfifUJ0qSGwNk
+         6zEX54vSjJ5MBV19hOuyv7nKTyNR8KvYOeCNCkySSarkjkiv4eqS+wEAewWgM7iSzCDm
+         4igf2T4BtcRRTXGGX4NYfAyLts3V61EtsDZUD5QmMqh0Wnh3jui2uD4m/01RupTrUlJa
+         NuEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697041711; x=1697646511;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KRWmiXe+sOi5SuBOgRgyTOCAK/vWlcAh/8eiBipZzN8=;
+        b=II4PLGsO8zRVmjyc00tzS0NsN1RiORqpnYNjTnMruI/FqkmMGT7IJSWDOvWKJsPLZ1
+         iOGB4oHhmfMYxBX8pEGz9vYcmFstJAfBEvV2QsJDVFGT1gq9ntITfhWjiLocX0c3eVb3
+         lsrhZ1gDzd5dNc+k4heHBD1R0JSPhmwHIHvq+p00AHZz6mkXg4XeX9Qb7ZtZdsKz/0c+
+         qSo3d0U4IR+C+eq0yv8839akWGVbz2ZDvM2w/QSyuGvgiWAw9c8bxUL+lmmE7RTrkXBL
+         bxIZgZ8xoXwqVZZ5Kd85W7BOU7F+JKdiviWAmdeAkJtdhBZ6DpkMBS2WxxyBivI6taKj
+         lW0A==
+X-Gm-Message-State: AOJu0YzTqau9djwjSSSDgYX4stEzo/5oH2X7A42t5b1HJk+DXNWulqHz
+	43q4TWxlHUNALLCjAdH/aag=
+X-Google-Smtp-Source: AGHT+IFoV2/1kKhAop4qlr++x7R+3xBK1CkUY918JrCtMueQmSKuZUsUpTaRjeZ+BZLunv0JlqxK/g==
+X-Received: by 2002:a2e:8241:0:b0:2c1:6b9c:48d6 with SMTP id j1-20020a2e8241000000b002c16b9c48d6mr17641926ljh.16.1697041711231;
+        Wed, 11 Oct 2023 09:28:31 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id n25-20020a2e7219000000b002bce77e4ddfsm3068060ljc.97.2023.10.11.09.28.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 09:28:30 -0700 (PDT)
+Message-ID: <b7b61031f41ab4082205ed061bb66cb859bd1f0d.camel@gmail.com>
+Subject: Re: [RFC dwarves 3/4] pahole: add
+ --btf_features=feature1[,feature2...] support
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alan Maguire <alan.maguire@oracle.com>, acme@kernel.org, 
+	andrii.nakryiko@gmail.com
+Cc: jolsa@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev,  song@kernel.org, yhs@fb.com,
+ john.fastabend@gmail.com, kpsingh@kernel.org,  sdf@google.com,
+ haoluo@google.com, mykolal@fb.com, bpf@vger.kernel.org, Andrii Nakryiko
+ <andrii@kernel.org>
+Date: Wed, 11 Oct 2023 19:28:29 +0300
+In-Reply-To: <20231011091732.93254-4-alan.maguire@oracle.com>
+References: <20231011091732.93254-1-alan.maguire@oracle.com>
+	 <20231011091732.93254-4-alan.maguire@oracle.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR10MB5278:EE_|DM4PR10MB6061:EE_
-X-MS-Office365-Filtering-Correlation-Id: a92bbb4e-5f10-4c0f-8f16-08dbca75dd86
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	18TyywCw+ttTDQtzusXt9pT5ysNL3jpni96I2hgmRdxz1kSmWdwqqfNTlQFf+J8pM0Rwj1XF9Q/BomDzjl+pgujE4GUdLHnaFA5QLnsZ1jG4fpDbbAT28+9k2MTtDwlgPtV7YvGmmDRDYdyh0GSCdsg7JVjc1dN3ks0uW3m/XeOL05IJMEi5AJGIlLmiJPjTdclo28SBwlSAlFxd1mLxry4XT1SURY/sYql4mQrcpO/Olhe1RAKoNFkNph9TRAAWHUPeMrAs8PqojMHm7o6ys/hmS3qOb3BDkN5DxxSKaI/ZcWXoqdcSrPiEo19siFse5FfRtv4E2wZhdc5JP5tcVtTHD1TMZfM1qf/5s2nbQAzzaQ5xXA8ky+NZE7t1bqz/KvSU5sz2UooJxA5NFM1MAdgMF/OyadJsOFDmQKrRc35pFHXVfUNDBxWuGao6/uwC9gL9sJPI8NRRDfFzGSmpp8IA1GMUjh53n/PUYqozG/+LDS2fV68SlR7gS9b6S4gROoE3DUGTQdCibLvkRsB4fNmXKHiAdvmQLvzopYvosx3W/6q/fyVJh4ck5URzjRiUuGz5nJoPvPj+zObGa/GmIUKXqXh/fKTeFeDxYwH8vokCaiyVJ9KjCrxwAEfOkROx+JKdRbXdJA02e0P1kN0tQw==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR10MB5278.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(39860400002)(366004)(396003)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(53546011)(83380400001)(2616005)(110136005)(66556008)(66476007)(316002)(41300700001)(6666004)(66946007)(6512007)(6486002)(478600001)(2906002)(5660300002)(30864003)(4326008)(6506007)(8936002)(44832011)(8676002)(38100700002)(36756003)(86362001)(31696002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?NVFnTGN2U0F2WnQvOHVuQ3RvSmt0b0FUVGlTNUoyd3BWL1UrbmkyeFVYYVhB?=
- =?utf-8?B?UGVtaEh6L2lodGo4QTBrZUFRMHRlN2V6Q0FlMCtyVlBmdnR6QXJPZzh4a2Nr?=
- =?utf-8?B?ajVsSGViTkIxSld0dHBIQk5BblIycU9GUEJnS2p5OERYUDEya2VuNTZxTWRx?=
- =?utf-8?B?U20vL2tkTktMalBqYkNSZkQ3RUZvdHVqZ3BDZkozMVh3YUpGb1lHYTFVRzRs?=
- =?utf-8?B?VXZhWGlySm9UbDUwYjQwQWdBbnhsUTBqSk9OTFlyK0tuUWp2WlNOT3o3dW8v?=
- =?utf-8?B?TEtKa3dJRHhyWmN0OWEzMTZMN3pKOTFVb3RjUzR6OVhTdEFOSzVJV2MwRmdW?=
- =?utf-8?B?MzRVLzMzTTVvQmFMckF6SXd3YVQ4K0lkdndhOXdZamtEL2pvZTdlYW5KOXNl?=
- =?utf-8?B?c3dtM2p5U2kvV3hFRk04WDhoVFhTdHlFVmFlOUIxaURyVjdZdzZlWTA5d3FI?=
- =?utf-8?B?dFdzMUpmTEV1bXpEVk9NQld3TTczOHF5YXU0RExxQUhFc3RKWkIzMVcrc0Rx?=
- =?utf-8?B?KzBPbEpCeFoxekNPTWovVnFxRmlJbFZNU20vcnJLRHhhc3ArRlpRdU1jblFr?=
- =?utf-8?B?Q0VXeDJGWXhISC9rRi9qK3JnRzMrc2pBVTdiNHBNbCtiUW1QUU14N1RteWxM?=
- =?utf-8?B?QnRxZzNnd3pNZ1d2OURMTkRNWWQrWjB0a2dvNnArOVVxbzAxNEtwTjZXSVdv?=
- =?utf-8?B?bnNhOW9sQUtYTHhLbUxOa1diRXNGV0EwSnE5QndxMXBENTU0Q2dyTVVFQ0xB?=
- =?utf-8?B?cHNwMlRWSnFEcVdxYnZsTXVONiswQjNkZlovRHMyZ3Y3THluNERuempSalVZ?=
- =?utf-8?B?UjRtWTNOZVlDckxOWkxBUHh0WjNtYU1xSHhQOFE1dzRXalNZd2RGOHZ6OEI3?=
- =?utf-8?B?bGFHamZ2T1lES0JBUW50T3hjSDNLc2M0ZlA0STVpT20vR3hISDdQQWU5MElD?=
- =?utf-8?B?U0dlR2EwYlVSMDROcUxVeWhJZ1J1a0Z1N1p6L0FWVGt3VFBudzNGNzc3Q2Rw?=
- =?utf-8?B?dTZZUGloQ1paWGpFc1FFQ055Z1VOV2VoWVQ4dXAvMkRVTkI5ZnNRZzVFaHJR?=
- =?utf-8?B?VFdMU1pCUTFWdTJVSWVCWG5oaTMxaGVvVENnczRuSnF1NnZkT1RBZmpmdjVK?=
- =?utf-8?B?dzg4U2V1dXJ0U3JsdUtQakdHRlg4Z2NBNVZnSDhMTGRKcDZnVzNvT2xrKzN2?=
- =?utf-8?B?ZUpFaGhwZjZWTml2TEJRR3RPeDVhcFc4WFJvbkw5dzJjRUNTY0phYUxSdDNZ?=
- =?utf-8?B?eVpqWU1NZnhObC9ESDVXUmpYa0V2YlMzY3NLWSt1ODBMTDJvbUxrTk1nNnlR?=
- =?utf-8?B?b21Id2c2VHN6OHo0dkxDTEI2TjlHay9UcmNtVFlWV0xCUzYwSlkvc0ppRHNZ?=
- =?utf-8?B?bVhMM3BJWXoxOHdUbXhUcDNpc3paeTZ6Tm16a1YvTG9ZbzNOQy9Lcld1U1k0?=
- =?utf-8?B?ODRZbnNoRDNOTStXWlg1eEpXUk8rK1FvZVc4ODhyNWMyb1ZWTllSWG4xTlcr?=
- =?utf-8?B?VlB0ckkvZm1xMytEOFVQS2Qra05mdnd4ZW9FMHJpdXl1dDlJY01VQUdCNm9U?=
- =?utf-8?B?eHlNM2VMOTF1dms3eUZHcjVSY1Z5WGFGdXJyZENwMm5ZZjZUdzZxdEtkNlIw?=
- =?utf-8?B?bE9xM3NWS0MrbUtRTTYzSXFReUJJR3ZqWS9jWlJVU1FDWnJNanlpcWtCaURm?=
- =?utf-8?B?ZmYwd0tnOEl5M2Ezd3BMQXRkaTFiWS9GMVJocmJYZG9VRmV0N0VRalcxdUR3?=
- =?utf-8?B?OFRFYXU5b0FxbER1Q21xTXhyanVocTM2K2lWSUU0V3hVK0lITnYrY2FnVStn?=
- =?utf-8?B?ZnFoUDZYT0tHSVBZRFlrQTIwaTdTMGxpWEpjVTB3cjV0WllqYkhQK2tkRFo0?=
- =?utf-8?B?QXFKdUliZXhpajNGUERKWE0ydTJDd1dxOThaTThRTk95MUFOd3NLOEVML1dj?=
- =?utf-8?B?cVNCM3VmU0llSDN3cVZBWXJMemE1Y0QzSVYvNFNJbmxMM2drVzh1VkZHOWpM?=
- =?utf-8?B?c1MzRDVRRjJkdlNKU2FnS1Z3Nm01NFVlRTZrMWlmNU9oRWIwUGhicWNwS1Vj?=
- =?utf-8?B?QlNFcVpZeGNtOGZ6aHUvVyttWE9yT1k0YXpIWFlKc1IvbEw3KzFlRFlVUEUy?=
- =?utf-8?B?Y3U0OUNmdjVDUXZuc094UFlsdktvdnYvUXJCZlN4RzZ0VWpxbUZhbFhHYlpG?=
- =?utf-8?Q?Xeqr8V2iP5Ne8Jzlg5dE1bc=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	X8Z1Qfk51xeLjw2Fyz+dCus8K5isPCydvlbFaVPc8IZ84yLh14PiUBi9hJfYwOaN4i4nRmiZO51p2xLunWik0uvyAzR4TIH6ee2LeipirBtEh6okcwBpDGYbr+7H2Nni1c+j+ccHzJ0cVm4HOnn+j8dYVT5n2s6eRr7WBt9wYCyItqg30fWn2Wmw50Dp4tvSqEztETshlnDe1qb9qhQ+2LOfsUjoSSUv/0eadc9TF0DGxl8GyfOrP3rX9rnXLb2Bcasnk4bd7tAbLJxk5K+LYqUSmqX/aX8CJxoGKopfMlOVSs92MVo7M6WTn6WFxiL+nbGGevjkqCDFZpr6/ugbfXcBJukH5MPgP/Rr2/G2Zw9nwoOZlldattqA/1Jz5kyChBO4QKbhK0kVkqSXfp7bFYdeAg+hpq5PdtvN5izZ7HDEdF1lkAeJPVtFPTISC6rHARa8s00YtDTpToiXOujQ5ipM9yOO1Ks7P8E5xDnuxO5nXUQnfZFZggb8L74Q5gXmyP2EZsdiNkG9n+5/ZE+CcyE60X9R3SkJ6wZyMQRm6hHo0UqyWOg9jVPsrUuPBF89fIv/Za5nJl4ciUsKgCg9goawEoQZqrII9+uYz6DxXzMwkupaTuZYPPoxSObPcXbJy+tAz9kDCpRiC6YBM+rSG7tj9M6m9mQdxUutKfwDg1zToAo2I8uHYGMAW/u1hdwNKgyiUxJyUK1w9Tzofv3sjz1ZMf19TFU/RbDMSGu+rnZKmA1YsuThpWVB6nxuYTOgYmxXCHlWWFHo00XN8Da2i5PqeJAtSSih64StoIAsFOAUGrgUpkKYNBDkNI7R8w+YnNFdnZqTFEDxnjYwX2cuMEfwLzainnk1kaAHQ+0G4dU=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a92bbb4e-5f10-4c0f-8f16-08dbca75dd86
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR10MB5278.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2023 16:19:38.1542
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0E2fZIKf865gy0kRGfnaFnNTZQejm6zRd3cZbK6jzTVMwM+slLuYXUixQfgNuAAD23kBoS8y/vvm8GBb4TZy/w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB6061
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-11_11,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0
- malwarescore=0 adultscore=0 spamscore=0 mlxlogscore=999 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310110144
-X-Proofpoint-GUID: wKBEJ8_LkF0pBY5Jwqar8f1FT9Eo7Sg2
-X-Proofpoint-ORIG-GUID: wKBEJ8_LkF0pBY5Jwqar8f1FT9Eo7Sg2
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 10/10/2023 14:54, Masami Hiramatsu (Google) wrote:
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> Move the BTF APIs used in tracing to the BTF library code for sharing it
-> with others.
-> Previously, to avoid complex dependency in a series I made it on the
-> tracing tree, but now it is a good time to move it to BPF tree because
-> these functions are pure BTF functions.
->
-
-Makes sense to me. Two very small things - usual practice for
-bpf-related changes is to specify "PATCH bpf-next" for changes like
-this that target the -next tree. Other thing is I'm reasonably sure
-no functional changes are intended - it's basically just a matter of
-moving code from trace_btf -> btf - but would be good to confirm
-that no functional changes are intended or similar in the commit
-message. It's sort of implicit when you say "move the BTF APIs", but
-would be good to confirm.
-
-
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-
-
+On Wed, 2023-10-11 at 10:17 +0100, Alan Maguire wrote:
+> This allows consumers to specify an opt-in set of features
+> they want to use in BTF encoding.
+>=20
+> Supported features are
+>=20
+> 	encode_force  Ignore invalid symbols when encoding BTF.
+> 	var           Encode variables using BTF_KIND_VAR in BTF.
+> 	float         Encode floating-point types in BTF.
+> 	decl_tag      Encode declaration tags using BTF_KIND_DECL_TAG.
+> 	type_tag      Encode type tags using BTF_KIND_TYPE_TAG.
+> 	enum64        Encode enum64 values with BTF_KIND_ENUM64.
+> 	optimized     Encode representations of optimized functions
+> 	              with suffixes like ".isra.0" etc
+> 	consistent    Avoid encoding inconsistent static functions.
+> 	              These occur when a parameter is optimized out
+> 	              in some CUs and not others, or when the same
+> 	              function name has inconsistent BTF descriptions
+> 	              in different CUs.
+>=20
+> Specifying "--btf_features=3Dall" is the equivalent to setting
+> all of the above.  If pahole does not know about a feature
+> it silently ignores it.  These properties allow us to use
+> the --btf_features option in the kernel pahole_flags.sh
+> script to specify the desired set of features.  If a new
+> feature is not present in pahole but requested, pahole
+> BTF encoding will not complain (but will not encode the
+> feature).
+>=20
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 > ---
->  include/linux/btf.h        |   24 +++++++++
->  kernel/bpf/btf.c           |  115 +++++++++++++++++++++++++++++++++++++++++
->  kernel/trace/Makefile      |    1 
->  kernel/trace/trace_btf.c   |  122 --------------------------------------------
->  kernel/trace/trace_btf.h   |   11 ----
->  kernel/trace/trace_probe.c |    2 -
->  6 files changed, 140 insertions(+), 135 deletions(-)
->  delete mode 100644 kernel/trace/trace_btf.c
->  delete mode 100644 kernel/trace/trace_btf.h
-> 
-> diff --git a/include/linux/btf.h b/include/linux/btf.h
-> index 928113a80a95..8372d93ea402 100644
-> --- a/include/linux/btf.h
-> +++ b/include/linux/btf.h
-> @@ -507,6 +507,14 @@ btf_get_prog_ctx_type(struct bpf_verifier_log *log, const struct btf *btf,
->  int get_kern_ctx_btf_id(struct bpf_verifier_log *log, enum bpf_prog_type prog_type);
->  bool btf_types_are_same(const struct btf *btf1, u32 id1,
->  			const struct btf *btf2, u32 id2);
-> +const struct btf_type *btf_find_func_proto(const char *func_name,
-> +					   struct btf **btf_p);
-> +const struct btf_param *btf_get_func_param(const struct btf_type *func_proto,
-> +					   s32 *nr);
-> +const struct btf_member *btf_find_struct_member(struct btf *btf,
-> +						const struct btf_type *type,
-> +						const char *member_name,
-> +						u32 *anon_offset);
->  #else
->  static inline const struct btf_type *btf_type_by_id(const struct btf *btf,
->  						    u32 type_id)
-> @@ -559,6 +567,22 @@ static inline bool btf_types_are_same(const struct btf *btf1, u32 id1,
->  {
->  	return false;
->  }
-> +static inline const struct btf_type *btf_find_func_proto(const char *func_name,
-> +							 struct btf **btf_p)
-> +{
-> +	return NULL;
-> +}
-> +static inline const struct btf_param *
-> +btf_get_func_param(const struct btf_type *func_proto, s32 *nr)
-> +{
-> +	return NULL;
-> +}
-> +static inline const struct btf_member *
-> +btf_find_struct_member(struct btf *btf, const struct btf_type *type,
-> +		       const char *member_name, u32 *anon_offset)
-> +{
-> +	return NULL;
-> +}
->  #endif
->  
->  static inline bool btf_type_is_struct_ptr(struct btf *btf, const struct btf_type *t)
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 8090d7fb11ef..e5cbf3b31b78 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -912,6 +912,121 @@ static const struct btf_type *btf_type_skip_qualifiers(const struct btf *btf,
->  	return t;
->  }
->  
-> +/*
-> + * Find a function proto type by name, and return the btf_type with its btf
-> + * in *@btf_p. Return NULL if not found.
-> + * Note that caller has to call btf_put(*@btf_p) after using the btf_type.
+>  man-pages/pahole.1 | 20 +++++++++++
+>  pahole.c           | 87 +++++++++++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 106 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
+> index c1b48de..7c072dc 100644
+> --- a/man-pages/pahole.1
+> +++ b/man-pages/pahole.1
+> @@ -273,6 +273,26 @@ Generate BTF for functions with optimization-related=
+ suffixes (.isra, .constprop
+>  .B \-\-btf_gen_all
+>  Allow using all the BTF features supported by pahole.
+> =20
+> +.TP
+> +.B \-\-btf_features=3DFEATURE_LIST
+> +Encode BTF using the specified feature list, or specify 'all' for all fe=
+atures supported.  This single parameter value can be used as an alternativ=
+e to unsing multiple BTF-related options. Supported features are
+> +
+> +.nf
+> +	encode_force  Ignore invalid symbols when encoding BTF.
+> +	var           Encode variables using BTF_KIND_VAR in BTF.
+> +	float         Encode floating-point types in BTF.
+> +	decl_tag      Encode declaration tags using BTF_KIND_DECL_TAG.
+> +	type_tag      Encode type tags using BTF_KIND_TYPE_TAG.
+> +	enum64        Encode enum64 values with BTF_KIND_ENUM64.
+> +	optimized     Encode representations of optimized functions
+> +	              with suffixes like ".isra.0" etc
+> +	consistent    Avoid encoding inconsistent static functions.
+> +	              These occur when a parameter is optimized out
+> +	              in some CUs and not others, or when the same
+> +	              function name has inconsistent BTF descriptions
+> +	              in different CUs.
+> +.fi
+> +
+>  .TP
+>  .B \-l, \-\-show_first_biggest_size_base_type_member
+>  Show first biggest size base_type member.
+> diff --git a/pahole.c b/pahole.c
+> index 7a41dc3..4f00b08 100644
+> --- a/pahole.c
+> +++ b/pahole.c
+> @@ -1229,6 +1229,83 @@ ARGP_PROGRAM_VERSION_HOOK_DEF =3D dwarves_print_ve=
+rsion;
+>  #define ARGP_skip_emitting_atomic_typedefs 338
+>  #define ARGP_btf_gen_optimized  339
+>  #define ARGP_skip_encoding_btf_inconsistent_proto 340
+> +#define ARGP_btf_features	341
+> +
+> +/* --btf_features=3Dfeature1[,feature2,..] option allows us to specify
+> + * opt-in features (or "all"); these are translated into conf_load
+> + * values by specifying the associated bool offset and whether it
+> + * is a skip option or not; btf_features is for opting _into_ features
+> + * so for skip options we have to reverse the logic.  For example
+> + * "--skip_encoding_btf_type_tag --btf_gen_floats" translate to
+> + * "--btf_features=3Dtype_tag,float"
 > + */
-> +const struct btf_type *btf_find_func_proto(const char *func_name, struct btf **btf_p)
-> +{
-> +	const struct btf_type *t;
-> +	s32 id;
+> +#define BTF_FEATURE(name, alias, skip)				\
+> +	{ #name, #alias, offsetof(struct conf_load, alias), skip }
 > +
-> +	id = bpf_find_btf_id(func_name, BTF_KIND_FUNC, btf_p);
-> +	if (id < 0)
-> +		return NULL;
-> +
-> +	/* Get BTF_KIND_FUNC type */
-> +	t = btf_type_by_id(*btf_p, id);
-> +	if (!t || !btf_type_is_func(t))
-> +		goto err;
-> +
-> +	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
-> +	t = btf_type_by_id(*btf_p, t->type);
-> +	if (!t || !btf_type_is_func_proto(t))
-> +		goto err;
-> +
-> +	return t;
-> +err:
-> +	btf_put(*btf_p);
-> +	return NULL;
-> +}
-> +
-> +/*
-> + * Get function parameter with the number of parameters.
-> + * This can return NULL if the function has no parameters.
-> + * It can return -EINVAL if the @func_proto is not a function proto type.
-> + */
-> +const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s32 *nr)
-> +{
-> +	if (!btf_type_is_func_proto(func_proto))
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	*nr = btf_type_vlen(func_proto);
-> +	if (*nr > 0)
-> +		return (const struct btf_param *)(func_proto + 1);
-> +	else
-> +		return NULL;
-> +}
-> +
-> +#define BTF_ANON_STACK_MAX	16
-> +
-> +struct btf_anon_stack {
-> +	u32 tid;
-> +	u32 offset;
+> +struct btf_feature {
+> +	const char      *name;
+> +	const char      *option_alias;
+> +	size_t          conf_load_offset;
+> +	bool		skip;
+> +} btf_features[] =3D {
+> +	BTF_FEATURE(encode_force, btf_encode_force, false),
+> +	BTF_FEATURE(var, skip_encoding_btf_vars, true),
+> +	BTF_FEATURE(float, btf_gen_floats, false),
+> +	BTF_FEATURE(decl_tag, skip_encoding_btf_decl_tag, true),
+> +	BTF_FEATURE(type_tag, skip_encoding_btf_type_tag, true),
+> +	BTF_FEATURE(enum64, skip_encoding_btf_enum64, true),
+> +	BTF_FEATURE(optimized, btf_gen_optimized, false),
+> +	/* the "skip" in skip_encoding_btf_inconsistent_proto is misleading
+> +	 * here; this is a positive feature to ensure consistency of
+> +	 * representation rather than a negative option which we want
+> +	 * to invert.  So as a result, "skip" is false here.
+> +	 */
+> +	BTF_FEATURE(consistent, skip_encoding_btf_inconsistent_proto, false),
 > +};
 > +
-> +/*
-> + * Find a member of data structure/union by name and return it.
-> + * Return NULL if not found, or -EINVAL if parameter is invalid.
-> + * If the member is an member of anonymous union/structure, the offset
-> + * of that anonymous union/structure is stored into @anon_offset. Caller
-> + * can calculate the correct offset from the root data structure by
-> + * adding anon_offset to the member's offset.
+> +#define BTF_MAX_FEATURES	32
+> +#define BTF_MAX_FEATURE_STR	256
+> +
+> +/* Translate --btf_features=3Dfeature1[,feature2] into conf_load values.
+> + * Explicitly ignores unrecognized features to allow future specificatio=
+n
+> + * of new opt-in features.
 > + */
-> +const struct btf_member *btf_find_struct_member(struct btf *btf,
-> +						const struct btf_type *type,
-> +						const char *member_name,
-> +						u32 *anon_offset)
+> +static void parse_btf_features(const char *features, struct conf_load *c=
+onf_load)
 > +{
-> +	struct btf_anon_stack *anon_stack;
-> +	const struct btf_member *member;
-> +	u32 tid, cur_offset = 0;
-> +	const char *name;
-> +	int i, top = 0;
+> +	char *feature_list[BTF_MAX_FEATURES] =3D {};
+> +	char f[BTF_MAX_FEATURE_STR];
+> +	bool encode_all =3D false;
+> +	int i, j, n =3D 0;
 > +
-> +	anon_stack = kcalloc(BTF_ANON_STACK_MAX, sizeof(*anon_stack), GFP_KERNEL);
-> +	if (!anon_stack)
-> +		return ERR_PTR(-ENOMEM);
+> +	strncpy(f, features, sizeof(f));
 > +
-> +retry:
-> +	if (!btf_type_is_struct(type)) {
-> +		member = ERR_PTR(-EINVAL);
-> +		goto out;
-> +	}
+> +	if (strcmp(features, "all") =3D=3D 0) {
+> +		encode_all =3D true;
+> +	} else {
+> +		char *saveptr =3D NULL, *s =3D f, *t;
 > +
-> +	for_each_member(i, type, member) {
-> +		if (!member->name_off) {
-> +			/* Anonymous union/struct: push it for later use */
-> +			type = btf_type_skip_modifiers(btf, member->type, &tid);
-> +			if (type && top < BTF_ANON_STACK_MAX) {
-> +				anon_stack[top].tid = tid;
-> +				anon_stack[top++].offset =
-> +					cur_offset + member->offset;
-> +			}
-> +		} else {
-> +			name = btf_name_by_offset(btf, member->name_off);
-> +			if (name && !strcmp(member_name, name)) {
-> +				if (anon_offset)
-> +					*anon_offset = cur_offset;
-> +				goto out;
-> +			}
+> +		while ((t =3D strtok_r(s, ",", &saveptr)) !=3D NULL) {
+> +			s =3D NULL;
+> +			feature_list[n++] =3D t;
+
+Maybe guard against `n` >=3D BTF_MAX_FEATURES here?
+
 > +		}
 > +	}
-> +	if (top > 0) {
-> +		/* Pop from the anonymous stack and retry */
-> +		tid = anon_stack[--top].tid;
-> +		cur_offset = anon_stack[top].offset;
-> +		type = btf_type_by_id(btf, tid);
-> +		goto retry;
+> +
+> +	for (i =3D 0; i < ARRAY_SIZE(btf_features); i++) {
+> +		bool *bval =3D (bool *)(((void *)conf_load) + btf_features[i].conf_loa=
+d_offset);
+> +		bool match =3D encode_all;
+> +
+> +		if (!match) {
+> +			for (j =3D 0; j < n; j++) {
+> +				if (strcmp(feature_list[j], btf_features[i].name) =3D=3D 0) {
+> +					match =3D true;
+> +					break;
+> +				}
+> +			}
+> +		}
+> +		if (match)
+> +			*bval =3D btf_features[i].skip ? false : true;
+
+I'm not sure I understand the logic behind "skip" features.
+Take `decl_tag` for example:
+- by default conf_load->skip_encoding_btf_decl_tag is 0;
+- if `--btf_features=3Ddecl_tag` is passed it is still 0 because of the
+  `skip ? false : true` logic.
+
+If there is no way to change "skip" features why listing these at all?
+
+Other than that I tested the patch-set with current kernel master and
+a change to pahole-flags.sh and bpf tests pass.
+
 > +	}
-> +	member = NULL;
-> +
-> +out:
-> +	kfree(anon_stack);
-> +	return member;
 > +}
-> +
->  #define BTF_SHOW_MAX_ITER	10
->  
->  #define BTF_KIND_BIT(kind)	(1ULL << kind)
-> diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
-> index 057cd975d014..64b61f67a403 100644
-> --- a/kernel/trace/Makefile
-> +++ b/kernel/trace/Makefile
-> @@ -99,7 +99,6 @@ obj-$(CONFIG_KGDB_KDB) += trace_kdb.o
->  endif
->  obj-$(CONFIG_DYNAMIC_EVENTS) += trace_dynevent.o
->  obj-$(CONFIG_PROBE_EVENTS) += trace_probe.o
-> -obj-$(CONFIG_PROBE_EVENTS_BTF_ARGS) += trace_btf.o
->  obj-$(CONFIG_UPROBE_EVENTS) += trace_uprobe.o
->  obj-$(CONFIG_BOOTTIME_TRACING) += trace_boot.o
->  obj-$(CONFIG_FTRACE_RECORD_RECURSION) += trace_recursion_record.o
-> diff --git a/kernel/trace/trace_btf.c b/kernel/trace/trace_btf.c
-> deleted file mode 100644
-> index ca224d53bfdc..000000000000
-> --- a/kernel/trace/trace_btf.c
-> +++ /dev/null
-> @@ -1,122 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -#include <linux/btf.h>
-> -#include <linux/kernel.h>
-> -#include <linux/slab.h>
-> -
-> -#include "trace_btf.h"
-> -
-> -/*
-> - * Find a function proto type by name, and return the btf_type with its btf
-> - * in *@btf_p. Return NULL if not found.
-> - * Note that caller has to call btf_put(*@btf_p) after using the btf_type.
-> - */
-> -const struct btf_type *btf_find_func_proto(const char *func_name, struct btf **btf_p)
-> -{
-> -	const struct btf_type *t;
-> -	s32 id;
-> -
-> -	id = bpf_find_btf_id(func_name, BTF_KIND_FUNC, btf_p);
-> -	if (id < 0)
-> -		return NULL;
-> -
-> -	/* Get BTF_KIND_FUNC type */
-> -	t = btf_type_by_id(*btf_p, id);
-> -	if (!t || !btf_type_is_func(t))
-> -		goto err;
-> -
-> -	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
-> -	t = btf_type_by_id(*btf_p, t->type);
-> -	if (!t || !btf_type_is_func_proto(t))
-> -		goto err;
-> -
-> -	return t;
-> -err:
-> -	btf_put(*btf_p);
-> -	return NULL;
-> -}
-> -
-> -/*
-> - * Get function parameter with the number of parameters.
-> - * This can return NULL if the function has no parameters.
-> - * It can return -EINVAL if the @func_proto is not a function proto type.
-> - */
-> -const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s32 *nr)
-> -{
-> -	if (!btf_type_is_func_proto(func_proto))
-> -		return ERR_PTR(-EINVAL);
-> -
-> -	*nr = btf_type_vlen(func_proto);
-> -	if (*nr > 0)
-> -		return (const struct btf_param *)(func_proto + 1);
-> -	else
-> -		return NULL;
-> -}
-> -
-> -#define BTF_ANON_STACK_MAX	16
-> -
-> -struct btf_anon_stack {
-> -	u32 tid;
-> -	u32 offset;
-> -};
-> -
-> -/*
-> - * Find a member of data structure/union by name and return it.
-> - * Return NULL if not found, or -EINVAL if parameter is invalid.
-> - * If the member is an member of anonymous union/structure, the offset
-> - * of that anonymous union/structure is stored into @anon_offset. Caller
-> - * can calculate the correct offset from the root data structure by
-> - * adding anon_offset to the member's offset.
-> - */
-> -const struct btf_member *btf_find_struct_member(struct btf *btf,
-> -						const struct btf_type *type,
-> -						const char *member_name,
-> -						u32 *anon_offset)
-> -{
-> -	struct btf_anon_stack *anon_stack;
-> -	const struct btf_member *member;
-> -	u32 tid, cur_offset = 0;
-> -	const char *name;
-> -	int i, top = 0;
-> -
-> -	anon_stack = kcalloc(BTF_ANON_STACK_MAX, sizeof(*anon_stack), GFP_KERNEL);
-> -	if (!anon_stack)
-> -		return ERR_PTR(-ENOMEM);
-> -
-> -retry:
-> -	if (!btf_type_is_struct(type)) {
-> -		member = ERR_PTR(-EINVAL);
-> -		goto out;
-> -	}
-> -
-> -	for_each_member(i, type, member) {
-> -		if (!member->name_off) {
-> -			/* Anonymous union/struct: push it for later use */
-> -			type = btf_type_skip_modifiers(btf, member->type, &tid);
-> -			if (type && top < BTF_ANON_STACK_MAX) {
-> -				anon_stack[top].tid = tid;
-> -				anon_stack[top++].offset =
-> -					cur_offset + member->offset;
-> -			}
-> -		} else {
-> -			name = btf_name_by_offset(btf, member->name_off);
-> -			if (name && !strcmp(member_name, name)) {
-> -				if (anon_offset)
-> -					*anon_offset = cur_offset;
-> -				goto out;
-> -			}
-> -		}
-> -	}
-> -	if (top > 0) {
-> -		/* Pop from the anonymous stack and retry */
-> -		tid = anon_stack[--top].tid;
-> -		cur_offset = anon_stack[top].offset;
-> -		type = btf_type_by_id(btf, tid);
-> -		goto retry;
-> -	}
-> -	member = NULL;
-> -
-> -out:
-> -	kfree(anon_stack);
-> -	return member;
-> -}
-> -
-> diff --git a/kernel/trace/trace_btf.h b/kernel/trace/trace_btf.h
-> deleted file mode 100644
-> index 4bc44bc261e6..000000000000
-> --- a/kernel/trace/trace_btf.h
-> +++ /dev/null
-> @@ -1,11 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0 */
-> -#include <linux/btf.h>
-> -
-> -const struct btf_type *btf_find_func_proto(const char *func_name,
-> -					   struct btf **btf_p);
-> -const struct btf_param *btf_get_func_param(const struct btf_type *func_proto,
-> -					   s32 *nr);
-> -const struct btf_member *btf_find_struct_member(struct btf *btf,
-> -						const struct btf_type *type,
-> -						const char *member_name,
-> -						u32 *anon_offset);
-> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-> index 4dc74d73fc1d..b33c424b8ee0 100644
-> --- a/kernel/trace/trace_probe.c
-> +++ b/kernel/trace/trace_probe.c
-> @@ -12,7 +12,7 @@
->  #define pr_fmt(fmt)	"trace_probe: " fmt
->  
->  #include <linux/bpf.h>
-> -#include "trace_btf.h"
-> +#include <linux/btf.h>
->  
->  #include "trace_probe.h"
->  
-> 
-> 
+> =20
+>  static const struct argp_option pahole__options[] =3D {
+>  	{
+> @@ -1651,6 +1728,12 @@ static const struct argp_option pahole__options[] =
+=3D {
+>  		.key =3D ARGP_skip_encoding_btf_inconsistent_proto,
+>  		.doc =3D "Skip functions that have multiple inconsistent function prot=
+otypes sharing the same name, or that use unexpected registers for paramete=
+r values."
+>  	},
+> +	{
+> +		.name =3D "btf_features",
+> +		.key =3D ARGP_btf_features,
+> +		.arg =3D "FEATURE_LIST",
+> +		.doc =3D "Specify supported BTF features in FEATURE_LIST or 'all' for =
+all supported features. See the pahole manual page for the list of supporte=
+d features."
+> +	},
+>  	{
+>  		.name =3D NULL,
+>  	}
+> @@ -1796,7 +1879,7 @@ static error_t pahole__options_parser(int key, char=
+ *arg,
+>  	case ARGP_btf_gen_floats:
+>  		conf_load.btf_gen_floats =3D true;	break;
+>  	case ARGP_btf_gen_all:
+> -		conf_load.btf_gen_floats =3D true;	break;
+> +		parse_btf_features("all", &conf_load);	break;
+>  	case ARGP_with_flexible_array:
+>  		show_with_flexible_array =3D true;	break;
+>  	case ARGP_prettify_input_filename:
+> @@ -1826,6 +1909,8 @@ static error_t pahole__options_parser(int key, char=
+ *arg,
+>  		conf_load.btf_gen_optimized =3D true;		break;
+>  	case ARGP_skip_encoding_btf_inconsistent_proto:
+>  		conf_load.skip_encoding_btf_inconsistent_proto =3D true; break;
+> +	case ARGP_btf_features:
+> +		parse_btf_features(arg, &conf_load);	break;
+>  	default:
+>  		return ARGP_ERR_UNKNOWN;
+>  	}
+
 
