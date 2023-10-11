@@ -1,31 +1,31 @@
-Return-Path: <bpf+bounces-11891-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11893-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28AC97C4EC9
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 11:28:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D73597C4ECD
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 11:28:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49CD41C20F0E
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 09:28:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C92E282334
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 09:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D42E21DA23;
-	Wed, 11 Oct 2023 09:27:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D79771E52B;
+	Wed, 11 Oct 2023 09:27:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C1641DDCC;
-	Wed, 11 Oct 2023 09:27:47 +0000 (UTC)
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454BEB6;
-	Wed, 11 Oct 2023 02:27:44 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R411e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VtwGXde_1697016461;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VtwGXde_1697016461)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA88F1E508;
+	Wed, 11 Oct 2023 09:27:49 +0000 (UTC)
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9C6A7;
+	Wed, 11 Oct 2023 02:27:46 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R491e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VtwJVey_1697016462;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VtwJVey_1697016462)
           by smtp.aliyun-inc.com;
-          Wed, 11 Oct 2023 17:27:41 +0800
+          Wed, 11 Oct 2023 17:27:42 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: virtualization@lists.linux-foundation.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -41,9 +41,9 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	John Fastabend <john.fastabend@gmail.com>,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH vhost 11/22] virtio_net: sq support premapped mode
-Date: Wed, 11 Oct 2023 17:27:17 +0800
-Message-Id: <20231011092728.105904-12-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH vhost 12/22] virtio_net: xsk: bind/unbind xsk
+Date: Wed, 11 Oct 2023 17:27:18 +0800
+Message-Id: <20231011092728.105904-13-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20231011092728.105904-1-xuanzhuo@linux.alibaba.com>
 References: <20231011092728.105904-1-xuanzhuo@linux.alibaba.com>
@@ -56,264 +56,344 @@ MIME-Version: 1.0
 X-Git-Hash: 7e791d85ef9e
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
-	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-If the xsk is enabling, the xsk tx will share the send queue.
-But the xsk requires that the send queue use the premapped mode.
-So the send queue must support premapped mode.
+This patch implement the logic of bind/unbind xsk pool to sq and rq.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/net/virtio/main.c       | 98 ++++++++++++++++++++++++++++++++-
- drivers/net/virtio/virtio_net.h | 55 +++++++++++++++++-
- 2 files changed, 148 insertions(+), 5 deletions(-)
+ drivers/net/virtio/Makefile     |   2 +-
+ drivers/net/virtio/main.c       |  10 +-
+ drivers/net/virtio/virtio_net.h |  18 ++++
+ drivers/net/virtio/xsk.c        | 186 ++++++++++++++++++++++++++++++++
+ drivers/net/virtio/xsk.h        |   7 ++
+ 5 files changed, 216 insertions(+), 7 deletions(-)
+ create mode 100644 drivers/net/virtio/xsk.c
+ create mode 100644 drivers/net/virtio/xsk.h
 
+diff --git a/drivers/net/virtio/Makefile b/drivers/net/virtio/Makefile
+index 15ed7c97fd4f..8c2a884d2dba 100644
+--- a/drivers/net/virtio/Makefile
++++ b/drivers/net/virtio/Makefile
+@@ -5,4 +5,4 @@
+ 
+ obj-$(CONFIG_VIRTIO_NET) += virtio_net.o
+ 
+-virtio_net-y := main.o
++virtio_net-y := main.o xsk.o
 diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
-index fb4a9cd98e0c..ad47ab2d74a2 100644
+index ad47ab2d74a2..a4e63c55ba1f 100644
 --- a/drivers/net/virtio/main.c
 +++ b/drivers/net/virtio/main.c
-@@ -514,6 +514,46 @@ static void *virtnet_rq_alloc(struct virtnet_rq *rq, u32 size, gfp_t gfp)
- 	return buf;
- }
- 
-+int virtnet_sq_set_premapped(struct virtnet_sq *sq)
-+{
-+	struct virtnet_sq_dma *d;
-+	int err, size, i;
-+
-+	size = virtqueue_get_vring_size(sq->vq);
-+
-+	size += MAX_SKB_FRAGS + 2;
-+
-+	sq->dmainfo.head = kcalloc(size, sizeof(*sq->dmainfo.head), GFP_KERNEL);
-+	if (!sq->dmainfo.head)
-+		return -ENOMEM;
-+
-+	err = virtqueue_set_dma_premapped(sq->vq, true);
-+	if (err) {
-+		kfree(sq->dmainfo.head);
-+		return err;
-+	}
-+
-+	sq->dmainfo.free = NULL;
-+
-+	sq->do_dma = true;
-+
-+	for (i = 0; i < size; ++i) {
-+		d = &sq->dmainfo.head[i];
-+
-+		d->next = sq->dmainfo.free;
-+		sq->dmainfo.free = d;
-+	}
-+
-+	return 0;
-+}
-+
-+void virtnet_sq_unset_premapped(struct virtnet_sq *sq)
-+{
-+	sq->do_dma = false;
-+	kfree(sq->dmainfo.head);
-+	virtqueue_set_dma_premapped(sq->vq, false);
-+}
-+
- static void virtnet_rq_set_premapped(struct virtnet_info *vi)
- {
- 	int i;
-@@ -530,6 +570,56 @@ static void virtnet_rq_set_premapped(struct virtnet_info *vi)
- 	}
- }
- 
-+static struct virtnet_sq_dma *virtnet_sq_map_sg(struct virtnet_sq *sq, int nents, void *data)
-+{
-+	struct virtnet_sq_dma *d, *head;
-+	struct scatterlist *sg;
-+	int i;
-+
-+	head = NULL;
-+
-+	for_each_sg(sq->sg, sg, nents, i) {
-+		sg->dma_address = virtqueue_dma_map_page_attrs(sq->vq, sg_page(sg),
-+							       sg->offset, sg->length,
-+							       DMA_TO_DEVICE, 0);
-+		if (virtqueue_dma_mapping_error(sq->vq, sg->dma_address))
-+			goto err;
-+
-+		d = sq->dmainfo.free;
-+		sq->dmainfo.free = d->next;
-+
-+		d->addr = sg->dma_address;
-+		d->len = sg->length;
-+
-+		d->next = head;
-+		head = d;
-+	}
-+
-+	head->data = data;
-+
-+	return (void *)((u64)head | ((u64)data & VIRTIO_XMIT_DATA_MASK));
-+err:
-+	virtnet_sq_unmap(sq, head);
-+	return NULL;
-+}
-+
-+static int virtnet_add_outbuf(struct virtnet_sq *sq, u32 num, void *data)
-+{
-+	int ret;
-+
-+	if (sq->do_dma) {
-+		data = virtnet_sq_map_sg(sq, num, data);
-+		if (!data)
-+			return -ENOMEM;
-+	}
-+
-+	ret = virtqueue_add_outbuf(sq->vq, sq->sg, num, data, GFP_ATOMIC);
-+	if (ret && sq->do_dma)
-+		virtnet_sq_unmap(sq, data);
-+
-+	return ret;
-+}
-+
- static void free_old_xmit(struct virtnet_sq *sq, bool in_napi)
- {
- 	struct virtnet_sq_stats stats = {};
-@@ -623,8 +713,7 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
- 			    skb_frag_size(frag), skb_frag_off(frag));
- 	}
- 
--	err = virtqueue_add_outbuf(sq->vq, sq->sg, nr_frags + 1,
--				   xdp_to_ptr(xdpf), GFP_ATOMIC);
-+	err = virtnet_add_outbuf(sq, nr_frags + 1, xdp_to_ptr(xdpf));
- 	if (unlikely(err))
- 		return -ENOSPC; /* Caller handle free/refcnt */
- 
-@@ -2066,7 +2155,8 @@ static int xmit_skb(struct virtnet_sq *sq, struct sk_buff *skb)
- 			return num_sg;
- 		num_sg++;
- 	}
--	return virtqueue_add_outbuf(sq->vq, sq->sg, num_sg, skb, GFP_ATOMIC);
-+
-+	return virtnet_add_outbuf(sq, num_sg, skb);
- }
- 
- static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
-@@ -3723,6 +3813,8 @@ static void virtnet_free_queues(struct virtnet_info *vi)
- 	for (i = 0; i < vi->max_queue_pairs; i++) {
- 		__netif_napi_del(&vi->rq[i].napi);
- 		__netif_napi_del(&vi->sq[i].napi);
-+
-+		kfree(vi->sq[i].dmainfo.head);
- 	}
- 
- 	/* We called __netif_napi_del(),
-diff --git a/drivers/net/virtio/virtio_net.h b/drivers/net/virtio/virtio_net.h
-index 2f930af35364..9cb9b16bb0d3 100644
---- a/drivers/net/virtio/virtio_net.h
-+++ b/drivers/net/virtio/virtio_net.h
-@@ -7,6 +7,7 @@
- #include <linux/average.h>
- 
- #define VIRTIO_XDP_FLAG	BIT(0)
-+#define VIRTIO_XMIT_DATA_MASK (VIRTIO_XDP_FLAG)
- 
- /* RX packet size EWMA. The average packet size is used to determine the packet
-  * buffer size when refilling RX rings. As the entire RX ring may be refilled
-@@ -58,6 +59,18 @@ struct virtnet_rq_dma {
- 	u16 need_sync;
+@@ -8,7 +8,6 @@
+ #include <linux/etherdevice.h>
+ #include <linux/module.h>
+ #include <linux/virtio.h>
+-#include <linux/virtio_net.h>
+ #include <linux/bpf.h>
+ #include <linux/bpf_trace.h>
+ #include <linux/scatterlist.h>
+@@ -139,9 +138,6 @@ struct virtio_net_common_hdr {
+ 	};
  };
  
-+struct virtnet_sq_dma {
-+	struct virtnet_sq_dma *next;
-+	dma_addr_t addr;
-+	u32 len;
-+	void *data;
-+};
-+
-+struct virtnet_sq_dma_head {
-+	struct virtnet_sq_dma *free;
-+	struct virtnet_sq_dma *head;
-+};
-+
- /* Internal representation of a send virtqueue */
- struct virtnet_sq {
- 	/* Virtqueue associated with this virtnet_sq */
-@@ -77,6 +90,10 @@ struct virtnet_sq {
+-static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
+-static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
+-
+ static void *xdp_to_ptr(struct xdp_frame *ptr)
+ {
+ 	return (void *)((unsigned long)ptr | VIRTIO_XDP_FLAG);
+@@ -3676,6 +3672,8 @@ static int virtnet_xdp(struct net_device *dev, struct netdev_bpf *xdp)
+ 	switch (xdp->command) {
+ 	case XDP_SETUP_PROG:
+ 		return virtnet_xdp_set(dev, xdp->prog, xdp->extack);
++	case XDP_SETUP_XSK_POOL:
++		return virtnet_xsk_pool_setup(dev, xdp);
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -3861,7 +3859,7 @@ static void free_receive_page_frags(struct virtnet_info *vi)
+ 		}
+ }
  
- 	/* Record whether sq is in reset state. */
- 	bool reset;
+-static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
++void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
+ {
+ 	if (!virtnet_is_xdp_frame(buf))
+ 		dev_kfree_skb(buf);
+@@ -3869,7 +3867,7 @@ static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
+ 		xdp_return_frame(virtnet_ptr_to_xdp(buf));
+ }
+ 
+-static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf)
++void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf)
+ {
+ 	struct virtnet_info *vi = vq->vdev->priv;
+ 	int i = vq2rxq(vq);
+diff --git a/drivers/net/virtio/virtio_net.h b/drivers/net/virtio/virtio_net.h
+index 9cb9b16bb0d3..0603033b76a0 100644
+--- a/drivers/net/virtio/virtio_net.h
++++ b/drivers/net/virtio/virtio_net.h
+@@ -5,6 +5,8 @@
+ 
+ #include <linux/ethtool.h>
+ #include <linux/average.h>
++#include <linux/virtio_net.h>
++#include <net/xdp_sock_drv.h>
+ 
+ #define VIRTIO_XDP_FLAG	BIT(0)
+ #define VIRTIO_XMIT_DATA_MASK (VIRTIO_XDP_FLAG)
+@@ -94,6 +96,11 @@ struct virtnet_sq {
+ 	bool do_dma;
+ 
+ 	struct virtnet_sq_dma_head dmainfo;
++	struct {
++		struct xsk_buff_pool __rcu *pool;
 +
-+	bool do_dma;
-+
-+	struct virtnet_sq_dma_head dmainfo;
++		dma_addr_t hdr_dma_address;
++	} xsk;
  };
  
  /* Internal representation of a receive virtqueue */
-@@ -211,6 +228,28 @@ static inline struct xdp_frame *virtnet_ptr_to_xdp(void *ptr)
- 	return (struct xdp_frame *)((unsigned long)ptr & ~VIRTIO_XDP_FLAG);
- }
+@@ -134,6 +141,13 @@ struct virtnet_rq {
  
-+static inline void *virtnet_sq_unmap(struct virtnet_sq *sq, void *data)
+ 	/* Do dma by self */
+ 	bool do_dma;
++
++	struct {
++		struct xsk_buff_pool __rcu *pool;
++
++		/* xdp rxq used by xsk */
++		struct xdp_rxq_info xdp_rxq;
++	} xsk;
+ };
+ 
+ struct virtnet_info {
+@@ -218,6 +232,8 @@ struct virtnet_info {
+ 	struct failover *failover;
+ };
+ 
++#include "xsk.h"
++
+ static inline bool virtnet_is_xdp_frame(void *ptr)
+ {
+ 	return (unsigned long)ptr & VIRTIO_XDP_FLAG;
+@@ -309,4 +325,6 @@ void virtnet_tx_pause(struct virtnet_info *vi, struct virtnet_sq *sq);
+ void virtnet_tx_resume(struct virtnet_info *vi, struct virtnet_sq *sq);
+ int virtnet_sq_set_premapped(struct virtnet_sq *sq);
+ void virtnet_sq_unset_premapped(struct virtnet_sq *sq);
++void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
++void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
+ #endif
+diff --git a/drivers/net/virtio/xsk.c b/drivers/net/virtio/xsk.c
+new file mode 100644
+index 000000000000..adbaefb77480
+--- /dev/null
++++ b/drivers/net/virtio/xsk.c
+@@ -0,0 +1,186 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * virtio-net xsk
++ */
++
++#include "virtio_net.h"
++
++static struct virtio_net_hdr_mrg_rxbuf xsk_hdr;
++
++static int virtnet_rq_bind_xsk_pool(struct virtnet_info *vi, struct virtnet_rq *rq,
++				    struct xsk_buff_pool *pool)
 +{
-+	struct virtnet_sq_dma *next, *head;
++	int err, qindex;
 +
-+	head = (void *)((u64)data & ~VIRTIO_XMIT_DATA_MASK);
++	qindex = rq - vi->rq;
 +
-+	data = head->data;
++	if (pool) {
++		err = xdp_rxq_info_reg(&rq->xsk.xdp_rxq, vi->dev, qindex, rq->napi.napi_id);
++		if (err < 0)
++			return err;
 +
-+	while (head) {
-+		virtqueue_dma_unmap_page_attrs(sq->vq, head->addr, head->len, DMA_TO_DEVICE, 0);
++		err = xdp_rxq_info_reg_mem_model(&rq->xsk.xdp_rxq,
++						 MEM_TYPE_XSK_BUFF_POOL, NULL);
++		if (err < 0) {
++			xdp_rxq_info_unreg(&rq->xsk.xdp_rxq);
++			return err;
++		}
 +
-+		next = head->next;
-+
-+		head->next = sq->dmainfo.free;
-+		sq->dmainfo.free = head;
-+
-+		head = next;
++		xsk_pool_set_rxq_info(pool, &rq->xsk.xdp_rxq);
++	} else {
++		xdp_rxq_info_unreg(&rq->xsk.xdp_rxq);
 +	}
 +
-+	return data;
++	virtnet_rx_pause(vi, rq);
++
++	err = virtqueue_reset(rq->vq, virtnet_rq_free_unused_buf);
++	if (err)
++		netdev_err(vi->dev, "reset rx fail: rx queue index: %d err: %d\n", qindex, err);
++
++	if (pool && err)
++		xdp_rxq_info_unreg(&rq->xsk.xdp_rxq);
++	else
++		rcu_assign_pointer(rq->xsk.pool, pool);
++
++	virtnet_rx_resume(vi, rq);
++
++	return err;
 +}
 +
- static inline void virtnet_free_old_xmit(struct virtnet_sq *sq, bool in_napi,
- 					 struct virtnet_sq_stats *stats)
- {
-@@ -219,14 +258,24 @@ static inline void virtnet_free_old_xmit(struct virtnet_sq *sq, bool in_napi,
- 
- 	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
- 		if (!virtnet_is_xdp_frame(ptr)) {
--			struct sk_buff *skb = ptr;
-+			struct sk_buff *skb;
++static int virtnet_sq_bind_xsk_pool(struct virtnet_info *vi,
++				    struct virtnet_sq *sq,
++				    struct xsk_buff_pool *pool)
++{
++	int err, qindex;
 +
-+			if (sq->do_dma)
-+				ptr = virtnet_sq_unmap(sq, ptr);
++	qindex = sq - vi->sq;
 +
-+			skb = ptr;
- 
- 			pr_debug("Sent skb %p\n", skb);
- 
- 			stats->bytes += skb->len;
- 			napi_consume_skb(skb, in_napi);
- 		} else {
--			struct xdp_frame *frame = virtnet_ptr_to_xdp(ptr);
-+			struct xdp_frame *frame;
++	virtnet_tx_pause(vi, sq);
 +
-+			if (sq->do_dma)
-+				ptr = virtnet_sq_unmap(sq, ptr);
++	err = virtqueue_reset(sq->vq, virtnet_sq_free_unused_buf);
++	if (err)
++		netdev_err(vi->dev, "reset tx fail: tx queue index: %d err: %d\n", qindex, err);
 +
-+			frame = virtnet_ptr_to_xdp(ptr);
- 
- 			stats->bytes += xdp_get_frame_len(frame);
- 			xdp_return_frame(frame);
-@@ -258,4 +307,6 @@ void virtnet_rx_pause(struct virtnet_info *vi, struct virtnet_rq *rq);
- void virtnet_rx_resume(struct virtnet_info *vi, struct virtnet_rq *rq);
- void virtnet_tx_pause(struct virtnet_info *vi, struct virtnet_sq *sq);
- void virtnet_tx_resume(struct virtnet_info *vi, struct virtnet_sq *sq);
-+int virtnet_sq_set_premapped(struct virtnet_sq *sq);
-+void virtnet_sq_unset_premapped(struct virtnet_sq *sq);
- #endif
++	if (pool) {
++		if (!err)
++			err = virtnet_sq_set_premapped(sq);
++
++		if (!err)
++			rcu_assign_pointer(sq->xsk.pool, pool);
++	} else {
++		rcu_assign_pointer(sq->xsk.pool, NULL);
++		virtnet_sq_unset_premapped(sq);
++	}
++
++	virtnet_tx_resume(vi, sq);
++
++	return err;
++}
++
++static int virtnet_xsk_pool_enable(struct net_device *dev,
++				   struct xsk_buff_pool *pool,
++				   u16 qid)
++{
++	struct virtnet_info *vi = netdev_priv(dev);
++	struct virtnet_rq *rq;
++	struct virtnet_sq *sq;
++	struct device *dma_dev;
++	dma_addr_t hdr_dma;
++	int err;
++
++	/* In big_packets mode, xdp cannot work, so there is no need to
++	 * initialize xsk of rq.
++	 */
++	if (vi->big_packets && !vi->mergeable_rx_bufs)
++		return -ENOENT;
++
++	if (qid >= vi->curr_queue_pairs)
++		return -EINVAL;
++
++	sq = &vi->sq[qid];
++	rq = &vi->rq[qid];
++
++	/* xsk tx zerocopy depend on the tx napi.
++	 *
++	 * All xsk packets are actually consumed and sent out from the xsk tx
++	 * queue under the tx napi mechanism.
++	 */
++	if (!sq->napi.weight)
++		return -EPERM;
++
++	if (!rq->do_dma)
++		return -EPERM;
++
++	if (virtqueue_dma_dev(rq->vq) != virtqueue_dma_dev(sq->vq))
++		return -EPERM;
++
++	dma_dev = virtqueue_dma_dev(rq->vq);
++	if (!dma_dev)
++		return -EPERM;
++
++	hdr_dma = dma_map_single(dma_dev, &xsk_hdr, vi->hdr_len, DMA_TO_DEVICE);
++	if (dma_mapping_error(dma_dev, hdr_dma))
++		return -ENOMEM;
++
++	err = xsk_pool_dma_map(pool, dma_dev, 0);
++	if (err)
++		goto err_xsk_map;
++
++	err = virtnet_rq_bind_xsk_pool(vi, rq, pool);
++	if (err)
++		goto err_rq;
++
++	err = virtnet_sq_bind_xsk_pool(vi, sq, pool);
++	if (err)
++		goto err_sq;
++
++	sq->xsk.hdr_dma_address = hdr_dma;
++
++	return 0;
++
++err_sq:
++	virtnet_rq_bind_xsk_pool(vi, rq, NULL);
++err_rq:
++	xsk_pool_dma_unmap(pool, 0);
++err_xsk_map:
++	dma_unmap_single(dma_dev, hdr_dma, vi->hdr_len, DMA_TO_DEVICE);
++	return err;
++}
++
++static int virtnet_xsk_pool_disable(struct net_device *dev, u16 qid)
++{
++	struct virtnet_info *vi = netdev_priv(dev);
++	struct device *dma_dev;
++	struct virtnet_rq *rq;
++	struct virtnet_sq *sq;
++	int err1, err2;
++
++	if (qid >= vi->curr_queue_pairs)
++		return -EINVAL;
++
++	sq = &vi->sq[qid];
++	rq = &vi->rq[qid];
++
++	dma_dev = virtqueue_dma_dev(rq->vq);
++
++	dma_unmap_single(dma_dev, sq->xsk.hdr_dma_address, vi->hdr_len, DMA_TO_DEVICE);
++
++	xsk_pool_dma_unmap(sq->xsk.pool, 0);
++
++	/* Sync with the XSK wakeup and with NAPI. */
++	synchronize_net();
++
++	err1 = virtnet_sq_bind_xsk_pool(vi, sq, NULL);
++	err2 = virtnet_rq_bind_xsk_pool(vi, rq, NULL);
++
++	return err1 | err2;
++}
++
++int virtnet_xsk_pool_setup(struct net_device *dev, struct netdev_bpf *xdp)
++{
++	if (xdp->xsk.pool)
++		return virtnet_xsk_pool_enable(dev, xdp->xsk.pool,
++					       xdp->xsk.queue_id);
++	else
++		return virtnet_xsk_pool_disable(dev, xdp->xsk.queue_id);
++}
+diff --git a/drivers/net/virtio/xsk.h b/drivers/net/virtio/xsk.h
+new file mode 100644
+index 000000000000..1918285c310c
+--- /dev/null
++++ b/drivers/net/virtio/xsk.h
+@@ -0,0 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++
++#ifndef __XSK_H__
++#define __XSK_H__
++
++int virtnet_xsk_pool_setup(struct net_device *dev, struct netdev_bpf *xdp);
++#endif
 -- 
 2.32.0.3.g01195cf9f
 
