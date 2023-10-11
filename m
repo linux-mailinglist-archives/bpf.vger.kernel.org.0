@@ -1,31 +1,31 @@
-Return-Path: <bpf+bounces-11887-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11889-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA5827C4EBB
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 11:28:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5F587C4EC5
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 11:28:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A86ED282776
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 09:28:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80688281FEE
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 09:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46AE71DA5D;
-	Wed, 11 Oct 2023 09:27:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7522B1DDDF;
+	Wed, 11 Oct 2023 09:27:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C264A1DA52;
-	Wed, 11 Oct 2023 09:27:42 +0000 (UTC)
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D7191;
-	Wed, 11 Oct 2023 02:27:40 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VtwGXc5_1697016457;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VtwGXc5_1697016457)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8DAA1DDC6;
+	Wed, 11 Oct 2023 09:27:45 +0000 (UTC)
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E085B0;
+	Wed, 11 Oct 2023 02:27:42 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R661e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VtwGXce_1697016458;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VtwGXce_1697016458)
           by smtp.aliyun-inc.com;
-          Wed, 11 Oct 2023 17:27:38 +0800
+          Wed, 11 Oct 2023 17:27:39 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: virtualization@lists.linux-foundation.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -41,9 +41,9 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	John Fastabend <john.fastabend@gmail.com>,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH vhost 08/22] virtio_net: virtnet_poll_tx support rescheduled
-Date: Wed, 11 Oct 2023 17:27:14 +0800
-Message-Id: <20231011092728.105904-9-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH vhost 09/22] virtio_net: separate virtnet_rx_resize()
+Date: Wed, 11 Oct 2023 17:27:15 +0800
+Message-Id: <20231011092728.105904-10-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20231011092728.105904-1-xuanzhuo@linux.alibaba.com>
 References: <20231011092728.105904-1-xuanzhuo@linux.alibaba.com>
@@ -62,46 +62,83 @@ X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-virtnet_poll_tx() support to return budget when busy to be rescheduled.
+This patch separates two sub-functions from virtnet_rx_resize():
 
-When retval < budget, napi_poll() in dev.c will exit directly. And
-virtqueue_napi_complete() will be called to close napi.
+* virtnet_rx_pause
+* virtnet_rx_resume
 
-When retval == budget, the napi_poll() in dev.c will re-add napi to the
-queue.
-
-The purpose of this patch is to support xsk xmit in virtio_poll_tx() for
-subsequent patch.
+Then the subsequent reset rx for xsk can share these two functions.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/net/virtio/main.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/virtio/main.c       | 29 +++++++++++++++++++++--------
+ drivers/net/virtio/virtio_net.h |  3 +++
+ 2 files changed, 24 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
-index bcfd31a55076..f32cfa189972 100644
+index f32cfa189972..ffab59da8506 100644
 --- a/drivers/net/virtio/main.c
 +++ b/drivers/net/virtio/main.c
-@@ -1976,6 +1976,7 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
- 	struct virtnet_info *vi = sq->vq->vdev->priv;
- 	unsigned int index = vq2txq(sq->vq);
- 	struct netdev_queue *txq;
-+	int busy = 0;
- 	int opaque;
- 	bool done;
+@@ -2126,26 +2126,39 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	return NETDEV_TX_OK;
+ }
  
-@@ -1993,6 +1994,11 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
- 	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
- 		netif_tx_wake_queue(txq);
+-static int virtnet_rx_resize(struct virtnet_info *vi,
+-			     struct virtnet_rq *rq, u32 ring_num)
++void virtnet_rx_pause(struct virtnet_info *vi, struct virtnet_rq *rq)
+ {
+ 	bool running = netif_running(vi->dev);
+-	int err, qindex;
+-
+-	qindex = rq - vi->rq;
  
-+	if (busy) {
-+		__netif_tx_unlock(txq);
-+		return budget;
-+	}
+ 	if (running)
+ 		napi_disable(&rq->napi);
++}
+ 
+-	err = virtqueue_resize(rq->vq, ring_num, virtnet_rq_free_unused_buf);
+-	if (err)
+-		netdev_err(vi->dev, "resize rx fail: rx queue index: %d err: %d\n", qindex, err);
++void virtnet_rx_resume(struct virtnet_info *vi, struct virtnet_rq *rq)
++{
++	bool running = netif_running(vi->dev);
+ 
+ 	if (!try_fill_recv(vi, rq, GFP_KERNEL))
+ 		schedule_delayed_work(&vi->refill, 0);
+ 
+ 	if (running)
+ 		virtnet_napi_enable(rq->vq, &rq->napi);
++}
 +
- 	opaque = virtqueue_enable_cb_prepare(sq->vq);
++static int virtnet_rx_resize(struct virtnet_info *vi,
++			     struct virtnet_rq *rq, u32 ring_num)
++{
++	int err, qindex;
++
++	qindex = rq - vi->rq;
++
++	virtnet_rx_pause(vi, rq);
++
++	err = virtqueue_resize(rq->vq, ring_num, virtnet_rq_free_unused_buf);
++	if (err)
++		netdev_err(vi->dev, "resize rx fail: rx queue index: %d err: %d\n", qindex, err);
++
++	virtnet_rx_resume(vi, rq);
+ 	return err;
+ }
  
- 	done = napi_complete_done(napi, 0);
+diff --git a/drivers/net/virtio/virtio_net.h b/drivers/net/virtio/virtio_net.h
+index 282504d6639a..70eea23adba6 100644
+--- a/drivers/net/virtio/virtio_net.h
++++ b/drivers/net/virtio/virtio_net.h
+@@ -253,4 +253,7 @@ static inline bool virtnet_is_xdp_raw_buffer_queue(struct virtnet_info *vi, int
+ 	else
+ 		return false;
+ }
++
++void virtnet_rx_pause(struct virtnet_info *vi, struct virtnet_rq *rq);
++void virtnet_rx_resume(struct virtnet_info *vi, struct virtnet_rq *rq);
+ #endif
 -- 
 2.32.0.3.g01195cf9f
 
