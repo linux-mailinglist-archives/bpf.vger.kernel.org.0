@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-11910-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11911-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AEA57C531D
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 14:10:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4F007C5324
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 14:10:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DEF81C20EB5
-	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 12:10:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A714282F34
+	for <lists+bpf@lfdr.de>; Wed, 11 Oct 2023 12:10:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D42FC1F16C;
-	Wed, 11 Oct 2023 12:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 650B31F16D;
+	Wed, 11 Oct 2023 12:10:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="HNYpW+UB"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="M1H0DPw3"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 684FA1EA97
-	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 12:10:16 +0000 (UTC)
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE77D5C
-	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 05:09:44 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-690bc3f82a7so5220404b3a.0
-        for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 05:09:44 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B8D41EA97
+	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 12:10:34 +0000 (UTC)
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA4A10B
+	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 05:09:51 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6c644a1845cso4580870a34.2
+        for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 05:09:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697026172; x=1697630972; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1697026175; x=1697630975; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=spK2veKjGKPWlL695PFbHPuUiEqdtYJXw3T2DQ3u9LI=;
-        b=HNYpW+UBrqt1EsgOIjp8OlgFt+mMZYusVSuqLV+l/QNLFNSyFc8wDu52pcMSXvk8aN
-         NTmBSuhCYHw1X6T7563JgBBENauR1pagGauCpBDUSWy5DcN6RR0aDrw36Lub/A3yU5jD
-         wToRVraUczoB+pltLxsW56ixxIdV4uskoeyaIYSxmXCglA3hK0/TLBWcZHgNY9+P2tTX
-         ODstqAamlpifAG4ZTg1TyS3WCouQytiQQg4UlBjsPQp3XA3fx3ncHvUSZXxybeTYlXD0
-         JaSwiC6P8aB09giMMPD64moeHD+fROMg1vMnNCwDVG4Dgis5ff/x1hhndpkqaE7XQcoC
-         b18A==
+        bh=OvtOLR/3l5/FirKuucsBQhHg+ePC25J/Wauwusn+tsY=;
+        b=M1H0DPw3MpA19a7O02MHrJc+UyiAwU+KgsefNHBsHMQOveRmg6YoD+RXnPKSfLRWme
+         vc+JbpGiyoAuS1d9csD9ctg9RBeOerKsybh3o8+idVJPTbAXTGhxMJO1Bbft6qLCN4nq
+         kv5ZDjXroIinv4hpqidLqn7sGWQHV1Gv1XBaJ+i0FKd+jKhBERcFvAeKhSDZUML+1UN7
+         OnlvqF3/hS361IwM19/7L2RsvhiUGtzJsAAwNT7bgPbsxbIHJwfopfIeV4/ZvvxTFShD
+         Wokj5ePoZ8oothX9MfhZ6Rnipr4lSavLFA9tCgWmLqrnAP3kmQMApQ7jr5j0DovQ1GLp
+         UjcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697026172; x=1697630972;
+        d=1e100.net; s=20230601; t=1697026175; x=1697630975;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=spK2veKjGKPWlL695PFbHPuUiEqdtYJXw3T2DQ3u9LI=;
-        b=BwcVmyIMq+qzpf4jSMbF13y41F+NQs51p0i5V5D8RsBtBZeN+2bDDbx3AAqlSa51Eq
-         oLOzK9G3OtjOXIpW2uP7I7HlDFxXZBSx5DXFb8b1pmSk1OL5O6KdqopeZxZmNLEUKu2K
-         FpyT99PxDgAV1KMlFL+K3MdkiQ/2LG5E9N7pJPv0tSbOvxv8DSA+RafiVB2FdQvAwf67
-         WJEGbt4l4Y1ON8j25i/zpKT7oN4NhA8DGAjVQ0HgEUxxA4h1EHKtYpAF6oqrZnA0nh8R
-         TdNTNYTcxNVSeW7GAcJiUXph6KpSUAo03kOiOZ+BdieugH3BvVqFi+lWoL00vZ9PGLZr
-         S3vA==
-X-Gm-Message-State: AOJu0YwFmQWULp0K5Q4tWGzw/vt2IpcC4aWrz94Vfdd3uwFXKnZlyavU
-	PouyOdJGwgJ+ZnhVyF4BZDvkpj/xLg+LMHe8rGI=
-X-Google-Smtp-Source: AGHT+IFTklTZEuAxwA2HhEfukzlMTtmRC5V7W2fvftjRg7l7SsdYyrLWWuTwN/rd6UUqNMUvMxcl4w==
-X-Received: by 2002:a05:6a00:1943:b0:690:d4fa:d43d with SMTP id s3-20020a056a00194300b00690d4fad43dmr18270745pfk.6.1697026171738;
-        Wed, 11 Oct 2023 05:09:31 -0700 (PDT)
+        bh=OvtOLR/3l5/FirKuucsBQhHg+ePC25J/Wauwusn+tsY=;
+        b=Dy3XZErVH6Se73+KbxZ88lqGyCJj/lu1nybl00RBo6AlWhR02SuKhdt+0rBvDjJLmI
+         n1nwe3X+Wzv+s+2CUxytGkN3Py9H+4rXy3yahYxCfVstvDfMM4v3WY1VnWxvDOmiJqrP
+         bmqQbN1t0hypUQK71L45R0RIj8wuhoARrqklv3j478AcHRGeQhchYmq/toM7kbA2TzUL
+         C8DWwPEzgD1SNW3b38+yUyfrIUb5HJo0XJ5DfBmjrTXusljT8RFgn0me9sruaxUG63QX
+         aSpUsyn4mOxsnW9B2KhRyPMt6UIaiULGN4e7JL1Ex1efUhLlTAksGvuO2V2V7MaX3ARx
+         IRyw==
+X-Gm-Message-State: AOJu0Ywvn6DYg4yIPQvWfqKn6e84Edz6jq4EcKK164ppkRjhTo8ZRtvn
+	GN+N2++J85TMGp5V89d5/UylC6ztgRyHnCeXI6Y=
+X-Google-Smtp-Source: AGHT+IFoxq2SQoqKangsFUJ3VZv3q9RBs5R/9npchnWZY538lXa1rlMZnRaS7ICct2jVLXKyNn8BWA==
+X-Received: by 2002:a05:6830:6685:b0:6c4:be02:635f with SMTP id cq5-20020a056830668500b006c4be02635fmr27430243otb.5.1697026175171;
+        Wed, 11 Oct 2023 05:09:35 -0700 (PDT)
 Received: from n37-019-243.byted.org ([180.184.51.142])
-        by smtp.gmail.com with ESMTPSA id u13-20020a62ed0d000000b006930db1e6cfsm9962769pfh.62.2023.10.11.05.09.29
+        by smtp.gmail.com with ESMTPSA id u13-20020a62ed0d000000b006930db1e6cfsm9962769pfh.62.2023.10.11.05.09.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 05:09:31 -0700 (PDT)
+        Wed, 11 Oct 2023 05:09:34 -0700 (PDT)
 From: Chuyi Zhou <zhouchuyi@bytedance.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -67,9 +67,9 @@ Cc: ast@kernel.org,
 	tj@kernel.org,
 	linux-kernel@vger.kernel.org,
 	Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: [PATCH bpf-next v5 5/8] bpf: teach the verifier to enforce css_iter and task_iter in RCU CS
-Date: Wed, 11 Oct 2023 20:08:54 +0800
-Message-Id: <20231011120857.251943-6-zhouchuyi@bytedance.com>
+Subject: [PATCH bpf-next v5 6/8] bpf: Let bpf_iter_task_new accept null task ptr
+Date: Wed, 11 Oct 2023 20:08:55 +0800
+Message-Id: <20231011120857.251943-7-zhouchuyi@bytedance.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20231011120857.251943-1-zhouchuyi@bytedance.com>
 References: <20231011120857.251943-1-zhouchuyi@bytedance.com>
@@ -87,241 +87,122 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-css_iter and task_iter should be used in rcu section. Specifically, in
-sleepable progs explicit bpf_rcu_read_lock() is needed before use these
-iters. In normal bpf progs that have implicit rcu_read_lock(), it's OK to
-use them directly.
+When using task_iter to iterate all threads of a specific task, we enforce
+that the user must pass a valid task pointer to ensure safety. However,
+when iterating all threads/process in the system, BPF verifier still
+require a valid ptr instead of "nullable" pointer, even though it's
+pointless, which is a kind of surprising from usability standpoint. It
+would be nice if we could let that kfunc accept a explicit null pointer
+when we are using BPF_TASK_ITER_ALL_{PROCS, THREADS} and a valid pointer
+when using BPF_TASK_ITER_THREAD.
 
-This patch adds a new a KF flag KF_RCU_PROTECTED for bpf_iter_task_new and
-bpf_iter_css_new. It means the kfunc should be used in RCU CS. We check
-whether we are in rcu cs before we want to invoke this kfunc. If the rcu
-protection is guaranteed, we would let st->type = PTR_TO_STACK | MEM_RCU.
-Once user do rcu_unlock during the iteration, state MEM_RCU of regs would
-be cleared. is_iter_reg_valid_init() will reject if reg->type is UNTRUSTED.
+Given a trival kfunc:
+	__bpf_kfunc void FN(struct TYPE_A *obj);
 
-It is worth noting that currently, bpf_rcu_read_unlock does not
-clear the state of the STACK_ITER reg, since bpf_for_each_spilled_reg
-only considers STACK_SPILL. This patch also let bpf_for_each_spilled_reg
-search STACK_ITER.
+BPF Prog would reject a nullptr for obj. The error info is:
+"arg#x pointer type xx xx must point to scalar, or struct with scalar"
+reported by get_kfunc_ptr_arg_type(). The reg->type is SCALAR_VALUE and
+the btf type of ref_t is not scalar or scalar_struct which leads to the
+rejection of get_kfunc_ptr_arg_type.
+
+This patch add "__nullable" annotation:
+	__bpf_kfunc void FN(struct TYPE_A *obj__nullable);
+Here __nullable indicates obj can be optional, user can pass a explicit
+nullptr or a normal TYPE_A pointer. In get_kfunc_ptr_arg_type(), we will
+detect whether the current arg is optional and register is null, If so,
+return a new kfunc_ptr_arg_type KF_ARG_PTR_TO_NULL and skip to the next
+arg in check_kfunc_args().
 
 Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
 ---
- include/linux/bpf_verifier.h | 19 ++++++++------
- include/linux/btf.h          |  1 +
- kernel/bpf/helpers.c         |  4 +--
- kernel/bpf/verifier.c        | 50 ++++++++++++++++++++++++++++--------
- 4 files changed, 53 insertions(+), 21 deletions(-)
+ kernel/bpf/task_iter.c |  7 +++++--
+ kernel/bpf/verifier.c  | 13 ++++++++++++-
+ 2 files changed, 17 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 94ec766432f5..e67cd45a85be 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -386,19 +386,18 @@ struct bpf_verifier_state {
- 	u32 jmp_history_cnt;
+diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+index caeddad3d2f1..0772545568f1 100644
+--- a/kernel/bpf/task_iter.c
++++ b/kernel/bpf/task_iter.c
+@@ -873,7 +873,7 @@ enum {
  };
  
--#define bpf_get_spilled_reg(slot, frame)				\
-+#define bpf_get_spilled_reg(slot, frame, mask)				\
- 	(((slot < frame->allocated_stack / BPF_REG_SIZE) &&		\
--	  (frame->stack[slot].slot_type[0] == STACK_SPILL))		\
-+	  ((1 << frame->stack[slot].slot_type[0]) & (mask))) \
- 	 ? &frame->stack[slot].spilled_ptr : NULL)
- 
- /* Iterate over 'frame', setting 'reg' to either NULL or a spilled register. */
--#define bpf_for_each_spilled_reg(iter, frame, reg)			\
--	for (iter = 0, reg = bpf_get_spilled_reg(iter, frame);		\
-+#define bpf_for_each_spilled_reg(iter, frame, reg, mask)			\
-+	for (iter = 0, reg = bpf_get_spilled_reg(iter, frame, mask);		\
- 	     iter < frame->allocated_stack / BPF_REG_SIZE;		\
--	     iter++, reg = bpf_get_spilled_reg(iter, frame))
-+	     iter++, reg = bpf_get_spilled_reg(iter, frame, mask))
- 
--/* Invoke __expr over regsiters in __vst, setting __state and __reg */
--#define bpf_for_each_reg_in_vstate(__vst, __state, __reg, __expr)   \
-+#define bpf_for_each_reg_in_vstate_mask(__vst, __state, __reg, __mask, __expr)   \
- 	({                                                               \
- 		struct bpf_verifier_state *___vstate = __vst;            \
- 		int ___i, ___j;                                          \
-@@ -410,7 +409,7 @@ struct bpf_verifier_state {
- 				__reg = &___regs[___j];                  \
- 				(void)(__expr);                          \
- 			}                                                \
--			bpf_for_each_spilled_reg(___j, __state, __reg) { \
-+			bpf_for_each_spilled_reg(___j, __state, __reg, __mask) { \
- 				if (!__reg)                              \
- 					continue;                        \
- 				(void)(__expr);                          \
-@@ -418,6 +417,10 @@ struct bpf_verifier_state {
- 		}                                                        \
- 	})
- 
-+/* Invoke __expr over regsiters in __vst, setting __state and __reg */
-+#define bpf_for_each_reg_in_vstate(__vst, __state, __reg, __expr) \
-+	bpf_for_each_reg_in_vstate_mask(__vst, __state, __reg, 1 << STACK_SPILL, __expr)
-+
- /* linked list of verifier states used to prune search */
- struct bpf_verifier_state_list {
- 	struct bpf_verifier_state state;
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index 928113a80a95..c2231c64d60b 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -74,6 +74,7 @@
- #define KF_ITER_NEW     (1 << 8) /* kfunc implements BPF iter constructor */
- #define KF_ITER_NEXT    (1 << 9) /* kfunc implements BPF iter next method */
- #define KF_ITER_DESTROY (1 << 10) /* kfunc implements BPF iter destructor */
-+#define KF_RCU_PROTECTED (1 << 11) /* kfunc should be protected by rcu cs when they are invoked */
- 
- /*
-  * Tag marking a kernel function as a kfunc. This is meant to minimize the
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 6330e37ca8d5..5081a4ac5b6d 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2555,10 +2555,10 @@ BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
- BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
- BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
--BTF_ID_FLAGS(func, bpf_iter_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
-+BTF_ID_FLAGS(func, bpf_iter_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS | KF_RCU_PROTECTED)
- BTF_ID_FLAGS(func, bpf_iter_task_next, KF_ITER_NEXT | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_iter_task_destroy, KF_ITER_DESTROY)
--BTF_ID_FLAGS(func, bpf_iter_css_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
-+BTF_ID_FLAGS(func, bpf_iter_css_new, KF_ITER_NEW | KF_TRUSTED_ARGS | KF_RCU_PROTECTED)
- BTF_ID_FLAGS(func, bpf_iter_css_next, KF_ITER_NEXT | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_iter_css_destroy, KF_ITER_DESTROY)
- BTF_ID_FLAGS(func, bpf_dynptr_adjust)
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 528d375c17ee..3a60cc87520e 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1173,7 +1173,12 @@ static bool is_dynptr_type_expected(struct bpf_verifier_env *env, struct bpf_reg
- 
- static void __mark_reg_known_zero(struct bpf_reg_state *reg);
- 
-+static bool in_rcu_cs(struct bpf_verifier_env *env);
-+
-+static bool is_kfunc_rcu_protected(struct bpf_kfunc_call_arg_meta *meta);
-+
- static int mark_stack_slots_iter(struct bpf_verifier_env *env,
-+				 struct bpf_kfunc_call_arg_meta *meta,
- 				 struct bpf_reg_state *reg, int insn_idx,
- 				 struct btf *btf, u32 btf_id, int nr_slots)
+ __bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it,
+-		struct task_struct *task, unsigned int flags)
++		struct task_struct *task__nullable, unsigned int flags)
  {
-@@ -1194,6 +1199,12 @@ static int mark_stack_slots_iter(struct bpf_verifier_env *env,
+ 	struct bpf_iter_task_kern *kit = (void *)it;
  
- 		__mark_reg_known_zero(st);
- 		st->type = PTR_TO_STACK; /* we don't have dedicated reg type */
-+		if (is_kfunc_rcu_protected(meta)) {
-+			if (in_rcu_cs(env))
-+				st->type |= MEM_RCU;
-+			else
-+				st->type |= PTR_UNTRUSTED;
-+		}
- 		st->live |= REG_LIVE_WRITTEN;
- 		st->ref_obj_id = i == 0 ? id : 0;
- 		st->iter.btf = btf;
-@@ -1268,7 +1279,7 @@ static bool is_iter_reg_valid_uninit(struct bpf_verifier_env *env,
- 	return true;
- }
- 
--static bool is_iter_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
-+static int is_iter_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
- 				   struct btf *btf, u32 btf_id, int nr_slots)
- {
- 	struct bpf_func_state *state = func(env, reg);
-@@ -1276,26 +1287,28 @@ static bool is_iter_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_
- 
- 	spi = iter_get_spi(env, reg, nr_slots);
- 	if (spi < 0)
--		return false;
-+		return -EINVAL;
- 
- 	for (i = 0; i < nr_slots; i++) {
- 		struct bpf_stack_state *slot = &state->stack[spi - i];
- 		struct bpf_reg_state *st = &slot->spilled_ptr;
- 
-+		if (st->type & PTR_UNTRUSTED)
-+			return -EPROTO;
- 		/* only main (first) slot has ref_obj_id set */
- 		if (i == 0 && !st->ref_obj_id)
--			return false;
+@@ -885,14 +885,17 @@ __bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it,
+ 	switch (flags) {
+ 	case BPF_TASK_ITER_ALL_THREADS:
+ 	case BPF_TASK_ITER_ALL_PROCS:
++		break;
+ 	case BPF_TASK_ITER_PROC_THREADS:
++		if (!task__nullable)
 +			return -EINVAL;
- 		if (i != 0 && st->ref_obj_id)
--			return false;
-+			return -EINVAL;
- 		if (st->iter.btf != btf || st->iter.btf_id != btf_id)
--			return false;
-+			return -EINVAL;
- 
- 		for (j = 0; j < BPF_REG_SIZE; j++)
- 			if (slot->slot_type[j] != STACK_ITER)
--				return false;
-+				return -EINVAL;
+ 		break;
+ 	default:
+ 		return -EINVAL;
  	}
  
--	return true;
-+	return 0;
+ 	if (flags == BPF_TASK_ITER_PROC_THREADS)
+-		kit->task = task;
++		kit->task = task__nullable;
+ 	else
+ 		kit->task = &init_task;
+ 	kit->pos = kit->task;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 3a60cc87520e..d09697dbfd9c 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -10310,6 +10310,11 @@ static bool is_kfunc_arg_refcounted_kptr(const struct btf *btf, const struct btf
+ 	return __kfunc_param_match_suffix(btf, arg, "__refcounted_kptr");
  }
  
- /* Check if given stack slot is "special":
-@@ -7618,15 +7631,24 @@ static int process_iter_arg(struct bpf_verifier_env *env, int regno, int insn_id
- 				return err;
- 		}
- 
--		err = mark_stack_slots_iter(env, reg, insn_idx, meta->btf, btf_id, nr_slots);
-+		err = mark_stack_slots_iter(env, meta, reg, insn_idx, meta->btf, btf_id, nr_slots);
- 		if (err)
- 			return err;
- 	} else {
- 		/* iter_next() or iter_destroy() expect initialized iter state*/
--		if (!is_iter_reg_valid_init(env, reg, meta->btf, btf_id, nr_slots)) {
-+		err = is_iter_reg_valid_init(env, reg, meta->btf, btf_id, nr_slots);
-+		switch (err) {
-+		case 0:
-+			break;
-+		case -EINVAL:
- 			verbose(env, "expected an initialized iter_%s as arg #%d\n",
- 				iter_type_str(meta->btf, btf_id), regno);
--			return -EINVAL;
-+			return err;
-+		case -EPROTO:
-+			verbose(env, "expected an RCU CS when using %s\n", meta->func_name);
-+			return err;
-+		default:
-+			return err;
- 		}
- 
- 		spi = iter_get_spi(env, reg, nr_slots);
-@@ -10209,6 +10231,11 @@ static bool is_kfunc_rcu(struct bpf_kfunc_call_arg_meta *meta)
- 	return meta->kfunc_flags & KF_RCU;
- }
- 
-+static bool is_kfunc_rcu_protected(struct bpf_kfunc_call_arg_meta *meta)
++static bool is_kfunc_arg_nullable(const struct btf *btf, const struct btf_param *arg)
 +{
-+	return meta->kfunc_flags & KF_RCU_PROTECTED;
++	return __kfunc_param_match_suffix(btf, arg, "__nullable");
 +}
 +
- static bool __kfunc_param_match_suffix(const struct btf *btf,
- 				       const struct btf_param *arg,
- 				       const char *suffix)
-@@ -11560,6 +11587,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 	if (env->cur_state->active_rcu_lock) {
- 		struct bpf_func_state *state;
- 		struct bpf_reg_state *reg;
-+		u32 clear_mask = (1 << STACK_SPILL) | (1 << STACK_ITER);
+ static bool is_kfunc_arg_scalar_with_name(const struct btf *btf,
+ 					  const struct btf_param *arg,
+ 					  const char *name)
+@@ -10452,6 +10457,7 @@ enum kfunc_ptr_arg_type {
+ 	KF_ARG_PTR_TO_CALLBACK,
+ 	KF_ARG_PTR_TO_RB_ROOT,
+ 	KF_ARG_PTR_TO_RB_NODE,
++	KF_ARG_PTR_TO_NULL,
+ };
  
- 		if (in_rbtree_lock_required_cb(env) && (rcu_lock || rcu_unlock)) {
- 			verbose(env, "Calling bpf_rcu_read_{lock,unlock} in unnecessary rbtree callback\n");
-@@ -11570,7 +11598,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 			verbose(env, "nested rcu read lock (kernel function %s)\n", func_name);
- 			return -EINVAL;
- 		} else if (rcu_unlock) {
--			bpf_for_each_reg_in_vstate(env->cur_state, state, reg, ({
-+			bpf_for_each_reg_in_vstate_mask(env->cur_state, state, reg, clear_mask, ({
- 				if (reg->type & MEM_RCU) {
- 					reg->type &= ~(MEM_RCU | PTR_MAYBE_NULL);
- 					reg->type |= PTR_UNTRUSTED;
+ enum special_kfunc_type {
+@@ -10608,6 +10614,8 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
+ 	if (is_kfunc_arg_callback(env, meta->btf, &args[argno]))
+ 		return KF_ARG_PTR_TO_CALLBACK;
+ 
++	if (is_kfunc_arg_nullable(meta->btf, &args[argno]) && register_is_null(reg))
++		return KF_ARG_PTR_TO_NULL;
+ 
+ 	if (argno + 1 < nargs &&
+ 	    (is_kfunc_arg_mem_size(meta->btf, &args[argno + 1], &regs[regno + 1]) ||
+@@ -11158,7 +11166,8 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+ 		}
+ 
+ 		if ((is_kfunc_trusted_args(meta) || is_kfunc_rcu(meta)) &&
+-		    (register_is_null(reg) || type_may_be_null(reg->type))) {
++		    (register_is_null(reg) || type_may_be_null(reg->type)) &&
++			!is_kfunc_arg_nullable(meta->btf, &args[i])) {
+ 			verbose(env, "Possibly NULL pointer passed to trusted arg%d\n", i);
+ 			return -EACCES;
+ 		}
+@@ -11183,6 +11192,8 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+ 			return kf_arg_type;
+ 
+ 		switch (kf_arg_type) {
++		case KF_ARG_PTR_TO_NULL:
++			continue;
+ 		case KF_ARG_PTR_TO_ALLOC_BTF_ID:
+ 		case KF_ARG_PTR_TO_BTF_ID:
+ 			if (!is_kfunc_trusted_args(meta) && !is_kfunc_rcu(meta))
 -- 
 2.20.1
 
