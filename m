@@ -1,126 +1,254 @@
-Return-Path: <bpf+bounces-12031-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12032-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C53777C6F0D
-	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 15:22:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8074A7C6F6D
+	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 15:40:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58D1E282992
-	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 13:22:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 795541C20FA0
+	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 13:40:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DFEA2940D;
-	Thu, 12 Oct 2023 13:22:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UJoE99eE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65F1129429;
+	Thu, 12 Oct 2023 13:40:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA5F427EE7
-	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 13:22:28 +0000 (UTC)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 207F6B8
-	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 06:22:27 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-405361bb9f7so10073505e9.2
-        for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 06:22:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697116945; x=1697721745; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8CZToky5azJ5+jZVKB2Thamw2tqhCm0WJnhiBDRzWYM=;
-        b=UJoE99eEt024LhF2JZFBCYpZPzMmyHwVTOyirA0SjtmFTR3DyLaHW1DWSfCkunFSvL
-         db9Epk0aTHvyUhqJH0RwbNzznnLKY4htPl6Xl8CPcpeat6niIxLM6kowvwxkFqNm4PsM
-         0C2opwQ3RxQYv26qkoP2JFXuS6+cFB0qXw2CJSQoHVjfFvr/Eru/4o0Hz04uPQ0W8J00
-         8aGLPaEMyJbRndyqEClm4/g1p37BXFkMPt0TLTaSovkpdIyuCT2nIGVQTmN7+j05MhHp
-         F0HZz9AER6gbtEFM/6qic+lN/YINz/MwJBLKeROJHOU+y7+fxZ9lApChwvHca+NltU1B
-         GLYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697116945; x=1697721745;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8CZToky5azJ5+jZVKB2Thamw2tqhCm0WJnhiBDRzWYM=;
-        b=PFireaaQtbYMvPMSc2swLz4vuajlkwO/FE5yP4teQNLyxKOW+AN3sazhnrGJhloqhI
-         mtbjZFg6zRp6msKA7B1xJo8ZTZXGonAvn6W6fEZcWkj0vqr6djGY+Oz1FA4jerkcEeDI
-         kr6qMmPdtWTZ+L/KyGGYksVmWgd1KW/glrNUALeF6360pbniEZ0WMgBYyshsZUYRuFtH
-         3GqkW4LkTfSCMQTA+A/3MilSdEOfh1iVu85TadcXtCweaMy7OpFa9RU4Ofi+OghTMAbS
-         /TJgoRDkEgfXjM0EdAbrY4j2jWQCPz4Hjk8ksPgn5OXgiWPOLVOr075iFnv5r40M4tjn
-         7TMQ==
-X-Gm-Message-State: AOJu0YyzAMe+S/NVOLz4Fy7tAbbDvMfaozmpyWVclVwWuVNMXNl2tOML
-	WIrZP6qBfVJa1hBBpWObsJo=
-X-Google-Smtp-Source: AGHT+IG4S+m9DIcP2qWIJvXLEpcXhmsC12FPFuQYaMDPaQ4S1+2XEQa3DpfE2YLLpxknYlP9XEHmkA==
-X-Received: by 2002:a7b:c851:0:b0:405:3252:fe2 with SMTP id c17-20020a7bc851000000b0040532520fe2mr20474680wml.14.1697116945138;
-        Thu, 12 Oct 2023 06:22:25 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id u7-20020a7bc047000000b004063cced50bsm19662036wmc.23.2023.10.12.06.22.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 06:22:24 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 12 Oct 2023 15:22:22 +0200
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	martin.lau@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next 2/5] selftests/bpf: improve
- missed_kprobe_recursion test robustness
-Message-ID: <ZSfzDk28TYohTv8z@krava>
-References: <20231011223728.3188086-1-andrii@kernel.org>
- <20231011223728.3188086-3-andrii@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D5827705
+	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 13:40:02 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2273594
+	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 06:39:59 -0700 (PDT)
+Received: from fsav315.sakura.ne.jp (fsav315.sakura.ne.jp [153.120.85.146])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 39CDdlXh064863;
+	Thu, 12 Oct 2023 22:39:47 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav315.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav315.sakura.ne.jp);
+ Thu, 12 Oct 2023 22:39:47 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav315.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 39CDdllV064860
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Thu, 12 Oct 2023 22:39:47 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <adfab6e8-b1de-4efc-a9ef-84e219c91833@I-love.SAKURA.ne.jp>
+Date: Thu, 12 Oct 2023 22:39:44 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011223728.3188086-3-andrii@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: Is tools/testing/selftests/bpf/ maintained?
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Oct 11, 2023 at 03:37:25PM -0700, Andrii Nakryiko wrote:
-> Given missed_kprobe_recursion is non-serial and uses common testing
-> kfuncs to count number of recursion misses it's possible that some other
-> parallel test can trigger extraneous recursion misses. So we can't
-> expect exactly 1 miss. Relax conditions and expect at least one.
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Hello.
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+I'm having problem with finding BPF LSM examples that work.
+I tried building tools/testing/selftests/bpf/progs/lsm.c and
+tools/testing/selftests/bpf/prog_tests/test_lsm.c explained at
+https://docs.kernel.org/bpf/prog_lsm.html , but got a lot of errors.
 
-jirka
+----------------------------------------
+root@ubuntu:/usr/src# git clone https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux.git
+Cloning into 'linux'...
+remote: Total 9723739 (delta 8227084), reused 9723739 (delta 8227084)
+Receiving objects: 100% (9723739/9723739), 1.81 GiB | 4.04 MiB/s, done.
+Resolving deltas: 100% (8227084/8227084), done.
+Checking objects: 100% (33554432/33554432), done.
+Updating files: 100% (81759/81759), done.
+root@ubuntu:/usr/src# cd linux
+root@ubuntu:/usr/src/linux# git describe
+v6.6-rc5-72-g401644852d0b
+root@ubuntu:/usr/src/linux# make -s headers
+root@ubuntu:/usr/src/linux# make -sC tools/testing/selftests/bpf/
+  MKDIR    libbpf
+Warning: Kernel ABI header at 'tools/include/uapi/linux/if_xdp.h' differs from latest version at 'include/uapi/linux/if_xdp.h'
+  TEST-HDR [test_progs] tests.h
+  EXT-OBJ  [test_progs] testing_helpers.o
+  EXT-OBJ  [test_progs] cap_helpers.o
+  EXT-OBJ  [test_progs] unpriv_helpers.o
+  BINARY   test_verifier
+  BINARY   test_tag
+  MKDIR    bpftool
 
-> ---
->  tools/testing/selftests/bpf/prog_tests/missed.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/missed.c b/tools/testing/selftests/bpf/prog_tests/missed.c
-> index 24ade11f5c05..70d90c43537c 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/missed.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/missed.c
-> @@ -81,10 +81,10 @@ static void test_missed_kprobe_recursion(void)
->  	ASSERT_EQ(topts.retval, 0, "test_run");
->  
->  	ASSERT_EQ(get_missed_count(bpf_program__fd(skel->progs.test1)), 0, "test1_recursion_misses");
-> -	ASSERT_EQ(get_missed_count(bpf_program__fd(skel->progs.test2)), 1, "test2_recursion_misses");
-> -	ASSERT_EQ(get_missed_count(bpf_program__fd(skel->progs.test3)), 1, "test3_recursion_misses");
-> -	ASSERT_EQ(get_missed_count(bpf_program__fd(skel->progs.test4)), 1, "test4_recursion_misses");
-> -	ASSERT_EQ(get_missed_count(bpf_program__fd(skel->progs.test5)), 1, "test5_recursion_misses");
-> +	ASSERT_GE(get_missed_count(bpf_program__fd(skel->progs.test2)), 1, "test2_recursion_misses");
-> +	ASSERT_GE(get_missed_count(bpf_program__fd(skel->progs.test3)), 1, "test3_recursion_misses");
-> +	ASSERT_GE(get_missed_count(bpf_program__fd(skel->progs.test4)), 1, "test4_recursion_misses");
-> +	ASSERT_GE(get_missed_count(bpf_program__fd(skel->progs.test5)), 1, "test5_recursion_misses");
->  
->  cleanup:
->  	missed_kprobe_recursion__destroy(skel);
-> -- 
-> 2.34.1
-> 
-> 
+  GEN      vmlinux.h
+  CLNG-BPF [test_maps] async_stack_depth.bpf.o
+progs/async_stack_depth.c:8:19: error: field has incomplete type 'struct bpf_timer'
+        struct bpf_timer timer;
+                         ^
+/usr/src/linux/tools/testing/selftests/bpf/tools/include/bpf/bpf_helper_defs.h:41:8: note: forward declaration of 'struct bpf_timer'
+struct bpf_timer;
+       ^
+1 error generated.
+make: *** [Makefile:598: /usr/src/linux/tools/testing/selftests/bpf/async_stack_depth.bpf.o] Error 1
+----------------------------------------
+
+To fix these errors, something like the following
+(this seems to be a fraction) is needed. What am I missing?
+
+----------------------------------------
+diff --git a/tools/testing/selftests/bpf/progs/async_stack_depth.c b/tools/testing/selftests/bpf/progs/async_stack_depth.c
+index 3517c0e01206..0318229d8fb2 100644
+--- a/tools/testing/selftests/bpf/progs/async_stack_depth.c
++++ b/tools/testing/selftests/bpf/progs/async_stack_depth.c
+@@ -4,6 +4,11 @@
+ 
+ #include "bpf_misc.h"
+ 
++struct bpf_timer {
++	__u64 :64;
++	__u64 :64;
++} __attribute__((aligned(8)));
++
+ struct hmap_elem {
+ 	struct bpf_timer timer;
+ };
+diff --git a/tools/testing/selftests/bpf/progs/cb_refs.c b/tools/testing/selftests/bpf/progs/cb_refs.c
+index 76d661b20e87..d1fb43346dc1 100644
+--- a/tools/testing/selftests/bpf/progs/cb_refs.c
++++ b/tools/testing/selftests/bpf/progs/cb_refs.c
+@@ -2,6 +2,9 @@
+ #include <vmlinux.h>
+ #include <bpf/bpf_tracing.h>
+ #include <bpf/bpf_helpers.h>
++struct prog_test_member1 {
++	int a;
++};
+ #include "../bpf_testmod/bpf_testmod_kfunc.h"
+ 
+ struct map_value {
+diff --git a/tools/testing/selftests/bpf/progs/cgrp_ls_attach_cgroup.c b/tools/testing/selftests/bpf/progs/cgrp_ls_attach_cgroup.c
+index 8aeba1b75c83..5de35c0e08cc 100644
+--- a/tools/testing/selftests/bpf/progs/cgrp_ls_attach_cgroup.c
++++ b/tools/testing/selftests/bpf/progs/cgrp_ls_attach_cgroup.c
+@@ -14,7 +14,7 @@ struct socket_cookie {
+ };
+ 
+ struct {
+-	__uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
++	__uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
+ 	__uint(map_flags, BPF_F_NO_PREALLOC);
+ 	__type(key, int);
+ 	__type(value, struct socket_cookie);
+diff --git a/tools/testing/selftests/bpf/progs/cgrp_ls_negative.c b/tools/testing/selftests/bpf/progs/cgrp_ls_negative.c
+index d41f90e2ab64..21043a18b67d 100644
+--- a/tools/testing/selftests/bpf/progs/cgrp_ls_negative.c
++++ b/tools/testing/selftests/bpf/progs/cgrp_ls_negative.c
+@@ -8,7 +8,7 @@
+ char _license[] SEC("license") = "GPL";
+ 
+ struct {
+-	__uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
++	__uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
+ 	__uint(map_flags, BPF_F_NO_PREALLOC);
+ 	__type(key, int);
+ 	__type(value, long);
+diff --git a/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c b/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
+index a043d8fefdac..cc175f004266 100644
+--- a/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
++++ b/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
+@@ -8,14 +8,14 @@
+ char _license[] SEC("license") = "GPL";
+ 
+ struct {
+-	__uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
++	__uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
+ 	__uint(map_flags, BPF_F_NO_PREALLOC);
+ 	__type(key, int);
+ 	__type(value, long);
+ } map_a SEC(".maps");
+ 
+ struct {
+-	__uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
++	__uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
+ 	__uint(map_flags, BPF_F_NO_PREALLOC);
+ 	__type(key, int);
+ 	__type(value, long);
+diff --git a/tools/testing/selftests/bpf/progs/cgrp_ls_sleepable.c b/tools/testing/selftests/bpf/progs/cgrp_ls_sleepable.c
+index 4c7844e1dbfa..0130e2e6b3d7 100644
+--- a/tools/testing/selftests/bpf/progs/cgrp_ls_sleepable.c
++++ b/tools/testing/selftests/bpf/progs/cgrp_ls_sleepable.c
+@@ -9,7 +9,7 @@
+ char _license[] SEC("license") = "GPL";
+ 
+ struct {
+-	__uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
++	__uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
+ 	__uint(map_flags, BPF_F_NO_PREALLOC);
+ 	__type(key, int);
+ 	__type(value, long);
+diff --git a/tools/testing/selftests/bpf/progs/cgrp_ls_tp_btf.c b/tools/testing/selftests/bpf/progs/cgrp_ls_tp_btf.c
+index 9ebb8e2fe541..e47c88c8790c 100644
+--- a/tools/testing/selftests/bpf/progs/cgrp_ls_tp_btf.c
++++ b/tools/testing/selftests/bpf/progs/cgrp_ls_tp_btf.c
+@@ -8,14 +8,14 @@
+ char _license[] SEC("license") = "GPL";
+ 
+ struct {
+-	__uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
++	__uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
+ 	__uint(map_flags, BPF_F_NO_PREALLOC);
+ 	__type(key, int);
+ 	__type(value, long);
+ } map_a SEC(".maps");
+ 
+ struct {
+-	__uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
++	__uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
+ 	__uint(map_flags, BPF_F_NO_PREALLOC);
+ 	__type(key, int);
+ 	__type(value, long);
+diff --git a/tools/testing/selftests/bpf/progs/dummy_st_ops_fail.c b/tools/testing/selftests/bpf/progs/dummy_st_ops_fail.c
+index 0bf969a0b5ed..f681d6f15c43 100644
+--- a/tools/testing/selftests/bpf/progs/dummy_st_ops_fail.c
++++ b/tools/testing/selftests/bpf/progs/dummy_st_ops_fail.c
+@@ -3,6 +3,18 @@
+ 
+ #include "vmlinux.h"
+ #include <bpf/bpf_helpers.h>
++
++struct bpf_dummy_ops_state {
++	int val;
++};
++
++struct bpf_dummy_ops {
++	int (*test_1)(struct bpf_dummy_ops_state *cb);
++	int (*test_2)(struct bpf_dummy_ops_state *cb, int a1, unsigned short a2,
++		      char a3, unsigned long a4);
++	int (*test_sleepable)(struct bpf_dummy_ops_state *cb);
++};
++
+ #include <bpf/bpf_tracing.h>
+ 
+ #include "bpf_misc.h"
+diff --git a/tools/testing/selftests/bpf/progs/map_kptr.c b/tools/testing/selftests/bpf/progs/map_kptr.c
+index da30f0d59364..b0db7b893461 100644
+--- a/tools/testing/selftests/bpf/progs/map_kptr.c
++++ b/tools/testing/selftests/bpf/progs/map_kptr.c
+@@ -68,7 +68,7 @@ struct lru_pcpu_hash_map {
+ } lru_pcpu_hash_map SEC(".maps");
+ 
+ struct cgrp_ls_map {
+-	__uint(type, BPF_MAP_TYPE_CGRP_STORAGE);
++	__uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
+ 	__uint(map_flags, BPF_F_NO_PREALLOC);
+ 	__type(key, int);
+ 	__type(value, struct map_value);
+----------------------------------------
 
