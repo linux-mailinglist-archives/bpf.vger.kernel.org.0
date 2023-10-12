@@ -1,142 +1,197 @@
-Return-Path: <bpf+bounces-12036-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12037-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68EF77C70D8
-	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 17:00:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 985347C70DC
+	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 17:02:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F1F52829F9
-	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 15:00:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC96A1C21034
+	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 15:02:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30AFE26296;
-	Thu, 12 Oct 2023 15:00:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A56262B2;
+	Thu, 12 Oct 2023 15:02:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GMB2PvPf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KDKis3GW"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC3FB249F0
-	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 15:00:51 +0000 (UTC)
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68813BE
-	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 08:00:49 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-5031ccf004cso1404226e87.2
-        for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 08:00:49 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21FC6BA3C
+	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 15:02:15 +0000 (UTC)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F54CA9;
+	Thu, 12 Oct 2023 08:02:14 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3215f19a13aso1011108f8f.3;
+        Thu, 12 Oct 2023 08:02:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697122847; x=1697727647; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=q4GcHVcImsCmkkAzVPFlYXjCx/OtSQRb+8D59GIF+UQ=;
-        b=GMB2PvPfyXs4UE+H9Hhe3lSj0LHjvQxDpLDf0P/FyvS68vdakck2IRoBNIv14Jlsmc
-         5Vz389WjsF74aKpjtPi2OGgHglFqPgM7EKaMbRgH6og2c05iQthOVYoPI+yO2fVTnVWb
-         QdPnhLzrIbbrOGlsHqVUq73AqmHEqj2L62JkoGUArcB/vSLQH4+0mVBynE9l9gMCiv5i
-         rCRJrwAhJg8RBbZrjbpxK7v+gAvRT58j79rRi82iYJ6bo5iS8w7atqiFQfbSF8cdY1kS
-         ejhM9iWRWV1t/ZHcqkqQnVg1iRYL+uG/Mp2q1gIG3j55mIfR92DQtDIzXZUz6mYzrKGJ
-         v9Bg==
+        d=gmail.com; s=20230601; t=1697122932; x=1697727732; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S90hAqlSYxgq/E7D0v0WIajU1lTX+G+PuSX4VnbOm2s=;
+        b=KDKis3GWmPt1v3HGVxBgn10/0YAnB/yWFbaafdzEo/3+Gb6RM2En8yCZSk3SYov8SI
+         BlsGVdQ5SIGZflTelek2MEixwPfL8BWa5RaGMq47B6HEHAm5Z2v2gA9LvQq5+JX1PXmJ
+         6RejCEbYgpgAikP5vtCn9BKw4qRCZovXRMRhZsWSB/f06ur4XhwSFB3rraGiNa+AUeNr
+         LLF3nU26jXFAPyLcHm3Y67jWWxBzdNMGuWd0S+9cgLYJUhY0PnuWqjWhvASYkT8eW/3G
+         +ND3VmrsLjT2FzGVpcNvapxsIDJeN8irvpmwtRfZbbHQ5/xkRG9AYipdbxXzt4P6WgVf
+         N17g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697122847; x=1697727647;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q4GcHVcImsCmkkAzVPFlYXjCx/OtSQRb+8D59GIF+UQ=;
-        b=ooSEfVfHvRHnxXYlc5xwyLfjYJNmGui1mFsse8v3ils+Ns0H80oNsUplxc9hPiaYo2
-         TYz5+/j3tK6+G+BXCgW+pvvwRct9c9IiFuwCP6R7dymHJbk5btk8Ut/7TrV0QOL19Q3E
-         r7IsPVGAQJ0MidyQuPJ/6FP64/pNcfcHvJyG6xhG/ebZ/BXgzydnrNcRAmXuaJxFEfNA
-         zNMLm6DuscoOOIuie+hqjarqYRK5OYxVL4Xeu/ZvV0oc0lkcIAPcE3vLSrTe8g71s1MW
-         XgE+Gu0e0bvJeKcnx8JStPxCE4LvLMwvuSYMDqMY8miotRT52tRaIq+eKu8HgNvM/t5T
-         4nyg==
-X-Gm-Message-State: AOJu0Yw90KDSjH/iFxjPAuO0mTFqbBqCVVWW06QtSV1mHq2y4gDofb7+
-	6FuLlN1XTn3f5HHSJxW/hpM=
-X-Google-Smtp-Source: AGHT+IHm8e701noKnLoPbkvY2UnNd94eCUo6S1qEGPW5DvQxKcnxDGBBLcoTw9GciINI6elKwIziWw==
-X-Received: by 2002:a05:6512:1029:b0:500:9f7b:e6a4 with SMTP id r9-20020a056512102900b005009f7be6a4mr18148395lfr.32.1697122847285;
-        Thu, 12 Oct 2023 08:00:47 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id q7-20020ac25147000000b005009aa86582sm2844289lfd.55.2023.10.12.08.00.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 08:00:46 -0700 (PDT)
-Message-ID: <3a31082343bc1efd9328e5bb48adf9a36932135f.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 0/5] BPF verifier log improvements
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
- ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org
-Cc: kernel-team@meta.com
-Date: Thu, 12 Oct 2023 18:00:45 +0300
-In-Reply-To: <20231011223728.3188086-1-andrii@kernel.org>
-References: <20231011223728.3188086-1-andrii@kernel.org>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0 
+        d=1e100.net; s=20230601; t=1697122932; x=1697727732;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S90hAqlSYxgq/E7D0v0WIajU1lTX+G+PuSX4VnbOm2s=;
+        b=BnQuX0EnRC7qbfpTlvL81KHAxW/0V9VYZ0dQtyXlM50S3Nn9H9jMPPcI+ZSfQvblu5
+         uzBduNboLIzL3XVPkIyEbQ4KUo01nK855E6xr2G5Sl/jFkKBC2idRw/tjOka6l+9Yeyw
+         l8TMEz8Qd5QgPVEfZaODh3GF9A2KpBQ1lsqVwnmCxSR5yq+xSz4IlYTXu0Zd8syzcEgD
+         eR3dTqbziz5pF85DQ5gGmz0zxeG4IMgzuq+M+8a/X1JfxTuWMlb57MXYxkgv5sRsxXik
+         PVY0ir/9t0qHHfa2Wn6IbDZ1qf0RC+kr41XnlfMe/atbT8TK44CG+zSUo7YsseQUTtnO
+         xhCQ==
+X-Gm-Message-State: AOJu0YxpEj/ctj5fLHMUupkn9r7uqduRkUpwJFvd+Eiza4/sLliujdKN
+	svG6t1XXG20r61YjfH/+CNNtGd2aG8ydvzrXQoQ=
+X-Google-Smtp-Source: AGHT+IFlyPzAR6LK6U2iigbKY3HePEve7fDW4KzopE20OLPrOkOjGCI8S1oQsO+ZRoLEXRscWeToi84PdF3NTTzuIm8=
+X-Received: by 2002:a05:6000:1cc:b0:32d:819c:5da6 with SMTP id
+ t12-20020a05600001cc00b0032d819c5da6mr5400142wrx.21.1697122932227; Thu, 12
+ Oct 2023 08:02:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231011-jmp-into-reserved-fields-v3-0-97d2aa979788@gmail.com>
+ <20231011-jmp-into-reserved-fields-v3-1-97d2aa979788@gmail.com>
+ <CAADnVQJnhfbALtNkCauS_ZwRfybcb_mryEvZW7Uu1uOSshQ9Ew@mail.gmail.com> <ZSeq7ieG7Cq13w67@u94a>
+In-Reply-To: <ZSeq7ieG7Cq13w67@u94a>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 12 Oct 2023 08:02:00 -0700
+Message-ID: <CAADnVQJHAPid9HouwMEnfwDDKuy8BnGia269KSbby2gA030OBg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/3] bpf: Detect jumping to reserved code
+ during check_cfg()
+To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc: Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, 2023-10-11 at 15:37 -0700, Andrii Nakryiko wrote:
-> This patch set fixes ambiguity in BPF verifier log output of SCALAR regis=
-ter
-> in the parts that emit umin/umax, smin/smax, etc ranges. See patch #4 for
-> details.
->=20
-> Also, patch #5 fixes an issue with verifier log missing instruction conte=
-xt
-> (state) output for conditionals that trigger precision marking. See detai=
-ls in
-> the patch.
->=20
-> First two patches are just improvements to two selftests that are very fl=
-aky
-> locally when run in parallel mode.
->=20
-> Patch #3 changes 'align' selftest to be less strict about exact verifier =
-log
-> output (which patch #4 changes, breaking lots of align tests as written).=
- Now
-> test does more of a register substate checks, mostly around expected var_=
-off()
-> values. This 'align' selftests is one of the more brittle ones and requir=
-es
-> constant adjustment when verifier log output changes, without really catc=
-hing
-> any new issues. So hopefully these changes can minimize future support ef=
-forts
-> for this specific set of tests.
+On Thu, Oct 12, 2023 at 1:14=E2=80=AFAM Shung-Hsi Yu <shung-hsi.yu@suse.com=
+> wrote:
+>
+> On Wed, Oct 11, 2023 at 06:38:56AM -0700, Alexei Starovoitov wrote:
+> > On Wed, Oct 11, 2023 at 2:01=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> w=
+rote:
+> > >
+> > > Currently, we don't check if the branch-taken of a jump is reserved c=
+ode of
+> > > ld_imm64. Instead, such a issue is captured in check_ld_imm(). The ve=
+rifier
+> > > gives the following log in such case:
+> > >
+> > > func#0 @0
+> > > 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
+> > > 0: (18) r4 =3D 0xffff888103436000       ; R4_w=3Dmap_ptr(off=3D0,ks=
+=3D4,vs=3D128,imm=3D0)
+> > > 2: (18) r1 =3D 0x1d                     ; R1_w=3D29
+> > > 4: (55) if r4 !=3D 0x0 goto pc+4        ; R4_w=3Dmap_ptr(off=3D0,ks=
+=3D4,vs=3D128,imm=3D0)
+> > > 5: (1c) w1 -=3D w1                      ; R1_w=3D0
+> > > 6: (18) r5 =3D 0x32                     ; R5_w=3D50
+> > > 8: (56) if w5 !=3D 0xfffffff4 goto pc-2
+> > > mark_precise: frame0: last_idx 8 first_idx 0 subseq_idx -1
+> > > mark_precise: frame0: regs=3Dr5 stack=3D before 6: (18) r5 =3D 0x32
+> > > 7: R5_w=3D50
+> > > 7: BUG_ld_00
+> > > invalid BPF_LD_IMM insn
+> > >
+> > > Here the verifier rejects the program because it thinks insn at 7 is =
+an
+> > > invalid BPF_LD_IMM, but such a error log is not accurate since the is=
+sue
+> > > is jumping to reserved code not because the program contains invalid =
+insn.
+> > > Therefore, make the verifier check the jump target during check_cfg()=
+. For
+> > > the same program, the verifier reports the following log:
+> > >
+> > > func#0 @0
+> > > jump to reserved code from insn 8 to 7
+> > >
+> > > Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+> > > ---
+> > >  kernel/bpf/verifier.c | 7 +++++++
+> > >  1 file changed, 7 insertions(+)
+> > >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index eed7350e15f4..725ac0b464cf 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -14980,6 +14980,7 @@ static int push_insn(int t, int w, int e, str=
+uct bpf_verifier_env *env,
+> > >  {
+> > >         int *insn_stack =3D env->cfg.insn_stack;
+> > >         int *insn_state =3D env->cfg.insn_state;
+> > > +       struct bpf_insn *insns =3D env->prog->insnsi;
+> > >
+> > >         if (e =3D=3D FALLTHROUGH && insn_state[t] >=3D (DISCOVERED | =
+FALLTHROUGH))
+> > >                 return DONE_EXPLORING;
+> > > @@ -14993,6 +14994,12 @@ static int push_insn(int t, int w, int e, st=
+ruct bpf_verifier_env *env,
+> > >                 return -EINVAL;
+> > >         }
+> > >
+> > > +       if (e =3D=3D BRANCH && insns[w].code =3D=3D 0) {
+> > > +               verbose_linfo(env, t, "%d", t);
+> > > +               verbose(env, "jump to reserved code from insn %d to %=
+d\n", t, w);
+> > > +               return -EINVAL;
+> > > +       }
+> >
+> > I don't think we should be changing the verifier to make
+> > fuzzer logs more readable.
+>
+> Taking fuzzer out of consideration, giving users clearer explanation for
+> such verifier rejection could save a lot of head scratching.
 
-All seems reasonable and passes local testing.
+Users won't see such errors unless they are actively doing what
+is not recommended.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> Compiler shouldn't generate such program, but its plausible to forget to
+> account that BPF_LD_IMM64 consists of two instructions when writing
+> assembly (especially with filter.h-like macros) and have it jump to the 2=
+nd
+> part of BPF_LD_IMM64.
 
->=20
-> Andrii Nakryiko (5):
->   selftests/bpf: improve percpu_alloc test robustness
->   selftests/bpf: improve missed_kprobe_recursion test robustness
->   selftests/bpf: make align selftests more robust
->   bpf: disambiguate SCALAR register state output in verifier logs
->   bpf: ensure proper register state printing for cond jumps
->=20
->  kernel/bpf/verifier.c                         |  74 ++++--
->  .../testing/selftests/bpf/prog_tests/align.c  | 241 +++++++++---------
->  .../testing/selftests/bpf/prog_tests/missed.c |   8 +-
->  .../selftests/bpf/prog_tests/percpu_alloc.c   |   3 +
->  .../selftests/bpf/progs/exceptions_assert.c   |  18 +-
->  .../selftests/bpf/progs/percpu_alloc_array.c  |   7 +
->  .../progs/percpu_alloc_cgrp_local_storage.c   |   4 +
->  .../selftests/bpf/progs/verifier_ldsx.c       |   2 +-
->  8 files changed, 200 insertions(+), 157 deletions(-)
->=20
+Using macros to write bpf asm code is highly discouraged.
+All kinds of errors are possible.
+Bogus jump is just one of such mistakes.
+Use naked functions and inline asm in C code that
+both GCC and clang understand then you won't see bad jumps.
+See selftets/bpf/verifier_*.c as an example.
 
+> > Same with patch 2. The code is fine as-is.
+>
+> The only way BPF_SIZE(insn->code) !=3D BPF_DW conditional in check_ld_imm=
+()
+> can be met right now is when we have a jump to the 2nd part of LD_IMM64; =
+but
+> what this conditional actually guard against is not straight-forward and
+> quite confusing[1].
+
+There are plenty of cases in the verifier where we print
+an error message. Some of them should be impossible due
+to prior checks. In such cases we don't yell "verifier bug"
+and are not going to do that in this case either.
 
