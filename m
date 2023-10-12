@@ -1,330 +1,160 @@
-Return-Path: <bpf+bounces-12075-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12076-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F80C7C77AD
-	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 22:11:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E42927C77E1
+	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 22:26:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03FAF282C67
-	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 20:11:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FFB41C21150
+	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 20:26:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC48B3D385;
-	Thu, 12 Oct 2023 20:11:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC243D3A9;
+	Thu, 12 Oct 2023 20:25:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="gbwiVRFc"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SqH8CEVC"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD3553CCFE
-	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 20:11:42 +0000 (UTC)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB90B7
-	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 13:11:41 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CK8iqS004604;
-	Thu, 12 Oct 2023 20:11:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=aNl2HmeyXlkIPCiIDQNiNFJey0faRYyByW2efEXFHno=;
- b=gbwiVRFczUXiuYjTDT7qUQMwxFwl1+4StSUAmeFaMOFYzeTqmodptaiR4oCZI/iQ/zUG
- AeiDzhqYp6okKdfTCs0PJCbB23viRqr37egx239AbLEvyKPmtNVwiT6dheVfB2J78NYw
- qB2LvQpZLdxiDd5vFjydLDidCrbGkq1SERqkPCsBftJqNHD8n+BWT0GsfG6MyIw/FNfi
- whie2f98smAhXdbmFaCcdz4X9PIITa06dGuxVDPobWOLOB5wF57JZVk+0VeAGfNSui5J
- jeURon7uZu48NRAEfX5MRbuJ9pOtg7hGy2mS5u6v3HI7x/oGIZYBh4tpxII3vmg1WJri Kg== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpqjyr3ue-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 12 Oct 2023 20:11:18 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39CIgZGP023064;
-	Thu, 12 Oct 2023 20:11:16 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tkmc21m5g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 12 Oct 2023 20:11:16 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39CKBEwW22479610
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 12 Oct 2023 20:11:15 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A97A620040;
-	Thu, 12 Oct 2023 20:11:14 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 02D5D2004B;
-	Thu, 12 Oct 2023 20:11:13 +0000 (GMT)
-Received: from [9.43.73.24] (unknown [9.43.73.24])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 12 Oct 2023 20:11:12 +0000 (GMT)
-Message-ID: <46e295ce-5531-b09b-2f38-13a0d5179b0a@linux.ibm.com>
-Date: Fri, 13 Oct 2023 01:41:12 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 1/5] powerpc/code-patching: introduce
- patch_instructions()
-Content-Language: en-US
-To: Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Song Liu <songliubraving@fb.com>
-References: <20230928194818.261163-1-hbathini@linux.ibm.com>
- <20230928194818.261163-2-hbathini@linux.ibm.com>
- <6fe51a4d-9c16-81e0-c592-07331743bedb@csgroup.eu>
-From: Hari Bathini <hbathini@linux.ibm.com>
-In-Reply-To: <6fe51a4d-9c16-81e0-c592-07331743bedb@csgroup.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: m0rMrHbi7esklEQnUM8jIyT2f5KJDtug
-X-Proofpoint-ORIG-GUID: m0rMrHbi7esklEQnUM8jIyT2f5KJDtug
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176543D388
+	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 20:25:54 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6453B83
+	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 13:25:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1697142352;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=cSHDrt3NTy0ANnTQoqXu1o1JnvbkAXQxw2KZJ7VHu1g=;
+	b=SqH8CEVCgYuqfvLDfY4HzqAJXLSF6yFD94SISZWBoLazYMqjS76/152GHkEyqII/I1Ijbo
+	Yw/RZZ1rG+wwZIEfi4txFCnIsZ2hPd5TKz12TNNaeXM+sn9FwQMkycymgszzxPPc3XTvL8
+	vanNqX7iEtoQ9MdhI4QasDXAHDzYov0=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-632-8K2LtHftMc-ZeI3ExYzE-Q-1; Thu, 12 Oct 2023 16:25:51 -0400
+X-MC-Unique: 8K2LtHftMc-ZeI3ExYzE-Q-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9b2e3f315d5so148600266b.1
+        for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 13:25:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697142349; x=1697747149;
+        h=mime-version:message-id:date:subject:cc:to:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cSHDrt3NTy0ANnTQoqXu1o1JnvbkAXQxw2KZJ7VHu1g=;
+        b=jdeC8Q8w0df9lHcUyv1pIKq0LOz6/xP2a+NNsD8rgUCBUWoe7UBKOj/mmvMdQS5qv1
+         jrp1vPVLSmcSfuFFi6Q+SO9GFSbgcdaCbsO1Pg/pmDWWV1AHUJiQ8irdx7zAGjhD4EyV
+         BUdBbedv0bDhUfdan9rurKy3N+jthsw36Eg+YDIS6S0aXXkgEJBxwbHj5CstxLiGbH3b
+         BGvNH41WrPhS3SjKaPUqAIsT1dlCgpmQjt58aHs86YyntMPjespyMnyspxmvVj3amMJk
+         Ns9eZkt2xBtxe8+SZ8gX5sD5t+2UFJM7kphSuzf3SruXuFZl2VTxeLxKHy5D4yyN6nX0
+         m6ZQ==
+X-Gm-Message-State: AOJu0YyqeU9Fm9bTnVURcH/PbVxcs5blqizeG/gi+9AGdSJEssKd6DsR
+	RikTUuy90N1HFnCL7/lRKGt/il6Yof4H+R07Q9hhxfW9Oq650tb8ssHWUSir+X2ECMqJfAWfWk+
+	rZ02M7oFOYNnZ
+X-Received: by 2002:a17:906:af10:b0:9ad:8a9e:23ee with SMTP id lx16-20020a170906af1000b009ad8a9e23eemr18427966ejb.13.1697142349446;
+        Thu, 12 Oct 2023 13:25:49 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEyaEmLvtR9YAI42pm+MCqFIvZOsMAzN5aI2kGprOER6rDDtPJpT97UZoJxc1Nm0Hfv3sOAww==
+X-Received: by 2002:a17:906:af10:b0:9ad:8a9e:23ee with SMTP id lx16-20020a170906af1000b009ad8a9e23eemr18427961ejb.13.1697142349166;
+        Thu, 12 Oct 2023 13:25:49 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id y17-20020a1709064b1100b0099cc3c7ace2sm11631504eju.140.2023.10.12.13.25.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 13:25:48 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 38DD4E5BE30; Thu, 12 Oct 2023 22:25:48 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, Mohamed Mahmoud <mmahmoud@redhat.com>
+Subject: Hitting verifier backtracking bug on 6.5.5 kernel
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Thu, 12 Oct 2023 22:25:48 +0200
+Message-ID: <87jzrrwptf.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_12,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=822 lowpriorityscore=0 phishscore=0 priorityscore=1501
- suspectscore=0 bulkscore=0 adultscore=0 clxscore=1015 impostorscore=0
- mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310120168
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Thanks for the review, Christophe.
+Hi Andrii
 
-On 10/10/23 11:16 pm, Christophe Leroy wrote:
-> 
-> 
-> Le 28/09/2023 à 21:48, Hari Bathini a écrit :
->> patch_instruction() entails setting up pte, patching the instruction,
->> clearing the pte and flushing the tlb. If multiple instructions need
->> to be patched, every instruction would have to go through the above
->> drill unnecessarily. Instead, introduce function patch_instructions()
->> that sets up the pte, clears the pte and flushes the tlb only once per
->> page range of instructions to be patched. This adds a slight overhead
->> to patch_instruction() call while improving the patching time for
->> scenarios where more than one instruction needs to be patched.
-> 
-> Not a "slight" but a "significant" overhead on PPC32.
-> 
-> Thinking about it once more I don't think it is a good idea to try and
-> merge that into the existing code_patching logic which is really single
-> instruction performance oriented.
-> 
-> Anyway, comments below.
-> 
->>
->> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
->> ---
->>    arch/powerpc/include/asm/code-patching.h |  1 +
->>    arch/powerpc/lib/code-patching.c         | 93 +++++++++++++++++++++---
->>    2 files changed, 85 insertions(+), 9 deletions(-)
->>
->> diff --git a/arch/powerpc/include/asm/code-patching.h b/arch/powerpc/include/asm/code-patching.h
->> index 3f881548fb61..43a4aedfa703 100644
->> --- a/arch/powerpc/include/asm/code-patching.h
->> +++ b/arch/powerpc/include/asm/code-patching.h
->> @@ -74,6 +74,7 @@ int create_cond_branch(ppc_inst_t *instr, const u32 *addr,
->>    int patch_branch(u32 *addr, unsigned long target, int flags);
->>    int patch_instruction(u32 *addr, ppc_inst_t instr);
->>    int raw_patch_instruction(u32 *addr, ppc_inst_t instr);
->> +int patch_instructions(void *addr, void *code, size_t len, bool repeat_instr);
-> 
-> I don't like void *, you can do to much nasty things with that.
-> I think you want u32 *
-> 
->>    
->>    static inline unsigned long patch_site_addr(s32 *site)
->>    {
->> diff --git a/arch/powerpc/lib/code-patching.c b/arch/powerpc/lib/code-patching.c
->> index b00112d7ad46..4ff002bc41f6 100644
->> --- a/arch/powerpc/lib/code-patching.c
->> +++ b/arch/powerpc/lib/code-patching.c
->> @@ -278,7 +278,36 @@ static void unmap_patch_area(unsigned long addr)
->>    	flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
->>    }
->>    
->> -static int __do_patch_instruction_mm(u32 *addr, ppc_inst_t instr)
->> +static int __patch_instructions(u32 *patch_addr, void *code, size_t len, bool repeat_instr)
->> +{
->> +	unsigned long start = (unsigned long)patch_addr;
->> +
->> +	/* Repeat instruction */
->> +	if (repeat_instr) {
->> +		ppc_inst_t instr = ppc_inst_read(code);
->> +
->> +		if (ppc_inst_prefixed(instr)) {
->> +			u64 val = ppc_inst_as_ulong(instr);
->> +
->> +			memset64((uint64_t *)patch_addr, val, len / 8);
-> 
-> Use u64 instead of uint64_t.
-> 
->> +		} else {
->> +			u32 val = ppc_inst_val(instr);
->> +
->> +			memset32(patch_addr, val, len / 4);
->> +		}
->> +	} else
->> +		memcpy(patch_addr, code, len);
-> 
-> Missing braces, see
-> https://docs.kernel.org/process/coding-style.html#placing-braces-and-spaces
-> 
->> +
->> +	smp_wmb();	/* smp write barrier */
->> +	flush_icache_range(start, start + len);
->> +	return 0;
->> +}
->> +
->> +/*
->> + * A page is mapped and instructions that fit the page are patched.
->> + * Assumes 'len' to be (PAGE_SIZE - offset_in_page(addr)) or below.
->> + */
->> +static int __do_patch_instructions_mm(u32 *addr, void *code, size_t len, bool repeat_instr)
->>    {
->>    	int err;
->>    	u32 *patch_addr;
->> @@ -307,11 +336,15 @@ static int __do_patch_instruction_mm(u32 *addr, ppc_inst_t instr)
->>    
->>    	orig_mm = start_using_temp_mm(patching_mm);
->>    
->> -	err = __patch_instruction(addr, instr, patch_addr);
->> +	/* Single instruction case. */
->> +	if (len == 0) {
->> +		err = __patch_instruction(addr, *(ppc_inst_t *)code, patch_addr);
-> 
-> Take care, you can't convert u32 * to ppc_inst_t that way, you have to
-> use ppc_inst_read() otherwise you'll get odd result with prefixed
-> instructions depending on endianness.
-> 
->>    
->> -	/* hwsync performed by __patch_instruction (sync) if successful */
->> -	if (err)
->> -		mb();  /* sync */
->> +		/* hwsync performed by __patch_instruction (sync) if successful */
->> +		if (err)
->> +			mb();  /* sync */
-> 
-> Get this away, see my patch at
-> https://patchwork.ozlabs.org/project/linuxppc-dev/patch/e88b154eaf2efd9ff177d472d3411dcdec8ff4f5.1696675567.git.christophe.leroy@csgroup.eu/
-> 
->> +	} else
->> +		err = __patch_instructions(patch_addr, code, len, repeat_instr);
->>    
->>    	/* context synchronisation performed by __patch_instruction (isync or exception) */
->>    	stop_using_temp_mm(patching_mm, orig_mm);
->> @@ -328,7 +361,11 @@ static int __do_patch_instruction_mm(u32 *addr, ppc_inst_t instr)
->>    	return err;
->>    }
->>    
->> -static int __do_patch_instruction(u32 *addr, ppc_inst_t instr)
->> +/*
->> + * A page is mapped and instructions that fit the page are patched.
->> + * Assumes 'len' to be (PAGE_SIZE - offset_in_page(addr)) or below.
->> + */
->> +static int __do_patch_instructions(u32 *addr, void *code, size_t len, bool repeat_instr)
->>    {
->>    	int err;
->>    	u32 *patch_addr;
->> @@ -345,7 +382,11 @@ static int __do_patch_instruction(u32 *addr, ppc_inst_t instr)
->>    	if (radix_enabled())
->>    		asm volatile("ptesync": : :"memory");
->>    
->> -	err = __patch_instruction(addr, instr, patch_addr);
->> +	/* Single instruction case. */
->> +	if (len == 0)
->> +		err = __patch_instruction(addr, *(ppc_inst_t *)code, patch_addr);
-> 
-> Same, use ppc_inst_read() instead of this nasty casting.
-> 
->> +	else
->> +		err = __patch_instructions(patch_addr, code, len, repeat_instr);
->>    
->>    	pte_clear(&init_mm, text_poke_addr, pte);
->>    	flush_tlb_kernel_range(text_poke_addr, text_poke_addr + PAGE_SIZE);
->> @@ -369,15 +410,49 @@ int patch_instruction(u32 *addr, ppc_inst_t instr)
->>    
->>    	local_irq_save(flags);
->>    	if (mm_patch_enabled())
->> -		err = __do_patch_instruction_mm(addr, instr);
->> +		err = __do_patch_instructions_mm(addr, &instr, 0, false);
->>    	else
->> -		err = __do_patch_instruction(addr, instr);
->> +		err = __do_patch_instructions(addr, &instr, 0, false);
->>    	local_irq_restore(flags);
->>    
->>    	return err;
->>    }
->>    NOKPROBE_SYMBOL(patch_instruction);
->>    
->> +/*
->> + * Patch 'addr' with 'len' bytes of instructions from 'code'.
->> + *
->> + * If repeat_instr is true, the same instruction is filled for
->> + * 'len' bytes.
->> + */
->> +int patch_instructions(void *addr, void *code, size_t len, bool repeat_instr)
-> 
-> I'd like to see code as a u32 *
-> 
->> +{
->> +	unsigned long flags;
->> +	size_t plen;
->> +	int err;
-> 
-> Move those three variables inside the only block in which they are used.
-> 
->> +
->> +	while (len > 0) {
->> +		plen = min_t(size_t, PAGE_SIZE - offset_in_page(addr), len);
->> +
->> +		local_irq_save(flags);
->> +		if (mm_patch_enabled())
->> +			err = __do_patch_instructions_mm(addr, code, plen, repeat_instr);
->> +		else
->> +			err = __do_patch_instructions(addr, code, plen, repeat_instr);
->> +		local_irq_restore(flags);
->> +		if (err)
->> +			break;
-> 
-> replace by 'return err'
-> 
->> +
->> +		len -= plen;
->> +		addr = addr + plen;
->> +		if (!repeat_instr)
->> +			code = code + plen;
->> +	}
->> +
->> +	return err;
-> 
-> If len is 0 err will be undefined. Is that expected ?
-> 
-> Replace by return 0;
+Mohamed ran into what appears to be a verifier bug related to your
+commit:
 
-Posted v6 
-(https://lore.kernel.org/linuxppc-dev/20231012200310.235137-1-hbathini@linux.ibm.com/)
-with code path for patch_instruction() & patch_instriuctions() unmerged
-to avoid performance hit reported on ppc32. Also, addressed other review
-comments.
+fde2a3882bd0 ("bpf: support precision propagation in the presence of subprogs")
 
-Thanks
-Hari
+So I figured you'd be the person to ask about this :)
+
+The issue appears on a vanilla 6.5 kernel (on both 6.5.6 on Fedora 38,
+and 6.5.5 on my Arch machine):
+
+INFO[0000] Verifier error: load program: bad address:
+	1861: frame2: R1_w=fp-160 R2_w=pkt_end(off=0,imm=0) R3=scalar(umin=17,umax=255,var_off=(0x0; 0xff)) R4_w=fp-96 R6_w=fp-96 R7_w=pkt(off=34,r=34,imm=0) R10=fp0
+	; switch (protocol) {
+	1861: (15) if r3 == 0x11 goto pc+22 1884: frame2: R1_w=fp-160 R2_w=pkt_end(off=0,imm=0) R3=17 R4_w=fp-96 R6_w=fp-96 R7_w=pkt(off=34,r=34,imm=0) R10=fp0
+	; if ((void *)udp + sizeof(*udp) <= data_end) {
+	1884: (bf) r3 = r7                    ; frame2: R3_w=pkt(off=34,r=34,imm=0) R7_w=pkt(off=34,r=34,imm=0)
+	1885: (07) r3 += 8                    ; frame2: R3_w=pkt(off=42,r=34,imm=0)
+	; if ((void *)udp + sizeof(*udp) <= data_end) {
+	1886: (2d) if r3 > r2 goto pc+23      ; frame2: R2_w=pkt_end(off=0,imm=0) R3_w=pkt(off=42,r=42,imm=0)
+	; id->src_port = bpf_ntohs(udp->source);
+	1887: (69) r2 = *(u16 *)(r7 +0)       ; frame2: R2_w=scalar(umax=65535,var_off=(0x0; 0xffff)) R7_w=pkt(off=34,r=42,imm=0)
+	1888: (bf) r3 = r2                    ; frame2: R2_w=scalar(id=103,umax=65535,var_off=(0x0; 0xffff)) R3_w=scalar(id=103,umax=65535,var_off=(0x0; 0xffff))
+	1889: (dc) r3 = be16 r3               ; frame2: R3_w=scalar()
+	; id->src_port = bpf_ntohs(udp->source);
+	1890: (73) *(u8 *)(r1 +47) = r3       ; frame2: R1_w=fp-160 R3_w=scalar()
+	; id->src_port = bpf_ntohs(udp->source);
+	1891: (dc) r2 = be64 r2               ; frame2: R2_w=scalar()
+	; id->src_port = bpf_ntohs(udp->source);
+	1892: (77) r2 >>= 56                  ; frame2: R2_w=scalar(umax=255,var_off=(0x0; 0xff))
+	1893: (73) *(u8 *)(r1 +48) = r2
+	BUG regs 1
+	processed 5121 insns (limit 1000000) max_states_per_insn 4 total_states 92 peak_states 90 mark_read 20
+	(truncated)  component=ebpf.FlowFetcher
+
+Dmesg says:
+
+[252431.093126] verifier backtracking bug
+[252431.093129] WARNING: CPU: 3 PID: 302245 at kernel/bpf/verifier.c:3533 __mark_chain_precision+0xe83/0x1090
+
+
+The splat appears when trying to run the netobserv-ebpf-agent. Steps to
+reproduce:
+
+git clone https://github.com/netobserv/netobserv-ebpf-agent
+cd netobserv-ebpf-agent && make compile
+sudo FLOWS_TARGET_HOST=127.0.0.1 FLOWS_TARGET_PORT=9999 ./bin/netobserv-ebpf-agent
+
+(It needs a 'make generate' before the compile to recompile the BPF
+program itself, but that requires the Cilium bpf2go program to be
+installed and there's a binary version checked into the tree so that is
+not strictly necessary to reproduce the splat).
+
+That project uses the Cilium Go eBPF loader. Interestingly, loading the
+same program using tc (with libbpf 1.2.2) works just fine:
+
+ip link add type veth
+tc qdisc add dev veth0 clsact
+tc filter add dev veth0 egress bpf direct-action obj pkg/ebpf/bpf_bpfel.o sec tc_egress
+
+So maybe there is some massaging of the object file that libbpf is doing
+but the Go library isn't, that prevents this bug from triggering? I'm
+only guessing here, I don't really know exactly what the Go library is
+doing under the hood.
+
+Anyway, I guess this is a kernel bug in any case since that WARN() is
+there; could you please take a look?
+
+Thanks!
+
+-Toke
+
 
