@@ -1,75 +1,82 @@
-Return-Path: <bpf+bounces-11993-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-11994-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0708B7C6514
-	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 08:04:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E14317C6566
+	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 08:23:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B06E22827E1
-	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 06:04:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 143981C20A4B
+	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 06:23:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95C5AD280;
-	Thu, 12 Oct 2023 06:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 657C0D2FB;
+	Thu, 12 Oct 2023 06:23:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NoThQ1Jv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SWD77S6r"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28A21D274
-	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 06:04:39 +0000 (UTC)
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332C8A9
-	for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 23:04:38 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-66cfd874520so3851426d6.2
-        for <bpf@vger.kernel.org>; Wed, 11 Oct 2023 23:04:38 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9E0465B
+	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 06:23:16 +0000 (UTC)
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FFBBA;
+	Wed, 11 Oct 2023 23:23:14 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a7ba0828efso7894707b3.3;
+        Wed, 11 Oct 2023 23:23:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697090677; x=1697695477; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697091794; x=1697696594; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UGffhN/kq3nYZQ0UQR3oRJAdEa3CCgMAsQ84VBfGP4E=;
-        b=NoThQ1JvbLDcuTt7i5RgCAJvg2z8lojkkGmFJs3lU5p7R0xijrSLPJ8ATU1SXu8QxO
-         VmoBisuMVcwSupubhtGsiLDMVIxfpEY2iDnfsrYPZlJeR59kOwftUgNjvG0P9UcY3hEw
-         n78qEVvxIscNtqpbHm69kd7m5q6Jm3KdiUNvdGhL6C+BeCCTykTB7KU0j+h68OpoVkPV
-         eel9U+qQmCSlso+X0iN7doBkGthv4M8qxiW6FbNuIxa0TY7VJbHMRKfS7rjil2UzKNri
-         a1eKCwsV3Yc6gUgKICTV9+7IEvtR9t7NkAuFpP1Sv9sAN0zzCJDmX069e3f2gXsWRPjk
-         LckQ==
+        bh=IleMAKg+GPM4xdNPivF/aSxe53FBWLj6oWJi1m12Mt4=;
+        b=SWD77S6rVHQCriIEd//myP1vy2py+GOk7PbLDOQciq9ygCSRLUMXZdALOufE51XyJo
+         ZOYjhMCivnCFxOHf3ou6uv+xZjYUP3OTYcWISCa1PhQOLC4IjtZswt0HRwxFNKu/dxv2
+         6K8M2eQ1olXXw7a/GvoDgY2cEGxyftmt9RCsyosUPNJ7ERVhZLmbhkohV3ksXyLrteDq
+         M7RaH1NXcpgFpHNv6NUIPTRYgBNHINtmXDNBdbfFQDFCecWil/0zpW5/OezrXaxr1p3J
+         AC4OPlZYa9xsv6X0288NtAlkJpDu5q14ysc8VIT9bdMJKsOjJiOT9UXGieV3kY/SmVuW
+         UStA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697090677; x=1697695477;
+        d=1e100.net; s=20230601; t=1697091794; x=1697696594;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UGffhN/kq3nYZQ0UQR3oRJAdEa3CCgMAsQ84VBfGP4E=;
-        b=AZ/s8ZfE+ijkLrwHZj4FGN2CYOrmDLZC/x8a/A+5LTDfFx96FyvZJFvh+xT7C0ovLl
-         SLmq4hZHBRR2NFaS4RPsFYldTwGOXsdstfExKsK4b7X3VH8IytW2eph1bhG59HwgxTcQ
-         Ft7D6YXYyoEgJJcJxOeNvDCWE9fJX64wSc8zo7NLgJNyVNCe0JnWvBquPZk5ud+UZyy2
-         uIc+QNIW6RTuxQuteC09js+mUL7/8IpTwevfqcahRksW9gY86ImTFZjfxjEU3jkBjZ/q
-         zu7d1uXpEew7AyvuQOmTL8cBWILxsobMdjrEP9FhQRNVCGhxtG8o0ndLTUUPIWgkBqQj
-         Q+aA==
-X-Gm-Message-State: AOJu0Yx1Kl5mm1q+J/oBzK05Ti2y7QtLW8RTlSSleg7WUp11VnKAnr7m
-	6Ey4LEVupMREhQIPY0GgmUF/SBdlcIovgdg/Jlg=
-X-Google-Smtp-Source: AGHT+IFdNdOlXDK9YZneYtDEaV1PQvgL9bfFbyaUyQcOGyIidesXbrZe2STB3c+zgUFBiLqY6rzbNF6Bk9QigVkMQn4=
-X-Received: by 2002:a05:6214:4285:b0:658:708c:4d56 with SMTP id
- og5-20020a056214428500b00658708c4d56mr23048987qvb.17.1697090677260; Wed, 11
- Oct 2023 23:04:37 -0700 (PDT)
+        bh=IleMAKg+GPM4xdNPivF/aSxe53FBWLj6oWJi1m12Mt4=;
+        b=hk+PuDX9UHrnjMW8DqEoEk3WnDXw+qd8xqsf6mTaBCoeoqyzVx8Ie+J7nwl415mjxS
+         qtH73uY/v/PUU+I5nbahxRdlNFxim0TCSMeZyhtNbZp/dD5RIxDxYaitvZYAfuETT9vb
+         X6kkC6Y6ZyFEmIrODaxNoGK5y1BtSHuUzNOMGU+Mv1+gvAIJlV88uyJ3yTIKm0kOHnYT
+         5s7lyhtAUqSt5YX8qJMUE2rUsSA2SUHY/OvMsiiaNIi4vMKMoxPNvM6ZR0zk4/3YvuSE
+         sjw4GZU1S2kUHek3JlCPTWpJ1Z7YZuA8P+gt5oIMSABc8gZrNbUCIQknVl1wKsEwfhQb
+         DE2w==
+X-Gm-Message-State: AOJu0Ywpu2X9nKM5p2zHeI6pyOHqVgecmBxSutvo0NEJxFkSHy0Yr/Rt
+	FTkKy63NvL7kgLTuI8fYNau3oAIz0/NeBG+XAQ==
+X-Google-Smtp-Source: AGHT+IFQ353yTk3+nKKDmFe0eALFrWtMyQLeRj2n4iGQUeDFwe81I4FXFCULAILRECxIujY+EIYFG9l/NxXvHPVCpEA=
+X-Received: by 2002:a25:800b:0:b0:d9a:39d9:f4fa with SMTP id
+ m11-20020a25800b000000b00d9a39d9f4famr8491995ybk.11.1697091793792; Wed, 11
+ Oct 2023 23:23:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231011223728.3188086-1-andrii@kernel.org> <20231011223728.3188086-2-andrii@kernel.org>
-In-Reply-To: <20231011223728.3188086-2-andrii@kernel.org>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Thu, 12 Oct 2023 14:04:01 +0800
-Message-ID: <CALOAHbDMtn-Z7p6+oJG3D=fDpreDLb7hzRjrbPgiPn30=heDCA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] selftests/bpf: improve percpu_alloc test robustness
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@kernel.org, kernel-team@meta.com
+References: <20231009-jmp-into-reserved-fields-v1-1-d8006e2ac1f6@gmail.com>
+ <6524f6f77b896_66abc2084d@john.notmuch> <92f824ec-9538-501c-e63e-8483ffe14bad@iogearbox.net>
+ <CAEf4Bza2s=JwR8b6d_x+bj5Y7iZ+ZDOMOJRNwcXF1ATWzHCxcA@mail.gmail.com>
+ <CACkBjsZiaXTANv=c5QE3OvcB=KUgdFuMY8O4ft4Q3h6dDNVarg@mail.gmail.com> <79dd71a5-446d-9b05-7d37-40e49bbf04ae@iogearbox.net>
+In-Reply-To: <79dd71a5-446d-9b05-7d37-40e49bbf04ae@iogearbox.net>
+From: Hao Sun <sunhao.th@gmail.com>
+Date: Thu, 12 Oct 2023 08:23:02 +0200
+Message-ID: <CACkBjsadVpmppbFE8Dp5eym3DK3zFF2ojvvSpTW3b9PsC6CdgA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] Detect jumping to reserved code during check_cfg()
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, John Fastabend <john.fastabend@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,123 +86,219 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Oct 12, 2023 at 6:37=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org>=
- wrote:
+On Wed, Oct 11, 2023 at 4:50=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
 >
-> Make these non-serial tests filter BPF programs by intended PID of
-> a test runner process. This makes it isolated from other parallel tests
-> that might interfere accidentally.
+> On 10/11/23 8:46 AM, Hao Sun wrote:
+> > On Wed, Oct 11, 2023 at 4:42=E2=80=AFAM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> >> On Tue, Oct 10, 2023 at 1:33=E2=80=AFAM Daniel Borkmann <daniel@iogear=
+box.net> wrote:
+> >>> On 10/10/23 9:02 AM, John Fastabend wrote:
+> >>>> Hao Sun wrote:
+> >>>>> Currently, we don't check if the branch-taken of a jump is reserved=
+ code of
+> >>>>> ld_imm64. Instead, such a issue is captured in check_ld_imm(). The =
+verifier
+> >>>>> gives the following log in such case:
+> >>>>>
+> >>>>> func#0 @0
+> >>>>> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
+> >>>>> 0: (18) r4 =3D 0xffff888103436000       ; R4_w=3Dmap_ptr(off=3D0,ks=
+=3D4,vs=3D128,imm=3D0)
+> >>>>> 2: (18) r1 =3D 0x1d                     ; R1_w=3D29
+> >>>>> 4: (55) if r4 !=3D 0x0 goto pc+4        ; R4_w=3Dmap_ptr(off=3D0,ks=
+=3D4,vs=3D128,imm=3D0)
+> >>>>> 5: (1c) w1 -=3D w1                      ; R1_w=3D0
+> >>>>> 6: (18) r5 =3D 0x32                     ; R5_w=3D50
+> >>>>> 8: (56) if w5 !=3D 0xfffffff4 goto pc-2
+> >>>>> mark_precise: frame0: last_idx 8 first_idx 0 subseq_idx -1
+> >>>>> mark_precise: frame0: regs=3Dr5 stack=3D before 6: (18) r5 =3D 0x32
+> >>>>> 7: R5_w=3D50
+> >>>>> 7: BUG_ld_00
+> >>>>> invalid BPF_LD_IMM insn
+> >>>>>
+> >>>>> Here the verifier rejects the program because it thinks insn at 7 i=
+s an
+> >>>>> invalid BPF_LD_IMM, but such a error log is not accurate since the =
+issue
+> >>>>> is jumping to reserved code not because the program contains invali=
+d insn.
+> >>>>> Therefore, make the verifier check the jump target during check_cfg=
+(). For
+> >>>>> the same program, the verifier reports the following log:
+> >>>>
+> >>>> I think we at least would want a test case for this. Also how did yo=
+u create
+> >>>> this case? Is it just something you did manually and noticed a stran=
+ge error?
+> >>>
+> >>> Curious as well.
+> >>>
+> >>> We do have test cases which try to jump into the middle of a double i=
+nsn as can
+> >>> be seen that this patch breaks BPF CI with regards to log mismatch be=
+low (which
+> >>> still needs to be adapted, too). Either way, it probably doesn't hurt=
+ to also add
+> >>> the above snippet as a test.
+> >>>
+> >>> Hao, as I understand, the patch here is an usability improvement (not=
+ a fix per se)
+> >>> where we reject such cases earlier during cfg check rather than at a =
+later point
+> >>> where we validate ld_imm instruction. Or are there cases you found wh=
+ich were not
+> >>> yet captured via current check_ld_imm()?
+> >>>
+> >>> test_verifier failure log :
+> >>>
+> >>>     #458/u test1 ld_imm64 FAIL
+> >>>     Unexpected verifier log!
+> >>>     EXP: R1 pointer comparison
+> >>>     RES:
+> >>>     FAIL
+> >>>     Unexpected error message!
+> >>>          EXP: R1 pointer comparison
+> >>>          RES: jump to reserved code from insn 0 to 2
+> >>>     verification time 22 usec
+> >>>     stack depth 0
+> >>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_sta=
+tes 0 peak_states 0 mark_read 0
+> >>>
+> >>>     jump to reserved code from insn 0 to 2
+> >>>     verification time 22 usec
+> >>>     stack depth 0
+> >>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_sta=
+tes 0 peak_states 0 mark_read 0
+> >>>     #458/p test1 ld_imm64 FAIL
+> >>>     Unexpected verifier log!
+> >>>     EXP: invalid BPF_LD_IMM insn
+> >>>     RES:
+> >>>     FAIL
+> >>>     Unexpected error message!
+> >>>          EXP: invalid BPF_LD_IMM insn
+> >>>          RES: jump to reserved code from insn 0 to 2
+> >>>     verification time 9 usec
+> >>>     stack depth 0
+> >>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_sta=
+tes 0 peak_states 0 mark_read 0
+> >>>
+> >>>     jump to reserved code from insn 0 to 2
+> >>>     verification time 9 usec
+> >>>     stack depth 0
+> >>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_sta=
+tes 0 peak_states 0 mark_read 0
+> >>>     #459/u test2 ld_imm64 FAIL
+> >>>     Unexpected verifier log!
+> >>>     EXP: R1 pointer comparison
+> >>>     RES:
+> >>>     FAIL
+> >>>     Unexpected error message!
+> >>>          EXP: R1 pointer comparison
+> >>>          RES: jump to reserved code from insn 0 to 2
+> >>>     verification time 11 usec
+> >>>     stack depth 0
+> >>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_sta=
+tes 0 peak_states 0 mark_read 0
+> >>>
+> >>>     jump to reserved code from insn 0 to 2
+> >>>     verification time 11 usec
+> >>>     stack depth 0
+> >>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_sta=
+tes 0 peak_states 0 mark_read 0
+> >>>     #459/p test2 ld_imm64 FAIL
+> >>>     Unexpected verifier log!
+> >>>     EXP: invalid BPF_LD_IMM insn
+> >>>     RES:
+> >>>     FAIL
+> >>>     Unexpected error message!
+> >>>          EXP: invalid BPF_LD_IMM insn
+> >>>          RES: jump to reserved code from insn 0 to 2
+> >>>     verification time 8 usec
+> >>>     stack depth 0
+> >>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_sta=
+tes 0 peak_states 0 mark_read 0
+> >>>
+> >>>     jump to reserved code from insn 0 to 2
+> >>>     verification time 8 usec
+> >>>     stack depth 0
+> >>>     processed 0 insns (limit 1000000) max_states_per_insn 0 total_sta=
+tes 0 peak_states 0 mark_read 0
+> >>>     #460/u test3 ld_imm64 OK
+> >>>
+> >>>>> func#0 @0
+> >>>>> jump to reserved code from insn 8 to 7
+> >>>>>
+> >>>>> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+> >>>
+> >>> nit: This needs to be before the "---" line.
+> >>>
+> >>>>> ---
+> >>>>>    kernel/bpf/verifier.c | 7 +++++++
+> >>>>>    1 file changed, 7 insertions(+)
+> >>>>>
+> >>>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> >>>>> index eed7350e15f4..725ac0b464cf 100644
+> >>>>> --- a/kernel/bpf/verifier.c
+> >>>>> +++ b/kernel/bpf/verifier.c
+> >>>>> @@ -14980,6 +14980,7 @@ static int push_insn(int t, int w, int e, s=
+truct bpf_verifier_env *env,
+> >>>>>    {
+> >>>>>       int *insn_stack =3D env->cfg.insn_stack;
+> >>>>>       int *insn_state =3D env->cfg.insn_state;
+> >>>>> +    struct bpf_insn *insns =3D env->prog->insnsi;
+> >>>>>
+> >>>>>       if (e =3D=3D FALLTHROUGH && insn_state[t] >=3D (DISCOVERED | =
+FALLTHROUGH))
+> >>>>>               return DONE_EXPLORING;
+> >>>>> @@ -14993,6 +14994,12 @@ static int push_insn(int t, int w, int e, =
+struct bpf_verifier_env *env,
+> >>>>>               return -EINVAL;
+> >>>>>       }
+> >>>>>
+> >>>>> +    if (e =3D=3D BRANCH && insns[w].code =3D=3D 0) {
+> >>>>> +            verbose_linfo(env, t, "%d", t);
+> >>>>> +            verbose(env, "jump to reserved code from insn %d to %d=
+\n", t, w);
+> >>>>> +            return -EINVAL;
+> >>>>> +    }
+> >>>
+> >>> Other than that, lgtm.
+> >>
+> >> We do rely quite a lot on verifier not complaining eagerly about some
+> >> potentially invalid instructions if it's provable that some portion of
+> >> the code won't ever be reached (think using .rodata variables for
+> >> feature gating, poisoning intructions due to failed CO-RE relocation,
+> >> which libbpf does actively, except it's using a call to non-existing
+> >> helper). As such, check_cfg() is a wrong place to do such validity
+> >> checks because some of the branches might never be run and validated
+> >> in practice.
+> >
+> > Don't really agree. Jump to the middle of ld_imm64 is just like jumping
+> > out of bounds, both break the CFG integrity immediately. For those
+> > apparently incorrect  jumps, rejecting early makes everything simple;
+> > otherwise, we probably need some rewrite in the end.
 >
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  tools/testing/selftests/bpf/prog_tests/percpu_alloc.c      | 3 +++
->  tools/testing/selftests/bpf/progs/percpu_alloc_array.c     | 7 +++++++
->  .../selftests/bpf/progs/percpu_alloc_cgrp_local_storage.c  | 4 ++++
->  3 files changed, 14 insertions(+)
+> Could you elaborate on the 'breaking CFG integrity immediately'? This was
+> what I was trying to gather earlier with log improvement vs actual fix.
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c b/tool=
-s/testing/selftests/bpf/prog_tests/percpu_alloc.c
-> index 9541e9b3a034..343da65864d6 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
-> @@ -19,6 +19,7 @@ static void test_array(void)
->         bpf_program__set_autoload(skel->progs.test_array_map_3, true);
->         bpf_program__set_autoload(skel->progs.test_array_map_4, true);
+> Do you mean /potentially/ breaking CFG integrity, if, say, we had a doubl=
+e
+> insn jump in future and there is a back-jump to the 2nd part of the insn?
 >
-> +       skel->bss->my_pid =3D getpid();
->         skel->rodata->nr_cpus =3D libbpf_num_possible_cpus();
->
->         err =3D percpu_alloc_array__load(skel);
-> @@ -51,6 +52,7 @@ static void test_array_sleepable(void)
->
->         bpf_program__set_autoload(skel->progs.test_array_map_10, true);
->
-> +       skel->bss->my_pid =3D getpid();
->         skel->rodata->nr_cpus =3D libbpf_num_possible_cpus();
->
->         err =3D percpu_alloc_array__load(skel);
-> @@ -85,6 +87,7 @@ static void test_cgrp_local_storage(void)
->         if (!ASSERT_OK_PTR(skel, "percpu_alloc_cgrp_local_storage__open")=
-)
->                 goto close_fd;
->
-> +       skel->bss->my_pid =3D getpid();
->         skel->rodata->nr_cpus =3D libbpf_num_possible_cpus();
->
->         err =3D percpu_alloc_cgrp_local_storage__load(skel);
-> diff --git a/tools/testing/selftests/bpf/progs/percpu_alloc_array.c b/too=
-ls/testing/selftests/bpf/progs/percpu_alloc_array.c
-> index bbc45346e006..37c2d2608ec0 100644
-> --- a/tools/testing/selftests/bpf/progs/percpu_alloc_array.c
-> +++ b/tools/testing/selftests/bpf/progs/percpu_alloc_array.c
-> @@ -71,6 +71,7 @@ int BPF_PROG(test_array_map_2)
->  }
->
->  int cpu0_field_d, sum_field_c;
-> +int my_pid;
->
->  /* Summarize percpu data */
->  SEC("?fentry/bpf_fentry_test3")
-> @@ -81,6 +82,9 @@ int BPF_PROG(test_array_map_3)
->         struct val_t *v;
->         struct elem *e;
->
-> +       if ((bpf_get_current_pid_tgid() >> 32) !=3D my_pid)
-> +               return 0;
-> +
->         e =3D bpf_map_lookup_elem(&array, &index);
->         if (!e)
->                 return 0;
-> @@ -130,6 +134,9 @@ int BPF_PROG(test_array_map_10)
->         struct val_t *v;
->         struct elem *e;
->
-> +       if ((bpf_get_current_pid_tgid() >> 32) !=3D my_pid)
-> +               return 0;
-> +
->         e =3D bpf_map_lookup_elem(&array, &index);
->         if (!e)
->                 return 0;
-> diff --git a/tools/testing/selftests/bpf/progs/percpu_alloc_cgrp_local_st=
-orage.c b/tools/testing/selftests/bpf/progs/percpu_alloc_cgrp_local_storage=
-.c
-> index 1c36a241852c..a2acf9aa6c24 100644
-> --- a/tools/testing/selftests/bpf/progs/percpu_alloc_cgrp_local_storage.c
-> +++ b/tools/testing/selftests/bpf/progs/percpu_alloc_cgrp_local_storage.c
-> @@ -70,6 +70,7 @@ int BPF_PROG(test_cgrp_local_storage_2)
->  }
->
->  int cpu0_field_d, sum_field_c;
-> +int my_pid;
->
->  /* Summarize percpu data collection */
->  SEC("fentry/bpf_fentry_test3")
-> @@ -81,6 +82,9 @@ int BPF_PROG(test_cgrp_local_storage_3)
->         struct elem *e;
->         int i;
->
-> +       if ((bpf_get_current_pid_tgid() >> 32) !=3D my_pid)
-> +               return 0;
-> +
->         task =3D bpf_get_current_task_btf();
 
-a small nit.
+I mean jumping to the middle of ld_imm64 is similar to jumping out-of-bound=
+,
+both are CFG-related issues and can be handled early in one place.
 
-We have already got the current task. Should we better use
+For the case you mentioned, the current code would handle such an issue in
+check_ld_imm64(), and again gives "BAD_LD_IMM" log, which is strange.
 
-    if (task->pid !=3D my_pid)
-
-instead ?
-
->         e =3D bpf_cgrp_storage_get(&cgrp, task->cgroups->dfl_cgrp, 0, 0);
->         if (!e)
-> --
-> 2.34.1
+> > Also, as you mentioned, libbpf relies on non-existing helpers, not jump
+> > to the middle of ld_imm64. It seems better and easier to not leave this
+> > hole.
 >
->
-
-
---=20
-Regards
-Yafang
+> Thanks,
+> Daniel
 
