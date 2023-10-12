@@ -1,76 +1,89 @@
-Return-Path: <bpf+bounces-12029-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12030-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAF3E7C6E91
-	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 14:54:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD5587C6EC5
+	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 15:07:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 078C11C2109E
-	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 12:54:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58BFE282C09
+	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 13:07:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A05226E2E;
-	Thu, 12 Oct 2023 12:54:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B74B92940B;
+	Thu, 12 Oct 2023 13:07:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ly0QYlmJ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M/0cRI1K"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62E3F25107
-	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 12:54:19 +0000 (UTC)
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD4AF0
-	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 05:54:15 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32d3755214dso916027f8f.0
-        for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 05:54:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697115254; x=1697720054; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=P9/OwjmRdTbQ8eXw96KRM4nksnqlfAVP8C3CyB9QmWs=;
-        b=ly0QYlmJPO2sa6n40p6YjVH9lwKK1vlQBPqiXzITwMRLJWiMasuptw6GWrWzjs0tts
-         0w6i/Lta21DgDPx9aYlzSUES0SeuparGJCNLLyLuTgjX7K6/tjfkQariwvsOB/tIXHmx
-         NeqbVi/jvca6WSghEWNQFw3oeNGn5mI2+xsnDjqu7OfXS26eYT7rUdb2PqGuGRu2COzd
-         okuY0IoerJ64ZhqILtOX8UNGsP5wjvFFGhhkH3Jsps83dIWEtY1GyyCXtIiGoqjfrN8R
-         XhNcBXaerktThZykJwKKiQf1nSWUgVPBkaNY3MfzqTq3ZJQWCBM8XHpcEAN/oOhPDb2x
-         qYFQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 670E327712
+	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 13:07:33 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9926894
+	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 06:07:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1697116050;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6RsmbdmHeIJjajNpJlxE4knqBt1TJWSS+6uc9jgSnK8=;
+	b=M/0cRI1KUeBMbDkg++FV6NHiSCplY9sicEY4llaDf80pP0vZjaLYpHT4dDamr6vxUghZvv
+	ThjScP5W5R2oXwu0q28qBOBsd3x0k/DHp+dG0MMvNWpZgvWz9I/IQqQcdKK6ejl20FSHs/
+	6gtqyaTpseIZkSSvn026wrCpRXjwuCQ=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-411-F974aTLJNd6GnrzfOxnYIQ-1; Thu, 12 Oct 2023 09:07:28 -0400
+X-MC-Unique: F974aTLJNd6GnrzfOxnYIQ-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3f5df65f9f4so6390865e9.2
+        for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 06:07:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697115254; x=1697720054;
+        d=1e100.net; s=20230601; t=1697116047; x=1697720847;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=P9/OwjmRdTbQ8eXw96KRM4nksnqlfAVP8C3CyB9QmWs=;
-        b=VWSMroQ/PEIE1mePeVtcsvY4+baRtO11VNH5k+e/3pxIyGdESBYmglgccNPDJ3U4Ig
-         bRCDwf8CQprtKSClygJvJUDrp+Z5+bfMb1ysB7kCWZxgUgD2CGy/q1ZHqd4neR4PPOpG
-         WVC5qHseOPPDvoc6ncuQPqFadDKodhqUJgUAChuxFnC2DjkJgnRkq+zCn0tQpT5zs64v
-         COQskSDfb6zDcSaDG4HfxMCcAd0sdSvbT4GVCbSVUTxbnc1GpFm9U1vhy8EeZTvF7P5f
-         jfJRmbMkcVHSF3sNaUddawTc4GyBN0OwbEblEC0MZCL0RIbw8X2Vb3+lGH9W3ix8hGNr
-         O2Jg==
-X-Gm-Message-State: AOJu0YyB7Q9IdmBS+jvBOPnAkjeRJwr9fNU5a44DwEnw/Hzssqht9KUN
-	qlRRrqDIzFn1EkSBBhR2wE4=
-X-Google-Smtp-Source: AGHT+IHkOhsC8hkKQZzWpscIdMw8KZceOpjKfT1TYBjE9L899pPZ9yhMW1vrcpS4sxgy6QiGdKFZNQ==
-X-Received: by 2002:adf:fb0b:0:b0:317:6ea5:ab71 with SMTP id c11-20020adffb0b000000b003176ea5ab71mr18890991wrr.30.1697115253537;
-        Thu, 12 Oct 2023 05:54:13 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id ba18-20020a0560001c1200b0032d8a4b637bsm3360299wrb.22.2023.10.12.05.54.12
+        bh=6RsmbdmHeIJjajNpJlxE4knqBt1TJWSS+6uc9jgSnK8=;
+        b=V3Z/PJZ9uvor32ZpvABWUPJSae2IGbKBdg/cJ9qYIozCIyrD3bB1dqaKlwkIfm/mSu
+         hYehbIofdFsE+UnxtXR7BeM9XK3CJ5MILFa7/r6Sh59HNf/G140Xxmd3CJpGUHT7okO9
+         cgE2HKy3dqWTHRZauvhuRpIapqoh4PIrSu+N0tVoo5ogKizXJqcC/LV7fYgHAo4eHCvd
+         wZnSgx26eUjriHjXEaeyAopzD+jjwvwqh+4VUkDRqfQm+Au85Vlfu3jQPh6jqoTo7I6f
+         qsisSfDICMJMuKe7OLjbXUUo11J/CUTqOwn1AqKkAoyFEMlOZD2gFEa3looQOqps+aqY
+         XTUg==
+X-Gm-Message-State: AOJu0Yy5CSnbLOMDksOxLGmlH4uh3JGnCthXAcwJh7eY53XAeijtCA5d
+	QXmOva+/MWiRP49SpyV/l9R7MLQ2U9jFximjOiqmBOTkl02seidukgsG4fYtlDlDRGY0W7J60Th
+	BgEV76KZQvfob
+X-Received: by 2002:a05:600c:2219:b0:405:1c19:b747 with SMTP id z25-20020a05600c221900b004051c19b747mr20736209wml.15.1697116047568;
+        Thu, 12 Oct 2023 06:07:27 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IENFzPHy318ZIAZGjzjpy4+I+lUIwRej9/NXgZPJcOdLn4eVm1MWxNkCTzCBfrKN6XADTgSJQ==
+X-Received: by 2002:a05:600c:2219:b0:405:1c19:b747 with SMTP id z25-20020a05600c221900b004051c19b747mr20736181wml.15.1697116047160;
+        Thu, 12 Oct 2023 06:07:27 -0700 (PDT)
+Received: from redhat.com ([2a06:c701:73d2:bf00:e379:826:5137:6b23])
+        by smtp.gmail.com with ESMTPSA id i2-20020a05600c290200b004063d8b43e7sm21849039wmd.48.2023.10.12.06.07.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 05:54:13 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 12 Oct 2023 14:54:10 +0200
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: acme@kernel.org, andrii.nakryiko@gmail.com, ast@kernel.org,
-	daniel@iogearbox.net, eddyz87@gmail.com, martin.lau@linux.dev,
-	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-	mykolal@fb.com, bpf@vger.kernel.org
-Subject: Re: [RFC dwarves 1/4] btf_encoder, pahole: move btf encoding options
- into conf_load
-Message-ID: <ZSfscvIOkikSHc7w@krava>
-References: <20231011091732.93254-1-alan.maguire@oracle.com>
- <20231011091732.93254-2-alan.maguire@oracle.com>
+        Thu, 12 Oct 2023 06:07:26 -0700 (PDT)
+Date: Thu, 12 Oct 2023 09:07:23 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: virtualization@lists.linux-foundation.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH vhost 21/22] virtio_net: update tx timeout record
+Message-ID: <20231012090632-mutt-send-email-mst@kernel.org>
+References: <20231011092728.105904-1-xuanzhuo@linux.alibaba.com>
+ <20231011092728.105904-22-xuanzhuo@linux.alibaba.com>
+ <20231012050936-mutt-send-email-mst@kernel.org>
+ <1697101953.6236846-1-xuanzhuo@linux.alibaba.com>
+ <20231012052017-mutt-send-email-mst@kernel.org>
+ <1697111642.7917345-2-xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -79,155 +92,83 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231011091732.93254-2-alan.maguire@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+In-Reply-To: <1697111642.7917345-2-xuanzhuo@linux.alibaba.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Oct 11, 2023 at 10:17:29AM +0100, Alan Maguire wrote:
-> ...rather than passing them to btf_encoder__new(); this tidies
-> up the encoder API and also allows us to use generalized methods
-> to translate from a BTF feature (forthcoming) to a conf_load
-> parameter.
+On Thu, Oct 12, 2023 at 07:54:02PM +0800, Xuan Zhuo wrote:
+> On Thu, 12 Oct 2023 05:36:56 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> > On Thu, Oct 12, 2023 at 05:12:33PM +0800, Xuan Zhuo wrote:
+> > > On Thu, 12 Oct 2023 05:10:55 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> > > > On Wed, Oct 11, 2023 at 05:27:27PM +0800, Xuan Zhuo wrote:
+> > > > > If send queue sent some packets, we update the tx timeout
+> > > > > record to prevent the tx timeout.
+> > > > >
+> > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > ---
+> > > > >  drivers/net/virtio/xsk.c | 10 ++++++++++
+> > > > >  1 file changed, 10 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/net/virtio/xsk.c b/drivers/net/virtio/xsk.c
+> > > > > index 7abd46bb0e3d..e605f860edb6 100644
+> > > > > --- a/drivers/net/virtio/xsk.c
+> > > > > +++ b/drivers/net/virtio/xsk.c
+> > > > > @@ -274,6 +274,16 @@ bool virtnet_xsk_xmit(struct virtnet_sq *sq, struct xsk_buff_pool *pool,
+> > > > >
+> > > > >  	virtnet_xsk_check_queue(sq);
+> > > > >
+> > > > > +	if (stats.packets) {
+> > > > > +		struct netdev_queue *txq;
+> > > > > +		struct virtnet_info *vi;
+> > > > > +
+> > > > > +		vi = sq->vq->vdev->priv;
+> > > > > +
+> > > > > +		txq = netdev_get_tx_queue(vi->dev, sq - vi->sq);
+> > > > > +		txq_trans_cond_update(txq);
+> > > > > +	}
+> > > > > +
+> > > > >  	u64_stats_update_begin(&sq->stats.syncp);
+> > > > >  	sq->stats.packets += stats.packets;
+> > > > >  	sq->stats.bytes += stats.bytes;
+> > > >
+> > > > I don't get what this is doing. Is there some kind of race here you
+> > > > are trying to address? And what introduced the race?
+> > >
+> > >
+> > > Because the xsk xmit shares the send queue with the kernel xmit,
+> > > then when I do benchmark, the xsk will always use the send queue,
+> > > so the kernel may have no chance to do xmit, the tx watchdog
+> > > thinks that the send queue is hang and prints tx timeout log.
+> > >
+> > > So I call the txq_trans_cond_update() to tell the tx watchdog
+> > > that the send queue is working.
+> > >
+> > > Thanks.
+> >
+> > Don't like this hack.
+> > So packets are stuck in queue - that's not good is it?
+> > Is ours the only driver that shares queues like this?
 > 
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-
-nice cleanup
-
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-jirka
-
-> ---
->  btf_encoder.c |  8 ++++----
->  btf_encoder.h |  2 +-
->  dwarves.h     |  3 +++
->  pahole.c      | 21 ++++++++-------------
->  4 files changed, 16 insertions(+), 18 deletions(-)
+> NO.
 > 
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 65f6e71..fd04008 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -1625,7 +1625,7 @@ out:
->  	return err;
->  }
->  
-> -struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filename, struct btf *base_btf, bool skip_encoding_vars, bool force, bool gen_floats, bool verbose)
-> +struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filename, struct btf *base_btf, bool verbose, struct conf_load *conf_load)
->  {
->  	struct btf_encoder *encoder = zalloc(sizeof(*encoder));
->  
-> @@ -1639,9 +1639,9 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
->  		if (encoder->btf == NULL)
->  			goto out_delete;
->  
-> -		encoder->force		 = force;
-> -		encoder->gen_floats	 = gen_floats;
-> -		encoder->skip_encoding_vars = skip_encoding_vars;
-> +		encoder->force		 = conf_load->btf_encode_force;
-> +		encoder->gen_floats	 = conf_load->btf_gen_floats;
-> +		encoder->skip_encoding_vars = conf_load->skip_encoding_btf_vars;
->  		encoder->verbose	 = verbose;
->  		encoder->has_index_type  = false;
->  		encoder->need_index_type = false;
-> diff --git a/btf_encoder.h b/btf_encoder.h
-> index 34516bb..f54c95a 100644
-> --- a/btf_encoder.h
-> +++ b/btf_encoder.h
-> @@ -16,7 +16,7 @@ struct btf;
->  struct cu;
->  struct list_head;
->  
-> -struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filename, struct btf *base_btf, bool skip_encoding_vars, bool force, bool gen_floats, bool verbose);
-> +struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filename, struct btf *base_btf, bool verbose, struct conf_load *conf_load);
->  void btf_encoder__delete(struct btf_encoder *encoder);
->  
->  int btf_encoder__encode(struct btf_encoder *encoder);
-> diff --git a/dwarves.h b/dwarves.h
-> index eb1a6df..db68161 100644
-> --- a/dwarves.h
-> +++ b/dwarves.h
-> @@ -68,6 +68,9 @@ struct conf_load {
->  	bool			skip_encoding_btf_enum64;
->  	bool			btf_gen_optimized;
->  	bool			skip_encoding_btf_inconsistent_proto;
-> +	bool			skip_encoding_btf_vars;
-> +	bool			btf_gen_floats;
-> +	bool			btf_encode_force;
->  	uint8_t			hashtable_bits;
->  	uint8_t			max_hashtable_bits;
->  	uint16_t		kabi_prefix_len;
-> diff --git a/pahole.c b/pahole.c
-> index e843999..7a41dc3 100644
-> --- a/pahole.c
-> +++ b/pahole.c
-> @@ -32,13 +32,10 @@
->  static struct btf_encoder *btf_encoder;
->  static char *detached_btf_filename;
->  static bool btf_encode;
-> -static bool btf_gen_floats;
->  static bool ctf_encode;
->  static bool sort_output;
->  static bool need_resort;
->  static bool first_obj_only;
-> -static bool skip_encoding_btf_vars;
-> -static bool btf_encode_force;
->  static const char *base_btf_file;
->  
->  static const char *prettify_input_filename;
-> @@ -1786,9 +1783,9 @@ static error_t pahole__options_parser(int key, char *arg,
->  	case ARGP_header_type:
->  		conf.header_type = arg;			break;
->  	case ARGP_skip_encoding_btf_vars:
-> -		skip_encoding_btf_vars = true;		break;
-> +		conf_load.skip_encoding_btf_vars = true;	break;
->  	case ARGP_btf_encode_force:
-> -		btf_encode_force = true;		break;
-> +		conf_load.btf_encode_force = true;	break;
->  	case ARGP_btf_base:
->  		base_btf_file = arg;			break;
->  	case ARGP_kabi_prefix:
-> @@ -1797,9 +1794,9 @@ static error_t pahole__options_parser(int key, char *arg,
->  	case ARGP_numeric_version:
->  		print_numeric_version = true;		break;
->  	case ARGP_btf_gen_floats:
-> -		btf_gen_floats = true;			break;
-> +		conf_load.btf_gen_floats = true;	break;
->  	case ARGP_btf_gen_all:
-> -		btf_gen_floats = true;			break;
-> +		conf_load.btf_gen_floats = true;	break;
->  	case ARGP_with_flexible_array:
->  		show_with_flexible_array = true;	break;
->  	case ARGP_prettify_input_filename:
-> @@ -3063,8 +3060,8 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
->  			 * And, it is used by the thread
->  			 * create it.
->  			 */
-> -			btf_encoder = btf_encoder__new(cu, detached_btf_filename, conf_load->base_btf, skip_encoding_btf_vars,
-> -						       btf_encode_force, btf_gen_floats, global_verbose);
-> +			btf_encoder = btf_encoder__new(cu, detached_btf_filename, conf_load->base_btf,
-> +						       global_verbose, conf_load);
->  			if (btf_encoder && thr_data) {
->  				struct thread_data *thread = thr_data;
->  
-> @@ -3093,10 +3090,8 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
->  				thread->encoder =
->  					btf_encoder__new(cu, detached_btf_filename,
->  							 NULL,
-> -							 skip_encoding_btf_vars,
-> -							 btf_encode_force,
-> -							 btf_gen_floats,
-> -							 global_verbose);
-> +							 global_verbose,
-> +							 conf_load);
->  				thread->btf = btf_encoder__btf(thread->encoder);
->  			}
->  			encoder = thread->encoder;
-> -- 
-> 2.31.1
+> And txq_trans_cond_update() is called by many net drivers for the similar reason.
 > 
+> Thanks
+
+Hmm it seems you are right. OK, sorry about the noise.
+
+> 
+> >
+> > >
+> > > >
+> > > > > --
+> > > > > 2.32.0.3.g01195cf9f
+> > > >
+> > > >
+> >
+
 
