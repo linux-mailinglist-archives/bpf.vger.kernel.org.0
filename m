@@ -1,84 +1,89 @@
-Return-Path: <bpf+bounces-12046-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12048-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D1F67C73AF
-	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 19:04:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 352EE7C73C2
+	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 19:12:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E49E7282F09
-	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 17:04:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66FEF1C21154
+	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 17:12:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02A2634CC4;
-	Thu, 12 Oct 2023 17:04:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37211339AA;
+	Thu, 12 Oct 2023 17:12:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EKyrHvpe"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ah7yQW6L"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E7682AB57;
-	Thu, 12 Oct 2023 17:04:41 +0000 (UTC)
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7EED6;
-	Thu, 12 Oct 2023 10:04:39 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32157c8e4c7so1158221f8f.1;
-        Thu, 12 Oct 2023 10:04:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697130278; x=1697735078; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VkUJ0oO3Mp9xCXnylh1JdkHseQH/mUhjkeml5gm5SR8=;
-        b=EKyrHvpe3wR6P8/JJLVVlxu74L7tuvaOtZLYAV60i5Qdk9bLS5Vp4TRpQMPanXcRIG
-         HNfal8veY8MW4jukBlswEr9s8TtYCcm/Cv7MarTEP1tLYoI3OF8xSPmTzi/kTmuM7HlJ
-         c9ouDVCNnFEJ697ucVTGzopnAXIlHxBZk3x9Ji9MeJ34LGt/zWbRICS3wR/S/e8Bk69S
-         a8oGXCn+LD8SME9pxhaTjkIKacFE6D6q9ANZt5xFd2syMgp+kC4UDrSD+ucLMfSrPHsg
-         AZxgDJGmTLhqpITP2CF8ILNJhCIQ1dSHwv2ze9Yl+UoSAaB97VLpf6+lEaeQBxxiPn+w
-         eorg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697130278; x=1697735078;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VkUJ0oO3Mp9xCXnylh1JdkHseQH/mUhjkeml5gm5SR8=;
-        b=w3zobfsJvyT4yvIfjLmWAzo2KESGNkbozblTTk5HptZ/zSRKE5NiJRe8dP31oWgY5k
-         NTH64CeZEgbUrii/lB3TgQbfTXTVVXqYVXYC76N4QuKgT/i/afgYpI5Oh69mv/nTOYqj
-         tur+WwIdo5TJlM7cN65zcB1PRjI80+rZJ+sOdjcdtw7cCCloPD5YjYcL5qtUX6UGEVf+
-         YkqM3GRwTGKCCTlgIkXAzJnPJ5F6AtM/vj9Xo61PwD8zohnRfcJQEyeNWhCvWdPXOb2l
-         aEt4muFugEdgEFqH8t0TarHnBVPp/tmdI9O98O3DKkcRUD22xtO0KcyBt83hqC6O+E1v
-         g8tQ==
-X-Gm-Message-State: AOJu0YwOBYRp4wQdbF4OqJj6WVbM+Zx9BGSuBdXEm3lkQPLJaL9JcGXV
-	chbzpemZqCtXEyeqwKljePM=
-X-Google-Smtp-Source: AGHT+IGEfvOX2oiWBKkh4O/yKmWydOZ76wDsxaQCjAqvjCnNn57Y9QF5SeE6lMfg3rl+IKZUkH80og==
-X-Received: by 2002:a05:6000:b0f:b0:32d:9572:6469 with SMTP id dj15-20020a0560000b0f00b0032d95726469mr1470249wrb.46.1697130277811;
-        Thu, 12 Oct 2023 10:04:37 -0700 (PDT)
-Received: from lucifer.home ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.googlemail.com with ESMTPSA id h16-20020adffd50000000b003197869bcd7sm18875418wrs.13.2023.10.12.10.04.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 10:04:36 -0700 (PDT)
-From: Lorenzo Stoakes <lstoakes@gmail.com>
-To: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Hugh Dickins <hughd@google.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Lorenzo Stoakes <lstoakes@gmail.com>
-Subject: [PATCH v4 3/3] mm: perform the mapping_map_writable() check after call_mmap()
-Date: Thu, 12 Oct 2023 18:04:30 +0100
-Message-ID: <55e413d20678a1bb4c7cce889062bbb07b0df892.1697116581.git.lstoakes@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1697116581.git.lstoakes@gmail.com>
-References: <cover.1697116581.git.lstoakes@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB7F72B76E;
+	Thu, 12 Oct 2023 17:12:41 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D92B7;
+	Thu, 12 Oct 2023 10:12:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697130760; x=1728666760;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=AU5WQZnJB4MsmwO/vorGeCBj1LsumsIqK9Eo87FY3Kk=;
+  b=Ah7yQW6LhMqaanPBg+CfspuQDy87iWUA7rYqNyHw/9eCgksTcebBtE2W
+   +CcBVCtslPIAFGh1rdQGPQGV0gdeGhly/+9dRbxkXSyuSWxBlzDrPkL5h
+   MPObWws9aXSN/ogd0Le0cY12sO5dMkD3FWkXBTlk/nrrtmj0EPEXbYC82
+   MnisUDGdr5shyPPddY39dDAGLK65faR5AXMu2rtbXyVXEJEVgqNABm+Vx
+   Yrj4rorOZ6lxmcIGOkubu4Ghljy0aAJdU82M1NJeK4KZtDibkpRzjRepf
+   w1SjiOMYf7CaJOw0wBRFqOG6uoWdN7OzmRxbpMaYTuttUIRx1IqKZAD5n
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="416027516"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="416027516"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 10:11:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="783773891"
+X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
+   d="scan'208";a="783773891"
+Received: from irvmail002.ir.intel.com ([10.43.11.120])
+  by orsmga008.jf.intel.com with ESMTP; 12 Oct 2023 10:11:46 -0700
+Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 3F4A733BFF;
+	Thu, 12 Oct 2023 18:11:43 +0100 (IST)
+From: Larysa Zaremba <larysa.zaremba@intel.com>
+To: bpf@vger.kernel.org
+Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yhs@fb.com,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	David Ahern <dsahern@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Willem de Bruijn <willemb@google.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Anatoly Burakov <anatoly.burakov@intel.com>,
+	Alexander Lobakin <alexandr.lobakin@intel.com>,
+	Magnus Karlsson <magnus.karlsson@gmail.com>,
+	Maryam Tahhan <mtahhan@redhat.com>,
+	xdp-hints@xdp-project.net,
+	netdev@vger.kernel.org,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Simon Horman <simon.horman@corigine.com>,
+	Tariq Toukan <tariqt@mellanox.com>,
+	Saeed Mahameed <saeedm@mellanox.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH bpf-next v6 00/18] XDP metadata via kfuncs for ice + VLAN hint
+Date: Thu, 12 Oct 2023 19:05:06 +0200
+Message-ID: <20231012170524.21085-1-larysa.zaremba@intel.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,106 +91,146 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-In order for a F_SEAL_WRITE sealed memfd mapping to have an opportunity to
-clear VM_MAYWRITE, we must be able to invoke the appropriate vm_ops->mmap()
-handler to do so. We would otherwise fail the mapping_map_writable() check
-before we had the opportunity to avoid it.
+This series introduces XDP hints via kfuncs [0] to the ice driver.
 
-This patch moves this check after the call_mmap() invocation. Only memfd
-actively denies write access causing a potential failure here (in
-memfd_add_seals()), so there should be no impact on non-memfd cases.
+Series brings the following existing hints to the ice driver:
+ - HW timestamp
+ - RX hash with type
 
-This patch makes the userland-visible change that MAP_SHARED, PROT_READ
-mappings of an F_SEAL_WRITE sealed memfd mapping will now succeed.
+Series also introduces VLAN tag with protocol XDP hint, it now be accessed by
+XDP and userspace (AF_XDP) programs. They can also be checked with xdp_metadata
+test and xdp_hw_metadata program.
 
-There is a delicate situation with cleanup paths assuming that a writable
-mapping must have occurred in circumstances where it may now not have. In
-order to ensure we do not accidentally mark a writable file unwritable by
-mistake, we explicitly track whether we have a writable mapping and
-unmap only if we do.
+On Maciej's request, I provide some numbers about impact of these patches
+on ice performance.
+ZC:
+* Full hints implementation before addition of the static key decreases
+  pps in ZC mode by 6%
+* Adding a static key eliminates this drop. Overall performce difference
+  compared to a clean tree in inconsequential.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=217238
-Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
----
- mm/mmap.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+skb (packets with invalid IP, dropped by stack):
+* Overall, patchset improves peak performance in skb mode by about 0.5%
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 0041e3631f6c..7f45a08e7973 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -2752,6 +2752,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
- 	unsigned long charged = 0;
- 	unsigned long end = addr + len;
- 	unsigned long merge_start = addr, merge_end = end;
-+	bool writable_file_mapping = false;
- 	pgoff_t vm_pgoff;
- 	int error;
- 	VMA_ITERATOR(vmi, mm, addr);
-@@ -2846,17 +2847,19 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
- 	vma->vm_pgoff = pgoff;
- 
- 	if (file) {
--		if (is_shared_maywrite(vm_flags)) {
--			error = mapping_map_writable(file->f_mapping);
--			if (error)
--				goto free_vma;
--		}
--
- 		vma->vm_file = get_file(file);
- 		error = call_mmap(file, vma);
- 		if (error)
- 			goto unmap_and_free_vma;
- 
-+		if (vma_is_shared_maywrite(vma)) {
-+			error = mapping_map_writable(file->f_mapping);
-+			if (error)
-+				goto close_and_free_vma;
-+
-+			writable_file_mapping = true;
-+		}
-+
- 		/*
- 		 * Expansion is handled above, merging is handled below.
- 		 * Drivers should not alter the address of the VMA.
-@@ -2920,8 +2923,10 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
- 	mm->map_count++;
- 	if (vma->vm_file) {
- 		i_mmap_lock_write(vma->vm_file->f_mapping);
--		if (vma_is_shared_maywrite(vma))
-+		if (vma_is_shared_maywrite(vma)) {
- 			mapping_allow_writable(vma->vm_file->f_mapping);
-+			writable_file_mapping = true;
-+		}
- 
- 		flush_dcache_mmap_lock(vma->vm_file->f_mapping);
- 		vma_interval_tree_insert(vma, &vma->vm_file->f_mapping->i_mmap);
-@@ -2937,7 +2942,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
- 
- 	/* Once vma denies write, undo our temporary denial count */
- unmap_writable:
--	if (file && is_shared_maywrite(vm_flags))
-+	if (writable_file_mapping)
- 		mapping_unmap_writable(file->f_mapping);
- 	file = vma->vm_file;
- 	ksm_add_vma(vma);
-@@ -2985,7 +2990,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
- 		unmap_region(mm, &vmi.mas, vma, prev, next, vma->vm_start,
- 			     vma->vm_end, vma->vm_end, true);
- 	}
--	if (file && is_shared_maywrite(vm_flags))
-+	if (writable_file_mapping)
- 		mapping_unmap_writable(file->f_mapping);
- free_vma:
- 	vm_area_free(vma);
+[0] https://patchwork.kernel.org/project/netdevbpf/cover/20230119221536.3349901-1-sdf@google.com/
+
+Intermediate RFC v2:
+https://lore.kernel.org/bpf/20230927075124.23941-1-larysa.zaremba@intel.com/
+Intermediate RFC v1:
+https://lore.kernel.org/bpf/20230824192703.712881-1-larysa.zaremba@intel.com/
+v5:
+https://lore.kernel.org/bpf/20230811161509.19722-1-larysa.zaremba@intel.com/
+v4:
+https://lore.kernel.org/bpf/20230728173923.1318596-1-larysa.zaremba@intel.com/
+v3:
+https://lore.kernel.org/bpf/20230719183734.21681-1-larysa.zaremba@intel.com/
+v2:
+https://lore.kernel.org/bpf/20230703181226.19380-1-larysa.zaremba@intel.com/
+v1:
+https://lore.kernel.org/all/20230512152607.992209-1-larysa.zaremba@intel.com/
+
+Changes since v5:
+* drop checksum hint from the patchset entirely
+* Alex's patch that lifts the data_meta size limitation is no longer
+  required in this patchset, so will be sent separately
+* new patch: hide some ice hints code behind a static key
+* fix several bugs in ZC mode (ice)
+* change argument order in VLAN hint kfunc (tci, proto -> proto, tci)
+* cosmetic changes
+* analyze performance impact
+
+Changes since v4:
+* Drop the concept of partial checksum from the hint design
+* Drop the concept of checksum level from the hint design
+
+Changes since v3:
+* use XDP_CHECKSUM_VALID_LVL0 + csum_level instead of csum_level + 1
+* fix spelling mistakes
+* read XDP timestamp unconditionally
+* add TO_STR() macro
+
+Changes since v2:
+* redesign checksum hint, so now it gives full status
+* rename vlan_tag -> vlan_tci, where applicable
+* use open_netns() and close_netns() in xdp_metadata
+* improve VLAN hint documentation
+* replace CFI with DEI
+* use VLAN_VID_MASK in xdp_metadata
+* make vlan_get_tag() return -ENODATA
+* remove unused rx_ptype in ice_xsk.c
+* fix ice timestamp code division between patches
+
+Changes since v1:
+* directly return RX hash, RX timestamp and RX checksum status
+  in skb-common functions
+* use intermediate enum value for checksum status in ice
+* get rid of ring structure dependency in ice kfunc implementation
+* make variables const, when possible, in ice implementation
+* use -ENODATA instead of -EOPNOTSUPP for driver implementation
+* instead of having 2 separate functions for c-tag and s-tag,
+  use 1 function that outputs both VLAN tag and protocol ID
+* improve documentation for introduced hints
+* update xdp_metadata selftest to test new hints
+* implement new hints in veth, so they can be tested in xdp_metadata
+* parse VLAN tag in xdp_hw_metadata
+
+Larysa Zaremba (18):
+  ice: make RX hash reading code more reusable
+  ice: make RX HW timestamp reading code more reusable
+  ice: Make ptype internal to descriptor info processing
+  ice: Introduce ice_xdp_buff
+  ice: Support HW timestamp hint
+  ice: Support RX hash XDP hint
+  ice: Support XDP hints in AF_XDP ZC mode
+  xdp: Add VLAN tag hint
+  ice: Implement VLAN tag hint
+  ice: use VLAN proto from ring packet context in skb path
+  ice: put XDP meta sources assignment under a static key condition
+  veth: Implement VLAN tag XDP hint
+  net: make vlan_get_tag() return -ENODATA instead of -EINVAL
+  mlx5: implement VLAN tag XDP hint
+  selftests/bpf: Allow VLAN packets in xdp_hw_metadata
+  selftests/bpf: Add flags and VLAN hint to xdp_hw_metadata
+  selftests/bpf: Use AF_INET for TX in xdp_metadata
+  selftests/bpf: Check VLAN tag and proto in xdp_metadata
+
+ Documentation/networking/xdp-rx-metadata.rst  |   8 +-
+ drivers/net/ethernet/intel/ice/ice.h          |   3 +
+ drivers/net/ethernet/intel/ice/ice_ethtool.c  |   2 +-
+ .../net/ethernet/intel/ice/ice_lan_tx_rx.h    | 412 +++++++++---------
+ drivers/net/ethernet/intel/ice/ice_lib.c      |   2 +-
+ drivers/net/ethernet/intel/ice/ice_main.c     |  35 ++
+ drivers/net/ethernet/intel/ice/ice_ptp.c      |  25 +-
+ drivers/net/ethernet/intel/ice/ice_ptp.h      |  16 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.c     |  20 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.h     |  29 +-
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 209 ++++++++-
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.h |  18 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c      |  49 ++-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  15 +
+ drivers/net/veth.c                            |  19 +
+ include/linux/if_vlan.h                       |   4 +-
+ include/linux/mlx5/device.h                   |   2 +-
+ include/net/xdp.h                             |   9 +
+ include/uapi/linux/netdev.h                   |   5 +-
+ net/core/xdp.c                                |  33 ++
+ tools/include/uapi/linux/netdev.h             |   5 +-
+ .../selftests/bpf/prog_tests/xdp_metadata.c   | 184 ++++----
+ .../selftests/bpf/progs/xdp_hw_metadata.c     |  38 +-
+ .../selftests/bpf/progs/xdp_metadata.c        |   5 +
+ tools/testing/selftests/bpf/testing_helpers.h |   3 +
+ tools/testing/selftests/bpf/xdp_hw_metadata.c |  38 +-
+ tools/testing/selftests/bpf/xdp_metadata.h    |  34 +-
+ 27 files changed, 816 insertions(+), 406 deletions(-)
+
 -- 
-2.42.0
+2.41.0
 
 
