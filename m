@@ -1,177 +1,139 @@
-Return-Path: <bpf+bounces-12009-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12010-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F10B67C65A0
-	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 08:32:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D816E7C66A7
+	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 09:50:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76F9A2826BD
-	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 06:32:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFC02282924
+	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 07:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEC7ECA77;
-	Thu, 12 Oct 2023 06:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C596615E9C;
+	Thu, 12 Oct 2023 07:50:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FQgWY1gR"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="i8ErYKva"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC429D529
-	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 06:32:49 +0000 (UTC)
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57885BA;
-	Wed, 11 Oct 2023 23:32:48 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d9abc069c8bso518364276.3;
-        Wed, 11 Oct 2023 23:32:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697092367; x=1697697167; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tLs232MoIvKTceoFGKf83FsYAh/WEEvSsX2TipWGeU4=;
-        b=FQgWY1gRQCI3x8yWmyVVZY1MEkz/WxLWijdF2uaZanr7xLvbUOYTB+FTPqOGL1nIrK
-         ThAVKJspSYKJS726r/FEn0t3CaW2G1BBf6lhKlqtgFT30r91uTo/pFR636jwkcwYOFxv
-         nAFPInV0GRvvaNJtaSAK3hqQzVlP7Bl1+XDmaUsCsliaMfRPCc1FtHBLnOrvelNPO3yc
-         W82vFuNCrCFrZOMg1chKFdirHuPksvI5NZEq5Rvtj+kp6bbI33UpAIMu/s9p5jl3uNGT
-         ZUp1NvqUfnmW1PCRclKbxZLbLfIq9k6Tl/4OKh/1pFmzNkvs6uXux2a2K/CxTsh6VsUq
-         Bjaw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E7CED533
+	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 07:50:31 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEDACD7
+	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 00:50:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1697097028;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FiG13da8k/ZbjjqgCy1pf25ts3THBZ36xeSgrel6qHw=;
+	b=i8ErYKva0Z0GYhkPx14724ZbwMHt9+lYYUeGWJl0lNQ0pspH9TsAuq51HnYIF/FLwsRky6
+	95m+m46hiSG7gsAcG0zzTNdKKD9OWiCvJOexy2eHC8O9J8RAIs2oG1NH4I6zYwizJRJ/Ao
+	TTdE58KWtnMGHq3XfYQkL/jpYeyYNMU=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-177-YJXk7owwO72DZycKyyUj6w-1; Thu, 12 Oct 2023 03:50:26 -0400
+X-MC-Unique: YJXk7owwO72DZycKyyUj6w-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2c296e650easo6264671fa.3
+        for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 00:50:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697092367; x=1697697167;
+        d=1e100.net; s=20230601; t=1697097025; x=1697701825;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tLs232MoIvKTceoFGKf83FsYAh/WEEvSsX2TipWGeU4=;
-        b=V/9FpPeuOrFYOoLDn1MsQFKsAeJlk0yjbdoWa2WsHrXBVDZpnEaj4p/xFYzBxhZ/zt
-         HTNOMo9XcVv4oAdDz0O4HW/RZ0V2jUBJhoMMxwr5FL9T6X0ry4pH6SYSve0zPM8cq2nG
-         RXAIrJqvanuY+wFgLM7lYN+s5YvCkLjxbaenAlRdy7V8uSKJ5EIfrYGg/gHGsnHVG9/k
-         tOpE0TjLIk+d68Mbsc2suHIY36igzq/sC6nMmHpjDZAvIxPrsulAMi48tjpvfGe+RYk2
-         cZEV1k+GXDBIYXqH1bDK+do9QtkNBrrJrcthF6uSLgL8hp1FFxo9cixm2bTkuu6A8V7X
-         IEZQ==
-X-Gm-Message-State: AOJu0Yw5B4/jSal32VJVko9gWg4nJXNc5NNryZfmjHyZpIarm1+iLqbb
-	r3ghJ1+2xqK+76tuoHw+bis5lBzxi6pezFIDIQ==
-X-Google-Smtp-Source: AGHT+IHkDv5jKaQ1FgsNyM0VOVCwqFWJXnJyrusacjLePBkFgPyzB5kGHgmIe9tx3q5vW64I8SeFnjGpVfd3+nPwLKA=
-X-Received: by 2002:a25:4d89:0:b0:d99:f29f:371 with SMTP id
- a131-20020a254d89000000b00d99f29f0371mr9694650ybb.4.1697092367335; Wed, 11
- Oct 2023 23:32:47 -0700 (PDT)
+        bh=FiG13da8k/ZbjjqgCy1pf25ts3THBZ36xeSgrel6qHw=;
+        b=uvQVDa8jtSxk3yKov5/OtlHoWLk5ogjfOS4IRO/OtLEYIVkd0qIsipWQHtOnqfjN7a
+         us6VI5hobBpPv4+CDPs4zbLUYMMWjD/rSjOry+WXeMGXthO6aTQvcgbu5sLtMy58pl7C
+         MCmAFBaYM+t8bgyDEX+BbEWdWgMpiSsbXEQ+rrnWbPx/LjExnIN6O5+iiSgOL7hnJD45
+         DydYrJBL9TUESu4ADNKEz3c3yGtXmlVgsRwHVndvAkTa32i7/3jzaO6RwjyAzjVcmyNq
+         MjsUqz8tQG9MEcN70vDcUMwl/RtZ8CttSoknC+YnGfgXj6TH1ZCR+Xz7VNXKKInyFRv8
+         zj1Q==
+X-Gm-Message-State: AOJu0YzbM6vDdLzFsIJMQYpOevhccZyY5vdTC4twG+penqYQ1X8LfDXu
+	Ndeb5hnAtnLbFYXywR1r/UZ9ApSBLMCKTmZsPiC/tjvk8gcuI+S764lHsCZc5wP0Meq9DHOkMc5
+	rAFB8C10Ps8P+PMdV2vuQN38h/jPW
+X-Received: by 2002:a2e:2c1a:0:b0:2bc:e470:1405 with SMTP id s26-20020a2e2c1a000000b002bce4701405mr18183621ljs.46.1697097025336;
+        Thu, 12 Oct 2023 00:50:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHzYu7Lfht/V4Rj2WUdNomulK6QlCD6ZyUl6D/Bh+QtwT3mYue+hyDIjXaThrj7GL3e+cS6zO8ebpAqF5FI2rI=
+X-Received: by 2002:a2e:2c1a:0:b0:2bc:e470:1405 with SMTP id
+ s26-20020a2e2c1a000000b002bce4701405mr18183602ljs.46.1697097025022; Thu, 12
+ Oct 2023 00:50:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231011-jmp-into-reserved-fields-v3-0-97d2aa979788@gmail.com>
- <20231011-jmp-into-reserved-fields-v3-1-97d2aa979788@gmail.com> <CAADnVQJnhfbALtNkCauS_ZwRfybcb_mryEvZW7Uu1uOSshQ9Ew@mail.gmail.com>
-In-Reply-To: <CAADnVQJnhfbALtNkCauS_ZwRfybcb_mryEvZW7Uu1uOSshQ9Ew@mail.gmail.com>
-From: Hao Sun <sunhao.th@gmail.com>
-Date: Thu, 12 Oct 2023 08:32:36 +0200
-Message-ID: <CACkBjsabY6e1Zh1R+gyuqwpuDiXJwLDc9s9wEEqfb=1P11QeOg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/3] bpf: Detect jumping to reserved code
- during check_cfg()
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20231011092728.105904-1-xuanzhuo@linux.alibaba.com>
+ <20231011100057.535f3834@kernel.org> <1697075634.444064-2-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1697075634.444064-2-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Thu, 12 Oct 2023 15:50:13 +0800
+Message-ID: <CACGkMEsadYH8Y-KOxPX6vPic7pBqzj2DLnog5osuBDtypKgEZA@mail.gmail.com>
+Subject: Re: [PATCH vhost 00/22] virtio-net: support AF_XDP zero copy
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, virtualization@lists.linux-foundation.org, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, "Michael S. Tsirkin" <mst@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Oct 11, 2023 at 3:39=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Thu, Oct 12, 2023 at 9:58=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
+om> wrote:
 >
-> On Wed, Oct 11, 2023 at 2:01=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wro=
-te:
+> On Wed, 11 Oct 2023 10:00:57 -0700, Jakub Kicinski <kuba@kernel.org> wrot=
+e:
+> > On Wed, 11 Oct 2023 17:27:06 +0800 Xuan Zhuo wrote:
+> > > ## AF_XDP
+> > >
+> > > XDP socket(AF_XDP) is an excellent bypass kernel network framework. T=
+he zero
+> > > copy feature of xsk (XDP socket) needs to be supported by the driver.=
+ The
+> > > performance of zero copy is very good. mlx5 and intel ixgbe already s=
+upport
+> > > this feature, This patch set allows virtio-net to support xsk's zeroc=
+opy xmit
+> > > feature.
 > >
-> > Currently, we don't check if the branch-taken of a jump is reserved cod=
-e of
-> > ld_imm64. Instead, such a issue is captured in check_ld_imm(). The veri=
-fier
-> > gives the following log in such case:
-> >
-> > func#0 @0
-> > 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-> > 0: (18) r4 =3D 0xffff888103436000       ; R4_w=3Dmap_ptr(off=3D0,ks=3D4=
-,vs=3D128,imm=3D0)
-> > 2: (18) r1 =3D 0x1d                     ; R1_w=3D29
-> > 4: (55) if r4 !=3D 0x0 goto pc+4        ; R4_w=3Dmap_ptr(off=3D0,ks=3D4=
-,vs=3D128,imm=3D0)
-> > 5: (1c) w1 -=3D w1                      ; R1_w=3D0
-> > 6: (18) r5 =3D 0x32                     ; R5_w=3D50
-> > 8: (56) if w5 !=3D 0xfffffff4 goto pc-2
-> > mark_precise: frame0: last_idx 8 first_idx 0 subseq_idx -1
-> > mark_precise: frame0: regs=3Dr5 stack=3D before 6: (18) r5 =3D 0x32
-> > 7: R5_w=3D50
-> > 7: BUG_ld_00
-> > invalid BPF_LD_IMM insn
-> >
-> > Here the verifier rejects the program because it thinks insn at 7 is an
-> > invalid BPF_LD_IMM, but such a error log is not accurate since the issu=
-e
-> > is jumping to reserved code not because the program contains invalid in=
-sn.
-> > Therefore, make the verifier check the jump target during check_cfg(). =
-For
-> > the same program, the verifier reports the following log:
-> >
-> > func#0 @0
-> > jump to reserved code from insn 8 to 7
-> >
-> > Signed-off-by: Hao Sun <sunhao.th@gmail.com>
-> > ---
-> >  kernel/bpf/verifier.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index eed7350e15f4..725ac0b464cf 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -14980,6 +14980,7 @@ static int push_insn(int t, int w, int e, struc=
-t bpf_verifier_env *env,
-> >  {
-> >         int *insn_stack =3D env->cfg.insn_stack;
-> >         int *insn_state =3D env->cfg.insn_state;
-> > +       struct bpf_insn *insns =3D env->prog->insnsi;
-> >
-> >         if (e =3D=3D FALLTHROUGH && insn_state[t] >=3D (DISCOVERED | FA=
-LLTHROUGH))
-> >                 return DONE_EXPLORING;
-> > @@ -14993,6 +14994,12 @@ static int push_insn(int t, int w, int e, stru=
-ct bpf_verifier_env *env,
-> >                 return -EINVAL;
-> >         }
-> >
-> > +       if (e =3D=3D BRANCH && insns[w].code =3D=3D 0) {
-> > +               verbose_linfo(env, t, "%d", t);
-> > +               verbose(env, "jump to reserved code from insn %d to %d\=
-n", t, w);
-> > +               return -EINVAL;
-> > +       }
+> > You're moving the driver and adding a major feature.
+> > This really needs to go via net or bpf.
+> > If you have dependencies in other trees please wait for
+> > after the merge window.
 >
-> I don't think we should be changing the verifier to make
-> fuzzer logs more readable.
 >
-> Same with patch 2. The code is fine as-is.
+> If so, I can remove the first two commits.
+>
+> Then, the sq uses the premapped mode by default.
+> And we can use the api virtqueue_dma_map_single_attrs to replace the
+> virtqueue_dma_map_page_attrs.
+>
+> And then I will fix that on the top.
+>
+> Hi Micheal and Jason, is that ok for you?
 
-Confused, the changes are not for fuzzer logs but to handle jumping to
-the middle of ld_imm64. Like jumping out of bounds, both are similar
-issues and can be handled in one place.
+I would go with what looks easy for you but I think Jakub wants the
+series to go with next-next (this is what we did in the past for
+networking specific features that is done in virtio-net). So we need
+to tweak the prefix to use net-next instead of vhost.
 
-The current code handles such incorrect jumps in check_ld_imm(), which
-is strange, and the error log "BAD_LD_IMM" rather than "bad jump" is
-also strange.
+Thanks
 
-The second one is just for verifier debugging because the only
-caller of check_ld_imm() is do_check(), before which we already
-have resolve_pseudo_ldimm64() which has opcode_in_insntable()
-to check the validity of insn code. The only reason we could see
-an invalid ld_imm64 in check_id_imm() is errors somewhere else.
+
+>
+> Thanks.
+>
+
 
