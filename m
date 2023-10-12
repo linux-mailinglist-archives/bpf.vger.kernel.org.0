@@ -1,55 +1,55 @@
-Return-Path: <bpf+bounces-12054-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12055-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CB2B7C73CE
-	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 19:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8069B7C73D0
+	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 19:13:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 221CB282DEF
-	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 17:13:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39B29282C44
+	for <lists+bpf@lfdr.de>; Thu, 12 Oct 2023 17:13:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEFFD3588A;
-	Thu, 12 Oct 2023 17:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35614358BA;
+	Thu, 12 Oct 2023 17:12:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JYSu7l25"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JgcP5o4n"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1428F347CE;
-	Thu, 12 Oct 2023 17:12:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6444A34CEC;
+	Thu, 12 Oct 2023 17:12:52 +0000 (UTC)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862B5D6;
-	Thu, 12 Oct 2023 10:12:49 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF771CC;
+	Thu, 12 Oct 2023 10:12:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697130769; x=1728666769;
+  t=1697130770; x=1728666770;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=a2u8HNpfDRl5v8LylXd/DhKF0bTSqcw3XLCTWPWWUMA=;
-  b=JYSu7l255bNqsCE243idAYY6feim3UoFzejivupQlD5sBDWWGIAtrZPD
-   sPZq2ZQFBJHubYFQFVaeSRMZVMb2cXOyMy/P3ExWcVzu3eOEJaap1NOLQ
-   zMakcZl1Xjqxhoc7mjUaDAW1lnkzRYevSHHczFWNr9nz6u1vjimODbwW6
-   +olZFxqGa+H75oLMfHYcnZJaSw4vWc7dMvjZiqLHTkPdvL1V1GAsKA1W1
-   3uJD4NtXJ5RakP7/JssyTMAPmiswnWrb4iWN9letO6nFM5ceSm/pPrXne
-   BB3t5SFI4fBbX72sEYiDC4+2Xu8nt90JfudhDmvexUgRpSeiit6QxRNLl
+  bh=GQ+/fAd0tXHZeUD23nalG1uAFHTWEEKfJMVb6zDMB2Q=;
+  b=JgcP5o4nN3+lF0x3e7avS/k48/yxogw/44iLAHj2dQEoS5Ytg6oEuZ/j
+   fzqcd9OQrVTyNbh9/f3pdCFTTG6U2eIaxEAAsUobaVUxigCzae60e+9og
+   yIBEcOeXCpPAf5oFwdF8F1MlncbZ1msLM44Vs1NEKzXBh/dkEXNv0M/U+
+   ojjZAljwrmGTRJddOFHMe5Jtsh35XtcnPTAYFhLZQRpMRS11CvFr/Xx+X
+   WC8vdgvtGGTKUPIbrx7uFzfL04UjwffO4loVuJHEu/Y78zdjZjM6nZ6Nv
+   4OfTmso9IpDw6JKD9Su89S/ZUXVV00QC8hzZ7hFr56KbVt4lZIP1W19pw
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="416027600"
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="416027616"
 X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="416027600"
+   d="scan'208";a="416027616"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 10:12:06 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 10:12:08 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="783773962"
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="783774008"
 X-IronPort-AV: E=Sophos;i="6.03,219,1694761200"; 
-   d="scan'208";a="783773962"
+   d="scan'208";a="783774008"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by orsmga008.jf.intel.com with ESMTP; 12 Oct 2023 10:11:56 -0700
+  by orsmga008.jf.intel.com with ESMTP; 12 Oct 2023 10:12:00 -0700
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id 0AF0B33BFF;
-	Thu, 12 Oct 2023 18:11:53 +0100 (IST)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id EF78633E95;
+	Thu, 12 Oct 2023 18:11:56 +0100 (IST)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: bpf@vger.kernel.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -80,9 +80,9 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	Tariq Toukan <tariqt@mellanox.com>,
 	Saeed Mahameed <saeedm@mellanox.com>,
 	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH bpf-next v6 03/18] ice: Make ptype internal to descriptor info processing
-Date: Thu, 12 Oct 2023 19:05:09 +0200
-Message-ID: <20231012170524.21085-4-larysa.zaremba@intel.com>
+Subject: [PATCH bpf-next v6 04/18] ice: Introduce ice_xdp_buff
+Date: Thu, 12 Oct 2023 19:05:10 +0200
+Message-ID: <20231012170524.21085-5-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231012170524.21085-1-larysa.zaremba@intel.com>
 References: <20231012170524.21085-1-larysa.zaremba@intel.com>
@@ -100,126 +100,147 @@ X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Currently, rx_ptype variable is used only as an argument
-to ice_process_skb_fields() and is computed
-just before the function call.
+In order to use XDP hints via kfuncs we need to put
+RX descriptor and ring pointers just next to xdp_buff.
+Same as in hints implementations in other drivers, we achieve
+this through putting xdp_buff into a child structure.
 
-Therefore, there is no reason to pass this value as an argument.
-Instead, remove this argument and compute the value directly inside
-ice_process_skb_fields() function.
+Currently, xdp_buff is stored in the ring structure,
+so replace it with union that includes child structure.
+This way enough memory is available while existing XDP code
+remains isolated from hints.
 
-Also, separate its calculation into a short function, so the code
-can later be reused in .xmo_() callbacks.
+Minimum size of the new child structure (ice_xdp_buff) is exactly
+64 bytes (single cache line). To place it at the start of a cache line,
+move 'next' field from CL1 to CL3, as it isn't used often. This still
+leaves 128 bits available in CL3 for packet context extensions.
 
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 ---
- drivers/net/ethernet/intel/ice/ice_txrx.c     |  6 +-----
- drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 15 +++++++++++++--
- drivers/net/ethernet/intel/ice/ice_txrx_lib.h |  2 +-
- drivers/net/ethernet/intel/ice/ice_xsk.c      |  6 +-----
- 4 files changed, 16 insertions(+), 13 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_txrx.c     |  7 +++--
+ drivers/net/ethernet/intel/ice/ice_txrx.h     | 26 ++++++++++++++++---
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.h | 10 +++++++
+ 3 files changed, 38 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-index 52d0a126eb61..40f2f6dabb81 100644
+index 40f2f6dabb81..4e6546d9cf85 100644
 --- a/drivers/net/ethernet/intel/ice/ice_txrx.c
 +++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-@@ -1181,7 +1181,6 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
- 		unsigned int size;
- 		u16 stat_err_bits;
- 		u16 vlan_tag = 0;
--		u16 rx_ptype;
- 
- 		/* get the Rx desc from Rx ring based on 'next_to_clean' */
- 		rx_desc = ICE_RX_DESC(rx_ring, ntc);
-@@ -1286,10 +1285,7 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
- 		total_rx_bytes += skb->len;
- 
- 		/* populate checksum, VLAN, and protocol */
--		rx_ptype = le16_to_cpu(rx_desc->wb.ptype_flex_flags0) &
--			ICE_RX_FLEX_DESC_PTYPE_M;
--
--		ice_process_skb_fields(rx_ring, rx_desc, skb, rx_ptype);
-+		ice_process_skb_fields(rx_ring, rx_desc, skb);
- 
- 		ice_trace(clean_rx_irq_indicate, rx_ring, rx_desc, skb);
- 		/* send completed skb up the stack */
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-index 95c29181301b..8b5cee0429d3 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-@@ -204,12 +204,21 @@ ice_ptp_rx_hwts_to_skb(struct ice_rx_ring *rx_ring,
- 	};
- }
- 
-+/**
-+ * ice_get_ptype - Read HW packet type from the descriptor
-+ * @rx_desc: RX descriptor
-+ */
-+static u16 ice_get_ptype(const union ice_32b_rx_flex_desc *rx_desc)
-+{
-+	return le16_to_cpu(rx_desc->wb.ptype_flex_flags0) &
-+	       ICE_RX_FLEX_DESC_PTYPE_M;
-+}
-+
- /**
-  * ice_process_skb_fields - Populate skb header fields from Rx descriptor
-  * @rx_ring: Rx descriptor ring packet is being transacted on
-  * @rx_desc: pointer to the EOP Rx descriptor
-  * @skb: pointer to current skb being populated
-- * @ptype: the packet type decoded by hardware
+@@ -557,13 +557,14 @@ ice_rx_frame_truesize(struct ice_rx_ring *rx_ring, const unsigned int size)
+  * @xdp_prog: XDP program to run
+  * @xdp_ring: ring to be used for XDP_TX action
+  * @rx_buf: Rx buffer to store the XDP action
++ * @eop_desc: Last descriptor in packet to read metadata from
   *
-  * This function checks the ring, descriptor, and packet information in
-  * order to populate the hash, checksum, VLAN, protocol, and
-@@ -218,8 +227,10 @@ ice_ptp_rx_hwts_to_skb(struct ice_rx_ring *rx_ring,
- void
- ice_process_skb_fields(struct ice_rx_ring *rx_ring,
- 		       union ice_32b_rx_flex_desc *rx_desc,
--		       struct sk_buff *skb, u16 ptype)
-+		       struct sk_buff *skb)
+  * Returns any of ICE_XDP_{PASS, CONSUMED, TX, REDIR}
+  */
+ static void
+ ice_run_xdp(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
+ 	    struct bpf_prog *xdp_prog, struct ice_tx_ring *xdp_ring,
+-	    struct ice_rx_buf *rx_buf)
++	    struct ice_rx_buf *rx_buf, union ice_32b_rx_flex_desc *eop_desc)
  {
-+	u16 ptype = ice_get_ptype(rx_desc);
-+
- 	ice_rx_hash_to_skb(rx_ring, rx_desc, skb, ptype);
+ 	unsigned int ret = ICE_XDP_PASS;
+ 	u32 act;
+@@ -571,6 +572,8 @@ ice_run_xdp(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
+ 	if (!xdp_prog)
+ 		goto exit;
  
- 	/* modifies the skb - consumes the enet header */
++	ice_xdp_meta_set_desc(xdp, eop_desc);
++
+ 	act = bpf_prog_run_xdp(xdp_prog, xdp);
+ 	switch (act) {
+ 	case XDP_PASS:
+@@ -1240,7 +1243,7 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
+ 		if (ice_is_non_eop(rx_ring, rx_desc))
+ 			continue;
+ 
+-		ice_run_xdp(rx_ring, xdp, xdp_prog, xdp_ring, rx_buf);
++		ice_run_xdp(rx_ring, xdp, xdp_prog, xdp_ring, rx_buf, rx_desc);
+ 		if (rx_buf->act == ICE_XDP_PASS)
+ 			goto construct_skb;
+ 		total_rx_bytes += xdp_get_buff_len(xdp);
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.h b/drivers/net/ethernet/intel/ice/ice_txrx.h
+index 166413fc33f4..d0ab2c4c0c91 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx.h
++++ b/drivers/net/ethernet/intel/ice/ice_txrx.h
+@@ -257,6 +257,18 @@ enum ice_rx_dtype {
+ 	ICE_RX_DTYPE_SPLIT_ALWAYS	= 2,
+ };
+ 
++struct ice_pkt_ctx {
++	const union ice_32b_rx_flex_desc *eop_desc;
++};
++
++struct ice_xdp_buff {
++	struct xdp_buff xdp_buff;
++	struct ice_pkt_ctx pkt_ctx;
++};
++
++/* Required for compatibility with xdp_buffs from xsk_pool */
++static_assert(offsetof(struct ice_xdp_buff, xdp_buff) == 0);
++
+ /* indices into GLINT_ITR registers */
+ #define ICE_RX_ITR	ICE_IDX_ITR0
+ #define ICE_TX_ITR	ICE_IDX_ITR1
+@@ -298,7 +310,6 @@ enum ice_dynamic_itr {
+ /* descriptor ring, associated with a VSI */
+ struct ice_rx_ring {
+ 	/* CL1 - 1st cacheline starts here */
+-	struct ice_rx_ring *next;	/* pointer to next ring in q_vector */
+ 	void *desc;			/* Descriptor ring memory */
+ 	struct device *dev;		/* Used for DMA mapping */
+ 	struct net_device *netdev;	/* netdev ring maps to */
+@@ -310,12 +321,19 @@ struct ice_rx_ring {
+ 	u16 count;			/* Number of descriptors */
+ 	u16 reg_idx;			/* HW register index of the ring */
+ 	u16 next_to_alloc;
+-	/* CL2 - 2nd cacheline starts here */
++
+ 	union {
+ 		struct ice_rx_buf *rx_buf;
+ 		struct xdp_buff **xdp_buf;
+ 	};
+-	struct xdp_buff xdp;
++	/* CL2 - 2nd cacheline starts here */
++	union {
++		struct ice_xdp_buff xdp_ext;
++		struct {
++			struct xdp_buff xdp;
++			struct ice_pkt_ctx pkt_ctx;
++		};
++	};
+ 	/* CL3 - 3rd cacheline starts here */
+ 	struct bpf_prog *xdp_prog;
+ 	u16 rx_offset;
+@@ -325,6 +343,8 @@ struct ice_rx_ring {
+ 	u16 next_to_clean;
+ 	u16 first_desc;
+ 
++	struct ice_rx_ring *next;	/* pointer to next ring in q_vector */
++
+ 	/* stats structs */
+ 	struct ice_ring_stats *ring_stats;
+ 
 diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-index 115969ecdf7b..e1d49e1235b3 100644
+index e1d49e1235b3..145883eec129 100644
 --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
 +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-@@ -148,7 +148,7 @@ void ice_release_rx_desc(struct ice_rx_ring *rx_ring, u16 val);
- void
- ice_process_skb_fields(struct ice_rx_ring *rx_ring,
- 		       union ice_32b_rx_flex_desc *rx_desc,
--		       struct sk_buff *skb, u16 ptype);
-+		       struct sk_buff *skb);
+@@ -151,4 +151,14 @@ ice_process_skb_fields(struct ice_rx_ring *rx_ring,
+ 		       struct sk_buff *skb);
  void
  ice_receive_skb(struct ice_rx_ring *rx_ring, struct sk_buff *skb, u16 vlan_tag);
++
++static inline void
++ice_xdp_meta_set_desc(struct xdp_buff *xdp,
++		      union ice_32b_rx_flex_desc *eop_desc)
++{
++	struct ice_xdp_buff *xdp_ext = container_of(xdp, struct ice_xdp_buff,
++						    xdp_buff);
++
++	xdp_ext->pkt_ctx.eop_desc = eop_desc;
++}
  #endif /* !_ICE_TXRX_LIB_H_ */
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index 2a3f0834e139..ef778b8e6d1b 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -870,7 +870,6 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
- 		struct sk_buff *skb;
- 		u16 stat_err_bits;
- 		u16 vlan_tag = 0;
--		u16 rx_ptype;
- 
- 		rx_desc = ICE_RX_DESC(rx_ring, ntc);
- 
-@@ -950,10 +949,7 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
- 
- 		vlan_tag = ice_get_vlan_tag_from_rx_desc(rx_desc);
- 
--		rx_ptype = le16_to_cpu(rx_desc->wb.ptype_flex_flags0) &
--				       ICE_RX_FLEX_DESC_PTYPE_M;
--
--		ice_process_skb_fields(rx_ring, rx_desc, skb, rx_ptype);
-+		ice_process_skb_fields(rx_ring, rx_desc, skb);
- 		ice_receive_skb(rx_ring, skb, vlan_tag);
- 	}
- 
 -- 
 2.41.0
 
