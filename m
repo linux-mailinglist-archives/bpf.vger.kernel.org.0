@@ -1,205 +1,216 @@
-Return-Path: <bpf+bounces-12183-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12184-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2BF57C8FA8
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 23:55:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5789F7C9002
+	for <lists+bpf@lfdr.de>; Sat, 14 Oct 2023 00:05:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EE651F21790
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 21:55:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88C4B1C212B7
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 22:05:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E77EB28E14;
-	Fri, 13 Oct 2023 21:55:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80A362941D;
+	Fri, 13 Oct 2023 22:05:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ipyAs54/"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="o66FlYyz"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A35772B5C1;
-	Fri, 13 Oct 2023 21:55:38 +0000 (UTC)
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE6FACE;
-	Fri, 13 Oct 2023 14:55:36 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53dd752685fso4573233a12.3;
-        Fri, 13 Oct 2023 14:55:36 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E573A21A0A;
+	Fri, 13 Oct 2023 22:05:15 +0000 (UTC)
+Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36639B7;
+	Fri, 13 Oct 2023 15:05:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697234135; x=1697838935; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IIsoon5ifapyRHJFHWDM6c5fi2ejPFzuYB8rlmAp+E4=;
-        b=ipyAs54/+GsCk8OOtlvDe7OeTPzUwUccB2tNIm1ue+YjOu98ZTXVl162L7WgkJZo+P
-         WoJZlgIqMacCliwLL79PaN4NLXaEZHvU8Rg8FoKxY7lRGy9hDlrXaLvGIZOu12r+Iwc0
-         0ODhJFOfGZU1vKVqkVSsuFWXVVVvU6kBwfY3iop1WPwU0Nku6k5kjE/PwV1gP180OpEN
-         cQh6oj6+ZsI9TgjHUSPHF9EU9vHjpaUuqVvDAwQgOIsSflrVK+JfagWN9a8Jzuy2NTd2
-         gMzZNKQNT/EuuJJC6c69lyxKyJZJDbZXjWAgECzKE0seQHnpy6IC4y47HY4EP0wDAv8g
-         PxRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697234135; x=1697838935;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IIsoon5ifapyRHJFHWDM6c5fi2ejPFzuYB8rlmAp+E4=;
-        b=PbpwYgKC0chNAeHkRimnW6A5YQqYTxRZN9/A9eIlw+imurdN1FFEYZKxzVikwgyrCd
-         7fBOoUJywS5UukANQf4uOeavOnBrxbGuBsC7z0LWTWDwNhfYeUq6dqzDA7QVVecEVD9+
-         0Sx2KTqyAyafgtebpdAvr5c9NTaySdIx0H/em5yXP5J6/kFZ5OimtutnrVMAvsNE2UWn
-         gQ4qoO+UG+1wrPej1ZXbYzuaXUWKXhKjq9vNnWRLAk8MBsS5I2a8CdnHt+LtKs1CYihJ
-         5B3bsj5QSOwMCuStAuFPfLpvJJ8aSyIsSpWiHU3jHAMdqlMmRjvzUjcOjAX0c4/8MjYh
-         J6rA==
-X-Gm-Message-State: AOJu0Yzo49JT/yH3hKXGAke33AIl7UYiglGxpXV4hSQ7wWZf4iRypbGd
-	pzFwk25DeaEJy/tWHCqZw2ERw8GDPaoWmHdonJs=
-X-Google-Smtp-Source: AGHT+IFRq0uCNp2DqUaQzM1voq5+iFisevdEN33yDgeV9vMFdHUgZLKLjCIYxV2ALVtrXgCkixX3qn+aEchlhlCXLQo=
-X-Received: by 2002:a50:9fc1:0:b0:53e:2e0a:f5c6 with SMTP id
- c59-20020a509fc1000000b0053e2e0af5c6mr2895234edf.40.1697234135345; Fri, 13
- Oct 2023 14:55:35 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1697234714; x=1728770714;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=mI7coQFdhEGnguDbH2wh9Qo/10gHOhyBrnmUIiYC6IY=;
+  b=o66FlYyzMMSohM5qknC+NwGy9HeXEqcBPqgNEz5t5iph338Os1QAAA9T
+   6PPegrAd3vDtv8q4NGjxp/uRu9W+Fm36A2RGQ7xuvEAUzjx5ls9PzVYKV
+   yhpP1y+gAP4PAyC0RL6DwhpSQddtNkSD82APUrDa1ljNSKBKbWqoYArps
+   I=;
+X-IronPort-AV: E=Sophos;i="6.03,223,1694736000"; 
+   d="scan'208";a="35768345"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-bbc6e425.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 22:05:10 +0000
+Received: from EX19MTAUWB002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+	by email-inbound-relay-iad-1a-m6i4x-bbc6e425.us-east-1.amazon.com (Postfix) with ESMTPS id 7C9D680811;
+	Fri, 13 Oct 2023 22:05:05 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Fri, 13 Oct 2023 22:05:04 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.187.170.60) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Fri, 13 Oct 2023 22:05:00 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
+	<song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+	<john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
+	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>
+CC: Kuniyuki Iwashima <kuniyu@amazon.com>, Kuniyuki Iwashima
+	<kuni1840@gmail.com>, <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: [PATCH v1 bpf-next 00/11] bpf: tcp: Add SYN Cookie generation/validation SOCK_OPS hooks.
+Date: Fri, 13 Oct 2023 15:04:22 -0700
+Message-ID: <20231013220433.70792-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231012222810.4120312-7-andrii@kernel.org> <f739928b1db9a9e45da89249c0389e85.paul@paul-moore.com>
-In-Reply-To: <f739928b1db9a9e45da89249c0389e85.paul@paul-moore.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 13 Oct 2023 14:55:24 -0700
-Message-ID: <CAEf4BzZWDSZOyoVF+8pKBcvwjcpCC-XMG8J9kaJXXS=P+i5FmA@mail.gmail.com>
-Subject: Re: [PATCH v7 6/18] bpf: add BPF token support to BPF_PROG_LOAD command
-To: Paul Moore <paul@paul-moore.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	keescook@chromium.org, brauner@kernel.org, lennart@poettering.net, 
-	kernel-team@meta.com, sargun@sargun.me
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.187.170.60]
+X-ClientProxiedBy: EX19D043UWA004.ant.amazon.com (10.13.139.41) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Precedence: Bulk
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Oct 13, 2023 at 2:15=E2=80=AFPM Paul Moore <paul@paul-moore.com> wr=
-ote:
->
-> On Oct 12, 2023 Andrii Nakryiko <andrii@kernel.org> wrote:
-> >
-> > Add basic support of BPF token to BPF_PROG_LOAD. Wire through a set of
-> > allowed BPF program types and attach types, derived from BPF FS at BPF
-> > token creation time. Then make sure we perform bpf_token_capable()
-> > checks everywhere where it's relevant.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  include/linux/bpf.h                           |  6 ++
-> >  include/uapi/linux/bpf.h                      |  2 +
-> >  kernel/bpf/core.c                             |  1 +
-> >  kernel/bpf/inode.c                            |  6 +-
-> >  kernel/bpf/syscall.c                          | 87 ++++++++++++++-----
-> >  kernel/bpf/token.c                            | 27 ++++++
-> >  tools/include/uapi/linux/bpf.h                |  2 +
-> >  .../selftests/bpf/prog_tests/libbpf_probes.c  |  2 +
-> >  .../selftests/bpf/prog_tests/libbpf_str.c     |  3 +
-> >  9 files changed, 110 insertions(+), 26 deletions(-)
->
-> ...
->
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index a2c9edcbcd77..c6b00aee3b62 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -2584,13 +2584,15 @@ static bool is_perfmon_prog_type(enum bpf_prog_=
-type prog_type)
-> >  }
-> >
-> >  /* last field in 'union bpf_attr' used by this command */
-> > -#define      BPF_PROG_LOAD_LAST_FIELD log_true_size
-> > +#define BPF_PROG_LOAD_LAST_FIELD prog_token_fd
-> >
-> >  static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uat=
-tr_size)
-> >  {
-> >       enum bpf_prog_type type =3D attr->prog_type;
-> >       struct bpf_prog *prog, *dst_prog =3D NULL;
-> >       struct btf *attach_btf =3D NULL;
-> > +     struct bpf_token *token =3D NULL;
-> > +     bool bpf_cap;
-> >       int err;
-> >       char license[128];
-> >
-> > @@ -2606,10 +2608,31 @@ static int bpf_prog_load(union bpf_attr *attr, =
-bpfptr_t uattr, u32 uattr_size)
-> >                                BPF_F_XDP_DEV_BOUND_ONLY))
-> >               return -EINVAL;
-> >
-> > +     bpf_prog_load_fixup_attach_type(attr);
-> > +
-> > +     if (attr->prog_token_fd) {
-> > +             token =3D bpf_token_get_from_fd(attr->prog_token_fd);
-> > +             if (IS_ERR(token))
-> > +                     return PTR_ERR(token);
-> > +             /* if current token doesn't grant prog loading permission=
-s,
-> > +              * then we can't use this token, so ignore it and rely on
-> > +              * system-wide capabilities checks
-> > +              */
-> > +             if (!bpf_token_allow_cmd(token, BPF_PROG_LOAD) ||
-> > +                 !bpf_token_allow_prog_type(token, attr->prog_type,
-> > +                                            attr->expected_attach_type=
-)) {
-> > +                     bpf_token_put(token);
-> > +                     token =3D NULL;
-> > +             }
->
-> At the start of this effort I mentioned how we wanted to have LSM
-> control points when the token is created and when it is used.  It is
-> for this reason that we still want a hook inside the
-> bpf_token_allow_cmd() function as it allows us to enable/disable use
-> of the token when its use is first attempted.  If the LSM decides to
-> disallow use of the token in this particular case then the token is
-> disabled (set to NULL) while the operation is still allowed to move
-> forward, simply without the token.  It's a much cleaner and well
-> behaved approach as it allows the normal BPF access controls to do
-> their work.
+Under SYN Flood, the TCP stack generates SYN Cookie to remain stateless
+for the connection request until a valid ACK is responded to the SYN+ACK.
 
-I see, ok, so you want to be able to say "no BPF token for you", but
-not just error out the entire operation. Makes sense.
+The cookie contains two kinds of host-specific bits, a timestamp and
+secrets, so only can it be validated by the generator.  It means SYN
+Cookie consumes network resources between the client and the server;
+intermediate nodes must remember which nodes to route ACK for the cookie.
 
->
-> > +     }
-> > +
-> > +     bpf_cap =3D bpf_token_capable(token, CAP_BPF);
->
-> Similar to the above comment, we want to a LSM control point in
-> bpf_token_capable() so that the LSM can control the token's
-> ability to delegate capability privileges when they are used.  Having
-> to delay this access control point to security_bpf_prog_load() is not
-> only awkward but it requires either manual synchronization between
-> all of the different LSMs and the the capability checks in the
-> bpf_prog_load() function or a completely different set of LSM
-> permissions for a token-based BPF program load over a normal BPF
-> program load.
->
-> We really need these hooks Andrii, I wouldn't have suggested them if
-> I didn't believe they were important.
+SYN Proxy reduces such unwanted resource allocation by handling 3WHS at
+the edge network.  After SYN Proxy completes 3WHS, it forwards SYN to the
+backend server and completes another 3WHS.  However, since the server's
+ISN differs from the cookie, the proxy must manage the ISN mappings and
+fix up SEQ/ACK numbers in every packet for each connection.  If a proxy
+node is down, all the connections through it are also down.  Keeping a
+state at proxy is painful from that perspective.
 
-No problem, I'll add both of them. I really didn't want to add hooks
-for allow_{maps,progs,attachs} (which you agreed shouldn't be added,
-so we are good), but I think allow_cmds and capable checks are fine.
-Will add in the next revision.
+At AWS, we use a dirty hack to build truly stateless SYN Proxy at scale.
+Our SYN Proxy consists of the front proxy layer and the backend kernel
+module.  (See slides of netconf [0], p6 - p15)
 
->
-> > +     err =3D -EPERM;
-> > +
-> >       if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) &&
-> >           (attr->prog_flags & BPF_F_ANY_ALIGNMENT) &&
-> > -         !bpf_capable())
-> > -             return -EPERM;
-> > +         !bpf_cap)
-> > +             goto put_token;
-> >
+The cookie that SYN Proxy generates differs from the kernel's cookie in
+that it contains a secret (called rolling salt) (i) shared by all the proxy
+nodes so that any node can validate ACK and (ii) updated periodically so
+that old cookies cannot be validated.  Also, ISN contains WScale, SACK, and
+ECN, not in TS val.  This is not to sacrifice any connection quality, where
+some customers turn off the timestamp option due to retro CVE.
 
-[...]
+After 3WHS, the proxy restores SYN and forwards it and ACK to the backend
+server.  Our kernel module works at Netfilter input/output hooks and first
+feeds SYN to the TCP stack to initiate 3WHS.  When the module is triggered
+for SYN+ACK, it looks up the corresponding request socket and overwrites
+tcp_rsk(req)->snt_isn with the proxy's cookie.  Then, the module can
+complete 3WHS with the original ACK as is.
+
+This way, our SYN Proxy does not manage the ISN mappings and can stay
+stateless.  It's working very well for high-bandwidth services like
+multiple Tbps, but we are looking for a way to drop the dirty hack and
+further optimise the sequences.
+
+If we could validate an arbitrary SYN Cookie on the backend server with
+BPF, the proxy would need not restore SYN nor pass it.  After validating
+ACK, the proxy node just needs to forward it, and then the server can do
+the lightweight validation (e.g. check if ACK came from proxy nodes, etc)
+and create a connection from the ACK.
+
+This series adds two SOCK_OPS hooks to generate and validate arbitrary
+SYN Cookie.  Each hook is invoked if BPF_SOCK_OPS_SYNCOOKIE_CB_FLAG is
+set to the listening socket in advance by bpf_sock_ops_cb_flags_set().
+
+The user interface looks like this:
+
+  BPF_SOCK_OPS_GEN_SYNCOOKIE_CB
+
+    input
+    |- bpf_sock_ops.sk           : 4-tuple
+    |- bpf_sock_ops.skb          : TCP header
+    |- bpf_sock_ops.args[0]      : MSS
+    `- bpf_sock_ops.args[1]      : BPF_SYNCOOKIE_XXX flags
+
+    output
+    |- bpf_sock_ops.replylong[0] : ISN (SYN Cookie) ------.
+    `- bpf_sock_ops.replylong[1] : TS value -----------.  |
+                                                       |  |
+  BPF_SOCK_OPS_CHECK_SYNCOOKIE_CB                      |  |
+                                                       |  |
+    input                                              |  |
+    |- bpf_sock_ops.sk           : 4-tuple             |  |
+    |- bpf_sock_ops.skb          : TCP header          |  |
+    |- bpf_sock_ops.args[0]      : ISN (SYN Cookie) <-----'
+    `- bpf_sock_ops.args[1]      : TS value <----------'
+
+    output
+    |- bpf_sock_ops.replylong[0] : MSS
+    `- bpf_sock_ops.replylong[1] : BPF_SYNCOOKIE_XXX flags
+
+To establish a connection from SYN Cookie, BPF_SOCK_OPS_CHECK_SYNCOOKIE_CB
+hook must set a valid MSS to bpf_sock_ops.replylong[0], meaning that
+BPF_SOCK_OPS_GEN_SYNCOOKIE_CB hook must encode MSS to ISN or TS val to be
+restored in the validation hook.
+
+If WScale, SACK, and ECN are detected to be available in SYN packet, the
+corresponding flags are passed to args[0] of BPF_SOCK_OPS_GEN_SYNCOOKIE_CB
+so that bpf prog need not parse the TCP header.  The same flags can be set
+to replylong[0] of BPF_SOCK_OPS_CHECK_SYNCOOKIE_CB to enable each feature
+on the connection.
+
+For details, please see each patch.  Here's an overview:
+
+  patch 1 - 4 : Misc cleanup
+  patch 5, 6  : Add SOCK_OPS hook (only ISN is available here)
+  patch 7, 8  : Make TS val available as the second cookie storage
+  patch 9, 10 : Make WScale, SACK, and ECN configurable from ACK
+  patch 11    : selftest, need some help from BPF experts...
+
+[0]: https://netdev.bots.linux.dev/netconf/2023/kuniyuki.pdf
+
+
+Kuniyuki Iwashima (11):
+  tcp: Clean up reverse xmas tree in cookie_v[46]_check().
+  tcp: Cache sock_net(sk) in cookie_v[46]_check().
+  tcp: Clean up goto labels in cookie_v[46]_check().
+  tcp: Don't initialise tp->tsoffset in tcp_get_cookie_sock().
+  bpf: tcp: Add SYN Cookie generation SOCK_OPS hook.
+  bpf: tcp: Add SYN Cookie validation SOCK_OPS hook.
+  bpf: Make bpf_sock_ops.replylong[1] writable.
+  bpf: tcp: Make TS available for SYN Cookie storage.
+  tcp: Split cookie_ecn_ok().
+  bpf: tcp: Make WS, SACK, ECN configurable from BPF SYN Cookie.
+  selftest: bpf: Test BPF_SOCK_OPS_(GEN|CHECK)_SYNCOOKIE_CB.
+
+ include/net/inet_sock.h                       |   4 +-
+ include/net/tcp.h                             |  46 +++-
+ include/uapi/linux/bpf.h                      |  52 ++++-
+ net/core/filter.c                             |   2 +-
+ net/ipv4/syncookies.c                         | 219 +++++++++++-------
+ net/ipv4/tcp_input.c                          |  53 ++++-
+ net/ipv6/syncookies.c                         |  94 +++++---
+ tools/include/uapi/linux/bpf.h                |  52 ++++-
+ .../selftests/bpf/prog_tests/tcp_syncookie.c  |  84 +++++++
+ .../selftests/bpf/progs/test_siphash.h        |  65 ++++++
+ .../selftests/bpf/progs/test_tcp_syncookie.c  | 170 ++++++++++++++
+ .../selftests/bpf/test_tcp_hdr_options.h      |   8 +-
+ 12 files changed, 715 insertions(+), 134 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/tcp_syncookie.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_siphash.h
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tcp_syncookie.c
+
+-- 
+2.30.2
+
 
