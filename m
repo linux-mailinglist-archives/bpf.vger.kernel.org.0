@@ -1,39 +1,39 @@
-Return-Path: <bpf+bounces-12163-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12164-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7E6E7C8DD6
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 21:40:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 283A27C8DD7
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 21:40:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F237282FCD
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 19:40:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52E181C211F0
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 19:40:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B06721A0A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61BCA241FF;
 	Fri, 13 Oct 2023 19:40:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hD8LmCdV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eCqtc6Ei"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A462C23764
-	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 19:40:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3BFEAC43397;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B116D2376D;
+	Fri, 13 Oct 2023 19:40:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 27AF5C4339A;
 	Fri, 13 Oct 2023 19:40:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1697226023;
-	bh=lsh1fU6p0+JHhCl5bLlCJ5zOKuvVIF53P7e+Seu7WQA=;
+	bh=lI9YMhqSvJP2WrE3g7wkWlJVDKheiRybUb/+yL0/2Tk=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=hD8LmCdVSMNi0E9r0RrGIa7+KD5NtwhdWOF1KDHcn745DfJ6of7eqyKiWT0GP430y
-	 E/fXt1o+7ANjVjHufLThJj4A2hyHdyEs/n0aBdgZoKrCN705/1dQpDoiY6tlez4S34
-	 UOWhESHGDb501FzZ8fpMRK9YHIyWz3u6GNHP2BmMDIXCzu6kgxLbp9W/3ADDo1bsUB
-	 pZbiZsDPC6CuIOQTUGA16q/ZnRGdIAMA/fUYb0qc3qotM7YzVJsBd7s76caclKFxpO
-	 rTT6w/utueL1ILZ0JBG36+bUhx9b9T5QhPjbeqo4bqjvWI70/IQuJduLKI88opf/pT
-	 4iOy2eHToYs+g==
+	b=eCqtc6Eim4nCDDGxGINFFtyz89pxDsYQK8Gm+abSTI/UT7YKtuqAtIzuJHNuKPZF7
+	 f3xmrTemcc7Qx8hHev40KWKHNjeWpScKvQkA8yFz1JT0nLKcc2IpNXOtU8mqvA2W5V
+	 7Dvvb35MRV3Lil9m431vp22fvJRDOA0cMl/bf/btt6TUhC4ZRVJrPj537ZaiTTKpaZ
+	 mmBV7d/XbDA0Y/IX/CtVxCCFvLr8P8lWfaWcvhL2xXkCeOWxmCHLD8YXZg4SCdfOw5
+	 jeJD4YqL7lJE2dwqpdNIzkenXCFP8O47C0JAudy3HG9qs4aSPrAbe0ItSQfgvIwKKM
+	 SN9O3beBKzKqw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1F530C691EF;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 171A3E1F669;
 	Fri, 13 Oct 2023 19:40:23 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -43,40 +43,38 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: Avoid unnecessary audit log for CPU security
- mitigations
+Subject: Re: [PATCH bpf-next] net/bpf: Avoid unused "sin_addr_len" warning when
+ CONFIG_CGROUP_BPF is not set
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <169722602312.5697.7407014423519491804.git-patchwork-notify@kernel.org>
+ <169722602308.5697.7422019493094159101.git-patchwork-notify@kernel.org>
 Date: Fri, 13 Oct 2023 19:40:23 +0000
-References: <20231013083916.4199-1-laoar.shao@gmail.com>
-In-Reply-To: <20231013083916.4199-1-laoar.shao@gmail.com>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- andrii.nakryiko@gmail.com
+References: <20231013185702.3993710-1-martin.lau@linux.dev>
+In-Reply-To: <20231013185702.3993710-1-martin.lau@linux.dev>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, netdev@vger.kernel.org, kernel-team@meta.com,
+ sfr@canb.auug.org.au, daan.j.demeyer@gmail.com
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Andrii Nakryiko <andrii@kernel.org>:
 
-On Fri, 13 Oct 2023 08:39:16 +0000 you wrote:
-> Check cpu_mitigations_off() first to avoid calling capable() if it is off.
-> This can avoid unnecessary audit log.
+On Fri, 13 Oct 2023 11:57:02 -0700 you wrote:
+> From: Martin KaFai Lau <martin.lau@kernel.org>
 > 
-> Fixes: bc5bc309db45 ("bpf: Inherit system settings for CPU security mitigations")
-> Link: https://lore.kernel.org/bpf/CAEf4Bza6UVUWqcWQ-66weZ-nMDr+TFU3Mtq=dumZFD-pSqU7Ow@mail.gmail.com/
-> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> It was reported that there is a compiler warning on the unused variable
+> "sin_addr_len" in af_inet.c when CONFIG_CGROUP_BPF is not set.
+> This patch is to address it similar to the ipv6 counterpart
+> in inet6_getname(). It is to "return sin_addr_len;"
+> instead of "return sizeof(*sin);".
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next] bpf: Avoid unnecessary audit log for CPU security mitigations
-    https://git.kernel.org/bpf/bpf-next/c/236334aeec0f
+  - [bpf-next] net/bpf: Avoid unused "sin_addr_len" warning when CONFIG_CGROUP_BPF is not set
+    https://git.kernel.org/bpf/bpf-next/c/9c1292eca243
 
 You are awesome, thank you!
 -- 
