@@ -1,94 +1,142 @@
-Return-Path: <bpf+bounces-12207-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12208-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DF0D7C9119
-	for <lists+bpf@lfdr.de>; Sat, 14 Oct 2023 01:00:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 522287C911D
+	for <lists+bpf@lfdr.de>; Sat, 14 Oct 2023 01:00:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4545E282CB5
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 23:00:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF61DB20C2E
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 23:00:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AE102C84F;
-	Fri, 13 Oct 2023 23:00:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F2652C856;
+	Fri, 13 Oct 2023 23:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AU871qmM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="khOgFP81"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF10C224DF
-	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 23:00:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3EAEAC433C9;
-	Fri, 13 Oct 2023 23:00:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56002273E6;
+	Fri, 13 Oct 2023 23:00:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DCD3C433C7;
+	Fri, 13 Oct 2023 23:00:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697238025;
-	bh=kJnbQgXK7RKgNaW35oPGIpdwdf8c5n/5J9m3sbU+gzk=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=AU871qmMcCw7kFnj+GnkjDRSVZ60j7Fnbo+mvT5F2MINycf1o7g2ARjooyzurT7PS
-	 uD3c+Usu/Mo/pnGHYSJRzgSXIQ5fWxXgw6M0kDqsjk6+Kdu4VIgHvM9Vxs2NPbc7Ye
-	 UWkaYG7RPjHkg1YSwqTzynyHySYrdXs4H0JXOdlLA6bO77uliqNhMQHke13Uk6nWX6
-	 X4GILBpSy+HcRolTdFHb55PgdF47lEVw0JEx1VivIDNzH8OKStnQLGPeb8iXC5ixLB
-	 cXB4IXpXFXigj882CqewwhM89KYH/VC6AAnM9QPnIsnmvmtQWmYC71Zg4StNCert3e
-	 LNqYoqZcdekLA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1C4F3E1F666;
-	Fri, 13 Oct 2023 23:00:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1697238046;
+	bh=8qM9BSYxF4si0oZK0+zWRYG3pweYYK3vSzWPG9FsH9Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=khOgFP816HxAaaJBFb9SGkC1jihPOk1bYRxg562/KgHri4N7/lK+1LGiW2kHsAThk
+	 gMBZIDfcFSDqO7i12sQH5uibP0qc4F721SRUSQqpoqbzo8lhOTdY8N3EC4TqTR8H1p
+	 PSBYfs/hwM54RDVmnyDt7vcN8971GsikBv/x1WUdB/tPfi6JBIwV7LyzOIKvFrkCre
+	 GAQFDP7ZWclQxwciGSXhmaL8uUhKe4uGzRkWM8vqEJDweudGRCh3IWB/Futq4tMW9n
+	 nJ8wYUrH5yUdjN67zTzuEYY9W11dvWp9+DOUeJ5/xUnz7cxQTiE8moewpu2IWKwLgo
+	 W7sZkk+MRDhSw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id B2AEA40016; Fri, 13 Oct 2023 20:00:43 -0300 (-03)
+Date: Fri, 13 Oct 2023 20:00:43 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH] perf lock contention: Clear lock addr after use
+Message-ID: <ZSnMGwlppacZGaXf@kernel.org>
+References: <20230928235018.2136-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v7 bpf-next 0/5] Open-coded task_vma iter
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <169723802511.13796.5689188744998758174.git-patchwork-notify@kernel.org>
-Date: Fri, 13 Oct 2023 23:00:25 +0000
-References: <20231013204426.1074286-1-davemarchevsky@fb.com>
-In-Reply-To: <20231013204426.1074286-1-davemarchevsky@fb.com>
-To: Dave Marchevsky <davemarchevsky@fb.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230928235018.2136-1-namhyung@kernel.org>
+X-Url: http://acmel.wordpress.com
 
-Hello:
+Em Thu, Sep 28, 2023 at 04:50:18PM -0700, Namhyung Kim escreveu:
+> It checks the current lock to calculated the delta of contention time.
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Fri, 13 Oct 2023 13:44:21 -0700 you wrote:
-> At Meta we have a profiling daemon which periodically collects
-> information on many hosts. This collection usually involves grabbing
-> stacks (user and kernel) using perf_event BPF progs and later symbolicating
-> them. For user stacks we try to use BPF_F_USER_BUILD_ID and rely on
-> remote symbolication, but BPF_F_USER_BUILD_ID doesn't always succeed. In
-> those cases we must fall back to digging around in /proc/PID/maps to map
-> virtual address to (binary, offset). The /proc/PID/maps digging does not
-> occur synchronously with stack collection, so the process might already
-> be gone, in which case it won't have /proc/PID/maps and we will fail to
-> symbolicate.
+> The address is saved in the tstamp map which is allocated at begining of
+> contention and released at end of contention.
 > 
-> [...]
+> But it's possible for bpf_map_delete_elem() to fail.  In that case, the
 
-Here is the summary with links:
-  - [v7,bpf-next,1/5] bpf: Don't explicitly emit BTF for struct btf_iter_num
-    https://git.kernel.org/bpf/bpf-next/c/f10ca5da5bd7
-  - [v7,bpf-next,2/5] selftests/bpf: Rename bpf_iter_task_vma.c to bpf_iter_task_vmas.c
-    https://git.kernel.org/bpf/bpf-next/c/45b38941c81f
-  - [v7,bpf-next,3/5] bpf: Introduce task_vma open-coded iterator kfuncs
-    https://git.kernel.org/bpf/bpf-next/c/4ac454682158
-  - [v7,bpf-next,4/5] selftests/bpf: Add tests for open-coded task_vma iter
-    https://git.kernel.org/bpf/bpf-next/c/e0e1a7a5fc37
-  - [v7,bpf-next,5/5] bpf: Add BPF_KFUNC_{START,END}_defs macros
-    (no matching commit)
+How can it fail? 
 
-You are awesome, thank you!
+You do:
+
+        pelem = bpf_map_lookup_elem(&tstamp, &pid);
+        if (!pelem || pelem->lock != ctx[0])
+                return 0;
+
+So it is there, why would the removal using the same key fail?
+
+The patch should work as-is, I'm just curious about what would make
+there removal of a map entry that was successfully looked up on the same
+contention_end prog to fail when being removed...
+
+- Arnaldo
+
+> element in the tstamp map kept for the current lock and it makes the
+> next contention for the same lock tracked incorrectly.  Specificially
+> the next contention begin will see the existing element for the task and
+> it'd just return.  Then the next contention end will see the element and
+> calculate the time using the timestamp for the previous begin.
+> 
+> This can result in a large value for two small contentions happened from
+> time to time.  Let's clear the lock address so that it can be updated
+> next time even if the bpf_map_delete_elem() failed.
+> 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/bpf_skel/lock_contention.bpf.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> index 4900a5dfb4a4..b11179452e19 100644
+> --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> @@ -389,6 +389,7 @@ int contention_end(u64 *ctx)
+>  
+>  	duration = bpf_ktime_get_ns() - pelem->timestamp;
+>  	if ((__s64)duration < 0) {
+> +		pelem->lock = 0;
+>  		bpf_map_delete_elem(&tstamp, &pid);
+>  		__sync_fetch_and_add(&time_fail, 1);
+>  		return 0;
+> @@ -422,6 +423,7 @@ int contention_end(u64 *ctx)
+>  	data = bpf_map_lookup_elem(&lock_stat, &key);
+>  	if (!data) {
+>  		if (data_map_full) {
+> +			pelem->lock = 0;
+>  			bpf_map_delete_elem(&tstamp, &pid);
+>  			__sync_fetch_and_add(&data_fail, 1);
+>  			return 0;
+> @@ -445,6 +447,7 @@ int contention_end(u64 *ctx)
+>  				data_map_full = 1;
+>  			__sync_fetch_and_add(&data_fail, 1);
+>  		}
+> +		pelem->lock = 0;
+>  		bpf_map_delete_elem(&tstamp, &pid);
+>  		return 0;
+>  	}
+> @@ -458,6 +461,7 @@ int contention_end(u64 *ctx)
+>  	if (data->min_time > duration)
+>  		data->min_time = duration;
+>  
+> +	pelem->lock = 0;
+>  	bpf_map_delete_elem(&tstamp, &pid);
+>  	return 0;
+>  }
+> -- 
+> 2.42.0.582.g8ccd20d70d-goog
+> 
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
 
-
+- Arnaldo
 
