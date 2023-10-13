@@ -1,197 +1,487 @@
-Return-Path: <bpf+bounces-12156-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12157-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8261B7C8D30
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 20:40:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99B9F7C8D37
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 20:41:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EAB4EB20B2F
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 18:40:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A40F61C20F7F
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 18:41:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C20001A266;
-	Fri, 13 Oct 2023 18:40:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0176C1C287;
+	Fri, 13 Oct 2023 18:41:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YiI+HFlh"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="GXX7Q0O4"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 576D91428A
-	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 18:40:02 +0000 (UTC)
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F23B83
-	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 11:40:00 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53db1fbee70so4173777a12.2
-        for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 11:40:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697222399; x=1697827199; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p5VQ9XS9BKZw4KQRmwSOIM8UjAV9kKGOxiRZCoLu24s=;
-        b=YiI+HFlhD1A+pSQm7hzV0DB9Bdiao+fyOgweKJshBDXIA4tH9PPw90NzcaX9P7hpEy
-         64A2BlI/maDNYfmxkoLstiZnemZdr5YovNueM6xhntJ31Cg9LjIJCHvx1n+fzD+D3ljR
-         6e/WcBly4IiTXIDWH8BjwQddmiWzpbeUwtSP8p4J7crHdXeVFawdVonQO+r3q5zR0coi
-         fgtHa17vbspIjyjL+8zSX0bl22WF9iEybJc89SNzPKbz0/01gb5tvtF0zNwllwUi1HyS
-         jcSxmByZmfArrDDUNvAFTe/VgiB7YL28ODy+yputFKp5zR41tvk9CiiSgEZ7lWykBV8U
-         6WEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697222399; x=1697827199;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p5VQ9XS9BKZw4KQRmwSOIM8UjAV9kKGOxiRZCoLu24s=;
-        b=N0s/w5DPfynmQMchjsmN7f1N+tAFakqhTYpBAWmf0/9SZ+P3/1XD4lGEgoa9D366FH
-         97LBcnTyFYbOlXFjAXtwLuSxGCXiRIWR88ykdW/Rd5LXAN9IUNLCCQLv118+G9YG9AZ+
-         DMgR+ifjFI8HaeAmlvmjVT9/+OGoTbeYGec6yW9FyZeSIAmGBvFWeMmzOwFVaijy/Jym
-         YE1t6LRov0lT3Z//uHs3XB968FR1r+gGv3amly2PHN0FrgLzIyCCSKvXjanBTPudvUaW
-         I28PM2vaE3HnwB4YN9bUiyOygIubY1YunnLmBVqFnpwBKsUplcib4LQcClL89Smcw13Y
-         /5rQ==
-X-Gm-Message-State: AOJu0YwFnTbsfxL+Z7NF7vHtKgMcvjz6D1xj7eEvFBsBiMyyttWiYehM
-	YgdYRxxrz3U0GlijM8Fj0CbsCPOehXPJIjEKUSMn5vZZ
-X-Google-Smtp-Source: AGHT+IED57qUWcENl6IecxvoYmAjbCqXAcsoLH9/eh/QXmxSggC1TR8G1KDwukR/XZSiJd24+pH4+/iTvsULN39+Ucw=
-X-Received: by 2002:a05:6402:4303:b0:53e:6239:a04a with SMTP id
- m3-20020a056402430300b0053e6239a04amr890921edc.24.1697222398394; Fri, 13 Oct
- 2023 11:39:58 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14B9134CD
+	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 18:41:26 +0000 (UTC)
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD0BC0;
+	Fri, 13 Oct 2023 11:41:23 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id D549A100006;
+	Fri, 13 Oct 2023 21:41:19 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru D549A100006
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1697222479;
+	bh=8QIY7MI/xX/BChuarEslhWbVX0P4jo1X9m5opcLx4p8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=GXX7Q0O4xMMBb+EwhZVsQvtUewh+HJUSqjR9DdHt4eNLdwS8iPF2d7EkiH1eH1S3Q
+	 XOB4yAQqlPWmBV4ZmJ6doZGh+ZDR9Rk4ooH1GJ4LpVq0qwkbmVCn1nwL/WapRlqob+
+	 62JMxW2z6d5n4zoZTNBu750rtaJdJLQy4J02qLjnm2nHWzBo75vD1SyEGVz31z4G4m
+	 I8dfnoznp8JmX2IUVGlEEzjlwhb3fc7VPtkYXSgRvoIn9cfPj5yGTC8DUChXN6ySvi
+	 vi/xGSTWmbyyT0izXDPIfup/WoTDWDF/5DJ67MbdGnDmdjHgv37GhoHaA98PIIImvu
+	 gEVPuhaf3jbaA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Fri, 13 Oct 2023 21:41:18 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 13 Oct 2023 21:41:17 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: <hannes@cmpxchg.org>, <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
+	<shakeelb@google.com>, <muchun.song@linux.dev>, <akpm@linux-foundation.org>
+CC: <kernel@sberdevices.ru>, <rockosov@gmail.com>, <cgroups@vger.kernel.org>,
+	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+	Dmitry Rokosov <ddrokosov@salutedevices.com>
+Subject: [PATCH v1] tools/cgroup: introduce cgroup v2 memory.events listener
+Date: Fri, 13 Oct 2023 21:41:07 +0300
+Message-ID: <20231013184107.28734-1-ddrokosov@salutedevices.com>
+X-Mailer: git-send-email 2.36.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231011091732.93254-1-alan.maguire@oracle.com>
- <20231011091732.93254-4-alan.maguire@oracle.com> <CAEf4BzZOMOBpwT6wkXeoh9gBQa5jruE=ynsH-1FOB6TRDxFqzQ@mail.gmail.com>
- <698efb39-c5d2-c322-e83c-f836c0166bd7@oracle.com>
-In-Reply-To: <698efb39-c5d2-c322-e83c-f836c0166bd7@oracle.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 13 Oct 2023 11:39:46 -0700
-Message-ID: <CAEf4BzYoBUZi4hSKB2xHyTkyLekL3or6kNKxtr8TnP843t9=EA@mail.gmail.com>
-Subject: Re: [RFC dwarves 3/4] pahole: add --btf_features=feature1[,feature2...]
- support
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: acme@kernel.org, jolsa@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	eddyz87@gmail.com, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, mykolal@fb.com, bpf@vger.kernel.org, 
-	Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 180616 [Oct 13 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 539 539 807534d9021bfe9ca369c363d15ac993cd93d4d9, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/13 17:38:00 #22183193
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Oct 13, 2023 at 4:54=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
-om> wrote:
->
-> On 13/10/2023 01:21, Andrii Nakryiko wrote:
-> > On Wed, Oct 11, 2023 at 2:17=E2=80=AFAM Alan Maguire <alan.maguire@orac=
-le.com> wrote:
-> >>
-> >> This allows consumers to specify an opt-in set of features
-> >> they want to use in BTF encoding.
-> >
-> > This is exactly what I had in mind, so thanks a lot for doing this!
-> > Minor nits below, but otherwise a big thumb up from me for the overall
-> > approach.
-> >
->
-> Great!
->
-> >>
-> >> Supported features are
-> >>
-> >>         encode_force  Ignore invalid symbols when encoding BTF.
-> >
-> > ignore_invalid? Even then I don't really know what this means even
-> > after reading the description, but that's ok :)
-> >
->
-> The only place it is currently used is when checking btf_name_valid()
-> on a variable - if encode_force is specified we skip invalidly-named
-> symbols and drive on. I'll try and flesh out the description a bit.
->
->
-> >>         var           Encode variables using BTF_KIND_VAR in BTF.
-> >>         float         Encode floating-point types in BTF.
-> >>         decl_tag      Encode declaration tags using BTF_KIND_DECL_TAG.
-> >>         type_tag      Encode type tags using BTF_KIND_TYPE_TAG.
-> >>         enum64        Encode enum64 values with BTF_KIND_ENUM64.
-> >>         optimized     Encode representations of optimized functions
-> >>                       with suffixes like ".isra.0" etc
-> >>         consistent    Avoid encoding inconsistent static functions.
-> >>                       These occur when a parameter is optimized out
-> >>                       in some CUs and not others, or when the same
-> >>                       function name has inconsistent BTF descriptions
-> >>                       in different CUs.
-> >
-> > both optimized and consistent refer to functions, so shouldn't the
-> > feature name include func somewhere?
-> >
->
-> Yeah, though consistent may eventually need to apply to variables too.
-> As Stephen and I have been exploring adding global variable support for
-> all variables, we've run across a bunch of cases where the same variable
-> name refers to different types too. Worse, it often happens that the
-> same variable name refers to a "struct foo" and a "struct foo *" which
-> is liable to be very confusing. So I think we will either need to skip
-> encoding such variables for now (the "consistent" approach used for
-> functions) or we may have to sort out the symbol->address mapping issue
-> in BTF for functions _and_ variables before we land variable support.
-> My preference would be the latter - since it will solve the issues with
-> functions too - but I think we can probably make either sequence work.
->
-> So all of that is to say we can either stick with "consistent" with
-> the expectation that it may be more broadly applied to variables, or
-> convert to "consistent_func", I've no major preference which.
->
-> Optimized definitely refers to functions so we can switch that to
-> "optimized_func" if you like.
->
+This is a simple listener for memory events that handles counter
+changes in runtime. It can be set up for a specific memory cgroup v2.
 
-So I'd say optimized params will be its own feature, no? So yeah, I
-think optimized_funcs is a better and more specific name. We can
-probably add groups/aliases separate or later on, so then "optimized"
-will mean both optimized_funcs and optimized_params, etc. Just like
-you have all.
+The output example:
+=====
+$ /tmp/cgroup_v2_event_listener test
+Initialized MEMCG events with counters:
+MEMCG events:
+	low: 0
+	high: 0
+	max: 0
+	oom: 0
+	oom_kill: 0
+	oom_group_kill: 0
+Started monitoring memory events from '/sys/fs/cgroup/test/memory.events'...
+Received event in /sys/fs/cgroup/test/memory.events:
+*** 1 MEMCG oom_kill event, change counter 0 => 1
+Received event in /sys/fs/cgroup/test/memory.events:
+*** 1 MEMCG oom_kill event, change counter 1 => 2
+Received event in /sys/fs/cgroup/test/memory.events:
+*** 1 MEMCG oom_kill event, change counter 2 => 3
+Received event in /sys/fs/cgroup/test/memory.events:
+*** 1 MEMCG oom_kill event, change counter 3 => 4
+Received event in /sys/fs/cgroup/test/memory.events:
+*** 2 MEMCG max events, change counter 0 => 2
+Received event in /sys/fs/cgroup/test/memory.events:
+*** 8 MEMCG max events, change counter 2 => 10
+*** 1 MEMCG oom event, change counter 0 => 1
+Received event in /sys/fs/cgroup/test/memory.events:
+*** 1 MEMCG oom_kill event, change counter 4 => 5
+^CExiting cgroup v2 event listener...
+=====
 
-But this starts to sounds like a feature creep, so let's go with
-specific names now, and worry about aliases when we need them.
+Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+---
+ tools/cgroup/Makefile                   |   4 +-
+ tools/cgroup/cgroup_v2_event_listener.c | 330 ++++++++++++++++++++++++
+ 2 files changed, 332 insertions(+), 2 deletions(-)
+ create mode 100644 tools/cgroup/cgroup_v2_event_listener.c
 
-> >>
-> >> Specifying "--btf_features=3Dall" is the equivalent to setting
-> >> all of the above.  If pahole does not know about a feature
-> >> it silently ignores it.  These properties allow us to use
-> >> the --btf_features option in the kernel pahole_flags.sh
-> >> script to specify the desired set of features.  If a new
-> >> feature is not present in pahole but requested, pahole
-> >> BTF encoding will not complain (but will not encode the
-> >> feature).
-> >
-> > As I mentioned in the cover letter reply, we might add a "strict mode"
-> > flag, that will error out on unknown features. I don't have much
-> > opinion here, up to Arnaldo and others whether this is useful.
-> >
->
-> I think this is a good idea. I'll add it to v2 unless anyone has major
-> objections.
->
+diff --git a/tools/cgroup/Makefile b/tools/cgroup/Makefile
+index ffca068e4a76..86bd357a8f54 100644
+--- a/tools/cgroup/Makefile
++++ b/tools/cgroup/Makefile
+@@ -3,9 +3,9 @@
+ 
+ CFLAGS = -Wall -Wextra
+ 
+-all: cgroup_event_listener
++all: cgroup_event_listener cgroup_v2_event_listener
+ %: %.c
+ 	$(CC) $(CFLAGS) -o $@ $^
+ 
+ clean:
+-	$(RM) cgroup_event_listener
++	$(RM) cgroup_event_listener cgroup_v2_event_listener
+diff --git a/tools/cgroup/cgroup_v2_event_listener.c b/tools/cgroup/cgroup_v2_event_listener.c
+new file mode 100644
+index 000000000000..987261db5369
+--- /dev/null
++++ b/tools/cgroup/cgroup_v2_event_listener.c
+@@ -0,0 +1,330 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * cgroup_v2_event_listener.c - Simple listener of cgroup v2 memory.events
++ *
++ * Copyright (c) 2023, SaluteDevices. All Rights Reserved.
++ *
++ * Author: Dmitry Rokosov <ddrokosov@salutedevices.com>
++ */
++
++#include <err.h>
++#include <errno.h>
++#include <limits.h>
++#include <poll.h>
++#include <stdbool.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/inotify.h>
++#include <unistd.h>
++
++#define MEMCG_EVENTS "memory.events"
++
++/* Size of buffer to use when reading inotify events */
++#define INOTIFY_BUFFER_SIZE 8192
++
++#define INOTIFY_EVENT_NEXT(event, length) ({         \
++	(length) -= sizeof(*(event)) + (event)->len; \
++	(event)++;                                   \
++})
++
++#define INOTIFY_EVENT_OK(event, length) ((length) >= (ssize_t)sizeof(*(event)))
++
++#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
++
++struct memcg_counters {
++	long low;
++	long high;
++	long max;
++	long oom;
++	long oom_kill;
++	long oom_group_kill;
++};
++
++struct memcg_events {
++	struct memcg_counters counters;
++	char path[PATH_MAX];
++	int inotify_fd;
++	int inotify_wd;
++};
++
++static void print_memcg_counters(const struct memcg_counters *counters)
++{
++	printf("MEMCG events:\n");
++	printf("\tlow: %ld\n", counters->low);
++	printf("\thigh: %ld\n", counters->high);
++	printf("\tmax: %ld\n", counters->max);
++	printf("\toom: %ld\n", counters->oom);
++	printf("\toom_kill: %ld\n", counters->oom_kill);
++	printf("\toom_group_kill: %ld\n", counters->oom_group_kill);
++}
++
++static int get_memcg_counter(char *line, const char *name, long *counter)
++{
++	size_t len = strlen(name);
++	char *endptr;
++	long tmp;
++
++	if (memcmp(line, name, len)) {
++		warnx("Counter line %s has wrong name, %s is expected",
++		      line, name);
++		return -EINVAL;
++	}
++
++	/* skip the whitespace delimiter */
++	len += 1;
++
++	errno = 0;
++	tmp = strtol(&line[len], &endptr, 10);
++	if (((tmp == LONG_MAX || tmp == LONG_MIN) && errno == ERANGE) ||
++	    (errno && !tmp)) {
++		warnx("Failed to parse: %s", &line[len]);
++		return -ERANGE;
++	}
++
++	if (endptr == &line[len]) {
++		warnx("Not digits were found in line %s", &line[len]);
++		return -EINVAL;
++	}
++
++	if (!(*endptr == '\0' || (*endptr == '\n' && *++endptr == '\0'))) {
++		warnx("Further characters after number: %s", endptr);
++		return -EINVAL;
++	}
++
++	*counter = tmp;
++
++	return 0;
++}
++
++static int read_memcg_events(struct memcg_events *events, bool show_diff)
++{
++	FILE *fp = fopen(events->path, "re");
++	size_t i;
++	int ret = 0;
++	bool any_new_events = false;
++	char *line = NULL;
++	size_t len = 0;
++	struct memcg_counters new_counters;
++	struct memcg_counters *counters = &events->counters;
++	struct {
++		const char *name;
++		long *new;
++		long *old;
++	} map[] = {
++		{
++			.name = "low",
++			.new = &new_counters.low,
++			.old = &counters->low,
++		},
++		{
++			.name = "high",
++			.new = &new_counters.high,
++			.old = &counters->high,
++		},
++		{
++			.name = "max",
++			.new = &new_counters.max,
++			.old = &counters->max,
++		},
++		{
++			.name = "oom",
++			.new = &new_counters.oom,
++			.old = &counters->oom,
++		},
++		{
++			.name = "oom_kill",
++			.new = &new_counters.oom_kill,
++			.old = &counters->oom_kill,
++		},
++		{
++			.name = "oom_group_kill",
++			.new = &new_counters.oom_group_kill,
++			.old = &counters->oom_group_kill,
++		},
++	};
++
++	if (!fp) {
++		warn("Failed to open memcg events file %s", events->path);
++		return -EBADF;
++	}
++
++	/* Read new values for memcg counters */
++	for (i = 0; i < ARRAY_SIZE(map); ++i) {
++		ssize_t nread;
++
++		errno = 0;
++		nread = getline(&line, &len, fp);
++		if (nread == -1) {
++			if (errno) {
++				warn("Failed to read line for counter %s",
++				     map[i].name);
++				ret = -EIO;
++				goto exit;
++			}
++
++			break;
++		}
++
++		ret = get_memcg_counter(line, map[i].name, map[i].new);
++		if (ret) {
++			warnx("Failed to get counter value from line %s", line);
++			goto exit;
++		}
++	}
++
++	for (i = 0; i < ARRAY_SIZE(map); ++i) {
++		long diff;
++
++		if (*map[i].new > *map[i].old) {
++			diff = *map[i].new - *map[i].old;
++
++			if (show_diff)
++				printf("*** %ld MEMCG %s event%s, "
++				       "change counter %ld => %ld\n",
++				       diff, map[i].name,
++				       (diff == 1) ? "" : "s",
++				       *map[i].old, *map[i].new);
++
++			*map[i].old += diff;
++			any_new_events = true;
++		}
++	}
++
++	if (show_diff && !any_new_events)
++		printf("*** No new untracked memcg events available\n");
++
++exit:
++	free(line);
++	fclose(fp);
++
++	return ret;
++}
++
++static void process_memcg_events(struct memcg_events *events,
++				 struct inotify_event *event)
++{
++	int ret;
++
++	if (events->inotify_wd != event->wd) {
++		warnx("Unknown inotify event %d, should be %d", event->wd,
++		      events->inotify_wd);
++		return;
++	}
++
++	printf("Received event in %s:\n", events->path);
++
++	if (!(event->mask & IN_MODIFY)) {
++		warnx("No IN_MODIFY event, skip it");
++		return;
++	}
++
++	ret = read_memcg_events(events, /* show_diff = */true);
++	if (ret)
++		warnx("Can't read memcg events");
++}
++
++static void monitor_events(struct memcg_events *events)
++{
++	struct pollfd fds[1];
++	int ret;
++
++	printf("Started monitoring memory events from '%s'...\n", events->path);
++
++	fds[0].fd = events->inotify_fd;
++	fds[0].events = POLLIN;
++
++	for (;;) {
++		ret = poll(fds, ARRAY_SIZE(fds), -1);
++		if (ret < 0 && errno != EAGAIN)
++			err(EXIT_FAILURE, "Can't poll memcg events (%d)", ret);
++
++		if (fds[0].revents & POLLERR)
++			err(EXIT_FAILURE, "Got POLLERR during monitor events");
++
++		if (fds[0].revents & POLLIN) {
++			struct inotify_event *event;
++			char buffer[INOTIFY_BUFFER_SIZE];
++			ssize_t length;
++
++			length = read(fds[0].fd, buffer, INOTIFY_BUFFER_SIZE);
++			if (length <= 0)
++				continue;
++
++			event = (struct inotify_event *)buffer;
++			while (INOTIFY_EVENT_OK(event, length)) {
++				process_memcg_events(events, event);
++				event = INOTIFY_EVENT_NEXT(event, length);
++			}
++		}
++	}
++}
++
++static int initialize_memcg_events(struct memcg_events *events,
++				   const char *cgroup)
++{
++	int ret;
++
++	memset(events, 0, sizeof(struct memcg_events));
++
++	ret = snprintf(events->path, PATH_MAX,
++		       "/sys/fs/cgroup/%s/memory.events", cgroup);
++	if (ret >= PATH_MAX) {
++		warnx("Path to cgroup memory.events is too long");
++		return -EMSGSIZE;
++	} else if (ret < 0) {
++		warn("Can't generate cgroup event full name");
++		return ret;
++	}
++
++	ret = read_memcg_events(events, /* show_diff = */false);
++	if (ret) {
++		warnx("Failed to read initial memcg events state (%d)", ret);
++		return ret;
++	}
++
++	events->inotify_fd = inotify_init();
++	if (events->inotify_fd < 0) {
++		warn("Failed to setup new inotify device");
++		return -EMFILE;
++	}
++
++	events->inotify_wd = inotify_add_watch(events->inotify_fd,
++					       events->path, IN_MODIFY);
++	if (events->inotify_wd < 0) {
++		warn("Couldn't add monitor in dir %s", events->path);
++		return -EIO;
++	}
++
++	printf("Initialized MEMCG events with counters:\n");
++	print_memcg_counters(&events->counters);
++
++	return 0;
++}
++
++static void cleanup_memcg_events(struct memcg_events *events)
++{
++	inotify_rm_watch(events->inotify_fd, events->inotify_wd);
++	close(events->inotify_fd);
++}
++
++int main(int argc, const char **argv)
++{
++	struct memcg_events events;
++	ssize_t ret;
++
++	if (argc != 2)
++		errx(EXIT_FAILURE, "Usage: %s <cgroup>", argv[0]);
++
++	ret = initialize_memcg_events(&events, argv[1]);
++	if (ret)
++		errx(EXIT_FAILURE, "Can't initialize memcg events (%zd)", ret);
++
++	monitor_events(&events);
++
++	cleanup_memcg_events(&events);
++
++	printf("Exiting cgroup v2 event listener...\n");
++
++	return EXIT_SUCCESS;
++}
+-- 
+2.36.0
 
-SGTM
-
-> >>
-> >> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> >> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> >> ---
-> >>  man-pages/pahole.1 | 20 +++++++++++
-> >>  pahole.c           | 87 +++++++++++++++++++++++++++++++++++++++++++++=
--
-> >>  2 files changed, 106 insertions(+), 1 deletion(-)
-> >>
-
-[...]
 
