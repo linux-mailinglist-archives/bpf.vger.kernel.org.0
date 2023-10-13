@@ -1,73 +1,81 @@
-Return-Path: <bpf+bounces-12132-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12133-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F34CE7C82C5
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 12:14:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBD857C8319
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 12:32:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE49FB20AF0
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 10:14:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD76D1C20CB5
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 10:32:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28AC511CAC;
-	Fri, 13 Oct 2023 10:14:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03BAB10954;
+	Fri, 13 Oct 2023 10:32:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lna7iAfu"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GzPUTXkK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KRkE/GJn"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5894B11C8D;
-	Fri, 13 Oct 2023 10:14:28 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B81AD;
-	Fri, 13 Oct 2023 03:14:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697192066; x=1728728066;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=XFoqaJbduqLCyl9DPecY1ECvrkqVkONk2hKheDsUmwo=;
-  b=lna7iAfuP3cluWanA94OG3qQBcTREM2x+4gawebfKypVwOA+sPgSchoB
-   s7JFpUbqPCFM0nRAlDIxYDVzF8VYziq0/5A3N6t00T4lUdRY21zkhQ/IM
-   R5L4vesF50vxt6ZqYBxrUVs2+8i/HmpCNykBKoP/YPBRYjSvody3Ui9up
-   Tru6AnoFlzs5YGw5+iwZhIW/wlQy7u/NpD74YPSHBz6xPFhoVibqbM+L/
-   iu+KB6FmBa8pS/WSkP0kJt573A292uaVkafoCzLFSP6R9MA4xuyX044KT
-   HxmVuGZ82yawFwwzeNcfJLvGjZQdWsAbHRp49Kx/B2UJjQCPMMHelzx0w
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="416202068"
-X-IronPort-AV: E=Sophos;i="6.03,221,1694761200"; 
-   d="scan'208";a="416202068"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 03:14:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="754653480"
-X-IronPort-AV: E=Sophos;i="6.03,221,1694761200"; 
-   d="scan'208";a="754653480"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 13 Oct 2023 03:14:18 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qrFBQ-0004cX-1O;
-	Fri, 13 Oct 2023 10:14:16 +0000
-Date: Fri, 13 Oct 2023 18:13:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	virtualization@lists.linux-foundation.org
-Cc: oe-kbuild-all@lists.linux.dev, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9465C134AD;
+	Fri, 13 Oct 2023 10:32:13 +0000 (UTC)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93DB5B7;
+	Fri, 13 Oct 2023 03:32:10 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CB4991F37E;
+	Fri, 13 Oct 2023 10:32:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1697193128; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=66B4eH+VSglevS0FFJUbqlfaivXzDyXujiWgnWbKsn0=;
+	b=GzPUTXkKn6AZFQGjDKin2eF0ALSipmF8QhOq+wKShSHdUM4pyXff0HoSjkzHgl0ILNFnrt
+	0ylBSy+c5OBebJmS00aKBcPckR149JRtqf9c9TX9zNeQyq4jsUE/T28W8luwYtTibxbeoT
+	EYRQYFZNGWnmOg5BXIVewxMraQ3BLSc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1697193128;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=66B4eH+VSglevS0FFJUbqlfaivXzDyXujiWgnWbKsn0=;
+	b=KRkE/GJnaQzE12WFx22/2vpu1a25IfI/GaPJQa5Awjb4ic5Jm4rBt153Td8maYEyerLFyK
+	ohh3fn+NvA+bPYAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BA3B7138EF;
+	Fri, 13 Oct 2023 10:32:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id cRFxLagcKWU2NAAAMHmgww
+	(envelope-from <jack@suse.cz>); Fri, 13 Oct 2023 10:32:08 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 54305A05C4; Fri, 13 Oct 2023 12:32:08 +0200 (CEST)
+Date: Fri, 13 Oct 2023 12:32:08 +0200
+From: Jan Kara <jack@suse.cz>
+To: Lorenzo Stoakes <lstoakes@gmail.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Mike Kravetz <mike.kravetz@oracle.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Hugh Dickins <hughd@google.com>, Andy Lutomirski <luto@kernel.org>,
+	Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: Re: [PATCH vhost 11/22] virtio_net: sq support premapped mode
-Message-ID: <202310131711.QjbkIwe0-lkp@intel.com>
-References: <20231011092728.105904-12-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v4 2/3] mm: update memfd seal write check to include
+ F_SEAL_WRITE
+Message-ID: <20231013103208.kdffpyerufr4ygnw@quack3>
+References: <cover.1697116581.git.lstoakes@gmail.com>
+ <913628168ce6cce77df7d13a63970bae06a526e0.1697116581.git.lstoakes@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,106 +84,137 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231011092728.105904-12-xuanzhuo@linux.alibaba.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-	autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <913628168ce6cce77df7d13a63970bae06a526e0.1697116581.git.lstoakes@gmail.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -10.60
+X-Spamd-Result: default: False [-10.60 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLY(-4.00)[];
+	 NEURAL_HAM_LONG(-3.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-1.00)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_COUNT_TWO(0.00)[2];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Xuan,
+On Thu 12-10-23 18:04:29, Lorenzo Stoakes wrote:
+> The seal_check_future_write() function is called by shmem_mmap() or
+> hugetlbfs_file_mmap() to disallow any future writable mappings of an memfd
+> sealed this way.
+> 
+> The F_SEAL_WRITE flag is not checked here, as that is handled via the
+> mapping->i_mmap_writable mechanism and so any attempt at a mapping would
+> fail before this could be run.
+> 
+> However we intend to change this, meaning this check can be performed for
+> F_SEAL_WRITE mappings also.
+> 
+> The logic here is equally applicable to both flags, so update this function
+> to accommodate both and rename it accordingly.
+> 
+> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
 
-kernel test robot noticed the following build warnings:
+For some reason only this one patch landed in my inbox but I've checked all
+three on lore and they look good to me. Feel free to add:
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.6-rc5 next-20231013]
-[cannot apply to mst-vhost/linux-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Xuan-Zhuo/virtio_ring-virtqueue_set_dma_premapped-support-disable/20231011-180709
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20231011092728.105904-12-xuanzhuo%40linux.alibaba.com
-patch subject: [PATCH vhost 11/22] virtio_net: sq support premapped mode
-config: parisc-randconfig-001-20231013 (https://download.01.org/0day-ci/archive/20231013/202310131711.QjbkIwe0-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231013/202310131711.QjbkIwe0-lkp@intel.com/reproduce)
+to all of them. Thanks!
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310131711.QjbkIwe0-lkp@intel.com/
+								Honza
 
-All warnings (new ones prefixed by >>):
-
-   In file included from drivers/net/virtio/main.c:25:
-   drivers/net/virtio/virtio_net.h: In function 'virtnet_sq_unmap':
->> drivers/net/virtio/virtio_net.h:235:25: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-     235 |         head = (void *)((u64)data & ~VIRTIO_XMIT_DATA_MASK);
-         |                         ^
->> drivers/net/virtio/virtio_net.h:235:16: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-     235 |         head = (void *)((u64)data & ~VIRTIO_XMIT_DATA_MASK);
-         |                ^
-   drivers/net/virtio/main.c: In function 'virtnet_sq_map_sg':
->> drivers/net/virtio/main.c:600:25: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-     600 |         return (void *)((u64)head | ((u64)data & VIRTIO_XMIT_DATA_MASK));
-         |                         ^
-   drivers/net/virtio/main.c:600:38: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-     600 |         return (void *)((u64)head | ((u64)data & VIRTIO_XMIT_DATA_MASK));
-         |                                      ^
->> drivers/net/virtio/main.c:600:16: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-     600 |         return (void *)((u64)head | ((u64)data & VIRTIO_XMIT_DATA_MASK));
-         |                ^
-   drivers/net/virtio/main.c: In function 'virtnet_find_vqs':
-   drivers/net/virtio/main.c:3977:48: warning: '%d' directive writing between 1 and 11 bytes into a region of size 10 [-Wformat-overflow=]
-    3977 |                 sprintf(vi->rq[i].name, "input.%d", i);
-         |                                                ^~
-   drivers/net/virtio/main.c:3977:41: note: directive argument in the range [-2147483641, 65534]
-    3977 |                 sprintf(vi->rq[i].name, "input.%d", i);
-         |                                         ^~~~~~~~~~
-   drivers/net/virtio/main.c:3977:17: note: 'sprintf' output between 8 and 18 bytes into a destination of size 16
-    3977 |                 sprintf(vi->rq[i].name, "input.%d", i);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/virtio/main.c:3978:49: warning: '%d' directive writing between 1 and 11 bytes into a region of size 9 [-Wformat-overflow=]
-    3978 |                 sprintf(vi->sq[i].name, "output.%d", i);
-         |                                                 ^~
-   drivers/net/virtio/main.c:3978:41: note: directive argument in the range [-2147483641, 65534]
-    3978 |                 sprintf(vi->sq[i].name, "output.%d", i);
-         |                                         ^~~~~~~~~~~
-   drivers/net/virtio/main.c:3978:17: note: 'sprintf' output between 9 and 19 bytes into a destination of size 16
-    3978 |                 sprintf(vi->sq[i].name, "output.%d", i);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +235 drivers/net/virtio/virtio_net.h
-
-   230	
-   231	static inline void *virtnet_sq_unmap(struct virtnet_sq *sq, void *data)
-   232	{
-   233		struct virtnet_sq_dma *next, *head;
-   234	
- > 235		head = (void *)((u64)data & ~VIRTIO_XMIT_DATA_MASK);
-   236	
-   237		data = head->data;
-   238	
-   239		while (head) {
-   240			virtqueue_dma_unmap_page_attrs(sq->vq, head->addr, head->len, DMA_TO_DEVICE, 0);
-   241	
-   242			next = head->next;
-   243	
-   244			head->next = sq->dmainfo.free;
-   245			sq->dmainfo.free = head;
-   246	
-   247			head = next;
-   248		}
-   249	
-   250		return data;
-   251	}
-   252	
-
+> ---
+>  fs/hugetlbfs/inode.c |  2 +-
+>  include/linux/mm.h   | 15 ++++++++-------
+>  mm/shmem.c           |  2 +-
+>  3 files changed, 10 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+> index 06693bb1153d..5c333373dcc9 100644
+> --- a/fs/hugetlbfs/inode.c
+> +++ b/fs/hugetlbfs/inode.c
+> @@ -112,7 +112,7 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
+>  	vm_flags_set(vma, VM_HUGETLB | VM_DONTEXPAND);
+>  	vma->vm_ops = &hugetlb_vm_ops;
+>  
+> -	ret = seal_check_future_write(info->seals, vma);
+> +	ret = seal_check_write(info->seals, vma);
+>  	if (ret)
+>  		return ret;
+>  
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index bae234d18d81..26d7dc3b342b 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -4078,25 +4078,26 @@ static inline void mem_dump_obj(void *object) {}
+>  #endif
+>  
+>  /**
+> - * seal_check_future_write - Check for F_SEAL_FUTURE_WRITE flag and handle it
+> + * seal_check_write - Check for F_SEAL_WRITE or F_SEAL_FUTURE_WRITE flags and
+> + *                    handle them.
+>   * @seals: the seals to check
+>   * @vma: the vma to operate on
+>   *
+> - * Check whether F_SEAL_FUTURE_WRITE is set; if so, do proper check/handling on
+> - * the vma flags.  Return 0 if check pass, or <0 for errors.
+> + * Check whether F_SEAL_WRITE or F_SEAL_FUTURE_WRITE are set; if so, do proper
+> + * check/handling on the vma flags.  Return 0 if check pass, or <0 for errors.
+>   */
+> -static inline int seal_check_future_write(int seals, struct vm_area_struct *vma)
+> +static inline int seal_check_write(int seals, struct vm_area_struct *vma)
+>  {
+> -	if (seals & F_SEAL_FUTURE_WRITE) {
+> +	if (seals & (F_SEAL_WRITE | F_SEAL_FUTURE_WRITE)) {
+>  		/*
+>  		 * New PROT_WRITE and MAP_SHARED mmaps are not allowed when
+> -		 * "future write" seal active.
+> +		 * write seals are active.
+>  		 */
+>  		if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_WRITE))
+>  			return -EPERM;
+>  
+>  		/*
+> -		 * Since an F_SEAL_FUTURE_WRITE sealed memfd can be mapped as
+> +		 * Since an F_SEAL_[FUTURE_]WRITE sealed memfd can be mapped as
+>  		 * MAP_SHARED and read-only, take care to not allow mprotect to
+>  		 * revert protections on such mappings. Do this only for shared
+>  		 * mappings. For private mappings, don't need to mask
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 6503910b0f54..cab053831fea 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -2405,7 +2405,7 @@ static int shmem_mmap(struct file *file, struct vm_area_struct *vma)
+>  	struct shmem_inode_info *info = SHMEM_I(inode);
+>  	int ret;
+>  
+> -	ret = seal_check_future_write(info->seals, vma);
+> +	ret = seal_check_write(info->seals, vma);
+>  	if (ret)
+>  		return ret;
+>  
+> -- 
+> 2.42.0
+> 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
