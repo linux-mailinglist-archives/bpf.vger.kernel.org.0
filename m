@@ -1,95 +1,81 @@
-Return-Path: <bpf+bounces-12141-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12142-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EB617C8720
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 15:45:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 404097C8746
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 16:00:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F7C3B20AB2
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 13:45:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79DEB1C21207
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 14:00:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFD0915EB5;
-	Fri, 13 Oct 2023 13:45:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="mmlqf5aa"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8044618E18;
+	Fri, 13 Oct 2023 14:00:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4EC517980
-	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 13:45:31 +0000 (UTC)
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5B095
-	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 06:45:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1697204724;
-	bh=9yGwfZ0bSaj3gcY+vZ+R+FcCTDnHPx5WRf8m9aJ5bfI=;
-	h=From:To:Cc:Subject:Date;
-	b=mmlqf5aacSNUnhyslTSexUdWpxzmWi0YyoEtOLx25QOY5FJpj/Tt6hgleC4xzGqg+
-	 OWfqOUr77Ta6MsJ17VuCrsf3QAi0L6fIKwt8Sii/sgKopjyxuCK/NvFKyaxAi6lcVx
-	 6Mm/C5lHGuXiMlTOeIJULes6hDNH5oytvv+xXRUM=
-Received: from lb-dt.. ([117.32.216.61])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id 98D3A64F; Fri, 13 Oct 2023 21:38:13 +0800
-X-QQ-mid: xmsmtpt1697204293t6sdx6oqu
-Message-ID: <tencent_C59755D2B2D8A78676CFECBC4DA9031C1908@qq.com>
-X-QQ-XMAILINFO: NjoVKmBV+G+ji2pBCRqhNflLjeN+jgbwKx7H/BliISMpkUUtrPg/xyOxP5kwRd
-	 Y+zx7lSNr9ErA697vCPImorxOPKeM5R3NjRLahV6PpJAG8ijODM3BrXVhEixWMBQoDzmmZcOURiI
-	 LeQViSRu/XyES3sM89rhWv8TVg9ySwvxu0IpDxr2CrSwD2lapC5mR6yMsbFNXbM3hnJKaxpfW0T4
-	 GF8Osr0Q916ZAHM6hXV1//iRzvBg0sOO8OJ/x9M07WezxekJPgoIolOmR246PgAnolhwxlycIIXj
-	 wL4O52Qv/fIeTrp6KT7u6v3UGwiwlbPYwJi8yMCDJTCMpBratNOBzEFgCRk8Rdu7P5qhxwUblIXS
-	 eT76BD19IPhMwgAFUWWZ/a0ysrNb7C6ONreUizOZU4ooYdBH+/Uohb7hQ3W5e2dd14tCDOu8GI3i
-	 QVLt2vv+2nLN8A2vBJ/PqjPONHYfXYrQd6n76he7do3Tj/DpFuJqMZnDJaNQvlvCoTXa3n55F3CD
-	 up3vO9MxMnHwCAJ0L59eJNXV1z8WC+JXOWN4RQCeKG7DnHp3+HqAfqoH66hPqv9Nr8sIZnrzJfB7
-	 dWdKFq62JUYW7pkUfq4xYViMKyc6QB+JxlzYGOdMiYzl3osBOvkNVawvJOzmexZe1xeBogFNHqVy
-	 XRoOsAffb/5Fg0/6FFqWdH4GFZ7KLnieTTkSEHk78MweN0Eaz41QE9eqsUOOyQeObNwDXPLv8RXW
-	 nt5gFK53q4dwjV0yownPp8NNps0BvoIZp6J4n0jFsVY/dGU4MLicU9pCTzMVtduhs8EarDp7lIuf
-	 3NkNRcih/z7p8BWVU+pHlUKkoqIj0zwePGVOomNUNRhGqwqAfv2akf/i+W6MaVhr/X4ij4LjUpjt
-	 TIM0SZiTw7672AkJgMjg6G9TFYUBiY3lGskKKrwSrN62xrq5sYwCQzPYDnN6bKwyYrptUwIVI1Xb
-	 o5Zy250enAHsDDrRwQiBMEaX+yI0gw1kOZBZSsEag=
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-From: LiuLingze <luiyanbing@foxmail.com>
-To: bpf@vger.kernel.org
-Cc: LiuLingze <luiyanbing@foxmail.com>
-Subject: [PATCH] Fix 'libbpf: failed to find BTF info for global/extern symbol' since uninitialized global variables
-Date: Fri, 13 Oct 2023 13:38:10 +0000
-X-OQ-MSGID: <20231013133810.147874-1-luiyanbing@foxmail.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C929B15E94;
+	Fri, 13 Oct 2023 14:00:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3004EC433C7;
+	Fri, 13 Oct 2023 14:00:25 +0000 (UTC)
+Date: Fri, 13 Oct 2023 10:00:23 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Artem Savkov <asavkov@redhat.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, Masami
+ Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+ linux-rt-users@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [RFC PATCH bpf-next] bpf: change syscall_nr type to int in
+ struct syscall_tp_t
+Message-ID: <20231013100023.5b0943ec@rorschach.local.home>
+In-Reply-To: <ZSjdPqQiPdqa-UTs@wtfbox.lan>
+References: <20231005123413.GA488417@alecto.usersys.redhat.com>
+	<20231012114550.152846-1-asavkov@redhat.com>
+	<20231012094444.0967fa79@gandalf.local.home>
+	<CAEf4BzZKWkJjOjw8x_eL_hsU-QzFuSzd5bkBH2EHtirN2hnEgA@mail.gmail.com>
+	<ZSjdPqQiPdqa-UTs@wtfbox.lan>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-	RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
----
- examples/c/usdt.bpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, 13 Oct 2023 08:01:34 +0200
+Artem Savkov <asavkov@redhat.com> wrote:
 
-diff --git a/examples/c/usdt.bpf.c b/examples/c/usdt.bpf.c
-index 49ba506..2612ec1 100644
---- a/examples/c/usdt.bpf.c
-+++ b/examples/c/usdt.bpf.c
-@@ -5,7 +5,7 @@
- #include <bpf/bpf_tracing.h>
- #include <bpf/usdt.bpf.h>
- 
--pid_t my_pid;
-+pid_t my_pid = 0;
- 
- SEC("usdt/libc.so.6:libc:setjmp")
- int BPF_USDT(usdt_auto_attach, void *arg1, int arg2, void *arg3)
--- 
-2.37.2
+> > But looking at [0] and briefly reading some of the discussions you,
+> > Steven, had. I'm just wondering if it would be best to avoid
+> > increasing struct trace_entry altogether? It seems like preempt_count
+> > is actually a 4-bit field in trace context, so it doesn't seem like we
+> > really need to allocate an entire byte for both preempt_count and
+> > preempt_lazy_count. Why can't we just combine them and not waste 8
+> > extra bytes for each trace event in a ring buffer?
+> > 
+> >   [0] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/commit/?id=b1773eac3f29cbdcdfd16e0339f1a164066e9f71  
+> 
+> I agree that avoiding increase in struct trace_entry size would be very
+> desirable, but I have no knowledge whether rt developers had reasons to
+> do it like this.
+> 
+> Nevertheless I think the issue with verifier running against a wrong
+> struct still needs to be addressed.
 
+Correct. My Ack is based on the current way things are done upstream.
+It was just that linux-rt showed the issue, where the code was not as
+robust as it should have been. To me this was a correctness issue, not
+an issue that had to do with how things are done in linux-rt.
+
+As for the changes in linux-rt, they are not upstream yet. I'll have my
+comments on that code when that happens.
+
+-- Steve
 
