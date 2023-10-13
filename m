@@ -1,184 +1,300 @@
-Return-Path: <bpf+bounces-12174-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12175-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FF1E7C8EC7
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 23:11:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B64D7C8ED8
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 23:15:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAFE1B20B07
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 21:11:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E41EC2812EB
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 21:15:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A9ED250F2;
-	Fri, 13 Oct 2023 21:11:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 668E5262A0;
+	Fri, 13 Oct 2023 21:15:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DuRQ4nAB"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="SOFfq/eB"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A64219FC
-	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 21:11:43 +0000 (UTC)
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F3ED8
-	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 14:11:42 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53db1fbee70so4369185a12.2
-        for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 14:11:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5E9B241EB
+	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 21:15:47 +0000 (UTC)
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8BDFB7
+	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 14:15:38 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5a7be88e9ccso31508147b3.2
+        for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 14:15:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697231501; x=1697836301; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/lcRNuayPf4anQZfBDqfnvyhOp8pAiTdz5J2F5oxTr0=;
-        b=DuRQ4nABEbbXIAUN9a/87+aUM6WzebS1PvTMEcUX+0O9kdwt2/IrFspcLRuyHcuFp3
-         xHxtgT+pMmt3QiamVo2WUvqnQ+2Nk7bUdmJ6A8D2wOs56m6nZnrcLoDkYPlG/fha21MO
-         K0/+iPsRyhX3uxvVZ7MAfBgrDS3tD8C9bgmKGLJISvww7vQsdy/OAV2X+uOOwoMnb6fL
-         KcXP2eUcs+kAzVrqSzcN4dfJ2vthuwPoBOZtvzyW5karR8h8fMdQYdIA5DaU5TsujCkD
-         38I0xnLEb8Hqd1c+t0Nsyx4BBvWkb9MYPgVSGbXWP8AQTHmnF8yWKjmtjO/IVABTnnM3
-         BdQQ==
+        d=paul-moore.com; s=google; t=1697231738; x=1697836538; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=dLQj5ZtRhq6MJlTujO1awDYkdSdBvUj8+lUyHnK/bd4=;
+        b=SOFfq/eBOF46t8KmBVttTNwb/Ms9aEFLYPFekKQUyfhV1GEwPF/pi6ecxjZMQpA2/C
+         gJ3ylnLqIFiMtTDnIgfza01kRKbnZw2o8hu4U6jfdI60xd9TARK9D2GZwSrpjX+cAVaE
+         z01nYYRkKUuUCuixgXjcG8NDzNeUwNLor3lAMO2cJFZVc2LnMohl1erMYoCI2nji7A9D
+         kyBsvGVLp/Pf5eDdzzQQIoJTOSjN+Hb8/ObhonKWfLRaUc9Qais+kOWNnUm6zKm8fC9K
+         qgl7CoxFr4fgXS63q0oRJfHmL89xx8d/o7VPSF9t7y4OiQXZHwFPt25xcdD0/Z5b+DKt
+         f56w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697231501; x=1697836301;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/lcRNuayPf4anQZfBDqfnvyhOp8pAiTdz5J2F5oxTr0=;
-        b=JJIS2bCWsYLmTmbzhjScxWVzkWq3YSZu6twbIPgrwqCcClimaAC1r4DfWNNJuzKpcz
-         +QQnnyYiGEcU9xr+i+w2UwdJ24SxjJQbtNOUkYReVb9Ou4fOUE9gHPGsmpZF0G0gepdA
-         GW+fwSpKMifeGHA+DNzgV3LGvbeGxCUJf1I9YwUkaK4BBhFoUKX4DQCbhmwclhq0HD81
-         pqJJ7pl4IFYFa0RHRLcJ8MRhaWmI5XIIWbcuboRxtnVnvAGjutUS/i7Hz9NQ4AyAMRs/
-         z75JAL2bK+oxaagQ32ubOL+BxWl1y9N5ZtHloDwYWV1aZV3yxnkTx4zbMuw0YuZs26tC
-         l8iA==
-X-Gm-Message-State: AOJu0YwUKYtlA+yqqPRTvFyMF+8LpEZ0TRaD2D6ivtlvNYKz8dKTHdPU
-	CAbTLEuqokpKYqZuVv7rSiQj0aAt9FfKJoWg1QmAXdr7
-X-Google-Smtp-Source: AGHT+IEsHiKlK9HE08vhqZfo4wrykV5bi0Vi432TOQ2yhLKXR3715NZW4svPRGrQlTT/2rkPIr3ifJWq63Tq/Ev82gM=
-X-Received: by 2002:aa7:c508:0:b0:534:78a6:36c4 with SMTP id
- o8-20020aa7c508000000b0053478a636c4mr25369053edq.36.1697231500451; Fri, 13
- Oct 2023 14:11:40 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697231738; x=1697836538;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dLQj5ZtRhq6MJlTujO1awDYkdSdBvUj8+lUyHnK/bd4=;
+        b=gGAPxiv43+EbNe1BxhmWVdU3LrtobnnR1HTLvKkFCl0c8jiK2Vr0J0x+Sw+UrqUaBh
+         6N4rM5advNR0ikIu1NWTkDTD0jYT5q1osYcJOw1NnB9FVQwUXFMQi4wT4RGTv18DeA/p
+         /nfM0u6nv+Kf8f0CFX4H2riWjdd5JnJ4ZQ4EfVoGgTSMtoz9ySIyipJlwgsur/ds9uIX
+         nOVia8a19OZEvvWT80XRatrXBDXiZTSkrJj44hVOwmrBi2+WctDIMfTfYuqFd30nU/oF
+         6p1kFdLBooRI2dWa1lQveAz486NMj3fveosrfEaHfTkqEzU/sddpFEMie7ozSdALxu89
+         wvGA==
+X-Gm-Message-State: AOJu0Yz4qy9eqHfGHaCl6X8SuFhFzMVdlhisXX6L+OidQf9TSXHsOFdF
+	4jXCc0Mo2OrXJ5ik2H3dIFGm
+X-Google-Smtp-Source: AGHT+IE9Y/CTy90dFiEu+jR5Pxz9wsQqLKZYtYve5r7Wzy5bzGLDis9NzbyVIICb9r05qqznex/94g==
+X-Received: by 2002:a0d:caca:0:b0:5a7:d133:370d with SMTP id m193-20020a0dcaca000000b005a7d133370dmr12555978ywd.16.1697231737932;
+        Fri, 13 Oct 2023 14:15:37 -0700 (PDT)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id e5-20020a05620a12c500b007756c8ce8f5sm945199qkl.59.2023.10.13.14.15.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 14:15:37 -0700 (PDT)
+Date: Fri, 13 Oct 2023 17:15:36 -0400
+Message-ID: <f739928b1db9a9e45da89249c0389e85.paul@paul-moore.com>
+From: Paul Moore <paul@paul-moore.com>
+To: Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+Cc: <linux-fsdevel@vger.kernel.org>, <linux-security-module@vger.kernel.org>, <keescook@chromium.org>, <brauner@kernel.org>, <lennart@poettering.net>, <kernel-team@meta.com>, <sargun@sargun.me>
+Subject: Re: [PATCH v7 6/18] bpf: add BPF token support to BPF_PROG_LOAD  command
+References: <20231012222810.4120312-7-andrii@kernel.org>
+In-Reply-To: <20231012222810.4120312-7-andrii@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <87jzrrwptf.fsf@toke.dk>
-In-Reply-To: <87jzrrwptf.fsf@toke.dk>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 13 Oct 2023 14:11:28 -0700
-Message-ID: <CAEf4BzaC3ZohtcRhKQRCjdiou3=KcfDvRnF6RN55BTZx+jNqhg@mail.gmail.com>
-Subject: Re: Hitting verifier backtracking bug on 6.5.5 kernel
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
-	Mohamed Mahmoud <mmahmoud@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-On Thu, Oct 12, 2023 at 1:25=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgensen <t=
-oke@redhat.com> wrote:
->
-> Hi Andrii
->
-> Mohamed ran into what appears to be a verifier bug related to your
-> commit:
->
-> fde2a3882bd0 ("bpf: support precision propagation in the presence of subp=
-rogs")
->
-> So I figured you'd be the person to ask about this :)
->
-> The issue appears on a vanilla 6.5 kernel (on both 6.5.6 on Fedora 38,
-> and 6.5.5 on my Arch machine):
->
-> INFO[0000] Verifier error: load program: bad address:
->         1861: frame2: R1_w=3Dfp-160 R2_w=3Dpkt_end(off=3D0,imm=3D0) R3=3D=
-scalar(umin=3D17,umax=3D255,var_off=3D(0x0; 0xff)) R4_w=3Dfp-96 R6_w=3Dfp-9=
-6 R7_w=3Dpkt(off=3D34,r=3D34,imm=3D0) R10=3Dfp0
->         ; switch (protocol) {
->         1861: (15) if r3 =3D=3D 0x11 goto pc+22 1884: frame2: R1_w=3Dfp-1=
-60 R2_w=3Dpkt_end(off=3D0,imm=3D0) R3=3D17 R4_w=3Dfp-96 R6_w=3Dfp-96 R7_w=
-=3Dpkt(off=3D34,r=3D34,imm=3D0) R10=3Dfp0
->         ; if ((void *)udp + sizeof(*udp) <=3D data_end) {
->         1884: (bf) r3 =3D r7                    ; frame2: R3_w=3Dpkt(off=
-=3D34,r=3D34,imm=3D0) R7_w=3Dpkt(off=3D34,r=3D34,imm=3D0)
->         1885: (07) r3 +=3D 8                    ; frame2: R3_w=3Dpkt(off=
-=3D42,r=3D34,imm=3D0)
->         ; if ((void *)udp + sizeof(*udp) <=3D data_end) {
->         1886: (2d) if r3 > r2 goto pc+23      ; frame2: R2_w=3Dpkt_end(of=
-f=3D0,imm=3D0) R3_w=3Dpkt(off=3D42,r=3D42,imm=3D0)
->         ; id->src_port =3D bpf_ntohs(udp->source);
->         1887: (69) r2 =3D *(u16 *)(r7 +0)       ; frame2: R2_w=3Dscalar(u=
-max=3D65535,var_off=3D(0x0; 0xffff)) R7_w=3Dpkt(off=3D34,r=3D42,imm=3D0)
->         1888: (bf) r3 =3D r2                    ; frame2: R2_w=3Dscalar(i=
-d=3D103,umax=3D65535,var_off=3D(0x0; 0xffff)) R3_w=3Dscalar(id=3D103,umax=
-=3D65535,var_off=3D(0x0; 0xffff))
->         1889: (dc) r3 =3D be16 r3               ; frame2: R3_w=3Dscalar()
->         ; id->src_port =3D bpf_ntohs(udp->source);
->         1890: (73) *(u8 *)(r1 +47) =3D r3       ; frame2: R1_w=3Dfp-160 R=
-3_w=3Dscalar()
->         ; id->src_port =3D bpf_ntohs(udp->source);
->         1891: (dc) r2 =3D be64 r2               ; frame2: R2_w=3Dscalar()
->         ; id->src_port =3D bpf_ntohs(udp->source);
->         1892: (77) r2 >>=3D 56                  ; frame2: R2_w=3Dscalar(u=
-max=3D255,var_off=3D(0x0; 0xff))
->         1893: (73) *(u8 *)(r1 +48) =3D r2
->         BUG regs 1
->         processed 5121 insns (limit 1000000) max_states_per_insn 4 total_=
-states 92 peak_states 90 mark_read 20
->         (truncated)  component=3Debpf.FlowFetcher
->
-> Dmesg says:
->
-> [252431.093126] verifier backtracking bug
-> [252431.093129] WARNING: CPU: 3 PID: 302245 at kernel/bpf/verifier.c:3533=
- __mark_chain_precision+0xe83/0x1090
->
->
-> The splat appears when trying to run the netobserv-ebpf-agent. Steps to
-> reproduce:
->
-> git clone https://github.com/netobserv/netobserv-ebpf-agent
-> cd netobserv-ebpf-agent && make compile
-> sudo FLOWS_TARGET_HOST=3D127.0.0.1 FLOWS_TARGET_PORT=3D9999 ./bin/netobse=
-rv-ebpf-agent
->
-> (It needs a 'make generate' before the compile to recompile the BPF
-> program itself, but that requires the Cilium bpf2go program to be
-> installed and there's a binary version checked into the tree so that is
-> not strictly necessary to reproduce the splat).
->
-> That project uses the Cilium Go eBPF loader. Interestingly, loading the
-> same program using tc (with libbpf 1.2.2) works just fine:
->
-> ip link add type veth
-> tc qdisc add dev veth0 clsact
-> tc filter add dev veth0 egress bpf direct-action obj pkg/ebpf/bpf_bpfel.o=
- sec tc_egress
->
-> So maybe there is some massaging of the object file that libbpf is doing
-> but the Go library isn't, that prevents this bug from triggering? I'm
-> only guessing here, I don't really know exactly what the Go library is
-> doing under the hood.
->
-> Anyway, I guess this is a kernel bug in any case since that WARN() is
-> there; could you please take a look?
->
+On Oct 12, 2023 Andrii Nakryiko <andrii@kernel.org> wrote:
+> 
+> Add basic support of BPF token to BPF_PROG_LOAD. Wire through a set of
+> allowed BPF program types and attach types, derived from BPF FS at BPF
+> token creation time. Then make sure we perform bpf_token_capable()
+> checks everywhere where it's relevant.
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  include/linux/bpf.h                           |  6 ++
+>  include/uapi/linux/bpf.h                      |  2 +
+>  kernel/bpf/core.c                             |  1 +
+>  kernel/bpf/inode.c                            |  6 +-
+>  kernel/bpf/syscall.c                          | 87 ++++++++++++++-----
+>  kernel/bpf/token.c                            | 27 ++++++
+>  tools/include/uapi/linux/bpf.h                |  2 +
+>  .../selftests/bpf/prog_tests/libbpf_probes.c  |  2 +
+>  .../selftests/bpf/prog_tests/libbpf_str.c     |  3 +
+>  9 files changed, 110 insertions(+), 26 deletions(-)
 
-Yes, I tried. Unfortunately I can't build netobserv-ebpf-agent on my
-dev machine and can't run it. I tried to load bpf_bpfel.o through
-veristat, but unfortunately it is not libbpf-compatible.
+...
 
-Is there some way to get a full verifier log for the failure above?
-with log_level 2, if possible? If you can share it through Github Gist
-or something like that, I'd really appreciate it. Thanks!
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index a2c9edcbcd77..c6b00aee3b62 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2584,13 +2584,15 @@ static bool is_perfmon_prog_type(enum bpf_prog_type prog_type)
+>  }
+>  
+>  /* last field in 'union bpf_attr' used by this command */
+> -#define	BPF_PROG_LOAD_LAST_FIELD log_true_size
+> +#define BPF_PROG_LOAD_LAST_FIELD prog_token_fd
+>  
+>  static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+>  {
+>  	enum bpf_prog_type type = attr->prog_type;
+>  	struct bpf_prog *prog, *dst_prog = NULL;
+>  	struct btf *attach_btf = NULL;
+> +	struct bpf_token *token = NULL;
+> +	bool bpf_cap;
+>  	int err;
+>  	char license[128];
+>  
+> @@ -2606,10 +2608,31 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+>  				 BPF_F_XDP_DEV_BOUND_ONLY))
+>  		return -EINVAL;
+>  
+> +	bpf_prog_load_fixup_attach_type(attr);
+> +
+> +	if (attr->prog_token_fd) {
+> +		token = bpf_token_get_from_fd(attr->prog_token_fd);
+> +		if (IS_ERR(token))
+> +			return PTR_ERR(token);
+> +		/* if current token doesn't grant prog loading permissions,
+> +		 * then we can't use this token, so ignore it and rely on
+> +		 * system-wide capabilities checks
+> +		 */
+> +		if (!bpf_token_allow_cmd(token, BPF_PROG_LOAD) ||
+> +		    !bpf_token_allow_prog_type(token, attr->prog_type,
+> +					       attr->expected_attach_type)) {
+> +			bpf_token_put(token);
+> +			token = NULL;
+> +		}
 
-> Thanks!
->
-> -Toke
->
+At the start of this effort I mentioned how we wanted to have LSM
+control points when the token is created and when it is used.  It is
+for this reason that we still want a hook inside the
+bpf_token_allow_cmd() function as it allows us to enable/disable use
+of the token when its use is first attempted.  If the LSM decides to
+disallow use of the token in this particular case then the token is
+disabled (set to NULL) while the operation is still allowed to move
+forward, simply without the token.  It's a much cleaner and well
+behaved approach as it allows the normal BPF access controls to do
+their work.
+
+> +	}
+> +
+> +	bpf_cap = bpf_token_capable(token, CAP_BPF);
+
+Similar to the above comment, we want to a LSM control point in
+bpf_token_capable() so that the LSM can control the token's
+ability to delegate capability privileges when they are used.  Having
+to delay this access control point to security_bpf_prog_load() is not
+only awkward but it requires either manual synchronization between
+all of the different LSMs and the the capability checks in the
+bpf_prog_load() function or a completely different set of LSM
+permissions for a token-based BPF program load over a normal BPF
+program load.
+
+We really need these hooks Andrii, I wouldn't have suggested them if
+I didn't believe they were important.
+
+> +	err = -EPERM;
+> +
+>  	if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) &&
+>  	    (attr->prog_flags & BPF_F_ANY_ALIGNMENT) &&
+> -	    !bpf_capable())
+> -		return -EPERM;
+> +	    !bpf_cap)
+> +		goto put_token;
+>  
+>  	/* Intent here is for unprivileged_bpf_disabled to block BPF program
+>  	 * creation for unprivileged users; other actions depend
+> @@ -2618,21 +2641,23 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+>  	 * capability checks are still carried out for these
+>  	 * and other operations.
+>  	 */
+> -	if (sysctl_unprivileged_bpf_disabled && !bpf_capable())
+> -		return -EPERM;
+> +	if (sysctl_unprivileged_bpf_disabled && !bpf_cap)
+> +		goto put_token;
+>  
+>  	if (attr->insn_cnt == 0 ||
+> -	    attr->insn_cnt > (bpf_capable() ? BPF_COMPLEXITY_LIMIT_INSNS : BPF_MAXINSNS))
+> -		return -E2BIG;
+> +	    attr->insn_cnt > (bpf_cap ? BPF_COMPLEXITY_LIMIT_INSNS : BPF_MAXINSNS)) {
+> +		err = -E2BIG;
+> +		goto put_token;
+> +	}
+>  	if (type != BPF_PROG_TYPE_SOCKET_FILTER &&
+>  	    type != BPF_PROG_TYPE_CGROUP_SKB &&
+> -	    !bpf_capable())
+> -		return -EPERM;
+> +	    !bpf_cap)
+> +		goto put_token;
+>  
+> -	if (is_net_admin_prog_type(type) && !bpf_net_capable())
+> -		return -EPERM;
+> -	if (is_perfmon_prog_type(type) && !perfmon_capable())
+> -		return -EPERM;
+> +	if (is_net_admin_prog_type(type) && !bpf_token_capable(token, CAP_NET_ADMIN))
+> +		goto put_token;
+> +	if (is_perfmon_prog_type(type) && !bpf_token_capable(token, CAP_PERFMON))
+> +		goto put_token;
+>  
+>  	/* attach_prog_fd/attach_btf_obj_fd can specify fd of either bpf_prog
+>  	 * or btf, we need to check which one it is
+> @@ -2642,27 +2667,33 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+>  		if (IS_ERR(dst_prog)) {
+>  			dst_prog = NULL;
+>  			attach_btf = btf_get_by_fd(attr->attach_btf_obj_fd);
+> -			if (IS_ERR(attach_btf))
+> -				return -EINVAL;
+> +			if (IS_ERR(attach_btf)) {
+> +				err = -EINVAL;
+> +				goto put_token;
+> +			}
+>  			if (!btf_is_kernel(attach_btf)) {
+>  				/* attaching through specifying bpf_prog's BTF
+>  				 * objects directly might be supported eventually
+>  				 */
+>  				btf_put(attach_btf);
+> -				return -ENOTSUPP;
+> +				err = -ENOTSUPP;
+> +				goto put_token;
+>  			}
+>  		}
+>  	} else if (attr->attach_btf_id) {
+>  		/* fall back to vmlinux BTF, if BTF type ID is specified */
+>  		attach_btf = bpf_get_btf_vmlinux();
+> -		if (IS_ERR(attach_btf))
+> -			return PTR_ERR(attach_btf);
+> -		if (!attach_btf)
+> -			return -EINVAL;
+> +		if (IS_ERR(attach_btf)) {
+> +			err = PTR_ERR(attach_btf);
+> +			goto put_token;
+> +		}
+> +		if (!attach_btf) {
+> +			err = -EINVAL;
+> +			goto put_token;
+> +		}
+>  		btf_get(attach_btf);
+>  	}
+>  
+> -	bpf_prog_load_fixup_attach_type(attr);
+>  	if (bpf_prog_load_check_attach(type, attr->expected_attach_type,
+>  				       attach_btf, attr->attach_btf_id,
+>  				       dst_prog)) {
+> @@ -2670,7 +2701,8 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+>  			bpf_prog_put(dst_prog);
+>  		if (attach_btf)
+>  			btf_put(attach_btf);
+> -		return -EINVAL;
+> +		err = -EINVAL;
+> +		goto put_token;
+>  	}
+>  
+>  	/* plain bpf_prog allocation */
+> @@ -2680,7 +2712,8 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+>  			bpf_prog_put(dst_prog);
+>  		if (attach_btf)
+>  			btf_put(attach_btf);
+> -		return -ENOMEM;
+> +		err = -EINVAL;
+> +		goto put_token;
+>  	}
+>  
+>  	prog->expected_attach_type = attr->expected_attach_type;
+> @@ -2691,6 +2724,10 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+>  	prog->aux->sleepable = attr->prog_flags & BPF_F_SLEEPABLE;
+>  	prog->aux->xdp_has_frags = attr->prog_flags & BPF_F_XDP_HAS_FRAGS;
+>  
+> +	/* move token into prog->aux, reuse taken refcnt */
+> +	prog->aux->token = token;
+> +	token = NULL;
+> +
+>  	err = security_bpf_prog_alloc(prog->aux);
+>  	if (err)
+>  		goto free_prog;
+> @@ -2792,6 +2829,8 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+>  	if (prog->aux->attach_btf)
+>  		btf_put(prog->aux->attach_btf);
+>  	bpf_prog_free(prog);
+> +put_token:
+> +	bpf_token_put(token);
+>  	return err;
+>  }
+
+--
+paul-moore.com
 
