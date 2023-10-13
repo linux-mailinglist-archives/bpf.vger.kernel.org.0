@@ -1,81 +1,78 @@
-Return-Path: <bpf+bounces-12142-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12144-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 404097C8746
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 16:00:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6E997C87A8
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 16:17:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79DEB1C21207
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 14:00:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC3DD1C211D7
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 14:17:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8044618E18;
-	Fri, 13 Oct 2023 14:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FEF218E3B;
+	Fri, 13 Oct 2023 14:17:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C929B15E94;
-	Fri, 13 Oct 2023 14:00:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3004EC433C7;
-	Fri, 13 Oct 2023 14:00:25 +0000 (UTC)
-Date: Fri, 13 Oct 2023 10:00:23 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Artem Savkov <asavkov@redhat.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, Masami
- Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
- linux-rt-users@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [RFC PATCH bpf-next] bpf: change syscall_nr type to int in
- struct syscall_tp_t
-Message-ID: <20231013100023.5b0943ec@rorschach.local.home>
-In-Reply-To: <ZSjdPqQiPdqa-UTs@wtfbox.lan>
-References: <20231005123413.GA488417@alecto.usersys.redhat.com>
-	<20231012114550.152846-1-asavkov@redhat.com>
-	<20231012094444.0967fa79@gandalf.local.home>
-	<CAEf4BzZKWkJjOjw8x_eL_hsU-QzFuSzd5bkBH2EHtirN2hnEgA@mail.gmail.com>
-	<ZSjdPqQiPdqa-UTs@wtfbox.lan>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3A737A
+	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 14:17:43 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2B6BE
+	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 07:17:41 -0700 (PDT)
+Received: from fsav116.sakura.ne.jp (fsav116.sakura.ne.jp [27.133.134.243])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 39DEHRrr098656;
+	Fri, 13 Oct 2023 23:17:27 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav116.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp);
+ Fri, 13 Oct 2023 23:17:27 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 39DEHRnr098649
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Fri, 13 Oct 2023 23:17:27 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <c73c0e02-4cc8-4927-bc62-dab33bd98ac4@I-love.SAKURA.ne.jp>
+Date: Fri, 13 Oct 2023 23:17:27 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: Is tools/testing/selftests/bpf/ maintained?
+Content-Language: en-US
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>
+References: <adfab6e8-b1de-4efc-a9ef-84e219c91833@I-love.SAKURA.ne.jp>
+ <26b213505abeefba2728d238927ddd1907967786.camel@gmail.com>
+ <261bfeec-8230-490a-b583-d52223e2d707@I-love.SAKURA.ne.jp>
+ <5695d6b472d932e7aba4d1f6cbd1a8002642a33f.camel@gmail.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <5695d6b472d932e7aba4d1f6cbd1a8002642a33f.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+	SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Fri, 13 Oct 2023 08:01:34 +0200
-Artem Savkov <asavkov@redhat.com> wrote:
+On 2023/10/13 22:25, Eduard Zingerman wrote:
+> I think you are using clang-14, which does not like u32 instructions.
+> At least I get the same error message as you with clang-14.
+> If so, please try using clang-16 instead.
 
-> > But looking at [0] and briefly reading some of the discussions you,
-> > Steven, had. I'm just wondering if it would be best to avoid
-> > increasing struct trace_entry altogether? It seems like preempt_count
-> > is actually a 4-bit field in trace context, so it doesn't seem like we
-> > really need to allocate an entire byte for both preempt_count and
-> > preempt_lazy_count. Why can't we just combine them and not waste 8
-> > extra bytes for each trace event in a ring buffer?
-> > 
-> >   [0] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/commit/?id=b1773eac3f29cbdcdfd16e0339f1a164066e9f71  
-> 
-> I agree that avoiding increase in struct trace_entry size would be very
-> desirable, but I have no knowledge whether rt developers had reasons to
-> do it like this.
-> 
-> Nevertheless I think the issue with verifier running against a wrong
-> struct still needs to be addressed.
+Yes, I did something like below and build succeeded. Thank you.
 
-Correct. My Ack is based on the current way things are done upstream.
-It was just that linux-rt showed the issue, where the code was not as
-robust as it should have been. To me this was a correctness issue, not
-an issue that had to do with how things are done in linux-rt.
+wget https://apt.llvm.org/llvm.sh
+chmod +x llvm.sh
+./llvm.sh 16
+apt remove clang
+ln -s /usr/bin/clang-16 /usr/bin/clang
 
-As for the changes in linux-rt, they are not upstream yet. I'll have my
-comments on that code when that happens.
-
--- Steve
 
