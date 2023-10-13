@@ -1,191 +1,165 @@
-Return-Path: <bpf+bounces-12122-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12123-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1C167C7DBB
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 08:34:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C8097C7DC6
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 08:37:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA9631C20AC4
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 06:34:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C055B20A56
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 06:37:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5795246AC;
-	Fri, 13 Oct 2023 06:33:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9CF146AC;
+	Fri, 13 Oct 2023 06:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="K7NPfzoo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V+SNLB1i"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842F1C8F5
-	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 06:33:57 +0000 (UTC)
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51EBDBC
-	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 23:33:55 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c9daca2b85so13224745ad.1
-        for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 23:33:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25134110C;
+	Fri, 13 Oct 2023 06:37:14 +0000 (UTC)
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B2EBC;
+	Thu, 12 Oct 2023 23:37:12 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso299776266b.2;
+        Thu, 12 Oct 2023 23:37:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697178835; x=1697783635; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wrh5eOkTQdzzRaA0+eIlvA+uCT3v/wg9JTwG/iC1Neo=;
-        b=K7NPfzooF7r4is5QPvNz6ZF9N5qSbl4ZDyxdUxN69jQ/La+IZl/RcFIMLn7N7bhYkH
-         O+06GoWJzVdkrh8m6gFdMlB18kSawVpHD0eM2WrvqnFLIatjzguJYibZrqDKMKj+bCdM
-         ZHZkFHJWysufwdeiKDKrkIjJPUjBbDsFKrjMwPFKokZhVqmwRuk8DAN20NfZcbUth0Ti
-         NdX+pw2TV/aSD9cFAd/0eDlQVrSLaSQgsuYMjSVVkHwQpaq6zQWggISJyy2bzsBDG/4s
-         mmHHWMg5NNsyvHL/PEa++0a/Bf9jxsFU0QSQs5MsxB14JF715rENMSjhidRaQGI1YucR
-         HHpg==
+        d=gmail.com; s=20230601; t=1697179031; x=1697783831; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Yw2XAIYoGosVaRhpV1LmzXn+oclXPzYHPKDh6+mkVJM=;
+        b=V+SNLB1iiEbK2IN27jgvg5yYTJL7w5p+T8Q1S5SDP1IoSh72n6x1kxmsOQaO+9Swc1
+         RBsYH9hj2XMO0SqlmK2oFnFohOSAUPRUUbZ0xz+ZCglnaePylVYIXWqUBQDuog3OHlPd
+         i66GxRIp0yav/qvVinB3AAR/YUv6bzDKuIRcRuhzMO0/IF4K84APZaIocuxI55Znm8zH
+         sQSYceVA+hqpi3J8IiNMxro0cbsGA4NJ6be4LTieoW+qXOcZ3inz7aBxurmH7H7vfs9U
+         JGGHfWOkz4OqNJdWCkqXETN804U95whdzcKA7qq0O7K16uer6jURI3nMb0v1YYfR39rT
+         wKAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697178835; x=1697783635;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Wrh5eOkTQdzzRaA0+eIlvA+uCT3v/wg9JTwG/iC1Neo=;
-        b=CMSijtun3DU8R5OiQUJnaA5z3vF62cNYyGzgFhrYeuOaXqO1Ep2Z0i3lPCoSVIv36t
-         8mqjx8EE5EheDIerK2sMK6ZLckF7QwKMB17wXeAIWXiB/FJX5m/0MQRwVr/vywrjuwAM
-         gZ1n+DftuPokujRCpQBWONRfek1Pvc0k7E5CWWqHk3HFFYQKsuytK4h8OQh1fgyw0BKK
-         MajdDxFwP2XoJcslar7iWoEI5dunIwFgwAnR5RZX4lrJMovGwfuKvKrs+1oC6tv+75pD
-         NsMRkS3Si/clGkRmnN7tsouw+OdFKACL84XH08ixS6C03J4zYe1qXm+GxzF0Q/LRMqXl
-         iPng==
-X-Gm-Message-State: AOJu0YzcTpG3DODofB59oevpynq+66rvyfcw/gQAQWqUuL4igHdzNd2L
-	Do4lMjBZFs1Evr0RgdxLYS3f3w==
-X-Google-Smtp-Source: AGHT+IFQWgsuLJj5jKAlRwd7Ga72SZZXlNEwJyo/+2vUnOBebDFN0UCZTxAfTVQgjd8YdsdtxNGy3g==
-X-Received: by 2002:a17:903:22d0:b0:1c7:22ae:4080 with SMTP id y16-20020a17090322d000b001c722ae4080mr35178736plg.0.1697178834760;
-        Thu, 12 Oct 2023 23:33:54 -0700 (PDT)
-Received: from C02FG34NMD6R.bytedance.net ([203.208.189.11])
-        by smtp.gmail.com with ESMTPSA id x6-20020a170902ec8600b001c44c8d857esm3042304plg.120.2023.10.12.23.33.48
+        d=1e100.net; s=20230601; t=1697179031; x=1697783831;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Yw2XAIYoGosVaRhpV1LmzXn+oclXPzYHPKDh6+mkVJM=;
+        b=h9ngPds+9J0S6YGD0/QP+CU6NyZnk5IxJeLpy5eLjN7cN352YnNHthwDPmNlriHyVJ
+         +cYTgFHZ4PDXyhpyZNzvMrYw+km/F4E0abTcsmUS552HpDo0kxxulTfEEfFyizko+0Bg
+         vsC7azmGadHAupPq+f4PYN0SRBLVbU7mXlRAPH7iJbhYQboQxV0fHjMofWSHHnVDLisT
+         WLxJAkDIfIQPHdxhVU7uX0csIRXP3sVHMBir8Usa66bWeNUq+uJTdlDoFjlIFw88yno7
+         dOK18/2GsYgAniJPOVkIWwaO6uMl9z26HNgsDqesduz25C71e+gixd0EPa3+jC/7LuVo
+         mwCQ==
+X-Gm-Message-State: AOJu0YzWMnKRYd/0RlEyLuvWlzFsqlU+z3+jnPI6fPYITPzwso2M31ui
+	nl55vk9YIXar/Z2dLA3feSA=
+X-Google-Smtp-Source: AGHT+IGnIQOy++7g/GxLi2lAayoaVwkkPdJ7exYracwDbOtTZ/0MBIw4RkVOgFpePPvQNylLy+wwGA==
+X-Received: by 2002:a17:906:209a:b0:9ae:69b8:322b with SMTP id 26-20020a170906209a00b009ae69b8322bmr22516291ejq.60.1697179030550;
+        Thu, 12 Oct 2023 23:37:10 -0700 (PDT)
+Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
+        by smtp.gmail.com with ESMTPSA id gy6-20020a0564025bc600b0053e2a64b5f8sm1041676edb.14.2023.10.12.23.37.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 23:33:54 -0700 (PDT)
-From: Albert Huang <huangjie.albert@bytedance.com>
-To: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>
-Cc: Albert Huang <huangjie.albert@bytedance.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
+        Thu, 12 Oct 2023 23:37:09 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 13 Oct 2023 08:37:07 +0200
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Quentin Monnet <quentin@isovalent.com>,
+	Dmitry Goncharov <dgoncharov@users.sf.net>,
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
 	John Fastabend <john.fastabend@gmail.com>,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] xsk: Avoid starving xsk at the end of the list
-Date: Fri, 13 Oct 2023 14:33:31 +0800
-Message-Id: <20231013063332.38189-1-huangjie.albert@bytedance.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+	Ian Rogers <irogers@google.com>, KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	Peter Zijlstra <a.p.zijlstra@chello.nl>
+Subject: Re: [PATCHv2 1/2] tools/build: Fix -s detection code in
+ tools/build/Makefile.build
+Message-ID: <ZSjlk99UOV2tTMWO@krava>
+References: <20231008212251.236023-1-jolsa@kernel.org>
+ <20231008212251.236023-2-jolsa@kernel.org>
+ <CAM9d7cjYCrTkOTOmBHry-95nivmkGv1g0wp=+TSA0xPXJW_QvQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM9d7cjYCrTkOTOmBHry-95nivmkGv1g0wp=+TSA0xPXJW_QvQ@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-In the previous implementation, when multiple xsk sockets were
-associated with a single xsk_buff_pool, a situation could arise
-where the xsk_tx_list maintained data at the front for one xsk
-socket while starving the xsk sockets at the back of the list.
-This could result in issues such as the inability to transmit packets,
-increased latency, and jitter. To address this problem, we introduced
-a new variable called tx_budget_cache, which limits each xsk to transmit
-a maximum of MAX_XSK_TX_BUDGET tx descriptors. This allocation ensures
-equitable opportunities for subsequent xsk sockets to send tx descriptors.
-The value of MAX_XSK_TX_BUDGET is temporarily set to 16.
+On Thu, Oct 12, 2023 at 08:57:33PM -0700, Namhyung Kim wrote:
+> Hi Jiri,
+> 
+> On Sun, Oct 8, 2023 at 2:23 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > As Dmitry described in [1] changelog the current way of detecting
+> > -s option is broken for new make.
+> 
+> I'm not sure what -s option does for perf (at least).
+> It doesn't seem much different whether I give it or not.
+> Am I missing something?
 
-Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
----
- include/net/xdp_sock.h |  6 ++++++
- net/xdp/xsk.c          | 17 +++++++++++++++++
- 2 files changed, 23 insertions(+)
+what's your make version? the wrong output is visible when running
+with make version > 4.4 .. basicaly the -s is wrongly detected and
+you either get no output at all from some builds or overly verbose
+output
 
-diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-index 69b472604b86..f617ff54e38c 100644
---- a/include/net/xdp_sock.h
-+++ b/include/net/xdp_sock.h
-@@ -44,6 +44,7 @@ struct xsk_map {
- 	struct xdp_sock __rcu *xsk_map[];
- };
- 
-+#define MAX_XSK_TX_BUDGET 16
- struct xdp_sock {
- 	/* struct sock must be the first member of struct xdp_sock */
- 	struct sock sk;
-@@ -63,6 +64,11 @@ struct xdp_sock {
- 
- 	struct xsk_queue *tx ____cacheline_aligned_in_smp;
- 	struct list_head tx_list;
-+	/* Record the actual number of times xsk has transmitted a tx
-+	 * descriptor, with a maximum limit not exceeding MAX_XSK_TX_BUDGET
-+	 */
-+	u32 tx_budget_cache;
-+
- 	/* Protects generic receive. */
- 	spinlock_t rx_lock;
- 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index f5e96e0d6e01..bf964456e9b1 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -413,16 +413,25 @@ EXPORT_SYMBOL(xsk_tx_release);
- 
- bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
- {
-+	u32 xsk_full_count = 0;
- 	struct xdp_sock *xs;
- 
- 	rcu_read_lock();
-+again:
- 	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
-+		if (xs->tx_budget_cache >= MAX_XSK_TX_BUDGET) {
-+			xsk_full_count++;
-+			continue;
-+		}
-+
- 		if (!xskq_cons_peek_desc(xs->tx, desc, pool)) {
- 			if (xskq_has_descs(xs->tx))
- 				xskq_cons_release(xs->tx);
- 			continue;
- 		}
- 
-+		xs->tx_budget_cache++;
-+
- 		/* This is the backpressure mechanism for the Tx path.
- 		 * Reserve space in the completion queue and only proceed
- 		 * if there is space in it. This avoids having to implement
-@@ -436,6 +445,13 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
- 		return true;
- 	}
- 
-+	if (unlikely(xsk_full_count > 0)) {
-+		list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
-+			xs->tx_budget_cache = 0;
-+		}
-+		goto again;
-+	}
-+
- out:
- 	rcu_read_unlock();
- 	return false;
-@@ -1230,6 +1246,7 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
- 	xs->zc = xs->umem->zc;
- 	xs->sg = !!(xs->umem->flags & XDP_UMEM_SG_FLAG);
- 	xs->queue_id = qid;
-+	xs->tx_budget_cache = 0;
- 	xp_add_xsk(xs->pool, xs);
- 
- out_unlock:
--- 
-2.20.1
+it's mentioned in the [1] commit changelog, I can put it to the
+changelog in new version
 
+jirka
+
+> 
+> Thanks,
+> Namhyung
+> 
+> >
+> > Changing the tools/build -s option detection the same way as it was
+> > fixed for root Makefile in [1].
+> >
+> > [1] 4bf73588165b ("kbuild: Port silent mode detection to future gnu make.")
+> >
+> > Cc: Dmitry Goncharov <dgoncharov@users.sf.net>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  tools/build/Makefile.build | 10 +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/build/Makefile.build b/tools/build/Makefile.build
+> > index fac42486a8cf..5fb3fb3d97e0 100644
+> > --- a/tools/build/Makefile.build
+> > +++ b/tools/build/Makefile.build
+> > @@ -20,7 +20,15 @@ else
+> >    Q=@
+> >  endif
+> >
+> > -ifneq ($(findstring s,$(filter-out --%,$(MAKEFLAGS))),)
+> > +# If the user is running make -s (silent mode), suppress echoing of commands
+> > +# make-4.0 (and later) keep single letter options in the 1st word of MAKEFLAGS.
+> > +ifeq ($(filter 3.%,$(MAKE_VERSION)),)
+> > +short-opts := $(firstword -$(MAKEFLAGS))
+> > +else
+> > +short-opts := $(filter-out --%,$(MAKEFLAGS))
+> > +endif
+> > +
+> > +ifneq ($(findstring s,$(short-opts)),)
+> >    quiet=silent_
+> >  endif
+> >
+> > --
+> > 2.41.0
+> >
 
