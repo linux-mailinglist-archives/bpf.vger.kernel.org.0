@@ -1,177 +1,191 @@
-Return-Path: <bpf+bounces-12121-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12122-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 756C17C7D5E
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 08:01:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1C167C7DBB
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 08:34:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A18B51C20A21
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 06:01:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA9631C20AC4
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 06:34:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83F6F6FAE;
-	Fri, 13 Oct 2023 06:01:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5795246AC;
+	Fri, 13 Oct 2023 06:33:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H1u6cRPX"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="K7NPfzoo"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 403815691
-	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 06:01:46 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EABEBE
-	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 23:01:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1697176903;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uspCcCfbm2YmR5dZLZTo0epZzk54L6kfVVGxjNItAZs=;
-	b=H1u6cRPXNGp1bzeyEQXh6MNW+bu/DY+e4cSNAd8jLh60QEFVQnc+o/2Hw6WFuqXJr3FqJ2
-	hmeFmJbZUHunvkyCm8jpqBsW2lgz/tRfwRal7SdP7u0ElUaHieYAStn1fmmRd4PVbyWH37
-	LJbATKFm52wT7tN1m0B1TRBsLvMzmWg=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-625-QZR-wY5EOF-cukCasi9NeQ-1; Fri, 13 Oct 2023 02:01:39 -0400
-X-MC-Unique: QZR-wY5EOF-cukCasi9NeQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 38EC73813BCD;
-	Fri, 13 Oct 2023 06:01:38 +0000 (UTC)
-Received: from wtfbox.lan (unknown [10.45.224.87])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 620D81C060DF;
-	Fri, 13 Oct 2023 06:01:36 +0000 (UTC)
-Date: Fri, 13 Oct 2023 08:01:34 +0200
-From: Artem Savkov <asavkov@redhat.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842F1C8F5
+	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 06:33:57 +0000 (UTC)
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51EBDBC
+	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 23:33:55 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c9daca2b85so13224745ad.1
+        for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 23:33:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1697178835; x=1697783635; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wrh5eOkTQdzzRaA0+eIlvA+uCT3v/wg9JTwG/iC1Neo=;
+        b=K7NPfzooF7r4is5QPvNz6ZF9N5qSbl4ZDyxdUxN69jQ/La+IZl/RcFIMLn7N7bhYkH
+         O+06GoWJzVdkrh8m6gFdMlB18kSawVpHD0eM2WrvqnFLIatjzguJYibZrqDKMKj+bCdM
+         ZHZkFHJWysufwdeiKDKrkIjJPUjBbDsFKrjMwPFKokZhVqmwRuk8DAN20NfZcbUth0Ti
+         NdX+pw2TV/aSD9cFAd/0eDlQVrSLaSQgsuYMjSVVkHwQpaq6zQWggISJyy2bzsBDG/4s
+         mmHHWMg5NNsyvHL/PEa++0a/Bf9jxsFU0QSQs5MsxB14JF715rENMSjhidRaQGI1YucR
+         HHpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697178835; x=1697783635;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Wrh5eOkTQdzzRaA0+eIlvA+uCT3v/wg9JTwG/iC1Neo=;
+        b=CMSijtun3DU8R5OiQUJnaA5z3vF62cNYyGzgFhrYeuOaXqO1Ep2Z0i3lPCoSVIv36t
+         8mqjx8EE5EheDIerK2sMK6ZLckF7QwKMB17wXeAIWXiB/FJX5m/0MQRwVr/vywrjuwAM
+         gZ1n+DftuPokujRCpQBWONRfek1Pvc0k7E5CWWqHk3HFFYQKsuytK4h8OQh1fgyw0BKK
+         MajdDxFwP2XoJcslar7iWoEI5dunIwFgwAnR5RZX4lrJMovGwfuKvKrs+1oC6tv+75pD
+         NsMRkS3Si/clGkRmnN7tsouw+OdFKACL84XH08ixS6C03J4zYe1qXm+GxzF0Q/LRMqXl
+         iPng==
+X-Gm-Message-State: AOJu0YzcTpG3DODofB59oevpynq+66rvyfcw/gQAQWqUuL4igHdzNd2L
+	Do4lMjBZFs1Evr0RgdxLYS3f3w==
+X-Google-Smtp-Source: AGHT+IFQWgsuLJj5jKAlRwd7Ga72SZZXlNEwJyo/+2vUnOBebDFN0UCZTxAfTVQgjd8YdsdtxNGy3g==
+X-Received: by 2002:a17:903:22d0:b0:1c7:22ae:4080 with SMTP id y16-20020a17090322d000b001c722ae4080mr35178736plg.0.1697178834760;
+        Thu, 12 Oct 2023 23:33:54 -0700 (PDT)
+Received: from C02FG34NMD6R.bytedance.net ([203.208.189.11])
+        by smtp.gmail.com with ESMTPSA id x6-20020a170902ec8600b001c44c8d857esm3042304plg.120.2023.10.12.23.33.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 23:33:54 -0700 (PDT)
+From: Albert Huang <huangjie.albert@bytedance.com>
+To: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Jonathan Lemon <jonathan.lemon@gmail.com>
+Cc: Albert Huang <huangjie.albert@bytedance.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	linux-rt-users@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [RFC PATCH bpf-next] bpf: change syscall_nr type to int in
- struct syscall_tp_t
-Message-ID: <ZSjdPqQiPdqa-UTs@wtfbox.lan>
-References: <20231005123413.GA488417@alecto.usersys.redhat.com>
- <20231012114550.152846-1-asavkov@redhat.com>
- <20231012094444.0967fa79@gandalf.local.home>
- <CAEf4BzZKWkJjOjw8x_eL_hsU-QzFuSzd5bkBH2EHtirN2hnEgA@mail.gmail.com>
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] xsk: Avoid starving xsk at the end of the list
+Date: Fri, 13 Oct 2023 14:33:31 +0800
+Message-Id: <20231013063332.38189-1-huangjie.albert@bytedance.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZKWkJjOjw8x_eL_hsU-QzFuSzd5bkBH2EHtirN2hnEgA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
 	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Oct 12, 2023 at 04:32:51PM -0700, Andrii Nakryiko wrote:
-> On Thu, Oct 12, 2023 at 6:43 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > On Thu, 12 Oct 2023 13:45:50 +0200
-> > Artem Savkov <asavkov@redhat.com> wrote:
-> >
-> > > linux-rt-devel tree contains a patch (b1773eac3f29c ("sched: Add support
-> > > for lazy preemption")) that adds an extra member to struct trace_entry.
-> > > This causes the offset of args field in struct trace_event_raw_sys_enter
-> > > be different from the one in struct syscall_trace_enter:
-> > >
-> > > struct trace_event_raw_sys_enter {
-> > >         struct trace_entry         ent;                  /*     0    12 */
-> > >
-> > >         /* XXX last struct has 3 bytes of padding */
-> > >         /* XXX 4 bytes hole, try to pack */
-> > >
-> > >         long int                   id;                   /*    16     8 */
-> > >         long unsigned int          args[6];              /*    24    48 */
-> > >         /* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
-> > >         char                       __data[];             /*    72     0 */
-> > >
-> > >         /* size: 72, cachelines: 2, members: 4 */
-> > >         /* sum members: 68, holes: 1, sum holes: 4 */
-> > >         /* paddings: 1, sum paddings: 3 */
-> > >         /* last cacheline: 8 bytes */
-> > > };
-> > >
-> > > struct syscall_trace_enter {
-> > >         struct trace_entry         ent;                  /*     0    12 */
-> > >
-> > >         /* XXX last struct has 3 bytes of padding */
-> > >
-> > >         int                        nr;                   /*    12     4 */
-> > >         long unsigned int          args[];               /*    16     0 */
-> > >
-> > >         /* size: 16, cachelines: 1, members: 3 */
-> > >         /* paddings: 1, sum paddings: 3 */
-> > >         /* last cacheline: 16 bytes */
-> > > };
-> > >
-> > > This, in turn, causes perf_event_set_bpf_prog() fail while running bpf
-> > > test_profiler testcase because max_ctx_offset is calculated based on the
-> > > former struct, while off on the latter:
-> > >
-> > >   10488         if (is_tracepoint || is_syscall_tp) {
-> > >   10489                 int off = trace_event_get_offsets(event->tp_event);
-> > >   10490
-> > >   10491                 if (prog->aux->max_ctx_offset > off)
-> > >   10492                         return -EACCES;
-> > >   10493         }
-> > >
-> > > What bpf program is actually getting is a pointer to struct
-> > > syscall_tp_t, defined in kernel/trace/trace_syscalls.c. This patch fixes
-> > > the problem by aligning struct syscall_tp_t with with struct
-> > > syscall_trace_(enter|exit) and changing the tests to use these structs
-> > > to dereference context.
-> > >
-> > > Signed-off-by: Artem Savkov <asavkov@redhat.com>
-> >
-> 
-> I think these changes make sense regardless, can you please resend the
-> patch without RFC tag so that our CI can run tests for it?
+In the previous implementation, when multiple xsk sockets were
+associated with a single xsk_buff_pool, a situation could arise
+where the xsk_tx_list maintained data at the front for one xsk
+socket while starving the xsk sockets at the back of the list.
+This could result in issues such as the inability to transmit packets,
+increased latency, and jitter. To address this problem, we introduced
+a new variable called tx_budget_cache, which limits each xsk to transmit
+a maximum of MAX_XSK_TX_BUDGET tx descriptors. This allocation ensures
+equitable opportunities for subsequent xsk sockets to send tx descriptors.
+The value of MAX_XSK_TX_BUDGET is temporarily set to 16.
 
-Ok, didn't know it was set up like that.
+Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
+---
+ include/net/xdp_sock.h |  6 ++++++
+ net/xdp/xsk.c          | 17 +++++++++++++++++
+ 2 files changed, 23 insertions(+)
 
-> > Thanks for doing a proper fix.
-> >
-> > Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> 
-> But looking at [0] and briefly reading some of the discussions you,
-> Steven, had. I'm just wondering if it would be best to avoid
-> increasing struct trace_entry altogether? It seems like preempt_count
-> is actually a 4-bit field in trace context, so it doesn't seem like we
-> really need to allocate an entire byte for both preempt_count and
-> preempt_lazy_count. Why can't we just combine them and not waste 8
-> extra bytes for each trace event in a ring buffer?
-> 
->   [0] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/commit/?id=b1773eac3f29cbdcdfd16e0339f1a164066e9f71
-
-I agree that avoiding increase in struct trace_entry size would be very
-desirable, but I have no knowledge whether rt developers had reasons to
-do it like this.
-
-Nevertheless I think the issue with verifier running against a wrong
-struct still needs to be addressed.
-
+diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+index 69b472604b86..f617ff54e38c 100644
+--- a/include/net/xdp_sock.h
++++ b/include/net/xdp_sock.h
+@@ -44,6 +44,7 @@ struct xsk_map {
+ 	struct xdp_sock __rcu *xsk_map[];
+ };
+ 
++#define MAX_XSK_TX_BUDGET 16
+ struct xdp_sock {
+ 	/* struct sock must be the first member of struct xdp_sock */
+ 	struct sock sk;
+@@ -63,6 +64,11 @@ struct xdp_sock {
+ 
+ 	struct xsk_queue *tx ____cacheline_aligned_in_smp;
+ 	struct list_head tx_list;
++	/* Record the actual number of times xsk has transmitted a tx
++	 * descriptor, with a maximum limit not exceeding MAX_XSK_TX_BUDGET
++	 */
++	u32 tx_budget_cache;
++
+ 	/* Protects generic receive. */
+ 	spinlock_t rx_lock;
+ 
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index f5e96e0d6e01..bf964456e9b1 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -413,16 +413,25 @@ EXPORT_SYMBOL(xsk_tx_release);
+ 
+ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
+ {
++	u32 xsk_full_count = 0;
+ 	struct xdp_sock *xs;
+ 
+ 	rcu_read_lock();
++again:
+ 	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
++		if (xs->tx_budget_cache >= MAX_XSK_TX_BUDGET) {
++			xsk_full_count++;
++			continue;
++		}
++
+ 		if (!xskq_cons_peek_desc(xs->tx, desc, pool)) {
+ 			if (xskq_has_descs(xs->tx))
+ 				xskq_cons_release(xs->tx);
+ 			continue;
+ 		}
+ 
++		xs->tx_budget_cache++;
++
+ 		/* This is the backpressure mechanism for the Tx path.
+ 		 * Reserve space in the completion queue and only proceed
+ 		 * if there is space in it. This avoids having to implement
+@@ -436,6 +445,13 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
+ 		return true;
+ 	}
+ 
++	if (unlikely(xsk_full_count > 0)) {
++		list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
++			xs->tx_budget_cache = 0;
++		}
++		goto again;
++	}
++
+ out:
+ 	rcu_read_unlock();
+ 	return false;
+@@ -1230,6 +1246,7 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+ 	xs->zc = xs->umem->zc;
+ 	xs->sg = !!(xs->umem->flags & XDP_UMEM_SG_FLAG);
+ 	xs->queue_id = qid;
++	xs->tx_budget_cache = 0;
+ 	xp_add_xsk(xs->pool, xs);
+ 
+ out_unlock:
 -- 
-Regards,
-  Artem
+2.20.1
 
 
