@@ -1,262 +1,243 @@
-Return-Path: <bpf+bounces-12114-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12115-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E2337C7B92
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 04:25:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8222C7C7BEC
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 05:13:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A63B71C210F0
-	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 02:25:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BF21282D60
+	for <lists+bpf@lfdr.de>; Fri, 13 Oct 2023 03:13:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D401AA47;
-	Fri, 13 Oct 2023 02:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B18D91399;
+	Fri, 13 Oct 2023 03:13:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QNReD1WE"
+	dkim=pass (2048-bit key) header.d=vmn-com-au.20230601.gappssmtp.com header.i=@vmn-com-au.20230601.gappssmtp.com header.b="DSXt9k9q"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6FC77FC
-	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 02:25:50 +0000 (UTC)
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410AB95;
-	Thu, 12 Oct 2023 19:25:47 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53e08e439c7so2360259a12.0;
-        Thu, 12 Oct 2023 19:25:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 875F8ED7
+	for <bpf@vger.kernel.org>; Fri, 13 Oct 2023 03:13:43 +0000 (UTC)
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3743CA
+	for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 20:13:38 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-53d82bea507so2844130a12.2
+        for <bpf@vger.kernel.org>; Thu, 12 Oct 2023 20:13:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697163946; x=1697768746; darn=vger.kernel.org;
+        d=vmn-com-au.20230601.gappssmtp.com; s=20230601; t=1697166817; x=1697771617; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IfucaFtMygn+o6ygSaKBL+1oTA+kLVzBXGrUlL7E3ws=;
-        b=QNReD1WEoCP5SO8nc6lGawnOlt8ZqVQtcy4QRoJ0J8bcJnMGHeSwDlHRYywkDA1y3+
-         NZ+RzYpzfAqJ1mcJ8rLyfRSuI2HhegNOyH71XctXkCuCeFf5jN8wgkYDXHk0pNEyEiYT
-         ukabfqkCOA2UuqtA8ougKXxbAO7ZWV7VLdqkIy4etQ7kXrPqocI0O77vH1cbZ0J5o0nX
-         rnWS7xV22IDEOxhFc3Iz3IDUl0xh5gw0hiZtpLZEnaF8QLO7quRF5+S5ryRKPx2ffcva
-         h1eptEPweBqdieEEBPOsqaOsPOxzAt+et/VrS5B0PpXYqZNMS4MFvDgrv5YaW4mrgKav
-         3G5A==
+        bh=Oh9GrgKa9j4l+aRPCooNGk8I84arXkGHoVeRTOb15Bc=;
+        b=DSXt9k9q9EKnm5nRqQihLdlzTVvEQENvJfLAeYzF9nr2GxafYdXWEWQmFrSD6LRMt/
+         8afJJvn4PaOV4WU6iNyqiCCRRvScsAYxAgbCMe5tSKxolPpwSlAjwOZtvWVFDqZ4ohT6
+         wuhwT2JsUL8VT28kKhdTbCepnWEl8N/plb3Vs54aNnq24DLXJdUc/Ypd97+xS6ZM3J6b
+         DPE3sg/52sn94H8+FbKsUEFVkAjuK0X0FBihEyvyYHkM9FKOMngNu/TulyLfz17hhb+F
+         kHaDVQx4uXViueMtvuS0rQQDDCU10TH0BndHY+okOJ3O3IfWftWqz1e2WtfDrgInWhFa
+         60Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697163946; x=1697768746;
+        d=1e100.net; s=20230601; t=1697166817; x=1697771617;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IfucaFtMygn+o6ygSaKBL+1oTA+kLVzBXGrUlL7E3ws=;
-        b=YOE0grijcuoo2tFKVTtsYmTRwLetCMYJ/KQTK+n0+UIxtHhnPQONaoNygQalwvfbkm
-         Dz36O/bMlB2nsoQONenLHHE7K8n6BIpU82T4G1kx2YFk2wt8MEb9VNmI+t+pL2Y+JiqL
-         oJcnqbFJ+SC3Fpy/Jov8mVEM/wVNGMNde7oNCYTy6SFMzh5iIia/gg+ve11Rk5HTaHvl
-         lC1UOfz2A7hs/dLmVGd0IsyHFRFKA6titIzVUrRYFAKEG/cwZLikyHY/kdVqHrrrWDHG
-         7vsRGCVgOKYy38n3+e50LMejwWpkDu5Prq3dLCYjzTBqQ6sj7YDNFURwTuucBYt9wW4u
-         ksOQ==
-X-Gm-Message-State: AOJu0YzS8oh2JeBQq5Dn+fvv+XqLCcjr+mtc6WpUQUEWovbgPuKXIaPX
-	WsIQbolkB+ocqfTa67eW43YBg4ojqsjRu/b7wf1X97pQ2Zc=
-X-Google-Smtp-Source: AGHT+IGfKKqTIbSVTOh52xqnpR+OlWaleG0kq0XcH8t6hx7zfyC0t1UjxReyCGYOyF7baEXemAgzpmeiJEGLoTxoxIE=
-X-Received: by 2002:a05:6402:b0f:b0:536:aead:3486 with SMTP id
- bm15-20020a0564020b0f00b00536aead3486mr18332831edb.40.1697163945415; Thu, 12
- Oct 2023 19:25:45 -0700 (PDT)
+        bh=Oh9GrgKa9j4l+aRPCooNGk8I84arXkGHoVeRTOb15Bc=;
+        b=T1Raep8eOeszVY/arLO9E0yTHbELNqzHlw84RnG3l+cingmUHHQkMpACqEsmUg8PDZ
+         p6cKP67t/xtHebZ0k984S91HV2qongPemJxcgZ3dgV+ZmiXqs7dnx68UudqwzgtYYq1s
+         ZYhXpU0cF78Jt8+P06qxYs+mpoBFXgQ2zhwub/bAn1QSXTOeZOEAK6HOPQMAjvxyC6I4
+         Gi8itKVSJyZXVixWLxyAevCK2ZehsVxQMajPKh5pkIWK6m2BZ5QauQhoXz43ZNBqv1yd
+         Y9lvwSxRyfZ2rSiRThjKCAnXQv6/oaTLeUam3HQNTYn7ixEKWHrqbIjV19SmTMpE3EJL
+         c7UQ==
+X-Gm-Message-State: AOJu0YztfQXYNq4vKm7WxUXcyzptQUWZS7bIT2vZNiKeLJMbRqwkBuly
+	HS1FybdIa3hw6qX91gDPO0Llg54gKbN8rpYvlcxh7A==
+X-Google-Smtp-Source: AGHT+IHvZ17To1stiQJWyyQrwQlN6RKbchB9YFbwir7UWOPkkbeRgkjImvF8R8r7Uu/GXf6SqTrnjuJnH7mu7BYs6Ow=
+X-Received: by 2002:a17:906:2d1:b0:9b2:b765:8802 with SMTP id
+ 17-20020a17090602d100b009b2b7658802mr25418604ejk.40.1697166816430; Thu, 12
+ Oct 2023 20:13:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231013013536.2047-1-zhujun2@cmss.chinamobile.com>
-In-Reply-To: <20231013013536.2047-1-zhujun2@cmss.chinamobile.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 12 Oct 2023 19:25:34 -0700
-Message-ID: <CAEf4BzbPMWy4Zxg6Tc-qcWjncW6qK+G=i0wC+nd0MLXiSMiBig@mail.gmail.com>
-Subject: Re: [PATCH] selftests: bpf: remove unused variables
-To: zhujun2 <zhujun2@cmss.chinamobile.com>
-Cc: shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, andrii@kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20231005123413.GA488417@alecto.usersys.redhat.com> <20231012114550.152846-1-asavkov@redhat.com>
+In-Reply-To: <20231012114550.152846-1-asavkov@redhat.com>
+From: Rod Webster <rod@vmn.com.au>
+Date: Fri, 13 Oct 2023 13:13:25 +1000
+Message-ID: <CANV1gkc4yXXAnEu6N1xB_oX_YQ7-8TiPyJ=p8pgZ_Y7o3OCg1g@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next] bpf: change syscall_nr type to int in struct syscall_tp_t
+To: Artem Savkov <asavkov@redhat.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, 
+	linux-rt-users@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Oct 12, 2023 at 6:35=E2=80=AFPM zhujun2 <zhujun2@cmss.chinamobile.c=
-om> wrote:
+For the novice with the RT kernel, Could somebody  tell me what kernel
+this bug was first introduced in and what kernel we need to install to
+get the fix?
+
+This could be the issue we have been experiencing in the Linuxcnc
+community with excessive RT network latency (mostly with realtek
+NIC's).
+I had flagged Lazy preemption as being the possible  changes causing
+this issue. I thought Lazy Preemption was added Circa kernel 5.09 as
+it affected Debian Bullseye on Kernel 5.10 which coincided with when
+we first observed the problem.
+
+Thanks in anticipation.
+
+Rod Webster
+
+Rod Webster
+1300 896 832
++61 435 765 611
+VMN=C2=AE
+www.vmn.com.au
+
+Sole Queensland Distributor
+
+
+On Thu, 12 Oct 2023 at 21:46, Artem Savkov <asavkov@redhat.com> wrote:
 >
-> These variables are never referenced in the code, just remove them.
+> linux-rt-devel tree contains a patch (b1773eac3f29c ("sched: Add support
+> for lazy preemption")) that adds an extra member to struct trace_entry.
+> This causes the offset of args field in struct trace_event_raw_sys_enter
+> be different from the one in struct syscall_trace_enter:
 >
-> Signed-off-by: zhujun2 <zhujun2@cmss.chinamobile.com>
+> struct trace_event_raw_sys_enter {
+>         struct trace_entry         ent;                  /*     0    12 *=
+/
+>
+>         /* XXX last struct has 3 bytes of padding */
+>         /* XXX 4 bytes hole, try to pack */
+>
+>         long int                   id;                   /*    16     8 *=
+/
+>         long unsigned int          args[6];              /*    24    48 *=
+/
+>         /* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
+>         char                       __data[];             /*    72     0 *=
+/
+>
+>         /* size: 72, cachelines: 2, members: 4 */
+>         /* sum members: 68, holes: 1, sum holes: 4 */
+>         /* paddings: 1, sum paddings: 3 */
+>         /* last cacheline: 8 bytes */
+> };
+>
+> struct syscall_trace_enter {
+>         struct trace_entry         ent;                  /*     0    12 *=
+/
+>
+>         /* XXX last struct has 3 bytes of padding */
+>
+>         int                        nr;                   /*    12     4 *=
+/
+>         long unsigned int          args[];               /*    16     0 *=
+/
+>
+>         /* size: 16, cachelines: 1, members: 3 */
+>         /* paddings: 1, sum paddings: 3 */
+>         /* last cacheline: 16 bytes */
+> };
+>
+> This, in turn, causes perf_event_set_bpf_prog() fail while running bpf
+> test_profiler testcase because max_ctx_offset is calculated based on the
+> former struct, while off on the latter:
+>
+>   10488         if (is_tracepoint || is_syscall_tp) {
+>   10489                 int off =3D trace_event_get_offsets(event->tp_eve=
+nt);
+>   10490
+>   10491                 if (prog->aux->max_ctx_offset > off)
+>   10492                         return -EACCES;
+>   10493         }
+>
+> What bpf program is actually getting is a pointer to struct
+> syscall_tp_t, defined in kernel/trace/trace_syscalls.c. This patch fixes
+> the problem by aligning struct syscall_tp_t with with struct
+> syscall_trace_(enter|exit) and changing the tests to use these structs
+> to dereference context.
+>
+> Signed-off-by: Artem Savkov <asavkov@redhat.com>
 > ---
-
-  Why do you stubbornly keep submitting the same untested and broken
-patch, ignoring the feedback ([0])? Your changes don't even compile
-successfully ([1]).
-
-  [0] https://lore.kernel.org/bpf/2e4c17ac-9a61-4901-8f98-c783242eec28@ioge=
-arbox.net/
-  [1] https://github.com/kernel-patches/bpf/actions/runs/6502998724/job/176=
-62867681
-
->  tools/testing/selftests/bpf/prog_tests/atomic_bounds.c      | 1 -
->  tools/testing/selftests/bpf/prog_tests/kfree_skb.c          | 2 --
->  tools/testing/selftests/bpf/prog_tests/perf_branches.c      | 6 +-----
->  .../testing/selftests/bpf/prog_tests/probe_read_user_str.c  | 4 ++--
->  tools/testing/selftests/bpf/prog_tests/test_overhead.c      | 4 ++--
->  tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c       | 1 -
->  6 files changed, 5 insertions(+), 13 deletions(-)
+>  kernel/trace/trace_syscalls.c                    | 4 ++--
+>  tools/testing/selftests/bpf/progs/profiler.inc.h | 2 +-
+>  tools/testing/selftests/bpf/progs/test_vmlinux.c | 4 ++--
+>  3 files changed, 5 insertions(+), 5 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c b/too=
-ls/testing/selftests/bpf/prog_tests/atomic_bounds.c
-> index 69bd7853e..4715cde38 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
-> @@ -7,7 +7,6 @@
->  void test_atomic_bounds(void)
+> diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.=
+c
+> index de753403cdafb..9c581d6da843a 100644
+> --- a/kernel/trace/trace_syscalls.c
+> +++ b/kernel/trace/trace_syscalls.c
+> @@ -556,7 +556,7 @@ static int perf_call_bpf_enter(struct trace_event_cal=
+l *call, struct pt_regs *re
 >  {
->         struct atomic_bounds *skel;
-> -       __u32 duration =3D 0;
->
->         skel =3D atomic_bounds__open_and_load();
->         if (CHECK(!skel, "skel_load", "couldn't load program\n"))
-> diff --git a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c b/tools/t=
-esting/selftests/bpf/prog_tests/kfree_skb.c
-> index c07991544..b0992a9ed 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-> @@ -20,7 +20,6 @@ static void on_sample(void *ctx, int cpu, void *data, _=
-_u32 size)
+>         struct syscall_tp_t {
+>                 struct trace_entry ent;
+> -               unsigned long syscall_nr;
+> +               int syscall_nr;
+>                 unsigned long args[SYSCALL_DEFINE_MAXARGS];
+>         } __aligned(8) param;
+>         int i;
+> @@ -661,7 +661,7 @@ static int perf_call_bpf_exit(struct trace_event_call=
+ *call, struct pt_regs *reg
 >  {
->         struct meta *meta =3D (struct meta *)data;
->         struct ipv6_packet *pkt_v6 =3D data + sizeof(*meta);
-> -       int duration =3D 0;
+>         struct syscall_tp_t {
+>                 struct trace_entry ent;
+> -               unsigned long syscall_nr;
+> +               int syscall_nr;
+>                 unsigned long ret;
+>         } __aligned(8) param;
 >
->         if (CHECK(size !=3D 72 + sizeof(*meta), "check_size", "size %u !=
-=3D %zu\n",
->                   size, 72 + sizeof(*meta)))
-> @@ -65,7 +64,6 @@ void serial_test_kfree_skb(void)
->         struct perf_buffer *pb =3D NULL;
->         int err, prog_fd;
->         bool passed =3D false;
-> -       __u32 duration =3D 0;
->         const int zero =3D 0;
->         bool test_ok[2];
+> diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h b/tools/tes=
+ting/selftests/bpf/progs/profiler.inc.h
+> index f799d87e87002..897061930cb76 100644
+> --- a/tools/testing/selftests/bpf/progs/profiler.inc.h
+> +++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
+> @@ -609,7 +609,7 @@ ssize_t BPF_KPROBE(kprobe__proc_sys_write,
+>  }
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/perf_branches.c b/too=
-ls/testing/selftests/bpf/prog_tests/perf_branches.c
-> index bc24f8333..0942b9891 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/perf_branches.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
-> @@ -13,7 +13,6 @@ static void check_good_sample(struct test_perf_branches=
- *skel)
->         int required_size =3D skel->bss->required_size_out;
->         int written_stack =3D skel->bss->written_stack_out;
->         int pbe_size =3D sizeof(struct perf_branch_entry);
-> -       int duration =3D 0;
->
->         if (CHECK(!skel->bss->valid, "output not valid",
->                  "no valid sample from prog"))
-> @@ -43,7 +42,6 @@ static void check_bad_sample(struct test_perf_branches =
-*skel)
->         int written_global =3D skel->bss->written_global_out;
->         int required_size =3D skel->bss->required_size_out;
->         int written_stack =3D skel->bss->written_stack_out;
-> -       int duration =3D 0;
->
->         if (CHECK(!skel->bss->valid, "output not valid",
->                  "no valid sample from prog"))
-> @@ -61,7 +59,7 @@ static void test_perf_branches_common(int perf_fd,
->                                       void (*cb)(struct test_perf_branche=
-s *))
+>  SEC("tracepoint/syscalls/sys_enter_kill")
+> -int tracepoint__syscalls__sys_enter_kill(struct trace_event_raw_sys_ente=
+r* ctx)
+> +int tracepoint__syscalls__sys_enter_kill(struct syscall_trace_enter* ctx=
+)
 >  {
->         struct test_perf_branches *skel;
-> -       int err, i, duration =3D 0;
-> +       int err, i;
->         bool detached =3D false;
->         struct bpf_link *link;
->         volatile int j =3D 0;
-> @@ -102,7 +100,6 @@ static void test_perf_branches_common(int perf_fd,
->  static void test_perf_branches_hw(void)
+>         struct bpf_func_stats_ctx stats_ctx;
+>
+> diff --git a/tools/testing/selftests/bpf/progs/test_vmlinux.c b/tools/tes=
+ting/selftests/bpf/progs/test_vmlinux.c
+> index 4b8e37f7fd06c..78b23934d9f8f 100644
+> --- a/tools/testing/selftests/bpf/progs/test_vmlinux.c
+> +++ b/tools/testing/selftests/bpf/progs/test_vmlinux.c
+> @@ -16,12 +16,12 @@ bool kprobe_called =3D false;
+>  bool fentry_called =3D false;
+>
+>  SEC("tp/syscalls/sys_enter_nanosleep")
+> -int handle__tp(struct trace_event_raw_sys_enter *args)
+> +int handle__tp(struct syscall_trace_enter *args)
 >  {
->         struct perf_event_attr attr =3D {0};
-> -       int duration =3D 0;
->         int pfd;
+>         struct __kernel_timespec *ts;
+>         long tv_nsec;
 >
->         /* create perf event */
-> @@ -143,7 +140,6 @@ static void test_perf_branches_hw(void)
->  static void test_perf_branches_no_hw(void)
->  {
->         struct perf_event_attr attr =3D {0};
-> -       int duration =3D 0;
->         int pfd;
+> -       if (args->id !=3D __NR_nanosleep)
+> +       if (args->nr !=3D __NR_nanosleep)
+>                 return 0;
 >
->         /* create perf event */
-> diff --git a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c=
- b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-> index e41929813..a7c6ad8d6 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-> @@ -9,7 +9,7 @@ static const char str3[] =3D "mestringblubblubblubblubblu=
-b";
->  static int test_one_str(struct test_probe_read_user_str *skel, const cha=
-r *str,
->                         size_t len)
->  {
-> -       int err, duration =3D 0;
-> +       int err;
->         char buf[256];
->
->         /* Ensure bytes after string are ones */
-> @@ -44,7 +44,7 @@ static int test_one_str(struct test_probe_read_user_str=
- *skel, const char *str,
->  void test_probe_read_user_str(void)
->  {
->         struct test_probe_read_user_str *skel;
-> -       int err, duration =3D 0;
-> +       int err;
->
->         skel =3D test_probe_read_user_str__open_and_load();
->         if (CHECK(!skel, "test_probe_read_user_str__open_and_load",
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_overhead.c b/too=
-ls/testing/selftests/bpf/prog_tests/test_overhead.c
-> index f27013e38..6161009df 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-> @@ -17,7 +17,7 @@ static __u64 time_get_ns(void)
->
->  static int test_task_rename(const char *prog)
->  {
-> -       int i, fd, duration =3D 0, err;
-> +       int i, fd, err;
->         char buf[] =3D "test_overhead";
->         __u64 start_time;
->
-> @@ -66,7 +66,7 @@ void test_test_overhead(void)
->         struct bpf_program *fentry_prog, *fexit_prog;
->         struct bpf_object *obj;
->         struct bpf_link *link;
-> -       int err, duration =3D 0;
-> +       int err;
->         char comm[16] =3D {};
->
->         if (CHECK_FAIL(prctl(PR_GET_NAME, comm, 0L, 0L, 0L)))
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c b/tool=
-s/testing/selftests/bpf/prog_tests/xdp_synproxy.c
-> index 8b50a992d..5af434353 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
-> @@ -40,7 +40,6 @@ static bool expect_str(char *buf, size_t size, const ch=
-ar *str, const char *name
->  {
->         static char escbuf_expected[CMD_OUT_BUF_SIZE * 4];
->         static char escbuf_actual[CMD_OUT_BUF_SIZE * 4];
-> -       static int duration =3D 0;
->         bool ok;
->
->         ok =3D size =3D=3D strlen(str) && !memcmp(buf, str, size);
+>         ts =3D (void *)args->args[0];
 > --
-> 2.17.1
->
->
+> 2.41.0
 >
 >
 
