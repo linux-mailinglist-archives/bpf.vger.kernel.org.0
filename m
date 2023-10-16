@@ -1,261 +1,162 @@
-Return-Path: <bpf+bounces-12310-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12311-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 836407CAEAC
-	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 18:12:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CB167CAF2A
+	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 18:27:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED1E1B20F1D
-	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 16:12:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF757B20EB2
+	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 16:27:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C1F130CFA;
-	Mon, 16 Oct 2023 16:12:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5622730F8A;
+	Mon, 16 Oct 2023 16:27:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="J0/P8eus"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bI3ZRLWy"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA3822E638;
-	Mon, 16 Oct 2023 16:12:14 +0000 (UTC)
-Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD13E6;
-	Mon, 16 Oct 2023 09:12:12 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 420B027EFB;
+	Mon, 16 Oct 2023 16:27:15 +0000 (UTC)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05862702;
+	Mon, 16 Oct 2023 09:27:08 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32da4ffd7e5so1271860f8f.0;
+        Mon, 16 Oct 2023 09:27:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1697472733; x=1729008733;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=+36XmP8asMBo8L9iZ19ej+lJg8W+aW92hTS1Nj/oAYg=;
-  b=J0/P8eus/07FMHaSHcmkIMHmJsfDmbiTx8xFntl6k6cX4/bQXGMGWEOb
-   dqUGnKZTXxTrgi6C/sjewF2AF64GEjCLqxijjxhhF9RDLIGPuk+9UhhXA
-   mVhXI3HpepERN5Nc0yVEnkT4X4aYhzkGu1crjkUwJRLbFjGUYzTKK3R7R
-   c=;
-X-IronPort-AV: E=Sophos;i="6.03,229,1694736000"; 
-   d="scan'208";a="245384081"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-529f0975.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 16:12:09 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
-	by email-inbound-relay-iad-1e-m6i4x-529f0975.us-east-1.amazon.com (Postfix) with ESMTPS id 14D344880B;
-	Mon, 16 Oct 2023 16:11:55 +0000 (UTC)
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.38.20:41908]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.12.209:2525] with esmtp (Farcaster)
- id 32d64908-6f5e-4cac-b6d7-291102808b66; Mon, 16 Oct 2023 16:11:54 +0000 (UTC)
-X-Farcaster-Flow-ID: 32d64908-6f5e-4cac-b6d7-291102808b66
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Mon, 16 Oct 2023 16:11:46 +0000
-Received: from 88665a182662.ant.amazon.com (10.187.171.29) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Mon, 16 Oct 2023 16:11:42 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <daniel@iogearbox.net>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<davem@davemloft.net>, <dsahern@kernel.org>, <edumazet@google.com>,
-	<haoluo@google.com>, <john.fastabend@gmail.com>, <jolsa@kernel.org>,
-	<kpsingh@kernel.org>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-	<kuniyu@amazon.com>, <martin.lau@linux.dev>, <mykolal@fb.com>,
-	<netdev@vger.kernel.org>, <pabeni@redhat.com>, <sdf@google.com>,
-	<song@kernel.org>, <yonghong.song@linux.dev>
-Subject: Re: [PATCH v1 bpf-next 00/11] bpf: tcp: Add SYN Cookie generation/validation SOCK_OPS hooks.
-Date: Mon, 16 Oct 2023 09:11:34 -0700
-Message-ID: <20231016161134.25365-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <0611984e-aea2-7eb5-af3e-e0635ca3b7ba@iogearbox.net>
-References: <0611984e-aea2-7eb5-af3e-e0635ca3b7ba@iogearbox.net>
+        d=gmail.com; s=20230601; t=1697473627; x=1698078427; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IMYUQ2LS/1q5+Qfwe+X4lk99RPotlvjWnMGp/QgUzgQ=;
+        b=bI3ZRLWyiIbeCWzm9aIJlt5qFGaHQu2iSHs817EErRgYQeM7oUW6UxHkAZMqX5BtRR
+         qqgjnBruifgjl77WNDNjwjrNbMCNLxyTlN0C4Z5yP3AxLS8snUG0DLIUV29XIimqYz8a
+         dOndkALntceUqHv8AWMzpVbrp/NycAbfKAYfUDFsdSFcTxkI/PfvSOj6IDuJGscqWJ/J
+         uZISZzNLRrOTZfvATSt/P7CLHvLpCdooKAEg2CsJdivbtVQge7SphpCP4KARfJ/maoPG
+         6nYlBecBriPWDXBRYjbDK/5m7Y64e5v2g9z7em5pPEs2y6OUz7XyMU/WIeuRql1FwYOi
+         yjpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697473627; x=1698078427;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IMYUQ2LS/1q5+Qfwe+X4lk99RPotlvjWnMGp/QgUzgQ=;
+        b=sJZoKc/cZEd39LDLQx63t45NmA21rehE04JxaregzMEow1jz7PtjheWa4cNw/4rRd+
+         JwVppUjX8vRwOyuzafwdkofn8AIOwQcikRmdawBQFKRrsdRNRqeRVjGZ/+pXzPyw6vMl
+         eb4wH06C62/6Z/QH3EVIaA4SlF7IhFfDPE/2Nq1coleEuphmIg8RP9MUCGYlT+YIs6oE
+         LxSUXX5XN/bndiYLwBl0jFBpswlwBm338y3PplP5rM/hTD+sSD/ufgK9jlh9WCzEq0SP
+         Q6FcJ0yAHkC373300w24usTPt0PhEOA874NveUlXFnkmOiXMgro5dV5FNVix7XjJbNA8
+         7VdQ==
+X-Gm-Message-State: AOJu0YysZWoU2veiGmng9d5earCjfXVJ9wBH5r4rhdZ64VjFa/kqzZwd
+	4a9nNbzDoeZBC8wtDXUsqkA=
+X-Google-Smtp-Source: AGHT+IGZbYa0CCoiFXxwCOjLMGFV+q0rjVMSOl7t/xlR4Yh18QMRi2gEGD/dpfEILIzP2v7wvi5ucw==
+X-Received: by 2002:adf:f1c5:0:b0:32d:bf1c:ce65 with SMTP id z5-20020adff1c5000000b0032dbf1cce65mr724254wro.22.1697473626397;
+        Mon, 16 Oct 2023 09:27:06 -0700 (PDT)
+Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
+        by smtp.gmail.com with ESMTPSA id v11-20020a5d6b0b000000b00324853fc8adsm27415367wrw.104.2023.10.16.09.27.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 09:27:05 -0700 (PDT)
+Date: Mon, 16 Oct 2023 17:27:04 +0100
+From: Lorenzo Stoakes <lstoakes@gmail.com>
+To: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Hugh Dickins <hughd@google.com>, Andy Lutomirski <luto@kernel.org>,
+	Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+	bpf@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>,
+	lkft-triage@lists.linaro.org
+Subject: Re: [PATCH v4 3/3] mm: perform the mapping_map_writable() check
+ after call_mmap()
+Message-ID: <c9eb4cc6-7db4-4c2b-838d-43a0b319a4f0@lucifer.local>
+References: <cover.1697116581.git.lstoakes@gmail.com>
+ <55e413d20678a1bb4c7cce889062bbb07b0df892.1697116581.git.lstoakes@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.187.171.29]
-X-ClientProxiedBy: EX19D039UWB003.ant.amazon.com (10.13.138.93) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	SPF_NONE,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <55e413d20678a1bb4c7cce889062bbb07b0df892.1697116581.git.lstoakes@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Daniel Borkmann <daniel@iogearbox.net>
-Date: Mon, 16 Oct 2023 15:05:25 +0200
-> On 10/14/23 12:04 AM, Kuniyuki Iwashima wrote:
-> > Under SYN Flood, the TCP stack generates SYN Cookie to remain stateless
-> > for the connection request until a valid ACK is responded to the SYN+ACK.
-> > 
-> > The cookie contains two kinds of host-specific bits, a timestamp and
-> > secrets, so only can it be validated by the generator.  It means SYN
-> > Cookie consumes network resources between the client and the server;
-> > intermediate nodes must remember which nodes to route ACK for the cookie.
-> > 
-> > SYN Proxy reduces such unwanted resource allocation by handling 3WHS at
-> > the edge network.  After SYN Proxy completes 3WHS, it forwards SYN to the
-> > backend server and completes another 3WHS.  However, since the server's
-> > ISN differs from the cookie, the proxy must manage the ISN mappings and
-> > fix up SEQ/ACK numbers in every packet for each connection.  If a proxy
-> > node is down, all the connections through it are also down.  Keeping a
-> > state at proxy is painful from that perspective.
-> > 
-> > At AWS, we use a dirty hack to build truly stateless SYN Proxy at scale.
-> > Our SYN Proxy consists of the front proxy layer and the backend kernel
-> > module.  (See slides of netconf [0], p6 - p15)
-> > 
-> > The cookie that SYN Proxy generates differs from the kernel's cookie in
-> > that it contains a secret (called rolling salt) (i) shared by all the proxy
-> > nodes so that any node can validate ACK and (ii) updated periodically so
-> > that old cookies cannot be validated.  Also, ISN contains WScale, SACK, and
-> > ECN, not in TS val.  This is not to sacrifice any connection quality, where
-> > some customers turn off the timestamp option due to retro CVE.
-> > 
-> > After 3WHS, the proxy restores SYN and forwards it and ACK to the backend
-> > server.  Our kernel module works at Netfilter input/output hooks and first
-> > feeds SYN to the TCP stack to initiate 3WHS.  When the module is triggered
-> > for SYN+ACK, it looks up the corresponding request socket and overwrites
-> > tcp_rsk(req)->snt_isn with the proxy's cookie.  Then, the module can
-> > complete 3WHS with the original ACK as is.
-> > 
-> > This way, our SYN Proxy does not manage the ISN mappings and can stay
-> > stateless.  It's working very well for high-bandwidth services like
-> > multiple Tbps, but we are looking for a way to drop the dirty hack and
-> > further optimise the sequences.
-> > 
-> > If we could validate an arbitrary SYN Cookie on the backend server with
-> > BPF, the proxy would need not restore SYN nor pass it.  After validating
-> > ACK, the proxy node just needs to forward it, and then the server can do
-> > the lightweight validation (e.g. check if ACK came from proxy nodes, etc)
-> > and create a connection from the ACK.
-> > 
-> > This series adds two SOCK_OPS hooks to generate and validate arbitrary
-> > SYN Cookie.  Each hook is invoked if BPF_SOCK_OPS_SYNCOOKIE_CB_FLAG is
-> > set to the listening socket in advance by bpf_sock_ops_cb_flags_set().
-> > 
-> > The user interface looks like this:
-> > 
-> >    BPF_SOCK_OPS_GEN_SYNCOOKIE_CB
-> > 
-> >      input
-> >      |- bpf_sock_ops.sk           : 4-tuple
-> >      |- bpf_sock_ops.skb          : TCP header
-> >      |- bpf_sock_ops.args[0]      : MSS
-> >      `- bpf_sock_ops.args[1]      : BPF_SYNCOOKIE_XXX flags
-> > 
-> >      output
-> >      |- bpf_sock_ops.replylong[0] : ISN (SYN Cookie) ------.
-> >      `- bpf_sock_ops.replylong[1] : TS value -----------.  |
-> >                                                         |  |
-> >    BPF_SOCK_OPS_CHECK_SYNCOOKIE_CB                      |  |
-> >                                                         |  |
-> >      input                                              |  |
-> >      |- bpf_sock_ops.sk           : 4-tuple             |  |
-> >      |- bpf_sock_ops.skb          : TCP header          |  |
-> >      |- bpf_sock_ops.args[0]      : ISN (SYN Cookie) <-----'
-> >      `- bpf_sock_ops.args[1]      : TS value <----------'
-> > 
-> >      output
-> >      |- bpf_sock_ops.replylong[0] : MSS
-> >      `- bpf_sock_ops.replylong[1] : BPF_SYNCOOKIE_XXX flags
-> > 
-> > To establish a connection from SYN Cookie, BPF_SOCK_OPS_CHECK_SYNCOOKIE_CB
-> > hook must set a valid MSS to bpf_sock_ops.replylong[0], meaning that
-> > BPF_SOCK_OPS_GEN_SYNCOOKIE_CB hook must encode MSS to ISN or TS val to be
-> > restored in the validation hook.
-> > 
-> > If WScale, SACK, and ECN are detected to be available in SYN packet, the
-> > corresponding flags are passed to args[0] of BPF_SOCK_OPS_GEN_SYNCOOKIE_CB
-> > so that bpf prog need not parse the TCP header.  The same flags can be set
-> > to replylong[0] of BPF_SOCK_OPS_CHECK_SYNCOOKIE_CB to enable each feature
-> > on the connection.
-> > 
-> > For details, please see each patch.  Here's an overview:
-> > 
-> >    patch 1 - 4 : Misc cleanup
-> >    patch 5, 6  : Add SOCK_OPS hook (only ISN is available here)
-> >    patch 7, 8  : Make TS val available as the second cookie storage
-> >    patch 9, 10 : Make WScale, SACK, and ECN configurable from ACK
-> >    patch 11    : selftest, need some help from BPF experts...
-> > 
-> > [0]: https://netdev.bots.linux.dev/netconf/2023/kuniyuki.pdf
-> 
-> Fyi, just as quick feedback, this fails BPF CI selftests :
-> 
-> https://github.com/kernel-patches/bpf/actions/runs/6513838231/job/17694669376
-> 
-> Notice: Success: 427/3396, Skipped: 24, Failed: 1
-> Error: #274 tcpbpf_user
->    Error: #274 tcpbpf_user
->    test_tcpbpf_user:PASS:open and load skel 0 nsec
->    test_tcpbpf_user:PASS:test__join_cgroup(/tcpbpf-user-test) 0 nsec
->    test_tcpbpf_user:PASS:attach_cgroup(bpf_testcb) 0 nsec
->    run_test:PASS:start_server 0 nsec
->    run_test:PASS:connect_to_fd(listen_fd) 0 nsec
->    run_test:PASS:accept(listen_fd) 0 nsec
->    run_test:PASS:send(cli_fd) 0 nsec
->    run_test:PASS:recv(accept_fd) 0 nsec
->    run_test:PASS:send(accept_fd) 0 nsec
->    run_test:PASS:recv(cli_fd) 0 nsec
->    run_test:PASS:recv(cli_fd) for fin 0 nsec
->    run_test:PASS:recv(accept_fd) for fin 0 nsec
->    verify_result:PASS:event_map 0 nsec
->    verify_result:PASS:bytes_received 0 nsec
->    verify_result:PASS:bytes_acked 0 nsec
->    verify_result:PASS:data_segs_in 0 nsec
->    verify_result:PASS:data_segs_out 0 nsec
->    verify_result:FAIL:bad_cb_test_rv unexpected bad_cb_test_rv: actual 0 != expected 128
+On Thu, Oct 12, 2023 at 06:04:30PM +0100, Lorenzo Stoakes wrote:
+> In order for a F_SEAL_WRITE sealed memfd mapping to have an opportunity to
+> clear VM_MAYWRITE, we must be able to invoke the appropriate vm_ops->mmap()
+> handler to do so. We would otherwise fail the mapping_map_writable() check
+> before we had the opportunity to avoid it.
+>
+> This patch moves this check after the call_mmap() invocation. Only memfd
+> actively denies write access causing a potential failure here (in
+> memfd_add_seals()), so there should be no impact on non-memfd cases.
+>
+> This patch makes the userland-visible change that MAP_SHARED, PROT_READ
+> mappings of an F_SEAL_WRITE sealed memfd mapping will now succeed.
+>
+> There is a delicate situation with cleanup paths assuming that a writable
+> mapping must have occurred in circumstances where it may now not have. In
+> order to ensure we do not accidentally mark a writable file unwritable by
+> mistake, we explicitly track whether we have a writable mapping and
+> unmap only if we do.
+>
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217238
+> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+> ---
+>  mm/mmap.c | 23 ++++++++++++++---------
+>  1 file changed, 14 insertions(+), 9 deletions(-)
+>
+[snip]
 
-128 (0x80) should be BPF_SOCK_OPS_ALL_CB_FLAGS + 1 instead so
-that we need not update the test for each SOCK_OPS addition.
+Andrew, could you apply the following -fix patch to this? As a bug was
+detected in the implementation [0] - I was being over-zealous in setting
+the writable_file_mapping flag and had falsely assumed vma->vm_file == file
+in all instances of the cleanup. The fix is to only set it in one place.
 
-I'll include this diff in the next revision.
+[0]: https://lore.kernel.org/all/CA+G9fYtL7wK-dE-Tnz4t-GWmQb50EPYa=TWGjpgYU2Z=oeAO_w@mail.gmail.com/
 
-Thank you!
+----8<----
+From 7feea6faada5b10a872c24755cc630220cba619a Mon Sep 17 00:00:00 2001
+From: Lorenzo Stoakes <lstoakes@gmail.com>
+Date: Mon, 16 Oct 2023 17:17:13 +0100
+Subject: [PATCH] mm: perform the mapping_map_writable() check after
+ call_mmap()
 
----8<---
-diff --git a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-index 7e8fe1bad03f..e4849d2a2956 100644
---- a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-@@ -26,7 +26,8 @@ static void verify_result(struct tcpbpf_globals *result)
- 	ASSERT_EQ(result->bytes_acked, 1002, "bytes_acked");
- 	ASSERT_EQ(result->data_segs_in, 1, "data_segs_in");
- 	ASSERT_EQ(result->data_segs_out, 1, "data_segs_out");
--	ASSERT_EQ(result->bad_cb_test_rv, 0x80, "bad_cb_test_rv");
-+	ASSERT_EQ(result->bad_cb_test_rv, BPF_SOCK_OPS_ALL_CB_FLAGS + 1,
-+		  "bad_cb_test_rv");
- 	ASSERT_EQ(result->good_cb_test_rv, 0, "good_cb_test_rv");
- 	ASSERT_EQ(result->num_listen, 1, "num_listen");
+Do not set writable_file_mapping in an instance where it is not appropriate
+to do so.
+
+Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+---
+ mm/mmap.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 7f45a08e7973..8b57e42fd980 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -2923,10 +2923,8 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+ 	mm->map_count++;
+ 	if (vma->vm_file) {
+ 		i_mmap_lock_write(vma->vm_file->f_mapping);
+-		if (vma_is_shared_maywrite(vma)) {
++		if (vma_is_shared_maywrite(vma))
+ 			mapping_allow_writable(vma->vm_file->f_mapping);
+-			writable_file_mapping = true;
+-		}
  
-diff --git a/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c b/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-index cf7ed8cbb1fe..52da66d77fd6 100644
---- a/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-@@ -103,7 +103,8 @@ int bpf_testcb(struct bpf_sock_ops *skops)
- 		break;
- 	case BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB:
- 		/* Test failure to set largest cb flag (assumes not defined) */
--		global.bad_cb_test_rv = bpf_sock_ops_cb_flags_set(skops, 0x80);
-+		global.bad_cb_test_rv = bpf_sock_ops_cb_flags_set(skops,
-+								  BPF_SOCK_OPS_ALL_CB_FLAGS + 1);
- 		/* Set callback */
- 		global.good_cb_test_rv = bpf_sock_ops_cb_flags_set(skops,
- 						 BPF_SOCK_OPS_STATE_CB_FLAG);
----8<---
+ 		flush_dcache_mmap_lock(vma->vm_file->f_mapping);
+ 		vma_interval_tree_insert(vma, &vma->vm_file->f_mapping->i_mmap);
+-- 
+2.42.0
 
-
->    verify_result:PASS:good_cb_test_rv 0 nsec
->    verify_result:PASS:num_listen 0 nsec
->    verify_result:PASS:num_close_events 0 nsec
->    verify_result:PASS:tcp_save_syn 0 nsec
->    verify_result:PASS:tcp_saved_syn 0 nsec
->    verify_result:PASS:window_clamp_client 0 nsec
->    verify_result:PASS:window_clamp_server 0 nsec
 
