@@ -1,47 +1,50 @@
-Return-Path: <bpf+bounces-12308-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12309-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2641B7CAE38
-	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 17:52:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3689C7CAE74
+	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 18:04:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D61CF281794
-	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 15:52:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 667AE1C20AC4
+	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 16:04:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B2742E64C;
-	Mon, 16 Oct 2023 15:52:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C6D730CE7;
+	Mon, 16 Oct 2023 16:04:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rodHOUas"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52792B779;
-	Mon, 16 Oct 2023 15:52:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06237C433C7;
-	Mon, 16 Oct 2023 15:52:07 +0000 (UTC)
-Date: Mon, 16 Oct 2023 11:53:42 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Artem Savkov <asavkov@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, Masami
- Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
- linux-rt-users@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [RFC PATCH bpf-next] bpf: change syscall_nr type to int in
- struct syscall_tp_t
-Message-ID: <20231016115342.30b3d357@gandalf.local.home>
-In-Reply-To: <CAEf4Bza0ma+oRHYkHfQwmLPzJobRpq6-u2gog_uMNAHs0-KYiQ@mail.gmail.com>
-References: <20231005123413.GA488417@alecto.usersys.redhat.com>
-	<20231012114550.152846-1-asavkov@redhat.com>
-	<20231012094444.0967fa79@gandalf.local.home>
-	<CAEf4BzZKWkJjOjw8x_eL_hsU-QzFuSzd5bkBH2EHtirN2hnEgA@mail.gmail.com>
-	<ZSjdPqQiPdqa-UTs@wtfbox.lan>
-	<20231013100023.5b0943ec@rorschach.local.home>
-	<CAEf4Bza0ma+oRHYkHfQwmLPzJobRpq6-u2gog_uMNAHs0-KYiQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E9C028E24;
+	Mon, 16 Oct 2023 16:04:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 746ABC433C8;
+	Mon, 16 Oct 2023 16:04:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1697472268;
+	bh=YZ4sGcFwTls02ydpSHlFcFPIfFvUcrnKlPq29AuSudo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=rodHOUas0uw9FTgwqjcgW/yuKI8So7pJUfKIfnlaONlclGFImbrl0fUd43kc4hZBG
+	 tKVfz7o4ago8W9ZFMGjZ4g8Si5fBxeCFass2/qgUwK0PTnVVwm63EporN0xRdmNLAY
+	 PWGphe3ZbUqLhd90/aXmtryHcwy2nlBvsjYXRjzKTRV8L/DjDlG3TY8PQPrh7QrMo2
+	 9UKpGENJ3QzZpEGHkXjDJb2lOggPtMCHNHJUbuKCUWwXzCcnRQcXcy3JtSZr78yW22
+	 6Eh5B431MncsWLT6La1fXnxM+d/4a/NbRYIJrrKNR1yA8L+ygAPV9U7FjYMKeFsc5e
+	 RhoAChj/ttAWQ==
+Date: Mon, 16 Oct 2023 09:04:26 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Victor Nogueira <victor@mojatatu.com>
+Cc: jhs@mojatatu.com, daniel@iogearbox.net, xiyou.wangcong@gmail.com,
+ jiri@resnulli.us, davem@davemloft.net, edumazet@google.com,
+ pabeni@redhat.com, paulb@nvidia.com, bpf@vger.kernel.org,
+ mleitner@redhat.com, martin.lau@linux.dev, dcaratti@redhat.com,
+ netdev@vger.kernel.org, kernel@mojatatu.com
+Subject: Re: [PATCH RFC net-next v2 1/1] net: sched: Disambiguate verdict
+ from return code
+Message-ID: <20231016090426.26c4baa8@kernel.org>
+In-Reply-To: <20231014180921.833820-1-victor@mojatatu.com>
+References: <20231014180921.833820-1-victor@mojatatu.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -51,31 +54,20 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Fri, 13 Oct 2023 12:43:18 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-
-
-> > Correct. My Ack is based on the current way things are done upstream.
-> > It was just that linux-rt showed the issue, where the code was not as
-> > robust as it should have been. To me this was a correctness issue, not
-> > an issue that had to do with how things are done in linux-rt.  
+On Sat, 14 Oct 2023 15:09:21 -0300 Victor Nogueira wrote:
+> Currently there is no way to distinguish between an error and a
+> classification verdict. Which has caused us a lot of pain with buggy qdiscs
+> and syzkaller. This patch does 2 things - one is it disambiguates between
+> an error and policy decisions. The reasons are added under the auspices of
+> skb drop reason. We add the drop reason as a part of struct tcf_result.
+> That way, tcf_classify can set a proper drop reason when it fails,
+> and we keep the classification result as the tcf_classify's return value.
 > 
-> I think we should at least add some BUILD_BUG_ON() that validates
-> offsets in syscall_tp_t matches the ones in syscall_trace_enter and
-> syscall_trace_exit, to fail more loudly if there is any mismatch in
-> the future. WDYT?
+> This patch also adds a variety of drop reasons which are more fine grained
+> on why a packet was dropped by the TC classification action subsystem.
 
-If you want to, feel free to send a patch.
-
-> 
-> >
-> > As for the changes in linux-rt, they are not upstream yet. I'll have my
-> > comments on that code when that happens.  
-> 
-> Ah, ok, cool. I'd appreciate you cc'ing bpf@vger.kernel.org in that
-> discussion, thank you!
-
-If I remember ;-)
-
--- Steve
+Looks like this mostly builds on top of Daniel's patches with some
+not-described additions like zeroing out res and cleaning up ifdefs.
+Let me apply Daniel's patches and you can refine the return codes
+on top.
 
