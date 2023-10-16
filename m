@@ -1,129 +1,139 @@
-Return-Path: <bpf+bounces-12334-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12335-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80F337CB285
-	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 20:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B5427CB28C
+	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 20:33:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1C591C20AFF
-	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 18:29:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCEA21C20B21
+	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 18:33:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE7AD339AD;
-	Mon, 16 Oct 2023 18:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45C2F30CF8;
+	Mon, 16 Oct 2023 18:33:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="UTJrC6C3";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="S5UiA4Hq"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C262C31A70
-	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 18:28:54 +0000 (UTC)
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD0BAC
-	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 11:28:53 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39GIAZuP010281
-	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 11:28:52 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ts86x9aes-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 11:28:52 -0700
-Received: from twshared19681.14.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 16 Oct 2023 11:28:50 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 11F7539DA1C80; Mon, 16 Oct 2023 11:28:42 -0700 (PDT)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>,
-        Hengqi Chen
-	<hengqi.chen@gmail.com>,
-        Liam Wisehart <liamwisehart@meta.com>
-Subject: [PATCH bpf-next] libbpf: don't assume SHT_GNU_verdef presence for SHT_GNU_versym section
-Date: Mon, 16 Oct 2023 11:28:40 -0700
-Message-ID: <20231016182840.4033346-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F07F34190;
+	Mon, 16 Oct 2023 18:33:22 +0000 (UTC)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A46A2;
+	Mon, 16 Oct 2023 11:33:18 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9340E21941;
+	Mon, 16 Oct 2023 18:33:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1697481195; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QkCIkhPVNqzKHJQMduEVPWqZGb5aCwOZAMiw/zbXR9E=;
+	b=UTJrC6C3SO/r3WQH6r5yJ9nuRF9VCxPuDyNRGuH7VkK9ichOpyY0/zEFJ5q4dn76WUhDx+
+	JC/Py8aMsEHrlKqhR4bPyvmJ8trS0KaX3qS7sAFW2c/jBLLOzYbowPDIcMSAdXVO7vH2Nx
+	Iy9FESfaLUjCH4c+60EgFHVZSFZjMsI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1697481195;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QkCIkhPVNqzKHJQMduEVPWqZGb5aCwOZAMiw/zbXR9E=;
+	b=S5UiA4Hq3Lwb/q9XN1YM7jBOWslZ3JKRi8PR5zmnZb7R7Xx5Q0Iz7zQafcSb645qj8DvhQ
+	eKUMkLOW3a8z3rCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5DE9C138EF;
+	Mon, 16 Oct 2023 18:33:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id tLOLEeuBLWWWYQAAMHmgww
+	(envelope-from <krisman@suse.de>); Mon, 16 Oct 2023 18:33:15 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: Breno Leitao <leitao@debian.org>
+Cc: sdf@google.com,  axboe@kernel.dk,  asml.silence@gmail.com,
+  willemdebruijn.kernel@gmail.com,  kuba@kernel.org,  pabeni@redhat.com,
+  martin.lau@linux.dev,  bpf@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  netdev@vger.kernel.org,
+  io-uring@vger.kernel.org
+Subject: Re: [PATCH v7 09/11] io_uring/cmd: Introduce
+ SOCKET_URING_OP_GETSOCKOPT
+In-Reply-To: <20231016134750.1381153-10-leitao@debian.org> (Breno Leitao's
+	message of "Mon, 16 Oct 2023 06:47:47 -0700")
+References: <20231016134750.1381153-1-leitao@debian.org>
+	<20231016134750.1381153-10-leitao@debian.org>
+Date: Mon, 16 Oct 2023 14:33:14 -0400
+Message-ID: <87bkcybeol.fsf@>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: qrO2uuSqP7MiJJJwlhnv5r7qMxo8JEbD
-X-Proofpoint-ORIG-GUID: qrO2uuSqP7MiJJJwlhnv5r7qMxo8JEbD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-16_10,2023-10-12_01,2023-05-22_02
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.40
+X-Spamd-Result: default: False [-0.40 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-3.00)[-0.998];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-1.00)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 INVALID_MSGID(1.70)[];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_COUNT_TWO(0.00)[2];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 FREEMAIL_CC(0.00)[google.com,kernel.dk,gmail.com,kernel.org,redhat.com,linux.dev,vger.kernel.org]
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_MSGID,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Fix too eager assumption that SHT_GNU_verdef ELF section is going to be
-present whenever binary has SHT_GNU_versym section. It seems like either
-SHT_GNU_verdef or SHT_GNU_verneed can be used, so failing on missing
-SHT_GNU_verdef actually breaks use cases in production.
+Breno Leitao <leitao@debian.org> writes:
 
-One specific reported issue, which was used to manually test this fix,
-was trying to attach to `readline` function in BASH binary.
+> Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
+> level is SOL_SOCKET. This is leveraging the sockptr_t infrastructure,
+> where a sockptr_t is either userspace or kernel space, and handled as
+> such.
+>
+> Differently from the getsockopt(2), the optlen field is not a userspace
+> pointers. In getsockopt(2), userspace provides optlen pointer, which is
+> overwritten by the kernel.  In this implementation, userspace passes a
+> u32, and the new value is returned in cqe->res. I.e., optlen is not a
+> pointer.
+>
+> Important to say that userspace needs to keep the pointer alive until
+> the CQE is completed.
+>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-Cc: Hengqi Chen <hengqi.chen@gmail.com>
-Reported-by: Liam Wisehart <liamwisehart@meta.com>
-Fixes: bb7fa09399b9 ("libbpf: Support symbol versioning for uprobe")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/elf.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+I suspect you forgot to collect my previous r-b on this :).  Either way,
+still good to me:
 
-diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-index 2a158e8a8b7c..2a62bf411bb3 100644
---- a/tools/lib/bpf/elf.c
-+++ b/tools/lib/bpf/elf.c
-@@ -141,14 +141,15 @@ static int elf_sym_iter_new(struct elf_sym_iter *it=
-er,
- 	iter->versyms =3D elf_getdata(scn, 0);
-=20
- 	scn =3D elf_find_next_scn_by_type(elf, SHT_GNU_verdef, NULL);
--	if (!scn) {
--		pr_debug("elf: failed to find verdef ELF sections in '%s'\n", binary_p=
-ath);
--		return -ENOENT;
--	}
--	if (!gelf_getshdr(scn, &sh))
-+	if (!scn)
-+		return 0;
-+
-+	iter->verdefs =3D elf_getdata(scn, 0);
-+	if (!iter->verdefs || !gelf_getshdr(scn, &sh)) {
-+		pr_warn("elf: failed to get verdef ELF section in '%s'\n", binary_path=
-);
- 		return -EINVAL;
-+	}
- 	iter->verdef_strtabidx =3D sh.sh_link;
--	iter->verdefs =3D elf_getdata(scn, 0);
-=20
- 	return 0;
- }
-@@ -199,6 +200,9 @@ static const char *elf_get_vername(struct elf_sym_ite=
-r *iter, int ver)
- 	GElf_Verdef verdef;
- 	int offset;
-=20
-+	if (!iter->verdefs)
-+		return NULL;
-+
- 	offset =3D 0;
- 	while (gelf_getverdef(iter->verdefs, offset, &verdef)) {
- 		if (verdef.vd_ndx !=3D ver) {
---=20
-2.34.1
+Reviewed-by: Gabriel Krisman Bertazi <krisman@suse.de>
 
+-- 
+Gabriel Krisman Bertazi
 
