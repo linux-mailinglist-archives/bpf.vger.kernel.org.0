@@ -1,194 +1,200 @@
-Return-Path: <bpf+bounces-12343-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12344-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 824B77CB32F
-	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 21:08:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A9767CB362
+	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 21:37:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12B92B20FA4
-	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 19:08:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4967B20EE6
+	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 19:37:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BA4B34CF3;
-	Mon, 16 Oct 2023 19:08:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3A7B347D8;
+	Mon, 16 Oct 2023 19:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bW/6/yxg"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aiSJ7L97"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 412A429425;
-	Mon, 16 Oct 2023 19:08:27 +0000 (UTC)
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F20C95;
-	Mon, 16 Oct 2023 12:08:26 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c87a85332bso41777565ad.2;
-        Mon, 16 Oct 2023 12:08:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697483305; x=1698088105; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ubjkS5+y1rW721gBAWdylENqvUrLaiGAMBOmuqAVODw=;
-        b=bW/6/yxgdqmEgrP1CMMGFByYlfcIoHKJFCYGE4rmk9v7dzdm7ls5LM2Hu0+KzNldWS
-         vYigARxUnETFQkO/4QwlPhmEY55SCZviq3w7/Zz/4rQFST/bT6AcrKUnLQu5ZA8IWUaH
-         /mVPxPraGZz4Q0Jrl3Th+Pla9/1Qr+x7qXDLK7onHCZIHXzGMz7YuqHbeQtNYJ4IOJ1A
-         kSZG8Okt6hAtgXbJMCFMyha0xzH9cll5qVUU66OizLrXAVXBL76IOpFsUFnuF16VYRhH
-         dXZOMTqLgth7Eok5eOnvgjHMAn282Yt3WDotnbtefoIOYFhb0pb3fW3haWuk85pduCZ/
-         KkNg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A98E8339B3
+	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 19:37:08 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51469F
+	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 12:37:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1697485025;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6VO4a5LovCVntfdCgVRy2oxs5rFAyhM7E/Q+GrU1a9E=;
+	b=aiSJ7L97B4TFme/UhpDPAeK0AGJpiQlkTNTB7m7Mq1jGD0fi7PKeC4cVdqW9n/7HiTItUp
+	ivkItZ5mJ2dVAPNq9Q5qACg62LIDp88SA5f/C+72v+mThIysaeajpdcRMObxTkA2Js8Ei+
+	S9fRtq5VieGPNuCDur8AyFiLPV2vzno=
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
+ [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-27-YxmbC5c4PnueLusC1PjsZQ-1; Mon, 16 Oct 2023 15:37:03 -0400
+X-MC-Unique: YxmbC5c4PnueLusC1PjsZQ-1
+Received: by mail-yb1-f200.google.com with SMTP id 3f1490d57ef6-d9a483bdce7so6783711276.2
+        for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 12:37:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697483305; x=1698088105;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1697485022; x=1698089822;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ubjkS5+y1rW721gBAWdylENqvUrLaiGAMBOmuqAVODw=;
-        b=d7DX9L3lrWMv2lxnGJXdU1ahl2RrUz8DLygzsgy2pl27sOznE26Qa/EjIDhLj3xe7m
-         Y4fCRvkFMeW/ZlUpxkZJ0h7aY+lTunm9ymgenPIi1tBgioaxQkicSyHrjca04NXpkYP1
-         6yFhkrWIJGfvnPfMZf14BeYQFHjpUGHoGJ/rmhQIC4Yc+vL3angrIWi23oQb/Tykslbg
-         ipQXCuPEUs3oThozxwC6iasxQGDkYL604x5pVdKtXKHp6VJLgGhXF0sP82yj1r0NIcKv
-         VKuXP8ZlRpGSQHk+WyRrI/2M5rQVnICQ0T/ygEFNBajkgK9Nd8VInqxjkKrK827DL4IP
-         GH+w==
-X-Gm-Message-State: AOJu0YyVbwcO3SbMrCH1AaO+0TvIWl8oUudsgBc7TOSCpUr7Ug8XviqO
-	kL5JJPGiAv0zsant6y4uwWDDUcVn8iw=
-X-Google-Smtp-Source: AGHT+IHjz05cUxibX1otVAS/9iWsfr+1vBo9AGGa8Iqmi6v4NF+OBtrRSsYD/6y9NA1LGcTuf+wMWw==
-X-Received: by 2002:a17:903:1212:b0:1c4:387a:3259 with SMTP id l18-20020a170903121200b001c4387a3259mr235762plh.46.1697483304931;
-        Mon, 16 Oct 2023 12:08:24 -0700 (PDT)
-Received: from john.lan ([98.97.116.126])
-        by smtp.gmail.com with ESMTPSA id i2-20020a170902c94200b001c9bc811d4dsm8803473pla.295.2023.10.16.12.08.23
+        bh=6VO4a5LovCVntfdCgVRy2oxs5rFAyhM7E/Q+GrU1a9E=;
+        b=nRXDPj/vVBUia34XuOzKMbBpRBPyl1H7D6vx23Cfuw/18U/GNBM7pyyBn4nfltDdj1
+         ZgIHK2MCuL++CNByr+NFjDcUT354bZ4BXmIpuztTLVuf8ru+3roLTulSnFiPfFibehHb
+         4GPkbFvwSJOH5MODyCM3/EWROKs6Es5Y4mGolVVN3QH37KbS3ENBc1cKFWC+Upu7mAmg
+         zugzP2SkDChnW0Ic0X6wmp1Q14wqGcdJfDpXYEiNBxrwq7ZGFlYK/gU2iv5TqepPIHtQ
+         BFOcQGPaD2G51qgA9jnvYdRZxPWjL+k/ztjHhJlVhAstwstqTRsHuUr04AUaT30UN2iG
+         ZBcg==
+X-Gm-Message-State: AOJu0Yy7p6C/yU/pajWdtSKBcwFT7jPJd94Zu8ayNn82kYdhKBTAOZmn
+	wMC8lig19gdbdumtOFGoyP9/Q6paqzvw8cFsnF/HcAHcU6D4mnZC4TquFmVhBGAPRMkE+dlDoWv
+	s2qSI9VIGKLvP
+X-Received: by 2002:a25:b05:0:b0:d9a:54d1:f874 with SMTP id 5-20020a250b05000000b00d9a54d1f874mr15307ybl.35.1697485022295;
+        Mon, 16 Oct 2023 12:37:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHKj3TXNgEgrYqgySV+WS+iFqeJ5bDyYwHdZiEjk4vJtU8pSRiJDGD4LUu/fy7eSgWKMsC05A==
+X-Received: by 2002:a25:b05:0:b0:d9a:54d1:f874 with SMTP id 5-20020a250b05000000b00d9a54d1f874mr15296ybl.35.1697485022021;
+        Mon, 16 Oct 2023 12:37:02 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id t11-20020a252d0b000000b00d7b9fab78bfsm2892114ybt.7.2023.10.16.12.37.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 12:08:24 -0700 (PDT)
-From: John Fastabend <john.fastabend@gmail.com>
-To: bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: yangyingliang@huawei.com,
-	jakub@cloudflare.com,
-	martin.lau@kernel.org,
-	john.fastabend@gmail.com
-Subject: [PATCH bpf 2/2] bpf: sockmap, add af_unix test with both sockets in map
-Date: Mon, 16 Oct 2023 12:08:19 -0700
-Message-Id: <20231016190819.81307-3-john.fastabend@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20231016190819.81307-1-john.fastabend@gmail.com>
-References: <20231016190819.81307-1-john.fastabend@gmail.com>
+        Mon, 16 Oct 2023 12:37:01 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 7E3C1EB2003; Mon, 16 Oct 2023 21:36:59 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Mohamed
+ Mahmoud <mmahmoud@redhat.com>
+Subject: Re: Hitting verifier backtracking bug on 6.5.5 kernel
+In-Reply-To: <CAEf4BzaC3ZohtcRhKQRCjdiou3=KcfDvRnF6RN55BTZx+jNqhg@mail.gmail.com>
+References: <87jzrrwptf.fsf@toke.dk>
+ <CAEf4BzaC3ZohtcRhKQRCjdiou3=KcfDvRnF6RN55BTZx+jNqhg@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Mon, 16 Oct 2023 21:36:59 +0200
+Message-ID: <87sf6auzok.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This adds a test where both pairs of a af_unix paired socket are put into
-a BPF map. This ensures that when we tear down the af_unix pair we don't
-have any issues on sockmap side with ordering and reference counting.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- .../selftests/bpf/prog_tests/sockmap_listen.c | 39 ++++++++++++++++---
- .../selftests/bpf/progs/test_sockmap_listen.c |  7 ++++
- 2 files changed, 40 insertions(+), 6 deletions(-)
+> On Thu, Oct 12, 2023 at 1:25=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgensen =
+<toke@redhat.com> wrote:
+>>
+>> Hi Andrii
+>>
+>> Mohamed ran into what appears to be a verifier bug related to your
+>> commit:
+>>
+>> fde2a3882bd0 ("bpf: support precision propagation in the presence of sub=
+progs")
+>>
+>> So I figured you'd be the person to ask about this :)
+>>
+>> The issue appears on a vanilla 6.5 kernel (on both 6.5.6 on Fedora 38,
+>> and 6.5.5 on my Arch machine):
+>>
+>> INFO[0000] Verifier error: load program: bad address:
+>>         1861: frame2: R1_w=3Dfp-160 R2_w=3Dpkt_end(off=3D0,imm=3D0) R3=
+=3Dscalar(umin=3D17,umax=3D255,var_off=3D(0x0; 0xff)) R4_w=3Dfp-96 R6_w=3Df=
+p-96 R7_w=3Dpkt(off=3D34,r=3D34,imm=3D0) R10=3Dfp0
+>>         ; switch (protocol) {
+>>         1861: (15) if r3 =3D=3D 0x11 goto pc+22 1884: frame2: R1_w=3Dfp-=
+160 R2_w=3Dpkt_end(off=3D0,imm=3D0) R3=3D17 R4_w=3Dfp-96 R6_w=3Dfp-96 R7_w=
+=3Dpkt(off=3D34,r=3D34,imm=3D0) R10=3Dfp0
+>>         ; if ((void *)udp + sizeof(*udp) <=3D data_end) {
+>>         1884: (bf) r3 =3D r7                    ; frame2: R3_w=3Dpkt(off=
+=3D34,r=3D34,imm=3D0) R7_w=3Dpkt(off=3D34,r=3D34,imm=3D0)
+>>         1885: (07) r3 +=3D 8                    ; frame2: R3_w=3Dpkt(off=
+=3D42,r=3D34,imm=3D0)
+>>         ; if ((void *)udp + sizeof(*udp) <=3D data_end) {
+>>         1886: (2d) if r3 > r2 goto pc+23      ; frame2: R2_w=3Dpkt_end(o=
+ff=3D0,imm=3D0) R3_w=3Dpkt(off=3D42,r=3D42,imm=3D0)
+>>         ; id->src_port =3D bpf_ntohs(udp->source);
+>>         1887: (69) r2 =3D *(u16 *)(r7 +0)       ; frame2: R2_w=3Dscalar(=
+umax=3D65535,var_off=3D(0x0; 0xffff)) R7_w=3Dpkt(off=3D34,r=3D42,imm=3D0)
+>>         1888: (bf) r3 =3D r2                    ; frame2: R2_w=3Dscalar(=
+id=3D103,umax=3D65535,var_off=3D(0x0; 0xffff)) R3_w=3Dscalar(id=3D103,umax=
+=3D65535,var_off=3D(0x0; 0xffff))
+>>         1889: (dc) r3 =3D be16 r3               ; frame2: R3_w=3Dscalar()
+>>         ; id->src_port =3D bpf_ntohs(udp->source);
+>>         1890: (73) *(u8 *)(r1 +47) =3D r3       ; frame2: R1_w=3Dfp-160 =
+R3_w=3Dscalar()
+>>         ; id->src_port =3D bpf_ntohs(udp->source);
+>>         1891: (dc) r2 =3D be64 r2               ; frame2: R2_w=3Dscalar()
+>>         ; id->src_port =3D bpf_ntohs(udp->source);
+>>         1892: (77) r2 >>=3D 56                  ; frame2: R2_w=3Dscalar(=
+umax=3D255,var_off=3D(0x0; 0xff))
+>>         1893: (73) *(u8 *)(r1 +48) =3D r2
+>>         BUG regs 1
+>>         processed 5121 insns (limit 1000000) max_states_per_insn 4 total=
+_states 92 peak_states 90 mark_read 20
+>>         (truncated)  component=3Debpf.FlowFetcher
+>>
+>> Dmesg says:
+>>
+>> [252431.093126] verifier backtracking bug
+>> [252431.093129] WARNING: CPU: 3 PID: 302245 at kernel/bpf/verifier.c:353=
+3 __mark_chain_precision+0xe83/0x1090
+>>
+>>
+>> The splat appears when trying to run the netobserv-ebpf-agent. Steps to
+>> reproduce:
+>>
+>> git clone https://github.com/netobserv/netobserv-ebpf-agent
+>> cd netobserv-ebpf-agent && make compile
+>> sudo FLOWS_TARGET_HOST=3D127.0.0.1 FLOWS_TARGET_PORT=3D9999 ./bin/netobs=
+erv-ebpf-agent
+>>
+>> (It needs a 'make generate' before the compile to recompile the BPF
+>> program itself, but that requires the Cilium bpf2go program to be
+>> installed and there's a binary version checked into the tree so that is
+>> not strictly necessary to reproduce the splat).
+>>
+>> That project uses the Cilium Go eBPF loader. Interestingly, loading the
+>> same program using tc (with libbpf 1.2.2) works just fine:
+>>
+>> ip link add type veth
+>> tc qdisc add dev veth0 clsact
+>> tc filter add dev veth0 egress bpf direct-action obj pkg/ebpf/bpf_bpfel.=
+o sec tc_egress
+>>
+>> So maybe there is some massaging of the object file that libbpf is doing
+>> but the Go library isn't, that prevents this bug from triggering? I'm
+>> only guessing here, I don't really know exactly what the Go library is
+>> doing under the hood.
+>>
+>> Anyway, I guess this is a kernel bug in any case since that WARN() is
+>> there; could you please take a look?
+>>
+>
+> Yes, I tried. Unfortunately I can't build netobserv-ebpf-agent on my
+> dev machine and can't run it. I tried to load bpf_bpfel.o through
+> veristat, but unfortunately it is not libbpf-compatible.
+>
+> Is there some way to get a full verifier log for the failure above?
+> with log_level 2, if possible? If you can share it through Github Gist
+> or something like that, I'd really appreciate it. Thanks!
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index 8df8cbb447f1..90e97907c1c1 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -1824,8 +1824,10 @@ static void inet_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
- }
- 
--static void unix_inet_redir_to_connected(int family, int type, int sock_mapfd,
--					int verd_mapfd, enum redir_mode mode)
-+static void unix_inet_redir_to_connected(int family, int type,
-+					int sock_mapfd, int nop_mapfd,
-+					int verd_mapfd,
-+					enum redir_mode mode)
- {
- 	const char *log_prefix = redir_mode_str(mode);
- 	int c0, c1, p0, p1;
-@@ -1849,6 +1851,12 @@ static void unix_inet_redir_to_connected(int family, int type, int sock_mapfd,
- 	if (err)
- 		goto close;
- 
-+	if (nop_mapfd >= 0) {
-+		err = add_to_sockmap(nop_mapfd, c0, c1);
-+		if (err)
-+			goto close;
-+	}
-+
- 	n = write(c1, "a", 1);
- 	if (n < 0)
- 		FAIL_ERRNO("%s: write", log_prefix);
-@@ -1883,6 +1891,7 @@ static void unix_inet_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 					    struct bpf_map *inner_map, int family)
- {
- 	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-+	int nop_map = bpf_map__fd(skel->maps.nop_map);
- 	int verdict_map = bpf_map__fd(skel->maps.verdict_map);
- 	int sock_map = bpf_map__fd(inner_map);
- 	int err;
-@@ -1892,14 +1901,32 @@ static void unix_inet_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 		return;
- 
- 	skel->bss->test_ingress = false;
--	unix_inet_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
-+	unix_inet_redir_to_connected(family, SOCK_DGRAM,
-+				     sock_map, -1, verdict_map,
-+				     REDIR_EGRESS);
-+	unix_inet_redir_to_connected(family, SOCK_DGRAM,
-+				     sock_map, -1, verdict_map,
- 				     REDIR_EGRESS);
--	unix_inet_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+
-+	unix_inet_redir_to_connected(family, SOCK_DGRAM,
-+				     sock_map, nop_map, verdict_map,
-+				     REDIR_EGRESS);
-+	unix_inet_redir_to_connected(family, SOCK_STREAM,
-+				     sock_map, nop_map, verdict_map,
- 				     REDIR_EGRESS);
- 	skel->bss->test_ingress = true;
--	unix_inet_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
-+	unix_inet_redir_to_connected(family, SOCK_DGRAM,
-+				     sock_map, -1, verdict_map,
-+				     REDIR_INGRESS);
-+	unix_inet_redir_to_connected(family, SOCK_STREAM,
-+				     sock_map, -1, verdict_map,
-+				     REDIR_INGRESS);
-+
-+	unix_inet_redir_to_connected(family, SOCK_DGRAM,
-+				     sock_map, nop_map, verdict_map,
- 				     REDIR_INGRESS);
--	unix_inet_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+	unix_inet_redir_to_connected(family, SOCK_STREAM,
-+				     sock_map, nop_map, verdict_map,
- 				     REDIR_INGRESS);
- 
- 	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_listen.c b/tools/testing/selftests/bpf/progs/test_sockmap_listen.c
-index 464d35bd57c7..b7250eb9c30c 100644
---- a/tools/testing/selftests/bpf/progs/test_sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_listen.c
-@@ -14,6 +14,13 @@ struct {
- 	__type(value, __u64);
- } sock_map SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, 2);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} nop_map SEC(".maps");
-+
- struct {
- 	__uint(type, BPF_MAP_TYPE_SOCKHASH);
- 	__uint(max_entries, 2);
--- 
-2.33.0
+Sure, here you go:
+https://gist.github.com/tohojo/31173d2bb07262a21393f76d9a45132d
+
+-Toke
 
 
