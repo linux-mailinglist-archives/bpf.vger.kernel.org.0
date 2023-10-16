@@ -1,31 +1,31 @@
-Return-Path: <bpf+bounces-12278-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12279-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AB0B7CA7A7
-	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 14:04:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97F647CA7A9
+	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 14:04:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D12D81F221DB
-	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 12:04:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA57E1C20CDF
+	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 12:04:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14C6128DDD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E9F928E0B;
 	Mon, 16 Oct 2023 12:01:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E017A28DD2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E009B28DB0;
 	Mon, 16 Oct 2023 12:01:02 +0000 (UTC)
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF15E6;
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF21E1;
 	Mon, 16 Oct 2023 05:00:59 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VuHskDZ_1697457654;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VuHskDZ_1697457654)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VuHc.Ri_1697457655;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VuHc.Ri_1697457655)
           by smtp.aliyun-inc.com;
-          Mon, 16 Oct 2023 20:00:55 +0800
+          Mon, 16 Oct 2023 20:00:56 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: netdev@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -41,9 +41,9 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	John Fastabend <john.fastabend@gmail.com>,
 	virtualization@lists.linux-foundation.org,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next v1 18/19] virtio_net: update tx timeout record
-Date: Mon, 16 Oct 2023 20:00:32 +0800
-Message-Id: <20231016120033.26933-19-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH net-next v1 19/19] virtio_net: xdp_features add NETDEV_XDP_ACT_XSK_ZEROCOPY
+Date: Mon, 16 Oct 2023 20:00:33 +0800
+Message-Id: <20231016120033.26933-20-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20231016120033.26933-1-xuanzhuo@linux.alibaba.com>
 References: <20231016120033.26933-1-xuanzhuo@linux.alibaba.com>
@@ -62,35 +62,28 @@ X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-If send queue sent some packets, we update the tx timeout
-record to prevent the tx timeout.
+Now, we supported AF_XDP(xsk). Add NETDEV_XDP_ACT_XSK_ZEROCOPY to
+xdp_features.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/net/virtio/xsk.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/virtio/main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/virtio/xsk.c b/drivers/net/virtio/xsk.c
-index f1c64414fac9..5d3de505c56c 100644
---- a/drivers/net/virtio/xsk.c
-+++ b/drivers/net/virtio/xsk.c
-@@ -274,6 +274,16 @@ bool virtnet_xsk_xmit(struct virtnet_sq *sq, struct xsk_buff_pool *pool,
+diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
+index ac62d0955c13..c66d8509330e 100644
+--- a/drivers/net/virtio/main.c
++++ b/drivers/net/virtio/main.c
+@@ -4329,7 +4329,8 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 		dev->hw_features |= NETIF_F_GRO_HW;
  
- 	virtnet_xsk_check_queue(sq);
+ 	dev->vlan_features = dev->features;
+-	dev->xdp_features = NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT;
++	dev->xdp_features = NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
++		NETDEV_XDP_ACT_XSK_ZEROCOPY;
  
-+	if (stats.packets) {
-+		struct netdev_queue *txq;
-+		struct virtnet_info *vi;
-+
-+		vi = sq->vq->vdev->priv;
-+
-+		txq = netdev_get_tx_queue(vi->dev, sq - vi->sq);
-+		txq_trans_cond_update(txq);
-+	}
-+
- 	u64_stats_update_begin(&sq->stats.syncp);
- 	sq->stats.packets += stats.packets;
- 	sq->stats.bytes += stats.bytes;
+ 	/* MTU range: 68 - 65535 */
+ 	dev->min_mtu = MIN_MTU;
 -- 
 2.32.0.3.g01195cf9f
 
