@@ -1,51 +1,51 @@
-Return-Path: <bpf+bounces-12332-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12334-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C46D7CB20F
-	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 20:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80F337CB285
+	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 20:29:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE16C1C20AEF
-	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 18:05:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1C591C20AFF
+	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 18:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A7053AC24;
-	Mon, 16 Oct 2023 18:03:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE7AD339AD;
+	Mon, 16 Oct 2023 18:28:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10A7138F80
-	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 18:03:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C262C31A70
+	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 18:28:54 +0000 (UTC)
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A826C10A
-	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 11:03:12 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39GFUrNc016389
-	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 11:03:12 -0700
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD0BAC
+	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 11:28:53 -0700 (PDT)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39GIAZuP010281
+	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 11:28:52 -0700
 Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ts7vhs9d3-15
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ts86x9aes-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 11:03:11 -0700
-Received: from twshared15247.17.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 11:28:52 -0700
+Received: from twshared19681.14.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 16 Oct 2023 11:03:04 -0700
+ 15.1.2507.23; Mon, 16 Oct 2023 11:28:50 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 6BBB939D9C372; Mon, 16 Oct 2023 11:02:59 -0700 (PDT)
+	id 11F7539DA1C80; Mon, 16 Oct 2023 11:28:42 -0700 (PDT)
 From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC: <linux-fsdevel@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
-        <keescook@chromium.org>, <brauner@kernel.org>,
-        <lennart@poettering.net>, <kernel-team@meta.com>, <sargun@sargun.me>
-Subject: [PATCH v8 bpf-next 18/18] bpf,selinux: allocate bpf_security_struct per BPF token
-Date: Mon, 16 Oct 2023 11:02:20 -0700
-Message-ID: <20231016180220.3866105-19-andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>,
+        Hengqi Chen
+	<hengqi.chen@gmail.com>,
+        Liam Wisehart <liamwisehart@meta.com>
+Subject: [PATCH bpf-next] libbpf: don't assume SHT_GNU_verdef presence for SHT_GNU_versym section
+Date: Mon, 16 Oct 2023 11:28:40 -0700
+Message-ID: <20231016182840.4033346-1-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231016180220.3866105-1-andrii@kernel.org>
-References: <20231016180220.3866105-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -55,8 +55,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: qgmBFikwxjYxElauFvTDqEpQLdmqjICb
-X-Proofpoint-ORIG-GUID: qgmBFikwxjYxElauFvTDqEpQLdmqjICb
+X-Proofpoint-GUID: qrO2uuSqP7MiJJJwlhnv5r7qMxo8JEbD
+X-Proofpoint-ORIG-GUID: qrO2uuSqP7MiJJJwlhnv5r7qMxo8JEbD
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-16_10,2023-10-12_01,2023-05-22_02
@@ -67,69 +67,62 @@ X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Utilize newly added bpf_token_create/bpf_token_free LSM hooks to
-allocate struct bpf_security_struct for each BPF token object in
-SELinux. This just follows similar pattern for BPF prog and map.
+Fix too eager assumption that SHT_GNU_verdef ELF section is going to be
+present whenever binary has SHT_GNU_versym section. It seems like either
+SHT_GNU_verdef or SHT_GNU_verneed can be used, so failing on missing
+SHT_GNU_verdef actually breaks use cases in production.
 
+One specific reported issue, which was used to manually test this fix,
+was trying to attach to `readline` function in BASH binary.
+
+Cc: Hengqi Chen <hengqi.chen@gmail.com>
+Reported-by: Liam Wisehart <liamwisehart@meta.com>
+Fixes: bb7fa09399b9 ("libbpf: Support symbol versioning for uprobe")
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- security/selinux/hooks.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ tools/lib/bpf/elf.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 3d5dea4f1df0..acd84839ae2c 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -6828,6 +6828,29 @@ static void selinux_bpf_prog_free(struct bpf_prog =
-*prog)
- 	prog->aux->security =3D NULL;
- 	kfree(bpfsec);
+diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
+index 2a158e8a8b7c..2a62bf411bb3 100644
+--- a/tools/lib/bpf/elf.c
++++ b/tools/lib/bpf/elf.c
+@@ -141,14 +141,15 @@ static int elf_sym_iter_new(struct elf_sym_iter *it=
+er,
+ 	iter->versyms =3D elf_getdata(scn, 0);
+=20
+ 	scn =3D elf_find_next_scn_by_type(elf, SHT_GNU_verdef, NULL);
+-	if (!scn) {
+-		pr_debug("elf: failed to find verdef ELF sections in '%s'\n", binary_p=
+ath);
+-		return -ENOENT;
+-	}
+-	if (!gelf_getshdr(scn, &sh))
++	if (!scn)
++		return 0;
++
++	iter->verdefs =3D elf_getdata(scn, 0);
++	if (!iter->verdefs || !gelf_getshdr(scn, &sh)) {
++		pr_warn("elf: failed to get verdef ELF section in '%s'\n", binary_path=
+);
+ 		return -EINVAL;
++	}
+ 	iter->verdef_strtabidx =3D sh.sh_link;
+-	iter->verdefs =3D elf_getdata(scn, 0);
+=20
+ 	return 0;
  }
-+
-+static int selinux_bpf_token_create(struct bpf_token *token, union bpf_a=
-ttr *attr,
-+				    struct path *path)
-+{
-+	struct bpf_security_struct *bpfsec;
-+
-+	bpfsec =3D kzalloc(sizeof(*bpfsec), GFP_KERNEL);
-+	if (!bpfsec)
-+		return -ENOMEM;
-+
-+	bpfsec->sid =3D current_sid();
-+	token->security =3D bpfsec;
-+
-+	return 0;
-+}
-+
-+static void selinux_bpf_token_free(struct bpf_token *token)
-+{
-+	struct bpf_security_struct *bpfsec =3D token->security;
-+
-+	token->security =3D NULL;
-+	kfree(bpfsec);
-+}
- #endif
+@@ -199,6 +200,9 @@ static const char *elf_get_vername(struct elf_sym_ite=
+r *iter, int ver)
+ 	GElf_Verdef verdef;
+ 	int offset;
 =20
- struct lsm_blob_sizes selinux_blob_sizes __ro_after_init =3D {
-@@ -7183,6 +7206,7 @@ static struct security_hook_list selinux_hooks[] __=
-ro_after_init =3D {
- 	LSM_HOOK_INIT(bpf_prog, selinux_bpf_prog),
- 	LSM_HOOK_INIT(bpf_map_free, selinux_bpf_map_free),
- 	LSM_HOOK_INIT(bpf_prog_free, selinux_bpf_prog_free),
-+	LSM_HOOK_INIT(bpf_token_free, selinux_bpf_token_free),
- #endif
-=20
- #ifdef CONFIG_PERF_EVENTS
-@@ -7241,6 +7265,7 @@ static struct security_hook_list selinux_hooks[] __=
-ro_after_init =3D {
- #ifdef CONFIG_BPF_SYSCALL
- 	LSM_HOOK_INIT(bpf_map_create, selinux_bpf_map_create),
- 	LSM_HOOK_INIT(bpf_prog_load, selinux_bpf_prog_load),
-+	LSM_HOOK_INIT(bpf_token_create, selinux_bpf_token_create),
- #endif
- #ifdef CONFIG_PERF_EVENTS
- 	LSM_HOOK_INIT(perf_event_alloc, selinux_perf_event_alloc),
++	if (!iter->verdefs)
++		return NULL;
++
+ 	offset =3D 0;
+ 	while (gelf_getverdef(iter->verdefs, offset, &verdef)) {
+ 		if (verdef.vd_ndx !=3D ver) {
 --=20
 2.34.1
 
