@@ -1,123 +1,115 @@
-Return-Path: <bpf+bounces-12259-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12260-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 678457CA739
-	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 13:56:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72DDA7CA744
+	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 13:57:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 994751C204E8
-	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 11:56:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9629F1C20A43
+	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 11:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0700F266AA;
-	Mon, 16 Oct 2023 11:56:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3843266C0;
+	Mon, 16 Oct 2023 11:57:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="NDZxOhu2"
+	dkim=pass (2048-bit key) header.d=daynix-com.20230601.gappssmtp.com header.i=@daynix-com.20230601.gappssmtp.com header.b="Uqxhkj0P"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F4615ADD;
-	Mon, 16 Oct 2023 11:56:35 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7619BEB;
-	Mon, 16 Oct 2023 04:56:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=WRPI/vvAe1a/d/T53OXiNe5f7JTZlBNBUbkDycSd458=; b=NDZxOhu2bvM4P4YdZuYfpQ2lwo
-	dhyoO/D1aKBPPjhCqUPDdtavMHg9e0J0xKrO2FOVJ3qtwef5GICHvfzMSARLIaRWxVQoZsXYoHd/w
-	n2/mTj7GwkocyAJH1+TFnFZQUtGn9KavOtBbv2Fgu0fTIeoxcIbA2gT2O6rER665ZqrYZrZvmgtqi
-	wBieyPcQuIQLnA6WKx9QgMb8RexRDBwgv0VR3EN+HVBDy6FmONTyQ4VJES9N1znpw92eGDq8KefaC
-	R7lCW8CFqsJAOod3C1RumaGqWTLeh/kpUtV86/EOL6MpQv3LpG9/hJAtbA/nw0QSoC7cJWt0ageZQ
-	syGDO2KA==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qsMCw-00093v-5q; Mon, 16 Oct 2023 13:56:26 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qsMCv-0002uD-7t; Mon, 16 Oct 2023 13:56:25 +0200
-Subject: Re: [PATCH bpf-next -v4] net: Add a warning if NAPI cb missed
- xdp_do_flush().
-To: John Fastabend <john.fastabend@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Eric Dumazet <edumazet@google.com>,
- Hao Luo <haoluo@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>,
- Jiri Olsa <jolsa@kernel.org>, Jonathan Lemon <jonathan.lemon@gmail.com>,
- KP Singh <kpsingh@kernel.org>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Paolo Abeni <pabeni@redhat.com>,
- Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Thomas Gleixner <tglx@linutronix.de>, Yonghong Song
- <yonghong.song@linux.dev>, =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?=
- <toke@redhat.com>
-References: <20230929165825.RvwBYGP1@linutronix.de>
- <20231004070926.5b4ba04c@kernel.org> <20231006154933.mQgxQHHt@linutronix.de>
- <20231006123139.5203444e@kernel.org> <20231007154351.UvncuBMF@linutronix.de>
- <20231010065745.lJLYdf_X@linutronix.de>
- <652627b386bbe_2d55e208d6@john.notmuch>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5efb2093-537e-0f7d-beef-d32c02ec4a3d@iogearbox.net>
-Date: Mon, 16 Oct 2023 13:56:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E61672629D
+	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 11:57:25 +0000 (UTC)
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A69FE
+	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 04:57:23 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-57de6e502fcso2640195eaf.3
+        for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 04:57:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1697457442; x=1698062242; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4dXhQiW3CeLcA8j0HpKT5tW5ghtUshlNGr8srK7/YcI=;
+        b=Uqxhkj0PiVlsQfe0MNmXz89pM3r5zOsGgOSqamMLP4d9QehQsruA8An/QNx9ERDMPT
+         46QcwYs0+os/MoSEj+9Tc2jepT1okz02GljozN28YV9pwN3Q11HxZiugwX16/zWoegoX
+         3O9fyXAnG1HkG00FAm6/6CIaXYSB8IAXJrlkVBWF4kDaYnFb8ohPUWRUsQgYqf/8h/uL
+         18yUzJtqLHxUxc2Tk2EGmGIb4sRcYFTN2y6JPJqghdTdMzMFE0XbvHPOGXZF0qdrKryi
+         iIWIXFdqejzAsjsATo92U4eGAlARNVw7PBer0uFMVqkwl55HDrmA8KVlVvjcaYypslGi
+         Priw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697457442; x=1698062242;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4dXhQiW3CeLcA8j0HpKT5tW5ghtUshlNGr8srK7/YcI=;
+        b=nNmyfu3kbjkekVUSb49NX3ROVzmMei25OagIK22rz2CrdiG+O/QZsL8Rd7Ri6+k5qX
+         1RtZtu+N44/+CcbmofZSegYWARbl1AqoBd8ouoOzc3+W0BExye5T+ReRBFKNxmJ7mQVz
+         MtwLN74OJgQiFNK2sHiVYJqBYde24mV1x7VuYIwinVoSeOEXWxTcqgRIoXJQbFodqODh
+         01ZjnCBvnq+2YJZkdxQbw7oLORFs455vGFhtgOuNvwte9Dslgq1prhdoPtK2gSAdRYTA
+         CV3BRgrXDlFg57lgBU2pN32oqaNU26HI4eMhKEj0VaN2dBj4NAPLkTryQ8X95LuInPdT
+         /CMQ==
+X-Gm-Message-State: AOJu0YwMvFN68oQE0EQ5MrhE9gg7N3tKmikqT9QQlZYYqi7fdS8qXB4R
+	2lzBn6Xu/L70bbJ83PcMYmYd7A==
+X-Google-Smtp-Source: AGHT+IE/2U4L2nHv4HRjfKmaGiJe500WFnQxdJcQ546ojINbjt2vjRSSjqWYcdaSEk+sSfNF8wu8Kw==
+X-Received: by 2002:a05:6358:4327:b0:14f:6a41:5d14 with SMTP id r39-20020a056358432700b0014f6a415d14mr42820220rwc.27.1697457442436;
+        Mon, 16 Oct 2023 04:57:22 -0700 (PDT)
+Received: from ?IPV6:2400:4050:a840:1e00:78d2:b862:10a7:d486? ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
+        by smtp.gmail.com with ESMTPSA id x23-20020aa79ad7000000b006bdfb718e17sm2424805pfp.124.2023.10.16.04.57.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 04:57:22 -0700 (PDT)
+Message-ID: <60ab339a-3029-42db-97cf-d8574d05e789@daynix.com>
+Date: Mon, 16 Oct 2023 20:57:17 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <652627b386bbe_2d55e208d6@john.notmuch>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next] selftests/bpf: Use pkg-config to determine ld
+ flags
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27063/Mon Oct 16 10:02:17 2023)
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Nick Terrell <terrelln@fb.com>, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231015133916.257197-1-akihiko.odaki@daynix.com>
+ <062d9a75-caa0-d05d-14db-cd59dafab8b9@iogearbox.net>
+From: Akihiko Odaki <akihiko.odaki@daynix.com>
+In-Reply-To: <062d9a75-caa0-d05d-14db-cd59dafab8b9@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Sebastian,
-
-On 10/11/23 6:42 AM, John Fastabend wrote:
-> Sebastian Andrzej Siewior wrote:
->> A few drivers were missing a xdp_do_flush() invocation after
->> XDP_REDIRECT.
->>
->> Add three helper functions each for one of the per-CPU lists. Return
->> true if the per-CPU list is non-empty and flush the list.
->> Add xdp_do_check_flushed() which invokes each helper functions and
->> creates a warning if one of the functions had a non-empty list.
->> Hide everything behind CONFIG_DEBUG_NET.
->>
->> Suggested-by: Jesper Dangaard Brouer <hawk@kernel.org>
->> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
->> Acked-by: Jakub Kicinski <kuba@kernel.org>
->> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+On 2023/10/16 20:39, Daniel Borkmann wrote:
+> On 10/15/23 3:39 PM, Akihiko Odaki wrote:
+>> When linking statically, libraries may require other dependencies to be
+>> included to ld flags. In particular, libelf may require libzstd. Use
+>> pkg-config to determine such dependencies.
 > 
-> LGTM.
+> Is this not covered via -lz or is it that the name differs?
+
+libelf may not only be linked with zlib but also with zstandard.
+
 > 
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> Anyway, this change breaks selftest build for BPF CI (see below), could 
+> this
+> either be made optional or detected differently?
+> 
+> https://github.com/kernel-patches/bpf/actions/runs/6524480596/job/17716170021
 
-Do you have a chance to send a v5 rebase? It does not apply to bpf-next.
-
-Other than that, the patch lgtm.
-
-Thanks,
-Daniel
+I sent v2 (I forgot to add bpf-next to the subject for this).
+This version implements a fallback just in the same way done for 
+HOSTPKG_CONFIG.
 
