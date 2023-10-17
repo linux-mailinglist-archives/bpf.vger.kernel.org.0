@@ -1,372 +1,307 @@
-Return-Path: <bpf+bounces-12417-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12418-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D2DA7CC39F
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 14:46:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C2A27CC3AF
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 14:54:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C4A8B21214
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 12:46:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66ADDB21137
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 12:54:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2F0142BE2;
-	Tue, 17 Oct 2023 12:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C836C41E2F;
+	Tue, 17 Oct 2023 12:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Eqcrwe5N"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fr2VgIpR"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 379DC41E34
-	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 12:46:22 +0000 (UTC)
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48FD7101;
-	Tue, 17 Oct 2023 05:46:20 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6ba172c5f3dso2334179b3a.0;
-        Tue, 17 Oct 2023 05:46:20 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B38DDEBE
+	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 12:53:58 +0000 (UTC)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EFCDB
+	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 05:53:57 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so9977053a12.2
+        for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 05:53:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697546780; x=1698151580; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QANBxWeQVGeTYEVVyQ3g6025jiJVAg51gX0cGDQdMMc=;
-        b=Eqcrwe5NJVxKN/ZOsj7S+xihSHvlplloqDS+CqoM7MXEI8zE1NfaFqYHVPH2ZP5fl3
-         DaB8WUAA/R3kj7L69inbXbTSVVlArKtfhpZqOAxMuauyvr/+PQIb3Ce8+GwCvup61EDN
-         08LQbWfocPmPdYUmCWHuik+0CVQeLHiTPY7Q/yqHDlW0/j3fjkr50n8WV9+gbHdI/Z+S
-         2a99N89w8mbe0G/mL8va2cApOPoa8yIeummFpxpmK+trq/poH6SBTWK6+XTFVORIruOb
-         hQ5DZivXuQqRoQqqqgPKy8DZ3+JhkfrmKLURZCeFADR78wGPANDmUcqtaXdc9u0YcS1D
-         cZbg==
+        d=gmail.com; s=20230601; t=1697547235; x=1698152035; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=h1Bas8/4rSjG5DLwSV2D6JGkMGl8xJ+dNySrFoMYV0I=;
+        b=fr2VgIpRfJino3tEZghbg9ahV1OyVHmqAQOtqPA60ridRHtKJ3vLBeU0AYiRfDSm9Y
+         pH/uCd2shKJRdPbXKrkuvguAhcCEz8vcNzkHxhRKZ+Yhj1uJgLeuhTXuu77iFzLs1gaF
+         3awwaq7kw+y1a0QLJeEGPl/9qwtdGvK1NmwJERYWtdqnUDZaM0BtkBbOMF5MV+V/gL4W
+         L5jbUzIiE/TG+mVr4iDSYXtGk2uoCsr+7nBH7hBAyYRNxiRSH661G/3d5soBRPwx1+S9
+         VXqpp2jfngqSiIHIyxEzapXZYYsHzdneNSfhjkPFaVBl/s/EbNCf5O6cLKJ4ro00n9zn
+         wpSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697546780; x=1698151580;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QANBxWeQVGeTYEVVyQ3g6025jiJVAg51gX0cGDQdMMc=;
-        b=GvB6NZBZaTujD6wzM8Vimq32bZDzxh68Jm1LUf3RrgtifPR+K0iuZmjkCEQwJ1PXQd
-         XVsKho+v+yG6GbmsuAmLr7YMNrb2H3vgEzrRfvmzoDnJDzS5yj6SixKTVscZUrN36utr
-         7i7gCF5sGR0UN3dqShTgGhxpK3X43MmPboDwUsnoHAZ0mKpO46vkUh0U5sJSsMsB/mfO
-         j7yLVKncZp6l43ff8QhGELM/Z2xo+d/NQPPVpvD7/m5+rmgVK/UPaT0YAEWPz9jzEKAm
-         Lq0pLrGLrrZ8UnHkn1b/+n/wQNq4z5DsLGqZBXcHy0GGD0RZkh6ZxtgmrCFZ+pQG+LSn
-         50Dg==
-X-Gm-Message-State: AOJu0YwSegtovl2qNmVbGrT3C2EWMLNVIyWHUp3QquqhYascMMyPinhE
-	vsLMuoYEYpNS3njxnhq73Cs=
-X-Google-Smtp-Source: AGHT+IH05Xt47ES7HySXrSPD3SfQdP60JDoCnLCG+2y4ZVGWH8cEabJCBeT56dOIL1Aubj5rIHek5A==
-X-Received: by 2002:a05:6a00:1494:b0:68e:41e9:10be with SMTP id v20-20020a056a00149400b0068e41e910bemr2331055pfu.20.1697546779721;
-        Tue, 17 Oct 2023 05:46:19 -0700 (PDT)
-Received: from vultr.guest ([2001:19f0:ac01:3b2:5400:4ff:fe9b:d21b])
-        by smtp.gmail.com with ESMTPSA id fa36-20020a056a002d2400b006bdf4dfbe0dsm1375595pfb.12.2023.10.17.05.46.18
+        d=1e100.net; s=20230601; t=1697547235; x=1698152035;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=h1Bas8/4rSjG5DLwSV2D6JGkMGl8xJ+dNySrFoMYV0I=;
+        b=GuyEXzF2bRC9brzEamLLa96iG9X3MHJg5sRLGDCVLVFhwD6lcKx6CM8ZTjInJo8Ebf
+         7l0DtfNBRpEwfSlX+G1SbLwQWfSE4URDGYGJ+dLn053mgTmIxWwY1f1toj+o5M8/fHBA
+         e8TLrPf23dbvW080AUPDmfvM1bMDKzgjQkJfXNQUETmq5aspd7FcOQFMsjzcuwCmwAX3
+         C+LSBujtdM6/Gdb+lWwPgxEUTvFi0q7KtB6JDNXetxPM+QF9lnVJRb3/BP0xDDvKUBOx
+         +MipfzoaXJeaUw0Bc9zez+Qd1LC8xH/8FbM/HT8QktYkA4VIAdlgiRbh31d0Dcpy1ZZb
+         lEkw==
+X-Gm-Message-State: AOJu0YxkQIhGhLE8CPV7PVWYF/zGn3JMvXuG8q46M+3dhklGtOKorYYg
+	8xT/efFaitDtAxFTJjGOvxo=
+X-Google-Smtp-Source: AGHT+IF3S/BYWh7/Hg9vveawhXj28NgUJRaQy7x/sAO9F6UOdCQBc0Fs3V+abKHznIXMt+KxqTLtsQ==
+X-Received: by 2002:a17:907:60d2:b0:9c3:bd63:4245 with SMTP id hv18-20020a17090760d200b009c3bd634245mr1862804ejc.47.1697547235083;
+        Tue, 17 Oct 2023 05:53:55 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id s14-20020a170906bc4e00b00977cad140a8sm1201271ejv.218.2023.10.17.05.53.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 05:46:19 -0700 (PDT)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	tj@kernel.org,
-	lizefan.x@bytedance.com,
-	hannes@cmpxchg.org,
-	yosryahmed@google.com,
-	mkoutny@suse.com,
-	sinquersw@gmail.com
-Cc: cgroups@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next v2 9/9] selftests/bpf: Add selftests for cgroup1 hierarchy
-Date: Tue, 17 Oct 2023 12:45:46 +0000
-Message-Id: <20231017124546.24608-10-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20231017124546.24608-1-laoar.shao@gmail.com>
-References: <20231017124546.24608-1-laoar.shao@gmail.com>
+        Tue, 17 Oct 2023 05:53:54 -0700 (PDT)
+Message-ID: <dbaa9e9b3e090f5ed88faaa62a40a080eae53ec4.camel@gmail.com>
+Subject: Re: [PATCH v2 dwarves 5/5] pahole: add --btf_features_strict to
+ reject unknown BTF features
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alan Maguire <alan.maguire@oracle.com>, acme@kernel.org, 
+	andrii.nakryiko@gmail.com
+Cc: jolsa@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev,  song@kernel.org, yhs@fb.com,
+ john.fastabend@gmail.com, kpsingh@kernel.org,  sdf@google.com,
+ haoluo@google.com, mykolal@fb.com, bpf@vger.kernel.org, Andrii Nakryiko
+ <andrii@kernel.org>
+Date: Tue, 17 Oct 2023 15:53:52 +0300
+In-Reply-To: <20231013153359.88274-6-alan.maguire@oracle.com>
+References: <20231013153359.88274-1-alan.maguire@oracle.com>
+	 <20231013153359.88274-6-alan.maguire@oracle.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add selftests for cgroup1 hierarchy.
-The result as follows,
+On Fri, 2023-10-13 at 16:33 +0100, Alan Maguire wrote:
+> --btf_features is used to specify the list of requested features
+> for BTF encoding.  However, it is not strict in rejecting requests
+> with unknown features; this allows us to use the same parameters
+> regardless of pahole version.  --btf_features_strict carries out
+> the same encoding with the same feature set, but will fail if an
+> unrecognized feature is specified.
+>=20
+> So
+>=20
+>   pahole -J --btf_features=3Denum64,foo
+>=20
+> will succeed, while
+>=20
+>   pahole -J --btf_features_strict=3Denum64,foo
+>=20
+> will not.
+>=20
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  man-pages/pahole.1 |  4 ++++
+>  pahole.c           | 20 +++++++++++++++++---
+>  2 files changed, 21 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
+> index 6148915..ea9045c 100644
+> --- a/man-pages/pahole.1
+> +++ b/man-pages/pahole.1
+> @@ -297,6 +297,10 @@ Encode BTF using the specified feature list, or spec=
+ify 'all' for all features s
+> =20
+>  So for example, specifying \-\-btf_encode=3Dvar,enum64 will result in a =
+BTF encoding that (as well as encoding basic BTF information) will contain =
+variables and enum64 values.
+> =20
+> +.TP
+> +.B \-\-btf_features_strict
+> +Identical to \-\-btf_features above, but pahole will exit if it encounte=
+rs an unrecognized feature.
+> +
+>  .TP
+>  .B \-\-supported_btf_features
+>  Show set of BTF features supported by \-\-btf_features option and exit. =
+ Useful for checking which features are supported since \-\-btf_features wi=
+ll not emit an error if an unrecognized feature is specified.
+> diff --git a/pahole.c b/pahole.c
+> index 816525a..e2a2440 100644
+> --- a/pahole.c
+> +++ b/pahole.c
+> @@ -1231,6 +1231,7 @@ ARGP_PROGRAM_VERSION_HOOK_DEF =3D dwarves_print_ver=
+sion;
+>  #define ARGP_skip_encoding_btf_inconsistent_proto 340
+>  #define ARGP_btf_features	341
+>  #define ARGP_supported_btf_features 342
+> +#define ARGP_btf_features_strict 343
+> =20
+>  /* --btf_features=3Dfeature1[,feature2,..] allows us to specify
+>   * a list of requested BTF features or "all" to enable all features.
+> @@ -1288,7 +1289,7 @@ bool set_btf_features_defaults;
+>   * Explicitly ignores unrecognized features to allow future specificatio=
+n
+>   * of new opt-in features.
+>   */
+> -static void parse_btf_features(const char *features)
+> +static void parse_btf_features(const char *features, bool strict)
+>  {
+>  	char *feature_list[BTF_MAX_FEATURES] =3D {};
+>  	char f[BTF_MAX_FEATURE_STR];
+> @@ -1325,6 +1326,11 @@ static void parse_btf_features(const char *feature=
+s)
+>  					break;
+>  				}
+>  			}
+> +			if (strict && !match) {
+> +				fprintf(stderr, "Feature in '%s' is not supported.  'pahole --suppor=
+ted_btf_features' shows the list of features supported.\n",
+> +					features);
+> +				exit(EXIT_FAILURE);
+> +			}
 
-  $ tools/testing/selftests/bpf/test_progs --name=cgroup1_hierarchy
-  #36/1    cgroup1_hierarchy/test_cgroup1_hierarchy:OK
-  #36/2    cgroup1_hierarchy/test_root_cgid:OK
-  #36/3    cgroup1_hierarchy/test_invalid_level:OK
-  #36/4    cgroup1_hierarchy/test_invalid_cgid:OK
-  #36/5    cgroup1_hierarchy/test_invalid_hid:OK
-  #36/6    cgroup1_hierarchy/test_invalid_cgrp_name:OK
-  #36/7    cgroup1_hierarchy/test_invalid_cgrp_name2:OK
-  #36/8    cgroup1_hierarchy/test_sleepable_prog:OK
-  #36      cgroup1_hierarchy:OK
-  Summary: 1/8 PASSED, 0 SKIPPED, 0 FAILED
+Hi Alan,
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Sorry for late response.
+
+This won't work if --btf_features_strict specifies an incomplete list, e.g.=
+:
+
+  $ pahole --btf_features_strict=3Ddecl_tag,enum64 --btf_encode_detached=3D=
+/dev/null ~/work/tmp/test.o=20
+  Feature in 'decl_tag,enum64' is not supported.  'pahole --supported_btf_f=
+eatures' shows the list of features supported.
+
+Also, I think it would be good to print exactly which feature is not suppor=
+ted.
+What do you think about modification as in the end of this email?
+(applied on top of your series).
+
+Thanks,
+Eduard
+
 ---
- .../bpf/prog_tests/cgroup1_hierarchy.c        | 159 ++++++++++++++++++
- .../bpf/progs/test_cgroup1_hierarchy.c        |  73 ++++++++
- 2 files changed, 232 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup1_hierarchy.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup1_hierarchy.c b/tools/testing/selftests/bpf/prog_tests/cgroup1_hierarchy.c
-new file mode 100644
-index 000000000000..4aafbc921254
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup1_hierarchy.c
-@@ -0,0 +1,159 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023 Yafang Shao <laoar.shao@gmail.com> */
-+
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <test_progs.h>
-+#include "cgroup_helpers.h"
-+#include "test_cgroup1_hierarchy.skel.h"
-+
-+static void bpf_cgroup1(struct test_cgroup1_hierarchy *skel)
+diff --git a/pahole.c b/pahole.c
+index e2a2440..cf87f83 100644
+--- a/pahole.c
++++ b/pahole.c
+@@ -1285,6 +1285,29 @@ struct btf_feature {
+=20
+ bool set_btf_features_defaults;
+=20
++static struct btf_feature *find_feature(char *name)
 +{
-+	int err;
++	int i;
 +
-+	/* Attach LSM prog first */
-+	skel->links.lsm_run = bpf_program__attach_lsm(skel->progs.lsm_run);
-+	if (!ASSERT_OK_PTR(skel->links.lsm_run, "lsm_attach"))
-+		return;
-+
-+	/* LSM prog will be triggered when attaching fentry */
-+	skel->links.fentry_run = bpf_program__attach_trace(skel->progs.fentry_run);
-+	ASSERT_NULL(skel->links.fentry_run, "fentry_attach_fail");
-+
-+	err = bpf_link__destroy(skel->links.lsm_run);
-+	ASSERT_OK(err, "destroy_lsm");
-+	skel->links.lsm_run = NULL;
++	for (i =3D 0; i < ARRAY_SIZE(btf_features); i++)
++		if (strcmp(name, btf_features[i].name) =3D=3D 0)
++			return &btf_features[i];
++	return NULL;
 +}
 +
-+static void bpf_cgroup1_sleepable(struct test_cgroup1_hierarchy *skel)
++static void init_feature(struct btf_feature *feature)
 +{
-+	int err;
-+
-+	/* Attach LSM prog first */
-+	skel->links.lsm_s_run = bpf_program__attach_lsm(skel->progs.lsm_s_run);
-+	if (!ASSERT_OK_PTR(skel->links.lsm_s_run, "lsm_attach"))
-+		return;
-+
-+	/* LSM prog will be triggered when attaching fentry */
-+	skel->links.fentry_run = bpf_program__attach_trace(skel->progs.fentry_run);
-+	ASSERT_NULL(skel->links.fentry_run, "fentry_attach_fail");
-+
-+	err = bpf_link__destroy(skel->links.lsm_s_run);
-+	ASSERT_OK(err, "destroy_lsm");
-+	skel->links.lsm_s_run = NULL;
++	*feature->conf_value =3D feature->default_value;
 +}
 +
-+static void bpf_cgroup1_invalid_id(struct test_cgroup1_hierarchy *skel)
++static void enable_feature(struct btf_feature *feature)
 +{
-+	int err;
-+
-+	/* Attach LSM prog first */
-+	skel->links.lsm_run = bpf_program__attach_lsm(skel->progs.lsm_run);
-+	if (!ASSERT_OK_PTR(skel->links.lsm_run, "lsm_attach"))
-+		return;
-+
-+	/* LSM prog will be triggered when attaching fentry */
-+	skel->links.fentry_run = bpf_program__attach_trace(skel->progs.fentry_run);
-+	if (!ASSERT_OK_PTR(skel->links.fentry_run, "fentry_attach_success"))
-+		goto cleanup;
-+
-+	err = bpf_link__destroy(skel->links.lsm_run);
-+	ASSERT_OK(err, "destroy_lsm");
-+	skel->links.lsm_run = NULL;
-+
-+cleanup:
-+	err = bpf_link__destroy(skel->links.fentry_run);
-+	ASSERT_OK(err, "destroy_fentry");
-+	skel->links.fentry_run = NULL;
++	/* switch "default-off" features on, and "default-on" features
++	 * off; i.e. negate the default value.
++	 */
++	*feature->conf_value =3D !feature->default_value;
 +}
 +
-+void test_cgroup1_hierarchy(void)
-+{
-+	struct test_cgroup1_hierarchy *skel;
-+	__u64 current_cgid;
-+	int hid, err;
-+
-+	skel = test_cgroup1_hierarchy__open();
-+	if (!ASSERT_OK_PTR(skel, "open"))
-+		return;
-+
-+	skel->bss->target_pid = getpid();
-+
-+	err = bpf_program__set_attach_target(skel->progs.fentry_run, 0, "bpf_fentry_test1");
-+	if (!ASSERT_OK(err, "fentry_set_target"))
-+		goto destroy;
-+
-+	err = test_cgroup1_hierarchy__load(skel);
-+	if (!ASSERT_OK(err, "load"))
-+		goto destroy;
-+
-+	/* Setup cgroup1 hierarchy */
-+	err = setup_classid_environment();
-+	if (!ASSERT_OK(err, "setup_classid_environment"))
-+		goto destroy;
-+
-+	err = join_classid();
-+	if (!ASSERT_OK(err, "join_cgroup1"))
-+		goto cleanup;
-+
-+	current_cgid = get_classid_cgroup_id();
-+	if (!ASSERT_GE(current_cgid, 0, "cgroup1 id"))
-+		goto cleanup;
-+
-+	hid = get_cgroup1_hierarchy_id("net_cls");
-+	if (!ASSERT_GE(hid, 0, "cgroup1 id"))
-+		goto cleanup;
-+	skel->bss->target_hid = hid;
-+
-+	if (test__start_subtest("test_cgroup1_hierarchy")) {
-+		skel->bss->target_ancestor_cgid = current_cgid;
-+		bpf_cgroup1(skel);
+ /* Translate --btf_features=3Dfeature1[,feature2] into conf_load values.
+  * Explicitly ignores unrecognized features to allow future specification
+  * of new opt-in features.
+@@ -1294,7 +1317,7 @@ static void parse_btf_features(const char *features, =
+bool strict)
+ 	char *feature_list[BTF_MAX_FEATURES] =3D {};
+ 	char f[BTF_MAX_FEATURE_STR];
+ 	bool encode_all =3D false;
+-	int i, j, n =3D 0;
++	int i, n =3D 0;
+=20
+ 	strncpy(f, features, sizeof(f));
+=20
+@@ -1309,36 +1332,36 @@ static void parse_btf_features(const char *features=
+, bool strict)
+ 		}
+ 	}
+=20
+-	for (i =3D 0; i < ARRAY_SIZE(btf_features); i++) {
+-		bool match =3D encode_all;
++	/* Only set default values once, as multiple --btf_features=3D
++	 * may be specified on command-line, and setting defaults
++	 * again could clobber values.   The aim is to enable
++	 * all features set across all --btf_features options.
++	 */
++	if (!set_btf_features_defaults) {
++		for (i =3D 0; i < ARRAY_SIZE(btf_features); i++)
++			init_feature(&btf_features[i]);
++		set_btf_features_defaults =3D true;
 +	}
+=20
+-		/* Only set default values once, as multiple --btf_features=3D
+-		 * may be specified on command-line, and setting defaults
+-		 * again could clobber values.   The aim is to enable
+-		 * all features set across all --btf_features options.
+-		 */
+-		if (!set_btf_features_defaults)
+-			*(btf_features[i].conf_value) =3D btf_features[i].default_value;
+-		if (!match) {
+-			for (j =3D 0; j < n; j++) {
+-				if (strcmp(feature_list[j], btf_features[i].name) =3D=3D 0) {
+-					match =3D true;
+-					break;
+-				}
+-			}
+-			if (strict && !match) {
+-				fprintf(stderr, "Feature in '%s' is not supported.  'pahole --supporte=
+d_btf_features' shows the list of features supported.\n",
+-					features);
++	if (encode_all) {
++		for (i =3D 0; i < ARRAY_SIZE(btf_features); i++)
++			enable_feature(&btf_features[i]);
++	} else {
++		for (i =3D 0; i < n; i++) {
++			struct btf_feature *feature =3D find_feature(feature_list[i]);
 +
-+	if (test__start_subtest("test_root_cgid")) {
-+		skel->bss->target_ancestor_cgid = 1;
-+		skel->bss->target_ancestor_level = 0;
-+		bpf_cgroup1(skel);
-+	}
-+
-+	if (test__start_subtest("test_invalid_level")) {
-+		skel->bss->target_ancestor_cgid = 1;
-+		skel->bss->target_ancestor_level = 1;
-+		bpf_cgroup1_invalid_id(skel);
-+	}
-+
-+	if (test__start_subtest("test_invalid_cgid")) {
-+		skel->bss->target_ancestor_cgid = 0;
-+		bpf_cgroup1_invalid_id(skel);
-+	}
-+
-+	if (test__start_subtest("test_invalid_hid")) {
-+		skel->bss->target_ancestor_cgid = 1;
-+		skel->bss->target_ancestor_level = 0;
-+		skel->bss->target_hid = -1;
-+		bpf_cgroup1_invalid_id(skel);
-+	}
-+
-+	if (test__start_subtest("test_invalid_cgrp_name")) {
-+		skel->bss->target_hid = get_cgroup1_hierarchy_id("net_cl");
-+		skel->bss->target_ancestor_cgid = current_cgid;
-+		bpf_cgroup1_invalid_id(skel);
-+	}
-+
-+	if (test__start_subtest("test_invalid_cgrp_name2")) {
-+		skel->bss->target_hid = get_cgroup1_hierarchy_id("net_cls,");
-+		skel->bss->target_ancestor_cgid = current_cgid;
-+		bpf_cgroup1_invalid_id(skel);
-+	}
-+
-+	if (test__start_subtest("test_sleepable_prog")) {
-+		skel->bss->target_hid = hid;
-+		skel->bss->target_ancestor_cgid = current_cgid;
-+		bpf_cgroup1_sleepable(skel);
-+	}
-+
-+cleanup:
-+	cleanup_classid_environment();
-+destroy:
-+	test_cgroup1_hierarchy__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c b/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
-new file mode 100644
-index 000000000000..ca9a631a6499
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
-@@ -0,0 +1,73 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//#endif
-+/* Copyright (C) 2023 Yafang Shao <laoar.shao@gmail.com> */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+__u32 target_ancestor_level;
-+__u64 target_ancestor_cgid;
-+int target_pid, target_hid;
-+
-+struct cgroup *
-+bpf_task_get_cgroup1_within_hierarchy(struct task_struct *task, int hierarchy_id) __ksym;
-+struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level) __ksym;
-+void bpf_cgroup_release(struct cgroup *cgrp) __ksym;
-+
-+static int bpf_link_create_verify(int cmd)
-+{
-+	struct cgroup *cgrp, *ancestor;
-+	struct task_struct *task;
-+	int ret = 0;
-+
-+	if (cmd != BPF_LINK_CREATE)
-+		return 0;
-+
-+	task = bpf_get_current_task_btf();
-+
-+	/* Then it can run in parallel with others */
-+	if (task->pid != target_pid)
-+		return 0;
-+
-+	cgrp = bpf_task_get_cgroup1_within_hierarchy(task, target_hid);
-+	if (!cgrp)
-+		return 0;
-+
-+	/* Refuse it if its cgid or its ancestor's cgid is the target cgid */
-+	if (cgrp->kn->id == target_ancestor_cgid)
-+		ret = -1;
-+
-+	ancestor = bpf_cgroup_ancestor(cgrp, target_ancestor_level);
-+	if (!ancestor)
-+		goto out;
-+
-+	if (ancestor->kn->id == target_ancestor_cgid)
-+		ret = -1;
-+	bpf_cgroup_release(ancestor);
-+
-+out:
-+	bpf_cgroup_release(cgrp);
-+	return ret;
-+}
-+
-+SEC("lsm/bpf")
-+int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size)
-+{
-+	return bpf_link_create_verify(cmd);
-+}
-+
-+SEC("lsm.s/bpf")
-+int BPF_PROG(lsm_s_run, int cmd, union bpf_attr *attr, unsigned int size)
-+{
-+	return bpf_link_create_verify(cmd);
-+}
-+
-+SEC("fentry")
-+int BPF_PROG(fentry_run)
-+{
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.30.1 (Apple Git-130)
-
++			if (!feature && strict) {
++				fprintf(stderr, "Feature '%s' is not supported.  'pahole --supported_b=
+tf_features' shows the list of features supported.\n",
++					feature_list[i]);
+ 				exit(EXIT_FAILURE);
+ 			}
++			if (!feature && global_verbose)
++				fprintf(stdout, "Ignoring unsupported feature '%s'\n",
++					feature_list[i]);
++			if (feature)
++				enable_feature(feature);
+ 		}
+-		/* switch "default-off" features on, and "default-on" features
+-		 * off; i.e. negate the default value.
+-		 */
+-		if (match)
+-			*(btf_features[i].conf_value) =3D !btf_features[i].default_value;
+ 	}
+-	set_btf_features_defaults =3D true;
+ }
+=20
+ static void show_supported_btf_features(void)
 
