@@ -1,335 +1,126 @@
-Return-Path: <bpf+bounces-12421-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12422-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B00617CC3C7
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 14:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F0C187CC3D0
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 14:57:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2E191C20B71
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 12:56:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FF881C20AEC
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 12:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8128542BFD;
-	Tue, 17 Oct 2023 12:56:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AFBE42BF2;
+	Tue, 17 Oct 2023 12:57:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dinDgrVT"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 510D642BE9
-	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 12:56:20 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA6A51BE
-	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 05:56:14 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4S8v9h2Nyxz4f3lX2
-	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 20:56:08 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgB3BdVihC5lIwrSDA--.31244S6;
-	Tue, 17 Oct 2023 20:56:09 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hsin-Wei Hung <hsinweih@uci.edu>,
-	houtao1@huawei.com
-Subject: [PATCH bpf 2/2] selftests/bpf: Test race between map uref release and bpf timer init
-Date: Tue, 17 Oct 2023 20:57:17 +0800
-Message-Id: <20231017125717.241101-3-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20231017125717.241101-1-houtao@huaweicloud.com>
-References: <20231017125717.241101-1-houtao@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4519D41E34
+	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 12:57:51 +0000 (UTC)
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F703F0
+	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 05:57:49 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso9995759a12.3
+        for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 05:57:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697547468; x=1698152268; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=BoeNzOO9utnW9I1a0+lFfY2UvjEqeJjm/R9O0yeFilc=;
+        b=dinDgrVTmq/imggnUCd1TqNvFPlpVpL3/28gh1kCnOXywPGa+LlL9ZM+GVTMUn5ttd
+         ijXZpXMuwNsf019ApsXphI94xDexEV/hHll4nHhDk0iTEVX4HpvFxcRwPuPPzPZjBqIh
+         YsneYkS4SwqebTDrc3XtcoFHUckjoip3iuHR3BdThaMD7F52zJiO66QfCu8lwrwvO4vi
+         XGsZ6vpiFUS3bNvIUEeHBiCTnwNuURZLg750FHg1wYA4lZBN9fGD80aI9Q192npdd7Ca
+         JM8IoFAUlmk6oOsRJnQ7If5R08uLl8YhSr1V7pTJwX7iRS5ZFY2bZ1Rh6rgkSb3V3lLy
+         qCXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697547468; x=1698152268;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BoeNzOO9utnW9I1a0+lFfY2UvjEqeJjm/R9O0yeFilc=;
+        b=WF6mRUtQWh85s+58VTFfOKNDgOK4+Yc+MFZm3nviLe8QDIGLAL00nzKbaBAEvKVT/6
+         t/dhYn1FycWRzeO2tOPdXqq5jTkLMbR78Uj5wl3ZU+u8dRuAP4doXCMd7AtpvSyM2Ka9
+         iv219JgQ3O1aJOc1q6kvNpPubgcefySj+Rh5Q9xQfjGy1fx9+YtHwSvYYQll+PIj9fAj
+         gQ50zWM5zUXmFYFzQm1ncGL3lqkqF15AExMAJuPKtJxET6G2sq4fWCf6QpW/lhZZoSNu
+         EcHhhUQpD90Yy77aeSMmnYQzGwrrPpbBhFOOlLOA6lKshZhNHUPLqi2Bjelvb3PPERo1
+         XkUQ==
+X-Gm-Message-State: AOJu0Yw2NUE0c40v5hPSbvSIO7TTPHNJr04YU/fQjGu9nChx2/2neRmk
+	8gz3xZklFrBvpV32Ias79VA=
+X-Google-Smtp-Source: AGHT+IHfF4haZWqOGEMqYyVjYczdOJU5YF2Iesaf5XTIGUY0fUCk/4Qy8nPjeqzje95sg2DnRgxwRA==
+X-Received: by 2002:a05:6402:42d3:b0:53d:fffc:36ec with SMTP id i19-20020a05640242d300b0053dfffc36ecmr2059954edc.16.1697547467493;
+        Tue, 17 Oct 2023 05:57:47 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id ev12-20020a056402540c00b00533e915923asm1170246edb.49.2023.10.17.05.57.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 05:57:47 -0700 (PDT)
+Message-ID: <42b74a5e36fa013262138a33ba635afe7c15a085.camel@gmail.com>
+Subject: Re: [PATCH v2 dwarves 0/5] pahole, btf_encoder: support
+ --btf_features
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alan Maguire <alan.maguire@oracle.com>, acme@kernel.org, 
+	andrii.nakryiko@gmail.com
+Cc: jolsa@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev,  song@kernel.org, yhs@fb.com,
+ john.fastabend@gmail.com, kpsingh@kernel.org,  sdf@google.com,
+ haoluo@google.com, mykolal@fb.com, bpf@vger.kernel.org
+Date: Tue, 17 Oct 2023 15:57:45 +0300
+In-Reply-To: <20231013153359.88274-1-alan.maguire@oracle.com>
+References: <20231013153359.88274-1-alan.maguire@oracle.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgB3BdVihC5lIwrSDA--.31244S6
-X-Coremail-Antispam: 1UD129KBjvJXoW3AFW8Gw1kKF47Ar1kJF1kZrb_yoWxtF48pa
-	ySk345Gr48ZrsxGr48ta1UurWftF4kuF4UJrZYg34UZF1xWFnxJF1xKFyjyFW3CFWvvrWf
-	Zrs5tFWYyw4UZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	WxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
-	0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
-	JVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwI
-	xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
-	IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
-	6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UC9aPUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Hou Tao <houtao1@huawei.com>
+On Fri, 2023-10-13 at 16:33 +0100, Alan Maguire wrote:
+> Currently, the kernel uses pahole version checking as the way to
+> determine which BTF encoding features to request from pahole.  This
+> means that such features have to be tied to a specific version and
+> as new features are added, additional clauses in scripts/pahole-flags.sh
+> have to be added; for example
+>=20
+> if [ "${pahole_ver}" -ge "125" ]; then
+>         extra_paholeopt=3D"${extra_paholeopt} --skip_encoding_btf_inconsi=
+stent_proto --btf_gen_optimized"
+> fi
+>=20
+> To better future-proof this process, this series introduces a
+> single "btf_features" parameter that uses a comma-separated list
+> of encoding options.  This is helpful because
+>=20
+> - the semantics are simpler for the user; the list comprises the set of
+>   BTF features asked for, rather than having to specify a combination of
+>   --skip_encoding_btf_feature and --btf_gen_feature options; and
+> - any version of pahole that supports --btf_features can accept the
+>   option list; unknown options are silently ignored.  As a result, there
+>   would be no need to add additional version clauses beyond
+>=20
+> if [ "${pahole_ver}" -ge "126" ]; then
+>         extra_pahole_opt=3D"-j --lang_exclude=3Drust
+> --btf_features=3Dencode_force,var,float,decl_tag,type_tag,enum64,optimize=
+d,consistent"
+> fi
 
-Test race between the release of map ref and bpf_timer_init():
-1) create one thread to add array map with bpf_timer into array of
-   arrays map repeatedly.
-2) create another thread to call getpgid() and call bpf_timer_init()
-   in the attached bpf program repeatedly.
-3) synchronize these two threads through pthread barrier.
+Nitpick, could you please update the line above as below?
 
-It is a bit hard to trigger the kmemleak by only running the test. I
-managed to reproduce the kmemleak by injecting a delay between
-t->timer.function = bpf_timer_cb and timer->timer = t in
-bpf_timer_init().
-
-The following is the output of kmemleak after reproducing:
-
-unreferenced object 0xffff8881163d3780 (size 96):
-  comm "test_progs", pid 539, jiffies 4295358164 (age 23.276s)
-  hex dump (first 32 bytes):
-    80 37 3d 16 81 88 ff ff 00 00 00 00 00 00 00 00  .7=.............
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000bbc3f059>] __kmem_cache_alloc_node+0x3b1/0x4a0
-    [<00000000a24ddf4d>] __kmalloc_node+0x57/0x140
-    [<000000004d577dbf>] bpf_map_kmalloc_node+0x5f/0x180
-    [<00000000bd8428d3>] bpf_timer_init+0xf6/0x1b0
-    [<0000000086d87323>] 0xffffffffc000c94e
-    [<000000005a09e655>] trace_call_bpf+0xc5/0x1c0
-    [<0000000051ab837b>] kprobe_perf_func+0x51/0x260
-    [<000000000069bbd1>] kprobe_dispatcher+0x61/0x70
-    [<000000007dceb75b>] kprobe_ftrace_handler+0x168/0x240
-    [<00000000d8721bd7>] 0xffffffffc02010f7
-    [<00000000e885b809>] __x64_sys_getpgid+0x1/0x20
-    [<000000007be835d8>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../bpf/prog_tests/timer_init_race.c          | 138 ++++++++++++++++++
- .../selftests/bpf/progs/timer_init_race.c     |  56 +++++++
- 2 files changed, 194 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/timer_init_race.c
- create mode 100644 tools/testing/selftests/bpf/progs/timer_init_race.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/timer_init_race.c b/tools/testing/selftests/bpf/prog_tests/timer_init_race.c
-new file mode 100644
-index 000000000000..7bd57459e504
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/timer_init_race.c
-@@ -0,0 +1,138 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
-+#define _GNU_SOURCE
-+#include <unistd.h>
-+#include <sys/syscall.h>
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+#include "timer_init_race.skel.h"
-+
-+struct thread_ctx {
-+	struct bpf_map_create_opts opts;
-+	pthread_barrier_t barrier;
-+	int outer_map_fd;
-+	int start, abort;
-+	int loop, err;
-+};
-+
-+static int wait_for_start_or_abort(struct thread_ctx *ctx)
-+{
-+	while (!ctx->start && !ctx->abort)
-+		usleep(1);
-+	return ctx->abort ? -1 : 0;
-+}
-+
-+static void *close_map_fn(void *data)
-+{
-+	struct thread_ctx *ctx = data;
-+	int loop = ctx->loop, err = 0;
-+
-+	if (wait_for_start_or_abort(ctx) < 0)
-+		return NULL;
-+
-+	while (loop-- > 0) {
-+		int fd, zero = 0, i;
-+		volatile int s = 0;
-+
-+		fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, 4, sizeof(struct bpf_timer),
-+				    1, &ctx->opts);
-+		if (fd < 0) {
-+			err |= 1;
-+			pthread_barrier_wait(&ctx->barrier);
-+			continue;
-+		}
-+
-+		if (bpf_map_update_elem(ctx->outer_map_fd, &zero, &fd, 0) < 0)
-+			err |= 2;
-+
-+		pthread_barrier_wait(&ctx->barrier);
-+		/* let bpf_timer_init run first */
-+		for (i = 0; i < 5000; i++)
-+			s++;
-+		close(fd);
-+	}
-+
-+	ctx->err = err;
-+
-+	return NULL;
-+}
-+
-+static void *init_timer_fn(void *data)
-+{
-+	struct thread_ctx *ctx = data;
-+	int loop = ctx->loop;
-+
-+	if (wait_for_start_or_abort(ctx) < 0)
-+		return NULL;
-+
-+	while (loop-- > 0) {
-+		pthread_barrier_wait(&ctx->barrier);
-+		syscall(SYS_getpgid);
-+	}
-+
-+	return NULL;
-+}
-+
-+void test_timer_init_race(void)
-+{
-+	struct timer_init_race *skel;
-+	struct thread_ctx ctx;
-+	pthread_t tid[2];
-+	struct btf *btf;
-+	int err;
-+
-+	skel = timer_init_race__open();
-+	if (!ASSERT_OK_PTR(skel, "timer_init_race open"))
-+		return;
-+
-+	err = timer_init_race__load(skel);
-+	if (!ASSERT_EQ(err, 0, "timer_init_race load"))
-+		goto out;
-+
-+	memset(&ctx, 0, sizeof(ctx));
-+
-+	btf = bpf_object__btf(skel->obj);
-+	if (!ASSERT_OK_PTR(btf, "timer_init_race btf"))
-+		goto out;
-+
-+	LIBBPF_OPTS_RESET(ctx.opts);
-+	ctx.opts.btf_fd = bpf_object__btf_fd(skel->obj);
-+	if (!ASSERT_GE((int)ctx.opts.btf_fd, 0, "btf_fd"))
-+		goto out;
-+	ctx.opts.btf_key_type_id = btf__find_by_name(btf, "int");
-+	if (!ASSERT_GT(ctx.opts.btf_key_type_id, 0, "key_type_id"))
-+		goto out;
-+	ctx.opts.btf_value_type_id = btf__find_by_name_kind(btf, "inner_value", BTF_KIND_STRUCT);
-+	if (!ASSERT_GT(ctx.opts.btf_value_type_id, 0, "value_type_id"))
-+		goto out;
-+
-+	err = timer_init_race__attach(skel);
-+	if (!ASSERT_EQ(err, 0, "timer_init_race attach"))
-+		goto out;
-+
-+	skel->bss->tgid = getpid();
-+
-+	pthread_barrier_init(&ctx.barrier, NULL, 2);
-+	ctx.outer_map_fd = bpf_map__fd(skel->maps.outer_map);
-+	ctx.loop = 8;
-+
-+	err = pthread_create(&tid[0], NULL, close_map_fn, &ctx);
-+	if (!ASSERT_OK(err, "close_thread"))
-+		goto out;
-+
-+	err = pthread_create(&tid[1], NULL, init_timer_fn, &ctx);
-+	if (!ASSERT_OK(err, "init_thread")) {
-+		ctx.abort = 1;
-+		pthread_join(tid[0], NULL);
-+		goto out;
-+	}
-+
-+	ctx.start = 1;
-+	pthread_join(tid[0], NULL);
-+	pthread_join(tid[1], NULL);
-+
-+	ASSERT_EQ(ctx.err, 0, "error");
-+	ASSERT_EQ(skel->bss->cnt, 8, "cnt");
-+out:
-+	timer_init_race__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/timer_init_race.c b/tools/testing/selftests/bpf/progs/timer_init_race.c
-new file mode 100644
-index 000000000000..ba67cb178639
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/timer_init_race.c
-@@ -0,0 +1,56 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
-+#include <linux/bpf.h>
-+#include <time.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#include "bpf_misc.h"
-+
-+struct inner_value {
-+	struct bpf_timer timer;
-+};
-+
-+struct inner_map_type {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, int);
-+	__type(value, struct inner_value);
-+	__uint(max_entries, 1);
-+} inner_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-+	__type(key, int);
-+	__type(value, int);
-+	__uint(max_entries, 1);
-+	__array(values, struct inner_map_type);
-+} outer_map SEC(".maps") = {
-+	.values = {
-+		[0] = &inner_map,
-+	},
-+};
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int tgid = 0, cnt = 0;
-+
-+SEC("kprobe/" SYS_PREFIX "sys_getpgid")
-+int do_timer_init(void *ctx)
-+{
-+	struct inner_map_type *map;
-+	struct inner_value *value;
-+	int zero = 0;
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != tgid)
-+		return 0;
-+
-+	map = bpf_map_lookup_elem(&outer_map, &zero);
-+	if (!map)
-+		return 0;
-+	value = bpf_map_lookup_elem(map, &zero);
-+	if (!value)
-+		return 0;
-+	bpf_timer_init(&value->timer, map, CLOCK_MONOTONIC);
-+	cnt++;
-+
-+	return 0;
-+}
--- 
-2.29.2
-
+  --btf_features_strict=3Dencode_force,var,float,decl_tag,type_tag,enum64,o=
+ptimized_func,consistent_func
 
