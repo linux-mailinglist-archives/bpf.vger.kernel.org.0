@@ -1,297 +1,257 @@
-Return-Path: <bpf+bounces-12489-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12490-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A9EF7CD00A
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 00:31:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5C987CD011
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 00:40:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97FE61C209DB
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 22:31:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 297CF2812BA
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 22:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F1FF2D04D;
-	Tue, 17 Oct 2023 22:31:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16FA02D03A;
+	Tue, 17 Oct 2023 22:40:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RX1xwzxH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VVSQQAnT"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C38362F526
-	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 22:31:50 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2B89F;
-	Tue, 17 Oct 2023 15:31:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697581908; x=1729117908;
-  h=date:from:to:cc:subject:message-id;
-  bh=+PZzgswT11tTCY1wW5RYTAzOwYzHytdZcwrWclS/1Lw=;
-  b=RX1xwzxHHVS1Xqa2ZB8M59a/5KlE7AHXttUf18CmqCTmyk+znWkRsJOd
-   o2oIWpd1sqKovnh+W5RGy7vrsbGBBqn1YUiDyi2m6UXNbZN9Z20qcCw+f
-   lajK/uR3AFAVg+r/ZS9wRjj863HU8VvL/DqiWzMuqifIz8dU7y2E5Y2oF
-   d1Z/TneK4MK1cCf06oxFW06ecD1BpDfqbkSQCnix6xZG95IKn7PggKrv3
-   ZLya+3bVVeLExoolwrWvJswco1uC1IRQH3jb3315UzAoQqCsn4erx1I+q
-   jzMLWhVm42rH8T9ZGgTDSgXV3Rj2+ePxaSCEvXUOFEKDls9v7fLVlLzOq
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="376260810"
-X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="376260810"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 15:31:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="759988573"
-X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="759988573"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 17 Oct 2023 15:31:45 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qssbF-000ABQ-0H;
-	Tue, 17 Oct 2023 22:31:42 +0000
-Date: Wed, 18 Oct 2023 06:30:37 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Memory Management List <linux-mm@kvack.org>,
- amd-gfx@lists.freedesktop.org, bpf@vger.kernel.org,
- dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
- linux-arm-msm@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: [linux-next:master] BUILD REGRESSION
- 4d5ab2376ec576af173e5eac3887ed0b51bd8566
-Message-ID: <202310180627.U2wgFLJO-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DF817735
+	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 22:40:39 +0000 (UTC)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4CBCBA
+	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 15:40:37 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-507b96095abso2489201e87.3
+        for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 15:40:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697582436; x=1698187236; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+t2oBSmgVOkL1cEr7s5DILahgjgWDtbegCWKTV0JuvA=;
+        b=VVSQQAnTxQFJgPXKCzwR5dV4qbZ2a316w2DDNrt/0tyAgRJF1RbKtT7yjn7bGTUVg4
+         jTR/OLi5207HIBM/0XrP09iN1eJO8kXdA6oNJsfLGuDQ82Uij7UQbTERziBP6oe2B1e3
+         BkMRifrXwvtT4jW9sgm8p7E93925/Esqyu2KQHzyHGMBs3OwYV3zzLoUwip8Kmzd8pA0
+         HDiQBay/DKoeM6il0QHp4GbM66PYea6ESJdTzj+A1bJJjlKgBiOnZ3GPGQeN/GoqAxKm
+         9sA9te92E7iKesFCeMmsJPPUTWu9A9827ZcmzQB1keIcXys4USycueMiMHhYjMC7UaAe
+         isyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697582436; x=1698187236;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+t2oBSmgVOkL1cEr7s5DILahgjgWDtbegCWKTV0JuvA=;
+        b=d/Olv0ohu4/OJtZ946cbYctP3UmThWZq5r7zVrwM8bEJJ2HDAA+SHqPHvre2o9ImUL
+         p1+kTaYLNXRoarmoWkJp/ks6kg8o+FqHX2WG6/gwQ2E5td2YQ3Hs8hh/WHgbpiVw1SI1
+         7qXomDnfodV4WBsIFQ2nmHZTi1DUOHrmaNCRGtdTWGu7OeVvASv1FpafTitLDYJrtT4M
+         lOOa03pkbZxoPHxapLgLuz0lJQJSfLI6DdtkjgGk02iFfjEsni0vVAOPl0NEkNjePRab
+         XxCyxitioPaaMRplog91axM+TED+1ANtgKWMHDhGsJ6F1LkLlG2L6iTO7qzFUWBm8TGu
+         /14g==
+X-Gm-Message-State: AOJu0YxoqnIsP7HSe+QgPCR6OV31K8gJ6hWo7dEK6OYGqxL3//+0VSBy
+	mNsLleockH3XrrA3tiygbx2U5YBTpGwioZtDOIw=
+X-Google-Smtp-Source: AGHT+IHxmoM5IfXswvNuM01QDq2A/jkLjQQDErkDCN6UuiGs8195FS1h1bVsfXJZWzfLanwCYaAjEE4K1s4t9/ocpAw=
+X-Received: by 2002:a05:6512:1589:b0:503:28cb:c087 with SMTP id
+ bp9-20020a056512158900b0050328cbc087mr3406646lfb.29.1697582435690; Tue, 17
+ Oct 2023 15:40:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20231013182644.2346458-1-song@kernel.org> <20231013182644.2346458-2-song@kernel.org>
+ <CAEf4BzYbQzMU4T6KYt4UudXvZiPg4nQdQCxD9zqzoJLgqOE9bQ@mail.gmail.com>
+ <0ABF7860-A331-4161-9599-C781E9650283@fb.com> <CAEf4BzaNA18CpG-E-OUynEZuhGoQsieyzTVTkVOF9qB=j4u+yA@mail.gmail.com>
+ <5FBE8C27-0280-4434-BBF2-70344276F16D@fb.com>
+In-Reply-To: <5FBE8C27-0280-4434-BBF2-70344276F16D@fb.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 17 Oct 2023 15:40:24 -0700
+Message-ID: <CAEf4BzZXPMqLG95f5XXayvbTUOOJmzUKjyaurnjdMrt46S5d1Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/5] bpf: Add kfunc bpf_get_file_xattr
+To: Song Liu <songliubraving@meta.com>
+Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"fsverity@lists.linux.dev" <fsverity@lists.linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	Eric Biggers <ebiggers@kernel.org>, "tytso@mit.edu" <tytso@mit.edu>, 
+	"roberto.sassu@huaweicloud.com" <roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 4d5ab2376ec576af173e5eac3887ed0b51bd8566  Add linux-next specific files for 20231017
+On Tue, Oct 17, 2023 at 3:16=E2=80=AFPM Song Liu <songliubraving@meta.com> =
+wrote:
+>
+>
+>
+> > On Oct 17, 2023, at 2:52=E2=80=AFPM, Andrii Nakryiko <andrii.nakryiko@g=
+mail.com> wrote:
+> >
+> > On Tue, Oct 17, 2023 at 1:31=E2=80=AFPM Song Liu <songliubraving@meta.c=
+om> wrote:
+> >>
+> >>
+> >>
+> >>> On Oct 17, 2023, at 11:58=E2=80=AFAM, Andrii Nakryiko <andrii.nakryik=
+o@gmail.com> wrote:
+> >>>
+> >>> On Fri, Oct 13, 2023 at 11:29=E2=80=AFAM Song Liu <song@kernel.org> w=
+rote:
+> >>>>
+> >>>> This kfunc can be used to read xattr of a file.
+> >>>>
+> >>>> Since vfs_getxattr() requires null-terminated string as input "name"=
+, a new
+> >>>> helper bpf_dynptr_is_string() is added to check the input before cal=
+ling
+> >>>> vfs_getxattr().
+> >>>>
+> >>>> Signed-off-by: Song Liu <song@kernel.org>
+> >>>> ---
+> >>>> include/linux/bpf.h      | 12 +++++++++++
+> >>>> kernel/trace/bpf_trace.c | 44 ++++++++++++++++++++++++++++++++++++++=
+++
+> >>>> 2 files changed, 56 insertions(+)
+> >>>>
+> >>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> >>>> index 61bde4520f5c..f14fae45e13d 100644
+> >>>> --- a/include/linux/bpf.h
+> >>>> +++ b/include/linux/bpf.h
+> >>>> @@ -2472,6 +2472,13 @@ static inline bool has_current_bpf_ctx(void)
+> >>>>       return !!current->bpf_ctx;
+> >>>> }
+> >>>>
+> >>>> +static inline bool bpf_dynptr_is_string(struct bpf_dynptr_kern *ptr=
+)
+> >>>
+> >>> is_zero_terminated would be more accurate? though there is nothing
+> >>> really dynptr-specific here...
+> >>
+> >> is_zero_terminated sounds better.
+> >>
+> >>>
+> >>>> +{
+> >>>> +       char *str =3D ptr->data;
+> >>>> +
+> >>>> +       return str[__bpf_dynptr_size(ptr) - 1] =3D=3D '\0';
+> >>>> +}
+> >>>> +
+> >>>> void notrace bpf_prog_inc_misses_counter(struct bpf_prog *prog);
+> >>>>
+> >>>> void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, void *data,
+> >>>> @@ -2708,6 +2715,11 @@ static inline bool has_current_bpf_ctx(void)
+> >>>>       return false;
+> >>>> }
+> >>>>
+> >>>> +static inline bool bpf_dynptr_is_string(struct bpf_dynptr_kern *ptr=
+)
+> >>>> +{
+> >>>> +       return false;
+> >>>> +}
+> >>>> +
+> >>>> static inline void bpf_prog_inc_misses_counter(struct bpf_prog *prog=
+)
+> >>>> {
+> >>>> }
+> >>>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> >>>> index df697c74d519..946268574e05 100644
+> >>>> --- a/kernel/trace/bpf_trace.c
+> >>>> +++ b/kernel/trace/bpf_trace.c
+> >>>> @@ -24,6 +24,7 @@
+> >>>> #include <linux/key.h>
+> >>>> #include <linux/verification.h>
+> >>>> #include <linux/namei.h>
+> >>>> +#include <linux/fileattr.h>
+> >>>>
+> >>>> #include <net/bpf_sk_storage.h>
+> >>>>
+> >>>> @@ -1429,6 +1430,49 @@ static int __init bpf_key_sig_kfuncs_init(voi=
+d)
+> >>>> late_initcall(bpf_key_sig_kfuncs_init);
+> >>>> #endif /* CONFIG_KEYS */
+> >>>>
+> >>>> +/* filesystem kfuncs */
+> >>>> +__diag_push();
+> >>>> +__diag_ignore_all("-Wmissing-prototypes",
+> >>>> +                 "kfuncs which will be used in BPF programs");
+> >>>> +
+> >>>> +/**
+> >>>> + * bpf_get_file_xattr - get xattr of a file
+> >>>> + * @name_ptr: name of the xattr
+> >>>> + * @value_ptr: output buffer of the xattr value
+> >>>> + *
+> >>>> + * Get xattr *name_ptr* of *file* and store the output in *value_pt=
+r*.
+> >>>> + *
+> >>>> + * Return: 0 on success, a negative value on error.
+> >>>> + */
+> >>>> +__bpf_kfunc int bpf_get_file_xattr(struct file *file, struct bpf_dy=
+nptr_kern *name_ptr,
+> >>>> +                                  struct bpf_dynptr_kern *value_ptr=
+)
+> >>>> +{
+> >>>> +       if (!bpf_dynptr_is_string(name_ptr))
+> >>>> +               return -EINVAL;
+> >>>
+> >>> so dynptr can be invalid and name_ptr->data will be NULL, you should
+> >>> account for that
+> >>
+> >> We can add a NULL check (or size check) here.
+> >
+> > there must be some helper to check if dynptr is valid, let's use that
+> > instead of NULL checks
+>
+> Yeah, we can use bpf_dynptr_is_null().
+>
+> >
+> >>
+> >>>
+> >>> and there could also be special dynptrs that don't have contiguous
+> >>> memory region, so somehow you'd need to take care of that as well
+> >>
+> >> We can require the dynptr to be BPF_DYNPTR_TYPE_LOCAL. I don't think
+> >> we need this for dynptr of skb or xdp. Would this be sufficient?
+> >
+> > well, to keep thing simple we can have a simple internal helper API
+> > that will tell if it's safe to assume that dynptr memory is contiguous
+> > and it's ok to use dynptr memory. But still, you shouldn't access data
+> > pointer directly, there must be some helper for that. Please check. It
+> > has to take into account offset and stuff like that.
+>
+> Yeah, we can use bpf_dynptr_write(), which is a helper (not kfunc).
+>
+> >
+> > Also, and separately from that, we should think about providing a
+> > bpf_dynptr_slice()-like helper that will accept a fixed-sized
+> > temporary buffer and return pointer to either actual memory or copy
+> > non-contiguous memory into that buffer. That will make sure you can
+> > use any dynptr as a source of data, and only pay the price of memory
+> > copy in rare cases where it's necessary
+>
+> I don't quite follow here. Currently, we have
+>
+> bpf_dynptr_data()
+> bpf_dynptr_slice()
+> bpf_dynptr_slice_rdwr()
+> bpf_dynptr_write()
+>
+> AFAICT, they are sufficient to cover existing use cases (and the new
+> use case we are adding in this set). What's the new kfunc are you
+> thinking about?
 
-Error/Warning reports:
+I wasn't talking about kfuncs, but rather just internal helpers to be
+used by other kfuncs when working with dynptrs as input arguments.
 
-https://lore.kernel.org/oe-kbuild-all/202309212121.cul1pTRa-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202309212339.hxhBu2F1-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202310171612.nWyFirmz-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202310171657.KGpaQG47-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202310171905.azfrKoID-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202310172007.cCfBVBuG-lkp@intel.com
-
-Error/Warning: (recently discovered and may have been fixed)
-
-drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu13/smu_v13_0_6_ppt.c:286:52: warning: '%s' directive output may be truncated writing up to 29 bytes into a region of size 23 [-Wformat-truncation=]
-drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu14/smu_v14_0.c:72:52: warning: '%s' directive output may be truncated writing up to 29 bytes into a region of size 23 [-Wformat-truncation=]
-drivers/gpu/drm/msm/adreno/a6xx_gmu.c:1752:(.text+0x455c): undefined reference to `qmp_get'
-drivers/gpu/drm/msm/adreno/a6xx_gmu.c:994:(.text+0x369c): undefined reference to `qmp_send'
-kernel/bpf/helpers.c:1909:19: warning: no previous declaration for 'bpf_percpu_obj_new_impl' [-Wmissing-declarations]
-kernel/bpf/helpers.c:1945:18: warning: no previous declaration for 'bpf_percpu_obj_drop_impl' [-Wmissing-declarations]
-kernel/bpf/helpers.c:2480:18: warning: no previous declaration for 'bpf_throw' [-Wmissing-declarations]
-security/landlock/net.h:26:1: warning: 'landlock_append_net_rule' declared 'static' but never defined [-Wunused-function]
-security/landlock/net.h:26:1: warning: 'landlock_append_net_rule' used but never defined
-security/landlock/net.h:28:1: error: expected identifier or '('
-security/landlock/net.h:28:1: error: expected identifier or '(' before '{' token
-
-Unverified Error/Warning (likely false positive, please contact us if interested):
-
-Documentation/devicetree/bindings/mfd/qcom,tcsr.yaml:
-Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml:
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- arm-buildonly-randconfig-r006-20230322
-|   |-- drivers-gpu-drm-amd-amdgpu-..-pm-swsmu-smu13-smu_v13_0_6_ppt.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
-|   `-- drivers-gpu-drm-amd-amdgpu-..-pm-swsmu-smu14-smu_v14_0.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
-|-- arm64-randconfig-r003-20220728
-|   |-- drivers-gpu-drm-msm-adreno-a6xx_gmu.c:(.text):undefined-reference-to-qmp_get
-|   `-- drivers-gpu-drm-msm-adreno-a6xx_gmu.c:(.text):undefined-reference-to-qmp_send
-|-- i386-buildonly-randconfig-004-20231017
-|   |-- security-landlock-net.h:error:expected-identifier-or-(-before-token
-|   |-- security-landlock-net.h:warning:landlock_append_net_rule-declared-static-but-never-defined
-|   `-- security-landlock-net.h:warning:landlock_append_net_rule-used-but-never-defined
-|-- loongarch-randconfig-001-20231017
-|   |-- Documentation-devicetree-bindings-mfd-qcom-pm8xxx.yaml:
-|   `-- Documentation-devicetree-bindings-mfd-qcom-tcsr.yaml:
-|-- microblaze-randconfig-r004-20230514
-|   |-- security-landlock-net.h:error:expected-identifier-or-(-before-token
-|   |-- security-landlock-net.h:warning:landlock_append_net_rule-declared-static-but-never-defined
-|   `-- security-landlock-net.h:warning:landlock_append_net_rule-used-but-never-defined
-|-- openrisc-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-pm-swsmu-smu13-smu_v13_0_6_ppt.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
-|   `-- drivers-gpu-drm-amd-amdgpu-..-pm-swsmu-smu14-smu_v14_0.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
-|-- openrisc-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-pm-swsmu-smu13-smu_v13_0_6_ppt.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
-|   `-- drivers-gpu-drm-amd-amdgpu-..-pm-swsmu-smu14-smu_v14_0.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
-|-- powerpc-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-pm-swsmu-smu13-smu_v13_0_6_ppt.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
-|   `-- drivers-gpu-drm-amd-amdgpu-..-pm-swsmu-smu14-smu_v14_0.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
-|-- powerpc-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-pm-swsmu-smu13-smu_v13_0_6_ppt.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
-|   `-- drivers-gpu-drm-amd-amdgpu-..-pm-swsmu-smu14-smu_v14_0.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
-|-- riscv-randconfig-001-20231017
-|   |-- security-landlock-net.h:warning:landlock_append_net_rule-declared-static-but-never-defined
-|   `-- security-landlock-net.h:warning:landlock_append_net_rule-used-but-never-defined
-|-- riscv-randconfig-002-20231017
-|   |-- security-landlock-net.h:warning:landlock_append_net_rule-declared-static-but-never-defined
-|   `-- security-landlock-net.h:warning:landlock_append_net_rule-used-but-never-defined
-|-- x86_64-buildonly-randconfig-004-20231017
-|   |-- drivers-gpu-drm-amd-amdgpu-..-pm-swsmu-smu13-smu_v13_0_6_ppt.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
-|   `-- drivers-gpu-drm-amd-amdgpu-..-pm-swsmu-smu14-smu_v14_0.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
-|-- x86_64-randconfig-001-20231017
-|   |-- kernel-bpf-helpers.c:warning:no-previous-declaration-for-bpf_percpu_obj_drop_impl
-|   |-- kernel-bpf-helpers.c:warning:no-previous-declaration-for-bpf_percpu_obj_new_impl
-|   `-- kernel-bpf-helpers.c:warning:no-previous-declaration-for-bpf_throw
-`-- x86_64-randconfig-015-20231017
-    |-- drivers-gpu-drm-amd-amdgpu-..-pm-swsmu-smu13-smu_v13_0_6_ppt.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
-    `-- drivers-gpu-drm-amd-amdgpu-..-pm-swsmu-smu14-smu_v14_0.c:warning:s-directive-output-may-be-truncated-writing-up-to-bytes-into-a-region-of-size
-clang_recent_errors
-`-- hexagon-buildonly-randconfig-r005-20211202
-    `-- security-landlock-net.h:error:expected-identifier-or-(
-
-elapsed time: 1053m
-
-configs tested: 128
-configs skipped: 2
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231017   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20231017   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231017   gcc  
-i386         buildonly-randconfig-002-20231017   gcc  
-i386         buildonly-randconfig-003-20231017   gcc  
-i386         buildonly-randconfig-004-20231017   gcc  
-i386         buildonly-randconfig-005-20231017   gcc  
-i386         buildonly-randconfig-006-20231017   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231017   gcc  
-i386                  randconfig-002-20231017   gcc  
-i386                  randconfig-003-20231017   gcc  
-i386                  randconfig-004-20231017   gcc  
-i386                  randconfig-005-20231017   gcc  
-i386                  randconfig-006-20231017   gcc  
-i386                  randconfig-011-20231017   gcc  
-i386                  randconfig-012-20231017   gcc  
-i386                  randconfig-013-20231017   gcc  
-i386                  randconfig-014-20231017   gcc  
-i386                  randconfig-015-20231017   gcc  
-i386                  randconfig-016-20231017   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231017   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231017   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231017   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231017   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231017   gcc  
-x86_64       buildonly-randconfig-002-20231017   gcc  
-x86_64       buildonly-randconfig-003-20231017   gcc  
-x86_64       buildonly-randconfig-004-20231017   gcc  
-x86_64       buildonly-randconfig-005-20231017   gcc  
-x86_64       buildonly-randconfig-006-20231017   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231017   gcc  
-x86_64                randconfig-002-20231017   gcc  
-x86_64                randconfig-003-20231017   gcc  
-x86_64                randconfig-004-20231017   gcc  
-x86_64                randconfig-005-20231017   gcc  
-x86_64                randconfig-006-20231017   gcc  
-x86_64                randconfig-011-20231017   gcc  
-x86_64                randconfig-012-20231017   gcc  
-x86_64                randconfig-013-20231017   gcc  
-x86_64                randconfig-014-20231017   gcc  
-x86_64                randconfig-015-20231017   gcc  
-x86_64                randconfig-016-20231017   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> Thanks,
+> Song
+>
+>
 
