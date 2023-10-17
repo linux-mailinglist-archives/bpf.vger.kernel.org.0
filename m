@@ -1,240 +1,312 @@
-Return-Path: <bpf+bounces-12378-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12379-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5A157CBA1C
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 07:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E7577CBA1E
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 07:28:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56E521F22AB5
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 05:26:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4DB81F22A98
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 05:28:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F5D5C130;
-	Tue, 17 Oct 2023 05:26:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9659AC131;
+	Tue, 17 Oct 2023 05:28:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y3kdTExo"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KLfk6eMm"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B161BE58
-	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 05:26:44 +0000 (UTC)
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C3D1A2
-	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 22:26:38 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6c4b9e09528so3604494a34.3
-        for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 22:26:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697520398; x=1698125198; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rxldCq1oGvlr0lO08zzJrwJrqhPtlOadnmwmIrqUd5Y=;
-        b=Y3kdTExo2YrDMwEPu1JPKJ5w05zSxgb7tqwQWd0I//QZWPvxKDArPeNKsJx8h5BcZN
-         a2+iCO3IpOVQzuj5qs9jyzdwgAgJn28TUcHCxTSS7JSYuAnpRH4ATbt2iDVlmQ4vvsJs
-         MaKddtXNsyjuHIFognEJSJXqHaZtXsO5s7dzG+KUgxicmluPeJb92GCRm+i4O9iLoUzr
-         vciNkmc1YHV8WUHcOYf5iG0ekV6JfNG9lB3hh6Une9anwV0IY2w05VM5i/f2I9eVXOtG
-         YbC4t1rwLZs5ghC4fk4dtdl2duybHkuYVz1RJ/FwSfeQcBSVvvV6HTutP0v017iHdag5
-         dmPw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A84BE58
+	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 05:28:04 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB6BF1
+	for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 22:28:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1697520482;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hB1Ys3pyVtLC66WyqHQkYZDV0fWNI3xEcGaEBbTojWA=;
+	b=KLfk6eMmyflIiRyUd8bUhT9+zGfkDiP574rSOxeX1s6uY1WQGlv6Ny/DnpLkt/VOOxqJbZ
+	XY8ItdNIAwEcyQGCxP5434LnyiW7z91lqBxYur8Ao9/ZjyWkgcIYivpSltXDA1BAp1VF3L
+	aUp0Vd2x+gtuLrkCCGizRVN0XcsOfdE=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-539-B2Cg0DKUNU6ECmOL9hfU3Q-1; Tue, 17 Oct 2023 01:28:00 -0400
+X-MC-Unique: B2Cg0DKUNU6ECmOL9hfU3Q-1
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-5079fd97838so2973679e87.1
+        for <bpf@vger.kernel.org>; Mon, 16 Oct 2023 22:28:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697520398; x=1698125198;
+        d=1e100.net; s=20230601; t=1697520479; x=1698125279;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rxldCq1oGvlr0lO08zzJrwJrqhPtlOadnmwmIrqUd5Y=;
-        b=cXLaNzbEl/VveH2lKgV0B8AjEI0DicmjaziaYXvmeOrwTSFoQTaspbhpJ94yiBjdi1
-         Pqur1N8LIkTA3uOJyWtxpjSGCRRtiIOJ3xz4vRnUE0y/Ee+OK5pRtDzF8GlWvAUqNuNP
-         oKFhiKye5/8H/tmjU5LQIkpWim3vUEywiY5utmQ6EUhPIR9R2RH+0nmAlPAZpCvVKP3E
-         pFJfC/nNga5G/tPf3qMV+KLkcVmdm9PG7cYLZ7z66eNTwLnFuaO7IJXtDxaXSEriRZgj
-         1SEWXY+g8yE8ZJNcCMsaYcZcbZ8aDt4MLaYUFcBxK7LBscV1S7G+nlPhxp9I82wjFDWs
-         5gxQ==
-X-Gm-Message-State: AOJu0YyUBiuSDIj8xYx39Sq8JYg97Q7qjIkNpUeGgPCTo4Too13y5PMp
-	bhDPFUZGycIcK1RCoWIG2q04Kivm+wGq4/RKYPOOvKqUkEo=
-X-Google-Smtp-Source: AGHT+IEwUMdHyEU5/39oj9CHUCyWzev1ZVPfCtgb6/SK2Z1iZ6gAfchBj2XD0e0d7LQjHQ7IYjWpx8EEgHuwKb/HHOY=
-X-Received: by 2002:a05:6870:6c02:b0:1e9:c10e:401f with SMTP id
- na2-20020a0568706c0200b001e9c10e401fmr1550670oab.12.1697520397815; Mon, 16
- Oct 2023 22:26:37 -0700 (PDT)
+        bh=hB1Ys3pyVtLC66WyqHQkYZDV0fWNI3xEcGaEBbTojWA=;
+        b=i0fo5JTSZFipUw+hdAcJ29LxwYBf33XtiEwdN0T3H1NMm5MNbNY9J/NOp/DM5nzXsM
+         RQYJIbGyAt4idWgcU+T8e2SiUFGTpbOTBib8vpdqhq8Mu5RtU+x8QZQpIfibcK8FRw8s
+         slMy+eWhbIcIZX+/FG/5abqW+LZh+LJ4Ld0G2zGmGPM0+gq53ilpjO8MjHSkzM0JTbrw
+         PydiO1TLlQOHPHwlNppM6yXSAhF6CK0ALGEUbK5fg9BaPaillol5PSyUi90eXcaLlRkB
+         vXBQxL4KjeAEq91vjp81ucNe5E+EFAtFepbkqjcbOiSVV2hOsmQaAuMIJmu4xyMJwPpY
+         bXww==
+X-Gm-Message-State: AOJu0YzLzIwo88+nwkAD0xFG8tiKKnEEUbmDb1VBC3Vca1w2EUqgrOc3
+	BKyFp7PDV1OvWLKCcFvGhuoLmtzG0MHlsr2voHSpbkqzfFC9Tiufupc7YcR3OjrUR7zT+Hn97p+
+	Uxb53+aRH1nklwK/dTqizOdebe/d4guezb2drujc=
+X-Received: by 2002:a05:6512:3ba9:b0:507:9701:2700 with SMTP id g41-20020a0565123ba900b0050797012700mr1114157lfv.20.1697520478992;
+        Mon, 16 Oct 2023 22:27:58 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFvAfxdQ+kiLfQtT6f7u3IqD6TS5IKXJFBeQ799Eef64sPKZxV6ivtMPGYp4y2Xt9AEpnuEQAc3PEglkp45by8=
+X-Received: by 2002:a05:6512:3ba9:b0:507:9701:2700 with SMTP id
+ g41-20020a0565123ba900b0050797012700mr1114144lfv.20.1697520478648; Mon, 16
+ Oct 2023 22:27:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231016182840.4033346-1-andrii@kernel.org> <CAEf4BzZopGdv=cfQCryvaw_duK_BD1oFgTXXZ6w25X0xxXLWJw@mail.gmail.com>
- <CAEyhmHSHJgQrgtRZotmm3yQOSekjjZjqaHAF58iQeu0WYPNcYA@mail.gmail.com> <20231017040600.z3k5nqfpblt6zwhe@google.com>
-In-Reply-To: <20231017040600.z3k5nqfpblt6zwhe@google.com>
-From: Hengqi Chen <hengqi.chen@gmail.com>
-Date: Tue, 17 Oct 2023 13:26:26 +0800
-Message-ID: <CAEyhmHRyY6s50niYbJgstDVjPX7aMoOXQVhz1CaCvcpJt+Weqw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: don't assume SHT_GNU_verdef presence for
- SHT_GNU_versym section
-To: Fangrui Song <maskray@google.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org, 
-	kernel-team@meta.com, Liam Wisehart <liamwisehart@meta.com>
+References: <20231016120033.26933-1-xuanzhuo@linux.alibaba.com>
+ <CACGkMEs4u-4ch2UAK14hNfKeORjqMu4BX7=46OfaXpvxW+VT7w@mail.gmail.com>
+ <1697511725.2037013-1-xuanzhuo@linux.alibaba.com> <CACGkMEskfXDo+bnx5hbGU3JRwOgBRwOC-bYDdFYSmEO2jjgPnA@mail.gmail.com>
+ <1697512950.0813534-1-xuanzhuo@linux.alibaba.com> <CACGkMEtppjoX_WAM+vjzkMKaMQQ0iZL=C_xS4RObuoLbm0udUw@mail.gmail.com>
+In-Reply-To: <CACGkMEtppjoX_WAM+vjzkMKaMQQ0iZL=C_xS4RObuoLbm0udUw@mail.gmail.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Tue, 17 Oct 2023 13:27:47 +0800
+Message-ID: <CACGkMEvWAhH3uj2DEo=m7qWg3-pQjE-EtEBvTT8JXzqZ+RYEXQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v1 00/19] virtio-net: support AF_XDP zero copy
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Oct 17, 2023 at 12:06=E2=80=AFPM Fangrui Song <maskray@google.com> =
-wrote:
+On Tue, Oct 17, 2023 at 11:28=E2=80=AFAM Jason Wang <jasowang@redhat.com> w=
+rote:
 >
-> On 2023-10-17, Hengqi Chen wrote:
-> >+ Fangrui
->
-> Thanks for CCing me. I have spent countless hours studying symbol
-> versioning...
-> https://maskray.me/blog/2020-11-26-all-about-symbol-versioning
->
-> >On Tue, Oct 17, 2023 at 4:10=E2=80=AFAM Andrii Nakryiko
-> ><andrii.nakryiko@gmail.com> wrote:
-> >>
-> >> On Mon, Oct 16, 2023 at 11:28=E2=80=AFAM Andrii Nakryiko <andrii@kerne=
-l.org> wrote:
-> >> >
-> >> > Fix too eager assumption that SHT_GNU_verdef ELF section is going to=
- be
-> >> > present whenever binary has SHT_GNU_versym section. It seems like ei=
-ther
-> >> > SHT_GNU_verdef or SHT_GNU_verneed can be used, so failing on missing
-> >> > SHT_GNU_verdef actually breaks use cases in production.
-> >> >
-> >> > One specific reported issue, which was used to manually test this fi=
-x,
-> >> > was trying to attach to `readline` function in BASH binary.
-> >> >
-> >> > Cc: Hengqi Chen <hengqi.chen@gmail.com>
-> >> > Reported-by: Liam Wisehart <liamwisehart@meta.com>
-> >> > Fixes: bb7fa09399b9 ("libbpf: Support symbol versioning for uprobe")
-> >> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> >> > ---
-> >> >  tools/lib/bpf/elf.c | 16 ++++++++++------
-> >> >  1 file changed, 10 insertions(+), 6 deletions(-)
-> >> >
-> >>
-> >> Hengqi,
-> >>
-> >> Please take a look when you get a chance. I'm not very familiar with
-> >> symbol versioning details, but it seems like we made a too strong
-> >> assumption about verdef always being present. In bash's case we have
-> >> VERNEED, but not VERDEF, and that seems to be ok:
-> >>
+> On Tue, Oct 17, 2023 at 11:26=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibab=
+a.com> wrote:
 > >
-> >Yes, both VERNEED and VERDEF are optional.
->
-> Yes.
->
-> The .gnu.version table assigns a version index to each .dynsym entry. An
-> entry (version ID) corresponds to a Index: entry in .gnu.version_d or a
-> Version: entry in .gnu.version_r.
->
-> >>   [ 8] .gnu.version      VERSYM          000000000001c9ca 01c9ca
-> >> 00130c 02   A  6   0  2
-> >>   [ 9] .gnu.version_r    VERNEED         000000000001dcd8 01dcd8
-> >> 0000b0 00   A  7   2  8
-> >>
-> >> So perhaps we need to complete the implementation to take VERNEED into
-> >> account. And also let's add a test that can catch an issue like this
-> >> going forward. Thanks!
-> >>
+> > On Tue, 17 Oct 2023 11:20:41 +0800, Jason Wang <jasowang@redhat.com> wr=
+ote:
+> > > On Tue, Oct 17, 2023 at 11:11=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.al=
+ibaba.com> wrote:
+> > > >
+> > > > On Tue, 17 Oct 2023 10:53:44 +0800, Jason Wang <jasowang@redhat.com=
+> wrote:
+> > > > > On Mon, Oct 16, 2023 at 8:00=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux=
+.alibaba.com> wrote:
+> > > > > >
+> > > > > > ## AF_XDP
+> > > > > >
+> > > > > > XDP socket(AF_XDP) is an excellent bypass kernel network framew=
+ork. The zero
+> > > > > > copy feature of xsk (XDP socket) needs to be supported by the d=
+river. The
+> > > > > > performance of zero copy is very good. mlx5 and intel ixgbe alr=
+eady support
+> > > > > > this feature, This patch set allows virtio-net to support xsk's=
+ zerocopy xmit
+> > > > > > feature.
+> > > > > >
+> > > > > > At present, we have completed some preparation:
+> > > > > >
+> > > > > > 1. vq-reset (virtio spec and kernel code)
+> > > > > > 2. virtio-core premapped dma
+> > > > > > 3. virtio-net xdp refactor
+> > > > > >
+> > > > > > So it is time for Virtio-Net to complete the support for the XD=
+P Socket
+> > > > > > Zerocopy.
+> > > > > >
+> > > > > > Virtio-net can not increase the queue num at will, so xsk share=
+s the queue with
+> > > > > > kernel.
+> > > > > >
+> > > > > > On the other hand, Virtio-Net does not support generate interru=
+pt from driver
+> > > > > > manually, so when we wakeup tx xmit, we used some tips. If the =
+CPU run by TX
+> > > > > > NAPI last time is other CPUs, use IPI to wake up NAPI on the re=
+mote CPU. If it
+> > > > > > is also the local CPU, then we wake up napi directly.
+> > > > > >
+> > > > > > This patch set includes some refactor to the virtio-net to let =
+that to support
+> > > > > > AF_XDP.
+> > > > > >
+> > > > > > ## performance
+> > > > > >
+> > > > > > ENV: Qemu with vhost-user(polling mode).
+> > > > > >
+> > > > > > Sockperf: https://github.com/Mellanox/sockperf
+> > > > > > I use this tool to send udp packet by kernel syscall.
+> > > > > >
+> > > > > > xmit command: sockperf tp -i 10.0.3.1 -t 1000
+> > > > > >
+> > > > > > I write a tool that sends udp packets or recvs udp packets by A=
+F_XDP.
+> > > > > >
+> > > > > >                   | Guest APP CPU |Guest Softirq CPU | UDP PPS
+> > > > > > ------------------|---------------|------------------|---------=
+---
+> > > > > > xmit by syscall   |   100%        |                  |   676,91=
+5
+> > > > > > xmit by xsk       |   59.1%       |   100%           | 5,447,16=
+8
+> > > > > > recv by syscall   |   60%         |   100%           |   932,28=
+8
+> > > > > > recv by xsk       |   35.7%       |   100%           | 3,343,16=
+8
+> > > > >
+> > > > > Any chance we can get a testpmd result (which I guess should be b=
+etter
+> > > > > than PPS above)?
+> > > >
+> > > > Do you mean testpmd + DPDK + AF_XDP?
+> > >
+> > > Yes.
+> > >
+> > > >
+> > > > Yes. This is probably better because my tool does more work. That i=
+s not a
+> > > > complete testing tool used by our business.
+> > >
+> > > Probably, but it would be appealing for others. Especially considerin=
+g
+> > > DPDK supports AF_XDP PMD now.
 > >
-> >AFAIK, VERNEED contains version requirements for shared libraries.
->
-> Yes.
->
-> >> > diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-> >> > index 2a158e8a8b7c..2a62bf411bb3 100644
-> >> > --- a/tools/lib/bpf/elf.c
-> >> > +++ b/tools/lib/bpf/elf.c
-> >> > @@ -141,14 +141,15 @@ static int elf_sym_iter_new(struct elf_sym_ite=
-r *iter,
-> >> >         iter->versyms =3D elf_getdata(scn, 0);
-> >> >
-> >> >         scn =3D elf_find_next_scn_by_type(elf, SHT_GNU_verdef, NULL)=
-;
-> >> > -       if (!scn) {
-> >> > -               pr_debug("elf: failed to find verdef ELF sections in=
- '%s'\n", binary_path);
-> >> > -               return -ENOENT;
-> >> > -       }
-> >> > -       if (!gelf_getshdr(scn, &sh))
-> >> > +       if (!scn)
-> >> > +               return 0;
-> >> > +
-> >> > +       iter->verdefs =3D elf_getdata(scn, 0);
-> >> > +       if (!iter->verdefs || !gelf_getshdr(scn, &sh)) {
-> >> > +               pr_warn("elf: failed to get verdef ELF section in '%=
-s'\n", binary_path);
-> >> >                 return -EINVAL;
-> >> > +       }
-> >> >         iter->verdef_strtabidx =3D sh.sh_link;
-> >> > -       iter->verdefs =3D elf_getdata(scn, 0);
-> >> >
-> >> >         return 0;
-> >> >  }
-> >> > @@ -199,6 +200,9 @@ static const char *elf_get_vername(struct elf_sy=
-m_iter *iter, int ver)
-> >> >         GElf_Verdef verdef;
-> >> >         int offset;
-> >> >
-> >> > +       if (!iter->verdefs)
-> >> > +               return NULL;
-> >> > +
-> >> >         offset =3D 0;
-> >> >         while (gelf_getverdef(iter->verdefs, offset, &verdef)) {
-> >> >                 if (verdef.vd_ndx !=3D ver) {
-> >> > --
-> >> > 2.34.1
-> >> >
+> > OK.
 > >
-> >Anyway, this change look good to me, so
+> > Let me try.
 > >
-> >Acked-by: Hengqi Chen <hengqi.chen@gmail.com>
+> > But could you start to review firstly?
 >
-> Looks good to me, too.
->
-> Review Reviewed-by: Fangrui Song <maskray@google.com>
->
-> ---
->
-> I have a question about a previous patch
-> "libbpf: Support symbol versioning for uprobe"
-> (commit bb7fa09399b937cdc4432ac99f9748f5a7f69389 in next/master).
->
-> In the function 'symbol_match',
->
->         /* If user specifies symbol version, for dynamic symbols,
->          * get version name from ELF verdef section for comparison.
->          */
->         if (sh_type =3D=3D SHT_DYNSYM) {
->                 ver_name =3D elf_get_vername(iter, sym->ver);
->                 if (!ver_name)
->                         return false;
->                 return strcmp(ver_name, lib_ver) =3D=3D 0;
->         }
->
-> elf_get_vername only checks verdef, not verneed. Is this an issue?
-> I am not familiar with tools/lib/bpf or how it is used for uprobe.
->
->
+> Yes, it's in my todo list.
 
-We are dealing with symbols defined in an ELF object,  not the shared libra=
-ries
-it refers to. So I guess we don't need to handle verneed.
+Speaking too fast, I think if it doesn't take too long time, I would
+wait for the result first as netdim series. One reason is that I
+remember claims to be only 10% to 20% loss comparing to wire speed, so
+I'd expect it should be much faster. I vaguely remember, even a vhost
+can gives us more than 3M PPS if we disable SMAP, so the numbers here
+are not as impressive as expected.
 
-> Is the function intended to match linker behavior?
-> Then the rules described at https://maskray.me/blog/2020-11-26-all-about-=
-symbol-versioning#linker-behavior
-> apply.
-> I think the current rules are quite good.
+Thanks
+
 >
+> >
+> >
+> > >
+> > > >
+> > > > What I noticed is that the hotspot is the driver writing virtio des=
+c. Because
+> > > > the device is in busy mode. So there is race between driver and dev=
+ice.
+> > > > So I modified the virtio core and lazily updated avail idx. Then pp=
+s can reach
+> > > > 10,000,000.
+> > >
+> > > Care to post a draft for this?
+> >
+> > YES, I is thinking for this.
+> > But maybe that is just work for split. The packed mode has some trouble=
+s.
 >
-> >--
-> >Hengqi
+> Ok.
+>
+> Thanks
+>
+> >
+> > Thanks.
+> >
+> > >
+> > > Thanks
+> > >
+> > > >
+> > > > Thanks.
+> > > >
+> > > > >
+> > > > > Thanks
+> > > > >
+> > > > > >
+> > > > > > ## maintain
+> > > > > >
+> > > > > > I am currently a reviewer for virtio-net. I commit to maintain =
+AF_XDP support in
+> > > > > > virtio-net.
+> > > > > >
+> > > > > > Please review.
+> > > > > >
+> > > > > > Thanks.
+> > > > > >
+> > > > > > v1:
+> > > > > >     1. remove two virtio commits. Push this patchset to net-nex=
+t
+> > > > > >     2. squash "virtio_net: virtnet_poll_tx support rescheduled"=
+ to xsk: support tx
+> > > > > >     3. fix some warnings
+> > > > > >
+> > > > > > Xuan Zhuo (19):
+> > > > > >   virtio_net: rename free_old_xmit_skbs to free_old_xmit
+> > > > > >   virtio_net: unify the code for recycling the xmit ptr
+> > > > > >   virtio_net: independent directory
+> > > > > >   virtio_net: move to virtio_net.h
+> > > > > >   virtio_net: add prefix virtnet to all struct/api inside virti=
+o_net.h
+> > > > > >   virtio_net: separate virtnet_rx_resize()
+> > > > > >   virtio_net: separate virtnet_tx_resize()
+> > > > > >   virtio_net: sq support premapped mode
+> > > > > >   virtio_net: xsk: bind/unbind xsk
+> > > > > >   virtio_net: xsk: prevent disable tx napi
+> > > > > >   virtio_net: xsk: tx: support tx
+> > > > > >   virtio_net: xsk: tx: support wakeup
+> > > > > >   virtio_net: xsk: tx: virtnet_free_old_xmit() distinguishes xs=
+k buffer
+> > > > > >   virtio_net: xsk: tx: virtnet_sq_free_unused_buf() check xsk b=
+uffer
+> > > > > >   virtio_net: xsk: rx: introduce add_recvbuf_xsk()
+> > > > > >   virtio_net: xsk: rx: introduce receive_xsk() to recv xsk buff=
+er
+> > > > > >   virtio_net: xsk: rx: virtnet_rq_free_unused_buf() check xsk b=
+uffer
+> > > > > >   virtio_net: update tx timeout record
+> > > > > >   virtio_net: xdp_features add NETDEV_XDP_ACT_XSK_ZEROCOPY
+> > > > > >
+> > > > > >  MAINTAINERS                                 |   2 +-
+> > > > > >  drivers/net/Kconfig                         |   8 +-
+> > > > > >  drivers/net/Makefile                        |   2 +-
+> > > > > >  drivers/net/virtio/Kconfig                  |  13 +
+> > > > > >  drivers/net/virtio/Makefile                 |   8 +
+> > > > > >  drivers/net/{virtio_net.c =3D> virtio/main.c} | 652 +++++++++-=
+----------
+> > > > > >  drivers/net/virtio/virtio_net.h             | 359 +++++++++++
+> > > > > >  drivers/net/virtio/xsk.c                    | 545 ++++++++++++=
+++++
+> > > > > >  drivers/net/virtio/xsk.h                    |  32 +
+> > > > > >  9 files changed, 1247 insertions(+), 374 deletions(-)
+> > > > > >  create mode 100644 drivers/net/virtio/Kconfig
+> > > > > >  create mode 100644 drivers/net/virtio/Makefile
+> > > > > >  rename drivers/net/{virtio_net.c =3D> virtio/main.c} (91%)
+> > > > > >  create mode 100644 drivers/net/virtio/virtio_net.h
+> > > > > >  create mode 100644 drivers/net/virtio/xsk.c
+> > > > > >  create mode 100644 drivers/net/virtio/xsk.h
+> > > > > >
+> > > > > > --
+> > > > > > 2.32.0.3.g01195cf9f
+> > > > > >
+> > > > >
+> > > >
+> > >
+> >
+
 
