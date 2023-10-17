@@ -1,256 +1,239 @@
-Return-Path: <bpf+bounces-12402-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12404-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F44D7CC2BD
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 14:15:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98B977CC2CA
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 14:17:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1260C28184F
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 12:15:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA797B20AC2
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 12:17:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6192C41E5B;
-	Tue, 17 Oct 2023 12:15:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F9A541E5A;
+	Tue, 17 Oct 2023 12:17:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ITpAt+AJ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N24OxsQz"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD0741746;
-	Tue, 17 Oct 2023 12:15:48 +0000 (UTC)
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F52A6EAF;
-	Tue, 17 Oct 2023 05:15:45 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-533d31a8523so9525473a12.1;
-        Tue, 17 Oct 2023 05:15:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697544944; x=1698149744; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gz2J8/viNOWHCJxpoa1uLouYnvMF+ug9wHlLJn4++E0=;
-        b=ITpAt+AJeEWfqNsLcBu3siWdj9LRqdj1XJ+s0ecp5OhkfxbpnH/GDh+X9LMvefy0Fk
-         xXo6M/mj02SzJs1lDTzHktdozm8aHVPUbGYYRQ0TxASv6x69asbwJpIsABLRzj+Kepim
-         EwPwc2ZOrMkfACRtw8M2iNuq/zmkznh9GVuNpxRQvff0stYFfieb+fW2BNXS5Xen4yQt
-         F+Pb+nBtytpLpkIuwvBae10Vkba9cUvahb8gsGNFNtTmoA65Q6lVxnEamj+Z68m0CDBj
-         B9iK0G1BzPev/CQOOjy9QR0cmVE0j5ufBk1FIDyK55+GfbS2Z9JA+4y7QoKW7s0vErWK
-         K3VA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E6141946A
+	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 12:17:12 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 586321A6
+	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 05:17:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1697545029;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AOG8Qdzj+S+0QmAirIeqO8mwxiboEVQPS3M71m1d9BA=;
+	b=N24OxsQz8eM3mudSCITCVhga1Hmtb7jSUQCcDwut5Q5QoeSFe/kRKIEkwsHWA0Jir/M5yq
+	MwV6qPyhopyRbaBA5COQDSCuu7rLWax83iwFppbaXur0yAKT357c4cAxSm0pOWKQYe62uQ
+	Ce0SXdXLxSTQwebApIPt+X2/z6mEQyY=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-198-BqcmciNzPfyqVy3q5HhKjg-1; Tue, 17 Oct 2023 08:17:07 -0400
+X-MC-Unique: BqcmciNzPfyqVy3q5HhKjg-1
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6c4ecdd6dc9so6638474a34.1
+        for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 05:17:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697544944; x=1698149744;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gz2J8/viNOWHCJxpoa1uLouYnvMF+ug9wHlLJn4++E0=;
-        b=e+R3nnR33KFBoKhZN6TqqAmvVeuLz3J6eOGuDVEQokZZTCRQEoUoaPWdJhpZgR3+Ow
-         ID03V4VT2vUP32JjSvSxIDzHZ737hNtjVSNh/Z9es2W/OblQ0XV4APr/W3quhvrvzi8G
-         3/lEkhTaXFYLPSBvJIudoWicU3hsUKHlexHaC0WLSx+Jw/eY05oL15LR2FM6BnXZCTLU
-         kDAsqNZ/WqxkeQgcicX/g5yJ7F9s8iDwjBsTNfKISfm15tzDq7BZPRNCdcq5Hx2eKym6
-         nuvvhllF0WmSBNNKXwzvJmwo1GEbUT/cNEip0MsS3qwRv6Zl7MF2VxEI5G7VtIkIeIIi
-         T+0Q==
-X-Gm-Message-State: AOJu0YyINtuxlWcq8G7uEu+z2Qs98byklivQ2IAtCFvDaYvHlLBXl2jh
-	rSoU2zdTlunWhSMHda3bJHg=
-X-Google-Smtp-Source: AGHT+IHeTgAalkUR85YjdP6gbU+30Mf3B0a2wbI0ZavZKPX6VdX8e8bXVlK583OP74/vsoFzuWre9A==
-X-Received: by 2002:a05:6402:510d:b0:53d:e8a7:57a6 with SMTP id m13-20020a056402510d00b0053de8a757a6mr1716689edd.34.1697544943477;
-        Tue, 17 Oct 2023 05:15:43 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id i27-20020a50d75b000000b0053e3d8f1d9fsm1119801edj.67.2023.10.17.05.15.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 05:15:43 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 17 Oct 2023 14:15:40 +0200
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Benno Lossin <benno.lossin@proton.me>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>, Gary Guo <gary@garyguo.net>,
-	Hao Luo <haoluo@google.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>, Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
-	rust-for-linux@vger.kernel.org
-Subject: Re: [PATCH 2/4] kbuild: avoid too many execution of
- scripts/pahole-flags.sh
-Message-ID: <ZS567HeKDesxBYWh@krava>
-References: <20231017103742.130927-1-masahiroy@kernel.org>
- <20231017103742.130927-2-masahiroy@kernel.org>
+        d=1e100.net; s=20230601; t=1697545027; x=1698149827;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AOG8Qdzj+S+0QmAirIeqO8mwxiboEVQPS3M71m1d9BA=;
+        b=MIkxFCNrDyr+3dpdt7OdDQEVvzVy+5itMV/qQRt+yQ7NXtlX3PEEQ2Admeqgu5DRrv
+         RxiJ2zwC0GcbzFooNMHGxPFMhs2OrTpqentg4pq6HQkVgtXsnnfXcw+V03/6LuQFn/et
+         wH+26mtl7HoYDRw5B+tLY8ZkXJy4j+wXIISR9Ng3CrUiG+q4xil0oA/WkiK375vKrwZM
+         P4Vb/Tcf/UowiwwiBmPKPPVFF4GhbdPu5PFPsyJvITpbQBilkmZLJcrDAz/x11qZGlRB
+         R1/1/6fCaVNNakTXascWwNI+Pa0VrevBKs9eFz7VYSkc8WZ8xBncOO3bEDwSWLWtSudi
+         l4Og==
+X-Gm-Message-State: AOJu0YzXj3Z4LnGuojBehoTe+Fc9qcu8ciLfVBzBdGt9nPKKkAs9Verm
+	c7EbjHbAjEowKHq/bhrRspwPXTkMtstyWRAmmEHgxKSptHoR3GiC6A8niXh4XcyBSB8oVrhCYFH
+	XEXYUEXQSX7MvMuyH8IiLAOVOjBPM
+X-Received: by 2002:a05:6830:314a:b0:6b8:9932:b8ad with SMTP id c10-20020a056830314a00b006b89932b8admr2513981ots.1.1697545026960;
+        Tue, 17 Oct 2023 05:17:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IETGbP4wUEB2KpcTN9I/djW9UHbD+A95G1tubGY2GQm/mzZcpbB9Jy6du5FqPOIv59jKCJLigNpqLGuzJweEvw=
+X-Received: by 2002:a05:6830:314a:b0:6b8:9932:b8ad with SMTP id
+ c10-20020a056830314a00b006b89932b8admr2513967ots.1.1697545026712; Tue, 17 Oct
+ 2023 05:17:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231017103742.130927-2-masahiroy@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+References: <87jzrrwptf.fsf@toke.dk> <CAEf4BzaC3ZohtcRhKQRCjdiou3=KcfDvRnF6RN55BTZx+jNqhg@mail.gmail.com>
+ <87sf6auzok.fsf@toke.dk> <CAEf4BzaAjisHpVikUNb5sQDdQwNheNJRojoauQvAPppMQJhK9g@mail.gmail.com>
+ <87il75v74m.fsf@toke.dk>
+In-Reply-To: <87il75v74m.fsf@toke.dk>
+From: Mohamed Mahmoud <mmahmoud@redhat.com>
+Date: Tue, 17 Oct 2023 08:16:55 -0400
+Message-ID: <CAP6g7JL-tPZgtKy-+io0L03D4201saqKT5FUBMC5Ph+uYnfu5Q@mail.gmail.com>
+Subject: Re: Hitting verifier backtracking bug on 6.5.5 kernel
+To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Oct 17, 2023 at 07:37:40PM +0900, Masahiro Yamada wrote:
-> scripts/pahole-flags.sh is executed so many times.
-> 
-> You can check how many times it is invoked during the build, as follows:
-> 
->   $ cat <<EOF >> scripts/pahole-flags.sh
->   > echo "scripts/pahole-flags.sh was executed" >&2
->   > EOF
-> 
->   $ make -s
->   scripts/pahole-flags.sh was executed
->   scripts/pahole-flags.sh was executed
->   scripts/pahole-flags.sh was executed
->   scripts/pahole-flags.sh was executed
->   scripts/pahole-flags.sh was executed
->     [ lots of repeated lines suppressed... ]
-> 
-> This scripts is exectuted more than 20 times during the kernel build
-> because PAHOLE_FLAGS is a recursively expanded variable and exported
-> to sub-processes.
-> 
-> With the GNU Make >= 4.4, it is executed more than 60 times because
-> exported variables are also passed to other $(shell ) invocations.
-> Without careful coding, it is known to cause an exponential fork
-> explosion. [1]
+Any idea why the same verification errors are not seen when the
+program is attached with bpftool ?
 
-nice :-\
+Thanks!
+Mohamed
 
-> 
-> The use of $(shell ) in an exported recursive variable is likely wrong
-> because $(shell ) is always evaluated due to the 'export' keyword, and
-> the evaluation can occur multiple times by the nature of recursive
-> variables.
-> 
-> Convert the shell script to a Makefile, which is included only when
-> CONFIG_DEBUG_INFO_BTF=y.
 
-looks good.. could you please resend this patch with bpf-next in subject
-so CI tests would trigger for it?
+On Tue, Oct 17, 2023 at 7:08=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen <t=
+oke@redhat.com> wrote:
+>
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+> > On Mon, Oct 16, 2023 at 12:37=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgens=
+en <toke@redhat.com> wrote:
+> >>
+> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> >>
+> >> > On Thu, Oct 12, 2023 at 1:25=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rge=
+nsen <toke@redhat.com> wrote:
+> >> >>
+> >> >> Hi Andrii
+> >> >>
+> >> >> Mohamed ran into what appears to be a verifier bug related to your
+> >> >> commit:
+> >> >>
+> >> >> fde2a3882bd0 ("bpf: support precision propagation in the presence o=
+f subprogs")
+> >> >>
+> >> >> So I figured you'd be the person to ask about this :)
+> >> >>
+> >> >> The issue appears on a vanilla 6.5 kernel (on both 6.5.6 on Fedora =
+38,
+> >> >> and 6.5.5 on my Arch machine):
+> >> >>
+> >> >> INFO[0000] Verifier error: load program: bad address:
+> >> >>         1861: frame2: R1_w=3Dfp-160 R2_w=3Dpkt_end(off=3D0,imm=3D0)=
+ R3=3Dscalar(umin=3D17,umax=3D255,var_off=3D(0x0; 0xff)) R4_w=3Dfp-96 R6_w=
+=3Dfp-96 R7_w=3Dpkt(off=3D34,r=3D34,imm=3D0) R10=3Dfp0
+> >> >>         ; switch (protocol) {
+> >> >>         1861: (15) if r3 =3D=3D 0x11 goto pc+22 1884: frame2: R1_w=
+=3Dfp-160 R2_w=3Dpkt_end(off=3D0,imm=3D0) R3=3D17 R4_w=3Dfp-96 R6_w=3Dfp-96=
+ R7_w=3Dpkt(off=3D34,r=3D34,imm=3D0) R10=3Dfp0
+> >> >>         ; if ((void *)udp + sizeof(*udp) <=3D data_end) {
+> >> >>         1884: (bf) r3 =3D r7                    ; frame2: R3_w=3Dpk=
+t(off=3D34,r=3D34,imm=3D0) R7_w=3Dpkt(off=3D34,r=3D34,imm=3D0)
+> >> >>         1885: (07) r3 +=3D 8                    ; frame2: R3_w=3Dpk=
+t(off=3D42,r=3D34,imm=3D0)
+> >> >>         ; if ((void *)udp + sizeof(*udp) <=3D data_end) {
+> >> >>         1886: (2d) if r3 > r2 goto pc+23      ; frame2: R2_w=3Dpkt_=
+end(off=3D0,imm=3D0) R3_w=3Dpkt(off=3D42,r=3D42,imm=3D0)
+> >> >>         ; id->src_port =3D bpf_ntohs(udp->source);
+> >> >>         1887: (69) r2 =3D *(u16 *)(r7 +0)       ; frame2: R2_w=3Dsc=
+alar(umax=3D65535,var_off=3D(0x0; 0xffff)) R7_w=3Dpkt(off=3D34,r=3D42,imm=
+=3D0)
+> >> >>         1888: (bf) r3 =3D r2                    ; frame2: R2_w=3Dsc=
+alar(id=3D103,umax=3D65535,var_off=3D(0x0; 0xffff)) R3_w=3Dscalar(id=3D103,=
+umax=3D65535,var_off=3D(0x0; 0xffff))
+> >> >>         1889: (dc) r3 =3D be16 r3               ; frame2: R3_w=3Dsc=
+alar()
+> >> >>         ; id->src_port =3D bpf_ntohs(udp->source);
+> >> >>         1890: (73) *(u8 *)(r1 +47) =3D r3       ; frame2: R1_w=3Dfp=
+-160 R3_w=3Dscalar()
+> >> >>         ; id->src_port =3D bpf_ntohs(udp->source);
+> >> >>         1891: (dc) r2 =3D be64 r2               ; frame2: R2_w=3Dsc=
+alar()
+> >> >>         ; id->src_port =3D bpf_ntohs(udp->source);
+> >> >>         1892: (77) r2 >>=3D 56                  ; frame2: R2_w=3Dsc=
+alar(umax=3D255,var_off=3D(0x0; 0xff))
+> >> >>         1893: (73) *(u8 *)(r1 +48) =3D r2
+> >> >>         BUG regs 1
+> >> >>         processed 5121 insns (limit 1000000) max_states_per_insn 4 =
+total_states 92 peak_states 90 mark_read 20
+> >> >>         (truncated)  component=3Debpf.FlowFetcher
+> >> >>
+> >> >> Dmesg says:
+> >> >>
+> >> >> [252431.093126] verifier backtracking bug
+> >> >> [252431.093129] WARNING: CPU: 3 PID: 302245 at kernel/bpf/verifier.=
+c:3533 __mark_chain_precision+0xe83/0x1090
+> >> >>
+> >> >>
+> >> >> The splat appears when trying to run the netobserv-ebpf-agent. Step=
+s to
+> >> >> reproduce:
+> >> >>
+> >> >> git clone https://github.com/netobserv/netobserv-ebpf-agent
+> >> >> cd netobserv-ebpf-agent && make compile
+> >> >> sudo FLOWS_TARGET_HOST=3D127.0.0.1 FLOWS_TARGET_PORT=3D9999 ./bin/n=
+etobserv-ebpf-agent
+> >> >>
+> >> >> (It needs a 'make generate' before the compile to recompile the BPF
+> >> >> program itself, but that requires the Cilium bpf2go program to be
+> >> >> installed and there's a binary version checked into the tree so tha=
+t is
+> >> >> not strictly necessary to reproduce the splat).
+> >> >>
+> >> >> That project uses the Cilium Go eBPF loader. Interestingly, loading=
+ the
+> >> >> same program using tc (with libbpf 1.2.2) works just fine:
+> >> >>
+> >> >> ip link add type veth
+> >> >> tc qdisc add dev veth0 clsact
+> >> >> tc filter add dev veth0 egress bpf direct-action obj pkg/ebpf/bpf_b=
+pfel.o sec tc_egress
+> >> >>
+> >> >> So maybe there is some massaging of the object file that libbpf is =
+doing
+> >> >> but the Go library isn't, that prevents this bug from triggering? I=
+'m
+> >> >> only guessing here, I don't really know exactly what the Go library=
+ is
+> >> >> doing under the hood.
+> >> >>
+> >> >> Anyway, I guess this is a kernel bug in any case since that WARN() =
+is
+> >> >> there; could you please take a look?
+> >> >>
+> >> >
+> >> > Yes, I tried. Unfortunately I can't build netobserv-ebpf-agent on my
+> >> > dev machine and can't run it. I tried to load bpf_bpfel.o through
+> >> > veristat, but unfortunately it is not libbpf-compatible.
+> >> >
+> >> > Is there some way to get a full verifier log for the failure above?
+> >> > with log_level 2, if possible? If you can share it through Github Gi=
+st
+> >> > or something like that, I'd really appreciate it. Thanks!
+> >>
+> >> Sure, here you go:
+> >> https://gist.github.com/tohojo/31173d2bb07262a21393f76d9a45132d
+> >
+> > Thanks, this is very useful. And it's pretty clear what happens from
+> > last few lines:
+> >
+> >     mark_precise: frame2: regs=3Dr2 stack=3D before 1890: (dc) r2 =3D b=
+e64 r2
+> >     mark_precise: frame2: regs=3Dr0,r2 stack=3D before 1889: (73) *(u8
+> > *)(r1 +47) =3D r3
+> >
+> > See how we add r0 to the regs set, while there is no r0 involved in
+> > `r2 =3D be64 r2`? I think it's just a missing case of handling BPF_END
+> > (and perhaps BPF_NEG as well) instructions in backtrack_insn(). Should
+> > be a trivial fix, though ideally we should also add some test for this
+> > as well.
+>
+> Sounds good, thank you for looking into it! Let me know if you need me
+> to test a patch :)
+>
+> -Toke
+>
 
-thanks,
-jirka
-
-> 
-> [1]: https://savannah.gnu.org/bugs/index.php?64746
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  Makefile                |  4 +---
->  scripts/Makefile.btf    | 19 +++++++++++++++++++
->  scripts/pahole-flags.sh | 30 ------------------------------
->  3 files changed, 20 insertions(+), 33 deletions(-)
->  create mode 100644 scripts/Makefile.btf
->  delete mode 100755 scripts/pahole-flags.sh
-> 
-> diff --git a/Makefile b/Makefile
-> index fed9a6cc3665..eaddec67e5e1 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -513,8 +513,6 @@ LZ4		= lz4c
->  XZ		= xz
->  ZSTD		= zstd
->  
-> -PAHOLE_FLAGS	= $(shell PAHOLE=$(PAHOLE) $(srctree)/scripts/pahole-flags.sh)
-> -
->  CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
->  		  -Wbitwise -Wno-return-void -Wno-unknown-attribute $(CF)
->  NOSTDINC_FLAGS :=
-> @@ -605,7 +603,6 @@ export KBUILD_RUSTFLAGS RUSTFLAGS_KERNEL RUSTFLAGS_MODULE
->  export KBUILD_AFLAGS AFLAGS_KERNEL AFLAGS_MODULE
->  export KBUILD_AFLAGS_MODULE KBUILD_CFLAGS_MODULE KBUILD_RUSTFLAGS_MODULE KBUILD_LDFLAGS_MODULE
->  export KBUILD_AFLAGS_KERNEL KBUILD_CFLAGS_KERNEL KBUILD_RUSTFLAGS_KERNEL
-> -export PAHOLE_FLAGS
->  
->  # Files to ignore in find ... statements
->  
-> @@ -1002,6 +999,7 @@ KBUILD_CPPFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
->  # include additional Makefiles when needed
->  include-y			:= scripts/Makefile.extrawarn
->  include-$(CONFIG_DEBUG_INFO)	+= scripts/Makefile.debug
-> +include-$(CONFIG_DEBUG_INFO_BTF)+= scripts/Makefile.btf
->  include-$(CONFIG_KASAN)		+= scripts/Makefile.kasan
->  include-$(CONFIG_KCSAN)		+= scripts/Makefile.kcsan
->  include-$(CONFIG_KMSAN)		+= scripts/Makefile.kmsan
-> diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-> new file mode 100644
-> index 000000000000..82377e470aed
-> --- /dev/null
-> +++ b/scripts/Makefile.btf
-> @@ -0,0 +1,19 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +pahole-ver := $(CONFIG_PAHOLE_VERSION)
-> +pahole-flags-y :=
-> +
-> +# pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
-> +ifeq ($(call test-le, $(pahole-ver), 121),y)
-> +pahole-flags-$(call test-ge, $(pahole-ver), 118)	+= --skip_encoding_btf_vars
-> +endif
-> +
-> +pahole-flags-$(call test-ge, $(pahole-ver), 121)	+= --btf_gen_floats
-> +
-> +pahole-flags-$(call test-ge, $(pahole-ver), 122)	+= -j
-> +
-> +pahole-flags-$(CONFIG_PAHOLE_HAS_LANG_EXCLUDE)		+= --lang_exclude=rust
-> +
-> +pahole-flags-$(call test-ge, $(pahole-ver), 125)	+= --skip_encoding_btf_inconsistent_proto --btf_gen_optimized
-> +
-> +export PAHOLE_FLAGS := $(pahole-flags-y)
-> diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
-> deleted file mode 100755
-> index 728d55190d97..000000000000
-> --- a/scripts/pahole-flags.sh
-> +++ /dev/null
-> @@ -1,30 +0,0 @@
-> -#!/bin/sh
-> -# SPDX-License-Identifier: GPL-2.0
-> -
-> -extra_paholeopt=
-> -
-> -if ! [ -x "$(command -v ${PAHOLE})" ]; then
-> -	exit 0
-> -fi
-> -
-> -pahole_ver=$($(dirname $0)/pahole-version.sh ${PAHOLE})
-> -
-> -if [ "${pahole_ver}" -ge "118" ] && [ "${pahole_ver}" -le "121" ]; then
-> -	# pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
-> -	extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_vars"
-> -fi
-> -if [ "${pahole_ver}" -ge "121" ]; then
-> -	extra_paholeopt="${extra_paholeopt} --btf_gen_floats"
-> -fi
-> -if [ "${pahole_ver}" -ge "122" ]; then
-> -	extra_paholeopt="${extra_paholeopt} -j"
-> -fi
-> -if [ "${pahole_ver}" -ge "124" ]; then
-> -	# see PAHOLE_HAS_LANG_EXCLUDE
-> -	extra_paholeopt="${extra_paholeopt} --lang_exclude=rust"
-> -fi
-> -if [ "${pahole_ver}" -ge "125" ]; then
-> -	extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_inconsistent_proto --btf_gen_optimized"
-> -fi
-> -
-> -echo ${extra_paholeopt}
-> -- 
-> 2.40.1
-> 
 
