@@ -1,169 +1,165 @@
-Return-Path: <bpf+bounces-12359-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12360-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EA897CB76B
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 02:31:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48E307CB77A
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 02:37:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48BBC1C20C25
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 00:31:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1BC9B2105C
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 00:37:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5095C15B1;
-	Tue, 17 Oct 2023 00:31:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BF0615A5;
+	Tue, 17 Oct 2023 00:37:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="OZ3MRuQz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C3jiDWSv"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ECF88BF9;
-	Tue, 17 Oct 2023 00:31:20 +0000 (UTC)
-Received: from smtp-fw-9106.amazon.com (smtp-fw-9106.amazon.com [207.171.188.206])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D25A7;
-	Mon, 16 Oct 2023 17:31:19 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18352622;
+	Tue, 17 Oct 2023 00:37:23 +0000 (UTC)
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C01F95;
+	Mon, 16 Oct 2023 17:37:21 -0700 (PDT)
+Received: by mail-ua1-x92d.google.com with SMTP id a1e0cc1a2514c-7ab5150a7b5so4140928241.0;
+        Mon, 16 Oct 2023 17:37:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1697502680; x=1729038680;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=cWliG2NV1kGukfy+w+gPobJRp1ccl6GzwmgZ0IueiF8=;
-  b=OZ3MRuQza6Ie5NytW3ILMn0WySck7VruuUNtkzilbElCIAJdZqQpXeiB
-   +7054xlYOT7QNLZ35dh2ke5+ulX1BALNscwqCsaIkC+2eosCEb5IPuuiM
-   BpQYzjWdIzpQrz5eFOo8H3KtP+5YtNIM+kJzjkVC7JAK7RBkt8DHdZjqV
-   w=;
-X-IronPort-AV: E=Sophos;i="6.03,230,1694736000"; 
-   d="scan'208";a="678093490"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-d47337e0.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9106.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 00:31:14 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan3.pdx.amazon.com [10.39.38.70])
-	by email-inbound-relay-pdx-2a-m6i4x-d47337e0.us-west-2.amazon.com (Postfix) with ESMTPS id 6498660C28;
-	Tue, 17 Oct 2023 00:31:11 +0000 (UTC)
-Received: from EX19MTAUWA001.ant.amazon.com [10.0.21.151:32772]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.12.209:2525] with esmtp (Farcaster)
- id e4025785-f217-459b-9c22-c564a1c35538; Tue, 17 Oct 2023 00:31:11 +0000 (UTC)
-X-Farcaster-Flow-ID: e4025785-f217-459b-9c22-c564a1c35538
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA001.ant.amazon.com (10.250.64.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Tue, 17 Oct 2023 00:31:11 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.187.171.29) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Tue, 17 Oct 2023 00:31:06 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <sinquersw@gmail.com>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
-	<edumazet@google.com>, <haoluo@google.com>, <john.fastabend@gmail.com>,
-	<jolsa@kernel.org>, <kpsingh@kernel.org>, <kuba@kernel.org>,
-	<kuni1840@gmail.com>, <kuniyu@amazon.com>, <martin.lau@linux.dev>,
-	<mykolal@fb.com>, <netdev@vger.kernel.org>, <pabeni@redhat.com>,
-	<sdf@google.com>, <song@kernel.org>, <yonghong.song@linux.dev>
-Subject: Re: [PATCH v1 bpf-next 03/11] tcp: Clean up goto labels in cookie_v[46]_check().
-Date: Mon, 16 Oct 2023 17:30:58 -0700
-Message-ID: <20231017003058.6254-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <effba957-26ce-4b04-841a-40c863e6931f@gmail.com>
-References: <effba957-26ce-4b04-841a-40c863e6931f@gmail.com>
+        d=gmail.com; s=20230601; t=1697503040; x=1698107840; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hCBpBFy0sL3kGgajsg5bL9lp51r5jSArJUZNS83IHhs=;
+        b=C3jiDWSveC8PtTe5bXeKzkGZWO3pkZa89DKC6nfS2+H34Hu2e/YDCYPXSZEFwvrXlZ
+         1dC+aaOeLrBrXeTNewTbkuK6CCfsAh6nRZX4hE+RhyKedtZnmqA3uRDwreuabBXX0B9S
+         sRt+d/lLDTMUWTLs+wBUQBmjZmtSu1xCcQiEjLSq9wjN7JWQZJ/6ZsIztI8SzFxctrMm
+         LuEH6rs88L5gEEeaGvhBq7U6OFwPLdyLykJODzQmeKbr1DdYCyaDF9QYo7Eq7l6Vx2qT
+         JMtPRQA6/gt7miQIPxGwpxCNOt0Ikzo9oXm2ijKHUs+4Ze4hCUlvg2ll+0Eff3F9iCqN
+         6JZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697503040; x=1698107840;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hCBpBFy0sL3kGgajsg5bL9lp51r5jSArJUZNS83IHhs=;
+        b=Qc7dr/CAWve5s/CPqs1/+QU4dWMalQGFUyWpsGST6+A0Au+vUQHlS+I7fv3mUBWL48
+         EqGB7REUZgRQXMSwWNkr9ek0yeQR8Z1xGzdmsVchj32ihzHhXZO/2bt2u8zbXfpIKWBQ
+         RTccaVtQkq/o0j7Mxdzu3CoPucX6SrRXxlFxKj5WzzE8My4d8ii0tApcqAux7yVLOgnh
+         hXYgXwBzTQQEEEk+XklLsh1BcFylQeqVa8c8BguWtfZD5qyEu2jpw0PqkAsKIjRPLXiU
+         sjoSUDJ+Rc/T56Q6B7ckTnU8FCNwfF17OQmb038rJb5aTyppApCpr2LM2Xt7+mxTAhtY
+         iSnQ==
+X-Gm-Message-State: AOJu0YzWMUBVmfaWznhbVkyQqrT6J4asx8GmyNNb7D6yb+/OYSYIS+h7
+	6xlGmH3Gfh4NI40uDszYRHmqtsDVWCLWp1P9/HWpbQY+
+X-Google-Smtp-Source: AGHT+IGTFKrIo3DX3VTBrldf07y90mT9ODR4qoemWSfmdES5n+WGptKeaXQi892QmMn5GqvVYCmrHCk1YdrE8z97v4I=
+X-Received: by 2002:a67:ac4a:0:b0:457:cbde:603d with SMTP id
+ n10-20020a67ac4a000000b00457cbde603dmr189013vsh.14.1697503040429; Mon, 16 Oct
+ 2023 17:37:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.187.171.29]
-X-ClientProxiedBy: EX19D033UWC004.ant.amazon.com (10.13.139.225) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE,UNPARSEABLE_RELAY autolearn=no
+References: <20231015141644.260646-1-akihiko.odaki@daynix.com>
+ <20231015141644.260646-2-akihiko.odaki@daynix.com> <CAADnVQLfUDmgYng8Cw1hiZOMfWNWLjbn7ZGc4yOEz-XmeFEz5Q@mail.gmail.com>
+ <2594bb24-74dc-4785-b46d-e1bffcc3e7ed@daynix.com> <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
+In-Reply-To: <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date: Mon, 16 Oct 2023 20:36:43 -0400
+Message-ID: <CAF=yD-Jr1wKo6viUGWTcXsT5b9e1NkuemuvjN988qSyNmheM2A@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/7] bpf: Introduce BPF_PROG_TYPE_VNET_HASH
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Akihiko Odaki <akihiko.odaki@daynix.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Jason Wang <jasowang@redhat.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, kvm@vger.kernel.org, 
+	virtualization@lists.linux-foundation.org, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
+	Yuri Benditovich <yuri.benditovich@daynix.com>, Andrew Melnychenko <andrew@daynix.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Kui-Feng Lee <sinquersw@gmail.com>
-Date: Mon, 16 Oct 2023 17:00:39 -0700
-> On 10/13/23 15:04, Kuniyuki Iwashima wrote:
-> > We will add a SOCK_OPS hook to validate SYN Cookie.
-> > 
-> > We invoke the hook after allocating reqsk.  In case it fails,
-> > we will respond with RST instead of just dropping the ACK.
-> > 
-> > Then, there would be more duplicated error handling patterns.
-> > To avoid that, let's clean up goto labels.
-> > 
-> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
-> > ---
-> >   net/ipv4/syncookies.c | 22 +++++++++++-----------
-> >   net/ipv6/syncookies.c |  4 ++--
-> >   2 files changed, 13 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
-> > index 64280cf42667..b0cf6f4d66d8 100644
-> > --- a/net/ipv4/syncookies.c
-> > +++ b/net/ipv4/syncookies.c
-> > @@ -369,11 +369,10 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
-> >   	if (!cookie_timestamp_decode(net, &tcp_opt))
-> >   		goto out;
-> >   
-> > -	ret = NULL;
-> >   	req = cookie_tcp_reqsk_alloc(&tcp_request_sock_ops,
-> >   				     &tcp_request_sock_ipv4_ops, sk, skb);
-> >   	if (!req)
-> > -		goto out;
-> > +		goto out_drop;
-> >   
-> >   	ireq = inet_rsk(req);
-> >   	treq = tcp_rsk(req);
-> > @@ -405,10 +404,8 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
-> >   	 */
-> >   	RCU_INIT_POINTER(ireq->ireq_opt, tcp_v4_save_options(net, skb));
-> >   
-> > -	if (security_inet_conn_request(sk, skb, req)) {
-> > -		reqsk_free(req);
-> > -		goto out;
-> > -	}
-> > +	if (security_inet_conn_request(sk, skb, req))
-> > +		goto out_free;
-> >   
-> >   	req->num_retrans = 0;
-> >   
-> > @@ -425,10 +422,8 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
-> >   			   ireq->ir_loc_addr, th->source, th->dest, sk->sk_uid);
-> >   	security_req_classify_flow(req, flowi4_to_flowi_common(&fl4));
-> >   	rt = ip_route_output_key(net, &fl4);
-> > -	if (IS_ERR(rt)) {
-> > -		reqsk_free(req);
-> > -		goto out;
-> > -	}
-> > +	if (IS_ERR(rt))
-> > +		goto out_free;
-> >   
-> >   	/* Try to redo what tcp_v4_send_synack did. */
-> >   	req->rsk_window_clamp = tp->window_clamp ? :dst_metric(&rt->dst, RTAX_WINDOW);
-> > @@ -452,5 +447,10 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
-> >   	 */
-> >   	if (ret)
-> >   		inet_sk(ret)->cork.fl.u.ip4 = fl4;
-> > -out:	return ret;
-> > +out:
-> > +	return ret;
-> > +out_free:
-> > +	reqsk_free(req);
-> > +out_drop:
-> > +	return NULL;
-> >   }
-> 
-> Looks like you don't use out_free and out_drop at all
-> in the patch 5 & 6. Are these changes still necessary?
-> Especially, the line 'goto out_drop' can be 'return NULL' concisely.
+On Mon, Oct 16, 2023 at 7:53=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Sun, Oct 15, 2023 at 10:10=E2=80=AFAM Akihiko Odaki <akihiko.odaki@day=
+nix.com> wrote:
+> >
+> > On 2023/10/16 1:07, Alexei Starovoitov wrote:
+> > > On Sun, Oct 15, 2023 at 7:17=E2=80=AFAM Akihiko Odaki <akihiko.odaki@=
+daynix.com> wrote:
+> > >>
+> > >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > >> index 0448700890f7..298634556fab 100644
+> > >> --- a/include/uapi/linux/bpf.h
+> > >> +++ b/include/uapi/linux/bpf.h
+> > >> @@ -988,6 +988,7 @@ enum bpf_prog_type {
+> > >>          BPF_PROG_TYPE_SK_LOOKUP,
+> > >>          BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscal=
+ls */
+> > >>          BPF_PROG_TYPE_NETFILTER,
+> > >> +       BPF_PROG_TYPE_VNET_HASH,
+> > >
+> > > Sorry, we do not add new stable program types anymore.
+> > >
+> > >> @@ -6111,6 +6112,10 @@ struct __sk_buff {
+> > >>          __u8  tstamp_type;
+> > >>          __u32 :24;              /* Padding, future use. */
+> > >>          __u64 hwtstamp;
+> > >> +
+> > >> +       __u32 vnet_hash_value;
+> > >> +       __u16 vnet_hash_report;
+> > >> +       __u16 vnet_rss_queue;
+> > >>   };
+> > >
+> > > we also do not add anything to uapi __sk_buff.
+> > >
+> > >> +const struct bpf_verifier_ops vnet_hash_verifier_ops =3D {
+> > >> +       .get_func_proto         =3D sk_filter_func_proto,
+> > >> +       .is_valid_access        =3D sk_filter_is_valid_access,
+> > >> +       .convert_ctx_access     =3D bpf_convert_ctx_access,
+> > >> +       .gen_ld_abs             =3D bpf_gen_ld_abs,
+> > >> +};
+> > >
+> > > and we don't do ctx rewrites like this either.
+> > >
+> > > Please see how hid-bpf and cgroup rstat are hooking up bpf
+> > > in _unstable_ way.
+> >
+> > Can you describe what "stable" and "unstable" mean here? I'm new to BPF
+> > and I'm worried if it may mean the interface stability.
+> >
+> > Let me describe the context. QEMU bundles an eBPF program that is used
+> > for the "eBPF steering program" feature of tun. Now I'm proposing to
+> > extend the feature to allow to return some values to the userspace and
+> > vhost_net. As such, the extension needs to be done in a way that ensure=
+s
+> > interface stability.
+>
+> bpf is not an option then.
+> we do not add stable bpf program types or hooks any more.
+> If a kernel subsystem wants to use bpf it needs to accept the fact
+> that such bpf extensibility will be unstable and subsystem maintainers
+> can decide to remove such bpf support in the future.
 
-I think it's hard to follow a function where goto and return
-are mixed, so I cleaned up the labels while at it.
+Based on hooks for tracepoints and kfuncs, correct?
+
+Perhaps the existing stable flow dissector type is extensible to
+optionally compute the hash and report hash and hash type. Else we
+probably should revisit the previous version of this series.
 
