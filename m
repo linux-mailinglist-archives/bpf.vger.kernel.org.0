@@ -1,165 +1,195 @@
-Return-Path: <bpf+bounces-12477-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12478-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44AA27CCC36
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 21:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD1647CCC93
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 21:50:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE927281B51
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 19:26:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75CE32819E1
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 19:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E60502D799;
-	Tue, 17 Oct 2023 19:26:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E878B4447A;
+	Tue, 17 Oct 2023 19:50:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=daynix-com.20230601.gappssmtp.com header.i=@daynix-com.20230601.gappssmtp.com header.b="MIuRQW1w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G8Lhvyqe"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B22CA2EAEF
-	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 19:26:48 +0000 (UTC)
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29BA4E8
-	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 12:26:47 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6934202b8bdso5259731b3a.1
-        for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 12:26:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD4182DF95
+	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 19:50:32 +0000 (UTC)
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F0CC4
+	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 12:50:31 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-53d9b94731aso10743518a12.1
+        for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 12:50:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1697570806; x=1698175606; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KDot9iblcIn0w6AF1G0uxUEwZFMHjB3wMQ8TKedvYfs=;
-        b=MIuRQW1wOl26JrDTgt4y1nTWFo9t47fiF7ZbavL3tg75bDQ9HXAf6W5pYBQuO8k4M3
-         Ktu/pSXluTmzvJmOtYnikCKpww7c2m+cvBZ/U+PLVrpHT9L9HeAFF3HXxUrHErw6PoSv
-         2a737RbILsV5fUCsgwJIGeEJEuzEPWsXj45ItYba0ZNmp3xKxqKQiOWuiW/EsXedeIJ3
-         uSwa3iJbvnSusjkuEYZo1t1klQ+m9daZzi6lDX7HuYuMXT2vCQG4q6lDPrjTOhRQc0yt
-         EGfWhT10fnWV06vnzorQabl//5Tncgmd1CrQEHovdjDbNrk0fb3O2oM48rDKlkeRHZVS
-         l4ZQ==
+        d=gmail.com; s=20230601; t=1697572229; x=1698177029; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QiAfMO8Yugl8IggqSvmRx+k1gube6Jyh/Cc5OXvA1/g=;
+        b=G8LhvyqexNQDfnxsUI3jbd2IqgKpEjOm2J6fhlwNIAHL0l772ks/Vfu8ijFvqqEWpU
+         GeYx+MzMviZOSPDX6Vdk2Cxuvs3hjsvHoPTZSujG98qR6gh/2Onqrw7+Y6TPWS+IAFbY
+         OVK6KZUhf5YugoMYQ2sjP8YL4YE1gao+wBvaGGkc//TSAqKMdt3vtxivRKk8jeU6CfJc
+         88Ni6ccvEfZKCGLXbEMDXx7QoG63rPyz3NSBeK4luNa+OFiPxWGyfrGEm5RrvpZCFBqe
+         E8ksHpppNxhClMUz/CerQdw4zG5yRsmDI9WaSDDd1FhtF3T5hT/nNnW/sxYAhIO9iJ2a
+         eYnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697570806; x=1698175606;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KDot9iblcIn0w6AF1G0uxUEwZFMHjB3wMQ8TKedvYfs=;
-        b=wGdsbKvVp+d4wtgdLqWVU6w1fjMc3gsCdTnu4wP6V23MiDIPelCgeQNMoGLVvvkAqm
-         uQBp/tvLa80yg2XN7YQBd4/Hhsi/xGtVrUUx1d41Q/jF9ycvZ4dfLsN+d9pW7cE86ha+
-         qlJZOnDvFvaN/cG5tXCNGLhfN04VX+hWfdbM4jkNJW038crWmgEUWb5qyNqQfZwUF+Kh
-         2qS8KgZUGFZUn8riiI4Q06WuBPUSTznv5dzirA/p1T1+hdANhFfxzU18MAYJ2RrC12cU
-         gSLGF1zYwmOqjDZqbCzVx0vszTgf12YqB1M25hlOLx/ubthAgKZaQabntu2RZ7YcJXKD
-         uBhQ==
-X-Gm-Message-State: AOJu0Ywvx8qo24sw1Nq4csW3tYtGSmMceoEGGAU147womol7NzzkEivG
-	snLvn/vH4C1pyWFt81mHA1yDTg==
-X-Google-Smtp-Source: AGHT+IHYI3yyhu3JqTTLzLVz52tA4oYjGlWDkzfMtgTEGUIpfjySanG8qpTnjMDKm/wqRtkB07X3Dg==
-X-Received: by 2002:a05:6a00:23d3:b0:6bd:2c0a:e7d with SMTP id g19-20020a056a0023d300b006bd2c0a0e7dmr3052248pfc.19.1697570806604;
-        Tue, 17 Oct 2023 12:26:46 -0700 (PDT)
-Received: from ?IPV6:2400:4050:a840:1e00:78d2:b862:10a7:d486? ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
-        by smtp.gmail.com with ESMTPSA id o3-20020aa79783000000b006be22fde07dsm1825381pfp.106.2023.10.17.12.26.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 12:26:46 -0700 (PDT)
-Message-ID: <512a8ed7-4321-4ffe-a569-da1bee288986@daynix.com>
-Date: Wed, 18 Oct 2023 04:26:41 +0900
+        d=1e100.net; s=20230601; t=1697572229; x=1698177029;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QiAfMO8Yugl8IggqSvmRx+k1gube6Jyh/Cc5OXvA1/g=;
+        b=FGsPfFblUJHG3YIvlLVFNXN6A3FuGECQzVXIT8MgbjTgG7zSYROJT2EG19M9PPKQR5
+         jXCfCkA+mRqFVGkW8HJxHFczUeTEclFaN5Sf7DT0AsB5OBstVwYEpeFZDh2VbHY11us2
+         CFHuWB/7ZMhK+lSlX1DTVM5KI8syejLWF46HxB+uia7wO/iF/tDZ334fvqCHwBxbcRc/
+         xmffe73XatJDy8RdHxMq1jjfMjkFAdAz4t+fYAP3Ahjd2NqG8SwQTMpkarYuW0L/pAKU
+         Q6AS6B7k8h3CSZyysPmxZVmD6M0ZKeJ/x2xML3ZpVUhIyIiihKmeFHoxgxVhsjPFY39V
+         /v/A==
+X-Gm-Message-State: AOJu0Ywtsat5XaJzbRweFLFoBqa44iHE+bnpql6r01kE5hav1LO7oPBZ
+	Yzip4IDRdzkpaWgS3XoIqQuBxmDd9siOr6zvNJs=
+X-Google-Smtp-Source: AGHT+IGHguOehkLc0Vq8S+Qs8vFHEGViFzjDhHg6jRfYIrUTrsBxcj4WmObk1SZjGfT6kbHabJzXQTi9WFPEidxfd4I=
+X-Received: by 2002:a50:d5d4:0:b0:53e:6624:5aeb with SMTP id
+ g20-20020a50d5d4000000b0053e66245aebmr2512294edj.11.1697572229531; Tue, 17
+ Oct 2023 12:50:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v4] selftests/bpf: Use pkg-config to determine ld
- flags
-Content-Language: en-US
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Nick Terrell <terrelln@fb.com>, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- bjorn@kernel.org
-References: <20231016130307.35104-1-akihiko.odaki@daynix.com>
- <4037a83a-c6b6-6eab-1cb1-93339686c4e5@iogearbox.net>
-From: Akihiko Odaki <akihiko.odaki@daynix.com>
-In-Reply-To: <4037a83a-c6b6-6eab-1cb1-93339686c4e5@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-	autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20231013182644.2346458-1-song@kernel.org> <20231013182644.2346458-3-song@kernel.org>
+In-Reply-To: <20231013182644.2346458-3-song@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 17 Oct 2023 12:50:17 -0700
+Message-ID: <CAEf4BzbM0Ru4NpHNfn5Y=vQgfFAmeb+8Z+O6unuFkNr=9BrvKQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/5] bpf, fsverity: Add kfunc bpf_get_fsverity_digest
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, fsverity@lists.linux.dev, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org, 
+	kernel-team@meta.com, ebiggers@kernel.org, tytso@mit.edu, 
+	roberto.sassu@huaweicloud.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 2023/10/17 23:15, Daniel Borkmann wrote:
-> On 10/16/23 3:03 PM, Akihiko Odaki wrote:
->> When linking statically, libraries may require other dependencies to be
->> included to ld flags. In particular, libelf may require libzstd. Use
->> pkg-config to determine such dependencies.
->>
->> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
->> ---
->> V3 -> V4: Added "2> /dev/null".
->> V2 -> V3: Added missing "echo".
->> V1 -> V2: Implemented fallback, referring to HOSTPKG_CONFIG.
->>
->>   tools/testing/selftests/bpf/Makefile   | 4 +++-
->>   tools/testing/selftests/bpf/README.rst | 2 +-
->>   2 files changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/Makefile 
->> b/tools/testing/selftests/bpf/Makefile
->> index caede9b574cb..009e907a8abe 100644
->> --- a/tools/testing/selftests/bpf/Makefile
->> +++ b/tools/testing/selftests/bpf/Makefile
->> @@ -4,6 +4,7 @@ include ../../../scripts/Makefile.arch
->>   include ../../../scripts/Makefile.include
->>   CXX ?= $(CROSS_COMPILE)g++
->> +PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
->>   CURDIR := $(abspath .)
->>   TOOLSDIR := $(abspath ../../..)
->> @@ -31,7 +32,8 @@ CFLAGS += -g -O0 -rdynamic -Wall -Werror $(GENFLAGS) 
->> $(SAN_CFLAGS)    \
->>         -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)        \
->>         -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
->>   LDFLAGS += $(SAN_LDFLAGS)
->> -LDLIBS += -lelf -lz -lrt -lpthread
->> +LDLIBS += $(shell $(PKG_CONFIG) --libs libelf zlib 2> /dev/null || 
->> echo -lelf -lz)    \
->> +      -lrt -lpthread
->>   ifneq ($(LLVM),)
->>   # Silence some warnings when compiled with clang
-> 
-> Staring at tools/bpf/resolve_btfids/Makefile, I'm trying to understand 
-> why we
-> cannot replicate something similar for BPF selftests?
-> 
-> For example, with your patch, why is it necessary to now have PKG_CONFIG 
-> and
-> another HOSTPKG_CONFIG var?
-
-It's because at least Debian does have wrappers of pkg-config for cross 
-compile targets. You can find them below:
-https://packages.debian.org/search?searchon=contents&keywords=pkg-config&mode=path&suite=stable&arch=any
-
-> 
-> What about the below?
-> 
-> diff --git a/tools/testing/selftests/bpf/Makefile 
-> b/tools/testing/selftests/bpf/Makefile
-> index 4225f975fce3..62166d2f937d 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -29,13 +29,17 @@ SAN_CFLAGS  ?=
->   SAN_LDFLAGS    ?= $(SAN_CFLAGS)
->   RELEASE                ?=
->   OPT_FLAGS      ?= $(if $(RELEASE),-O2,-O0)
+On Fri, Oct 13, 2023 at 11:29=E2=80=AFAM Song Liu <song@kernel.org> wrote:
+>
+> The kfunc can be used to read fsverity_digest, so that we can verify
+> signature in BPF LSM.
+>
+> This kfunc is added to fs/verity/measure.c because some data structure us=
+ed
+> in the function is private to fsverity (fs/verity/fsverity_private.h).
+>
+> Signed-off-by: Song Liu <song@kernel.org>
+> ---
+>  fs/verity/measure.c | 66 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>
+> diff --git a/fs/verity/measure.c b/fs/verity/measure.c
+> index eec5956141da..2d4b2e6f5a5d 100644
+> --- a/fs/verity/measure.c
+> +++ b/fs/verity/measure.c
+> @@ -8,6 +8,8 @@
+>  #include "fsverity_private.h"
+>
+>  #include <linux/uaccess.h>
+> +#include <linux/bpf.h>
+> +#include <linux/btf.h>
+>
+>  /**
+>   * fsverity_ioctl_measure() - get a verity file's digest
+> @@ -100,3 +102,67 @@ int fsverity_get_digest(struct inode *inode,
+>         return hash_alg->digest_size;
+>  }
+>  EXPORT_SYMBOL_GPL(fsverity_get_digest);
 > +
-> +LIBELF_FLAGS   := $(shell $(HOSTPKG_CONFIG) libelf --cflags 2>/dev/null)
-> +LIBELF_LIBS    := $(shell $(HOSTPKG_CONFIG) libelf --libs 2>/dev/null 
-> || echo -lelf)
+> +/* bpf kfuncs */
+> +__diag_push();
+> +__diag_ignore_all("-Wmissing-prototypes",
+> +                 "kfuncs which will be used in BPF programs");
+> +
+> +/**
+> + * bpf_get_fsverity_digest: read fsverity digest of file
+> + * @file: file to get digest from
+> + * @digest_ptr: (out) dynptr for struct fsverity_digest
+> + *
+> + * Read fsverity_digest of *file* into *digest_ptr*.
+> + *
+> + * Return: 0 on success, a negative value on error.
+> + */
+> +__bpf_kfunc int bpf_get_fsverity_digest(struct file *file, struct bpf_dy=
+nptr_kern *digest_ptr)
+> +{
+> +       const struct inode *inode =3D file_inode(file);
+> +       struct fsverity_digest *arg =3D digest_ptr->data;
 
-Having dedicated variables and checking --cflags are a good idea.
+this can be null
+
+I think we need some internal helpers that are similar to
+bpf_dynptr_slice() that would handle invalid dynptr cases, as well as
+abstract away potentially non-contiguous memory dynptr points to.
+WDYT?
+
+> +       const struct fsverity_info *vi;
+> +       const struct fsverity_hash_alg *hash_alg;
+> +       int out_digest_sz;
+> +
+> +       if (__bpf_dynptr_size(digest_ptr) < sizeof(struct fsverity_digest=
+))
+> +               return -EINVAL;
+> +
+> +       vi =3D fsverity_get_info(inode);
+> +       if (!vi)
+> +               return -ENODATA; /* not a verity file */
+> +
+> +       hash_alg =3D vi->tree_params.hash_alg;
+> +
+> +       arg->digest_algorithm =3D hash_alg - fsverity_hash_algs;
+> +       arg->digest_size =3D hash_alg->digest_size;
+> +
+> +       out_digest_sz =3D __bpf_dynptr_size(digest_ptr) - sizeof(struct f=
+sverity_digest);
+> +
+> +       /* copy digest */
+> +       memcpy(arg->digest, vi->file_digest,  min_t(int, hash_alg->digest=
+_size, out_digest_sz));
+> +
+> +       /* fill the extra buffer with zeros */
+> +       memset(arg->digest + arg->digest_size, 0, out_digest_sz - hash_al=
+g->digest_size);
+> +
+> +       return 0;
+> +}
+> +
+> +__diag_pop();
+> +
+> +BTF_SET8_START(fsverity_set)
+> +BTF_ID_FLAGS(func, bpf_get_fsverity_digest, KF_SLEEPABLE)
+> +BTF_SET8_END(fsverity_set)
+> +
+> +const struct btf_kfunc_id_set bpf_fsverity_set =3D {
+> +       .owner =3D THIS_MODULE,
+> +       .set =3D &fsverity_set,
+> +};
+> +
+> +static int __init bpf_fsverity_init(void)
+> +{
+> +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
+> +                                        &bpf_fsverity_set);
+> +}
+> +
+> +late_initcall(bpf_fsverity_init);
+> --
+> 2.34.1
+>
 
