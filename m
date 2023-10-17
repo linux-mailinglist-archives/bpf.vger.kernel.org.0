@@ -1,195 +1,250 @@
-Return-Path: <bpf+bounces-12478-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12479-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD1647CCC93
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 21:50:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BBA37CCCB9
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 21:57:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75CE32819E1
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 19:50:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD580B212A6
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 19:57:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E878B4447A;
-	Tue, 17 Oct 2023 19:50:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D5A9CA74;
+	Tue, 17 Oct 2023 19:57:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G8Lhvyqe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HUlGL12+"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD4182DF95
-	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 19:50:32 +0000 (UTC)
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F0CC4
-	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 12:50:31 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-53d9b94731aso10743518a12.1
-        for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 12:50:31 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86E632EAE2;
+	Tue, 17 Oct 2023 19:57:07 +0000 (UTC)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6C5C4;
+	Tue, 17 Oct 2023 12:57:05 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53d9f001b35so10451698a12.2;
+        Tue, 17 Oct 2023 12:57:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697572229; x=1698177029; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697572624; x=1698177424; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QiAfMO8Yugl8IggqSvmRx+k1gube6Jyh/Cc5OXvA1/g=;
-        b=G8LhvyqexNQDfnxsUI3jbd2IqgKpEjOm2J6fhlwNIAHL0l772ks/Vfu8ijFvqqEWpU
-         GeYx+MzMviZOSPDX6Vdk2Cxuvs3hjsvHoPTZSujG98qR6gh/2Onqrw7+Y6TPWS+IAFbY
-         OVK6KZUhf5YugoMYQ2sjP8YL4YE1gao+wBvaGGkc//TSAqKMdt3vtxivRKk8jeU6CfJc
-         88Ni6ccvEfZKCGLXbEMDXx7QoG63rPyz3NSBeK4luNa+OFiPxWGyfrGEm5RrvpZCFBqe
-         E8ksHpppNxhClMUz/CerQdw4zG5yRsmDI9WaSDDd1FhtF3T5hT/nNnW/sxYAhIO9iJ2a
-         eYnQ==
+        bh=Vl//DC5ziIO68KUbpNSRqo4FW+IItW9RRn+Fwf7gHXM=;
+        b=HUlGL12+FadNoXde4zwwNJr8nYACjm/xbZHn2KE0nxNlgIYJXAiTmPyZqdTZ3GoyBe
+         rYZFasu5JOxqAvDpPcJWbO/0geyXyXl9PXvYV+lOm42QWVh40vlI7EOMcAA4GZZ1LlbY
+         T4uuQ0NzZO8d7HtJSyp0CHN65eQgCzJywDhLpc7sydgncwEGaAcoJYgWfVoeIkxu6jdn
+         A20x1ImV7BWpJl3R8RjB6dK9F3GjotDXVBTZ63PoKI8i0hP7kZAz3FO6TGXVOAgyyP0x
+         zWExuLuM/GQWWeMoJ8Ij8fSTcdRoAd691/OK8NYRRjXSTKyToHERoj2fWQpMvTo0Vu3u
+         iT3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697572229; x=1698177029;
+        d=1e100.net; s=20230601; t=1697572624; x=1698177424;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QiAfMO8Yugl8IggqSvmRx+k1gube6Jyh/Cc5OXvA1/g=;
-        b=FGsPfFblUJHG3YIvlLVFNXN6A3FuGECQzVXIT8MgbjTgG7zSYROJT2EG19M9PPKQR5
-         jXCfCkA+mRqFVGkW8HJxHFczUeTEclFaN5Sf7DT0AsB5OBstVwYEpeFZDh2VbHY11us2
-         CFHuWB/7ZMhK+lSlX1DTVM5KI8syejLWF46HxB+uia7wO/iF/tDZ334fvqCHwBxbcRc/
-         xmffe73XatJDy8RdHxMq1jjfMjkFAdAz4t+fYAP3Ahjd2NqG8SwQTMpkarYuW0L/pAKU
-         Q6AS6B7k8h3CSZyysPmxZVmD6M0ZKeJ/x2xML3ZpVUhIyIiihKmeFHoxgxVhsjPFY39V
-         /v/A==
-X-Gm-Message-State: AOJu0Ywtsat5XaJzbRweFLFoBqa44iHE+bnpql6r01kE5hav1LO7oPBZ
-	Yzip4IDRdzkpaWgS3XoIqQuBxmDd9siOr6zvNJs=
-X-Google-Smtp-Source: AGHT+IGHguOehkLc0Vq8S+Qs8vFHEGViFzjDhHg6jRfYIrUTrsBxcj4WmObk1SZjGfT6kbHabJzXQTi9WFPEidxfd4I=
-X-Received: by 2002:a50:d5d4:0:b0:53e:6624:5aeb with SMTP id
- g20-20020a50d5d4000000b0053e66245aebmr2512294edj.11.1697572229531; Tue, 17
- Oct 2023 12:50:29 -0700 (PDT)
+        bh=Vl//DC5ziIO68KUbpNSRqo4FW+IItW9RRn+Fwf7gHXM=;
+        b=jpWU71QUrH90NkgegaJh01FdbCag11C2S1bTktVubuMwARXfJypuAHCt+LaFNhzQW0
+         jlqSfmBifMEhVQo1Z31+jKthZQYIanpwMFQggRjBnPNtc2V+0stdfGsx6Rz1RMV4YFKh
+         7/oSu+iz8naCS0CvibuYK8PmaOz6XSx963k13VctR5amUBZsSyXEWw+BUf0H6wFF2Bs/
+         eF0zvhfm49MB4RdqPP5SIym1K/fC0B7LXlV3J6nH6L2sJR0VzWqIzqjBbPaUdycOLQH4
+         yeK81b4aurKTvXmyNwcbRYQhAwibA8LHzjl52TaU/d2sL/Xd388EFP5dauU2kq1DtLbW
+         Uung==
+X-Gm-Message-State: AOJu0YxOMgDe73lO4jArZGyptwPQ6ueZBbRAXBwSmv0lM1ZGIm/y0i1P
+	8JlpTmgIUS1FEsEVJ02FLGJutPFJAxTCu3k+cTA=
+X-Google-Smtp-Source: AGHT+IE54ubwzInt8pjf1xLQK23tkOkZVxxwRLgaha9BMuvwU1sZigJOg0asUrccflLugI6pDAN5DdOwz8kjoV7zkv8=
+X-Received: by 2002:a05:6402:4315:b0:53d:fbf6:72c with SMTP id
+ m21-20020a056402431500b0053dfbf6072cmr2852702edc.1.1697572623918; Tue, 17 Oct
+ 2023 12:57:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231013182644.2346458-1-song@kernel.org> <20231013182644.2346458-3-song@kernel.org>
-In-Reply-To: <20231013182644.2346458-3-song@kernel.org>
+References: <20231017103742.130927-1-masahiroy@kernel.org> <20231017103742.130927-2-masahiroy@kernel.org>
+In-Reply-To: <20231017103742.130927-2-masahiroy@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 17 Oct 2023 12:50:17 -0700
-Message-ID: <CAEf4BzbM0Ru4NpHNfn5Y=vQgfFAmeb+8Z+O6unuFkNr=9BrvKQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/5] bpf, fsverity: Add kfunc bpf_get_fsverity_digest
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, fsverity@lists.linux.dev, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org, 
-	kernel-team@meta.com, ebiggers@kernel.org, tytso@mit.edu, 
-	roberto.sassu@huaweicloud.com
+Date: Tue, 17 Oct 2023 12:56:52 -0700
+Message-ID: <CAEf4Bzaxb1npVtH_CnFNrOJQxQF5t82_nZxqbaFLiE-rpk_jBg@mail.gmail.com>
+Subject: Re: [PATCH 2/4] kbuild: avoid too many execution of scripts/pahole-flags.sh
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Alice Ryhl <aliceryhl@google.com>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Benno Lossin <benno.lossin@proton.me>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, Gary Guo <gary@garyguo.net>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Miguel Ojeda <ojeda@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Nicolas Schier <nicolas@fjasle.eu>, Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org, 
+	rust-for-linux@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Oct 13, 2023 at 11:29=E2=80=AFAM Song Liu <song@kernel.org> wrote:
+On Tue, Oct 17, 2023 at 3:38=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
 >
-> The kfunc can be used to read fsverity_digest, so that we can verify
-> signature in BPF LSM.
+> scripts/pahole-flags.sh is executed so many times.
 >
-> This kfunc is added to fs/verity/measure.c because some data structure us=
-ed
-> in the function is private to fsverity (fs/verity/fsverity_private.h).
+> You can check how many times it is invoked during the build, as follows:
 >
-> Signed-off-by: Song Liu <song@kernel.org>
+>   $ cat <<EOF >> scripts/pahole-flags.sh
+>   > echo "scripts/pahole-flags.sh was executed" >&2
+>   > EOF
+>
+>   $ make -s
+>   scripts/pahole-flags.sh was executed
+>   scripts/pahole-flags.sh was executed
+>   scripts/pahole-flags.sh was executed
+>   scripts/pahole-flags.sh was executed
+>   scripts/pahole-flags.sh was executed
+>     [ lots of repeated lines suppressed... ]
+>
+> This scripts is exectuted more than 20 times during the kernel build
+> because PAHOLE_FLAGS is a recursively expanded variable and exported
+> to sub-processes.
+>
+> With the GNU Make >=3D 4.4, it is executed more than 60 times because
+> exported variables are also passed to other $(shell ) invocations.
+> Without careful coding, it is known to cause an exponential fork
+> explosion. [1]
+>
+> The use of $(shell ) in an exported recursive variable is likely wrong
+> because $(shell ) is always evaluated due to the 'export' keyword, and
+> the evaluation can occur multiple times by the nature of recursive
+> variables.
+>
+> Convert the shell script to a Makefile, which is included only when
+> CONFIG_DEBUG_INFO_BTF=3Dy.
+>
+> [1]: https://savannah.gnu.org/bugs/index.php?64746
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
->  fs/verity/measure.c | 66 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 66 insertions(+)
 >
-> diff --git a/fs/verity/measure.c b/fs/verity/measure.c
-> index eec5956141da..2d4b2e6f5a5d 100644
-> --- a/fs/verity/measure.c
-> +++ b/fs/verity/measure.c
-> @@ -8,6 +8,8 @@
->  #include "fsverity_private.h"
+>  Makefile                |  4 +---
+>  scripts/Makefile.btf    | 19 +++++++++++++++++++
+>  scripts/pahole-flags.sh | 30 ------------------------------
+>  3 files changed, 20 insertions(+), 33 deletions(-)
+>  create mode 100644 scripts/Makefile.btf
+>  delete mode 100755 scripts/pahole-flags.sh
 >
->  #include <linux/uaccess.h>
-> +#include <linux/bpf.h>
-> +#include <linux/btf.h>
+> diff --git a/Makefile b/Makefile
+> index fed9a6cc3665..eaddec67e5e1 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -513,8 +513,6 @@ LZ4         =3D lz4c
+>  XZ             =3D xz
+>  ZSTD           =3D zstd
 >
->  /**
->   * fsverity_ioctl_measure() - get a verity file's digest
-> @@ -100,3 +102,67 @@ int fsverity_get_digest(struct inode *inode,
->         return hash_alg->digest_size;
->  }
->  EXPORT_SYMBOL_GPL(fsverity_get_digest);
-> +
-> +/* bpf kfuncs */
-> +__diag_push();
-> +__diag_ignore_all("-Wmissing-prototypes",
-> +                 "kfuncs which will be used in BPF programs");
-> +
-> +/**
-> + * bpf_get_fsverity_digest: read fsverity digest of file
-> + * @file: file to get digest from
-> + * @digest_ptr: (out) dynptr for struct fsverity_digest
-> + *
-> + * Read fsverity_digest of *file* into *digest_ptr*.
-> + *
-> + * Return: 0 on success, a negative value on error.
-> + */
-> +__bpf_kfunc int bpf_get_fsverity_digest(struct file *file, struct bpf_dy=
-nptr_kern *digest_ptr)
-> +{
-> +       const struct inode *inode =3D file_inode(file);
-> +       struct fsverity_digest *arg =3D digest_ptr->data;
+> -PAHOLE_FLAGS   =3D $(shell PAHOLE=3D$(PAHOLE) $(srctree)/scripts/pahole-=
+flags.sh)
 
-this can be null
+What if we just used :=3D here? Wouldn't it avoid unnecessary multiple exec=
+utions?
 
-I think we need some internal helpers that are similar to
-bpf_dynptr_slice() that would handle invalid dynptr cases, as well as
-abstract away potentially non-contiguous memory dynptr points to.
-WDYT?
+I don't make Makefile.btf approach, just curious why :=3D doesn't work,
+if it doesn't.
 
-> +       const struct fsverity_info *vi;
-> +       const struct fsverity_hash_alg *hash_alg;
-> +       int out_digest_sz;
+> -
+>  CHECKFLAGS     :=3D -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
+>                   -Wbitwise -Wno-return-void -Wno-unknown-attribute $(CF)
+>  NOSTDINC_FLAGS :=3D
+> @@ -605,7 +603,6 @@ export KBUILD_RUSTFLAGS RUSTFLAGS_KERNEL RUSTFLAGS_MO=
+DULE
+>  export KBUILD_AFLAGS AFLAGS_KERNEL AFLAGS_MODULE
+>  export KBUILD_AFLAGS_MODULE KBUILD_CFLAGS_MODULE KBUILD_RUSTFLAGS_MODULE=
+ KBUILD_LDFLAGS_MODULE
+>  export KBUILD_AFLAGS_KERNEL KBUILD_CFLAGS_KERNEL KBUILD_RUSTFLAGS_KERNEL
+> -export PAHOLE_FLAGS
+>
+>  # Files to ignore in find ... statements
+>
+> @@ -1002,6 +999,7 @@ KBUILD_CPPFLAGS +=3D $(call cc-option,-fmacro-prefix=
+-map=3D$(srctree)/=3D)
+>  # include additional Makefiles when needed
+>  include-y                      :=3D scripts/Makefile.extrawarn
+>  include-$(CONFIG_DEBUG_INFO)   +=3D scripts/Makefile.debug
+> +include-$(CONFIG_DEBUG_INFO_BTF)+=3D scripts/Makefile.btf
+>  include-$(CONFIG_KASAN)                +=3D scripts/Makefile.kasan
+>  include-$(CONFIG_KCSAN)                +=3D scripts/Makefile.kcsan
+>  include-$(CONFIG_KMSAN)                +=3D scripts/Makefile.kmsan
+> diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
+> new file mode 100644
+> index 000000000000..82377e470aed
+> --- /dev/null
+> +++ b/scripts/Makefile.btf
+> @@ -0,0 +1,19 @@
+> +# SPDX-License-Identifier: GPL-2.0
 > +
-> +       if (__bpf_dynptr_size(digest_ptr) < sizeof(struct fsverity_digest=
-))
-> +               return -EINVAL;
+> +pahole-ver :=3D $(CONFIG_PAHOLE_VERSION)
+> +pahole-flags-y :=3D
 > +
-> +       vi =3D fsverity_get_info(inode);
-> +       if (!vi)
-> +               return -ENODATA; /* not a verity file */
+> +# pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
+> +ifeq ($(call test-le, $(pahole-ver), 121),y)
+> +pahole-flags-$(call test-ge, $(pahole-ver), 118)       +=3D --skip_encod=
+ing_btf_vars
+> +endif
 > +
-> +       hash_alg =3D vi->tree_params.hash_alg;
+> +pahole-flags-$(call test-ge, $(pahole-ver), 121)       +=3D --btf_gen_fl=
+oats
 > +
-> +       arg->digest_algorithm =3D hash_alg - fsverity_hash_algs;
-> +       arg->digest_size =3D hash_alg->digest_size;
+> +pahole-flags-$(call test-ge, $(pahole-ver), 122)       +=3D -j
 > +
-> +       out_digest_sz =3D __bpf_dynptr_size(digest_ptr) - sizeof(struct f=
-sverity_digest);
+> +pahole-flags-$(CONFIG_PAHOLE_HAS_LANG_EXCLUDE)         +=3D --lang_exclu=
+de=3Drust
 > +
-> +       /* copy digest */
-> +       memcpy(arg->digest, vi->file_digest,  min_t(int, hash_alg->digest=
-_size, out_digest_sz));
+> +pahole-flags-$(call test-ge, $(pahole-ver), 125)       +=3D --skip_encod=
+ing_btf_inconsistent_proto --btf_gen_optimized
 > +
-> +       /* fill the extra buffer with zeros */
-> +       memset(arg->digest + arg->digest_size, 0, out_digest_sz - hash_al=
-g->digest_size);
-> +
-> +       return 0;
-> +}
-> +
-> +__diag_pop();
-> +
-> +BTF_SET8_START(fsverity_set)
-> +BTF_ID_FLAGS(func, bpf_get_fsverity_digest, KF_SLEEPABLE)
-> +BTF_SET8_END(fsverity_set)
-> +
-> +const struct btf_kfunc_id_set bpf_fsverity_set =3D {
-> +       .owner =3D THIS_MODULE,
-> +       .set =3D &fsverity_set,
-> +};
-> +
-> +static int __init bpf_fsverity_init(void)
-> +{
-> +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
-> +                                        &bpf_fsverity_set);
-> +}
-> +
-> +late_initcall(bpf_fsverity_init);
+> +export PAHOLE_FLAGS :=3D $(pahole-flags-y)
+> diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
+> deleted file mode 100755
+> index 728d55190d97..000000000000
+> --- a/scripts/pahole-flags.sh
+> +++ /dev/null
+> @@ -1,30 +0,0 @@
+> -#!/bin/sh
+> -# SPDX-License-Identifier: GPL-2.0
+> -
+> -extra_paholeopt=3D
+> -
+> -if ! [ -x "$(command -v ${PAHOLE})" ]; then
+> -       exit 0
+> -fi
+> -
+> -pahole_ver=3D$($(dirname $0)/pahole-version.sh ${PAHOLE})
+> -
+> -if [ "${pahole_ver}" -ge "118" ] && [ "${pahole_ver}" -le "121" ]; then
+> -       # pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
+> -       extra_paholeopt=3D"${extra_paholeopt} --skip_encoding_btf_vars"
+> -fi
+> -if [ "${pahole_ver}" -ge "121" ]; then
+> -       extra_paholeopt=3D"${extra_paholeopt} --btf_gen_floats"
+> -fi
+> -if [ "${pahole_ver}" -ge "122" ]; then
+> -       extra_paholeopt=3D"${extra_paholeopt} -j"
+> -fi
+> -if [ "${pahole_ver}" -ge "124" ]; then
+> -       # see PAHOLE_HAS_LANG_EXCLUDE
+> -       extra_paholeopt=3D"${extra_paholeopt} --lang_exclude=3Drust"
+> -fi
+> -if [ "${pahole_ver}" -ge "125" ]; then
+> -       extra_paholeopt=3D"${extra_paholeopt} --skip_encoding_btf_inconsi=
+stent_proto --btf_gen_optimized"
+> -fi
+> -
+> -echo ${extra_paholeopt}
 > --
-> 2.34.1
+> 2.40.1
 >
 
