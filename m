@@ -1,163 +1,140 @@
-Return-Path: <bpf+bounces-12406-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12405-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E23CA7CC345
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 14:35:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CDF07CC342
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 14:35:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C97FB211D2
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 12:35:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1768328188B
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 12:35:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C8142C02;
-	Tue, 17 Oct 2023 12:35:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="DLTrj+tO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9A742BF9;
+	Tue, 17 Oct 2023 12:34:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4BFF42C00;
-	Tue, 17 Oct 2023 12:35:22 +0000 (UTC)
-X-Greylist: delayed 317 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 17 Oct 2023 05:35:20 PDT
-Received: from mail.avm.de (mail.avm.de [212.42.244.119])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C54F2;
-	Tue, 17 Oct 2023 05:35:20 -0700 (PDT)
-Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
-	by mail.avm.de (Postfix) with ESMTPS;
-	Tue, 17 Oct 2023 14:29:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-	t=1697545797; bh=zLahxL+QXI3rfdx1iiel7NusxwDfyi7i9OT70ttG0sI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DLTrj+tOPB+cWfqo3Be1jRRCeHJzMzOdcWFEiMSPuJTH7boM/qyMZ+F31owpydLTi
-	 /dRJjk+1yCfUM9I46b96H/x9MmxF7O7mDQFUcKv6QvqT2d+0e2Qnca4cq+FVb/pu4T
-	 K4z+p/lIETLJdQmp5ev7O8R0hWHNAnt+uxQ05Tc4=
-Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
-	by mail-auth.avm.de (Postfix) with ESMTPA id 8F52280C3A;
-	Tue, 17 Oct 2023 14:29:57 +0200 (CEST)
-Received: by buildd.core.avm.de (Postfix, from userid 1000)
-	id 7A521180CD9; Tue, 17 Oct 2023 14:29:57 +0200 (CEST)
-Date: Tue, 17 Oct 2023 14:29:57 +0200
-From: Nicolas Schier <n.schier@avm.de>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Benno Lossin <benno.lossin@proton.me>,
-	=?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>, Gary Guo <gary@garyguo.net>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>, Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
-	rust-for-linux@vger.kernel.org
-Subject: Re: [PATCH 2/4] kbuild: avoid too many execution of
- scripts/pahole-flags.sh
-Message-ID: <ZS5+RcXh766bgHz3@buildd.core.avm.de>
-Mail-Followup-To: Masahiro Yamada <masahiroy@kernel.org>,
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Benno Lossin <benno.lossin@proton.me>,
-	=?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>, Gary Guo <gary@garyguo.net>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
-	rust-for-linux@vger.kernel.org
-References: <20231017103742.130927-1-masahiroy@kernel.org>
- <20231017103742.130927-2-masahiroy@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD09F42BF3;
+	Tue, 17 Oct 2023 12:34:56 +0000 (UTC)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5E4101;
+	Tue, 17 Oct 2023 05:34:52 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-99357737980so926820066b.2;
+        Tue, 17 Oct 2023 05:34:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697546089; x=1698150889;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u/XqDc9sG/4KnSxtdeA1TCIkGdrj0dQn8EvOZY/N0NE=;
+        b=tDVLsyUofWLxdmC5N3KM3Z6sxO9IU39AlYDSGFTiofWLljmGKtZReGywRoAPttVYUK
+         6SRblw7zxeTDbKWn0OnpbKYWEaKa74gugTlXL8YQgYCaQrCH2Mat6L0KoOrIdcsEcVL2
+         RXOVxfovNzrDFPQT031zQZqXdUJdHCFALZHdMCGKcQ4hT1fYyd/agN8PPsQpfktqeHca
+         sGdfQSqURVSZbvXh0AFfc3eicrNZRr7pjtxErUEZ6PovKbIwjFYq2wWhe70YACMqnIUu
+         CF8fRbFKz5SD3AqSBXU3CfjCuM8lP4I/HcYKDVCl4dfZrhtBswchZu7tzQYr+dchM8N4
+         kqRw==
+X-Gm-Message-State: AOJu0YxhZF5lN90Ml82rfefm4FdqUqcJ2/eQIqdWawRnkT2eDDJpSY2o
+	izN6JXsftt1f5yu3i+8baC0=
+X-Google-Smtp-Source: AGHT+IHAumeXbSxFFz9KsI+FT2kivwPXTkExyh5Y2KSA5CDXQBaYmK2h/R/lnaD9sCEe/4CInrj5qA==
+X-Received: by 2002:a17:907:3182:b0:9b9:fce8:e073 with SMTP id xe2-20020a170907318200b009b9fce8e073mr1526408ejb.26.1697546089188;
+        Tue, 17 Oct 2023 05:34:49 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-119.fbsv.net. [2a03:2880:31ff:77::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 29-20020a170906001d00b0099bd5d28dc4sm1181919eja.195.2023.10.17.05.34.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 05:34:48 -0700 (PDT)
+Date: Tue, 17 Oct 2023 05:34:46 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Gabriel Krisman Bertazi <krisman@suse.de>, martin.lau@linux.dev,
+	sdf@google.com
+Cc: sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
+	willemdebruijn.kernel@gmail.com, kuba@kernel.org, pabeni@redhat.com,
+	martin.lau@linux.dev, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	io-uring@vger.kernel.org,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	Stefan Metzmacher <metze@samba.org>,
+	Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [PATCH v7 06/11] tools headers: Grab copy of io_uring.h
+Message-ID: <ZS5/Zk60X0+ZX+hf@gmail.com>
+References: <20231016134750.1381153-1-leitao@debian.org>
+ <20231016134750.1381153-7-leitao@debian.org>
+ <652d877c.250a0220.b0af2.3a66SMTPIN_ADDED_BROKEN@mx.google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231017103742.130927-2-masahiroy@kernel.org>
-X-purgate-ID: 149429::1697545797-CBE3C0EE-94F75A2F/0/0
-X-purgate-type: clean
-X-purgate-size: 1635
-X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
-X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
-X-purgate: clean
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.6
+In-Reply-To: <652d877c.250a0220.b0af2.3a66SMTPIN_ADDED_BROKEN@mx.google.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-> Subject: kbuild: avoid too many execution of scripts/pahole-flags.sh
-executions?
+Hello Gabriel,
 
-On Tue, Oct 17, 2023 at 07:37:40PM +0900, Masahiro Yamada wrote:
-> scripts/pahole-flags.sh is executed so many times.
+On Mon, Oct 16, 2023 at 02:56:55PM -0400, Gabriel Krisman Bertazi wrote:
+> Breno Leitao <leitao@debian.org> writes:
 > 
-> You can check how many times it is invoked during the build, as follows:
+> > This file will be used by mini_uring.h and allow tests to run without
+> > the need of installing liburing to run the tests.
+> >
+> > This is needed to run io_uring tests in BPF, such as
+> > (tools/testing/selftests/bpf/prog_tests/sockopt.c).
+> >
+> > Signed-off-by: Breno Leitao <leitao@debian.org>
 > 
->   $ cat <<EOF >> scripts/pahole-flags.sh
->   > echo "scripts/pahole-flags.sh was executed" >&2
->   > EOF
-> 
->   $ make -s
->   scripts/pahole-flags.sh was executed
->   scripts/pahole-flags.sh was executed
->   scripts/pahole-flags.sh was executed
->   scripts/pahole-flags.sh was executed
->   scripts/pahole-flags.sh was executed
->     [ lots of repeated lines suppressed... ]
-> 
-> This scripts is exectuted more than 20 times during the kernel build
+> Can't mini_uring rely on the kernel header like
+> selftests/net/io_uring_zerocopy_tx.c does?
 
-executed
+Before this patch, io_uring_zerocopy_tx was not relying on "make
+headers" headers, as far as I know. I think it was not a problem because
+there was no CI running the test, and whoever was running the test was
+relying on local io_uring headers.
 
-> because PAHOLE_FLAGS is a recursively expanded variable and exported
-> to sub-processes.
-> 
-> With the GNU Make >= 4.4, it is executed more than 60 times because
-> exported variables are also passed to other $(shell ) invocations.
-> Without careful coding, it is known to cause an exponential fork
-> explosion. [1]
-> 
-> The use of $(shell ) in an exported recursive variable is likely wrong
-> because $(shell ) is always evaluated due to the 'export' keyword, and
-> the evaluation can occur multiple times by the nature of recursive
-> variables.
-> 
-> Convert the shell script to a Makefile, which is included only when
-> CONFIG_DEBUG_INFO_BTF=y.
-> 
-> [1]: https://savannah.gnu.org/bugs/index.php?64746
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+My patch is, in fact,  adding the following flag, which relies on the
+headers now on:
 
-Thanks, looks good to me!
+	+$(OUTPUT)/io_uring_zerocopy_tx: CFLAGS += -I../../../include/
 
-Reviewed-by: Nicolas Schier <n.schier@avm.de>
+> I ask because this will be the third copy of these
+> definitions that we're gonna need to keep in sync (kernel, liburing and
+> here). Given this is only used for selftests, we better avoid the
+> duplication.
+
+Right, I don't know why this was the suggested way, but, that is how
+people are using it.
+
+I can definitely get rid of the copy and do the same mechanism as
+io_uring_zerocopy_tx. This is what I've tested, and it worked fine.
+
+---
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 4225f975fce3..9f79a392acc1 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -383,6 +383,8 @@ BPF_CFLAGS = -g -Wall -Werror -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) \
+ CLANG_CFLAGS = $(CLANG_SYS_INCLUDES) \
+               -Wno-compare-distinct-pointer-types
+
++HEADER_CFLAGS = -I$(abspath $(OUTPUT)/../../../../usr/include)
++
+ $(OUTPUT)/test_l4lb_noinline.o: BPF_CFLAGS += -fno-inline
+ $(OUTPUT)/test_xdp_noinline.o: BPF_CFLAGS += -fno-inline
+
+@@ -551,7 +553,7 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:                   \
+                      $(TRUNNER_BPF_SKELS_LINKED)                       \
+                      $$(BPFOBJ) | $(TRUNNER_OUTPUT)
+        $$(call msg,TEST-OBJ,$(TRUNNER_BINARY),$$@)
+-       $(Q)cd $$(@D) && $$(CC) -I. $$(CFLAGS) -c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
++       $(Q)cd $$(@D) && $$(CC) -I. $$(CFLAGS) $$(HEADER_CFLAGS) -c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
+
 
