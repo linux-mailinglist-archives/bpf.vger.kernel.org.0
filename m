@@ -1,92 +1,93 @@
-Return-Path: <bpf+bounces-12357-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12358-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D254D7CB736
-	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 01:53:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 165177CB73E
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 02:00:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AB4C28180C
-	for <lists+bpf@lfdr.de>; Mon, 16 Oct 2023 23:53:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 475F41C20BA3
+	for <lists+bpf@lfdr.de>; Tue, 17 Oct 2023 00:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31AC63AC2C;
-	Mon, 16 Oct 2023 23:53:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83DCD468F;
+	Tue, 17 Oct 2023 00:00:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bb0Xz1yX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WGsYxnhU"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31165347A5;
-	Mon, 16 Oct 2023 23:53:27 +0000 (UTC)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E9A93;
-	Mon, 16 Oct 2023 16:53:25 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-406650da82bso46816845e9.3;
-        Mon, 16 Oct 2023 16:53:25 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74CD41864F;
+	Tue, 17 Oct 2023 00:00:45 +0000 (UTC)
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA5F93;
+	Mon, 16 Oct 2023 17:00:43 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a7db1f864bso61110487b3.3;
+        Mon, 16 Oct 2023 17:00:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697500404; x=1698105204; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0VEVqtbhTZ62Wt4BNsx/63ghGB/h6YT4GupgB+U3dfc=;
-        b=bb0Xz1yXNb2sHQ3xC3CXxWgQe6ZCXuPffo+qa+iwpa9Lt0MUmiLSLOOsvDR6UtHM4B
-         TTM5TVvEoYoz2liqVMYiKY51083wyyZ7hVWd3ANRa+1SDU1L34H8AGYjbW30FGiY62VP
-         Ly66nl/ywm69zoWmrMynVdM3l2QVd8osP0yYsuAZUxSxdx8ZSMJU7QXn+I/lo2Tvs3zm
-         MnRzg3X0Cr7hYYrhKQrgMa2p05t8BaoxBskPicLUza2scRMNEOWOzUVIWx6lbyIcUZrm
-         19j24h5UIp9L8KchCN4uq0b6EmEV1q5pqdefyTPlgXd2OvANZcwl/mpW7oGB3l38InCy
-         2siQ==
+        d=gmail.com; s=20230601; t=1697500843; x=1698105643; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=upT2SOaSlFax2SLg8LDtHnOPLY2rWaXpDNXwsy0h3Fk=;
+        b=WGsYxnhUgIjCfUWNaRw8ftFQvnkTfotNwUU6KUQmBVCDgCtfp4u9Q15KCaVxb+cdCR
+         dCPtBqO+Sv7l3PsMzEdYvbXjkT1ZIXvHv8MxJTzwWfEdErIoCcJZTmpVTf4+qYCOfMbq
+         4lFyq+74VSxjdQ7J2VFOHgp0VQO0eo8WmMMImePSIvUVXPdJt1X1R2LpdMGnP5DLAJPe
+         qjApmRqmMcJGy/XlN/0doOW/L1rgwzQjHfxwauYVoE2UBLxcyWQLtV1NIZqF/nMPlbtl
+         JIpXe5weayIMx+/fsMd+rMfcaKPTrDYU56Kyxkr5ajDJElwiVt/84s3c5dHnbLbkU0s9
+         1Xwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697500404; x=1698105204;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0VEVqtbhTZ62Wt4BNsx/63ghGB/h6YT4GupgB+U3dfc=;
-        b=pRatSAan9ql82OmtnAEv343cGrbq620k0xwFUGc25/Z65bYROIrGs0X092k1bWkwI1
-         y+/fUQyZxAxp6A2s9AR5DSb32EwcbeDsIHG8gyF24jSK0G2pdl+ERNf0xXHhwggG+sZG
-         7WujquDYzzzia3+8SjgWd9eJbt64+PZdrE5H2cojlAa4dAxPS5ovvWf3MJlG8jGp8EsT
-         WbT84GkAucTOiwyW1niES6X2d1VuIhvQhw4iVj2VY/87xg+wJuVLQM0cjg29TlqPqX8D
-         dSlvUuE+uZPu4cnK1uNEjfngZ8BYcPXv593lkJgggIsOjRRB3xB06MHhO8vFKfdkrKcA
-         U3xQ==
-X-Gm-Message-State: AOJu0Yw82DiKHjuEwQK/JnbQZyF15Wh9HsKXkxnNvN/G2dggG+O28Gv7
-	f8Odgd0qy4cQDDvjFFK5gJpnkZA9EL4ZeoYovzahYuWq1R0=
-X-Google-Smtp-Source: AGHT+IF1BuNjnsWI6nItlbieev+STDfI8LZWyBbAFr7V6O8+/fhS7AV6KvGufUNVb5YGTQIWA1gzYmteJZKw5LQ/Qio=
-X-Received: by 2002:a5d:63cc:0:b0:32d:b8f8:2b18 with SMTP id
- c12-20020a5d63cc000000b0032db8f82b18mr715262wrw.32.1697500403744; Mon, 16 Oct
- 2023 16:53:23 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697500843; x=1698105643;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=upT2SOaSlFax2SLg8LDtHnOPLY2rWaXpDNXwsy0h3Fk=;
+        b=r7JeTUHkYdrGoHTI8ZEBW95tsNm+1HOCRl7ClhUgq8LJfHJi3b3WOyi9jUcJAADOZo
+         ll1siXe2nvA8qQJXlIr7HziNNUtRWHEnscKoTP4cD0GeS8CEKpYjUSCccM5/oKDJiqI4
+         Cgs1PAfzZpIPpjebJEhf0RlaGwe95Y0+nB/EaBKZTg4I/5nrL2QAb6wjQO+w257ksNm6
+         PL1pOEgBzaQUKtQbNs42GaQbhGrfb4N1JMqeSvutNm/YsZGVd98ZubtrxVCmSFoqi+3K
+         LhrLP0o5HK4r3+ytoxYQ3EL6dNpZQA8TjEt4tVodFVmSz4gmzc82jEY0KuETsMJC9k39
+         uYPA==
+X-Gm-Message-State: AOJu0YzhSlnIE7NV/g5wWWJv7Sbh0/FDGns6qN6kXe6u9HIc06tJ7G5b
+	ZEt+/f5XFTtAWhC+tavwsjs=
+X-Google-Smtp-Source: AGHT+IGNIDIJESdR6oou3kp6rQDvkjrkmJQajbAyh07uYV0h1QeCQwFyf0Mz27sbFzJNV17i6h4XRw==
+X-Received: by 2002:a81:7157:0:b0:5a7:aaac:2bce with SMTP id m84-20020a817157000000b005a7aaac2bcemr732300ywc.35.1697500842740;
+        Mon, 16 Oct 2023 17:00:42 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:ee9:2f3e:b2a:a5c3? ([2600:1700:6cf8:1240:ee9:2f3e:b2a:a5c3])
+        by smtp.gmail.com with ESMTPSA id fc10-20020a05690c314a00b00577269ba9e9sm128325ywb.86.2023.10.16.17.00.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 17:00:42 -0700 (PDT)
+Message-ID: <effba957-26ce-4b04-841a-40c863e6931f@gmail.com>
+Date: Mon, 16 Oct 2023 17:00:39 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231015141644.260646-1-akihiko.odaki@daynix.com>
- <20231015141644.260646-2-akihiko.odaki@daynix.com> <CAADnVQLfUDmgYng8Cw1hiZOMfWNWLjbn7ZGc4yOEz-XmeFEz5Q@mail.gmail.com>
- <2594bb24-74dc-4785-b46d-e1bffcc3e7ed@daynix.com>
-In-Reply-To: <2594bb24-74dc-4785-b46d-e1bffcc3e7ed@daynix.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 16 Oct 2023 16:53:11 -0700
-Message-ID: <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/7] bpf: Introduce BPF_PROG_TYPE_VNET_HASH
-To: Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jason Wang <jasowang@redhat.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, kvm@vger.kernel.org, 
-	virtualization@lists.linux-foundation.org, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
-	Yuri Benditovich <yuri.benditovich@daynix.com>, Andrew Melnychenko <andrew@daynix.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 bpf-next 03/11] tcp: Clean up goto labels in
+ cookie_v[46]_check().
+To: Kuniyuki Iwashima <kuniyu@amazon.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ David Ahern <dsahern@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>
+Cc: Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org
+References: <20231013220433.70792-1-kuniyu@amazon.com>
+ <20231013220433.70792-4-kuniyu@amazon.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20231013220433.70792-4-kuniyu@amazon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -94,62 +95,107 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sun, Oct 15, 2023 at 10:10=E2=80=AFAM Akihiko Odaki <akihiko.odaki@dayni=
-x.com> wrote:
->
-> On 2023/10/16 1:07, Alexei Starovoitov wrote:
-> > On Sun, Oct 15, 2023 at 7:17=E2=80=AFAM Akihiko Odaki <akihiko.odaki@da=
-ynix.com> wrote:
-> >>
-> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> >> index 0448700890f7..298634556fab 100644
-> >> --- a/include/uapi/linux/bpf.h
-> >> +++ b/include/uapi/linux/bpf.h
-> >> @@ -988,6 +988,7 @@ enum bpf_prog_type {
-> >>          BPF_PROG_TYPE_SK_LOOKUP,
-> >>          BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls=
- */
-> >>          BPF_PROG_TYPE_NETFILTER,
-> >> +       BPF_PROG_TYPE_VNET_HASH,
-> >
-> > Sorry, we do not add new stable program types anymore.
-> >
-> >> @@ -6111,6 +6112,10 @@ struct __sk_buff {
-> >>          __u8  tstamp_type;
-> >>          __u32 :24;              /* Padding, future use. */
-> >>          __u64 hwtstamp;
-> >> +
-> >> +       __u32 vnet_hash_value;
-> >> +       __u16 vnet_hash_report;
-> >> +       __u16 vnet_rss_queue;
-> >>   };
-> >
-> > we also do not add anything to uapi __sk_buff.
-> >
-> >> +const struct bpf_verifier_ops vnet_hash_verifier_ops =3D {
-> >> +       .get_func_proto         =3D sk_filter_func_proto,
-> >> +       .is_valid_access        =3D sk_filter_is_valid_access,
-> >> +       .convert_ctx_access     =3D bpf_convert_ctx_access,
-> >> +       .gen_ld_abs             =3D bpf_gen_ld_abs,
-> >> +};
-> >
-> > and we don't do ctx rewrites like this either.
-> >
-> > Please see how hid-bpf and cgroup rstat are hooking up bpf
-> > in _unstable_ way.
->
-> Can you describe what "stable" and "unstable" mean here? I'm new to BPF
-> and I'm worried if it may mean the interface stability.
->
-> Let me describe the context. QEMU bundles an eBPF program that is used
-> for the "eBPF steering program" feature of tun. Now I'm proposing to
-> extend the feature to allow to return some values to the userspace and
-> vhost_net. As such, the extension needs to be done in a way that ensures
-> interface stability.
 
-bpf is not an option then.
-we do not add stable bpf program types or hooks any more.
-If a kernel subsystem wants to use bpf it needs to accept the fact
-that such bpf extensibility will be unstable and subsystem maintainers
-can decide to remove such bpf support in the future.
+
+On 10/13/23 15:04, Kuniyuki Iwashima wrote:
+> We will add a SOCK_OPS hook to validate SYN Cookie.
+> 
+> We invoke the hook after allocating reqsk.  In case it fails,
+> we will respond with RST instead of just dropping the ACK.
+> 
+> Then, there would be more duplicated error handling patterns.
+> To avoid that, let's clean up goto labels.
+> 
+> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> ---
+>   net/ipv4/syncookies.c | 22 +++++++++++-----------
+>   net/ipv6/syncookies.c |  4 ++--
+>   2 files changed, 13 insertions(+), 13 deletions(-)
+> 
+> diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
+> index 64280cf42667..b0cf6f4d66d8 100644
+> --- a/net/ipv4/syncookies.c
+> +++ b/net/ipv4/syncookies.c
+> @@ -369,11 +369,10 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
+>   	if (!cookie_timestamp_decode(net, &tcp_opt))
+>   		goto out;
+>   
+> -	ret = NULL;
+>   	req = cookie_tcp_reqsk_alloc(&tcp_request_sock_ops,
+>   				     &tcp_request_sock_ipv4_ops, sk, skb);
+>   	if (!req)
+> -		goto out;
+> +		goto out_drop;
+>   
+>   	ireq = inet_rsk(req);
+>   	treq = tcp_rsk(req);
+> @@ -405,10 +404,8 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
+>   	 */
+>   	RCU_INIT_POINTER(ireq->ireq_opt, tcp_v4_save_options(net, skb));
+>   
+> -	if (security_inet_conn_request(sk, skb, req)) {
+> -		reqsk_free(req);
+> -		goto out;
+> -	}
+> +	if (security_inet_conn_request(sk, skb, req))
+> +		goto out_free;
+>   
+>   	req->num_retrans = 0;
+>   
+> @@ -425,10 +422,8 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
+>   			   ireq->ir_loc_addr, th->source, th->dest, sk->sk_uid);
+>   	security_req_classify_flow(req, flowi4_to_flowi_common(&fl4));
+>   	rt = ip_route_output_key(net, &fl4);
+> -	if (IS_ERR(rt)) {
+> -		reqsk_free(req);
+> -		goto out;
+> -	}
+> +	if (IS_ERR(rt))
+> +		goto out_free;
+>   
+>   	/* Try to redo what tcp_v4_send_synack did. */
+>   	req->rsk_window_clamp = tp->window_clamp ? :dst_metric(&rt->dst, RTAX_WINDOW);
+> @@ -452,5 +447,10 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
+>   	 */
+>   	if (ret)
+>   		inet_sk(ret)->cork.fl.u.ip4 = fl4;
+> -out:	return ret;
+> +out:
+> +	return ret;
+> +out_free:
+> +	reqsk_free(req);
+> +out_drop:
+> +	return NULL;
+>   }
+
+Looks like you don't use out_free and out_drop at all
+in the patch 5 & 6. Are these changes still necessary?
+Especially, the line 'goto out_drop' can be 'return NULL' concisely.
+
+
+> diff --git a/net/ipv6/syncookies.c b/net/ipv6/syncookies.c
+> index cbee2df8a006..b8ef6efbb60e 100644
+> --- a/net/ipv6/syncookies.c
+> +++ b/net/ipv6/syncookies.c
+> @@ -171,11 +171,10 @@ struct sock *cookie_v6_check(struct sock *sk, struct sk_buff *skb)
+>   	if (!cookie_timestamp_decode(net, &tcp_opt))
+>   		goto out;
+>   
+> -	ret = NULL;
+>   	req = cookie_tcp_reqsk_alloc(&tcp6_request_sock_ops,
+>   				     &tcp_request_sock_ipv6_ops, sk, skb);
+>   	if (!req)
+> -		goto out;
+> +		goto out_drop;
+>   
+>   	ireq = inet_rsk(req);
+>   	treq = tcp_rsk(req);
+> @@ -263,5 +262,6 @@ struct sock *cookie_v6_check(struct sock *sk, struct sk_buff *skb)
+>   	return ret;
+>   out_free:
+>   	reqsk_free(req);
+> +out_drop:
+>   	return NULL;
+>   }
+Same here!
 
