@@ -1,131 +1,126 @@
-Return-Path: <bpf+bounces-12533-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12534-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF2757CD7B8
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 11:19:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B8497CD841
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 11:35:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87EC6B20F45
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 09:19:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27232B211C9
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 09:35:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0227717993;
-	Wed, 18 Oct 2023 09:19:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F85E18045;
+	Wed, 18 Oct 2023 09:35:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gw3BBQSI"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7745E134BF;
-	Wed, 18 Oct 2023 09:19:34 +0000 (UTC)
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784B5F9;
-	Wed, 18 Oct 2023 02:19:32 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R921e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VuQCd7i_1697620768;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VuQCd7i_1697620768)
-          by smtp.aliyun-inc.com;
-          Wed, 18 Oct 2023 17:19:29 +0800
-Message-ID: <1697620622.3183842-4-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost 02/22] virtio_ring: introduce virtqueue_dma_[un]map_page_attrs
-Date: Wed, 18 Oct 2023 17:17:02 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Jason Wang <jasowang@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- netdev@vger.kernel.org,
- bpf@vger.kernel.org,
- virtualization@lists.linux-foundation.org
-References: <20231011092728.105904-1-xuanzhuo@linux.alibaba.com>
- <20231011092728.105904-3-xuanzhuo@linux.alibaba.com>
- <1697615580.6880193-1-xuanzhuo@linux.alibaba.com>
- <20231018035751-mutt-send-email-mst@kernel.org>
- <1697616022.630633-2-xuanzhuo@linux.alibaba.com>
- <20231018044204-mutt-send-email-mst@kernel.org>
- <1697619441.5367694-3-xuanzhuo@linux.alibaba.com>
- <20231018051201-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20231018051201-mutt-send-email-mst@kernel.org>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DEF918038
+	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 09:35:29 +0000 (UTC)
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45ECCF7;
+	Wed, 18 Oct 2023 02:35:28 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c8a1541232so57257295ad.0;
+        Wed, 18 Oct 2023 02:35:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697621728; x=1698226528; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=psAbZY+RKpKnuz5/JIWWeE0XC1sus4pMagqwUPmeN2E=;
+        b=Gw3BBQSIjI0j3LnnO8TS2PGWDLAzMq8MJlOAm+DhBRBP/PDtLYMyVYvod5ymv2Aytr
+         HGc4cxfvAyhgEDvmtV4wK22tmViSjtCl52RRMZ+2FWSsEFxSp+fIRt0wjA1+S1y37XHi
+         0aFhFpJ7doMm+Kh7JdUsy0DfA914XuijFFkenbzRlT+2dUguE6GglDeOIR19FQByR31w
+         ciOaXfCP3QaS5j4M8HyPc/jckV+w65TjVWRVL/1ihPNGsxqiilo22m0O2xeIpxIgls6A
+         bvUZIRk9l3nILGJ4W8NcFMZ1jjwKn3QAQ0o+V2CUemHINT5FkVA5GU17EF4FWrMF7jlh
+         2t1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697621728; x=1698226528;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=psAbZY+RKpKnuz5/JIWWeE0XC1sus4pMagqwUPmeN2E=;
+        b=isSCtDpAE8wnBBhlkBDtPRaseTTwWSZnFIVqlR0DedRUiVpLYo4NmH8WrhD8gocFZh
+         X0llAxC0SL70ArLMqluMdRqQf29GracU5Kj01gYarPzOhL4EedNWIVPq0hjCDdsaC+oE
+         4nTgR2x1aErvyGwa931MGIFnydOmbXPbvdscduRdCKyUjbpcgn3ZMQ0Soa3p/qk0XW9u
+         lh2u7jJ0CpNFjmoM/zOWLun2/wIJ9G+wc0A2GDTAhO7LLTMQJxXpDOOmZpHtbtNCjRw8
+         tkQUEfW553VHShAMc27x5tVNPJCsNzCPqpeEsJRdOvUxJFQV2+7gJH4AF9EJ0YyWfNi6
+         xO1w==
+X-Gm-Message-State: AOJu0Yygo9TdgyksWABIgF9XQ11kHvnDFJlVyMvWhzY2jt1BRIjQexNs
+	053TRgQ94aJRF3rjDsmlZeKx0wklZB3Bmg==
+X-Google-Smtp-Source: AGHT+IGnz698gk8G5P3tfjcfQSu+6RdXhcejf0IlwNxYpxiHaAIhNCPfel926XOHOBCBzkVFgZfv9w==
+X-Received: by 2002:a17:903:41cd:b0:1ca:9507:52 with SMTP id u13-20020a17090341cd00b001ca95070052mr5431903ple.67.1697621727580;
+        Wed, 18 Oct 2023 02:35:27 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id z15-20020a1709027e8f00b001c726147a45sm3126886pla.190.2023.10.18.02.35.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 02:35:27 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 17 Oct 2023 23:35:26 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+	haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com,
+	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com,
+	sinquersw@gmail.com, cgroups@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next v2 1/9] cgroup: Make operations on the
+ cgroup root_list RCU safe
+Message-ID: <ZS-m3t-_daPzEsJL@slm.duckdns.org>
+References: <20231017124546.24608-1-laoar.shao@gmail.com>
+ <20231017124546.24608-2-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231017124546.24608-2-laoar.shao@gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Wed, 18 Oct 2023 05:13:44 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> On Wed, Oct 18, 2023 at 04:57:21PM +0800, Xuan Zhuo wrote:
-> > On Wed, 18 Oct 2023 04:44:24 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> > > On Wed, Oct 18, 2023 at 04:00:22PM +0800, Xuan Zhuo wrote:
-> > > > On Wed, 18 Oct 2023 03:59:03 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> > > > > On Wed, Oct 18, 2023 at 03:53:00PM +0800, Xuan Zhuo wrote:
-> > > > > > Hi Michael,
-> > > > > >
-> > > > > > Do you think it's appropriate to push the first two patches of this patch set to
-> > > > > > linux 6.6?
-> > > > > >
-> > > > > > Thanks.
-> > > > >
-> > > > > I generally treat patchsets as a whole unless someone asks me to do
-> > > > > otherwise. Why do you want this?
-> > > >
-> > > > As we discussed, the patch set supporting AF_XDP will be push to net-next.
-> > > > But the two patchs belong to the vhost.
-> > > >
-> > > > So, if you think that is appropriate, I will post a new patchset(include the two
-> > > > patchs without virtio-net + AF_XDP) to vhost. I wish that can be merged to 6.6.
-> > >
-> > > Oh wait 6.6? Too late really, merge window has been closed for weeks.
-> >
-> > I mean as a fix. So I ask you do you think it is appropriate?
->
-> Sure if there's a bugfix please post is separately - what issues do
-> these two patches fix? this is the part I'm missing. Especially patch 2
-> which just adds a new API.
+On Tue, Oct 17, 2023 at 12:45:38PM +0000, Yafang Shao wrote:
+>  #define for_each_root(root)						\
+> -	list_for_each_entry((root), &cgroup_roots, root_list)
+> +	list_for_each_entry_rcu((root), &cgroup_roots, root_list,	\
+> +				!lockdep_is_held(&cgroup_mutex))
 
+Shouldn't that be lockdep_is_held() without the leading negation?
 
-No bugfix. That is the requirement of the supporting AF_XDP.
+> @@ -1386,13 +1386,15 @@ static inline struct cgroup *__cset_cgroup_from_root(struct css_set *cset,
+>  		}
+>  	}
+>  
+> -	BUG_ON(!res_cgroup);
+> +	WARN_ON_ONCE(!res_cgroup && lockdep_is_held(&cgroup_mutex));
 
-So please ignore my question. Sorry ^_^.
+This doesn't work. lockdep_is_held() is always true if !PROVE_LOCKING.
+
+>  	return res_cgroup;
+>  }
+>  
+>  /*
+>   * look up cgroup associated with current task's cgroup namespace on the
+> - * specified hierarchy
+> + * specified hierarchy. Umount synchronization is ensured via VFS layer,
+> + * so we don't have to hold cgroup_mutex to prevent the root from being
+> + * destroyed.
+>   */
+
+Yeah, as Michal said, let's not do it this way.
 
 Thanks.
 
-
->
-> > >
-> > > > Then when the 6.7 net-next merge window is open, I can push this patch set to 6.7.
-> > > > The v1 version use the virtqueue_dma_map_single_attrs to replace
-> > > > virtqueue_dma_map_page_attrs. But I think we should use virtqueue_dma_map_page_attrs.
-> > > >
-> > > > Thanks.
-> > > >
-> > >
-> > > Get a complete working patchset that causes no regressions posted first please
-> > > then we will discuss merge strategy.
-> > > I would maybe just put everything in one file for now, easier to merge,
-> > > refactor later when it's all upstream. But up to you.
-> >
-> > OK. I will get a working patchset firstly.
-> >
-> > Thanks.
-> >
-> > >
-> > >
-> > > > >
-> > > > > --
-> > > > > MST
-> > > > >
-> > >
->
+-- 
+tejun
 
