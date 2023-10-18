@@ -1,369 +1,116 @@
-Return-Path: <bpf+bounces-12563-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12564-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ACB47CDA7A
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 13:33:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8C677CDAF0
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 13:47:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 202A7281C3E
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 11:33:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7496EB211F2
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 11:47:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18F782F51E;
-	Wed, 18 Oct 2023 11:32:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA0B30F85;
+	Wed, 18 Oct 2023 11:47:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 958BA1946C
-	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 11:32:45 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60F519F
-	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 04:32:40 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4S9TGn4pLGz4f3pG3
-	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 19:32:33 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgDnfd1Mwi9l9jYmDQ--.41845S11;
-	Wed, 18 Oct 2023 19:32:36 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org,
-	linux-mm@kvack.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	houtao1@huawei.com,
-	Dennis Zhou <dennis@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	Christoph Lameter <cl@linux.com>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH bpf-next v2 7/7] selftests/bpf: Add more test cases for bpf memory allocator
-Date: Wed, 18 Oct 2023 19:33:43 +0800
-Message-Id: <20231018113343.2446300-8-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20231018113343.2446300-1-houtao@huaweicloud.com>
-References: <20231018113343.2446300-1-houtao@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA56814F8F;
+	Wed, 18 Oct 2023 11:47:20 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75152112;
+	Wed, 18 Oct 2023 04:47:19 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S9TVJ4M6WzvQ7d;
+	Wed, 18 Oct 2023 19:42:32 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 18 Oct
+ 2023 19:47:17 +0800
+Subject: Re: [PATCH net-next v11 0/6] introduce page_pool_alloc() related API
+To: Jakub Kicinski <kuba@kernel.org>
+CC: <davem@davemloft.net>, <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, Matthias Brugger
+	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, <bpf@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	Alexander Duyck <alexander.duyck@gmail.com>
+References: <20231013064827.61135-1-linyunsheng@huawei.com>
+ <20231016182725.6aa5544f@kernel.org>
+ <2059ea42-f5cb-1366-804e-7036fb40cdaa@huawei.com>
+ <20231017081303.769e4fbe@kernel.org>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <67f2af29-59b8-a9e2-1c31-c9a625e4c4b3@huawei.com>
+Date: Wed, 18 Oct 2023 19:47:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDnfd1Mwi9l9jYmDQ--.41845S11
-X-Coremail-Antispam: 1UD129KBjvJXoW3Wr4rXw15Cw4kJw1fJFyrJFb_yoWfArW5pF
-	y0yrySyr1kWr1Igw1Yvw48C34rZF4fWw15GrZ5WFyUury3XryUArn5CFyUJF95GFZ2gr45
-	Aas0gF97KF4xA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBSb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0x
-	vE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAI
-	cVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2js
-	IEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUFgAwUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+In-Reply-To: <20231017081303.769e4fbe@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Hou Tao <houtao1@huawei.com>
+On 2023/10/17 23:13, Jakub Kicinski wrote:
+> On Tue, 17 Oct 2023 15:56:48 +0800 Yunsheng Lin wrote:
+>>> And I can't figure out now what the "cache" in the name is referring to.
+>>> Looks like these are just convenience wrappers which return VA instead
+>>> of struct page..  
+>>
+>> Yes, it is corresponding to some API like napi_alloc_frag() returning va
+>> instead of 'struct page' mentioned in patch 5.
+>>
+>> Anyway, naming is hard, any suggestion for a better naming is always
+>> welcomed:)
+> 
+> I'd just throw a _va (for virtual address) at the end. And not really
 
-Add the following 3 test cases for bpf memory allocator:
-1) Do allocation in bpf program and free through map free
-2) Do batch per-cpu allocation and per-cpu free in bpf program
-3) Do per-cpu allocation in bpf program and free through map free
+_va seems fine:)
 
-For per-cpu allocation, because per-cpu allocation can not refill timely
-sometimes, so test 2) and test 3) consider it is OK for
-bpf_percpu_obj_new_impl() to return NULL.
+> mention it in the documentation. Plus the kdoc of the function should
+> say that this is just a thin wrapper around other page pool APIs, and
+> it's safe to mix it with other page pool APIs?
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/prog_tests/test_bpf_ma.c    |  20 +-
- .../testing/selftests/bpf/progs/test_bpf_ma.c | 180 +++++++++++++++++-
- 2 files changed, 193 insertions(+), 7 deletions(-)
+I am not sure I understand what do 'safe' and 'mix' mean here.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpf_ma.c b/tools/testing/selftests/bpf/prog_tests/test_bpf_ma.c
-index 0cca4e8ae38e..d3491a84b3b9 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_bpf_ma.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_bpf_ma.c
-@@ -9,9 +9,10 @@
- 
- #include "test_bpf_ma.skel.h"
- 
--void test_test_bpf_ma(void)
-+static void do_bpf_ma_test(const char *name)
- {
- 	struct test_bpf_ma *skel;
-+	struct bpf_program *prog;
- 	struct btf *btf;
- 	int i, err;
- 
-@@ -34,6 +35,11 @@ void test_test_bpf_ma(void)
- 		skel->rodata->data_btf_ids[i] = id;
- 	}
- 
-+	prog = bpf_object__find_program_by_name(skel->obj, name);
-+	if (!ASSERT_OK_PTR(prog, "invalid prog name"))
-+		goto out;
-+	bpf_program__set_autoload(prog, true);
-+
- 	err = test_bpf_ma__load(skel);
- 	if (!ASSERT_OK(err, "load"))
- 		goto out;
-@@ -48,3 +54,15 @@ void test_test_bpf_ma(void)
- out:
- 	test_bpf_ma__destroy(skel);
- }
-+
-+void test_test_bpf_ma(void)
-+{
-+	if (test__start_subtest("batch_alloc_free"))
-+		do_bpf_ma_test("test_batch_alloc_free");
-+	if (test__start_subtest("free_through_map_free"))
-+		do_bpf_ma_test("test_free_through_map_free");
-+	if (test__start_subtest("batch_percpu_alloc_free"))
-+		do_bpf_ma_test("test_batch_percpu_alloc_free");
-+	if (test__start_subtest("percpu_free_through_map_free"))
-+		do_bpf_ma_test("test_percpu_free_through_map_free");
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_ma.c b/tools/testing/selftests/bpf/progs/test_bpf_ma.c
-index ecde41ae0fc8..b685a4aba6bd 100644
---- a/tools/testing/selftests/bpf/progs/test_bpf_ma.c
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_ma.c
-@@ -37,10 +37,20 @@ int pid = 0;
- 		__type(key, int); \
- 		__type(value, struct map_value_##_size); \
- 		__uint(max_entries, 128); \
--	} array_##_size SEC(".maps");
-+	} array_##_size SEC(".maps")
- 
--static __always_inline void batch_alloc_free(struct bpf_map *map, unsigned int batch,
--					     unsigned int idx)
-+#define DEFINE_ARRAY_WITH_PERCPU_KPTR(_size) \
-+	struct map_value_percpu_##_size { \
-+		struct bin_data_##_size __percpu_kptr * data; \
-+	}; \
-+	struct { \
-+		__uint(type, BPF_MAP_TYPE_ARRAY); \
-+		__type(key, int); \
-+		__type(value, struct map_value_percpu_##_size); \
-+		__uint(max_entries, 128); \
-+	} array_percpu_##_size SEC(".maps")
-+
-+static __always_inline void batch_alloc(struct bpf_map *map, unsigned int batch, unsigned int idx)
- {
- 	struct generic_map_value *value;
- 	unsigned int i, key;
-@@ -65,6 +75,14 @@ static __always_inline void batch_alloc_free(struct bpf_map *map, unsigned int b
- 			return;
- 		}
- 	}
-+}
-+
-+static __always_inline void batch_free(struct bpf_map *map, unsigned int batch, unsigned int idx)
-+{
-+	struct generic_map_value *value;
-+	unsigned int i, key;
-+	void *old;
-+
- 	for (i = 0; i < batch; i++) {
- 		key = i;
- 		value = bpf_map_lookup_elem(map, &key);
-@@ -81,8 +99,72 @@ static __always_inline void batch_alloc_free(struct bpf_map *map, unsigned int b
- 	}
- }
- 
-+static __always_inline void batch_percpu_alloc(struct bpf_map *map, unsigned int batch,
-+					       unsigned int idx)
-+{
-+	struct generic_map_value *value;
-+	unsigned int i, key;
-+	void *old, *new;
-+
-+	for (i = 0; i < batch; i++) {
-+		key = i;
-+		value = bpf_map_lookup_elem(map, &key);
-+		if (!value) {
-+			err = 1;
-+			return;
-+		}
-+		/* per-cpu allocator may not be able to refill in time */
-+		new = bpf_percpu_obj_new_impl(data_btf_ids[idx], NULL);
-+		if (!new)
-+			continue;
-+
-+		old = bpf_kptr_xchg(&value->data, new);
-+		if (old) {
-+			bpf_percpu_obj_drop(old);
-+			err = 2;
-+			return;
-+		}
-+	}
-+}
-+
-+static __always_inline void batch_percpu_free(struct bpf_map *map, unsigned int batch,
-+					      unsigned int idx)
-+{
-+	struct generic_map_value *value;
-+	unsigned int i, key;
-+	void *old;
-+
-+	for (i = 0; i < batch; i++) {
-+		key = i;
-+		value = bpf_map_lookup_elem(map, &key);
-+		if (!value) {
-+			err = 3;
-+			return;
-+		}
-+		old = bpf_kptr_xchg(&value->data, NULL);
-+		if (!old)
-+			continue;
-+		bpf_percpu_obj_drop(old);
-+	}
-+}
-+
-+#define CALL_BATCH_ALLOC(size, batch, idx) \
-+	batch_alloc((struct bpf_map *)(&array_##size), batch, idx)
-+
- #define CALL_BATCH_ALLOC_FREE(size, batch, idx) \
--	batch_alloc_free((struct bpf_map *)(&array_##size), batch, idx)
-+	do { \
-+		batch_alloc((struct bpf_map *)(&array_##size), batch, idx); \
-+		batch_free((struct bpf_map *)(&array_##size), batch, idx); \
-+	} while (0)
-+
-+#define CALL_BATCH_PERCPU_ALLOC(size, batch, idx) \
-+	batch_percpu_alloc((struct bpf_map *)(&array_percpu_##size), batch, idx)
-+
-+#define CALL_BATCH_PERCPU_ALLOC_FREE(size, batch, idx) \
-+	do { \
-+		batch_percpu_alloc((struct bpf_map *)(&array_percpu_##size), batch, idx); \
-+		batch_percpu_free((struct bpf_map *)(&array_percpu_##size), batch, idx); \
-+	} while (0)
- 
- DEFINE_ARRAY_WITH_KPTR(8);
- DEFINE_ARRAY_WITH_KPTR(16);
-@@ -97,8 +179,21 @@ DEFINE_ARRAY_WITH_KPTR(1024);
- DEFINE_ARRAY_WITH_KPTR(2048);
- DEFINE_ARRAY_WITH_KPTR(4096);
- 
--SEC("fentry/" SYS_PREFIX "sys_nanosleep")
--int test_bpf_mem_alloc_free(void *ctx)
-+/* per-cpu kptr doesn't support bin_data_8 which is a zero-sized array */
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(16);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(32);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(64);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(96);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(128);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(192);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(256);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(512);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(1024);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(2048);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(4096);
-+
-+SEC("?fentry/" SYS_PREFIX "sys_nanosleep")
-+int test_batch_alloc_free(void *ctx)
- {
- 	if ((u32)bpf_get_current_pid_tgid() != pid)
- 		return 0;
-@@ -121,3 +216,76 @@ int test_bpf_mem_alloc_free(void *ctx)
- 
- 	return 0;
- }
-+
-+SEC("?fentry/" SYS_PREFIX "sys_nanosleep")
-+int test_free_through_map_free(void *ctx)
-+{
-+	if ((u32)bpf_get_current_pid_tgid() != pid)
-+		return 0;
-+
-+	/* Alloc 128 8-bytes objects in batch to trigger refilling,
-+	 * then free these objects through map free.
-+	 */
-+	CALL_BATCH_ALLOC(8, 128, 0);
-+	CALL_BATCH_ALLOC(16, 128, 1);
-+	CALL_BATCH_ALLOC(32, 128, 2);
-+	CALL_BATCH_ALLOC(64, 128, 3);
-+	CALL_BATCH_ALLOC(96, 128, 4);
-+	CALL_BATCH_ALLOC(128, 128, 5);
-+	CALL_BATCH_ALLOC(192, 128, 6);
-+	CALL_BATCH_ALLOC(256, 128, 7);
-+	CALL_BATCH_ALLOC(512, 64, 8);
-+	CALL_BATCH_ALLOC(1024, 32, 9);
-+	CALL_BATCH_ALLOC(2048, 16, 10);
-+	CALL_BATCH_ALLOC(4096, 8, 11);
-+
-+	return 0;
-+}
-+
-+SEC("?fentry/" SYS_PREFIX "sys_nanosleep")
-+int test_batch_percpu_alloc_free(void *ctx)
-+{
-+	if ((u32)bpf_get_current_pid_tgid() != pid)
-+		return 0;
-+
-+	/* Alloc 128 16-bytes per-cpu objects in batch to trigger refilling,
-+	 * then free 128 16-bytes per-cpu objects in batch to trigger freeing.
-+	 */
-+	CALL_BATCH_PERCPU_ALLOC_FREE(16, 128, 1);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(32, 128, 2);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(64, 128, 3);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(96, 128, 4);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(128, 128, 5);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(192, 128, 6);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(256, 128, 7);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(512, 64, 8);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(1024, 32, 9);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(2048, 16, 10);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(4096, 8, 11);
-+
-+	return 0;
-+}
-+
-+SEC("?fentry/" SYS_PREFIX "sys_nanosleep")
-+int test_percpu_free_through_map_free(void *ctx)
-+{
-+	if ((u32)bpf_get_current_pid_tgid() != pid)
-+		return 0;
-+
-+	/* Alloc 128 16-bytes per-cpu objects in batch to trigger refilling,
-+	 * then free these object through map free.
-+	 */
-+	CALL_BATCH_PERCPU_ALLOC(16, 128, 1);
-+	CALL_BATCH_PERCPU_ALLOC(32, 128, 2);
-+	CALL_BATCH_PERCPU_ALLOC(64, 128, 3);
-+	CALL_BATCH_PERCPU_ALLOC(96, 128, 4);
-+	CALL_BATCH_PERCPU_ALLOC(128, 128, 5);
-+	CALL_BATCH_PERCPU_ALLOC(192, 128, 6);
-+	CALL_BATCH_PERCPU_ALLOC(256, 128, 7);
-+	CALL_BATCH_PERCPU_ALLOC(512, 64, 8);
-+	CALL_BATCH_PERCPU_ALLOC(1024, 32, 9);
-+	CALL_BATCH_PERCPU_ALLOC(2048, 16, 10);
-+	CALL_BATCH_PERCPU_ALLOC(4096, 8, 11);
-+
-+	return 0;
-+}
--- 
-2.29.2
+For 'safe' part, I suppose you mean if there is a va accociated with
+a 'struct page' without calling some API like kmap()? For that, I suppose
+it is safe when the driver is calling page_pool API without the
+__GFP_HIGHMEM flag. Maybe we should mention that in the kdoc and give a
+warning if page_pool_*alloc_va() is called with the __GFP_HIGHMEM flag?
 
+For the 'mix', I suppose you mean the below:
+1. Allocate a page with the page_pool_*alloc_va() API and free a page with
+   page_pool_free() API.
+2. Allocate a page with the page_pool_*alloc() API and free a page with
+   page_pool_free_va() API.
+
+For 1, it seems it is ok as some virt_to_head_page() and page_address() call
+between va and 'struct page' does not seem to change anything if we have
+enforce page_pool_*alloc_va() to be called without the __GFP_HIGHMEM flag.
+
+For 2, If the va is returned from page_address() which the allocation API is
+called without __GFP_HIGHMEM flag. If not, the va is from kmap*()? which means
+we may be calling page_pool_free_va() before kunmap*()? Is that possible?
+
+
+> .
+> 
 
