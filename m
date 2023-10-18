@@ -1,150 +1,113 @@
-Return-Path: <bpf+bounces-12606-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12607-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 074C17CE772
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 21:12:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99B967CE789
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 21:18:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5A76B212FA
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 19:12:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E76C9B211CB
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 19:18:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4918F44488;
-	Wed, 18 Oct 2023 19:12:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48C9A450CC;
+	Wed, 18 Oct 2023 19:18:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IVdqhlsu"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3FFE335CA;
-	Wed, 18 Oct 2023 19:12:43 +0000 (UTC)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B72C109;
-	Wed, 18 Oct 2023 12:12:42 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-d9ac43d3b71so7809959276.0;
-        Wed, 18 Oct 2023 12:12:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 487421F16B;
+	Wed, 18 Oct 2023 19:18:25 +0000 (UTC)
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B32AB;
+	Wed, 18 Oct 2023 12:18:24 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c9b7c234a7so62366965ad.3;
+        Wed, 18 Oct 2023 12:18:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697656703; x=1698261503; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NG8xDx7terS9QmCT7NO8n1XBkFKCFD9jcbOnlRt+1sE=;
+        b=IVdqhlsuEeCvj7ajTysNzvgvMso/qXMJp5sCpFMd2NqTEoiREMa8BmaCRipvsMGlg+
+         /PYk+AOSH0xoLjRpRV75NRI9UtzZDxGBl2o1tCwsPni6iRYzjFaU9fnA1UyowXnryz+4
+         sIRtwTdM3VYxbeZcfPaTUOH7nWh+kNqoUBdTMS3VZLQzhimxhNx7NQgNZMit+WTDlX9s
+         ZEYGVM6jWh0FH7WDX9D//gTMES9pWlroS4LiOC82NHXd8GTVotANaKKTsr8hGSREV5fV
+         QTu4HkaLa3fEpVyI4riHRqexqxY1OdeJTEwR2GQQUi4+N0cS7aUKL8Oij2Kl1gorZMa5
+         qB0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697656361; x=1698261161;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Bm/QitVoXGxf3ERCz3VJAvR9l7hSVdW0OvjmYyP6n1s=;
-        b=D3+z/My+TkaEJ83wkraPBqL4quLG4CY8GUcezwYaQfS0CYJnh9g/WB7c9o0lVRh0HE
-         HgbhmQBu6G9fW8HUu/FO8fWM3eUA4cBwduiNXqoVYAz/qSv79q9+DKLMJkjy9r+Re0wf
-         6zmWSflv6THq+y/ewY7lTc9gvVR3PZIJV7LXb8N6kr+hHIlu70ZW0ZHwD6AxaBG5z8au
-         erKVbDWzIJw5OV079YWkajwsheUsau2b59cyR1nJHELa7tKhy4Ydw53p7+thc8fwgf0p
-         cDtLAAhAv7o3+G485MDQZtBQI4fNk1c8FQKDeSwCVpBi8zQLQG5Iuz7u+CTvQwH/BOnf
-         N8pQ==
-X-Gm-Message-State: AOJu0YyN3y6aW+CzJGnxFXLtl7iNUSnYf9Icb21iA6TpDO5ecoQgj/bd
-	SSgA+j3T/LjSuxX7MeeExiP8vB0wankJzA==
-X-Google-Smtp-Source: AGHT+IG99EISzj7k6T/yx0htRH7EUXaAkURMTiKbUNVYa2lCnKMK5l/f8Vj9mdDXRkTu+CWbTgKGKg==
-X-Received: by 2002:a25:50c7:0:b0:d9a:e337:b6a with SMTP id e190-20020a2550c7000000b00d9ae3370b6amr259861ybb.61.1697656361368;
-        Wed, 18 Oct 2023 12:12:41 -0700 (PDT)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id l12-20020a25bccc000000b00d749a394c87sm1487247ybm.16.2023.10.18.12.12.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 12:12:41 -0700 (PDT)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-d84f18e908aso8157338276.1;
-        Wed, 18 Oct 2023 12:12:40 -0700 (PDT)
-X-Received: by 2002:a25:d7c7:0:b0:d80:1604:f6e9 with SMTP id
- o190-20020a25d7c7000000b00d801604f6e9mr285943ybg.44.1697656360583; Wed, 18
- Oct 2023 12:12:40 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697656703; x=1698261503;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=NG8xDx7terS9QmCT7NO8n1XBkFKCFD9jcbOnlRt+1sE=;
+        b=c3Xo21YfJQI1woV8Plavg+fFUHiwybw4/IIDeoBaRU96AKSBTKqMika5hCDxvBVDsC
+         ylw4PfO8ZwmVwZxHleLdZKHDcH/OhI2HY5zQX9VCoTNf8DABnTX/Xx66i3GpBnLe0ex5
+         KSQ0PkP28x5PH5n04rBI04Qbtr5J8w03Q3CWx6ZUHVQmF0iMVOjkHsVN1+v4kSoAd0FW
+         SSpOm3YFXPd7e6VFBWIOCVanKnySp6wPXz8K/WDkl+6iNFXMkBezfHpFY1JAc/AyDOHR
+         okNbMrha/nVr4n2tGmYp5ylc1SPPBKAmjMvlD9qw9Y7dD6t9gxu3UVQhMUYRWaww+0vO
+         Oapg==
+X-Gm-Message-State: AOJu0YwZBDa2MWFwXwLI+lCfIsDp9DHkO11hm91MtdcjWv10+kEe1djm
+	EoEXqkTXegqpdFC6it0UYds=
+X-Google-Smtp-Source: AGHT+IHn7rNC99r0ByBx32gdk/BLbwNNlRWv/DFUH2OGhQqUimXjSgIsEMHnKxp+O9tcFEGeaYBEbQ==
+X-Received: by 2002:a17:902:f549:b0:1ca:754a:692e with SMTP id h9-20020a170902f54900b001ca754a692emr400672plf.30.1697656703324;
+        Wed, 18 Oct 2023 12:18:23 -0700 (PDT)
+Received: from localhost ([2605:59c8:148:ba00:f357:1d39:9540:831f])
+        by smtp.gmail.com with ESMTPSA id p9-20020a170902bd0900b001c7283d3089sm270654pls.273.2023.10.18.12.18.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 12:18:22 -0700 (PDT)
+Date: Wed, 18 Oct 2023 12:18:21 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Eric Dumazet <edumazet@google.com>, 
+ Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Jakub Sitnicki <jakub@cloudflare.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ David Ahern <dsahern@kernel.org>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ bpf@vger.kernel.org
+Message-ID: <65302f7d693a8_b74c20846@john.notmuch>
+In-Reply-To: <CANn89iL0f+RWFm1FuNmKjoeMTMZQZHW8=83ZQnUxiY8B6hHxrg@mail.gmail.com>
+References: <8f99194c698bcef12666f0a9a999c58f8b1cb52c.1697557782.git.pabeni@redhat.com>
+ <CANn89iL0f+RWFm1FuNmKjoeMTMZQZHW8=83ZQnUxiY8B6hHxrg@mail.gmail.com>
+Subject: Re: [PATCH net] tcp_bpf: properly release resources on error paths
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231018182412.80291-1-hamza.mahfooz@amd.com> <CAMuHMdXSzMJe1zyJu1HkxWggTKJj_sxkPOejjbdRjg3FeFTVHQ@mail.gmail.com>
- <d764242f-cde0-47c0-ae2c-f94b199c93df@amd.com>
-In-Reply-To: <d764242f-cde0-47c0-ae2c-f94b199c93df@amd.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 18 Oct 2023 21:12:29 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXYDQi5+x1KxMG0wnjSfa=A547B9tgAbgbHbV42bbRu8Q@mail.gmail.com>
-Message-ID: <CAMuHMdXYDQi5+x1KxMG0wnjSfa=A547B9tgAbgbHbV42bbRu8Q@mail.gmail.com>
-Subject: Re: [PATCH] lib/Kconfig.debug: disable FRAME_WARN for kasan and kcsan
-To: Hamza Mahfooz <hamza.mahfooz@amd.com>
-Cc: linux-kernel@vger.kernel.org, Rodrigo Siqueira <rodrigo.siqueira@amd.com>, 
-	Harry Wentland <harry.wentland@amd.com>, Alex Deucher <alexander.deucher@amd.com>, 
-	Arnd Bergmann <arnd@arndb.de>, stable@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Nick Terrell <terrelln@fb.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, 
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Kees Cook <keescook@chromium.org>, Zhaoyang Huang <zhaoyang.huang@unisoc.com>, 
-	Li Hua <hucool.lihua@huawei.com>, Alexander Potapenko <glider@google.com>, Rae Moar <rmoar@google.com>, 
-	rust-for-linux@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi Hamza,
-
-On Wed, Oct 18, 2023 at 8:39=E2=80=AFPM Hamza Mahfooz <hamza.mahfooz@amd.co=
-m> wrote:
-> On 10/18/23 14:29, Geert Uytterhoeven wrote:
-> > On Wed, Oct 18, 2023 at 8:24=E2=80=AFPM Hamza Mahfooz <hamza.mahfooz@am=
-d.com> wrote:
-> >> With every release of LLVM, both of these sanitizers eat up more and
-> >> more of the stack. So, set FRAME_WARN to 0 if either of them is enable=
-d
-> >> for a given build.
-> >>
-> >> Cc: stable@vger.kernel.org
-> >> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+Eric Dumazet wrote:
+> On Tue, Oct 17, 2023 at 5:50=E2=80=AFPM Paolo Abeni <pabeni@redhat.com>=
+ wrote:
 > >
-> > Thanks for your patch!
-> >
-> >> --- a/lib/Kconfig.debug
-> >> +++ b/lib/Kconfig.debug
-> >> @@ -429,11 +429,10 @@ endif # DEBUG_INFO
-> >>   config FRAME_WARN
-> >>          int "Warn for stack frames larger than"
-> >>          range 0 8192
-> >> -       default 0 if KMSAN
-> >> +       default 0 if KASAN || KCSAN || KMSAN
-> >
-> > Are kernels with KASAN || KCSAN || KMSAN enabled supposed to be bootabl=
-e?
->
-> They are all intended to be used for runtime debugging, so I'd imagine so=
+> > In the blamed commit below, I completely forgot to release the acquir=
+ed
+> > resources before erroring out in the TCP BPF code, as reported by Dan=
 .
+> >
+> > Address the issues by replacing the bogus return with a jump to the
+> > relevant cleanup code.
+> >
+> > Fixes: 419ce133ab92 ("tcp: allow again tcp_disconnect() when threads =
+are waiting")
+> > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+> =
 
-Then I strongly suggest putting a nonzero value here.  As you write
-that "with every release of LLVM, both of these sanitizers eat up more and =
-more
-of the stack", don't you want to have at least some canary to detect
-when "more and more" is guaranteed to run into problems?
+> Right :)
+> =
 
-> > Stack overflows do cause crashes.
->
-> It is worth noting that FRAME_WARN has been disabled for KMSAN for quite
-> a while and as far as I can tell no one has complained.
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-ROTFL...
+Thanks.
 
-> >>          default 2048 if GCC_PLUGIN_LATENT_ENTROPY
-> >>          default 2048 if PARISC
-> >>          default 1536 if (!64BIT && XTENSA)
-> >> -       default 1280 if KASAN && !64BIT
-> >>          default 1024 if !64BIT
-> >>          default 2048 if 64BIT
-> >>          help
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>=
 
