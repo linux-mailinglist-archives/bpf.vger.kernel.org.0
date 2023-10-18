@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-12592-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12593-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EC657CE5D9
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 20:04:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 298127CE5DA
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 20:04:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C322F1C20D80
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 18:04:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7542281BEC
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 18:04:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D5E33FE50;
-	Wed, 18 Oct 2023 18:04:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AF7D3FE4D;
+	Wed, 18 Oct 2023 18:04:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b/ykYnRa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o4Gd3PEo"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1E5AC14F
-	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 18:04:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02575C433CA;
-	Wed, 18 Oct 2023 18:04:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73EBDC14F
+	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 18:04:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6031C433CA;
+	Wed, 18 Oct 2023 18:04:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697652287;
-	bh=9jbmDJ4wjer9o4yKuvWWtDbhNe5WKETyqDdGZegZXXM=;
+	s=k20201202; t=1697652290;
+	bh=Gr3wChi1HzP1riZzQDKuSdE7NGsTzmrRKTwTzNDyTcM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=b/ykYnRaV7GgqSlvMa3HT6RX3XBnB4wxTqLaFXM6o9DR6gJaRKr21Vqn0/V/xJyvZ
-	 g/FSlqccDPBwVR3lpGRnRAA/x7G/Qi8n7qJry2pn1U1/OVWc/jSPJLxH8raLuUxNZw
-	 mUiLLrPOYw9r2rBmg4g1Xh1GMl0zAUKPloFq+qje8jqeGc5JaWsbTEAfYriMMdc4ho
-	 CYL+OEKRukoEIk48c57V9jndjGWcwV82xuyDejTCqC+rdUVbezOtDFicky7IwmQKZo
-	 JxeBzmBVucbvIqq1V+1Law64qkNhdc+UO0adILFGG60i7F1f2MM3hGBZ+eP+mCdSG6
-	 6bN+GiNHDeZMg==
+	b=o4Gd3PEohw62jNd7jFrjuCvddr+Cpiww2vaBNqOn/Vzu2DGNLTUN5OmYmqyZXWnsa
+	 phgEwJ7VsQHSUTUcyJGld1B0jqFJ8hGKBoaIDA1+K8wtyF5Hy7gEXpthwkp3q7cyBq
+	 JCdGj+uCwNJE9xqdSLNR1fTmIzoSRX/Vrpa+wULDE3PY9pH47jJievd3NgWY1SpRfA
+	 jmLN1GA3k+u4MflQHp6PNik8uPJbZ1EtNZSJfdHLSDut/NUa2NpxAIHJe5kQ/BVi+4
+	 N7lEEvPTo0apPJPeDP/nzeWXD4OSG7w3U9oQ1wLK/3z5jN4LgEaAUE2XUv5ijyIQxV
+	 zELoAQNZ2RsqQ==
 From: Song Liu <song@kernel.org>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -41,9 +41,9 @@ Cc: ast@kernel.org,
 	kernel-team@meta.com,
 	Song Liu <song@kernel.org>,
 	Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH v4 bpf-next 5/7] bpf: Add arch_bpf_trampoline_size()
-Date: Wed, 18 Oct 2023 11:03:34 -0700
-Message-Id: <20231018180336.1696131-6-song@kernel.org>
+Subject: [PATCH v4 bpf-next 6/7] bpf: Use arch_bpf_trampoline_size
+Date: Wed, 18 Oct 2023 11:03:35 -0700
+Message-Id: <20231018180336.1696131-7-song@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231018180336.1696131-1-song@kernel.org>
 References: <20231018180336.1696131-1-song@kernel.org>
@@ -55,315 +55,221 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This helper will be used to calculate the size of the trampoline before
-allocating the memory.
+Instead of blindly allocating PAGE_SIZE for each trampoline, check the size
+of the trampoline with arch_bpf_trampoline_size(). This size is saved in
+bpf_tramp_image->size, and used for modmem charge/uncharge. The fallback
+arch_alloc_bpf_trampoline() still allocates a whole page because we need to
+use set_memory_* to protect the memory.
 
-arch_prepare_bpf_trampoline() for arm64 and riscv64 can use
-arch_bpf_trampoline_size() to check the trampoline fits in the image.
+struct_ops trampoline still uses a whole page for multiple trampolines.
 
-OTOH, arch_prepare_bpf_trampoline() for s390 has to call the JIT process
-twice, so it cannot use arch_bpf_trampoline_size().
+With this size check at caller (regular trampoline and struct_ops
+trampoline), remove arch_bpf_trampoline_size() from
+arch_prepare_bpf_trampoline() in archs.
 
 Signed-off-by: Song Liu <song@kernel.org>
 Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
 Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>  # on s390x
 ---
- arch/arm64/net/bpf_jit_comp.c   | 56 ++++++++++++++++++++++++---------
- arch/riscv/net/bpf_jit_comp64.c | 22 ++++++++++---
- arch/s390/net/bpf_jit_comp.c    | 56 ++++++++++++++++++++-------------
- arch/x86/net/bpf_jit_comp.c     | 37 +++++++++++++++++++---
- include/linux/bpf.h             |  2 ++
- kernel/bpf/trampoline.c         |  6 ++++
- 6 files changed, 133 insertions(+), 46 deletions(-)
+ arch/arm64/net/bpf_jit_comp.c   |  7 -----
+ arch/riscv/net/bpf_jit_comp64.c |  7 -----
+ include/linux/bpf.h             |  1 +
+ kernel/bpf/bpf_struct_ops.c     |  7 +++++
+ kernel/bpf/trampoline.c         | 49 +++++++++++++++++++++------------
+ 5 files changed, 39 insertions(+), 32 deletions(-)
 
 diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index d81b886ea4df..a6671253b7ed 100644
+index a6671253b7ed..8955da5c47cf 100644
 --- a/arch/arm64/net/bpf_jit_comp.c
 +++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -2026,18 +2026,10 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	return ctx->idx;
- }
- 
--int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
--				void *image_end, const struct btf_func_model *m,
--				u32 flags, struct bpf_tramp_links *tlinks,
--				void *func_addr)
-+static int btf_func_model_nregs(const struct btf_func_model *m)
- {
--	int i, ret;
- 	int nregs = m->nr_args;
--	int max_insns = ((long)image_end - (long)image) / AARCH64_INSN_SIZE;
--	struct jit_ctx ctx = {
--		.image = NULL,
--		.idx = 0,
--	};
-+	int i;
- 
- 	/* extra registers needed for struct argument */
- 	for (i = 0; i < MAX_BPF_FUNC_ARGS; i++) {
-@@ -2046,19 +2038,53 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
- 			nregs += (m->arg_size[i] + 7) / 8 - 1;
- 	}
- 
-+	return nregs;
-+}
-+
-+int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
-+			     struct bpf_tramp_links *tlinks, void *func_addr)
-+{
-+	struct jit_ctx ctx = {
-+		.image = NULL,
-+		.idx = 0,
-+	};
-+	struct bpf_tramp_image im;
-+	int nregs, ret;
-+
-+	nregs = btf_func_model_nregs(m);
- 	/* the first 8 registers are used for arguments */
+@@ -2079,13 +2079,6 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
  	if (nregs > 8)
  		return -ENOTSUPP;
  
--	ret = prepare_trampoline(&ctx, im, tlinks, func_addr, nregs, flags);
-+	ret = prepare_trampoline(&ctx, &im, tlinks, func_addr, nregs, flags);
- 	if (ret < 0)
- 		return ret;
- 
--	if (ret > max_insns)
+-	ret = arch_bpf_trampoline_size(m, flags, tlinks, func_addr);
+-	if (ret < 0)
+-		return ret;
+-
+-	if (ret > ((long)image_end - (long)image))
 -		return -EFBIG;
-+	return ret < 0 ? ret : ret * AARCH64_INSN_SIZE;
-+}
- 
--	ctx.image = image;
--	ctx.idx = 0;
-+int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
-+				void *image_end, const struct btf_func_model *m,
-+				u32 flags, struct bpf_tramp_links *tlinks,
-+				void *func_addr)
-+{
-+	int ret, nregs;
-+	struct jit_ctx ctx = {
-+		.image = image,
-+		.idx = 0,
-+	};
-+
-+	nregs = btf_func_model_nregs(m);
-+	/* the first 8 registers are used for arguments */
-+	if (nregs > 8)
-+		return -ENOTSUPP;
-+
-+	ret = arch_bpf_trampoline_size(m, flags, tlinks, func_addr);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (ret > ((long)image_end - (long)image))
-+		return -EFBIG;
- 
+-
  	jit_fill_hole(image, (unsigned int)(image_end - image));
  	ret = prepare_trampoline(&ctx, im, tlinks, func_addr, nregs, flags);
+ 
 diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index 8581693e62d3..35747fafde57 100644
+index 35747fafde57..58dc64dd94a8 100644
 --- a/arch/riscv/net/bpf_jit_comp64.c
 +++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -1029,6 +1029,21 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 	return ret;
- }
- 
-+int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
-+			     struct bpf_tramp_links *tlinks, void *func_addr)
-+{
-+	struct bpf_tramp_image im;
-+	struct rv_jit_context ctx;
-+	int ret;
-+
-+	ctx.ninsns = 0;
-+	ctx.insns = NULL;
-+	ctx.ro_insns = NULL;
-+	ret = __arch_prepare_bpf_trampoline(&im, m, tlinks, func_addr, flags, &ctx);
-+
-+	return ret < 0 ? ret : ninsns_rvoff(ctx.ninsns);
-+}
-+
- int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
- 				void *image_end, const struct btf_func_model *m,
- 				u32 flags, struct bpf_tramp_links *tlinks,
-@@ -1037,14 +1052,11 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
+@@ -1052,13 +1052,6 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
  	int ret;
  	struct rv_jit_context ctx;
  
--	ctx.ninsns = 0;
--	ctx.insns = NULL;
--	ctx.ro_insns = NULL;
--	ret = __arch_prepare_bpf_trampoline(im, m, tlinks, func_addr, flags, &ctx);
-+	ret = arch_bpf_trampoline_size(im, m, flags, tlinks, func_addr);
- 	if (ret < 0)
- 		return ret;
- 
--	if (ninsns_rvoff(ret) > (long)image_end - (long)image)
-+	if (ret > (long)image_end - (long)image)
- 		return -EFBIG;
- 
+-	ret = arch_bpf_trampoline_size(im, m, flags, tlinks, func_addr);
+-	if (ret < 0)
+-		return ret;
+-
+-	if (ret > (long)image_end - (long)image)
+-		return -EFBIG;
+-
  	ctx.ninsns = 0;
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index bf06b7283f0c..cc129617480a 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -2637,6 +2637,21 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 	return 0;
- }
- 
-+int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
-+			     struct bpf_tramp_links *tlinks, void *orig_call)
-+{
-+	struct bpf_tramp_image im;
-+	struct bpf_tramp_jit tjit;
-+	int ret;
-+
-+	memset(&tjit, 0, sizeof(tjit));
-+
-+	ret = __arch_prepare_bpf_trampoline(&im, &tjit, m, flags,
-+					    tlinks, orig_call);
-+
-+	return ret < 0 ? ret : tjit.common.prg;
-+}
-+
- int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
- 				void *image_end, const struct btf_func_model *m,
- 				u32 flags, struct bpf_tramp_links *tlinks,
-@@ -2644,30 +2659,27 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
- {
- 	struct bpf_tramp_jit tjit;
- 	int ret;
--	int i;
- 
--	for (i = 0; i < 2; i++) {
--		if (i == 0) {
--			/* Compute offsets, check whether the code fits. */
--			memset(&tjit, 0, sizeof(tjit));
--		} else {
--			/* Generate the code. */
--			tjit.common.prg = 0;
--			tjit.common.prg_buf = image;
--		}
--		ret = __arch_prepare_bpf_trampoline(im, &tjit, m, flags,
--						    tlinks, func_addr);
--		if (ret < 0)
--			return ret;
--		if (tjit.common.prg > (char *)image_end - (char *)image)
--			/*
--			 * Use the same error code as for exceeding
--			 * BPF_MAX_TRAMP_LINKS.
--			 */
--			return -E2BIG;
--	}
-+	/* Compute offsets, check whether the code fits. */
-+	memset(&tjit, 0, sizeof(tjit));
-+	ret = __arch_prepare_bpf_trampoline(im, &tjit, m, flags,
-+					    tlinks, func_addr);
-+
-+	if (ret < 0)
-+		return ret;
-+	if (tjit.common.prg > (char *)image_end - (char *)image)
-+		/*
-+		 * Use the same error code as for exceeding
-+		 * BPF_MAX_TRAMP_LINKS.
-+		 */
-+		return -E2BIG;
-+
-+	tjit.common.prg = 0;
-+	tjit.common.prg_buf = image;
-+	ret = __arch_prepare_bpf_trampoline(im, &tjit, m, flags,
-+					    tlinks, func_addr);
- 
--	return tjit.common.prg;
-+	return ret < 0 ? ret : tjit.common.prg;
- }
- 
- bool bpf_jit_supports_subprog_tailcalls(void)
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 5f7528cac344..561530ef2cdb 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -2422,10 +2422,10 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
-  * add rsp, 8                      // skip eth_type_trans's frame
-  * ret                             // return to its caller
-  */
--int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *image_end,
--				const struct btf_func_model *m, u32 flags,
--				struct bpf_tramp_links *tlinks,
--				void *func_addr)
-+static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *image_end,
-+					 const struct btf_func_model *m, u32 flags,
-+					 struct bpf_tramp_links *tlinks,
-+					 void *func_addr)
- {
- 	int i, ret, nr_regs = m->nr_args, stack_size = 0;
- 	int regs_off, nregs_off, ip_off, run_ctx_off, arg_stack_off, rbx_off;
-@@ -2678,6 +2678,35 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 	return ret;
- }
- 
-+int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *image_end,
-+				const struct btf_func_model *m, u32 flags,
-+				struct bpf_tramp_links *tlinks,
-+				void *func_addr)
-+{
-+	return __arch_prepare_bpf_trampoline(im, image, image_end, m, flags, tlinks, func_addr);
-+}
-+
-+int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
-+			     struct bpf_tramp_links *tlinks, void *func_addr)
-+{
-+	struct bpf_tramp_image im;
-+	void *image;
-+	int ret;
-+
-+	/* Allocate a temporary buffer for __arch_prepare_bpf_trampoline().
-+	 * This will NOT cause fragmentation in direct map, as we do not
-+	 * call set_memory_*() on this buffer.
-+	 */
-+	image = bpf_jit_alloc_exec(PAGE_SIZE);
-+	if (!image)
-+		return -ENOMEM;
-+
-+	ret = __arch_prepare_bpf_trampoline(&im, image, image + PAGE_SIZE, m, flags,
-+					    tlinks, func_addr);
-+	bpf_jit_free_exec(image);
-+	return ret;
-+}
-+
- static int emit_bpf_dispatcher(u8 **pprog, int a, int b, s64 *progs, u8 *image, u8 *buf)
- {
- 	u8 *jg_reloc, *prog = *pprog;
+ 	/*
+ 	 * The bpf_int_jit_compile() uses a RW buffer (ctx.insns) to write the
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 0d392ad54304..2ed65b764aab 100644
+index 2ed65b764aab..17bd3dbd2636 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -1087,6 +1087,8 @@ void *arch_alloc_bpf_trampoline(int size);
- void arch_free_bpf_trampoline(void *image, int size);
- void arch_protect_bpf_trampoline(void *image, int size);
- void arch_unprotect_bpf_trampoline(void *image, int size);
-+int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
-+			     struct bpf_tramp_links *tlinks, void *func_addr);
+@@ -1122,6 +1122,7 @@ enum bpf_tramp_prog_type {
  
- u64 notrace __bpf_prog_enter_sleepable_recur(struct bpf_prog *prog,
- 					     struct bpf_tramp_run_ctx *run_ctx);
+ struct bpf_tramp_image {
+ 	void *image;
++	int size;
+ 	struct bpf_ksym ksym;
+ 	struct percpu_ref pcref;
+ 	void *ip_after_call;
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index e9e95879bce2..4d53c53fc5aa 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -355,6 +355,7 @@ int bpf_struct_ops_prepare_trampoline(struct bpf_tramp_links *tlinks,
+ 				      void *image, void *image_end)
+ {
+ 	u32 flags;
++	int size;
+ 
+ 	tlinks[BPF_TRAMP_FENTRY].links[0] = link;
+ 	tlinks[BPF_TRAMP_FENTRY].nr_links = 1;
+@@ -362,6 +363,12 @@ int bpf_struct_ops_prepare_trampoline(struct bpf_tramp_links *tlinks,
+ 	 * and it must be used alone.
+ 	 */
+ 	flags = model->ret_size > 0 ? BPF_TRAMP_F_RET_FENTRY_RET : 0;
++
++	size = arch_bpf_trampoline_size(model, flags, tlinks, NULL);
++	if (size < 0)
++		return size;
++	if (size > (unsigned long)image_end - (unsigned long)image)
++		return -E2BIG;
+ 	return arch_prepare_bpf_trampoline(NULL, image, image_end,
+ 					   model, flags, tlinks, NULL);
+ }
 diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 5509bdf98067..285c5b7c1ea4 100644
+index 285c5b7c1ea4..7c0535edab3f 100644
 --- a/kernel/bpf/trampoline.c
 +++ b/kernel/bpf/trampoline.c
-@@ -1070,6 +1070,12 @@ void __weak arch_unprotect_bpf_trampoline(void *image, int size)
- 	set_memory_rw((long)image, 1);
+@@ -254,8 +254,8 @@ bpf_trampoline_get_progs(const struct bpf_trampoline *tr, int *total, bool *ip_a
+ static void bpf_tramp_image_free(struct bpf_tramp_image *im)
+ {
+ 	bpf_image_ksym_del(&im->ksym);
+-	arch_free_bpf_trampoline(im->image, PAGE_SIZE);
+-	bpf_jit_uncharge_modmem(PAGE_SIZE);
++	arch_free_bpf_trampoline(im->image, im->size);
++	bpf_jit_uncharge_modmem(im->size);
+ 	percpu_ref_exit(&im->pcref);
+ 	kfree_rcu(im, rcu);
+ }
+@@ -349,7 +349,7 @@ static void bpf_tramp_image_put(struct bpf_tramp_image *im)
+ 	call_rcu_tasks_trace(&im->rcu, __bpf_tramp_image_put_rcu_tasks);
  }
  
-+int __weak arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
-+				    struct bpf_tramp_links *tlinks, void *func_addr)
-+{
-+	return -ENOTSUPP;
-+}
-+
- static int __init init_trampolines(void)
+-static struct bpf_tramp_image *bpf_tramp_image_alloc(u64 key)
++static struct bpf_tramp_image *bpf_tramp_image_alloc(u64 key, int size)
  {
- 	int i;
+ 	struct bpf_tramp_image *im;
+ 	struct bpf_ksym *ksym;
+@@ -360,12 +360,13 @@ static struct bpf_tramp_image *bpf_tramp_image_alloc(u64 key)
+ 	if (!im)
+ 		goto out;
+ 
+-	err = bpf_jit_charge_modmem(PAGE_SIZE);
++	err = bpf_jit_charge_modmem(size);
+ 	if (err)
+ 		goto out_free_im;
++	im->size = size;
+ 
+ 	err = -ENOMEM;
+-	im->image = image = arch_alloc_bpf_trampoline(PAGE_SIZE);
++	im->image = image = arch_alloc_bpf_trampoline(size);
+ 	if (!image)
+ 		goto out_uncharge;
+ 
+@@ -380,9 +381,9 @@ static struct bpf_tramp_image *bpf_tramp_image_alloc(u64 key)
+ 	return im;
+ 
+ out_free_image:
+-	arch_free_bpf_trampoline(im->image, PAGE_SIZE);
++	arch_free_bpf_trampoline(im->image, im->size);
+ out_uncharge:
+-	bpf_jit_uncharge_modmem(PAGE_SIZE);
++	bpf_jit_uncharge_modmem(size);
+ out_free_im:
+ 	kfree(im);
+ out:
+@@ -395,7 +396,7 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
+ 	struct bpf_tramp_links *tlinks;
+ 	u32 orig_flags = tr->flags;
+ 	bool ip_arg = false;
+-	int err, total;
++	int err, total, size;
+ 
+ 	tlinks = bpf_trampoline_get_progs(tr, &total, &ip_arg);
+ 	if (IS_ERR(tlinks))
+@@ -408,12 +409,6 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
+ 		goto out;
+ 	}
+ 
+-	im = bpf_tramp_image_alloc(tr->key);
+-	if (IS_ERR(im)) {
+-		err = PTR_ERR(im);
+-		goto out;
+-	}
+-
+ 	/* clear all bits except SHARE_IPMODIFY and TAIL_CALL_CTX */
+ 	tr->flags &= (BPF_TRAMP_F_SHARE_IPMODIFY | BPF_TRAMP_F_TAIL_CALL_CTX);
+ 
+@@ -437,13 +432,31 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
+ 		tr->flags |= BPF_TRAMP_F_ORIG_STACK;
+ #endif
+ 
+-	err = arch_prepare_bpf_trampoline(im, im->image, im->image + PAGE_SIZE,
++	size = arch_bpf_trampoline_size(&tr->func.model, tr->flags,
++					tlinks, tr->func.addr);
++	if (size < 0) {
++		err = size;
++		goto out;
++	}
++
++	if (size > PAGE_SIZE) {
++		err = -E2BIG;
++		goto out;
++	}
++
++	im = bpf_tramp_image_alloc(tr->key, size);
++	if (IS_ERR(im)) {
++		err = PTR_ERR(im);
++		goto out;
++	}
++
++	err = arch_prepare_bpf_trampoline(im, im->image, im->image + size,
+ 					  &tr->func.model, tr->flags, tlinks,
+ 					  tr->func.addr);
+ 	if (err < 0)
+ 		goto out_free;
+ 
+-	arch_protect_bpf_trampoline(im->image, PAGE_SIZE);
++	arch_protect_bpf_trampoline(im->image, im->size);
+ 
+ 	WARN_ON(tr->cur_image && total == 0);
+ 	if (tr->cur_image)
+@@ -463,8 +476,8 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
+ 		tr->fops->func = NULL;
+ 		tr->fops->trampoline = 0;
+ 
+-		/* reset im->image memory attr for arch_prepare_bpf_trampoline */
+-		arch_unprotect_bpf_trampoline(im->image, PAGE_SIZE);
++		/* free im memory and reallocate later */
++		bpf_tramp_image_free(im);
+ 		goto again;
+ 	}
+ #endif
 -- 
 2.34.1
 
