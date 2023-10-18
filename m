@@ -1,117 +1,86 @@
-Return-Path: <bpf+bounces-12523-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12525-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 045477CD61A
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 10:10:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8E9F7CD63E
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 10:20:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B2A2B210BE
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 08:10:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82F7E281B66
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 08:20:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87B5214A8E;
-	Wed, 18 Oct 2023 08:10:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC4A0125CB;
+	Wed, 18 Oct 2023 08:20:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dxHvGvFF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r59T8zg4"
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BC76F9D5
-	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 08:10:20 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBBFB6
-	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 01:10:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1697616616;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=37/kJ7xBvGvJcqALMsAiYLG6+205Ian/eThnUNlAZmo=;
-	b=dxHvGvFFfWTVXxR/jhtiuQBRUyrr44r0XyWbXRoWYdkzOXvGNTiAxWW570ScpLrw+oENkd
-	F0m5lx0a1BFv/Oezc6+5E7QnA/FeqzeVi4/0Kz/IlbSCb0bRI0EuMFUInz87neJFEP/S8x
-	a7RyFiRKBSRInVS1lyCnkcXa6HEJEh4=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-38-t5o1MQ0aMIK1fD992VzzSA-1; Wed, 18 Oct 2023 04:10:05 -0400
-X-MC-Unique: t5o1MQ0aMIK1fD992VzzSA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9bf8678af70so267556066b.2
-        for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 01:10:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697616604; x=1698221404;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=37/kJ7xBvGvJcqALMsAiYLG6+205Ian/eThnUNlAZmo=;
-        b=hioIewigWYDmuZBIMVSq9whoGVvUsMoBWuqFUO8mzC2He83bPM1EVmFi/AgznYfVeK
-         iXTNo2e2xK6sSNmMXBJcHC8hDXHSQNZDuROoQqQa8mL3jXV9diK/p47RuTZgZSpGko8w
-         Es6abApnWP+X9HH+XXBr0IcEa5tYAIlQjM1JDan0+dOhnsrug3srFA0QERtRCI3GcK7G
-         ZKWsXWAVTXA9ZDmMrjSbY7ynUGjwTAjRS6SFE5/3mTZiWMN5MucqY+UYDSA7urOTqRnh
-         1lx1lNrTQknwplJs8Jpjf5sWd3a55GWBKUBJM/56X7ZCcvAXudHAN1ylGSlhrdFL1vbl
-         F9fg==
-X-Gm-Message-State: AOJu0YzsLvO1d52DC5Ttr26ne+oCghQ4ZMMUXGJ2MB8A6ZvMxF84Stmj
-	BFoPdwVPL+7vpfiTAhjPftKaQ+E/Kyvhl3mPNZ90az0Zg39cGVo2EHsrEAh1p0JH2PeiJY7yTwv
-	qroy7p8JOEoSh
-X-Received: by 2002:a17:906:ee81:b0:9be:481c:60bf with SMTP id wt1-20020a170906ee8100b009be481c60bfmr3207765ejb.55.1697616604100;
-        Wed, 18 Oct 2023 01:10:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFo/uNRLOrJZqZfYt3SG8LZALHlWpLFAe29ra7F9UnNNgD7+57SContltcsRq/ZecphhcN7iQ==
-X-Received: by 2002:a17:906:ee81:b0:9be:481c:60bf with SMTP id wt1-20020a170906ee8100b009be481c60bfmr3207746ejb.55.1697616603792;
-        Wed, 18 Oct 2023 01:10:03 -0700 (PDT)
-Received: from redhat.com ([193.142.201.34])
-        by smtp.gmail.com with ESMTPSA id f17-20020a1709062c5100b009aa292a2df2sm1118534ejh.217.2023.10.18.01.09.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 01:10:03 -0700 (PDT)
-Date: Wed, 18 Oct 2023 04:09:56 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH vhost 02/22] virtio_ring: introduce
- virtqueue_dma_[un]map_page_attrs
-Message-ID: <20231018040907-mutt-send-email-mst@kernel.org>
-References: <20231011092728.105904-1-xuanzhuo@linux.alibaba.com>
- <20231011092728.105904-3-xuanzhuo@linux.alibaba.com>
- <1697615580.6880193-1-xuanzhuo@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE6341401C
+	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 08:20:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 626E7C433D9;
+	Wed, 18 Oct 2023 08:20:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1697617222;
+	bh=g92m7+sSdBA8KJbvUHeNmVunsbDNRD1vE8MRrBz6ljA=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=r59T8zg47HcnAHnSOnRAUnW0uvwPdLEQKC4KCkYgr375lpc7ZUlcrJKybGMbzx1+F
+	 4C3J464Or47cKMqLHRKHVHfjX9UEN1ER7Ppz8GaD+jFKb4ANMaozLRpLayx80xbVZs
+	 Q9lvT87ebPHTmcJ55SsRkEndMxPx+F4AyLfBoWMDZ+sJQa7urPxiH18jHy8Gkt5oZ+
+	 wwxvURhcQq7ZdWxnd8koALV9vpof7DCGYlPti+bLISNlYVpGYZspX4mISmud7OqYU1
+	 H5dZgDpG20EKP1BpZQklijygeUlG69Y4zhgnmUJJx6SiFtoEQO7GiVZm5imdEar0b2
+	 ePJOpyc6MMlow==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 45BD1C04E27;
+	Wed, 18 Oct 2023 08:20:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1697615580.6880193-1-xuanzhuo@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: add options and frags to
+ xdp_hw_metadata
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <169761722228.19172.14123962875957627623.git-patchwork-notify@kernel.org>
+Date: Wed, 18 Oct 2023 08:20:22 +0000
+References: <20231017162800.24080-1-larysa.zaremba@intel.com>
+In-Reply-To: <20231017162800.24080-1-larysa.zaremba@intel.com>
+To: Larysa Zaremba <larysa.zaremba@intel.com>
+Cc: bpf@vger.kernel.org, martin.lau@linux.dev, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+ maciej.fijalkowski@intel.com, hawk@kernel.org, sdf@google.com
 
-On Wed, Oct 18, 2023 at 03:53:00PM +0800, Xuan Zhuo wrote:
-> Hi Michael,
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Tue, 17 Oct 2023 18:27:57 +0200 you wrote:
+> This is a follow-up to the commit 9b2b86332a9b ("bpf: Allow to use kfunc
+> XDP hints and frags together").
 > 
-> Do you think it's appropriate to push the first two patches of this patch set to
-> linux 6.6?
+> The are some possible implementations problems that may arise when
+> providing metadata specifically for multi-buffer packets, therefore there
+> must be a possibility to test such option separately.
 > 
-> Thanks.
+> [...]
 
+Here is the summary with links:
+  - [bpf-next,v2] selftests/bpf: add options and frags to xdp_hw_metadata
+    https://git.kernel.org/bpf/bpf-next/c/bb6a88885fde
 
-I see this is with the eye towards merging this gradually. However,
-I want the patchset to be ready first, right now it's not -
-with build failures and new warnings on some systems.
-
-
+You are awesome, thank you!
 -- 
-MST
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
