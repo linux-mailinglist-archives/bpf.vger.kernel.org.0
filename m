@@ -1,231 +1,159 @@
-Return-Path: <bpf+bounces-12518-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12519-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 565687CD464
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 08:23:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A47BC7CD56D
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 09:22:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF163B21124
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 06:23:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54C21281B3F
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 07:22:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E9B28F71;
-	Wed, 18 Oct 2023 06:22:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A13A1171E;
+	Wed, 18 Oct 2023 07:22:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="awnFfa4s"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e6SeqXZr"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 311C04421
-	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 06:22:57 +0000 (UTC)
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510162726
-	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 23:21:20 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6bb4abb8100so3035573b3a.2
-        for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 23:21:20 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F131F7495;
+	Wed, 18 Oct 2023 07:21:58 +0000 (UTC)
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1152CC6;
+	Wed, 18 Oct 2023 00:21:56 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso6747242e87.1;
+        Wed, 18 Oct 2023 00:21:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697610078; x=1698214878; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ygh6e4WwpciuAym8ohi+pEGWxAd4q6l+qZbqHeReRLY=;
-        b=awnFfa4swzG55hSP5I78A89D9zkzcui4PaycC8K3QZL/MSVASdppz9sVHZlti5NCar
-         ERTHTNxAtxqm3fBqk6B0sOf32oEatrhopyW7fnMLpo9F7itUc9Kq6S5OyI8rSINAh7uE
-         jzfWHO2vyG3xhS1HJj4EUfchytW20YibnR16gCz8k+x03+E0JiRHexxSrzX1rLKFemAn
-         aIJ1ysDD6GJeCaDkn2AwEBnfgDjJp1oM5N5Eeq1juH20++LuCsZ1+xKx0Ym893Gnk2eR
-         LmpzSOoG0958HH2Bnm2ah4UBHBVPTWfcSg40n10M2INjYyrki+UFngf7vt/NH/6+eR/6
-         eKKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697610078; x=1698214878;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+        d=gmail.com; s=20230601; t=1697613714; x=1698218514; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=Ygh6e4WwpciuAym8ohi+pEGWxAd4q6l+qZbqHeReRLY=;
-        b=uTy3tP0I49Nsd+Rd1J6Wh740KNctoqky+EvHSnx5wXiq/uVfdu9SRAsEJJZ18GvbAn
-         8m4clSzkfdqJN3qHbnizFU8xt6zmzFSTZaiG4lT0QWZ/QtMFDoMf0w4UGAZMJQLw2FiV
-         i3yQvLZFH4hotps64W1mbAeZUBChiZsk74ezd3ns8opHk+gji4teEhO6z1OvsOh3S81t
-         EVIzTcQtj2X7KY24u/LBElwiulVfY6FA2lCGDrmR67HVd0RitjjfeBNTkjdfC1l1NBGy
-         7dS4VL+dkLL6pInyO9JF7vAjwR12rkjuFyTZzBORJEldOmhElxdJQ3qIAQriyTWe7isq
-         zF4w==
-X-Gm-Message-State: AOJu0YwdRbg795s71PsKQXN5oKDNkvr8gG6dGqVle2U7ypCuyitR77vi
-	WHQPRjn4nhbRUUWCxTN8gmAoej4hc+ruWyAZBgw=
-X-Google-Smtp-Source: AGHT+IFTiAyCc8sJKZOQpGe4wNF4hy+oK4JaBOKmdbkhIlznNss2EFm0xFw2I9KMRCWDZAov7ckDQQ==
-X-Received: by 2002:a05:6a00:2395:b0:6b3:55fd:d851 with SMTP id f21-20020a056a00239500b006b355fdd851mr3979376pfc.10.1697610078373;
-        Tue, 17 Oct 2023 23:21:18 -0700 (PDT)
-Received: from [10.254.248.11] ([139.177.225.242])
-        by smtp.gmail.com with ESMTPSA id k15-20020aa7998f000000b00690bd3c0723sm2541846pfh.99.2023.10.17.23.21.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 23:21:18 -0700 (PDT)
-Message-ID: <d7f1b762-0a59-4f3a-8370-deba06f91c46@bytedance.com>
-Date: Wed, 18 Oct 2023 14:21:13 +0800
+        bh=6G8urhdBc1eZTqmtV0ApQqIzJAH2N7GQh3AvU6FGmiw=;
+        b=e6SeqXZrz9v7qVp6ReTxXfPsBGf4xrQy0O/HdJNyCCj/QE1cYz6mXDs2sBo7jp5YeN
+         FaBQZYMFaxCb7LAUJxOLiu7yvTKzbwDqzlg/ygZdTzzPVseyasQS3PjZkuhXEJ0yO9Js
+         3SUR5TI4D3OAFEdvVJbdSualXwJ3Xk9E7VCxtByhBlLm57aQ8hc/8TH7jLLD6qHD9FZ7
+         WVIOswFvzHos2RlAVzC/X9OcC6/YFHAXlpQ+1xlczb26tEx95gzXZ+9TR+9UgeRfFKC6
+         XSdjOWEAMoA3qdU5ILycikjvWTt0lo2RtGXiicNGOQc9Py5sTbDjXgOzTXLVSDYjzC4I
+         yHvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697613714; x=1698218514;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6G8urhdBc1eZTqmtV0ApQqIzJAH2N7GQh3AvU6FGmiw=;
+        b=d8r1O9O5upHxL9cNTujcDc0ZFd9Mx1fIcuiMkNi7r8DLICtCQDlEYFixVw6PRkN5p/
+         7kDjdxqOsJs6z+ak6stfQ0Dj0fcmnpjhXpy7+v4to73H50Cn+ntVitRG+aKwM6tKOnha
+         GP1H+AWHjeE2FzCPLRod9PvGpKL9i4b4yXknbUlLQPFHpSXFODGGh07ELn6IWrIFOLpk
+         5WnA258vSndAnA35diwdA76sLSbsa3CMWgH03LwdJORWPzGFarWEyYwWHUFPwTo4hnWb
+         i4gm7zzngj0uTG1/lc/w+zo8saNQW+M6Bka0elMy/BYUbK2t/V3fK11FJ4WALA6BWv0t
+         Msog==
+X-Gm-Message-State: AOJu0YwNxZZWZ2iWij/SwuJJnINkmvxqDhAR190YVTxvLBeGbEvmdCQl
+	jQ/GUsqHd9re4MCzP0T4IBWmiF4P4W02Jg==
+X-Google-Smtp-Source: AGHT+IFoonVRP81816NJAlLxAEodcFQZefwPN2L3xJAVPhzMjlSX0hk88mhFbgZ2iQuyX6Zd7Uv+gQ==
+X-Received: by 2002:a05:6512:313a:b0:503:364d:b93d with SMTP id p26-20020a056512313a00b00503364db93dmr3529129lfd.20.1697613713890;
+        Wed, 18 Oct 2023 00:21:53 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id v23-20020a056402175700b0053dd8898f75sm2289694edx.81.2023.10.18.00.21.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 00:21:53 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 18 Oct 2023 09:21:51 +0200
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Quentin Monnet <quentin@isovalent.com>,
+	Dmitry Goncharov <dgoncharov@users.sf.net>,
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Ian Rogers <irogers@google.com>, KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	Peter Zijlstra <a.p.zijlstra@chello.nl>
+Subject: Re: [PATCHv2 1/2] tools/build: Fix -s detection code in
+ tools/build/Makefile.build
+Message-ID: <ZS+Hj3aDWoCV/ckr@krava>
+References: <20231008212251.236023-1-jolsa@kernel.org>
+ <20231008212251.236023-2-jolsa@kernel.org>
+ <CAM9d7cjYCrTkOTOmBHry-95nivmkGv1g0wp=+TSA0xPXJW_QvQ@mail.gmail.com>
+ <ZSjlk99UOV2tTMWO@krava>
+ <CAM9d7cjqvEs6262GfuF18mtFsWEznqNOWP_NqZN99Ys3MxCXqg@mail.gmail.com>
+ <ZS5JHuwxL200M09H@krava>
+ <CAM9d7chq125TOtnWFVKUC6PwRJqmXwNbfs7Dhm_04B3ZbA4jdw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH bpf-next v6 0/8] Add Open-coded task, css_task and
- css iters
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@kernel.org, tj@kernel.org, linux-kernel@vger.kernel.org
-References: <20231018061746.111364-1-zhouchuyi@bytedance.com>
-From: Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <20231018061746.111364-1-zhouchuyi@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM9d7chq125TOtnWFVKUC6PwRJqmXwNbfs7Dhm_04B3ZbA4jdw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Tue, Oct 17, 2023 at 01:16:28PM -0700, Namhyung Kim wrote:
+> On Tue, Oct 17, 2023 at 1:43 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Mon, Oct 16, 2023 at 06:36:10PM -0700, Namhyung Kim wrote:
+> > > On Thu, Oct 12, 2023 at 11:37 PM Jiri Olsa <olsajiri@gmail.com> wrote:
+> > > >
+> > > > On Thu, Oct 12, 2023 at 08:57:33PM -0700, Namhyung Kim wrote:
+> > > > > Hi Jiri,
+> > > > >
+> > > > > On Sun, Oct 8, 2023 at 2:23 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> > > > > >
+> > > > > > As Dmitry described in [1] changelog the current way of detecting
+> > > > > > -s option is broken for new make.
+> > > > >
+> > > > > I'm not sure what -s option does for perf (at least).
+> > > > > It doesn't seem much different whether I give it or not.
+> > > > > Am I missing something?
+> > > >
+> > > > what's your make version? the wrong output is visible when running
+> > > > with make version > 4.4 .. basicaly the -s is wrongly detected and
+> > > > you either get no output at all from some builds or overly verbose
+> > > > output
+> > > >
+> > > > it's mentioned in the [1] commit changelog, I can put it to the
+> > > > changelog in new version
+> > >
+> > > IIUC it's about detecting `make -s` properly and not being confused
+> > > by `make a=s` or something.  I'm not objecting on it but I don't see
+> > > what `make -s` does actually.
+> >
+> > so the tools/build/Makefile.build and tools/scripts/Makefile.include detect
+> > make -s option, which puts make into silent mode, so both makefiles switch
+> > off the output by setting quiet=silent_ or silent=1
+> >
+> > the problem is that the detection of make -s option changed in make > 4.4
+> > and current code could be tricked to switch to silent mode just by having
+> > 's' persent on the command line, like with 'a=s'
+> 
+> I think our talk is circulating :-).  Anyway I'm ok with the change, so
 
+:) ok, thanks
 
-在 2023/10/18 14:17, Chuyi Zhou 写道:
-> This is version 6 of task, css_task and css iters support.
 > 
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> 
+> Which tree do you want to route it?
 
-I resend this patchset since my network broken when I sent it first time.
+I think perf tree is the best one to route it
 
-> --- Changelog ---
-> 
-> v5 -> v6:
-> 
-> Patch #3:
->   * In bpf_iter_task_next, return pos rather than goto out. (Andrii)
-> Patch #2, #3, #4:
->   * Add the missing __diag_ignore_all to avoid kernel build warning
-> Patch #5, #6, #7:
->   * Add Andrii's ack
-> 
-> Patch #8:
->   * In BPF prog iter_css_task_for_each, return -EPERM rather than 0, and
->     ensure stack_mprotect() in iters.c not success. If not, it would cause
->     the subsequent 'test_lsm' fail, since the 'is_stack' check in
->     test_int_hook(lsm.c) would not be guaranteed.
->     (https://github.com/kernel-patches/bpf/actions/runs/6489662214/job/17624665086?pr=5790)
-> 
-> v4 -> v5:https://lore.kernel.org/lkml/20231007124522.34834-1-zhouchuyi@bytedance.com/
-> 
-> Patch 3~4:
->   * Relax the BUILD_BUG_ON check in bpf_iter_task_new and bpf_iter_css_new to avoid
->     netdev/build_32bit CI error.
->     (https://netdev.bots.linux.dev/static/nipa/790929/13412333/build_32bit/stderr)
-> Patch 8:
->   * Initialize skel pointer to fix the LLVM-16 build CI error
->     (https://github.com/kernel-patches/bpf/actions/runs/6462875618/job/17545170863)
-> 
-> v3 -> v4:https://lore.kernel.org/all/20230925105552.817513-1-zhouchuyi@bytedance.com/
-> 
-> * Address all the comments from Andrii in patch-3 ~ patch-6
-> * Collect Tejun's ack
-> * Add a extra patch to rename bpf_iter_task.c to bpf_iter_tasks.c
-> * Seperate three BPF program files for selftests (iters_task.c iters_css_task.c iters_css.c)
-> 
-> v2 -> v3:https://lore.kernel.org/lkml/20230912070149.969939-1-zhouchuyi@bytedance.com/
-> 
-> Patch 1 (cgroup: Prepare for using css_task_iter_*() in BPF)
->    * Add tj's ack and Alexei's suggest-by.
-> Patch 2 (bpf: Introduce css_task open-coded iterator kfuncs)
->    * Use bpf_mem_alloc/bpf_mem_free rather than kzalloc()
->    * Add KF_TRUSTED_ARGS for bpf_iter_css_task_new (Alexei)
->    * Move bpf_iter_css_task's definition from uapi/linux/bpf.h to
->      kernel/bpf/task_iter.c and we can use it from vmlinux.h
->    * Move bpf_iter_css_task_XXX's declaration from bpf_helpers.h to
->      bpf_experimental.h
-> Patch 3 (Introduce task open coded iterator kfuncs)
->    * Change th API design keep consistent with SEC("iter/task"), support
->      iterating all threads(BPF_TASK_ITERATE_ALL) and threads of a
->      specific task (BPF_TASK_ITERATE_THREAD).（Andrii)
->    * Move bpf_iter_task's definition from uapi/linux/bpf.h to
->      kernel/bpf/task_iter.c and we can use it from vmlinux.h
->    * Move bpf_iter_task_XXX's declaration from bpf_helpers.h to
->      bpf_experimental.h
-> Patch 4 (Introduce css open-coded iterator kfuncs)
->    * Change th API design keep consistent with cgroup_iters, reuse
->      BPF_CGROUP_ITER_DESCENDANTS_PRE/BPF_CGROUP_ITER_DESCENDANTS_POST
->      /BPF_CGROUP_ITER_ANCESTORS_UP(Andrii)
->    * Add KF_TRUSTED_ARGS for bpf_iter_css_new
->    * Move bpf_iter_css's definition from uapi/linux/bpf.h to
->      kernel/bpf/task_iter.c and we can use it from vmlinux.h
->    * Move bpf_iter_css_XXX's declaration from bpf_helpers.h to
->      bpf_experimental.h
-> Patch 5 (teach the verifier to enforce css_iter and task_iter in RCU CS)
->    * Add KF flag KF_RCU_PROTECTED to maintain kfuncs which need RCU CS.(Andrii)
->    * Consider STACK_ITER when using bpf_for_each_spilled_reg.
-> Patch 6 (Let bpf_iter_task_new accept null task ptr)
->    * Add this extra patch to let bpf_iter_task_new accept a 'nullable'
->    * task pointer(Andrii)
-> Patch 7 (selftests/bpf: Add tests for open-coded task and css iter)
->    * Add failure testcase(Alexei)
-> 
-> 
-> Changes from v1(https://lore.kernel.org/lkml/20230827072057.1591929-1-zhouchuyi@bytedance.com/):
-> - Add a pre-patch to make some preparations before supporting css_task
->    iters.(Alexei)
-> - Add an allowlist for css_task iters(Alexei)
-> - Let bpf progs do explicit bpf_rcu_read_lock() when using process
->    iters and css_descendant iters.(Alexei)
-> ---------------------
-> 
-> In some BPF usage scenarios, it will be useful to iterate the process and
-> css directly in the BPF program. One of the expected scenarios is
-> customizable OOM victim selection via BPF[1].
-> 
-> Inspired by Dave's task_vma iter[2], this patchset adds three types of
-> open-coded iterator kfuncs:
-> 
-> 1. bpf_task_iters. It can be used to
-> 1) iterate all process in the system, like for_each_forcess() in kernel.
-> 2) iterate all threads in the system.
-> 3) iterate all threads of a specific task
-> 
-> 2. bpf_css_iters. It works like css_task_iter_{start, next, end} and would
-> be used to iterating tasks/threads under a css.
-> 
-> 3. css_iters. It works like css_next_descendant_{pre, post} to iterating all
-> descendant css.
-> 
-> BPF programs can use these kfuncs directly or through bpf_for_each macro.
-> 
-> link[1]: https://lore.kernel.org/lkml/20230810081319.65668-1-zhouchuyi@bytedance.com/
-> link[2]: https://lore.kernel.org/all/20230810183513.684836-1-davemarchevsky@fb.com/
-> 
-> Chuyi Zhou (8):
->    cgroup: Prepare for using css_task_iter_*() in BPF
->    bpf: Introduce css_task open-coded iterator kfuncs
->    bpf: Introduce task open coded iterator kfuncs
->    bpf: Introduce css open-coded iterator kfuncs
->    bpf: teach the verifier to enforce css_iter and task_iter in RCU CS
->    bpf: Let bpf_iter_task_new accept null task ptr
->    selftests/bpf: rename bpf_iter_task.c to bpf_iter_tasks.c
->    selftests/bpf: Add tests for open-coded task and css iter
-> 
->   include/linux/bpf_verifier.h                  |  19 ++-
->   include/linux/btf.h                           |   1 +
->   include/linux/cgroup.h                        |  12 +-
->   kernel/bpf/cgroup_iter.c                      |  65 ++++++++
->   kernel/bpf/helpers.c                          |   9 ++
->   kernel/bpf/task_iter.c                        | 151 ++++++++++++++++++
->   kernel/bpf/verifier.c                         |  86 ++++++++--
->   kernel/cgroup/cgroup.c                        |  18 ++-
->   .../testing/selftests/bpf/bpf_experimental.h  |  19 +++
->   .../selftests/bpf/prog_tests/bpf_iter.c       |  18 +--
->   .../testing/selftests/bpf/prog_tests/iters.c  | 150 +++++++++++++++++
->   .../{bpf_iter_task.c => bpf_iter_tasks.c}     |   0
->   tools/testing/selftests/bpf/progs/iters_css.c |  72 +++++++++
->   .../selftests/bpf/progs/iters_css_task.c      |  47 ++++++
->   .../testing/selftests/bpf/progs/iters_task.c  |  41 +++++
->   .../selftests/bpf/progs/iters_task_failure.c  | 105 ++++++++++++
->   16 files changed, 771 insertions(+), 42 deletions(-)
->   rename tools/testing/selftests/bpf/progs/{bpf_iter_task.c => bpf_iter_tasks.c} (100%)
->   create mode 100644 tools/testing/selftests/bpf/progs/iters_css.c
->   create mode 100644 tools/testing/selftests/bpf/progs/iters_css_task.c
->   create mode 100644 tools/testing/selftests/bpf/progs/iters_task.c
->   create mode 100644 tools/testing/selftests/bpf/progs/iters_task_failure.c
-> 
+thanks,
+jirka
 
