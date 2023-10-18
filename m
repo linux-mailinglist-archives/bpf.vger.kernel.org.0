@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-12618-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12619-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CB477CEBAE
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 01:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F91F7CEBDE
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 01:20:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 877C0B2127B
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 23:16:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64B0CB2114E
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 23:20:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E96618E0B;
-	Wed, 18 Oct 2023 23:16:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C28B036B03;
+	Wed, 18 Oct 2023 23:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98D5E3986C;
-	Wed, 18 Oct 2023 23:16:24 +0000 (UTC)
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC43113;
-	Wed, 18 Oct 2023 16:16:23 -0700 (PDT)
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-27d4b280e4eso155072a91.1;
-        Wed, 18 Oct 2023 16:16:23 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F7BB1EB24;
+	Wed, 18 Oct 2023 23:20:49 +0000 (UTC)
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B03D51;
+	Wed, 18 Oct 2023 16:20:42 -0700 (PDT)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-27d23f1e3b8so5619406a91.1;
+        Wed, 18 Oct 2023 16:20:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697670983; x=1698275783;
+        d=1e100.net; s=20230601; t=1697671242; x=1698276042;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sIqkHqDOHQuBjbbW3lZ0aMJK1GXnPfSHH5+VnCKa+5E=;
-        b=PryT3oDclSMTVDDg6fYZn8mkmOYWiwHOVa+kxvOv3kkZ0TfNV/te79BmguKR66ut1H
-         Rt5kndlH+ufb97DwvBSlgPGG8BX2M5SHzgQAnjgy5DlFicaZeWIwP1idTVuiGzcdToH5
-         DyDYSylfWfh91NH7ycwOcCabWAu7didEqdPJndcC24KYLfOBgLTQJDUtMsPgJqOpA0MC
-         KBtvngeHpFd0KRZWQhmUtVIMOlu8JTn+cZ12pnOALreMkkvAlR4RYisEZe6Y8JEQH9Ej
-         M7DBtiUPpws5vqnEfzsOQNxDZQsnpsdbfGI2k08GphGUwd0K7cLCajCQ8Yw2KpgD+zf4
-         4nxA==
-X-Gm-Message-State: AOJu0YxnlRPCN0AjubabwH7TF4+NA8GYLPB6E8f35pFI2d5V7BsjzExa
-	yDLRBh1fSTn2f+Pswi64EIaqN3t/u3VCwtLur0Y=
-X-Google-Smtp-Source: AGHT+IH3cHfMHMkPW0wf8wXkGXDRsCuzcrZXEfuHGBDHr1Lk29UAyILehq8JUCWlTMiaJCfnLyY53kRk1Q2H/Oveqmk=
-X-Received: by 2002:a17:90a:11:b0:27d:df04:d109 with SMTP id
- 17-20020a17090a001100b0027ddf04d109mr409283pja.2.1697670982818; Wed, 18 Oct
- 2023 16:16:22 -0700 (PDT)
+        bh=UufSU0DJZN7WnStqbSdFLZOGonoM+uqnsYlL8bCP5z8=;
+        b=FogSghdWNbnqLh0STBS4o+Tc5LukwGDkIxTKzAAfcLjWXc7K/jghnRCKlEWXAsmxHn
+         0zr0VwbGjw7BgZmiK8GJI85JB7IRoprUimdiN5/4LduZ/TTdkIbJxj4+TEysqqw0JzVS
+         AC1kKsGx6HIuAx4JN033ok89NyaswmhggyLnQci0ve4c09GkkKsQIGy4ENWtvUg8m+Ms
+         IKHf6Ml0nPLyOZb2aCgxxWX6i6LYeW3jvOB/fOk/2YDGDeEibUVxqtu0vmvpuNkTl1b6
+         K9icgTwcdwucRHjE/eNcM/cPi/K4yVk0nLQ30YUdcV0ELFupV5l/Vb3lO1k6tkTYWCp7
+         Ut8A==
+X-Gm-Message-State: AOJu0Yzfzl4l/sN67MDXdaym6T+PEZpEinfXyw5kyawrzmUpalPwmCPg
+	ZfjkQEE9oabNIsUYr8piK6Hzt5kBx8jRu4ZNfL8=
+X-Google-Smtp-Source: AGHT+IGdjwGljjSza0sZKxQY8YEKvPn0ojx/+eccPOPHfSAMDF/EH5hh0ixHltoELua5mfzjbUW8bboJ3eLW7UbEgSk=
+X-Received: by 2002:a17:90b:4b49:b0:27d:8d0:713e with SMTP id
+ mi9-20020a17090b4b4900b0027d08d0713emr655906pjb.10.1697671241931; Wed, 18 Oct
+ 2023 16:20:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231012062359.1616786-1-irogers@google.com> <20231012062359.1616786-4-irogers@google.com>
-In-Reply-To: <20231012062359.1616786-4-irogers@google.com>
+References: <20231012062359.1616786-1-irogers@google.com> <20231012062359.1616786-10-irogers@google.com>
+In-Reply-To: <20231012062359.1616786-10-irogers@google.com>
 From: Namhyung Kim <namhyung@kernel.org>
-Date: Wed, 18 Oct 2023 16:16:11 -0700
-Message-ID: <CAM9d7cg=v9rnPz4cy2yeNZNSCoZ3VReC895gHPTO-emn6XdLXg@mail.gmail.com>
-Subject: Re: [PATCH v2 03/13] perf hist: Add missing puts to hist__account_cycles
+Date: Wed, 18 Oct 2023 16:20:30 -0700
+Message-ID: <CAM9d7cih9+DCKzVXBFTMUfjjY6ZX-yrj3CEM+Q3tjTNRYmQ=Yw@mail.gmail.com>
+Subject: Re: [PATCH v2 09/13] perf mem_info: Add and use map_symbol__exit and addr_map_symbol__exit
 To: Ian Rogers <irogers@google.com>
 Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
@@ -70,75 +70,197 @@ Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Ian,
-
 On Wed, Oct 11, 2023 at 11:24=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
 ote:
 >
-> Caught using reference count checking on perf top with
-> "--call-graph=3Dlbr". After this no memory leaks were detected.
+> Fix leak where mem_info__put wouldn't release the maps/map as used by
+> perf mem. Add exit functions and use elsewhere that the maps and map
+> are released.
 >
-> Fixes: 57849998e2cd ("perf report: Add processing for cycle histograms")
 > Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
->  tools/perf/util/hist.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
+>  tools/perf/util/Build        |  1 +
+>  tools/perf/util/callchain.c  | 15 +++++----------
+>  tools/perf/util/hist.c       |  6 ++----
+>  tools/perf/util/machine.c    |  6 ++----
+>  tools/perf/util/map_symbol.c | 15 +++++++++++++++
+>  tools/perf/util/map_symbol.h |  4 ++++
+>  tools/perf/util/symbol.c     |  5 ++++-
+>  7 files changed, 33 insertions(+), 19 deletions(-)
+>  create mode 100644 tools/perf/util/map_symbol.c
 >
+> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+> index 0ea5a9d368d4..96058f949ec9 100644
+> --- a/tools/perf/util/Build
+> +++ b/tools/perf/util/Build
+> @@ -49,6 +49,7 @@ perf-y +=3D dso.o
+>  perf-y +=3D dsos.o
+>  perf-y +=3D symbol.o
+>  perf-y +=3D symbol_fprintf.o
+> +perf-y +=3D map_symbol.o
+>  perf-y +=3D color.o
+>  perf-y +=3D color_config.o
+>  perf-y +=3D metricgroup.o
+> diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
+> index 0a7919c2af91..02881d5b822c 100644
+> --- a/tools/perf/util/callchain.c
+> +++ b/tools/perf/util/callchain.c
+> @@ -1496,16 +1496,14 @@ static void free_callchain_node(struct callchain_=
+node *node)
+>
+>         list_for_each_entry_safe(list, tmp, &node->parent_val, list) {
+>                 list_del_init(&list->list);
+> -               map__zput(list->ms.map);
+> -               maps__zput(list->ms.maps);
+> +               map_symbol__exit(&list->ms);
+>                 zfree(&list->brtype_stat);
+>                 free(list);
+>         }
+>
+>         list_for_each_entry_safe(list, tmp, &node->val, list) {
+>                 list_del_init(&list->list);
+> -               map__zput(list->ms.map);
+> -               maps__zput(list->ms.maps);
+> +               map_symbol__exit(&list->ms);
+>                 zfree(&list->brtype_stat);
+>                 free(list);
+>         }
+> @@ -1591,8 +1589,7 @@ int callchain_node__make_parent_list(struct callcha=
+in_node *node)
+>  out:
+>         list_for_each_entry_safe(chain, new, &head, list) {
+>                 list_del_init(&chain->list);
+> -               map__zput(chain->ms.map);
+> -               maps__zput(chain->ms.maps);
+> +               map_symbol__exit(&chain->ms);
+>                 zfree(&chain->brtype_stat);
+>                 free(chain);
+>         }
+> @@ -1676,10 +1673,8 @@ void callchain_cursor_reset(struct callchain_curso=
+r *cursor)
+>         cursor->nr =3D 0;
+>         cursor->last =3D &cursor->first;
+>
+> -       for (node =3D cursor->first; node !=3D NULL; node =3D node->next)=
+ {
+> -               map__zput(node->ms.map);
+> -               maps__zput(node->ms.maps);
+> -       }
+> +       for (node =3D cursor->first; node !=3D NULL; node =3D node->next)
+> +               map_symbol__exit(&node->ms);
+>  }
+>
+>  void callchain_param_setup(u64 sample_type, const char *arch)
 > diff --git a/tools/perf/util/hist.c b/tools/perf/util/hist.c
-> index 3dc8a4968beb..ac8c0ef48a7f 100644
+> index ac8c0ef48a7f..d62693b8fad8 100644
 > --- a/tools/perf/util/hist.c
 > +++ b/tools/perf/util/hist.c
-> @@ -2676,8 +2676,6 @@ void hist__account_cycles(struct branch_stack *bs, =
-struct addr_location *al,
+> @@ -524,8 +524,7 @@ static int hist_entry__init(struct hist_entry *he,
+>                 map__put(he->mem_info->daddr.ms.map);
+>         }
+>  err:
+> -       maps__zput(he->ms.maps);
+> -       map__zput(he->ms.map);
+> +       map_symbol__exit(&he->ms);
+>         zfree(&he->stat_acc);
+>         return -ENOMEM;
+>  }
+> @@ -1317,8 +1316,7 @@ void hist_entry__delete(struct hist_entry *he)
+>         struct hist_entry_ops *ops =3D he->ops;
 >
->         /* If we have branch cycles always annotate them. */
->         if (bs && bs->nr && entries[0].flags.cycles) {
-> -               int i;
-> -
+>         thread__zput(he->thread);
+> -       maps__zput(he->ms.maps);
+> -       map__zput(he->ms.map);
+> +       map_symbol__exit(&he->ms);
+>
+>         if (he->branch_info) {
+>                 map__zput(he->branch_info->from.ms.map);
 
-Seems not necessary.
+What about he->branch_info and he->mem_info ?
 
->                 bi =3D sample__resolve_bstack(sample, al);
-
-It looks like this increases the refcount for each bi entry and
-it didn't put the refcounts.
-
-
->                 if (bi) {
->                         struct addr_map_symbol *prev =3D NULL;
-> @@ -2692,7 +2690,7 @@ void hist__account_cycles(struct branch_stack *bs, =
-struct addr_location *al,
->                          * Note that perf stores branches reversed from
->                          * program order!
->                          */
-> -                       for (i =3D bs->nr - 1; i >=3D 0; i--) {
-> +                       for (int i =3D bs->nr - 1; i >=3D 0; i--) {
->                                 addr_map_symbol__account_cycles(&bi[i].fr=
-om,
->                                         nonany_branch_mode ? NULL : prev,
->                                         bi[i].flags.cycles);
-> @@ -2701,6 +2699,12 @@ void hist__account_cycles(struct branch_stack *bs,=
- struct addr_location *al,
->                                 if (total_cycles)
->                                         *total_cycles +=3D bi[i].flags.cy=
-cles;
->                         }
-> +                       for (unsigned int i =3D 0; i < bs->nr; i++) {
-
-Can we just reuse the int i above?
+Also I think we can use it in hists__account_cycles() too.
 
 Thanks,
 Namhyung
 
 
-> +                               map__put(bi[i].to.ms.map);
-> +                               maps__put(bi[i].to.ms.maps);
-> +                               map__put(bi[i].from.ms.map);
-> +                               maps__put(bi[i].from.ms.maps);
-> +                       }
->                         free(bi);
->                 }
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index 8e5085b77c7b..6ca7500e2cf4 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -2389,8 +2389,7 @@ static int add_callchain_ip(struct thread *thread,
+>                                       iter_cycles, branch_from, srcline);
+>  out:
+>         addr_location__exit(&al);
+> -       maps__put(ms.maps);
+> -       map__put(ms.map);
+> +       map_symbol__exit(&ms);
+>         return err;
+>  }
+>
+> @@ -3116,8 +3115,7 @@ static int append_inlines(struct callchain_cursor *=
+cursor, struct map_symbol *ms
+>                 if (ret !=3D 0)
+>                         return ret;
 >         }
+> -       map__put(ilist_ms.map);
+> -       maps__put(ilist_ms.maps);
+> +       map_symbol__exit(&ilist_ms);
+>
+>         return ret;
+>  }
+> diff --git a/tools/perf/util/map_symbol.c b/tools/perf/util/map_symbol.c
+> new file mode 100644
+> index 000000000000..bef5079f2403
+> --- /dev/null
+> +++ b/tools/perf/util/map_symbol.c
+> @@ -0,0 +1,15 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include "map_symbol.h"
+> +#include "maps.h"
+> +#include "map.h"
+> +
+> +void map_symbol__exit(struct map_symbol *ms)
+> +{
+> +       maps__zput(ms->maps);
+> +       map__zput(ms->map);
+> +}
+> +
+> +void addr_map_symbol__exit(struct addr_map_symbol *ams)
+> +{
+> +       map_symbol__exit(&ams->ms);
+> +}
+> diff --git a/tools/perf/util/map_symbol.h b/tools/perf/util/map_symbol.h
+> index e08817b0c30f..72d5ed938ed6 100644
+> --- a/tools/perf/util/map_symbol.h
+> +++ b/tools/perf/util/map_symbol.h
+> @@ -22,4 +22,8 @@ struct addr_map_symbol {
+>         u64           phys_addr;
+>         u64           data_page_size;
+>  };
+> +
+> +void map_symbol__exit(struct map_symbol *ms);
+> +void addr_map_symbol__exit(struct addr_map_symbol *ams);
+> +
+>  #endif // __PERF_MAP_SYMBOL
+> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+> index 2740d4457c13..d67a87072eec 100644
+> --- a/tools/perf/util/symbol.c
+> +++ b/tools/perf/util/symbol.c
+> @@ -2790,8 +2790,11 @@ struct mem_info *mem_info__get(struct mem_info *mi=
+)
+>
+>  void mem_info__put(struct mem_info *mi)
+>  {
+> -       if (mi && refcount_dec_and_test(&mi->refcnt))
+> +       if (mi && refcount_dec_and_test(&mi->refcnt)) {
+> +               addr_map_symbol__exit(&mi->iaddr);
+> +               addr_map_symbol__exit(&mi->daddr);
+>                 free(mi);
+> +       }
+>  }
+>
+>  struct mem_info *mem_info__new(void)
 > --
 > 2.42.0.609.gbb76f46606-goog
 >
