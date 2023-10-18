@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-12516-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12513-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 124007CD453
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 08:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 653827CD433
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 08:18:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 437AC1C20D24
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 06:20:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96CDE1C20AE0
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 06:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C518F7D;
-	Wed, 18 Oct 2023 06:20:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 299A58F71;
+	Wed, 18 Oct 2023 06:18:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="WW3aO8hM"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="FwW88olg"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F5EA8F77
-	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 06:20:34 +0000 (UTC)
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D68198C
-	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 23:18:17 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-27d0e3d823fso3823228a91.1
-        for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 23:18:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C59501FC5
+	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 06:18:48 +0000 (UTC)
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA84D19A9
+	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 23:18:19 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c9bca1d96cso44216355ad.3
+        for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 23:18:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697609892; x=1698214692; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1697609894; x=1698214694; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pBjREUfdYjysteuQq+CF2MBmAUs5yTb/YGRZ4Q4shvo=;
-        b=WW3aO8hMPq9dtwDyVMW8bvYBqA9W5ayBgjr8EyMbwXlENVQYLcT/O7MnckTrEdGeAg
-         t3Ij9IMel+5V/0syQekAwBDa5pGTXJN50vM4JM/Ert0UO3OjadDmHxPrbzYIjEpp05YR
-         8fckf4LZZ3YcnWgZBC+D3ppUdF1DZUnLWGicx7U3Vl7O531PMA4dtGJfd3VHaivS4sCL
-         p5ePlszhPZWiR4srszNmO/1Uyo7dfe9UCHwRp/6uIloSdMXEBFBCC/FprMW3sGKB6ZdI
-         noD7+sMWbwoACGT/faOYyZyYCEjEPBME58+XZ6OBAoubQZav46qxr2N5exRNtKxLUJMh
-         NScA==
+        bh=bQoEay4rhaVzIBrBvVhg11HsCpeS6HANzS4lkGBCuZ4=;
+        b=FwW88olgJ5EWUU25m6KzuQ6R858GYT0Ra2cPUGTZ1aXWYsCvDvhXDm8o8rVYoKTPBO
+         cL1bp9RR1NrR4Yrmr6bAhWa65Jw5Lm/dqivydvj4sIBy6HKRei2Axp/3sNBo3uMGw+Mf
+         VXEnX7jM7x4BWA+QJhPZBKJYq3Dp8omZWV+EA4YGlBljDXex3jqHyCuAg+YcVHzViJ27
+         hYXUj2SuaXJztjePmIJsU8CBievUhtZj7a3dcz4iI34lXhAco5vobbmRXjZ81hjgPuls
+         TgFV6adRs5cqatgR68QofM/sD5ajefX8qR6RPEVDo1Xxe/jABtwLhJF2dSEMjeB6aNPb
+         4g9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697609892; x=1698214692;
+        d=1e100.net; s=20230601; t=1697609894; x=1698214694;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pBjREUfdYjysteuQq+CF2MBmAUs5yTb/YGRZ4Q4shvo=;
-        b=HGa1KbtQ6ZasvFmBbKQXYiS2bfhxXt3ViH1YBvd2pw2ItbnBWgvGfFDXuENaS9f0J7
-         dEcixsNeqlffzeZVyZjSRtVO5ZiIs92iuPM1gTDolhiGwke7jkX6JLpwt6OW3IQDBXju
-         M938zBbaNzLReC/mUl5a9Md6EOdhjWr42WreoZuEzF4SNshgQakG/eS4VE0+nqbsWOTN
-         n8L17+7+IHy8/xEKrJ9cRk6FLW+GutPOe0oUQoqcXCRJ743mZAyY24rUKRUPMmXYaODY
-         +j2UNnLxWG9vRsJiuQFF8kICtIdEfA32CUclNZoRh+u22O46JehD2J9MMHCjX3ClBb4n
-         zM7Q==
-X-Gm-Message-State: AOJu0YyD0EzE9iVZfN+Y1UqIyLxkR70wnDHaVs7m58/7LjsRwj1qVyKm
-	/hIruQQSpI7ha2cqmvC+DA9RvKn/8Bk3YJUG3ozdMA==
-X-Google-Smtp-Source: AGHT+IEcjcprgVH3l41ELy8Zj6cbhO4neAlWBPjwjSIwdE6So6A363RYv4MEKCuHWdtRisbJbwo7oQ==
-X-Received: by 2002:a17:90a:31c:b0:27d:1ce5:1eb6 with SMTP id 28-20020a17090a031c00b0027d1ce51eb6mr4382459pje.17.1697609891808;
-        Tue, 17 Oct 2023 23:18:11 -0700 (PDT)
+        bh=bQoEay4rhaVzIBrBvVhg11HsCpeS6HANzS4lkGBCuZ4=;
+        b=Ktlrja2hWRf/5FbwQAWwP3CyHK1YS9fFMK4YjmD8vZ1KKTdVe0EVemdT9AMwywmx4B
+         Jkl1w3e852NStGrnHUaHtoO27OrpYfmy0zmqYq+0tJfYx6JVYod8bn1MztNmg8wVD8eS
+         nTAZ1P7ZtQ3d81HZmf6XqRu2/GuOxJu3NcnOKr+FWcwN54BERf66atfp8mFQvFjH9OJV
+         XckPoAXvnjRFhZniKIcmQDD9+3EaR2r4annrTvKHRNlfr7uAT8l8ox0ETVYotaxiDHeq
+         9Y2bfJw+EAFkWd4eDmbB6RNGi6rTF8J/SIFxVAX+zBPuK0bL4harQAfMbmHaGznFLtX9
+         aLBg==
+X-Gm-Message-State: AOJu0YzwUJrQAPN2DKN8Es5y3+RxF2cEAFULNmusPwrf9na1S7DotFCf
+	TuZ3CziBccYU67SkeN2F+9CIod4GKU0RBQlxIP2avg==
+X-Google-Smtp-Source: AGHT+IHe5ZdVnEzS5tjxpfZ8uEPb9SiEMM/KwW0ztO0tbDERHa84ynxNWv4YWxXpeDJgGfrzjTyw3A==
+X-Received: by 2002:a17:902:ecc9:b0:1ca:1af1:681d with SMTP id a9-20020a170902ecc900b001ca1af1681dmr4504438plh.67.1697609894426;
+        Tue, 17 Oct 2023 23:18:14 -0700 (PDT)
 Received: from n37-019-243.byted.org ([180.184.103.200])
-        by smtp.gmail.com with ESMTPSA id ix13-20020a170902f80d00b001c61acd5bd2sm2659116plb.112.2023.10.17.23.18.09
+        by smtp.gmail.com with ESMTPSA id ix13-20020a170902f80d00b001c61acd5bd2sm2659116plb.112.2023.10.17.23.18.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 23:18:11 -0700 (PDT)
+        Tue, 17 Oct 2023 23:18:14 -0700 (PDT)
 From: Chuyi Zhou <zhouchuyi@bytedance.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -67,9 +67,9 @@ Cc: ast@kernel.org,
 	tj@kernel.org,
 	linux-kernel@vger.kernel.org,
 	Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: [RESEND PATCH bpf-next v6 6/8] bpf: Let bpf_iter_task_new accept null task ptr
-Date: Wed, 18 Oct 2023 14:17:44 +0800
-Message-Id: <20231018061746.111364-7-zhouchuyi@bytedance.com>
+Subject: [RESEND PATCH bpf-next v6 7/8] selftests/bpf: rename bpf_iter_task.c to bpf_iter_tasks.c
+Date: Wed, 18 Oct 2023 14:17:45 +0800
+Message-Id: <20231018061746.111364-8-zhouchuyi@bytedance.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20231018061746.111364-1-zhouchuyi@bytedance.com>
 References: <20231018061746.111364-1-zhouchuyi@bytedance.com>
@@ -82,128 +82,87 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-When using task_iter to iterate all threads of a specific task, we enforce
-that the user must pass a valid task pointer to ensure safety. However,
-when iterating all threads/process in the system, BPF verifier still
-require a valid ptr instead of "nullable" pointer, even though it's
-pointless, which is a kind of surprising from usability standpoint. It
-would be nice if we could let that kfunc accept a explicit null pointer
-when we are using BPF_TASK_ITER_ALL_{PROCS, THREADS} and a valid pointer
-when using BPF_TASK_ITER_THREAD.
-
-Given a trival kfunc:
-	__bpf_kfunc void FN(struct TYPE_A *obj);
-
-BPF Prog would reject a nullptr for obj. The error info is:
-"arg#x pointer type xx xx must point to scalar, or struct with scalar"
-reported by get_kfunc_ptr_arg_type(). The reg->type is SCALAR_VALUE and
-the btf type of ref_t is not scalar or scalar_struct which leads to the
-rejection of get_kfunc_ptr_arg_type.
-
-This patch add "__nullable" annotation:
-	__bpf_kfunc void FN(struct TYPE_A *obj__nullable);
-Here __nullable indicates obj can be optional, user can pass a explicit
-nullptr or a normal TYPE_A pointer. In get_kfunc_ptr_arg_type(), we will
-detect whether the current arg is optional and register is null, If so,
-return a new kfunc_ptr_arg_type KF_ARG_PTR_TO_NULL and skip to the next
-arg in check_kfunc_args().
+The newly-added struct bpf_iter_task has a name collision with a selftest
+for the seq_file task iter's bpf skel, so the selftests/bpf/progs file is
+renamed in order to avoid the collision.
 
 Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/task_iter.c |  7 +++++--
- kernel/bpf/verifier.c  | 13 ++++++++++++-
- 2 files changed, 17 insertions(+), 3 deletions(-)
+ .../selftests/bpf/prog_tests/bpf_iter.c        | 18 +++++++++---------
+ .../{bpf_iter_task.c => bpf_iter_tasks.c}      |  0
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+ rename tools/testing/selftests/bpf/progs/{bpf_iter_task.c => bpf_iter_tasks.c} (100%)
 
-diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-index faa1712c1df5..59e747938bdb 100644
---- a/kernel/bpf/task_iter.c
-+++ b/kernel/bpf/task_iter.c
-@@ -976,7 +976,7 @@ __diag_ignore_all("-Wmissing-prototypes",
- 		  "Global functions as their definitions will be in vmlinux BTF");
- 
- __bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it,
--		struct task_struct *task, unsigned int flags)
-+		struct task_struct *task__nullable, unsigned int flags)
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+index 41aba139b20b..e3498f607b49 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+@@ -7,7 +7,7 @@
+ #include "bpf_iter_ipv6_route.skel.h"
+ #include "bpf_iter_netlink.skel.h"
+ #include "bpf_iter_bpf_map.skel.h"
+-#include "bpf_iter_task.skel.h"
++#include "bpf_iter_tasks.skel.h"
+ #include "bpf_iter_task_stack.skel.h"
+ #include "bpf_iter_task_file.skel.h"
+ #include "bpf_iter_task_vmas.skel.h"
+@@ -215,12 +215,12 @@ static void *do_nothing_wait(void *arg)
+ static void test_task_common_nocheck(struct bpf_iter_attach_opts *opts,
+ 				     int *num_unknown, int *num_known)
  {
- 	struct bpf_iter_task_kern *kit = (void *)it;
+-	struct bpf_iter_task *skel;
++	struct bpf_iter_tasks *skel;
+ 	pthread_t thread_id;
+ 	void *ret;
  
-@@ -988,14 +988,17 @@ __bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it,
- 	switch (flags) {
- 	case BPF_TASK_ITER_ALL_THREADS:
- 	case BPF_TASK_ITER_ALL_PROCS:
-+		break;
- 	case BPF_TASK_ITER_PROC_THREADS:
-+		if (!task__nullable)
-+			return -EINVAL;
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
+-	skel = bpf_iter_task__open_and_load();
+-	if (!ASSERT_OK_PTR(skel, "bpf_iter_task__open_and_load"))
++	skel = bpf_iter_tasks__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "bpf_iter_tasks__open_and_load"))
+ 		return;
  
- 	if (flags == BPF_TASK_ITER_PROC_THREADS)
--		kit->task = task;
-+		kit->task = task__nullable;
- 	else
- 		kit->task = &init_task;
- 	kit->pos = kit->task;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index fcdf2382153a..e9bc5d4a25a1 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -10332,6 +10332,11 @@ static bool is_kfunc_arg_refcounted_kptr(const struct btf *btf, const struct btf
- 	return __kfunc_param_match_suffix(btf, arg, "__refcounted_kptr");
+ 	ASSERT_OK(pthread_mutex_lock(&do_nothing_mutex), "pthread_mutex_lock");
+@@ -239,7 +239,7 @@ static void test_task_common_nocheck(struct bpf_iter_attach_opts *opts,
+ 	ASSERT_FALSE(pthread_join(thread_id, &ret) || ret != NULL,
+ 		     "pthread_join");
+ 
+-	bpf_iter_task__destroy(skel);
++	bpf_iter_tasks__destroy(skel);
  }
  
-+static bool is_kfunc_arg_nullable(const struct btf *btf, const struct btf_param *arg)
-+{
-+	return __kfunc_param_match_suffix(btf, arg, "__nullable");
-+}
-+
- static bool is_kfunc_arg_scalar_with_name(const struct btf *btf,
- 					  const struct btf_param *arg,
- 					  const char *name)
-@@ -10474,6 +10479,7 @@ enum kfunc_ptr_arg_type {
- 	KF_ARG_PTR_TO_CALLBACK,
- 	KF_ARG_PTR_TO_RB_ROOT,
- 	KF_ARG_PTR_TO_RB_NODE,
-+	KF_ARG_PTR_TO_NULL,
- };
+ static void test_task_common(struct bpf_iter_attach_opts *opts, int num_unknown, int num_known)
+@@ -307,10 +307,10 @@ static void test_task_pidfd(void)
  
- enum special_kfunc_type {
-@@ -10630,6 +10636,8 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
- 	if (is_kfunc_arg_callback(env, meta->btf, &args[argno]))
- 		return KF_ARG_PTR_TO_CALLBACK;
+ static void test_task_sleepable(void)
+ {
+-	struct bpf_iter_task *skel;
++	struct bpf_iter_tasks *skel;
  
-+	if (is_kfunc_arg_nullable(meta->btf, &args[argno]) && register_is_null(reg))
-+		return KF_ARG_PTR_TO_NULL;
+-	skel = bpf_iter_task__open_and_load();
+-	if (!ASSERT_OK_PTR(skel, "bpf_iter_task__open_and_load"))
++	skel = bpf_iter_tasks__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "bpf_iter_tasks__open_and_load"))
+ 		return;
  
- 	if (argno + 1 < nargs &&
- 	    (is_kfunc_arg_mem_size(meta->btf, &args[argno + 1], &regs[regno + 1]) ||
-@@ -11180,7 +11188,8 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 		}
+ 	do_dummy_read(skel->progs.dump_task_sleepable);
+@@ -320,7 +320,7 @@ static void test_task_sleepable(void)
+ 	ASSERT_GT(skel->bss->num_success_copy_from_user_task, 0,
+ 		  "num_success_copy_from_user_task");
  
- 		if ((is_kfunc_trusted_args(meta) || is_kfunc_rcu(meta)) &&
--		    (register_is_null(reg) || type_may_be_null(reg->type))) {
-+		    (register_is_null(reg) || type_may_be_null(reg->type)) &&
-+			!is_kfunc_arg_nullable(meta->btf, &args[i])) {
- 			verbose(env, "Possibly NULL pointer passed to trusted arg%d\n", i);
- 			return -EACCES;
- 		}
-@@ -11205,6 +11214,8 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 			return kf_arg_type;
+-	bpf_iter_task__destroy(skel);
++	bpf_iter_tasks__destroy(skel);
+ }
  
- 		switch (kf_arg_type) {
-+		case KF_ARG_PTR_TO_NULL:
-+			continue;
- 		case KF_ARG_PTR_TO_ALLOC_BTF_ID:
- 		case KF_ARG_PTR_TO_BTF_ID:
- 			if (!is_kfunc_trusted_args(meta) && !is_kfunc_rcu(meta))
+ static void test_task_stack(void)
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task.c b/tools/testing/selftests/bpf/progs/bpf_iter_tasks.c
+similarity index 100%
+rename from tools/testing/selftests/bpf/progs/bpf_iter_task.c
+rename to tools/testing/selftests/bpf/progs/bpf_iter_tasks.c
 -- 
 2.20.1
 
