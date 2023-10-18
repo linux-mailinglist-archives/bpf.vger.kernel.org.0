@@ -1,227 +1,561 @@
-Return-Path: <bpf+bounces-12496-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12497-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 700977CD240
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 04:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A2007CD26E
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 04:47:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9290F1C20902
-	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 02:25:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DE451C20AEC
+	for <lists+bpf@lfdr.de>; Wed, 18 Oct 2023 02:47:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8ED146AE;
-	Wed, 18 Oct 2023 02:25:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054451FB8;
+	Wed, 18 Oct 2023 02:47:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Le2IZZ+v"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YXusUTTO"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52794696
-	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 02:25:44 +0000 (UTC)
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33202FC
-	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 19:25:40 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a87ac9d245so35339247b3.3
-        for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 19:25:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697595939; x=1698200739; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=F7prIbaqd3exPN6qydcxIQcP7exTwdUtcMjgVFRHTr4=;
-        b=Le2IZZ+vQSdB2Y8vG1DGbZBaz799YhdCjLIGIYu3ZnHEUie1w2Ofil2nsZDCIMp/g6
-         hvNkPzGP3PljMB3eBlKONOzV0GNIsisDVjDs54v+iEd3jKameMdlEuV0saBVFQ0y/EOb
-         6pj/kjzKHykEGpT50QpscQkT86VMOk/VSaI9o/oA94W+JcNMPEYmajp0f2zBLH4Yec8v
-         AbIS97wCLCf/vRbTaqAliInWJL3J/pGuBHgAyDUp+7zZ6L5EbYQJi30p61hoEV+j5gTr
-         xNVZeZK3fYeXrFOc93srHf1JXsgc1iwiuGVgUhf2/WpBZ403WbLJ+d8llkcE5ZPzboWm
-         wzng==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98E19631
+	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 02:46:57 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E0EAB
+	for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 19:46:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1697597213;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fu9VeueLFSnrZct8drjYc/gCDM9GIE8F4Ss2BH3JHGk=;
+	b=YXusUTTOFVqDFf6QtFJG25Yrvq15QixAjH+LNywih2r3YTWSBTOLU+JCD3A3JGZdqQEgR5
+	+UZ0HVBKEWQayBIrrOqvFq9LdIiYIOGNeo2enspqqlDlkpHQgISWVYLwIrauSSCsXEvtMR
+	OHOiEMDBHTg8iVX5R/ri7+HcAzJnTcM=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-244-S1nINEauPJORV75KxtImPg-1; Tue, 17 Oct 2023 22:46:51 -0400
+X-MC-Unique: S1nINEauPJORV75KxtImPg-1
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-502fff967ccso6152148e87.1
+        for <bpf@vger.kernel.org>; Tue, 17 Oct 2023 19:46:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697595939; x=1698200739;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F7prIbaqd3exPN6qydcxIQcP7exTwdUtcMjgVFRHTr4=;
-        b=PW126V7dBwaeKj/3CiVK9fuD4zci7OuPSR82s6m9z2ibIWBOT440tIXfWkxh/1MdFs
-         9ubGm/FX3U+3vHKBbWEv6zWg3DaEX8eapF4Q+eg1PI4KH0bMFDncKl063x9wBdPxNHFh
-         RyHO1Vc0XiGzkAQGWCVBjS6wO0W6uz64Bo9L4kil0bRFu0l0pHVuRbPO9DvHHHWiMAKV
-         oATALuffjtSQHDb/huM/e575Y7AksaRRn9Kd3R4PwEbPC2nMeRu6w/fk8x3E60u9911Q
-         B74O1nTvDV+J8r9jDm7kjv/POtuyLAHUZUVY0WwlEuIS+CZNC+hHdZB5cZJAo1V4+UtT
-         Q2aQ==
-X-Gm-Message-State: AOJu0Yxj7ZiifoTaciNpea1zwL5i2zj1xF3i6/uvNOsOQDTabjhkTd9T
-	Z3aHjcL8m8NFYoOfwcDsz5I=
-X-Google-Smtp-Source: AGHT+IEqVUAo/YTqhlL98DVil/aKWJZ1aHaOwGf2h7GfScHwoRnacwUDi+OgbZpmpqJed7n92U4pwg==
-X-Received: by 2002:a0d:ef04:0:b0:59b:c0a8:2882 with SMTP id y4-20020a0def04000000b0059bc0a82882mr4258199ywe.46.1697595939344;
-        Tue, 17 Oct 2023 19:25:39 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:7566:72a0:e053:66fd? ([2600:1700:6cf8:1240:7566:72a0:e053:66fd])
-        by smtp.gmail.com with ESMTPSA id k68-20020a0dc847000000b005a7d46770f2sm1116728ywd.83.2023.10.17.19.25.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 19:25:38 -0700 (PDT)
-Message-ID: <4fabd00b-3b72-49cb-a00d-6507a74dff72@gmail.com>
-Date: Tue, 17 Oct 2023 19:25:36 -0700
+        d=1e100.net; s=20230601; t=1697597209; x=1698202009;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fu9VeueLFSnrZct8drjYc/gCDM9GIE8F4Ss2BH3JHGk=;
+        b=YQXX28DP2OE72eR+KddYri/i9pKVBntk8QKmn6J8tu5uFUz66WTeLFZy1y9nlkKL0F
+         TVUao69zkC13iJjEYwDTAcRfh1PPYg+sA/oAFa+cgIMtaHFQhWrO1lGULp+BZOSYzA+8
+         uDDwKM36UiWSb6Ziv5ZfuJZayv7vOqmLEGx4xgfg9nURq0B2TUyXJYblt9gusisXNvIr
+         M5Gmn/r64165FRW46a6oSLtYgQ/KsGlQY4UFnJuswEkMybptXO5zp8McT1AqbDCrgOg4
+         IC5A4QHfIDCMvDkmi2En/qHbufIusA49EJDQCb129TPByZqQ/9X9KhDaFVQnJDQBfPVm
+         YAqg==
+X-Gm-Message-State: AOJu0YzD5gPTt5FSVsn5mEzUdpR9k0rSlOlfAxx1coNVAF/W0+yYc2ff
+	cLrSDJKmuMCuddN+qs9cj2x1CNdrf4nQh0gD0oAuKfWgtYu0mWc5A3M14O9vcFywhAmAdKNlXFv
+	5CWQ/qv4NEu644FRFvnJi/wQg3kVO
+X-Received: by 2002:a05:6512:220e:b0:507:b853:c96 with SMTP id h14-20020a056512220e00b00507b8530c96mr3524038lfu.48.1697597209640;
+        Tue, 17 Oct 2023 19:46:49 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEZV5EtosSDwwkZzCwjboL79g0C1qW5btNLD363QbtEZUcwukp+g75rqe7nyG5Euzj4+Y/iOt5gmU13z/N+qBQ=
+X-Received: by 2002:a05:6512:220e:b0:507:b853:c96 with SMTP id
+ h14-20020a056512220e00b00507b8530c96mr3524018lfu.48.1697597209144; Tue, 17
+ Oct 2023 19:46:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v5 7/9] libbpf: Find correct module BTFs for
- struct_ops maps and progs.
-Content-Language: en-US
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, thinker.li@gmail.com
-Cc: bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
- song@kernel.org, kernel-team@meta.com, andrii@kernel.org, drosen@google.com,
- kuifeng@meta.com
-References: <20231017162306.176586-1-thinker.li@gmail.com>
- <20231017162306.176586-8-thinker.li@gmail.com>
- <CAEf4BzY9jYfK4Z7bAhmX458mZcGi+SLgGe4VK3WQYz2toOgdOA@mail.gmail.com>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <CAEf4BzY9jYfK4Z7bAhmX458mZcGi+SLgGe4VK3WQYz2toOgdOA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+References: <20231016120033.26933-1-xuanzhuo@linux.alibaba.com>
+ <CACGkMEs4u-4ch2UAK14hNfKeORjqMu4BX7=46OfaXpvxW+VT7w@mail.gmail.com>
+ <1697511725.2037013-1-xuanzhuo@linux.alibaba.com> <CACGkMEskfXDo+bnx5hbGU3JRwOgBRwOC-bYDdFYSmEO2jjgPnA@mail.gmail.com>
+ <1697512950.0813534-1-xuanzhuo@linux.alibaba.com> <CACGkMEtppjoX_WAM+vjzkMKaMQQ0iZL=C_xS4RObuoLbm0udUw@mail.gmail.com>
+ <CACGkMEvWAhH3uj2DEo=m7qWg3-pQjE-EtEBvTT8JXzqZ+RYEXQ@mail.gmail.com>
+ <1697522771.0390663-2-xuanzhuo@linux.alibaba.com> <CACGkMEu4tSHd4RVo0zEp1A6uM-6h42y+yAB2xzHTv8SzYdZPXQ@mail.gmail.com>
+ <1697525013.7650406-3-xuanzhuo@linux.alibaba.com> <1697541581.967358-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1697541581.967358-1-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Wed, 18 Oct 2023 10:46:38 +0800
+Message-ID: <CACGkMEuXJaGEyAtdz1d3ajwx9jBqkWUyoUrg8DZ6dCXLPJxiOw@mail.gmail.com>
+Subject: Re: [PATCH net-next v1 00/19] virtio-net: support AF_XDP zero copy
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Tue, Oct 17, 2023 at 7:28=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
+om> wrote:
+>
+> On Tue, 17 Oct 2023 14:43:33 +0800, Xuan Zhuo <xuanzhuo@linux.alibaba.com=
+> wrote:
+> > On Tue, 17 Oct 2023 14:26:01 +0800, Jason Wang <jasowang@redhat.com> wr=
+ote:
+> > > On Tue, Oct 17, 2023 at 2:17=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.ali=
+baba.com> wrote:
+> > > >
+> > > > On Tue, 17 Oct 2023 13:27:47 +0800, Jason Wang <jasowang@redhat.com=
+> wrote:
+> > > > > On Tue, Oct 17, 2023 at 11:28=E2=80=AFAM Jason Wang <jasowang@red=
+hat.com> wrote:
+> > > > > >
+> > > > > > On Tue, Oct 17, 2023 at 11:26=E2=80=AFAM Xuan Zhuo <xuanzhuo@li=
+nux.alibaba.com> wrote:
+> > > > > > >
+> > > > > > > On Tue, 17 Oct 2023 11:20:41 +0800, Jason Wang <jasowang@redh=
+at.com> wrote:
+> > > > > > > > On Tue, Oct 17, 2023 at 11:11=E2=80=AFAM Xuan Zhuo <xuanzhu=
+o@linux.alibaba.com> wrote:
+> > > > > > > > >
+> > > > > > > > > On Tue, 17 Oct 2023 10:53:44 +0800, Jason Wang <jasowang@=
+redhat.com> wrote:
+> > > > > > > > > > On Mon, Oct 16, 2023 at 8:00=E2=80=AFPM Xuan Zhuo <xuan=
+zhuo@linux.alibaba.com> wrote:
+> > > > > > > > > > >
+> > > > > > > > > > > ## AF_XDP
+> > > > > > > > > > >
+> > > > > > > > > > > XDP socket(AF_XDP) is an excellent bypass kernel netw=
+ork framework. The zero
+> > > > > > > > > > > copy feature of xsk (XDP socket) needs to be supporte=
+d by the driver. The
+> > > > > > > > > > > performance of zero copy is very good. mlx5 and intel=
+ ixgbe already support
+> > > > > > > > > > > this feature, This patch set allows virtio-net to sup=
+port xsk's zerocopy xmit
+> > > > > > > > > > > feature.
+> > > > > > > > > > >
+> > > > > > > > > > > At present, we have completed some preparation:
+> > > > > > > > > > >
+> > > > > > > > > > > 1. vq-reset (virtio spec and kernel code)
+> > > > > > > > > > > 2. virtio-core premapped dma
+> > > > > > > > > > > 3. virtio-net xdp refactor
+> > > > > > > > > > >
+> > > > > > > > > > > So it is time for Virtio-Net to complete the support =
+for the XDP Socket
+> > > > > > > > > > > Zerocopy.
+> > > > > > > > > > >
+> > > > > > > > > > > Virtio-net can not increase the queue num at will, so=
+ xsk shares the queue with
+> > > > > > > > > > > kernel.
+> > > > > > > > > > >
+> > > > > > > > > > > On the other hand, Virtio-Net does not support genera=
+te interrupt from driver
+> > > > > > > > > > > manually, so when we wakeup tx xmit, we used some tip=
+s. If the CPU run by TX
+> > > > > > > > > > > NAPI last time is other CPUs, use IPI to wake up NAPI=
+ on the remote CPU. If it
+> > > > > > > > > > > is also the local CPU, then we wake up napi directly.
+> > > > > > > > > > >
+> > > > > > > > > > > This patch set includes some refactor to the virtio-n=
+et to let that to support
+> > > > > > > > > > > AF_XDP.
+> > > > > > > > > > >
+> > > > > > > > > > > ## performance
+> > > > > > > > > > >
+> > > > > > > > > > > ENV: Qemu with vhost-user(polling mode).
+> > > > > > > > > > >
+> > > > > > > > > > > Sockperf: https://github.com/Mellanox/sockperf
+> > > > > > > > > > > I use this tool to send udp packet by kernel syscall.
+> > > > > > > > > > >
+> > > > > > > > > > > xmit command: sockperf tp -i 10.0.3.1 -t 1000
+> > > > > > > > > > >
+> > > > > > > > > > > I write a tool that sends udp packets or recvs udp pa=
+ckets by AF_XDP.
+> > > > > > > > > > >
+> > > > > > > > > > >                   | Guest APP CPU |Guest Softirq CPU =
+| UDP PPS
+> > > > > > > > > > > ------------------|---------------|------------------=
+|------------
+> > > > > > > > > > > xmit by syscall   |   100%        |                  =
+|   676,915
+> > > > > > > > > > > xmit by xsk       |   59.1%       |   100%           =
+| 5,447,168
+> > > > > > > > > > > recv by syscall   |   60%         |   100%           =
+|   932,288
+> > > > > > > > > > > recv by xsk       |   35.7%       |   100%           =
+| 3,343,168
+> > > > > > > > > >
+> > > > > > > > > > Any chance we can get a testpmd result (which I guess s=
+hould be better
+> > > > > > > > > > than PPS above)?
+> > > > > > > > >
+> > > > > > > > > Do you mean testpmd + DPDK + AF_XDP?
+> > > > > > > >
+> > > > > > > > Yes.
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > > Yes. This is probably better because my tool does more wo=
+rk. That is not a
+> > > > > > > > > complete testing tool used by our business.
+> > > > > > > >
+> > > > > > > > Probably, but it would be appealing for others. Especially =
+considering
+> > > > > > > > DPDK supports AF_XDP PMD now.
+> > > > > > >
+> > > > > > > OK.
+> > > > > > >
+> > > > > > > Let me try.
+> > > > > > >
+> > > > > > > But could you start to review firstly?
+> > > > > >
+> > > > > > Yes, it's in my todo list.
+> > > > >
+> > > > > Speaking too fast, I think if it doesn't take too long time, I wo=
+uld
+> > > > > wait for the result first as netdim series. One reason is that I
+> > > > > remember claims to be only 10% to 20% loss comparing to wire spee=
+d, so
+> > > > > I'd expect it should be much faster. I vaguely remember, even a v=
+host
+> > > > > can gives us more than 3M PPS if we disable SMAP, so the numbers =
+here
+> > > > > are not as impressive as expected.
+> > > >
+> > > >
+> > > > What is SMAP? Cloud you give me more info?
+> > >
+> > > Supervisor Mode Access Prevention
+> > >
+> > > Vhost suffers from this.
+> > >
+> > > >
+> > > > So if we think the 3M as the wire speed, you expect the result
+> > > > can reach 2.8M pps/core, right?
+> > >
+> > > It's AF_XDP that claims to be 80% if my memory is correct. So a
+> > > correct AF_XDP implementation should not sit behind this too much.
+> > >
+> > > > Now the recv result is 2.5M(2463646) pps/core.
+> > > > Do you think there is a huge gap?
+> > >
+> > > You never describe your testing environment in details. For example,
+> > > is this a virtual environment? What's the CPU model and frequency etc=
+.
+> > >
+> > > Because I never see a NIC whose wire speed is 3M.
+> > >
+> > > >
+> > > > My tool makes udp packet and lookup route, so it take more much cpu=
+.
+> > >
+> > > That's why I suggest you to test raw PPS.
+> >
+> > OK. Let's align some info.
+> >
+> > 1. My test env is vhost-user. Qemu + vhost-user(polling mode).
+> >    I do not use the DPDK, because that there is some trouble for me.
+> >    I use the VAPP (https://github.com/fengidri/vapp) as the vhost-user =
+device.
+> >    That has two threads all are busy mode for tx and rx.
+> >    tx thread consumes the tx ring and drop the packet.
+> >    rx thread put the packet to the rx ring.
+> >
+> > 2. My Host CPU: Intel(R) Xeon(R) Platinum 8163 CPU @ 2.50GHz
+> >
+> > 3. From this http://fast.dpdk.org/doc/perf/DPDK_23_03_Intel_virtio_perf=
+ormance_report.pdf
+> >    I think we can align that the vhost max speed is 8.5 MPPS.
+> >    Is that ok?
+> >    And the expected AF_XDP pps is about 6 MPPS.
+> >
+> > 4. About the raw PPS, I agree that. I will test with testpmd.
+> >
+>
+> ## testpmd command
+>
+> ./build/app/dpdk-testpmd -l 1-2 --no-pci --main-lcore=3D2 \
+>         --vdev net_af_xdp0,iface=3Dens5,queue_count=3D1,busy_budget=3D0 \
+>         --log-level=3Dpmd.net.af_xdp:8 \
+>         -- -i -a --nb-cores=3D1 --rxq=3D1 --txq=3D1 --forward-mode=3Dmacs=
+wap
+>
+> ## work without the follow patch[0]
+>
+> testpmd> show port stats all
+>
+>   ######################## NIC statistics for port 0  ###################=
+#####
+>   RX-packets: 3615824336 RX-missed: 0          RX-bytes:  202486162816
+>   RX-errors: 0
+>   RX-nombuf:  0
+>   TX-packets: 3615795592 TX-errors: 20738      TX-bytes:  202484553152
+>
+>   Throughput (since last show)
+>   Rx-pps:      3790446          Rx-bps:   1698120056
+>   Tx-pps:      3790446          Tx-bps:   1698120056
+>   #######################################################################=
+#####
+>
+>
+> ## work with the follow patch[0]
+>
+> testpmd> show port stats all
+>
+>   ######################## NIC statistics for port 0  ###################=
+#####
+>   RX-packets: 68152727   RX-missed: 0          RX-bytes:  3816552712
+>   RX-errors: 0
+>   RX-nombuf:  0
+>   TX-packets: 68114967   TX-errors: 33216      TX-bytes:  3814438152
+>
+>   Throughput (since last show)
+>   Rx-pps:      6333196          Rx-bps:   2837272088
+>   Tx-pps:      6333227          Tx-bps:   2837285936
+>   #######################################################################=
+#####
+>
+> I search the dpdk code that the dpdk virtio driver has the similar code.
+>
+> virtio_xmit_pkts(void *tx_queue, struct rte_mbuf **tx_pkts, uint16_t nb_p=
+kts)
+> {
+>         [...]
+>
+>         for (nb_tx =3D 0; nb_tx < nb_pkts; nb_tx++) {
+>
+>                 [...]
+>
+>                 /* Enqueue Packet buffers */
+>                 virtqueue_enqueue_xmit(txvq, txm, slots, use_indirect,
+>                         can_push, 0);
+>         }
+>
+>         [...]
+>
+>         if (likely(nb_tx)) {
+> -->             vq_update_avail_idx(vq);
+>
+>                 if (unlikely(virtqueue_kick_prepare(vq))) {
+>                         virtqueue_notify(vq);
+>                         PMD_TX_LOG(DEBUG, "Notified backend after xmit");
+>                 }
+>         }
+> }
+>
+> ## patch[0]
+>
+> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> index 51d8f3299c10..cfe556b5d88f 100644
+> --- a/drivers/virtio/virtio_ring.c
+> +++ b/drivers/virtio/virtio_ring.c
+> @@ -687,12 +687,7 @@ static inline int virtqueue_add_split(struct virtque=
+ue *_vq,
+>         avail =3D vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
+>         vq->split.vring.avail->ring[avail] =3D cpu_to_virtio16(_vq->vdev,=
+ head);
+>
+> -       /* Descriptors and available array need to be set before we expos=
+e the
+> -        * new available array entries. */
+> -       virtio_wmb(vq->weak_barriers);
+>         vq->split.avail_idx_shadow++;
+> -       vq->split.vring.avail->idx =3D cpu_to_virtio16(_vq->vdev,
+> -                                               vq->split.avail_idx_shado=
+w);
+>         vq->num_added++;
+>
+>         pr_debug("Added buffer head %i to %p\n", head, vq);
+> @@ -700,8 +695,12 @@ static inline int virtqueue_add_split(struct virtque=
+ue *_vq,
+>
+>         /* This is very unlikely, but theoretically possible.  Kick
+>          * just in case. */
+> -       if (unlikely(vq->num_added =3D=3D (1 << 16) - 1))
+> +       if (unlikely(vq->num_added =3D=3D (1 << 16) - 1)) {
+> +               virtio_wmb(vq->weak_barriers);
+> +               vq->split.vring.avail->idx =3D cpu_to_virtio16(_vq->vdev,
+> +                                                            vq->split.av=
+ail_idx_shadow);
+>                 virtqueue_kick(_vq);
+> +       }
+>
+>         return 0;
+>
+> @@ -742,6 +741,9 @@ static bool virtqueue_kick_prepare_split(struct virtq=
+ueue *_vq)
+>          * event. */
+>         virtio_mb(vq->weak_barriers);
+>
+> +       vq->split.vring.avail->idx =3D cpu_to_virtio16(_vq->vdev,
+> +                                               vq->split.avail_idx_shado=
+w);
+> +
 
+Looks like an interesting optimization.
 
-On 10/17/23 14:49, Andrii Nakryiko wrote:
-> On Tue, Oct 17, 2023 at 9:23 AM <thinker.li@gmail.com> wrote:
->>
->> From: Kui-Feng Lee <thinker.li@gmail.com>
->>
->> Locate the module BTFs for struct_ops maps and progs and pass them to the
->> kernel. This ensures that the kernel correctly resolves type IDs from the
->> appropriate module BTFs.
->>
->> For the map of a struct_ops object, mod_btf is added to bpf_map to keep a
->> reference to the module BTF. The FD of the module BTF is passed to the
->> kernel as mod_btf_fd when the struct_ops object is loaded.
->>
->> For a bpf_struct_ops prog, attach_btf_obj_fd of bpf_prog is the FD of a
->> module BTF in the kernel.
->>
->> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
->> ---
->>   tools/lib/bpf/bpf.c    |  4 ++-
->>   tools/lib/bpf/bpf.h    |  5 +++-
->>   tools/lib/bpf/libbpf.c | 68 +++++++++++++++++++++++++++---------------
->>   3 files changed, 51 insertions(+), 26 deletions(-)
->>
-> 
-> I have a few nits, please accommodate them, and with that please add
-> my ack on libbpf side of things
-> 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Would you mind posting this with numbers separately?
 
+Btw, does the current API require virtqueue_kick_prepare() to be done
+before a virtqueue_notify(). If not, we need do something similar in
+virtqueue_notify()?
 
-Thanks for reviewing!
+Thanks
 
-> 
->> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
->> index b0f1913763a3..af46488e4ea9 100644
->> --- a/tools/lib/bpf/bpf.c
->> +++ b/tools/lib/bpf/bpf.c
->> @@ -169,7 +169,8 @@ int bpf_map_create(enum bpf_map_type map_type,
->>                     __u32 max_entries,
->>                     const struct bpf_map_create_opts *opts)
->>   {
->> -       const size_t attr_sz = offsetofend(union bpf_attr, map_extra);
->> +       const size_t attr_sz = offsetofend(union bpf_attr,
->> +                                          value_type_btf_obj_fd);
->>          union bpf_attr attr;
->>          int fd;
->>
->> @@ -191,6 +192,7 @@ int bpf_map_create(enum bpf_map_type map_type,
->>          attr.btf_key_type_id = OPTS_GET(opts, btf_key_type_id, 0);
->>          attr.btf_value_type_id = OPTS_GET(opts, btf_value_type_id, 0);
->>          attr.btf_vmlinux_value_type_id = OPTS_GET(opts, btf_vmlinux_value_type_id, 0);
->> +       attr.value_type_btf_obj_fd = OPTS_GET(opts, value_type_btf_obj_fd, 0);
->>
->>          attr.inner_map_fd = OPTS_GET(opts, inner_map_fd, 0);
->>          attr.map_flags = OPTS_GET(opts, map_flags, 0);
->> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
->> index 74c2887cfd24..1733cdc21241 100644
->> --- a/tools/lib/bpf/bpf.h
->> +++ b/tools/lib/bpf/bpf.h
->> @@ -51,8 +51,11 @@ struct bpf_map_create_opts {
->>
->>          __u32 numa_node;
->>          __u32 map_ifindex;
->> +
->> +       __u32 value_type_btf_obj_fd;
->> +       size_t:0;
->>   };
->> -#define bpf_map_create_opts__last_field map_ifindex
->> +#define bpf_map_create_opts__last_field value_type_btf_obj_fd
->>
->>   LIBBPF_API int bpf_map_create(enum bpf_map_type map_type,
->>                                const char *map_name,
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 3a6108e3238b..d8a60fb52f5c 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -519,6 +519,7 @@ struct bpf_map {
->>          struct bpf_map_def def;
->>          __u32 numa_node;
->>          __u32 btf_var_idx;
->> +       int mod_btf_fd;
->>          __u32 btf_key_type_id;
->>          __u32 btf_value_type_id;
->>          __u32 btf_vmlinux_value_type_id;
->> @@ -893,6 +894,8 @@ bpf_object__add_programs(struct bpf_object *obj, Elf_Data *sec_data,
->>          return 0;
->>   }
->>
->> +static int load_module_btfs(struct bpf_object *obj);
->> +
-> 
-> you don't need this forward declaration, do you?
+>         old =3D vq->split.avail_idx_shadow - vq->num_added;
+>         new =3D vq->split.avail_idx_shadow;
+>         vq->num_added =3D 0;
+>
+> ---------------
+>
+> Thanks.
+>
+>
+> >
+> > Thanks.
+> >
+> >
+> > >
+> > > Thanks
+> > >
+> > > >
+> > > > I am confused.
+> > > >
+> > > >
+> > > > What is SMAP? Could you give me more information?
+> > > >
+> > > > So if we use 3M as the wire speed, you would expect the result to b=
+e 2.8M
+> > > > pps/core, right?
+> > > >
+> > > > Now the recv result is 2.5M (2463646 =3D 3,343,168/1.357) pps/core.=
+ Do you think
+> > > > the difference is big?
+> > > >
+> > > > My tool makes udp packets and looks up routes, so it requires more =
+CPU.
+> > > >
+> > > > I'm confused. Is there something I misunderstood?
+> > > >
+> > > > Thanks.
+> > > >
+> > > > >
+> > > > > Thanks
+> > > > >
+> > > > > >
+> > > > > > >
+> > > > > > >
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > > What I noticed is that the hotspot is the driver writing =
+virtio desc. Because
+> > > > > > > > > the device is in busy mode. So there is race between driv=
+er and device.
+> > > > > > > > > So I modified the virtio core and lazily updated avail id=
+x. Then pps can reach
+> > > > > > > > > 10,000,000.
+> > > > > > > >
+> > > > > > > > Care to post a draft for this?
+> > > > > > >
+> > > > > > > YES, I is thinking for this.
+> > > > > > > But maybe that is just work for split. The packed mode has so=
+me troubles.
+> > > > > >
+> > > > > > Ok.
+> > > > > >
+> > > > > > Thanks
+> > > > > >
+> > > > > > >
+> > > > > > > Thanks.
+> > > > > > >
+> > > > > > > >
+> > > > > > > > Thanks
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > > Thanks.
+> > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > Thanks
+> > > > > > > > > >
+> > > > > > > > > > >
+> > > > > > > > > > > ## maintain
+> > > > > > > > > > >
+> > > > > > > > > > > I am currently a reviewer for virtio-net. I commit to=
+ maintain AF_XDP support in
+> > > > > > > > > > > virtio-net.
+> > > > > > > > > > >
+> > > > > > > > > > > Please review.
+> > > > > > > > > > >
+> > > > > > > > > > > Thanks.
+> > > > > > > > > > >
+> > > > > > > > > > > v1:
+> > > > > > > > > > >     1. remove two virtio commits. Push this patchset =
+to net-next
+> > > > > > > > > > >     2. squash "virtio_net: virtnet_poll_tx support re=
+scheduled" to xsk: support tx
+> > > > > > > > > > >     3. fix some warnings
+> > > > > > > > > > >
+> > > > > > > > > > > Xuan Zhuo (19):
+> > > > > > > > > > >   virtio_net: rename free_old_xmit_skbs to free_old_x=
+mit
+> > > > > > > > > > >   virtio_net: unify the code for recycling the xmit p=
+tr
+> > > > > > > > > > >   virtio_net: independent directory
+> > > > > > > > > > >   virtio_net: move to virtio_net.h
+> > > > > > > > > > >   virtio_net: add prefix virtnet to all struct/api in=
+side virtio_net.h
+> > > > > > > > > > >   virtio_net: separate virtnet_rx_resize()
+> > > > > > > > > > >   virtio_net: separate virtnet_tx_resize()
+> > > > > > > > > > >   virtio_net: sq support premapped mode
+> > > > > > > > > > >   virtio_net: xsk: bind/unbind xsk
+> > > > > > > > > > >   virtio_net: xsk: prevent disable tx napi
+> > > > > > > > > > >   virtio_net: xsk: tx: support tx
+> > > > > > > > > > >   virtio_net: xsk: tx: support wakeup
+> > > > > > > > > > >   virtio_net: xsk: tx: virtnet_free_old_xmit() distin=
+guishes xsk buffer
+> > > > > > > > > > >   virtio_net: xsk: tx: virtnet_sq_free_unused_buf() c=
+heck xsk buffer
+> > > > > > > > > > >   virtio_net: xsk: rx: introduce add_recvbuf_xsk()
+> > > > > > > > > > >   virtio_net: xsk: rx: introduce receive_xsk() to rec=
+v xsk buffer
+> > > > > > > > > > >   virtio_net: xsk: rx: virtnet_rq_free_unused_buf() c=
+heck xsk buffer
+> > > > > > > > > > >   virtio_net: update tx timeout record
+> > > > > > > > > > >   virtio_net: xdp_features add NETDEV_XDP_ACT_XSK_ZER=
+OCOPY
+> > > > > > > > > > >
+> > > > > > > > > > >  MAINTAINERS                                 |   2 +-
+> > > > > > > > > > >  drivers/net/Kconfig                         |   8 +-
+> > > > > > > > > > >  drivers/net/Makefile                        |   2 +-
+> > > > > > > > > > >  drivers/net/virtio/Kconfig                  |  13 +
+> > > > > > > > > > >  drivers/net/virtio/Makefile                 |   8 +
+> > > > > > > > > > >  drivers/net/{virtio_net.c =3D> virtio/main.c} | 652 =
++++++++++-----------
+> > > > > > > > > > >  drivers/net/virtio/virtio_net.h             | 359 ++=
++++++++++
+> > > > > > > > > > >  drivers/net/virtio/xsk.c                    | 545 ++=
+++++++++++++++
+> > > > > > > > > > >  drivers/net/virtio/xsk.h                    |  32 +
+> > > > > > > > > > >  9 files changed, 1247 insertions(+), 374 deletions(-=
+)
+> > > > > > > > > > >  create mode 100644 drivers/net/virtio/Kconfig
+> > > > > > > > > > >  create mode 100644 drivers/net/virtio/Makefile
+> > > > > > > > > > >  rename drivers/net/{virtio_net.c =3D> virtio/main.c}=
+ (91%)
+> > > > > > > > > > >  create mode 100644 drivers/net/virtio/virtio_net.h
+> > > > > > > > > > >  create mode 100644 drivers/net/virtio/xsk.c
+> > > > > > > > > > >  create mode 100644 drivers/net/virtio/xsk.h
+> > > > > > > > > > >
+> > > > > > > > > > > --
+> > > > > > > > > > > 2.32.0.3.g01195cf9f
+> > > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > >
+> > > > > > >
+> > > > >
+> > > >
+> > >
+> >
+>
 
-
-I will remove it.
-
-> 
->>   static const struct btf_member *
->>   find_member_by_offset(const struct btf_type *t, __u32 bit_offset)
->>   {
->> @@ -922,22 +925,29 @@ find_member_by_name(const struct btf *btf, const struct btf_type *t,
->>          return NULL;
->>   }
->>
-> 
-> [...]
-> 
->>          if (obj->btf && btf__fd(obj->btf) >= 0) {
->>                  create_attr.btf_fd = btf__fd(obj->btf);
->> @@ -7700,9 +7718,9 @@ static int bpf_object__read_kallsyms_file(struct bpf_object *obj)
->>          return libbpf_kallsyms_parse(kallsyms_cb, obj);
->>   }
->>
->> -static int find_ksym_btf_id(struct bpf_object *obj, const char *ksym_name,
->> -                           __u16 kind, struct btf **res_btf,
->> -                           struct module_btf **res_mod_btf)
->> +static int find_module_btf_id(struct bpf_object *obj, const char *kern_name,
->> +                             __u16 kind, struct btf **res_btf,
->> +                             struct module_btf **res_mod_btf)
-> 
-> I actually find "find_module" terminology confusing, because it might
-> not be in the module after all, right? I think "find_ksym_btf_id" is a
-> totally appropriate name, and it's just that in some cases that kernel
-> symbol (ksym) will be found in the kernel module instead of in vmlinux
-> image itself. Still, it's a kernel. Let's keep the name?
-
-Agree!
-
-> 
->>   {
->>          struct module_btf *mod_btf;
->>          struct btf *btf;
-> 
-> [...]
 
