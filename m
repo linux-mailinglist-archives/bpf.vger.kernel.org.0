@@ -1,132 +1,129 @@
-Return-Path: <bpf+bounces-12669-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12670-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD1767CF032
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 08:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BA2A07CF038
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 08:39:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEAA31C20D75
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 06:38:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA9A31C20DAD
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 06:39:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 198106126;
-	Thu, 19 Oct 2023 06:38:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57C7263CF;
+	Thu, 19 Oct 2023 06:39:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fOy6dT2D"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JbJM/W4+"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48E2546671
-	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 06:38:27 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BAE126
-	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 23:38:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1697697504;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Blqwk8CZOAuxak9k7tu36Lndth1mX4n5z0UG75CC1Vc=;
-	b=fOy6dT2DGyJt8LXN9J71coKyMQDt1LSvkwZwiGdHyqR+pR8SpT9JvUdJGLkPUzJj4qDz26
-	8mnMp9WALeQJyNmagyagUnsc1K1KPv6Otyg6TnCodNTLA/zi119wKt3VS1mueX2nbOMLVF
-	lySqNYz2/AJJpK1ULtqrViRSadlDYag=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-453-jp4lKj2qNuqHv2Cq1otFNw-1; Thu, 19 Oct 2023 02:38:23 -0400
-X-MC-Unique: jp4lKj2qNuqHv2Cq1otFNw-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f41a04a297so55413775e9.3
-        for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 23:38:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697697502; x=1698302302;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A875246671
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 06:39:30 +0000 (UTC)
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F879116;
+	Wed, 18 Oct 2023 23:39:29 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-7741b18a06aso551387085a.1;
+        Wed, 18 Oct 2023 23:39:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697697568; x=1698302368; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Blqwk8CZOAuxak9k7tu36Lndth1mX4n5z0UG75CC1Vc=;
-        b=YbSyBPgKGagGvnOchykxDTQ0tsRbqCciqzTczwjBcmhiYzpYr1YtPItcaAbrCn9IE7
-         vT4KEsrf0NRvPWECdoJM13jT3IiLC76ZC5L8eCzLJSVaQ/jdslc5drC15fMPXE0K9POp
-         +v94MZzIRyDa0KEpxtww6Om5STofDAbKyDyPszs4quOAT3V+jE0QEzih0kRrYlXVFe8j
-         hSBWFwiOGCJDnfB30vTASnfd+meaUC9shEBz4IJU8RlcuPVwVHfi/3PiH5ukUpa8HSr2
-         48YHOq2yZw8Dh96jZdXx9+wQ5qD4ZrEl76kR+FTL5cTPf5Zk49MxnpgiXCCGSc9d82jY
-         nsmQ==
-X-Gm-Message-State: AOJu0YwEZT27xbjXre2LCMKeoVyzE5qV3bFkOQk8lEoNbksi4gPGYn3b
-	Y4sepq/gPxbe+sZdowDqgPhPvlXd561ZgmUEuY+ZEItkfUInZOu3getrfRusEVzCQdVClmtqOtm
-	KCbHPpFyzoHpE
-X-Received: by 2002:a05:600c:c0c:b0:407:7e5f:ffb9 with SMTP id fm12-20020a05600c0c0c00b004077e5fffb9mr1104333wmb.9.1697697502080;
-        Wed, 18 Oct 2023 23:38:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE9qh0cDCENMRB0qEBa29pUmbeWcdQ3FQ1ygusFYggBDj+0Bntc+WUE/xD8GAaiDYHR1Jei5w==
-X-Received: by 2002:a05:600c:c0c:b0:407:7e5f:ffb9 with SMTP id fm12-20020a05600c0c0c00b004077e5fffb9mr1104320wmb.9.1697697501762;
-        Wed, 18 Oct 2023 23:38:21 -0700 (PDT)
-Received: from redhat.com ([2a02:14f:1f2:2037:f34:d61b:7da0:a7be])
-        by smtp.gmail.com with ESMTPSA id j20-20020a05600c1c1400b004065daba6casm3604423wms.46.2023.10.18.23.38.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 23:38:21 -0700 (PDT)
-Date: Thu, 19 Oct 2023 02:38:16 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next v1 13/19] virtio_net: xsk: tx:
- virtnet_free_old_xmit() distinguishes xsk buffer
-Message-ID: <20231019023739-mutt-send-email-mst@kernel.org>
-References: <20231016120033.26933-1-xuanzhuo@linux.alibaba.com>
- <20231016120033.26933-14-xuanzhuo@linux.alibaba.com>
- <20231016164434.3a1a51e1@kernel.org>
- <1697508125.07194-1-xuanzhuo@linux.alibaba.com>
+        bh=r9ZsHqJLwA+8C0bKpNAFMlm9CdR6RyXfCZFn1e/5/2w=;
+        b=JbJM/W4+rljHwMTvsjKCmcMpYvUW6Nuh37aq/uOB7Nx0Hq4f4QC3fb2hW8mTYh7ivn
+         trZi0Hec1HF1OSzeIjFFxPlp8xWEXznfUytde3KMf/hj6qjxI2dZyIRQgrlylMNdB7eF
+         wSBreeikFVeFUbOx/cOWf7dCaF4MiksmgO/8clq2T5iKmueWLYTSVOURp9oU7j8bSClY
+         sMCCXqsergGUqH08BSEmvKkdvzNdtOLgkX6A56Ftvu1qnKyIW6h7QTgmuFZck5WHBLDp
+         xPqb5kWMPZKGOjv8JNvmTQ3c3W/bOew819/5cuf/jRQPnY+y4paM4g+rH2+1Eft+zkny
+         780g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697697568; x=1698302368;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r9ZsHqJLwA+8C0bKpNAFMlm9CdR6RyXfCZFn1e/5/2w=;
+        b=saxmMc1yOLpnYy8jGyul7vVMti6DolP64qxtVwxHhBqtbJK4I1Fe1op4nfJvIf7tgJ
+         65a8rx5ZtC5e33XtX5ZePl/EZHEtv+Iid9fBNPyeTvh1HMiaA7xG+I49XPF7JZS/QVZA
+         G3WhdkPrsxfXQpqHQRDeuyDKvYl9Id+ahU0E39QI03f5theMTMkyZFwMEVHJnyHzwseh
+         RKNBaeM6Da8RV1y1VPyCludimkZ/fym3myL+bSTt5U4yGefd15MWInPJEZZchJpBlRMx
+         3QL9KDyq9lcWt3ksaGOBC56x68DpMhKQfA25zAtK6DA9gFGmvBO2lTe/1GWvx+C2L+jB
+         8rUg==
+X-Gm-Message-State: AOJu0YyY3vIsKTTNpdvfHm8pF215gv+Aceh7yxw9TUMX1Djr3qaROKJC
+	1n1wO9inJ51uBMm4ff7S0qAFV+dsd917Bp5ddFE=
+X-Google-Smtp-Source: AGHT+IGX0Wi333UrDCooJ04O3JfucX0UUD1XQ01jNvgTTbFoISHizTrWjj695jy+J0auhREZGZw1955Sua80J6Bnffg=
+X-Received: by 2002:ad4:5de4:0:b0:66d:25cb:43ba with SMTP id
+ jn4-20020ad45de4000000b0066d25cb43bamr1595817qvb.20.1697697567992; Wed, 18
+ Oct 2023 23:39:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1697508125.07194-1-xuanzhuo@linux.alibaba.com>
+References: <20231017124546.24608-1-laoar.shao@gmail.com> <20231017124546.24608-2-laoar.shao@gmail.com>
+ <ZS-m3t-_daPzEsJL@slm.duckdns.org>
+In-Reply-To: <ZS-m3t-_daPzEsJL@slm.duckdns.org>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Thu, 19 Oct 2023 14:38:52 +0800
+Message-ID: <CALOAHbAd2S--=72c2267Lrcj_czkitdG9j97pai2zGqdAskvQQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v2 1/9] cgroup: Make operations on the cgroup
+ root_list RCU safe
+To: Tejun Heo <tj@kernel.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com, 
+	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com, 
+	sinquersw@gmail.com, cgroups@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 17, 2023 at 10:02:05AM +0800, Xuan Zhuo wrote:
-> On Mon, 16 Oct 2023 16:44:34 -0700, Jakub Kicinski <kuba@kernel.org> wrote:
-> > On Mon, 16 Oct 2023 20:00:27 +0800 Xuan Zhuo wrote:
-> > > @@ -305,9 +311,15 @@ static inline void virtnet_free_old_xmit(struct virtnet_sq *sq, bool in_napi,
-> > >
-> > >  			stats->bytes += xdp_get_frame_len(frame);
-> > >  			xdp_return_frame(frame);
-> > > +		} else {
-> > > +			stats->bytes += virtnet_ptr_to_xsk(ptr);
-> > > +			++xsknum;
-> > >  		}
-> > >  		stats->packets++;
-> > >  	}
-> > > +
-> > > +	if (xsknum)
-> > > +		xsk_tx_completed(sq->xsk.pool, xsknum);
-> > >  }
+On Wed, Oct 18, 2023 at 5:35=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
+>
+> On Tue, Oct 17, 2023 at 12:45:38PM +0000, Yafang Shao wrote:
+> >  #define for_each_root(root)                                          \
+> > -     list_for_each_entry((root), &cgroup_roots, root_list)
+> > +     list_for_each_entry_rcu((root), &cgroup_roots, root_list,       \
+> > +                             !lockdep_is_held(&cgroup_mutex))
+>
+> Shouldn't that be lockdep_is_held() without the leading negation?
+
+right. will fix it.
+
+>
+> > @@ -1386,13 +1386,15 @@ static inline struct cgroup *__cset_cgroup_from=
+_root(struct css_set *cset,
+> >               }
+> >       }
 > >
-> > sparse complains:
+> > -     BUG_ON(!res_cgroup);
+> > +     WARN_ON_ONCE(!res_cgroup && lockdep_is_held(&cgroup_mutex));
+>
+> This doesn't work. lockdep_is_held() is always true if !PROVE_LOCKING.
+
+will use mutex_is_locked() instead.
+
+>
+> >       return res_cgroup;
+> >  }
 > >
-> > drivers/net/virtio/virtio_net.h:322:41: warning: incorrect type in argument 1 (different address spaces)
-> > drivers/net/virtio/virtio_net.h:322:41:    expected struct xsk_buff_pool *pool
-> > drivers/net/virtio/virtio_net.h:322:41:    got struct xsk_buff_pool
-> > [noderef] __rcu *pool
-> >
-> > please build test with W=1 C=1
-> 
-> OK. I will add C=1 to may script.
-> 
-> Thanks.
+> >  /*
+> >   * look up cgroup associated with current task's cgroup namespace on t=
+he
+> > - * specified hierarchy
+> > + * specified hierarchy. Umount synchronization is ensured via VFS laye=
+r,
+> > + * so we don't have to hold cgroup_mutex to prevent the root from bein=
+g
+> > + * destroyed.
+> >   */
+>
+> Yeah, as Michal said, let's not do it this way.
 
-And I hope we all understand, rcu has to be used properly it's not just
-about casting the warning away.
+sure, will do it.
 
--- 
-MST
-
+--=20
+Regards
+Yafang
 
