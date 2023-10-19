@@ -1,86 +1,101 @@
-Return-Path: <bpf+bounces-12701-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12702-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A156B7CFD07
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 16:40:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2091B7CFD72
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 16:59:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF324B211FB
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 14:40:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66C292821B4
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 14:59:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADE3B1DFDA;
-	Thu, 19 Oct 2023 14:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 730862FE07;
+	Thu, 19 Oct 2023 14:59:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AlroUv46"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="sUoD+aIc"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E80662FE04
-	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 14:40:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id AD1E2C433C8;
-	Thu, 19 Oct 2023 14:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697726424;
-	bh=wZMEDDiAJJm7uSvNAHu2ZodrXmhZsLsW4c0xpTojxKc=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=AlroUv469+XL+E4tD2s4yTPU+FcX/YLSYFng0YMpumbOipAxBRCZ2qo7wiUYSr+v5
-	 o0krLYoyt9r1Cs+0SGeExizbP3Sy7Qwe4p8tpxl7DU6G/I39NmWh1A4p+hq0RIX2CU
-	 iZhftflioDc6pmi4XkeZCxc406Tp7HUyeHPziGgFV7L/PTyD9MEvpOpm11EfeHmDQ4
-	 ic/4fq1BkAK5G3m78vIwR7W6G5M3VtuMMZay476/8F8BuUV6iSR55gTiBugS4hg/Gf
-	 vVX3WadgyGga9+a+O5mnESymfXcvZ7KiwpeAOb7cPOnoG0tx3aG2Ll6bJSCQjPufLs
-	 lKCR5027YVNQg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8BCF7C595CE;
-	Thu, 19 Oct 2023 14:40:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 368F92745A
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 14:59:04 +0000 (UTC)
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F0D12D
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 07:59:01 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-355fbb84257so5398765ab.1
+        for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 07:59:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697727541; x=1698332341; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=H+fSKfoprD2xjep9haqaGcjsUyuDzAiaP8KcDuihTMA=;
+        b=sUoD+aIcaveSUSQ0/cmDczMrbov3C1nT/mruXdO99rQ/odOehiiDEv6Z/HozS/9CPm
+         Db6jo18+L18LikJf9G5Y8x1BXOo6bbBEbWvqIePhegMNknQfDWgqgNnHUkPW1nKqM0vu
+         BaYMN96YJamvXWEfHQ5jxN/Q5apVFDPowcyEkVG7NfjtKQnat/a8p+VV8EzB5DmOMq+q
+         99g+IbfVibMzeNYIZ4rkNNUjp/748Ko43Qesf+jkL5afgc8Ms2oPQvoaQFnJTpem83q9
+         NwXZUumY1p79ks6jj74djdfnD86bWlWXITDuBUDGr9sDJ7U+5DkQLBuKb5LKR+3TVjUW
+         Ap6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697727541; x=1698332341;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=H+fSKfoprD2xjep9haqaGcjsUyuDzAiaP8KcDuihTMA=;
+        b=w9gs1RyQFzRfq5AJ+GbaxesBC89snyraZr9Zi6Q48Gt5+Xu0szBXjSWpTAVxhSH9Ff
+         BiS+MRbF+lrKLMKgRBLobCrFORql+7nly0ox8GbG655bOi6rLvoAfaTjDbWpMv2Wmb5a
+         4dhE5AOyIykKnAg+hO2OfKttXivkeDSaYncTxBcBXSlc+I7n/46P+kNGXJTeMyY3rZEc
+         rXJQsEPiVsviC1RWna6IaPLuIuxBqEberFmT4mrhlIQixNIpy4w3gPxIcdv3WodKCDui
+         vZHBvhbCKq1euO7u5wurfJd/gJ9tCfd6HyTgzrHGwgOO4ZQzLT+f2eYgmHu+eDSjQIZT
+         DN0g==
+X-Gm-Message-State: AOJu0Yywh74r/NOH7VBFHXxzsBcCQK03h2vogb9YKAapB4XnfYWEBoTd
+	Gz9D728A3FE5tXkCakg+Lucinw==
+X-Google-Smtp-Source: AGHT+IEh/tK0F10IvZvGnoSbcbP2On+lPSGmusrkOrr9+UtW+WgbOIcoUk3HPRR/bznJy32nKzETUQ==
+X-Received: by 2002:a5d:9d56:0:b0:79d:1c65:9bde with SMTP id k22-20020a5d9d56000000b0079d1c659bdemr2438497iok.1.1697727540691;
+        Thu, 19 Oct 2023 07:59:00 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id s1-20020a056638258100b0045b16bddb8fsm1932502jat.111.2023.10.19.07.58.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 07:59:00 -0700 (PDT)
+Message-ID: <7bb74d5a-ebde-42fe-abec-5274982ce930@kernel.dk>
+Date: Thu, 19 Oct 2023 08:58:59 -0600
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/2] bpftool: Fix some json formatting for struct_ops
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <169772642455.3357.9344470246076270075.git-patchwork-notify@kernel.org>
-Date: Thu, 19 Oct 2023 14:40:24 +0000
-References: <20231018230133.1593152-1-chantr4@gmail.com>
-In-Reply-To: <20231018230133.1593152-1-chantr4@gmail.com>
-To: Manu Bretelle <chantr4@gmail.com>
-Cc: bpf@vger.kernel.org, quentin@isovalent.com, andrii@kernel.org,
- daniel@iogearbox.net, ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 00/11] io_uring: Initial support for {s,g}etsockopt
+ commands
+Content-Language: en-US
+To: Breno Leitao <leitao@debian.org>, sdf@google.com, asml.silence@gmail.com,
+ willemdebruijn.kernel@gmail.com, kuba@kernel.org, pabeni@redhat.com,
+ martin.lau@linux.dev, krisman@suse.de
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, io-uring@vger.kernel.org
+References: <20231016134750.1381153-1-leitao@debian.org>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20231016134750.1381153-1-leitao@debian.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Wed, 18 Oct 2023 16:01:31 -0700 you wrote:
-> When dumping struct_ops with bpftool, the json produced was invalid.
-> 1) pointer values where not printed with surrounding quotes, causing an
-> invalid json integer to be emitted
-> 2) when bpftool struct_ops dump id <id>, the 2 dictionaries were not
-> wrapped in a array, here also causing an invalid json payload to be
-> emitted.
+On 10/16/23 7:47 AM, Breno Leitao wrote:
+> This patchset adds support for getsockopt (SOCKET_URING_OP_GETSOCKOPT)
+> and setsockopt (SOCKET_URING_OP_SETSOCKOPT) in io_uring commands.
+> SOCKET_URING_OP_SETSOCKOPT implements generic case, covering all levels
+> and optnames. SOCKET_URING_OP_GETSOCKOPT is limited, for now, to
+> SOL_SOCKET level, which seems to be the most common level parameter for
+> get/setsockopt(2).
 > 
-> [...]
+> In order to keep the implementation (and tests) simple, some refactors
+> were done prior to the changes, as follows:
 
-Here is the summary with links:
-  - [bpf-next,1/2] bpftool: fix printing of pointer value
-    https://git.kernel.org/bpf/bpf-next/c/90704b4be0b0
-  - [bpf-next,2/2] bpftool: wrap struct_ops dump in an array
-    https://git.kernel.org/bpf/bpf-next/c/6bd5e167af2e
+Looks like folks are mostly happy with this now, so the next question is
+how to stage it?
 
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Jens Axboe
 
 
