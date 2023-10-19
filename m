@@ -1,273 +1,283 @@
-Return-Path: <bpf+bounces-12685-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12686-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 820C67CF329
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 10:47:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E1C27CF3B0
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 11:13:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D13E1B212F7
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 08:47:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E904BB20ED4
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 09:13:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C872515AEA;
-	Thu, 19 Oct 2023 08:47:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D418171B8;
+	Thu, 19 Oct 2023 09:12:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j3kAQcEK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IGuyxjWY"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B664B15AD2;
-	Thu, 19 Oct 2023 08:47:45 +0000 (UTC)
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5779D131;
-	Thu, 19 Oct 2023 01:47:43 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53d9f001b35so13017109a12.2;
-        Thu, 19 Oct 2023 01:47:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AEB3171A6;
+	Thu, 19 Oct 2023 09:12:52 +0000 (UTC)
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB647136;
+	Thu, 19 Oct 2023 02:12:49 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-66d32cc3957so10383776d6.0;
+        Thu, 19 Oct 2023 02:12:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697705262; x=1698310062; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yzLdLZsv3KpWToPZKdN9/qcoYkbhKAJA1zuy4Nsjj3k=;
-        b=j3kAQcEKdG9ETNSpc42DKQ24CvGpvGS+CRDZW04P6OEzLqdVfY/qcRA15Nd8mcTBhC
-         MtqgYkAHkbiW1D4wm+43MKcqLFQ0D8e3ri1nZio/Ir9f4efSyr5U9AOew31v7Pmffzx5
-         sjdOcSaIRpAblp5zm99UoschkbE6RP8xRBDI1ggwOFfdtv2F1ovrHVcLeupfe2wmK8Y1
-         ybPgERQwxp/e77BUOqjWIl8AYQiNK9xe4bf9CDLYollNMqDk69rPCepnsKcIHw87fI1L
-         SjlRini0hFj2A3NOVK5z5DlhA8X5v0izAV+bQd16S3nWRwsctmupglUxTx7HR3pCXIcu
-         oCvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697705262; x=1698310062;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1697706768; x=1698311568; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yzLdLZsv3KpWToPZKdN9/qcoYkbhKAJA1zuy4Nsjj3k=;
-        b=X9dSdPhr9f828guU4+hUJC45Utw0gj1Xd3OjovVx0dQ8QbE6MAKchE7dtLZLthKoSa
-         47iPOp3r6in/9/urWcklD8QJGoHOB3e0dJIUYikozT/4WzjbM3z4DU6tr44sYikrPrHp
-         cCcbWFfzPscYGhScOnUPkzoQKcph3pOg2jY29r2jVv5/SwBle59wcEjcb7KzdMasVOBJ
-         pZFGR4wbZ5YydzY+3MThXpRpLSNFWuwb8MlVREmg2Y/lJba5apsbCCIIYWf50BuYKLdo
-         tWL5iOzVGlAcVe7z6HtAKSG4pv27qfxQJRHb1zNvxmooIowUHPOjrLbjpgiOnBtIrQoS
-         tpug==
-X-Gm-Message-State: AOJu0YxMqPZbV9DSjKO3IUGmaOvuuOL8gnnRxi3KJ19JoII0rCnpobo0
-	K89uY2dosWZPZLj/JaEtFyc=
-X-Google-Smtp-Source: AGHT+IFfVB/qd36PJX41p+g4j/2+te/++EWuAUjTUuh1MzuKNTPNcG6jQSb8UnAVHLOPl2JP7v7GHA==
-X-Received: by 2002:a17:907:320d:b0:9bf:70ea:692e with SMTP id xg13-20020a170907320d00b009bf70ea692emr1331892ejb.60.1697705261615;
-        Thu, 19 Oct 2023 01:47:41 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id p14-20020a1709060dce00b0099cc3c7ace2sm3092009eji.140.2023.10.19.01.47.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 01:47:41 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 19 Oct 2023 10:47:38 +0200
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Nicolas Schier <n.schier@avm.de>, Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Benno Lossin <benno.lossin@proton.me>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>, Gary Guo <gary@garyguo.net>,
-	Hao Luo <haoluo@google.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>, Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
-	rust-for-linux@vger.kernel.org
-Subject: Re: [bpf-next PATCH v2 2/4] kbuild: avoid too many execution of
- scripts/pahole-flags.sh
-Message-ID: <ZTDtKonBQeOAiZ/L@krava>
-References: <20231018151950.205265-1-masahiroy@kernel.org>
- <20231018151950.205265-2-masahiroy@kernel.org>
+        bh=NWNooNg/Y6CGESg+ZjVOOHYVpkeT1UB3lOiWYIImT/s=;
+        b=IGuyxjWYJOvFXlBIOY1hw46lKKQy/O85tQCMld3C8oHNchaniWPttj+YOhjhpLahS0
+         giGm8iXiujWkZQdwFEah6hzDGqLxDL7DFUuq57XoBvM0p/Alz9cdde30iu2ihOgUQADx
+         kGoiG3EJgyVott8I+EtehwWfwZuzNOQExeSs2syFsWUAqNlWTJAs/RzrKoBjRqgt6Lxn
+         azkLiS/HuRQeNs0SKjl0tquCAjza5D2DsnRZ6XzcWXVtlSu3em+1eHDkmMBUDVAo5V+d
+         asyCHZwmd+wizKFfUnilKM2t+DAJM9Tzm689Wx5BKVO/bX8VHdbvewk5Uoxzl2y9OGKp
+         G2Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697706768; x=1698311568;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NWNooNg/Y6CGESg+ZjVOOHYVpkeT1UB3lOiWYIImT/s=;
+        b=Wlz8v69dewJewhYiUR4RsKEzangrqUT0S/YHabmJUOre7jkTuiienLZFwlIMF+IVzE
+         DTg2i7skexy/6TkQZ4NEVNamjm2FRknbYchDF2C0uGGl+Q9fEQsSKYTCqQ2aSXp/RPZQ
+         tuS+C7BbiuzT9Tf3N6c1rfriWYJma895sGAjJf+YN1qAyumWcc5HWx1B4q+0/tg+H2ew
+         bjv/ht83b1+S/jKxT8XHsF/8BpacyGQg5/MIBcX7kVSZmMfYv3izsTHgwGLJ4UqgN5jI
+         IJLpaVuPORHT7xXGCIUf5vjenF0ofjkgmS+fWHG4wXu93ni0clcuzAwB4C2Ijzr5uWxz
+         Xs9A==
+X-Gm-Message-State: AOJu0YxEjCKJeexdZWAsEiyQxD9er/mGOPycQXGSQxLa8o4XgjoVFhKz
+	6F6jCW3x3UMCXKg04jC7bbRt9M0IKHtHMhEI1us=
+X-Google-Smtp-Source: AGHT+IGvkKwbx8ERyXOwHsQwi7t9BqKOLrtyKPG3RkU/n2283bQFmpTC88SU/oVLpAg3BfXBMYe6miuA/pSG6Ibp1c4=
+X-Received: by 2002:a05:6214:3d8d:b0:66d:1b9b:196c with SMTP id
+ om13-20020a0562143d8d00b0066d1b9b196cmr1700631qvb.2.1697706768487; Thu, 19
+ Oct 2023 02:12:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018151950.205265-2-masahiroy@kernel.org>
+References: <20231016031649.35088-1-huangjie.albert@bytedance.com>
+ <CAJ8uoz2DUe3xySTKuLbA5=QDAGuTzPdGu3P_=ZvJmna25VtHCQ@mail.gmail.com> <CABKxMyONtPR1pWLdBiK5M-NJoc5S6rpyYYUQWa0J2R+eyajOsg@mail.gmail.com>
+In-Reply-To: <CABKxMyONtPR1pWLdBiK5M-NJoc5S6rpyYYUQWa0J2R+eyajOsg@mail.gmail.com>
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Thu, 19 Oct 2023 11:12:37 +0200
+Message-ID: <CAJ8uoz3Vq1aHzB6Ew-yCQF8On9EP_9BSB4rOvqEgMXeA5=wZgw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2 net-next] xsk: Avoid starving xsk at the
+ end of the list
+To: =?UTF-8?B?6buE5p2w?= <huangjie.albert@bytedance.com>
+Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Magnus Karlsson <magnus.karlsson@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, 
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 19, 2023 at 12:19:48AM +0900, Masahiro Yamada wrote:
-> scripts/pahole-flags.sh is executed so many times.
-> 
-> You can check how many times it is invoked during the build, as follows:
-> 
->   $ cat <<EOF >> scripts/pahole-flags.sh
->   > echo "scripts/pahole-flags.sh was executed" >&2
->   > EOF
-> 
->   $ make -s
->   scripts/pahole-flags.sh was executed
->   scripts/pahole-flags.sh was executed
->   scripts/pahole-flags.sh was executed
->   scripts/pahole-flags.sh was executed
->   scripts/pahole-flags.sh was executed
->     [ lots of repeated lines suppressed... ]
-> 
-> This scripts is executed more than 20 times during the kernel build
-> because PAHOLE_FLAGS is a recursively expanded variable and exported
-> to sub-processes.
-> 
-> With the GNU Make >= 4.4, it is executed more than 60 times because
-> exported variables are also passed to other $(shell ) invocations.
-> Without careful coding, it is known to cause an exponential fork
-> explosion. [1]
-> 
-> The use of $(shell ) in an exported recursive variable is likely wrong
-> because $(shell ) is always evaluated due to the 'export' keyword, and
-> the evaluation can occur multiple times by the nature of recursive
-> variables.
-> 
-> Convert the shell script to a Makefile, which is included only when
-> CONFIG_DEBUG_INFO_BTF=y.
-> 
-> [1]: https://savannah.gnu.org/bugs/index.php?64746
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> Tested-by: Alan Maguire <alan.maguire@oracle.com>
-> Reviewed-by: Nicolas Schier <n.schier@avm.de>
-> Tested-by: Miguel Ojeda <ojeda@kernel.org>
-> Acked-by: Miguel Ojeda <ojeda@kernel.org>
+On Thu, 19 Oct 2023 at 10:41, =E9=BB=84=E6=9D=B0 <huangjie.albert@bytedance=
+.com> wrote:
+>
+> Magnus Karlsson <magnus.karlsson@gmail.com> =E4=BA=8E2023=E5=B9=B410=E6=
+=9C=8816=E6=97=A5=E5=91=A8=E4=B8=80 14:41=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > On Mon, 16 Oct 2023 at 05:17, Albert Huang
+> > <huangjie.albert@bytedance.com> wrote:
+> > >
+> > > In the previous implementation, when multiple xsk sockets were
+> > > associated with a single xsk_buff_pool, a situation could arise
+> > > where the xsk_tx_list maintained data at the front for one xsk
+> > > socket while starving the xsk sockets at the back of the list.
+> > > This could result in issues such as the inability to transmit packets=
+,
+> > > increased latency, and jitter. To address this problem, we introduced
+> > > a new variable called tx_budget_cache, which limits each xsk to trans=
+mit
+> > > a maximum of MAX_XSK_TX_BUDGET tx descriptors. This allocation ensure=
+s
+> > > equitable opportunities for subsequent xsk sockets to send tx descrip=
+tors.
+> > > The value of MAX_XSK_TX_BUDGET is temporarily set to 16.
+> >
+> > Hi Albert. Yes you are correct that there is nothing hindering this to
+> > happen in the code at the moment, so let us fix it.
+> >
+> > > Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
+> > > ---
+> > >  include/net/xdp_sock.h |  6 ++++++
+> > >  net/xdp/xsk.c          | 18 ++++++++++++++++++
+> > >  2 files changed, 24 insertions(+)
+> > >
+> > > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> > > index 69b472604b86..f617ff54e38c 100644
+> > > --- a/include/net/xdp_sock.h
+> > > +++ b/include/net/xdp_sock.h
+> > > @@ -44,6 +44,7 @@ struct xsk_map {
+> > >         struct xdp_sock __rcu *xsk_map[];
+> > >  };
+> > >
+> > > +#define MAX_XSK_TX_BUDGET 16
+> >
+> > I think something like MAX_PER_SOCKET_BUDGET would be clearer.
+> >
+> > >  struct xdp_sock {
+> > >         /* struct sock must be the first member of struct xdp_sock */
+> > >         struct sock sk;
+> > > @@ -63,6 +64,11 @@ struct xdp_sock {
+> > >
+> > >         struct xsk_queue *tx ____cacheline_aligned_in_smp;
+> > >         struct list_head tx_list;
+> > > +       /* Record the actual number of times xsk has transmitted a tx
+> > > +        * descriptor, with a maximum limit not exceeding MAX_XSK_TX_=
+BUDGET
+> > > +        */
+> > > +       u32 tx_budget_cache;
+> > > +
+> > >         /* Protects generic receive. */
+> > >         spinlock_t rx_lock;
+> > >
+> > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > > index f5e96e0d6e01..087f2675333c 100644
+> > > --- a/net/xdp/xsk.c
+> > > +++ b/net/xdp/xsk.c
+> > > @@ -413,16 +413,25 @@ EXPORT_SYMBOL(xsk_tx_release);
+> > >
+> > >  bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *d=
+esc)
+> > >  {
+> > > +       u32 xsk_full_count =3D 0;
+> >
+> > Enough with a bool;
+> >
+> > >         struct xdp_sock *xs;
+> > >
+> > >         rcu_read_lock();
+> > > +again:
+> > >         list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
+> > > +               if (xs->tx_budget_cache >=3D MAX_XSK_TX_BUDGET) {
+> > > +                       xsk_full_count++;
+> > > +                       continue;
+> > > +               }
+> >
+> > The problem here is that the fixed MAX_XSK_TX_BUDGET is only useful
+> > for the <=3D 2 socket case. If I have 3 sockets sharing a
+> > netdev/queue_id, the two first sockets can still starve the third one
+> > since the total budget per send is 32. You need to go through the list
+> > of sockets in the beginning to compute the MAX_XSK_TX_BUDGET to
+> > compute this dynamically before each call. Or cache this value
+> > somehow, in the pool for example. Actually, the refcount in the
+> > buf_pool will tell you how many sockets are sharing the same buf_pool.
+> > Try using that to form MAX_XSK_TX_BUDGET on the fly.
+> >
+> > Another simpler way of accomplishing this would be to just reorder the
+> > list every time. Put the first socket last in the list every time. The
+> > drawback of this is that you need to hold the xsk_tx_list_lock while
+> > doing this so might be slower. The per socket batch size would also be
+> > 32 and you would not receive "fairness" over a single call to
+> > sendto(). Would that be a problem for you?
+> >
+>
+> Currently, there are two paths in the kernel that consume TX queue descri=
+ptors:
+>
+> 1=E3=80=81Native XSK
+> xsk_tx_peek_desc
+>      xskq_cons_peek_desc
+>
+> In the first scenario, we consume TX descriptors by sequentially
+> traversing the pool->xsk_tx_list
+> without any implicit code logic to ensure fairness. This can lead to a
+> scenario of starvation,
+> making it a top priority for us to address.
+>
+> 2=E3=80=81Generic XSK
+> __xsk_sendmsg (or xsk_poll)
+>      xsk_generic_xmit
+>         __xsk_generic_xmit
+>               xskq_cons_peek_desc
+>
+> In the second scenario, TX descriptors are consumed by using sendto.
+> Currently, __xsk_generic_xmit
+> sends a maximum of 32 TX descriptors each time, and the process
+> scheduling strategy already
+> ensures a certain level of fairness. In this scenario, should we
+> consider not addressing it and
+> instead prioritize the first scenario?
 
-nice!
+Agree. The first scenario is the problematic one. One problem we have
+to solve there is that the batch size is up to the driver in the
+zero-copy case so the xsk core has no idea. Maybe introduce a pointer
+that tells us what socket to get packets from first and make sure this
+pointer gets updated to the next socket in the list every time the
+function is exited? Please make sure that the one socket case is not
+hurt.
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+> Additionally, based on my understanding, there should not be
+> applications concurrently using generic
+> XSK and native XSK on the same pool.
 
-thanks,
-jirka
+That is correct.
 
+> Magnus, how do you view this issue? I'm concerned that striving for
+> absolute fairness might introduce
+> additional complexity in the logic.
 
-> ---
-> 
-> Changes in v2:
->  - Fix a typo in commit description
->  - Update MAINTAINERS
-> 
->  MAINTAINERS             |  2 +-
->  Makefile                |  4 +---
->  scripts/Makefile.btf    | 19 +++++++++++++++++++
->  scripts/pahole-flags.sh | 30 ------------------------------
->  4 files changed, 21 insertions(+), 34 deletions(-)
->  create mode 100644 scripts/Makefile.btf
->  delete mode 100755 scripts/pahole-flags.sh
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 35977b269d5e..a08d558b1aaa 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3742,7 +3742,7 @@ F:	net/sched/act_bpf.c
->  F:	net/sched/cls_bpf.c
->  F:	samples/bpf/
->  F:	scripts/bpf_doc.py
-> -F:	scripts/pahole-flags.sh
-> +F:	scripts/Makefile.btf
->  F:	scripts/pahole-version.sh
->  F:	tools/bpf/
->  F:	tools/lib/bpf/
-> diff --git a/Makefile b/Makefile
-> index fed9a6cc3665..eaddec67e5e1 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -513,8 +513,6 @@ LZ4		= lz4c
->  XZ		= xz
->  ZSTD		= zstd
->  
-> -PAHOLE_FLAGS	= $(shell PAHOLE=$(PAHOLE) $(srctree)/scripts/pahole-flags.sh)
-> -
->  CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
->  		  -Wbitwise -Wno-return-void -Wno-unknown-attribute $(CF)
->  NOSTDINC_FLAGS :=
-> @@ -605,7 +603,6 @@ export KBUILD_RUSTFLAGS RUSTFLAGS_KERNEL RUSTFLAGS_MODULE
->  export KBUILD_AFLAGS AFLAGS_KERNEL AFLAGS_MODULE
->  export KBUILD_AFLAGS_MODULE KBUILD_CFLAGS_MODULE KBUILD_RUSTFLAGS_MODULE KBUILD_LDFLAGS_MODULE
->  export KBUILD_AFLAGS_KERNEL KBUILD_CFLAGS_KERNEL KBUILD_RUSTFLAGS_KERNEL
-> -export PAHOLE_FLAGS
->  
->  # Files to ignore in find ... statements
->  
-> @@ -1002,6 +999,7 @@ KBUILD_CPPFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
->  # include additional Makefiles when needed
->  include-y			:= scripts/Makefile.extrawarn
->  include-$(CONFIG_DEBUG_INFO)	+= scripts/Makefile.debug
-> +include-$(CONFIG_DEBUG_INFO_BTF)+= scripts/Makefile.btf
->  include-$(CONFIG_KASAN)		+= scripts/Makefile.kasan
->  include-$(CONFIG_KCSAN)		+= scripts/Makefile.kcsan
->  include-$(CONFIG_KMSAN)		+= scripts/Makefile.kmsan
-> diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-> new file mode 100644
-> index 000000000000..82377e470aed
-> --- /dev/null
-> +++ b/scripts/Makefile.btf
-> @@ -0,0 +1,19 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +pahole-ver := $(CONFIG_PAHOLE_VERSION)
-> +pahole-flags-y :=
-> +
-> +# pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
-> +ifeq ($(call test-le, $(pahole-ver), 121),y)
-> +pahole-flags-$(call test-ge, $(pahole-ver), 118)	+= --skip_encoding_btf_vars
-> +endif
-> +
-> +pahole-flags-$(call test-ge, $(pahole-ver), 121)	+= --btf_gen_floats
-> +
-> +pahole-flags-$(call test-ge, $(pahole-ver), 122)	+= -j
-> +
-> +pahole-flags-$(CONFIG_PAHOLE_HAS_LANG_EXCLUDE)		+= --lang_exclude=rust
-> +
-> +pahole-flags-$(call test-ge, $(pahole-ver), 125)	+= --skip_encoding_btf_inconsistent_proto --btf_gen_optimized
-> +
-> +export PAHOLE_FLAGS := $(pahole-flags-y)
-> diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
-> deleted file mode 100755
-> index 728d55190d97..000000000000
-> --- a/scripts/pahole-flags.sh
-> +++ /dev/null
-> @@ -1,30 +0,0 @@
-> -#!/bin/sh
-> -# SPDX-License-Identifier: GPL-2.0
-> -
-> -extra_paholeopt=
-> -
-> -if ! [ -x "$(command -v ${PAHOLE})" ]; then
-> -	exit 0
-> -fi
-> -
-> -pahole_ver=$($(dirname $0)/pahole-version.sh ${PAHOLE})
-> -
-> -if [ "${pahole_ver}" -ge "118" ] && [ "${pahole_ver}" -le "121" ]; then
-> -	# pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
-> -	extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_vars"
-> -fi
-> -if [ "${pahole_ver}" -ge "121" ]; then
-> -	extra_paholeopt="${extra_paholeopt} --btf_gen_floats"
-> -fi
-> -if [ "${pahole_ver}" -ge "122" ]; then
-> -	extra_paholeopt="${extra_paholeopt} -j"
-> -fi
-> -if [ "${pahole_ver}" -ge "124" ]; then
-> -	# see PAHOLE_HAS_LANG_EXCLUDE
-> -	extra_paholeopt="${extra_paholeopt} --lang_exclude=rust"
-> -fi
-> -if [ "${pahole_ver}" -ge "125" ]; then
-> -	extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_inconsistent_proto --btf_gen_optimized"
-> -fi
-> -
-> -echo ${extra_paholeopt}
-> -- 
-> 2.40.1
-> 
+Is this a problem that you have observed or need to guard against in
+an application? If so, let us fix it.
+
+> BR
+> Albert
+>
+>
+>
+> > > +
+> > >                 if (!xskq_cons_peek_desc(xs->tx, desc, pool)) {
+> > >                         if (xskq_has_descs(xs->tx))
+> > >                                 xskq_cons_release(xs->tx);
+> > >                         continue;
+> > >                 }
+> > >
+> > > +               xs->tx_budget_cache++;
+> > > +
+> > >                 /* This is the backpressure mechanism for the Tx path=
+.
+> > >                  * Reserve space in the completion queue and only pro=
+ceed
+> > >                  * if there is space in it. This avoids having to imp=
+lement
+> > > @@ -436,6 +445,14 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool=
+, struct xdp_desc *desc)
+> > >                 return true;
+> > >         }
+> > >
+> > > +       if (unlikely(xsk_full_count > 0)) {
+> > > +               list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_li=
+st) {
+> > > +                       xs->tx_budget_cache =3D 0;
+> > > +               }
+> > > +               xsk_full_count =3D 0;
+> > > +               goto again;
+> > > +       }
+> > > +
+> > >  out:
+> > >         rcu_read_unlock();
+> > >         return false;
+> > > @@ -1230,6 +1247,7 @@ static int xsk_bind(struct socket *sock, struct=
+ sockaddr *addr, int addr_len)
+> > >         xs->zc =3D xs->umem->zc;
+> > >         xs->sg =3D !!(xs->umem->flags & XDP_UMEM_SG_FLAG);
+> > >         xs->queue_id =3D qid;
+> > > +       xs->tx_budget_cache =3D 0;
+> > >         xp_add_xsk(xs->pool, xs);
+> > >
+> > >  out_unlock:
+> > > --
+> > > 2.20.1
+> > >
+> > >
 
