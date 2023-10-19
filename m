@@ -1,167 +1,108 @@
-Return-Path: <bpf+bounces-12761-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12762-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F3847D052B
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 00:55:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99FA37D0580
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 01:53:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58417282330
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 22:55:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02DCC2821CE
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 23:53:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B43842BF5;
-	Thu, 19 Oct 2023 22:55:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f6is3Dx4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB5FB45F46;
+	Thu, 19 Oct 2023 23:53:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 076E5321AA
-	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 22:55:28 +0000 (UTC)
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FFA9D7B;
-	Thu, 19 Oct 2023 15:55:05 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507c5249d55so230130e87.3;
-        Thu, 19 Oct 2023 15:55:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697756103; x=1698360903; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JApUBgje4/9HqvVQBNMwp81U0zX95uW/eEb26z4ZagE=;
-        b=f6is3Dx4TZI/xQPEvd+ufXJhrY70v+bmF2Hd1YxXjRqpsDaEd0BHthLCR+wTwMx0xS
-         3xyzj4VReKfy937A+nhL+svxqvQnAVvhkcIH1t2edJ31muFoeJJSNHoC+7zf6S+aPhwJ
-         lkQKYTw/QOcki0npLKIeEgLvogOoaLTcY9lzF4ElZ9busE92jBNOl1qfd5UWLHmh//gP
-         MdYeBq8namvOPimEGIPiP5T0ZirInEgc73Y5jiaq6FuetSzjhAbvDDD+QtuDyVsSm28h
-         vG/BLJnUc+oR0T/jXeN3thpi46WpOD/tttsZaYRK/m4ET8l/TLhoBQbJFDV7igr5pgY6
-         5bhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697756103; x=1698360903;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JApUBgje4/9HqvVQBNMwp81U0zX95uW/eEb26z4ZagE=;
-        b=ZH0XnSwvqZuz1a+Zez07OKEQeIzOLm9F3gFIJLLlh9eJ0jbT4Kq9Pg7ZuWjr0930vI
-         py/G8XHPtFFucTCtwnQBjvis8RSTOAUZE2XdnWaJxRMHNFTR973uo1+JZL7bMDYtbNlE
-         0bA/Wzz4fhcyxZwhD21D2MLPrd+f1sPPXlLDGMuWGS5FAy2kbJVl19WS28EY5atT+9Tf
-         ZuQfzrjQCup17xdZBExVSmeY/CK1uceAb6bMboL5hxCaLyhtygfRp2kaMBiD1xVjooHP
-         +LOhFOjR4DhFUyfhnbCV4yod3XXmvPWppFJW7e6j2vgIz4JbVn8UeNFnFy67rTLMJvCM
-         /8Iw==
-X-Gm-Message-State: AOJu0YxomacM/XoWlqt9sFnKypxJXOjnxQcS+WYsBWtjXtAkXPl0hM2P
-	7ffw6qEl/LJD6D3577y0U4Sh6yZBxegQAbjPOUd8n21j
-X-Google-Smtp-Source: AGHT+IEa1lO4OJKdWw8PpX3iZxSF60jEeW/H6lB2eXd2bt30WvJr+KnKcsrTMmrc8gLeWBj5C/8MHwnnEsc1rvwnRs8=
-X-Received: by 2002:ac2:5458:0:b0:503:333e:b387 with SMTP id
- d24-20020ac25458000000b00503333eb387mr56656lfn.41.1697756103345; Thu, 19 Oct
- 2023 15:55:03 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C153C19440
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 23:53:16 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416EB113
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 16:53:15 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39JMdO84006084
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 16:53:15 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3tubwmryxd-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 16:53:14 -0700
+Received: from twshared29647.38.frc1.facebook.com (2620:10d:c0a8:1b::30) by
+ mail.thefacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Thu, 19 Oct 2023 16:53:09 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id 1DB093A0A4CFF; Thu, 19 Oct 2023 16:53:06 -0700 (PDT)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH v3 bpf-next 0/7] BPF register bounds logic and testing improvements
+Date: Thu, 19 Oct 2023 16:52:58 -0700
+Message-ID: <20231019235305.656855-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231018151950.205265-1-masahiroy@kernel.org> <20231018151950.205265-4-masahiroy@kernel.org>
- <ZTDlrkTXnkVN1cff@krava>
-In-Reply-To: <ZTDlrkTXnkVN1cff@krava>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 19 Oct 2023 15:54:52 -0700
-Message-ID: <CAEf4BzZm4h4q6k9ZhuT5qiWC9PYA+c7XwVFd68iAq4mtMJ-qhw@mail.gmail.com>
-Subject: Re: [bpf-next PATCH v2 4/4] kbuild: refactor module BTF rule
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: wg5Gq_jSdqr1d1V5CYU_lRuDk7AcT_3K
+X-Proofpoint-GUID: wg5Gq_jSdqr1d1V5CYU_lRuDk7AcT_3K
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-19_22,2023-10-19_01,2023-05-22_02
 
-On Thu, Oct 19, 2023 at 1:15=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Thu, Oct 19, 2023 at 12:19:50AM +0900, Masahiro Yamada wrote:
-> > newer_prereqs_except and if_changed_except are ugly hacks of the
-> > newer-prereqs and if_changed in scripts/Kbuild.include.
-> >
-> > Remove.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> > Changes in v2:
-> >   - Fix if_changed_except to if_changed
-> >
-> >  scripts/Makefile.modfinal | 25 ++++++-------------------
-> >  1 file changed, 6 insertions(+), 19 deletions(-)
-> >
-> > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> > index 9fd7a26e4fe9..fc07854bb7b9 100644
-> > --- a/scripts/Makefile.modfinal
-> > +++ b/scripts/Makefile.modfinal
-> > @@ -19,6 +19,9 @@ vmlinux :=3D
-> >  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-> >  ifneq ($(wildcard vmlinux),)
-> >  vmlinux :=3D vmlinux
-> > +cmd_btf =3D ; \
-> > +     LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_ba=
-se vmlinux $@; \
-> > +     $(RESOLVE_BTFIDS) -b vmlinux $@
-> >  else
-> >  $(warning Skipping BTF generation due to unavailability of vmlinux)
-> >  endif
-> > @@ -41,27 +44,11 @@ quiet_cmd_ld_ko_o =3D LD [M]  $@
-> >        cmd_ld_ko_o +=3D                                                =
- \
-> >       $(LD) -r $(KBUILD_LDFLAGS)                                      \
-> >               $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)              \
-> > -             -T scripts/module.lds -o $@ $(filter %.o, $^)
-> > +             -T scripts/module.lds -o $@ $(filter %.o, $^)           \
-> > +     $(cmd_btf)
-> >
-> > -quiet_cmd_btf_ko =3D BTF [M] $@
->
-> nit not sure it's intentional but we no longer display 'BTF [M] ...ko' li=
-nes,
-> I don't mind not displaying that, but we should mention that in changelog
->
+This patch set adds a big set of manual and auto-generated test cases
+validating BPF verifier's register bounds tracking and deduction logic. S=
+ee
+details in the last patch.
 
-Thanks for spotting this! I think those messages are useful and
-important to keep. Masahiro, is it possible to preserve them?
+To make this approach work, BPF verifier's logic needed a bunch of
+improvements to handle some cases that previously were not covered. This =
+had
+no implications as to correctness of verifier logic, but it was incomplet=
+e
+enough to cause significant disagreements with alternative implementation=
+ of
+register bounds logic that tests in this patch set implement. So we need =
+BPF
+verifier logic improvements to make all the tests pass.
 
+This is a first part of work with the end goal intended to extend registe=
+r
+bounds logic to cover range vs range comparisons, which will be submitted
+later assuming changes in this patch set land.
 
-> jirka
->
-> > -      cmd_btf_ko =3D                                                  =
- \
-> > -             LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) =
---btf_base vmlinux $@; \
-> > -             $(RESOLVE_BTFIDS) -b vmlinux $@
-> > -
-> > -# Same as newer-prereqs, but allows to exclude specified extra depende=
-ncies
-> > -newer_prereqs_except =3D $(filter-out $(PHONY) $(1),$?)
-> > -
-> > -# Same as if_changed, but allows to exclude specified extra dependenci=
-es
-> > -if_changed_except =3D $(if $(call newer_prereqs_except,$(2))$(cmd-chec=
-k),      \
-> > -     $(cmd);                                                          =
-    \
-> > -     printf '%s\n' 'savedcmd_$@ :=3D $(make-cmd)' > $(dot-target).cmd,=
- @:)
-> > -
-> > -# Re-generate module BTFs if either module's .ko or vmlinux changed
-> >  %.ko: %.o %.mod.o scripts/module.lds $(vmlinux) FORCE
-> > -     +$(call if_changed_except,ld_ko_o,vmlinux)
-> > -ifdef vmlinux
-> > -     +$(if $(newer-prereqs),$(call cmd,btf_ko))
-> > -endif
-> > +     +$(call if_changed,ld_ko_o)
-> >
-> >  targets +=3D $(modules:%.o=3D%.ko) $(modules:%.o=3D%.mod.o)
-> >
-> > --
-> > 2.40.1
-> >
-> >
->
+See individual patches for details.
+
+v2->v3:
+  - fix a subtle little-endianness assumption inside parge_reg_state() (C=
+I);
+v1->v2:
+  - fix compilation when building selftests with llvm-16 toolchain (CI).
+
+Andrii Nakryiko (7):
+  bpf: improve JEQ/JNE branch taken logic
+  bpf: derive smin/smax from umin/max bounds
+  bpf: enhance subregister bounds deduction logic
+  bpf: improve deduction of 64-bit bounds from 32-bit bounds
+  bpf: try harder to deduce register bounds from different numeric
+    domains
+  bpf: drop knowledge-losing __reg_combine_{32,64}_into_{64,32} logic
+  selftests/bpf: BPF register range bounds tester
+
+ kernel/bpf/verifier.c                         |  175 +-
+ .../selftests/bpf/prog_tests/reg_bounds.c     | 1667 +++++++++++++++++
+ 2 files changed, 1790 insertions(+), 52 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+
+--=20
+2.34.1
+
 
