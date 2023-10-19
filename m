@@ -1,169 +1,177 @@
-Return-Path: <bpf+bounces-12634-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12636-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12A3E7CED2C
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 03:07:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 066987CED2F
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 03:08:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D4981C20C5A
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 01:07:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2986D1C20DAE
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 01:07:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 067A3394;
-	Thu, 19 Oct 2023 01:07:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF9D394;
+	Thu, 19 Oct 2023 01:07:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="CHDf4FoQ";
+	dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="CHDf4FoQ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WtcNj7V+"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C98D38C
-	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 01:07:17 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822C8128;
-	Wed, 18 Oct 2023 18:07:15 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4S9qLj5y8wz4f3l27;
-	Thu, 19 Oct 2023 09:07:09 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgC3RdU7gTBlOLFZDQ--.58008S2;
-	Thu, 19 Oct 2023 09:07:11 +0800 (CST)
-Subject: Re: [PATCH bpf] Fold smp_mb__before_atomic() into
- atomic_set_release()
-To: paulmck@kernel.org, bpf@vger.kernel.org
-Cc: David Vernet <void@manifault.com>, Andrii Nakryiko <andrii@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org
-References: <ec86d38e-cfb4-44aa-8fdb-6c925922d93c@paulmck-laptop>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <722b64d7-281b-b4ab-4d4d-403abc41a36b@huaweicloud.com>
-Date: Thu, 19 Oct 2023 09:07:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 716D638C
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 01:07:55 +0000 (UTC)
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C2F112
+	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 18:07:53 -0700 (PDT)
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 8C528C1516EB
+	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 18:07:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1697677673; bh=oIgMGGQsyGZQ5E4CTc7E7pFJaPtcVOx7JPJhQzMnB7A=;
+	h=From:Date:References:To:In-Reply-To:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=CHDf4FoQ5NSH3tmto5OZPAi1x2LSmP0r6SBlmGtgsHz0HCqb1w5WX5iNd4bu1peZN
+	 I931GclGxrkWkgyQrAn0ta2F2EQw/FOQQuEarBiomVwd0KrLGIDlNzsQxKiV5pNw/L
+	 h2DMXgz5SCLoIjCJrFXn9tuqqeBA8eHcNrRYA/+k=
+X-Mailbox-Line: From bpf-bounces@ietf.org  Wed Oct 18 18:07:53 2023
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 5D729C151079;
+	Wed, 18 Oct 2023 18:07:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1697677673; bh=oIgMGGQsyGZQ5E4CTc7E7pFJaPtcVOx7JPJhQzMnB7A=;
+	h=From:Date:References:To:In-Reply-To:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=CHDf4FoQ5NSH3tmto5OZPAi1x2LSmP0r6SBlmGtgsHz0HCqb1w5WX5iNd4bu1peZN
+	 I931GclGxrkWkgyQrAn0ta2F2EQw/FOQQuEarBiomVwd0KrLGIDlNzsQxKiV5pNw/L
+	 h2DMXgz5SCLoIjCJrFXn9tuqqeBA8eHcNrRYA/+k=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 4F73DC151079
+ for <bpf@ietfa.amsl.com>; Wed, 18 Oct 2023 18:07:52 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Score: -2.106
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id OtpwGW5nQHEB for <bpf@ietfa.amsl.com>;
+ Wed, 18 Oct 2023 18:07:48 -0700 (PDT)
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com
+ [IPv6:2607:f8b0:4864:20::730])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 901EDC14CE4A
+ for <bpf@ietf.org>; Wed, 18 Oct 2023 18:07:48 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id
+ af79cd13be357-778999c5ecfso47298485a.2
+ for <bpf@ietf.org>; Wed, 18 Oct 2023 18:07:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1697677667; x=1698282467; darn=ietf.org;
+ h=message-id:in-reply-to:to:references:date:subject:mime-version
+ :content-transfer-encoding:from:from:to:cc:subject:date:message-id
+ :reply-to; bh=93iTMdBSd/L52S+O8BZ0+TOR69y0nK2OuLj6qOm2suw=;
+ b=WtcNj7V+8k/q/exIENE38qvOLhMfjVHfVUH2A2Bu8WmfdT1YflAzqZdqb5PK0NnQwN
+ B305kP3BVKFXwj6dqhyFl/P9Kh8y8F7Q0SaguNl+jWT2Yn+iTeULNaEzYh4/VBBComMu
+ uYNuISogG4mOaUq+Sy2mJ6vSi4qBluBeM5K0geI+IDq1brPia67KiOFEPM5sqAVKrG68
+ gCLsE0LDuNXYWlEdJFO8IGeHLNlab5w6RlXLN4poIjZzVyCseq4hTZl5AX8oUBsHFUYg
+ ONZajZ7eWSKHfXqdBifb3nsLiCxEVC0xv5PuVrTc7DpSOpehAAFpWBn5GSD2Qmm44aM3
+ 2NqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1697677667; x=1698282467;
+ h=message-id:in-reply-to:to:references:date:subject:mime-version
+ :content-transfer-encoding:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=93iTMdBSd/L52S+O8BZ0+TOR69y0nK2OuLj6qOm2suw=;
+ b=cWmeO0/3mvbbXJkAXiHhrFT1WmLQtylNIhyNcP2PJs9M8s0Gltz99vJZJaob5IxO6S
+ diP5r9mALy2gIA0aNvXucBYH8RIqbR8mELhd7bzRRKBqZzJ+0WpoKI1Rgj8fcRa7+4lM
+ P6wK5ImQwdsgWGg3xEXLR8GKynVRQUlEHtJc5XQhdsR5toGMe1piV6u2AsIVLgtLswSu
+ OrXv7Ns67Goug5qomWL8b7Nd+J/B+AgX53x+owqYgQrHmL7r9dMLJAqT8d1/cgh0pYTD
+ pRurrY6K3uF+QsypMEgNBZoZdBDbGoIHjumqMqwtp/o6rjUB/1/av3d/V+kTWC+FkcoY
+ iVMg==
+X-Gm-Message-State: AOJu0Yz52ORHx8AtpxTGs/5t/VTEG2dS81cq7TvNF48P1SiMnyo5sWQ+
+ QFAivjV7sqQAsHUmdsGjhhrzNRkenHc=
+X-Google-Smtp-Source: AGHT+IFqO0u5YdNYimUIslC487swT9BZk+UNlFqvPQBvHDE3YHGQTo315dlj1oN7K/XccD7UpM5Q2w==
+X-Received: by 2002:ad4:5b89:0:b0:66d:50a6:da73 with SMTP id
+ 9-20020ad45b89000000b0066d50a6da73mr1225476qvp.22.1697677667014; 
+ Wed, 18 Oct 2023 18:07:47 -0700 (PDT)
+Received: from smtpclient.apple (45-19-110-76.lightspeed.tukrga.sbcglobal.net.
+ [45.19.110.76]) by smtp.gmail.com with ESMTPSA id
+ qh11-20020a0562144c0b00b0065af657ddf7sm376860qvb.144.2023.10.18.18.07.45
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 18 Oct 2023 18:07:45 -0700 (PDT)
+From: Suresh Krishnan <suresh.krishnan@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <ec86d38e-cfb4-44aa-8fdb-6c925922d93c@paulmck-laptop>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:gCh0CgC3RdU7gTBlOLFZDQ--.58008S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr1rGFWUJFykuFyxWry7trb_yoWrGF4Upr
-	48Kr4UtrWDXr48JwnrJw4UZ34fJr4DA345Gr45JFy8Zr1UKr4jvF18Xr4jgr15Jr4kGr1j
-	yr1UWryqv34UJrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.4\))
+Date: Wed, 18 Oct 2023 21:07:44 -0400
+References: <CA+MHpBoHdG4ptYsdeHaEUNqmyPYYgavWUpMbVW5zzOzUoLUJMw@mail.gmail.com>
+To: bpf@ietf.org,
+ bpf <bpf@vger.kernel.org>
+In-Reply-To: <CA+MHpBoHdG4ptYsdeHaEUNqmyPYYgavWUpMbVW5zzOzUoLUJMw@mail.gmail.com>
+Message-Id: <1C8A6FD1-1724-4AD3-A6C9-CA2C427FD32E@gmail.com>
+X-Mailer: Apple Mail (2.3696.120.41.1.4)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/mLRsSHsAaPm3JHETz_EOvhMaID4>
+Subject: Re: [Bpf] Call for WG adoption: draft-thaler-bpf-isa-02
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
+ <bpf.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
+ <mailto:bpf-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
+ <mailto:bpf-request@ietf.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
 
-Hi Paul,
+Hi all,
+  This document has now been adopted as a WG item. Dave, please submit the next revision as draft-ietf-bpf-isa-00.
 
-On 10/19/2023 6:28 AM, Paul E. McKenney wrote:
-> bpf: Fold smp_mb__before_atomic() into atomic_set_release()
->
-> The bpf_user_ringbuf_drain() BPF_CALL function uses an atomic_set()
-> immediately preceded by smp_mb__before_atomic() so as to order storing
-> of ring-buffer consumer and producer positions prior to the atomic_set()
-> call's clearing of the ->busy flag, as follows:
->
->         smp_mb__before_atomic();
->         atomic_set(&rb->busy, 0);
->
-> Although this works given current architectures and implementations, and
-> given that this only needs to order prior writes against a later write.
-> However, it does so by accident because the smp_mb__before_atomic()
-> is only guaranteed to work with read-modify-write atomic operations,
-> and not at all with things like atomic_set() and atomic_read().
->
-> Note especially that smp_mb__before_atomic() will not, repeat *not*,
-> order the prior write to "a" before the subsequent non-read-modify-write
-> atomic read from "b", even on strongly ordered systems such as x86:
->
->         WRITE_ONCE(a, 1);
->         smp_mb__before_atomic();
->         r1 = atomic_read(&b);
+Thanks
+Suresh & David
 
-The reason is smp_mb__before_atomic() is defined as noop and
-atomic_read() in x86-64 is just READ_ONCE(), right ?
+> On Sep 29, 2023, at 10:28 AM, Suresh Krishnan <suresh.krishnan@gmail.com> wrote:
+> 
+> Hi all,
+>  This draft has been presented at the bpf meetings and has received
+> significant feedback both at the meetings and on/off list. Dave has
+> published a new revision that addresses all the comments, and has
+> requested WG adoption of the draft. This call is being initiated to
+> determine whether there is WG consensus towards adoption of
+> draft-thaler-bpf-isa-02 as a bpf WG draft. This draft is expected to
+> address the WG deliverable
+> 
+> "[PS] the BPF instruction set architecture (ISA) that defines the
+> instructions and low-level virtual machine for BPF programs"
+> 
+> The draft is available at
+> 
+> (HTML) https://datatracker.ietf.org/doc/html/draft-thaler-bpf-isa-02
+> (Plaintext) https://www.ietf.org/archive/id/draft-thaler-bpf-isa-02.txt
+> 
+> Please state whether or not you're in favor of the adoption by
+> replying to this email. If you are not in favor, please also state
+> your objections in your response. This adoption call will conclude on
+> Friday October 13 2023 (AoE) .
+> 
+> Regards
+> Suresh & David
 
-And it seems that I also used smp_mb__before_atomic() in a wrong way for
-patch [1]. The memory order in the posted patch is
-
-process X                                    process Y
-    atomic64_dec_and_test(&map->usercnt)
-    READ_ONCE(timer->timer)
-                                            timer->time = t
-                                            // it won't work
-                                            smp_mb__before_atomic()
-                                            atomic64_read(&map->usercnt)
-
-For the problem, it seems I need to replace smp_mb__before_atomic() by
-smp_mb() to fix the memory order, right ?
-
-Regards,
-Hou
-
-[1]:
-https://lore.kernel.org/bpf/20231017125717.241101-2-houtao@huaweicloud.com/
-                                                                
-
->
-> Therefore, replace the smp_mb__before_atomic() and atomic_set() with
-> atomic_set_release() as follows:
->
->         atomic_set_release(&rb->busy, 0);
->
-> This is no slower (and sometimes is faster) than the original, and also
-> provides a formal guarantee of ordering that the original lacks.
->
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Acked-by: David Vernet <void@manifault.com>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Yonghong Song <yonghong.song@linux.dev>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: <bpf@vger.kernel.org>
->
-> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-> index f045fde632e5..0ee653a936ea 100644
-> --- a/kernel/bpf/ringbuf.c
-> +++ b/kernel/bpf/ringbuf.c
-> @@ -770,8 +770,7 @@ BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
->  	/* Prevent the clearing of the busy-bit from being reordered before the
->  	 * storing of any rb consumer or producer positions.
->  	 */
-> -	smp_mb__before_atomic();
-> -	atomic_set(&rb->busy, 0);
-> +	atomic_set_release(&rb->busy, 0);
->  
->  	if (flags & BPF_RB_FORCE_WAKEUP)
->  		irq_work_queue(&rb->work);
->
-> .
-
+-- 
+Bpf mailing list
+Bpf@ietf.org
+https://www.ietf.org/mailman/listinfo/bpf
 
