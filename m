@@ -1,221 +1,103 @@
-Return-Path: <bpf+bounces-12699-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12700-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 311227CFC6B
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 16:26:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DD817CFC81
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 16:28:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44EB32810FD
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 14:25:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D962B212FF
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 14:28:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4862E29D0D;
-	Thu, 19 Oct 2023 14:25:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 324EB2E40F;
+	Thu, 19 Oct 2023 14:28:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P8JImrOq"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="VblVA/j9"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A56232744F
-	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 14:25:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BEF9C433C7;
-	Thu, 19 Oct 2023 14:25:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697725552;
-	bh=c70oHRZIcX9ccV9DBUUmfsPIDAtoFzr6CLXIfVHsiyo=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=P8JImrOq7BrNsIWUVCibxxKNRxUbaQaRl66JW6JSv2uweVcQXByVmBtooT/UYVDoC
-	 AmOL/QJTk7FUg5NCdjz1p8Kr5CXtuIMJ0sY9bFQgzNLlNFt+ofPnjM87JrNzZ9wVWa
-	 NI08CE2eYyatI0gft/69fqF3sZOp6WTyvM8Q5gccrB3wOqE/+MKRb7xwZc3H6Cv5Ze
-	 COQ2TgNtoflMwduausqpBtEe6im0DFE4ikltZEvLOD/5w6C3TDTMU13chk72ar77NM
-	 6eJ2k6gmK64lSrNDLUI1yX1ePWJ9eQa2EW9sVuF1BHTHtxRL41yOzqts8e5/T/u6sU
-	 NMjKtH/XSZmWw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 9A2E9CE0868; Thu, 19 Oct 2023 07:25:51 -0700 (PDT)
-Date: Thu, 19 Oct 2023 07:25:51 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, David Vernet <void@manifault.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf] Fold smp_mb__before_atomic() into
- atomic_set_release()
-Message-ID: <d16b1511-fe53-4fde-a85f-4b38a4370cf0@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ec86d38e-cfb4-44aa-8fdb-6c925922d93c@paulmck-laptop>
- <722b64d7-281b-b4ab-4d4d-403abc41a36b@huaweicloud.com>
- <f6526ae6-cd52-4d1d-ab2a-7d82e2c818fd@paulmck-laptop>
- <7fe984d2-c30c-40ad-83cd-d9fb51b6ce0d@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E55329CF3
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 14:28:30 +0000 (UTC)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C1C13D
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 07:28:28 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40806e4106dso5383065e9.1
+        for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 07:28:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1697725707; x=1698330507; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XFu0ef+zdh3Ln5vrsGeJWeSUKFjMRNqdynnNl9ppqdQ=;
+        b=VblVA/j9NVtX0S4e/CRaVh0i1/CJUZDP6LbOwgKPuzEL36hE7KAcC3Ix8236MaqZ1b
+         ovdHDIN4R+l3vYOh/CgyYFEQ3n03pHcAj9gV06SunIC5UglaCJmoI0dKn6mBnndpf+IA
+         oDi8j7BDKusvoCkD/e2jrM21zMOgb7hN6cQfduiqbG97wSdxlNSEbSXvkFHyp5vlgoMT
+         iVLym7mTQpjmyTGafokUiExQcQzLECShLXpVuMEoOEviB999oWIQm0bYK6bE3HGQRrLw
+         x+kLSenqBuLLzo7OkTKJGJaoof7nedJS/qCgWUUCzCGNh9Gb20F6zuZECJ8cQz4Frido
+         Q/xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697725707; x=1698330507;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XFu0ef+zdh3Ln5vrsGeJWeSUKFjMRNqdynnNl9ppqdQ=;
+        b=IFvGU9U94iKK77kOJv1yDJtxnX9GDk+mMeQdv8F2T+Eve+cGlcEiXcBCT+aD1XXXiP
+         GsvQflZtxMOd21ep96cMSDg6Dy9b5e84BGsKaqzhwlFbAznrSzdGkZrZ3+amTLzK5otT
+         0Al5b1NguRUmJUNV+HU6jDhgMrDa9x9reoUl4waOWVS0C1ypPMRCkF9tMj+MtSJpeJeh
+         xd+ORSxHO0F1tOWfYb5KgwwLuJaChYKUkMV5ny3HTI8yY2WbbSOEsUA7zlLzE1gF02fD
+         m9VJSamVC6uy7HNNwsusCvoeka9Mwy1+7Rm2qf72wwoKXKNe1kZrEkttmuWle5vkFBzq
+         jZ3A==
+X-Gm-Message-State: AOJu0YwQQrpLtoITk+HjUgULNLz76+RzC8v+6TXzw7k+pyQ6AOP9k+50
+	m8dH/6SwF+0M1suElSmwzVYnkA==
+X-Google-Smtp-Source: AGHT+IHOeapdLxuvl7GvBzzOJn6e31pRsq5Xh5rpZRbTgcamH7be1UUBEU3GiVaaQ83kfggorINFeA==
+X-Received: by 2002:a05:600c:5489:b0:3fe:1fd9:bedf with SMTP id iv9-20020a05600c548900b003fe1fd9bedfmr2185781wmb.11.1697725706905;
+        Thu, 19 Oct 2023 07:28:26 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:c4fd:a5df:859a:71c8? ([2a02:8011:e80c:0:c4fd:a5df:859a:71c8])
+        by smtp.gmail.com with ESMTPSA id j17-20020a5d5651000000b0032d8f075810sm4597862wrw.10.2023.10.19.07.28.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Oct 2023 07:28:26 -0700 (PDT)
+Message-ID: <e2270719-3dc6-4f3f-bbea-dd3fd4a17b77@isovalent.com>
+Date: Thu, 19 Oct 2023 15:28:25 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7fe984d2-c30c-40ad-83cd-d9fb51b6ce0d@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 0/2] bpftool: Fix some json formatting for
+ struct_ops
+Content-Language: en-GB
+To: Manu Bretelle <chantr4@gmail.com>, bpf@vger.kernel.org,
+ andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org
+References: <20231018230133.1593152-1-chantr4@gmail.com>
+From: Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20231018230133.1593152-1-chantr4@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Oct 19, 2023 at 02:20:35PM +0800, Hou Tao wrote:
-> Hi Paul,
+On 19/10/2023 00:01, Manu Bretelle wrote:
+> When dumping struct_ops with bpftool, the json produced was invalid.
+> 1) pointer values where not printed with surrounding quotes, causing an
+> invalid json integer to be emitted
+> 2) when bpftool struct_ops dump id <id>, the 2 dictionaries were not
+> wrapped in a array, here also causing an invalid json payload to be
+> emitted. 
 > 
-> On 10/19/2023 12:54 PM, Paul E. McKenney wrote:
-> > On Thu, Oct 19, 2023 at 09:07:07AM +0800, Hou Tao wrote:
-> >> Hi Paul,
-> >>
-> >> On 10/19/2023 6:28 AM, Paul E. McKenney wrote:
-> >>> bpf: Fold smp_mb__before_atomic() into atomic_set_release()
-> >>>
-> >>> The bpf_user_ringbuf_drain() BPF_CALL function uses an atomic_set()
-> >>> immediately preceded by smp_mb__before_atomic() so as to order storing
-> >>> of ring-buffer consumer and producer positions prior to the atomic_set()
-> >>> call's clearing of the ->busy flag, as follows:
-> >>>
-> >>>         smp_mb__before_atomic();
-> >>>         atomic_set(&rb->busy, 0);
-> >>>
-> >>> Although this works given current architectures and implementations, and
-> >>> given that this only needs to order prior writes against a later write.
-> >>> However, it does so by accident because the smp_mb__before_atomic()
-> >>> is only guaranteed to work with read-modify-write atomic operations,
-> >>> and not at all with things like atomic_set() and atomic_read().
-> >>>
-> >>> Note especially that smp_mb__before_atomic() will not, repeat *not*,
-> >>> order the prior write to "a" before the subsequent non-read-modify-write
-> >>> atomic read from "b", even on strongly ordered systems such as x86:
-> >>>
-> >>>         WRITE_ONCE(a, 1);
-> >>>         smp_mb__before_atomic();
-> >>>         r1 = atomic_read(&b);
-> >> The reason is smp_mb__before_atomic() is defined as noop and
-> >> atomic_read() in x86-64 is just READ_ONCE(), right ?
-> > The real reason is that smp_mb__before_atomic() is not defined to do
-> > anything unless followed by an atomic read-modify-write operation,
-> > and atomic_read(), atomic_64read(), atomic_set(), and so on are not
-> > read-modify-write operations.
+> Manu Bretelle (2):
+>   bpftool: fix printing of pointer value
+>   bpftool: wrap struct_ops dump in an array
 > 
-> I see. Thanks for explanation. It seems I did not read
-> Documentation/atomic_t.txt carefully, it said:
+>  tools/bpf/bpftool/btf_dumper.c | 2 +-
+>  tools/bpf/bpftool/struct_ops.c | 6 ++++++
+>  2 files changed, 7 insertions(+), 1 deletion(-)
 > 
->     The barriers:
-> 
->     smp_mb__{before,after}_atomic()
-> 
->     only apply to the RMW atomic ops and can be used to augment/upgrade the
->     ordering inherent to the op.
 
-That is the place!
+Acked-by: Quentin Monnet <quentin@isovalent.com>
 
-> > As you point out, one implementation consequence of this is that
-> > smp_mb__before_atomic() is nothingness on x86.
-> >
-> >> And it seems that I also used smp_mb__before_atomic() in a wrong way for
-> >> patch [1]. The memory order in the posted patch is
-> >>
-> >> process X                                    process Y
-> >>     atomic64_dec_and_test(&map->usercnt)
-> >>     READ_ONCE(timer->timer)
-> >>                                             timer->time = t
-> > The above two lines are supposed to be accessing the same field, correct?
-> > If so, process Y's store really should be WRITE_ONCE().
-> 
-> Yes. These two processes are accessing the same field (namely
-> timer->timer). Is WRITE_ONCE(xx) still necessary when the write of
-> timer->time in process Y is protected by a spin-lock ?
-
-If there is any possibility of a concurrent reader, that is, a reader
-not holding that same lock, then yes, you should use WRITE_ONCE().
-
-Compilers can do pretty vicious things to unmarked reads and writes.
-But don't take my word for it, here are a few writeups:
-
-o	"Who's afraid of a big bad optimizing compiler?" (series)
-	https://lwn.net/Articles/793253, https://lwn.net/Articles/799218
-
-o	"An introduction to lockless algorithms" (Paolo Bonzini series)
-	https://lwn.net/Articles/844224, https://lwn.net/Articles/846700,
-	https://lwn.net/Articles/847481, https://lwn.net/Articles/847973,
-	https://lwn.net/Articles/849237, https://lwn.net/Articles/850202
-
-o	"Is Parallel Programming Hard, And, If So, What Can You Do About It?"
-	Section 4.3.4 ("Accessing Shared Variables")
-	https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/perfbook/
-perfbook.html
-
-> >>                                             // it won't work
-> >>                                             smp_mb__before_atomic()
-> >>                                             atomic64_read(&map->usercnt)
-> >>
-> >> For the problem, it seems I need to replace smp_mb__before_atomic() by
-> >> smp_mb() to fix the memory order, right ?
-> > Yes, because smp_mb() will order the prior store against that later load.
-> 
-> Thanks. Will fix the patch.
-
-Very good!
-
-							Thanx, Paul
-
-> Regards,
-> Hou
-> >
-> > 							Thanx, Paul
-> >
-> >> Regards,
-> >> Hou
-> >>
-> >> [1]:
-> >> https://lore.kernel.org/bpf/20231017125717.241101-2-houtao@huaweicloud.com/
-> >>                                                                 
-> >>
-> >>> Therefore, replace the smp_mb__before_atomic() and atomic_set() with
-> >>> atomic_set_release() as follows:
-> >>>
-> >>>         atomic_set_release(&rb->busy, 0);
-> >>>
-> >>> This is no slower (and sometimes is faster) than the original, and also
-> >>> provides a formal guarantee of ordering that the original lacks.
-> >>>
-> >>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >>> Acked-by: David Vernet <void@manifault.com>
-> >>> Cc: Andrii Nakryiko <andrii@kernel.org>
-> >>> Cc: Alexei Starovoitov <ast@kernel.org>
-> >>> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> >>> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> >>> Cc: Song Liu <song@kernel.org>
-> >>> Cc: Yonghong Song <yonghong.song@linux.dev>
-> >>> Cc: John Fastabend <john.fastabend@gmail.com>
-> >>> Cc: KP Singh <kpsingh@kernel.org>
-> >>> Cc: Stanislav Fomichev <sdf@google.com>
-> >>> Cc: Hao Luo <haoluo@google.com>
-> >>> Cc: Jiri Olsa <jolsa@kernel.org>
-> >>> Cc: <bpf@vger.kernel.org>
-> >>>
-> >>> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-> >>> index f045fde632e5..0ee653a936ea 100644
-> >>> --- a/kernel/bpf/ringbuf.c
-> >>> +++ b/kernel/bpf/ringbuf.c
-> >>> @@ -770,8 +770,7 @@ BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
-> >>>  	/* Prevent the clearing of the busy-bit from being reordered before the
-> >>>  	 * storing of any rb consumer or producer positions.
-> >>>  	 */
-> >>> -	smp_mb__before_atomic();
-> >>> -	atomic_set(&rb->busy, 0);
-> >>> +	atomic_set_release(&rb->busy, 0);
-> >>>  
-> >>>  	if (flags & BPF_RB_FORCE_WAKEUP)
-> >>>  		irq_work_queue(&rb->work);
-> >>>
-> >>> .
-> 
+Thanks a lot for these fixes!
 
