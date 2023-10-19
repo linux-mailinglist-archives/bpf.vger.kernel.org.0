@@ -1,178 +1,210 @@
-Return-Path: <bpf+bounces-12738-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12739-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE5987D02FB
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 22:05:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B18227D0314
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 22:17:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0E0E1C20F20
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 20:05:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B10F91F23F36
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 20:17:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD8F3DFF6;
-	Thu, 19 Oct 2023 20:04:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4FB23DFF1;
+	Thu, 19 Oct 2023 20:17:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="hVJSsOgi"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="c6/FDmwx"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC553DFE8
-	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 20:04:49 +0000 (UTC)
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B282F131
-	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 13:04:46 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-2739c8862d2so24772a91.1
-        for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 13:04:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697745886; x=1698350686; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VHSM7lgOK3HTJKxso8W1sPPHXik4YHTdjZ5i3zqRGx4=;
-        b=hVJSsOgikFx2v0hDLza9QGjIV8a6tJluJcV/pZEW9BAreZr3dBUcXEAy3rnQt/sGQi
-         0db2gX+WccmzYGJP+aj0NWsgRvZgSHh3hSjVXaxZ4z3j0vyCV6pKpauW4vI1WDQGPNjQ
-         lipLElDOc/SIyqkGCcFk/oO/tH/RRPL8/o7wGzlbdWg4wwH4m6yDS0ou6RP/wSULDDcw
-         XDMn+1NvPWDlI5XfEQQfNccI/IjYR0cqhSrw3m97oQcbeUcUDNIfkHrz8KQtFMnrG/7z
-         KYudnlhakY/Ikm8706uLWES7qUFJpX5tkeYrfj528xnocTyIrwTyb2tcOTTs9LuRMV45
-         H7dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697745886; x=1698350686;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VHSM7lgOK3HTJKxso8W1sPPHXik4YHTdjZ5i3zqRGx4=;
-        b=SlIdpt+0vX96cp6bBWnQM4ncCpEBwCU39fnflvl7BlIjUgfgOdGFfCMsV2pFzh23aD
-         dtkOw3tPV0HDVcc9Y4LVJaWD5EmMhLELNXep/ZyMfDkTO7J5K8fB5CycJXMD3V6O4fKt
-         B8kX+6zDtqrR7eitZCBEHhnkHVoxY1ttBzHeCfdIzZor2NXgoVZf1Go6IIHoMCfMfApm
-         w5SW0EMNzxM9GHL2uEGc238IBnBZMrdlL81HENyxMxttjROCgHQ9mZOk9VkZ+NXu5XMS
-         1CUYjAnsIXS0uiPtkmWJtQQLJNndJl0BrGwNUCEbKM2wYXuCQkVsayNce7U6GY/HTl62
-         YO/A==
-X-Gm-Message-State: AOJu0YxXV5aWSeqykseOJzszNAaTo5iL3a5H4LcwVfbJz9GPUqA3T0pw
-	fAK8yHj7DYclyA7E03RuZT7lbx8qVb5TTKtzTCG+5g==
-X-Google-Smtp-Source: AGHT+IGbCrBvmsRbosyDyHhFgwB9uD9EKZDkSeQTftL9H2qEaLZcX5FXO2SKmc7h7coRIOruRtobPQ==
-X-Received: by 2002:a17:90b:1d0e:b0:274:99ed:a80c with SMTP id on14-20020a17090b1d0e00b0027499eda80cmr3295469pjb.3.1697745886045;
-        Thu, 19 Oct 2023 13:04:46 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id jb14-20020a17090b408e00b002774d7e2fefsm157717pjb.36.2023.10.19.13.04.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Oct 2023 13:04:45 -0700 (PDT)
-Message-ID: <e1920ac4-18ad-4b97-a3a3-9604724937d6@kernel.dk>
-Date: Thu, 19 Oct 2023 14:04:43 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D38E03D3B5;
+	Thu, 19 Oct 2023 20:17:37 +0000 (UTC)
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2044.outbound.protection.outlook.com [40.107.102.44])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08274124;
+	Thu, 19 Oct 2023 13:17:36 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aYTkTYgn1C7k+gulS0SXPggS4Ri1fY0uKt1HdZbDAhdkNFh6+zFDlsBenvE2hNa7MwJnXIzYvQKwO4orXCfK+6sYSUK3uvMjAXbLR+6OqZ0/H5W895UinH3mN5tNDq9gQiBjAGKj0KwVs4cX48BYLQG7O2hrZQdxrq3Lg2cU0+dApJK2QkfyPu7q9rYnsySjSONausb3vydRgGzL2o3y8AolGfPBxtVJ9150AebDvoz5Le6TeUeTwe9ZT8mSZDmkPN59gCu3qxxBGX69/bSjIOFV7Rs/SvRQ4r+NXZQbi+hSfu2gxF8ngERlJU4YC2QXRt6YA3/8eC4BrpLtqnoejw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Q+1qGJ1b1W/hrmbe9VlayPZ0BGk79yLrvvAYCz9Z+Ic=;
+ b=EB51bvc8luL0XcOTcBIK8LmOw+FAIrkF/V3mvKKd1zGxi+mUBnXKLb9VZ8CvKYAQdnVygRPtqQWRcBGVwC6JHX9t2aPPQxS6hC2t6a417bSnGwH+cMk4S1pMqkU25s6REqGIkfJo/nuC40qQNUhP7xYQeDNGSAw6SBE7qIGkRBkz8/HYvu1xcIm18H+jrogLi0EVhkNFp1F5J4JrYZpnmfA5gQTzIH9x01bW9z6zYK1cL1Nv1MlCmq8osOYzuDQUj8KVPhrF7OGxA52X+JlDpDAHJEAwK2m5cOzLPXzQ/Cskydb2daV4LFMtW5l1fE+nk2IrIOvNjNnNPzwQRZmeDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q+1qGJ1b1W/hrmbe9VlayPZ0BGk79yLrvvAYCz9Z+Ic=;
+ b=c6/FDmwx4W1xMVmG+lxU3pOHFRWdezlf3Eis1sYqACwuJ9rVI7JKSkHEYeJ8V/UIVLSONfKPeXUzOsGmTfp3TxIDvWeehgKfhpADFvX7JshfixIskCEeF/j3MQ/DSxYrxGL5AoKFoois7f9QyHJZqRWdW9UlSil6QWMCFtNWelw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
+ DS0PR12MB7632.namprd12.prod.outlook.com (2603:10b6:8:11f::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6907.24; Thu, 19 Oct 2023 20:17:31 +0000
+Received: from DM4PR12MB6280.namprd12.prod.outlook.com
+ ([fe80::5aa2:3605:1718:3332]) by DM4PR12MB6280.namprd12.prod.outlook.com
+ ([fe80::5aa2:3605:1718:3332%7]) with mapi id 15.20.6886.034; Thu, 19 Oct 2023
+ 20:17:31 +0000
+Message-ID: <a9237e7a-e08c-4904-b84a-f6198333a78c@amd.com>
+Date: Thu, 19 Oct 2023 16:17:26 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] lib/Kconfig.debug: disable FRAME_WARN for kasan and kcsan
+Content-Language: en-US
+To: Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Cc: Alexander Potapenko <glider@google.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org,
+ Rodrigo Siqueira <rodrigo.siqueira@amd.com>,
+ Harry Wentland <harry.wentland@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>, stable@vger.kernel.org,
+ Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng
+ <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Nick Terrell <terrelln@fb.com>, Nick Desaulniers <ndesaulniers@google.com>,
+ Tom Rix <trix@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Randy Dunlap
+ <rdunlap@infradead.org>, Kees Cook <keescook@chromium.org>,
+ Zhaoyang Huang <zhaoyang.huang@unisoc.com>, Li Hua
+ <hucool.lihua@huawei.com>, Rae Moar <rmoar@google.com>,
+ rust-for-linux@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev
+References: <20231018182412.80291-1-hamza.mahfooz@amd.com>
+ <CAMuHMdXSzMJe1zyJu1HkxWggTKJj_sxkPOejjbdRjg3FeFTVHQ@mail.gmail.com>
+ <d764242f-cde0-47c0-ae2c-f94b199c93df@amd.com>
+ <CAMuHMdXYDQi5+x1KxMG0wnjSfa=A547B9tgAbgbHbV42bbRu8Q@mail.gmail.com>
+ <CAG_fn=XcJ=rZEJN+L1zZwk=qA90KShhZK1MA6fdW0oh7BqSJKw@mail.gmail.com>
+ <22580470-7def-4723-b836-1688db6da038@app.fastmail.com>
+ <20231019155600.GB60597@dev-arch.thelio-3990X>
+From: Hamza Mahfooz <hamza.mahfooz@amd.com>
+In-Reply-To: <20231019155600.GB60597@dev-arch.thelio-3990X>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQBPR0101CA0208.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:67::31) To DM4PR12MB6280.namprd12.prod.outlook.com
+ (2603:10b6:8:a2::11)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 04/11] net/socket: Break down __sys_getsockopt
-Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>, Breno Leitao <leitao@debian.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, io-uring@vger.kernel.org,
- Kuniyuki Iwashima <kuniyu@amazon.com>,
- Alexander Mikhalitsyn <alexander@mihalicyn.com>,
- David Howells <dhowells@redhat.com>, sdf@google.com, asml.silence@gmail.com,
- willemdebruijn.kernel@gmail.com, kuba@kernel.org, pabeni@redhat.com,
- krisman@suse.de, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>
-References: <20231016134750.1381153-1-leitao@debian.org>
- <20231016134750.1381153-5-leitao@debian.org>
- <1074c1f1-e676-fbe6-04bc-783821d746a1@linux.dev>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <1074c1f1-e676-fbe6-04bc-783821d746a1@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|DS0PR12MB7632:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1758f286-9ebe-459b-f9a4-08dbd0e06c6a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	1YUWApU2IIWDF6DjVLrfsugTaHu+NQ5NGOoBZfg3WfZFNydhnrpdQei+AxxkLZtUtOyWgi7y4fLf9khvcw/yW/21NAEIRLQh+rB+HAfW11/vccRctgoUFQVOkO0le+M/oVcEXbQIsTP0U4xvJbgW6jXJlqf+pH/WiXq5Jz+rn++eNdz1nInESobUlhW1alN703tK1CzxvLirWVZ42ejJbSoA+G4EfI35RR30DvihnKz4lZsVrRJ4t+oLxbCDfOj4RoLFrm/lhWSDq38pSlP/NoMFUzOqrqunERnBWXeHkmfXjVmgutv7wePUF2lOxEsJ+kRlCS74fj/aP01m/sKzN05DVSTvPnAbOhvySki4z8UY0Cybcy6YCTJi7ftJenNj7zqO1K6CX+GRIeIyBkUV62AOAlJIa6BhDIktnadb6G5f1ZTyQeHwaz5QOJhSovnLdXhiej45soSiqESh1ieYcXld0hK4x59QoLnDSOYiOCJuJv22B4LhdUomX1GlFtD4dZfZlHOXcJbKrXtwJbSEBnIceFDGS+m+4FnlAzO7Orf3zAi9y3rGWgHZ3sRRT+wtiOoMAri00PDqFwIrDrTBHS6BnYKhkvqGcyMRJebW/hN2q7ECQQ7e8CgpS4OykJ+i6RnKXOImnQhzdYMTkzQ/CB5p6u4RFJkx37FrhReYeHflG+iOnAygwu874+Fq6YLQ
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(366004)(39860400002)(396003)(346002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(26005)(31686004)(38100700002)(83380400001)(54906003)(5660300002)(66946007)(8676002)(4326008)(7416002)(8936002)(86362001)(2906002)(110136005)(66476007)(44832011)(966005)(6486002)(66556008)(53546011)(6506007)(478600001)(6666004)(316002)(31696002)(66899024)(2616005)(36756003)(6512007)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?K1ZsRUQrcFYxS1BBcDRWTnFxOWRsU2lhYVE0YmpJdE5GdFNOL0ZKQVJ0bWQ5?=
+ =?utf-8?B?OEJiTlRXZGtJZElPUW1uSU1lUWU1RHZaS1FVV1k3MXRqb0FBVmZ0M0VJUlJL?=
+ =?utf-8?B?ZThhdFhQMWdtRXBKa3h3WWdzYllPTVJqU0NRbTBsWGJrRERvVkpQMk1EVFBz?=
+ =?utf-8?B?V2lJMkxVdzY5RllURjNYMzU2aDZSWVFDdGZJaTB1MFlZSGEzMWlPanhJNGhv?=
+ =?utf-8?B?SGRKR28rUDUzcUVCbEJXSzZ0Y24vaTdBb2xpVENWaGJBZlBaNUNFNkUzc0k0?=
+ =?utf-8?B?aklXRlE5dkpiUFp6c0RJVlJBTE1CRVdwWE90dFU5bjNoM092NkhHL09vK1J4?=
+ =?utf-8?B?YjJyWjlNZStIdUtHMlIrOFlMTG9CT05wUTFwS0lic3lMbWR5VFprRlUzQlBH?=
+ =?utf-8?B?MHJnQzhYYUNXUzJmckNZb0FBM0RIZytWMTh1RDZKWmhFWkpqVG1YbEdRN0JI?=
+ =?utf-8?B?LytFUlpud2FVWFIvYXA3VmlVaFRMc2VTVm4zcFZvaDBvcHhRVW56QWUwamdS?=
+ =?utf-8?B?MGF1SXBxZXlPQjRNd2FZVjJOUlYveFZWV2JRdk4rVXRmRlJjZnZBcmpCanY4?=
+ =?utf-8?B?MDFqTUR1bndpUVR0NFN5dEJ1djFmd3lDclhRbzBhYkRTZG9nZGtHWTM0Ukwx?=
+ =?utf-8?B?YXN2WDZ1dFY3ZzUvUUhubXJFWTE3OTVjQ2RJZ2FMUWZibG8rWHdCRTIxaDVo?=
+ =?utf-8?B?OXRseExLZ2pOaGJ3OUdzRmJzZFJFMTFJVkdpUndQUUxQeWNVRTQ4UGluMWpU?=
+ =?utf-8?B?NzFLaE1Fb2kvK25DQTJ3WFF3TTBZUm5UN3VTQ08xRXc3aUkxRnVlcnR6SVFD?=
+ =?utf-8?B?NFB6NFJvVGhkUFNvekY1U3ZUaC9wajdaK2RwV3FReUhlZWVQcEJ1R3Q1dmw0?=
+ =?utf-8?B?SGdoWXBVRzRJcFpNY2xCc2xrRCtUTjZ4OXJ1Z0F5bUwwS1BnTXByRGVsazJH?=
+ =?utf-8?B?Q3J6RjlYTWpQZkVnNGJoWGNLeHZpK044ZWhpM0o0TFJLVDJ1S0JNcytTQ011?=
+ =?utf-8?B?bEJYMVV6eVU2Q3lXU2tkaElKcHBkZUM3L0N1MWkwMFROUHZDSlFiUCtCQ2Ru?=
+ =?utf-8?B?K2ZNNFRSUVRYQUtUTTd0THVtak1ESlJTN3JCTVJmRzNVdHdwYkFCYWZIOUpU?=
+ =?utf-8?B?MERyNk9oZVc2ZWxTWEdCQkRGY2o0aFcyMU1Kam14TnI2R294Tm1rSjY1dmNK?=
+ =?utf-8?B?WG5qTFdNN1JWYjZXRll4dzRORXQ0N0lTYXkrOERKaTRvU0JFcWNFK256cHBY?=
+ =?utf-8?B?V1N5T0FPUkI4NlZVRHZ4TDJ5SHMySmdFbTFWY3ZCZm5kb3NNRmZ6ZTZWQ250?=
+ =?utf-8?B?a1dSYUVscDAxR0YwK2dsWHRZOFBOTTdneXdmUWxneHlUcWFMK3R3QjBEZTQv?=
+ =?utf-8?B?RFpuRHI2TW4ycDc0blo4Z0lBdmZZUVE4cUZpV0FDTGlNNDM4UE9LRmZ2Q0Vs?=
+ =?utf-8?B?ckRUdFNnUndxN0pONGJrMUxpcVEwbTdRS2txQWpQdnZPTEdOckFaMWhTUHBq?=
+ =?utf-8?B?UDl0SWZwb3p6NE1IUEtUMFk4a2RXMDlJVmd5VXA5U09WbVcyMTJmeGVuYlEz?=
+ =?utf-8?B?blA4SzVOYlpJUS8xVUJEQWR3bzZhc3hPY0R1MWtnaGh0M0NpZDRaOXF3aFFF?=
+ =?utf-8?B?UzMrNUFzWEM3SDJ0R0x5S3ZkUTRFNkp6dC82dnZWZGZIQ08rWUlyY0V1MG5z?=
+ =?utf-8?B?TWJ3R1JXaWhYdU5tNlhRb050NENscm9oclh2eU5BbmxyRXkvNkVYUWR5Tk9T?=
+ =?utf-8?B?R200K2RjdEtCK2lVWE8yMGJYVEhYcWJkempsb0kwZ3NXUEp3UHRpOXdoMmh2?=
+ =?utf-8?B?ZWhvV2xlRDhxa2c4RUpjWXNNQ2RGL0U2azdQNDNQZGtzZmhwdTRLaFJWNktX?=
+ =?utf-8?B?TWU4dnNPczFsdTE5dDlDa1Q5bTV2VDBEZDNPbG9rRmQvQ2NsWFV3RTZDYW1l?=
+ =?utf-8?B?Z0sxcWViRVJISVcwT1hYWnRUaWh1WTlSS0tIWTdMOG1tbW1MNkFJbDg2OElt?=
+ =?utf-8?B?cTc4V0xSc2c5Yk9IdEpIKzFFMUdHTXpROFNISHl5am51eC9VQVE4Q0tQUzE5?=
+ =?utf-8?B?VGZHaUQra0lySWxiSE84SXROdjZtelJvbHlFdkg0cklWUE80MFIySWtUMWVK?=
+ =?utf-8?Q?RNsGZrR/C761Q0i+L6lJjCbLT?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1758f286-9ebe-459b-f9a4-08dbd0e06c6a
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 20:17:31.4993
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3ieGRtnbjL0PaAYTLLaRYZtkLrz/fyA6g8zaYKgOIYzyc3MPkojFvvLfOXjSakbcIJ9r/7n6iNVQJJF16dD8pw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7632
 
-On 10/19/23 1:12 PM, Martin KaFai Lau wrote:
-> On 10/16/23 6:47?AM, Breno Leitao wrote:
->> diff --git a/net/socket.c b/net/socket.c
->> index 0087f8c071e7..f4c156a1987e 100644
->> --- a/net/socket.c
->> +++ b/net/socket.c
->> @@ -2350,6 +2350,42 @@ SYSCALL_DEFINE5(setsockopt, int, fd, int, level, int, optname,
->>   INDIRECT_CALLABLE_DECLARE(bool tcp_bpf_bypass_getsockopt(int level,
->>                                int optname));
->>   +int do_sock_getsockopt(struct socket *sock, bool compat, int level,
->> +               int optname, sockptr_t optval, sockptr_t optlen)
->> +{
->> +    int max_optlen __maybe_unused;
->> +    const struct proto_ops *ops;
->> +    int err;
->> +
->> +    err = security_socket_getsockopt(sock, level, optname);
->> +    if (err)
->> +        return err;
->> +
->> +    ops = READ_ONCE(sock->ops);
->> +    if (level == SOL_SOCKET) {
->> +        err = sk_getsockopt(sock->sk, level, optname, optval, optlen);
->> +    } else if (unlikely(!ops->getsockopt)) {
->> +        err = -EOPNOTSUPP;
->> +    } else {
->> +        if (WARN_ONCE(optval.is_kernel || optlen.is_kernel,
->> +                  "Invalid argument type"))
->> +            return -EOPNOTSUPP;
->> +
->> +        err = ops->getsockopt(sock, level, optname, optval.user,
->> +                      optlen.user);
->> +    }
->> +
->> +    if (!compat) {
->> +        max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen);
+On 10/19/23 11:56, Nathan Chancellor wrote:
+> On Thu, Oct 19, 2023 at 02:53:01PM +0200, Arnd Bergmann wrote:
+>> On Thu, Oct 19, 2023, at 12:04, Alexander Potapenko wrote:
+>>> So the remaining option would be to just increase the frame size every
+>>> time a new function surpasses the limit.
+>>
+>> That is clearly not an option, though we could try to
+>> add Kconfig dependencies that avoid the known bad combinations,
+>> such as annotating the AMD GPU driver as
+>>
+>>        depends on (CC_IS_GCC || CLANG_VERSION >=180000) || !(KASAN || KCSAN)
 > 
-> The max_optlen was done before the above sk_getsockopt. The bpf CI cannot catch it because it cannot apply patch 5 cleanly. I ran the following out of the linux-block tree:
+> This would effectively disable the AMDGPU driver for allmodconfig, which
+> is somewhat unfortunate as it is an easy testing target.
 > 
-> $> ./test_progs -t sockopt_sk
-> test_sockopt_sk:PASS:join_cgroup /sockopt_sk 0 nsec
-> run_test:PASS:skel_load 0 nsec
-> run_test:PASS:setsockopt_link 0 nsec
-> run_test:PASS:getsockopt_link 0 nsec
-> (/data/users/kafai/fb-kernel/linux/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c:111: errno: Operation not permitted) Failed to call getsockopt, ret=-1
-> run_test:FAIL:getsetsockopt unexpected error: -1 (errno 1)
-> #217     sockopt_sk:FAIL
+> Taking a step back, this is all being done because of a couple of
+> warnings in the AMDGPU code. If fixing those in the source is too much
+> effort (I did note [1] that GCC is at the current limit for that file
+> even with Rodrigo's series applied [2]), couldn't we just take the
+> existing workaround that this Makefile has for this file and its high
+> stack usage and just extend it slightly for clang?
 
-Does it work with this incremental? I can fold that in, will rebase
-anyway to collect acks.
+I personally don't mind fixing these issues in the driver, but the fact
+that they the creep back every time a new major version of Clang rolls
+out (that has been true for the past couple of years at the very
+least), makes it rather annoying to deal with.
 
-
-diff --git a/net/socket.c b/net/socket.c
-index bccd257e13fe..eb6960958026 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -2344,6 +2344,9 @@ int do_sock_getsockopt(struct socket *sock, bool compat, int level,
- 	if (err)
- 		return err;
- 
-+	if (!compat)
-+		max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen);
-+
- 	ops = READ_ONCE(sock->ops);
- 	if (level == SOL_SOCKET) {
- 		err = sk_getsockopt(sock->sk, level, optname, optval, optlen);
-@@ -2358,12 +2361,10 @@ int do_sock_getsockopt(struct socket *sock, bool compat, int level,
- 				      optlen.user);
- 	}
- 
--	if (!compat) {
--		max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen);
-+	if (!compat)
- 		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock->sk, level, optname,
- 						     optval, optlen, max_optlen,
- 						     err);
--	}
- 
- 	return err;
- }
-
+> 
+> diff --git a/drivers/gpu/drm/amd/display/dc/dml2/Makefile b/drivers/gpu/drm/amd/display/dc/dml2/Makefile
+> index 66431525f2a0..fd49e3526c0d 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dml2/Makefile
+> +++ b/drivers/gpu/drm/amd/display/dc/dml2/Makefile
+> @@ -58,7 +58,7 @@ endif
+>   endif
+>   
+>   ifneq ($(CONFIG_FRAME_WARN),0)
+> -frame_warn_flag := -Wframe-larger-than=2048
+> +frame_warn_flag := -Wframe-larger-than=$(if $(CONFIG_CC_IS_CLANG),3072,2048)
+>   endif
+>   
+>   CFLAGS_$(AMDDALPATH)/dc/dml2/display_mode_core.o := $(dml2_ccflags) $(frame_warn_flag)
+> 
+> That would address the immediate concern of the warning breaking builds
+> with CONFIG_WERROR=y while not raising the limit for other files in the
+> kernel (just this one file in AMDGPU) and avoiding disabling the whole
+> driver. The number could be lower, I think ~2500 bytes is the most usage
+> I see with Rodrigo's series applied, so maybe 2800 would be a decent
+> limit? Once there is a fix in the compiler, this expression could be
+> changed to use clang-min-version or something of that sort.
+> 
+> [1]: https://lore.kernel.org/20231017172231.GA2348194@dev-arch.thelio-3990X/
+> [2]: https://lore.kernel.org/20231016142031.241912-1-Rodrigo.Siqueira@amd.com/
+> 
+> Cheers,
+> Nathan
 -- 
-Jens Axboe
+Hamza
 
 
