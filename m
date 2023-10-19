@@ -1,168 +1,112 @@
-Return-Path: <bpf+bounces-12694-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12695-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 693A17CF9C3
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 14:54:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B127A7CFA05
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 14:56:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 700C51C20ECF
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 12:54:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D30011C20EA4
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 12:56:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D691A225B6;
-	Thu, 19 Oct 2023 12:54:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 629AD225B6;
+	Thu, 19 Oct 2023 12:56:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="iYYwDelQ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mjx3p4xy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g3Vouayy"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A785225A4;
-	Thu, 19 Oct 2023 12:54:02 +0000 (UTC)
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB691FD7;
-	Thu, 19 Oct 2023 05:53:29 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id C215C3200ACE;
-	Thu, 19 Oct 2023 08:53:23 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 19 Oct 2023 08:53:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm2; t=1697720003; x=1697806403; bh=c+
-	OQf9mXsocdxZsSc7Qg9I7aF5FCLMuGCb54DwDnDIE=; b=iYYwDelQB/1pQrjDqD
-	+wxGOVgX15b5fVhHulX5D1KgWssBiLtEWMUm88IdtPhTBXrrU9TAAhOpVPuIRXAd
-	haM0sz6u4GsmCMqTZnboeJ19b/464N1s4W9XOb/c+kQl+rjHcxyug0YtC0Z0G7fH
-	Lo1s+nzXVPBk6KSGQdaPQ5YSYTSTI1X0Qjrv4O96eWvkvB73sNDiGS4ENUnryZxA
-	NNC2CKuqGgMR2DBoAh1Y6wCkll44M0s0+mvq8IPRFUF0zB/O8RxRjhGypTK9EpbC
-	lLqUFX0K6H9h4Rrot0pMdqcUgLY05kdLNbZn0kdKfwfrT6T7lgqX5rH4gqrofkIh
-	PiwA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm3; t=1697720003; x=1697806403; bh=c+OQf9mXsocdx
-	ZsSc7Qg9I7aF5FCLMuGCb54DwDnDIE=; b=mjx3p4xyhc148ce0bmL6NGiNVF1PH
-	2meSQ1Y0xo9jkztYxxZFxoOx17sAyptr3psxKQqa0+BItwMMmC1FBeHMJltK7+Fw
-	zwx9HSmRJfmu5jO+yLEZ5PToLdjzHgM94u006RLdD9ovfMO3O+bGeLmnazuCaYx5
-	ciN2DuwDBblj09x3ph3Sdnko+BJjvPWL36HJ1UPSmiF8I0X3UHv0gEwGHeI3EXd2
-	yPtWh7jXY83BOvm1qRWUG68wjzryk0qQyj9ON0OEmBRziZPp5RkXiNbD1iUlMcd2
-	2GTxSJiLqzT2C4DDykOJACpAXeIC+tfbFm0sNSgHElPCIED44huQMMFkQ==
-X-ME-Sender: <xms:wiYxZfvAYJ87OzL9VJN9VajqrAd9mgWFUIqvh_ipRUCu-oDhieqG8A>
-    <xme:wiYxZQfJ7aLYw3RUOtljHcmchazyXW_2og17Uv9qdFEdGeBWvD90Z6CJ1xuSNYCcU
-    NZBv0Z-xolbQEy2UFI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjeeigdehjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:wiYxZSw6r134fUYOgOhgv3ngUAo50bNAGvSy1QLaIZNf49-vBL7Cbg>
-    <xmx:wiYxZeO4Ul-zvjp16Ul8GX0sKIdVXOp2j_Z0qhNLwYD_8-gua6JlzA>
-    <xmx:wiYxZf9u3G-k4Z-_FQ-mwH9HDOaPIijI0xYy-wXAB9T3ew_sRQDhgg>
-    <xmx:wyYxZVFsp_WBSxC4d5aZFDo0KbDS7UHeT8xw3LEAywvqBYOea_Hrnw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 2D5DEB60089; Thu, 19 Oct 2023 08:53:22 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1019-ged83ad8595-fm-20231002.001-ged83ad85
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97F31208DF
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 12:56:52 +0000 (UTC)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE784198A
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 05:56:10 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9ad8a822508so1296991566b.0
+        for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 05:56:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697720167; x=1698324967; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:to:from:subject:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0kAJ5xQ9RbelcbecpJL8m+2QACL44txfbzQbKe16GFU=;
+        b=g3VouayyWzPWrp6xJiMb8PFTkvvGcltD/y5UiOkErMrkPHwmX3dXtZl6nHoxmncOm+
+         TiTbiEAAnV0wmv3VpJuG3Sj+pwxywwkNAYkmaWyQfyb7e1KRhh3RyIRx6hkt/Ri1zKc6
+         DPrFTlAOptSNgk+NcKq8OER1bM5eitHVgSgvy/2aD38eBT7Q0vEI+E0utZ89P6vDm5eT
+         ZOzH1xAEJh3wn3qhmM/s9gUZDXxh2aGlzR5RTdkPOVPKTUwKhhNixoyzDVJ3keLBo77A
+         7m3AGY/Ms+nEhS7sLxMrYY7Dopae43Uqt1ee0Dk/2XtvXQNEsJUwrlfYbGPjMyupooaw
+         NwkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697720167; x=1698324967;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0kAJ5xQ9RbelcbecpJL8m+2QACL44txfbzQbKe16GFU=;
+        b=wm+T6AsBpkxrbEulLtcueD/CwVZt1VDvgVa9nWa3DqG7ITkhPQ/k311/mPX0uxyk4a
+         3U8br8Y2E6ix12giUyQJKykObmhsusqZcC3unyVLvoadzMUEBisZlt9EYpbOcnKxy7t+
+         KEhyff6QTLhu7V0RBmBr2G2KM8MYJmytqbSH/mtLE15f3f0DYH/tCVCX4t2IGxKQ+Zph
+         DWhdts/L/tF2yfTb2ePGBlhgzelZ0IgDBGDLtWn9fyimxLfpg/7ThXMXQC9AfJN+4nk3
+         iakbmqYb24OPE+7Fuj/gEPsYsMMPP6+XrLTClR3gsW1L+O+vMIah6czMAQhkpYMpQ7E6
+         4LKw==
+X-Gm-Message-State: AOJu0Yz13ms1xnfkC6371ekI+ha71x32B+cX/NGZBIcS0aaiN7jaMOUh
+	rBImWZ99zUBh8ow05XiwLf0=
+X-Google-Smtp-Source: AGHT+IGfPX2H0/6LmCYYjLKsvRyQfgDxFQtE5Yfd3j2q9Y2456VMLvG9OOFG6d1AiF1du3ca2u+2Ew==
+X-Received: by 2002:a17:907:3603:b0:9b2:89eb:79b5 with SMTP id bk3-20020a170907360300b009b289eb79b5mr1417051ejc.35.1697720166353;
+        Thu, 19 Oct 2023 05:56:06 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id n6-20020a170906688600b0099cb349d570sm3507384ejr.185.2023.10.19.05.56.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Oct 2023 05:56:05 -0700 (PDT)
+Message-ID: <a8e684361c0a006971aa55afddda347e59a2ef79.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 0/2] bpftool: Fix some json formatting for
+ struct_ops
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Manu Bretelle <chantr4@gmail.com>, bpf@vger.kernel.org, 
+ quentin@isovalent.com, andrii@kernel.org, daniel@iogearbox.net,
+ ast@kernel.org,  martin.lau@linux.dev, song@kernel.org,
+ john.fastabend@gmail.com,  kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org
+Date: Thu, 19 Oct 2023 15:56:04 +0300
+In-Reply-To: <20231018230133.1593152-1-chantr4@gmail.com>
+References: <20231018230133.1593152-1-chantr4@gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <22580470-7def-4723-b836-1688db6da038@app.fastmail.com>
-In-Reply-To: 
- <CAG_fn=XcJ=rZEJN+L1zZwk=qA90KShhZK1MA6fdW0oh7BqSJKw@mail.gmail.com>
-References: <20231018182412.80291-1-hamza.mahfooz@amd.com>
- <CAMuHMdXSzMJe1zyJu1HkxWggTKJj_sxkPOejjbdRjg3FeFTVHQ@mail.gmail.com>
- <d764242f-cde0-47c0-ae2c-f94b199c93df@amd.com>
- <CAMuHMdXYDQi5+x1KxMG0wnjSfa=A547B9tgAbgbHbV42bbRu8Q@mail.gmail.com>
- <CAG_fn=XcJ=rZEJN+L1zZwk=qA90KShhZK1MA6fdW0oh7BqSJKw@mail.gmail.com>
-Date: Thu, 19 Oct 2023 14:53:01 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Alexander Potapenko" <glider@google.com>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>
-Cc: "Hamza Mahfooz" <hamza.mahfooz@amd.com>, linux-kernel@vger.kernel.org,
- "Rodrigo Siqueira" <rodrigo.siqueira@amd.com>,
- "Harry Wentland" <harry.wentland@amd.com>,
- "Alex Deucher" <alexander.deucher@amd.com>, stable@vger.kernel.org,
- "Miguel Ojeda" <ojeda@kernel.org>, "Alex Gaynor" <alex.gaynor@gmail.com>,
- "Wedson Almeida Filho" <wedsonaf@gmail.com>,
- "Boqun Feng" <boqun.feng@gmail.com>, "Gary Guo" <gary@garyguo.net>,
- =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- "Nick Terrell" <terrelln@fb.com>,
- "Nathan Chancellor" <nathan@kernel.org>,
- "Nick Desaulniers" <ndesaulniers@google.com>,
- "Tom Rix" <trix@redhat.com>, "Andrew Morton" <akpm@linux-foundation.org>,
- "Masami Hiramatsu" <mhiramat@kernel.org>,
- "Randy Dunlap" <rdunlap@infradead.org>,
- "Kees Cook" <keescook@chromium.org>,
- "Zhaoyang Huang" <zhaoyang.huang@unisoc.com>,
- "Li Hua" <hucool.lihua@huawei.com>, "Rae Moar" <rmoar@google.com>,
- rust-for-linux@vger.kernel.org, bpf@vger.kernel.org,
- llvm@lists.linux.dev
-Subject: Re: [PATCH] lib/Kconfig.debug: disable FRAME_WARN for kasan and kcsan
-Content-Type: text/plain
 
-On Thu, Oct 19, 2023, at 12:04, Alexander Potapenko wrote:
->> > > Are kernels with KASAN || KCSAN || KMSAN enabled supposed to be bootable?
->> >
->> > They are all intended to be used for runtime debugging, so I'd imagine so.
->>
->> Then I strongly suggest putting a nonzero value here.  As you write
->> that "with every release of LLVM, both of these sanitizers eat up more and more
->> of the stack", don't you want to have at least some canary to detect
->> when "more and more" is guaranteed to run into problems?
->
-> FRAME_WARN is a poor canary. First, it does not necessarily indicate
-> that a build is faulty (a single bloated stack frame won't crash the
-> system).
+On Wed, 2023-10-18 at 16:01 -0700, Manu Bretelle wrote:
+> When dumping struct_ops with bpftool, the json produced was invalid.
+> 1) pointer values where not printed with surrounding quotes, causing an
+> invalid json integer to be emitted
+> 2) when bpftool struct_ops dump id <id>, the 2 dictionaries were not
+> wrapped in a array, here also causing an invalid json payload to be
+> emitted.=20
 
-I agree it's flawed, but it does catch a lot of bugs, both in the
-driver and the compiler. What we should probably have is some better
-runtime debugging in addition to FRAME_WARN, but it's better than
-nothing.
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-One idea that I've suggested in the past is to add a soft stack
-limit that is lower than THREAD_SIZE, using VMAP_STACK with a custom
-stack start and a read-only page at the end to catch a thread
-exceeding the soft limit and print a backtrace before marking
-the page writable.
+Hi Manu,
 
-> Second, devs are unlikely to fix a function because its stack frame is
-> too big under some exotic tool+compiler combination.
+I've tested this patch-set and everything seems to work as expected.
 
-I've probably sent hundreds of fixes for these in the past. Most
-of the time there is an actual driver bug, and almost always
-the driver maintainers are responsive and treat the report with
-the appropriate urgency: even if only some configurations actually
-push it over the limit, the general case is some data structure that
-is hundreds of bytes long and was not actually meant to be on
-the stack.
+Thanks,
+Eduard
 
-The gcc bug reports also usually get addressed quickly, though
-we've had problems with clang not making progress on known
-bugs for years. It sounds like Nick has made some important
-progress on clang very recently, so we should be able to
-raise the minimum clang version for kasan and kcsan once
-there is a known good release.
+> Manu Bretelle (2):
+>   bpftool: fix printing of pointer value
+>   bpftool: wrap struct_ops dump in an array
+>=20
+>  tools/bpf/bpftool/btf_dumper.c | 2 +-
+>  tools/bpf/bpftool/struct_ops.c | 6 ++++++
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+>=20
 
-> So the remaining option would be to just increase the frame size every
-> time a new function surpasses the limit.
-
-That is clearly not an option, though we could try to
-add Kconfig dependencies that avoid the known bad combinations,
-such as annotating the AMD GPU driver as
-
-      depends on (CC_IS_GCC || CLANG_VERSION >=180000) || !(KASAN || KCSAN)
-
-    Arnd
 
