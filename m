@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-12647-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12649-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95ABA7CEE9D
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 06:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B5D3C7CEE9E
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 06:24:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FF8E281F33
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 04:24:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6ED0E281F12
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 04:24:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 705FF17FD;
-	Thu, 19 Oct 2023 04:24:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEDE617FD;
+	Thu, 19 Oct 2023 04:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DAC8566D
-	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 04:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6EA8441C
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 04:24:20 +0000 (UTC)
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC790121
-	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 21:24:15 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E900123
+	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 21:24:20 -0700 (PDT)
 Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39INkcMR004746
-	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 21:24:15 -0700
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39INkcMX004746
+	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 21:24:19 -0700
 Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ttbw6xvkf-4
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ttbw6xvkf-10
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 21:24:15 -0700
-Received: from twshared44805.48.prn1.facebook.com (2620:10d:c0a8:1c::11) by
+	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 21:24:19 -0700
+Received: from twshared29647.38.frc1.facebook.com (2620:10d:c0a8:1c::1b) by
  mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 18 Oct 2023 21:24:12 -0700
+ 15.1.2507.23; Wed, 18 Oct 2023 21:24:15 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id D175C39FE741D; Wed, 18 Oct 2023 21:24:08 -0700 (PDT)
+	id 2BC3939FE742F; Wed, 18 Oct 2023 21:24:10 -0700 (PDT)
 From: Andrii Nakryiko <andrii@kernel.org>
 To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>
 CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH v2 bpf-next 1/7] bpf: improve JEQ/JNE branch taken logic
-Date: Wed, 18 Oct 2023 21:23:59 -0700
-Message-ID: <20231019042405.2971130-2-andrii@kernel.org>
+Subject: [PATCH v2 bpf-next 2/7] bpf: derive smin/smax from umin/max bounds
+Date: Wed, 18 Oct 2023 21:24:00 -0700
+Message-ID: <20231019042405.2971130-3-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231019042405.2971130-1-andrii@kernel.org>
 References: <20231019042405.2971130-1-andrii@kernel.org>
@@ -54,73 +54,46 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: j5uFI_vBwR8Q4XbEVnAnElNt7yNqpY2G
-X-Proofpoint-GUID: j5uFI_vBwR8Q4XbEVnAnElNt7yNqpY2G
+X-Proofpoint-ORIG-GUID: tgw_HUXLYn95gcH09fBZJPrNc3Wtj76G
+X-Proofpoint-GUID: tgw_HUXLYn95gcH09fBZJPrNc3Wtj76G
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-19_02,2023-10-18_01,2023-05-22_02
 
-When determining if if/else branch will always or never be taken, use
-signed range knowledge in addition to currently used unsigned range knowl=
-edge.
-If either signed or unsigned range suggests that condition is
-always/never taken, return corresponding branch_taken verdict.
-
-Current use of unsigned range for this seems arbitrary and unnecessarily
-incomplete. It is possible for *signed* operations to be performed on
-register, which could "invalidate" unsigned range for that register. In
-such case branch_taken will be artificially useless, even if we can
-still tell that some constant is outside of register value range based
-on its signed bounds.
-
-veristat-based validation shows zero differences across selftests,
-Cilium, and Meta-internal BPF object files.
+Add smin/smax derivation from appropriate umin/umax values. Previously th=
+e
+logic was surprisingly asymmetric, trying to derive umin/umax from smin/s=
+max
+(if possible), but not trying to do the same in the other direction. A si=
+mple
+addition to __reg64_deduce_bounds() fixes this.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/verifier.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ kernel/bpf/verifier.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index bb58987e4844..c87144e3c5e8 100644
+index c87144e3c5e8..ee9837463092 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -13663,12 +13663,16 @@ static int is_branch32_taken(struct bpf_reg_sta=
-te *reg, u32 val, u8 opcode)
- 			return !!tnum_equals_const(subreg, val);
- 		else if (val < reg->u32_min_value || val > reg->u32_max_value)
- 			return 0;
-+		else if (sval < reg->s32_min_value || sval > reg->s32_max_value)
-+			return 0;
- 		break;
- 	case BPF_JNE:
- 		if (tnum_is_const(subreg))
- 			return !tnum_equals_const(subreg, val);
- 		else if (val < reg->u32_min_value || val > reg->u32_max_value)
- 			return 1;
-+		else if (sval < reg->s32_min_value || sval > reg->s32_max_value)
-+			return 1;
- 		break;
- 	case BPF_JSET:
- 		if ((~subreg.mask & subreg.value) & val)
-@@ -13740,12 +13744,16 @@ static int is_branch64_taken(struct bpf_reg_sta=
-te *reg, u64 val, u8 opcode)
- 			return !!tnum_equals_const(reg->var_off, val);
- 		else if (val < reg->umin_value || val > reg->umax_value)
- 			return 0;
-+		else if (sval < reg->smin_value || sval > reg->smax_value)
-+			return 0;
- 		break;
- 	case BPF_JNE:
- 		if (tnum_is_const(reg->var_off))
- 			return !tnum_equals_const(reg->var_off, val);
- 		else if (val < reg->umin_value || val > reg->umax_value)
- 			return 1;
-+		else if (sval < reg->smin_value || sval > reg->smax_value)
-+			return 1;
- 		break;
- 	case BPF_JSET:
- 		if ((~reg->var_off.mask & reg->var_off.value) & val)
+@@ -2151,6 +2151,13 @@ static void __reg32_deduce_bounds(struct bpf_reg_s=
+tate *reg)
+=20
+ static void __reg64_deduce_bounds(struct bpf_reg_state *reg)
+ {
++	/* u64 range forms a valid s64 range (due to matching sign bit),
++	 * so try to learn from that
++	 */
++	if ((s64)reg->umin_value <=3D (s64)reg->umax_value) {
++		reg->smin_value =3D max_t(s64, reg->smin_value, reg->umin_value);
++		reg->smax_value =3D min_t(s64, reg->smax_value, reg->umax_value);
++	}
+ 	/* Learn sign from signed bounds.
+ 	 * If we cannot cross the sign boundary, then signed and unsigned bound=
+s
+ 	 * are the same, so combine.  This works even in the negative case, e.g=
+.
 --=20
 2.34.1
 
