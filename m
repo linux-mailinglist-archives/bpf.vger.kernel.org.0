@@ -1,261 +1,202 @@
-Return-Path: <bpf+bounces-12633-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12637-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39B8A7CECDE
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 02:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE4577CED3C
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 03:11:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17B8DB21248
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 00:39:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8784FB212DD
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 01:11:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5F7138D;
-	Thu, 19 Oct 2023 00:39:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F50F642;
+	Thu, 19 Oct 2023 01:11:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="U6U/OWno"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TUVz44Ez"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A71A64C
-	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 00:39:37 +0000 (UTC)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67596133
-	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 17:39:35 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4063bfc6c03so22915e9.0
-        for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 17:39:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697675974; x=1698280774; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iWzCLiLZGdTDQE6Mm3c5UmIIcTECp3y/VYTIRTvbYV4=;
-        b=U6U/OWnosDk6Gs1AtcU0u9pf31irMk4F8qLim6fgpQmQPsaT5xspNc4OZcQFnd6CNu
-         f3YYjPYCiRudNUwZCCz9sDhqk5NGlCUR/MO00/NZjgcGG0ZSnwOK8Ml3W0+t9JVCtMzQ
-         CWC1Sp2fn4vqOLXJHiuWIEO3BkYK7Fj61DM8mvCOTorb64G0FfKpn4R1SNxZBvAKGOHG
-         PcbyJMimEQoZo5gvmDi3TSnnnTa2Tp/a9JRwVOu5t+4t8iwy09rUgJpDu5f/fVZLkg5P
-         xNMUyEgMYnP9Sjas/KQBky8w4Z+wpsu8Nd6nNUBF6TjOIavFq3Fod3t2e3vOCXFBA1r9
-         JvwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697675974; x=1698280774;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iWzCLiLZGdTDQE6Mm3c5UmIIcTECp3y/VYTIRTvbYV4=;
-        b=lA8vir2lfJZcqlv0e04EXhoBYp/tKalLdTCRJfQkXj8ADyGWpL/zvW3Pbsv/v/Itwy
-         C4EE7E3wqmwCpms+vKy0JiB83NB018/XzBiHaUzoSd5Ba37bP9s5SAx5fIBpip3PsnhF
-         68GRJ9GPSCAMJR3veuaM5DIehDZOUZRdzZhLTgZihx8t0U7OoRM/UHm5BqJ92tuQkoGN
-         e9NoCslFWz8CM45oEi9fxxrenHAdMJhcN61Uc82YrGdZ/zA7LdOOoAo1tWI/3BdkXWww
-         j1+Pv1c/BWIkOCYlelGv4MzyDce84BLLXTmYhuTgyjXjRnED5cRjNFdk+PyPz2X8bkiB
-         q21A==
-X-Gm-Message-State: AOJu0Yy1kzkGh4ciJi4Y74eRB4JtMjZ6zV6MIgTQ7UAW8ld5x0GflEnV
-	zisrnE6OGHXpJwDUdtUAoH4hkFKn2VTu63uVuSQoeg==
-X-Google-Smtp-Source: AGHT+IGSSTVjmeIukqthlIjrszaciDHvBd9CrEJpr+LhL33bCUc+CagV3HWVpPBehmpBbckPuve+vWKYaUL9O2mnlM4=
-X-Received: by 2002:a05:600c:1615:b0:3f7:3e85:36a with SMTP id
- m21-20020a05600c161500b003f73e85036amr38163wmn.7.1697675973589; Wed, 18 Oct
- 2023 17:39:33 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 900EF391;
+	Thu, 19 Oct 2023 01:11:09 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0261A113;
+	Wed, 18 Oct 2023 18:11:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697677868; x=1729213868;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   mime-version;
+  bh=7/wWhp5WZzNZkPgaV7hrekuTzYgsc1/Vjk365oAFFsg=;
+  b=TUVz44Ezmc19Y9sE5sPre+im5bX4/7wLLZFdhkEV47gvSYxYoOKHkL+v
+   aUKo4jayGjAQwKJe5r8Rsgp61RlquEHFKPViNzsmi+CiVTupx/nKzUg9t
+   6yc5ccr5xFVc/xG3kzhzyLCI36TZdQJoQloDL7xFdiqRpzLh45AlsGcLh
+   Sc7ZxZGGlC4UDiPGvr4gDvaJC/LSWrVgw5BjF2mDVVPigu+udk1NPj5Ua
+   lP0Lhpuw8MRF8E4Of6ZGf1c+DXsyYxy/66hnMAfgxYXT2M1Ckde3+XOsA
+   aogMx+N3LaZz+TuSZIejCmFZV1r2sbULzTSLk16tjnECzvc+vnZvTPBPW
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="385972853"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="385972853"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 18:11:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="930414261"
+X-IronPort-AV: E=Sophos;i="6.03,236,1694761200"; 
+   d="scan'208";a="930414261"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Oct 2023 18:11:07 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 18 Oct 2023 18:11:06 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Wed, 18 Oct 2023 18:11:06 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Wed, 18 Oct 2023 18:11:05 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nAoqJ4rK/MpC7onMJK3QG0Ma2LsYddLskflHfj56lNTH/Mi9PorCHMvq77dKWVlb+zGMMHNQF+MTlBlq6xxLNChb2NqaKBs5RamtEyIFGk0IGJEn2nfwayjuNUjU+DAGNKY3wv4MREhMH0Pw47Z7Mn/B2PZzWGCYmyMYr49knEKH5uzeoRu/6FWnNKVgs8YS0098wwuqFkx6S7I3rY3qG2gC9hOQbsfdsTiFQe6zBKubYHi19MovxWCzs7Hon4AWt9nh4LnONYkPYHImE5roxlH8h7TV0mLQ+4iVX3GjVTA3CzYxxXeghWnkWw/s+VFhVudKPHzjbn41GOyTjY00tQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jj6cD4W4BRp9U9iPcpiL6QM6Sy6uZ6e0do5bvHeVB4o=;
+ b=Gtn85rQC1imIlKb4ujXzIkVxvrJ/RfxbYHSlGBbAqyryuykfEul1XtTY/of4PKnhI9I1u6idxGsv5FNkXG1WyS3ZhzO4GcJ9eqYaILM9AGVeLYfagOour3SZsrzGtUWZTls1eLubICimXFXKS458NnNnbJWNntGBJn4dAX9FQuF7C+zBa2S0jvGiTZdoqiuGDfpM+29ffoa3rm7/mu33qzH7+CbmPlG1VRSlGCqlLSWo6HekQGrs9ibGKQHgisyVXdFYammhI2IETwKE6WaVLuc2siO5Zgh2uhDkTU+VNh9yyqdmKwtqucQTexS1SOJH4bkpFCpuaL2Btd/5xpoWEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
+ by SA2PR11MB4923.namprd11.prod.outlook.com (2603:10b6:806:fa::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.23; Thu, 19 Oct
+ 2023 01:11:03 +0000
+Received: from CY5PR11MB6392.namprd11.prod.outlook.com
+ ([fe80::21f8:775f:a94d:e1c0]) by CY5PR11MB6392.namprd11.prod.outlook.com
+ ([fe80::21f8:775f:a94d:e1c0%4]) with mapi id 15.20.6907.022; Thu, 19 Oct 2023
+ 01:11:03 +0000
+Date: Thu, 19 Oct 2023 09:06:10 +0800
+From: kernel test robot <yujie.liu@intel.com>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>, <bhelgaas@google.com>
+CC: <oe-kbuild-all@lists.linux.dev>, <linux-pm@vger.kernel.org>,
+	<linux-mmc@vger.kernel.org>, Kai-Heng Feng <kai.heng.feng@canonical.com>,
+	Ricky Wu <ricky_wu@realtek.com>, Kees Cook <keescook@chromium.org>, Tony Luck
+	<tony.luck@intel.com>, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, "Lukas
+ Wunner" <lukas@wunner.de>, <linux-pci@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
+	<bpf@vger.kernel.org>
+Subject: Re: [PATCH] PCI: pciehp: Prevent child devices from doing RPM on
+ PCIe Link Down
+Message-ID: <202310171955.hlish6FZ-lkp@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231016040132.23824-1-kai.heng.feng@canonical.com>
+X-ClientProxiedBy: KL1PR01CA0139.apcprd01.prod.exchangelabs.com
+ (2603:1096:820:4::31) To CY5PR11MB6392.namprd11.prod.outlook.com
+ (2603:10b6:930:37::15)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231012062359.1616786-1-irogers@google.com> <20231012062359.1616786-14-irogers@google.com>
- <CAM9d7citTUkj5z4bu0HsF73Msnks=2vOBcZU5skT77zUri_Bag@mail.gmail.com>
-In-Reply-To: <CAM9d7citTUkj5z4bu0HsF73Msnks=2vOBcZU5skT77zUri_Bag@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 18 Oct 2023 17:39:21 -0700
-Message-ID: <CAP-5=fU6ghEpYqy0FhSvxUQ_RSan34Mjp0GDys84FyPcRz_W0w@mail.gmail.com>
-Subject: Re: [PATCH v2 13/13] perf machine thread: Remove exited threads by default
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Nick Terrell <terrelln@fb.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Song Liu <song@kernel.org>, 
-	Sandipan Das <sandipan.das@amd.com>, Anshuman Khandual <anshuman.khandual@arm.com>, 
-	James Clark <james.clark@arm.com>, Liam Howlett <liam.howlett@oracle.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, Leo Yan <leo.yan@linaro.org>, 
-	German Gomez <german.gomez@arm.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
-	Artem Savkov <asavkov@redhat.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6392:EE_|SA2PR11MB4923:EE_
+X-MS-Office365-Filtering-Correlation-Id: 956edf23-e6cb-4789-1101-08dbd040435c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: z+Sg8aILu9u/J9+OBib5/MF5mtCDYQJ5XnKTWFWonx0SJrIWzHdwLCdom5YL5mzkKqIpLhR9jFs+LGGKkohEuQXaIiYJM+uK26jIRuOoZ6P8fpnORuq6c1kqf53QjETHYL60AQ3npZEGNYTzmDWIu9drj2MpDmKrP181wzHqLcwnsqWBJpPG5Gf+kD+LGCM1pBhozBobsOmco8BKtQLlv77rBHrUFE1B7jfKksR8+JmowhF2SBfaBJLVneo+ZwGWzd3DTfqCX1521Fkp7iT6irPIZYZemRyHGJKD29XLdFQfRh48Ty1QWuTsexMhGlVpaZKR7NxicCoJ7kED6BZ5Zj52icEL4fUahfP1Ej6bv5kA/XFZ5NNSQ8oGMNhixYw4deLDQxBfsussVHzctf8+dKI3i4r9XuLQX0kAHrG7oP4b6JdlOq+nem1pvhNPFTrMjKWQR71j3HTPMLyeM+u9/2AemG7TiqU9wApPVfrQOhPWNA+rmA3RvAeZxBzAXvUg8fV/wFgbZhQ2/QY4UwycmRZum9xt5u5vt+SP2eesrGEWaooDr7BQT6v69eSq9lAFCbNYWf1OQvKCgS0MdR+P5Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(136003)(366004)(396003)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(2616005)(26005)(6666004)(6512007)(6506007)(83380400001)(4001150100001)(5660300002)(8676002)(8936002)(4326008)(41300700001)(7416002)(2906002)(966005)(6486002)(316002)(478600001)(66476007)(66556008)(66946007)(54906003)(1076003)(86362001)(82960400001)(38100700002)(36756003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?e3kWUdarVcUqybapBbJnlu1d3nIlTjyoBlhpXUP+lRqpGu/bivZNEnfdsKVd?=
+ =?us-ascii?Q?XK8mGmejbrG6CnSrJgGkyKcnCGoV0cChg5j8TOiNSUUxhZKZgcN0GsCzb8iu?=
+ =?us-ascii?Q?KWJMrHKQwdWM6pmsgSfJLqY/MOFhqasDNv0VxYJTlK7eSHyupEipftpYk0NB?=
+ =?us-ascii?Q?iwLr1mfRVH4QEICnou9CKPVRyo26hBdWLdcCBdTmgQ+sa/agc17rXuOTMZuZ?=
+ =?us-ascii?Q?oMSmtRjuvzRV4Pstyiqa29HVz8e8dbAxj18G3yf11w2qxk+paCUmC+DQo35+?=
+ =?us-ascii?Q?+OnKdpQNMHdlKeNJhprzfiA88/qM3IrABXqKPvyJ+NBKjlkKb59js17oLdM+?=
+ =?us-ascii?Q?kMg7d+aZlEwcqZSssZVHOXzc6micQE0xij8rYSOQMT4id5A6SQrPaRTE9CQL?=
+ =?us-ascii?Q?aLfllEsM4pqe/LIWoWTUovRipOaZP7S5c42iKbtP4paVghRNyocy7R0LkEFq?=
+ =?us-ascii?Q?uqTi0CFJaO3mTrXScYw4PQzCq5OuvNmIXOmyFgJfFwZow1AIMjNqVguGvKIb?=
+ =?us-ascii?Q?8E8yV2k3Fdxp2rZdj7Qv/zKc6v4ftUy27yaMtIWgl4Q3mCH8IxaMscKxKMZI?=
+ =?us-ascii?Q?SRLGjPgwjynKxSKfvSs3oIEOn0m9p7pzj61w8ZhRwZ8F6TzWQRTHmMNwhj8J?=
+ =?us-ascii?Q?9KxDCwu1OkZi8qm9xLbdSkxkdcnquftnH20W7F4aykW9WWDQBxfCBxGAPPL1?=
+ =?us-ascii?Q?aRDIAPvUg2QEP7snkU7zDT0ISLkoOnD/w1V1Uxmw0ks0JTQ8koQFSQBJHMzU?=
+ =?us-ascii?Q?WnHGr/w8Tsmr7qj0QEz/L90+GKycGP9RVsvW2xr7c42yAdqEujDEHGHf8tfI?=
+ =?us-ascii?Q?ln0WBQ9/qgz/MwscNr90884Wi6pgw/UmYwuwK2esH7gVeW6d9hLPZtlzjXK6?=
+ =?us-ascii?Q?Fbzz4TKlrL3a1Bh2OzDrQyyLF+Negi1ro0WLtMp9ET2WoRMUOepJDH4hPBLi?=
+ =?us-ascii?Q?sjIOOkehY1qyhjiE2DAJ7kfb9h3ERcj3kC5RkNUbBRUTDYFh7fjFpjwqCCZe?=
+ =?us-ascii?Q?fC/hTa2dry29JnHrl6LJnQaYZjH4opzKR1EstvST4+6PjNxPfLGBRS74dVeH?=
+ =?us-ascii?Q?FoUdDtGsCApdSMez4qD4SOweJNFoB/KB4TI8E10yauYcRZ8Z/a6J7xsCIFJ6?=
+ =?us-ascii?Q?0WAxoi/OuS62qNJznECW23Sa+jVRBxOf1FfJyzo1puiW96oaSIL8aw/exNb0?=
+ =?us-ascii?Q?BFWmjAXZOF7jBI7GR31MlI+tf5pJiz9tP4GPxyEJXxOx+MF1r3V/RE1HSbRj?=
+ =?us-ascii?Q?sEn88TDGmc/Jja3kJt5lzqVDZGFrB9zj9BqGpC3MOpjoB4s8WjA1BGcIz9bQ?=
+ =?us-ascii?Q?wME2epNA7zF7EtEZFYuMrnGwozJmA4/XwkGaoj5I4J6y7Gmjq270NO5x/QVx?=
+ =?us-ascii?Q?ipBqmXWBWxb1U4ZXZJHkGmwMXq1CLTZnDaVH8lEgoLms6+UpRV+lL6RrqfDN?=
+ =?us-ascii?Q?RR1JriEgk19bvICk+XXc/OQZ71bOM1pmO6jyOm3fx3RwzWlK4bvJVIFrFNTG?=
+ =?us-ascii?Q?vt86wtgAZyGVWhTTSPEg9BCFt81ghEvkuPsVvm9P413FemB4OduafN69bMmi?=
+ =?us-ascii?Q?mURfwyHq+28lPBkKMKXpHRQ/w1qFBhyeHLhnzW8I?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 956edf23-e6cb-4789-1101-08dbd040435c
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6392.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2023 01:11:03.1101
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: okgbq8PFLaYwqWb6n4eq/o4z+hNRyzhqnY5rdj3UI3xslnVROdzo0roBb95rtCQMRPscEiUWYA8qTtA0UwGTpw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4923
+X-OriginatorOrg: intel.com
 
-On Wed, Oct 18, 2023 at 4:30=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> On Wed, Oct 11, 2023 at 11:24=E2=80=AFPM Ian Rogers <irogers@google.com> =
-wrote:
-> >
-> > struct thread values hold onto references to mmaps, dsos, etc. When a
-> > thread exits it is necessary to clean all of this memory up by
-> > removing the thread from the machine's threads. Some tools require
-> > this doesn't happen, such as perf report if offcpu events exist or if
-> > a task list is being generated, so add a symbol_conf value to make the
-> > behavior optional. When an exited thread is left in the machine's
-> > threads, mark it as exited.
-> >
-> > This change relates to commit 40826c45eb0b ("perf thread: Remove
-> > notion of dead threads"). Dead threads were removed as they had a
-> > reference count of 0 and were difficult to reason about with the
-> > reference count checker. Here a thread is removed from threads when it
-> > exits, unless via symbol_conf the exited thread isn't remove and is
-> > marked as exited. Reference counting behaves as it normally does.
->
-> Maybe we can do it the other way around.  IOW tools can access
-> dead threads for whatever reason if they are dealing with a data
-> file.  And I guess the main concern is perf top to reduce memory
-> footprint, right?  Then we can declare to remove the dead threads
-> for perf top case only IMHO.
+Hi Kai-Heng,
 
-Thanks I did consider this but I think this order makes most sense.
-The only tool relying on access to dead threads is perf report, but
-its uses are questionable:
+kernel test robot noticed the following build warnings:
 
- - task printing - the tools wants to show all threads from a perf run
-and assumes they are in threads. By replacing tool.exit it would be
-easy to record dead threads for this, as the maps aren't required the
-memory overhead could be improved by just recording the necessary
-task's data.
+[auto build test WARNING on pci/next]
+[also build test WARNING on pci/for-linus linus/master v6.6-rc6 next-20231017]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
- - offcpu - it would be very useful to have offcpu samples be real
-samples, rather than an aggregated sample at the end of the data file
-with a timestamp greater-than when the thread exited. These samples
-would happen before the exit event is processed and so the reason to
-keep dead threads around would be removed. I think we could do some
-kind of sample aggregation using BPF, but I think we need to think it
-through with exit events. Perhaps we can fix things in the short-term
-by generating BPF samples with aggregation when threads exit in the
-offcpu BPF code, but then again, if you have this going it seems as
-easy just to keep to record all offcpu events as distinct.
+url:    https://github.com/intel-lab-lkp/linux/commits/Kai-Heng-Feng/PCI-pciehp-Prevent-child-devices-from-doing-RPM-on-PCIe-Link-Down/20231017-142208
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/20231016040132.23824-1-kai.heng.feng%40canonical.com
+patch subject: [PATCH] PCI: pciehp: Prevent child devices from doing RPM on PCIe Link Down
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20231017/202310171955.hlish6FZ-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231017/202310171955.hlish6FZ-lkp@intel.com/reproduce)
 
-Other commands like perf top and perf script don't currently have
-dependencies on dead threads and I'm kind of glad, for
-understandability, memory footprint, etc. Having the default be that
-dead threads linger on will just encourage the kind of issues we see
-currently in perf report and having to have every tool, perf script
-declare it doesn't want dead threads seems burdensome.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <yujie.liu@intel.com>
+| Closes: https://lore.kernel.org/r/202310171955.hlish6FZ-lkp@intel.com/
 
-Thanks,
-Ian
+All warnings (new ones prefixed by >>):
 
-> Thanks,
-> Namhyung
->
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/builtin-report.c   |  7 +++++++
-> >  tools/perf/util/machine.c     | 10 +++++++---
-> >  tools/perf/util/symbol_conf.h |  3 ++-
-> >  tools/perf/util/thread.h      | 14 ++++++++++++++
-> >  4 files changed, 30 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-> > index dcedfe00f04d..749246817aed 100644
-> > --- a/tools/perf/builtin-report.c
-> > +++ b/tools/perf/builtin-report.c
-> > @@ -1411,6 +1411,13 @@ int cmd_report(int argc, const char **argv)
-> >         if (ret < 0)
-> >                 goto exit;
-> >
-> > +       /*
-> > +        * tasks_mode require access to exited threads to list those th=
-at are in
-> > +        * the data file. Off-cpu events are synthesized after other ev=
-ents and
-> > +        * reference exited threads.
-> > +        */
-> > +       symbol_conf.keep_exited_threads =3D true;
-> > +
-> >         annotation_options__init(&report.annotation_opts);
-> >
-> >         ret =3D perf_config(report__config, &report);
-> > diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> > index 6ca7500e2cf4..5cda47eb337d 100644
-> > --- a/tools/perf/util/machine.c
-> > +++ b/tools/perf/util/machine.c
-> > @@ -2157,9 +2157,13 @@ int machine__process_exit_event(struct machine *=
-machine, union perf_event *event
-> >         if (dump_trace)
-> >                 perf_event__fprintf_task(event, stdout);
-> >
-> > -       if (thread !=3D NULL)
-> > -               thread__put(thread);
-> > -
-> > +       if (thread !=3D NULL) {
-> > +               if (symbol_conf.keep_exited_threads)
-> > +                       thread__set_exited(thread, /*exited=3D*/true);
-> > +               else
-> > +                       machine__remove_thread(machine, thread);
-> > +       }
-> > +       thread__put(thread);
-> >         return 0;
-> >  }
-> >
-> > diff --git a/tools/perf/util/symbol_conf.h b/tools/perf/util/symbol_con=
-f.h
-> > index 2b2fb9e224b0..6040286e07a6 100644
-> > --- a/tools/perf/util/symbol_conf.h
-> > +++ b/tools/perf/util/symbol_conf.h
-> > @@ -43,7 +43,8 @@ struct symbol_conf {
-> >                         disable_add2line_warn,
-> >                         buildid_mmap2,
-> >                         guest_code,
-> > -                       lazy_load_kernel_maps;
-> > +                       lazy_load_kernel_maps,
-> > +                       keep_exited_threads;
-> >         const char      *vmlinux_name,
-> >                         *kallsyms_name,
-> >                         *source_prefix,
-> > diff --git a/tools/perf/util/thread.h b/tools/perf/util/thread.h
-> > index e79225a0ea46..0df775b5c110 100644
-> > --- a/tools/perf/util/thread.h
-> > +++ b/tools/perf/util/thread.h
-> > @@ -36,13 +36,22 @@ struct thread_rb_node {
-> >  };
-> >
-> >  DECLARE_RC_STRUCT(thread) {
-> > +       /** @maps: mmaps associated with this thread. */
-> >         struct maps             *maps;
-> >         pid_t                   pid_; /* Not all tools update this */
-> > +       /** @tid: thread ID number unique to a machine. */
-> >         pid_t                   tid;
-> > +       /** @ppid: parent process of the process this thread belongs to=
-. */
-> >         pid_t                   ppid;
-> >         int                     cpu;
-> >         int                     guest_cpu; /* For QEMU thread */
-> >         refcount_t              refcnt;
-> > +       /**
-> > +        * @exited: Has the thread had an exit event. Such threads are =
-usually
-> > +        * removed from the machine's threads but some events/tools req=
-uire
-> > +        * access to dead threads.
-> > +        */
-> > +       bool                    exited;
-> >         bool                    comm_set;
-> >         int                     comm_len;
-> >         struct list_head        namespaces_list;
-> > @@ -189,6 +198,11 @@ static inline refcount_t *thread__refcnt(struct th=
-read *thread)
-> >         return &RC_CHK_ACCESS(thread)->refcnt;
-> >  }
-> >
-> > +static inline void thread__set_exited(struct thread *thread, bool exit=
-ed)
-> > +{
-> > +       RC_CHK_ACCESS(thread)->exited =3D exited;
-> > +}
-> > +
-> >  static inline bool thread__comm_set(const struct thread *thread)
-> >  {
-> >         return RC_CHK_ACCESS(thread)->comm_set;
-> > --
-> > 2.42.0.609.gbb76f46606-goog
-> >
+>> drivers/pci/hotplug/pciehp_pci.c:25:5: warning: no previous prototype for 'pci_dev_disconnect' [-Wmissing-prototypes]
+      25 | int pci_dev_disconnect(struct pci_dev *pdev, void *unused)
+         |     ^~~~~~~~~~~~~~~~~~
+
+
+vim +/pci_dev_disconnect +25 drivers/pci/hotplug/pciehp_pci.c
+
+^1da177e4c3f41 Linus Torvalds 2005-04-16  24  
+2bd1cb5c4e6711 Kai-Heng Feng  2023-10-16 @25  int pci_dev_disconnect(struct pci_dev *pdev, void *unused)
+2bd1cb5c4e6711 Kai-Heng Feng  2023-10-16  26  {
+2bd1cb5c4e6711 Kai-Heng Feng  2023-10-16  27  	pm_runtime_barrier(&pdev->dev);
+2bd1cb5c4e6711 Kai-Heng Feng  2023-10-16  28  	pci_dev_set_disconnected(pdev, NULL);
+2bd1cb5c4e6711 Kai-Heng Feng  2023-10-16  29  
+2bd1cb5c4e6711 Kai-Heng Feng  2023-10-16  30  	return 0;
+2bd1cb5c4e6711 Kai-Heng Feng  2023-10-16  31  }
+2bd1cb5c4e6711 Kai-Heng Feng  2023-10-16  32  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
 
