@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-12764-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12763-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B0467D0582
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 01:53:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 563977D0581
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 01:53:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CA4D1C20FA7
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 23:53:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D68D282342
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 23:53:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F59947342;
-	Thu, 19 Oct 2023 23:53:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0419745F4E;
+	Thu, 19 Oct 2023 23:53:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C14545F59
-	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 23:53:28 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC5F113
-	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 16:53:27 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 39JMdhJ1012665
-	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 16:53:26 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by m0089730.ppops.net (PPS) with ESMTPS id 3tubxf0yt2-4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C21C919440
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 23:53:23 +0000 (UTC)
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 111D2113
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 16:53:20 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39JMeOQl019252
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 16:53:20 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3tubwxrywe-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 16:53:26 -0700
-Received: from twshared17786.35.frc1.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 16:53:20 -0700
+Received: from twshared29647.38.frc1.facebook.com (2620:10d:c0a8:1b::30) by
+ mail.thefacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Thu, 19 Oct 2023 16:53:23 -0700
+ 15.1.2507.23; Thu, 19 Oct 2023 16:53:19 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id DE4D73A0A4D16; Thu, 19 Oct 2023 16:53:11 -0700 (PDT)
+	id 08C7E3A0A4D20; Thu, 19 Oct 2023 16:53:13 -0700 (PDT)
 From: Andrii Nakryiko <andrii@kernel.org>
 To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>
 CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH v3 bpf-next 2/7] bpf: derive smin/smax from umin/max bounds
-Date: Thu, 19 Oct 2023 16:53:00 -0700
-Message-ID: <20231019235305.656855-3-andrii@kernel.org>
+Subject: [PATCH v3 bpf-next 3/7] bpf: enhance subregister bounds deduction logic
+Date: Thu, 19 Oct 2023 16:53:01 -0700
+Message-ID: <20231019235305.656855-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231019235305.656855-1-andrii@kernel.org>
 References: <20231019235305.656855-1-andrii@kernel.org>
@@ -54,40 +54,103 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: ItZyjW8DmU3vMpD2-xqMEhQKNj460hDq
-X-Proofpoint-ORIG-GUID: ItZyjW8DmU3vMpD2-xqMEhQKNj460hDq
+X-Proofpoint-ORIG-GUID: 3CVhJS4l91Qlz49tkDqL0hZcDT-hbmEN
+X-Proofpoint-GUID: 3CVhJS4l91Qlz49tkDqL0hZcDT-hbmEN
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-19_21,2023-10-19_01,2023-05-22_02
 
-Add smin/smax derivation from appropriate umin/umax values. Previously th=
-e
-logic was surprisingly asymmetric, trying to derive umin/umax from smin/s=
-max
-(if possible), but not trying to do the same in the other direction. A si=
-mple
-addition to __reg64_deduce_bounds() fixes this.
+Add handling of a bunch of possible cases which allows deducing extra
+information about subregister bounds, both u32 and s32, from full registe=
+r
+u64/s64 bounds.
+
+Also add smin32/smax32 bounds derivation from corresponding umin32/umax32
+bounds, similar to what we did with smin/smax from umin/umax derivation i=
+n
+previous patch.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/verifier.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ kernel/bpf/verifier.c | 52 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index c87144e3c5e8..ee9837463092 100644
+index ee9837463092..d5fd41fb3031 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -2151,6 +2151,13 @@ static void __reg32_deduce_bounds(struct bpf_reg_s=
-tate *reg)
-=20
- static void __reg64_deduce_bounds(struct bpf_reg_state *reg)
+@@ -2117,6 +2117,58 @@ static void __update_reg_bounds(struct bpf_reg_sta=
+te *reg)
+ /* Uses signed min/max values to inform unsigned, and vice-versa */
+ static void __reg32_deduce_bounds(struct bpf_reg_state *reg)
  {
-+	/* u64 range forms a valid s64 range (due to matching sign bit),
-+	 * so try to learn from that
++	/* if upper 32 bits of u64/s64 range don't change,
++	 * we can use lower 32 bits to improve our u32/s32 boundaries
 +	 */
-+	if ((s64)reg->umin_value <=3D (s64)reg->umax_value) {
-+		reg->smin_value =3D max_t(s64, reg->smin_value, reg->umin_value);
-+		reg->smax_value =3D min_t(s64, reg->smax_value, reg->umax_value);
++	if ((reg->umin_value >> 32) =3D=3D (reg->umax_value >> 32)) {
++		/* u64 to u32 casting preserves validity of low 32 bits as
++		 * a range, if upper 32 bits are the same
++		 */
++		reg->u32_min_value =3D max_t(u32, reg->u32_min_value, (u32)reg->umin_v=
+alue);
++		reg->u32_max_value =3D min_t(u32, reg->u32_max_value, (u32)reg->umax_v=
+alue);
++
++		if ((s32)reg->umin_value <=3D (s32)reg->umax_value) {
++			reg->s32_min_value =3D max_t(s32, reg->s32_min_value, (s32)reg->umin_=
+value);
++			reg->s32_max_value =3D min_t(s32, reg->s32_max_value, (s32)reg->umax_=
+value);
++		}
++	}
++	if ((reg->smin_value >> 32) =3D=3D (reg->smax_value >> 32)) {
++		/* low 32 bits should form a proper u32 range */
++		if ((u32)reg->smin_value <=3D (u32)reg->smax_value) {
++			reg->u32_min_value =3D max_t(u32, reg->u32_min_value, (u32)reg->smin_=
+value);
++			reg->u32_max_value =3D min_t(u32, reg->u32_max_value, (u32)reg->smax_=
+value);
++		}
++		/* low 32 bits should form a proper s32 range */
++		if ((s32)reg->smin_value <=3D (s32)reg->smax_value) {
++			reg->s32_min_value =3D max_t(s32, reg->s32_min_value, (s32)reg->smin_=
+value);
++			reg->s32_max_value =3D min_t(s32, reg->s32_max_value, (s32)reg->smax_=
+value);
++		}
++	}
++	/* Special case where upper bits form a small sequence of two
++	 * sequential numbers (in 32-bit unsigned space, so 0xffffffff to
++	 * 0x00000000 is also valid), while lower bits form a proper s32 range
++	 * going from negative numbers to positive numbers.
++	 * E.g.: [0xfffffff0ffffff00; 0xfffffff100000010]. Iterating
++	 * over full 64-bit numbers range will form a proper [-16, 16]
++	 * ([0xffffff00; 0x00000010]) range in its lower 32 bits.
++	 */
++	if ((u32)(reg->umin_value >> 32) + 1 =3D=3D (u32)(reg->umax_value >> 32=
+) &&
++	    (s32)reg->umin_value < 0 && (s32)reg->umax_value >=3D 0) {
++		reg->s32_min_value =3D max_t(s32, reg->s32_min_value, (s32)reg->umin_v=
+alue);
++		reg->s32_max_value =3D min_t(s32, reg->s32_max_value, (s32)reg->umax_v=
+alue);
++	}
++	if ((u32)(reg->smin_value >> 32) + 1 =3D=3D (u32)(reg->smax_value >> 32=
+) &&
++	    (s32)reg->smin_value < 0 && (s32)reg->smax_value >=3D 0) {
++		reg->s32_min_value =3D max_t(s32, reg->s32_min_value, (s32)reg->smin_v=
+alue);
++		reg->s32_max_value =3D min_t(s32, reg->s32_max_value, (s32)reg->smax_v=
+alue);
++	}
++	/* if u32 range forms a valid s32 range (due to matching sign bit),
++	 * try to learn from that
++	 */
++	if ((s32)reg->u32_min_value <=3D (s32)reg->u32_max_value) {
++		reg->s32_min_value =3D max_t(s32, reg->s32_min_value, reg->u32_min_val=
+ue);
++		reg->s32_max_value =3D min_t(s32, reg->s32_max_value, reg->u32_max_val=
+ue);
 +	}
  	/* Learn sign from signed bounds.
  	 * If we cannot cross the sign boundary, then signed and unsigned bound=
