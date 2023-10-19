@@ -1,195 +1,209 @@
-Return-Path: <bpf+bounces-12665-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12666-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0D517CF006
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 08:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BA367CF009
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 08:21:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E37E1C20D8F
-	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 06:19:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0078A1C209C8
+	for <lists+bpf@lfdr.de>; Thu, 19 Oct 2023 06:20:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 105E863A5;
-	Thu, 19 Oct 2023 06:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Bzd+cAGF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A06363C4;
+	Thu, 19 Oct 2023 06:20:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 217D82104
-	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 06:18:53 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AC2B6
-	for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 23:18:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1697696331;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t5lP2IEwe8+p9/Axdm9QTLhS4D+SLbQCbPDvFOSM2PI=;
-	b=Bzd+cAGFZ9rE4jRwSZvQyqFl4RY3qQcQo/DpVt4fQsIcdS14cWvx2arV52u0YQz1+t/rmv
-	4tUOOepEN2KWYxDD5M7hiBkOD1/fm+rhK+41OBKBCsSckqE5o+ucMe6x8loG00rVmGeO2D
-	KpwSYK+9n37jJ56hAY9n8y3+0w4EcZ0=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-607-RJ-Rfu6cNEq0v_IXgz069g-1; Thu, 19 Oct 2023 02:18:49 -0400
-X-MC-Unique: RJ-Rfu6cNEq0v_IXgz069g-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-507b0270b7fso4329495e87.3
-        for <bpf@vger.kernel.org>; Wed, 18 Oct 2023 23:18:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697696328; x=1698301128;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t5lP2IEwe8+p9/Axdm9QTLhS4D+SLbQCbPDvFOSM2PI=;
-        b=wRADMxh8Xz34vbcJFmpakODyBYlWGM5DKGXP0P/MCvfV4ZTEf/J3ABI9VBzfeY2rw6
-         fQH2/wnIwvrwLW0emvDgaD+rnfT+ni/gMJbG23OjiuZ/5BYodhPyNtL9ioTMoD4I0KYS
-         cG+zYiHOMm8g+bizVFPOmaNhqLN417hepQTgK1D+fkuUKRpFSMe75QcyuU18S5F8ZMQf
-         WhZeRFzLxSPTw5/kwaDqkqkx7ugjaSOAHciTeaA40aDC2Eja1AwCGp2hDMhJ6ZENdN0w
-         XkwZy8TOAWH/j507PzUjshIOhpYaFQ3SZirKJ2xJThgRjolgTMnsMK4sA4pDOCAwvUJP
-         2EfQ==
-X-Gm-Message-State: AOJu0YznQgzJeyJGfv/EW0q6kL3ndk8F6dwJcLduQjLzytc2NCpOnSTb
-	1a1lv1YvI8lqNb3zxmkR6hYchZBEe5PTWgfqT2/5TbK2AqXMF9sz/z+DDllV/vnDlgoQkEVYR1Z
-	EZq37E4gCYu6O6eYGxrx2xb3OiUdm
-X-Received: by 2002:a05:6512:3e06:b0:507:9d71:2a77 with SMTP id i6-20020a0565123e0600b005079d712a77mr873087lfv.17.1697696328563;
-        Wed, 18 Oct 2023 23:18:48 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEKm6rGJgW6Z7BA1cTpUTUR/6KwfiGtTMHbrw0rOATMiEWNT9mWMqGW2Jy0QbHUI+LlwOQs/pr5t1Vl/fEWNyY=
-X-Received: by 2002:a05:6512:3e06:b0:507:9d71:2a77 with SMTP id
- i6-20020a0565123e0600b005079d712a77mr873065lfv.17.1697696328225; Wed, 18 Oct
- 2023 23:18:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60399611B
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 06:20:49 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3509BB6;
+	Wed, 18 Oct 2023 23:20:46 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4S9yJR32BTz4f3jqh;
+	Thu, 19 Oct 2023 14:20:39 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgD3idmzyjBl3pdtDQ--.28374S2;
+	Thu, 19 Oct 2023 14:20:39 +0800 (CST)
+Subject: Re: [PATCH bpf] Fold smp_mb__before_atomic() into
+ atomic_set_release()
+To: paulmck@kernel.org
+Cc: bpf@vger.kernel.org, David Vernet <void@manifault.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org
+References: <ec86d38e-cfb4-44aa-8fdb-6c925922d93c@paulmck-laptop>
+ <722b64d7-281b-b4ab-4d4d-403abc41a36b@huaweicloud.com>
+ <f6526ae6-cd52-4d1d-ab2a-7d82e2c818fd@paulmck-laptop>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <7fe984d2-c30c-40ad-83cd-d9fb51b6ce0d@huaweicloud.com>
+Date: Thu, 19 Oct 2023 14:20:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231016120033.26933-1-xuanzhuo@linux.alibaba.com> <20231016120033.26933-8-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20231016120033.26933-8-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Thu, 19 Oct 2023 14:18:37 +0800
-Message-ID: <CACGkMEvMzp3zW5OXicemuC-GetrfMdGdscY_ZY5xY_pO8eYZvQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v1 07/19] virtio_net: separate virtnet_tx_resize()
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <f6526ae6-cd52-4d1d-ab2a-7d82e2c818fd@paulmck-laptop>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgD3idmzyjBl3pdtDQ--.28374S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Ar1fJr1UKF4rGr15WFy8Zrb_yoW7WrWfpr
+	WkKF1jyrWkXr18Aw1Dtw4UZa4ftw4DA343Gr45XFy8Zr1DKr4jvF18Xr4jgFn8Jr4kGr1j
+	yr4UXr9Fv34UXrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 
-On Mon, Oct 16, 2023 at 8:00=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
-om> wrote:
->
-> This patch separates two sub-functions from virtnet_tx_resize():
->
-> * virtnet_tx_pause
-> * virtnet_tx_resume
->
-> Then the subsequent virtnet_tx_reset() can share these two functions.
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Hi Paul,
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+On 10/19/2023 12:54 PM, Paul E. McKenney wrote:
+> On Thu, Oct 19, 2023 at 09:07:07AM +0800, Hou Tao wrote:
+>> Hi Paul,
+>>
+>> On 10/19/2023 6:28 AM, Paul E. McKenney wrote:
+>>> bpf: Fold smp_mb__before_atomic() into atomic_set_release()
+>>>
+>>> The bpf_user_ringbuf_drain() BPF_CALL function uses an atomic_set()
+>>> immediately preceded by smp_mb__before_atomic() so as to order storing
+>>> of ring-buffer consumer and producer positions prior to the atomic_set()
+>>> call's clearing of the ->busy flag, as follows:
+>>>
+>>>         smp_mb__before_atomic();
+>>>         atomic_set(&rb->busy, 0);
+>>>
+>>> Although this works given current architectures and implementations, and
+>>> given that this only needs to order prior writes against a later write.
+>>> However, it does so by accident because the smp_mb__before_atomic()
+>>> is only guaranteed to work with read-modify-write atomic operations,
+>>> and not at all with things like atomic_set() and atomic_read().
+>>>
+>>> Note especially that smp_mb__before_atomic() will not, repeat *not*,
+>>> order the prior write to "a" before the subsequent non-read-modify-write
+>>> atomic read from "b", even on strongly ordered systems such as x86:
+>>>
+>>>         WRITE_ONCE(a, 1);
+>>>         smp_mb__before_atomic();
+>>>         r1 = atomic_read(&b);
+>> The reason is smp_mb__before_atomic() is defined as noop and
+>> atomic_read() in x86-64 is just READ_ONCE(), right ?
+> The real reason is that smp_mb__before_atomic() is not defined to do
+> anything unless followed by an atomic read-modify-write operation,
+> and atomic_read(), atomic_64read(), atomic_set(), and so on are not
+> read-modify-write operations.
 
-Thanks
+I see. Thanks for explanation. It seems I did not read
+Documentation/atomic_t.txt carefully, it said:
 
-> ---
->  drivers/net/virtio/main.c       | 35 +++++++++++++++++++++++++++------
->  drivers/net/virtio/virtio_net.h |  2 ++
->  2 files changed, 31 insertions(+), 6 deletions(-)
+    The barriers:
+
+    smp_mb__{before,after}_atomic()
+
+    only apply to the RMW atomic ops and can be used to augment/upgrade the
+    ordering inherent to the op.
+
 >
-> diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
-> index e6b262341619..8da84ea9bcbe 100644
-> --- a/drivers/net/virtio/main.c
-> +++ b/drivers/net/virtio/main.c
-> @@ -2156,12 +2156,11 @@ static int virtnet_rx_resize(struct virtnet_info =
-*vi,
->         return err;
->  }
+> As you point out, one implementation consequence of this is that
+> smp_mb__before_atomic() is nothingness on x86.
 >
-> -static int virtnet_tx_resize(struct virtnet_info *vi,
-> -                            struct virtnet_sq *sq, u32 ring_num)
-> +void virtnet_tx_pause(struct virtnet_info *vi, struct virtnet_sq *sq)
->  {
->         bool running =3D netif_running(vi->dev);
->         struct netdev_queue *txq;
-> -       int err, qindex;
-> +       int qindex;
+>> And it seems that I also used smp_mb__before_atomic() in a wrong way for
+>> patch [1]. The memory order in the posted patch is
+>>
+>> process X                                    process Y
+>>     atomic64_dec_and_test(&map->usercnt)
+>>     READ_ONCE(timer->timer)
+>>                                             timer->time = t
+> The above two lines are supposed to be accessing the same field, correct?
+> If so, process Y's store really should be WRITE_ONCE().
+
+Yes. These two processes are accessing the same field (namely
+timer->timer). Is WRITE_ONCE(xx) still necessary when the write of
+timer->time in process Y is protected by a spin-lock ?
+
+
 >
->         qindex =3D sq - vi->sq;
+>>                                             // it won't work
+>>                                             smp_mb__before_atomic()
+>>                                             atomic64_read(&map->usercnt)
+>>
+>> For the problem, it seems I need to replace smp_mb__before_atomic() by
+>> smp_mb() to fix the memory order, right ?
+> Yes, because smp_mb() will order the prior store against that later load.
+
+Thanks. Will fix the patch.
+
+Regards,
+Hou
 >
-> @@ -2182,10 +2181,17 @@ static int virtnet_tx_resize(struct virtnet_info =
-*vi,
->         netif_stop_subqueue(vi->dev, qindex);
+> 							Thanx, Paul
 >
->         __netif_tx_unlock_bh(txq);
-> +}
->
-> -       err =3D virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused=
-_buf);
-> -       if (err)
-> -               netdev_err(vi->dev, "resize tx fail: tx queue index: %d e=
-rr: %d\n", qindex, err);
-> +void virtnet_tx_resume(struct virtnet_info *vi, struct virtnet_sq *sq)
-> +{
-> +       bool running =3D netif_running(vi->dev);
-> +       struct netdev_queue *txq;
-> +       int qindex;
-> +
-> +       qindex =3D sq - vi->sq;
-> +
-> +       txq =3D netdev_get_tx_queue(vi->dev, qindex);
->
->         __netif_tx_lock_bh(txq);
->         sq->reset =3D false;
-> @@ -2194,6 +2200,23 @@ static int virtnet_tx_resize(struct virtnet_info *=
-vi,
->
->         if (running)
->                 virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
-> +}
-> +
-> +static int virtnet_tx_resize(struct virtnet_info *vi, struct virtnet_sq =
-*sq,
-> +                            u32 ring_num)
-> +{
-> +       int qindex, err;
-> +
-> +       qindex =3D sq - vi->sq;
-> +
-> +       virtnet_tx_pause(vi, sq);
-> +
-> +       err =3D virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused=
-_buf);
-> +       if (err)
-> +               netdev_err(vi->dev, "resize tx fail: tx queue index: %d e=
-rr: %d\n", qindex, err);
-> +
-> +       virtnet_tx_resume(vi, sq);
-> +
->         return err;
->  }
->
-> diff --git a/drivers/net/virtio/virtio_net.h b/drivers/net/virtio/virtio_=
-net.h
-> index 70eea23adba6..2f930af35364 100644
-> --- a/drivers/net/virtio/virtio_net.h
-> +++ b/drivers/net/virtio/virtio_net.h
-> @@ -256,4 +256,6 @@ static inline bool virtnet_is_xdp_raw_buffer_queue(st=
-ruct virtnet_info *vi, int
->
->  void virtnet_rx_pause(struct virtnet_info *vi, struct virtnet_rq *rq);
->  void virtnet_rx_resume(struct virtnet_info *vi, struct virtnet_rq *rq);
-> +void virtnet_tx_pause(struct virtnet_info *vi, struct virtnet_sq *sq);
-> +void virtnet_tx_resume(struct virtnet_info *vi, struct virtnet_sq *sq);
->  #endif
-> --
-> 2.32.0.3.g01195cf9f
->
+>> Regards,
+>> Hou
+>>
+>> [1]:
+>> https://lore.kernel.org/bpf/20231017125717.241101-2-houtao@huaweicloud.com/
+>>                                                                 
+>>
+>>> Therefore, replace the smp_mb__before_atomic() and atomic_set() with
+>>> atomic_set_release() as follows:
+>>>
+>>>         atomic_set_release(&rb->busy, 0);
+>>>
+>>> This is no slower (and sometimes is faster) than the original, and also
+>>> provides a formal guarantee of ordering that the original lacks.
+>>>
+>>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>>> Acked-by: David Vernet <void@manifault.com>
+>>> Cc: Andrii Nakryiko <andrii@kernel.org>
+>>> Cc: Alexei Starovoitov <ast@kernel.org>
+>>> Cc: Daniel Borkmann <daniel@iogearbox.net>
+>>> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+>>> Cc: Song Liu <song@kernel.org>
+>>> Cc: Yonghong Song <yonghong.song@linux.dev>
+>>> Cc: John Fastabend <john.fastabend@gmail.com>
+>>> Cc: KP Singh <kpsingh@kernel.org>
+>>> Cc: Stanislav Fomichev <sdf@google.com>
+>>> Cc: Hao Luo <haoluo@google.com>
+>>> Cc: Jiri Olsa <jolsa@kernel.org>
+>>> Cc: <bpf@vger.kernel.org>
+>>>
+>>> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+>>> index f045fde632e5..0ee653a936ea 100644
+>>> --- a/kernel/bpf/ringbuf.c
+>>> +++ b/kernel/bpf/ringbuf.c
+>>> @@ -770,8 +770,7 @@ BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
+>>>  	/* Prevent the clearing of the busy-bit from being reordered before the
+>>>  	 * storing of any rb consumer or producer positions.
+>>>  	 */
+>>> -	smp_mb__before_atomic();
+>>> -	atomic_set(&rb->busy, 0);
+>>> +	atomic_set_release(&rb->busy, 0);
+>>>  
+>>>  	if (flags & BPF_RB_FORCE_WAKEUP)
+>>>  		irq_work_queue(&rb->work);
+>>>
+>>> .
 
 
