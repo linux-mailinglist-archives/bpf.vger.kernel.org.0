@@ -1,133 +1,135 @@
-Return-Path: <bpf+bounces-12836-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12837-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 506317D11C7
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 16:47:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 040517D11CB
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 16:48:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBB10282510
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 14:47:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86AF41F2422C
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 14:48:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B66519BAC;
-	Fri, 20 Oct 2023 14:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2D521A27C;
+	Fri, 20 Oct 2023 14:48:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Q8mGK1wt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y6ZddTYb"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 407B115EBB
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 14:46:55 +0000 (UTC)
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D78106
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 07:46:54 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c9e95aa02dso7285105ad.0
-        for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 07:46:54 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B42D118E37
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 14:48:44 +0000 (UTC)
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E4C106
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 07:48:43 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso143837366b.1
+        for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 07:48:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697813214; x=1698418014; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GyYLg6uaau03lsfr7xxhq7bt6KmMpCzPGGZ4WDyQ87k=;
-        b=Q8mGK1wtnWCx8tCK0NSPDaVqaCzFeXzsltsRaV8Rz31choCxKMtvjvLJE6qAKDDw86
-         t43QQ0a2/vvYrBPuWw6ZFgp2vsg2Wx+bqs8b2oGZ1zAGGl95EXfK2VMcm8jwNi70ISLz
-         028G0Nzv1bAAlVdgnqizFq51hzE9srTofdatzN3UAWT4ly0iBhH7hb4+OCgkI7iHRJuF
-         VgRDO6Vp1Mv9ITrySYs94NH4uJ9VrjVbopVlY004ctN+h3NQtNzKvLHj412U5gTVycpK
-         qdUQpgmxTmdsWf+JC2i942VBOoFEhBg7VKOWA1Biwecas7UremsTVSe6nxq2kdIac4G5
-         cG6g==
+        d=gmail.com; s=20230601; t=1697813321; x=1698418121; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LMitdlL0PE5FK6dy5YsEIZGv6PZqNfSHEO3MRBhQ84k=;
+        b=Y6ZddTYbhLbJd6D4nCUF2wzruIbxY/vpZ4sH68WG/w9JtXNUPIJi4ROlYZOJ9+S4YA
+         E1qsGa6Eb3ehGdalSdTTrxTCoWJ4FTWscPlsvoFBgH1RhHWF1bBj540R4uNxhdtrIO5j
+         JVNnwvnZfLGDcrjPtA/Cd+oWuzio1lKpKQ5hBLb6cPHhhGw8Dho74nr8OISivj1ndpFB
+         JEE1CAqjGv64TTywD9QMA4isQd8PKvvFpC3UyvufEMr5GLG6Qa48Uek50pK3j8JQWCyV
+         9toe6hnY6UPeXnDPYFdiP0c9J9/iJL+bBSgFXEOKpJ9V8YzIvGWIgl3ZAr0S/ZyPTGJn
+         c+1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697813214; x=1698418014;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GyYLg6uaau03lsfr7xxhq7bt6KmMpCzPGGZ4WDyQ87k=;
-        b=oCA62B++s8KrdtdFbPtN1dD1AWYD04UZGCduH7QdQa9JMjsAa9G+qybaWvAVnDqaG1
-         BpXPhKlGwR6kDHnJ2nJLwml/UY7zO42rPYiZs6d7mp36TxSCUemLE4GOlSprVzMj9nxQ
-         BaUIZNS3cPbgircn8oUbnLBSUNf+nJntL6opyRdELiVMGlvJEr4SCezYxMVgYp88sbl5
-         HtXmtpuCfD2JOMCYBBAqpJED/TiTLMdVeXTyeWJtTkHNzPR/A47+owt5jynAvRK/7pec
-         vq0AHpQaF8zyq8YM8uTxHREYavyU78gdNBMBlke71oQeD5i73W2AY+Xa7ukLtmvtdiAA
-         D6hw==
-X-Gm-Message-State: AOJu0YwaAW3d3GEqyvfrn4Fjlxi3Tz6r4ACYl8WJWL5U8oClUDj9C3zl
-	HAquFNNPNdRRzlDg9iqOom0z2e005wMQ7JaCLmk=
-X-Google-Smtp-Source: AGHT+IFu+j4QSKAUz1a05aMPKqTUoCm8eGTO3kbV6RYKEUUYJskXkYI3Cp6EYCSsU8WnzgahVH+KsQ==
-X-Received: by 2002:a17:902:d2c2:b0:1c7:49dd:2ff with SMTP id n2-20020a170902d2c200b001c749dd02ffmr2718988plc.27.1697813214265;
-        Fri, 20 Oct 2023 07:46:54 -0700 (PDT)
-Received: from [10.254.107.145] ([139.177.225.237])
-        by smtp.gmail.com with ESMTPSA id f12-20020a17090274cc00b001c72f4334afsm1619250plt.20.2023.10.20.07.46.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Oct 2023 07:46:53 -0700 (PDT)
-Message-ID: <272de0e9-539c-4d89-9b9c-0652b0826cdd@bytedance.com>
-Date: Fri, 20 Oct 2023 22:46:48 +0800
+        d=1e100.net; s=20230601; t=1697813321; x=1698418121;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LMitdlL0PE5FK6dy5YsEIZGv6PZqNfSHEO3MRBhQ84k=;
+        b=c5+BXWzVzbGADLOEVX+YhzJiVKwGFJtLuzGDjFyTnwZ2X48fpGCXNUan1qLizqDG/U
+         avWeKq+8W1P/VlrqkN23MUQf2pWwoDm+HqMbHsNVWqsMUU87aTgFn/uzaq8X9i/Sf6YJ
+         NGU9l6hJohei5q82TqwOoi3anUpgVfzPIhwCAZ3HVw0WmpwUdEAphTbFT7DLR24c8Ndo
+         mIgczNDQRzmvj3KZXv/toraJofC45a/m6ZLDZf/6F0X2yRShTI8S8JP9W247BebaaP3p
+         WumHywqulhhf7CpDNOR/esnt5uzL1B8tj6RdAuEPaq+V/Qodh8gyNuqIZ+K5xH5Hzb37
+         7+FQ==
+X-Gm-Message-State: AOJu0YzbyiC++fiMgYQAObVMozE2TtTygnrdOeSVEKepkuPfj++76M+a
+	duGALs9yD6INLi1jnPR81D1bZtn8CGWqAWvJ
+X-Google-Smtp-Source: AGHT+IE0GVg7C1XpE1q4TGu1iiFkAmPxZrFyqDMJv+V1TvS9CZcCMlhBm8jMbfYJGCasUIs9Jq/UEg==
+X-Received: by 2002:a17:907:9623:b0:9ae:6da8:1819 with SMTP id gb35-20020a170907962300b009ae6da81819mr1432985ejc.48.1697813321349;
+        Fri, 20 Oct 2023 07:48:41 -0700 (PDT)
+Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
+        by smtp.gmail.com with ESMTPSA id kf14-20020a17090776ce00b0099bd7b26639sm1650555ejc.6.2023.10.20.07.48.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 07:48:40 -0700 (PDT)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next] selftests/bpf: Make linked_list failure test more robust
+Date: Fri, 20 Oct 2023 14:48:39 +0000
+Message-Id: <20231020144839.2734006-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH bpf-next v6 8/8] selftests/bpf: Add tests for
- open-coded task and css iter
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-References: <20231018061746.111364-1-zhouchuyi@bytedance.com>
- <20231018061746.111364-9-zhouchuyi@bytedance.com>
- <CAADnVQKafk_junRyE=-FVAik4hjTRDtThymYGEL8hGTuYoOGpA@mail.gmail.com>
-From: Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <CAADnVQKafk_junRyE=-FVAik4hjTRDtThymYGEL8hGTuYoOGpA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+The linked list failure test 'pop_front_off' and 'pop_back_off'
+currently rely on matching exact instruction and register values.  The
+purpose of the test is to ensure the offset is correctly incremented for
+the returned pointers from list pop helpers, which can then be used with
+container_of to obtain the real object. Hence, somehow obtaining the
+information that the offset is 48 will work for us. Make the test more
+robust by relying on verifier error string of bpf_spin_lock and remove
+dependence on fragile instruction index or register number, which can be
+affected by different clang versions used to build the selftests.
 
+Fixes: 300f19dcdb99 ("selftests/bpf: Add BPF linked list API tests")
+Reported-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+ tools/testing/selftests/bpf/prog_tests/linked_list.c | 10 ++--------
+ tools/testing/selftests/bpf/progs/linked_list_fail.c |  4 +++-
+ 2 files changed, 5 insertions(+), 9 deletions(-)
 
-在 2023/10/20 08:03, Alexei Starovoitov 写道:
-> On Tue, Oct 17, 2023 at 11:18 PM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
->>
->> +
->> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
->> +__failure __msg("css_task_iter is only allowed in bpf_lsm and bpf iter-s")
->> +int BPF_PROG(iter_css_task_for_each)
->> +{
->> +       u64 cg_id = bpf_get_current_cgroup_id();
->> +       struct cgroup *cgrp = bpf_cgroup_from_id(cg_id);
->> +       struct cgroup_subsys_state *css;
->> +       struct task_struct *task;
->> +
->> +       if (cgrp == NULL)
->> +               return 0;
->> +       css = &cgrp->self;
->> +
->> +       bpf_for_each(css_task, task, css, CSS_TASK_ITER_PROCS) {
->> +
->> +       }
->> +       bpf_cgroup_release(cgrp);
->> +       return 0;
->> +}
-> 
-> I think we should relax allowlist in patch 2 further.
-> Any sleepable is safe.
-> Allowlist is needed to avoid dead locking on css_set_lock.
-> Any lsm and any iter (even non-sleepable) and any sleepable
-> seems to be safe.
+diff --git a/tools/testing/selftests/bpf/prog_tests/linked_list.c b/tools/testing/selftests/bpf/prog_tests/linked_list.c
+index 69dc31383b78..2fb89de63bd2 100644
+--- a/tools/testing/selftests/bpf/prog_tests/linked_list.c
++++ b/tools/testing/selftests/bpf/prog_tests/linked_list.c
+@@ -94,14 +94,8 @@ static struct {
+ 	{ "incorrect_head_var_off2", "variable ptr_ access var_off=(0x0; 0xffffffff) disallowed" },
+ 	{ "incorrect_head_off1", "bpf_list_head not found at offset=25" },
+ 	{ "incorrect_head_off2", "bpf_list_head not found at offset=1" },
+-	{ "pop_front_off",
+-	  "15: (bf) r1 = r6                      ; R1_w=ptr_or_null_foo(id=4,ref_obj_id=4,off=48,imm=0) "
+-	  "R6_w=ptr_or_null_foo(id=4,ref_obj_id=4,off=48,imm=0) refs=2,4\n"
+-	  "16: (85) call bpf_this_cpu_ptr#154\nR1 type=ptr_or_null_ expected=percpu_ptr_" },
+-	{ "pop_back_off",
+-	  "15: (bf) r1 = r6                      ; R1_w=ptr_or_null_foo(id=4,ref_obj_id=4,off=48,imm=0) "
+-	  "R6_w=ptr_or_null_foo(id=4,ref_obj_id=4,off=48,imm=0) refs=2,4\n"
+-	  "16: (85) call bpf_this_cpu_ptr#154\nR1 type=ptr_or_null_ expected=percpu_ptr_" },
++	{ "pop_front_off", "off 48 doesn't point to 'struct bpf_spin_lock' that is at 40" },
++	{ "pop_back_off", "off 48 doesn't point to 'struct bpf_spin_lock' that is at 40" },
+ };
 
-Yes, I just try to read the corresponding code. IIUC, the key point here 
-is we should not hold the css_set_lock before we invoking a BPF Prog 
-which may use css_task iters.
+ static void test_linked_list_fail_prog(const char *prog_name, const char *err_msg)
+diff --git a/tools/testing/selftests/bpf/progs/linked_list_fail.c b/tools/testing/selftests/bpf/progs/linked_list_fail.c
+index f4c63daba229..6438982b928b 100644
+--- a/tools/testing/selftests/bpf/progs/linked_list_fail.c
++++ b/tools/testing/selftests/bpf/progs/linked_list_fail.c
+@@ -591,7 +591,9 @@ int pop_ptr_off(void *(*op)(void *head))
+ 	n = op(&p->head);
+ 	bpf_spin_unlock(&p->lock);
 
-1. For lsm hooks and task_iters, it would be clearly know from the code 
-that we would not try to hold that lock.
+-	bpf_this_cpu_ptr(n);
++	if (!n)
++		return 0;
++	bpf_spin_lock((void *)n);
+ 	return 0;
+ }
 
-2. For cgroup_iters, we will hold the cgroup_muetx before we enter the 
-Prog and it's OK.(see __cgroup_procs_write())
-
-3. For any sleepable progs, bpf_check_attach_target() would only allow 
-them to attach some sepecifc hooks, currently, these hooks are OK.
-
-
-Thanks for the suggestion again! I would do it.
+--
+2.40.1
 
 
