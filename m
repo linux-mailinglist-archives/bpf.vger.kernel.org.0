@@ -1,110 +1,142 @@
-Return-Path: <bpf+bounces-12810-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12811-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 151F67D0C12
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 11:37:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D7E37D0C7B
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 11:59:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02259B21726
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 09:37:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D035B21472
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 09:59:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5F0713FE1;
-	Fri, 20 Oct 2023 09:37:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JiTtqSmB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3AF15E97;
+	Fri, 20 Oct 2023 09:59:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA00F12E50
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 09:37:37 +0000 (UTC)
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C6010D7;
-	Fri, 20 Oct 2023 02:37:35 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d9a518d66a1so618461276.0;
-        Fri, 20 Oct 2023 02:37:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697794654; x=1698399454; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yGNznPsTVL7r5fUa5yWmdKYSl0/KhU2hv+FsOhhScWo=;
-        b=JiTtqSmBStovt7DmeKHC561o4kInk0apC+iCBGiyhY/T3ascnn6eWkxHBx9XQC/zLd
-         bVqm0QbR8oElEQtLEPZ8COk815znOfhVq4xmmMti6bgfw9wUk9kWfaxm9QbWVsjwATH0
-         XnK5mR+EYg0yQQ7fSoe3+lWNSSb6tRQacavh4wcRDz+XEA5gL/DB/jPYO++4IRDTM4+T
-         34DwQlSLPonU3Vo74YwpzAYi6EC/cmStYhMCWXYma3C3F0SHHiW3NpHf9Aw9HcUQrAbT
-         5Csy74desv/DYFdIdOE7sEmnwaagM7RIcIxAkvuzlumsw8LKTSysovrF8pgLwAQcWOT9
-         NwMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697794654; x=1698399454;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yGNznPsTVL7r5fUa5yWmdKYSl0/KhU2hv+FsOhhScWo=;
-        b=Etm/ttRgGE3ZQ3aa7Ndv8bNYgJOGX4kZIGex3Iurpp5V3kir+jnCbVacJYr+PAz5/B
-         oBOntxF40uFtOV1RtPjh4DeiWs2X8AEbuhPEqPLuqKqE0dgMyBb61RTe8YFIVskafuyF
-         NRqOCN5bNbwO0ucXnNEsi7Om89qChgAIaUobeh5MyYuPsL57JnR6duVlfgavhcgRz+C3
-         fRCv66yI1rtAC8eb8n/YH+D3Wwhfkyc/lvtEz0URu3HxxnSnztTlkL+SUPkFwzdR+oUb
-         yhCJbHpOEc7U2AEqaBfRHsAWVX0CZ3yG2rqLW3JndSnx/qVmBOvVIOltspW6vt/3ceDv
-         E+Cg==
-X-Gm-Message-State: AOJu0YwO2NMuA5V1u5U51oXsgyDwNkgofk/xIxY3XpnzbKqhNkLHbq6W
-	Ino7DNZ5ZopdpzKYU/7eaj21VL8nSmyARRapfY0=
-X-Google-Smtp-Source: AGHT+IG45bJOjz9sD7TDzCQos0POliQ9zNVRh7Po5jlTj3N60hg5OTy5if7qevLpsU7vXKm+0dqWVm7YQW2MCx4Tv2w=
-X-Received: by 2002:a25:8c88:0:b0:d9c:44:4463 with SMTP id m8-20020a258c88000000b00d9c00444463mr1070424ybl.34.1697794653908;
- Fri, 20 Oct 2023 02:37:33 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F888156C0;
+	Fri, 20 Oct 2023 09:59:30 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94CDBD49;
+	Fri, 20 Oct 2023 02:59:27 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SBg1d0KDNzMm2q;
+	Fri, 20 Oct 2023 17:55:17 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 20 Oct 2023 17:59:24 +0800
+From: Yunsheng Lin <linyunsheng@huawei.com>
+To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
+	<linyunsheng@huawei.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, Matthias Brugger
+	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, <bpf@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
+Subject: [PATCH net-next v12 0/5] introduce page_pool_alloc() related API
+Date: Fri, 20 Oct 2023 17:59:47 +0800
+Message-ID: <20231020095952.11055-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231017124546.24608-1-laoar.shao@gmail.com> <20231017124546.24608-2-laoar.shao@gmail.com>
- <ZS-m3t-_daPzEsJL@slm.duckdns.org> <CALOAHbAd2S--=72c2267Lrcj_czkitdG9j97pai2zGqdAskvQQ@mail.gmail.com>
- <ZTF-nOb4HDvjTSca@slm.duckdns.org> <09ff4166-bcc2-989b-97ce-a6574120eea7@redhat.com>
-In-Reply-To: <09ff4166-bcc2-989b-97ce-a6574120eea7@redhat.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Fri, 20 Oct 2023 17:36:57 +0800
-Message-ID: <CALOAHbDO=gzkn=7e+6LMJNwKUPxexJfg=L1J+KZG9a9Zk9LZUg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v2 1/9] cgroup: Make operations on the cgroup
- root_list RCU safe
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, ast@kernel.org, daniel@iogearbox.net, 
-	john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev, 
-	song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com, 
-	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com, 
-	sinquersw@gmail.com, cgroups@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 
-On Fri, Oct 20, 2023 at 3:43=E2=80=AFAM Waiman Long <longman@redhat.com> wr=
-ote:
->
-> On 10/19/23 15:08, Tejun Heo wrote:
-> > On Thu, Oct 19, 2023 at 02:38:52PM +0800, Yafang Shao wrote:
-> >>>> -     BUG_ON(!res_cgroup);
-> >>>> +     WARN_ON_ONCE(!res_cgroup && lockdep_is_held(&cgroup_mutex));
-> >>> This doesn't work. lockdep_is_held() is always true if !PROVE_LOCKING=
-.
-> >> will use mutex_is_locked() instead.
-> > But then, someone else can hold the lock and trigger the condition
-> > spuriously. The kernel doesn't track who's holding the lock unless lock=
-dep
-> > is enabled.
->
-> It is actually possible to detect if the current process is the owner of
-> a mutex since there is a owner field in the mutex structure. However,
-> the owner field also contains additional information which need to be
-> masked off before comparing with "current". If such a functionality is
-> really needed, we will have to add a helper function mutex_is_held(),
-> for example, to kernel/locking/mutex.c.
-=E3=80=81
-Agreed. We should first introduce mutex_is_held(). Thanks for your suggesti=
-on.
+In [1] & [2] & [3], there are usecases for veth and virtio_net
+to use frag support in page pool to reduce memory usage, and it
+may request different frag size depending on the head/tail
+room space for xdp_frame/shinfo and mtu/packet size. When the
+requested frag size is large enough that a single page can not
+be split into more than one frag, using frag support only have
+performance penalty because of the extra frag count handling
+for frag support.
 
---=20
-Regards
-Yafang
+So this patchset provides a page pool API for the driver to
+allocate memory with least memory utilization and performance
+penalty when it doesn't know the size of memory it need
+beforehand.
+
+1. https://patchwork.kernel.org/project/netdevbpf/patch/d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org/
+2. https://patchwork.kernel.org/project/netdevbpf/patch/20230526054621.18371-3-liangchen.linux@gmail.com/
+3. https://github.com/alobakin/linux/tree/iavf-pp-frag
+
+V12: Rename page_pool_cache_alloc() to page_pool_alloc_va()
+     and mask off __GFP_HIGHMEM for page allocation.
+
+V11: Repost based on the latest net-next branch and collect
+     Tested-by Tag from Alexander.
+
+V10: Use fragment instead of frag in English docs.
+     Remove PP_FLAG_PAGE_FRAG usage in idpf driver.
+
+V9: Update some performance info in patch 2.
+
+V8: Store the dma addr on a shifted u32 instead of using
+    dma_addr_t explicitly for 32-bit arch with 64-bit DMA.
+    Update document according to discussion in v7.
+
+V7: Fix a compile error, a few typo and use kernel-doc syntax.
+
+V6: Add a PP_FLAG_PAGE_SPLIT_IN_DRIVER flag to fail the page_pool
+    creation for 32-bit arch with 64-bit DMA when driver tries to
+    do the page splitting itself, adjust the requested size to
+    include head/tail room in veth, and rebased on the latest
+    next-net.
+
+v5 RFC: Add a new page_pool_cache_alloc() API, and other minor
+        change as discussed in v4. As there seems to be three
+        comsumers that might be made use of the new API, so
+        repost it as RFC and CC the relevant authors to see
+        if the new API fits their need.
+
+V4. Fix a typo and add a patch to update document about frag
+    API, PAGE_POOL_DMA_USE_PP_FRAG_COUNT is not renamed yet
+    as we may need a different thread to discuss that.
+
+V3: Incorporate changes from the disscusion with Alexander,
+    mostly the inline wraper, PAGE_POOL_DMA_USE_PP_FRAG_COUNT
+    change split to separate patch and comment change.
+
+V2: Add patch to remove PP_FLAG_PAGE_FRAG flags and mention
+    virtio_net usecase in the cover letter.
+
+V1: Drop RFC tag and page_pool_frag patch.
+
+Yunsheng Lin (5):
+  page_pool: unify frag_count handling in page_pool_is_last_frag()
+  page_pool: remove PP_FLAG_PAGE_FRAG
+  page_pool: introduce page_pool_alloc() API
+  page_pool: update document about fragment API
+  net: veth: use newly added page pool API for veth with xdp
+
+ Documentation/networking/page_pool.rst        |   4 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   2 -
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   |   3 +-
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c   |   3 -
+ .../marvell/octeontx2/nic/otx2_common.c       |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |   2 +-
+ drivers/net/veth.c                            |  25 ++-
+ drivers/net/wireless/mediatek/mt76/mac80211.c |   2 +-
+ include/net/page_pool/helpers.h               | 210 +++++++++++++++---
+ include/net/page_pool/types.h                 |   6 +-
+ net/core/page_pool.c                          |  17 +-
+ net/core/skbuff.c                             |   2 +-
+ 12 files changed, 220 insertions(+), 58 deletions(-)
+
+-- 
+2.33.0
+
 
