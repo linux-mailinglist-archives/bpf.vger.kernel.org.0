@@ -1,140 +1,155 @@
-Return-Path: <bpf+bounces-12804-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12805-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41B4A7D0935
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 09:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91CB67D0973
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 09:24:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB2792823D1
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 07:09:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77D11282443
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 07:23:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 450F3D2E0;
-	Fri, 20 Oct 2023 07:09:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBDC2D2F2;
+	Fri, 20 Oct 2023 07:23:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94418CA6C
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 07:09:21 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60CB69F
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 00:09:19 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SBbKx0V9zz4f3s6D
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 15:09:09 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgC3NaaWJzJlDukWDQ--.46806S2;
-	Fri, 20 Oct 2023 15:09:14 +0800 (CST)
-Subject: Re: [PATCH bpf-next v2 2/7] mm/percpu.c: introduce pcpu_alloc_size()
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Dennis Zhou <dennis@kernel.org>
-Cc: bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko
- <andrii@kernel.org>, Song Liu <song@kernel.org>, Hao Luo
- <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>,
- Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
- Andrew Morton <akpm@linux-foundation.org>
-References: <20231018113343.2446300-1-houtao@huaweicloud.com>
- <20231018113343.2446300-3-houtao@huaweicloud.com> <ZTH9c2kj2jpP0SDD@snowbird>
- <CAADnVQJ10m1N0zQL-u2UYYnn9yL+RZz4QQgjXxkNrOcBLHu4XA@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <3b502d3e-db22-f3d8-94de-f6294afcde5c@huaweicloud.com>
-Date: Fri, 20 Oct 2023 15:09:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D656107;
+	Fri, 20 Oct 2023 07:23:50 +0000 (UTC)
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC2B10D9;
+	Fri, 20 Oct 2023 00:23:47 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VuWM7J9_1697786622;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VuWM7J9_1697786622)
+          by smtp.aliyun-inc.com;
+          Fri, 20 Oct 2023 15:23:43 +0800
+Message-ID: <1697786208.7535846-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next v1 08/19] virtio_net: sq support premapped mode
+Date: Fri, 20 Oct 2023 15:16:48 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Jason Wang <jasowang@redhat.com>
+Cc: netdev@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ virtualization@lists.linux-foundation.org,
+ bpf@vger.kernel.org
+References: <20231016120033.26933-1-xuanzhuo@linux.alibaba.com>
+ <20231016120033.26933-9-xuanzhuo@linux.alibaba.com>
+ <CACGkMEuq8i9_PX+vRESS3g2BpaWBv3FxDLMryG=aEJ+gAOsSaA@mail.gmail.com>
+In-Reply-To: <CACGkMEuq8i9_PX+vRESS3g2BpaWBv3FxDLMryG=aEJ+gAOsSaA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <CAADnVQJ10m1N0zQL-u2UYYnn9yL+RZz4QQgjXxkNrOcBLHu4XA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgC3NaaWJzJlDukWDQ--.46806S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr13CryUtr4UCF1UCF1kGrg_yoW8tw4fpr
-	40gF1FyF4kAr9rGw1Sq3Wjvw1aqw4kJF4xG347WF1UAr9Ivr92gr1qvrW5uFy5Crn29r17
-	tFZ0qFZakFy5J3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-	6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UZ18PUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
 
-Hi,
+On Fri, 20 Oct 2023 14:50:52 +0800, Jason Wang <jasowang@redhat.com> wrote:
+> On Mon, Oct 16, 2023 at 8:01=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba=
+.com> wrote:
+> >
+> > If the xsk is enabling, the xsk tx will share the send queue.
+> > But the xsk requires that the send queue use the premapped mode.
+> > So the send queue must support premapped mode.
+> >
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > ---
+> >  drivers/net/virtio/main.c       | 108 ++++++++++++++++++++++++++++----
+> >  drivers/net/virtio/virtio_net.h |  54 +++++++++++++++-
+> >  2 files changed, 149 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
+> > index 8da84ea9bcbe..02d27101fef1 100644
+> > --- a/drivers/net/virtio/main.c
+> > +++ b/drivers/net/virtio/main.c
+> > @@ -514,20 +514,104 @@ static void *virtnet_rq_alloc(struct virtnet_rq =
+*rq, u32 size, gfp_t gfp)
+> >         return buf;
+> >  }
+> >
+> > -static void virtnet_rq_set_premapped(struct virtnet_info *vi)
+> > +static int virtnet_sq_set_premapped(struct virtnet_sq *sq)
+> >  {
+> > -       int i;
+> > +       struct virtnet_sq_dma *d;
+> > +       int err, size, i;
+> >
+> > -       /* disable for big mode */
+> > -       if (!vi->mergeable_rx_bufs && vi->big_packets)
+> > -               return;
+>
+> Not specific to this patch but any plan to fix the big mode?
+>
 
-On 10/20/2023 12:16 PM, Alexei Starovoitov wrote:
-> On Thu, Oct 19, 2023 at 9:09 PM Dennis Zhou <dennis@kernel.org> wrote:
->> On Wed, Oct 18, 2023 at 07:33:38PM +0800, Hou Tao wrote:
->>> From: Hou Tao <houtao1@huawei.com>
->>>
->>> Introduce pcpu_alloc_size() to get the size of the dynamic per-cpu
->>> area. It will be used by bpf memory allocator in the following patches.
->>> BPF memory allocator maintains per-cpu area caches for multiple area
->>> sizes and its free API only has the to-be-freed per-cpu pointer, so it
->>> needs the size of dynamic per-cpu area to select the corresponding cache
->>> when bpf program frees the dynamic per-cpu pointer.
->>>
->>> Signed-off-by: Hou Tao <houtao1@huawei.com>
->>> ---
->>>  include/linux/percpu.h |  1 +
->>>  mm/percpu.c            | 30 ++++++++++++++++++++++++++++++
->>>  2 files changed, 31 insertions(+)
->>>
->>> diff --git a/include/linux/percpu.h b/include/linux/percpu.h
->>> index 68fac2e7cbe6..8c677f185901 100644
->>> --- a/include/linux/percpu.h
->>> +++ b/include/linux/percpu.h
->>> @@ -132,6 +132,7 @@ extern void __init setup_per_cpu_areas(void);
->>>  extern void __percpu *__alloc_percpu_gfp(size_t size, size_t align, gfp_t gfp) __alloc_size(1);
->>>  extern void __percpu *__alloc_percpu(size_t size, size_t align) __alloc_size(1);
->>>  extern void free_percpu(void __percpu *__pdata);
->>> +extern size_t pcpu_alloc_size(void __percpu *__pdata);
->>>
->>>  DEFINE_FREE(free_percpu, void __percpu *, free_percpu(_T))
->>>
->>> diff --git a/mm/percpu.c b/mm/percpu.c
->>> index 76b9c5e63c56..b0cea2dc16a9 100644
->>> --- a/mm/percpu.c
->>> +++ b/mm/percpu.c
->>> @@ -2244,6 +2244,36 @@ static void pcpu_balance_workfn(struct work_struct *work)
->>>       mutex_unlock(&pcpu_alloc_mutex);
->>>  }
->>>
->>> +/**
->>> + * pcpu_alloc_size - the size of the dynamic percpu area
->>> + * @ptr: pointer to the dynamic percpu area
->>> + *
->>> + * Return the size of the dynamic percpu area @ptr.
->>> + *
->> Alexei, can you modify the above comment to:
->>
->> Returns the size of the @ptr allocation.  This is undefined for statically
->> defined percpu variables as there is no corresponding chunk->bound_map.
-> Good point! Will do.
 
-I will post v3 to update the API document.
+For big, we should make it support XDP and do dma first.
+
 
 >
-> Thanks for the quick review!
->
-> .
+> > +       size =3D virtqueue_get_vring_size(sq->vq);
+> > +
+> > +       size +=3D MAX_SKB_FRAGS + 2;
+> > +
+> > +       sq->dmainfo.head =3D kcalloc(size, sizeof(*sq->dmainfo.head), G=
+FP_KERNEL);
+> > +       if (!sq->dmainfo.head)
+> > +               return -ENOMEM;
+> > +
+> > +       err =3D virtqueue_set_dma_premapped(sq->vq);
+> > +       if (err) {
+> > +               kfree(sq->dmainfo.head);
+> > +               return err;
+> > +       }
+> > +
+> > +       sq->dmainfo.free =3D NULL;
+> > +
 
+[...]
+
+> > +
+> > +               d->addr =3D sg->dma_address;
+> > +               d->len =3D sg->length;
+> > +
+> > +               d->next =3D head;
+> > +               head =3D d;
+>
+> It's really a pity that we need to duplicate those DMA metata twice.
+> Could we invent a new API to just fetch it from the virtio core?
+
+Actually, I posted that patch.
+
+Consider this is pushing to net-next. We can do that on top.
+
+
+>
+> > +       }
+> > +
+> > +       head->data =3D data;
+> > +
+> > +       return (void *)((unsigned long)head | ((unsigned long)data & VI=
+RTIO_XMIT_DATA_MASK));
+>
+> If we packed everything into dmainfo, we can leave the type (XDP vs
+> skb) there to avoid trick like packing it into the pointer here?
+
+Yes. But if the virtio has not _ACCESS_PLATFORM, the driver will
+has not the DMA meta data.
+
+Thanks.
+
+
+>
+> Thanks
+>
 
