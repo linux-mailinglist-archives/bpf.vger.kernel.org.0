@@ -1,123 +1,112 @@
-Return-Path: <bpf+bounces-12855-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12856-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 112087D1528
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 19:51:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41DF07D1535
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 19:54:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4DBBB214CB
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 17:51:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2F4E282412
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 17:54:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B24CE208A6;
-	Fri, 20 Oct 2023 17:51:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 116D5208B5;
+	Fri, 20 Oct 2023 17:53:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MdEy9t7N"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WWgkIzPx"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 197821E530
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 17:51:09 +0000 (UTC)
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE7FFA;
-	Fri, 20 Oct 2023 10:51:07 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-27d5fe999caso883401a91.1;
-        Fri, 20 Oct 2023 10:51:07 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BCD91E530;
+	Fri, 20 Oct 2023 17:53:55 +0000 (UTC)
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DB4D55;
+	Fri, 20 Oct 2023 10:53:54 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-59b5484fbe6so12327697b3.1;
+        Fri, 20 Oct 2023 10:53:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697824267; x=1698429067; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
+        d=gmail.com; s=20230601; t=1697824434; x=1698429234; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=02puzIEeiYhiJJhgKY07tvx8NVCgLzZBlRnnWhDsfHc=;
-        b=MdEy9t7Nfxog0ferh5cs0INWIvp5mPgP+d8wgevJJyLAqq8m6iRh0AEF0nGW/glnwW
-         IR+jLxuoXgfDTMnY5vStNBrjz4Y5Ceclz/ToahQDo14cbgVVigrZm0yGJUcvVwLjP6yx
-         KojJXgyHkJI+4ZGjidUMqKmsBvDhNZmmW9NE7ItKilMk5kd9tbnYEEguOu4gJVhhdM3u
-         Jba+QvHOPLNQr3klHWaLWjejWNunxtblpA2o5gqD2EBWzxjjit7GKJWk2CHD1jVIH/ub
-         IcuzrL18wZZgsTPd5M9ruN+Y8qfWuHxMnPRNHep3goThfg1P6nSMlgNpurXq2SBCbCm3
-         qMjQ==
+        bh=WrkktZKBRPlFCzqyWlpvovV2LO5dRVDhRGH6sL1EBdg=;
+        b=WWgkIzPxn4p4m2QCyxnn7HjZ2WiJYZsQJeqmJbzvY980pNPal5jh/TIX543wbQkry2
+         Or2aB8hqcHlEvTtCuEiE0yunVPxyTMoJzquJxnnBrbBbAtKCJqOHufgS4C6G2f+5n0dg
+         8d2nKRgPR5omRxKPWN256Gh0NalOZLfRl7jYoouCsr2kOQX47qNy7PZbZ0Frbuk3FFf1
+         MxGNem6XS9FWlfCw1j036USuodgRkM4/GFlGnk2WE9I5/PGzxs/wFfZed7TVbe0vJ94U
+         GTseM1cjw9Dn/8gP/VCelRHZqNrHYDdnN/fHmugX6eHIsfTPK7aZdJfO+iHOU2+Jb0f0
+         fcXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697824267; x=1698429067;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
+        d=1e100.net; s=20230601; t=1697824434; x=1698429234;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=02puzIEeiYhiJJhgKY07tvx8NVCgLzZBlRnnWhDsfHc=;
-        b=iFs362CbxuMA51OK164F1xDgCZhvW4PFXSykCYriGwajO0K3tporUvkNpAG4nDMeKx
-         13YTXQpxN3yYsbI2fyxMINvnHhAouSgLnLN9EGy7N/YEyggQhRIzPSbKJiVbZN2Bgc0B
-         VZ1l6tMX2MSxekEnVbcci7nXoSfE7qPYZAXVXcmwfz0wglRUbwxSGHiM2DY4kGTHUuvc
-         IOr+NmHgCkE7SuqTqlqqpS+OJPax7Bz3UEb4wC2PHhcfSMOm4wzdl+PIiIDEcWgfmO50
-         yy9JF3J97eSaRGkGtKwYYJQmbQalzaroE6X3lKlwle9LQvfBEWja6UvMvMBW4WFKvUKZ
-         3eHQ==
-X-Gm-Message-State: AOJu0YzmT4Sg8LbFCTILbXIZWVTf7/1+oAguvYnJ0mkGV6qBgsCirVLT
-	9qGp+sfOWXyKXrC1RncbPUw2ySiiNPg=
-X-Google-Smtp-Source: AGHT+IG6mo8ss51mg8ctTHseVofJa/iBmi1/IxfEKmbkZQJyAbR6M6xjUip0PrtoBmbDUmHeOcvArA==
-X-Received: by 2002:a17:90a:19cb:b0:27d:5f1f:8eed with SMTP id 11-20020a17090a19cb00b0027d5f1f8eedmr2412326pjj.14.1697824266393;
-        Fri, 20 Oct 2023 10:51:06 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::4:a906])
-        by smtp.gmail.com with ESMTPSA id 21-20020a17090a01d500b0027732eb24bbsm3905843pjd.4.2023.10.20.10.51.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 10:51:05 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 20 Oct 2023 07:51:04 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Waiman Long <longman@redhat.com>, ast@kernel.org, daniel@iogearbox.net,
-	john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
-	song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org,
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-	lizefan.x@bytedance.com, hannes@cmpxchg.org, yosryahmed@google.com,
-	mkoutny@suse.com, sinquersw@gmail.com, cgroups@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next v2 1/9] cgroup: Make operations on the
- cgroup root_list RCU safe
-Message-ID: <ZTK-CI9juS31kMSX@slm.duckdns.org>
-References: <20231017124546.24608-1-laoar.shao@gmail.com>
- <20231017124546.24608-2-laoar.shao@gmail.com>
- <ZS-m3t-_daPzEsJL@slm.duckdns.org>
- <CALOAHbAd2S--=72c2267Lrcj_czkitdG9j97pai2zGqdAskvQQ@mail.gmail.com>
- <ZTF-nOb4HDvjTSca@slm.duckdns.org>
- <09ff4166-bcc2-989b-97ce-a6574120eea7@redhat.com>
- <CALOAHbDO=gzkn=7e+6LMJNwKUPxexJfg=L1J+KZG9a9Zk9LZUg@mail.gmail.com>
+        bh=WrkktZKBRPlFCzqyWlpvovV2LO5dRVDhRGH6sL1EBdg=;
+        b=cb7IfFksNjeUnTcRfZRcn2vevWeyk+ASv9dsX9bXOKQY9aAec5NHH5d99N1ph7mk++
+         lXHn04VWymCa4cBK+ru0S/wE3WNmu/J3/k1ctbK21JNS/TTvps1+YdB3XSXJWo/8KN1w
+         +/0zWLJnmLs2JV4300/HoxgTtFTB2VjsC/bRYJKyQYjKigltSndoLj9yDIpqY+E544NB
+         PjiCB5YTtQN4eg9NLwNtBlbgXlhDVGb888y25TJJIQ5jA7t7Zil8y+JP/DwYxKOVrRxC
+         57laMaQ348pahIxCxR8WuvLnSjBhspWl7nmVXryE5IPa+jhTituhGPySeuhVOAzhbc5/
+         XNqQ==
+X-Gm-Message-State: AOJu0YyKapU66870eaCj6NdAT2n/e7tND6fq0EoP0CkoEtMWftkML0qE
+	UAn5syadNKSQEx90Z/iRMRk=
+X-Google-Smtp-Source: AGHT+IFtURqb6fN+sYUYMlRQVStxudTfcXAC9A3VU4s4N5kleYFIUozk0gwuopi37iYAOB4GDZjZiw==
+X-Received: by 2002:a0d:ea8b:0:b0:5a7:aad1:6567 with SMTP id t133-20020a0dea8b000000b005a7aad16567mr2938236ywe.7.1697824433997;
+        Fri, 20 Oct 2023 10:53:53 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:74bb:66ec:3132:3e97? ([2600:1700:6cf8:1240:74bb:66ec:3132:3e97])
+        by smtp.gmail.com with ESMTPSA id o11-20020a81de4b000000b0059511008958sm828029ywl.76.2023.10.20.10.53.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 10:53:53 -0700 (PDT)
+Message-ID: <bef24789-819c-4a7b-bbb0-f38ffe9f67f0@gmail.com>
+Date: Fri, 20 Oct 2023 10:53:52 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v5 6/9] bpf, net: switch to dynamic registration
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
+Cc: kuifeng@meta.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+ drosen@google.com
+References: <20231017162306.176586-1-thinker.li@gmail.com>
+ <20231017162306.176586-7-thinker.li@gmail.com>
+ <72104b12-4573-7f6d-183e-4761673329e2@linux.dev>
+ <9e7ec07f-bc03-4e62-a0f6-28f668a1ec42@gmail.com>
+In-Reply-To: <9e7ec07f-bc03-4e62-a0f6-28f668a1ec42@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALOAHbDO=gzkn=7e+6LMJNwKUPxexJfg=L1J+KZG9a9Zk9LZUg@mail.gmail.com>
 
-On Fri, Oct 20, 2023 at 05:36:57PM +0800, Yafang Shao wrote:
-> On Fri, Oct 20, 2023 at 3:43 AM Waiman Long <longman@redhat.com> wrote:
-> >
-> > On 10/19/23 15:08, Tejun Heo wrote:
-> > > On Thu, Oct 19, 2023 at 02:38:52PM +0800, Yafang Shao wrote:
-> > >>>> -     BUG_ON(!res_cgroup);
-> > >>>> +     WARN_ON_ONCE(!res_cgroup && lockdep_is_held(&cgroup_mutex));
-> > >>> This doesn't work. lockdep_is_held() is always true if !PROVE_LOCKING.
-> > >> will use mutex_is_locked() instead.
-> > > But then, someone else can hold the lock and trigger the condition
-> > > spuriously. The kernel doesn't track who's holding the lock unless lockdep
-> > > is enabled.
-> >
-> > It is actually possible to detect if the current process is the owner of
-> > a mutex since there is a owner field in the mutex structure. However,
-> > the owner field also contains additional information which need to be
-> > masked off before comparing with "current". If such a functionality is
-> > really needed, we will have to add a helper function mutex_is_held(),
-> > for example, to kernel/locking/mutex.c.
-> 、
-> Agreed. We should first introduce mutex_is_held(). Thanks for your suggestion.
 
-I'm not sure this is the right occassion to add such thing. It's just a
-warn_on, we can either pass in the necessary condition from the callers or
-just drop the warning.
 
-Thanks.
+On 10/20/23 08:12, Kui-Feng Lee wrote:
+> 
+> 
+> On 10/18/23 18:49, Martin KaFai Lau wrote:
+>> On 10/17/23 9:23 AM, thinker.li@gmail.com wrote:
+>>> From: Kui-Feng Lee <thinker.li@gmail.com>
+>>>   static const struct bpf_struct_ops *
+>>>   bpf_struct_ops_find_value(struct btf *btf, u32 value_id)
+>>>   {
+>>> +    const struct bpf_struct_ops *st_ops = NULL;
+>>> +    const struct bpf_struct_ops **st_ops_list;
+>>>       unsigned int i;
+>>> +    u32 cnt = 0;
+>>>       if (!value_id || !btf_vmlinux)
+>>
+>> The "!btf_vmlinux" should have been changed to "!btf" in the earlier 
+>> patch (patch 2?),
+> 
+> This is not btf. It mean to check if btf_vmlinux is initialized.
+> It is not necessary anymore.
+> For checking btf, the following btf_get_struct_ops() will keep cnt zero
+> if btf is NULL, so it is unnecessary as well.
 
--- 
-tejun
+Forget my previous comment.  I think you are right!
+
 
