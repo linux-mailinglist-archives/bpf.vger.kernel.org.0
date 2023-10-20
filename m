@@ -1,162 +1,94 @@
-Return-Path: <bpf+bounces-12783-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12784-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DB907D0683
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 04:36:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1DA07D0690
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 04:42:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66D081C20F18
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 02:36:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC15EB21467
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 02:42:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C1C080E;
-	Fri, 20 Oct 2023 02:36:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553CD811;
+	Fri, 20 Oct 2023 02:42:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DnQV6zSx"
+	dkim=pass (2048-bit key) header.d=obs-cr.20230601.gappssmtp.com header.i=@obs-cr.20230601.gappssmtp.com header.b="UjyXydjx"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6104369
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 02:36:35 +0000 (UTC)
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F97D124
-	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 19:36:34 -0700 (PDT)
-Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-7b61de8e456so151315241.0
-        for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 19:36:34 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABC51369
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 02:42:14 +0000 (UTC)
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547CF124
+	for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 19:42:13 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-457c82cd87bso126647137.0
+        for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 19:42:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697769393; x=1698374193; darn=vger.kernel.org;
+        d=obs-cr.20230601.gappssmtp.com; s=20230601; t=1697769732; x=1698374532; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8NesduVr/BG1deQGTSgj2+fzQ2Kh7lDgyaPe/Zcp2PI=;
-        b=DnQV6zSx1G/F6yccWOm6RJRSm1C3LOvzOZjxS+Fpg0cX6qfy7jlE/pbmvNdvD45tEe
-         Fk6rKLAtzLGumwGzk1jvZtKimRd+KM81lx5QNzg12GqA8BCED7hZNf5LRUXIDELIeNof
-         23x6OU6oF6vJBP7zreovKQJ8QbrC7GjhOgJJRQBXR/kfOKbcYuAl9qVyX+t22/qKMBAr
-         dYCVeTFRxNaitBsC3l4UvPHVf4N4PuYGu3J6+P88c/nHVkXzclZeg8/ibFASHKpSJ/Qq
-         x44w3XMq3e2tZg1p/RMaOC17AVeMBkxmP446aBygmjSs4zNOsTOXzfFdqAs+trgS4rKb
-         aFNA==
+        bh=TVA5fSjdA9V5Jo7c0rF1Ke9rT3L+nX0I3OmN+3HgEuw=;
+        b=UjyXydjxMYgl7nGK800ipjdFl5yJM3BNar6MUG3GLLI4+k/A1vSDiBKsvB1lrZK0jj
+         CBaHz8ZQEarVFtrBO6QlCTMgdY+vb05N0s3FsBCOQGy6JkYczkAk8WvFS90waZ9VNqM4
+         iYJxWM9m+9TxZYddp6+Ee5+1guGxeS0joL+jrFrk7/MK9+uChvcU+JmkoNFLUM822a/T
+         at3Au4mbPlaEofQydyM+uAUhdzgOBSOttW0b9rHBn509pzIZnDMgRlSIoz03FnclOrva
+         KBKiaO4QDcZcVgHwXcsLUuqu0YRVIRD9mZY1hP/yXsFnSR/TPAYTrl7C/6tEYUHJ2cdf
+         iKFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697769393; x=1698374193;
+        d=1e100.net; s=20230601; t=1697769732; x=1698374532;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8NesduVr/BG1deQGTSgj2+fzQ2Kh7lDgyaPe/Zcp2PI=;
-        b=bW1tk5ZduIfBNHbac0F3NOra2EMJC1eyah/lRf48s8R/DeLBuWewFXHYiBGrbTeWKB
-         8dZqH52zu8Uu8DpFVBAGn23NrQ2dZ2IX3dG/zrB4TvDhT3Xl2yuVrdQ/dWtz7oiv+TZb
-         gkoLIayuME/vna41XNy0NO1XvUa7iLzNYeVYxduJgJ8vq3kuIKFqBXNrH7t/nIhc75/y
-         z2mqJrKo/+0O0kNY/XEBhTmwzvQxUfRhp1E7AW+p4llq3MIVuM+Q8BNEcq0Cythfqcc6
-         SkbAr1chneZSh8pXCUf7mapRgkXfbF5IqhiZD6jkgH5UH8KvIo5wAHVIu7v/LYz2wPD9
-         c/4g==
-X-Gm-Message-State: AOJu0YxVQO7f3Z6xT+ZBfW61uBGmtCy3GiBnzA6+3UaHOdqpgohnqfqP
-	PSD+cZoh/Y5hmOp6kkehJCv5aOVgOJsi4QGG6Mo=
-X-Google-Smtp-Source: AGHT+IEn9UfqNsScwgOrtbZoDRRzqtSjJNXW3SRIyhFakoLLOklNUex+uhg76LbQwEwQ6untWCQ5rz2Xf/PsCjD1KmM=
-X-Received: by 2002:a67:b048:0:b0:452:9384:139a with SMTP id
- q8-20020a67b048000000b004529384139amr746035vsh.22.1697769393551; Thu, 19 Oct
- 2023 19:36:33 -0700 (PDT)
+        bh=TVA5fSjdA9V5Jo7c0rF1Ke9rT3L+nX0I3OmN+3HgEuw=;
+        b=Dbmc9j/OPh6abZAmI7m/a8d1j7r/6944cx09edBSKlPdIqlr9V/uUIPrOrxoQN+udZ
+         A3vGWm/F3f/s8O62J1u6Vz3/wl0oILDRbQu3abW5+xaEing0eV7KyKSSGd+tlp5p73CK
+         WmAMTm3y2SByDdc4f7Wjg4uMe4cTchFMZZJjdYmVLxC1KyMsuPV7S+sphEWewA4UDD1L
+         qOkkR2eSashfjfBQvOM8qOb2KIF/71V1KP5daO00IpFbS8xAfwZiBNWKbCTGXpLeq3Mk
+         IgGg86nsacFpivKAoPetrIVNporqFtHtP3y3GJZBxYbCLIYEyRP1IGxwWmeDcajYY0pW
+         npjQ==
+X-Gm-Message-State: AOJu0Yx2ltN5fXjLqOs4X6N/lCy4vmM5xLEgLr3vzCHxrd3IpvlbDpif
+	eUmW4QLyjw9pHg7RL1n6yODGY1ZE3KkcrlUJWUwXf511IVW+UXAe
+X-Google-Smtp-Source: AGHT+IGDCGb5MI1ezH7+uuu1/7puQhR8na0yn2tuohMCKuEiXELqjEyNCbHP/8zBSiAq72R00sLq4ahOHMZvHM1sSbs=
+X-Received: by 2002:a67:c38b:0:b0:457:eee6:c105 with SMTP id
+ s11-20020a67c38b000000b00457eee6c105mr649257vsj.8.1697769732381; Thu, 19 Oct
+ 2023 19:42:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231005084123.1338-1-laoar.shao@gmail.com> <CAADnVQKUBJqg+hHtbLeeC2jhoJAWqnmRAzXW3hmUCNSV9kx4sQ@mail.gmail.com>
-In-Reply-To: <CAADnVQKUBJqg+hHtbLeeC2jhoJAWqnmRAzXW3hmUCNSV9kx4sQ@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Fri, 20 Oct 2023 10:35:52 +0800
-Message-ID: <CALOAHbA8SKbTLFo=AHauDpsjth77BTuzB1452gWSO56FS993Pw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Inherit system settings for CPU security mitigations
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Luis Gerhorst <gerhorst@cs.fau.de>
+References: <20231002142001.3223261-1-hawkinsw@obs.cr> <ZTDGPJFegKuwZiOe@infradead.org>
+In-Reply-To: <ZTDGPJFegKuwZiOe@infradead.org>
+From: Will Hawkins <hawkinsw@obs.cr>
+Date: Thu, 19 Oct 2023 22:42:01 -0400
+Message-ID: <CADx9qWhTXgKxBpjY47ufhfs=7Fb+mxGULgXo=JrEyUicZ5JP9g@mail.gmail.com>
+Subject: Re: [Bpf] [PATCH] bpf, docs: Add additional ABI working draft base text
+To: Christoph Hellwig <hch@infradead.org>
+Cc: bpf@ietf.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 20, 2023 at 8:42=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Thu, Oct 19, 2023 at 2:01=E2=80=AFAM Christoph Hellwig <hch@infradead.or=
+g> wrote:
 >
-> On Thu, Oct 5, 2023 at 1:41=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com>=
- wrote:
-> >
-> > Currently, there exists a system-wide setting related to CPU security
-> > mitigations, denoted as 'mitigations=3D'. When set to 'mitigations=3Dof=
-f', it
-> > deactivates all optional CPU mitigations. Therefore, if we implement a
-> > system-wide 'mitigations=3Doff' setting, it should inherently bypass Sp=
-ectre
-> > v1 and Spectre v4 in the BPF subsystem.
-> >
-> > Please note that there is also a 'nospectre_v1' setting on x86 and ppc
-> > architectures, though it is not currently exported. For the time being,
-> > let's disregard it.
-> >
-> > This idea emerged during our discussion about potential Spectre v1 atta=
-cks
-> > with Luis[1].
-> >
-> > [1]. https://lore.kernel.org/bpf/b4fc15f7-b204-767e-ebb9-fdb4233961fb@i=
-ogearbox.net/
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > Cc: Luis Gerhorst <gerhorst@cs.fau.de>
-> > ---
-> >  include/linux/bpf.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index a82efd34b741..61bde4520f5c 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -2164,12 +2164,12 @@ static inline bool bpf_allow_uninit_stack(void)
-> >
-> >  static inline bool bpf_bypass_spec_v1(void)
-> >  {
-> > -       return perfmon_capable();
-> > +       return perfmon_capable() || cpu_mitigations_off();
-> >  }
-> >
-> >  static inline bool bpf_bypass_spec_v4(void)
-> >  {
-> > -       return perfmon_capable();
-> > +       return perfmon_capable() || cpu_mitigations_off();
-> >  }
+> A little style nitpick on top of all the useful comments from
+> David:
 >
-> Yafang,
+> > +An application binary interface (ABI) defines the requirements that on=
+e or more binary software
 >
-> this patch breaks several
-> test_progs -t verifier
+> Text documents and any other bulky texts should be spaces to 80
+> characters.  This should just be a very trivial reformat.
 
-Sorry, I miss that.
+Thank you!
 
->
-> tests when system is booted with mitigations=3Doff command line.
->
-> Please follow up with a patch to fix this.
+As you can tell, I got a little busy with teaching. I plan on spending
+time with this tomorrow afternoon and a further revision should be on
+its way then. Sorry for the delay!
 
-will do it.
-
->
-> As you noticed cpu_mitigations_off() is not quite right here.
-> The system might have booted without that command line, but
-> spec_v1 and spec_v4 mitigations are turned off.
-> Unfortunately there is no good way to check that atm.
-> Have you seen this patch set ?
-> https://lore.kernel.org/all/20231019181158.1982205-1-leitao@debian.org/
-> Please take a look at it and comment if you think it will help.
-
-Thanks for your information. will take a look.
-
->
-> In the meantime please fix test_progs -t verifier
-
-sure
-
---=20
-Regards
-Yafang
+Will
 
