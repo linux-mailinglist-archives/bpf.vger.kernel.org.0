@@ -1,197 +1,471 @@
-Return-Path: <bpf+bounces-12839-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D42F7D11F9
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 16:58:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4CCF7D124D
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 17:12:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7656282519
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 14:58:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62BF41C2102B
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 15:12:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4319F1DA30;
-	Fri, 20 Oct 2023 14:58:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA091DA4C;
+	Fri, 20 Oct 2023 15:12:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mqn4fmQ/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KhTkQLww"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97801199BE
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 14:58:16 +0000 (UTC)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1371EFA
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 07:58:13 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40651a726acso7545165e9.1
-        for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 07:58:13 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D21671DA3F;
+	Fri, 20 Oct 2023 15:12:29 +0000 (UTC)
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE77FA;
+	Fri, 20 Oct 2023 08:12:27 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5a7af45084eso10571007b3.0;
+        Fri, 20 Oct 2023 08:12:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697813891; x=1698418691; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xr4XT0H5H5s90ENHIQ4i1JDap0MUEcuZxPp9GsRehLE=;
-        b=Mqn4fmQ/Kp5anX4MbmYxkxLJAf5fed46sAWJJ0NgdgS97nJWGw6Gt6QtxA5nJ+qbDZ
-         diZUIYgu+9P/wpEncA4bDjBjdUgS1CVcOKyNnbFismDu97AhpDxw2CgAn0Zog3f5YueW
-         gtADBjjW9WCbaS+gvIXVsibI8sb6d8O9G/AHrDwlrm21PhzmQF0l01M/fOmRZscTtk4f
-         HfiZPNiaGRaC39ExSpO9TdHWkCTxEPaoCbLr42ut+TO1No4nE6kgxgO88tftUR+dJo+r
-         CB7yQw9iakTzUznjj1aWNlYbuY1zeoRU0cGG3IWa3coRq7I9TL7bVjImLoQ5btoe+UjP
-         Eniw==
+        d=gmail.com; s=20230601; t=1697814746; x=1698419546; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jkIX9pkO5/Tsxh3X28JoJEQJmjUmQKmAAJHUvc8itGc=;
+        b=KhTkQLww2IiXES/RxJdc1HC8JmjXhZA6AxCUnEqlY8pi2JvryAzjCTs3i4gP7uGDgN
+         9bbgG2UzIw0GZ8n2KSWsTLHRFO81Cuvf/a0jt0pMXCU1Yfjc0oj7fW0H7W4wezHoQYyl
+         dSLL2W0EBVI40jycaSFoOvSrxQdCT/nh4nINky4SeYRkc/HGhCk28yqU11L9ckYQEs+Z
+         jhWvjrfO9nOOCI6HE0LoyrYE3hScS95cLKzTVPj43S/AdJG7qRK4Rr3AoABweqLtHpky
+         YEUVbTat4F8h4ApisWNeP7u6HH/2CkUCu1aMiJBabKWjfKzi2/3XwCY52rs7McleIQaI
+         iHIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697813891; x=1698418691;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xr4XT0H5H5s90ENHIQ4i1JDap0MUEcuZxPp9GsRehLE=;
-        b=O6aAK3quFncKrvmNgZQCErqr0VD6/u/3rNTU24owAf4a3zjN93DSJ5GO8jQcm5bHgc
-         UPchcfWYprx4I4124GR60rVakytW77bQm2Am6zNP2aKV23+17wee/ft7LFK6iK06Ovk+
-         s09ZDTPVe1SRIG2j65z3KCAdVI0zW7//VovWv9CIr4nY3qe124GMwkDUYxj3y7+AAiS8
-         XV2ayGTeCi18EHIQajypzebBaf5bgWlUdtwRP1SPe6w/dj40mq9ilgG1WPubtxnp++yR
-         Lzf13lpWLwvc/JcHhfpLU0qwS2whmaM413ZFuRYyB+H36vYU9oYKku4wfr9muh2QdaGS
-         oKRg==
-X-Gm-Message-State: AOJu0YwLxOGnaG31uJgsgrUw+4x1orlaLr9oA4Zvvggu0nw10qnxQitG
-	93q2vwHowLvUXTbdz9qi5h6l4995yYOaKuFI65g=
-X-Google-Smtp-Source: AGHT+IGI2Tlv5L7OsVc+A0RdovcTka3Mq3ofUgfYTTNeCrnyBj2pokE7M4Qat2XewYAJIHYyhgmCCCZfldWlvZN+rmg=
-X-Received: by 2002:a05:6000:1c14:b0:323:2d01:f043 with SMTP id
- ba20-20020a0560001c1400b003232d01f043mr2397331wrb.3.1697813891246; Fri, 20
- Oct 2023 07:58:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697814746; x=1698419546;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jkIX9pkO5/Tsxh3X28JoJEQJmjUmQKmAAJHUvc8itGc=;
+        b=PdQxXN4RPX98CXwx0byAGXd1YTxYEv5wlNX1SaADPGToLvLaaPIViP21oo2fsUJo6V
+         ME2jl3B7DKxKoWdc9TiAtKSh8IMu8xGiHSC6UUBiFzxGUBDye+1qwcOoGD3eynD5Z2kg
+         50OYndRLKUY+5q3k074XsW7WagAKeNmCmRsbNQCzOJp1nZa0xRTkgiIehsi5DNfAvhRY
+         GlO5AWlyzyi85AoxR6kvyEeBEnjmVJULLm57UgKxPuUEut5IK5UhIkmAdKnP+kIptVKz
+         /+6y0d9aSNpoIbifBl+HZ0ko2DsER+8sFnn/9rXML5r2XOQlCYSbZLhZYuPtm+wFwj/i
+         EJHQ==
+X-Gm-Message-State: AOJu0YxOy4u8dRipoF+gnkRh6EZ2FEKQcVkXQn0m5YCE4ou5W06jqcwf
+	abyopYqWcHax3d2+9ng1l2o=
+X-Google-Smtp-Source: AGHT+IEEitKGpoHWJfRDrz3lMA1sSvMPWQl7klCdmBN/wkKoqOKr9prEOoLCHiwJ1ru/DkDHUUHmOQ==
+X-Received: by 2002:a81:5258:0:b0:5a7:b797:d1e4 with SMTP id g85-20020a815258000000b005a7b797d1e4mr2218035ywb.21.1697814746035;
+        Fri, 20 Oct 2023 08:12:26 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:74bb:66ec:3132:3e97? ([2600:1700:6cf8:1240:74bb:66ec:3132:3e97])
+        by smtp.gmail.com with ESMTPSA id g142-20020a0ddd94000000b005a8073e2062sm752011ywe.33.2023.10.20.08.12.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 08:12:25 -0700 (PDT)
+Message-ID: <9e7ec07f-bc03-4e62-a0f6-28f668a1ec42@gmail.com>
+Date: Fri, 20 Oct 2023 08:12:23 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231020014214.2471419-1-houtao@huaweicloud.com>
- <20231020014214.2471419-2-houtao@huaweicloud.com> <CAADnVQK9BzHfAwnws+XhwL_zz9wvSAUaK0HSFWHGUQeD4LWO8w@mail.gmail.com>
- <42756ba7-191e-37a5-ee78-849e2f1d3d50@huaweicloud.com>
-In-Reply-To: <42756ba7-191e-37a5-ee78-849e2f1d3d50@huaweicloud.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 20 Oct 2023 07:57:59 -0700
-Message-ID: <CAADnVQL0N=+3yk17iNHEJ2+12LuTj3A6T5mzb-jpy_z6GOD6LA@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 1/2] bpf: Check map->usercnt again after
- timer->timer is assigned
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Hsin-Wei Hung <hsinweih@uci.edu>, 
-	Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: Kui-Feng Lee <sinquersw@gmail.com>
+Subject: Re: [PATCH bpf-next v5 6/9] bpf, net: switch to dynamic registration
+To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
+Cc: kuifeng@meta.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+ drosen@google.com
+References: <20231017162306.176586-1-thinker.li@gmail.com>
+ <20231017162306.176586-7-thinker.li@gmail.com>
+ <72104b12-4573-7f6d-183e-4761673329e2@linux.dev>
+Content-Language: en-US
+In-Reply-To: <72104b12-4573-7f6d-183e-4761673329e2@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Oct 20, 2023 at 12:31=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> w=
-rote:
->
-> Hi,
->
-> On 10/20/2023 10:14 AM, Alexei Starovoitov wrote:
-> > On Thu, Oct 19, 2023 at 6:41=E2=80=AFPM Hou Tao <houtao@huaweicloud.com=
-> wrote:
-> >> From: Hou Tao <houtao1@huawei.com>
-> >>
-> >> When there are concurrent uref release and bpf timer init operations,
-> >> the following sequence diagram is possible and it will lead to memory
-> >> leak:
-> >>
-> >> bpf program X
-> >>
-> >> bpf_timer_init()
-> >>   lock timer->lock
-> >>     read timer->timer as NULL
-> >>     read map->usercnt !=3D 0
-> >>
-> >>                 process Y
-> >>
-> >>                 close(map_fd)
-> >>                   // put last uref
-> >>                   bpf_map_put_uref()
-> >>                     atomic_dec_and_test(map->usercnt)
-> >>                       array_map_free_timers()
-> >>                         bpf_timer_cancel_and_free()
-> >>                           // just return and lead to memory leak
-> >>                           read timer->timer is NULL
-> >>
-> >>     t =3D bpf_map_kmalloc_node()
-> >>     timer->timer =3D t
-> >>   unlock timer->lock
-> >>
-> >> Fix the problem by checking map->usercnt again after timer->timer is
-> >> assigned, so when there are concurrent uref release and bpf timer init=
-,
-> >> either bpf_timer_cancel_and_free() from uref release reads a no-NULL
-> >> timer and the newly-added check of map->usercnt reads a zero usercnt.
-> >>
-> >> Because atomic_dec_and_test(map->usercnt) and READ_ONCE(timer->timer)
-> >> in bpf_timer_cancel_and_free() are not protected by a lock, so add
-> >> a memory barrier to guarantee the order between map->usercnt and
-> >> timer->timer. Also use WRITE_ONCE(timer->timer, x) to match the lockle=
-ss
-> >> read of timer->timer.
-> >>
-> >> Reported-by: Hsin-Wei Hung <hsinweih@uci.edu>
-> >> Closes: https://lore.kernel.org/bpf/CABcoxUaT2k9hWsS1tNgXyoU3E-=3DPuOg=
-Mn737qK984fbFmfYixQ@mail.gmail.com
-> >> Fixes: b00628b1c7d5 ("bpf: Introduce bpf timers.")
-> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> >> ---
-> >>  kernel/bpf/helpers.c | 18 +++++++++++++++---
-> >>  1 file changed, 15 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> >> index 757b99c1e613f..a7d92c3ddc3dd 100644
-> >> --- a/kernel/bpf/helpers.c
-> >> +++ b/kernel/bpf/helpers.c
-> >> @@ -1156,7 +1156,7 @@ BPF_CALL_3(bpf_timer_init, struct bpf_timer_kern=
- *, timer, struct bpf_map *, map
-> >>            u64, flags)
-> >>  {
-> >>         clockid_t clockid =3D flags & (MAX_CLOCKS - 1);
-> >> -       struct bpf_hrtimer *t;
-> >> +       struct bpf_hrtimer *t, *to_free =3D NULL;
-> >>         int ret =3D 0;
-> >>
-> >>         BUILD_BUG_ON(MAX_CLOCKS !=3D 16);
-> >> @@ -1197,9 +1197,21 @@ BPF_CALL_3(bpf_timer_init, struct bpf_timer_ker=
-n *, timer, struct bpf_map *, map
-> >>         rcu_assign_pointer(t->callback_fn, NULL);
-> >>         hrtimer_init(&t->timer, clockid, HRTIMER_MODE_REL_SOFT);
-> >>         t->timer.function =3D bpf_timer_cb;
-> >> -       timer->timer =3D t;
-> >> +       WRITE_ONCE(timer->timer, t);
-> >> +       /* Guarantee order between timer->timer and map->usercnt. So w=
-hen
-> >> +        * there are concurrent uref release and bpf timer init, eithe=
-r
-> >> +        * bpf_timer_cancel_and_free() called by uref release reads a =
-no-NULL
-> >> +        * timer or atomic64_read() below reads a zero usercnt.
-> >> +        */
-> >> +       smp_mb();
-> >> +       if (!atomic64_read(&map->usercnt)) {
-> >> +               WRITE_ONCE(timer->timer, NULL);
-> >> +               to_free =3D t;
-> > just kfree(t); here.
->
-> Will do. It is a slow path, so I think doing kfree() under spin-lock is
-> acceptable.
-> >
-> >> +               ret =3D -EPERM;
-> >> +       }
-> > This will add a second atomic64_read(&map->usercnt) in the same functio=
-n.
-> > Let's remove the first one ?
->
-> I prefer to still keep it. Because it can detect the release of map uref
-> early and the handle of uref release is simple compared with the second
-> atomic64_read(). Do you have a strong preference ?
 
-I bet somebody will send a patch to remove the first one as redundant.
-So let's do it now.
-The only reason we do repeated early check is to avoid taking a lock.
-Here doing an extra early check to avoid kmalloc is an overkill.
-That check is highly unlikely to hit while for locks it's a likely one.
-Hence extra check is justified for locks, but not here.
 
-Reading your other email it looks like this patchset is incomplete anyway?
+On 10/18/23 18:49, Martin KaFai Lau wrote:
+> On 10/17/23 9:23 AM, thinker.li@gmail.com wrote:
+>> From: Kui-Feng Lee <thinker.li@gmail.com>
+>>
+>> Replace the static list of struct_ops types with pre-btf 
+>> struct_ops_tab to
+>> enable dynamic registration.
+>>
+>> Both bpf_dummy_ops and bpf_tcp_ca now utilize the registration function
+>> instead of being listed in bpf_struct_ops_types.h.
+>>
+>> Cc: netdev@vger.kernel.org
+>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+>> ---
+>>   include/linux/bpf.h               |   2 +
+>>   include/linux/btf.h               |  29 +++++++
+>>   kernel/bpf/bpf_struct_ops.c       | 124 +++++++++++++++---------------
+>>   kernel/bpf/bpf_struct_ops_types.h |  12 ---
+>>   kernel/bpf/btf.c                  |   2 +-
+>>   net/bpf/bpf_dummy_struct_ops.c    |  14 +++-
+>>   net/ipv4/bpf_tcp_ca.c             |  16 +++-
+>>   7 files changed, 119 insertions(+), 80 deletions(-)
+>>   delete mode 100644 kernel/bpf/bpf_struct_ops_types.h
+>>
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index 1e1647c8b0ce..b0f33147aa93 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -3207,4 +3207,6 @@ static inline bool bpf_is_subprog(const struct 
+>> bpf_prog *prog)
+>>       return prog->aux->func_idx != 0;
+>>   }
+>> +int register_bpf_struct_ops(struct bpf_struct_ops *st_ops);
+>> +
+>>   #endif /* _LINUX_BPF_H */
+>> diff --git a/include/linux/btf.h b/include/linux/btf.h
+>> index aa2ba77648be..fdc83aa10462 100644
+>> --- a/include/linux/btf.h
+>> +++ b/include/linux/btf.h
+>> @@ -12,6 +12,8 @@
+>>   #include <uapi/linux/bpf.h>
+>>   #define BTF_TYPE_EMIT(type) ((void)(type *)0)
+>> +#define BTF_STRUCT_OPS_TYPE_EMIT(type) {((void)(struct type *)0);    \
+>> +        ((void)(struct bpf_struct_ops_##type *)0); }
+>>   #define BTF_TYPE_EMIT_ENUM(enum_val) ((void)enum_val)
+>>   /* These need to be macros, as the expressions are used in assembler 
+>> input */
+>> @@ -200,6 +202,7 @@ u32 btf_obj_id(const struct btf *btf);
+>>   bool btf_is_kernel(const struct btf *btf);
+>>   bool btf_is_module(const struct btf *btf);
+>>   struct module *btf_try_get_module(const struct btf *btf);
+>> +struct btf *btf_get_module_btf(const struct module *module);
+>>   u32 btf_nr_types(const struct btf *btf);
+>>   bool btf_member_is_reg_int(const struct btf *btf, const struct 
+>> btf_type *s,
+>>                  const struct btf_member *m,
+>> @@ -577,4 +580,30 @@ int btf_add_struct_ops(struct bpf_struct_ops 
+>> *st_ops);
+>>   const struct bpf_struct_ops **
+>>   btf_get_struct_ops(struct btf *btf, u32 *ret_cnt);
+>> +enum bpf_struct_ops_state {
+>> +    BPF_STRUCT_OPS_STATE_INIT,
+>> +    BPF_STRUCT_OPS_STATE_INUSE,
+>> +    BPF_STRUCT_OPS_STATE_TOBEFREE,
+>> +    BPF_STRUCT_OPS_STATE_READY,
+>> +};
+>> +
+>> +struct bpf_struct_ops_common_value {
+>> +    refcount_t refcnt;
+>> +    enum bpf_struct_ops_state state;
+>> +};
+>> +#define BPF_STRUCT_OPS_COMMON_VALUE struct 
+>> bpf_struct_ops_common_value common
+> 
+> Since there is 'struct bpf_struct_ops_common_value' now, the 
+> BPF_STRUCT_OPS_COMMON_VALUE macro is not as useful as before. Lets 
+> remove it.
+
+Agree
+
+> 
+>> +
+>> +/* bpf_struct_ops_##_name (e.g. bpf_struct_ops_tcp_congestion_ops) is
+>> + * the map's value exposed to the userspace and its btf-type-id is
+>> + * stored at the map->btf_vmlinux_value_type_id.
+>> + *
+>> + */
+>> +#define DEFINE_STRUCT_OPS_VALUE_TYPE(_name)            \
+>> +extern struct bpf_struct_ops bpf_##_name;            \
+>> +                                \
+>> +struct bpf_struct_ops_##_name {                    \
+>> +    BPF_STRUCT_OPS_COMMON_VALUE;                \
+>> +    struct _name data ____cacheline_aligned_in_smp;        \
+>> +}
+> 
+> I think the bpp_struct_ops_* should not be in btf.h. Probably move them 
+> to bpf.h instead. or there is some other considerations I am missing?
+
+Yes, I think bpf.h is the right place.
+
+> 
+>> +
+>>   #endif
+>> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+>> index 60445ff32275..175068b083cb 100644
+>> --- a/kernel/bpf/bpf_struct_ops.c
+>> +++ b/kernel/bpf/bpf_struct_ops.c
+>> @@ -13,19 +13,6 @@
+>>   #include <linux/btf_ids.h>
+>>   #include <linux/rcupdate_wait.h>
+>> -enum bpf_struct_ops_state {
+>> -    BPF_STRUCT_OPS_STATE_INIT,
+>> -    BPF_STRUCT_OPS_STATE_INUSE,
+>> -    BPF_STRUCT_OPS_STATE_TOBEFREE,
+>> -    BPF_STRUCT_OPS_STATE_READY,
+>> -};
+>> -
+>> -struct bpf_struct_ops_common_value {
+>> -    refcount_t refcnt;
+>> -    enum bpf_struct_ops_state state;
+>> -};
+>> -#define BPF_STRUCT_OPS_COMMON_VALUE struct 
+>> bpf_struct_ops_common_value common
+>> -
+>>   struct bpf_struct_ops_value {
+>>       BPF_STRUCT_OPS_COMMON_VALUE;
+>>       char data[] ____cacheline_aligned_in_smp;
+>> @@ -72,35 +59,6 @@ static DEFINE_MUTEX(update_mutex);
+>>   #define VALUE_PREFIX "bpf_struct_ops_"
+>>   #define VALUE_PREFIX_LEN (sizeof(VALUE_PREFIX) - 1)
+>> -/* bpf_struct_ops_##_name (e.g. bpf_struct_ops_tcp_congestion_ops) is
+>> - * the map's value exposed to the userspace and its btf-type-id is
+>> - * stored at the map->btf_vmlinux_value_type_id.
+>> - *
+>> - */
+>> -#define BPF_STRUCT_OPS_TYPE(_name)                \
+>> -extern struct bpf_struct_ops bpf_##_name;            \
+>> -                                \
+>> -struct bpf_struct_ops_##_name {                        \
+>> -    BPF_STRUCT_OPS_COMMON_VALUE;                \
+>> -    struct _name data ____cacheline_aligned_in_smp;        \
+>> -};
+>> -#include "bpf_struct_ops_types.h"
+>> -#undef BPF_STRUCT_OPS_TYPE
+>> -
+>> -enum {
+>> -#define BPF_STRUCT_OPS_TYPE(_name) BPF_STRUCT_OPS_TYPE_##_name,
+>> -#include "bpf_struct_ops_types.h"
+>> -#undef BPF_STRUCT_OPS_TYPE
+>> -    __NR_BPF_STRUCT_OPS_TYPE,
+>> -};
+>> -
+>> -static struct bpf_struct_ops * const bpf_struct_ops[] = {
+>> -#define BPF_STRUCT_OPS_TYPE(_name)                \
+>> -    [BPF_STRUCT_OPS_TYPE_##_name] = &bpf_##_name,
+>> -#include "bpf_struct_ops_types.h"
+>> -#undef BPF_STRUCT_OPS_TYPE
+>> -};
+>> -
+>>   const struct bpf_verifier_ops bpf_struct_ops_verifier_ops = {
+>>   };
+>> @@ -234,16 +192,51 @@ static void bpf_struct_ops_init_one(struct 
+>> bpf_struct_ops *st_ops,
+>>   }
+>> +static int register_bpf_struct_ops_btf(struct bpf_struct_ops *st_ops,
+>> +                       struct btf *btf)
+> 
+> Please combine this function into register_bpf_struct_ops(). They are 
+> both very short.
+> 
+
+Got it!
+
+>> +{
+>> +    struct bpf_verifier_log *log;
+>> +    int err;
+>> +
+>> +    if (st_ops == NULL)
+>> +        return -EINVAL;
+>> +
+>> +    log = kzalloc(sizeof(*log), GFP_KERNEL | __GFP_NOWARN);
+>> +    if (!log) {
+>> +        err = -ENOMEM;
+>> +        goto errout;
+>> +    }
+>> +
+>> +    log->level = BPF_LOG_KERNEL;
+>> +
+>> +    bpf_struct_ops_init_one(st_ops, btf, st_ops->owner, log);
+>> +
+>> +    err = btf_add_struct_ops(st_ops);
+>> +
+>> +errout:
+>> +    kfree(log);
+>> +
+>> +    return err;
+>> +}
+>> +
+>> +int register_bpf_struct_ops(struct bpf_struct_ops *st_ops)
+> 
+> Similar to the register kfunc counterpart, can this be moved to btf.c 
+> instead by extern-ing bpf_struct_ops_init_one()? or there are some other 
+> structs/functions need to extern?
+
+It is wierd to move a function of bpf_struct_ops to btf.
+But, kfunc already did that, I don't mind to follow it.
+
+> 
+>> +{
+>> +    struct btf *btf;
+>> +    int err;
+>> +
+>> +    btf = btf_get_module_btf(st_ops->owner);
+>> +    if (!btf)
+>> +        return -EINVAL;
+>> +    err = register_bpf_struct_ops_btf(st_ops, btf);
+>> +    btf_put(btf);
+>> +
+>> +    return err;
+>> +}
+>> +EXPORT_SYMBOL_GPL(register_bpf_struct_ops);
+>> +
+>>   void bpf_struct_ops_init(struct btf *btf, struct bpf_verifier_log *log)
+> 
+> The bpf_struct_ops_init() is pretty much only finding the btf 
+> "module_id" and "common_value_id". Lets use the BTF_ID_LIST to do it 
+> instead. Then the newly added bpf_struct_ops_init_one() could use a 
+> proper name bpf_struct_ops_init() instead of having the special "_one" 
+> suffix.
+
+Got it!
+
+> 
+>>   {
+>> -    struct bpf_struct_ops *st_ops;
+>>       s32 module_id, common_value_id;
+>> -    u32 i;
+>> -
+>> -    /* Ensure BTF type is emitted for "struct bpf_struct_ops_##_name" */
+>> -#define BPF_STRUCT_OPS_TYPE(_name) BTF_TYPE_EMIT(struct 
+>> bpf_struct_ops_##_name);
+>> -#include "bpf_struct_ops_types.h"
+>> -#undef BPF_STRUCT_OPS_TYPE
+>>       module_id = btf_find_by_name_kind(btf, "module", BTF_KIND_STRUCT);
+>>       if (module_id < 0) {
+>> @@ -259,11 +252,6 @@ void bpf_struct_ops_init(struct btf *btf, struct 
+>> bpf_verifier_log *log)
+>>           return;
+>>       }
+>>       common_value_type = btf_type_by_id(btf, common_value_id);
+>> -
+>> -    for (i = 0; i < ARRAY_SIZE(bpf_struct_ops); i++) {
+>> -        st_ops = bpf_struct_ops[i];
+>> -        bpf_struct_ops_init_one(st_ops, btf, NULL, log);
+>> -    }
+>>   }
+>>   extern struct btf *btf_vmlinux;
+>> @@ -271,32 +259,44 @@ extern struct btf *btf_vmlinux;
+>>   static const struct bpf_struct_ops *
+>>   bpf_struct_ops_find_value(struct btf *btf, u32 value_id)
+>>   {
+>> +    const struct bpf_struct_ops *st_ops = NULL;
+>> +    const struct bpf_struct_ops **st_ops_list;
+>>       unsigned int i;
+>> +    u32 cnt = 0;
+>>       if (!value_id || !btf_vmlinux)
+> 
+> The "!btf_vmlinux" should have been changed to "!btf" in the earlier 
+> patch (patch 2?),
+
+This is not btf. It mean to check if btf_vmlinux is initialized.
+It is not necessary anymore.
+For checking btf, the following btf_get_struct_ops() will keep cnt zero
+if btf is NULL, so it is unnecessary as well.
+
+> 
+> and is this null check still needed now?
+> 
+>>           return NULL;
+>> -    for (i = 0; i < ARRAY_SIZE(bpf_struct_ops); i++) {
+>> -        if (bpf_struct_ops[i]->value_id == value_id)
+>> -            return bpf_struct_ops[i];
+>> +    st_ops_list = btf_get_struct_ops(btf, &cnt);
+>> +    for (i = 0; i < cnt; i++) {
+>> +        if (st_ops_list[i]->value_id == value_id) {
+>> +            st_ops = st_ops_list[i];
+> 
+> nit. Like the change in the earlier patch that is being replaced here,
+> directly "return st_ops_list[i];".
+
+Got it!
+
+> 
+>> +            break;
+>> +        }
+>>       }
+>> -    return NULL;
+>> +    return st_ops;
+>>   }
+>>   const struct bpf_struct_ops *bpf_struct_ops_find(struct btf *btf, 
+>> u32 type_id)
+>>   {
+>> +    const struct bpf_struct_ops *st_ops = NULL;
+>> +    const struct bpf_struct_ops **st_ops_list;
+>>       unsigned int i;
+>> +    u32 cnt;
+>>       if (!type_id || !btf_vmlinux)
+>>           return NULL;
+>> -    for (i = 0; i < ARRAY_SIZE(bpf_struct_ops); i++) {
+>> -        if (bpf_struct_ops[i]->type_id == type_id)
+>> -            return bpf_struct_ops[i];
+>> +    st_ops_list = btf_get_struct_ops(btf, &cnt);
+>> +    for (i = 0; i < cnt; i++) {
+>> +        if (st_ops_list[i]->type_id == type_id) {
+>> +            st_ops = st_ops_list[i];
+> 
+> Same.
+
+Ack!
+
+> 
+>> +            break;
+>> +        }
+>>       }
+>> -    return NULL;
+>> +    return st_ops;
+>>   }
+>>   static int bpf_struct_ops_map_get_next_key(struct bpf_map *map, void 
+>> *key,
+>> diff --git a/kernel/bpf/bpf_struct_ops_types.h 
+>> b/kernel/bpf/bpf_struct_ops_types.h
+>> deleted file mode 100644
+>> index 5678a9ddf817..000000000000
+>> --- a/kernel/bpf/bpf_struct_ops_types.h
+>> +++ /dev/null
+>> @@ -1,12 +0,0 @@
+>> -/* SPDX-License-Identifier: GPL-2.0 */
+>> -/* internal file - do not include directly */
+>> -
+>> -#ifdef CONFIG_BPF_JIT
+>> -#ifdef CONFIG_NET
+>> -BPF_STRUCT_OPS_TYPE(bpf_dummy_ops)
+>> -#endif
+>> -#ifdef CONFIG_INET
+>> -#include <net/tcp.h>
+>> -BPF_STRUCT_OPS_TYPE(tcp_congestion_ops)
+>> -#endif
+>> -#endif
+> 
+> Seeing this gone is satisfying
+> 
+>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+>> index be5144dbb53d..990973d6057d 100644
+>> --- a/kernel/bpf/btf.c
+>> +++ b/kernel/bpf/btf.c
+>> @@ -7532,7 +7532,7 @@ struct module *btf_try_get_module(const struct 
+>> btf *btf)
+>>   /* Returns struct btf corresponding to the struct module.
+>>    * This function can return NULL or ERR_PTR.
+>>    */
+>> -static struct btf *btf_get_module_btf(const struct module *module)
+>> +struct btf *btf_get_module_btf(const struct module *module)
+>>   {
+>>   #ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+>>       struct btf_module *btf_mod, *tmp;
+>> diff --git a/net/bpf/bpf_dummy_struct_ops.c 
+>> b/net/bpf/bpf_dummy_struct_ops.c
+>> index 5918d1b32e19..724bb7224079 100644
+>> --- a/net/bpf/bpf_dummy_struct_ops.c
+>> +++ b/net/bpf/bpf_dummy_struct_ops.c
+>> @@ -7,7 +7,7 @@
+>>   #include <linux/bpf.h>
+>>   #include <linux/btf.h>
+>> -extern struct bpf_struct_ops bpf_bpf_dummy_ops;
+>> +static struct bpf_struct_ops bpf_bpf_dummy_ops;
+> 
+> Is it still needed ?
+
+Yes, it will be used by bpf_struct_ops_test_run().
+
+
+> 
+> 
+> 
+
 
