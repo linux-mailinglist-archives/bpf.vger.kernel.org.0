@@ -1,414 +1,154 @@
-Return-Path: <bpf+bounces-12802-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12803-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E4ED7D0909
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 09:00:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD4D77D0926
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 09:03:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8284B214FB
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 07:00:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62B9A2823C4
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 07:03:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B06CA6C;
-	Fri, 20 Oct 2023 07:00:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F02D260;
+	Fri, 20 Oct 2023 07:03:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hryhupo6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hqR6eY9H"
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7D08D2E4
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 07:00:11 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E756A1A3
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 00:00:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1697785209;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ilTNUKXWTLvCzjvECmFphhyUb1DRzISDCfAPMJLpcAk=;
-	b=hryhupo67an1PXUp4zw7OFuoWUuAMM6hZ3CJdA/lcFliEjywGTioG3HifnstHaDkXRnhPn
-	BajnNbfj2w/hEDLJu0jTBXJma2UsB9z91LHOn+TZVzlk1ebgANQto0+CmpszjLfIBV7MMj
-	YH/dBrZA6URxtBqSJ+GsrtbrqTDYgdw=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-356-nEamZ71aPOy9mzB_HjN5iA-1; Fri, 20 Oct 2023 02:59:57 -0400
-X-MC-Unique: nEamZ71aPOy9mzB_HjN5iA-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-5079630993dso442240e87.1
-        for <bpf@vger.kernel.org>; Thu, 19 Oct 2023 23:59:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697785196; x=1698389996;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ilTNUKXWTLvCzjvECmFphhyUb1DRzISDCfAPMJLpcAk=;
-        b=vR0Miid445utr/yYN95RXA6hlHDkCx5gW/TukCSR+2XdHg0Xxyld4IZGjgXPxp+xWs
-         uOAmo8Dy6paA1HkOY0GuA8zro2yryc7JC4cSWZ4IvUgqi7ai9AMNxNGF+3auaEsj5E5c
-         wQcV3gOzU1oWmrKoDjvkE0JP1nwVJj111q30lvb/BbzqKb8fo3He/hZEbIdFK8+x88je
-         5nQwyOdVdsIcOA28UPMPn/xmVAbkDGbj6JRy2bu0QjzmkASS3rmQxoTiLBD6pzCOF+ez
-         6DXKrT+EVK+Ue37MsgHxEyE8oSJSkV+wNUgyMK1zRd+inMsdrGpvPIlp/cbZQc14op2U
-         +REw==
-X-Gm-Message-State: AOJu0Ywe0NQ3b7UoqsYIr6zoCQlKc8Ful7EbUlCN0EDDmI/RfKdtZRVo
-	18b+WDbRLJUQqaWSxVx7ioAHzNDPOdsesBdZL71TiF28n7D5eN5p9rMWsEMJNeVhXGt1GdiP5l2
-	S9ZEd2VAoUYLcbCiOPASBqdogM7et
-X-Received: by 2002:ac2:4a63:0:b0:507:9803:ff8b with SMTP id q3-20020ac24a63000000b005079803ff8bmr636532lfp.44.1697785196298;
-        Thu, 19 Oct 2023 23:59:56 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGHzYNZWPrmFcCdWbmP7EsjuOF9qMOthEUxg9RW6OOpDJQl81ryv7HHxHT+jWUwMOoXzhGb1+6gnLZGRqCg1ek=
-X-Received: by 2002:ac2:4a63:0:b0:507:9803:ff8b with SMTP id
- q3-20020ac24a63000000b005079803ff8bmr636514lfp.44.1697785195928; Thu, 19 Oct
- 2023 23:59:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A7CCA6E
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 07:03:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6D80C433C9;
+	Fri, 20 Oct 2023 07:03:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1697785424;
+	bh=OkduzFsQrql4vaQN1hI4ttHMuV3cQxeu0vcbumIU/YQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=hqR6eY9HqplSVmgpVrsg/pSkDw62/zAbF0f+qFRka5bz/yojBeZdRWyUTVzOs9/Cx
+	 ooV+wCVycPSJmQEvXzBpgpcKSM5nv9yCblY2VcpvPJc6PEFM7I2t+foqkoH7rpj3eK
+	 MTKS3soeVyjSuaVoWwJLIimsfdDfSbnxo0o0AXCYz3vhDF5xoCLBBmY5qT+7tOPT+Z
+	 q41KNTB6Mn9vHd398z4IHhs26g23y4qzEBYeSaaCIDe0JgZ6PxT9soxjm/iKrSjosn
+	 mJHcec+v1gxQsfQRNHDEGwikEXJIaq0YKk8Bm5Y8v5kJoTEPnsvDTnoGBRV2B9620y
+	 NlsfWtmG1Yqjg==
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6ce37d0f1a9so149799a34.0;
+        Fri, 20 Oct 2023 00:03:44 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyXcrvL6cALJiHZe3ciRnu52hc1kyE1nmArRdOe316vtCj5NwDk
+	PI/f+jBWYlg9BE2jI7APRF+lWwwMDT+pJVrGO98=
+X-Google-Smtp-Source: AGHT+IHN0w7kBf0+HBio2x3W554zUTb5zy2/0fI+q2GVGnmytcQr57G3zxy8R7UNLJtf2+dwNbxg8mC6Ev0mJcXlEh8=
+X-Received: by 2002:a05:6870:5d8d:b0:1e9:fc32:9887 with SMTP id
+ fu13-20020a0568705d8d00b001e9fc329887mr1459108oab.13.1697785423969; Fri, 20
+ Oct 2023 00:03:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231016120033.26933-1-xuanzhuo@linux.alibaba.com>
- <20231016120033.26933-5-xuanzhuo@linux.alibaba.com> <CACGkMEtmvyJ93Xa0791KVSZEzqZgT9trzOkxz1OY+wOJ1xaR5A@mail.gmail.com>
- <1697699809.6548615-2-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1697699809.6548615-2-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Fri, 20 Oct 2023 14:59:45 +0800
-Message-ID: <CACGkMEsXNqPSEw8tznkGNypjR=aecWr7t0tTeqgRk8OPMwWzXA@mail.gmail.com>
-Subject: Re: [PATCH net-next v1 04/19] virtio_net: move to virtio_net.h
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+References: <20231018151950.205265-1-masahiroy@kernel.org> <20231018151950.205265-4-masahiroy@kernel.org>
+ <ZTDlrkTXnkVN1cff@krava> <CAEf4BzZm4h4q6k9ZhuT5qiWC9PYA+c7XwVFd68iAq4mtMJ-qhw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZm4h4q6k9ZhuT5qiWC9PYA+c7XwVFd68iAq4mtMJ-qhw@mail.gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Fri, 20 Oct 2023 16:03:07 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAR2kKwbzdFxfVXDxsy8pfyQDCR-BN=zpbcZg0JS9RpsKQ@mail.gmail.com>
+Message-ID: <CAK7LNAR2kKwbzdFxfVXDxsy8pfyQDCR-BN=zpbcZg0JS9RpsKQ@mail.gmail.com>
+Subject: Re: [bpf-next PATCH v2 4/4] kbuild: refactor module BTF rule
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 19, 2023 at 3:20=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
-om> wrote:
+On Fri, Oct 20, 2023 at 7:55=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Thu, 19 Oct 2023 14:12:55 +0800, Jason Wang <jasowang@redhat.com> wrot=
-e:
-> > On Mon, Oct 16, 2023 at 8:00=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.aliba=
-ba.com> wrote:
+> On Thu, Oct 19, 2023 at 1:15=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wr=
+ote:
+> >
+> > On Thu, Oct 19, 2023 at 12:19:50AM +0900, Masahiro Yamada wrote:
+> > > newer_prereqs_except and if_changed_except are ugly hacks of the
+> > > newer-prereqs and if_changed in scripts/Kbuild.include.
 > > >
-> > > Move some structure definitions and inline functions into the
-> > > virtio_net.h file.
-> >
-> > Some of the functions are not inline one before the moving. I'm not
-> > sure what's the criteria to choose the function to be moved.
->
->
-> That will used by xsk.c or other funcions in headers in the subsequence
-> commits.
->
-> If you are confused, I can try move the function when that is needed.
-> This commit just move some important structures.
-
-That's fine.
-
-Thanks
-
->
-> Thanks.
->
-> >
-> >
+> > > Remove.
 > > >
-> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > > > ---
-> > >  drivers/net/virtio/main.c       | 252 +-----------------------------=
--
-> > >  drivers/net/virtio/virtio_net.h | 256 ++++++++++++++++++++++++++++++=
-++
-> > >  2 files changed, 258 insertions(+), 250 deletions(-)
-> > >  create mode 100644 drivers/net/virtio/virtio_net.h
 > > >
-> > > diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
-> > > index 6cf77b6acdab..d8b6c0d86f29 100644
-> > > --- a/drivers/net/virtio/main.c
-> > > +++ b/drivers/net/virtio/main.c
-> > > @@ -6,7 +6,6 @@
-> > >  //#define DEBUG
-> > >  #include <linux/netdevice.h>
-> > >  #include <linux/etherdevice.h>
-> > > -#include <linux/ethtool.h>
-> > >  #include <linux/module.h>
-> > >  #include <linux/virtio.h>
-> > >  #include <linux/virtio_net.h>
-> > > @@ -16,7 +15,6 @@
-> > >  #include <linux/if_vlan.h>
-> > >  #include <linux/slab.h>
-> > >  #include <linux/cpu.h>
-> > > -#include <linux/average.h>
-> > >  #include <linux/filter.h>
-> > >  #include <linux/kernel.h>
-> > >  #include <net/route.h>
-> > > @@ -24,6 +22,8 @@
-> > >  #include <net/net_failover.h>
-> > >  #include <net/netdev_rx_queue.h>
+> > > Changes in v2:
+> > >   - Fix if_changed_except to if_changed
 > > >
-> > > +#include "virtio_net.h"
-> > > +
-> > >  static int napi_weight =3D NAPI_POLL_WEIGHT;
-> > >  module_param(napi_weight, int, 0444);
+> > >  scripts/Makefile.modfinal | 25 ++++++-------------------
+> > >  1 file changed, 6 insertions(+), 19 deletions(-)
 > > >
-> > > @@ -45,15 +45,6 @@ module_param(napi_tx, bool, 0644);
-> > >  #define VIRTIO_XDP_TX          BIT(0)
-> > >  #define VIRTIO_XDP_REDIR       BIT(1)
+> > > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> > > index 9fd7a26e4fe9..fc07854bb7b9 100644
+> > > --- a/scripts/Makefile.modfinal
+> > > +++ b/scripts/Makefile.modfinal
+> > > @@ -19,6 +19,9 @@ vmlinux :=3D
+> > >  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+> > >  ifneq ($(wildcard vmlinux),)
+> > >  vmlinux :=3D vmlinux
+> > > +cmd_btf =3D ; \
+> > > +     LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_=
+base vmlinux $@; \
+> > > +     $(RESOLVE_BTFIDS) -b vmlinux $@
+> > >  else
+> > >  $(warning Skipping BTF generation due to unavailability of vmlinux)
+> > >  endif
+> > > @@ -41,27 +44,11 @@ quiet_cmd_ld_ko_o =3D LD [M]  $@
+> > >        cmd_ld_ko_o +=3D                                              =
+   \
+> > >       $(LD) -r $(KBUILD_LDFLAGS)                                     =
+ \
+> > >               $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)             =
+ \
+> > > -             -T scripts/module.lds -o $@ $(filter %.o, $^)
+> > > +             -T scripts/module.lds -o $@ $(filter %.o, $^)          =
+ \
+> > > +     $(cmd_btf)
 > > >
-> > > -#define VIRTIO_XDP_FLAG        BIT(0)
-> > > -
-> > > -/* RX packet size EWMA. The average packet size is used to determine=
- the packet
-> > > - * buffer size when refilling RX rings. As the entire RX ring may be=
- refilled
-> > > - * at once, the weight is chosen so that the EWMA will be insensitiv=
-e to short-
-> > > - * term, transient changes in packet size.
-> > > - */
-> > > -DECLARE_EWMA(pkt_len, 0, 64)
-> > > -
-> > >  #define VIRTNET_DRIVER_VERSION "1.0.0"
-> > >
-> > >  static const unsigned long guest_offloads[] =3D {
-> > > @@ -74,36 +65,6 @@ static const unsigned long guest_offloads[] =3D {
-> > >                                 (1ULL << VIRTIO_NET_F_GUEST_USO4) | \
-> > >                                 (1ULL << VIRTIO_NET_F_GUEST_USO6))
-> > >
-> > > -struct virtnet_stat_desc {
-> > > -       char desc[ETH_GSTRING_LEN];
-> > > -       size_t offset;
-> > > -};
-> > > -
-> > > -struct virtnet_sq_stats {
-> > > -       struct u64_stats_sync syncp;
-> > > -       u64 packets;
-> > > -       u64 bytes;
-> > > -       u64 xdp_tx;
-> > > -       u64 xdp_tx_drops;
-> > > -       u64 kicks;
-> > > -       u64 tx_timeouts;
-> > > -};
-> > > -
-> > > -struct virtnet_rq_stats {
-> > > -       struct u64_stats_sync syncp;
-> > > -       u64 packets;
-> > > -       u64 bytes;
-> > > -       u64 drops;
-> > > -       u64 xdp_packets;
-> > > -       u64 xdp_tx;
-> > > -       u64 xdp_redirects;
-> > > -       u64 xdp_drops;
-> > > -       u64 kicks;
-> > > -};
-> > > -
-> > > -#define VIRTNET_SQ_STAT(m)     offsetof(struct virtnet_sq_stats, m)
-> > > -#define VIRTNET_RQ_STAT(m)     offsetof(struct virtnet_rq_stats, m)
-> > > -
-> > >  static const struct virtnet_stat_desc virtnet_sq_stats_desc[] =3D {
-> > >         { "packets",            VIRTNET_SQ_STAT(packets) },
-> > >         { "bytes",              VIRTNET_SQ_STAT(bytes) },
-> > > @@ -127,80 +88,6 @@ static const struct virtnet_stat_desc virtnet_rq_=
-stats_desc[] =3D {
-> > >  #define VIRTNET_SQ_STATS_LEN   ARRAY_SIZE(virtnet_sq_stats_desc)
-> > >  #define VIRTNET_RQ_STATS_LEN   ARRAY_SIZE(virtnet_rq_stats_desc)
-> > >
-> > > -struct virtnet_interrupt_coalesce {
-> > > -       u32 max_packets;
-> > > -       u32 max_usecs;
-> > > -};
-> > > -
-> > > -/* The dma information of pages allocated at a time. */
-> > > -struct virtnet_rq_dma {
-> > > -       dma_addr_t addr;
-> > > -       u32 ref;
-> > > -       u16 len;
-> > > -       u16 need_sync;
-> > > -};
-> > > -
-> > > -/* Internal representation of a send virtqueue */
-> > > -struct send_queue {
-> > > -       /* Virtqueue associated with this send _queue */
-> > > -       struct virtqueue *vq;
-> > > -
-> > > -       /* TX: fragments + linear part + virtio header */
-> > > -       struct scatterlist sg[MAX_SKB_FRAGS + 2];
-> > > -
-> > > -       /* Name of the send queue: output.$index */
-> > > -       char name[16];
-> > > -
-> > > -       struct virtnet_sq_stats stats;
-> > > -
-> > > -       struct virtnet_interrupt_coalesce intr_coal;
-> > > -
-> > > -       struct napi_struct napi;
-> > > -
-> > > -       /* Record whether sq is in reset state. */
-> > > -       bool reset;
-> > > -};
-> > > -
-> > > -/* Internal representation of a receive virtqueue */
-> > > -struct receive_queue {
-> > > -       /* Virtqueue associated with this receive_queue */
-> > > -       struct virtqueue *vq;
-> > > -
-> > > -       struct napi_struct napi;
-> > > -
-> > > -       struct bpf_prog __rcu *xdp_prog;
-> > > -
-> > > -       struct virtnet_rq_stats stats;
-> > > -
-> > > -       struct virtnet_interrupt_coalesce intr_coal;
-> > > -
-> > > -       /* Chain pages by the private ptr. */
-> > > -       struct page *pages;
-> > > -
-> > > -       /* Average packet length for mergeable receive buffers. */
-> > > -       struct ewma_pkt_len mrg_avg_pkt_len;
-> > > -
-> > > -       /* Page frag for packet buffer allocation. */
-> > > -       struct page_frag alloc_frag;
-> > > -
-> > > -       /* RX: fragments + linear part + virtio header */
-> > > -       struct scatterlist sg[MAX_SKB_FRAGS + 2];
-> > > -
-> > > -       /* Min single buffer size for mergeable buffers case. */
-> > > -       unsigned int min_buf_len;
-> > > -
-> > > -       /* Name of this receive queue: input.$index */
-> > > -       char name[16];
-> > > -
-> > > -       struct xdp_rxq_info xdp_rxq;
-> > > -
-> > > -       /* Record the last dma info to free after new pages is alloca=
-ted. */
-> > > -       struct virtnet_rq_dma *last_dma;
-> > > -
-> > > -       /* Do dma by self */
-> > > -       bool do_dma;
-> > > -};
-> > > -
-> > >  /* This structure can contain rss message with maximum settings for =
-indirection table and keysize
-> > >   * Note, that default structure that describes RSS configuration vir=
-tio_net_rss_config
-> > >   * contains same info but can't handle table values.
-> > > @@ -234,88 +121,6 @@ struct control_buf {
-> > >         struct virtio_net_ctrl_coal_vq coal_vq;
-> > >  };
-> > >
-> > > -struct virtnet_info {
-> > > -       struct virtio_device *vdev;
-> > > -       struct virtqueue *cvq;
-> > > -       struct net_device *dev;
-> > > -       struct send_queue *sq;
-> > > -       struct receive_queue *rq;
-> > > -       unsigned int status;
-> > > -
-> > > -       /* Max # of queue pairs supported by the device */
-> > > -       u16 max_queue_pairs;
-> > > -
-> > > -       /* # of queue pairs currently used by the driver */
-> > > -       u16 curr_queue_pairs;
-> > > -
-> > > -       /* # of XDP queue pairs currently used by the driver */
-> > > -       u16 xdp_queue_pairs;
-> > > -
-> > > -       /* xdp_queue_pairs may be 0, when xdp is already loaded. So a=
-dd this. */
-> > > -       bool xdp_enabled;
-> > > -
-> > > -       /* I like... big packets and I cannot lie! */
-> > > -       bool big_packets;
-> > > -
-> > > -       /* number of sg entries allocated for big packets */
-> > > -       unsigned int big_packets_num_skbfrags;
-> > > -
-> > > -       /* Host will merge rx buffers for big packets (shake it! shak=
-e it!) */
-> > > -       bool mergeable_rx_bufs;
-> > > -
-> > > -       /* Host supports rss and/or hash report */
-> > > -       bool has_rss;
-> > > -       bool has_rss_hash_report;
-> > > -       u8 rss_key_size;
-> > > -       u16 rss_indir_table_size;
-> > > -       u32 rss_hash_types_supported;
-> > > -       u32 rss_hash_types_saved;
-> > > -
-> > > -       /* Has control virtqueue */
-> > > -       bool has_cvq;
-> > > -
-> > > -       /* Host can handle any s/g split between our header and packe=
-t data */
-> > > -       bool any_header_sg;
-> > > -
-> > > -       /* Packet virtio header size */
-> > > -       u8 hdr_len;
-> > > -
-> > > -       /* Work struct for delayed refilling if we run low on memory.=
- */
-> > > -       struct delayed_work refill;
-> > > -
-> > > -       /* Is delayed refill enabled? */
-> > > -       bool refill_enabled;
-> > > -
-> > > -       /* The lock to synchronize the access to refill_enabled */
-> > > -       spinlock_t refill_lock;
-> > > -
-> > > -       /* Work struct for config space updates */
-> > > -       struct work_struct config_work;
-> > > -
-> > > -       /* Does the affinity hint is set for virtqueues? */
-> > > -       bool affinity_hint_set;
-> > > -
-> > > -       /* CPU hotplug instances for online & dead */
-> > > -       struct hlist_node node;
-> > > -       struct hlist_node node_dead;
-> > > -
-> > > -       struct control_buf *ctrl;
-> > > -
-> > > -       /* Ethtool settings */
-> > > -       u8 duplex;
-> > > -       u32 speed;
-> > > -
-> > > -       /* Interrupt coalescing settings */
-> > > -       struct virtnet_interrupt_coalesce intr_coal_tx;
-> > > -       struct virtnet_interrupt_coalesce intr_coal_rx;
-> > > -
-> > > -       unsigned long guest_offloads;
-> > > -       unsigned long guest_offloads_capable;
-> > > -
-> > > -       /* failover when STANDBY feature enabled */
-> > > -       struct failover *failover;
-> > > -};
-> > > -
-> > >  struct padded_vnet_hdr {
-> > >         struct virtio_net_hdr_v1_hash hdr;
-> > >         /*
-> > > @@ -337,45 +142,11 @@ struct virtio_net_common_hdr {
-> > >  static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *b=
-uf);
-> > >  static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *b=
-uf);
-> > >
-> > > -static bool is_xdp_frame(void *ptr)
-> > > -{
-> > > -       return (unsigned long)ptr & VIRTIO_XDP_FLAG;
-> > > -}
-> > > -
-> > >  static void *xdp_to_ptr(struct xdp_frame *ptr)
-> > >  {
-> > >         return (void *)((unsigned long)ptr | VIRTIO_XDP_FLAG);
-> > >  }
+> > > -quiet_cmd_btf_ko =3D BTF [M] $@
 > >
-> > Any reason for not moving this?
-> >
-> > Thanks
-> >
-> > >
+> > nit not sure it's intentional but we no longer display 'BTF [M] ...ko' =
+lines,
+> > I don't mind not displaying that, but we should mention that in changel=
+og
 > >
 >
+> Thanks for spotting this! I think those messages are useful and
+> important to keep. Masahiro, is it possible to preserve them?
 
+
+
+No, I do not think so.
+
+Your code is wrong.
+
+
+To clarify this is a fix,
+I will replace the commit as follows:
+
+
+
+
+------------------->8----------------------
+kbuild: detect btf command change for modules
+
+Currently, the command change in cmd_btf_ko does not cause to rebuild
+the modules because it is not passed to if_changed.
+
+Pass everything to if_change so that the btf command is also recorded
+in the .*.cmd files. This removes the hacky newer_prereqs_except and
+if_changed_except macros too.
+------------------->8----------------------
+
+
+
+
+--
+Best Regards
+
+Masahiro Yamada
 
