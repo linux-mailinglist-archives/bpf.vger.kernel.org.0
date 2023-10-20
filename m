@@ -1,147 +1,153 @@
-Return-Path: <bpf+bounces-12871-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12872-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F33D7D1841
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 23:38:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 060EA7D18CA
+	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 00:02:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BD2E1C2093D
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 21:38:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02FE4B215AF
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 22:02:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10F402FE0D;
-	Fri, 20 Oct 2023 21:38:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5F05321B0;
+	Fri, 20 Oct 2023 22:02:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NA/0OH4c"
+	dkim=pass (1024-bit key) header.d=epfl.ch header.i=@epfl.ch header.b="GLA14+fb"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A9C1A5A8
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 21:37:57 +0000 (UTC)
-Received: from out-194.mta1.migadu.com (out-194.mta1.migadu.com [95.215.58.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D97BD7A
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 14:37:51 -0700 (PDT)
-Message-ID: <047bbde0-eb9c-7785-349a-d241c1623fab@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1697837869;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DaSnHyuKtdUTDp3PA3Ycr2I841iXFtsPPUqcHWay0Wg=;
-	b=NA/0OH4cLMvFdv3Ya5aRcqDNHQZQ96ivY1W3mfBX5LMoLhvRe4kHpLQT0h22DngZOSdzJv
-	1sONIf9BCPybxY00m3crc8GY3TjuniuW2SAP9fjlu9VjgzrhRIJ4jhjDgaGgbQG4oLaj2k
-	S+AWegvXbnyRHs4+AeZ1ZUtTxT4lumU=
-Date: Fri, 20 Oct 2023 14:37:44 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B48B62FE09
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 22:02:34 +0000 (UTC)
+Received: from smtp5.epfl.ch (smtp5.epfl.ch [IPv6:2001:620:618:1e0:1:80b2:e034:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79AB9D52
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 15:02:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=epfl.ch;
+      s=epfl; t=1697839347;
+      h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Content-Type;
+      bh=spzh79TVE/k8kd+8ZYhaeOZCPuUEPSlfw+NJGWna0uU=;
+      b=GLA14+fbyqbiDw/n5EgC2niDIR3DVoUtk7uoIVTqlOfAUyTnl4yCmboVYxZHDO7lX
+        hIgpitbXyZZPGn8nZn9ikwblGay0XYGpW+Uv68xTJ3+RD78svrN5af4G6RVWntEQZ
+        c1GyUckTKXKzcJc2OX0QsmqaJ8aoIGHuT27HYHidU=
+Received: (qmail 30588 invoked by uid 107); 20 Oct 2023 22:02:27 -0000
+Received: from ax-snat-224-178.epfl.ch (HELO ewa07.intranet.epfl.ch) (192.168.224.178) (TLS, ECDHE-RSA-AES256-GCM-SHA384 (P-256 curve) cipher)
+  by mail.epfl.ch (AngelmatoPhylax SMTP proxy) with ESMTPS; Sat, 21 Oct 2023 00:02:27 +0200
+X-EPFL-Auth: XjnzMUAuGC+9lWDvEvyVvVeUSbUWNNTSRYRtS7moNwUDKGFyO0g=
+Received: from rs3labsrv2.iccluster.epfl.ch (10.90.46.62) by
+ ewa07.intranet.epfl.ch (128.178.224.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.31; Sat, 21 Oct 2023 00:02:27 +0200
+From: Tao Lyu <tao.lyu@epfl.ch>
+To: <ast@kernel.org>, <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
+	<andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
+	<yonghong.song@linux.dev>, <kpsingh@kernel.org>, <sdf@google.com>,
+	<haoluo@google.com>, <jolsa@kernel.org>, <mykolal@fb.com>
+CC: <bpf@vger.kernel.org>, <sanidhya.kashyap@epfl.ch>,
+	<mathias.payer@nebelwelt.net>, <meng.xu.cs@uwaterloo.ca>, <tao.lyu@epfl.ch>
+Subject: [PATCH] Accept program in priv mode when returning from subprog with r10 marked as precise
+Date: Sat, 21 Oct 2023 00:02:16 +0200
+Message-ID: <20231020220216.263948-1-tao.lyu@epfl.ch>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <https://lore.kernel.org/bpf/20231020155842.130257-1-tao.lyu@epfl.ch/T/#u>
+References: <https://lore.kernel.org/bpf/20231020155842.130257-1-tao.lyu@epfl.ch/T/#u>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v5 3/9] bpf: hold module for bpf_struct_ops_map.
-Content-Language: en-US
-To: Kui-Feng Lee <sinquersw@gmail.com>, thinker.li@gmail.com
-Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, drosen@google.com
-References: <20231017162306.176586-1-thinker.li@gmail.com>
- <20231017162306.176586-4-thinker.li@gmail.com>
- <a245d4c4-6eb0-ce54-41aa-4f8c8acf3051@linux.dev>
- <7ea8ebf7-3349-4461-b204-be106e3b547a@gmail.com>
- <02e2a704-4939-4f8c-b465-473c3a2eae1c@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <02e2a704-4939-4f8c-b465-473c3a2eae1c@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
+X-Originating-IP: [10.90.46.62]
+X-ClientProxiedBy: ewa11.intranet.epfl.ch (128.178.224.186) To
+ ewa07.intranet.epfl.ch (128.178.224.178)
 
-On 10/19/23 10:07 PM, Kui-Feng Lee wrote:
-> 
-> 
-> On 10/19/23 09:29, Kui-Feng Lee wrote:
->>
->>
->> On 10/18/23 17:36, Martin KaFai Lau wrote:
->>> On 10/17/23 9:23 AM, thinker.li@gmail.com wrote:
->>
->>>
->>>>   }
->>>>   void bpf_struct_ops_init(struct btf *btf, struct bpf_verifier_log *log)
->>>> @@ -215,7 +218,7 @@ void bpf_struct_ops_init(struct btf *btf, struct 
->>>> bpf_verifier_log *log)
->>>>       for (i = 0; i < ARRAY_SIZE(bpf_struct_ops); i++) {
->>>>           st_ops = bpf_struct_ops[i];
->>>> -        bpf_struct_ops_init_one(st_ops, btf, log);
->>>> +        bpf_struct_ops_init_one(st_ops, btf, NULL, log);
->>>>       }
->>>>   }
->>>> @@ -630,6 +633,7 @@ static void __bpf_struct_ops_map_free(struct bpf_map *map)
->>>>           bpf_jit_uncharge_modmem(PAGE_SIZE);
->>>>       }
->>>>       bpf_map_area_free(st_map->uvalue);
->>>> +    module_put(st_map->st_ops->owner);
->>>>       bpf_map_area_free(st_map);
->>>>   }
->>>> @@ -676,9 +680,18 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union 
->>>> bpf_attr *attr)
->>>>       if (!st_ops)
->>>>           return ERR_PTR(-ENOTSUPP);
->>>> +    /* If st_ops->owner is NULL, it means the struct_ops is
->>>> +     * statically defined in the kernel.  We don't need to
->>>> +     * take a refcount on it.
->>>> +     */
->>>> +    if (st_ops->owner && !btf_try_get_module(st_ops->btf))
+There is another issue about the backtracking.
+When uploading the following program under privilege mode,
+the verifier reports a "verifier backtracking bug".
 
-While replying and looking at it again, I don't think the 
-btf_try_get_module(st_ops->btf) is safe. The module's owned st_ops itself could 
-have been gone with the module. The same goes with the "st_ops->owner" test, so 
-btf_is_module(btf) should be used instead.
+0: R1=ctx(off=0,imm=0) R10=fp0
+0: (85) call pc+2
+caller:
+ R10=fp0
+callee:
+ frame1: R1=ctx(off=0,imm=0) R10=fp0
+3: frame1:
+3: (bf) r3 = r10                      ; frame1: R3_w=fp0 R10=fp0
+4: (bc) w0 = w10                      ; frame1: R0_w=scalar(umax=4294967295,var_off=(0x0; 0xffffffff)) R10=fp0
+5: (0f) r3 += r0
+mark_precise: frame1: last_idx 5 first_idx 0 subseq_idx -1
+mark_precise: frame1: regs=r0 stack= before 4: (bc) w0 = w10
+mark_precise: frame1: regs=r10 stack= before 3: (bf) r3 = r10
+mark_precise: frame1: regs=r10 stack= before 0: (85) call pc+2
+BUG regs 400
 
-I am risking to act like a broken clock to repeat this question, does it really 
-need to store btf back into the st_ops which may accidentally get into the above 
-btf_try_get_module(st_ops->btf) usage?
+This bug is manifested by the following check:
 
->>>
->>> This just came to my mind. Is the module refcnt needed during map alloc/free 
->>> or it could be done during the reg/unreg instead?
->>
->>
->> Sure, I can move it to reg/unreg.
-> 
-> Just found that we relies type information in st_ops to update element and clean 
-> up maps.
-> We can not move get/put modules to reg/unreg except keeping a redundant copy in
-> st_map or somewhere. It make the code much more complicated by
-> introducing get/put module here and there.
-> 
-> I prefer to keep as it is now. WDYT?
+if (bt_reg_mask(bt) & ~BPF_REGMASK_ARGS) {
+    verbose(env, "BUG regs %x\n", bt_reg_mask(bt));
+    WARN_ONCE(1, "verifier backtracking bug");
+    return -EFAULT;
+}
 
-Yeah, sure. I was asking after seeing a longer wait time for the module to go 
-away in patch 11 selftest and requires an explicit waiting for the tasks_trace 
-period. Releasing the module refcnt earlier will help.
+Since the verifier allows add operation on stack pointers,
+it shouldn't show this WARNING and reject the program.
 
-Regardless of the module refcnt hold/free location, I think storing the type* 
-and value* in the module's owned st_ops does not look correct now. It was fine 
-and convenient to piggy back them into bpf_struct_ops when everything was 
-built-in the kernel and no lifetime concern. It makes sense now to separate them 
-out from the module's owned st_ops. Something like:
+I fixed it by skipping the warning if it's privilege mode and only r10 is marked as precise.
 
-struct btf_struct_ops_desc {
-	struct bpf_struct_ops *ops;
-         const struct btf_type *type;
-         const struct btf_type *value_type;
-         u32 type_id;
-         u32 value_id;
-};
+Signed-off-by: Tao Lyu <tao.lyu@epfl.ch>
+---
+ kernel/bpf/verifier.c                            |  4 +++-
+ .../bpf/verifier/ret-without-checing-r10.c       | 16 ++++++++++++++++
+ 2 files changed, 19 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/verifier/ret-without-checing-r10.c
 
-struct btf_struct_ops_tab {
-         u32 cnt;
-	u32 capacity;
-	struct btf_struct_ops_desc *st_ops_desc[];
-};
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index e777f50401b6..1ce80cdc4f1d 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3495,6 +3495,7 @@ static int backtrack_insn(struct bpf_verifier_env *env, int idx, int subseq_idx,
+ 	u32 dreg = insn->dst_reg;
+ 	u32 sreg = insn->src_reg;
+ 	u32 spi, i;
++	u32 reg_mask;
+ 
+ 	if (insn->code == 0)
+ 		return 0;
+@@ -3621,7 +3622,8 @@ static int backtrack_insn(struct bpf_verifier_env *env, int idx, int subseq_idx,
+ 				 * precise, r0 and r6-r10 or any stack slot in
+ 				 * the current frame should be zero by now
+ 				 */
+-				if (bt_reg_mask(bt) & ~BPF_REGMASK_ARGS) {
++				reg_mask = bt_reg_mask(bt) & ~BPF_REGMASK_ARGS;
++				if (reg_mask && !((reg_mask == 1 << BPF_REG_10) && env->allow_ptr_leaks)) {
+ 					verbose(env, "BUG regs %x\n", bt_reg_mask(bt));
+ 					WARN_ONCE(1, "verifier backtracking bug");
+ 					return -EFAULT;
+diff --git a/tools/testing/selftests/bpf/verifier/ret-without-checing-r10.c b/tools/testing/selftests/bpf/verifier/ret-without-checing-r10.c
+new file mode 100644
+index 000000000000..56e529cf922b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/verifier/ret-without-checing-r10.c
+@@ -0,0 +1,16 @@
++{
++  "pointer arithmetic: when returning from subprog in priv, do not checking r10",
++  .insns = {
++	BPF_CALL_REL(2),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	BPF_MOV64_REG(BPF_REG_3, BPF_REG_10),
++	BPF_MOV32_REG(BPF_REG_0, BPF_REG_10),
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_3, BPF_REG_0),
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++  },
++  .result  = ACCEPT,
++  .result_unpriv = REJECT,
++  .errstr_unpriv = "loading/calling other bpf or kernel functions are allowed for CAP_BPF and CAP_SYS_ADMIN",
++},
+-- 
+2.25.1
 
-wdyt?
 
