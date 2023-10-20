@@ -1,283 +1,218 @@
-Return-Path: <bpf+bounces-12814-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12815-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B28AF7D0E62
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 13:29:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 659427D0FA4
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 14:27:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25CFDB21436
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 11:29:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52A0F1C20E73
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 12:27:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF64018E1E;
-	Fri, 20 Oct 2023 11:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 660EF19BD4;
+	Fri, 20 Oct 2023 12:27:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="LccNg23t"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C5F18E03
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 11:28:54 +0000 (UTC)
-Received: from mail-ot1-f80.google.com (mail-ot1-f80.google.com [209.85.210.80])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4241A8
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 04:28:51 -0700 (PDT)
-Received: by mail-ot1-f80.google.com with SMTP id 46e09a7af769-6ce29652abaso875402a34.3
-        for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 04:28:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697801330; x=1698406130;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FKmQsTiSHDiANfS/WlRW00VQzH4fK7YNw/iaQWI2jPo=;
-        b=phkjTGOiex/lqKmnBQ4urhYuY5N/edHbI/cuWF/f3Yju5WI+SuuC3cWWm7NY/VEspI
-         C/eFPerGrC43ZzlQu327QUjS3a5Fdn3aTZ6bWxN0t6VpMOJO83un4vjMb8ubRYjOiNuk
-         QmhiB70XQk15yB0qtor/dq8PhSacddwx3N2TUO11hcuAoW6P1nn70Edqi/B9Gyb6HR9q
-         DFW5lfuUp+1Fi06GPUMduR+VxtBYcntBNJUld1/xgpiwLYjoqE3oryj+5SM52xhtsWrM
-         yglsa+pWlnkDJSfJ7luesXTyJdEQ95jPKOcFicz55AjD9khvT04NlGYyUR/6TFdD53z1
-         vxPg==
-X-Gm-Message-State: AOJu0YwKRJktl1cdMqJDcYOs8bueUzMu62YznkhKNc2I0qPgUpnmuopp
-	ReRKGat/QJgAOVcIR0NOadJT0OZsI5c3cDll3jyqWEjfAMs1BTiehA==
-X-Google-Smtp-Source: AGHT+IEuN+FfSvMxNgSEVBehxXRj2dAACRCToBJi7M0aYSJQCwYoMLLCNX3Orng1AlCj+JSipWUS8fo8d5X3uJdSMZaNznzl8NAo
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD0C71A27A
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 12:27:45 +0000 (UTC)
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2048.outbound.protection.outlook.com [40.107.6.48])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260B8D49
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 05:27:43 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fI/+2GJgkTWKEfLGjeTMO52LnAjGVkg4ve6dUYnyfV8VO30lu5yPs8otU2ADbBwC8X18LSNVUtmc4za4nzckyD827+c9TXqreUu0W9GNkXXJQvBqVyFXtSDrqbB7xEuOxMqhup9P1k0FwdjtMjdEAc955AF36geFJwZmEaGsJX4z0kDtjEZUrcqw+RgSkQxzVea6rRb/CisBhf1wsTBc1oeB3J5HGyVUnnYzv4mG+0/ib7z2xSBcipf0+dymQ6qiANw/J3XzYhtMVArag7wy/ppDiRE5idQuv4LnGcCzCVTwMpO7K5HGI10xxY5Bee8sKXimXBiJz8/sZytDVsUK9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JQfqEJahVjM4uE7OOUHQN+J8jcnJNPaoRnxvO5JQR0Y=;
+ b=f4+E+3M2fYogN7vmzBb4+ZFj7YM3kheI4hUEMMdhDdFPB8A1c0anSejQYQoAUU+BjpLP5QCQZ9OA4ksj7B9gIzSaXSS866yglbGL+0Z+soCdq+rOm/gfYYKOlypP5QV2z2x/AGtgZkx2MYd+9oUj7yymzhzuDR4FVuNQvDRxGL8vzkqcTpwhxe/Af8vo4QceCdIkr7VJCWhcOmF/2YCiPkiKl+ttvY2J9DLtEFW8t1k8aQjyCDP84wGweoIPIKvLzsyjNYLwmmLi4sjSDs+vZhDvg9hLlzcMFk9Xaj8EprOtA3eIRouOIw/REq6xOXLO//PFi7mvSTwGcyt6pVm+EA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JQfqEJahVjM4uE7OOUHQN+J8jcnJNPaoRnxvO5JQR0Y=;
+ b=LccNg23tNUV7ZD9xjIeR5REMGYXjdFAAdH3yDYIdumQeky0eJ7iVEX7kB+dO2DNdO1d6vuAvxCLNjawHYwWQZcFB3S+hD2SRqfHeJS623i65aG2JcHyGqj7gl+Cl9B4MbrjBtW8PWaJ/2UcOfJHDMj2+ZhKLS79RIu0I1otqlNJ6GKgXE+MHRAnZeuXIoo5E8jcbBxBNh1RSM4YFSfrOJOqXPWY8TZmlh7DATWZ1bMc2KF3Sk+SFC3Xsp9jNSH269gaK+TkW+bkc5WGGgRyyd7vvCCoreb4kmrMCjEuxxlYfkdhJNfcEd1fpLMPbAKBolYkulr31AnTujxs0tyyhCw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB9510.eurprd04.prod.outlook.com (2603:10a6:20b:44a::11)
+ by DB8PR04MB7049.eurprd04.prod.outlook.com (2603:10a6:10:fc::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.7; Fri, 20 Oct
+ 2023 12:27:39 +0000
+Received: from AS8PR04MB9510.eurprd04.prod.outlook.com
+ ([fe80::d87f:b654:d14c:c54a]) by AS8PR04MB9510.eurprd04.prod.outlook.com
+ ([fe80::d87f:b654:d14c:c54a%3]) with mapi id 15.20.6907.022; Fri, 20 Oct 2023
+ 12:27:39 +0000
+Date: Fri, 20 Oct 2023 20:27:32 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Langston Barrett <langston.barrett@gmail.com>,
+	Srinivas Narayana <srinivas.narayana@rutgers.edu>,
+	Santosh Nagarakatte <santosh.nagarakatte@cs.rutgers.edu>,
+	bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	martin.lau@kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH v2 bpf-next 7/7] selftests/bpf: BPF register range bounds
+ tester
+Message-ID: <ZTJyNJ44ekEdazfS@u94a>
+References: <20231019042405.2971130-1-andrii@kernel.org>
+ <20231019042405.2971130-8-andrii@kernel.org>
+ <ZTDbGWHu4CnJYWAs@u94a>
+ <CAEf4Bzad+jgPWQ37VM5JOw4GPHbjZpJrxmRsFs8N0MqeMHyLSA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4Bzad+jgPWQ37VM5JOw4GPHbjZpJrxmRsFs8N0MqeMHyLSA@mail.gmail.com>
+X-ClientProxiedBy: FR0P281CA0255.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:af::18) To AS8PR04MB9510.eurprd04.prod.outlook.com
+ (2603:10a6:20b:44a::11)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a9d:7f86:0:b0:6bf:192d:31dc with SMTP id
- t6-20020a9d7f86000000b006bf192d31dcmr417772otp.2.1697801330538; Fri, 20 Oct
- 2023 04:28:50 -0700 (PDT)
-Date: Fri, 20 Oct 2023 04:28:50 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000034c0520608242de6@google.com>
-Subject: [syzbot] [kernel?] possible deadlock in __schedule (2)
-From: syzbot <syzbot+39a85bc0224f82336405@syzkaller.appspotmail.com>
-To: bpf@vger.kernel.org, brauner@kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB9510:EE_|DB8PR04MB7049:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9a9a7a31-4891-4c59-f9e8-08dbd167f324
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Ye/6c0B4eRN6yy1dDhJcKd4f7ctplta4TnKpuPAcT+doJvh0R/qt2xotvoTdukJFnyuxNVpfEEAsMDU5yWcff6qBtLJFrdSyD7ov+yad7TW36CtA/BC/CnbLlD3pkwFGVG2ayP/x36nza5LyH90w/uZku+0Tq89I1F+ylzyS+RWcmDRjjW4MWOUzQwD5Rw8q5d02KFokuNHr1WEVSoEhA9b8FiB6qdaSzOPijydvkk8cudNr8KX5uVMHXnv4uSiAZrBUc0X1N/4KseiAAdtVgGmCIvFR6dIoDJmECYUmyIcpyXPAw32ed2/Ko95hEu9qZF+7vZ5JtqzhhPH/L9kO2jfqs3VZPCyyJEIlKdT14nKszSEICJzMPhrTeePoSPCR00YUsXYWHDTpnBaiKsNXlmc2WqOwc5OMxhC/lJfnrLLaRu67NoDmS7D9XyLTWBkR9dWc9qxSE46maEBZvEzZjfCRTD+5jT8LauN8Rat9G7TF4PJiqVRoPVqWz3IRvUCyK6hkmT6xmdpC2gKCE+WTUbFJzEO2sNpBuXekjalzV60=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB9510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(39860400002)(136003)(366004)(376002)(346002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(66946007)(66476007)(316002)(66556008)(86362001)(38100700002)(53546011)(83380400001)(6512007)(9686003)(26005)(6666004)(6506007)(6916009)(478600001)(8936002)(2906002)(6486002)(54906003)(7416002)(33716001)(4326008)(41300700001)(8676002)(966005)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?NjZLYnBRZmMwNExVODRRQXFGV1F2bytDdERSQkVDRGloL3dkOXFFVGtTWThB?=
+ =?utf-8?B?MGd2UWNmZVdJOU0xRXJXNk5qcHVYYndxeExsMFJCRmppWEVvdWt3eFV3dWV3?=
+ =?utf-8?B?WkxxM3YvR0k4dElHSjcxcmtDZ3l0akJmWm05d1J2ME4zYmxodk92cHIxaVJt?=
+ =?utf-8?B?WER4MUprb0x1elZ1SmtMS1hxZ0laZjRxeEpsWm1UTll5ODJlVTVGWkg5MmJ3?=
+ =?utf-8?B?T01jdnhqRG56U1J3OWNKYk53Mit3YXZmZmttZXBHbkJqb25aQVZJRFVsSHBL?=
+ =?utf-8?B?RGFON3paZmEvZjJZNGtCdGFDanp1S2VNQm8rZmQweWRSNDhCd0tuTzFTRFpa?=
+ =?utf-8?B?QTNWdHdZSlZseGgrTVJCZTFPOU1HRjlTbXhKTTM5Si9wNWRodTRSb0tDS1JY?=
+ =?utf-8?B?dytUV05td1JWUlE1bForNDZkZ1VjeHl6dmU4WHBvTW1OcVdqVzZHc1pKb3dI?=
+ =?utf-8?B?TThVNU1wMnJJRzB3am40N0FmSit5WUtwVjljbTIya2RDOWU1ZFh1R1Vldkwz?=
+ =?utf-8?B?blErVmI2ZU5aYjA4K2FqZUY3RjJQV2tZKy82emRIalBOT1J4NDlSQ3VLd1JM?=
+ =?utf-8?B?OWZXd05MeTFxYmZEd21Oc3ZCellFdjU1WS9MK01tb2toODMyNkxZVDJzU0Za?=
+ =?utf-8?B?bTJpTXRlWUhNbXFhUk0xRjY1SWVlejhyWFNWcVBoSGRMWWhpTHRBMkw3dHpB?=
+ =?utf-8?B?bE1TbnVvV0tldXBienNBTVlNZDZXYlJ3YzU0bGxnbktOdDVUM1RwUEhjVkgv?=
+ =?utf-8?B?TXllb0VRM01UUGRvbXlOdkhQUDNxa3RZdDN5U0R6WDNzdlVYeHAvZW1FSFFw?=
+ =?utf-8?B?Vjl0VkhvV2MxVHhobW5NR1ZtWm5qYjZKb2FnVFA4TWh1amMxb2xQRzNPcHdw?=
+ =?utf-8?B?cFp6clVtUkZ4T3drMm1EbmF0bU13T2w2UUMrNFJLejIyM2k3THo1OWJ6dkhy?=
+ =?utf-8?B?aWlvTnp3bnJYWG5neXprZlY2Uk1GenZsdi90aHNud1RjZ3V4M0VscDJQZDRR?=
+ =?utf-8?B?RzVxUWtlemJnSHVFL1ZFT1pXTklCbGxuSmZZZjlnT3NLY2dBdW5aMkJrbjdD?=
+ =?utf-8?B?ZHRvS3ZYRHVxVXQ0V2tMSmRydHZpclhDaEFxeFJaL2hQdWkyVEoxR0tYYkZh?=
+ =?utf-8?B?VHQ4YUo2QThGNHBGNENsVnU0Q0p4N3VpaGlxMTBQRVEvaExSQ0pXQll3TXhq?=
+ =?utf-8?B?Uk5hbG1SdjhrT3dGMC83aUJhNGViVlJmWGh0ZGtURlBuem1nOE43TkNZWnQ4?=
+ =?utf-8?B?OVdsNmIwc296WXJKNE1iVUs1VmNHdjNneWpkRGZBNFpnMGlZYmlvRkZtTVB2?=
+ =?utf-8?B?T2ZTZWgrQ3VBQ2g0NDdxYVhNbUUvZkVaZVpzYmVoK3hmaENxSjgvbTEzd21x?=
+ =?utf-8?B?WkFpODk0b3o2ZlBsUysrTTEvQjVOOHVhM2tLRjF2RG9VaURIUjg3ZW9mM1RR?=
+ =?utf-8?B?U3lLNmdwc09CN1lpZzREaGNiblVYSkVRRmxWelFxdHNrLzFGVFNySXZTYjlj?=
+ =?utf-8?B?MGhETk9nbi9KWno3VHhQcGNFcWRhOXV5MnJYY2tybFV6NUhvandiOXVNaVow?=
+ =?utf-8?B?SGpMM3J5QlVURkVTV2UyQ1dzQ09qUjJDbEhjZUJ1UmRqK25FMGZYRGE1ekUw?=
+ =?utf-8?B?OTZPYzQyU1Y0T3kzcUx1M2NvN1c3MVZVZS9VWGVBdVZLdzBjVzNZNkduRWFZ?=
+ =?utf-8?B?bGpKa1Y1Mng2WGFVL3l1YmtCNldGczZhNU1tVjYzLzB5bDhDUW0rY1hCNzd4?=
+ =?utf-8?B?a09VL3E0bkVua29hY1dDbFRmN1hnYlBsSWx5YjFrMkUwY2FYUTUyTVFBc2FF?=
+ =?utf-8?B?YVhHVmtuS000N0libTFXeXU0SFhkWllLVTdSZXJtbWE5MDNrVzF2NzdCTGph?=
+ =?utf-8?B?NjAyRitaejlVQVBhZHdVaytsb25YU29raWJtY0ZYVlMrK09ZVzIvcnZOQWlz?=
+ =?utf-8?B?dGVrRVI2dFdRQlNpQXRGOTBiV0Q0VURmUnJlNWladGtrMmY2cnVvSnZFRGVI?=
+ =?utf-8?B?QUIrRXlvVnNjalJGd1pTOEMybjZuRXMzclNreDBHdVQ1ZjdZWFNrVHFwS1NH?=
+ =?utf-8?B?dXFyd1dhbklJc2U3OUNZWDlkVFFHcTBNZ2xzTHZpNEZjTGhTRVU0RDZCdWFC?=
+ =?utf-8?Q?XDGwZDGm1hyQNaC1vWAENHFeq?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a9a7a31-4891-4c59-f9e8-08dbd167f324
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB9510.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 12:27:39.5183
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RZjm26QZvMXlRDQZZGxyVKENrvSjKO7nRm8lDfl24eWOIG5FbPGSi5zNASF3EoVI4DCx10et/5R/6miY58DvRg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7049
 
-Hello,
+On Thu, Oct 19, 2023 at 11:31:55AM -0700, Andrii Nakryiko wrote:
+> On Thu, Oct 19, 2023 at 12:30 AM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
+> > On Wed, Oct 18, 2023 at 09:24:05PM -0700, Andrii Nakryiko wrote:
+> > > Add tests that validate correctness and completeness of BPF verifier's
+> > > register range bounds.
+> >
+> > Nitpick: in abstract-interpretation-speak, completeness seems to mean
+> > something different. I believe what we're trying to check here is
+> > soundness[1], again, in abstraction-interpretation-speak), so using
+> > completeness here may be misleading to some. (I'll leave explanation to
+> > other that understand this concept better than I do, rather than making an
+> > ill attempt that would probably just make things worst)
+> 
+> I'll just say "Add test to validate BPF verifier's register range
+> bounds tracking logic." to avoid terminology hazards :)
 
-syzbot found the following issue on:
+Sounds good to me :)
 
-HEAD commit:    06dc10eae55b Merge tag 'fbdev-for-6.6-rc7' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13200f55680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d236817624b4822c
-dashboard link: https://syzkaller.appspot.com/bug?extid=39a85bc0224f82336405
-compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
+> > > The main bulk is a lot of auto-generated tests based on a small set of
+> > > seed values for lower and upper 32 bits of full 64-bit values.
+> > > Currently we validate only range vs const comparisons, but the idea is
+> > > to start validating range over range comparisons in subsequent patch set.
+> >
+> > CC Langston Barrett who had previously send kunit-based tnum checks[2] a
+> > while back. If this patch is merged, perhaps we can consider adding
+> > validation for tnum as well in the future using similar framework.
+> >
+> > More comments below
+> >
+> > > When setting up initial register ranges we treat registers as one of
+> > > u64/s64/u32/s32 numeric types, and then independently perform conditional
+> > > comparisons based on a potentially different u64/s64/u32/s32 types. This
+> > > tests lots of tricky cases of deriving bounds information across
+> > > different numeric domains.
+> > >
+> > > Given there are lots of auto-generated cases, we guard them behind
+> > > SLOW_TESTS=1 envvar requirement, and skip them altogether otherwise.
+> > > With current full set of upper/lower seed value, all supported
+> > > comparison operators and all the combinations of u64/s64/u32/s32 number
+> > > domains, we get about 7.7 million tests, which run in about 35 minutes
+> > > on my local qemu instance. So it's something that can be run manually
+> > > for exhaustive check in a reasonable time, and perhaps as a nightly CI
+> > > test, but certainly is too slow to run as part of a default test_progs run.
+> >
+> > FWIW an alternative approach that speeds things up is to use model checkers
+> > like Z3 or CBMC. On my laptop, using Z3 to validate tnum_add() against *all*
+> > possible inputs takes less than 1.3 seconds[3] (based on code from [1]
+> > paper, but I somehow lost the link to their GitHub repository).
+> >
+> > One of the potential issue with [3] is that Z3Py is written in Python. So
+> > there's the large over head of translating the C-implementation into Python
+> > using Z3Py APIs each time we changed relevant code. This overhead could
+> > potentially be removed with CBMC, which understand C, and we had a
+> > precedence of using CBMC[4] within the kernel source code, though it was
+> > later removed[5] due because SRCU changes are still happening too fast for
+> > the format tests to keep up, so it looks like CBMC is not a silver-bullet.
+> >
+> > I really meant to look into the CMBC approach for verification of ranges and
+> > tnum, but fails to allocate time for it, so far.
+> 
+> It would be great if someone did a proper model checker-based
+> verification of range tracking logic of overall BPF verifier logic,
+> agreed. Until we have that (and depending on how easy it is to
+> integrate that approach into BPF CI), I think having something as part
+> of test_progs is a good practical step forward.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Agree, by no mean was I trying to suggest we shouldn't have this test.
+Mainly want to bring up checker-based verification, and was glad to hear
+that it is considered worth investigating.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-06dc10ea.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/84fbcc80ef2d/vmlinux-06dc10ea.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a061d48adac0/Image-06dc10ea.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+39a85bc0224f82336405@syzkaller.appspotmail.com
-
-EEVDF scheduling fail, picking leftmost
-======================================================
-WARNING: possible circular locking dependency detected
-6.6.0-rc6-syzkaller-00039-g06dc10eae55b #0 Not tainted
-------------------------------------------------------
-syz-executor.1/3112 is trying to acquire lock:
-ffff8000865271b8 ((console_sem).lock){-.-.}-{2:2}, at: down_trylock+0x18/0x80 kernel/locking/semaphore.c:139
-
-but task is already holding lock:
-ffff00006a8dd758 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested kernel/sched/core.c:558 [inline]
-ffff00006a8dd758 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock kernel/sched/sched.h:1372 [inline]
-ffff00006a8dd758 (&rq->__lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1681 [inline]
-ffff00006a8dd758 (&rq->__lock){-.-.}-{2:2}, at: __schedule+0x268/0x2ae4 kernel/sched/core.c:6612
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #2 (&rq->__lock){-.-.}-{2:2}:
-       _raw_spin_lock_nested+0x50/0x6c kernel/locking/spinlock.c:378
-       raw_spin_rq_lock_nested+0x2c/0x44 kernel/sched/core.c:558
-       raw_spin_rq_lock kernel/sched/sched.h:1372 [inline]
-       rq_lock kernel/sched/sched.h:1681 [inline]
-       task_fork_fair+0x70/0x13c kernel/sched/fair.c:12416
-       sched_cgroup_fork+0x35c/0x520 kernel/sched/core.c:4816
-       copy_process+0x2fb0/0x5520 kernel/fork.c:2609
-       kernel_clone+0x140/0x7e8 kernel/fork.c:2909
-       user_mode_thread+0xb4/0xf0 kernel/fork.c:2987
-       rest_init+0x2c/0x210 init/main.c:691
-       arch_post_acpi_subsys_init+0x0/0x8 init/main.c:823
-       start_kernel+0x328/0x3a0 init/main.c:1068
-       __primary_switched+0xb8/0xc0 arch/arm64/kernel/head.S:523
-
--> #1 (&p->pi_lock){-.-.}-{2:2}:
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x58/0x80 kernel/locking/spinlock.c:162
-       class_raw_spinlock_irqsave_constructor include/linux/spinlock.h:518 [inline]
-       try_to_wake_up+0xac/0x1924 kernel/sched/core.c:4230
-       wake_up_process+0x18/0x24 kernel/sched/core.c:4478
-       __up.isra.0+0x124/0x18c kernel/locking/semaphore.c:278
-       up+0x94/0xd4 kernel/locking/semaphore.c:191
-       __up_console_sem kernel/printk/printk.c:346 [inline]
-       __console_unlock kernel/printk/printk.c:2718 [inline]
-       console_unlock+0x1b8/0x1d8 kernel/printk/printk.c:3037
-       fb_flashcursor drivers/video/fbdev/core/fbcon.c:382 [inline]
-       fb_flashcursor+0x220/0x340 drivers/video/fbdev/core/fbcon.c:348
-       process_one_work+0x670/0x143c kernel/workqueue.c:2630
-       process_scheduled_works kernel/workqueue.c:2703 [inline]
-       worker_thread+0x5a8/0xfb0 kernel/workqueue.c:2784
-       kthread+0x27c/0x300 kernel/kthread.c:388
-       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
-
--> #0 ((console_sem).lock){-.-.}-{2:2}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3868 [inline]
-       __lock_acquire+0x2cac/0x6b70 kernel/locking/lockdep.c:5136
-       lock_acquire kernel/locking/lockdep.c:5753 [inline]
-       lock_acquire+0x480/0x7c8 kernel/locking/lockdep.c:5718
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x58/0x80 kernel/locking/spinlock.c:162
-       down_trylock+0x18/0x80 kernel/locking/semaphore.c:139
-       __down_trylock_console_sem+0x38/0xd8 kernel/printk/printk.c:329
-       console_trylock kernel/printk/printk.c:2671 [inline]
-       console_trylock_spinning kernel/printk/printk.c:1927 [inline]
-       vprintk_emit+0x334/0x4e4 kernel/printk/printk.c:2306
-       vprintk_default+0x38/0x44 kernel/printk/printk.c:2322
-       vprintk+0x17c/0x1bc kernel/printk/printk_safe.c:45
-       _printk+0xa8/0xe0 kernel/printk/printk.c:2332
-       pick_eevdf kernel/sched/fair.c:976 [inline]
-       pick_next_entity kernel/sched/fair.c:5278 [inline]
-       pick_next_task_fair+0x1a4/0xd3c kernel/sched/fair.c:8222
-       __pick_next_task kernel/sched/core.c:6004 [inline]
-       pick_next_task kernel/sched/core.c:6514 [inline]
-       __schedule+0x3b8/0x2ae4 kernel/sched/core.c:6659
-       preempt_schedule_common kernel/sched/core.c:6864 [inline]
-       preempt_schedule+0xf4/0x254 kernel/sched/core.c:6888
-       __mutex_lock_common kernel/locking/mutex.c:613 [inline]
-       __mutex_lock+0x2b0/0x840 kernel/locking/mutex.c:747
-       mutex_lock_nested+0x24/0x30 kernel/locking/mutex.c:799
-       xt_find_table_lock+0x68/0x418 net/netfilter/x_tables.c:1242
-       get_entries net/ipv6/netfilter/ip6_tables.c:1035 [inline]
-       do_ip6t_get_ctl+0x340/0x980 net/ipv6/netfilter/ip6_tables.c:1669
-       nf_getsockopt+0x78/0xec net/netfilter/nf_sockopt.c:116
-       ipv6_getsockopt+0x210/0x34c net/ipv6/ipv6_sockglue.c:1500
-       tcp_getsockopt+0x7c/0x248 net/ipv4/tcp.c:4278
-       sock_common_getsockopt+0x70/0xc8 net/core/sock.c:3672
-       __sys_getsockopt+0x190/0x478 net/socket.c:2371
-       __do_sys_getsockopt net/socket.c:2386 [inline]
-       __se_sys_getsockopt net/socket.c:2383 [inline]
-       __arm64_sys_getsockopt+0xa4/0x100 net/socket.c:2383
-       __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
-       invoke_syscall+0x6c/0x258 arch/arm64/kernel/syscall.c:51
-       el0_svc_common.constprop.0+0xac/0x230 arch/arm64/kernel/syscall.c:136
-       do_el0_svc+0x40/0x58 arch/arm64/kernel/syscall.c:155
-       el0_svc+0x58/0x140 arch/arm64/kernel/entry-common.c:678
-       el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:696
-       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-
-other info that might help us debug this:
-
-Chain exists of:
-  (console_sem).lock --> &p->pi_lock --> &rq->__lock
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&rq->__lock);
-                               lock(&p->pi_lock);
-                               lock(&rq->__lock);
-  lock((console_sem).lock);
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor.1/3112:
- #0: ffff000013bfcd88 (&xt[i].mutex){+.+.}-{3:3}, at: xt_find_table_lock+0x68/0x418 net/netfilter/x_tables.c:1242
- #1: ffff00006a8dd758 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested kernel/sched/core.c:558 [inline]
- #1: ffff00006a8dd758 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock kernel/sched/sched.h:1372 [inline]
- #1: ffff00006a8dd758 (&rq->__lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1681 [inline]
- #1: ffff00006a8dd758 (&rq->__lock){-.-.}-{2:2}, at: __schedule+0x268/0x2ae4 kernel/sched/core.c:6612
-
-stack backtrace:
-CPU: 0 PID: 3112 Comm: syz-executor.1 Not tainted 6.6.0-rc6-syzkaller-00039-g06dc10eae55b #0
-Hardware name: linux,dummy-virt (DT)
-Call trace:
- dump_backtrace+0x9c/0x11c arch/arm64/kernel/stacktrace.c:233
- show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:240
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x74/0xd4 lib/dump_stack.c:106
- dump_stack+0x1c/0x28 lib/dump_stack.c:113
- print_circular_bug+0x420/0x6f8 kernel/locking/lockdep.c:2060
- check_noncircular+0x2dc/0x364 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3868 [inline]
- __lock_acquire+0x2cac/0x6b70 kernel/locking/lockdep.c:5136
- lock_acquire kernel/locking/lockdep.c:5753 [inline]
- lock_acquire+0x480/0x7c8 kernel/locking/lockdep.c:5718
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0x58/0x80 kernel/locking/spinlock.c:162
- down_trylock+0x18/0x80 kernel/locking/semaphore.c:139
- __down_trylock_console_sem+0x38/0xd8 kernel/printk/printk.c:329
- console_trylock kernel/printk/printk.c:2671 [inline]
- console_trylock_spinning kernel/printk/printk.c:1927 [inline]
- vprintk_emit+0x334/0x4e4 kernel/printk/printk.c:2306
- vprintk_default+0x38/0x44 kernel/printk/printk.c:2322
- vprintk+0x17c/0x1bc kernel/printk/printk_safe.c:45
- _printk+0xa8/0xe0 kernel/printk/printk.c:2332
- pick_eevdf kernel/sched/fair.c:976 [inline]
- pick_next_entity kernel/sched/fair.c:5278 [inline]
- pick_next_task_fair+0x1a4/0xd3c kernel/sched/fair.c:8222
- __pick_next_task kernel/sched/core.c:6004 [inline]
- pick_next_task kernel/sched/core.c:6514 [inline]
- __schedule+0x3b8/0x2ae4 kernel/sched/core.c:6659
- preempt_schedule_common kernel/sched/core.c:6864 [inline]
- preempt_schedule+0xf4/0x254 kernel/sched/core.c:6888
- __mutex_lock_common kernel/locking/mutex.c:613 [inline]
- __mutex_lock+0x2b0/0x840 kernel/locking/mutex.c:747
- mutex_lock_nested+0x24/0x30 kernel/locking/mutex.c:799
- xt_find_table_lock+0x68/0x418 net/netfilter/x_tables.c:1242
- get_entries net/ipv6/netfilter/ip6_tables.c:1035 [inline]
- do_ip6t_get_ctl+0x340/0x980 net/ipv6/netfilter/ip6_tables.c:1669
- nf_getsockopt+0x78/0xec net/netfilter/nf_sockopt.c:116
- ipv6_getsockopt+0x210/0x34c net/ipv6/ipv6_sockglue.c:1500
- tcp_getsockopt+0x7c/0x248 net/ipv4/tcp.c:4278
- sock_common_getsockopt+0x70/0xc8 net/core/sock.c:3672
- __sys_getsockopt+0x190/0x478 net/socket.c:2371
- __do_sys_getsockopt net/socket.c:2386 [inline]
- __se_sys_getsockopt net/socket.c:2383 [inline]
- __arm64_sys_getsockopt+0xa4/0x100 net/socket.c:2383
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x6c/0x258 arch/arm64/kernel/syscall.c:51
- el0_svc_common.constprop.0+0xac/0x230 arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x40/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x58/0x140 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> > Shung-Hsi
+> >
+> > > ...
+> >
+> > 1: https://people.cs.rutgers.edu/~sn349/papers/cgo-2022.pdf
+> > 2: https://lore.kernel.org/bpf/20220430215727.113472-1-langston.barrett@gmail.com/
+> > 3: https://gist.github.com/shunghsiyu/a63e08e6231553d1abdece4aef29f70e
+> > 4: https://lore.kernel.org/all/1485295229-14081-3-git-send-email-paulmck@linux.vnet.ibm.com/
 
