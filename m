@@ -1,154 +1,140 @@
-Return-Path: <bpf+bounces-12803-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12804-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD4D77D0926
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 09:03:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41B4A7D0935
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 09:09:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62B9A2823C4
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 07:03:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB2792823D1
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 07:09:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F02D260;
-	Fri, 20 Oct 2023 07:03:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hqR6eY9H"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 450F3D2E0;
+	Fri, 20 Oct 2023 07:09:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A7CCA6E
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 07:03:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6D80C433C9;
-	Fri, 20 Oct 2023 07:03:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697785424;
-	bh=OkduzFsQrql4vaQN1hI4ttHMuV3cQxeu0vcbumIU/YQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=hqR6eY9HqplSVmgpVrsg/pSkDw62/zAbF0f+qFRka5bz/yojBeZdRWyUTVzOs9/Cx
-	 ooV+wCVycPSJmQEvXzBpgpcKSM5nv9yCblY2VcpvPJc6PEFM7I2t+foqkoH7rpj3eK
-	 MTKS3soeVyjSuaVoWwJLIimsfdDfSbnxo0o0AXCYz3vhDF5xoCLBBmY5qT+7tOPT+Z
-	 q41KNTB6Mn9vHd398z4IHhs26g23y4qzEBYeSaaCIDe0JgZ6PxT9soxjm/iKrSjosn
-	 mJHcec+v1gxQsfQRNHDEGwikEXJIaq0YKk8Bm5Y8v5kJoTEPnsvDTnoGBRV2B9620y
-	 NlsfWtmG1Yqjg==
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6ce37d0f1a9so149799a34.0;
-        Fri, 20 Oct 2023 00:03:44 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyXcrvL6cALJiHZe3ciRnu52hc1kyE1nmArRdOe316vtCj5NwDk
-	PI/f+jBWYlg9BE2jI7APRF+lWwwMDT+pJVrGO98=
-X-Google-Smtp-Source: AGHT+IHN0w7kBf0+HBio2x3W554zUTb5zy2/0fI+q2GVGnmytcQr57G3zxy8R7UNLJtf2+dwNbxg8mC6Ev0mJcXlEh8=
-X-Received: by 2002:a05:6870:5d8d:b0:1e9:fc32:9887 with SMTP id
- fu13-20020a0568705d8d00b001e9fc329887mr1459108oab.13.1697785423969; Fri, 20
- Oct 2023 00:03:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94418CA6C
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 07:09:21 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60CB69F
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 00:09:19 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SBbKx0V9zz4f3s6D
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 15:09:09 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgC3NaaWJzJlDukWDQ--.46806S2;
+	Fri, 20 Oct 2023 15:09:14 +0800 (CST)
+Subject: Re: [PATCH bpf-next v2 2/7] mm/percpu.c: introduce pcpu_alloc_size()
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Dennis Zhou <dennis@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko
+ <andrii@kernel.org>, Song Liu <song@kernel.org>, Hao Luo
+ <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>,
+ Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+References: <20231018113343.2446300-1-houtao@huaweicloud.com>
+ <20231018113343.2446300-3-houtao@huaweicloud.com> <ZTH9c2kj2jpP0SDD@snowbird>
+ <CAADnVQJ10m1N0zQL-u2UYYnn9yL+RZz4QQgjXxkNrOcBLHu4XA@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <3b502d3e-db22-f3d8-94de-f6294afcde5c@huaweicloud.com>
+Date: Fri, 20 Oct 2023 15:09:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231018151950.205265-1-masahiroy@kernel.org> <20231018151950.205265-4-masahiroy@kernel.org>
- <ZTDlrkTXnkVN1cff@krava> <CAEf4BzZm4h4q6k9ZhuT5qiWC9PYA+c7XwVFd68iAq4mtMJ-qhw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZm4h4q6k9ZhuT5qiWC9PYA+c7XwVFd68iAq4mtMJ-qhw@mail.gmail.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Fri, 20 Oct 2023 16:03:07 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAR2kKwbzdFxfVXDxsy8pfyQDCR-BN=zpbcZg0JS9RpsKQ@mail.gmail.com>
-Message-ID: <CAK7LNAR2kKwbzdFxfVXDxsy8pfyQDCR-BN=zpbcZg0JS9RpsKQ@mail.gmail.com>
-Subject: Re: [bpf-next PATCH v2 4/4] kbuild: refactor module BTF rule
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAADnVQJ10m1N0zQL-u2UYYnn9yL+RZz4QQgjXxkNrOcBLHu4XA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgC3NaaWJzJlDukWDQ--.46806S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr13CryUtr4UCF1UCF1kGrg_yoW8tw4fpr
+	40gF1FyF4kAr9rGw1Sq3Wjvw1aqw4kJF4xG347WF1UAr9Ivr92gr1qvrW5uFy5Crn29r17
+	tFZ0qFZakFy5J3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+	6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UZ18PUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 
-On Fri, Oct 20, 2023 at 7:55=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+Hi,
+
+On 10/20/2023 12:16 PM, Alexei Starovoitov wrote:
+> On Thu, Oct 19, 2023 at 9:09 PM Dennis Zhou <dennis@kernel.org> wrote:
+>> On Wed, Oct 18, 2023 at 07:33:38PM +0800, Hou Tao wrote:
+>>> From: Hou Tao <houtao1@huawei.com>
+>>>
+>>> Introduce pcpu_alloc_size() to get the size of the dynamic per-cpu
+>>> area. It will be used by bpf memory allocator in the following patches.
+>>> BPF memory allocator maintains per-cpu area caches for multiple area
+>>> sizes and its free API only has the to-be-freed per-cpu pointer, so it
+>>> needs the size of dynamic per-cpu area to select the corresponding cache
+>>> when bpf program frees the dynamic per-cpu pointer.
+>>>
+>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>>> ---
+>>>  include/linux/percpu.h |  1 +
+>>>  mm/percpu.c            | 30 ++++++++++++++++++++++++++++++
+>>>  2 files changed, 31 insertions(+)
+>>>
+>>> diff --git a/include/linux/percpu.h b/include/linux/percpu.h
+>>> index 68fac2e7cbe6..8c677f185901 100644
+>>> --- a/include/linux/percpu.h
+>>> +++ b/include/linux/percpu.h
+>>> @@ -132,6 +132,7 @@ extern void __init setup_per_cpu_areas(void);
+>>>  extern void __percpu *__alloc_percpu_gfp(size_t size, size_t align, gfp_t gfp) __alloc_size(1);
+>>>  extern void __percpu *__alloc_percpu(size_t size, size_t align) __alloc_size(1);
+>>>  extern void free_percpu(void __percpu *__pdata);
+>>> +extern size_t pcpu_alloc_size(void __percpu *__pdata);
+>>>
+>>>  DEFINE_FREE(free_percpu, void __percpu *, free_percpu(_T))
+>>>
+>>> diff --git a/mm/percpu.c b/mm/percpu.c
+>>> index 76b9c5e63c56..b0cea2dc16a9 100644
+>>> --- a/mm/percpu.c
+>>> +++ b/mm/percpu.c
+>>> @@ -2244,6 +2244,36 @@ static void pcpu_balance_workfn(struct work_struct *work)
+>>>       mutex_unlock(&pcpu_alloc_mutex);
+>>>  }
+>>>
+>>> +/**
+>>> + * pcpu_alloc_size - the size of the dynamic percpu area
+>>> + * @ptr: pointer to the dynamic percpu area
+>>> + *
+>>> + * Return the size of the dynamic percpu area @ptr.
+>>> + *
+>> Alexei, can you modify the above comment to:
+>>
+>> Returns the size of the @ptr allocation.  This is undefined for statically
+>> defined percpu variables as there is no corresponding chunk->bound_map.
+> Good point! Will do.
+
+I will post v3 to update the API document.
+
 >
-> On Thu, Oct 19, 2023 at 1:15=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wr=
-ote:
-> >
-> > On Thu, Oct 19, 2023 at 12:19:50AM +0900, Masahiro Yamada wrote:
-> > > newer_prereqs_except and if_changed_except are ugly hacks of the
-> > > newer-prereqs and if_changed in scripts/Kbuild.include.
-> > >
-> > > Remove.
-> > >
-> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > ---
-> > >
-> > > Changes in v2:
-> > >   - Fix if_changed_except to if_changed
-> > >
-> > >  scripts/Makefile.modfinal | 25 ++++++-------------------
-> > >  1 file changed, 6 insertions(+), 19 deletions(-)
-> > >
-> > > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> > > index 9fd7a26e4fe9..fc07854bb7b9 100644
-> > > --- a/scripts/Makefile.modfinal
-> > > +++ b/scripts/Makefile.modfinal
-> > > @@ -19,6 +19,9 @@ vmlinux :=3D
-> > >  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-> > >  ifneq ($(wildcard vmlinux),)
-> > >  vmlinux :=3D vmlinux
-> > > +cmd_btf =3D ; \
-> > > +     LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_=
-base vmlinux $@; \
-> > > +     $(RESOLVE_BTFIDS) -b vmlinux $@
-> > >  else
-> > >  $(warning Skipping BTF generation due to unavailability of vmlinux)
-> > >  endif
-> > > @@ -41,27 +44,11 @@ quiet_cmd_ld_ko_o =3D LD [M]  $@
-> > >        cmd_ld_ko_o +=3D                                              =
-   \
-> > >       $(LD) -r $(KBUILD_LDFLAGS)                                     =
- \
-> > >               $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)             =
- \
-> > > -             -T scripts/module.lds -o $@ $(filter %.o, $^)
-> > > +             -T scripts/module.lds -o $@ $(filter %.o, $^)          =
- \
-> > > +     $(cmd_btf)
-> > >
-> > > -quiet_cmd_btf_ko =3D BTF [M] $@
-> >
-> > nit not sure it's intentional but we no longer display 'BTF [M] ...ko' =
-lines,
-> > I don't mind not displaying that, but we should mention that in changel=
-og
-> >
+> Thanks for the quick review!
 >
-> Thanks for spotting this! I think those messages are useful and
-> important to keep. Masahiro, is it possible to preserve them?
+> .
 
-
-
-No, I do not think so.
-
-Your code is wrong.
-
-
-To clarify this is a fix,
-I will replace the commit as follows:
-
-
-
-
-------------------->8----------------------
-kbuild: detect btf command change for modules
-
-Currently, the command change in cmd_btf_ko does not cause to rebuild
-the modules because it is not passed to if_changed.
-
-Pass everything to if_change so that the btf command is also recorded
-in the .*.cmd files. This removes the hacky newer_prereqs_except and
-if_changed_except macros too.
-------------------->8----------------------
-
-
-
-
---
-Best Regards
-
-Masahiro Yamada
 
