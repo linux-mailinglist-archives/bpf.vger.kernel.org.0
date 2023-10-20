@@ -1,171 +1,259 @@
-Return-Path: <bpf+bounces-12876-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12877-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0B097D193E
-	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 00:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F3B137D197C
+	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 01:10:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B31728279A
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 22:38:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACD04282704
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 23:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39DEF2B757;
-	Fri, 20 Oct 2023 22:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE2F4354FD;
+	Fri, 20 Oct 2023 23:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Ot/144jq"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="olB2ipdp"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9BE735505;
-	Fri, 20 Oct 2023 22:38:38 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E4B791;
-	Fri, 20 Oct 2023 15:38:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=kPveCGwDQzw44KmBN2s9cemxnEV3T4s1jd00sY+o42s=; b=Ot/144jqhOJN6lYzObeZBWQQQK
-	KMAppdfBgjam/SzvvzJvCxkAQc7W5p89PBjFU4uEik5SYKQIeXbMDOcSAQxqLEURFdLzJaVfeFd0p
-	NdWFMULtXPrxDQvfsTFU5G5HB03o/qtFPSCbZHbR1ZA3XKl1D1bmiHlrlDgPuTqdpHQM7TumOlV7e
-	AKp8xTbEcacx2yiihNZx5yr3w5PPWJYlLthnPonZFmg2qH77Si8AN0o7wdWotkyVgleDRMTFNes0N
-	r7CS2pf6DmhXn4TywNvs0lBgnMFwJfbRYh0wID9QKSfkLofwZE9pyqydjTqRFQKbNzfZD+nZpHyAD
-	wjD8Duwg==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qty8V-000Jy7-Ka; Sat, 21 Oct 2023 00:38:31 +0200
-Received: from [178.197.249.50] (helo=linux.home)
-	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qty8V-000ICz-6o; Sat, 21 Oct 2023 00:38:31 +0200
-Subject: Re: [PATCH bpf-next v2 1/7] netkit, bpf: Add bpf programmable net
- device
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, martin.lau@linux.dev,
- razor@blackwall.org, ast@kernel.org, andrii@kernel.org,
- john.fastabend@gmail.com, sdf@google.com, toke@kernel.org
-References: <20231019204919.4203-1-daniel@iogearbox.net>
- <20231019204919.4203-2-daniel@iogearbox.net>
- <33467f55-4bbf-4078-af21-d91c6aab82ee@lunn.ch>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <f57df221-0790-3a93-c7e2-d85136fb07c8@iogearbox.net>
-Date: Sat, 21 Oct 2023 00:38:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F0661A71B;
+	Fri, 20 Oct 2023 23:10:25 +0000 (UTC)
+Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CBFD46;
+	Fri, 20 Oct 2023 16:10:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1697843425; x=1729379425;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=c2MTKVsVzkxUvuTXCIBYynqyIqF6GoiRRdW1Io8kXV0=;
+  b=olB2ipdpmrErNEPPqkAcvHeE5XPGI+ZRg5cNoud+FquCGIR0YvzcoaJ5
+   CwwQKJMVvYh+tVIh4dQohISTEwKRgJOxLD9yF6qevp6caJFG1g+9itvj6
+   xCuBhh0vTiwBenGFIwR62FH8c4CSTkhfAuzP3OucwYn01MYbPSLP5AOVf
+   4=;
+X-IronPort-AV: E=Sophos;i="6.03,239,1694736000"; 
+   d="scan'208";a="611265191"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-25ac6bd5.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 23:10:23 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
+	by email-inbound-relay-iad-1d-m6i4x-25ac6bd5.us-east-1.amazon.com (Postfix) with ESMTPS id 2429E486DE;
+	Fri, 20 Oct 2023 23:10:16 +0000 (UTC)
+Received: from EX19MTAUWA001.ant.amazon.com [10.0.21.151:9435]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.14.246:2525] with esmtp (Farcaster)
+ id 9fe161c2-9fba-4e93-9c67-a745e55eb32a; Fri, 20 Oct 2023 23:10:16 +0000 (UTC)
+X-Farcaster-Flow-ID: 9fe161c2-9fba-4e93-9c67-a745e55eb32a
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA001.ant.amazon.com (10.250.64.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 20 Oct 2023 23:10:15 +0000
+Received: from 88665a182662.ant.amazon.com (10.142.223.91) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 20 Oct 2023 23:10:11 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <martin.lau@linux.dev>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
+	<edumazet@google.com>, <haoluo@google.com>, <john.fastabend@gmail.com>,
+	<jolsa@kernel.org>, <kpsingh@kernel.org>, <kuba@kernel.org>,
+	<kuni1840@gmail.com>, <kuniyu@amazon.com>, <mykolal@fb.com>,
+	<netdev@vger.kernel.org>, <pabeni@redhat.com>, <sdf@google.com>,
+	<sinquersw@gmail.com>, <song@kernel.org>, <yonghong.song@linux.dev>
+Subject: Re: [PATCH v1 bpf-next 00/11] bpf: tcp: Add SYN Cookie generation/validation SOCK_OPS hooks.
+Date: Fri, 20 Oct 2023 16:10:03 -0700
+Message-ID: <20231020231003.51313-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <16bad14a-a99c-a2a2-ccdc-6c44c9c4ad1d@linux.dev>
+References: <16bad14a-a99c-a2a2-ccdc-6c44c9c4ad1d@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <33467f55-4bbf-4078-af21-d91c6aab82ee@lunn.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27067/Fri Oct 20 09:48:05 2023)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.142.223.91]
+X-ClientProxiedBy: EX19D044UWA004.ant.amazon.com (10.13.139.7) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Precedence: Bulk
 
-On 10/21/23 12:18 AM, Andrew Lunn wrote:
->> +static void netkit_get_drvinfo(struct net_device *dev,
->> +			       struct ethtool_drvinfo *info)
->> +{
->> +	strscpy(info->driver, DRV_NAME, sizeof(info->driver));
->> +	strscpy(info->version, "n/a", sizeof(info->version));
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Date: Fri, 20 Oct 2023 12:59:00 -0700
+> On 10/19/23 11:01 AM, Kuniyuki Iwashima wrote:
+> > From: Martin KaFai Lau <martin.lau@linux.dev>
+> > Date: Thu, 19 Oct 2023 00:25:00 -0700
+> >> On 10/18/23 3:31 PM, Kuniyuki Iwashima wrote:
+> >>> From: Kui-Feng Lee <sinquersw@gmail.com>
+> >>> Date: Wed, 18 Oct 2023 14:47:43 -0700
+> >>>> On 10/18/23 10:20, Kuniyuki Iwashima wrote:
+> >>>>> From: Eric Dumazet <edumazet@google.com>
+> >>>>> Date: Wed, 18 Oct 2023 10:02:51 +0200
+> >>>>>> On Wed, Oct 18, 2023 at 8:19 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+> >>>>>>>
+> >>>>>>> On 10/17/23 9:48 AM, Kuniyuki Iwashima wrote:
+> >>>>>>>> From: Martin KaFai Lau <martin.lau@linux.dev>
+> >>>>>>>> Date: Mon, 16 Oct 2023 22:53:15 -0700
+> >>>>>>>>> On 10/13/23 3:04 PM, Kuniyuki Iwashima wrote:
+> >>>>>>>>>> Under SYN Flood, the TCP stack generates SYN Cookie to remain stateless
+> >>>>>>>>>> After 3WHS, the proxy restores SYN and forwards it and ACK to the backend
+> >>>>>>>>>> server.  Our kernel module works at Netfilter input/output hooks and first
+> >>>>>>>>>> feeds SYN to the TCP stack to initiate 3WHS.  When the module is triggered
+> >>>>>>>>>> for SYN+ACK, it looks up the corresponding request socket and overwrites
+> >>>>>>>>>> tcp_rsk(req)->snt_isn with the proxy's cookie.  Then, the module can
+> >>>>>>>>>> complete 3WHS with the original ACK as is.
+> >>>>>>>>>
+> >>>>>>>>> Does the current kernel module also use the timestamp bits differently?
+> >>>>>>>>> (something like patch 8 and patch 10 trying to do)
+> >>>>>>>>
+> >>>>>>>> Our SYN Proxy uses TS as is.  The proxy nodes generate a random number
+> >>>>>>>> if TS is in SYN.
+> >>>>>>>>
+> >>>>>>>> But I thought someone would suggest making TS available so that we can
+> >>>>>>>> mock the default behaviour at least, and it would be more acceptable.
+> >>>>>>>>
+> >>>>>>>> The selftest uses TS just to strengthen security by validating 32-bits
+> >>>>>>>> hash.  Dropping a part of hash makes collision easier to happen, but
+> >>>>>>>> 24-bits were sufficient for us to reduce SYN flood to the managable
+> >>>>>>>> level at the backend.
+> >>>>>>>
+> >>>>>>> While enabling bpf to customize the syncookie (and timestamp), I want to explore
+> >>>>>>> where can this also be done other than at the tcp layer.
+> >>>>>>>
+> >>>>>>> Have you thought about directly sending the SYNACK back at a lower layer like
+> >>>>>>> tc/xdp after receiving the SYN?
+> >>>>>
+> >>>>> Yes.  Actually, at netconf I mentioned the cookie generation hook will not
+> >>>>> be necessary and should be replaced with XDP.
+> >>
+> >> Right, it is also what I have been thinking when seeing the
+> >> BPF_SOCK_OPS_GEN_SYNCOOKIE_CB carrying the bpf generated timestamp to the
+> >> tcp_make_synack. It feels like trying hard to work with the tcp want_cookie
+> >> logic while there is an existing better alternative in tc/xdp to deal with synflood.
+> >>
+> >>>>>
+> >>>>>
+> >>>>>>> There are already bpf_tcp_{gen,check}_syncookie
+> >>>>>>> helper that allows to do this for the performance reason to absorb synflood. It
+> >>>>>>> will be natural to extend it to handle the customized syncookie also.
+> >>>>>
+> >>>>> Maybe we even need not extend it and can use XDP as said below.
+> >>>>>
+> >>>>>
+> >>>>>>>
+> >>>>>>> I think it should already be doable to send a SYNACK back with customized
+> >>>>>>> syncookie (and timestamp) at tc/xdp today.
+> >>>>>>>
+> >>>>>>> When ack is received, the prog@tc/xdp can verify the cookie. It will probably
+> >>>>>>> need some new kfuncs to create the ireq and queue the child socket. The bpf prog
+> >>>>>>> can change the ireq->{snd_wscale, sack_ok...} if needed. The details of the
+> >>>>>>> kfuncs need some more thoughts. I think most of the bpf-side infra is ready,
+> >>>>>>> e.g. acquire/release/ref-tracking...etc.
+> >>>>>>>
+> >>>>>>
+> >>>>>> I think I mostly agree with this.
+> >>>>>
+> >>>>> I didn't come up with kfunc to create ireq and queue it to listener, so
+> >>>>> cookie_v[46]_check() were best place for me to extend easily, but now it
+> >>>>> sounds like kfunc would be the way to go.
+> >>>>>
+> >>>>> Maybe we can move the core part of cookie_v[46]_check() except for kernel
+> >>>>> cookie's validation to __cookie_v[46]_check() and expose a wrapper of it
+> >>>>> as kfunc ?
+> >>>>>
+> >>>>> Then, we can look up sk and pass the listener, skb, and flags (for sack_ok,
+> >>>>> etc) to the kfunc.  (It could still introduce some conflicts with Eric's
+> >>>>> patch though...)
+> >>>>
+> >>>> Does that mean the packets handled in this way (in XDP) will skip all
+> >>>> netfilter at all?
+> >>>
+> >>> Good point.
+> >>>
+> >>> If we want not to skip other layers, maybe we can use tc ?
+> >>>
+> >>> 1) allocate ireq and set sack_ok etc with kfunc
+> >>> 2) bpf_sk_assign() to set ireq to skb (this could be done in kfunc above)
+> >>> 3) let inet_steal_sock() return req->sk_listener if not sk_fullsock(sk)
+> >>> 4) if skb->sk is reqsk in cookie_v[46]_check(), skip validation and
+> >>>      req allocation and create full sk
+> >>
+> >> Haven't looked at the details. The above feels reasonable and would be nice if
+> >> it works out. don't know if the skb at tc can be used in cookie_v[46]_check() as
+> >> is. It probably needs more thoughts.  [ note, xdp does not have skb. ]
+> >>
+> >> Regarding the "allocate ireq and set sack_ok etc with kfunc", do you think it
+> >> will be useful (and potentially cleaner) even for the
+> >> BPF_SOCK_OPS_CHECK_SYNCOOKIE_CB if it needed to go back to consider skops? Then
+> >> only do the BPF_SOCK_OPS_CHECK_SYNCOOKIE_CB and the xdp/tc can generate SYNACK.
+> >> The xdp/tc can still do the check and drop the bad ACK earlier in the stack.
+> > 
+> > kfunc would be useful if we want to fall back to the default
+> > validation, but I think we should not allocate ireq in kfunc.
+> > 
+> > The SOCK_OPS prog only returns a binary value.  If we decide whether
+> > we skip validation or not based on kfunc call (ireq allocation), the
+> > flow would be like :
+> > 
+> >    1. CG_OK & ireq is allocated -> skip validation and req allocation
+> >    2. CG_OK & no ireq           -> default validation
+> >    3. CG_ERR                    -> RST
+> > 
+> > The problem here is that if kfunc fails with -ENOMEM and cookie
+> > is valid, we need a way to tell the kernel to drop the ACK instead
+> > of sending RST.  (I hope the prog could return CG_DROP...)
 > 
-> If you don't put anything in version, the core will put in the git
-> hash of the kernel. Its more useful than "n/a".
+> bpf_set_retval() helper allows the cgrp bpf prog to return -ENOMEM. Take a look 
+> at how __cgroup_bpf_run_filter_getsockopt is using the return value of 
+> bpf_prog_run_array_cg() and an example in progs/cgroup_getset_retval_getsockopt.c.
 
-Thanks, I wasn't aware of this! Agree that this is better!
+Oh, this is nice, I assumed -EPERM was always returned.
 
->> +	ether_setup(dev);
->> +	dev->min_mtu = ETH_MIN_MTU;
+
+> > If we allocate ireq first, it would be cleaner as bpf need not care
+> > about the drop path.
+> > 
+> >    1. CG_OK & mss is set -> skip validation
+> >    2. CG_OK & no mss set -> default validation
+> >    3. CG_ERR             -> RST
 > 
-> ether_setup() sets min_mtu to ETH_MIN_MTU.
+> Even if it uses the mss set/not-set like above to decide drop/rst. Does it 
+> really need to pre-allocate ireq? Looking at the test, the bpf prog is not using 
+> the skops->sk either.
 
-Will fix.
+It uses skops->remote_ip4 etc, maybe this was another reason why
+I chose pre-alloc, but yes, it's not needed.  The same value can
+be extraced from skb with bpf_skb_load_bytes_relative(BPF_HDR_START_NET).
 
->> +static int netkit_new_link(struct net *src_net, struct net_device *dev,
->> +			   struct nlattr *tb[], struct nlattr *data[],
->> +			   struct netlink_ext_ack *extack)
->> +{
+
+> It would be nice to allow bpf prog to check the cookie first before creating 
+> ireq. The kernel also checks the cookie first before tcp_parse_option and ireq 
+> creation. Beside, I suspect the multiple "if ([!]bpf_cookie)" checks in 
+> cookie_v[46]_check() is due to the pre-alloc ireq requirement.
 > 
-> ...
-> 
->> +	err = register_netdevice(peer);
->> +	put_net(net);
->> +	if (err < 0)
->> +		goto err_register_peer;
->> +
->> +	netif_carrier_off(peer);
->> +
->> +	err = rtnl_configure_link(peer, ifmp, 0, NULL);
->> +	if (err < 0)
->> +		goto err_configure_peer;
-> 
-> Seeing code after calling register_netdevice() often means bugs. The
-> interface is live, and in use before the function even returns. The
-> kernel can try to get an IP address, mount an NFS root etc. This might
-> be safe, because you have two linked interfaces here, and the other
-> one is not yet registered. Maybe some comment about this would be
-> good, or can the rtnl_configure_link() be done earlier?
+> What does it take to create an ireq? sk, skb, tcp_opt, and mss? Potentially, it 
+> could have a "bpf_skops_parse_tcp_options(struct bpf_sock_ops_kern *skops, 
+> struct tcp_options_received *opt_rx, u32 opt_rx__sz)" to initialize the tcp_opt. 
+> I think the bpf prog should be able to parse the tcp options by itself also and 
+> directly initialize the tcp_opt.
 
-I'll check if it's possible to reorder resp. add a comment if not.
+Yes, also the prog will not need to parse all the options unless
+the validation algorithm needs to becaues SACK_PERMITTED, WSCALE,
+MSS (and ECN bits) are only available in SYN.
 
->> +
->> +	if (mode == NETKIT_L2)
->> +		eth_hw_addr_random(dev);
->> +	if (tb[IFLA_IFNAME])
->> +		nla_strscpy(dev->name, tb[IFLA_IFNAME], IFNAMSIZ);
->> +	else
->> +		snprintf(dev->name, IFNAMSIZ, "m%%d");
->> +
->> +	err = register_netdevice(dev);
->> +	if (err < 0)
->> +		goto err_configure_peer;
-> 
-> We have the same here, but now we have both peers registers, the
-> kernel could of configured both up in order to find its NFS root etc.
-> Is it safe to have packets flowing at this point? Before the remaining
-> configuration happens?
+So, the prog will just need to parse timestamps option with
+bpf_load_hdr_opt() and can initialise tcp_opt based on ISN
+(and/or TS).
 
-They would be dropped in xmit if the peer is linked yet.
 
->> +	netif_carrier_off(dev);
->> +
->> +	nk = netdev_priv(dev);
->> +	nk->primary = true;
->> +	nk->policy = default_prim;
->> +	nk->mode = mode;
->> +	if (nk->mode == NETKIT_L2)
->> +		dev_change_flags(dev, dev->flags & ~IFF_NOARP, NULL);
->> +	bpf_mprog_bundle_init(&nk->bundle);
->> +	RCU_INIT_POINTER(nk->active, NULL);
->> +	rcu_assign_pointer(nk->peer, peer);
->> +
->> +	nk = netdev_priv(peer);
->> +	nk->primary = false;
->> +	nk->policy = default_peer;
->> +	nk->mode = mode;
->> +	if (nk->mode == NETKIT_L2)
->> +		dev_change_flags(peer, peer->flags & ~IFF_NOARP, NULL);
->> +	bpf_mprog_bundle_init(&nk->bundle);
->> +	RCU_INIT_POINTER(nk->active, NULL);
->> +	rcu_assign_pointer(nk->peer, dev);
->> +	return 0;
->> +err_configure_peer:
->> +	unregister_netdevice(peer);
->> +	return err;
->> +err_register_peer:
->> +	free_netdev(peer);
->> +	return err;
->> +}
+> The "bpf_skops_alloc_tcp_req(struct bpf_sock_ops_kern *skops, struct 
+> tcp_options_received *opt_rx, u32 opt_rx__size, int mss,...)" could directly 
+> save the "ireq" in skops->ireq (new member). If skops->ireq is available, the 
+> kernel could then skip most of the ireq initialization and directly continue the 
+> remaining processing (e.g. directly to security_inet_conn_request() ?). would 
+> that work?
 
-Thanks,
-Daniel
+Yes, that will work.
 
