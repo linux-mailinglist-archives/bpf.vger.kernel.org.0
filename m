@@ -1,365 +1,374 @@
-Return-Path: <bpf+bounces-12824-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12826-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE5D97D108F
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 15:31:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77AD17D1114
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 15:57:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77B5D1F2433F
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 13:31:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 681131C20FB8
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 13:57:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCF9D1CFA1;
-	Fri, 20 Oct 2023 13:31:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EF671D525;
+	Fri, 20 Oct 2023 13:57:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F991BDD4
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 13:31:04 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB109D61
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 06:31:02 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SBlpP4B6Dz4f3jXx
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 21:30:53 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgBn+dgIgTJlmYjjDQ--.7231S11;
-	Fri, 20 Oct 2023 21:30:59 +0800 (CST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 498261A5BD
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 13:57:24 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5586293
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 06:57:21 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SBmNp11G7z4f3l21
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 21:57:14 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgBn25s5hzJlKJEvDQ--.18575S2;
+	Fri, 20 Oct 2023 21:57:17 +0800 (CST)
+Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: Test race between map uref
+ release and bpf timer init
+To: Hsin-Wei Hung <hsinweih@uci.edu>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
+References: <20231020014214.2471419-1-houtao@huaweicloud.com>
+ <20231020014214.2471419-3-houtao@huaweicloud.com>
+ <CABcoxUYdAxUuMp=YtfrqvHsF==yHkCBSbrVDu3uzVkizbSH9OA@mail.gmail.com>
 From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org,
-	linux-mm@kvack.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	houtao1@huawei.com,
-	Dennis Zhou <dennis@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	Christoph Lameter <cl@linux.com>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH bpf-next v3 7/7] selftests/bpf: Add more test cases for bpf memory allocator
-Date: Fri, 20 Oct 2023 21:32:02 +0800
-Message-Id: <20231020133202.4043247-8-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20231020133202.4043247-1-houtao@huaweicloud.com>
-References: <20231020133202.4043247-1-houtao@huaweicloud.com>
+Message-ID: <239420e7-1854-6e22-1572-2903af9f8d91@huaweicloud.com>
+Date: Fri, 20 Oct 2023 21:57:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <CABcoxUYdAxUuMp=YtfrqvHsF==yHkCBSbrVDu3uzVkizbSH9OA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBn+dgIgTJlmYjjDQ--.7231S11
-X-Coremail-Antispam: 1UD129KBjvJXoW3Wr4rXw15Cw4kJw1fJFyrJFb_yoWfArW3pF
-	y0yrySyr1kWr1Ig34Yvw4UCa4rZF4fWw15GrZ5WFyUury3X34UArn5CFyUJF95GFZ2gr45
-	Aas0gF97KF4xA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBSb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0x
-	vE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAI
-	cVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2js
-	IEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUFgAwUUUUU
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgBn25s5hzJlKJEvDQ--.18575S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Ww1UKw4rWFW8JrW5JFy7Jrb_yoWfZFy8pa
+	yIyF43CF48Xr47Jr1jqa1UWFZ3tr48uF4jyr48ta4UAF929rn3tF1xKFW2ka1fCr4vyr4f
+	Zr4rtr9Ikw4DAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvSb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+	67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43
+	ZEXa7IU1zuWJUUUUU==
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 
-From: Hou Tao <houtao1@huawei.com>
+Hi,
 
-Add the following 3 test cases for bpf memory allocator:
-1) Do allocation in bpf program and free through map free
-2) Do batch per-cpu allocation and per-cpu free in bpf program
-3) Do per-cpu allocation in bpf program and free through map free
+On 10/20/2023 10:50 AM, Hsin-Wei Hung wrote:
+> On Thu, Oct 19, 2023 at 6:41 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> Test race between the release of map ref and bpf_timer_init():
+>> 1) create one thread to add array map with bpf_timer into array of
+>>    arrays map repeatedly.
+>> 2) create another thread to call getpgid() and call bpf_timer_init()
+>>    in the attached bpf program repeatedly.
+>> 3) synchronize these two threads through pthread barrier.
+>>
+>> It is a bit hard to trigger the kmemleak by only running the test. I
+>> managed to reproduce the kmemleak by injecting a delay between
+>> t->timer.function = bpf_timer_cb and timer->timer = t in
+>> bpf_timer_init().
+> I figured out that to trigger this issue reliably, I can insert
+> different delays using large bpf_loop() in allocation and release
+> paths. I have some extra code to filter out unwanted events. The
+> userspace program is similar. It just needs to try to call close(fd)
+> and syscall(SYS_getpgid) at the same time without delay. It is not a
+> stable test though due to the reference to the function.
+>
+> SEC("tp/syscalls/sys_enter_close")
+> {
+>         ...
+>         bpf_loop(1000000, &delay_loop, NULL, 0);
+> }
+>
+> SEC("fexit/bpf_map_kmalloc_node")gmai
+> {
+>         ...
+>         bpf_loop(2000000, &delay_loop, NULL, 0);
+> }
 
-For per-cpu allocation, because per-cpu allocation can not refill timely
-sometimes, so test 2) and test 3) consider it is OK for
-bpf_percpu_obj_new_impl() to return NULL.
+Thanks for sharing another way to reproduce the problem.
+>
+> I can confirm that the v1 patch fixes memleak in v5.15. However, this
+> issue doesn't seem to affect net-next. At least since db559117828d
+> (bpf: Consolidate spin_lock, timer management into btf_record), the
+> leaked memory caused by the race would be freed in array_map_free().
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/prog_tests/test_bpf_ma.c    |  20 +-
- .../testing/selftests/bpf/progs/test_bpf_ma.c | 180 +++++++++++++++++-
- 2 files changed, 193 insertions(+), 7 deletions(-)
+I think you are partially right, because array_map indeed doesn't have
+such problem but array-in-array map still has the problem and I can
+reproduce the problem in bpf tree (see the kmemleak report below). After
+reading the related code carefully, I think the proposed fix in the
+patch is not right, because the root cause is the release of map-in-map
+is not correct (e.g, don't wait for a RCU GP) but the patch only fixes
+the phenomenon. Will update the patchset to fix the problem again.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpf_ma.c b/tools/testing/selftests/bpf/prog_tests/test_bpf_ma.c
-index 0cca4e8ae38e0..d3491a84b3b98 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_bpf_ma.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_bpf_ma.c
-@@ -9,9 +9,10 @@
- 
- #include "test_bpf_ma.skel.h"
- 
--void test_test_bpf_ma(void)
-+static void do_bpf_ma_test(const char *name)
- {
- 	struct test_bpf_ma *skel;
-+	struct bpf_program *prog;
- 	struct btf *btf;
- 	int i, err;
- 
-@@ -34,6 +35,11 @@ void test_test_bpf_ma(void)
- 		skel->rodata->data_btf_ids[i] = id;
- 	}
- 
-+	prog = bpf_object__find_program_by_name(skel->obj, name);
-+	if (!ASSERT_OK_PTR(prog, "invalid prog name"))
-+		goto out;
-+	bpf_program__set_autoload(prog, true);
-+
- 	err = test_bpf_ma__load(skel);
- 	if (!ASSERT_OK(err, "load"))
- 		goto out;
-@@ -48,3 +54,15 @@ void test_test_bpf_ma(void)
- out:
- 	test_bpf_ma__destroy(skel);
- }
-+
-+void test_test_bpf_ma(void)
-+{
-+	if (test__start_subtest("batch_alloc_free"))
-+		do_bpf_ma_test("test_batch_alloc_free");
-+	if (test__start_subtest("free_through_map_free"))
-+		do_bpf_ma_test("test_free_through_map_free");
-+	if (test__start_subtest("batch_percpu_alloc_free"))
-+		do_bpf_ma_test("test_batch_percpu_alloc_free");
-+	if (test__start_subtest("percpu_free_through_map_free"))
-+		do_bpf_ma_test("test_percpu_free_through_map_free");
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_ma.c b/tools/testing/selftests/bpf/progs/test_bpf_ma.c
-index ecde41ae0fc87..b685a4aba6bd9 100644
---- a/tools/testing/selftests/bpf/progs/test_bpf_ma.c
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_ma.c
-@@ -37,10 +37,20 @@ int pid = 0;
- 		__type(key, int); \
- 		__type(value, struct map_value_##_size); \
- 		__uint(max_entries, 128); \
--	} array_##_size SEC(".maps");
-+	} array_##_size SEC(".maps")
- 
--static __always_inline void batch_alloc_free(struct bpf_map *map, unsigned int batch,
--					     unsigned int idx)
-+#define DEFINE_ARRAY_WITH_PERCPU_KPTR(_size) \
-+	struct map_value_percpu_##_size { \
-+		struct bin_data_##_size __percpu_kptr * data; \
-+	}; \
-+	struct { \
-+		__uint(type, BPF_MAP_TYPE_ARRAY); \
-+		__type(key, int); \
-+		__type(value, struct map_value_percpu_##_size); \
-+		__uint(max_entries, 128); \
-+	} array_percpu_##_size SEC(".maps")
-+
-+static __always_inline void batch_alloc(struct bpf_map *map, unsigned int batch, unsigned int idx)
- {
- 	struct generic_map_value *value;
- 	unsigned int i, key;
-@@ -65,6 +75,14 @@ static __always_inline void batch_alloc_free(struct bpf_map *map, unsigned int b
- 			return;
- 		}
- 	}
-+}
-+
-+static __always_inline void batch_free(struct bpf_map *map, unsigned int batch, unsigned int idx)
-+{
-+	struct generic_map_value *value;
-+	unsigned int i, key;
-+	void *old;
-+
- 	for (i = 0; i < batch; i++) {
- 		key = i;
- 		value = bpf_map_lookup_elem(map, &key);
-@@ -81,8 +99,72 @@ static __always_inline void batch_alloc_free(struct bpf_map *map, unsigned int b
- 	}
- }
- 
-+static __always_inline void batch_percpu_alloc(struct bpf_map *map, unsigned int batch,
-+					       unsigned int idx)
-+{
-+	struct generic_map_value *value;
-+	unsigned int i, key;
-+	void *old, *new;
-+
-+	for (i = 0; i < batch; i++) {
-+		key = i;
-+		value = bpf_map_lookup_elem(map, &key);
-+		if (!value) {
-+			err = 1;
-+			return;
-+		}
-+		/* per-cpu allocator may not be able to refill in time */
-+		new = bpf_percpu_obj_new_impl(data_btf_ids[idx], NULL);
-+		if (!new)
-+			continue;
-+
-+		old = bpf_kptr_xchg(&value->data, new);
-+		if (old) {
-+			bpf_percpu_obj_drop(old);
-+			err = 2;
-+			return;
-+		}
-+	}
-+}
-+
-+static __always_inline void batch_percpu_free(struct bpf_map *map, unsigned int batch,
-+					      unsigned int idx)
-+{
-+	struct generic_map_value *value;
-+	unsigned int i, key;
-+	void *old;
-+
-+	for (i = 0; i < batch; i++) {
-+		key = i;
-+		value = bpf_map_lookup_elem(map, &key);
-+		if (!value) {
-+			err = 3;
-+			return;
-+		}
-+		old = bpf_kptr_xchg(&value->data, NULL);
-+		if (!old)
-+			continue;
-+		bpf_percpu_obj_drop(old);
-+	}
-+}
-+
-+#define CALL_BATCH_ALLOC(size, batch, idx) \
-+	batch_alloc((struct bpf_map *)(&array_##size), batch, idx)
-+
- #define CALL_BATCH_ALLOC_FREE(size, batch, idx) \
--	batch_alloc_free((struct bpf_map *)(&array_##size), batch, idx)
-+	do { \
-+		batch_alloc((struct bpf_map *)(&array_##size), batch, idx); \
-+		batch_free((struct bpf_map *)(&array_##size), batch, idx); \
-+	} while (0)
-+
-+#define CALL_BATCH_PERCPU_ALLOC(size, batch, idx) \
-+	batch_percpu_alloc((struct bpf_map *)(&array_percpu_##size), batch, idx)
-+
-+#define CALL_BATCH_PERCPU_ALLOC_FREE(size, batch, idx) \
-+	do { \
-+		batch_percpu_alloc((struct bpf_map *)(&array_percpu_##size), batch, idx); \
-+		batch_percpu_free((struct bpf_map *)(&array_percpu_##size), batch, idx); \
-+	} while (0)
- 
- DEFINE_ARRAY_WITH_KPTR(8);
- DEFINE_ARRAY_WITH_KPTR(16);
-@@ -97,8 +179,21 @@ DEFINE_ARRAY_WITH_KPTR(1024);
- DEFINE_ARRAY_WITH_KPTR(2048);
- DEFINE_ARRAY_WITH_KPTR(4096);
- 
--SEC("fentry/" SYS_PREFIX "sys_nanosleep")
--int test_bpf_mem_alloc_free(void *ctx)
-+/* per-cpu kptr doesn't support bin_data_8 which is a zero-sized array */
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(16);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(32);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(64);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(96);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(128);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(192);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(256);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(512);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(1024);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(2048);
-+DEFINE_ARRAY_WITH_PERCPU_KPTR(4096);
-+
-+SEC("?fentry/" SYS_PREFIX "sys_nanosleep")
-+int test_batch_alloc_free(void *ctx)
- {
- 	if ((u32)bpf_get_current_pid_tgid() != pid)
- 		return 0;
-@@ -121,3 +216,76 @@ int test_bpf_mem_alloc_free(void *ctx)
- 
- 	return 0;
- }
-+
-+SEC("?fentry/" SYS_PREFIX "sys_nanosleep")
-+int test_free_through_map_free(void *ctx)
-+{
-+	if ((u32)bpf_get_current_pid_tgid() != pid)
-+		return 0;
-+
-+	/* Alloc 128 8-bytes objects in batch to trigger refilling,
-+	 * then free these objects through map free.
-+	 */
-+	CALL_BATCH_ALLOC(8, 128, 0);
-+	CALL_BATCH_ALLOC(16, 128, 1);
-+	CALL_BATCH_ALLOC(32, 128, 2);
-+	CALL_BATCH_ALLOC(64, 128, 3);
-+	CALL_BATCH_ALLOC(96, 128, 4);
-+	CALL_BATCH_ALLOC(128, 128, 5);
-+	CALL_BATCH_ALLOC(192, 128, 6);
-+	CALL_BATCH_ALLOC(256, 128, 7);
-+	CALL_BATCH_ALLOC(512, 64, 8);
-+	CALL_BATCH_ALLOC(1024, 32, 9);
-+	CALL_BATCH_ALLOC(2048, 16, 10);
-+	CALL_BATCH_ALLOC(4096, 8, 11);
-+
-+	return 0;
-+}
-+
-+SEC("?fentry/" SYS_PREFIX "sys_nanosleep")
-+int test_batch_percpu_alloc_free(void *ctx)
-+{
-+	if ((u32)bpf_get_current_pid_tgid() != pid)
-+		return 0;
-+
-+	/* Alloc 128 16-bytes per-cpu objects in batch to trigger refilling,
-+	 * then free 128 16-bytes per-cpu objects in batch to trigger freeing.
-+	 */
-+	CALL_BATCH_PERCPU_ALLOC_FREE(16, 128, 1);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(32, 128, 2);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(64, 128, 3);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(96, 128, 4);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(128, 128, 5);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(192, 128, 6);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(256, 128, 7);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(512, 64, 8);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(1024, 32, 9);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(2048, 16, 10);
-+	CALL_BATCH_PERCPU_ALLOC_FREE(4096, 8, 11);
-+
-+	return 0;
-+}
-+
-+SEC("?fentry/" SYS_PREFIX "sys_nanosleep")
-+int test_percpu_free_through_map_free(void *ctx)
-+{
-+	if ((u32)bpf_get_current_pid_tgid() != pid)
-+		return 0;
-+
-+	/* Alloc 128 16-bytes per-cpu objects in batch to trigger refilling,
-+	 * then free these object through map free.
-+	 */
-+	CALL_BATCH_PERCPU_ALLOC(16, 128, 1);
-+	CALL_BATCH_PERCPU_ALLOC(32, 128, 2);
-+	CALL_BATCH_PERCPU_ALLOC(64, 128, 3);
-+	CALL_BATCH_PERCPU_ALLOC(96, 128, 4);
-+	CALL_BATCH_PERCPU_ALLOC(128, 128, 5);
-+	CALL_BATCH_PERCPU_ALLOC(192, 128, 6);
-+	CALL_BATCH_PERCPU_ALLOC(256, 128, 7);
-+	CALL_BATCH_PERCPU_ALLOC(512, 64, 8);
-+	CALL_BATCH_PERCPU_ALLOC(1024, 32, 9);
-+	CALL_BATCH_PERCPU_ALLOC(2048, 16, 10);
-+	CALL_BATCH_PERCPU_ALLOC(4096, 8, 11);
-+
-+	return 0;
-+}
--- 
-2.29.2
+Regards,
+Hou
+>
+>> The following is the output of kmemleak after reproducing:
+>>
+>> unreferenced object 0xffff8881163d3780 (size 96):
+>>   comm "test_progs", pid 539, jiffies 4295358164 (age 23.276s)
+>>   hex dump (first 32 bytes):
+>>     80 37 3d 16 81 88 ff ff 00 00 00 00 00 00 00 00  .7=.............
+>>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>>   backtrace:
+>>     [<00000000bbc3f059>] __kmem_cache_alloc_node+0x3b1/0x4a0
+>>     [<00000000a24ddf4d>] __kmalloc_node+0x57/0x140
+>>     [<000000004d577dbf>] bpf_map_kmalloc_node+0x5f/0x180
+>>     [<00000000bd8428d3>] bpf_timer_init+0xf6/0x1b0
+>>     [<0000000086d87323>] 0xffffffffc000c94e
+>>     [<000000005a09e655>] trace_call_bpf+0xc5/0x1c0
+>>     [<0000000051ab837b>] kprobe_perf_func+0x51/0x260
+>>     [<000000000069bbd1>] kprobe_dispatcher+0x61/0x70
+>>     [<000000007dceb75b>] kprobe_ftrace_handler+0x168/0x240
+>>     [<00000000d8721bd7>] 0xffffffffc02010f7
+>>     [<00000000e885b809>] __x64_sys_getpgid+0x1/0x20
+>>     [<000000007be835d8>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+>>
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>> ---
+>>  .../bpf/prog_tests/timer_init_race.c          | 138 ++++++++++++++++++
+>>  .../selftests/bpf/progs/timer_init_race.c     |  56 +++++++
+>>  2 files changed, 194 insertions(+)
+>>  create mode 100644 tools/testing/selftests/bpf/prog_tests/timer_init_race.c
+>>  create mode 100644 tools/testing/selftests/bpf/progs/timer_init_race.c
+>>
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/timer_init_race.c b/tools/testing/selftests/bpf/prog_tests/timer_init_race.c
+>> new file mode 100644
+>> index 0000000000000..7bd57459e5048
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/prog_tests/timer_init_race.c
+>> @@ -0,0 +1,138 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
+>> +#define _GNU_SOURCE
+>> +#include <unistd.h>
+>> +#include <sys/syscall.h>
+>> +#include <test_progs.h>
+>> +#include <bpf/btf.h>
+>> +#include "timer_init_race.skel.h"
+>> +
+>> +struct thread_ctx {
+>> +       struct bpf_map_create_opts opts;
+>> +       pthread_barrier_t barrier;
+>> +       int outer_map_fd;
+>> +       int start, abort;
+>> +       int loop, err;
+>> +};
+>> +
+>> +static int wait_for_start_or_abort(struct thread_ctx *ctx)
+>> +{
+>> +       while (!ctx->start && !ctx->abort)
+>> +               usleep(1);
+>> +       return ctx->abort ? -1 : 0;
+>> +}
+>> +
+>> +static void *close_map_fn(void *data)
+>> +{
+>> +       struct thread_ctx *ctx = data;
+>> +       int loop = ctx->loop, err = 0;
+>> +
+>> +       if (wait_for_start_or_abort(ctx) < 0)
+>> +               return NULL;
+>> +
+>> +       while (loop-- > 0) {
+>> +               int fd, zero = 0, i;
+>> +               volatile int s = 0;
+>> +
+>> +               fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, 4, sizeof(struct bpf_timer),
+>> +                                   1, &ctx->opts);
+>> +               if (fd < 0) {
+>> +                       err |= 1;
+>> +                       pthread_barrier_wait(&ctx->barrier);
+>> +                       continue;
+>> +               }
+>> +
+>> +               if (bpf_map_update_elem(ctx->outer_map_fd, &zero, &fd, 0) < 0)
+>> +                       err |= 2;
+>> +
+>> +               pthread_barrier_wait(&ctx->barrier);
+>> +               /* let bpf_timer_init run first */
+>> +               for (i = 0; i < 5000; i++)
+>> +                       s++;
+>> +               close(fd);
+>> +       }
+>> +
+>> +       ctx->err = err;
+>> +
+>> +       return NULL;
+>> +}
+>> +
+>> +static void *init_timer_fn(void *data)
+>> +{
+>> +       struct thread_ctx *ctx = data;
+>> +       int loop = ctx->loop;
+>> +
+>> +       if (wait_for_start_or_abort(ctx) < 0)
+>> +               return NULL;
+>> +
+>> +       while (loop-- > 0) {
+>> +               pthread_barrier_wait(&ctx->barrier);
+>> +               syscall(SYS_getpgid);
+>> +       }
+>> +
+>> +       return NULL;
+>> +}
+>> +
+>> +void test_timer_init_race(void)
+>> +{
+>> +       struct timer_init_race *skel;
+>> +       struct thread_ctx ctx;
+>> +       pthread_t tid[2];
+>> +       struct btf *btf;
+>> +       int err;
+>> +
+>> +       skel = timer_init_race__open();
+>> +       if (!ASSERT_OK_PTR(skel, "timer_init_race open"))
+>> +               return;
+>> +
+>> +       err = timer_init_race__load(skel);
+>> +       if (!ASSERT_EQ(err, 0, "timer_init_race load"))
+>> +               goto out;
+>> +
+>> +       memset(&ctx, 0, sizeof(ctx));
+>> +
+>> +       btf = bpf_object__btf(skel->obj);
+>> +       if (!ASSERT_OK_PTR(btf, "timer_init_race btf"))
+>> +               goto out;
+>> +
+>> +       LIBBPF_OPTS_RESET(ctx.opts);
+>> +       ctx.opts.btf_fd = bpf_object__btf_fd(skel->obj);
+>> +       if (!ASSERT_GE((int)ctx.opts.btf_fd, 0, "btf_fd"))
+>> +               goto out;
+>> +       ctx.opts.btf_key_type_id = btf__find_by_name(btf, "int");
+>> +       if (!ASSERT_GT(ctx.opts.btf_key_type_id, 0, "key_type_id"))
+>> +               goto out;
+>> +       ctx.opts.btf_value_type_id = btf__find_by_name_kind(btf, "inner_value", BTF_KIND_STRUCT);
+>> +       if (!ASSERT_GT(ctx.opts.btf_value_type_id, 0, "value_type_id"))
+>> +               goto out;
+>> +
+>> +       err = timer_init_race__attach(skel);
+>> +       if (!ASSERT_EQ(err, 0, "timer_init_race attach"))
+>> +               goto out;
+>> +
+>> +       skel->bss->tgid = getpid();
+>> +
+>> +       pthread_barrier_init(&ctx.barrier, NULL, 2);
+>> +       ctx.outer_map_fd = bpf_map__fd(skel->maps.outer_map);
+>> +       ctx.loop = 8;
+>> +
+>> +       err = pthread_create(&tid[0], NULL, close_map_fn, &ctx);
+>> +       if (!ASSERT_OK(err, "close_thread"))
+>> +               goto out;
+>> +
+>> +       err = pthread_create(&tid[1], NULL, init_timer_fn, &ctx);
+>> +       if (!ASSERT_OK(err, "init_thread")) {
+>> +               ctx.abort = 1;
+>> +               pthread_join(tid[0], NULL);
+>> +               goto out;
+>> +       }
+>> +
+>> +       ctx.start = 1;
+>> +       pthread_join(tid[0], NULL);
+>> +       pthread_join(tid[1], NULL);
+>> +
+>> +       ASSERT_EQ(ctx.err, 0, "error");
+>> +       ASSERT_EQ(skel->bss->cnt, 8, "cnt");
+>> +out:
+>> +       timer_init_race__destroy(skel);
+>> +}
+>> diff --git a/tools/testing/selftests/bpf/progs/timer_init_race.c b/tools/testing/selftests/bpf/progs/timer_init_race.c
+>> new file mode 100644
+>> index 0000000000000..ba67cb1786399
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/progs/timer_init_race.c
+>> @@ -0,0 +1,56 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
+>> +#include <linux/bpf.h>
+>> +#include <time.h>
+>> +#include <bpf/bpf_helpers.h>
+>> +
+>> +#include "bpf_misc.h"
+>> +
+>> +struct inner_value {
+>> +       struct bpf_timer timer;
+>> +};
+>> +
+>> +struct inner_map_type {
+>> +       __uint(type, BPF_MAP_TYPE_ARRAY);
+>> +       __type(key, int);
+>> +       __type(value, struct inner_value);
+>> +       __uint(max_entries, 1);
+>> +} inner_map SEC(".maps");
+>> +
+>> +struct {
+>> +       __uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
+>> +       __type(key, int);
+>> +       __type(value, int);
+>> +       __uint(max_entries, 1);
+>> +       __array(values, struct inner_map_type);
+>> +} outer_map SEC(".maps") = {
+>> +       .values = {
+>> +               [0] = &inner_map,
+>> +       },
+>> +};
+>> +
+>> +char _license[] SEC("license") = "GPL";
+>> +
+>> +int tgid = 0, cnt = 0;
+>> +
+>> +SEC("kprobe/" SYS_PREFIX "sys_getpgid")
+>> +int do_timer_init(void *ctx)
+>> +{
+>> +       struct inner_map_type *map;
+>> +       struct inner_value *value;
+>> +       int zero = 0;
+>> +
+>> +       if ((bpf_get_current_pid_tgid() >> 32) != tgid)
+>> +               return 0;
+>> +
+>> +       map = bpf_map_lookup_elem(&outer_map, &zero);
+>> +       if (!map)
+>> +               return 0;
+>> +       value = bpf_map_lookup_elem(map, &zero);
+>> +       if (!value)
+>> +               return 0;
+>> +       bpf_timer_init(&value->timer, map, CLOCK_MONOTONIC);
+>> +       cnt++;
+>> +
+>> +       return 0;
+>> +}
+>> --
+>> 2.29.2
+>>
+> .
 
 
