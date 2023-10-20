@@ -1,337 +1,197 @@
-Return-Path: <bpf+bounces-12838-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12839-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 420387D11E0
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 16:52:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D42F7D11F9
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 16:58:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6310D1C20FF7
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 14:52:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7656282519
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 14:58:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AE571D539;
-	Fri, 20 Oct 2023 14:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4319F1DA30;
+	Fri, 20 Oct 2023 14:58:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EIVulI9W"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mqn4fmQ/"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2878819BD8
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 14:52:16 +0000 (UTC)
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D081D60
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 07:52:14 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id 4fb4d7f45d1cf-53fc7c67a41so1751616a12.0
-        for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 07:52:14 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97801199BE
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 14:58:16 +0000 (UTC)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1371EFA
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 07:58:13 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40651a726acso7545165e9.1
+        for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 07:58:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697813533; x=1698418333; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697813891; x=1698418691; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aOZQtLcLOAEMe4qjCEag2EdNtlfoJidW35bBWWM5GAA=;
-        b=EIVulI9WLf5eS7/h/eQWA+S/edRXCpPUuL3w9xSbctmpYPdajIqtoBRAnIiiRhpUyg
-         Qw9y70F8hFK9s8/Ma0e2IrjSQ4f7rkj3hBbfZJXq15UFDGwtRIyCzYQXHJpK+Pzw6kJa
-         yklOSZlWDKX1sEf5KvaHcAMlvxxZzD3tWq61QNwxAG6FfBsK4JcI54tPGaBoeYEBNBbB
-         XXr9zGDhrWb61lfP+2VAlWaKg3CROlRCOf4RNy6UKuo0Jl16BE/HjPuJtCZvDsZojqI+
-         MdXXoMer6Kp5c96TQPXKw5Ds6TvC908XRK4yY9C2+2+BlrD0QJUrFd8hzb6KB5jgZGFG
-         Q0WA==
+        bh=xr4XT0H5H5s90ENHIQ4i1JDap0MUEcuZxPp9GsRehLE=;
+        b=Mqn4fmQ/Kp5anX4MbmYxkxLJAf5fed46sAWJJ0NgdgS97nJWGw6Gt6QtxA5nJ+qbDZ
+         diZUIYgu+9P/wpEncA4bDjBjdUgS1CVcOKyNnbFismDu97AhpDxw2CgAn0Zog3f5YueW
+         gtADBjjW9WCbaS+gvIXVsibI8sb6d8O9G/AHrDwlrm21PhzmQF0l01M/fOmRZscTtk4f
+         HfiZPNiaGRaC39ExSpO9TdHWkCTxEPaoCbLr42ut+TO1No4nE6kgxgO88tftUR+dJo+r
+         CB7yQw9iakTzUznjj1aWNlYbuY1zeoRU0cGG3IWa3coRq7I9TL7bVjImLoQ5btoe+UjP
+         Eniw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697813533; x=1698418333;
+        d=1e100.net; s=20230601; t=1697813891; x=1698418691;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aOZQtLcLOAEMe4qjCEag2EdNtlfoJidW35bBWWM5GAA=;
-        b=ZEW77OLiek4H1hBf9ASlWqu744Wj4SDfoeYLcP+RryAfP91gE259Fxv7KqwQA2MxMc
-         Xd9l9saqGxYE27Qi9e9G/moCsvesaEyqgcJb6PMNSlAyZDMTGV9BWENoZuh/JIOl2Yec
-         WoCK7yTAcUzVUrOe+pB4CVE5jobPDTA/BttKCj5QvMf4xnEHwjUaZhr9mKoyTqBXHHGw
-         33GHnBdYDEVBRgg25krU2it2r0LV6uS3Blf2SvpVMF5cnUEz1DMQkhrWwjs95EHKQSos
-         xX15jo1Yqh8TB/6lLgZl/HWHS8VQUm9I6MzO7e42oQPC09OZ6Vu/RWqT41DdrLb1v2oY
-         itPw==
-X-Gm-Message-State: AOJu0YzGSZUBGfmKv9fPqE2OgI7yfJw7smmtrd5iGo2QhnOu+ISihP7I
-	2/dk1JBMwqXkHzfa3pd0LGydSLCGTsFOtjTBNdw=
-X-Google-Smtp-Source: AGHT+IGZkx28PhnnIwjD7pkBH9xtGqp/CYX4U4EU+jR6dpGLlIDFfvHjBDyVdlhCBjwyFll1aE4QRSEK/r0SikMhbao=
-X-Received: by 2002:a50:9e66:0:b0:53e:ae04:40ec with SMTP id
- z93-20020a509e66000000b0053eae0440ecmr1855164ede.18.1697813532374; Fri, 20
- Oct 2023 07:52:12 -0700 (PDT)
+        bh=xr4XT0H5H5s90ENHIQ4i1JDap0MUEcuZxPp9GsRehLE=;
+        b=O6aAK3quFncKrvmNgZQCErqr0VD6/u/3rNTU24owAf4a3zjN93DSJ5GO8jQcm5bHgc
+         UPchcfWYprx4I4124GR60rVakytW77bQm2Am6zNP2aKV23+17wee/ft7LFK6iK06Ovk+
+         s09ZDTPVe1SRIG2j65z3KCAdVI0zW7//VovWv9CIr4nY3qe124GMwkDUYxj3y7+AAiS8
+         XV2ayGTeCi18EHIQajypzebBaf5bgWlUdtwRP1SPe6w/dj40mq9ilgG1WPubtxnp++yR
+         Lzf13lpWLwvc/JcHhfpLU0qwS2whmaM413ZFuRYyB+H36vYU9oYKku4wfr9muh2QdaGS
+         oKRg==
+X-Gm-Message-State: AOJu0YwLxOGnaG31uJgsgrUw+4x1orlaLr9oA4Zvvggu0nw10qnxQitG
+	93q2vwHowLvUXTbdz9qi5h6l4995yYOaKuFI65g=
+X-Google-Smtp-Source: AGHT+IGI2Tlv5L7OsVc+A0RdovcTka3Mq3ofUgfYTTNeCrnyBj2pokE7M4Qat2XewYAJIHYyhgmCCCZfldWlvZN+rmg=
+X-Received: by 2002:a05:6000:1c14:b0:323:2d01:f043 with SMTP id
+ ba20-20020a0560001c1400b003232d01f043mr2397331wrb.3.1697813891246; Fri, 20
+ Oct 2023 07:58:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20221118015614.2013203-1-memxor@gmail.com> <20221118015614.2013203-23-memxor@gmail.com>
- <CAEf4BzY0h8pPn3gWGg2D5TvEy8z_EROb_jMdiqjWWo_vL87g7w@mail.gmail.com>
- <CAP01T76SybiQeoH91tsDuWn4DU1Ba_8H53AuQP8QedZyc3ZKbg@mail.gmail.com> <CAEf4BzZZrRW7MQOEhJ28sx0N_F-o0OzT+EEnvKh1h3inXhpYEQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzZZrRW7MQOEhJ28sx0N_F-o0OzT+EEnvKh1h3inXhpYEQ@mail.gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 20 Oct 2023 16:51:35 +0200
-Message-ID: <CAP01T75YbRK65vi9zgZpZmqrkd0bFWhm3ydKL3Snt2ueb7H7RQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 22/24] selftests/bpf: Add BPF linked list API tests
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Dave Marchevsky <davemarchevsky@meta.com>
+References: <20231020014214.2471419-1-houtao@huaweicloud.com>
+ <20231020014214.2471419-2-houtao@huaweicloud.com> <CAADnVQK9BzHfAwnws+XhwL_zz9wvSAUaK0HSFWHGUQeD4LWO8w@mail.gmail.com>
+ <42756ba7-191e-37a5-ee78-849e2f1d3d50@huaweicloud.com>
+In-Reply-To: <42756ba7-191e-37a5-ee78-849e2f1d3d50@huaweicloud.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 20 Oct 2023 07:57:59 -0700
+Message-ID: <CAADnVQL0N=+3yk17iNHEJ2+12LuTj3A6T5mzb-jpy_z6GOD6LA@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 1/2] bpf: Check map->usercnt again after
+ timer->timer is assigned
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Hsin-Wei Hung <hsinweih@uci.edu>, 
+	Hou Tao <houtao1@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 20 Oct 2023 at 02:15, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
+On Fri, Oct 20, 2023 at 12:31=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> w=
 rote:
 >
-> On Wed, Oct 11, 2023 at 4:02=E2=80=AFPM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > On Thu, 12 Oct 2023 at 00:44, Andrii Nakryiko <andrii.nakryiko@gmail.co=
-m> wrote:
-> > >
-> > > On Thu, Nov 17, 2022 at 5:57=E2=80=AFPM Kumar Kartikeya Dwivedi
-> > > <memxor@gmail.com> wrote:
-> > > >
-> > > > Include various tests covering the success and failure cases. Also,=
- run
-> > > > the success cases at runtime to verify correctness of linked list
-> > > > manipulation routines, in addition to ensuring successful verificat=
-ion.
-> > > >
-> > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > > ---
-> > > >  tools/testing/selftests/bpf/DENYLIST.aarch64  |   1 +
-> > > >  tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
-> > > >  .../selftests/bpf/prog_tests/linked_list.c    | 255 ++++++++
-> > > >  .../testing/selftests/bpf/progs/linked_list.c | 370 +++++++++++
-> > > >  .../testing/selftests/bpf/progs/linked_list.h |  56 ++
-> > > >  .../selftests/bpf/progs/linked_list_fail.c    | 581 ++++++++++++++=
-++++
-> > > >  6 files changed, 1264 insertions(+)
-> > > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/linked_l=
-ist.c
-> > > >  create mode 100644 tools/testing/selftests/bpf/progs/linked_list.c
-> > > >  create mode 100644 tools/testing/selftests/bpf/progs/linked_list.h
-> > > >  create mode 100644 tools/testing/selftests/bpf/progs/linked_list_f=
-ail.c
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/t=
-esting/selftests/bpf/DENYLIST.aarch64
-> > > > index 09416d5d2e33..affc5aebbf0f 100644
-> > > > --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-> > > > +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-> > > > @@ -38,6 +38,7 @@ kprobe_multi_test/skel_api                       =
-# kprobe_multi__attach unexpect
-> > > >  ksyms_module/libbpf                              # 'bpf_testmod_ks=
-ym_percpu': not found in kernel BTF
-> > > >  ksyms_module/lskel                               # test_ksyms_modu=
-le_lskel__open_and_load unexpected error: -2
-> > > >  libbpf_get_fd_by_id_opts                         # test_libbpf_get=
-_fd_by_id_opts__attach unexpected error: -524 (errno 524)
-> > > > +linked_list
-> > > >  lookup_key                                       # test_lookup_key=
-__attach unexpected error: -524 (errno 524)
-> > > >  lru_bug                                          # lru_bug__attach=
- unexpected error: -524 (errno 524)
-> > > >  modify_return                                    # modify_return__=
-attach failed unexpected error: -524 (errno 524)
-> > > > diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/tes=
-ting/selftests/bpf/DENYLIST.s390x
-> > > > index be4e3d47ea3e..072243af93b0 100644
-> > > > --- a/tools/testing/selftests/bpf/DENYLIST.s390x
-> > > > +++ b/tools/testing/selftests/bpf/DENYLIST.s390x
-> > > > @@ -33,6 +33,7 @@ ksyms_module                             # test_k=
-syms_module__open_and_load unex
-> > > >  ksyms_module_libbpf                      # JIT does not support ca=
-lling kernel function                                (kfunc)
-> > > >  ksyms_module_lskel                       # test_ksyms_module_lskel=
-__open_and_load unexpected error: -9                 (?)
-> > > >  libbpf_get_fd_by_id_opts                 # failed to attach: ERROR=
-: strerror_r(-524)=3D22                                (trampoline)
-> > > > +linked_list                             # JIT does not support cal=
-ling kernel function                                (kfunc)
-> > > >  lookup_key                               # JIT does not support ca=
-lling kernel function                                (kfunc)
-> > > >  lru_bug                                  # prog 'printk': failed t=
-o auto-attach: -524
-> > > >  map_kptr                                 # failed to open_and_load=
- program: -524 (trampoline)
-> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/linked_list.c b=
-/tools/testing/selftests/bpf/prog_tests/linked_list.c
-> > > > new file mode 100644
-> > > > index 000000000000..41e588807321
-> > > > --- /dev/null
-> > > > +++ b/tools/testing/selftests/bpf/prog_tests/linked_list.c
-> > > > @@ -0,0 +1,255 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0
-> > > > +#include <test_progs.h>
-> > > > +#include <network_helpers.h>
-> > > > +
-> > > > +#include "linked_list.skel.h"
-> > > > +#include "linked_list_fail.skel.h"
-> > > > +
-> > > > +static char log_buf[1024 * 1024];
-> > > > +
-> > > > +static struct {
-> > > > +       const char *prog_name;
-> > > > +       const char *err_msg;
-> > > > +} linked_list_fail_tests[] =3D {
-> > > > +#define TEST(test, off) \
-> > > > +       { #test "_missing_lock_push_front", \
-> > > > +         "bpf_spin_lock at off=3D" #off " must be held for bpf_lis=
-t_head" }, \
-> > > > +       { #test "_missing_lock_push_back", \
-> > > > +         "bpf_spin_lock at off=3D" #off " must be held for bpf_lis=
-t_head" }, \
-> > > > +       { #test "_missing_lock_pop_front", \
-> > > > +         "bpf_spin_lock at off=3D" #off " must be held for bpf_lis=
-t_head" }, \
-> > > > +       { #test "_missing_lock_pop_back", \
-> > > > +         "bpf_spin_lock at off=3D" #off " must be held for bpf_lis=
-t_head" },
-> > > > +       TEST(kptr, 32)
-> > > > +       TEST(global, 16)
-> > > > +       TEST(map, 0)
-> > > > +       TEST(inner_map, 0)
-> > > > +#undef TEST
-> > > > +#define TEST(test, op) \
-> > > > +       { #test "_kptr_incorrect_lock_" #op, \
-> > > > +         "held lock and object are not in the same allocation\n" \
-> > > > +         "bpf_spin_lock at off=3D32 must be held for bpf_list_head=
-" }, \
-> > > > +       { #test "_global_incorrect_lock_" #op, \
-> > > > +         "held lock and object are not in the same allocation\n" \
-> > > > +         "bpf_spin_lock at off=3D16 must be held for bpf_list_head=
-" }, \
-> > > > +       { #test "_map_incorrect_lock_" #op, \
-> > > > +         "held lock and object are not in the same allocation\n" \
-> > > > +         "bpf_spin_lock at off=3D0 must be held for bpf_list_head"=
- }, \
-> > > > +       { #test "_inner_map_incorrect_lock_" #op, \
-> > > > +         "held lock and object are not in the same allocation\n" \
-> > > > +         "bpf_spin_lock at off=3D0 must be held for bpf_list_head"=
- },
-> > > > +       TEST(kptr, push_front)
-> > > > +       TEST(kptr, push_back)
-> > > > +       TEST(kptr, pop_front)
-> > > > +       TEST(kptr, pop_back)
-> > > > +       TEST(global, push_front)
-> > > > +       TEST(global, push_back)
-> > > > +       TEST(global, pop_front)
-> > > > +       TEST(global, pop_back)
-> > > > +       TEST(map, push_front)
-> > > > +       TEST(map, push_back)
-> > > > +       TEST(map, pop_front)
-> > > > +       TEST(map, pop_back)
-> > > > +       TEST(inner_map, push_front)
-> > > > +       TEST(inner_map, push_back)
-> > > > +       TEST(inner_map, pop_front)
-> > > > +       TEST(inner_map, pop_back)
-> > > > +#undef TEST
-> > > > +       { "map_compat_kprobe", "tracing progs cannot use bpf_list_h=
-ead yet" },
-> > > > +       { "map_compat_kretprobe", "tracing progs cannot use bpf_lis=
-t_head yet" },
-> > > > +       { "map_compat_tp", "tracing progs cannot use bpf_list_head =
-yet" },
-> > > > +       { "map_compat_perf", "tracing progs cannot use bpf_list_hea=
-d yet" },
-> > > > +       { "map_compat_raw_tp", "tracing progs cannot use bpf_list_h=
-ead yet" },
-> > > > +       { "map_compat_raw_tp_w", "tracing progs cannot use bpf_list=
-_head yet" },
-> > > > +       { "obj_type_id_oor", "local type ID argument must be in ran=
-ge [0, U32_MAX]" },
-> > > > +       { "obj_new_no_composite", "bpf_obj_new type ID argument mus=
-t be of a struct" },
-> > > > +       { "obj_new_no_struct", "bpf_obj_new type ID argument must b=
-e of a struct" },
-> > > > +       { "obj_drop_non_zero_off", "R1 must have zero offset when p=
-assed to release func" },
-> > > > +       { "new_null_ret", "R0 invalid mem access 'ptr_or_null_'" },
-> > > > +       { "obj_new_acq", "Unreleased reference id=3D" },
-> > > > +       { "use_after_drop", "invalid mem access 'scalar'" },
-> > > > +       { "ptr_walk_scalar", "type=3Dscalar expected=3Dpercpu_ptr_"=
- },
-> > > > +       { "direct_read_lock", "direct access to bpf_spin_lock is di=
-sallowed" },
-> > > > +       { "direct_write_lock", "direct access to bpf_spin_lock is d=
-isallowed" },
-> > > > +       { "direct_read_head", "direct access to bpf_list_head is di=
-sallowed" },
-> > > > +       { "direct_write_head", "direct access to bpf_list_head is d=
-isallowed" },
-> > > > +       { "direct_read_node", "direct access to bpf_list_node is di=
-sallowed" },
-> > > > +       { "direct_write_node", "direct access to bpf_list_node is d=
-isallowed" },
-> > > > +       { "write_after_push_front", "only read is supported" },
-> > > > +       { "write_after_push_back", "only read is supported" },
-> > > > +       { "use_after_unlock_push_front", "invalid mem access 'scala=
-r'" },
-> > > > +       { "use_after_unlock_push_back", "invalid mem access 'scalar=
-'" },
-> > > > +       { "double_push_front", "arg#1 expected pointer to allocated=
- object" },
-> > > > +       { "double_push_back", "arg#1 expected pointer to allocated =
-object" },
-> > > > +       { "no_node_value_type", "bpf_list_node not found at offset=
-=3D0" },
-> > > > +       { "incorrect_value_type",
-> > > > +         "operation on bpf_list_head expects arg#1 bpf_list_node a=
-t offset=3D0 in struct foo, "
-> > > > +         "but arg is at offset=3D0 in struct bar" },
-> > > > +       { "incorrect_node_var_off", "variable ptr_ access var_off=
-=3D(0x0; 0xffffffff) disallowed" },
-> > > > +       { "incorrect_node_off1", "bpf_list_node not found at offset=
-=3D1" },
-> > > > +       { "incorrect_node_off2", "arg#1 offset=3D40, but expected b=
-pf_list_node at offset=3D0 in struct foo" },
-> > > > +       { "no_head_type", "bpf_list_head not found at offset=3D0" }=
+> Hi,
+>
+> On 10/20/2023 10:14 AM, Alexei Starovoitov wrote:
+> > On Thu, Oct 19, 2023 at 6:41=E2=80=AFPM Hou Tao <houtao@huaweicloud.com=
+> wrote:
+> >> From: Hou Tao <houtao1@huawei.com>
+> >>
+> >> When there are concurrent uref release and bpf timer init operations,
+> >> the following sequence diagram is possible and it will lead to memory
+> >> leak:
+> >>
+> >> bpf program X
+> >>
+> >> bpf_timer_init()
+> >>   lock timer->lock
+> >>     read timer->timer as NULL
+> >>     read map->usercnt !=3D 0
+> >>
+> >>                 process Y
+> >>
+> >>                 close(map_fd)
+> >>                   // put last uref
+> >>                   bpf_map_put_uref()
+> >>                     atomic_dec_and_test(map->usercnt)
+> >>                       array_map_free_timers()
+> >>                         bpf_timer_cancel_and_free()
+> >>                           // just return and lead to memory leak
+> >>                           read timer->timer is NULL
+> >>
+> >>     t =3D bpf_map_kmalloc_node()
+> >>     timer->timer =3D t
+> >>   unlock timer->lock
+> >>
+> >> Fix the problem by checking map->usercnt again after timer->timer is
+> >> assigned, so when there are concurrent uref release and bpf timer init=
 ,
-> > > > +       { "incorrect_head_var_off1", "R1 doesn't have constant offs=
-et" },
-> > > > +       { "incorrect_head_var_off2", "variable ptr_ access var_off=
-=3D(0x0; 0xffffffff) disallowed" },
-> > > > +       { "incorrect_head_off1", "bpf_list_head not found at offset=
-=3D17" },
-> > > > +       { "incorrect_head_off2", "bpf_list_head not found at offset=
-=3D1" },
-> > > > +       { "pop_front_off",
-> > > > +         "15: (bf) r1 =3D r6                      ; R1_w=3Dptr_or_=
-null_foo(id=3D4,ref_obj_id=3D4,off=3D40,imm=3D0) "
-> > > > +         "R6_w=3Dptr_or_null_foo(id=3D4,ref_obj_id=3D4,off=3D40,im=
-m=3D0) refs=3D2,4\n"
-> > > > +         "16: (85) call bpf_this_cpu_ptr#154\nR1 type=3Dptr_or_nul=
-l_ expected=3Dpercpu_ptr_" },
-> > > > +       { "pop_back_off",
-> > > > +         "15: (bf) r1 =3D r6                      ; R1_w=3Dptr_or_=
-null_foo(id=3D4,ref_obj_id=3D4,off=3D40,imm=3D0) "
-> > > > +         "R6_w=3Dptr_or_null_foo(id=3D4,ref_obj_id=3D4,off=3D40,im=
-m=3D0) refs=3D2,4\n"
-> > > > +         "16: (85) call bpf_this_cpu_ptr#154\nR1 type=3Dptr_or_nul=
-l_ expected=3Dpercpu_ptr_" },
-> > > > +};
-> > > > +
-> > >
-> > > Hey Kumar,
-> > >
-> > > pop_front_off/pop_back_off validation seems to rely on exact register
-> > > usage (r6 in this case) generated by the compiler, while the test
-> > > itself is written in C, so really nothing is guaranteed. And that's
-> > > exactly what seems to happen to me locally, as in my case compiler
-> > > chose to use r7 in this particular spot (see logs below).
-> > >
-> > > Can you please take a look and try to make it more robust? Ideally we
-> > > should probably rewrite BPF program to use inline assembly if we are
-> > > to check the exact instruction index and registers.
+> >> either bpf_timer_cancel_and_free() from uref release reads a no-NULL
+> >> timer and the newly-added check of map->usercnt reads a zero usercnt.
+> >>
+> >> Because atomic_dec_and_test(map->usercnt) and READ_ONCE(timer->timer)
+> >> in bpf_timer_cancel_and_free() are not protected by a lock, so add
+> >> a memory barrier to guarantee the order between map->usercnt and
+> >> timer->timer. Also use WRITE_ONCE(timer->timer, x) to match the lockle=
+ss
+> >> read of timer->timer.
+> >>
+> >> Reported-by: Hsin-Wei Hung <hsinweih@uci.edu>
+> >> Closes: https://lore.kernel.org/bpf/CABcoxUaT2k9hWsS1tNgXyoU3E-=3DPuOg=
+Mn737qK984fbFmfYixQ@mail.gmail.com
+> >> Fixes: b00628b1c7d5 ("bpf: Introduce bpf timers.")
+> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> >> ---
+> >>  kernel/bpf/helpers.c | 18 +++++++++++++++---
+> >>  1 file changed, 15 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> >> index 757b99c1e613f..a7d92c3ddc3dd 100644
+> >> --- a/kernel/bpf/helpers.c
+> >> +++ b/kernel/bpf/helpers.c
+> >> @@ -1156,7 +1156,7 @@ BPF_CALL_3(bpf_timer_init, struct bpf_timer_kern=
+ *, timer, struct bpf_map *, map
+> >>            u64, flags)
+> >>  {
+> >>         clockid_t clockid =3D flags & (MAX_CLOCKS - 1);
+> >> -       struct bpf_hrtimer *t;
+> >> +       struct bpf_hrtimer *t, *to_free =3D NULL;
+> >>         int ret =3D 0;
+> >>
+> >>         BUILD_BUG_ON(MAX_CLOCKS !=3D 16);
+> >> @@ -1197,9 +1197,21 @@ BPF_CALL_3(bpf_timer_init, struct bpf_timer_ker=
+n *, timer, struct bpf_map *, map
+> >>         rcu_assign_pointer(t->callback_fn, NULL);
+> >>         hrtimer_init(&t->timer, clockid, HRTIMER_MODE_REL_SOFT);
+> >>         t->timer.function =3D bpf_timer_cb;
+> >> -       timer->timer =3D t;
+> >> +       WRITE_ONCE(timer->timer, t);
+> >> +       /* Guarantee order between timer->timer and map->usercnt. So w=
+hen
+> >> +        * there are concurrent uref release and bpf timer init, eithe=
+r
+> >> +        * bpf_timer_cancel_and_free() called by uref release reads a =
+no-NULL
+> >> +        * timer or atomic64_read() below reads a zero usercnt.
+> >> +        */
+> >> +       smp_mb();
+> >> +       if (!atomic64_read(&map->usercnt)) {
+> >> +               WRITE_ONCE(timer->timer, NULL);
+> >> +               to_free =3D t;
+> > just kfree(t); here.
+>
+> Will do. It is a slow path, so I think doing kfree() under spin-lock is
+> acceptable.
 > >
-> > Thanks for the report Andrii.
-> > I'll take a look and send a patch to address this.
+> >> +               ret =3D -EPERM;
+> >> +       }
+> > This will add a second atomic64_read(&map->usercnt) in the same functio=
+n.
+> > Let's remove the first one ?
 >
-> Friendly ping! Did you get a chance to look at this?
->
+> I prefer to still keep it. Because it can detect the release of map uref
+> early and the handle of uref release is simple compared with the second
+> atomic64_read(). Do you have a strong preference ?
 
-Hi Andrii, sorry for the delay. The fix should be relatively simple,
-we just need to check whether the offset on the returned pointer is
-48.
-I have posted a fix here, PTAL. Thanks.
+I bet somebody will send a patch to remove the first one as redundant.
+So let's do it now.
+The only reason we do repeated early check is to avoid taking a lock.
+Here doing an extra early check to avoid kmalloc is an overkill.
+That check is highly unlikely to hit while for locks it's a likely one.
+Hence extra check is justified for locks, but not here.
 
-https://lore.kernel.org/bpf/20231020144839.2734006-1-memxor@gmail.com
+Reading your other email it looks like this patchset is incomplete anyway?
 
