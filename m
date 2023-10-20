@@ -1,206 +1,171 @@
-Return-Path: <bpf+bounces-12875-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12876-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 131047D1939
-	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 00:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A0B097D193E
+	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 00:38:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA81C2826C5
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 22:37:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B31728279A
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 22:38:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 792A01E524;
-	Fri, 20 Oct 2023 22:37:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39DEF2B757;
+	Fri, 20 Oct 2023 22:38:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E06HzQXh"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Ot/144jq"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FFB3354FF;
-	Fri, 20 Oct 2023 22:37:41 +0000 (UTC)
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A251391;
-	Fri, 20 Oct 2023 15:37:39 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1caa7597af9so10042915ad.1;
-        Fri, 20 Oct 2023 15:37:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697841459; x=1698446259; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=uEORB8UKz3jI9V2Uw1z+6Bx6hXJ3JKuB176UcboEYQQ=;
-        b=E06HzQXhAHjuC8/FObDcU8VOUOBJuTI0LhYygq6sxyfgxVaRbY4bNANe+DwRPYXami
-         bxy6RoADp2Iwf+Fn+37HOOaZ+N+y/os9VkbH+y2nlhz7Lb3lADSqJFrDlzl7pQm9EPZk
-         kCchqO3tU2fCYCX9ROXSOAZj9mKWGyD8PcqTwVL//4jNNYs3TUjFE3dYTwfQijhBBIlT
-         UBVdNMZSJGthfix8aXUpeS3W+p+EvsQuqdzSUyuG9kbxCurYNXclIk/gIQ0ubZ3SuRO5
-         BCqN88ZQQUN0T1F9HMkUjCvsPZoK7hn8MeFJI++pv9v67TgFZOS4fZLRvaAukNJG8KDj
-         pKqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697841459; x=1698446259;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uEORB8UKz3jI9V2Uw1z+6Bx6hXJ3JKuB176UcboEYQQ=;
-        b=AXcdki8bJ7C3gWlktjTeDdbwbs6jtpOXF0GE++7ENrzJteIMDGwXtVaEWGV45klQ3f
-         sHVCuMppqkawpIL6pphvx84TSCUkHHIT3ax8iGlWM6jmE81F2l7OrN3vAcTgUSkV9MUg
-         hd5ET8gOhhn6R5aajI7EWPw+Jl7PBEC+pMBdHATWukSmO2VLZeGpchZ2uq0DPBljTLef
-         77jdsKwXVleLL8UMM8H20uFukvo4VnoUDXI7aFAhBIIGPVaEvIYyutL4ReWej3ZgFhso
-         IGPR8UUC5jU9ZbXI0c89EthlN4zw2MygXXQ43ZNeTy9kK7XBHoH6++hqL86fgLOBCCQd
-         mmJA==
-X-Gm-Message-State: AOJu0YxA10QQXvcdm82GYXRzZMufhHqyODorNY8B41MXCHj3WMQlgRQ6
-	hGmobMpWRRGxssilavacdxA=
-X-Google-Smtp-Source: AGHT+IGDx74zBr973fPDYRRWSy7BhSeYD83FvBZ2Wq/ZqrYovtFkadRQ539xvE9cm7qcKBSc53U5vA==
-X-Received: by 2002:a17:902:da83:b0:1c7:4973:7b34 with SMTP id j3-20020a170902da8300b001c749737b34mr3285436plx.50.1697841458914;
-        Fri, 20 Oct 2023 15:37:38 -0700 (PDT)
-Received: from surya ([2600:1700:3ec2:2011:69fb:d3e1:a14b:fe38])
-        by smtp.gmail.com with ESMTPSA id o11-20020a170902bccb00b001c613b4aa33sm1978264pls.287.2023.10.20.15.37.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 15:37:38 -0700 (PDT)
-Date: Fri, 20 Oct 2023 15:37:34 -0700
-From: Manu Bretelle <chantr4@gmail.com>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Tom Rix <trix@redhat.com>, Fangrui Song <maskray@google.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Carsten Haitzler <carsten.haitzler@arm.com>,
-	Ravi Bangoria <ravi.bangoria@amd.com>,
-	"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	James Clark <james.clark@arm.com>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>, Yonghong Song <yhs@fb.com>,
-	Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-	llvm@lists.linux.dev, Wang Nan <wangnan0@huawei.com>,
-	Wang ShaoBo <bobo.shaobowang@huawei.com>,
-	YueHaibing <yuehaibing@huawei.com>, He Kuang <hekuang@huawei.com>,
-	Brendan Gregg <brendan.d.gregg@gmail.com>,
-	Quentin Monnet <quentin@isovalent.com>
-Subject: Re: [PATCH v1 1/4] perf parse-events: Remove BPF event support
-Message-ID: <ZTMBLllcYRoIF8E1@surya>
-References: <20230810184853.2860737-1-irogers@google.com>
- <20230810184853.2860737-2-irogers@google.com>
- <ZNZJCWi9MT/HZdQ/@kernel.org>
- <ZNZWsAXg2px1sm2h@kernel.org>
- <ZTGHRAlQtF7Fq8vn@surya>
- <ZTGa0Ukt7QyxWcVy@kernel.org>
- <ZTGyWHTOE8OEhQWq@surya>
- <ZTLlfXM4MhW1GEIJ@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9BE735505;
+	Fri, 20 Oct 2023 22:38:38 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E4B791;
+	Fri, 20 Oct 2023 15:38:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=kPveCGwDQzw44KmBN2s9cemxnEV3T4s1jd00sY+o42s=; b=Ot/144jqhOJN6lYzObeZBWQQQK
+	KMAppdfBgjam/SzvvzJvCxkAQc7W5p89PBjFU4uEik5SYKQIeXbMDOcSAQxqLEURFdLzJaVfeFd0p
+	NdWFMULtXPrxDQvfsTFU5G5HB03o/qtFPSCbZHbR1ZA3XKl1D1bmiHlrlDgPuTqdpHQM7TumOlV7e
+	AKp8xTbEcacx2yiihNZx5yr3w5PPWJYlLthnPonZFmg2qH77Si8AN0o7wdWotkyVgleDRMTFNes0N
+	r7CS2pf6DmhXn4TywNvs0lBgnMFwJfbRYh0wID9QKSfkLofwZE9pyqydjTqRFQKbNzfZD+nZpHyAD
+	wjD8Duwg==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qty8V-000Jy7-Ka; Sat, 21 Oct 2023 00:38:31 +0200
+Received: from [178.197.249.50] (helo=linux.home)
+	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qty8V-000ICz-6o; Sat, 21 Oct 2023 00:38:31 +0200
+Subject: Re: [PATCH bpf-next v2 1/7] netkit, bpf: Add bpf programmable net
+ device
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, martin.lau@linux.dev,
+ razor@blackwall.org, ast@kernel.org, andrii@kernel.org,
+ john.fastabend@gmail.com, sdf@google.com, toke@kernel.org
+References: <20231019204919.4203-1-daniel@iogearbox.net>
+ <20231019204919.4203-2-daniel@iogearbox.net>
+ <33467f55-4bbf-4078-af21-d91c6aab82ee@lunn.ch>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f57df221-0790-3a93-c7e2-d85136fb07c8@iogearbox.net>
+Date: Sat, 21 Oct 2023 00:38:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZTLlfXM4MhW1GEIJ@kernel.org>
+In-Reply-To: <33467f55-4bbf-4078-af21-d91c6aab82ee@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27067/Fri Oct 20 09:48:05 2023)
 
-On Fri, Oct 20, 2023 at 05:39:25PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Oct 19, 2023 at 03:48:56PM -0700, Manu Bretelle escreveu:
-> > On Thu, Oct 19, 2023 at 06:08:33PM -0300, Arnaldo Carvalho de Melo wrote:
-> > > I wonder how to improve the current situation to detect these kinds of
-> > > problems in the future, i.e. how to notice that some file needed by some
-> > > Makefile, etc got removed or that some feature test fails because some
-> > > change in the test .c files makes them fail and thus activates fallbacks
-> > > like the one above :-\
->  
-> > I think it is tricky. Specifically to this situation, some CI could try to build
-> > the different combinaison of bpftool and check the features through the build
-> > `bpftool --version`.
+On 10/21/23 12:18 AM, Andrew Lunn wrote:
+>> +static void netkit_get_drvinfo(struct net_device *dev,
+>> +			       struct ethtool_drvinfo *info)
+>> +{
+>> +	strscpy(info->driver, DRV_NAME, sizeof(info->driver));
+>> +	strscpy(info->version, "n/a", sizeof(info->version));
 > 
-> Right, if the right packages are installed, we expect to get some
-> bpftool build output, if that changes after some patch, flag it.
-> 
-> Does bpftool have something like:
-> 
-> ⬢[acme@toolbox perf-tools-next]$ perf version --build-options
-> perf version 6.6.rc1.ga8dd62d05e56
->                  dwarf: [ on  ]  # HAVE_DWARF_SUPPORT
->     dwarf_getlocations: [ on  ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
->          syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
->                 libbfd: [ OFF ]  # HAVE_LIBBFD_SUPPORT
->             debuginfod: [ on  ]  # HAVE_DEBUGINFOD_SUPPORT
->                 libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
->                libnuma: [ on  ]  # HAVE_LIBNUMA_SUPPORT
-> numa_num_possible_cpus: [ on  ]  # HAVE_LIBNUMA_SUPPORT
->                libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
->              libpython: [ on  ]  # HAVE_LIBPYTHON_SUPPORT
->               libslang: [ on  ]  # HAVE_SLANG_SUPPORT
->              libcrypto: [ on  ]  # HAVE_LIBCRYPTO_SUPPORT
->              libunwind: [ on  ]  # HAVE_LIBUNWIND_SUPPORT
->     libdw-dwarf-unwind: [ on  ]  # HAVE_DWARF_SUPPORT
->                   zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
->                   lzma: [ on  ]  # HAVE_LZMA_SUPPORT
->              get_cpuid: [ on  ]  # HAVE_AUXTRACE_SUPPORT
->                    bpf: [ on  ]  # HAVE_LIBBPF_SUPPORT
->                    aio: [ on  ]  # HAVE_AIO_SUPPORT
->                   zstd: [ on  ]  # HAVE_ZSTD_SUPPORT
->                libpfm4: [ on  ]  # HAVE_LIBPFM
->          libtraceevent: [ on  ]  # HAVE_LIBTRACEEVENT
->          bpf_skeletons: [ on  ]  # HAVE_BPF_SKEL
-> ⬢[acme@toolbox perf-tools-next]$
-> 
-> ?
-> 
+> If you don't put anything in version, the core will put in the git
+> hash of the kernel. Its more useful than "n/a".
 
-It has
+Thanks, I wasn't aware of this! Agree that this is better!
 
-    $ ./tools/bpf/bpftool/bpftool --version -j | jq .features
-    {
-      "libbfd": false,
-      "llvm": true,
-      "skeletons": true,
-      "bootstrap": false
-    }
-
-
-Maybe Quentin knows of something else.
-
-> > This is actually a test that I run internally to make sure our build has some
-> > feature enabled.
-> > This is actually tested by bpftool in the GH CI:
-> > https://github.com/libbpf/bpftool/blob/main/.github/workflows/build.yaml#L62
->  
-> > As a matter of fact, it would not have been detected because that CI uses a
-> > different Makefile.feature.
->  
-> > Quentin and I were talking offline how we could improve bpftool CI at diff time.
-> > This is an example where it would have helped :)
-> > 
-> > > I'll get this merged in my perf-tools-fixes-for-v6.6 that I'll submit
-> > > tomorrow to Linus, thanks for reporting!
-> > > 
-> > > I'll add your:
-> > > 
-> > > Reported-by: Manu Bretelle <chantr4@gmail.com>
-> > > 
-> > > And:
-> > > 
-> > > Fixes: 56b11a2126bf2f42 ("perf bpf: Remove support for embedding clang for compiling BPF events (-e foo.c)")
-> > > 
-> > > Ok?
->  
-> > SGTM. Thanks for the quick turnaround.
->  
-> > Reviewed-by: Manu Bretelle <chantr4@gmail.com>
+>> +	ether_setup(dev);
+>> +	dev->min_mtu = ETH_MIN_MTU;
 > 
-> You're welcome, thanks for the detailed report, the patch was just sent
-> to Linus.
+> ether_setup() sets min_mtu to ETH_MIN_MTU.
+
+Will fix.
+
+>> +static int netkit_new_link(struct net *src_net, struct net_device *dev,
+>> +			   struct nlattr *tb[], struct nlattr *data[],
+>> +			   struct netlink_ext_ack *extack)
+>> +{
 > 
-> - Arnaldo
+> ...
+> 
+>> +	err = register_netdevice(peer);
+>> +	put_net(net);
+>> +	if (err < 0)
+>> +		goto err_register_peer;
+>> +
+>> +	netif_carrier_off(peer);
+>> +
+>> +	err = rtnl_configure_link(peer, ifmp, 0, NULL);
+>> +	if (err < 0)
+>> +		goto err_configure_peer;
+> 
+> Seeing code after calling register_netdevice() often means bugs. The
+> interface is live, and in use before the function even returns. The
+> kernel can try to get an IP address, mount an NFS root etc. This might
+> be safe, because you have two linked interfaces here, and the other
+> one is not yet registered. Maybe some comment about this would be
+> good, or can the rtnl_configure_link() be done earlier?
+
+I'll check if it's possible to reorder resp. add a comment if not.
+
+>> +
+>> +	if (mode == NETKIT_L2)
+>> +		eth_hw_addr_random(dev);
+>> +	if (tb[IFLA_IFNAME])
+>> +		nla_strscpy(dev->name, tb[IFLA_IFNAME], IFNAMSIZ);
+>> +	else
+>> +		snprintf(dev->name, IFNAMSIZ, "m%%d");
+>> +
+>> +	err = register_netdevice(dev);
+>> +	if (err < 0)
+>> +		goto err_configure_peer;
+> 
+> We have the same here, but now we have both peers registers, the
+> kernel could of configured both up in order to find its NFS root etc.
+> Is it safe to have packets flowing at this point? Before the remaining
+> configuration happens?
+
+They would be dropped in xmit if the peer is linked yet.
+
+>> +	netif_carrier_off(dev);
+>> +
+>> +	nk = netdev_priv(dev);
+>> +	nk->primary = true;
+>> +	nk->policy = default_prim;
+>> +	nk->mode = mode;
+>> +	if (nk->mode == NETKIT_L2)
+>> +		dev_change_flags(dev, dev->flags & ~IFF_NOARP, NULL);
+>> +	bpf_mprog_bundle_init(&nk->bundle);
+>> +	RCU_INIT_POINTER(nk->active, NULL);
+>> +	rcu_assign_pointer(nk->peer, peer);
+>> +
+>> +	nk = netdev_priv(peer);
+>> +	nk->primary = false;
+>> +	nk->policy = default_peer;
+>> +	nk->mode = mode;
+>> +	if (nk->mode == NETKIT_L2)
+>> +		dev_change_flags(peer, peer->flags & ~IFF_NOARP, NULL);
+>> +	bpf_mprog_bundle_init(&nk->bundle);
+>> +	RCU_INIT_POINTER(nk->active, NULL);
+>> +	rcu_assign_pointer(nk->peer, dev);
+>> +	return 0;
+>> +err_configure_peer:
+>> +	unregister_netdevice(peer);
+>> +	return err;
+>> +err_register_peer:
+>> +	free_netdev(peer);
+>> +	return err;
+>> +}
+
+Thanks,
+Daniel
 
