@@ -1,146 +1,155 @@
-Return-Path: <bpf+bounces-12844-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12845-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64EBA7D13F1
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 18:25:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D7997D13FD
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 18:30:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE03AB215DC
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 16:25:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 267882825AE
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 16:30:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3364E1EA90;
-	Fri, 20 Oct 2023 16:25:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A80E61DA2F;
+	Fri, 20 Oct 2023 16:30:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FBiYMpU8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VqxZvahY"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E22018C14;
-	Fri, 20 Oct 2023 16:25:30 +0000 (UTC)
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BDE91A4;
-	Fri, 20 Oct 2023 09:25:28 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53e2308198eso1539232a12.1;
-        Fri, 20 Oct 2023 09:25:28 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA831EA7A
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 16:30:46 +0000 (UTC)
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B63CA
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 09:30:45 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so1519372a12.2
+        for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 09:30:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697819127; x=1698423927; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697819443; x=1698424243; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0Zh2IXK6vdHBvlCvwZsvPMmXUhqBdB70AvUaXtJ3lng=;
-        b=FBiYMpU8uptcyIUEjnm6JlOah1D2zGrqOhYwlNIjEkvdx+dbpgyxm7QFRmrG7Rva6J
-         IvrwGeijCv4QYfDSYpYLw5RIk9iB4E/K9D4QSvuPM/SDmJqGuTKQ+2jmBBGE89y+mIQm
-         8eXBXJt0z9S0RpqcPVSLwPcVQitLOsCxsC6GV+tqXWLejnPhoC8GVx5A802ovnufF16N
-         YMWBIEsHoFvxrsPxkiP4y53Tey8nloSXd6DAqIBqE7b0tLC1tHkMY2li4TNR41MMxZUn
-         XFXvFiIPyijy2p3CUmDMNrmkN3WPe0lqvI4TB9PoNnFmnEK+EvNfiZnvaz9hzp+qAe2Y
-         RwJw==
+        bh=4c1qsE1GAMxWHfNqlIESceBNMyTVgVw4x+Bo/JmJxkM=;
+        b=VqxZvahYQlyKqeD5fcxfyFp38G63ZZfKYmxCFme4yDYFycENyw6Fw43Cl8nsS75kNv
+         i7CvkyGymFv9uVGOJARYseShlCwl6q6SxSDgr1WPISDEw30b5atOrperzf1RHhF03siw
+         QkbheQL8XfJStV2zmYmS4IdoxnVd8GyDcDjdfJle1SmH34VBfCjCsxLcMj9r7c/ugQXg
+         0rK4QV+XrGAhHW8CXnPzqXXIts/+TpgXfNxSrNuRsUXnrRLREQ/4xfZYFbj6xE8zxOIJ
+         3iIECIH4Q3GPItAVwFjXvyRcmh81zrZpdTVdJTXhldqNYYhXsQVVsEkwUUIltk/PDOAL
+         +p7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697819127; x=1698423927;
+        d=1e100.net; s=20230601; t=1697819443; x=1698424243;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0Zh2IXK6vdHBvlCvwZsvPMmXUhqBdB70AvUaXtJ3lng=;
-        b=uo+uhrQW7eGCZqnN2cf4UTEMdYU+RCkhY907CZZWFWiATUxIRRDYotXgqwPu/gyLA1
-         CA0/fLhAjjtkj+3owPHzl0J2lC8aHHLPG5ISbSerOWZleoaW3fnGFirISLxL4jKFgIZp
-         j1CQrgI3NeiMfWQPqXbwbco2CLvtlaKgovH/4n6SlR8lgwd+7HRzj8dok6qccTbd6GiM
-         lYDVYZTNNwrztkC7psuIR+YEEZ70lOkD5mrxAFUtU7llBdA1J/XA0MDGOnui7bCE9l4E
-         o4KCEf05rBsSJg0XVM/yBrCcIxsXXXAACAu/aMi7aS8AWCK50o0K1hJzq0JA9eB/xRhA
-         UIKA==
-X-Gm-Message-State: AOJu0YzoGpcIrMZCKZA5PdFn0xQbtRGsxilMaOWf1LjPgs6DFXssgLV8
-	3p3rWtTz2ZEA39QVDqNw+b1fOzi24wyWfYD6Lyk=
-X-Google-Smtp-Source: AGHT+IHR3P0GY5oHeM7ZfYPG/nM9zShbnUgp0/H4u/l4uQFiRoimeJtGseDXHUsWqIm3AUVKeuFWnhB+ruOti/4Xtqk=
-X-Received: by 2002:a05:6402:430f:b0:53e:2a65:1d9c with SMTP id
- m15-20020a056402430f00b0053e2a651d9cmr2171650edc.25.1697819126717; Fri, 20
- Oct 2023 09:25:26 -0700 (PDT)
+        bh=4c1qsE1GAMxWHfNqlIESceBNMyTVgVw4x+Bo/JmJxkM=;
+        b=Wu+38uXC33csaieh03nxNr5udeFiqSdUDVMoz2ZvhxYhZJ3FmqNExkJevN+S3IVUQ8
+         A0X82eyz89dfkfzoHNLSag9WVXl+bE68H3QbomTyESwyeda/g3VTSIN/k6kShKnEYwxg
+         FszdvnUq2Zz9VEpTtSHryFy4SvcJvpIqPenCbm6XdtR57jDEmnwHSKzsQiUPkieA2mCo
+         oFb+ZEN8wuFZF8nXHHCNDUW55tzhSku283SFE385g6Mojih1FqbojWELso7XdxOkrmrL
+         QfBQfrQOiO2qqsGHPRab+yFpl0fQL4nWqOIxhPR/ydr2BIWL4EnNQBQCWk//lyx7h/JN
+         sCxg==
+X-Gm-Message-State: AOJu0YwyYdvC359kEVrHV+LVaAYpuWrOUEQUCyz/5UQEYaD3O47ad1no
+	fLIsCzSgpt2WLWrls15ipIqAyOklsmuSlDFWX0sh+soN
+X-Google-Smtp-Source: AGHT+IEtpjqLAIzXsPFySHCLhdFWrZEumJWhiVtpQT2svUEni2Rv+fCFLI3CHhGwPXmE37D8WJ6A2RvDE3/lgXo2cvk=
+X-Received: by 2002:a05:6402:5c4:b0:53e:30dc:ef59 with SMTP id
+ n4-20020a05640205c400b0053e30dcef59mr2054501edx.10.1697819443304; Fri, 20 Oct
+ 2023 09:30:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231016180220.3866105-1-andrii@kernel.org> <CAN+4W8hu+zWiWejWtc72WwQb6ydL3U3LXvaFBdc0o826JKzoAQ@mail.gmail.com>
-In-Reply-To: <CAN+4W8hu+zWiWejWtc72WwQb6ydL3U3LXvaFBdc0o826JKzoAQ@mail.gmail.com>
+References: <20231020144839.2734006-1-memxor@gmail.com>
+In-Reply-To: <20231020144839.2734006-1-memxor@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 20 Oct 2023 09:25:15 -0700
-Message-ID: <CAEf4BzbK2JkJwcwtXzhnazxT7dasjpSbScOoE=N9wkcepJu81w@mail.gmail.com>
-Subject: Re: [PATCH v8 bpf-next 00/18] BPF token and BPF FS-based delegation
-To: Lorenz Bauer <lorenz.bauer@isovalent.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	keescook@chromium.org, brauner@kernel.org, lennart@poettering.net, 
-	kernel-team@meta.com, sargun@sargun.me
+Date: Fri, 20 Oct 2023 09:30:32 -0700
+Message-ID: <CAEf4BzZR2tDXWwYWr_MHABVQGbAo5KwVg7gjKXYVg4iOEmVqnA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Make linked_list failure test
+ more robust
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 20, 2023 at 6:18=E2=80=AFAM Lorenz Bauer <lorenz.bauer@isovalen=
-t.com> wrote:
+On Fri, Oct 20, 2023 at 7:48=E2=80=AFAM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> On Mon, Oct 16, 2023 at 7:03=E2=80=AFPM Andrii Nakryiko <andrii@kernel.or=
-g> wrote:
-> ...
-> > This patch set adds a basic minimum of functionality to make BPF token =
-idea
-> > useful and to discuss API and functionality. Currently only low-level l=
-ibbpf
-> > APIs support creating and passing BPF token around, allowing to test ke=
-rnel
-> > functionality, but for the most part is not sufficient for real-world
-> > applications, which typically use high-level libbpf APIs based on `stru=
-ct
-> > bpf_object` type. This was done with the intent to limit the size of pa=
-tch set
-> > and concentrate on mostly kernel-side changes. All the necessary plumbi=
-ng for
-> > libbpf will be sent as a separate follow up patch set kernel support ma=
-kes it
-> > upstream.
-> >
-> > Another part that should happen once kernel-side BPF token is establish=
-ed, is
-> > a set of conventions between applications (e.g., systemd), tools (e.g.,
-> > bpftool), and libraries (e.g., libbpf) on exposing delegatable BPF FS
-> > instance(s) at well-defined locations to allow applications take advant=
-age of
-> > this in automatic fashion without explicit code changes on BPF applicat=
-ion's
-> > side. But I'd like to postpone this discussion to after BPF token conce=
-pt
-> > lands.
+> The linked list failure test 'pop_front_off' and 'pop_back_off'
+> currently rely on matching exact instruction and register values.  The
+> purpose of the test is to ensure the offset is correctly incremented for
+> the returned pointers from list pop helpers, which can then be used with
+> container_of to obtain the real object. Hence, somehow obtaining the
+> information that the offset is 48 will work for us. Make the test more
+> robust by relying on verifier error string of bpf_spin_lock and remove
+> dependence on fragile instruction index or register number, which can be
+> affected by different clang versions used to build the selftests.
 >
-> In the patch set you've extended MAP_CREATE, PROG_LOAD and BTF_LOAD to
-> accept an additional token_fd. How many more commands will need a
-> token as a context like this? It would cause a lot of churn to support
-
-There are few more commands that do capable() checks (GET_NEXT_ID and
-GET_FD_BY_ID commands, TASK_QUERY, maybe few others), so if those
-would be necessary to delegate, we can probably add token support
-there as well. Other than that LINK_CREATE seems like a likely
-candidate in the future. This will probably be driven by concrete
-customer use cases.
-
-> many BPF commands like this, since every command will have token_fd at
-> a different offset in bpf_attr. This means we need to write extra code
-> for each new command, both in kernel as well as user space.
-
-Yes, but that's generally true for anything else added to BPF syscall
-(like verifier log, for example). Luckily it's not really a lot of
-commands and definitely not a lot of code.
-
+> Fixes: 300f19dcdb99 ("selftests/bpf: Add BPF linked list API tests")
+> Reported-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/linked_list.c | 10 ++--------
+>  tools/testing/selftests/bpf/progs/linked_list_fail.c |  4 +++-
+>  2 files changed, 5 insertions(+), 9 deletions(-)
 >
-> Could we pass the token in a way that is uniform across commands?
-> Something like additional arg to the syscall or similar.
 
-Adding a new argument means adding a new syscall (bpf2()) due to
-backwards compatibility requirements. Adding bpf2() syscall means
-adding even more code to all existing libraries to support them (and
-still keeping backwards compatibility with bpf() syscall).
+Thanks for the fix! Applied to bpf-next.
 
-It doesn't really seem worth it just for passing token_fd to a few
-commands, IMO.
-
+> diff --git a/tools/testing/selftests/bpf/prog_tests/linked_list.c b/tools=
+/testing/selftests/bpf/prog_tests/linked_list.c
+> index 69dc31383b78..2fb89de63bd2 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/linked_list.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/linked_list.c
+> @@ -94,14 +94,8 @@ static struct {
+>         { "incorrect_head_var_off2", "variable ptr_ access var_off=3D(0x0=
+; 0xffffffff) disallowed" },
+>         { "incorrect_head_off1", "bpf_list_head not found at offset=3D25"=
+ },
+>         { "incorrect_head_off2", "bpf_list_head not found at offset=3D1" =
+},
+> -       { "pop_front_off",
+> -         "15: (bf) r1 =3D r6                      ; R1_w=3Dptr_or_null_f=
+oo(id=3D4,ref_obj_id=3D4,off=3D48,imm=3D0) "
+> -         "R6_w=3Dptr_or_null_foo(id=3D4,ref_obj_id=3D4,off=3D48,imm=3D0)=
+ refs=3D2,4\n"
+> -         "16: (85) call bpf_this_cpu_ptr#154\nR1 type=3Dptr_or_null_ exp=
+ected=3Dpercpu_ptr_" },
+> -       { "pop_back_off",
+> -         "15: (bf) r1 =3D r6                      ; R1_w=3Dptr_or_null_f=
+oo(id=3D4,ref_obj_id=3D4,off=3D48,imm=3D0) "
+> -         "R6_w=3Dptr_or_null_foo(id=3D4,ref_obj_id=3D4,off=3D48,imm=3D0)=
+ refs=3D2,4\n"
+> -         "16: (85) call bpf_this_cpu_ptr#154\nR1 type=3Dptr_or_null_ exp=
+ected=3Dpercpu_ptr_" },
+> +       { "pop_front_off", "off 48 doesn't point to 'struct bpf_spin_lock=
+' that is at 40" },
+> +       { "pop_back_off", "off 48 doesn't point to 'struct bpf_spin_lock'=
+ that is at 40" },
+>  };
 >
-> Lorenz
+>  static void test_linked_list_fail_prog(const char *prog_name, const char=
+ *err_msg)
+> diff --git a/tools/testing/selftests/bpf/progs/linked_list_fail.c b/tools=
+/testing/selftests/bpf/progs/linked_list_fail.c
+> index f4c63daba229..6438982b928b 100644
+> --- a/tools/testing/selftests/bpf/progs/linked_list_fail.c
+> +++ b/tools/testing/selftests/bpf/progs/linked_list_fail.c
+> @@ -591,7 +591,9 @@ int pop_ptr_off(void *(*op)(void *head))
+>         n =3D op(&p->head);
+>         bpf_spin_unlock(&p->lock);
+>
+> -       bpf_this_cpu_ptr(n);
+> +       if (!n)
+> +               return 0;
+> +       bpf_spin_lock((void *)n);
+>         return 0;
+>  }
+>
+> --
+> 2.40.1
+>
 
