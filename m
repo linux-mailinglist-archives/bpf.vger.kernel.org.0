@@ -1,294 +1,187 @@
-Return-Path: <bpf+bounces-12867-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12868-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7B807D175E
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 22:47:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 533957D1790
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 22:52:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 831CF28268C
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 20:47:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81A981C2103F
+	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 20:52:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85E3924A17;
-	Fri, 20 Oct 2023 20:47:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 059BB23744;
+	Fri, 20 Oct 2023 20:52:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fkrMbFRA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dzrwJJd3"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0060249F6;
-	Fri, 20 Oct 2023 20:47:47 +0000 (UTC)
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70229D65;
-	Fri, 20 Oct 2023 13:47:46 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6be840283ceso1163189b3a.3;
-        Fri, 20 Oct 2023 13:47:46 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1116C1EA90
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 20:52:15 +0000 (UTC)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1149D6A;
+	Fri, 20 Oct 2023 13:52:08 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53d9f001b35so1737790a12.2;
+        Fri, 20 Oct 2023 13:52:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697834866; x=1698439666; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1697835127; x=1698439927; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JOImYZdSx2m0PGY/kvmONhOIa9TTLkTXQlBLoR0LTq8=;
-        b=fkrMbFRAqI1vUZkgOdAfiRdTiQsPUmyzXLXgcCkkysEYDVYfxsQiuUKYLRxgFP1vbe
-         q6+swc7mnpxFDxy07AzB8DNQa38AHMj1rbW8BndpdRWnyQ1r52OQJ1/0huFeae1+riq7
-         eqQesvQvSe0+X65qgaUTpQCUkkPmiN46/Grsy7rj/umcjGQAOV/8OicMXwO2L6fEROcv
-         R7evtYgSeoNgVJvaBBfCcQSZBC7dwVoaNnRNVNupAUB2APAch6mGjYxU98FCZhArLUhX
-         tdRrLQ1pnClr7j0w0fDyOtO5cHnFItv9Na4366M4cugbGgNqXIhwMv9H8fFJwdXRHa5m
-         Enqw==
+        bh=unUnfck8/CKTv+VT7tj7RrTNM5dM2fjAuO4rpf2gviw=;
+        b=dzrwJJd3StIlRKXc6DpRg7hMKFSLOZqYaJacr8OzMdTMnYc1KoglIr7lhc3m6usNZs
+         swv/NmJURQ7FlxVdFPmM4Gst8nR/c/Q4VrkCpMIASdMPkmODByFdlRjtjVUo6ANUSJHP
+         hczRzMwHEBgoM9Eole3R+/+iVUcm1FpxvnSuDFzNqaUctM9c9RPNM/uMh2N48UMrOVT2
+         u591hEl+EcUsssYOPji35I3nw56ZzXWjCGEdhvGlU4TsTy0mBUtEf+lrl25w08VPsjc+
+         3aMN1K18dq5hSb3D2je1SK33u+Glff1W41/+sMwmWMWTY1THPDhHcerv/X9ZgKe/2zyg
+         C+wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697834866; x=1698439666;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=JOImYZdSx2m0PGY/kvmONhOIa9TTLkTXQlBLoR0LTq8=;
-        b=N1gCvrqjVfR4Q+g/QIr8XcXhqdVjJZtPqTWCMqdKhlXr+kI7YgHTUgHvt+tnhhLRMA
-         1sXKpN+mXVgxLubwC9PQ0e7r0b6BNxYQHHmzu7YvLEvxWqHhtketc1NTuFQYWJMc0Bgn
-         xYQuiaEp2yd6BvaYn/WTHbkVfzJtEnsAlzwv2SypqIYG+jVR3AajNe47PXMzUQ+PJDW3
-         Ut21pPNTGjm+JfTXpBLCXGwFIKBROlY+qTRiMG2ZDqbVOS8BINrGeTgpcGTycokJd34s
-         OENRhAWu9uR58DpAe/Kj9onSrILmbics07ddf32+WOeOZTD+8JjraeHHZMBKztObaxVb
-         ABmw==
-X-Gm-Message-State: AOJu0YzJIPF3ZLRBAul+jgyC4v2hkU13Ftcp0Z7QeNe/RWE7jxfBDhwP
-	P7m0GC4Fk0myCyh5zlm0H47hYHMdxrU=
-X-Google-Smtp-Source: AGHT+IE6l3rYdCDPQTlPePjtB6GIowh3BYRmShPbEGbnsFP08KqWR8o5JZih7EBMhmrqdM2tdB4dcA==
-X-Received: by 2002:a05:6a21:7989:b0:17b:8404:96d8 with SMTP id bh9-20020a056a21798900b0017b840496d8mr3002343pzc.41.1697834865589;
-        Fri, 20 Oct 2023 13:47:45 -0700 (PDT)
-Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:17e0:7ea9:fbc6:4c7d])
-        by smtp.gmail.com with ESMTPSA id r25-20020aa79639000000b00694f14a784bsm1971183pfg.52.2023.10.20.13.47.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 13:47:45 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>
-Cc: Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	bpf@vger.kernel.org
-Subject: [PATCH v3 3/3] perf lock contention: Use per-cpu array map for spinlocks
-Date: Fri, 20 Oct 2023 13:47:41 -0700
-Message-ID: <20231020204741.1869520-3-namhyung@kernel.org>
-X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-In-Reply-To: <20231020204741.1869520-1-namhyung@kernel.org>
-References: <20231020204741.1869520-1-namhyung@kernel.org>
+        d=1e100.net; s=20230601; t=1697835127; x=1698439927;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=unUnfck8/CKTv+VT7tj7RrTNM5dM2fjAuO4rpf2gviw=;
+        b=tZF1kZlB5Rim+9GfHaMo2WdAVZ4zqJmaitA+RUkOJsOM0804xw/PZZhKXNBvh0y0mW
+         OJW75+1DiUabe4DQKeygstassjZHM75LleJX4Mo/fStDLvfiTgb4r5O1lJznFrWCZjiZ
+         6ZSmpwrHAfo+3bBy/Pg0IIcod+4YOJffPcpT/aqOX0sFViKiDbf35pV6ixZ7cfoePuFA
+         U/IDT2HERMRsZ6oU9kopkjeRf6wO+M8XdFcCQCh9S1J+wvGpLO2zU2aTjwlaHmPHztt0
+         BV56/aoBLaWbAukyA3N+RSyLKMlwDgXwP+4PvkocZcWThZqCTfQ7o6HOfRpSnwXAAPrL
+         U2Dw==
+X-Gm-Message-State: AOJu0Yzs4rRkAOsIeS1OOnJFRzLIyOTliHzHqQGxc2D35WQgQptFpFe5
+	RmkIMofd8c7/RI2P4LmX0QiezH5SfvJQAcf0V3Q=
+X-Google-Smtp-Source: AGHT+IG4d9h2Ohq91pO5Y0biBu5YbdFQMD6S1GEmWuOw7zaPsAJo5Zi3zpI3YrJb68aQYXmYDgNRqRCVAmBgCEE3Hjg=
+X-Received: by 2002:a05:6402:2787:b0:53e:fc60:85bd with SMTP id
+ b7-20020a056402278700b0053efc6085bdmr3033561ede.24.1697835126812; Fri, 20 Oct
+ 2023 13:52:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231018151950.205265-1-masahiroy@kernel.org> <20231018151950.205265-4-masahiroy@kernel.org>
+ <ZTDlrkTXnkVN1cff@krava> <CAEf4BzZm4h4q6k9ZhuT5qiWC9PYA+c7XwVFd68iAq4mtMJ-qhw@mail.gmail.com>
+ <CAK7LNAR2kKwbzdFxfVXDxsy8pfyQDCR-BN=zpbcZg0JS9RpsKQ@mail.gmail.com>
+In-Reply-To: <CAK7LNAR2kKwbzdFxfVXDxsy8pfyQDCR-BN=zpbcZg0JS9RpsKQ@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 20 Oct 2023 13:51:54 -0700
+Message-ID: <CAEf4BzbYwEFSNTFjJyhYmOOK5iwHjFAdcArkUbcQz5ntRvOOvA@mail.gmail.com>
+Subject: Re: [bpf-next PATCH v2 4/4] kbuild: refactor module BTF rule
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Currently lock contention timestamp is maintained in a hash map keyed by
-pid.  That means it needs to get and release a map element (which is
-proctected by spinlock!) on each contention begin and end pair.  This
-can impact on performance if there are a lot of contention (usually from
-spinlocks).
+On Fri, Oct 20, 2023 at 12:03=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.=
+org> wrote:
+>
+> On Fri, Oct 20, 2023 at 7:55=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Thu, Oct 19, 2023 at 1:15=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> =
+wrote:
+> > >
+> > > On Thu, Oct 19, 2023 at 12:19:50AM +0900, Masahiro Yamada wrote:
+> > > > newer_prereqs_except and if_changed_except are ugly hacks of the
+> > > > newer-prereqs and if_changed in scripts/Kbuild.include.
+> > > >
+> > > > Remove.
+> > > >
+> > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > > ---
+> > > >
+> > > > Changes in v2:
+> > > >   - Fix if_changed_except to if_changed
+> > > >
+> > > >  scripts/Makefile.modfinal | 25 ++++++-------------------
+> > > >  1 file changed, 6 insertions(+), 19 deletions(-)
+> > > >
+> > > > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> > > > index 9fd7a26e4fe9..fc07854bb7b9 100644
+> > > > --- a/scripts/Makefile.modfinal
+> > > > +++ b/scripts/Makefile.modfinal
+> > > > @@ -19,6 +19,9 @@ vmlinux :=3D
+> > > >  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+> > > >  ifneq ($(wildcard vmlinux),)
+> > > >  vmlinux :=3D vmlinux
+> > > > +cmd_btf =3D ; \
+> > > > +     LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --bt=
+f_base vmlinux $@; \
+> > > > +     $(RESOLVE_BTFIDS) -b vmlinux $@
+> > > >  else
+> > > >  $(warning Skipping BTF generation due to unavailability of vmlinux=
+)
+> > > >  endif
+> > > > @@ -41,27 +44,11 @@ quiet_cmd_ld_ko_o =3D LD [M]  $@
+> > > >        cmd_ld_ko_o +=3D                                            =
+     \
+> > > >       $(LD) -r $(KBUILD_LDFLAGS)                                   =
+   \
+> > > >               $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)           =
+   \
+> > > > -             -T scripts/module.lds -o $@ $(filter %.o, $^)
+> > > > +             -T scripts/module.lds -o $@ $(filter %.o, $^)        =
+   \
+> > > > +     $(cmd_btf)
+> > > >
+> > > > -quiet_cmd_btf_ko =3D BTF [M] $@
+> > >
+> > > nit not sure it's intentional but we no longer display 'BTF [M] ...ko=
+' lines,
+> > > I don't mind not displaying that, but we should mention that in chang=
+elog
+> > >
+> >
+> > Thanks for spotting this! I think those messages are useful and
+> > important to keep. Masahiro, is it possible to preserve them?
+>
+>
+>
+> No, I do not think so.
+>
 
-It used to go with task local storage but it had an issue on memory
-allocation in some critical paths.  Although it's addressed in recent
-kernels IIUC, the tool should support old kernels too.  So it cannot
-simply switch to the task local storage at least for now.
+That's too bad, I think it's a useful one.
 
-As spinlocks create lots of contention and they disabled preemption
-during the spinning, it can use per-cpu array to keep the timestamp to
-avoid overhead in hashmap update and delete.
+> Your code is wrong.
+>
 
-In contention_begin, it's easy to check the lock types since it can see
-the flags.  But contention_end cannot see it.  So let's try to per-cpu
-array first (unconditionally) if it has an active element (lock != 0).
-Then it should be used and per-task tstamp map should not be used until
-the per-cpu array element is cleared which means nested spinlock
-contention (if any) was finished and it nows see (the outer) lock.
+Could be, but note the comment you are removing:
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- .../perf/util/bpf_skel/lock_contention.bpf.c  | 89 +++++++++++++++----
- 1 file changed, 72 insertions(+), 17 deletions(-)
+# Re-generate module BTFs if either module's .ko or vmlinux changed
 
-diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index 69d31fd77cd0..95cd8414f6ef 100644
---- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-+++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -42,6 +42,14 @@ struct {
- 	__uint(max_entries, MAX_ENTRIES);
- } tstamp SEC(".maps");
- 
-+/* maintain per-CPU timestamp at the beginning of contention */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(struct tstamp_data));
-+	__uint(max_entries, 1);
-+} tstamp_cpu SEC(".maps");
-+
- /* actual lock contention statistics */
- struct {
- 	__uint(type, BPF_MAP_TYPE_HASH);
-@@ -311,34 +319,57 @@ static inline __u32 check_lock_type(__u64 lock, __u32 flags)
- 	return 0;
- }
- 
--SEC("tp_btf/contention_begin")
--int contention_begin(u64 *ctx)
-+static inline struct tstamp_data *get_tstamp_elem(__u32 flags)
- {
- 	__u32 pid;
- 	struct tstamp_data *pelem;
- 
--	if (!enabled || !can_record(ctx))
--		return 0;
-+	/* Use per-cpu array map for spinlock and rwlock */
-+	if (flags == (LCB_F_SPIN | LCB_F_READ) || flags == LCB_F_SPIN ||
-+	    flags == (LCB_F_SPIN | LCB_F_WRITE)) {
-+		__u32 idx = 0;
-+
-+		pelem = bpf_map_lookup_elem(&tstamp_cpu, &idx);
-+		/* Do not update the element for nested locks */
-+		if (pelem && pelem->lock)
-+			pelem = NULL;
-+		return pelem;
-+	}
- 
- 	pid = bpf_get_current_pid_tgid();
- 	pelem = bpf_map_lookup_elem(&tstamp, &pid);
-+	/* Do not update the element for nested locks */
- 	if (pelem && pelem->lock)
--		return 0;
-+		return NULL;
- 
- 	if (pelem == NULL) {
- 		struct tstamp_data zero = {};
- 
- 		if (bpf_map_update_elem(&tstamp, &pid, &zero, BPF_NOEXIST) < 0) {
- 			__sync_fetch_and_add(&task_fail, 1);
--			return 0;
-+			return NULL;
- 		}
- 
- 		pelem = bpf_map_lookup_elem(&tstamp, &pid);
- 		if (pelem == NULL) {
- 			__sync_fetch_and_add(&task_fail, 1);
--			return 0;
-+			return NULL;
- 		}
- 	}
-+	return pelem;
-+}
-+
-+SEC("tp_btf/contention_begin")
-+int contention_begin(u64 *ctx)
-+{
-+	struct tstamp_data *pelem;
-+
-+	if (!enabled || !can_record(ctx))
-+		return 0;
-+
-+	pelem = get_tstamp_elem(ctx[1]);
-+	if (pelem == NULL)
-+		return 0;
- 
- 	pelem->timestamp = bpf_ktime_get_ns();
- 	pelem->lock = (__u64)ctx[0];
-@@ -377,24 +408,42 @@ int contention_begin(u64 *ctx)
- SEC("tp_btf/contention_end")
- int contention_end(u64 *ctx)
- {
--	__u32 pid;
-+	__u32 pid = 0, idx = 0;
- 	struct tstamp_data *pelem;
- 	struct contention_key key = {};
- 	struct contention_data *data;
- 	__u64 duration;
-+	bool need_delete = false;
- 
- 	if (!enabled)
- 		return 0;
- 
--	pid = bpf_get_current_pid_tgid();
--	pelem = bpf_map_lookup_elem(&tstamp, &pid);
--	if (!pelem || pelem->lock != ctx[0])
--		return 0;
-+	/*
-+	 * For spinlock and rwlock, it needs to get the timestamp for the
-+	 * per-cpu map.  However, contention_end does not have the flags
-+	 * so it cannot know whether it reads percpu or hash map.
-+	 *
-+	 * Try per-cpu map first and check if there's active contention.
-+	 * If it is, do not read hash map because it cannot go to sleeping
-+	 * locks before releasing the spinning locks.
-+	 */
-+	pelem = bpf_map_lookup_elem(&tstamp_cpu, &idx);
-+	if (pelem && pelem->lock) {
-+		if (pelem->lock != ctx[0])
-+			return 0;
-+	} else {
-+		pid = bpf_get_current_pid_tgid();
-+		pelem = bpf_map_lookup_elem(&tstamp, &pid);
-+		if (!pelem || pelem->lock != ctx[0])
-+			return 0;
-+		need_delete = true;
-+	}
- 
- 	duration = bpf_ktime_get_ns() - pelem->timestamp;
- 	if ((__s64)duration < 0) {
- 		pelem->lock = 0;
--		bpf_map_delete_elem(&tstamp, &pid);
-+		if (need_delete)
-+			bpf_map_delete_elem(&tstamp, &pid);
- 		__sync_fetch_and_add(&time_fail, 1);
- 		return 0;
- 	}
-@@ -406,8 +455,11 @@ int contention_end(u64 *ctx)
- 	case LOCK_AGGR_TASK:
- 		if (lock_owner)
- 			key.pid = pelem->flags;
--		else
-+		else {
-+			if (!need_delete)
-+				pid = bpf_get_current_pid_tgid();
- 			key.pid = pid;
-+		}
- 		if (needs_callstack)
- 			key.stack_id = pelem->stack_id;
- 		break;
-@@ -428,7 +480,8 @@ int contention_end(u64 *ctx)
- 	if (!data) {
- 		if (data_map_full) {
- 			pelem->lock = 0;
--			bpf_map_delete_elem(&tstamp, &pid);
-+			if (need_delete)
-+				bpf_map_delete_elem(&tstamp, &pid);
- 			__sync_fetch_and_add(&data_fail, 1);
- 			return 0;
- 		}
-@@ -452,7 +505,8 @@ int contention_end(u64 *ctx)
- 			__sync_fetch_and_add(&data_fail, 1);
- 		}
- 		pelem->lock = 0;
--		bpf_map_delete_elem(&tstamp, &pid);
-+		if (need_delete)
-+			bpf_map_delete_elem(&tstamp, &pid);
- 		return 0;
- 	}
- 
-@@ -466,7 +520,8 @@ int contention_end(u64 *ctx)
- 		data->min_time = duration;
- 
- 	pelem->lock = 0;
--	bpf_map_delete_elem(&tstamp, &pid);
-+	if (need_delete)
-+		bpf_map_delete_elem(&tstamp, &pid);
- 	return 0;
- }
- 
--- 
-2.42.0.655.g421f12c284-goog
+BTF has to be re-generated not just when module .ko is regenerated,
+but also when the vmlinux image itself changes.
 
+I don't see where this is done with your changes. Can you please point
+it out explicitly?
+
+>
+> To clarify this is a fix,
+> I will replace the commit as follows:
+>
+>
+>
+>
+> ------------------->8----------------------
+> kbuild: detect btf command change for modules
+>
+> Currently, the command change in cmd_btf_ko does not cause to rebuild
+> the modules because it is not passed to if_changed.
+>
+> Pass everything to if_change so that the btf command is also recorded
+> in the .*.cmd files. This removes the hacky newer_prereqs_except and
+> if_changed_except macros too.
+> ------------------->8----------------------
+>
+>
+>
+>
+> --
+> Best Regards
+>
+> Masahiro Yamada
 
