@@ -1,155 +1,173 @@
-Return-Path: <bpf+bounces-12896-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12897-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B797E7D1B85
-	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 09:31:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD60E7D1CDF
+	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 13:38:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 254092826F8
-	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 07:31:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D002B215C9
+	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 11:38:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44C6BD26B;
-	Sat, 21 Oct 2023 07:31:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27698DF4F;
+	Sat, 21 Oct 2023 11:38:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TL52Rjkq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K1RfshJf"
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EFC215D5
-	for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 07:31:07 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12D7D70
-	for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 00:30:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697873457; x=1729409457;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ejvklo04DBkvBCX4PM66PVMkqEvTtBI4S9R88xEMMNQ=;
-  b=TL52RjkqCdIh9XCnQs7+4etqGWycMwtkvxGENvfwkx0srmPn/W1OhUgQ
-   FHpyXLtWioLLL4+D4G535OseBwIsVWclt59ODrrrFDKwZqCCg8t+gPaLI
-   2F6dJhI8x0vcrskzToNpK2TRFHZ+rOIOD5tpHw6yZh0gHe3pa1pDti8YS
-   dp0338ndkCNln74HQlRFjNZfpGoz3en4wYnaOmTghGgqD371re+qI25BH
-   W/mWcYj3fpsBJJOZjigPqpUMz/brtmI+h+uZojtagm9Arx2bMOKwWEdrW
-   Ga5MEydfSzAhKAx5gL2JozWyWk3sXixH4k1CDgWf8RDlotlGAqlZIANUN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="5235706"
-X-IronPort-AV: E=Sophos;i="6.03,240,1694761200"; 
-   d="scan'208";a="5235706"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2023 00:30:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="874148831"
-X-IronPort-AV: E=Sophos;i="6.03,240,1694761200"; 
-   d="scan'208";a="874148831"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 21 Oct 2023 00:30:55 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qu6Rh-0004ZG-1f;
-	Sat, 21 Oct 2023 07:30:53 +0000
-Date: Sat, 21 Oct 2023 15:30:16 +0800
-From: kernel test robot <lkp@intel.com>
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH bpf-next 4/5] selftests/bpf: test if state loops are
- detected in a tricky case
-Message-ID: <202310211512.s2yiOSnL-lkp@intel.com>
-References: <20231021005939.1041-5-eddyz87@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CCD1D51D
+	for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 11:38:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7323C433C8;
+	Sat, 21 Oct 2023 11:38:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1697888281;
+	bh=CItNLUhgPKWprZgDhoE5AHbH/bbnD7boGHI0AXjLGCI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=K1RfshJfvG+iK1f5POzdM2+SCvqS01LqDm71qUBujpZCK0J9k5Epc0RxBLUn5QmNy
+	 uENT3RhYdkA+ycQxIUPo7eAfTWbRJw3Z/pcKEtg/9OYibGvV1tOlzydDRM5UAdBdcB
+	 pBBfgSs/1SorGnF4tBwLGCZqpi3QCbUwMvOVjnEJyt4jnaOlov0Pf9fE9IfmxIdIgq
+	 UpwXWZYylq4UwrRpu1quekYcVjKP8FsNaERavFI6uYCutglsIRZ0AczpeW/qXZ2gP8
+	 0HD4EScsNKpPEAXP/POpSPQDSkt1L3ntKcQ/PDNQDOi4nMy0Ci3wnVwlceX8p3z0Hy
+	 awP9Y4K/dKmuw==
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1dd5b98d9aeso916386fac.0;
+        Sat, 21 Oct 2023 04:38:01 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yw+oDbnD3IIsXCttUb8bIDZJVMLGlJIRHV41hadFwNAGUyMxnLH
+	31R0BOM9osM7qBsdkUFrcSJcCLMawne7v+MgWmA=
+X-Google-Smtp-Source: AGHT+IGrABm4SR8tSQm9fY18WWVZBwn80V24irNVJmXvkmY/hGdMR4KZQw8iUGeT2hTqVr7lRaaqAYLvhGurv4IW+uc=
+X-Received: by 2002:a05:6870:c087:b0:1e9:dfc3:1e6c with SMTP id
+ c7-20020a056870c08700b001e9dfc31e6cmr4318161oad.28.1697888281221; Sat, 21 Oct
+ 2023 04:38:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231021005939.1041-5-eddyz87@gmail.com>
+References: <20231018151950.205265-1-masahiroy@kernel.org> <20231018151950.205265-4-masahiroy@kernel.org>
+ <ZTDlrkTXnkVN1cff@krava> <CAEf4BzZm4h4q6k9ZhuT5qiWC9PYA+c7XwVFd68iAq4mtMJ-qhw@mail.gmail.com>
+ <CAK7LNAR2kKwbzdFxfVXDxsy8pfyQDCR-BN=zpbcZg0JS9RpsKQ@mail.gmail.com> <CAEf4BzbYwEFSNTFjJyhYmOOK5iwHjFAdcArkUbcQz5ntRvOOvA@mail.gmail.com>
+In-Reply-To: <CAEf4BzbYwEFSNTFjJyhYmOOK5iwHjFAdcArkUbcQz5ntRvOOvA@mail.gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 21 Oct 2023 20:37:24 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQxFgOpuCBYPSx5Z6aw5MtKzPL39XLUvZuUBSyRGnOZUg@mail.gmail.com>
+Message-ID: <CAK7LNAQxFgOpuCBYPSx5Z6aw5MtKzPL39XLUvZuUBSyRGnOZUg@mail.gmail.com>
+Subject: Re: [bpf-next PATCH v2 4/4] kbuild: refactor module BTF rule
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Eduard,
+On Sat, Oct 21, 2023 at 5:52=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Oct 20, 2023 at 12:03=E2=80=AFAM Masahiro Yamada <masahiroy@kerne=
+l.org> wrote:
+> >
+> > On Fri, Oct 20, 2023 at 7:55=E2=80=AFAM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Thu, Oct 19, 2023 at 1:15=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com=
+> wrote:
+> > > >
+> > > > On Thu, Oct 19, 2023 at 12:19:50AM +0900, Masahiro Yamada wrote:
+> > > > > newer_prereqs_except and if_changed_except are ugly hacks of the
+> > > > > newer-prereqs and if_changed in scripts/Kbuild.include.
+> > > > >
+> > > > > Remove.
+> > > > >
+> > > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > > > ---
+> > > > >
+> > > > > Changes in v2:
+> > > > >   - Fix if_changed_except to if_changed
+> > > > >
+> > > > >  scripts/Makefile.modfinal | 25 ++++++-------------------
+> > > > >  1 file changed, 6 insertions(+), 19 deletions(-)
+> > > > >
+> > > > > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfina=
+l
+> > > > > index 9fd7a26e4fe9..fc07854bb7b9 100644
+> > > > > --- a/scripts/Makefile.modfinal
+> > > > > +++ b/scripts/Makefile.modfinal
+> > > > > @@ -19,6 +19,9 @@ vmlinux :=3D
+> > > > >  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+> > > > >  ifneq ($(wildcard vmlinux),)
+> > > > >  vmlinux :=3D vmlinux
+> > > > > +cmd_btf =3D ; \
+> > > > > +     LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --=
+btf_base vmlinux $@; \
+> > > > > +     $(RESOLVE_BTFIDS) -b vmlinux $@
+> > > > >  else
+> > > > >  $(warning Skipping BTF generation due to unavailability of vmlin=
+ux)
+> > > > >  endif
+> > > > > @@ -41,27 +44,11 @@ quiet_cmd_ld_ko_o =3D LD [M]  $@
+> > > > >        cmd_ld_ko_o +=3D                                          =
+       \
+> > > > >       $(LD) -r $(KBUILD_LDFLAGS)                                 =
+     \
+> > > > >               $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)         =
+     \
+> > > > > -             -T scripts/module.lds -o $@ $(filter %.o, $^)
+> > > > > +             -T scripts/module.lds -o $@ $(filter %.o, $^)      =
+     \
+> > > > > +     $(cmd_btf)
+> > > > >
+> > > > > -quiet_cmd_btf_ko =3D BTF [M] $@
+> > > >
+> > > > nit not sure it's intentional but we no longer display 'BTF [M] ...=
+ko' lines,
+> > > > I don't mind not displaying that, but we should mention that in cha=
+ngelog
+> > > >
+> > >
+> > > Thanks for spotting this! I think those messages are useful and
+> > > important to keep. Masahiro, is it possible to preserve them?
+> >
+> >
+> >
+> > No, I do not think so.
+> >
+>
+> That's too bad, I think it's a useful one.
 
-kernel test robot noticed the following build warnings:
 
-[auto build test WARNING on bpf-next/master]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Eduard-Zingerman/bpf-exact-states-comparison-for-iterator-convergence-checks/20231021-090213
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20231021005939.1041-5-eddyz87%40gmail.com
-patch subject: [PATCH bpf-next 4/5] selftests/bpf: test if state loops are detected in a tricky case
-reproduce: (https://download.01.org/0day-ci/archive/20231021/202310211512.s2yiOSnL-lkp@intel.com/reproduce)
+I prioritize that the code is correct.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310211512.s2yiOSnL-lkp@intel.com/
 
-# many are suggestions rather than must-fix
 
-WARNING:SPLIT_STRING: quoted string split across lines
-#122: FILE: tools/testing/selftests/bpf/progs/iters.c:1078:
-+	"j_loop_%=:"
-+		"r1 = r10;"
+>
+> > Your code is wrong.
+> >
+>
+> Could be, but note the comment you are removing:
+>
+> # Re-generate module BTFs if either module's .ko or vmlinux changed
+>
+> BTF has to be re-generated not just when module .ko is regenerated,
+> but also when the vmlinux image itself changes.
+>
+> I don't see where this is done with your changes. Can you please point
+> it out explicitly?
 
-WARNING:SPLIT_STRING: quoted string split across lines
-#136: FILE: tools/testing/selftests/bpf/progs/iters.c:1092:
-+	"i_loop_%=:"
-+		"r1 = r10;"
 
-WARNING:SPLIT_STRING: quoted string split across lines
-#141: FILE: tools/testing/selftests/bpf/progs/iters.c:1097:
-+	"check_one_r6_%=:"
-+		"if r6 != 1 goto check_zero_r6_%=;"
 
-WARNING:SPLIT_STRING: quoted string split across lines
-#146: FILE: tools/testing/selftests/bpf/progs/iters.c:1102:
-+	"check_zero_r6_%=:"
-+		"if r6 != 0 goto i_loop_%=;"
+That is too obvious; %.ko depends on $(vmlinux).
 
-WARNING:SPLIT_STRING: quoted string split across lines
-#152: FILE: tools/testing/selftests/bpf/progs/iters.c:1108:
-+	"check_one_r7_%=:"
-+		"if r7 != 1 goto i_loop_%=;"
 
-WARNING:SPLIT_STRING: quoted string split across lines
-#166: FILE: tools/testing/selftests/bpf/progs/iters.c:1122:
-+	"i_loop_end_%=:"
-+		"r1 = r10;"
 
-WARNING:SPLIT_STRING: quoted string split across lines
-#179: FILE: tools/testing/selftests/bpf/progs/iters.c:1135:
-+	"i2_loop_%=:"
-+		"r1 = r10;"
+%.ko: %.o %.mod.o scripts/module.lds $(vmlinux) FORCE
 
-WARNING:SPLIT_STRING: quoted string split across lines
-#184: FILE: tools/testing/selftests/bpf/progs/iters.c:1140:
-+	"check2_one_r6_%=:"
-+		"if r6 != 1 goto check2_zero_r6_%=;"
 
-WARNING:SPLIT_STRING: quoted string split across lines
-#189: FILE: tools/testing/selftests/bpf/progs/iters.c:1145:
-+	"check2_zero_r6_%=:"
-+		"if r6 != 0 goto i2_loop_%=;"
 
-WARNING:SPLIT_STRING: quoted string split across lines
-#195: FILE: tools/testing/selftests/bpf/progs/iters.c:1151:
-+	"check2_one_r7_%=:"
-+		"if r7 != 1 goto i2_loop_%=;"
 
-WARNING:SPLIT_STRING: quoted string split across lines
-#200: FILE: tools/testing/selftests/bpf/progs/iters.c:1156:
-+	"i2_loop_end_%=:"
-+		"r1 = r10;"
-
-WARNING:SPLIT_STRING: quoted string split across lines
-#208: FILE: tools/testing/selftests/bpf/progs/iters.c:1164:
-+	"j_loop_end_%=:"
-+		"r1 = r10;"
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+Best Regards
+Masahiro Yamada
 
