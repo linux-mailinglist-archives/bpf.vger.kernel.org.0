@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-12881-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12882-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA4397D1A26
-	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 03:00:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9228D7D1A25
+	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 03:00:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10883B2168C
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB5451C210A0
 	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 01:00:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46F4CA38;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A73EAA4C;
 	Sat, 21 Oct 2023 01:00:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pc4yDv7u"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cllPDQPg"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6938F801
-	for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 01:00:24 +0000 (UTC)
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A54D69
-	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 18:00:22 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-5046bf37ec1so1825736e87.1
-        for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 18:00:22 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80F8180D
+	for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 01:00:25 +0000 (UTC)
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3063FD45
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 18:00:24 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9338e4695so19976821fa.2
+        for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 18:00:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697850020; x=1698454820; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697850022; x=1698454822; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=piktWMIbUbvsCPFZL+ZgEoXRBrJsrW87UAPGh4LxYBU=;
-        b=Pc4yDv7u7eYM8gaS+kc40NR5L+sVi6c6vfma7J3bRyDZH3qksK0uT2b/aOI0s9T8OR
-         NyvY0akJBN54npX7OAHx+8ylWYmIDEp9ZdMDa5Sh7qV6UDuEGVoQtQgkpFBzHDjeNkGV
-         ATkQE/52I93eYB9S9CclH4qTFHgVqQGLvOagbhktkz2RJ4gFakTw1I1hZZXPhAd0Zq7Q
-         pqTLUWyP/nB/lrnN2GUIu8STi+XkDyb+5uLqfjjU2luqnXoIkkDPoaoMsd0hVpRT9vjQ
-         oVxWSIkWZCp1DyWntUA1yAgA/A+O+1/DQ1uTAhroVvi3isjyrjGkQPrAHVi7U5axr2o3
-         Tc2w==
+        bh=vjZfCOsiQ8gNa1K5iuy9cN8w9IqFjspIaddvVsyA6LE=;
+        b=cllPDQPgh/9xt1CsxZRrOrivIih374uBukLJ4QGRqc2WVMr88td+Zd3T3ykIV8NYC2
+         NmrPFLWyuf+4ia6wvilAM4fgmzOvracSuLBQto3VWee8wXzNZvBzXTGHZ+2fyWivSthC
+         J3gbDXzOruRS7EEmp44vO/1Np8yEOPPFvkWVd8P9LOJ7f70zBw/y2s5A0MAy3OOCvji0
+         7wH5PkrZJxuxvb36QRiEpTTN5rxrAlvJ+aPaoArcUVQbNkdbwb/leShxzH0hifu7r8DB
+         fYCFI+z3+W0YLBKk5L3VetxPaW/bKlN2j/f0pzWj8xoctpjG4v3hthzaZLzx9bmTbEcr
+         FVWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697850020; x=1698454820;
+        d=1e100.net; s=20230601; t=1697850022; x=1698454822;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=piktWMIbUbvsCPFZL+ZgEoXRBrJsrW87UAPGh4LxYBU=;
-        b=pCrmU/TMo1dthX/ldVoxjVfh7OUcasYggJN3ioFgC1CrU+GTNhJQUN7Ql5gXEOhDSb
-         EP/hr8G9OnTmcQ2F9R/4PWOii13hHilJefpTSw9CEmzhmxQG+NXFWJ0jIw6RV2QJvoy/
-         R3mGWteAl3xbNCAGtj7blhmXGA6nIcWdoWC2bKAJslxGiNcsf0KS1jzWFQ/UpiK4Cdrt
-         gKk2Aym/Y5/COQx1ub53VCNNSTCGgNSNjKuV38WG1WcWwRmUyZKiajqMHflO9VFsZsjO
-         476fCaKEUOZI+Mpzx6bIdG+nCXY+F/Ztjh6oqad8+/gqTHokl6CnYJqtqcnkLw0I4wXc
-         IOrw==
-X-Gm-Message-State: AOJu0YyKlWXf9npjwYtaGEHNnblnmYBby8UohGN9Y87hj6Zz4jgLGk9I
-	NA1L8vru62cWpy5LgkJniVpy49oldOcO8A32
-X-Google-Smtp-Source: AGHT+IFdwKu1XJbK57InYOLideZhuVbBiF4KxpmOfggmRTb2xlL0B7NeRwT0i+QW97xE+NPzGVjzwg==
-X-Received: by 2002:a19:2d02:0:b0:507:9ff3:d6ec with SMTP id k2-20020a192d02000000b005079ff3d6ecmr2441510lfj.50.1697850020335;
-        Fri, 20 Oct 2023 18:00:20 -0700 (PDT)
+        bh=vjZfCOsiQ8gNa1K5iuy9cN8w9IqFjspIaddvVsyA6LE=;
+        b=Cr8c+E6wDKpu32jNZigRJOZ8xbHU7xGfDFGF3BAeIDpbcvrchIvGeqWUVYGZbYXSWU
+         1OiiJLZ70h7ghP4IUggBjuYkwD/8hCzpIZXoMCNwMQxderTvWJSJgeG1PbYdc4ltNess
+         HBNjV+yrK9kUSgQ2FJkIU6Rkz1hU38xadoXieoz8SRxEwLUr+EfYIZJmQOlarTuCzHWy
+         5oxEFnru6hImeAj11IE+lUxk1ExmAA0lYxu3tkc+OGg4ZErjOcOz2qa92uMRXqw5osAJ
+         DWlxPr7e6TR5JeJOl4cLAon6Gj6KpfzsenbV1fbIR5ENjdqkZGT2QXfVeb5ywGT4FIrk
+         /Weg==
+X-Gm-Message-State: AOJu0YxATlute3Dtx1kFMy5S9R2uNbXBFXyGDf5WwpeRPnABRpn0mhVU
+	amNS4M5ZTZK+wkN0ErFtGBLAKfCXEF9o2G+9
+X-Google-Smtp-Source: AGHT+IFOuHbSAvESzb5MtrUWH8hN6p+Zxd1RivuRuc5VNJeT3Uw7HraTDgcty89I7FVGzgvDtDDGUQ==
+X-Received: by 2002:a05:6512:41d:b0:504:7ff8:3430 with SMTP id u29-20020a056512041d00b005047ff83430mr2442826lfk.10.1697850021939;
+        Fri, 20 Oct 2023 18:00:21 -0700 (PDT)
 Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id cf15-20020a0564020b8f00b0053deb97e8e6sm2370344edb.28.2023.10.20.18.00.18
+        by smtp.gmail.com with ESMTPSA id cf15-20020a0564020b8f00b0053deb97e8e6sm2370344edb.28.2023.10.20.18.00.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 18:00:19 -0700 (PDT)
+        Fri, 20 Oct 2023 18:00:21 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -70,9 +70,9 @@ Cc: andrii@kernel.org,
 	awerner32@gmail.com,
 	john.fastabend@gmail.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next 4/5] selftests/bpf: test if state loops are detected in a tricky case
-Date: Sat, 21 Oct 2023 03:59:38 +0300
-Message-ID: <20231021005939.1041-5-eddyz87@gmail.com>
+Subject: [PATCH bpf-next 5/5] bpf: print full verifier states on infinite loop detection
+Date: Sat, 21 Oct 2023 03:59:39 +0300
+Message-ID: <20231021005939.1041-6-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231021005939.1041-1-eddyz87@gmail.com>
 References: <20231021005939.1041-1-eddyz87@gmail.com>
@@ -84,224 +84,29 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A convoluted test case for iterators convergence logic that
-demonstrates that states with branch count equal to 0 might still be
-a part of not completely explored loop.
-
-E.g. consider the following state diagram:
-
-               initial     Here state 'succ' was processed first,
-                 |         it was eventually tracked to produce a
-                 V         state identical to 'hdr'.
-    .---------> hdr        All branches from 'succ' had been explored
-    |            |         and thus 'succ' has its .branches == 0.
-    |            V
-    |    .------...        Suppose states 'cur' and 'succ' correspond
-    |    |       |         to the same instruction + callsites.
-    |    V       V         In such case it is necessary to check
-    |   ...     ...        whether 'succ' and 'cur' are identical.
-    |    |       |         If 'succ' and 'cur' are a part of the same loop
-    |    V       V         they have to be compared exactly.
-    |   succ <- cur
-    |    |
-    |    V
-    |   ...
-    |    |
-    '----'
+Additional logging in is_state_visited(): if infinite loop is detected
+print full verifier state for both current and equivalent states.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- tools/testing/selftests/bpf/progs/iters.c | 177 ++++++++++++++++++++++
- 1 file changed, 177 insertions(+)
+ kernel/bpf/verifier.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/selftests/bpf/progs/iters.c
-index ee85cc6d3444..89aaddec9a6d 100644
---- a/tools/testing/selftests/bpf/progs/iters.c
-+++ b/tools/testing/selftests/bpf/progs/iters.c
-@@ -998,6 +998,183 @@ __naked int loop_state_deps1(void)
- 	);
- }
- 
-+SEC("?raw_tp")
-+__failure
-+__msg("math between fp pointer and register with unbounded")
-+__flag(BPF_F_TEST_STATE_FREQ)
-+__naked int loop_state_deps2(void)
-+{
-+	/* This is equivalent to C program below.
-+	 *
-+	 * The case turns out to be tricky in a sense that:
-+	 * - states with read+precise mark on c are explored only on a second
-+	 *   iteration of the first inner loop and in a state which is pushed to
-+	 *   states stack first.
-+	 * - states with c=-25 are explored only on a second iteration of the
-+	 *   second inner loop and in a state which is pushed to states stack
-+	 *   first.
-+	 *
-+	 * Depending on the details of iterator convergence logic
-+	 * verifier might stop states traversal too early and miss
-+	 * unsafe c=-25 memory access.
-+	 *
-+	 *   j = iter_new();             // fp[-16]
-+	 *   a = 0;                      // r6
-+	 *   b = 0;                      // r7
-+	 *   c = -24;                    // r8
-+	 *   while (iter_next(j)) {
-+	 *     i = iter_new();           // fp[-8]
-+	 *     a = 0;                    // r6
-+	 *     b = 0;                    // r7
-+	 *     while (iter_next(i)) {
-+	 *       if (a == 1) {
-+	 *         a = 0;
-+	 *         b = 1;
-+	 *       } else if (a == 0) {
-+	 *         a = 1;
-+	 *         if (random() == 42)
-+	 *           continue;
-+	 *         if (b == 1) {
-+	 *           *(r10 + c) = 7;     // this is not safe
-+	 *           iter_destroy(i);
-+	 *           iter_destroy(j);
-+	 *           return;
-+	 *         }
-+	 *       }
-+	 *     }
-+	 *     iter_destroy(i);
-+	 *     i = iter_new();           // fp[-8]
-+	 *     a = 0;                    // r6
-+	 *     b = 0;                    // r7
-+	 *     while (iter_next(i)) {
-+	 *       if (a == 1) {
-+	 *         a = 0;
-+	 *         b = 1;
-+	 *       } else if (a == 0) {
-+	 *         a = 1;
-+	 *         if (random() == 42)
-+	 *           continue;
-+	 *         if (b == 1) {
-+	 *           a = 0;
-+	 *           c = -25;
-+	 *         }
-+	 *       }
-+	 *     }
-+	 *     iter_destroy(i);
-+	 *   }
-+	 *   iter_destroy(j);
-+	 *   return;
-+	 */
-+	asm volatile (
-+		"r1 = r10;"
-+		"r1 += -16;"
-+		"r2 = 0;"
-+		"r3 = 10;"
-+		"call %[bpf_iter_num_new];"
-+		"r6 = 0;"
-+		"r7 = 0;"
-+		"r8 = -24;"
-+	"j_loop_%=:"
-+		"r1 = r10;"
-+		"r1 += -16;"
-+		"call %[bpf_iter_num_next];"
-+		"if r0 == 0 goto j_loop_end_%=;"
-+
-+		/* first inner loop */
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"r2 = 0;"
-+		"r3 = 10;"
-+		"call %[bpf_iter_num_new];"
-+		"r6 = 0;"
-+		"r7 = 0;"
-+	"i_loop_%=:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_next];"
-+		"if r0 == 0 goto i_loop_end_%=;"
-+	"check_one_r6_%=:"
-+		"if r6 != 1 goto check_zero_r6_%=;"
-+		"r6 = 0;"
-+		"r7 = 1;"
-+		"goto i_loop_%=;"
-+	"check_zero_r6_%=:"
-+		"if r6 != 0 goto i_loop_%=;"
-+		"r6 = 1;"
-+		"call %[bpf_get_prandom_u32];"
-+		"if r0 != 42 goto check_one_r7_%=;"
-+		"goto i_loop_%=;"
-+	"check_one_r7_%=:"
-+		"if r7 != 1 goto i_loop_%=;"
-+		"r0 = r10;"
-+		"r0 += r8;"
-+		"r1 = 7;"
-+		"*(u64 *)(r0 + 0) = r1;"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_destroy];"
-+		"r1 = r10;"
-+		"r1 += -16;"
-+		"call %[bpf_iter_num_destroy];"
-+		"r0 = 0;"
-+		"exit;"
-+	"i_loop_end_%=:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_destroy];"
-+
-+		/* second inner loop */
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"r2 = 0;"
-+		"r3 = 10;"
-+		"call %[bpf_iter_num_new];"
-+		"r6 = 0;"
-+		"r7 = 0;"
-+	"i2_loop_%=:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_next];"
-+		"if r0 == 0 goto i2_loop_end_%=;"
-+	"check2_one_r6_%=:"
-+		"if r6 != 1 goto check2_zero_r6_%=;"
-+		"r6 = 0;"
-+		"r7 = 1;"
-+		"goto i2_loop_%=;"
-+	"check2_zero_r6_%=:"
-+		"if r6 != 0 goto i2_loop_%=;"
-+		"r6 = 1;"
-+		"call %[bpf_get_prandom_u32];"
-+		"if r0 != 42 goto check2_one_r7_%=;"
-+		"goto i2_loop_%=;"
-+	"check2_one_r7_%=:"
-+		"if r7 != 1 goto i2_loop_%=;"
-+		"r6 = 0;"
-+		"r8 = -25;"
-+		"goto i2_loop_%=;"
-+	"i2_loop_end_%=:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_destroy];"
-+
-+		"r6 = 0;"
-+		"r7 = 0;"
-+		"goto j_loop_%=;"
-+	"j_loop_end_%=:"
-+		"r1 = r10;"
-+		"r1 += -16;"
-+		"call %[bpf_iter_num_destroy];"
-+		"r0 = 0;"
-+		"exit;"
-+		:
-+		: __imm(bpf_get_prandom_u32),
-+		  __imm(bpf_iter_num_new),
-+		  __imm(bpf_iter_num_next),
-+		  __imm(bpf_iter_num_destroy)
-+		: __clobber_all
-+	);
-+}
-+
- SEC("?raw_tp")
- __success
- __naked int triple_continue(void)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 117dafd9b1e7..29d7908d0ebe 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -16936,6 +16936,10 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 			    !iter_active_depths_differ(&sl->state, cur)) {
+ 				verbose_linfo(env, insn_idx, "; ");
+ 				verbose(env, "infinite loop detected at insn %d\n", insn_idx);
++				verbose(env, "cur state:");
++				print_verifier_state(env, cur->frame[cur->curframe], true);
++				verbose(env, "old state:");
++				print_verifier_state(env, sl->state.frame[cur->curframe], true);
+ 				return -EINVAL;
+ 			}
+ 			/* if the verifier is processing a loop, avoid adding new state
 -- 
 2.42.0
 
