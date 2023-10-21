@@ -1,212 +1,125 @@
-Return-Path: <bpf+bounces-12901-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12902-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A45E77D1F1B
-	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 21:33:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 212907D1FDC
+	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 23:41:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50035281D3E
-	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 19:33:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AAF5B20E4F
+	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 21:41:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A20AF20328;
-	Sat, 21 Oct 2023 19:33:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18F1E210F1;
+	Sat, 21 Oct 2023 21:41:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aH2uS3cZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QBmPN+E/"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EEF11DDCD
-	for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 19:33:24 +0000 (UTC)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E2611B;
-	Sat, 21 Oct 2023 12:33:19 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9c41e95efcbso282077866b.3;
-        Sat, 21 Oct 2023 12:33:19 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A37B1EA6E
+	for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 21:41:17 +0000 (UTC)
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BFC9C
+	for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 14:41:15 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7a6a8c957ccso63525239f.3
+        for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 14:41:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697916798; x=1698521598; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EhKBvEwFp6dPng7EMHTDKwHw0rg8boPI6MAVBy/sUeQ=;
-        b=aH2uS3cZctLbvBQCh1MKnA6x2ecVIVqLUhQ4lJhmM20tz+l8sTTVL4hpZRja+XgfQG
-         h09YVgbXdYSH1pdORA6n3JizFLdW7dg7X6EwNPQdZc4zpg5QwCN/YvoFjJBDAJBP6Afs
-         NAj6emWrK3yFYUTo0UsL3rl2wwWw3D8SqfJ4bIt6dMEwgEFPJMT5q/46YOIK8IidWEqs
-         v0ZWU2uFrbgrpOnjQorCA6sUs4S6kVQYkZ1l3mTOdbV+JjcjIfttpwIg0ZySYs79thEL
-         GL6qdwi+qBlL64Hi9KwyR2vnSerzGRpy9Z48aatCQbsClw6HDvoXDftT3QHAMFgcFHnY
-         wqjg==
+        d=gmail.com; s=20230601; t=1697924475; x=1698529275; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZX/+26FZoxbqhfvQJjSrin/6U0Pr2TOVk2i7kYpeMu8=;
+        b=QBmPN+E/hn4TVmJc8aq8D6Pd5qpHyBzBeaFDCx8bDKe/1RXM/2b+Yp1Zz3CmnwQv8q
+         TRi62cANUDYhjIasSeVmEpE8RoseYL5Zwp/vVnYnyFeAzs979oKasElg+t0IQMMZzFPq
+         VbdNNr6kfHroHjfDcL7MD37SGnInpJVsx+q87lFSmIxCCORO1fq3IheQY753sE4pUCDu
+         f1TeykKVfWsXhcTTMh9Q4jDeHYbKJlLMNa803tV/3f57FFkV5dIcM6obtxNVbS1qKoHg
+         wo4LnrSi5abC0QrY1eGBM678l8BbkrmSsz4QYCBmPFnOtMB9lJ5e2QyfUl+/8g93x65Z
+         wXvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697916798; x=1698521598;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EhKBvEwFp6dPng7EMHTDKwHw0rg8boPI6MAVBy/sUeQ=;
-        b=G4KRJvTYoFi3rm4rXIj3DJG1DcpJEGTJhLr3joii548Yyqh9qbqbtJI70iZCCEtIMX
-         PAV87dCNEG7SxX8OlZTdtdmcvUFDlsJlTCB36zBzNtg46tmEPwaDgVQu1MgOG4t6Mxf2
-         C88JVs6IQznmAsE1886Z1+WlocUK1bPLQWljj0hPrGYteAMowrFjMcu9F0GON9TApPTD
-         y9ZxmH9SHR7CPIYGTkh8SjN8C+UmztNdyfED60WoZHpdBpbWEI8OISCuwfpLBX2YdraE
-         tqewwBoDZHX/wJPgXuKDpOGMVlL658myQhzTs8RXveZYnCw1K6aK0f+cVKpuaZAKOzJT
-         3dng==
-X-Gm-Message-State: AOJu0YwarXgVXDITlaUipT6nkS5+30hntNlRnaS+GXTI1SKsnt3R6f77
-	zYSJfs73kCUXEX6+nFtiSvtqLsKD7Cd1V/VWDDU=
-X-Google-Smtp-Source: AGHT+IE5k3rQI3rL00mfGqc4OaA80pAQZr1jIxpO6M2c1lCkOomkJXj0Nd0XChSfc6S694CUjwuDf1zcU6RY1/9TctY=
-X-Received: by 2002:a17:906:dc89:b0:9bf:ad86:ece8 with SMTP id
- cs9-20020a170906dc8900b009bfad86ece8mr4252656ejc.25.1697916797534; Sat, 21
- Oct 2023 12:33:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697924475; x=1698529275;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZX/+26FZoxbqhfvQJjSrin/6U0Pr2TOVk2i7kYpeMu8=;
+        b=d2zPO6jcSG4lPyKqjVtbC0zbfCAnQjLUlUtHzQzMNPkE5Lblfp+9/LPpmB7L1b9mUd
+         ZK81yaXuoZ0gEbMg4Uoi3PnTmtaUehxhvZ8hmHme7/LXvT9uHmykwzdiAJmA92kndaTA
+         MDmMLV3TKsM5QcyCqfU2JenQyOfYLeOSDBCnhYiNB7c5HF0xKZZU/fSeX/2bq1SB2k8R
+         ItaBkoYXlvH3YOryOxIP4g9EVONF6BDT1aO7FI3kLeIroOgmlrP5UD1jz1qtsAK5QjvV
+         zH6rgAJxwD+cnAMWkFYgUa4WPrm8VWNt5nlUa2c2pgkbZhzA8qkY/ua45Rw3DlXYyRpf
+         MRYQ==
+X-Gm-Message-State: AOJu0YxHor8NpeTxy+yzt6x+SrWetzPeZhqNzSP7wUiA3Mz+ckD1lhJZ
+	2ugDIfo1ITdTPL5CL5TYQs2GPNSRXlc=
+X-Google-Smtp-Source: AGHT+IFIkWnWLL6MWE1WrQLB6pPnrTRYzFLqhgWi5mO9HSa5Cgs8YfWXQxhYlc2c2nPWMhofwPY54Q==
+X-Received: by 2002:a05:6e02:1c2b:b0:34f:70ec:d4cf with SMTP id m11-20020a056e021c2b00b0034f70ecd4cfmr7444868ilh.8.1697924474829;
+        Sat, 21 Oct 2023 14:41:14 -0700 (PDT)
+Received: from MacBook-Pro-49.local ([2620:10d:c090:400::4:8b66])
+        by smtp.gmail.com with ESMTPSA id 63-20020a17090a09c500b00262eb0d141esm3792431pjo.28.2023.10.21.14.41.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Oct 2023 14:41:14 -0700 (PDT)
+Date: Sat, 21 Oct 2023 14:41:10 -0700
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
+	yonghong.song@linux.dev, memxor@gmail.com, awerner32@gmail.com,
+	john.fastabend@gmail.com,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH bpf-next 1/5] bpf: exact states comparison for iterator
+ convergence checks
+Message-ID: <20231021214110.cpgk32tqaerzbvbe@MacBook-Pro-49.local>
+References: <20231021005939.1041-1-eddyz87@gmail.com>
+ <20231021005939.1041-2-eddyz87@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231018151950.205265-1-masahiroy@kernel.org> <20231018151950.205265-4-masahiroy@kernel.org>
- <ZTDlrkTXnkVN1cff@krava> <CAEf4BzZm4h4q6k9ZhuT5qiWC9PYA+c7XwVFd68iAq4mtMJ-qhw@mail.gmail.com>
- <CAK7LNAR2kKwbzdFxfVXDxsy8pfyQDCR-BN=zpbcZg0JS9RpsKQ@mail.gmail.com>
- <CAEf4BzbYwEFSNTFjJyhYmOOK5iwHjFAdcArkUbcQz5ntRvOOvA@mail.gmail.com> <CAK7LNAQxFgOpuCBYPSx5Z6aw5MtKzPL39XLUvZuUBSyRGnOZUg@mail.gmail.com>
-In-Reply-To: <CAK7LNAQxFgOpuCBYPSx5Z6aw5MtKzPL39XLUvZuUBSyRGnOZUg@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Sat, 21 Oct 2023 12:33:05 -0700
-Message-ID: <CAEf4BzZqpqo3j33FkH3QJwezbJwarr1dXs4fCsp5So12_5MmTg@mail.gmail.com>
-Subject: Re: [bpf-next PATCH v2 4/4] kbuild: refactor module BTF rule
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231021005939.1041-2-eddyz87@gmail.com>
 
-On Sat, Oct 21, 2023 at 4:38=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.o=
-rg> wrote:
->
-> On Sat, Oct 21, 2023 at 5:52=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Fri, Oct 20, 2023 at 12:03=E2=80=AFAM Masahiro Yamada <masahiroy@ker=
-nel.org> wrote:
-> > >
-> > > On Fri, Oct 20, 2023 at 7:55=E2=80=AFAM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Thu, Oct 19, 2023 at 1:15=E2=80=AFAM Jiri Olsa <olsajiri@gmail.c=
-om> wrote:
-> > > > >
-> > > > > On Thu, Oct 19, 2023 at 12:19:50AM +0900, Masahiro Yamada wrote:
-> > > > > > newer_prereqs_except and if_changed_except are ugly hacks of th=
-e
-> > > > > > newer-prereqs and if_changed in scripts/Kbuild.include.
-> > > > > >
-> > > > > > Remove.
-> > > > > >
-> > > > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > > > > ---
-> > > > > >
-> > > > > > Changes in v2:
-> > > > > >   - Fix if_changed_except to if_changed
-> > > > > >
-> > > > > >  scripts/Makefile.modfinal | 25 ++++++-------------------
-> > > > > >  1 file changed, 6 insertions(+), 19 deletions(-)
-> > > > > >
-> > > > > > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfi=
-nal
-> > > > > > index 9fd7a26e4fe9..fc07854bb7b9 100644
-> > > > > > --- a/scripts/Makefile.modfinal
-> > > > > > +++ b/scripts/Makefile.modfinal
-> > > > > > @@ -19,6 +19,9 @@ vmlinux :=3D
-> > > > > >  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-> > > > > >  ifneq ($(wildcard vmlinux),)
-> > > > > >  vmlinux :=3D vmlinux
-> > > > > > +cmd_btf =3D ; \
-> > > > > > +     LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) =
---btf_base vmlinux $@; \
-> > > > > > +     $(RESOLVE_BTFIDS) -b vmlinux $@
-> > > > > >  else
-> > > > > >  $(warning Skipping BTF generation due to unavailability of vml=
-inux)
-> > > > > >  endif
-> > > > > > @@ -41,27 +44,11 @@ quiet_cmd_ld_ko_o =3D LD [M]  $@
-> > > > > >        cmd_ld_ko_o +=3D                                        =
-         \
-> > > > > >       $(LD) -r $(KBUILD_LDFLAGS)                               =
-       \
-> > > > > >               $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)       =
-       \
-> > > > > > -             -T scripts/module.lds -o $@ $(filter %.o, $^)
-> > > > > > +             -T scripts/module.lds -o $@ $(filter %.o, $^)    =
-       \
-> > > > > > +     $(cmd_btf)
-> > > > > >
-> > > > > > -quiet_cmd_btf_ko =3D BTF [M] $@
-> > > > >
-> > > > > nit not sure it's intentional but we no longer display 'BTF [M] .=
-..ko' lines,
-> > > > > I don't mind not displaying that, but we should mention that in c=
-hangelog
-> > > > >
-> > > >
-> > > > Thanks for spotting this! I think those messages are useful and
-> > > > important to keep. Masahiro, is it possible to preserve them?
-> > >
-> > >
-> > >
-> > > No, I do not think so.
-> > >
-> >
-> > That's too bad, I think it's a useful one.
->
->
->
-> I prioritize that the code is correct.
->
+On Sat, Oct 21, 2023 at 03:59:35AM +0300, Eduard Zingerman wrote:
+>  
+> +static struct bpf_verifier_state_list **__explored_state(struct bpf_verifier_env *env,
+> +							 int idx,
+> +							 int callsite);
+...
+> +static struct bpf_verifier_state *find_prev_entry(struct bpf_verifier_env *env,
+> +						  struct bpf_verifier_state *cur,
+> +						  int insn_idx)
+> +{
+> +	struct bpf_verifier_state_list *sl;
+> +	struct bpf_verifier_state *st;
+> +
+> +	/* Explored states are pushed in stack order, most recent states come first */
+> +	sl = *__explored_state(env, insn_idx, cur->frame[cur->curframe]->callsite);
+...
+> +		prev_st = find_prev_entry(env, cur_st->parent, insn_idx);
+...
+> +static struct bpf_verifier_state_list **__explored_state(struct bpf_verifier_env *env,
+> +							 int idx,
+> +							 int callsite)
+> +{
+> +	return &env->explored_states[(idx ^ callsite) % state_htab_size(env)];
+> +}
+> +
+>  static struct bpf_verifier_state_list **explored_state(
+>  					struct bpf_verifier_env *env,
+>  					int idx)
+> @@ -15032,7 +15161,7 @@ static struct bpf_verifier_state_list **explored_state(
+>  	struct bpf_verifier_state *cur = env->cur_state;
+>  	struct bpf_func_state *state = cur->frame[cur->curframe];
+>  
+> -	return &env->explored_states[(idx ^ state->callsite) % state_htab_size(env)];
+> +	return __explored_state(env, idx, state->callsite);
+>  }
 
-Could you please also prioritize not regressing informativeness of a
-build log? With your changes it's not clear now if BTF was generated
-or not for a kernel module, while previously it was obvious and was
-easy to spot if for some reason BTF was not generated. I'd like to
-preserve this
-property, thank you.
-
-E.g, can we still have BTF generation as a separate command and do a
-separate $(call if_changed,btf_ko)? Or something along those lines.
-Would that work?
-
->
->
-> >
-> > > Your code is wrong.
-> > >
-> >
-> > Could be, but note the comment you are removing:
-> >
-> > # Re-generate module BTFs if either module's .ko or vmlinux changed
-> >
-> > BTF has to be re-generated not just when module .ko is regenerated,
-> > but also when the vmlinux image itself changes.
-> >
-> > I don't see where this is done with your changes. Can you please point
-> > it out explicitly?
->
->
->
-> That is too obvious; %.ko depends on $(vmlinux).
-
-Thank you for your gracious answer. We used to not rebuild module's
-.ko's when vmlinux didn't change (but we did regen BTFs), and that's
-why I was confused. Now we forcefully recompile modules, which is a
-change in behavior which would be nice to call out in the commit
-message.
-
-
->
->
->
-> %.ko: %.o %.mod.o scripts/module.lds $(vmlinux) FORCE
->
->
->
->
-> --
-> Best Regards
-> Masahiro Yamada
+Do we really need to introduce this new helper?
+I suspect the concern was that cur->callsite != cur->parent->callsite, right?
+But that can never be the case, since bpf_iter_num_next() is force checkpoint,
+so inside process_iter_next_call() cur_st->parent is guaranteed to be from
+the same function and callsites will be the same.
+I can undo above and replace with a warn_on (or with a comment) while applying?
 
