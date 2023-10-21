@@ -1,173 +1,90 @@
-Return-Path: <bpf+bounces-12897-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12898-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD60E7D1CDF
-	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 13:38:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8C907D1D1E
+	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 14:21:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D002B215C9
-	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 11:38:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A1D0B21554
+	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 12:21:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27698DF4F;
-	Sat, 21 Oct 2023 11:38:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K1RfshJf"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B92312F4B;
+	Sat, 21 Oct 2023 12:21:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CCD1D51D
-	for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 11:38:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7323C433C8;
-	Sat, 21 Oct 2023 11:38:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697888281;
-	bh=CItNLUhgPKWprZgDhoE5AHbH/bbnD7boGHI0AXjLGCI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=K1RfshJfvG+iK1f5POzdM2+SCvqS01LqDm71qUBujpZCK0J9k5Epc0RxBLUn5QmNy
-	 uENT3RhYdkA+ycQxIUPo7eAfTWbRJw3Z/pcKEtg/9OYibGvV1tOlzydDRM5UAdBdcB
-	 pBBfgSs/1SorGnF4tBwLGCZqpi3QCbUwMvOVjnEJyt4jnaOlov0Pf9fE9IfmxIdIgq
-	 UpwXWZYylq4UwrRpu1quekYcVjKP8FsNaERavFI6uYCutglsIRZ0AczpeW/qXZ2gP8
-	 0HD4EScsNKpPEAXP/POpSPQDSkt1L3ntKcQ/PDNQDOi4nMy0Ci3wnVwlceX8p3z0Hy
-	 awP9Y4K/dKmuw==
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1dd5b98d9aeso916386fac.0;
-        Sat, 21 Oct 2023 04:38:01 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yw+oDbnD3IIsXCttUb8bIDZJVMLGlJIRHV41hadFwNAGUyMxnLH
-	31R0BOM9osM7qBsdkUFrcSJcCLMawne7v+MgWmA=
-X-Google-Smtp-Source: AGHT+IGrABm4SR8tSQm9fY18WWVZBwn80V24irNVJmXvkmY/hGdMR4KZQw8iUGeT2hTqVr7lRaaqAYLvhGurv4IW+uc=
-X-Received: by 2002:a05:6870:c087:b0:1e9:dfc3:1e6c with SMTP id
- c7-20020a056870c08700b001e9dfc31e6cmr4318161oad.28.1697888281221; Sat, 21 Oct
- 2023 04:38:01 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13F7CD528
+	for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 12:21:24 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A07D7B;
+	Sat, 21 Oct 2023 05:21:15 -0700 (PDT)
+Received: from fsav113.sakura.ne.jp (fsav113.sakura.ne.jp [27.133.134.240])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 39LCL2s6088155;
+	Sat, 21 Oct 2023 21:21:02 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav113.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav113.sakura.ne.jp);
+ Sat, 21 Oct 2023 21:21:02 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav113.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 39LCKoIx088106
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Sat, 21 Oct 2023 21:21:02 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <9b006dfe-450e-4d73-8117-9625d2586dad@I-love.SAKURA.ne.jp>
+Date: Sat, 21 Oct 2023 21:21:02 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231018151950.205265-1-masahiroy@kernel.org> <20231018151950.205265-4-masahiroy@kernel.org>
- <ZTDlrkTXnkVN1cff@krava> <CAEf4BzZm4h4q6k9ZhuT5qiWC9PYA+c7XwVFd68iAq4mtMJ-qhw@mail.gmail.com>
- <CAK7LNAR2kKwbzdFxfVXDxsy8pfyQDCR-BN=zpbcZg0JS9RpsKQ@mail.gmail.com> <CAEf4BzbYwEFSNTFjJyhYmOOK5iwHjFAdcArkUbcQz5ntRvOOvA@mail.gmail.com>
-In-Reply-To: <CAEf4BzbYwEFSNTFjJyhYmOOK5iwHjFAdcArkUbcQz5ntRvOOvA@mail.gmail.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Sat, 21 Oct 2023 20:37:24 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQxFgOpuCBYPSx5Z6aw5MtKzPL39XLUvZuUBSyRGnOZUg@mail.gmail.com>
-Message-ID: <CAK7LNAQxFgOpuCBYPSx5Z6aw5MtKzPL39XLUvZuUBSyRGnOZUg@mail.gmail.com>
-Subject: Re: [bpf-next PATCH v2 4/4] kbuild: refactor module BTF rule
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/2] LSM: Allow dynamically appendable LSM modules.
+Content-Language: en-US
+To: Casey Schaufler <casey@schaufler-ca.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        KP Singh <kpsingh@kernel.org>, Paul Moore <paul@paul-moore.com>,
+        bpf <bpf@vger.kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <cc8e16bb-5083-01da-4a77-d251a76dc8ff@I-love.SAKURA.ne.jp>
+ <57295dac-9abd-3bac-ff5d-ccf064947162@schaufler-ca.com>
+ <b2cd749e-a716-1a13-6550-44a232deac25@I-love.SAKURA.ne.jp>
+ <1b9f0e3f-0ff3-5b2d-19fa-dfa83afab8a6@schaufler-ca.com>
+ <36776914-189b-3f51-9b56-b4273a625005@I-love.SAKURA.ne.jp>
+ <a47971c0-f692-4f48-92a0-4f15c73d05e7@schaufler-ca.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <a47971c0-f692-4f48-92a0-4f15c73d05e7@schaufler-ca.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Oct 21, 2023 at 5:52=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Oct 20, 2023 at 12:03=E2=80=AFAM Masahiro Yamada <masahiroy@kerne=
-l.org> wrote:
-> >
-> > On Fri, Oct 20, 2023 at 7:55=E2=80=AFAM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Thu, Oct 19, 2023 at 1:15=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com=
-> wrote:
-> > > >
-> > > > On Thu, Oct 19, 2023 at 12:19:50AM +0900, Masahiro Yamada wrote:
-> > > > > newer_prereqs_except and if_changed_except are ugly hacks of the
-> > > > > newer-prereqs and if_changed in scripts/Kbuild.include.
-> > > > >
-> > > > > Remove.
-> > > > >
-> > > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > > > ---
-> > > > >
-> > > > > Changes in v2:
-> > > > >   - Fix if_changed_except to if_changed
-> > > > >
-> > > > >  scripts/Makefile.modfinal | 25 ++++++-------------------
-> > > > >  1 file changed, 6 insertions(+), 19 deletions(-)
-> > > > >
-> > > > > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfina=
-l
-> > > > > index 9fd7a26e4fe9..fc07854bb7b9 100644
-> > > > > --- a/scripts/Makefile.modfinal
-> > > > > +++ b/scripts/Makefile.modfinal
-> > > > > @@ -19,6 +19,9 @@ vmlinux :=3D
-> > > > >  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-> > > > >  ifneq ($(wildcard vmlinux),)
-> > > > >  vmlinux :=3D vmlinux
-> > > > > +cmd_btf =3D ; \
-> > > > > +     LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --=
-btf_base vmlinux $@; \
-> > > > > +     $(RESOLVE_BTFIDS) -b vmlinux $@
-> > > > >  else
-> > > > >  $(warning Skipping BTF generation due to unavailability of vmlin=
-ux)
-> > > > >  endif
-> > > > > @@ -41,27 +44,11 @@ quiet_cmd_ld_ko_o =3D LD [M]  $@
-> > > > >        cmd_ld_ko_o +=3D                                          =
-       \
-> > > > >       $(LD) -r $(KBUILD_LDFLAGS)                                 =
-     \
-> > > > >               $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)         =
-     \
-> > > > > -             -T scripts/module.lds -o $@ $(filter %.o, $^)
-> > > > > +             -T scripts/module.lds -o $@ $(filter %.o, $^)      =
-     \
-> > > > > +     $(cmd_btf)
-> > > > >
-> > > > > -quiet_cmd_btf_ko =3D BTF [M] $@
-> > > >
-> > > > nit not sure it's intentional but we no longer display 'BTF [M] ...=
-ko' lines,
-> > > > I don't mind not displaying that, but we should mention that in cha=
-ngelog
-> > > >
-> > >
-> > > Thanks for spotting this! I think those messages are useful and
-> > > important to keep. Masahiro, is it possible to preserve them?
-> >
-> >
-> >
-> > No, I do not think so.
-> >
->
-> That's too bad, I think it's a useful one.
+On 2023/10/21 5:40, Casey Schaufler wrote:
+>>> You can make something that will work. Whether you can sell it upstream will
+>>> depend on any number of factors. But working code is always a great start.
+>> Selling a code to the upstream is not sufficient for allowing end users to use
+>> that code.
+>>
+>> For https://bugzilla.redhat.com/show_bug.cgi?id=542986 case, the reason that Red Hat
+>> does not enable Smack/TOMOYO/AppArmor is NOT "Smack/TOMOYO/AppArmor are not attractive".
+> 
+> And YAMA is enabled because it *is* attractive to RedHat's support based business
+> model. Even if we did have loadable LSM support I doubt RedHat would even consider
+> enabling it. Their model is based on selling support.
 
+I don't expect that Red Hat will enable other LSMs as soon as we made it possible to use
+other LSMs via LKM. But making it possible to use other LSMs at user's own risk via LKM
+(like device/filesystem drivers) is the first step towards enabling other LSMs.
 
+Somebody other than Red Hat can establish a business model for supporting other LSMs. But
+current situation (i.e. requiring replacement of vmlinux ) can not allow such somebody to
+establish a business model for supporting other LSMs. What is important is "don't make
+LKM-based LSMs conditional (e.g. don't require kernel config option to enable LKM-based
+LSMs, unlike device/filesystem drivers can be loaded as long as CONFIG_MODULES=y ).
 
-I prioritize that the code is correct.
-
-
-
->
-> > Your code is wrong.
-> >
->
-> Could be, but note the comment you are removing:
->
-> # Re-generate module BTFs if either module's .ko or vmlinux changed
->
-> BTF has to be re-generated not just when module .ko is regenerated,
-> but also when the vmlinux image itself changes.
->
-> I don't see where this is done with your changes. Can you please point
-> it out explicitly?
-
-
-
-That is too obvious; %.ko depends on $(vmlinux).
-
-
-
-%.ko: %.o %.mod.o scripts/module.lds $(vmlinux) FORCE
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
 
