@@ -1,259 +1,148 @@
-Return-Path: <bpf+bounces-12877-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12878-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3B137D197C
-	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 01:10:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5417A7D1A23
+	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 03:00:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACD04282704
-	for <lists+bpf@lfdr.de>; Fri, 20 Oct 2023 23:10:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0F35B21576
+	for <lists+bpf@lfdr.de>; Sat, 21 Oct 2023 01:00:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE2F4354FD;
-	Fri, 20 Oct 2023 23:10:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6A1655;
+	Sat, 21 Oct 2023 01:00:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="olB2ipdp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iV5HHyJD"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F0661A71B;
-	Fri, 20 Oct 2023 23:10:25 +0000 (UTC)
-Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CBFD46;
-	Fri, 20 Oct 2023 16:10:24 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1974A37C
+	for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 01:00:16 +0000 (UTC)
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34433D4C
+	for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 18:00:15 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so2082173a12.1
+        for <bpf@vger.kernel.org>; Fri, 20 Oct 2023 18:00:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1697843425; x=1729379425;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=c2MTKVsVzkxUvuTXCIBYynqyIqF6GoiRRdW1Io8kXV0=;
-  b=olB2ipdpmrErNEPPqkAcvHeE5XPGI+ZRg5cNoud+FquCGIR0YvzcoaJ5
-   CwwQKJMVvYh+tVIh4dQohISTEwKRgJOxLD9yF6qevp6caJFG1g+9itvj6
-   xCuBhh0vTiwBenGFIwR62FH8c4CSTkhfAuzP3OucwYn01MYbPSLP5AOVf
-   4=;
-X-IronPort-AV: E=Sophos;i="6.03,239,1694736000"; 
-   d="scan'208";a="611265191"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-25ac6bd5.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 23:10:23 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
-	by email-inbound-relay-iad-1d-m6i4x-25ac6bd5.us-east-1.amazon.com (Postfix) with ESMTPS id 2429E486DE;
-	Fri, 20 Oct 2023 23:10:16 +0000 (UTC)
-Received: from EX19MTAUWA001.ant.amazon.com [10.0.21.151:9435]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.14.246:2525] with esmtp (Farcaster)
- id 9fe161c2-9fba-4e93-9c67-a745e55eb32a; Fri, 20 Oct 2023 23:10:16 +0000 (UTC)
-X-Farcaster-Flow-ID: 9fe161c2-9fba-4e93-9c67-a745e55eb32a
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA001.ant.amazon.com (10.250.64.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Fri, 20 Oct 2023 23:10:15 +0000
-Received: from 88665a182662.ant.amazon.com (10.142.223.91) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Fri, 20 Oct 2023 23:10:11 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <martin.lau@linux.dev>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
-	<edumazet@google.com>, <haoluo@google.com>, <john.fastabend@gmail.com>,
-	<jolsa@kernel.org>, <kpsingh@kernel.org>, <kuba@kernel.org>,
-	<kuni1840@gmail.com>, <kuniyu@amazon.com>, <mykolal@fb.com>,
-	<netdev@vger.kernel.org>, <pabeni@redhat.com>, <sdf@google.com>,
-	<sinquersw@gmail.com>, <song@kernel.org>, <yonghong.song@linux.dev>
-Subject: Re: [PATCH v1 bpf-next 00/11] bpf: tcp: Add SYN Cookie generation/validation SOCK_OPS hooks.
-Date: Fri, 20 Oct 2023 16:10:03 -0700
-Message-ID: <20231020231003.51313-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <16bad14a-a99c-a2a2-ccdc-6c44c9c4ad1d@linux.dev>
-References: <16bad14a-a99c-a2a2-ccdc-6c44c9c4ad1d@linux.dev>
+        d=gmail.com; s=20230601; t=1697850013; x=1698454813; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5qD6eC5f6UK8N81OYIQ+NqWlRdGs0KwvIQUqP7r0Aas=;
+        b=iV5HHyJDf9n6/xMGd9Nn6RJpHbVxzfK2WMapx5U0SV80Dh1GD/16/PBIFoU7sokYIJ
+         MxODXwoSy+/11IPS4EceRCPhYIsQ4BRTkRG3Ip1XOAvwgPvBYJwp5zB6P5N6PjfyQDtB
+         QjFV36VI6bU76W/iJJf8bmUbMgleKbfBGLyxvZNNOy2eO/7cYn9/U4/C/DfO7R5tRGhz
+         swryeU/gaxaS1IHkEUZS/eEf+Y0g9P+y29ZiY4rJ4dSMDfzjsT8V5b8E6qTRwc+7ZTIR
+         VK3SDeY8AieXx8alGX6g8DnfzdOT1HwUVmrOJf2VXanZZ9LD8hhjJnV68vQ+fwp23mb8
+         IBYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697850013; x=1698454813;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5qD6eC5f6UK8N81OYIQ+NqWlRdGs0KwvIQUqP7r0Aas=;
+        b=DgaFz5voqV0FtLMLD963m/ptbQFIpcR+uwBs4PgCcFqrTqeg7utjS4GrlIH+pU1ygn
+         fjhovP9aVwgS2SBGEELF9wz8npp2aOrZQ6GH6f5xMUBFNsHWdMHwYjIoRVgn5rKoXyHP
+         foR7ihBmx/m80rzRwO/4KsuYGHWCBZM83+5dXuqYfIv9YWqXOAWt8KT8OuoA46R3NEAc
+         TDMIIfsaEcgKK7ENRosdumGleDur6NYsxUoRLqVrMKRkrJPtLqFsmQ/WhHMYtIkYi9pT
+         jjenCFUJQ7lv/Ul6ddgB645MEa3U/pXLVbPyj3vN2b9SMFhnOtLFhLPR5g2QkRJ48LxK
+         LC9A==
+X-Gm-Message-State: AOJu0YzFtwKNByyFSdKcwDa4/HFbNukn/ybuNL2KC+prNa4hHKgxluvg
+	RyDcdknN3eByZr5OJtyRhpcRzJVfitxi6Tfi
+X-Google-Smtp-Source: AGHT+IGHvGbIHUanf59uebuLHxK0Mf8wYo1LAQ+TJu4XCcs4cO2oAHShFDEfKEaZvHIr64ATxK0Pcg==
+X-Received: by 2002:a50:a695:0:b0:530:bd6b:7a94 with SMTP id e21-20020a50a695000000b00530bd6b7a94mr2781724edc.24.1697850012970;
+        Fri, 20 Oct 2023 18:00:12 -0700 (PDT)
+Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id cf15-20020a0564020b8f00b0053deb97e8e6sm2370344edb.28.2023.10.20.18.00.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 18:00:11 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org
+Cc: andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	memxor@gmail.com,
+	awerner32@gmail.com,
+	john.fastabend@gmail.com,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next 0/5] exact states comparison for iterator convergence checks
+Date: Sat, 21 Oct 2023 03:59:34 +0300
+Message-ID: <20231021005939.1041-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.142.223.91]
-X-ClientProxiedBy: EX19D044UWA004.ant.amazon.com (10.13.139.7) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
 
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Date: Fri, 20 Oct 2023 12:59:00 -0700
-> On 10/19/23 11:01 AM, Kuniyuki Iwashima wrote:
-> > From: Martin KaFai Lau <martin.lau@linux.dev>
-> > Date: Thu, 19 Oct 2023 00:25:00 -0700
-> >> On 10/18/23 3:31 PM, Kuniyuki Iwashima wrote:
-> >>> From: Kui-Feng Lee <sinquersw@gmail.com>
-> >>> Date: Wed, 18 Oct 2023 14:47:43 -0700
-> >>>> On 10/18/23 10:20, Kuniyuki Iwashima wrote:
-> >>>>> From: Eric Dumazet <edumazet@google.com>
-> >>>>> Date: Wed, 18 Oct 2023 10:02:51 +0200
-> >>>>>> On Wed, Oct 18, 2023 at 8:19 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
-> >>>>>>>
-> >>>>>>> On 10/17/23 9:48 AM, Kuniyuki Iwashima wrote:
-> >>>>>>>> From: Martin KaFai Lau <martin.lau@linux.dev>
-> >>>>>>>> Date: Mon, 16 Oct 2023 22:53:15 -0700
-> >>>>>>>>> On 10/13/23 3:04 PM, Kuniyuki Iwashima wrote:
-> >>>>>>>>>> Under SYN Flood, the TCP stack generates SYN Cookie to remain stateless
-> >>>>>>>>>> After 3WHS, the proxy restores SYN and forwards it and ACK to the backend
-> >>>>>>>>>> server.  Our kernel module works at Netfilter input/output hooks and first
-> >>>>>>>>>> feeds SYN to the TCP stack to initiate 3WHS.  When the module is triggered
-> >>>>>>>>>> for SYN+ACK, it looks up the corresponding request socket and overwrites
-> >>>>>>>>>> tcp_rsk(req)->snt_isn with the proxy's cookie.  Then, the module can
-> >>>>>>>>>> complete 3WHS with the original ACK as is.
-> >>>>>>>>>
-> >>>>>>>>> Does the current kernel module also use the timestamp bits differently?
-> >>>>>>>>> (something like patch 8 and patch 10 trying to do)
-> >>>>>>>>
-> >>>>>>>> Our SYN Proxy uses TS as is.  The proxy nodes generate a random number
-> >>>>>>>> if TS is in SYN.
-> >>>>>>>>
-> >>>>>>>> But I thought someone would suggest making TS available so that we can
-> >>>>>>>> mock the default behaviour at least, and it would be more acceptable.
-> >>>>>>>>
-> >>>>>>>> The selftest uses TS just to strengthen security by validating 32-bits
-> >>>>>>>> hash.  Dropping a part of hash makes collision easier to happen, but
-> >>>>>>>> 24-bits were sufficient for us to reduce SYN flood to the managable
-> >>>>>>>> level at the backend.
-> >>>>>>>
-> >>>>>>> While enabling bpf to customize the syncookie (and timestamp), I want to explore
-> >>>>>>> where can this also be done other than at the tcp layer.
-> >>>>>>>
-> >>>>>>> Have you thought about directly sending the SYNACK back at a lower layer like
-> >>>>>>> tc/xdp after receiving the SYN?
-> >>>>>
-> >>>>> Yes.  Actually, at netconf I mentioned the cookie generation hook will not
-> >>>>> be necessary and should be replaced with XDP.
-> >>
-> >> Right, it is also what I have been thinking when seeing the
-> >> BPF_SOCK_OPS_GEN_SYNCOOKIE_CB carrying the bpf generated timestamp to the
-> >> tcp_make_synack. It feels like trying hard to work with the tcp want_cookie
-> >> logic while there is an existing better alternative in tc/xdp to deal with synflood.
-> >>
-> >>>>>
-> >>>>>
-> >>>>>>> There are already bpf_tcp_{gen,check}_syncookie
-> >>>>>>> helper that allows to do this for the performance reason to absorb synflood. It
-> >>>>>>> will be natural to extend it to handle the customized syncookie also.
-> >>>>>
-> >>>>> Maybe we even need not extend it and can use XDP as said below.
-> >>>>>
-> >>>>>
-> >>>>>>>
-> >>>>>>> I think it should already be doable to send a SYNACK back with customized
-> >>>>>>> syncookie (and timestamp) at tc/xdp today.
-> >>>>>>>
-> >>>>>>> When ack is received, the prog@tc/xdp can verify the cookie. It will probably
-> >>>>>>> need some new kfuncs to create the ireq and queue the child socket. The bpf prog
-> >>>>>>> can change the ireq->{snd_wscale, sack_ok...} if needed. The details of the
-> >>>>>>> kfuncs need some more thoughts. I think most of the bpf-side infra is ready,
-> >>>>>>> e.g. acquire/release/ref-tracking...etc.
-> >>>>>>>
-> >>>>>>
-> >>>>>> I think I mostly agree with this.
-> >>>>>
-> >>>>> I didn't come up with kfunc to create ireq and queue it to listener, so
-> >>>>> cookie_v[46]_check() were best place for me to extend easily, but now it
-> >>>>> sounds like kfunc would be the way to go.
-> >>>>>
-> >>>>> Maybe we can move the core part of cookie_v[46]_check() except for kernel
-> >>>>> cookie's validation to __cookie_v[46]_check() and expose a wrapper of it
-> >>>>> as kfunc ?
-> >>>>>
-> >>>>> Then, we can look up sk and pass the listener, skb, and flags (for sack_ok,
-> >>>>> etc) to the kfunc.  (It could still introduce some conflicts with Eric's
-> >>>>> patch though...)
-> >>>>
-> >>>> Does that mean the packets handled in this way (in XDP) will skip all
-> >>>> netfilter at all?
-> >>>
-> >>> Good point.
-> >>>
-> >>> If we want not to skip other layers, maybe we can use tc ?
-> >>>
-> >>> 1) allocate ireq and set sack_ok etc with kfunc
-> >>> 2) bpf_sk_assign() to set ireq to skb (this could be done in kfunc above)
-> >>> 3) let inet_steal_sock() return req->sk_listener if not sk_fullsock(sk)
-> >>> 4) if skb->sk is reqsk in cookie_v[46]_check(), skip validation and
-> >>>      req allocation and create full sk
-> >>
-> >> Haven't looked at the details. The above feels reasonable and would be nice if
-> >> it works out. don't know if the skb at tc can be used in cookie_v[46]_check() as
-> >> is. It probably needs more thoughts.  [ note, xdp does not have skb. ]
-> >>
-> >> Regarding the "allocate ireq and set sack_ok etc with kfunc", do you think it
-> >> will be useful (and potentially cleaner) even for the
-> >> BPF_SOCK_OPS_CHECK_SYNCOOKIE_CB if it needed to go back to consider skops? Then
-> >> only do the BPF_SOCK_OPS_CHECK_SYNCOOKIE_CB and the xdp/tc can generate SYNACK.
-> >> The xdp/tc can still do the check and drop the bad ACK earlier in the stack.
-> > 
-> > kfunc would be useful if we want to fall back to the default
-> > validation, but I think we should not allocate ireq in kfunc.
-> > 
-> > The SOCK_OPS prog only returns a binary value.  If we decide whether
-> > we skip validation or not based on kfunc call (ireq allocation), the
-> > flow would be like :
-> > 
-> >    1. CG_OK & ireq is allocated -> skip validation and req allocation
-> >    2. CG_OK & no ireq           -> default validation
-> >    3. CG_ERR                    -> RST
-> > 
-> > The problem here is that if kfunc fails with -ENOMEM and cookie
-> > is valid, we need a way to tell the kernel to drop the ACK instead
-> > of sending RST.  (I hope the prog could return CG_DROP...)
-> 
-> bpf_set_retval() helper allows the cgrp bpf prog to return -ENOMEM. Take a look 
-> at how __cgroup_bpf_run_filter_getsockopt is using the return value of 
-> bpf_prog_run_array_cg() and an example in progs/cgroup_getset_retval_getsockopt.c.
+Iterator convergence logic in is_state_visited() uses state_equals()
+for states with branches counter > 0 to check if iterator based loop
+converges. This is not fully correct because state_equals() relies on
+presence of read and precision marks on registers. These marks are not
+guaranteed to be finalized while state has branches.
+Commit message for patch #1 describes a program that exhibits such
+behavior.
 
-Oh, this is nice, I assumed -EPERM was always returned.
+This patch-set aims to fix iterator convergence logic by adding notion
+of exact states comparison. Exact comparison does not rely on presence
+of read or precision marks and thus is more strict.
+As explained in commit message for patch #1 exact comparisons require
+addition of speculative register bounds widening. The end result for
+BPF verifier users could be summarized as follows:
 
+(!) After this update verifier would reject programs that conjure an
+    imprecise value on first loop iteration and use it as precise on
+    a second (for iterator based loops).
 
-> > If we allocate ireq first, it would be cleaner as bpf need not care
-> > about the drop path.
-> > 
-> >    1. CG_OK & mss is set -> skip validation
-> >    2. CG_OK & no mss set -> default validation
-> >    3. CG_ERR             -> RST
-> 
-> Even if it uses the mss set/not-set like above to decide drop/rst. Does it 
-> really need to pre-allocate ireq? Looking at the test, the bpf prog is not using 
-> the skops->sk either.
+I urge people to at least skim over the commit message for patch #1.
 
-It uses skops->remote_ip4 etc, maybe this was another reason why
-I chose pre-alloc, but yes, it's not needed.  The same value can
-be extraced from skb with bpf_skb_load_bytes_relative(BPF_HDR_START_NET).
+Patches are organized as follows:
+- patch #1: introduces exact mode for states comparison and adds
+  widening heuristic;
+- patch #2: adds test-cases that demonstrate why the series is
+  necessary;
+- patch #3: extends patch #1 with a notion of state loop entries,
+  these entries have to be tracked to correctly identify that
+  different verifier states belong to the same states loop;
+- patch #4: adds a test-case that demonstrates a program
+  which requires loop entry tracking for correct verification;
+- patch #5: just adds a few debug prints.
 
+The following actions are planned as a followup for this patch-set:
+- implementation has to be adapted for callbacks handling logic as a
+  part of a fix for [1];
+- it is necessary to explore ways to improve widening heuristic to
+  handle iters_task_vma test w/o need to insert barrier_var() calls;
+- explored states eviction logic on cache miss has to be extended
+  to either:
+  - allow eviction of checkpoint states -or-
+  - be sped up in case if there are many active checkpoints associated
+    with the same instruction.
 
-> It would be nice to allow bpf prog to check the cookie first before creating 
-> ireq. The kernel also checks the cookie first before tcp_parse_option and ireq 
-> creation. Beside, I suspect the multiple "if ([!]bpf_cookie)" checks in 
-> cookie_v[46]_check() is due to the pre-alloc ireq requirement.
-> 
-> What does it take to create an ireq? sk, skb, tcp_opt, and mss? Potentially, it 
-> could have a "bpf_skops_parse_tcp_options(struct bpf_sock_ops_kern *skops, 
-> struct tcp_options_received *opt_rx, u32 opt_rx__sz)" to initialize the tcp_opt. 
-> I think the bpf prog should be able to parse the tcp options by itself also and 
-> directly initialize the tcp_opt.
+The patch-set is a followup for mailing list discussion [1].
 
-Yes, also the prog will not need to parse all the options unless
-the validation algorithm needs to becaues SACK_PERMITTED, WSCALE,
-MSS (and ECN bits) are only available in SYN.
+[1] https://lore.kernel.org/bpf/97a90da09404c65c8e810cf83c94ac703705dc0e.camel@gmail.com/
 
-So, the prog will just need to parse timestamps option with
-bpf_load_hdr_opt() and can initialise tcp_opt based on ISN
-(and/or TS).
+Eduard Zingerman (5):
+  bpf: exact states comparison for iterator convergence checks
+  selftests/bpf: tests with delayed read/precision makrs in loop body
+  bpf: correct loop detection for iterators convergence
+  selftests/bpf: test if state loops are detected in a tricky case
+  bpf: print full verifier states on infinite loop detection
 
+ include/linux/bpf_verifier.h                  |  16 +
+ kernel/bpf/verifier.c                         | 440 ++++++++++++-
+ tools/testing/selftests/bpf/progs/iters.c     | 620 ++++++++++++++++++
+ .../selftests/bpf/progs/iters_task_vma.c      |   1 +
+ 4 files changed, 1043 insertions(+), 34 deletions(-)
 
-> The "bpf_skops_alloc_tcp_req(struct bpf_sock_ops_kern *skops, struct 
-> tcp_options_received *opt_rx, u32 opt_rx__size, int mss,...)" could directly 
-> save the "ireq" in skops->ireq (new member). If skops->ireq is available, the 
-> kernel could then skip most of the ireq initialization and directly continue the 
-> remaining processing (e.g. directly to security_inet_conn_request() ?). would 
-> that work?
+-- 
+2.42.0
 
-Yes, that will work.
 
