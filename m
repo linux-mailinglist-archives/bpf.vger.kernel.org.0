@@ -1,72 +1,73 @@
-Return-Path: <bpf+bounces-12947-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12948-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C1187D2401
-	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 17:59:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF70E7D2420
+	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 18:04:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD7401C209AD
-	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 15:59:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 177581C209A8
+	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 16:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C82FD10968;
-	Sun, 22 Oct 2023 15:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD75910974;
+	Sun, 22 Oct 2023 16:04:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nds5iSFf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nK1hIKKq"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5154B6133
-	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 15:59:06 +0000 (UTC)
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF999B
-	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 08:59:04 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40853c639abso16168975e9.0
-        for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 08:59:04 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ECEB6133
+	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 16:04:14 +0000 (UTC)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9826ADE
+	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 09:04:12 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32d9d8284abso1707659f8f.3
+        for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 09:04:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697990343; x=1698595143; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697990651; x=1698595451; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TAXzudsf8cFqMXCW5L8pje60sCJ9Apzs/7PyKAlSUC4=;
-        b=Nds5iSFfS5v8XMQvqUbZt/GVc0RAgS5j6DcX5UC5KWifm/sn8GOQuO7XWkTvv4A0Va
-         DzmXZjlbI7atvg0FfxzoB4HA8Vt1oQl1zqqFp1Z8DuGd/Y6IUI+qWKBirryqIEm4O5R3
-         usRcnnuGOtW+i/Ox580YOkNYG1rsMSXs1oEqSWuextLukzAI5vmmtwgaskjCF800I9tR
-         jFYxbToXac4nBwkTmRHFoKY6EiAkBiBZIJyuLj+2fDPUPG23Irfv9Sm5sv/DNCu5Khgm
-         emAkZNQ/VRVkH6CZxxD9D2LDSAHbXzGtFxkRRgRNZVsGT9eTwYx1xo5Y24nP3xOWgJxk
-         QOZA==
+        bh=FoYiAH1OnvbAZXhFtreaTPgu1XDekONIFALk35396as=;
+        b=nK1hIKKqq+92KFFcC3zvGP90CHes367hW9I8HT6bfTGb/NBsdCpidZcEcRE9s1qyzw
+         +/hcs+sn9aOhFc+6pNLGNXobM+jLdZ0nCKEaNyKFcwaC9lu7EgIlFUfBFbrXLTjB2cem
+         CegCLojl30u2Br1fiw2MM38+QvbX3YAfoH/MvL32OdjnDLtoSLc0O0dNgZydDmb7W+p+
+         UUu5PXyXTAEknslF+m2IzPHOfDgOF2YBNUUWhACUSZ/BF262+61H1DjRJlKCuNjrs+P4
+         FjZzDYfbg6pDSdlEqgEDRINtbH8thIE6jTXKGl+44x+twec/yJrK7hR4FHIb12Ibub3B
+         ny/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697990343; x=1698595143;
+        d=1e100.net; s=20230601; t=1697990651; x=1698595451;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TAXzudsf8cFqMXCW5L8pje60sCJ9Apzs/7PyKAlSUC4=;
-        b=PWAf/ZU4Fl7toWEM1lo1k4a6dxmc5+vtQXFy0MRloHbJo2JAhIfl85GNHo0HBHGvUn
-         HpfAbR7QEpkxYqF3jpCoWRS9hx93k8eFASTpF34v+P/i8VXhQcWeaGZlVZGQaSDykeiu
-         tF/H4dXe2sVzB5tWaZhDg7SXtBclYgGZyPW/NmntgFcoGm2mGz6CcX/ACNa9jtBAQG9Q
-         I/rl33YRSHHpIZKA2jTxvqTLTxRgfwLbTc6mukzhXuujpawXKpb83fVrvXLxXzViVtZ8
-         gNOKGnbkixsfF2Nl0GEjbDw2mdkjbpWJidBV49P2eqWtCAIC4/ZoSwC82nZmCmt1H2wf
-         s31w==
-X-Gm-Message-State: AOJu0Yy/moS9hPaVNa4kzaqZOinDutp8JyFPJLNIDmGrSt0x008z5P8e
-	ZXdaJ+JBbWQ+UKYJMj3ZNouZ9E2lJq94xKJF/zxavKbTyXU=
-X-Google-Smtp-Source: AGHT+IFWwee0LTUB9JcGX6uBe3EzPYSaIm+7bSG0JWul7cTWuIFUXwMV6BpIq1IoUs0HdXNVXpWNDMNzfK5Zv/Jasmo=
-X-Received: by 2002:adf:ef42:0:b0:32d:6c35:db55 with SMTP id
- c2-20020adfef42000000b0032d6c35db55mr5015546wrp.29.1697990342765; Sun, 22 Oct
- 2023 08:59:02 -0700 (PDT)
+        bh=FoYiAH1OnvbAZXhFtreaTPgu1XDekONIFALk35396as=;
+        b=IjgyYUPANTaM9BygRGp0kTBu6cyiRVcbXU2uePIUfXVJa68+4eTrQujJleiGmSAxyG
+         wi5s4osTYsGjC5hd3ZSD3t4FBitNUmo8c0ClBUupVfCVoxxIS5NI20zNz8xWZIl2hXcf
+         Sai8dUGpjFpr+9fWcAcuUSBZWOEf0mudklmmajMOxbiCUJuEwAsCirGV182lVEg50liE
+         I8lHuNIGejqDnWNrSAL9WAfi9K3HrGrsaPCcdCfYT8+jvJ7J/nORDM8VZLPDMTJIZ+Z2
+         nxJUiwU38QTBDjUGS3gzDzK4KEVe1OG/hChOYrIbwUvrIqAGdm5+19apEsdLEZ2uY1xs
+         0bWA==
+X-Gm-Message-State: AOJu0YzxSvNPoBAW4ADCtpvQhS6KGJOZ30KPbXevRV33boVkS9UX8xjI
+	kfjRFoUaDhnfcEAlwygo+7fjzatlqulkOkI9+hg=
+X-Google-Smtp-Source: AGHT+IFmd0EM2/0xDtZl6dMw65skFPp6XUeSpNYwCzSpBdh/fX5radxIR/lZo1SSmlkKEa73ZamDdsUCABx8gTOa+Ek=
+X-Received: by 2002:a5d:5229:0:b0:32d:1258:dc98 with SMTP id
+ i9-20020a5d5229000000b0032d1258dc98mr4506856wra.11.1697990650792; Sun, 22 Oct
+ 2023 09:04:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231022154527.229117-1-zhouchuyi@bytedance.com> <20231022154527.229117-2-zhouchuyi@bytedance.com>
-In-Reply-To: <20231022154527.229117-2-zhouchuyi@bytedance.com>
+References: <20231022154527.229117-1-zhouchuyi@bytedance.com> <20231022154527.229117-3-zhouchuyi@bytedance.com>
+In-Reply-To: <20231022154527.229117-3-zhouchuyi@bytedance.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sun, 22 Oct 2023 08:58:51 -0700
-Message-ID: <CAADnVQ+M-+0No8qpiRvg9h3JF=aOXwhiUdxUhwPGAeGxZkkE+w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Relax allowlist for css_task iter
+Date: Sun, 22 Oct 2023 09:03:59 -0700
+Message-ID: <CAADnVQLGwn_x9CZmYX5K_6K5Y0SB7EjU5wfRUHRMdXhAvKEJVw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add test for css_task iter
+ combining with cgroup iter
 To: Chuyi Zhou <zhouchuyi@bytedance.com>
 Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
@@ -77,107 +78,145 @@ Content-Transfer-Encoding: quoted-printable
 On Sun, Oct 22, 2023 at 8:45=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.com=
 > wrote:
 >
-> The newly added open-coded css_task iter would try to hold the global
-> css_set_lock in bpf_iter_css_task_new, so the bpf side has to be careful =
-in
-> where it allows to use this iter. The mainly concern is dead locking on
-> css_set_lock. check_css_task_iter_allowlist() in verifier enforced css_ta=
-sk
-> can only be used in bpf_lsm hooks and sleepable bpf_iter.
+> This patch adds a test which demonstrates how css_task iter can be combin=
+ed
+> with cgroup iter and it won't cause deadlock, though cgroup iter is not
+> sleepable.
 >
-> This patch relax the allowlist for css_task iter. Any lsm and any iter
-> (even non-sleepable) and any sleepable are safe since they would not hold
-> the css_set_lock before entering BPF progs context.
->
-> This patch also fixes the misused BPF_TRACE_ITER in
-> check_css_task_iter_allowlist which compared bpf_prog_type with
-> bpf_attach_type.
->
-> Fixes: 9c66dc94b62ae ("bpf: Introduce css_task open-coded iterator kfuncs=
-")
 > Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
 > ---
->  kernel/bpf/verifier.c                             | 15 ++++++++++-----
->  .../selftests/bpf/progs/iters_task_failure.c      |  4 ++--
->  2 files changed, 12 insertions(+), 7 deletions(-)
+>  .../selftests/bpf/prog_tests/cgroup_iter.c    | 33 +++++++++++++++
+>  .../selftests/bpf/progs/iters_css_task.c      | 41 +++++++++++++++++++
+>  2 files changed, 74 insertions(+)
 >
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index e9bc5d4a25a1..cc79cd555337 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -11088,17 +11088,22 @@ static int process_kf_arg_ptr_to_rbtree_node(st=
-ruct bpf_verifier_env *env,
->                                                   &meta->arg_rbtree_root.=
-field);
+> diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_iter.c b/tools=
+/testing/selftests/bpf/prog_tests/cgroup_iter.c
+> index e02feb5fae97..3679687a6927 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
+> @@ -4,6 +4,7 @@
+>  #include <test_progs.h>
+>  #include <bpf/libbpf.h>
+>  #include <bpf/btf.h>
+> +#include "iters_css_task.skel.h"
+>  #include "cgroup_iter.skel.h"
+>  #include "cgroup_helpers.h"
+>
+> @@ -263,6 +264,35 @@ static void test_walk_dead_self_only(struct cgroup_i=
+ter *skel)
+>         close(cgrp_fd);
 >  }
 >
-> +/*
-> + * css_task iter allowlist is needed to avoid dead locking on css_set_lo=
-ck.
-> + * LSM hooks and iters (both sleepable and non-sleepable) are safe.
-> + * Any sleepable progs are also safe since bpf_check_attach_target() enf=
-orce
-> + * them can only be attached to some specific hook points.
-> + */
->  static bool check_css_task_iter_allowlist(struct bpf_verifier_env *env)
+> +static void test_walk_self_only_css_task(void)
+> +{
+> +       struct iters_css_task *skel =3D NULL;
+> +       int err;
+> +
+> +       skel =3D iters_css_task__open();
+> +       if (!ASSERT_OK_PTR(skel, "skel_open"))
+> +               return;
+> +
+> +       bpf_program__set_autoload(skel->progs.cgroup_id_printer, true);
+> +
+> +       err =3D iters_css_task__load(skel);
+> +       if (!ASSERT_OK(err, "skel_load"))
+> +               goto cleanup;
+> +
+> +       err =3D join_cgroup(cg_path[CHILD2]);
+> +       if (!ASSERT_OK(err, "join_cgroup"))
+> +               goto cleanup;
+> +
+> +       skel->bss->target_pid =3D getpid();
+> +       snprintf(expected_output, sizeof(expected_output),
+> +               PROLOGUE "%8llu\n" EPILOGUE, cg_id[CHILD2]);
+> +       read_from_cgroup_iter(skel->progs.cgroup_id_printer, cg_fd[CHILD2=
+],
+> +               BPF_CGROUP_ITER_SELF_ONLY, "test_walk_self_only_css_task"=
+);
+> +       ASSERT_EQ(skel->bss->css_task_cnt, 1, "css_task_cnt");
+> +cleanup:
+> +       iters_css_task__destroy(skel);
+> +}
+> +
+>  void test_cgroup_iter(void)
 >  {
->         enum bpf_prog_type prog_type =3D resolve_prog_type(env->prog);
-> -
->         switch (prog_type) {
->         case BPF_PROG_TYPE_LSM:
->                 return true;
-> -       case BPF_TRACE_ITER:
-> -               return env->prog->aux->sleepable;
-> +       case BPF_PROG_TYPE_TRACING:
-> +               return env->prog->expected_attach_type =3D=3D BPF_TRACE_I=
-TER;
-
-I think it needs to be
-if (env->prog->expected_attach_type =3D=3D BPF_TRACE_ITER)
-   return true;
-/* else: fall through to check sleepable */
-
->         default:
-> -               return false;
-> +               return env->prog->aux->sleepable;
->         }
->  }
+>         struct cgroup_iter *skel =3D NULL;
+> @@ -293,6 +323,9 @@ void test_cgroup_iter(void)
+>                 test_walk_self_only(skel);
+>         if (test__start_subtest("cgroup_iter__dead_self_only"))
+>                 test_walk_dead_self_only(skel);
+> +       if (test__start_subtest("cgroup_iter__self_only_css_task"))
+> +               test_walk_self_only_css_task();
+> +
+>  out:
+>         cgroup_iter__destroy(skel);
+>         cleanup_cgroups();
+> diff --git a/tools/testing/selftests/bpf/progs/iters_css_task.c b/tools/t=
+esting/selftests/bpf/progs/iters_css_task.c
+> index 5089ce384a1c..0974e6f44328 100644
+> --- a/tools/testing/selftests/bpf/progs/iters_css_task.c
+> +++ b/tools/testing/selftests/bpf/progs/iters_css_task.c
+> @@ -10,6 +10,7 @@
 >
-> @@ -11357,7 +11362,7 @@ static int check_kfunc_args(struct bpf_verifier_e=
-nv *env, struct bpf_kfunc_call_
->                 case KF_ARG_PTR_TO_ITER:
->                         if (meta->func_id =3D=3D special_kfunc_list[KF_bp=
-f_iter_css_task_new]) {
->                                 if (!check_css_task_iter_allowlist(env)) =
-{
-> -                                       verbose(env, "css_task_iter is on=
-ly allowed in bpf_lsm and bpf iter-s\n");
-> +                                       verbose(env, "css_task_iter is on=
-ly allowed in bpf_lsm, bpf_iter and sleepable progs\n");
->                                         return -EINVAL;
->                                 }
->                         }
-> diff --git a/tools/testing/selftests/bpf/progs/iters_task_failure.c b/too=
-ls/testing/selftests/bpf/progs/iters_task_failure.c
-> index c3bf96a67dba..6b1588d70652 100644
-> --- a/tools/testing/selftests/bpf/progs/iters_task_failure.c
-> +++ b/tools/testing/selftests/bpf/progs/iters_task_failure.c
-> @@ -84,8 +84,8 @@ int BPF_PROG(iter_css_lock_and_unlock)
->         return 0;
->  }
+>  char _license[] SEC("license") =3D "GPL";
 >
-> -SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-> -__failure __msg("css_task_iter is only allowed in bpf_lsm and bpf iter-s=
-")
-> +SEC("?fentry/" SYS_PREFIX "sys_getpgid")
+> +struct cgroup *bpf_cgroup_acquire(struct cgroup *p) __ksym;
+>  struct cgroup *bpf_cgroup_from_id(u64 cgid) __ksym;
+>  void bpf_cgroup_release(struct cgroup *p) __ksym;
+>
+> @@ -45,3 +46,43 @@ int BPF_PROG(iter_css_task_for_each, struct vm_area_st=
+ruct *vma,
+>
+>         return -EPERM;
+>  }
+> +
+> +static inline u64 cgroup_id(struct cgroup *cgrp)
+> +{
+> +       return cgrp->kn->id;
+> +}
+> +
+> +SEC("?iter/cgroup")
+> +int cgroup_id_printer(struct bpf_iter__cgroup *ctx)
+> +{
+> +       struct seq_file *seq =3D ctx->meta->seq;
+> +       struct cgroup *cgrp, *acquired;
+> +       struct cgroup_subsys_state *css;
+> +       struct task_struct *task;
+> +
+> +       cgrp =3D ctx->cgroup;
+> +
+> +       /* epilogue */
+> +       if (cgrp =3D=3D NULL) {
+> +               BPF_SEQ_PRINTF(seq, "epilogue\n");
+> +               return 0;
+> +       }
+> +
+> +       /* prologue */
+> +       if (ctx->meta->seq_num =3D=3D 0)
+> +               BPF_SEQ_PRINTF(seq, "prologue\n");
+> +
+> +       BPF_SEQ_PRINTF(seq, "%8llu\n", cgroup_id(cgrp));
+> +
+> +       acquired =3D bpf_cgroup_from_id(cgroup_id(cgrp));
 
-so that fentry/sys_foo is rejected, but fentry.s/sys_foo loads ok.
+You're doing this dance, because a plain cgrp pointer is not trusted?
+Maybe let's add
+BTF_TYPE_SAFE_RCU_OR_NULL(struct bpf_iter__cgroup) {...}
+to the verifier similar to what we do for bpf_iter__task.
 
-> +__failure __msg("css_task_iter is only allowed in bpf_lsm, bpf_iter and =
-sleepable progs")
->  int BPF_PROG(iter_css_task_for_each)
->  {
->         u64 cg_id =3D bpf_get_current_cgroup_id();
+After if (cgrp =3D=3D NULL) check the pointer is safe to iterate on.
+
+> +       if (!acquired)
+> +               return 0;
+> +       css =3D &acquired->self;
+> +       css_task_cnt =3D 0;
+> +       bpf_for_each(css_task, task, css, CSS_TASK_ITER_PROCS) {
+> +               if (task->pid =3D=3D target_pid)
+> +                       css_task_cnt++;
+> +       }
+> +       bpf_cgroup_release(acquired);
+> +       return 0;
+> +}
 > --
 > 2.20.1
 >
