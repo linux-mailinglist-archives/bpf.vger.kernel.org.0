@@ -1,146 +1,107 @@
-Return-Path: <bpf+bounces-12943-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12944-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C82A77D2332
-	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 15:34:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A64EA7D2399
+	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 17:45:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A44A2814DB
-	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 13:34:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60CE2281596
+	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 15:45:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D77B6101D4;
-	Sun, 22 Oct 2023 13:34:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8718A107AC;
+	Sun, 22 Oct 2023 15:45:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="G8WkM0iY"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD23E29AF
-	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 13:34:40 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A59DC;
-	Sun, 22 Oct 2023 06:34:38 -0700 (PDT)
-Received: from fsav415.sakura.ne.jp (fsav415.sakura.ne.jp [133.242.250.114])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 39MDYOVY016439;
-	Sun, 22 Oct 2023 22:34:24 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav415.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav415.sakura.ne.jp);
- Sun, 22 Oct 2023 22:34:24 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav415.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 39MDYNUN016436
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Sun, 22 Oct 2023 22:34:24 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <c588ca5d-c343-4ea2-a1f1-4efe67ebb8e3@I-love.SAKURA.ne.jp>
-Date: Sun, 22 Oct 2023 22:34:20 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 122FE33D7
+	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 15:45:42 +0000 (UTC)
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E47A7
+	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 08:45:39 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c9a1762b43so20188915ad.1
+        for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 08:45:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1697989538; x=1698594338; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=e8nUSkrqP1LIry5a+Vy86unFLe045AhC2A2H9e3CWTY=;
+        b=G8WkM0iYyUz4A+xgnVAPkFeIW5nGwIPQKAnmAjBw6V6yutEDoUi0nOfA8MzN4zu+Wd
+         615IWWgpK8cZOAOySQISXzMmPSTnzlBT9kVIAYYBRaxceT2BSefFKxs+9/At2xfN4ImY
+         eKjLkr+t5mB5wRfC/OWQCwHZZiNJXTaMdziSAQ3Kj7UuHdS0q8zKCbP/ity4uMnJmIsJ
+         3qx1YKKA2rNkWFPiU0p0eIRsQdufnrFBOdtlnCfi7Y23PIl+8q5zbPGw6J46WLNmA86k
+         FDBtbADj+Py/d68puev/vbVa8FQksgP4TdgiVE1cA5ILFY85yQ/TWTgnSBNVXGvZC34r
+         i51w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697989538; x=1698594338;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e8nUSkrqP1LIry5a+Vy86unFLe045AhC2A2H9e3CWTY=;
+        b=qMLcevqo9xg1pHwtnbVAVCd9HXpN92WOqbgx7NySVvYM0NoAdraxh9yf7+FLtTYCtY
+         4hZb4UTp7UuR5kFyQM6MLyanu36PVlbd/4mewmkqzlnAlp26fjDmTK6oiiaWr3/1dEwr
+         rMGMQkjF73RsMy1QSscSlhYqA/Yl38/IYQ8NaErrcaZUuU5BbX+mmFHDDdBZHZaZTTRO
+         8KzEp3ltrtmUcRGr9Jzn7u5LPfVUkKBqa4g+QARvfOzNL/B0L+A3BULX3f/+vhZnDIJF
+         rZCWOPJHOymdfoqvCuUd9S5HS/WNynvbQAA/6phVH5VsoS3AbVu8x3nha+JobCT8sU7Y
+         DaTw==
+X-Gm-Message-State: AOJu0YwQGe/KdjwOKoOXc59QA6xU4Mxbq9pk5cgs3xNrKYTVEh+TPUEg
+	jZ0tNt85+2w8NveS7l7g7tZT2UZmL99SxI5rJsDEiQ==
+X-Google-Smtp-Source: AGHT+IGdS2sMioBYj3fLI0k16tMn7gnOe0bCjofVOm+8Vo29PFPR57g2Ntavy8LDDjMGRpyfL0VrFw==
+X-Received: by 2002:a17:902:e5c5:b0:1c1:ecff:a637 with SMTP id u5-20020a170902e5c500b001c1ecffa637mr6272338plf.15.1697989538362;
+        Sun, 22 Oct 2023 08:45:38 -0700 (PDT)
+Received: from n37-019-243.byted.org ([180.184.49.4])
+        by smtp.gmail.com with ESMTPSA id l2-20020a170902d34200b001bbdd44bbb6sm4551996plk.136.2023.10.22.08.45.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Oct 2023 08:45:38 -0700 (PDT)
+From: Chuyi Zhou <zhouchuyi@bytedance.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@kernel.org,
+	Chuyi Zhou <zhouchuyi@bytedance.com>
+Subject: [PATCH bpf-next 0/2] Relax allowlist for open-coded css_task iter
+Date: Sun, 22 Oct 2023 23:45:25 +0800
+Message-Id: <20231022154527.229117-1-zhouchuyi@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/2] LSM: Allow dynamically appendable LSM modules.
-Content-Language: en-US
-To: KP Singh <kpsingh@kernel.org>
-Cc: linux-security-module <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Paul Moore <paul@paul-moore.com>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <cc8e16bb-5083-01da-4a77-d251a76dc8ff@I-love.SAKURA.ne.jp>
- <CACYkzJ5k7oYxFgWp9bz1Wmp3n6LcU39Mh-HXFWTKnZnpY-Ef7w@mail.gmail.com>
- <153e7c39-d2e2-db31-68cd-cb05eb2d46db@I-love.SAKURA.ne.jp>
- <CACYkzJ79fvoQW5uqavdLV=N8zw6uern8m-6cM44YYFDhJF248A@mail.gmail.com>
- <f249c8f0-e053-066b-edc5-59a1a00a0868@I-love.SAKURA.ne.jp>
- <CACYkzJ7kzXGcjRdyaOWCaigPWcKXU7_KW_bFg9ptrnwAeJ2AgQ@mail.gmail.com>
- <d060365e-7c87-451e-a92a-edb4904e77a7@I-love.SAKURA.ne.jp>
- <CACYkzJ7S00K8f-H7EdDz3CFyxbfoQ1zQXDj7oWpY3dkDjFb0LA@mail.gmail.com>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <CACYkzJ7S00K8f-H7EdDz3CFyxbfoQ1zQXDj7oWpY3dkDjFb0LA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2023/10/22 0:20, KP Singh wrote:
->> Since printk() is not callable, most of functions which TOMOYO/AKARI/CaitSith-like
->> programs use seem to be not callable.
-> 
-> It seems like you are trying to 1:1 re-implement an existing LSM's
-> code base in BPF,
+Hi,
+The patchset aims to relax the allowlist for open-coded css_task iter
+suggested by Alexei[1].
 
-Yes, that is the goal. Since you said
+Please see individual patches for more details. And comments are always
+welcome.
 
-  "Until I hear the real limitations of using BPF, it's a NAK from me."
+Patch summary:
+ * Patch #1: Relax the allowlist and let css_task iter can be used in
+   bpf iters and any sleepable progs.
+ * Patch #2: Add a test in cgroup_iters.c which demonstrates how
+   css_task iters can be combined with cgroup iter.
 
-at https://lkml.kernel.org/r/CACYkzJ5k7oYxFgWp9bz1Wmp3n6LcU39Mh-HXFWTKnZnpY-Ef7w@mail.gmail.com ,
-I want to know whether it is possible to re-implement TOMOYO LSM as an eBPF program.
+link[1]:https://lore.kernel.org/lkml/CAADnVQKafk_junRyE=-FVAik4hjTRDtThymYGEL8hGTuYoOGpA@mail.gmail.com/
 
-If it is possible to re-implement TOMOYO LSM as an eBPF program, my desire to
-allow appending LKM-based LSMs after boot will be significantly reduced, which
-in turn will become my ACK to "security: Count the LSMs enabled at compile time"
-in your "Reduce overhead of LSMs with static calls" proposal.
+Chuyi Zhou (2):
+  bpf: Relax allowlist for css_task iter
+  selftests/bpf: Add test for css_task iter combining with cgroup iter
 
->                   that's surely not going to work. You need to think
-> about the use-case / policy you are trying to implement and then write
-> the code in BPF independently. Please share concrete examples of the
-> policy you want to implement and we try to help you. Asking for
-> features where you want a 1:1 parity with kernel code without concrete
-> policy use-cases is not going to enable us to help you.
+ kernel/bpf/verifier.c                         | 15 ++++---
+ .../selftests/bpf/prog_tests/cgroup_iter.c    | 33 +++++++++++++++
+ .../selftests/bpf/progs/iters_css_task.c      | 41 +++++++++++++++++++
+ .../selftests/bpf/progs/iters_task_failure.c  |  4 +-
+ 4 files changed, 86 insertions(+), 7 deletions(-)
 
-The code which I want to re-implement using eBPF is all of security/tomoyo/ directory.
-
-
-
->> I couldn't build tools/testing/selftests/bpf/progs/lsm.c with printk() added.
->> Sending to /sys/kernel/debug/tracing/trace_pipe via bpf_printk() is not enough for
->> reporting critical/urgent problems. Synchronous operation is important.
-> 
-> you cannot call any function from within BPF. If you need to call
-> something they need to be exported as a kfunc (you need to send
-> patches on the mailing list for it). This is because we want to ensure
-> that BPF programs can be verified.
-
-TOMOYO needs to be able to call d_absolute_path() in order to calculate
-requested pathname, call call_usermodehelper(UMH_WAIT_PROC) in order to load
-policy upon activation, call get_mm_exe_file() in order to know the pathname
-of executable, get_user_pages_remote() in order to examine argv/envp passed to
-execve() system call etc. etc. in addition to performing complicated comparison
-including loop like https://elixir.bootlin.com/linux/v6.6-rc6/source/security/tomoyo/group.c#L120 .
-
-If any of above requirements cannot be satisfied in eBPF, that will become
-the real limitations of using BPF.
-
-
-
->> I was finally able to build and load tools/testing/selftests/bpf/progs/lsm.c and
->> tools/testing/selftests/bpf/prog_tests/test_lsm.c , and I found fatal limitation
-> 
-> Programs can also be pinned on /sys/bpf similar to maps, this allows
-> them to persist even after the loading program goes away.
-> 
-> Here's an example of a pinned program:
-> 
-> https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/bpf/flow_dissector_load.c#L39
-> 
->> that the program registered is terminated when the file descriptor which refers to
->> tools/testing/selftests/bpf/lsm.bpf.o is closed (due to e.g. process termination).
->> That is, eBPF programs are not reliable/robust enough to implement TOMOYO/AKARI/
->> CaitSith-like programs. Re-registering when the file descriptor is closed is racy
-> 
-> Not needed as programs can be pinned too.
-> 
-
-That's good but not enough. We will need to forbid unlink/umount because detach_program()
-says "/* To unpin, it is necessary and sufficient to just remove this dir */". Hooking
-security_inode_unlink()/security_sb_umount() and return an error if the requested file was
-the eBPF version of TOMOYO (or maps etc. related to the eBPF version of TOMOYO) or the
-requested filesystem was sysfs might be able to forbid "unpin" operation... That would be
-the next step to check if re-implementing all of security/tomoyo/ directory using eBPF
-is possible...
+-- 
+2.20.1
 
 
