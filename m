@@ -1,209 +1,264 @@
-Return-Path: <bpf+bounces-12921-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12922-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA98D7D2104
-	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 06:43:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3D397D210A
+	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 07:00:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C802B1C209E7
-	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 04:43:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2446528175D
+	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 05:00:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A302ECD;
-	Sun, 22 Oct 2023 04:43:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80790EDA;
+	Sun, 22 Oct 2023 05:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lCl+gpCc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Su7E2SO7"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BC3B36A
-	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 04:43:00 +0000 (UTC)
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34155B4
-	for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 21:42:59 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99de884ad25so326584666b.3
-        for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 21:42:59 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2983136A
+	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 04:59:58 +0000 (UTC)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F27EDA;
+	Sat, 21 Oct 2023 21:59:57 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53e84912038so3119925a12.1;
+        Sat, 21 Oct 2023 21:59:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697949777; x=1698554577; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697950795; x=1698555595; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=slgTn7f6Evho6VfvPT/cmrwLs1CTQFl+4z80cmbj4a4=;
-        b=lCl+gpCcE3LXbTxF24SkTJLKZonYFfXvDifh3A56AWf3tA4wAvjWbJbFHlww3qvXwi
-         mmBuOEhQhVoXM+cwCuiLiOqAkiqVWKrtPaGZwvNkraUXurMj+6aYCfEMO0QqTiVgMeA9
-         IRS2tKszu+Tq9ssntLOo3rXizCrwHeL/ejeB5ff1LIiRwksFTsAXCSlnKJGZU5y+NBZc
-         DYybthMKFP91TEFDU5S+Cu/QZcZwj3stWDLNJuGa9gSeS4baFAtt3jq7QCcoXiN1jbRz
-         pH6fKclU4jwcQ2EzH62orXkySYQCw1jOt4Umf8Us+IKFWHjAvFcI568ELcAFatbCeCpx
-         38TQ==
+        bh=XBySzR+l1+gpl5uLMz6UdtdL0sUeapQTO47B6XYiJBQ=;
+        b=Su7E2SO73F9YgURqDnjV1kOTpHiJLfnjyMelXzf+2VkrnWyW33GMAZPxwwGgKeFUXU
+         KrwB4gtyrQ1ObfXY5QdrmcKFl8FCB+tFUvLPdImlmrdvOTXgJ0ZopKo/cmHkhVNfDxNb
+         XuZvU8gcY3N1mqPpMydvqFbnbHUfBweu+Zdkda7Fwss/BJyTJZDJOJF6J197balKL0eT
+         GeYPu9J49StjRkdhFzrBDZ18Zjt1wEO88LGHglvlIICyUi1Paq5FGEd+itlDAGFWppqQ
+         CgjRu4cgHnbtsFUK5SzxopW9vy/eYNCUKn55r5ZZCqa5U3nzPGQtI484DSFzLo7Elw7B
+         AdsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697949777; x=1698554577;
+        d=1e100.net; s=20230601; t=1697950795; x=1698555595;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=slgTn7f6Evho6VfvPT/cmrwLs1CTQFl+4z80cmbj4a4=;
-        b=GjQKPT59o6KEmwBKFzz9uPgoTzhR4hSU7HyOF3M6pyn+/X/leJBQJg7NUdkjikMf4a
-         4NNkHMOnSFteHnCaRaksF9lwsXOPwtyP4u2f+6eZG7e/CtflXaQxW5Sosp1O4KN7kx9u
-         CVpIcCcUHj8jPWqh5u7+4rZw3LDC9zTI5Om6zDsnKGhcUvHWJ7FrVGCSSlbhUxEmaaYi
-         qBXK5efHOPdAqEzi/9PXhQptjgOD2NTAJAj/a5UfGO29lcmWXpaD64bAOLsRQ3ELHkIu
-         eqCSr1s3wwaR2YTHxJgv63eKP2ekX6FstVecz7svvjlICuA4yCC80DaFzBb8f6OKPsoR
-         8QsA==
-X-Gm-Message-State: AOJu0YyvoKdmYVMACMlvdARpKS6bLR3fVugERxILGSQp6MdtUhp27FSR
-	lnw2T7WRhcW5yeG9je4QzKlUGawcN7lS3by6BLQ=
-X-Google-Smtp-Source: AGHT+IG/kyFPf1NMsmfhCaoQTVzT9znnlMB3pxFURjYytgao4fKaVPbRAi7/NaWXgqd1jCn/9y1YzSbd71H7ipZLVoM=
-X-Received: by 2002:a17:907:25c3:b0:9bf:a614:9a2e with SMTP id
- ae3-20020a17090725c300b009bfa6149a2emr4920990ejc.61.1697949777314; Sat, 21
- Oct 2023 21:42:57 -0700 (PDT)
+        bh=XBySzR+l1+gpl5uLMz6UdtdL0sUeapQTO47B6XYiJBQ=;
+        b=qMlYxiMc+DR/rWx7LhlUfxKuYoF24oVzwP9DPutWDiSrMVWUmnDdRTA4IUXY2fa3f6
+         U81Q8/QsoDHu4Nwk0ks+Re+MHu/jHm0EWWnxd0cnBKcC7dfCQe60yxZZ8frXH9LTkKQO
+         pA7jNgJWuJFcVcxgCzyqv2cWDdl9IO5rOMTS8kK8TmBg1KZvFgJaM1aweQMAamm6DAp9
+         N+90QtlS6z09CSba48k9WyeU7LAjnNSKj9tJObwHqKTmceBbq8Ld0xeRKFCdXI3ywqXI
+         +4EAw8cJm9ifXnJ6CQhc2SybIrd+2z/YhNfUwYjyZKL/mzcoELdBZt6bC5LuRLT8xHMQ
+         nB4A==
+X-Gm-Message-State: AOJu0YwWAEsaOGTev5XzDKv4vIQeU6kzVS782ykevW7GAnl/i/z+jR48
+	mxPxzId5jJjbJ2MC51FVDs++YTmdlQ23mM3ib/o=
+X-Google-Smtp-Source: AGHT+IGMKsonpyWMlgeANbElGK30CcxRJYitihsHXOD6l1tgr6e0cQqqaoebSrSchWN9K787aJOIdGmHNFIzjl0BrfI=
+X-Received: by 2002:a17:906:ee8a:b0:9b7:2a13:160c with SMTP id
+ wt10-20020a170906ee8a00b009b72a13160cmr4126038ejb.69.1697950795485; Sat, 21
+ Oct 2023 21:59:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231019042405.2971130-1-andrii@kernel.org> <20231019042405.2971130-8-andrii@kernel.org>
- <ZTDbGWHu4CnJYWAs@u94a> <ZTDgIyzBX9oZNeFw@u94a> <CAEf4BzYgJR6SAjbvd0uZ6w8D37Sy=Wjd2TROOGEAZDiEq7xb2g@mail.gmail.com>
- <1DA1AC52-6E2D-4CDA-8216-D1DD4648AD55@cs.rutgers.edu>
-In-Reply-To: <1DA1AC52-6E2D-4CDA-8216-D1DD4648AD55@cs.rutgers.edu>
+References: <20231020155842.130257-1-tao.lyu@epfl.ch>
+In-Reply-To: <20231020155842.130257-1-tao.lyu@epfl.ch>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Sat, 21 Oct 2023 21:42:46 -0700
-Message-ID: <CAEf4BzbFhA585gSN1YfaDaeEmmUvWSdpMY605fmV_RvSQ7+xeQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 7/7] selftests/bpf: BPF register range bounds tester
-To: Srinivas Narayana Ganapathy <sn624@cs.rutgers.edu>
-Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Langston Barrett <langston.barrett@gmail.com>, 
-	Srinivas Narayana <srinivas.narayana@rutgers.edu>, Santosh Nagarakatte <sn349@cs.rutgers.edu>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, "martin.lau@kernel.org" <martin.lau@kernel.org>, 
-	"kernel-team@meta.com" <kernel-team@meta.com>, 
-	Harishankar Vishwanathan <harishankar.vishwanathan@rutgers.edu>, 
-	Matan Shachnai <m.shachnai@rutgers.edu>, Paul Chaignon <paul@isovalent.com>
+Date: Sat, 21 Oct 2023 21:59:44 -0700
+Message-ID: <CAEf4BzaqOt8DyB781geXYfrosmgQCkzDOCOH8WBVmCAPs+wQBw@mail.gmail.com>
+Subject: Re: [PATCH] Incorrect backtracking for load/store or atomic ops
+To: Tao Lyu <tao.lyu@epfl.ch>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org, 
+	security@kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, sanidhya.kashyap@epfl.ch, 
+	mathias.payer@nebelwelt.net, meng.xu.cs@uwaterloo.ca, 
+	kartikeya.dwivedi@epfl.ch
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 20, 2023 at 10:37=E2=80=AFAM Srinivas Narayana Ganapathy
-<sn624@cs.rutgers.edu> wrote:
+On Fri, Oct 20, 2023 at 9:06=E2=80=AFAM Tao Lyu <tao.lyu@epfl.ch> wrote:
 >
-> Hi all,
+> Hi,
 >
-> Thanks, @Shung-Hsi, for bringing up this conversation about
-> integrating formal verification approaches into the BPF CI and testing.
+> I found the backtracking logic of the eBPF verifier is flawed
+> when meeting 1) normal load and store instruction or
+> 2) atomic memory instructions.
 >
-> > On 19-Oct-2023, at 1:34 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com>=
- wrote:
-> >
-> > On Thu, Oct 19, 2023 at 12:52=E2=80=AFAM Shung-Hsi Yu <shung-hsi.yu@sus=
-e.com> wrote:
-> >>
-> >> On Thu, Oct 19, 2023 at 03:30:33PM +0800, Shung-Hsi Yu wrote:
-> >>> On Wed, Oct 18, 2023 at 09:24:05PM -0700, Andrii Nakryiko wrote:
-> >>>> Add tests that validate correctness and completeness of BPF verifier=
-'s
-> >>>> register range bounds.
-> >>>
-> >>> Nitpick: in abstract-interpretation-speak, completeness seems to mean
-> >>> something different. I believe what we're trying to check here is
-> >>> soundness[1], again, in abstraction-interpretation-speak), so using
-> >>> completeness here may be misleading to some. (I'll leave explanation =
-to
-> >>> other that understand this concept better than I do, rather than maki=
-ng an
-> >>> ill attempt that would probably just make things worst)
-> >>>
-> >>>> The main bulk is a lot of auto-generated tests based on a small set =
-of
-> >>>> seed values for lower and upper 32 bits of full 64-bit values.
-> >>>> Currently we validate only range vs const comparisons, but the idea =
-is
-> >>>> to start validating range over range comparisons in subsequent patch=
- set.
-> >>>
-> >>> CC Langston Barrett who had previously send kunit-based tnum checks[2=
-] a
-> >>> while back. If this patch is merged, perhaps we can consider adding
-> >>> validation for tnum as well in the future using similar framework.
-> >>>
-> >>> More comments below
-> >>>
-> >>>> When setting up initial register ranges we treat registers as one of
-> >>>> u64/s64/u32/s32 numeric types, and then independently perform condit=
-ional
-> >>>> comparisons based on a potentially different u64/s64/u32/s32 types. =
-This
-> >>>> tests lots of tricky cases of deriving bounds information across
-> >>>> different numeric domains.
-> >>>>
-> >>>> Given there are lots of auto-generated cases, we guard them behind
-> >>>> SLOW_TESTS=3D1 envvar requirement, and skip them altogether otherwis=
-e.
-> >>>> With current full set of upper/lower seed value, all supported
-> >>>> comparison operators and all the combinations of u64/s64/u32/s32 num=
-ber
-> >>>> domains, we get about 7.7 million tests, which run in about 35 minut=
-es
-> >>>> on my local qemu instance. So it's something that can be run manuall=
-y
-> >>>> for exhaustive check in a reasonable time, and perhaps as a nightly =
-CI
-> >>>> test, but certainly is too slow to run as part of a default test_pro=
-gs run.
-> >>>
-> >>> FWIW an alternative approach that speeds things up is to use model ch=
-eckers
-> >>> like Z3 or CBMC. On my laptop, using Z3 to validate tnum_add() agains=
-t *all*
-> >>> possible inputs takes less than 1.3 seconds[3] (based on code from [1=
-]
-> >>> paper, but I somehow lost the link to their GitHub repository).
-> >>
-> >> Found it. For reference, code used in "Sound, Precise, and Fast Abstra=
-ct
-> >> Interpretation with Tristate Numbers"[1] can be found at
-> >> https://github.com/bpfverif/tnums-cgo22/blob/main/verification/tnum.py
-> >>
-> >> Below is a truncated form of the above that only check tnum_add(), req=
-uires
-> >> a package called python3-z3 on most distros:
-> >
-> > Great! I'd be curious to see how range tracking logic can be encoded
-> > using this approach, please give it a go!
-> >
+> # Normal load and store
 >
-> We have some recent work that applies formal verification approaches
-> to the entirety of range tracking in the eBPF verifier. We posted a
-> note to the eBPF mailing list about it sometime ago:
+> Here, I show one case about the normal load and store instructions,
+> which can be exploited to achieve arbitrary read and write with two requi=
+rements:
+> 1) The uploading program should have at least CAP_BPF, which is required =
+for most eBPF applications.
+> 2) Disable CPU mitigations by adding "mitigations=3Doff" in the kernel bo=
+oting command line. Otherwise,
+> the Spectre mitigation in the eBPF verifier will prevent exploitation.
 >
-> [1] https://lore.kernel.org/bpf/SJ2PR14MB6501E906064EE19F5D1666BFF93BA@SJ=
-2PR14MB6501.namprd14.prod.outlook.com/T/#u
+>                                    1: r3 =3D r10 (stack pointer)
+>                                    3:           if cond
+>                                                  /           \
+>                                                /                \
+>         4: *(u64 *)(r3 -120) =3D 200      6: *(u64 *)(r3 -120) =3D arbitr=
+ary offset to r2
+>                  verification state 1                  verification state=
+ 2 (prune point)
+>                                               \                  /
+>                                                 \              /
+>                                       7:  r6 =3D *(u64 *)(r1 -120)
+>                                                          ...
+>                                     17:    r7 =3D a map pointer
+>                                     18:            r7 +=3D r6
+>                          // Out-of-bound access from the right side path
+>
+> Give an eBPF program (tools/testing/selftests/bpf/test_precise.c)
+> whose simplified control flow graph looks like the above.
+> When the verifier goes through the first (left-side) path and reaches ins=
+n 18,
+> it will backtrack on register 6 like below.
+>
+> 18: (0f) r7 +=3D r6
+> mark_precise: frame0: last_idx 18 first_idx 17 subseq_idx -1
+> mark_precise: frame0: regs=3Dr6 stack=3D before 17: (bf) r7 =3D r0
+> ...
+> mark_precise: frame0: regs=3Dr6 stack=3D before 7: (79) r6 =3D *(u64 *)(r=
+3 -120)
+>
+> However, the backtracking process is problematic when it reaches insn 7.
+> Insn 7 is to load a value from the stack, but the stack pointer is repres=
+ented by r3 instead of r10.
+> ** In this case, the verifier (as shown below) will reset the precision o=
+n r6 and not mark the precision on the stack. **
+> Afterward, the backtracking finishes without annotating any registers in =
+any verifier states.
+>
+>     else if (class =3D=3D BPF_LDX) {
+>         if (!bt_is_reg_set(bt, dreg))
+>             return 0;
+>         bt_clear_reg(bt, dreg);
+>         if (insn->src_reg !=3D BPF_REG_FP)
+>             return 0;
+>         ...
+>    }
+>
+> Finally, when the second (left-side) path reaches insn 7 again,
+> it will compare the verifier states with the previous one.
+> However, it realizes these two states are equal because no precision is o=
+n r6,
+> thus the eBPF program an easily pass the verifier
+> although the second path contains an invalid access offset.
+> We have successfully exploited this bug for getting the root privilege.
+> If needed, we can share the exploitation.
+> BTW, when using the similar instructions in sub_prog can also trigger an =
+assertion in the verifier:
+> "[ 1510.165537] verifier backtracking bug
+> [ 1510.165582] WARNING: CPU: 2 PID: 382 at kernel/bpf/verifier.c:3626 __m=
+ark_chain_precision+0x4568/0x4e50"
+>
+>
+>
+> IMO, to fully patch this bug, we need to know whether the insn->src_reg i=
+s an alias of BPF_REG_FP.
+
+Yes!
+
+> However, it might need too much code addition.
+
+No :) I don't think it's a lot of code. I've been meaning to tackle
+this for a while, but perhaps the time is now.
+
+The plan is to use jmp_history to record an extra flags for some
+instructions (even if they are not jumps). Like in this case, we can
+remember for LDX and STX instructions that they were doing register
+load/spill, and take that into account during backtrack_insn() without
+having to guess based on r10.
+
+I have part of this ready locally, I'll try to finish this up in a
+next week or two. Stay tuned (unless you want to tackle that
+yourself).
+
+> Or we just do not clear the precision on the src register.
+>
+> # Atomic memory instructions
+>
+> Then, I show that the backtracking on atomic load and store is also flawe=
+d.
+> As shown below, when the backtrack_insn() function in the verifier meets =
+store instructions,
+> it checks if the stack slot is set with precision or not. If not, just re=
+turn.
+>
+>             if (!bt_is_slot_set(bt, spi))
+>                 return 0;
+>             bt_clear_slot(bt, spi);
+>             if (class =3D=3D BPF_STX)
+>                 bt_set_reg(bt, sreg);
+>
+> Assume we have an atomic_fetch_or instruction (tools/testing/selftests/bp=
+f/verifier/atomic_precision.c) shown below.
+>
+> 7: (4c) w7 |=3D w3
+> mark_precise: frame1: last_idx 7 first_idx 0 subseq_idx -1
+> mark_precise: frame1: regs=3Dr7 stack=3D before 6: (c3) r7 =3D atomic_fet=
+ch_or((u32 *)(r10 -120), r7)
+> mark_precise: frame1: regs=3Dr7 stack=3D before 5: (bf) r7 =3D r10
+> mark_precise: frame1: regs=3Dr10 stack=3D before 4: (7b) *(u64 *)(r3 -120=
+) =3D r1
+> mark_precise: frame1: regs=3Dr10 stack=3D before 3: (bf) r3 =3D r10
+> mark_precise: frame1: regs=3Dr10 stack=3D before 2: (b7) r1 =3D 1000
+> mark_precise: frame1: regs=3Dr10 stack=3D before 0: (85) call pc+1
+> BUG regs 400
+>
+> Before backtracking to it, r7 has already been marked as precise.
+> Since the value of r7 after atomic_fecth_or comes from r10-120,
+> it should propagate the precision to r10-120.
+> However, because the stack slot r10-120 is not marked,
+> it doesn't satisfy bt_is_slot_set(bt, spi) condition shown above.
+> Finally, it just returns without marking r10-120 as precise.
+
+this seems like the same issue with not recognizing stack access
+through any other register but r10?
+
+Or is there something specific to atomic instructions here? I'm not
+very familiar with them, so I'll need to analyse the code first.
+
+>
+> This bug can lead to the verifier's assertion as well:
+> "[ 1510.165537] verifier backtracking bug
+> [ 1510.165582] WARNING: CPU: 2 PID: 382 at kernel/bpf/verifier.c:3626 __m=
+ark_chain_precision+0x4568/0x4e50"
+>
+> I've attached the patch for correctly propagating the precision on atomic=
+ instructions.
+> But it still can't solve the problem that the stack slot is expressed wit=
+h other registers instead of r10.
+
+I can try to solve stack access through non-r10, but it would be very
+useful if you could provide tests that trigger the above situations
+you described. Your test_precise.c test below is not the right way to
+add tests, it adds a new binary and generally doesn't fit into
+existing set of tests inside test_progs. Please see
+progs/verifier_xadd.c and prog_tests/verifier.c and try to convert
+your tests into that form (you also will be able to use inline
+assembly instead of painful BPF_xxx() instruction macros).
+
+Thanks.
+
+>
+> Signed-off-by: Tao Lyu <tao.lyu@epfl.ch>
+> ---
+>  kernel/bpf/verifier.c                         |  58 +++++-
+>  tools/testing/selftests/bpf/Makefile          |   6 +-
+>  tools/testing/selftests/bpf/test_precise.c    | 186 ++++++++++++++++++
+>  .../selftests/bpf/verifier/atomic_precision.c |  19 ++
+>  4 files changed, 263 insertions(+), 6 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/test_precise.c
+>  create mode 100644 tools/testing/selftests/bpf/verifier/atomic_precision=
+.c
 >
 
-Oh, I totally missed this, as I just went on a long vacation a few
-days before that and declared email bankruptcy afterwards. I'll try to
-give it a read, though I see lots of math symbols there and make no
-promises ;)
-
-> Our paper, also posted on [1], appeared at Computer Aided Verification (C=
-AV)=E2=80=9923.
->
-> [2] https://people.cs.rutgers.edu/~sn624/papers/agni-cav23.pdf
->
-> Together with @Paul Chaignon and @Harishankar Vishwanathan (CC'ed), we
-> are working to get our tooling into a form that is integrable into BPF
-> CI. We will look forward to your feedback when we post patches.
-
-If this could be integrated in a way that we can regularly run this
-and validate latest version of verifier, that would be great. I have a
-second part of verifier changes coming up that extends range tracking
-logic further to support range vs range (as opposed to range vs const
-that we do currently) comparisons and is_branch_taken, so having
-independent and formal verification of these changes would be great!
-
->
-> Thanks,
->
-> --
-> Srinivas
-> The fastest algorithm can frequently be replaced by one that is almost as=
- fast and much easier to understand.
->
+[...]
 
