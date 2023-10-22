@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-12911-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12914-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43E707D2098
-	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 03:09:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1C7D7D209A
+	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 03:09:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D84AB20F04
-	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 01:09:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DFDFAB2130F
+	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 01:09:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39AA0805;
-	Sun, 22 Oct 2023 01:08:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39115A35;
+	Sun, 22 Oct 2023 01:09:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zd3uIjXX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J12eYCOp"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E893A44
-	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 01:08:53 +0000 (UTC)
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE724D52
-	for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 18:08:50 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-98377c5d53eso301385866b.0
-        for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 18:08:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9608FA44
+	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 01:08:56 +0000 (UTC)
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194F1D5D
+	for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 18:08:52 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9becde9ea7bso678568666b.0
+        for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 18:08:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697936929; x=1698541729; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697936930; x=1698541730; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PCwj7Qy6Jj4YA+gpp8/oL0LXado4ZTkzasPvZuyFUWI=;
-        b=Zd3uIjXXalAlGzyjYqIqeybp9y9hz2rJRz6I1xUuMPr2CK5w68CATQnZmXBbBtRZBp
-         BHBZMfzJ6wChRHXwhn2ST532fpqj4W9tswe2YKmfsRX9oK4AYRuSVzIgULAa3C1M52fa
-         6oKJhwuv7wakn46NEnfyyQx+AkJ/VYjCNFpdDl99dZyYskho9+3RAyUGS09gqogoFv0p
-         SeRapLWu0AQiuzhb6Y+mFIuHKycW0OrpqA4dc9Hhzw9piBmcc+fXBC5mPyc+0bLSsvfe
-         9Pqna53HpOccWHMCVzBVudf0Wz/wEcK9tg7j7k+uy8BVvs8GqIB5K5Ep3nyOqqMySqXI
-         B4Nw==
+        bh=RZyBE1xGiYxngFZra2rd6pwnEz/jgqgKVe3QP8nCReQ=;
+        b=J12eYCOpqVra4CWqwjhDZ/XjtNmzg3BOmiUDz6esf9EdiZvoBv/LMrDfaVGrOril/o
+         QDOurP38uOyPhPa+XGaQVFgolO9akDC19EmtLzxK5QPS+cZH1HMANfcr5MLmG5Ph7fx/
+         L/dYnOHtF0gcAg2nX5G+napJakmOwlsZSYOHFF+kXtXLsslVRr/DCrFeqyw/N0ukePlB
+         nkP3N6Lw47XbpyecqfPu+DaZ5aVg5muTrfonapBo40CNFjk574PCUCS4ktfa3r0uL90o
+         +0Xy2aAb/WD0+cSubTlxMHpNQ1HKTBjR0ifqi2CB+qO3tdHMMxSyogxBmHmCZHS48m6b
+         nIjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697936929; x=1698541729;
+        d=1e100.net; s=20230601; t=1697936930; x=1698541730;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PCwj7Qy6Jj4YA+gpp8/oL0LXado4ZTkzasPvZuyFUWI=;
-        b=PQBSJ2tzh5HtQhwnXTEOWaHmXT6RHaRtYGXOAlzLmgGelDjKOQmnleKzNqTRvN9v16
-         7wUP6dQirHKYRk1Pmed/9OSAePxrlKmHxszmpQmMiWJJoi235xIyTiLMW2B5O7ffznaE
-         yBtTL08yi2US67BiC2Ze3JmNHiljpZ0kCRNF3HkpQ7+WcCmiH1h3nOj6ZZNP4H91Uz9X
-         UEC6Mlv1EKlzLsR4d0jOPKwJrI9uoJNRXR7uSFL8JMuWft+ee5eoM4qGDGDzZB2XchrM
-         qbhRwI31L+AD2JTKViFZNSAlySSIj6IICYegXcefFnFCAOvmOIZkU4puyP2zScp36M88
-         lA3A==
-X-Gm-Message-State: AOJu0Yyof7lJWsv+ldkFN31qgWNbOhWMEW7iZU99t47TmQ7HVlHMwqcD
-	4k6luccTu5xHYFtJz6fwdLCvqkUzNaG59I82
-X-Google-Smtp-Source: AGHT+IHjvq5i0Fl7DSh4lRSmXrAxjCzLL2gqF5GD7guZpf1a5AvYqPgPC+cDlpVQOxT8ug4DqOgXpA==
-X-Received: by 2002:a17:907:3688:b0:9ae:5db5:149 with SMTP id bi8-20020a170907368800b009ae5db50149mr3616361ejc.35.1697936928800;
-        Sat, 21 Oct 2023 18:08:48 -0700 (PDT)
+        bh=RZyBE1xGiYxngFZra2rd6pwnEz/jgqgKVe3QP8nCReQ=;
+        b=Fu9TwJY1otMwzmjT4vWpZ6EAwh6MT4EB2FeSv4eAZodItE1ddZH9QMXKFaHwipkuff
+         Nxx+04NYTt/3dVhHkox2MyzG6c0239jYzj9lRZpaHmFarr7ydBY23XFjysGrifiDJPvH
+         SZ9y61k+arkq8zyCycXkaPx4CK8Oty3cXrzPUdBxSReSsuARAbiAMrFSS8BXnqRZeER4
+         DF1DgjiHw9o+dTbm1TnYJY9DZ6UP/7n67PtCl0TUx12hF/Mi8oGOliBsgTlYKygTCnrd
+         UMhV6JU4ZOlNlGchWzCdOnBC6DrXb73Iu5804R8EeSyWnEoUqdTkJDM58TDJ0pmwc2bQ
+         EWeA==
+X-Gm-Message-State: AOJu0Ywt8uanaA3pG0PxJno06DmurErFaT9ILxByZtFSPF3349fe/ix/
+	aB931H0zZmH/Gn05/fpg5VaD25iTfYjVNKsJ
+X-Google-Smtp-Source: AGHT+IE6g68J+sQvyBh42gBpzMuzqYVa5/it260eqfQqo+qoA5p7BG9KJe5XWRBLmaYHuaQTURc9Cw==
+X-Received: by 2002:a17:907:3ea8:b0:9c3:ba22:4d65 with SMTP id hs40-20020a1709073ea800b009c3ba224d65mr5293621ejc.4.1697936930094;
+        Sat, 21 Oct 2023 18:08:50 -0700 (PDT)
 Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id u16-20020a170906655000b009c3f1b3e988sm4276143ejn.90.2023.10.21.18.08.47
+        by smtp.gmail.com with ESMTPSA id u16-20020a170906655000b009c3f1b3e988sm4276143ejn.90.2023.10.21.18.08.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Oct 2023 18:08:48 -0700 (PDT)
+        Sat, 21 Oct 2023 18:08:49 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -69,10 +69,12 @@ Cc: andrii@kernel.org,
 	memxor@gmail.com,
 	awerner32@gmail.com,
 	john.fastabend@gmail.com,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v2 4/7] selftests/bpf: tests with delayed read/precision makrs in loop body
-Date: Sun, 22 Oct 2023 04:08:09 +0300
-Message-ID: <20231022010812.9201-5-eddyz87@gmail.com>
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Subject: [PATCH bpf-next v2 5/7] bpf: correct loop detection for iterators convergence
+Date: Sun, 22 Oct 2023 04:08:10 +0300
+Message-ID: <20231022010812.9201-6-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231022010812.9201-1-eddyz87@gmail.com>
 References: <20231022010812.9201-1-eddyz87@gmail.com>
@@ -84,477 +86,336 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-These test cases try to hide read and precision marks from loop
-convergence logic: marks would only be assigned on subsequent loop
-iterations or after exploring states pushed to env->head stack first.
-Without verifier fix to use exact states comparison logic for
-iterators convergence these tests (except 'triple_continue') would be
-errorneously marked as safe.
+It turns out that .branches > 0 in is_state_visited() is not a
+sufficient condition to identify if two verifier states form a loop
+when iterators convergence is computed. This commit adds logic to
+distinguish situations like below:
 
+ (I)            initial       (II)            initial
+                  |                             |
+                  V                             V
+     .---------> hdr                           ..
+     |            |                             |
+     |            V                             V
+     |    .------...                    .------..
+     |    |       |                     |       |
+     |    V       V                     V       V
+     |   ...     ...               .-> hdr     ..
+     |    |       |                |    |       |
+     |    V       V                |    V       V
+     |   succ <- cur               |   succ <- cur
+     |    |                        |    |
+     |    V                        |    V
+     |   ...                       |   ...
+     |    |                        |    |
+     '----'                        '----'
+
+For both (I) and (II) successor 'succ' of the current state 'cur' was
+previously explored and has branches count at 0. However, loop entry
+'hdr' corresponding to 'succ' might be a part of current DFS path.
+If that is the case 'succ' and 'cur' are members of the same loop
+and have to be compared exactly.
+
+Co-developed-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Co-developed-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- tools/testing/selftests/bpf/progs/iters.c | 443 ++++++++++++++++++++++
- 1 file changed, 443 insertions(+)
+ include/linux/bpf_verifier.h |  15 +++
+ kernel/bpf/verifier.c        | 207 ++++++++++++++++++++++++++++++++++-
+ 2 files changed, 218 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/selftests/bpf/progs/iters.c
-index 6b9b3c56f009..ee85cc6d3444 100644
---- a/tools/testing/selftests/bpf/progs/iters.c
-+++ b/tools/testing/selftests/bpf/progs/iters.c
-@@ -14,6 +14,13 @@ int my_pid;
- int arr[256];
- int small_arr[16] SEC(".data.small_arr");
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 38b788228594..24213a99cc79 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -373,10 +373,25 @@ struct bpf_verifier_state {
+ 	struct bpf_active_lock active_lock;
+ 	bool speculative;
+ 	bool active_rcu_lock;
++	/* If this state was ever pointed-to by other state's loop_entry field
++	 * this flag would be set to true. Used to avoid freeing such states
++	 * while they are still in use.
++	 */
++	bool used_as_loop_entry;
  
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 10);
-+	__type(key, int);
-+	__type(value, int);
-+} amap SEC(".maps");
-+
- #ifdef REAL_TEST
- #define MY_PID_GUARD() if (my_pid != (bpf_get_current_pid_tgid() >> 32)) return 0
- #else
-@@ -716,4 +723,440 @@ int iter_pass_iter_ptr_to_subprog(const void *ctx)
- 	return 0;
+ 	/* first and last insn idx of this verifier state */
+ 	u32 first_insn_idx;
+ 	u32 last_insn_idx;
++	/* If this state is a part of states loop this field points to some
++	 * parent of this state such that:
++	 * - it is also a member of the same states loop;
++	 * - DFS states traversal starting from initial state visits loop_entry
++	 *   state before this state.
++	 * Used to compute topmost loop entry for state loops.
++	 * State loops might appear because of open coded iterators logic.
++	 * See get_loop_entry() for more information.
++	 */
++	struct bpf_verifier_state *loop_entry;
+ 	/* jmp history recorded from first to last.
+ 	 * backtracking is using it to go from last to first.
+ 	 * For most states jmp_history_cnt is [0-3].
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 23e4eb0a5c23..baf31b61b3ff 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1803,6 +1803,7 @@ static int copy_verifier_state(struct bpf_verifier_state *dst_state,
+ 	dst_state->first_insn_idx = src->first_insn_idx;
+ 	dst_state->last_insn_idx = src->last_insn_idx;
+ 	dst_state->dfs_depth = src->dfs_depth;
++	dst_state->used_as_loop_entry = src->used_as_loop_entry;
+ 	for (i = 0; i <= src->curframe; i++) {
+ 		dst = dst_state->frame[i];
+ 		if (!dst) {
+@@ -1845,11 +1846,176 @@ static bool same_callsites(struct bpf_verifier_state *a, struct bpf_verifier_sta
+ 	return true;
  }
  
-+SEC("?raw_tp")
-+__failure
-+__msg("R1 type=scalar expected=fp")
-+__naked int delayed_read_mark(void)
++/* Open coded iterators allow back-edges in the state graph in order to
++ * check unbounded loops that iterators.
++ *
++ * In is_state_visited() it is necessary to know if explored states are
++ * part of some loops in order to decide whether non-exact states
++ * comparison could be used:
++ * - non-exact states comparison establishes sub-state relation and uses
++ *   read and precision marks to do so, these marks are propagated from
++ *   children states and thus are not guaranteed to be final in a loop;
++ * - exact states comparison just checks if current and explored states
++ *   are identical (and thus form a back-edge).
++ *
++ * Paper "A New Algorithm for Identifying Loops in Decompilation"
++ * by Tao Wei, Jian Mao, Wei Zou and Yu Chen [1] presents a convenient
++ * algorithm for loop structure detection and gives an overview of
++ * relevant terminology. It also has helpful illustrations.
++ *
++ * [1] https://api.semanticscholar.org/CorpusID:15784067
++ *
++ * We use a similar algorithm but because loop nested structure is
++ * irrelevant for verifier ours is significantly simpler and resembles
++ * strongly connected components algorithm from Sedgewick's textbook.
++ *
++ * Define topmost loop entry as a first node of the loop traversed in a
++ * depth first search starting from initial state. The goal of the loop
++ * tracking algorithm is to associate topmost loop entries with states
++ * derived from these entries.
++ *
++ * For each step in the DFS states traversal algorithm needs to identify
++ * the following situations:
++ *
++ *          initial                     initial                   initial
++ *            |                           |                         |
++ *            V                           V                         V
++ *           ...                         ...           .---------> hdr
++ *            |                           |            |            |
++ *            V                           V            |            V
++ *           cur                     .-> succ          |    .------...
++ *            |                      |    |            |    |       |
++ *            V                      |    V            |    V       V
++ *           succ                    '-- cur           |   ...     ...
++ *                                                     |    |       |
++ *                                                     |    V       V
++ *                                                     |   succ <- cur
++ *                                                     |    |
++ *                                                     |    V
++ *                                                     |   ...
++ *                                                     |    |
++ *                                                     '----'
++ *
++ *  (A) successor state of cur   (B) successor state of cur or it's entry
++ *      not yet traversed            are in current DFS path, thus cur and succ
++ *                                   are members of the same outermost loop
++ *
++ *                      initial                  initial
++ *                        |                        |
++ *                        V                        V
++ *                       ...                      ...
++ *                        |                        |
++ *                        V                        V
++ *                .------...               .------...
++ *                |       |                |       |
++ *                V       V                V       V
++ *           .-> hdr     ...              ...     ...
++ *           |    |       |                |       |
++ *           |    V       V                V       V
++ *           |   succ <- cur              succ <- cur
++ *           |    |                        |
++ *           |    V                        V
++ *           |   ...                      ...
++ *           |    |                        |
++ *           '----'                       exit
++ *
++ * (C) successor state of cur is a part of some loop but this loop
++ *     does not include cur or successor state is not in a loop at all.
++ *
++ * Algorithm could be described as the following python code:
++ *
++ *     traversed = set()   # Set of traversed nodes
++ *     entries = {}        # Mapping from node to loop entry
++ *     depths = {}         # Depth level assigned to graph node
++ *     path = set()        # Current DFS path
++ *
++ *     # Find outermost loop entry known for n
++ *     def get_loop_entry(n):
++ *         h = entries.get(n, None)
++ *         while h in entries and entries[h] != h:
++ *             h = entries[h]
++ *         return h
++ *
++ *     # Update n's loop entry if h's outermost entry comes
++ *     # before n's outermost entry in current DFS path.
++ *     def update_loop_entry(n, h):
++ *         n1 = get_loop_entry(n) or n
++ *         h1 = get_loop_entry(h) or h
++ *         if h1 in path and depths[h1] <= depths[n1]:
++ *             entries[n] = h1
++ *
++ *     def dfs(n, depth):
++ *         traversed.add(n)
++ *         path.add(n)
++ *         depths[n] = depth
++ *         for succ in G.successors(n):
++ *             if succ not in traversed:
++ *                 # Case A: explore succ and update cur's loop entry
++ *                 #         only if succ's entry is in current DFS path.
++ *                 dfs(succ, depth + 1)
++ *                 h = get_loop_entry(succ)
++ *                 update_loop_entry(n, h)
++ *             else:
++ *                 # Case B or C depending on `h1 in path` check in update_loop_entry().
++ *                 update_loop_entry(n, succ)
++ *         path.remove(n)
++ *
++ * To adapt this algorithm for use with verifier:
++ * - use st->branch == 0 as a signal that DFS of succ had been finished
++ *   and cur's loop entry has to be updated (case A), handle this in
++ *   update_branch_counts();
++ * - use st->branch > 0 as a signal that st is in the current DFS path;
++ * - handle cases B and C in is_state_visited();
++ * - update topmost loop entry for intermediate states in get_loop_entry().
++ */
++static struct bpf_verifier_state *get_loop_entry(struct bpf_verifier_state *st)
 +{
-+	/* This is equivalent to C program below.
-+	 * The call to bpf_iter_num_next() is reachable with r7 values &fp[-16] and 0xdead.
-+	 * State with r7=&fp[-16] is visited first and follows r6 != 42 ... continue branch.
-+	 * At this point iterator next() call is reached with r7 that has no read mark.
-+	 * Loop body with r7=0xdead would only be visited if verifier would decide to continue
-+	 * with second loop iteration. Absence of read mark on r7 might affect state
-+	 * equivalent logic used for iterator convergence tracking.
-+	 *
-+	 * r7 = &fp[-16]
-+	 * fp[-16] = 0
-+	 * r6 = bpf_get_prandom_u32()
-+	 * bpf_iter_num_new(&fp[-8], 0, 10)
-+	 * while (bpf_iter_num_next(&fp[-8])) {
-+	 *   r6++
-+	 *   if (r6 != 42) {
-+	 *     r7 = 0xdead
-+	 *     continue;
-+	 *   }
-+	 *   bpf_probe_read_user(r7, 8, 0xdeadbeef); // this is not safe
-+	 * }
-+	 * bpf_iter_num_destroy(&fp[-8])
-+	 * return 0
++	struct bpf_verifier_state *topmost = st->loop_entry, *old;
++
++	while (topmost && topmost->loop_entry && topmost != topmost->loop_entry)
++		topmost = topmost->loop_entry;
++	/* Update loop entries for intermediate states to avoid this
++	 * traversal in future get_loop_entry() calls.
 +	 */
-+	asm volatile (
-+		"r7 = r10;"
-+		"r7 += -16;"
-+		"r0 = 0;"
-+		"*(u64 *)(r7 + 0) = r0;"
-+		"call %[bpf_get_prandom_u32];"
-+		"r6 = r0;"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"r2 = 0;"
-+		"r3 = 10;"
-+		"call %[bpf_iter_num_new];"
-+	"1:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_next];"
-+		"if r0 == 0 goto 2f;"
-+		"r6 += 1;"
-+		"if r6 != 42 goto 3f;"
-+		"r7 = 0xdead;"
-+		"goto 1b;"
-+	"3:"
-+		"r1 = r7;"
-+		"r2 = 8;"
-+		"r3 = 0xdeadbeef;"
-+		"call %[bpf_probe_read_user];"
-+		"goto 1b;"
-+	"2:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_destroy];"
-+		"r0 = 0;"
-+		"exit;"
-+		:
-+		: __imm(bpf_get_prandom_u32),
-+		  __imm(bpf_iter_num_new),
-+		  __imm(bpf_iter_num_next),
-+		  __imm(bpf_iter_num_destroy),
-+		  __imm(bpf_probe_read_user)
-+		: __clobber_all
-+	);
++	while (st && st->loop_entry != topmost) {
++		old = st->loop_entry;
++		st->loop_entry = topmost;
++		st = old;
++	}
++	return topmost;
 +}
 +
-+SEC("?raw_tp")
-+__failure
-+__msg("math between fp pointer and register with unbounded")
-+__naked int delayed_precision_mark(void)
++static void update_loop_entry(struct bpf_verifier_state *cur, struct bpf_verifier_state *hdr)
 +{
-+	/* This is equivalent to C program below.
-+	 * The test is similar to delayed_iter_mark but verifies that incomplete
-+	 * precision don't fool verifier.
-+	 * The call to bpf_iter_num_next() is reachable with r7 values -16 and -32.
-+	 * State with r7=-16 is visited first and follows r6 != 42 ... continue branch.
-+	 * At this point iterator next() call is reached with r7 that has no read
-+	 * and precision marks.
-+	 * Loop body with r7=-32 would only be visited if verifier would decide to continue
-+	 * with second loop iteration. Absence of precision mark on r7 might affect state
-+	 * equivalent logic used for iterator convergence tracking.
-+	 *
-+	 * r8 = 0
-+	 * fp[-16] = 0
-+	 * r7 = -16
-+	 * r6 = bpf_get_prandom_u32()
-+	 * bpf_iter_num_new(&fp[-8], 0, 10)
-+	 * while (bpf_iter_num_next(&fp[-8])) {
-+	 *   if (r6 != 42) {
-+	 *     r7 = -32
-+	 *     r6 = bpf_get_prandom_u32()
-+	 *     continue;
-+	 *   }
-+	 *   r0 = r10
-+	 *   r0 += r7
-+	 *   r8 = *(u64 *)(r0 + 0)           // this is not safe
-+	 *   r6 = bpf_get_prandom_u32()
-+	 * }
-+	 * bpf_iter_num_destroy(&fp[-8])
-+	 * return r8
++	struct bpf_verifier_state *cur1, *hdr1;
++
++	cur1 = get_loop_entry(cur) ?: cur;
++	hdr1 = get_loop_entry(hdr) ?: hdr;
++	/* The head1->branches check decides between cases B and C in
++	 * comment for get_loop_entry(). If hdr1->branches == 0 then
++	 * head's topmost loop entry is not in current DFS path,
++	 * hence 'cur' and 'hdr' are not in the same loop and there is
++	 * no need to update cur->loop_entry.
 +	 */
-+	asm volatile (
-+		"r8 = 0;"
-+		"*(u64 *)(r10 - 16) = r8;"
-+		"r7 = -16;"
-+		"call %[bpf_get_prandom_u32];"
-+		"r6 = r0;"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"r2 = 0;"
-+		"r3 = 10;"
-+		"call %[bpf_iter_num_new];"
-+	"1:"
-+		"r1 = r10;"
-+		"r1 += -8;\n"
-+		"call %[bpf_iter_num_next];"
-+		"if r0 == 0 goto 2f;"
-+		"if r6 != 42 goto 3f;"
-+		"r7 = -32;"
-+		"call %[bpf_get_prandom_u32];"
-+		"r6 = r0;"
-+		"goto 1b;\n"
-+	"3:"
-+		"r0 = r10;"
-+		"r0 += r7;"
-+		"r8 = *(u64 *)(r0 + 0);"
-+		"call %[bpf_get_prandom_u32];"
-+		"r6 = r0;"
-+		"goto 1b;\n"
-+	"2:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_destroy];"
-+		"r0 = r8;"
-+		"exit;"
-+		:
-+		: __imm(bpf_get_prandom_u32),
-+		  __imm(bpf_iter_num_new),
-+		  __imm(bpf_iter_num_next),
-+		  __imm(bpf_iter_num_destroy),
-+		  __imm(bpf_probe_read_user)
-+		: __clobber_all
-+	);
++	if (hdr1->branches && hdr1->dfs_depth <= cur1->dfs_depth) {
++		cur->loop_entry = hdr;
++		hdr->used_as_loop_entry = true;
++	}
 +}
 +
-+SEC("?raw_tp")
-+__failure
-+__msg("math between fp pointer and register with unbounded")
-+__flag(BPF_F_TEST_STATE_FREQ)
-+__naked int loop_state_deps1(void)
-+{
-+	/* This is equivalent to C program below.
-+	 *
-+	 * The case turns out to be tricky in a sense that:
-+	 * - states with c=-25 are explored only on a second iteration
-+	 *   of the outer loop;
-+	 * - states with read+precise mark on c are explored only on
-+	 *   second iteration of the inner loop and in a state which
-+	 *   is pushed to states stack first.
-+	 *
-+	 * Depending on the details of iterator convergence logic
-+	 * verifier might stop states traversal too early and miss
-+	 * unsafe c=-25 memory access.
-+	 *
-+	 *   j = iter_new();		 // fp[-16]
-+	 *   a = 0;			 // r6
-+	 *   b = 0;			 // r7
-+	 *   c = -24;			 // r8
-+	 *   while (iter_next(j)) {
-+	 *     i = iter_new();		 // fp[-8]
-+	 *     a = 0;			 // r6
-+	 *     b = 0;			 // r7
-+	 *     while (iter_next(i)) {
-+	 *	 if (a == 1) {
-+	 *	   a = 0;
-+	 *	   b = 1;
-+	 *	 } else if (a == 0) {
-+	 *	   a = 1;
-+	 *	   if (random() == 42)
-+	 *	     continue;
-+	 *	   if (b == 1) {
-+	 *	     *(r10 + c) = 7;  // this is not safe
-+	 *	     iter_destroy(i);
-+	 *	     iter_destroy(j);
-+	 *	     return;
-+	 *	   }
-+	 *	 }
-+	 *     }
-+	 *     iter_destroy(i);
-+	 *     a = 0;
-+	 *     b = 0;
-+	 *     c = -25;
-+	 *   }
-+	 *   iter_destroy(j);
-+	 *   return;
-+	 */
-+	asm volatile (
-+		"r1 = r10;"
-+		"r1 += -16;"
-+		"r2 = 0;"
-+		"r3 = 10;"
-+		"call %[bpf_iter_num_new];"
-+		"r6 = 0;"
-+		"r7 = 0;"
-+		"r8 = -24;"
-+	"j_loop_%=:"
-+		"r1 = r10;"
-+		"r1 += -16;"
-+		"call %[bpf_iter_num_next];"
-+		"if r0 == 0 goto j_loop_end_%=;"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"r2 = 0;"
-+		"r3 = 10;"
-+		"call %[bpf_iter_num_new];"
-+		"r6 = 0;"
-+		"r7 = 0;"
-+	"i_loop_%=:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_next];"
-+		"if r0 == 0 goto i_loop_end_%=;"
-+	"check_one_r6_%=:"
-+		"if r6 != 1 goto check_zero_r6_%=;"
-+		"r6 = 0;"
-+		"r7 = 1;"
-+		"goto i_loop_%=;"
-+	"check_zero_r6_%=:"
-+		"if r6 != 0 goto i_loop_%=;"
-+		"r6 = 1;"
-+		"call %[bpf_get_prandom_u32];"
-+		"if r0 != 42 goto check_one_r7_%=;"
-+		"goto i_loop_%=;"
-+	"check_one_r7_%=:"
-+		"if r7 != 1 goto i_loop_%=;"
-+		"r0 = r10;"
-+		"r0 += r8;"
-+		"r1 = 7;"
-+		"*(u64 *)(r0 + 0) = r1;"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_destroy];"
-+		"r1 = r10;"
-+		"r1 += -16;"
-+		"call %[bpf_iter_num_destroy];"
-+		"r0 = 0;"
-+		"exit;"
-+	"i_loop_end_%=:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_destroy];"
-+		"r6 = 0;"
-+		"r7 = 0;"
-+		"r8 = -25;"
-+		"goto j_loop_%=;"
-+	"j_loop_end_%=:"
-+		"r1 = r10;"
-+		"r1 += -16;"
-+		"call %[bpf_iter_num_destroy];"
-+		"r0 = 0;"
-+		"exit;"
-+		:
-+		: __imm(bpf_get_prandom_u32),
-+		  __imm(bpf_iter_num_new),
-+		  __imm(bpf_iter_num_next),
-+		  __imm(bpf_iter_num_destroy)
-+		: __clobber_all
-+	);
-+}
+ static void update_branch_counts(struct bpf_verifier_env *env, struct bpf_verifier_state *st)
+ {
+ 	while (st) {
+ 		u32 br = --st->branches;
+ 
++		/* br == 0 signals that DFS exploration for 'st' is finished,
++		 * thus it is necessary to update parent's loop entry if it
++		 * turned out that st is a part of some loop.
++		 * This is a part of 'case A' in get_loop_entry() comment.
++		 */
++		if (br == 0 && st->parent && st->loop_entry)
++			update_loop_entry(st->parent, st->loop_entry);
 +
-+SEC("?raw_tp")
-+__success
-+__naked int triple_continue(void)
-+{
-+	/* This is equivalent to C program below.
-+	 * High branching factor of the loop body turned out to be
-+	 * problematic for one of the iterator convergence tracking
-+	 * algorithms explored.
-+	 *
-+	 * r6 = bpf_get_prandom_u32()
-+	 * bpf_iter_num_new(&fp[-8], 0, 10)
-+	 * while (bpf_iter_num_next(&fp[-8])) {
-+	 *   if (bpf_get_prandom_u32() != 42)
-+	 *     continue;
-+	 *   if (bpf_get_prandom_u32() != 42)
-+	 *     continue;
-+	 *   if (bpf_get_prandom_u32() != 42)
-+	 *     continue;
-+	 *   r0 += 0;
-+	 * }
-+	 * bpf_iter_num_destroy(&fp[-8])
-+	 * return 0
-+	 */
-+	asm volatile (
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"r2 = 0;"
-+		"r3 = 10;"
-+		"call %[bpf_iter_num_new];"
-+	"loop_%=:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_next];"
-+		"if r0 == 0 goto loop_end_%=;"
-+		"call %[bpf_get_prandom_u32];"
-+		"if r0 != 42 goto loop_%=;"
-+		"call %[bpf_get_prandom_u32];"
-+		"if r0 != 42 goto loop_%=;"
-+		"call %[bpf_get_prandom_u32];"
-+		"if r0 != 42 goto loop_%=;"
-+		"r0 += 0;"
-+		"goto loop_%=;"
-+	"loop_end_%=:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_destroy];"
-+		"r0 = 0;"
-+		"exit;"
-+		:
-+		: __imm(bpf_get_prandom_u32),
-+		  __imm(bpf_iter_num_new),
-+		  __imm(bpf_iter_num_next),
-+		  __imm(bpf_iter_num_destroy)
-+		: __clobber_all
-+	);
-+}
-+
-+SEC("raw_tp")
-+__success
-+__naked int checkpoint_states_deletion(void)
-+{
-+	/* This is equivalent to C program below.
-+	 *
-+	 *   int i;
-+	 *   int sum = 0;
-+	 *   bpf_for(i, 0, 10) {
-+	 *     int *a = bpf_map_lookup_elem(&amap, &i);
-+	 *     int *b = bpf_map_lookup_elem(&amap, &i);
-+	 *     int *c = bpf_map_lookup_elem(&amap, &i);
-+	 *     if (a)
-+	 *             sum += 1;
-+	 *     if (b)
-+	 *             sum += 1;
-+	 *     if (c)
-+	 *             sum += 1;
-+	 *     // a = NULL;
-+	 *   }
-+	 *   return 0;
-+	 *
-+	 * Note the commented out 'a = NULL;'.
-+	 * The body of the loop spawns multiple simulation paths
-+	 * with different combination of NULL/non-NULL information for a/b/c.
-+	 * Each combination is unique from states_equal() point of view.
-+	 * Explored states checkpoint is created after each iterator next call.
-+	 * Iterator convergence logic expects that eventually current state
-+	 * would get equal to one of the explored states and thus loop
-+	 * exploration would be finished (at-least for a specific path).
-+	 * Verifier evicts explored states with high miss to hit ratio
-+	 * to to avoid comparing current state with too many explored
-+	 * states per instruction.
-+	 * This test is designed to trick the following eviction policy:
-+	 *
-+	 *    sl->miss_cnt > sl->hit_cnt * 3 + 3 // if true sl->state is evicted
-+	 *
-+	 * *If* checkpoint states are allowed to be evicted and the
-+	 * policy above is used, verifier would remove states too early,
-+	 * before loop convergence could be established.
-+	 * Uncommenting 'a = NULL;' reduces number of distinct states
-+	 * and program verifies.
-+	 */
-+	asm volatile (
-+		"r6 = 0;"   /* a */
-+		"r7 = 0;"   /* b */
-+		"r8 = 0;"   /* c */
-+		"r9 = 0;"   /* sum */
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"r2 = 0;"
-+		"r3 = 10;"
-+		"call %[bpf_iter_num_new];"
-+	"loop_%=:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_next];"
-+		"if r0 == 0 goto loop_end_%=;"
-+
-+		"*(u64 *)(r10 - 16) = r0;"
-+
-+		"r1 = %[amap] ll;"
-+		"r2 = r10;"
-+		"r2 += -16;"
-+		"call %[bpf_map_lookup_elem];"
-+		"r6 = r0;"
-+
-+		"r1 = %[amap] ll;"
-+		"r2 = r10;"
-+		"r2 += -16;"
-+		"call %[bpf_map_lookup_elem];"
-+		"r7 = r0;"
-+
-+		"r1 = %[amap] ll;"
-+		"r2 = r10;"
-+		"r2 += -16;"
-+		"call %[bpf_map_lookup_elem];"
-+		"r8 = r0;"
-+
-+		"if r6 == 0 goto +1;"
-+		"r9 += 1;"
-+		"if r7 == 0 goto +1;"
-+		"r9 += 1;"
-+		"if r8 == 0 goto +1;"
-+		"r9 += 1;"
-+
-+		/* "r6 = 0;" // Commented out 'a = NULL;' */
-+		"goto loop_%=;"
-+	"loop_end_%=:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_destroy];"
-+		"r0 = 0;"
-+		"exit;"
-+		:
-+		: __imm(bpf_map_lookup_elem),
-+		  __imm(bpf_iter_num_new),
-+		  __imm(bpf_iter_num_next),
-+		  __imm(bpf_iter_num_destroy),
-+		  __imm_addr(amap)
-+		: __clobber_all
-+	);
-+}
-+
- char _license[] SEC("license") = "GPL";
+ 		/* WARN_ON(br > 1) technically makes sense here,
+ 		 * but see comment in push_stack(), hence:
+ 		 */
+@@ -16649,10 +16815,11 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ {
+ 	struct bpf_verifier_state_list *new_sl;
+ 	struct bpf_verifier_state_list *sl, **pprev;
+-	struct bpf_verifier_state *cur = env->cur_state, *new;
++	struct bpf_verifier_state *cur = env->cur_state, *new, *loop_entry;
+ 	int i, j, err, states_cnt = 0;
+ 	bool force_new_state = env->test_state_freq || is_force_checkpoint(env, insn_idx);
+ 	bool add_new_state = force_new_state;
++	bool force_exact;
+ 
+ 	/* bpf progs typically have pruning point every 4 instructions
+ 	 * http://vger.kernel.org/bpfconf2019.html#session-1
+@@ -16747,8 +16914,10 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 					 */
+ 					spi = __get_spi(iter_reg->off + iter_reg->var_off.value);
+ 					iter_state = &func(env, iter_reg)->stack[spi].spilled_ptr;
+-					if (iter_state->iter.state == BPF_ITER_STATE_ACTIVE)
++					if (iter_state->iter.state == BPF_ITER_STATE_ACTIVE) {
++						update_loop_entry(cur, &sl->state);
+ 						goto hit;
++					}
+ 				}
+ 				goto skip_inf_loop_check;
+ 			}
+@@ -16779,7 +16948,36 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 				add_new_state = false;
+ 			goto miss;
+ 		}
+-		if (states_equal(env, &sl->state, cur, false)) {
++		/* If sl->state is a part of a loop and this loop's entry is a part of
++		 * current verification path then states have to be compared exactly.
++		 * 'force_exact' is needed to catch the following case:
++		 *
++		 *                initial     Here state 'succ' was processed first,
++		 *                  |         it was eventually tracked to produce a
++		 *                  V         state identical to 'hdr'.
++		 *     .---------> hdr        All branches from 'succ' had been explored
++		 *     |            |         and thus 'succ' has its .branches == 0.
++		 *     |            V
++		 *     |    .------...        Suppose states 'cur' and 'succ' correspond
++		 *     |    |       |         to the same instruction + callsites.
++		 *     |    V       V         In such case it is necessary to check
++		 *     |   ...     ...        if 'succ' and 'cur' are states_equal().
++		 *     |    |       |         If 'succ' and 'cur' are a part of the
++		 *     |    V       V         same loop exact flag has to be set.
++		 *     |   succ <- cur        To check if that is the case, verify
++		 *     |    |                 if loop entry of 'succ' is in current
++		 *     |    V                 DFS path.
++		 *     |   ...
++		 *     |    |
++		 *     '----'
++		 *
++		 * Additional details are in the comment before get_loop_entry().
++		 */
++		loop_entry = get_loop_entry(&sl->state);
++		force_exact = loop_entry && loop_entry->branches > 0;
++		if (states_equal(env, &sl->state, cur, force_exact)) {
++			if (force_exact)
++				update_loop_entry(cur, loop_entry);
+ hit:
+ 			sl->hit_cnt++;
+ 			/* reached equivalent register/stack state,
+@@ -16825,7 +17023,8 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 			 * speed up verification
+ 			 */
+ 			*pprev = sl->next;
+-			if (sl->state.frame[0]->regs[0].live & REG_LIVE_DONE) {
++			if (sl->state.frame[0]->regs[0].live & REG_LIVE_DONE &&
++			    !sl->state.used_as_loop_entry) {
+ 				u32 br = sl->state.branches;
+ 
+ 				WARN_ONCE(br,
 -- 
 2.42.0
 
