@@ -1,62 +1,63 @@
-Return-Path: <bpf+bounces-12907-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12908-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A02F7D2093
-	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 03:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FE8C7D2094
+	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 03:08:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 532932817F0
-	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 01:08:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ACD92817FC
+	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 01:08:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5C27805;
-	Sun, 22 Oct 2023 01:08:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE4281D;
+	Sun, 22 Oct 2023 01:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ihZ06ME6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZVqkVxMA"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC5FA36A
-	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 01:08:47 +0000 (UTC)
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED23D99
-	for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 18:08:45 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9c773ac9b15so241805966b.2
-        for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 18:08:45 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC0C77F2
+	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 01:08:48 +0000 (UTC)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBBCD52
+	for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 18:08:47 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-991c786369cso310315566b.1
+        for <bpf@vger.kernel.org>; Sat, 21 Oct 2023 18:08:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697936924; x=1698541724; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=D+0GGusGg2nWONPcwtwTqAoEP7QDq6T8+gyJFbZT/i8=;
-        b=ihZ06ME6YeETmMISdxmNjlFvZVukpW9VyaXv7FpKL4jzR8+VM/Wg9xIc3t7mkrI1tq
-         ltbkjxCIF5tAvzlTfRQB2DVZMlTJwiiV5wGHUME6ImeqkABo/P3GnevAQ/VtOtO1PuWC
-         ByNeAKbxktCBMWH0qD/I5BnN6I1AOzLQfLn2GYAweKOOAeH5xzCxOL1Mm5KmIc8fTHaa
-         ixsst4iRlBexTdiYOd3jPxlkut1yRkxgw5R8GUuQyGG7aybeojYs+ou6JeCSzMxwfNmv
-         tSqnqUdr83+mZnbPZlReqvxiJym98DGY0TubRYYd7WZkigIC8UHU8h9rfN2t/n9WKbrw
-         DYcQ==
+        d=gmail.com; s=20230601; t=1697936925; x=1698541725; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jMBXwYsElRUnbv/J2ohSLKs8sutWufCbyfqA6nV5UMw=;
+        b=ZVqkVxMAP+neZM4FB8T89dIl7YFQBiyVGE8/iqtv9QozGNaWlp5f5efLMAUYsKw9or
+         J1esj4pMw5g/tnMnl5VkCWfOBb+Fzwm+238L4yWnqmDFTykvPsvbKMtgzp5aXJEt5OzG
+         y/GEuJhv6ZznDN2p6OTR6eSE/K+EpeWChI9SDgayAakLTzYVvqFOd9zaMheZyfKJzfln
+         ytgIVg0NaNo49pfrlpKnFqEoQ2Ofc5x62v1CF1l3+h+may1hfxmuTfNoAfqGfnN60B+H
+         jVpQK0nbC4MrnTzlJ2yBrBCP+3aYM077a4wCrfd+VWrzk4ArW6cd2/GS1CYczsyg/Tii
+         PlZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697936924; x=1698541724;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=D+0GGusGg2nWONPcwtwTqAoEP7QDq6T8+gyJFbZT/i8=;
-        b=YisY60Phv2BCaiQZ3Tg3pUMzmHthxphPSdgi1PlJoeH8NFSVBuMTnPsLxppH+eQBUu
-         rVplYsDC/Bg1qPr13dp1aC1QAdqWzSrBEyRSPe2KwqhETcW+SrP+PXaCaxWgMyfYb/wQ
-         If3FV0Ip/8N/StDantKqf8ArDhBDvsqRe5qIsVyGRpfLZYtffkNLitWiSb+IuB3wvtE4
-         Hds0SsQO0IpRtBuFbnE2Opg/dI9gRbKMcUDQxzJf/SfK38KOEKPO+XblDEp8KPshW/n6
-         NB7qrEgX/f3K7dz/2JlTSB/YVZ8N2/nyCrGphat7tT2UmHhwMdgzZ7NMj7VjAFkqvG81
-         v2ew==
-X-Gm-Message-State: AOJu0YxQdakL7KzII/efICqH8ij7SaF55Jm1K7Z3BwXSj+8p+WqKB++m
-	u2YhchzDNvXaNshhMsy0O+tqlR9qyYO0uPN8
-X-Google-Smtp-Source: AGHT+IFbUF+rHhHELEs8BrU8riwwUT5MoFDEswdmEkaQ/RfaVe//2+T21HyZCriQj9Hqu/3uxsZmBw==
-X-Received: by 2002:a17:906:da82:b0:9ad:a4bd:dc67 with SMTP id xh2-20020a170906da8200b009ada4bddc67mr4831197ejb.50.1697936923803;
-        Sat, 21 Oct 2023 18:08:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697936925; x=1698541725;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jMBXwYsElRUnbv/J2ohSLKs8sutWufCbyfqA6nV5UMw=;
+        b=NPjgX5XzZT9nxnnNIotNSKqfpgheXNW8NtyXA4YE4FUOxEVYropFGcMA/0ezR/mON8
+         AQ3g7slCtN4k3JyL4Ir7lA9vvF7E6L38AQEWBKWclTYMkyfhYnYVRO0ycUcMZYC5gsec
+         isjNOJfShdC9dCoCY1FrWmyKP4Vp4bCmQSdGxKofRGkxmqKPrcdsdd2PKO2qHBzmPEn3
+         sH8EFhlMLamIJ2zwBIKpgtV681UOdw3nsPMaDUiYghZk9B1Wz28YcVvJ/yAxvsaz2DLk
+         hK9CCJZgRaKacSTQq47Ardu07xLrI9eqvdSeR/QJ+wELAiJMLt5/zK6M0SGbwWiSdyov
+         yMNA==
+X-Gm-Message-State: AOJu0Yzttg4kP3wBUAtuNDbaoY5dNWGnk5p3L92BdiQ/7jzOGL1yVhQ9
+	dc+K6FILxteSF4RVw7lmAwsZ8ic8A+PI7qk9
+X-Google-Smtp-Source: AGHT+IEn2x9um90ptJ5pDdaNA0QMHIVfc1L67oPw6dDi9mcjyunhbPI1fnU4Gq18gnexBoVazs0A7w==
+X-Received: by 2002:a17:907:da3:b0:9c6:7ec2:e14e with SMTP id go35-20020a1709070da300b009c67ec2e14emr5064686ejc.50.1697936925157;
+        Sat, 21 Oct 2023 18:08:45 -0700 (PDT)
 Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id u16-20020a170906655000b009c3f1b3e988sm4276143ejn.90.2023.10.21.18.08.42
+        by smtp.gmail.com with ESMTPSA id u16-20020a170906655000b009c3f1b3e988sm4276143ejn.90.2023.10.21.18.08.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Oct 2023 18:08:43 -0700 (PDT)
+        Sat, 21 Oct 2023 18:08:44 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -69,10 +70,12 @@ Cc: andrii@kernel.org,
 	awerner32@gmail.com,
 	john.fastabend@gmail.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v2 0/7] exact states comparison for iterator convergence checks
-Date: Sun, 22 Oct 2023 04:08:05 +0300
-Message-ID: <20231022010812.9201-1-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v2 1/7] bpf: move explored_state() closer to the beginning of verifier.c
+Date: Sun, 22 Oct 2023 04:08:06 +0300
+Message-ID: <20231022010812.9201-2-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231022010812.9201-1-eddyz87@gmail.com>
+References: <20231022010812.9201-1-eddyz87@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -81,79 +84,60 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Iterator convergence logic in is_state_visited() uses state_equals()
-for states with branches counter > 0 to check if iterator based loop
-converges. This is not fully correct because state_equals() relies on
-presence of read and precision marks on registers. These marks are not
-guaranteed to be finalized while state has branches.
-Commit message for patch #3 describes a program that exhibits such
-behavior.
+Subsequent patches would make use of explored_state() function.
+Move it up to avoid adding unnecessary prototype.
 
-This patch-set aims to fix iterator convergence logic by adding notion
-of exact states comparison. Exact comparison does not rely on presence
-of read or precision marks and thus is more strict.
-As explained in commit message for patch #3 exact comparisons require
-addition of speculative register bounds widening. The end result for
-BPF verifier users could be summarized as follows:
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ kernel/bpf/verifier.c | 28 +++++++++++++---------------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
-(!) After this update verifier would reject programs that conjure an
-    imprecise value on the first loop iteration and use it as precise
-    on the second (for iterator based loops).
-
-I urge people to at least skim over the commit message for patch #3.
-
-Patches are organized as follows:
-- patches #1,2: moving/extracting utility functions;
-- patch #3: introduces exact mode for states comparison and adds
-  widening heuristic;
-- patch #4: adds test-cases that demonstrate why the series is
-  necessary;
-- patch #5: extends patch #3 with a notion of state loop entries,
-  these entries have to be tracked to correctly identify that
-  different verifier states belong to the same states loop;
-- patch #6: adds a test-case that demonstrates a program
-  which requires loop entry tracking for correct verification;
-- patch #7: just adds a few debug prints.
-
-The following actions are planned as a followup for this patch-set:
-- implementation has to be adapted for callbacks handling logic as a
-  part of a fix for [1];
-- it is necessary to explore ways to improve widening heuristic to
-  handle iters_task_vma test w/o need to insert barrier_var() calls;
-- explored states eviction logic on cache miss has to be extended
-  to either:
-  - allow eviction of checkpoint states -or-
-  - be sped up in case if there are many active checkpoints associated
-    with the same instruction.
-
-The patch-set is a followup for mailing list discussion [1].
-
-Changelog:
-V1 -> V2 [2], applied changes suggested by Alexei offlist:
-- __explored_state() function removed;
-- same_callsites() function is now used in clean_live_states();
-- patches #1,2 are added as preparatory code movement;
-- in process_iter_next_call() a safeguard is added to verify that
-  cur_st->parent exists and has expected insn index / call sites.
-
-[1] https://lore.kernel.org/bpf/97a90da09404c65c8e810cf83c94ac703705dc0e.camel@gmail.com/
-[2] https://lore.kernel.org/bpf/20231021005939.1041-1-eddyz87@gmail.com/
-
-Eduard Zingerman (7):
-  bpf: move explored_state() closer to the beginning of verifier.c
-  bpf: extract same_callsites() as utility function
-  bpf: exact states comparison for iterator convergence checks
-  selftests/bpf: tests with delayed read/precision makrs in loop body
-  bpf: correct loop detection for iterators convergence
-  selftests/bpf: test if state loops are detected in a tricky case
-  bpf: print full verifier states on infinite loop detection
-
- include/linux/bpf_verifier.h                  |  16 +
- kernel/bpf/verifier.c                         | 469 +++++++++++--
- tools/testing/selftests/bpf/progs/iters.c     | 620 ++++++++++++++++++
- .../selftests/bpf/progs/iters_task_vma.c      |   1 +
- 4 files changed, 1053 insertions(+), 53 deletions(-)
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index e9bc5d4a25a1..e6232b5d3964 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1817,6 +1817,19 @@ static int copy_verifier_state(struct bpf_verifier_state *dst_state,
+ 	return 0;
+ }
+ 
++static u32 state_htab_size(struct bpf_verifier_env *env)
++{
++	return env->prog->len;
++}
++
++static struct bpf_verifier_state_list **explored_state(struct bpf_verifier_env *env, int idx)
++{
++	struct bpf_verifier_state *cur = env->cur_state;
++	struct bpf_func_state *state = cur->frame[cur->curframe];
++
++	return &env->explored_states[(idx ^ state->callsite) % state_htab_size(env)];
++}
++
+ static void update_branch_counts(struct bpf_verifier_env *env, struct bpf_verifier_state *st)
+ {
+ 	while (st) {
+@@ -15020,21 +15033,6 @@ enum {
+ 	BRANCH = 2,
+ };
+ 
+-static u32 state_htab_size(struct bpf_verifier_env *env)
+-{
+-	return env->prog->len;
+-}
+-
+-static struct bpf_verifier_state_list **explored_state(
+-					struct bpf_verifier_env *env,
+-					int idx)
+-{
+-	struct bpf_verifier_state *cur = env->cur_state;
+-	struct bpf_func_state *state = cur->frame[cur->curframe];
+-
+-	return &env->explored_states[(idx ^ state->callsite) % state_htab_size(env)];
+-}
+-
+ static void mark_prune_point(struct bpf_verifier_env *env, int idx)
+ {
+ 	env->insn_aux_data[idx].prune_point = true;
 -- 
 2.42.0
 
