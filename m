@@ -1,211 +1,124 @@
-Return-Path: <bpf+bounces-12940-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12941-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4FCF7D2277
-	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 12:06:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 436867D22F5
+	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 13:40:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B9971C2093D
-	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 10:06:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0498B20DEE
+	for <lists+bpf@lfdr.de>; Sun, 22 Oct 2023 11:40:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CAE6612F;
-	Sun, 22 Oct 2023 10:06:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5568863B4;
+	Sun, 22 Oct 2023 11:40:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z8i2yiUx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IF2axAcs"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C13010FC
-	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 10:06:23 +0000 (UTC)
-Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655ADE6
-	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 03:06:22 -0700 (PDT)
-Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1ea05b3f228so1693721fac.1
-        for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 03:06:22 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BD3323A8;
+	Sun, 22 Oct 2023 11:40:42 +0000 (UTC)
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4089EB;
+	Sun, 22 Oct 2023 04:40:40 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-578b4997decso1723415a12.0;
+        Sun, 22 Oct 2023 04:40:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697969181; x=1698573981; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ApB3fBukxcRRutiXZMFOGvDxthestNJNWe1cIRYdLFY=;
-        b=Z8i2yiUxrYtgY5If7KBhhlqykFp+KkOYWcMnPdwbZPKjJ81h0YQr2tmAfB+GIblcmI
-         GtZx7avGtC+DwuH8vnOnCNCpq1l0oYDKO38O+/Kv6Ztx9sIdt3xpVYrqvZ4GgN7eR7C4
-         yqozD7AzoPM9h6rzWdRSjerux8pL3tFpLayS1WXTOJpcwZ6Rufmw8//vvCC4j0Rvdorl
-         k2MrdQdkWerEZQpjc7Wh42Q9Qmsyd3Mini2x8ZlKtLCCU2xJdZ4au9NdfNTBpHsihqH7
-         pYJmoQB6Xquv+9qdo4aj1FzeaoTuLtc97y4OkmCc7VKHY2g82o30ii/bKVxFUexQBfjL
-         N+oQ==
+        d=gmail.com; s=20230601; t=1697974840; x=1698579640; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ljaI8yne9hbUxqHM2K9k1jzFfYFrLBrIFmHWl9mQXzA=;
+        b=IF2axAcs5O6tn01geX9QwfuHUN/2NM1DAptM3bwG8oNZY+M+/ZgDjF2U2qrSv6Smqu
+         GVt3Zvgl1EX9f76L1Z/m3kBuA58k8Q/durr7dvnbsY6XSboieVRv9ek5aDMeBTdKcHFu
+         LGZ3aNon/OD+Ugunf5UUJr05MjvGRVhFVcrVRZSkmydbxMRtavJw5FMjBnZY9Z1M8Nqt
+         qQN+92oLU/FuHQ3nos9+YnCo7sxP8FmCIfZUy4Q4GJg3YXjeuciMhJZSI6LPl7gNAiSW
+         jsIjo+Y/pbQfNCjrZv467Zmj+Iu2RhY9Hlp72R4Ni8R/pQ3BaRNLw1ZWCFgNUVFRjkBo
+         +Y6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697969181; x=1698573981;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ApB3fBukxcRRutiXZMFOGvDxthestNJNWe1cIRYdLFY=;
-        b=FkW/+8afKY0caEaxQKzhi9aOe/3/F53npxjQdEQYa19GkLNUvLlvczcJu+dYQs1Nsb
-         R2tdMCSAaJeJZGFyfpa0ut6yNbDrJAsvvU8Xxq9y0/mq9CvQEVi+muIKxy4i2EkS3AoJ
-         AP9ZJ9YUZQ9EVn1atZIJG9i4jgK94o4PnNUXYyZLrfjf2tZOjHCn2WqeQ5L7tscteKOI
-         xdb+jDZ+ANWM+0RsNYeMrRIk84H2aI5vV0hDpuMhlRJLhz7Np1vFqJJVPHtbPsA8LNqa
-         F9J/ONmQ0gHVKws9rwKHYk3B3apfEorsjJf+Z2F/p4RXsYBAZIFxUS46iQ6gdUPmRqTp
-         hzyg==
-X-Gm-Message-State: AOJu0YwJxwfqGDGUFc5HIws3hvRCyYB3x8IDruyib4vBPek+m4fQuoTJ
-	PkVxtjFLbu9OLl3Clnx8HqMSEoxCE4Vhy3olEoY=
-X-Google-Smtp-Source: AGHT+IHPZ3TF2IeoSuedDLiQCxVT+poOMq6WZZlIbhHkmXnevdcroW4MuJuwjq+oH3ahHnaiQqweNsvF3eiZPo3xUlE=
-X-Received: by 2002:a05:6871:78a:b0:1e9:d25d:3cb0 with SMTP id
- o10-20020a056871078a00b001e9d25d3cb0mr8302032oap.21.1697969181306; Sun, 22
- Oct 2023 03:06:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697974840; x=1698579640;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ljaI8yne9hbUxqHM2K9k1jzFfYFrLBrIFmHWl9mQXzA=;
+        b=J93ZDv/qJIfyZOVZwbjBa+IOjLJ5P6lM1UQgLvqIULanyS8f64Ig60J3aHhasoJe7h
+         86QfTTWG5xrenKUku/7ToQ6Q8GMVSLJ01huYXKzrcUrBdRGivhij2XdXSzvz2D1muwZV
+         JUJV/70bboUelVtSdSH0cKxVQnc57DpXCtUyIIG9ZnBWvlajBZmT45liH5/Ltz32iq0O
+         BBSfyXA05mWDxePY+g64/j1PP+BoTwQvOoc6N28M/Mo4yNVYzGkuyx5XUQlu48CZizqU
+         IPY5mm2kwBJn0nx/QC64fOxtATsRS7T/voYgrBvzNUpb1adO7fKsEp6pCtFbvjcWRzA+
+         DT/g==
+X-Gm-Message-State: AOJu0Yz2KMgKtMWD2g0lNMqCwRhCfsJAvJ3Ef4O+BrHNJ11gZYkgaRar
+	m6vqANuM63M1NmbxPHvN9pUWeNSq6zY/OQ==
+X-Google-Smtp-Source: AGHT+IEUMOdRI5f0m/WLLxCApC2EsQ2VXCemwXQik4qn0vF4HdxcQf4GriQEDxoM5N8eFRRdkPvMoA==
+X-Received: by 2002:a05:6a20:394a:b0:17b:2c56:70b8 with SMTP id r10-20020a056a20394a00b0017b2c5670b8mr7740804pzg.22.1697974839695;
+        Sun, 22 Oct 2023 04:40:39 -0700 (PDT)
+Received: from localhost.localdomain ([2001:448a:20a0:ad9f:f712:ea6f:f4b9:17c2])
+        by smtp.gmail.com with ESMTPSA id x3-20020aa79563000000b006bdd7cbcf98sm4441833pfq.182.2023.10.22.04.40.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Oct 2023 04:40:39 -0700 (PDT)
+From: James Tirta Halim <tirtajames45@gmail.com>
+To: linux-hardening@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: James Tirta Halim <tirtajames45@gmail.com>
+Subject: [PATCH] strstarts: avoid calling strlen() if first char does not match
+Date: Sun, 22 Oct 2023 18:35:47 +0700
+Message-ID: <20231022113547.168081-1-tirtajames45@gmail.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231022092606.2245-1-laoar.shao@gmail.com> <20231022094906.3003-1-laoar.shao@gmail.com>
-In-Reply-To: <20231022094906.3003-1-laoar.shao@gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Sun, 22 Oct 2023 18:05:45 +0800
-Message-ID: <CALOAHbA=_HV6ohXgr-yO2WVVmQjXL0rTHc6vJ=mb+qCUKzuPAA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] selftests/bpf: Fix selftests broken by mitigations=off
-To: laoar.shao@gmail.com
-Cc: alexei.starovoitov@gmail.com, andrii@kernel.org, ast@kernel.org, 
-	bpf@vger.kernel.org, daniel@iogearbox.net, gerhorst@cs.fau.de, 
-	haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org, 
-	kpsingh@kernel.org, martin.lau@linux.dev, sdf@google.com, song@kernel.org, 
-	yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Oct 22, 2023 at 5:49=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> =
-wrote:
->
-> When we configure the kernel command line with 'mitigations=3Doff' and se=
-t
-> the sysctl knob 'kernel.unprivileged_bpf_disabled' to 0, the commit
-> bc5bc309db45 ("bpf: Inherit system settings for CPU security mitigations"=
-)
-> causes issues in the execution of 'test_progs -t verifier.' This is becau=
-se
-> 'mitigations=3Doff' bypasses Spectre v1 and Spectre v4 protections.
->
-> Currently, when a program requests to run in unprivileged mode
-> (kernel.unprivileged_bpf_disabled =3D 0), the BPF verifier may prevent it
-> from running due to the following conditions not being enabled:
->
->   - bypass_spec_v1
->   - bypass_spec_v4
->   - allow_ptr_leaks
->   - allow_uninit_stack
->
-> While 'mitigations=3Doff' enables the first two conditions, it does not
-> enable the latter two. As a result, some test cases in
-> 'test_progs -t verifier' that were expected to fail to run may run
-> successfully, while others still fail but with different error messages.
-> This makes it challenging to address them comprehensively.
->
-> Moreover, in the future, we may introduce more fine-grained control over
-> CPU mitigations, such as enabling only bypass_spec_v1 or bypass_spec_v4.
->
-> Given the complexity of the situation, rather than fixing each broken tes=
-t
-> case individually, it's preferable to skip them when 'mitigations=3Doff' =
-is
-> in effect and introduce specific test cases for the new 'mitigations=3Dof=
-f'
-> scenario. For instance, we can introduce new BTF declaration tags like
-> '__failure__nospec', '__failure_nospecv1' and '__failure_nospecv4'.
->
-> In this patch, the approach is to simply skip the broken test cases when
-> 'mitigations=3Doff' is enabled. The result as follows after this commit,
->
-> - without 'mitigations=3Doff'
->   - kernel.unprivileged_bpf_disabled =3D 2
->     Summary: 74/948 PASSED, 388 SKIPPED, 0 FAILED
->   - kernel.unprivileged_bpf_disabled =3D 0
->     Summary: 74/948 PASSED, 388 SKIPPED, 0 FAILED
-> - with 'mitigations=3Doff'
->   - kernel.unprivileged_bpf_disabled =3D 2
->     Summary: 74/948 PASSED, 388 SKIPPED, 0 FAILED
->   - kernel.unprivileged_bpf_disabled =3D 0
->     Summary: 74/948 PASSED, 388 SKIPPED, 0 FAILED
->
-> Fixes: bc5bc309db45 ("bpf: Inherit system settings for CPU security mitig=
-ations")
-> Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Closes: https://lore.kernel.org/bpf/CAADnVQKUBJqg+hHtbLeeC2jhoJAWqnmRAzXW=
-3hmUCNSV9kx4sQ@mail.gmail.com
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> ---
->  tools/testing/selftests/bpf/unpriv_helpers.c | 34 +++++++++++++++++++-
->  1 file changed, 33 insertions(+), 1 deletion(-)
->
-> ---
-> v1 -> v2: Fix leaked fd
->
-> diff --git a/tools/testing/selftests/bpf/unpriv_helpers.c b/tools/testing=
-/selftests/bpf/unpriv_helpers.c
-> index 2a6efbd0401e..ca4760795f5d 100644
-> --- a/tools/testing/selftests/bpf/unpriv_helpers.c
-> +++ b/tools/testing/selftests/bpf/unpriv_helpers.c
-> @@ -4,9 +4,41 @@
->  #include <stdlib.h>
->  #include <error.h>
->  #include <stdio.h>
-> +#include <string.h>
-> +#include <unistd.h>
-> +#include <fcntl.h>
->
->  #include "unpriv_helpers.h"
->
-> +static bool get_mitigations_off(void)
-> +{
-> +       char cmdline[4096], *c;
-> +       int fd, ret =3D false;
-> +
-> +       fd =3D open("/proc/cmdline", O_RDONLY);
-> +       if (fd < 0) {
-> +               perror("open /proc/cmdline");
-> +               return false;
-> +       }
-> +
-> +       if (read(fd, cmdline, sizeof(cmdline) - 1) < 0) {
-> +               perror("read /proc/cmdline");
-> +               goto out;
-> +       }
-> +
-> +       cmdline[sizeof(cmdline) - 1] =3D '\0';
-> +       for (c =3D strtok(cmdline, " \n"); c; c =3D strtok(NULL, " \n")) =
-{
-> +               if (!strncmp(c, "mitigtions=3Doff", strlen(c))) {
-> +                       ret =3D true;
-> +                       break;
-> +               }
-> +       }
-> +
-> +out:
-> +       close(fd);
-> +       return ret;
-> +}
-> +
->  bool get_unpriv_disabled(void)
->  {
->         bool disabled;
-> @@ -22,5 +54,5 @@ bool get_unpriv_disabled(void)
->                 disabled =3D true;
->         }
->
-> -       return disabled;
-> +       return disabled ? true : !get_mitigations_off();
->  }
-> --
-> 2.39.3
->
+---
+ include/linux/string.h  | 9 ++++++---
+ tools/bpf/bpftool/gen.c | 2 +-
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
-Pls. just igore this wrong patch. Sorry about the noise.
-I must be in a sleep state currently. I will send a new one after I
-get awake ...
+diff --git a/include/linux/string.h b/include/linux/string.h
+index dbfc66400050..1c51039604e7 100644
+--- a/include/linux/string.h
++++ b/include/linux/string.h
+@@ -214,7 +214,7 @@ int ptr_to_hashval(const void *ptr, unsigned long *hashval_out);
+  */
+ static inline bool strstarts(const char *str, const char *prefix)
+ {
+-	return strncmp(str, prefix, strlen(prefix)) == 0;
++	return (*str == *prefix) ? strncmp(str, prefix, strlen(prefix)) == 0 : (*prefix == '\0');
+ }
+ 
+ size_t memweight(const void *ptr, size_t bytes);
+@@ -356,8 +356,11 @@ void memcpy_and_pad(void *dest, size_t dest_len, const void *src, size_t count,
+  */
+ static __always_inline size_t str_has_prefix(const char *str, const char *prefix)
+ {
+-	size_t len = strlen(prefix);
+-	return strncmp(str, prefix, len) == 0 ? len : 0;
++	if (*str == *prefix) {
++		size_t len = strlen(prefix);
++		return strncmp(str, prefix, len) == 0 ? len : 0;
++	}
++	return *prefix == '\0';
+ }
+ 
+ #endif /* _LINUX_STRING_H_ */
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index 2883660d6b67..5f8db7e517bc 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -36,7 +36,7 @@ static void sanitize_identifier(char *name)
+ 
+ static bool str_has_prefix(const char *str, const char *prefix)
+ {
+-	return strncmp(str, prefix, strlen(prefix)) == 0;
++	return (*str == *prefix) ? strncmp(str, prefix, strlen(prefix)) == 0 : (*prefix == '\0');
+ }
+ 
+ static bool str_has_suffix(const char *str, const char *suffix)
+-- 
+2.42.0
 
---=20
-Regards
-Yafang
 
