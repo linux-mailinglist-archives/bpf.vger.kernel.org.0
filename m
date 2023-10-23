@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-13064-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13065-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 392037D42C4
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 00:41:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8D897D42C5
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 00:41:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69A741C20B5E
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 22:41:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA37D1C20B5D
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 22:41:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E367D219F9;
-	Mon, 23 Oct 2023 22:41:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD7C022304;
+	Mon, 23 Oct 2023 22:41:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JKxNr0NL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UPGhN8L2"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABD7257D;
-	Mon, 23 Oct 2023 22:41:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB158C433C8;
-	Mon, 23 Oct 2023 22:41:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AEB8200AE;
+	Mon, 23 Oct 2023 22:41:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1B12C433C7;
+	Mon, 23 Oct 2023 22:41:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698100882;
-	bh=0LBNy4jEmP3QOJLS/v9sSKJshgRUg6NsdZQVstUHGPY=;
+	s=k20201202; t=1698100889;
+	bh=JktvCz8l5F4UfdnmLbTyIiMyqaaZHAVs4MnXWzRhxlA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JKxNr0NLpgHcNIbe+370znzKvNChoC62E5bJoyvgUw48GHpUOhBMZdTBLfvUxL3lt
-	 IC4j/X0t8MTUHFV7YIhnZh/Wkaq4R62NwV4KF0K0YjoS/SLiWqxIDUPj9ecFbi5yPY
-	 6A3aU6c3zCUTCuPkBkiZLv/cZDJH09kTiTcoOGlrrEvjqFV8djX4cDF6C8obXzNRQg
-	 Gtq6FF+fSX06ifNr75co+uKVCcMJKKr7Cxmqd75L7aWgBgaqqVMedE/OXY2eafsacC
-	 CTC35/Xkwh1M43tGtDWRM4TZPvFj65IK39MjjTn9yy0uLSvgLnC/6b46k5lpDdoubY
-	 8sK/C0VDLvHaA==
+	b=UPGhN8L2dmDx0aw7J0oNrvoLopU1HKbVS+V6OwtP3K7qv788tHSQofo6ouQMCpUNB
+	 vW9Zcsbn53CMk8TR8xw36uDrWmiLHdsI5bo5GdCcLAwxeBo/bgyf3ZfKi6iJXvIdqF
+	 c3fAx8kqkFcsBm59vjEud6BTE8l9IGA+rkQXmlVl3eHNkVp0fd0vsflKvrtFDpmjh4
+	 Qy8F+O9rRuVsXddy809fy7/wJ981tiAFYs3C7rWhsWs5i0kZ3ke+xzEQcvfliszU8r
+	 K2LTrqI7UE6an57vIwNUrQI/SHe8CNkoAbEgMhVob5XJRb3XalKoCyZl0EsbScMLki
+	 NCR9QfYPFw5fA==
 From: Song Liu <song@kernel.org>
 To: bpf@vger.kernel.org,
 	fsverity@lists.linux.dev
@@ -44,9 +44,9 @@ Cc: ast@kernel.org,
 	tytso@mit.edu,
 	roberto.sassu@huaweicloud.com,
 	Song Liu <song@kernel.org>
-Subject: [PATCH v4 bpf-next 2/9] bpf: Factor out helper check_reg_const_str()
-Date: Mon, 23 Oct 2023 15:40:53 -0700
-Message-Id: <20231023224100.2573116-3-song@kernel.org>
+Subject: [PATCH v4 bpf-next 3/9] bpf: Introduce KF_ARG_PTR_TO_CONST_STR
+Date: Mon, 23 Oct 2023 15:40:54 -0700
+Message-Id: <20231023224100.2573116-4-song@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231023224100.2573116-1-song@kernel.org>
 References: <20231023224100.2573116-1-song@kernel.org>
@@ -58,120 +58,108 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This helper will be used to check whether a kfunc arg points to const
-string. Add a type check (PTR_TO_MAP_VALUE) in case the helper is
-misused in the future.
+KF_ARG_PTR_TO_CONST_STR specifies kfunc args that point to const strings.
+This is	similar to ARG_PTR_TO_CONST_STR for helpers.
 
 Signed-off-by: Song Liu <song@kernel.org>
 ---
- kernel/bpf/verifier.c | 85 +++++++++++++++++++++++++------------------
- 1 file changed, 49 insertions(+), 36 deletions(-)
+ Documentation/bpf/kfuncs.rst | 24 ++++++++++++++++++++++++
+ kernel/bpf/verifier.c        | 19 +++++++++++++++++++
+ 2 files changed, 43 insertions(+)
 
+diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+index 0d2647fb358d..e696aca08b3a 100644
+--- a/Documentation/bpf/kfuncs.rst
++++ b/Documentation/bpf/kfuncs.rst
+@@ -137,6 +137,30 @@ Either way, the returned buffer is either NULL, or of size buffer_szk. Without t
+ annotation, the verifier will reject the program if a null pointer is passed in with
+ a nonzero size.
+ 
++2.2.5 __const_str Annotation
++----------------------------
++This annotation is used to indicate that the argument is a constant string.
++
++An example is given below::
++
++        __bpf_kfunc bpf_get_file_xattr(..., const char *name__const_str, ...)
++        {
++        ...
++        }
++
++In this case, ``bpf_get_file_xattr()`` can be called as::
++
++        bpf_get_file_xattr(..., "xattr_name", ...);
++
++Or::
++
++        const char name[] = "xattr_name";  /* This need to be global */
++        int BPF_PROG(...)
++        {
++                ...
++                bpf_get_file_xattr(..., name, ...);
++                ...
++        }
+ 
+ .. _BPF_kfunc_nodef:
+ 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index e9bc5d4a25a1..6ce5f0fbad84 100644
+index 6ce5f0fbad84..a2d992ca49c4 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -8265,6 +8265,54 @@ static enum bpf_dynptr_type dynptr_get_type(struct bpf_verifier_env *env,
- 	return state->stack[spi].spilled_ptr.dynptr.type;
+@@ -10350,6 +10350,11 @@ static bool is_kfunc_arg_nullable(const struct btf *btf, const struct btf_param
+ 	return __kfunc_param_match_suffix(btf, arg, "__nullable");
  }
  
-+static int check_reg_const_str(struct bpf_verifier_env *env,
-+			       struct bpf_reg_state *reg, u32 regno)
++static bool is_kfunc_arg_const_str(const struct btf *btf, const struct btf_param *arg)
 +{
-+	struct bpf_map *map = reg->map_ptr;
-+	int err;
-+	int map_off;
-+	u64 map_addr;
-+	char *str_ptr;
-+
-+	if (WARN_ON_ONCE(reg->type != PTR_TO_MAP_VALUE))
-+		return -EINVAL;
-+
-+	if (!bpf_map_is_rdonly(map)) {
-+		verbose(env, "R%d does not point to a readonly map'\n", regno);
-+		return -EACCES;
-+	}
-+
-+	if (!tnum_is_const(reg->var_off)) {
-+		verbose(env, "R%d is not a constant address'\n", regno);
-+			return -EACCES;
-+	}
-+
-+	if (!map->ops->map_direct_value_addr) {
-+		verbose(env, "no direct value access support for this map type\n");
-+		return -EACCES;
-+	}
-+
-+	err = check_map_access(env, regno, reg->off,
-+			       map->value_size - reg->off, false,
-+			       ACCESS_HELPER);
-+	if (err)
-+		return err;
-+
-+	map_off = reg->off + reg->var_off.value;
-+	err = map->ops->map_direct_value_addr(map, &map_addr, map_off);
-+	if (err) {
-+		verbose(env, "direct value access on string failed\n");
-+		return err;
-+	}
-+
-+	str_ptr = (char *)(long)(map_addr);
-+	if (!strnchr(str_ptr + map_off, map->value_size - map_off, 0)) {
-+		verbose(env, "string is not zero-terminated\n");
-+		return -EINVAL;
-+	}
-+	return 0;
++	return __kfunc_param_match_suffix(btf, arg, "__const_str");
 +}
 +
- static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 			  struct bpf_call_arg_meta *meta,
- 			  const struct bpf_func_proto *fn,
-@@ -8509,44 +8557,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+ static bool is_kfunc_arg_scalar_with_name(const struct btf *btf,
+ 					  const struct btf_param *arg,
+ 					  const char *name)
+@@ -10493,6 +10498,7 @@ enum kfunc_ptr_arg_type {
+ 	KF_ARG_PTR_TO_RB_ROOT,
+ 	KF_ARG_PTR_TO_RB_NODE,
+ 	KF_ARG_PTR_TO_NULL,
++	KF_ARG_PTR_TO_CONST_STR,
+ };
+ 
+ enum special_kfunc_type {
+@@ -10637,6 +10643,9 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
+ 	if (is_kfunc_arg_rbtree_node(meta->btf, &args[argno]))
+ 		return KF_ARG_PTR_TO_RB_NODE;
+ 
++	if (is_kfunc_arg_const_str(meta->btf, &args[argno]))
++		return KF_ARG_PTR_TO_CONST_STR;
++
+ 	if ((base_type(reg->type) == PTR_TO_BTF_ID || reg2btf_ids[base_type(reg->type)])) {
+ 		if (!btf_type_is_struct(ref_t)) {
+ 			verbose(env, "kernel function %s args#%d pointer type %s %s is not supported\n",
+@@ -11260,6 +11269,7 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+ 		case KF_ARG_PTR_TO_MEM_SIZE:
+ 		case KF_ARG_PTR_TO_CALLBACK:
+ 		case KF_ARG_PTR_TO_REFCOUNTED_KPTR:
++		case KF_ARG_PTR_TO_CONST_STR:
+ 			/* Trusted by default */
+ 			break;
+ 		default:
+@@ -11531,6 +11541,15 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+ 			meta->arg_btf = reg->btf;
+ 			meta->arg_btf_id = reg->btf_id;
+ 			break;
++		case KF_ARG_PTR_TO_CONST_STR:
++			if (reg->type != PTR_TO_MAP_VALUE) {
++				verbose(env, "arg#%d doesn't point to a const string\n", i);
++				return -EINVAL;
++			}
++			ret = check_reg_const_str(env, reg, regno);
++			if (ret)
++				return ret;
++			break;
+ 		}
  	}
- 	case ARG_PTR_TO_CONST_STR:
- 	{
--		struct bpf_map *map = reg->map_ptr;
--		int map_off;
--		u64 map_addr;
--		char *str_ptr;
--
--		if (!bpf_map_is_rdonly(map)) {
--			verbose(env, "R%d does not point to a readonly map'\n", regno);
--			return -EACCES;
--		}
--
--		if (!tnum_is_const(reg->var_off)) {
--			verbose(env, "R%d is not a constant address'\n", regno);
--			return -EACCES;
--		}
--
--		if (!map->ops->map_direct_value_addr) {
--			verbose(env, "no direct value access support for this map type\n");
--			return -EACCES;
--		}
--
--		err = check_map_access(env, regno, reg->off,
--				       map->value_size - reg->off, false,
--				       ACCESS_HELPER);
-+		err = check_reg_const_str(env, reg, regno);
- 		if (err)
- 			return err;
--
--		map_off = reg->off + reg->var_off.value;
--		err = map->ops->map_direct_value_addr(map, &map_addr, map_off);
--		if (err) {
--			verbose(env, "direct value access on string failed\n");
--			return err;
--		}
--
--		str_ptr = (char *)(long)(map_addr);
--		if (!strnchr(str_ptr + map_off, map->value_size - map_off, 0)) {
--			verbose(env, "string is not zero-terminated\n");
--			return -EINVAL;
--		}
- 		break;
- 	}
- 	case ARG_PTR_TO_KPTR:
+ 
 -- 
 2.34.1
 
