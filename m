@@ -1,108 +1,192 @@
-Return-Path: <bpf+bounces-13049-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13050-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DFA77D3F61
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 20:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A38277D3F7C
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 20:46:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCE0EB20F66
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 18:38:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CA7BB20D3C
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 18:46:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F1021A06;
-	Mon, 23 Oct 2023 18:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A4AF2135C;
+	Mon, 23 Oct 2023 18:46:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Uj2CgIuG"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0gVQymOw"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B13E4219E2
-	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 18:38:20 +0000 (UTC)
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A669CC
-	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 11:38:19 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7bbe0a453so45722317b3.0
-        for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 11:38:19 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58CC11A724
+	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 18:46:50 +0000 (UTC)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62AAEFD
+	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 11:46:48 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a528c2c8bso4456763276.1
+        for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 11:46:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698086298; x=1698691098; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698086807; x=1698691607; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=psPIDexlmbx2oQKoywMWkukSVUBQPWpjMzsLgIAN/3Q=;
-        b=Uj2CgIuGEACRene++037LQ2/pIztr1k4ibu4jgeW+T6+5P1EEPNX0zLQ/TRO7LHWKB
-         rysKqLgi7hP3omNPDriPZjRBJ+grgXPcC7vwZo+3O/Bv8lTzC52/nEVOsWh43eI2asz7
-         cuftCczPHMQXKcRzeki17zMnK8sAum/9d7Ba2U9uQNaQF1b2lBcmniIqpdUed50mxLU9
-         dCKSaeO3N9+lBzldNfAKNUYnwAIcW99d6kUuXcFKKL9icqrNHU+tKYHXzEx6cB1WwHD7
-         wS/vv2zgb07VJw8wT/X+GZpLPZ/ajYZqRqTVNiTrzkglsyTOC04dyI4Reho6ATuSmc/D
-         gKcw==
+        bh=aWCt7fVifu9lSRwvkCzaL8k9JM3Sqd8iOqTHPjTp+Z8=;
+        b=0gVQymOw39zXiMSQfLo9sMYGpYHiFi1O/RCTGGAlo6stYJu+F/AHL9PQkdIxWSLHZ5
+         VeEgHHMOHwyDgc6Uful/8rcks2qL4aoIfgQjI4Mbqk1vr1gCqYlDphq6Y14P/TfNEJff
+         xVDk90bAlRQNgBH6P7HTPiyBMU/2LciIG7SKKHFAPf0Npfq7pThgRiUy2mt1feNnU0PC
+         Xrj6oHoSidDeOojcSxtNVhHxOnLiV4WSanM8o/7DHqgx8SSqM3QiD4s08jZ1U0IabrMi
+         elIjW0OpQszH40Df3NoUlp8ZxNLVTLojcpYc9jU5wGPVIKEpXewXaFcG7mgqhicxkL8/
+         vP6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698086298; x=1698691098;
+        d=1e100.net; s=20230601; t=1698086807; x=1698691607;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=psPIDexlmbx2oQKoywMWkukSVUBQPWpjMzsLgIAN/3Q=;
-        b=tLrVZJqZh43VccjkqGHEE5L6z8gEPBraEhBLIqNJgoy8sZOP2JiAOWO8I1aRYRLCgq
-         FjaZKMPUMbSkq7jT4/XbVSwFZRETgQI99Cv4Kxj4YIwSbcTnrItwvmZVRZL5F0Zm5WrG
-         gwkVpiQNbjarSV9n5R8LcTTvpKoRuyGOtIMIEFBniijRkhIwB0IAuogPc2DXABwfg/FO
-         jU0n8RJEGhap9GqrHof+TZqIGSHzKMe9ztreYh+LqXK0/J/vtaXQCtqBhuK766ip3b/O
-         1zQ3WKtFulCjAEFYY/MnyXJ/vcOXBHYaYHcLx5/dzcmmtF5y4Cz1Gk+DZ64KkM995Qg3
-         zyEg==
-X-Gm-Message-State: AOJu0YxbVNZaxIsQycW7DXy+neWPH38phFIz2tfn7T68iRwzX3uRagAp
-	mkBT3DsX2j3RjH5NJOSPWJ3g960=
-X-Google-Smtp-Source: AGHT+IGSN2dlPUz4dYZ0sD/eg33lpIQ0p1bO+6bqKeVaG96gSQUEbAc0EauDKMZ5jFi/sXX6twYdvxM=
+        bh=aWCt7fVifu9lSRwvkCzaL8k9JM3Sqd8iOqTHPjTp+Z8=;
+        b=gHC0ciCRLtVtjr8LxE+E4LB5Y7yzAF9fezW5t7LKRK9AeAmBmP348h/aB6ZkjIehL0
+         SUbTZIw1vXQbdLBUwklGIs/IXLjmPSqz3dmcwKjME9EFo0LcPnq7wN1hGNZ1BeiVVTQV
+         21Yf/wQRAYV0iHm5gkhUCrxBY/NJj5BNxRJ/pc0Rxw4R1MZl4NJ3QDrcXsTkMhtpV6NF
+         4cJ/dVUomeTqIlwyBDfEEajOfqDsMLD+wYWmd9jxVT3S8xqV6mkyrXN98TqQtVF+Y0VK
+         gpxr+c/p9uxaG4uXReSW9mzCJjYLytIBLIQ1LelRsGYzjNyB0GtWEvk051klhrdsXtDL
+         qbMw==
+X-Gm-Message-State: AOJu0YyNpTpVa5tsx6JBreHnxRvghQ+nEyqDzUec8wF+uX2zm3UvzFQT
+	0Noz5/eHlM8Ms/jGYVlCnLj6Joo=
+X-Google-Smtp-Source: AGHT+IHVcMG7X5PXY5nV8TbWav2pfkXl0AU0B4K3H28H7klf2hO78/4IOCsT2NNurl+37A28QdkmVt4=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:c7d2:0:b0:c78:c530:6345 with SMTP id
- w201-20020a25c7d2000000b00c78c5306345mr169998ybe.7.1698086298615; Mon, 23 Oct
- 2023 11:38:18 -0700 (PDT)
-Date: Mon, 23 Oct 2023 11:38:16 -0700
-In-Reply-To: <CAJ8uoz26Q-8etBpgc25xFY8ZRcoJeAM5RFOWO-Q2_T1=xBfL9g@mail.gmail.com>
+ (user=sdf job=sendgmr) by 2002:a25:374e:0:b0:d9a:425c:f5c with SMTP id
+ e75-20020a25374e000000b00d9a425c0f5cmr183992yba.1.1698086807648; Mon, 23 Oct
+ 2023 11:46:47 -0700 (PDT)
+Date: Mon, 23 Oct 2023 11:46:46 -0700
+In-Reply-To: <20231023111209.2278899c@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20231019174944.3376335-1-sdf@google.com> <CAJ8uoz26Q-8etBpgc25xFY8ZRcoJeAM5RFOWO-Q2_T1=xBfL9g@mail.gmail.com>
-Message-ID: <ZTa9mO5esjWnW8Oo@google.com>
-Subject: Re: [PATCH bpf-next v4 00/11] xsk: TX metadata
+References: <20231019174944.3376335-1-sdf@google.com> <20231019174944.3376335-3-sdf@google.com>
+ <20231020180411.2a9f573d@kernel.org> <ZTarsV4UT-sQ14uI@google.com> <20231023111209.2278899c@kernel.org>
+Message-ID: <ZTa_lr8W__wVcqVH@google.com>
+Subject: Re: [PATCH bpf-next v4 02/11] xsk: Add TX timestamp and TX checksum
+ offload support
 From: Stanislav Fomichev <sdf@google.com>
-To: Magnus Karlsson <magnus.karlsson@gmail.com>
+To: Jakub Kicinski <kuba@kernel.org>
 Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
 	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
 	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
-	jolsa@kernel.org, kuba@kernel.org, toke@kernel.org, willemb@google.com, 
-	dsahern@kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org, 
-	maciej.fijalkowski@intel.com, hawk@kernel.org, yoong.siang.song@intel.com, 
-	netdev@vger.kernel.org, xdp-hints@xdp-project.net
+	jolsa@kernel.org, toke@kernel.org, willemb@google.com, dsahern@kernel.org, 
+	magnus.karlsson@intel.com, bjorn@kernel.org, maciej.fijalkowski@intel.com, 
+	hawk@kernel.org, yoong.siang.song@intel.com, netdev@vger.kernel.org, 
+	xdp-hints@xdp-project.net
 Content-Type: text/plain; charset="utf-8"
 
-On 10/23, Magnus Karlsson wrote:
-> On Thu, 19 Oct 2023 at 19:49, Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > This series implements initial TX metadata (offloads) for AF_XDP.
-> > See patch #2 for the main implementation and mlx5/stmmac ones for the
-> > example on how to consume the metadata on the device side.
-> >
-> > Starting with two types of offloads:
-> > - request TX timestamp (and write it back into the metadata area)
-> > - request TX checksum offload
-> >
-> > Changes since v3:
-> > - fix xsk_tx_metadata_ops kdoc (Song Yoong Siang)
-> > - add missing xsk_tx_metadata_to_compl for XDP_SOCKETS=n (Vinicius Costa Gomes and Intel bots)
-> > - add reference timestamps to the selftests + refactor existing ones (Jesper)
-> >
-> > v3: https://lore.kernel.org/bpf/20231003200522.1914523-1-sdf@google.com/
+On 10/23, Jakub Kicinski wrote:
+> On Mon, 23 Oct 2023 10:21:53 -0700 Stanislav Fomichev wrote:
+> > On 10/20, Jakub Kicinski wrote:
+> > > On Thu, 19 Oct 2023 10:49:35 -0700 Stanislav Fomichev wrote:  
+> > > > diff --git a/Documentation/netlink/specs/netdev.yaml b/Documentation/netlink/specs/netdev.yaml
+> > > > index 14511b13f305..22d2649a34ee 100644
+> > > > --- a/Documentation/netlink/specs/netdev.yaml
+> > > > +++ b/Documentation/netlink/specs/netdev.yaml
+> > > > @@ -55,6 +55,19 @@ name: netdev
+> > > >          name: hash
+> > > >          doc:
+> > > >            Device is capable of exposing receive packet hash via bpf_xdp_metadata_rx_hash().
+> > > > +  -
+> > > > +    type: flags
+> > > > +    name: xsk-flags
+> > > > +    render-max: true  
+> > > 
+> > > I don't think you're using the MAX, maybe don't render it.
+> > > IDK what purpose it'd serve for feature flag enums.  
+> > 
+> > I was gonna say 'to iterate over every possible bit', but we are using
+> > that 'xxx > 1U << i' implementation (which you also found a bug in).
+> > 
+> > I can drop it, but the question is: should I drop it from the rest as
+> > well? xdp-act and xdp-rx-metadata have it.
 > 
-> Thanks for working on this Stanislav. I went through the patch set and
-> it looks good to me. You have addressed all the feedback that Maciej
-> and I had on a previous version. Just had some small things in two of
-> the patches. Apart from that, you are good to go and you can add my
-> ack to the next version.
-> 
-> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> 
-> Again, really appreciate all your work with this!
+> The xdp-act one looks used. xdp-rx-metadata looks unused, so you could
+> drop. But up to you if you want to clean it up.
 
-Thank you! Appreciate the review and comments as well!
+Ok. I'll cleanup xdp-rx-metadata in the same path. Might we worth it
+to limit copy-paste spread..
+ 
+> > > > +/* Request transmit timestamp. Upon completion, put it into tx_timestamp
+> > > > + * field of struct xsk_tx_metadata.
+> > > > + */
+> > > > +#define XDP_TX_METADATA_TIMESTAMP		(1 << 0)
+> > > > +
+> > > > +/* Request transmit checksum offload. Checksum start position and offset
+> > > > + * are communicated via csum_start and csum_offset fields of struct
+> > > > + * xsk_tx_metadata.
+> > > > + */
+> > > > +#define XDP_TX_METADATA_CHECKSUM		(1 << 1)  
+> > > 
+> > > Reuse of enum netdev_xsk_flags is not an option?  
+> > 
+> > It is an option, but probably better to keep them separate? Netlink is
+> > for observability, and here have a tighter control over the defines and
+> > UAPI (and the don't have to map 1:1 as in the case of
+> > XDP_TX_METADATA_CHECKSUM_SW, for example).
+> 
+> The duplication is rather apparent, and they are flags so compiler
+> can't help us catch misuses of one set vs the other.
+> 
+> If you prefer to keep the separate defines - I'd rename them to tie 
+> them to the field more strongly. Specifically they should have the
+> word "flags" in them?
+> 
+> XDP_TXMD_FLAGS_TIMESTAMP
+> XDP_TXMD_FLAGS_CHECKSUM
+> 
+> maybe?
+
+Sg, will rename.
+
+> > > > +/* Force checksum calculation in software. Can be used for testing or
+> > > > + * working around potential HW issues. This option causes performance
+> > > > + * degradation and only works in XDP_COPY mode.
+> > > > + */
+> > > > +#define XDP_TX_METADATA_CHECKSUM_SW		(1 << 2)  
+> > > 
+> > > Is there a need for this to be on packet-by-packet basis?
+> > > HW issues should generally be fixed by the driver, is there 
+> > > any type of problem in particular you have in mind here?  
+> > 
+> > No, not really, do you think it makes sense to move it to a setsockopt
+> > or something? We'd still have to check it on a per-packet case
+> > though (from xsk_sock), so not sure it is strictly better?
+> 
+> Setsockopt or just ethtool -K $ifc tx off ? And check device features?
+> Maybe I'm overly sensitive but descriptor bits are usually super
+> precious :)
+
+Good point on the descriptor bits. Let me try to move to a setsockopt.
+
+> > Regarding HW issues: I don't have a good problem in mind, but I
+> > think having a SW path is useful. It least it was useful for me
+> > during developing (to compare the checksum) and I hope it will be
+> > useful for other people as well (mostly as well during development).
+> > Because the API is still a bit complicated and requires getting
+> > pseudo header csum right. Plus the fact that csum_offset is an
+> > offset from csum_start was not super intuitive to me.
+> 
+> Okay, I'm not strongly opposed, I just wanted to flag it.
+> If nobody else feels the same way, and you like the separate bit - 
+> perfectly fine by me.
+> 
+> > > > +			meta = buffer - xs->pool->tx_metadata_len;
+> > > > +
+> > > > +			if (meta->flags & XDP_TX_METADATA_CHECKSUM) {  
+> > > 
+> > > Do we need to worry about reserved / unsupported meta->flags ?  
+> > 
+> > I don't think so, probably not worth the cycles to check for the
+> > unsupported bits? Or do you think it makes sense to clearly return
+> > an error here and this extra check won't actually affect anything?
+> 
+> Hm, it is uAPI, isn't it? We try to validate anything kernel gets these
+> days, why would the flags be different? Shouldn't be more than 2 cycles.
+
+Yeah, agreed, worst case we can have some static_branch to disable it.
+But fair point that unlikely we'll see it cause any issues.
 
