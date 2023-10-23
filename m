@@ -1,128 +1,321 @@
-Return-Path: <bpf+bounces-13028-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13029-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B16867D3D01
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 19:03:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E1A17D3D0E
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 19:06:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B079B20E39
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 17:03:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF6BC2813CF
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 17:06:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA4DE1CA8D;
-	Mon, 23 Oct 2023 17:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F4F1D53E;
+	Mon, 23 Oct 2023 17:06:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FFf2vfB4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jb7T0z8q"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 171131BDCD
-	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 17:03:44 +0000 (UTC)
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9B510A
-	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 10:03:43 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-507c91582fdso5212423e87.2
-        for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 10:03:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE3E134C6
+	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 17:06:39 +0000 (UTC)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6FC10B;
+	Mon, 23 Oct 2023 10:06:37 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53e3e7e478bso5348483a12.0;
+        Mon, 23 Oct 2023 10:06:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698080621; x=1698685421; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698080796; x=1698685596; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1FoRjFsvkj87Ut9eWd3W0pP9wKr1+EgchJk1zLXqHrg=;
-        b=FFf2vfB4zPHmabg4ciij5Bfp9CeALZso42L361qF5B5qrJNiCGZAmqmx5EZoPziBW2
-         uyePoZnZtonnA6Zp/LI7ioDvwaj2qAi4HClt8dlJbG46OsJL3DOiWNG6Fe6e61/Z8O5h
-         mYtzEyMGTeKhofBMHhn2spbMYkl/Wf+GTt9ZSggadAK/l1h5+ETaDDTIQ5Dmoit9ZhOk
-         gt/XBYmubbfT1q+ZsFFfPzivpojsbRFoP7sYrg2TuzIasDg9DPeeKyVEksXHnmLTpm4e
-         X6W01W2f6730NS4y95FHRyyQ8z/ljaY+4iU/GTkKojPUdNb+c2cNjxlcCX0gN4EQYdzL
-         +UqA==
+        bh=lJnSbiIkK3dVrsPXMQL0xhdSPBzrcP+C+2hGQ/sSqgE=;
+        b=jb7T0z8qpVqq2cbORZFsqP6T5XZUJ+a3Q+F66hRAHnI+QOnRIX/FbUWXHN3CqzAJbV
+         xY1h1QyMCXp9fAJ/2sPlQMtoF4R5lareAe9sgayhGajizcIt05X08TiprZaAjX/J9xEq
+         JnZAnNW3rhCmMyc5Cl063RBtO6lmPdcq4MXyMRjmJH+9nCVMK8TgzkEkX31L506FJyj6
+         ChrFeufb1QXNGzHc1+7k7+IIE7ZiGxpHFjC5rMWF32apkpHRYuJ8uxe347OuBc+lL3pj
+         XsNBmbE45I5mtba0KjP4wEIkJhb0BXhbV0lY5O5FQVSIZ/V5A5nSWkVwi8CzYUUbPq9D
+         RnJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698080621; x=1698685421;
+        d=1e100.net; s=20230601; t=1698080796; x=1698685596;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1FoRjFsvkj87Ut9eWd3W0pP9wKr1+EgchJk1zLXqHrg=;
-        b=gbop8LVYYOOCIn39R07uKpipK80lOHEgTqnwF37ZkKAOalI2wU1gQc1gUKYFgDXdgw
-         tG6I/x2j8FVVnKp2j/uHRqNqqTXtF5awWlYjMgs/CxrjolWYXcCJf1m61CBlvu7XNPDM
-         wJTyuS3I4Vzf+x/8L1Quup/3YQQH+fIjyZowQd7kT95wfpVxILkqx4bBvFbbfyS9Y1ok
-         8yPC/+aSl4r9jsMEiAJyFWTbFzyYUvFqo+WNXkXWg6zLa84RLLQD98kpXqNNWVzllm3Y
-         h3cHyHDq/rIHKlhJV/8pQCcVnzcvk059leQ8P8w88OwVu8Mq3DVsXIpAqjCm5nzTkNqM
-         hRCQ==
-X-Gm-Message-State: AOJu0YywW4kRZJzaSD/IRzp8tnoyg77MmrGQk+MOZyfKtF9+3IGnSNrD
-	zUsnYobKFzZuMYNB1T+AmEWFTlIJGCLcVYKjsy7xTXa/w48=
-X-Google-Smtp-Source: AGHT+IH33VEiRzeq7iYOUi7Rd9pFck9FnLjl0A39Pz33w3AhwHmCeA8xx1uNts9jY5we9ewo0TP5Qzxz6cXUFazYXMs=
-X-Received: by 2002:a19:ae17:0:b0:507:a58d:24ba with SMTP id
- f23-20020a19ae17000000b00507a58d24bamr6631511lfc.63.1698080621259; Mon, 23
- Oct 2023 10:03:41 -0700 (PDT)
+        bh=lJnSbiIkK3dVrsPXMQL0xhdSPBzrcP+C+2hGQ/sSqgE=;
+        b=FOYP+ZCd5PjYtKpvwzP0ErK2VtamZHtJ4LLdlGcw3WlQyRFK1R8KltvJ1oA2yX3bEf
+         tDmj8Zdhqc1S4Cd1SCVH2YmQ7VlGmM6tDtj6TdUhT33KX6BdxFc2zjaU9BO2CIXkKvln
+         TMuLrCRMYQ8Hti8RyG+cfC/iS9ndNssoCYsot3YfrTQngrZj76XC6+VyVstPZx1H91XY
+         9200gHYPvY+hFjY9k+e9Algw3MjG8BSo447yuzRpazNZxGbgsUCyAUFxJmB0arNdV644
+         4QxmDmrB1uw0fGOykhCu8sPRx1SBVJi89t87Y2H5RFZo2dk1AWf3JFQjug+sSCzPvNCP
+         WDOQ==
+X-Gm-Message-State: AOJu0Ywmv54amzngY6+eRep5jzInRdlO5B8ZgM2KuKnLL6ZaGMS9rPKJ
+	UYdxzefSUZ19EWB2WL2FFRqMQVgqYqahpb3zP6U=
+X-Google-Smtp-Source: AGHT+IEQE6+bXc56pBFh8wTO2DkHpBKnca5f0xfWp3/i7aZIDB/AtV38Yv6TZ5Gv9detr3xgO/iKKDdgSaakMXqRV+k=
+X-Received: by 2002:a50:cc9e:0:b0:53e:fa55:8e0e with SMTP id
+ q30-20020a50cc9e000000b0053efa558e0emr8318186edi.24.1698080795692; Mon, 23
+ Oct 2023 10:06:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABfcHotwAEFraonQVhra82kzDK_3sFRqjQRg-WeVyzKkZHmJ5w@mail.gmail.com>
-In-Reply-To: <CABfcHotwAEFraonQVhra82kzDK_3sFRqjQRg-WeVyzKkZHmJ5w@mail.gmail.com>
+References: <20231020155842.130257-1-tao.lyu@epfl.ch> <CAEf4BzaqOt8DyB781geXYfrosmgQCkzDOCOH8WBVmCAPs+wQBw@mail.gmail.com>
+ <966735dbb75c46a5a73cbbaaeb31bc99@epfl.ch>
+In-Reply-To: <966735dbb75c46a5a73cbbaaeb31bc99@epfl.ch>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 23 Oct 2023 10:03:29 -0700
-Message-ID: <CAEf4Bzab7_N4s_+gJr9u_k+gU8XKkfmcnO7vGTGO4wD_kUZ+yA@mail.gmail.com>
-Subject: Re: Need help in bpf exec hook for execsnoop command
-To: sunilhasbe@gmail.com
-Cc: bpf@vger.kernel.org
+Date: Mon, 23 Oct 2023 10:06:24 -0700
+Message-ID: <CAEf4BzZ1VWD6BUWpSzf5Ny-6ptgypppvEjcWV68J6N2MJcA3ag@mail.gmail.com>
+Subject: Re: [PATCH] Incorrect backtracking for load/store or atomic ops
+To: Tao Lyu <tao.lyu@epfl.ch>
+Cc: "ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "andrii@kernel.org" <andrii@kernel.org>, 
+	"martin.lau@linux.dev" <martin.lau@linux.dev>, "song@kernel.org" <song@kernel.org>, 
+	"yonghong.song@linux.dev" <yonghong.song@linux.dev>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
+	"sdf@google.com" <sdf@google.com>, "haoluo@google.com" <haoluo@google.com>, 
+	"jolsa@kernel.org" <jolsa@kernel.org>, "mykolal@fb.com" <mykolal@fb.com>, "shuah@kernel.org" <shuah@kernel.org>, 
+	"security@kernel.org" <security@kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, 
+	Sanidhya Kashyap <sanidhya.kashyap@epfl.ch>, 
+	"mathias.payer@nebelwelt.net" <mathias.payer@nebelwelt.net>, 
+	"meng.xu.cs@uwaterloo.ca" <meng.xu.cs@uwaterloo.ca>, 
+	Kumar Kartikeya Dwivedi <kartikeya.dwivedi@epfl.ch>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Oct 22, 2023 at 10:12=E2=80=AFPM sunil hasbe <sunilhasbe@gmail.com>=
- wrote:
+On Mon, Oct 23, 2023 at 3:12=E2=80=AFAM Tao Lyu <tao.lyu@epfl.ch> wrote:
 >
-> Hello,
-> We are using ebpf hooks to get the process and its arguments when it
-> is calling exec. We are using ebpf execsnoop open source utility to
-> track all exec. Most of the time it works correctly, but in certain
-> cases (very less) it fails to get the argv[0] and argv[1]. E.g. in
-> below case, we are opening a new session into existing tmux session
-> which forks/exec a new process like this
-> "/usr/lib/x86_64-linux-gnu/utempter/utempter add tmux(1852218).%8".
-> However execsnopp is unable to get all the arguments which a userland
-> utility is able to get based on the cmdline for thar process. We have
-> used proc_connector as well to track all the processes which is able
-> to get the command line properly.
+> >
+> > On Fri, Oct 20, 2023 at 9:06=E2=80=AFAM Tao Lyu <tao.lyu@epfl.ch> wrote=
+:
+> >>
+> >> Hi,
+> >>
+> >> I found the backtracking logic of the eBPF verifier is flawed
+> >> when meeting 1) normal load and store instruction or
+> >> 2) atomic memory instructions.
+> >>
+> >> # Normal load and store
+> >>
+> >> Here, I show one case about the normal load and store instructions,
+> >> which can be exploited to achieve arbitrary read and write with two re=
+quirements:
+> >> 1) The uploading program should have at least CAP_BPF, which is requir=
+ed for most eBPF applications.
+> >> 2) Disable CPU mitigations by adding "mitigations=3Doff" in the kernel=
+ booting command line. Otherwise,
+> >> the Spectre mitigation in the eBPF verifier will prevent exploitation.
+> >>
+> >>                                    1: r3 =3D r10 (stack pointer)
+> >>                                    3:           if cond
+> >>                                                  /           \
+> >>                                                /                \
+> >>         4: *(u64 *)(r3 -120) =3D 200      6: *(u64 *)(r3 -120) =3D arb=
+itrary offset to r2
+> >>                  verification state 1                  verification st=
+ate 2 (prune point)
+> >>                                               \                  /
+> >>                                                 \              /
+> >>                                       7:  r6 =3D *(u64 *)(r1 -120)
+> >>                                                          ...
+> >>                                     17:    r7 =3D a map pointer
+> >>                                     18:            r7 +=3D r6
+> >>                          // Out-of-bound access from the right side pa=
+th
+> >>
+> >> Give an eBPF program (tools/testing/selftests/bpf/test_precise.c)
+> >> whose simplified control flow graph looks like the above.
+> >> When the verifier goes through the first (left-side) path and reaches =
+insn 18,
+> >> it will backtrack on register 6 like below.
+> >>
+> >> 18: (0f) r7 +=3D r6
+> >> mark_precise: frame0: last_idx 18 first_idx 17 subseq_idx -1
+> >> mark_precise: frame0: regs=3Dr6 stack=3D before 17: (bf) r7 =3D r0
+> >> ...
+> >> mark_precise: frame0: regs=3Dr6 stack=3D before 7: (79) r6 =3D *(u64 *=
+)(r3 -120)
+> >>
+> >> However, the backtracking process is problematic when it reaches insn =
+7.
+> >> Insn 7 is to load a value from the stack, but the stack pointer is rep=
+resented by r3 instead of r10.
+> >> ** In this case, the verifier (as shown below) will reset the precisio=
+n on r6 and not mark the precision on the stack. **
+> >> Afterward, the backtracking finishes without annotating any registers =
+in any verifier states.
+> >>
+> >>     else if (class =3D=3D BPF_LDX) {
+> >>         if (!bt_is_reg_set(bt, dreg))
+> >>             return 0;
+> >>         bt_clear_reg(bt, dreg);
+> >>         if (insn->src_reg !=3D BPF_REG_FP)
+> >>             return 0;
+> >>         ...
+> >>    }
+> >>
+> >> Finally, when the second (left-side) path reaches insn 7 again,
+> >> it will compare the verifier states with the previous one.
+> >> However, it realizes these two states are equal because no precision i=
+s on r6,
+> >> thus the eBPF program an easily pass the verifier
+> >> although the second path contains an invalid access offset.
+> >> We have successfully exploited this bug for getting the root privilege=
+.
+> >> If needed, we can share the exploitation.
+> >> BTW, when using the similar instructions in sub_prog can also trigger =
+an assertion in the verifier:
+> >> "[ 1510.165537] verifier backtracking bug
+> >> [ 1510.165582] WARNING: CPU: 2 PID: 382 at kernel/bpf/verifier.c:3626 =
+__mark_chain_precision+0x4568/0x4e50"
+> >>
+> >>
+> >>
+> >> IMO, to fully patch this bug, we need to know whether the insn->src_re=
+g is an alias of BPF_REG_FP.
+> >
+> > Yes!
+> >
+> >> However, it might need too much code addition.
+> >
+> > No :) I don't think it's a lot of code. I've been meaning to tackle
+> > this for a while, but perhaps the time is now.
+> >
+> > The plan is to use jmp_history to record an extra flags for some
+> > instructions (even if they are not jumps). Like in this case, we can
+> > remember for LDX and STX instructions that they were doing register
+> > load/spill, and take that into account during backtrack_insn() without
+> > having to guess based on r10.
+> >
+> > I have part of this ready locally, I'll try to finish this up in a
+> > next week or two. Stay tuned (unless you want to tackle that
+> > yourself).
 >
+> Great! I'll keep focus on this.
 >
-> proc_connector process
-> FORK:parent(pid,tgid)=3D1852218,1852218   child(pid,tgid)=3D1935154,19351=
-54 [tmux ]
-> FORK:parent(pid,tgid)=3D1852218,1852218   child(pid,tgid)=3D1935155,19351=
-55 [tmux ]
-> EXEC:pid=3D1935154,tgid=3D1935154   [Uid:   0       0       0       0]   =
-   [-bash ]
-> EXEC:pid=3D1935155,tgid=3D1935155   [Uid:   0       0       0       0]
->  [/usr/lib/x86_64-linux-gnu/utempter/utempter add tmux(1852218).%8 ]
+> >
+> >> Or we just do not clear the precision on the src register.
+> >>
+> >> # Atomic memory instructions
+> >>
+> >> Then, I show that the backtracking on atomic load and store is also fl=
+awed.
+> >> As shown below, when the backtrack_insn() function in the verifier mee=
+ts store instructions,
+> >> it checks if the stack slot is set with precision or not. If not, just=
+ return.
+> >>
+> >>             if (!bt_is_slot_set(bt, spi))
+> >>                 return 0;
+> >>             bt_clear_slot(bt, spi);
+> >>             if (class =3D=3D BPF_STX)
+> >>                 bt_set_reg(bt, sreg);
+> >>
+> >> Assume we have an atomic_fetch_or instruction (tools/testing/selftests=
+/bpf/verifier/atomic_precision.c) shown below.
+> >>
+> >> 7: (4c) w7 |=3D w3
+> >> mark_precise: frame1: last_idx 7 first_idx 0 subseq_idx -1
+> >> mark_precise: frame1: regs=3Dr7 stack=3D before 6: (c3) r7 =3D atomic_=
+fetch_or((u32 *)(r10 -120), r7)
+> >> mark_precise: frame1: regs=3Dr7 stack=3D before 5: (bf) r7 =3D r10
+> >> mark_precise: frame1: regs=3Dr10 stack=3D before 4: (7b) *(u64 *)(r3 -=
+120) =3D r1
+> >> mark_precise: frame1: regs=3Dr10 stack=3D before 3: (bf) r3 =3D r10
+> >> mark_precise: frame1: regs=3Dr10 stack=3D before 2: (b7) r1 =3D 1000
+> >> mark_precise: frame1: regs=3Dr10 stack=3D before 0: (85) call pc+1
+> >> BUG regs 400
+> >>
+> >> Before backtracking to it, r7 has already been marked as precise.
+> >> Since the value of r7 after atomic_fecth_or comes from r10-120,
+> >> it should propagate the precision to r10-120.
+> >> However, because the stack slot r10-120 is not marked,
+> >> it doesn't satisfy bt_is_slot_set(bt, spi) condition shown above.
+> >> Finally, it just returns without marking r10-120 as precise.
+> >
+> > this seems like the same issue with not recognizing stack access
+> > through any other register but r10?
+> >
+> > Or is there something specific to atomic instructions here? I'm not
+> > very familiar with them, so I'll need to analyse the code first.
 >
+> The non-recognizing stack access through other non-r10 registers can also=
+ affect atomic instructions as atomic instructions are also memory store in=
+structions.
 >
-> /usr/sbin/execsnoop-bpfcc
-> bash             1935154 1852218   0 /bin/bash
-> utempter         1935155 1852218   0   tmux(1852218).%8
+> But there is another aspect, that atomi ops has much complex/different se=
+mantic compared to memory store instructions. However, the backtracking log=
+ic didn't take care of it.
 >
+> For example, insn r7 =3D atomic_fetch_or((u32 *)(r10 -120), r7) will load=
+ the original value at r10-120 to the final r7, and store the "or" result o=
+f the value at r10-120 and original r7.
 >
-> Upon debugging this further, we are suspecting if there is anything
-> related to how the parent process is forking/execing and updating its
-> arguments. As most of the times execsnoop is working perfectly fine
-> but only for few processes it fails to get the argv[0] and argv[1]. We
-> inspected the syscall__execve and found that argv[0], argv[1] is empty
-> and argv[2] is having correct value as tmux(1852218).%8.
+> Case 1: Assume r7 is marked as precise and then the backtracking code mee=
+ts this instruction, it should propagate the precision to the stack slot r1=
+0-120.
 >
-> We have seen this issue on kernel version on 5.15 on ubuntu20. Any
-> pointer would be very helpful on this.
+> Case 2: Assume r10-120 is marked as precise, after this instruction, r10-=
+120 and r7 should both be marked precise.
+>
 
-Check what error bpf_probe_read_user() returns. If it's -EFAULT, then
-it's probably the case that user memory is not physically present in
-memory and needs to be paged in, which is not allowed for
-non-sleepable BPF programs. So you'd need to make use of
-bpf_copy_from_user() and use sleepable BPF programs.
+So generally speaking atomic operation's memory argument can't be
+precise as it is supposed to be modified by other CPUs simultaneously,
+so we can never be sure about its actual value.
+
+But using stack pointer is kind of a special case where atomicity
+doesn't matter because no one should be accessing stack from another
+CPU. So perhaps we can special case this.
+
+Either way, I'm going to concentrate on more generally recognize stack
+access for any instruction, and we can work on fixing atomic-specific
+semantics on top of that separately.
+
+> >
+> >>
+> >> This bug can lead to the verifier's assertion as well:
+> >> "[ 1510.165537] verifier backtracking bug
+> >> [ 1510.165582] WARNING: CPU: 2 PID: 382 at kernel/bpf/verifier.c:3626 =
+__mark_chain_precision+0x4568/0x4e50"
+> >>
+> >> I've attached the patch for correctly propagating the precision on ato=
+mic instructions.
+> >> But it still can't solve the problem that the stack slot is expressed =
+with other registers instead of r10.
+> >
+> > I can try to solve stack access through non-r10, but it would be very
+> > useful if you could provide tests that trigger the above situations
+> > you described. Your test_precise.c test below is not the right way to
+> > add tests, it adds a new binary and generally doesn't fit into
+> > existing set of tests inside test_progs. Please see
+> > progs/verifier_xadd.c and prog_tests/verifier.c and try to convert
+> > your tests into that form (you also will be able to use inline
+> > assembly instead of painful BPF_xxx() instruction macros).
+> >
+> > Thanks.
+>
+> Sure. I'll re-construct the test case may the end of this week because I'=
+m attending a conference SOSP this week.
+
+Sounds good, thanks.
 
 >
-> Regards,
-> Sunil
->
+> >
+> >>
+> >> Signed-off-by: Tao Lyu <tao.lyu@epfl.ch>
+> >> ---
+> >>  kernel/bpf/verifier.c                         |  58 +++++-
+> >>  tools/testing/selftests/bpf/Makefile          |   6 +-
+> >>  tools/testing/selftests/bpf/test_precise.c    | 186 +++++++++++++++++=
++
+> >>  .../selftests/bpf/verifier/atomic_precision.c |  19 ++
+> >>  4 files changed, 263 insertions(+), 6 deletions(-)
+> >>  create mode 100644 tools/testing/selftests/bpf/test_precise.c
+> >>  create mode 100644 tools/testing/selftests/bpf/verifier/atomic_precis=
+ion.c
+> >>
+> >
+> >[...]
 
