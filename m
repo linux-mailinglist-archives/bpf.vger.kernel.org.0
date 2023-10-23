@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-13021-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13022-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8CE97D3BB0
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCD277D3BAF
 	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 18:04:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D15DB20ED8
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 16:04:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76B2928149E
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 16:04:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812C31CF8C;
-	Mon, 23 Oct 2023 16:04:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C69C81CABF;
+	Mon, 23 Oct 2023 16:04:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SQiQSYWs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tHLAoS+0"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE70418E36;
-	Mon, 23 Oct 2023 16:04:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0B54C433C7;
-	Mon, 23 Oct 2023 16:04:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B62A1CAA2;
+	Mon, 23 Oct 2023 16:04:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10A7EC433C7;
+	Mon, 23 Oct 2023 16:04:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698077062;
-	bh=vI21SwsFh8BbUe3W4TDykih0dYY4CzbsnALGXjMyIZk=;
+	s=k20201202; t=1698077066;
+	bh=OkdgsQ0WxLHiL+vWRAT85wEiCaCy0CgtTgmYQnUQPbc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SQiQSYWsrNMSnoFRrdgXaT1KA4JMzhmRSo8PXzVIPrpLgttt5AZHkb7uddoMsEs4c
-	 99+EGf9ng6xNq6MaO6JWyK+gWmqrunUOb+m/I2sesrMEmD1Bt/vRd0h+94RWCOxmnM
-	 W5BbZFh0IK6fxUS8tzAKC7ntayJOoX/T2olrpOudncUII2Pi2JBLXDMQ2ymy93U/PL
-	 qsGZFPvLl0A9x47jOxKPGjOhNLnqz3CC49mgZ4A+4R9FKHYfeIvk2RwzQ75nxGSJhJ
-	 Jt5TJDmGNb8VBaYzI4CMqEYsjqVIo6M+EzNsX/RIDSfEUOtiIBEO38Qt7QN8KLIk/4
-	 LUcprhEz5TtBg==
+	b=tHLAoS+0TS9MtJ8XU3pLMYFqDmmQ6W84aixIb+ANPaXUZtZxaBJFBUAwaQ8HAhBcF
+	 UeXJ1ChuRid1k2V5k70DP0yzu1dyIdvzlmhhkQq0qH3//tb0Pxw3LwTB9PAkHLfIX5
+	 uwrGiErYb/Y4Qq4Atbf50cGCbRfAGE+CWG169OmsCMxxDn0DNR+bZXQY/WPKNvc/Ut
+	 rfYv48/Q+3RWp8tZnZxQkDAp+n2ALi0Q//dX1JSG3txGBfui8nojEFZPn7Obr+FFKV
+	 FOpPWFmi8cbtKrpAwdeosg3R3ZxoJfvktt5lkQZB5+e1dHwqobDC9Eu0kWHorK0wKS
+	 p1radZoOZKMyw==
 From: Song Liu <song@kernel.org>
 To: bpf@vger.kernel.org,
 	fsverity@lists.linux.dev
@@ -44,9 +44,9 @@ Cc: ast@kernel.org,
 	tytso@mit.edu,
 	roberto.sassu@huaweicloud.com,
 	Song Liu <song@kernel.org>
-Subject: [PATCH v3 bpf-next 6/9] Documentation/bpf: Add documentation for filesystem kfuncs
-Date: Mon, 23 Oct 2023 09:03:46 -0700
-Message-Id: <20231023160349.4161154-7-song@kernel.org>
+Subject: [PATCH v3 bpf-next 7/9] selftests/bpf: Sort config in alphabetic order
+Date: Mon, 23 Oct 2023 09:03:47 -0700
+Message-Id: <20231023160349.4161154-8-song@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231023160349.4161154-1-song@kernel.org>
 References: <20231023160349.4161154-1-song@kernel.org>
@@ -58,54 +58,26 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a brief introduction for file system kfuncs.
+Move CONFIG_VSOCKETS up, so the CONFIGs are in sorted order.
 
 Signed-off-by: Song Liu <song@kernel.org>
 ---
- Documentation/bpf/fs_kfuncs.rst | 21 +++++++++++++++++++++
- Documentation/bpf/index.rst     |  1 +
- 2 files changed, 22 insertions(+)
- create mode 100644 Documentation/bpf/fs_kfuncs.rst
+ tools/testing/selftests/bpf/config | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/bpf/fs_kfuncs.rst b/Documentation/bpf/fs_kfuncs.rst
-new file mode 100644
-index 000000000000..8762c3233a3d
---- /dev/null
-+++ b/Documentation/bpf/fs_kfuncs.rst
-@@ -0,0 +1,21 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. _fs_kfuncs-header-label:
-+
-+=====================
-+BPF filesystem kfuncs
-+=====================
-+
-+BPF LSM programs need to access filesystem data from LSM hooks. The following
-+BPF kfuncs can be used to get these data.
-+
-+ * ``bpf_get_file_xattr()``
-+
-+ * ``bpf_get_fsverity_digest()``
-+
-+To avoid recursions, these kfuncs follow the following rules:
-+
-+1. These kfuncs are only permitted from BPF LSM function.
-+2. These kfuncs should not call into other LSM hooks, i.e. security_*(). For
-+   example, ``bpf_get_file_xattr()`` does not use ``vfs_getxattr()``, because
-+   the latter calls LSM hook ``security_inode_getxattr``.
-diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
-index aeaeb35e6d4a..0bb5cb8157f1 100644
---- a/Documentation/bpf/index.rst
-+++ b/Documentation/bpf/index.rst
-@@ -21,6 +21,7 @@ that goes into great technical depth about the BPF Architecture.
-    helpers
-    kfuncs
-    cpumasks
-+   fs_kfuncs
-    programs
-    maps
-    bpf_prog_run
+diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+index 02dd4409200e..09da30be8728 100644
+--- a/tools/testing/selftests/bpf/config
++++ b/tools/testing/selftests/bpf/config
+@@ -81,7 +81,7 @@ CONFIG_SECURITY=y
+ CONFIG_SECURITYFS=y
+ CONFIG_TEST_BPF=m
+ CONFIG_USERFAULTFD=y
++CONFIG_VSOCKETS=y
+ CONFIG_VXLAN=y
+ CONFIG_XDP_SOCKETS=y
+ CONFIG_XFRM_INTERFACE=y
+-CONFIG_VSOCKETS=y
 -- 
 2.34.1
 
