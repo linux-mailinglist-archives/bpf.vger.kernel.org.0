@@ -1,246 +1,266 @@
-Return-Path: <bpf+bounces-12966-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12967-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05C7F7D28C2
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 05:00:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEE2A7D28FA
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 05:19:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A5D0B20D58
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 02:59:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D657281447
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 03:19:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 465D515B3;
-	Mon, 23 Oct 2023 02:59:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86B5E1841;
+	Mon, 23 Oct 2023 03:19:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FvxCSk7r"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aATVn9eq"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 224081104
-	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 02:59:51 +0000 (UTC)
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C84119
-	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 19:59:49 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-66d1a05b816so21946406d6.1
-        for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 19:59:49 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD9A371
+	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 03:19:51 +0000 (UTC)
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A29F7;
+	Sun, 22 Oct 2023 20:19:48 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507cee17b00so4088676e87.2;
+        Sun, 22 Oct 2023 20:19:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698029988; x=1698634788; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698031187; x=1698635987; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=N6OJsYG53qkdKLI2mndRMykx22cvUjCektEL73A9ayc=;
-        b=FvxCSk7ryIkgsQTdZJRMQLfPSJX84moxKXidkMGO086F4lRO0DMe6IUWDY6gChZXPH
-         qDdVxHZIDF89H0Ar7qrgDEcOvNrfE/1RQV/KGqn7LQcD3f9jgAEEYy3MK7YdhggTp7AH
-         hQQQB5VdOJo2w780IpqVmgXiGqcQtjZjbyv3/Qn/8ax0LAcnUcIbmCrAeDsXv3YbJ8EQ
-         Mx1Ow9DgBE1HPCJGH0hS8UKooyIleX0YfU3kKROl7AhpnED5/kE3RXh9S4w9zHsYqJZS
-         pIAb2qGi04unTtYLZ0sgLAdtI8VSsFkTD4E1nXg2CtfMJNViKyxkGsjM2f8tsYK0huVw
-         o/4Q==
+        bh=PoHxDhurNoi7ABAIOjydGemVbw76Jn6sMUFspJpsTdg=;
+        b=aATVn9eqnz2f/mcbSdgngYVCiAzqqiBXGPHSJiBFj9uwLSdgaOwJ7ye4mi+EeZh5+G
+         B8CyyaKBr3thcLn+9dmtzMYKkqVS1OzroCy7vxKoEPDrSHR76ptia/ptfdnFc9dSbjt5
+         kKyINJxOkn/l1KwZunVjr5YjGUel9KYz/r2Qacu+1oAYSu2QZ1nZOCNEBQcv9IeYTa39
+         nyCXVTMoWG/AqGkW913uwKm4al/fo4eoDg8uI9DlqzF2KYmcG5/elduaLObl/VZ3BfcV
+         fz628qTpIhhSwnay2uh7vgrZ6CU/ZKmCi7mELapQm7aZwZy/vikl208Dm3GlxINoFA7N
+         aeZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698029988; x=1698634788;
+        d=1e100.net; s=20230601; t=1698031187; x=1698635987;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N6OJsYG53qkdKLI2mndRMykx22cvUjCektEL73A9ayc=;
-        b=qWSNOPHQTDKiCIVVFtjz4Axa/Jcmtksi1yk5yRnsSwA9UWFIHcQ7Y40dBRyDUrLurP
-         +5HtTu/uU44pnCSC5Y8irXPsd8FejIpwm/5V/6C9xf3ooqPJZDgJA68lhvVYMXCk7t3a
-         eYN2wWp/W5Lua86WLfbiI8MRp2+YiVPOjuA/POV56Bg442o01fHZPtDTbCmWJAJ1yOzz
-         VpaXz9IXXdXY/zZESh46buPaDfh1FGBTnQAIvd6vi69G4OaMmXIlt9PFGzPImvdHY4Jf
-         vLxbr8wO7jbZzGnk1iJMJu7zipeUx5Y3RT/kzOPQGw5MmFyhjUQa5IRFZteixSvtNcMF
-         xT7w==
-X-Gm-Message-State: AOJu0Yw9b/gvJHftcnyuiZ6azc/Yl7ZFcD2emLvg/OvgmEvcYXFzT2+T
-	VI92YnFEK/V6Td8ejgU/mcPeBNoyC4+fOhZqPJk=
-X-Google-Smtp-Source: AGHT+IHT2DVFg6n/fpki1JIz7YgvFr1x5k4XW7Dr5KilWPtUgML5TtFS4KfemrRuh1swAjNGWz7OYprgiFX6niZWh50=
-X-Received: by 2002:a05:6214:248e:b0:66d:690d:42b8 with SMTP id
- gi14-20020a056214248e00b0066d690d42b8mr12191924qvb.22.1698029988506; Sun, 22
- Oct 2023 19:59:48 -0700 (PDT)
+        bh=PoHxDhurNoi7ABAIOjydGemVbw76Jn6sMUFspJpsTdg=;
+        b=vGwcvgEpYWmVugFWBMXp53eRZjOlzxfF5DaT4Mk6te0R53y+/9Fua2GcVM14QybLmm
+         dqaM7QomkigG3a/rPf/QXs5Q36b1zSGvxq5H8rixwKGBPF/hi0SuDpmgjT+wYaek0LRX
+         9xrxD/pQy5ZJxh0d5KWZdapJ8W8P8/bRPxOVHh8GCdYxLrhYb6pmVPXhNjRKuSVHrxNV
+         ijlT8ZVLpNBbqqNmbJSZ8oA1to8fYc1GLWdvrqTWrdGHvEanGXDwij+0vYJQsww3pSXl
+         3paej1oiKkauHRENWZLvgb3/DWGEAnai8ECgckFvnRYsvgdo9emIn7R4pMzQrD1QvEJa
+         //iA==
+X-Gm-Message-State: AOJu0YyqKvgHkxtNdce3ZwZ2ZBTEjxHU+8VAFjyaeNSSVoQquL/n6h11
+	QCEQNFUiegOA4rqbfDksIu4CwooPV66sTfWUOLZ+KmuY
+X-Google-Smtp-Source: AGHT+IEfZdoYjtp/SQVKQbfr7FTTTxJVVy+tG1DGFuvSJuUyhUJQFwv4G1ZGcA1OdREtN29We06C9NHHSNjMGV6Os9A=
+X-Received: by 2002:ac2:5550:0:b0:503:258f:fd1b with SMTP id
+ l16-20020ac25550000000b00503258ffd1bmr5613776lfk.18.1698031186879; Sun, 22
+ Oct 2023 20:19:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231019181158.1982205-1-leitao@debian.org>
-In-Reply-To: <20231019181158.1982205-1-leitao@debian.org>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Mon, 23 Oct 2023 10:59:13 +0800
-Message-ID: <CALOAHbDreP4JpL_C=+mkpwRvMpkVDdE-LNxkN=oyJW2vPjM_GQ@mail.gmail.com>
-Subject: Re: [PATCH v5 00/12] x86/bugs: Add a separate config for each mitigation
-To: Breno Leitao <leitao@debian.org>
-Cc: jpoimboe@kernel.org, mingo@redhat.com, tglx@linutronix.de, bp@alien8.de, 
-	x86@kernel.org, leit@meta.com, 
-	"open list:BPF [MISC]:Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>
+References: <20231018151950.205265-1-masahiroy@kernel.org> <20231018151950.205265-4-masahiroy@kernel.org>
+ <ZTDlrkTXnkVN1cff@krava> <CAEf4BzZm4h4q6k9ZhuT5qiWC9PYA+c7XwVFd68iAq4mtMJ-qhw@mail.gmail.com>
+ <CAK7LNAR2kKwbzdFxfVXDxsy8pfyQDCR-BN=zpbcZg0JS9RpsKQ@mail.gmail.com>
+ <CAEf4BzbYwEFSNTFjJyhYmOOK5iwHjFAdcArkUbcQz5ntRvOOvA@mail.gmail.com>
+ <CAK7LNAQxFgOpuCBYPSx5Z6aw5MtKzPL39XLUvZuUBSyRGnOZUg@mail.gmail.com>
+ <CAEf4BzZqpqo3j33FkH3QJwezbJwarr1dXs4fCsp5So12_5MmTg@mail.gmail.com> <CAK7LNATAuLXCvN5=WiaKv9G4uF-cC2gNe5V-6G55b6fxGNZpeA@mail.gmail.com>
+In-Reply-To: <CAK7LNATAuLXCvN5=WiaKv9G4uF-cC2gNe5V-6G55b6fxGNZpeA@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Sun, 22 Oct 2023 20:19:35 -0700
+Message-ID: <CAEf4BzbUqNW5UnhV9bzevtsUUeALca7CthBtzz7NjMCu2ZFmsw@mail.gmail.com>
+Subject: Re: [bpf-next PATCH v2 4/4] kbuild: refactor module BTF rule
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 20, 2023 at 2:12=E2=80=AFAM Breno Leitao <leitao@debian.org> wr=
-ote:
+On Sun, Oct 22, 2023 at 1:24=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
 >
-> Currently, the CONFIG_SPECULATION_MITIGATIONS is halfway populated,
-> where some mitigations have entries in Kconfig, and they could be
-> modified, while others mitigations do not have Kconfig entries, and
-> could not be controlled at build time.
+> On Sun, Oct 22, 2023 at 4:33=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Sat, Oct 21, 2023 at 4:38=E2=80=AFAM Masahiro Yamada <masahiroy@kern=
+el.org> wrote:
+> > >
+> > > On Sat, Oct 21, 2023 at 5:52=E2=80=AFAM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Fri, Oct 20, 2023 at 12:03=E2=80=AFAM Masahiro Yamada <masahiroy=
+@kernel.org> wrote:
+> > > > >
+> > > > > On Fri, Oct 20, 2023 at 7:55=E2=80=AFAM Andrii Nakryiko
+> > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > >
+> > > > > > On Thu, Oct 19, 2023 at 1:15=E2=80=AFAM Jiri Olsa <olsajiri@gma=
+il.com> wrote:
+> > > > > > >
+> > > > > > > On Thu, Oct 19, 2023 at 12:19:50AM +0900, Masahiro Yamada wro=
+te:
+> > > > > > > > newer_prereqs_except and if_changed_except are ugly hacks o=
+f the
+> > > > > > > > newer-prereqs and if_changed in scripts/Kbuild.include.
+> > > > > > > >
+> > > > > > > > Remove.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > > > > > > ---
+> > > > > > > >
+> > > > > > > > Changes in v2:
+> > > > > > > >   - Fix if_changed_except to if_changed
+> > > > > > > >
+> > > > > > > >  scripts/Makefile.modfinal | 25 ++++++-------------------
+> > > > > > > >  1 file changed, 6 insertions(+), 19 deletions(-)
+> > > > > > > >
+> > > > > > > > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.m=
+odfinal
+> > > > > > > > index 9fd7a26e4fe9..fc07854bb7b9 100644
+> > > > > > > > --- a/scripts/Makefile.modfinal
+> > > > > > > > +++ b/scripts/Makefile.modfinal
+> > > > > > > > @@ -19,6 +19,9 @@ vmlinux :=3D
+> > > > > > > >  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+> > > > > > > >  ifneq ($(wildcard vmlinux),)
+> > > > > > > >  vmlinux :=3D vmlinux
+> > > > > > > > +cmd_btf =3D ; \
+> > > > > > > > +     LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLA=
+GS) --btf_base vmlinux $@; \
+> > > > > > > > +     $(RESOLVE_BTFIDS) -b vmlinux $@
+> > > > > > > >  else
+> > > > > > > >  $(warning Skipping BTF generation due to unavailability of=
+ vmlinux)
+> > > > > > > >  endif
+> > > > > > > > @@ -41,27 +44,11 @@ quiet_cmd_ld_ko_o =3D LD [M]  $@
+> > > > > > > >        cmd_ld_ko_o +=3D                                    =
+             \
+> > > > > > > >       $(LD) -r $(KBUILD_LDFLAGS)                           =
+           \
+> > > > > > > >               $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)   =
+           \
+> > > > > > > > -             -T scripts/module.lds -o $@ $(filter %.o, $^)
+> > > > > > > > +             -T scripts/module.lds -o $@ $(filter %.o, $^)=
+           \
+> > > > > > > > +     $(cmd_btf)
+> > > > > > > >
+> > > > > > > > -quiet_cmd_btf_ko =3D BTF [M] $@
+> > > > > > >
+> > > > > > > nit not sure it's intentional but we no longer display 'BTF [=
+M] ...ko' lines,
+> > > > > > > I don't mind not displaying that, but we should mention that =
+in changelog
+> > > > > > >
+> > > > > >
+> > > > > > Thanks for spotting this! I think those messages are useful and
+> > > > > > important to keep. Masahiro, is it possible to preserve them?
+> > > > >
+> > > > >
+> > > > >
+> > > > > No, I do not think so.
+> > > > >
+> > > >
+> > > > That's too bad, I think it's a useful one.
+> > >
+> > >
+> > >
+> > > I prioritize that the code is correct.
+> > >
+> >
+> > Could you please also prioritize not regressing informativeness of a
+> > build log? With your changes it's not clear now if BTF was generated
+> > or not for a kernel module, while previously it was obvious and was
+> > easy to spot if for some reason BTF was not generated. I'd like to
+> > preserve this
+> > property, thank you.
+> >
+> > E.g, can we still have BTF generation as a separate command and do a
+> > separate $(call if_changed,btf_ko)? Or something along those lines.
+> > Would that work?
 >
-> The fact of having a fine grained control can help in a few ways:
->
-> 1) Users can choose and pick only mitigations that are important for
-> their workloads.
->
-> 2) Users and developers can choose to disable mitigations that mangle
-> the assembly code generation, making it hard to read.
->
-> 3) Separate configs for just source code readability,
-> so that we see *which* butt-ugly piece of crap code is for what
-> reason.
->
-> Important to say, if a mitigation is disabled at compilation time, it
-> could be enabled at runtime using kernel command line arguments.
+> If we have an intermediate file (say, *.no-btf.ko),
+> it would make sense to have separate
+> $(call if_changed,ld_ko_o) and $(call if_changed,btf_ko).
 
-Hi Breno,
+Currently we don't generate intermediate files, but we do rewrite
+original .ko file as a post-processing step.
 
-Do you have any plans to introduce utility functions for runtime
-checks on whether specific mitigations are disabled? Such helpers
-would be quite valuable; for instance, we could utilize them to
-determine if Spectre v1 or Spectre v4 mitigations are disabled in
-BPF[1].
-
-[1].  https://lore.kernel.org/bpf/20231005084123.1338-1-laoar.shao@gmail.co=
-m
-
+And that rewriting step might not happen depending on Kconfig and
+toolchain (e.g., too old pahole makes it impossible to generate kernel
+module BTF). And that's why having a separate BTF [M] message in the
+build log is important.
 
 >
-> Discussion about this approach:
-> https://lore.kernel.org/all/CAHk-=3DwjTHeQjsqtHcBGvy9TaJQ5uAm5HrCDuOD9v7q=
-A9U1Xr4w@mail.gmail.com/
-> and
-> https://lore.kernel.org/lkml/20231011044252.42bplzjsam3qsasz@treble/
 >
-> In order to get the missing mitigations, some clean up was done.
+>            LD                 RESOLVE_BTFIDS
+>  *.mod.o  ------> *.no-btf.ko ------------> *.ko
 >
-> 1) Get a namespace for mitigations, prepending MITIGATION to the Kconfig
-> entries.
 >
-> 2) Adding the missing mitigations, so, the mitigations have entries in th=
-e
-> Kconfig that could be easily configure by the user.
+> When vmlinux is changed, only the second step would
+> be re-run, but that would require extra file copy.
+
+Today we rewrite .ko with a new .ko ELF file which gains a new ELF
+section (.BTF), so we already pay this price when BTF is enabled (if
+that's your concern).
+
 >
-> With this patchset applied, all configs have an individual entry under
-> CONFIG_SPECULATION_MITIGATIONS, and all of them starts with CONFIG_MITIGA=
-TION.
+> Is this what you want to see?
+
+I don't have strong preferences for exact implementation, but what you
+propose will work, I think. What I'd like to avoid is unnecessarily
+relinking .ko files if all we need to do is regenerate BTF.
+
 >
-> Changelog
-> ---------
-> V1:
->         * Creates a way to mitigate all (or none) hardware bugs
-> V2:
->         * Create KCONFIGs entries only some hardware bugs (MDS, TAA, MMIO=
-)
-> V3:
->         * Expand the mitigations KCONFIGs to all hardware bugs that are
->           Linux mitigates.
-> V4:
->         * Patch rebase.
->         * Better documentation about the reasons of this decision.
-> V5:
->         * Create a "MITIGATION" Kconfig namespace for the entries mitigat=
-ing
->           hardware bugs.
->         * Add GDS to the set of mitigations that are being covered.
->         * Reduce the ifdefs in the code by leveraging conditionals with o=
-mitted
->           operands.
 >
-> Breno Leitao (12):
->   x86/bugs: Rename GDS_FORCE_MITIGATION to MITIGATION_GDS_FORCE
->   x86/bugs: Rename CPU_IBPB_ENTRY to MITIGATION_IBPB_ENTRY
->   x86/bugs: Rename CALL_DEPTH_TRACKING to MITIGATION_CALL_DEPTH_TRACKING
->   x86/bugs: Rename PAGE_TABLE_ISOLATION to MITIGATION_PAGE_TABLE_ISOLATIO=
-N
->   x86/bugs: Rename RETPOLINE to MITIGATION_RETPOLINE
->   x86/bugs: Rename SLS to CONFIG_MITIGATION_SLS
->   x86/bugs: Rename CPU_UNRET_ENTRY to MITIGATION_UNRET_ENTRY
->   x86/bugs: Rename CPU_IBRS_ENTRY to MITIGATION_IBRS_ENTRY
->   x86/bugs: Rename CPU_SRSO to MITIGATION_SRSO
->   x86/bugs: Rename RETHUNK to MITIGATION_RETHUNK
->   x86/bugs: Create a way to disable GDS mitigation
->   x86/bugs: Add a separate config for missing mitigation
 >
->  Documentation/admin-guide/hw-vuln/spectre.rst |   8 +-
->  .../admin-guide/kernel-parameters.txt         |   4 +-
->  Documentation/arch/x86/pti.rst                |   6 +-
->  arch/x86/Kconfig                              | 141 +++++++++++++++---
->  arch/x86/Makefile                             |   8 +-
->  arch/x86/boot/compressed/ident_map_64.c       |   4 +-
->  arch/x86/configs/i386_defconfig               |   2 +-
->  arch/x86/entry/calling.h                      |   8 +-
->  arch/x86/entry/entry_64.S                     |   2 +-
->  arch/x86/entry/vdso/Makefile                  |   4 +-
->  arch/x86/include/asm/current.h                |   2 +-
->  arch/x86/include/asm/disabled-features.h      |  10 +-
->  arch/x86/include/asm/linkage.h                |  16 +-
->  arch/x86/include/asm/nospec-branch.h          |  30 ++--
->  arch/x86/include/asm/pgalloc.h                |   2 +-
->  arch/x86/include/asm/pgtable-3level.h         |   2 +-
->  arch/x86/include/asm/pgtable.h                |  18 +--
->  arch/x86/include/asm/pgtable_64.h             |   3 +-
->  arch/x86/include/asm/processor-flags.h        |   2 +-
->  arch/x86/include/asm/pti.h                    |   2 +-
->  arch/x86/include/asm/static_call.h            |   2 +-
->  arch/x86/kernel/alternative.c                 |  14 +-
->  arch/x86/kernel/asm-offsets.c                 |   2 +-
->  arch/x86/kernel/cpu/amd.c                     |   2 +-
->  arch/x86/kernel/cpu/bugs.c                    |  87 ++++++-----
->  arch/x86/kernel/dumpstack.c                   |   2 +-
->  arch/x86/kernel/ftrace.c                      |   3 +-
->  arch/x86/kernel/head_32.S                     |   4 +-
->  arch/x86/kernel/head_64.S                     |   2 +-
->  arch/x86/kernel/kprobes/opt.c                 |   2 +-
->  arch/x86/kernel/ldt.c                         |   8 +-
->  arch/x86/kernel/static_call.c                 |   2 +-
->  arch/x86/kernel/vmlinux.lds.S                 |   8 +-
->  arch/x86/kvm/mmu/mmu.c                        |   2 +-
->  arch/x86/kvm/mmu/mmu_internal.h               |   2 +-
->  arch/x86/kvm/svm/svm.c                        |   2 +-
->  arch/x86/kvm/svm/vmenter.S                    |   4 +-
->  arch/x86/kvm/vmx/vmx.c                        |   2 +-
->  arch/x86/lib/Makefile                         |   2 +-
->  arch/x86/lib/retpoline.S                      |  26 ++--
->  arch/x86/mm/Makefile                          |   2 +-
->  arch/x86/mm/debug_pagetables.c                |   4 +-
->  arch/x86/mm/dump_pagetables.c                 |   4 +-
->  arch/x86/mm/pgtable.c                         |   4 +-
->  arch/x86/mm/tlb.c                             |  10 +-
->  arch/x86/net/bpf_jit_comp.c                   |   4 +-
->  arch/x86/net/bpf_jit_comp32.c                 |   2 +-
->  arch/x86/purgatory/Makefile                   |   2 +-
->  include/linux/compiler-gcc.h                  |   2 +-
->  include/linux/indirect_call_wrapper.h         |   2 +-
->  include/linux/module.h                        |   2 +-
->  include/linux/objtool.h                       |   2 +-
->  include/linux/pti.h                           |   2 +-
->  include/net/netfilter/nf_tables_core.h        |   2 +-
->  include/net/tc_wrapper.h                      |   2 +-
->  kernel/trace/ring_buffer.c                    |   2 +-
->  net/netfilter/Makefile                        |   2 +-
->  net/netfilter/nf_tables_core.c                |   6 +-
->  net/netfilter/nft_ct.c                        |   4 +-
->  net/netfilter/nft_lookup.c                    |   2 +-
->  net/sched/sch_api.c                           |   2 +-
->  scripts/Makefile.lib                          |   8 +-
->  scripts/Makefile.vmlinux_o                    |   2 +-
->  scripts/generate_rust_target.rs               |   2 +-
->  scripts/mod/modpost.c                         |   2 +-
->  .../arch/x86/include/asm/disabled-features.h  |  10 +-
->  66 files changed, 326 insertions(+), 214 deletions(-)
+>
+>
+> >
+> > >
+> > >
+> > > >
+> > > > > Your code is wrong.
+> > > > >
+> > > >
+> > > > Could be, but note the comment you are removing:
+> > > >
+> > > > # Re-generate module BTFs if either module's .ko or vmlinux changed
+> > > >
+> > > > BTF has to be re-generated not just when module .ko is regenerated,
+> > > > but also when the vmlinux image itself changes.
+> > > >
+> > > > I don't see where this is done with your changes. Can you please po=
+int
+> > > > it out explicitly?
+> > >
+> > >
+> > >
+> > > That is too obvious; %.ko depends on $(vmlinux).
+> >
+> > Thank you for your gracious answer. We used to not rebuild module's
+> > .ko's when vmlinux didn't change (but we did regen BTFs), and that's
+> > why I was confused. Now we forcefully recompile modules, which is a
+> > change in behavior which would be nice to call out in the commit
+> > message.
+> >
+> >
+> > >
+> > >
+> > >
+> > > %.ko: %.o %.mod.o scripts/module.lds $(vmlinux) FORCE
+> > >
+> > >
+> > >
+> > >
+> > > --
+> > > Best Regards
+> > > Masahiro Yamada
+>
+>
 >
 > --
-> 2.34.1
->
->
-
-
---
-Regards
-Yafang
+> Best Regards
+> Masahiro Yamada
 
