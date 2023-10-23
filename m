@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-12979-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB7F67D2A16
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 08:14:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3F847D2A18
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 08:14:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 950DE28155E
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 06:14:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0270D1C209E1
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 06:14:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1B9D63A8;
-	Mon, 23 Oct 2023 06:14:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB96263AB;
+	Mon, 23 Oct 2023 06:14:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JfBKKvyT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q4RGWmj4"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42D9663AF;
-	Mon, 23 Oct 2023 06:14:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1428C433C8;
-	Mon, 23 Oct 2023 06:14:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55BC163A8;
+	Mon, 23 Oct 2023 06:14:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5640AC433C7;
+	Mon, 23 Oct 2023 06:14:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698041685;
-	bh=OkdgsQ0WxLHiL+vWRAT85wEiCaCy0CgtTgmYQnUQPbc=;
+	s=k20201202; t=1698041688;
+	bh=DrsJx+z7CBw5gcPr17+7hi6ZrI1Tg3h7aMJn29TNzq4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JfBKKvyTjYPmart805N9Lwbx8coL7wBCn/8f4nyIoQeJWrqvZ/hIneu0AdtgTsQlD
-	 OAmcFyUh3Ii1CPYbg4l0xTqvYfP74k2B2fP+hR6nuXCb7q1L7be9C/mbAxu2WcKcBz
-	 hohhTJAuTCIz4dSnLvvxAui2qISuG/IsWxsF2NmpnhJ6MTb+Ab4Cg4MtZmV+ny07Rb
-	 DKuc9yJu/c84FngzW+fvmwUN+5yrMSGNKlLQjjgcMdm6TiklbhR0cEZIt7gXCXJvcT
-	 88if1XAgAdZnJmyXsUazN+KhNXnSvwg76KQQTjlCCsbIucU5ghXwyE3gLQi+EKlK26
-	 ZuZUjQUlcZwqA==
+	b=q4RGWmj4oKaEFM6XG1OKKqK+EABL1X/mn3IbIJRFQ73mqeb1QQDpGPtnz/hCs1Jsj
+	 y1oSrXIiyxbVbWcUijj4VzGYb79qxtOWqf+UAYu/fURZszxL/ZtTPx0mzBgMCr1zCj
+	 NxaeiObh01/di2ESpTF25MIcZhOuZy1LE8UKBnfDbYV/5ito7HamNhNTlpQWyhLGym
+	 40zP5K9DXf1qEIwjLfKt7TYe3sP/IWtUytF8v432kdieiu30iUl2B+DCRlTJHjEdLQ
+	 rwt1yHu5Sod8ViNDzRd7Ju9uUlVJ6OoXsVC7qOYFRi2lqE2DX9CB1LSiBu83VPGS40
+	 I/sEwtvYbnNwQ==
 From: Song Liu <song@kernel.org>
 To: bpf@vger.kernel.org,
 	fsverity@lists.linux.dev
@@ -44,9 +44,9 @@ Cc: ast@kernel.org,
 	tytso@mit.edu,
 	roberto.sassu@huaweicloud.com,
 	Song Liu <song@kernel.org>
-Subject: [PATCH v2 bpf-next 7/9] selftests/bpf: Sort config in alphabetic order
-Date: Sun, 22 Oct 2023 23:13:52 -0700
-Message-Id: <20231023061354.941552-8-song@kernel.org>
+Subject: [PATCH v2 bpf-next 8/9] selftests/bpf: Add tests for filesystem kfuncs
+Date: Sun, 22 Oct 2023 23:13:53 -0700
+Message-Id: <20231023061354.941552-9-song@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231023061354.941552-1-song@kernel.org>
 References: <20231023061354.941552-1-song@kernel.org>
@@ -58,26 +58,287 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Move CONFIG_VSOCKETS up, so the CONFIGs are in sorted order.
+Add selftests for two new filesystem kfuncs:
+  1. bpf_get_file_xattr
+  2. bpf_get_fsverity_digest
+
+These tests simply make sure the two kfuncs work.
+
+CONFIG_FS_VERITY is added to selftests config. However, this is not
+sufficient to guarantee bpf_get_fsverity_digest works. This is because
+fsverity need to be enabled at file system level (for example, with tune2fs
+on ext4). If local file system doesn't have this feature enabled, just skip
+the test.
 
 Signed-off-by: Song Liu <song@kernel.org>
 ---
- tools/testing/selftests/bpf/config | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |   3 +
+ tools/testing/selftests/bpf/config            |   1 +
+ .../selftests/bpf/prog_tests/fs_kfuncs.c      | 132 ++++++++++++++++++
+ .../selftests/bpf/progs/test_fsverity.c       |  46 ++++++
+ .../selftests/bpf/progs/test_get_xattr.c      |  37 +++++
+ 5 files changed, 219 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_fsverity.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_get_xattr.c
 
+diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/selftests/bpf/bpf_kfuncs.h
+index 5ca68ff0b59f..c2c084a44eae 100644
+--- a/tools/testing/selftests/bpf/bpf_kfuncs.h
++++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
+@@ -55,4 +55,7 @@ void *bpf_cast_to_kern_ctx(void *) __ksym;
+ 
+ void *bpf_rdonly_cast(void *obj, __u32 btf_id) __ksym;
+ 
++extern int bpf_get_file_xattr(struct file *file, const char *name,
++			      struct bpf_dynptr *value_ptr) __ksym;
++extern int bpf_get_fsverity_digest(struct file *file, struct bpf_dynptr *digest_ptr) __ksym;
+ #endif
 diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 02dd4409200e..09da30be8728 100644
+index 09da30be8728..4534a913e46c 100644
 --- a/tools/testing/selftests/bpf/config
 +++ b/tools/testing/selftests/bpf/config
-@@ -81,7 +81,7 @@ CONFIG_SECURITY=y
- CONFIG_SECURITYFS=y
- CONFIG_TEST_BPF=m
- CONFIG_USERFAULTFD=y
-+CONFIG_VSOCKETS=y
- CONFIG_VXLAN=y
- CONFIG_XDP_SOCKETS=y
- CONFIG_XFRM_INTERFACE=y
--CONFIG_VSOCKETS=y
+@@ -23,6 +23,7 @@ CONFIG_FPROBE=y
+ CONFIG_FTRACE_SYSCALLS=y
+ CONFIG_FUNCTION_ERROR_INJECTION=y
+ CONFIG_FUNCTION_TRACER=y
++CONFIG_FS_VERITY=y
+ CONFIG_GENEVE=y
+ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+diff --git a/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c b/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
+new file mode 100644
+index 000000000000..3084872ad1f4
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
+@@ -0,0 +1,132 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
++
++#include <stdlib.h>
++#include <sys/types.h>
++#include <sys/xattr.h>
++#include <linux/fsverity.h>
++#include <unistd.h>
++#include <test_progs.h>
++#include "test_get_xattr.skel.h"
++#include "test_fsverity.skel.h"
++
++static const char testfile[] = "/tmp/test_progs_fs_kfuncs";
++
++static void test_xattr(void)
++{
++	struct test_get_xattr *skel = NULL;
++	int fd = -1, err;
++
++	fd = open(testfile, O_CREAT | O_RDONLY, 0644);
++	if (!ASSERT_GE(fd, 0, "create_file"))
++		return;
++
++	close(fd);
++	fd = -1;
++
++	err = setxattr(testfile, "user.kfuncs", "hello", sizeof("hello"), 0);
++	if (!ASSERT_OK(err, "setxattr"))
++		goto out;
++
++	skel = test_get_xattr__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "test_get_xattr__open_and_load"))
++		goto out;
++
++	skel->bss->monitored_pid = getpid();
++	err = test_get_xattr__attach(skel);
++
++	if (!ASSERT_OK(err, "test_get_xattr__attach"))
++		goto out;
++
++	fd = open(testfile, O_RDONLY, 0644);
++	if (!ASSERT_GE(fd, 0, "open_file"))
++		goto out;
++
++	ASSERT_EQ(skel->bss->found_xattr, 1, "found_xattr");
++
++out:
++	close(fd);
++	test_get_xattr__destroy(skel);
++	remove(testfile);
++}
++
++#ifndef SHA256_DIGEST_SIZE
++#define SHA256_DIGEST_SIZE      32
++#endif
++
++static void test_fsverity(void)
++{
++	struct fsverity_enable_arg arg = {0};
++	struct test_fsverity *skel = NULL;
++	struct fsverity_digest *d;
++	int fd, err;
++	char buffer[4096];
++
++	fd = open(testfile, O_CREAT | O_RDWR, 0644);
++	if (!ASSERT_GE(fd, 0, "create_file"))
++		return;
++
++	/* Write random buffer, so the file is not empty */
++	err = write(fd, buffer, 4096);
++	if (!ASSERT_EQ(err, 4096, "write_file"))
++		goto out;
++	close(fd);
++
++	/* Reopen read-only, otherwise FS_IOC_ENABLE_VERITY will fail */
++	fd = open(testfile, O_RDONLY, 0644);
++	if (!ASSERT_GE(fd, 0, "open_file1"))
++		return;
++
++	/* Enable fsverity for the file.
++	 * If the file system doesn't support verity, this will fail. Skip
++	 * the test in such case.
++	 */
++	arg.version = 1;
++	arg.hash_algorithm = FS_VERITY_HASH_ALG_SHA256;
++	arg.block_size = 4096;
++	err = ioctl(fd, FS_IOC_ENABLE_VERITY, &arg);
++	if (err) {
++		printf("%s:SKIP:local fs doesn't support fsverity (%d)\n", __func__, errno);
++		test__skip();
++		goto out;
++	}
++
++	skel = test_fsverity__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "test_fsverity__open_and_load"))
++		goto out;
++
++	/* Get fsverity_digest from ioctl */
++	d = (struct fsverity_digest *)skel->bss->expected_digest;
++	d->digest_algorithm = FS_VERITY_HASH_ALG_SHA256;
++	d->digest_size = SHA256_DIGEST_SIZE;
++	err = ioctl(fd, FS_IOC_MEASURE_VERITY, skel->bss->expected_digest);
++	if (!ASSERT_OK(err, "ioctl_FS_IOC_MEASURE_VERITY"))
++		goto out;
++
++	skel->bss->monitored_pid = getpid();
++	err = test_fsverity__attach(skel);
++	if (!ASSERT_OK(err, "test_fsverity__attach"))
++		goto out;
++
++	/* Reopen the file to trigger the program */
++	close(fd);
++	fd = open(testfile, O_RDONLY);
++	if (!ASSERT_GE(fd, 0, "open_file2"))
++		goto out;
++
++	ASSERT_EQ(skel->bss->got_fsverity, 1, "got_fsverity");
++	ASSERT_EQ(skel->bss->digest_matches, 1, "digest_matches");
++out:
++	close(fd);
++	test_fsverity__destroy(skel);
++	remove(testfile);
++}
++
++void test_fs_kfuncs(void)
++{
++	if (test__start_subtest("xattr"))
++		test_xattr();
++
++	if (test__start_subtest("fsverity"))
++		test_fsverity();
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_fsverity.c b/tools/testing/selftests/bpf/progs/test_fsverity.c
+new file mode 100644
+index 000000000000..ddba2edc8e7a
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_fsverity.c
+@@ -0,0 +1,46 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_kfuncs.h"
++
++char _license[] SEC("license") = "GPL";
++
++#ifndef SHA256_DIGEST_SIZE
++#define SHA256_DIGEST_SIZE      32
++#endif
++
++__u32 monitored_pid;
++char expected_digest[sizeof(struct fsverity_digest) + SHA256_DIGEST_SIZE];
++char digest[sizeof(struct fsverity_digest) + SHA256_DIGEST_SIZE];
++__u32 got_fsverity;
++__u32 digest_matches;
++
++SEC("lsm.s/file_open")
++int BPF_PROG(test_file_open, struct file *f)
++{
++	struct bpf_dynptr digest_ptr;
++	__u32 pid;
++	int ret;
++	int i;
++
++	pid = bpf_get_current_pid_tgid() >> 32;
++	if (pid != monitored_pid)
++		return 0;
++
++	bpf_dynptr_from_mem(digest, sizeof(digest), 0, &digest_ptr);
++	ret = bpf_get_fsverity_digest(f, &digest_ptr);
++	if (ret < 0)
++		return 0;
++	got_fsverity = 1;
++
++	for (i = 0; i < sizeof(digest); i++) {
++		if (digest[i] != expected_digest[i])
++			return 0;
++	}
++
++	digest_matches = 1;
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_get_xattr.c b/tools/testing/selftests/bpf/progs/test_get_xattr.c
+new file mode 100644
+index 000000000000..7eb2a4e5a3e5
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_get_xattr.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_kfuncs.h"
++
++char _license[] SEC("license") = "GPL";
++
++__u32 monitored_pid;
++__u32 found_xattr;
++
++static const char expected_value[] = "hello";
++char value[32];
++
++SEC("lsm.s/file_open")
++int BPF_PROG(test_file_open, struct file *f)
++{
++	struct bpf_dynptr value_ptr;
++	__u32 pid;
++	int ret;
++
++	pid = bpf_get_current_pid_tgid() >> 32;
++	if (pid != monitored_pid)
++		return 0;
++
++	bpf_dynptr_from_mem(value, sizeof(value), 0, &value_ptr);
++
++	ret = bpf_get_file_xattr(f, "user.kfuncs", &value_ptr);
++	if (ret != sizeof(expected_value))
++		return 0;
++	if (bpf_strncmp(value, ret, expected_value))
++		return 0;
++	found_xattr = 1;
++	return 0;
++}
 -- 
 2.34.1
 
