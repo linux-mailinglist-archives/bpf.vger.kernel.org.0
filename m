@@ -1,258 +1,109 @@
-Return-Path: <bpf+bounces-12970-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12971-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59D8D7D2945
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 06:17:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 158B07D2993
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 07:12:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5636B281434
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 04:17:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 219F31C209BD
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 05:12:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 822F71FB5;
-	Mon, 23 Oct 2023 04:17:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB8644C93;
+	Mon, 23 Oct 2023 05:12:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z83bdHwF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kr9xtAcX"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335AC1848
-	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 04:17:48 +0000 (UTC)
-Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1C01A4;
-	Sun, 22 Oct 2023 21:17:47 -0700 (PDT)
-Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1ea48ef2cbfso2393335fac.2;
-        Sun, 22 Oct 2023 21:17:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0F15231
+	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 05:12:00 +0000 (UTC)
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31950DF
+	for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 22:11:59 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-457c2b6713fso2685224137.1
+        for <bpf@vger.kernel.org>; Sun, 22 Oct 2023 22:11:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698034667; x=1698639467; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pdVnM7GBjen/7bYV9j3b3MHhI6ezvP35wTCLXueTt5c=;
-        b=Z83bdHwF9D79MFRv70eULZkl4EYdbSpDzgraFjm6rERBltuYIsfjrkbCMlNW0GeUZO
-         MiqRObNWkP/06UBndeEvWqzP+ZuzXQFq1fQvG+slx9CgNyCozhkDvxfjT5P+a/PvDuTP
-         8uOob5Zf9EBvPxeImL5GGAnd7nacqheciPM1AqOwSp5t7n3CTKC+V8ey4lobLp+0n1oP
-         xQ7V52ybZxcdJ4FC8yj1VsqYLJQMOqF4dc5n2C5XOL5MCydTLTbi2p518UMWkK7q6Pvt
-         t3LNDFhJ9BzcWI0uPJ7a/WuViPOM9cqxWOFh1RvO5FcwnD/BNM0xjIgXoddn26FRdaVY
-         NGGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698034667; x=1698639467;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=gmail.com; s=20230601; t=1698037918; x=1698642718; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pdVnM7GBjen/7bYV9j3b3MHhI6ezvP35wTCLXueTt5c=;
-        b=Aqgr+etNHyMd63zCq2JIXXfdkKmyn/xxB1Ckd7+5miV8kdikChc1eAItJQLDaXZKCG
-         G1dBHY6mGMYPHN8KYcUa7h9K5aXzfIXiqgNyoqfVRvcshosKdqxkBYnGtRaqOpokbRDk
-         Usv9CKfgUons2XDI3o7JjUq3Z5aVPBV1T9ls8RzjJmeg2j/CGjnAjDY7Fj1xS8cad+D7
-         azKj/rdx6h8vnuGrssVgZ6ESyG/ia8MeJEQbZGtVC7U6g6bL1JLxDLymZctE0iwP+CNb
-         fFefinMXo8xhjL4EwiiHsPODdcXh0FVMVQwm7WAIAIFONzu/H76SkVjm1Mski+V34qJf
-         G01A==
-X-Gm-Message-State: AOJu0YxQrIxsLUDaoExjSjE3+vlB2Wzj9S/Txg47MSIOOme+cD0wVXdO
-	LkJRwhgHg+yMA6BhqxC4I03B3yDHaHOUG7WYNQPxt8yoHvk=
-X-Google-Smtp-Source: AGHT+IGFSvDDZ+OgOjxEJTlGedVsKn4iNFAqfdD1BZ6LLBw59GOfBTdz5hPIf34WT3/ILI/KGcrPywqPd4YRixEjUSo=
-X-Received: by 2002:a05:6871:6b16:b0:1d5:b2ba:bc93 with SMTP id
- zg22-20020a0568716b1600b001d5b2babc93mr7251895oab.13.1698034666686; Sun, 22
- Oct 2023 21:17:46 -0700 (PDT)
+        bh=UBsxpGWK+5ENJuSPcOHODQjfrGIRBTJcvRWPCFrxcaw=;
+        b=kr9xtAcXpvwF9GxsjA2yQzOvfJ3BAHkWua1+Gb37RZs44lQ55rACiup3zBI1CllgWs
+         2GjDmhm3sgZ+WaFDK85EjT2N4ovQTPjjJGfYoeR6Un1K49OPk2uFgZaVosmeJnlI433M
+         Ia+13VP9bn1LbCTkPc6LS4jegQ+XR9A1PdwIANJ68ZeFhFzhZsyI/Jj7QTnRiyAxEBtC
+         GXj8mVEGf4K/5TXGJzfsM1QXaFM5Xfg59ikk9oV/r+HAsMUWAl1KlyWtMaD9q4gSTXEJ
+         5BSg9WlbL6p7oF+B5vAaobGHXA7bIhOzItEhs0BH4ASOlX7gKacJeE81Ze9pF1XfB/pm
+         otHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698037918; x=1698642718;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UBsxpGWK+5ENJuSPcOHODQjfrGIRBTJcvRWPCFrxcaw=;
+        b=W12V+Htbm7dWZe1eVylzyI04dz2CO27dh9iCtWms+M4SaObIziBHVK3hmOq7kunMEs
+         0Yeo8b2itRDOMmjP8YjfPTH8/JjAiW3y3GwV1ndBTJa4bAZtQFiVryCsQaWVdlsFiP0D
+         7FVAY8Deu14otrEwQodvTdQ4KkfKnyXSa2prO1N8/cbaynTd443vKMtl2oC7Vc5hu+m4
+         CoMKgy4/wqUAMAPIKwMknT/AsM+NuXyWXP+L6UYFsnkTLKm5AE/ZlTrn+i/nwXIyRiWr
+         dNM4NquZ19Hb6wKIzPrcbhC9NPveL/Wi4OPCzQDmgZqvGwKIm4V57viXKD13nlYXIyeP
+         WBPg==
+X-Gm-Message-State: AOJu0Yzk0xB4DLromTFXZhSBOQqNK4bWIGrLECSgKO4ZWuEMPmV1+fFr
+	Rj4T+uNnt7vYFFYC5hQBFZixCvZwYwRrmg2wp00DiESy4rk8Kw==
+X-Google-Smtp-Source: AGHT+IGCFlrJd0FB15gRiDjRDWau6fhdCZxa9s3QM7X05B5/E9jsANB84euUqTSbit3/spnt3+A1aQcljrjzMiIyzV8=
+X-Received: by 2002:a67:cb94:0:b0:457:6867:aafb with SMTP id
+ h20-20020a67cb94000000b004576867aafbmr3807608vsl.11.1698037918082; Sun, 22
+ Oct 2023 22:11:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231015232953.84836-1-hengqi.chen@gmail.com> <20231015232953.84836-3-hengqi.chen@gmail.com>
- <0df30939-1ba1-5703-58cc-54058fbb1df5@iogearbox.net>
-In-Reply-To: <0df30939-1ba1-5703-58cc-54058fbb1df5@iogearbox.net>
-From: Hengqi Chen <hengqi.chen@gmail.com>
-Date: Mon, 23 Oct 2023 12:17:35 +0800
-Message-ID: <CAEyhmHSoGFRjpkoRQxRSaqe9U0ttbf51uKNbE6YkcaiGQc_2FA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] seccomp, bpf: Introduce SECCOMP_LOAD_FILTER operation
-To: Daniel Borkmann <daniel@iogearbox.net>, Kees Cook <keescook@chromium.org>
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org, 
-	andrii@kernel.org, luto@amacapital.net, wad@chromium.org, 
-	alexyonghe@tencent.com
+Reply-To: sunilhasbe@gmail.com
+From: sunil hasbe <sunilhasbe@gmail.com>
+Date: Mon, 23 Oct 2023 10:41:46 +0530
+Message-ID: <CABfcHotwAEFraonQVhra82kzDK_3sFRqjQRg-WeVyzKkZHmJ5w@mail.gmail.com>
+Subject: Need help in bpf exec hook for execsnoop command
+To: bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 16, 2023 at 8:44=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.n=
-et> wrote:
->
-> On 10/16/23 1:29 AM, Hengqi Chen wrote:
-> > This patch adds a new operation named SECCOMP_LOAD_FILTER.
-> > It accepts a sock_fprog the same as SECCOMP_SET_MODE_FILTER
-> > but only performs the loading process. If succeed, return a
-> > new fd associated with the JITed BPF program (the filter).
-> > The filter can then be pinned to bpffs using the returned
-> > fd and reused for different processes. To distinguish the
-> > filter from other BPF progs, BPF_PROG_TYPE_SECCOMP is added.
-> >
-> > Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> > ---
-> >   include/uapi/linux/bpf.h       |  1 +
-> >   include/uapi/linux/seccomp.h   |  1 +
-> >   kernel/seccomp.c               | 43 +++++++++++++++++++++++++++++++++=
-+
-> >   tools/include/uapi/linux/bpf.h |  1 +
-> >   4 files changed, 46 insertions(+)
-> >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 7ba61b75bc0e..61c80ffb1724 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -995,6 +995,7 @@ enum bpf_prog_type {
-> >       BPF_PROG_TYPE_SK_LOOKUP,
-> >       BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
-> >       BPF_PROG_TYPE_NETFILTER,
-> > +     BPF_PROG_TYPE_SECCOMP,
->
-> Please don't extend UAPI surface if this is not reachable/usable from use=
-r
-> space anyway.
->
-> >   enum bpf_attach_type {
-> > diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.=
-h
-> > index dbfc9b37fcae..ee2c83697810 100644
-> > --- a/include/uapi/linux/seccomp.h
-> > +++ b/include/uapi/linux/seccomp.h
-> > @@ -16,6 +16,7 @@
-> >   #define SECCOMP_SET_MODE_FILTER             1
-> >   #define SECCOMP_GET_ACTION_AVAIL    2
-> >   #define SECCOMP_GET_NOTIF_SIZES             3
-> > +#define SECCOMP_LOAD_FILTER          4
-> >
-> >   /* Valid flags for SECCOMP_SET_MODE_FILTER */
-> >   #define SECCOMP_FILTER_FLAG_TSYNC           (1UL << 0)
-> > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> > index faf84fc892eb..c9f6a19f7a4e 100644
-> > --- a/kernel/seccomp.c
-> > +++ b/kernel/seccomp.c
-> > @@ -17,6 +17,7 @@
-> >
-> >   #include <linux/refcount.h>
-> >   #include <linux/audit.h>
-> > +#include <linux/bpf.h>
-> >   #include <linux/compat.h>
-> >   #include <linux/coredump.h>
-> >   #include <linux/kmemleak.h>
-> > @@ -25,6 +26,7 @@
-> >   #include <linux/sched.h>
-> >   #include <linux/sched/task_stack.h>
-> >   #include <linux/seccomp.h>
-> > +#include <linux/security.h>
-> >   #include <linux/slab.h>
-> >   #include <linux/syscalls.h>
-> >   #include <linux/sysctl.h>
-> > @@ -2032,12 +2034,48 @@ static long seccomp_set_mode_filter(unsigned in=
-t flags,
-> >       seccomp_filter_free(prepared);
-> >       return ret;
-> >   }
-> > +
-> > +static long seccomp_load_filter(const char __user *filter)
-> > +{
-> > +     struct sock_fprog fprog;
-> > +     struct bpf_prog *prog;
-> > +     int ret;
-> > +
-> > +     ret =3D seccomp_copy_user_filter(filter, &fprog);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     ret =3D seccomp_prepare_prog(&prog, &fprog);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     ret =3D security_bpf_prog_alloc(prog->aux);
-> > +     if (ret) {
-> > +             bpf_prog_free(prog);
-> > +             return ret;
-> > +     }
-> > +
-> > +     prog->aux->user =3D get_current_user();
-> > +     atomic64_set(&prog->aux->refcnt, 1);
-> > +     prog->type =3D BPF_PROG_TYPE_SECCOMP;
-> > +
-> > +     ret =3D bpf_prog_new_fd(prog);
-> > +     if (ret < 0)
-> > +             bpf_prog_put(prog);
->
-> My bigger concern here is that bpf_prog_new_fd() is only used by eBPF (no=
-t cBPF).
->
-> Then you get an 'eBPF'-like fd back to user space which you can pass to v=
-arious
-> other bpf(2) commands like BPF_OBJ_GET_INFO_BY_FD etc which all have the =
-assumption
-> that this is a proper looking eBPF prog fd.
->
-> There may be breakage/undefined behavior in subtle ways.
->
-> I would suggest two potential alternatives :
->
-> 1) Build a seccomp-specific fd via anon_inode_getfd() so that BPF side do=
-es not
->     confuse it with bpf_prog_fops and therefore does not recognize it in =
-bpf(2)
->     as a prog fd.
->
-> 2) Extend seccomp where proper eBPF could be supported.
->
-> If option 2) is not realistic (where you would get this out of the box), =
-then I
-> think 1) could be however.
->
+Hello,
+We are using ebpf hooks to get the process and its arguments when it
+is calling exec. We are using ebpf execsnoop open source utility to
+track all exec. Most of the time it works correctly, but in certain
+cases (very less) it fails to get the argv[0] and argv[1]. E.g. in
+below case, we are opening a new session into existing tmux session
+which forks/exec a new process like this
+"/usr/lib/x86_64-linux-gnu/utempter/utempter add tmux(1852218).%8".
+However execsnopp is unable to get all the arguments which a userland
+utility is able to get based on the cmdline for thar process. We have
+used proc_connector as well to track all the processes which is able
+to get the command line properly.
 
-The intention is to use bpffs, so we need a bpf prog fd.
-I prefer option 2, though it requires a bit of work.
-That way, we could also write seccomp filter in eBPF language.
 
-Kees, could you share your opinions ? If you have no objection,
-I will continue this work.
+proc_connector process
+FORK:parent(pid,tgid)=1852218,1852218   child(pid,tgid)=1935154,1935154 [tmux ]
+FORK:parent(pid,tgid)=1852218,1852218   child(pid,tgid)=1935155,1935155 [tmux ]
+EXEC:pid=1935154,tgid=1935154   [Uid:   0       0       0       0]      [-bash ]
+EXEC:pid=1935155,tgid=1935155   [Uid:   0       0       0       0]
+ [/usr/lib/x86_64-linux-gnu/utempter/utempter add tmux(1852218).%8 ]
 
-> > +     return ret;
-> > +}
-> >   #else
-> >   static inline long seccomp_set_mode_filter(unsigned int flags,
-> >                                          const char __user *filter)
-> >   {
-> >       return -EINVAL;
-> >   }
-> > +
-> > +static inline long seccomp_load_filter(const char __user *filter)
-> > +{
-> > +     return -EINVAL;
-> > +}
-> >   #endif
-> >
-> >   static long seccomp_get_action_avail(const char __user *uaction)
-> > @@ -2099,6 +2137,11 @@ static long do_seccomp(unsigned int op, unsigned=
- int flags,
-> >                       return -EINVAL;
-> >
-> >               return seccomp_get_notif_sizes(uargs);
-> > +     case SECCOMP_LOAD_FILTER:
-> > +             if (flags !=3D 0)
-> > +                     return -EINVAL;
-> > +
-> > +             return seccomp_load_filter(uargs);
-> >       default:
-> >               return -EINVAL;
-> >       }
-> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/=
-bpf.h
-> > index 7ba61b75bc0e..61c80ffb1724 100644
-> > --- a/tools/include/uapi/linux/bpf.h
-> > +++ b/tools/include/uapi/linux/bpf.h
-> > @@ -995,6 +995,7 @@ enum bpf_prog_type {
-> >       BPF_PROG_TYPE_SK_LOOKUP,
-> >       BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
-> >       BPF_PROG_TYPE_NETFILTER,
-> > +     BPF_PROG_TYPE_SECCOMP,
-> >   };
-> >
-> >   enum bpf_attach_type {
-> >
->
+
+/usr/sbin/execsnoop-bpfcc
+bash             1935154 1852218   0 /bin/bash
+utempter         1935155 1852218   0   tmux(1852218).%8
+
+
+Upon debugging this further, we are suspecting if there is anything
+related to how the parent process is forking/execing and updating its
+arguments. As most of the times execsnoop is working perfectly fine
+but only for few processes it fails to get the argv[0] and argv[1]. We
+inspected the syscall__execve and found that argv[0], argv[1] is empty
+and argv[2] is having correct value as tmux(1852218).%8.
+
+We have seen this issue on kernel version on 5.15 on ubuntu20. Any
+pointer would be very helpful on this.
+
+Regards,
+Sunil
 
