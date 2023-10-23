@@ -1,256 +1,190 @@
-Return-Path: <bpf+bounces-12990-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12991-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BE6D7D2EE8
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 11:52:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2F1A7D2F40
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 11:58:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF2731C20941
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 09:52:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3F811C2095A
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 09:58:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C01E13FF1;
-	Mon, 23 Oct 2023 09:52:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9325714003;
+	Mon, 23 Oct 2023 09:58:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BKeTqRP/"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="sHzGdhfH"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D1EC134A6;
-	Mon, 23 Oct 2023 09:52:25 +0000 (UTC)
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FA0C4;
-	Mon, 23 Oct 2023 02:52:23 -0700 (PDT)
-Received: by mail-vk1-xa2c.google.com with SMTP id 71dfb90a1353d-49d428d89cdso285555e0c.1;
-        Mon, 23 Oct 2023 02:52:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698054743; x=1698659543; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UH47i0BQFdN1U9eAzdaKd7oOF6gd2ioYQqOsYKIl3tM=;
-        b=BKeTqRP/RbcqfYaDGNHkCKxp8l72I10i6PbUyozAIhxvWRx7olL+FKYkbAnTn6Bm9W
-         cRUDbTsAZTApgrRMlUjxRdmSy2KCAJGHiqr4Dc/kfTMPhv8CG1Q6UKfT/6ogiox1KXei
-         6o9Vub6WpBQBSuFPTm1/wyxIpus7GpJPXmyFo2nSkKlWh18orYJDJUtYst0FhshK7mgH
-         ippVK/YSzY51JjAQkW/pqxV3x5YeB2u19wFpPjcMLldskP2+y4L4iZc9cLEs+oYe/rQ+
-         cAqtcwcvwGafSXa8p8mEEQVMGfXqNvD9A4LU+2nDYlEqGDhcDXU+/5/L+t0RjSB+tE80
-         aPnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698054743; x=1698659543;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UH47i0BQFdN1U9eAzdaKd7oOF6gd2ioYQqOsYKIl3tM=;
-        b=romf/z4Y9dD47YUNjhvAxu69wjby5wdkyDYN19lwLJek+WZ0cq2T6/DPIbKS9wE6vL
-         q4I6udNJGFb4AxSSidU/zwo71DnNy1t6ZMmc9cNP36CwvLxl/qqMbk0/QBTdrBrl2LAU
-         ztacEoM1J4pNO2fxrixdM91jW8KNPzO3Iu3TcITRlPKuVdoO3Gyf5tt0xQklYrj9Nq+g
-         AazbYefF2sLrEBVOaPlAkM4OpufQO71XBhjYZ05y6YXoihK5nF9AsnXrmmtW2EH/N0fn
-         QR1ZRcNNh99pFugAKZo3TyH1pRyxpzGFABnhTCph/3c4iAZou5Kn8wi4hTJHFeqjDCwl
-         p7Ag==
-X-Gm-Message-State: AOJu0YxGKVaKYjDBk8PUE5YvZJSN11ch3xCScZNLUIo+NQ57E0GyaPkG
-	h+SJKNVR9ZFeemLblk4Hy2BbAv3g+6fKbP4AqTQ=
-X-Google-Smtp-Source: AGHT+IGu9HoKzvlBBtwlovsuIOBqf0xB3Xoy/TWWpGWBoCl65y4dL7iT6QBz8PVg+RMCIy8971cw0ViZmV2DEQqYDwI=
-X-Received: by 2002:a05:6102:5e90:b0:455:c309:720e with SMTP id
- ij16-20020a0561025e9000b00455c309720emr3791031vsb.3.1698054742773; Mon, 23
- Oct 2023 02:52:22 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5539013AE8
+	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 09:58:05 +0000 (UTC)
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E3A10CF
+	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 02:57:54 -0700 (PDT)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39N6jGje002756;
+	Mon, 23 Oct 2023 09:57:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=+Fk2sNts/h4Gw716GuoF96H3gO7hnDuxkalcOMED6Zs=;
+ b=sHzGdhfHjOSaCDVBBbGMKSkUDjKIfOnxNlOkGY70NyKYJn06l8K53NcE9RHOe/ek2jFQ
+ gLnDbI/fCZMChFipiGJyRcTp923FMkhVJX5u/lE+xHhjcG5NRVTRbweSrEbw14Y14cav
+ C2Rlgvr8oEjAZOyEdCv+dRFmScOnCW1+UsPjxMMogWk0Coq6uy//S/hoBnImfn+7w0Ls
+ gbVdK0m5sCygIhSrccNrX7/thy50MAJpFrxuEpnWGmiFqF0gtuDWSU7+/PYrRIlTn9uu
+ 4HXt7cKg5HgH909DRuxCIn3ZIdi6WTKXAQfqISWmCp+i/5NS6HKrd6UiGCqkXNYvkT0U bg== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tv6hajqd1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 23 Oct 2023 09:57:33 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39N7ZY7t001475;
+	Mon, 23 Oct 2023 09:57:32 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tv53a80xn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 23 Oct 2023 09:57:32 +0000
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39N9t2cL039213;
+	Mon, 23 Oct 2023 09:57:32 GMT
+Received: from bpf.uk.oracle.com (dhcp-10-175-206-92.vpn.oracle.com [10.175.206.92])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3tv53a80w0-1;
+	Mon, 23 Oct 2023 09:57:31 +0000
+From: Alan Maguire <alan.maguire@oracle.com>
+To: acme@kernel.org, andrii.nakryiko@gmail.com
+Cc: jolsa@kernel.org, ast@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, mykolal@fb.com, bpf@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH v4 dwarves 0/5] pahole, btf_encoder: support --btf_features
+Date: Mon, 23 Oct 2023 10:57:21 +0100
+Message-Id: <20231023095726.1179529-1-alan.maguire@oracle.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231019174944.3376335-1-sdf@google.com>
-In-Reply-To: <20231019174944.3376335-1-sdf@google.com>
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Mon, 23 Oct 2023 11:52:11 +0200
-Message-ID: <CAJ8uoz26Q-8etBpgc25xFY8ZRcoJeAM5RFOWO-Q2_T1=xBfL9g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 00/11] xsk: TX metadata
-To: Stanislav Fomichev <sdf@google.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
-	jolsa@kernel.org, kuba@kernel.org, toke@kernel.org, willemb@google.com, 
-	dsahern@kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org, 
-	maciej.fijalkowski@intel.com, hawk@kernel.org, yoong.siang.song@intel.com, 
-	netdev@vger.kernel.org, xdp-hints@xdp-project.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-23_07,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ adultscore=0 bulkscore=0 suspectscore=0 mlxscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310230085
+X-Proofpoint-GUID: F46hh5oJaKu7GUVfAus_gycYgwPhuhsL
+X-Proofpoint-ORIG-GUID: F46hh5oJaKu7GUVfAus_gycYgwPhuhsL
 
-On Thu, 19 Oct 2023 at 19:49, Stanislav Fomichev <sdf@google.com> wrote:
->
-> This series implements initial TX metadata (offloads) for AF_XDP.
-> See patch #2 for the main implementation and mlx5/stmmac ones for the
-> example on how to consume the metadata on the device side.
->
-> Starting with two types of offloads:
-> - request TX timestamp (and write it back into the metadata area)
-> - request TX checksum offload
->
-> Changes since v3:
-> - fix xsk_tx_metadata_ops kdoc (Song Yoong Siang)
-> - add missing xsk_tx_metadata_to_compl for XDP_SOCKETS=n (Vinicius Costa Gomes and Intel bots)
-> - add reference timestamps to the selftests + refactor existing ones (Jesper)
->
-> v3: https://lore.kernel.org/bpf/20231003200522.1914523-1-sdf@google.com/
+Currently, the kernel uses pahole version checking as the way to
+determine which BTF encoding features to request from pahole.  This
+means that such features have to be tied to a specific version and
+as new features are added, additional clauses in scripts/pahole-flags.sh
+have to be added; for example
 
-Thanks for working on this Stanislav. I went through the patch set and
-it looks good to me. You have addressed all the feedback that Maciej
-and I had on a previous version. Just had some small things in two of
-the patches. Apart from that, you are good to go and you can add my
-ack to the next version.
+if [ "${pahole_ver}" -ge "125" ]; then
+        extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_inconsistent_proto --btf_gen_optimized"
+fi
 
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+To better future-proof this process, this series introduces a
+single "btf_features" parameter that uses a comma-separated list
+of encoding options.  This is helpful because
 
-Again, really appreciate all your work with this!
+- the semantics are simpler for the user; the list comprises the set of
+  BTF features asked for, rather than having to specify a combination of
+  --skip_encoding_btf_feature and --btf_gen_feature options; and
+- any version of pahole that supports --btf_features can accept the
+  option list; unknown options are silently ignored.  As a result, there
+  would be no need to add additional version clauses beyond
 
-> Performance (mlx5):
->
-> I've implemented a small xskgen tool to try to saturate single tx queue:
-> https://github.com/fomichev/xskgen/tree/master
->
-> Here are the performance numbers with some analysis.
->
-> 1. Baseline. Running with commit eb62e6aef940 ("Merge branch 'bpf:
-> Support bpf_get_func_ip helper in uprobes'"), nothing from this series:
->
-> - with 1400 bytes of payload: 98 gbps, 8 mpps
-> ./xskgen -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
-> sent 10000000 packets 116960000000 bits, took 1.189130 sec, 98.357623 gbps 8.409509 mpps
->
-> - with 200 bytes of payload: 49 gbps, 23 mpps
-> ./xskgen -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
-> sent 10000064 packets 20960134144 bits, took 0.422235 sec, 49.640921 gbps 23.683645 mpps
->
-> 2. Adding single commit that supports reserving tx_metadata_len
->    changes nothing numbers-wise.
->
-> - baseline for 1400
-> ./xskgen -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
-> sent 10000000 packets 116960000000 bits, took 1.189247 sec, 98.347946 gbps 8.408682 mpps
->
-> - baseline for 200
-> ./xskgen -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
-> sent 10000000 packets 20960000000 bits, took 0.421248 sec, 49.756913 gbps 23.738985 mpps
->
-> 3. Adding -M flag causes xskgen to reserve the metadata and fill it, but
->    doesn't set XDP_TX_METADATA descriptor option.
->
-> - new baseline for 1400 (with only filling the metadata)
-> ./xskgen -M -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
-> sent 10000000 packets 116960000000 bits, took 1.188767 sec, 98.387657 gbps 8.412077 mpps
->
-> - new baseline for 200 (with only filling the metadata)
-> ./xskgen -M -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
-> sent 10000000 packets 20960000000 bits, took 0.410213 sec, 51.095407 gbps 24.377579 mpps
-> (the numbers go sligtly up here, not really sure why, maybe some cache-related
-> side-effects?
->
-> 4. Next, I'm running the same test but with the commit that adds actual
->    general infra to parse XDP_TX_METADATA (but no driver support).
->    Essentially applying "xsk: add TX timestamp and TX checksum offload support"
->    from this series. Numbers are the same.
->
-> - fill metadata for 1400
-> ./xskgen -M -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
-> sent 10000000 packets 116960000000 bits, took 1.188430 sec, 98.415557 gbps 8.414463 mpps
->
-> - fill metadata for 200
-> ./xskgen -M -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
-> sent 10000000 packets 20960000000 bits, took 0.411559 sec, 50.928299 gbps 24.297853 mpps
->
-> - request metadata for 1400
-> ./xskgen -m -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
-> sent 10000000 packets 116960000000 bits, took 1.188723 sec, 98.391299 gbps 8.412389 mpps
->
-> - request metadata for 200
-> ./xskgen -m -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
-> sent 10000064 packets 20960134144 bits, took 0.411240 sec, 50.968131 gbps 24.316856 mpps
->
-> 5. Now, for the most interesting part, I'm adding mlx5 driver support.
->    The mpps for 200 bytes case goes down from 23 mpps to 19 mpps, but
->    _only_ when I enable the metadata. This looks like a side effect
->    of me pushing extra metadata pointer via mlx5e_xdpi_fifo_push.
->    Hence, this part is wrapped into 'if (xp_tx_metadata_enabled)'
->    to not affect the existing non-metadata use-cases. Since this is not
->    regressing existing workloads, I'm not spending any time trying to
->    optimize it more (and leaving it up to mlx owners to purse if
->    they see any good way to do it).
->
-> - same baseline
-> ./xskgen -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
-> sent 10000000 packets 116960000000 bits, took 1.189434 sec, 98.332484 gbps 8.407360 mpps
->
-> ./xskgen -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
-> sent 10000128 packets 20960268288 bits, took 0.425254 sec, 49.288821 gbps 23.515659 mpps
->
-> - fill metadata for 1400
-> ./xskgen -M -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
-> sent 10000000 packets 116960000000 bits, took 1.189528 sec, 98.324714 gbps 8.406696 mpps
->
-> - fill metadata for 200
-> ./xskgen -M -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
-> sent 10000128 packets 20960268288 bits, took 0.519085 sec, 40.379260 gbps 19.264914 mpps
->
-> - request metadata for 1400
-> ./xskgen -m -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
-> sent 10000000 packets 116960000000 bits, took 1.189329 sec, 98.341165 gbps 8.408102 mpps
->
-> - request metadata for 200
-> ./xskgen -m -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
-> sent 10000128 packets 20960268288 bits, took 0.519929 sec, 40.313713 gbps 19.233642 mpps
->
-> Song Yoong Siang (1):
->   net: stmmac: Add Tx HWTS support to XDP ZC
->
-> Stanislav Fomichev (10):
->   xsk: Support tx_metadata_len
->   xsk: Add TX timestamp and TX checksum offload support
->   tools: ynl: Print xsk-features from the sample
->   net/mlx5e: Implement AF_XDP TX timestamp and checksum offload
->   selftests/xsk: Support tx_metadata_len
->   selftests/bpf: Add csum helpers
->   selftests/bpf: Add TX side to xdp_metadata
->   selftests/bpf: Convert xdp_hw_metadata to XDP_USE_NEED_WAKEUP
->   selftests/bpf: Add TX side to xdp_hw_metadata
->   xsk: Document tx_metadata_len layout
->
->  Documentation/netlink/specs/netdev.yaml       |  19 ++
->  Documentation/networking/index.rst            |   1 +
->  Documentation/networking/xsk-tx-metadata.rst  |  77 ++++++
->  drivers/net/ethernet/mellanox/mlx5/core/en.h  |   4 +-
->  .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  72 +++++-
->  .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |  11 +-
->  .../ethernet/mellanox/mlx5/core/en/xsk/tx.c   |  17 +-
->  .../net/ethernet/mellanox/mlx5/core/en_main.c |   1 +
->  drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  12 +
->  .../net/ethernet/stmicro/stmmac/stmmac_main.c |  63 ++++-
->  include/linux/netdevice.h                     |  27 ++
->  include/linux/skbuff.h                        |  14 +-
->  include/net/xdp_sock.h                        |  86 +++++++
->  include/net/xdp_sock_drv.h                    |  13 +
->  include/net/xsk_buff_pool.h                   |   7 +
->  include/uapi/linux/if_xdp.h                   |  41 ++++
->  include/uapi/linux/netdev.h                   |  16 ++
->  net/core/netdev-genl.c                        |  12 +-
->  net/xdp/xdp_umem.c                            |   4 +
->  net/xdp/xsk.c                                 |  51 +++-
->  net/xdp/xsk_buff_pool.c                       |   1 +
->  net/xdp/xsk_queue.h                           |  19 +-
->  tools/include/uapi/linux/if_xdp.h             |  55 ++++-
->  tools/include/uapi/linux/netdev.h             |  16 ++
->  tools/net/ynl/generated/netdev-user.c         |  19 ++
->  tools/net/ynl/generated/netdev-user.h         |   3 +
->  tools/net/ynl/samples/netdev.c                |   6 +
->  tools/testing/selftests/bpf/network_helpers.h |  43 ++++
->  .../selftests/bpf/prog_tests/xdp_metadata.c   |  31 ++-
->  tools/testing/selftests/bpf/xdp_hw_metadata.c | 230 ++++++++++++++++--
->  tools/testing/selftests/bpf/xsk.c             |   3 +
->  tools/testing/selftests/bpf/xsk.h             |   1 +
->  32 files changed, 914 insertions(+), 61 deletions(-)
->  create mode 100644 Documentation/networking/xsk-tx-metadata.rst
->
-> --
-> 2.42.0.655.g421f12c284-goog
->
->
+if [ "${pahole_ver}" -ge "126" ]; then
+        extra_pahole_opt="-j --lang_exclude=rust
+--btf_features=encode_force,var,float,decl_tag,type_tag,enum64,optimized_func,consistent_func"
+fi
+
+  Newly-supported features would simply be appended to the btf_features
+  list, and these would have impact on BTF encoding only if the features
+  were supported by pahole.  This means pahole will not require a version
+  bump when new BTF features are added, and should ease the burden of
+  coordinating such changes between bpf-next and dwarves.
+
+Patches 1 and 2 are preparatory work, while patch 3 adds the
+--btf_features support.  Patch 4 provides a means of querying
+the supported feature set since --btf_features will not error
+out when it encounters unrecognized features (this ensures
+an older pahole without a requested feature will not dump warnings
+in the build log for kernel/module BTF generation).  Patch 5
+adds --btf_features_strict, which is identical to --btf_features
+aside from the fact it will fail if an unrecognized feature is used.
+
+See [1] for more background on this topic.
+
+Changes since v3 [2]:
+- Merged strtok_r() and feature-processing into a single loop to
+  avoid the need to store feature list in an array (Eduard, patch 3)
+- Added ack from Eduard (patches 1-5)
+
+Changes since v2 [3]:
+- added acks from Andrii and Jiri (patches 1-5)
+- merged suggestions from Eduard which simplify and clean up code
+  considerably; these changes fix issues with --btf_features_strict
+  while providing better diagnostic output when an unknown feature
+  is encountered (specifying the unknown feature if in verbose
+  or strict modes).  Added Suggested-bys from Eduard for the
+  relevant patches (Eduard, patches 3,5)
+
+Changes since RFC [4]:
+
+- ensure features are disabled unless requested; use "default" field in
+  "struct btf_features" to specify the conf_load default value which
+  corresponds to the feature being disabled.  For
+  conf_load->btf_gen_floats for example, the default value is false,
+  while for conf_load->skip_encoding_btf_type_tags the default is
+  true; in both cases the intent is to _not_ encode the associated
+  feature by default.  However if the user specifies "float" or
+  "type_tag" in --btf_features, the default conf_load value is negated,
+  resulting in a BTF encoding that contains floats and type tags
+  (Eduard, patch 3)
+- clarify feature default/setting behaviour and how it only applies
+  when --btf_features is used (Eduard, patch 3)
+- ensure we do not run off the end of the feature_list[] array
+  (Eduard, patch 3)
+- rather than having each struct btf_feature record the offset in the
+  conf_load structure of the boolean (requiring us to later do pointer
+  math to update it), record the pointers to the boolean conf_load
+  values associated with each feature (Jiri, patch 3)
+- allow for multiple specifications of --btf_features, enabling the
+  union of all features specified (Andrii, patch 3)
+- rename function-related optimized/consistent to optimized_func and
+  consistent_func in recognition of the fact they are function-specific
+  (Andrii, patch 3)
+- add a strict version of --btf_features, --btf_features_strict that
+  will error out if an unrecognized feature is used (Andrii, patch 5)
+
+[1] https://lore.kernel.org/bpf/CAEf4Bzaz1UqqxuZ7Q+KQee-HLyY1nwhAurBE2n9YTWchqoYLbg@mail.gmail.com/
+[2] https://lore.kernel.org/bpf/20231018122926.735416-1-alan.maguire@oracle.com/
+[3] https://lore.kernel.org/bpf/20231013153359.88274-1-alan.maguire@oracle.com/
+[4] https://lore.kernel.org/bpf/20231011091732.93254-1-alan.maguire@oracle.com/
+
+Alan Maguire (5):
+  btf_encoder, pahole: move btf encoding options into conf_load
+  dwarves: move ARRAY_SIZE() to dwarves.h
+  pahole: add --btf_features support
+  pahole: add --supported_btf_features
+  pahole: add --btf_features_strict to reject unknown BTF features
+
+ btf_encoder.c      |   8 +-
+ btf_encoder.h      |   2 +-
+ dwarves.c          |  16 ----
+ dwarves.h          |  19 +++++
+ man-pages/pahole.1 |  32 ++++++++
+ pahole.c           | 186 +++++++++++++++++++++++++++++++++++++++++----
+ 6 files changed, 229 insertions(+), 34 deletions(-)
+
+-- 
+2.31.1
+
 
