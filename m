@@ -1,65 +1,65 @@
-Return-Path: <bpf+bounces-12960-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12961-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A8D67D2781
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 02:30:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00F2D7D2786
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 02:34:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5238A1C2089C
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 00:30:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B205D28140C
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 00:34:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3363F1877;
-	Mon, 23 Oct 2023 00:30:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B5937EB;
+	Mon, 23 Oct 2023 00:34:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MFSH30Ne"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O1Whmw7m"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA83F15B9;
-	Mon, 23 Oct 2023 00:30:30 +0000 (UTC)
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0CAE4;
-	Sun, 22 Oct 2023 17:30:29 -0700 (PDT)
-Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-57bc2c2f13dso1795289eaf.2;
-        Sun, 22 Oct 2023 17:30:29 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34CF6366;
+	Mon, 23 Oct 2023 00:34:08 +0000 (UTC)
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971AADC;
+	Sun, 22 Oct 2023 17:34:06 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c434c33ec0so15272105ad.3;
+        Sun, 22 Oct 2023 17:34:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698021029; x=1698625829; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20230601; t=1698021246; x=1698626046; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=m6eLSnzZZg7H+GrqfiJCsD1swb5+c3g7YWXl8du2HyA=;
-        b=MFSH30Ne+8ARp5lbO5HEXWCe10WXEMU9SXC2oWtFfZ0nHB6TMqiHqYWrgxP5WcCabS
-         LvoueEueEERps4SS+GIClEAIoI1BfwS1t+LnAxY8LzEou1iQOKAmjk31N3zDWv/OjtZC
-         IYDBAsMoYo5VHv2S0RHwJB27OJZzHDR3L3nCNGTOjbnWBIDIZm9ENK7LKaw9k/VHalQu
-         yiIhdM5M5QaNCsQvGdYJHEWJ0aJvWXs0C1tgR4BHC/06a2WfRP7+3XMUmhGFH0UAgr6Y
-         zj9dSe1SEOCiC3XYuxWBF0Qfqx7jcmx1Ic0sNkxXduf1ie5QB4mP/vRuP/WaSRpEo25g
-         Eudw==
+        bh=Yo6K0bHj9eDw2uCekwr3qyBicYCjBn6A7SQ6ir3tv1I=;
+        b=O1Whmw7m1zgny9j/yIbtZhgZVobvviwXEhNrDgFD2bzH/GvchcPBAR9ziFLUlwOQGe
+         DQGGlZqgxJVzS1KnN4zZOiEuFNPmDt4PYw7E6TREi8p1WG5Rb7b2Z4+sR9WlRZcz3fZQ
+         vSVsmABVpkz052hsjyB6e3A0lHwrowcHWw71u1/DwncJ6Rrhg+PpGJIJ2lSubXiVdCZZ
+         crZerQvr8REz1sWKKqwnpUNLtYZp7WE9IfqjYNZ8mzznB6w+qMPB1tcZp9WfVrVYQ730
+         xy/y2b7PcddXCM1MaB5SgX5EAO0qLJ51dvyK8Dafs2lIUX6uU1gph2xaLzOlYRyy3PYh
+         ATcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698021029; x=1698625829;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1698021246; x=1698626046;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m6eLSnzZZg7H+GrqfiJCsD1swb5+c3g7YWXl8du2HyA=;
-        b=iS2gvWwoAa1zfv4Lxe7oZJBaYEOrWDUrEq3vZWWJyG/Mug10SOBLOPKK6XkHdFzvIe
-         r3T10t6ZiJ7HwIjtPNkl0Bpq0vkLCrIDgUL6R41c9awATibtagHh0MkTmntHaizJr4SV
-         l11NsIhQG7JYPJH7J7M2dBIaHVH5xsn5J5lvIyfU9QBQFJYZ2bG0iFCxF6WY9bu3JGRv
-         5mozDIG59d03u7uhN3bqMQlv1wKvpCTSV9CzRe6lTC2bRxG/9RtrBHSaZKhctOz+A+v2
-         9+8WK6FEw/0orrHOuk2zjEmXmmnJ6gd+wysYEzX5EAaiwzpfN2rYz2krILwEFrQg6sU7
-         Xzpw==
-X-Gm-Message-State: AOJu0Yzx2IaStU5l0u/uaC5wEODaCATJj0Nf8fzGSWqAm1PpTH3sDwqL
-	Bgv+8Pn6pDcNvCxSkUDBivU=
-X-Google-Smtp-Source: AGHT+IHJmePMTS+VW+Lh+vsvi3jAsr62Wg/9ZlsEWGmuo5olAGKcTROr+WxyW46bc51uAB5aGDxkFQ==
-X-Received: by 2002:a05:6358:7a6:b0:168:e364:70af with SMTP id n38-20020a05635807a600b00168e36470afmr605342rwj.25.1698021028781;
-        Sun, 22 Oct 2023 17:30:28 -0700 (PDT)
+        bh=Yo6K0bHj9eDw2uCekwr3qyBicYCjBn6A7SQ6ir3tv1I=;
+        b=vlJqrAsinaiLPVASX8jtiHNb+P8jEJhflBKf6jGkd5UniCRpyB0HjjVj473iM6Mg+f
+         OC74y0kHBH5o+I9/SW2eEP1Mo3XBwTUZp8KkmhfGPdwEprG5+wt18PkMxMaUwIUECeWI
+         EM0UYUM2d2vxBA5fnjPYTs0cA0OQy+teO1WCcGOBhjPRO/YByALPtyjdcgEF3juihntJ
+         uKP7ekZeqSz4lLjEbY3CmX4wOc4PvxGEBvIyp+Qu8OAFSBe4UDyDLZcjJQ4ovVURYEI5
+         4CBNvO7GR+I5rsSWmERWs7ePTJrtMx2VTr1PCrpHgs7SQ607v1iZ3EPYvaVkV8a/nUhn
+         c2Kg==
+X-Gm-Message-State: AOJu0Yz2VXqJiqpFE/ARzQOcG2apj46/mFZzCikWWCgLotOetb3pTXtz
+	CxNMiwWZUKfC9bDpx2lO3pQ=
+X-Google-Smtp-Source: AGHT+IEAAaFlEybSobEedAEEMCSAunEL1L1R+SiHOzUgbtvIQrRdrP7M8FCJ6EQ7WlvROxpGsvhygg==
+X-Received: by 2002:a17:902:d48f:b0:1c9:dff6:58e8 with SMTP id c15-20020a170902d48f00b001c9dff658e8mr5395657plg.54.1698021245856;
+        Sun, 22 Oct 2023 17:34:05 -0700 (PDT)
 Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id j33-20020a632321000000b0058563287aedsm4779378pgj.72.2023.10.22.17.30.23
+        by smtp.gmail.com with ESMTPSA id 2-20020a170902ee4200b001c73d829fb7sm4927232plo.15.2023.10.22.17.33.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Oct 2023 17:30:28 -0700 (PDT)
-Message-ID: <f486476c-8109-4dfb-8ef0-bfd7a36c003e@gmail.com>
-Date: Sun, 22 Oct 2023 21:30:20 -0300
+        Sun, 22 Oct 2023 17:34:05 -0700 (PDT)
+Message-ID: <4c926cff-a3f2-445e-9ca2-9effad423cb7@gmail.com>
+Date: Sun, 22 Oct 2023 21:33:58 -0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,34 +67,36 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] kbuild: avoid too many execution of
+Subject: Re: [bpf-next PATCH v2 2/4] kbuild: avoid too many execution of
  scripts/pahole-flags.sh
+Content-Language: en-US
 To: Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Alex Gaynor <alex.gaynor@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Alice Ryhl <aliceryhl@google.com>,
- Andreas Hindborg <a.hindborg@samsung.com>,
- Andrii Nakryiko <andrii@kernel.org>, Benno Lossin <benno.lossin@proton.me>,
+Cc: linux-kernel@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
+ Nicolas Schier <n.schier@avm.de>, Miguel Ojeda <ojeda@kernel.org>,
+ Alex Gaynor <alex.gaynor@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+ Alice Ryhl <aliceryhl@google.com>, Andreas Hindborg
+ <a.hindborg@samsung.com>, Andrii Nakryiko <andrii@kernel.org>,
+ Benno Lossin <benno.lossin@proton.me>,
  =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
  Boqun Feng <boqun.feng@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>,
  Gary Guo <gary@garyguo.net>, Hao Luo <haoluo@google.com>,
  Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
  KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>,
  Nick Desaulniers <ndesaulniers@google.com>,
  Nicolas Schier <nicolas@fjasle.eu>, Song Liu <song@kernel.org>,
  Stanislav Fomichev <sdf@google.com>,
  Wedson Almeida Filho <wedsonaf@gmail.com>,
  Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
  rust-for-linux@vger.kernel.org
-References: <20231017103742.130927-1-masahiroy@kernel.org>
- <20231017103742.130927-2-masahiroy@kernel.org>
-Content-Language: en-US
+References: <20231018151950.205265-1-masahiroy@kernel.org>
+ <20231018151950.205265-2-masahiroy@kernel.org>
 From: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <20231017103742.130927-2-masahiroy@kernel.org>
+In-Reply-To: <20231018151950.205265-2-masahiroy@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 10/17/23 07:37, Masahiro Yamada wrote:
+On 10/18/23 12:19, Masahiro Yamada wrote:
 > scripts/pahole-flags.sh is executed so many times.
 > 
 > You can check how many times it is invoked during the build, as follows:
@@ -111,7 +113,7 @@ On 10/17/23 07:37, Masahiro Yamada wrote:
 >    scripts/pahole-flags.sh was executed
 >      [ lots of repeated lines suppressed... ]
 > 
-> This scripts is exectuted more than 20 times during the kernel build
+> This scripts is executed more than 20 times during the kernel build
 > because PAHOLE_FLAGS is a recursively expanded variable and exported
 > to sub-processes.
 > 
@@ -131,12 +133,24 @@ On 10/17/23 07:37, Masahiro Yamada wrote:
 > [1]: https://savannah.gnu.org/bugs/index.php?64746
 > 
 > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+> Tested-by: Alan Maguire <alan.maguire@oracle.com>
+> Reviewed-by: Nicolas Schier <n.schier@avm.de>
+> Tested-by: Miguel Ojeda <ojeda@kernel.org>
+> Acked-by: Miguel Ojeda <ojeda@kernel.org>
 > ---
 > [...]
+> @@ -1002,6 +999,7 @@ KBUILD_CPPFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
+>   # include additional Makefiles when needed
+>   include-y			:= scripts/Makefile.extrawarn
+>   include-$(CONFIG_DEBUG_INFO)	+= scripts/Makefile.debug
 > +include-$(CONFIG_DEBUG_INFO_BTF)+= scripts/Makefile.btf
 
-Would have used a tab.
+Would've used a tab, for legibility sake.
 
+>   include-$(CONFIG_KASAN)		+= scripts/Makefile.kasan
+>   include-$(CONFIG_KCSAN)		+= scripts/Makefile.kcsan
+>   include-$(CONFIG_KMSAN)		+= scripts/Makefile.kmsan
 > [...]
 Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 
