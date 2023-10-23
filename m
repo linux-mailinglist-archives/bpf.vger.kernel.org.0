@@ -1,162 +1,173 @@
-Return-Path: <bpf+bounces-13046-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13047-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 234FD7D3EB3
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 20:12:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F077B7D3F45
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 20:31:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53D641C20B17
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 18:12:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90043B20F55
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 18:31:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DB5E21366;
-	Mon, 23 Oct 2023 18:12:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E90AB219FC;
+	Mon, 23 Oct 2023 18:31:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n90t6WbH"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="noRhcJwh"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7137D21340;
-	Mon, 23 Oct 2023 18:12:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5C4EC433C8;
-	Mon, 23 Oct 2023 18:12:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698084730;
-	bh=GW9UQ6EHFPmshL/qVWAbYEnuG1iB/9yD9/xjWaONT0o=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=n90t6WbHB5spdTBUGRiLxo1B6q7BldlK4KG9cH3+oGOtd//VT4aSmGLMXzJFJeW/U
-	 vJcGbBqPxOzYQ8DAVfJjxX3BAsF5PtWt43BSwDenU7QbgnsEbiJYEFJtbD3JhvsJXN
-	 5JvC9kbgpW5BzTrKsb3ZGJrwJeAbVqXm5unH0m8qpYOn3eyd30rV2Mx8VAufYI9CI9
-	 uEQEKNs58xo5MUoBr0n7TT8AVvvJTVQkWfymP/fVKlljH6ECeRMudP4SqOPzAUxg4m
-	 7c1Xsv5IYrkx+dTcoktUHHQz6KDE/VVPvP1XSOgPSKxv1MDEfzrrH6/pUv+55jwEx9
-	 Ci0f+23s/kraw==
-Date: Mon, 23 Oct 2023 11:12:09 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Stanislav Fomichev <sdf@google.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
- john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
- jolsa@kernel.org, toke@kernel.org, willemb@google.com, dsahern@kernel.org,
- magnus.karlsson@intel.com, bjorn@kernel.org, maciej.fijalkowski@intel.com,
- hawk@kernel.org, yoong.siang.song@intel.com, netdev@vger.kernel.org,
- xdp-hints@xdp-project.net
-Subject: Re: [PATCH bpf-next v4 02/11] xsk: Add TX timestamp and TX checksum
- offload support
-Message-ID: <20231023111209.2278899c@kernel.org>
-In-Reply-To: <ZTarsV4UT-sQ14uI@google.com>
-References: <20231019174944.3376335-1-sdf@google.com>
-	<20231019174944.3376335-3-sdf@google.com>
-	<20231020180411.2a9f573d@kernel.org>
-	<ZTarsV4UT-sQ14uI@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFCE0224CC
+	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 18:31:23 +0000 (UTC)
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9032E9B
+	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 11:31:21 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c9f973d319so25709065ad.0
+        for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 11:31:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698085881; x=1698690681; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wPnBqAKtu7qfmlWwJUK17l0J3rYG4g6m8kBJfqHBWcI=;
+        b=noRhcJwhCQfXlnR6nfDGhLsP3UYBi2y7YHr2RGSwCp2duqgu/TN2ecnH1nS4lco7J/
+         /OjqbzZ2DpoEZUSwx5b4QGw2bbD19cBsH8/rBdq0ZxbEOXvXkMSz0Ny+uBDCkbPUWVgo
+         fotd9a9N8BdpoO3Fno7JblFiRbIzTdxFp5CBHxZOQs524v6jtEPfKznXMhBGuklpd5aK
+         348Hbd8fCbf9Wxg4SFpl3+ei52or/r9tntS2EmpeOPisvSnn61mirLtexxTIfpCWCtdR
+         I9vLYKtr7cN9QuHwZ4AW3cPWMn1ZInQPDLDGnPLhba6gJvjGZBWnIECfr7amhNrW/qw3
+         djVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698085881; x=1698690681;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wPnBqAKtu7qfmlWwJUK17l0J3rYG4g6m8kBJfqHBWcI=;
+        b=I0740epeMjjFP+ynTT5uNj8BZXc9G+4pVRCOA6b14vXydmge0H75cr6pfWd9BVwegd
+         SrbhqUwNduSdx3lZr52Gqgm/bdVduR1AQIP8AuleVhPiYcUn42v0Jdv42v4m0BYdE3oN
+         YnX4uBdVbeRmUCAOvAkmd+0T2S8reQhwaEHX4c1Op2yG32mSb+hLc6H2RLF5YKx35VaA
+         3KLi18cgPLAo8rAOtOJjnVjkKNHY+onmuC6ktNXOCYryonMA8feWIrm+TUOdDzPbUbX1
+         tHrBTr4v7wMZ71wn0xL0dJe8jx/p3RRRRTOBBzTmn8aXwMTJ8mHSZylEm/Zafb+Cvqqv
+         iHuA==
+X-Gm-Message-State: AOJu0YzXKl8gOfkQOJeDFOwcJ6Su165+08t3iDg0BK1lM2jdGSTFLeG9
+	8waJs3PdTyA6+kXtnzGL2PD4ZSA=
+X-Google-Smtp-Source: AGHT+IG+XvWazJNWN5c7NNnSVe2lrJdtfauU4L3Qq2lLLg+ikexd9cjwYoiGnk2YQZO9DGNX/ZkD6CQ=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:902:968d:b0:1ca:7a4c:834d with SMTP id
+ n13-20020a170902968d00b001ca7a4c834dmr206694plp.13.1698085881006; Mon, 23 Oct
+ 2023 11:31:21 -0700 (PDT)
+Date: Mon, 23 Oct 2023 11:31:19 -0700
+In-Reply-To: <CAJ8uoz0UERM3_yAbNmTV=c5kE1rmKBY2KQ0bRH9gV6de1NRJqA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <20231019174944.3376335-1-sdf@google.com> <20231019174944.3376335-12-sdf@google.com>
+ <CAJ8uoz0UERM3_yAbNmTV=c5kE1rmKBY2KQ0bRH9gV6de1NRJqA@mail.gmail.com>
+Message-ID: <ZTa792UUm6dACdf0@google.com>
+Subject: Re: [PATCH bpf-next v4 11/11] xsk: Document tx_metadata_len layout
+From: Stanislav Fomichev <sdf@google.com>
+To: Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
+	jolsa@kernel.org, kuba@kernel.org, toke@kernel.org, willemb@google.com, 
+	dsahern@kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org, 
+	maciej.fijalkowski@intel.com, hawk@kernel.org, yoong.siang.song@intel.com, 
+	netdev@vger.kernel.org, xdp-hints@xdp-project.net
+Content-Type: text/plain; charset="utf-8"
 
-On Mon, 23 Oct 2023 10:21:53 -0700 Stanislav Fomichev wrote:
-> On 10/20, Jakub Kicinski wrote:
-> > On Thu, 19 Oct 2023 10:49:35 -0700 Stanislav Fomichev wrote:  
-> > > diff --git a/Documentation/netlink/specs/netdev.yaml b/Documentation/netlink/specs/netdev.yaml
-> > > index 14511b13f305..22d2649a34ee 100644
-> > > --- a/Documentation/netlink/specs/netdev.yaml
-> > > +++ b/Documentation/netlink/specs/netdev.yaml
-> > > @@ -55,6 +55,19 @@ name: netdev
-> > >          name: hash
-> > >          doc:
-> > >            Device is capable of exposing receive packet hash via bpf_xdp_metadata_rx_hash().
-> > > +  -
-> > > +    type: flags
-> > > +    name: xsk-flags
-> > > +    render-max: true  
-> > 
-> > I don't think you're using the MAX, maybe don't render it.
-> > IDK what purpose it'd serve for feature flag enums.  
+On 10/23, Magnus Karlsson wrote:
+> On Thu, 19 Oct 2023 at 19:50, Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > - how to use
+> > - how to query features
+> > - pointers to the examples
+> >
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  Documentation/networking/index.rst           |  1 +
+> >  Documentation/networking/xsk-tx-metadata.rst | 77 ++++++++++++++++++++
+> >  2 files changed, 78 insertions(+)
+> >  create mode 100644 Documentation/networking/xsk-tx-metadata.rst
+> >
+> > diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
+> > index 2ffc5ad10295..f3c2566d6cad 100644
+> > --- a/Documentation/networking/index.rst
+> > +++ b/Documentation/networking/index.rst
+> > @@ -122,6 +122,7 @@ Refer to :ref:`netdev-FAQ` for a guide on netdev development process specifics.
+> >     xfrm_sync
+> >     xfrm_sysctl
+> >     xdp-rx-metadata
+> > +   xsk-tx-metadata
+> >
+> >  .. only::  subproject and html
+> >
+> > diff --git a/Documentation/networking/xsk-tx-metadata.rst b/Documentation/networking/xsk-tx-metadata.rst
+> > new file mode 100644
+> > index 000000000000..b7289f06745c
+> > --- /dev/null
+> > +++ b/Documentation/networking/xsk-tx-metadata.rst
+> > @@ -0,0 +1,77 @@
+> > +==================
+> > +AF_XDP TX Metadata
+> > +==================
+> > +
+> > +This document describes how to enable offloads when transmitting packets
+> > +via :doc:`af_xdp`. Refer to :doc:`xdp-rx-metadata` on how to access similar
+> > +metadata on the receive side.
+> > +
+> > +General Design
+> > +==============
+> > +
+> > +The headroom for the metadata is reserved via ``tx_metadata_len`` in
+> > +``struct xdp_umem_reg``. The metadata length is therefore the same for
+> > +every socket that shares the same umem. The metadata layout is a fixed UAPI,
+> > +refer to ``union xsk_tx_metadata`` in ``include/uapi/linux/if_xdp.h``.
+> > +Thus, generally, the ``tx_metadata_len`` field above should contain
+> > +``sizeof(union xsk_tx_metadata)``.
+> > +
+> > +The headroom and the metadata itself should be located right before
+> > +``xdp_desc->addr`` in the umem frame. Within a frame, the metadata
+> > +layout is as follows::
+> > +
+> > +           tx_metadata_len
+> > +     /                         \
+> > +    +-----------------+---------+----------------------------+
+> > +    | xsk_tx_metadata | padding |          payload           |
+> > +    +-----------------+---------+----------------------------+
+> > +                                ^
+> > +                                |
+> > +                          xdp_desc->addr
+> > +
+> > +An AF_XDP application can request headrooms larger than ``sizeof(struct
+> > +xsk_tx_metadata)``. The kernel will ignore the padding (and will still
+> > +use ``xdp_desc->addr - tx_metadata_len`` to locate
+> > +the ``xsk_tx_metadata``). For the frames that shouldn't carry
+> > +any metadata (i.e., the ones that don't have ``XDP_TX_METADATA`` option),
+> > +the metadata area is ignored by the kernel as well.
+> > +
+> > +The flags field enables the particular offload:
+> > +
+> > +- ``XDP_TX_METADATA_TIMESTAMP``: requests the device to put transmission
+> > +  timestamp into ``tx_timestamp`` field of ``union xsk_tx_metadata``.
+> > +- ``XDP_TX_METADATA_CHECKSUM``: requests the device to calculate L4
+> > +  checksum. ``csum_start`` specifies byte offset of there the checksumming
 > 
-> I was gonna say 'to iterate over every possible bit', but we are using
-> that 'xxx > 1U << i' implementation (which you also found a bug in).
+> nit: of there -> where
 > 
-> I can drop it, but the question is: should I drop it from the rest as
-> well? xdp-act and xdp-rx-metadata have it.
-
-The xdp-act one looks used. xdp-rx-metadata looks unused, so you could
-drop. But up to you if you want to clean it up.
-
-> > > +/* Request transmit timestamp. Upon completion, put it into tx_timestamp
-> > > + * field of struct xsk_tx_metadata.
-> > > + */
-> > > +#define XDP_TX_METADATA_TIMESTAMP		(1 << 0)
-> > > +
-> > > +/* Request transmit checksum offload. Checksum start position and offset
-> > > + * are communicated via csum_start and csum_offset fields of struct
-> > > + * xsk_tx_metadata.
-> > > + */
-> > > +#define XDP_TX_METADATA_CHECKSUM		(1 << 1)  
-> > 
-> > Reuse of enum netdev_xsk_flags is not an option?  
+> > +  should start and ``csum_offset`` specifies byte offset where the
+> > +  device should store the computed checksum.
+> > +- ``XDP_TX_METADATA_CHECKSUM_SW``: requests checksum calculation to
+> > +  be done in software; this mode works only in ``XSK_COPY`` mode and
+> > +  is mostly intended for testing. Do not enable this option, it
+> > +  will negatively affect performance.
+> > +
+> > +Besides the flags above, in order to trigger the offloads, the first
+> > +packet's ``struct xdp_desc`` descriptor should set ``XDP_TX_METADATA``
+> > +bit in the ``options`` field. Also not that in a multi-buffer packet
 > 
-> It is an option, but probably better to keep them separate? Netlink is
-> for observability, and here have a tighter control over the defines and
-> UAPI (and the don't have to map 1:1 as in the case of
-> XDP_TX_METADATA_CHECKSUM_SW, for example).
+> nit: not -> note
 
-The duplication is rather apparent, and they are flags so compiler
-can't help us catch misuses of one set vs the other.
-
-If you prefer to keep the separate defines - I'd rename them to tie 
-them to the field more strongly. Specifically they should have the
-word "flags" in them?
-
-XDP_TXMD_FLAGS_TIMESTAMP
-XDP_TXMD_FLAGS_CHECKSUM
-
-maybe?
-
-> > > +/* Force checksum calculation in software. Can be used for testing or
-> > > + * working around potential HW issues. This option causes performance
-> > > + * degradation and only works in XDP_COPY mode.
-> > > + */
-> > > +#define XDP_TX_METADATA_CHECKSUM_SW		(1 << 2)  
-> > 
-> > Is there a need for this to be on packet-by-packet basis?
-> > HW issues should generally be fixed by the driver, is there 
-> > any type of problem in particular you have in mind here?  
-> 
-> No, not really, do you think it makes sense to move it to a setsockopt
-> or something? We'd still have to check it on a per-packet case
-> though (from xsk_sock), so not sure it is strictly better?
-
-Setsockopt or just ethtool -K $ifc tx off ? And check device features?
-Maybe I'm overly sensitive but descriptor bits are usually super
-precious :)
-
-> Regarding HW issues: I don't have a good problem in mind, but I
-> think having a SW path is useful. It least it was useful for me
-> during developing (to compare the checksum) and I hope it will be
-> useful for other people as well (mostly as well during development).
-> Because the API is still a bit complicated and requires getting
-> pseudo header csum right. Plus the fact that csum_offset is an
-> offset from csum_start was not super intuitive to me.
-
-Okay, I'm not strongly opposed, I just wanted to flag it.
-If nobody else feels the same way, and you like the separate bit - 
-perfectly fine by me.
-
-> > > +			meta = buffer - xs->pool->tx_metadata_len;
-> > > +
-> > > +			if (meta->flags & XDP_TX_METADATA_CHECKSUM) {  
-> > 
-> > Do we need to worry about reserved / unsupported meta->flags ?  
-> 
-> I don't think so, probably not worth the cycles to check for the
-> unsupported bits? Or do you think it makes sense to clearly return
-> an error here and this extra check won't actually affect anything?
-
-Hm, it is uAPI, isn't it? We try to validate anything kernel gets these
-days, why would the flags be different? Shouldn't be more than 2 cycles.
+Thank you for both, will fix!
 
