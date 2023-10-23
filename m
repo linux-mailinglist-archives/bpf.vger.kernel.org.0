@@ -1,197 +1,131 @@
-Return-Path: <bpf+bounces-12985-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12986-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71C4C7D2DF2
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 11:20:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 064E87D2E32
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 11:28:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACD531C20928
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 09:20:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABC0F1F21C81
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 09:28:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57A1612B9F;
-	Mon, 23 Oct 2023 09:20:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9EB134AE;
+	Mon, 23 Oct 2023 09:28:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xe2km3me"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WwPiuNUN"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07AEE12B8A;
-	Mon, 23 Oct 2023 09:20:04 +0000 (UTC)
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C22597;
-	Mon, 23 Oct 2023 02:20:02 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3b2d9a9c824so734942b6e.0;
-        Mon, 23 Oct 2023 02:20:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698052801; x=1698657601; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vTLLmppAiMZ7nebqhxgQeiaMrLVs8gT7ZeBZYFeZ6xE=;
-        b=Xe2km3mefczzcEdTcj3r5z29OEcc9m2dEynCHe4u18Bg0Qe0xPid9udVTJReXpgL11
-         /w1OLrrz2peHd2LXTZ4EIKsg5CZcwjG71QleQVJr4SwXD69nUZK14zJ4/2/6DtJMDmpl
-         q6sH0ZpqliwoIIse/Q7hogJXfwO24OP6RIBjkqd9C69T14l83saw1cCXXWwI1CP7jVa/
-         n/q8GLseWdzzM5ew4ZP7FHRWJ4MPHJxsX12HSxfrqlhAFFANrCHvDon1gDR3fGNh5+Wh
-         UWsUQzSD/1GMV6ULZ7ZKK00RlGWHNlcym4P019lzr2UmIqZN7VlPAdalGSClmdO6zyKr
-         fMcQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1547747A
+	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 09:27:59 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 635C1AF
+	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 02:27:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1698053277;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PJpUQGqtSEw59FWAvf8kANUqzmQ+qpaN7eg8DI+YNGE=;
+	b=WwPiuNUNgMe2pDy6CwmzAE7kF6S7mZy2DCk9l3D/Mdz04gh9ObkARv8bSeBIBk65THhdzM
+	AnSXMmOqjHKvU2tk8ne9FpGpmnXycL3/9/QDDZc/M6qkbtrz0f6+tB46D7uAknFWJIeMaN
+	psTFArs65nTUsM9e5vHj7XnCFbSAW4U=
+Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
+ [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-607-wIwViLo8Olat5BFns0jy6g-1; Mon, 23 Oct 2023 05:27:56 -0400
+X-MC-Unique: wIwViLo8Olat5BFns0jy6g-1
+Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-59b5a586da6so30216587b3.1
+        for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 02:27:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698052801; x=1698657601;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vTLLmppAiMZ7nebqhxgQeiaMrLVs8gT7ZeBZYFeZ6xE=;
-        b=gSApZzXYJNSnO3MdOJtLS+gsY/HfxTeDiE2ungy1jqPW3wMMSjftQA4x7JE/s/gPTR
-         qB0y0wmi++hcyMmkLVfUcl1oyU/hIHb1sl9r/LgTKq25efTBLb0choawYiRreuLqZu73
-         6UBkvmd/P5uC5ye9mRWEJe5ZXDMYGZAOzyfYpoD9NTIVUHrmkKQSALP67Ia2o9Q7P93U
-         rLQKe/lPcaz6VtBA0tuNfmjvezSJKDPs4feYWL3Rwyjtqw+V/+8q8WScuVnPhBO+PRBS
-         E/GEIXhIY+Tc2QnaQKiaDv10lv17+MGPGTWG1tEMhVzaMnaVkiufYyOw0veOFZ+e0lsK
-         KUPw==
-X-Gm-Message-State: AOJu0Yztr85CcmydEXO8iqJFft4srNUy1UhcEmRy0GhinW61BJjAchwE
-	Cjb+xakws4GuRtJfbZA5RUdr/3T4NONqE8g3j5Q=
-X-Google-Smtp-Source: AGHT+IFriz68SBWCUSMU11F4QB9bXbe0kY3AVlbNs7eJqLAlATQXIQkeCpneiw2ILwtUzPeql2Rdrrw5FcvVA8kr3SI=
-X-Received: by 2002:a05:6830:a84:b0:6c4:7516:f2cf with SMTP id
- n4-20020a0568300a8400b006c47516f2cfmr8139106otu.2.1698052801541; Mon, 23 Oct
- 2023 02:20:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698053276; x=1698658076;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PJpUQGqtSEw59FWAvf8kANUqzmQ+qpaN7eg8DI+YNGE=;
+        b=fpGTQACHzsY6d1pC8JOOnzbnn//EDFlAaGvcjjRjlCVEmyHbhU7eiWTyI8eFQi+K4U
+         cgVRaFRt5cLFXuP97+Ri6ckoag5plVrTRtBjoDPWX4BYY1tCmWpCnaoAfPe6J4ZcY5dZ
+         ttD5mmhXSNOxsTaM9IB7SdhmtcEpASNUz6HUl14xIqIQYtYJNM32+qo4zRprh4VIdnxo
+         oWQOOMq37l9Pstolya6/Vu+3CWTpLm7O8LhMKZhZu8VIzPMBp3gBtJtqzU9m0+/3gS9B
+         1uavzkAJbXNhQYT65FBdgfdAsND6VJsP0nX+9Pw/uyZHwGfmdDIXfsmAAwCIPXqmcRMv
+         7QtQ==
+X-Gm-Message-State: AOJu0YwZ6wIIA9mSJnOio4QuENpU9WKEy1qZzoWg50Tvt5+N9XLr9eMc
+	6GCdrpSYPG/ewxy6KGjRWau3zyXtRHO9Roou0xQm590dNhHzDEHAcwNmxLZu55yC/cn4hdsOZBF
+	awx701DwjHQFX
+X-Received: by 2002:a0d:d6c2:0:b0:5a7:fcad:e865 with SMTP id y185-20020a0dd6c2000000b005a7fcade865mr11354046ywd.2.1698053275841;
+        Mon, 23 Oct 2023 02:27:55 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE1fa2SAOC7vpSI3i9NhHNOsNySO0pUT5I+RA50MlBKEOL769qAV8hmNqFnBd6UStCcWQvToQ==
+X-Received: by 2002:a0d:d6c2:0:b0:5a7:fcad:e865 with SMTP id y185-20020a0dd6c2000000b005a7fcade865mr11354037ywd.2.1698053275551;
+        Mon, 23 Oct 2023 02:27:55 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id j125-20020a819283000000b0059bc0d766f8sm3028015ywg.34.2023.10.23.02.27.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 02:27:54 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id F3D62EB2C56; Mon, 23 Oct 2023 11:27:51 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrii Nakryiko
+ <andrii@kernel.org>, bpf@vger.kernel.org, Mohamed Mahmoud
+ <mmahmoud@redhat.com>
+Subject: Re: Hitting verifier backtracking bug on 6.5.5 kernel
+In-Reply-To: <ZTXVn3EMBELuV-yH@u94a>
+References: <87jzrrwptf.fsf@toke.dk>
+ <CAEf4BzaC3ZohtcRhKQRCjdiou3=KcfDvRnF6RN55BTZx+jNqhg@mail.gmail.com>
+ <87sf6auzok.fsf@toke.dk>
+ <CAEf4BzaAjisHpVikUNb5sQDdQwNheNJRojoauQvAPppMQJhK9g@mail.gmail.com>
+ <87il75v74m.fsf@toke.dk> <ZS6nnJRuI22tgI4D@u94a> <87fs29uppj.fsf@toke.dk>
+ <87mswds1c7.fsf@toke.dk> <ZTXVn3EMBELuV-yH@u94a>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Mon, 23 Oct 2023 11:27:51 +0200
+Message-ID: <87wmvdr8mg.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231019174944.3376335-1-sdf@google.com> <20231019174944.3376335-12-sdf@google.com>
-In-Reply-To: <20231019174944.3376335-12-sdf@google.com>
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Mon, 23 Oct 2023 11:19:50 +0200
-Message-ID: <CAJ8uoz0UERM3_yAbNmTV=c5kE1rmKBY2KQ0bRH9gV6de1NRJqA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 11/11] xsk: Document tx_metadata_len layout
-To: Stanislav Fomichev <sdf@google.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
-	jolsa@kernel.org, kuba@kernel.org, toke@kernel.org, willemb@google.com, 
-	dsahern@kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org, 
-	maciej.fijalkowski@intel.com, hawk@kernel.org, yoong.siang.song@intel.com, 
-	netdev@vger.kernel.org, xdp-hints@xdp-project.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 19 Oct 2023 at 19:50, Stanislav Fomichev <sdf@google.com> wrote:
->
-> - how to use
-> - how to query features
-> - pointers to the examples
->
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
->  Documentation/networking/index.rst           |  1 +
->  Documentation/networking/xsk-tx-metadata.rst | 77 ++++++++++++++++++++
->  2 files changed, 78 insertions(+)
->  create mode 100644 Documentation/networking/xsk-tx-metadata.rst
->
-> diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
-> index 2ffc5ad10295..f3c2566d6cad 100644
-> --- a/Documentation/networking/index.rst
-> +++ b/Documentation/networking/index.rst
-> @@ -122,6 +122,7 @@ Refer to :ref:`netdev-FAQ` for a guide on netdev development process specifics.
->     xfrm_sync
->     xfrm_sysctl
->     xdp-rx-metadata
-> +   xsk-tx-metadata
->
->  .. only::  subproject and html
->
-> diff --git a/Documentation/networking/xsk-tx-metadata.rst b/Documentation/networking/xsk-tx-metadata.rst
-> new file mode 100644
-> index 000000000000..b7289f06745c
-> --- /dev/null
-> +++ b/Documentation/networking/xsk-tx-metadata.rst
-> @@ -0,0 +1,77 @@
-> +==================
-> +AF_XDP TX Metadata
-> +==================
-> +
-> +This document describes how to enable offloads when transmitting packets
-> +via :doc:`af_xdp`. Refer to :doc:`xdp-rx-metadata` on how to access similar
-> +metadata on the receive side.
-> +
-> +General Design
-> +==============
-> +
-> +The headroom for the metadata is reserved via ``tx_metadata_len`` in
-> +``struct xdp_umem_reg``. The metadata length is therefore the same for
-> +every socket that shares the same umem. The metadata layout is a fixed UAPI,
-> +refer to ``union xsk_tx_metadata`` in ``include/uapi/linux/if_xdp.h``.
-> +Thus, generally, the ``tx_metadata_len`` field above should contain
-> +``sizeof(union xsk_tx_metadata)``.
-> +
-> +The headroom and the metadata itself should be located right before
-> +``xdp_desc->addr`` in the umem frame. Within a frame, the metadata
-> +layout is as follows::
-> +
-> +           tx_metadata_len
-> +     /                         \
-> +    +-----------------+---------+----------------------------+
-> +    | xsk_tx_metadata | padding |          payload           |
-> +    +-----------------+---------+----------------------------+
-> +                                ^
-> +                                |
-> +                          xdp_desc->addr
-> +
-> +An AF_XDP application can request headrooms larger than ``sizeof(struct
-> +xsk_tx_metadata)``. The kernel will ignore the padding (and will still
-> +use ``xdp_desc->addr - tx_metadata_len`` to locate
-> +the ``xsk_tx_metadata``). For the frames that shouldn't carry
-> +any metadata (i.e., the ones that don't have ``XDP_TX_METADATA`` option),
-> +the metadata area is ignored by the kernel as well.
-> +
-> +The flags field enables the particular offload:
-> +
-> +- ``XDP_TX_METADATA_TIMESTAMP``: requests the device to put transmission
-> +  timestamp into ``tx_timestamp`` field of ``union xsk_tx_metadata``.
-> +- ``XDP_TX_METADATA_CHECKSUM``: requests the device to calculate L4
-> +  checksum. ``csum_start`` specifies byte offset of there the checksumming
+Shung-Hsi Yu <shung-hsi.yu@suse.com> writes:
 
-nit: of there -> where
-
-> +  should start and ``csum_offset`` specifies byte offset where the
-> +  device should store the computed checksum.
-> +- ``XDP_TX_METADATA_CHECKSUM_SW``: requests checksum calculation to
-> +  be done in software; this mode works only in ``XSK_COPY`` mode and
-> +  is mostly intended for testing. Do not enable this option, it
-> +  will negatively affect performance.
-> +
-> +Besides the flags above, in order to trigger the offloads, the first
-> +packet's ``struct xdp_desc`` descriptor should set ``XDP_TX_METADATA``
-> +bit in the ``options`` field. Also not that in a multi-buffer packet
-
-nit: not -> note
-
-> +only the first chunk should carry the metadata.
-> +
-> +Querying Device Capabilities
-> +============================
-> +
-> +Every devices exports its offloads capabilities via netlink netdev family.
-> +Refer to ``xsk-flags`` features bitmask in
-> +``Documentation/netlink/specs/netdev.yaml``.
-> +
-> +- ``tx-timestamp``: device supports ``XDP_TX_METADATA_TIMESTAMP``
-> +- ``tx-checksum``: device supports ``XDP_TX_METADATA_CHECKSUM``
-> +
-> +Note that every devices supports ``XDP_TX_METADATA_CHECKSUM_SW`` when
-> +running in ``XSK_COPY`` mode.
-> +
-> +See ``tools/net/ynl/samples/netdev.c`` on how to query this information.
-> +
-> +Example
-> +=======
-> +
-> +See ``tools/testing/selftests/bpf/xdp_hw_metadata.c`` for an example
-> +program that handles TX metadata. Also see https://github.com/fomichev/xskgen
-> +for a more bare-bones example.
-> --
-> 2.42.0.655.g421f12c284-goog
+> On Fri, Oct 20, 2023 at 06:30:48PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> writes:
+>> > Shung-Hsi Yu <shung-hsi.yu@suse.com> writes:
+>> >
+>> >> Patch based on Andrii's analysis.
+>> >>
+>> >> Given that both BPF_END and BPF_NEG always operates on dst_reg itself
+>> >> and that bt_is_reg_set(bt, dreg) was already checked I believe we can
+>> >> just return with no futher action.
+>> >
+>> > Alright, manually applied this to bpf-next and indeed this enables the
+>> > netobserv-bpf-agent to load successfully. Care to submit a formal patc=
+h?
+>> > In that case please add my:
+>> >
+>> > Tested-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> >
+>> > Thanks!
+>>=20
+>> Friendly ping - are you planning to submit an official patch for this? :)
 >
+> Yes, I do plan to send an offical one along with selftest as Alexei has
+> suggested. Once I've got my irrational fear of writing selftests overcame=
+ ;)
 >
+> Should have it out before the end of this week.
+
+Alright great! Didn't mean to rush you, just wanted to double check that
+you were planning to submit this :)
+
+Thanks!
+
+-Toke
+
 
