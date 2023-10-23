@@ -1,158 +1,207 @@
-Return-Path: <bpf+bounces-13013-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13014-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55B1F7D3A5D
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 17:06:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 823037D3B7F
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 17:52:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9E391F22085
-	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 15:06:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3706328162D
+	for <lists+bpf@lfdr.de>; Mon, 23 Oct 2023 15:52:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5F021BDC8;
-	Mon, 23 Oct 2023 15:06:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44EC01C6BC;
+	Mon, 23 Oct 2023 15:52:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="eVOXS9cO";
-	dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="eVOXS9cO";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=obs-cr.20230601.gappssmtp.com header.i=@obs-cr.20230601.gappssmtp.com header.b="07JnKKxF"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="hGvilwQ2"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A0914AA9
-	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 15:06:50 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A529DD
-	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 08:06:48 -0700 (PDT)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id A8253C170600
-	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 08:06:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1698073608; bh=cZpfhiCWzgU00SfS2AWuf6pT+8YdPTLWP0iBtW1TluI=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=eVOXS9cOOXGq6yRh89U1IJKL7l9Z5/YBdrC6MN2SVqpzkfH5UkzgS64TwdQCU9Zp5
-	 L83FjitmxnSO0ksWskehjgR3EUqsDQXk+Co8TAEBZF3h6FYJ/16czjzm2GXGNbK0i4
-	 SUMLKwEyseYOI6GPMBfy9ByVadpzhWcJSXYmcH2g=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Mon Oct 23 08:06:48 2023
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 53407C151080;
-	Mon, 23 Oct 2023 08:06:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1698073608; bh=cZpfhiCWzgU00SfS2AWuf6pT+8YdPTLWP0iBtW1TluI=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=eVOXS9cOOXGq6yRh89U1IJKL7l9Z5/YBdrC6MN2SVqpzkfH5UkzgS64TwdQCU9Zp5
-	 L83FjitmxnSO0ksWskehjgR3EUqsDQXk+Co8TAEBZF3h6FYJ/16czjzm2GXGNbK0i4
-	 SUMLKwEyseYOI6GPMBfy9ByVadpzhWcJSXYmcH2g=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id BF9D2C14CE4A
- for <bpf@ietfa.amsl.com>; Mon, 23 Oct 2023 08:06:46 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -6.905
-X-Spam-Level: 
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=obs-cr.20230601.gappssmtp.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id GVgWGaLoy1MG for <bpf@ietfa.amsl.com>;
- Mon, 23 Oct 2023 08:06:43 -0700 (PDT)
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com
- [IPv6:2607:f8b0:4864:20::c33])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id F236FC151080
- for <bpf@ietf.org>; Mon, 23 Oct 2023 08:06:42 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id
- 006d021491bc7-581de3e691dso2036758eaf.3
- for <bpf@ietf.org>; Mon, 23 Oct 2023 08:06:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683EE1427E
+	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 15:52:10 +0000 (UTC)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA64FF
+	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 08:52:07 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40838915cecso28772255e9.2
+        for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 08:52:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=obs-cr.20230601.gappssmtp.com; s=20230601; t=1698073602; x=1698678402;
- darn=ietf.org; 
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=589kWa60rv9ivRuzxruIRObnx4upUw3uc1WngFwaW/E=;
- b=07JnKKxFPMvkHBj9OIe5rrdyFBBnCA0U4q1LFzjK5KR3jamklvgsatxR0jprZVvZXM
- aqMe15f2/zoPBzGc0BnS3sQ+5m6O+dceBM9dQN/AfzqKGhYKTwnxL3VbLEJJLFG8JiiL
- fj1QkdGCOBf/euMT1ySJKygrvYj2Y9BeKZo2wT1K5KoJXPcJg/5vltfjmSp9owgaB3Fa
- U0RUAu/eSgVs5ph/vCNPQyLnuxYUA2DHWEaYFAOuR2vNJ7MfZIiq8Q23kvIxJlAXKVAu
- vdfEIH/gJTDkRk1Jk+WgHznEUK4W4pYT66mt4dI9bJnHfysLbklfrjPGkb/GyDv8AfqQ
- MKgA==
+        d=isovalent.com; s=google; t=1698076326; x=1698681126; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=BRPGgTEUARbMnsGporLeM6Uk6tu4EWuryvS3FhyPA7s=;
+        b=hGvilwQ2YUJzQ1H6rOy/AF59DoXePIoYq38XBy+IjIK3Q593gD3rx6PodThvd7EJaG
+         m060e7o1xsenv33oBnLp5Cd505I9ajlEJiFYO2pU5p1T0iUyu4J9/lqH1C9AmjH/u5Qm
+         aTROcjwOhXkvlpYNbLE9e/J1smBbcVhXTOlNRILvpQOYksQGS+1AUiXDY6WvwNa77bcB
+         oL5Gaz6st5iuDsTYEst/5ERtapXtOA8PdgY8+SxooW61UZIz0JcLSyD9FXWcsY5B9FNI
+         Krqa4m73emafKekgV4MVWL1rvvEeSQ2C8dE4MlVIX9zjcQHalv//4PVrOoaFX0YobZtO
+         h2Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1698073602; x=1698678402;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=589kWa60rv9ivRuzxruIRObnx4upUw3uc1WngFwaW/E=;
- b=nDPvVBSABWwL3x/gId6XLQgGALP1EigfqRssMCnGbOhnNvEg4NOE8drPx9PWVY77zT
- 1ihZljbkibLqn7R9bY+1rhw0xIuSPWIBqpOVNo5Ry7kYcuLZKM/tAjY8OVD3rJF537bT
- N+J64ESMIwqKD8M0qWqjpdUGveu2H96N8P3CEcVivsXxOqnfG8WhO2/L5ZrKIWobJ/NC
- LLn7zo+oRQbm1GkyE8mK4jZT5DLJInLf50Oljk8ik8tTnIDTGd0tHIqaM6R23aS8L6t9
- kt34hB6b5IqW0jg+clZ0qGO//8+WyzMkBBSgEUi7vqV7QdkyKSPDxDXxbO6Z6v8qVcuE
- Q8sg==
-X-Gm-Message-State: AOJu0Yxfm/yz/PQtOeVxoh9hTOwEBdJ71FhMyzddnf5O/NQe7kgI5TEC
- +rut4IfINbcWMKQTbDvsdyYaYg702HQGWVIQuId5Pg==
-X-Google-Smtp-Source: AGHT+IFNQ1m7HKnCw0yCQBHmA1Fz716XV9sZnDMUA943cr0wW2g8X1fgF2y2e5lLHjl99/hK91pYr2xUGbE6zum5o+0=
-X-Received: by 2002:a05:6358:cd04:b0:168:d0a3:202f with SMTP id
- gv4-20020a056358cd0400b00168d0a3202fmr5784477rwb.15.1698073601496; Mon, 23
- Oct 2023 08:06:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698076326; x=1698681126;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BRPGgTEUARbMnsGporLeM6Uk6tu4EWuryvS3FhyPA7s=;
+        b=NvMuQ3iadqyeSeFlRw+B4t8DawgaDpO/4INm/go1mZRf/DqsvlfoD99n+Scvct3SpG
+         M/1Os9cvttm+Ftz3vaLUs19FK5rFNjMpreJfmCwBTR5DHLfwmYncBvBsYavc7RIFvXd0
+         uj5zNAEkRkrodTCkxkooISI2SUfqaWR5m6+hp29Jjjxbgbz8u639T3EwrhzulRIJF8d+
+         Z4W5p/x4sY1KzpFUrxq3JR671n+tR1U0EceUN8wuj0f+YWNyz4ASBXswtFM588FuVrSP
+         elOfWpE5pSNea3B45GXNkV2G6VM7SXfeRGwGhLcadqFVl/5wAQszWQQF4XoFVKNeOe5/
+         XMGA==
+X-Gm-Message-State: AOJu0Yw0mYG0f5YzjvoEZel7mv02222s1jVSa6uqALtRK0bLgFWbTyux
+	AhHDTQbtuEi+92lFoafMyTnY
+X-Google-Smtp-Source: AGHT+IH2aCLDUrmjHkqhsDZvITRd7Xen6+hgNcvWkelPqIqWINrbsFODGBjysv7Mu/XSV2i82pixKA==
+X-Received: by 2002:a05:600c:5254:b0:405:3dd0:6ee9 with SMTP id fc20-20020a05600c525400b004053dd06ee9mr7194772wmb.34.1698076325724;
+        Mon, 23 Oct 2023 08:52:05 -0700 (PDT)
+Received: from Mem (2a01cb0890a26e0047713f6c25756fbd.ipv6.abo.wanadoo.fr. [2a01:cb08:90a2:6e00:4771:3f6c:2575:6fbd])
+        by smtp.gmail.com with ESMTPSA id b13-20020a05600c11cd00b0040770ec2c19sm14458189wmi.10.2023.10.23.08.52.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 08:52:05 -0700 (PDT)
+Date: Mon, 23 Oct 2023 17:52:03 +0200
+From: Paul Chaignon <paul@isovalent.com>
+To: Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Srinivas Narayana Ganapathy <sn624@cs.rutgers.edu>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Langston Barrett <langston.barrett@gmail.com>,
+	Srinivas Narayana <srinivas.narayana@rutgers.edu>,
+	Santosh Nagarakatte <sn349@cs.rutgers.edu>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"ast@kernel.org" <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"martin.lau@kernel.org" <martin.lau@kernel.org>,
+	"kernel-team@meta.com" <kernel-team@meta.com>,
+	Matan Shachnai <m.shachnai@rutgers.edu>,
+	Harishankar Vishwanathan <harishankar.vishwanathan@rutgers.edu>,
+	Paul Chaignon <paul.chaignon@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 7/7] selftests/bpf: BPF register range bounds
+ tester
+Message-ID: <ZTaWo7ZUv9jrfIa4@Mem>
+References: <20231019042405.2971130-1-andrii@kernel.org>
+ <20231019042405.2971130-8-andrii@kernel.org>
+ <ZTDbGWHu4CnJYWAs@u94a>
+ <ZTDgIyzBX9oZNeFw@u94a>
+ <CAEf4BzYgJR6SAjbvd0uZ6w8D37Sy=Wjd2TROOGEAZDiEq7xb2g@mail.gmail.com>
+ <1DA1AC52-6E2D-4CDA-8216-D1DD4648AD55@cs.rutgers.edu>
+ <CAEf4BzbFhA585gSN1YfaDaeEmmUvWSdpMY605fmV_RvSQ7+xeQ@mail.gmail.com>
+ <ZTZ9tYlVgt9DVcgi@u94a>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <PH7PR21MB387850B8DB6A2A5FB87DAC06A3C0A@PH7PR21MB3878.namprd21.prod.outlook.com>
- <ZTDGfppgSnpKjaYz@infradead.org>
-In-Reply-To: <ZTDGfppgSnpKjaYz@infradead.org>
-From: Will Hawkins <hawkinsw@obs.cr>
-Date: Mon, 23 Oct 2023 11:06:32 -0400
-Message-ID: <CADx9qWgP=h4kQEJ2Cpy-A9hyiKLdkF3hVZVydLrz2Lk+UGBaAQ@mail.gmail.com>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Dave Thaler <dthaler=40microsoft.com@dmarc.ietf.org>,
- "bpf@ietf.org" <bpf@ietf.org>, bpf <bpf@vger.kernel.org>
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/2la-VDz8UhgR8G5QyO-5LVjPyh8>
-Subject: Re: [Bpf] ISA RFC compliance question
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZTZ9tYlVgt9DVcgi@u94a>
 
-T24gVGh1LCBPY3QgMTksIDIwMjMgYXQgMjowNOKAr0FNIENocmlzdG9waCBIZWxsd2lnIDxoY2hA
-aW5mcmFkZWFkLm9yZz4gd3JvdGU6Cj4KPiBPbiBGcmksIFNlcCAyOSwgMjAyMyBhdCAwODoxNDox
-MlBNICswMDAwLCBEYXZlIFRoYWxlciB3cm90ZToKPiA+IE5vdyB0aGF0IHdlIGhhdmUgc29tZSBu
-ZXcgInY0IiBpbnN0cnVjdGlvbnMsIGl0IHNlZW1zIGEgZ29vZCB0aW1lIHRvIGFzayBhYm91dAo+
-ID4gd2hhdCBpdCBtZWFucyB0byBzdXBwb3J0IChvciBjb21wbHkgd2l0aCkgdGhlIElTQSBSRkMg
-b25jZSBwdWJsaXNoZWQuICBEb2VzCj4gPiBpdCBtZWFuIHRoYXQgYSB2ZXJpZmllci9kaXNhc3Nl
-bWJsZXIvSklUIGNvbXBpbGVyL2V0Yy4gTVVTVCBzdXBwb3J0ICphbGwqIHRoZQo+ID4gbm9uLWRl
-cHJlY2F0ZWQgaW5zdHJ1Y3Rpb25zIGluIHRoZSBkb2N1bWVudD8gICBUaGF0IGlzIGFueSBydW50
-aW1lIG9yIHRvb2wgdGhhdAo+ID4gZG9lc24ndCBzdXBwb3J0IHRoZSBuZXcgaW5zdHJ1Y3Rpb25z
-IGlzIGNvbnNpZGVyZWQgbm9uLWNvbXBsaWFudCB3aXRoIHRoZSBCUEYgSVNBPwo+Cj4gVW5sZXNz
-IHdlIGNsZWFybHkgZGVzaWduYXRlIG9wdGlvbmFsIGV4dGVuc2lvbnMgdGhhdCB0aGF0IGNhbiBj
-bGVhcmx5Cj4gYmUgbWFya2VkIHN1cHBvcnRlZCBvciBub3Qgc3VwcG9ydGVkIHRoYXQgaXMgdGhl
-IG9ubHkgd2F5IHRvIGdldAo+IGludGVyb3BlcmFiaWxpdHkuCj4KCkNhbiB3ZSBsb29rIHRvIGVp
-dGhlciBSSVNDLVYgb3IgQVJNIGZvciBwcmlvciBhcnQgaW4gaG93IHRoZXkgd29ya2VkCmRpZmZl
-cmVudCB2ZXJzaW9ucyBhbmQgY29tcGxpYW5jZSBsZXZlbHM/IEkgYW0gaGFwcHkgdG8gYW1hc3Mg
-c29tZQpkb2N1bWVudGF0aW9uIGFib3V0IHRoZWlyIHByb2Nlc3Nlcy9wcm9jZWR1cmVzIGlmIHlv
-dSB0aGluayB0aGF0IGl0CndvdWxkIGhlbHAhCgpXaWxsCgoKPiAtLQo+IEJwZiBtYWlsaW5nIGxp
-c3QKPiBCcGZAaWV0Zi5vcmcKPiBodHRwczovL3d3dy5pZXRmLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2JwZgoKLS0gCkJwZiBtYWlsaW5nIGxpc3QKQnBmQGlldGYub3JnCmh0dHBzOi8vd3d3LmlldGYu
-b3JnL21haWxtYW4vbGlzdGluZm8vYnBmCg==
+On Mon, Oct 23, 2023 at 10:05:41PM +0800, Shung-Hsi Yu wrote:
+> On Sat, Oct 21, 2023 at 09:42:46PM -0700, Andrii Nakryiko wrote:
+> > On Fri, Oct 20, 2023 at 10:37 AM Srinivas Narayana Ganapathy
+> > <sn624@cs.rutgers.edu> wrote:
+> > >
+> > > Hi all,
+> > >
+> > > Thanks, @Shung-Hsi, for bringing up this conversation about
+> > > integrating formal verification approaches into the BPF CI and testing.
+> > >
+> > > > On 19-Oct-2023, at 1:34 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > > > On Thu, Oct 19, 2023 at 12:52 AM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
+> > > >> On Thu, Oct 19, 2023 at 03:30:33PM +0800, Shung-Hsi Yu wrote:
+
+[...]
+
+> > > >>> FWIW an alternative approach that speeds things up is to use model checkers
+> > > >>> like Z3 or CBMC. On my laptop, using Z3 to validate tnum_add() against *all*
+> > > >>> possible inputs takes less than 1.3 seconds[3] (based on code from [1]
+> > > >>> paper, but I somehow lost the link to their GitHub repository).
+> > > >>
+> > > >> Found it. For reference, code used in "Sound, Precise, and Fast Abstract
+> > > >> Interpretation with Tristate Numbers"[1] can be found at
+> > > >> https://github.com/bpfverif/tnums-cgo22/blob/main/verification/tnum.py
+> > > >>
+> > > >> Below is a truncated form of the above that only check tnum_add(), requires
+> > > >> a package called python3-z3 on most distros:
+> > > >
+> > > > Great! I'd be curious to see how range tracking logic can be encoded
+> > > > using this approach, please give it a go!
+> > >
+> > > We have some recent work that applies formal verification approaches
+> > > to the entirety of range tracking in the eBPF verifier. We posted a
+> > > note to the eBPF mailing list about it sometime ago:
+> > >
+> > > [1] https://lore.kernel.org/bpf/SJ2PR14MB6501E906064EE19F5D1666BFF93BA@SJ2PR14MB6501.namprd14.prod.outlook.com/T/#u
+> > 
+> > Oh, I totally missed this, as I just went on a long vacation a few
+> > days before that and declared email bankruptcy afterwards. I'll try to
+> > give it a read, though I see lots of math symbols there and make no
+> > promises ;)
+> 
+> Feels the same when I start reading their previous work, but I can vouch
+> their work their work are definitely worth the read. (Though I had to admit
+> I secretly chant "math is easier than code, math is easier than code" to
+> convincing my mind to not go into flight mode when seeing math symbols ;D
+
+Hari et al. did a great job at explaining the intuitions throughout the
+paper. So even if you skip the math, you should be able to follow.
+
+Having an understanding of abstract interpretation helps. The Mozilla
+wiki has a great one [1] and I wrote a shorter BPF example of it [2].
+
+1 - https://wiki.mozilla.org/Abstract_Interpretation
+2 - https://pchaigno.github.io/abstract-interpretation.html
+
+> 
+> > > Our paper, also posted on [1], appeared at Computer Aided Verification (CAV)’23.
+> > >
+> > > [2] https://people.cs.rutgers.edu/~sn624/papers/agni-cav23.pdf
+> > >
+> > > Together with @Paul Chaignon and @Harishankar Vishwanathan (CC'ed), we
+> > > are working to get our tooling into a form that is integrable into BPF
+> > > CI. We will look forward to your feedback when we post patches.
+> > 
+> > If this could be integrated in a way that we can regularly run this
+> > and validate latest version of verifier, that would be great. I have a
+> > second part of verifier changes coming up that extends range tracking
+> > logic further to support range vs range (as opposed to range vs const
+> > that we do currently) comparisons and is_branch_taken, so having
+> > independent and formal verification of these changes would be great!
+
+The current goal is to have this running somewhere regularly (maybe
+releases + manual triggers) in a semi-automated fashion. The two
+challenges today are the time it takes to run verification (days without
+parallelization) and whether the bit of conversion & glue code will be
+maintanable long term.
+
+I'm fairly optimistic on the first as we're already down to hours with
+basic parallelization. The second is harder to predict, but I guess your
+patches will be a good exercice :)
+
+I've already ran the verification on v6.0 to v6.3; v6.4 is currently
+running. Hari et al. had verified v4.14 to v5.19 before. I'll give it a
+try on this patchset afterward.
+
+> 
+> +1 (from a quick skim) this work is already great as-is, and it'd be even
+> better once it get's in the CI. From the paper there's this
+> 
+>   We conducted our experiments on ... a machine with two 10-core Intel
+>   Skylake CPUs running at 2.20 GHz with 192 GB of memory...
+> 
+> I suppose the memory requirement comes from the vast amount of state space
+> that the Z3 SMT solver have to go through, and perhaps that poses a
+> challenge for CI integration?
+> 
+> Just wondering is there are some low-hanging fruit the can make things
+> easier for the SMT solver.
+
+This is how much memory the system had, but it didn't use it all :)
+When running the solver on a single core, I saw around 1GB of memory
+usage. With my changes to run on several cores, it can grow to a few
+GBs depending on the number of cores.
+
+--
+Paul
 
