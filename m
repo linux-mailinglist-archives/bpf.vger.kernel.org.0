@@ -1,355 +1,249 @@
-Return-Path: <bpf+bounces-13161-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13162-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E6937D5D2D
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 23:27:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09E397D5D38
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 23:29:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 433CD281AFD
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 21:27:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E900B2113F
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 21:29:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD3A3F4D0;
-	Tue, 24 Oct 2023 21:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E61EA3FB06;
+	Tue, 24 Oct 2023 21:29:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OgDBAhek"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TmTX4DVA"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47FDC3D967
-	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 21:27:16 +0000 (UTC)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD4E1BC7
-	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 14:26:59 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4083740f92dso40780645e9.3
-        for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 14:26:58 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5B103CD06
+	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 21:29:24 +0000 (UTC)
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31DF5A6
+	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 14:29:23 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-da043b5b6c9so965182276.2
+        for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 14:29:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698182817; x=1698787617; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rQyOBa7gpcdwJtnO8cZn3owf3MV9JeNdGawfaDxhqG0=;
-        b=OgDBAhekRAOQVzZV2NviijvBQ1hKq1FymVRxQIYuF/j4qhyIqzukJNDsCVXH1A4tlr
-         /3UU+OykvgxpZIRmR/wbSvGWL9vMJec99SYF+AeDleHs06jVw294xiKiTi80SZjTf2fd
-         4XOXM90Hs63W/obWQjcM11QskQmSoGZZd1e0PdngRvpS2OI8ONBEde2y4gZ5vaiY4/lA
-         7UDBSp8guL5kcjIXyeG2//F28yvwVUsnf/XVpmGpIlSC07GY8DrGvEOEL2Innbxa5pM4
-         WHpyuijfnGPjMlzrgat2DcK2c8TYrlFGOMnKpLj4fBBtnRHj/zpe2eQe3tB8Iva1ECBs
-         E0jA==
+        d=gmail.com; s=20230601; t=1698182962; x=1698787762; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=l92rQ76HobRkm7FnVIOgX18pEo5/pUc349OtpLhkFZo=;
+        b=TmTX4DVAT8OT6+K60jMY8grEevnbp0HvvEbPLtGTicuhtrwqE+KnhnJRGHKM0g+yEK
+         In1Kb6E2JmsnJqUS5TNU0j2w9XtaTMPZ9vY3Sm13nxkGVJsCldCV7Ckv0Clr/nwsDpd2
+         lOyYyc2Imdp+bwqHmvYriAnN/3LZacfyJLr22ba+/LcPT9yp6t54xOFtlx0jhGSrmJ89
+         B4T5orjM8/Kb2Bwg8iLNHMgiN+w4xzdps6IICRwM8R21R4Jwxj42W6UTGxzdHfMLoadH
+         o/D9jyZ+Hm6yrlczb7j4ZPd4k5fC9OAFPygv2Hg8T0xvMSlT+BFGNq41LrRyJ2OZkr0p
+         60FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698182817; x=1698787617;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1698182962; x=1698787762;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rQyOBa7gpcdwJtnO8cZn3owf3MV9JeNdGawfaDxhqG0=;
-        b=eOSon/J23A+jVMkSb5AFCjo0YU0EXBKmwrICSmsa6gSPB1N2qyCTAgsH/pBg3bkwTW
-         NXx57jvl4XK7eXv6pLTDqziX3ZPN3juGqLZvqO+opXt3JPN8Y59GXh79xvdXzF4c1Wtn
-         lOczq/qm5DftPXnkoDikAnsr2q9i2upP/OJha+XUaQaeQf42ngOmxQS09QuB61NZqYOm
-         tIg2I9uhowpMOm+4QSQItKTsfw4LRZWCD7kieIrtTa67N/GX6h2MDmm6aJsjaxD/gU8q
-         9VQI7eCM8oRzcGGD8eOSLdeZeGrhyyFeemY4VHWXVBz7oZNQUbDz9ecXT8WY11j0R5jV
-         MIDA==
-X-Gm-Message-State: AOJu0YyiKKUmW2E3W/v2Pal7wps1FzmkUM0Ja0VZOPlkRQvN7DB6UJ8c
-	+ULWfJJf05ogusReWzYomL4=
-X-Google-Smtp-Source: AGHT+IGyvo//8jS5yRWzAlxWfBod9hPXnrdZZ2WgJ0hn2omAf+wB7vkH8T0ERik3LwfaMtfUKoTXIw==
-X-Received: by 2002:adf:f151:0:b0:32d:82f7:e76 with SMTP id y17-20020adff151000000b0032d82f70e76mr10652331wro.34.1698182817000;
-        Tue, 24 Oct 2023 14:26:57 -0700 (PDT)
-Received: from Mem (2a01cb0890a26e00cc5e497626b56255.ipv6.abo.wanadoo.fr. [2a01:cb08:90a2:6e00:cc5e:4976:26b5:6255])
-        by smtp.gmail.com with ESMTPSA id h12-20020adff18c000000b0032d402f816csm10556192wro.98.2023.10.24.14.26.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 14:26:56 -0700 (PDT)
-Date: Tue, 24 Oct 2023 23:26:54 +0200
-From: Paul Chaignon <paul.chaignon@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-	Srinivas Narayana Ganapathy <sn624@cs.rutgers.edu>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Langston Barrett <langston.barrett@gmail.com>,
-	Srinivas Narayana <srinivas.narayana@rutgers.edu>,
-	Santosh Nagarakatte <sn349@cs.rutgers.edu>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"ast@kernel.org" <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"martin.lau@kernel.org" <martin.lau@kernel.org>,
-	"kernel-team@meta.com" <kernel-team@meta.com>,
-	Matan Shachnai <m.shachnai@rutgers.edu>,
-	Harishankar Vishwanathan <harishankar.vishwanathan@rutgers.edu>,
-	Paul Chaignon <paul@isovalent.com>
-Subject: Re: [PATCH v2 bpf-next 7/7] selftests/bpf: BPF register range bounds
- tester
-Message-ID: <ZTg2nkmkIs9olFhH@Mem>
-References: <20231019042405.2971130-8-andrii@kernel.org>
- <ZTDbGWHu4CnJYWAs@u94a>
- <ZTDgIyzBX9oZNeFw@u94a>
- <CAEf4BzYgJR6SAjbvd0uZ6w8D37Sy=Wjd2TROOGEAZDiEq7xb2g@mail.gmail.com>
- <1DA1AC52-6E2D-4CDA-8216-D1DD4648AD55@cs.rutgers.edu>
- <CAEf4BzbFhA585gSN1YfaDaeEmmUvWSdpMY605fmV_RvSQ7+xeQ@mail.gmail.com>
- <ZTZ9tYlVgt9DVcgi@u94a>
- <ZTaWo7ZUv9jrfIa4@Mem>
- <CAEf4BzbJ3hZCSt4nLCZCV4cxV60+kddiSMsy7-9ou_RaQV7B8A@mail.gmail.com>
- <CAEf4BzZqji_3NvJgkDu3Di6CjWZmyf+N7v=23ayfskEEwZZokA@mail.gmail.com>
+        bh=l92rQ76HobRkm7FnVIOgX18pEo5/pUc349OtpLhkFZo=;
+        b=JgMlH7va4bWd9rMOQsnwIvUHX0Pgcrs1L/hErgttgPGT3Ggfgpl8V2GZdLB4n6Z440
+         Ag/XkLMnjF878sQkO5b+wozb4Ed+ewJizM59xFJ4yragS+47C7Ig/9yCk/2DSh9LBbCm
+         kB605JoiKxvvEefZ04NwX/xNaXfOtXZdUrQZ2B1eFJKj08nm0Fa+Ke1PEzvy3HVpP9u4
+         uXpG14TLVxpLGVFRsIzOshuXB0FAId8gYzz8w7JHEdCpXmLzQdJnXwT/GJn8ufcrODrG
+         cUhmnRMJNjZX7SVEQXQb41LagWQe/wPDfGdRC38njf0yrPHPAkq4gINRYNtB1lR9/u6X
+         zrGA==
+X-Gm-Message-State: AOJu0YxZtMZON7YVerFtD+21I5B8X4xHkmSBh35RFMa48fLZOLkflxFp
+	l+HIOflNoDA/OqTF09HYKkE=
+X-Google-Smtp-Source: AGHT+IEo8Dow7/eyM/VTLsqJih7wwcvO/uKAN9GKITRRuyTyUavsXlwfkugc13+JOohIRe5SxlYfMw==
+X-Received: by 2002:a25:fe0b:0:b0:d9d:39af:2feb with SMTP id k11-20020a25fe0b000000b00d9d39af2febmr8595912ybe.50.1698182962299;
+        Tue, 24 Oct 2023 14:29:22 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:89d2:1af8:8439:b81? ([2600:1700:6cf8:1240:89d2:1af8:8439:b81])
+        by smtp.gmail.com with ESMTPSA id c15-20020a25c00f000000b00d9a43500f1dsm3860785ybf.28.2023.10.24.14.29.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 14:29:21 -0700 (PDT)
+Message-ID: <041a3ea2-8cc6-4f0f-8ed9-6ca459e5bbb7@gmail.com>
+Date: Tue, 24 Oct 2023 14:29:19 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZqji_3NvJgkDu3Di6CjWZmyf+N7v=23ayfskEEwZZokA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next] selftests/bpf: umount children of TDIR in
+ test_bpffs
+Content-Language: en-US
+To: Manu Bretelle <chantr4@gmail.com>, bpf@vger.kernel.org,
+ andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org
+References: <20231024201852.1512720-1-chantr4@gmail.com>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20231024201852.1512720-1-chantr4@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Oct 23, 2023 at 10:51:57PM -0700, Andrii Nakryiko wrote:
-> On Mon, Oct 23, 2023 at 3:50 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Mon, Oct 23, 2023 at 8:52 AM Paul Chaignon <paul@isovalent.com> wrote:
-> > >
-> > > On Mon, Oct 23, 2023 at 10:05:41PM +0800, Shung-Hsi Yu wrote:
-> > > > On Sat, Oct 21, 2023 at 09:42:46PM -0700, Andrii Nakryiko wrote:
-> > > > > On Fri, Oct 20, 2023 at 10:37 AM Srinivas Narayana Ganapathy
-> > > > > <sn624@cs.rutgers.edu> wrote:
-> > > > > >
-> > > > > > Hi all,
-> > > > > >
-> > > > > > Thanks, @Shung-Hsi, for bringing up this conversation about
-> > > > > > integrating formal verification approaches into the BPF CI and testing.
-> > > > > >
-> > > > > > > On 19-Oct-2023, at 1:34 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > > > > > > On Thu, Oct 19, 2023 at 12:52 AM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
-> > > > > > >> On Thu, Oct 19, 2023 at 03:30:33PM +0800, Shung-Hsi Yu wrote:
-> > >
-> > > [...]
-> > >
-> > > > > > >>> FWIW an alternative approach that speeds things up is to use model checkers
-> > > > > > >>> like Z3 or CBMC. On my laptop, using Z3 to validate tnum_add() against *all*
-> > > > > > >>> possible inputs takes less than 1.3 seconds[3] (based on code from [1]
-> > > > > > >>> paper, but I somehow lost the link to their GitHub repository).
-> > > > > > >>
-> > > > > > >> Found it. For reference, code used in "Sound, Precise, and Fast Abstract
-> > > > > > >> Interpretation with Tristate Numbers"[1] can be found at
-> > > > > > >> https://github.com/bpfverif/tnums-cgo22/blob/main/verification/tnum.py
-> > > > > > >>
-> > > > > > >> Below is a truncated form of the above that only check tnum_add(), requires
-> > > > > > >> a package called python3-z3 on most distros:
-> > > > > > >
-> > > > > > > Great! I'd be curious to see how range tracking logic can be encoded
-> > > > > > > using this approach, please give it a go!
-> > > > > >
-> > > > > > We have some recent work that applies formal verification approaches
-> > > > > > to the entirety of range tracking in the eBPF verifier. We posted a
-> > > > > > note to the eBPF mailing list about it sometime ago:
-> > > > > >
-> > > > > > [1] https://lore.kernel.org/bpf/SJ2PR14MB6501E906064EE19F5D1666BFF93BA@SJ2PR14MB6501.namprd14.prod.outlook.com/T/#u
-> > > > >
-> > > > > Oh, I totally missed this, as I just went on a long vacation a few
-> > > > > days before that and declared email bankruptcy afterwards. I'll try to
-> > > > > give it a read, though I see lots of math symbols there and make no
-> > > > > promises ;)
-> > > >
-> > > > Feels the same when I start reading their previous work, but I can vouch
-> > > > their work their work are definitely worth the read. (Though I had to admit
-> > > > I secretly chant "math is easier than code, math is easier than code" to
-> > > > convincing my mind to not go into flight mode when seeing math symbols ;D
-> > >
-> > > Hari et al. did a great job at explaining the intuitions throughout the
-> > > paper. So even if you skip the math, you should be able to follow.
-> > >
-> > > Having an understanding of abstract interpretation helps. The Mozilla
-> > > wiki has a great one [1] and I wrote a shorter BPF example of it [2].
-> > >
-> > > 1 - https://wiki.mozilla.org/Abstract_Interpretation
-> > > 2 - https://pchaigno.github.io/abstract-interpretation.html
-> > >
-> >
-> > thanks :)
+
+
+On 10/24/23 13:18, Manu Bretelle wrote:
+> Currently this tests tries to umount /sys/kernel/debug (TDIR) but the
+> system it is running on may have mounts below.
 > 
-> Hey Paul,
+> For example, danobi/vmtest [0] VMs have
+>      mount -t tracefs tracefs /sys/kernel/debug/tracing
+> as part of their init.
 > 
-> I had a bunch of time on the plane to catch up on reading, so I read
-> your blog post about PREVAIL among other things. Hopefully you don't
-> mind some comments posted here.
+> This change list mounts and will umount any mounts below TDIR before
+> umounting TDIR itself.
 > 
-> > Observation 1. The analysis must track binary relations among registers.
-> 
-> It's curious that the BPF verifier in kernel actually doesn't track
-> relations in this sense, and yet it works for lots and lots of
-> practical programs. :)
+> Note that it is not umounting recursively, so in the case of a sub-mount
+> of TDIR  having another sub-mount, this will fail as mtab is ordered.
 
-It kind of does, but only for the types where it's actually needed. For
-example if we have:
-
-  3: (bf) r3 = r1
-  4: (07) r3 += 14
-  5: (2d) if r3 > r2 goto pc+50
-   R1_w=pkt(id=0,off=0,r=14,imm=0) R2_w=pkt_end(id=0,off=0,imm=0)
-     R3_w=pkt(id=0,off=14,r=14,imm=0)
-
-R1's range actually refers to the relationship to pkt_end, R2 at this
-point. So, R1's r=14 carries the same information as R1 + 14 <= R2.
-
-A big difference is that the Linux verifier is very tailored to eBPF. So
-it doesn't perform this sort of more complicated tracking for all
-registers and slack slots. I suspect that plays a bit role in the lower
-performance of PREVAIL.
+Should we move TID to a random path likes "/sys/kernel/debug-<pid>/"?
 
 > 
+> Test:
 > 
-> (Speaking of kernel verifier implementation)
+> Originally:
 > 
-> > Third, it does not currently support programs with loops.
+>      $ vmtest -k $KERNEL_REPO/arch/x86_64/boot/bzImage "./test_progs -vv -a test_bpffs"
+>      => bzImage
+>      ===> Booting
+>      ===> Setting up VM
+>      ===> Running command
+>      [    2.138818] bpf_testmod: loading out-of-tree module taints kernel.
+>      [    2.140913] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
+>      bpf_testmod.ko is already unloaded.
+>      Loading bpf_testmod.ko...
+>      Successfully loaded bpf_testmod.ko.
+>      test_test_bpffs:PASS:clone 0 nsec
+>      fn:PASS:unshare 0 nsec
+>      fn:PASS:mount / 0 nsec
+>      fn:FAIL:umount /sys/kernel/debug unexpected error: -1 (errno 16)
+>      bpf_testmod.ko is already unloaded.
+>      Loading bpf_testmod.ko...
+>      Successfully loaded bpf_testmod.ko.
+>      test_test_bpffs:PASS:clone 0 nsec
+>      test_test_bpffs:PASS:waitpid 0 nsec
+>      test_test_bpffs:FAIL:bpffs test  failed 255#282     test_bpffs:FAIL
+>      Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+>      Successfully unloaded bpf_testmod.ko.
+>      Command failed with exit code: 1
 > 
-> It does, and I'm not even talking about bounded loops that are
-> basically unrolled as many times as necessary. We have bpf_loop()
-> helper calling given callback as many times as requested, but even
-> better we now have open-coded iterators. Please check selftests using
-> bpf_for() macro.
+> After this change:
 > 
-> Note that Eduard is fixing discovered issues in open-coded iterators
-> convergence checks and logic, but other than that BPF does have real
-> loops.
-
-I'll fix that. I also wasn't aware of the more recent bpf_for. Nice!
-
-The larger point is that PREVAIL is able to fully verify free-form
-loops. It doesn't impose a structure or rely on trusted code (helpers
-and kfuncs).
-In the end, I don't think it matters much. The amount of trusted code
-for this is small and well understood. And we probably don't want
-ill-structured loops in our C code anyway. But the lack of loop support
-used to take a lot of attention when speaking of the BPF verifier, so I
-guess that's why it ended up being a selling point in the paper.
-
+>      $ vmtest -k $KERNEL_REPO/arch/x86_64/boot/bzImage "./test_progs -vv -a test_bpffs"
+>      => bzImage
+>      ===> Booting
+>      ===> Setting up VM
+>      ===> Running command
+>      [    2.035210] bpf_testmod: loading out-of-tree module taints kernel.
+>      [    2.036510] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
+>      bpf_testmod.ko is already unloaded.
+>      Loading bpf_testmod.ko...
+>      Successfully loaded bpf_testmod.ko.
+>      test_test_bpffs:PASS:clone 0 nsec
+>      fn:PASS:unshare 0 nsec
+>      fn:PASS:mount / 0 nsec
+>      fn:PASS:accessing /etc/mtab 0 nsec
+>      fn:PASS:umount /sys/kernel/debug/tracing 0 nsec
+>      fn:PASS:umount /sys/kernel/debug 0 nsec
+>      fn:PASS:mount tmpfs 0 nsec
+>      fn:PASS:mkdir /sys/kernel/debug/fs1 0 nsec
+>      fn:PASS:mkdir /sys/kernel/debug/fs2 0 nsec
+>      fn:PASS:mount bpffs /sys/kernel/debug/fs1 0 nsec
+>      fn:PASS:mount bpffs /sys/kernel/debug/fs2 0 nsec
+>      fn:PASS:reading /sys/kernel/debug/fs1/maps.debug 0 nsec
+>      fn:PASS:reading /sys/kernel/debug/fs2/progs.debug 0 nsec
+>      fn:PASS:creating /sys/kernel/debug/fs1/a 0 nsec
+>      fn:PASS:creating /sys/kernel/debug/fs1/a/1 0 nsec
+>      fn:PASS:creating /sys/kernel/debug/fs1/b 0 nsec
+>      fn:PASS:create_map(ARRAY) 0 nsec
+>      fn:PASS:pin map 0 nsec
+>      fn:PASS:stat(/sys/kernel/debug/fs1/a) 0 nsec
+>      fn:PASS:renameat2(/fs1/a, /fs1/b, RENAME_EXCHANGE) 0 nsec
+>      fn:PASS:stat(/sys/kernel/debug/fs1/b) 0 nsec
+>      fn:PASS:b should have a's inode 0 nsec
+>      fn:PASS:access(/sys/kernel/debug/fs1/b/1) 0 nsec
+>      fn:PASS:stat(/sys/kernel/debug/fs1/map) 0 nsec
+>      fn:PASS:renameat2(/fs1/c, /fs1/b, RENAME_EXCHANGE) 0 nsec
+>      fn:PASS:stat(/sys/kernel/debug/fs1/b) 0 nsec
+>      fn:PASS:b should have c's inode 0 nsec
+>      fn:PASS:access(/sys/kernel/debug/fs1/c/1) 0 nsec
+>      fn:PASS:renameat2(RENAME_NOREPLACE) 0 nsec
+>      fn:PASS:access(/sys/kernel/debug/fs1/b) 0 nsec
+>      bpf_testmod.ko is already unloaded.
+>      Loading bpf_testmod.ko...
+>      Successfully loaded bpf_testmod.ko.
+>      test_test_bpffs:PASS:clone 0 nsec
+>      test_test_bpffs:PASS:waitpid 0 nsec
+>      test_test_bpffs:PASS:bpffs test  0 nsec
+>      #282     test_bpffs:OK
+>      Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+>      Successfully unloaded bpf_testmod.ko.
 > 
+> [0] https://github.com/danobi/vmtest
 > 
-> And about a confusing bit at the end:
+> Signed-off-by: Manu Bretelle <chantr4@gmail.com>
+> ---
+>   .../selftests/bpf/prog_tests/test_bpffs.c     | 28 +++++++++++++++++++
+>   1 file changed, 28 insertions(+)
 > 
-> >  0: r0 = 0
-> >  1: if r1 > 10 goto pc+4  // r1 ∈ [0; 10]
-> >  2: if r2 > 10 goto pc+3  // r2 ∈ [0; 10]
-> >  3: r1 *= r2              // r1 ∈ [0; 100]
-> >  4: if r1 != 5 goto pc+1
-> >  5: r1 /= r0              // Division by zero!
-> >  6: exit
-> >
-> > After instruction 2, both r1 and r2 have abstract value [0; 10].
-> > After instruction 3, r1 holds the multiplication of r1 and r2 and
-> > therefore has abstract value [0; 100]. When considering the condition at
-> >  instruction 4, because 11 ∈ [0; 100], we will walk both paths and hit the
-> >  division by zero.
-> >
-> > Except we know that r1 can never take value 11. The number 11 is a prime
-> >  number, so it is not a multiple of any integers between 0 and 10.
-> 
-> This made me pause for a while. I think you meant to have `4: if r1 !=
-> 11 goto pc+1` and then go on to explain that you can't get 11 by
-> multiplying numbers in range [0; 10], because 11 is greater than 10
-> (so can't be 1 x 11), but also it's a prime number, so you can't get
-> it from multiplication of two integers. So please consider fixing up
-> the code example, and perhaps elaborate a bit more on why 11 can't
-> happen in actuality. This example does look a bit academic, but, well,
-> formal methods and stuff, it's fitting! ;)
-
-You're absolutely right. It should be 11 instead of 5. That's what I get
-for changing the ranges from [0; 4] to [0; 10] at the last minute.
-
-> 
-> 
-> > It’s a bit disappointing that the paper doesn’t include any comparison with the Linux verifier on the same corpus of BPF programs.
-> 
-> Indeed, I concur. It would be interesting to have this comparison as
-> of the most recent version of PREVAIL and Linux's BPF verifier.
-> 
-> 
-> Either way, thanks a lot for the very approachable and informative
-> blog post, it was a pleasure to read! Great work!
-
-Thanks for the read and the review! I like reading about what academia
-is doing around BPF so certainly not my last post on those topics :)
-
-> 
-> 
-> >
-> > > >
-> > > > > > Our paper, also posted on [1], appeared at Computer Aided Verification (CAV)’23.
-> > > > > >
-> > > > > > [2] https://people.cs.rutgers.edu/~sn624/papers/agni-cav23.pdf
-> > > > > >
-> > > > > > Together with @Paul Chaignon and @Harishankar Vishwanathan (CC'ed), we
-> > > > > > are working to get our tooling into a form that is integrable into BPF
-> > > > > > CI. We will look forward to your feedback when we post patches.
-> > > > >
-> > > > > If this could be integrated in a way that we can regularly run this
-> > > > > and validate latest version of verifier, that would be great. I have a
-> > > > > second part of verifier changes coming up that extends range tracking
-> > > > > logic further to support range vs range (as opposed to range vs const
-> > > > > that we do currently) comparisons and is_branch_taken, so having
-> > > > > independent and formal verification of these changes would be great!
-> > >
-> > > The current goal is to have this running somewhere regularly (maybe
-> > > releases + manual triggers) in a semi-automated fashion. The two
-> > > challenges today are the time it takes to run verification (days without
-> > > parallelization) and whether the bit of conversion & glue code will be
-> > > maintanable long term.
-> > >
-> > > I'm fairly optimistic on the first as we're already down to hours with
-> > > basic parallelization. The second is harder to predict, but I guess your
-> > > patches will be a good exercice :)
-> > >
-> > > I've already ran the verification on v6.0 to v6.3; v6.4 is currently
-> > > running. Hari et al. had verified v4.14 to v5.19 before. I'll give it a
-> > > try on this patchset afterward.
-> >
-> > Cool, that's great! The second part of this work will be generalizing
-> > this logic in kernel to support range vs range comparisons, so I'd
-> > appreciate it if you could validate that one as well. I'm finalizing
-> > it, but will wait for this patch set to land first before posting
-> > second part to have a proper CI testing runs (and limit amount of code
-> > review to be done).
-
-Happy to!
-
-> >
-> > BTW, I've since did some more changes to this "selftests" to be a bit
-> > more parallelizable, so this range_vs_consts set of tests now can run
-> > in about 5 minutes on 8+ core QEMU instance. In the second part we'll
-> > have range-vs-range, so we have about 106 million cases and it takes
-> > slightly more than 8 hours single-threaded. But with parallelization,
-> > it's done in slightly more than one hour.
-> >
-> > So, of course, still too slow to run as part of normal test_progs run,
-> > but definitely easy to run locally to validate kernel changes (and
-> > probably makes sense to enable on some nightly CI runs, when we have
-> > them).
-> >
-> > Regardless, my point is that both methods of verification are
-> > complementary, I think, and it's good to have both available and
-> > working on latest kernel versions.
-
-Completely agree!
-
-> >
-> >
-> > >
-> > > >
-> > > > +1 (from a quick skim) this work is already great as-is, and it'd be even
-> > > > better once it get's in the CI. From the paper there's this
-> > > >
-> > > >   We conducted our experiments on ... a machine with two 10-core Intel
-> > > >   Skylake CPUs running at 2.20 GHz with 192 GB of memory...
-> > > >
-> > > > I suppose the memory requirement comes from the vast amount of state space
-> > > > that the Z3 SMT solver have to go through, and perhaps that poses a
-> > > > challenge for CI integration?
-> > > >
-> > > > Just wondering is there are some low-hanging fruit the can make things
-> > > > easier for the SMT solver.
-> > >
-> > > This is how much memory the system had, but it didn't use it all :)
-> > > When running the solver on a single core, I saw around 1GB of memory
-> > > usage. With my changes to run on several cores, it can grow to a few
-> > > GBs depending on the number of cores.
-> > >
-> > > --
-> > > Paul
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
+> index 214d9f4a94a5..001bf694c269 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
+> @@ -3,12 +3,14 @@
+>   #define _GNU_SOURCE
+>   #include <stdio.h>
+>   #include <sched.h>
+> +#include <mntent.h>
+>   #include <sys/mount.h>
+>   #include <sys/stat.h>
+>   #include <sys/types.h>
+>   #include <test_progs.h>
+>   
+>   #define TDIR "/sys/kernel/debug"
+> +#define MTAB "/etc/mtab"
+>   
+>   static int read_iter(char *file)
+>   {
+> @@ -32,6 +34,8 @@ static int read_iter(char *file)
+>   
+>   static int fn(void)
+>   {
+> +	/* A buffer to store logging messages */
+> +	char buf[1024];
+>   	struct stat a, b, c;
+>   	int err, map;
+>   
+> @@ -43,6 +47,30 @@ static int fn(void)
+>   	if (!ASSERT_OK(err, "mount /"))
+>   		goto out;
+>   
+> +	/* TDIR may have mounts below. unount them first */
+> +	FILE *mtab = setmntent(MTAB, "r");
+> +
+> +	if (!ASSERT_TRUE(mtab != NULL, "accessing " MTAB)) {
+> +		err = errno;
+> +		goto out;
+> +	}
+> +
+> +	struct mntent *mnt = NULL;
+> +
+> +	while ((mnt = getmntent(mtab)) != NULL) {
+> +		if (strlen(mnt->mnt_dir) > strlen(TDIR) &&
+> +			strncmp(TDIR, mnt->mnt_dir, strlen(TDIR)) == 0) {
+> +			snprintf(buf, sizeof(buf) - 1, "umount %s", mnt->mnt_dir);
+> +			err = umount(mnt->mnt_dir);
+> +			if (!ASSERT_OK(err, buf)) {
+> +				endmntent(mtab);
+> +				goto out;
+> +			}
+> +		}
+> +	}
+> +	// Ignore any error here
+> +	endmntent(mtab);
+> +
+>   	err = umount(TDIR);
+>   	if (!ASSERT_OK(err, "umount " TDIR))
+>   		goto out;
 
