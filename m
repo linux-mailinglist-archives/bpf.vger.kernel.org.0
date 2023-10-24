@@ -1,179 +1,117 @@
-Return-Path: <bpf+bounces-13123-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13124-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E3367D4C80
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 11:33:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD1E67D4CE8
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 11:50:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB220B20FDB
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 09:33:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42A75B20F79
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 09:50:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1504249E7;
-	Tue, 24 Oct 2023 09:33:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="frfKjSUq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CF1624A0C;
+	Tue, 24 Oct 2023 09:50:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A331224FE;
-	Tue, 24 Oct 2023 09:33:48 +0000 (UTC)
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46817268B;
-	Tue, 24 Oct 2023 02:33:45 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-66d32cc3957so10279286d6.0;
-        Tue, 24 Oct 2023 02:33:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698140024; x=1698744824; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hnpIQUPDm6Zq9acYBDFChtR53+u4G5h2VpvaQkr0GYM=;
-        b=frfKjSUqUdTV5sRBaJz3JxpC2w6xamMceVamFKuM8LzSN87o1yuW2ZQf52RmocKYr0
-         c0vX0PZW1DtIZpPPicxk4o1LEmcM/fiybITqugE2f6Qxl4OG/KQVo4HEuAyCbMUaK+WP
-         hduOhOIE4mI5ftzYym+e9L18WFt6FlEVs7p6k2FfHQgWuJRn9/rLom9dSdXZ639175xb
-         PjaLi0I61BHrzUXGtKVP0edfgocgV99ZY7JVWeU5WCWwCEat2sXfWf0D851L0KW9kQdf
-         /mo8ea0BY1RYWaEhAXrP/FgLMj1jhdni1BuPVyvJqFIFCQXtqqPDGTNyZk4liiWm/WmV
-         +RyA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF32718E27
+	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 09:50:30 +0000 (UTC)
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F7D10CE
+	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 02:50:28 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-99c1c66876aso634850166b.2
+        for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 02:50:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698140024; x=1698744824;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hnpIQUPDm6Zq9acYBDFChtR53+u4G5h2VpvaQkr0GYM=;
-        b=J3HBmVxhDPePwFUYroUvaI++noXalaPwStkW8oYtHD8OlgVreVl7qrGXMhsEOjSfOp
-         G5WYBnoEKsAba/sjF2jVabryFAAV3QPeXaRkAm1qkoemExlWtKGHROJU5dmwWYgyHzLo
-         58kVsk+YwZxqbaQ5l3c6j8PRM4rKu9ltPH94ZKK6RyxLTHW7h8Wlcu8dK4MVGIVCZtoC
-         T55TqUv37v+CR0fIOGNOO7au9sbDN8aj4ASx1D4igAUzI6QjEzG+PeI0ZFhHiLRZZ2so
-         8YpOFoqx7x3I5a5oSyKbBxqeG8O9uHiIC88WLf0InqyxQ2W7hhep9+be+ugZdgJ8oOpt
-         BK0g==
-X-Gm-Message-State: AOJu0YzGKaOkJirNPqliDDWgmWJwOaWLrDpqIaSTn6K7o4RA0CmGNZ+r
-	npcDdfPfQEk1Yndm2J1hS3kzizAuNv0yS5Zvuys=
-X-Google-Smtp-Source: AGHT+IGfXBx6g6iC3iWUPgREpEWmhHh8YsRyDeFkE6Bg7pnu11hKBIKTbhhdb+2mHNqCmhgjGw+sExZE/sZhJQVMNys=
-X-Received: by 2002:a05:6214:2dc8:b0:65d:486:25c6 with SMTP id
- nc8-20020a0562142dc800b0065d048625c6mr12536219qvb.3.1698140024285; Tue, 24
- Oct 2023 02:33:44 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698141026; x=1698745826;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2OLhZ/2PIt7xVFPx+qBdw/XQ9jguYjepL0mHm+xxkCM=;
+        b=q1+rsfwUEU2NgaRsEVE4Wss0iTvkybVW69yIFxFhBxLTERFGTejrRneLfj8FKU5cg/
+         htUXmlkKCyDlNoHmLxCSHO3zihPH4ivL1Rih7UAYQqIrACIE8S3RpzGzGcl4cRaWIE0q
+         dKaspJgjVdU6qthRli30QQ+jLr90oGY2i3Ngki3N5zsZpiHjDYBZhoARg1xse+CwjeQC
+         DMMicD+X6yVe3vwQhL4Z6RzCCO7qZfpupT4X5g/3cSR6g9WEj02fJssZkG2+SMNCgpKe
+         LQJG0kV3P2zpcUIRCouFxUk0Vs6hpzsbwj84KGylofZT8QVZnqsJ4HVP299qjfXlglh5
+         E98g==
+X-Gm-Message-State: AOJu0Yz+uB5FndEz0xLqf9OXp92svUAt5r0C/BQmcy1vN0BbSR+bo0Ly
+	oyhjIDknyUA7kw3XjbGlai0=
+X-Google-Smtp-Source: AGHT+IHfJidabxRlH49Jck19fVs8SgxHA9LVVWsWttiy14M1nXjDA2ZzMru6Rj7Dxo6Rf6nCTfeTJA==
+X-Received: by 2002:a17:907:2cc2:b0:9bd:fe2f:3949 with SMTP id hg2-20020a1709072cc200b009bdfe2f3949mr9807387ejc.51.1698141026264;
+        Tue, 24 Oct 2023 02:50:26 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-015.fbsv.net. [2a03:2880:31ff:f::face:b00c])
+        by smtp.gmail.com with ESMTPSA id jp15-20020a170906f74f00b009b2b47cd757sm7911654ejb.9.2023.10.24.02.50.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 02:50:25 -0700 (PDT)
+Date: Tue, 24 Oct 2023 02:50:21 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: jpoimboe@kernel.org, mingo@redhat.com, tglx@linutronix.de, bp@alien8.de,
+	x86@kernel.org, leit@meta.com,
+	"open list:BPF [MISC]:Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>
+Subject: Re: [PATCH v5 00/12] x86/bugs: Add a separate config for each
+ mitigation
+Message-ID: <ZTeTXcTy1tsn/msq@gmail.com>
+References: <20231019181158.1982205-1-leitao@debian.org>
+ <CALOAHbDreP4JpL_C=+mkpwRvMpkVDdE-LNxkN=oyJW2vPjM_GQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231023125732.82261-1-huangjie.albert@bytedance.com>
-In-Reply-To: <20231023125732.82261-1-huangjie.albert@bytedance.com>
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Tue, 24 Oct 2023 11:33:33 +0200
-Message-ID: <CAJ8uoz2zSPNdSdOFDQ8DB3gW+F7eHQrT9XxmiNbqHvtfWRCr5g@mail.gmail.com>
-Subject: Re: [PATCH v4 net-next] xsk: avoid starving the xsk further down the list
-To: Albert Huang <huangjie.albert@bytedance.com>
-Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Magnus Karlsson <magnus.karlsson@intel.com>, 
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALOAHbDreP4JpL_C=+mkpwRvMpkVDdE-LNxkN=oyJW2vPjM_GQ@mail.gmail.com>
 
-On Mon, 23 Oct 2023 at 14:57, Albert Huang
-<huangjie.albert@bytedance.com> wrote:
->
-> In the previous implementation, when multiple xsk sockets were
-> associated with a single xsk_buff_pool, a situation could arise
-> where the xsk_tx_list maintained data at the front for one xsk
-> socket while starving the xsk sockets at the back of the list.
-> This could result in issues such as the inability to transmit packets,
-> increased latency, and jitter. To address this problem, we introduce
-> a new variable called tx_budget_spent, which limits each xsk to transmit
-> a maximum of MAX_PER_SOCKET_BUDGET tx descriptors. This allocation ensures
-> equitable opportunities for subsequent xsk sockets to send tx descriptors.
-> The value of MAX_PER_SOCKET_BUDGET is set to 32.
+Hello Yafang,
 
-Thank you Albert for implementing this feature!
+On Mon, Oct 23, 2023 at 10:59:13AM +0800, Yafang Shao wrote:
+> On Fri, Oct 20, 2023 at 2:12 AM Breno Leitao <leitao@debian.org> wrote:
+> >
+> > Currently, the CONFIG_SPECULATION_MITIGATIONS is halfway populated,
+> > where some mitigations have entries in Kconfig, and they could be
+> > modified, while others mitigations do not have Kconfig entries, and
+> > could not be controlled at build time.
+> >
+> > The fact of having a fine grained control can help in a few ways:
+> >
+> > 1) Users can choose and pick only mitigations that are important for
+> > their workloads.
+> >
+> > 2) Users and developers can choose to disable mitigations that mangle
+> > the assembly code generation, making it hard to read.
+> >
+> > 3) Separate configs for just source code readability,
+> > so that we see *which* butt-ugly piece of crap code is for what
+> > reason.
+> >
+> > Important to say, if a mitigation is disabled at compilation time, it
+> > could be enabled at runtime using kernel command line arguments.
+> 
+> Hi Breno,
+> 
+> Do you have any plans to introduce utility functions for runtime
+> checks on whether specific mitigations are disabled? Such helpers
+> would be quite valuable; for instance, we could utilize them to
+> determine if Spectre v1 or Spectre v4 mitigations are disabled in
+> BPF[1].
 
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+I am not planning to. The check if a mitigation is enabled or not is a
+different topic, that also might require some further refactor.
 
-> Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
-> ---
->  include/net/xdp_sock.h |  7 +++++++
->  net/xdp/xsk.c          | 18 ++++++++++++++++++
->  2 files changed, 25 insertions(+)
->
-> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> index 69b472604b86..de6819e50d54 100644
-> --- a/include/net/xdp_sock.h
-> +++ b/include/net/xdp_sock.h
-> @@ -63,6 +63,13 @@ struct xdp_sock {
->
->         struct xsk_queue *tx ____cacheline_aligned_in_smp;
->         struct list_head tx_list;
-> +       /* record the number of tx descriptors sent by this xsk and
-> +        * when it exceeds MAX_PER_SOCKET_BUDGET, an opportunity needs
-> +        * to be given to other xsks for sending tx descriptors, thereby
-> +        * preventing other XSKs from being starved.
-> +        */
-> +       u32 tx_budget_spent;
-> +
->         /* Protects generic receive. */
->         spinlock_t rx_lock;
->
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index f5e96e0d6e01..65c32b85c326 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -33,6 +33,7 @@
->  #include "xsk.h"
->
->  #define TX_BATCH_SIZE 32
-> +#define MAX_PER_SOCKET_BUDGET (TX_BATCH_SIZE)
->
->  static DEFINE_PER_CPU(struct list_head, xskmap_flush_list);
->
-> @@ -413,16 +414,25 @@ EXPORT_SYMBOL(xsk_tx_release);
->
->  bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
->  {
-> +       bool budget_exhausted = false;
->         struct xdp_sock *xs;
->
->         rcu_read_lock();
-> +again:
->         list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
-> +               if (xs->tx_budget_spent >= MAX_PER_SOCKET_BUDGET) {
-> +                       budget_exhausted = true;
-> +                       continue;
-> +               }
-> +
->                 if (!xskq_cons_peek_desc(xs->tx, desc, pool)) {
->                         if (xskq_has_descs(xs->tx))
->                                 xskq_cons_release(xs->tx);
->                         continue;
->                 }
->
-> +               xs->tx_budget_spent++;
-> +
->                 /* This is the backpressure mechanism for the Tx path.
->                  * Reserve space in the completion queue and only proceed
->                  * if there is space in it. This avoids having to implement
-> @@ -436,6 +446,14 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
->                 return true;
->         }
->
-> +       if (budget_exhausted) {
-> +               list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list)
-> +                       xs->tx_budget_spent = 0;
-> +
-> +               budget_exhausted = false;
-> +               goto again;
-> +       }
-> +
->  out:
->         rcu_read_unlock();
->         return false;
-> --
-> 2.20.1
->
->
+This patch set focuses in the initialization of the mitigation code
+at build time. Initializating the mitigation code might not result in
+the mitigation being enabled in runtime.
+
+For instance, you can build the kernel to mitigate the GDS, but the
+runtime detects that you are running in a guest VM, and depend on the
+host to do the mitigation, so, the mitigation might be enabled or not,
+even if it is initialized with CONFIG_GDS_FORCE_MITIGATION=y.
+
+Detecting if the mitigation is enabled or not is an orthogonal problem
+than the one I am trying to solve with this patch set.
 
