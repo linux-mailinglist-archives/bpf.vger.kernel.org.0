@@ -1,112 +1,133 @@
-Return-Path: <bpf+bounces-13138-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13139-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDF827D5679
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 17:32:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90BF37D56C5
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 17:43:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A59F1C20C51
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 15:32:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9012F1C20C71
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 15:43:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D3293717E;
-	Tue, 24 Oct 2023 15:32:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3EE737C98;
+	Tue, 24 Oct 2023 15:43:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WVJXaQXA"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="ee8COOfB"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8013D37164
-	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 15:31:56 +0000 (UTC)
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D6F123
-	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 08:31:54 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32dcd3e5f3fso3285504f8f.1
-        for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 08:31:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698161513; x=1698766313; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DIwskzaILIGb3OgOBOOgpxT8l2Eva7GV0J+HgUWpKjY=;
-        b=WVJXaQXAt9jnVqijpjHApr+cp/vSVW/M4GwurSqthkcg/EcZGu3NpYZgEbR+S66dth
-         ZZR2fw53EdXqS0r/rZkRusb7NRqOadis5qXouLfQ39O34yNBb7tfly4XfqT/sZb7IIEF
-         alqH23mk5elzoic4u6Tq6UfmLpqJA4EksofsnLNDBZ9QkXWps2FWw5mIR1JEdvF4ClZs
-         JoqFV6SPYhD8ey0gdpf+k8lv+z1Jh2936mXWb0NzQDyghhy1OzWE4/LAmXj77KJft96S
-         9rJ4OW/2mAGKwuhItciuosvwZO8rsSS/665B/ck63TryNg8actOTzIR8BAQ1qtnsyVUz
-         +DNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698161513; x=1698766313;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DIwskzaILIGb3OgOBOOgpxT8l2Eva7GV0J+HgUWpKjY=;
-        b=R7avaKMMisuXYzSDwkk4QIidibVrVxdtm8IWiTZID+9BP6bHBiQGHOGmOpCw2Ij67r
-         AFrucDNizIitD3EEAz818vF9FrJmIeRI4WnuS9rnaVrM+VjgbbffJjA/xTVFrxKrHTDR
-         P+FSQNpFTZ52pohl6WDwrjakSJrVhgwgjHVo+ElB0MwN3xLIbtcQf+6hzFspzsETI20q
-         TAmciAW1HogGfFhtd7sOyMkzQ5nEqYJIOStPg74kEdRZpIuNxWORQv+o5B1aJ+Y4ZnXb
-         jCC6BziSY1KBaIWRC3VoCZszbrcKX3T3drrqVQm1bxxdLktcBNamlLV/5lwTkqsJyooZ
-         XLrg==
-X-Gm-Message-State: AOJu0YylR4LusFPWfsCGwVyg12x2Dok/Tg2NC8RVxPSLaBPEaT219k+E
-	L/mPYjxod8xbseYuGNEuHpD9RQ9u7lIwprvbtGbSwsOI
-X-Google-Smtp-Source: AGHT+IG80drvOviCPG8eeUNi4XYuJ4JD9qmRtUy7D2jdZvoiovE4Uz8AcyfWFpLYB4Ubqalq16du7oBcXFeAdKNI4eA=
-X-Received: by 2002:adf:fdc8:0:b0:32d:a3ee:6f73 with SMTP id
- i8-20020adffdc8000000b0032da3ee6f73mr8574770wrs.42.1698161512559; Tue, 24 Oct
- 2023 08:31:52 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BF21273E1
+	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 15:43:23 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6D9BA
+	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 08:43:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=5xuaPMdhGEPkOAbBcl9hUBJw7r0v912sHBBgkDyp8lQ=; b=ee8COOfBgPN3rXIZbH3BnrNMGR
+	r7+5tO44vxfAqkq9hfeJAvA6fAKSCNczSc2KmSIBXU+CRPS4QlMFpBapn+iLbw9LlHP1m+LU+XwU1
+	7Yja1zuL4f/3sh/kihY/70HWtb122t3suQJJuKkopZNHYgsnXmUC5j7wysLJra/KfUa9xfoYu4BSc
+	lhjdYcAjdL+rB8zoa2bKUIRCg+Y4sQWosleSE8jgzsoerj+RwscO3Q/S8M7B0j2IDmd07IcQU7Fo1
+	f3TjfF7psULqtg5zYQ6fI5QsK8+2sWzTRZjDXfFD4GedHCc71Oled2kc/KYRHO/D3SMuAk2TEYxyS
+	URIJODDg==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qvJYs-000GZO-22; Tue, 24 Oct 2023 17:43:18 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qvJYr-000KyE-Q9; Tue, 24 Oct 2023 17:43:17 +0200
+Subject: Re: [PATCH v4 bpf-next 2/7] bpf: derive smin/smax from umin/max
+ bounds
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org,
+ martin.lau@kernel.org, kernel-team@meta.com
+References: <20231022205743.72352-1-andrii@kernel.org>
+ <20231022205743.72352-3-andrii@kernel.org>
+ <5fed076b-597d-1721-2430-155d27188dfe@iogearbox.net>
+ <CAEf4BzafU5qofmEq3Kgpg77TLwLwnZ=8hth63gu5L9omT_USqw@mail.gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <562d13dd-6ef5-5088-b298-538b29f19b84@iogearbox.net>
+Date: Tue, 24 Oct 2023 17:43:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231022205743.72352-1-andrii@kernel.org> <20231022205743.72352-4-andrii@kernel.org>
- <ZTe28jP0qFNtf89A@u94a>
-In-Reply-To: <ZTe28jP0qFNtf89A@u94a>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 24 Oct 2023 08:31:41 -0700
-Message-ID: <CAADnVQ+_PrGAsQfQag0ktFHZ2pOVA2-63n-pA5=uRSu5GmWM0g@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 3/7] bpf: enhance subregister bounds deduction logic
-To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAEf4BzafU5qofmEq3Kgpg77TLwLwnZ=8hth63gu5L9omT_USqw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27071/Tue Oct 24 09:43:50 2023)
 
-On Tue, Oct 24, 2023 at 5:22=E2=80=AFAM Shung-Hsi Yu <shung-hsi.yu@suse.com=
-> wrote:
->
-> On Sun, Oct 22, 2023 at 01:57:39PM -0700, Andrii Nakryiko wrote:
-> > Add handling of a bunch of possible cases which allows deducing extra
-> > information about subregister bounds, both u32 and s32, from full regis=
-ter
-> > u64/s64 bounds.
-> >
-> > Also add smin32/smax32 bounds derivation from corresponding umin32/umax=
-32
-> > bounds, similar to what we did with smin/smax from umin/umax derivation=
- in
-> > previous patch.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
->
-> Forgot to add
->
-> Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
->
-> And that the acked-by for this and previous patches applies to future
-> version of the patchset as well.
->
-> Q: I going through the patches rather slowly, one by one, and sending
-> acked-by as I go, is that considered too verbose? Is it be better to spen=
-d
-> the time to go through the entire patchset first and just send an acked-b=
-y
-> to the cover letter?
+On 10/24/23 4:53 PM, Andrii Nakryiko wrote:
+> On Tue, Oct 24, 2023 at 6:08 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 10/22/23 10:57 PM, Andrii Nakryiko wrote:
+>>> Add smin/smax derivation from appropriate umin/umax values. Previously the
+>>> logic was surprisingly asymmetric, trying to derive umin/umax from smin/smax
+>>> (if possible), but not trying to do the same in the other direction. A simple
+>>> addition to __reg64_deduce_bounds() fixes this.
+>>
+>> Do you have a concrete example case where bounds get further refined? Might be
+>> useful to add this to the commit description or as comment in the code for future
+>> reference to make this one here more obvious.
+> 
+> Yes, it's one of the crafted tests. I've been adding those issues
+> where I found bugs or discrepancies between kernel and selftest to the
+> "crafted list" to make sure all previously broken cases are covered.
+> Unfortunately I didn't keep a detailed log of cases (as there were
+> initially too many). I'll try to undo each of these changes and see
+> what breaks, will take a bit to do this one by one, but it's fine.
+> 
+> What level of details is necessary? Just having a test case? Showing
+> how the kernel adjusts stuff (I can get verbose debugging logs both
+> from kernel and selftest)? I'm trying to understand the desired
+> balance between too little and too much information (and save myself a
+> lot of time, if I can ;)
 
-Take your time. Careful review of every individual patch is certainly prefe=
-rred.
-This is a tricky change. I'm still stuck on patch 2 :)
+I think a concrete walk-through example before/after with reg state would
+be nice and some more analysis on how the change relates to the subsequent
+adjustments done in __reg64_deduce_bounds() further below where we learn
+from signed and later again from unsigned bounds.
+
+(Btw, patch 1 looks good/trivial so I applied that one in the meantime.)
+
+>>> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+>>> ---
+>>>    kernel/bpf/verifier.c | 7 +++++++
+>>>    1 file changed, 7 insertions(+)
+>>>
+>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>> index f8fca3fbe20f..885dd4a2ff3a 100644
+>>> --- a/kernel/bpf/verifier.c
+>>> +++ b/kernel/bpf/verifier.c
+>>> @@ -2164,6 +2164,13 @@ static void __reg32_deduce_bounds(struct bpf_reg_state *reg)
+>>>
+>>>    static void __reg64_deduce_bounds(struct bpf_reg_state *reg)
+>>>    {
+>>> +     /* u64 range forms a valid s64 range (due to matching sign bit),
+>>> +      * so try to learn from that
+>>> +      */
+>>> +     if ((s64)reg->umin_value <= (s64)reg->umax_value) {
+>>> +             reg->smin_value = max_t(s64, reg->smin_value, reg->umin_value);
+>>> +             reg->smax_value = min_t(s64, reg->smax_value, reg->umax_value);
+>>> +     }
+>>>        /* Learn sign from signed bounds.
+>>>         * If we cannot cross the sign boundary, then signed and unsigned bounds
+>>>         * are the same, so combine.  This works even in the negative case, e.g.
+>>>
+>>
+>>
+
 
