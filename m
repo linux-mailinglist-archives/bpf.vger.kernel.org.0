@@ -1,152 +1,112 @@
-Return-Path: <bpf+bounces-13103-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13104-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C95D17D46C2
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 06:57:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 876EA7D46C7
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 07:01:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0259228181A
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 04:57:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B86CF1C20B52
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 05:01:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E15538B;
-	Tue, 24 Oct 2023 04:57:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FBE35671;
+	Tue, 24 Oct 2023 05:01:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GkxLS32n"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QBO8+Jxs"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 848EB1FA5
-	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 04:57:30 +0000 (UTC)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 388FAA1
-	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 21:57:28 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32ded3eb835so2016853f8f.0
-        for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 21:57:28 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00E871FA5
+	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 05:01:33 +0000 (UTC)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCB1B0
+	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 22:01:31 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4084095722aso32821095e9.1
+        for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 22:01:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698123446; x=1698728246; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698123690; x=1698728490; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cG/diypKuR8nTyMvRAZU14xkHri54HvRMckeEqsX+vE=;
-        b=GkxLS32nInFFn0yzAe4Mj9eXzaVbWRKXzMvvlutj7d8d4HgNYf+Kpiu0U5QUGuYR7I
-         +6O0HkW2gktJjny1MNEdkA+OGQgyOdi6IbDoCZGO52yaYI1cd3fsmPS916ozuy/Dn/IQ
-         eKqNLlygG3Lj7nSG8SAXfFtXgHgO/S1NDhk/Iw2WYjY/oGRtXlFXDe0ktGzxgRW6/oDV
-         VqmrTtuU2nWBsBWzRbH32qgJmnA6hVI3Yh/12EpoIbhrueZQ1MkJPOO/TNpH6rYIKDLj
-         zytTpsZBimniHNPzITb8wcgCFPyKdgkrNmGwEvsvREHlIQrvU2X8nT2I2C1I3bwK1GBr
-         M9Gg==
+        bh=CEWHVBSJljVv3NcchzJwkvXeBjvw/X4JgbzHYj40s58=;
+        b=QBO8+JxsFdbj3LVGklqAy7yaGc4hLEqlzkiPeVXjrBshD+v0RA6sh/vUUc9V4c47CW
+         xXnwl/Zy9HKfYry2o29jDNnlNqFk0UsF0S6hJAOEPWpvM6pmnTQpRSfJ49DEJtr0IZvJ
+         Y7G34ZrJSjXTUC08dFIscR4Z7J8uoajgwQoPTu9zVOU+lcwB7vw0fOaQJbnBepbQdA7h
+         DL7UEAyLDI3V6VyNaG+bOMmHcVuPO7FnsLum4WY/rqw2MjeRkoWwnWGkYn7IFRJoZCWN
+         hy9XFmmraVESrP4hIdSKPislxpSM9Re3YWFZ39mmM0gEVMfn2K+CYMDmlOrJLMjHy9+C
+         tXkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698123446; x=1698728246;
+        d=1e100.net; s=20230601; t=1698123690; x=1698728490;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cG/diypKuR8nTyMvRAZU14xkHri54HvRMckeEqsX+vE=;
-        b=LrtVARO/fIPUnjj7COzWcLDp+8gbGZCSlxfEmxnCqGppbXlgiL2W1aekx9afDYh1+x
-         qamkksnUo8naFzUGztEYGM7Lmax5zGKJiELBmydOqw4sJERRqSh55EE9oepesgmrNqak
-         pccOsdD2f4eAH/6UAMW6lV6OZIG9Z6Pu2b3kcp0DXmteyj/BSRJR3bNO4N4Nz9Tl5j0e
-         EzTDv9uWpQCZy48bqq9yyKV4vP6DzXqX9kNNBy9j74LcuRKTd61thmvDtXlXQMmCjdgo
-         McwSaefPMvuu5EV7OBoxsd5KCbpSaloQfc/AS8JewGyOKqUH9vNH2YiDiYN+bvRcYdqA
-         UTWA==
-X-Gm-Message-State: AOJu0YxiurhaG5lSKDPnjmNOC66g169TFG7QCJkCDrY4C56/wTjggIj1
-	guYPCys1TFWiEz8dql4VPV8CbqFWO78idcp4KGLviE6iXWQ=
-X-Google-Smtp-Source: AGHT+IEap4qc/8WtBfvP+hwkOIO1SdUvkb5CO8KJ+F4dRqXRaRvMpSplUXFU+Enq1KKVf69acqjwhTSBKJg4rGtiFkY=
-X-Received: by 2002:adf:e182:0:b0:32d:95ef:3b57 with SMTP id
- az2-20020adfe182000000b0032d95ef3b57mr12533128wrb.2.1698123446240; Mon, 23
- Oct 2023 21:57:26 -0700 (PDT)
+        bh=CEWHVBSJljVv3NcchzJwkvXeBjvw/X4JgbzHYj40s58=;
+        b=u+dALkQzoTZxcqFV8pnue+4moIbvRmPDdsxyfAR2iBVvnlBYbsChgLTbyS4D3Dirbe
+         kB2Cat2PycrpJYF+dJ4b2HqGwM4wqRcUGsidQBnjVsnHmGYw4qDzv0tOUDK6wGwsIrdF
+         Do5bxq2l/mE40d5+B5hmsKZeK5aVv89SKaQszEef/W6Q0DY9RDGt0PglAfLoG7FW5UwI
+         6uvC/LEQyCqhQbzsRz+OwV2rRj9PItYEzuQkYfZZuz05pb1WOHqeBAb1aCzF0N2cXgZh
+         V/yy35pd3T0SbmJxPBb/Xi8N6WgMYwbgJKV6WqhDGW5lkN+NOQ2tkTyD6TzXKEMi1//H
+         Ah3A==
+X-Gm-Message-State: AOJu0YySkepMu8aA+hUiDWa30bCEEYfCMd5aryf5gZCAK1MvJTy+8ula
+	BjI29F3wwRRudqYWdsOjfKn5RCSOL79uBPDCEvg=
+X-Google-Smtp-Source: AGHT+IHJ8NVG3SkzwjL8pMpvngsRPAghXbClEphUnlMSYKPg/zkDTp3e0uxz1aSbvGLuVxWJLQIkOau9WOgwG0hbyXk=
+X-Received: by 2002:adf:ec50:0:b0:32d:cd57:1a58 with SMTP id
+ w16-20020adfec50000000b0032dcd571a58mr8050644wrn.54.1698123689421; Mon, 23
+ Oct 2023 22:01:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231024024240.42790-1-zhouchuyi@bytedance.com> <20231024024240.42790-2-zhouchuyi@bytedance.com>
-In-Reply-To: <20231024024240.42790-2-zhouchuyi@bytedance.com>
+References: <20231023224100.2573116-1-song@kernel.org> <20231023224100.2573116-4-song@kernel.org>
+ <CAADnVQJ-u_j8p7FMOpDHsUKjTa0E9sjA0G=zG8V484kuatNDvw@mail.gmail.com> <90721298-D511-4C37-B8BC-947215BFA59E@fb.com>
+In-Reply-To: <90721298-D511-4C37-B8BC-947215BFA59E@fb.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 23 Oct 2023 21:57:14 -0700
-Message-ID: <CAADnVQJRhyn4Xpd5f0_iJp7F2iZrs_qp+E0DZPNc3aKc0SGzCQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Relax allowlist for css_task iter
-To: Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+Date: Mon, 23 Oct 2023 22:01:18 -0700
+Message-ID: <CAADnVQLC9T05WRgFebSEjMVomYJPvGmX9r2KEMqC11GdbRg9pA@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 3/9] bpf: Introduce KF_ARG_PTR_TO_CONST_STR
+To: Song Liu <songliubraving@meta.com>
+Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"fsverity@lists.linux.dev" <fsverity@lists.linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	Eric Biggers <ebiggers@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>, 
+	Roberto Sassu <roberto.sassu@huaweicloud.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 23, 2023 at 7:42=E2=80=AFPM Chuyi Zhou <zhouchuyi@bytedance.com=
-> wrote:
+On Mon, Oct 23, 2023 at 8:25=E2=80=AFPM Song Liu <songliubraving@meta.com> =
+wrote:
 >
-> The newly added open-coded css_task iter would try to hold the global
-> css_set_lock in bpf_iter_css_task_new, so the bpf side has to be careful =
-in
-> where it allows to use this iter. The mainly concern is dead locking on
-> css_set_lock. check_css_task_iter_allowlist() in verifier enforced css_ta=
-sk
-> can only be used in bpf_lsm hooks and sleepable bpf_iter.
 >
-> This patch relax the allowlist for css_task iter. Any lsm and any iter
-> (even non-sleepable) and any sleepable are safe since they would not hold
-> the css_set_lock before entering BPF progs context.
 >
-> This patch also fixes the misused BPF_TRACE_ITER in
-> check_css_task_iter_allowlist which compared bpf_prog_type with
-> bpf_attach_type.
+> > On Oct 23, 2023, at 5:49=E2=80=AFPM, Alexei Starovoitov <alexei.starovo=
+itov@gmail.com> wrote:
+> >
+> > On Mon, Oct 23, 2023 at 3:41=E2=80=AFPM Song Liu <song@kernel.org> wrot=
+e:
+> >> +
+> >> +        __bpf_kfunc bpf_get_file_xattr(..., const char *name__const_s=
+tr,
+> > ...
+> >> +               case KF_ARG_PTR_TO_CONST_STR:
+> >
+> > CONST_STR was ok here, but as __const_str suffix is a bit too verbose.
+> > How about just __str ? I don't think we'll have non-const strings in
+> > the near future.
 >
-> Fixes: 9c66dc94b62ae ("bpf: Introduce css_task open-coded iterator kfuncs=
-")
-> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
-> ---
->  kernel/bpf/verifier.c                         | 21 ++++++++++++-------
->  .../selftests/bpf/progs/iters_task_failure.c  |  4 ++--
->  2 files changed, 15 insertions(+), 10 deletions(-)
+> I thought about this. While we don't foresee non-const strings in the
+> near future, I think __const_str is acceptable. These annotations are
+> part of the core APIs of kfuncs. As we enabled other subsystems to add
+> kfuncs without touching BPF core, it makes sense to keep the annoations
+> as stable as possible. Making __const_str a little shorter doesn't seem
+> to justify the risk of changing it in the future.
 >
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index e9bc5d4a25a1..9f209adc4ccb 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -11088,18 +11088,23 @@ static int process_kf_arg_ptr_to_rbtree_node(st=
-ruct bpf_verifier_env *env,
->                                                   &meta->arg_rbtree_root.=
-field);
->  }
->
-> +/*
-> + * css_task iter allowlist is needed to avoid dead locking on css_set_lo=
-ck.
-> + * LSM hooks and iters (both sleepable and non-sleepable) are safe.
-> + * Any sleepable progs are also safe since bpf_check_attach_target() enf=
-orce
-> + * them can only be attached to some specific hook points.
-> + */
->  static bool check_css_task_iter_allowlist(struct bpf_verifier_env *env)
->  {
->         enum bpf_prog_type prog_type =3D resolve_prog_type(env->prog);
->
-> -       switch (prog_type) {
-> -       case BPF_PROG_TYPE_LSM:
-> +       if (prog_type =3D=3D BPF_PROG_TYPE_LSM)
->                 return true;
-> -       case BPF_TRACE_ITER:
-> -               return env->prog->aux->sleepable;
-> -       default:
-> -               return false;
-> -       }
-> +
-> +       if (env->prog->expected_attach_type =3D=3D BPF_TRACE_ITER)
-> +               return true;
+> Also, we already have longer annotations like __refcounted_kptr. So I
+> personally prefer to keep the annotation as __const_str.
 
-I think the switch by prog_type has to stay.
-Checking attach_type =3D=3D BPF_TRACE_ITER without considering prog_type
-is fragile. It likely works, but we don't do it anywhere else.
-Let's stick to what is known to work.
-
-> -SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-> -__failure __msg("css_task_iter is only allowed in bpf_lsm and bpf iter-s=
-")
-> +SEC("?fentry/" SYS_PREFIX "sys_getpgid")
-> +__failure __msg("css_task_iter is only allowed in bpf_lsm, bpf_iter and =
-sleepable progs")
-
-Please add both. fentry that is rejected and fentry.s that is accepted.
+Ok. That's fair. Didn't realize that such a long suffix is already in use.
 
