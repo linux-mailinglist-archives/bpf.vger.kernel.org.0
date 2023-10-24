@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-13195-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52CB57D5EDF
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 01:56:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9014F7D5EE0
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 01:56:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 843BD1C20D9B
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 23:56:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30BEFB21125
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 23:56:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0008D2D61D;
-	Tue, 24 Oct 2023 23:56:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8CEC2D61D;
+	Tue, 24 Oct 2023 23:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XHCNDjyf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RoKXl7hW"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642D93E495;
-	Tue, 24 Oct 2023 23:56:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98831C433C8;
-	Tue, 24 Oct 2023 23:56:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58DA8749D;
+	Tue, 24 Oct 2023 23:56:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EA56C433C8;
+	Tue, 24 Oct 2023 23:56:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698191800;
-	bh=Xm4N+IK6cCfxBp62n/HaElU5RuamPewSwlV6BouTrZQ=;
+	s=k20201202; t=1698191806;
+	bh=/AqxNKM2oDsDuOXrm5zJZpbk7p+aUoJlSJ50wuZ9rqs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XHCNDjyf4qoKwtHkpy6r4wub2wJJn13C1l73043H7NjRGaHi7GjGvq4DZ953dObBv
-	 p9DgsMqX2jEYFYRgV0S0e3WmkAaQdFDq0NPytLxKi0XeqsUuCNo+9GKrXY8QkYt8Fj
-	 TEwyyQj6gxnM5k4iGNjnqH7GMMF1ogiE5d4xq0nU3on6eBiHRwevuLQovPkcvhTHcf
-	 KRfdNNQGok8VmFfeHtKezKXFC4fAoLR8uuAPoW9UfENaFR4FQ4B0+x4H70NjNrNqwZ
-	 pMbrppiqkl5aL7s4TgD3JIItFSkAIgaNyL06ZyJVLWX02C0gAYA05WkVtA9Pe2sVXz
-	 2aG1au0rO1hxA==
+	b=RoKXl7hWEM72FKDGwJUZcIIEz4hZSI/wEc2Z7ZF/Vj5mE/YOmj+aKFV3rvzBmTCYz
+	 Pc+LMObWNN6gBTXMCcQp2N5MPTaCIH3oFrKWqyA7IheFXbNR2QyI6wKsDQS+Hwhi+k
+	 C4j3uU6NEh9z6+Gkt2AelKLycVDS6FnjCbpy/Bh3NkidXciuNcK7kMuLmCFCjUG2L9
+	 5uRRdoLlWwBV0iFcKsKon1J6/JjwJ5HbyORaZXAf06QW1G1FqZ55eoBbaYA7zYePTK
+	 EznnwUVUuNdhtKrgJ1ZTW99OL9rjrgwkmRK/yBowFYwSBcKEfTgvWuXLKYOWYS5byP
+	 7cNcgBvyk84wg==
 From: Song Liu <song@kernel.org>
 To: bpf@vger.kernel.org,
 	fsverity@lists.linux.dev
@@ -44,9 +44,9 @@ Cc: ast@kernel.org,
 	tytso@mit.edu,
 	roberto.sassu@huaweicloud.com,
 	Song Liu <song@kernel.org>
-Subject: [PATCH v6 bpf-next 6/9] Documentation/bpf: Add documentation for filesystem kfuncs
-Date: Tue, 24 Oct 2023 16:55:48 -0700
-Message-Id: <20231024235551.2769174-7-song@kernel.org>
+Subject: [PATCH v6 bpf-next 7/9] selftests/bpf: Sort config in alphabetic order
+Date: Tue, 24 Oct 2023 16:55:49 -0700
+Message-Id: <20231024235551.2769174-8-song@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231024235551.2769174-1-song@kernel.org>
 References: <20231024235551.2769174-1-song@kernel.org>
@@ -58,60 +58,26 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a brief introduction for file system kfuncs:
-
-  bpf_get_file_xattr()
-  bpf_get_fsverity_digest()
-
-The documentation highlights the strategy to avoid recursions of these
-kfuncs.
+Move CONFIG_VSOCKETS up, so the CONFIGs are in alphabetic order.
 
 Signed-off-by: Song Liu <song@kernel.org>
 ---
- Documentation/bpf/fs_kfuncs.rst | 21 +++++++++++++++++++++
- Documentation/bpf/index.rst     |  1 +
- 2 files changed, 22 insertions(+)
- create mode 100644 Documentation/bpf/fs_kfuncs.rst
+ tools/testing/selftests/bpf/config | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/bpf/fs_kfuncs.rst b/Documentation/bpf/fs_kfuncs.rst
-new file mode 100644
-index 000000000000..8762c3233a3d
---- /dev/null
-+++ b/Documentation/bpf/fs_kfuncs.rst
-@@ -0,0 +1,21 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. _fs_kfuncs-header-label:
-+
-+=====================
-+BPF filesystem kfuncs
-+=====================
-+
-+BPF LSM programs need to access filesystem data from LSM hooks. The following
-+BPF kfuncs can be used to get these data.
-+
-+ * ``bpf_get_file_xattr()``
-+
-+ * ``bpf_get_fsverity_digest()``
-+
-+To avoid recursions, these kfuncs follow the following rules:
-+
-+1. These kfuncs are only permitted from BPF LSM function.
-+2. These kfuncs should not call into other LSM hooks, i.e. security_*(). For
-+   example, ``bpf_get_file_xattr()`` does not use ``vfs_getxattr()``, because
-+   the latter calls LSM hook ``security_inode_getxattr``.
-diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
-index aeaeb35e6d4a..0bb5cb8157f1 100644
---- a/Documentation/bpf/index.rst
-+++ b/Documentation/bpf/index.rst
-@@ -21,6 +21,7 @@ that goes into great technical depth about the BPF Architecture.
-    helpers
-    kfuncs
-    cpumasks
-+   fs_kfuncs
-    programs
-    maps
-    bpf_prog_run
+diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+index 02dd4409200e..09da30be8728 100644
+--- a/tools/testing/selftests/bpf/config
++++ b/tools/testing/selftests/bpf/config
+@@ -81,7 +81,7 @@ CONFIG_SECURITY=y
+ CONFIG_SECURITYFS=y
+ CONFIG_TEST_BPF=m
+ CONFIG_USERFAULTFD=y
++CONFIG_VSOCKETS=y
+ CONFIG_VXLAN=y
+ CONFIG_XDP_SOCKETS=y
+ CONFIG_XFRM_INTERFACE=y
+-CONFIG_VSOCKETS=y
 -- 
 2.34.1
 
