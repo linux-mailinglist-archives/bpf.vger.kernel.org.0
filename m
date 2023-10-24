@@ -1,144 +1,152 @@
-Return-Path: <bpf+bounces-13102-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13103-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90F067D4698
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 06:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C95D17D46C2
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 06:57:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 493E3281895
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 04:03:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0259228181A
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 04:57:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1199B79C7;
-	Tue, 24 Oct 2023 04:03:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E15538B;
+	Tue, 24 Oct 2023 04:57:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="CvK7K3rE";
-	dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="CvK7K3rE";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Cz6LhvNn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GkxLS32n"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2237E7468
-	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 04:03:20 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00CDDC
-	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 21:03:19 -0700 (PDT)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 68CBCC187714
-	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 21:03:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1698120198; bh=kL369dyjU21eOoxdPeT+z5jQo/VEdqEXGJK6t8T/HqI=;
-	h=Date:From:To:Cc:References:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=CvK7K3rEQqKidMe5SlsA/2pvm6puo+ENc/cMBypeqdiv+axkubhqRDGNlvxImj9QU
-	 GJ9sOUdSbajyu9emXoTM4/zhiDdm6y7x6C27Lgl7HgTT1ZtV2hzoEQaZn3LLK09a53
-	 jVbNPIypQfzncUnEx7e/L96tOVFSOiw0kJDhEMtk=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Mon Oct 23 21:03:18 2023
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 4C76DC17C53A;
-	Mon, 23 Oct 2023 21:03:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1698120198; bh=kL369dyjU21eOoxdPeT+z5jQo/VEdqEXGJK6t8T/HqI=;
-	h=Date:From:To:Cc:References:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=CvK7K3rEQqKidMe5SlsA/2pvm6puo+ENc/cMBypeqdiv+axkubhqRDGNlvxImj9QU
-	 GJ9sOUdSbajyu9emXoTM4/zhiDdm6y7x6C27Lgl7HgTT1ZtV2hzoEQaZn3LLK09a53
-	 jVbNPIypQfzncUnEx7e/L96tOVFSOiw0kJDhEMtk=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 1D68BC1524A3
- for <bpf@ietfa.amsl.com>; Mon, 23 Oct 2023 21:02:59 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -2.104
-X-Spam-Level: 
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=infradead.org
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id SwIIBvCMY9xs for <bpf@ietfa.amsl.com>;
- Mon, 23 Oct 2023 21:02:54 -0700 (PDT)
-Received: from bombadil.infradead.org (bombadil.infradead.org
- [IPv6:2607:7c80:54:3::133])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 0B8B9C151091
- for <bpf@ietf.org>; Mon, 23 Oct 2023 21:02:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
- :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=o2oqEIL9hM7xktXoD6OoCSFGTuIiB9Fg0U9uwi4DxHU=; b=Cz6LhvNnth74dOqxKQrz6xfQKh
- EcFYZvBq8E5rGsi3b0jcokGoG7PRIopiruFoHNTXW1FYDCvy152JnB8dgKtm0MJoxdKxGrnKhBZNS
- iwIpC15zGV8QAtRcd9z/GEDJ51597GX8ofdYGjddnotaD0YrqE5qxSBRfvxFgikYnfTrupnJKgQ1s
- ysTRzgwOT8XxcCbWWVvEyvtJVIANAnqT0BxXWRzM0eclqJS2BgBz51ayUiJllLIic9ruT+TnZN3wj
- Uja/wQQAo5yTdkJPYGlIf3OVDqDCYh8PQmbzJ1KPhzmvBvCPeabHzhEenVoFkz8W/PqBXye9RyG5X
- 6oLR+oWw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat
- Linux)) id 1qv8cz-008lpy-2G; Tue, 24 Oct 2023 04:02:49 +0000
-Date: Mon, 23 Oct 2023 21:02:49 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: David Vernet <void@manifault.com>
-Cc: Will Hawkins <hawkinsw@obs.cr>, bpf@ietf.org, bpf@vger.kernel.org
-Message-ID: <ZTdB6dJSum4p63oR@infradead.org>
-References: <20231002142001.3223261-1-hawkinsw@obs.cr>
- <20231003182650.GA5902@maniforge>
- <CADx9qWjcSoNb=aWpDVV5QxEoUGuDr2=wOOz3AWhjemh6+hzhwA@mail.gmail.com>
- <20231024005528.GA33696@maniforge>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 848EB1FA5
+	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 04:57:30 +0000 (UTC)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 388FAA1
+	for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 21:57:28 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32ded3eb835so2016853f8f.0
+        for <bpf@vger.kernel.org>; Mon, 23 Oct 2023 21:57:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698123446; x=1698728246; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cG/diypKuR8nTyMvRAZU14xkHri54HvRMckeEqsX+vE=;
+        b=GkxLS32nInFFn0yzAe4Mj9eXzaVbWRKXzMvvlutj7d8d4HgNYf+Kpiu0U5QUGuYR7I
+         +6O0HkW2gktJjny1MNEdkA+OGQgyOdi6IbDoCZGO52yaYI1cd3fsmPS916ozuy/Dn/IQ
+         eKqNLlygG3Lj7nSG8SAXfFtXgHgO/S1NDhk/Iw2WYjY/oGRtXlFXDe0ktGzxgRW6/oDV
+         VqmrTtuU2nWBsBWzRbH32qgJmnA6hVI3Yh/12EpoIbhrueZQ1MkJPOO/TNpH6rYIKDLj
+         zytTpsZBimniHNPzITb8wcgCFPyKdgkrNmGwEvsvREHlIQrvU2X8nT2I2C1I3bwK1GBr
+         M9Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698123446; x=1698728246;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cG/diypKuR8nTyMvRAZU14xkHri54HvRMckeEqsX+vE=;
+        b=LrtVARO/fIPUnjj7COzWcLDp+8gbGZCSlxfEmxnCqGppbXlgiL2W1aekx9afDYh1+x
+         qamkksnUo8naFzUGztEYGM7Lmax5zGKJiELBmydOqw4sJERRqSh55EE9oepesgmrNqak
+         pccOsdD2f4eAH/6UAMW6lV6OZIG9Z6Pu2b3kcp0DXmteyj/BSRJR3bNO4N4Nz9Tl5j0e
+         EzTDv9uWpQCZy48bqq9yyKV4vP6DzXqX9kNNBy9j74LcuRKTd61thmvDtXlXQMmCjdgo
+         McwSaefPMvuu5EV7OBoxsd5KCbpSaloQfc/AS8JewGyOKqUH9vNH2YiDiYN+bvRcYdqA
+         UTWA==
+X-Gm-Message-State: AOJu0YxiurhaG5lSKDPnjmNOC66g169TFG7QCJkCDrY4C56/wTjggIj1
+	guYPCys1TFWiEz8dql4VPV8CbqFWO78idcp4KGLviE6iXWQ=
+X-Google-Smtp-Source: AGHT+IEap4qc/8WtBfvP+hwkOIO1SdUvkb5CO8KJ+F4dRqXRaRvMpSplUXFU+Enq1KKVf69acqjwhTSBKJg4rGtiFkY=
+X-Received: by 2002:adf:e182:0:b0:32d:95ef:3b57 with SMTP id
+ az2-20020adfe182000000b0032d95ef3b57mr12533128wrb.2.1698123446240; Mon, 23
+ Oct 2023 21:57:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20231024005528.GA33696@maniforge>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
- bombadil.infradead.org. See http://www.infradead.org/rpr.html
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/0PcL-pI0igK5yPG9xXsCLCMU9Yk>
-Subject: Re: [Bpf] [PATCH] bpf,
- docs: Add additional ABI working draft base text
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+References: <20231024024240.42790-1-zhouchuyi@bytedance.com> <20231024024240.42790-2-zhouchuyi@bytedance.com>
+In-Reply-To: <20231024024240.42790-2-zhouchuyi@bytedance.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 23 Oct 2023 21:57:14 -0700
+Message-ID: <CAADnVQJRhyn4Xpd5f0_iJp7F2iZrs_qp+E0DZPNc3aKc0SGzCQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Relax allowlist for css_task iter
+To: Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 23, 2023 at 07:55:28PM -0500, David Vernet wrote:
-> > You make an excellent point. Although v2 does not make this change, do
-> > you think that a reasonable adjustment would be to simply move this
-> > section to the end of the document?
-> 
-> My initial expectation is that it's not a great idea to reference
-> external documents that could change, no longer be valid links, etc, but
-> I'd like to hear what others think. Dave -- is this typical for an IETF
-> informational document? It seems like if we did this we'd basically be
-> taking implicit dependencies on documents we can't actually control
-> (because they're not IETF), but I have no idea if this is normal or not.
+On Mon, Oct 23, 2023 at 7:42=E2=80=AFPM Chuyi Zhou <zhouchuyi@bytedance.com=
+> wrote:
+>
+> The newly added open-coded css_task iter would try to hold the global
+> css_set_lock in bpf_iter_css_task_new, so the bpf side has to be careful =
+in
+> where it allows to use this iter. The mainly concern is dead locking on
+> css_set_lock. check_css_task_iter_allowlist() in verifier enforced css_ta=
+sk
+> can only be used in bpf_lsm hooks and sleepable bpf_iter.
+>
+> This patch relax the allowlist for css_task iter. Any lsm and any iter
+> (even non-sleepable) and any sleepable are safe since they would not hold
+> the css_set_lock before entering BPF progs context.
+>
+> This patch also fixes the misused BPF_TRACE_ITER in
+> check_css_task_iter_allowlist which compared bpf_prog_type with
+> bpf_attach_type.
+>
+> Fixes: 9c66dc94b62ae ("bpf: Introduce css_task open-coded iterator kfuncs=
+")
+> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+> ---
+>  kernel/bpf/verifier.c                         | 21 ++++++++++++-------
+>  .../selftests/bpf/progs/iters_task_failure.c  |  4 ++--
+>  2 files changed, 15 insertions(+), 10 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index e9bc5d4a25a1..9f209adc4ccb 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -11088,18 +11088,23 @@ static int process_kf_arg_ptr_to_rbtree_node(st=
+ruct bpf_verifier_env *env,
+>                                                   &meta->arg_rbtree_root.=
+field);
+>  }
+>
+> +/*
+> + * css_task iter allowlist is needed to avoid dead locking on css_set_lo=
+ck.
+> + * LSM hooks and iters (both sleepable and non-sleepable) are safe.
+> + * Any sleepable progs are also safe since bpf_check_attach_target() enf=
+orce
+> + * them can only be attached to some specific hook points.
+> + */
+>  static bool check_css_task_iter_allowlist(struct bpf_verifier_env *env)
+>  {
+>         enum bpf_prog_type prog_type =3D resolve_prog_type(env->prog);
+>
+> -       switch (prog_type) {
+> -       case BPF_PROG_TYPE_LSM:
+> +       if (prog_type =3D=3D BPF_PROG_TYPE_LSM)
+>                 return true;
+> -       case BPF_TRACE_ITER:
+> -               return env->prog->aux->sleepable;
+> -       default:
+> -               return false;
+> -       }
+> +
+> +       if (env->prog->expected_attach_type =3D=3D BPF_TRACE_ITER)
+> +               return true;
 
-IETF prefers IETF references, and if not stable standards-like
-documents.  Even those will get careful review (talking as someone
-with a draft that has normative SCSI and NVMe references right now).
+I think the switch by prog_type has to stay.
+Checking attach_type =3D=3D BPF_TRACE_ITER without considering prog_type
+is fragile. It likely works, but we don't do it anywhere else.
+Let's stick to what is known to work.
 
-For non-normative references this is a bit relaxed, but a random url
-that can change is never acceptable.
+> -SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
+> -__failure __msg("css_task_iter is only allowed in bpf_lsm and bpf iter-s=
+")
+> +SEC("?fentry/" SYS_PREFIX "sys_getpgid")
+> +__failure __msg("css_task_iter is only allowed in bpf_lsm, bpf_iter and =
+sleepable progs")
 
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+Please add both. fentry that is rejected and fentry.s that is accepted.
 
