@@ -1,178 +1,299 @@
-Return-Path: <bpf+bounces-13145-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13146-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1768B7D58EC
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 18:42:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 684E87D5978
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 19:10:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B404B20C74
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 16:41:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17C7F281A51
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 17:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E21A63A296;
-	Tue, 24 Oct 2023 16:41:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C1BF3A27F;
+	Tue, 24 Oct 2023 17:10:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="k8vZpnYh"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="rsnZr4bs";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="icB4AE0T"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C064C3B2AD
-	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 16:41:52 +0000 (UTC)
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE2CDA
-	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 09:41:49 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-5ac865d1358so2953632a12.3
-        for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 09:41:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698165709; x=1698770509; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F9cI2QYCQEc0Q/Z2mJbULzav03v+BRSAlGepCbIXf4g=;
-        b=k8vZpnYhUGkLINDaRw74tvPFE8FRGFFzm6dO1ITeTaTHgE5Qjw1l4T+KeiGvQPrVMQ
-         Lp2xFGAJR/xzMfJ/G2EnMle6UXY/mwUxiq8RVPbxBgiqDtrKpF2nkbalKXBxcQ/FUBuz
-         VTDXVhTdzEYiC+aAYZ4FC+CdPJJweEARSdZZSPgNjxUtFb8qTMsO2XRArKMMdn/45LPQ
-         NS+c8hiK79mIjpaqBbRb3lXMWd1c5toX2rozbDQCkdVQv04/uW7NJynD7Ysrz3vgUg7W
-         2J3EvBAlAOe6knt8vhzk9OqQ6XeSUz8FpQNbcaTtQMC5mwAbFjQEk68LBJWdUF9TEQ4z
-         XHTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698165709; x=1698770509;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F9cI2QYCQEc0Q/Z2mJbULzav03v+BRSAlGepCbIXf4g=;
-        b=Wl5ENG6jdG52Arj0jGHtDVZQ7B76o++swfli+u2tCTfENHKfm271hAkRBvDQpMKQhL
-         F4bjIrXcl6rtNMgzA7zwBGJ/ihJ7EtItsifX0DF90Yq59NXtJH+hwWN2HVsCrUiQNPvi
-         0e6MNpWfvLhXd8BW8O/5QKF0+V9nfMbIO+ERA5GDGjUJo1qPIbFjqZQIZkzZQHBNeH9M
-         V06sCgx64Ky2NmAqTePuRq6BepBaOxTOPpafttAfNZc5qdm5nvioMil+T+r/1Jjpp/59
-         zUu+AIjkSMKMolD20TR2UTSn/YsTCUs+hrKQD6qMTGlbeS2imxx8Qoez9B5HNhiwn3fs
-         YgVA==
-X-Gm-Message-State: AOJu0YypeFxrvsb/JFpSgDgMFSRtK/1SuHx0+FUO0ALOQ0PBQniZhb+K
-	ddgt22Z9G2+mksafaxe4mpu+HeJwB0jbIE+22KnVfA==
-X-Google-Smtp-Source: AGHT+IGAdVWT4mftFEAGQrXm3G8HV7gIjum7jCbwbb9KaUknUgk1WfDEZHCMV8V8bp+yGQa2u32B3NoAvqDI+8P/hfU=
-X-Received: by 2002:a17:90a:4f45:b0:27e:3880:d03d with SMTP id
- w5-20020a17090a4f4500b0027e3880d03dmr6113296pjl.7.1698165708830; Tue, 24 Oct
- 2023 09:41:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8EAC24212
+	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 17:10:20 +0000 (UTC)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CEE118;
+	Tue, 24 Oct 2023 10:10:18 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4803E218A4;
+	Tue, 24 Oct 2023 17:10:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1698167417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X7BOv864i2pOnohXaeV8uVrOFx4NtMMndDlD0LyLw6s=;
+	b=rsnZr4bsZf8CoFbNdFQEeaAOdkxRRq67AGQFeszLZSXQw8srD/RepeNJsGs6rkLK6HnWY0
+	ttCPBDAgOjBQ2fQ8JZd4Bak5UfDDqOk8KGkRJzugNfqdgHDvUQEXROTeJUa+Eh05QZZ7rm
+	wpEJMgNYfSfRGzpu5DZsEStUbD5wYPE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1698167417;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X7BOv864i2pOnohXaeV8uVrOFx4NtMMndDlD0LyLw6s=;
+	b=icB4AE0Tn7s09W8HhI4dhOHAStsZf3CVaGwuE77ftXqWK+wXDJlPmOAJhAtQZQt/I/6YXx
+	qmKGyf5flFGZA7BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BE259134F5;
+	Tue, 24 Oct 2023 17:10:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id dpqCIHj6N2VOfwAAMHmgww
+	(envelope-from <mpdesouza@suse.com>); Tue, 24 Oct 2023 17:10:16 +0000
+Date: Tue, 24 Oct 2023 14:10:14 -0300
+From: Marcos Paulo de Souza <mpdesouza@suse.de>
+To: Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org, 
+	mbenes@suse.cz
+Cc: linux-kselftest@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: # Toplevel Makefile doesn't process module build correctly on
+ recursive make calls
+Message-ID: <wegewi6hv36jymuc7gzlxd4yrcr4yg5ibuekouwk3tl6xgizup@qy3gpd2lvajc>
+References: <lp2gjgzwxvhluh7fpmmo2drhii7bxcrlvxacclfgsl4ycubjhc@jjq2jfvow4y2>
+ <CAK7LNATLv2KSWo0BnFGXi73GVdnvc1EX23TvTkKT1U-krgBnNQ@mail.gmail.com>
+ <b73okxdwey2s2pdjepb3tbrlk55utqjvnkrhkyx74bvm3tzvfy@kqxltdo7s2sz>
+ <ZTIAVNpVhPfSSQl8@buildd.core.avm.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231019174944.3376335-1-sdf@google.com> <20231019174944.3376335-11-sdf@google.com>
- <PH0PR11MB5830DF14E012DCAC75090010D8DFA@PH0PR11MB5830.namprd11.prod.outlook.com>
-In-Reply-To: <PH0PR11MB5830DF14E012DCAC75090010D8DFA@PH0PR11MB5830.namprd11.prod.outlook.com>
-From: Stanislav Fomichev <sdf@google.com>
-Date: Tue, 24 Oct 2023 09:41:36 -0700
-Message-ID: <CAKH8qBtqbRRER-qbT3YghgYkaHVzz=Rdvpe9h7b5bv3+gM-a5A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 10/11] selftests/bpf: Add TX side to xdp_hw_metadata
-To: "Song, Yoong Siang" <yoong.siang.song@intel.com>
-Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>, 
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "andrii@kernel.org" <andrii@kernel.org>, 
-	"martin.lau@linux.dev" <martin.lau@linux.dev>, "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>, 
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
-	"haoluo@google.com" <haoluo@google.com>, "jolsa@kernel.org" <jolsa@kernel.org>, 
-	"kuba@kernel.org" <kuba@kernel.org>, "toke@kernel.org" <toke@kernel.org>, 
-	"willemb@google.com" <willemb@google.com>, "dsahern@kernel.org" <dsahern@kernel.org>, 
-	"Karlsson, Magnus" <magnus.karlsson@intel.com>, "bjorn@kernel.org" <bjorn@kernel.org>, 
-	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, "hawk@kernel.org" <hawk@kernel.org>, 
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
-	"xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZTIAVNpVhPfSSQl8@buildd.core.avm.de>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -6.20
+X-Spamd-Result: default: False [-6.20 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-3.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-1.00)[-1.000];
+	 FORGED_SENDER(0.30)[mpdesouza@suse.de,mpdesouza@suse.com];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_COUNT_TWO(0.00)[2];
+	 FROM_NEQ_ENVFROM(0.10)[mpdesouza@suse.de,mpdesouza@suse.com];
+	 RCVD_TLS_ALL(0.00)[]
 
-On Mon, Oct 23, 2023 at 7:19=E2=80=AFPM Song, Yoong Siang
-<yoong.siang.song@intel.com> wrote:
->
-> On Friday, October 20, 2023 1:50 AM Stanislav Fomichev <sdf@google.com> w=
-rote:
-> >When we get a packet on port 9091, we swap src/dst and send it out.
-> >At this point we also request the timestamp and checksum offloads.
-> >
-> >Checksum offload is verified by looking at the tcpdump on the other side=
-.
-> >The tool prints pseudo-header csum and the final one it expects.
-> >The final checksum actually matches the incoming packets checksum
-> >because we only flip the src/dst and don't change the payload.
-> >
-> >Some other related changes:
-> >- switched to zerocopy mode by default; new flag can be used to force
-> >  old behavior
-> >- request fixed tx_metadata_len headroom
-> >- some other small fixes (umem size, fill idx+i, etc)
-> >
-> >mvbz3:~# ./xdp_hw_metadata eth3
-> >...
-> >xsk_ring_cons__peek: 1
-> >0x19546f8: rx_desc[0]->addr=3D80100 addr=3D80100 comp_addr=3D80100
-> >rx_hash: 0x80B7EA8B with RSS type:0x2A
-> >rx_timestamp:  1697580171852147395 (sec:1697580171.8521)
-> >HW RX-time:   1697580171852147395 (sec:1697580171.8521), delta to User R=
-X-time sec:0.2797 (279673.082 usec)
-> >XDP RX-time:   1697580172131699047 (sec:1697580172.1317), delta to User =
-RX-time sec:0.0001 (121.430 usec)
-> >0x19546f8: ping-pong with csum=3D3b8e (want d862) csum_start=3D54 csum_o=
-ffset=3D6
-> >0x19546f8: complete tx idx=3D0 addr=3D8
-> >tx_timestamp:  1697580172056756493 (sec:1697580172.0568)
->
-> Hi Stanislav,
->
-> rx_timestamp is duplicating HW RX-time while tx_timestamp is duplicating =
-HW TX-complete-time,
-> so, I think can remove printing of rx_timestamp and tx_timestamp to avoid=
- confusion.
+On Fri, Oct 20, 2023 at 06:21:40AM +0200, Nicolas Schier wrote:
+> On Thu, Oct 19, 2023 at 03:50:05PM -0300, Marcos Paulo de Souza wrote:
+> > On Sat, Oct 14, 2023 at 05:35:55PM +0900, Masahiro Yamada wrote:
+> > > On Tue, Oct 10, 2023 at 5:43 AM Marcos Paulo de Souza <mpdesouza@suse.de> wrote:
+> > > >
+> > > > Hi all,
+> > > >
+> > > > I found an issue while moving the livepatch kselftest modules to be built on the
+> > > > fly, instead of building them on kernel building.
+> > > >
+> > > > If, for some reason, there is a recursive make invocation that starts from the
+> > > > top level Makefile and in the leaf Makefile it tries to build a module (using M=
+> > > > in the make invocation), it doesn't produce the module. This happens because the
+> > > > toplevel Makefile checks for M= only once. This is controlled by the
+> > > > sub_make_done variable, which is exported after checking the command line
+> > > > options are passed to the top level Makefile. Once this variable is set it's
+> > > > the M= setting is never checked again on the recursive call.
+> > > >
+> > > > This can be observed when cleaning the bpf kselftest dir. When calling
+> > > >
+> > > >         $ make TARGETS="bpf" SKIP_TARGETS="" kselftest-clean
+> > > >
+> > > > What happens:
+> > > >
+> > > >         1. It checks for some command line settings (like M=) was passed (it wasn't),
+> > > >         set some definitions and exports sub_make_done.
+> > > >
+> > > >         2. Jump into tools/testing/selftests/bpf, and calls the clean target.
+> > > >
+> > > >         3. The clean target is overwritten to remove some files and then jump to
+> > > >         bpf_testmod dir and call clean there
+> > > >
+> > > >         4. On bpf_testmod/Makefile, the clean target will execute
+> > > >                 $(Q)make -C $(KDIR) M=$(BPF_TESTMOD_DIR) clean
+> > > >
+> > > >         5. The KDIR is to toplevel dir. The top Makefile will check that sub_make_done was
+> > > >         already set, ignoring the M= setting.
+> > > >
+> > > >         6. As M= wasn't checked, KBUILD_EXTMOD isn't set, and the clean target applies
+> > > >         to the kernel as a whole, making it clean all generated code/objects and
+> > > >         everything.
+> > > >
+> > > > One way to avoid it is to call "unexport sub_make_done" on
+> > > > tools/testing/selftests/bpf/bpf_testmod/Makefile before processing the all
+> > > > target, forcing the toplevel Makefile to process the M=, producing the module
+> > > > file correctly.
+> > > >
+> > > > If the M=dir points to /lib/modules/.../build, then it fails with "m2c: No such
+> > > > file", which I already reported here[1]. At the time this problem was treated
+> > > > like a problem with kselftest infrastructure.
+> > > >
+> > > > Important: The process works fine if the initial make invocation is targeted to a
+> > > > different directory (using -C), since it doesn't goes through the toplevel
+> > > > Makefile, and sub_make_done variable is not set.
+> > > >
+> > > > I attached a minimal reproducer, that can be used to better understand the
+> > > > problem. The "make testmod" and "make testmod-clean" have the same effect that
+> > > > can be seem with the bpf kselftests. There is a unexport call commented on
+> > > > test-mods/Makefile, and once that is called the process works as expected.
+> > > >
+> > > > Is there a better way to fix this? Is this really a problem, or am I missing
+> > > > something?
+> > > 
+> > > 
+> > > Or, using KBUILD_EXTMOD will work too.
+> > 
+> > Yes, that works, only if set to /lib/modules:
+> > 
+> > $ make kselftest TARGETS=bpf SKIP_TARGETS=""
+> > make[3]: Entering directory '/home/mpdesouza/git/linux/tools/testing/selftests/bpf'
+> >   MOD      bpf_testmod.ko
+> > warning: the compiler differs from the one used to build the kernel
+> >   The kernel was built by: gcc (SUSE Linux) 13.2.1 20230803 [revision cc279d6c64562f05019e1d12d0d825f9391b5553]
+> >   You are using:           gcc (SUSE Linux) 13.2.1 20230912 [revision b96e66fd4ef3e36983969fb8cdd1956f551a074b]
+> >   CC [M]  /home/mpdesouza/git/linux/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.o
+> >   MODPOST /home/mpdesouza/git/linux/tools/testing/selftests/bpf/bpf_testmod/Module.symvers
+> >   CC [M]  /home/mpdesouza/git/linux/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.mod.o
+> >   LD [M]  /home/mpdesouza/git/linux/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.ko
+> >   BTF [M] /home/mpdesouza/git/linux/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.ko
+> > Skipping BTF generation for /home/mpdesouza/git/linux/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.ko due to unavailability of vmlinux
+> >   BINARY   xdp_synproxy
+> > ...
+> > 
+> > But if we set the KBUILD_EXTMOD to toplevel Makefile, it fails with a different
+> > strange issue:
+> > 
+> > $ make kselftest TARGETS=bpf SKIP_TARGETS=""
+> >   BINARY   urandom_read
+> >   MOD      bpf_testmod.ko
+> > m2c    -o scripts/Makefile.build -e scripts/Makefile.build scripts/Makefile.build.mod
+> > make[6]: m2c: No such file or directory
+> > make[6]: *** [<builtin>: scripts/Makefile.build] Error 127
+> > make[5]: *** [Makefile:1913: /home/mpdesouza/git/linux/tools/testing/selftests/bpf/bpf_testmod] Error 2
+> > make[4]: *** [Makefile:19: all] Error 2
+> > make[3]: *** [Makefile:229: /home/mpdesouza/git/linux/tools/testing/selftests/bpf/bpf_testmod.ko] Error 2
+> > make[3]: Leaving directory '/home/mpdesouza/git/linux/tools/testing/selftests/bpf'
+> > make[2]: *** [Makefile:175: all] Error 2
+> > make[1]: *** [/home/mpdesouza/git/linux/Makefile:1362: kselftest] Error 2
+> > 
+> > I attached a patch that can reproduce the case where it works, and the case
+> > where it doesn't by changing the value of KDIR.
+> > 
+> > I understand that KBUILD_EXTMOD, as the name implies, was designed to build
+> > "external" modules, and not ones that live inside kernel, but how could this be
+> > solved?
+> 
+> It seems to me as if there is some confusion about in-tree vs.
+> out-of-tree kmods.
+> 
+> KBUILD_EXTMOD and M are almost the same and indicate that you want to
+> build _external_ (=out-of-tree) kernel modules.  In-tree modules are
+> only those that stay in-tree _and_ are built along with the kernel.
+> Thus, 'make modules KBUILD_EXTMOD=fs/ext4' could be used to build ext4
+> kmod as "out-of-tree" kernel module, that even taints the kernel if it
+> gets loaded.
+> 
+> If you want bpf_testmod.ko to be an in-tree kmod, it has to be build
+> during the usual kernel build, not by running 'make kselftest'.
+> 
+> If you use 'make -C $(KDIR)' for building out-of-tree kmods, KDIR has to
+> point to the kernel build directory.  (Or it may point to the source
+> tree if you give O=$(BUILDDIR) as well).
 
-That's fair, I think I'll do the following:
+Thanks for the explanation Nicolas. In this, I believe that the BPF module
+should be moved into lib/, like lib/livepatch, when then be built along with
+other in-tree modules.
 
-if (meta->rx_timestamp) {
-  /* print all those reference points */
-} else {
-  printf("No rx_timestamp\n");
-}
+Currently there is a bug when running the kselftests-clean target with bpf:
 
-And the same for tx. So at least the users get a signal that the
-timestamps weren't set.
+	make kselftest-clean TARGETS=bpf SKIP_TARGETS=""
 
-> >HW TX-complete-time:   1697580172056756493 (sec:1697580172.0568), delta =
-to User TX-complete-time sec:0.0852 (85175.537 usec)
-> >XDP RX-time:   1697580172131699047 (sec:1697580172.1317), delta to User =
-TX-complete-time sec:0.0102 (10232.983 usec)
-> >HW RX-time:   1697580171852147395 (sec:1697580171.8521), delta to HW TX-=
-complete-time sec:0.2046 (204609.098 usec)
-> >0x19546f8: complete rx idx=3D128 addr=3D80100
-> >
-> >mvbz4:~# nc  -Nu -q1 ${MVBZ3_LINK_LOCAL_IP}%eth3 9091
-> >
-> >mvbz4:~# tcpdump -vvx -i eth3 udp
-> >        tcpdump: listening on eth3, link-type EN10MB (Ethernet), snapsho=
-t length 262144
-> >bytes
-> >12:26:09.301074 IP6 (flowlabel 0x35fa5, hlim 127, next-header UDP (17) p=
-ayload
-> >length: 11) fe80::1270:fdff:fe48:1087.55807 > fe80::1270:fdff:fe48:1077.=
-9091: [bad
-> >udp cksum 0x3b8e -> 0xde7e!] UDP, length 3
-> >        0x0000:  6003 5fa5 000b 117f fe80 0000 0000 0000
-> >        0x0010:  1270 fdff fe48 1087 fe80 0000 0000 0000
-> >        0x0020:  1270 fdff fe48 1077 d9ff 2383 000b 3b8e
-> >        0x0030:  7864 70
-> >12:26:09.301976 IP6 (flowlabel 0x35fa5, hlim 127, next-header UDP (17) p=
-ayload
-> >length: 11) fe80::1270:fdff:fe48:1077.9091 > fe80::1270:fdff:fe48:1087.5=
-5807: [udp
-> >sum ok] UDP, length 3
-> >        0x0000:  6003 5fa5 000b 117f fe80 0000 0000 0000
-> >        0x0010:  1270 fdff fe48 1077 fe80 0000 0000 0000
-> >        0x0020:  1270 fdff fe48 1087 2383 d9ff 000b de7e
-> >        0x0030:  7864 70
-> >
-> >This reverts commit c3c9abc1d0c989e0be21d78cccd99076cc94ec44.
->
-> It didn't looked like this patch is reverting something.
-> If this is not a mistake, can you add the commit title behind the ID?
+As the M= argument is ignore on the toplevel Makefile, this make invocation
+applies the clean to all built kernel objects/modules/everything, which is bug
+IMO.
 
-Ah, that's a leftover from my rebasing and reshuffling, will drop, thanks!
+There is a statement in the BPF docs saying that the selftests should be run
+inside the tools/testing/selftests/bpf directory. At the same time, kselftests
+should comply with all the targets defined in the documention, like gen_tar, and
+run_tests. In this case should the build process be fixed, or just make
+kselftests less restrict?
+
+(CCing kselftests and bpf ML)
+
+> 
+> HTH.
+> 
+> Kind regards,
+> Nicolas
+> 
+> 
+> > For the sake of my initial about livepatch kselftests, KBUILD_EXTMOD
+> > will suffice, since we will target /lib/modules, but I would like to know what
+> > we can do in this case. Do you have other suggestions?
+> > 
+> > Thanks in advance,
+> >   Marcos
+> > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > --
+> > > Best Regards
+> > > Masahiro Yamada
+> 
+> > diff --git a/tools/testing/selftests/bpf/bpf_testmod/Makefile b/tools/testing/selftests/bpf/bpf_testmod/Makefile
+> > index 15cb36c4483a..1dce76f35405 100644
+> > --- a/tools/testing/selftests/bpf/bpf_testmod/Makefile
+> > +++ b/tools/testing/selftests/bpf/bpf_testmod/Makefile
+> > @@ -1,5 +1,6 @@
+> >  BPF_TESTMOD_DIR := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+> > -KDIR ?= $(abspath $(BPF_TESTMOD_DIR)/../../../../..)
+> > +#KDIR ?= $(abspath $(BPF_TESTMOD_DIR)/../../../../..)
+> > +KDIR ?= /lib/modules/$(shell uname -r)/build
+> >  
+> >  ifeq ($(V),1)
+> >  Q =
+> > @@ -12,9 +13,10 @@ MODULES = bpf_testmod.ko
+> >  obj-m += bpf_testmod.o
+> >  CFLAGS_bpf_testmod.o = -I$(src)
+> >  
+> > +export KBUILD_EXTMOD := $(BPF_TESTMOD_DIR)
+> > +
+> >  all:
+> > -	+$(Q)make -C $(KDIR) M=$(BPF_TESTMOD_DIR) modules
+> > +	+$(Q)make -C $(KDIR) modules
+> >  
+> >  clean:
+> > -	+$(Q)make -C $(KDIR) M=$(BPF_TESTMOD_DIR) clean
+> > -
+> > +	+$(Q)make -C $(KDIR) clean
+> 
 
