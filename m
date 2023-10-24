@@ -1,99 +1,121 @@
-Return-Path: <bpf+bounces-13133-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13134-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA6457D5204
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 15:40:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C50627D5440
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 16:46:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72B28B20CE6
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 13:40:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30775B20FB9
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 14:46:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B14702AB2F;
-	Tue, 24 Oct 2023 13:40:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD1E2FB6;
+	Tue, 24 Oct 2023 14:46:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IMnBi4fA"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="ha9Ktr5Z"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22BF2134B1
-	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 13:40:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9BD39C433CA;
-	Tue, 24 Oct 2023 13:40:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698154823;
-	bh=GuoeLtNsixLSsGotdqVqSnXzqMDuAs393mlNbp65ecU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=IMnBi4fAgNmzTXNWLENOiDt/X11Fjy7zhHGnHacRk304p54dZf7+bGBu771HipL1B
-	 Wd3eBJexyT63LtyrtplaA8D3Y2D9vn4JFCP2LSFQU+706pcZeyBeZq/Q67Mkc3PzPP
-	 ffjARFdFeUvu5EwCjsfAot61CqhUUrFEJdhZ9Y0JTdDDwY+lGyKjqmz3r8BRbmsOhy
-	 3DCzRiTsDO/ECLR1+qdGVgTM7Q0V5vgBDulCYmRAOdz33Zx3qlGl+Pd3z+iHAReUDg
-	 qra4N/RbY1uKPT2g9M7SNpd1Pw94tnM+CLSX8XjG076awUOZfHFD6lhrIk5xKysXWP
-	 sPhEBu/k50u6g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 82AC4C04D3F;
-	Tue, 24 Oct 2023 13:40:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF23E2C84E
+	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 14:45:59 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC25C10E4
+	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 07:45:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=f7Oda66J6WIHXXvYaHI8akWn5HSBliZ5S29tlblqDEw=; b=ha9Ktr5ZH4fNYZRfzk9mRwGgGo
+	JekiwoJGAVxZTqCO2e+wxofWx1JOp9sGkXzIcP2Upjcw2fOi0L5pynA2Vpo89jlkhA/XOzB80PpGV
+	vwfn9MVzClAGJszgS82n3mk7I6VJL5TUy/IgR04byLzIrYgfq0BBi7vMRcTN3NGocnwglH6DlEbZx
+	Y3UJxPjROhJH5OBtfehgVXIS4ZmpIGvoJ5zptWIvHkEmid9slVZDAqFFzdUGYxQ4f9KH/ovJ5hbhQ
+	iMZkqzxEF6rFt1Z7urQjSj7qDottVK9tJUORpzP94V/p10FCLLt9DLtVfujsU3lrSS7KyOBThOU4Q
+	6+V5paUA==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qvIfJ-0009og-Lg; Tue, 24 Oct 2023 16:45:53 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qvIfJ-0004QP-CL; Tue, 24 Oct 2023 16:45:53 +0200
+Subject: Re: [PATCH v4 bpf-next 3/7] bpf: Add helpers for trampoline image
+ management
+To: Song Liu <song@kernel.org>, bpf@vger.kernel.org
+Cc: ast@kernel.org, andrii@kernel.org, martin.lau@kernel.org,
+ kernel-team@meta.com, Ilya Leoshkevich <iii@linux.ibm.com>
+References: <20231018180336.1696131-1-song@kernel.org>
+ <20231018180336.1696131-4-song@kernel.org>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c1e44b6f-f18d-8c30-3ff7-8af35a0706bf@iogearbox.net>
+Date: Tue, 24 Oct 2023 16:45:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 bpf-next 0/7] BPF register bounds logic and testing
- improvements
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <169815482353.9646.13398548339433732959.git-patchwork-notify@kernel.org>
-Date: Tue, 24 Oct 2023 13:40:23 +0000
-References: <20231022205743.72352-1-andrii@kernel.org>
-In-Reply-To: <20231022205743.72352-1-andrii@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- martin.lau@kernel.org, kernel-team@meta.com
+In-Reply-To: <20231018180336.1696131-4-song@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27071/Tue Oct 24 09:43:50 2023)
 
-Hello:
+On 10/18/23 8:03 PM, Song Liu wrote:
+[...]
+> @@ -1040,6 +1038,38 @@ arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *image
+>   	return -ENOTSUPP;
+>   }
+>   
+> +void * __weak arch_alloc_bpf_trampoline(int size)
+> +{
+> +	void *image;
+> +
+> +	WARN_ON_ONCE(size > PAGE_SIZE || size <= 0);
 
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+non-blocking / can be follow-up, but why not:
 
-On Sun, 22 Oct 2023 13:57:36 -0700 you wrote:
-> This patch set adds a big set of manual and auto-generated test cases
-> validating BPF verifier's register bounds tracking and deduction logic. See
-> details in the last patch.
-> 
-> To make this approach work, BPF verifier's logic needed a bunch of
-> improvements to handle some cases that previously were not covered. This had
-> no implications as to correctness of verifier logic, but it was incomplete
-> enough to cause significant disagreements with alternative implementation of
-> register bounds logic that tests in this patch set implement. So we need BPF
-> verifier logic improvements to make all the tests pass.
-> 
-> [...]
+if (WARN_ON_ONCE(size > PAGE_SIZE || size <= 0))
+	return NULL
 
-Here is the summary with links:
-  - [v4,bpf-next,1/7] bpf: improve JEQ/JNE branch taken logic
-    https://git.kernel.org/bpf/bpf-next/c/42d31dd601fa
-  - [v4,bpf-next,2/7] bpf: derive smin/smax from umin/max bounds
-    (no matching commit)
-  - [v4,bpf-next,3/7] bpf: enhance subregister bounds deduction logic
-    (no matching commit)
-  - [v4,bpf-next,4/7] bpf: improve deduction of 64-bit bounds from 32-bit bounds
-    (no matching commit)
-  - [v4,bpf-next,5/7] bpf: try harder to deduce register bounds from different numeric domains
-    (no matching commit)
-  - [v4,bpf-next,6/7] bpf: drop knowledge-losing __reg_combine_{32,64}_into_{64,32} logic
-    (no matching commit)
-  - [v4,bpf-next,7/7] selftests/bpf: BPF register range bounds tester
-    (no matching commit)
+size could also be u32, then you don't need size <= 0 check ?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> +	image = bpf_jit_alloc_exec(PAGE_SIZE);
+> +	if (image)
+> +		set_vm_flush_reset_perms(image);
+> +	return image;
+> +}
+> +
+> +void __weak arch_free_bpf_trampoline(void *image, int size)
+> +{
+> +	/* bpf_jit_free_exec doesn't need "size", but
+> +	 * bpf_prog_pack_free() needs it.
+> +	 */
+> +	bpf_jit_free_exec(image);
+> +}
+> +
+> +void __weak arch_protect_bpf_trampoline(void *image, int size)
+> +{
+> +	WARN_ON_ONCE(size > PAGE_SIZE || size <= 0);
+> +	set_memory_rox((long)image, 1);
+> +}
+> +
+> +void __weak arch_unprotect_bpf_trampoline(void *image, int size)
+> +{
+> +	WARN_ON_ONCE(size > PAGE_SIZE || size <= 0);
+> +	set_memory_nx((long)image, 1);
+> +	set_memory_rw((long)image, 1);
+> +}
+> +
+>   static int __init init_trampolines(void)
+>   {
+>   	int i;
 
