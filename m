@@ -1,69 +1,92 @@
-Return-Path: <bpf+bounces-13176-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13181-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3602F7D5E70
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 00:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 17E397D5E75
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 00:47:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 670CC1C20DB1
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 22:46:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48A731C20D9A
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 22:47:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED5E93CD04;
-	Tue, 24 Oct 2023 22:46:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776803B7BF;
+	Tue, 24 Oct 2023 22:47:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GTx1GB1M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XQ5omFjM"
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06D12D633
-	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 22:46:15 +0000 (UTC)
-Received: from out-199.mta0.migadu.com (out-199.mta0.migadu.com [IPv6:2001:41d0:1004:224b::c7])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B8E6B0
-	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 15:46:13 -0700 (PDT)
-Message-ID: <6e2a62c8-5ec5-601f-1c3d-3eb79d8c8a41@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1698187571;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C5RhZS2ILbCf9SkA7iWts82XtnOI/rfnd/taKDVc1/Y=;
-	b=GTx1GB1MgOzy1MIeKGQTPEnc6Yhbteov2fxBEQ67lZ2dxwjxE6A0rRv69hU61pR42JjMh4
-	WS6wuLxOY804aRfna6zenaKTHsJ9pkK5cuPr6dwXIW5oX2ukCMn0xlTjPeuyVkH1ekqnB+
-	LBckIXqFYJmsUk+7YCdl4N1Ydh6aSy4=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E00752D633
+	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 22:46:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1331EC433C7;
+	Tue, 24 Oct 2023 22:46:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1698187619;
+	bh=W/noW4qsXFizQrutL2uPhzSsE/kupdIpomu1G4TLw+Q=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=XQ5omFjMAgTKNfXnenkxByk/H5IaJiyzbGtX+ToJUTsihHmcDG3pgBrNtdCNkXySl
+	 9kptHuWdj/Df82U8an4lci3e0opwXaVc5lzT4ILKhQVR599S3haAKhHKk9IMk9NzEm
+	 kQfd5AU6Vc0oi1xQJFLld21G6JN7jpcc2q/bGn6yyaGfvYh0Aq5MN8HNpafyfVamLR
+	 arlDfXocOnQYQ/eR7ypmW5gmjo7HEJ8j3HCV2R90BIoGelf/9Svsx5mNYYolMSif/G
+	 x+CHeLgvb3x938cga8PqPAxVbU3M35J4w7nSPRPs3dg8mfNpu/AyUsiy/RW3yNjdVb
+	 egHNtMDfmRR4A==
+From: Song Liu <song@kernel.org>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@kernel.org,
+	kernel-team@meta.com,
+	bjorn@kernel.org,
+	xukuohai@huawei.com,
+	pulehui@huawei.com,
+	iii@linux.ibm.com,
+	jolsa@kernel.org,
+	Song Liu <song@kernel.org>
+Subject: [PATCH v5 bpf-next 4/7] bpf, x86: Adjust arch_prepare_bpf_trampoline return value
 Date: Tue, 24 Oct 2023 15:45:58 -0700
+Message-Id: <20231024224601.2292927-5-song@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231024224601.2292927-1-song@kernel.org>
+References: <20231024224601.2292927-1-song@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 0/7] Add bpf programmable net device
-Content-Language: en-US
-To: Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org, razor@blackwall.org, ast@kernel.org,
- andrii@kernel.org, john.fastabend@gmail.com, sdf@google.com,
- toke@kernel.org, kuba@kernel.org, andrew@lunn.ch
-References: <20231024214904.29825-1-daniel@iogearbox.net>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20231024214904.29825-1-daniel@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 10/24/23 2:48 PM, Daniel Borkmann wrote:
-> This work adds a BPF programmable device which can operate in L3 or L2
-> mode where the BPF program is part of the xmit routine. It's program
-> management is done via bpf_mprog and it comes with BPF link support.
-> For details see patch 1 and following. Thanks!
+x86's implementation of arch_prepare_bpf_trampoline() requires
+BPF_INSN_SAFETY buffer space between end of program and image_end. OTOH,
+the return value does not include BPF_INSN_SAFETY. This doesn't cause any
+real issue at the moment. However, "image" of size retval is not enough for
+arch_prepare_bpf_trampoline(). This will cause confusion when we introduce
+a new helper arch_bpf_trampoline_size(). To avoid future confusion, adjust
+the return value to include BPF_INSN_SAFETY.
 
-Thanks for the work on this. We have been testing the earlier version in a 
-production service and we see at least 3% cpu win when comparing with veth.
+Signed-off-by: Song Liu <song@kernel.org>
+Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ arch/x86/net/bpf_jit_comp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 8c10d9abc239..5f7528cac344 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -2671,7 +2671,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 		ret = -EFAULT;
+ 		goto cleanup;
+ 	}
+-	ret = prog - (u8 *)image;
++	ret = prog - (u8 *)image + BPF_INSN_SAFETY;
+ 
+ cleanup:
+ 	kfree(branches);
+-- 
+2.34.1
 
 
