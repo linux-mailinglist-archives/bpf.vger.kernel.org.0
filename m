@@ -1,250 +1,375 @@
-Return-Path: <bpf+bounces-13157-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13158-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B20B57D5C4B
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 22:19:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C03C97D5C9E
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 22:52:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67E11281AFC
-	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 20:19:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE7561C20CAD
+	for <lists+bpf@lfdr.de>; Tue, 24 Oct 2023 20:52:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E1143E47A;
-	Tue, 24 Oct 2023 20:19:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6E439940;
+	Tue, 24 Oct 2023 20:52:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ic/9UaJl"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2IGGYXkm"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 169563E01E
-	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 20:19:41 +0000 (UTC)
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AFE8D7A
-	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 13:19:40 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1ca3a54d2c4so40919645ad.3
-        for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 13:19:40 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAAEC79D6
+	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 20:52:41 +0000 (UTC)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E5E10D4
+	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 13:52:36 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40837124e1cso27215e9.0
+        for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 13:52:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698178779; x=1698783579; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3K2T1S1+YZpUdmcQvQ+gGi3HocS0qGhCik3vUdjcGiI=;
-        b=ic/9UaJlyGsjkw/dLcW8PKOW74tfP+uKJeEIixbtJS+xHfNRnU2iN6Ep1ifHvc4WWs
-         om9gK8IUoA7rsqk1vR3U1eprOFZArUVMoy0R+mtG87bylCvqjw3zewEl4WbKQ9GWNzJg
-         U58iGlivqRrizTLy+C8x4Gho8kzrlK2e5gTy8NQY8pJlopbIuoMX1VZQwhKPLfaxqk1d
-         riXLULk5G0mqzBSIyTo7R2IA5uAvAxybXZfJvUfjp2kUqbNmMaBeh8RnJZzG4Yc8hyP9
-         zxdiDlX/rrPAUt0UzCnwVzbWXSTGHZVcj20izLMMPyluKwWt9dIkQOk3t29VsPgMFc0P
-         +H2g==
+        d=google.com; s=20230601; t=1698180755; x=1698785555; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uc+eG35bw1iGZpwNNHM4lO0BDe5utnOWKic0Qw9r840=;
+        b=2IGGYXkmwtc7wPMOSEQx9yblKO74epuBGdRk3+sXBxQeKp/zA/6F5mFxe59v8i3Vwu
+         C8JZYgvovm6n/32T1nROm04br6J5pSE6CgiS3q7nDPPEFaitp4l17G2A2oE47vPej/9o
+         bt3M19NHdKUG2UqgS6FcWAiNqrmpC882vlQXTf4HeT6OnjjkCepWguR76nC5UCxgsM+8
+         M4ZJ81wLwdKHm68ip7uVrQAoyGyhobzaim5rNdHesRMVPlwTsmHCqBsp72bsKvXdIphp
+         pwVqLaJk0qVmamQFKxprUkXMi/N+LQ0YW+jC+4NHtEjDFIp/o87n9DB6cUJ2ponnY39h
+         DcRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698178779; x=1698783579;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3K2T1S1+YZpUdmcQvQ+gGi3HocS0qGhCik3vUdjcGiI=;
-        b=Yu3liTreB5qrHCAzFi2w2OR3a4YgzL5y0hMmJpxZGmwHEe90hUFKQAR4wGbY0ytjg0
-         18/O4SXT0QmOa/TrbjH8RXBKK3VKsrzcRt8gpmwmy25Do5jZHpZHBiI+UA02iyibZ1eP
-         PLH+hcUlK1+7w7aEK0uc8lfT7dXgxLXTiiDUNKQzdfXkBtZAad8NMz3w7CWmLH7A+IzO
-         xZ2WtzTt9ASfPbCkJP4Fllwc3YbNvQaFcx3eB58ZtE+dpu/iDE+8jQ9rmwkzsoxfGAWj
-         M3C/XT5utJ6Nkz2H5bCMioKrPh0RYB3SP08fZEVpOwGfu3x++TMYtigdgGQpI+tzACYE
-         8iXQ==
-X-Gm-Message-State: AOJu0YzwmXq7RwGWO5M0Df+RyuWN199VDEkdvsum+O55lSNXSSscwJK1
-	k/lHS4p7qs/BP5mN0Uaj4LUSgw8H0SKfAA==
-X-Google-Smtp-Source: AGHT+IEesXVpv7VW7fsu9te30XvX6ugSB1QQ4YIsMj+I5BW7fZdRPLf7ba7bCYCLyu9D521rzlVHUg==
-X-Received: by 2002:a17:903:2846:b0:1c9:cc88:5029 with SMTP id kq6-20020a170903284600b001c9cc885029mr12715628plb.32.1698178778874;
-        Tue, 24 Oct 2023 13:19:38 -0700 (PDT)
-Received: from surya.localdomain ([2600:1700:3ec2:2011:3ef3:bbdb:b46b:4676])
-        by smtp.gmail.com with ESMTPSA id x4-20020a170902ec8400b001c74df14e6fsm7717872plg.284.2023.10.24.13.19.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 13:19:38 -0700 (PDT)
-From: Manu Bretelle <chantr4@gmail.com>
-To: bpf@vger.kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mykolal@fb.com,
-	shuah@kernel.org
-Cc: Manu Bretelle <chantr4@gmail.com>
-Subject: [PATCH bpf-next] selftests/bpf: umount children of TDIR in test_bpffs
-Date: Tue, 24 Oct 2023 13:18:52 -0700
-Message-Id: <20231024201852.1512720-1-chantr4@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        d=1e100.net; s=20230601; t=1698180755; x=1698785555;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uc+eG35bw1iGZpwNNHM4lO0BDe5utnOWKic0Qw9r840=;
+        b=COgVeHLt0u5rBT8EIJkEVLpTy6VEblbc1nsdYK8m2g9oYT4OqeTVSKHyH0q7wUuLhY
+         XYjmkub4K72UyhGrBiuECgGC7V7WJR44NDDk9HMnUfB4myGE5Od5xE8N3peJKeVtAhjL
+         DVCZ2J5VfcUyZuRSzaODf6KAy41qqK1w6JPkSAG6lnw4yrwYxc6L6wZ3e4Y6Ne6+0S7M
+         YWDuklS2BfTOH6+AaP8dvCUgKJVlzd6x8IqCNESnPz+WFEwUKpvEeJhKB7ddyV+Tw5np
+         FflWHrupC6ft4TW2xpJkDNRVdhgyVEJUm88jaN/rMU+FQAfrjWoxNtvkYx6AiYdBIXOM
+         2aXQ==
+X-Gm-Message-State: AOJu0Yzia4FuG66BGZWiS0CIFfw1LZi/SwZ1AthRSFgDyN2bTo/tZTmW
+	ZHoXcIPZMjAQ8qomTa7EAsx01NGkXjLdiK1stQgEnQ==
+X-Google-Smtp-Source: AGHT+IETMDtk6wyzOKg0bJiP64pef7TGydfCj428yOrlmahhZTy+ZQFoPtC2M+gLd0x4a8TD8TJezhZ/hQXskFR1SjI=
+X-Received: by 2002:a05:600c:4f02:b0:404:74f8:f47c with SMTP id
+ l2-20020a05600c4f0200b0040474f8f47cmr8525wmq.5.1698180754478; Tue, 24 Oct
+ 2023 13:52:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231012062359.1616786-1-irogers@google.com> <20231012062359.1616786-10-irogers@google.com>
+ <CAM9d7cih9+DCKzVXBFTMUfjjY6ZX-yrj3CEM+Q3tjTNRYmQ=Yw@mail.gmail.com>
+In-Reply-To: <CAM9d7cih9+DCKzVXBFTMUfjjY6ZX-yrj3CEM+Q3tjTNRYmQ=Yw@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 24 Oct 2023 13:52:22 -0700
+Message-ID: <CAP-5=fXzpDbzoL0CVeB8ewv37MNUYyXZahgJZQ=qxRh882jozw@mail.gmail.com>
+Subject: Re: [PATCH v2 09/13] perf mem_info: Add and use map_symbol__exit and addr_map_symbol__exit
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Nick Terrell <terrelln@fb.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Song Liu <song@kernel.org>, 
+	Sandipan Das <sandipan.das@amd.com>, Anshuman Khandual <anshuman.khandual@arm.com>, 
+	James Clark <james.clark@arm.com>, Liam Howlett <liam.howlett@oracle.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Leo Yan <leo.yan@linaro.org>, 
+	German Gomez <german.gomez@arm.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
+	Artem Savkov <asavkov@redhat.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Currently this tests tries to umount /sys/kernel/debug (TDIR) but the
-system it is running on may have mounts below.
+On Wed, Oct 18, 2023 at 4:20=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> On Wed, Oct 11, 2023 at 11:24=E2=80=AFPM Ian Rogers <irogers@google.com> =
+wrote:
+> >
+> > Fix leak where mem_info__put wouldn't release the maps/map as used by
+> > perf mem. Add exit functions and use elsewhere that the maps and map
+> > are released.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/util/Build        |  1 +
+> >  tools/perf/util/callchain.c  | 15 +++++----------
+> >  tools/perf/util/hist.c       |  6 ++----
+> >  tools/perf/util/machine.c    |  6 ++----
+> >  tools/perf/util/map_symbol.c | 15 +++++++++++++++
+> >  tools/perf/util/map_symbol.h |  4 ++++
+> >  tools/perf/util/symbol.c     |  5 ++++-
+> >  7 files changed, 33 insertions(+), 19 deletions(-)
+> >  create mode 100644 tools/perf/util/map_symbol.c
+> >
+> > diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+> > index 0ea5a9d368d4..96058f949ec9 100644
+> > --- a/tools/perf/util/Build
+> > +++ b/tools/perf/util/Build
+> > @@ -49,6 +49,7 @@ perf-y +=3D dso.o
+> >  perf-y +=3D dsos.o
+> >  perf-y +=3D symbol.o
+> >  perf-y +=3D symbol_fprintf.o
+> > +perf-y +=3D map_symbol.o
+> >  perf-y +=3D color.o
+> >  perf-y +=3D color_config.o
+> >  perf-y +=3D metricgroup.o
+> > diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
+> > index 0a7919c2af91..02881d5b822c 100644
+> > --- a/tools/perf/util/callchain.c
+> > +++ b/tools/perf/util/callchain.c
+> > @@ -1496,16 +1496,14 @@ static void free_callchain_node(struct callchai=
+n_node *node)
+> >
+> >         list_for_each_entry_safe(list, tmp, &node->parent_val, list) {
+> >                 list_del_init(&list->list);
+> > -               map__zput(list->ms.map);
+> > -               maps__zput(list->ms.maps);
+> > +               map_symbol__exit(&list->ms);
+> >                 zfree(&list->brtype_stat);
+> >                 free(list);
+> >         }
+> >
+> >         list_for_each_entry_safe(list, tmp, &node->val, list) {
+> >                 list_del_init(&list->list);
+> > -               map__zput(list->ms.map);
+> > -               maps__zput(list->ms.maps);
+> > +               map_symbol__exit(&list->ms);
+> >                 zfree(&list->brtype_stat);
+> >                 free(list);
+> >         }
+> > @@ -1591,8 +1589,7 @@ int callchain_node__make_parent_list(struct callc=
+hain_node *node)
+> >  out:
+> >         list_for_each_entry_safe(chain, new, &head, list) {
+> >                 list_del_init(&chain->list);
+> > -               map__zput(chain->ms.map);
+> > -               maps__zput(chain->ms.maps);
+> > +               map_symbol__exit(&chain->ms);
+> >                 zfree(&chain->brtype_stat);
+> >                 free(chain);
+> >         }
+> > @@ -1676,10 +1673,8 @@ void callchain_cursor_reset(struct callchain_cur=
+sor *cursor)
+> >         cursor->nr =3D 0;
+> >         cursor->last =3D &cursor->first;
+> >
+> > -       for (node =3D cursor->first; node !=3D NULL; node =3D node->nex=
+t) {
+> > -               map__zput(node->ms.map);
+> > -               maps__zput(node->ms.maps);
+> > -       }
+> > +       for (node =3D cursor->first; node !=3D NULL; node =3D node->nex=
+t)
+> > +               map_symbol__exit(&node->ms);
+> >  }
+> >
+> >  void callchain_param_setup(u64 sample_type, const char *arch)
+> > diff --git a/tools/perf/util/hist.c b/tools/perf/util/hist.c
+> > index ac8c0ef48a7f..d62693b8fad8 100644
+> > --- a/tools/perf/util/hist.c
+> > +++ b/tools/perf/util/hist.c
+> > @@ -524,8 +524,7 @@ static int hist_entry__init(struct hist_entry *he,
+> >                 map__put(he->mem_info->daddr.ms.map);
+> >         }
+> >  err:
+> > -       maps__zput(he->ms.maps);
+> > -       map__zput(he->ms.map);
+> > +       map_symbol__exit(&he->ms);
+> >         zfree(&he->stat_acc);
+> >         return -ENOMEM;
+> >  }
+> > @@ -1317,8 +1316,7 @@ void hist_entry__delete(struct hist_entry *he)
+> >         struct hist_entry_ops *ops =3D he->ops;
+> >
+> >         thread__zput(he->thread);
+> > -       maps__zput(he->ms.maps);
+> > -       map__zput(he->ms.map);
+> > +       map_symbol__exit(&he->ms);
+> >
+> >         if (he->branch_info) {
+> >                 map__zput(he->branch_info->from.ms.map);
+>
+> What about he->branch_info and he->mem_info ?
+>
+> Also I think we can use it in hists__account_cycles() too.
 
-For example, danobi/vmtest [0] VMs have
-    mount -t tracefs tracefs /sys/kernel/debug/tracing
-as part of their init.
+Thanks, I addressed the ones I could find. Running perf mem report I still =
+see:
 
-This change list mounts and will umount any mounts below TDIR before
-umounting TDIR itself.
+=3D=3D2948587=3D=3DERROR: LeakSanitizer: detected memory leaks
 
-Note that it is not umounting recursively, so in the case of a sub-mount
-of TDIR  having another sub-mount, this will fail as mtab is ordered.
+Direct leak of 1296 byte(s) in 162 object(s) allocated from:
+    #0 0x7f2a018d85bf in __interceptor_malloc
+../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:69
+    #1 0x556104500e47 in map__get util/map.h:180
+    #2 0x55610450cd6d in ip__resolve_data util/machine.c:2260
+    #3 0x55610450d022 in sample__resolve_mem util/machine.c:2275
+    #4 0x55610459dc73 in iter_prepare_mem_entry util/hist.c:824
+    #5 0x5561045a0175 in hist_entry_iter__add util/hist.c:1238
+    #6 0x5561042d8e8e in process_sample_event tools/perf/builtin-report.c:3=
+32
+    #7 0x556104526a37 in evlist__deliver_sample util/session.c:1518
+    #8 0x556104526d18 in machines__deliver_event util/session.c:1557
+    #9 0x556104527942 in perf_session__deliver_event util/session.c:1639
+    #10 0x55610451d576 in ordered_events__deliver_event util/session.c:188
+    #11 0x556104536b6a in do_flush util/ordered-events.c:245
+    #12 0x5561045372a8 in __ordered_events__flush util/ordered-events.c:324
+    #13 0x556104537544 in ordered_events__flush util/ordered-events.c:342
+    #14 0x5561045240b0 in perf_event__process_finished_round util/session.c=
+:1080
+    #15 0x556104527fd5 in perf_session__process_user_event util/session.c:1=
+692
+    #16 0x556104529396 in perf_session__process_event util/session.c:1861
+    #17 0x55610452cf8c in process_simple util/session.c:2436
+    #18 0x55610452c69b in reader__read_event util/session.c:2365
+    #19 0x55610452cb36 in reader__process_events util/session.c:2414
+    #20 0x55610452d467 in __perf_session__process_events util/session.c:246=
+1
+    #21 0x55610452ec52 in perf_session__process_events util/session.c:2627
+    #22 0x5561042dd613 in __cmd_report tools/perf/builtin-report.c:992
+    #23 0x5561042e7ac7 in cmd_report tools/perf/builtin-report.c:1711
+    #24 0x556104343967 in report_events tools/perf/builtin-mem.c:374
+    #25 0x556104345278 in cmd_mem tools/perf/builtin-mem.c:516
+    #26 0x55610441848d in run_builtin tools/perf/perf.c:322
+    #27 0x5561044189f9 in handle_internal_command tools/perf/perf.c:375
+    #28 0x556104418dc1 in run_argv tools/perf/perf.c:419
+    #29 0x556104419329 in main tools/perf/perf.c:535
 
-Test:
+Direct leak of 1296 byte(s) in 162 object(s) allocated from:
+    #0 0x7f2a018d85bf in __interceptor_malloc
+../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:69
+    #1 0x556104500e47 in map__get util/map.h:180
+    #2 0x55610450c97e in ip__resolve_ams util/machine.c:2239
+    #3 0x55610450cf1b in sample__resolve_mem util/machine.c:2274
+    #4 0x55610459dc73 in iter_prepare_mem_entry util/hist.c:824
+    #5 0x5561045a0175 in hist_entry_iter__add util/hist.c:1238
+    #6 0x5561042d8e8e in process_sample_event tools/perf/builtin-report.c:3=
+32
+    #7 0x556104526a37 in evlist__deliver_sample util/session.c:1518
+    #8 0x556104526d18 in machines__deliver_event util/session.c:1557
+    #9 0x556104527942 in perf_session__deliver_event util/session.c:1639
+    #10 0x55610451d576 in ordered_events__deliver_event util/session.c:188
+    #11 0x556104536b6a in do_flush util/ordered-events.c:245
+    #12 0x5561045372a8 in __ordered_events__flush util/ordered-events.c:324
+    #13 0x556104537544 in ordered_events__flush util/ordered-events.c:342
+    #14 0x5561045240b0 in perf_event__process_finished_round util/session.c=
+:1080
+    #15 0x556104527fd5 in perf_session__process_user_event util/session.c:1=
+692
+    #16 0x556104529396 in perf_session__process_event util/session.c:1861
+    #17 0x55610452cf8c in process_simple util/session.c:2436
+    #18 0x55610452c69b in reader__read_event util/session.c:2365
+    #19 0x55610452cb36 in reader__process_events util/session.c:2414
+    #20 0x55610452d467 in __perf_session__process_events util/session.c:246=
+1
+    #21 0x55610452ec52 in perf_session__process_events util/session.c:2627
+    #22 0x5561042dd613 in __cmd_report tools/perf/builtin-report.c:992
+    #23 0x5561042e7ac7 in cmd_report tools/perf/builtin-report.c:1711
+    #24 0x556104343967 in report_events tools/perf/builtin-mem.c:374
+    #25 0x556104345278 in cmd_mem tools/perf/builtin-mem.c:516
+    #26 0x55610441848d in run_builtin tools/perf/perf.c:322
+    #27 0x5561044189f9 in handle_internal_command tools/perf/perf.c:375
+    #28 0x556104418dc1 in run_argv tools/perf/perf.c:419
+    #29 0x556104419329 in main tools/perf/perf.c:535
 
-Originally:
+Which looks like iter->priv was freed without puts. The use of void*s
+and the general layout of the histogram code I find confusing. It
+would be nice to get this resolved but I wasn't able to do it in v3.
 
-    $ vmtest -k $KERNEL_REPO/arch/x86_64/boot/bzImage "./test_progs -vv -a test_bpffs"
-    => bzImage
-    ===> Booting
-    ===> Setting up VM
-    ===> Running command
-    [    2.138818] bpf_testmod: loading out-of-tree module taints kernel.
-    [    2.140913] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
-    bpf_testmod.ko is already unloaded.
-    Loading bpf_testmod.ko...
-    Successfully loaded bpf_testmod.ko.
-    test_test_bpffs:PASS:clone 0 nsec
-    fn:PASS:unshare 0 nsec
-    fn:PASS:mount / 0 nsec
-    fn:FAIL:umount /sys/kernel/debug unexpected error: -1 (errno 16)
-    bpf_testmod.ko is already unloaded.
-    Loading bpf_testmod.ko...
-    Successfully loaded bpf_testmod.ko.
-    test_test_bpffs:PASS:clone 0 nsec
-    test_test_bpffs:PASS:waitpid 0 nsec
-    test_test_bpffs:FAIL:bpffs test  failed 255#282     test_bpffs:FAIL
-    Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
-    Successfully unloaded bpf_testmod.ko.
-    Command failed with exit code: 1
+Thanks,
+Ian
 
-After this change:
-
-    $ vmtest -k $KERNEL_REPO/arch/x86_64/boot/bzImage "./test_progs -vv -a test_bpffs"
-    => bzImage
-    ===> Booting
-    ===> Setting up VM
-    ===> Running command
-    [    2.035210] bpf_testmod: loading out-of-tree module taints kernel.
-    [    2.036510] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
-    bpf_testmod.ko is already unloaded.
-    Loading bpf_testmod.ko...
-    Successfully loaded bpf_testmod.ko.
-    test_test_bpffs:PASS:clone 0 nsec
-    fn:PASS:unshare 0 nsec
-    fn:PASS:mount / 0 nsec
-    fn:PASS:accessing /etc/mtab 0 nsec
-    fn:PASS:umount /sys/kernel/debug/tracing 0 nsec
-    fn:PASS:umount /sys/kernel/debug 0 nsec
-    fn:PASS:mount tmpfs 0 nsec
-    fn:PASS:mkdir /sys/kernel/debug/fs1 0 nsec
-    fn:PASS:mkdir /sys/kernel/debug/fs2 0 nsec
-    fn:PASS:mount bpffs /sys/kernel/debug/fs1 0 nsec
-    fn:PASS:mount bpffs /sys/kernel/debug/fs2 0 nsec
-    fn:PASS:reading /sys/kernel/debug/fs1/maps.debug 0 nsec
-    fn:PASS:reading /sys/kernel/debug/fs2/progs.debug 0 nsec
-    fn:PASS:creating /sys/kernel/debug/fs1/a 0 nsec
-    fn:PASS:creating /sys/kernel/debug/fs1/a/1 0 nsec
-    fn:PASS:creating /sys/kernel/debug/fs1/b 0 nsec
-    fn:PASS:create_map(ARRAY) 0 nsec
-    fn:PASS:pin map 0 nsec
-    fn:PASS:stat(/sys/kernel/debug/fs1/a) 0 nsec
-    fn:PASS:renameat2(/fs1/a, /fs1/b, RENAME_EXCHANGE) 0 nsec
-    fn:PASS:stat(/sys/kernel/debug/fs1/b) 0 nsec
-    fn:PASS:b should have a's inode 0 nsec
-    fn:PASS:access(/sys/kernel/debug/fs1/b/1) 0 nsec
-    fn:PASS:stat(/sys/kernel/debug/fs1/map) 0 nsec
-    fn:PASS:renameat2(/fs1/c, /fs1/b, RENAME_EXCHANGE) 0 nsec
-    fn:PASS:stat(/sys/kernel/debug/fs1/b) 0 nsec
-    fn:PASS:b should have c's inode 0 nsec
-    fn:PASS:access(/sys/kernel/debug/fs1/c/1) 0 nsec
-    fn:PASS:renameat2(RENAME_NOREPLACE) 0 nsec
-    fn:PASS:access(/sys/kernel/debug/fs1/b) 0 nsec
-    bpf_testmod.ko is already unloaded.
-    Loading bpf_testmod.ko...
-    Successfully loaded bpf_testmod.ko.
-    test_test_bpffs:PASS:clone 0 nsec
-    test_test_bpffs:PASS:waitpid 0 nsec
-    test_test_bpffs:PASS:bpffs test  0 nsec
-    #282     test_bpffs:OK
-    Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-    Successfully unloaded bpf_testmod.ko.
-
-[0] https://github.com/danobi/vmtest
-
-Signed-off-by: Manu Bretelle <chantr4@gmail.com>
----
- .../selftests/bpf/prog_tests/test_bpffs.c     | 28 +++++++++++++++++++
- 1 file changed, 28 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-index 214d9f4a94a5..001bf694c269 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-@@ -3,12 +3,14 @@
- #define _GNU_SOURCE
- #include <stdio.h>
- #include <sched.h>
-+#include <mntent.h>
- #include <sys/mount.h>
- #include <sys/stat.h>
- #include <sys/types.h>
- #include <test_progs.h>
- 
- #define TDIR "/sys/kernel/debug"
-+#define MTAB "/etc/mtab"
- 
- static int read_iter(char *file)
- {
-@@ -32,6 +34,8 @@ static int read_iter(char *file)
- 
- static int fn(void)
- {
-+	/* A buffer to store logging messages */
-+	char buf[1024];
- 	struct stat a, b, c;
- 	int err, map;
- 
-@@ -43,6 +47,30 @@ static int fn(void)
- 	if (!ASSERT_OK(err, "mount /"))
- 		goto out;
- 
-+	/* TDIR may have mounts below. unount them first */
-+	FILE *mtab = setmntent(MTAB, "r");
-+
-+	if (!ASSERT_TRUE(mtab != NULL, "accessing " MTAB)) {
-+		err = errno;
-+		goto out;
-+	}
-+
-+	struct mntent *mnt = NULL;
-+
-+	while ((mnt = getmntent(mtab)) != NULL) {
-+		if (strlen(mnt->mnt_dir) > strlen(TDIR) &&
-+			strncmp(TDIR, mnt->mnt_dir, strlen(TDIR)) == 0) {
-+			snprintf(buf, sizeof(buf) - 1, "umount %s", mnt->mnt_dir);
-+			err = umount(mnt->mnt_dir);
-+			if (!ASSERT_OK(err, buf)) {
-+				endmntent(mtab);
-+				goto out;
-+			}
-+		}
-+	}
-+	// Ignore any error here
-+	endmntent(mtab);
-+
- 	err = umount(TDIR);
- 	if (!ASSERT_OK(err, "umount " TDIR))
- 		goto out;
--- 
-2.40.1
-
+> Thanks,
+> Namhyung
+>
+>
+> > diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> > index 8e5085b77c7b..6ca7500e2cf4 100644
+> > --- a/tools/perf/util/machine.c
+> > +++ b/tools/perf/util/machine.c
+> > @@ -2389,8 +2389,7 @@ static int add_callchain_ip(struct thread *thread=
+,
+> >                                       iter_cycles, branch_from, srcline=
+);
+> >  out:
+> >         addr_location__exit(&al);
+> > -       maps__put(ms.maps);
+> > -       map__put(ms.map);
+> > +       map_symbol__exit(&ms);
+> >         return err;
+> >  }
+> >
+> > @@ -3116,8 +3115,7 @@ static int append_inlines(struct callchain_cursor=
+ *cursor, struct map_symbol *ms
+> >                 if (ret !=3D 0)
+> >                         return ret;
+> >         }
+> > -       map__put(ilist_ms.map);
+> > -       maps__put(ilist_ms.maps);
+> > +       map_symbol__exit(&ilist_ms);
+> >
+> >         return ret;
+> >  }
+> > diff --git a/tools/perf/util/map_symbol.c b/tools/perf/util/map_symbol.=
+c
+> > new file mode 100644
+> > index 000000000000..bef5079f2403
+> > --- /dev/null
+> > +++ b/tools/perf/util/map_symbol.c
+> > @@ -0,0 +1,15 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include "map_symbol.h"
+> > +#include "maps.h"
+> > +#include "map.h"
+> > +
+> > +void map_symbol__exit(struct map_symbol *ms)
+> > +{
+> > +       maps__zput(ms->maps);
+> > +       map__zput(ms->map);
+> > +}
+> > +
+> > +void addr_map_symbol__exit(struct addr_map_symbol *ams)
+> > +{
+> > +       map_symbol__exit(&ams->ms);
+> > +}
+> > diff --git a/tools/perf/util/map_symbol.h b/tools/perf/util/map_symbol.=
+h
+> > index e08817b0c30f..72d5ed938ed6 100644
+> > --- a/tools/perf/util/map_symbol.h
+> > +++ b/tools/perf/util/map_symbol.h
+> > @@ -22,4 +22,8 @@ struct addr_map_symbol {
+> >         u64           phys_addr;
+> >         u64           data_page_size;
+> >  };
+> > +
+> > +void map_symbol__exit(struct map_symbol *ms);
+> > +void addr_map_symbol__exit(struct addr_map_symbol *ams);
+> > +
+> >  #endif // __PERF_MAP_SYMBOL
+> > diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+> > index 2740d4457c13..d67a87072eec 100644
+> > --- a/tools/perf/util/symbol.c
+> > +++ b/tools/perf/util/symbol.c
+> > @@ -2790,8 +2790,11 @@ struct mem_info *mem_info__get(struct mem_info *=
+mi)
+> >
+> >  void mem_info__put(struct mem_info *mi)
+> >  {
+> > -       if (mi && refcount_dec_and_test(&mi->refcnt))
+> > +       if (mi && refcount_dec_and_test(&mi->refcnt)) {
+> > +               addr_map_symbol__exit(&mi->iaddr);
+> > +               addr_map_symbol__exit(&mi->daddr);
+> >                 free(mi);
+> > +       }
+> >  }
+> >
+> >  struct mem_info *mem_info__new(void)
+> > --
+> > 2.42.0.609.gbb76f46606-goog
+> >
 
