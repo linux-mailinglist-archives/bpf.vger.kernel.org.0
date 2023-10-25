@@ -1,109 +1,125 @@
-Return-Path: <bpf+bounces-13212-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13213-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B33647D618C
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 08:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD7257D63A7
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 09:42:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4C6D1C20DE3
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 06:19:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0932E1C20E32
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 07:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59BAE156CC;
-	Wed, 25 Oct 2023 06:19:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E981643A;
+	Wed, 25 Oct 2023 07:42:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="esViBVOp"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WWvHFqUT"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77915154B6
-	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 06:19:40 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8367BCC
-	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 23:19:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1698214778;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0cOScpsY58vvdNy2vwFDL1fZWsJqXbmzD3bextbHu20=;
-	b=esViBVOp0vPJDbAKYQd1hpGza85B2npnGbKByvhg2OepwkhfJaOnTGEJIZ7x/D2jra9Q8K
-	D41CbjrA2JrPRwmnXEENZmco7dh4/mf17UyqGrCnUXzmglsziXyHiGQ0sMWyWs4AzrTnCE
-	TGWs8lJMkbGg90LiCX6MbtlRiytG0AU=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-240-WaN8A2LnPg6hQAx9AD-Icw-1; Wed,
- 25 Oct 2023 02:19:27 -0400
-X-MC-Unique: WaN8A2LnPg6hQAx9AD-Icw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 637203C0FC9F;
-	Wed, 25 Oct 2023 06:19:26 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.45.224.62])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 8A6F01121319;
-	Wed, 25 Oct 2023 06:19:24 +0000 (UTC)
-From: Viktor Malik <vmalik@redhat.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Donald Zickus <dzickus@redhat.com>,
-	Viktor Malik <vmalik@redhat.com>
-Subject: [PATCH bpf-next 3/3] samples/bpf: Allow building with custom bpftool
-Date: Wed, 25 Oct 2023 08:19:14 +0200
-Message-ID: <bd746954ac271b02468d8d951ff9f11e655d485b.1698213811.git.vmalik@redhat.com>
-In-Reply-To: <cover.1698213811.git.vmalik@redhat.com>
-References: <cover.1698213811.git.vmalik@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C7211BDC8
+	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 07:42:09 +0000 (UTC)
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB80A526D
+	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 00:41:00 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-32d9cb5e0fcso3738852f8f.0
+        for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 00:41:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698219655; x=1698824455; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=69I3s/9Uyb5eS2uNRw6CpHXyuNuJD6rrAzv0snc5CzI=;
+        b=WWvHFqUT0Vmeu4izhNGUUBvQ60nJpHoRpfsDCZIikE+laYig3xQawzglEsKqYjWSYo
+         Xow1v4wD4XGBEtjGcqf8xgNJNTaaY80qJ5nA1G9mwO5lb8LR38mHjlx2TjxaM6LzMnWf
+         dmRrRKyujM3Da77Xhp+/KhKlr0FVXepevPGr8AONFsgjAgzHnpZ+YSnwKf/9bLBgwmr1
+         5zGhVZxyumNCvB43xu11L9LIEmdAsHDC9T8my4yQH0olJJqqHLZ6miz5zr5w9RgvvCmd
+         KUYIcZcYDjIr7asTk5SsFm0LKnHfCEhPL/IL7z0q/dknbc5Hm2Fpkf46a+cuyg8paG4m
+         y0lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698219655; x=1698824455;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=69I3s/9Uyb5eS2uNRw6CpHXyuNuJD6rrAzv0snc5CzI=;
+        b=xBa282ESps5bojBdcjL3jPnrHlVdzSN0DzhY0GgvjIAmNBztbWAKAFkgwPXiAnycV7
+         ECDKKft9WF7Zt4T6ZDt1PGgQe43lQPBoE4D3rfzBRBBTCOPpPDxdKxKWkwdwY5vTLJyn
+         22DTRoMT+orqIRTnmDs/R+jaFvq2uvlN/k0o8OPDSzHt6Mc9KSuQ0kkJ3lyXoHRyIw3W
+         Xnewu93sod6aDZ/OyQguHuOvqXeHn878RI0DPOjom0QYSsZcZat8LYpkySfnnAO4L7bU
+         EdiW/50lKuxCcspx7pRHpUNuVz6DJyqUVyMS9iYrPfamFbBdqeB+meAy9RUxmm/Esj9Y
+         LdGA==
+X-Gm-Message-State: AOJu0YzKU9GNiezTak9DpCujAoHJm5wbYzIelAXe8dR9RQIJN5pXmMQF
+	vZ1lVJ1jBcapUfusMsKW3RQzAXCmJTUxnG2YjJk=
+X-Google-Smtp-Source: AGHT+IE/BhV7weAPzU0QQHLWkVCMXpkPFKk2kXgzuDwZPBFc9i7R1kndzUbyqRjNnABA0N5Jmfvu+w==
+X-Received: by 2002:a5d:5452:0:b0:32d:ad44:cec1 with SMTP id w18-20020a5d5452000000b0032dad44cec1mr9752078wrv.3.1698219655430;
+        Wed, 25 Oct 2023 00:40:55 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id u3-20020a5d5143000000b003296b488961sm11463923wrt.31.2023.10.25.00.40.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 00:40:55 -0700 (PDT)
+Date: Wed, 25 Oct 2023 10:40:49 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: yan@cloudflare.com
+Cc: bpf@vger.kernel.org
+Subject: [bug report] lwt: Fix return values of BPF xmit ops
+Message-ID: <cd258298-8d8c-453a-bf21-9859b873d379@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-samples/bpf build its own bpftool boostrap to generate vmlinux.h as well
-as some BPF objects. This is a redundant step if bpftool has been
-already built, so update samples/bpf/Makefile such that it accepts a
-path to bpftool passed via the BPFTOOL variable. The approach is
-practically the same as tools/testing/selftests/bpf/Makefile uses.
+Hello Yan Zhai,
 
-Signed-off-by: Viktor Malik <vmalik@redhat.com>
----
- samples/bpf/Makefile | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+The patch 29b22badb7a8: "lwt: Fix return values of BPF xmit ops" from
+Aug 17, 2023 (linux-next), leads to the following Smatch static
+checker warning:
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 378b9f3e9321..933f6c3fe6b0 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -260,8 +260,9 @@ $(LIBBPF): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
- 
- BPFTOOLDIR := $(TOOLS_PATH)/bpf/bpftool
- BPFTOOL_OUTPUT := $(abspath $(BPF_SAMPLES_PATH))/bpftool
--BPFTOOL := $(BPFTOOL_OUTPUT)/bootstrap/bpftool
--$(BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile) | $(BPFTOOL_OUTPUT)
-+DEFAULT_BPFTOOL := $(BPFTOOL_OUTPUT)/bootstrap/bpftool
-+BPFTOOL ?= $(DEFAULT_BPFTOOL)
-+$(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile) | $(BPFTOOL_OUTPUT)
- 	$(MAKE) -C $(BPFTOOLDIR) srctree=$(BPF_SAMPLES_PATH)/../../ 		\
- 		OUTPUT=$(BPFTOOL_OUTPUT)/ bootstrap
- 
--- 
-2.41.0
+	net/core/lwt_bpf.c:131 bpf_input()
+	error: double free of 'skb'
 
+net/core/lwt_bpf.c
+    38  static int run_lwt_bpf(struct sk_buff *skb, struct bpf_lwt_prog *lwt,
+    39                         struct dst_entry *dst, bool can_redirect)
+    40  {
+    41          int ret;
+    42  
+    43          /* Migration disable and BH disable are needed to protect per-cpu
+    44           * redirect_info between BPF prog and skb_do_redirect().
+    45           */
+    46          migrate_disable();
+    47          local_bh_disable();
+    48          bpf_compute_data_pointers(skb);
+    49          ret = bpf_prog_run_save_cb(lwt->prog, skb);
+    50  
+    51          switch (ret) {
+    52          case BPF_OK:
+    53          case BPF_LWT_REROUTE:
+    54                  break;
+    55  
+    56          case BPF_REDIRECT:
+    57                  if (unlikely(!can_redirect)) {
+    58                          pr_warn_once("Illegal redirect return code in prog %s\n",
+    59                                       lwt->name ? : "<unknown>");
+    60                          ret = BPF_OK;
+    61                  } else {
+    62                          skb_reset_mac_header(skb);
+    63                          skb_do_redirect(skb);
+    64                          ret = BPF_REDIRECT;
+
+If skb_do_redirect() returns -EINVAL it means the skb has been freed.
+Originally we preserved error code but now we just return BPF_REDIRECT.
+
+    65                  }
+    66                  break;
+    67  
+    68          case BPF_DROP:
+    69                  kfree_skb(skb);
+    70                  ret = -EPERM;
+    71                  break;
+
+regards,
+dan carpenter
 
