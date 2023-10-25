@@ -1,52 +1,55 @@
-Return-Path: <bpf+bounces-13262-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13263-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 493377D7316
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 20:18:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4043D7D7345
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 20:30:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 796AE1C20E4B
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 18:18:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE58C281276
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 18:30:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE69B30FBE;
-	Wed, 25 Oct 2023 18:18:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FBD12AB5C;
+	Wed, 25 Oct 2023 18:30:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YmFhsto0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s0YbhcG6"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47DF82771A
-	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 18:18:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 930AEC433C8;
-	Wed, 25 Oct 2023 18:18:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B33D6848B
+	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 18:30:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07DDCC433C8;
+	Wed, 25 Oct 2023 18:30:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698257920;
-	bh=+ZEj1XuhMhJev6XOUs0XKi93f2UCPsmTIs8hiy/MUq0=;
+	s=k20201202; t=1698258607;
+	bh=Pf2TZM42jJsqSJj/dZFzMHf2pcaHavWaUTRXsZQunBo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YmFhsto0a5XOvamACnfnGpb4NOgRZEe5+1cDLF5BneZZURjIbJx3X15SWht359zbJ
-	 Nf5bO/9v8XrT4doppUdAVgG1QhduTIpIQZAQqC6k5O5DoAKR5aGRlAakapg4SmPYqc
-	 d3k6RjLMRp5caxQSEGNlyRcDCP7rBvm+NWuDdJOr9b7H0xGQRxGdwZJ2mBtKcK/6Bs
-	 AE5IK78QaPfKF27rg9hLNjjxRFXrAMkuCsfjimKcM4i8i4b4Vf3pbLZ+yfcQllW/3j
-	 kn5CUKlVF1FMVikC+gBLvnjAwYeI7U/vicso7+tA9It88ZoBQcmr4XecFcLSX60JsZ
-	 t3ckiyyKyqKfg==
+	b=s0YbhcG6K8lEeDz5PB5AS5ehwWTgNyQKKzDx2vj62nbXn8IH0Fpxrk2H2QEcAe3OL
+	 e522dVDJdqGAeTMnJBlSAS6QLr8zEJO2viKLApok08xTiAH7hmaIatOpLBHAtvBIVD
+	 4A4NL8+TiWDuX0pRjsUmE4Y4uzMTR1jno9Xl8KRD7sH9ilJm7okuGhTEd2h43KIsLJ
+	 9ETJrnO8/tP2YeBHC/bTigNYZ+eldNQ44tVt/PRHvRdoE+2/AyAnjQ1tv0rpoy5bhO
+	 wWS554Nbp4JrpTfFiosgkPRQ70Cv2JTCu5Fzpvk0D8OdGLJKG4NwnGGISgaIISBYZd
+	 NlTb3/nuB/RGA==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id 494734035D; Wed, 25 Oct 2023 15:18:38 -0300 (-03)
-Date: Wed, 25 Oct 2023 15:18:38 -0300
+	id B08C04035D; Wed, 25 Oct 2023 15:30:04 -0300 (-03)
+Date: Wed, 25 Oct 2023 15:30:04 -0300
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: andrii.nakryiko@gmail.com, jolsa@kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, eddyz87@gmail.com, martin.lau@linux.dev,
-	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-	mykolal@fb.com, bpf@vger.kernel.org
+To: Alan Maguire <alan.maguire@oracle.com>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, ast@kernel.org, daniel@iogearbox.net,
+	eddyz87@gmail.com, martin.lau@linux.dev, song@kernel.org,
+	yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+	sdf@google.com, haoluo@google.com, mykolal@fb.com,
+	bpf@vger.kernel.org
 Subject: Re: [PATCH v4 dwarves 0/5] pahole, btf_encoder: support
  --btf_features
-Message-ID: <ZTlb/inSUnEelTJT@kernel.org>
+Message-ID: <ZTlerFwlAn3AP+o4@kernel.org>
 References: <20231023095726.1179529-1-alan.maguire@oracle.com>
  <ZTlTpYYVoYL0fls7@kernel.org>
+ <ZTlVAtFw7oKaFrvl@kernel.org>
+ <ZTlaoGDkALO2h95p@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -55,43 +58,19 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZTlTpYYVoYL0fls7@kernel.org>
+In-Reply-To: <ZTlaoGDkALO2h95p@kernel.org>
 X-Url: http://acmel.wordpress.com
 
-Em Wed, Oct 25, 2023 at 02:43:02PM -0300, Arnaldo Carvalho de Melo escreveu:
-> $ cp vmlinux.v5.19.0-rc5+ vmlinux.v5.19.0-rc5+.enum64 ; pahole --btf_encode --btf_features=enum64 vmlinux.v5.19.0-rc5+.enum64 
-> $
- 
-> I tried using --btf_encode_detached=file but then couldn't find a way to
-> make 'bpftool btf' to consume detached BTF, it seems that "file" means
-> "ELF file containing BTF" so I copied the original file to then reencode
-> BTF selecting just the enum64 feature, the resulting file continues to
-> have the original DWARF and the BTF using that --btf_features set:
+Em Wed, Oct 25, 2023 at 03:12:49PM -0300, Arnaldo Carvalho de Melo escreveu:
+> But I guess the acks/reviews + my tests are enough to merge this as-is,
+> thanks for your work on this!
 
-This was another symptom of me using a random old bpftool, using
-upstream I get what is expected:
+Ok, its in the 'next' branch so that it can go thru:
 
-$ pahole --btf_encode_detached=vmlinux.v5.19.0-rc5+.enum64 --btf_features=enum64 vmlinux.v5.19.0-rc5+
-$ bpftool btf dump file vmlinux.v5.19.0-rc5+.enum64 format raw | wc -l
-290975
-$ file vmlinux.v5.19.0-rc5+.enum64
-vmlinux.v5.19.0-rc5+.enum64: data
-$
-[acme@quaco pahole]$ bpftool btf dump file vmlinux.v5.19.0-rc5+.enum64 format raw | grep -w ENUM64
-[4266] ENUM64 'perf_event_sample_format' encoding=UNSIGNED size=8 vlen=27
-[5089] ENUM64 '(anon)' encoding=UNSIGNED size=8 vlen=11
-[6727] ENUM64 '(anon)' encoding=SIGNED size=8 vlen=28
-[27943] ENUM64 '(anon)' encoding=UNSIGNED size=8 vlen=3
-[31242] ENUM64 'netdev_priv_flags' encoding=UNSIGNED size=8 vlen=33
-[31438] ENUM64 'perf_callchain_context' encoding=UNSIGNED size=8 vlen=7
-[38853] ENUM64 'hmm_pfn_flags' encoding=UNSIGNED size=8 vlen=7
-[56830] ENUM64 'ib_uverbs_device_cap_flags' encoding=UNSIGNED size=8 vlen=25
-[60295] ENUM64 'blake2b_iv' encoding=UNSIGNED size=8 vlen=8
-[63498] ENUM64 '(anon)' encoding=UNSIGNED size=8 vlen=31
-[93914] ENUM64 '(anon)' encoding=SIGNED size=8 vlen=172
-[acme@quaco pahole]$
+https://github.com/libbpf/libbpf/actions/workflows/pahole.yml
 
-So sorry for the noise about this.
+But the previous days are all failures, probably something else is
+preventing this test from succeeding? Andrii?
 
 - Arnaldo
 
