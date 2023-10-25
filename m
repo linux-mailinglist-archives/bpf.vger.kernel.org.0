@@ -1,62 +1,63 @@
-Return-Path: <bpf+bounces-13214-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13215-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4960E7D6451
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 10:00:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D933A7D6450
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 10:00:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B987B21130
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 08:00:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66DEE281C91
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 08:00:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C05C11C681;
-	Wed, 25 Oct 2023 08:00:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09981C68B;
+	Wed, 25 Oct 2023 08:00:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="S8YGpTrb"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="c63pA3MJ"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8192263CA
-	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 08:00:22 +0000 (UTC)
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C25EDE
-	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 01:00:19 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6b9af7d41d2so4642436b3a.0
-        for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 01:00:19 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C3E71C2BA
+	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 08:00:23 +0000 (UTC)
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5902C10E
+	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 01:00:22 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3b2e72fe47fso3592068b6e.1
+        for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 01:00:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1698220819; x=1698825619; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=K5w2JCxpCxJDgHsk5AvbIbbA8aUN5teyyyczogE8i+0=;
-        b=S8YGpTrbOaUfQJBGWTop+nwr8v8hpHtlUVaILVAy2FBM6oq+PsFOMpLwIvJiSvJFNn
-         or1amWxSkhgFqeU7vtAwQ9S3JMP/una5ZLnhnkHNY7+L1Qv7nMhI9pStDM7LkB0rkLAk
-         c8ydg+yQ4wiHdgCFlVnxaL1fW4qnAZX+Za1H+i8ENIUBLZdRU8NHQtBaWrdkI1Hhd11R
-         UhERWizvDjpdrv/aUy3wJt2QNu+UgDphHWGwPA4TQePJ/JhnAIJPjq9dCBmWTKshDlyv
-         /KkHDjfveeqAY/EmyWqEImoov7kDlW7S9cWrlTE8jkzOdOLanmCRGcu/fehyDlpeGC94
-         b6bg==
+        d=bytedance.com; s=google; t=1698220821; x=1698825621; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=623dJ/e0dl/9VZB/F0AUPvisvbBwnO9eeoKfg40DawY=;
+        b=c63pA3MJG1VO2lYZk8GDp+mZCt1iE8qhQ5+IB54LTPEf0f/k4Sms99qsgZHDegM3U8
+         KTH9mYiN73PzC2cswq1qZnVq9OHwJLgV36A8usJRNvaNQ1Ivm3FcKUCTOH6gEicgtRfa
+         o4pZuOuXs/7lzH6imA8D/J+/jLiw50A1m3856GkumU719qGHD0n4meBCHzYxJFrYwF1B
+         ktkMEuSXuL65oXLgd199xPhdFUdaj5tbVxNj2uorIlTu4xh/p8Sij6xDZCfUFrlA++mV
+         tG+hc5wL/tSA5CSWxyRgZ+NWrfz0AVbiSEcZnbBJ0Ne1ixzeYv2Zn+MnI6SMxexFHZQb
+         sraQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698220819; x=1698825619;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=K5w2JCxpCxJDgHsk5AvbIbbA8aUN5teyyyczogE8i+0=;
-        b=LfJDiUHfeN6tL/G+XNqO+x0w0qZLq+rU4w4i/EdjGmO/mxYq2bwNt1/PjH15GdgEh2
-         EElIjU6qLJVjpzgl1zqodIwjmb6KCdCgErcwBVDXea/CYVeG5PoOXDssTvevbDSbHkxq
-         MYQCq6jmmupwKTdAEe6cpdSK+vW+1f+0TJ9p8QZBTD2vF26Gp99EweAlT0J0nxcLU9Pk
-         FKsQSgSjHqghs5G8HsSfkCNXRhs0mOYFS28n381MdYnp4lFkIZG4TeHYynSekwNCQx18
-         F+24+2FrV0adM/3/w6oQFCt7JcUNoVURDLkdEwyFeAuJXqE3z+B2qbu6Xi6ulG7BLaNS
-         lfmQ==
-X-Gm-Message-State: AOJu0Yy7DTM8rMV6/ZQXZRBRNjE8Xs1YTO8lKCFHJQwpyDCtXA8Avz1r
-	90PA0Ke6ue4THPybZOQe8Tgh6izJ0nUDIwuymtg=
-X-Google-Smtp-Source: AGHT+IEbzjzRZzqdTAncuAKumacZ4avf8DTylv/ZHeF++ePVRlKXmRityQGD3Sx+QpyaaIxOftSkAA==
-X-Received: by 2002:a05:6a20:548e:b0:14d:9bd1:6361 with SMTP id i14-20020a056a20548e00b0014d9bd16361mr5420766pzk.11.1698220818930;
-        Wed, 25 Oct 2023 01:00:18 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698220821; x=1698825621;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=623dJ/e0dl/9VZB/F0AUPvisvbBwnO9eeoKfg40DawY=;
+        b=t4GnpcLZglCTkKR+FdZSEznlb82EUbLFUW+YOYrkKUzDnm9Cf8mXjwHGd8aGyipZMf
+         L3maEWN6VMrcFm8saYZ2f//xqgPxGZonf2cJIRzOa2mytZV2mzwqP/HkqQbSYfMJVZ06
+         bKwaYNY6BSzOybqQNP8UrUqi2Xue5KIFULX+GE/uxBKpDrwQiTMN7aC+DzkOCr2CmtyM
+         /nh4HUIEDbiMInVcyXZCLvDYsEm09K9Nk8FoMpFyazKMREfgH4F2yzz8tPy8WIOZ1R+N
+         tla+XiR7L9R3s4xUtuPJPZUSmRf7IWWrJ+jVA39NnknkJ/vtpHawivqTXxXaFydgVtim
+         GX6g==
+X-Gm-Message-State: AOJu0YxmNczC9wDcc4N7C18F1T4gkxEdv95tcOpQ1ansfHV+G8ua62Qh
+	GCK2UpycVd1FRHgThwH1Wwb5xRUfgq4B1PJYbPg=
+X-Google-Smtp-Source: AGHT+IFNrJ6aGXsfBcfq42K58SlpCq4ESlrfgv2CoCJH4pDIc90B4PFXLHn+X0N/+cKUV52sXWfNgA==
+X-Received: by 2002:a05:6808:3ce:b0:3ae:55e5:43b6 with SMTP id o14-20020a05680803ce00b003ae55e543b6mr13588579oie.48.1698220821013;
+        Wed, 25 Oct 2023 01:00:21 -0700 (PDT)
 Received: from n37-019-243.byted.org ([180.184.51.40])
-        by smtp.gmail.com with ESMTPSA id 23-20020a630f57000000b0059cc2f1b7basm8118187pgp.11.2023.10.25.01.00.17
+        by smtp.gmail.com with ESMTPSA id 23-20020a630f57000000b0059cc2f1b7basm8118187pgp.11.2023.10.25.01.00.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 01:00:18 -0700 (PDT)
+        Wed, 25 Oct 2023 01:00:20 -0700 (PDT)
 From: Chuyi Zhou <zhouchuyi@bytedance.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -64,10 +65,12 @@ Cc: ast@kernel.org,
 	andrii@kernel.org,
 	martin.lau@kernel.org,
 	Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: [PATCH bpf-next v3 0/3] Relax allowlist for open-coded css_task iter
-Date: Wed, 25 Oct 2023 15:59:11 +0800
-Message-Id: <20231025075914.30979-1-zhouchuyi@bytedance.com>
+Subject: [PATCH bpf-next v3 1/3] bpf: Relax allowlist for css_task iter
+Date: Wed, 25 Oct 2023 15:59:12 +0800
+Message-Id: <20231025075914.30979-2-zhouchuyi@bytedance.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20231025075914.30979-1-zhouchuyi@bytedance.com>
+References: <20231025075914.30979-1-zhouchuyi@bytedance.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,44 +79,84 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
-The patchset aims to relax the allowlist for open-coded css_task iter
-suggested by Alexei[1].
+The newly added open-coded css_task iter would try to hold the global
+css_set_lock in bpf_iter_css_task_new, so the bpf side has to be careful in
+where it allows to use this iter. The mainly concern is dead locking on
+css_set_lock. check_css_task_iter_allowlist() in verifier enforced css_task
+can only be used in bpf_lsm hooks and sleepable bpf_iter.
 
-Please see individual patches for more details. And comments are always
-welcome.
+This patch relax the allowlist for css_task iter. Any lsm and any iter
+(even non-sleepable) and any sleepable are safe since they would not hold
+the css_set_lock before entering BPF progs context.
 
-Patch summary:
- * Patch #1: Relax the allowlist and let css_task iter can be used in
-   bpf iters and any sleepable progs.
- * Patch #2: Add a test in cgroup_iters.c which demonstrates how
-   css_task iters can be combined with cgroup iter.
+This patch also fixes the misused BPF_TRACE_ITER in
+check_css_task_iter_allowlist which compared bpf_prog_type with
+bpf_attach_type.
 
-link[1]:https://lore.kernel.org/lkml/CAADnVQKafk_junRyE=-FVAik4hjTRDtThymYGEL8hGTuYoOGpA@mail.gmail.com/
-
+Fixes: 9c66dc94b62ae ("bpf: Introduce css_task open-coded iterator kfuncs")
+Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
 ---
+ kernel/bpf/verifier.c                            | 16 ++++++++++++----
+ .../selftests/bpf/progs/iters_task_failure.c     |  4 ++--
+ 2 files changed, 14 insertions(+), 6 deletions(-)
 
-Changes in v2:
- * Fix the incorrect logic in check_css_task_iter_allowlist. Use
-   expected_attach_type to check whether we are using bpf_iters.
- * Link to v1:https://lore.kernel.org/bpf/20231022154527.229117-1-zhouchuyi@bytedance.com/T/#m946f9cde86b44a13265d9a44c5738a711eb578fd
-Changes in v3:
- * Add a testcase to prove css_task can be used in fentry.s
- * Link to v2:https://lore.kernel.org/bpf/20231024024240.42790-1-zhouchuyi@bytedance.com/T/#m14a97041ff56c2df21bc0149449abd275b73f6a3
-
----
-
-Chuyi Zhou (3):
-  bpf: Relax allowlist for css_task iter
-  selftests/bpf: Add tests for css_task iter combining with cgroup iter
-  selftests/bpf: Add test for using css_task iter in sleepable progs
-
- kernel/bpf/verifier.c                         | 16 ++++++--
- .../selftests/bpf/prog_tests/cgroup_iter.c    | 33 +++++++++++++++
- .../selftests/bpf/progs/iters_css_task.c      | 41 +++++++++++++++++++
- .../selftests/bpf/progs/iters_task_failure.c  | 23 ++++++++++-
- 4 files changed, 107 insertions(+), 6 deletions(-)
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index e9bc5d4a25a1..9243b6ca4854 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -11088,6 +11088,12 @@ static int process_kf_arg_ptr_to_rbtree_node(struct bpf_verifier_env *env,
+ 						  &meta->arg_rbtree_root.field);
+ }
+ 
++/*
++ * css_task iter allowlist is needed to avoid dead locking on css_set_lock.
++ * LSM hooks and iters (both sleepable and non-sleepable) are safe.
++ * Any sleepable progs are also safe since bpf_check_attach_target() enforce
++ * them can only be attached to some specific hook points.
++ */
+ static bool check_css_task_iter_allowlist(struct bpf_verifier_env *env)
+ {
+ 	enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
+@@ -11095,10 +11101,12 @@ static bool check_css_task_iter_allowlist(struct bpf_verifier_env *env)
+ 	switch (prog_type) {
+ 	case BPF_PROG_TYPE_LSM:
+ 		return true;
+-	case BPF_TRACE_ITER:
+-		return env->prog->aux->sleepable;
++	case BPF_PROG_TYPE_TRACING:
++		if (env->prog->expected_attach_type == BPF_TRACE_ITER)
++			return true;
++		fallthrough;
+ 	default:
+-		return false;
++		return env->prog->aux->sleepable;
+ 	}
+ }
+ 
+@@ -11357,7 +11365,7 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+ 		case KF_ARG_PTR_TO_ITER:
+ 			if (meta->func_id == special_kfunc_list[KF_bpf_iter_css_task_new]) {
+ 				if (!check_css_task_iter_allowlist(env)) {
+-					verbose(env, "css_task_iter is only allowed in bpf_lsm and bpf iter-s\n");
++					verbose(env, "css_task_iter is only allowed in bpf_lsm, bpf_iter and sleepable progs\n");
+ 					return -EINVAL;
+ 				}
+ 			}
+diff --git a/tools/testing/selftests/bpf/progs/iters_task_failure.c b/tools/testing/selftests/bpf/progs/iters_task_failure.c
+index c3bf96a67dba..6b1588d70652 100644
+--- a/tools/testing/selftests/bpf/progs/iters_task_failure.c
++++ b/tools/testing/selftests/bpf/progs/iters_task_failure.c
+@@ -84,8 +84,8 @@ int BPF_PROG(iter_css_lock_and_unlock)
+ 	return 0;
+ }
+ 
+-SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
+-__failure __msg("css_task_iter is only allowed in bpf_lsm and bpf iter-s")
++SEC("?fentry/" SYS_PREFIX "sys_getpgid")
++__failure __msg("css_task_iter is only allowed in bpf_lsm, bpf_iter and sleepable progs")
+ int BPF_PROG(iter_css_task_for_each)
+ {
+ 	u64 cg_id = bpf_get_current_cgroup_id();
 -- 
 2.20.1
 
