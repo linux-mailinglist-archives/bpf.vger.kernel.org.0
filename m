@@ -1,40 +1,40 @@
-Return-Path: <bpf+bounces-13261-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13262-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 921CB7D7309
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 20:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 493377D7316
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 20:18:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4ACC1C20E0A
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 18:12:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 796AE1C20E4B
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 18:18:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0AD630FBB;
-	Wed, 25 Oct 2023 18:12:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE69B30FBE;
+	Wed, 25 Oct 2023 18:18:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c/Qd/RrS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YmFhsto0"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07E0030F86
-	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 18:12:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DD9DC433C9;
-	Wed, 25 Oct 2023 18:12:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47DF82771A
+	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 18:18:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 930AEC433C8;
+	Wed, 25 Oct 2023 18:18:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698257571;
-	bh=xY2rrgxU1BMG2PGPODjdrO22ck/Wo1AtLqB6Adj6/Gk=;
+	s=k20201202; t=1698257920;
+	bh=+ZEj1XuhMhJev6XOUs0XKi93f2UCPsmTIs8hiy/MUq0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=c/Qd/RrSvgIhHPdAYFrrOVyTzK5IMFvSOQbXYxmnyK6F53YhT0JOY5xkK63abxW6l
-	 6FdyHEr4jz5onnbNRkgwgwIGWwSuB9WbEHDXf1d5eNQpn/pMfjsC4jz42SfjNXx8Eq
-	 5m3VDkWNb5DpEvxPeY45An4vK0MoYyVDA41ACMfYVxenuSxt838rx1r/vzJLwiN7qo
-	 Vrktz0VEcOYLAkH28sCfPlJdm6M0fhpXtw+blamPDa7G/DBj8CPwAA0rQfKGLO+0Uj
-	 wO3ah7U7UAtbYT4VJtSjag79x/8bXVOnw7lSqvG9vepNu7X0ShWAYTKpJeJQqdzcnc
-	 8c4m2TAy6OKQg==
+	b=YmFhsto0a5XOvamACnfnGpb4NOgRZEe5+1cDLF5BneZZURjIbJx3X15SWht359zbJ
+	 Nf5bO/9v8XrT4doppUdAVgG1QhduTIpIQZAQqC6k5O5DoAKR5aGRlAakapg4SmPYqc
+	 d3k6RjLMRp5caxQSEGNlyRcDCP7rBvm+NWuDdJOr9b7H0xGQRxGdwZJ2mBtKcK/6Bs
+	 AE5IK78QaPfKF27rg9hLNjjxRFXrAMkuCsfjimKcM4i8i4b4Vf3pbLZ+yfcQllW/3j
+	 kn5CUKlVF1FMVikC+gBLvnjAwYeI7U/vicso7+tA9It88ZoBQcmr4XecFcLSX60JsZ
+	 t3ckiyyKyqKfg==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id F0D424035D; Wed, 25 Oct 2023 15:12:48 -0300 (-03)
-Date: Wed, 25 Oct 2023 15:12:48 -0300
+	id 494734035D; Wed, 25 Oct 2023 15:18:38 -0300 (-03)
+Date: Wed, 25 Oct 2023 15:18:38 -0300
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
 To: Alan Maguire <alan.maguire@oracle.com>
 Cc: andrii.nakryiko@gmail.com, jolsa@kernel.org, ast@kernel.org,
@@ -44,10 +44,9 @@ Cc: andrii.nakryiko@gmail.com, jolsa@kernel.org, ast@kernel.org,
 	mykolal@fb.com, bpf@vger.kernel.org
 Subject: Re: [PATCH v4 dwarves 0/5] pahole, btf_encoder: support
  --btf_features
-Message-ID: <ZTlaoGDkALO2h95p@kernel.org>
+Message-ID: <ZTlb/inSUnEelTJT@kernel.org>
 References: <20231023095726.1179529-1-alan.maguire@oracle.com>
  <ZTlTpYYVoYL0fls7@kernel.org>
- <ZTlVAtFw7oKaFrvl@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -56,117 +55,43 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZTlVAtFw7oKaFrvl@kernel.org>
+In-Reply-To: <ZTlTpYYVoYL0fls7@kernel.org>
 X-Url: http://acmel.wordpress.com
 
-Em Wed, Oct 25, 2023 at 02:48:50PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Wed, Oct 25, 2023 at 02:43:02PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > But 'bpftool bpf' doesn't like it:
->  
-> >   $ bpftool btf dump file vmlinux.v5.19.0-rc5+.enum64 raw
-> >   Error: failed to load BTF from vmlinux.v5.19.0-rc5+.enum64: Invalid argument
-> >   $
->  
-> > But it doesn't like it even when not using --btf_features :-\
-> > 
-> >   $ cp vmlinux.v5.19.0-rc5+ vmlinux.v5.19.0-rc5+.default_btf_encode ; pahole --btf_encode vmlinux.v5.19.0-rc5+.default_btf_encode
-> >   $ bpftool btf dump file vmlinux.v5.19.0-rc5+.default_btf_encode raw | wc -l
-> >   Error: failed to load BTF from vmlinux.v5.19.0-rc5+.default_btf_encode: Invalid argument
-> >   0
-> >   $ 
->  
-> > I'll try to root cause this problem...
-> 
-> Random old bpftool on this notebook was the cause, nevermind, I'm back
-> testing this, sorry for the noise :-)
+Em Wed, Oct 25, 2023 at 02:43:02PM -0300, Arnaldo Carvalho de Melo escreveu:
+> $ cp vmlinux.v5.19.0-rc5+ vmlinux.v5.19.0-rc5+.enum64 ; pahole --btf_encode --btf_features=enum64 vmlinux.v5.19.0-rc5+.enum64 
+> $
+ 
+> I tried using --btf_encode_detached=file but then couldn't find a way to
+> make 'bpftool btf' to consume detached BTF, it seems that "file" means
+> "ELF file containing BTF" so I copied the original file to then reencode
+> BTF selecting just the enum64 feature, the resulting file continues to
+> have the original DWARF and the BTF using that --btf_features set:
 
-Now things look better:
+This was another symptom of me using a random old bpftool, using
+upstream I get what is expected:
 
-$ cp vmlinux.v5.19.0-rc5+ vmlinux.v5.19.0-rc5+.default_btf_encode ; pahole --btf_encode vmlinux.v5.19.0-rc5+.default_btf_encode
-$ cp vmlinux.v5.19.0-rc5+ vmlinux.v5.19.0-rc5+.enum64 ; pahole --btf_encode --btf_features=enum64 vmlinux.v5.19.0-rc5+.enum64
-$ bpftool btf dump file vmlinux.v5.19.0-rc5+.enum64 format raw > vmlinux.v5.19.0-rc5+.dump.enum64
-$ bpftool btf dump file vmlinux.v5.19.0-rc5+.default_btf_encode format raw > vmlinux.v5.19.0-rc5+.dump.original.default_btf_encode
-$ grep '^\[' vmlinux.v5.19.0-rc5+.dump.enum64 | cut -d ' ' -f 2 | sort | uniq -c | sort -k2 > enum64
-$ grep '^\[' vmlinux.v5.19.0-rc5+.dump.original.default_btf_encode | cut -d ' ' -f 2 | sort | uniq -c | sort -k2 > original.default_btf_encode
+$ pahole --btf_encode_detached=vmlinux.v5.19.0-rc5+.enum64 --btf_features=enum64 vmlinux.v5.19.0-rc5+
+$ bpftool btf dump file vmlinux.v5.19.0-rc5+.enum64 format raw | wc -l
+290975
+$ file vmlinux.v5.19.0-rc5+.enum64
+vmlinux.v5.19.0-rc5+.enum64: data
 $
-$ diff -u original.default_btf_encode enum64
---- original.default_btf_encode	2023-10-25 14:56:45.027645981 -0300
-+++ enum64	2023-10-25 14:54:15.024317995 -0300
-@@ -1,6 +1,5 @@
-    3677 ARRAY
-    3362 CONST
--      1 DATASEC
-    2109 ENUM
-      11 ENUM64
-   54147 FUNC
-@@ -12,5 +11,4 @@
-   10788 STRUCT
-    2394 TYPEDEF
-    1806 UNION
--    386 VAR
-      23 VOLATILE
-$
+[acme@quaco pahole]$ bpftool btf dump file vmlinux.v5.19.0-rc5+.enum64 format raw | grep -w ENUM64
+[4266] ENUM64 'perf_event_sample_format' encoding=UNSIGNED size=8 vlen=27
+[5089] ENUM64 '(anon)' encoding=UNSIGNED size=8 vlen=11
+[6727] ENUM64 '(anon)' encoding=SIGNED size=8 vlen=28
+[27943] ENUM64 '(anon)' encoding=UNSIGNED size=8 vlen=3
+[31242] ENUM64 'netdev_priv_flags' encoding=UNSIGNED size=8 vlen=33
+[31438] ENUM64 'perf_callchain_context' encoding=UNSIGNED size=8 vlen=7
+[38853] ENUM64 'hmm_pfn_flags' encoding=UNSIGNED size=8 vlen=7
+[56830] ENUM64 'ib_uverbs_device_cap_flags' encoding=UNSIGNED size=8 vlen=25
+[60295] ENUM64 'blake2b_iv' encoding=UNSIGNED size=8 vlen=8
+[63498] ENUM64 '(anon)' encoding=UNSIGNED size=8 vlen=31
+[93914] ENUM64 '(anon)' encoding=SIGNED size=8 vlen=172
+[acme@quaco pahole]$
 
-Now with just "var"
-
-$ cp vmlinux.v5.19.0-rc5+ vmlinux.v5.19.0-rc5+.var ; pahole --btf_encode --btf_features=var vmlinux.v5.19.0-rc5+.var
-$ bpftool btf dump file vmlinux.v5.19.0-rc5+.var format raw > vmlinux.v5.19.0-rc5+.dump.var
-$ grep '^\[' vmlinux.v5.19.0-rc5+.dump.var | cut -d ' ' -f 2 | sort | uniq -c | sort -k2 > var
-$ diff -u original.default_btf_encode var
---- original.default_btf_encode	2023-10-25 14:56:45.027645981 -0300
-+++ var	2023-10-25 15:04:24.231228667 -0300
-@@ -1,8 +1,7 @@
-    3677 ARRAY
-    3362 CONST
-       1 DATASEC
--   2109 ENUM
--     11 ENUM64
-+   2120 ENUM
-   54147 FUNC
-   29055 FUNC_PROTO
-     111 FWD
-$
-
-vars/datasecs are not removed and enum64 is not encoded, remaining as
-enum, so adding the 11 enum64 to the 2109 enums to get 2120 enums.
-
-$ cp vmlinux.v5.19.0-rc5+ vmlinux.v5.19.0-rc5+.float ; pahole --btf_encode --btf_features=float vmlinux.v5.19.0-rc5+.float
-$ bpftool btf dump file vmlinux.v5.19.0-rc5+.float format raw > vmlinux.v5.19.0-rc5+.dump.float
-$ grep '^\[' vmlinux.v5.19.0-rc5+.dump.float | cut -d ' ' -f 2 | sort | uniq -c | sort -k2 > float
-$ diff -u original.default_btf_encode float
---- original.default_btf_encode	2023-10-25 14:56:45.027645981 -0300
-+++ float	2023-10-25 15:06:57.441315272 -0300
-@@ -1,16 +1,14 @@
-    3677 ARRAY
-    3362 CONST
--      1 DATASEC
--   2109 ENUM
--     11 ENUM64
-+   2120 ENUM
-+      2 FLOAT
-   54147 FUNC
-   29055 FUNC_PROTO
-     111 FWD
--     17 INT
-+     15 INT
-   15345 PTR
-       4 RESTRICT
-   10788 STRUCT
-    2394 TYPEDEF
-    1806 UNION
--    386 VAR
-      23 VOLATILE
-$
-
-vars/datasecs are gone, enums combined, and floats are produced out of ints.
-
-I'll try to script all this so that we we can have it in btfdiff or
-another script to compare BTF from two files and then use in another
-script to check that the differences are the ones expected for the
-combinations of btf_features.
-
-But I guess the acks/reviews + my tests are enough to merge this as-is,
-thanks for your work on this!
+So sorry for the noise about this.
 
 - Arnaldo
 
