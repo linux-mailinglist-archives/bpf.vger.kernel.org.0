@@ -1,382 +1,336 @@
-Return-Path: <bpf+bounces-13252-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13253-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 844FF7D6E8C
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 16:18:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C8C57D712D
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 17:47:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36509281D2E
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 14:18:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7790C281D8D
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 15:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3FEB28E3B;
-	Wed, 25 Oct 2023 14:18:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7310E2C87D;
+	Wed, 25 Oct 2023 15:47:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="pkLB1Jlc"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="QPhzU/5Z"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4E118B08
-	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 14:18:31 +0000 (UTC)
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2049.outbound.protection.outlook.com [40.107.105.49])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732E8132;
-	Wed, 25 Oct 2023 07:18:29 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ahvjxymlZHlWueupc2xRCUuQxEd2xggKOgDCyVlhxtyOnXVUJkobIZIX2vFbT/rVbSDM9trtpLMemijnxT4rdZd4yonWKdu8+SkujDmnyiTmu6wb3P5Y8VEhaxbIZY7XF2SJwP44znS2R0FBT/yjTgZlYTD3l7p+W+u8oe/CNAju2omu3cA1YTnToeTnmrLCtpzdRHXOVpOdhZhcE8/egAfiaetOjE48/sMZDTsB4ZyC7jKhcRx2yRcivRJrlmvMFZbaT/qQBEt+6Oo8Qxf4Yt/cRyKXceR3BRDyFYUIjlEA6ZGQ5NIRkbZtG0A8Mlj/Q5noGYZIOXlUk24CMgvWbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hnP7DZlJEDNHh/wMYKyzqYUJTIarAhkTGTGBrM7KENg=;
- b=I3l3c8J7/Gz7xAtTyrMnEYQD88EFc3Y5wgso5xiWDEi5GT3hFNKc411XQOf+F9w99AzsfK03sH12hq3JlTmOlJHnc7ii37LbwiiqJ6kVdHlR4VOMBOeEf7m+3RnWfNhKgXcmYiChnCPul4hwmO4E7x1VaUN6I60MhJlEkkCGkEze1eABCpgX0gm3sQCr3DvaRaoU1dVCYgsNc9XIY99A9OUx+jIdDB+5/1gzY+U3uKyyIFg7zNnEM5w/fE9Fd1ikl8BbE8g4Z5gD4uMGSjL/scivmjznTVgejNs5+JJJtOZZaVcZDAr5siakWbU+8F+mvp67mOjONINwTKqA6ZGiXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hnP7DZlJEDNHh/wMYKyzqYUJTIarAhkTGTGBrM7KENg=;
- b=pkLB1JlcN/GGOVVvKong/KKDv3KAw2JHSWunYEk2HuQjDKmHUW65Tx/A0mHTqVkHiyShdhb8a5T6Dh2Mpqy5KhIDUIOMMCR/3PaX/OBdUXozs7IrwH0uPYmP6f7+by5IrIfXOeLqSKK3VacBdFbrViT53/gI5HWCD4Nek4n5CpTbAzIY4d0VSEaiR1jrazqGzq1KE5+zp3D+/DCOwoPJHHjbCPZBkjKGMm9cEi0rzUkmvmejNsSp140wjefiKqvnI7rvyoC56AArGpumdUe1TpbyU0HGQqvILmlHKbXB2Lv/CKUF/YR0F+Ks9EfdACgNxDErdxwf5eV8ixVmig5eKA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB9510.eurprd04.prod.outlook.com (2603:10a6:20b:44a::11)
- by AS8PR04MB9061.eurprd04.prod.outlook.com (2603:10a6:20b:444::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.11; Wed, 25 Oct
- 2023 14:18:26 +0000
-Received: from AS8PR04MB9510.eurprd04.prod.outlook.com
- ([fe80::9f3e:3b47:5ccd:c47c]) by AS8PR04MB9510.eurprd04.prod.outlook.com
- ([fe80::9f3e:3b47:5ccd:c47c%6]) with mapi id 15.20.6933.011; Wed, 25 Oct 2023
- 14:18:25 +0000
-Date: Wed, 25 Oct 2023 22:18:13 +0800
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: Hao Sun <sunhao.th@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	bpf <bpf@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: bpf: shift-out-of-bounds in tnum_rshift()
-Message-ID: <ZTkjpRZlsXekJuLW@u94a>
-References: <CACkBjsY2q1_fUohD7hRmKGqv1MV=eP2f6XK8kjkYNw7BaiF8iQ@mail.gmail.com>
- <CACkBjsbYMC7PgoGDK71fnqJ3QMywrwoA5Ctzh84Ldp6U_+_Ygg@mail.gmail.com>
- <ZTkhlwP-LkPkOjK2@u94a>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZTkhlwP-LkPkOjK2@u94a>
-X-ClientProxiedBy: TY2PR06CA0038.apcprd06.prod.outlook.com
- (2603:1096:404:2e::26) To AS8PR04MB9510.eurprd04.prod.outlook.com
- (2603:10a6:20b:44a::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E7F2AB54
+	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 15:47:12 +0000 (UTC)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66878131
+	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 08:47:09 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9ba1eb73c27so919403966b.3
+        for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 08:47:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1698248828; x=1698853628; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mt7St37rIKseWM3KjSEFy+jlXydYiULEJ1tiZmCsQbs=;
+        b=QPhzU/5ZAuXzg5ZXhIptvqBKFXPPNA7p7p5U0KDawQHP0Kfa6SYdP5M/FCvc+5duOI
+         q+pV6Fov3J05NoalzMg7a1bsWXprbXCD5YtwZRITy5xd+zn7QEsyWALvLBDVUWedx4+M
+         JNH5JoL2xAKSFKWC4VY9QzZNIVNwoLv1vea+AJaOfPuR14kyf5qFfJpNYno5pg4hdzuP
+         b1FNXIzko1l3xF1yBUKVR97IVyyRd5/QzaVUHZVepzGTKu0n681L4AUfqw9uWNsFBAS8
+         +OoM70gyRUAjnn/f72ugFwhj1MsAFsCcJFaJGqq113BAB+lEVSzs1o24HJWvTuGnnoDC
+         U5Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698248828; x=1698853628;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Mt7St37rIKseWM3KjSEFy+jlXydYiULEJ1tiZmCsQbs=;
+        b=oztyOSSdRimPp7x9xYjps86NvZ7llqYJ6gx6AiVf75TBtEKPID+4kxS0nsUGIheB4d
+         PLuC1/+DRrGspKIP6rE3SgIdkgErmsCGeR5/Xd9MPBgMDXF4bOnHiDMqjU2RxWlY3VwN
+         ppiY77fd3WCZSkWkyptbwVu6tBavOcFIkOl9rGezPYRAAEGDSHvVaNWIw0ibNyU4/VPQ
+         y+aCjJ9ZvtdqcMdLQ+Ac6K9uG8VloocFAZpyLug1m/375udvt+Vh7LsUzPbsQ4YJN/oC
+         N7IMiaSlYDFIw36z5u1VY40VB6uXMrNzC2EqgVNJyqSa4mEXD51lm+B2CwEmEuVj4p0H
+         I6Gw==
+X-Gm-Message-State: AOJu0Yyhmwcs9JjodnMmxwjQC61vJLmvV3qfi+Js29/3cZyQDyHqdz8U
+	e5MvTjAStaCAbGoeiqkNIslbpQ==
+X-Google-Smtp-Source: AGHT+IHAS0YwqqQ+OKqxlR5ZgvGYHtOqaDNLMTPyOA3e867qhf78U8qg48nDaB/X2usvqMGaCOB5YQ==
+X-Received: by 2002:a17:907:9403:b0:9bd:a5a3:3328 with SMTP id dk3-20020a170907940300b009bda5a33328mr13208921ejc.13.1698248827647;
+        Wed, 25 Oct 2023 08:47:07 -0700 (PDT)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id i25-20020a170906251900b009ca522853ecsm5035529ejb.58.2023.10.25.08.47.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 08:47:07 -0700 (PDT)
+Date: Wed, 25 Oct 2023 17:47:05 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, martin.lau@linux.dev,
+	razor@blackwall.org, ast@kernel.org, andrii@kernel.org,
+	john.fastabend@gmail.com, sdf@google.com, toke@kernel.org,
+	kuba@kernel.org, andrew@lunn.ch,
+	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH bpf-next v4 1/7] netkit, bpf: Add bpf programmable net
+ device
+Message-ID: <ZTk4ec8CBh92PZvs@nanopsycho>
+References: <20231024214904.29825-1-daniel@iogearbox.net>
+ <20231024214904.29825-2-daniel@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB9510:EE_|AS8PR04MB9061:EE_
-X-MS-Office365-Filtering-Correlation-Id: c87b69dc-2e7b-4ca6-7e8a-08dbd56540a4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	pfyOPN0FHNGXJvXNr5mUZbTNIpOhmPK89dsEBlIkqoo0ntiZ+tj5cS3O9T9xWkRgLoxE3RENEWM81MWXHQZi76SLaczegOkIde16mPZKHgS7lp0tX7Lr1iFETBrD0lp1qjfl7DFnYfkLprDCUrMMiiBDgkeqj/DdV85OFhzAu87qB0AUXnmhQM2mDJC89phsrFcXKt5wl0LZyeKJ3B2UMAMUvTgEy4agKhEY85FXsxosAO7aQqBTzijOk0rhQqXZTue9l12mgqtreSLDEJ15RgcVsmK3BXqfdtm00WUw47SB+4Wj3oJ8YWRr6NJ1w+NsDTHjONNcKwDf7kvUnSMZsajcOa42G1Si3KxJJELxersK73fji3Ellr3ZUvLKotkweOBNpyLSvn11dLTDy7QmGAFNPGRdVQgaXk+qND6md1fKWSW8NUOzBcmn828QyEY6TDjhKAzVHxQ7978UDPu70lMgzRWsE9g4lkI9qg6nLjam6QXUw5Lm8mI99QDUMeHCYjzoIZRm8U+lUXHT/7s8vHCisbJO4lxIfGw5GyyqrPM=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB9510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(366004)(346002)(39860400002)(136003)(396003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(66556008)(966005)(86362001)(66946007)(478600001)(316002)(6916009)(6486002)(66476007)(54906003)(4326008)(83380400001)(8936002)(8676002)(7416002)(5660300002)(6666004)(9686003)(38100700002)(2906002)(6512007)(53546011)(26005)(6506007)(41300700001)(33716001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MnlNV1RMdnZUL1pOUlo5eVRSSEpwVUd1cnRtdGZ0RTk5eUhUNVJCbnRLMXZN?=
- =?utf-8?B?d0dDMFRCNGZydU8zWnQxeXR0cDJub3FFZktrd3M5TEUxRWhCeU9td2NjRUlU?=
- =?utf-8?B?dWRzWDJ4MmVDV3RUOG80OVhFeWM0aW41NFFGNU1JYVQ5OHZqQlIycmp4MHNZ?=
- =?utf-8?B?ckNKZVRDejE5MERrYS9uSTJyaGgxWWdVMWprTmxXbjRkTXlNdTJjT3ovSVVH?=
- =?utf-8?B?a0t1TFpqQUlzNEhxbHZMT0syVVpFL05YVDlxOTlpbGJFbjBhOG1NTEJYSUtn?=
- =?utf-8?B?MGFwQUhyakRzcFlJOEJqWEQvNUY5WWU5cmd5Q1RKcDlSbnF2VXJhOXBaY1lq?=
- =?utf-8?B?T1FiN1A5YlVHWlBIU3hOU3NEQWw4VWpCemJEQm1HbEtwMDRNWXBIZ3ZmejE5?=
- =?utf-8?B?aVJKdktKb0dZdkZJNnUzTmJNTVVqUTlOT0w0VDYrTzZYVkJUNFE0N0tEeGsx?=
- =?utf-8?B?c2Q4SWtWN1VSYmw3Zm54V1R1L1c3cFZuWk9CbmFMUlVZaUF5RVptWGc1YUhn?=
- =?utf-8?B?T0lXdElLNjZ6cW1Xd2ZnZ2V3Z3RIVStSczBZTFBNd2ZHYVdWTUptTlEwejNS?=
- =?utf-8?B?aFd4Wk1FOGdwN1ZXZ3ZNL2VHQWYxck9adERMWG1FQklIRXJkblZ5cFZIa2VY?=
- =?utf-8?B?eVp2dzcreWF6RFF0WEVNWnpFSnRzSHlIU0I1REF6MW8xbDBoSis3OWhyWWFp?=
- =?utf-8?B?VFdzQ3ZUTzVmaTQxbk9jazYzZmdaWUhwUktycWR3YXFIS3kyUHZ1ekRoMmJ5?=
- =?utf-8?B?dStVbnk5Umppd3hxY1JjbmoyaGJrVjZVeVlhWFZsRm5OdHVzKzJvUExqbW9v?=
- =?utf-8?B?emFvT3E4eEtuc3FGTzJHS3BCYTRJdWZmQTlpMVljdGZkY0ZGYkUyRGU1NHBw?=
- =?utf-8?B?aGlDUVVTUkxUV0NHR3NTRkdsbVZSREN3NllEczdrbXlFNERYUnFwR1JpbnFo?=
- =?utf-8?B?YURhai9JN1pPNzJNcm1qaVoyV1NPd29HS0VCdjZLNGRXdzVWWmJvcmVzZzFz?=
- =?utf-8?B?dVlNZzMrRi9QRHVhWGN6VFJ1WmZQTklDOHVpY0UxZzdmTC9QTU9yM3gxeWZ6?=
- =?utf-8?B?WkxWdyt2MUd6TzRBdThSeXV1cCtaQUVWK0NCdTFuK091ZXFnWTd2RzNPcXVu?=
- =?utf-8?B?UHcxMDVudlJaaS9ZMEl1NWo0YUY5VEVwRFcxSC9yY1M1NjBSRTVYYWtWeTQ4?=
- =?utf-8?B?OEpicXdKaUM0NGNRRVVuMFZsQmtLQzJlNUloMDFVYXNxRlJIWUpjL0N0K0Nw?=
- =?utf-8?B?d1FLenpVa25DWFhsVDBFNlBjclNwWStOc205OHB3TWJOUFh5UlIvY0diSFJ6?=
- =?utf-8?B?anVXbjE4aFpuZ3dYS0JJS1hDek5VL2dWcHNtMFMxV1QycUpxTS9sSUVuU0Na?=
- =?utf-8?B?NjZKRS9rSFRkZVBCOS9VODVQTWtVY3V0czFoRnE2R2poUDlFZXh0dnAyOFVh?=
- =?utf-8?B?Nisyd0Q4YjcrSlJqSDhpVXZMRFM1aXByV05Ec3lqYUZ3V1BJdXZWTjkyQTdS?=
- =?utf-8?B?eURhOHRzWWVKUmJpWjZzT1lrb0JjQ3VMRitXcDZnQ05KYXFJWklzbTJXbnhs?=
- =?utf-8?B?WGRiNnFoSFh1aDlzcGF6NExCeWdLOG8xTjkyclh5WVdDN3h1ZEthS25Ec0F6?=
- =?utf-8?B?UjdqMEluLzBrYkVXRDlWU3hZc0V6aVEwdlo0KzVXZHNVMWxJSFcrTFZCZWRH?=
- =?utf-8?B?QkRIdldxdmp6QTY4NDJqa0JPZFBmR0NvdEZzVi83dDlSaEZTajZKSitzNXF6?=
- =?utf-8?B?UWtxd0U4TzdmOGEwaVZ6Q3lCaVFZMXFNckpGQkFoek1GL0xKei9PeGVXMmg4?=
- =?utf-8?B?TFRrMURNTTlFcUhaNzA3S3d0T2FQZElRcGMrUHpHa1poQ3lhc3VCdVJzSit3?=
- =?utf-8?B?VnRleGx5bWpYQUhScmNMQzdqZHhzbllXNjVPcTByanRKZ2Q1TXQ2RUdNRzVK?=
- =?utf-8?B?ZTVldkFYZmRPRm1FUWNsaXd1VmxyMnUrc1RPemRHcml6QkVFNHh4eStaeGRa?=
- =?utf-8?B?eUdDdXJrblpYUXNTOGcydkxmOTJLTE56NHNpU1BTdXhhRjRQbEJzOWZxSGpx?=
- =?utf-8?B?M2FPdTdoV3JtNUwyUlFSL21jY28rWkptOHJLU0pOZXVFVFNSSi9WaVVnVHdP?=
- =?utf-8?Q?Z6Z8TCQa/bbRGiiGr8UKU7BpG?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c87b69dc-2e7b-4ca6-7e8a-08dbd56540a4
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB9510.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 14:18:25.9381
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dO/AnwsBajAAYSrLiwdJ7PtV3Txhqv/w43Mt6Ac770a0l65ku7yzDmZA8fo/Ypd6fH2rkkzTZlyHYjh7i+AUcQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB9061
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231024214904.29825-2-daniel@iogearbox.net>
 
-On Wed, Oct 25, 2023 at 10:09:27PM +0800, Shung-Hsi Yu wrote:
-> Hi Hao,
-> 
-> On Wed, Oct 25, 2023 at 02:31:02PM +0200, Hao Sun wrote:
-> > On Tue, Oct 24, 2023 at 2:40 PM Hao Sun <sunhao.th@gmail.com> wrote:
-> > >
-> > > Hi,
-> > >
-> > > The following program can trigger a shift-out-of-bounds in
-> > > tnum_rshift(), called by scalar32_min_max_rsh():
-> > >
-> > > 0: (bc) w0.
-> = w1
-> > > 1: (bf) r2 = r0
-> > > 2: (18) r3 = 0xd
-> > > 4: (bc) w4 = w0
-> > > 5: (bf) r5 = r0
-> > > 6: (bf) r7 = r3
-> > > 7: (bf) r8 = r4
-> > > 8: (2f) r8 *= r5
-> > > 9: (cf) r5 s>>= r5
-> > > 10: (a6) if w8 < 0xfffffffb goto pc+10
-> > > 11: (1f) r7 -= r5
-> > > 12: (71) r6 = *(u8 *)(r1 +17)
-> > > 13: (5f) r3 &= r8
-> > > 14: (74) w2 >>= 30
-> > > 15: (1f) r7 -= r5
-> > > 16: (5d) if r8 != r6 goto pc+4
-> > > 17: (c7) r8 s>>= 5
-> > > 18: (cf) r0 s>>= r0
-> > > 19: (7f) r0 >>= r0
-> > > 20: (7c) w5 >>= w8         # shift-out-bounds here
-> > > 21: exit
-> > >
-> > 
-> > Here are the c macros for the above program in case anyone needs this:
-> > 
-> >         // 0: (bc) w0 = w1
-> >         BPF_MOV32_REG(BPF_REG_0, BPF_REG_1),
-> >         // 1: (bf) r2 = r0
-> >         BPF_MOV64_REG(BPF_REG_2, BPF_REG_0),
-> >         // 2: (18) r3 = 0xd
-> >         BPF_LD_IMM64(BPF_REG_3, 0xd),
-> >         // 4: (bc) w4 = w0
-> >         BPF_MOV32_REG(BPF_REG_4, BPF_REG_0),
-> >         // 5: (bf) r5 = r0
-> >         BPF_MOV64_REG(BPF_REG_5, BPF_REG_0),
-> >         // 6: (bf) r7 = r3
-> >         BPF_MOV64_REG(BPF_REG_7, BPF_REG_3),
-> >         // 7: (bf) r8 = r4
-> >         BPF_MOV64_REG(BPF_REG_8, BPF_REG_4),
-> >         // 8: (2f) r8 *= r5
-> >         BPF_ALU64_REG(BPF_MUL, BPF_REG_8, BPF_REG_5),
-> >         // 9: (cf) r5 s>>= r5
-> >         BPF_ALU64_REG(BPF_ARSH, BPF_REG_5, BPF_REG_5),
-> >         // 10: (a6) if w8 < 0xfffffffb goto pc+10
-> >         BPF_JMP32_IMM(BPF_JLT, BPF_REG_8, 0xfffffffb, 10),
-> >         // 11: (1f) r7 -= r5
-> >         BPF_ALU64_REG(BPF_SUB, BPF_REG_7, BPF_REG_5),
-> >         // 12: (71) r6 = *(u8 *)(r1 +17)
-> >         BPF_LDX_MEM(BPF_B, BPF_REG_6, BPF_REG_1, 17),
-> >         // 13: (5f) r3 &= r8
-> >         BPF_ALU64_REG(BPF_AND, BPF_REG_3, BPF_REG_8),
-> >         // 14: (74) w2 >>= 30
-> >         BPF_ALU32_IMM(BPF_RSH, BPF_REG_2, 30),
-> >         // 15: (1f) r7 -= r5
-> >         BPF_ALU64_REG(BPF_SUB, BPF_REG_7, BPF_REG_5),
-> >         // 16: (5d) if r8 != r6 goto pc+4
-> >         BPF_JMP_REG(BPF_JNE, BPF_REG_8, BPF_REG_6, 4),
-> >         // 17: (c7) r8 s>>= 5
-> >         BPF_ALU64_IMM(BPF_ARSH, BPF_REG_8, 5),
-> >         // 18: (cf) r0 s>>= r0
-> >         BPF_ALU64_REG(BPF_ARSH, BPF_REG_0, BPF_REG_0),
-> >         // 19: (7f) r0 >>= r0
-> >         BPF_ALU64_REG(BPF_RSH, BPF_REG_0, BPF_REG_0),
-> >         // 20: (7c) w5 >>= w8
-> >         BPF_ALU32_REG(BPF_RSH, BPF_REG_5, BPF_REG_8),
-> >         BPF_EXIT_INSN()
-> > 
-> > > After load:
-> > > ================================================================================
-> > > UBSAN: shift-out-of-bounds in kernel/bpf/tnum.c:44:9
-> > > shift exponent 255 is too large for 64-bit type 'long long unsigned int'
-> > > CPU: 2 PID: 8574 Comm: bpf-test Not tainted
-> > > 6.6.0-rc5-01400-g7c2f6c9fb91f-dirty #21
-> > > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-> > > Call Trace:
-> > >  <TASK>
-> > >  __dump_stack lib/dump_stack.c:88 [inline]
-> > >  dump_stack_lvl+0x8e/0xb0 lib/dump_stack.c:106
-> > >  ubsan_epilogue lib/ubsan.c:217 [inline]
-> > >  __ubsan_handle_shift_out_of_bounds+0x15a/0x2f0 lib/ubsan.c:387
-> > >  tnum_rshift.cold+0x17/0x32 kernel/bpf/tnum.c:44
-> > >  scalar32_min_max_rsh kernel/bpf/verifier.c:12999 [inline]
-> > >  adjust_scalar_min_max_vals kernel/bpf/verifier.c:13224 [inline]
-> > >  adjust_reg_min_max_vals+0x1936/0x5d50 kernel/bpf/verifier.c:13338
-> > >  do_check kernel/bpf/verifier.c:16890 [inline]
-> > >  do_check_common+0x2f64/0xbb80 kernel/bpf/verifier.c:19563
-> > >  do_check_main kernel/bpf/verifier.c:19626 [inline]
-> > >  bpf_check+0x65cf/0xa9e0 kernel/bpf/verifier.c:20263
-> > >  bpf_prog_load+0x110e/0x1b20 kernel/bpf/syscall.c:2717
-> > >  __sys_bpf+0xfcf/0x4380 kernel/bpf/syscall.c:5365
-> > >  __do_sys_bpf kernel/bpf/syscall.c:5469 [inline]
-> > >  __se_sys_bpf kernel/bpf/syscall.c:5467 [inline]
-> > >  __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:5467
-> > >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> > >  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-> > >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> > > RIP: 0033:0x5610511e23cd
-> > > Code: 24 80 00 00 00 48 0f 42 d0 48 89 94 24 68 0c 00 00 b8 41 01 00
-> > > 00 bf 05 00 00 00 ba 90 00 00 00 48 8d b44
-> > > RSP: 002b:00007f5357fc7820 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> > > RAX: ffffffffffffffda RBX: 0000000000000095 RCX: 00005610511e23cd
-> > > RDX: 0000000000000090 RSI: 00007f5357fc8410 RDI: 0000000000000005
-> > > RBP: 0000000000000000 R08: 00007f5357fca458 R09: 00007f5350005520
-> > > R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000002b
-> > > R13: 0000000d00000000 R14: 000000000000002b R15: 000000000000002b
-> > >  </TASK>
-> > >
-> > > If remove insn #20, the verifier gives:
-> > >  -------- Verifier Log --------
-> > >  func#0 @0
-> > >  0: R1=ctx(off=0,imm=0) R10=fp0
-> > >  0: (bc) w0 = w1                       ;
-> > > R0_w=scalar(smin=0,smax=umax=4294967295,var_off=(0x0; 0xffffffff))
-> > > R1=ctx(off=0,
-> > >  imm=0)
-> > >  1: (bf) r2 = r0                       ;
-> > > R0_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0;
-> > > 0xffffffff))
-> > >  R2_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0; 0xffffffff))
-> > >  2: (18) r3 = 0xd                      ; R3_w=13
-> > >  4: (bc) w4 = w0                       ;
-> > > R0_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0;
-> > > 0xffffffff))
-> > >  R4_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0; 0xffffffff))
-> > >  5: (bf) r5 = r0                       ;
-> > > R0_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0;
-> > > 0xffffffff))
-> > >  R5_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0; 0xffffffff))
-> > >  6: (bf) r7 = r3                       ; R3_w=13 R7_w=13
-> > >  7: (bf) r8 = r4                       ;
-> > > R4_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0;
-> > > 0xffffffff))
-> > >  R8_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0; 0xffffffff))
-> > >  8: (2f) r8 *= r5                      ;
-> > > R5_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0;
-> > > 0xffffffff))
-> > >  R8_w=scalar()
-> > >  9: (cf) r5 s>>= r5                    ; R5_w=scalar()
-> > >  10: (a6) if w8 < 0xfffffffb goto pc+9         ;
-> > > R8_w=scalar(smin=-9223372032559808520,umin=4294967288,smin32=-5,smax32=-1,
-> > >  umin32=4294967291,var_off=(0xfffffff8; 0xffffffff00000007))
-> > >  11: (1f) r7 -= r5                     ; R5_w=scalar() R7_w=scalar()
-> > >  12: (71) r6 = *(u8 *)(r1 +17)         ; R1=ctx(off=0,imm=0)
-> > > R6_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=255,
-> > >  var_off=(0x0; 0xff))
-> > >  13: (5f) r3 &= r8                     ;
-> > > R3_w=scalar(smin=umin=smin32=umin32=8,smax=umax=smax32=umax32=13,var_off=(0x8;
-> > >  0x5)) R8_w=scalar(smin=-9223372032559808520,umin=4294967288,smin32=-5,smax32=-1,umin32=4294967291,var_off=(0xffff)
-> > >  14: (74) w2 >>= 30                    ;
-> > > R2_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=3,var_off=(0x0;
-> > > 0x3))
-> > >  15: (1f) r7 -= r5                     ; R5_w=scalar() R7_w=scalar()
-> > >  16: (5d) if r8 != r6 goto pc+3        ;
-> > > R6_w=scalar(smin=umin=umin32=4294967288,smax=umax=umax32=255,smin32=-8,smax32=-1,
-> > >  var_off=(0xfffffff8; 0x7))
-> > > R8_w=scalar(smin=umin=4294967288,smax=umax=255,smin32=-5,smax32=-1,umin32=4294967291)
-> 
-> Seems like the root cause is a bug with range tracking, before instruction
-> 16, R8_w was
-> 
->   R8_w=scalar(smin=-9223372032559808520,umin=4294967288,smin32=-5,smax32=-1,umin32=4294967291,var_off=(0xffff)
-> 
-> But after instruction 16 it becomes
-> 
->   R8_w=scalar(smin=umin=4294967288,smax=umax=255,smin32=-5,smax32=-1,umin32=4294967291)
-> 
-> Where smin_value > smax_value, and umin_value > umax_value (among other
-> things). This should be the main problem.
-> 
-> The verifier operates on the assumption that smin_value <= smax_value and
-> umin_value <= umax_value, and if that assumption is not upheld then all kind
-> of things can go wrong.
-> 
-> Maybe Andrii may already has this worked out in the range-vs-range that he
-> has mentioned[1] he'll be sending soon.
-> 
-> 1: https://lore.kernel.org/bpf/CAEf4BzbJ3hZCSt4nLCZCV4cxV60+kddiSMsy7-9ou_RaQV7B8A@mail.gmail.com/
-> 
-> > >  17: (c7) r8 s>>= 5                    ; R8_w=134217727
-> > >  18: (cf) r0 s>>= r0                   ; R0_w=scalar()
-> > >  19: (7f) r0 >>= r0                    ; R0=scalar()
-> > >  20: (95) exit
-> > >
-> > >  from 16 to 20: safe
-> > >
-> > >  from 10 to 20: safe
-> > >  processed 22 insns (limit 1000000) max_states_per_insn 0 total_states
-> > > 1 peak_states 1 mark_read 1
-> > > -------- End of Verifier Log --------
-> > >
-> > > In adjust_scalar_min_max_vals(), src_reg.umax_value is 7, thus pass
-> > > the check here:
-> > >          if (umax_val >= insn_bitness) {
-> > >              /* Shifts greater than 31 or 63 are undefined.
-> > >               * This includes shifts by a negative number.
-> > >               */
-> > >              mark_reg_unknown(env, regs, insn->dst_reg);
-> > >              break;
-> > >          }
-> > >
-> > > However in scalar32_min_max_rsh(), both src_reg->u32_min_value and
-> > > src_reg->u32_max_value is 134217727, causing tnum_rsh() shit by 255.
-> > >
-> > > Should we check if(src_reg->u32_max_value < insn_bitness) before calling
-> > > scalar32_min_max_rsh(), rather than only checking umax_val? Or, is it
-> > > because issues somewhere else, incorrectly setting u32_min_value to
-> > > 34217727
-> 
-> Checking umax_val alone is be enough and we don't need to add a check for
-> u32_max_value, because (when we have correct range tracking) u32_max_value
-> should always be smaller than u32_value. So the fix needed here is to have
-> correct range tracking.
+Tue, Oct 24, 2023 at 11:48:58PM CEST, daniel@iogearbox.net wrote:
+>This work adds a new, minimal BPF-programmable device called "netkit"
+>(former PoC code-name "meta") we recently presented at LSF/MM/BPF. The
+>core idea is that BPF programs are executed within the drivers xmit routine
+>and therefore e.g. in case of containers/Pods moving BPF processing closer
+>to the source.
+>
+>One of the goals was that in case of Pod egress traffic, this allows to
+>move BPF programs from hostns tcx ingress into the device itself, providing
+>earlier drop or forward mechanisms, for example, if the BPF program
+>determines that the skb must be sent out of the node, then a redirect to
+>the physical device can take place directly without going through per-CPU
+>backlog queue. This helps to shift processing for such traffic from softirq
+>to process context, leading to better scheduling decisions/performance (see
+>measurements in the slides).
+>
+>In this initial version, the netkit device ships as a pair, but we plan to
+>extend this further so it can also operate in single device mode. The pair
 
-Since you are running fuzzer on BPF verifier, it may be be helpful to check
-that the following conditions are always met:
-- umin <= umax
-- smin <= smax
-- u32_min <= u32_max
-- s32_min <= s32_max
-- u32_max <= umax
-- smin <= s32_min
-- s32_max <= smax
+Single device mode should work how?
 
-If any of these condition is not upheld then it should be a range tracking
-bug.
 
-> > > Best
-> > > Hao Sun
+>comes with a primary and a peer device. Only the primary device, typically
+>residing in hostns, can manage BPF programs for itself and its peer. The
+>peer device is designated for containers/Pods and cannot attach/detach
+>BPF programs. Upon the device creation, the user can set the default policy
+>to 'pass' or 'drop' for the case when no BPF program is attached.
+
+It looks to me that you only need the host (primary) netdevice to be
+used as a handle to attach the bpf programs. Because the bpf program
+can (and probably in real use case will) redirect to uplink/another
+pod netdevice skipping the host (primary) netdevice, correct?
+
+If so, why can't you do just single device mode from start finding a
+different sort of bpf attach handle? (not sure which)
+
+
+>
+>Additionally, the device can be operated in L3 (default) or L2 mode. The
+>management of BPF programs is done via bpf_mprog, so that multi-attach is
+>supported right from the beginning with similar API and dependency controls
+>as tcx. For details on the latter see commit 053c8e1f235d ("bpf: Add generic
+>attach/detach/query API for multi-progs"). tc BPF compatibility is provided,
+>so that existing programs can be easily migrated.
+>
+>Going forward, we plan to use netkit devices in Cilium as the main device
+>type for connecting Pods. They will be operated in L3 mode in order to
+>simplify a Pod's neighbor management and the peer will operate in default
+>drop mode, so that no traffic is leaving between the time when a Pod is
+>brought up by the CNI plugin and programs attached by the agent.
+>Additionally, the programs we attach via tcx on the physical devices are
+>using bpf_redirect_peer() for inbound traffic into netkit device, hence the
+>latter is also supporting the ndo_get_peer_dev callback. Similarly, we use
+>bpf_redirect_neigh() for the way out, pushing from netkit peer to phys device
+>directly. Also, BIG TCP is supported on netkit device. For the follow-up
+>work in single device mode, we plan to convert Cilium's cilium_host/_net
+>devices into a single one.
+>
+>An extensive test suite for checking device operations and the BPF program
+>and link management API comes as BPF selftests in this series.
+>
+
+Couple of nitpicks below:
+
+[..]
+
+
+>+static int netkit_check_policy(int policy, struct nlattr *tb,
+>+			       struct netlink_ext_ack *extack)
+>+{
+>+	switch (policy) {
+>+	case NETKIT_PASS:
+>+	case NETKIT_DROP:
+>+		return 0;
+>+	default:
+
+Isn't this job for netlink policy?
+
+
+>+		NL_SET_ERR_MSG_ATTR(extack, tb,
+>+				    "Provided default xmit policy not supported");
+>+		return -EINVAL;
+>+	}
+>+}
+>+
+>+static int netkit_check_mode(int mode, struct nlattr *tb,
+>+			     struct netlink_ext_ack *extack)
+>+{
+>+	switch (mode) {
+>+	case NETKIT_L2:
+>+	case NETKIT_L3:
+>+		return 0;
+>+	default:
+
+Isn't this job for netlink policy?
+
+
+>+		NL_SET_ERR_MSG_ATTR(extack, tb,
+>+				    "Provided device mode can only be L2 or L3");
+>+		return -EINVAL;
+>+	}
+>+}
+>+
+>+static int netkit_validate(struct nlattr *tb[], struct nlattr *data[],
+>+			   struct netlink_ext_ack *extack)
+>+{
+>+	struct nlattr *attr = tb[IFLA_ADDRESS];
+>+
+>+	if (!attr)
+>+		return 0;
+>+	NL_SET_ERR_MSG_ATTR(extack, attr,
+>+			    "Setting Ethernet address is not supported");
+>+	return -EOPNOTSUPP;
+>+}
+>+
+>+static struct rtnl_link_ops netkit_link_ops;
+>+
+>+static int netkit_new_link(struct net *src_net, struct net_device *dev,
+>+			   struct nlattr *tb[], struct nlattr *data[],
+>+			   struct netlink_ext_ack *extack)
+>+{
+>+	struct nlattr *peer_tb[IFLA_MAX + 1], **tbp = tb, *attr;
+>+	enum netkit_action default_prim = NETKIT_PASS;
+>+	enum netkit_action default_peer = NETKIT_PASS;
+>+	enum netkit_mode mode = NETKIT_L3;
+>+	unsigned char ifname_assign_type;
+>+	struct ifinfomsg *ifmp = NULL;
+>+	struct net_device *peer;
+>+	char ifname[IFNAMSIZ];
+>+	struct netkit *nk;
+>+	struct net *net;
+>+	int err;
+>+
+>+	if (data) {
+>+		if (data[IFLA_NETKIT_MODE]) {
+>+			attr = data[IFLA_NETKIT_MODE];
+>+			mode = nla_get_u32(attr);
+>+			err = netkit_check_mode(mode, attr, extack);
+>+			if (err < 0)
+>+				return err;
+>+		}
+>+		if (data[IFLA_NETKIT_PEER_INFO]) {
+>+			attr = data[IFLA_NETKIT_PEER_INFO];
+>+			ifmp = nla_data(attr);
+>+			err = rtnl_nla_parse_ifinfomsg(peer_tb, attr, extack);
+>+			if (err < 0)
+>+				return err;
+>+			err = netkit_validate(peer_tb, NULL, extack);
+>+			if (err < 0)
+>+				return err;
+>+			tbp = peer_tb;
+>+		}
+>+		if (data[IFLA_NETKIT_POLICY]) {
+>+			attr = data[IFLA_NETKIT_POLICY];
+>+			default_prim = nla_get_u32(attr);
+>+			err = netkit_check_policy(default_prim, attr, extack);
+>+			if (err < 0)
+>+				return err;
+>+		}
+>+		if (data[IFLA_NETKIT_PEER_POLICY]) {
+>+			attr = data[IFLA_NETKIT_PEER_POLICY];
+>+			default_peer = nla_get_u32(attr);
+>+			err = netkit_check_policy(default_peer, attr, extack);
+>+			if (err < 0)
+>+				return err;
+>+		}
+>+	}
+>+
+>+	if (ifmp && tbp[IFLA_IFNAME]) {
+>+		nla_strscpy(ifname, tbp[IFLA_IFNAME], IFNAMSIZ);
+>+		ifname_assign_type = NET_NAME_USER;
+>+	} else {
+>+		strscpy(ifname, "nk%d", IFNAMSIZ);
+>+		ifname_assign_type = NET_NAME_ENUM;
+>+	}
+>+
+>+	net = rtnl_link_get_net(src_net, tbp);
+>+	if (IS_ERR(net))
+>+		return PTR_ERR(net);
+>+
+>+	peer = rtnl_create_link(net, ifname, ifname_assign_type,
+>+				&netkit_link_ops, tbp, extack);
+>+	if (IS_ERR(peer)) {
+>+		put_net(net);
+>+		return PTR_ERR(peer);
+>+	}
+>+
+>+	netif_inherit_tso_max(peer, dev);
+>+
+>+	if (mode == NETKIT_L2)
+>+		eth_hw_addr_random(peer);
+>+	if (ifmp && dev->ifindex)
+>+		peer->ifindex = ifmp->ifi_index;
+>+
+>+	nk = netkit_priv(peer);
+>+	nk->primary = false;
+>+	nk->policy = default_peer;
+>+	nk->mode = mode;
+>+	bpf_mprog_bundle_init(&nk->bundle);
+>+	RCU_INIT_POINTER(nk->active, NULL);
+>+	RCU_INIT_POINTER(nk->peer, NULL);
+
+Aren't these already 0?
+
+
+>+
+>+	err = register_netdevice(peer);
+>+	put_net(net);
+>+	if (err < 0)
+>+		goto err_register_peer;
+>+	netif_carrier_off(peer);
+>+	if (mode == NETKIT_L2)
+>+		dev_change_flags(peer, peer->flags & ~IFF_NOARP, NULL);
+>+
+>+	err = rtnl_configure_link(peer, NULL, 0, NULL);
+>+	if (err < 0)
+>+		goto err_configure_peer;
+>+
+>+	if (mode == NETKIT_L2)
+>+		eth_hw_addr_random(dev);
+>+	if (tb[IFLA_IFNAME])
+>+		nla_strscpy(dev->name, tb[IFLA_IFNAME], IFNAMSIZ);
+>+	else
+>+		strscpy(dev->name, "nk%d", IFNAMSIZ);
+>+
+>+	nk = netkit_priv(dev);
+>+	nk->primary = true;
+>+	nk->policy = default_prim;
+>+	nk->mode = mode;
+>+	bpf_mprog_bundle_init(&nk->bundle);
+>+	RCU_INIT_POINTER(nk->active, NULL);
+>+	RCU_INIT_POINTER(nk->peer, NULL);
+>+
+>+	err = register_netdevice(dev);
+>+	if (err < 0)
+>+		goto err_configure_peer;
+>+	netif_carrier_off(dev);
+>+	if (mode == NETKIT_L2)
+>+		dev_change_flags(dev, dev->flags & ~IFF_NOARP, NULL);
+>+
+>+	rcu_assign_pointer(netkit_priv(dev)->peer, peer);
+>+	rcu_assign_pointer(netkit_priv(peer)->peer, dev);
+>+	return 0;
+>+err_configure_peer:
+>+	unregister_netdevice(peer);
+>+	return err;
+>+err_register_peer:
+>+	free_netdev(peer);
+>+	return err;
+>+}
+>+
+
+[..]
 
