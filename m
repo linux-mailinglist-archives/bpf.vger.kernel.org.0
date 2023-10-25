@@ -1,252 +1,352 @@
-Return-Path: <bpf+bounces-13244-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 561717D6CFD
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 15:20:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 842427D6D02
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 15:21:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86A141C20DD1
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 13:20:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EF9AB21002
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 13:21:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679AF27ECB;
-	Wed, 25 Oct 2023 13:20:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D25328681;
+	Wed, 25 Oct 2023 13:21:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lQ+3z9/Q"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="1fHjxx/i"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33AB71380
-	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 13:20:44 +0000 (UTC)
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEE1111;
-	Wed, 25 Oct 2023 06:20:42 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d84c24a810dso4894028276.2;
-        Wed, 25 Oct 2023 06:20:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91CFA2D61E
+	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 13:21:17 +0000 (UTC)
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E22C9187
+	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 06:21:14 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a7fb84f6ceso53181687b3.1
+        for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 06:21:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698240041; x=1698844841; darn=vger.kernel.org;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1698240074; x=1698844874; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LPF+5Rsz+apiPCuGIdBu5hhoVuX8IXXK92UDgsE51EY=;
-        b=lQ+3z9/Q2uCxd+cHRxB6CqFsfiidtLdbnZy/LXXV6WCOindSSmnv7YOPbgrL7hy02b
-         lGYAOEr+gl/mhsV61L8Atqt0H1FuDIQg5EO9RCOnQPLr368tijIBG1+cNiqOWxiR2npA
-         8DXqYsEGC0iaHlJGCPsJgBgW4cISVW/BMHNIouoswdsdJ8a2B9uwqRTd83xSrb7a2XBl
-         6XizrbOo8Go4hJJg8X0Fb+umpOdhJi8Nr8LxXQ+XdYvRsHrNQXlIVyZ6A60tPZyIF3ET
-         gGzft78Z55PDIKi95hzu8VdK8Vohxng93ZPZ9QSk2HxVmWLKH/5UfgXXFaLL43IIPrEq
-         PdJA==
+        bh=6DcoXjq91K083akiBzKmjRJ24ZfSDZ3wB0oJDf159LU=;
+        b=1fHjxx/ieevHH1Ynzz/seUo73lgx7W8NTQOwtEFWq82ZkwcCatD9wij7EF3vY8eR2R
+         BWVrZjli5yerBEBWANYkEvrrIbwIZ+FuqqQWlRb/0Qp+ByWN32ewTL7kGFjzFLKhXMit
+         IJZzJI7nOW+2ZKO5ErDorDM6NjgDFoXTXRJuF6p4BB+9STkvhi1HVA7FKBwQqyc5iiBh
+         7rDWn54TIE/oI6FZyXpz/e7+YhErw2JOyisIDb8Altc5IqQsbqvLbNZjlxriwW2fvBCJ
+         jhhhLzbEon1J6YpB31Idf6A6YHdXx65aEtoYPk5hS/vG+LMo5nNEOZzuhO+U3YwdvOug
+         JtBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698240041; x=1698844841;
+        d=1e100.net; s=20230601; t=1698240074; x=1698844874;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LPF+5Rsz+apiPCuGIdBu5hhoVuX8IXXK92UDgsE51EY=;
-        b=TeVw5nrcnvFwRnkyh8PaA6IyyxdcOSqWO8bAmPr3pW9lw5LpDQHyIdnDRFQ296C0tl
-         kwmEDnLixlSc+esnWkIdL8NCdY89h2PBIVj9naMco5bNBuqGAJZKIKUPL2u0rZ1u7Ujj
-         f05svS0NnzRq4vu+efQytoiQR0OeTAQ26OpTp0wttCyEQnS/1hbFbR7VdtqiQlCyLD7j
-         N2QjX51caMokYn3XqL9xff8f6mtoMIgXCQkrgRcKQf2yVu5sZD+8EoHt29tn5ZGou+E0
-         mB0r3GYP5G9O939QMfCzP2hnMc8JDCqWvLWaMKC2FCkGpcuPverYghnImVqNY2UIhthI
-         B00w==
-X-Gm-Message-State: AOJu0Yx+5V0drmcpQiYatuviFaDc7SWB+3EVfV5/AA7VLtELEOKVks6n
-	RyqPUocrgGFy4iPk1OznSKcbPbvw4HutZT+Irg==
-X-Google-Smtp-Source: AGHT+IFLcsLSPKofOHu3dzTz4AZ1rnCSfsnB8IkZsu8AAEegFHBMsO/Qf1WLF1WQHbiJsXgzosCssWZXEzoyfbfzDeg=
-X-Received: by 2002:a25:aca0:0:b0:d9a:4d90:feda with SMTP id
- x32-20020a25aca0000000b00d9a4d90fedamr261633ybi.62.1698240041458; Wed, 25 Oct
- 2023 06:20:41 -0700 (PDT)
+        bh=6DcoXjq91K083akiBzKmjRJ24ZfSDZ3wB0oJDf159LU=;
+        b=IkcOK9kX126AaCc3DdsVAx6AU6BWSN99ax3F33T/G5/GePyX/L7zJV3Snj+4tndAtu
+         TkD1oci/9nyXXbHh9j/FsIeJiY5PJobiNXU4HvyGd1F4xRFMlsjjINVAK1GdOWDDF2xC
+         qs7pfitBkE5JFaftLT96g9sbOS0eAxrKER2iV2YOZ29SN3Zm+zJFFc2R5SSxtl0IXl8X
+         3evacdEO2frkxMIW1l1CllP98rE5MLsvp30hcoBJ0q2gI5YNz3CgSuRax5mc0dQXwlEc
+         fNyGJY7FzLSM6ykT71SGGP9XnnaVmt+GVwzL2p2no7tZnXOeXGm5VbqKww98ebiPDQKJ
+         l3qg==
+X-Gm-Message-State: AOJu0YxVaCQX+IjeoIdDqQJMKhNik2CR4Emq4By8wuC5H27zi8WdfMfb
+	Gg7z5t5EZnpXc4Cz5CLm7bDuH55h5wpXHdufhPCIecJhhblajKTg
+X-Google-Smtp-Source: AGHT+IE7hMas1i/UZGRzadsVtRrNQRelJ7LcBUiw5dtJ244gU7z5/nhc38cT64UtPVPDsGyjhKP7zTvMzIrjlputtiE=
+X-Received: by 2002:a0d:ea93:0:b0:5a7:ba17:7109 with SMTP id
+ t141-20020a0dea93000000b005a7ba177109mr13948389ywe.1.1698240074042; Wed, 25
+ Oct 2023 06:21:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CACkBjsY2q1_fUohD7hRmKGqv1MV=eP2f6XK8kjkYNw7BaiF8iQ@mail.gmail.com>
- <CACkBjsbYMC7PgoGDK71fnqJ3QMywrwoA5Ctzh84Ldp6U_+_Ygg@mail.gmail.com>
-In-Reply-To: <CACkBjsbYMC7PgoGDK71fnqJ3QMywrwoA5Ctzh84Ldp6U_+_Ygg@mail.gmail.com>
-From: Hao Sun <sunhao.th@gmail.com>
-Date: Wed, 25 Oct 2023 15:20:29 +0200
-Message-ID: <CACkBjsYHN2VGjRUV_KA+EBPYeOjBbOgysj4JVBFqd6pPBN-_0w@mail.gmail.com>
-Subject: Re: bpf: shift-out-of-bounds in tnum_rshift()
-To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Cc: bpf <bpf@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20231009092655.22025-1-daniel@iogearbox.net> <ZTjY959R+AFXf3Xy@shredder>
+ <726368f0-bbe9-6aeb-7007-6f974ed075f2@iogearbox.net> <CAM0EoM=L3ft1zuXhMsKq=Z+u7asbvpBL-KJBXLCmHBg=6BLHzQ@mail.gmail.com>
+ <87dfbac5-695c-7582-cbb5-4d71b6698ab1@iogearbox.net>
+In-Reply-To: <87dfbac5-695c-7582-cbb5-4d71b6698ab1@iogearbox.net>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Wed, 25 Oct 2023 09:21:02 -0400
+Message-ID: <CAM0EoMn-BDVbOvHEd0Pww5Hx5XD3UJnyipO+9h3HKzAVAp5n0A@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 1/2] net, sched: Make tc-related drop reason
+ more flexible
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Ido Schimmel <idosch@idosch.org>, kuba@kernel.org, netdev@vger.kernel.org, 
+	bpf@vger.kernel.org, victor@mojatatu.com, martin.lau@linux.dev, dxu@dxuuu.xyz, 
+	xiyou.wangcong@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 25, 2023 at 2:31=E2=80=AFPM Hao Sun <sunhao.th@gmail.com> wrote=
-:
+On Wed, Oct 25, 2023 at 7:52=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
 >
-> On Tue, Oct 24, 2023 at 2:40=E2=80=AFPM Hao Sun <sunhao.th@gmail.com> wro=
-te:
+> On 10/25/23 1:05 PM, Jamal Hadi Salim wrote:
+> > On Wed, Oct 25, 2023 at 6:01=E2=80=AFAM Daniel Borkmann <daniel@iogearb=
+ox.net> wrote:
+> >> On 10/25/23 10:59 AM, Ido Schimmel wrote:
+> >>> On Mon, Oct 09, 2023 at 11:26:54AM +0200, Daniel Borkmann wrote:
+> >>>> diff --git a/net/core/dev.c b/net/core/dev.c
+> >>>> index 606a366cc209..664426285fa3 100644
+> >>>> --- a/net/core/dev.c
+> >>>> +++ b/net/core/dev.c
+> >>>> @@ -3910,7 +3910,8 @@ EXPORT_SYMBOL_GPL(netdev_xmit_skip_txqueue);
+> >>>>    #endif /* CONFIG_NET_EGRESS */
+> >>>>
+> >>>>    #ifdef CONFIG_NET_XGRESS
+> >>>> -static int tc_run(struct tcx_entry *entry, struct sk_buff *skb)
+> >>>> +static int tc_run(struct tcx_entry *entry, struct sk_buff *skb,
+> >>>> +              enum skb_drop_reason *drop_reason)
+> >>>>    {
+> >>>>       int ret =3D TC_ACT_UNSPEC;
+> >>>>    #ifdef CONFIG_NET_CLS_ACT
+> >>>> @@ -3922,12 +3923,14 @@ static int tc_run(struct tcx_entry *entry, s=
+truct sk_buff *skb)
+> >>>>
+> >>>>       tc_skb_cb(skb)->mru =3D 0;
+> >>>>       tc_skb_cb(skb)->post_ct =3D false;
+> >>>> +    res.drop_reason =3D *drop_reason;
+> >>>>
+> >>>>       mini_qdisc_bstats_cpu_update(miniq, skb);
+> >>>>       ret =3D tcf_classify(skb, miniq->block, miniq->filter_list, &r=
+es, false);
+> >>>>       /* Only tcf related quirks below. */
+> >>>>       switch (ret) {
+> >>>>       case TC_ACT_SHOT:
+> >>>> +            *drop_reason =3D res.drop_reason;
+> >>>
+> >>> Daniel,
+> >>>
+> >>> Getting the following splat [1] with CONFIG_DEBUG_NET=3Dy and this
+> >>> reproducer [2]. Problem seems to be that classifiers clear 'struct
+> >>> tcf_result::drop_reason', thereby triggering the warning in
+> >>> __kfree_skb_reason() due to reason being 'SKB_NOT_DROPPED_YET' (0).
+> >>>
+> >>> Fixed by maintaining the original drop reason if the one returned fro=
+m
+> >>> tcf_classify() is 'SKB_NOT_DROPPED_YET' [3]. I can submit this fix
+> >>> unless you have a better idea.
+> >>
+> >> Thanks for catching this, looks reasonable to me as a fix.
+> >>
+> >>> [1]
+> >>> WARNING: CPU: 0 PID: 181 at net/core/skbuff.c:1082 kfree_skb_reason+0=
+x38/0x130
+> >>> Modules linked in:
+> >>> CPU: 0 PID: 181 Comm: mausezahn Not tainted 6.6.0-rc6-custom-ge43e6d9=
+582e0 #682
+> >>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.=
+fc37 04/01/2014
+> >>> RIP: 0010:kfree_skb_reason+0x38/0x130
+> >>> [...]
+> >>> Call Trace:
+> >>>    <IRQ>
+> >>>    __netif_receive_skb_core.constprop.0+0x837/0xdb0
+> >>>    __netif_receive_skb_one_core+0x3c/0x70
+> >>>    process_backlog+0x95/0x130
+> >>>    __napi_poll+0x25/0x1b0
+> >>>    net_rx_action+0x29b/0x310
+> >>>    __do_softirq+0xc0/0x29b
+> >>>    do_softirq+0x43/0x60
+> >>>    </IRQ>
+> >>>
+> >>> [2]
+> >>> #!/bin/bash
+> >>>
+> >>> ip link add name veth0 type veth peer name veth1
+> >>> ip link set dev veth0 up
+> >>> ip link set dev veth1 up
+> >>> tc qdisc add dev veth1 clsact
+> >>> tc filter add dev veth1 ingress pref 1 proto all flower dst_mac 00:11=
+:22:33:44:55 action drop
+> >>> mausezahn veth0 -a own -b 00:11:22:33:44:55 -q -c 1
+> >>
+> >> I didn't know you're using mausezahn, nice :)
+> >>
+> >>> [3]
+> >>> diff --git a/net/core/dev.c b/net/core/dev.c
+> >>> index a37a932a3e14..abd0b13f3f17 100644
+> >>> --- a/net/core/dev.c
+> >>> +++ b/net/core/dev.c
+> >>> @@ -3929,7 +3929,8 @@ static int tc_run(struct tcx_entry *entry, stru=
+ct sk_buff *skb,
+> >>>           /* Only tcf related quirks below. */
+> >>>           switch (ret) {
+> >>>           case TC_ACT_SHOT:
+> >>> -               *drop_reason =3D res.drop_reason;
+> >>> +               if (res.drop_reason !=3D SKB_NOT_DROPPED_YET)
+> >>> +                       *drop_reason =3D res.drop_reason;
+> >>>                   mini_qdisc_qstats_cpu_drop(miniq);
+> >>>                   break;
+> >>>           case TC_ACT_OK:
+> >>>
 > >
-> > Hi,
-> >
-> > The following program can trigger a shift-out-of-bounds in
-> > tnum_rshift(), called by scalar32_min_max_rsh():
-> >
-> > 0: (bc) w0 =3D w1
-> > 1: (bf) r2 =3D r0
-> > 2: (18) r3 =3D 0xd
-> > 4: (bc) w4 =3D w0
-> > 5: (bf) r5 =3D r0
-> > 6: (bf) r7 =3D r3
-> > 7: (bf) r8 =3D r4
-> > 8: (2f) r8 *=3D r5
-> > 9: (cf) r5 s>>=3D r5
-> > 10: (a6) if w8 < 0xfffffffb goto pc+10
-> > 11: (1f) r7 -=3D r5
-> > 12: (71) r6 =3D *(u8 *)(r1 +17)
-> > 13: (5f) r3 &=3D r8
-> > 14: (74) w2 >>=3D 30
-> > 15: (1f) r7 -=3D r5
-> > 16: (5d) if r8 !=3D r6 goto pc+4
-> > 17: (c7) r8 s>>=3D 5
-> > 18: (cf) r0 s>>=3D r0
-> > 19: (7f) r0 >>=3D r0
-> > 20: (7c) w5 >>=3D w8         # shift-out-bounds here
-> > 21: exit
-> >
+> > Out of curiosity - how does the policy say "drop" but drop_reason does
+> > not reflect it?
 >
-> Here are the c macros for the above program in case anyone needs this:
+> Ido, Jamal, wdyt about this alternative approach - these were the locatio=
+ns I could
+> find from an initial glance (compile-tested) :
 >
->         // 0: (bc) w0 =3D w1
->         BPF_MOV32_REG(BPF_REG_0, BPF_REG_1),
->         // 1: (bf) r2 =3D r0
->         BPF_MOV64_REG(BPF_REG_2, BPF_REG_0),
->         // 2: (18) r3 =3D 0xd
->         BPF_LD_IMM64(BPF_REG_3, 0xd),
->         // 4: (bc) w4 =3D w0
->         BPF_MOV32_REG(BPF_REG_4, BPF_REG_0),
->         // 5: (bf) r5 =3D r0
->         BPF_MOV64_REG(BPF_REG_5, BPF_REG_0),
->         // 6: (bf) r7 =3D r3
->         BPF_MOV64_REG(BPF_REG_7, BPF_REG_3),
->         // 7: (bf) r8 =3D r4
->         BPF_MOV64_REG(BPF_REG_8, BPF_REG_4),
->         // 8: (2f) r8 *=3D r5
->         BPF_ALU64_REG(BPF_MUL, BPF_REG_8, BPF_REG_5),
->         // 9: (cf) r5 s>>=3D r5
->         BPF_ALU64_REG(BPF_ARSH, BPF_REG_5, BPF_REG_5),
->         // 10: (a6) if w8 < 0xfffffffb goto pc+10
->         BPF_JMP32_IMM(BPF_JLT, BPF_REG_8, 0xfffffffb, 10),
->         // 11: (1f) r7 -=3D r5
->         BPF_ALU64_REG(BPF_SUB, BPF_REG_7, BPF_REG_5),
->         // 12: (71) r6 =3D *(u8 *)(r1 +17)
->         BPF_LDX_MEM(BPF_B, BPF_REG_6, BPF_REG_1, 17),
->         // 13: (5f) r3 &=3D r8
->         BPF_ALU64_REG(BPF_AND, BPF_REG_3, BPF_REG_8),
->         // 14: (74) w2 >>=3D 30
->         BPF_ALU32_IMM(BPF_RSH, BPF_REG_2, 30),
->         // 15: (1f) r7 -=3D r5
->         BPF_ALU64_REG(BPF_SUB, BPF_REG_7, BPF_REG_5),
->         // 16: (5d) if r8 !=3D r6 goto pc+4
->         BPF_JMP_REG(BPF_JNE, BPF_REG_8, BPF_REG_6, 4),
->         // 17: (c7) r8 s>>=3D 5
->         BPF_ALU64_IMM(BPF_ARSH, BPF_REG_8, 5),
->         // 18: (cf) r0 s>>=3D r0
->         BPF_ALU64_REG(BPF_ARSH, BPF_REG_0, BPF_REG_0),
->         // 19: (7f) r0 >>=3D r0
->         BPF_ALU64_REG(BPF_RSH, BPF_REG_0, BPF_REG_0),
->         // 20: (7c) w5 >>=3D w8
->         BPF_ALU32_REG(BPF_RSH, BPF_REG_5, BPF_REG_8),
->         BPF_EXIT_INSN()
+>  From a3d46a55aac484372b60b783cb6a3c98a0fef75c Mon Sep 17 00:00:00 2001
+> From: Daniel Borkmann <daniel@iogearbox.net>
+> Date: Wed, 25 Oct 2023 11:43:44 +0000
+> Subject: [PATCH] net, sched: fix..
 >
-> > After load:
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-> > UBSAN: shift-out-of-bounds in kernel/bpf/tnum.c:44:9
-> > shift exponent 255 is too large for 64-bit type 'long long unsigned int=
-'
-> > CPU: 2 PID: 8574 Comm: bpf-test Not tainted
-> > 6.6.0-rc5-01400-g7c2f6c9fb91f-dirty #21
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04=
-/01/2014
-> > Call Trace:
-> >  <TASK>
-> >  __dump_stack lib/dump_stack.c:88 [inline]
-> >  dump_stack_lvl+0x8e/0xb0 lib/dump_stack.c:106
-> >  ubsan_epilogue lib/ubsan.c:217 [inline]
-> >  __ubsan_handle_shift_out_of_bounds+0x15a/0x2f0 lib/ubsan.c:387
-> >  tnum_rshift.cold+0x17/0x32 kernel/bpf/tnum.c:44
-> >  scalar32_min_max_rsh kernel/bpf/verifier.c:12999 [inline]
-> >  adjust_scalar_min_max_vals kernel/bpf/verifier.c:13224 [inline]
-> >  adjust_reg_min_max_vals+0x1936/0x5d50 kernel/bpf/verifier.c:13338
-> >  do_check kernel/bpf/verifier.c:16890 [inline]
-> >  do_check_common+0x2f64/0xbb80 kernel/bpf/verifier.c:19563
-> >  do_check_main kernel/bpf/verifier.c:19626 [inline]
-> >  bpf_check+0x65cf/0xa9e0 kernel/bpf/verifier.c:20263
-> >  bpf_prog_load+0x110e/0x1b20 kernel/bpf/syscall.c:2717
-> >  __sys_bpf+0xfcf/0x4380 kernel/bpf/syscall.c:5365
-> >  __do_sys_bpf kernel/bpf/syscall.c:5469 [inline]
-> >  __se_sys_bpf kernel/bpf/syscall.c:5467 [inline]
-> >  __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:5467
-> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-> >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> > RIP: 0033:0x5610511e23cd
-> > Code: 24 80 00 00 00 48 0f 42 d0 48 89 94 24 68 0c 00 00 b8 41 01 00
-> > 00 bf 05 00 00 00 ba 90 00 00 00 48 8d b44
-> > RSP: 002b:00007f5357fc7820 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> > RAX: ffffffffffffffda RBX: 0000000000000095 RCX: 00005610511e23cd
-> > RDX: 0000000000000090 RSI: 00007f5357fc8410 RDI: 0000000000000005
-> > RBP: 0000000000000000 R08: 00007f5357fca458 R09: 00007f5350005520
-> > R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000002b
-> > R13: 0000000d00000000 R14: 000000000000002b R15: 000000000000002b
-> >  </TASK>
-> >
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> ---
+>   include/net/pkt_cls.h    | 12 ++++++++++++
+>   net/sched/cls_basic.c    |  2 +-
+>   net/sched/cls_bpf.c      |  2 +-
+>   net/sched/cls_flower.c   |  2 +-
+>   net/sched/cls_fw.c       |  2 +-
+>   net/sched/cls_matchall.c |  2 +-
+>   net/sched/cls_route.c    |  4 ++--
+>   net/sched/cls_u32.c      |  2 +-
+>   8 files changed, 20 insertions(+), 8 deletions(-)
+>
+> diff --git a/include/net/pkt_cls.h b/include/net/pkt_cls.h
+> index a76c9171db0e..31d8e8587824 100644
+> --- a/include/net/pkt_cls.h
+> +++ b/include/net/pkt_cls.h
+> @@ -160,6 +160,18 @@ static inline void tcf_set_drop_reason(struct tcf_re=
+sult *res,
+>         res->drop_reason =3D reason;
+>   }
+>
+> +static inline void tcf_set_result(struct tcf_result *to,
+> +                                 const struct tcf_result *from)
+> +{
+> +       /* tcf_result's drop_reason which is the last member must be
+> +        * preserved and cannot be copied from the cls'es tcf_result
+> +        * template given this is carried all the way and potentially
+> +        * set to a concrete tc drop reason upon error or intentional
+> +        * drop. See tcf_set_drop_reason() locations.
+> +        */
+> +       memcpy(to, from, offsetof(typeof(*to), drop_reason));
+> +}
+> +
 
-Here is another similar one, which can probably be fixed in the same
-patch. Build the kernel with UBSAN and run the following repro can
-easily reproduce this.
+Daniel, IMO, doing this at cls_api is best instead (like what Victors
+or my original patch did). Iam ~30K feet right now with a lousy
+keyboard - you can either do it, or i or Victor can send the patch by
+end of day today. There are missing cases which were covered by Victor
+and possibly something else will pop up next.
 
-C reproducer: https://pastebin.com/raw/zNfHaBnj
+cheers,
+jamal
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-UBSAN: shift-out-of-bounds in kernel/bpf/verifier.c:13049:63
-shift exponent 55 is too large for 32-bit type 'int'
-CPU: 3 PID: 8614 Comm: poc Not tainted 6.6.0-rc5-01400-g7c2f6c9fb91f-dirty =
-#22
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/=
-2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x8e/0xb0 lib/dump_stack.c:106
- ubsan_epilogue lib/ubsan.c:217 [inline]
- __ubsan_handle_shift_out_of_bounds+0x15a/0x2f0 lib/ubsan.c:387
- scalar32_min_max_arsh kernel/bpf/verifier.c:13049 [inline]
- adjust_scalar_min_max_vals kernel/bpf/verifier.c:13237 [inline]
- adjust_reg_min_max_vals.cold+0x116/0x353 kernel/bpf/verifier.c:13338
- do_check kernel/bpf/verifier.c:16890 [inline]
- do_check_common+0x2f64/0xbb80 kernel/bpf/verifier.c:19563
- do_check_main kernel/bpf/verifier.c:19626 [inline]
- bpf_check+0x65cf/0xa9e0 kernel/bpf/verifier.c:20263
- bpf_prog_load+0x110e/0x1b20 kernel/bpf/syscall.c:2717
- __sys_bpf+0xfcf/0x4380 kernel/bpf/syscall.c:5365
- __do_sys_bpf kernel/bpf/syscall.c:5469 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5467 [inline]
- __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:5467
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x43b0a9
-Code: 48 83 c4 28 c3 e8 17 1a 00 00 0f 1f 80 00 00 00 00 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 48
-RSP: 002b:00007fffec705b18 EFLAGS: 00000202 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007fffec705ff8 RCX: 000000000043b0a9
-RDX: 0000000000000080 RSI: 00007fffec705b30 RDI: 0000000000000005
-RBP: 00007fffec705c00 R08: 0000000400000002 R09: 0000003e00000000
-R10: 00000000000000fc R11: 0000000000000202 R12: 0000000000000001
-R13: 00007fffec705fe8 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
+>   static inline void
+>   __tcf_bind_filter(struct Qdisc *q, struct tcf_result *r, unsigned long =
+base)
+>   {
+> diff --git a/net/sched/cls_basic.c b/net/sched/cls_basic.c
+> index 1b92c33b5f81..d7ead3fc3c45 100644
+> --- a/net/sched/cls_basic.c
+> +++ b/net/sched/cls_basic.c
+> @@ -50,7 +50,7 @@ TC_INDIRECT_SCOPE int basic_classify(struct sk_buff *sk=
+b,
+>                 if (!tcf_em_tree_match(skb, &f->ematches, NULL))
+>                         continue;
+>                 __this_cpu_inc(f->pf->rhit);
+> -               *res =3D f->res;
+> +               tcf_set_result(res, &f->res);
+>                 r =3D tcf_exts_exec(skb, &f->exts, res);
+>                 if (r < 0)
+>                         continue;
+> diff --git a/net/sched/cls_bpf.c b/net/sched/cls_bpf.c
+> index 382c7a71f81f..e4620a462bc3 100644
+> --- a/net/sched/cls_bpf.c
+> +++ b/net/sched/cls_bpf.c
+> @@ -124,7 +124,7 @@ TC_INDIRECT_SCOPE int cls_bpf_classify(struct sk_buff=
+ *skb,
+>                         res->class   =3D 0;
+>                         res->classid =3D filter_res;
+>                 } else {
+> -                       *res =3D prog->res;
+> +                       tcf_set_result(res, &prog->res);
+>                 }
+>
+>                 ret =3D tcf_exts_exec(skb, &prog->exts, res);
+> diff --git a/net/sched/cls_flower.c b/net/sched/cls_flower.c
+> index e5314a31f75a..eb94090fb26c 100644
+> --- a/net/sched/cls_flower.c
+> +++ b/net/sched/cls_flower.c
+> @@ -341,7 +341,7 @@ TC_INDIRECT_SCOPE int fl_classify(struct sk_buff *skb=
+,
+>
+>                 f =3D fl_mask_lookup(mask, &skb_key);
+>                 if (f && !tc_skip_sw(f->flags)) {
+> -                       *res =3D f->res;
+> +                       tcf_set_result(res, &f->res);
+>                         return tcf_exts_exec(skb, &f->exts, res);
+>                 }
+>         }
+> diff --git a/net/sched/cls_fw.c b/net/sched/cls_fw.c
+> index c49d6af0e048..70b873f8771f 100644
+> --- a/net/sched/cls_fw.c
+> +++ b/net/sched/cls_fw.c
+> @@ -63,7 +63,7 @@ TC_INDIRECT_SCOPE int fw_classify(struct sk_buff *skb,
+>                 for (f =3D rcu_dereference_bh(head->ht[fw_hash(id)]); f;
+>                      f =3D rcu_dereference_bh(f->next)) {
+>                         if (f->id =3D=3D id) {
+> -                               *res =3D f->res;
+> +                               tcf_set_result(res, &f->res);
+>                                 if (!tcf_match_indev(skb, f->ifindex))
+>                                         continue;
+>                                 r =3D tcf_exts_exec(skb, &f->exts, res);
+> diff --git a/net/sched/cls_matchall.c b/net/sched/cls_matchall.c
+> index c4ed11df6254..a4018db80a60 100644
+> --- a/net/sched/cls_matchall.c
+> +++ b/net/sched/cls_matchall.c
+> @@ -37,7 +37,7 @@ TC_INDIRECT_SCOPE int mall_classify(struct sk_buff *skb=
+,
+>         if (tc_skip_sw(head->flags))
+>                 return -1;
+>
+> -       *res =3D head->res;
+> +       tcf_set_result(res, &head->res);
+>         __this_cpu_inc(head->pf->rhit);
+>         return tcf_exts_exec(skb, &head->exts, res);
+>   }
+> diff --git a/net/sched/cls_route.c b/net/sched/cls_route.c
+> index 1424bfeaca73..cbfaa1d1820f 100644
+> --- a/net/sched/cls_route.c
+> +++ b/net/sched/cls_route.c
+> @@ -109,7 +109,7 @@ static inline int route4_hash_wild(void)
+>
+>   #define ROUTE4_APPLY_RESULT()                                 \
+>   {                                                             \
+> -       *res =3D f->res;                                          \
+> +       tcf_set_result(res, &f->res);                           \
+>         if (tcf_exts_has_actions(&f->exts)) {                   \
+>                 int r =3D tcf_exts_exec(skb, &f->exts, res);      \
+>                 if (r < 0) {                                    \
+> @@ -152,7 +152,7 @@ TC_INDIRECT_SCOPE int route4_classify(struct sk_buff =
+*skb,
+>                         goto failure;
+>                 }
+>
+> -               *res =3D f->res;
+> +               tcf_set_result(res, &f->res);
+>                 spin_unlock(&fastmap_lock);
+>                 return 0;
+>         }
+> diff --git a/net/sched/cls_u32.c b/net/sched/cls_u32.c
+> index 6663e971a13e..f50ae40a29d5 100644
+> --- a/net/sched/cls_u32.c
+> +++ b/net/sched/cls_u32.c
+> @@ -172,7 +172,7 @@ TC_INDIRECT_SCOPE int u32_classify(struct sk_buff *sk=
+b,
+>   check_terminal:
+>                         if (n->sel.flags & TC_U32_TERMINAL) {
+>
+> -                               *res =3D n->res;
+> +                               tcf_set_result(res, &n->res);
+>                                 if (!tcf_match_indev(skb, n->ifindex)) {
+>                                         n =3D rcu_dereference_bh(n->next)=
+;
+>                                         goto next_knode;
+> --
+> 2.34.1
+>
 
