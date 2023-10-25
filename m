@@ -1,197 +1,252 @@
-Return-Path: <bpf+bounces-13243-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13244-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A6747D6CEE
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 15:17:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 561717D6CFD
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 15:20:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12520281C9D
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 13:17:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86A141C20DD1
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 13:20:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A844C27702;
-	Wed, 25 Oct 2023 13:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679AF27ECB;
+	Wed, 25 Oct 2023 13:20:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="YUExOLi3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lQ+3z9/Q"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28BC42D61E
-	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 13:17:51 +0000 (UTC)
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4324A116
-	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 06:17:49 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d9a4c0d89f7so5015742276.1
-        for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 06:17:49 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33AB71380
+	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 13:20:44 +0000 (UTC)
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEE1111;
+	Wed, 25 Oct 2023 06:20:42 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d84c24a810dso4894028276.2;
+        Wed, 25 Oct 2023 06:20:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1698239868; x=1698844668; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698240041; x=1698844841; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OhI+0U3C4maNiYVWrEGT2SlLeFp5Rtq5XADzsjH+0y0=;
-        b=YUExOLi3bB63BLB3LmYOz5fXJsFz3giuSe6MQq8EMmn0CbAicL3fynsuabXbu5RnpM
-         8YerNvWGWSvLxa4RpdC8ZKkr6GO+zdwHREY0+u6WbPDTZxY+HFatJXYan1fFXjo1IKdZ
-         vGEF4K/J3gwmKsairkEsU5iQ7q5Z1Av03mCrwGf7P42OsacRgFuwDhR5676fhGxlXki8
-         lFKd24FRToX7wRSQOqIZAmTOxSTYCIl9/0b9RZGhHsO3R6+yi2d9Zi1Uwp5XD+D9tPlf
-         s1OBenoev16RvP2Jd8aoDcQDGm7D28qgTAnINVZAzfr0KmVchGFRN/KpvWSgc+Mwd0iC
-         2fsw==
+        bh=LPF+5Rsz+apiPCuGIdBu5hhoVuX8IXXK92UDgsE51EY=;
+        b=lQ+3z9/Q2uCxd+cHRxB6CqFsfiidtLdbnZy/LXXV6WCOindSSmnv7YOPbgrL7hy02b
+         lGYAOEr+gl/mhsV61L8Atqt0H1FuDIQg5EO9RCOnQPLr368tijIBG1+cNiqOWxiR2npA
+         8DXqYsEGC0iaHlJGCPsJgBgW4cISVW/BMHNIouoswdsdJ8a2B9uwqRTd83xSrb7a2XBl
+         6XizrbOo8Go4hJJg8X0Fb+umpOdhJi8Nr8LxXQ+XdYvRsHrNQXlIVyZ6A60tPZyIF3ET
+         gGzft78Z55PDIKi95hzu8VdK8Vohxng93ZPZ9QSk2HxVmWLKH/5UfgXXFaLL43IIPrEq
+         PdJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698239868; x=1698844668;
+        d=1e100.net; s=20230601; t=1698240041; x=1698844841;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OhI+0U3C4maNiYVWrEGT2SlLeFp5Rtq5XADzsjH+0y0=;
-        b=uyfyK52KAJc8odhkDt8cl+7tagFfzXDBuc8lUTkuoJB+6Nz5VFAsRWKJm4xHO0oMKA
-         QSCnbVTOzNY/yfdPq06P7iq+IxFZ2o0oYRDpfkKJkc87wWO7n2j1nEThBxsKMkVkElGe
-         QSWIznKgRCbJQ0d6K8VPGi4BhksHGTBwUj3XcGlH+F5Ocpt45WL788tt+nh5xv4Yl1qd
-         FZqzdMjCB/Px2RSAIxVoU3RvbNuJZVeLw5tKj/lBp284JNK9ZU48AgZfR7SP6dGjNbiN
-         B3cTfhzQw55Hq2TJOG9FLUbgBszfEbSy+7i1r3fYp4AUYqKUR1RG8OQwTAbTAPeoGsdV
-         WLQw==
-X-Gm-Message-State: AOJu0YzEYWg6df4HcEdP/NiaUYCvvouaD3DmR+T9L6SYpslbbPgxsRxe
-	JvgzJVmFPixA8bVbrjsaZR2KaGMo7fYkVFlnGYLH
-X-Google-Smtp-Source: AGHT+IEmM4VRNzvMlwEig7LRJ0/I8fW70H8OJI07w9jqnVgfL3k2gIIT/BmMHa1TUskU3QK75Bw+pBd7fYHozFYVqsg=
-X-Received: by 2002:a25:5856:0:b0:da0:86e8:aea4 with SMTP id
- m83-20020a255856000000b00da086e8aea4mr840904ybb.57.1698239868426; Wed, 25 Oct
- 2023 06:17:48 -0700 (PDT)
+        bh=LPF+5Rsz+apiPCuGIdBu5hhoVuX8IXXK92UDgsE51EY=;
+        b=TeVw5nrcnvFwRnkyh8PaA6IyyxdcOSqWO8bAmPr3pW9lw5LpDQHyIdnDRFQ296C0tl
+         kwmEDnLixlSc+esnWkIdL8NCdY89h2PBIVj9naMco5bNBuqGAJZKIKUPL2u0rZ1u7Ujj
+         f05svS0NnzRq4vu+efQytoiQR0OeTAQ26OpTp0wttCyEQnS/1hbFbR7VdtqiQlCyLD7j
+         N2QjX51caMokYn3XqL9xff8f6mtoMIgXCQkrgRcKQf2yVu5sZD+8EoHt29tn5ZGou+E0
+         mB0r3GYP5G9O939QMfCzP2hnMc8JDCqWvLWaMKC2FCkGpcuPverYghnImVqNY2UIhthI
+         B00w==
+X-Gm-Message-State: AOJu0Yx+5V0drmcpQiYatuviFaDc7SWB+3EVfV5/AA7VLtELEOKVks6n
+	RyqPUocrgGFy4iPk1OznSKcbPbvw4HutZT+Irg==
+X-Google-Smtp-Source: AGHT+IFLcsLSPKofOHu3dzTz4AZ1rnCSfsnB8IkZsu8AAEegFHBMsO/Qf1WLF1WQHbiJsXgzosCssWZXEzoyfbfzDeg=
+X-Received: by 2002:a25:aca0:0:b0:d9a:4d90:feda with SMTP id
+ x32-20020a25aca0000000b00d9a4d90fedamr261633ybi.62.1698240041458; Wed, 25 Oct
+ 2023 06:20:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
-In-Reply-To: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
-From: Paul Moore <paul@paul-moore.com>
-Date: Wed, 25 Oct 2023 09:17:37 -0400
-Message-ID: <CAHC9VhThNGA+qRgs=rOmEfvffj3qLzB=Jx4ii-uksuU1YJ6F5w@mail.gmail.com>
-Subject: Re: [RESEND RFC PATCH v2 00/14] device_cgroup: guard mknod for
- non-initial user namespace
-To: =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>, Christian Brauner <brauner@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Quentin Monnet <quentin@isovalent.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, gyroidos@aisec.fraunhofer.de, 
-	linux-security-module@vger.kernel.org
+References: <CACkBjsY2q1_fUohD7hRmKGqv1MV=eP2f6XK8kjkYNw7BaiF8iQ@mail.gmail.com>
+ <CACkBjsbYMC7PgoGDK71fnqJ3QMywrwoA5Ctzh84Ldp6U_+_Ygg@mail.gmail.com>
+In-Reply-To: <CACkBjsbYMC7PgoGDK71fnqJ3QMywrwoA5Ctzh84Ldp6U_+_Ygg@mail.gmail.com>
+From: Hao Sun <sunhao.th@gmail.com>
+Date: Wed, 25 Oct 2023 15:20:29 +0200
+Message-ID: <CACkBjsYHN2VGjRUV_KA+EBPYeOjBbOgysj4JVBFqd6pPBN-_0w@mail.gmail.com>
+Subject: Re: bpf: shift-out-of-bounds in tnum_rshift()
+To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 25, 2023 at 5:42=E2=80=AFAM Michael Wei=C3=9F
-<michael.weiss@aisec.fraunhofer.de> wrote:
+On Wed, Oct 25, 2023 at 2:31=E2=80=AFPM Hao Sun <sunhao.th@gmail.com> wrote=
+:
 >
-> Introduce the flag BPF_DEVCG_ACC_MKNOD_UNS for bpf programs of type
-> BPF_PROG_TYPE_CGROUP_DEVICE which allows to guard access to mknod
-> in non-initial user namespaces.
+> On Tue, Oct 24, 2023 at 2:40=E2=80=AFPM Hao Sun <sunhao.th@gmail.com> wro=
+te:
+> >
+> > Hi,
+> >
+> > The following program can trigger a shift-out-of-bounds in
+> > tnum_rshift(), called by scalar32_min_max_rsh():
+> >
+> > 0: (bc) w0 =3D w1
+> > 1: (bf) r2 =3D r0
+> > 2: (18) r3 =3D 0xd
+> > 4: (bc) w4 =3D w0
+> > 5: (bf) r5 =3D r0
+> > 6: (bf) r7 =3D r3
+> > 7: (bf) r8 =3D r4
+> > 8: (2f) r8 *=3D r5
+> > 9: (cf) r5 s>>=3D r5
+> > 10: (a6) if w8 < 0xfffffffb goto pc+10
+> > 11: (1f) r7 -=3D r5
+> > 12: (71) r6 =3D *(u8 *)(r1 +17)
+> > 13: (5f) r3 &=3D r8
+> > 14: (74) w2 >>=3D 30
+> > 15: (1f) r7 -=3D r5
+> > 16: (5d) if r8 !=3D r6 goto pc+4
+> > 17: (c7) r8 s>>=3D 5
+> > 18: (cf) r0 s>>=3D r0
+> > 19: (7f) r0 >>=3D r0
+> > 20: (7c) w5 >>=3D w8         # shift-out-bounds here
+> > 21: exit
+> >
 >
-> If a container manager restricts its unprivileged (user namespaced)
-> children by a device cgroup, it is not necessary to deny mknod()
-> anymore. Thus, user space applications may map devices on different
-> locations in the file system by using mknod() inside the container.
+> Here are the c macros for the above program in case anyone needs this:
 >
-> A use case for this, we also use in GyroidOS, is to run virsh for
-> VMs inside an unprivileged container. virsh creates device nodes,
-> e.g., "/var/run/libvirt/qemu/11-fgfg.dev/null" which currently fails
-> in a non-initial userns, even if a cgroup device white list with the
-> corresponding major, minor of /dev/null exists. Thus, in this case
-> the usual bind mounts or pre populated device nodes under /dev are
-> not sufficient.
+>         // 0: (bc) w0 =3D w1
+>         BPF_MOV32_REG(BPF_REG_0, BPF_REG_1),
+>         // 1: (bf) r2 =3D r0
+>         BPF_MOV64_REG(BPF_REG_2, BPF_REG_0),
+>         // 2: (18) r3 =3D 0xd
+>         BPF_LD_IMM64(BPF_REG_3, 0xd),
+>         // 4: (bc) w4 =3D w0
+>         BPF_MOV32_REG(BPF_REG_4, BPF_REG_0),
+>         // 5: (bf) r5 =3D r0
+>         BPF_MOV64_REG(BPF_REG_5, BPF_REG_0),
+>         // 6: (bf) r7 =3D r3
+>         BPF_MOV64_REG(BPF_REG_7, BPF_REG_3),
+>         // 7: (bf) r8 =3D r4
+>         BPF_MOV64_REG(BPF_REG_8, BPF_REG_4),
+>         // 8: (2f) r8 *=3D r5
+>         BPF_ALU64_REG(BPF_MUL, BPF_REG_8, BPF_REG_5),
+>         // 9: (cf) r5 s>>=3D r5
+>         BPF_ALU64_REG(BPF_ARSH, BPF_REG_5, BPF_REG_5),
+>         // 10: (a6) if w8 < 0xfffffffb goto pc+10
+>         BPF_JMP32_IMM(BPF_JLT, BPF_REG_8, 0xfffffffb, 10),
+>         // 11: (1f) r7 -=3D r5
+>         BPF_ALU64_REG(BPF_SUB, BPF_REG_7, BPF_REG_5),
+>         // 12: (71) r6 =3D *(u8 *)(r1 +17)
+>         BPF_LDX_MEM(BPF_B, BPF_REG_6, BPF_REG_1, 17),
+>         // 13: (5f) r3 &=3D r8
+>         BPF_ALU64_REG(BPF_AND, BPF_REG_3, BPF_REG_8),
+>         // 14: (74) w2 >>=3D 30
+>         BPF_ALU32_IMM(BPF_RSH, BPF_REG_2, 30),
+>         // 15: (1f) r7 -=3D r5
+>         BPF_ALU64_REG(BPF_SUB, BPF_REG_7, BPF_REG_5),
+>         // 16: (5d) if r8 !=3D r6 goto pc+4
+>         BPF_JMP_REG(BPF_JNE, BPF_REG_8, BPF_REG_6, 4),
+>         // 17: (c7) r8 s>>=3D 5
+>         BPF_ALU64_IMM(BPF_ARSH, BPF_REG_8, 5),
+>         // 18: (cf) r0 s>>=3D r0
+>         BPF_ALU64_REG(BPF_ARSH, BPF_REG_0, BPF_REG_0),
+>         // 19: (7f) r0 >>=3D r0
+>         BPF_ALU64_REG(BPF_RSH, BPF_REG_0, BPF_REG_0),
+>         // 20: (7c) w5 >>=3D w8
+>         BPF_ALU32_REG(BPF_RSH, BPF_REG_5, BPF_REG_8),
+>         BPF_EXIT_INSN()
 >
-> To circumvent this limitation, allow mknod() by checking CAP_MKNOD
-> in the userns by implementing the security_inode_mknod_nscap(). The
-> hook implementation checks if the corresponding permission flag
-> BPF_DEVCG_ACC_MKNOD_UNS is set for the device in the bpf program.
-> To avoid to create unusable inodes in user space the hook also
-> checks SB_I_NODEV on the corresponding super block.
->
-> Further, the security_sb_alloc_userns() hook is implemented using
-> cgroup_bpf_current_enabled() to allow usage of device nodes on super
-> blocks mounted by a guarded task.
->
-> Patch 1 to 3 rework the current devcgroup_inode hooks as an LSM
->
-> Patch 4 to 8 rework explicit calls to devcgroup_check_permission
-> also as LSM hooks and finalize the conversion of the device_cgroup
-> subsystem to a LSM.
->
-> Patch 9 and 10 introduce new generic security hooks to be used
-> for the actual mknod device guard implementation.
->
-> Patch 11 wires up the security hooks in the vfs
->
-> Patch 12 and 13 provide helper functions in the bpf cgroup
-> subsystem.
->
-> Patch 14 finally implement the LSM hooks to grand access
->
-> Signed-off-by: Michael Wei=C3=9F <michael.weiss@aisec.fraunhofer.de>
-> ---
-> Changes in v2:
-> - Integrate this as LSM (Christian, Paul)
-> - Switched to a device cgroup specific flag instead of a generic
->   bpf program flag (Christian)
-> - do not ignore SB_I_NODEV in fs/namei.c but use LSM hook in
->   sb_alloc_super in fs/super.c
-> - Link to v1: https://lore.kernel.org/r/20230814-devcg_guard-v1-0-654971a=
-b88b1@aisec.fraunhofer.de
->
-> Michael Wei=C3=9F (14):
->   device_cgroup: Implement devcgroup hooks as lsm security hooks
->   vfs: Remove explicit devcgroup_inode calls
->   device_cgroup: Remove explicit devcgroup_inode hooks
->   lsm: Add security_dev_permission() hook
->   device_cgroup: Implement dev_permission() hook
->   block: Switch from devcgroup_check_permission to security hook
->   drm/amdkfd: Switch from devcgroup_check_permission to security hook
->   device_cgroup: Hide devcgroup functionality completely in lsm
->   lsm: Add security_inode_mknod_nscap() hook
->   lsm: Add security_sb_alloc_userns() hook
->   vfs: Wire up security hooks for lsm-based device guard in userns
->   bpf: Add flag BPF_DEVCG_ACC_MKNOD_UNS for device access
->   bpf: cgroup: Introduce helper cgroup_bpf_current_enabled()
->   device_cgroup: Allow mknod in non-initial userns if guarded
->
->  block/bdev.c                                 |   9 +-
->  drivers/gpu/drm/amd/amdkfd/kfd_priv.h        |   7 +-
->  fs/namei.c                                   |  24 ++--
->  fs/super.c                                   |   6 +-
->  include/linux/bpf-cgroup.h                   |   2 +
->  include/linux/device_cgroup.h                |  67 -----------
->  include/linux/lsm_hook_defs.h                |   4 +
->  include/linux/security.h                     |  18 +++
->  include/uapi/linux/bpf.h                     |   1 +
->  init/Kconfig                                 |   4 +
->  kernel/bpf/cgroup.c                          |  14 +++
->  security/Kconfig                             |   1 +
->  security/Makefile                            |   2 +-
->  security/device_cgroup/Kconfig               |   7 ++
->  security/device_cgroup/Makefile              |   4 +
->  security/{ =3D> device_cgroup}/device_cgroup.c |   3 +-
->  security/device_cgroup/device_cgroup.h       |  20 ++++
->  security/device_cgroup/lsm.c                 | 114 +++++++++++++++++++
->  security/security.c                          |  75 ++++++++++++
->  19 files changed, 294 insertions(+), 88 deletions(-)
->  delete mode 100644 include/linux/device_cgroup.h
->  create mode 100644 security/device_cgroup/Kconfig
->  create mode 100644 security/device_cgroup/Makefile
->  rename security/{ =3D> device_cgroup}/device_cgroup.c (99%)
->  create mode 100644 security/device_cgroup/device_cgroup.h
->  create mode 100644 security/device_cgroup/lsm.c
+> > After load:
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> > UBSAN: shift-out-of-bounds in kernel/bpf/tnum.c:44:9
+> > shift exponent 255 is too large for 64-bit type 'long long unsigned int=
+'
+> > CPU: 2 PID: 8574 Comm: bpf-test Not tainted
+> > 6.6.0-rc5-01400-g7c2f6c9fb91f-dirty #21
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04=
+/01/2014
+> > Call Trace:
+> >  <TASK>
+> >  __dump_stack lib/dump_stack.c:88 [inline]
+> >  dump_stack_lvl+0x8e/0xb0 lib/dump_stack.c:106
+> >  ubsan_epilogue lib/ubsan.c:217 [inline]
+> >  __ubsan_handle_shift_out_of_bounds+0x15a/0x2f0 lib/ubsan.c:387
+> >  tnum_rshift.cold+0x17/0x32 kernel/bpf/tnum.c:44
+> >  scalar32_min_max_rsh kernel/bpf/verifier.c:12999 [inline]
+> >  adjust_scalar_min_max_vals kernel/bpf/verifier.c:13224 [inline]
+> >  adjust_reg_min_max_vals+0x1936/0x5d50 kernel/bpf/verifier.c:13338
+> >  do_check kernel/bpf/verifier.c:16890 [inline]
+> >  do_check_common+0x2f64/0xbb80 kernel/bpf/verifier.c:19563
+> >  do_check_main kernel/bpf/verifier.c:19626 [inline]
+> >  bpf_check+0x65cf/0xa9e0 kernel/bpf/verifier.c:20263
+> >  bpf_prog_load+0x110e/0x1b20 kernel/bpf/syscall.c:2717
+> >  __sys_bpf+0xfcf/0x4380 kernel/bpf/syscall.c:5365
+> >  __do_sys_bpf kernel/bpf/syscall.c:5469 [inline]
+> >  __se_sys_bpf kernel/bpf/syscall.c:5467 [inline]
+> >  __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:5467
+> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+> >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > RIP: 0033:0x5610511e23cd
+> > Code: 24 80 00 00 00 48 0f 42 d0 48 89 94 24 68 0c 00 00 b8 41 01 00
+> > 00 bf 05 00 00 00 ba 90 00 00 00 48 8d b44
+> > RSP: 002b:00007f5357fc7820 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> > RAX: ffffffffffffffda RBX: 0000000000000095 RCX: 00005610511e23cd
+> > RDX: 0000000000000090 RSI: 00007f5357fc8410 RDI: 0000000000000005
+> > RBP: 0000000000000000 R08: 00007f5357fca458 R09: 00007f5350005520
+> > R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000002b
+> > R13: 0000000d00000000 R14: 000000000000002b R15: 000000000000002b
+> >  </TASK>
+> >
 
-Hi Michael,
+Here is another similar one, which can probably be fixed in the same
+patch. Build the kernel with UBSAN and run the following repro can
+easily reproduce this.
 
-I think this was lost because it wasn't CC'd to the LSM list (see
-below).  I've CC'd the list on my reply, but future patch submissions
-that involve the LSM must be posted to the LSM list if you would like
-them to be considered.
+C reproducer: https://pastebin.com/raw/zNfHaBnj
 
-http://vger.kernel.org/vger-lists.html#linux-security-module
-
---=20
-paul-moore.com
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+UBSAN: shift-out-of-bounds in kernel/bpf/verifier.c:13049:63
+shift exponent 55 is too large for 32-bit type 'int'
+CPU: 3 PID: 8614 Comm: poc Not tainted 6.6.0-rc5-01400-g7c2f6c9fb91f-dirty =
+#22
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/=
+2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x8e/0xb0 lib/dump_stack.c:106
+ ubsan_epilogue lib/ubsan.c:217 [inline]
+ __ubsan_handle_shift_out_of_bounds+0x15a/0x2f0 lib/ubsan.c:387
+ scalar32_min_max_arsh kernel/bpf/verifier.c:13049 [inline]
+ adjust_scalar_min_max_vals kernel/bpf/verifier.c:13237 [inline]
+ adjust_reg_min_max_vals.cold+0x116/0x353 kernel/bpf/verifier.c:13338
+ do_check kernel/bpf/verifier.c:16890 [inline]
+ do_check_common+0x2f64/0xbb80 kernel/bpf/verifier.c:19563
+ do_check_main kernel/bpf/verifier.c:19626 [inline]
+ bpf_check+0x65cf/0xa9e0 kernel/bpf/verifier.c:20263
+ bpf_prog_load+0x110e/0x1b20 kernel/bpf/syscall.c:2717
+ __sys_bpf+0xfcf/0x4380 kernel/bpf/syscall.c:5365
+ __do_sys_bpf kernel/bpf/syscall.c:5469 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5467 [inline]
+ __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:5467
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x43b0a9
+Code: 48 83 c4 28 c3 e8 17 1a 00 00 0f 1f 80 00 00 00 00 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 48
+RSP: 002b:00007fffec705b18 EFLAGS: 00000202 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007fffec705ff8 RCX: 000000000043b0a9
+RDX: 0000000000000080 RSI: 00007fffec705b30 RDI: 0000000000000005
+RBP: 00007fffec705c00 R08: 0000000400000002 R09: 0000003e00000000
+R10: 00000000000000fc R11: 0000000000000202 R12: 0000000000000001
+R13: 00007fffec705fe8 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
 
