@@ -1,163 +1,216 @@
-Return-Path: <bpf+bounces-13200-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13201-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88A5D7D5FF3
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 04:28:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E51B7D604A
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 05:12:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B94551C20DAD
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 02:28:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52BF1B211BA
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 03:11:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6D131FCC;
-	Wed, 25 Oct 2023 02:28:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B85417EA;
+	Wed, 25 Oct 2023 03:11:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C5RWjBaF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YrhAuMOM"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182251C14
-	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 02:28:34 +0000 (UTC)
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC04B9C;
-	Tue, 24 Oct 2023 19:28:28 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5a7af45084eso49799737b3.0;
-        Tue, 24 Oct 2023 19:28:28 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6EC51FBF
+	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 03:11:50 +0000 (UTC)
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D4012A
+	for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 20:11:48 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6b89ab5ddb7so5170302b3a.0
+        for <bpf@vger.kernel.org>; Tue, 24 Oct 2023 20:11:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698200908; x=1698805708; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hkXuQzkQb+jK+JnLy74+lQFSLJd+H01wVDWMIZ2Mra8=;
-        b=C5RWjBaFAL8BFWcZ+eW0T+fLS/GW0/62fL9trz/QszVBEfVJtix66Ghk/9ERYnBPC2
-         nchs6dAdzSriViu+qrtBfX6aKggl+7haRW+1rG7s8Zav5UlewUh50dC9CC5Wbyfs4FZO
-         QdORIx8bF79KXRJyh0R6LJUW8cv+00kn3gigrj9Fb8sU2I/2fwfx9CzW1nr3NPR58ana
-         mHiGcZbmj7DK6P6DxSFH9th0dzSvUWqu6iS+cB4224UVf5G7wYLvEXFBNzsKHC1vwFLP
-         +qWF7MprOm0bHkHmuVFTP88CI3oBgHALBjRnys3letj5LfrC6S6+NTYqqEKhI0frpIWh
-         HQUA==
+        d=gmail.com; s=20230601; t=1698203508; x=1698808308; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1NFPkYnCos96tYWYoFb2Ur0uVJtm7asjgaJR8wmpc2g=;
+        b=YrhAuMOMK/J68ec0KEOyoeLZoNWNkMj1iB4+NpQbibSOrP91z997bqK+5So0yjHZVc
+         S+K8pd1cXSeRT1cR8emVYSYAcBe2NfU6nH2f7SqH0K0+lyeU2dzh7CHNzKqBUdclX1XB
+         8MUSETR9S+aNoCIbSA/UVTsUEASA+5hSbbsPNKD3X03NrgJ8eC5sCMuzwm2GY8cOSc0Q
+         bvuQRTAFeDxH2YhNpCoMbdQiUJkcQ+2PS8rjuzovXmUMOmvuWxGFn1C68DKkqjqWyYsK
+         fATQU1Da5feUBNxkUQ7nFYJlCwNGIU1Z5OfOfQyyRTU3GQpprExuQfiiqYV89rPCxxjq
+         4mnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698200908; x=1698805708;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hkXuQzkQb+jK+JnLy74+lQFSLJd+H01wVDWMIZ2Mra8=;
-        b=QbGdo0rIJoJIPOwPxI1JRls/3q7dJIXn/Bug7ZCNtWxezpPD9y/qT7Hw8W/lFCMfEI
-         dGqNl4+GXd6dx/O+4rR+67K2YDk6RMahJ7fQPjc/YKmaD3JA+ly0Y/fpLeHR0Fn82I1p
-         XbQf76pfHu6XKfRz5lCkqADPu4xyROPsYxUSwfBdA9JsDGVK0CuC6NYdpqr9Aya8a8b/
-         Ik46ggmzdLpT2KTrnHGpX0Ul4P9UHtU9oKsbwEKgTiX0Rma/P5vcfndeANLXwV/E0mFz
-         36K9cwaLsokoqI+eVrQtRKDYIqtagy4rbsriYyQWpGOBFDrpdrVgNOmNNQVPnjmZ521K
-         cdMQ==
-X-Gm-Message-State: AOJu0YwIBHxQ6U54ZEtVhvP7sjRmAR2vamMdQQXI48CLpIztSL/HNSX8
-	PkbSi5cn3pbUTnX6jerIByc=
-X-Google-Smtp-Source: AGHT+IG6Cs/nZ3XDq7UeLBk+Eo+fCu4fZ2A/k4C9XO3gtRuYUm+XXRQmaUII/q0OR3a9RMIIEAefOA==
-X-Received: by 2002:a81:6d8d:0:b0:5a7:b8e6:6441 with SMTP id i135-20020a816d8d000000b005a7b8e66441mr12768735ywc.16.1698200907837;
-        Tue, 24 Oct 2023 19:28:27 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:7b3b:34a0:2070:c5ce? ([2600:1700:6cf8:1240:7b3b:34a0:2070:c5ce])
-        by smtp.gmail.com with ESMTPSA id n189-20020a0de4c6000000b005777a2c356asm4570839ywe.65.2023.10.24.19.28.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Oct 2023 19:28:27 -0700 (PDT)
-Message-ID: <7d703c4c-1a24-4806-a483-c02efb666059@gmail.com>
-Date: Tue, 24 Oct 2023 19:28:24 -0700
+        d=1e100.net; s=20230601; t=1698203508; x=1698808308;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1NFPkYnCos96tYWYoFb2Ur0uVJtm7asjgaJR8wmpc2g=;
+        b=Uk4A54PGJco0zCZs5y84p69W5kUp7KxiVvoiZnN7JJ3D/X7xv7bpsi6Eg6uCxubHN/
+         z7Sz1hUly8TWxhcLlGn7V2lvwQxxVuSI2K9zfwXhkfXhfoC8ZsPecJr0mhTkdQ+gwIQd
+         lPOTTLn8Rgqe8nvic4IsK4eSKw2YsprFGxIYnWhiLciMkRSLNFu5/g6POJI3NqE7Fbrm
+         823mazwyLD12mgOI537Lhxdhlv/8OYMTIkQV3lBHQbb9RB/4OfY4pDAvmTWG+H0xHHdz
+         0lE2bF4H2xQqoFstn4kWPMMg/28xh5FCNKs5sfyrp+kU7GBFD8LTGKrttQM4ftgdrblM
+         Kfig==
+X-Gm-Message-State: AOJu0Yzj8wfybVwQyQGjUYfyLpTX2oA75SxyWgM8OnE76MkCJYFdJKdH
+	Lm6Xi3+zwEGFkdk989W2tjc=
+X-Google-Smtp-Source: AGHT+IFj2IYnSqE7jndsn20AWT8NuzHqDJyWkMMQusvBu/nARq3M5eyV7wqXGNqn66NwkpxSGl0MbQ==
+X-Received: by 2002:a05:6a20:7f9c:b0:173:f8c9:94ef with SMTP id d28-20020a056a207f9c00b00173f8c994efmr6376560pzj.41.1698203507643;
+        Tue, 24 Oct 2023 20:11:47 -0700 (PDT)
+Received: from vultr.guest ([2001:19f0:ac00:4bae:5400:4ff:fe9f:2311])
+        by smtp.gmail.com with ESMTPSA id i1-20020aa796e1000000b006bdf4dfbe0dsm8624790pfq.12.2023.10.24.20.11.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 20:11:47 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: alexei.starovoitov@gmail.com
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	gerhorst@cs.fau.de,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	laoar.shao@gmail.com,
+	martin.lau@linux.dev,
+	sdf@google.com,
+	song@kernel.org,
+	yonghong.song@linux.dev
+Subject: [PATCH v3 bpf-next] selftests/bpf: Fix selftests broken by mitigations=off
+Date: Wed, 25 Oct 2023 03:11:44 +0000
+Message-Id: <20231025031144.5508-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <CAADnVQKUBJqg+hHtbLeeC2jhoJAWqnmRAzXW3hmUCNSV9kx4sQ@mail.gmail.com>
+References: <CAADnVQKUBJqg+hHtbLeeC2jhoJAWqnmRAzXW3hmUCNSV9kx4sQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] selftests/bpf: Add malloc failure checks in
- bpf_iter
-Content-Language: en-US
-To: Yuran Pereira <yuran.pereira@hotmail.com>, yonghong.song@linux.dev
-Cc: shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, brauner@kernel.org,
- iii@linux.ibm.com, kuifeng@meta.com, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <DB3PR10MB68356D7CDF6005480BE5876CE8DEA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <DB3PR10MB68356D7CDF6005480BE5876CE8DEA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Thank you for the patches.
+When we configure the kernel command line with 'mitigations=off' and set
+the sysctl knob 'kernel.unprivileged_bpf_disabled' to 0, the commit
+bc5bc309db45 ("bpf: Inherit system settings for CPU security mitigations")
+causes issues in the execution of `test_progs -t verifier`. This is because
+'mitigations=off' bypasses Spectre v1 and Spectre v4 protections.
 
-I found you have two patches in this set.
-You can generate both patch at once with git format-patch.
-format-patch will give each patch a number in their order.
-For example, the subject of this message will be
+Currently, when a program requests to run in unprivileged mode
+(kernel.unprivileged_bpf_disabled = 0), the BPF verifier may prevent it
+from running due to the following conditions not being enabled:
 
-   [PATCH bpf-next 2/2] selftest/bpf: Add malloc ....
+  - bypass_spec_v1
+  - bypass_spec_v4
+  - allow_ptr_leaks
+  - allow_uninit_stack
 
-And, you put both patches in the same directory.  And sent them at once
-by giving the path of the directory. For example,
+While 'mitigations=off' enables the first two conditions, it does not
+enable the latter two. As a result, some test cases in
+'test_progs -t verifier' that were expected to fail to run may run
+successfully, while others still fail but with different error messages.
+This makes it challenging to address them comprehensively.
 
-   git send-email --to=bpf@vger.kernel.org path/to/the/directory/
+Moreover, in the future, we may introduce more fine-grained control over
+CPU mitigations, such as enabling only bypass_spec_v1 or bypass_spec_v4.
 
-These patches will be sent in a thread instead of two independent
-messages.
+Given the complexity of the situation, rather than fixing each broken test
+case individually, it's preferable to skip them when 'mitigations=off' is
+in effect and introduce specific test cases for the new 'mitigations=off'
+scenario. For instance, we can introduce new BTF declaration tags like
+'__failure__nospec', '__failure_nospecv1' and '__failure_nospecv4'.
 
-On 10/24/23 18:52, Yuran Pereira wrote:
-> Since some malloc calls in bpf_iter may at times fail,
-> this patch adds the appropriate fail checks, and ensures that
-> any previously allocated resource is appropriately destroyed
-> before returning the function.
-> 
-> This is patch 2 in the sequence should be applied after d1a88d37cecc
-> "selftests/bpf: Convert CHECK macros to ASSERT_* macros in bpf_iter"
-> 
-> Patch 1:
-> https://lore.kernel.org/lkml/DB3PR10MB683589A5F705C6CA5BE0D325E8DFA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
-> 
-> Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
-> ---
->   tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 10 +++++++++-
->   1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> index 526ac4e741ee..c6cf42c64af3 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> @@ -700,7 +700,7 @@ static void test_overflow(bool test_e2big_overflow, bool ret1)
->   		goto free_link;
->   
->   	buf = malloc(expected_read_len);
-> -	if (!buf)
-> +	if (!ASSERT_OK_PTR(buf, "malloc"))
->   		goto close_iter;
->   
->   	/* do read */
-> @@ -871,6 +871,10 @@ static void test_bpf_percpu_hash_map(void)
->   
->   	skel->rodata->num_cpus = bpf_num_possible_cpus();
->   	val = malloc(8 * bpf_num_possible_cpus());
-> +	if (!ASSERT_OK_PTR(val, "malloc")) {
-> +		bpf_iter_bpf_percpu_hash_map__destroy(skel);
-> +		return;
-> +	}
+In this patch, the approach is to simply skip the broken test cases when
+'mitigations=off' is enabled. The result of `test_progs -t verifier` as
+follows after this commit,
 
-You can just do "goto out;" here.
+Before this commit
+==================
+- without 'mitigations=off'
+  - kernel.unprivileged_bpf_disabled = 2
+    Summary: 74/948 PASSED, 388 SKIPPED, 0 FAILED
+  - kernel.unprivileged_bpf_disabled = 0
+    Summary: 74/1336 PASSED, 0 SKIPPED, 0 FAILED   <<<<
+- with 'mitigations=off'
+  - kernel.unprivileged_bpf_disabled = 2
+    Summary: 74/948 PASSED, 388 SKIPPED, 0 FAILED
+  - kernel.unprivileged_bpf_disabled = 0
+    Summary: 63/1276 PASSED, 0 SKIPPED, 11 FAILED   <<<< 11 FAILED
 
+After this commit
+=================
+- without 'mitigations=off'
+  - kernel.unprivileged_bpf_disabled = 2
+    Summary: 74/948 PASSED, 388 SKIPPED, 0 FAILED
+  - kernel.unprivileged_bpf_disabled = 0
+    Summary: 74/1336 PASSED, 0 SKIPPED, 0 FAILED    <<<<
+- with this patch, with 'mitigations=off'
+  - kernel.unprivileged_bpf_disabled = 2
+    Summary: 74/948 PASSED, 388 SKIPPED, 0 FAILED
+  - kernel.unprivileged_bpf_disabled = 0
+    Summary: 74/948 PASSED, 388 SKIPPED, 0 FAILED   <<<< SKIPPED
 
->   
->   	err = bpf_iter_bpf_percpu_hash_map__load(skel);
->   	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_percpu_hash_map__load"))
-> @@ -1048,6 +1052,10 @@ static void test_bpf_percpu_array_map(void)
->   
->   	skel->rodata->num_cpus = bpf_num_possible_cpus();
->   	val = malloc(8 * bpf_num_possible_cpus());
-> +	if (!ASSERT_OK_PTR(val, "malloc")) {
-> +		bpf_iter_bpf_percpu_array_map__destroy(skel);
-> +		return;
-> +	}
+Fixes: bc5bc309db45 ("bpf: Inherit system settings for CPU security mitigations")
+Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Closes: https://lore.kernel.org/bpf/CAADnVQKUBJqg+hHtbLeeC2jhoJAWqnmRAzXW3hmUCNSV9kx4sQ@mail.gmail.com
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+---
+ tools/testing/selftests/bpf/unpriv_helpers.c | 35 +++++++++++++++++++-
+ 1 file changed, 34 insertions(+), 1 deletion(-)
 
-Same here, even it will call free(val), free(val) will do nothing when
-val is NULL.
+diff --git a/tools/testing/selftests/bpf/unpriv_helpers.c b/tools/testing/selftests/bpf/unpriv_helpers.c
+index 2a6efbd0401e..7101e72ef4a3 100644
+--- a/tools/testing/selftests/bpf/unpriv_helpers.c
++++ b/tools/testing/selftests/bpf/unpriv_helpers.c
+@@ -4,9 +4,42 @@
+ #include <stdlib.h>
+ #include <error.h>
+ #include <stdio.h>
++#include <string.h>
++#include <unistd.h>
++#include <fcntl.h>
+ 
+ #include "unpriv_helpers.h"
+ 
++static bool get_mitigations_off(void)
++{
++	char cmdline[4096], *c;
++	int fd, ret = false;
++
++	fd = open("/proc/cmdline", O_RDONLY);
++	if (fd < 0) {
++		perror("open /proc/cmdline");
++		return false;
++	}
++
++	if (read(fd, cmdline, sizeof(cmdline) - 1) < 0) {
++		perror("read /proc/cmdline");
++		goto out;
++	}
++
++	cmdline[sizeof(cmdline) - 1] = '\0';
++	for (c = strtok(cmdline, " \n"); c; c = strtok(NULL, " \n")) {
++		if (strncmp(c, "mitigations=off", strlen(c)))
++			continue;
++
++		ret = true;
++		break;
++	}
++
++out:
++	close(fd);
++	return ret;
++}
++
+ bool get_unpriv_disabled(void)
+ {
+ 	bool disabled;
+@@ -22,5 +55,5 @@ bool get_unpriv_disabled(void)
+ 		disabled = true;
+ 	}
+ 
+-	return disabled;
++	return disabled ? true : get_mitigations_off();
+ }
+-- 
+2.39.3
 
->   
->   	err = bpf_iter_bpf_percpu_array_map__load(skel);
->   	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_percpu_array_map__load"))
 
