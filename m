@@ -1,157 +1,197 @@
-Return-Path: <bpf+bounces-13242-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13243-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B592A7D6C47
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 14:48:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A6747D6CEE
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 15:17:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4535FB21177
-	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 12:48:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12520281C9D
+	for <lists+bpf@lfdr.de>; Wed, 25 Oct 2023 13:17:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A32E26E34;
-	Wed, 25 Oct 2023 12:48:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A844C27702;
+	Wed, 25 Oct 2023 13:17:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lb+hckQO"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="YUExOLi3"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE291D694
-	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 12:48:40 +0000 (UTC)
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF3F8F;
-	Wed, 25 Oct 2023 05:48:38 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99de884ad25so847907866b.3;
-        Wed, 25 Oct 2023 05:48:38 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28BC42D61E
+	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 13:17:51 +0000 (UTC)
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4324A116
+	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 06:17:49 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d9a4c0d89f7so5015742276.1
+        for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 06:17:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698238117; x=1698842917; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=lDBBO9aUCbmnvIZqszT/VX5ewolQMx9uvDoEXdeJOhE=;
-        b=lb+hckQOtQWGzMyr7V3MIZ1DzVm8mWTBcThl8Ow9Kt5k4aBqZPq23QCIRv+urhBIea
-         GhJ55ui8BCvwde5NwPE9uhjUk6cYzBQRE+62h3L+NN9MO2gWtk3cLnXdjEFo9iRB9mmQ
-         yP2pbZfNpeYa09YTZlOTeRq9skipDhy/nFtfhKlYBccWA5kko8J0QIuWkoqDT7j82XXz
-         68EiPNBoTCtVLNU2o72zFl0VPsDEBmJbsfcDKl9uxUwCwRXd5JSt0lFQBEmkWJkwLgUl
-         vFWvcQHd87jVZF8JPJxeIQmS5GF+UuuvhmZ6P/AdizGUQAshoVeOrfFVAqgxOuH7S/ug
-         enuA==
+        d=paul-moore.com; s=google; t=1698239868; x=1698844668; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OhI+0U3C4maNiYVWrEGT2SlLeFp5Rtq5XADzsjH+0y0=;
+        b=YUExOLi3bB63BLB3LmYOz5fXJsFz3giuSe6MQq8EMmn0CbAicL3fynsuabXbu5RnpM
+         8YerNvWGWSvLxa4RpdC8ZKkr6GO+zdwHREY0+u6WbPDTZxY+HFatJXYan1fFXjo1IKdZ
+         vGEF4K/J3gwmKsairkEsU5iQ7q5Z1Av03mCrwGf7P42OsacRgFuwDhR5676fhGxlXki8
+         lFKd24FRToX7wRSQOqIZAmTOxSTYCIl9/0b9RZGhHsO3R6+yi2d9Zi1Uwp5XD+D9tPlf
+         s1OBenoev16RvP2Jd8aoDcQDGm7D28qgTAnINVZAzfr0KmVchGFRN/KpvWSgc+Mwd0iC
+         2fsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698238117; x=1698842917;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lDBBO9aUCbmnvIZqszT/VX5ewolQMx9uvDoEXdeJOhE=;
-        b=jvKmz/VMPVfmjrP+IDAcKvxZ/j0VM1vutn3vG/GTFJZqtUxJp3fjoopazN+KmDHrVf
-         EleFxknw5BBAtlX2U/ryPbwSHtgo8kz5ySl9xHjF09g6Lbvkj0luYBnihEkRoytxu2bJ
-         NW4L1jWfrp+BN6XNkllNp3+by+KYOmSvB+Ob+iUbzCaz2S/ICznCIk2+TRrVMBUPZBPD
-         UdA7jexHFspn3w/bHiuSXUvZN1wvpM3EeE3oQZLnV52RvbOSReusi58C9Gc5EJOIu6L+
-         N22+HYbl/UiW4ZKtDlFKCF9BlaTFBYiV2Cv7mZCWEJRAHbufk1rGwSmNtgLuLqq+9ieC
-         NMTw==
-X-Gm-Message-State: AOJu0YzTRUtSuMfAxiQu2QUwPN4CeevHz+ZULbuJBAZHZLxqUOw24Tvi
-	jj4Kt/Td3LgK9I3NVaZ2o68=
-X-Google-Smtp-Source: AGHT+IH+xdgf9ka4i9aSARe9WHYkOgLKKx49YPXySZZiohb5wLd1cbMImnZ/gvJA8JPNPVl2YXGE7g==
-X-Received: by 2002:a17:907:1c93:b0:9a5:c54f:da1c with SMTP id nb19-20020a1709071c9300b009a5c54fda1cmr12370080ejc.47.1698238117148;
-        Wed, 25 Oct 2023 05:48:37 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id v8-20020a17090606c800b009b27d4153c0sm9874738ejb.178.2023.10.25.05.48.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 05:48:36 -0700 (PDT)
-Message-ID: <940ed5abeb10f8e56d28dd003f2e771fc416fb3b.camel@gmail.com>
-Subject: Re: bpf: incorrect value spill in check_stack_write_fixed_off()
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
- <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
- KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>
-Cc: bpf <bpf@vger.kernel.org>, Linux Kernel Mailing List
-	 <linux-kernel@vger.kernel.org>
-Date: Wed, 25 Oct 2023 15:48:35 +0300
-In-Reply-To: <17e03fa708cf0c1d297c2fa3d139a22a358a65e7.camel@gmail.com>
-References: 
-	<CACkBjsYXA8myxoP0Naz=ZxB0FWG-xS9e28CSFffGk1bA_n5RXw@mail.gmail.com>
-	 <17e03fa708cf0c1d297c2fa3d139a22a358a65e7.camel@gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0 
+        d=1e100.net; s=20230601; t=1698239868; x=1698844668;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OhI+0U3C4maNiYVWrEGT2SlLeFp5Rtq5XADzsjH+0y0=;
+        b=uyfyK52KAJc8odhkDt8cl+7tagFfzXDBuc8lUTkuoJB+6Nz5VFAsRWKJm4xHO0oMKA
+         QSCnbVTOzNY/yfdPq06P7iq+IxFZ2o0oYRDpfkKJkc87wWO7n2j1nEThBxsKMkVkElGe
+         QSWIznKgRCbJQ0d6K8VPGi4BhksHGTBwUj3XcGlH+F5Ocpt45WL788tt+nh5xv4Yl1qd
+         FZqzdMjCB/Px2RSAIxVoU3RvbNuJZVeLw5tKj/lBp284JNK9ZU48AgZfR7SP6dGjNbiN
+         B3cTfhzQw55Hq2TJOG9FLUbgBszfEbSy+7i1r3fYp4AUYqKUR1RG8OQwTAbTAPeoGsdV
+         WLQw==
+X-Gm-Message-State: AOJu0YzEYWg6df4HcEdP/NiaUYCvvouaD3DmR+T9L6SYpslbbPgxsRxe
+	JvgzJVmFPixA8bVbrjsaZR2KaGMo7fYkVFlnGYLH
+X-Google-Smtp-Source: AGHT+IEmM4VRNzvMlwEig7LRJ0/I8fW70H8OJI07w9jqnVgfL3k2gIIT/BmMHa1TUskU3QK75Bw+pBd7fYHozFYVqsg=
+X-Received: by 2002:a25:5856:0:b0:da0:86e8:aea4 with SMTP id
+ m83-20020a255856000000b00da086e8aea4mr840904ybb.57.1698239868426; Wed, 25 Oct
+ 2023 06:17:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
+In-Reply-To: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
+From: Paul Moore <paul@paul-moore.com>
+Date: Wed, 25 Oct 2023 09:17:37 -0400
+Message-ID: <CAHC9VhThNGA+qRgs=rOmEfvffj3qLzB=Jx4ii-uksuU1YJ6F5w@mail.gmail.com>
+Subject: Re: [RESEND RFC PATCH v2 00/14] device_cgroup: guard mknod for
+ non-initial user namespace
+To: =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>, Christian Brauner <brauner@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Quentin Monnet <quentin@isovalent.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, gyroidos@aisec.fraunhofer.de, 
+	linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2023-10-25 at 15:14 +0300, Eduard Zingerman wrote:
-> On Wed, 2023-10-25 at 11:16 +0200, Hao Sun wrote:
-> > Hi,
-> >=20
-> > In check_stack_write_fixed_off(), the verifier creates a fake reg to st=
-ore the
-> > imm in a BPF_ST_MEM:
-> > ...
-> > else if (!reg && !(off % BPF_REG_SIZE) && is_bpf_st_mem(insn) &&
-> > insn->imm !=3D 0 && env->bpf_capable) {
-> >         struct bpf_reg_state fake_reg =3D {};
-> >=20
-> >         __mark_reg_known(&fake_reg, (u32)insn->imm);
-> >         fake_reg.type =3D SCALAR_VALUE;
-> >         save_register_state(state, spi, &fake_reg, size);
-> >=20
-> > Here, insn->imm is cast to u32, and used to mark fake_reg, which is inc=
-orrect
-> > and may lose sign information.
->=20
-> This bug is on me.
-> Thank you for reporting it along with the example program.
-> Looks like the patch below is sufficient to fix the issue.
-> Have no idea at the moment why I used u32 cast there.
-> Let me think a bit more about it and I'll submit an official patch.
+On Wed, Oct 25, 2023 at 5:42=E2=80=AFAM Michael Wei=C3=9F
+<michael.weiss@aisec.fraunhofer.de> wrote:
+>
+> Introduce the flag BPF_DEVCG_ACC_MKNOD_UNS for bpf programs of type
+> BPF_PROG_TYPE_CGROUP_DEVICE which allows to guard access to mknod
+> in non-initial user namespaces.
+>
+> If a container manager restricts its unprivileged (user namespaced)
+> children by a device cgroup, it is not necessary to deny mknod()
+> anymore. Thus, user space applications may map devices on different
+> locations in the file system by using mknod() inside the container.
+>
+> A use case for this, we also use in GyroidOS, is to run virsh for
+> VMs inside an unprivileged container. virsh creates device nodes,
+> e.g., "/var/run/libvirt/qemu/11-fgfg.dev/null" which currently fails
+> in a non-initial userns, even if a cgroup device white list with the
+> corresponding major, minor of /dev/null exists. Thus, in this case
+> the usual bind mounts or pre populated device nodes under /dev are
+> not sufficient.
+>
+> To circumvent this limitation, allow mknod() by checking CAP_MKNOD
+> in the userns by implementing the security_inode_mknod_nscap(). The
+> hook implementation checks if the corresponding permission flag
+> BPF_DEVCG_ACC_MKNOD_UNS is set for the device in the bpf program.
+> To avoid to create unusable inodes in user space the hook also
+> checks SB_I_NODEV on the corresponding super block.
+>
+> Further, the security_sb_alloc_userns() hook is implemented using
+> cgroup_bpf_current_enabled() to allow usage of device nodes on super
+> blocks mounted by a guarded task.
+>
+> Patch 1 to 3 rework the current devcgroup_inode hooks as an LSM
+>
+> Patch 4 to 8 rework explicit calls to devcgroup_check_permission
+> also as LSM hooks and finalize the conversion of the device_cgroup
+> subsystem to a LSM.
+>
+> Patch 9 and 10 introduce new generic security hooks to be used
+> for the actual mknod device guard implementation.
+>
+> Patch 11 wires up the security hooks in the vfs
+>
+> Patch 12 and 13 provide helper functions in the bpf cgroup
+> subsystem.
+>
+> Patch 14 finally implement the LSM hooks to grand access
+>
+> Signed-off-by: Michael Wei=C3=9F <michael.weiss@aisec.fraunhofer.de>
+> ---
+> Changes in v2:
+> - Integrate this as LSM (Christian, Paul)
+> - Switched to a device cgroup specific flag instead of a generic
+>   bpf program flag (Christian)
+> - do not ignore SB_I_NODEV in fs/namei.c but use LSM hook in
+>   sb_alloc_super in fs/super.c
+> - Link to v1: https://lore.kernel.org/r/20230814-devcg_guard-v1-0-654971a=
+b88b1@aisec.fraunhofer.de
+>
+> Michael Wei=C3=9F (14):
+>   device_cgroup: Implement devcgroup hooks as lsm security hooks
+>   vfs: Remove explicit devcgroup_inode calls
+>   device_cgroup: Remove explicit devcgroup_inode hooks
+>   lsm: Add security_dev_permission() hook
+>   device_cgroup: Implement dev_permission() hook
+>   block: Switch from devcgroup_check_permission to security hook
+>   drm/amdkfd: Switch from devcgroup_check_permission to security hook
+>   device_cgroup: Hide devcgroup functionality completely in lsm
+>   lsm: Add security_inode_mknod_nscap() hook
+>   lsm: Add security_sb_alloc_userns() hook
+>   vfs: Wire up security hooks for lsm-based device guard in userns
+>   bpf: Add flag BPF_DEVCG_ACC_MKNOD_UNS for device access
+>   bpf: cgroup: Introduce helper cgroup_bpf_current_enabled()
+>   device_cgroup: Allow mknod in non-initial userns if guarded
+>
+>  block/bdev.c                                 |   9 +-
+>  drivers/gpu/drm/amd/amdkfd/kfd_priv.h        |   7 +-
+>  fs/namei.c                                   |  24 ++--
+>  fs/super.c                                   |   6 +-
+>  include/linux/bpf-cgroup.h                   |   2 +
+>  include/linux/device_cgroup.h                |  67 -----------
+>  include/linux/lsm_hook_defs.h                |   4 +
+>  include/linux/security.h                     |  18 +++
+>  include/uapi/linux/bpf.h                     |   1 +
+>  init/Kconfig                                 |   4 +
+>  kernel/bpf/cgroup.c                          |  14 +++
+>  security/Kconfig                             |   1 +
+>  security/Makefile                            |   2 +-
+>  security/device_cgroup/Kconfig               |   7 ++
+>  security/device_cgroup/Makefile              |   4 +
+>  security/{ =3D> device_cgroup}/device_cgroup.c |   3 +-
+>  security/device_cgroup/device_cgroup.h       |  20 ++++
+>  security/device_cgroup/lsm.c                 | 114 +++++++++++++++++++
+>  security/security.c                          |  75 ++++++++++++
+>  19 files changed, 294 insertions(+), 88 deletions(-)
+>  delete mode 100644 include/linux/device_cgroup.h
+>  create mode 100644 security/device_cgroup/Kconfig
+>  create mode 100644 security/device_cgroup/Makefile
+>  rename security/{ =3D> device_cgroup}/device_cgroup.c (99%)
+>  create mode 100644 security/device_cgroup/device_cgroup.h
+>  create mode 100644 security/device_cgroup/lsm.c
 
-Yeap, I see no drawbacks in that patch, imm field is declared as s32,
-so it would be correctly sign extended by compiler before cast to u64,
-so there is no need for additional casts.
-It would be wrong if I submit the fix, because you've done all the work.
-Here is a refined test-case to be placed in verifier/bpf_st_mem.c
-(be careful with \t, test_verifier uses those as glob marks inside errstr).
+Hi Michael,
 
-{
-	"BPF_ST_MEM stack imm sign",
-	/* Check if verifier correctly reasons about sign of an
-	 * immediate spilled to stack by BPF_ST instruction.
-	 *
-	 *   fp[-8] =3D -44;
-	 *   r0 =3D fp[-8];
-	 *   if r0 s< 0 goto ret0;
-	 *   r0 =3D -1;
-	 *   exit;
-	 * ret0:
-	 *   r0 =3D 0;
-	 *   exit;
-	 */
-	.insns =3D {
-	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, -44),
-	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_10, -8),
-	BPF_JMP_IMM(BPF_JSLT, BPF_REG_0, 0, 2),
-	BPF_MOV64_IMM(BPF_REG_0, -1),
-	BPF_EXIT_INSN(),
-	BPF_MOV64_IMM(BPF_REG_0, 0),
-	BPF_EXIT_INSN(),
-	},
-	/* Use prog type that requires return value in range [0, 1] */
-	.prog_type =3D BPF_PROG_TYPE_SK_LOOKUP,
-	.expected_attach_type =3D BPF_SK_LOOKUP,
-	.result =3D VERBOSE_ACCEPT,
-	.runs =3D -1,
-	.errstr =3D "0: (7a) *(u64 *)(r10 -8) =3D -44        ; R10=3Dfp0 fp-8_w=3D=
--44\
-	2: (c5) if r0 s< 0x0 goto pc+2\
-	2: R0_w=3D-44",
-},
+I think this was lost because it wasn't CC'd to the LSM list (see
+below).  I've CC'd the list on my reply, but future patch submissions
+that involve the LSM must be posted to the LSM list if you would like
+them to be considered.
+
+http://vger.kernel.org/vger-lists.html#linux-security-module
+
+--=20
+paul-moore.com
 
