@@ -1,63 +1,64 @@
-Return-Path: <bpf+bounces-13370-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13371-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 738777D8B96
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 00:18:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7B7A7D8B9D
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 00:21:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED2CEB21494
-	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 22:18:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7917BB213A7
+	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 22:21:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9FDA3F4CB;
-	Thu, 26 Oct 2023 22:17:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC7783F4CD;
+	Thu, 26 Oct 2023 22:21:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MqA2I/jk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DWt7kbDw"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683013D99D;
-	Thu, 26 Oct 2023 22:17:55 +0000 (UTC)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24168D47;
-	Thu, 26 Oct 2023 15:17:53 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4084095722aso11038155e9.1;
-        Thu, 26 Oct 2023 15:17:53 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83AFC3D980;
+	Thu, 26 Oct 2023 22:21:09 +0000 (UTC)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 035DBCC;
+	Thu, 26 Oct 2023 15:21:08 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4084b0223ccso11073175e9.2;
+        Thu, 26 Oct 2023 15:21:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698358671; x=1698963471; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=J6aQzvymgnykTJYyUNqos0M7PldrCbODsxg27QrFdA8=;
-        b=MqA2I/jk26INgZxxsfVwUbIFNkompGVlAukrf7za5JwMkk0rE5JqLiWst0keoAtdcg
-         wPDrNVF6A1TCMXqSaBcOdf0YvWxoxDZuQyeqnsbFiQoX6ZvBb7TyYF8vJUzH62RRDYnd
-         yd5L2Znfv+pvHvGdB4g03bhFhXNl9yDKz0loSiyC8ppi7q+DZDKYQhCHl7WTGiOZvYr7
-         nb+N3uUMFacjIG3UUEt6rYExk0I9M8dpu1zrG5PHZPGEsYVd0HscdJU2kA6jnT8yNqkL
-         a7QX0aK5wmvuzFNok4B4ZLYi7qsRFDyhmBxsyZTSmLJMNNXmZGUFygtJnIc+MsvvIpcK
-         MImw==
+        d=gmail.com; s=20230601; t=1698358866; x=1698963666; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=BZVyVYzi+6QbDuBCDPXiv+7wbOfcRmZKqyElOZWrfZc=;
+        b=DWt7kbDwohqS9bxyyggcvuxhI5HWgiH+dY5yaD8kijELakjz2DiQoxrFh5QubCBhV6
+         CLhhLm6BXlYk4KCwSCjEwEh1aIXAZNZb3L+dDf2p9ZOIMMnMBNggC6O206wFSxR+c3Ze
+         byBHekN06lUKX5Av9ZfTcwXed+DeTgw68/Omif5jP0qufMIzY7FlfXoZnhm8ozwq1Kw4
+         i40qxj+ts+WV8x/xg0jK+cfJW3M5fLMDnoQ1OQPLz4nE6LRsk79+fbLNYOpQCUtD/GY/
+         o7wgzEyIhNYWqsJWwguT2aGgc80ef9ggtU1ZlLuyxKofo75VpGa0JXDlkgvoOgAoGUeJ
+         l40g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698358671; x=1698963471;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J6aQzvymgnykTJYyUNqos0M7PldrCbODsxg27QrFdA8=;
-        b=iJT1grZxiBrWILOARyUcxAl56GlPRsw9z0Lr0W42iYcQagSDNvNJyFpUQ9HFCJUWip
-         4ug48x9jEpl3D2q8uRCjUd7CczyBcphb8k3RBDrUSsQNOmIrDdfqsX8UoRF75dNbxzuj
-         0GZsVqz0KW1Vns+xPKK8wqB0ElKVZTJcJ1zpef8R68rRTSKVGaBMEjwSKdtxrtrwtiXt
-         3IdkykgocQ0WIW6yqu/2cNAqI9TK4B+oXeM9YynyApO56gEWq1M/vaXhclgS7Aq70tkC
-         NbjOmqTcjZcMXtYy7Aw41qKtl8dTefLQeS4+BE1r1kX9puUU8ut1Bh7qzUfTgGAIs2aB
-         JHig==
-X-Gm-Message-State: AOJu0YyjYiud9Fp5YMbn4Z6vnDEQ9XInMDo06MQT/Tuf5bUaTp+K3rZf
-	qJ4u4hVQuJz2u2IM37W3CYM=
-X-Google-Smtp-Source: AGHT+IEXk7wu+BWH5PuNjLGzYfglJqQqyr64jFKw9mM2T6j/NSdcIcGUsTFFoYUci+YzMymGrg+hrA==
-X-Received: by 2002:a05:600c:1d18:b0:408:4475:8cc1 with SMTP id l24-20020a05600c1d1800b0040844758cc1mr930072wms.35.1698358671120;
-        Thu, 26 Oct 2023 15:17:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698358866; x=1698963666;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BZVyVYzi+6QbDuBCDPXiv+7wbOfcRmZKqyElOZWrfZc=;
+        b=PNZYTYK9ThUnUQgHR86LgWWvfBnQNi13UPXnrypr7SA66/9pjHjfdV4OHdNlqcd22s
+         GVVuLfmmqQnvfJgOQAlJyD9+Gehftu1Yai5sb3PkxizzCsyqsO1OlR61rCWUl6/7X7L6
+         ze1hNUGfEhMbMeS4XkRVa1M5KNjKF4gi8em2vuWOzyjT0WJi3U6BH5G8GS3luKChbGaS
+         Q8EmKghHJ8NCtz3WsVct3heBIE9KbHSk7IMIGFIlJ9jXr7+D1CoZETQecX17p0QtyvPW
+         glgtbDSUuY9DPmMyXayNoEv4m6052BuqzF6laO6OPasxSlaaHFnzxCqsw6TuS7KCGikT
+         bsJw==
+X-Gm-Message-State: AOJu0Yzn+yub9ob1aXZ7YoybPMKDDHVV1seApxDm4DeJLoFUsZRxy590
+	oyJ4zPSBzGP+dgXfrcDV10I=
+X-Google-Smtp-Source: AGHT+IEKimHb5xke6jH18TsHWKRxjcjGmlx0/kFhipt1/3/BG8Q2ivqVE2EsAdNFToNo9uL7wPtB6A==
+X-Received: by 2002:a05:600c:3c9a:b0:409:1d9a:1dec with SMTP id bg26-20020a05600c3c9a00b004091d9a1decmr908421wmb.35.1698358866086;
+        Thu, 26 Oct 2023 15:21:06 -0700 (PDT)
 Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id v3-20020a05600c428300b0040596352951sm3541734wmc.5.2023.10.26.15.17.47
+        by smtp.gmail.com with ESMTPSA id hg10-20020a05600c538a00b0040775fd5bf9sm148982wmb.0.2023.10.26.15.21.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 15:17:50 -0700 (PDT)
-Date: Fri, 27 Oct 2023 01:17:45 +0300
+        Thu, 26 Oct 2023 15:21:05 -0700 (PDT)
+Date: Fri, 27 Oct 2023 01:21:00 +0300
 From: Vladimir Oltean <olteanv@gmail.com>
 To: Justin Stitt <justinstitt@google.com>
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -117,68 +118,42 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	oss-drivers@corigine.com, linux-hyperv@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [PATCH next v2 3/3] treewide: Convert some ethtool_sprintf() to
- ethtool_puts()
-Message-ID: <20231026221745.uiqvn6avvcruyafx@skbuf>
+Subject: Re: [PATCH next v2 1/3] ethtool: Implement ethtool_puts()
+Message-ID: <20231026222100.yrjsdlq47djaurjf@skbuf>
 References: <20231026-ethtool_puts_impl-v2-0-0d67cbdd0538@google.com>
- <20231026-ethtool_puts_impl-v2-3-0d67cbdd0538@google.com>
+ <20231026-ethtool_puts_impl-v2-1-0d67cbdd0538@google.com>
+ <20231026220248.blgf7kgt5fkkbg7f@skbuf>
+ <CAFhGd8rWOE8zGFCdjM6i8H3TP8q5BFFxMGCk0n-nmLmjHojefg@mail.gmail.com>
+ <CAFhGd8pJkdpF4BYDf_Ym-zsisAVzM06_4ba+_6Uca_2Xerp1Qg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231026-ethtool_puts_impl-v2-3-0d67cbdd0538@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFhGd8pJkdpF4BYDf_Ym-zsisAVzM06_4ba+_6Uca_2Xerp1Qg@mail.gmail.com>
 
-On Thu, Oct 26, 2023 at 09:56:09PM +0000, Justin Stitt wrote:
-> This patch converts some basic cases of ethtool_sprintf() to
-> ethtool_puts().
+On Thu, Oct 26, 2023 at 03:11:28PM -0700, Justin Stitt wrote:
+> On Thu, Oct 26, 2023 at 3:09 PM Justin Stitt <justinstitt@google.com> wrote:
+> > On Thu, Oct 26, 2023 at 3:02 PM Vladimir Oltean <olteanv@gmail.com> wrote:
+> > > Maybe this is due to an incorrect rebase conflict resolution, but you
+> > > shouldn't have touched any of the ethtool force speed maps.
+> >
+> > Ah, I did have a conflict and resolved by simply moving the hunks
+> > out of each other's way. Trivial resolution.
+> >
+> > Should I undo this? I want my patch against next since it's targeting
+> > some stuff in-flight over there. BUT, I also want ethtool_puts() to be
+> > directly below ethtool_sprintf() in the source code. What to do?
 > 
-> The conversions are used in cases where ethtool_sprintf() was being used
-> with just two arguments:
-> |       ethtool_sprintf(&data, buffer[i].name);
-> or when it's used with format string: "%s"
-> |       ethtool_sprintf(&data, "%s", buffer[i].name);
-> which both now become:
-> |       ethtool_puts(&data, buffer[i].name);
-> 
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
->  drivers/net/dsa/lantiq_gswip.c                     |  2 +-
->  drivers/net/dsa/mt7530.c                           |  2 +-
->  drivers/net/dsa/qca/qca8k-common.c                 |  2 +-
->  drivers/net/dsa/realtek/rtl8365mb.c                |  2 +-
->  drivers/net/dsa/realtek/rtl8366-core.c             |  2 +-
->  drivers/net/dsa/vitesse-vsc73xx-core.c             |  8 +--
->  drivers/net/ethernet/amazon/ena/ena_ethtool.c      |  4 +-
->  drivers/net/ethernet/brocade/bna/bnad_ethtool.c    |  2 +-
->  drivers/net/ethernet/freescale/fec_main.c          |  4 +-
->  .../net/ethernet/fungible/funeth/funeth_ethtool.c  |  8 +--
->  drivers/net/ethernet/hisilicon/hns/hns_dsaf_gmac.c |  2 +-
->  .../net/ethernet/hisilicon/hns/hns_dsaf_xgmac.c    |  2 +-
->  drivers/net/ethernet/hisilicon/hns/hns_ethtool.c   | 65 +++++++++++-----------
->  drivers/net/ethernet/intel/i40e/i40e_ethtool.c     |  6 +-
->  drivers/net/ethernet/intel/iavf/iavf_ethtool.c     |  3 +-
->  drivers/net/ethernet/intel/ice/ice_ethtool.c       |  9 +--
->  drivers/net/ethernet/intel/idpf/idpf_ethtool.c     |  2 +-
->  drivers/net/ethernet/intel/igb/igb_ethtool.c       |  6 +-
->  drivers/net/ethernet/intel/igc/igc_ethtool.c       |  6 +-
->  drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c   |  5 +-
->  .../net/ethernet/microchip/sparx5/sparx5_ethtool.c |  2 +-
->  .../net/ethernet/netronome/nfp/nfp_net_ethtool.c   | 44 +++++++--------
->  drivers/net/ethernet/pensando/ionic/ionic_stats.c  |  4 +-
->  drivers/net/ethernet/wangxun/libwx/wx_ethtool.c    |  2 +-
->  drivers/net/hyperv/netvsc_drv.c                    |  4 +-
->  drivers/net/phy/nxp-tja11xx.c                      |  2 +-
->  drivers/net/phy/smsc.c                             |  2 +-
->  drivers/net/vmxnet3/vmxnet3_ethtool.c              | 10 ++--
->  28 files changed, 100 insertions(+), 112 deletions(-)
+> Oh, I just realized my auto formatter had a field day with that function.
+> I will rectify this in a new version after waiting 24hrs for comments to
+> trickle in as well.
 
-What's the "next" branch that you expect this to be applied through, and
-why is the patch "treewide"? It only affects networking drivers (I see
-nothing outside of drivers/net/) - so it's "net: Convert ..." and it
-should go through the "net-next.git" tree. The patch should be formatted
-as "PATCH net-next" not "PATCH next", to make this absolutely clear.
+Nothing other than ethtool_puts() should appear in the patch delta.
+
+pw-bot: cr
 
