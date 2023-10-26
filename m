@@ -1,153 +1,164 @@
-Return-Path: <bpf+bounces-13308-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13309-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C0997D80B1
-	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 12:25:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F2B57D81F2
+	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 13:42:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE2A4B2142A
-	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 10:24:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBD39B2135C
+	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 11:42:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84E8B2D05C;
-	Thu, 26 Oct 2023 10:24:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 236502D784;
+	Thu, 26 Oct 2023 11:42:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZyX3dszi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fB6O5mQ5"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB2C12D02B;
-	Thu, 26 Oct 2023 10:24:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1DD8C433C8;
-	Thu, 26 Oct 2023 10:24:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698315889;
-	bh=WN2YIA4Ghusd7FbmcNZrWw/oKLuywPkap4tOfxaAQ4k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZyX3dsziPkRUXG2UWwCRe9pQvhY4J8EKCi1UMJicG8n+1K8kuqLhkCHInfodKwhzx
-	 IGdZJx3E0WGYfJuhn5slU+daxFVHZfLRqURf8zRCQM4mPgPcJg6TqmPoqs/pWtOypa
-	 aGTSZPjPNBzHwtWONSwhXj/25YMcitUcojHP1kRQ49c14Z4eV6Kpw2ampGhmL7G6Sm
-	 v7J3Ia4FdxDhFLmdhSb20AH9mufPj5bcJmpVjmk+yiUwvbVfd/gsYS5NT3Ej9E93W4
-	 br849v8H22PcC0TOPiwgXMZFArfvyVNNVM97V2kwDBdHjqJI1bEYt3iRHEo7Tm6Bk9
-	 Y3kn5Rw8Exupg==
-Date: Thu, 26 Oct 2023 11:24:39 +0100
-From: Will Deacon <will@kernel.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, bpf@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-mm@kvack.org, linux-modules@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v3 04/13] mm/execmem, arch: convert remaining overrides
- of module_alloc to execmem
-Message-ID: <20231026102438.GA6924@willie-the-truck>
-References: <20230918072955.2507221-1-rppt@kernel.org>
- <20230918072955.2507221-5-rppt@kernel.org>
- <20231023171420.GA4041@willie-the-truck>
- <20231026085800.GK2824@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7EAF286B2
+	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 11:42:12 +0000 (UTC)
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69481A6
+	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 04:42:10 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-66d11fec9a5so5470786d6.1
+        for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 04:42:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698320530; x=1698925330; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aTHE5JsH+OSuQIz04id+Xdenoq0dG5qfzi9WDqlXutA=;
+        b=fB6O5mQ5yT7xu9VXl+umi3T97drf2thz2RO2ii3DcsZXFSgAwpGIrC1GgE76eAQsvm
+         2CJO9VbDbc7QWlGUIViXtk2Knv3LYSgWT4Sw66L7jcW3VG+G7WiRBjUOtG0UpyqJvu4n
+         Mc5+SvCAcLxpe8T1YYuR9sQWmjADSyG9mYAFh1P5pK2Hu2KOye8NTG3XOW7tnxviDD+J
+         FhRdrZjzexcz40fYNQi77gMMkmT3uDV4Gurd4qw9z5UAVA8yFGdGk/fqMiDwhAq5hAcC
+         E5pjGuzuc45sLgJUPq9TwVl1CeKCZXCX9MjzDPb3dAKqtFqPbTARIxLEzWe1MVLhTdTf
+         SYTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698320530; x=1698925330;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aTHE5JsH+OSuQIz04id+Xdenoq0dG5qfzi9WDqlXutA=;
+        b=Fr+kY+rU/9JSquKwusMiq6Swz7P3JrESf1usBWo6Z/3uQYS1jHk/J6V8XnUG9R4pas
+         5OBX0vZDdEPqPtg/TvfdfyLqRqlrp+t/mUybaEBUMWu0/dsQBpuBTrdBrZAkafAzuAWe
+         sfOOEhzKkxEHema4Jj23/GjKP7ZtCIYnrddqvWDOni+dUTK79raMEYn/CYLO56Yqosbd
+         fDIDTtadUGhEqjWlWUQRZ2QZZXQEECtVs1DjFJ6GWa11J/WIkNc488cXDPZJRkxpeCZQ
+         zBrvBUatvF0wuFWK3Kct/ZAWxTdXcAD2xL+5OY/PDHdUyIbHuxRgtkuizY+6H6+SHnBr
+         bglw==
+X-Gm-Message-State: AOJu0Yypsd+7LEErYnYDBMPqOaZwINPWfYgc7iyfEjxbkNA0h/QK/RI0
+	Xh1y/zbB2xpamg3oJtyw3C/ldk6j1hqj0xrlUd0=
+X-Google-Smtp-Source: AGHT+IHN7km9cul+oMZevYcz4Q61HLe/xygHXxh9DWD89HLKsxXgG7P9OGt2Uup4HAequUQ+S8C0upSCPOz6CE7y46w=
+X-Received: by 2002:ad4:5b8b:0:b0:66d:61c3:8ca4 with SMTP id
+ 11-20020ad45b8b000000b0066d61c38ca4mr18008886qvp.15.1698320529795; Thu, 26
+ Oct 2023 04:42:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231026085800.GK2824@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20231025202420.390702-1-jolsa@kernel.org> <20231025202420.390702-5-jolsa@kernel.org>
+In-Reply-To: <20231025202420.390702-5-jolsa@kernel.org>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Thu, 26 Oct 2023 19:41:33 +0800
+Message-ID: <CALOAHbC52fMNvvwsjJHZb26seQjQSZ4oNOLiWp3+3Q+JNmJckw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/6] selftests/bpf: Use bpf_link__destroy in
+ fill_link_info tests
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 26, 2023 at 11:58:00AM +0300, Mike Rapoport wrote:
-> On Mon, Oct 23, 2023 at 06:14:20PM +0100, Will Deacon wrote:
-> > On Mon, Sep 18, 2023 at 10:29:46AM +0300, Mike Rapoport wrote:
-> > > diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
-> > > index dd851297596e..cd6320de1c54 100644
-> > > --- a/arch/arm64/kernel/module.c
-> > > +++ b/arch/arm64/kernel/module.c
-> > > @@ -20,6 +20,7 @@
-> > >  #include <linux/random.h>
-> > >  #include <linux/scs.h>
-> > >  #include <linux/vmalloc.h>
-> > > +#include <linux/execmem.h>
-> > >  
-> > >  #include <asm/alternative.h>
-> > >  #include <asm/insn.h>
-> > > @@ -108,46 +109,38 @@ static int __init module_init_limits(void)
-> > >  
-> > >  	return 0;
-> > >  }
-> > > -subsys_initcall(module_init_limits);
-> > >  
-> > > -void *module_alloc(unsigned long size)
-> > > +static struct execmem_params execmem_params __ro_after_init = {
-> > > +	.ranges = {
-> > > +		[EXECMEM_DEFAULT] = {
-> > > +			.flags = EXECMEM_KASAN_SHADOW,
-> > > +			.alignment = MODULE_ALIGN,
-> > > +		},
-> > > +	},
-> > > +};
-> > > +
-> > > +struct execmem_params __init *execmem_arch_params(void)
-> > >  {
-> > > -	void *p = NULL;
-> > > +	struct execmem_range *r = &execmem_params.ranges[EXECMEM_DEFAULT];
-> > >  
-> > > -	/*
-> > > -	 * Where possible, prefer to allocate within direct branch range of the
-> > > -	 * kernel such that no PLTs are necessary.
-> > > -	 */
-> > 
-> > Why are you removing this comment? I think you could just move it next
-> > to the part where we set a 128MiB range.
->  
-> Oops, my bad. Will add it back.
+On Thu, Oct 26, 2023 at 4:25=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> The fill_link_info test keeps skeleton open and just creates
+> various links. We are wrongly calling bpf_link__detach after
+> each test to close them, we need to call bpf_link__destroy.
+>
+> Also we need to set the link NULL so the skeleton destroy
+> won't try to destroy them again.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-Thanks.
+Acked-by: Yafang Shao <laoar.shao@gmail.com>
 
-> > > -	if (module_direct_base) {
-> > > -		p = __vmalloc_node_range(size, MODULE_ALIGN,
-> > > -					 module_direct_base,
-> > > -					 module_direct_base + SZ_128M,
-> > > -					 GFP_KERNEL | __GFP_NOWARN,
-> > > -					 PAGE_KERNEL, 0, NUMA_NO_NODE,
-> > > -					 __builtin_return_address(0));
-> > > -	}
-> > > +	module_init_limits();
-> > 
-> > Hmm, this used to be run from subsys_initcall(), but now you're running
-> > it _really_ early, before random_init(), so randomization of the module
-> > space is no longer going to be very random if we don't have early entropy
-> > from the firmware or the CPU, which is likely to be the case on most SoCs.
-> 
-> Well, it will be as random as KASLR. Won't that be enough?
+> ---
+>  .../selftests/bpf/prog_tests/fill_link_info.c       | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c b/to=
+ols/testing/selftests/bpf/prog_tests/fill_link_info.c
+> index 97142a4db374..0379872c445a 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
+> @@ -22,6 +22,11 @@ static __u64 kmulti_addrs[KMULTI_CNT];
+>  #define KPROBE_FUNC "bpf_fentry_test1"
+>  static __u64 kprobe_addr;
+>
+> +#define LINK_DESTROY(__link) ({                \
+> +       bpf_link__destroy(__link);      \
+> +       __link =3D NULL;                  \
+> +})
+> +
+>  #define UPROBE_FILE "/proc/self/exe"
+>  static ssize_t uprobe_offset;
+>  /* uprobe attach point */
+> @@ -157,7 +162,7 @@ static void test_kprobe_fill_link_info(struct test_fi=
+ll_link_info *skel,
+>         } else {
+>                 kprobe_fill_invalid_user_buffer(link_fd);
+>         }
+> -       bpf_link__detach(skel->links.kprobe_run);
+> +       LINK_DESTROY(skel->links.kprobe_run);
+>  }
+>
+>  static void test_tp_fill_link_info(struct test_fill_link_info *skel)
+> @@ -171,7 +176,7 @@ static void test_tp_fill_link_info(struct test_fill_l=
+ink_info *skel)
+>         link_fd =3D bpf_link__fd(skel->links.tp_run);
+>         err =3D verify_perf_link_info(link_fd, BPF_PERF_EVENT_TRACEPOINT,=
+ 0, 0, 0);
+>         ASSERT_OK(err, "verify_perf_link_info");
+> -       bpf_link__detach(skel->links.tp_run);
+> +       LINK_DESTROY(skel->links.tp_run);
+>  }
+>
+>  static void test_uprobe_fill_link_info(struct test_fill_link_info *skel,
+> @@ -189,7 +194,7 @@ static void test_uprobe_fill_link_info(struct test_fi=
+ll_link_info *skel,
+>         link_fd =3D bpf_link__fd(skel->links.uprobe_run);
+>         err =3D verify_perf_link_info(link_fd, type, 0, uprobe_offset, 0)=
+;
+>         ASSERT_OK(err, "verify_perf_link_info");
+> -       bpf_link__detach(skel->links.uprobe_run);
+> +       LINK_DESTROY(skel->links.uprobe_run);
+>  }
+>
+>  static int verify_kmulti_link_info(int fd, bool retprobe)
+> @@ -295,7 +300,7 @@ static void test_kprobe_multi_fill_link_info(struct t=
+est_fill_link_info *skel,
+>         } else {
+>                 verify_kmulti_invalid_user_buffer(link_fd);
+>         }
+> -       bpf_link__detach(skel->links.kmulti_run);
+> +       LINK_DESTROY(skel->links.kmulti_run);
+>  }
+>
+>  void test_fill_link_info(void)
+> --
+> 2.41.0
+>
 
-I don't think that's true -- we have the 'kaslr-seed' property for KASLR,
-but I'm not seeing anything like that for the module randomisation and I
-also don't see why we need to set these limits so early.
 
-Will
+--=20
+Regards
+Yafang
 
