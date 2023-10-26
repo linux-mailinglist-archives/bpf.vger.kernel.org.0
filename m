@@ -1,148 +1,254 @@
-Return-Path: <bpf+bounces-13331-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13332-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29AB87D85BE
-	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 17:14:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B23247D85CD
+	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 17:17:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBDC11F21CA0
-	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 15:14:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D06B71C20F7B
+	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 15:17:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 260B22F51A;
-	Thu, 26 Oct 2023 15:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AF6A2F514;
+	Thu, 26 Oct 2023 15:17:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cy8hC7+T"
+	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="DAGOl84k"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9BBB2F513
-	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 15:13:59 +0000 (UTC)
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8371B9;
-	Thu, 26 Oct 2023 08:13:57 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c5087d19a6so14539901fa.0;
-        Thu, 26 Oct 2023 08:13:57 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B256DF9E3
+	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 15:17:08 +0000 (UTC)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A82DC
+	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 08:17:07 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4083ac51d8aso8136725e9.2
+        for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 08:17:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698333236; x=1698938036; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yHuPB109KsQAxIHXMrlfX3Zfn2UV329R/EJ5GBjTAOI=;
-        b=Cy8hC7+TALUUT3KXxaYSplrrcAgNiwrFMu/TiwtDYuH2M2Flw2ekcvg0/64V5CMYB9
-         3SRLi5yePPJ1GuySwiEtTPVnESdcMFVg78gXUjCkY+0ZwjsmRWvW2YtbVNa7qxG7dOBV
-         BE9qDGHkReBgzpoa3W2LhySZgA9SfzOKXhuPrqEfBU8+fJh3GAWvmvV8Bzwo0d7DKjpZ
-         QP/DystILj2licmM0GZXsLEoTQlMjdB831DmvQQd+aKbvLkMmpTNU/sIL5zs2geyDEuV
-         hC9z08wt4v1uopi2oPFUL6RDSqNKl0sDJD4j99JzBjyQD8BmHVosPlRnl2sJd7OsC1OK
-         zVvA==
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1698333425; x=1698938225; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tRNM7OP8FZNz7PcD8FSoHRmgfXGXNRO9Y1vYfQVDNxo=;
+        b=DAGOl84kADeDPMBHJLXipIG39hH+kurn76vEedHlAXdu589Zvk/JTMCxlto8EQEqDP
+         MFLrMn4rCLg+FYMiV3J7yUGchToayihjw1gUXYbnNL+O5tZIrMrm/2ETpyxs+QaDE3I4
+         jq5q9bnAUR7SMzFgoGxtJCd+wwVaJsLlwh4pjzJhR1kmx5kxy7P9WgSS3NIJWVE9YEZO
+         zorFlfZILUHGO3wqFretxUBcj38zn73DI0S/6bbZ5nCyS8rtO1pVio9MoLAYQF6zldny
+         gezbsDoNIKLr70ty3WgIkjQvqL/uziQR+iqgHflxzsJK4XHQASNn/D4v7wW2uuWKI9ze
+         rbuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698333236; x=1698938036;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yHuPB109KsQAxIHXMrlfX3Zfn2UV329R/EJ5GBjTAOI=;
-        b=f8ZD9Sip1ibjoefOv67E11b/wy5yK8BAXUww4PFXSvdKKGH53UdZtaIcQhCPoFyAXM
-         wtBJobqT1HKjkLtZ23i4OkcTMKs3ZL+ClB23L9hvs7RCUBG1CuyK4o14m7l8yyjMg0Or
-         sFtCZFrmIJ9ZT79WzJ1i3iXCE0U8VXkY06pNf/qH9M6b8Pl8j5/hlibBLTnHPE15ayDm
-         CXYEBOOos9aTLyJTikehQvGB7JxqRQlZRpnOQXos/BeNapH6qCPy1IkGa+Lq6N1DsPKU
-         0sVblIY8DpRSA9oEFeVzYmZFOxRjw3wFo7HhH3/W8n62oZkgImORpOvMthRLTPTcjgsG
-         u8jA==
-X-Gm-Message-State: AOJu0YzsQEmrvjs6FAUVP1QITNQksIRx+K3jiGpq1nkAp961+m5JV3K5
-	hmOO+70MDESk9+MtNc8z3g==
-X-Google-Smtp-Source: AGHT+IH4Mh22AEQcJ5JDt2JT5H+m//0MlhILIuAKfIAb/KoajFDvbcVaxKB8RtSKm4w1ouyByEk7XQ==
-X-Received: by 2002:a2e:a272:0:b0:2c5:1fae:e61f with SMTP id k18-20020a2ea272000000b002c51faee61fmr12511734ljm.6.1698333235292;
-        Thu, 26 Oct 2023 08:13:55 -0700 (PDT)
-Received: from amdsuplus2.inf.ethz.ch (amdsuplus2.inf.ethz.ch. [129.132.31.88])
-        by smtp.gmail.com with ESMTPSA id p12-20020a05600c468c00b0040472ad9a3dsm2843778wmo.14.2023.10.26.08.13.54
+        d=1e100.net; s=20230601; t=1698333425; x=1698938225;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tRNM7OP8FZNz7PcD8FSoHRmgfXGXNRO9Y1vYfQVDNxo=;
+        b=WLqs/E1YtRGujhXnkX/MBAxHVfTmK0JDFrymowOBoyRMxCTriGM1DXd6GJcjSuiAHd
+         A34wj3ObY9XknVjmCn9pnbijtNwFdmY8HdH/EOixFPugagD3SwzJGeE9eeao1V7cNEYw
+         iDINKWn2IDkww1FmiwBW/MfGBEdbAyK7esrHMLGalnLdXSMY4uXV8+kFhJ9IBeu7yHKJ
+         fGpEVAdCmCNpHIoEgKGVlefuob+pWIi5eX2Mknw9y3aQWVcQk3eZTvDugqxHnHy/1sxK
+         JbWiY459SK8LHYWOeD4IHxMTcZQHHogypq7eu4S6rdKyMfsNTHR1fhfjJ0LB+W1gDJDM
+         HE6w==
+X-Gm-Message-State: AOJu0YxdElvJGjvvGBtYapOB3m1KzEnA67QpNesSSlaaRMDZmKwMczTt
+	8IGypKOgViA4srEbBUUxazxdG0WD3NnZnQAJYNlJxQ==
+X-Google-Smtp-Source: AGHT+IHGG+ljO1uOaaVI84VnXV2gDunKAaklUlaOvOGhlPgpi3XYLBn97iOI8Jo83uuboDnRNluxhQ==
+X-Received: by 2002:a05:600c:3ca3:b0:408:386b:1916 with SMTP id bg35-20020a05600c3ca300b00408386b1916mr101578wmb.8.1698333424919;
+        Thu, 26 Oct 2023 08:17:04 -0700 (PDT)
+Received: from dev.. (haunt.prize.volia.net. [93.72.109.136])
+        by smtp.gmail.com with ESMTPSA id t10-20020a1c770a000000b0040775fd5bf9sm2804819wmi.0.2023.10.26.08.17.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 08:13:54 -0700 (PDT)
-From: Hao Sun <sunhao.th@gmail.com>
-Date: Thu, 26 Oct 2023 17:13:11 +0200
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add test for immediate spilled
- to stack
+        Thu, 26 Oct 2023 08:17:04 -0700 (PDT)
+From: Nikolay Aleksandrov <razor@blackwall.org>
+To: bpf@vger.kernel.org
+Cc: jiri@resnulli.us,
+	netdev@vger.kernel.org,
+	martin.lau@linux.dev,
+	ast@kernel.org,
+	andrii@kernel.org,
+	john.fastabend@gmail.com,
+	kuba@kernel.org,
+	andrew@lunn.ch,
+	toke@kernel.org,
+	toke@redhat.com,
+	sdf@google.com,
+	daniel@iogearbox.net,
+	idosch@idosch.org,
+	Nikolay Aleksandrov <razor@blackwall.org>
+Subject: [PATCH bpf-next v2] netkit: use netlink policy for mode and policy attributes validation
+Date: Thu, 26 Oct 2023 18:16:59 +0300
+Message-Id: <20231026151659.1676037-1-razor@blackwall.org>
+X-Mailer: git-send-email 2.38.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231026-fix-check-stack-write-v1-2-6b325ef3ce7e@gmail.com>
-References: <20231026-fix-check-stack-write-v1-0-6b325ef3ce7e@gmail.com>
-In-Reply-To: <20231026-fix-check-stack-write-v1-0-6b325ef3ce7e@gmail.com>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Hao Sun <sunhao.th@gmail.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1698333232; l=1562;
- i=sunhao.th@gmail.com; s=20231009; h=from:subject:message-id;
- bh=RsQQJC1kz5RaWMBIQa3UXHDscXwUBIZwC2LrZY94Ug8=;
- b=Cvvesh2nQ17Rb2nhCZUvaYo8gXO2laztddD1Yrx8dDI21vELJmTTZ/eHfDCttK8NBuKFv4+KE
- /Djj1ND8DX+BgA1wlIutZAHkaCQph8CDzrivel2ApK+E+UNAetg1exX
-X-Developer-Key: i=sunhao.th@gmail.com; a=ed25519;
- pk=AHFxrImGtyqXOuw4f5xTNh4PGReb7hzD86ayyTZCXd4=
+Content-Transfer-Encoding: 8bit
 
-Add a test to check if the verifier correctly reason about the sign
-of an immediate spilled to stack by BPF_ST instruction.
+Use netlink's NLA_POLICY_VALIDATE_FN() type for mode and primary/peer
+policy with custom validation functions to return better errors. This
+simplifies the logic a bit and relies on netlink's policy validation.
+We have to use NLA_BINARY and validate the length inside the callbacks.
 
-Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+Suggested-by: Jiri Pirko <jiri@resnulli.us>
+Signed-off-by: Nikolay Aleksandrov <razor@blackwall.org>
 ---
- tools/testing/selftests/bpf/verifier/bpf_st_mem.c | 32 +++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+v2: use NLA_BINARY instead of NLA_U32 (thanks Ido!), validate attribute
+    length inside the callbacks, run tests again
+    the patch is sent out of the set as only the first one was applied
+    before, see:
+    https://lore.kernel.org/bpf/8533255d-9b73-cdbe-fbbd-28a275313229@iogearbox.net/
 
-diff --git a/tools/testing/selftests/bpf/verifier/bpf_st_mem.c b/tools/testing/selftests/bpf/verifier/bpf_st_mem.c
-index 3af2501082b2..0ba23807c46c 100644
---- a/tools/testing/selftests/bpf/verifier/bpf_st_mem.c
-+++ b/tools/testing/selftests/bpf/verifier/bpf_st_mem.c
-@@ -65,3 +65,35 @@
- 	.expected_attach_type = BPF_SK_LOOKUP,
- 	.runs = -1,
- },
-+{
-+	"BPF_ST_MEM stack imm sign",
-+	/* Check if verifier correctly reasons about sign of an
-+	 * immediate spilled to stack by BPF_ST instruction.
-+	 *
-+	 *   fp[-8] = -44;
-+	 *   r0 = fp[-8];
-+	 *   if r0 s< 0 goto ret0;
-+	 *   r0 = -1;
-+	 *   exit;
-+	 * ret0:
-+	 *   r0 = 0;
-+	 *   exit;
-+	 */
-+	.insns = {
-+	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, -44),
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_10, -8),
-+	BPF_JMP_IMM(BPF_JSLT, BPF_REG_0, 0, 2),
-+	BPF_MOV64_IMM(BPF_REG_0, -1),
-+	BPF_EXIT_INSN(),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	/* Use prog type that requires return value in range [0, 1] */
-+	.prog_type = BPF_PROG_TYPE_SK_LOOKUP,
-+	.expected_attach_type = BPF_SK_LOOKUP,
-+	.result = VERBOSE_ACCEPT,
-+	.runs = -1,
-+	.errstr = "0: (7a) *(u64 *)(r10 -8) = -44        ; R10=fp0 fp-8_w=-44\
-+	2: (c5) if r0 s< 0x0 goto pc+2\
-+	2: R0_w=-44",
-+},
+ drivers/net/netkit.c | 79 ++++++++++++++++++++------------------------
+ 1 file changed, 35 insertions(+), 44 deletions(-)
 
+diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
+index 5a0f86f38f09..df819df86944 100644
+--- a/drivers/net/netkit.c
++++ b/drivers/net/netkit.c
+@@ -247,29 +247,39 @@ static struct net *netkit_get_link_net(const struct net_device *dev)
+ 	return peer ? dev_net(peer) : dev_net(dev);
+ }
+ 
+-static int netkit_check_policy(int policy, struct nlattr *tb,
++static int netkit_check_policy(const struct nlattr *attr,
+ 			       struct netlink_ext_ack *extack)
+ {
+-	switch (policy) {
++	if (nla_len(attr) != sizeof(u32)) {
++		NL_SET_ERR_MSG_ATTR(extack, attr, "Invalid policy attribute length");
++		return -EINVAL;
++	}
++
++	switch (nla_get_u32(attr)) {
+ 	case NETKIT_PASS:
+ 	case NETKIT_DROP:
+ 		return 0;
+ 	default:
+-		NL_SET_ERR_MSG_ATTR(extack, tb,
++		NL_SET_ERR_MSG_ATTR(extack, attr,
+ 				    "Provided default xmit policy not supported");
+ 		return -EINVAL;
+ 	}
+ }
+ 
+-static int netkit_check_mode(int mode, struct nlattr *tb,
++static int netkit_check_mode(const struct nlattr *attr,
+ 			     struct netlink_ext_ack *extack)
+ {
+-	switch (mode) {
++	if (nla_len(attr) != sizeof(u32)) {
++		NL_SET_ERR_MSG_ATTR(extack, attr, "Invalid mode attribute length");
++		return -EINVAL;
++	}
++
++	switch (nla_get_u32(attr)) {
+ 	case NETKIT_L2:
+ 	case NETKIT_L3:
+ 		return 0;
+ 	default:
+-		NL_SET_ERR_MSG_ATTR(extack, tb,
++		NL_SET_ERR_MSG_ATTR(extack, attr,
+ 				    "Provided device mode can only be L2 or L3");
+ 		return -EINVAL;
+ 	}
+@@ -306,13 +316,8 @@ static int netkit_new_link(struct net *src_net, struct net_device *dev,
+ 	int err;
+ 
+ 	if (data) {
+-		if (data[IFLA_NETKIT_MODE]) {
+-			attr = data[IFLA_NETKIT_MODE];
+-			mode = nla_get_u32(attr);
+-			err = netkit_check_mode(mode, attr, extack);
+-			if (err < 0)
+-				return err;
+-		}
++		if (data[IFLA_NETKIT_MODE])
++			mode = nla_get_u32(data[IFLA_NETKIT_MODE]);
+ 		if (data[IFLA_NETKIT_PEER_INFO]) {
+ 			attr = data[IFLA_NETKIT_PEER_INFO];
+ 			ifmp = nla_data(attr);
+@@ -324,20 +329,10 @@ static int netkit_new_link(struct net *src_net, struct net_device *dev,
+ 				return err;
+ 			tbp = peer_tb;
+ 		}
+-		if (data[IFLA_NETKIT_POLICY]) {
+-			attr = data[IFLA_NETKIT_POLICY];
+-			default_prim = nla_get_u32(attr);
+-			err = netkit_check_policy(default_prim, attr, extack);
+-			if (err < 0)
+-				return err;
+-		}
+-		if (data[IFLA_NETKIT_PEER_POLICY]) {
+-			attr = data[IFLA_NETKIT_PEER_POLICY];
+-			default_peer = nla_get_u32(attr);
+-			err = netkit_check_policy(default_peer, attr, extack);
+-			if (err < 0)
+-				return err;
+-		}
++		if (data[IFLA_NETKIT_POLICY])
++			default_prim = nla_get_u32(data[IFLA_NETKIT_POLICY]);
++		if (data[IFLA_NETKIT_PEER_POLICY])
++			default_peer = nla_get_u32(data[IFLA_NETKIT_PEER_POLICY]);
+ 	}
+ 
+ 	if (ifmp && tbp[IFLA_IFNAME]) {
+@@ -818,8 +813,6 @@ static int netkit_change_link(struct net_device *dev, struct nlattr *tb[],
+ 	struct netkit *nk = netkit_priv(dev);
+ 	struct net_device *peer = rtnl_dereference(nk->peer);
+ 	enum netkit_action policy;
+-	struct nlattr *attr;
+-	int err;
+ 
+ 	if (!nk->primary) {
+ 		NL_SET_ERR_MSG(extack,
+@@ -834,22 +827,14 @@ static int netkit_change_link(struct net_device *dev, struct nlattr *tb[],
+ 	}
+ 
+ 	if (data[IFLA_NETKIT_POLICY]) {
+-		attr = data[IFLA_NETKIT_POLICY];
+-		policy = nla_get_u32(attr);
+-		err = netkit_check_policy(policy, attr, extack);
+-		if (err)
+-			return err;
++		policy = nla_get_u32(data[IFLA_NETKIT_POLICY]);
+ 		WRITE_ONCE(nk->policy, policy);
+ 	}
+ 
+ 	if (data[IFLA_NETKIT_PEER_POLICY]) {
+-		err = -EOPNOTSUPP;
+-		attr = data[IFLA_NETKIT_PEER_POLICY];
+-		policy = nla_get_u32(attr);
+-		if (peer)
+-			err = netkit_check_policy(policy, attr, extack);
+-		if (err)
+-			return err;
++		if (!peer)
++			return -EOPNOTSUPP;
++		policy = nla_get_u32(data[IFLA_NETKIT_PEER_POLICY]);
+ 		nk = netkit_priv(peer);
+ 		WRITE_ONCE(nk->policy, policy);
+ 	}
+@@ -889,9 +874,15 @@ static int netkit_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ 
+ static const struct nla_policy netkit_policy[IFLA_NETKIT_MAX + 1] = {
+ 	[IFLA_NETKIT_PEER_INFO]		= { .len = sizeof(struct ifinfomsg) },
+-	[IFLA_NETKIT_POLICY]		= { .type = NLA_U32 },
+-	[IFLA_NETKIT_MODE]		= { .type = NLA_U32 },
+-	[IFLA_NETKIT_PEER_POLICY]	= { .type = NLA_U32 },
++	[IFLA_NETKIT_POLICY]		= NLA_POLICY_VALIDATE_FN(NLA_BINARY,
++								 netkit_check_policy,
++								 sizeof(u32)),
++	[IFLA_NETKIT_MODE]		= NLA_POLICY_VALIDATE_FN(NLA_BINARY,
++								 netkit_check_mode,
++								 sizeof(u32)),
++	[IFLA_NETKIT_PEER_POLICY]	= NLA_POLICY_VALIDATE_FN(NLA_BINARY,
++								 netkit_check_policy,
++								 sizeof(u32)),
+ 	[IFLA_NETKIT_PRIMARY]		= { .type = NLA_REJECT,
+ 					    .reject_message = "Primary attribute is read-only" },
+ };
 -- 
-2.34.1
+2.38.1
 
 
