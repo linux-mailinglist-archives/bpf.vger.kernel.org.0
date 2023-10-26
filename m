@@ -1,117 +1,124 @@
-Return-Path: <bpf+bounces-13357-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13358-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B79B7D8A65
-	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 23:33:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 648B07D8A6F
+	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 23:35:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4E7DB2108B
-	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 21:33:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0582BB212E9
+	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 21:35:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFE313D980;
-	Thu, 26 Oct 2023 21:33:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD953D987;
+	Thu, 26 Oct 2023 21:35:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nYndZGk7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QUsVyjH4"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C56534426
-	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 21:33:36 +0000 (UTC)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D53BB1AC;
-	Thu, 26 Oct 2023 14:33:33 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99c3c8adb27so205081766b.1;
-        Thu, 26 Oct 2023 14:33:33 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 254BE11C9E
+	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 21:35:26 +0000 (UTC)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C511EC1
+	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 14:35:24 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32003aae100so1558828f8f.0
+        for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 14:35:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698356012; x=1698960812; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ASkx/seKw1YtjFjKsIGUgBV6CKjEmc7iU1IIiSP7eYk=;
-        b=nYndZGk768C+pcpPfY+PNAM0e8jacZEaQzw+lBQGeQaq/C7fmPRe9zAO/NxJ7jm1Ho
-         1ol36e2mSezoYFd89bqvhg8F/15fYRxsa3h2C9oSAU6AsHfEZNxFXrnaEmucNWSh9FrP
-         ZpiriqICGfBzIiQq0wj7JL7tehg+TCBHCYU0iFo1j5WD9wvxru8e8hOkRHE5gAkHZqqo
-         zLKtHuJ5uBj7rbwLvMQLXMapzZqV/ys7tT/xKd2LRIWSWJ2VUDpRZbUbRKuNkFjmqu2B
-         2iMgrx1HtrWdqn0AYarb57ynZTe96o88MfSa7ybBW1IMMDSN6h7yvj2+zChtZ/XLmJOM
-         kxRw==
+        d=gmail.com; s=20230601; t=1698356123; x=1698960923; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z0mR35KT6Hsd8MM0x5OwTbVxWUczvUFC3BLMf9bmIjo=;
+        b=QUsVyjH4UeBgQCE0/y8cZ8B0G2ojWb36ufpdIjaZVIoXM93y5sF7HpiybRJD7PwI07
+         Uy7HvrhhHuqqtcWJGnWDahoNzSKJzzBFpsN/SSj8tWKYqy0Apu2FHTZlx+wpLUWMOAxR
+         pfHw/20LHhqHN49p+LFiOtPAWm5Yftd0oszZ3bQ+3a0CV56TcvbgdRdeyScrxDUyT7LM
+         j5uYaCxT29uItyiXNCBW0c6/yL5uOY9NBCyTU8WjLMAdlpA7FFwN7yjwl8vU22bFsd6x
+         uNIcArlu8inZ4aAlBp8BCgJrZ66vA6ssY95jwWGCCl7NfjZVb7iAtDjOYY1V3czID8YV
+         9FxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698356012; x=1698960812;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ASkx/seKw1YtjFjKsIGUgBV6CKjEmc7iU1IIiSP7eYk=;
-        b=lpPs1VCBp1O22KzSXl2H6CqTA5lwqBzwj0DcONDSJxRI+xBs3pzoImTF3RplY7Itj1
-         X7St28Q/m91GS0X1yszR6v36hMy4rPrd6MgzqklhxQtJx1SC1Kmr/gV7K3VBLPluvNf5
-         J4Y6ewJMzte27yFMxEJzyiG5l/Qxamu/sF4YIxc8sPPtNWoRuAt/DmK6Xd1Cx/A+hiBf
-         QDAxRuwMRWBuqiVuthFw+X66cz6i8944venhB2kTGQe9EHsYhisZDbqaszQ66xEbdqoE
-         dFzdKuDKtqvUFokUyk6fHJqMNuK1Tlf154b7mYxySLUvmU6VB1cH62cteNVu0RzovmFB
-         cpPA==
-X-Gm-Message-State: AOJu0YyQ2M0Ac0aG1wzJtS4Nd+YJuqv5TlDd33ggfnFUEUzcGrYhrmUT
-	1qL4J7UfFFycL2kXYN6if90=
-X-Google-Smtp-Source: AGHT+IH0n/0FDbflc8SokhFm2icvHNmomLnkCanqkoI6rky+zSHGaw9GIjdNCoO7Oo4uWx2FBohIBg==
-X-Received: by 2002:a17:907:3202:b0:9c6:3c94:69de with SMTP id xg2-20020a170907320200b009c63c9469demr803220ejb.53.1698356012084;
-        Thu, 26 Oct 2023 14:33:32 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id k15-20020a170906680f00b0099b8234a9fesm186613ejr.1.2023.10.26.14.33.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 14:33:31 -0700 (PDT)
-Message-ID: <707a9c4c001ca5efe8bf7db36e7341f308651451.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 0/2] bpf: Fix incorrect immediate spill
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
- <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
- KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,  Shuah Khan
- <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Fri, 27 Oct 2023 00:33:30 +0300
-In-Reply-To: <20231026-fix-check-stack-write-v1-0-6b325ef3ce7e@gmail.com>
-References: <20231026-fix-check-stack-write-v1-0-6b325ef3ce7e@gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0 
+        d=1e100.net; s=20230601; t=1698356123; x=1698960923;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z0mR35KT6Hsd8MM0x5OwTbVxWUczvUFC3BLMf9bmIjo=;
+        b=ghCgOQaSlAwhmwNE1eP+SV7vhH6Qcnl428C12aSs7NgiDdaV6iycoGS3V7THkowg5T
+         ZlesKoP6X39e0msAbhb0SHMUd1j6ksI+GdmVKJmz5RnhgfSay+ACHMrK5eCvxumISQDV
+         o1jP0La+7z8aQ+DsxxG9vZfZL+M2JAraNGpFJYifpWHoPQVdOkOBIAL3pLxxuO3Xt3AT
+         KsGKnUC8ktGIPvsdbnlHYH1iDDvh0poAJCb4227pA8V2VhwLHNgb6vxhwUYsrmxSMLC2
+         luOuvJCH+ANpEYNOFQMsd0n389x2eB70gnqlLNhY3tVACQAniAfJ0+3hrFgqhJV2/3fb
+         vjKw==
+X-Gm-Message-State: AOJu0Yw3GQx00aCQtzvwbxvEmGUjh7ASnGrlnPUI0M4sHdzVfQYVp5xk
+	TRCWxIBTtFHbjYIe7v83SIyJi3UCDMVzCchmaRo=
+X-Google-Smtp-Source: AGHT+IGg2N4KenBFXip8fYtut8GKcmk4o/0gdbmWnuZGA6+8Z943B1W9Nynz5cbFVTM7AgTtv7ld6D5KOMscje1DqCE=
+X-Received: by 2002:a5d:6c66:0:b0:32d:888d:7598 with SMTP id
+ r6-20020a5d6c66000000b0032d888d7598mr1220120wrz.4.1698356122951; Thu, 26 Oct
+ 2023 14:35:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20231024201852.1512720-1-chantr4@gmail.com> <041a3ea2-8cc6-4f0f-8ed9-6ca459e5bbb7@gmail.com>
+ <ZTiqp7URqNjqrSEk@surya>
+In-Reply-To: <ZTiqp7URqNjqrSEk@surya>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 26 Oct 2023 14:35:11 -0700
+Message-ID: <CAADnVQ++5v46OYD-zR28dM=PaZ1RYLoijLicg+8DgnAZAZ_qtw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: umount children of TDIR in test_bpffs
+To: Manu Bretelle <chantr4@gmail.com>
+Cc: Kui-Feng Lee <sinquersw@gmail.com>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2023-10-26 at 17:13 +0200, Hao Sun wrote:
-> Immediate is incorrectly cast to u32 before being spilled, losing sign
-> information. The range information is incorrect after load again. Fix
-> immediate spill by remove the cast. The second patch add a test case
-> for this.
->=20
-> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+On Tue, Oct 24, 2023 at 10:42=E2=80=AFPM Manu Bretelle <chantr4@gmail.com> =
+wrote:
+>
+> On Tue, Oct 24, 2023 at 02:29:19PM -0700, Kui-Feng Lee wrote:
+> >
+> >
+> > On 10/24/23 13:18, Manu Bretelle wrote:
+> > > Currently this tests tries to umount /sys/kernel/debug (TDIR) but the
+> > > system it is running on may have mounts below.
+> > >
+> > > For example, danobi/vmtest [0] VMs have
+> > >      mount -t tracefs tracefs /sys/kernel/debug/tracing
+> > > as part of their init.
+> > >
+> > > This change list mounts and will umount any mounts below TDIR before
+> > > umounting TDIR itself.
+> > >
+> > > Note that it is not umounting recursively, so in the case of a sub-mo=
+unt
+> > > of TDIR  having another sub-mount, this will fail as mtab is ordered.
+> >
+> > Should we move TID to a random path likes "/sys/kernel/debug-<pid>/"?
+> >
+>
+> Fair point, I suppose we would want to keep TDIR a defined string as it d=
+oes
+> simplify the gymnastic involved through the rest of the script, but yeah
+> looking at the original commit:
+> edb65ee5aa25 (selftests/bpf: Add bpffs preload test)
+>
+> I don't see any reason to use an alternate directory and rather mkdir it =
+vs
+> umounting the original one.
+> so something like
+>
+>     #define TDIR "/sys/kernel/test_bpffs"
+>
+> Would probably do.
+>
+> Alexei could confirm his original intent probably.
 
-Thank you for finding and fixing this issue.
-
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-
-> ---
-> Hao Sun (2):
->       bpf: Fix check_stack_write_fixed_off() to correctly spill imm
->       selftests/bpf: Add test for immediate spilled to stack
->=20
->  kernel/bpf/verifier.c                             |  2 +-
->  tools/testing/selftests/bpf/verifier/bpf_st_mem.c | 32 +++++++++++++++++=
-++++++
->  2 files changed, 33 insertions(+), 1 deletion(-)
-> ---
-> base-commit: 399f6185a1c02f39bcadb8749bc2d9d48685816f
-> change-id: 20231026-fix-check-stack-write-c40996694dfa
->=20
-> Best regards,
-
+I don't remember why I picked /sys/kernel/debug back then.
+I suspect TDIR /tmp/foo and mkdir would work the same way.
 
