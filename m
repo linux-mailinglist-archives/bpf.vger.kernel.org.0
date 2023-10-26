@@ -1,65 +1,65 @@
-Return-Path: <bpf+bounces-13295-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13296-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2E087D7B88
-	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 06:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C12C67D7BAD
+	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 06:40:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B6211C20E48
-	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 04:37:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB1311C20EA1
+	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 04:40:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF88187E;
-	Thu, 26 Oct 2023 04:37:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72327523F;
+	Thu, 26 Oct 2023 04:40:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SrmRGDX7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YD1k1p+u"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67223622
-	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 04:37:49 +0000 (UTC)
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BFD1186;
-	Wed, 25 Oct 2023 21:37:48 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a7c08b7744so3541747b3.3;
-        Wed, 25 Oct 2023 21:37:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545103D75
+	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 04:40:18 +0000 (UTC)
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6C5170D;
+	Wed, 25 Oct 2023 21:40:06 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d9b2ca542e5so343363276.3;
+        Wed, 25 Oct 2023 21:40:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698295067; x=1698899867; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698295205; x=1698900005; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=VQfPVTlNxNs5d5jXM9r1QgUiEU5LPOzadsgQUw42pws=;
-        b=SrmRGDX76S4eqY/cRYUq+j0/xYZNR5I4a2AO2d8Nt82dr03fAaYE0BtVYIWvNlHZ5o
-         xpBKmAH3HR21DPQwEAy0WcwO95GSoQYBGqlwUiyiJqL2+3qpewWfuBDqrjeC6xf9o5Jo
-         cL+HIRcF1hqvNwQhG11AMZP0oKrOZs3iIzSaCb/KXYVcvmVa8q+qSm008JLBcI7OZEX4
-         1+BAt5uDD25sUsWeSbcI8fwiOnDok6oNPM+OD5i5kfmFi/5nnEugTq4w4w+9AjPw1/pM
-         tMpQhMvn0UPLVyNyUygAE/7ST3szUVVVgzkYRU+Fz9DDU3lri7w9wzSdehXqddQ7oWPV
-         YhvQ==
+        bh=RIsqONf3Q1y0JGEcGNft9ou71IkLzaprkuT+NWbOdW0=;
+        b=YD1k1p+u2WPM1LHLUVY2EdURYPaHc7K7evFpJx18Ej/tJdtuXRxGnHpQnIJuQgZQ9p
+         JDu4It9xD8ZWc2f7Ixw6RVcbAN6ZBYHzkDGgiZHgy+35aj0W1bjJloPUk31a2zlEfbYt
+         clz/CfYVOtIQNKV7b1Oz9ZxRgY9L9YBPvrT/imjYK0OMqwiFtW+gPiGpf37VAF2oD6Bs
+         bfk6WIzx5rUPMRD3okD6TUup/TwFUxBw586eoJIQrC7VUJRMxuJVVxp7PsgwpWrlMiMl
+         wW1CaQlDifWg/Hp/hGnWhG5PzveR4uqoFlfO9t47GkkYtUMGLJMkML7H27+KTmMjznLW
+         d0Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698295067; x=1698899867;
+        d=1e100.net; s=20230601; t=1698295205; x=1698900005;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VQfPVTlNxNs5d5jXM9r1QgUiEU5LPOzadsgQUw42pws=;
-        b=Ds1B2GpeO5vF9S/JaNDg0CEhKOhHFxUEcbpLINd8+HKeQMRGN4Y3IUpV8lE96Z7nsm
-         aJXZlTRs77c86e8ih5NqhyhnxWCyz26e9+18/vb3L1XXGMjscOm+cQrvs/0LDWImbcNi
-         55N6BzZvoWqhC8MaI9F4OXguWcSMxTsRfyq5rChOqPoERMS5+fLsSxDguUun/6yowBOB
-         uD1zMily4Rsc+ySMpzsifiGmwFknTQY5WtJi3z/I8Fbq7p8dN4sMvMy5EL2Bzel2H7Oe
-         d4VBvnSBhlboeWXm8sgPxacrWsnbyAaQdSb9WYlx21hZxc5rY6+PuuhVsAfXTSAJL2Jr
-         JLZw==
-X-Gm-Message-State: AOJu0Ywfuv/n1/Gvy0D4j14jCTPvbcGf4wfhYQgXl2yNgvR0CXvAa8ic
-	Z1PUHFdKoeo6UYcW1Vkvrx0=
-X-Google-Smtp-Source: AGHT+IHt52HN0V+3DlJVOcSRacrk5PEgPDnXA6DtClm+Xq2Pw2+zSIqHBsRMDI/5qnu5klMYdQnj0A==
-X-Received: by 2002:a0d:d810:0:b0:5a7:cfdc:d7b1 with SMTP id a16-20020a0dd810000000b005a7cfdcd7b1mr19298114ywe.4.1698295067160;
-        Wed, 25 Oct 2023 21:37:47 -0700 (PDT)
+        bh=RIsqONf3Q1y0JGEcGNft9ou71IkLzaprkuT+NWbOdW0=;
+        b=LPUNdX7JZjAx8c88uDatSgppQ5XtmnnrHTZaA8hrqpIaxEiZrRbYbxaMO9S2qmbwZT
+         CMyanmlPMCZVBVislksjsXFIvJJdP5Tp2HXpGOUvovn2EMtBJO5GwOkOIAZzVGYJz66/
+         WknIMocykmUPCactwvc0lYmPStg7Q0y6rNQHNbs4e5kwuaM4IAr4s8rwT+kh+Y0kw9sb
+         egwXazDvst4FTBCgKQuLiUGB5PYxFKRRusOkRLW/pgT0odTks57XPgvZJOcZCRGRrjB6
+         Yv7Ddzb7Gc0Xn9JJ+mAW8xacJBMHieRK+7FKW/miZWWdQ6Tfsqtzf+iKC+hCkuJ/eKTf
+         c9RA==
+X-Gm-Message-State: AOJu0Yye+Cza3tiFSxHMDogaIS4FJJjCtJaZA2bFA2I6BW+q3tfmlbJz
+	27PnevBMbbPkgyD1zAty0Xf3zipGmoY=
+X-Google-Smtp-Source: AGHT+IH3GZApGUxeCBeb/skljKePhuSQcKYVTS4HIvryWlSGIprA0D4h9kcdM7SqGkjOGulQkpQlXA==
+X-Received: by 2002:a05:6902:567:b0:d9b:37dd:a3d7 with SMTP id a7-20020a056902056700b00d9b37dda3d7mr17308006ybt.17.1698295204735;
+        Wed, 25 Oct 2023 21:40:04 -0700 (PDT)
 Received: from ?IPV6:2600:1700:6cf8:1240:8355:61d5:b55:33e7? ([2600:1700:6cf8:1240:8355:61d5:b55:33e7])
-        by smtp.gmail.com with ESMTPSA id s13-20020a81bf4d000000b005a7fbac4ff0sm5638687ywk.110.2023.10.25.21.37.45
+        by smtp.gmail.com with ESMTPSA id g203-20020a25dbd4000000b00da041da21e7sm1921108ybf.65.2023.10.25.21.40.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 21:37:46 -0700 (PDT)
-Message-ID: <563d1ae7-8d1f-48d5-b742-989ce482c4f1@gmail.com>
-Date: Wed, 25 Oct 2023 21:37:44 -0700
+        Wed, 25 Oct 2023 21:40:04 -0700 (PDT)
+Message-ID: <8a14c779-441d-424c-b1f4-fdc7c5ce407e@gmail.com>
+Date: Wed, 25 Oct 2023 21:40:02 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,8 +67,8 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 0/2] selftests/bpf: Replaces CHECK macros and
- adds malloc failure checks to bpf_iter
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Add malloc failure checks
+ in bpf_iter
 Content-Language: en-US
 To: Yuran Pereira <yuran.pereira@hotmail.com>, bpf@vger.kernel.org,
  yonghong.song@linux.dev
@@ -77,49 +77,58 @@ Cc: shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net, song@kernel.org,
  haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, brauner@kernel.org,
  iii@linux.ibm.com, kuifeng@meta.com, linux-kselftest@vger.kernel.org,
  linux-kernel@vger.kernel.org
-References: <DB3PR10MB6835598B901975BEAEBA8601E8DDA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
+References: <20231026020319.1203600-1-yuran.pereira@hotmail.com>
+ <DB3PR10MB6835A2CBEE0EBE31D07FABFAE8DDA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
 From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <DB3PR10MB6835598B901975BEAEBA8601E8DDA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
+In-Reply-To: <DB3PR10MB6835A2CBEE0EBE31D07FABFAE8DDA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
+Good job! LGTM
+
+Acked-by: Kui-Feng Lee <thinker.li@gmail.com>
 
 
 On 10/25/23 19:03, Yuran Pereira wrote:
-> This patch series contains the following updates:
-> - Replaces the usage of all the CHECK macros in bpf_iter
->    to the appropriate ASSERT_* macro calls
-> - Adds appropriate malloc failure checks to bpf_iter
+> Since some malloc calls in bpf_iter may at times fail,
+> this patch adds the appropriate fail checks, and ensures that
+> any previously allocated resource is appropriately destroyed
+> before returning the function.
 > 
-> Changes in v2:
-> - Removed unused "duration" variable which caused compilation error
->    as reported by Yonghong Song [1]
-> - Improved malloc failure handling as suggested by Kui-Feng Lee [2]
-> - Ensured propper patch formatting (i.e. sending it as a set instead
->    of two distinct patches)
+> Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
+> ---
+>   tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> [1] https://lore.kernel.org/lkml/3531360b-c933-4c5f-a84c-17edf0592519@linux.dev/
-> [2] https://lore.kernel.org/lkml/7d703c4c-1a24-4806-a483-c02efb666059@gmail.com
-> 
-> 
-> Previous version:
-> v1 - https://lore.kernel.org/lkml/DB3PR10MB683589A5F705C6CA5BE0D325E8DFA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
->     - https://lore.kernel.org/lkml/DB3PR10MB68356D7CDF6005480BE5876CE8DEA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
-> 
-> Yuran Pereira (2):
->    selftests/bpf: Convert CHECK macros to ASSERT_* macros in bpf_iter
->    selftests/bpf: Add malloc failure checks in bpf_iter
-> 
->   .../selftests/bpf/prog_tests/bpf_iter.c       | 88 +++++++++----------
->   1 file changed, 44 insertions(+), 44 deletions(-)
-> 
-
-
-For the cover letter, you can just put it at the same directory of
-patch 1 and 2 and sent them with "git send-email" at once. All of them
-will be in the same thread.
-
-"git format-patch --cover-letter ..." will generate a template
-of the cover letter along with patches. FYI
-
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> index 7db6972ed952..955d374ba656 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> @@ -698,7 +698,7 @@ static void test_overflow(bool test_e2big_overflow, bool ret1)
+>   		goto free_link;
+>   
+>   	buf = malloc(expected_read_len);
+> -	if (!buf)
+> +	if (!ASSERT_OK_PTR(buf, "malloc"))
+>   		goto close_iter;
+>   
+>   	/* do read */
+> @@ -869,6 +869,8 @@ static void test_bpf_percpu_hash_map(void)
+>   
+>   	skel->rodata->num_cpus = bpf_num_possible_cpus();
+>   	val = malloc(8 * bpf_num_possible_cpus());
+> +	if (!ASSERT_OK_PTR(val, "malloc"))
+> +		goto out;
+>   
+>   	err = bpf_iter_bpf_percpu_hash_map__load(skel);
+>   	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_percpu_hash_map__load"))
+> @@ -1046,6 +1048,8 @@ static void test_bpf_percpu_array_map(void)
+>   
+>   	skel->rodata->num_cpus = bpf_num_possible_cpus();
+>   	val = malloc(8 * bpf_num_possible_cpus());
+> +	if (!ASSERT_OK_PTR(val, "malloc"))
+> +		goto out;
+>   
+>   	err = bpf_iter_bpf_percpu_array_map__load(skel);
+>   	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_percpu_array_map__load"))
 
