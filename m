@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-13367-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13368-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBBEC7D8B6F
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 00:10:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EB557D8B77
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 00:11:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDBF01C20ED8
-	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 22:10:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CD0C1C20FB0
+	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 22:11:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E53D73F4A9;
-	Thu, 26 Oct 2023 22:10:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93BA43F4BC;
+	Thu, 26 Oct 2023 22:11:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="J2j7S08R"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JoVLho0R"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D5303E48B
-	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 22:10:15 +0000 (UTC)
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98D091
-	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 15:10:13 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53fc7c67a41so5341043a12.0
-        for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 15:10:13 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B5D3E483
+	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 22:11:45 +0000 (UTC)
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B350391
+	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 15:11:42 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-5079f9675c6so2233950e87.2
+        for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 15:11:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698358212; x=1698963012; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698358301; x=1698963101; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VYkYcPfrdjdF13EUZZ4eE7TIV+DAr//+SL8WC077uOs=;
-        b=J2j7S08RIHdtE5P9LPqWSBmyk4JHy8o0zMHOmCUxJ6ex6gtuzLsOyVnrMcjETdt2my
-         aMWugK8ndDJSbiDSwZtZ3UHf6hLc21mR0kfIJuWsP843otfXTHdMtPWVB6DWEjF6jAvo
-         dKb3bUr/D9d6/CjNzhGa/2kFkg3of1YD3rpsViEouTud9mlyJvZ3egsu134wJnAZppla
-         PH8df/P9K4J6HSuJTPKBgIeEii29VDLq4gtZszfRO4HAaXEjs2qNvKIgcvf0et/1iWR1
-         Bhdr9p+K04toNFsaZlhw0lxk8QKmA/g/C7wE5qjar9deQc6EsbiVR7ymUK4MJTqE8RUL
-         A3+A==
+        bh=u7QyUigwL+AihRwuENBgL/lkTObabmHkjoTqFNGjpDU=;
+        b=JoVLho0Ry/Nc3mefIZkDvwTWG8RS8v7YxyhoZ0dOiN+JlESexiFIKGBD8wInQ2syjT
+         1EoHhhzQ3ZrM+uECf1iJIiJnHYOU7Sa/R2OrT22M6/HFk37TAiv4oMzt5KPwi1sYc5ze
+         96kKe1U2XO/ej3+T7baBKZmwt14e8AtCqimELAOgY2mstJZUr2t33tiuA8sLShWDN5Zn
+         GD80rlzyfDK7ii5/lQ3nKU4dSbsej3OQ8ih8G+gtNsrZw6Nx3FN4Jcr7heY6sebYwzfd
+         KeXKcB2Rz8cDEQZdvcl8rH2wZnBW+ue0RNJpTuKp5VpC9q2sL19ikPqagAjuLXYUco+S
+         TbEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698358212; x=1698963012;
+        d=1e100.net; s=20230601; t=1698358301; x=1698963101;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VYkYcPfrdjdF13EUZZ4eE7TIV+DAr//+SL8WC077uOs=;
-        b=fcFjS8fXbSmtSqu63e0w4LVVf+ptHrouhhObrwT7jZB+3Uh78SnlNhx0Jt85vtIYS4
-         nIxUNASkpWZ3fEY28srDmOi9GMOaLK75Ov202eyPFgl8F+nsgtKPAVMPzuurzDckxh+z
-         072ouGJVmZnVo1ut5TGXVM3mqwVZJZ3rl2u3A/kCUFx7UZFwYaKqbLXb4hglXE0j3Yis
-         a8/gIF8Bx2aohHTBuyn+Ut64wYvvrtb7x3eROAOn/yCyJkFbw9shksWVuwZDvCqcGprJ
-         FFKGD5ddtKDUM3Us2qLdaKgcGVoQywrqO1Q2sMpYQobmE9wxjNkYTt8WGG1f/VAdtv7s
-         aLQA==
-X-Gm-Message-State: AOJu0Yyg5DdEUkdLG91/FzdFQnqFAwgUmUaiH5zGpnE4VRFQEaLLsdcq
-	chG9yv2cpp6AdCNH26DOoxA62wdfWrgv/W+eWTofDg==
-X-Google-Smtp-Source: AGHT+IHuRGkSLp8NehiD60eytlHzZjcZDIT/jEslbKqr0KO3Wpe3LN4KZHOprmb19kQBB0q3jCL/Ej5UEDw1oqFqc4o=
-X-Received: by 2002:a50:fa83:0:b0:52a:38c3:1b4b with SMTP id
- w3-20020a50fa83000000b0052a38c31b4bmr1216507edr.15.1698358211957; Thu, 26 Oct
- 2023 15:10:11 -0700 (PDT)
+        bh=u7QyUigwL+AihRwuENBgL/lkTObabmHkjoTqFNGjpDU=;
+        b=YAPq5SHMVc3yT6Mbgz6I3LOlMRBLPlOQvBqFvOz58kgODrmR5SVvs0zktG06R92WIG
+         iJaSik9AjYm9Fn5qbQhiOC9Ub8Smbd2EaohgwmIxdjX1HNEECNyNa28Wqt3g+1aOcoBx
+         8YvafkfFLUy/2mrJP04i9iVfl62ijZXWG6YpQzsWVXIBwZp4bdWOUCihBGuinrVrAh8k
+         nt1oUsFOVL2pZYiqagoZkUj0WQtDb2x8E4IZ8UuW6D6SxS7peCKnC37OZYAMWirn2dWE
+         C91pltjYcCCSVytqJFMfVYJQ+pPbpy0dbxPAqnNLU/75Bu90pSIv9yj32VgQW0QYgfc7
+         uBQQ==
+X-Gm-Message-State: AOJu0YwDHXcrHzfgHZEVXvWWeGVZUqS4UX27jQNgF2qnu9OT5qZHe760
+	zpMWkxH4sCr44LavAWze4K1cnK19UXcUbN+xDEmYTg==
+X-Google-Smtp-Source: AGHT+IHf/4g0ckl88vh8B7NAaPWRBEPuiUqA7RhSF/OaNkq65RrrqAUENIJx47f8YuoL+1dF/Uae/bzIzQfZl027bkI=
+X-Received: by 2002:a19:ac0a:0:b0:4ff:a04c:8a5b with SMTP id
+ g10-20020a19ac0a000000b004ffa04c8a5bmr431476lfc.47.1698358300700; Thu, 26 Oct
+ 2023 15:11:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,10 +63,11 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20231026-ethtool_puts_impl-v2-0-0d67cbdd0538@google.com>
  <20231026-ethtool_puts_impl-v2-1-0d67cbdd0538@google.com> <20231026220248.blgf7kgt5fkkbg7f@skbuf>
-In-Reply-To: <20231026220248.blgf7kgt5fkkbg7f@skbuf>
+ <CAFhGd8rWOE8zGFCdjM6i8H3TP8q5BFFxMGCk0n-nmLmjHojefg@mail.gmail.com>
+In-Reply-To: <CAFhGd8rWOE8zGFCdjM6i8H3TP8q5BFFxMGCk0n-nmLmjHojefg@mail.gmail.com>
 From: Justin Stitt <justinstitt@google.com>
-Date: Thu, 26 Oct 2023 15:09:59 -0700
-Message-ID: <CAFhGd8rWOE8zGFCdjM6i8H3TP8q5BFFxMGCk0n-nmLmjHojefg@mail.gmail.com>
+Date: Thu, 26 Oct 2023 15:11:28 -0700
+Message-ID: <CAFhGd8pJkdpF4BYDf_Ym-zsisAVzM06_4ba+_6Uca_2Xerp1Qg@mail.gmail.com>
 Subject: Re: [PATCH next v2 1/3] ethtool: Implement ethtool_puts()
 To: Vladimir Oltean <olteanv@gmail.com>
 Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
@@ -105,98 +106,112 @@ Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 26, 2023 at 3:02=E2=80=AFPM Vladimir Oltean <olteanv@gmail.com>=
- wrote:
+On Thu, Oct 26, 2023 at 3:09=E2=80=AFPM Justin Stitt <justinstitt@google.co=
+m> wrote:
 >
-> Hi Justin,
->
-> On Thu, Oct 26, 2023 at 09:56:07PM +0000, Justin Stitt wrote:
-> > Use strscpy() to implement ethtool_puts().
+> On Thu, Oct 26, 2023 at 3:02=E2=80=AFPM Vladimir Oltean <olteanv@gmail.co=
+m> wrote:
 > >
-> > Functionally the same as ethtool_sprintf() when it's used with two
-> > arguments or with just "%s" format specifier.
+> > Hi Justin,
 > >
-> > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > ---
-> >  include/linux/ethtool.h | 34 +++++++++++++++++++++++-----------
-> >  net/ethtool/ioctl.c     |  7 +++++++
-> >  2 files changed, 30 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
-> > index 226a36ed5aa1..7129dd2e227c 100644
-> > --- a/include/linux/ethtool.h
-> > +++ b/include/linux/ethtool.h
-> > @@ -1053,22 +1053,34 @@ static inline int ethtool_mm_frag_size_min_to_a=
-dd(u32 val_min, u32 *val_add,
-> >   */
-> >  extern __printf(2, 3) void ethtool_sprintf(u8 **data, const char *fmt,=
- ...);
-> >
-> > +/**
-> > + * ethtool_puts - Write string to ethtool string data
-> > + * @data: Pointer to start of string to update
-> > + * @str: String to write
-> > + *
-> > + * Write string to data. Update data to point at start of next
-> > + * string.
-> > + *
-> > + * Prefer this function to ethtool_sprintf() when given only
-> > + * two arguments or if @fmt is just "%s".
-> > + */
-> > +extern void ethtool_puts(u8 **data, const char *str);
-> > +
-> >  /* Link mode to forced speed capabilities maps */
-> >  struct ethtool_forced_speed_map {
-> > -     u32             speed;
-> > +     u32 speed;
-> >       __ETHTOOL_DECLARE_LINK_MODE_MASK(caps);
-> >
-> > -     const u32       *cap_arr;
-> > -     u32             arr_size;
-> > +     const u32 *cap_arr;
-> > +     u32 arr_size;
-> >  };
-> >
-> > -#define ETHTOOL_FORCED_SPEED_MAP(prefix, value)                       =
-       \
-> > -{                                                                    \
-> > -     .speed          =3D SPEED_##value,                               =
+> > On Thu, Oct 26, 2023 at 09:56:07PM +0000, Justin Stitt wrote:
+> > > Use strscpy() to implement ethtool_puts().
+> > >
+> > > Functionally the same as ethtool_sprintf() when it's used with two
+> > > arguments or with just "%s" format specifier.
+> > >
+> > > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > > ---
+> > >  include/linux/ethtool.h | 34 +++++++++++++++++++++++-----------
+> > >  net/ethtool/ioctl.c     |  7 +++++++
+> > >  2 files changed, 30 insertions(+), 11 deletions(-)
+> > >
+> > > diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
+> > > index 226a36ed5aa1..7129dd2e227c 100644
+> > > --- a/include/linux/ethtool.h
+> > > +++ b/include/linux/ethtool.h
+> > > @@ -1053,22 +1053,34 @@ static inline int ethtool_mm_frag_size_min_to=
+_add(u32 val_min, u32 *val_add,
+> > >   */
+> > >  extern __printf(2, 3) void ethtool_sprintf(u8 **data, const char *fm=
+t, ...);
+> > >
+> > > +/**
+> > > + * ethtool_puts - Write string to ethtool string data
+> > > + * @data: Pointer to start of string to update
+> > > + * @str: String to write
+> > > + *
+> > > + * Write string to data. Update data to point at start of next
+> > > + * string.
+> > > + *
+> > > + * Prefer this function to ethtool_sprintf() when given only
+> > > + * two arguments or if @fmt is just "%s".
+> > > + */
+> > > +extern void ethtool_puts(u8 **data, const char *str);
+> > > +
+> > >  /* Link mode to forced speed capabilities maps */
+> > >  struct ethtool_forced_speed_map {
+> > > -     u32             speed;
+> > > +     u32 speed;
+> > >       __ETHTOOL_DECLARE_LINK_MODE_MASK(caps);
+> > >
+> > > -     const u32       *cap_arr;
+> > > -     u32             arr_size;
+> > > +     const u32 *cap_arr;
+> > > +     u32 arr_size;
+> > >  };
+> > >
+> > > -#define ETHTOOL_FORCED_SPEED_MAP(prefix, value)                     =
+         \
+> > > -{                                                                   =
  \
-> > -     .cap_arr        =3D prefix##_##value,                            =
+> > > -     .speed          =3D SPEED_##value,                             =
+   \
+> > > -     .cap_arr        =3D prefix##_##value,                          =
+   \
+> > > -     .arr_size       =3D ARRAY_SIZE(prefix##_##value),              =
+   \
+> > > -}
+> > > +#define ETHTOOL_FORCED_SPEED_MAP(prefix, value)                     =
  \
-> > -     .arr_size       =3D ARRAY_SIZE(prefix##_##value),                =
- \
-> > -}
-> > +#define ETHTOOL_FORCED_SPEED_MAP(prefix, value)                      \
-> > +     {                                                            \
-> > +             .speed =3D SPEED_##value, .cap_arr =3D prefix##_##value, =
+> > > +     {                                                            \
+> > > +             .speed =3D SPEED_##value, .cap_arr =3D prefix##_##value=
+, \
+> > > +             .arr_size =3D ARRAY_SIZE(prefix##_##value),            =
 \
-> > +             .arr_size =3D ARRAY_SIZE(prefix##_##value),            \
-> > +     }
+> > > +     }
+> > >
+> > > -void
+> > > -ethtool_forced_speed_maps_init(struct ethtool_forced_speed_map *maps=
+, u32 size);
+> > > +void ethtool_forced_speed_maps_init(struct ethtool_forced_speed_map =
+*maps,
+> > > +                                 u32 size);
+> > >  #endif /* _LINUX_ETHTOOL_H */
 > >
-> > -void
-> > -ethtool_forced_speed_maps_init(struct ethtool_forced_speed_map *maps, =
-u32 size);
-> > +void ethtool_forced_speed_maps_init(struct ethtool_forced_speed_map *m=
-aps,
-> > +                                 u32 size);
-> >  #endif /* _LINUX_ETHTOOL_H */
+> > Maybe this is due to an incorrect rebase conflict resolution, but you
+> > shouldn't have touched any of the ethtool force speed maps.
 >
-> Maybe this is due to an incorrect rebase conflict resolution, but you
-> shouldn't have touched any of the ethtool force speed maps.
+> Ah, I did have a conflict and resolved by simply moving the hunks
+> out of each other's way. Trivial resolution.
+>
+> Should I undo this? I want my patch against next since it's targeting
+> some stuff in-flight over there. BUT, I also want ethtool_puts() to be
+> directly below ethtool_sprintf() in the source code. What to do?
 
-Ah, I did have a conflict and resolved by simply moving the hunks
-out of each other's way. Trivial resolution.
-
-Should I undo this? I want my patch against next since it's targeting
-some stuff in-flight over there. BUT, I also want ethtool_puts() to be
-directly below ethtool_sprintf() in the source code. What to do?
+Oh, I just realized my auto formatter had a field day with that function.
+I will rectify this in a new version after waiting 24hrs for comments to
+trickle in as well.
 
 >
-> Please wait for at least 24 hours to pass before posting a new version,
-> to allow for more comments to come in.
-
-Ok :)
+> >
+> > Please wait for at least 24 hours to pass before posting a new version,
+> > to allow for more comments to come in.
+>
+> Ok :)
+>
+> Thanks
+> Justin
 
 Thanks
 Justin
