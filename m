@@ -1,507 +1,160 @@
-Return-Path: <bpf+bounces-13290-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13291-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A89E7D7A98
-	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 04:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EA7177D7AA3
+	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 04:05:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4562B2133A
-	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 02:00:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A016B212D6
+	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 02:05:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03134882E;
-	Thu, 26 Oct 2023 02:00:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26D39882E;
+	Thu, 26 Oct 2023 02:05:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="O2cqlMkO"
+	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="PGbTJjdv"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A781749F;
-	Thu, 26 Oct 2023 02:00:31 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B027212F;
-	Wed, 25 Oct 2023 19:00:29 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PMVQ1n012893;
-	Wed, 25 Oct 2023 19:00:15 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=s2048-2021-q4;
- bh=8UPJi435dLHCycWk7gRegwvU0o7kPnLG9DTceS7LPAM=;
- b=O2cqlMkOT2KEEIKaaAyMmscrbW3En3v1cJnEGIeexK9yteR3cpeE7uUS8sLReUM3usOk
- UnSW2c6dAfZTh4XEOyFQ4b2iwUFQ5UHoUHK+u5JcDxS1GjfD1d9rwtU04W4VoIOAHmiI
- CJr6P56g0i3Y3EWiYUMjI1YN5ToyWBkdpAogHYo7pjzWo+cIb0lx4YJcbF7V06sDl62K
- o/6SULR2p6aC/T5ICMGSuLgI5FVraCDnB22wEYuhARSnC8QkgGr19K6dJlgzAXC6JhNi
- eiaPOHxiE6apo0rvveIaOSazbYoE8yXffX450oc4bXHhutG1vFWlBlfoh5KGxih/Oo/j Bw== 
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3tybvr8x04-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Wed, 25 Oct 2023 19:00:15 -0700
-Received: from devvm4158.cln0.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server id
- 15.1.2507.34; Wed, 25 Oct 2023 18:59:48 -0700
-From: Vadim Fedorenko <vadfed@meta.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko
-	<andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, Mykola Lysenko
-	<mykolal@fb.com>
-CC: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-        Vadim Fedorenko
-	<vadfed@meta.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: [PATCH bpf-next 2/2] selftests: bpf: crypto skcipher algo selftests
-Date: Wed, 25 Oct 2023 18:59:38 -0700
-Message-ID: <20231026015938.276743-2-vadfed@meta.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20231026015938.276743-1-vadfed@meta.com>
-References: <20231026015938.276743-1-vadfed@meta.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9AC4A50
+	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 02:05:12 +0000 (UTC)
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2060.outbound.protection.outlook.com [40.92.90.60])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418A190;
+	Wed, 25 Oct 2023 19:05:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WuN/n9ugJxPNPafI7AjAvM6lyoyNIE+xEp6qEgZWU59dCic4+9GbLQdoflDvWr2IbDR7cIRa08X5GFyxTYJ3zvlJ2MOdUNjFfFjmAck+WCWsRCfIPWsAc/cTiLBo7iMSHhGIrti741BOsvHKvaxGMyRUDtd2mFPEA4BzA+DurcajDApEt41idgLsoukbfP3c03tYj9UioAmsc3/lS/iLVTBr6DNY1OKNCrC8z8n6yt+eJPEM26otETGyKUUw+pZKGGqzkqzN/VBQxUWUY3HdW6/cvxCaC9AKLUDMR4z5jtlNLHxzA/ePcWKi6H5I5sQf8Kg274wDbyRiPlJsQtC8KQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qlcCnMa+gq9ToVs6Fvuge7iFBROgo7HegysrN2LIibA=;
+ b=aSJ2YbIIw9a7wvDInlh7g55nQIn9yOKIsTTntsOByGgN84Uj9dcyKzvzspEK6CuXbHCc//Hasa2JneicuWi4MkqnfEbXgmijXp7+TgCSBJ3iT0dAxEOtZrO7kvu026tFgbNdMwkdJSsI4Tq1F69Oz0bmIXgnEFTSMMIg/Qb5H9diDvZz8OgOELgKSO1HvQQXIXyd/ZojSszbbhaTh1amg0byn4PgFv1Bb7+R9p8I6gKb9byJbBBAV2zjEFTKoc/yof7zVdOQyZlKk4Q7lCWvcWiGfC72g83RX0K648kJlXqR868Yjv+XOwQWj8t8zL17GAqw4lLZmSZ6Zt6IKMOYIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qlcCnMa+gq9ToVs6Fvuge7iFBROgo7HegysrN2LIibA=;
+ b=PGbTJjdvxdC2eA9TnW6HmnpbmSBDZSBaJxIkhLXwKH5fm0ePZnQ9hdJMRjisSFEaG/w5feu1Vw49pJt8W6BqduRabMGgENIgQgnaKuyqbBvKESvdGL1NnWuxafD0pULL5Jq10xChJ7cGRC6RKaTebnT8tGvcHHi4LIyUX4Dc84jRJovIlJeKTZOK0YoNyrMw4cRbeHOcmQPnCRr55XhC6luaT05S/ICuyrAOLTui+0DVE0EstYAuXjnwX6QUMTkszfo09UGaX4X0UXDn4OgMPA76Y0OkaOP2JhOCJvqIiw4WNuJFwz7oJnjzUu+2BKdOYJ4SKFD+MKDIatQ6o10qAw==
+Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
+ by AS2PR10MB7048.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:594::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.29; Thu, 26 Oct
+ 2023 02:05:08 +0000
+Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::e2b0:8d7e:e293:bd97]) by DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::e2b0:8d7e:e293:bd97%6]) with mapi id 15.20.6907.032; Thu, 26 Oct 2023
+ 02:05:08 +0000
+From: Yuran Pereira <yuran.pereira@hotmail.com>
+To: bpf@vger.kernel.org,
+	yonghong.song@linux.dev
+Cc: sinquersw@gmail.com,
+	shuah@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	song@kernel.org,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	mykolal@fb.com,
+	brauner@kernel.org,
+	iii@linux.ibm.com,
+	kuifeng@meta.com,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yuran Pereira <yuran.pereira@hotmail.com>
+Subject: [PATCH bpf-next v2 0/2] selftests/bpf: Replaces CHECK macros and adds malloc failure checks to bpf_iter
+Date: Thu, 26 Oct 2023 07:33:17 +0530
+Message-ID:
+ <DB3PR10MB6835598B901975BEAEBA8601E8DDA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [bSNAGxQf6DX7V24PetHib9rzSjSFxfBa]
+X-ClientProxiedBy: JNAP275CA0067.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::13)
+ To DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
+X-Microsoft-Original-Message-ID:
+ <20231026020319.1203600-1-yuran.pereira@hotmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [2620:10d:c085:208::11]
-X-Proofpoint-ORIG-GUID: uv3H0YVWNEq2CF2pUYpl6AA-2kXB46EL
-X-Proofpoint-GUID: uv3H0YVWNEq2CF2pUYpl6AA-2kXB46EL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-25_13,2023-10-25_01,2023-05-22_02
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB3PR10MB6835:EE_|AS2PR10MB7048:EE_
+X-MS-Office365-Filtering-Correlation-Id: 82d8a72a-aba0-4b55-c267-08dbd5c7fa6b
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	jufkgZzNZcvswShHVENCdbce+WdISqP2wxfH9JYt9xImoEuT94cSrOSUVNkx58cjEhdyVX1yupkiDyPfE4QvYWDENsHnRFBz4s6JjRDi05vNKKcQHFs5PyoVsJfCFeTOLPdYwxImN42+FL/shFAP0+EmlO1pCCgT8NqRz46QUvWkahVaKnwXfaSJ9y7wNJVLAUtsjGrddIu6UOWp+kOpO2xkSsqrgI2O4P2mCpQ95U69eV07FUPna9UE3rIPqCOduuXF/GRIawxKC7suZXSJXMKXHg6UpXKp2A/doAV06WJky1P0Qdn5PwTB+lnyA7jmpNYzOvd7wvdUDTHNu1aNYDj7PvDuOsycPneOrc3HkGKnmAlJyzntOPXDgY6tTaCKxuF9EfYrxYYXwEQAtNBqapult67lsIcdyfUn+qfgNL7PTYHKS7SpslzsiHOGW6aVR564Xz8eO1BDbWSaeJO0uiMBrBRMACGSr8pNX+FFgcHBz8tV2a+jhrYTmQM6ubUEqBmNZeEYvqO8oDV/MBx1KR1B6tqK8mqYSzg+FuODpGqYEWwj5h/Vx75V0qYwNJfSiq7r66W5aGO2tI+gsSBODnDNK5gfkjt34tO7StVqVgzNYCWkc1XJJIafZuUF1F3uBWGOlT3Ar4XhnD/Tl/GWfAPRA6GnQdT5iwQoh2tgPek=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?WJA1oz2f6k9/vONeeZxWgYF67/dRx4h6cbzzLb6qvUElrL4otChSZ0Z48SXx?=
+ =?us-ascii?Q?BgiEG8QaRl5AYFI7+SxhPJQ8WfM3CU7YvBmYRsskQ9AFanL+6jM1KyMO9Zf7?=
+ =?us-ascii?Q?UpCQVt2hnyVLaoD+ykMQGWa8Og9QwBZGo5EO0wzCsVSuh//uIpkU5Y74f4g0?=
+ =?us-ascii?Q?0hKmgeEj3K/tdgWyCJmA2aVp+sKnHQ2dHaHjUoDcHQYxOGRrAagjfu1cU4oB?=
+ =?us-ascii?Q?dOqTJTx9VPddWKC0zuWEXsGfOuy2PSAcOvPt+5VE+dcVx3C6L0eEgvXEAv0S?=
+ =?us-ascii?Q?cdQqE2k7xJ0f15J0ZI7g3UzM99qZ3RZqbhTJ7rbQ4RCT1fK7AoODYdu72oRz?=
+ =?us-ascii?Q?gNjeMLBmfBqJurp3UyxuDKGRdhLOA93m9xSbOtogyFR4qwJ8aH+OcEyzD3Bl?=
+ =?us-ascii?Q?kQN3jxc0AB1cWc8Wgc5vqq/Wn37cNpbOE1fT0ppxqL89oiJ9zbhU+McxMSP8?=
+ =?us-ascii?Q?o/JkAHDzBMkqiQajLA7NXVfBGcIR6S+01hVXlukgYweDbS5wJxKUb+h+sA+S?=
+ =?us-ascii?Q?z3MTF+7jxNj1fK/uq2FHuY3jUypBl/qtWZ7lCODaKnMdOhwv1JFs9Rq1QFcH?=
+ =?us-ascii?Q?LMIYvXcNcBIixhF/Vi08vcaIELn4dgPU74Bk3fsjmEL7WVK8AOBUERs8AcwB?=
+ =?us-ascii?Q?CI4ve40KBtXlmEKOz0NuhEmxLRhyZkQmhj2XtuY6Px4Jew3CluAMVdpAoE0u?=
+ =?us-ascii?Q?C06LSNuaEiQRmP/vvhyJMAr/j0HSVwX5tvxWyADpFbcLsc4i9nocod2N+Rnf?=
+ =?us-ascii?Q?i+YpMEaNPrIKmtArUeX+88gpYL7BgctXUWzTWobYHfP21JUNJwpLaE44hwis?=
+ =?us-ascii?Q?5bO/Mm/u5+1R90HT6h5FcxNXSpudBAh8Ppviyq9/Lw9HWRVl36QFceUocXUb?=
+ =?us-ascii?Q?kG5uqzkK2Ui6N3fhV8SfJPHPsRmiJK25HewVSuOmch2YN9xV2wqb16k4yRn3?=
+ =?us-ascii?Q?h3KgJmeY1ZTN36vTmjQShtxzj9kaRs3bevyr60OmbZumJp60RU4lBeeVtjLc?=
+ =?us-ascii?Q?x+AId4MwirZqyPtNiYrOhxCR8K/RTB5AXgIL+8fH8rAqG4nFzSnzEIQ5VQB8?=
+ =?us-ascii?Q?maOKj+UC0MyhiE7Cor9clJm0bLbtD9qLQDqDmV9y18gNQl6ve/yqz4KldSGC?=
+ =?us-ascii?Q?6mJ86rlKYg34GmfPFV30MNOZT0l74eO1Xh3vxjx5nKHDHHz1YQB9QOzXnnLZ?=
+ =?us-ascii?Q?ZqIPUZojKmMAkiRQKQCNlZh4g8wqltqqUyCX22CeDYl6h2lBfCgyhPrsnLw?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82d8a72a-aba0-4b55-c267-08dbd5c7fa6b
+X-MS-Exchange-CrossTenant-AuthSource: DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 02:05:08.4906
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR10MB7048
 
-Add simple tc hook selftests to show the way to work with new crypto
-BPF API. Some weird structre and map are added to setup program to make
-verifier happy about dynptr initialization from memory. Simple AES-ECB
-algo is used to demonstrate encryption and decryption of fixed size
-buffers.
+This patch series contains the following updates:
+- Replaces the usage of all the CHECK macros in bpf_iter
+  to the appropriate ASSERT_* macro calls
+- Adds appropriate malloc failure checks to bpf_iter
 
-Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
----
- tools/testing/selftests/bpf/config            |   1 +
- .../selftests/bpf/prog_tests/crypto_sanity.c  | 129 +++++++++++++++
- .../selftests/bpf/progs/crypto_common.h       |  98 +++++++++++
- .../selftests/bpf/progs/crypto_sanity.c       | 154 ++++++++++++++++++
- 4 files changed, 382 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/crypto_sanity.c
- create mode 100644 tools/testing/selftests/bpf/progs/crypto_common.h
- create mode 100644 tools/testing/selftests/bpf/progs/crypto_sanity.c
+Changes in v2:
+- Removed unused "duration" variable which caused compilation error
+  as reported by Yonghong Song [1]
+- Improved malloc failure handling as suggested by Kui-Feng Lee [2]
+- Ensured propper patch formatting (i.e. sending it as a set instead
+  of two distinct patches)
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 02dd4409200e..2a5d6339831b 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -14,6 +14,7 @@ CONFIG_CGROUP_BPF=y
- CONFIG_CRYPTO_HMAC=y
- CONFIG_CRYPTO_SHA256=y
- CONFIG_CRYPTO_USER_API_HASH=y
-+CONFIG_CRYPTO_SKCIPHER=y
- CONFIG_DEBUG_INFO=y
- CONFIG_DEBUG_INFO_BTF=y
- CONFIG_DEBUG_INFO_DWARF4=y
-diff --git a/tools/testing/selftests/bpf/prog_tests/crypto_sanity.c b/tools/testing/selftests/bpf/prog_tests/crypto_sanity.c
-new file mode 100644
-index 000000000000..a43969da6d15
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/crypto_sanity.c
-@@ -0,0 +1,129 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <net/if.h>
-+#include <linux/in6.h>
-+
-+#include "test_progs.h"
-+#include "network_helpers.h"
-+#include "crypto_sanity.skel.h"
-+
-+#define NS_TEST "crypto_sanity_ns"
-+#define IPV6_IFACE_ADDR "face::1"
-+#define UDP_TEST_PORT 7777
-+static const char plain_text[] = "stringtoencrypt0";
-+static const char crypted_data[] = "\x5B\x59\x39\xEA\xD9\x7A\x2D\xAD\xA7\xE0\x43" \
-+				   "\x37\x8A\x77\x17\xB2";
-+
-+void test_crypto_sanity(void)
-+{
-+	LIBBPF_OPTS(bpf_tc_hook, qdisc_hook, .attach_point = BPF_TC_EGRESS);
-+	LIBBPF_OPTS(bpf_tc_opts, tc_attach_enc);
-+	LIBBPF_OPTS(bpf_tc_opts, tc_attach_dec);
-+	LIBBPF_OPTS(bpf_test_run_opts, opts,
-+		    .data_in = crypted_data,
-+		    .data_size_in = sizeof(crypted_data),
-+		    .repeat = 1,
-+	);
-+	struct nstoken *nstoken = NULL;
-+	struct crypto_sanity *skel;
-+	struct sockaddr_in6 addr;
-+	int sockfd, err, pfd;
-+	socklen_t addrlen;
-+
-+	skel = crypto_sanity__open();
-+	if (!ASSERT_OK_PTR(skel, "skel open"))
-+		return;
-+
-+	bpf_program__set_autoload(skel->progs.skb_crypto_setup, true);
-+
-+	SYS(fail, "ip netns add %s", NS_TEST);
-+	SYS(fail, "ip -net %s -6 addr add %s/128 dev lo nodad", NS_TEST, IPV6_IFACE_ADDR);
-+	SYS(fail, "ip -net %s link set dev lo up", NS_TEST);
-+
-+	err = crypto_sanity__load(skel);
-+	if (!ASSERT_OK(err, "crypto_sanity__load"))
-+		goto fail;
-+
-+	nstoken = open_netns(NS_TEST);
-+	if (!ASSERT_OK_PTR(nstoken, "open_netns"))
-+		goto fail;
-+
-+	qdisc_hook.ifindex = if_nametoindex("lo");
-+	if (!ASSERT_GT(qdisc_hook.ifindex, 0, "if_nametoindex lo"))
-+		goto fail;
-+
-+	err = crypto_sanity__attach(skel);
-+	if (!ASSERT_OK(err, "crypto_sanity__attach"))
-+		goto fail;
-+
-+	pfd = bpf_program__fd(skel->progs.skb_crypto_setup);
-+	if (!ASSERT_GT(pfd, 0, "skb_crypto_setup fd"))
-+		goto fail;
-+
-+	err = bpf_prog_test_run_opts(pfd, &opts);
-+	if (!ASSERT_OK(err, "skb_crypto_setup") ||
-+	    !ASSERT_OK(opts.retval, "skb_crypto_setup retval"))
-+		goto fail;
-+
-+	if (!ASSERT_OK(skel->bss->status, "skb_crypto_setup status"))
-+		goto fail;
-+
-+	err = bpf_tc_hook_create(&qdisc_hook);
-+	if (!ASSERT_OK(err, "create qdisc hook"))
-+		goto fail;
-+
-+	addrlen = sizeof(addr);
-+	err = make_sockaddr(AF_INET6, IPV6_IFACE_ADDR, UDP_TEST_PORT,
-+			    (void *)&addr, &addrlen);
-+	if (!ASSERT_OK(err, "make_sockaddr"))
-+		goto fail;
-+
-+	tc_attach_dec.prog_fd = bpf_program__fd(skel->progs.decrypt_sanity);
-+	err = bpf_tc_attach(&qdisc_hook, &tc_attach_dec);
-+	if (!ASSERT_OK(err, "attach decrypt filter"))
-+		goto fail;
-+
-+	sockfd = socket(AF_INET6, SOCK_DGRAM, 0);
-+	if (!ASSERT_NEQ(sockfd, -1, "decrypt socket"))
-+		goto fail;
-+	err = sendto(sockfd, crypted_data, 16, 0, (void *)&addr, addrlen);
-+	close(sockfd);
-+	if (!ASSERT_EQ(err, 16, "decrypt send"))
-+		goto fail;
-+
-+	bpf_tc_detach(&qdisc_hook, &tc_attach_dec);
-+	if (!ASSERT_OK(skel->bss->status, "decrypt status"))
-+		goto fail;
-+	if (!ASSERT_STRNEQ(skel->bss->dst, plain_text, sizeof(plain_text), "decrypt"))
-+		goto fail;
-+
-+	tc_attach_enc.prog_fd = bpf_program__fd(skel->progs.encrypt_sanity);
-+	err = bpf_tc_attach(&qdisc_hook, &tc_attach_enc);
-+	if (!ASSERT_OK(err, "attach encrypt filter"))
-+		goto fail;
-+
-+	sockfd = socket(AF_INET6, SOCK_DGRAM, 0);
-+	if (!ASSERT_NEQ(sockfd, -1, "encrypt socket"))
-+		goto fail;
-+	err = sendto(sockfd, plain_text, 16, 0, (void *)&addr, addrlen);
-+	close(sockfd);
-+	if (!ASSERT_EQ(err, 16, "encrypt send"))
-+		goto fail;
-+
-+	bpf_tc_detach(&qdisc_hook, &tc_attach_enc);
-+	if (!ASSERT_OK(skel->bss->status, "encrypt status"))
-+		goto fail;
-+	if (!ASSERT_STRNEQ(skel->bss->dst, crypted_data, sizeof(crypted_data), "encrypt"))
-+		goto fail;
-+
-+fail:
-+	if (nstoken) {
-+		bpf_tc_hook_destroy(&qdisc_hook);
-+		close_netns(nstoken);
-+	}
-+	SYS_NOFAIL("ip netns del " NS_TEST " &> /dev/null");
-+	crypto_sanity__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/crypto_common.h b/tools/testing/selftests/bpf/progs/crypto_common.h
-new file mode 100644
-index 000000000000..c448f07d6e42
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/crypto_common.h
-@@ -0,0 +1,98 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+
-+#ifndef _CRYPTO_COMMON_H
-+#define _CRYPTO_COMMON_H
-+
-+#include "errno.h"
-+#include <stdbool.h>
-+
-+#define private(name) SEC(".bss." #name) __hidden __attribute__((aligned(8)))
-+private(CTX) static struct bpf_crypto_skcipher_ctx __kptr * global_crypto_ctx;
-+
-+struct bpf_crypto_skcipher_ctx *bpf_crypto_skcipher_ctx_create(const struct bpf_dynptr *algo, const struct bpf_dynptr *key, int *err) __ksym;
-+struct bpf_crypto_skcipher_ctx *bpf_crypto_skcipher_ctx_acquire(struct bpf_crypto_skcipher_ctx *ctx) __ksym;
-+void bpf_crypto_skcipher_ctx_release(struct bpf_crypto_skcipher_ctx *ctx) __ksym;
-+int bpf_crypto_skcipher_encrypt(struct bpf_crypto_skcipher_ctx *ctx, const struct bpf_dynptr *src, struct bpf_dynptr *dst, const struct bpf_dynptr *iv) __ksym;
-+int bpf_crypto_skcipher_decrypt(struct bpf_crypto_skcipher_ctx *ctx, const struct bpf_dynptr *src, struct bpf_dynptr *dst, const struct bpf_dynptr *iv) __ksym;
-+
-+struct __crypto_skcipher_ctx_value {
-+	struct bpf_crypto_skcipher_ctx __kptr * ctx;
-+};
-+
-+struct crypto_conf_value {
-+	__u8 algo[32];
-+	__u32 algo_size;
-+	__u8 key[32];
-+	__u32 key_size;
-+	__u8 iv[32];
-+	__u32 iv_size;
-+	__u8 dst[32];
-+	__u32 dst_size;
-+};
-+
-+struct array_conf_map {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, int);
-+	__type(value, struct crypto_conf_value);
-+	__uint(max_entries, 1);
-+} __crypto_conf_map SEC(".maps");
-+
-+struct array_map {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, int);
-+	__type(value, struct __crypto_skcipher_ctx_value);
-+	__uint(max_entries, 1);
-+} __crypto_skcipher_ctx_map SEC(".maps");
-+
-+static inline struct crypto_conf_value *crypto_conf_lookup(void)
-+{
-+	struct crypto_conf_value *v, local = {};
-+	u32 key = 0;
-+
-+	v = bpf_map_lookup_elem(&__crypto_conf_map, &key);
-+	if (v)
-+		return v;
-+
-+	bpf_map_update_elem(&__crypto_conf_map, &key, &local, 0);
-+	return bpf_map_lookup_elem(&__crypto_conf_map, &key);
-+}
-+
-+
-+static inline struct __crypto_skcipher_ctx_value *crypto_skcipher_ctx_value_lookup(void)
-+{
-+	u32 key = 0;
-+
-+	return bpf_map_lookup_elem(&__crypto_skcipher_ctx_map, &key);
-+}
-+
-+static inline int crypto_skcipher_ctx_insert(struct bpf_crypto_skcipher_ctx *ctx)
-+{
-+	struct __crypto_skcipher_ctx_value local, *v;
-+	long status;
-+	struct bpf_crypto_skcipher_ctx *old;
-+	u32 key = 0;
-+
-+	local.ctx = NULL;
-+	status = bpf_map_update_elem(&__crypto_skcipher_ctx_map, &key, &local, 0);
-+	if (status) {
-+		bpf_crypto_skcipher_ctx_release(ctx);
-+		return status;
-+	}
-+
-+	v = bpf_map_lookup_elem(&__crypto_skcipher_ctx_map, &key);
-+	if (!v) {
-+		bpf_crypto_skcipher_ctx_release(ctx);
-+		return -ENOENT;
-+	}
-+
-+	old = bpf_kptr_xchg(&v->ctx, ctx);
-+	if (old) {
-+		bpf_crypto_skcipher_ctx_release(old);
-+		return -EEXIST;
-+	}
-+
-+	return 0;
-+}
-+
-+#endif /* _CRYPTO_COMMON_H */
-diff --git a/tools/testing/selftests/bpf/progs/crypto_sanity.c b/tools/testing/selftests/bpf/progs/crypto_sanity.c
-new file mode 100644
-index 000000000000..71a172d8d2a2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/crypto_sanity.c
-@@ -0,0 +1,154 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include "bpf_tracing_net.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+#include "bpf_kfuncs.h"
-+#include "crypto_common.h"
-+
-+#define UDP_TEST_PORT 7777
-+unsigned char crypto_key[16] = "testtest12345678";
-+char crypto_algo[9] = "ecb(aes)";
-+char dst[32] = {};
-+int status;
-+
-+static inline int skb_validate_test(const struct __sk_buff *skb)
-+{
-+	struct ipv6hdr ip6h;
-+	struct udphdr udph;
-+	u32 offset;
-+
-+	if (skb->protocol != __bpf_constant_htons(ETH_P_IPV6))
-+		return -1;
-+
-+	if (bpf_skb_load_bytes(skb, ETH_HLEN, &ip6h, sizeof(ip6h)))
-+		return -1;
-+
-+	if (ip6h.nexthdr != IPPROTO_UDP)
-+		return -1;
-+
-+	if (bpf_skb_load_bytes(skb, ETH_HLEN + sizeof(ip6h), &udph, sizeof(udph)))
-+		return -1;
-+
-+	if (udph.dest != __bpf_constant_htons(UDP_TEST_PORT))
-+		return -1;
-+
-+	offset = ETH_HLEN + sizeof(ip6h) + sizeof(udph);
-+	if (skb->len < offset + 16)
-+		return -1;
-+
-+	return offset;
-+}
-+
-+SEC("?fentry.s/bpf_fentry_test1")
-+int BPF_PROG(skb_crypto_setup)
-+{
-+	struct crypto_conf_value *c;
-+	struct bpf_dynptr algo, key;
-+	int err = 0;
-+
-+	status = 0;
-+
-+	c = crypto_conf_lookup();
-+	if (!c) {
-+		status = -EINVAL;
-+		return 0;
-+	}
-+
-+	bpf_dynptr_from_mem(crypto_algo, sizeof(crypto_algo), 0, &algo);
-+	bpf_dynptr_from_mem(crypto_key, sizeof(crypto_key), 0, &key);
-+	struct bpf_crypto_skcipher_ctx *cctx = bpf_crypto_skcipher_ctx_create(&algo, &key, &err);
-+
-+	if (!cctx) {
-+		status = err;
-+		return 0;
-+	}
-+
-+	err = crypto_skcipher_ctx_insert(cctx);
-+	if (err && err != -EEXIST)
-+		status = err;
-+
-+	return 0;
-+}
-+
-+SEC("tc")
-+int decrypt_sanity(struct __sk_buff *skb)
-+{
-+	struct __crypto_skcipher_ctx_value *v;
-+	struct bpf_crypto_skcipher_ctx *ctx;
-+	struct bpf_dynptr psrc, pdst, iv;
-+	int err;
-+
-+	err = skb_validate_test(skb);
-+	if (err < 0) {
-+		status = err;
-+		return TC_ACT_SHOT;
-+	}
-+
-+	v = crypto_skcipher_ctx_value_lookup();
-+	if (!v) {
-+		status = -ENOENT;
-+		return TC_ACT_SHOT;
-+	}
-+
-+	ctx = v->ctx;
-+	if (!ctx) {
-+		status = -ENOENT;
-+		return TC_ACT_SHOT;
-+	}
-+
-+	bpf_dynptr_from_skb(skb, 0, &psrc);
-+	bpf_dynptr_adjust(&psrc, err, err + 16);
-+	bpf_dynptr_from_mem(dst, sizeof(dst), 0, &pdst);
-+	bpf_dynptr_from_mem(dst, 0, 0, &iv);
-+
-+	bpf_crypto_skcipher_decrypt(ctx, &psrc, &pdst, &iv);
-+
-+	status = 0;
-+
-+	return TC_ACT_SHOT;
-+}
-+
-+SEC("tc")
-+int encrypt_sanity(struct __sk_buff *skb)
-+{
-+	struct __crypto_skcipher_ctx_value *v;
-+	struct bpf_crypto_skcipher_ctx *ctx;
-+	struct bpf_dynptr psrc, pdst, iv;
-+	int err;
-+
-+	status = 0;
-+
-+	err = skb_validate_test(skb);
-+	if (err < 0) {
-+		status = err;
-+		return TC_ACT_SHOT;
-+	}
-+
-+	v = crypto_skcipher_ctx_value_lookup();
-+	if (!v) {
-+		status = -ENOENT;
-+		return TC_ACT_SHOT;
-+	}
-+
-+	ctx = v->ctx;
-+	if (!ctx) {
-+		status = -ENOENT;
-+		return TC_ACT_SHOT;
-+	}
-+
-+	bpf_dynptr_from_skb(skb, 0, &psrc);
-+	bpf_dynptr_adjust(&psrc, err, err + 16);
-+	bpf_dynptr_from_mem(dst, sizeof(dst), 0, &pdst);
-+	bpf_dynptr_from_mem(dst, 0, 0, &iv);
-+
-+	bpf_crypto_skcipher_encrypt(ctx, &psrc, &pdst, &iv);
-+
-+	return TC_ACT_SHOT;
-+}
-+
-+char __license[] SEC("license") = "GPL";
+[1] https://lore.kernel.org/lkml/3531360b-c933-4c5f-a84c-17edf0592519@linux.dev/
+[2] https://lore.kernel.org/lkml/7d703c4c-1a24-4806-a483-c02efb666059@gmail.com
+
+
+Previous version:
+v1 - https://lore.kernel.org/lkml/DB3PR10MB683589A5F705C6CA5BE0D325E8DFA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+   - https://lore.kernel.org/lkml/DB3PR10MB68356D7CDF6005480BE5876CE8DEA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+
+Yuran Pereira (2):
+  selftests/bpf: Convert CHECK macros to ASSERT_* macros in bpf_iter
+  selftests/bpf: Add malloc failure checks in bpf_iter
+
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 88 +++++++++----------
+ 1 file changed, 44 insertions(+), 44 deletions(-)
+
 -- 
-2.39.3
+2.25.1
 
 
