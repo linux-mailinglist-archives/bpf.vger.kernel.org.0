@@ -1,109 +1,175 @@
-Return-Path: <bpf+bounces-13299-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13300-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 900A37D7C47
-	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 07:35:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA9FC7D7CCD
+	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 08:20:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 490E4281DF4
-	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 05:35:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD642281E0E
+	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 06:20:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0599C8E8;
-	Thu, 26 Oct 2023 05:35:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D18611C84;
+	Thu, 26 Oct 2023 06:20:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="YLGNnZDX"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="IjO+h2aX"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C49E8C2C6
-	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 05:35:11 +0000 (UTC)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 392FE115
-	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 22:35:10 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9c773ac9b15so70441466b.2
-        for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 22:35:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1698298508; x=1698903308; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=AnW5wkCi1zvUqw9QeSavDrGwNvTC4IDf+32SvYPJoaM=;
-        b=YLGNnZDXiKBPV/2J5+JtclwBX/3I319PXqRsZDqosfcTOFiEXeJhwH5SwG6lrhx7GH
-         jW717/GOW0N+tFD7PE6/EMTfhV+PnGL4FxLi8ty05CL58or8WkOwxnXUVmExj0DmlS4+
-         QQCkSjEpvt0vtrw2KrStTt29prIoDmvK8M2RAAVq5wRsSqhlg8C+eNRGbxzoNNiqcepV
-         sfecRcYsBXVeGJtlDjaJAAgm97MvK2UUEQpL7swv2jlhFDJb6Vh17+Qtug6pocSj4Hpx
-         3HWmHfYdU4ydqZ8zD3tmb/tz/hp0VJnonOrMB5lXfCD5lf4bWFo2xN2/r4zRLVsco230
-         qPUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698298508; x=1698903308;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AnW5wkCi1zvUqw9QeSavDrGwNvTC4IDf+32SvYPJoaM=;
-        b=Tt8bM7ZwWKqr2AdePpEHKtFYTCnIglrK7p8QFZA42xojkWyg84rgc9+U/t/W+ra+iB
-         YPr9JMHHmxBGnhIaP/9jArhKHxnWfdkzs+mtm5sgJwHXjjI0ZA21mLDFx4K2YnqGGVSV
-         COIREUsjxalxuJ7PqnAseWbtewYaLV+x3L+Jsv7m+cLG9enTvG9IuUljOcwjQiedmE+G
-         iF2v98jEU6CL5SQxJTSzj+ocecWxQuAdIcDTmAx3V2pf4BnkNNxZ+vzYTMKj3EeO2wlZ
-         xw0ZC6TmiNJEySmsgWU3jBCNLWnESmBAK3XZKN7uLZUBREjChcyMTV5/a+tImAsFu0b0
-         OCQg==
-X-Gm-Message-State: AOJu0YxOq5afd6SXzlaZAMgqeTGJ573jeYO6szTXVg+4zXyoX5TvtUQ6
-	XF6ldpQOB2fyvSgiBgJpBx3BdA==
-X-Google-Smtp-Source: AGHT+IGpJs6UjB5/zt89grKMahUSoyHMhultp9ijTf1cz/ECcdJ/yxBvo32O3TnRlEnq7e2e7Zi5DA==
-X-Received: by 2002:a17:906:dc92:b0:9a3:c4f4:12de with SMTP id cs18-20020a170906dc9200b009a3c4f412demr13178771ejc.37.1698298508693;
-        Wed, 25 Oct 2023 22:35:08 -0700 (PDT)
-Received: from localhost ([80.95.114.184])
-        by smtp.gmail.com with ESMTPSA id b7-20020a1709062b4700b009ade1a4f795sm10784002ejg.168.2023.10.25.22.35.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 22:35:08 -0700 (PDT)
-Date: Thu, 26 Oct 2023 07:35:06 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, razor@blackwall.org, ast@kernel.org,
-	andrii@kernel.org, john.fastabend@gmail.com, sdf@google.com,
-	toke@kernel.org, kuba@kernel.org, andrew@lunn.ch
-Subject: Re: [PATCH bpf-next v4 0/7] Add bpf programmable net device
-Message-ID: <ZTn6ivygoE937Vk0@nanopsycho>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A9EDC8E8;
+	Thu, 26 Oct 2023 06:20:33 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC7F187;
+	Wed, 25 Oct 2023 23:20:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=z1mjbQsJ6uRSdwCB7sKsbSWDMZlOEsZ3uAoZGbDsd4U=; b=IjO+h2aXRhx9l3GqBR5+BpWj5Q
+	SutMt2oP6WLYhiSHuzhIONMtvxgIUPRctp2KKBoVR/ITgwWWfX69sc8KhOUiUcV8eIYTB26vY353x
+	GqN1TvyXgehgUkdbpK2h0Gin30oBJ/7ZNpA3C5vR/g4MbZJiJkPK0e+QJrnzSTiFRkMqkhPsVKzI4
+	+dXvn7REhFMfQWpMWJ1Pknb0hduV+PBUEfcVeYOyNZ4WCHJOdF9XxgRCL+ZJY/Q9AadpARFT7uha6
+	JdK1Yme8zTKEMlZ5sa1ReXkThuUJFJjeA5ogsggJH0jDxTwZ18+PJLYC0yj7VFu6Wku4TMs5Z7o0X
+	NMeTrpFw==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qvtjF-0006rO-I4; Thu, 26 Oct 2023 08:20:25 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qvtjF-000NEU-1d; Thu, 26 Oct 2023 08:20:25 +0200
+Subject: Re: [PATCH bpf-next v4 1/7] netkit, bpf: Add bpf programmable net
+ device
+To: Kui-Feng Lee <sinquersw@gmail.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>
+Cc: netdev@vger.kernel.org, razor@blackwall.org, ast@kernel.org,
+ andrii@kernel.org, john.fastabend@gmail.com, sdf@google.com,
+ toke@kernel.org, kuba@kernel.org, andrew@lunn.ch,
+ =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+ bpf@vger.kernel.org
 References: <20231024214904.29825-1-daniel@iogearbox.net>
- <169819142514.13417.3415333680978363345.git-patchwork-notify@kernel.org>
- <ZTk5MErTKAK96nO3@nanopsycho>
- <f6357d19-9bd9-e9f4-6e9d-97a73f61560d@linux.dev>
+ <20231024214904.29825-2-daniel@iogearbox.net>
+ <ad801a2c-217e-44b4-8dae-0ae7b1b8484f@gmail.com>
+ <51abec01-c4ce-434f-694a-f932e0e203ec@linux.dev>
+ <7e2b81d6-b154-446e-b074-1a8dc6426ce7@gmail.com>
+ <8e5e26e8-52c7-40a8-bf49-98ac2c330db9@gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <28a19c46-2ee0-01db-cf88-6c9007e97c82@iogearbox.net>
+Date: Thu, 26 Oct 2023 08:20:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <8e5e26e8-52c7-40a8-bf49-98ac2c330db9@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <f6357d19-9bd9-e9f4-6e9d-97a73f61560d@linux.dev>
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27072/Wed Oct 25 09:45:37 2023)
 
-Wed, Oct 25, 2023 at 06:54:27PM CEST, martin.lau@linux.dev wrote:
->On 10/25/23 8:50 AM, Jiri Pirko wrote:
->> Wed, Oct 25, 2023 at 01:50:25AM CEST, patchwork-bot+netdevbpf@kernel.org wrote:
->> > Hello:
->> > 
->> > This series was applied to bpf/bpf-next.git (master)
->> > by Martin KaFai Lau <martin.lau@kernel.org>:
->> 
->> Interesting, applied within 2 hours after send. You bpf people don't
->> care about some 24h timeout?
->
->24hr? The v1 was posted to both netdev and bpf list on 9/25. It was 10/24
->yesterday. The part you commented in patch 1 had not been changed much since
->v1, so there was a month of time. netdev is always on the cc list. Multiple
->people (Andrew, Jakub...etc) had already helped to review and Daniel had
->addressed the comments. The change history had been diminishing from v1 to v4
->and v4 changes was mostly nit-picking already.
+Hi Kui-Feng,
 
-AFAIK netdev maintainer have a policy (which I thoink I saw written
-down somewhere but cannot find) that the patch stays on the list one day
-before it is getting applied. It actually makes a lot of sense. Anyway,
-I may be wrong.
+On 10/26/23 3:18 AM, Kui-Feng Lee wrote:
+> On 10/25/23 18:15, Kui-Feng Lee wrote:
+>> On 10/25/23 15:09, Martin KaFai Lau wrote:
+>>> On 10/25/23 2:24 PM, Kui-Feng Lee wrote:
+>>>> On 10/24/23 14:48, Daniel Borkmann wrote:
+>>>>> This work adds a new, minimal BPF-programmable device called "netkit"
+>>>>> (former PoC code-name "meta") we recently presented at LSF/MM/BPF. The
+>>>>> core idea is that BPF programs are executed within the drivers xmit routine
+>>>>> and therefore e.g. in case of containers/Pods moving BPF processing closer
+>>>>> to the source.
+>>>>
+>>>> Sorry for intruding into this discussion! Although it is too late to
+>>>> mentioned this since this patchset have been v4 already.
+>>>>
+>>>> I notice netkit has introduced a new attach type. I wonder if it
+>>>> possible to implement it as a new struct_ops type.
+>>>
+>>> Could your elaborate more about what does this struct_ops type do and how is it different from the SCHED_CLS bpf prog that the netkit is running?
+>>
+>> I found the code has been landed.
+>> Basing on the landed code and
+>> the patchset of registering bpf struct_ops from modules that I
+>> am working on, it will looks like what is done in following patch.
+>> No changes on syscall, uapi and libbpf are required.
+>>
+>> diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
+>> index 7e484f9fd3ae..e4eafaf397bf 100644
+>> --- a/drivers/net/netkit.c
+>> +++ b/drivers/net/netkit.c
+>> @@ -20,6 +20,7 @@ struct netkit {
+>>       struct bpf_mprog_entry __rcu *active;
+>>       enum netkit_action policy;
+>>       struct bpf_mprog_bundle    bundle;
+>> +    struct hlist_head ops_list;
+>>
+>>       /* Needed in slow-path */
+>>       enum netkit_mode mode;
+>> @@ -27,6 +28,13 @@ struct netkit {
+>>       u32 headroom;
+>>   };
+>>
+>> +struct netkit_ops {
+>> +    struct hlist_node node;
+>> +    int ifindex;
+>> +
+>> +    int (*xmit)(struct sk_buff *skb);
+>> +};
+>> +
+>>   struct netkit_link {
+>>       struct bpf_link link;
+>>       struct net_device *dev;
+>> @@ -46,6 +54,22 @@ netkit_run(const struct bpf_mprog_entry *entry, struct sk_buff *skb,
+>>           if (ret != NETKIT_NEXT)
+>>               break;
+>>       }
+>> +
+>> +    return ret;
+>> +}
+>> +
+>> +static __always_inline int
+>> +netkit_run_st_ops(const struct netkit *nk, struct sk_buff *skb,
+>> +       enum netkit_action ret)
+>> +{
+>> +    struct netkit_ops *ops;
+>> +
+>> +    hlist_for_each_entry_rcu(ops, &nk->ops_list, node) {
+>> +        ret = ops->xmit(skb);
+>> +        if (ret != NETKIT_NEXT)
+>> +            break;
+>> +    }
+>> +
+>>       return ret;
+>>   }
+>>
+>> @@ -80,6 +104,8 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
+>>       entry = rcu_dereference(nk->active);
+>>       if (entry)
+>>           ret = netkit_run(entry, skb, ret);
+>> +    if (ret == NETKIT_NEXT)
+>> +        ret = netkit_run_st_ops(nk, skb, ret);
+>>       switch (ret) {
+>>       case NETKIT_NEXT:
+>>       case NETKIT_PASS:
 
->
+I don't think it makes sense to cramp struct ops in here for what has been
+solved already with the bpf_mprog interface in a more efficient way and with
+control dependencies for the insertion (before/after relative programs/links).
+The latter is in particular crucial for a multi-user interface when dealing
+with network traffic (think for example: policy, forwarder, observability
+prog, etc).
+
+Thanks,
+Daniel
 
