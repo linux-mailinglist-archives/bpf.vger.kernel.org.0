@@ -1,134 +1,113 @@
-Return-Path: <bpf+bounces-13296-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13297-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C12C67D7BAD
-	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 06:40:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C9AE7D7C20
+	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 07:18:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB1311C20EA1
-	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 04:40:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD7261C20E7B
+	for <lists+bpf@lfdr.de>; Thu, 26 Oct 2023 05:18:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72327523F;
-	Thu, 26 Oct 2023 04:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86F13C2D9;
+	Thu, 26 Oct 2023 05:18:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YD1k1p+u"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="XjQZT9Gh"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545103D75
-	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 04:40:18 +0000 (UTC)
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6C5170D;
-	Wed, 25 Oct 2023 21:40:06 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d9b2ca542e5so343363276.3;
-        Wed, 25 Oct 2023 21:40:06 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B777BC13C
+	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 05:18:16 +0000 (UTC)
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302F5C0
+	for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 22:18:15 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so700555a12.2
+        for <bpf@vger.kernel.org>; Wed, 25 Oct 2023 22:18:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698295205; x=1698900005; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RIsqONf3Q1y0JGEcGNft9ou71IkLzaprkuT+NWbOdW0=;
-        b=YD1k1p+u2WPM1LHLUVY2EdURYPaHc7K7evFpJx18Ej/tJdtuXRxGnHpQnIJuQgZQ9p
-         JDu4It9xD8ZWc2f7Ixw6RVcbAN6ZBYHzkDGgiZHgy+35aj0W1bjJloPUk31a2zlEfbYt
-         clz/CfYVOtIQNKV7b1Oz9ZxRgY9L9YBPvrT/imjYK0OMqwiFtW+gPiGpf37VAF2oD6Bs
-         bfk6WIzx5rUPMRD3okD6TUup/TwFUxBw586eoJIQrC7VUJRMxuJVVxp7PsgwpWrlMiMl
-         wW1CaQlDifWg/Hp/hGnWhG5PzveR4uqoFlfO9t47GkkYtUMGLJMkML7H27+KTmMjznLW
-         d0Og==
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1698297493; x=1698902293; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cpa1jmHoGIDl8T9wF7rvtHmWNTSsTPL6IUnnggsmgPg=;
+        b=XjQZT9GhzUF2EEQ4PPeTYT99fTYBE+3r3FyB44tM2i5Sb74qoBwFYzYTADtAhf0xps
+         WFXCsGW//a7TeC48MS89p0l7HPbcn1hFRa4uyIodvU6NzZVy5Fka7zLYbI+EJKB1c5f+
+         R794VF03WQB7PWFP7WG3dnkrEtO6ctWJvNzlyvI8zTEjGL71TOxt45QCPm7ORD6p+JI8
+         vlDYYI++EiUtWeBY/Va93IDi0NlPuJ00EypAYM2LTGNiSTg3CTjhH/ert10CMP8qJk5N
+         m/N0XYRVubzL3X5arvdIQvc+JkB1q+vfAi9/NcINdAxEwUAemZubFL2fR89PiuJhPjcj
+         gwLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698295205; x=1698900005;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RIsqONf3Q1y0JGEcGNft9ou71IkLzaprkuT+NWbOdW0=;
-        b=LPUNdX7JZjAx8c88uDatSgppQ5XtmnnrHTZaA8hrqpIaxEiZrRbYbxaMO9S2qmbwZT
-         CMyanmlPMCZVBVislksjsXFIvJJdP5Tp2HXpGOUvovn2EMtBJO5GwOkOIAZzVGYJz66/
-         WknIMocykmUPCactwvc0lYmPStg7Q0y6rNQHNbs4e5kwuaM4IAr4s8rwT+kh+Y0kw9sb
-         egwXazDvst4FTBCgKQuLiUGB5PYxFKRRusOkRLW/pgT0odTks57XPgvZJOcZCRGRrjB6
-         Yv7Ddzb7Gc0Xn9JJ+mAW8xacJBMHieRK+7FKW/miZWWdQ6Tfsqtzf+iKC+hCkuJ/eKTf
-         c9RA==
-X-Gm-Message-State: AOJu0Yye+Cza3tiFSxHMDogaIS4FJJjCtJaZA2bFA2I6BW+q3tfmlbJz
-	27PnevBMbbPkgyD1zAty0Xf3zipGmoY=
-X-Google-Smtp-Source: AGHT+IH3GZApGUxeCBeb/skljKePhuSQcKYVTS4HIvryWlSGIprA0D4h9kcdM7SqGkjOGulQkpQlXA==
-X-Received: by 2002:a05:6902:567:b0:d9b:37dd:a3d7 with SMTP id a7-20020a056902056700b00d9b37dda3d7mr17308006ybt.17.1698295204735;
-        Wed, 25 Oct 2023 21:40:04 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:8355:61d5:b55:33e7? ([2600:1700:6cf8:1240:8355:61d5:b55:33e7])
-        by smtp.gmail.com with ESMTPSA id g203-20020a25dbd4000000b00da041da21e7sm1921108ybf.65.2023.10.25.21.40.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 21:40:04 -0700 (PDT)
-Message-ID: <8a14c779-441d-424c-b1f4-fdc7c5ce407e@gmail.com>
-Date: Wed, 25 Oct 2023 21:40:02 -0700
+        d=1e100.net; s=20230601; t=1698297493; x=1698902293;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cpa1jmHoGIDl8T9wF7rvtHmWNTSsTPL6IUnnggsmgPg=;
+        b=iH66orOn2dlytdJ74y9fIzGMA/2duZO+hgXs7dUTaI95awqOhKM8g16s43jLXSkJdg
+         HcB/ACvjYMO02piPukliwk7/cc8YoJ/35JHIwrDTgkqvetIItYUHV9lWJJXWEwdHhyo5
+         7H9Fie1FcgAhOSppneOKwoo6/WNg5Mdsk6jciCgGHTXVdRI/8MGcCoJj33ckA/S0CtVJ
+         np54GoDWGKYN2cdGyu1ZuMYTES7LlH8HNPMiJ27MvS61Ta8J8VvO0IjBCeEvqbL6jNp7
+         Lj1q4+NxmACsvERqzWCAvzNQAQdeome13Kx886Meq5XQUNTRFlpxSGDNKUrcTKsHFA2/
+         mf6Q==
+X-Gm-Message-State: AOJu0Yx6ql/bobR1JGsiJuGzEZHtWiuuFAGm9Bvy9zZg/Q+0ivHmGAuW
+	ycL7biZTEj6YrKQYbYJR9uo2CBkEmZfx+LGaonQVMQ==
+X-Google-Smtp-Source: AGHT+IHr2lMvr2Iv0qLy9WCr3A7gV0R89XchaAwGLTQBaSzY//gV50Q3bg/Nq7bS3hSAe8KeCDUytg==
+X-Received: by 2002:a05:6402:190d:b0:53e:6da7:72ba with SMTP id e13-20020a056402190d00b0053e6da772bamr15933959edz.38.1698297493539;
+        Wed, 25 Oct 2023 22:18:13 -0700 (PDT)
+Received: from localhost ([80.95.114.184])
+        by smtp.gmail.com with ESMTPSA id n15-20020aa7c68f000000b0053eb9af1e15sm10586532edq.77.2023.10.25.22.18.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 22:18:12 -0700 (PDT)
+Date: Thu, 26 Oct 2023 07:18:11 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, martin.lau@linux.dev,
+	razor@blackwall.org, ast@kernel.org, andrii@kernel.org,
+	john.fastabend@gmail.com, sdf@google.com, toke@kernel.org,
+	kuba@kernel.org, andrew@lunn.ch,
+	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH bpf-next v4 1/7] netkit, bpf: Add bpf programmable net
+ device
+Message-ID: <ZTn2k1vn0AN8IHlw@nanopsycho>
+References: <20231024214904.29825-1-daniel@iogearbox.net>
+ <20231024214904.29825-2-daniel@iogearbox.net>
+ <ZTk4ec8CBh92PZvs@nanopsycho>
+ <7dcf130e-db64-34bc-5207-15e4a4963bc0@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Add malloc failure checks
- in bpf_iter
-Content-Language: en-US
-To: Yuran Pereira <yuran.pereira@hotmail.com>, bpf@vger.kernel.org,
- yonghong.song@linux.dev
-Cc: shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net, song@kernel.org,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, brauner@kernel.org,
- iii@linux.ibm.com, kuifeng@meta.com, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231026020319.1203600-1-yuran.pereira@hotmail.com>
- <DB3PR10MB6835A2CBEE0EBE31D07FABFAE8DDA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <DB3PR10MB6835A2CBEE0EBE31D07FABFAE8DDA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7dcf130e-db64-34bc-5207-15e4a4963bc0@iogearbox.net>
 
-Good job! LGTM
+Wed, Oct 25, 2023 at 07:20:01PM CEST, daniel@iogearbox.net wrote:
+>On 10/25/23 5:47 PM, Jiri Pirko wrote:
+>> Tue, Oct 24, 2023 at 11:48:58PM CEST, daniel@iogearbox.net wrote:
+>[...]
+>> > comes with a primary and a peer device. Only the primary device, typically
+>> > residing in hostns, can manage BPF programs for itself and its peer. The
+>> > peer device is designated for containers/Pods and cannot attach/detach
+>> > BPF programs. Upon the device creation, the user can set the default policy
+>> > to 'pass' or 'drop' for the case when no BPF program is attached.
+>> 
+>> It looks to me that you only need the host (primary) netdevice to be
+>> used as a handle to attach the bpf programs. Because the bpf program
+>> can (and probably in real use case will) redirect to uplink/another
+>> pod netdevice skipping the host (primary) netdevice, correct?
+>> 
+>> If so, why can't you do just single device mode from start finding a
+>> different sort of bpf attach handle? (not sure which)
+>
+>The first point where we switch netns from a K8s Pod is out of the netdevice.
+>For the CNI case the vast majority has one but there could also be multi-
+>homing for Pods where there may be two or more, and from a troubleshooting
+>PoV aka tcpdump et al, it is the most natural point. Other attach handle
+>inside the Pod doesn't really fit given from policy PoV it also must be
+>unreachable for apps inside the Pod itself.
 
-Acked-by: Kui-Feng Lee <thinker.li@gmail.com>
+Okay. What is the usecase for the single device model then?
 
-
-On 10/25/23 19:03, Yuran Pereira wrote:
-> Since some malloc calls in bpf_iter may at times fail,
-> this patch adds the appropriate fail checks, and ensures that
-> any previously allocated resource is appropriately destroyed
-> before returning the function.
-> 
-> Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
-> ---
->   tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> index 7db6972ed952..955d374ba656 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> @@ -698,7 +698,7 @@ static void test_overflow(bool test_e2big_overflow, bool ret1)
->   		goto free_link;
->   
->   	buf = malloc(expected_read_len);
-> -	if (!buf)
-> +	if (!ASSERT_OK_PTR(buf, "malloc"))
->   		goto close_iter;
->   
->   	/* do read */
-> @@ -869,6 +869,8 @@ static void test_bpf_percpu_hash_map(void)
->   
->   	skel->rodata->num_cpus = bpf_num_possible_cpus();
->   	val = malloc(8 * bpf_num_possible_cpus());
-> +	if (!ASSERT_OK_PTR(val, "malloc"))
-> +		goto out;
->   
->   	err = bpf_iter_bpf_percpu_hash_map__load(skel);
->   	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_percpu_hash_map__load"))
-> @@ -1046,6 +1048,8 @@ static void test_bpf_percpu_array_map(void)
->   
->   	skel->rodata->num_cpus = bpf_num_possible_cpus();
->   	val = malloc(8 * bpf_num_possible_cpus());
-> +	if (!ASSERT_OK_PTR(val, "malloc"))
-> +		goto out;
->   
->   	err = bpf_iter_bpf_percpu_array_map__load(skel);
->   	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_percpu_array_map__load"))
+[..]
 
