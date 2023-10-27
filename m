@@ -1,83 +1,130 @@
-Return-Path: <bpf+bounces-13524-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13525-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FFC27DA41D
-	for <lists+bpf@lfdr.de>; Sat, 28 Oct 2023 01:37:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6C527DA422
+	for <lists+bpf@lfdr.de>; Sat, 28 Oct 2023 01:41:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5CFA28280C
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 23:37:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E21A2827CC
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 23:41:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B3954120D;
-	Fri, 27 Oct 2023 23:37:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FF5E4121E;
+	Fri, 27 Oct 2023 23:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JHj014Qs"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="ZWWyy5xd"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5489347D3;
-	Fri, 27 Oct 2023 23:37:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09F93C433C7;
-	Fri, 27 Oct 2023 23:37:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698449864;
-	bh=aCJLWjdhU+5nCV6MY/j5MaIJfk6Y70haoZWhwkapETs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=JHj014QsOtLjRB9STmY/QRoHaYnrnyBpcw9by28Jtet59hAM6hbi9ii8GgCrSzIKO
-	 Hm8Ul3DdYBKuWXK/qDqmcnwQjWsjGGrfbQu8LDWTv/NbFR+Z7/X8ZM4CLSYTwLNW46
-	 lhLQoBh5xa+CwpOnFz59bFl8W8HoVqywfhC74JRyomxoeWNlc0PezUY3uLAvZLVpOP
-	 F23DDQ+DB/ck9aRuglLbsmuSgOVkakOEjQY9k4ZyqD7nEwEQOELwdqiwWyfknVQSgg
-	 yba36D9LSAOC2fTfdBQZ91LRKLXa9AIF4ea0LVOg33Fvl9uw7fwYr+zqySDI73NMJJ
-	 zWYY0NkVnxAVg==
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-507a62d4788so4022933e87.0;
-        Fri, 27 Oct 2023 16:37:43 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yy91cJ8TRqcRVxNZS/99iGJX7V15jzHJ4TlYX7+h1L6uEnmgQiQ
-	tNUY47LGmS6RlwLL8Pwr3ac9v6/KMDwuVIjLFVk=
-X-Google-Smtp-Source: AGHT+IErVIa16OdIYg71SntJ/eEKyZs7geS5tG2hC3qrU6xcJtP1SoEw0chQzTcaA7dv3gPNQ+TRXyUSWSpAYpANjDo=
-X-Received: by 2002:a19:7710:0:b0:508:1c45:f998 with SMTP id
- s16-20020a197710000000b005081c45f998mr2314308lfc.48.1698449862246; Fri, 27
- Oct 2023 16:37:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27052347D3;
+	Fri, 27 Oct 2023 23:41:30 +0000 (UTC)
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0589A1A6;
+	Fri, 27 Oct 2023 16:41:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=09k1FMNrHa5VTgFlKbdaRb+SPhW1H9zw7ovrSs4UjdY=; b=ZWWyy5xd7cYU1YZ3Y63aEvxcCe
+	XQojUHYnvygF02KsdPuzUdj1VFkZLk423VqEViU6D6EUA8zRI1RlDd9z9zEMQlcl3eakNA+l8SUu/
+	KY2ZYQOI4FngifBT+l6rvBDcfWaH1qI4+eb0e3aX0Q5nFF4Q55qVR0t8cxpOmlH7ruCg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1qwWRA-000Nnw-Px; Sat, 28 Oct 2023 01:40:20 +0200
+Date: Sat, 28 Oct 2023 01:40:20 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Justin Stitt <justinstitt@google.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Shay Agroskin <shayagr@amazon.com>,
+	Arthur Kiyanovski <akiyano@amazon.com>,
+	David Arinzon <darinzon@amazon.com>, Noam Dagan <ndagan@amazon.com>,
+	Saeed Bishara <saeedb@amazon.com>, Rasesh Mody <rmody@marvell.com>,
+	Sudarsana Kalluru <skalluru@marvell.com>,
+	GR-Linux-NIC-Dev@marvell.com,
+	Dimitris Michailidis <dmichail@fungible.com>,
+	Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Louis Peens <louis.peens@corigine.com>,
+	Shannon Nelson <shannon.nelson@amd.com>,
+	Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Ronak Doshi <doshir@vmware.com>,
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+	Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+	Dwaipayan Ray <dwaipayanray1@gmail.com>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Hauke Mehrtens <hauke@hauke-m.de>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	=?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+	Daniel Golle <daniel@makrotopia.org>,
+	Landen Chao <Landen.Chao@mediatek.com>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+	Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Lars Povlsen <lars.povlsen@microchip.com>,
+	Steen Hegelund <Steen.Hegelund@microchip.com>,
+	Daniel Machon <daniel.machon@microchip.com>,
+	UNGLinuxDriver@microchip.com, Jiawen Wu <jiawenwu@trustnetic.com>,
+	Mengyuan Lou <mengyuanlou@net-swift.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Kees Cook <keescook@chromium.org>, intel-wired-lan@lists.osuosl.org,
+	oss-drivers@corigine.com, linux-hyperv@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v3 3/3] net: Convert some ethtool_sprintf() to
+ ethtool_puts()
+Message-ID: <8f0e55ea-1c24-4d6b-9398-0cbc2bb58907@lunn.ch>
+References: <20231027-ethtool_puts_impl-v3-0-3466ac679304@google.com>
+ <20231027-ethtool_puts_impl-v3-3-3466ac679304@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231027233126.2073148-1-andrii@kernel.org>
-In-Reply-To: <20231027233126.2073148-1-andrii@kernel.org>
-From: Song Liu <song@kernel.org>
-Date: Fri, 27 Oct 2023 16:37:29 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4aLOvH7t2m6tm8CjPWKr_hvsvh_TacDgpggg7bL3b7aw@mail.gmail.com>
-Message-ID: <CAPhsuW4aLOvH7t2m6tm8CjPWKr_hvsvh_TacDgpggg7bL3b7aw@mail.gmail.com>
-Subject: Re: [PATCH] tracing/kprobes: Fix symbol counting logic by looking at
- modules as well
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org, 
-	bpf@vger.kernel.org, Francis Laniel <flaniel@linux.microsoft.com>, stable@vger.kernel.org, 
-	Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231027-ethtool_puts_impl-v3-3-3466ac679304@google.com>
 
-On Fri, Oct 27, 2023 at 4:31=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org>=
- wrote:
->
-> Recent changes to count number of matching symbols when creating
-> a kprobe event failed to take into account kernel modules. As such, it
-> breaks kprobes on kernel module symbols, by assuming there is no match.
->
-> Fix this my calling module_kallsyms_on_each_symbol() in addition to
-> kallsyms_on_each_match_symbol() to perform a proper counting.
->
-> Cc: Francis Laniel <flaniel@linux.microsoft.com>
-> Cc: stable@vger.kernel.org
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Fixes: b022f0c7e404 ("tracing/kprobes: Return EADDRNOTAVAIL when func mat=
-ches several symbols")
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+On Fri, Oct 27, 2023 at 10:05:35PM +0000, Justin Stitt wrote:
+> This patch converts some basic cases of ethtool_sprintf() to
+> ethtool_puts().
+> 
+> The conversions are used in cases where ethtool_sprintf() was being used
+> with just two arguments:
+> |       ethtool_sprintf(&data, buffer[i].name);
+> or when it's used with format string: "%s"
+> |       ethtool_sprintf(&data, "%s", buffer[i].name);
+> which both now become:
+> |       ethtool_puts(&data, buffer[i].name);
+> 
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-Acked-by: Song Liu <song@kernel.org>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
 
