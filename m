@@ -1,122 +1,79 @@
-Return-Path: <bpf+bounces-13381-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13382-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD7087D8C87
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 02:25:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4F407D8CD5
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 03:35:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7754A28227E
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 00:25:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D333D1C21026
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 01:35:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F35963E;
-	Fri, 27 Oct 2023 00:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 984D817D1;
+	Fri, 27 Oct 2023 01:35:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="IffGrwP5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E8ULpVB2"
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 289EF179;
-	Fri, 27 Oct 2023 00:25:49 +0000 (UTC)
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6308129;
-	Thu, 26 Oct 2023 17:25:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=jIyiqB62ftZdGgQlboBjKJDIEuAQba9l17H9K2s+tSw=; b=IffGrwP5oG4aEAFxxaf2PqzcQZ
-	ORjncm0hfUgItjHBd8VcirWOJpA2PvES3CqmknoYTaP/DYJke8dcpVx28cgfsAwqKQWDLMtZzCdee
-	2nCT6DyH2m4LWzZXYAhZLUYXehzsR1HI7TBLO8F6DD27oJPkQxCzvGn4/yG2cMQWjL/A=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1qwAeU-000ILa-L7; Fri, 27 Oct 2023 02:24:38 +0200
-Date: Fri, 27 Oct 2023 02:24:38 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Justin Stitt <justinstitt@google.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Shay Agroskin <shayagr@amazon.com>,
-	Arthur Kiyanovski <akiyano@amazon.com>,
-	David Arinzon <darinzon@amazon.com>, Noam Dagan <ndagan@amazon.com>,
-	Saeed Bishara <saeedb@amazon.com>, Rasesh Mody <rmody@marvell.com>,
-	Sudarsana Kalluru <skalluru@marvell.com>,
-	GR-Linux-NIC-Dev@marvell.com,
-	Dimitris Michailidis <dmichail@fungible.com>,
-	Yisen Zhuang <yisen.zhuang@huawei.com>,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Louis Peens <louis.peens@corigine.com>,
-	Shannon Nelson <shannon.nelson@amd.com>,
-	Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Ronak Doshi <doshir@vmware.com>,
-	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-	Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
-	Dwaipayan Ray <dwaipayanray1@gmail.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Hauke Mehrtens <hauke@hauke-m.de>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	=?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-	Daniel Golle <daniel@makrotopia.org>,
-	Landen Chao <Landen.Chao@mediatek.com>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-	Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>,
-	Clark Wang <xiaoning.wang@nxp.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Lars Povlsen <lars.povlsen@microchip.com>,
-	Steen Hegelund <Steen.Hegelund@microchip.com>,
-	Daniel Machon <daniel.machon@microchip.com>,
-	UNGLinuxDriver@microchip.com, Jiawen Wu <jiawenwu@trustnetic.com>,
-	Mengyuan Lou <mengyuanlou@net-swift.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Kees Cook <keescook@chromium.org>, intel-wired-lan@lists.osuosl.org,
-	oss-drivers@corigine.com, linux-hyperv@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [PATCH next v2 0/3] ethtool: Add ethtool_puts()
-Message-ID: <eda2f651-93f7-46c5-be7e-e8295903cc1e@lunn.ch>
-References: <20231026-ethtool_puts_impl-v2-0-0d67cbdd0538@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0804910E9;
+	Fri, 27 Oct 2023 01:35:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DEDAC433C9;
+	Fri, 27 Oct 2023 01:35:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1698370510;
+	bh=bX9iU4fJgIDvj2HWp6daGLv3deXYF2h0HetQpc9+0ws=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=E8ULpVB2szSNjiimxwDdpqQ7/y50Vy5gaepRQ1zMcjyzaJr+u1x9/rGpRRwTyyQom
+	 JjS/J4y7wLsU1sLY/Mkt8ERaCb2Tm0F9NujixEJymkKKvdwQSqtHyGx+H0pDc1kBmR
+	 BhZKJubNxV6Jbs1kVqzAH7HEJYCVEPini/b8qXezcnjtSgeZRlupK0v9dh9nSFjkwc
+	 YzihAdlJ2TmKfLgxNFhLeiNmGY8Y/wxn55879UEibWHLEYuD2dwRnULfGlms+6+X9C
+	 gDmA+k/6tYF8W2eXlt6p9nUHzQ6huGAOJMsoxzthUT0WfB2XWxTqsOvrvAP//qPDVK
+	 /jPev5yg23Aag==
+Date: Thu, 26 Oct 2023 18:35:09 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Cc: Vadim Fedorenko <vadfed@meta.com>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>, Alexei
+ Starovoitov <ast@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/2] bpf: add skcipher API support to TC/XDP
+ programs
+Message-ID: <20231026183509.471af050@kernel.org>
+In-Reply-To: <a10cdab4-ab67-1cd2-0827-52c3755a464f@linux.dev>
+References: <20231026015938.276743-1-vadfed@meta.com>
+	<20231026144759.5ce20f4c@kernel.org>
+	<a10cdab4-ab67-1cd2-0827-52c3755a464f@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231026-ethtool_puts_impl-v2-0-0d67cbdd0538@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-> Changes in v2:
-> - wrap lines better in replacement (thanks Joe, Kees)
-> - add --fix to checkpatch (thanks Joe)
-> - clean up checkpatch formatting (thanks Joe, et al.)
-> - rebase against next
+On Fri, 27 Oct 2023 00:29:29 +0100 Vadim Fedorenko wrote:
+> > Does anything prevent them from being used simultaneously
+> > by difference CPUs?  
+> 
+> The algorithm configuration and the key can be used by different CPUs
+> simultaneously
 
-Please could you explain the rebase against next? As Vladimir pointed
-out, all the patches are to drivers/net, so anything in flight should
-be in net-next, merged by the netdev Maintainers.
+Makes sense, got confused ctx vs req. You allocate req on the fly.
 
-    Andrew
+> >> +	case BPF_DYNPTR_TYPE_SKB:
+> >> +		return skb_pointer_if_linear(ptr->data, ptr->offset, __bpf_dynptr_size(ptr));  
+> > 
+> > dynptr takes care of checking if skb can be written to?  
+> 
+> dynptr is used to take care of size checking, but this particular part is used
+> to provide plain buffer from skb. I'm really sure if we can (or should) encrypt
+> or decrypt in-place, so API now assumes that src and dst are different buffers.
+
+Not sure this answers my question. What I'm asking is basically whether
+for destination we need to call __bpf_dynptr_is_rdonly() or something
+already checks that.
 
