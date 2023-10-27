@@ -1,228 +1,253 @@
-Return-Path: <bpf+bounces-13420-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13421-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF7667D9A5A
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 15:48:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79AFA7D9A76
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 15:52:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCBF11C2106D
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 13:48:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21263282504
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 13:52:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A1C241FF;
-	Fri, 27 Oct 2023 13:48:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FE7D2D020;
+	Fri, 27 Oct 2023 13:52:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Ds88vc9N"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="jOdiNrd0"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 110B2B678
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 13:47:58 +0000 (UTC)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B30BCA
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 06:47:57 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9936b3d0286so326950766b.0
-        for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 06:47:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1698414475; x=1699019275; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=U1tm69cOQKIuAU0wa8JTqJ2b4DYDoojVR4McyMO82qI=;
-        b=Ds88vc9NDmRBwQ58cEf3XpARaoi1l+lCxVaSVoaLyxXeIGyZCTCEB06PLeKq5s2rU7
-         cy9SGY5JJk55CX5Hng+lNSMqL+Fwa/OofeMKupTsk7kwkXngVQHATSuuzDQX2ZSLmVPn
-         DLoKPVkfZXZyFlc8isPItSWMwiGKmvaTok/IUuzI/Gd/3Ime/UCGP9d2CGEwDj67kxHw
-         JS8/0IJf8ZQBYWwxm+nM9iS5WeiAqXhQz6JkD4FOfg0vhqrhb0OdeAXouFsVvviRb8z3
-         fqDPjJns0XoO5hkoNlFOqQ2th/focLB5cMRGqIlOVSGk3Lt+qfq3197ZWbcZ3Gqy9/aq
-         O1cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698414475; x=1699019275;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U1tm69cOQKIuAU0wa8JTqJ2b4DYDoojVR4McyMO82qI=;
-        b=AmeCzmDMvNYnHuiFK22v5n+NO0hMum+kbNqVJWCGGFQ3kdgWwuSMyJrAX7x2PPEWDZ
-         L6++Gf6WnAdbT2n91gkcBShQu+3VwnV8yRfsy5dGaTytwIyEjRmYjHvbEinJ6Ni5IMu4
-         m8MiGaavd8xVBngfv6TupK48l3Fpez8AVqw/0VAKCDEO1pm038tY4zZ4OmSzmcGmTqpp
-         MBM3viTJuwxMXIn2LWsi5drjBopAcLeFlKLc3I987BsMcxeBVMN5bfiXITS3tEAHyAaX
-         ZkpAyJSSNg5H4KcCYtJsRxW0e/Z7nH389+lbuvBmmjPXwFY4WDg5bah3F1qg/2MzcC7Z
-         rCLw==
-X-Gm-Message-State: AOJu0YzvIK2cMb1yfPukXJt8iSxLDVSEgW8ZSaXjp/ZRdRraDS/OmdB1
-	qGWWBAOPYYBNzTa67VsYn3gLQQ==
-X-Google-Smtp-Source: AGHT+IFah7FuXLQI46WtzJOR+jgG6iAxLIZ9RjCnmGOROHIvLmJVD8yp/09D/Iywu+jv4I4GGnrfRA==
-X-Received: by 2002:a17:906:ee82:b0:9be:3c8e:1506 with SMTP id wt2-20020a170906ee8200b009be3c8e1506mr2299570ejb.70.1698414475403;
-        Fri, 27 Oct 2023 06:47:55 -0700 (PDT)
-Received: from cloudflare.com (79.184.154.62.ipv4.supernova.orange.pl. [79.184.154.62])
-        by smtp.gmail.com with ESMTPSA id ov7-20020a170906fc0700b00993cc1242d4sm1206864ejb.151.2023.10.27.06.47.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 06:47:54 -0700 (PDT)
-References: <20231016190819.81307-1-john.fastabend@gmail.com>
- <20231016190819.81307-2-john.fastabend@gmail.com>
- <87fs289poz.fsf@cloudflare.com> <65383999941f3_1969a2083e@john.notmuch>
-User-agent: mu4e 1.6.10; emacs 28.3
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: John Fastabend <john.fastabend@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, yangyingliang@huawei.com,
- martin.lau@kernel.org
-Subject: Re: [PATCH bpf 1/2] bpf: sockmap, af_unix sockets need to hold ref
- for pair sock
-Date: Fri, 27 Oct 2023 15:32:15 +0200
-In-reply-to: <65383999941f3_1969a2083e@john.notmuch>
-Message-ID: <87o7gk18ja.fsf@cloudflare.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBA631EB28;
+	Fri, 27 Oct 2023 13:51:53 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE41118A;
+	Fri, 27 Oct 2023 06:51:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
+	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=bZFuNIvNr+O7sWZ0ED5meKlY7g9oTmwwM9BLzW/byYY=; b=jOdiNrd0hsEbFcTm51HsecGzeq
+	Vm9TztWuMZOoJDbHvDdCV1rAVVtC5kL7BFuZy3Yz4y8vNwnPMsJW65Bk7eT1nUBy9rwqHuuGPW9KF
+	zCN55FX+xrWf5iFDZuGr1XlKhsBvhAxMuKNuIC9ZTQPqJHHjU8AuhaB8vc6PROaA9KLJ8PbFWyGYE
+	iMe1H8wMgYRGgyuDYDGNAeDpqZHFI+dt3GzdCZop4YHUKxDMC2XgdwHMYp1s2Y3kJdQ5qzLrJlaFk
+	9S9FeIQjSSW8J/7oPw9qdb/c9GIIJ2zM3dFCUUe69MxgmYd/BV+/24rUx4qgXRTmvnAVH49B0bnGL
+	KcaLzRgA==;
+Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qwNFc-000HL6-2U; Fri, 27 Oct 2023 15:51:48 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: kuba@kernel.org
+Cc: idosch@idosch.org,
+	jhs@mojatatu.com,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH net-next] net, sched: Fix SKB_NOT_DROPPED_YET splat under debug config
+Date: Fri, 27 Oct 2023 15:51:42 +0200
+Message-Id: <20231027135142.11555-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27074/Fri Oct 27 09:58:36 2023)
 
-On Tue, Oct 24, 2023 at 02:39 PM -07, John Fastabend wrote:
-> Jakub Sitnicki wrote:
->> On Mon, Oct 16, 2023 at 12:08 PM -07, John Fastabend wrote:
->> > AF_UNIX sockets are a paired socket. So sending on one of the pairs
->> > will lookup the paired socket as part of the send operation. It is
->> > possible however to put just one of the pairs in a BPF map. This
->> > currently increments the refcnt on the sock in the sockmap to
->> > ensure it is not free'd by the stack before sockmap cleans up its
->> > state and stops any skbs being sent/recv'd to that socket.
->> >
->> > But we missed a case. If the peer socket is closed it will be
->> > free'd by the stack. However, the paired socket can still be
->> > referenced from BPF sockmap side because we hold a reference
->> > there. Then if we are sending traffic through BPF sockmap to
->> > that socket it will try to dereference the free'd pair in its
->> > send logic creating a use after free.  And following splat,
->> >
->> >    [59.900375] BUG: KASAN: slab-use-after-free in sk_wake_async+0x31/0x1b0
->> >    [59.901211] Read of size 8 at addr ffff88811acbf060 by task kworker/1:2/954
->> >    [...]
->> >    [59.905468] Call Trace:
->> >    [59.905787]  <TASK>
->> >    [59.906066]  dump_stack_lvl+0x130/0x1d0
->> >    [59.908877]  print_report+0x16f/0x740
->> >    [59.910629]  kasan_report+0x118/0x160
->> >    [59.912576]  sk_wake_async+0x31/0x1b0
->> >    [59.913554]  sock_def_readable+0x156/0x2a0
->> >    [59.914060]  unix_stream_sendmsg+0x3f9/0x12a0
->> >    [59.916398]  sock_sendmsg+0x20e/0x250
->> >    [59.916854]  skb_send_sock+0x236/0xac0
->> >    [59.920527]  sk_psock_backlog+0x287/0xaa0
->> 
->> Isn't the problem here that unix_stream_sendmsg doesn't grab a ref to
->> peer sock? Unlike unix_dgram_sendmsg which uses the unix_peer_get
->> helper.
->
-> It does by my read. In unix_stream_connect we have,
->
-> 	sock_hold(sk);
-> 	unix_peer(newsk)	= sk;
-> 	newsk->sk_state		= TCP_ESTABLISHED;
->
-> where it assigns the peer sock. unix_dgram_connect() also calls
-> sock_hold() but through the path that does the socket lookup, such as
-> unix_find_other().
->
-> The problem I see is before the socket does the kfree on the
-> sock we need to be sure the backlog is canceled and the skb list
-> ingress_skb is purged. If we don't ensure this then the redirect
-> will 
->
-> My model is this,
->
->          s1            c1
-> refcnt    1             1
-> connect   2             2
-> psock     3             3
-> send(s1) ...
-> close(s1) 2             1 <- close drops psock count also
-> close(c1) 0             0
->
-> The important bit here is the psock has a refcnt on the
-> underlying sock (psock->sk) and wont dec that until after
-> cancel_delayed_work_sync() completes. This ensures the
-> backlog wont try to sendmsg() on that sock after we free
-> it. We also check for SOCK_DEAD and abort to avoid sending
-> over a socket that has been marked DEAD.
->
-> So... After close(s1) the only thing keeping that sock
-> around is c1. Then we close(c1) that call path is
->
->  unix_release
->    close() 
->    unix_release_sock()
->      skpair = unix_peer(sk);
->      ...
->      sock_put(skpair);  <- trouble here
->
-> The release will call sock_put() on the pair socket and
-> dec it to 0 where it gets free'd through sk_free(). But
-> now the trouble is we haven't waited for cancel_delayed_work_sync()
-> on the c1 socket yet so backlog can still run. When it does
-> run it may try to send a pkg over socket s1. OK right up until
-> the sendmsg(s1, ...) does a peer lookup and derefs the peer
-> socket. The peer socket was free'd earlier so use after free. 
->
-> The question I had originally was this is odd, we are allowing
-> a sendmsg(s1) over a socket while its in unix_release(). We
-> used to take the sock lock from the backlog that was dropped
-> in the name of performance, but it creates these races.
->
-> Other fixes I considered. First adding sock lock back to
-> backlog. But that punishes the UDP and TCP cases that don't
-> have this problem. Set the SOCK_DEAD flag earlier or check
-> later but this just makes the race smaller doesn't really
-> eliminate it.
->
-> So this patch is what I came up with. 
+Ido reported:
 
-What I was getting at is that we could make it safe to call sendmsg on a
-unix stream sock while its peer is being release. And not just for
-sockmap. I expect io_uring might have the same problem. But I didn't
-actually check yet.
+  [...] getting the following splat [1] with CONFIG_DEBUG_NET=y and this
+  reproducer [2]. Problem seems to be that classifiers clear 'struct
+  tcf_result::drop_reason', thereby triggering the warning in
+  __kfree_skb_reason() due to reason being 'SKB_NOT_DROPPED_YET' (0). [...]
 
-For that we could keep a ref to peer for the duration of sendmsg call,
-like unix dgram does. Then 'other' doesn't become a stale pointer before
-we're done with it.
+  [1]
+  WARNING: CPU: 0 PID: 181 at net/core/skbuff.c:1082 kfree_skb_reason+0x38/0x130
+  Modules linked in:
+  CPU: 0 PID: 181 Comm: mausezahn Not tainted 6.6.0-rc6-custom-ge43e6d9582e0 #682
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc37 04/01/2014
+  RIP: 0010:kfree_skb_reason+0x38/0x130
+  [...]
+  Call Trace:
+   <IRQ>
+   __netif_receive_skb_core.constprop.0+0x837/0xdb0
+   __netif_receive_skb_one_core+0x3c/0x70
+   process_backlog+0x95/0x130
+   __napi_poll+0x25/0x1b0
+   net_rx_action+0x29b/0x310
+   __do_softirq+0xc0/0x29b
+   do_softirq+0x43/0x60
+   </IRQ>
 
-Bumping ref count on each sendmsg is not free, but maybe its
-acceptable. Unix dgram sockets live with it.
+  [2]
+  #!/bin/bash
 
-With a patch like below, I'm no longer able to trigger an UAF splat.
+  ip link add name veth0 type veth peer name veth1
+  ip link set dev veth0 up
+  ip link set dev veth1 up
+  tc qdisc add dev veth1 clsact
+  tc filter add dev veth1 ingress pref 1 proto all flower dst_mac 00:11:22:33:44:55 action drop
+  mausezahn veth0 -a own -b 00:11:22:33:44:55 -q -c 1
 
-WDYT?
+What happens is that inside most classifiers the tcf_result is copied over
+from a filter template e.g. *res = f->res which then implicitly overrides
+the prior SKB_DROP_REASON_TC_{INGRESS,EGRESS} default drop code which was
+set via sch_handle_{ingress,egress}() for kfree_skb_reason().
 
----8<---
+Add a small helper tcf_set_result() and convert classifiers over to it.
+The latter leaves the drop code intact and classifiers, actions as well
+as the action engine in tcf_exts_exec() can then in future make use of
+tcf_set_drop_reason(), too.
 
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index 3e8a04a13668..48cf19ea9294 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -2198,7 +2198,7 @@ static int unix_stream_sendmsg(struct socket *sock, struct msghdr *msg,
- 		goto out_err;
- 	} else {
- 		err = -ENOTCONN;
--		other = unix_peer(sk);
-+		other = unix_peer_get(sk);
- 		if (!other)
- 			goto out_err;
- 	}
-@@ -2282,6 +2282,7 @@ static int unix_stream_sendmsg(struct socket *sock, struct msghdr *msg,
- 	}
- #endif
- 
-+	sock_put(other);
- 	scm_destroy(&scm);
- 
- 	return sent;
-@@ -2294,6 +2295,8 @@ static int unix_stream_sendmsg(struct socket *sock, struct msghdr *msg,
- 		send_sig(SIGPIPE, current, 0);
- 	err = -EPIPE;
- out_err:
-+	if (other)
-+		sock_put(other);
- 	scm_destroy(&scm);
- 	return sent ? : err;
+Tested that the splat is fixed under CONFIG_DEBUG_NET=y with the repro.
+
+Fixes: 54a59aed395c ("net, sched: Make tc-related drop reason more flexible")
+Reported-by: Ido Schimmel <idosch@idosch.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Link: https://lore.kernel.org/netdev/ZTjY959R+AFXf3Xy@shredder
+---
+ include/net/pkt_cls.h    | 12 ++++++++++++
+ net/sched/cls_basic.c    |  2 +-
+ net/sched/cls_bpf.c      |  2 +-
+ net/sched/cls_flower.c   |  2 +-
+ net/sched/cls_fw.c       |  2 +-
+ net/sched/cls_matchall.c |  2 +-
+ net/sched/cls_route.c    |  4 ++--
+ net/sched/cls_u32.c      |  2 +-
+ 8 files changed, 20 insertions(+), 8 deletions(-)
+
+diff --git a/include/net/pkt_cls.h b/include/net/pkt_cls.h
+index a76c9171db0e..31d8e8587824 100644
+--- a/include/net/pkt_cls.h
++++ b/include/net/pkt_cls.h
+@@ -160,6 +160,18 @@ static inline void tcf_set_drop_reason(struct tcf_result *res,
+ 	res->drop_reason = reason;
  }
+ 
++static inline void tcf_set_result(struct tcf_result *to,
++				  const struct tcf_result *from)
++{
++	/* tcf_result's drop_reason which is the last member must be
++	 * preserved and cannot be copied from the cls'es tcf_result
++	 * template given this is carried all the way and potentially
++	 * set to a concrete tc drop reason upon error or intentional
++	 * drop. See tcf_set_drop_reason() locations.
++	 */
++	memcpy(to, from, offsetof(typeof(*to), drop_reason));
++}
++
+ static inline void
+ __tcf_bind_filter(struct Qdisc *q, struct tcf_result *r, unsigned long base)
+ {
+diff --git a/net/sched/cls_basic.c b/net/sched/cls_basic.c
+index 1b92c33b5f81..d7ead3fc3c45 100644
+--- a/net/sched/cls_basic.c
++++ b/net/sched/cls_basic.c
+@@ -50,7 +50,7 @@ TC_INDIRECT_SCOPE int basic_classify(struct sk_buff *skb,
+ 		if (!tcf_em_tree_match(skb, &f->ematches, NULL))
+ 			continue;
+ 		__this_cpu_inc(f->pf->rhit);
+-		*res = f->res;
++		tcf_set_result(res, &f->res);
+ 		r = tcf_exts_exec(skb, &f->exts, res);
+ 		if (r < 0)
+ 			continue;
+diff --git a/net/sched/cls_bpf.c b/net/sched/cls_bpf.c
+index 382c7a71f81f..e4620a462bc3 100644
+--- a/net/sched/cls_bpf.c
++++ b/net/sched/cls_bpf.c
+@@ -124,7 +124,7 @@ TC_INDIRECT_SCOPE int cls_bpf_classify(struct sk_buff *skb,
+ 			res->class   = 0;
+ 			res->classid = filter_res;
+ 		} else {
+-			*res = prog->res;
++			tcf_set_result(res, &prog->res);
+ 		}
+ 
+ 		ret = tcf_exts_exec(skb, &prog->exts, res);
+diff --git a/net/sched/cls_flower.c b/net/sched/cls_flower.c
+index e5314a31f75a..eb94090fb26c 100644
+--- a/net/sched/cls_flower.c
++++ b/net/sched/cls_flower.c
+@@ -341,7 +341,7 @@ TC_INDIRECT_SCOPE int fl_classify(struct sk_buff *skb,
+ 
+ 		f = fl_mask_lookup(mask, &skb_key);
+ 		if (f && !tc_skip_sw(f->flags)) {
+-			*res = f->res;
++			tcf_set_result(res, &f->res);
+ 			return tcf_exts_exec(skb, &f->exts, res);
+ 		}
+ 	}
+diff --git a/net/sched/cls_fw.c b/net/sched/cls_fw.c
+index c49d6af0e048..70b873f8771f 100644
+--- a/net/sched/cls_fw.c
++++ b/net/sched/cls_fw.c
+@@ -63,7 +63,7 @@ TC_INDIRECT_SCOPE int fw_classify(struct sk_buff *skb,
+ 		for (f = rcu_dereference_bh(head->ht[fw_hash(id)]); f;
+ 		     f = rcu_dereference_bh(f->next)) {
+ 			if (f->id == id) {
+-				*res = f->res;
++				tcf_set_result(res, &f->res);
+ 				if (!tcf_match_indev(skb, f->ifindex))
+ 					continue;
+ 				r = tcf_exts_exec(skb, &f->exts, res);
+diff --git a/net/sched/cls_matchall.c b/net/sched/cls_matchall.c
+index c4ed11df6254..a4018db80a60 100644
+--- a/net/sched/cls_matchall.c
++++ b/net/sched/cls_matchall.c
+@@ -37,7 +37,7 @@ TC_INDIRECT_SCOPE int mall_classify(struct sk_buff *skb,
+ 	if (tc_skip_sw(head->flags))
+ 		return -1;
+ 
+-	*res = head->res;
++	tcf_set_result(res, &head->res);
+ 	__this_cpu_inc(head->pf->rhit);
+ 	return tcf_exts_exec(skb, &head->exts, res);
+ }
+diff --git a/net/sched/cls_route.c b/net/sched/cls_route.c
+index 1424bfeaca73..cbfaa1d1820f 100644
+--- a/net/sched/cls_route.c
++++ b/net/sched/cls_route.c
+@@ -109,7 +109,7 @@ static inline int route4_hash_wild(void)
+ 
+ #define ROUTE4_APPLY_RESULT()					\
+ {								\
+-	*res = f->res;						\
++	tcf_set_result(res, &f->res);				\
+ 	if (tcf_exts_has_actions(&f->exts)) {			\
+ 		int r = tcf_exts_exec(skb, &f->exts, res);	\
+ 		if (r < 0) {					\
+@@ -152,7 +152,7 @@ TC_INDIRECT_SCOPE int route4_classify(struct sk_buff *skb,
+ 			goto failure;
+ 		}
+ 
+-		*res = f->res;
++		tcf_set_result(res, &f->res);
+ 		spin_unlock(&fastmap_lock);
+ 		return 0;
+ 	}
+diff --git a/net/sched/cls_u32.c b/net/sched/cls_u32.c
+index 6663e971a13e..f50ae40a29d5 100644
+--- a/net/sched/cls_u32.c
++++ b/net/sched/cls_u32.c
+@@ -172,7 +172,7 @@ TC_INDIRECT_SCOPE int u32_classify(struct sk_buff *skb,
+ check_terminal:
+ 			if (n->sel.flags & TC_U32_TERMINAL) {
+ 
+-				*res = n->res;
++				tcf_set_result(res, &n->res);
+ 				if (!tcf_match_indev(skb, n->ifindex)) {
+ 					n = rcu_dereference_bh(n->next);
+ 					goto next_knode;
+-- 
+2.34.1
+
 
