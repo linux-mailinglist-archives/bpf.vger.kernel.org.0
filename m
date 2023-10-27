@@ -1,437 +1,209 @@
-Return-Path: <bpf+bounces-13403-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13404-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF9487D8F40
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 09:09:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADBB67D8F63
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 09:14:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1E7B1C2103D
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 07:09:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E478BB213C6
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 07:14:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E12EBB64D;
-	Fri, 27 Oct 2023 07:09:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6679B65E;
+	Fri, 27 Oct 2023 07:14:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RRzX/TK/"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="0xDJGdeT"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93CC8B64B
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 07:09:08 +0000 (UTC)
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C36D4E
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 00:09:03 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6ce344fa7e4so1134024a34.0
-        for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 00:09:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698390543; x=1698995343; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bzItQAiz3N+PHOCRQROjlTNqu/fE/sUv5md0sO5zbzk=;
-        b=RRzX/TK/cunchBD+EWROfmUPn7ZdAe1Y6coXURPPFhS3ReSORi0PDER+0RDcIwr33c
-         OJUOPwJIheNlcyVo0r4UYTBAt+/Xjw734oo2PKtQ+xOEf4kF1iqI8btA41jZG/3qamvE
-         HTVjCZixPmC/pmAcDaloYUKFJmzC4loeDpUMF/yjNduC9mcuF0v/veskdAO4Y51hfB/R
-         2BCpxDJRibs5rZ6Im7UYroMz86WV5v6Qr9v1XQxJjhWN+abGJgTc8ODKGViSDIxmbp7R
-         54t2eiiQXxyIhqFQLxUMcyAqw93aQrJ9dH7WYHqjxsJnqKe601LRjfprjsx5hdGC+zfs
-         8fNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698390543; x=1698995343;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bzItQAiz3N+PHOCRQROjlTNqu/fE/sUv5md0sO5zbzk=;
-        b=epjVl1k8mMBWZRZNGh1X0ZOK/hL19rdwbwHhqh+XhApORrwN6J+UwC9Hky5ZnRusl/
-         owOWwtcVyUGjvAnolMG36pX9jCPbfFEo5c8xMBbzyTgdZX1ec01o92EPSB7wj3BooZfk
-         7IniEIvUUTDll59Av/2s6orDwjgEYV3I8GVhcjvisOQyJ8ZG/ZBNFBYyxaYCCL2QrVdj
-         UzNuGfy+0qwriwHDFRjRzULOISBLAY2OUyBICosjzjGTiLTtThnNanKFB55hepJk95sl
-         4ZfkB/zP8RRy8MZ9RQHM4FXndIQ3C9TSWgc+jVQLc/1xOVDBKevrpCVOltXsFvmLm/+6
-         ncVw==
-X-Gm-Message-State: AOJu0YwI87AE6cExq0hBABD5/cVuDRs20A5HgbKcCxs+ZFQCSI1XNVq5
-	qXHTxMc4QosRr42OJxqU6k4=
-X-Google-Smtp-Source: AGHT+IF9ARfQOR8+Gmkdyku92xLzlpsgXuSBUQiEDGK/s2fKrRcELy/tzyrfWVUo/hDdC5GDgFX4dw==
-X-Received: by 2002:a05:6830:4c4:b0:6b9:dc90:8a85 with SMTP id s4-20020a05683004c400b006b9dc908a85mr1680727otd.24.1698390542648;
-        Fri, 27 Oct 2023 00:09:02 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:ed69:fa3e:676a:4a7a? ([2600:1700:6cf8:1240:ed69:fa3e:676a:4a7a])
-        by smtp.gmail.com with ESMTPSA id v186-20020a8148c3000000b00592548b2c47sm453423ywa.80.2023.10.27.00.09.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 00:09:02 -0700 (PDT)
-Message-ID: <82ef06b9-d0e3-4ad2-8c00-cc458cc1796a@gmail.com>
-Date: Fri, 27 Oct 2023 00:09:00 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7EFAB64F
+	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 07:14:27 +0000 (UTC)
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2067.outbound.protection.outlook.com [40.107.104.67])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA6AD40;
+	Fri, 27 Oct 2023 00:14:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hICSTo7jNMsGE+SaanM3xC9lCqAbdxmMJekh5KHC5+gR704/EiUB5DlUAw35VCGtDtMguhoDMyD//HQyO9Smti3AhL5+LQgId6kahDO2MegP7imIcfSq+gpx0Y0VoNJtzOWc1LedXM2a/oIZE/ujWdK4d0fGrHXp90oNltOWa8JE8tdQuLCmGs/NKK6NNHbcR+T/ixe9l6K0oaFfNU3a7+0mSabuKlIikBwD6IlSY7ezrJip79Dv3qQGF+8UBjtziq9v76YMavb01+h0bz1gUUqKeLVybnBlae/O4DoZmAsr1BCfVPHH3shQqMZpIzzvkCx/dJtBWFXRIrFnFpGn9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=i9Db+43y38xWAC0XJGLnR0RRLbmc/igu04EO36lgYT8=;
+ b=jml8MbQIkb7JGdaNeZsvtGTEBrL+GaYYLJz6Qk6Y8SWOv/824yZQvWMVusJPI0xA55rE7l8Oo6N0wNijm1N+1aIfGivfBunCBMcYbXpoqJwdkFqIxrhHLWUar9rYyHlpoWiIpgAxWXLi5DaCqAy6ua0VV18rCkPguP42J186N5OGw9R57Pa4Gg2dNzM/BAqJo4Ufv0WLvWfrud5qU6e/WXlfR1xa/iT5S68zA2ivt1GUA/oyhB4LNDW8vutQqLf8Fi49yNo//9hr7gWmpOdZ21gS0ioy9+12sTaQU/7S3d5BbYE7XgF8PWkdKWngTDl3qy5Xmo+YghwCbypTNL4jMA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i9Db+43y38xWAC0XJGLnR0RRLbmc/igu04EO36lgYT8=;
+ b=0xDJGdeT6BxTLkjpnAuX7tlJGSnho0+8MvOvzIosVDWx/phXhWP7EpTSghq0qw+IcPcZdx4I6zTcCBTHGbAgnSEGM+G9ssVwHP5ZO6o/SU/BkeNROOeUt9ea5UiL1BS9d0J4JFrmY5ygMGAMWXRbO8hrHWYVH2l8KORKhcEQy5mQayqaZkpMXRMWfTv6Q2cFcD+t3IVm751DBAORciyKE8A7bGBRSqAq+IzmWEZ8e24vzupTA4JEiGAbOKQpFxtaSH5jZu20h286fuMEaJ9VFrWfSb7mz8yKcHWYa7E5+gWWByNfESPrQE82hfxpMOQZLds52BdxVFAka9eEphWzVQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB9510.eurprd04.prod.outlook.com (2603:10a6:20b:44a::11)
+ by DU0PR04MB9493.eurprd04.prod.outlook.com (2603:10a6:10:350::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Fri, 27 Oct
+ 2023 07:14:21 +0000
+Received: from AS8PR04MB9510.eurprd04.prod.outlook.com
+ ([fe80::9f3e:3b47:5ccd:c47c]) by AS8PR04MB9510.eurprd04.prod.outlook.com
+ ([fe80::9f3e:3b47:5ccd:c47c%6]) with mapi id 15.20.6954.008; Fri, 27 Oct 2023
+ 07:14:21 +0000
+Date: Fri, 27 Oct 2023 15:14:10 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Hao Sun <sunhao.th@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/2] bpf: Fix check_stack_write_fixed_off() to
+ correctly spill imm
+Message-ID: <ZTtjQlqRQWCWwmHx@u94a>
+References: <20231026-fix-check-stack-write-v1-0-6b325ef3ce7e@gmail.com>
+ <20231026-fix-check-stack-write-v1-1-6b325ef3ce7e@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231026-fix-check-stack-write-v1-1-6b325ef3ce7e@gmail.com>
+X-ClientProxiedBy: FR4P281CA0158.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:ba::15) To AS8PR04MB9510.eurprd04.prod.outlook.com
+ (2603:10a6:20b:44a::11)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v6 10/10] selftests/bpf: test case for
- register_bpf_struct_ops().
-Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>, thinker.li@gmail.com,
- bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, drosen@google.com
-Cc: kuifeng@meta.com
-References: <20231022050335.2579051-1-thinker.li@gmail.com>
- <20231022050335.2579051-11-thinker.li@gmail.com>
- <abd76cd234ab2a1185bb9557fa54013264df6a50.camel@gmail.com>
- <5b3609f3-bc40-4fc3-b591-d124432dc4d9@gmail.com>
-In-Reply-To: <5b3609f3-bc40-4fc3-b591-d124432dc4d9@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB9510:EE_|DU0PR04MB9493:EE_
+X-MS-Office365-Filtering-Correlation-Id: 83f9c4f1-2098-4e52-5162-08dbd6bc57ad
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	VSnqQoYNSBRD9WYehCGCblBlEqhqARxZrhUl/E9h2JPEeZqOQvNs+VYGKTmQQ/XpEp6RnHUyyTsQA24iDCurTJHJvBuHaUzI+P7uUdvW/pvgNTxJuUrbH7AwUBeUMHJ2QYWtBZqK0minBKZItcl02MMyH9L0dCxksOJP7tIbIf2qd6kxvSbW63aO8pycUQvQG7Wl/VX7bZTf6NJJ6lYJWhNBWF0eTq0RWJWHc6e+C8spy9nvbLmlBp9ts+Yq4BckHY4lFPdOe7NeH+S2ZGybWmZGWCkk2OnbIK6LNOdpf4Kd5Aab9+Bjcg4l0F3MUZeB3/ODsMDFF7BDx10h1JzJLAXx21EjI1uKgl9gpsblJA9uthfkHbAduA1Tkg4p2i8DtGgcKdDQuzj2MqFtGqkdacLX43H3VMfZxCaCtVENML5UBgfanhJhJ0UFBAYNmXwZ71lgnfeLLPGyf7bdgQ5BltPNUvGk7V19KB/i6V3BzQUK1lSSzEYCPNrRa1ZPy/TDWpcIn2lFfsQ5A4unQBaPwnwAwitdBCxz/4j4cRKgGheBkC1oYY9hXCtHGG84FmEd
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB9510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(376002)(396003)(366004)(39860400002)(136003)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(41300700001)(5660300002)(66946007)(7416002)(2906002)(316002)(6916009)(8936002)(8676002)(4326008)(6506007)(54906003)(6486002)(478600001)(33716001)(6666004)(9686003)(66476007)(26005)(83380400001)(66556008)(38100700002)(86362001)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?b2pFS01QZkxZVkhhRWVva3VKSHNQV21Kbm1yc0lpejZjZS9xdTdnRG9DTVg2?=
+ =?utf-8?B?Skg0bXJGYnlTbkt1R3VldFUzUUFzeE1NV1c2dFR2aFBva0d4Sm83NUtEbUtw?=
+ =?utf-8?B?WGJPNCtrUytpTC9vODVyRXBHSlZiVVF4dXI5RE1YRmZudWs3TnI5NXRVei9K?=
+ =?utf-8?B?UW1WT1JnajVpbGtrRjJodlRtZDhUTUovVzlSNTlNNCtMdHJ3VTkzL2FkazBS?=
+ =?utf-8?B?NXhUUEE4ak1mNURSL0RoSTFaMkJjcVViM1ZDVnJjSGQ0NGpFWFI4Z2t1a2RH?=
+ =?utf-8?B?V2pGcm41TGJSRFp5eFVCeTRsQ1BGRnROcUVJTzR0WlJQNisxTEtDNXhGRXZi?=
+ =?utf-8?B?eGNBQk1ibEtJTjFwK2JXd3h6a0c0VlFwWDJsbUhDRXd2V0pKbjhveVdlVkRC?=
+ =?utf-8?B?bkZVbVcvMXROZlN6QlpRWjdoc1hFR0ZZamY1YTRsZVloR0pZUlIzTzN5YkVB?=
+ =?utf-8?B?d2lFMVltcnJhak9zMVF6cGhyTHg5Tm1XSzJHOTlHN0hEN1BHdmNMN3JSbHRS?=
+ =?utf-8?B?VHZvNDg3dmdwNmlqemZudmlXcnkveHcvcXRVNEwxL0RmZW1wNzNkMi9IR2tP?=
+ =?utf-8?B?ZVVDNnU2cHZpRjRGM2VWS3ZjdlpoSWNVY1JqTlJzT0VzVTcwblBELzVXRGMz?=
+ =?utf-8?B?c2RZYUQ0djN6bWpOUmhxQVBVNkR4U1VheGdYVm9VN2ROTG93QWU1RUpHQmRh?=
+ =?utf-8?B?UnNEN0VaTVZ4ZVJkMndxUG5zQlBBeEgxNldkYko5VWsvQVZsdWxlVHA2NkpR?=
+ =?utf-8?B?dS9tMnFyYmdubm5QNnl1KzdmRk5qSmNpV3dyR3VmUVdEZ3dHaUhUdytqZEk4?=
+ =?utf-8?B?RW5qUkRBakdWT05FYWRNc1ZXNUs0ZFRHNHYzYUY4Ym1mT3ZQbk5uMVpwMTh5?=
+ =?utf-8?B?djU3cWZvK09uN3RvaG9aVStjenNFdUYzU3p2TU9LSHREcHJSMzJnRlQrdFNB?=
+ =?utf-8?B?U1U0T3g5bGw3NVQ1RWllelIxNUhhalRjUTNiSzdVMnlsQUcwOTlSeFlYNzlp?=
+ =?utf-8?B?aHRJNnArT2EvUm1pOThpekZsZnNuOTFhQ3Q3TmdlN1VDQ0I0WGNWNnVYdmV3?=
+ =?utf-8?B?T1dmK1BXYTJRS3VSaUVCZ3UwSTRRN0xuMTNPakc0WUdaZ1FveWExK0gwbk83?=
+ =?utf-8?B?ZUJLdmtJZkxOWWFnUTJqVkJucXBBNFhJQVUvQ0hmMjVELzBVRmlqL0NFdkdx?=
+ =?utf-8?B?b0Qyc2VGeEpPYmFyR0kyZkN2ZEFiNGNVclZYWjdpUDlobE5WeTZVakFLczJr?=
+ =?utf-8?B?aXdYT2hBSmRRMlFpayszMzdJVkpVWjk3Wk9oUlBTNHE3dHNWN3VNU3UraUZN?=
+ =?utf-8?B?N0RPc0Vaamo0cUNycG5obTFVdnFMc2lWZ0FXcTUyaW5nZjZVS3grRGtXWGRR?=
+ =?utf-8?B?d3BQaHdjRmxiWmZuU0tIVHo1dm4zL2V1bnlrVlo2b3o1bkNFQmtQQnRQcE5i?=
+ =?utf-8?B?OXFFckt2QzdjdDEyVitnbHZtUW9tb1JHMTRHSEh2ZldOZXAwMXFYTzZ5eHJ2?=
+ =?utf-8?B?aXV6NFF3V1RNTG9ERFhCUXlncFhPMmpwR1QxcUlMdDlxaWtXUkJlVUxmbnNT?=
+ =?utf-8?B?cnlncDkyY2NMZlBDZlRFendQRDZwN0VXa0hwYXAzV0pKaXJVTXVrTVlRdXFp?=
+ =?utf-8?B?L01Oc3R5TkgxdHRmMFkzNFMreE8xT2JNeWxUNjZqOEhadjRMdnpPck5DTEF0?=
+ =?utf-8?B?WFQzVkl5UGRyRzlCVWZPNU9iSkxjTjBWN0JES1RZd1ZrbkZvY0ZranRrS2cz?=
+ =?utf-8?B?SFZwQ1RrREpHMHd5Y3M4L1o2TmU3QXhPRG1qWVVZbHpDMU8yUkowNnpHNWJj?=
+ =?utf-8?B?NG1OOGZVWCtsYzNWazJGQUFydkwzNEdmZzBUWm9EVHY0aGM4WE9ObnJRQzdC?=
+ =?utf-8?B?eWVDWHdaS3FHMXBwQ3I5ZU1wMVN6dVlWVU5VQVhEZFFuWU9rM2NJQjdyT2Fq?=
+ =?utf-8?B?MXgzSWNhNFZMeHRlM2JYU1RmaU5Fa08xeFYzcWtlWXBKTGh5RUd5MDRKZlVJ?=
+ =?utf-8?B?MWVNc2lraU1ja2htNHEwaWdRZVcrNkNBeWJMTjBHU2lQSm5EODZWQlRoOXk4?=
+ =?utf-8?B?a3NSb045Z3NHc21SU2l0aHphdERlTFAySCtmRVovS1RNS29IMC9oUWNwUEpT?=
+ =?utf-8?Q?dwargCUkgTxDrvuxGT/6KNLzG?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83f9c4f1-2098-4e52-5162-08dbd6bc57ad
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB9510.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 07:14:21.7237
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5w6HomUJ8PXCcSWAR4112oK9y6I+WFXdQdwngbgYYKWDJGH8OtO5SPSEsbrOsSarYJiF7WQni0ZxbfV1NEgJ/Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9493
 
+On Thu, Oct 26, 2023 at 05:13:10PM +0200, Hao Sun wrote:
+> In check_stack_write_fixed_off(), imm value is cast to u32 before being
+> spilled to the stack. Therefore, the sign information is lost, and the
+> range information is incorrect when load from the stack again.
+> 
+> For the following prog:
+> 0: r2 = r10
+> 1: *(u64*)(r2 -40) = -44
+> 2: r0 = *(u64*)(r2 - 40)
+> 3: if r0 s<= 0xa goto +2
+> 4: r0 = 1
+> 5: exit
+> 6: r0  = 0
+> 7: exit
+> 
+> The verifier gives:
+> func#0 @0
+> 0: R1=ctx(off=0,imm=0) R10=fp0
+> 0: (bf) r2 = r10                      ; R2_w=fp0 R10=fp0
+> 1: (7a) *(u64 *)(r2 -40) = -44        ; R2_w=fp0 fp-40_w=4294967252
+> 2: (79) r0 = *(u64 *)(r2 -40)         ; R0_w=4294967252 R2_w=fp0
+> fp-40_w=4294967252
+> 3: (c5) if r0 s< 0xa goto pc+2
+> mark_precise: frame0: last_idx 3 first_idx 0 subseq_idx -1
+> mark_precise: frame0: regs=r0 stack= before 2: (79) r0 = *(u64 *)(r2 -40)
+> 3: R0_w=4294967252
+> 4: (b7) r0 = 1                        ; R0_w=1
+> 5: (95) exit
+> verification time 7971 usec
+> stack depth 40
+> processed 6 insns (limit 1000000) max_states_per_insn 0 total_states 0
+> peak_states 0 mark_read 0
+> 
+> So remove the incorrect cast, since imm field is declared as s32, and
+> __mark_reg_known() takes u64, so imm would be correctly sign extended
+> by compiler.
+> 
+> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
 
+Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 
-On 10/26/23 21:55, Kui-Feng Lee wrote:
-> 
-> 
-> On 10/26/23 13:31, Eduard Zingerman wrote:
->> On Sat, 2023-10-21 at 22:03 -0700, thinker.li@gmail.com wrote:
->>> From: Kui-Feng Lee <thinker.li@gmail.com>
->>>
->>> Create a new struct_ops type called bpf_testmod_ops within the 
->>> bpf_testmod
->>> module. When a struct_ops object is registered, the bpf_testmod 
->>> module will
->>> invoke test_2 from the module.
->>>
->>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
->>
->> Hello,
->>
->> Sorry for the late response, was moving through the patch-set very 
->> slowly.
->> Please note that CI currently fails for this series [0], reported 
->> error is:
->>
->> testing_helpers.c:13:10: fatal error: 'rcu_tasks_trace_gp.skel.h' file 
->> not found
->>     13 | #include "rcu_tasks_trace_gp.skel.h"
->>        |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Thank! I will fix this dependency issue.
-> 
->>
->> I get the same error when try to run tests locally (after full clean).
->> On the other hand it looks like `kern_sync_rcu_tasks_trace` changes
->> are not really necessary, when I undo these changes but keep changes in:
->>
->> - .../selftests/bpf/bpf_testmod/bpf_testmod.c
->> - .../selftests/bpf/bpf_testmod/bpf_testmod.h
->> - .../bpf/prog_tests/test_struct_ops_module.c
->> - .../selftests/bpf/progs/struct_ops_module.c
->>
->> struct_ops_module/regular_load test still passes.
->>
-> 
-> The test will pass even without this change.
-> But, the test harness may complain by showing warnings.
-> You may see an additional warning message without this change.
+The acked-by applies to future version of the patchset as well.
 
+FWIW I think we'd also need the same treatment for the (BPF_ALU | BPF_MOV |
+BPF_K) case in check_alu_op().
 
-One thing forgot to mentioned. The test harness may fail to unload
-the bpf_testmod module.
-
+> ---
+>  kernel/bpf/verifier.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->> Regarding assertion:
->>
->>> +    ASSERT_EQ(skel->bss->test_2_result, 7, "test_2_result");
->>
->> Could you please leave a comment explaining why the value is 7?
->> I don't understand what invokes 'test_2' but changing it to 8
->> forces test to fail, so something does call 'test_2' :)
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 857d76694517..44af69ce1301 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -4674,7 +4674,7 @@ static int check_stack_write_fixed_off(struct bpf_verifier_env *env,
+>  		   insn->imm != 0 && env->bpf_capable) {
+>  		struct bpf_reg_state fake_reg = {};
+>  
+> -		__mark_reg_known(&fake_reg, (u32)insn->imm);
+> +		__mark_reg_known(&fake_reg, insn->imm);
+>  		fake_reg.type = SCALAR_VALUE;
+>  		save_register_state(state, spi, &fake_reg, size);
+>  	} else if (reg && is_spillable_regtype(reg->type)) {
 > 
-> It is called by bpf_dummy_reg() in bpf_testmod.c.
-> I will add a comment here.
+> -- 
+> 2.34.1
 > 
->>
->> Also, when running test_maps I get the following error:
->>
->> libbpf: bpf_map_create_opts has non-zero extra bytes
->> map_create_opts(317):FAIL:bpf_map_create() error:Invalid argument 
->> (name=hash_of_maps)
-> 
-> It looks like a padding issue. I will check it.
-> 
->>
->> [0] 
->> https://patchwork.kernel.org/project/netdevbpf/patch/20231022050335.2579051-11-thinker.li@gmail.com/
->>      (look for 'Logs for x86_64-gcc / build / build for x86_64 with 
->> gcc ')
->>
->>> ---
->>>   tools/testing/selftests/bpf/Makefile          |  2 +
->>>   .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 59 +++++++++++++++++++
->>>   .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  5 ++
->>>   .../bpf/prog_tests/test_struct_ops_module.c   | 38 ++++++++++++
->>>   .../selftests/bpf/progs/struct_ops_module.c   | 30 ++++++++++
->>>   tools/testing/selftests/bpf/testing_helpers.c | 35 +++++++++++
->>>   6 files changed, 169 insertions(+)
->>>   create mode 100644 
->>> tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
->>>   create mode 100644 
->>> tools/testing/selftests/bpf/progs/struct_ops_module.c
->>>
->>> diff --git a/tools/testing/selftests/bpf/Makefile 
->>> b/tools/testing/selftests/bpf/Makefile
->>> index caede9b574cb..dd7ff14e1fdf 100644
->>> --- a/tools/testing/selftests/bpf/Makefile
->>> +++ b/tools/testing/selftests/bpf/Makefile
->>> @@ -706,6 +706,8 @@ $(OUTPUT)/uprobe_multi: uprobe_multi.c
->>>       $(call msg,BINARY,,$@)
->>>       $(Q)$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@
->>> +$(OUTPUT)/testing_helpers.o: $(OUTPUT)/rcu_tasks_trace_gp.skel.h
->>> +
->>>   EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) 
->>> $(HOST_SCRATCH_DIR)    \
->>>       prog_tests/tests.h map_tests/tests.h verifier/tests.h        \
->>>       feature bpftool                            \
->>> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c 
->>> b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
->>> index cefc5dd72573..f1a20669d884 100644
->>> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
->>> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
->>> @@ -1,5 +1,6 @@
->>>   // SPDX-License-Identifier: GPL-2.0
->>>   /* Copyright (c) 2020 Facebook */
->>> +#include <linux/bpf.h>
->>>   #include <linux/btf.h>
->>>   #include <linux/btf_ids.h>
->>>   #include <linux/error-injection.h>
->>> @@ -517,11 +518,66 @@ BTF_ID_FLAGS(func, 
->>> bpf_kfunc_call_test_static_unused_arg)
->>>   BTF_ID_FLAGS(func, bpf_kfunc_call_test_offset)
->>>   BTF_SET8_END(bpf_testmod_check_kfunc_ids)
->>> +#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
->>> +
->>> +DEFINE_STRUCT_OPS_VALUE_TYPE(bpf_testmod_ops);
->>> +
->>> +static int bpf_testmod_ops_init(struct btf *btf)
->>> +{
->>> +    return 0;
->>> +}
->>> +
->>> +static bool bpf_testmod_ops_is_valid_access(int off, int size,
->>> +                        enum bpf_access_type type,
->>> +                        const struct bpf_prog *prog,
->>> +                        struct bpf_insn_access_aux *info)
->>> +{
->>> +    return bpf_tracing_btf_ctx_access(off, size, type, prog, info);
->>> +}
->>> +
->>> +static int bpf_testmod_ops_init_member(const struct btf_type *t,
->>> +                       const struct btf_member *member,
->>> +                       void *kdata, const void *udata)
->>> +{
->>> +    return 0;
->>> +}
->>> +
->>>   static const struct btf_kfunc_id_set bpf_testmod_kfunc_set = {
->>>       .owner = THIS_MODULE,
->>>       .set   = &bpf_testmod_check_kfunc_ids,
->>>   };
->>> +static const struct bpf_verifier_ops bpf_testmod_verifier_ops = {
->>> +    .is_valid_access = bpf_testmod_ops_is_valid_access,
->>> +};
->>> +
->>> +static int bpf_dummy_reg(void *kdata)
->>> +{
->>> +    struct bpf_testmod_ops *ops = kdata;
->>> +    int r;
->>> +
->>> +    BTF_STRUCT_OPS_TYPE_EMIT(bpf_testmod_ops);
->>> +    r = ops->test_2(4, 3);
->>> +
->>> +    return 0;
->>> +}
->>> +
->>> +static void bpf_dummy_unreg(void *kdata)
->>> +{
->>> +}
->>> +
->>> +struct bpf_struct_ops bpf_bpf_testmod_ops = {
->>> +    .verifier_ops = &bpf_testmod_verifier_ops,
->>> +    .init = bpf_testmod_ops_init,
->>> +    .init_member = bpf_testmod_ops_init_member,
->>> +    .reg = bpf_dummy_reg,
->>> +    .unreg = bpf_dummy_unreg,
->>> +    .name = "bpf_testmod_ops",
->>> +    .owner = THIS_MODULE,
->>> +};
->>> +
->>> +#endif /* CONFIG_DEBUG_INFO_BTF_MODULES */
->>> +
->>>   extern int bpf_fentry_test1(int a);
->>>   static int bpf_testmod_init(void)
->>> @@ -532,6 +588,9 @@ static int bpf_testmod_init(void)
->>>       ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, 
->>> &bpf_testmod_kfunc_set);
->>>       ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, 
->>> &bpf_testmod_kfunc_set);
->>>       ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, 
->>> &bpf_testmod_kfunc_set);
->>> +#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
->>> +    ret = ret ?: register_bpf_struct_ops(&bpf_bpf_testmod_ops);
->>> +#endif
->>>       if (ret < 0)
->>>           return ret;
->>>       if (bpf_fentry_test1(0) < 0)
->>> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h 
->>> b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
->>> index f32793efe095..ca5435751c79 100644
->>> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
->>> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
->>> @@ -28,4 +28,9 @@ struct bpf_iter_testmod_seq {
->>>       int cnt;
->>>   };
->>> +struct bpf_testmod_ops {
->>> +    int (*test_1)(void);
->>> +    int (*test_2)(int a, int b);
->>> +};
->>> +
->>>   #endif /* _BPF_TESTMOD_H */
->>> diff --git 
->>> a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c 
->>> b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
->>> new file mode 100644
->>> index 000000000000..7261fc6c377a
->>> --- /dev/null
->>> +++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
->>> @@ -0,0 +1,38 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
->>> +#include <test_progs.h>
->>> +#include <time.h>
->>> +
->>> +#include "rcu_tasks_trace_gp.skel.h"
->>> +#include "struct_ops_module.skel.h"
->>> +
->>> +static void test_regular_load(void)
->>> +{
->>> +    struct struct_ops_module *skel;
->>> +    struct bpf_link *link;
->>> +    DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
->>> +    int err;
->>> +
->>> +    skel = struct_ops_module__open_opts(&opts);
->>> +    if (!ASSERT_OK_PTR(skel, "struct_ops_module_open"))
->>> +        return;
->>> +    err = struct_ops_module__load(skel);
->>> +    if (!ASSERT_OK(err, "struct_ops_module_load"))
->>> +        return;
->>> +
->>> +    link = bpf_map__attach_struct_ops(skel->maps.testmod_1);
->>> +    ASSERT_OK_PTR(link, "attach_test_mod_1");
->>> +
->>> +    ASSERT_EQ(skel->bss->test_2_result, 7, "test_2_result");
->>> +
->>> +    bpf_link__destroy(link);
->>> +
->>> +    struct_ops_module__destroy(skel);
->>> +}
->>> +
->>> +void serial_test_struct_ops_module(void)
->>> +{
->>> +    if (test__start_subtest("regular_load"))
->>> +        test_regular_load();
->>> +}
->>> +
->>> diff --git a/tools/testing/selftests/bpf/progs/struct_ops_module.c 
->>> b/tools/testing/selftests/bpf/progs/struct_ops_module.c
->>> new file mode 100644
->>> index 000000000000..cb305d04342f
->>> --- /dev/null
->>> +++ b/tools/testing/selftests/bpf/progs/struct_ops_module.c
->>> @@ -0,0 +1,30 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
->>> +#include <vmlinux.h>
->>> +#include <bpf/bpf_helpers.h>
->>> +#include <bpf/bpf_tracing.h>
->>> +#include "../bpf_testmod/bpf_testmod.h"
->>> +
->>> +char _license[] SEC("license") = "GPL";
->>> +
->>> +int test_2_result = 0;
->>> +
->>> +SEC("struct_ops/test_1")
->>> +int BPF_PROG(test_1)
->>> +{
->>> +    return 0xdeadbeef;
->>> +}
->>> +
->>> +SEC("struct_ops/test_2")
->>> +int BPF_PROG(test_2, int a, int b)
->>> +{
->>> +    test_2_result = a + b;
->>> +    return a + b;
->>> +}
->>> +
->>> +SEC(".struct_ops.link")
->>> +struct bpf_testmod_ops testmod_1 = {
->>> +    .test_1 = (void *)test_1,
->>> +    .test_2 = (void *)test_2,
->>> +};
->>> +
->>> diff --git a/tools/testing/selftests/bpf/testing_helpers.c 
->>> b/tools/testing/selftests/bpf/testing_helpers.c
->>> index 8d994884c7b4..05870cd62458 100644
->>> --- a/tools/testing/selftests/bpf/testing_helpers.c
->>> +++ b/tools/testing/selftests/bpf/testing_helpers.c
->>> @@ -10,6 +10,7 @@
->>>   #include "test_progs.h"
->>>   #include "testing_helpers.h"
->>>   #include <linux/membarrier.h>
->>> +#include "rcu_tasks_trace_gp.skel.h"
->>>   int parse_num_list(const char *s, bool **num_set, int *num_set_len)
->>>   {
->>> @@ -380,10 +381,44 @@ int load_bpf_testmod(bool verbose)
->>>       return 0;
->>>   }
->>> +/* This function will trigger call_rcu_tasks_trace() in the kernel */
->>> +static int kern_sync_rcu_tasks_trace(void)
->>> +{
->>> +    struct rcu_tasks_trace_gp *rcu;
->>> +    time_t start;
->>> +    long gp_seq;
->>> +    LIBBPF_OPTS(bpf_test_run_opts, opts);
->>> +
->>> +    rcu = rcu_tasks_trace_gp__open_and_load();
->>> +    if (IS_ERR(rcu))
->>> +        return -EFAULT;
->>> +    if (rcu_tasks_trace_gp__attach(rcu))
->>> +        return -EFAULT;
->>> +
->>> +    gp_seq = READ_ONCE(rcu->bss->gp_seq);
->>> +
->>> +    if 
->>> (bpf_prog_test_run_opts(bpf_program__fd(rcu->progs.do_call_rcu_tasks_trace),
->>> +                   &opts))
->>> +        return -EFAULT;
->>> +    if (opts.retval != 0)
->>> +        return -EFAULT;
->>> +
->>> +    start = time(NULL);
->>> +    while ((start + 2) > time(NULL) &&
->>> +           gp_seq == READ_ONCE(rcu->bss->gp_seq))
->>> +        sched_yield();
->>> +
->>> +    rcu_tasks_trace_gp__destroy(rcu);
->>> +
->>> +    return 0;
->>> +}
->>> +
->>>   /*
->>>    * Trigger synchronize_rcu() in kernel.
->>>    */
->>>   int kern_sync_rcu(void)
->>>   {
->>> +    if (kern_sync_rcu_tasks_trace())
->>> +        return -EFAULT;
->>>       return syscall(__NR_membarrier, MEMBARRIER_CMD_SHARED, 0, 0);
->>>   }
->>
 
