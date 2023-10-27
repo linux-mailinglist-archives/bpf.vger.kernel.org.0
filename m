@@ -1,243 +1,378 @@
-Return-Path: <bpf+bounces-13401-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13402-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 737667D8E74
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 08:09:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49D577D8F2E
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 09:06:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C48A5B21373
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 06:08:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EC3A28231D
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 07:06:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37C338C12;
-	Fri, 27 Oct 2023 06:08:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC78DB641;
+	Fri, 27 Oct 2023 07:05:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WCc7Yv70"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MkLliwq6"
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 681B58BFB
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 06:08:51 +0000 (UTC)
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b3])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE33D1AD
-	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 23:08:49 -0700 (PDT)
-Message-ID: <6e4e46a2-77de-45d0-a1ec-b5622e1d75e0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1698386928;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Qg+TtUC4ZIyGyUu7Sh70Xkk2yNumDl3u4A3ebUc+4TE=;
-	b=WCc7Yv70JmjDer8JR5oxdrdep/j9aBPcsdgOyuyGL3ZNLLIjeyRkLSlcvL6Bq9EbyMA7rI
-	0d6VK2nODoZCNWcCXIjIhtkVD7f9CFZnHsPpagIDy6e0QP2cyof/KuiXuU3H1xQp3EsfAn
-	Ie88xyRPL7lGipqal5TYuBg8yCgvdPQ=
-Date: Thu, 26 Oct 2023 23:08:35 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C5FD8F7D
+	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 07:05:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3219C433CC
+	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 07:05:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1698390356;
+	bh=9Rl5Eop7IOaHzUdYZOBqYeKV34UkivO8it/7mphES9c=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=MkLliwq6ge2FOPuaCtLhXnXjPw5Qts3o2/ELu/nUQY2jJhFLiZepayoPRB+xFr0ev
+	 nzACmn00DPrI4sy6NgEnh9cFHxHQgjC5VxvpsvWgZcZX44HtXGc+SPPlC2ak/jNOLY
+	 o4ndsuDD9ASJxb5m5pHh/Q4VDUoAV67QmiQDliPJwMvYQkHlRzGAKqQxOb4C/C717W
+	 oAoIkX+RnQB1JJyD6i8xJsi0wUOVaUK21CO83KJN7KMNRRWQNmF3IhaqH5ddV1jpkb
+	 q96GJzB2MqApOr9RTKsQkk3DYfIoTX1fwRLwIih6LafJTL2cm5ycJQylyP+CLHsVco
+	 XD4WxdyQGExTA==
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-53d9b94731aso2856290a12.1
+        for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 00:05:56 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxV4QsAislKlDkQMIv3aF5J7KyG3yYPuoBN4X9eUvHEWvClJOhJ
+	qVEtJh25kzOaZYeo8yY5BwHPNzUigGrcUVoCw40=
+X-Google-Smtp-Source: AGHT+IHaLXIjFdO6pLnNjqLJf11kex4c+jYE5HWGuSLVKekNDzWi83pvpSj8xZoYeNXfmnbrGmj/7ZiNbGYCEMrxmRo=
+X-Received: by 2002:aa7:c649:0:b0:53d:fba2:24be with SMTP id
+ z9-20020aa7c649000000b0053dfba224bemr1408372edr.15.1698390355102; Fri, 27 Oct
+ 2023 00:05:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] selftests/bpf: umount children of TDIR in
- test_bpffs
-Content-Language: en-GB
-To: Manu Bretelle <chantr4@gmail.com>, Kui-Feng Lee <sinquersw@gmail.com>,
- ast@kernel.org
-Cc: bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
- martin.lau@linux.dev, song@kernel.org, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org,
- mykolal@fb.com, shuah@kernel.org
-References: <20231024201852.1512720-1-chantr4@gmail.com>
- <041a3ea2-8cc6-4f0f-8ed9-6ca459e5bbb7@gmail.com> <ZTiqp7URqNjqrSEk@surya>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <ZTiqp7URqNjqrSEk@surya>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20231026184337.563801-1-hengqi.chen@gmail.com> <20231026184337.563801-9-hengqi.chen@gmail.com>
+In-Reply-To: <20231026184337.563801-9-hengqi.chen@gmail.com>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Fri, 27 Oct 2023 15:05:42 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H57Xxq86of8cfcGtq5hVuZ2Z5hCjZSGQZ+kHShXS83xVw@mail.gmail.com>
+Message-ID: <CAAhV-H57Xxq86of8cfcGtq5hVuZ2Z5hCjZSGQZ+kHShXS83xVw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 8/8] selftests/bpf: Enable cpu v4 tests for LoongArch
+To: Hengqi Chen <hengqi.chen@gmail.com>
+Cc: loongarch@lists.linux.dev, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, kernel@xen0n.name, 
+	yangtiezhu@loongson.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi, Hengqi,
 
-On 10/24/23 10:41 PM, Manu Bretelle wrote:
-> On Tue, Oct 24, 2023 at 02:29:19PM -0700, Kui-Feng Lee wrote:
->>
->> On 10/24/23 13:18, Manu Bretelle wrote:
->>> Currently this tests tries to umount /sys/kernel/debug (TDIR) but the
->>> system it is running on may have mounts below.
->>>
->>> For example, danobi/vmtest [0] VMs have
->>>       mount -t tracefs tracefs /sys/kernel/debug/tracing
->>> as part of their init.
->>>
->>> This change list mounts and will umount any mounts below TDIR before
->>> umounting TDIR itself.
->>>
->>> Note that it is not umounting recursively, so in the case of a sub-mount
->>> of TDIR  having another sub-mount, this will fail as mtab is ordered.
->> Should we move TID to a random path likes "/sys/kernel/debug-<pid>/"?
->>
-> Fair point, I suppose we would want to keep TDIR a defined string as it does
-> simplify the gymnastic involved through the rest of the script, but yeah
-> looking at the original commit:
-> edb65ee5aa25 (selftests/bpf: Add bpffs preload test)
+On Fri, Oct 27, 2023 at 2:01=E2=80=AFPM Hengqi Chen <hengqi.chen@gmail.com>=
+ wrote:
 >
-> I don't see any reason to use an alternate directory and rather mkdir it vs
-> umounting the original one.
-> so something like
+> Enable cpu v4 tests for LoongArch. Currently, we don't
+> have BPF trampoline in LoongArch JIT, so the fentry
+> test `test_ptr_struct_arg` still failed, will followup.
+> Test result attached below:
 >
->      #define TDIR "/sys/kernel/test_bpffs"
+>   # ./test_progs -t verifier_sdiv,verifier_movsx,verifier_ldsx,verifier_g=
+otol,verifier_bswap
+>   #316/1   verifier_bswap/BSWAP, 16:OK
+>   #316/2   verifier_bswap/BSWAP, 16 @unpriv:OK
+>   #316/3   verifier_bswap/BSWAP, 32:OK
+>   #316/4   verifier_bswap/BSWAP, 32 @unpriv:OK
+>   #316/5   verifier_bswap/BSWAP, 64:OK
+>   #316/6   verifier_bswap/BSWAP, 64 @unpriv:OK
+>   #316     verifier_bswap:OK
+>   #330/1   verifier_gotol/gotol, small_imm:OK
+>   #330/2   verifier_gotol/gotol, small_imm @unpriv:OK
+>   #330     verifier_gotol:OK
+>   #338/1   verifier_ldsx/LDSX, S8:OK
+>   #338/2   verifier_ldsx/LDSX, S8 @unpriv:OK
+>   #338/3   verifier_ldsx/LDSX, S16:OK
+>   #338/4   verifier_ldsx/LDSX, S16 @unpriv:OK
+>   #338/5   verifier_ldsx/LDSX, S32:OK
+>   #338/6   verifier_ldsx/LDSX, S32 @unpriv:OK
+>   #338/7   verifier_ldsx/LDSX, S8 range checking, privileged:OK
+>   #338/8   verifier_ldsx/LDSX, S16 range checking:OK
+>   #338/9   verifier_ldsx/LDSX, S16 range checking @unpriv:OK
+>   #338/10  verifier_ldsx/LDSX, S32 range checking:OK
+>   #338/11  verifier_ldsx/LDSX, S32 range checking @unpriv:OK
+>   #338     verifier_ldsx:OK
+>   #349/1   verifier_movsx/MOV32SX, S8:OK
+>   #349/2   verifier_movsx/MOV32SX, S8 @unpriv:OK
+>   #349/3   verifier_movsx/MOV32SX, S16:OK
+>   #349/4   verifier_movsx/MOV32SX, S16 @unpriv:OK
+>   #349/5   verifier_movsx/MOV64SX, S8:OK
+>   #349/6   verifier_movsx/MOV64SX, S8 @unpriv:OK
+>   #349/7   verifier_movsx/MOV64SX, S16:OK
+>   #349/8   verifier_movsx/MOV64SX, S16 @unpriv:OK
+>   #349/9   verifier_movsx/MOV64SX, S32:OK
+>   #349/10  verifier_movsx/MOV64SX, S32 @unpriv:OK
+>   #349/11  verifier_movsx/MOV32SX, S8, range_check:OK
+>   #349/12  verifier_movsx/MOV32SX, S8, range_check @unpriv:OK
+>   #349/13  verifier_movsx/MOV32SX, S16, range_check:OK
+>   #349/14  verifier_movsx/MOV32SX, S16, range_check @unpriv:OK
+>   #349/15  verifier_movsx/MOV32SX, S16, range_check 2:OK
+>   #349/16  verifier_movsx/MOV32SX, S16, range_check 2 @unpriv:OK
+>   #349/17  verifier_movsx/MOV64SX, S8, range_check:OK
+>   #349/18  verifier_movsx/MOV64SX, S8, range_check @unpriv:OK
+>   #349/19  verifier_movsx/MOV64SX, S16, range_check:OK
+>   #349/20  verifier_movsx/MOV64SX, S16, range_check @unpriv:OK
+>   #349/21  verifier_movsx/MOV64SX, S32, range_check:OK
+>   #349/22  verifier_movsx/MOV64SX, S32, range_check @unpriv:OK
+>   #349/23  verifier_movsx/MOV64SX, S16, R10 Sign Extension:OK
+>   #349/24  verifier_movsx/MOV64SX, S16, R10 Sign Extension @unpriv:OK
+>   #349     verifier_movsx:OK
+>   #361/1   verifier_sdiv/SDIV32, non-zero imm divisor, check 1:OK
+>   #361/2   verifier_sdiv/SDIV32, non-zero imm divisor, check 1 @unpriv:OK
+>   #361/3   verifier_sdiv/SDIV32, non-zero imm divisor, check 2:OK
+>   #361/4   verifier_sdiv/SDIV32, non-zero imm divisor, check 2 @unpriv:OK
+>   #361/5   verifier_sdiv/SDIV32, non-zero imm divisor, check 3:OK
+>   #361/6   verifier_sdiv/SDIV32, non-zero imm divisor, check 3 @unpriv:OK
+>   #361/7   verifier_sdiv/SDIV32, non-zero imm divisor, check 4:OK
+>   #361/8   verifier_sdiv/SDIV32, non-zero imm divisor, check 4 @unpriv:OK
+>   #361/9   verifier_sdiv/SDIV32, non-zero imm divisor, check 5:OK
+>   #361/10  verifier_sdiv/SDIV32, non-zero imm divisor, check 5 @unpriv:OK
+>   #361/11  verifier_sdiv/SDIV32, non-zero imm divisor, check 6:OK
+>   #361/12  verifier_sdiv/SDIV32, non-zero imm divisor, check 6 @unpriv:OK
+>   #361/13  verifier_sdiv/SDIV32, non-zero imm divisor, check 7:OK
+>   #361/14  verifier_sdiv/SDIV32, non-zero imm divisor, check 7 @unpriv:OK
+>   #361/15  verifier_sdiv/SDIV32, non-zero imm divisor, check 8:OK
+>   #361/16  verifier_sdiv/SDIV32, non-zero imm divisor, check 8 @unpriv:OK
+>   #361/17  verifier_sdiv/SDIV32, non-zero reg divisor, check 1:OK
+>   #361/18  verifier_sdiv/SDIV32, non-zero reg divisor, check 1 @unpriv:OK
+>   #361/19  verifier_sdiv/SDIV32, non-zero reg divisor, check 2:OK
+>   #361/20  verifier_sdiv/SDIV32, non-zero reg divisor, check 2 @unpriv:OK
+>   #361/21  verifier_sdiv/SDIV32, non-zero reg divisor, check 3:OK
+>   #361/22  verifier_sdiv/SDIV32, non-zero reg divisor, check 3 @unpriv:OK
+>   #361/23  verifier_sdiv/SDIV32, non-zero reg divisor, check 4:OK
+>   #361/24  verifier_sdiv/SDIV32, non-zero reg divisor, check 4 @unpriv:OK
+>   #361/25  verifier_sdiv/SDIV32, non-zero reg divisor, check 5:OK
+>   #361/26  verifier_sdiv/SDIV32, non-zero reg divisor, check 5 @unpriv:OK
+>   #361/27  verifier_sdiv/SDIV32, non-zero reg divisor, check 6:OK
+>   #361/28  verifier_sdiv/SDIV32, non-zero reg divisor, check 6 @unpriv:OK
+>   #361/29  verifier_sdiv/SDIV32, non-zero reg divisor, check 7:OK
+>   #361/30  verifier_sdiv/SDIV32, non-zero reg divisor, check 7 @unpriv:OK
+>   #361/31  verifier_sdiv/SDIV32, non-zero reg divisor, check 8:OK
+>   #361/32  verifier_sdiv/SDIV32, non-zero reg divisor, check 8 @unpriv:OK
+>   #361/33  verifier_sdiv/SDIV64, non-zero imm divisor, check 1:OK
+>   #361/34  verifier_sdiv/SDIV64, non-zero imm divisor, check 1 @unpriv:OK
+>   #361/35  verifier_sdiv/SDIV64, non-zero imm divisor, check 2:OK
+>   #361/36  verifier_sdiv/SDIV64, non-zero imm divisor, check 2 @unpriv:OK
+>   #361/37  verifier_sdiv/SDIV64, non-zero imm divisor, check 3:OK
+>   #361/38  verifier_sdiv/SDIV64, non-zero imm divisor, check 3 @unpriv:OK
+>   #361/39  verifier_sdiv/SDIV64, non-zero imm divisor, check 4:OK
+>   #361/40  verifier_sdiv/SDIV64, non-zero imm divisor, check 4 @unpriv:OK
+>   #361/41  verifier_sdiv/SDIV64, non-zero imm divisor, check 5:OK
+>   #361/42  verifier_sdiv/SDIV64, non-zero imm divisor, check 5 @unpriv:OK
+>   #361/43  verifier_sdiv/SDIV64, non-zero imm divisor, check 6:OK
+>   #361/44  verifier_sdiv/SDIV64, non-zero imm divisor, check 6 @unpriv:OK
+>   #361/45  verifier_sdiv/SDIV64, non-zero reg divisor, check 1:OK
+>   #361/46  verifier_sdiv/SDIV64, non-zero reg divisor, check 1 @unpriv:OK
+>   #361/47  verifier_sdiv/SDIV64, non-zero reg divisor, check 2:OK
+>   #361/48  verifier_sdiv/SDIV64, non-zero reg divisor, check 2 @unpriv:OK
+>   #361/49  verifier_sdiv/SDIV64, non-zero reg divisor, check 3:OK
+>   #361/50  verifier_sdiv/SDIV64, non-zero reg divisor, check 3 @unpriv:OK
+>   #361/51  verifier_sdiv/SDIV64, non-zero reg divisor, check 4:OK
+>   #361/52  verifier_sdiv/SDIV64, non-zero reg divisor, check 4 @unpriv:OK
+>   #361/53  verifier_sdiv/SDIV64, non-zero reg divisor, check 5:OK
+>   #361/54  verifier_sdiv/SDIV64, non-zero reg divisor, check 5 @unpriv:OK
+>   #361/55  verifier_sdiv/SDIV64, non-zero reg divisor, check 6:OK
+>   #361/56  verifier_sdiv/SDIV64, non-zero reg divisor, check 6 @unpriv:OK
+>   #361/57  verifier_sdiv/SMOD32, non-zero imm divisor, check 1:OK
+>   #361/58  verifier_sdiv/SMOD32, non-zero imm divisor, check 1 @unpriv:OK
+>   #361/59  verifier_sdiv/SMOD32, non-zero imm divisor, check 2:OK
+>   #361/60  verifier_sdiv/SMOD32, non-zero imm divisor, check 2 @unpriv:OK
+>   #361/61  verifier_sdiv/SMOD32, non-zero imm divisor, check 3:OK
+>   #361/62  verifier_sdiv/SMOD32, non-zero imm divisor, check 3 @unpriv:OK
+>   #361/63  verifier_sdiv/SMOD32, non-zero imm divisor, check 4:OK
+>   #361/64  verifier_sdiv/SMOD32, non-zero imm divisor, check 4 @unpriv:OK
+>   #361/65  verifier_sdiv/SMOD32, non-zero imm divisor, check 5:OK
+>   #361/66  verifier_sdiv/SMOD32, non-zero imm divisor, check 5 @unpriv:OK
+>   #361/67  verifier_sdiv/SMOD32, non-zero imm divisor, check 6:OK
+>   #361/68  verifier_sdiv/SMOD32, non-zero imm divisor, check 6 @unpriv:OK
+>   #361/69  verifier_sdiv/SMOD32, non-zero reg divisor, check 1:OK
+>   #361/70  verifier_sdiv/SMOD32, non-zero reg divisor, check 1 @unpriv:OK
+>   #361/71  verifier_sdiv/SMOD32, non-zero reg divisor, check 2:OK
+>   #361/72  verifier_sdiv/SMOD32, non-zero reg divisor, check 2 @unpriv:OK
+>   #361/73  verifier_sdiv/SMOD32, non-zero reg divisor, check 3:OK
+>   #361/74  verifier_sdiv/SMOD32, non-zero reg divisor, check 3 @unpriv:OK
+>   #361/75  verifier_sdiv/SMOD32, non-zero reg divisor, check 4:OK
+>   #361/76  verifier_sdiv/SMOD32, non-zero reg divisor, check 4 @unpriv:OK
+>   #361/77  verifier_sdiv/SMOD32, non-zero reg divisor, check 5:OK
+>   #361/78  verifier_sdiv/SMOD32, non-zero reg divisor, check 5 @unpriv:OK
+>   #361/79  verifier_sdiv/SMOD32, non-zero reg divisor, check 6:OK
+>   #361/80  verifier_sdiv/SMOD32, non-zero reg divisor, check 6 @unpriv:OK
+>   #361/81  verifier_sdiv/SMOD64, non-zero imm divisor, check 1:OK
+>   #361/82  verifier_sdiv/SMOD64, non-zero imm divisor, check 1 @unpriv:OK
+>   #361/83  verifier_sdiv/SMOD64, non-zero imm divisor, check 2:OK
+>   #361/84  verifier_sdiv/SMOD64, non-zero imm divisor, check 2 @unpriv:OK
+>   #361/85  verifier_sdiv/SMOD64, non-zero imm divisor, check 3:OK
+>   #361/86  verifier_sdiv/SMOD64, non-zero imm divisor, check 3 @unpriv:OK
+>   #361/87  verifier_sdiv/SMOD64, non-zero imm divisor, check 4:OK
+>   #361/88  verifier_sdiv/SMOD64, non-zero imm divisor, check 4 @unpriv:OK
+>   #361/89  verifier_sdiv/SMOD64, non-zero imm divisor, check 5:OK
+>   #361/90  verifier_sdiv/SMOD64, non-zero imm divisor, check 5 @unpriv:OK
+>   #361/91  verifier_sdiv/SMOD64, non-zero imm divisor, check 6:OK
+>   #361/92  verifier_sdiv/SMOD64, non-zero imm divisor, check 6 @unpriv:OK
+>   #361/93  verifier_sdiv/SMOD64, non-zero imm divisor, check 7:OK
+>   #361/94  verifier_sdiv/SMOD64, non-zero imm divisor, check 7 @unpriv:OK
+>   #361/95  verifier_sdiv/SMOD64, non-zero imm divisor, check 8:OK
+>   #361/96  verifier_sdiv/SMOD64, non-zero imm divisor, check 8 @unpriv:OK
+>   #361/97  verifier_sdiv/SMOD64, non-zero reg divisor, check 1:OK
+>   #361/98  verifier_sdiv/SMOD64, non-zero reg divisor, check 1 @unpriv:OK
+>   #361/99  verifier_sdiv/SMOD64, non-zero reg divisor, check 2:OK
+>   #361/100 verifier_sdiv/SMOD64, non-zero reg divisor, check 2 @unpriv:OK
+>   #361/101 verifier_sdiv/SMOD64, non-zero reg divisor, check 3:OK
+>   #361/102 verifier_sdiv/SMOD64, non-zero reg divisor, check 3 @unpriv:OK
+>   #361/103 verifier_sdiv/SMOD64, non-zero reg divisor, check 4:OK
+>   #361/104 verifier_sdiv/SMOD64, non-zero reg divisor, check 4 @unpriv:OK
+>   #361/105 verifier_sdiv/SMOD64, non-zero reg divisor, check 5:OK
+>   #361/106 verifier_sdiv/SMOD64, non-zero reg divisor, check 5 @unpriv:OK
+>   #361/107 verifier_sdiv/SMOD64, non-zero reg divisor, check 6:OK
+>   #361/108 verifier_sdiv/SMOD64, non-zero reg divisor, check 6 @unpriv:OK
+>   #361/109 verifier_sdiv/SMOD64, non-zero reg divisor, check 7:OK
+>   #361/110 verifier_sdiv/SMOD64, non-zero reg divisor, check 7 @unpriv:OK
+>   #361/111 verifier_sdiv/SMOD64, non-zero reg divisor, check 8:OK
+>   #361/112 verifier_sdiv/SMOD64, non-zero reg divisor, check 8 @unpriv:OK
+>   #361/113 verifier_sdiv/SDIV32, zero divisor:OK
+>   #361/114 verifier_sdiv/SDIV32, zero divisor @unpriv:OK
+>   #361/115 verifier_sdiv/SDIV64, zero divisor:OK
+>   #361/116 verifier_sdiv/SDIV64, zero divisor @unpriv:OK
+>   #361/117 verifier_sdiv/SMOD32, zero divisor:OK
+>   #361/118 verifier_sdiv/SMOD32, zero divisor @unpriv:OK
+>   #361/119 verifier_sdiv/SMOD64, zero divisor:OK
+>   #361/120 verifier_sdiv/SMOD64, zero divisor @unpriv:OK
+>   #361     verifier_sdiv:OK
+>   Summary: 5/163 PASSED, 0 SKIPPED, 0 FAILED
 >
-> Would probably do.
+>   # ./test_progs -t ldsx_insn
+>   test_map_val_and_probed_memory:PASS:test_ldsx_insn__open 0 nsec
+>   test_map_val_and_probed_memory:PASS:test_ldsx_insn__load 0 nsec
+>   libbpf: prog 'test_ptr_struct_arg': failed to attach: ERROR: strerror_r=
+(-524)=3D22
+>   libbpf: prog 'test_ptr_struct_arg': failed to auto-attach: -524
+>   test_map_val_and_probed_memory:FAIL:test_ldsx_insn__attach unexpected e=
+rror: -524 (errno 524)
+>   #116/1   ldsx_insn/map_val and probed_memory:FAIL
+>   #116/2   ldsx_insn/ctx_member_sign_ext:OK
+>   #116/3   ldsx_insn/ctx_member_narrow_sign_ext:OK
+>   #116     ldsx_insn:FAIL
+Thank you for your effort, but why is there a failure? Can it be solved?
+
+Huacai
+
 >
-> Alexei could confirm his original intent probably.
-
-
-Maybe/sys/kernel/tracing should work too? Not sure whether it is universally 
-available or not.
-
-
+>   All error logs:
+>   test_map_val_and_probed_memory:PASS:test_ldsx_insn__open 0 nsec
+>   test_map_val_and_probed_memory:PASS:test_ldsx_insn__load 0 nsec
+>   libbpf: prog 'test_ptr_struct_arg': failed to attach: ERROR: strerror_r=
+(-524)=3D22
+>   libbpf: prog 'test_ptr_struct_arg': failed to auto-attach: -524
+>   test_map_val_and_probed_memory:FAIL:test_ldsx_insn__attach unexpected e=
+rror: -524 (errno 524)
+>   #116/1   ldsx_insn/map_val and probed_memory:FAIL
+>   #116     ldsx_insn:FAIL
+>   Summary: 0/2 PASSED, 0 SKIPPED, 1 FAILED
 >
->>> Test:
->>>
->>> Originally:
->>>
->>>       $ vmtest -k $KERNEL_REPO/arch/x86_64/boot/bzImage "./test_progs -vv -a test_bpffs"
->>>       => bzImage
->>>       ===> Booting
->>>       ===> Setting up VM
->>>       ===> Running command
->>>       [    2.138818] bpf_testmod: loading out-of-tree module taints kernel.
->>>       [    2.140913] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
->>>       bpf_testmod.ko is already unloaded.
->>>       Loading bpf_testmod.ko...
->>>       Successfully loaded bpf_testmod.ko.
->>>       test_test_bpffs:PASS:clone 0 nsec
->>>       fn:PASS:unshare 0 nsec
->>>       fn:PASS:mount / 0 nsec
->>>       fn:FAIL:umount /sys/kernel/debug unexpected error: -1 (errno 16)
->>>       bpf_testmod.ko is already unloaded.
->>>       Loading bpf_testmod.ko...
->>>       Successfully loaded bpf_testmod.ko.
->>>       test_test_bpffs:PASS:clone 0 nsec
->>>       test_test_bpffs:PASS:waitpid 0 nsec
->>>       test_test_bpffs:FAIL:bpffs test  failed 255#282     test_bpffs:FAIL
->>>       Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
->>>       Successfully unloaded bpf_testmod.ko.
->>>       Command failed with exit code: 1
->>>
->>> After this change:
->>>
->>>       $ vmtest -k $KERNEL_REPO/arch/x86_64/boot/bzImage "./test_progs -vv -a test_bpffs"
->>>       => bzImage
->>>       ===> Booting
->>>       ===> Setting up VM
->>>       ===> Running command
->>>       [    2.035210] bpf_testmod: loading out-of-tree module taints kernel.
->>>       [    2.036510] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
->>>       bpf_testmod.ko is already unloaded.
->>>       Loading bpf_testmod.ko...
->>>       Successfully loaded bpf_testmod.ko.
->>>       test_test_bpffs:PASS:clone 0 nsec
->>>       fn:PASS:unshare 0 nsec
->>>       fn:PASS:mount / 0 nsec
->>>       fn:PASS:accessing /etc/mtab 0 nsec
->>>       fn:PASS:umount /sys/kernel/debug/tracing 0 nsec
->>>       fn:PASS:umount /sys/kernel/debug 0 nsec
->>>       fn:PASS:mount tmpfs 0 nsec
->>>       fn:PASS:mkdir /sys/kernel/debug/fs1 0 nsec
->>>       fn:PASS:mkdir /sys/kernel/debug/fs2 0 nsec
->>>       fn:PASS:mount bpffs /sys/kernel/debug/fs1 0 nsec
->>>       fn:PASS:mount bpffs /sys/kernel/debug/fs2 0 nsec
->>>       fn:PASS:reading /sys/kernel/debug/fs1/maps.debug 0 nsec
->>>       fn:PASS:reading /sys/kernel/debug/fs2/progs.debug 0 nsec
->>>       fn:PASS:creating /sys/kernel/debug/fs1/a 0 nsec
->>>       fn:PASS:creating /sys/kernel/debug/fs1/a/1 0 nsec
->>>       fn:PASS:creating /sys/kernel/debug/fs1/b 0 nsec
->>>       fn:PASS:create_map(ARRAY) 0 nsec
->>>       fn:PASS:pin map 0 nsec
->>>       fn:PASS:stat(/sys/kernel/debug/fs1/a) 0 nsec
->>>       fn:PASS:renameat2(/fs1/a, /fs1/b, RENAME_EXCHANGE) 0 nsec
->>>       fn:PASS:stat(/sys/kernel/debug/fs1/b) 0 nsec
->>>       fn:PASS:b should have a's inode 0 nsec
->>>       fn:PASS:access(/sys/kernel/debug/fs1/b/1) 0 nsec
->>>       fn:PASS:stat(/sys/kernel/debug/fs1/map) 0 nsec
->>>       fn:PASS:renameat2(/fs1/c, /fs1/b, RENAME_EXCHANGE) 0 nsec
->>>       fn:PASS:stat(/sys/kernel/debug/fs1/b) 0 nsec
->>>       fn:PASS:b should have c's inode 0 nsec
->>>       fn:PASS:access(/sys/kernel/debug/fs1/c/1) 0 nsec
->>>       fn:PASS:renameat2(RENAME_NOREPLACE) 0 nsec
->>>       fn:PASS:access(/sys/kernel/debug/fs1/b) 0 nsec
->>>       bpf_testmod.ko is already unloaded.
->>>       Loading bpf_testmod.ko...
->>>       Successfully loaded bpf_testmod.ko.
->>>       test_test_bpffs:PASS:clone 0 nsec
->>>       test_test_bpffs:PASS:waitpid 0 nsec
->>>       test_test_bpffs:PASS:bpffs test  0 nsec
->>>       #282     test_bpffs:OK
->>>       Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
->>>       Successfully unloaded bpf_testmod.ko.
->>>
->>> [0] https://github.com/danobi/vmtest
->>>
->>> Signed-off-by: Manu Bretelle <chantr4@gmail.com>
->>> ---
->>>    .../selftests/bpf/prog_tests/test_bpffs.c     | 28 +++++++++++++++++++
->>>    1 file changed, 28 insertions(+)
->>>
->>> diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
->>> index 214d9f4a94a5..001bf694c269 100644
->>> --- a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
->>> +++ b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
->>> @@ -3,12 +3,14 @@
->>>    #define _GNU_SOURCE
->>>    #include <stdio.h>
->>>    #include <sched.h>
->>> +#include <mntent.h>
->>>    #include <sys/mount.h>
->>>    #include <sys/stat.h>
->>>    #include <sys/types.h>
->>>    #include <test_progs.h>
->>>    #define TDIR "/sys/kernel/debug"
->>> +#define MTAB "/etc/mtab"
->>>    static int read_iter(char *file)
->>>    {
->>> @@ -32,6 +34,8 @@ static int read_iter(char *file)
->>>    static int fn(void)
->>>    {
->>> +	/* A buffer to store logging messages */
->>> +	char buf[1024];
->>>    	struct stat a, b, c;
->>>    	int err, map;
->>> @@ -43,6 +47,30 @@ static int fn(void)
->>>    	if (!ASSERT_OK(err, "mount /"))
->>>    		goto out;
->>> +	/* TDIR may have mounts below. unount them first */
->>> +	FILE *mtab = setmntent(MTAB, "r");
->>> +
->>> +	if (!ASSERT_TRUE(mtab != NULL, "accessing " MTAB)) {
->>> +		err = errno;
->>> +		goto out;
->>> +	}
->>> +
->>> +	struct mntent *mnt = NULL;
->>> +
->>> +	while ((mnt = getmntent(mtab)) != NULL) {
->>> +		if (strlen(mnt->mnt_dir) > strlen(TDIR) &&
->>> +			strncmp(TDIR, mnt->mnt_dir, strlen(TDIR)) == 0) {
->>> +			snprintf(buf, sizeof(buf) - 1, "umount %s", mnt->mnt_dir);
->>> +			err = umount(mnt->mnt_dir);
->>> +			if (!ASSERT_OK(err, buf)) {
->>> +				endmntent(mtab);
->>> +				goto out;
->>> +			}
->>> +		}
->>> +	}
->>> +	// Ignore any error here
->>> +	endmntent(mtab);
->>> +
->>>    	err = umount(TDIR);
->>>    	if (!ASSERT_OK(err, "umount " TDIR))
->>>    		goto out;
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/progs/test_ldsx_insn.c | 3 ++-
+>  tools/testing/selftests/bpf/progs/verifier_bswap.c | 3 ++-
+>  tools/testing/selftests/bpf/progs/verifier_gotol.c | 3 ++-
+>  tools/testing/selftests/bpf/progs/verifier_ldsx.c  | 3 ++-
+>  tools/testing/selftests/bpf/progs/verifier_movsx.c | 3 ++-
+>  tools/testing/selftests/bpf/progs/verifier_sdiv.c  | 3 ++-
+>  6 files changed, 12 insertions(+), 6 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/test_ldsx_insn.c b/tools/t=
+esting/selftests/bpf/progs/test_ldsx_insn.c
+> index 3ddcb3777912..2a2a942737d7 100644
+> --- a/tools/testing/selftests/bpf/progs/test_ldsx_insn.c
+> +++ b/tools/testing/selftests/bpf/progs/test_ldsx_insn.c
+> @@ -7,7 +7,8 @@
+>
+>  #if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
+>       (defined(__TARGET_ARCH_riscv) && __riscv_xlen =3D=3D 64) ||       \
+> -     defined(__TARGET_ARCH_s390)) && __clang_major__ >=3D 18
+> +     defined(__TARGET_ARCH_s390) || defined(__TARGET_ARCH_loongarch)) &&=
+ \
+> +     __clang_major__ >=3D 18
+>  const volatile int skip =3D 0;
+>  #else
+>  const volatile int skip =3D 1;
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_bswap.c b/tools/t=
+esting/selftests/bpf/progs/verifier_bswap.c
+> index 107525fb4a6a..e61755656e8d 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_bswap.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_bswap.c
+> @@ -6,7 +6,8 @@
+>
+>  #if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
+>         (defined(__TARGET_ARCH_riscv) && __riscv_xlen =3D=3D 64) || \
+> -        defined(__TARGET_ARCH_arm) || defined(__TARGET_ARCH_s390)) && \
+> +       defined(__TARGET_ARCH_arm) || defined(__TARGET_ARCH_s390) || \
+> +       defined(__TARGET_ARCH_loongarch)) && \
+>         __clang_major__ >=3D 18
+>
+>  SEC("socket")
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_gotol.c b/tools/t=
+esting/selftests/bpf/progs/verifier_gotol.c
+> index 9f202eda952f..d1edbcff9a18 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_gotol.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_gotol.c
+> @@ -6,7 +6,8 @@
+>
+>  #if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
+>         (defined(__TARGET_ARCH_riscv) && __riscv_xlen =3D=3D 64) || \
+> -        defined(__TARGET_ARCH_arm) || defined(__TARGET_ARCH_s390)) && \
+> +       defined(__TARGET_ARCH_arm) || defined(__TARGET_ARCH_s390) || \
+> +       defined(__TARGET_ARCH_loongarch)) && \
+>         __clang_major__ >=3D 18
+>
+>  SEC("socket")
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_ldsx.c b/tools/te=
+sting/selftests/bpf/progs/verifier_ldsx.c
+> index 375525329637..d4427d8e1217 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_ldsx.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_ldsx.c
+> @@ -6,7 +6,8 @@
+>
+>  #if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
+>         (defined(__TARGET_ARCH_riscv) && __riscv_xlen =3D=3D 64) || \
+> -        defined(__TARGET_ARCH_arm) || defined(__TARGET_ARCH_s390)) && \
+> +       defined(__TARGET_ARCH_arm) || defined(__TARGET_ARCH_s390) || \
+> +       defined(__TARGET_ARCH_loongarch)) && \
+>         __clang_major__ >=3D 18
+>
+>  SEC("socket")
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_movsx.c b/tools/t=
+esting/selftests/bpf/progs/verifier_movsx.c
+> index b2a04d1179d0..cbb9d6714f53 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_movsx.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_movsx.c
+> @@ -6,7 +6,8 @@
+>
+>  #if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
+>         (defined(__TARGET_ARCH_riscv) && __riscv_xlen =3D=3D 64) || \
+> -        defined(__TARGET_ARCH_arm) || defined(__TARGET_ARCH_s390)) && \
+> +       defined(__TARGET_ARCH_arm) || defined(__TARGET_ARCH_s390) || \
+> +       defined(__TARGET_ARCH_loongarch)) && \
+>         __clang_major__ >=3D 18
+>
+>  SEC("socket")
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_sdiv.c b/tools/te=
+sting/selftests/bpf/progs/verifier_sdiv.c
+> index 8fc5174808b2..2a2271cf0294 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_sdiv.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_sdiv.c
+> @@ -6,7 +6,8 @@
+>
+>  #if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
+>         (defined(__TARGET_ARCH_riscv) && __riscv_xlen =3D=3D 64) || \
+> -        defined(__TARGET_ARCH_arm) || defined(__TARGET_ARCH_s390)) && \
+> +       defined(__TARGET_ARCH_arm) || defined(__TARGET_ARCH_s390) || \
+> +       defined(__TARGET_ARCH_loongarch)) && \
+>         __clang_major__ >=3D 18
+>
+>  SEC("socket")
+> --
+> 2.34.1
+>
 
