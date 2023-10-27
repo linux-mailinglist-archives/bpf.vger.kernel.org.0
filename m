@@ -1,107 +1,91 @@
-Return-Path: <bpf+bounces-13475-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13474-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 459AC7DA115
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 20:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 795097DA0FD
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 20:48:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF80628261E
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 18:55:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C12228259E
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 18:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D033CD01;
-	Fri, 27 Oct 2023 18:55:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D7D83CCE0;
+	Fri, 27 Oct 2023 18:47:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="IPAkS5dJ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="a+s0bHh3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZVaYQ2iq"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B39E374C5;
-	Fri, 27 Oct 2023 18:55:52 +0000 (UTC)
-X-Greylist: delayed 538 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 27 Oct 2023 11:55:49 PDT
-Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42FAAB0;
-	Fri, 27 Oct 2023 11:55:49 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 75F77580897;
-	Fri, 27 Oct 2023 14:46:50 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 27 Oct 2023 14:46:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to; s=fm2; t=1698432410; x=
-	1698439610; bh=4Ah8oNGCj3UUd4tZonhdOFYd28AC8mVLruGLmu1uJPo=; b=I
-	PAkS5dJshTzDmnYREnLGTIhjhlFecijpEqy/PDiLikg0oCGpEgJh5de3dOX7wkUa
-	hyfUxIReX4ma5e5Oygouqo4Pi03/gfedrh2WAcuNkOPIW5JNchmJ/KCcQEKZIsBs
-	igQ7c3r++jeCNMMUGMxIhn5kPo8sVL3nSMnxHB+mcAxIqfXBi1h7gfQk9eUONCiJ
-	pKTlRbXXK2IA1F0uN4tRwho2zWlSmkkj4J8mTLZi7eSrAhv9ge+g4vtOvce47psP
-	5TGwghjcrPtgGhcgXKs6OwRGFO2sr+u32evgEa0yLRTo86HcIJw3EK4LHicEMh/V
-	n0FhUC9+QK9QWALZ46gfQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1698432410; x=
-	1698439610; bh=4Ah8oNGCj3UUd4tZonhdOFYd28AC8mVLruGLmu1uJPo=; b=a
-	+s0bHh37UBfTbKEIUYy2DpBSmxlSfdfS3Gc1uIsRC9gq23yXCvX3L7Zb/rKlnp8O
-	ssQkISNFafXFz9cdQr0nW6paOdVKvDNZZn/155wGTqdbHPE7NWa95PgXEYTR/fd8
-	he1o1CtxfK8svO7Z/fWM2O2EBRzeMwx0urPHBmttxK2fFSMuAxu6C0kB/H8w3TwS
-	4Rf67a+yesMz7Yy9CeV/wuNXY0pHVtHQ8T8/V6mL8g2emMjYooQXNszA6FalJX5X
-	zccDoTUhveN+4niVrZcYnTxVtSV7W57ITwtSSl6UAljs7ysnGK3Ezu93YaNMln21
-	A2ZFOJRRk4w8TOgGqIgRg==
-X-ME-Sender: <xms:mgU8ZWh-T_UB48zprN2VicCqDSuW13KZX9BGW0NUzBYDopTY549qzg>
-    <xme:mgU8ZXBeQN7i-OXOzcf9fAqEtrxabv8G-yQQl9mOetLlwCxFs0I0UjXgXKJJu1DZM
-    FVk4FaJsTtm_93Yvg>
-X-ME-Received: <xmr:mgU8ZeEt4Zz1Q3-uw_9yqMa5GWXpMBEmVnZFLXcl2IrYf35OsflaEUsUSedVqKSCFeFpyAE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleeggddufedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
-    evufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceo
-    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgfegjefhudeike
-    dvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:mgU8ZfQaaMlZOurJM5B2tfTHP2Lu0rHpBDLAKXQXlLZNYrw73Dht2g>
-    <xmx:mgU8ZTx2vvZndN9UGOhdREa2Iq7hv43Q8DGcbvo0B1s2T-cPNN5kAA>
-    <xmx:mgU8Zd7biLVIpHekm13ObRpvGz8wjteFPwDD7-IyKil_oNUKLmOh8w>
-    <xmx:mgU8ZRq7VqWDZvY9zoT78pBLb3G2ESoDdlYXUz0KMbXmXbytZiuteg>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 27 Oct 2023 14:46:49 -0400 (EDT)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: hawk@kernel.org,
-	ast@kernel.org,
-	shuah@kernel.org,
-	daniel@iogearbox.net,
-	kuba@kernel.org,
-	davem@davemloft.net,
-	andrii@kernel.org,
-	john.fastabend@gmail.com,
-	steffen.klassert@secunet.com,
-	antony.antony@secunet.com
-Cc: mykolal@fb.com,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3CC374C5;
+	Fri, 27 Oct 2023 18:47:53 +0000 (UTC)
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E60B10C3;
+	Fri, 27 Oct 2023 11:47:36 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-66fbcaf03c6so5839106d6.1;
+        Fri, 27 Oct 2023 11:47:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698432455; x=1699037255; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s/a0tTu9/JPEdXuV8EJT0RD0nNZ+OkcyleZ2EfTC0bM=;
+        b=ZVaYQ2iqIz9F5TFk7CLpbyBMbcXcwvexEV7SoDSi72/eGV4GwTaRcSyJANW1O+k8VW
+         k6ESSNi9IFwfo3c7OWITAlbfsNjwaVUgANzXBvmYNUsOyzpZe4tLFB9rx/uOvDJN7sOq
+         zbdAT3BlSo3zWO0VAth8FV4YaB1DDi3QlX4cP1vnLQleLsuMjaG9QcVA8QR7Ljexn5nb
+         URA1tRjZbz3zJ0Ho4eYC0xSPTWwGjydtrMst3eDR39pfVAZxu1wS6afI3/qEmHxFEayX
+         ZIrJo5Lf9aG4IDp1VTWc9lNkFZEbUGnLB108DjRQQ5UBLYJYH5aQklHexKrFEbAXpXPy
+         uuuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698432455; x=1699037255;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s/a0tTu9/JPEdXuV8EJT0RD0nNZ+OkcyleZ2EfTC0bM=;
+        b=oALmuctOrMLAKK3sbCrxeWHy7T7K7Fjyx+wIkGLDVTNEzLxPpGV74GeZM3Cfun0quA
+         uhd8NXfejxRs355hf3yul9uE6rLIziSlUkQTxpeFpLXHaifB8e2o1Hg4fyHb1Bt0WYZw
+         R9+TfbXHv9OfC/MtCkcAiUaV/idezdQ3DkaoC3rwQJ/AeNCmaiT8/DaqJD5u3T8uKO5S
+         zo1SOS3N8GomtrRyOYL3R21OD6qwRI6Ln/o+k9UwnZCPnwngpe4/1GD8nmWN/+0y1u0u
+         wG5k2r6bFAZ+GJATtygB9+IDlGLvX+0tkBY1fcJY12/TWEQc9TsY5rxlDZ+YWflEAQi5
+         sJ3A==
+X-Gm-Message-State: AOJu0YzPdyVyqlCGahuX9w6ztODtEaVCFIVSeHtbo6x3ibmlsKXRDQGG
+	EMdNdqZbCc3MCwiAgwkXKQ==
+X-Google-Smtp-Source: AGHT+IH4eVOUIF76haowlEtb/fcEKTnFPVsn6mTG+2WQozJbnW3yB6tp9L86bBH9YWLUnz06tElP5w==
+X-Received: by 2002:a05:6214:21aa:b0:66d:12c7:bf85 with SMTP id t10-20020a05621421aa00b0066d12c7bf85mr4456312qvc.31.1698432455054;
+        Fri, 27 Oct 2023 11:47:35 -0700 (PDT)
+Received: from n191-129-154.byted.org ([130.44.215.123])
+        by smtp.gmail.com with ESMTPSA id o1-20020a05620a110100b0076d25b11b62sm773944qkk.38.2023.10.27.11.47.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Oct 2023 11:47:34 -0700 (PDT)
+From: Peilin Ye <yepeilin.cs@gmail.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Peilin Ye <peilin.ye@bytedance.com>,
 	netdev@vger.kernel.org,
-	devel@linux-ipsec.org
-Subject: [RFC bpf-next 6/6] bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
-Date: Fri, 27 Oct 2023 12:46:22 -0600
-Message-ID: <62f770a8956773a3c21dccb6037aee305dc7e4c6.1698431765.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1698431765.git.dxu@dxuuu.xyz>
-References: <cover.1698431765.git.dxu@dxuuu.xyz>
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Cong Wang <cong.wang@bytedance.com>,
+	Jiang Wang <jiang.wang@bytedance.com>,
+	Youlun Zhang <zhangyoulun@bytedance.com>,
+	Peilin Ye <yepeilin.cs@gmail.com>
+Subject: [PATCH net] veth: Fix RX stats for bpf_redirect_peer() traffic
+Date: Fri, 27 Oct 2023 18:46:57 +0000
+Message-Id: <20231027184657.83978-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -110,135 +94,140 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit extends test_tunnel selftest to test the new XDP xfrm state
-lookup kfunc.
+From: Peilin Ye <peilin.ye@bytedance.com>
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+Traffic redirected by bpf_redirect_peer() (used by recent CNIs like
+Cilium) is not accounted for in the RX stats of veth devices, confusing
+user space metrics collectors such as cAdvisor [1], as reported by
+Youlun.
+
+Currently veth devices use the @lstats per-CPU counters, which only
+cover TX traffic.  veth_get_stats64() actually collects RX stats of a
+veth device from its peer's TX (@lstats) counters, based on the
+assumption that a veth device can _only_ receive packets from its peer,
+which is no longer true.
+
+Instead, use @tstats to maintain both per-CPU RX and TX traffic counters
+for each veth device, and count bpf_redirect_peer() traffic in
+skb_do_redirect().
+
+veth_stats_rx() might need a name change (perhaps to "veth_stats_xdp()")
+for less confusion, but let's leave it to a separate patch to keep this
+fix minimal.
+
+[1] Specifically, the "container_network_receive_{byte,packet}s_total"
+    counters are affected.
+
+Reported-by: Youlun Zhang <zhangyoulun@bytedance.com>
+Fixes: 9aa1206e8f48 ("bpf: Add redirect_peer helper")
+Cc: Jiang Wang <jiang.wang@bytedance.com>
+Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
 ---
- .../selftests/bpf/progs/test_tunnel_kern.c    | 46 +++++++++++++++++++
- tools/testing/selftests/bpf/test_tunnel.sh    | 12 +++--
- 2 files changed, 54 insertions(+), 4 deletions(-)
+ drivers/net/veth.c | 36 ++++++++++++++----------------------
+ net/core/filter.c  |  1 +
+ 2 files changed, 15 insertions(+), 22 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index ec7e04e012ae..f5f6a18ac0f1 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -35,6 +35,9 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
- 			  struct bpf_fou_encap *encap, int type) __ksym;
- int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
- 			  struct bpf_fou_encap *encap) __ksym;
-+struct xfrm_state *
-+bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts,
-+		       u32 opts__sz) __ksym;
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
-@@ -948,4 +951,47 @@ int xfrm_get_state(struct __sk_buff *skb)
- 	return TC_ACT_OK;
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 9980517ed8b0..df7a7c21a46d 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -373,7 +373,7 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	skb_tx_timestamp(skb);
+ 	if (likely(veth_forward_skb(rcv, skb, rq, use_napi) == NET_RX_SUCCESS)) {
+ 		if (!use_napi)
+-			dev_lstats_add(dev, length);
++			dev_sw_netstats_tx_add(dev, 1, length);
+ 		else
+ 			__veth_xdp_flush(rq);
+ 	} else {
+@@ -387,14 +387,6 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	return ret;
  }
  
-+SEC("xdp")
-+int xfrm_get_state_xdp(struct xdp_md *xdp)
-+{
-+	struct bpf_xfrm_state_opts opts = {};
-+	struct ip_esp_hdr *esph;
-+	struct bpf_dynptr ptr;
-+	struct xfrm_state *x;
-+	u8 esph_buf[8] = {};
-+	u8 iph_buf[20] = {};
-+	struct iphdr *iph;
-+	u32 off;
-+
-+	if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
-+		goto out;
-+
-+	off = sizeof(struct ethhdr);
-+	iph = bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf));
-+	if (!iph || iph->protocol != IPPROTO_ESP)
-+		goto out;
-+
-+	off += sizeof(struct iphdr);
-+	esph = bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_buf));
-+	if (!esph)
-+		goto out;
-+
-+	opts.netns_id = BPF_F_CURRENT_NETNS,
-+	opts.daddr.a4 = iph->daddr;
-+	opts.spi = esph->spi;
-+	opts.proto = IPPROTO_ESP;
-+	opts.family = AF_INET;
-+
-+	x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-+	if (!x || opts.error)
-+		goto out;
-+
-+	if (!x->replay_esn)
-+		goto out;
-+
-+	bpf_printk("replay-window %d\n", x->replay_esn->replay_window);
-+out:
-+	return XDP_PASS;
-+}
-+
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_tunnel.sh b/tools/testing/selftests/bpf/test_tunnel.sh
-index dd3c79129e87..17d263681c71 100755
---- a/tools/testing/selftests/bpf/test_tunnel.sh
-+++ b/tools/testing/selftests/bpf/test_tunnel.sh
-@@ -528,7 +528,7 @@ setup_xfrm_tunnel()
- 	# at_ns0 -> root
- 	ip netns exec at_ns0 \
- 		ip xfrm state add src 172.16.1.100 dst 172.16.1.200 proto esp \
--			spi $spi_in_to_out reqid 1 mode tunnel \
-+			spi $spi_in_to_out reqid 1 mode tunnel replay-window 42 \
- 			auth-trunc 'hmac(sha1)' $auth 96 enc 'cbc(aes)' $enc
- 	ip netns exec at_ns0 \
- 		ip xfrm policy add src 10.1.1.100/32 dst 10.1.1.200/32 dir out \
-@@ -537,7 +537,7 @@ setup_xfrm_tunnel()
- 	# root -> at_ns0
- 	ip netns exec at_ns0 \
- 		ip xfrm state add src 172.16.1.200 dst 172.16.1.100 proto esp \
--			spi $spi_out_to_in reqid 2 mode tunnel \
-+			spi $spi_out_to_in reqid 2 mode tunnel replay-window 42 \
- 			auth-trunc 'hmac(sha1)' $auth 96 enc 'cbc(aes)' $enc
- 	ip netns exec at_ns0 \
- 		ip xfrm policy add src 10.1.1.200/32 dst 10.1.1.100/32 dir in \
-@@ -553,14 +553,14 @@ setup_xfrm_tunnel()
- 	# root namespace
- 	# at_ns0 -> root
- 	ip xfrm state add src 172.16.1.100 dst 172.16.1.200 proto esp \
--		spi $spi_in_to_out reqid 1 mode tunnel \
-+		spi $spi_in_to_out reqid 1 mode tunnel replay-window 42 \
- 		auth-trunc 'hmac(sha1)' $auth 96  enc 'cbc(aes)' $enc
- 	ip xfrm policy add src 10.1.1.100/32 dst 10.1.1.200/32 dir in \
- 		tmpl src 172.16.1.100 dst 172.16.1.200 proto esp reqid 1 \
- 		mode tunnel
- 	# root -> at_ns0
- 	ip xfrm state add src 172.16.1.200 dst 172.16.1.100 proto esp \
--		spi $spi_out_to_in reqid 2 mode tunnel \
-+		spi $spi_out_to_in reqid 2 mode tunnel replay-window 42 \
- 		auth-trunc 'hmac(sha1)' $auth 96  enc 'cbc(aes)' $enc
- 	ip xfrm policy add src 10.1.1.200/32 dst 10.1.1.100/32 dir out \
- 		tmpl src 172.16.1.200 dst 172.16.1.100 proto esp reqid 2 \
-@@ -585,6 +585,8 @@ test_xfrm_tunnel()
- 	tc qdisc add dev veth1 clsact
- 	tc filter add dev veth1 proto ip ingress bpf da object-pinned \
- 		${BPF_PIN_TUNNEL_DIR}/xfrm_get_state
-+	ip link set dev veth1 xdpdrv pinned \
-+		${BPF_PIN_TUNNEL_DIR}/xfrm_get_state_xdp
- 	ip netns exec at_ns0 ping $PING_ARG 10.1.1.200
- 	sleep 1
- 	grep "reqid 1" ${TRACE}
-@@ -593,6 +595,8 @@ test_xfrm_tunnel()
- 	check_err $?
- 	grep "remote ip 0xac100164" ${TRACE}
- 	check_err $?
-+	grep "replay-window 42" ${TRACE}
-+	check_err $?
- 	cleanup
+-static u64 veth_stats_tx(struct net_device *dev, u64 *packets, u64 *bytes)
+-{
+-	struct veth_priv *priv = netdev_priv(dev);
+-
+-	dev_lstats_read(dev, packets, bytes);
+-	return atomic64_read(&priv->dropped);
+-}
+-
+ static void veth_stats_rx(struct veth_stats *result, struct net_device *dev)
+ {
+ 	struct veth_priv *priv = netdev_priv(dev);
+@@ -432,24 +424,24 @@ static void veth_get_stats64(struct net_device *dev,
+ 	struct veth_priv *priv = netdev_priv(dev);
+ 	struct net_device *peer;
+ 	struct veth_stats rx;
+-	u64 packets, bytes;
  
- 	if [ $ret -ne 0 ]; then
+-	tot->tx_dropped = veth_stats_tx(dev, &packets, &bytes);
+-	tot->tx_bytes = bytes;
+-	tot->tx_packets = packets;
++	tot->tx_dropped = atomic64_read(&priv->dropped);
++	dev_fetch_sw_netstats(tot, dev->tstats);
+ 
+ 	veth_stats_rx(&rx, dev);
+ 	tot->tx_dropped += rx.xdp_tx_err;
+ 	tot->rx_dropped = rx.rx_drops + rx.peer_tq_xdp_xmit_err;
+-	tot->rx_bytes = rx.xdp_bytes;
+-	tot->rx_packets = rx.xdp_packets;
++	tot->rx_bytes += rx.xdp_bytes;
++	tot->rx_packets += rx.xdp_packets;
+ 
+ 	rcu_read_lock();
+ 	peer = rcu_dereference(priv->peer);
+ 	if (peer) {
+-		veth_stats_tx(peer, &packets, &bytes);
+-		tot->rx_bytes += bytes;
+-		tot->rx_packets += packets;
++		struct rtnl_link_stats64 tot_peer = {};
++
++		dev_fetch_sw_netstats(&tot_peer, peer->tstats);
++		tot->rx_bytes += tot_peer.tx_bytes;
++		tot->rx_packets += tot_peer.tx_packets;
+ 
+ 		veth_stats_rx(&rx, peer);
+ 		tot->tx_dropped += rx.peer_tq_xdp_xmit_err;
+@@ -1508,13 +1500,13 @@ static int veth_dev_init(struct net_device *dev)
+ {
+ 	int err;
+ 
+-	dev->lstats = netdev_alloc_pcpu_stats(struct pcpu_lstats);
+-	if (!dev->lstats)
++	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
++	if (!dev->tstats)
+ 		return -ENOMEM;
+ 
+ 	err = veth_alloc_queues(dev);
+ 	if (err) {
+-		free_percpu(dev->lstats);
++		free_percpu(dev->tstats);
+ 		return err;
+ 	}
+ 
+@@ -1524,7 +1516,7 @@ static int veth_dev_init(struct net_device *dev)
+ static void veth_dev_free(struct net_device *dev)
+ {
+ 	veth_free_queues(dev);
+-	free_percpu(dev->lstats);
++	free_percpu(dev->tstats);
+ }
+ 
+ #ifdef CONFIG_NET_POLL_CONTROLLER
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 21d75108c2e9..7aca28b7d0fd 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -2492,6 +2492,7 @@ int skb_do_redirect(struct sk_buff *skb)
+ 			     net_eq(net, dev_net(dev))))
+ 			goto out_drop;
+ 		skb->dev = dev;
++		dev_sw_netstats_rx_add(dev, skb->len);
+ 		return -EAGAIN;
+ 	}
+ 	return flags & BPF_F_NEIGH ?
 -- 
-2.42.0
+2.20.1
 
 
