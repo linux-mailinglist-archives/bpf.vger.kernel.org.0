@@ -1,224 +1,208 @@
-Return-Path: <bpf+bounces-13411-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13412-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49F8C7D930C
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 11:06:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C66BD7D931B
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 11:09:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E57D6282068
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 09:06:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8165728237C
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 09:09:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC4F3156E0;
-	Fri, 27 Oct 2023 09:06:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E743156EB;
+	Fri, 27 Oct 2023 09:09:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=epfl.ch header.i=@epfl.ch header.b="fJZvNwSm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c9nQphYO"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95B4E156C8
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 09:06:45 +0000 (UTC)
-Received: from smtp5.epfl.ch (smtp5.epfl.ch [IPv6:2001:620:618:1e0:1:80b2:e034:1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2361793
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 02:06:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=epfl.ch;
-      s=epfl; t=1698397595;
-      h=From:To:CC:Subject:Date:Message-ID:Content-Type:Content-Transfer-Encoding:MIME-Version;
-      bh=F2K3pWIfH43bq8/JbURV5Rgivts8nuQvamDePMRWdIc=;
-      b=fJZvNwSmQjv4VMLLP27K1rVg8kQotriJ4SgvUPlcJ2lwDIsliI6zl1Bfvk3Wmh8Oe
-        PsxFjjr6EH9Cljn/ihdGlH8H8sErx2o2zrK170vXl1Upi65l8ssyaVtyuaTCk+eZh
-        0guKaHo+n3sAavRo1Dnv9r+kYSYl2o8oEpzuTZjfc=
-Received: (qmail 27896 invoked by uid 107); 27 Oct 2023 09:06:35 -0000
-Received: from ax-snat-224-158.epfl.ch (HELO ewa01.intranet.epfl.ch) (192.168.224.158) (TLS, AES256-GCM-SHA384 cipher)
-  by mail.epfl.ch (AngelmatoPhylax SMTP proxy) with ESMTPS; Fri, 27 Oct 2023 11:06:35 +0200
-X-EPFL-Auth: rEMj2ymelelJDBr08IL1bcN2s9meCtg2ov3OCykhANRg3zYyCNQ=
-Received: from ewa07.intranet.epfl.ch (128.178.224.178) by
- ewa01.intranet.epfl.ch (128.178.224.158) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 27 Oct 2023 11:06:34 +0200
-Received: from ewa07.intranet.epfl.ch ([fe80::f470:9b62:7382:7f3a]) by
- ewa07.intranet.epfl.ch ([fe80::f470:9b62:7382:7f3a%4]) with mapi id
- 15.01.2507.031; Fri, 27 Oct 2023 11:06:34 +0200
-From: Tao Lyu <tao.lyu@epfl.ch>
-To: "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>
-CC: "ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net"
-	<daniel@iogearbox.net>, "john.fastabend@gmail.com"
-	<john.fastabend@gmail.com>, "andrii@kernel.org" <andrii@kernel.org>,
-	"martin.lau@linux.dev" <martin.lau@linux.dev>, "song@kernel.org"
-	<song@kernel.org>, "yonghong.song@linux.dev" <yonghong.song@linux.dev>,
-	"kpsingh@kernel.org" <kpsingh@kernel.org>, "sdf@google.com" <sdf@google.com>,
-	"haoluo@google.com" <haoluo@google.com>, "jolsa@kernel.org"
-	<jolsa@kernel.org>, "mykolal@fb.com" <mykolal@fb.com>, "bpf@vger.kernel.org"
-	<bpf@vger.kernel.org>, Sanidhya Kashyap <sanidhya.kashyap@epfl.ch>,
-	"mathias.payer@nebelwelt.net" <mathias.payer@nebelwelt.net>,
-	"meng.xu.cs@uwaterloo.ca" <meng.xu.cs@uwaterloo.ca>
-Subject: Re: [PATCH] Accept program in priv mode when returning from subprog
- with r10 marked as precise
-Thread-Topic: [PATCH] Accept program in priv mode when returning from subprog
- with r10 marked as precise
-Thread-Index: AQHaA6Ed/LIYTErb00uqRqdGvRmit7BVIVoAgAg8zTA=
-Date: Fri, 27 Oct 2023 09:06:34 +0000
-Message-ID: <a1c717381a0049da9f5472f691477ba8@epfl.ch>
-References: <20231020220216.263948-1-tao.lyu@epfl.ch>,<CAEf4Bzb6uXiKK4=1++9Lu=GyfU1Co6VcqRwNO8PsQL=TzGzs-A@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb6uXiKK4=1++9Lu=GyfU1Co6VcqRwNO8PsQL=TzGzs-A@mail.gmail.com>
-Accept-Language: en-US, fr-CH
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-originating-ip: [128.178.116.141]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 868DE17E3
+	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 09:09:00 +0000 (UTC)
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95161C0;
+	Fri, 27 Oct 2023 02:08:57 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3af609c4dfeso1123350b6e.1;
+        Fri, 27 Oct 2023 02:08:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698397737; x=1699002537; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=k9JHRlaWcqX4XDWVpb3VRduRa6Nwoy/dm+aEodvSM3U=;
+        b=c9nQphYOSTRHjR2Qmp4bUq5v+LMMFsQc8NhlHSIDJ5gJqUkimEWC+lpkZKkXS9HmR6
+         Kh2khCLGGw14DcF7LGLIcRhj0IfJPnvY2AZp7JHQvSBJd8W38PXZBsAdHjFQTH2YyRKQ
+         1QNIsaTHbW1kI7i/NP83LhjQAqYgftM8ztOOOtB1T9kBKXPde/9eFhVMWZAr0WhgcLq5
+         y0peKe6dqdlsxDG6U8fX0rACiePFeR343JsPwKFI3M2jKUnroo7L/isuMz4oSrcBQRm0
+         FXe57YzGs6IiSVluIaagyYz+jpbOnZHvMigQXsE4G95PAZL9y72nvSaovsz5kK8Xi9Y5
+         4EqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698397737; x=1699002537;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=k9JHRlaWcqX4XDWVpb3VRduRa6Nwoy/dm+aEodvSM3U=;
+        b=YrmFnEgV09WZyMy9nu0Y+vGR9ulZ+RXNCirSVcVvv974DDKFlxgqckz7ksU6bO9n5t
+         /YIjKszGqadO7gjfKtc7/iXa0MhdAk8e4vHl6Jkj9+l1UA4xSDD8t8a/E7d/oc1p7KcS
+         DXeZpVzJASvl2pWzCGHyvE+3u9Q4KhMh/fCAKaHNsG4oAPP1IkcJzpYgmEkj2HPgn6NR
+         PZbZrEGF6CnN6rseca5njbFZE8JiCyCzsgbh+eKiOw57koTLuNx7ZTTHNmS5bnAkmPYt
+         KXFlsWWVyjxDWD5skyykYdAbiP3AZNRWG79hHTtRz/Ckfv18g4RikK/gSIYySLDUFhqB
+         chQw==
+X-Gm-Message-State: AOJu0YxXJLsAYT6nVkQiS9fBb6+mJrucd/mSOU15bxrUxxkULd7LF1Fk
+	AoPNNjoizQhq4hRXQ82v/VrIZ7tODJY6z3yMag==
+X-Google-Smtp-Source: AGHT+IHrS16CvH3F2HD12au66y9KbFKWN8Qmfc+OO1LKjNiSbcoXK+Ik6fcKKVYHShuq5AXYdGekADYVHuz38FcGL54=
+X-Received: by 2002:aca:1c03:0:b0:3a7:1e86:e83f with SMTP id
+ c3-20020aca1c03000000b003a71e86e83fmr1992888oic.51.1698397736722; Fri, 27 Oct
+ 2023 02:08:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+From: Hao Sun <sunhao.th@gmail.com>
+Date: Fri, 27 Oct 2023 11:08:45 +0200
+Message-ID: <CACkBjsY22BOUCns43Rza5gXCBtEKbdRqXxOTviZQOjjDySYGHQ@mail.gmail.com>
+Subject: bpf: incorrect passing infinate loop causing rcu detected stall
+ during bpf_prog_run()
+To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
->>
->> There is another issue about the backtracking.
->> When uploading the following program under privilege mode,
->> the verifier reports a "verifier backtracking bug".
->>
->> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
->> 0: (85) call pc+2
->> caller:
->>=A0 R10=3Dfp0
->> callee:
->>=A0 frame1: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
->> 3: frame1:
->> 3: (bf) r3 =3D r10=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0 ; frame1: R3_w=3Dfp0 R10=3Dfp0
->> 4: (bc) w0 =3D w10=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0 ; frame1: R0_w=3Dscalar(umax=3D4294967295,var_off=3D(0x0; 0xfffff=
-fff)) R10=3Dfp0
->> 5: (0f) r3 +=3D r0
->> mark_precise: frame1: last_idx 5 first_idx 0 subseq_idx -1
->> mark_precise: frame1: regs=3Dr0 stack=3D before 4: (bc) w0 =3D w10
->> mark_precise: frame1: regs=3Dr10 stack=3D before 3: (bf) r3 =3D r10
->> mark_precise: frame1: regs=3Dr10 stack=3D before 0: (85) call pc+2
->> BUG regs 400
->>
->> This bug is manifested by the following check:
->>
->> if (bt_reg_mask(bt) & ~BPF_REGMASK_ARGS) {
->>=A0=A0=A0=A0 verbose(env, "BUG regs %x\n", bt_reg_mask(bt));
->>=A0=A0=A0=A0 WARN_ONCE(1, "verifier backtracking bug");
->>=A0=A0=A0=A0 return -EFAULT;
->> }
->>
->> Since the verifier allows add operation on stack pointers,
->> it shouldn't show this WARNING and reject the program.
->>
->> I fixed it by skipping the warning if it's privilege mode and only r10 i=
-s marked as precise.
->>
->
->See my reply to your other email. It would be nice if you can rewrite
->your tests in inline assembly, it would be easier to follow and debug.
->
+Hi,
 
-Sorry, I'm new to this community.=20
-Could you explain a little bit more about what the inline assembly is?
-I wrote the test confirming to the test cases under "tools/testing/selftest=
-s/bpf".
+The following C repro contains a bpf program that can cause rcu
+stall/soft lockup during running in bpf_prog_run(). Seems the verifier
+incorrectly passed the program with an infinite loop.
 
->I think your fix is papering over the fact that we don't recognize
->non-r10 stack access. Once we fix that, we shouldn't need extra hacks.
->So let's solve the underlying problem first.
+C repro: https://pastebin.com/raw/ymzAxjeU
+Verifier's log: https://pastebin.com/raw/thZDTFJc
 
-Sure, we can fix the non-r10 stack access first.
+rcu stall:
 
-However, the bug here is not related to the r10 stack access tracking, as t=
-here is no stack access in the test case.
-The root cause is that when meeting subprog calling instruction, the verifi=
-er asserts that r10 can't be marked as precise.
-However, under privileged mode, the verifier allows arithmetic operations (=
-e.g., sub and add) on stack pointers, and thus, it's legal that r10 can be =
-marked as precise.
-In this situation, the verifier might incorrectly reject programs.
-
-Solutions for this issue:
-1) Never mark r10 as precise during backtracking
-2) Modify this assertion so that under privileged mode, even if the verifie=
-r sees r10 is marked as precise, it does throw the WARNING.
-
-The patch I provided is the second solution.
-
->> Signed-off-by: Tao Lyu <tao.lyu@epfl.ch>
->> ---
->>=A0 kernel/bpf/verifier.c=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0 4 +++-
->>=A0 .../bpf/verifier/ret-without-checing-r10.c=A0=A0=A0=A0=A0=A0 | 16 +++=
-+++++++++++++
->>=A0 2 files changed, 19 insertions(+), 1 deletion(-)
->>=A0 create mode 100644 tools/testing/selftests/bpf/verifier/ret-without-c=
-hecing-r10.c
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index e777f50401b6..1ce80cdc4f1d 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -3495,6 +3495,7 @@ static int backtrack_insn(struct bpf_verifier_env =
-*env, int idx, int subseq_idx,
->>=A0=A0=A0=A0=A0=A0=A0=A0 u32 dreg =3D insn->dst_reg;
->>=A0=A0=A0=A0=A0=A0=A0=A0 u32 sreg =3D insn->src_reg;
->>=A0=A0=A0=A0=A0=A0=A0=A0 u32 spi, i;
->> +=A0=A0=A0=A0=A0=A0 u32 reg_mask;
->>
->>=A0=A0=A0=A0=A0=A0=A0=A0 if (insn->code =3D=3D 0)
->>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return 0;
->> @@ -3621,7 +3622,8 @@ static int backtrack_insn(struct bpf_verifier_env =
-*env, int idx, int subseq_idx,
->>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0 * precise, r0 and r6-r10 or any stack slot in
->>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0 * the current frame should be zero by now
->>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0 */
->> -=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 if (bt_reg_mask(bt) & ~BPF_REGMASK_ARGS) {
->> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 reg_mask =3D bt_reg_mask(bt) & ~BPF_REGMASK_ARGS;
->> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 if (reg_mask && !((reg_mask =3D=3D 1 << BPF_REG_10) &=
-& env->allow_ptr_leaks)) {
->>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 verbose(env, "BUG regs %x\=
-n", bt_reg_mask(bt));
->>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 WARN_ONCE(1, "verifier bac=
-ktracking bug");
->>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return -EFAULT;
->> diff --git a/tools/testing/selftests/bpf/verifier/ret-without-checing-r1=
-0.c b/tools/testing/selftests/bpf/verifier/ret-without-checing-r10.c
->> new file mode 100644
->> index 000000000000..56e529cf922b
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/verifier/ret-without-checing-r10.c
->> @@ -0,0 +1,16 @@
->> +{
->> +=A0 "pointer arithmetic: when returning from subprog in priv, do not ch=
-ecking r10",
->> +=A0 .insns =3D {
->> +=A0=A0=A0=A0=A0=A0 BPF_CALL_REL(2),
->> +=A0=A0=A0=A0=A0=A0 BPF_MOV64_IMM(BPF_REG_0, 0),
->> +=A0=A0=A0=A0=A0=A0 BPF_EXIT_INSN(),
->> +=A0=A0=A0=A0=A0=A0 BPF_MOV64_REG(BPF_REG_3, BPF_REG_10),
->> +=A0=A0=A0=A0=A0=A0 BPF_MOV32_REG(BPF_REG_0, BPF_REG_10),
->> +=A0=A0=A0=A0=A0=A0 BPF_ALU64_REG(BPF_ADD, BPF_REG_3, BPF_REG_0),
->> +=A0=A0=A0=A0=A0=A0 BPF_MOV64_IMM(BPF_REG_0, 0),
->> +=A0=A0=A0=A0=A0=A0 BPF_EXIT_INSN(),
->> +=A0 },
->> +=A0 .result=A0 =3D ACCEPT,
->> +=A0 .result_unpriv =3D REJECT,
->> +=A0 .errstr_unpriv =3D "loading/calling other bpf or kernel functions a=
-re allowed for CAP_BPF and CAP_SYS_ADMIN",
->> +},
->> --
->> 2.25.1
->>
+rcu: INFO: rcu_preempt self-detected stall on CPU
+rcu: 7-....: (10500 ticks this GP) idle=c144/1/0x4000000000000000
+softirq=6017/6017 fqs=4579
+rcu:          hardirqs   softirqs   csw/system
+rcu: number:        0        212            0
+rcu: cputime:        0          0        52479   ==> 52480(ms)
+rcu: (t=10501 jiffies g=8277 q=132 ncpus=8)
+CPU: 7 PID: 8633 Comm: bpf-test Not tainted
+6.6.0-rc5-01400-g7c2f6c9fb91f-dirty #25
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+RIP: 0010:___bpf_prog_run+0x4cbf/0x9720 kernel/bpf/core.c:2099
+Code: 80 3c 38 00 0f 85 c0 44 00 00 41 0f b6 44 24 01 4c 8b 2b c0 e8
+04 0f b6 c0 48 8d 5c c5 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 <0f> 85
+8d 44 00 00 4c 3b 2b 0f 86 16 0f 00 00 49 8d 7c 24 02 48 89
+RSP: 0018:ffffc90006eb7a58 EFLAGS: 00000246
+RAX: 1ffff92000dd6f70 RBX: ffffc90006eb7b80 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: 00000000000014ff RDI: ffffc900052160d1
+RBP: ffffc90006eb7b48 R08: ffffc90005216144 R09: fffffbfff228f9d0
+R10: ffffffff9147ce87 R11: 0000000000088001 R12: ffffc900052160d0
+R13: 000000000000001f R14: 0000000000000000 R15: dffffc0000000000
+FS:  00007fcc4dc606c0(0000) GS:ffff88832db80000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fcc4dcb6000 CR3: 0000000157724000 CR4: 00000000000006e0
+Call Trace:
+ <IRQ>
+ </IRQ>
+ <TASK>
+ __bpf_prog_run32+0x8d/0xd0 kernel/bpf/core.c:2264
+ bpf_dispatcher_nop_func include/linux/bpf.h:1192 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ __bpf_prog_test_run_raw_tp+0xc5/0x2c0 net/bpf/test_run.c:712
+ bpf_prog_test_run_raw_tp+0x304/0x560 net/bpf/test_run.c:752
+ bpf_prog_put kernel/bpf/syscall.c:2165 [inline]
+ bpf_prog_test_run kernel/bpf/syscall.c:4042 [inline]
+ __sys_bpf+0xf98/0x4380 kernel/bpf/syscall.c:5401
+ __do_sys_bpf kernel/bpf/syscall.c:5487 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5485 [inline]
+ __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:5485
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x564499114a87
+Code: 81 f9 01 02 00 00 72 03 49 8b 12 48 89 54 24 28 89 44 24 1c 48
+8d 74 24 10 b8 41 01 00 00 bf 0a 00 00 00 ba 50 00 00 00 0f 05 <48> 3d
+01 f0 ff ff 0f 83 8a 00 00 00 8b 7c 24 3c 49 8b 88 18 08 00
+RSP: 002b:00007fcc4dc594d0 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007fcc4dc59860 RCX: 0000564499114a87
+RDX: 0000000000000050 RSI: 00007fcc4dc594e0 RDI: 000000000000000a
+RBP: 00007fcc48002d00 R08: 00005644993d4e10 R09: 00005644993d5428
+R10: 00005644993d5018 R11: 0000000000000246 R12: 00007fcc4dc5e458
+R13: 00007fcc4dc5bb40 R14: 00007fcc4fd1cbb0 R15: 00007fcc4dc5bc28
+ </TASK>
+watchdog: BUG: soft lockup - CPU#7 stuck for 246s! [bpf-test:8633]
+Modules linked in:
+irq event stamp: 64410
+hardirqs last  enabled at (64409): [<ffffffff8960140a>]
+asm_sysvec_apic_timer_interrupt+0x1a/0x20
+arch/x86/include/asm/idtentry.h:645
+hardirqs last disabled at (64410): [<ffffffff89455f6f>]
+sysvec_apic_timer_interrupt+0xf/0xc0 arch/x86/kernel/apic/apic.c:1074
+softirqs last  enabled at (64378): [<ffffffff8145aa47>] invoke_softirq
+kernel/softirq.c:427 [inline]
+softirqs last  enabled at (64378): [<ffffffff8145aa47>] __irq_exit_rcu
+kernel/softirq.c:632 [inline]
+softirqs last  enabled at (64378): [<ffffffff8145aa47>]
+irq_exit_rcu+0xb7/0x120 kernel/softirq.c:644
+softirqs last disabled at (64373): [<ffffffff8145aa47>] invoke_softirq
+kernel/softirq.c:427 [inline]
+softirqs last disabled at (64373): [<ffffffff8145aa47>] __irq_exit_rcu
+kernel/softirq.c:632 [inline]
+softirqs last disabled at (64373): [<ffffffff8145aa47>]
+irq_exit_rcu+0xb7/0x120 kernel/softirq.c:644
+CPU: 7 PID: 8633 Comm: bpf-test Not tainted
+6.6.0-rc5-01400-g7c2f6c9fb91f-dirty #25
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+RIP: 0010:kcov_trace_bpf_prog_regs+0x68/0xc0 kernel/kcov.c:248
+Code: 83 f8 04 75 5c 4c 8b a2 e8 15 00 00 8b 92 e4 15 00 00 49 8b 04
+24 48 c1 e2 03 48 8d 34 80 48 8d 4c 36 0b 48 c1 e1 03 48 39 ca <72> 35
+48 83 c0 01 49 89 04 24 48 c1 e6 04 49 89 7c 0c b0 31 db 49
+RSP: 0018:ffffc90006eb7a38 EFLAGS: 00000297
+RAX: 0000000000000433 RBX: ffffc90006eb7b48 RCX: 0000000000015048
+RDX: 0000000000015000 RSI: 00000000000014ff RDI: 000000000000001c
+RBP: ffffc90006eb7b48 R08: ffffc90005216144 R09: fffffbfff228f9d0
+R10: ffffffff9147ce87 R11: 0000000000088001 R12: ffffc90006c39000
+R13: ffff1102f32b8600 R14: 0000000000000000 R15: dffffc0000000000
+FS:  00007fcc4dc606c0(0000) GS:ffff88832db80000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fcc4dcb6000 CR3: 0000000157724000 CR4: 00000000000006e0
+Call Trace:
+ <IRQ>
+ </IRQ>
+ <TASK>
+ ___bpf_prog_run+0x53d9/0x9720 kernel/bpf/core.c:2100
+ __bpf_prog_run32+0x8d/0xd0 kernel/bpf/core.c:2264
+ bpf_dispatcher_nop_func include/linux/bpf.h:1192 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ __bpf_prog_test_run_raw_tp+0xc5/0x2c0 net/bpf/test_run.c:712
+ bpf_prog_test_run_raw_tp+0x304/0x560 net/bpf/test_run.c:752
+ bpf_prog_put kernel/bpf/syscall.c:2165 [inline]
+ bpf_prog_test_run kernel/bpf/syscall.c:4042 [inline]
+ __sys_bpf+0xf98/0x4380 kernel/bpf/syscall.c:5401
+ __do_sys_bpf kernel/bpf/syscall.c:5487 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5485 [inline]
+ __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:5485
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x564499114a87
+Code: 81 f9 01 02 00 00 72 03 49 8b 12 48 89 54 24 28 89 44 24 1c 48
+8d 74 24 10 b8 41 01 00 00 bf 0a 00 00 00 ba 50 00 00 00 0f 05 <48> 3d
+01 f0 ff ff 0f 83 8a 00 00 00 8b 7c 24 3c 49 8b 88 18 08 00
+RSP: 002b:00007fcc4dc594d0 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007fcc4dc59860 RCX: 0000564499114a87
+RDX: 0000000000000050 RSI: 00007fcc4dc594e0 RDI: 000000000000000a
+RBP: 00007fcc48002d00 R08: 00005644993d4e10 R09: 00005644993d5428
+R10: 00005644993d5018 R11: 0000000000000246 R12: 00007fcc4dc5e458
+R13: 00007fcc4dc5bb40 R14: 00007fcc4fd1cbb0 R15: 00007fcc4dc5bc28
+ </TASK>
 
