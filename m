@@ -1,269 +1,412 @@
-Return-Path: <bpf+bounces-13387-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13388-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EDD37D8DD8
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 06:43:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9F5C7D8DED
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 06:55:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E6101C20FF9
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 04:43:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73792B213BD
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 04:55:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D87210B;
-	Fri, 27 Oct 2023 04:43:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563755229;
+	Fri, 27 Oct 2023 04:55:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xuO6J+lu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dGgdtGWe"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DE711FC5
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 04:43:07 +0000 (UTC)
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [IPv6:2001:41d0:203:375::b9])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2793186
-	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 21:43:04 -0700 (PDT)
-Message-ID: <20d0c45e-8e1a-4bb9-93eb-8487d8d79651@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1698381782;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ik0PNz5cQTLwJ/kpyE4amSYtABFvL9Eg+IQVHIyZu+o=;
-	b=xuO6J+luBKh/qkjLfM1f7YyvHtYZg2fzrXx/Mfa7uP5FIyXy7q9OzjT2JHf0bhwOQ48s6G
-	n5vHaHdhAHx9J9+pBDVr2XV5Plqptkk8Y2RkgrFXyKvL5Ph0W+HIb0a/82jrwLWB6fV4ZU
-	Tch04+73x7nPeBUo+UFt4ZP32wcfupM=
-Date: Thu, 26 Oct 2023 21:42:56 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D03D04434
+	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 04:55:38 +0000 (UTC)
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154F21A5
+	for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 21:55:36 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a8ada42c2aso12774677b3.3
+        for <bpf@vger.kernel.org>; Thu, 26 Oct 2023 21:55:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698382535; x=1698987335; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9qn6SLIPvR+jvmU9XqKyb3fI7G1aOoXH0tiKFqE4GbU=;
+        b=dGgdtGWe3S9ZZvrLqhA2+Ncp/9ye7s/+tWUQXB0N0uJhGdv1agBwag9S42FsaA8JTk
+         z7RdPf5Fkmjc9wGWF8SEpEa4nRknas+vMaRcBWqUnX9WPk3oB3Hu9AqLMKH8GC40akOO
+         lCl9+tAw/fOqGc929nSHKG50zpPw0UbtEZoCD1M8biGw0/2VBz7c4R5jG+TZOYraSgVG
+         2FuM1eSGWVeGEiKGlThvs0Rq8gzCJ9OYD8rNELtsiPyOc7719cFYYptQiEfEmRbGk0Zr
+         HPiIKbJSQnAUvlNhjn0QDNB48MrshkKR2M6A+mQg7PYQAJx4R8+5VA2BiqzLoTac0Dzz
+         4F8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698382535; x=1698987335;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9qn6SLIPvR+jvmU9XqKyb3fI7G1aOoXH0tiKFqE4GbU=;
+        b=mPzaDkgxCp1GW+4hmjWAGx9Klhwlybttnvi4t5XYkGg7LJmmtiapzRGTMZZ2g7zKJl
+         sDujrAwvA/dUMNvx3NuWAz1IkZsqk9KpUd3knBifL4SRxmJNyYdOH6FzbCCQF1sULKTy
+         NadIj8Kt4QF3l+EQd6qc9uqGLcUbF4Y/7gRhcLc0ElvUYoNdRp9YR6SHTwYXw/846p5K
+         J9RSVup3mbWFFSWzxVXUNaBpbHCej5ATMjaXT6Mjnmj+DOFBoAPO2iUdChDk/CKpUPmE
+         qKZYxXZppz1eFNCtjzQRtBxQnzY4FGXxfeOEVuZb5d4+5J0HBaxG7lLsguuQxqEuR1SG
+         rq5g==
+X-Gm-Message-State: AOJu0Yx65LM2DD9wQSuY6Qdv11zGKeQiyU+KSQ6iy+KKrmxnch3qcIoJ
+	/LxSD6y/7Lt/+DqZr3U0j4I=
+X-Google-Smtp-Source: AGHT+IGggnkTqN1UJdXLMFKtX9mE81CJNRKUe6VSmVUJhFzhaClhsguEUh+KUuqiccSTEQX0sXeziA==
+X-Received: by 2002:a25:d784:0:b0:d7f:af26:2c7e with SMTP id o126-20020a25d784000000b00d7faf262c7emr1466722ybg.20.1698382535185;
+        Thu, 26 Oct 2023 21:55:35 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:ed69:fa3e:676a:4a7a? ([2600:1700:6cf8:1240:ed69:fa3e:676a:4a7a])
+        by smtp.gmail.com with ESMTPSA id x33-20020a25aca1000000b00d9c7bf8f32fsm370771ybi.42.2023.10.26.21.55.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Oct 2023 21:55:34 -0700 (PDT)
+Message-ID: <5b3609f3-bc40-4fc3-b591-d124432dc4d9@gmail.com>
+Date: Thu, 26 Oct 2023 21:55:32 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 1/2] selftests/bpf: Convert CHECK macros to
- ASSERT_* macros in bpf_iter
-Content-Language: en-GB
-To: Kui-Feng Lee <sinquersw@gmail.com>,
- Yuran Pereira <yuran.pereira@hotmail.com>, bpf@vger.kernel.org
-Cc: shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net, song@kernel.org,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, brauner@kernel.org,
- iii@linux.ibm.com, kuifeng@meta.com, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231026020319.1203600-1-yuran.pereira@hotmail.com>
- <DB3PR10MB68352B683F26EE9C342B71A9E8DDA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
- <3739e65c-b86d-4c11-9cf5-7b76080400c2@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <3739e65c-b86d-4c11-9cf5-7b76080400c2@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v6 10/10] selftests/bpf: test case for
+ register_bpf_struct_ops().
+Content-Language: en-US
+To: Eduard Zingerman <eddyz87@gmail.com>, thinker.li@gmail.com,
+ bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, drosen@google.com
+Cc: kuifeng@meta.com
+References: <20231022050335.2579051-1-thinker.li@gmail.com>
+ <20231022050335.2579051-11-thinker.li@gmail.com>
+ <abd76cd234ab2a1185bb9557fa54013264df6a50.camel@gmail.com>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <abd76cd234ab2a1185bb9557fa54013264df6a50.camel@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 7bit
 
 
-On 10/25/23 9:33 PM, Kui-Feng Lee wrote:
->
->
-> On 10/25/23 19:03, Yuran Pereira wrote:
->> As it was pointed out by Yonghong Song [1], in the bpf selftests the use
->> of the ASSERT_* series of macros is preferred over the CHECK macro.
->> This patch replaces all CHECK calls in bpf_iter with the appropriate
->> ASSERT_* macros.
+
+On 10/26/23 13:31, Eduard Zingerman wrote:
+> On Sat, 2023-10-21 at 22:03 -0700, thinker.li@gmail.com wrote:
+>> From: Kui-Feng Lee <thinker.li@gmail.com>
 >>
->> [1] 
->> https://lore.kernel.org/lkml/0a142924-633c-44e6-9a92-2dc019656bf2@linux.dev
+>> Create a new struct_ops type called bpf_testmod_ops within the bpf_testmod
+>> module. When a struct_ops object is registered, the bpf_testmod module will
+>> invoke test_2 from the module.
 >>
->> Suggested-by: Yonghong Song <yonghong.song@linux.dev>
->> Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
+>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> 
+> Hello,
+> 
+> Sorry for the late response, was moving through the patch-set very slowly.
+> Please note that CI currently fails for this series [0], reported error is:
+> 
+> testing_helpers.c:13:10: fatal error: 'rcu_tasks_trace_gp.skel.h' file not found
+>     13 | #include "rcu_tasks_trace_gp.skel.h"
+>        |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Thank! I will fix this dependency issue.
+
+> 
+> I get the same error when try to run tests locally (after full clean).
+> On the other hand it looks like `kern_sync_rcu_tasks_trace` changes
+> are not really necessary, when I undo these changes but keep changes in:
+> 
+> - .../selftests/bpf/bpf_testmod/bpf_testmod.c
+> - .../selftests/bpf/bpf_testmod/bpf_testmod.h
+> - .../bpf/prog_tests/test_struct_ops_module.c
+> - .../selftests/bpf/progs/struct_ops_module.c
+> 
+> struct_ops_module/regular_load test still passes.
+> 
+
+The test will pass even without this change.
+But, the test harness may complain by showing warnings.
+You may see an additional warning message without this change.
+
+> Regarding assertion:
+> 
+>> +	ASSERT_EQ(skel->bss->test_2_result, 7, "test_2_result");
+> 
+> Could you please leave a comment explaining why the value is 7?
+> I don't understand what invokes 'test_2' but changing it to 8
+> forces test to fail, so something does call 'test_2' :)
+
+It is called by bpf_dummy_reg() in bpf_testmod.c.
+I will add a comment here.
+
+> 
+> Also, when running test_maps I get the following error:
+> 
+> libbpf: bpf_map_create_opts has non-zero extra bytes
+> map_create_opts(317):FAIL:bpf_map_create() error:Invalid argument (name=hash_of_maps)
+
+It looks like a padding issue. I will check it.
+
+> 
+> [0] https://patchwork.kernel.org/project/netdevbpf/patch/20231022050335.2579051-11-thinker.li@gmail.com/
+>      (look for 'Logs for x86_64-gcc / build / build for x86_64 with gcc ')
+> 
 >> ---
->>   .../selftests/bpf/prog_tests/bpf_iter.c       | 82 +++++++++----------
->>   1 file changed, 39 insertions(+), 43 deletions(-)
+>>   tools/testing/selftests/bpf/Makefile          |  2 +
+>>   .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 59 +++++++++++++++++++
+>>   .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  5 ++
+>>   .../bpf/prog_tests/test_struct_ops_module.c   | 38 ++++++++++++
+>>   .../selftests/bpf/progs/struct_ops_module.c   | 30 ++++++++++
+>>   tools/testing/selftests/bpf/testing_helpers.c | 35 +++++++++++
+>>   6 files changed, 169 insertions(+)
+>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
+>>   create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_module.c
 >>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c 
->> b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
->> index 1f02168103dd..7db6972ed952 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
->> @@ -34,8 +34,6 @@
->>   #include "bpf_iter_ksym.skel.h"
->>   #include "bpf_iter_sockmap.skel.h"
->>   -static int duration;
->> -
->>   static void test_btf_id_or_null(void)
->>   {
->>       struct bpf_iter_test_kern3 *skel;
->> @@ -64,7 +62,7 @@ static void do_dummy_read_opts(struct bpf_program 
->> *prog, struct bpf_iter_attach_
->>       /* not check contents, but ensure read() ends without error */
->>       while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
->>           ;
->> -    CHECK(len < 0, "read", "read failed: %s\n", strerror(errno));
->> +    ASSERT_GE(len, 0, "read");
->>         close(iter_fd);
->>   @@ -413,7 +411,7 @@ static int do_btf_read(struct bpf_iter_task_btf 
->> *skel)
->>           goto free_link;
->>       }
->>   -    if (CHECK(err < 0, "read", "read failed: %s\n", strerror(errno)))
->> +    if (!ASSERT_GE(err, 0, "read"))
->>           goto free_link;
->>         ASSERT_HAS_SUBSTR(taskbuf, "(struct task_struct)",
->> @@ -526,11 +524,11 @@ static int do_read_with_fd(int iter_fd, const 
->> char *expected,
->>       start = 0;
->>       while ((len = read(iter_fd, buf + start, read_buf_len)) > 0) {
->>           start += len;
->> -        if (CHECK(start >= 16, "read", "read len %d\n", len))
->> +        if (!ASSERT_LT(start, 16, "read"))
->>               return -1;
->>           read_buf_len = read_one_char ? 1 : 16 - start;
->>       }
->> -    if (CHECK(len < 0, "read", "read failed: %s\n", strerror(errno)))
->> +    if (!ASSERT_GE(len, 0, "read"))
->>           return -1;
->>         if (!ASSERT_STREQ(buf, expected, "read"))
->> @@ -571,8 +569,7 @@ static int do_read(const char *path, const char 
->> *expected)
->>       int err, iter_fd;
->>         iter_fd = open(path, O_RDONLY);
->> -    if (CHECK(iter_fd < 0, "open", "open %s failed: %s\n",
->> -          path, strerror(errno)))
->> +    if (!ASSERT_GE(iter_fd, 0, "open"))
->>           return -1;
->>         err = do_read_with_fd(iter_fd, expected, false);
->> @@ -600,7 +597,7 @@ static void test_file_iter(void)
->>       unlink(path);
->>         err = bpf_link__pin(link, path);
->> -    if (CHECK(err, "pin_iter", "pin_iter to %s failed: %d\n", path, 
->> err))
->> +    if (!ASSERT_OK(err, "pin_iter"))
->>           goto free_link;
->>         err = do_read(path, "abcd");
->> @@ -651,12 +648,10 @@ static void test_overflow(bool 
->> test_e2big_overflow, bool ret1)
->>        * overflow and needs restart.
->>        */
->>       map1_fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, 4, 8, 1, NULL);
->> -    if (CHECK(map1_fd < 0, "bpf_map_create",
->> -          "map_creation failed: %s\n", strerror(errno)))
->> +    if (!ASSERT_GE(map1_fd, 0, "bpf_map_create"))
->>           goto out;
->>       map2_fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, 4, 8, 1, NULL);
->> -    if (CHECK(map2_fd < 0, "bpf_map_create",
->> -          "map_creation failed: %s\n", strerror(errno)))
->> +    if (!ASSERT_GE(map2_fd, 0, "bpf_map_create"))
->>           goto free_map1;
->>         /* bpf_seq_printf kernel buffer is 8 pages, so one map
->> @@ -685,14 +680,12 @@ static void test_overflow(bool 
->> test_e2big_overflow, bool ret1)
->>       /* setup filtering map_id in bpf program */
->>       map_info_len = sizeof(map_info);
->>       err = bpf_map_get_info_by_fd(map1_fd, &map_info, &map_info_len);
->> -    if (CHECK(err, "get_map_info", "get map info failed: %s\n",
->> -          strerror(errno)))
->> +    if (!ASSERT_OK(err, "get_map_info"))
->>           goto free_map2;
->>       skel->bss->map1_id = map_info.id;
->>         err = bpf_map_get_info_by_fd(map2_fd, &map_info, &map_info_len);
->> -    if (CHECK(err, "get_map_info", "get map info failed: %s\n",
->> -          strerror(errno)))
->> +    if (!ASSERT_OK(err, "get_map_info"))
->>           goto free_map2;
->>       skel->bss->map2_id = map_info.id;
->>   @@ -714,16 +707,15 @@ static void test_overflow(bool 
->> test_e2big_overflow, bool ret1)
->>           while ((len = read(iter_fd, buf, expected_read_len)) > 0)
->>               total_read_len += len;
->>   -        CHECK(len != -1 || errno != E2BIG, "read",
->> -              "expected ret -1, errno E2BIG, but get ret %d, error 
->> %s\n",
->> -              len, strerror(errno));
->> +        if (!ASSERT_EQ(len, -1, "read"))
->> +            goto free_buf;
->> +        ASSERT_EQ(errno, E2BIG, "read");
->
-> I think you can just do
->
->   ASSERT_EQ(len, -1, "read");
->   ASSERT_EQ(errno, E2BG, "read");
->
-> without a check here.
-> WDYT?
-
-Many recent selftests have ASSERT_* similar to what Kui-Feng is suggested.
-So I think it is okay to do adjustment like it. The same for some other suggestions
-below.
-
-But since this patch intends to convert CHECK to ASSERT_*, so other possible
-'optimizations' like above ASSERT_EQ can stay as is since they do not really
-affect functionality.
-
-In the next revision, please put three patches 0/2, 1/2 and 2/2 together as a single
-patch set. Thanks.
-
->
->>           goto free_buf;
->>       } else if (!ret1) {
->>           while ((len = read(iter_fd, buf, expected_read_len)) > 0)
->>               total_read_len += len;
->>   -        if (CHECK(len < 0, "read", "read failed: %s\n",
->> -              strerror(errno)))
->> +        if (!ASSERT_GE(len, 0, "read"))
->>               goto free_buf;
->>       } else {
->>           do {
->> @@ -732,8 +724,7 @@ static void test_overflow(bool 
->> test_e2big_overflow, bool ret1)
->>                   total_read_len += len;
->>           } while (len > 0 || len == -EAGAIN);
->>   -        if (CHECK(len < 0, "read", "read failed: %s\n",
->> -              strerror(errno)))
->> +        if (!ASSERT_GE(len, 0, "read"))
->>               goto free_buf;
->>       }
->>   @@ -836,7 +827,7 @@ static void test_bpf_hash_map(void)
->>       /* do some tests */
->>       while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
->>           ;
->> -    if (CHECK(len < 0, "read", "read failed: %s\n", strerror(errno)))
->> +    if (!ASSERT_GE(len, 0, "read"))
->>           goto close_iter;
->>         /* test results */
->> @@ -917,7 +908,7 @@ static void test_bpf_percpu_hash_map(void)
->>       /* do some tests */
->>       while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
->>           ;
->> -    if (CHECK(len < 0, "read", "read failed: %s\n", strerror(errno)))
->> +    if (!ASSERT_GE(len, 0, "read"))
->>           goto close_iter;
->>         /* test results */
->> @@ -983,17 +974,15 @@ static void test_bpf_array_map(void)
->>       start = 0;
->>       while ((len = read(iter_fd, buf + start, sizeof(buf) - start)) 
->> > 0)
->>           start += len;
->> -    if (CHECK(len < 0, "read", "read failed: %s\n", strerror(errno)))
->> +    if (!ASSERT_GE(len, 0, "read"))
->>           goto close_iter;
->>         /* test results */
->>       res_first_key = *(__u32 *)buf;
->>       res_first_val = *(__u64 *)(buf + sizeof(__u32));
->> -    if (CHECK(res_first_key != 0 || res_first_val != first_val,
->> -          "bpf_seq_write",
->> -          "seq_write failure: first key %u vs expected 0, "
->> -          " first value %llu vs expected %llu\n",
->> -          res_first_key, res_first_val, first_val))
->> +    if (!ASSERT_EQ(res_first_key, 0, "bpf_seq_write"))
->> +        goto close_iter;
->> +    else if (!ASSERT_EQ(res_first_val, first_val, "bpf_seq_write"))
->>           goto close_iter;
->
-> Similiar here!
->
->  if (!ASSERT_EQ(...) ||
->      !ASSERT_EQ(...))
->       goto close_iter;
->
-> [...]
+>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+>> index caede9b574cb..dd7ff14e1fdf 100644
+>> --- a/tools/testing/selftests/bpf/Makefile
+>> +++ b/tools/testing/selftests/bpf/Makefile
+>> @@ -706,6 +706,8 @@ $(OUTPUT)/uprobe_multi: uprobe_multi.c
+>>   	$(call msg,BINARY,,$@)
+>>   	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@
+>>   
+>> +$(OUTPUT)/testing_helpers.o: $(OUTPUT)/rcu_tasks_trace_gp.skel.h
+>> +
+>>   EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)	\
+>>   	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
+>>   	feature bpftool							\
+>> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+>> index cefc5dd72573..f1a20669d884 100644
+>> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+>> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+>> @@ -1,5 +1,6 @@
+>>   // SPDX-License-Identifier: GPL-2.0
+>>   /* Copyright (c) 2020 Facebook */
+>> +#include <linux/bpf.h>
+>>   #include <linux/btf.h>
+>>   #include <linux/btf_ids.h>
+>>   #include <linux/error-injection.h>
+>> @@ -517,11 +518,66 @@ BTF_ID_FLAGS(func, bpf_kfunc_call_test_static_unused_arg)
+>>   BTF_ID_FLAGS(func, bpf_kfunc_call_test_offset)
+>>   BTF_SET8_END(bpf_testmod_check_kfunc_ids)
+>>   
+>> +#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+>> +
+>> +DEFINE_STRUCT_OPS_VALUE_TYPE(bpf_testmod_ops);
+>> +
+>> +static int bpf_testmod_ops_init(struct btf *btf)
+>> +{
+>> +	return 0;
+>> +}
+>> +
+>> +static bool bpf_testmod_ops_is_valid_access(int off, int size,
+>> +					    enum bpf_access_type type,
+>> +					    const struct bpf_prog *prog,
+>> +					    struct bpf_insn_access_aux *info)
+>> +{
+>> +	return bpf_tracing_btf_ctx_access(off, size, type, prog, info);
+>> +}
+>> +
+>> +static int bpf_testmod_ops_init_member(const struct btf_type *t,
+>> +				       const struct btf_member *member,
+>> +				       void *kdata, const void *udata)
+>> +{
+>> +	return 0;
+>> +}
+>> +
+>>   static const struct btf_kfunc_id_set bpf_testmod_kfunc_set = {
+>>   	.owner = THIS_MODULE,
+>>   	.set   = &bpf_testmod_check_kfunc_ids,
+>>   };
+>>   
+>> +static const struct bpf_verifier_ops bpf_testmod_verifier_ops = {
+>> +	.is_valid_access = bpf_testmod_ops_is_valid_access,
+>> +};
+>> +
+>> +static int bpf_dummy_reg(void *kdata)
+>> +{
+>> +	struct bpf_testmod_ops *ops = kdata;
+>> +	int r;
+>> +
+>> +	BTF_STRUCT_OPS_TYPE_EMIT(bpf_testmod_ops);
+>> +	r = ops->test_2(4, 3);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void bpf_dummy_unreg(void *kdata)
+>> +{
+>> +}
+>> +
+>> +struct bpf_struct_ops bpf_bpf_testmod_ops = {
+>> +	.verifier_ops = &bpf_testmod_verifier_ops,
+>> +	.init = bpf_testmod_ops_init,
+>> +	.init_member = bpf_testmod_ops_init_member,
+>> +	.reg = bpf_dummy_reg,
+>> +	.unreg = bpf_dummy_unreg,
+>> +	.name = "bpf_testmod_ops",
+>> +	.owner = THIS_MODULE,
+>> +};
+>> +
+>> +#endif /* CONFIG_DEBUG_INFO_BTF_MODULES */
+>> +
+>>   extern int bpf_fentry_test1(int a);
+>>   
+>>   static int bpf_testmod_init(void)
+>> @@ -532,6 +588,9 @@ static int bpf_testmod_init(void)
+>>   	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &bpf_testmod_kfunc_set);
+>>   	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_testmod_kfunc_set);
+>>   	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &bpf_testmod_kfunc_set);
+>> +#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+>> +	ret = ret ?: register_bpf_struct_ops(&bpf_bpf_testmod_ops);
+>> +#endif
+>>   	if (ret < 0)
+>>   		return ret;
+>>   	if (bpf_fentry_test1(0) < 0)
+>> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+>> index f32793efe095..ca5435751c79 100644
+>> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+>> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+>> @@ -28,4 +28,9 @@ struct bpf_iter_testmod_seq {
+>>   	int cnt;
+>>   };
+>>   
+>> +struct bpf_testmod_ops {
+>> +	int (*test_1)(void);
+>> +	int (*test_2)(int a, int b);
+>> +};
+>> +
+>>   #endif /* _BPF_TESTMOD_H */
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
+>> new file mode 100644
+>> index 000000000000..7261fc6c377a
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
+>> @@ -0,0 +1,38 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
+>> +#include <test_progs.h>
+>> +#include <time.h>
+>> +
+>> +#include "rcu_tasks_trace_gp.skel.h"
+>> +#include "struct_ops_module.skel.h"
+>> +
+>> +static void test_regular_load(void)
+>> +{
+>> +	struct struct_ops_module *skel;
+>> +	struct bpf_link *link;
+>> +	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
+>> +	int err;
+>> +
+>> +	skel = struct_ops_module__open_opts(&opts);
+>> +	if (!ASSERT_OK_PTR(skel, "struct_ops_module_open"))
+>> +		return;
+>> +	err = struct_ops_module__load(skel);
+>> +	if (!ASSERT_OK(err, "struct_ops_module_load"))
+>> +		return;
+>> +
+>> +	link = bpf_map__attach_struct_ops(skel->maps.testmod_1);
+>> +	ASSERT_OK_PTR(link, "attach_test_mod_1");
+>> +
+>> +	ASSERT_EQ(skel->bss->test_2_result, 7, "test_2_result");
+>> +
+>> +	bpf_link__destroy(link);
+>> +
+>> +	struct_ops_module__destroy(skel);
+>> +}
+>> +
+>> +void serial_test_struct_ops_module(void)
+>> +{
+>> +	if (test__start_subtest("regular_load"))
+>> +		test_regular_load();
+>> +}
+>> +
+>> diff --git a/tools/testing/selftests/bpf/progs/struct_ops_module.c b/tools/testing/selftests/bpf/progs/struct_ops_module.c
+>> new file mode 100644
+>> index 000000000000..cb305d04342f
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/progs/struct_ops_module.c
+>> @@ -0,0 +1,30 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
+>> +#include <vmlinux.h>
+>> +#include <bpf/bpf_helpers.h>
+>> +#include <bpf/bpf_tracing.h>
+>> +#include "../bpf_testmod/bpf_testmod.h"
+>> +
+>> +char _license[] SEC("license") = "GPL";
+>> +
+>> +int test_2_result = 0;
+>> +
+>> +SEC("struct_ops/test_1")
+>> +int BPF_PROG(test_1)
+>> +{
+>> +	return 0xdeadbeef;
+>> +}
+>> +
+>> +SEC("struct_ops/test_2")
+>> +int BPF_PROG(test_2, int a, int b)
+>> +{
+>> +	test_2_result = a + b;
+>> +	return a + b;
+>> +}
+>> +
+>> +SEC(".struct_ops.link")
+>> +struct bpf_testmod_ops testmod_1 = {
+>> +	.test_1 = (void *)test_1,
+>> +	.test_2 = (void *)test_2,
+>> +};
+>> +
+>> diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testing/selftests/bpf/testing_helpers.c
+>> index 8d994884c7b4..05870cd62458 100644
+>> --- a/tools/testing/selftests/bpf/testing_helpers.c
+>> +++ b/tools/testing/selftests/bpf/testing_helpers.c
+>> @@ -10,6 +10,7 @@
+>>   #include "test_progs.h"
+>>   #include "testing_helpers.h"
+>>   #include <linux/membarrier.h>
+>> +#include "rcu_tasks_trace_gp.skel.h"
+>>   
+>>   int parse_num_list(const char *s, bool **num_set, int *num_set_len)
+>>   {
+>> @@ -380,10 +381,44 @@ int load_bpf_testmod(bool verbose)
+>>   	return 0;
+>>   }
+>>   
+>> +/* This function will trigger call_rcu_tasks_trace() in the kernel */
+>> +static int kern_sync_rcu_tasks_trace(void)
+>> +{
+>> +	struct rcu_tasks_trace_gp *rcu;
+>> +	time_t start;
+>> +	long gp_seq;
+>> +	LIBBPF_OPTS(bpf_test_run_opts, opts);
+>> +
+>> +	rcu = rcu_tasks_trace_gp__open_and_load();
+>> +	if (IS_ERR(rcu))
+>> +		return -EFAULT;
+>> +	if (rcu_tasks_trace_gp__attach(rcu))
+>> +		return -EFAULT;
+>> +
+>> +	gp_seq = READ_ONCE(rcu->bss->gp_seq);
+>> +
+>> +	if (bpf_prog_test_run_opts(bpf_program__fd(rcu->progs.do_call_rcu_tasks_trace),
+>> +				   &opts))
+>> +		return -EFAULT;
+>> +	if (opts.retval != 0)
+>> +		return -EFAULT;
+>> +
+>> +	start = time(NULL);
+>> +	while ((start + 2) > time(NULL) &&
+>> +	       gp_seq == READ_ONCE(rcu->bss->gp_seq))
+>> +		sched_yield();
+>> +
+>> +	rcu_tasks_trace_gp__destroy(rcu);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>   /*
+>>    * Trigger synchronize_rcu() in kernel.
+>>    */
+>>   int kern_sync_rcu(void)
+>>   {
+>> +	if (kern_sync_rcu_tasks_trace())
+>> +		return -EFAULT;
+>>   	return syscall(__NR_membarrier, MEMBARRIER_CMD_SHARED, 0, 0);
+>>   }
+> 
 
