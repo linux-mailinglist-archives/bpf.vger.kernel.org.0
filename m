@@ -1,80 +1,78 @@
-Return-Path: <bpf+bounces-13508-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13510-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E404D7DA248
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 23:17:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A2047DA263
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 23:23:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C358B21627
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 21:17:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2D91282635
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 21:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9B33FE55;
-	Fri, 27 Oct 2023 21:17:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA383FE23;
+	Fri, 27 Oct 2023 21:23:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iJJdjRJU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="efNDDYdn"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54B5F3FB1D
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 21:17:25 +0000 (UTC)
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E581AA
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 14:17:23 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a8ada42c2aso19437887b3.3
-        for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 14:17:23 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCB1E3FB2F
+	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 21:23:37 +0000 (UTC)
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9466C1B4
+	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 14:23:35 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-5842a7fdc61so1451544eaf.3
+        for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 14:23:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698441442; x=1699046242; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X7X6eDWH84YiiA/yviMS1DD8P2E6WYBibPMTFCKAaRw=;
-        b=iJJdjRJU2W9nVhmrEQhmZ1EPLwcd1tB/2x+81zz8zA9ghIwNpaBWWnicDHqs0EYhCG
-         QB5bXfK8JGzvBk1DphHccFeyxOkzFo6wAIOG7bv8IYa3t2E9RwQ38e9EOAB16uOCOseT
-         irxW/CI2TlxpqRU9V/6kS8111w1xPFFkke+75As6qge3Z9nMmRXgGt1YaDwwbZYFvM/o
-         mpWloDg/aCpbsIAjzQBBNPF+9XHikjkWhdVfyxZRWqdj7Xx8km+mm0NPdoprZgGEkw94
-         if3Tm9T3PeJdx4Kub9hAyEGuSx+wxw7mzNg/GjMx36mAmOFsSfHqA7HR1GE8Vh9RGwJT
-         StUw==
+        d=gmail.com; s=20230601; t=1698441814; x=1699046614; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9OZd1ZsVqLdGjpxY17xt+LSIV5vSlXewYuYJmytLXJw=;
+        b=efNDDYdnSfXXwFyrT5RvhrG73sGT0p+x4mf3/cx9IoCtye2fFRUUXyx4/DY09D9TVJ
+         6D1E/O6RpgxVnb5SPMNLF00npBv0iGem5tYqJJ8XhwrXBNvnuoPwbyC5KiowGo4sGf6W
+         CRQulwruTSPJI/oRWGl9FO13v8VbU4P3E7vFc3guN1i516VQAMuIjh2CAlfaAn7Y+0og
+         fwZPlmFmFQ2o4bDoMdgWX3tEQgOgxNZT+TDWgtRtZ4lSQAbphpieVB+aGBZDjU/X8emg
+         5OHrFUWEj5KDAxQfckoKRFzPb0f7/SQmm3oig6xxidCOHWwzCuY5UsNObuxZbYfqK3iz
+         T7Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698441442; x=1699046242;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X7X6eDWH84YiiA/yviMS1DD8P2E6WYBibPMTFCKAaRw=;
-        b=OnDeg+TMqHuhdd9TgOeFFRCaTsf7Hzf9vfApfwM0ClxLoPhGM+FOz5HBexg4Te6k+k
-         yPiEf1u3x1yJdONT/iViqhyLSQA3gBx6Y/Pm0AQzSlnUxJtLdFASvxkfZWzGhV0sQ76q
-         clYuZTxEFzpoe4N4g5TfKCFcgiEgqhucg7YEvSQjICxVOvy/vEl5R+aZfw8eMXO30SKz
-         wiPMjlfuK652lTP+NoICBsrTvmgGIxr6ZiuN2mlXgFHAV0507vKFqf5hC8w3Fjm+g91B
-         STA/+4Ug93MQz2wQa/c7xEjooW1RaMPAHll6BxLpfjxu0KbjtOPb7erT4MV8F90vm+HB
-         eI/A==
-X-Gm-Message-State: AOJu0YyJG4hx+JBYyRzSg3Gdp8Dv/+ePTsxYVrFI/aVE01kVus6uQzCL
-	ski4Bm4slJuWBU49fk2ku7bM01T7FoQ=
-X-Google-Smtp-Source: AGHT+IHKcpsxfmLElxdJr8c1o3eyV8UV8wFtfD7Te4ehj5U4XWZsDpeTyGyHdqxVsk892i5CVkmAVA==
-X-Received: by 2002:a81:e608:0:b0:5a7:bc66:949f with SMTP id u8-20020a81e608000000b005a7bc66949fmr3776448ywl.26.1698441442340;
-        Fri, 27 Oct 2023 14:17:22 -0700 (PDT)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:41cd:a94b:292d:cd8])
-        by smtp.gmail.com with ESMTPSA id e133-20020a81698b000000b0059a34cfa2a5sm1080174ywc.67.2023.10.27.14.17.21
+        d=1e100.net; s=20230601; t=1698441814; x=1699046614;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9OZd1ZsVqLdGjpxY17xt+LSIV5vSlXewYuYJmytLXJw=;
+        b=hCM2a+yCF2iAzEBbCKjco+SCTJ7mcsmP+zsI7rn8saa8Lo0JxYXJ2gaISWlacoIt6w
+         K+Rt1i3PBIpqQ1eZn+2lb+thX6gpRbo1eDQdfAn8VNvLu7vTylhquqf1xAhhEi2K6UW/
+         Ce1nkPhMob6lQCim0UPyN6B/TSxqTlgGnRirwOvy0UAdZz4pfTafq4lVNkFRym6ncJxQ
+         IVjwjtKxyIJvzrM5oRhtmYoG/PLNL05HaiCR+LmUgJPRJkYxnMac9BKUfgLI4AIvjmTK
+         fNRODrjr9BdKIAPXlJaiEZ79bs7rpNKLhU2+3uH6jIujB7RD0hYR0BR9rpIEjtSBh1wj
+         wO9Q==
+X-Gm-Message-State: AOJu0Yx/b8bXpjMyA2UUsOjSprVnhNcig8LNA5cIXvuOVou+1iz4HQqq
+	N5rkRflkQDGL1KLHiC/dKHJWhSMFFYBi3g==
+X-Google-Smtp-Source: AGHT+IH2GDhp522Y75p1x89KI7SDWgviDucJh5PXRwFcjbtiAxNWndXwyqtvpM7QELmCrgoPbnM+Og==
+X-Received: by 2002:a4a:a50c:0:b0:57b:7e41:9f11 with SMTP id v12-20020a4aa50c000000b0057b7e419f11mr3747129ook.2.1698441814500;
+        Fri, 27 Oct 2023 14:23:34 -0700 (PDT)
+Received: from localhost (fwdproxy-vll-004.fbsv.net. [2a03:2880:12ff:4::face:b00c])
+        by smtp.gmail.com with ESMTPSA id e15-20020a4aaacf000000b0057b8baf00bbsm521369oon.22.2023.10.27.14.23.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 14:17:21 -0700 (PDT)
-From: thinker.li@gmail.com
+        Fri, 27 Oct 2023 14:23:34 -0700 (PDT)
+From: Manu Bretelle <chantr4@gmail.com>
 To: bpf@vger.kernel.org,
+	quentin@isovalent.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
 	ast@kernel.org,
 	martin.lau@linux.dev,
 	song@kernel.org,
-	kernel-team@meta.com,
-	andrii@kernel.org,
-	drosen@google.com
-Cc: sinquersw@gmail.com,
-	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v7 10/10] selftests/bpf: test case for register_bpf_struct_ops().
-Date: Fri, 27 Oct 2023 14:17:02 -0700
-Message-Id: <20231027211702.1374597-11-thinker.li@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231027211702.1374597-1-thinker.li@gmail.com>
-References: <20231027211702.1374597-1-thinker.li@gmail.com>
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org
+Subject: [PATCH bpf-next] selftests/bpf: consolidate VIRTIO/9P configs in the generic config file
+Date: Fri, 27 Oct 2023 14:23:04 -0700
+Message-Id: <20231027212304.3354504-1-chantr4@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,287 +81,191 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Kui-Feng Lee <thinker.li@gmail.com>
+Those configs are needed to be able to run VM somewhat consistently.
+For instance, ATM, s390x is missing the `CONFIG_VIRTIO_CONSOLE` which
+prevents s390x kernels built in CI to leverage qemu-guest-agent.
 
-Create a new struct_ops type called bpf_testmod_ops within the bpf_testmod
-module. When a struct_ops object is registered, the bpf_testmod module will
-invoke test_2 from the module.
+By moving them to `config`, we should have selftest kernels which are
+equal in term of functionalities.
 
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+The set of config unabled were picked using
+
+    grep -h -E '(_9P|_VIRTIO)' config.x86_64 config | sort | uniq
+
+added to `config` and then
+    grep -vE '(_9P|_VIRTIO)' config.{x86_64,aarch64,s390x}
+
+as a side-effect, some config may have disappeared to the aarch64 and
+s390x kernels, but they should not be needed. CI will tell.
+
+Signed-off-by: Manu Bretelle <chantr4@gmail.com>
 ---
- tools/testing/selftests/bpf/Makefile          |  4 +-
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 59 +++++++++++++++++++
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  5 ++
- .../bpf/prog_tests/test_struct_ops_module.c   | 39 ++++++++++++
- .../selftests/bpf/progs/struct_ops_module.c   | 30 ++++++++++
- tools/testing/selftests/bpf/testing_helpers.c | 35 +++++++++++
- 6 files changed, 171 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_module.c
+ tools/testing/selftests/bpf/config         | 13 +++++++++++++
+ tools/testing/selftests/bpf/config.aarch64 | 16 ----------------
+ tools/testing/selftests/bpf/config.s390x   |  9 ---------
+ tools/testing/selftests/bpf/config.x86_64  | 12 ------------
+ 4 files changed, 13 insertions(+), 37 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 9c27b67bc7b1..1b02e3fdaf21 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -458,7 +458,8 @@ TRUNNER_TEST_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.test.o,	\
- 				 $$(notdir $$(wildcard $(TRUNNER_TESTS_DIR)/*.c)))
- TRUNNER_EXTRA_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.o,		\
- 				 $$(filter %.c,$(TRUNNER_EXTRA_SOURCES)))
--TRUNNER_EXTRA_HDRS := $$(filter %.h,$(TRUNNER_EXTRA_SOURCES))
-+TRUNNER_EXTRA_HDRS := $$(filter %.h,$(TRUNNER_EXTRA_SOURCES)) \
-+	$$(TRUNNER_OUTPUT)$(if $$(TRUNNER_OUTPUT),/)rcu_tasks_trace_gp.skel.h
- TRUNNER_TESTS_HDR := $(TRUNNER_TESTS_DIR)/tests.h
- TRUNNER_BPF_SRCS := $$(notdir $$(wildcard $(TRUNNER_BPF_PROGS_DIR)/*.c))
- TRUNNER_BPF_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.bpf.o, $$(TRUNNER_BPF_SRCS))
-@@ -724,6 +725,7 @@ $(OUTPUT)/uprobe_multi: uprobe_multi.c
- 	$(call msg,BINARY,,$@)
- 	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@
- 
-+
- EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)	\
- 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
- 	feature bpftool							\
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index a5e246f7b202..418e10311c33 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2020 Facebook */
-+#include <linux/bpf.h>
- #include <linux/btf.h>
- #include <linux/btf_ids.h>
- #include <linux/error-injection.h>
-@@ -522,11 +523,66 @@ BTF_ID_FLAGS(func, bpf_kfunc_call_test_static_unused_arg)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_offset)
- BTF_SET8_END(bpf_testmod_check_kfunc_ids)
- 
-+#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-+
-+DEFINE_STRUCT_OPS_VALUE_TYPE(bpf_testmod_ops);
-+
-+static int bpf_testmod_ops_init(struct btf *btf)
-+{
-+	return 0;
-+}
-+
-+static bool bpf_testmod_ops_is_valid_access(int off, int size,
-+					    enum bpf_access_type type,
-+					    const struct bpf_prog *prog,
-+					    struct bpf_insn_access_aux *info)
-+{
-+	return bpf_tracing_btf_ctx_access(off, size, type, prog, info);
-+}
-+
-+static int bpf_testmod_ops_init_member(const struct btf_type *t,
-+				       const struct btf_member *member,
-+				       void *kdata, const void *udata)
-+{
-+	return 0;
-+}
-+
- static const struct btf_kfunc_id_set bpf_testmod_kfunc_set = {
- 	.owner = THIS_MODULE,
- 	.set   = &bpf_testmod_check_kfunc_ids,
- };
- 
-+static const struct bpf_verifier_ops bpf_testmod_verifier_ops = {
-+	.is_valid_access = bpf_testmod_ops_is_valid_access,
-+};
-+
-+static int bpf_dummy_reg(void *kdata)
-+{
-+	struct bpf_testmod_ops *ops = kdata;
-+	int r;
-+
-+	BTF_STRUCT_OPS_TYPE_EMIT(bpf_testmod_ops);
-+	r = ops->test_2(4, 3);
-+
-+	return 0;
-+}
-+
-+static void bpf_dummy_unreg(void *kdata)
-+{
-+}
-+
-+struct bpf_struct_ops bpf_bpf_testmod_ops = {
-+	.verifier_ops = &bpf_testmod_verifier_ops,
-+	.init = bpf_testmod_ops_init,
-+	.init_member = bpf_testmod_ops_init_member,
-+	.reg = bpf_dummy_reg,
-+	.unreg = bpf_dummy_unreg,
-+	.name = "bpf_testmod_ops",
-+	.owner = THIS_MODULE,
-+};
-+
-+#endif /* CONFIG_DEBUG_INFO_BTF_MODULES */
-+
- extern int bpf_fentry_test1(int a);
- 
- static int bpf_testmod_init(void)
-@@ -537,6 +593,9 @@ static int bpf_testmod_init(void)
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &bpf_testmod_kfunc_set);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_testmod_kfunc_set);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &bpf_testmod_kfunc_set);
-+#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-+	ret = ret ?: register_bpf_struct_ops(&bpf_bpf_testmod_ops);
-+#endif
- 	if (ret < 0)
- 		return ret;
- 	if (bpf_fentry_test1(0) < 0)
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-index f32793efe095..ca5435751c79 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-@@ -28,4 +28,9 @@ struct bpf_iter_testmod_seq {
- 	int cnt;
- };
- 
-+struct bpf_testmod_ops {
-+	int (*test_1)(void);
-+	int (*test_2)(int a, int b);
-+};
-+
- #endif /* _BPF_TESTMOD_H */
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-new file mode 100644
-index 000000000000..3a00dc294583
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+#include <test_progs.h>
-+#include <time.h>
-+
-+#include "rcu_tasks_trace_gp.skel.h"
-+#include "struct_ops_module.skel.h"
-+
-+static void test_regular_load(void)
-+{
-+	struct struct_ops_module *skel;
-+	struct bpf_link *link;
-+	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
-+	int err;
-+
-+	skel = struct_ops_module__open_opts(&opts);
-+	if (!ASSERT_OK_PTR(skel, "struct_ops_module_open"))
-+		return;
-+	err = struct_ops_module__load(skel);
-+	if (!ASSERT_OK(err, "struct_ops_module_load"))
-+		return;
-+
-+	link = bpf_map__attach_struct_ops(skel->maps.testmod_1);
-+	ASSERT_OK_PTR(link, "attach_test_mod_1");
-+
-+	/* test_2() will be called from bpf_dummy_reg() in bpf_testmod.c */
-+	ASSERT_EQ(skel->bss->test_2_result, 7, "test_2_result");
-+
-+	bpf_link__destroy(link);
-+
-+	struct_ops_module__destroy(skel);
-+}
-+
-+void serial_test_struct_ops_module(void)
-+{
-+	if (test__start_subtest("regular_load"))
-+		test_regular_load();
-+}
-+
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_module.c b/tools/testing/selftests/bpf/progs/struct_ops_module.c
-new file mode 100644
-index 000000000000..cb305d04342f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_module.c
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../bpf_testmod/bpf_testmod.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int test_2_result = 0;
-+
-+SEC("struct_ops/test_1")
-+int BPF_PROG(test_1)
-+{
-+	return 0xdeadbeef;
-+}
-+
-+SEC("struct_ops/test_2")
-+int BPF_PROG(test_2, int a, int b)
-+{
-+	test_2_result = a + b;
-+	return a + b;
-+}
-+
-+SEC(".struct_ops.link")
-+struct bpf_testmod_ops testmod_1 = {
-+	.test_1 = (void *)test_1,
-+	.test_2 = (void *)test_2,
-+};
-+
-diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testing/selftests/bpf/testing_helpers.c
-index 8d994884c7b4..05870cd62458 100644
---- a/tools/testing/selftests/bpf/testing_helpers.c
-+++ b/tools/testing/selftests/bpf/testing_helpers.c
-@@ -10,6 +10,7 @@
- #include "test_progs.h"
- #include "testing_helpers.h"
- #include <linux/membarrier.h>
-+#include "rcu_tasks_trace_gp.skel.h"
- 
- int parse_num_list(const char *s, bool **num_set, int *num_set_len)
- {
-@@ -380,10 +381,44 @@ int load_bpf_testmod(bool verbose)
- 	return 0;
- }
- 
-+/* This function will trigger call_rcu_tasks_trace() in the kernel */
-+static int kern_sync_rcu_tasks_trace(void)
-+{
-+	struct rcu_tasks_trace_gp *rcu;
-+	time_t start;
-+	long gp_seq;
-+	LIBBPF_OPTS(bpf_test_run_opts, opts);
-+
-+	rcu = rcu_tasks_trace_gp__open_and_load();
-+	if (IS_ERR(rcu))
-+		return -EFAULT;
-+	if (rcu_tasks_trace_gp__attach(rcu))
-+		return -EFAULT;
-+
-+	gp_seq = READ_ONCE(rcu->bss->gp_seq);
-+
-+	if (bpf_prog_test_run_opts(bpf_program__fd(rcu->progs.do_call_rcu_tasks_trace),
-+				   &opts))
-+		return -EFAULT;
-+	if (opts.retval != 0)
-+		return -EFAULT;
-+
-+	start = time(NULL);
-+	while ((start + 2) > time(NULL) &&
-+	       gp_seq == READ_ONCE(rcu->bss->gp_seq))
-+		sched_yield();
-+
-+	rcu_tasks_trace_gp__destroy(rcu);
-+
-+	return 0;
-+}
-+
- /*
-  * Trigger synchronize_rcu() in kernel.
-  */
- int kern_sync_rcu(void)
- {
-+	if (kern_sync_rcu_tasks_trace())
-+		return -EFAULT;
- 	return syscall(__NR_membarrier, MEMBARRIER_CMD_SHARED, 0, 0);
- }
+diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+index 3ec5927ec3e5..c22a068bc1de 100644
+--- a/tools/testing/selftests/bpf/config
++++ b/tools/testing/selftests/bpf/config
+@@ -86,3 +86,16 @@ CONFIG_VXLAN=y
+ CONFIG_XDP_SOCKETS=y
+ CONFIG_XFRM_INTERFACE=y
+ CONFIG_VSOCKETS=y
++# VIRTIO/9P configs to run in VMs
++CONFIG_9P_FS_POSIX_ACL=y
++CONFIG_9P_FS_SECURITY=y
++CONFIG_9P_FS=y
++CONFIG_CRYPTO_DEV_VIRTIO=y
++CONFIG_NET_9P_VIRTIO=y
++CONFIG_NET_9P=y
++CONFIG_VIRTIO_BALLOON=y
++CONFIG_VIRTIO_BLK=y
++CONFIG_VIRTIO_CONSOLE=y
++CONFIG_VIRTIO_NET=y
++CONFIG_VIRTIO_PCI=y
++CONFIG_VIRTIO_VSOCKETS_COMMON=y
+diff --git a/tools/testing/selftests/bpf/config.aarch64 b/tools/testing/selftests/bpf/config.aarch64
+index 253821494884..fa8ecf626c73 100644
+--- a/tools/testing/selftests/bpf/config.aarch64
++++ b/tools/testing/selftests/bpf/config.aarch64
+@@ -1,4 +1,3 @@
+-CONFIG_9P_FS=y
+ CONFIG_ARCH_VEXPRESS=y
+ CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
+ CONFIG_ARM_SMMU_V3=y
+@@ -46,7 +45,6 @@ CONFIG_DEBUG_SG=y
+ CONFIG_DETECT_HUNG_TASK=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_DEVTMPFS=y
+-CONFIG_DRM_VIRTIO_GPU=y
+ CONFIG_DRM=y
+ CONFIG_DUMMY=y
+ CONFIG_EXPERT=y
+@@ -67,7 +65,6 @@ CONFIG_HAVE_KRETPROBES=y
+ CONFIG_HEADERS_INSTALL=y
+ CONFIG_HIGH_RES_TIMERS=y
+ CONFIG_HUGETLBFS=y
+-CONFIG_HW_RANDOM_VIRTIO=y
+ CONFIG_HW_RANDOM=y
+ CONFIG_HZ_100=y
+ CONFIG_IDLE_PAGE_TRACKING=y
+@@ -99,8 +96,6 @@ CONFIG_MEMCG=y
+ CONFIG_MEMORY_HOTPLUG=y
+ CONFIG_MEMORY_HOTREMOVE=y
+ CONFIG_NAMESPACES=y
+-CONFIG_NET_9P_VIRTIO=y
+-CONFIG_NET_9P=y
+ CONFIG_NET_ACT_BPF=y
+ CONFIG_NET_ACT_GACT=y
+ CONFIG_NETDEVICES=y
+@@ -140,7 +135,6 @@ CONFIG_SCHED_TRACER=y
+ CONFIG_SCSI_CONSTANTS=y
+ CONFIG_SCSI_LOGGING=y
+ CONFIG_SCSI_SCAN_ASYNC=y
+-CONFIG_SCSI_VIRTIO=y
+ CONFIG_SCSI=y
+ CONFIG_SECURITY_NETWORK=y
+ CONFIG_SERIAL_AMBA_PL011_CONSOLE=y
+@@ -167,16 +161,6 @@ CONFIG_UPROBES=y
+ CONFIG_USELIB=y
+ CONFIG_USER_NS=y
+ CONFIG_VETH=y
+-CONFIG_VIRTIO_BALLOON=y
+-CONFIG_VIRTIO_BLK=y
+-CONFIG_VIRTIO_CONSOLE=y
+-CONFIG_VIRTIO_FS=y
+-CONFIG_VIRTIO_INPUT=y
+-CONFIG_VIRTIO_MMIO_CMDLINE_DEVICES=y
+-CONFIG_VIRTIO_MMIO=y
+-CONFIG_VIRTIO_NET=y
+-CONFIG_VIRTIO_PCI=y
+-CONFIG_VIRTIO_VSOCKETS_COMMON=y
+ CONFIG_VLAN_8021Q=y
+ CONFIG_VSOCKETS=y
+ CONFIG_VSOCKETS_LOOPBACK=y
+diff --git a/tools/testing/selftests/bpf/config.s390x b/tools/testing/selftests/bpf/config.s390x
+index 2ba92167be35..e93330382849 100644
+--- a/tools/testing/selftests/bpf/config.s390x
++++ b/tools/testing/selftests/bpf/config.s390x
+@@ -1,4 +1,3 @@
+-CONFIG_9P_FS=y
+ CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
+ CONFIG_AUDIT=y
+ CONFIG_BLK_CGROUP=y
+@@ -84,8 +83,6 @@ CONFIG_MEMORY_HOTPLUG=y
+ CONFIG_MEMORY_HOTREMOVE=y
+ CONFIG_NAMESPACES=y
+ CONFIG_NET=y
+-CONFIG_NET_9P=y
+-CONFIG_NET_9P_VIRTIO=y
+ CONFIG_NET_ACT_BPF=y
+ CONFIG_NET_ACT_GACT=y
+ CONFIG_NET_KEY=y
+@@ -114,7 +111,6 @@ CONFIG_SAMPLE_SECCOMP=y
+ CONFIG_SAMPLES=y
+ CONFIG_SCHED_TRACER=y
+ CONFIG_SCSI=y
+-CONFIG_SCSI_VIRTIO=y
+ CONFIG_SECURITY_NETWORK=y
+ CONFIG_STACK_TRACER=y
+ CONFIG_STATIC_KEYS_SELFTEST=y
+@@ -136,11 +132,6 @@ CONFIG_UPROBES=y
+ CONFIG_USELIB=y
+ CONFIG_USER_NS=y
+ CONFIG_VETH=y
+-CONFIG_VIRTIO_BALLOON=y
+-CONFIG_VIRTIO_BLK=y
+-CONFIG_VIRTIO_NET=y
+-CONFIG_VIRTIO_PCI=y
+-CONFIG_VIRTIO_VSOCKETS_COMMON=y
+ CONFIG_VLAN_8021Q=y
+ CONFIG_VSOCKETS=y
+ CONFIG_VSOCKETS_LOOPBACK=y
+diff --git a/tools/testing/selftests/bpf/config.x86_64 b/tools/testing/selftests/bpf/config.x86_64
+index 2e70a6048278..f7bfb2b09c82 100644
+--- a/tools/testing/selftests/bpf/config.x86_64
++++ b/tools/testing/selftests/bpf/config.x86_64
+@@ -1,6 +1,3 @@
+-CONFIG_9P_FS=y
+-CONFIG_9P_FS_POSIX_ACL=y
+-CONFIG_9P_FS_SECURITY=y
+ CONFIG_AGP=y
+ CONFIG_AGP_AMD64=y
+ CONFIG_AGP_INTEL=y
+@@ -45,7 +42,6 @@ CONFIG_CPU_IDLE_GOV_LADDER=y
+ CONFIG_CPUSETS=y
+ CONFIG_CRC_T10DIF=y
+ CONFIG_CRYPTO_BLAKE2B=y
+-CONFIG_CRYPTO_DEV_VIRTIO=y
+ CONFIG_CRYPTO_SEQIV=y
+ CONFIG_CRYPTO_XXHASH=y
+ CONFIG_DCB=y
+@@ -145,8 +141,6 @@ CONFIG_MEMORY_FAILURE=y
+ CONFIG_MINIX_SUBPARTITION=y
+ CONFIG_NAMESPACES=y
+ CONFIG_NET=y
+-CONFIG_NET_9P=y
+-CONFIG_NET_9P_VIRTIO=y
+ CONFIG_NET_ACT_BPF=y
+ CONFIG_NET_CLS_CGROUP=y
+ CONFIG_NET_EMATCH=y
+@@ -228,12 +222,6 @@ CONFIG_USER_NS=y
+ CONFIG_VALIDATE_FS_PARSER=y
+ CONFIG_VETH=y
+ CONFIG_VIRT_DRIVERS=y
+-CONFIG_VIRTIO_BALLOON=y
+-CONFIG_VIRTIO_BLK=y
+-CONFIG_VIRTIO_CONSOLE=y
+-CONFIG_VIRTIO_NET=y
+-CONFIG_VIRTIO_PCI=y
+-CONFIG_VIRTIO_VSOCKETS_COMMON=y
+ CONFIG_VLAN_8021Q=y
+ CONFIG_VSOCKETS=y
+ CONFIG_VSOCKETS_LOOPBACK=y
 -- 
-2.34.1
+2.39.3
 
 
