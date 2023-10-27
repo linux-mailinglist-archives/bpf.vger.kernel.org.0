@@ -1,47 +1,49 @@
-Return-Path: <bpf+bounces-13446-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13445-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 933A57D9FA5
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 20:17:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0032A7D9FA3
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 20:17:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23E4AB2160E
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 18:17:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A7F1B2153D
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 18:16:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03CD53C086;
-	Fri, 27 Oct 2023 18:16:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84E593B7B3;
+	Fri, 27 Oct 2023 18:16:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 969D03C067
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 354A13C066
 	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 18:16:52 +0000 (UTC)
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3FFF3
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 11:16:51 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39RE5aB8006235
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69B3AC
+	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 11:16:50 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+	by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 39RE53c5003192
 	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 11:16:50 -0700
 Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3u0c4pu37t-2
+	by m0001303.ppops.net (PPS) with ESMTPS id 3u089achyn-13
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 11:16:50 -0700
-Received: from twshared39705.02.prn5.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 11:16:49 -0700
+Received: from twshared9518.03.prn6.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 27 Oct 2023 11:16:49 -0700
+ 15.1.2507.34; Fri, 27 Oct 2023 11:16:42 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 782ED3A796532; Fri, 27 Oct 2023 11:13:51 -0700 (PDT)
+	id AFEEF3A79656B; Fri, 27 Oct 2023 11:13:54 -0700 (PDT)
 From: Andrii Nakryiko <andrii@kernel.org>
 To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH v5 bpf-next 02/23] selftests/bpf: satisfy compiler by having explicit return in btf test
-Date: Fri, 27 Oct 2023 11:13:25 -0700
-Message-ID: <20231027181346.4019398-3-andrii@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>,
+        Shung-Hsi Yu
+	<shung-hsi.yu@suse.com>
+Subject: [PATCH v5 bpf-next 03/23] bpf: derive smin/smax from umin/max bounds
+Date: Fri, 27 Oct 2023 11:13:26 -0700
+Message-ID: <20231027181346.4019398-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231027181346.4019398-1-andrii@kernel.org>
 References: <20231027181346.4019398-1-andrii@kernel.org>
@@ -54,34 +56,115 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: vtZ5OKtBBcGZXgFV4jP8gm2_MhMTGg01
-X-Proofpoint-ORIG-GUID: vtZ5OKtBBcGZXgFV4jP8gm2_MhMTGg01
+X-Proofpoint-GUID: yxmpqExx0_Lza_f-S4lIijNi4ok_q1Hj
+X-Proofpoint-ORIG-GUID: yxmpqExx0_Lza_f-S4lIijNi4ok_q1Hj
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-27_17,2023-10-27_01,2023-05-22_02
 
-Some compilers complain about get_pprint_mapv_size() not returning value
-in some code paths. Fix with explicit return.
+Add smin/smax derivation from appropriate umin/umax values. Previously th=
+e
+logic was surprisingly asymmetric, trying to derive umin/umax from smin/s=
+max
+(if possible), but not trying to do the same in the other direction. A si=
+mple
+addition to __reg64_deduce_bounds() fixes this.
 
+Added also generic comment about u64/s64 ranges and their relationship.
+Hopefully that helps readers to understand all the bounds deductions
+a bit better.
+
+Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/testing/selftests/bpf/prog_tests/btf.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/bpf/verifier.c | 70 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing=
-/selftests/bpf/prog_tests/btf.c
-index 92d51f377fe5..8fb4a04fbbc0 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf.c
-@@ -5265,6 +5265,7 @@ static size_t get_pprint_mapv_size(enum pprint_mapv=
-_kind_t mapv_kind)
- #endif
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 857d76694517..bf4193706744 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2358,6 +2358,76 @@ static void __reg32_deduce_bounds(struct bpf_reg_s=
+tate *reg)
 =20
- 	assert(0);
-+	return 0;
- }
-=20
- static void set_pprint_mapv(enum pprint_mapv_kind_t mapv_kind,
+ static void __reg64_deduce_bounds(struct bpf_reg_state *reg)
+ {
++	/* If u64 range forms a valid s64 range (due to matching sign bit),
++	 * try to learn from that. Let's do a bit of ASCII art to see when
++	 * this is happening. Let's take u64 range first:
++	 *
++	 * 0             0x7fffffffffffffff 0x8000000000000000        U64_MAX
++	 * |-------------------------------|--------------------------------|
++	 *
++	 * Valid u64 range is formed when umin and umax are anywhere in this
++	 * range [0, U64_MAX] and umin <=3D umax. u64 is simple and
++	 * straightforward. Let's where s64 range maps to this simple [0,
++	 * U64_MAX] range, annotated below the line for comparison:
++	 *
++	 * 0             0x7fffffffffffffff 0x8000000000000000        U64_MAX
++	 * |-------------------------------|--------------------------------|
++	 * 0                        S64_MAX S64_MIN                        -1
++	 *
++	 * So s64 values basically start in the middle and then are contiguous
++	 * to the right of it, wrapping around from -1 to 0, and then
++	 * finishing as S64_MAX (0x7fffffffffffffff) right before S64_MIN.
++	 * We can try drawing more visually continuity of u64 vs s64 values as
++	 * mapped to just actual hex valued range of values.
++	 *
++	 *  u64 start                                               u64 end
++	 *  _______________________________________________________________
++	 * /                                                               \
++	 * 0             0x7fffffffffffffff 0x8000000000000000        U64_MAX
++	 * |-------------------------------|--------------------------------|
++	 * 0                        S64_MAX S64_MIN                        -1
++	 *                                / \
++	 * >------------------------------   ------------------------------->
++	 * s64 continues...        s64 end   s64 start          s64 "midpoint"
++	 *
++	 * What this means is that in general, we can't always derive
++	 * something new about u64 from any random s64 range, and vice versa.
++	 * But we can do that in two particular cases. One is when entire
++	 * u64/s64 range is *entirely* contained within left half of the above
++	 * diagram or when it is *entirely* contained in the right half. I.e.:
++	 *
++	 * |-------------------------------|--------------------------------|
++	 *     ^                   ^            ^                 ^
++	 *     A                   B            C                 D
++	 *
++	 * [A, B] and [C, D] are contained entirely in their respective halves
++	 * and form valid contiguous ranges as both u64 and s64 values. [A, B]
++	 * will be non-negative both as u64 and s64 (and in fact it will be
++	 * identical ranges no matter the signedness). [C, D] treated as s64
++	 * will be a range of negative values, while in u64 it will be
++	 * non-negative range of values larger than 0x8000000000000000.
++	 *
++	 * Now, any other range here can't be represented in both u64 and s64
++	 * simultaneously. E.g., [A, C], [A, D], [B, C], [B, D] are valid
++	 * contiguous u64 ranges, but they are discontinuous in s64. [B, C]
++	 * in s64 would be properly presented as [S64_MIN, C] and [B, S64_MAX],
++	 * for example. Similarly, valid s64 range [D, A] (going from negative
++	 * to positive values), would be two separate [D, U64_MAX] and [0, A]
++	 * ranges as u64. Currently reg_state can't represent two segments per
++	 * numeric domain, so in such situations we can only derive maximal
++	 * possible range ([0, U64_MAX] for u64, and [S64_MIN, S64_MAX) for s64=
+).
++	 *
++	 * So we use these facts to derive umin/umax from smin/smax and vice
++	 * versa only if they stay within the same "half". This is equivalent
++	 * to checking sign bit: lower half will have sign bit as zero, upper
++	 * half have sign bit 1. Below in code we simplify this by just
++	 * casting umin/umax as smin/smax and checking if they form valid
++	 * range, and vice versa. Those are equivalent checks.
++	 */
++	if ((s64)reg->umin_value <=3D (s64)reg->umax_value) {
++		reg->smin_value =3D max_t(s64, reg->smin_value, reg->umin_value);
++		reg->smax_value =3D min_t(s64, reg->smax_value, reg->umax_value);
++	}
+ 	/* Learn sign from signed bounds.
+ 	 * If we cannot cross the sign boundary, then signed and unsigned bound=
+s
+ 	 * are the same, so combine.  This works even in the negative case, e.g=
+.
 --=20
 2.34.1
 
