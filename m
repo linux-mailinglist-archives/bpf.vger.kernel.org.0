@@ -1,271 +1,103 @@
-Return-Path: <bpf+bounces-13510-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13509-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A2047DA263
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 23:23:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 623947DA261
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 23:23:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2D91282635
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 21:23:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 911F31C211A6
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 21:23:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA383FE23;
-	Fri, 27 Oct 2023 21:23:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C86D3FE33;
+	Fri, 27 Oct 2023 21:23:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="efNDDYdn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PmxAkITO"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCB1E3FB2F
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 21:23:37 +0000 (UTC)
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9466C1B4
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 14:23:35 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-5842a7fdc61so1451544eaf.3
-        for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 14:23:35 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DD2E3FB26
+	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 21:23:20 +0000 (UTC)
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 237FA1B5
+	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 14:23:19 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5a7a80a96dbso32149177b3.0
+        for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 14:23:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698441814; x=1699046614; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9OZd1ZsVqLdGjpxY17xt+LSIV5vSlXewYuYJmytLXJw=;
-        b=efNDDYdnSfXXwFyrT5RvhrG73sGT0p+x4mf3/cx9IoCtye2fFRUUXyx4/DY09D9TVJ
-         6D1E/O6RpgxVnb5SPMNLF00npBv0iGem5tYqJJ8XhwrXBNvnuoPwbyC5KiowGo4sGf6W
-         CRQulwruTSPJI/oRWGl9FO13v8VbU4P3E7vFc3guN1i516VQAMuIjh2CAlfaAn7Y+0og
-         fwZPlmFmFQ2o4bDoMdgWX3tEQgOgxNZT+TDWgtRtZ4lSQAbphpieVB+aGBZDjU/X8emg
-         5OHrFUWEj5KDAxQfckoKRFzPb0f7/SQmm3oig6xxidCOHWwzCuY5UsNObuxZbYfqK3iz
-         T7Kw==
+        d=gmail.com; s=20230601; t=1698441798; x=1699046598; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yARJvkL89rH3jq0Z53eSfLhxtKLw7kncSliYwuuLzlM=;
+        b=PmxAkITOOodKzYdgIFpVR7Ejp7NwteS75Xf8CpOAs8mvAF382VTJFz4xeol04OIDOL
+         lLH8fQtkK1rxS53jQ560M5PwTgSarshTBR9JmICsCcz22grKyNnRh9gtLCOlc85VreUN
+         Pf+4ogyPkA0ak6hB0/e9ure62KiXzkM4HqaATSA5Oaqn8sSgYJMB2RUfUKFNGQTsAYNl
+         Ct+91nRa6hVp3ejjZokOBe4V6FBFkS9mqN3kADWjXfjUd1Ueqk1gfgCZOm/hZL2uAEJN
+         4v6Ufw+qlfK0pm+PGaTG7++QZbUPJYCzJOwQ0w18K1wenCYHTxjGZSY1ka5mbBrlt5Gy
+         Ahzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698441814; x=1699046614;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9OZd1ZsVqLdGjpxY17xt+LSIV5vSlXewYuYJmytLXJw=;
-        b=hCM2a+yCF2iAzEBbCKjco+SCTJ7mcsmP+zsI7rn8saa8Lo0JxYXJ2gaISWlacoIt6w
-         K+Rt1i3PBIpqQ1eZn+2lb+thX6gpRbo1eDQdfAn8VNvLu7vTylhquqf1xAhhEi2K6UW/
-         Ce1nkPhMob6lQCim0UPyN6B/TSxqTlgGnRirwOvy0UAdZz4pfTafq4lVNkFRym6ncJxQ
-         IVjwjtKxyIJvzrM5oRhtmYoG/PLNL05HaiCR+LmUgJPRJkYxnMac9BKUfgLI4AIvjmTK
-         fNRODrjr9BdKIAPXlJaiEZ79bs7rpNKLhU2+3uH6jIujB7RD0hYR0BR9rpIEjtSBh1wj
-         wO9Q==
-X-Gm-Message-State: AOJu0Yx/b8bXpjMyA2UUsOjSprVnhNcig8LNA5cIXvuOVou+1iz4HQqq
-	N5rkRflkQDGL1KLHiC/dKHJWhSMFFYBi3g==
-X-Google-Smtp-Source: AGHT+IH2GDhp522Y75p1x89KI7SDWgviDucJh5PXRwFcjbtiAxNWndXwyqtvpM7QELmCrgoPbnM+Og==
-X-Received: by 2002:a4a:a50c:0:b0:57b:7e41:9f11 with SMTP id v12-20020a4aa50c000000b0057b7e419f11mr3747129ook.2.1698441814500;
-        Fri, 27 Oct 2023 14:23:34 -0700 (PDT)
-Received: from localhost (fwdproxy-vll-004.fbsv.net. [2a03:2880:12ff:4::face:b00c])
-        by smtp.gmail.com with ESMTPSA id e15-20020a4aaacf000000b0057b8baf00bbsm521369oon.22.2023.10.27.14.23.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 14:23:34 -0700 (PDT)
-From: Manu Bretelle <chantr4@gmail.com>
-To: bpf@vger.kernel.org,
-	quentin@isovalent.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org
-Subject: [PATCH bpf-next] selftests/bpf: consolidate VIRTIO/9P configs in the generic config file
-Date: Fri, 27 Oct 2023 14:23:04 -0700
-Message-Id: <20231027212304.3354504-1-chantr4@gmail.com>
-X-Mailer: git-send-email 2.39.3
+        d=1e100.net; s=20230601; t=1698441798; x=1699046598;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yARJvkL89rH3jq0Z53eSfLhxtKLw7kncSliYwuuLzlM=;
+        b=D9ZRyVPr337T3xr+sUQAAX4/jt6ZZug+qOHF+S7d/hvx0CHP+nNRWheSE8X7Va8hfg
+         l5x2cKyXGMMx+roVlJFz5Bfthf1lc4yfB5K/iiYy+CBg2LKOvkEGMFs5X/3mklfOCFGf
+         dlre0oSQbFSW1WIJDRR9yqMPM4NAQlzY1YiVsUyKDjFNcnoA6A9djbx5nVGwLVLb6lC3
+         Vl2LdXCoSWLNamIrYscn/+zat8kjSbuX4NqTU5IbVrZ9Fdt/qS7ZbHYIzqYQNhTf9UvE
+         8SX7lAY8BX4S1LAir2CGxHbIm/wbV1YcdWOEolViV9/nxDcpBhvnThStlENsFkG7AheW
+         wBrg==
+X-Gm-Message-State: AOJu0Ywe/J21xWgNFa0CUini6y429w+PPlP+61ovX/Vra6jG38JsRyeV
+	C1bnA/p1gncTt+ipFvU0AU2v/W0E+dI=
+X-Google-Smtp-Source: AGHT+IFCRY/AUY75UevtbjC5NOaE2VXBSWNlFKNqVcgPkoEQJt+oxmoNnFbXCJd0GpavLwE2T3rXPw==
+X-Received: by 2002:a81:9897:0:b0:5a7:bfc6:96aa with SMTP id p145-20020a819897000000b005a7bfc696aamr11851635ywg.7.1698441798264;
+        Fri, 27 Oct 2023 14:23:18 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:41cd:a94b:292d:cd8? ([2600:1700:6cf8:1240:41cd:a94b:292d:cd8])
+        by smtp.gmail.com with ESMTPSA id f124-20020a0ddc82000000b005950e1bbf11sm1084298ywe.60.2023.10.27.14.23.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 14:23:17 -0700 (PDT)
+Message-ID: <7f525126-92cd-4559-9128-894f0d9be512@gmail.com>
+Date: Fri, 27 Oct 2023 14:23:16 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v7 00/10] Registrating struct_ops types from
+ modules
+Content-Language: en-US
+To: thinker.li@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
+ andrii@kernel.org, drosen@google.com
+Cc: kuifeng@meta.com
+References: <20231027205227.855463-1-thinker.li@gmail.com>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20231027205227.855463-1-thinker.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Those configs are needed to be able to run VM somewhat consistently.
-For instance, ATM, s390x is missing the `CONFIG_VIRTIO_CONSOLE` which
-prevents s390x kernels built in CI to leverage qemu-guest-agent.
+Sorry for sending out this thread by a mistake!
+I have resent v7 as
+   https://lore.kernel.org/bpf/20231027211702.1374597-1-thinker.li@gmail.com
 
-By moving them to `config`, we should have selftest kernels which are
-equal in term of functionalities.
 
-The set of config unabled were picked using
-
-    grep -h -E '(_9P|_VIRTIO)' config.x86_64 config | sort | uniq
-
-added to `config` and then
-    grep -vE '(_9P|_VIRTIO)' config.{x86_64,aarch64,s390x}
-
-as a side-effect, some config may have disappeared to the aarch64 and
-s390x kernels, but they should not be needed. CI will tell.
-
-Signed-off-by: Manu Bretelle <chantr4@gmail.com>
----
- tools/testing/selftests/bpf/config         | 13 +++++++++++++
- tools/testing/selftests/bpf/config.aarch64 | 16 ----------------
- tools/testing/selftests/bpf/config.s390x   |  9 ---------
- tools/testing/selftests/bpf/config.x86_64  | 12 ------------
- 4 files changed, 13 insertions(+), 37 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 3ec5927ec3e5..c22a068bc1de 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -86,3 +86,16 @@ CONFIG_VXLAN=y
- CONFIG_XDP_SOCKETS=y
- CONFIG_XFRM_INTERFACE=y
- CONFIG_VSOCKETS=y
-+# VIRTIO/9P configs to run in VMs
-+CONFIG_9P_FS_POSIX_ACL=y
-+CONFIG_9P_FS_SECURITY=y
-+CONFIG_9P_FS=y
-+CONFIG_CRYPTO_DEV_VIRTIO=y
-+CONFIG_NET_9P_VIRTIO=y
-+CONFIG_NET_9P=y
-+CONFIG_VIRTIO_BALLOON=y
-+CONFIG_VIRTIO_BLK=y
-+CONFIG_VIRTIO_CONSOLE=y
-+CONFIG_VIRTIO_NET=y
-+CONFIG_VIRTIO_PCI=y
-+CONFIG_VIRTIO_VSOCKETS_COMMON=y
-diff --git a/tools/testing/selftests/bpf/config.aarch64 b/tools/testing/selftests/bpf/config.aarch64
-index 253821494884..fa8ecf626c73 100644
---- a/tools/testing/selftests/bpf/config.aarch64
-+++ b/tools/testing/selftests/bpf/config.aarch64
-@@ -1,4 +1,3 @@
--CONFIG_9P_FS=y
- CONFIG_ARCH_VEXPRESS=y
- CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
- CONFIG_ARM_SMMU_V3=y
-@@ -46,7 +45,6 @@ CONFIG_DEBUG_SG=y
- CONFIG_DETECT_HUNG_TASK=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_DEVTMPFS=y
--CONFIG_DRM_VIRTIO_GPU=y
- CONFIG_DRM=y
- CONFIG_DUMMY=y
- CONFIG_EXPERT=y
-@@ -67,7 +65,6 @@ CONFIG_HAVE_KRETPROBES=y
- CONFIG_HEADERS_INSTALL=y
- CONFIG_HIGH_RES_TIMERS=y
- CONFIG_HUGETLBFS=y
--CONFIG_HW_RANDOM_VIRTIO=y
- CONFIG_HW_RANDOM=y
- CONFIG_HZ_100=y
- CONFIG_IDLE_PAGE_TRACKING=y
-@@ -99,8 +96,6 @@ CONFIG_MEMCG=y
- CONFIG_MEMORY_HOTPLUG=y
- CONFIG_MEMORY_HOTREMOVE=y
- CONFIG_NAMESPACES=y
--CONFIG_NET_9P_VIRTIO=y
--CONFIG_NET_9P=y
- CONFIG_NET_ACT_BPF=y
- CONFIG_NET_ACT_GACT=y
- CONFIG_NETDEVICES=y
-@@ -140,7 +135,6 @@ CONFIG_SCHED_TRACER=y
- CONFIG_SCSI_CONSTANTS=y
- CONFIG_SCSI_LOGGING=y
- CONFIG_SCSI_SCAN_ASYNC=y
--CONFIG_SCSI_VIRTIO=y
- CONFIG_SCSI=y
- CONFIG_SECURITY_NETWORK=y
- CONFIG_SERIAL_AMBA_PL011_CONSOLE=y
-@@ -167,16 +161,6 @@ CONFIG_UPROBES=y
- CONFIG_USELIB=y
- CONFIG_USER_NS=y
- CONFIG_VETH=y
--CONFIG_VIRTIO_BALLOON=y
--CONFIG_VIRTIO_BLK=y
--CONFIG_VIRTIO_CONSOLE=y
--CONFIG_VIRTIO_FS=y
--CONFIG_VIRTIO_INPUT=y
--CONFIG_VIRTIO_MMIO_CMDLINE_DEVICES=y
--CONFIG_VIRTIO_MMIO=y
--CONFIG_VIRTIO_NET=y
--CONFIG_VIRTIO_PCI=y
--CONFIG_VIRTIO_VSOCKETS_COMMON=y
- CONFIG_VLAN_8021Q=y
- CONFIG_VSOCKETS=y
- CONFIG_VSOCKETS_LOOPBACK=y
-diff --git a/tools/testing/selftests/bpf/config.s390x b/tools/testing/selftests/bpf/config.s390x
-index 2ba92167be35..e93330382849 100644
---- a/tools/testing/selftests/bpf/config.s390x
-+++ b/tools/testing/selftests/bpf/config.s390x
-@@ -1,4 +1,3 @@
--CONFIG_9P_FS=y
- CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
- CONFIG_AUDIT=y
- CONFIG_BLK_CGROUP=y
-@@ -84,8 +83,6 @@ CONFIG_MEMORY_HOTPLUG=y
- CONFIG_MEMORY_HOTREMOVE=y
- CONFIG_NAMESPACES=y
- CONFIG_NET=y
--CONFIG_NET_9P=y
--CONFIG_NET_9P_VIRTIO=y
- CONFIG_NET_ACT_BPF=y
- CONFIG_NET_ACT_GACT=y
- CONFIG_NET_KEY=y
-@@ -114,7 +111,6 @@ CONFIG_SAMPLE_SECCOMP=y
- CONFIG_SAMPLES=y
- CONFIG_SCHED_TRACER=y
- CONFIG_SCSI=y
--CONFIG_SCSI_VIRTIO=y
- CONFIG_SECURITY_NETWORK=y
- CONFIG_STACK_TRACER=y
- CONFIG_STATIC_KEYS_SELFTEST=y
-@@ -136,11 +132,6 @@ CONFIG_UPROBES=y
- CONFIG_USELIB=y
- CONFIG_USER_NS=y
- CONFIG_VETH=y
--CONFIG_VIRTIO_BALLOON=y
--CONFIG_VIRTIO_BLK=y
--CONFIG_VIRTIO_NET=y
--CONFIG_VIRTIO_PCI=y
--CONFIG_VIRTIO_VSOCKETS_COMMON=y
- CONFIG_VLAN_8021Q=y
- CONFIG_VSOCKETS=y
- CONFIG_VSOCKETS_LOOPBACK=y
-diff --git a/tools/testing/selftests/bpf/config.x86_64 b/tools/testing/selftests/bpf/config.x86_64
-index 2e70a6048278..f7bfb2b09c82 100644
---- a/tools/testing/selftests/bpf/config.x86_64
-+++ b/tools/testing/selftests/bpf/config.x86_64
-@@ -1,6 +1,3 @@
--CONFIG_9P_FS=y
--CONFIG_9P_FS_POSIX_ACL=y
--CONFIG_9P_FS_SECURITY=y
- CONFIG_AGP=y
- CONFIG_AGP_AMD64=y
- CONFIG_AGP_INTEL=y
-@@ -45,7 +42,6 @@ CONFIG_CPU_IDLE_GOV_LADDER=y
- CONFIG_CPUSETS=y
- CONFIG_CRC_T10DIF=y
- CONFIG_CRYPTO_BLAKE2B=y
--CONFIG_CRYPTO_DEV_VIRTIO=y
- CONFIG_CRYPTO_SEQIV=y
- CONFIG_CRYPTO_XXHASH=y
- CONFIG_DCB=y
-@@ -145,8 +141,6 @@ CONFIG_MEMORY_FAILURE=y
- CONFIG_MINIX_SUBPARTITION=y
- CONFIG_NAMESPACES=y
- CONFIG_NET=y
--CONFIG_NET_9P=y
--CONFIG_NET_9P_VIRTIO=y
- CONFIG_NET_ACT_BPF=y
- CONFIG_NET_CLS_CGROUP=y
- CONFIG_NET_EMATCH=y
-@@ -228,12 +222,6 @@ CONFIG_USER_NS=y
- CONFIG_VALIDATE_FS_PARSER=y
- CONFIG_VETH=y
- CONFIG_VIRT_DRIVERS=y
--CONFIG_VIRTIO_BALLOON=y
--CONFIG_VIRTIO_BLK=y
--CONFIG_VIRTIO_CONSOLE=y
--CONFIG_VIRTIO_NET=y
--CONFIG_VIRTIO_PCI=y
--CONFIG_VIRTIO_VSOCKETS_COMMON=y
- CONFIG_VLAN_8021Q=y
- CONFIG_VSOCKETS=y
- CONFIG_VSOCKETS_LOOPBACK=y
--- 
-2.39.3
-
+On 10/27/23 13:52, thinker.li@gmail.com wrote:
+> From: Kui-Feng Lee <thinker.li@gmail.com>
+> 
+> Given the current constraints of the current implementation,
+> struct_ops cannot be registered dynamically. This presents a
+> significant limitation for modules like coming fuse-bpf, which seeks
+> to implement a new struct_ops type. To address this issue, a new API
+> is introduced that allows the registration of new struct_ops types
+> from modules.
+> 
+> Previously, struct_ops types were defined in bpf_struct_ops_types.h
+> and collected as a static array. The new API lets callers add new
+> struct_ops types dynamically. The static array has been removed and
+> replaced by the per-btf struct_ops_tab.
+> 
 
