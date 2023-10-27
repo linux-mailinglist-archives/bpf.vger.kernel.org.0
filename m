@@ -1,81 +1,74 @@
-Return-Path: <bpf+bounces-13407-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13408-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C9107D9085
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 10:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DB0F7D90E0
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 10:16:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00936282324
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 08:02:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68A0C281F57
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 08:16:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EDDC11722;
-	Fri, 27 Oct 2023 08:01:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29ECA134B7;
+	Fri, 27 Oct 2023 08:16:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="kgCASnC+"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="3jEMJ7rj"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E11A111711
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 08:01:55 +0000 (UTC)
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2040.outbound.protection.outlook.com [40.107.104.40])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F1E111;
-	Fri, 27 Oct 2023 01:01:53 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C29C0125CB
+	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 08:16:39 +0000 (UTC)
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2073.outbound.protection.outlook.com [40.107.249.73])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF3CC196
+	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 01:16:36 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P/hy8vMJs5px5acSLHd67iBg9byiQwk2a4a36XYJqkJQAosFLZCgleg2vBSw/IoledKZBbbZNLE66UWV6BMeB2SK7j8BX6KMCo4IXlqwyo5lCXELBHUOUEMZrgbZeJ+WC56NBJaWwZNrVQQZA4kX/ZY44jC1CwZ2FY/LO1HgQXOEmoME389rqUT6ZJTV4KwNCwmh+R9T6i5sGvjsFLxczu+9wSfxnOys2LrtPryVZVM0k51XI+tcwiNri4OYc8MdUUob/zslDoIB410UEePJrJALaUpE2Q4KHKZYPloIs0AovQ/PwuBR6rqLPbqdlbNEJNnYu5k4rO3juU+QheUK9w==
+ b=gzLCmClGvrakYCrTPXwA/I44goKj7BmMRY3mRpz7MFMhkgRmm9ACXkPpYTgkYpYMU410zAoqmof6d+eiTJ2pJTvCkpRVZf76zEtvheFVWa2iEZl7dwz7zBswjmqL2WQwVePYZs9aCBItyiHnJFVZY4ruzE4nC1stcSaAhhVHUAhhbZv8aNOR43n8kpFfrpPik8sW9few9j5BbsaBXbe6Ms1Tqi2eAt/bahY682DQGDftcLu6svC8R6XTHRKx0M14EjXhow2R5S+jVQGW1m9jDESCC8tMKrEufXW7n+bNhRnlQcVdGlTMwvHCGHRY6mS0khvDwd0bNNKp//vf2aln7Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=O6rMfTEXMY0XFp7wYldg/N2Nj3YSs9RWCXJjR7YlXfw=;
- b=P7XgDU1wzZXh9nD5XzWM1QIZQb52iSYHYKNzquEJ1u26d0jjFoJ3nyb0ji3nsdesaTXFid1lfBgEhz3towTSX6bCJizvH+MxpPiVoUQliweIBZXuLdZq2qAS8XXTce4iyDBfn6vmGEG256IjvVAkajTnAxL0RVKc9MBKi0aHmtk2G/VjvDOsuAQUG/2Kuci5mlEwDThRdApzYeg3dTJzvWmpOQQxn6eTj0r7dPCzmXLtZ2ISisFPq5QSmraVAfP0gxkc3UNv0ZyBrS0JQ5YZMEraXkmuQ4x8nSd3fz2aE8cenrcUqyG9i99j4eCu4yQCjR1tlWxFGAWeOsU5ooD+SQ==
+ bh=HjyMB+Q8pp2L0xzyJoZVmkjqMpg3IbBMJC1PSA9LibA=;
+ b=OGAP3RzCnedApxTxxB8RHU/9Rb/cUbbKuNImCjxY966jjudnnEhOhx3l1tQ4qE7KQ066VZnLuA9NGzKSsz3uOUMRX8q1wFxJIewhqS6hmYgLCebFCpU9iWemRV4G2OzXBqAJNPWQ/pAdI6ek9kxelqvhLr03NKSt33rHwGWF8njEOuuGQ1IOB9v0BOW8DXupUpbvMgTPRGL7xEwo4yUJTks0FfZxol/EkUlzHHnXskU/+W7xR5wj2tZdkI/KNT0OiwcnhR90aqMxEyBt3wwf+77mB7qQQRW1ShGLPHGIhMtBwqVWvgXMIE+5AV5zPN9/Y4tk6sXQCqEsphEAnDqrdw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O6rMfTEXMY0XFp7wYldg/N2Nj3YSs9RWCXJjR7YlXfw=;
- b=kgCASnC+V2Lq1CdrnuZOih+Hx5Mtpeo48KQhhED8jMG5MJxHuW3P9a6y7hK9WgwW4WgTUt7H24eQOulWu0+nvg5VhVzjm2XYzr8vTWgmpve226BTDQzmAnyT9sxhCjFck4FDn1ZD0VcNgp0pDRaYTJJBz/g2enMcQidt9/xv8tV8OQP0mizbgDwR0L/Q71SgNSgMmDqCYk9/7cDmyQ6dRHyCL+OLSrTAzIb+1DT0tmdhGCMxeokG65FSLrTssiE1xacBhTwlo/MGoaOwMRJ8EmJBsiS4DvxDMLyAebQJZ1RGHXQLlM2dFCqOVgJKHqcMycBsX8SAEHXYdA6BKpwkHw==
+ bh=HjyMB+Q8pp2L0xzyJoZVmkjqMpg3IbBMJC1PSA9LibA=;
+ b=3jEMJ7rjsp2BvXiTbaxdbc7mkm9+lRmcnM7oLlGmyhLjtHRzcRSlGuK39x7mfqeSj/slFi/odPNxSXvJBg1TdVxJ0ToJn04w6wm2bUmbNiJek1u2Xv/PfaGZBvIzDg8a8u4UWdHih7hpccJ6Ab6GrcRmSD/+2NbGPLyQz7FLVHn1XjR2CBcY73zDSUixy+RrKi7GWTGnKOYEZrf+x+8cDzWys7tJPSMz6pSPgGqJPYzt7pi1XcavicOgzP3tV907dD/b+2p0B9+Hl7oo+ceVH5yA0FC8zCT8vMBmmsIcL7L1Tb+ZAsSmcyg1vFDbPfbNfs7LQ11/2zrCpwILkcNIzQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=suse.com;
 Received: from AS8PR04MB9510.eurprd04.prod.outlook.com (2603:10a6:20b:44a::11)
- by AS8PR04MB9127.eurprd04.prod.outlook.com (2603:10a6:20b:44a::15) with
+ by PAXPR04MB8624.eurprd04.prod.outlook.com (2603:10a6:102:21b::5) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.8; Fri, 27 Oct
- 2023 08:01:51 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Fri, 27 Oct
+ 2023 08:16:34 +0000
 Received: from AS8PR04MB9510.eurprd04.prod.outlook.com
  ([fe80::9f3e:3b47:5ccd:c47c]) by AS8PR04MB9510.eurprd04.prod.outlook.com
  ([fe80::9f3e:3b47:5ccd:c47c%6]) with mapi id 15.20.6954.008; Fri, 27 Oct 2023
- 08:01:51 +0000
-Date: Fri, 27 Oct 2023 16:01:43 +0800
+ 08:16:34 +0000
+Date: Fri, 27 Oct 2023 16:16:28 +0800
 From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: Hao Sun <sunhao.th@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/2] bpf: Fix check_stack_write_fixed_off() to
- correctly spill imm
-Message-ID: <ZTtuZ1dMAN9_63Xk@u94a>
-References: <20231026-fix-check-stack-write-v1-0-6b325ef3ce7e@gmail.com>
- <20231026-fix-check-stack-write-v1-1-6b325ef3ce7e@gmail.com>
- <ZTtjQlqRQWCWwmHx@u94a>
- <ZTtqSnKmaQ4ma98g@u94a>
- <CACkBjsZM8pYj6Y7vazw_Rp3ZYDnpTiCSO0bNYdt36MxFEvqZZw@mail.gmail.com>
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Kernel Team <kernel-team@meta.com>
+Subject: Re: [PATCH v4 bpf-next 3/7] bpf: enhance subregister bounds
+ deduction logic
+Message-ID: <ZTtx3DxStmx3i9Eo@u94a>
+References: <20231022205743.72352-1-andrii@kernel.org>
+ <20231022205743.72352-4-andrii@kernel.org>
+ <ZTe28jP0qFNtf89A@u94a>
+ <CAADnVQ+_PrGAsQfQag0ktFHZ2pOVA2-63n-pA5=uRSu5GmWM0g@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACkBjsZM8pYj6Y7vazw_Rp3ZYDnpTiCSO0bNYdt36MxFEvqZZw@mail.gmail.com>
-X-ClientProxiedBy: FR3P281CA0127.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:94::13) To AS8PR04MB9510.eurprd04.prod.outlook.com
+In-Reply-To: <CAADnVQ+_PrGAsQfQag0ktFHZ2pOVA2-63n-pA5=uRSu5GmWM0g@mail.gmail.com>
+X-ClientProxiedBy: FR3P281CA0113.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a3::12) To AS8PR04MB9510.eurprd04.prod.outlook.com
  (2603:10a6:20b:44a::11)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -84,164 +77,93 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB9510:EE_|AS8PR04MB9127:EE_
-X-MS-Office365-Filtering-Correlation-Id: 999a8ba8-1a51-4867-d04c-08dbd6c2fa09
+X-MS-TrafficTypeDiagnostic: AS8PR04MB9510:EE_|PAXPR04MB8624:EE_
+X-MS-Office365-Filtering-Correlation-Id: 46c7380b-0a4d-423c-3314-08dbd6c5087e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	DL1zSaH9WOI/fDSBsIgGAbHeu3WgPqCWKOd0HwJPTwdsX4Qe3RBnBKC8e9hO9sBT7o1UOHA/tH7V5SoEpoJpLK+oOr7gloDGHzB7/zyo4BfnIBBcViQPx3KJn32JH5sdAHQEvM9TI3W2lcA+giszchIzP5rj7LSjg5/oFAzKysz9jFlq5F7xr+OKdh0kAn4uNaAO1kHRZyD5BnmJC6tfJuyQd2i+U+8K75OOBpEnxy8tMN3rb6ea7mujGv4MyJF/0UvtbxuZKez2A5Nj1aWWnrLoIEuxC654/UrrDUn4uigyWvMe0uap8F1FH588zHqFxqkCctLOYOJRa9Jc1uNKP3yY5fFCzgbYZ3vQzAmu/FnHBbiTBAaXd45jRGDhiZgtgaxbA9ljhtathzpuwP4/yx8xElO4KwPch+u9d6z0I+G9/YFwDhIxwZQlsp5K7/EyaoWq/v08QPob5qUbpbz3HALVZcJzyUxkEINa5DNhGXXQ9kmzpuWZGwRHIL4D9lG42eIjRsDoHolr6W0G+DW7Fm3fWiW41IwRj0Ld6hIlmbc=
+	qSghICa84Fuv6uhJmk+rJIfNZgoQKb+Z0kkd0YHfiDs0JWe/eElLga2Sga2YsZHAW8TG6cHYY6gRIdTcDJ8wxdMMqrPYNyY/6CP5Gc7GPajANAF2fHInrbs40Zf8BbkF2i3brGajmyez8gWwLrjwkCSdsbI4sP4Vd8Lp+HF6YU/C/ryJIllAKCG6jWjqNZfQs5w8aB/KgnGxlVo5kKgFnSiGMGuOmUy1t5kVdWik9GPrtAI1mXkF51rzlo2hoDMnYYETEpYBi8rfZ73qG9DYp+W88Vuw7gjiNHrC/y0A0eJXTDR0UmSxVw5fp4AHP21v2e8qTkNvs0M2Rn19B/H9FF3fpYqPR+A1y69LakpQH0rmqOHqC9SoWNUYCUfBe6i6rZqqG0I2BbEpLZQwiGGSLjwaiYvte3+qSBAoCTuZJYkcu9idNi68Pgd31YDsBl33SLwCTT11DW3XSvTlCG4MxCzx1YN5d4WxAVZdSteh4dLyRNuTQWKU1pJCfzS0almti0xXzH4iLrHkZu4z7dLWmDl0gtkZAdINA1fh17NtewC2V3Jv7QpEUWjRPR/obc5Q
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB9510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(346002)(376002)(136003)(396003)(39860400002)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(53546011)(66899024)(6666004)(6506007)(33716001)(38100700002)(86362001)(83380400001)(9686003)(6512007)(26005)(7416002)(316002)(66946007)(54906003)(6916009)(66556008)(66476007)(41300700001)(5660300002)(6486002)(2906002)(966005)(478600001)(8676002)(4326008)(8936002);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB9510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(136003)(376002)(366004)(346002)(396003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(38100700002)(478600001)(6506007)(9686003)(66476007)(6512007)(66946007)(53546011)(6666004)(6486002)(33716001)(86362001)(54906003)(26005)(66556008)(8936002)(8676002)(41300700001)(4326008)(5660300002)(316002)(6916009)(2906002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dkpMQkNkeENlemM5Y2dWVG14Q1J2MldVK09INXZDUTFEVzBUWC9mcytlSUo5?=
- =?utf-8?B?Z0tTRDFMRHVkTlo0dzRyNnRVRDZXQVloZHppdXUxWlJIVm9hc1JZWU1pUGxv?=
- =?utf-8?B?S2tJbm5rdVljZkhzWFI5Lzh2d3g5UTF0bDY5czdPS1dRc2drTTNsK3NOaXRD?=
- =?utf-8?B?ejMvOEpXbVFKWWVEZjNpby9HUHF4UnNvbmhlS2FoM0NVV1BBY0xiRlJxZndq?=
- =?utf-8?B?ZVh1ckhEdFFZTng3ejVnTHVuUUw4c2RrVjVhSXNNYTBpVFRVdzYydENCWWNC?=
- =?utf-8?B?OFdHWngrckd0R3BVaVg0RDh3WnZrU2FVd3hMNW1pZm9hSlFPSFZLSENFQk43?=
- =?utf-8?B?N2tyUnNxR1k5N05rRDN1aFZkYWRpN0pTNzQ1bkFLckx4WUMycXA0dkN5RFhF?=
- =?utf-8?B?aDJHVzk4RmRzYWkwcGNEcjlYY0p6ZXppQTgzNHhhYUwwTm84bi9UZFdiem9a?=
- =?utf-8?B?MnVVWk4yM0ZFRjJSWTJUQms4NnBweXdURGVxZklmL09Ea1J6MWpzdE8zNkdv?=
- =?utf-8?B?a3pCK1U4OU1kN0hpdlhmTTNTQ0l6YWFRazAyQ2VFVE40Z0pFK3hPMmZUb2Nq?=
- =?utf-8?B?NlQxajczeExVQTRqbjFOL3oxV1F3a1lwU1dKVHpxblZFMkRvd2l2cXFoVkh0?=
- =?utf-8?B?UWR6cWFuZFBkNFNlN1ZtbXQxM3RkcDNMQ1V0SWtZekVEbk9Obi9vbXVMM1BG?=
- =?utf-8?B?MnczZTlCSVZaNWJ0OXF1dlRxMlA4K1hUNnUyeUIzZk4vdlBPQ0xOUHV4SzhD?=
- =?utf-8?B?NTF4OEtsVHQ5TDFoUFRXNUg4UmpiWThmcmg3SFllY205WmdtcUx1VXRVUlhS?=
- =?utf-8?B?S3hrUlNrbi9PTWZVZi8rUm51V3REbHRRdDBCcHJVOGhVb0oyNFRvSys3ZTVK?=
- =?utf-8?B?QWZ1R2tOUS9FN1Jjamh1R1BGa0t6QTFqWVNKVk13WGJDMHdNU2hIYzN4QU5h?=
- =?utf-8?B?eHRQWThoRUg1SEprQXNJWVJJUStZSzBPMnBoVVNpVlNYbTgrT0pRS2dNWjBv?=
- =?utf-8?B?WVd0S2k5d3RZVUo0ME9Lcjh0S2RyWmNuTnZIdVViZlNWTnMyQXZ3OEZUditD?=
- =?utf-8?B?L3FZK0VGVkpLOGV5YVpidVlrV3NWdDI4UjNQbWFmWUxac0h5TDJINktxVmlS?=
- =?utf-8?B?QnZHTG5SYVZ2S0VBNjhMc3V5VktNcnNlUWFRb2hrb2hOdEljVlJNdUlBajMz?=
- =?utf-8?B?ZDBuMTh2SUdwaVY2WCtRZTMxcEtGd25QMEM2VnhZRXVwV1ZOTGNDSUZMOVpU?=
- =?utf-8?B?d2lsZHZMaG9kc01XV0pZc05XMHNCRUdiUkRPZ09TY3QrY1RDTlpodVU1NnQz?=
- =?utf-8?B?YVJLa2lnRDBhVUdRNHVpblE5VlFyRXpIbzZZRnBGV2ZFT2ZzUktMdjhGQWVL?=
- =?utf-8?B?eGJTcnVpWTN1Y0VJNDlWK0hGTnJBMmE2RVp1WWJreXJmcmlkdmhHTnJPRmxZ?=
- =?utf-8?B?blFNaHN0WGUxWE5OR1d3MGhWRmd3QVVnL3hrV3RuNmJNOVV4TC95QmpxWCtl?=
- =?utf-8?B?OFI2NDZlYVJTeG9lWkthUnY4SEpnMnNJOHFzaWtFbGtFVC9OOE1vY3pMT0VL?=
- =?utf-8?B?WTdrclRMY0dNNStVdFE5WDRxUTVrVkZxSkU3Q0ttaHR2RC9uUUxWMzd3WTRE?=
- =?utf-8?B?ck1aampJL2xuWjVsNUpESjI2dmdNczhVdTNicWVwYTJjZlB5UjV3MjhYMlBv?=
- =?utf-8?B?N0MwYmtVbGpQKzd4TEpEeXBPZ1NQR1E1YnEyaW5YcnBNRnJsUDM4SUd0a0Zr?=
- =?utf-8?B?b1lrQkRVdFpma1FMenU3OHI3TStsYTh3Y2E5U0V6dUJ5anlJenQ0MEhmUGdo?=
- =?utf-8?B?anZUWWJRMFBzWmRTdlA1OW1IZUVqbjg1K3pPU0pBbVFhVEIxSDFKRHAzeUkr?=
- =?utf-8?B?ZGRoSnJFRVFkRHpYM2YwRXNWL0grbVpOekwrMDNkS1Z6a1ZEYVA1OGdJUXBT?=
- =?utf-8?B?ckNWci9tWURSTnRiUXY0VWRxbUlKL1lUaC9rQnVsVmovZllqYkhuSmlNUGtu?=
- =?utf-8?B?V25rRmxaaVpjdHdxMlo3KzBiK29DK1BFNFcvcnpKKzVsWXhuK3hGbkhGMjNO?=
- =?utf-8?B?bWFBcjBZRTRXUldGSTdzWmhpYitIeUZuRUZHYWJIdWpZUXJaQ1RXZkpMOFh5?=
- =?utf-8?Q?w2ZALvX82j7skMq53nckT5moq?=
+	=?utf-8?B?Q2RXQk5rSmNWM1AzN3VEa1FWNEUzRXNsM3JqY3RxcUxpNUkwY05kUXV4cTlC?=
+ =?utf-8?B?cHR0ckZ1TlMxb2xrSzVJZFAxYmx6QmkySWdZMGplMUtNN0d6NEFjWi84V0hO?=
+ =?utf-8?B?NE1QUkN3a0tSSkUwbGtZRXh5eVZFdmFYZ3BuLzhoS3ZzeklOOThnaVhuck9i?=
+ =?utf-8?B?ekpGb0hGdklrbU55d29GWEgvWXB4VVBCNjNHRldwQ1BjRVJhMEpVOGtXUllG?=
+ =?utf-8?B?VzRUU2xDR2tCSE5uOTFSOFBxeTd3SURtUWx3aEdPMHBjZmR2NW9KMThWOVlF?=
+ =?utf-8?B?U3R5Z2JUcE1GbU5xeVVSY2xnR3lkNHI5RGN5Q09Qc04xNG9KTHBWbnJ4RTFV?=
+ =?utf-8?B?Q2F1VllSM0I2T0gxMnMzTmNMTUt0RzB2eHhvWnJaNFZGc2hHVHFJbFBqWjhN?=
+ =?utf-8?B?S0o1VWpEaHdnRHZPaVY4ZWJFa0JJcEwyUHIxTXV0Q2xJbnQrTWJBc09rK25w?=
+ =?utf-8?B?eUJ4VXIvN1l4VGg4NUFCOXNiTmc5dU82VHhrTW5qVlhOUkpNSmMveUFMdFFB?=
+ =?utf-8?B?elI4WjVTSE00MThJbEh5ZzM3Q1RqZ3JWZjBUcHFhWGt1K3pnSjBkb3lxcllh?=
+ =?utf-8?B?L24ralBvcmxxSThEUVlYZGwwQU5NS05sOVhrUXlXT0Qzdy9zOGRjdmlIdEFW?=
+ =?utf-8?B?ZkFOYXViOURNd3NPSHA2LzF2ZjNyTGlLbHNvUnBBZmlsQ21TeC9sQnZUSzRJ?=
+ =?utf-8?B?OVZLWFZZcUpEMFdwTDc2K1dEeE03WlZ0SmxPL2tFNnUwOWx6N3VNajlwdEhO?=
+ =?utf-8?B?SU9zSmxHcWtqSHY2QnZxQ0xmT1J2b2kreHhIRmF0eG9sZko2WFZnOHpRdDNJ?=
+ =?utf-8?B?SEt6VldWQzFxRmpOK0ZGQkhGcnpaamVxMS9iNUx4QmRpRnZ1VXRxY0JoQU15?=
+ =?utf-8?B?VnFJVEJQZHQ3Y2l1bFgrOWpPbnJsT0QwTnVVMENaQ0NDRHdnSVBlOTZXQUdo?=
+ =?utf-8?B?TEZZenIrcmtoYWx6VklCaUI1WE5FNVZVQVdnejM2VTVrT0VLOUV6NFNWUHhs?=
+ =?utf-8?B?Sm9PV3ErbEtmeGlpSnh5cG9PcEVBNnhJUGNSS0FoMzFUeDB6MWRLczNRVU1z?=
+ =?utf-8?B?ZUFZL09sdjVnTFZ6NHBPbjFrRXdJRUJXRzRmRnMxWGJFb09GREZlKytURGl4?=
+ =?utf-8?B?WGk4MENUa1UxRHEvWUV4Rk0zUDVNY2JZVXlGeFA1djZvT1lid2VVdTZPc3Yw?=
+ =?utf-8?B?ci85SituV1ArdTJNUHJXOXZ1THNOZGRWL21IblpxUGd3UmRDanpkbTF4YTBE?=
+ =?utf-8?B?bEhwbXBkQlZ4ZHY2WFdWMXN1ZWJtZloySFBWZnUvMmNXa1VpVmNodXJicVZQ?=
+ =?utf-8?B?bFN2ejdoWURlYmpLYmdjbW5LMW42MnZHSzlFVXc0UnZvQS9kQVZQblhFbmZj?=
+ =?utf-8?B?MkdIaU5JZ0tCU0lENFFLV2FzenlWcWw5bDhUZ3VmOXVTbGJyODd5ZloyT0lN?=
+ =?utf-8?B?VFhmQWdON3ZpampmSnRzV3E3cUUyWXBLVEVRS3hVVy8rK0x0NE5jL29vVWVC?=
+ =?utf-8?B?UXhZc25UdDR6YVozUTFPUkZOaGVCY0lhTzdySG8yMHVva0FqMTlNVDBWRW8x?=
+ =?utf-8?B?ZkR0bTAzU0xMNldQUDJ2NnZSR2JjdURzUXpzZG5KSG9RN0RqemFtd2N6TXFt?=
+ =?utf-8?B?RmVjY3ltdXFZTHlycFFZZk9yMG44WVdHNWp6c09QeWEyS0V2Qm13Rzdoa1dS?=
+ =?utf-8?B?U2hWbnQrZThYNjlhbS9HWCtIbDJFVWdvSVBTcEoyaDlyRzYzMUV2a2dtQ0hx?=
+ =?utf-8?B?M3RiNHFGbkFVak1WMnN1OEJaZGJJb3cxbWVvSTdxdWZxYVBIOFdRVkJVemU5?=
+ =?utf-8?B?L09uM1dsdXo3UGNsb0FoYStYYzFrRVV4bXBJU3R2SzFpQ3ZnVkQ2Vm1kczhG?=
+ =?utf-8?B?ckE1ek00bnR1Y3hkaWtkZFVRQThJNnRmYlNFNzFpUEg0S1MwaXZRazdodXls?=
+ =?utf-8?B?NzBJTm9TNGV4eS9jcWVmY1hKaW1reUJpQjNTbVJvSlQ2TVdzYTdFaDY1NjVO?=
+ =?utf-8?B?N3llMTBKcjdxdUw1WDdPUUtUeURtUUxrYnllQWxQSkp2bzBOVkp4d1ArYVdy?=
+ =?utf-8?B?Z1cxcXQzTndvbWE4czdCVzdUNERWUUdxUHB1T2s2dlpvZWtGVk1yRm5FTEJz?=
+ =?utf-8?Q?ZN1zR2bp10Xo9zmKh9PpMoHHq?=
 X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 999a8ba8-1a51-4867-d04c-08dbd6c2fa09
+X-MS-Exchange-CrossTenant-Network-Message-Id: 46c7380b-0a4d-423c-3314-08dbd6c5087e
 X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB9510.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 08:01:51.2863
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 08:16:34.5526
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kcBkzEm61QGACDgK6M14H2FhGHkaBAyNiUf5Rwqv5a8FU9C75OgwdwiBGo3WsT1ZD/4mDktO7MxTVrtJXZfASA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB9127
+X-MS-Exchange-CrossTenant-UserPrincipalName: X2u0+wesheO1J+s4zWpZ7Oq/jF7AjGwnR2wPhbWU9JCmlWkLZeeZ4f9j7SJp593C1R+hDrCvCd350jXMQlbj6A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8624
 
-On Fri, Oct 27, 2023 at 09:51:58AM +0200, Hao Sun wrote:
-> On Fri, Oct 27, 2023 at 9:44 AM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
+On Tue, Oct 24, 2023 at 08:31:41AM -0700, Alexei Starovoitov wrote:
+> On Tue, Oct 24, 2023 at 5:22 AM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
 > >
-> > On Fri, Oct 27, 2023 at 03:14:10PM +0800, Shung-Hsi Yu wrote:
-> > > On Thu, Oct 26, 2023 at 05:13:10PM +0200, Hao Sun wrote:
-> > > > In check_stack_write_fixed_off(), imm value is cast to u32 before being
-> > > > spilled to the stack. Therefore, the sign information is lost, and the
-> > > > range information is incorrect when load from the stack again.
-> > > >
-> > > > For the following prog:
-> > > > 0: r2 = r10
-> > > > 1: *(u64*)(r2 -40) = -44
-> > > > 2: r0 = *(u64*)(r2 - 40)
-> > > > 3: if r0 s<= 0xa goto +2
-> > > > 4: r0 = 1
-> > > > 5: exit
-> > > > 6: r0  = 0
-> > > > 7: exit
-> > > >
-> > > > The verifier gives:
-> > > > func#0 @0
-> > > > 0: R1=ctx(off=0,imm=0) R10=fp0
-> > > > 0: (bf) r2 = r10                      ; R2_w=fp0 R10=fp0
-> > > > 1: (7a) *(u64 *)(r2 -40) = -44        ; R2_w=fp0 fp-40_w=4294967252
-> > > > 2: (79) r0 = *(u64 *)(r2 -40)         ; R0_w=4294967252 R2_w=fp0
-> > > > fp-40_w=4294967252
-> > > > 3: (c5) if r0 s< 0xa goto pc+2
-> > > > mark_precise: frame0: last_idx 3 first_idx 0 subseq_idx -1
-> > > > mark_precise: frame0: regs=r0 stack= before 2: (79) r0 = *(u64 *)(r2 -40)
-> > > > 3: R0_w=4294967252
-> > > > 4: (b7) r0 = 1                        ; R0_w=1
-> > > > 5: (95) exit
-> > > > verification time 7971 usec
-> > > > stack depth 40
-> > > > processed 6 insns (limit 1000000) max_states_per_insn 0 total_states 0
-> > > > peak_states 0 mark_read 0
-> > > >
-> > > > So remove the incorrect cast, since imm field is declared as s32, and
-> > > > __mark_reg_known() takes u64, so imm would be correctly sign extended
-> > > > by compiler.
-> > > >
-> > > > Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+> > On Sun, Oct 22, 2023 at 01:57:39PM -0700, Andrii Nakryiko wrote:
+> > > Add handling of a bunch of possible cases which allows deducing extra
+> > > information about subregister bounds, both u32 and s32, from full register
+> > > u64/s64 bounds.
 > > >
-> > > Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> > > Also add smin32/smax32 bounds derivation from corresponding umin32/umax32
+> > > bounds, similar to what we did with smin/smax from umin/umax derivation in
+> > > previous patch.
 > > >
-> > > The acked-by applies to future version of the patchset as well.
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> >
+> > Forgot to add
+> >
+> > Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> >
+> > And that the acked-by for this and previous patches applies to future
+> > version of the patchset as well.
+> >
+> > Q: I going through the patches rather slowly, one by one, and sending
+> > acked-by as I go, is that considered too verbose? Is it be better to spend
+> > the time to go through the entire patchset first and just send an acked-by
+> > to the cover letter?
 > 
-> (BPF_ALU | BPF_MOV | BPF_K) is handled correctly in the current
-> code, i.e., no cast in BPF_ALU64 so that the sign is extended, and
-> the cast in BPF_ALU correctly zero extend the reg.
+> Take your time. Careful review of every individual patch is certainly preferred.
+> This is a tricky change. I'm still stuck on patch 2 :)
 
-My mistake, you're right. Thank you for the explanation.
-
-> > Oh and since this is a fix it would be great to have the fixes tag[1] to
-> > specify when the bug was introduced
-> >
-> > Fixes: ecdf985d7615 ("bpf: track immediate values written to stack by BPF_ST instruction")
-> 
-> Noted, thanks.
-> 
-> > Add Cc tag for stable[2] so stable kernels pick up the fix as well
-> >
-> > Cc: stable@vger.kernel.org
-> >
-> > And ideally specify that the patch should be applied to the bpf tree rather
-> > than bpf-next[3] (though the BPF maintainers has the final say on which tree
-> > this patch should be applied).
-> >
-> > I'd owe you a big thank as well since this helps with our internal process
-> > at my company. So thank you in advance!
-> >
-> > 1: https://docs.kernel.org/process/submitting-patches.html#describe-your-changes
-> > 2: https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html#option-1
-> > 3: https://docs.kernel.org/bpf/bpf_devel_QA.html#q-how-do-the-changes-make-their-way-into-linux
-> >
-> > > FWIW I think we'd also need the same treatment for the (BPF_ALU | BPF_MOV |
-> > > BPF_K) case in check_alu_op().
-
-^ This statement is incorrect as Hao has explained above.
-
-> > > > ---
-> > > >  kernel/bpf/verifier.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > index 857d76694517..44af69ce1301 100644
-> > > > --- a/kernel/bpf/verifier.c
-> > > > +++ b/kernel/bpf/verifier.c
-> > > > @@ -4674,7 +4674,7 @@ static int check_stack_write_fixed_off(struct bpf_verifier_env *env,
-> > > >                insn->imm != 0 && env->bpf_capable) {
-> > > >             struct bpf_reg_state fake_reg = {};
-> > > >
-> > > > -           __mark_reg_known(&fake_reg, (u32)insn->imm);
-> > > > +           __mark_reg_known(&fake_reg, insn->imm);
-> > > >             fake_reg.type = SCALAR_VALUE;
-> > > >             save_register_state(state, spi, &fake_reg, size);
-> > > >     } else if (reg && is_spillable_regtype(reg->type)) {
-> > > >
-> > > > --
-> > > > 2.34.1
-> > > >
+Noted and thanks :)
 
