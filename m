@@ -1,234 +1,194 @@
-Return-Path: <bpf+bounces-13463-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13464-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2717B7D9FC4
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 20:20:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B813D7D9FC9
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 20:21:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5745C1C20A16
-	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 18:20:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D6A51F21EA0
+	for <lists+bpf@lfdr.de>; Fri, 27 Oct 2023 18:21:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93E883C083;
-	Fri, 27 Oct 2023 18:20:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD9B3C08B;
+	Fri, 27 Oct 2023 18:21:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KWM5GPmk"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="fpZWkR5u"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB8337C9E
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 18:20:42 +0000 (UTC)
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA9018F
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 11:20:38 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so386261166b.3
-        for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 11:20:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698430837; x=1699035637; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gqmiZmjBD0+9/jPDrSH0XeNW4tiUbOY3mRzWFEy07AE=;
-        b=KWM5GPmkvU7AnZr6WMy3y/txHL0r0VFf75J8lXa3x7T0FGBoJR6JDDiQfmUeiDJuD+
-         nl3dHPY2i4weVO2JmzKo7zh32wfOPHTL176LAcx0/vi5vz2MfJ/aEU8fVFwJpZ8+QgTw
-         otnlaoGrF1Oad0MBRR/hv5sHp6SDDuHhIAebncte4E+ODoUW5vVBlvcUf/xzAv71R6lQ
-         KdUgHaYVQo19DKou5b0Geo8LcdK/Ms3Y+PDXKU4JTchZt6Qw9woUmSiqv7KNxAXj6lTg
-         7NOoBOH/v1dGMCWLmXlDUWTU8qFKCGRr7+Vi1USnOCtxSbi5sovvIHyLVykDToX3awzr
-         1CIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698430837; x=1699035637;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gqmiZmjBD0+9/jPDrSH0XeNW4tiUbOY3mRzWFEy07AE=;
-        b=mPfNA3/T58/aNPUrkosg9fFjT30Z9ovHgl1dANZIdGpyqGLuAUIZIO/5y1crayzxNq
-         DH5TztnfKFgkSAPJn69sBpG44dTMMtJIEAaxwS+jfy379gFrzbaoPdjrhM2/+Y2hqCJN
-         fW+C8so9rU6kd8CzMuV5SvdL52QpOOuRrc0ohcrUs/mWgXX3OXXQAwVMO2ktjbg8HIZU
-         tS3fXEyQdihhU5Y4kOQnp0Ax5UUfh/B8FfwwXHZEjQR6tGWcN0SrIpZJRZXsxq3QtZoB
-         faRAjQI/LKi1fjYfhJ1LfSeE4gXbcUsVWJb0NpLhYiTiB8Xsd6COG/NTP6HwbGEitxou
-         pZnw==
-X-Gm-Message-State: AOJu0Yx3t1knyX3e09XC4AKjKmGJDXl6NhVNTcKaq6wHhCX8pOA5PtcH
-	zVik5G1DEK3qUJx7V1LAgDy5F8k5nuHDgRunSNk=
-X-Google-Smtp-Source: AGHT+IEKeg90HuYo1E4g9naNgpe2d6FDeFoRuMDbCnY3PSm2QIi1bMJFI4704e2AO1DHws8Y57K15SrIN0qWEmjbfEU=
-X-Received: by 2002:a17:907:26c4:b0:9ae:5120:5147 with SMTP id
- bp4-20020a17090726c400b009ae51205147mr2495654ejc.38.1698430837320; Fri, 27
- Oct 2023 11:20:37 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A72EF37C9E;
+	Fri, 27 Oct 2023 18:21:49 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D0C18F;
+	Fri, 27 Oct 2023 11:21:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=yAZ1l6ZTqmOTsSYC4pFvp359bd24Tgw1IN/gEEgk1V8=; b=fpZWkR5uq/TKb7HIsEpGHRHcnp
+	V1IycfqGwcptf/0PYtqlZEDKZCo5XSOiIyXz1HFuWDhkC4OEnpVOxIP/7fBvxmzsILO5EkVSAnYQA
+	IZWkhnPae4WL2VMXf6ZOWxRODM7VYH9BlBT9MB9pFjz4bcHOIop7U/WuIdalr2CWjpubajJhiPjZ6
+	8oxzJVqZpsk2x2nvQxe/cbgPOJ3j3dmr/jkY9Itsk1qkfBjpXgTMgSb4WYy3HWTD598QAOpnmZsO7
+	z+rO9B57pvUMxx22iQb/vaEFvxjVS6rSwr/+sDTEmzapygYpAd4vLQOVsf9CMttcUmgfTZI0gnJND
+	5m4Sz0cQ==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qwRSm-000Nit-ML; Fri, 27 Oct 2023 20:21:40 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qwRSm-000MRw-E7; Fri, 27 Oct 2023 20:21:40 +0200
+Subject: Re: [PATCH net-next] net, sched: Fix SKB_NOT_DROPPED_YET splat under
+ debug config
+To: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: kuba@kernel.org, idosch@idosch.org, netdev@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20231027135142.11555-1-daniel@iogearbox.net>
+ <CAM0EoMm9K=jS=JZUNXo+C6qs=p=r7CtjWK20ocmTKEDxN3Bz-w@mail.gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5ab182b6-6ac7-16f7-7eae-7001be2b6da7@iogearbox.net>
+Date: Fri, 27 Oct 2023 20:21:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231020220216.263948-1-tao.lyu@epfl.ch> <CAEf4Bzb6uXiKK4=1++9Lu=GyfU1Co6VcqRwNO8PsQL=TzGzs-A@mail.gmail.com>
- <a1c717381a0049da9f5472f691477ba8@epfl.ch>
-In-Reply-To: <a1c717381a0049da9f5472f691477ba8@epfl.ch>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 27 Oct 2023 11:20:25 -0700
-Message-ID: <CAEf4BzYpvmcw4snk-kAFbYu515xxYRg6c-E2XNtURwmFwaACvw@mail.gmail.com>
-Subject: Re: [PATCH] Accept program in priv mode when returning from subprog
- with r10 marked as precise
-To: Tao Lyu <tao.lyu@epfl.ch>
-Cc: "ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "andrii@kernel.org" <andrii@kernel.org>, 
-	"martin.lau@linux.dev" <martin.lau@linux.dev>, "song@kernel.org" <song@kernel.org>, 
-	"yonghong.song@linux.dev" <yonghong.song@linux.dev>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
-	"sdf@google.com" <sdf@google.com>, "haoluo@google.com" <haoluo@google.com>, 
-	"jolsa@kernel.org" <jolsa@kernel.org>, "mykolal@fb.com" <mykolal@fb.com>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, Sanidhya Kashyap <sanidhya.kashyap@epfl.ch>, 
-	"mathias.payer@nebelwelt.net" <mathias.payer@nebelwelt.net>, 
-	"meng.xu.cs@uwaterloo.ca" <meng.xu.cs@uwaterloo.ca>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAM0EoMm9K=jS=JZUNXo+C6qs=p=r7CtjWK20ocmTKEDxN3Bz-w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27074/Fri Oct 27 09:58:36 2023)
 
-On Fri, Oct 27, 2023 at 2:06=E2=80=AFAM Tao Lyu <tao.lyu@epfl.ch> wrote:
->
-> >>
-> >> There is another issue about the backtracking.
-> >> When uploading the following program under privilege mode,
-> >> the verifier reports a "verifier backtracking bug".
-> >>
-> >> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-> >> 0: (85) call pc+2
-> >> caller:
-> >>  R10=3Dfp0
-> >> callee:
-> >>  frame1: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-> >> 3: frame1:
-> >> 3: (bf) r3 =3D r10                      ; frame1: R3_w=3Dfp0 R10=3Dfp0
-> >> 4: (bc) w0 =3D w10                      ; frame1: R0_w=3Dscalar(umax=
-=3D4294967295,var_off=3D(0x0; 0xffffffff)) R10=3Dfp0
-> >> 5: (0f) r3 +=3D r0
-> >> mark_precise: frame1: last_idx 5 first_idx 0 subseq_idx -1
-> >> mark_precise: frame1: regs=3Dr0 stack=3D before 4: (bc) w0 =3D w10
-> >> mark_precise: frame1: regs=3Dr10 stack=3D before 3: (bf) r3 =3D r10
-> >> mark_precise: frame1: regs=3Dr10 stack=3D before 0: (85) call pc+2
-> >> BUG regs 400
-> >>
-> >> This bug is manifested by the following check:
-> >>
-> >> if (bt_reg_mask(bt) & ~BPF_REGMASK_ARGS) {
-> >>     verbose(env, "BUG regs %x\n", bt_reg_mask(bt));
-> >>     WARN_ONCE(1, "verifier backtracking bug");
-> >>     return -EFAULT;
-> >> }
-> >>
-> >> Since the verifier allows add operation on stack pointers,
-> >> it shouldn't show this WARNING and reject the program.
-> >>
-> >> I fixed it by skipping the warning if it's privilege mode and only r10=
- is marked as precise.
-> >>
-> >
-> >See my reply to your other email. It would be nice if you can rewrite
-> >your tests in inline assembly, it would be easier to follow and debug.
-> >
->
-> Sorry, I'm new to this community.
-> Could you explain a little bit more about what the inline assembly is?
-> I wrote the test confirming to the test cases under "tools/testing/selfte=
-sts/bpf".
+On 10/27/23 7:24 PM, Jamal Hadi Salim wrote:
+> On Fri, Oct 27, 2023 at 9:51 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>
+>> Ido reported:
+>>
+>>    [...] getting the following splat [1] with CONFIG_DEBUG_NET=y and this
+>>    reproducer [2]. Problem seems to be that classifiers clear 'struct
+>>    tcf_result::drop_reason', thereby triggering the warning in
+>>    __kfree_skb_reason() due to reason being 'SKB_NOT_DROPPED_YET' (0). [...]
+>>
+>>    [1]
+>>    WARNING: CPU: 0 PID: 181 at net/core/skbuff.c:1082 kfree_skb_reason+0x38/0x130
+>>    Modules linked in:
+>>    CPU: 0 PID: 181 Comm: mausezahn Not tainted 6.6.0-rc6-custom-ge43e6d9582e0 #682
+>>    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc37 04/01/2014
+>>    RIP: 0010:kfree_skb_reason+0x38/0x130
+>>    [...]
+>>    Call Trace:
+>>     <IRQ>
+>>     __netif_receive_skb_core.constprop.0+0x837/0xdb0
+>>     __netif_receive_skb_one_core+0x3c/0x70
+>>     process_backlog+0x95/0x130
+>>     __napi_poll+0x25/0x1b0
+>>     net_rx_action+0x29b/0x310
+>>     __do_softirq+0xc0/0x29b
+>>     do_softirq+0x43/0x60
+>>     </IRQ>
+>>
+>>    [2]
+>>    #!/bin/bash
+>>
+>>    ip link add name veth0 type veth peer name veth1
+>>    ip link set dev veth0 up
+>>    ip link set dev veth1 up
+>>    tc qdisc add dev veth1 clsact
+>>    tc filter add dev veth1 ingress pref 1 proto all flower dst_mac 00:11:22:33:44:55 action drop
+>>    mausezahn veth0 -a own -b 00:11:22:33:44:55 -q -c 1
+>>
+>> What happens is that inside most classifiers the tcf_result is copied over
+>> from a filter template e.g. *res = f->res which then implicitly overrides
+>> the prior SKB_DROP_REASON_TC_{INGRESS,EGRESS} default drop code which was
+>> set via sch_handle_{ingress,egress}() for kfree_skb_reason().
+>>
+>> Add a small helper tcf_set_result() and convert classifiers over to it.
+>> The latter leaves the drop code intact and classifiers, actions as well
+>> as the action engine in tcf_exts_exec() can then in future make use of
+>> tcf_set_drop_reason(), too.
+>>
+>> Tested that the splat is fixed under CONFIG_DEBUG_NET=y with the repro.
+>>
+>> Fixes: 54a59aed395c ("net, sched: Make tc-related drop reason more flexible")
+>> Reported-by: Ido Schimmel <idosch@idosch.org>
+>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+>> Cc: Jamal Hadi Salim <jhs@mojatatu.com>
+>> Cc: Jakub Kicinski <kuba@kernel.org>
+>> Link: https://lore.kernel.org/netdev/ZTjY959R+AFXf3Xy@shredder
+>> ---
+>>   include/net/pkt_cls.h    | 12 ++++++++++++
+>>   net/sched/cls_basic.c    |  2 +-
+>>   net/sched/cls_bpf.c      |  2 +-
+>>   net/sched/cls_flower.c   |  2 +-
+>>   net/sched/cls_fw.c       |  2 +-
+>>   net/sched/cls_matchall.c |  2 +-
+>>   net/sched/cls_route.c    |  4 ++--
+>>   net/sched/cls_u32.c      |  2 +-
+>>   8 files changed, 20 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/include/net/pkt_cls.h b/include/net/pkt_cls.h
+>> index a76c9171db0e..31d8e8587824 100644
+>> --- a/include/net/pkt_cls.h
+>> +++ b/include/net/pkt_cls.h
+>> @@ -160,6 +160,18 @@ static inline void tcf_set_drop_reason(struct tcf_result *res,
+>>          res->drop_reason = reason;
+>>   }
+>>
+>> +static inline void tcf_set_result(struct tcf_result *to,
+>> +                                 const struct tcf_result *from)
+>> +{
+>> +       /* tcf_result's drop_reason which is the last member must be
+>> +        * preserved and cannot be copied from the cls'es tcf_result
+>> +        * template given this is carried all the way and potentially
+>> +        * set to a concrete tc drop reason upon error or intentional
+>> +        * drop. See tcf_set_drop_reason() locations.
+>> +        */
+>> +       memcpy(to, from, offsetof(typeof(*to), drop_reason));
+>> +}
+> 
+> I believe our bigger issue here is we are using this struct now for
+> both policy set by the control plane and for runtime decisions
 
-see progs/verifier_subprog_precision.c under
-tools/testing/selftests/bpf, those examples show how we write verifier
-tests using BPF assembly, instead of constructing BPF programs out of
-BPF_XXX() macros (which are much harder to write and read)
+Hm, but that was also either way in the original rfc.
 
->
-> >I think your fix is papering over the fact that we don't recognize
-> >non-r10 stack access. Once we fix that, we shouldn't need extra hacks.
-> >So let's solve the underlying problem first.
->
-> Sure, we can fix the non-r10 stack access first.
->
-> However, the bug here is not related to the r10 stack access tracking, as=
- there is no stack access in the test case.
-> The root cause is that when meeting subprog calling instruction, the veri=
-fier asserts that r10 can't be marked as precise.
-> However, under privileged mode, the verifier allows arithmetic operations=
- (e.g., sub and add) on stack pointers, and thus, it's legal that r10 can b=
-e marked as precise.
-> In this situation, the verifier might incorrectly reject programs.
->
-> Solutions for this issue:
-> 1) Never mark r10 as precise during backtracking
-> 2) Modify this assertion so that under privileged mode, even if the verif=
-ier sees r10 is marked as precise, it does throw the WARNING.
->
+> (drop_reason) - whereas the original assumption was this struct only
+> held set policy. In retrospect we should have put the verdict(which is
+> policy) here and return the error code (as was in the first patch). I
+> am also not sure humans would not make a mistake on "this field must
+> be at the end of the struct". Can we put some assert (or big comment
+> on the struct) to make sure someone does not overwrite this field?
 
-I'm not entirely sure, but I think the right solution is to prevent
-r10 and generally PTR_TO_STACK from being marked as precise. It should
-be precise implicitly, just like any other non-SCALAR_VALUE register.
+Yeah that can be done.
 
-> The patch I provided is the second solution.
->
-> >> Signed-off-by: Tao Lyu <tao.lyu@epfl.ch>
-> >> ---
-> >>  kernel/bpf/verifier.c                            |  4 +++-
-> >>  .../bpf/verifier/ret-without-checing-r10.c       | 16 +++++++++++++++=
-+
-> >>  2 files changed, 19 insertions(+), 1 deletion(-)
-> >>  create mode 100644 tools/testing/selftests/bpf/verifier/ret-without-c=
-hecing-r10.c
-> >>
-> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> >> index e777f50401b6..1ce80cdc4f1d 100644
-> >> --- a/kernel/bpf/verifier.c
-> >> +++ b/kernel/bpf/verifier.c
-> >> @@ -3495,6 +3495,7 @@ static int backtrack_insn(struct bpf_verifier_en=
-v *env, int idx, int subseq_idx,
-> >>         u32 dreg =3D insn->dst_reg;
-> >>         u32 sreg =3D insn->src_reg;
-> >>         u32 spi, i;
-> >> +       u32 reg_mask;
-> >>
-> >>         if (insn->code =3D=3D 0)
-> >>                 return 0;
-> >> @@ -3621,7 +3622,8 @@ static int backtrack_insn(struct bpf_verifier_en=
-v *env, int idx, int subseq_idx,
-> >>                                  * precise, r0 and r6-r10 or any stack=
- slot in
-> >>                                  * the current frame should be zero by=
- now
-> >>                                  */
-> >> -                               if (bt_reg_mask(bt) & ~BPF_REGMASK_ARG=
-S) {
-> >> +                               reg_mask =3D bt_reg_mask(bt) & ~BPF_RE=
-GMASK_ARGS;
-> >> +                               if (reg_mask && !((reg_mask =3D=3D 1 <=
-< BPF_REG_10) && env->allow_ptr_leaks)) {
-> >>                                         verbose(env, "BUG regs %x\n", =
-bt_reg_mask(bt));
-> >>                                         WARN_ONCE(1, "verifier backtra=
-cking bug");
-> >>                                         return -EFAULT;
-> >> diff --git a/tools/testing/selftests/bpf/verifier/ret-without-checing-=
-r10.c b/tools/testing/selftests/bpf/verifier/ret-without-checing-r10.c
-> >> new file mode 100644
-> >> index 000000000000..56e529cf922b
-> >> --- /dev/null
-> >> +++ b/tools/testing/selftests/bpf/verifier/ret-without-checing-r10.c
-> >> @@ -0,0 +1,16 @@
-> >> +{
-> >> +  "pointer arithmetic: when returning from subprog in priv, do not ch=
-ecking r10",
-> >> +  .insns =3D {
-> >> +       BPF_CALL_REL(2),
-> >> +       BPF_MOV64_IMM(BPF_REG_0, 0),
-> >> +       BPF_EXIT_INSN(),
-> >> +       BPF_MOV64_REG(BPF_REG_3, BPF_REG_10),
-> >> +       BPF_MOV32_REG(BPF_REG_0, BPF_REG_10),
-> >> +       BPF_ALU64_REG(BPF_ADD, BPF_REG_3, BPF_REG_0),
-> >> +       BPF_MOV64_IMM(BPF_REG_0, 0),
-> >> +       BPF_EXIT_INSN(),
-> >> +  },
-> >> +  .result  =3D ACCEPT,
-> >> +  .result_unpriv =3D REJECT,
-> >> +  .errstr_unpriv =3D "loading/calling other bpf or kernel functions a=
-re allowed for CAP_BPF and CAP_SYS_ADMIN",
-> >> +},
-> >> --
-> >> 2.25.1
-> >>
+> Also what happens if "from" above has a set drop_reason - is that
+> lost? Do you need an assert there as well?
+
+Why it's needed, do you have a use case for it?
+
+> BTW: The simple patch i posted fixes the problem as well (i actually
+> tested it minus the typo i sent).
+
+It didn't compile for me, but if you think it's a better approach, yes,
+feel free to post it as a proper patch then.
+
+What I'm not quite following though is, I thought your original use case
+was that you want to be able to troubleshoot drops from unexpected
+locations (aka not policy) in the tc engine so won't this miss cases when
+you would then want to use tcf_set_drop_reason() e.g. from tcf_action_exec()
+upon 'exception' cases (like the one for example I pointed out)? With the
+diff you proposed it will basically fallback to SKB_DROP_REASON_TC_{INGRESS,
+EGRESS}, so override anything that would have been set from there.
+
+Thanks,
+Daniel
 
