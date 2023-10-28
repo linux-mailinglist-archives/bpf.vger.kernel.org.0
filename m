@@ -1,177 +1,110 @@
-Return-Path: <bpf+bounces-13540-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13541-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AF077DA52E
-	for <lists+bpf@lfdr.de>; Sat, 28 Oct 2023 07:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C4B267DA569
+	for <lists+bpf@lfdr.de>; Sat, 28 Oct 2023 09:07:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A37F28280A
-	for <lists+bpf@lfdr.de>; Sat, 28 Oct 2023 05:25:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 610B12826F6
+	for <lists+bpf@lfdr.de>; Sat, 28 Oct 2023 07:07:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA63B10F5;
-	Sat, 28 Oct 2023 05:25:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED3F443D;
+	Sat, 28 Oct 2023 07:07:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="hjPae80b"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="DANICsOC"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A3017E3
-	for <bpf@vger.kernel.org>; Sat, 28 Oct 2023 05:25:07 +0000 (UTC)
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01olkn2077.outbound.protection.outlook.com [40.92.64.77])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63BDA10A;
-	Fri, 27 Oct 2023 22:25:06 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cb66q/VcmBHwC5yjQtggg5XnHBL5MSMJUhVMH5aT+C+MHb3GKCCiB4wzchUwzOn0G7JXFLax8xn5NcXXY8xVe02GTNwcc5gZyl0eS9ggaOKRAIf68pcxxlYRL7gdWoHxexHKpHINSedmQ2ew5LsfOsY47qirAgC8bsmQlJiEHoUvWejtWaapwMrmntcCQOmA/c8H9VY/slMWbsYDJq1bo/359y42fYZhDkPN6IyyoNlnYyCWzbuGL4XQzyx54tnvQnqQafqURMNXV2ca2mgCbN41c4yw4Jfhs5C57v6z+wMPojgqOlxYBMEsWLpiBfxL9PeIvowiHe2wRUs9kAotVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J0vU6QzwY0KgWTyrQQqWM9stWEifz+KR6QYp41Wr3/w=;
- b=WE2Z0feQkqxi6+kOdFT7TcagHRiQrRdxFWxjciCCi4rkPEtgUuL/fDKGBs6d4mwXSW61yVRWqoDs1khOxArctMpv2D2D+HPAGeA7BV7TSTPFiHa+02BBsoeTzuAobEJ7XBLFDfYmt8WIJ+zQBpCZtkdJciwenVbkuQvDWJKnzEaZMGddw++DzPTCPEbC25loE5LdU0y/KgoUInYzsAa31Cjqbga4l/5ugdomONQz0L/jkgXlbnC2ET4W54iZL5IlZk/5QeEivSHMde7y3nHqCTLPvjODIkZ4mB/y+02pzBoRzPp3VQ2mDaoP9S89QZj9a5Hf1P7ZMnmTxWqUX2EiVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J0vU6QzwY0KgWTyrQQqWM9stWEifz+KR6QYp41Wr3/w=;
- b=hjPae80bnwFnSF5Roo4ym/Z9+S0O9J0aFtcVMyoSmsaAi+0oLZqRhiTO5s/UjDEf7Juosp3wogtOSPrwuEeB/4BBAIDrNAx1/2ANX4jlml9gfLl9dR746Q1lRPynhpYzZcy7LUhhUhD0pfGSMgJJFP0t8/60fs/aWsJioDaz1ELm7pBGdlVdW+sifh9BFBzssQ5vqJu+yS+Ok9grr3wCjn+f5IfVmCvnN6H9iUu0I/lHsZEzWQbnj3MZ5n4jgJAyHIYHLYfJFCHSjcPKTvWAMGrJaD5Uz80xKt6qzI2X3tTH0TsI54SpC2Z6lGdtvdEV5aoKt5Q9rFrCgx0fSmMd5w==
-Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
- by DU0PR10MB6367.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:40d::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.22; Sat, 28 Oct
- 2023 05:25:04 +0000
-Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::e2b0:8d7e:e293:bd97]) by DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::e2b0:8d7e:e293:bd97%7]) with mapi id 15.20.6933.024; Sat, 28 Oct 2023
- 05:25:04 +0000
-From: Yuran Pereira <yuran.pereira@hotmail.com>
-To: bpf@vger.kernel.org,
-	yonghong.song@linux.dev
-Cc: sinquersw@gmail.com,
-	ast@kernel.org,
-	brauner@kernel.org,
-	daniel@iogearbox.net,
-	haoluo@google.com,
-	iii@linux.ibm.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	kuifeng@meta.com,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	mykolal@fb.com,
-	sdf@google.com,
-	shuah@kernel.org,
-	song@kernel.org,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	Yuran Pereira <yuran.pereira@hotmail.com>
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: Add malloc failure checks in bpf_iter
-Date: Sat, 28 Oct 2023 10:54:14 +0530
-Message-ID:
- <DB3PR10MB6835F0ECA792265FA41FC39BE8A3A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1698461732.git.yuran.pereira@hotmail.com>
-References: <cover.1698461732.git.yuran.pereira@hotmail.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [bEIWiwKQSCkoEmLKktPbRwGxn5+fMSHi]
-X-ClientProxiedBy: JN3P275CA0002.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:70::6)
- To DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
-X-Microsoft-Original-Message-ID:
- <5f3b9bdf9b22e0b3bfd5e73a0ef15b68db3a381e.1698461732.git.yuran.pereira@hotmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BFC410F5;
+	Sat, 28 Oct 2023 07:07:06 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B03CA;
+	Sat, 28 Oct 2023 00:07:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=9jZ6IeTzqgI7KPSimrweLY9VVvaA0yg3+mceyW4nrIA=; b=DANICsOCgGLFEj0wCWjFrMwVPC
+	A5sg8Wg4RC6lswHA3/IGYWB7zI1WOhb7pOQinUO694iLQDudsxbuqYhX80XSEXeUCHyVB6GD22rJS
+	03R4JRIW2YJYzpDfpUrPPq/gGw0Ev0hrjbnFJKdMptLmefTwg1VIroVy1GHZ9CKIICO9/9yDEAgVI
+	huLWlB08TWWm4Dt7I9QHaSKHWHlGBagEXQyaoUzD36rYXYOFzBiXg/ylDHrlvaCOf3xaPFcNOzopQ
+	ZwQVq06qnun9klrwFB8oT9gWhZF0xSbvD+3a/MVycKZfylQUslgCUbxN59to6BlY9qSePwmVFjte6
+	yaOr1PiA==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qwdPB-0000Xk-Rh; Sat, 28 Oct 2023 09:06:45 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qwdPB-000Qwf-0W; Sat, 28 Oct 2023 09:06:45 +0200
+Subject: Re: [PATCH net] veth: Fix RX stats for bpf_redirect_peer() traffic
+To: Peilin Ye <yepeilin.cs@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Peilin Ye <peilin.ye@bytedance.com>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Cong Wang <cong.wang@bytedance.com>, Jiang Wang <jiang.wang@bytedance.com>,
+ Youlun Zhang <zhangyoulun@bytedance.com>
+References: <20231027184657.83978-1-yepeilin.cs@gmail.com>
+ <20231027190254.GA88444@n191-129-154.byted.org>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <59be18ff-dabc-2a07-3d78-039461b0f3f7@iogearbox.net>
+Date: Sat, 28 Oct 2023 09:06:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB3PR10MB6835:EE_|DU0PR10MB6367:EE_
-X-MS-Office365-Filtering-Correlation-Id: fbb9c629-068e-4bad-937f-08dbd7763d50
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	r1NgmA2FUg5Tr4C2YXh42Qef/ei7y8PCWjdvVnKgtrbOc13N1p6ZwSn9Rgxzqi4N12/Nk2GUinZu2qtnOXZB3ZK6hNCFbRCt+I4NSBp8EwZ8i/nagu1kDvqRwVRs66/5pRsvN942KEOQH7H4ygMi2BwtVYDXrZrO1H1OOu4h9TsnF14j2j0H2nzQHo/w/pgusUnucESqgzlciydWjZ5QB8/IOnObnoIE6Z4m97Mqhis3MT/ELeSj9oB6ZpsSDAOAHu3soY3NH9TqVWWPjyBFNSMNofb1MfFAt6Vw0Fhum4lJ37yPgmjrhJ2jkOU3yNq6yB+oYtBd7RqoEKw1CX2aZTBHzqRklKW09QiHibkA3BBb1Uf4ilZrzsorxsCxW6P57J2I18ZQ9/+6BdsFxS8yUAz8c8HfPZlzJwviB0w5NzTgjhJgOie3qa0CF6HAddc0hOmC7MCzW+0evJiLbBAv41DsnqAaeGUxmYLE5Is0LMrL5ew3Y1lvc8chmD5oVmEW8+lxLCv1GzabIZdCWVntcCfIEKcBMvyB26FxzBpPzra2TJZGtXnkk2LeeZa30MDMqZfvf+CMmNPwK1fmb2q0q+6BHaIX8EjH8DcBNmqUrX4DnqAG8kN7wDPqjYRRGfGB
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?GX+9YO9hYVqgbPNybZEr4+PlJnAVmBHWMLr1AKk+lERQiQgIzZMMK77EeTPT?=
- =?us-ascii?Q?pvucvkpdZRosjkKSpOQ3YgELYr01tD0qfJGYdExYGjkcx71Z8I4A86fWO2bh?=
- =?us-ascii?Q?lKoZfuDAXG0PXZh5zo+eS+O6MA5QqAu+Ypkvh64oLaiYTDuC03H5ig4IJmsP?=
- =?us-ascii?Q?BtBKc35dTZ1QIdqd7rnWvPqD+oiCweRmGS9rXJviVl4HCS1cfp9iZzYxkVbs?=
- =?us-ascii?Q?kE8ACoWguWLG/NrkLCdYSp4Bsk2POhOQBuhDQ3vIf8wvMOsbdT6nbxqKPvQw?=
- =?us-ascii?Q?zM846zvaDhzxrJM3p7RAEwtx3d7kKh1eZi36SyTuEgQvL2LTnn8zuv2ke+3+?=
- =?us-ascii?Q?YT1GhtNrIeTghgx7DHkAZmXLBYX5aGItNcSTY4gMX6/rG1B8vB+MyjhKfZiw?=
- =?us-ascii?Q?nl5HPugsjmmwOJMcJz3G10oXoxcVwtfn0mGrQtYm9hDsHY6iKVM/I22Gmdko?=
- =?us-ascii?Q?1RN8zXsUnic3XtgBvhJ2vJEF91J2QD/HuIYx3X+PboeEbJPoj7Ds2M/eDWIr?=
- =?us-ascii?Q?CnQZdOdiT7hIlG9lvVJ7GIAn+Ea2bfVdWt7q+H4OMx7tDFX5pyIAUTjGn2T8?=
- =?us-ascii?Q?L7kMSJ6cUE634KoaZEA4WkCKXhxLQxTXz93qEDQuDGWIIB2tWBhndohrpPgi?=
- =?us-ascii?Q?KqANdT2kRnlIFXu6ndVsPxn0PIcpEytxjdJpkdoFHcU39PPZgyrkMlyXOOoy?=
- =?us-ascii?Q?D1q7xzmsABZbp+jEZkiqYaIU5HTlF11fRU3fX9XJN+oYGfRi8ZwZ4HNX4oOz?=
- =?us-ascii?Q?hb49RZnVU4tuMe2b2N1er1dz4sDPI3gQ7mTuaRjgVpBp3yOENeVZdlLx9BEN?=
- =?us-ascii?Q?PzAFFl91gPFTWHRhMZk6FdiOM2rdtR9TjZH4Y/LnpYdYlaSr2a2EscEFbdHA?=
- =?us-ascii?Q?Wom6dzCPnj1olagFZ+tH3r6rr/S1maLuDVGu7Id8uCP74Q+DqoEVQiy4U6uI?=
- =?us-ascii?Q?/TTS7/5uJhB6OFoIKxF4atvi/YQ4rt8Q5y+tKl/tbJ6uojKW9UjHtuLI8XHc?=
- =?us-ascii?Q?tOQVBsR6EeNJd9QuICwRlSD/xuPl+9ec7+R9t+TuVFFIvSDvjcwF5M29n6+I?=
- =?us-ascii?Q?Zg5Kqgebbcq2k5Irkkq1XQYBHBbSG6tp71KmllGb2Oko6LE6x5Sn8HPPCAfh?=
- =?us-ascii?Q?FITBJkJSz3QfT0GhhGESktpxGMsgOiJB+wCb3j5G/cXJJ/qPMvW/KPS8PJAV?=
- =?us-ascii?Q?rMvdfrAgV3F7vZaIG8ePw0kuETHyWlnBc6a5QZx3JY2IXl8lULEc/mLRIeU?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: fbb9c629-068e-4bad-937f-08dbd7763d50
-X-MS-Exchange-CrossTenant-AuthSource: DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2023 05:25:04.0864
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR10MB6367
+In-Reply-To: <20231027190254.GA88444@n191-129-154.byted.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27074/Fri Oct 27 09:58:36 2023)
 
-Since some malloc calls in bpf_iter may at times fail,
-this patch adds the appropriate fail checks, and ensures that
-any previously allocated resource is appropriately destroyed
-before returning the function.
+Hi Peilin,
 
-Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
----
- tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+On 10/27/23 9:02 PM, Peilin Ye wrote:
+> On Fri, Oct 27, 2023 at 06:46:57PM +0000, Peilin Ye wrote:
+>> diff --git a/net/core/filter.c b/net/core/filter.c
+>> index 21d75108c2e9..7aca28b7d0fd 100644
+>> --- a/net/core/filter.c
+>> +++ b/net/core/filter.c
+>> @@ -2492,6 +2492,7 @@ int skb_do_redirect(struct sk_buff *skb)
+>>   			     net_eq(net, dev_net(dev))))
+>>   			goto out_drop;
+>>   		skb->dev = dev;
+>> +		dev_sw_netstats_rx_add(dev, skb->len);
+> 
+> This assumes that all devices that support BPF_F_PEER (currently only
+> veth) use tstats (instead of lstats, or dstats) - is that okay?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-index 123a3502b8f0..1e02d1ba1c18 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -698,7 +698,7 @@ static void test_overflow(bool test_e2big_overflow, bool ret1)
- 		goto free_link;
- 
- 	buf = malloc(expected_read_len);
--	if (!buf)
-+	if (!ASSERT_OK_PTR(buf, "malloc"))
- 		goto close_iter;
- 
- 	/* do read */
-@@ -868,6 +868,8 @@ static void test_bpf_percpu_hash_map(void)
- 
- 	skel->rodata->num_cpus = bpf_num_possible_cpus();
- 	val = malloc(8 * bpf_num_possible_cpus());
-+	if (!ASSERT_OK_PTR(val, "malloc"))
-+		goto out;
- 
- 	err = bpf_iter_bpf_percpu_hash_map__load(skel);
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_percpu_hash_map__load"))
-@@ -1044,6 +1046,8 @@ static void test_bpf_percpu_array_map(void)
- 
- 	skel->rodata->num_cpus = bpf_num_possible_cpus();
- 	val = malloc(8 * bpf_num_possible_cpus());
-+	if (!ASSERT_OK_PTR(val, "malloc"))
-+		goto out;
- 
- 	err = bpf_iter_bpf_percpu_array_map__load(skel);
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_percpu_array_map__load"))
--- 
-2.25.1
+Dumb question, but why all this change and not simply just call ...
 
+   dev_lstats_add(dev, skb->len)
+
+... on the host dev ?
+
+> If not, should I add another NDO e.g. ->ndo_stats_rx_add()?
+
+Definitely no new stats ndo resp indirect call in fast path.
+
+Thanks,
+Daniel
 
