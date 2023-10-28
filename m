@@ -1,134 +1,247 @@
-Return-Path: <bpf+bounces-13558-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13559-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 944F27DAA1A
-	for <lists+bpf@lfdr.de>; Sun, 29 Oct 2023 01:11:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8793D7DAA33
+	for <lists+bpf@lfdr.de>; Sun, 29 Oct 2023 01:50:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF84DB20F58
-	for <lists+bpf@lfdr.de>; Sat, 28 Oct 2023 23:11:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B43CC1C209F7
+	for <lists+bpf@lfdr.de>; Sat, 28 Oct 2023 23:50:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFBD918B0D;
-	Sat, 28 Oct 2023 23:11:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4419318C10;
+	Sat, 28 Oct 2023 23:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D2T6KYUM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QAgyjfAn"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9E4820F2;
-	Sat, 28 Oct 2023 23:11:41 +0000 (UTC)
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9415ED6;
-	Sat, 28 Oct 2023 16:11:40 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-77891c236fcso262019385a.3;
-        Sat, 28 Oct 2023 16:11:40 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A167FD;
+	Sat, 28 Oct 2023 23:50:03 +0000 (UTC)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B8ACF;
+	Sat, 28 Oct 2023 16:49:58 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-408425c7c10so26091045e9.0;
+        Sat, 28 Oct 2023 16:49:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698534699; x=1699139499; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1698536997; x=1699141797; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jYVnGp3cT6/jvVqSx9OkSVZgoRvtxkzuv24koCwWOG8=;
-        b=D2T6KYUM+NLwFRHO0Cclg+cwjQO+kbeFA34kSNssPvsFCVsOkNYVEId+XkhonvgPCe
-         GHiS0nIo9nio5i7bUfLEVe8BZfLMjZ8LxsCkESzI8PKHJiDwLsEv4FUc8T2zhTml9JG4
-         9L1hnJUwUM7DRwYNJvwBK4a2W4hhL1DPCchDPGne/l1Ai9R761vq6zjNGRQi07vh3Z0E
-         dMRAMBsksK5osIHPZZpIRki28Xubl5GeAyOhkvyq12DQJQCOquIvnB0Kyjn0bnPqu8Uh
-         4yjBRKiXL/C1V7rFAZGbkoBF2yuP3r/Nrj5+efktHyQpmB2bb2b4m79kRC2t/X6h1Lf4
-         0BHQ==
+        bh=g/C8RdsxmTPE6wff6Gcpqd7wLJY2aX8b3m06UTd80i0=;
+        b=QAgyjfAnNngL+dx/G4BVAw1SiSjxt7wgckAsqc4hna5T/hiXtZ9iHo/vmkmdgqfGkj
+         TXFO8g20SiQ8G8LHMT8G+BsXmSK8rdeK/+4wy6EvJ7KPRipDmfKu+db8qGg9EkcnrHUh
+         nUU74hndalEN11M50/dJr2JU3XYogF17fCiUtNEFH7UuNH3y4O0zg/MUewWmeIzP92v+
+         YKUUSiIqgIK5d21C9x4PdZZTRw4xq80b6lBDN4fjO0xzQDQOHkcAivzb1bsnp3amoVbf
+         KiS6G7KdsPBtcNmvPsZhZG/OmOdmObznpI0qQUsT3CscHAN2+V8nY8w+ez7/b8XPauq4
+         VgzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698534699; x=1699139499;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1698536997; x=1699141797;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jYVnGp3cT6/jvVqSx9OkSVZgoRvtxkzuv24koCwWOG8=;
-        b=mqHEQSAWoq69H0dDXtOG02+RYbjIy7d+CUSUevSvG4nCKw2hJwgGXF0FmA1bSw7V/b
-         EG3Bv0NYUNGUyOFHuXqByivQVq1wK5sOTGvLTS1DEPUGMsgOR4zpiCzt4EC8YUpNr7sc
-         FcRkcN/trpn17k1O9UizKzG91fB6qR+eIk+Fjvmpu36GwyF/nrKth4o+r+73KgTSpcYE
-         ZSjmuKrF2J8u0jCoplLUr9aAo/m4E1gVJTpVxz+W6mwxRwB9CXLcD54itstt9MVzHHQ4
-         j7NlJSLJqE8Z6DE5itasS7cR5cBDHxI/RRa/PjNAFwZ/gwXcTDdgzrrKEwkKl1U3Ie0H
-         2DAQ==
-X-Gm-Message-State: AOJu0YzINiI5maSNlhA5ksFir6lIgheN5kXMRJusASzleQYrYnwEtu1n
-	zmJT3GgwgUJZblB6aGnQ1Q==
-X-Google-Smtp-Source: AGHT+IGz3+YVwqb4dUdzhuz8wzmFiJtLAHz3MS74BztY0QK4r1cZu0N6BysPVkqTN3lpukHZsE/P9Q==
-X-Received: by 2002:a05:622a:130c:b0:418:a14:9c30 with SMTP id v12-20020a05622a130c00b004180a149c30mr8750949qtk.9.1698534699640;
-        Sat, 28 Oct 2023 16:11:39 -0700 (PDT)
-Received: from n191-129-154.byted.org ([147.160.184.150])
-        by smtp.gmail.com with ESMTPSA id z18-20020a05622a061200b00417dd1dd0adsm1968894qta.87.2023.10.28.16.11.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 16:11:39 -0700 (PDT)
-Date: Sat, 28 Oct 2023 23:11:37 +0000
-From: Peilin Ye <yepeilin.cs@gmail.com>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Peilin Ye <peilin.ye@bytedance.com>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Cong Wang <cong.wang@bytedance.com>,
-	Jiang Wang <jiang.wang@bytedance.com>,
-	Youlun Zhang <zhangyoulun@bytedance.com>
-Subject: Re: [PATCH net] veth: Fix RX stats for bpf_redirect_peer() traffic
-Message-ID: <20231028231135.GA2236124@n191-129-154.byted.org>
-References: <20231027184657.83978-1-yepeilin.cs@gmail.com>
- <20231027190254.GA88444@n191-129-154.byted.org>
- <59be18ff-dabc-2a07-3d78-039461b0f3f7@iogearbox.net>
+        bh=g/C8RdsxmTPE6wff6Gcpqd7wLJY2aX8b3m06UTd80i0=;
+        b=Hm54VAND7BukXAWyG48Pv1DziwUuT+CLWrjeOrYyjWUSFXVpfeux/dksn1yLqd2vXz
+         42JQFgztm5VMseyYrnJM/xCMbyGD0jyoVzH8kcgicXq8e42qtLJxBiJ7v59AbAycu5p+
+         Tj30CHkvAiYvDIjcwyaVF9SfaIxDPofmMxuAXtkpuBxXYSrT5P3mHO1HGiZcfCl5f7Dx
+         s5677HmkQawtRcvF1RqLhkiDXqXsWPTE7/LyeXDgm7d3bXJXMQgh2Lp3gV/Bg9zXI/wx
+         fJ81dmn0Um/DHmwzivYddTg+pSzVOkgQzCxcx4i7knd1Xg8VM3Ggt6KQLLTKJGDjuQyD
+         77Og==
+X-Gm-Message-State: AOJu0Yy4WJlIWM/ZWr8S8YMKjvAG4O5RLL88rHn/oW8P4cklMf5piet/
+	tJHwW2HNi+Uh6ks23MYuN8Hxbdn1OKfh+7HBLvc=
+X-Google-Smtp-Source: AGHT+IFkLIZdxJqOddVHY2lTFwnf1BOfRen48CuhxfISgFdSg4+7VUC7c/jhVA1PEpvon/ctWj1OWuGWlB//tjjpluM=
+X-Received: by 2002:a5d:4049:0:b0:320:8e6:b0cf with SMTP id
+ w9-20020a5d4049000000b0032008e6b0cfmr3731864wrp.42.1698536996822; Sat, 28 Oct
+ 2023 16:49:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <59be18ff-dabc-2a07-3d78-039461b0f3f7@iogearbox.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <cover.1698431765.git.dxu@dxuuu.xyz> <ee5513e6384696147da9bdccd2e22ea27d690084.1698431765.git.dxu@dxuuu.xyz>
+In-Reply-To: <ee5513e6384696147da9bdccd2e22ea27d690084.1698431765.git.dxu@dxuuu.xyz>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sat, 28 Oct 2023 16:49:45 -0700
+Message-ID: <CAADnVQ+UUsJvrPp=YhtpwuC6xVWGB=OgwXZwXtHi=2Je6n5a=A@mail.gmail.com>
+Subject: Re: [RFC bpf-next 1/6] bpf: xfrm: Add bpf_xdp_get_xfrm_state() kfunc
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Eric Dumazet <edumazet@google.com>, 
+	antony.antony@secunet.com, LKML <linux-kernel@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, devel@linux-ipsec.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Daniel,
+On Fri, Oct 27, 2023 at 11:46=E2=80=AFAM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> This commit adds an unstable kfunc helper to access internal xfrm_state
+> associated with an SA. This is intended to be used for the upcoming
+> IPsec pcpu work to assign special pcpu SAs to a particular CPU. In other
+> words: for custom software RSS.
+>
+> That being said, the function that this kfunc wraps is fairly generic
+> and used for a lot of xfrm tasks. I'm sure people will find uses
+> elsewhere over time.
+>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  include/net/xfrm.h        |   9 ++++
+>  net/xfrm/Makefile         |   1 +
+>  net/xfrm/xfrm_policy.c    |   2 +
+>  net/xfrm/xfrm_state_bpf.c | 105 ++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 117 insertions(+)
+>  create mode 100644 net/xfrm/xfrm_state_bpf.c
+>
+> diff --git a/include/net/xfrm.h b/include/net/xfrm.h
+> index 98d7aa78adda..ab4cf66480f3 100644
+> --- a/include/net/xfrm.h
+> +++ b/include/net/xfrm.h
+> @@ -2188,4 +2188,13 @@ static inline int register_xfrm_interface_bpf(void=
+)
+>
+>  #endif
+>
+> +#if IS_ENABLED(CONFIG_DEBUG_INFO_BTF)
+> +int register_xfrm_state_bpf(void);
+> +#else
+> +static inline int register_xfrm_state_bpf(void)
+> +{
+> +       return 0;
+> +}
+> +#endif
+> +
+>  #endif /* _NET_XFRM_H */
+> diff --git a/net/xfrm/Makefile b/net/xfrm/Makefile
+> index cd47f88921f5..547cec77ba03 100644
+> --- a/net/xfrm/Makefile
+> +++ b/net/xfrm/Makefile
+> @@ -21,3 +21,4 @@ obj-$(CONFIG_XFRM_USER_COMPAT) +=3D xfrm_compat.o
+>  obj-$(CONFIG_XFRM_IPCOMP) +=3D xfrm_ipcomp.o
+>  obj-$(CONFIG_XFRM_INTERFACE) +=3D xfrm_interface.o
+>  obj-$(CONFIG_XFRM_ESPINTCP) +=3D espintcp.o
+> +obj-$(CONFIG_DEBUG_INFO_BTF) +=3D xfrm_state_bpf.o
+> diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
+> index 5cdd3bca3637..62e64fa7ae5c 100644
+> --- a/net/xfrm/xfrm_policy.c
+> +++ b/net/xfrm/xfrm_policy.c
+> @@ -4267,6 +4267,8 @@ void __init xfrm_init(void)
+>  #ifdef CONFIG_XFRM_ESPINTCP
+>         espintcp_init();
+>  #endif
+> +
+> +       register_xfrm_state_bpf();
+>  }
+>
+>  #ifdef CONFIG_AUDITSYSCALL
+> diff --git a/net/xfrm/xfrm_state_bpf.c b/net/xfrm/xfrm_state_bpf.c
+> new file mode 100644
+> index 000000000000..a73a17a6497b
+> --- /dev/null
+> +++ b/net/xfrm/xfrm_state_bpf.c
+> @@ -0,0 +1,105 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Unstable XFRM state BPF helpers.
+> + *
+> + * Note that it is allowed to break compatibility for these functions si=
+nce the
+> + * interface they are exposed through to BPF programs is explicitly unst=
+able.
+> + */
+> +
+> +#include <linux/bpf.h>
+> +#include <linux/btf_ids.h>
+> +#include <net/xdp.h>
+> +#include <net/xfrm.h>
+> +
+> +/* bpf_xfrm_state_opts - Options for XFRM state lookup helpers
+> + *
+> + * Members:
+> + * @error      - Out parameter, set for any errors encountered
+> + *              Values:
+> + *                -EINVAL - netns_id is less than -1
+> + *                -EINVAL - Passed NULL for opts
+> + *                -EINVAL - opts__sz isn't BPF_XFRM_STATE_OPTS_SZ
+> + *                -ENONET - No network namespace found for netns_id
+> + * @netns_id   - Specify the network namespace for lookup
+> + *              Values:
+> + *                BPF_F_CURRENT_NETNS (-1)
+> + *                  Use namespace associated with ctx
+> + *                [0, S32_MAX]
+> + *                  Network Namespace ID
+> + * @mark       - XFRM mark to match on
+> + * @daddr      - Destination address to match on
+> + * @spi                - Security parameter index to match on
+> + * @proto      - L3 protocol to match on
+> + * @family     - L3 protocol family to match on
+> + */
+> +struct bpf_xfrm_state_opts {
+> +       s32 error;
+> +       s32 netns_id;
+> +       u32 mark;
+> +       xfrm_address_t daddr;
+> +       __be32 spi;
+> +       u8 proto;
+> +       u16 family;
+> +};
+> +
+> +enum {
+> +       BPF_XFRM_STATE_OPTS_SZ =3D sizeof(struct bpf_xfrm_state_opts),
+> +};
+> +
+> +__diag_push();
+> +__diag_ignore_all("-Wmissing-prototypes",
+> +                 "Global functions as their definitions will be in xfrm_=
+state BTF");
+> +
+> +/* bpf_xdp_get_xfrm_state - Get XFRM state
+> + *
+> + * Parameters:
+> + * @ctx        - Pointer to ctx (xdp_md) in XDP program
+> + *                 Cannot be NULL
+> + * @opts       - Options for lookup (documented above)
+> + *                 Cannot be NULL
+> + * @opts__sz   - Length of the bpf_xfrm_state_opts structure
+> + *                 Must be BPF_XFRM_STATE_OPTS_SZ
+> + */
+> +__bpf_kfunc struct xfrm_state *
+> +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *o=
+pts, u32 opts__sz)
+> +{
+> +       struct xdp_buff *xdp =3D (struct xdp_buff *)ctx;
+> +       struct net *net =3D dev_net(xdp->rxq->dev);
+> +
+> +       if (!opts || opts__sz !=3D BPF_XFRM_STATE_OPTS_SZ) {
+> +               opts->error =3D -EINVAL;
+> +               return NULL;
+> +       }
+> +
+> +       if (unlikely(opts->netns_id < BPF_F_CURRENT_NETNS)) {
+> +               opts->error =3D -EINVAL;
+> +               return NULL;
+> +       }
+> +
+> +       if (opts->netns_id >=3D 0) {
+> +               net =3D get_net_ns_by_id(net, opts->netns_id);
+> +               if (unlikely(!net)) {
+> +                       opts->error =3D -ENONET;
+> +                       return NULL;
+> +               }
+> +       }
+> +
+> +       return xfrm_state_lookup(net, opts->mark, &opts->daddr, opts->spi=
+,
+> +                                opts->proto, opts->family);
+> +}
 
-Thanks for taking a look!
-
-On Sat, Oct 28, 2023 at 09:06:44AM +0200, Daniel Borkmann wrote:
-> > > diff --git a/net/core/filter.c b/net/core/filter.c
-> > > index 21d75108c2e9..7aca28b7d0fd 100644
-> > > --- a/net/core/filter.c
-> > > +++ b/net/core/filter.c
-> > > @@ -2492,6 +2492,7 @@ int skb_do_redirect(struct sk_buff *skb)
-> > >   			     net_eq(net, dev_net(dev))))
-> > >   			goto out_drop;
-> > >   		skb->dev = dev;
-> > > +		dev_sw_netstats_rx_add(dev, skb->len);
-> > 
-> > This assumes that all devices that support BPF_F_PEER (currently only
-> > veth) use tstats (instead of lstats, or dstats) - is that okay?
-> 
-> Dumb question, but why all this change and not simply just call ...
-> 
->   dev_lstats_add(dev, skb->len)
-> 
-> ... on the host dev ?
-
-Since I didn't want to update host-veth's TX counters.  If we
-bpf_redirect_peer()ed a packet from NIC TC ingress to Pod-veth TC ingress,
-I think it means we've bypassed host-veth TX?
-
-> > If not, should I add another NDO e.g. ->ndo_stats_rx_add()?
-> 
-> Definitely no new stats ndo resp indirect call in fast path.
-
-Yeah, I think I'll put a comment saying that all devices that support
-BPF_F_PEER must use tstats (or must use lstats), then.
-
-Thanks,
-Peilin Ye
-
+Patch 6 example does little to explain how this kfunc can be used.
+Cover letter sounds promising, but no code to demonstrate the result.
+The main issue is that this kfunc has to be KF_ACQUIRE,
+otherwise bpf prog will keep leaking xfrm_state.
+Plenty of red flags in this RFC.
 
