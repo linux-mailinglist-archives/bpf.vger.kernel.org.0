@@ -1,135 +1,175 @@
-Return-Path: <bpf+bounces-13531-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13532-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB84E7DA487
-	for <lists+bpf@lfdr.de>; Sat, 28 Oct 2023 02:56:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8570E7DA492
+	for <lists+bpf@lfdr.de>; Sat, 28 Oct 2023 03:16:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F397B21645
-	for <lists+bpf@lfdr.de>; Sat, 28 Oct 2023 00:56:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 431A02827A3
+	for <lists+bpf@lfdr.de>; Sat, 28 Oct 2023 01:16:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AFFF639;
-	Sat, 28 Oct 2023 00:56:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2484764C;
+	Sat, 28 Oct 2023 01:16:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I085t9yn"
+	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="NDhtJ6qA"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E4B39F
-	for <bpf@vger.kernel.org>; Sat, 28 Oct 2023 00:56:30 +0000 (UTC)
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76AF8CC
-	for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 17:56:29 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6b1ef786b7fso2578723b3a.3
-        for <bpf@vger.kernel.org>; Fri, 27 Oct 2023 17:56:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698454589; x=1699059389; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=a76Ao9N7egg58eqjOWJkIzdIV1+T0l/g36r0Idjh7NU=;
-        b=I085t9yniihKameymX/JVXaVkMMitibBnFltTgWWaX2Z9dDxSM5BR/ESY/E+JNh4Co
-         +uPaSj7cveb1L20tizLokV6u9QJNhAWYuIr/WzDxagfeQikVzFwdPPbduo9RHqIG4orS
-         B6nSx7RfCWfvCXWXFEx08y46suEduCXiCbOeN1vYoJlZ59npTE+pCawY+Ts43/gBhbN8
-         4ZfW/FuwoehOIhIyurGC8XwwZVShkvgLhLP+rS1ezNNiKonuuu4M+ACRP0mac9tTLOC0
-         8HPTE4WaAZE3Rck9sAuhNcuVH85nCOMJcSOxqEDlKHIsH+YTf5gW6v0cQgNlwuO9GssZ
-         r0Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698454589; x=1699059389;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a76Ao9N7egg58eqjOWJkIzdIV1+T0l/g36r0Idjh7NU=;
-        b=RDRzZp5sqDZBmM1SzuR4e8xgKDOUHagWmboKjYuRjQn2WPmZKh29j6QKRjlZYJFdTz
-         YMAdCdt2DXf/6inYtUrvX1OfFjXCFxQMdWHqgsxvU6fBn2bIby94ZgPlVh6A5R25fmzd
-         lWqOMQw8+EVTMWGoI9VMkEruUCmSgCDpt6vh4drJDz9efeOzJHZs0c+57wGKZyygORRr
-         NiZHLYBRni/CDRq/Wv9vWEd6OQdiOF5q0bgqSeTEFqddEJd2Rwq/TreAsIH+Zv8gMEcZ
-         CETsPMvFUJISskXfdGiQGhcjdifA5pAHxNNv6pbllr7P4irgNNLxBogVDslJB2zXFceO
-         BjEw==
-X-Gm-Message-State: AOJu0YzjHyUNYPckQMDKuA5fxM5UGqfJtMYPe6+/7yDPoazdGryphmKs
-	/cBLXpW20qEj6oWwLUrcAHk=
-X-Google-Smtp-Source: AGHT+IGmJlXG+IgwwitkGT3Ru+NlQnm5e/B0pYqTMFqMzfSnh1hT5lugxfuxsnz9aSDyDd1Yf5Kd1A==
-X-Received: by 2002:a05:6a00:1888:b0:690:2ad9:1454 with SMTP id x8-20020a056a00188800b006902ad91454mr4845117pfh.33.1698454588829;
-        Fri, 27 Oct 2023 17:56:28 -0700 (PDT)
-Received: from surya ([2600:1700:3ec2:2011:3ef3:bbdb:b46b:4676])
-        by smtp.gmail.com with ESMTPSA id fj8-20020a056a003a0800b006b90f1706f1sm1937318pfb.134.2023.10.27.17.56.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 17:56:28 -0700 (PDT)
-Date: Fri, 27 Oct 2023 17:56:26 -0700
-From: Manu Bretelle <chantr4@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Kui-Feng Lee <sinquersw@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-	bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH bpf-next] selftests/bpf: umount children of TDIR in
- test_bpffs
-Message-ID: <ZTxcOjXbeVsxgs0p@surya>
-References: <20231024201852.1512720-1-chantr4@gmail.com>
- <041a3ea2-8cc6-4f0f-8ed9-6ca459e5bbb7@gmail.com>
- <ZTiqp7URqNjqrSEk@surya>
- <CAADnVQ++5v46OYD-zR28dM=PaZ1RYLoijLicg+8DgnAZAZ_qtw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E97631
+	for <bpf@vger.kernel.org>; Sat, 28 Oct 2023 01:16:21 +0000 (UTC)
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05olkn2103.outbound.protection.outlook.com [40.92.89.103])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E658116;
+	Fri, 27 Oct 2023 18:16:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mGnP3soB1RBBMiQw1QmFgWbZSCEOjVtAyIIcY3lpHWn7cjy4V9u5NKuA1McAhbH9OGt+1Xp4O+LlyFBPWMX+Yyk8N9zePZCYFZZsKMi+Vph3WrZTQf/epd5DFmZYu9nAbMKmex0gu6c34lN5feKjleTk7Lm0djhZYXgdOzmbcwXCqQbfXAZCHcWpJoZrFIgw0ZG2FqbRH7rypmJkZsIzAi1By9ncSvHUPreJSAEkMaCI1mbbItMU1mzvNiI1RuvJ/k88zay3mdVHnUrWY3cnPn+l2XDdRqBMv0S2dNSJEeK9/+YLoU55U4UlqOTpLHvnvABTOkg21BueHG/mqwDPhA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=i7WUzJ7kr1/39hE6hxmLlu+QI6SQsCt5YRuHWaP9kjE=;
+ b=VRBO6uaKqLb1IjnBOnV6YVbh1nulm3qxmYbVVz5uLNRX7Jt5/Etzk9PeIhfZX5dAF5Bq1A2kMak+NCDKLfIYFLEefmWe4Foa/ZTiVjssQpqHxkeJyI8HDnEEGyhAMh/GUikUQTNsYz12HlTlVnYYxH3gSje6fiJoWs2AM4uLoKMsSIXDrBUT3dEW987tDqj+uhgKIVSqpObzNJQmMHjXEUfkQ649LumikCCvXrer9xfpmFpYAZ3Jr3tlpfmyDcVswt3FPtwUhDJ+9aXhcMxPTwDedzxS5sJ0T6jMzXn4EfJH6U823IpVIX3GQ8HKsfkxGEeRSJD32PykjbVsD1wIxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i7WUzJ7kr1/39hE6hxmLlu+QI6SQsCt5YRuHWaP9kjE=;
+ b=NDhtJ6qA/NctWcoQh3Zmbmyo358lnH+F2a0BVPmxQ5CLnmWgRZrwoY24j8R+xvv26pFn+DTUVmqIbiqLN+sEQ904/rLZmMJvveqzWHaDfw+i5BHcjKCH8wHGHMQ18XIem0Pk9NlNrsxSnKk1+srqJWmDvr4bKhz17uFvr6eU6Zl13oSfcjq3APGqklnuLR4PtATU5oQi/GVOCfbI6EhaM2AwXFxuSujGFxy1g8QKHCGO6x+s07oLKkuG9KSBObiFg1dRXzJdypJkyxGaCpzQJzUHb4uyL9ysizPs1Hf8RJUWH7LcmlIpyAioE5A84nZgroVC8fnxtzPQ+8QCu2Lvew==
+Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
+ by GV2PR10MB6741.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:ba::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Sat, 28 Oct
+ 2023 01:16:17 +0000
+Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::e2b0:8d7e:e293:bd97]) by DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::e2b0:8d7e:e293:bd97%7]) with mapi id 15.20.6933.024; Sat, 28 Oct 2023
+ 01:16:17 +0000
+Date: Sat, 28 Oct 2023 06:46:06 +0530
+From: Yuran Pereira <yuran.pereira@hotmail.com>
+To: Kui-Feng Lee <sinquersw@gmail.com>
+Cc: bpf@vger.kernel.org, yonghong.song@linux.dev, shuah@kernel.org,
+	ast@kernel.org, daniel@iogearbox.net, song@kernel.org,
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+	haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+	brauner@kernel.org, iii@linux.ibm.com, kuifeng@meta.com,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 0/2] selftests/bpf: Replaces CHECK macros and
+ adds malloc failure checks to bpf_iter
+Message-ID:
+ <DB3PR10MB683516C89C063FEC4D94D45BE8A3A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
+References: <DB3PR10MB6835598B901975BEAEBA8601E8DDA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
+ <563d1ae7-8d1f-48d5-b742-989ce482c4f1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <563d1ae7-8d1f-48d5-b742-989ce482c4f1@gmail.com>
+X-TMN: [4HdNbtbKo7XXj822lfe06GbG0v8M3hMA]
+X-ClientProxiedBy: JN3P275CA0010.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:70::11)
+ To DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
+X-Microsoft-Original-Message-ID: <20231028011606.GD1301832@nmj-network>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ++5v46OYD-zR28dM=PaZ1RYLoijLicg+8DgnAZAZ_qtw@mail.gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB3PR10MB6835:EE_|GV2PR10MB6741:EE_
+X-MS-Office365-Filtering-Correlation-Id: 663dbcf2-a07c-4010-0544-08dbd7537c01
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	2h7dN9zDgoKYKD/RRgNfzd9pBTu/eop+gpT8qIevFwrW7//NUuGBvssaVITFjiSX+ZvTS+iBUSp+R182zd0DdjemU4pLcNHUZlCLBTjkJxwby8SNTwE4bpNaj8bL0JXj/do8Cq5sqM3CQCRUB0WdynhdpVJBFknyeQN9n/o695pI5UI+4FEWUlj8gQ1FBQeqH71uQeUWxNsO4h36qR0jjHS3mUxjOA8UZytp/l6d3NLOy3ZgqXRbp22DwRNMl6PqUQtNI3+jLIO/0NVO2p/ZHKtbnU3wJ+nEFwYnYBsDcovdceitSzmW+EjATUcFDgVlUoBTgMkwPDMQra681Q/cxyqbKRSTtOAMXHkfFGhucbJWIjZ489c5p6wVoY7ZbrEwG+5r7bjKmDW6vfQ74mhRT0uurYspTfH47O56k4G1t9NBFFkb4t0ARVfeUd1958tO2/Vlp6QrYzRK9QbFGWojb3gpQFfesxwOG4FOmfdWeLxNbubZc1ohxbjUwGdRHk5O7yTFPEuQ5rLtC4OaKvHBTVdus5ogWsMGLqX/307CVTskq/Ho4iSoKroNTHeMzRRGjOfBeHhHfw3T3Zmz6nIDP2PN3O4ZU2cX+W9gy6mzI+hQg5QaRdbU3u/lgdZndmgYAzmuexdxFgLyD4QAnkfyuA==
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?leT5kOuzGx6hnpiBEm9OSSpsPxqWJ5023hU2Mga2G99ghZ2nUHs/TLUyAfR8?=
+ =?us-ascii?Q?Ktp8YeYYzxVM5YjZAFOrL4hZS3LgQoY8N5DAU8IKv5QvVf6mIeVA9uH2TXAe?=
+ =?us-ascii?Q?yFUOa9qAEN2tfttowoN3SmVpFAzR59da3hmFQw1upbNTy5r7bp24bbyGKNW/?=
+ =?us-ascii?Q?TiVNjPyHbuYhozy39q5M2ai6nteZgmHjE7OxPOOgCt4EAhhVB+J9NvHMH7/J?=
+ =?us-ascii?Q?iFjm5ooX7H+ddWEPuaCaxLWEEMuIok90bBzoLLLQ7x27REm/w393l/hh4lLi?=
+ =?us-ascii?Q?hUDk/Y6y5IMVOI3Q3fqaEjRRV8zn8dG8kNHjOxQ9oMQraDU5sh+fGEMNmuXz?=
+ =?us-ascii?Q?IyOLIQHk3JEgNeaRyQfIFW+9lVuvkrDF3dnBxTNHKPA120ekUyNM2TjHr0Bz?=
+ =?us-ascii?Q?M10VAqCfTY8vwo6ZTJW0TMdM87UftwQItHsv0sXI3ssHiprIZcI9oItagXdO?=
+ =?us-ascii?Q?UG2i+MMvH4DGlc/fkUSjrCfOw2ENUlsx0jjSFQbm/cfzI5n1YJ0do1I9JfAm?=
+ =?us-ascii?Q?vLBDHr+k7rvCaGmUBxA69UOcoO1OiX3CWpQWaCVdom5DxU96T7lu7rRtASz1?=
+ =?us-ascii?Q?WcIIwBXEksxDGRBVZmXTXKJE9BHWOqoWfd0C9z0mHOcebnvqXvyDPl8EwTKK?=
+ =?us-ascii?Q?C/9vjL3F79lPU1fjuaGxvxyIuGBSnfx2NJVMRdBeQWiqUyUOdOWuCuq48MA+?=
+ =?us-ascii?Q?wHhz4XTpdncAeHo3uHVZxrFeslxF3wak2M0dD42PBLeBgexxwp4ok3V8vpe8?=
+ =?us-ascii?Q?tD3YdM/wS9u/U89SUj4BD00dYQsyLWAFI2lO2eG1U2ya11bbT3+dKlI0aUpN?=
+ =?us-ascii?Q?le3dduhuYc+tO/Z59d+y8XaunXkmpuVsLIQcgTTh8S8KHnwDtgvZlrjlpAFh?=
+ =?us-ascii?Q?uGRHi1rp8MbXZEeTAvbfiSj6mY6EVRlEzUMO8e5P0rQlMopOHkZRFy2rqXSm?=
+ =?us-ascii?Q?OeUiIbuq9vCIdweZHWdhJojax9lZ8P83upXvnHipAFqDs2APIpFdg85zfZd6?=
+ =?us-ascii?Q?gzW/gcXPuI4rVKAxGV2ocRGN+FYN/yZo7Yn+YDtbDIpO9STR9IH8uBuXzGu4?=
+ =?us-ascii?Q?1b4DwhiidW5S1dsWyGmTUvZYN6ByXWJgxS/NBNCjKc0uQNTTixcJ98h3xN1d?=
+ =?us-ascii?Q?c2cAmraCPKQME0sZ++UIXIWEn48qviQNQxH6Q/CQE5x3yavyELQP72slI1We?=
+ =?us-ascii?Q?eA9e0wC52iMG3GNjDcsw0S+6ZE3IlbN2yBKKOF0bLpaqGmN6iC5hVyz+9CQ?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 663dbcf2-a07c-4010-0544-08dbd7537c01
+X-MS-Exchange-CrossTenant-AuthSource: DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2023 01:16:16.9451
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR10MB6741
 
-On Thu, Oct 26, 2023 at 02:35:11PM -0700, Alexei Starovoitov wrote:
-> On Tue, Oct 24, 2023 at 10:42 PM Manu Bretelle <chantr4@gmail.com> wrote:
-> >
-> > On Tue, Oct 24, 2023 at 02:29:19PM -0700, Kui-Feng Lee wrote:
-> > >
-> > >
-> > > On 10/24/23 13:18, Manu Bretelle wrote:
-> > > > Currently this tests tries to umount /sys/kernel/debug (TDIR) but the
-> > > > system it is running on may have mounts below.
-> > > >
-> > > > For example, danobi/vmtest [0] VMs have
-> > > >      mount -t tracefs tracefs /sys/kernel/debug/tracing
-> > > > as part of their init.
-> > > >
-> > > > This change list mounts and will umount any mounts below TDIR before
-> > > > umounting TDIR itself.
-> > > >
-> > > > Note that it is not umounting recursively, so in the case of a sub-mount
-> > > > of TDIR  having another sub-mount, this will fail as mtab is ordered.
-> > >
-> > > Should we move TID to a random path likes "/sys/kernel/debug-<pid>/"?
-> > >
-> >
-> > Fair point, I suppose we would want to keep TDIR a defined string as it does
-> > simplify the gymnastic involved through the rest of the script, but yeah
-> > looking at the original commit:
-> > edb65ee5aa25 (selftests/bpf: Add bpffs preload test)
-> >
-> > I don't see any reason to use an alternate directory and rather mkdir it vs
-> > umounting the original one.
-> > so something like
-> >
-> >     #define TDIR "/sys/kernel/test_bpffs"
-> >
-> > Would probably do.
-> >
-> > Alexei could confirm his original intent probably.
+On Wed, Oct 25, 2023 at 09:37:44PM -0700, Kui-Feng Lee wrote:
 > 
-> I don't remember why I picked /sys/kernel/debug back then.
-> I suspect TDIR /tmp/foo and mkdir would work the same way.
+> 
+> On 10/25/23 19:03, Yuran Pereira wrote:
+> > This patch series contains the following updates:
+> > - Replaces the usage of all the CHECK macros in bpf_iter
+> >    to the appropriate ASSERT_* macro calls
+> > - Adds appropriate malloc failure checks to bpf_iter
+> > 
+> > Changes in v2:
+> > - Removed unused "duration" variable which caused compilation error
+> >    as reported by Yonghong Song [1]
+> > - Improved malloc failure handling as suggested by Kui-Feng Lee [2]
+> > - Ensured propper patch formatting (i.e. sending it as a set instead
+> >    of two distinct patches)
+> > 
+> > [1] https://lore.kernel.org/lkml/3531360b-c933-4c5f-a84c-17edf0592519@linux.dev/
+> > [2] https://lore.kernel.org/lkml/7d703c4c-1a24-4806-a483-c02efb666059@gmail.com
+> > 
+> > 
+> > Previous version:
+> > v1 - https://lore.kernel.org/lkml/DB3PR10MB683589A5F705C6CA5BE0D325E8DFA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+> >     - https://lore.kernel.org/lkml/DB3PR10MB68356D7CDF6005480BE5876CE8DEA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+> > 
+> > Yuran Pereira (2):
+> >    selftests/bpf: Convert CHECK macros to ASSERT_* macros in bpf_iter
+> >    selftests/bpf: Add malloc failure checks in bpf_iter
+> > 
+> >   .../selftests/bpf/prog_tests/bpf_iter.c       | 88 +++++++++----------
+> >   1 file changed, 44 insertions(+), 44 deletions(-)
+> > 
+> 
+> 
+> For the cover letter, you can just put it at the same directory of
+> patch 1 and 2 and sent them with "git send-email" at once. All of them
+> will be in the same thread.
+> 
+> "git format-patch --cover-letter ..." will generate a template
+> of the cover letter along with patches. FYI
+>
+Hello Kui-Feng, thanks for the feedback.
 
-Yeah. I suspect the reason you used an existing directory is that
-/sys/kernel is not mutable from userspace.
-I ended up picking a random name under /tmp and mkdir.
+So I did use "git format-patch --cover-letter", but for some reason
+"git send-email /path-to-patches/" seems to be deliberately sending
+the cover letter on a separate thread. IDK why.
+
+But "git send-email --compose" seems to be working as expected, so
+I'll use that and manually copy the cover letter generated by
+format-patch to ensure it's all on the same thread.
+
+Since I already butchered this thread, I will send v3 series on a 
+separate thread. But I'll ensure to reference this thread on the 
+cover letter.
+
+I'll be more careful with future patches.
 
