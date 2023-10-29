@@ -1,385 +1,297 @@
-Return-Path: <bpf+bounces-13578-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13579-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 318137DAB25
-	for <lists+bpf@lfdr.de>; Sun, 29 Oct 2023 07:15:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3455D7DABE0
+	for <lists+bpf@lfdr.de>; Sun, 29 Oct 2023 10:33:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EE02B212CC
-	for <lists+bpf@lfdr.de>; Sun, 29 Oct 2023 06:15:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB92328174C
+	for <lists+bpf@lfdr.de>; Sun, 29 Oct 2023 09:33:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 799978F60;
-	Sun, 29 Oct 2023 06:15:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 549A88F7E;
+	Sun, 29 Oct 2023 09:33:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bx/2qO8f"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VPhcMnvy"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 252328F78;
-	Sun, 29 Oct 2023 06:15:07 +0000 (UTC)
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B6CED9;
-	Sat, 28 Oct 2023 23:15:05 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3b2e44c7941so2432874b6e.2;
-        Sat, 28 Oct 2023 23:15:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698560105; x=1699164905; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X+y5IvZGTJVNsINeBbqs6/CPtfFJoedZnxRZu6VJyjA=;
-        b=Bx/2qO8f0EcsZOk2rNn4bT+ZOjtODoYRAUdn12LwOjZRDiGJ4Y23FQaXqWZlQAkxnt
-         WdIueM1Nk5VWo61/nkkwlnkqUPn9l0mSo5tz7ggZB1fBhJWc79RZZahNw8T5qVL+obEF
-         RPGf0QOhkZXwWOlJxgzO48AUaGZxLVS/OdgcKZp5ZEq42MAFa6zZR26pAb2+Mn2vYIUW
-         MGGMTmMUm4kRGIiEGgKAd8q1fuXzF061S95bjmuar7NXa1csKO+dEDyeWv8tl2BHxYrE
-         /UEyThaKyQLcw2QEzrvo/je+jCQPjWuQhv9aXC+IPOD2ow6Ydc6409dv/bHJ6/FClww1
-         vMLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698560105; x=1699164905;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X+y5IvZGTJVNsINeBbqs6/CPtfFJoedZnxRZu6VJyjA=;
-        b=h5xz4AGfepHLM6+a5k1w2oMsk9CycyEY3pFjpPxPGM0KZVgVqj2PzxNIpSGX/qn+nQ
-         kbuoILFfjMhkkIsJ8zK0njHOhdME+Cmaz38omoEzXAZ6M2YwWZgWIFP/K3IpEimGLujA
-         yyToh+SknBdgtE5a0GG7iqbpUk9xUCrNRJ7Epj7aEE3MeYNYHO7Aq99+/wjX25r3aEbc
-         T8AhakwK3FnAy2mzHmgM/RIlGMwpeqZHdzxFN2xBNUPDzBakbzMvO/z3R7wrAq95R/gG
-         iUeY8zQXN6O6xgu/HCFszP02ZtSZcifD0i/WXfrjx1Oeel9I6HGoAMj7m+BMuTE2JV3i
-         a1sw==
-X-Gm-Message-State: AOJu0Yx77CuWhD7H7t8I6yuLN/jiShFiPLxVZRJf2/uKHrFDx3KZm+vx
-	Rn9lyxUDFlX9L70ZLvNNAJ8=
-X-Google-Smtp-Source: AGHT+IEL/zFegIBdXR5fcscjYR4WrvXL+mrGreh3egZnEoN+g71G0TvRDGrDqJL6UgaUuHlcWdwLFw==
-X-Received: by 2002:a05:6808:13d6:b0:3b2:ef9a:4339 with SMTP id d22-20020a05680813d600b003b2ef9a4339mr8876787oiw.49.1698560104727;
-        Sat, 28 Oct 2023 23:15:04 -0700 (PDT)
-Received: from vultr.guest ([2001:19f0:ac01:2b5:5400:4ff:fea0:d066])
-        by smtp.gmail.com with ESMTPSA id m2-20020aa79002000000b006b225011ee5sm3775106pfo.6.2023.10.28.23.15.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 23:15:04 -0700 (PDT)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	tj@kernel.org,
-	lizefan.x@bytedance.com,
-	hannes@cmpxchg.org,
-	yosryahmed@google.com,
-	mkoutny@suse.com,
-	sinquersw@gmail.com,
-	longman@redhat.com
-Cc: cgroups@vger.kernel.org,
-	bpf@vger.kernel.org,
-	oliver.sang@intel.com,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v3 bpf-next 11/11] selftests/bpf: Add selftests for cgroup1 hierarchy
-Date: Sun, 29 Oct 2023 06:14:38 +0000
-Message-Id: <20231029061438.4215-12-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20231029061438.4215-1-laoar.shao@gmail.com>
-References: <20231029061438.4215-1-laoar.shao@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0352B320A;
+	Sun, 29 Oct 2023 09:33:01 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B050BD;
+	Sun, 29 Oct 2023 02:33:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698571980; x=1730107980;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=EB6AXOCzM0UMKHUfSK5sQFRebDnHx2JnAx0qwYWuJyQ=;
+  b=VPhcMnvyGW6DweSmc/AxMW6vLGIRf8JHztWeKtz+ABZbAI+v+LkXImr2
+   j19J1f7lEWOf/xGfPuKYByTJ+B44+oEAmIQ620O/6xl9gq8+BgM2F4JPU
+   r6nriLrliBv61uLN+zHHNEL/xo+VfiSxS21ELbolyBJRW7Kh8uD2XOMya
+   rdW08Z+S3E1V71b+ndcRI3pbiVHZCnkiLbY30RNqNWbJISZ+q3V2lxSrZ
+   5f9xYC507kLYpUUyaRSHu8twh8BOvpGdGm4FgJKdRQ82JPt2XzH59dLGK
+   2ILqFRkEzHaTerXgiTwcWubToZgOMy0X5/5MjDHtnf28X0cs2iZwUK3+p
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="763520"
+X-IronPort-AV: E=Sophos;i="6.03,261,1694761200"; 
+   d="scan'208";a="763520"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2023 02:32:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="789203497"
+X-IronPort-AV: E=Sophos;i="6.03,261,1694761200"; 
+   d="scan'208";a="789203497"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 29 Oct 2023 02:32:56 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qx2A9-000CSp-2K;
+	Sun, 29 Oct 2023 09:32:53 +0000
+Date: Sun, 29 Oct 2023 17:32:19 +0800
+From: kernel test robot <lkp@intel.com>
+To: Vadim Fedorenko <vadfed@meta.com>, Jakub Kicinski <kuba@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>
+Cc: oe-kbuild-all@lists.linux.dev, Vadim Fedorenko <vadfed@meta.com>,
+	bpf@vger.kernel.org, netdev@vger.kernel.org,
+	linux-crypto@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: add skcipher API support to TC/XDP
+ programs
+Message-ID: <202310291759.z9P4QJvI-lkp@intel.com>
+References: <20231027172039.1365917-1-vadfed@meta.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231027172039.1365917-1-vadfed@meta.com>
 
-Add selftests for cgroup1 hierarchy.
-The result as follows,
+Hi Vadim,
 
-  $ tools/testing/selftests/bpf/test_progs --name=cgroup1_hierarchy
-  #36/1    cgroup1_hierarchy/test_cgroup1_hierarchy:OK
-  #36/2    cgroup1_hierarchy/test_root_cgid:OK
-  #36/3    cgroup1_hierarchy/test_invalid_level:OK
-  #36/4    cgroup1_hierarchy/test_invalid_cgid:OK
-  #36/5    cgroup1_hierarchy/test_invalid_hid:OK
-  #36/6    cgroup1_hierarchy/test_invalid_cgrp_name:OK
-  #36/7    cgroup1_hierarchy/test_invalid_cgrp_name2:OK
-  #36/8    cgroup1_hierarchy/test_sleepable_prog:OK
-  #36      cgroup1_hierarchy:OK
-  Summary: 1/8 PASSED, 0 SKIPPED, 0 FAILED
+kernel test robot noticed the following build warnings:
 
-Besides, I also did some stress test similar to the patch #2 in this
-series, as follows (with CONFIG_PROVE_RCU_LIST enabled):
+[auto build test WARNING on bpf-next/master]
 
-- Continuously mounting and unmounting named cgroups in some tasks,
-  for example:
+url:    https://github.com/intel-lab-lkp/linux/commits/Vadim-Fedorenko/selftests-bpf-crypto-skcipher-algo-selftests/20231028-020332
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20231027172039.1365917-1-vadfed%40meta.com
+patch subject: [PATCH bpf-next v2 1/2] bpf: add skcipher API support to TC/XDP programs
+config: x86_64-randconfig-001-20231029 (https://download.01.org/0day-ci/archive/20231029/202310291759.z9P4QJvI-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231029/202310291759.z9P4QJvI-lkp@intel.com/reproduce)
 
-  cgrp_name=$1
-  while true
-  do
-      mount -t cgroup -o none,name=$cgrp_name none /$cgrp_name
-      umount /$cgrp_name
-  done
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310291759.z9P4QJvI-lkp@intel.com/
 
-- Continuously run this selftest concurrently,
-  while true; do ./test_progs --name=cgroup1_hierarchy; done
+All warnings (new ones prefixed by >>):
 
-They can ran successfully without any RCU warnings in dmesg.
+>> kernel/bpf/crypto.c:72:1: warning: no previous declaration for 'bpf_crypto_skcipher_ctx_create' [-Wmissing-declarations]
+    bpf_crypto_skcipher_ctx_create(const struct bpf_dynptr_kern *palgo,
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/crypto.c:140:1: warning: no previous declaration for 'bpf_crypto_skcipher_ctx_acquire' [-Wmissing-declarations]
+    bpf_crypto_skcipher_ctx_acquire(struct bpf_crypto_skcipher_ctx *ctx)
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/crypto.c:154:18: warning: no previous declaration for 'bpf_crypto_skcipher_ctx_release' [-Wmissing-declarations]
+    __bpf_kfunc void bpf_crypto_skcipher_ctx_release(struct bpf_crypto_skcipher_ctx *ctx)
+                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/crypto.c:208:17: warning: no previous declaration for 'bpf_crypto_skcipher_decrypt' [-Wmissing-declarations]
+    __bpf_kfunc int bpf_crypto_skcipher_decrypt(struct bpf_crypto_skcipher_ctx *ctx,
+                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/crypto.c:225:17: warning: no previous declaration for 'bpf_crypto_skcipher_encrypt' [-Wmissing-declarations]
+    __bpf_kfunc int bpf_crypto_skcipher_encrypt(struct bpf_crypto_skcipher_ctx *ctx,
+                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- .../selftests/bpf/prog_tests/cgroup1_hierarchy.c   | 159 +++++++++++++++++++++
- .../selftests/bpf/progs/test_cgroup1_hierarchy.c   |  72 ++++++++++
- 2 files changed, 231 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup1_hierarchy.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup1_hierarchy.c b/tools/testing/selftests/bpf/prog_tests/cgroup1_hierarchy.c
-new file mode 100644
-index 0000000..4aafbc9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup1_hierarchy.c
-@@ -0,0 +1,159 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023 Yafang Shao <laoar.shao@gmail.com> */
-+
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <test_progs.h>
-+#include "cgroup_helpers.h"
-+#include "test_cgroup1_hierarchy.skel.h"
-+
-+static void bpf_cgroup1(struct test_cgroup1_hierarchy *skel)
-+{
-+	int err;
-+
-+	/* Attach LSM prog first */
-+	skel->links.lsm_run = bpf_program__attach_lsm(skel->progs.lsm_run);
-+	if (!ASSERT_OK_PTR(skel->links.lsm_run, "lsm_attach"))
-+		return;
-+
-+	/* LSM prog will be triggered when attaching fentry */
-+	skel->links.fentry_run = bpf_program__attach_trace(skel->progs.fentry_run);
-+	ASSERT_NULL(skel->links.fentry_run, "fentry_attach_fail");
-+
-+	err = bpf_link__destroy(skel->links.lsm_run);
-+	ASSERT_OK(err, "destroy_lsm");
-+	skel->links.lsm_run = NULL;
-+}
-+
-+static void bpf_cgroup1_sleepable(struct test_cgroup1_hierarchy *skel)
-+{
-+	int err;
-+
-+	/* Attach LSM prog first */
-+	skel->links.lsm_s_run = bpf_program__attach_lsm(skel->progs.lsm_s_run);
-+	if (!ASSERT_OK_PTR(skel->links.lsm_s_run, "lsm_attach"))
-+		return;
-+
-+	/* LSM prog will be triggered when attaching fentry */
-+	skel->links.fentry_run = bpf_program__attach_trace(skel->progs.fentry_run);
-+	ASSERT_NULL(skel->links.fentry_run, "fentry_attach_fail");
-+
-+	err = bpf_link__destroy(skel->links.lsm_s_run);
-+	ASSERT_OK(err, "destroy_lsm");
-+	skel->links.lsm_s_run = NULL;
-+}
-+
-+static void bpf_cgroup1_invalid_id(struct test_cgroup1_hierarchy *skel)
-+{
-+	int err;
-+
-+	/* Attach LSM prog first */
-+	skel->links.lsm_run = bpf_program__attach_lsm(skel->progs.lsm_run);
-+	if (!ASSERT_OK_PTR(skel->links.lsm_run, "lsm_attach"))
-+		return;
-+
-+	/* LSM prog will be triggered when attaching fentry */
-+	skel->links.fentry_run = bpf_program__attach_trace(skel->progs.fentry_run);
-+	if (!ASSERT_OK_PTR(skel->links.fentry_run, "fentry_attach_success"))
-+		goto cleanup;
-+
-+	err = bpf_link__destroy(skel->links.lsm_run);
-+	ASSERT_OK(err, "destroy_lsm");
-+	skel->links.lsm_run = NULL;
-+
-+cleanup:
-+	err = bpf_link__destroy(skel->links.fentry_run);
-+	ASSERT_OK(err, "destroy_fentry");
-+	skel->links.fentry_run = NULL;
-+}
-+
-+void test_cgroup1_hierarchy(void)
-+{
-+	struct test_cgroup1_hierarchy *skel;
-+	__u64 current_cgid;
-+	int hid, err;
-+
-+	skel = test_cgroup1_hierarchy__open();
-+	if (!ASSERT_OK_PTR(skel, "open"))
-+		return;
-+
-+	skel->bss->target_pid = getpid();
-+
-+	err = bpf_program__set_attach_target(skel->progs.fentry_run, 0, "bpf_fentry_test1");
-+	if (!ASSERT_OK(err, "fentry_set_target"))
-+		goto destroy;
-+
-+	err = test_cgroup1_hierarchy__load(skel);
-+	if (!ASSERT_OK(err, "load"))
-+		goto destroy;
-+
-+	/* Setup cgroup1 hierarchy */
-+	err = setup_classid_environment();
-+	if (!ASSERT_OK(err, "setup_classid_environment"))
-+		goto destroy;
-+
-+	err = join_classid();
-+	if (!ASSERT_OK(err, "join_cgroup1"))
-+		goto cleanup;
-+
-+	current_cgid = get_classid_cgroup_id();
-+	if (!ASSERT_GE(current_cgid, 0, "cgroup1 id"))
-+		goto cleanup;
-+
-+	hid = get_cgroup1_hierarchy_id("net_cls");
-+	if (!ASSERT_GE(hid, 0, "cgroup1 id"))
-+		goto cleanup;
-+	skel->bss->target_hid = hid;
-+
-+	if (test__start_subtest("test_cgroup1_hierarchy")) {
-+		skel->bss->target_ancestor_cgid = current_cgid;
-+		bpf_cgroup1(skel);
-+	}
-+
-+	if (test__start_subtest("test_root_cgid")) {
-+		skel->bss->target_ancestor_cgid = 1;
-+		skel->bss->target_ancestor_level = 0;
-+		bpf_cgroup1(skel);
-+	}
-+
-+	if (test__start_subtest("test_invalid_level")) {
-+		skel->bss->target_ancestor_cgid = 1;
-+		skel->bss->target_ancestor_level = 1;
-+		bpf_cgroup1_invalid_id(skel);
-+	}
-+
-+	if (test__start_subtest("test_invalid_cgid")) {
-+		skel->bss->target_ancestor_cgid = 0;
-+		bpf_cgroup1_invalid_id(skel);
-+	}
-+
-+	if (test__start_subtest("test_invalid_hid")) {
-+		skel->bss->target_ancestor_cgid = 1;
-+		skel->bss->target_ancestor_level = 0;
-+		skel->bss->target_hid = -1;
-+		bpf_cgroup1_invalid_id(skel);
-+	}
-+
-+	if (test__start_subtest("test_invalid_cgrp_name")) {
-+		skel->bss->target_hid = get_cgroup1_hierarchy_id("net_cl");
-+		skel->bss->target_ancestor_cgid = current_cgid;
-+		bpf_cgroup1_invalid_id(skel);
-+	}
-+
-+	if (test__start_subtest("test_invalid_cgrp_name2")) {
-+		skel->bss->target_hid = get_cgroup1_hierarchy_id("net_cls,");
-+		skel->bss->target_ancestor_cgid = current_cgid;
-+		bpf_cgroup1_invalid_id(skel);
-+	}
-+
-+	if (test__start_subtest("test_sleepable_prog")) {
-+		skel->bss->target_hid = hid;
-+		skel->bss->target_ancestor_cgid = current_cgid;
-+		bpf_cgroup1_sleepable(skel);
-+	}
-+
-+cleanup:
-+	cleanup_classid_environment();
-+destroy:
-+	test_cgroup1_hierarchy__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c b/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
-new file mode 100644
-index 0000000..979ff4e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
-@@ -0,0 +1,72 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//#endif
-+/* Copyright (C) 2023 Yafang Shao <laoar.shao@gmail.com> */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+__u32 target_ancestor_level;
-+__u64 target_ancestor_cgid;
-+int target_pid, target_hid;
-+
-+struct cgroup *bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id) __ksym;
-+struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level) __ksym;
-+void bpf_cgroup_release(struct cgroup *cgrp) __ksym;
-+
-+static int bpf_link_create_verify(int cmd)
-+{
-+	struct cgroup *cgrp, *ancestor;
-+	struct task_struct *task;
-+	int ret = 0;
-+
-+	if (cmd != BPF_LINK_CREATE)
-+		return 0;
-+
-+	task = bpf_get_current_task_btf();
-+
-+	/* Then it can run in parallel with others */
-+	if (task->pid != target_pid)
-+		return 0;
-+
-+	cgrp = bpf_task_get_cgroup1(task, target_hid);
-+	if (!cgrp)
-+		return 0;
-+
-+	/* Refuse it if its cgid or its ancestor's cgid is the target cgid */
-+	if (cgrp->kn->id == target_ancestor_cgid)
-+		ret = -1;
-+
-+	ancestor = bpf_cgroup_ancestor(cgrp, target_ancestor_level);
-+	if (!ancestor)
-+		goto out;
-+
-+	if (ancestor->kn->id == target_ancestor_cgid)
-+		ret = -1;
-+	bpf_cgroup_release(ancestor);
-+
-+out:
-+	bpf_cgroup_release(cgrp);
-+	return ret;
-+}
-+
-+SEC("lsm/bpf")
-+int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size)
-+{
-+	return bpf_link_create_verify(cmd);
-+}
-+
-+SEC("lsm.s/bpf")
-+int BPF_PROG(lsm_s_run, int cmd, union bpf_attr *attr, unsigned int size)
-+{
-+	return bpf_link_create_verify(cmd);
-+}
-+
-+SEC("fentry")
-+int BPF_PROG(fentry_run)
-+{
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+vim +/bpf_crypto_skcipher_ctx_create +72 kernel/bpf/crypto.c
+
+    58	
+    59	/**
+    60	 * bpf_crypto_skcipher_ctx_create() - Create a mutable BPF crypto context.
+    61	 *
+    62	 * Allocates a crypto context that can be used, acquired, and released by
+    63	 * a BPF program. The crypto context returned by this function must either
+    64	 * be embedded in a map as a kptr, or freed with bpf_crypto_skcipher_ctx_release().
+    65	 *
+    66	 * bpf_crypto_skcipher_ctx_create() allocates memory using the BPF memory
+    67	 * allocator, and will not block. It may return NULL if no memory is available.
+    68	 * @algo: bpf_dynptr which holds string representation of algorithm.
+    69	 * @key:  bpf_dynptr which holds cipher key to do crypto.
+    70	 */
+    71	__bpf_kfunc struct bpf_crypto_skcipher_ctx *
+  > 72	bpf_crypto_skcipher_ctx_create(const struct bpf_dynptr_kern *palgo,
+    73				       const struct bpf_dynptr_kern *pkey, int *err)
+    74	{
+    75		struct bpf_crypto_skcipher_ctx *ctx;
+    76		char *algo;
+    77	
+    78		if (__bpf_dynptr_size(palgo) > CRYPTO_MAX_ALG_NAME) {
+    79			*err = -EINVAL;
+    80			return NULL;
+    81		}
+    82	
+    83		algo = __bpf_dynptr_data_ptr(palgo);
+    84	
+    85		if (!crypto_has_skcipher(algo, CRYPTO_ALG_TYPE_SKCIPHER, CRYPTO_ALG_TYPE_MASK)) {
+    86			*err = -EOPNOTSUPP;
+    87			return NULL;
+    88		}
+    89	
+    90		ctx = kmalloc(sizeof(*ctx), GFP_KERNEL);
+    91		if (!ctx) {
+    92			*err = -ENOMEM;
+    93			return NULL;
+    94		}
+    95	
+    96		memset(ctx, 0, sizeof(*ctx));
+    97	
+    98		ctx->tfm = crypto_alloc_sync_skcipher(algo, 0, 0);
+    99		if (IS_ERR(ctx->tfm)) {
+   100			*err = PTR_ERR(ctx->tfm);
+   101			ctx->tfm = NULL;
+   102			goto err;
+   103		}
+   104	
+   105		*err = crypto_sync_skcipher_setkey(ctx->tfm, __bpf_dynptr_data_ptr(pkey),
+   106						   __bpf_dynptr_size(pkey));
+   107		if (*err)
+   108			goto err;
+   109	
+   110		refcount_set(&ctx->usage, 1);
+   111	
+   112		return ctx;
+   113	err:
+   114		if (ctx->tfm)
+   115			crypto_free_sync_skcipher(ctx->tfm);
+   116		kfree(ctx);
+   117	
+   118		return NULL;
+   119	}
+   120	
+   121	static void crypto_free_sync_skcipher_cb(struct rcu_head *head)
+   122	{
+   123		struct bpf_crypto_skcipher_ctx *ctx;
+   124	
+   125		ctx = container_of(head, struct bpf_crypto_skcipher_ctx, rcu);
+   126		crypto_free_sync_skcipher(ctx->tfm);
+   127		kfree(ctx);
+   128	}
+   129	
+   130	/**
+   131	 * bpf_crypto_skcipher_ctx_acquire() - Acquire a reference to a BPF crypto context.
+   132	 * @ctx: The BPF crypto context being acquired. The ctx must be a trusted
+   133	 *	     pointer.
+   134	 *
+   135	 * Acquires a reference to a BPF crypto context. The context returned by this function
+   136	 * must either be embedded in a map as a kptr, or freed with
+   137	 * bpf_crypto_skcipher_ctx_release().
+   138	 */
+   139	__bpf_kfunc struct bpf_crypto_skcipher_ctx *
+ > 140	bpf_crypto_skcipher_ctx_acquire(struct bpf_crypto_skcipher_ctx *ctx)
+   141	{
+   142		refcount_inc(&ctx->usage);
+   143		return ctx;
+   144	}
+   145	
+   146	/**
+   147	 * bpf_crypto_skcipher_ctx_release() - Release a previously acquired BPF crypto context.
+   148	 * @ctx: The crypto context being released.
+   149	 *
+   150	 * Releases a previously acquired reference to a BPF cpumask. When the final
+   151	 * reference of the BPF cpumask has been released, it is subsequently freed in
+   152	 * an RCU callback in the BPF memory allocator.
+   153	 */
+ > 154	__bpf_kfunc void bpf_crypto_skcipher_ctx_release(struct bpf_crypto_skcipher_ctx *ctx)
+   155	{
+   156		if (refcount_dec_and_test(&ctx->usage))
+   157			call_rcu(&ctx->rcu, crypto_free_sync_skcipher_cb);
+   158	}
+   159	
+   160	static int bpf_crypto_skcipher_crypt(struct crypto_sync_skcipher *tfm,
+   161					     const struct bpf_dynptr_kern *src,
+   162					     struct bpf_dynptr_kern *dst,
+   163					     const struct bpf_dynptr_kern *iv,
+   164					     bool decrypt)
+   165	{
+   166		struct skcipher_request *req = NULL;
+   167		struct scatterlist sgin, sgout;
+   168		int err;
+   169	
+   170		if (crypto_sync_skcipher_get_flags(tfm) & CRYPTO_TFM_NEED_KEY)
+   171			return -EINVAL;
+   172	
+   173		if (__bpf_dynptr_is_rdonly(dst))
+   174			return -EINVAL;
+   175	
+   176		if (!__bpf_dynptr_size(dst) || !__bpf_dynptr_size(src))
+   177			return -EINVAL;
+   178	
+   179		if (__bpf_dynptr_size(iv) != crypto_sync_skcipher_ivsize(tfm))
+   180			return -EINVAL;
+   181	
+   182		req = skcipher_request_alloc(&tfm->base, GFP_ATOMIC);
+   183		if (!req)
+   184			return -ENOMEM;
+   185	
+   186		sg_init_one(&sgin, __bpf_dynptr_data_ptr(src), __bpf_dynptr_size(src));
+   187		sg_init_one(&sgout, __bpf_dynptr_data_ptr(dst), __bpf_dynptr_size(dst));
+   188	
+   189		skcipher_request_set_crypt(req, &sgin, &sgout, __bpf_dynptr_size(src),
+   190					   __bpf_dynptr_data_ptr(iv));
+   191	
+   192		err = decrypt ? crypto_skcipher_decrypt(req) : crypto_skcipher_encrypt(req);
+   193	
+   194		skcipher_request_free(req);
+   195	
+   196		return err;
+   197	}
+   198	
+   199	/**
+   200	 * bpf_crypto_skcipher_decrypt() - Decrypt buffer using configured context and IV provided.
+   201	 * @ctx:	The crypto context being used. The ctx must be a trusted pointer.
+   202	 * @src:	bpf_dynptr to the encrypted data. Must be a trusted pointer.
+   203	 * @dst:	bpf_dynptr to the buffer where to store the result. Must be a trusted pointer.
+   204	 * @iv:		bpf_dynptr to IV data to be used by decryptor.
+   205	 *
+   206	 * Decrypts provided buffer using IV data and the crypto context. Crypto context must be configured.
+   207	 */
+ > 208	__bpf_kfunc int bpf_crypto_skcipher_decrypt(struct bpf_crypto_skcipher_ctx *ctx,
+   209						    const struct bpf_dynptr_kern *src,
+   210						    struct bpf_dynptr_kern *dst,
+   211						    const struct bpf_dynptr_kern *iv)
+   212	{
+   213		return bpf_crypto_skcipher_crypt(ctx->tfm, src, dst, iv, true);
+   214	}
+   215	
+   216	/**
+   217	 * bpf_crypto_skcipher_encrypt() - Encrypt buffer using configured context and IV provided.
+   218	 * @ctx:	The crypto context being used. The ctx must be a trusted pointer.
+   219	 * @src:	bpf_dynptr to the plain data. Must be a trusted pointer.
+   220	 * @dst:	bpf_dynptr to buffer where to store the result. Must be a trusted pointer.
+   221	 * @iv:		bpf_dynptr to IV data to be used by decryptor.
+   222	 *
+   223	 * Encrypts provided buffer using IV data and the crypto context. Crypto context must be configured.
+   224	 */
+ > 225	__bpf_kfunc int bpf_crypto_skcipher_encrypt(struct bpf_crypto_skcipher_ctx *ctx,
+   226						    const struct bpf_dynptr_kern *src,
+   227						    struct bpf_dynptr_kern *dst,
+   228						    const struct bpf_dynptr_kern *iv)
+   229	{
+   230		return bpf_crypto_skcipher_crypt(ctx->tfm, src, dst, iv, false);
+   231	}
+   232	
+
 -- 
-1.8.3.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
