@@ -1,206 +1,138 @@
-Return-Path: <bpf+bounces-13641-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13642-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13F7C7DC19D
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 22:10:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF0577DC1AE
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 22:17:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A244B20E4C
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 21:10:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70DE32816CA
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 21:17:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844101C2A4;
-	Mon, 30 Oct 2023 21:10:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FDA61B29C;
+	Mon, 30 Oct 2023 21:17:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cVrwi4rr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ekmPkSO+"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 190431A713
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 21:10:38 +0000 (UTC)
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BB1E1
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 14:10:36 -0700 (PDT)
-Message-ID: <45000107-b119-46d5-aa01-c3f08d0a1921@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1698700234;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+xJXCd1tt7lV6SbkNIQA+C0UMRD1a9biaymvRej+fKg=;
-	b=cVrwi4rrnS2UomXhC+yigCdl4HOOfJdudVGtn21DDkEpm5eF5kg+nH79zeLspOo6rlRmsc
-	oXWg5968XLrx/RSoA66LUcxXHvHf8Adl0pfD8w6MoXqU+aWcXs8w7W0dpNP1drLRb2Y3T5
-	28SkqCZtI5F2BYE6SOdilyi62I+ANjI=
-Date: Mon, 30 Oct 2023 14:10:25 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC72E156F6
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 21:17:44 +0000 (UTC)
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46041E1
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 14:17:43 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9becde9ea7bso1268933266b.0
+        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 14:17:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698700662; x=1699305462; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4nsbbncSe2xfzmyG61O3oc4LIZNMyZMDfdbU3umUAgY=;
+        b=ekmPkSO+7+bpiw6zPV2HMRimlYtJ5q/Z77EJuLqjQn3ik5yNFpIYk6uChdE/AfSJ0i
+         UAE28JVVStY1j+GCk6YeuNZAfz5hnJcYJXG7PywS7w1RN7ru9aHlwt+DbcixdYnSrFiE
+         YAPpxhABTnOwgPWffTjqHgH6tQ235zBvBTqjhJab9RZ47p3AlBu6ZhDqmtXT+ZgaUieb
+         vHQ4VIQ4G+zbum0CSIEvs7UdieaxsVk5YF8sgsQFUip+k0FzlDjQP4TobE79TfZBpNMT
+         Vjx6hSCnwZP/bkNJgkJpTOSTEAfLHSWSYJ3kgByZkdIy+aO+Mm+g6BrNhGy97+cXR4Xz
+         Zdkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698700662; x=1699305462;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4nsbbncSe2xfzmyG61O3oc4LIZNMyZMDfdbU3umUAgY=;
+        b=cWjEa1srjm/ApGzwprGa39uL0K72xnxSjXFKWihwPE7J2D/uVFxqkVst5HCgr1XpzA
+         JPzXW1j0P++8bTXqpDyuG4I5eK0a3VKM4lGKK8r+TE1DEOhC7IXKeOpPZFuRcodRxYvi
+         7TQnS06hlYccwdABRSCBz6h6UaocMWQOCdzekElUBLDkdevgWJX5UjT7dedeBYmIGduY
+         0gsgUVHLqp4Fkv7MWk+hImEveaeMyU/9L4K9XO+d3XhJJ2SJX9omMzw/gBVGYdDapHq9
+         LCNqo2ZY+cgv8cEIwfk8GQFVq5TpR/4O/H5GpwQqbzhsZOQLrCA2LIpgwrq1+VQ2thie
+         03Mg==
+X-Gm-Message-State: AOJu0Yy3/at1rBvLxfBYkOuQrDlYbx9eQDcCFrtd/88w9hlk8dSkXy2K
+	NbK2B/tkvsRNLl0mIvonolc=
+X-Google-Smtp-Source: AGHT+IFQFIL+MSm01fLLR4mACxO7zDBfOTS5+UmrjeKbTIJXuKD5phLw4f79GRMoOPxkOL72Ka0YSA==
+X-Received: by 2002:a17:907:da9:b0:9b2:bdbb:f145 with SMTP id go41-20020a1709070da900b009b2bdbbf145mr806948ejc.34.1698700661339;
+        Mon, 30 Oct 2023 14:17:41 -0700 (PDT)
+Received: from krava ([83.240.63.31])
+        by smtp.gmail.com with ESMTPSA id ci6-20020a170906c34600b009929ab17be0sm6450147ejb.162.2023.10.30.14.17.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 14:17:41 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 30 Oct 2023 22:17:39 +0100
+To: Quentin Monnet <quentin@isovalent.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH bpf-next 3/6] bpf: Add link_info support for uprobe multi
+ link
+Message-ID: <ZUAdc3mQXAqXiWvr@krava>
+References: <20231025202420.390702-1-jolsa@kernel.org>
+ <20231025202420.390702-4-jolsa@kernel.org>
+ <72a9c3e0-f73a-4a63-8602-712d44d7cee7@isovalent.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v1 bpf-next 4/4] selftests/bpf: Add tests exercising
- aggregate type BTF field search
-Content-Language: en-GB
-To: Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>
-References: <20231023220030.2556229-1-davemarchevsky@fb.com>
- <20231023220030.2556229-5-davemarchevsky@fb.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20231023220030.2556229-5-davemarchevsky@fb.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <72a9c3e0-f73a-4a63-8602-712d44d7cee7@isovalent.com>
 
+On Mon, Oct 30, 2023 at 10:18:59AM +0000, Quentin Monnet wrote:
+> 
+> 2023-10-25 21:24 UTC+0100 ~ Jiri Olsa
+> > Adding support to get uprobe_link details through bpf_link_info
+> > interface.
+> > 
+> > Adding new struct uprobe_multi to struct bpf_link_info to carry
+> > the uprobe_multi link details.
+> > 
+> > The uprobe_multi.count is passed from user space to denote size
+> > of array fields (offsets/ref_ctr_offsets/cookies). The actual
+> > array size is stored back to uprobe_multi.count (allowing user
+> > to find out the actual array size) and array fields are populated
+> > up to the user passed size.
+> > 
+> > All the non-array fields (path/count/flags/pid) are always set.
+> > 
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  include/uapi/linux/bpf.h       | 10 +++++
+> >  kernel/trace/bpf_trace.c       | 68 ++++++++++++++++++++++++++++++++++
+> >  tools/include/uapi/linux/bpf.h | 10 +++++
+> >  3 files changed, 88 insertions(+)
+> > 
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 0f6cdf52b1da..960cf2914d63 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -6556,6 +6556,16 @@ struct bpf_link_info {
+> >  			__u32 flags;
+> >  			__u64 missed;
+> >  		} kprobe_multi;
+> > +		struct {
+> > +			__aligned_u64 path;
+> > +			__aligned_u64 offsets;
+> > +			__aligned_u64 ref_ctr_offsets;
+> > +			__aligned_u64 cookies;
+> > +			__u32 path_max; /* in/out: uprobe_multi path size */
+> 
+> Just a nit on the naming here: I don't really understand why this is
+> "path_max", should it be "path_size" instead?
 
-On 10/23/23 3:00 PM, Dave Marchevsky wrote:
-> The newly-added test file attempts to kptr_xchg a prog_test_ref_kfunc
-> kptr into a kptr field in a variety of nested aggregate types. If the
-> verifier recognizes that there's a kptr field where we're trying to
-> kptr_xchg, then the aggregate type digging logic works as expected.
->
-> Some of the refactoring changes in this series are tested as well.
-> Specifically:
->    * BTF_FIELDS_MAX is now higher and represents the max size of the
->      growable array. Confirm that btf_parse_fields fails for a type which
->      contains too many fields.
->    * If we've already seen BTF_FIELDS_MAX fields, we should continue
->      looking for fields and fail if we find another one, otherwise the
->      search should succeed and return BTF_FIELDS_MAX btf_field_infos.
->      Confirm that this edge case works as expected.
->
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> ---
->   .../selftests/bpf/prog_tests/array_kptr.c     |  12 ++
->   .../testing/selftests/bpf/progs/array_kptr.c  | 179 ++++++++++++++++++
->   2 files changed, 191 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/array_kptr.c
->   create mode 100644 tools/testing/selftests/bpf/progs/array_kptr.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/array_kptr.c b/tools/testing/selftests/bpf/prog_tests/array_kptr.c
-> new file mode 100644
-> index 000000000000..9d088520bdfe
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/array_kptr.c
-> @@ -0,0 +1,12 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-> +
-> +#include <test_progs.h>
-> +
-> +#include "array_kptr.skel.h"
-> +
-> +void test_array_kptr(void)
-> +{
-> +	if (env.has_testmod)
-> +		RUN_TESTS(array_kptr);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/array_kptr.c b/tools/testing/selftests/bpf/progs/array_kptr.c
-> new file mode 100644
-> index 000000000000..f34872e74024
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/array_kptr.c
-> @@ -0,0 +1,179 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-> +
-> +#include <vmlinux.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include "../bpf_testmod/bpf_testmod_kfunc.h"
-> +#include "bpf_misc.h"
-> +
-> +struct val {
-> +	int d;
-> +	struct prog_test_ref_kfunc __kptr *ref_ptr;
-> +};
-> +
-> +struct val2 {
-> +	char c;
-> +	struct val v;
-> +};
-> +
-> +struct val_holder {
-> +	int e;
-> +	struct val2 first[2];
-> +	int f;
-> +	struct val second[2];
-> +};
-> +
-> +struct array_map {
-> +	__uint(type, BPF_MAP_TYPE_ARRAY);
-> +	__type(key, int);
-> +	__type(value, struct val);
-> +	__uint(max_entries, 10);
-> +} array_map SEC(".maps");
-> +
-> +struct array_map2 {
-> +	__uint(type, BPF_MAP_TYPE_ARRAY);
-> +	__type(key, int);
-> +	__type(value, struct val2);
-> +	__uint(max_entries, 10);
-> +} array_map2 SEC(".maps");
-> +
-> +__hidden struct val array[25];
-> +__hidden struct val double_array[5][5];
-> +__hidden struct val_holder double_holder_array[2][2];
-> +
-> +/* Some tests need their own section to force separate bss arraymap,
-> + * otherwise above arrays wouldn't have btf_field_info either
-> + */
-> +#define private(name) SEC(".bss." #name) __hidden __attribute__((aligned(8)))
-> +private(A) struct val array_too_big[300];
-> +
-> +private(B) struct val exactly_max_fields[256];
-> +private(B) int ints[50];
-> +
-> +SEC("tc")
-> +__success __retval(0)
-> +int test_arraymap(void *ctx)
-> +{
-> +	struct prog_test_ref_kfunc *p;
-> +	unsigned long dummy = 0;
-> +	struct val *v;
-> +	int idx = 0;
-> +
-> +	v = bpf_map_lookup_elem(&array_map, &idx);
-> +	if (!v)
-> +		return 1;
-> +
-> +	p = bpf_kfunc_call_test_acquire(&dummy);
-> +	if (!p)
-> +		return 2;
-> +
-> +	p = bpf_kptr_xchg(&v->ref_ptr, p);
-> +	if (p) {
-> +		bpf_kfunc_call_test_release(p);
-> +		return 3;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> ...
-> +
-> +SEC("tc")
-> +__failure __msg("map '.bss.A' has no valid kptr")
+right, path_size fits better, will change
 
-The .bss.A might have valid kptr.
-To reflect realiaty, maybe error message can be
-'has too many special fields'?
+thanks,
+jirka
 
-> +int test_array_fail__too_big(void *ctx)
-> +{
-> +	/* array_too_big's btf_record parsing will fail due to the
-> +	 * number of btf_field_infos being > BTF_FIELDS_MAX
-> +	 */
-> +	return test_array_xchg(&array_too_big[50]);
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
+> 
+> Quentin
 
