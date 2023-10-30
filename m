@@ -1,223 +1,175 @@
-Return-Path: <bpf+bounces-13605-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13606-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8023C7DBA94
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 14:23:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 182147DBB12
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 14:45:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35BF728159B
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 13:23:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 494311C20AFB
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 13:45:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EBA3168A8;
-	Mon, 30 Oct 2023 13:23:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1111171BB;
+	Mon, 30 Oct 2023 13:45:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="y+IUrpZ3"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="PMFeM+nv"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F55A16402
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 13:23:11 +0000 (UTC)
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2084.outbound.protection.outlook.com [40.107.15.84])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F41D9
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 06:23:08 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W70oC3jii0J7WfkL+oqBp9TehjgB0BEmxBGleK/fRQ4/I6WRxLadf5X9k26Q8iC5puwQxi5z+M08ZuHa+zIqISVq5diSvQxmJDWE9JOkiuF9gUP1CKMnVVHBxiczNiZjaImJ14nYQ9PfMGFkT6wK3RWspqHdVR548YBBNXYXhDMg4lZkpnUu+VxjlMSHWzRzRHsOWq8nD7GH4C2U9KrTu55MAPBzOeAaD86xAxLGpzHwY7Z/lWBR4yRD7u5I8V310mnTMe8QH4TyQTLWEjVCc6dIoVwLTnbR4UbczxdImndfOTBuRAnFPAv6I7vCsMukCR3THY7yujpAt5dn2DfDTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3hi0Rsh9qyH8zNYgsWHIZ27yfIC90cJfTAtoM4vnEjY=;
- b=Wj0wN7zex7Hsthfg44CeIShmvPcTmy5qMsXpqbZZqnn0PgJyYE8l9yGyyROtfObvjR+Xnlo8zVTh4VX4GHE28CGguOUBQJ1IqePva6gRsq8zduqWtd5+nqkYQt+E5l6KMQhMUBBDRhUVAWrnnI7oIO3fgwq8bHf4F8UlSD2ncsvIZ4FuCsJM56XAAiAbFrcBqoC421Mik1cDsYSG6vpUuylrc5Ed21L6JArQ9jZunO9w8jCd6xaQF6VAdz+Ymjjx3/hXwjqDUOvorwX7XLAoEmr0LkwkMU2XK1Z1G4boCH6maSVaB7N7jYILQFi6rwCzaxnlCm/CfTsfILbvwW1NuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3hi0Rsh9qyH8zNYgsWHIZ27yfIC90cJfTAtoM4vnEjY=;
- b=y+IUrpZ3j3xiiOtFT7SxGw42494S5/39rhW8Tr++qfrpYMot2ohTZtBfe/eWaHe8gMmg+Ee+XpwGLbyBJqB75JPCQstlYnXoK5yi3so2eawalbxpLar/zNkhyqMv/JT9RS1zHry4PdS42eg6YIXIaWvEuqw1a1xfMfxYQXf5mhUryy3SKBHPI+2JP0p3QRRtTjE8gPk05pf4PPnVeo3tOwp+vGj4i3uZBEHbtdosjSdXDsgP6XhgRHCBYnds9Fb6sd2st6wf9q/la9XrZU/2Jr02FNc0f+tn/k66Qu1zIP1B00WBtHXWPHR+4InfgxZJrrp3sxqI3U25n9m9eZBFuw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB9510.eurprd04.prod.outlook.com (2603:10a6:20b:44a::11)
- by PAXPR04MB8894.eurprd04.prod.outlook.com (2603:10a6:102:20d::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.16; Mon, 30 Oct
- 2023 13:23:06 +0000
-Received: from AS8PR04MB9510.eurprd04.prod.outlook.com
- ([fe80::9f3e:3b47:5ccd:c47c]) by AS8PR04MB9510.eurprd04.prod.outlook.com
- ([fe80::9f3e:3b47:5ccd:c47c%6]) with mapi id 15.20.6954.016; Mon, 30 Oct 2023
- 13:23:06 +0000
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: bpf@vger.kernel.org
-Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andriin@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>
-Subject: [RFC bpf 2/2] selftests/bpf: precision tracking test for BPF_ALU | BPF_TO_BE | BPF_END
-Date: Mon, 30 Oct 2023 21:21:42 +0800
-Message-ID: <20231030132145.20867-3-shung-hsi.yu@suse.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231030132145.20867-1-shung-hsi.yu@suse.com>
-References: <20231030132145.20867-1-shung-hsi.yu@suse.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: FR4P281CA0009.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:c8::11) To AS8PR04MB9510.eurprd04.prod.outlook.com
- (2603:10a6:20b:44a::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD340171B0
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 13:45:25 +0000 (UTC)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73913E1
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 06:45:22 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c5039d4e88so64933051fa.3
+        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 06:45:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1698673521; x=1699278321; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GohpsQrcaac+InARdeGJXWEscd24vBjSRISWq8Cg3qo=;
+        b=PMFeM+nvwg2o3hUkFf5WDar4B5f+wPYK5n+DIsL9G+Y4I4odiZBe1GCPLL7eAeqlW6
+         c2lyW+1Bj5tFG91hZO0N1E7jMWLQFfEXKTcn3n3713pwqzVne0Eyqf3jXOUx0Sgr6+FG
+         gN8GT++z+y0aVwax8HILnqS6V9wP08IItaKfZ1j9aVldhBUunzY0CC9GEZgUp/RJh6V5
+         6hRj2ndm3BYv8Fr9FuOsMvqZt0Ki6kyohcz7GD314aZmbusJdvV/rCm7eX4ytP7RMDMe
+         FIx6MvOvWMkdiYVF9hvnpF7DK6zfStaD8Ja1n9iMZTCFmmRQeNnIS0WMGyd1fEke46rH
+         Zfnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698673521; x=1699278321;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GohpsQrcaac+InARdeGJXWEscd24vBjSRISWq8Cg3qo=;
+        b=wFCDg24HMysmbRl00KBEFPCsSOTfoXQwb5/BPRK0K1MUyj4+Scs0uZfnUHVcZf6Y33
+         RUQbVh271zP8IXm/+WkOm4Ltx8z2wznZUnacu7d5XnI2lAVm1B+kmu3QD0EycUW5vb4g
+         WQ05YuIny7BNm2VLF9VIeeypOzgccEgi9Z+GVTnk9r6SxjKjWsy5z+gxJ/t/65Gy7gge
+         6YJ4YnXg6AAoHFSLbpWaMBhYHaqpy1MV3mrQCr9ShLhffedSFbun8tsaULDY1zMZqHJl
+         ztFYbxvOI8mtXRG5uqjnjd+FM9+MLiSHHn2bnl4UvvL8kBW1QbLy1kKwNVf0359x4ynA
+         JI9Q==
+X-Gm-Message-State: AOJu0Yyy+GLLgo92wNH/jNZqko7iFP4SOSExiNh2pOzRB8yUmpgOIJOy
+	/fkH/o0c/fKkHCd5X3yTWIYa5A==
+X-Google-Smtp-Source: AGHT+IHUyKBDdUHoMMe9GELt+mwcn7c4braCiIyaxk+ybioiZK2T48DVyM0eL2GkM/PQfbXd/xu+eA==
+X-Received: by 2002:a2e:b752:0:b0:2c5:9a5:a1c2 with SMTP id k18-20020a2eb752000000b002c509a5a1c2mr6713030ljo.30.1698673520509;
+        Mon, 30 Oct 2023 06:45:20 -0700 (PDT)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id n13-20020a05600c500d00b0040772934b12sm12671846wmr.7.2023.10.30.06.45.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 06:45:19 -0700 (PDT)
+Date: Mon, 30 Oct 2023 14:45:18 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: bpf@vger.kernel.org
+Subject: Re: kfunc use newbie question
+Message-ID: <ZT+zbjvG3eul/Rde@nanopsycho>
+References: <ZT94/1VlpfA231TX@nanopsycho>
+ <ZT+CG0cWnko5AIO8@krava>
+ <ZT+NNS1kgBRdfZnW@nanopsycho>
+ <ZT+tbVP29nH29gbh@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB9510:EE_|PAXPR04MB8894:EE_
-X-MS-Office365-Filtering-Correlation-Id: a5647df9-d534-47f7-9152-08dbd94b5a17
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	TV7F8jKdmH9/NkvQeH5121x0vv9hNQqfkL5rou+SqEdu7pdaIEWgUBWLsER0i0q5Te0mv4EI90FxiEzX7WeU2r0EECYi32ZCtZ7ijPvdFhKj0OUthmIgvOTqq6frllrrNZXU6rfQM9Gws8vZPDZ60LmQj9w2XZbArp16NihT6VStJn/KNZnZJ87e74OgJ71rTMce1PcylDXZAhvjetqujkmInYj6lZPDAGi5M+an4JR95fuFVFrF3DXwiiAvU8Uu8NJumVf+bmKI03tuUI+p8eL4vJKkL8XwDm8Y/s/6zIPeVdDF6V+3CTDFlTCH74xW8+akHIuhN7XrTbuAFQ1i+Pgq+T0HiTqwioGgCXLUME5dfGp3Sf29/bb5NVhz9orqjELQ++fU7RZa7xytJ8uf0izDbdi+ZPOf67Va4HbqG8iJHocKwJBYbx9S28GAYvR85J5hmQHWrthEszVc8JrXdJC7KAI+5J+ru/DWz1ZJJJJfPWwUzAQhs4OHpgz18a2pg4c3EH8II4MOCa6DCG2IF3GWqURIA/vNdtElvCkBNug=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB9510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(136003)(39860400002)(346002)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(2616005)(1076003)(6506007)(66899024)(6512007)(38100700002)(36756003)(86362001)(83380400001)(5660300002)(7416002)(54906003)(66476007)(66946007)(66556008)(4326008)(8676002)(8936002)(41300700001)(6916009)(316002)(6666004)(6486002)(966005)(478600001)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?JNO+vLernUgtsf8FMfwfTonBcoszLUe/O8eeY2TZLm3NCa+POiKM51EMrorm?=
- =?us-ascii?Q?ubig/SO/DwEQaCNbEy+/ify6S5AvfkyZmJty3ZwHUwFe1qYdu6oaSI0YnCvu?=
- =?us-ascii?Q?+Aw4nwDQzRJcCGcOH/jQlRIXlmsYk+7W00JottMVJK4eoqn6jZ9LMhA+TVo4?=
- =?us-ascii?Q?piRTMSaqN0ZQqWmH3Qb0jQEpKDNROVplKVVX/zkoaJyw62avCfLAlidpF6Aj?=
- =?us-ascii?Q?YVPjXZXWoMFF/yOaW6qqVLD9dtvu9fL/uXl+UaxDAvtBhmQ9NsopRn2XoiLr?=
- =?us-ascii?Q?2m95BoMg/Ubx3UgTN5lh7VASXL4/eGI2kQsijWp1j5qnNrMvJ+558QC4Mek6?=
- =?us-ascii?Q?tAfYWGWtd5quMB9D2iVpHLb60E1hb/zJvdEBViN+hArk5D6K+8RpuQfldMhp?=
- =?us-ascii?Q?V/yYHuGqJE8qcev4vlSycC8jiP3N+BjPNO1SwEqP/Y+mmmExlOzCQXbgStOM?=
- =?us-ascii?Q?hoUWPWr4utTEk7vdei3ruqZOGQi+zIuR2iGmJJ/9lAj9Lg0dE8vj2XT9FLZ2?=
- =?us-ascii?Q?Lm0Y3BrBROWl5Bib1YvnNvFsRohRP5DDNjCboAal0Bohr03UtS0ORzWgW556?=
- =?us-ascii?Q?Ye9KdgM6YyLKoeup4Pvy9rLoRb3RJU5TWhYKV4nAsZ20lph93PcuyDTu3wo8?=
- =?us-ascii?Q?pjb1QUOmpV3ayxslZ42Q0XBbjH5AHZdDEOX1i+U6yF+yncCA3yE/vNVI/1to?=
- =?us-ascii?Q?SjSJeBQgGattSwEqrvs1B9yvHuWee9JF9/6SQolYzw9gpqhYOXitLIh164fg?=
- =?us-ascii?Q?nKawN+ur/4Ydt8Jbrspfl7khbwI3oBq2M62t+uZo/x3yUbhrK9upse2FM82W?=
- =?us-ascii?Q?e0kxHGcVGv8h40TJosyQw5vXhYlkbYNArpXzWXe0Z1XnorEVYzTH5WZAiHE9?=
- =?us-ascii?Q?CU7ABYawSl/kX/76YZ4/D61nSGp9UvWYFZiRgfQwNh9orJNinW527RBv6KQz?=
- =?us-ascii?Q?IyFR4jCayt/eTCy5zh3W6NRgUS99Kr1i1Gfh2TRn/wtJ1kpBsGSlNaKaJCuf?=
- =?us-ascii?Q?x4LPvuVkTBJdfsrimOOh7lueorbxJUA7yTSPZjTcLmDCPcaKSe1ZlkRN2r5b?=
- =?us-ascii?Q?S1efJ3qmuGYyQG+VsLq8XawUNLLNOCOvBm4318WfCUfbjmhld+yZ7RGzW5Nf?=
- =?us-ascii?Q?0r6lToJsQn1O/Ho9vJf8byObEJkBQ7FZ7dy2ShFsvBEZxRHnvnMzWS5C6ocz?=
- =?us-ascii?Q?hS2imowGw5UBUO9VrhEt23ITehqMmMuzpx/my7GkFF5c+3nNmdxM8CiGzlz4?=
- =?us-ascii?Q?MLsUqQOHqA6Zt6/UrZlGvP+2F+pNMfZIeMqSw2Wu1bJrA8NuPJEts/A6jtgY?=
- =?us-ascii?Q?9Rzx08JV65kkpqmjLADt62jrIVqdeX8Pbl21ubyT+Eq0gAigGOfxAqVZjZrR?=
- =?us-ascii?Q?fyJs2yVlFBIKBUAJBhDfk2nWZvphcxYzfUUakWzunxmVKtWF/kMkbRDSqbor?=
- =?us-ascii?Q?xsKfngyD2ERmMNw28+ehBkQBXx2DiXeHhu1lflRH00vOAfEWlXRBVLPiCNVL?=
- =?us-ascii?Q?CMdj+w1/qnShgaFFem1wRP/cjlnFKkVArU3hoEkkJqWGZWw1X9ZDhYu78P6M?=
- =?us-ascii?Q?fyt2c2SK/pPV3+rUZjysRt6ffxKJJQkmoDWvzMsTuFGjIhvYH+NeOvA4O8cS?=
- =?us-ascii?Q?1c3n+9G9oJWnvvqOwYowRgb+zt6/FvT2VK1pFl1CDx2Uo1w1Oo8Fp9/p2v2h?=
- =?us-ascii?Q?BvtT4g=3D=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a5647df9-d534-47f7-9152-08dbd94b5a17
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB9510.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 13:23:06.3460
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ToIvaKbboaX2BTkwtdzRyKB7Lf5ixiEF4mbLcp8bi+5m2cQHUenXjA/sAR4rVuJN56jMWkkNVkS/J+rlqN+q7Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8894
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZT+tbVP29nH29gbh@krava>
 
-Add a test written with inline assembly to check that the verifier does
-not incorrecly use the src_reg field of a BPF_ALU | BPF_TO_BE | BPF_END
-instruction.
+Mon, Oct 30, 2023 at 02:19:41PM CET, olsajiri@gmail.com wrote:
+>On Mon, Oct 30, 2023 at 12:02:13PM +0100, Jiri Pirko wrote:
+>> Mon, Oct 30, 2023 at 11:14:51AM CET, olsajiri@gmail.com wrote:
+>> >On Mon, Oct 30, 2023 at 10:35:59AM +0100, Jiri Pirko wrote:
+>> >> Hi BPF :)
+>> >> 
+>> >> I'm trying to use bpf_dynptr_from_skb() kfunc in my program. I compiled
+>> >> it with having following declaration in the bpf .c file:
+>> >> extern int bpf_dynptr_from_skb(struct __sk_buff *skb, __u64 flags,
+>> >>                                struct bpf_dynptr *ptr__uninit) __ksym;
+>> >> 
+>> >> I have all "BPF/BTF" kernel config options on. During load,
+>> >> I'm still getting:
+>> >> 
+>> >> libbpf: failed to find BTF for extern 'bpf_dynptr_from_skb': -3
+>> >
+>> >heya,
+>> >error -3 suggests there's no BTF generated, is there .BTF section
+>> >in the object ? did you compile with -g ?
+>> 
+>> w/o -g. If I compile with -g, I'm getting this:
+>> libbpf: failed to find valid kernel BTF
+>> libbpf: Error loading vmlinux BTF: -3
+>
+>hum, this one seems straightforward missing vmlinux btf,
+>(check btf__load_vmlinux_btf in tools/lib/bpf/btf.c)
+>could you please send your .config?
 
-Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
----
+Hmm, I managed to get some debug print from libbpf (docs more or less
+suck btw), and here it is:
+libbpf: loading bpftest2.o
+libbpf: elf: section(2) .text, size 48, link 0, flags 6, type=1
+libbpf: sec '.text': found program 'parse_nl_attr' at insn offset 0 (0 bytes), code size 6 insns (48 bytes)
+libbpf: elf: section(3) .rel.text, size 16, link 25, flags 40, type=9
+libbpf: elf: section(4) socket, size 248, link 0, flags 6, type=1
+libbpf: sec 'socket': found program 'main_prog' at insn offset 0 (0 bytes), code size 31 insns (248 bytes)
+libbpf: elf: section(5) .relsocket, size 48, link 25, flags 40, type=9
+libbpf: elf: section(6) .rodata, size 50, link 0, flags 2, type=1
+libbpf: elf: section(7) license, size 4, link 0, flags 3, type=1
+libbpf: license of bpftest2.o is GPL
+libbpf: elf: section(16) .BTF, size 2032, link 0, flags 0, type=1
+libbpf: elf: section(18) .BTF.ext, size 280, link 0, flags 0, type=1
+libbpf: elf: section(25) .symtab, size 432, link 1, flags 0, type=2
+libbpf: looking for externs among 18 symbols...
+libbpf: collected 1 externs total
+libbpf: extern (ksym) #0: symbol 16, name bpf_dynptr_from_skb
+libbpf: map 'bpftest2.rodata' (global data): at sec_idx 6, offset 0, flags 480.
+libbpf: map 0 is "bpftest2.rodata"
+libbpf: sec '.rel.text': collecting relocation for section(2) '.text'
+libbpf: sec '.rel.text': relo #0: insn #0 against '.rodata'
+libbpf: prog 'parse_nl_attr': found data map 0 (bpftest2.rodata, sec 6, off 0) for insn 0
+libbpf: sec '.relsocket': collecting relocation for section(4) 'socket'
+libbpf: sec '.relsocket': relo #0: insn #7 against '.rodata'
+libbpf: prog 'main_prog': found data map 0 (bpftest2.rodata, sec 6, off 0) for insn 7
+libbpf: sec '.relsocket': relo #1: insn #15 against 'bpf_dynptr_from_skb'
+libbpf: prog 'main_prog': found extern #0 'bpf_dynptr_from_skb' (sym 16) for insn #15
+libbpf: sec '.relsocket': relo #2: insn #24 against '.text'
+libbpf: Unsupported BTF_KIND:19
+libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': -22
+libbpf: failed to find valid kernel BTF
+libbpf: Error loading vmlinux BTF: -3
+libbpf: failed to load object 'bpftest2.o'
 
-This is the first time I'm writing a selftest so there's a lot of
-question I can't answer myself. Looking for suggestions regarding:
 
-1. Whether BPF_NEG and other BPF_END cases should be tested as well
-2. While the suggested way of writing BPF assembly is with inline
-   assembly[0], as done here, maybe it is better to have this test case
-   added in verifier/precise.c and written using macro instead?
-   The rational is that ideally we want the selftest to be backport to
-   the v5.3+ stable kernels alongside the fix, but __msg macro used here
-   is only available since v6.2.
+19 is BTF_KIND_ENUM64
 
-0: https://lore.kernel.org/bpf/CAADnVQJHAPid9HouwMEnfwDDKuy8BnGia269KSbby2gA030OBg@mail.gmail.com/
+Looks like I'm using some old libbpf (libbpf-0.8.0-2.fc37.x86_64):
+https://lwn.net/ml/bpf/20220603015937.1190992-1-yhs@fb.com/
 
- .../selftests/bpf/prog_tests/verifier.c       |  2 ++
- .../selftests/bpf/progs/verifier_precision.c  | 29 +++++++++++++++++++
- 2 files changed, 31 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_precision.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index e3e68c97b40c..e5c61aa6604a 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -46,6 +46,7 @@
- #include "verifier_movsx.skel.h"
- #include "verifier_netfilter_ctx.skel.h"
- #include "verifier_netfilter_retcode.skel.h"
-+#include "verifier_precision.skel.h"
- #include "verifier_prevent_map_lookup.skel.h"
- #include "verifier_raw_stack.skel.h"
- #include "verifier_raw_tp_writable.skel.h"
-@@ -153,6 +154,7 @@ void test_verifier_meta_access(void)          { RUN(verifier_meta_access); }
- void test_verifier_movsx(void)                 { RUN(verifier_movsx); }
- void test_verifier_netfilter_ctx(void)        { RUN(verifier_netfilter_ctx); }
- void test_verifier_netfilter_retcode(void)    { RUN(verifier_netfilter_retcode); }
-+void test_verifier_precision(void)            { RUN(verifier_precision); }
- void test_verifier_prevent_map_lookup(void)   { RUN(verifier_prevent_map_lookup); }
- void test_verifier_raw_stack(void)            { RUN(verifier_raw_stack); }
- void test_verifier_raw_tp_writable(void)      { RUN(verifier_raw_tp_writable); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_precision.c b/tools/testing/selftests/bpf/progs/verifier_precision.c
-new file mode 100644
-index 000000000000..9236994387bf
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_precision.c
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023 SUSE LLC */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+int vals[] SEC(".data.vals") = {1, 2, 3, 4};
-+
-+SEC("?raw_tp")
-+__success __log_level(2)
-+__msg("mark_precise: frame0: regs=r2 stack= before 5: (bf) r1 = r6")
-+__msg("mark_precise: frame0: regs=r2 stack= before 4: (57) r2 &= 3")
-+__msg("mark_precise: frame0: regs=r2 stack= before 3: (dc) r2 = be16 r2")
-+__msg("mark_precise: frame0: regs=r2 stack= before 2: (b7) r2 = 0")
-+__naked int bpf_end(void)
-+{
-+	asm volatile (
-+		"r2 = 0;"
-+		"r2 = be16 r2;"
-+		"r2 &= 0x3;"
-+		"r1 = %[vals];"
-+		"r1 += r2;"
-+		"r0 = *(u32 *)(r1 + 0);"
-+		"exit;"
-+		:
-+		: __imm_ptr(vals)
-+		: __clobber_common);
-+}
--- 
-2.42.0
+Will update, I'm sure it will help.
 
+
+Thanks!
+
+
+
+>
+>jirka
+>
+>> 
+>> 
+>> >
+>> >jirka
+>> >
+>> >> 
+>> >> I'm pretty much clueless about what may be wrong. Documentation didn't
+>> >> help me either :/
+>> >> 
+>> >> Any idea what I may be doing wrong?
+>> >> 
+>> >> Thanks
+>> >> 
+>> >> Jiri
+>> >> 
 
