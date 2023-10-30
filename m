@@ -1,114 +1,122 @@
-Return-Path: <bpf+bounces-13598-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13599-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C021B7DB8A9
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 12:02:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 234187DB90C
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 12:36:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA52C1C20AAE
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 11:02:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A054B20EE6
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 11:36:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECDAA1118A;
-	Mon, 30 Oct 2023 11:02:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15BB914019;
+	Mon, 30 Oct 2023 11:36:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="i8lcTjBZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OhUHnyYc"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37CD411C93
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 11:02:19 +0000 (UTC)
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899898E
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 04:02:16 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-542d3e47fd5so3034372a12.0
-        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 04:02:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB31B12E53;
+	Mon, 30 Oct 2023 11:36:04 +0000 (UTC)
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3883BC4;
+	Mon, 30 Oct 2023 04:36:03 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5a7afd45199so40051397b3.0;
+        Mon, 30 Oct 2023 04:36:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1698663735; x=1699268535; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WeWnu1VnXDJdQnD4OwRDixNC5z+Kx5C71UrIBBCdxu0=;
-        b=i8lcTjBZYRXJI+n53Pq5QNRmone1bIV7FM0iFvs3pWFndgvSwgpp8wveSoI4dZ9gBm
-         827pQ3xGIB4BS0yFWJo5sbbjbFS89Nwqnq99pcdI95fWRBlXz3o++j4kNQnsuC79xJLj
-         XhwVLCX93zhWW80YnDRau/lrhwE5mqvvqqseUi1029kmfKAKWSI6L9GqyVF6h8s/smGj
-         pn1mp89uPXVhcVpVAjqdaQZpaTRKAkF545E02AV7DzpQqyn8jvfi7hfChblIL1OyqJbv
-         3Z01aF25gaLsjzzzBkyAo4sEgkbcRz2ApkTk0R+dGiyk22QWnP9pleyY4QaZtxt1aGoA
-         IDeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698663735; x=1699268535;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1698665762; x=1699270562; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WeWnu1VnXDJdQnD4OwRDixNC5z+Kx5C71UrIBBCdxu0=;
-        b=PCxlyGVHMuJ0RgZFsaK0XxGv3Aerk9J38dolAwZNOeveYSH/DCrak2sbahdlpsyj2i
-         KV0QU+tQ2vb1Yb+0SUu7p2geEhj1B5lZm+2zI+oNTEZOl/qam1C1v+v2SwZYE5fvYSWB
-         7O993TJOoBwMZjlnLloa5qFSQMoKTWMlo9HL4LWy7619rrNBOclO2I/tG9C+sQzNZo5l
-         JVknVgE0ruR+zM2/eBIVb/aTBMGVRJwyvCNSh9G0ttYMc6ymKPPdEdDkIqOoTac1KLks
-         olvPvvaoepvoGcfhR09xH094GcaN61haTMhAFxXnyHa3yPEyZy+mt0U79bUJSX7aKtET
-         K9tw==
-X-Gm-Message-State: AOJu0Ywl02WagN4xueaBCp2nW9rU7gh0dQgBT4pp3NQtEE7ZMIsP4h//
-	aEKjaxz8ItOypyy4sF01wHgSAPVxv5PRJOsCMqE=
-X-Google-Smtp-Source: AGHT+IH2PvculO5L3/sCFJj9rQfTxZjvyKYLYFKxgVZWZBW11zPbbBu64PdTycEAYJ6SjMkahfCcnA==
-X-Received: by 2002:a50:d6d5:0:b0:543:54da:1a37 with SMTP id l21-20020a50d6d5000000b0054354da1a37mr136752edj.6.1698663734935;
-        Mon, 30 Oct 2023 04:02:14 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id r27-20020a50d69b000000b00537666d307csm6047409edi.32.2023.10.30.04.02.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 04:02:14 -0700 (PDT)
-Date: Mon, 30 Oct 2023 12:02:13 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: bpf@vger.kernel.org
-Subject: Re: kfunc use newbie question
-Message-ID: <ZT+NNS1kgBRdfZnW@nanopsycho>
-References: <ZT94/1VlpfA231TX@nanopsycho>
- <ZT+CG0cWnko5AIO8@krava>
+        bh=qthidPTR+eTfkmkLWPFHs2FuiYW04uLS5zl0QtuY49M=;
+        b=OhUHnyYc3WEzDMl6vZEphfiKGwcAiWiKfkVLyaC7OugqyfK88jprRXiJWB2EbqxIJ9
+         CcoH1gF33tLHZTcTVBDI5saBg0Bq4fzg8q2S699a9EfBOIpWK53edMdM9kXd8lgg7bfO
+         Yamflp3Fxt1H4s6z4xLhK0e/EF+fEQSfdy0XT9QP3NL+np7LVwd0Urj1yND0Qx/X6aqA
+         lxV7/RM4XC76oFXF6ULLuLgQFt1miribavcDiKqA7gsec68LGBZzOfd/ew5bR9nc5Naw
+         ekNW3ST+Wlv6WVm7+RkQ3dACFASmIKhJQFt9VRlMvivra3DP8qYr8z+q2rjsiHYchdg8
+         OOdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698665762; x=1699270562;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qthidPTR+eTfkmkLWPFHs2FuiYW04uLS5zl0QtuY49M=;
+        b=V4tyPJN5Q7GHKdxOmrCoH0NhzimTd5Ki8NzLCs2qLmrzPRsB+sskz2nIo0ayes10DO
+         i02Pcj1LXfgJ8EFHpasXrGthmsc+1CHFiL0/pgGFZG46yYpbbyiN2uqil12FxCTQVZ3v
+         7F5omdeQVZ958vTL2jj7z1YZaypEglrCyeSRBY21OzWaDkrAPb2AhjtBAeEwIeYeCQ+V
+         2zMcb5tO7lWNovy5+tTR7fUEL4+X+CifVgETKWE+ShwqS59ASx25hvFRCE7eZQhA/Q0d
+         SDdZGH0ENOKnPziraE1dILA+zDfjtTiGEBo2RUadNQbmQ7Fp9QjjUF2o4WTU1Hbx3uu5
+         nfrQ==
+X-Gm-Message-State: AOJu0Yz3nxbqIPFWLMqmaeNycyNL2b/U7zRozquOxCvs02GkP5jVu958
+	GCbgCX6TuyEAzaD4ttKp1lP/1p/40hOQpUZLYGg=
+X-Google-Smtp-Source: AGHT+IHH4fcCsA+tyWVbIyDc2dZAophSJFvc0q1YfFGl/DwDjxYIuoQMYDIwJERYp/Nhg53L7ynux94JiV+d7kNe0ds=
+X-Received: by 2002:a81:450d:0:b0:5a7:bc38:fff2 with SMTP id
+ s13-20020a81450d000000b005a7bc38fff2mr9469511ywa.15.1698665762297; Mon, 30
+ Oct 2023 04:36:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZT+CG0cWnko5AIO8@krava>
+References: <20231029061438.4215-7-laoar.shao@gmail.com> <202310301605.CGFI0aSW-lkp@intel.com>
+In-Reply-To: <202310301605.CGFI0aSW-lkp@intel.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Mon, 30 Oct 2023 19:35:25 +0800
+Message-ID: <CALOAHbA51eCYFsfaUVBxRrfKt=z1=77bPO1CPKEyGeph5PztOQ@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 06/11] bpf: Add a new kfunc for cgroup1 hierarchy
+To: kernel test robot <lkp@intel.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, jolsa@kernel.org, tj@kernel.org, lizefan.x@bytedance.com, 
+	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com, 
+	sinquersw@gmail.com, longman@redhat.com, oe-kbuild-all@lists.linux.dev, 
+	cgroups@vger.kernel.org, bpf@vger.kernel.org, oliver.sang@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Mon, Oct 30, 2023 at 11:14:51AM CET, olsajiri@gmail.com wrote:
->On Mon, Oct 30, 2023 at 10:35:59AM +0100, Jiri Pirko wrote:
->> Hi BPF :)
->> 
->> I'm trying to use bpf_dynptr_from_skb() kfunc in my program. I compiled
->> it with having following declaration in the bpf .c file:
->> extern int bpf_dynptr_from_skb(struct __sk_buff *skb, __u64 flags,
->>                                struct bpf_dynptr *ptr__uninit) __ksym;
->> 
->> I have all "BPF/BTF" kernel config options on. During load,
->> I'm still getting:
->> 
->> libbpf: failed to find BTF for extern 'bpf_dynptr_from_skb': -3
+On Mon, Oct 30, 2023 at 5:01=E2=80=AFPM kernel test robot <lkp@intel.com> w=
+rote:
 >
->heya,
->error -3 suggests there's no BTF generated, is there .BTF section
->in the object ? did you compile with -g ?
-
-w/o -g. If I compile with -g, I'm getting this:
-libbpf: failed to find valid kernel BTF
-libbpf: Error loading vmlinux BTF: -3
-
-
+> Hi Yafang,
 >
->jirka
+> kernel test robot noticed the following build warnings:
 >
->> 
->> I'm pretty much clueless about what may be wrong. Documentation didn't
->> help me either :/
->> 
->> Any idea what I may be doing wrong?
->> 
->> Thanks
->> 
->> Jiri
->> 
+> [auto build test WARNING on bpf-next/master]
+>
+> url:    https://github.com/intel-lab-lkp/linux/commits/Yafang-Shao/cgroup=
+-Remove-unnecessary-list_empty/20231029-143457
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git =
+master
+> patch link:    https://lore.kernel.org/r/20231029061438.4215-7-laoar.shao=
+%40gmail.com
+> patch subject: [PATCH v3 bpf-next 06/11] bpf: Add a new kfunc for cgroup1=
+ hierarchy
+> config: i386-randconfig-013-20231030 (https://download.01.org/0day-ci/arc=
+hive/20231030/202310301605.CGFI0aSW-lkp@intel.com/config)
+> compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
+ve/20231030/202310301605.CGFI0aSW-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202310301605.CGFI0aSW-lkp=
+@intel.com/
+>
+> All warnings (new ones prefixed by >>):
+>
+>    kernel/bpf/helpers.c:1893:19: warning: no previous declaration for 'bp=
+f_obj_new_impl' [-Wmissing-declarations]
+
+-Wmissing-declarations is a known issue and somebody is working on it, righ=
+t?
+
+--=20
+Regards
+Yafang
 
