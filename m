@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-13635-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13636-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 092107DC0B9
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 20:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EAF387DC0D4
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 20:52:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6E34281676
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 19:40:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A85B281608
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 19:52:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9827B1A717;
-	Mon, 30 Oct 2023 19:40:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 216231A723;
+	Mon, 30 Oct 2023 19:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E7ZPlTTS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AZKXuoxp"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB2B21A711
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 19:40:02 +0000 (UTC)
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F265FFC
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 12:40:00 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5b8f68ba4e5so3509279a12.1
-        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 12:40:00 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 571EA14018
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 19:52:20 +0000 (UTC)
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F858DB
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 12:52:19 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cc3542e328so12327745ad.1
+        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 12:52:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698694800; x=1699299600; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698695538; x=1699300338; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lTvLEboRKSBjYPFsIPVX1i84k4fzgBTXsciS+AzFRYY=;
-        b=E7ZPlTTS9Ndfnph2r+ibobZEBiMdnUL8zffxqjniUyLaws+ue5MTTe3OBjdxiHhw7n
-         YFfiPqU3rGaAwN7WTOPghsrRQjdaguWLeKhIwNbkZXFb94MQdq0GyFFiwgP4Oakr8yEu
-         HSb8+AASjmD82XOjmFrn1OoONLvd8i7pH1Yh3h+vQRpIyvP1So9/3GHc2GCo7o3Kuha6
-         IIBOzngQjxdclOw3m7YMHZQTSjSvR68KbUiBb/2+1RUdzT4syISL4QnZLzh3zC3ZGgHH
-         zN9q2AfUSyaSueyU8FFvGyJ57sgux4gGml5WyfWXewHpLVUyRuA1fb/o+ikoMiAQd0B7
-         Jo8Q==
+        bh=zdgxUvpUVsRw9uupLFCccGk2yeWOcpQUS6GgoiusbWY=;
+        b=AZKXuoxpCZNCl0dbON7FmyoikLTkmOtxaH2TNIjTuBE2DZzg3akM1xwsUTL1MI+Y3N
+         YiuYl0uz5r+ENshtDPRyTbE5hks7QMPRXMnIGAnd+XuUBCNG63TgSIgoGyWvnYCt0NA2
+         VjO/EZMwhFXNcI68+Fd52uiaHqja8DRlLo1oDgOWre6TyXw8FhOHiW7M9me3bnKY7Mjo
+         1OM27Qsk7tOHyJvEV4v9NhXJ7F5R7/Kf9aRuoS/lrKmvwYHtE1fXizc0EFb19kcynVgK
+         ZQY5p5dUPTxJAjR7uCe7BDN2aH96zHAVPsCsFkPN43HDCXH09MjGGQNH2YiVyIivW09o
+         gdZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698694800; x=1699299600;
+        d=1e100.net; s=20230601; t=1698695538; x=1699300338;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lTvLEboRKSBjYPFsIPVX1i84k4fzgBTXsciS+AzFRYY=;
-        b=grODqvD2vRTE+UEQ6IGQ7923DsIBHM+dea9nyVmA8U6lKZfRCshP+6GQuMOc1nAl6j
-         Qogi3WqdFzSExJamkqA/haqayWrr7XF+P1/UPizTDfnqQX5hRsRg1nw2Q94opXpFLxt1
-         bk+D8U72CnE0HPWlAMeMhaW9jaaDmO1nbJyotLkmrtA2yt+RWbg1p4dbdDKzveHrCrbl
-         lkm81l44aTYsToDfi1wzEg2a3FOAEk7/2KkJDiGceIr6xVVkUB7EWO0ByGdx5rOEAQr2
-         58zhybD0WVI7l/aVk8EQ7PyC1fGbVp8Tr0oT1k+L7PRWMWFqsbRMiFxt8VbLN0F61evw
-         +4LA==
-X-Gm-Message-State: AOJu0Yy08GEGjXUm75n65IZfSZ3Gg68CU7ftj/fPgKFHAN8VjA9pW7jU
-	Kqg+giHT7Zil1bJGRtfjxKp2+rjVWSE=
-X-Google-Smtp-Source: AGHT+IEKiGpFMrXvSvllOz0p2OCiTzNNVJ8bUAKku/1tT7uqNSr5yEMn7eNWJwzSqE5t3V4sNxn0rQ==
-X-Received: by 2002:a05:6300:8003:b0:14d:4ab5:5e34 with SMTP id an3-20020a056300800300b0014d4ab55e34mr8150108pzc.51.1698694800329;
-        Mon, 30 Oct 2023 12:40:00 -0700 (PDT)
+        bh=zdgxUvpUVsRw9uupLFCccGk2yeWOcpQUS6GgoiusbWY=;
+        b=gKO/LWVYY3CoI3GtMC/rMG3GEdjcnRPsZOwLUhAYMAtM0pm9B4SKIIyNTKVTX7rCzc
+         R3a4y7lANPWBdk2DBbDNVBHtGhwa4QGCU+5fwcDyPRQ9EgeB/JMofK+1SCAqFRPBh0Gl
+         B1p3nXxNiYgplBdBiErFwHSLvFVes5Kbh4jhzhW6MMN1JZFB1rDuIlSyXd2xJUEcMJCz
+         e2uWonrtZwDmBQNiaz/GJmwBbZpRi/UNjNk+bhN713mvB5tTwvq1wkWcMvTAg4i658Z6
+         9i7/raIzFN0UOx823rYNVedETqZKHFXQrU6/A93QRSzfl0YXa1pdxOFj40bje+49CU6a
+         ggNw==
+X-Gm-Message-State: AOJu0YzM+GiIbTBhPZ1RwIuXP/0TEJvjO1Rx6lntoStpn5rFhnP7ZYQP
+	HVra73ZJsy7uNVY1S4Ugols=
+X-Google-Smtp-Source: AGHT+IFQVPzT30UVfTDy44Ysmgn4wDYmGFCDbVYqYSP2Wl1Bm4b6paG6c7BrLdk03eEAd0R/EG/wcA==
+X-Received: by 2002:a17:902:db10:b0:1cc:5833:cf5e with SMTP id m16-20020a170902db1000b001cc5833cf5emr2376712plx.27.1698695538428;
+        Mon, 30 Oct 2023 12:52:18 -0700 (PDT)
 Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:500::7:f772])
-        by smtp.gmail.com with ESMTPSA id b5-20020aa78705000000b0068fb8e18971sm6198681pfo.130.2023.10.30.12.39.58
+        by smtp.gmail.com with ESMTPSA id 6-20020a170902c10600b001bd62419744sm6634115pli.147.2023.10.30.12.52.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 12:39:59 -0700 (PDT)
-Date: Mon, 30 Oct 2023 12:39:57 -0700
+        Mon, 30 Oct 2023 12:52:18 -0700 (PDT)
+Date: Mon, 30 Oct 2023 12:52:16 -0700
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: Andrii Nakryiko <andrii@kernel.org>
 Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
 	martin.lau@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v5 bpf-next 11/23] bpf: rename is_branch_taken reg
- arguments to prepare for the second one
-Message-ID: <20231030193957.poqagefzsxqfputp@macbook-pro-49.dhcp.thefacebook.com>
+Subject: Re: [PATCH v5 bpf-next 15/23] bpf: unify 32-bit and 64-bit
+ is_branch_taken logic
+Message-ID: <20231030195216.zpcntk47dxyissoi@macbook-pro-49.dhcp.thefacebook.com>
 References: <20231027181346.4019398-1-andrii@kernel.org>
- <20231027181346.4019398-12-andrii@kernel.org>
+ <20231027181346.4019398-16-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,36 +75,43 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231027181346.4019398-12-andrii@kernel.org>
+In-Reply-To: <20231027181346.4019398-16-andrii@kernel.org>
 
-On Fri, Oct 27, 2023 at 11:13:34AM -0700, Andrii Nakryiko wrote:
-> Just taking mundane refactoring bits out into a separate patch. No
-> functional changes.
+On Fri, Oct 27, 2023 at 11:13:38AM -0700, Andrii Nakryiko wrote:
+> Combine 32-bit and 64-bit is_branch_taken logic for SCALAR_VALUE
+> registers. It makes it easier to see parallels between two domains
+> (32-bit and 64-bit), and makes subsequent refactoring more
+> straightforward.
+> 
+> No functional changes.
 > 
 > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
->  kernel/bpf/verifier.c | 107 +++++++++++++++++++++---------------------
->  1 file changed, 53 insertions(+), 54 deletions(-)
+>  kernel/bpf/verifier.c | 154 ++++++++++--------------------------------
+>  1 file changed, 36 insertions(+), 118 deletions(-)
 > 
 > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index f5fcb7fb2c67..aa13f32751a1 100644
+> index fedd6d0e76e5..b911d1111fad 100644
 > --- a/kernel/bpf/verifier.c
 > +++ b/kernel/bpf/verifier.c
-> @@ -14169,26 +14169,25 @@ static void find_good_pkt_pointers(struct bpf_verifier_state *vstate,
->  	}));
->  }
->  
-> -static int is_branch32_taken(struct bpf_reg_state *reg, u32 val, u8 opcode)
-> +static int is_branch32_taken(struct bpf_reg_state *reg1, u32 val, u8 opcode)
+> @@ -14185,166 +14185,86 @@ static u64 reg_const_value(struct bpf_reg_state *reg, bool subreg32)
+>  /*
+>   * <reg1> <op> <reg2>, currently assuming reg2 is a constant
+>   */
+> -static int is_branch32_taken(struct bpf_reg_state *reg1, struct bpf_reg_state *reg2, u8 opcode)
+> +static int is_scalar_branch_taken(struct bpf_reg_state *reg1, struct bpf_reg_state *reg2,
+> +				  u8 opcode, bool is_jmp32)
 >  {
-> -	struct tnum subreg = tnum_subreg(reg->var_off);
+> -	struct tnum subreg = tnum_subreg(reg1->var_off);
+> -	u32 val = (u32)tnum_subreg(reg2->var_off).value;
+> -	s32 sval = (s32)val;
+> +	struct tnum t1 = is_jmp32 ? tnum_subreg(reg1->var_off) : reg1->var_off;
+> +	u64 umin1 = is_jmp32 ? (u64)reg1->u32_min_value : reg1->umin_value;
+> +	u64 umax1 = is_jmp32 ? (u64)reg1->u32_max_value : reg1->umax_value;
+> +	s64 smin1 = is_jmp32 ? (s64)reg1->s32_min_value : reg1->smin_value;
+> +	s64 smax1 = is_jmp32 ? (s64)reg1->s32_max_value : reg1->smax_value;
+> +	u64 val = is_jmp32 ? (u32)tnum_subreg(reg2->var_off).value : reg2->var_off.value;
+> +	s64 sval = is_jmp32 ? (s32)val : (s64)val;
 
-Looks like accidental removal that breaks build.
-
->  	s32 sval = (s32)val;
->  
->  	switch (opcode) {
->  	case BPF_JEQ:
->  		if (tnum_is_const(subreg))
->  			return !!tnum_equals_const(subreg, val);
+Maybe use uval and sval to be consisten with umin/smin ?
 
