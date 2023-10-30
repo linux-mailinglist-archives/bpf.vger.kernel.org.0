@@ -1,160 +1,291 @@
-Return-Path: <bpf+bounces-13619-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8F337DBF97
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 19:16:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A5AE7DC023
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 19:57:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 297BB2816D4
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 18:16:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17AC0B20E61
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 18:57:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1062719BAC;
-	Mon, 30 Oct 2023 18:16:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12701199D0;
+	Mon, 30 Oct 2023 18:57:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lDviNoVH"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="jVn+Ywkj"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 134A119BBA
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 18:16:39 +0000 (UTC)
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2769E;
-	Mon, 30 Oct 2023 11:16:38 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53e855d7dacso7824656a12.0;
-        Mon, 30 Oct 2023 11:16:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698689797; x=1699294597; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=MpHHf9xas8OW3Kjr9CsNsjI7QnAkaIwmHfMSF5Ql6DE=;
-        b=lDviNoVHLOYL4i697bxRV/yZXocIWizBMJV8QfOP9EpguVSiIOuZU1SbR1arfH6tYi
-         cIdebrHdieJ/TxZ2XN/z8f1TItNYCDXR8dnzZ3CxLH7gM737xV84gi+ofoXQfKACxg72
-         kOItnF6zrZJezSQAxl166r96zzuWQ0FJv5EoNQt3eBGiA2hsvVjg8E2YvZvXOcA5+LLd
-         T+xrSXC24JxeyLR1icPepWLsZ3r5a8uTXfKMZi37uThwq2XKUfgHp8Sp1QyLVfe84zB7
-         ai8ESTagC7ThrOp1+leVLAa23w5op+EVTDYLsI1qbWivJQFVLuzzrF5PZHPggSoYIzmE
-         rsDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698689797; x=1699294597;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MpHHf9xas8OW3Kjr9CsNsjI7QnAkaIwmHfMSF5Ql6DE=;
-        b=AZFWSV9Vw1jvPwYww6YwruW9ONRGChxbRBqCJRzkazByfqr9kn4YV0XS0e4+JRXV2z
-         dY64TOUO7Ns28SD1JlNYNdFZ0D2uEY2oKUrAC/Wh14Ps0uLos243/DQH4ByjjwTrh0d5
-         vIXpFqjnj3QL5YngVjZcbNMWxcMYg4tpMHHnfyK+660Ys10zPYb2Qnsv1+LYO6L2SbP/
-         lh+0oEFJ+rRD7sUrf9KEb5qnR4eL5BfhYUFxtpJQfzevHLN350Cvpsyanz9h72jWV6oV
-         ICOQsgo/iRW99PDoglQYewieDtO3TEQJbDNwfCBfmrDfAzSgcK5kHUH5cTVX6WQ7n9AB
-         ySpA==
-X-Gm-Message-State: AOJu0YwyUe+QClptzz3NeghEhOvHgGnbMe33XqDwfgJSIvLWzNvXwu8y
-	aAVQs/G0VENN3GyXbUkosyY=
-X-Google-Smtp-Source: AGHT+IFsxpwYPNeKpNYGJp017SOoui4ESE0IY6o1gTa8kJWuGX2NSakE1SfuAUHBDXyXZcG2spBFHA==
-X-Received: by 2002:a17:907:5cb:b0:9bf:b022:dc7 with SMTP id wg11-20020a17090705cb00b009bfb0220dc7mr9009960ejb.48.1698689796736;
-        Mon, 30 Oct 2023 11:16:36 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id bq27-20020a170906d0db00b009ca522853ecsm6322229ejb.58.2023.10.30.11.16.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 11:16:35 -0700 (PDT)
-Message-ID: <c9c5c5d267dacd68d97e539bf294111345f91ed8.camel@gmail.com>
-Subject: Re: bpf: incorrect passing infinate loop causing rcu detected stall
- during bpf_prog_run()
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov
-	 <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>,  John Fastabend <john.fastabend@gmail.com>, Andrii
- Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song
- Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh
- <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Mykola Lysenko
- <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date: Mon, 30 Oct 2023 20:16:34 +0200
-In-Reply-To: <CACkBjsZ5iYQRc6_EREhKA1cg-dFtopSOKQhDo+6SgDnVrz+vcA@mail.gmail.com>
-References: 
-	<CACkBjsY22BOUCns43Rza5gXCBtEKbdRqXxOTviZQOjjDySYGHQ@mail.gmail.com>
-	 <CAADnVQK2nsdzviA1q_tBuh+7g6Xo6wZY2VxGR1H4ag40nNrSgg@mail.gmail.com>
-	 <CACkBjsZ5iYQRc6_EREhKA1cg-dFtopSOKQhDo+6SgDnVrz+vcA@mail.gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 940BC19BAD
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 18:57:20 +0000 (UTC)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C139D9
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 11:57:17 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39UIuW6a023158;
+	Mon, 30 Oct 2023 18:56:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=RQhcWmUBgZ1fKnY5Lo6A5MlrOXzHBKg/fL6GdR0+SBk=;
+ b=jVn+YwkjyRS6HwNCEq5o60tHJ2UMmq7uecEg155nzqSOhZniwvLkxrYGxbzaloiQ73QO
+ JNoPDpZHfpw0Eua5gqIBk7xoLnmGQHsKweC/JLxXhzEjdYBKHNctNhX9EK4UV0bQGbzv
+ yHJRNMJ/ZrFiXzXGIxZbIJlfTQX45LZUDbueGJEjFttNXcKgBCwu0PQJKvXRxp5LhVVC
+ JwGC4oJrrTiLuAEC/WuwcvrWQxoBzRAVkCOt6A91ap62WTHcJrauKj6DBgf0uc3fXVSJ
+ zMQ23xwJOIbP38460lrSuPBOG4qFOr7UJqYBxcRK4/98ouBjAIUffm18ZXJkUT4u2Rev AA== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u2j6wg066-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 30 Oct 2023 18:56:55 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39UIkip5000597;
+	Mon, 30 Oct 2023 18:56:55 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u1cmsufq4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 30 Oct 2023 18:56:55 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39UIuqJO16712364
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 30 Oct 2023 18:56:52 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0F5D320049;
+	Mon, 30 Oct 2023 18:56:52 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id AAFFF20040;
+	Mon, 30 Oct 2023 18:56:49 +0000 (GMT)
+Received: from [9.43.76.45] (unknown [9.43.76.45])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 30 Oct 2023 18:56:49 +0000 (GMT)
+Message-ID: <31da5cb9-b0fa-5561-0cce-db53477d4470@linux.ibm.com>
+Date: Tue, 31 Oct 2023 00:26:48 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v7 1/5] powerpc/code-patching: introduce
+ patch_instructions()
+To: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org
+Cc: Song Liu <songliubraving@fb.com>, Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+References: <20231020141358.643575-1-hbathini@linux.ibm.com>
+ <20231020141358.643575-2-hbathini@linux.ibm.com>
+ <87fs1s9sc2.fsf@linux.ibm.com>
+Content-Language: en-US
+From: Hari Bathini <hbathini@linux.ibm.com>
+In-Reply-To: <87fs1s9sc2.fsf@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: fYGO71rcWuXIS2uHwHc0WUxLNIcnTRfu
+X-Proofpoint-ORIG-GUID: fYGO71rcWuXIS2uHwHc0WUxLNIcnTRfu
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_13,2023-10-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 adultscore=0 spamscore=0 suspectscore=0 impostorscore=0
+ mlxscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310300148
 
-On Mon, 2023-10-30 at 11:29 +0100, Hao Sun wrote:
-> On Sun, Oct 29, 2023 at 2:35=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >=20
-> > On Fri, Oct 27, 2023 at 2:09=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> w=
-rote:
-> > >=20
-> > > Hi,
-> > >=20
-> > > The following C repro contains a bpf program that can cause rcu
-> > > stall/soft lockup during running in bpf_prog_run(). Seems the verifie=
-r
-> > > incorrectly passed the program with an infinite loop.
-> > >=20
-> > > C repro: https://pastebin.com/raw/ymzAxjeU
-> >=20
-> > Thanks for the report.
-> > Did you debug what exactly caused this bug?
-> > Are you planning to work on the fix?
->=20
-> This bug is really hard to debug. Here is a simplified view of
-> the original program:
->=20
-> loop:
-> 0: r4 =3D r8
-> 1: r1 =3D 0x1f
-> 2: r8 -=3D -8
-> 3: if r1 > r7 goto pc+1
-> 4: r7 <<=3D r1         ; LSH r7 by 31
-> 5: r5 =3D r0
-> 6: r5 *=3D 2
-> 7: if r5 < r0 goto pc+1
-> 8: r8 s>>=3D 6
-> 9: w7 &=3D w7       ; r7 =3D 0 after the first iter
-> 10: r8 -=3D r7
-> 11: r8 -=3D -1
-> 12: if r4 >=3D 0x9 goto loop
-> 13: exit
->=20
-> At runtime, r7 is updated to 0 through #4 and #9 at the first iteration,
-> so the following iteration will not take #3 to #4, so #3 can be ignored
-> after the first iteration. r0 is init by get_current_task, and r5 is alwa=
-ys
-> smaller than r0 at runtime, so #7 to #8 will never run. So, the update
-> to r8 is only #2 and #11, which together add 9 to r8. Since r4 is set
-> to r8 at the start of each iteration, so it's an infinite loop at runtime=
-.
->=20
-> Based on the log, the verifier keeps tracking #7 to #8 and to #9, and
-> at some point, the verifier prunes states and path from #7 to #9, so
-> it stops checking. The log is huge and hard to follow, the issue is likel=
-y
-> in pruning logic, but I don't have much knowledge about that part.
+Hi Aneesh,
 
-I can take a look at this issue but closer to the end of the week (Thu/Fri)=
-.
+On 30/10/23 6:32 pm, Aneesh Kumar K.V wrote:
+> Hari Bathini <hbathini@linux.ibm.com> writes:
+> 
+>> patch_instruction() entails setting up pte, patching the instruction,
+>> clearing the pte and flushing the tlb. If multiple instructions need
+>> to be patched, every instruction would have to go through the above
+>> drill unnecessarily. Instead, introduce patch_instructions() function
+>> that sets up the pte, clears the pte and flushes the tlb only once
+>> per page range of instructions to be patched. Duplicate most of the
+>> patch_instruction() code instead of merging with it, to avoid the
+>> performance degradation observed on ppc32, for patch_instruction(),
+>> with the code path merged. Also, setup poking_init() always as BPF
+>> expects poking_init() to be setup even when STRICT_KERNEL_RWX is off.
+>>
+>> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+>> Acked-by: Song Liu <song@kernel.org>
+>>
+> 
+> A lot of this is duplicate of patch_instruction(). Can we consolidate
+> thing between them?
 
->=20
-> >=20
-> > > Verifier's log: https://pastebin.com/raw/thZDTFJc
-> >=20
-> > log is trimmed.
->=20
-> Full log: https://pastebin.com/raw/cTC8wmDH
->=20
+True. The code was consolidated till v5 but had to duplicate most of it
+to avoid performance degradation reported on ppc32:
 
+ 
+https://lore.kernel.org/all/6cceb564-8b52-4d98-9118-92a914f4871e@csgroup.eu/
+
+> 
+>> ---
+>>
+>> Changes in v7:
+>> * Fixed crash observed with !STRICT_RWX.
+>>
+>>
+>>   arch/powerpc/include/asm/code-patching.h |   1 +
+>>   arch/powerpc/lib/code-patching.c         | 141 ++++++++++++++++++++++-
+>>   2 files changed, 139 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/powerpc/include/asm/code-patching.h b/arch/powerpc/include/asm/code-patching.h
+>> index 3f881548fb61..0e29ccf903d0 100644
+>> --- a/arch/powerpc/include/asm/code-patching.h
+>> +++ b/arch/powerpc/include/asm/code-patching.h
+>> @@ -74,6 +74,7 @@ int create_cond_branch(ppc_inst_t *instr, const u32 *addr,
+>>   int patch_branch(u32 *addr, unsigned long target, int flags);
+>>   int patch_instruction(u32 *addr, ppc_inst_t instr);
+>>   int raw_patch_instruction(u32 *addr, ppc_inst_t instr);
+>> +int patch_instructions(u32 *addr, u32 *code, size_t len, bool repeat_instr);
+>>   
+>>   static inline unsigned long patch_site_addr(s32 *site)
+>>   {
+>> diff --git a/arch/powerpc/lib/code-patching.c b/arch/powerpc/lib/code-patching.c
+>> index b00112d7ad46..e1c1fd9246d8 100644
+>> --- a/arch/powerpc/lib/code-patching.c
+>> +++ b/arch/powerpc/lib/code-patching.c
+>> @@ -204,9 +204,6 @@ void __init poking_init(void)
+>>   {
+>>   	int ret;
+>>   
+>> -	if (!IS_ENABLED(CONFIG_STRICT_KERNEL_RWX))
+>> -		return;
+>> -
+>>   	if (mm_patch_enabled())
+>>   		ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
+>>   					"powerpc/text_poke_mm:online",
+>> @@ -378,6 +375,144 @@ int patch_instruction(u32 *addr, ppc_inst_t instr)
+>>   }
+>>   NOKPROBE_SYMBOL(patch_instruction);
+>>   
+>> +static int __patch_instructions(u32 *patch_addr, u32 *code, size_t len, bool repeat_instr)
+>> +{
+>> +	unsigned long start = (unsigned long)patch_addr;
+>> +
+>> +	/* Repeat instruction */
+>> +	if (repeat_instr) {
+>> +		ppc_inst_t instr = ppc_inst_read(code);
+>> +
+>> +		if (ppc_inst_prefixed(instr)) {
+>> +			u64 val = ppc_inst_as_ulong(instr);
+>> +
+>> +			memset64((u64 *)patch_addr, val, len / 8);
+>> +		} else {
+>> +			u32 val = ppc_inst_val(instr);
+>> +
+>> +			memset32(patch_addr, val, len / 4);
+>> +		}
+>> +	} else {
+>> +		memcpy(patch_addr, code, len);
+>> +	}
+>> +
+>> +	smp_wmb();	/* smp write barrier */
+>> +	flush_icache_range(start, start + len);
+>> +	return 0;
+>> +}
+>> +
+>> +/*
+>> + * A page is mapped and instructions that fit the page are patched.
+>> + * Assumes 'len' to be (PAGE_SIZE - offset_in_page(addr)) or below.
+>> + */
+>> +static int __do_patch_instructions_mm(u32 *addr, u32 *code, size_t len, bool repeat_instr)
+>> +{
+>> +	struct mm_struct *patching_mm, *orig_mm;
+>> +	unsigned long pfn = get_patch_pfn(addr);
+>> +	unsigned long text_poke_addr;
+>> +	spinlock_t *ptl;
+>> +	u32 *patch_addr;
+>> +	pte_t *pte;
+>> +	int err;
+>> +
+>> +	patching_mm = __this_cpu_read(cpu_patching_context.mm);
+>> +	text_poke_addr = __this_cpu_read(cpu_patching_context.addr);
+>> +	patch_addr = (u32 *)(text_poke_addr + offset_in_page(addr));
+>> +
+>> +	pte = get_locked_pte(patching_mm, text_poke_addr, &ptl);
+>> +	if (!pte)
+>> +		return -ENOMEM;
+>> +
+>> +	__set_pte_at(patching_mm, text_poke_addr, pte, pfn_pte(pfn, PAGE_KERNEL), 0);
+>> +
+>> +	/* order PTE update before use, also serves as the hwsync */
+>> +	asm volatile("ptesync" ::: "memory");
+>> +
+>> +	/* order context switch after arbitrary prior code */
+>> +	isync();
+>> +
+>> +	orig_mm = start_using_temp_mm(patching_mm);
+>> +
+>> +	err = __patch_instructions(patch_addr, code, len, repeat_instr);
+>> +
+>> +	/* context synchronisation performed by __patch_instructions */
+>> +	stop_using_temp_mm(patching_mm, orig_mm);
+>> +
+>> +	pte_clear(patching_mm, text_poke_addr, pte);
+>> +	/*
+>> +	 * ptesync to order PTE update before TLB invalidation done
+>> +	 * by radix__local_flush_tlb_page_psize (in _tlbiel_va)
+>> +	 */
+>> +	local_flush_tlb_page_psize(patching_mm, text_poke_addr, mmu_virtual_psize);
+>> +
+>> +	pte_unmap_unlock(pte, ptl);
+>> +
+>> +	return err;
+>> +}
+>> +
+>> +/*
+>> + * A page is mapped and instructions that fit the page are patched.
+>> + * Assumes 'len' to be (PAGE_SIZE - offset_in_page(addr)) or below.
+>> + */
+>> +static int __do_patch_instructions(u32 *addr, u32 *code, size_t len, bool repeat_instr)
+>> +{
+>> +	unsigned long pfn = get_patch_pfn(addr);
+>> +	unsigned long text_poke_addr;
+>> +	u32 *patch_addr;
+>> +	pte_t *pte;
+>> +	int err;
+>> +
+>> +	text_poke_addr = (unsigned long)__this_cpu_read(cpu_patching_context.addr) & PAGE_MASK;
+>> +	patch_addr = (u32 *)(text_poke_addr + offset_in_page(addr));
+>> +
+>> +	pte = __this_cpu_read(cpu_patching_context.pte);
+>> +	__set_pte_at(&init_mm, text_poke_addr, pte, pfn_pte(pfn, PAGE_KERNEL), 0);
+>> +	/* See ptesync comment in radix__set_pte_at() */
+>> +	if (radix_enabled())
+>> +		asm volatile("ptesync" ::: "memory");
+>> +
+>> +	err = __patch_instructions(patch_addr, code, len, repeat_instr);
+>> +
+>> +	pte_clear(&init_mm, text_poke_addr, pte);
+>> +	flush_tlb_kernel_range(text_poke_addr, text_poke_addr + PAGE_SIZE);
+>> +
+>> +	return err;
+>> +}
+>> +
+>> +/*
+>> + * Patch 'addr' with 'len' bytes of instructions from 'code'.
+>> + *
+>> + * If repeat_instr is true, the same instruction is filled for
+>> + * 'len' bytes.
+>> + */
+>> +int patch_instructions(u32 *addr, u32 *code, size_t len, bool repeat_instr)
+>> +{
+> 
+> Will this break with prefix instructions?
+
+No, afaics.. unless, the caller fails to setup the code buffer
+appropriately..
+
+Thanks
+Hari
 
