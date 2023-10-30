@@ -1,170 +1,160 @@
-Return-Path: <bpf+bounces-13615-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13616-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A3A87DBE85
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 18:11:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F3317DBEA3
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 18:17:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 243B32811A9
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 17:11:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38DD92815D4
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 17:17:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5CA819457;
-	Mon, 30 Oct 2023 17:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E711D19467;
+	Mon, 30 Oct 2023 17:17:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KScjAMMf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PlPsfo6v"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F421D1945A
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 17:11:15 +0000 (UTC)
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06534D9;
-	Mon, 30 Oct 2023 10:11:14 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32f7c44f6a7so1408295f8f.1;
-        Mon, 30 Oct 2023 10:11:13 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB1C15EA1
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 17:17:26 +0000 (UTC)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E7ABD
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 10:17:23 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-32dff08bbdbso3272057f8f.2
+        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 10:17:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698685872; x=1699290672; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698686242; x=1699291042; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ry3Aypoe5JPo+tRS+yvTNFBsfgQ4Fm63F5zsO3uosT0=;
-        b=KScjAMMfWRUBxYBDzV0AKyprR9mOVil9nTMUSmA15jwsKTA5sJD8iqik2rAYO7AQAa
-         6F4NzYsbMvWZY5sibLG9cC+noocISccLjlxdCNhp5M+ivyzResmy/mdahGFUlQETrvP4
-         5bWHZ684h8I5FUlLba1iW4XEq169s83PwezDMB8SxyvVr8qZUmcnCrSO/19DjeT3bA7p
-         nHUk08WFcKTsRqvdr1J8ub/31OoLYOChWNAUZA9r3uAsoVtWHRnfsD2Fexcn4fjBq5Ia
-         5RWYe9Ey//quQONeXfuiPRkwLdiv2bTJM5W51ROKkEqGY4cA8Ma3RdxYyDskfRgNjOO/
-         o39w==
+        bh=/xCPYdOEerxLBOv9ORUYRFtApw/deOLu2qd8YpeIQWA=;
+        b=PlPsfo6vpOw9kaTkpsZk0WaU8RALRzZn/B+DuLkSlg8ZIlix+XIAi+bMggsgCd4qV3
+         t6G+0tAz2yqnMCjZlb7q7HC6Qn3ULzKvEXvXcFheJrCgFtGvx/D1yJYs7WzXMTPeMhgw
+         xXuXSu9S3hVPp6aM4VoXbh3lDUcf5toURIXzkDs7NXmxTn8h34VDNXO4s4B+Y+S6SVYr
+         YnyPVgQXKwew7z38/23lp7FXPW3Qt8uW3v2wH0spaPAgliZQb1V9iHFte9zX8gs/Dj0s
+         yhY+LkzX9+luKhRzomfZFlwPWaxkbjr4ZCDjMm/+6x6XRfWP7no9qyebGU0bijbCE3Ez
+         pFcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698685872; x=1699290672;
+        d=1e100.net; s=20230601; t=1698686242; x=1699291042;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ry3Aypoe5JPo+tRS+yvTNFBsfgQ4Fm63F5zsO3uosT0=;
-        b=MnVfK8WsAQMIF8I9jk45HkgIw176DZEhhxkiOptT8ir1wLGY+2VPxEbZLHbKrOXI/Q
-         VcmUTNWT76gPlu5xYrXO8HxG0mm9D8gosr7YI2O2+vlfwp5qDaRcW1UBiaK9u8IiJeZO
-         mLJ5cWm4ZnTjq1vDvpgoSgg+O8rdfbrKR8QVrYwedPfYuTqzJOwpLgKYHVhSbUo9z6gU
-         eUs72xh+clnC9ilm1ImbbZMjC+u8UAt2u90nuzYnWtq9kqS4YHhVxiChmI2BmbrQjsOm
-         Iv/pWlkcKGkygfOylREvA+7IMgT+nRTAg4kiWLVlbdJ3kylFeACwsLgITueKA0a04VYx
-         n7wA==
-X-Gm-Message-State: AOJu0Yz6UdArhuso9VUOQjwp9ETf8SCa+5uChn/zQE68ZiwIx/Wud7V/
-	hPYQuAumnHFToMXtYd0FMYqes1uXvd+W4oy6nT8=
-X-Google-Smtp-Source: AGHT+IFFA8HajvEcs6Z39LGJi+lHKvMiO49+MSFy94JzgZ7XQhe36VP3AUafTfu9BuF3gzqgnemmWWhG2VTzuhaLUz0=
-X-Received: by 2002:adf:f605:0:b0:32d:89b5:7fd9 with SMTP id
- t5-20020adff605000000b0032d89b57fd9mr7973222wrp.56.1698685872109; Mon, 30 Oct
- 2023 10:11:12 -0700 (PDT)
+        bh=/xCPYdOEerxLBOv9ORUYRFtApw/deOLu2qd8YpeIQWA=;
+        b=aSPBLzUTu828CLxlYr3Fxq5JgQXyjXO+47mGyrEQauvEtBpiueaUl9LFuB7qJRBvCF
+         fnikYfBRasfG+06LFrCdYsECG+JTkUcD9MrDYV+Cqki/Nz1GwCaUknAL08TsinPLsGxf
+         dlMWAHIQSENirAA4nWLGyPniI2VJ5xeDjW/s17iYTLSSN15ucO+OCYXCbPAmSKA5xt4/
+         4iLPe4d8wSkQI5r2dxGWLepURFLLP76TYfx27hVcURB5Pv4RkRrRxtTJPJI1DlAmGz5k
+         LAMbvAwZJDya+Tx48WqSnD9+KBALRBvbk4tEAW7XPPbPpMatuBTQ5fz9n0XJOcLgHl6i
+         aObQ==
+X-Gm-Message-State: AOJu0YzFwHEv3ti/Ck0HarRyWaiuf7ej5J/cmNsZK4+Hg19z8EcFOvdy
+	DCTzFLG3gAvhdIy86aFZ3Gh7mAL/UHzyKTpPhHw=
+X-Google-Smtp-Source: AGHT+IHKBQrX7kMKBYCiaXmU276FjF7V9koDxUp7jjdPcJtZL5f7YQy2sahFWnp+/ch3Dj1kVpJJrKYDN0Yp3O20evM=
+X-Received: by 2002:adf:ef02:0:b0:32d:8220:8991 with SMTP id
+ e2-20020adfef02000000b0032d82208991mr8665650wro.8.1698686241699; Mon, 30 Oct
+ 2023 10:17:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAG48ez0ppjcT=QxU-jtCUfb5xQb3mLr=5FcwddF_VKfEBPs_Dg@mail.gmail.com>
-In-Reply-To: <CAG48ez0ppjcT=QxU-jtCUfb5xQb3mLr=5FcwddF_VKfEBPs_Dg@mail.gmail.com>
+References: <20231030132145.20867-1-shung-hsi.yu@suse.com> <20231030132145.20867-3-shung-hsi.yu@suse.com>
+ <905f4ae9a5d9fe1a030d7e7442e980e9d49e00b9.camel@gmail.com>
+In-Reply-To: <905f4ae9a5d9fe1a030d7e7442e980e9d49e00b9.camel@gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 30 Oct 2023 10:11:00 -0700
-Message-ID: <CAADnVQKm3u+XbMoRxXSwg_d+Q80jPdqgzO6Yz+6JXvYATyMEZw@mail.gmail.com>
-Subject: Re: BPF: bpf_d_path() can be invoked on "struct path" not holding
- proper references, resulting in kernel memory corruption
-To: Jann Horn <jannh@google.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, KP Singh <kpsingh@google.com>, 
-	Matt Bobrowski <mattbobrowski@google.com>, bpf <bpf@vger.kernel.org>, 
-	kernel list <linux-kernel@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>
+Date: Mon, 30 Oct 2023 10:17:10 -0700
+Message-ID: <CAADnVQKF6G2au4QPNwxyxNBLTvzhJpADYxKeYMjPg3wA1jJNAA@mail.gmail.com>
+Subject: Re: [RFC bpf 2/2] selftests/bpf: precision tracking test for BPF_ALU
+ | BPF_TO_BE | BPF_END
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andriin@fb.com>, 
+	Alexei Starovoitov <ast@kernel.org>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 27, 2023 at 10:13=E2=80=AFAM Jann Horn <jannh@google.com> wrote=
-:
+On Mon, Oct 30, 2023 at 7:36=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> Hi!
+> On Mon, 2023-10-30 at 21:21 +0800, Shung-Hsi Yu wrote:
+> > Add a test written with inline assembly to check that the verifier does
+> > not incorrecly use the src_reg field of a BPF_ALU | BPF_TO_BE | BPF_END
+> > instruction.
+> >
+> > Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> > ---
+> >
+> > This is the first time I'm writing a selftest so there's a lot of
+> > question I can't answer myself. Looking for suggestions regarding:
+> >
+> > 1. Whether BPF_NEG and other BPF_END cases should be tested as well
 >
-> bpf_d_path() can be invoked on a "struct path" that results from
-> following a pointer chain involving pointers that can concurrently
-> change; this can lead to stuff like use-after-free in d_path().
->
-> For example, the BPF verifier permits stuff like
-> bpf_d_path(&current->mm->exe_file->f_path, ...), which is not actually
-> safe in many contexts:
->
-> current->mm->exe_file can concurrently change; so by the time
-> bpf_d_path() is called, the file's refcount might have gone to zero,
-> and __fput() may have already mostly torn down the file. "struct file"
-> currently has some limited RCU lifetime, but that is supposed to be an
-> implementation detail that BPF shouldn't be relying on, and "struct
-> file" will soon have even less RCU lifetime than before (see
-> <https://lore.kernel.org/all/20230930-glitzer-errungenschaft-b86880c177c4=
-@brauner/>).
->
-> When __fput() tears down a file, it drops the references held by
-> file->f_path.mnt and file->f_path.dentry. "struct vfsmount" has some
-> kind of RCU lifetime, but "struct dentry" will be freed directly in
-> dentry_free() if it has DCACHE_NORCU set, which is the case if it was
-> allocated via d_alloc_pseudo(), which is how memfd files are
-> allocated.
->
-> So the following race is possible, if we start in a situation where
-> current->mm->exe_file points to a memfd:
->
-> thread A            thread B
-> =3D=3D=3D=3D=3D=3D=3D=3D            =3D=3D=3D=3D=3D=3D=3D=3D
-> begin RCU section
-> begin BPF program
-> compute path =3D &current->mm->exe_file->f_path
->
->                     prctl(PR_SET_MM, PR_SET_MM_MAP, ...)
->                       updates current->mm->exe_file
->                       calls fput() on old ->exe_file
->                     __fput() runs
->                       dput(dentry);
->                       mntput(mnt)
->
-> invoke helper bpf_d_path(path, ...)
->   d_path()
->     reads path->dentry->d_op  *** UAF read ***
->     reads path->dentry->d_op->d_dname  *** read through wild pointer ***
->     path->dentry->d_op->d_dname(...) *** wild pointer call ***
->
-> So if an attacker managed to reallocate the old "struct dentry" with
-> attacker-controlled data, they could probably get the kernel to call
-> an attacker-provided function pointer, eventually letting an attacker
-> gain kernel privileges.
->
-> Obviously this is not a bug an unprivileged attacker can just hit
-> directly on a system where no legitimate BPF programs are already
-> running, because loading tracing BPF programs requires privileges; but
-> if a privileged process loads a tracing BPF program that does
-> something unsafe like "bpf_d_path(&current->mm->exe_file->f_path,
-> ...)", an attacker might be able to leverage that.
+> It is probably good to test BPF_NEG, unfortunately verifier does not
+> track range information for BPF_NEG, so I ended up with the following
+> contraption:
 
-Thanks for the report. That's a verifier bug indeed.
-Curious, did you actually see such broken bpf program or this is
-theoretical issue in case somebody will write such thing ?
+Makes sense to me.
 
+> SEC("?raw_tp")
+> __success __log_level(2)
+> __msg("mark_precise: frame0: regs=3Dr2 stack=3D before 3: (bf) r1 =3D r10=
+")
+> __msg("mark_precise: frame0: regs=3Dr2 stack=3D before 2: (55) if r2 !=3D=
+ 0xfffffff8 goto pc+2")
+> __msg("mark_precise: frame0: regs=3Dr2 stack=3D before 1: (87) r2 =3D -r2=
+")
+> __msg("mark_precise: frame0: regs=3Dr2 stack=3D before 0: (b7) r2 =3D 8")
+> __naked int bpf_neg(void)
+> {
+>         asm volatile (
+>                 "r2 =3D 8;"
+>                 "r2 =3D -r2;"
+>                 "if r2 !=3D -8 goto 1f;"
+>                 "r1 =3D r10;"
+>                 "r1 +=3D r2;"
+>         "1:"
+>                 "r0 =3D 0;"
+>                 "exit;"
+>                 ::: __clobber_all);
+> }
 >
-> If BPF wants to be able to promise that buggy BPF code can't crash the
-> kernel (or, worse, introduce privilege escalation vulnerabilities in
-> the kernel),
+> Also, maybe it's good to test bswap version of BPF_END (CPU v4
+> instruction) for completeness, e.g. as follows:
+>
+> #if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
+>         (defined(__TARGET_ARCH_riscv) && __riscv_xlen =3D=3D 64) || \
+>         defined(__TARGET_ARCH_arm) || defined(__TARGET_ARCH_s390)) && \
+>         __clang_major__ >=3D 18
+>
+> ...
+>                 "r2 =3D bswap16 r2;"
 
-Only the former. The verifier cannot possibly guarantee that the bpf-lsm
-program or tracing bpf prog is not leaking addresses or acting maliciously.
-Same in networking. XDP prog might be doing firewalling incorrectly,
-dropping wrong packets, disabling ssh when it shouldn't, etc.
-We cannot validate semantics. The verifier tries to guarantee non-crash onl=
-y.
-Hence loading bpf prog is a privileged operation.
++1. Let's have a test for this one as well.
 
-But back to the verifier bug... I suspect it will be very hard to
-craft a test that does prctl(PR_SET_MM) and goes all the way through
-the delayed fput logic on one cpu while bpf prog under rcu_read_lock
-calls bpf_d_path on the other cpu. I can see this happening in theory
-and we need to close this verification gap, but we need to be realistic
-in assessing the severity of it.
-To fix it we need to make bpf_d_path KF_TRUSTED_ARGS. All new kfuncs
-are done this way already. They don't allow unrestricted pointer walks.
+> ...
+>
+> #endif
+>
+>
+> > 2. While the suggested way of writing BPF assembly is with inline
+> >    assembly[0], as done here, maybe it is better to have this test case
+> >    added in verifier/precise.c and written using macro instead?
+> >    The rational is that ideally we want the selftest to be backport to
+> >    the v5.3+ stable kernels alongside the fix, but __msg macro used her=
+e
+> >    is only available since v6.2.
+>
+> As far as I understand we want to have new tests written in assembly,
+> but let's wait for Alexei or Andrii to comment.
+
+Backports is not a reason to use macros.
+Please continue with inline asm.
 
