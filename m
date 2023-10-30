@@ -1,132 +1,110 @@
-Return-Path: <bpf+bounces-13634-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13635-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 305A97DC0B8
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 20:40:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 092107DC0B9
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 20:40:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45B9AB20E05
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 19:39:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6E34281676
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 19:40:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 869921A716;
-	Mon, 30 Oct 2023 19:39:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9827B1A717;
+	Mon, 30 Oct 2023 19:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="affjcAxq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E7ZPlTTS"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B917171D4
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 19:39:52 +0000 (UTC)
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD37E9;
-	Mon, 30 Oct 2023 12:39:50 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d84c24a810dso4298325276.2;
-        Mon, 30 Oct 2023 12:39:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB2B21A711
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 19:40:02 +0000 (UTC)
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F265FFC
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 12:40:00 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5b8f68ba4e5so3509279a12.1
+        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 12:40:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698694790; x=1699299590; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BsBULrXurlnUUPobuOc2JUUL821FidVFYB/7ZUCqbqQ=;
-        b=affjcAxq8GDH1iWylxRciBvEF76ZtfcQ79HLiXCSFutJNAa0mPHahYlZfdHOiSjRog
-         4AXZd0Hrl6aYupmmAv/JC1u/3Z54aCgwYOH4Hm3OxD+ydW6J+q03dP6aCWCjA3LlhO8h
-         Epdn91HY+aRGictRbd/fNFdNZAH2qHSJSvGNpBmMcv1tjSj0oRQg8B9yyc5WZztiCO24
-         XdqWM1Jg2UqukWkCNX4yHffZth/GWTiA+ICn20u1b8liwSlK5ByvO57v4rQDI/cWEGG0
-         QamHH0iW5b5Ja0GNYYGrdM5aL2kTDGimHYBS6Ahzj8OygSGY8K1Jh4HHMKZLXhYIe2R9
-         78Ng==
+        d=gmail.com; s=20230601; t=1698694800; x=1699299600; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lTvLEboRKSBjYPFsIPVX1i84k4fzgBTXsciS+AzFRYY=;
+        b=E7ZPlTTS9Ndfnph2r+ibobZEBiMdnUL8zffxqjniUyLaws+ue5MTTe3OBjdxiHhw7n
+         YFfiPqU3rGaAwN7WTOPghsrRQjdaguWLeKhIwNbkZXFb94MQdq0GyFFiwgP4Oakr8yEu
+         HSb8+AASjmD82XOjmFrn1OoONLvd8i7pH1Yh3h+vQRpIyvP1So9/3GHc2GCo7o3Kuha6
+         IIBOzngQjxdclOw3m7YMHZQTSjSvR68KbUiBb/2+1RUdzT4syISL4QnZLzh3zC3ZGgHH
+         zN9q2AfUSyaSueyU8FFvGyJ57sgux4gGml5WyfWXewHpLVUyRuA1fb/o+ikoMiAQd0B7
+         Jo8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698694790; x=1699299590;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BsBULrXurlnUUPobuOc2JUUL821FidVFYB/7ZUCqbqQ=;
-        b=s6ikpTjWLaulhyM8Dzq0B2qmD7pwLNE5EO5QKN0c5D/Z4WFiu4/ixyNpsSYSOHIM9R
-         mfNP7ZiK9t4MqwBn4iSCAU4w/cCBZe1zUiNQxTKr2eZ+TNkPpVlv355Rodx1XK6Zw3X9
-         xTvEI/CqU3Rf3oHwrf4I8ieIqwESF+EuC2YnIRphwiTYbuBWd5YmpbdeXuqdKsDhdYey
-         UfkCh8rcWjfOuOdxa2WYBPDM+lh2cGtSpGafANd74fjyLWcnjFn93N5KLge9aVcFWZ2u
-         MP02Q1SSWpD/ys33NpBz4xjhPiiqEYLtiD++24agoFsJeyd2/RQY4C3o5oHQNL6Dg2x0
-         89Yg==
-X-Gm-Message-State: AOJu0Yz/965Wy1VTNJDSP29Ua1CJcUyAjWMs4IdnM6rq18T9LxRIiaFz
-	aqCXSqtmXgpRZGT4u1dV/BU=
-X-Google-Smtp-Source: AGHT+IHn+RPSeNCAzAD8bj9UAzLPTZbj8frSIeBf08GihOIWy7m2i+qPYQdsJCMar4vwnVBfSg/OtQ==
-X-Received: by 2002:a5b:c2:0:b0:d9a:da03:2417 with SMTP id d2-20020a5b00c2000000b00d9ada032417mr9478650ybp.45.1698694789691;
-        Mon, 30 Oct 2023 12:39:49 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:5b04:e8d1:ce5:8164? ([2600:1700:6cf8:1240:5b04:e8d1:ce5:8164])
-        by smtp.gmail.com with ESMTPSA id k11-20020a056902024b00b00d7b9fab78bfsm62003ybs.7.2023.10.30.12.39.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 12:39:49 -0700 (PDT)
-Message-ID: <767f32a8-d00b-4bb9-bbea-f972caced064@gmail.com>
-Date: Mon, 30 Oct 2023 12:39:48 -0700
+        d=1e100.net; s=20230601; t=1698694800; x=1699299600;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lTvLEboRKSBjYPFsIPVX1i84k4fzgBTXsciS+AzFRYY=;
+        b=grODqvD2vRTE+UEQ6IGQ7923DsIBHM+dea9nyVmA8U6lKZfRCshP+6GQuMOc1nAl6j
+         Qogi3WqdFzSExJamkqA/haqayWrr7XF+P1/UPizTDfnqQX5hRsRg1nw2Q94opXpFLxt1
+         bk+D8U72CnE0HPWlAMeMhaW9jaaDmO1nbJyotLkmrtA2yt+RWbg1p4dbdDKzveHrCrbl
+         lkm81l44aTYsToDfi1wzEg2a3FOAEk7/2KkJDiGceIr6xVVkUB7EWO0ByGdx5rOEAQr2
+         58zhybD0WVI7l/aVk8EQ7PyC1fGbVp8Tr0oT1k+L7PRWMWFqsbRMiFxt8VbLN0F61evw
+         +4LA==
+X-Gm-Message-State: AOJu0Yy08GEGjXUm75n65IZfSZ3Gg68CU7ftj/fPgKFHAN8VjA9pW7jU
+	Kqg+giHT7Zil1bJGRtfjxKp2+rjVWSE=
+X-Google-Smtp-Source: AGHT+IEKiGpFMrXvSvllOz0p2OCiTzNNVJ8bUAKku/1tT7uqNSr5yEMn7eNWJwzSqE5t3V4sNxn0rQ==
+X-Received: by 2002:a05:6300:8003:b0:14d:4ab5:5e34 with SMTP id an3-20020a056300800300b0014d4ab55e34mr8150108pzc.51.1698694800329;
+        Mon, 30 Oct 2023 12:40:00 -0700 (PDT)
+Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:500::7:f772])
+        by smtp.gmail.com with ESMTPSA id b5-20020aa78705000000b0068fb8e18971sm6198681pfo.130.2023.10.30.12.39.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 12:39:59 -0700 (PDT)
+Date: Mon, 30 Oct 2023 12:39:57 -0700
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	martin.lau@kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH v5 bpf-next 11/23] bpf: rename is_branch_taken reg
+ arguments to prepare for the second one
+Message-ID: <20231030193957.poqagefzsxqfputp@macbook-pro-49.dhcp.thefacebook.com>
+References: <20231027181346.4019398-1-andrii@kernel.org>
+ <20231027181346.4019398-12-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Add malloc failure checks
- in bpf_iter
-Content-Language: en-US
-To: Yuran Pereira <yuran.pereira@hotmail.com>, bpf@vger.kernel.org,
- yonghong.song@linux.dev
-Cc: ast@kernel.org, brauner@kernel.org, daniel@iogearbox.net,
- haoluo@google.com, iii@linux.ibm.com, john.fastabend@gmail.com,
- jolsa@kernel.org, kpsingh@kernel.org, kuifeng@meta.com,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- mykolal@fb.com, sdf@google.com, shuah@kernel.org, song@kernel.org,
- linux-kernel-mentees@lists.linuxfoundation.org
-References: <cover.1698461732.git.yuran.pereira@hotmail.com>
- <DB3PR10MB6835F0ECA792265FA41FC39BE8A3A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <DB3PR10MB6835F0ECA792265FA41FC39BE8A3A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231027181346.4019398-12-andrii@kernel.org>
 
-Acked-by: Kui-Feng Lee <thinker.li@gmail.com>
-
-On 10/27/23 22:24, Yuran Pereira wrote:
-> Since some malloc calls in bpf_iter may at times fail,
-> this patch adds the appropriate fail checks, and ensures that
-> any previously allocated resource is appropriately destroyed
-> before returning the function.
+On Fri, Oct 27, 2023 at 11:13:34AM -0700, Andrii Nakryiko wrote:
+> Just taking mundane refactoring bits out into a separate patch. No
+> functional changes.
 > 
-> Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
->   tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
+>  kernel/bpf/verifier.c | 107 +++++++++++++++++++++---------------------
+>  1 file changed, 53 insertions(+), 54 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> index 123a3502b8f0..1e02d1ba1c18 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> @@ -698,7 +698,7 @@ static void test_overflow(bool test_e2big_overflow, bool ret1)
->   		goto free_link;
->   
->   	buf = malloc(expected_read_len);
-> -	if (!buf)
-> +	if (!ASSERT_OK_PTR(buf, "malloc"))
->   		goto close_iter;
->   
->   	/* do read */
-> @@ -868,6 +868,8 @@ static void test_bpf_percpu_hash_map(void)
->   
->   	skel->rodata->num_cpus = bpf_num_possible_cpus();
->   	val = malloc(8 * bpf_num_possible_cpus());
-> +	if (!ASSERT_OK_PTR(val, "malloc"))
-> +		goto out;
->   
->   	err = bpf_iter_bpf_percpu_hash_map__load(skel);
->   	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_percpu_hash_map__load"))
-> @@ -1044,6 +1046,8 @@ static void test_bpf_percpu_array_map(void)
->   
->   	skel->rodata->num_cpus = bpf_num_possible_cpus();
->   	val = malloc(8 * bpf_num_possible_cpus());
-> +	if (!ASSERT_OK_PTR(val, "malloc"))
-> +		goto out;
->   
->   	err = bpf_iter_bpf_percpu_array_map__load(skel);
->   	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_percpu_array_map__load"))
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index f5fcb7fb2c67..aa13f32751a1 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -14169,26 +14169,25 @@ static void find_good_pkt_pointers(struct bpf_verifier_state *vstate,
+>  	}));
+>  }
+>  
+> -static int is_branch32_taken(struct bpf_reg_state *reg, u32 val, u8 opcode)
+> +static int is_branch32_taken(struct bpf_reg_state *reg1, u32 val, u8 opcode)
+>  {
+> -	struct tnum subreg = tnum_subreg(reg->var_off);
+
+Looks like accidental removal that breaks build.
+
+>  	s32 sval = (s32)val;
+>  
+>  	switch (opcode) {
+>  	case BPF_JEQ:
+>  		if (tnum_is_const(subreg))
+>  			return !!tnum_equals_const(subreg, val);
 
