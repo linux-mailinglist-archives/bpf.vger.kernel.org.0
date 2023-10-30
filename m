@@ -1,223 +1,170 @@
-Return-Path: <bpf+bounces-13614-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13615-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 862067DBC07
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 15:44:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A3A87DBE85
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 18:11:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 267EB1F2209C
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 14:44:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 243B32811A9
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 17:11:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C36F917981;
-	Mon, 30 Oct 2023 14:44:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5CA819457;
+	Mon, 30 Oct 2023 17:11:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DrVUO8sq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KScjAMMf"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753F115EB0
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 14:44:50 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC3CDB
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 07:44:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1698677086;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PHeVaYA5ND81Ldxlkv31mo1kSupxrhdPQxyopuVjti8=;
-	b=DrVUO8sqnOY6ZTr68z80kZBTtMycfLCBFONe4s4OpWtUJDb4PpfzV6Op/a3o6CYgqMBT/V
-	F7bPHT7+oOuuSiWoseFSeS6/+cm+OyWCskK+PSwP34lWOtDfRa/+xTwgbCRzkMCqbKRcGN
-	4xsekzwaDhVR4zRNPJTd1LZWdVmwq5k=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-149-eQcQEWRGNPWiJFFW42epUA-1; Mon, 30 Oct 2023 10:44:44 -0400
-X-MC-Unique: eQcQEWRGNPWiJFFW42epUA-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9bf1047cb28so336022066b.2
-        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 07:44:44 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F421D1945A
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 17:11:15 +0000 (UTC)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06534D9;
+	Mon, 30 Oct 2023 10:11:14 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32f7c44f6a7so1408295f8f.1;
+        Mon, 30 Oct 2023 10:11:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698685872; x=1699290672; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ry3Aypoe5JPo+tRS+yvTNFBsfgQ4Fm63F5zsO3uosT0=;
+        b=KScjAMMfWRUBxYBDzV0AKyprR9mOVil9nTMUSmA15jwsKTA5sJD8iqik2rAYO7AQAa
+         6F4NzYsbMvWZY5sibLG9cC+noocISccLjlxdCNhp5M+ivyzResmy/mdahGFUlQETrvP4
+         5bWHZ684h8I5FUlLba1iW4XEq169s83PwezDMB8SxyvVr8qZUmcnCrSO/19DjeT3bA7p
+         nHUk08WFcKTsRqvdr1J8ub/31OoLYOChWNAUZA9r3uAsoVtWHRnfsD2Fexcn4fjBq5Ia
+         5RWYe9Ey//quQONeXfuiPRkwLdiv2bTJM5W51ROKkEqGY4cA8Ma3RdxYyDskfRgNjOO/
+         o39w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698677083; x=1699281883;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1698685872; x=1699290672;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PHeVaYA5ND81Ldxlkv31mo1kSupxrhdPQxyopuVjti8=;
-        b=DyVmbxMjoiLivqcLUys0y/rLDC69x41UacZ9BD4wjK0f+yuiXoZTjY7oX9iPoTHziX
-         Z33lmOaXqjEvg5LFMBVzIbrx1Qkrbc+2U/KN3JxwlD3AnbhNme0DT2XNHXXgXR2DSEsV
-         vJf9kQVxAOFUfmEbxaycNHzO37xSYYCSQCA3SUib0zaM4X1HjUusTdSBY+wUoJSAvasl
-         56/tICvJXgqlvpVSGxH783/lnH9kXDQw0P7oMr8NMWvyIrnwf+4NmNT+2T1IZ1Y3G89s
-         zpitin8TSz4UmvIyR8mJe/4WllW+9kcrPzOs39zZXnxYlXcdWrheUFOkm0OQBClCnHXp
-         gWTA==
-X-Gm-Message-State: AOJu0Yxn+JvbpoYXyytwFKSDcRy5Q8Sdfy/OvOJl+rQ5rLqy7bBJJUC1
-	osRrzbenD5HTcbRihKIXu6HygGyDZAO0i5qvcJTzFi5xoeJXu9cBVpt3aGR5xrP3ai9pDtJl/RL
-	tKLPhtz6EkM9V
-X-Received: by 2002:a17:907:7b96:b0:9bd:fc4b:6c9b with SMTP id ne22-20020a1709077b9600b009bdfc4b6c9bmr9313233ejc.36.1698677083603;
-        Mon, 30 Oct 2023 07:44:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGOzwdpByv5eMIfEZNQxod68TFiUj6yN235lERty487PVgJ9RdDWqxqIS7SQRCqG+vjb4e/Xw==
-X-Received: by 2002:a17:907:7b96:b0:9bd:fc4b:6c9b with SMTP id ne22-20020a1709077b9600b009bdfc4b6c9bmr9313219ejc.36.1698677083289;
-        Mon, 30 Oct 2023 07:44:43 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id sd2-20020a170906ce2200b009c762d89c76sm6035480ejb.0.2023.10.30.07.44.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 07:44:42 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 7A5FBEE5ACB; Mon, 30 Oct 2023 15:44:42 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Shung-Hsi Yu <shung-hsi.yu@suse.com>, bpf@vger.kernel.org
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrii Nakryiko
- <andrii@kernel.org>, Mohamed Mahmoud <mmahmoud@redhat.com>
-Subject: Re: Hitting verifier backtracking bug on 6.5.5 kernel
-In-Reply-To: <ZT-6upsxRUWVnTvV@u94a>
-References: <87jzrrwptf.fsf@toke.dk>
- <CAEf4BzaC3ZohtcRhKQRCjdiou3=KcfDvRnF6RN55BTZx+jNqhg@mail.gmail.com>
- <87sf6auzok.fsf@toke.dk>
- <CAEf4BzaAjisHpVikUNb5sQDdQwNheNJRojoauQvAPppMQJhK9g@mail.gmail.com>
- <87il75v74m.fsf@toke.dk> <ZS6nnJRuI22tgI4D@u94a> <87fs29uppj.fsf@toke.dk>
- <ZT-6upsxRUWVnTvV@u94a>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Mon, 30 Oct 2023 15:44:42 +0100
-Message-ID: <8734xs2mqt.fsf@toke.dk>
+        bh=Ry3Aypoe5JPo+tRS+yvTNFBsfgQ4Fm63F5zsO3uosT0=;
+        b=MnVfK8WsAQMIF8I9jk45HkgIw176DZEhhxkiOptT8ir1wLGY+2VPxEbZLHbKrOXI/Q
+         VcmUTNWT76gPlu5xYrXO8HxG0mm9D8gosr7YI2O2+vlfwp5qDaRcW1UBiaK9u8IiJeZO
+         mLJ5cWm4ZnTjq1vDvpgoSgg+O8rdfbrKR8QVrYwedPfYuTqzJOwpLgKYHVhSbUo9z6gU
+         eUs72xh+clnC9ilm1ImbbZMjC+u8UAt2u90nuzYnWtq9kqS4YHhVxiChmI2BmbrQjsOm
+         Iv/pWlkcKGkygfOylREvA+7IMgT+nRTAg4kiWLVlbdJ3kylFeACwsLgITueKA0a04VYx
+         n7wA==
+X-Gm-Message-State: AOJu0Yz6UdArhuso9VUOQjwp9ETf8SCa+5uChn/zQE68ZiwIx/Wud7V/
+	hPYQuAumnHFToMXtYd0FMYqes1uXvd+W4oy6nT8=
+X-Google-Smtp-Source: AGHT+IFFA8HajvEcs6Z39LGJi+lHKvMiO49+MSFy94JzgZ7XQhe36VP3AUafTfu9BuF3gzqgnemmWWhG2VTzuhaLUz0=
+X-Received: by 2002:adf:f605:0:b0:32d:89b5:7fd9 with SMTP id
+ t5-20020adff605000000b0032d89b57fd9mr7973222wrp.56.1698685872109; Mon, 30 Oct
+ 2023 10:11:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <CAG48ez0ppjcT=QxU-jtCUfb5xQb3mLr=5FcwddF_VKfEBPs_Dg@mail.gmail.com>
+In-Reply-To: <CAG48ez0ppjcT=QxU-jtCUfb5xQb3mLr=5FcwddF_VKfEBPs_Dg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 30 Oct 2023 10:11:00 -0700
+Message-ID: <CAADnVQKm3u+XbMoRxXSwg_d+Q80jPdqgzO6Yz+6JXvYATyMEZw@mail.gmail.com>
+Subject: Re: BPF: bpf_d_path() can be invoked on "struct path" not holding
+ proper references, resulting in kernel memory corruption
+To: Jann Horn <jannh@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, KP Singh <kpsingh@google.com>, 
+	Matt Bobrowski <mattbobrowski@google.com>, bpf <bpf@vger.kernel.org>, 
+	kernel list <linux-kernel@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Shung-Hsi Yu <shung-hsi.yu@suse.com> writes:
-
-> On Tue, Oct 17, 2023 at 07:24:40PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> Shung-Hsi Yu <shung-hsi.yu@suse.com> writes:
->> > On Tue, Oct 17, 2023 at 01:08:25PM +0200, Toke H=C3=B8iland-J=C3=B8rge=
-nsen wrote:
->> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->> >> > On Mon, Oct 16, 2023 at 12:37=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8r=
-gensen <toke@redhat.com> wrote:
->> >> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->> >> >> > On Thu, Oct 12, 2023 at 1:25=E2=80=AFPM Toke H=C3=B8iland-J=C3=
-=B8rgensen <toke@redhat.com> wrote:
->> >> >> >>
->> >> >> >> Hi Andrii
->> >> >> >>
->> >> >> >> Mohamed ran into what appears to be a verifier bug related to y=
-our
->> >> >> >> commit:
->> >> >> >>
->> >> >> >> fde2a3882bd0 ("bpf: support precision propagation in the presen=
-ce of subprogs")
->> >> >> >>
->> >> >> >> So I figured you'd be the person to ask about this :)
->> >> >> >>
->> >> >> >> The issue appears on a vanilla 6.5 kernel (on both 6.5.6 on Fed=
-ora 38,
->> >> >> >> and 6.5.5 on my Arch machine):
->> >> >> >>
->> >> >> >> INFO[0000] Verifier error: load program: bad address:
->> >> >> >>         1861: frame2: R1_w=3Dfp-160 R2_w=3Dpkt_end(off=3D0,imm=
-=3D0) R3=3Dscalar(umin=3D17,umax=3D255,var_off=3D(0x0; 0xff)) R4_w=3Dfp-96 =
-R6_w=3Dfp-96 R7_w=3Dpkt(off=3D34,r=3D34,imm=3D0) R10=3Dfp0
->> >> >> >>         ; switch (protocol) {
->> >> >> >>         1861: (15) if r3 =3D=3D 0x11 goto pc+22 1884: frame2: R=
-1_w=3Dfp-160 R2_w=3Dpkt_end(off=3D0,imm=3D0) R3=3D17 R4_w=3Dfp-96 R6_w=3Dfp=
--96 R7_w=3Dpkt(off=3D34,r=3D34,imm=3D0) R10=3Dfp0
->> >> >> >>         ; if ((void *)udp + sizeof(*udp) <=3D data_end) {
->> >> >> >>         1884: (bf) r3 =3D r7                    ; frame2: R3_w=
-=3Dpkt(off=3D34,r=3D34,imm=3D0) R7_w=3Dpkt(off=3D34,r=3D34,imm=3D0)
->> >> >> >>         1885: (07) r3 +=3D 8                    ; frame2: R3_w=
-=3Dpkt(off=3D42,r=3D34,imm=3D0)
->> >> >> >>         ; if ((void *)udp + sizeof(*udp) <=3D data_end) {
->> >> >> >>         1886: (2d) if r3 > r2 goto pc+23      ; frame2: R2_w=3D=
-pkt_end(off=3D0,imm=3D0) R3_w=3Dpkt(off=3D42,r=3D42,imm=3D0)
->> >> >> >>         ; id->src_port =3D bpf_ntohs(udp->source);
->> >> >> >>         1887: (69) r2 =3D *(u16 *)(r7 +0)       ; frame2: R2_w=
-=3Dscalar(umax=3D65535,var_off=3D(0x0; 0xffff)) R7_w=3Dpkt(off=3D34,r=3D42,=
-imm=3D0)
->> >> >> >>         1888: (bf) r3 =3D r2                    ; frame2: R2_w=
-=3Dscalar(id=3D103,umax=3D65535,var_off=3D(0x0; 0xffff)) R3_w=3Dscalar(id=
-=3D103,umax=3D65535,var_off=3D(0x0; 0xffff))
->> >> >> >>         1889: (dc) r3 =3D be16 r3               ; frame2: R3_w=
-=3Dscalar()
->> >> >> >>         ; id->src_port =3D bpf_ntohs(udp->source);
->> >> >> >>         1890: (73) *(u8 *)(r1 +47) =3D r3       ; frame2: R1_w=
-=3Dfp-160 R3_w=3Dscalar()
->> >> >> >>         ; id->src_port =3D bpf_ntohs(udp->source);
->> >> >> >>         1891: (dc) r2 =3D be64 r2               ; frame2: R2_w=
-=3Dscalar()
->> >> >> >>         ; id->src_port =3D bpf_ntohs(udp->source);
->> >> >> >>         1892: (77) r2 >>=3D 56                  ; frame2: R2_w=
-=3Dscalar(umax=3D255,var_off=3D(0x0; 0xff))
->> >> >> >>         1893: (73) *(u8 *)(r1 +48) =3D r2
->> >> >> >>         BUG regs 1
->> >> >> >>         processed 5121 insns (limit 1000000) max_states_per_ins=
-n 4 total_states 92 peak_states 90 mark_read 20
->> >> >> >>         (truncated)  component=3Debpf.FlowFetcher
->> >> >> >>
->> >> >> >> Dmesg says:
->> >> >> >>
->> >> >> >> [252431.093126] verifier backtracking bug
->> >> >> >> [252431.093129] WARNING: CPU: 3 PID: 302245 at kernel/bpf/verif=
-ier.c:3533 __mark_chain_precision+0xe83/0x1090
->> >> >> >>
->> >> >> >> ...
->> >> >> >
->> >> >> > Is there some way to get a full verifier log for the failure abo=
-ve?
->> >> >> > with log_level 2, if possible? If you can share it through Githu=
-b Gist
->> >> >> > or something like that, I'd really appreciate it. Thanks!
->> >> >>
->> >> >> Sure, here you go:
->> >> >> https://gist.github.com/tohojo/31173d2bb07262a21393f76d9a45132d
->> >> >
->> >> > Thanks, this is very useful. And it's pretty clear what happens from
->> >> > last few lines:
->> >> >
->> >> >     mark_precise: frame2: regs=3Dr2 stack=3D before 1890: (dc) r2 =
-=3D be64 r2
->> >> >     mark_precise: frame2: regs=3Dr0,r2 stack=3D before 1889: (73) *=
-(u8
->> >> > *)(r1 +47) =3D r3
->> >> >
->> >> > See how we add r0 to the regs set, while there is no r0 involved in
->> >> > `r2 =3D be64 r2`? I think it's just a missing case of handling BPF_=
-END
->> >> > (and perhaps BPF_NEG as well) instructions in backtrack_insn(). Sho=
-uld
->> >> > be a trivial fix, though ideally we should also add some test for t=
-his
->> >> > as well.
+On Fri, Oct 27, 2023 at 10:13=E2=80=AFAM Jann Horn <jannh@google.com> wrote=
+:
 >
-> Turns out the only case r0 is wrongly added to the regs set is with
-> BPF_ALU | BPF_TO_BE | BPF_END like the one seen here (only realize this
-> while working on selftests). All other cases are already handled correctly
-> because they happens to fall into the BPF_SRC(insn->code) =3D=3D BPF_K =
-=3D=3D 0 case.
+> Hi!
 >
->         } else {
->                 if (BPF_SRC(insn->code) =3D=3D BPF_X) {
->                         bt_set_reg(bt, sreg);
->                 }
->                 /* BPF_NEG, BPF_ALU | BPF_TO_LE | BPF_END, and
->                  * BPF_ALU64 | BPF_END goes here in backtrack_insn()
->                  */
->         }
+> bpf_d_path() can be invoked on a "struct path" that results from
+> following a pointer chain involving pointers that can concurrently
+> change; this can lead to stuff like use-after-free in d_path().
 >
-> That said, having a "if (opcode =3D=3D BPF_END || opcode =3D=3D BPF_NEG)"=
- check
-> still makes more sense, so I'm sticking with that.
+> For example, the BPF verifier permits stuff like
+> bpf_d_path(&current->mm->exe_file->f_path, ...), which is not actually
+> safe in many contexts:
 >
-> RFC can be found at
->  https://lore.kernel.org/bpf/20231030132145.20867-1-shung-hsi.yu@suse.com/
+> current->mm->exe_file can concurrently change; so by the time
+> bpf_d_path() is called, the file's refcount might have gone to zero,
+> and __fput() may have already mostly torn down the file. "struct file"
+> currently has some limited RCU lifetime, but that is supposed to be an
+> implementation detail that BPF shouldn't be relying on, and "struct
+> file" will soon have even less RCU lifetime than before (see
+> <https://lore.kernel.org/all/20230930-glitzer-errungenschaft-b86880c177c4=
+@brauner/>).
+>
+> When __fput() tears down a file, it drops the references held by
+> file->f_path.mnt and file->f_path.dentry. "struct vfsmount" has some
+> kind of RCU lifetime, but "struct dentry" will be freed directly in
+> dentry_free() if it has DCACHE_NORCU set, which is the case if it was
+> allocated via d_alloc_pseudo(), which is how memfd files are
+> allocated.
+>
+> So the following race is possible, if we start in a situation where
+> current->mm->exe_file points to a memfd:
+>
+> thread A            thread B
+> =3D=3D=3D=3D=3D=3D=3D=3D            =3D=3D=3D=3D=3D=3D=3D=3D
+> begin RCU section
+> begin BPF program
+> compute path =3D &current->mm->exe_file->f_path
+>
+>                     prctl(PR_SET_MM, PR_SET_MM_MAP, ...)
+>                       updates current->mm->exe_file
+>                       calls fput() on old ->exe_file
+>                     __fput() runs
+>                       dput(dentry);
+>                       mntput(mnt)
+>
+> invoke helper bpf_d_path(path, ...)
+>   d_path()
+>     reads path->dentry->d_op  *** UAF read ***
+>     reads path->dentry->d_op->d_dname  *** read through wild pointer ***
+>     path->dentry->d_op->d_dname(...) *** wild pointer call ***
+>
+> So if an attacker managed to reallocate the old "struct dentry" with
+> attacker-controlled data, they could probably get the kernel to call
+> an attacker-provided function pointer, eventually letting an attacker
+> gain kernel privileges.
+>
+> Obviously this is not a bug an unprivileged attacker can just hit
+> directly on a system where no legitimate BPF programs are already
+> running, because loading tracing BPF programs requires privileges; but
+> if a privileged process loads a tracing BPF program that does
+> something unsafe like "bpf_d_path(&current->mm->exe_file->f_path,
+> ...)", an attacker might be able to leverage that.
 
-Great, thanks for taking care of this! :)
+Thanks for the report. That's a verifier bug indeed.
+Curious, did you actually see such broken bpf program or this is
+theoretical issue in case somebody will write such thing ?
 
--Toke
+>
+> If BPF wants to be able to promise that buggy BPF code can't crash the
+> kernel (or, worse, introduce privilege escalation vulnerabilities in
+> the kernel),
 
+Only the former. The verifier cannot possibly guarantee that the bpf-lsm
+program or tracing bpf prog is not leaking addresses or acting maliciously.
+Same in networking. XDP prog might be doing firewalling incorrectly,
+dropping wrong packets, disabling ssh when it shouldn't, etc.
+We cannot validate semantics. The verifier tries to guarantee non-crash onl=
+y.
+Hence loading bpf prog is a privileged operation.
+
+But back to the verifier bug... I suspect it will be very hard to
+craft a test that does prctl(PR_SET_MM) and goes all the way through
+the delayed fput logic on one cpu while bpf prog under rcu_read_lock
+calls bpf_d_path on the other cpu. I can see this happening in theory
+and we need to close this verification gap, but we need to be realistic
+in assessing the severity of it.
+To fix it we need to make bpf_d_path KF_TRUSTED_ARGS. All new kfuncs
+are done this way already. They don't allow unrestricted pointer walks.
 
