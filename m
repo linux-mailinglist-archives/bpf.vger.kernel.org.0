@@ -1,129 +1,138 @@
-Return-Path: <bpf+bounces-13596-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13597-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE73E7DB7CA
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 11:19:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05DD97DB81C
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 11:29:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70F09281455
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 10:19:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3CB128133C
+	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 10:29:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1722C1118D;
-	Mon, 30 Oct 2023 10:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E451111CB0;
+	Mon, 30 Oct 2023 10:29:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="Na32S4o6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CPfLOFQ4"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3491E379
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 10:19:15 +0000 (UTC)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC44384F
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 03:19:02 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40853c639abso33694505e9.0
-        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 03:19:01 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D084D53A
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 10:29:51 +0000 (UTC)
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A7FC0;
+	Mon, 30 Oct 2023 03:29:49 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d9ad67058fcso3622245276.1;
+        Mon, 30 Oct 2023 03:29:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1698661140; x=1699265940; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=21TAXtHOUB4zGMWyhZU8/6XzvDu+QbrS3oHhoGDKwz0=;
-        b=Na32S4o62nhlwoRPm4m09FbdeDrp9OJFns/R8bXsfCQSa642pTMU6gHDTBcICEQPGL
-         mKGKTG/ePxnn8JCxA2mjNER1v503OUgu6VPorJKM4Vd0aHNqeCHXin1Jug3xach1Jod1
-         tk2gLaUmMawLtHi/gF1XsgkkpqrZjwoPvVBMpFqM2R0cGdBJdLys2hK47IfGdW+fJf/N
-         X5jsv+y7CzvYU7Gp21RmEdbXg0FD68MQtL+iAr6Lr6UpWpbQ5ZEKR1Ui8sv5wFpEUbDZ
-         hP/Lp6o83/mMrXjWFVMijgoMsZ5Ip+u9E96fcoXWogLZ87XQ0NLi0zuR254HJ1ni2Vm0
-         APWg==
+        d=gmail.com; s=20230601; t=1698661789; x=1699266589; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5P0KAfGZ4r/a+034RmSbTATHD3Tt63VpMU8Ct8RXpgU=;
+        b=CPfLOFQ4q8HeAjJ1JeIFzQheL8Ar3m1uOJfkbepTqIMbcB3YEMepXQvXqlsEaqNvQr
+         6V11uML5YXn2SNeXABEAtbjmgkn4D9SEHTPGM4qWRkBMRNCtWeoBB6c5jLvPZSfvPbev
+         8C7gY352/x9xPJ35dYjEf6kiKFgZHroDCJFStkOX6miHsVCsJj3uY8fbzdicjtXAOjps
+         ozMBEB/xScqNMO0mXiheynkdiCPXeWRLL0IoQfF5OH9tIIAVQm0j/TWoD33RlLZjwrYJ
+         rLiG9sFEiV73d9YbvTH58fIyODP/aNroeABn9KjLAQHBf/EssYYsXZ7WFmQZCIYkpHZ8
+         RI/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698661140; x=1699265940;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=21TAXtHOUB4zGMWyhZU8/6XzvDu+QbrS3oHhoGDKwz0=;
-        b=ZHACgUpQva6JY4R+oJG5VCkif2mbjZ8nVCHZbCK6HjdQCsCO1AEZhjTef7c7XLs0Ty
-         Tb+sVULmN47VjaLdt16HXumanys8meGvM9awKYvOuO72RrrDxkSZZLS2MLmjNaYgai5C
-         tiKRhNGqXG7afWxLL+bUNEPjV878bJ+IT6Y+T3bRKN3MAjCUvN7mvh8GS/QYWXPx96Zy
-         xBp0pJ0FefLSsx39XBVZYeE2n00hi7WHW7ulALdG7hp1Ngk5Uns3CwDTSf8DmX8Kp5Eb
-         VZPBv7TgTiyGmmzRH5HZ7s68T9Q8fFZniU3R7JrDgA6UqXewPX4rvHOWfdptTkO3XcSS
-         eoVw==
-X-Gm-Message-State: AOJu0Yytht6J7ioaSalOFXiIYHGsHdpA6woW8cX/X24pzsNfbLTBVRGJ
-	l5fqt8jahRN0b5129imEUbDRkw==
-X-Google-Smtp-Source: AGHT+IHctPm/1ggazkelVB966AXJcXs1oT1GCAMHP54jhoRXv+57B+59i486H0/PjxhuSI3tv5w1oQ==
-X-Received: by 2002:a05:600c:1c15:b0:406:f832:6513 with SMTP id j21-20020a05600c1c1500b00406f8326513mr7612392wms.3.1698661140314;
-        Mon, 30 Oct 2023 03:19:00 -0700 (PDT)
-Received: from ?IPV6:2a02:8011:e80c:0:415:ab66:142e:d74b? ([2a02:8011:e80c:0:415:ab66:142e:d74b])
-        by smtp.gmail.com with ESMTPSA id bd6-20020a05600c1f0600b003fee53feab5sm8771232wmb.10.2023.10.30.03.18.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 03:19:00 -0700 (PDT)
-Message-ID: <72a9c3e0-f73a-4a63-8602-712d44d7cee7@isovalent.com>
-Date: Mon, 30 Oct 2023 10:18:59 +0000
+        d=1e100.net; s=20230601; t=1698661789; x=1699266589;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5P0KAfGZ4r/a+034RmSbTATHD3Tt63VpMU8Ct8RXpgU=;
+        b=hvADABjWUK16CrryNdlF/Etzy89zoQthOwcOHajSbd2z14kpyj+Iy3hWetxwrpY1cW
+         qUmLOSERHfQgsCdK0QQ5lv5f32p+18lo5OgVEe2HzvRTcnXpsitwyUDuITTOisgmM9hQ
+         Rxi30IzmtZCooTH/2Lp/zQkXKNY8mcGvAD65D6lG/qwSf+Zxc2E7uogg8V1UemokgJfW
+         CQ41xVQxYLhUFT5FJeYoyuNl/xWgqs+L/YqCSv0l8yAR+WGGhBSa5MePUQ3GK2Gf4N6U
+         YJz6qa2G/KHHbCX9vrj4VMcRkjthZ7jot1BdW5UkLyLSKMOISy2erkmLheXnxlx/KdSI
+         5RWw==
+X-Gm-Message-State: AOJu0Yx+W4+ejI+LRrjt5P54/91CgzGX9ZPbLYr+QfsM1LLTUvLyH3ol
+	WfTnB1ZJVCoTIEhbJe9Q4MbY8a4NR3cy9GLLjA==
+X-Google-Smtp-Source: AGHT+IHmxy7N61wXlg9jCKGsMt+WcfBOhgsVo2CdaUZTDROvujckXfAJje8ufPvPWe3EUFC1hQXz8NqoInEuKgtwxag=
+X-Received: by 2002:a25:3447:0:b0:d9a:3c95:a3dd with SMTP id
+ b68-20020a253447000000b00d9a3c95a3ddmr7903113yba.63.1698661788793; Mon, 30
+ Oct 2023 03:29:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 3/6] bpf: Add link_info support for uprobe multi
- link
-Content-Language: en-GB
-To: Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
- Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Yafang Shao <laoar.shao@gmail.com>
-References: <20231025202420.390702-1-jolsa@kernel.org>
- <20231025202420.390702-4-jolsa@kernel.org>
-From: Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20231025202420.390702-4-jolsa@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CACkBjsY22BOUCns43Rza5gXCBtEKbdRqXxOTviZQOjjDySYGHQ@mail.gmail.com>
+ <CAADnVQK2nsdzviA1q_tBuh+7g6Xo6wZY2VxGR1H4ag40nNrSgg@mail.gmail.com>
+In-Reply-To: <CAADnVQK2nsdzviA1q_tBuh+7g6Xo6wZY2VxGR1H4ag40nNrSgg@mail.gmail.com>
+From: Hao Sun <sunhao.th@gmail.com>
+Date: Mon, 30 Oct 2023 11:29:37 +0100
+Message-ID: <CACkBjsZ5iYQRc6_EREhKA1cg-dFtopSOKQhDo+6SgDnVrz+vcA@mail.gmail.com>
+Subject: Re: bpf: incorrect passing infinate loop causing rcu detected stall
+ during bpf_prog_run()
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Sun, Oct 29, 2023 at 2:35=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Oct 27, 2023 at 2:09=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wro=
+te:
+> >
+> > Hi,
+> >
+> > The following C repro contains a bpf program that can cause rcu
+> > stall/soft lockup during running in bpf_prog_run(). Seems the verifier
+> > incorrectly passed the program with an infinite loop.
+> >
+> > C repro: https://pastebin.com/raw/ymzAxjeU
+>
+> Thanks for the report.
+> Did you debug what exactly caused this bug?
+> Are you planning to work on the fix?
 
-2023-10-25 21:24 UTC+0100 ~ Jiri Olsa
-> Adding support to get uprobe_link details through bpf_link_info
-> interface.
-> 
-> Adding new struct uprobe_multi to struct bpf_link_info to carry
-> the uprobe_multi link details.
-> 
-> The uprobe_multi.count is passed from user space to denote size
-> of array fields (offsets/ref_ctr_offsets/cookies). The actual
-> array size is stored back to uprobe_multi.count (allowing user
-> to find out the actual array size) and array fields are populated
-> up to the user passed size.
-> 
-> All the non-array fields (path/count/flags/pid) are always set.
-> 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  include/uapi/linux/bpf.h       | 10 +++++
->  kernel/trace/bpf_trace.c       | 68 ++++++++++++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h | 10 +++++
->  3 files changed, 88 insertions(+)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 0f6cdf52b1da..960cf2914d63 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -6556,6 +6556,16 @@ struct bpf_link_info {
->  			__u32 flags;
->  			__u64 missed;
->  		} kprobe_multi;
-> +		struct {
-> +			__aligned_u64 path;
-> +			__aligned_u64 offsets;
-> +			__aligned_u64 ref_ctr_offsets;
-> +			__aligned_u64 cookies;
-> +			__u32 path_max; /* in/out: uprobe_multi path size */
+This bug is really hard to debug. Here is a simplified view of
+the original program:
 
-Just a nit on the naming here: I don't really understand why this is
-"path_max", should it be "path_size" instead?
+loop:
+0: r4 =3D r8
+1: r1 =3D 0x1f
+2: r8 -=3D -8
+3: if r1 > r7 goto pc+1
+4: r7 <<=3D r1         ; LSH r7 by 31
+5: r5 =3D r0
+6: r5 *=3D 2
+7: if r5 < r0 goto pc+1
+8: r8 s>>=3D 6
+9: w7 &=3D w7       ; r7 =3D 0 after the first iter
+10: r8 -=3D r7
+11: r8 -=3D -1
+12: if r4 >=3D 0x9 goto loop
+13: exit
 
-Quentin
+At runtime, r7 is updated to 0 through #4 and #9 at the first iteration,
+so the following iteration will not take #3 to #4, so #3 can be ignored
+after the first iteration. r0 is init by get_current_task, and r5 is always
+smaller than r0 at runtime, so #7 to #8 will never run. So, the update
+to r8 is only #2 and #11, which together add 9 to r8. Since r4 is set
+to r8 at the start of each iteration, so it's an infinite loop at runtime.
+
+Based on the log, the verifier keeps tracking #7 to #8 and to #9, and
+at some point, the verifier prunes states and path from #7 to #9, so
+it stops checking. The log is huge and hard to follow, the issue is likely
+in pruning logic, but I don't have much knowledge about that part.
+
+>
+> > Verifier's log: https://pastebin.com/raw/thZDTFJc
+>
+> log is trimmed.
+
+Full log: https://pastebin.com/raw/cTC8wmDH
 
