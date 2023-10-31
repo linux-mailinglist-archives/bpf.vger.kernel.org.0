@@ -1,204 +1,149 @@
-Return-Path: <bpf+bounces-13679-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13649-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E70D57DC62F
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 07:01:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 263337DC3FB
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 02:53:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88637B20FD1
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 06:01:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A77B9281684
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 01:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDE4F101C3;
-	Tue, 31 Oct 2023 06:01:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E3FEBF;
+	Tue, 31 Oct 2023 01:53:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hUxJq1Hw"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hzSmA0uN"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C642DDF5D
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 06:01:12 +0000 (UTC)
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07791F4
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 23:01:08 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c434c33ec0so40465985ad.3
-        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 23:01:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698732049; x=1699336849; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KMitVK3rOTDVbT4Z+8x0bS93zlRA2h7260oX1PRTrQE=;
-        b=hUxJq1Hwyb9l03FRPO0HLffR+E7eJu9Aai1DYQsWT4dG2Cfy4PhLGar1qk1YH/99pN
-         5nqfKPXh76oUBDWLd1iqueUCysBI89nfq65j+DgWo++hgd7Cd5ilJiivO1tVfWyJi95k
-         1mLU5z5+zTWNco8Gqfp3O2l57lW/+qRUHCEwLG9knG0P+/5wyVHfBnliaYXW00vvc/UO
-         1WNOC0IQhZw4uzHp2nFSy/RK42oyPf6Y68FXifQZ9Y01B/v4atRtzsD9hMzYQqMIrOwv
-         xBWFDBIo90vvHNsDKHzCOxvbUX97kbNaFvLJGbop9nBIuhZD+GYapBZRm3VBPiMeIGcq
-         XDJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698732049; x=1699336849;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KMitVK3rOTDVbT4Z+8x0bS93zlRA2h7260oX1PRTrQE=;
-        b=jHVLTCYIoRAg/SdWWK0mzc9Ui2spIGpHC+JP3Z2//QypPyQx7W3Jpm9Tse7LYQLDUp
-         PnaddtLbF0w9E87/u5flpoCDgEoLZS7lt86MrQSVMn+nV4sZmSGWdQ5i5jILeDz6nRET
-         D09ogrrw6J7oQE3tiyb6xiPS3pSssWRR0H/e/rEJmWzzSuyYH5zeJdo/gU2QrMLIu16p
-         9Nl91gYjxema5iYWDG7EhnkArnA2pt1x2J1nVcf/UKAJ168/nwWiOOnd+uF4urJjjPEB
-         dXHJ92TcCyTUUsU01JrYsyAiSZ3XQXPlRXzUJvT+GYPxHiHidEd7lulMe2rKyb8Au+g7
-         T1KQ==
-X-Gm-Message-State: AOJu0YzkReuer3ai6Pq/XODEvcPXIJLK+gY6aE7+ugvoL4WRfI0ULBUr
-	mLugcl/XsAJiPTMlyVqtJu7tQaf7rWIqZg==
-X-Google-Smtp-Source: AGHT+IHij17j15v/dEVO7nUcwFHlvhQi2eRQdf72y00nNcRRXLxzEUYBzkpOLoD6lOZKix231/WTaQ==
-X-Received: by 2002:a17:903:1104:b0:1c9:ea6e:5a63 with SMTP id n4-20020a170903110400b001c9ea6e5a63mr12217788plh.32.1698732048725;
-        Mon, 30 Oct 2023 23:00:48 -0700 (PDT)
-Received: from ubuntu.. ([203.205.141.13])
-        by smtp.googlemail.com with ESMTPSA id x5-20020a170902b40500b001cc50f67fbasm460683plr.281.2023.10.30.23.00.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 23:00:48 -0700 (PDT)
-From: Hengqi Chen <hengqi.chen@gmail.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	keescook@chromium.org,
-	luto@amacapital.net,
-	wad@chromium.org,
-	hengqi.chen@gmail.com
-Subject: [PATCH bpf-next 6/6] selftests/bpf: Test BPF_PROG_TYPE_SECCOMP
-Date: Tue, 31 Oct 2023 01:24:07 +0000
-Message-Id: <20231031012407.51371-7-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231031012407.51371-1-hengqi.chen@gmail.com>
-References: <20231031012407.51371-1-hengqi.chen@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82433A54
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 01:53:45 +0000 (UTC)
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [IPv6:2001:41d0:1004:224b::ba])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594C0102
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 18:53:43 -0700 (PDT)
+Message-ID: <ff0e6978-adb5-db47-5968-5af4924aadba@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1698717221;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J404lBE3F3LpLQxmNZ01hqhYTMjQYaA4yglqsMZM/zk=;
+	b=hzSmA0uNLfTUXZAGTyn8/DIxLhJCQZdej1DEmyKwahkwrKCpugfxXcVmXGqyHUrC48OmWS
+	850bh4cHlQ61NfPTPefTauIG4QRqjGPrzIlCZdFJ7+FcM0UJatSMi5pjvWTMQdchOoiPTL
+	J58nzb7ZANb+TL4QFAf+Gr9mRisSyi0=
+Date: Mon, 30 Oct 2023 18:53:37 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v8 06/10] bpf: pass attached BTF to the
+ bpf_struct_ops subsystem
+Content-Language: en-US
+To: thinker.li@gmail.com
+Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
+ ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+ drosen@google.com
+References: <20231030192810.382942-1-thinker.li@gmail.com>
+ <20231030192810.382942-7-thinker.li@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20231030192810.382942-7-thinker.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Add a testcase to exercise BPF_PROG_TYPE_SECCOMP.
+On 10/30/23 12:28 PM, thinker.li@gmail.com wrote:
+> From: Kui-Feng Lee <thinker.li@gmail.com>
+> 
+> Giving a BTF, the bpf_struct_ops knows the right place to look up type info
+> associated with a type ID. This enables a user space program to load a
+> struct_ops object linked to a struct_ops type defined by a module, by
+> providing the module BTF (fd).
 
-  # ./test_progs -n 194
-  #194     seccomp:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+This describes about the struct_ops map creation change (by adding 
+value_type_btf_obj_fd)? It could be described more clearly in the commit 
+message, like specify the value_type_btf_obj_fd addition and how it is used in 
+the struct_ops map creation.
 
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- tools/include/uapi/linux/bpf.h                |  1 +
- tools/include/uapi/linux/seccomp.h            |  2 +
- .../selftests/bpf/prog_tests/seccomp.c        | 40 +++++++++++++++++++
- .../selftests/bpf/progs/test_seccomp.c        | 24 +++++++++++
- 4 files changed, 67 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/seccomp.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_seccomp.c
+> 
+> The bpf_prog includes attach_btf in aux which is passed along with the
+> bpf_attr when loading the program. The purpose of attach_btf is to
+> determine the btf type of attach_btf_id. The attach_btf_id is then used to
+> identify the traced function for a trace program. In the case of struct_ops
+> programs, it is used to identify the struct_ops type of the struct_ops
+> object that a program is attached to.
 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 0f6cdf52b1da..f0fcfe0ccb2e 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -995,6 +995,7 @@ enum bpf_prog_type {
- 	BPF_PROG_TYPE_SK_LOOKUP,
- 	BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
- 	BPF_PROG_TYPE_NETFILTER,
-+	BPF_PROG_TYPE_SECCOMP,
- };
- 
- enum bpf_attach_type {
-diff --git a/tools/include/uapi/linux/seccomp.h b/tools/include/uapi/linux/seccomp.h
-index dbfc9b37fcae..db792dc96b5a 100644
---- a/tools/include/uapi/linux/seccomp.h
-+++ b/tools/include/uapi/linux/seccomp.h
-@@ -25,6 +25,8 @@
- #define SECCOMP_FILTER_FLAG_TSYNC_ESRCH		(1UL << 4)
- /* Received notifications wait in killable state (only respond to fatal signals) */
- #define SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV	(1UL << 5)
-+/* Indicates that the filter is in form of bpf prog fd */
-+#define SECCOMP_FILTER_FLAG_BPF_PROG_FD		(1UL << 6)
- 
- /*
-  * All BPF programs must return a 32-bit value.
-diff --git a/tools/testing/selftests/bpf/prog_tests/seccomp.c b/tools/testing/selftests/bpf/prog_tests/seccomp.c
-new file mode 100644
-index 000000000000..fc7db6af7d64
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/seccomp.c
-@@ -0,0 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Hengqi Chen */
-+
-+#include <test_progs.h>
-+#include <linux/seccomp.h>
-+#include "test_seccomp.skel.h"
-+
-+static int seccomp(unsigned int op, unsigned int flags, void *args)
-+{
-+	errno = 0;
-+	return syscall(__NR_seccomp, op, flags, args);
-+}
-+
-+void test_seccomp(void)
-+{
-+	struct test_seccomp *skel;
-+	int fd, flags, ret;
-+
-+	skel = test_seccomp__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	skel->rodata->seccomp_syscall_nr = __NR_seccomp;
-+	skel->rodata->seccomp_errno = 99;
-+
-+	ret = test_seccomp__load(skel);
-+	if (!ASSERT_OK(ret, "skel_load"))
-+		goto cleanup;
-+
-+	fd = bpf_program__fd(skel->progs.seccomp_prog);
-+	flags = SECCOMP_FILTER_FLAG_BPF_PROG_FD;
-+	ret = seccomp(SECCOMP_SET_MODE_FILTER, flags, &fd);
-+	ASSERT_OK(ret, "seccomp_set_bpf_prog");
-+	ret = seccomp(SECCOMP_SET_MODE_FILTER, flags, &fd);
-+	ASSERT_EQ(ret, -1, "seccomp should fail");
-+	ASSERT_EQ(errno, 99, "errno not equal to 99");
-+
-+cleanup:
-+	test_seccomp__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_seccomp.c b/tools/testing/selftests/bpf/progs/test_seccomp.c
-new file mode 100644
-index 000000000000..c53e75b8c0ec
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_seccomp.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Hengqi Chen */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#define SECCOMP_RET_ERRNO	0x00050000U
-+#define SECCOMP_RET_ALLOW	0x7fff0000U
-+#define SECCOMP_RET_DATA	0x0000ffffU
-+
-+const volatile int seccomp_syscall_nr = 0;
-+const volatile __u32 seccomp_errno = 0;
-+
-+SEC("seccomp")
-+int seccomp_prog(struct seccomp_data *ctx)
-+{
-+	if (ctx->nr != seccomp_syscall_nr)
-+		return SECCOMP_RET_ALLOW;
-+
-+	return SECCOMP_RET_ERRNO | (seccomp_errno & SECCOMP_RET_DATA);
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.34.1
+Does attach_btf_obj_fd also work?
+
+[ ... ]
+
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index 256516aba632..db2bbba50e38 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -694,6 +694,7 @@ static void __bpf_struct_ops_map_free(struct bpf_map *map)
+>   		bpf_jit_uncharge_modmem(PAGE_SIZE);
+>   	}
+>   	bpf_map_area_free(st_map->uvalue);
+> +	btf_put(st_map->st_ops_desc->btf);
+>   	bpf_map_area_free(st_map);
+>   }
+>   
+> @@ -735,16 +736,31 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+>   	const struct btf_type *t, *vt;
+>   	struct module *mod = NULL;
+>   	struct bpf_map *map;
+> +	struct btf *btf;
+>   	int ret;
+>   
+> -	st_ops_desc = bpf_struct_ops_find_value(btf_vmlinux, attr->btf_vmlinux_value_type_id);
+> -	if (!st_ops_desc)
+> -		return ERR_PTR(-ENOTSUPP);
+> +	if (attr->value_type_btf_obj_fd) {
+> +		/* The map holds btf for its whole life time. */
+
+It took me a while to parse this comment and connect it with the 
+btf_put(st_map->st_ops_desc->btf) in the __bpf_struct_ops_map_free() above.
+
+It is now like "btf" owns "struct_ops_desc" which also stores a pointer pointing 
+back to itself, like "btf->struct_ops_desc->btf". The struct_ops_desc->btf was 
+not initialized by st_map but st_map will increment its refcount much later.
+
+Can btf be directly stored in the st_map->btf instead and map_alloc holds the 
+refcnt of st_map->btf and btf_put(st_map->btf) in map_free?
+
+
+> +		btf = btf_get_by_fd(attr->value_type_btf_obj_fd);
+> +		if (IS_ERR(btf))
+> +			return ERR_PTR(PTR_ERR(btf));
+> +
+> +		if (btf != btf_vmlinux) {
+> +			mod = btf_try_get_module(btf);
+> +			if (!mod) {
+> +				ret = -EINVAL;
+> +				goto errout;
+> +			}
+> +		}
+> +	} else {
+> +		btf = btf_vmlinux;
+> +		btf_get(btf);
+> +	}
+>   
+> -	if (st_ops_desc->btf != btf_vmlinux) {
+> -		mod = btf_try_get_module(st_ops_desc->btf);
+> -		if (!mod)
+> -			return ERR_PTR(-EINVAL);
+> +	st_ops_desc = bpf_struct_ops_find_value(btf, attr->btf_vmlinux_value_type_id);
+> +	if (!st_ops_desc) {
+> +		ret = -ENOTSUPP;
+> +		goto errout;
+>   	}
+>   
+>   	vt = st_ops_desc->value_type;
 
 
