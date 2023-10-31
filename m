@@ -1,108 +1,79 @@
-Return-Path: <bpf+bounces-13643-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13644-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 911B47DC223
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 22:51:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A98C7DC368
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 01:05:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEC241C20B90
-	for <lists+bpf@lfdr.de>; Mon, 30 Oct 2023 21:51:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A04F11C20B72
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 00:05:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C301CFA6;
-	Mon, 30 Oct 2023 21:51:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E57441C3B;
+	Tue, 31 Oct 2023 00:05:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MNqtA8OL"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pfrFjRJ6"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC3A31A72B;
-	Mon, 30 Oct 2023 21:51:38 +0000 (UTC)
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5E1119;
-	Mon, 30 Oct 2023 14:51:30 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6ce2cf67be2so3211791a34.2;
-        Mon, 30 Oct 2023 14:51:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698702690; x=1699307490; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XU6YDGeI4+wBW6QcdXCx4BV1CZFjMKR0ks808HcPwwQ=;
-        b=MNqtA8OLfMT9W2eDB5mBNGV5spw19L7tc9YBCjNFkxJJJTTkt8B1hGUzu/AY3HL85A
-         bZl+Fwb5mbIL+Uo/J9OzzNcDwtrFBEDA0TPqyNZyZXmY/eT0clhulJaTT3XXFsaeAbMD
-         6B87tLX3LtWItTyqFm2J9MppBERAqOfNvs8Dymvoh/z0vwto/G5Ye8NyPzmIuRug0A/2
-         tv6zlF3i3ttP1gMBjESolPuGDZW1v8g3ajl6tHo8edRKO7hVuc+eti1PwfDnRE6hXUvJ
-         Yfvm1Qu1vlm6TVhs3exPyzfUDWiA+oUnPD1fe+0wW3CpbxRF/ZV32fe9JPP5lwFUy/V1
-         Mvkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698702690; x=1699307490;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XU6YDGeI4+wBW6QcdXCx4BV1CZFjMKR0ks808HcPwwQ=;
-        b=M3jFnBEbxpnd28zuEnkfRcWKwG2GI99kyRjP1+C/G/ezSwOR/43YaYs9Cdwn2LLxTK
-         LYNYHBXOU6TMiesobj/lkMGfsFSf6nflc7ASwkPb/Apd6DaYMOLPeb2HXX/RweM6xXAB
-         JGyllcM55GB5/14aQQ3+ArZYM7wjQgiUF6iA2/ggv7hkYp+VRperYq6nU2Zw+1vUyEMv
-         rJ+k1hFurEPuQ1tlifu249EtW98WY/lshcAuS+O9HKTaZz1wIESowiACBmKQAD+MFaVS
-         y7V1z8wmbrkiRmeu/ZLegzhUDBT/meVvVMcyu514vjFPLx8uDBlS7xrkeYDdx6zzSZNT
-         fiHA==
-X-Gm-Message-State: AOJu0YzARsveJSmcUeuYR3Mspcvb43yuLVTAVEHJ266TUwZemWjH8HmE
-	Lb5qCkO4NkpsF03skQTZzQ==
-X-Google-Smtp-Source: AGHT+IGLVz1d9Q/Rkzo8IbHTLi8FgvNKF2npO02/ws7LHL6ufzuWyDYmYF4cPmxCUtROBTpN+rPnGA==
-X-Received: by 2002:a05:6359:2c44:b0:168:e9e5:b407 with SMTP id qv4-20020a0563592c4400b00168e9e5b407mr9778121rwb.10.1698702689775;
-        Mon, 30 Oct 2023 14:51:29 -0700 (PDT)
-Received: from n191-129-154.byted.org ([130.44.212.103])
-        by smtp.gmail.com with ESMTPSA id o14-20020a05620a22ce00b007776c520488sm3692396qki.9.2023.10.30.14.51.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 14:51:29 -0700 (PDT)
-Date: Mon, 30 Oct 2023 21:51:27 +0000
-From: Peilin Ye <yepeilin.cs@gmail.com>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Peilin Ye <peilin.ye@bytedance.com>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Cong Wang <cong.wang@bytedance.com>,
-	Jiang Wang <jiang.wang@bytedance.com>,
-	Youlun Zhang <zhangyoulun@bytedance.com>
-Subject: Re: [PATCH net] veth: Fix RX stats for bpf_redirect_peer() traffic
-Message-ID: <20231030215124.GA1626574@n191-129-154.byted.org>
-References: <20231027184657.83978-1-yepeilin.cs@gmail.com>
- <20231027190254.GA88444@n191-129-154.byted.org>
- <59be18ff-dabc-2a07-3d78-039461b0f3f7@iogearbox.net>
- <20231028231135.GA2236124@n191-129-154.byted.org>
- <94c88020-5282-c82b-8f88-a2d012444699@iogearbox.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F18691C2E
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 00:05:28 +0000 (UTC)
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [IPv6:2001:41d0:203:375::af])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C28BC6
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 17:05:27 -0700 (PDT)
+Message-ID: <ca7e896b-328b-454e-ad97-fc824df562af@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1698710723;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O/YUjq1v69MBLsAc5IX6Uscalj2TK70GIPvMUidDUkw=;
+	b=pfrFjRJ68So5jnONDwQJKQzDbl38uRRn22GM28vZHeJGYafl0iPOc7u/K50dFRPNWWWfz/
+	I17S4TY+z9kmhpIkuWRZI6uuKjiMQe5fk6oC4e1u9b0i5eEaj/0U5K7ySPG4jGmF0pA9Hs
+	yJ46wkUraXIBSLg/4OPoaVdyhtk+Vnc=
+Date: Mon, 30 Oct 2023 17:05:16 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <94c88020-5282-c82b-8f88-a2d012444699@iogearbox.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Subject: Re: [PATCH bpf-next v3 1/3] bpf: Relax allowlist for css_task iter
+Content-Language: en-GB
+To: Chuyi Zhou <zhouchuyi@bytedance.com>, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@kernel.org
+References: <20231025075914.30979-1-zhouchuyi@bytedance.com>
+ <20231025075914.30979-2-zhouchuyi@bytedance.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20231025075914.30979-2-zhouchuyi@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Oct 30, 2023 at 03:19:26PM +0100, Daniel Borkmann wrote:
-> OT: does cadvisor run inside the Pod to collect the device stats? Just
-> curious how it gathers them.
 
-Seems like it reads from /proc/$PID/net/dev:
-https://github.com/google/cadvisor/blob/d19df4f3b8e73c7e807d4b9894c252b54852fa8a/container/libcontainer/handler.go#L461
+On 10/25/23 12:59 AM, Chuyi Zhou wrote:
+> The newly added open-coded css_task iter would try to hold the global
+> css_set_lock in bpf_iter_css_task_new, so the bpf side has to be careful in
+> where it allows to use this iter. The mainly concern is dead locking on
+> css_set_lock. check_css_task_iter_allowlist() in verifier enforced css_task
+> can only be used in bpf_lsm hooks and sleepable bpf_iter.
+>
+> This patch relax the allowlist for css_task iter. Any lsm and any iter
+> (even non-sleepable) and any sleepable are safe since they would not hold
+> the css_set_lock before entering BPF progs context.
+>
+> This patch also fixes the misused BPF_TRACE_ITER in
+> check_css_task_iter_allowlist which compared bpf_prog_type with
+> bpf_attach_type.
+>
+> Fixes: 9c66dc94b62ae ("bpf: Introduce css_task open-coded iterator kfuncs")
+> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
 
-Thanks,
-Peilin Ye
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
 
