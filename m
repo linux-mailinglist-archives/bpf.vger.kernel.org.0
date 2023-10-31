@@ -1,125 +1,147 @@
-Return-Path: <bpf+bounces-13741-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13742-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 893647DD5C4
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 19:06:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A2D97DD5C8
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 19:07:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B96991C20CF6
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 18:06:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D993AB20CD8
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 18:07:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 071F92111E;
-	Tue, 31 Oct 2023 18:06:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1897D21354;
+	Tue, 31 Oct 2023 18:07:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O7aefBte"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GMD7K5H/"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 323AF199A3
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 18:06:23 +0000 (UTC)
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8A0F7
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 11:06:21 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53dd752685fso9878695a12.3
-        for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 11:06:21 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D6AB199A3
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 18:07:10 +0000 (UTC)
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A56A2
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 11:07:09 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32dc918d454so3789249f8f.2
+        for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 11:07:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698775580; x=1699380380; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698775628; x=1699380428; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SLjjzg0TslzUjnoC13hjgfhS/eXJuGr95yzpMA0wsr8=;
-        b=O7aefBteh5eqBg1ikvD6Suyh+TzssdiajtD1nADN0ynybknjcN04TWY22lG5kpCZ/4
-         ewKHwn/G4eBTZMNck1mNPbjzp6BovI9IxES1O9f//pNyeqYC7eX6BbFY+rw8S8g0Oq9n
-         kSssNyV0jxgL47eCfkul1xG9v59IvKGLhZekmRknUdNDYs6IfZ4mWdTsTB5E4DDM8kow
-         m9fuSeHjbrPV//NP9oAFgW3uzRs6GVwu/L8t3kQn059FlwegDJrWzVFnjm/BLGjViyYu
-         YrAcr/b37/aXTF0PjvsKBPkt3NFHXHHQMvzGeV0Sia2HcYnTwSUismb2559JiaTQJgRf
-         3UIQ==
+        bh=+RUHs+Gkr7vwPCfhl0MJm5ELSvHF9844/n0968IWYsk=;
+        b=GMD7K5H/NQT0cFA0Yug1Tts9dR1L3n6Rqo1/svxioplk2Q/teBQ8uEOOjmdxmFlXZE
+         Sfk/KCwvpcuzbEhGjTrfQMZurc+FyoslwnUjUaMwyH0aURAM3d7vcOOQmBHZMrg+SMMT
+         gNML14KYUP1x08QMY5/89lZRZpSDp8sqDL2cEvf/Dr4CfMi3ykRKEA14muAxqcBztd58
+         uZ0SDwtiQVuFwPehZMDBXkGb5jGc6nDG2VvLE/FaYm9hK4Lq7pHRoXe04Ar53tXTahKJ
+         JURT1Es4ST+/aGg6rvqpl4zYV+W5+xEHFl7GBxuLAIj39G577enwpRp6SUTi+OZYU/1J
+         n+1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698775580; x=1699380380;
+        d=1e100.net; s=20230601; t=1698775628; x=1699380428;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SLjjzg0TslzUjnoC13hjgfhS/eXJuGr95yzpMA0wsr8=;
-        b=rOvZcexfHZhjQlOU9ImNu86a0dwbbetMNLKnJBX1M1rvNvfIDlVElhqe7sh9b0t/nR
-         B4oll3w3t+r17aKaI6rW55fl19iNS7ixkCAiDowYFYO5j+YyeyFj0WqXtdw7sguGPxbt
-         Ru1dtezjD6ntIHPJIYMvORSZCSS7CZXfwWrNqpUfjbhWFlbVtaK+r8lE9EKxuqfjVjTU
-         4QmwWR/tLnAg0NBA3KYgFmkJ2MHpzADck2X+9QEFTOZJ26LgF+StfskQHo1Deaw8OFOx
-         Rdm9bPbbB3XwOBMnSoI83QWgXinLvqWatoekL8s3laEqcz96dyT6oxjA1AItnR4cWhQW
-         FdwQ==
-X-Gm-Message-State: AOJu0YwPFgV+nhvvqSuDJoG89ZKgkmlnObCq4tyhB4YZEJILwim9FeOF
-	8BfxIVeykmtD155Fu9n17SJ6hPfPPTxbQtietT2tC22z
-X-Google-Smtp-Source: AGHT+IFqE0Fm3cL+aJwDdd1p2rqQCU9e71O1CUZkzKi7s06G63UPpipdWuyXhYu4+LrXDjbyADVGI+wbvymRuOL7HN4=
-X-Received: by 2002:a17:906:794d:b0:9b2:b2ad:2a76 with SMTP id
- l13-20020a170906794d00b009b2b2ad2a76mr124423ejo.16.1698775579857; Tue, 31 Oct
- 2023 11:06:19 -0700 (PDT)
+        bh=+RUHs+Gkr7vwPCfhl0MJm5ELSvHF9844/n0968IWYsk=;
+        b=Oi0v+Umk5ffvfxTKpeF3qq2/yHoQHNW4PbCDc3aIeFQEeVJjZoUquU3/uTbGOZIBBL
+         5FgW2IA3C9DV008TD8JXBSr0QFeV0CGRW69kSA30n9VG/Ut5ObPuSRJEXnQwZozoQHed
+         b1fWDVOItO/uXqf/sNwlUbzCSOtVJXMwiR187nsNytU0NLwdP7uS4Munfruu2ZGs9Uel
+         2ADMSrENDcNbb5ReHSacTLZpvNWw9Q6q11pEBb5JhKNp8xo+2jSw5KDvXP+n9TRexWwT
+         eX2bauu2nLSuJjTRVXZPrLMMfdi0UOf1HqZS3gy04+g6dYdiIw4ZLlkuLHBomiiM6Zyu
+         p6EQ==
+X-Gm-Message-State: AOJu0Yw0qcEBh3oC9hw0ShRiy3CqZ4jQ50tW6QqtzeFeIPVvD8Ku0qJL
+	jmot4WhzxXHqYbZ48QpQSq9y3clQRyjIgeY4ya0lT62e
+X-Google-Smtp-Source: AGHT+IGnRtErdvD1B/hm7GM/67xN40SqpVtBcKzPmSxuxu06+l2FMln4wfc5l40H2gDUH2Ul/qcPPp1KeHl2RcZk6ao=
+X-Received: by 2002:adf:f40b:0:b0:32d:87c8:b548 with SMTP id
+ g11-20020adff40b000000b0032d87c8b548mr8061072wro.21.1698775627677; Tue, 31
+ Oct 2023 11:07:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231027181346.4019398-1-andrii@kernel.org> <20231027181346.4019398-18-andrii@kernel.org>
- <20231031020248.uo54fkisydzwzgvn@MacBook-Pro-49.local> <CAEf4BzbZT11cYbinnGaqGZPiX2Mq5Taksx=VWOMhpuKEj8cXcA@mail.gmail.com>
- <CAADnVQLADK67wpesGfn=9EoAnXcHV8inBqOt79hjpSdvNS=yiQ@mail.gmail.com>
- <CAEf4BzbTc9wv=QU_ziG+TGcpHkLoQe_0NicKZF83KXgiCfqJFQ@mail.gmail.com>
- <CAEf4BzbZDdgLPkD3UaD2JCE6hV7X0ZHfYC0ToPnRQe0+9J3MfA@mail.gmail.com> <CAADnVQ+8m0OggW=eO5bHiFMpafV04ZSvBP6SNtjHN22bmSZ5CQ@mail.gmail.com>
-In-Reply-To: <CAADnVQ+8m0OggW=eO5bHiFMpafV04ZSvBP6SNtjHN22bmSZ5CQ@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 31 Oct 2023 11:06:08 -0700
-Message-ID: <CAEf4BzY=txHiLjJYLVq+hD1O2vRs1o=WR-btthsX0OwjUmt8hA@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 17/23] bpf: generalize reg_set_min_max() to
- handle two sets of two registers
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+References: <20231027181346.4019398-1-andrii@kernel.org> <20231027181346.4019398-21-andrii@kernel.org>
+ <20231031022033.536yvwc5vcc4toh2@MacBook-Pro-49.local> <CAEf4BzZC3NYUZu2uK+Mi3GgMrLOqe=ShXpkQpor-dLZxbjM-Tw@mail.gmail.com>
+ <CAADnVQ+a-39-Gppmh3VgVaEYfnpHg9v9+mjPGEbX4PoSqaeMLw@mail.gmail.com> <CAEf4Bzb6jNpXr6LGHHrW17zaM_H1aDR-hY+eQg5dZUF0ZboufA@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb6jNpXr6LGHHrW17zaM_H1aDR-hY+eQg5dZUF0ZboufA@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 31 Oct 2023 11:06:56 -0700
+Message-ID: <CAADnVQLHXeyrNvercxNVq2mrREk-g0cKhKF30KMhFhDa9KyN4Q@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 20/23] bpf: enhance BPF_JEQ/BPF_JNE
+ is_branch_taken logic
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
 	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 31, 2023 at 11:04=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, Oct 31, 2023 at 11:04=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Tue, Oct 31, 2023 at 10:56=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > I don't see a code path where reg_set_min_max() is called
-> > > > with pointers. At least not in the current code base.
-> > > > Are you saying somewhere in your later patch it happens?
-> > > >
+> On Tue, Oct 31, 2023 at 9:36=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Oct 30, 2023 at 11:16=E2=80=AFPM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
 > > >
-> > > Hm.. no, it's all in this patch. Check check_cond_jmp_op(). We at
-> > > least allow `(reg_is_pkt_pointer_any(dst_reg) &&
-> > > reg_is_pkt_pointer_any(src_reg)` case to get into is_branch_taken(),
-> > > which, btw, does handle pointer x pointer, pointer x scalar, and
-> > > scalar x scalar cases. Then, we go straight to reg_set_min_max(), bot=
-h
-> > > for BPF_X and BPF_K cases. So reg_set_min_max() has to guard itself
-> > > against pointers.
+> > > On Mon, Oct 30, 2023 at 7:20=E2=80=AFPM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Fri, Oct 27, 2023 at 11:13:43AM -0700, Andrii Nakryiko wrote:
+> > > > > Use 32-bit subranges to prune some 64-bit BPF_JEQ/BPF_JNE conditi=
+ons
+> > > > > that otherwise would be "inconclusive" (i.e., is_branch_taken() w=
+ould
+> > > > > return -1). This can happen, for example, when registers are init=
+ialized
+> > > > > as 64-bit u64/s64, then compared for inequality as 32-bit subregi=
+sters,
+> > > > > and then followed by 64-bit equality/inequality check. That 32-bi=
+t
+> > > > > inequality can establish some pattern for lower 32 bits of a regi=
+ster
+> > > > > (e.g., s< 0 condition determines whether the bit #31 is zero or n=
+ot),
+> > > > > while overall 64-bit value could be anything (according to a valu=
+e range
+> > > > > representation).
+> > > > >
+> > > > > This is not a fancy quirky special case, but actually a handling =
+that's
+> > > > > necessary to prevent correctness issue with BPF verifier's range
+> > > > > tracking: set_range_min_max() assumes that register ranges are
+> > > > > non-overlapping, and if that condition is not guaranteed by
+> > > > > is_branch_taken() we can end up with invalid ranges, where min > =
+max.
+> > > >
+> > > > This is_scalar_branch_taken() logic makes sense,
+> > > > but if set_range_min_max() is delicate, it should have its own sani=
+ty
+> > > > check for ranges.
+> > > > Shouldn't be difficult to check for that dangerous overlap case.
+> > >
+> > > So let me clarify. As far as I'm concerned, is_branch_taken() is such
+> > > a check for set_reg_min_max, and so duplicating such checks in
+> > > set_reg_min_max() is just that a duplication of code and logic, and
+> > > just a chance for more typos and subtle bugs.
+> > >
+> > > But the concern about invalid ranges is valid, so I don't know,
+> > > perhaps we should just do a quick check after adjustment to validate
+> > > that umin<=3Dumax and so on? E.g., we can do that outside of
+> > > reg_set_min_max(), to keep reg_set_min_max() non-failing. WDYT?
 > >
-> > Correction, BPF_K branch does check for dst_reg->type =3D=3D SCALAR_VAL=
-UE.
-> > But BPF_X doesn't. I stared at this code for so long that I don't even
-> > notice those checks anymore :(
-> >
-> > I'd rather drop this SCALAR check for the BPF_K case and keep
-> > reg_set_min_max() as generic as is_branch_taken(), if that's ok. I
-> > think it's less error-prone and a more consistent approach.
+> > Sounds like a good option too.
+> > Just trying to minimize breakage in the future.
+> > Sanity check before or after should catch it.
 >
-> Ahh. Now I see that the patch is doing reg_set_min_max()
-> right after BPF_X check.
-> So before the patch all !scalar checks were done outside
-> and extra __is_pointer_value() inside was useless (reserved for future).
-> With this change the !scalar change inside is necessary.
-> Makes sense now. Commit log could have explained that bit
-> and avoided this back and forth ;)
-
-Ok, I'll call this out in the commit message, np.
-
+> Sounds good, I'll have a separate register state sanity check and will
+> see what minimal amount of places where we should call it.
 >
-> And yeah dropping !scalar from BPF_K path makes sense as well.
+> I'm assuming we are ok with returning -EFAULT and failing validation
+> whenever we detect violation, right?
 
-Done.
+Yep and I'll take back WARN suggestion. Let's not add any WARN to avoid
+triggering panic_on_warn.
 
