@@ -1,145 +1,124 @@
-Return-Path: <bpf+bounces-13648-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13678-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D2077DC3D6
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 02:22:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AEFE67DC62E
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 07:01:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEC94280FCF
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 01:22:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AC5428167C
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 06:01:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 787D97FC;
-	Tue, 31 Oct 2023 01:22:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1759DDDCA;
+	Tue, 31 Oct 2023 06:01:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IWwfcU0v"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H34Bxbxy"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F41607F2
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 01:22:00 +0000 (UTC)
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b9])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BAC3C1
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 18:21:59 -0700 (PDT)
-Message-ID: <ac35bad1-f978-6278-9619-c5e9ed3b76e5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1698715317;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=disR6/9qdMQna5mM+MDfQoCNj7UJX/w3WGO9mvSIVbg=;
-	b=IWwfcU0v7xHmDClKgtYIVc99Euk+S8qk1oGEPVlU6ml9yLy10+ZzU85XWUfU194NS+Dqs9
-	nMzuMU0cxjzsSa25TUXtNNeNJowSbigGvziX22tZYBtQzq5UwyEByh1wRO8c+2RiVCRYsE
-	eseGJcw4sdPCmJCo7QNh7/5BesUvcno=
-Date: Mon, 30 Oct 2023 18:21:51 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C94CBDF65
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 06:01:12 +0000 (UTC)
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FFB9E4
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 23:01:08 -0700 (PDT)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1cc30bf9e22so21709385ad.1
+        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 23:01:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698732007; x=1699336807; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ceDh1cKdWAOGY8e/9yNlJsDhemfIbrVzdDc5cnL3l2c=;
+        b=H34Bxbxymdk7krH1NMteylYRs767xqRvwppYW2Qu0daxxMmeQ4OX9m3jLT24NFw1t7
+         HvzOlsazIlaQR0KFpKenJe4XykuEEb2PvFVQBeLJVIJ89kryiiZCwjiOvy54oNTCfXf0
+         sMUNCfYWJEDX0Fg/P6YPpBgOh7GKk89RXVe2rh+qV9SHGBysHGfcFLKNfM5hOLScZi9W
+         xmjUcM4D7I6GhbtcxVnzdeLwMEIg+KPsTOBwMzErMXdlKg6dTOH1x7iDiaxL3xSQgvPB
+         7KT+vA6C/7oFw2GLXxyofCmL7N9/Y1gZ0BDmVsYIAWKoKjPgo0PV+WZGIW4sOgiUYg4L
+         1X/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698732007; x=1699336807;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ceDh1cKdWAOGY8e/9yNlJsDhemfIbrVzdDc5cnL3l2c=;
+        b=UwTHt9Y2elNXlm6RFpVaGE0+hXGDnGcy9zJfMofpix/XskBnNYTGLR4s6/AyskZEWe
+         X5gphmceWTBXfVPSYZz/mFbb9t7lTWRzfSN/gYm7ei0b10bPcWMJz3gbAVPsApeqIfss
+         LaQRk4ueC+l4iD/JYc/m8lkkppsShOM1IaJdhePdXTcBzNihqAcHGKX5wHIexG0EF20b
+         ST9jX0VlwS41eUESqE6LGCRFyBl02sN7mA7Kov5Zwrrn72Mmag3a/AIYTdzVoOr9yd4U
+         SahUWkHv/KwgCIZotqKrpaJVFhJdSh3KjoRY9h5p42/7ji6l7GGLWurZVcnoJWWxLlbZ
+         Jt3Q==
+X-Gm-Message-State: AOJu0YzjpS51mT3R2feHs5aN4BO0M7DrPEONrugjeA3a17BNpcUW4sn6
+	KxF7TPT0qYcw0jEYgUNvfa1bNIbJBbfEQA==
+X-Google-Smtp-Source: AGHT+IFO7O9fOFN9h4Sz8YPC58JK03lqn7p7x5NeZkpOnMInE/cW7vTInMknei1MCovovpOyGd86jQ==
+X-Received: by 2002:a17:903:2347:b0:1cc:5029:e3d4 with SMTP id c7-20020a170903234700b001cc5029e3d4mr2282899plh.23.1698732007173;
+        Mon, 30 Oct 2023 23:00:07 -0700 (PDT)
+Received: from ubuntu.. ([203.205.141.13])
+        by smtp.googlemail.com with ESMTPSA id x5-20020a170902b40500b001cc50f67fbasm460683plr.281.2023.10.30.23.00.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 23:00:06 -0700 (PDT)
+From: Hengqi Chen <hengqi.chen@gmail.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	keescook@chromium.org,
+	luto@amacapital.net,
+	wad@chromium.org,
+	hengqi.chen@gmail.com
+Subject: [PATCH bpf-next 0/6] bpf: Add seccomp program type
+Date: Tue, 31 Oct 2023 01:24:01 +0000
+Message-Id: <20231031012407.51371-1-hengqi.chen@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v8 04/10] bpf: hold module for
- bpf_struct_ops_map.
-Content-Language: en-US
-To: thinker.li@gmail.com
-Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
- ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
- drosen@google.com
-References: <20231030192810.382942-1-thinker.li@gmail.com>
- <20231030192810.382942-5-thinker.li@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20231030192810.382942-5-thinker.li@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 10/30/23 12:28 PM, thinker.li@gmail.com wrote:
-> @@ -681,9 +697,17 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
->   	if (!st_ops_desc)
->   		return ERR_PTR(-ENOTSUPP);
->   
-> +	if (st_ops_desc->btf != btf_vmlinux) {
-> +		mod = btf_try_get_module(st_ops_desc->btf);
-> +		if (!mod)
-> +			return ERR_PTR(-EINVAL);
-> +	}
-> +
->   	vt = st_ops_desc->value_type;
-> -	if (attr->value_size != vt->size)
-> -		return ERR_PTR(-EINVAL);
-> +	if (attr->value_size != vt->size) {
-> +		ret = -EINVAL;
-> +		goto errout;
-> +	}
->   
->   	t = st_ops_desc->type;
->   
-> @@ -694,17 +718,17 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
->   		(vt->size - sizeof(struct bpf_struct_ops_value));
->   
->   	st_map = bpf_map_area_alloc(st_map_size, NUMA_NO_NODE);
-> -	if (!st_map)
-> -		return ERR_PTR(-ENOMEM);
-> +	if (!st_map) {
-> +		ret = -ENOMEM;
-> +		goto errout;
-> +	}
->   
->   	st_map->st_ops_desc = st_ops_desc;
->   	map = &st_map->map;
->   
->   	ret = bpf_jit_charge_modmem(PAGE_SIZE);
-> -	if (ret) {
-> -		__bpf_struct_ops_map_free(map);
-> -		return ERR_PTR(ret);
-> -	}
-> +	if (ret)
-> +		goto errout_free;
->   
->   	st_map->image = bpf_jit_alloc_exec(PAGE_SIZE);
->   	if (!st_map->image) {
-> @@ -713,23 +737,32 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
->   		 * here.
->   		 */
->   		bpf_jit_uncharge_modmem(PAGE_SIZE);
-> -		__bpf_struct_ops_map_free(map);
-> -		return ERR_PTR(-ENOMEM);
-> +		ret = -ENOMEM;
-> +		goto errout_free;
->   	}
->   	st_map->uvalue = bpf_map_area_alloc(vt->size, NUMA_NO_NODE);
->   	st_map->links =
->   		bpf_map_area_alloc(btf_type_vlen(t) * sizeof(struct bpf_links *),
->   				   NUMA_NO_NODE);
->   	if (!st_map->uvalue || !st_map->links) {
-> -		__bpf_struct_ops_map_free(map);
-> -		return ERR_PTR(-ENOMEM);
-> +		ret = -ENOMEM;
-> +		goto errout_free;
->   	}
->   
->   	mutex_init(&st_map->lock);
->   	set_vm_flush_reset_perms(st_map->image);
->   	bpf_map_init_from_attr(map, attr);
->   
-> +	module_put(mod);
-> +
->   	return map;
-> +
-> +errout_free:
-> +	__bpf_struct_ops_map_free(map);
-> +	btf = NULL;		/* has been released */
+This patchset introduces seccomp program type which can be
+used to attach to the existing seccomp framework.
 
-btf is not defined. I don't think this patch compiles.
-Something from a latter patch?
+The motivation is to enable sharing of seccomp filter through
+bpf prog fd and bpffs. With this in place, we can eliminate
+a hot path of JITing cBPF program (seccomp filter) where we apply
+the same seccomp filter to thousands of micro VMs on a bare metal
+instance.
 
-> +errout:
-> +	module_put(mod);
-> +	return ERR_PTR(ret);
->   }
+This also allows us to write seccomp filter in an intuitive way,
+see selftests for reference.
+
+Hengqi Chen (6):
+  bpf: Introduce BPF_PROG_TYPE_SECCOMP
+  bpf: Add test_run support for seccomp program type
+  seccomp: Refactor filter copy/create for reuse
+  seccomp: Support attaching BPF_PROG_TYPE_SECCOMP progs
+  selftests/bpf: Add seccomp verifier tests
+  selftests/bpf: Test BPF_PROG_TYPE_SECCOMP
+
+ include/linux/bpf.h                           |   3 +
+ include/linux/bpf_types.h                     |   4 +
+ include/linux/seccomp.h                       |   3 +-
+ include/uapi/linux/bpf.h                      |   1 +
+ include/uapi/linux/seccomp.h                  |   2 +
+ kernel/seccomp.c                              | 142 ++++++++++++++--
+ net/bpf/test_run.c                            |  27 +++
+ tools/include/uapi/linux/bpf.h                |   1 +
+ tools/include/uapi/linux/seccomp.h            |   2 +
+ tools/lib/bpf/libbpf.c                        |   2 +
+ tools/lib/bpf/libbpf_probes.c                 |   1 +
+ .../selftests/bpf/prog_tests/seccomp.c        |  40 +++++
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../selftests/bpf/progs/test_seccomp.c        |  24 +++
+ .../selftests/bpf/progs/verifier_seccomp.c    | 154 ++++++++++++++++++
+ 15 files changed, 390 insertions(+), 18 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/seccomp.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_seccomp.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_seccomp.c
+
+-- 
+2.34.1
 
 
