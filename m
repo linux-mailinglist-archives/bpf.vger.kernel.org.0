@@ -1,225 +1,232 @@
-Return-Path: <bpf+bounces-13702-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13703-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B6D17DCBB3
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 12:24:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEB4A7DCBF3
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 12:38:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 401332817C2
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 11:24:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D03CB20F54
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 11:38:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BE161A72B;
-	Tue, 31 Oct 2023 11:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63A7E1A73C;
+	Tue, 31 Oct 2023 11:38:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="as3m0Wv8"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="TIyszBdQ"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1817E1A70F;
-	Tue, 31 Oct 2023 11:24:17 +0000 (UTC)
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D7697;
-	Tue, 31 Oct 2023 04:24:16 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39V7TvKx004769;
-	Tue, 31 Oct 2023 04:23:53 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=jxcYiC94VBU9IMPI8prqBSJJjwC0PAd9u+mtlkrs+Fs=;
- b=as3m0Wv8gTcoTk/1kNywYxQcXaflIzxeYOGl1cY+uY6ApsXCTNYCWKD/WSFNVSE8/Wsh
- xHDG4xafLZt9z/ifvqamOaQnc6icyNS1wNi9qUs895wZ3NlsaigJLzXDD+ZmqEo3FsEd
- Dwi/pyq1qmuM+7YisCuCH7H5QzUf8gE7tesFl4PpWAIPOLcuLsUkhRFb8E3VMHPtHCdM
- q5GCRPs1Pf73lnX5zkJfKz4/R0R0faDkEFkI7oRB/bHzSyKcEepC6Y9F0lEHPVBy9m3u
- GZL8La8zZSDL6/gG/mhj2e8xb3T0k6+GmR44tk5ONfQFXqWWSHkmlRHv3zOjvGrLS0HL CQ== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3u11tpa8bj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-	Tue, 31 Oct 2023 04:23:53 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 31 Oct
- 2023 04:23:51 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 31 Oct 2023 04:23:51 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-	by maili.marvell.com (Postfix) with ESMTP id DCF723F70C2;
-	Tue, 31 Oct 2023 04:23:46 -0700 (PDT)
-From: Geetha sowjanya <gakula@marvell.com>
-To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC: <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
-        <edumazet@google.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <hawk@kernel.org>, <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>
-Subject: [net PATCH] octeontx2-pf: Free pending and dropped SQEs
-Date: Tue, 31 Oct 2023 16:53:45 +0530
-Message-ID: <20231031112345.25291-1-gakula@marvell.com>
-X-Mailer: git-send-email 2.17.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C58E1A72B
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 11:38:05 +0000 (UTC)
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2144C97
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 04:38:04 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-5872c6529e1so280185eaf.0
+        for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 04:38:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1698752283; x=1699357083; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UrmnCRurc9pOzS45cFwToO916UcNT8LXzHTdag6sctA=;
+        b=TIyszBdQIJdN3eAC4PawAhuLWKAY3PhCK3rayUbK3TmEaJjjT7jzBp2Grn5hC7Z+ta
+         B/tMGGDBFFUGLGwBhFsAQGSLQQm+cBqeadOrH6gTM6nHPnCCSrQUl7tTil5FkBjuqsDv
+         nExMrAJkmktoPuuNwg+m4U8y343bqGUmfrR8Xkt6n0m0GWc9Pj1vjMPTrOvWhpWYlr8c
+         tRELeP+IpOxxEBT95h0IzAxI6bmxRnkMqKpTscEVJ5lyZegBCp7dMAFRpnJQIp91chM8
+         IMyJnIWpyKOdCV1yNNt9/zakz2EibF7Lcbl3wHUJt1BL49ruHnYwcaWwGpcmSY901HrR
+         kdhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698752283; x=1699357083;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=UrmnCRurc9pOzS45cFwToO916UcNT8LXzHTdag6sctA=;
+        b=OF2S98o5/ldGFq+O2WxWirIiBSSIE7GkumvdwUly9DftXuciQFHfeBmQFmu2aWI3Za
+         UMuzs/Rnaa2viqtQSMa3STL6nzdWEGSYs4l6v2b9MwuQD1L9IyUIBMQELL175pnovrL7
+         ndUZioRz53SunErXq4gzMOs5/iR8vcWCs2ejZFRyErjv9w6/omwug153f9w42EDSebU5
+         NQ8x45fUqXx/SjhnzKQSnRt/xqNwGSXw6dslbXv5C/3FoP/9/Cm2tcuEua3o8J1zLkI6
+         oDYbl1FtLaJ6YlVdQll/cLfDrIcSzSl/S0mHkt4uMZWk6LqhBc97H0+s6wgsq5CqY8VR
+         dFtw==
+X-Gm-Message-State: AOJu0YyP1dWAMonJPAZulvLC4ZeVmosBydhgP5+pKv+lQY53IMqB9DPe
+	LvDr47JrTFQAqFm7wBiKmnda5ofdRcx/1P8vfYU=
+X-Google-Smtp-Source: AGHT+IGBtixaCm0FIY16f5LpHRQdQHffCSOujH/FoRjS+SxKKnc1OQoVs8zqSRhneMMoqM7LVmtDYQ==
+X-Received: by 2002:a05:6358:89e:b0:168:f5e2:b1e0 with SMTP id m30-20020a056358089e00b00168f5e2b1e0mr13923303rwj.31.1698752283338;
+        Tue, 31 Oct 2023 04:38:03 -0700 (PDT)
+Received: from [10.254.164.31] ([139.177.225.236])
+        by smtp.gmail.com with ESMTPSA id t27-20020a63955b000000b0057412d84d25sm950868pgn.4.2023.10.31.04.38.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Oct 2023 04:38:03 -0700 (PDT)
+Message-ID: <bcdce26b-b5cf-4eb7-bf04-7507f5e0ac85@bytedance.com>
+Date: Tue, 31 Oct 2023 19:37:56 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: U1Q4Db0ML9vmH-0MZvETkm2VQxOMh4dZ
-X-Proofpoint-ORIG-GUID: U1Q4Db0ML9vmH-0MZvETkm2VQxOMh4dZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-31_01,2023-10-31_03,2023-05-22_02
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add test for css_task iter
+ combining with cgroup iter
+From: Chuyi Zhou <zhouchuyi@bytedance.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@kernel.org>
+References: <20231022154527.229117-1-zhouchuyi@bytedance.com>
+ <20231022154527.229117-3-zhouchuyi@bytedance.com>
+ <CAADnVQLGwn_x9CZmYX5K_6K5Y0SB7EjU5wfRUHRMdXhAvKEJVw@mail.gmail.com>
+ <cfaf3363-51b9-40af-8993-9718d7edbaf7@bytedance.com>
+ <CAADnVQLcw36TiEYXaoYDhEinygCQ86U5AKg-rJPsQj=KUu7Y2g@mail.gmail.com>
+ <350dd3e5-3a34-42ba-85b9-ddb1a217c95e@bytedance.com>
+In-Reply-To: <350dd3e5-3a34-42ba-85b9-ddb1a217c95e@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On interface down, the pending SQEs in the NIX get dropped
-or drained out during SMQ flush. But skb's pointed by these
-SQEs never get free or updated to the stack as respective CQE
-never get added.
-This patch fixes the issue by freeing all valid skb's in SQ SG list.
 
-Fixes: b1bc8457e9d0 ("octeontx2-pf: Cleanup all receive buffers in SG descriptor")
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
----
- .../marvell/octeontx2/nic/otx2_common.c       | 15 +++----
- .../marvell/octeontx2/nic/otx2_common.h       |  1 +
- .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  1 +
- .../marvell/octeontx2/nic/otx2_txrx.c         | 42 +++++++++++++++++++
- 4 files changed, 49 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-index 1a42bfded872..7ca6941ea0b9 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-@@ -818,7 +818,6 @@ void otx2_sqb_flush(struct otx2_nic *pfvf)
- 	int qidx, sqe_tail, sqe_head;
- 	struct otx2_snd_queue *sq;
- 	u64 incr, *ptr, val;
--	int timeout = 1000;
- 
- 	ptr = (u64 *)otx2_get_regaddr(pfvf, NIX_LF_SQ_OP_STATUS);
- 	for (qidx = 0; qidx < otx2_get_total_tx_queues(pfvf); qidx++) {
-@@ -827,15 +826,11 @@ void otx2_sqb_flush(struct otx2_nic *pfvf)
- 			continue;
- 
- 		incr = (u64)qidx << 32;
--		while (timeout) {
--			val = otx2_atomic64_add(incr, ptr);
--			sqe_head = (val >> 20) & 0x3F;
--			sqe_tail = (val >> 28) & 0x3F;
--			if (sqe_head == sqe_tail)
--				break;
--			usleep_range(1, 3);
--			timeout--;
--		}
-+		val = otx2_atomic64_add(incr, ptr);
-+		sqe_head = (val >> 20) & 0x3F;
-+		sqe_tail = (val >> 28) & 0x3F;
-+		if (sqe_head != sqe_tail)
-+			usleep_range(50, 60);
- 	}
- }
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-index c04a8ee53a82..e7c69b57147e 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-@@ -977,6 +977,7 @@ int otx2_txschq_config(struct otx2_nic *pfvf, int lvl, int prio, bool pfc_en);
- int otx2_txsch_alloc(struct otx2_nic *pfvf);
- void otx2_txschq_stop(struct otx2_nic *pfvf);
- void otx2_txschq_free_one(struct otx2_nic *pfvf, u16 lvl, u16 schq);
-+void otx2_free_pending_sqe(struct otx2_nic *pfvf);
- void otx2_sqb_flush(struct otx2_nic *pfvf);
- int otx2_alloc_rbuf(struct otx2_nic *pfvf, struct otx2_pool *pool,
- 		    dma_addr_t *dma);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index 6daf4d58c25d..8e82db6092af 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -1589,6 +1589,7 @@ static void otx2_free_hw_resources(struct otx2_nic *pf)
- 		else
- 			otx2_cleanup_tx_cqes(pf, cq);
- 	}
-+	otx2_free_pending_sqe(pf);
- 
- 	otx2_free_sq_res(pf);
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-index 53b2a4ef5298..6ee15f3c25ed 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-@@ -1247,9 +1247,11 @@ void otx2_cleanup_rx_cqes(struct otx2_nic *pfvf, struct otx2_cq_queue *cq, int q
- 
- void otx2_cleanup_tx_cqes(struct otx2_nic *pfvf, struct otx2_cq_queue *cq)
- {
-+	int tx_pkts = 0, tx_bytes = 0;
- 	struct sk_buff *skb = NULL;
- 	struct otx2_snd_queue *sq;
- 	struct nix_cqe_tx_s *cqe;
-+	struct netdev_queue *txq;
- 	int processed_cqe = 0;
- 	struct sg_list *sg;
- 	int qidx;
-@@ -1270,12 +1272,20 @@ void otx2_cleanup_tx_cqes(struct otx2_nic *pfvf, struct otx2_cq_queue *cq)
- 		sg = &sq->sg[cqe->comp.sqe_id];
- 		skb = (struct sk_buff *)sg->skb;
- 		if (skb) {
-+			tx_bytes += skb->len;
-+			tx_pkts++;
- 			otx2_dma_unmap_skb_frags(pfvf, sg);
- 			dev_kfree_skb_any(skb);
- 			sg->skb = (u64)NULL;
- 		}
- 	}
- 
-+	if (likely(tx_pkts)) {
-+		if (qidx >= pfvf->hw.tx_queues)
-+			qidx -= pfvf->hw.xdp_queues;
-+		txq = netdev_get_tx_queue(pfvf->netdev, qidx);
-+		netdev_tx_completed_queue(txq, tx_pkts, tx_bytes);
-+	}
- 	/* Free CQEs to HW */
- 	otx2_write64(pfvf, NIX_LF_CQ_OP_DOOR,
- 		     ((u64)cq->cq_idx << 32) | processed_cqe);
-@@ -1302,6 +1312,38 @@ int otx2_rxtx_enable(struct otx2_nic *pfvf, bool enable)
- 	return err;
- }
- 
-+void otx2_free_pending_sqe(struct otx2_nic *pfvf)
-+{
-+	int tx_pkts = 0, tx_bytes = 0;
-+	struct sk_buff *skb = NULL;
-+	struct otx2_snd_queue *sq;
-+	struct netdev_queue *txq;
-+	struct sg_list *sg;
-+	int sq_idx, sqe;
-+
-+	for (sq_idx = 0; sq_idx < pfvf->hw.tx_queues; sq_idx++) {
-+		sq = &pfvf->qset.sq[sq_idx];
-+		for (sqe = 0; sqe < sq->sqe_cnt; sqe++) {
-+			sg = &sq->sg[sqe];
-+			skb = (struct sk_buff *)sg->skb;
-+			if (skb) {
-+				tx_bytes += skb->len;
-+				tx_pkts++;
-+				otx2_dma_unmap_skb_frags(pfvf, sg);
-+				dev_kfree_skb_any(skb);
-+				sg->skb = (u64)NULL;
-+			}
-+		}
-+
-+		if (!tx_pkts)
-+			continue;
-+		txq = netdev_get_tx_queue(pfvf->netdev, sq_idx);
-+		netdev_tx_completed_queue(txq, tx_pkts, tx_bytes);
-+		tx_pkts = 0;
-+		tx_bytes = 0;
-+	}
-+}
-+
- static void otx2_xdp_sqe_add_sg(struct otx2_snd_queue *sq, u64 dma_addr,
- 				int len, int *offset)
- {
--- 
-2.25.1
+在 2023/10/30 22:37, Chuyi Zhou 写道:
+> Hello,
+> 
+> 在 2023/10/24 01:14, Alexei Starovoitov 写道:
+>> On Mon, Oct 23, 2023 at 6:50 AM Chuyi Zhou <zhouchuyi@bytedance.com> 
+>> wrote:
+>>>
+>>>
+>>> R1_w=ptr_task_struct(off=0,imm=0) R7_w=ptr_task_struct(off=0,imm=0)
+>>> 18: (85) call bpf_task_acquire#26990
+>>> R1 must be a rcu pointer
+>>>
+>>> I will try to figure out it.
+>>
+>> Thanks. That would be great.
+>> So far it looks like a regression.
+>> I'm guessing __bpf_md_ptr wrapping is confusing the verifier.
+>>
+>> Since it's more complicated than I thought, please respin
+>> the current set with fixes to patch 1 and leave the patch 2 as-is.
+>> That can be another follow up.
+> 
+> After adding this change:
+> 
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 15d71d2986d3..4565e5457754 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6071,6 +6071,8 @@ bool btf_ctx_access(int off, int size, enum 
+> bpf_access_type type,
+>                          info->reg_type = ctx_arg_info->reg_type;
+>                          info->btf = btf_vmlinux;
+>                          info->btf_id = ctx_arg_info->btf_id;
+> +                       if (prog_args_trusted(prog))
+> +                               info->reg_type |= PTR_TRUSTED;
+>                          return true;
+>                  }
+>          }
+> 
+> the task pointer would be recognized as 'trusted_ptr_or_null_task_struct'.
+> 
+> The VERIFIER LOG:
+> =============
+> reg type unsupported for arg#0 function dump_task#7
+> 0: R1=ctx(off=0,imm=0) R10=fp0
+> ; struct task_struct *task = ctx->task;
+> 0: (79) r1 = *(u64 *)(r1 +8)          ; 
+> R1_w=trusted_ptr_or_null_task_struct(id=1,off=0,imm=0)
+> 
+> The following BPF Prog works well.
+> 
+> SEC("iter/task")
+> int dump_task(struct bpf_iter__task *ctx)
+> {
+>      struct task_struct *task = ctx->task;
+>      struct task_struct *acq;
+>      if (task == NULL)
+>          return 0;
+>      acq = bpf_task_acquire(task);
+>      if (!acq)
+>          return 0;
+>      bpf_task_release(acq);
+> 
+>      return 0;
+> }
+> 
+
+bpf_iter__task->meta would be recognized as a trusted ptr.
+In btf_ctx_access(), we would add PTR_TRUSTED flag if 
+prog_args_trusted(prog) return true.
+
+It seems for BPF_TRACE_ITER, ctx access is always 'trusted'.
+
+But I noticed that in task_iter.c, we actually explicitly declare that 
+the type of bpf_iter__task->task is PTR_TO_BTF_ID_OR_NULL.
+
+static struct bpf_iter_reg task_reg_info = {
+	.target			= "task",
+	.attach_target		= bpf_iter_attach_task,
+	.feature		= BPF_ITER_RESCHED,
+	.ctx_arg_info_size	= 1,
+	.ctx_arg_info		= {
+		{ offsetof(struct bpf_iter__task, task),
+		  PTR_TO_BTF_ID_OR_NULL },
+	},
+	.seq_info		= &task_seq_info,
+	.fill_link_info		= bpf_iter_fill_link_info,
+	.show_fdinfo		= bpf_iter_task_show_fdinfo,
+};
+
+btf_ctx_access() would enforce the reg_type is 
+ctx_arg_info->reg_type(PTR_TO_BTF_ID_OR_NULL) for bpf_iter__task->task:
+
+bool btf_ctx_access()
+	....
+	/* this is a pointer to another type */
+	for (i = 0; i < prog->aux->ctx_arg_info_size; i++) {
+		const struct bpf_ctx_arg_aux *ctx_arg_info = &prog->aux->ctx_arg_info[i];
+
+		if (ctx_arg_info->offset == off) {
+			...
+			info->reg_type = ctx_arg_info->reg_type;
+			info->btf = btf_vmlinux;
+			info->btf_id = ctx_arg_info->btf_id;
+			return true;
+		}
+	}
+
+
+So, maybe another possible solution is:
+
+diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
+index 209e5135f9fb..72a6778e3fba 100644
+--- a/kernel/bpf/cgroup_iter.c
++++ b/kernel/bpf/cgroup_iter.c
+@@ -282,7 +282,7 @@ static struct bpf_iter_reg bpf_cgroup_reg_info = {
+         .ctx_arg_info_size      = 1,
+         .ctx_arg_info           = {
+                 { offsetof(struct bpf_iter__cgroup, cgroup),
+-                 PTR_TO_BTF_ID_OR_NULL },
++                 PTR_TO_BTF_ID_OR_NULL | MEM_RCU },
+         },
+         .seq_info               = &cgroup_iter_seq_info,
+  };
+diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+index 59e747938bdb..4fd3f734dffd 100644
+--- a/kernel/bpf/task_iter.c
++++ b/kernel/bpf/task_iter.c
+@@ -706,7 +706,7 @@ static struct bpf_iter_reg task_reg_info = {
+         .ctx_arg_info_size      = 1,
+         .ctx_arg_info           = {
+                 { offsetof(struct bpf_iter__task, task),
+-                 PTR_TO_BTF_ID_OR_NULL },
++                 PTR_TO_BTF_ID_OR_NULL | PTR_TRUSTED },
+         },
+         .seq_info               = &task_seq_info,
+         .fill_link_info         = bpf_iter_fill_link_info,
+
+
+Just some thoughts.
+
+Thanks.
 
 
