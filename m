@@ -1,170 +1,260 @@
-Return-Path: <bpf+bounces-13734-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13735-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2F0F7DD4FA
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 18:46:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EA357DD571
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 18:50:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B662B20F04
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 17:46:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF0F92818F0
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 17:50:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE828208D5;
-	Tue, 31 Oct 2023 17:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D01A20B17;
+	Tue, 31 Oct 2023 17:50:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AmFVox1T"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bv0PkfCr"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B9F620B07
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 17:46:08 +0000 (UTC)
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23469F1
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 10:46:04 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5a8ee23f043so57295077b3.3
-        for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 10:46:04 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 101E2208CF
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 17:50:45 +0000 (UTC)
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27512E4
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 10:50:43 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9d2e7726d5bso413613566b.0
+        for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 10:50:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698774364; x=1699379164; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=V8K0DkHI3HcP+A+JynTn2/kFdnASPuvTWx4LJWoZFTQ=;
-        b=AmFVox1T1zbYMm7wRGy818MK3RpBZqwjTMylMD1va6HK9LSh/ReHi74UHZW1gUkvbs
-         WnXxoPo0iwZfu/hRqxHtIYQBt8GI+K9DmddbSMMw8Q2mCcpb5UXdBkGyAhGkktXdiYPF
-         QziKe3Tg1jD89aSO+po1UPa0ooaqgBhpAtiwf31gICosohbBY2wzWXGonCIxwLqGdA3f
-         buLvedbMVKWCjrrzwY7OMcLH0Mne4HrkiZ3/Hro1H3mDk6VgLeEEcmiswcjxa6dZzy8D
-         n2HANbFDdBQoaBgp4ZyQPA5bCZtWUHSWmKXJmbDg+pu19WGarooc6/+63ck9/vWAzcmH
-         utRg==
+        d=gmail.com; s=20230601; t=1698774642; x=1699379442; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AVg2AG+Lwariw1WKiPyqulp7+oiL9WnhpqDPVfhFT8A=;
+        b=bv0PkfCrztHn23xbO49NEuWJDQrTa57oPUU1UIaYNIdF1hnBocAuvyijusLfLC2Xb2
+         YgCEicjORGd/GTHys8i3pcwHmLU2vB3jVNNcBDyYlRtq9xq00tGGTceh6sR5ElaaCw0Z
+         GxZY5irQ48GIxFWLUp7KmHumQtbHX9Ni84DQbpl4xGRzQie3h2Jd5J4681SbaX6/8zs5
+         A64SNh3Z/uJ+IoWx+o0iJbPzWsnVCNLtC8pUcomig1qO09l7PTqTdfCm/3Xqi0oByusf
+         cXY7YkO2Y1tidVKcaYOgNRKm+9ja9iC2GexKEFF+E5SDJdl9zPLG3qNSKwLY5TuZRIhu
+         YiMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698774364; x=1699379164;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V8K0DkHI3HcP+A+JynTn2/kFdnASPuvTWx4LJWoZFTQ=;
-        b=NwKvVsrwigLRtGyxXxmhxPhV5iM9O06K9eobv3DDk3gBejsmy4ue1L+JjJ5rYAgl/J
-         Tx8cxJ5yHpQjTRxhuZWqcaeKfRIPlZR+O4JL3OLg6pHhj8KGVvv7P/eA/CqW/hR6aJqt
-         ufh2s7E+5TtS85Kg2MMT6pMJEdlP1DtAMJAk2ecYASDYAMb+5jqy9eW94ZQMdBOSXaBV
-         K0gGJtzwtaO8Ttu5RoA2J7Rxr2mdNCh73w90wQKMz9lItRGv/xWqV/sD7I6L3RYKqVcp
-         3i3iwfUzqA9xnuuuqpsusn8WCBMUdD7iu/UMbhZjPC/AGZ0YCwIt+fYhlqFBL4+WM7Tj
-         9YSQ==
-X-Gm-Message-State: AOJu0YwH669CmSQkl5TC49tBFjFWPjM2LdwCsM/ZugRLD07hvxXcn5g7
-	CwFlF8nKFg3LXgM07WtNSaA=
-X-Google-Smtp-Source: AGHT+IGbdZlfz2xqjjxeMbayBY9btRbfrUWYVDEYE7Co4VoWQZXWDQeIkwTg8vFqUq9g6NMCtswdVg==
-X-Received: by 2002:a81:ad1a:0:b0:5a7:be29:19ac with SMTP id l26-20020a81ad1a000000b005a7be2919acmr15086065ywh.12.1698774364133;
-        Tue, 31 Oct 2023 10:46:04 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:ac50:f3c6:2a0c:d29? ([2600:1700:6cf8:1240:ac50:f3c6:2a0c:d29])
-        by smtp.gmail.com with ESMTPSA id p127-20020a0dcd85000000b00583b144fe51sm950580ywd.118.2023.10.31.10.46.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 10:46:03 -0700 (PDT)
-Message-ID: <d9e57272-f462-4c11-9b1a-b4257107e3ae@gmail.com>
-Date: Tue, 31 Oct 2023 10:46:02 -0700
+        d=1e100.net; s=20230601; t=1698774642; x=1699379442;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AVg2AG+Lwariw1WKiPyqulp7+oiL9WnhpqDPVfhFT8A=;
+        b=fU7gKqMvXfOoZdV1MtEpuHYGS9fcvual2BpvjQtksMYHvgJ2x2LdypE9cZFvRn//w+
+         jU4Dx9p1xlmKFolMoQT2lPnXRPWjxAQwDbC9Jhh+57cisPKrhHZ6DsAoaA11LD9wfH5Z
+         qlyAO8VfQ4FM7uGOVIlZLIHQuHIA93KIUpWXRLRbu/vKpswj3Dg2VDYAHApl9vazkoWy
+         5Rj1t5wnSIQaEvdAfnASDePr4vQySqEjTtBV09RmeSyXhJc4vSz7gHCJKR0nt/XK4vUq
+         Spu7TN20OCgwnKrIcQkVr4hdLi2/52/Cllz3aV0bfpJI6/DgyxhfWyDQx99G6WIQNjCQ
+         G+KA==
+X-Gm-Message-State: AOJu0YwT1CyhLCHJBiu2qCnCvJP5rvaKKr7VNeGihVMLgLkvW61IgDer
+	nODPWlLuJWresxYIPqVs88vpuanWES0hHwV34RQ=
+X-Google-Smtp-Source: AGHT+IHPWPUOX3gkQZm69APGM6L9oxcsUZZ5NYTtCriNTYFgHPM4AGmbPAO0tuTUyl1nr0ktXrMpeo0C0D57hC9eQkA=
+X-Received: by 2002:a17:907:7f15:b0:9bd:a75a:5644 with SMTP id
+ qf21-20020a1709077f1500b009bda75a5644mr74357ejc.16.1698774642102; Tue, 31 Oct
+ 2023 10:50:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v8 04/10] bpf: hold module for
- bpf_struct_ops_map.
-Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
-Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, drosen@google.com
-References: <20231030192810.382942-1-thinker.li@gmail.com>
- <20231030192810.382942-5-thinker.li@gmail.com>
- <ac35bad1-f978-6278-9619-c5e9ed3b76e5@linux.dev>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <ac35bad1-f978-6278-9619-c5e9ed3b76e5@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20231027181346.4019398-1-andrii@kernel.org> <20231027181346.4019398-18-andrii@kernel.org>
+ <20231031020248.uo54fkisydzwzgvn@MacBook-Pro-49.local> <CAEf4BzbZT11cYbinnGaqGZPiX2Mq5Taksx=VWOMhpuKEj8cXcA@mail.gmail.com>
+ <CAADnVQLADK67wpesGfn=9EoAnXcHV8inBqOt79hjpSdvNS=yiQ@mail.gmail.com>
+In-Reply-To: <CAADnVQLADK67wpesGfn=9EoAnXcHV8inBqOt79hjpSdvNS=yiQ@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 31 Oct 2023 10:50:30 -0700
+Message-ID: <CAEf4BzbTc9wv=QU_ziG+TGcpHkLoQe_0NicKZF83KXgiCfqJFQ@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 17/23] bpf: generalize reg_set_min_max() to
+ handle two sets of two registers
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Oct 31, 2023 at 9:24=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Oct 30, 2023 at 11:03=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Oct 30, 2023 at 7:02=E2=80=AFPM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Fri, Oct 27, 2023 at 11:13:40AM -0700, Andrii Nakryiko wrote:
+> > > >  static void reg_set_min_max(struct bpf_reg_state *true_reg1,
+> > > > +                         struct bpf_reg_state *true_reg2,
+> > > >                           struct bpf_reg_state *false_reg1,
+> > > > -                         u64 val, u32 val32,
+> > > > +                         struct bpf_reg_state *false_reg2,
+> > > >                           u8 opcode, bool is_jmp32)
+> > > >  {
+> > > > -     struct tnum false_32off =3D tnum_subreg(false_reg1->var_off);
+> > > > -     struct tnum false_64off =3D false_reg1->var_off;
+> > > > -     struct tnum true_32off =3D tnum_subreg(true_reg1->var_off);
+> > > > -     struct tnum true_64off =3D true_reg1->var_off;
+> > > > -     s64 sval =3D (s64)val;
+> > > > -     s32 sval32 =3D (s32)val32;
+> > > > -
+> > > > -     /* If the dst_reg is a pointer, we can't learn anything about=
+ its
+> > > > -      * variable offset from the compare (unless src_reg were a po=
+inter into
+> > > > -      * the same object, but we don't bother with that.
+> > > > -      * Since false_reg1 and true_reg1 have the same type by const=
+ruction, we
+> > > > -      * only need to check one of them for pointerness.
+> > > > +     struct tnum false_32off, false_64off;
+> > > > +     struct tnum true_32off, true_64off;
+> > > > +     u64 val;
+> > > > +     u32 val32;
+> > > > +     s64 sval;
+> > > > +     s32 sval32;
+> > > > +
+> > > > +     /* If either register is a pointer, we can't learn anything a=
+bout its
+> > > > +      * variable offset from the compare (unless they were a point=
+er into
+> > > > +      * the same object, but we don't bother with that).
+> > > >        */
+> > > > -     if (__is_pointer_value(false, false_reg1))
+> > >
+> > > The removal of the above check, but not the comment was surprising an=
+d concerning,
+> > > so I did a bit of git-archaeology.
+> > > It was added in commit f1174f77b50c ("bpf/verifier: rework value trac=
+king")
+> > > back in 2017 !
+> > > and in that commit reg_set_min_max() was always called with reg =3D=
+=3D scalar.
+> > > It looked like premature check. Then I spotted a comment in that comm=
+it:
+> > >   * this is only legit if both are scalars (or pointers to the same
+> > >   * object, I suppose, but we don't support that right now), because
+> > >   * otherwise the different base pointers mean the offsets aren't
+> > >   * comparable.
+> > > so the intent back then was to generalize reg_set_min_max() to be use=
+d with pointers too,
+> > > but we never got around to do that and the comment now reads:
+> >
+> > Yeah, it shouldn't be too hard to "generalize" to pointer vs pointer,
+> > if we ensure they point to exactly the same thing (I haven't thought
+> > much about how), because beyond that it's still basically SCALAR
+> > offsets. But I figured it's out of scope for these changes :)
+> >
+> > >   * this is only legit if both are scalars (or pointers to the same
+> > >   * object, I suppose, see the PTR_MAYBE_NULL related if block below)=
+,
+> > >   * because otherwise the different base pointers mean the offsets ar=
+en't
+> > >   * comparable.
+> > >
+> > > So please remove is_pointer check and remove the comment,
+> >
+> > So I'm a bit confused. I did remove __is_pointer_value() check, but I
+> > still need to guard against having pointers, which is why I have:
+> >
+> > if (false_reg1->type !=3D SCALAR_VALUE || false_reg2->type !=3D SCALAR_=
+VALUE).
+> >     return;
+> >
+> > I think I need this check, because reg_set_min_max() can be called
+> > from check_cond_jmp_op() with pointer regs, and we shouldn't try to
+> > adjust them. Or am I missing something? And the comment I have here
+> > now:
+>
+> I don't see a code path where reg_set_min_max() is called
+> with pointers. At least not in the current code base.
+> Are you saying somewhere in your later patch it happens?
+>
+
+Hm.. no, it's all in this patch. Check check_cond_jmp_op(). We at
+least allow `(reg_is_pkt_pointer_any(dst_reg) &&
+reg_is_pkt_pointer_any(src_reg)` case to get into is_branch_taken(),
+which, btw, does handle pointer x pointer, pointer x scalar, and
+scalar x scalar cases. Then, we go straight to reg_set_min_max(), both
+for BPF_X and BPF_K cases. So reg_set_min_max() has to guard itself
+against pointers.
 
 
+> Then the question is whether to do this is_scalar check inside
+> reg_set_min_max() or outside. Both options are probably fine.
 
-On 10/30/23 18:21, Martin KaFai Lau wrote:
-> On 10/30/23 12:28 PM, thinker.li@gmail.com wrote:
->> @@ -681,9 +697,17 @@ static struct bpf_map 
->> *bpf_struct_ops_map_alloc(union bpf_attr *attr)
->>       if (!st_ops_desc)
->>           return ERR_PTR(-ENOTSUPP);
->> +    if (st_ops_desc->btf != btf_vmlinux) {
->> +        mod = btf_try_get_module(st_ops_desc->btf);
->> +        if (!mod)
->> +            return ERR_PTR(-EINVAL);
->> +    }
->> +
->>       vt = st_ops_desc->value_type;
->> -    if (attr->value_size != vt->size)
->> -        return ERR_PTR(-EINVAL);
->> +    if (attr->value_size != vt->size) {
->> +        ret = -EINVAL;
->> +        goto errout;
->> +    }
->>       t = st_ops_desc->type;
->> @@ -694,17 +718,17 @@ static struct bpf_map 
->> *bpf_struct_ops_map_alloc(union bpf_attr *attr)
->>           (vt->size - sizeof(struct bpf_struct_ops_value));
->>       st_map = bpf_map_area_alloc(st_map_size, NUMA_NO_NODE);
->> -    if (!st_map)
->> -        return ERR_PTR(-ENOMEM);
->> +    if (!st_map) {
->> +        ret = -ENOMEM;
->> +        goto errout;
->> +    }
->>       st_map->st_ops_desc = st_ops_desc;
->>       map = &st_map->map;
->>       ret = bpf_jit_charge_modmem(PAGE_SIZE);
->> -    if (ret) {
->> -        __bpf_struct_ops_map_free(map);
->> -        return ERR_PTR(ret);
->> -    }
->> +    if (ret)
->> +        goto errout_free;
->>       st_map->image = bpf_jit_alloc_exec(PAGE_SIZE);
->>       if (!st_map->image) {
->> @@ -713,23 +737,32 @@ static struct bpf_map 
->> *bpf_struct_ops_map_alloc(union bpf_attr *attr)
->>            * here.
->>            */
->>           bpf_jit_uncharge_modmem(PAGE_SIZE);
->> -        __bpf_struct_ops_map_free(map);
->> -        return ERR_PTR(-ENOMEM);
->> +        ret = -ENOMEM;
->> +        goto errout_free;
->>       }
->>       st_map->uvalue = bpf_map_area_alloc(vt->size, NUMA_NO_NODE);
->>       st_map->links =
->>           bpf_map_area_alloc(btf_type_vlen(t) * sizeof(struct 
->> bpf_links *),
->>                      NUMA_NO_NODE);
->>       if (!st_map->uvalue || !st_map->links) {
->> -        __bpf_struct_ops_map_free(map);
->> -        return ERR_PTR(-ENOMEM);
->> +        ret = -ENOMEM;
->> +        goto errout_free;
->>       }
->>       mutex_init(&st_map->lock);
->>       set_vm_flush_reset_perms(st_map->image);
->>       bpf_map_init_from_attr(map, attr);
->> +    module_put(mod);
->> +
->>       return map;
->> +
->> +errout_free:
->> +    __bpf_struct_ops_map_free(map);
->> +    btf = NULL;        /* has been released */
-> 
-> btf is not defined. I don't think this patch compiles.
-> Something from a latter patch?
+Given we have two separate calls to reg_set_min_max(), BPF_X and
+BPF_K, it seems cleaner to do it once at the beginning of
+reg_set_min_max(). And if in the future we do support pointer
+variants, I'd handle them inside reg_set_min_max(), just like
+is_branch_taken() handles different situations in one place
+transparently to the caller.
 
-Yes, it is defined in the next patch. I will fix it.
+>
+> >
+> > +       /* If either register is a pointer, we can't learn anything abo=
+ut its
+> > +        * variable offset from the compare (unless they were a pointer=
+ into
+> > +        * the same object, but we don't bother with that).
+> >          */
+> >
+> > is trying to explain that we don't really adjust two pointers.
+> >
+> > > and fixup the comment in check_cond_jmp_op() where reg_set_min_max().
+> >
+> > I have this locally for now, please let me know if this is fine or you
+> > had something else in mind:
+> >
+> > -/* Adjusts the register min/max values in the case that the dst_reg is=
+ the
+> > - * variable register that we are working on, and src_reg is a constant=
+ or we're
+> > - * simply doing a BPF_K check.
+> > - * In JEQ/JNE cases we also adjust the var_off values.
+> > +/* Adjusts the register min/max values in the case that the dst_reg an=
+d
+> > + * src_reg are both SCALAR_VALUE registers (or we are simply doing a B=
+PF_K
+> > + * check, in which case we havea fake SCALAR_VALUE representing insn->=
+imm).
+> > + * Technically we can do similar adjustments for pointers to the same =
+object,
+> > + * but we don't support that right now.
+>
+> Looks fine. I'm trying to say that we had such comment forever and
+> it never lead to actually doing the work.
+> So I'd just remove the last sentence about pointers ...
 
-> 
->> +errout:
->> +    module_put(mod);
->> +    return ERR_PTR(ret);
->>   }
-> 
+Ah, ok, yep, sure.
+
+>
+> >   */
+> >  static void reg_set_min_max(struct bpf_reg_state *true_reg1,
+> >                             struct bpf_reg_state *true_reg2,
+> > @@ -14884,13 +14885,6 @@ static int check_cond_jmp_op(struct
+> > bpf_verifier_env *env,
+> >                 return -EFAULT;
+> >         other_branch_regs =3D other_branch->frame[other_branch->curfram=
+e]->regs;
+> >
+> > -       /* detect if we are comparing against a constant value so we ca=
+n adjust
+> > -        * our min/max values for our dst register.
+> > -        * this is only legit if both are scalars (or pointers to the s=
+ame
+> > -        * object, I suppose, see the PTR_MAYBE_NULL related if block b=
+elow),
+> > -        * because otherwise the different base pointers mean the offse=
+ts aren't
+> > -        * comparable.
+> > -        */
+>
+> ... and removing this comment is good thing too.
+> In general the comments should be in front of the function body
+> (as you're doing) instead of the callsite.
+
+yep, sounds good
 
