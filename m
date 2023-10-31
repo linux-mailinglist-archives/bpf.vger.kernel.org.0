@@ -1,162 +1,235 @@
-Return-Path: <bpf+bounces-13653-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13654-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F70C7DC469
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 03:28:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F28E17DC481
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 03:37:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E0E01C20BEF
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 02:28:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4F0CB20F4F
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 02:37:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94966469F;
-	Tue, 31 Oct 2023 02:28:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F4EC15A1;
+	Tue, 31 Oct 2023 02:36:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="X00x0lAv"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HXTGtJOt"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59572ED3
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 02:28:18 +0000 (UTC)
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E568FE6
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 19:28:16 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1cc5b6d6228so9497035ad.2
-        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 19:28:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1698719296; x=1699324096; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gsSU3nf3CwyBe16APP7mb6wThVF+fgrIgWcl848naoU=;
-        b=X00x0lAvYhqV/R1N3HX6Dyzz8t0pewHQWcKkvCpBxT0e7jhNIXfCXkJmx8Xhx39M0N
-         5Uu63N16iqKgniEUDdP/xykpj3DlUEl+ZAH19uACnNI5n4W32vFn9EjHUZv/1fF3gvJk
-         +j0t7+Gp2sll6Wz2UUt2oCN5rEBhZanL3dCwaEUjOKJGAksoUEynY5aq3k4bT/lhdrnE
-         skfj40G29qyMUnXJIdil23kH5rzC/7JBPKNAJEyGEAZxPXXUGQyf69dZ5mqeCCljQ4r8
-         Rxfe6HGV9zzIVHsRiWVk/Z3SN9BIsdSkvhckyiIWUaWKr4EjW2Lksq9AF/YReFQDr3Xp
-         o8/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698719296; x=1699324096;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=gsSU3nf3CwyBe16APP7mb6wThVF+fgrIgWcl848naoU=;
-        b=VIFViki0X53y/1U9N4zjI/pfZYDN+7DSAke8TJWe+qJxoZm14rhTkB2bsdm2frGcb9
-         5DGmBCTuOvk5eCiTLJvOb3TNrP42XTy/uXSJ8rre4B58kHcr2Wc4fnUrww8iif6X4DBY
-         ivJ3GYqJCyUgklV7MHJK8pWc01muRKapT3o1sJJGAX+wG884l4uU6CWSDXQgFOtRmAkO
-         Fm10aTdwHvMnGtywWkKD6KnW7eNXIKp8rXE9d63fLk/sI/zFwXIfWlyr71ZlWcsnOmBi
-         99b9QToe1Lmh1kfTV3RHJXgZgBVK75KdXn/nemg6441oPMs3Ii8tuegumIhAiVKcAqW5
-         Dx5A==
-X-Gm-Message-State: AOJu0YyWZIxQKjSeBKPUB9mALW/U9zLP6Bk7Kmp45riEg3RWooyYvdId
-	pN5jB+s/XE0luIA46zZPFnbEMA==
-X-Google-Smtp-Source: AGHT+IH6GTqzd7TAQGRDVepZfUKN/mGy2SAqdZM0GyClRs0jLAJoSYu1Pge5RrXBIeQkhveXa5SBnQ==
-X-Received: by 2002:a17:902:db0f:b0:1cc:5ef7:e3dd with SMTP id m15-20020a170902db0f00b001cc5ef7e3ddmr2439200plx.47.1698719296268;
-        Mon, 30 Oct 2023 19:28:16 -0700 (PDT)
-Received: from [10.254.164.31] ([139.177.225.236])
-        by smtp.gmail.com with ESMTPSA id h5-20020a170902f7c500b001c3f7fd1ef7sm183128plw.12.2023.10.30.19.28.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 19:28:15 -0700 (PDT)
-Message-ID: <80aa5e7c-13ad-49c1-9350-4982353cfe78@bytedance.com>
-Date: Tue, 31 Oct 2023 10:28:10 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D441AA4D
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 02:36:54 +0000 (UTC)
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255CFEA
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 19:36:50 -0700 (PDT)
+Message-ID: <73604c03-75ea-4126-9d8c-38d9581b6d9f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1698719808;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fF3sLgV9ECIJ8pAley6VZPGiy9RqmDb1qwAh4db1m/I=;
+	b=HXTGtJOtJKHEX54oK88R3T/B0RFDx5KlhjOgyoOKrMVazuboBduR3lMbNkxfd+ppgzODmg
+	JdcbtqILOlanvKgoUfi948L6KIIKWfXxGr5SVfe5cxdQADhjgIqRy2Jb2knSsW8Zqt+c9c
+	BbCZPxczcyedBpIPmDHAuVMWrdjWg9M=
+Date: Mon, 30 Oct 2023 19:36:41 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 3/3] selftests/bpf: Add test for using
- css_task iter in sleepable progs
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@kernel.org
-References: <20231025075914.30979-1-zhouchuyi@bytedance.com>
- <20231025075914.30979-4-zhouchuyi@bytedance.com>
- <c361ad7b-9c82-4ec2-ad39-86bdcdf9bd60@linux.dev>
-From: Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <c361ad7b-9c82-4ec2-ad39-86bdcdf9bd60@linux.dev>
+Subject: Re: [PATCH v1 bpf-next 5/6] bpf: Mark direct ld of stashed
+ bpf_{rb,list}_node as non-owning ref
+Content-Language: en-GB
+To: Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>
+References: <20231025214007.2920506-1-davemarchevsky@fb.com>
+ <20231025214007.2920506-6-davemarchevsky@fb.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20231025214007.2920506-6-davemarchevsky@fb.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-
-Hello,
-
-在 2023/10/31 08:20, Yonghong Song 写道:
-> 
-> On 10/25/23 12:59 AM, Chuyi Zhou wrote:
->> This Patch add a test to prove css_task iter can be used in normal
->> sleepable progs.
->>
->> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
->> ---
->>   .../selftests/bpf/progs/iters_task_failure.c  | 19 +++++++++++++++++++
->>   1 file changed, 19 insertions(+)
->>
->> diff --git a/tools/testing/selftests/bpf/progs/iters_task_failure.c 
->> b/tools/testing/selftests/bpf/progs/iters_task_failure.c
->> index 6b1588d70652..fe0b19e545d0 100644
->> --- a/tools/testing/selftests/bpf/progs/iters_task_failure.c
->> +++ b/tools/testing/selftests/bpf/progs/iters_task_failure.c
->> @@ -103,3 +103,22 @@ int BPF_PROG(iter_css_task_for_each)
->>       bpf_cgroup_release(cgrp);
->>       return 0;
->>   }
->> +
->> +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
->> +int BPF_PROG(iter_css_task_for_each_sleep)
->> +{
->> +    u64 cg_id = bpf_get_current_cgroup_id();
->> +    struct cgroup *cgrp = bpf_cgroup_from_id(cg_id);
->> +    struct cgroup_subsys_state *css;
->> +    struct task_struct *task;
->> +
->> +    if (cgrp == NULL)
->> +        return 0;
->> +    css = &cgrp->self;
->> +
->> +    bpf_for_each(css_task, task, css, CSS_TASK_ITER_PROCS) {
->> +
->> +    }
->> +    bpf_cgroup_release(cgrp);
->> +    return 0;
->> +}
-> 
-> Could you move this prog toiters_css_task.c and add a subtest in 
-> cgroup_iter.c? The file iters_task_failure.c intends for negative tests. 
-> This prog succeeds with loading.
-> 
-
-Thanks for the review. I will change in next version.
-
-But do we need a extra subtest like subtest_css_task_iters() in iters.c 
-or just use RUN_TESTS(iters_css_task) to prove it can be loaded?
-
-If we do need a extra subtest, maybe we can reuse 
-subtest_css_task_iters() in iters.c? cgroup_iter.c is used to test 
-SEC("iter/cgroup") and iters.c is used to test open-coded iters.
-
-We can let this prog outo-loaded, and use 'syscall(SYS_getpgid)' after 
-'stack_mprotect()' to trigger the prog.
-
-static void subtest_css_task_iters(void)
-{
-	...
-	err = stack_mprotect();
-	syscall(SYS_getpgid);
-	if (!ASSERT_EQ(err, -1, "stack_mprotect") ||
-	    !ASSERT_EQ(errno, EPERM, "stack_mprotect"))
-		goto cleanup;
-	iters_css_task__detach(skel);
-	ASSERT_EQ(skel->bss->css_task_cnt_in_lsm, 1, "css_task_cnt_in_lsm");
-	ASSERT_EQ(skel->bss->css_task_cnt_in_sleep, 1, "css_task_cnt_in_sleep");
-	...
-}
-
-What do you think?
-
-Thanks.
+X-Migadu-Flow: FLOW_OUT
 
 
+On 10/25/23 2:40 PM, Dave Marchevsky wrote:
+> This patch enables the following pattern:
+>
+>    /* mapval contains a __kptr pointing to refcounted local kptr */
+>    mapval = bpf_map_lookup_elem(&map, &idx);
+>    if (!mapval || !mapval->some_kptr) { /* omitted */ }
+>
+>    p = bpf_refcount_acquire(&mapval->some_kptr);
+>
+> Currently this doesn't work because bpf_refcount_acquire expects an
+> owning or non-owning ref. The verifier defines non-owning ref as a type:
+>
+>    PTR_TO_BTF_ID | MEM_ALLOC | NON_OWN_REF
+>
+> while mapval->some_kptr is PTR_TO_BTF_ID | PTR_UNTRUSTED. It's possible
+> to do the refcount_acquire by first bpf_kptr_xchg'ing mapval->some_kptr
+> into a temp kptr, refcount_acquiring that, and xchg'ing back into
+> mapval, but this is unwieldy and shouldn't be necessary.
+>
+> This patch modifies btf_ld_kptr_type such that user-allocated types are
+> marked MEM_ALLOC and if those types have a bpf_{rb,list}_node they're
+> marked NON_OWN_REF as well. Additionally, due to changes to
+> bpf_obj_drop_impl earlier in this series, rcu_protected_object now
+> returns true for all user-allocated types, resulting in
+> mapval->some_kptr being marked MEM_RCU.
+>
+> After this patch's changes, mapval->some_kptr is now:
+>
+>    PTR_TO_BTF_ID | MEM_ALLOC | NON_OWN_REF | MEM_RCU
+>
+> which results in it passing the non-owning ref test, and the motivating
+> example passing verification.
+>
+> Future work will likely get rid of special non-owning ref lifetime logic
+> in the verifier, at which point we'll be able to delete the NON_OWN_REF
+> flag entirely.
+>
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> ---
+>   kernel/bpf/verifier.c | 36 +++++++++++++++++++++++++++++++-----
+>   1 file changed, 31 insertions(+), 5 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 857d76694517..bb098a4c8fd5 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5396,10 +5396,23 @@ BTF_SET_END(rcu_protected_types)
+>   static bool rcu_protected_object(const struct btf *btf, u32 btf_id)
+>   {
+>   	if (!btf_is_kernel(btf))
+> -		return false;
+> +		return true;
+>   	return btf_id_set_contains(&rcu_protected_types, btf_id);
+>   }
+>   
+> +static struct btf_record *kptr_pointee_btf_record(struct btf_field *kptr_field)
+> +{
+> +	struct btf_struct_meta *meta;
+> +
+> +	if (btf_is_kernel(kptr_field->kptr.btf))
+> +		return NULL;
+> +
+> +	meta = btf_find_struct_meta(kptr_field->kptr.btf,
+> +				    kptr_field->kptr.btf_id);
+> +
+> +	return meta ? meta->record : NULL;
+> +}
+> +
+>   static bool rcu_safe_kptr(const struct btf_field *field)
+>   {
+>   	const struct btf_field_kptr *kptr = &field->kptr;
+> @@ -5410,12 +5423,25 @@ static bool rcu_safe_kptr(const struct btf_field *field)
+>   
+>   static u32 btf_ld_kptr_type(struct bpf_verifier_env *env, struct btf_field *kptr_field)
+>   {
+> +	struct btf_record *rec;
+> +	u32 ret;
+> +
+> +	ret = PTR_MAYBE_NULL;
+>   	if (rcu_safe_kptr(kptr_field) && in_rcu_cs(env)) {
+> -		if (kptr_field->type != BPF_KPTR_PERCPU)
+> -			return PTR_MAYBE_NULL | MEM_RCU;
+> -		return PTR_MAYBE_NULL | MEM_RCU | MEM_PERCPU;
+> +		ret |= MEM_RCU;
+> +		if (kptr_field->type == BPF_KPTR_PERCPU)
+> +			ret |= MEM_PERCPU;
+> +		if (!btf_is_kernel(kptr_field->kptr.btf))
+> +			ret |= MEM_ALLOC;
+> +
+> +		rec = kptr_pointee_btf_record(kptr_field);
+> +		if (rec && btf_record_has_field(rec, BPF_GRAPH_NODE))
+> +			ret |= NON_OWN_REF;
+> +	} else {
+> +		ret |= PTR_UNTRUSTED;
+>   	}
+> -	return PTR_MAYBE_NULL | PTR_UNTRUSTED;
+> +
+> +	return ret;
+>   }
 
+The CI reported a failure.
+   https://github.com/kernel-patches/bpf/actions/runs/6675467065/job/18143577936?pr=5886
+
+Error: #162 percpu_alloc
+Error:#162/1 percpu_alloc/array
+Error:#162/2 percpu_alloc/array_sleepable
+Error:#162/3 percpu_alloc/cgrp_local_storage
+
+Error: #162 percpu_alloc
+Error:#162/1 percpu_alloc/array
+Error: #162/1 percpu_alloc/array
+test_array:PASS:percpu_alloc_array__open 0 nsec
+libbpf: prog 'test_array_map_2': BPF program load failed: Permission denied
+libbpf: prog 'test_array_map_2': -- BEGIN PROG LOAD LOG --
+reg type unsupported for arg#0 function test_array_map_2#25
+0: R1=ctx(off=0,imm=0) R10=fp0
+; int BPF_PROG(test_array_map_2)
+0: (b4) w1 = 0 ; R1_w=0
+; int index = 0;
+1: (63) *(u32 *)(r10 -4) = r1 ; R1_w=0 R10=fp0 fp-8=0000????
+2: (bf) r2 = r10 ; R2_w=fp0 R10=fp0
+;
+3: (07) r2 += -4 ; R2_w=fp-4
+; e = bpf_map_lookup_elem(&array, &index);
+4: (18) r1 = 0xffffa3bd813c5400 ; R1_w=map_ptr(off=0,ks=4,vs=16,imm=0)
+6: (85) call bpf_map_lookup_elem#1 ; 
+R0_w=map_value_or_null(id=1,off=0,ks=4,vs=16,imm=0)
+; if (!e)
+7: (15) if r0 == 0x0 goto pc+9 ; R0_w=map_value(off=0,ks=4,vs=16,imm=0)
+; p = e->pc;
+8: (79) r1 = *(u64 *)(r0 +8) ; R0=map_value(off=0,ks=4,vs=16,imm=0) 
+R1=percpu_rcu_ptr_or_null_val_t(id=2,off=0,imm=0)
+; if (!p)
+9: (15) if r1 == 0x0 goto pc+7 ; R1=percpu_rcu_ptr_val_t(off=0,imm=0)
+; v = bpf_per_cpu_ptr(p, 0);
+10: (b4) w2 = 0 ; R2_w=0
+11: (85) call bpf_per_cpu_ptr#153
+R1 type=percpu_rcu_ptr_ expected=percpu_ptr_, percpu_rcu_ptr_, 
+percpu_trusted_ptr_
+processed 11 insns (limit 1000000) max_states_per_insn 0 total_states 1 
+peak_states 1 mark_read 1
+-- END PROG LOAD LOG --
+libbpf: prog 'test_array_map_2': failed to load: -13
+libbpf: failed to load object 'percpu_alloc_array'
+libbpf: failed to load BPF skeleton 'percpu_alloc_array': -13
+test_array:FAIL:percpu_alloc_array__load unexpected error: -13 (errno 13)
+
+The following hack can fix the issue.
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index bb098a4c8fd5..2bbda1f5e858 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5431,7 +5431,7 @@ static u32 btf_ld_kptr_type(struct 
+bpf_verifier_env *env, struct btf_field *kptr
+                 ret |= MEM_RCU;
+                 if (kptr_field->type == BPF_KPTR_PERCPU)
+                         ret |= MEM_PERCPU;
+-               if (!btf_is_kernel(kptr_field->kptr.btf))
++               else if (!btf_is_kernel(kptr_field->kptr.btf))
+                         ret |= MEM_ALLOC;
+
+                 rec = kptr_pointee_btf_record(kptr_field);
+
+
+Note in the current kernel, MEM_RCU | MEM_PERCPU implies non-kernel 
+kptr. The kernel PERCPU kptr has PTR_TRUSTED | MEM_PERCPU. So there is 
+no MEM_ALLOC. Adding MEM_ALLOC might need changes in other places 
+w.r.t., percpu non-kernel kptr.
+
+Please take a look.
+
+>   
+>   static int check_map_kptr_access(struct bpf_verifier_env *env, u32 regno,
 
