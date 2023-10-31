@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-13685-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13683-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2317B7DC66B
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 07:19:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA8AB7DC669
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 07:19:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B05DD1F22239
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 06:19:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 262C51C20BB3
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 06:19:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B6E0101F8;
-	Tue, 31 Oct 2023 06:18:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F5210A16;
+	Tue, 31 Oct 2023 06:18:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cLkPKecR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JeVtV7dy"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6032F107B4
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 06:18:54 +0000 (UTC)
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B6EEE
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 23:09:30 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-778925998cbso373240485a.0
-        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 23:09:30 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48DEE101FA
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 06:18:50 +0000 (UTC)
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655B4C1
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 23:08:13 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-41e1974783cso34264831cf.3
+        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 23:08:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698732570; x=1699337370; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698732492; x=1699337292; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MoFSLdNv9BgdZXMvRsLNv+khDd0bU37YBKNQN5ndCUM=;
-        b=cLkPKecR4objqz1QIrgHbCCi9WKoLl0QCd1pKvso5TB8fDDyd5n/9yXweCaPpKH9cp
-         qb3owUQB5XLMIzsrF3C+Xk2sg73uCi8R+fg3lEzx1cAk9Z5mIQ0ts/iU4VvwEckStaoZ
-         GliZan1j8sJgJFv4xw1QuZFXNIDWe9W97hzduRWtF8qEKVnlNG3vfp9+ZDjUFqMVQTeA
-         CIuaZIMyewb5anPPlv4dOaukWN3U10kvj9Rvopodpm28NHanhQVGXsX/d4jJXtvbi86t
-         VQorewtYogfibZdlV93UX9QBZNyrYmmXBUAaMyRqfnfcKkCLaX+ed3yOLEUGIa2TsVJ5
-         L/jA==
+        bh=xUS+urLlc3l5lMxBmDrHF/GhNDqUeMARNzj5fIJEJlY=;
+        b=JeVtV7dyjU0Bi3WhvlUK/pUXmXUZNauUBtuZmiHkB0zluH229dIhbHRGqKs0ytICL2
+         xNXmsWp7q7AmPek2Dg64XaZmjNjJsvezMUqnZ0cL+mNuYT5DHrRn5AtjeDrk4j0tu4WI
+         RoJKFLRen42xYze32pTsI2TIeeTzfDy4VXYpppvpg4v01srIX4WoaEIx6lNr+rf2uNQ5
+         HoKXJDu6RtbYKGwexBgHThoDYKqkhDm6ji5SEeGh981as5Kl6Ji4lp+07p2/FKrUdevF
+         tUQ1LmGevTmvPRIZ6dj6pdkosI1CmmHQe2OEWaZYuUBqc4ESABc/HM4wi4YldiQ5na+O
+         yQOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698732570; x=1699337370;
+        d=1e100.net; s=20230601; t=1698732492; x=1699337292;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MoFSLdNv9BgdZXMvRsLNv+khDd0bU37YBKNQN5ndCUM=;
-        b=O1dGFr1mUhINdqG5wMVrAVxpLalNY35D8gD2ZMcLbHXQJgcQ/Kg6Q2zcYObqOZZvTz
-         opYjbpln5rDYnL4BBOxi6jZimKa+RcSko0mhTaj9CuoY0OPz59YDt61ztBaHRWQlqE7C
-         zd6z6a6Z7Vtw9hItM8ODtpC8+ScRe8l6Rjm0wiFuOTjenNqZwnd7yPGfMLYCsUEpM2hu
-         c6zf4kwHz9c61bgHlgj5vbD4Trxu5nzeA/q48B83fktnVoEjYM0+LwUjasslLUfH+OXc
-         PzjXrbFWiv08Z6wJ93nHeqVmhVGiBMVlvYsBBDHuhxaXmYP9VFp7IxINkPGmcBxZj+rB
-         Ys5w==
-X-Gm-Message-State: AOJu0YzhqqfeuXnBJXgt60RxUreVJtWXu5Ak8mbKdFccynnj7diXB2AJ
-	I9aTrSQ+6Po60MoOEJEb6hGjvzfK5kZ7/A==
-X-Google-Smtp-Source: AGHT+IFgahv4dofu1sz24kDo1ybg8cdXKxmHnl6Ij28tDiq9Ni78XN2pgtV51tBIwMF+yEg4VU5G1w==
-X-Received: by 2002:a17:902:e803:b0:1cc:482c:bc4d with SMTP id u3-20020a170902e80300b001cc482cbc4dmr4371642plg.5.1698732026837;
-        Mon, 30 Oct 2023 23:00:26 -0700 (PDT)
+        bh=xUS+urLlc3l5lMxBmDrHF/GhNDqUeMARNzj5fIJEJlY=;
+        b=SSj6ZFicXK3xKrxDJMwvZONWrqOsE46GuzGek7K8Rjipkyo+L14SL6MJ3S8EIkKtAY
+         8MGz/uZwD6DdycEz56gTYFq0iFKeafEOzfzIV1aF+iDQQ/+P4VXvH0jTMnX6RlSMnzBc
+         /HSsecJyYewpG6o5dcwog8i6PcUFWJLF3/wQl8kqZy7VySpO3pxrNeoxqA0xvcjV7sEj
+         vFaj+mc3mcSE9wgmpzhSsPENkn8H2FqDtB6MMZ/qntfaV7TsQcZg1c8oxifAf1RmdWmo
+         KlonHipz93XLAlNI5ObcnnmmOpT6KS1g4wiQ2BHYXuP8ktNybEa2QNIPJO4t30x138nJ
+         y9xg==
+X-Gm-Message-State: AOJu0YzPWrcqQ5hN2F62sX3nkMmoBOIzEPoxo3c2yTyyha62a2JrrX/v
+	IsnYsUnAcNVqDHsKfq30Kwbg6hCFXF8ZOg==
+X-Google-Smtp-Source: AGHT+IEMarcjHGbYarFj4G2ffbj28C5zjWId8cBBqSRV233XWfBRGcC7JYUo1+b9SW+iwY9DKnA0sw==
+X-Received: by 2002:a05:6a20:d90b:b0:180:f8c2:633c with SMTP id jd11-20020a056a20d90b00b00180f8c2633cmr732820pzb.53.1698732038967;
+        Mon, 30 Oct 2023 23:00:38 -0700 (PDT)
 Received: from ubuntu.. ([203.205.141.13])
-        by smtp.googlemail.com with ESMTPSA id x5-20020a170902b40500b001cc50f67fbasm460683plr.281.2023.10.30.23.00.25
+        by smtp.googlemail.com with ESMTPSA id x5-20020a170902b40500b001cc50f67fbasm460683plr.281.2023.10.30.23.00.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 23:00:26 -0700 (PDT)
+        Mon, 30 Oct 2023 23:00:38 -0700 (PDT)
 From: Hengqi Chen <hengqi.chen@gmail.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -67,9 +67,9 @@ Cc: ast@kernel.org,
 	luto@amacapital.net,
 	wad@chromium.org,
 	hengqi.chen@gmail.com
-Subject: [PATCH bpf-next 2/6] bpf: Add test_run support for seccomp program type
-Date: Tue, 31 Oct 2023 01:24:03 +0000
-Message-Id: <20231031012407.51371-3-hengqi.chen@gmail.com>
+Subject: [PATCH bpf-next 3/6] seccomp: Refactor filter copy/create for reuse
+Date: Tue, 31 Oct 2023 01:24:04 +0000
+Message-Id: <20231031012407.51371-4-hengqi.chen@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231031012407.51371-1-hengqi.chen@gmail.com>
 References: <20231031012407.51371-1-hengqi.chen@gmail.com>
@@ -81,89 +81,110 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Implement test_run for seccomp program type. Default
-is to use an empty struct seccomp_data as bpf_context,
-but can be overridden by userspace. This will be used
-in selftests.
+This refactors seccomp_prepare_filter() for reuse in
+subsequent additions. No functional change intended.
 
 Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 ---
- include/linux/bpf.h |  3 +++
- kernel/seccomp.c    |  1 +
- net/bpf/test_run.c  | 27 +++++++++++++++++++++++++++
- 3 files changed, 31 insertions(+)
+ kernel/seccomp.c | 50 +++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 35 insertions(+), 15 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index b4825d3cdb29..e25338e67ec4 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2376,6 +2376,9 @@ int bpf_prog_test_run_sk_lookup(struct bpf_prog *prog,
- int bpf_prog_test_run_nf(struct bpf_prog *prog,
- 			 const union bpf_attr *kattr,
- 			 union bpf_attr __user *uattr);
-+int bpf_prog_test_run_seccomp(struct bpf_prog *prog,
-+			      const union bpf_attr *kattr,
-+			      union bpf_attr __user *uattr);
- bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 		    const struct bpf_prog *prog,
- 		    struct bpf_insn_access_aux *info);
 diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 5a6ed8630566..1fa2312654a5 100644
+index 1fa2312654a5..2a724690a627 100644
 --- a/kernel/seccomp.c
 +++ b/kernel/seccomp.c
-@@ -2517,6 +2517,7 @@ int proc_pid_seccomp_cache(struct seq_file *m, struct pid_namespace *ns,
- 
- #if defined(CONFIG_SECCOMP_FILTER) && defined(CONFIG_BPF_SYSCALL)
- const struct bpf_prog_ops seccomp_prog_ops = {
-+	.test_run = bpf_prog_test_run_seccomp,
- };
- 
- static bool seccomp_is_valid_access(int off, int size, enum bpf_access_type type,
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 0841f8d82419..db159b9c56ca 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -20,6 +20,7 @@
- #include <linux/smp.h>
- #include <linux/sock_diag.h>
- #include <linux/netfilter.h>
-+#include <linux/seccomp.h>
- #include <net/netdev_rx_queue.h>
- #include <net/xdp.h>
- #include <net/netfilter/nf_bpf_link.h>
-@@ -1665,6 +1666,32 @@ int bpf_prog_test_run_nf(struct bpf_prog *prog,
- 	return ret;
+@@ -641,14 +641,14 @@ static inline void seccomp_sync_threads(unsigned long flags)
  }
  
-+int bpf_prog_test_run_seccomp(struct bpf_prog *prog,
-+			      const union bpf_attr *kattr,
-+			      union bpf_attr __user *uattr)
-+{
-+	void __user *ctx_in = u64_to_user_ptr(kattr->test.ctx_in);
-+	__u32 ctx_size_in = kattr->test.ctx_size_in;
-+	struct seccomp_data ctx = {};
-+	__u32 retval;
-+
-+	if (kattr->test.flags || kattr->test.cpu || kattr->test.batch_size)
+ /**
+- * seccomp_prepare_filter: Prepares a seccomp filter for use.
+- * @fprog: BPF program to install
++ * seccomp_prepare_prog - prepares a JITed BPF filter for use.
++ * @pfp: the unattached filter that is created
++ * @fprog: the filter program
+  *
+- * Returns filter on success or an ERR_PTR on failure.
++ * Returns 0 on success and non-zero otherwise.
+  */
+-static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
++static int seccomp_prepare_prog(struct bpf_prog **pfp, struct sock_fprog *fprog)
+ {
+-	struct seccomp_filter *sfilter;
+ 	int ret;
+ 	const bool save_orig =
+ #if defined(CONFIG_CHECKPOINT_RESTORE) || defined(SECCOMP_ARCH_NATIVE)
+@@ -658,10 +658,27 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
+ #endif
+ 
+ 	if (fprog->len == 0 || fprog->len > BPF_MAXINSNS)
+-		return ERR_PTR(-EINVAL);
 +		return -EINVAL;
-+
-+	if (ctx_size_in && ctx_size_in < sizeof(ctx))
-+		return -EINVAL;
-+
-+	if (ctx_size_in && copy_from_user(&ctx, ctx_in, sizeof(ctx)))
-+		return -EFAULT;
-+
-+	retval = bpf_prog_run_pin_on_cpu(prog, &ctx);
-+
-+	if (copy_to_user(&uattr->test.retval, &retval, sizeof(retval)))
-+		return -EFAULT;
+ 
+ 	BUG_ON(INT_MAX / fprog->len < sizeof(struct sock_filter));
+ 
++	ret = bpf_prog_create_from_user(pfp, fprog, seccomp_check_filter, save_orig);
++	if (ret < 0)
++		return ret;
 +
 +	return 0;
 +}
 +
- static const struct btf_kfunc_id_set bpf_prog_test_kfunc_set = {
- 	.owner = THIS_MODULE,
- 	.set   = &test_sk_check_kfunc_ids,
++/**
++ * seccomp_prepare_filter: Prepares a seccomp filter for use.
++ * @prog: BPF program to install
++ *
++ * Returns filter on success or an ERR_PTR on failure.
++ */
++static struct seccomp_filter *seccomp_prepare_filter(struct bpf_prog *prog)
++{
++	struct seccomp_filter *sfilter;
++
+ 	/*
+ 	 * Installing a seccomp filter requires that the task has
+ 	 * CAP_SYS_ADMIN in its namespace or be running with no_new_privs.
+@@ -678,13 +695,7 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	mutex_init(&sfilter->notify_lock);
+-	ret = bpf_prog_create_from_user(&sfilter->prog, fprog,
+-					seccomp_check_filter, save_orig);
+-	if (ret < 0) {
+-		kfree(sfilter);
+-		return ERR_PTR(ret);
+-	}
+-
++	sfilter->prog = prog;
+ 	refcount_set(&sfilter->refs, 1);
+ 	refcount_set(&sfilter->users, 1);
+ 	init_waitqueue_head(&sfilter->wqh);
+@@ -701,8 +712,10 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
+ static struct seccomp_filter *
+ seccomp_prepare_user_filter(const char __user *user_filter)
+ {
+-	struct sock_fprog fprog;
+ 	struct seccomp_filter *filter = ERR_PTR(-EFAULT);
++	struct sock_fprog fprog;
++	struct bpf_prog *prog;
++	int ret;
+ 
+ #ifdef CONFIG_COMPAT
+ 	if (in_compat_syscall()) {
+@@ -715,7 +728,14 @@ seccomp_prepare_user_filter(const char __user *user_filter)
+ #endif
+ 	if (copy_from_user(&fprog, user_filter, sizeof(fprog)))
+ 		goto out;
+-	filter = seccomp_prepare_filter(&fprog);
++
++	ret = seccomp_prepare_prog(&prog, &fprog);
++	if (ret)
++		return ERR_PTR(ret);
++
++	filter = seccomp_prepare_filter(prog);
++	if (IS_ERR(filter))
++		bpf_prog_destroy(prog);
+ out:
+ 	return filter;
+ }
 -- 
 2.34.1
 
