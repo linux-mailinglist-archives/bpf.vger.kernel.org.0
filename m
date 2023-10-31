@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-13666-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13665-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAC4D7DC59F
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 06:04:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77E637DC59D
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 06:04:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B3FD1F2223D
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 05:04:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E3F82812ED
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 05:04:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E3BC8F5;
-	Tue, 31 Oct 2023 05:03:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D6CF6FD8;
+	Tue, 31 Oct 2023 05:03:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8E7D28D
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 05:03:57 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656C7DD
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 22:03:56 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39UKaShX002508
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 22:03:56 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B675D289
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 05:03:56 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44A1C9
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 22:03:54 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+	by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 39UIuPMt032353
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 22:03:54 -0700
 Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3u1p2ba7ng-10
+	by m0001303.ppops.net (PPS) with ESMTPS id 3u2j74aw3p-8
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 22:03:55 -0700
-Received: from twshared39705.02.prn5.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 22:03:53 -0700
+Received: from twshared34392.14.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 30 Oct 2023 22:03:48 -0700
+ 15.1.2507.34; Mon, 30 Oct 2023 22:03:50 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 9AD883AA9B6F6; Mon, 30 Oct 2023 22:03:36 -0700 (PDT)
+	id A320F3AA9B6FE; Mon, 30 Oct 2023 22:03:38 -0700 (PDT)
 From: Andrii Nakryiko <andrii@kernel.org>
 To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>
 CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH bpf-next 5/7] bpf: preserve STACK_ZERO slots on partial reg spills
-Date: Mon, 30 Oct 2023 22:03:22 -0700
-Message-ID: <20231031050324.1107444-6-andrii@kernel.org>
+Subject: [PATCH bpf-next 6/7] bpf: preserve constant zero when doing partial register restore
+Date: Mon, 30 Oct 2023 22:03:23 -0700
+Message-ID: <20231031050324.1107444-7-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231031050324.1107444-1-andrii@kernel.org>
 References: <20231031050324.1107444-1-andrii@kernel.org>
@@ -54,122 +54,72 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Ijn2O2dORuFnmJcx1g18JukoNKSXN9J1
-X-Proofpoint-GUID: Ijn2O2dORuFnmJcx1g18JukoNKSXN9J1
+X-Proofpoint-GUID: XTS8m0OGApaFzxBT9hfJ5dCjqJjy6lNx
+X-Proofpoint-ORIG-GUID: XTS8m0OGApaFzxBT9hfJ5dCjqJjy6lNx
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-30_13,2023-10-31_01,2023-05-22_02
 
-Instead of always forcing STACK_ZERO slots to STACK_MISC, preserve it in
-situations where this is possible. E.g., when spilling register as
-1/2/4-byte subslots on the stack, all the remaining bytes in the stack
-slot do not automatically become unknown. If we knew they contained
-zeroes, we can preserve those STACK_ZERO markers.
-
-Add a helper mark_stack_slot_misc(), similar to scrub_spilled_slot(),
-but that doesn't overwrite either STACK_INVALID nor STACK_ZERO. Note
-that we need to take into account possibility of being in unprivileged
-mode, in which case STACK_INVALID is forced to STACK_MISC for correctness=
-,
-as treating STACK_INVALID as equivalent STACK_MISC is only enabled in
-privileged mode.
+Similar to special handling of STACK_ZERO, when reading 1/2/4 bytes from
+stack from slot that has register spilled into it and that register has
+a constant value zero, preserve that zero and mark spilled register as
+precise for that. This makes spilled const zero register and STACK_ZERO
+cases equivalent in their behavior.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/verifier.c | 28 +++++++++++++++++++++++-----
- 1 file changed, 23 insertions(+), 5 deletions(-)
+ kernel/bpf/verifier.c | 25 +++++++++++++++++++++----
+ 1 file changed, 21 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 82992c32c1bd..0eecc6b3109c 100644
+index 0eecc6b3109c..8cfe060e4938 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -1355,6 +1355,21 @@ static void scrub_spilled_slot(u8 *stype)
- 		*stype =3D STACK_MISC;
- }
-=20
-+/* Mark stack slot as STACK_MISC, unless it is already STACK_INVALID, in=
- which
-+ * case they are equivalent, or it's STACK_ZERO, in which case we preser=
-ve
-+ * more precise STACK_ZERO.
-+ * Note, in uprivileged mode leaving STACK_INVALID is wrong, so we take
-+ * env->allow_ptr_leaks into account and force STACK_MISC, if necessary.
-+ */
-+static void mark_stack_slot_misc(struct bpf_verifier_env *env, u8 *stype=
-)
-+{
-+	if (*stype =3D=3D STACK_ZERO)
-+		return;
-+	if (env->allow_ptr_leaks && *stype =3D=3D STACK_INVALID)
-+		return;
-+	*stype =3D STACK_MISC;
-+}
+@@ -4958,22 +4958,39 @@ static int check_stack_read_fixed_off(struct bpf_=
+verifier_env *env,
+ 				copy_register_state(&state->regs[dst_regno], reg);
+ 				state->regs[dst_regno].subreg_def =3D subreg_def;
+ 			} else {
++				int spill_cnt =3D 0, zero_cnt =3D 0;
 +
- static void print_scalar_ranges(struct bpf_verifier_env *env,
- 				const struct bpf_reg_state *reg,
- 				const char **sep)
-@@ -4577,7 +4592,8 @@ static void copy_register_state(struct bpf_reg_stat=
-e *dst, const struct bpf_reg_
- 	dst->live =3D live;
- }
-=20
--static void save_register_state(struct bpf_func_state *state,
-+static void save_register_state(struct bpf_verifier_env *env,
-+				struct bpf_func_state *state,
- 				int spi, struct bpf_reg_state *reg,
- 				int size)
- {
-@@ -4592,7 +4608,7 @@ static void save_register_state(struct bpf_func_sta=
-te *state,
-=20
- 	/* size < 8 bytes spill */
- 	for (; i; i--)
--		scrub_spilled_slot(&state->stack[spi].slot_type[i - 1]);
-+		mark_stack_slot_misc(env, &state->stack[spi].slot_type[i - 1]);
- }
-=20
- static bool is_bpf_st_mem(struct bpf_insn *insn)
-@@ -4654,7 +4670,7 @@ static int check_stack_write_fixed_off(struct bpf_v=
-erifier_env *env,
- 	mark_stack_slot_scratched(env, spi);
- 	if (reg && !(off % BPF_REG_SIZE) && register_is_bounded(reg) &&
- 	    !register_is_null(reg) && env->bpf_capable) {
--		save_register_state(state, spi, reg, size);
-+		save_register_state(env, state, spi, reg, size);
- 		/* Break the relation on a narrowing spill. */
- 		if (fls64(reg->umax_value) > BITS_PER_BYTE * size)
- 			state->stack[spi].spilled_ptr.id =3D 0;
-@@ -4664,7 +4680,7 @@ static int check_stack_write_fixed_off(struct bpf_v=
-erifier_env *env,
-=20
- 		__mark_reg_known(&fake_reg, (u32)insn->imm);
- 		fake_reg.type =3D SCALAR_VALUE;
--		save_register_state(state, spi, &fake_reg, size);
-+		save_register_state(env, state, spi, &fake_reg, size);
- 		insn_flags =3D 0; /* not a register spill */
- 	} else if (reg && is_spillable_regtype(reg->type)) {
- 		/* register containing pointer is being spilled into stack */
-@@ -4677,7 +4693,7 @@ static int check_stack_write_fixed_off(struct bpf_v=
-erifier_env *env,
- 			verbose(env, "cannot spill pointers to stack into stack frame of the =
-caller\n");
- 			return -EINVAL;
- 		}
--		save_register_state(state, spi, reg, size);
-+		save_register_state(env, state, spi, reg, size);
- 	} else {
- 		u8 type =3D STACK_MISC;
-=20
-@@ -4948,6 +4964,8 @@ static int check_stack_read_fixed_off(struct bpf_ve=
-rifier_env *env,
+ 				for (i =3D 0; i < size; i++) {
+ 					type =3D stype[(slot - i) % BPF_REG_SIZE];
+-					if (type =3D=3D STACK_SPILL)
++					if (type =3D=3D STACK_SPILL) {
++						spill_cnt++;
  						continue;
++					}
  					if (type =3D=3D STACK_MISC)
  						continue;
-+					if (type =3D=3D STACK_ZERO)
-+						continue;
+-					if (type =3D=3D STACK_ZERO)
++					if (type =3D=3D STACK_ZERO) {
++						zero_cnt++;
+ 						continue;
++					}
  					if (type =3D=3D STACK_INVALID && env->allow_uninit_stack)
  						continue;
  					verbose(env, "invalid read from stack off %d+%d size %d\n",
+ 						off, i, size);
+ 					return -EACCES;
+ 				}
+-				mark_reg_unknown(env, state->regs, dst_regno);
+-				insn_flags =3D 0; /* not restoring original register state */
++
++				if (spill_cnt =3D=3D size &&
++				    tnum_is_const(reg->var_off) && reg->var_off.value =3D=3D 0) {
++					__mark_reg_const_zero(&state->regs[dst_regno]);
++					/* this IS register fill, so keep insn_flags */
++				} else if (zero_cnt =3D=3D size) {
++					/* similarly to mark_reg_stack_read(), preserve zeroes */
++					__mark_reg_const_zero(&state->regs[dst_regno]);
++					insn_flags =3D 0; /* not restoring original register state */
++				} else {
++					mark_reg_unknown(env, state->regs, dst_regno);
++					insn_flags =3D 0; /* not restoring original register state */
++				}
+ 			}
+ 			state->regs[dst_regno].live |=3D REG_LIVE_WRITTEN;
+ 		} else if (dst_regno >=3D 0) {
 --=20
 2.34.1
 
