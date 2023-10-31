@@ -1,142 +1,207 @@
-Return-Path: <bpf+bounces-13677-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13686-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF3037DC628
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 06:56:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 902DE7DC66C
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 07:19:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7FBD6B20E99
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 05:56:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44EFD28160B
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 06:19:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56525DDBF;
-	Tue, 31 Oct 2023 05:56:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 263A31097E;
+	Tue, 31 Oct 2023 06:18:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R41/PFOJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HbQfRBzq"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E441D535
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 05:56:40 +0000 (UTC)
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2099ADE
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 22:56:39 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-66d0252578aso34685996d6.0
-        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 22:56:39 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D539107AF
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 06:18:53 +0000 (UTC)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BDF126
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 23:12:18 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32f87b1c725so1443531f8f.3
+        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 23:12:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698731791; x=1699336591; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698732737; x=1699337537; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hPutwxc2ouh1GHJHavtt+jiBGrJCCfv7E2utFChZlp8=;
-        b=R41/PFOJuyb3vgN7+7XY4pEofYeFS8WL99oHZQCNo3bshRym9GMg9HiaNob+Rus40h
-         XTWm31ullFudI/vkUsXY2gG19VP5/XHxP2QKz7kL8Q7dotiWHdXq45fASDNo9zJALgvR
-         K89QpK5okDEkFPxa95U3Mw/6kSvPfbBw2hFKGvn1JCzDf/d2Z/j3hgRTygle9+jgn5yw
-         MAV1kvNQlp/p6+6X3frGk4yWTW8qzAsR+PvaSI5R5NKQLOpVdHAZpXSz/VHgR5FNb/5I
-         x4OFSKwHJYERAFNlQm0y0aGjnRb/2g4zkPcOgmm6OM318TN+Tsw+TLMuUySOacIMdayj
-         m5Jg==
+        bh=TZ+NgD/53kymwXjtLyFwA23cddBFxJ32rTfDf4UtgzU=;
+        b=HbQfRBzq6bM328QdXcjK+GfhbIyR0HyQIFJOp606HuoQBpQaGps+yq0PPBsqLnzydk
+         +QvpXdx68PwQ0p3IpxX98koQLq1gaXjvaSyL2IpKqGrblSsT/axc26llnFNc5XGxyL4r
+         ki9vcA8zKxpUUJreI8WOBM7wCmTmbm+qJTI8wXOVrkeX7ug6JbpEodfEjx8bdGFouCxc
+         QbGk30KpE6lxLYg+WbmCfC79Xo7RT9VxYB6YPfW+AaIWC4kKlB5TuRlv17STD8bxdnXx
+         beebHKM6ASX9z/obdNA275+LojSoEgxbv7k9SY1sSds6vhpbTC16yZQ29jZWfyYU8pSq
+         sqRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698731791; x=1699336591;
+        d=1e100.net; s=20230601; t=1698732737; x=1699337537;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hPutwxc2ouh1GHJHavtt+jiBGrJCCfv7E2utFChZlp8=;
-        b=P3N3r10Q3eBg5yy2lQN+G4Mh1fsRvJCdrC3WAC6+7g79Kia3bBKv1EpD7fR66bUYzD
-         u/FqBQGprKLujY6QO31n7CFKX/kv/+0H5WV7+v1bpdAJU8n7clbH0M1sl0jFLSpEkzB5
-         UuaUADnT3Rzl6HhIzNlDCvMkMGd8BtcGmjclvcN9JjaXoKMff9yEy2j6GEZfZSUmA4x6
-         5XSqJ6sZJFlvHimqUf0PlUX7a9sB8efUEfBj8ODNMAbKPgEnoV9B6i8nqvqgcBqLmKkq
-         rmeSmq+QqGhBt3Hso5qiqNWw1tgeNonG98rYpwCmcg0ErxIJYC2CDDh0sj4rSG7Z1n+T
-         xq4Q==
-X-Gm-Message-State: AOJu0YwGEo9619Nzlb8Vqoyld6NuCWRfs/V8VzKrlEWdFzdX4knzE5M+
-	P0hTyQzVXK3Cv3c2hl4eeEoF8Nevy9EpG8zjps4=
-X-Google-Smtp-Source: AGHT+IHgrj762m6NlF+yO/I5H2nnSkTkmEMkFyr+LnTVkcrxKDZLPUUwHDKjVqSywLnbeKXBySRMMzY1bNp4kgLX+Ds=
-X-Received: by 2002:ad4:5baa:0:b0:66d:6869:5e62 with SMTP id
- 10-20020ad45baa000000b0066d68695e62mr11704934qvq.46.1698731791158; Mon, 30
- Oct 2023 22:56:31 -0700 (PDT)
+        bh=TZ+NgD/53kymwXjtLyFwA23cddBFxJ32rTfDf4UtgzU=;
+        b=pOHTu28Y+LBj8nXALhtCmGrqAZVYGGchlOX/fSSs44LfjoR+eYJvdvii84sg3DyhWT
+         GqD6VOY1oePEBepNO6LwuyY1IZ78+di3+Mb7n2FBQY/uX18iW4sBhM7O01r2n5kD7BZV
+         4O7PKDJUlw+UusztHXOWLxWfGur/ZVxu7/aLQ6MFFXtOkyAaNHnpllDMIGN16pD+EOeP
+         qkiO4+HHG+7Yn7b/+JAnPq5k+rhVY0s6/+UhzSSnY2R7vIlmFg98rRnFJBoj292HJc5W
+         VGdSWRkbivba4KvXXhxl5xAikqjHlWL/i27nikerVXdjre8zPfi4iLeOaJ5DNtORpgTt
+         SYWQ==
+X-Gm-Message-State: AOJu0YxIhaM4sjZzQbGJTI6yvivnX1uO/rs0O9t0lpPnShBfPnUqLqFN
+	VN0UDEGr4WO2cHDkcqQI+xM8InMQTeN8t49uqHQ37Y5ii00=
+X-Google-Smtp-Source: AGHT+IHEPYUWPIhD8f4c4sEo7bKKKRRz4jXRiuYDC+OiJTn+uqNqGDvpKp+7yQ75csDOOazNYl3OkRJnQ28g+3t+Nww=
+X-Received: by 2002:a17:906:6a24:b0:9c5:ea33:7bf9 with SMTP id
+ qw36-20020a1709066a2400b009c5ea337bf9mr9627173ejc.51.1698732197643; Mon, 30
+ Oct 2023 23:03:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231030210638.2415306-1-davemarchevsky@fb.com>
-In-Reply-To: <20231030210638.2415306-1-davemarchevsky@fb.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Tue, 31 Oct 2023 13:55:55 +0800
-Message-ID: <CALOAHbAUhae1S1XUHNZAkSuOdvjS-ECSuKNoJRLAwtgp85L+dg@mail.gmail.com>
-Subject: Re: [PATCH v1 bpf-next] bpf: Add __bpf_kfunc_{start,end}_defs macros
-To: Dave Marchevsky <davemarchevsky@fb.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>, 
-	Jiri Olsa <olsajiri@gmail.com>
+References: <20231027181346.4019398-1-andrii@kernel.org> <20231027181346.4019398-18-andrii@kernel.org>
+ <20231031020248.uo54fkisydzwzgvn@MacBook-Pro-49.local>
+In-Reply-To: <20231031020248.uo54fkisydzwzgvn@MacBook-Pro-49.local>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 30 Oct 2023 23:03:05 -0700
+Message-ID: <CAEf4BzbZT11cYbinnGaqGZPiX2Mq5Taksx=VWOMhpuKEj8cXcA@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 17/23] bpf: generalize reg_set_min_max() to
+ handle two sets of two registers
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 31, 2023 at 5:07=E2=80=AFAM Dave Marchevsky <davemarchevsky@fb.=
-com> wrote:
+On Mon, Oct 30, 2023 at 7:02=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> BPF kfuncs are meant to be called from BPF programs. Accordingly, most
-> kfuncs are not called from anywhere in the kernel, which the
-> -Wmissing-prototypes warning is unhappy about. We've peppered
-> __diag_ignore_all("-Wmissing-prototypes", ... everywhere kfuncs are
-> defined in the codebase to suppress this warning.
+> On Fri, Oct 27, 2023 at 11:13:40AM -0700, Andrii Nakryiko wrote:
+> >  static void reg_set_min_max(struct bpf_reg_state *true_reg1,
+> > +                         struct bpf_reg_state *true_reg2,
+> >                           struct bpf_reg_state *false_reg1,
+> > -                         u64 val, u32 val32,
+> > +                         struct bpf_reg_state *false_reg2,
+> >                           u8 opcode, bool is_jmp32)
+> >  {
+> > -     struct tnum false_32off =3D tnum_subreg(false_reg1->var_off);
+> > -     struct tnum false_64off =3D false_reg1->var_off;
+> > -     struct tnum true_32off =3D tnum_subreg(true_reg1->var_off);
+> > -     struct tnum true_64off =3D true_reg1->var_off;
+> > -     s64 sval =3D (s64)val;
+> > -     s32 sval32 =3D (s32)val32;
+> > -
+> > -     /* If the dst_reg is a pointer, we can't learn anything about its
+> > -      * variable offset from the compare (unless src_reg were a pointe=
+r into
+> > -      * the same object, but we don't bother with that.
+> > -      * Since false_reg1 and true_reg1 have the same type by construct=
+ion, we
+> > -      * only need to check one of them for pointerness.
+> > +     struct tnum false_32off, false_64off;
+> > +     struct tnum true_32off, true_64off;
+> > +     u64 val;
+> > +     u32 val32;
+> > +     s64 sval;
+> > +     s32 sval32;
+> > +
+> > +     /* If either register is a pointer, we can't learn anything about=
+ its
+> > +      * variable offset from the compare (unless they were a pointer i=
+nto
+> > +      * the same object, but we don't bother with that).
+> >        */
+> > -     if (__is_pointer_value(false, false_reg1))
 >
-> This patch adds two macros meant to bound one or many kfunc definitions.
-> All existing kfunc definitions which use these __diag calls to suppress
-> -Wmissing-prototypes are migrated to use the newly-introduced macros.
-> A new __diag_ignore_all - for "-Wmissing-declarations" - is added to the
-> __bpf_kfunc_start_defs macro based on feedback from Andrii on an earlier
-> version of this patch [0] and another recent mailing list thread [1].
->
-> In the future we might need to ignore different warnings or do other
-> kfunc-specific things. This change will make it easier to make such
-> modifications for all kfunc defs.
->
->   [0]: https://lore.kernel.org/bpf/CAEf4BzaE5dRWtK6RPLnjTW-MW9sx9K3Fn6uwq=
-CTChK2Dcb1Xig@mail.gmail.com/
->   [1]: https://lore.kernel.org/bpf/ZT+2qCc%2FaXep0%2FLf@krava/
->
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Jiri Olsa <olsajiri@gmail.com>
-> ---
->
-> This patch was submitted earlier as part of task_vma
-> iter series: https://lore.kernel.org/bpf/20231013204426.1074286-6-davemar=
-chevsky@fb.com/
->
-> This separate submission addresses Andrii's comments from
-> that thread.
->
->  include/linux/btf.h              |  9 +++++++++
->  kernel/bpf/bpf_iter.c            |  6 ++----
->  kernel/bpf/cpumask.c             |  6 ++----
->  kernel/bpf/helpers.c             |  6 ++----
->  kernel/bpf/map_iter.c            |  6 ++----
->  kernel/bpf/task_iter.c           |  6 ++----
->  kernel/trace/bpf_trace.c         |  6 ++----
->  net/bpf/test_run.c               |  7 +++----
->  net/core/filter.c                | 13 ++++---------
->  net/core/xdp.c                   |  6 ++----
->  net/ipv4/fou_bpf.c               |  6 ++----
->  net/netfilter/nf_conntrack_bpf.c |  6 ++----
->  net/netfilter/nf_nat_bpf.c       |  6 ++----
->  net/xfrm/xfrm_interface_bpf.c    |  6 ++----
->  14 files changed, 38 insertions(+), 57 deletions(-)
->
+> The removal of the above check, but not the comment was surprising and co=
+ncerning,
+> so I did a bit of git-archaeology.
+> It was added in commit f1174f77b50c ("bpf/verifier: rework value tracking=
+")
+> back in 2017 !
+> and in that commit reg_set_min_max() was always called with reg =3D=3D sc=
+alar.
+> It looked like premature check. Then I spotted a comment in that commit:
+>   * this is only legit if both are scalars (or pointers to the same
+>   * object, I suppose, but we don't support that right now), because
+>   * otherwise the different base pointers mean the offsets aren't
+>   * comparable.
+> so the intent back then was to generalize reg_set_min_max() to be used wi=
+th pointers too,
+> but we never got around to do that and the comment now reads:
 
-Thanks for your work.
+Yeah, it shouldn't be too hard to "generalize" to pointer vs pointer,
+if we ensure they point to exactly the same thing (I haven't thought
+much about how), because beyond that it's still basically SCALAR
+offsets. But I figured it's out of scope for these changes :)
 
-By using a simple grep for "__diag_ignore_all(\"-Wmissing-prototypes",
-it appears that the files net/socket.c,
-tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c,
-kernel/cgroup/rstat.c and Documentation/bpf/kfuncs.rst are missing. It
-seems that we should also update them.
+>   * this is only legit if both are scalars (or pointers to the same
+>   * object, I suppose, see the PTR_MAYBE_NULL related if block below),
+>   * because otherwise the different base pointers mean the offsets aren't
+>   * comparable.
+>
+> So please remove is_pointer check and remove the comment,
 
---=20
-Regards
-Yafang
+So I'm a bit confused. I did remove __is_pointer_value() check, but I
+still need to guard against having pointers, which is why I have:
+
+if (false_reg1->type !=3D SCALAR_VALUE || false_reg2->type !=3D SCALAR_VALU=
+E).
+    return;
+
+I think I need this check, because reg_set_min_max() can be called
+from check_cond_jmp_op() with pointer regs, and we shouldn't try to
+adjust them. Or am I missing something? And the comment I have here
+now:
+
++       /* If either register is a pointer, we can't learn anything about i=
+ts
++        * variable offset from the compare (unless they were a pointer int=
+o
++        * the same object, but we don't bother with that).
+         */
+
+is trying to explain that we don't really adjust two pointers.
+
+> and fixup the comment in check_cond_jmp_op() where reg_set_min_max().
+
+I have this locally for now, please let me know if this is fine or you
+had something else in mind:
+
+-/* Adjusts the register min/max values in the case that the dst_reg is the
+- * variable register that we are working on, and src_reg is a constant or =
+we're
+- * simply doing a BPF_K check.
+- * In JEQ/JNE cases we also adjust the var_off values.
++/* Adjusts the register min/max values in the case that the dst_reg and
++ * src_reg are both SCALAR_VALUE registers (or we are simply doing a BPF_K
++ * check, in which case we havea fake SCALAR_VALUE representing insn->imm)=
+.
++ * Technically we can do similar adjustments for pointers to the same obje=
+ct,
++ * but we don't support that right now.
+  */
+ static void reg_set_min_max(struct bpf_reg_state *true_reg1,
+                            struct bpf_reg_state *true_reg2,
+@@ -14884,13 +14885,6 @@ static int check_cond_jmp_op(struct
+bpf_verifier_env *env,
+                return -EFAULT;
+        other_branch_regs =3D other_branch->frame[other_branch->curframe]->=
+regs;
+
+-       /* detect if we are comparing against a constant value so we can ad=
+just
+-        * our min/max values for our dst register.
+-        * this is only legit if both are scalars (or pointers to the same
+-        * object, I suppose, see the PTR_MAYBE_NULL related if block below=
+),
+-        * because otherwise the different base pointers mean the offsets a=
+ren't
+-        * comparable.
+-        */
+        if (BPF_SRC(insn->code) =3D=3D BPF_X) {
+                reg_set_min_max(&other_branch_regs[insn->dst_reg],
+                                &other_branch_regs[insn->src_reg],
 
