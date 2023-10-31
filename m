@@ -1,249 +1,320 @@
-Return-Path: <bpf+bounces-13692-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13693-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E72E27DC68D
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 07:30:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 192837DC6A5
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 07:36:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0B871C20B2C
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 06:30:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C4AFB20E57
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 06:36:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37CB010790;
-	Tue, 31 Oct 2023 06:30:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C7853A5;
+	Tue, 31 Oct 2023 06:36:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PNAzYiak"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Mr9gplBV"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E3AD10780
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 06:29:58 +0000 (UTC)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C910A2
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 23:29:56 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9c603e2354fso1079019866b.1
-        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 23:29:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698733794; x=1699338594; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DjxbZIH/RJ+zw4P1twblI5Q8opl+YL2IWL18np/wfsg=;
-        b=PNAzYiakFnwqSjZidX+seTPDK7nd/r17bzL60rXazB4/VF3IGbhM5bbeaj2ooJRsvb
-         BzqfV+4hV3cA1PZPu7X0FsCrGa2VXDeoYUMyLmOYjXCe4m3OsDwHdufXmMAop0kk+5vD
-         veokZmDrOwYvixwSUlvsEghghtThSZUzf9na/mQDaSni/hATcI6uR+IAqnYce2D2T2bE
-         9ZFE6sS8DBjeRZ3mt23zjH/6XoPVTr78QJ6i4wXDE+TH0qXmj5sl/2h3XhEJuH7hDAZv
-         9YzAeUfmgMDVGQ0XprxGl11vVNXjkmQ8dWclsS0pABe2HUShDcidHx9PmBR6t19kHyRL
-         tARg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698733794; x=1699338594;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DjxbZIH/RJ+zw4P1twblI5Q8opl+YL2IWL18np/wfsg=;
-        b=Y3yi9QjeSVBt2N5EoA8byvrVWCapgAe1ItgPlVNGpJSfXr0tHiAXEzl+vMdmBK6SEu
-         N88VKWuy2BnjXE6E8XiamiGrtwRgAqnUTdd1GAiCXpi8B2JAfdyujLGspDPrvYn42Yuk
-         +V6Em8ASuHZDy9OzPvpirVGnGozexijENMHGZv71gNXk0oOkPAx0NkbHJWN3H9P2sdsv
-         d5Ta87fwAGbdyO0AYwrKyPjDogONSVwYLRz+3/qGZMWPBENMUnPJ2ltAOi3Cwcjm/1oY
-         gOJLn+XIsOQsqcmKFBUhvdBBkCEuzdewTKSRgFMOJw3GBskIrWanVKAANNgFPS8dsqSo
-         0GKQ==
-X-Gm-Message-State: AOJu0YxSaQEPxusB8LG9zqz8jyHoa3rv30peds1CrcV+ryiX1TanxYXi
-	82E3MGw//bTyf6Ew+UGzxuq+x5f4v7lyIohbb7A=
-X-Google-Smtp-Source: AGHT+IFijXeIYJUf7S93hKWof0gmImQtKypzP2Aofj/RUP6Re/nvedlE+2meN8uYUE55Ll0z71fpD7a+/BzCqsjUxYU=
-X-Received: by 2002:a17:906:bcd7:b0:9ad:8641:e91b with SMTP id
- lw23-20020a170906bcd700b009ad8641e91bmr1531816ejb.11.1698733794540; Mon, 30
- Oct 2023 23:29:54 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6686360
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 06:36:34 +0000 (UTC)
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C6912A
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 23:36:30 -0700 (PDT)
+Message-ID: <183fd964-8910-b7e6-436a-f5f82c2bafb0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1698734188;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P7rytP9Jz8YlmuSewihEAlGNyDdVt5rkOQstx/lEPqc=;
+	b=Mr9gplBV4ORlK13ct73jtd1Z5YcxSlSxPpTf2SibdlJmLT4kxfkx0CNVh+Ig6FYc0xNU0W
+	2nTnEDzAVjk2DMuDb0sdo7tEjxY05irZhyxQb0mTnXlhQ3LEXns4vQF6h58h7A0OVPcZ/l
+	aXNr7Id53e7tLyhlWvBXAK83aHiP1+8=
+Date: Mon, 30 Oct 2023 23:36:21 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231027223006.2062967-1-chantr4@gmail.com>
-In-Reply-To: <20231027223006.2062967-1-chantr4@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 30 Oct 2023 23:29:43 -0700
-Message-ID: <CAEf4BzbpvwJiuxfn9pE6_hg-7pY_353d-iBx+9-3qnwHY4yBpQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix test_bpffs
-To: Manu Bretelle <chantr4@gmail.com>
-Cc: bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net, 
-	ast@kernel.org, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, 
-	shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v8 07/10] bpf, net: switch to dynamic
+ registration
+Content-Language: en-US
+To: thinker.li@gmail.com
+Cc: sinquersw@gmail.com, kuifeng@meta.com, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, ast@kernel.org, song@kernel.org, kernel-team@meta.com,
+ andrii@kernel.org, drosen@google.com
+References: <20231030192810.382942-1-thinker.li@gmail.com>
+ <20231030192810.382942-8-thinker.li@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20231030192810.382942-8-thinker.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Oct 27, 2023 at 3:30=E2=80=AFPM Manu Bretelle <chantr4@gmail.com> w=
-rote:
->
-> Currently this tests tries to umount /sys/kernel/debug (TDIR) but the
-> system it is running on may have mounts below.
->
-> For example, danobi/vmtest [0] VMs have
->     mount -t tracefs tracefs /sys/kernel/debug/tracing
-> as part of their init.
->
-> This change instead creates a "random" directory under /tmp and uses this
-> as TDIR.
-> If the directory already exists, ignore the error and keep moving on.
->
-> Test:
->
-> Originally:
->
->     $ vmtest -k $KERNEL_REPO/arch/x86_64/boot/bzImage "./test_progs -vv -=
-a test_bpffs"
->     =3D> bzImage
->     =3D=3D=3D> Booting
->     =3D=3D=3D> Setting up VM
->     =3D=3D=3D> Running command
->     [    2.138818] bpf_testmod: loading out-of-tree module taints kernel.
->     [    2.140913] bpf_testmod: module verification failed: signature and=
-/or required key missing - tainting kernel
->     bpf_testmod.ko is already unloaded.
->     Loading bpf_testmod.ko...
->     Successfully loaded bpf_testmod.ko.
->     test_test_bpffs:PASS:clone 0 nsec
->     fn:PASS:unshare 0 nsec
->     fn:PASS:mount / 0 nsec
->     fn:FAIL:umount /sys/kernel/debug unexpected error: -1 (errno 16)
->     bpf_testmod.ko is already unloaded.
->     Loading bpf_testmod.ko...
->     Successfully loaded bpf_testmod.ko.
->     test_test_bpffs:PASS:clone 0 nsec
->     test_test_bpffs:PASS:waitpid 0 nsec
->     test_test_bpffs:FAIL:bpffs test  failed 255#282     test_bpffs:FAIL
->     Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
->     Successfully unloaded bpf_testmod.ko.
->     Command failed with exit code: 1
->
-> After this change:
->
->     $ vmtest -k $KERNEL_REPO/arch/x86_64/boot/bzImage "./test_progs -vv -=
-a test_bpffs"
->     =3D> bzImage
->     =3D=3D=3D> Booting
->     =3D=3D=3D> Setting up VM
->     =3D=3D=3D> Running command
->     [    2.119236] bpf_testmod: loading out-of-tree module taints kernel.
->     [    2.121768] bpf_testmod: module verification failed: signature and=
-/or required key missing - tainting kernel
->     bpf_testmod.ko is already unloaded.
->     Loading bpf_testmod.ko...
->     Successfully loaded bpf_testmod.ko.
->     test_test_bpffs:PASS:clone 0 nsec
->     fn:PASS:unshare 0 nsec
->     fn:PASS:mount / 0 nsec
->     fn:PASS:mount tmpfs 0 nsec
->     fn:PASS:mkdir /tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed/fs1 0=
- nsec
->     fn:PASS:mkdir /tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed/fs2 0=
- nsec
->     fn:PASS:mount bpffs /tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed=
-/fs1 0 nsec
->     fn:PASS:mount bpffs /tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed=
-/fs2 0 nsec
->     fn:PASS:reading /tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed/fs1=
-/maps.debug 0 nsec
->     fn:PASS:reading /tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed/fs2=
-/progs.debug 0 nsec
->     fn:PASS:creating /tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed/fs=
-1/a 0 nsec
->     fn:PASS:creating /tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed/fs=
-1/a/1 0 nsec
->     fn:PASS:creating /tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed/fs=
-1/b 0 nsec
->     fn:PASS:create_map(ARRAY) 0 nsec
->     fn:PASS:pin map 0 nsec
->     fn:PASS:stat(/tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed/fs1/a)=
- 0 nsec
->     fn:PASS:renameat2(/fs1/a, /fs1/b, RENAME_EXCHANGE) 0 nsec
->     fn:PASS:stat(/tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed/fs1/b)=
- 0 nsec
->     fn:PASS:b should have a's inode 0 nsec
->     fn:PASS:access(/tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed/fs1/=
-b/1) 0 nsec
->     fn:PASS:stat(/tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed/fs1/ma=
-p) 0 nsec
->     fn:PASS:renameat2(/fs1/c, /fs1/b, RENAME_EXCHANGE) 0 nsec
->     fn:PASS:stat(/tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed/fs1/b)=
- 0 nsec
->     fn:PASS:b should have c's inode 0 nsec
->     fn:PASS:access(/tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed/fs1/=
-c/1) 0 nsec
->     fn:PASS:renameat2(RENAME_NOREPLACE) 0 nsec
->     fn:PASS:access(/tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed/fs1/=
-b) 0 nsec
->     bpf_testmod.ko is already unloaded.
->     Loading bpf_testmod.ko...
->     Successfully loaded bpf_testmod.ko.
->     test_test_bpffs:PASS:clone 0 nsec
->     test_test_bpffs:PASS:waitpid 0 nsec
->     test_test_bpffs:PASS:bpffs test  0 nsec
->     #282     test_bpffs:OK
->     Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
->     Successfully unloaded bpf_testmod.ko.
->
-> [0] https://github.com/danobi/vmtest
->
-> This is a follow-up of https://lore.kernel.org/bpf/20231024201852.1512720=
--1-chantr4@gmail.com/T/
->
-> Signed-off-by: Manu Bretelle <chantr4@gmail.com>
+On 10/30/23 12:28 PM, thinker.li@gmail.com wrote:
+> From: Kui-Feng Lee <thinker.li@gmail.com>
+> 
+> Replace the static list of struct_ops types with per-btf struct_ops_tab to
+> enable dynamic registration.
+> 
+> Both bpf_dummy_ops and bpf_tcp_ca now utilize the registration function
+> instead of being listed in bpf_struct_ops_types.h.
+> 
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 > ---
->  tools/testing/selftests/bpf/prog_tests/test_bpffs.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c b/tools/=
-testing/selftests/bpf/prog_tests/test_bpffs.c
-> index 214d9f4a94a5..80a1afb9589d 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-> @@ -8,7 +8,8 @@
->  #include <sys/types.h>
->  #include <test_progs.h>
->
-> -#define TDIR "/sys/kernel/debug"
-> +// TDIR must be in a location we can create a directory in.
-> +#define TDIR "/tmp/vvnlhrgunvkrfegnlrvnggcudfgdtrhbfelkebeurfed"
+>   include/linux/bpf.h               |  36 ++++++--
+>   include/linux/btf.h               |   5 +-
+>   kernel/bpf/bpf_struct_ops.c       | 140 +++++++++---------------------
+>   kernel/bpf/bpf_struct_ops_types.h |  12 ---
+>   kernel/bpf/btf.c                  |  41 ++++++++-
+>   net/bpf/bpf_dummy_struct_ops.c    |  14 ++-
+>   net/ipv4/bpf_tcp_ca.c             |  16 +++-
+>   7 files changed, 140 insertions(+), 124 deletions(-)
+>   delete mode 100644 kernel/bpf/bpf_struct_ops_types.h
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index c993df3cf699..9d7105ff06db 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1644,7 +1644,6 @@ struct bpf_struct_ops_desc {
+>   #if defined(CONFIG_BPF_JIT) && defined(CONFIG_BPF_SYSCALL)
+>   #define BPF_MODULE_OWNER ((void *)((0xeB9FUL << 2) + POISON_POINTER_DELTA))
+>   const struct bpf_struct_ops_desc *bpf_struct_ops_find(struct btf *btf, u32 type_id);
+> -void bpf_struct_ops_init(struct btf *btf, struct bpf_verifier_log *log);
+>   bool bpf_struct_ops_get(const void *kdata);
+>   void bpf_struct_ops_put(const void *kdata);
+>   int bpf_struct_ops_map_sys_lookup_elem(struct bpf_map *map, void *key,
+> @@ -1690,10 +1689,6 @@ static inline const struct bpf_struct_ops_desc *bpf_struct_ops_find(struct btf *
+>   {
+>   	return NULL;
+>   }
+> -static inline void bpf_struct_ops_init(struct btf *btf,
+> -				       struct bpf_verifier_log *log)
+> -{
+> -}
+>   static inline bool bpf_try_module_get(const void *data, struct module *owner)
+>   {
+>   	return try_module_get(owner);
+> @@ -3232,4 +3227,35 @@ static inline bool bpf_is_subprog(const struct bpf_prog *prog)
+>   	return prog->aux->func_idx != 0;
+>   }
+>   
+> +int register_bpf_struct_ops(struct bpf_struct_ops *st_ops);
+> +
+> +enum bpf_struct_ops_state {
+> +	BPF_STRUCT_OPS_STATE_INIT,
+> +	BPF_STRUCT_OPS_STATE_INUSE,
+> +	BPF_STRUCT_OPS_STATE_TOBEFREE,
+> +	BPF_STRUCT_OPS_STATE_READY,
+> +};
+> +
+> +struct bpf_struct_ops_common_value {
+> +	refcount_t refcnt;
+> +	enum bpf_struct_ops_state state;
+> +};
+> +
+> +/* bpf_struct_ops_##_name (e.g. bpf_struct_ops_tcp_congestion_ops) is
+> + * the map's value exposed to the userspace and its btf-type-id is
+> + * stored at the map->btf_vmlinux_value_type_id.
+> + *
+> + */
+> +#define DEFINE_STRUCT_OPS_VALUE_TYPE(_name)			\
+> +extern struct bpf_struct_ops bpf_##_name;			\
+> +								\
+> +struct bpf_struct_ops_##_name {					\
+> +	struct bpf_struct_ops_common_value common;		\
+> +	struct _name data ____cacheline_aligned_in_smp;		\
+> +}
+> +
+> +extern int bpf_struct_ops_init(struct bpf_struct_ops_desc *st_ops_desc,
+> +			       struct btf *btf,
+> +			       struct bpf_verifier_log *log);
+> +
+>   #endif /* _LINUX_BPF_H */
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index a8813605f2f6..954536431e0b 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -12,6 +12,8 @@
+>   #include <uapi/linux/bpf.h>
+>   
+>   #define BTF_TYPE_EMIT(type) ((void)(type *)0)
+> +#define BTF_STRUCT_OPS_TYPE_EMIT(type) {((void)(struct type *)0);	\
 
-and "/tmp/test_bpffs_testdir" isn't unique enough? ;)
+((void)(struct type *)0); is new. Why is it needed?
 
->
->  static int read_iter(char *file)
->  {
-> @@ -43,8 +44,10 @@ static int fn(void)
->         if (!ASSERT_OK(err, "mount /"))
->                 goto out;
->
-> -       err =3D umount(TDIR);
-> -       if (!ASSERT_OK(err, "umount " TDIR))
-> +       err =3D  mkdir(TDIR, 0777);
-> +       // If the directory already exists we can carry on. It may be lef=
-t over
-> +       // from a previous run.
+> +		((void)(struct bpf_struct_ops_##type *)0); }
+>   #define BTF_TYPE_EMIT_ENUM(enum_val) ((void)enum_val)
+>   
+>   /* These need to be macros, as the expressions are used in assembler input */
+> @@ -201,6 +203,7 @@ u32 btf_obj_id(const struct btf *btf);
+>   bool btf_is_kernel(const struct btf *btf);
+>   bool btf_is_module(const struct btf *btf);
+>   struct module *btf_try_get_module(const struct btf *btf);
+> +struct btf *btf_get_module_btf(const struct module *module);
+>   u32 btf_nr_types(const struct btf *btf);
+>   bool btf_member_is_reg_int(const struct btf *btf, const struct btf_type *s,
+>   			   const struct btf_member *m,
+> @@ -575,8 +578,6 @@ static inline bool btf_type_is_struct_ptr(struct btf *btf, const struct btf_type
+>   struct bpf_struct_ops;
+>   struct bpf_struct_ops_desc;
+>   
+> -struct bpf_struct_ops_desc *
+> -btf_add_struct_ops(struct btf *btf, struct bpf_struct_ops *st_ops);
+>   const struct bpf_struct_ops_desc *
+>   btf_get_struct_ops(struct btf *btf, u32 *ret_cnt);
+>   
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index db2bbba50e38..f3ec72be9c63 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -13,21 +13,8 @@
+>   #include <linux/btf_ids.h>
+>   #include <linux/rcupdate_wait.h>
+>   
+> -enum bpf_struct_ops_state {
+> -	BPF_STRUCT_OPS_STATE_INIT,
+> -	BPF_STRUCT_OPS_STATE_INUSE,
+> -	BPF_STRUCT_OPS_STATE_TOBEFREE,
+> -	BPF_STRUCT_OPS_STATE_READY,
+> -};
+> -
+> -struct bpf_struct_ops_common_value {
+> -	refcount_t refcnt;
+> -	enum bpf_struct_ops_state state;
+> -};
+> -#define BPF_STRUCT_OPS_COMMON_VALUE struct bpf_struct_ops_common_value common
+> -
+>   struct bpf_struct_ops_value {
+> -	BPF_STRUCT_OPS_COMMON_VALUE;
+> +	struct bpf_struct_ops_common_value common;
 
-we don't use C++-style comments in kernel and selftests code, please
-change to /* */
+This cleanup is good. It should have been done together in patch 5 instead when 
+refcnt and state were grouped into a new 'struct bpf_struct_ops_common_value'.
 
-same above for TDIR comment
+>   	char data[] ____cacheline_aligned_in_smp;
+>   };
+>   
+> @@ -72,35 +59,6 @@ static DEFINE_MUTEX(update_mutex);
+>   #define VALUE_PREFIX "bpf_struct_ops_"
+>   #define VALUE_PREFIX_LEN (sizeof(VALUE_PREFIX) - 1)
+>   
+> -/* bpf_struct_ops_##_name (e.g. bpf_struct_ops_tcp_congestion_ops) is
+> - * the map's value exposed to the userspace and its btf-type-id is
+> - * stored at the map->btf_vmlinux_value_type_id.
+> - *
+> - */
+> -#define BPF_STRUCT_OPS_TYPE(_name)				\
+> -extern struct bpf_struct_ops bpf_##_name;			\
+> -								\
+> -struct bpf_struct_ops_##_name {						\
+> -	BPF_STRUCT_OPS_COMMON_VALUE;				\
+> -	struct _name data ____cacheline_aligned_in_smp;		\
+> -};
+> -#include "bpf_struct_ops_types.h"
+> -#undef BPF_STRUCT_OPS_TYPE
+> -
+> -enum {
+> -#define BPF_STRUCT_OPS_TYPE(_name) BPF_STRUCT_OPS_TYPE_##_name,
+> -#include "bpf_struct_ops_types.h"
+> -#undef BPF_STRUCT_OPS_TYPE
+> -	__NR_BPF_STRUCT_OPS_TYPE,
+> -};
+> -
+> -static struct bpf_struct_ops_desc bpf_struct_ops[] = {
+> -#define BPF_STRUCT_OPS_TYPE(_name)				\
+> -	[BPF_STRUCT_OPS_TYPE_##_name] = { .st_ops = &bpf_##_name },
+> -#include "bpf_struct_ops_types.h"
+> -#undef BPF_STRUCT_OPS_TYPE
+> -};
+> -
+>   const struct bpf_verifier_ops bpf_struct_ops_verifier_ops = {
+>   };
+>   
+> @@ -110,13 +68,22 @@ const struct bpf_prog_ops bpf_struct_ops_prog_ops = {
+>   #endif
+>   };
+>   
+> -static const struct btf_type *module_type;
+> -static const struct btf_type *common_value_type;
+> +BTF_ID_LIST(st_ops_ids)
+> +BTF_ID(struct, module)
+> +BTF_ID(struct, bpf_struct_ops_common_value)
 
-> +       if ((err && errno !=3D EEXIST) && !ASSERT_OK(err, "mkdir " TDIR))
->                 goto out;
->
->         err =3D mount("none", TDIR, "tmpfs", 0, NULL);
-> @@ -138,6 +141,7 @@ static int fn(void)
->         rmdir(TDIR "/fs1");
->         rmdir(TDIR "/fs2");
->         umount(TDIR);
-> +       rmdir(TDIR);
->         exit(err);
->  }
->
-> --
-> 2.40.1
->
+This should have been done in a separated patch immediately after patch 1. The 
+patch 7 has unrelated changes/cleanups like this and the above 
+BPF_STRUCT_OPS_COMMON_VALUE which could have been done earlier as preparation 
+patches instead of packing them together with the main change here: "switch to 
+dynamic registration". The commit message for the BTF_ID_LIST changes could be 
+like: "A preparation to completely retire the bpf_struct_ops_init() function in 
+the latter patch...".
+
+> +
+> +enum {
+> +	idx_module_id,
+> +	idx_st_ops_common_value_id,
+
+nit. upper case to stay consistent with other similar usages.
+
+> +};
+> +
+
+[ ... ]
+
+> +int register_bpf_struct_ops(struct bpf_struct_ops *st_ops)
+> +{
+> +	struct bpf_struct_ops_desc *desc;
+> +	struct bpf_verifier_log *log;
+> +	struct btf *btf;
+> +	int err = 0;
+> +
+> +	if (st_ops == NULL)
+
+NULL check is not needed. caller will never do that. If it really wanted to try, 
+other values would have similar effect.
+
+> +		return -EINVAL;
+> +
+> +	btf = btf_get_module_btf(st_ops->owner);
+> +	if (!btf)
+> +		return -EINVAL;
+> +
+> +	log = kzalloc(sizeof(*log), GFP_KERNEL | __GFP_NOWARN);
+> +	if (!log) {
+> +		err = -ENOMEM;
+> +		goto errout;
+> +	}
+> +
+> +	log->level = BPF_LOG_KERNEL;
+> +
+> +	desc = btf_add_struct_ops(btf, st_ops);
+> +	if (IS_ERR(desc)) {
+> +		err = PTR_ERR(desc);
+> +		goto errout;
+> +	}
+> +
+> +	err = bpf_struct_ops_init(desc, btf, log);
+
+When bpf_struct_ops_init() returns err, desc is in btf_struct_ops_tab but it is 
+in an uninitialized state. May be do the bpf_struct_ops_init() in 
+btf_add_struct_ops() and only increment struct_ops_tab->cnt when everything is 
+correct.
+
+> +
+> +errout:
+> +	kfree(log);
+> +	btf_put(btf);
+> +
+> +	return err;
+> +}
+> +EXPORT_SYMBOL_GPL(register_bpf_struct_ops);
+
+
 
