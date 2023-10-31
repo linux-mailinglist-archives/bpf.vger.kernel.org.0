@@ -1,74 +1,74 @@
-Return-Path: <bpf+bounces-13724-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13725-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 336727DD212
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 17:35:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AE027DD23F
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 17:39:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 337331C20D01
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 16:35:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B46EB20EF5
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 16:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0052D1DDC8;
-	Tue, 31 Oct 2023 16:35:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA201F191;
+	Tue, 31 Oct 2023 16:39:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mg3URAGb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W5ePFYsJ"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE40120322
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 16:35:52 +0000 (UTC)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E6431BF7
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 09:35:02 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-408002b5b9fso42286175e9.3
-        for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 09:35:02 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D79E1DDD0
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 16:39:18 +0000 (UTC)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647E74EFF
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 09:36:46 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32dff08bbdbso4025223f8f.2
+        for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 09:36:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698770101; x=1699374901; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698770204; x=1699375004; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KKfSWPxZTtHcSwazW3RxUH0blTHV8hg3jlROv/dLM1s=;
-        b=mg3URAGb4OhHBsE9m6Q2JFWPF+wDb8jVfUYpD//10Q0xeGVVFVROE35vVIC8nzwZe4
-         Qydd70MFDrq2LtHEmjxNrsj8tEIj31Vn7yLJwU8Ilil/4gck/zXNRPHFk2tHOZbRU5aK
-         nZUeMlqHwKIgnJiclI+BS1S4URlYnRg6wB5f710BTZoq2U5p+Mx7sUjzB8ATl1EmJ3hK
-         E8dHR/5rMB7jhz781V/sKjKiH0lVjfCcHy8LpjOVnsrw+Fxp9dc/MFE18r5CuIhLA9h4
-         pzH/HM7di2dEPvvLVGf2lYWEbBCfUp/PkElk2pSgY69nUSpFvc7XobzcSozirRPvvE9q
-         mzTA==
+        bh=mhE/2mejQRvgYRLrd1/KmV+d2EQPndZ060DnAMZHI3U=;
+        b=W5ePFYsJYGwfubU5w1PwdTrFfJkaJsgaXQU7GAByJlZDiomeT2w43FVfE9u7nQjKl1
+         6l7pNuBcoSEv5pBNtA+BtzCQZne9J88cqgu1qwCK2Up75MQgy+jlh69gldnY6m0cDmTv
+         R7MwHuyw2BK1gSwXfYRRopvS0KbyHYlpxrFrQeRc0vGQQUg9i946H4c8NpwPPTS3cG0e
+         ut/G+BS/7YJCXIOD9wQykeOdHJhGe8MISqf050P27cBSrFVNnoseE3ySg6kmqvUKY1fC
+         8iBdKtHSQI829FNLR3d6URHHB3sJmCuyRVjeTrWj5rBROhDsDyr+6OMTz7mtKyoVygmR
+         0Jqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698770101; x=1699374901;
+        d=1e100.net; s=20230601; t=1698770204; x=1699375004;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KKfSWPxZTtHcSwazW3RxUH0blTHV8hg3jlROv/dLM1s=;
-        b=gPc3NBziMdO/60/bwhyLc/vxiqA7hbLo3tle5cijccFAmjz3v43WhGhqKYol5eQZRG
-         bTTJyy19jLY/OqDlbAoqYaRlBcoADvFck3KFNABmqe/FDr5pLEP/jNgrBvbr94elTyvR
-         miwlhVqehf3HoauB21v6Q5pSamyW9kDj1TblQyTZ1iG2vZCFQs63IKaj01fWP4mgC16I
-         ygI9+ewyZdiJcTDkwDELOZ8EhAEySmYuKZuH56GwIOYZ1IGw5MBVJUCHIzYPLiWPB58z
-         TYuL6nqz0JC573Uce+1E8VM2pFQ2kCA0ePhKjKdMTEc1ScR4BZGxA+YLkkMDhokZNhO8
-         VHmw==
-X-Gm-Message-State: AOJu0YzFPPZttU3LTMkIC4hmKra1gIxHVHm8etfnCQf67OX/Dm8cPHl5
-	P1NsJ5ndrnW0VcBWf0TcYebFT1xdpRTQZA7aOq6P0SElgBo=
-X-Google-Smtp-Source: AGHT+IFyiPDVOazML+bHEq/9g5YhCEuNc5jF89FM0gGWjVtzzhQKHDHro9yfdLkRsjMBvhbAV3jKUMbAy+xoBSjBzVM=
-X-Received: by 2002:a05:600c:4ed2:b0:408:2f50:f228 with SMTP id
- g18-20020a05600c4ed200b004082f50f228mr11289096wmq.41.1698770100502; Tue, 31
- Oct 2023 09:35:00 -0700 (PDT)
+        bh=mhE/2mejQRvgYRLrd1/KmV+d2EQPndZ060DnAMZHI3U=;
+        b=Tcw9bliU5bw78X/7Y/mpP9EmI9bS3O+ZmLa9lypYfEmbIy1wHps5AxJ5/ZLKok5dzr
+         2Y6SCkdKebDxh1sRZWns8PuxMWsa070PAL9Y2qBZriw5uSwddPr9lA8deO+6bMxXgnoi
+         HLYH4Y5yvusqG/2b2cPRMyhSMaLUOAA5t3UmuXFpxVF7rxIy8pRYBhoojE1/WiCiS1RL
+         OMnzw6I7iGSHoCm5eWyUMUbGXHZlq4qkj8qriPdh7CH+hLsdusTddJ00oWOUqMNiN7qA
+         +TrMzr0DelvnJw/0EpaXTm+EseazwpN/opIlyLBbHMqrTkbX2kgLpf6ZVYhrsOFlpSqu
+         JVFA==
+X-Gm-Message-State: AOJu0YxQil53S5nkLKviH/pMn+9W5/LvnXT2c9sKy1JLJd+qM99ds6ZY
+	RrWT1e7B+6WpZXT3grtAD7e3whbG/JdVIQIgJ3YlFJPz
+X-Google-Smtp-Source: AGHT+IFWP0Z3naYVAWz80kOqHkVhGpbN4hguRST+QWyNmRddMrhGqo3em4/WQj/WpOU+eWjajBry3kyfJW86+RsJYR4=
+X-Received: by 2002:a05:6000:4cf:b0:32d:87ca:7b0d with SMTP id
+ h15-20020a05600004cf00b0032d87ca7b0dmr9562775wri.56.1698770203614; Tue, 31
+ Oct 2023 09:36:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231027181346.4019398-1-andrii@kernel.org> <20231027181346.4019398-20-andrii@kernel.org>
- <20231031021200.lryk4xjudptseasm@MacBook-Pro-49.local> <CAEf4BzZ0oPHe8p96OjY=o7R+=cMn9utk9K5YgYQp8Ai=T6fPCQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ0oPHe8p96OjY=o7R+=cMn9utk9K5YgYQp8Ai=T6fPCQ@mail.gmail.com>
+References: <20231027181346.4019398-1-andrii@kernel.org> <20231027181346.4019398-21-andrii@kernel.org>
+ <20231031022033.536yvwc5vcc4toh2@MacBook-Pro-49.local> <CAEf4BzZC3NYUZu2uK+Mi3GgMrLOqe=ShXpkQpor-dLZxbjM-Tw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZC3NYUZu2uK+Mi3GgMrLOqe=ShXpkQpor-dLZxbjM-Tw@mail.gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 31 Oct 2023 09:34:49 -0700
-Message-ID: <CAADnVQKOYk7emThHsRxuPVVAZFfE7U6qngcM+L=gt6JQfLgcLg@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 19/23] bpf: generalize is_scalar_branch_taken()
- logic
+Date: Tue, 31 Oct 2023 09:36:32 -0700
+Message-ID: <CAADnVQ+a-39-Gppmh3VgVaEYfnpHg9v9+mjPGEbX4PoSqaeMLw@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 20/23] bpf: enhance BPF_JEQ/BPF_JNE
+ is_branch_taken logic
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
 	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
@@ -76,112 +76,49 @@ Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 30, 2023 at 11:12=E2=80=AFPM Andrii Nakryiko
+On Mon, Oct 30, 2023 at 11:16=E2=80=AFPM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
 >
-> On Mon, Oct 30, 2023 at 7:12=E2=80=AFPM Alexei Starovoitov
+> On Mon, Oct 30, 2023 at 7:20=E2=80=AFPM Alexei Starovoitov
 > <alexei.starovoitov@gmail.com> wrote:
 > >
-> > On Fri, Oct 27, 2023 at 11:13:42AM -0700, Andrii Nakryiko wrote:
-> > > Generalize is_branch_taken logic for SCALAR_VALUE register to handle
-> > > cases when both registers are not constants. Previously supported
-> > > <range> vs <scalar> cases are a natural subset of more generic <range=
->
-> > > vs <range> set of cases.
+> > On Fri, Oct 27, 2023 at 11:13:43AM -0700, Andrii Nakryiko wrote:
+> > > Use 32-bit subranges to prune some 64-bit BPF_JEQ/BPF_JNE conditions
+> > > that otherwise would be "inconclusive" (i.e., is_branch_taken() would
+> > > return -1). This can happen, for example, when registers are initiali=
+zed
+> > > as 64-bit u64/s64, then compared for inequality as 32-bit subregister=
+s,
+> > > and then followed by 64-bit equality/inequality check. That 32-bit
+> > > inequality can establish some pattern for lower 32 bits of a register
+> > > (e.g., s< 0 condition determines whether the bit #31 is zero or not),
+> > > while overall 64-bit value could be anything (according to a value ra=
+nge
+> > > representation).
 > > >
-> > > Generalized logic relies on straightforward segment intersection chec=
-ks.
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  kernel/bpf/verifier.c | 104 ++++++++++++++++++++++++++--------------=
---
-> > >  1 file changed, 64 insertions(+), 40 deletions(-)
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 4c974296127b..f18a8247e5e2 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -14189,82 +14189,105 @@ static int is_scalar_branch_taken(struct b=
-pf_reg_state *reg1, struct bpf_reg_sta
-> > >                                 u8 opcode, bool is_jmp32)
-> > >  {
-> > >       struct tnum t1 =3D is_jmp32 ? tnum_subreg(reg1->var_off) : reg1=
-->var_off;
-> > > +     struct tnum t2 =3D is_jmp32 ? tnum_subreg(reg2->var_off) : reg2=
-->var_off;
-> > >       u64 umin1 =3D is_jmp32 ? (u64)reg1->u32_min_value : reg1->umin_=
-value;
-> > >       u64 umax1 =3D is_jmp32 ? (u64)reg1->u32_max_value : reg1->umax_=
-value;
-> > >       s64 smin1 =3D is_jmp32 ? (s64)reg1->s32_min_value : reg1->smin_=
-value;
-> > >       s64 smax1 =3D is_jmp32 ? (s64)reg1->s32_max_value : reg1->smax_=
-value;
-> > > -     u64 val =3D is_jmp32 ? (u32)tnum_subreg(reg2->var_off).value : =
-reg2->var_off.value;
-> > > -     s64 sval =3D is_jmp32 ? (s32)val : (s64)val;
-> > > +     u64 umin2 =3D is_jmp32 ? (u64)reg2->u32_min_value : reg2->umin_=
-value;
-> > > +     u64 umax2 =3D is_jmp32 ? (u64)reg2->u32_max_value : reg2->umax_=
-value;
-> > > +     s64 smin2 =3D is_jmp32 ? (s64)reg2->s32_min_value : reg2->smin_=
-value;
-> > > +     s64 smax2 =3D is_jmp32 ? (s64)reg2->s32_max_value : reg2->smax_=
-value;
-> > >
-> > >       switch (opcode) {
-> > >       case BPF_JEQ:
-> > > -             if (tnum_is_const(t1))
-> > > -                     return !!tnum_equals_const(t1, val);
-> > > -             else if (val < umin1 || val > umax1)
-> > > +             /* const tnums */
-> > > +             if (tnum_is_const(t1) && tnum_is_const(t2))
-> > > +                     return t1.value =3D=3D t2.value;
-> > > +             /* const ranges */
-> > > +             if (umin1 =3D=3D umax1 && umin2 =3D=3D umax2)
-> > > +                     return umin1 =3D=3D umin2;
+> > > This is not a fancy quirky special case, but actually a handling that=
+'s
+> > > necessary to prevent correctness issue with BPF verifier's range
+> > > tracking: set_range_min_max() assumes that register ranges are
+> > > non-overlapping, and if that condition is not guaranteed by
+> > > is_branch_taken() we can end up with invalid ranges, where min > max.
 > >
-> > I don't follow this logic.
-> > umin1 =3D=3D umax1 means that it's a single constant and
-> > it should have been handled by earlier tnum_is_const check.
+> > This is_scalar_branch_taken() logic makes sense,
+> > but if set_range_min_max() is delicate, it should have its own sanity
+> > check for ranges.
+> > Shouldn't be difficult to check for that dangerous overlap case.
 >
-> I think you follow the logic, you just think it's redundant. Yes, it's
-> basically the same as
+> So let me clarify. As far as I'm concerned, is_branch_taken() is such
+> a check for set_reg_min_max, and so duplicating such checks in
+> set_reg_min_max() is just that a duplication of code and logic, and
+> just a chance for more typos and subtle bugs.
 >
->           if (tnum_is_const(t1) && tnum_is_const(t2))
->                 return t1.value =3D=3D t2.value;
->
-> but based on ranges. I didn't feel comfortable to assume that if umin1
-> =3D=3D umax1 then tnum_is_const(t1) will always be true. At worst we'll
-> perform one redundant check.
->
-> In short, I don't trust tnum to be as precise as umin/umax and other rang=
-es.
->
-> >
-> > > +             if (smin1 =3D=3D smax1 && smin2 =3D=3D smax2)
-> > > +                     return umin1 =3D=3D umin2;
-> >
-> > here it's even more confusing. smin =3D=3D smax -> singel const,
-> > but then compare umin1 with umin2 ?!
->
-> Eagle eyes! Typo, sorry :( it should be `smin1 =3D=3D smin2`, of course.
->
-> What saves us is reg_bounds_sync(), and if we have umin1 =3D=3D umax1 the=
-n
-> we'll have also smin1 =3D=3D smax1 =3D=3D umin1 =3D=3D umax1 (and corresp=
-onding
-> relation for second register). But I fixed these typos in both BPF_JEQ
-> and BPF_JNE branches.
+> But the concern about invalid ranges is valid, so I don't know,
+> perhaps we should just do a quick check after adjustment to validate
+> that umin<=3Dumax and so on? E.g., we can do that outside of
+> reg_set_min_max(), to keep reg_set_min_max() non-failing. WDYT?
 
-Not just 'saves us'. The tnum <-> bounds sync is mandatory.
-I think we have a test where a function returns [-errno, 0]
-and then we do if (ret < 0) check. At this point the reg has
-to be tnum_is_const and zero.
-So if smin1 =3D=3D smax1 =3D=3D umin1 =3D=3D umax1 it should be tnum_is_con=
-st.
-Otherwise it's a bug in sync logic.
-I think instead of doing redundant and confusing check may be
-add WARN either here or in sync logic to make sure it's all good ?
+Sounds like a good option too.
+Just trying to minimize breakage in the future.
+Sanity check before or after should catch it.
 
