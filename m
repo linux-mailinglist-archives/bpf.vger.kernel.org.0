@@ -1,478 +1,285 @@
-Return-Path: <bpf+bounces-13756-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13757-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 082B57DD768
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 21:56:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E773C7DD7BE
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 22:27:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABEAE281940
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 20:56:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 636FE2817E7
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 21:27:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA919225DB;
-	Tue, 31 Oct 2023 20:56:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E014249ED;
+	Tue, 31 Oct 2023 21:27:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jODBsKVb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OVppXTTO"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EEE61D69C
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 20:56:00 +0000 (UTC)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF782A3
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 13:55:57 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9c2a0725825so973804866b.2
-        for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 13:55:57 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D18A8EEA2
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 21:27:51 +0000 (UTC)
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DC9B9
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 14:27:50 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6cd09f51fe0so3550553a34.1
+        for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 14:27:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698785756; x=1699390556; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cgWummPW4Bw/KhT9fGmdEN3KFkLA93LJUGY7Z2watGE=;
-        b=jODBsKVbwEmaqEaSHs9XXNdmrk0lWUnpUoTGIFlmEuA/AAGrq4CvMtnVxJlOVFXc/W
-         TdaRQPfGSruH5GPzFOlv0/jH8RbesI6tOPCAMV8XSKNDPwJYsYah8PphJ5230lZ8yrik
-         nGHgYvJuV5O56mwkau9YEXhRTh8211mlIjSvm4XBP/mcAwKUaFxrIyTLp4pwJZGGzdZH
-         YWZwCOkP9cEt1t7EI4agh+cO0v5sKH7UXREIC9Pip8v/Ny/Vbi9AkiBQ5Dq0OtOOQ4ZD
-         WF2kln/z5oo2wPaQKHqIxD34HFrhaC2vLDrZBvpeqLkF7tkIFmo8X+pfNwlf+5pgdd9W
-         QrnA==
+        d=gmail.com; s=20230601; t=1698787669; x=1699392469; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UldHiEfbNixhoGZziFzkGsGZjUM85AdNIN2RpBGCLiU=;
+        b=OVppXTTOrKXUqnPYdz8U+x60Kh7HRASWdM0EfQjDQy96mXRzFa+3jMNnDtwjQk0Fmp
+         vhz8Y0orsWM6KEe/UcHIAIAqzvlQ2/00gQ2aVd+R1ZJFa5CbDXKOKzfGNuY9Le2GduuG
+         1CToTAPNX6eiTz4jWwMAPyLB2fi5oTxLaTR2jEonY5FN346vIzCBmR5fnKi+GiPRjqRL
+         oPS/tpDC2JH1YnMpu19vkKeIHs/823iWn2xRn4rs4SEit5GKz1NxaKdPfh6ZCjXKWCHa
+         F8xRlNNGsjFDEZ5SOIkYlC4VsNj5tHbUuJvBpkJmp2t/XU2fQAOilGJ0p8WDYmFPJrJ9
+         GULw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698785756; x=1699390556;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cgWummPW4Bw/KhT9fGmdEN3KFkLA93LJUGY7Z2watGE=;
-        b=Q0na8tEMdcsWA9QdmCP6d3UNFDO1A2gwOTyuGSfbmZMZyUsnmDtO3D1mWZ6b19DH8p
-         cSPl4tS8csusbw65S3Pzh+aYTeASGXz9gBeKc1wtFZqXISyQ7cCtnsUgXX9LMmxxiRf5
-         5xzK9e0HoVuGoAXozf2Eowd8/meDEVc1qhaua32ELvpsBJ5Lxh+HZQCeqyZnJRvOAigT
-         dBcg93AhtwcNlbYP0p/O0NF+XxYDTA18RdR7hXpLVyP3Wqi2cRDjEkJMeTJzhnBQg2/q
-         emdQuNL2MJDrTJXSXhONkq5n3eGKJB+40Yiyk+Mj5gp+GQ9Cz7JOkCdJ+sWA2i0Y5x4r
-         Qedg==
-X-Gm-Message-State: AOJu0YzaaxX7ObEGnXyIF3OR9a+QLv01g0k/R/9pGIQy352EjCQ1CzI1
-	Fd4mnnDiO9StFOg3Q/fV/RYJYP/zC2CK0CNJVaQ=
-X-Google-Smtp-Source: AGHT+IFimllBXwuARrt6K5B2TxBr1e9r7r5aDi/F+9gM/S8zzHA7nHphV6PKcgWSIlIevUtA0NRK/vvYvrB3ccPDPY4=
-X-Received: by 2002:a17:907:3f96:b0:9ae:5be8:ff90 with SMTP id
- hr22-20020a1709073f9600b009ae5be8ff90mr402779ejc.68.1698785755895; Tue, 31
- Oct 2023 13:55:55 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698787669; x=1699392469;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UldHiEfbNixhoGZziFzkGsGZjUM85AdNIN2RpBGCLiU=;
+        b=B/5POuy5f6a7ZNF56rtKJnOMMNxb9KY5rkYTt1ueK/zWQhb/KQb5I1oDiKj27SdNdt
+         RmIgKJCKbsYn+Jxkf6vYEHlShtTzLKHoJFLtz68RgrX5yiS3C9z4nSqQqL5HeP0pPeLX
+         z2sisxYuAOoRM3/Xyto0jsDiJro6jw+81dNAeQHewW00YX9rjorgl4kgBbZA4gPzuR1N
+         8I8NlsCPFMbBRSzG20/NE6gkY0E7MwL1b48vhhNVA8dvsB4tWTtBr68ju9lob5SwWLln
+         exgLCBR1kyhaCa8aMKmuqWKizfr6NAOYrb9Ajg72pA34b+BWcg5/Fb48GC296AOHErWP
+         b+6w==
+X-Gm-Message-State: AOJu0YzCO+D/H4D0vGoRS4lvUgwBQH63qEWFQLGX5O06lgEkJDLu88vo
+	otJKWCoGbmqs5KrzbAXZb19X+SiHszSGAw==
+X-Google-Smtp-Source: AGHT+IFSieqtk2i0cCIrrjy54lrYl6WFeSszSK7B7dOZcuwjjGDjwjfdHaFaSnhDgTEbRacMGh82pQ==
+X-Received: by 2002:a05:6830:2684:b0:6d3:12be:804d with SMTP id l4-20020a056830268400b006d312be804dmr2695172otu.20.1698787669224;
+        Tue, 31 Oct 2023 14:27:49 -0700 (PDT)
+Received: from localhost (fwdproxy-vll-008.fbsv.net. [2a03:2880:12ff:8::face:b00c])
+        by smtp.gmail.com with ESMTPSA id m24-20020a9d6ad8000000b006b87f593877sm21760otq.37.2023.10.31.14.27.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 14:27:48 -0700 (PDT)
+From: Manu Bretelle <chantr4@gmail.com>
+To: bpf@vger.kernel.org,
+	quentin@isovalent.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org
+Subject: [PATCH v3 bpf-next ] selftests/bpf: consolidate VIRTIO/9P configs in config.vm file
+Date: Tue, 31 Oct 2023 14:27:17 -0700
+Message-Id: <20231031212717.4037892-1-chantr4@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231027181346.4019398-1-andrii@kernel.org> <20231027181346.4019398-20-andrii@kernel.org>
- <20231031021200.lryk4xjudptseasm@MacBook-Pro-49.local> <CAEf4BzZ0oPHe8p96OjY=o7R+=cMn9utk9K5YgYQp8Ai=T6fPCQ@mail.gmail.com>
- <CAADnVQKOYk7emThHsRxuPVVAZFfE7U6qngcM+L=gt6JQfLgcLg@mail.gmail.com>
- <CAEf4BzYurVB-6J-1oAVuPj8BbtzfKRYue6ajOUeofchAYCrNjA@mail.gmail.com> <CAEf4BzaOygre08BW=Ma_jsg5Eir=b4COcx8j1xv2qwtcRtHcnQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzaOygre08BW=Ma_jsg5Eir=b4COcx8j1xv2qwtcRtHcnQ@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 31 Oct 2023 13:55:44 -0700
-Message-ID: <CAEf4BzYUPueT_ngrw81VMp-cnSsZFHeNdDROsVR1T9u094d+6A@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 19/23] bpf: generalize is_scalar_branch_taken()
- logic
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Oct 31, 2023 at 1:53=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Oct 31, 2023 at 11:01=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Tue, Oct 31, 2023 at 9:35=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Mon, Oct 30, 2023 at 11:12=E2=80=AFPM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Mon, Oct 30, 2023 at 7:12=E2=80=AFPM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Oct 27, 2023 at 11:13:42AM -0700, Andrii Nakryiko wrote:
-> > > > > > Generalize is_branch_taken logic for SCALAR_VALUE register to h=
-andle
-> > > > > > cases when both registers are not constants. Previously support=
-ed
-> > > > > > <range> vs <scalar> cases are a natural subset of more generic =
-<range>
-> > > > > > vs <range> set of cases.
-> > > > > >
-> > > > > > Generalized logic relies on straightforward segment intersectio=
-n checks.
-> > > > > >
-> > > > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > > > ---
-> > > > > >  kernel/bpf/verifier.c | 104 ++++++++++++++++++++++++++--------=
---------
-> > > > > >  1 file changed, 64 insertions(+), 40 deletions(-)
-> > > > > >
-> > > > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > > > index 4c974296127b..f18a8247e5e2 100644
-> > > > > > --- a/kernel/bpf/verifier.c
-> > > > > > +++ b/kernel/bpf/verifier.c
-> > > > > > @@ -14189,82 +14189,105 @@ static int is_scalar_branch_taken(st=
-ruct bpf_reg_state *reg1, struct bpf_reg_sta
-> > > > > >                                 u8 opcode, bool is_jmp32)
-> > > > > >  {
-> > > > > >       struct tnum t1 =3D is_jmp32 ? tnum_subreg(reg1->var_off) =
-: reg1->var_off;
-> > > > > > +     struct tnum t2 =3D is_jmp32 ? tnum_subreg(reg2->var_off) =
-: reg2->var_off;
-> > > > > >       u64 umin1 =3D is_jmp32 ? (u64)reg1->u32_min_value : reg1-=
->umin_value;
-> > > > > >       u64 umax1 =3D is_jmp32 ? (u64)reg1->u32_max_value : reg1-=
->umax_value;
-> > > > > >       s64 smin1 =3D is_jmp32 ? (s64)reg1->s32_min_value : reg1-=
->smin_value;
-> > > > > >       s64 smax1 =3D is_jmp32 ? (s64)reg1->s32_max_value : reg1-=
->smax_value;
-> > > > > > -     u64 val =3D is_jmp32 ? (u32)tnum_subreg(reg2->var_off).va=
-lue : reg2->var_off.value;
-> > > > > > -     s64 sval =3D is_jmp32 ? (s32)val : (s64)val;
-> > > > > > +     u64 umin2 =3D is_jmp32 ? (u64)reg2->u32_min_value : reg2-=
->umin_value;
-> > > > > > +     u64 umax2 =3D is_jmp32 ? (u64)reg2->u32_max_value : reg2-=
->umax_value;
-> > > > > > +     s64 smin2 =3D is_jmp32 ? (s64)reg2->s32_min_value : reg2-=
->smin_value;
-> > > > > > +     s64 smax2 =3D is_jmp32 ? (s64)reg2->s32_max_value : reg2-=
->smax_value;
-> > > > > >
-> > > > > >       switch (opcode) {
-> > > > > >       case BPF_JEQ:
-> > > > > > -             if (tnum_is_const(t1))
-> > > > > > -                     return !!tnum_equals_const(t1, val);
-> > > > > > -             else if (val < umin1 || val > umax1)
-> > > > > > +             /* const tnums */
-> > > > > > +             if (tnum_is_const(t1) && tnum_is_const(t2))
-> > > > > > +                     return t1.value =3D=3D t2.value;
-> > > > > > +             /* const ranges */
-> > > > > > +             if (umin1 =3D=3D umax1 && umin2 =3D=3D umax2)
-> > > > > > +                     return umin1 =3D=3D umin2;
-> > > > >
-> > > > > I don't follow this logic.
-> > > > > umin1 =3D=3D umax1 means that it's a single constant and
-> > > > > it should have been handled by earlier tnum_is_const check.
-> > > >
-> > > > I think you follow the logic, you just think it's redundant. Yes, i=
-t's
-> > > > basically the same as
-> > > >
-> > > >           if (tnum_is_const(t1) && tnum_is_const(t2))
-> > > >                 return t1.value =3D=3D t2.value;
-> > > >
-> > > > but based on ranges. I didn't feel comfortable to assume that if um=
-in1
-> > > > =3D=3D umax1 then tnum_is_const(t1) will always be true. At worst w=
-e'll
-> > > > perform one redundant check.
-> > > >
-> > > > In short, I don't trust tnum to be as precise as umin/umax and othe=
-r ranges.
-> > > >
-> > > > >
-> > > > > > +             if (smin1 =3D=3D smax1 && smin2 =3D=3D smax2)
-> > > > > > +                     return umin1 =3D=3D umin2;
-> > > > >
-> > > > > here it's even more confusing. smin =3D=3D smax -> singel const,
-> > > > > but then compare umin1 with umin2 ?!
-> > > >
-> > > > Eagle eyes! Typo, sorry :( it should be `smin1 =3D=3D smin2`, of co=
-urse.
-> > > >
-> > > > What saves us is reg_bounds_sync(), and if we have umin1 =3D=3D uma=
-x1 then
-> > > > we'll have also smin1 =3D=3D smax1 =3D=3D umin1 =3D=3D umax1 (and c=
-orresponding
-> > > > relation for second register). But I fixed these typos in both BPF_=
-JEQ
-> > > > and BPF_JNE branches.
-> > >
-> > > Not just 'saves us'. The tnum <-> bounds sync is mandatory.
-> > > I think we have a test where a function returns [-errno, 0]
-> > > and then we do if (ret < 0) check. At this point the reg has
-> > > to be tnum_is_const and zero.
-> > > So if smin1 =3D=3D smax1 =3D=3D umin1 =3D=3D umax1 it should be tnum_=
-is_const.
-> > > Otherwise it's a bug in sync logic.
-> > > I think instead of doing redundant and confusing check may be
-> > > add WARN either here or in sync logic to make sure it's all good ?
-> >
-> > Ok, let's add it as part of register state sanity checks we discussed
-> > on another patch. I'll drop the checks and will re-run all the test to
-> > make sure we are not missing anything.
->
-> So I have this as one more patch for the next revision (pending local
-> testing). If you hate any part of it, I'd appreciate early feedback :)
-> I'll wait for Eduard to finish going through the series (probably
-> tomorrow), and then will post the next version based on all the
-> feedback I got (and whatever might still come).
->
-> Note, in the below, I don't output the actual register state on
-> violation, which is unfortunate. But to make this happen I need to
-> refactor print_verifier_state() to allow me to print register state.
-> I've been wanting to move print_verifier_state() into kernel/bpf/log.c
-> for a while now, and fix how we print the state of spilled registers
-> (and maybe few more small things), so I'll do that separately, and
-> then add register state printing to sanity check error.
->
->
-> Author: Andrii Nakryiko <andrii@kernel.org>
-> Date:   Tue Oct 31 13:34:33 2023 -0700
->
->     bpf: add register bounds sanity checks
->
->     Add simple sanity checks that validate well-formed ranges (min <=3D m=
-ax)
->     across u64, s64, u32, and s32 ranges. Also for cases when the value i=
-s
->     constant (either 64-bit or 32-bit), we validate that ranges and tnums
->     are in agreement.
->
->     These bounds checks are performed at the end of BPF_ALU/BPF_ALU64
->     operations, on conditional jumps, and for LDX instructions (where sub=
-reg
->     zero/sign extension is probably the most important to check). This
->     covers most of the interesting cases.
->
->     Also, we validate the sanity of the return register when manually
-> adjusting it
->     for some special helpers.
->
->     Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index c85d974ba21f..b29c85089bc9 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -2615,6 +2615,46 @@ static void reg_bounds_sync(struct bpf_reg_state *=
-reg)
->         __update_reg_bounds(reg);
->  }
->
-> +static int reg_bounds_sanity_check(struct bpf_verifier_env *env,
-> struct bpf_reg_state *reg)
-> +{
-> +       const char *msg;
-> +
-> +       if (reg->umin_value > reg->umax_value ||
-> +           reg->smin_value > reg->smax_value ||
-> +           reg->u32_min_value > reg->u32_max_value ||
-> +           reg->s32_min_value > reg->s32_max_value) {
-> +                   msg =3D "range bounds violation";
-> +                   goto out;
-> +       }
-> +
-> +       if (tnum_is_const(reg->var_off)) {
-> +               u64 uval =3D reg->var_off.value;
-> +               s64 sval =3D (s64)uval;
-> +
-> +               if (reg->umin_value !=3D uval || reg->umax_value !=3D uva=
-l ||
-> +                   reg->smin_value !=3D sval || reg->smax_value !=3D sva=
-l) {
-> +                       msg =3D "const tnum out of sync with range bounds=
-";
-> +                       goto out;
-> +               }
-> +       }
-> +
-> +       if (tnum_subreg_is_const(reg->var_off)) {
-> +               u32 uval32 =3D tnum_subreg(reg->var_off).value;
-> +               s32 sval32 =3D (s32)uval32;
-> +
-> +               if (reg->u32_min_value !=3D uval32 || reg->u32_max_value
-> !=3D uval32 ||
-> +                   reg->s32_min_value !=3D sval32 || reg->s32_max_value
-> !=3D sval32) {
-> +                       msg =3D "const tnum (subreg) out of sync with
-> range bounds";
-> +                       goto out;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +out:
-> +       verbose(env, "%s\n", msg);
-> +       return -EFAULT;
-> +}
-> +
->  static bool __reg32_bound_s64(s32 a)
->  {
->         return a >=3D 0 && a <=3D S32_MAX;
-> @@ -9928,14 +9968,15 @@ static int prepare_func_exit(struct
-> bpf_verifier_env *env, int *insn_idx)
->         return 0;
->  }
->
-> -static void do_refine_retval_range(struct bpf_reg_state *regs, int ret_t=
-ype,
-> -                                  int func_id,
-> -                                  struct bpf_call_arg_meta *meta)
-> +static int do_refine_retval_range(struct bpf_verifier_env *env,
-> +                                 struct bpf_reg_state *regs, int ret_typ=
-e,
-> +                                 int func_id,
-> +                                 struct bpf_call_arg_meta *meta)
->  {
->         struct bpf_reg_state *ret_reg =3D &regs[BPF_REG_0];
->
->         if (ret_type !=3D RET_INTEGER)
-> -               return;
-> +               return 0;
->
->         switch (func_id) {
->         case BPF_FUNC_get_stack:
-> @@ -9961,6 +10002,8 @@ static void do_refine_retval_range(struct
-> bpf_reg_state *regs, int ret_type,
->                 reg_bounds_sync(ret_reg);
->                 break;
->         }
-> +
-> +       return reg_bounds_sanity_check(env, ret_reg);
->  }
->
->  static int
-> @@ -10612,7 +10655,9 @@ static int check_helper_call(struct
-> bpf_verifier_env *env, struct bpf_insn *insn
->                 regs[BPF_REG_0].ref_obj_id =3D id;
->         }
->
-> -       do_refine_retval_range(regs, fn->ret_type, func_id, &meta);
-> +       err =3D do_refine_retval_range(env, regs, fn->ret_type, func_id, =
-&meta);
-> +       if (err)
-> +               return err;
->
->         err =3D check_map_func_compatibility(env, meta.map_ptr, func_id);
->         if (err)
-> @@ -14079,13 +14124,12 @@ static int check_alu_op(struct
-> bpf_verifier_env *env, struct bpf_insn *insn)
->
->                 /* check dest operand */
->                 err =3D check_reg_arg(env, insn->dst_reg, DST_OP_NO_MARK)=
-;
-> +               err =3D err ?: adjust_reg_min_max_vals(env, insn);
->                 if (err)
->                         return err;
-> -
-> -               return adjust_reg_min_max_vals(env, insn);
->         }
->
-> -       return 0;
-> +       return reg_bounds_sanity_check(env, &regs[insn->dst_reg]);
->  }
->
->  static void find_good_pkt_pointers(struct bpf_verifier_state *vstate,
-> @@ -14600,18 +14644,21 @@ static void regs_refine_cond_op(struct
-> bpf_reg_state *reg1, struct bpf_reg_state
->   * Technically we can do similar adjustments for pointers to the same ob=
-ject,
->   * but we don't support that right now.
->   */
-> -static void reg_set_min_max(struct bpf_reg_state *true_reg1,
-> -                           struct bpf_reg_state *true_reg2,
-> -                           struct bpf_reg_state *false_reg1,
-> -                           struct bpf_reg_state *false_reg2,
-> -                           u8 opcode, bool is_jmp32)
-> +static int reg_set_min_max(struct bpf_verifier_env *env,
-> +                          struct bpf_reg_state *true_reg1,
-> +                          struct bpf_reg_state *true_reg2,
-> +                          struct bpf_reg_state *false_reg1,
-> +                          struct bpf_reg_state *false_reg2,
-> +                          u8 opcode, bool is_jmp32)
->  {
-> +       int err;
-> +
->         /* If either register is a pointer, we can't learn anything about=
- its
->          * variable offset from the compare (unless they were a pointer i=
-nto
->          * the same object, but we don't bother with that).
->          */
->         if (false_reg1->type !=3D SCALAR_VALUE || false_reg2->type !=3D
-> SCALAR_VALUE)
-> -               return;
-> +               return 0;
->
->         /* fallthrough (FALSE) branch */
->         regs_refine_cond_op(false_reg1, false_reg2,
-> rev_opcode(opcode), is_jmp32);
-> @@ -14622,6 +14669,12 @@ static void reg_set_min_max(struct
-> bpf_reg_state *true_reg1,
->         regs_refine_cond_op(true_reg1, true_reg2, opcode, is_jmp32);
->         reg_bounds_sync(true_reg1);
->         reg_bounds_sync(true_reg2);
-> +
-> +       err =3D reg_bounds_sanity_check(env, true_reg1);
-> +       err =3D err ?: reg_bounds_sanity_check(env, true_reg2);
-> +       err =3D err ?: reg_bounds_sanity_check(env, false_reg1);
-> +       err =3D err ?: reg_bounds_sanity_check(env, false_reg2);
-> +       return err;
->  }
->
->  static void mark_ptr_or_null_reg(struct bpf_func_state *state,
-> @@ -14915,15 +14968,20 @@ static int check_cond_jmp_op(struct
-> bpf_verifier_env *env,
->         other_branch_regs =3D other_branch->frame[other_branch->curframe]=
-->regs;
->
->         if (BPF_SRC(insn->code) =3D=3D BPF_X) {
-> -               reg_set_min_max(&other_branch_regs[insn->dst_reg],
-> -                               &other_branch_regs[insn->src_reg],
-> -                               dst_reg, src_reg, opcode, is_jmp32);
-> +               err =3D reg_set_min_max(env,
-> +                                     &other_branch_regs[insn->dst_reg],
-> +                                     &other_branch_regs[insn->src_reg],
-> +                                     dst_reg, src_reg, opcode, is_jmp32)=
-;
->         } else /* BPF_SRC(insn->code) =3D=3D BPF_K */ {
-> -               reg_set_min_max(&other_branch_regs[insn->dst_reg],
-> -                               src_reg /* fake one */,
-> -                               dst_reg, src_reg /* same fake one */,
-> -                               opcode, is_jmp32);
-> +               err =3D reg_set_min_max(env,
-> +                                     &other_branch_regs[insn->dst_reg],
-> +                                     src_reg /* fake one */,
-> +                                     dst_reg, src_reg /* same fake one *=
-/,
-> +                                     opcode, is_jmp32);
->         }
-> +       if (err)
-> +               return err;
-> +
->         if (BPF_SRC(insn->code) =3D=3D BPF_X &&
->             src_reg->type =3D=3D SCALAR_VALUE && src_reg->id &&
->             !WARN_ON_ONCE(src_reg->id !=3D other_branch_regs[insn->src_re=
-g].id)) {
-> @@ -17426,10 +17484,8 @@ static int do_check(struct bpf_verifier_env *env=
-)
->                                                insn->off, BPF_SIZE(insn->=
-code),
->                                                BPF_READ, insn->dst_reg, f=
-alse,
->                                                BPF_MODE(insn->code) =3D=
-=3D
-> BPF_MEMSX);
-> -                       if (err)
-> -                               return err;
-> -
-> -                       err =3D save_aux_ptr_type(env, src_reg_type, true=
-);
-> +                       err =3D err ?: save_aux_ptr_type(env, src_reg_typ=
-e, true);
-> +                       err =3D reg_bounds_sanity_check(env,
-> &regs[insn->dst_reg]);
+Those configs are needed to be able to run VM somewhat consistently.
+For instance, ATM, s390x is missing the `CONFIG_VIRTIO_CONSOLE` which
+prevents s390x kernels built in CI to leverage qemu-guest-agent.
 
-this should obviously be `err =3D err ?: reg_bounds_sanity_check(...)`
-(somehow it gets obvious in the email, not locally)
+By moving them to `config,vm`, we should have selftest kernels which are
+equal in term of VM functionalities when they include this file.
 
->                         if (err)
->                                 return err;
->                 } else if (class =3D=3D BPF_STX) {
+The set of config unabled were picked using
+
+    grep -h -E '(_9P|_VIRTIO)' config.x86_64 config | sort | uniq
+
+added to `config.vm` and then
+    grep -vE '(_9P|_VIRTIO)' config.{x86_64,aarch64,s390x}
+
+as a side-effect, some config may have disappeared to the aarch64 and
+s390x kernels, but they should not be needed. CI will tell.
+
+Signed-off-by: Manu Bretelle <chantr4@gmail.com>
+---
+ tools/testing/selftests/bpf/config.aarch64 | 16 ----------------
+ tools/testing/selftests/bpf/config.s390x   |  9 ---------
+ tools/testing/selftests/bpf/config.vm      | 12 ++++++++++++
+ tools/testing/selftests/bpf/config.x86_64  | 12 ------------
+ tools/testing/selftests/bpf/vmtest.sh      |  4 +++-
+ 5 files changed, 15 insertions(+), 38 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/config.vm
+
+diff --git a/tools/testing/selftests/bpf/config.aarch64 b/tools/testing/selftests/bpf/config.aarch64
+index 253821494884..fa8ecf626c73 100644
+--- a/tools/testing/selftests/bpf/config.aarch64
++++ b/tools/testing/selftests/bpf/config.aarch64
+@@ -1,4 +1,3 @@
+-CONFIG_9P_FS=y
+ CONFIG_ARCH_VEXPRESS=y
+ CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
+ CONFIG_ARM_SMMU_V3=y
+@@ -46,7 +45,6 @@ CONFIG_DEBUG_SG=y
+ CONFIG_DETECT_HUNG_TASK=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_DEVTMPFS=y
+-CONFIG_DRM_VIRTIO_GPU=y
+ CONFIG_DRM=y
+ CONFIG_DUMMY=y
+ CONFIG_EXPERT=y
+@@ -67,7 +65,6 @@ CONFIG_HAVE_KRETPROBES=y
+ CONFIG_HEADERS_INSTALL=y
+ CONFIG_HIGH_RES_TIMERS=y
+ CONFIG_HUGETLBFS=y
+-CONFIG_HW_RANDOM_VIRTIO=y
+ CONFIG_HW_RANDOM=y
+ CONFIG_HZ_100=y
+ CONFIG_IDLE_PAGE_TRACKING=y
+@@ -99,8 +96,6 @@ CONFIG_MEMCG=y
+ CONFIG_MEMORY_HOTPLUG=y
+ CONFIG_MEMORY_HOTREMOVE=y
+ CONFIG_NAMESPACES=y
+-CONFIG_NET_9P_VIRTIO=y
+-CONFIG_NET_9P=y
+ CONFIG_NET_ACT_BPF=y
+ CONFIG_NET_ACT_GACT=y
+ CONFIG_NETDEVICES=y
+@@ -140,7 +135,6 @@ CONFIG_SCHED_TRACER=y
+ CONFIG_SCSI_CONSTANTS=y
+ CONFIG_SCSI_LOGGING=y
+ CONFIG_SCSI_SCAN_ASYNC=y
+-CONFIG_SCSI_VIRTIO=y
+ CONFIG_SCSI=y
+ CONFIG_SECURITY_NETWORK=y
+ CONFIG_SERIAL_AMBA_PL011_CONSOLE=y
+@@ -167,16 +161,6 @@ CONFIG_UPROBES=y
+ CONFIG_USELIB=y
+ CONFIG_USER_NS=y
+ CONFIG_VETH=y
+-CONFIG_VIRTIO_BALLOON=y
+-CONFIG_VIRTIO_BLK=y
+-CONFIG_VIRTIO_CONSOLE=y
+-CONFIG_VIRTIO_FS=y
+-CONFIG_VIRTIO_INPUT=y
+-CONFIG_VIRTIO_MMIO_CMDLINE_DEVICES=y
+-CONFIG_VIRTIO_MMIO=y
+-CONFIG_VIRTIO_NET=y
+-CONFIG_VIRTIO_PCI=y
+-CONFIG_VIRTIO_VSOCKETS_COMMON=y
+ CONFIG_VLAN_8021Q=y
+ CONFIG_VSOCKETS=y
+ CONFIG_VSOCKETS_LOOPBACK=y
+diff --git a/tools/testing/selftests/bpf/config.s390x b/tools/testing/selftests/bpf/config.s390x
+index 2ba92167be35..e93330382849 100644
+--- a/tools/testing/selftests/bpf/config.s390x
++++ b/tools/testing/selftests/bpf/config.s390x
+@@ -1,4 +1,3 @@
+-CONFIG_9P_FS=y
+ CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
+ CONFIG_AUDIT=y
+ CONFIG_BLK_CGROUP=y
+@@ -84,8 +83,6 @@ CONFIG_MEMORY_HOTPLUG=y
+ CONFIG_MEMORY_HOTREMOVE=y
+ CONFIG_NAMESPACES=y
+ CONFIG_NET=y
+-CONFIG_NET_9P=y
+-CONFIG_NET_9P_VIRTIO=y
+ CONFIG_NET_ACT_BPF=y
+ CONFIG_NET_ACT_GACT=y
+ CONFIG_NET_KEY=y
+@@ -114,7 +111,6 @@ CONFIG_SAMPLE_SECCOMP=y
+ CONFIG_SAMPLES=y
+ CONFIG_SCHED_TRACER=y
+ CONFIG_SCSI=y
+-CONFIG_SCSI_VIRTIO=y
+ CONFIG_SECURITY_NETWORK=y
+ CONFIG_STACK_TRACER=y
+ CONFIG_STATIC_KEYS_SELFTEST=y
+@@ -136,11 +132,6 @@ CONFIG_UPROBES=y
+ CONFIG_USELIB=y
+ CONFIG_USER_NS=y
+ CONFIG_VETH=y
+-CONFIG_VIRTIO_BALLOON=y
+-CONFIG_VIRTIO_BLK=y
+-CONFIG_VIRTIO_NET=y
+-CONFIG_VIRTIO_PCI=y
+-CONFIG_VIRTIO_VSOCKETS_COMMON=y
+ CONFIG_VLAN_8021Q=y
+ CONFIG_VSOCKETS=y
+ CONFIG_VSOCKETS_LOOPBACK=y
+diff --git a/tools/testing/selftests/bpf/config.vm b/tools/testing/selftests/bpf/config.vm
+new file mode 100644
+index 000000000000..a9746ca78777
+--- /dev/null
++++ b/tools/testing/selftests/bpf/config.vm
+@@ -0,0 +1,12 @@
++CONFIG_9P_FS=y
++CONFIG_9P_FS_POSIX_ACL=y
++CONFIG_9P_FS_SECURITY=y
++CONFIG_CRYPTO_DEV_VIRTIO=y
++CONFIG_NET_9P=y
++CONFIG_NET_9P_VIRTIO=y
++CONFIG_VIRTIO_BALLOON=y
++CONFIG_VIRTIO_BLK=y
++CONFIG_VIRTIO_CONSOLE=y
++CONFIG_VIRTIO_NET=y
++CONFIG_VIRTIO_PCI=y
++CONFIG_VIRTIO_VSOCKETS_COMMON=y
+diff --git a/tools/testing/selftests/bpf/config.x86_64 b/tools/testing/selftests/bpf/config.x86_64
+index 2e70a6048278..f7bfb2b09c82 100644
+--- a/tools/testing/selftests/bpf/config.x86_64
++++ b/tools/testing/selftests/bpf/config.x86_64
+@@ -1,6 +1,3 @@
+-CONFIG_9P_FS=y
+-CONFIG_9P_FS_POSIX_ACL=y
+-CONFIG_9P_FS_SECURITY=y
+ CONFIG_AGP=y
+ CONFIG_AGP_AMD64=y
+ CONFIG_AGP_INTEL=y
+@@ -45,7 +42,6 @@ CONFIG_CPU_IDLE_GOV_LADDER=y
+ CONFIG_CPUSETS=y
+ CONFIG_CRC_T10DIF=y
+ CONFIG_CRYPTO_BLAKE2B=y
+-CONFIG_CRYPTO_DEV_VIRTIO=y
+ CONFIG_CRYPTO_SEQIV=y
+ CONFIG_CRYPTO_XXHASH=y
+ CONFIG_DCB=y
+@@ -145,8 +141,6 @@ CONFIG_MEMORY_FAILURE=y
+ CONFIG_MINIX_SUBPARTITION=y
+ CONFIG_NAMESPACES=y
+ CONFIG_NET=y
+-CONFIG_NET_9P=y
+-CONFIG_NET_9P_VIRTIO=y
+ CONFIG_NET_ACT_BPF=y
+ CONFIG_NET_CLS_CGROUP=y
+ CONFIG_NET_EMATCH=y
+@@ -228,12 +222,6 @@ CONFIG_USER_NS=y
+ CONFIG_VALIDATE_FS_PARSER=y
+ CONFIG_VETH=y
+ CONFIG_VIRT_DRIVERS=y
+-CONFIG_VIRTIO_BALLOON=y
+-CONFIG_VIRTIO_BLK=y
+-CONFIG_VIRTIO_CONSOLE=y
+-CONFIG_VIRTIO_NET=y
+-CONFIG_VIRTIO_PCI=y
+-CONFIG_VIRTIO_VSOCKETS_COMMON=y
+ CONFIG_VLAN_8021Q=y
+ CONFIG_VSOCKETS=y
+ CONFIG_VSOCKETS_LOOPBACK=y
+diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
+index 685034528018..65d14f3bbe30 100755
+--- a/tools/testing/selftests/bpf/vmtest.sh
++++ b/tools/testing/selftests/bpf/vmtest.sh
+@@ -36,7 +36,9 @@ DEFAULT_COMMAND="./test_progs"
+ MOUNT_DIR="mnt"
+ ROOTFS_IMAGE="root.img"
+ OUTPUT_DIR="$HOME/.bpf_selftests"
+-KCONFIG_REL_PATHS=("tools/testing/selftests/bpf/config" "tools/testing/selftests/bpf/config.${ARCH}")
++KCONFIG_REL_PATHS=("tools/testing/selftests/bpf/config"
++	"tools/testing/selftests/bpf/config.vm"
++	"tools/testing/selftests/bpf/config.${ARCH}")
+ INDEX_URL="https://raw.githubusercontent.com/libbpf/ci/master/INDEX"
+ NUM_COMPILE_JOBS="$(nproc)"
+ LOG_FILE_BASE="$(date +"bpf_selftests.%Y-%m-%d_%H-%M-%S")"
+-- 
+2.39.3
+
 
