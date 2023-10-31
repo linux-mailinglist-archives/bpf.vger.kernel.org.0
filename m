@@ -1,170 +1,247 @@
-Return-Path: <bpf+bounces-13728-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13729-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52CD17DD3DF
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 18:05:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 123AE7DD4B2
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 18:31:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC394B21014
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 17:05:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEED21C20CAE
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 17:30:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E98F2032D;
-	Tue, 31 Oct 2023 17:05:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3077F208C1;
+	Tue, 31 Oct 2023 17:30:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="USHGYfnn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XbZItavC"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95BC2031C
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 17:05:30 +0000 (UTC)
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B47E181;
-	Tue, 31 Oct 2023 10:05:28 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so10251870a12.1;
-        Tue, 31 Oct 2023 10:05:28 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7E51945A
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 17:30:53 +0000 (UTC)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE90BF1
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 10:30:51 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9bf86b77a2aso843339666b.0
+        for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 10:30:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698771927; x=1699376727; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PHOq+cM1i5HvilDCUI3n2s0JE2fFsAEJIBhWGuopi9E=;
-        b=USHGYfnnsTMSxXqdmOHwuBfdbU20Ymow/HfF6shFT4ANCtcq9ICZYYA4pIQ7RE4jlX
-         7edaUJ1TE4Bt+Q0K9g/7WHYnrQccXZLlreQ7M2ohQw7pcxjZr/yjUiJ7JFtTn+mH2arx
-         UEEnhjHTRVPLSHZPJWnbVvf9j2wNAK3gOc1DM95z2MGQSAlS0ol/9u1l8RzJr6tOOfQS
-         fr30yKguNEDQ5lRenE7t4VjovjYGAu8bFD8sbskAgYzQYR6RRkqfujVJORRK0Ml34sqh
-         tnh2lLkfqn962QwobeG1u2MLS6qwMWpQPse5K/3y2Tw8ALqZpfgaABfYpmTrBEiaUrJy
-         WlOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698771927; x=1699376727;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1698773450; x=1699378250; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PHOq+cM1i5HvilDCUI3n2s0JE2fFsAEJIBhWGuopi9E=;
-        b=op2CYNNIZSgchTC1HWY1FpYVPC2ZKpDNjehyv5ttAsDNAdvKv+oxTPyOpLkx5Tjvtz
-         9Fa0/RaEP4M57oDss7r8/Jpg6J60VcqPKnIy8c2MQv+85HjqCMvtxp9mpD2Sg2+cqRR1
-         9zKOQh0F6xf5x9tgDzuAid6VleUm8YMDplI+437d0e+ZilqC7rNcSWRdYvGvWGDuQXWV
-         0IV4y8RjaEjTbzRxOxr+MytQ35R9XdXQIlXnwH4rcdCliEo15GPk+xT67yNts7QfnNAc
-         olLGNWxRVP7swXLBNrSYcbizmDtXZdt9dDJfN3/WIOItqp1O9PGnURGm9i2H0gcT72Fm
-         Pv3w==
-X-Gm-Message-State: AOJu0Yzt8nYIC6N8pxY+o4vAeFt/C001l3PETe7TgNu0Yi7hPb9LemAf
-	+JuoPzlkhrAA0K/GvxCjOPZb8iMQezOw7Q==
-X-Google-Smtp-Source: AGHT+IHaRXGmxNROU+qgeKBTMhFayeYLeKfBdCCE+0SfI7lcwuHO+zQmfzKBoA+F2pfuixIZlMBnpA==
-X-Received: by 2002:a17:906:dace:b0:9c3:730e:6947 with SMTP id xi14-20020a170906dace00b009c3730e6947mr10822219ejb.41.1698771926710;
-        Tue, 31 Oct 2023 10:05:26 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id z5-20020a170906714500b0099ce188be7fsm1279516ejj.3.2023.10.31.10.05.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 10:05:23 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 31 Oct 2023 18:05:17 +0100
-To: Matthieu Baerts <matttbe@kernel.org>
-Cc: Yonghong Song <yonghong.song@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Chuyi Zhou <zhouchuyi@bytedance.com>,
-	Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, mptcp@lists.linux.dev,
-	kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH bpf-next] bpf: fix compilation error without CGROUPS
-Message-ID: <ZUEzzc/Sod8OR28B@krava>
-References: <20231031-bpf-compil-err-css-v1-1-e2244c637835@kernel.org>
+        bh=kkqqR0n+8oUQ6AAyIvTTSh3RfNG7ffYbjY6haPDG8Xc=;
+        b=XbZItavCbcdbGgHoFoVkh+D1EqJzMTc5FTQXFds5n+GijAoegfYsPWttIqiU4D+kiT
+         erNlRTQyTKmH7YSsWC2fAOcYGhRVX9pgr7URpJeY+T/sLB6o0wB6PwK5I90SFDLr/NQc
+         gdL9IHf/yt6UutFV1XrvLJHa+rwyoLhE2GguyY5/LwoDa1LY2FgsPrtEg6PU0YR4tJdI
+         QxHIjTgnRIAUJ+1ZnN4SensxW2ME4cE9AG8OsWF4B3fKVYkhnq97dFRgOtd8/o/9aacy
+         G9m6ltJw5CQiPMAqDIlQsnmacVw6WwMyZA94lWLlds/zvpX+3MldhcdTUZzqKzhCk50P
+         aTYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698773450; x=1699378250;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kkqqR0n+8oUQ6AAyIvTTSh3RfNG7ffYbjY6haPDG8Xc=;
+        b=Y/Z8FOskLpsdoHRrxcY/ryrg7z+oQo/6Vf8yrr/AXEhyHnM5xntSuCy61w1aPCGfRs
+         3F9cM0hbYyeXTiGRDOpkmCLHQiskoU57k53jaRQLskhs3zQv47Xb+HlWKJYZ/XrXDX30
+         vqxkFGNUFvBlogu7Al88uVcPb0nr2gKWwH0C6z15cAq2FUYZ/f1EhcaijvfOAn9wg3Bd
+         VrqAH9lqAWQ0MzAnUe4aPOmHulk4N/Vh9d1Xf8X7Vy7SdlrlYQzExueZqxcOAJe90Kfs
+         7vE3qqTZ2MVF5EQPndszp/4Ns/avs1R/cqZF8e6SfeG44KSL6dlS3kTjRA/nc+9pgh5k
+         1Omg==
+X-Gm-Message-State: AOJu0YxkH0f6hk49k+trduKr0JglE/+Yg3V4Yg7u4cPjP2l/ahWR1Pm7
+	sy8pL5QDrzx8/yqmALBA+GhSTfRkKmO0KqqF+Jw=
+X-Google-Smtp-Source: AGHT+IEK0jHNzPcqoym/eLkfmvGR/k4l/7tp5TxNey3NfNV3RjDImaJLoeyidQ7FYQQt+Pqd8e2FM6JrU8/BWYpWm/I=
+X-Received: by 2002:a17:906:fd8b:b0:9c1:66cc:1d7d with SMTP id
+ xa11-20020a170906fd8b00b009c166cc1d7dmr3806ejb.64.1698773450037; Tue, 31 Oct
+ 2023 10:30:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231031-bpf-compil-err-css-v1-1-e2244c637835@kernel.org>
+References: <20231027181346.4019398-1-andrii@kernel.org> <20231027181346.4019398-4-andrii@kernel.org>
+ <487ae806ba081a07b43733d0698752f4414cd01d.camel@gmail.com>
+In-Reply-To: <487ae806ba081a07b43733d0698752f4414cd01d.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 31 Oct 2023 10:30:38 -0700
+Message-ID: <CAEf4BzY5TSpNf4wdeU9jn_Sv4ugi_FrDONCtrm-KMdf=v72iYQ@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 03/23] bpf: derive smin/smax from umin/max bounds
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com, 
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 31, 2023 at 04:49:34PM +0100, Matthieu Baerts wrote:
-> Our MPTCP CI complained [1] -- and KBuild too -- that it was no longer
-> possible to build the kernel without CONFIG_CGROUPS:
-> 
->   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
->   kernel/bpf/task_iter.c:919:14: error: 'CSS_TASK_ITER_PROCS' undeclared (first use in this function)
->     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
->         |              ^~~~~~~~~~~~~~~~~~~
->   kernel/bpf/task_iter.c:919:14: note: each undeclared identifier is reported only once for each function it appears in
->   kernel/bpf/task_iter.c:919:36: error: 'CSS_TASK_ITER_THREADED' undeclared (first use in this function)
->     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
->         |                                    ^~~~~~~~~~~~~~~~~~~~~~
->   kernel/bpf/task_iter.c:927:60: error: invalid application of 'sizeof' to incomplete type 'struct css_task_iter'
->     927 |         kit->css_it = bpf_mem_alloc(&bpf_global_ma, sizeof(struct css_task_iter));
->         |                                                            ^~~~~~
->   kernel/bpf/task_iter.c:930:9: error: implicit declaration of function 'css_task_iter_start'; did you mean 'task_seq_start'? [-Werror=implicit-function-declaration]
->     930 |         css_task_iter_start(css, flags, kit->css_it);
->         |         ^~~~~~~~~~~~~~~~~~~
->         |         task_seq_start
->   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_next':
->   kernel/bpf/task_iter.c:940:16: error: implicit declaration of function 'css_task_iter_next'; did you mean 'class_dev_iter_next'? [-Werror=implicit-function-declaration]
->     940 |         return css_task_iter_next(kit->css_it);
->         |                ^~~~~~~~~~~~~~~~~~
->         |                class_dev_iter_next
->   kernel/bpf/task_iter.c:940:16: error: returning 'int' from a function with return type 'struct task_struct *' makes pointer from integer without a cast [-Werror=int-conversion]
->     940 |         return css_task_iter_next(kit->css_it);
->         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_destroy':
->   kernel/bpf/task_iter.c:949:9: error: implicit declaration of function 'css_task_iter_end' [-Werror=implicit-function-declaration]
->     949 |         css_task_iter_end(kit->css_it);
->         |         ^~~~~~~~~~~~~~~~~
-> 
-> This patch simply surrounds with a #ifdef the new code requiring CGroups
-> support. It seems enough for the compiler and this is similar to
-> bpf_iter_css_{new,next,destroy}() functions where no other #ifdef have
-> been added in kernel/bpf/helpers.c and in the selftests.
-> 
-> Fixes: 9c66dc94b62a ("bpf: Introduce css_task open-coded iterator kfuncs")
-> Link: https://github.com/multipath-tcp/mptcp_net-next/actions/runs/6665206927
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202310260528.aHWgVFqq-lkp@intel.com/
-> Signed-off-by: Matthieu Baerts <matttbe@kernel.org>
+On Tue, Oct 31, 2023 at 8:37=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Fri, 2023-10-27 at 11:13 -0700, Andrii Nakryiko wrote:
+> > Add smin/smax derivation from appropriate umin/umax values. Previously =
+the
+> > logic was surprisingly asymmetric, trying to derive umin/umax from smin=
+/smax
+> > (if possible), but not trying to do the same in the other direction. A =
+simple
+> > addition to __reg64_deduce_bounds() fixes this.
+> >
+> > Added also generic comment about u64/s64 ranges and their relationship.
+> > Hopefully that helps readers to understand all the bounds deductions
+> > a bit better.
+> >
+> > Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+>
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+>
+> Nice comment, thank you. I noticed two typos, see below.
+>
+> > ---
+> >  kernel/bpf/verifier.c | 70 +++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 70 insertions(+)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 857d76694517..bf4193706744 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -2358,6 +2358,76 @@ static void __reg32_deduce_bounds(struct bpf_reg=
+_state *reg)
+> >
+> >  static void __reg64_deduce_bounds(struct bpf_reg_state *reg)
+> >  {
+> > +     /* If u64 range forms a valid s64 range (due to matching sign bit=
+),
+> > +      * try to learn from that. Let's do a bit of ASCII art to see whe=
+n
+> > +      * this is happening. Let's take u64 range first:
+> > +      *
+> > +      * 0             0x7fffffffffffffff 0x8000000000000000        U64=
+_MAX
+> > +      * |-------------------------------|-----------------------------=
+---|
+> > +      *
+> > +      * Valid u64 range is formed when umin and umax are anywhere in t=
+his
+> > +      * range [0, U64_MAX] and umin <=3D umax. u64 is simple and
+> > +      * straightforward. Let's where s64 range maps to this simple [0,
+> > +      * U64_MAX] range, annotated below the line for comparison:
+>
+> Nit: this sentence sounds a bit weird, probably some word is missing
+>      between "let's" and "where".
+>
 
-Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
+I don't know what's going on here, I wasn't drunk when I wrote this
+and I don't remember it being so incoherent :) Will re-read and try to
+make it clearer.
 
-jirka
+> > +      *
+> > +      * 0             0x7fffffffffffffff 0x8000000000000000        U64=
+_MAX
+> > +      * |-------------------------------|-----------------------------=
+---|
+> > +      * 0                        S64_MAX S64_MIN                      =
+  -1
+> > +      *
+> > +      * So s64 values basically start in the middle and then are conti=
+guous
+> > +      * to the right of it, wrapping around from -1 to 0, and then
+> > +      * finishing as S64_MAX (0x7fffffffffffffff) right before S64_MIN=
+.
+> > +      * We can try drawing more visually continuity of u64 vs s64 valu=
+es as
+> > +      * mapped to just actual hex valued range of values.
+> > +      *
+> > +      *  u64 start                                               u64 e=
+nd
+> > +      *  _____________________________________________________________=
+__
+> > +      * /                                                             =
+  \
+> > +      * 0             0x7fffffffffffffff 0x8000000000000000        U64=
+_MAX
+> > +      * |-------------------------------|-----------------------------=
+---|
+> > +      * 0                        S64_MAX S64_MIN                      =
+  -1
+> > +      *                                / \
+> > +      * >------------------------------   ----------------------------=
+--->
+> > +      * s64 continues...        s64 end   s64 start          s64 "midp=
+oint"
+> > +      *
+> > +      * What this means is that in general, we can't always derive
+> > +      * something new about u64 from any random s64 range, and vice ve=
+rsa.
+> > +      * But we can do that in two particular cases. One is when entire
+> > +      * u64/s64 range is *entirely* contained within left half of the =
+above
+> > +      * diagram or when it is *entirely* contained in the right half. =
+I.e.:
+> > +      *
+> > +      * |-------------------------------|-----------------------------=
+---|
+> > +      *     ^                   ^            ^                 ^
+> > +      *     A                   B            C                 D
+> > +      *
+> > +      * [A, B] and [C, D] are contained entirely in their respective h=
+alves
+> > +      * and form valid contiguous ranges as both u64 and s64 values. [=
+A, B]
+> > +      * will be non-negative both as u64 and s64 (and in fact it will =
+be
+> > +      * identical ranges no matter the signedness). [C, D] treated as =
+s64
+> > +      * will be a range of negative values, while in u64 it will be
+> > +      * non-negative range of values larger than 0x8000000000000000.
+> > +      *
+> > +      * Now, any other range here can't be represented in both u64 and=
+ s64
+> > +      * simultaneously. E.g., [A, C], [A, D], [B, C], [B, D] are valid
+> > +      * contiguous u64 ranges, but they are discontinuous in s64. [B, =
+C]
+> > +      * in s64 would be properly presented as [S64_MIN, C] and [B, S64=
+_MAX],
+> > +      * for example. Similarly, valid s64 range [D, A] (going from neg=
+ative
+> > +      * to positive values), would be two separate [D, U64_MAX] and [0=
+, A]
+> > +      * ranges as u64. Currently reg_state can't represent two segment=
+s per
+> > +      * numeric domain, so in such situations we can only derive maxim=
+al
+> > +      * possible range ([0, U64_MAX] for u64, and [S64_MIN, S64_MAX) f=
+or s64).
+>                                                                   ^
+> Nit:                                                      missing bracket
+>
 
-> ---
->  kernel/bpf/task_iter.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> index 59e747938bdb..e0d313114a5b 100644
-> --- a/kernel/bpf/task_iter.c
-> +++ b/kernel/bpf/task_iter.c
-> @@ -894,6 +894,8 @@ __bpf_kfunc void bpf_iter_task_vma_destroy(struct bpf_iter_task_vma *it)
->  
->  __diag_pop();
->  
-> +#ifdef CONFIG_CGROUPS
-> +
->  struct bpf_iter_css_task {
->  	__u64 __opaque[1];
->  } __attribute__((aligned(8)));
-> @@ -952,6 +954,8 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
->  
->  __diag_pop();
->  
-> +#endif /* CONFIG_CGROUPS */
-> +
->  struct bpf_iter_task {
->  	__u64 __opaque[3];
->  } __attribute__((aligned(8)));
-> 
-> ---
-> base-commit: f1c73396133cb3d913e2075298005644ee8dfade
-> change-id: 20231031-bpf-compil-err-css-056f3db04860
-> 
-> Best regards,
-> -- 
-> Matthieu Baerts <matttbe@kernel.org>
-> 
+it's actually a typo, ) -> ], which is now fixed as well, thanks
+
+> > +      *
+> > +      * So we use these facts to derive umin/umax from smin/smax and v=
+ice
+> > +      * versa only if they stay within the same "half". This is equiva=
+lent
+> > +      * to checking sign bit: lower half will have sign bit as zero, u=
+pper
+> > +      * half have sign bit 1. Below in code we simplify this by just
+> > +      * casting umin/umax as smin/smax and checking if they form valid
+> > +      * range, and vice versa. Those are equivalent checks.
+> > +      */
+> > +     if ((s64)reg->umin_value <=3D (s64)reg->umax_value) {
+> > +             reg->smin_value =3D max_t(s64, reg->smin_value, reg->umin=
+_value);
+> > +             reg->smax_value =3D min_t(s64, reg->smax_value, reg->umax=
+_value);
+> > +     }
+> >       /* Learn sign from signed bounds.
+> >        * If we cannot cross the sign boundary, then signed and unsigned=
+ bounds
+> >        * are the same, so combine.  This works even in the negative cas=
+e, e.g.
+>
+>
+>
 
