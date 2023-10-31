@@ -1,133 +1,119 @@
-Return-Path: <bpf+bounces-13671-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13672-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 431197DC5A6
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 06:05:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4C127DC5CD
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 06:19:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73D081C20BAF
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 05:05:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9B9E1C20BEB
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 05:19:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 978C9748F;
-	Tue, 31 Oct 2023 05:04:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C80AAD275;
+	Tue, 31 Oct 2023 05:19:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="jvl0qBy8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aUHVY278"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED31CA68
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 05:04:55 +0000 (UTC)
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30548F3
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 22:04:54 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-2802b744e52so1898900a91.0
-        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 22:04:54 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2034ECA7C
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 05:19:25 +0000 (UTC)
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A67B7
+	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 22:19:19 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9be3b66f254so774670766b.3
+        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 22:19:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1698728693; x=1699333493; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1698729554; x=1699334354; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KHjScvx8WEZuHjDOhihyelPybn4gwPGSDSuXuehLacg=;
-        b=jvl0qBy8+E7FU2CHoFTD36zGOAQBaZjYyANqcb8bmSS/hQAkfxdn3aQGYdxoYqRID8
-         ILNZPLkznpJ5/nAuUCWgic+HnKa0EjfWH6vHBnHz1zit58dTHI1vWlkUzzTp11z4g/vj
-         ZgRkdx1r1uG05aEP7QCIqcYpP1hXrfjLavZTi7QAipo4DyX4dvHcqeCK54JLyFrpFjrm
-         vL+2ceE6hxgyTJ8cfxcbg6oTpmmMOvPFzYJ0FuTgPTnY1puNwKfkvpWJIIwLzpTbA5BN
-         qUb/fA5yivEl+opXRExgqiYmCojC7b65XJSH4d8LkHCkC9qHMRaxhZ26SLShwE6KCwka
-         Qr/w==
+        bh=oapVQRnil/59u3gHAbKWTpeSyDW7jQ4dw86pBfRqhXg=;
+        b=aUHVY278vZaQ3lJs5wNfIQlGVv6+vJ0VXlu6SflpDA2oX3k9R24zuSx/Fi9wcHVIga
+         iCtmU8vVTZP3vuiKU6aRl6RkchECc/0FZ52lvAUh08NDgR0CcGWqYw9/gG5PPor3BRlr
+         9aL0BBsGueFE1bE9wfWQ1BIVp5iYUx4NV9IImfG4wE89KnSqgzLU/sm2Ojq19tVTXTnS
+         xJnpCq836MoorovsN9qMaz1xDftnUdhTLWi5bM7s8BDUwX0OU3XYoT9HoaepypPbhnNx
+         gEZRd9fQfRN8l4boup1626rhVF/utEQ0iVFYyue04+grBtL97ht0RrPx9pw+cOEzBaSC
+         STbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698728693; x=1699333493;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1698729554; x=1699334354;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KHjScvx8WEZuHjDOhihyelPybn4gwPGSDSuXuehLacg=;
-        b=IbS9rvczD+ip3GcP8beOeqwq+rMf/eIc6jClI6YhPTgoyc5WzaVD79W3iyvo8+6ZES
-         0743AQXUGVmdbk5DIWct/BFc2PZ9ee+Xy3qJGHgVqRPvuqvY9/EeR+4PF73MFDGM7AKl
-         8Buy11wKF+Tcoh+Akz1A15+tWFr33tpyemcuPS1xrbOMhzORu+aWrXJkhkcUM2QKxUL2
-         D9xPY5EGnttp05P6KmIsVQjKPMK0+50FwEe8fgMNYUpJsnjmJ1g8ya1r9qIDCGRIUQ7D
-         7kjaNErbECdqPFakdC9F6U6EL7IaEFhKadYwfGcHyLl8WHh1MpsUtn/gEmoMPGIyxgxQ
-         sS3g==
-X-Gm-Message-State: AOJu0YyD7BinQiDhVQX3KVZFczm7GumXHErwpNwKw8UT3lNTikeHfyPp
-	oBPspZNv7CctJXtANA+g763e/uyXcv+A1Aj0bKA=
-X-Google-Smtp-Source: AGHT+IFcJ2iLnCohdPUcXXSHvhUQBOAl8xtEfhb33V9KDv/UuBjYUO+VPeNYJsoPOHdVmsR5HQdBEg==
-X-Received: by 2002:a17:90a:600f:b0:280:8e7d:5701 with SMTP id y15-20020a17090a600f00b002808e7d5701mr2095099pji.2.1698728693503;
-        Mon, 30 Oct 2023 22:04:53 -0700 (PDT)
-Received: from n37-019-243.byted.org ([180.184.51.142])
-        by smtp.gmail.com with ESMTPSA id 21-20020a17090a195500b0027ce34334f5sm350951pjh.37.2023.10.30.22.04.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 22:04:53 -0700 (PDT)
-From: Chuyi Zhou <zhouchuyi@bytedance.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@kernel.org,
-	Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: [PATCH bpf-next v4 3/3] selftests/bpf: Add test for using css_task iter in sleepable progs
-Date: Tue, 31 Oct 2023 13:04:38 +0800
-Message-Id: <20231031050438.93297-4-zhouchuyi@bytedance.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20231031050438.93297-1-zhouchuyi@bytedance.com>
-References: <20231031050438.93297-1-zhouchuyi@bytedance.com>
+        bh=oapVQRnil/59u3gHAbKWTpeSyDW7jQ4dw86pBfRqhXg=;
+        b=s30ttWa7ZySKc5ExEmRfK5kvHwIjoz2QOHxrgsvFRiI7QRL8WjWIg2WYzzsXdREtRu
+         eI/ttEwGL26sK0HnwdNBK6f9Nmj4wB340qPMlsyQmN/AwgcxtctXvpJTld6xmkeOXnMT
+         N2d7XLtzVyIMJ/9nT6TEpiRKg2ivYRjgEJxd0RGY4VnxIeD6mm5XTOaXRsgZOfHa0Hlw
+         jL57KuQaj7Eh4cmcf/qTgkqWVc5KP289oBqwmhgVPABt60k7OmnWLi3Febj9Ea2XgBfs
+         inkz93Keyu5OlBOgUhTCPPWVoSB83PJLD5+I4GdCEFHU5iwy5ev4nE84xV2oM00nxycd
+         T8+Q==
+X-Gm-Message-State: AOJu0YxSu4V4+BShsV88+EEmH8cx6fP+gB1RT88oYoJSq4x/DrPxvLGi
+	Y5U6ml/+Iy6htPbBF0vSAkRJ7dQelOVj8038nJE=
+X-Google-Smtp-Source: AGHT+IHspC1ZZTx1OI1EXqtIzGUKUg9D2K7S1Rc6+aUswOK87bKeKp27zfpg3clG6WlxM809a/MOqNPVE9ujUqYeg/w=
+X-Received: by 2002:a17:907:3fa4:b0:9be:8ead:54c7 with SMTP id
+ hr36-20020a1709073fa400b009be8ead54c7mr10589517ejc.12.1698729553762; Mon, 30
+ Oct 2023 22:19:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231027181346.4019398-1-andrii@kernel.org> <20231030175513.4zy3ubkpse2f6gqz@MacBook-Pro-49.local>
+In-Reply-To: <20231030175513.4zy3ubkpse2f6gqz@MacBook-Pro-49.local>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 30 Oct 2023 22:19:01 -0700
+Message-ID: <CAEf4BzZyLwO_ZppGObkY=4aXZEGE+k+tTtJug7MP63DffoxrYA@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 00/23] BPF register bounds logic and testing improvements
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Paul Chaignon <paul@isovalent.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This Patch add a test to prove css_task iter can be used in normal
-sleepable progs.
+On Mon, Oct 30, 2023 at 10:55=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Oct 27, 2023 at 11:13:23AM -0700, Andrii Nakryiko wrote:
+> >
+> > Note, this is not unique to <range> vs <range> logic. Just recently ([0=
+])
+> > a related issue was reported for existing verifier logic. This patch se=
+t does
+> > fix that issues as well, as pointed out on the mailing list.
+> >
+> >   [0] https://lore.kernel.org/bpf/CAEf4Bzbgf-WQSCz8D4Omh3zFdS4oWS6XELnE=
+7VeoUWgKf3cpig@mail.gmail.com/
+>
+> Quick comment regarding shift out of bound issue.
+> I think this patch set makes Hao Sun's repro not working, but I don't thi=
+nk
+> the range vs range improvement fixes the underlying issue.
 
-Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
----
- .../testing/selftests/bpf/prog_tests/iters.c  |  1 +
- .../selftests/bpf/progs/iters_css_task.c      | 19 +++++++++++++++++++
- 2 files changed, 20 insertions(+)
+Correct, yes, I think adjust_reg_min_max_vals() might still need some fixin=
+g.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/iters.c b/tools/testing/selftests/bpf/prog_tests/iters.c
-index c2425791c923..bf84d4a1d9ae 100644
---- a/tools/testing/selftests/bpf/prog_tests/iters.c
-+++ b/tools/testing/selftests/bpf/prog_tests/iters.c
-@@ -294,6 +294,7 @@ void test_iters(void)
- 	RUN_TESTS(iters_state_safety);
- 	RUN_TESTS(iters_looping);
- 	RUN_TESTS(iters);
-+	RUN_TESTS(iters_css_task);
- 
- 	if (env.has_testmod)
- 		RUN_TESTS(iters_testmod_seq);
-diff --git a/tools/testing/selftests/bpf/progs/iters_css_task.c b/tools/testing/selftests/bpf/progs/iters_css_task.c
-index 384ff806990f..e180aa1b1d52 100644
---- a/tools/testing/selftests/bpf/progs/iters_css_task.c
-+++ b/tools/testing/selftests/bpf/progs/iters_css_task.c
-@@ -89,3 +89,22 @@ int cgroup_id_printer(struct bpf_iter__cgroup *ctx)
- 	bpf_cgroup_release(acquired);
- 	return 0;
- }
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int BPF_PROG(iter_css_task_for_each_sleep)
-+{
-+	u64 cgrp_id = bpf_get_current_cgroup_id();
-+	struct cgroup *cgrp = bpf_cgroup_from_id(cgrp_id);
-+	struct cgroup_subsys_state *css;
-+	struct task_struct *task;
-+
-+	if (cgrp == NULL)
-+		return 0;
-+	css = &cgrp->self;
-+
-+	bpf_for_each(css_task, task, css, CSS_TASK_ITER_PROCS) {
-+
-+	}
-+	bpf_cgroup_release(cgrp);
-+	return 0;
-+}
--- 
-2.20.1
+> Currently we do:
+> if (umax_val >=3D insn_bitness)
+>   mark_reg_unknown
+> else
+>   here were use src_reg->u32_max_value or src_reg->umax_value
+> I suspect the insn_bitness check is buggy and it's still possible to hit =
+UBSAN splat with
+> out of bounds shift. Just need to try harder.
+> if w8 < 0xffffffff goto +2;
+> if r8 !=3D r6 goto +1;
+> w0 >>=3D w8;
+> won't be enough anymore.
 
+Agreed, but I felt that fixing adjust_reg_min_max_vals() is out of
+scope for this already large patch set. If someone can take a deeper
+look into reg bounds for arithmetic operations, it would be great.
+
+On the other hand, one of those academic papers claimed to verify
+soundness of verifier's reg bounds, so I wonder why they missed this?
+cc Paul, maybe he can clarify (and also, Paul, please try to run all
+that formal verification machinery against this patch set, thanks!)
 
