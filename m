@@ -1,155 +1,81 @@
-Return-Path: <bpf+bounces-13696-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13697-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3B427DC6C9
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 07:59:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9B1F7DC6E4
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 08:06:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C68671C20AD9
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 06:59:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44BA0B20F23
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 07:06:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09161D524;
-	Tue, 31 Oct 2023 06:59:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B36110797;
+	Tue, 31 Oct 2023 07:06:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="t759mRqK"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="E4pNF9cp"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88BD2D297
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 06:59:12 +0000 (UTC)
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B41BB
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 23:59:10 -0700 (PDT)
-Message-ID: <ee0d2862-7bc8-76da-1eca-30b3c80858a0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1698735549;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yeYSbXm9AHXLIERC3BTSecLjMsQTfyG/SZvkSpx/uTA=;
-	b=t759mRqKVo0GFovw4Xe4c4S5mer2Hk+hCnVjnGg4bqKK59HLwCVdnpLpq2BRaW1YAak5+M
-	0mX8Ui0WSojbHBcliJLyr/BE4zKJv9uQ7O1z5/vFDFe8tWLBZUX+zIv5xcoMAGtsZLH0g1
-	GYrYz0yyEc+FdNtnRXVSGg5Vs0VZkzg=
-Date: Mon, 30 Oct 2023 23:59:01 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6375D2F3
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 07:05:59 +0000 (UTC)
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81DF7D8
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 00:05:58 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a8d9dcdd2bso87473757b3.2
+        for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 00:05:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698735957; x=1699340757; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3qqGrncn9z2siXQej+XDHf24Ibd6ZoQA9m8HlMMLQeA=;
+        b=E4pNF9cpVKsLCV8RqNLMVA4Ah8sfPKqeXypmXkzvMSNhR7pNtVtkTBe8hPQPk5yfAi
+         /GelG2BKDfknGKSJGeHFCoIji/RrZznsvMGQcq/39vaXt6XDfYvC5CWz3p0qaw7Q5p2t
+         Vhg3IgOKDLMCkDWDqSpdwW+kFpyDPnAaDA57gnkUqum9FMOonk0xBHa+axNBNdZDNlHa
+         oC51/y39sM7oJdooomRPYlUoTe2xfD6JWbiOusk8DOrcRrJUg62y+mdqbuOx+4DpQnck
+         IpNdDGgrANe4Aihujpcs4qDzQJa8mjFdD6wEd1TACE9VRd8jBiLChUapUimHmGplUFxS
+         Bs3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698735957; x=1699340757;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3qqGrncn9z2siXQej+XDHf24Ibd6ZoQA9m8HlMMLQeA=;
+        b=TVoJfm6QK3FIujxGXSPj+IJjps0IUKpGD0dUAx1dFsOxwqxBUHdiDXtzbny5iwswlM
+         xSbnQ1W1wJwJch1SkNTLLlYviotpL2bmvs7QIafYJPM4zOgZIuGmdJxCQmL/eE7nyJtr
+         QRC/DKJvYYsQ1oYfzQWnT+k0Lw/czb81+21yTLoqCpHRSJGJL9kcmzm22wAcpMhDpx6V
+         H/uHomwFzY9Bl0iV5YeyS6E6lgltDNcIpZqnWODXJZa/yGRFdNpdkDqa1VXDG3EfoIuA
+         1VuMoW2XshmA3b9f/Iu0UCMyOfNIH3alR31xnHHh8uo81B+d46FJ/6hxFnUbqfqUqpSl
+         DDiA==
+X-Gm-Message-State: AOJu0Yxx2ByDiZYvKOda0Sz1kI8foOEusGvsIvvbQDd9f1ujoeMi/laF
+	g0K5mWRtOpw0UQNOPtTHv84apQH6YedpWwA=
+X-Google-Smtp-Source: AGHT+IGeTB41EBMZVDThUiRregw55h2jTQnwYYNdAgFIlhpok596/J7uFljMgXDr/akkVeaXU4OUrOd5mjZ/+uQ=
+X-Received: from nrengaraj.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:f4e])
+ (user=nrengaraj job=sendgmr) by 2002:a0d:d5ca:0:b0:5a7:afd5:1cb1 with SMTP id
+ x193-20020a0dd5ca000000b005a7afd51cb1mr246311ywd.1.1698735957697; Tue, 31 Oct
+ 2023 00:05:57 -0700 (PDT)
+Date: Tue, 31 Oct 2023 07:05:56 +0000
+In-Reply-To: <20221018135920.726360-1-memxor@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v8 10/10] selftests/bpf: test case for
- register_bpf_struct_ops().
-Content-Language: en-US
-To: thinker.li@gmail.com
-Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
- ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
- drosen@google.com
-References: <20231030192810.382942-1-thinker.li@gmail.com>
- <20231030192810.382942-11-thinker.li@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20231030192810.382942-11-thinker.li@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+References: <20221018135920.726360-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+Message-ID: <20231031070556.400813-1-nrengaraj@google.com>
+Subject: CVE-2023-39191 - Dynptr fixes - reg.
+From: Nandhini Rengaraj <nrengaraj@google.com>
+To: memxor@gmail.com
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, joannelkoong@gmail.com, martin.lau@kernel.org, 
+	void@manifault.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 10/30/23 12:28 PM, thinker.li@gmail.com wrote:
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-> new file mode 100644
-> index 000000000000..3a00dc294583
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-> @@ -0,0 +1,39 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-> +#include <test_progs.h>
-> +#include <time.h>
-> +
-> +#include "rcu_tasks_trace_gp.skel.h"
-> +#include "struct_ops_module.skel.h"
-> +
-> +static void test_regular_load(void)
-> +{
-> +	struct struct_ops_module *skel;
-> +	struct bpf_link *link;
-> +	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
-> +	int err;
-> +
-> +	skel = struct_ops_module__open_opts(&opts);
-> +	if (!ASSERT_OK_PTR(skel, "struct_ops_module_open"))
-> +		return;
-> +	err = struct_ops_module__load(skel);
-> +	if (!ASSERT_OK(err, "struct_ops_module_load"))
-> +		return;
-> +
-> +	link = bpf_map__attach_struct_ops(skel->maps.testmod_1);
-> +	ASSERT_OK_PTR(link, "attach_test_mod_1");
-> +
-> +	/* test_2() will be called from bpf_dummy_reg() in bpf_testmod.c */
-> +	ASSERT_EQ(skel->bss->test_2_result, 7, "test_2_result");
-> +
-> +	bpf_link__destroy(link);
-> +
-> +	struct_ops_module__destroy(skel);
-> +}
-> +
-> +void serial_test_struct_ops_module(void)
-> +{
-> +	if (test__start_subtest("regular_load"))
-> +		test_regular_load();
+Hi,
+This is marked as a fix for CVE-2023-39191. Does this vulnerability also affect dynptr in stable kernel v6.1? If so, would you please be able to help us backport the fix to stable kernel v6.1?
 
-Could it also add some negative tests, e.g. missing 'struct 
-bpf_struct_ops_common_value', reg() when the module is gone...etc.
-
-[ ... ]
-
-> +/* This function will trigger call_rcu_tasks_trace() in the kernel */
-> +static int kern_sync_rcu_tasks_trace(void)
-
-With patch 4, is it still needed?
-
-> +{
-> +	struct rcu_tasks_trace_gp *rcu;
-> +	time_t start;
-> +	long gp_seq;
-> +	LIBBPF_OPTS(bpf_test_run_opts, opts);
-> +
-> +	rcu = rcu_tasks_trace_gp__open_and_load();
-> +	if (IS_ERR(rcu))
-> +		return -EFAULT;
-> +	if (rcu_tasks_trace_gp__attach(rcu))
-> +		return -EFAULT;
-> +
-> +	gp_seq = READ_ONCE(rcu->bss->gp_seq);
-> +
-> +	if (bpf_prog_test_run_opts(bpf_program__fd(rcu->progs.do_call_rcu_tasks_trace),
-> +				   &opts))
-> +		return -EFAULT;
-> +	if (opts.retval != 0)
-> +		return -EFAULT;
-> +
-> +	start = time(NULL);
-> +	while ((start + 2) > time(NULL) &&
-> +	       gp_seq == READ_ONCE(rcu->bss->gp_seq))
-> +		sched_yield();
-> +
-> +	rcu_tasks_trace_gp__destroy(rcu);
-> +
-> +	return 0;
-> +}
-> +
->   /*
->    * Trigger synchronize_rcu() in kernel.
->    */
->   int kern_sync_rcu(void)
->   {
-> +	if (kern_sync_rcu_tasks_trace())
-> +		return -EFAULT;
->   	return syscall(__NR_membarrier, MEMBARRIER_CMD_SHARED, 0, 0);
->   }
-
+Thank you,
+Nandhini Rengaraj
 
