@@ -1,181 +1,271 @@
-Return-Path: <bpf+bounces-13732-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13733-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D198B7DD4C9
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 18:39:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFCE37DD4CD
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 18:41:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 098EE1C20C9F
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 17:39:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 475F7B20FCD
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 17:41:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A540208C2;
-	Tue, 31 Oct 2023 17:39:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3692208C2;
+	Tue, 31 Oct 2023 17:41:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ypdxm6Vn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WfY/w0rc"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DBAB134BA
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 17:39:32 +0000 (UTC)
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40BF92
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 10:39:30 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-540fb78363bso10240382a12.0
-        for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 10:39:30 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEADB7491
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 17:41:42 +0000 (UTC)
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA5791
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 10:41:41 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9d242846194so448076466b.1
+        for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 10:41:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698773969; x=1699378769; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698774100; x=1699378900; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iuFqII5lx4gDj6l4552okZfPDfPOCS7K2TqGCI2kZek=;
-        b=Ypdxm6VnpyjNtv0PQxK6VnQ24hUzhPeque7CsFrniIQpNV6oB3CXCbGFJgYbKjsKq3
-         Ff3w6ZA7Ipo7pQLB93M4mOlmKaSXmk6v7NqEM+JUbCOS6/+s9VbfoBBqSW4ZU2DdttrK
-         wP2AE1lmb9RdicksFtEX6I9hOIo6XUtBWa2xFH94fUai6WnefWhSvi1Kki9GcufjhT+G
-         i9nwrJ9T6VO0bhs1peoYyvBuM/Z7OKSorf67n7HufeGWfEQfmCWy3bvEfzKcwsxAkhlh
-         tOjBbrTeTj/VhlzRXE5z6bPiU0n5cE2++szXGAgPbBu1dUZwNG7T5AK0oK/hygr8MkwI
-         IdUg==
+        bh=WxKHmktgpVOVuTIRJVKQZan2VJBgq5Kt/3RsnVwNB4c=;
+        b=WfY/w0rclWQOrg/UESDDWmvaOtX4Lg7H4cmWv4ALydB1/F806wyCDBr7IbGxZ6Jy4h
+         i7mIaTzj+J8zStmDSOf4E+Ne2Egr+WWPhmIhsZzIepTTJ+rWS6YKQmADlbdzIJ0PbP8o
+         kjMDxk5a11i6PL/qjkQmzAQ6w6mAxI702KnD/3Vcv31huErVEACDkQSnH197KiUAsLh9
+         YaaatFcK7lLu2J/T+xDv0jixZXQ55xStozhBBwNvF8WP8GVTGEbNcGs9smlCL9U3VC6q
+         7kfNQkKbI2IKNZOVVklB5Et66+edGZNn3RBBMsiLo/BlIcNQR0XK0vR9pGqVwuACjiG2
+         Xwjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698773969; x=1699378769;
+        d=1e100.net; s=20230601; t=1698774100; x=1699378900;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iuFqII5lx4gDj6l4552okZfPDfPOCS7K2TqGCI2kZek=;
-        b=tTXtoPH7g3YcvFSSRN3sZ9whXJ4o6bgAXsOpmR7IdP3wN8KZPvNfWZibgfdh6mi/9S
-         97vh7hynJi3LZTFqNEomgbkw4/TLrKUTz5hbzOjfFuaFW+SWFnZQ5iAzG/laadn9ZE/5
-         mrCjRR+lMUXkt3gwWABj8/S/S8mcj6H9X7y0+f0Onmo+r0Co88usUZed+/VFAvwcMNyX
-         EPNav1f4+xKihn9OVLlTtTe6hTMuQo3I39ofxwiBmgAD11MnNkcXE2J873vLKKRXZ5ws
-         2XoxtrgmRSpPArtaGmfLfdmj4jy0gQWesWj1uoBYFcuDk9a20PDURQOwJIDjp/b0YbKF
-         g1HA==
-X-Gm-Message-State: AOJu0YysyOcEfZkK2HNPEOi9is5CNhXaMymlGM98FSkYeuTIhQbGfhk4
-	HV1AepMum6/AlI8ovkjEnaGSrRiptxAjRZNj0Wk=
-X-Google-Smtp-Source: AGHT+IFO/uB7ycjwcekl+KjAasBwqdU0TYX+o+yK8A4PBVpR6lhoFcdef/tXfZq7JHHZNZFk+BO8JE+Zni2X72fuYoE=
-X-Received: by 2002:a17:907:2da3:b0:9bd:c592:e0ce with SMTP id
- gt35-20020a1709072da300b009bdc592e0cemr16695ejc.51.1698773968897; Tue, 31 Oct
- 2023 10:39:28 -0700 (PDT)
+        bh=WxKHmktgpVOVuTIRJVKQZan2VJBgq5Kt/3RsnVwNB4c=;
+        b=mghcIlSK7Eag8hX63bpFKNdgmn2RvrV+EmbcF7PzFPNomUGslO4tDsFytBl8X23Xb0
+         DLgbIg6TdfSVRzSe5YbwiBcWzFgIJ8+QT7/ILui7JCFjr4tYVooPg2kE/KbpXyGkrKla
+         I+Z0J4rP5dNlQgOgOfu4Ja3e4ZWT8nBDcnahThHNlzs28ZJfFW/MkkQ1RsQUKnB67Z0a
+         +TdSG+1UMubJ7Ajrn1lqFf9une24fBFlayiWfgYlzG15XI2IRiXHVEIhsrvNwvAuy9dG
+         k+mFCuzvwcq7/pCnZJMqfw1YUyAburappBmySEYh5NQCKofvDfHAMqhZWUvUNL49pc88
+         +jqg==
+X-Gm-Message-State: AOJu0Yy4Kx1afEoYem1/77kcvc3WLWnq8JJ3MroOu3VdjaZRo24uyjWP
+	KAyyIyLkD8ByxOaS3bKpc+t1Bme1Mm7tJbolLveg3Z4A
+X-Google-Smtp-Source: AGHT+IF41UnXeW3go1c7G0EHEjdShMOVMsWR1Dj/Kz3lxfEoBFvsEYWLGguYNMG1i74qAT/DKvq53vNndlCrJ6KjQN4=
+X-Received: by 2002:a17:907:d2a:b0:9d2:fe04:b19a with SMTP id
+ gn42-20020a1709070d2a00b009d2fe04b19amr43047ejc.27.1698774099699; Tue, 31 Oct
+ 2023 10:41:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231027181346.4019398-1-andrii@kernel.org> <20231027181346.4019398-7-andrii@kernel.org>
- <d7af631802f0cfae20df77fe70068702d24bbd31.camel@gmail.com>
-In-Reply-To: <d7af631802f0cfae20df77fe70068702d24bbd31.camel@gmail.com>
+References: <20231027181346.4019398-1-andrii@kernel.org> <20231027181346.4019398-13-andrii@kernel.org>
+ <776179259164573a1c3b9f588c77082750014734.camel@gmail.com>
+In-Reply-To: <776179259164573a1c3b9f588c77082750014734.camel@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 31 Oct 2023 10:39:17 -0700
-Message-ID: <CAEf4BzZVmEUP-+jP34H+UJF5qK2boKFHH3+rpKkjEVEKvN4eMQ@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 06/23] bpf: add special smin32/smax32
- derivation from 64-bit bounds
+Date: Tue, 31 Oct 2023 10:41:28 -0700
+Message-ID: <CAEf4BzYer4jW+XXOBhDojRM9DfqM=JANb5S6Y-Vk2XbjHJ5OPw@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 12/23] bpf: generalize is_branch_taken() to
+ work with two registers
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com, 
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 31, 2023 at 8:37=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+On Tue, Oct 31, 2023 at 8:38=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
 > wrote:
 >
 > On Fri, 2023-10-27 at 11:13 -0700, Andrii Nakryiko wrote:
-> > Add a special case where we can derive valid s32 bounds from umin/umax
-> > or smin/smax by stitching together negative s32 subrange and
-> > non-negative s32 subrange. That requires upper 32 bits to form a [N, N+=
-1]
-> > range in u32 domain (taking into account wrap around, so 0xffffffff
-> > to 0x00000000 is a valid [N, N+1] range in this sense). See code commen=
-t
-> > for concrete examples.
-> >
-> > Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > While still assuming that second register is a constant, generalize
+> > > is_branch_taken-related code to accept two registers instead of regis=
+ter
+> > > plus explicit constant value. This also, as a side effect, allows to
+> > > simplify check_cond_jmp_op() by unifying BPF_K case with BPF_X case, =
+for
+> > > which we use a fake register to represent BPF_K's imm constant as
+> > > a register.
+> > >
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 >
 > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 >
-> fwiw, an alternative explanation might be arithmetic based.
-> Suppose:
-> . there are numbers a, b, c
-> . 2**31 <=3D b < 2**32
-> . 0 <=3D c < 2**31
-> . umin =3D 2**32 * a + b
-> . umax =3D 2**32 * (a + 1) + c
+> Please see a nitpick below.
 >
-> The number of values in the range represented by [umin; umax] is:
-> . N =3D umax - umin + 1 =3D 2**32 + c - b + 1
-> . min(N) =3D 2**32 + 0 - (2**32-1) + 1 =3D 2
-> . max(N) =3D 2**32 + (2**31 - 1) - 2**31 + 1 =3D 2**32
-> Hence [(s32)b; (s32)c] form a valid range.
+> > > ---
+> > >  kernel/bpf/verifier.c | 58 ++++++++++++++++++++++++-----------------=
+--
+> > >  1 file changed, 33 insertions(+), 25 deletions(-)
+> > >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index aa13f32751a1..fd328c579f10 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -14169,8 +14169,13 @@ static void find_good_pkt_pointers(struct bp=
+f_verifier_state *vstate,
+> > >     }));
+> > >  }
+> > >
+> > > -static int is_branch32_taken(struct bpf_reg_state *reg1, u32 val, u8=
+ opcode)
+> > > +/*
+> > > + * <reg1> <op> <reg2>, currently assuming reg2 is a constant
+> > > + */
+> > > +static int is_branch32_taken(struct bpf_reg_state *reg1, struct bpf_=
+reg_state *reg2, u8 opcode)
+> > >  {
+> > > +   struct tnum subreg =3D tnum_subreg(reg1->var_off);
+> > > +   u32 val =3D (u32)tnum_subreg(reg2->var_off).value;
+> > >     s32 sval =3D (s32)val;
+> > >
+> > >     switch (opcode) {
+> > > @@ -14250,8 +14255,12 @@ static int is_branch32_taken(struct bpf_reg_=
+state *reg1, u32 val, u8 opcode)
+> > >  }
+> > >
+> > >
+> > > -static int is_branch64_taken(struct bpf_reg_state *reg1, u64 val, u8=
+ opcode)
+> > > +/*
+> > > + * <reg1> <op> <reg2>, currently assuming reg2 is a constant
+> > > + */
+> > > +static int is_branch64_taken(struct bpf_reg_state *reg1, struct bpf_=
+reg_state *reg2, u8 opcode)
+> > >  {
+> > > +   u64 val =3D reg2->var_off.value;
+> > >     s64 sval =3D (s64)val;
+> > >
+> > >     switch (opcode) {
+> > > @@ -14330,16 +14339,23 @@ static int is_branch64_taken(struct bpf_reg=
+_state *reg1, u64 val, u8 opcode)
+> > >     return -1;
+> > >  }
+> > >
+> > > -/* compute branch direction of the expression "if (reg opcode val) g=
+oto target;"
+> > > +/* compute branch direction of the expression "if (<reg1> opcode <re=
+g2>) goto target;"
+> > >   * and return:
+> > >   *  1 - branch will be taken and "goto target" will be executed
+> > >   *  0 - branch will not be taken and fall-through to next insn
+> > > - * -1 - unknown. Example: "if (reg < 5)" is unknown when register va=
+lue
+> > > + * -1 - unknown. Example: "if (reg1 < 5)" is unknown when register v=
+alue
+> > >   *      range [0,10]
+> > >   */
+> > > -static int is_branch_taken(struct bpf_reg_state *reg1, u64 val, u8 o=
+pcode,
+> > > -                      bool is_jmp32)
+> > > +static int is_branch_taken(struct bpf_reg_state *reg1, struct bpf_re=
+g_state *reg2,
+> > > +                      u8 opcode, bool is_jmp32)
+> > >  {
+> > > +   struct tnum reg2_tnum =3D is_jmp32 ? tnum_subreg(reg2->var_off) :=
+ reg2->var_off;
+> > > +   u64 val;
+> > > +
+> > > +   if (!tnum_is_const(reg2_tnum))
+> > > +           return -1;
+> > > +   val =3D reg2_tnum.value;
+> > > +
+> > >     if (__is_pointer_value(false, reg1)) {
+> > >             if (!reg_not_null(reg1))
+> > >                     return -1;
+> > > @@ -14361,8 +14377,8 @@ static int is_branch_taken(struct bpf_reg_sta=
+te *reg1, u64 val, u8 opcode,
+> > >     }
+> > >
+> > >     if (is_jmp32)
+> > > -           return is_branch32_taken(reg1, val, opcode);
+> > > -   return is_branch64_taken(reg1, val, opcode);
+> > > +           return is_branch32_taken(reg1, reg2, opcode);
+> > > +   return is_branch64_taken(reg1, reg2, opcode);
+> > >  }
+> > >
+> > >  static int flip_opcode(u32 opcode)
+> > > @@ -14833,6 +14849,7 @@ static int check_cond_jmp_op(struct bpf_verif=
+ier_env *env,
+> > >     struct bpf_reg_state *regs =3D this_branch->frame[this_branch->cu=
+rframe]->regs;
+> > >     struct bpf_reg_state *dst_reg, *other_branch_regs, *src_reg =3D N=
+ULL;
+> > >     struct bpf_reg_state *eq_branch_regs;
+> > > +   struct bpf_reg_state fake_reg;
 >
-> At-least that's how I convinced myself.
+> Nitpick:
+> bpf_reg_state has a lot of fields, e.g. 'parent' pointer. While it looks =
+like
+> the use within this patch-set is safe, I suggest to change the declaratio=
+n to
+> include '=3D {}' initializer. Just to err on a safe side for future modif=
+ications.
 
-So the logic here follows the (visual) intuition how s64 and u64 (and
-also u32 and s32) correlate. That's how I saw it. TBH, the above
-mathematical way seems scary and not so straightforward to follow, so
-I'm hesitant to add it to comments to not scare anyone away :)
-
-I did try to visually represent it, but I'm not creative enough ASCII
-artist to pull this off, apparently. I'll just leave it as it is for
-now.
+yes, good point. One other place where we use "fake_reg" doesn
+zero-initialize with =3D {}, will fix.
 
 >
-> > ---
-> >  kernel/bpf/verifier.c | 23 +++++++++++++++++++++++
-> >  1 file changed, 23 insertions(+)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 5082ca1ea5dc..38d21d0e46bd 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -2369,6 +2369,29 @@ static void __reg32_deduce_bounds(struct bpf_reg=
-_state *reg)
-> >                       reg->s32_max_value =3D min_t(s32, reg->s32_max_va=
-lue, (s32)reg->smax_value);
-> >               }
-> >       }
-> > +     /* Special case where upper bits form a small sequence of two
-> > +      * sequential numbers (in 32-bit unsigned space, so 0xffffffff to
-> > +      * 0x00000000 is also valid), while lower bits form a proper s32 =
-range
-> > +      * going from negative numbers to positive numbers. E.g., let's s=
-ay we
-> > +      * have s64 range [-1, 1] ([0xffffffffffffffff, 0x000000000000000=
-1]).
-> > +      * Possible s64 values are {-1, 0, 1} ({0xffffffffffffffff,
-> > +      * 0x0000000000000000, 0x00000000000001}). Ignoring upper 32 bits=
-,
-> > +      * we still get a valid s32 range [-1, 1] ([0xffffffff, 0x0000000=
-1]).
-> > +      * Note that it doesn't have to be 0xffffffff going to 0x00000000=
- in
-> > +      * upper 32 bits. As a random example, s64 range
-> > +      * [0xfffffff0ffffff00; 0xfffffff100000010], forms a valid s32 ra=
-nge
-> > +      * [-16, 16] ([0xffffff00; 0x00000010]) in its 32 bit subregister=
-.
-> > +      */
-> > +     if ((u32)(reg->umin_value >> 32) + 1 =3D=3D (u32)(reg->umax_value=
- >> 32) &&
-> > +         (s32)reg->umin_value < 0 && (s32)reg->umax_value >=3D 0) {
-> > +             reg->s32_min_value =3D max_t(s32, reg->s32_min_value, (s3=
-2)reg->umin_value);
-> > +             reg->s32_max_value =3D min_t(s32, reg->s32_max_value, (s3=
-2)reg->umax_value);
-> > +     }
-> > +     if ((u32)(reg->smin_value >> 32) + 1 =3D=3D (u32)(reg->smax_value=
- >> 32) &&
-> > +         (s32)reg->smin_value < 0 && (s32)reg->smax_value >=3D 0) {
-> > +             reg->s32_min_value =3D max_t(s32, reg->s32_min_value, (s3=
-2)reg->smin_value);
-> > +             reg->s32_max_value =3D min_t(s32, reg->s32_max_value, (s3=
-2)reg->smax_value);
-> > +     }
-> >       /* if u32 range forms a valid s32 range (due to matching sign bit=
-),
-> >        * try to learn from that
-> >        */
->
->
+> > >     u8 opcode =3D BPF_OP(insn->code);
+> > >     bool is_jmp32;
+> > >     int pred =3D -1;
+> > > @@ -14873,36 +14890,27 @@ static int check_cond_jmp_op(struct bpf_ver=
+ifier_env *env,
+> > >                     verbose(env, "BPF_JMP/JMP32 uses reserved fields\=
+n");
+> > >                     return -EINVAL;
+> > >             }
+> > > +           src_reg =3D &fake_reg;
+> > > +           src_reg->type =3D SCALAR_VALUE;
+> > > +           __mark_reg_known(src_reg, insn->imm);
+> > >     }
+> > >
+> > >     is_jmp32 =3D BPF_CLASS(insn->code) =3D=3D BPF_JMP32;
+> > >
+> > >     if (BPF_SRC(insn->code) =3D=3D BPF_K) {
+> > > -           pred =3D is_branch_taken(dst_reg, insn->imm, opcode, is_j=
+mp32);
+> > > +           pred =3D is_branch_taken(dst_reg, src_reg, opcode, is_jmp=
+32);
+> > >     } else if (src_reg->type =3D=3D SCALAR_VALUE &&
+> > >                is_jmp32 && tnum_is_const(tnum_subreg(src_reg->var_off=
+))) {
+> > > -           pred =3D is_branch_taken(dst_reg,
+> > > -                                  tnum_subreg(src_reg->var_off).valu=
+e,
+> > > -                                  opcode,
+> > > -                                  is_jmp32);
+> > > +           pred =3D is_branch_taken(dst_reg, src_reg, opcode, is_jmp=
+32);
+> > >     } else if (src_reg->type =3D=3D SCALAR_VALUE &&
+> > >                !is_jmp32 && tnum_is_const(src_reg->var_off)) {
+> > > -           pred =3D is_branch_taken(dst_reg,
+> > > -                                  src_reg->var_off.value,
+> > > -                                  opcode,
+> > > -                                  is_jmp32);
+> > > +           pred =3D is_branch_taken(dst_reg, src_reg, opcode, is_jmp=
+32);
+> > >     } else if (dst_reg->type =3D=3D SCALAR_VALUE &&
+> > >                is_jmp32 && tnum_is_const(tnum_subreg(dst_reg->var_off=
+))) {
+> > > -           pred =3D is_branch_taken(src_reg,
+> > > -                                  tnum_subreg(dst_reg->var_off).valu=
+e,
+> > > -                                  flip_opcode(opcode),
+> > > -                                  is_jmp32);
+> > > +           pred =3D is_branch_taken(src_reg, dst_reg, flip_opcode(op=
+code), is_jmp32);
+> > >     } else if (dst_reg->type =3D=3D SCALAR_VALUE &&
+> > >                !is_jmp32 && tnum_is_const(dst_reg->var_off)) {
+> > > -           pred =3D is_branch_taken(src_reg,
+> > > -                                  dst_reg->var_off.value,
+> > > -                                  flip_opcode(opcode),
+> > > -                                  is_jmp32);
+> > > +           pred =3D is_branch_taken(src_reg, dst_reg, flip_opcode(op=
+code), is_jmp32);
+> > >     } else if (reg_is_pkt_pointer_any(dst_reg) &&
+> > >                reg_is_pkt_pointer_any(src_reg) &&
+> > >                !is_jmp32) {
 >
 
