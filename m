@@ -1,285 +1,595 @@
-Return-Path: <bpf+bounces-13757-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13758-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E773C7DD7BE
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 22:27:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4411A7DD7F4
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 22:56:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 636FE2817E7
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 21:27:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A65DF281938
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 21:56:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E014249ED;
-	Tue, 31 Oct 2023 21:27:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9651F250F8;
+	Tue, 31 Oct 2023 21:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OVppXTTO"
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="RSkGDJ3p"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D18A8EEA2
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 21:27:51 +0000 (UTC)
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DC9B9
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 14:27:50 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6cd09f51fe0so3550553a34.1
-        for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 14:27:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698787669; x=1699392469; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UldHiEfbNixhoGZziFzkGsGZjUM85AdNIN2RpBGCLiU=;
-        b=OVppXTTOrKXUqnPYdz8U+x60Kh7HRASWdM0EfQjDQy96mXRzFa+3jMNnDtwjQk0Fmp
-         vhz8Y0orsWM6KEe/UcHIAIAqzvlQ2/00gQ2aVd+R1ZJFa5CbDXKOKzfGNuY9Le2GduuG
-         1CToTAPNX6eiTz4jWwMAPyLB2fi5oTxLaTR2jEonY5FN346vIzCBmR5fnKi+GiPRjqRL
-         oPS/tpDC2JH1YnMpu19vkKeIHs/823iWn2xRn4rs4SEit5GKz1NxaKdPfh6ZCjXKWCHa
-         F8xRlNNGsjFDEZ5SOIkYlC4VsNj5tHbUuJvBpkJmp2t/XU2fQAOilGJ0p8WDYmFPJrJ9
-         GULw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698787669; x=1699392469;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UldHiEfbNixhoGZziFzkGsGZjUM85AdNIN2RpBGCLiU=;
-        b=B/5POuy5f6a7ZNF56rtKJnOMMNxb9KY5rkYTt1ueK/zWQhb/KQb5I1oDiKj27SdNdt
-         RmIgKJCKbsYn+Jxkf6vYEHlShtTzLKHoJFLtz68RgrX5yiS3C9z4nSqQqL5HeP0pPeLX
-         z2sisxYuAOoRM3/Xyto0jsDiJro6jw+81dNAeQHewW00YX9rjorgl4kgBbZA4gPzuR1N
-         8I8NlsCPFMbBRSzG20/NE6gkY0E7MwL1b48vhhNVA8dvsB4tWTtBr68ju9lob5SwWLln
-         exgLCBR1kyhaCa8aMKmuqWKizfr6NAOYrb9Ajg72pA34b+BWcg5/Fb48GC296AOHErWP
-         b+6w==
-X-Gm-Message-State: AOJu0YzCO+D/H4D0vGoRS4lvUgwBQH63qEWFQLGX5O06lgEkJDLu88vo
-	otJKWCoGbmqs5KrzbAXZb19X+SiHszSGAw==
-X-Google-Smtp-Source: AGHT+IFSieqtk2i0cCIrrjy54lrYl6WFeSszSK7B7dOZcuwjjGDjwjfdHaFaSnhDgTEbRacMGh82pQ==
-X-Received: by 2002:a05:6830:2684:b0:6d3:12be:804d with SMTP id l4-20020a056830268400b006d312be804dmr2695172otu.20.1698787669224;
-        Tue, 31 Oct 2023 14:27:49 -0700 (PDT)
-Received: from localhost (fwdproxy-vll-008.fbsv.net. [2a03:2880:12ff:8::face:b00c])
-        by smtp.gmail.com with ESMTPSA id m24-20020a9d6ad8000000b006b87f593877sm21760otq.37.2023.10.31.14.27.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 14:27:48 -0700 (PDT)
-From: Manu Bretelle <chantr4@gmail.com>
-To: bpf@vger.kernel.org,
-	quentin@isovalent.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org
-Subject: [PATCH v3 bpf-next ] selftests/bpf: consolidate VIRTIO/9P configs in config.vm file
-Date: Tue, 31 Oct 2023 14:27:17 -0700
-Message-Id: <20231031212717.4037892-1-chantr4@gmail.com>
-X-Mailer: git-send-email 2.39.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF88D134D1
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 21:56:40 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5E4C2
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 14:56:38 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 39VL95WB023375
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 14:56:37 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=WdvCHMIUxZM8pZUTVksQGGAOaeqZ8+vGw7kKuS9NGds=;
+ b=RSkGDJ3p7QHofwuxWNyKR9qfsjYt/Zyf1iLNnGXYk5t604BFwpl6zfAh1zPl3M3c1T3r
+ aGk8ECzYt00O50l2MpPXtteEMnakcF4ksjA5urg/XASoysb3NaqyhrV9ku7ohWxgpUFk
+ DHiaU9tK25QHL/TFBGsMAZL31urv6g2DDuE= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by m0089730.ppops.net (PPS) with ESMTPS id 3u3984g98p-5
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 14:56:37 -0700
+Received: from twshared2737.02.ash8.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 31 Oct 2023 14:56:34 -0700
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+	id 10E9626957DF5; Tue, 31 Oct 2023 14:56:25 -0700 (PDT)
+From: Dave Marchevsky <davemarchevsky@fb.com>
+To: <bpf@vger.kernel.org>
+CC: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann
+	<daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau
+	<martin.lau@kernel.org>,
+        Kernel Team <kernel-team@fb.com>, <laoar.shao@gmail.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Jiri Olsa
+	<olsajiri@gmail.com>
+Subject: [PATCH v2 bpf-next 1/2] bpf: Add __bpf_kfunc_{start,end}_defs macros
+Date: Tue, 31 Oct 2023 14:56:24 -0700
+Message-ID: <20231031215625.2343848-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.34.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: qr3mM4W6OqIZI5QQaKS2UqCzwOOc1Rqg
+X-Proofpoint-GUID: qr3mM4W6OqIZI5QQaKS2UqCzwOOc1Rqg
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-31_08,2023-10-31_03,2023-05-22_02
 
-Those configs are needed to be able to run VM somewhat consistently.
-For instance, ATM, s390x is missing the `CONFIG_VIRTIO_CONSOLE` which
-prevents s390x kernels built in CI to leverage qemu-guest-agent.
+BPF kfuncs are meant to be called from BPF programs. Accordingly, most
+kfuncs are not called from anywhere in the kernel, which the
+-Wmissing-prototypes warning is unhappy about. We've peppered
+__diag_ignore_all("-Wmissing-prototypes", ... everywhere kfuncs are
+defined in the codebase to suppress this warning.
 
-By moving them to `config,vm`, we should have selftest kernels which are
-equal in term of VM functionalities when they include this file.
+This patch adds two macros meant to bound one or many kfunc definitions.
+All existing kfunc definitions which use these __diag calls to suppress
+-Wmissing-prototypes are migrated to use the newly-introduced macros.
+A new __diag_ignore_all - for "-Wmissing-declarations" - is added to the
+__bpf_kfunc_start_defs macro based on feedback from Andrii on an earlier
+version of this patch [0] and another recent mailing list thread [1].
 
-The set of config unabled were picked using
+In the future we might need to ignore different warnings or do other
+kfunc-specific things. This change will make it easier to make such
+modifications for all kfunc defs.
 
-    grep -h -E '(_9P|_VIRTIO)' config.x86_64 config | sort | uniq
+  [0]: https://lore.kernel.org/bpf/CAEf4BzaE5dRWtK6RPLnjTW-MW9sx9K3Fn6uwqCT=
+ChK2Dcb1Xig@mail.gmail.com/
+  [1]: https://lore.kernel.org/bpf/ZT+2qCc%2FaXep0%2FLf@krava/
 
-added to `config.vm` and then
-    grep -vE '(_9P|_VIRTIO)' config.{x86_64,aarch64,s390x}
-
-as a side-effect, some config may have disappeared to the aarch64 and
-s390x kernels, but they should not be needed. CI will tell.
-
-Signed-off-by: Manu Bretelle <chantr4@gmail.com>
+Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>
 ---
- tools/testing/selftests/bpf/config.aarch64 | 16 ----------------
- tools/testing/selftests/bpf/config.s390x   |  9 ---------
- tools/testing/selftests/bpf/config.vm      | 12 ++++++++++++
- tools/testing/selftests/bpf/config.x86_64  | 12 ------------
- tools/testing/selftests/bpf/vmtest.sh      |  4 +++-
- 5 files changed, 15 insertions(+), 38 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/config.vm
 
-diff --git a/tools/testing/selftests/bpf/config.aarch64 b/tools/testing/selftests/bpf/config.aarch64
-index 253821494884..fa8ecf626c73 100644
---- a/tools/testing/selftests/bpf/config.aarch64
-+++ b/tools/testing/selftests/bpf/config.aarch64
-@@ -1,4 +1,3 @@
--CONFIG_9P_FS=y
- CONFIG_ARCH_VEXPRESS=y
- CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
- CONFIG_ARM_SMMU_V3=y
-@@ -46,7 +45,6 @@ CONFIG_DEBUG_SG=y
- CONFIG_DETECT_HUNG_TASK=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_DEVTMPFS=y
--CONFIG_DRM_VIRTIO_GPU=y
- CONFIG_DRM=y
- CONFIG_DUMMY=y
- CONFIG_EXPERT=y
-@@ -67,7 +65,6 @@ CONFIG_HAVE_KRETPROBES=y
- CONFIG_HEADERS_INSTALL=y
- CONFIG_HIGH_RES_TIMERS=y
- CONFIG_HUGETLBFS=y
--CONFIG_HW_RANDOM_VIRTIO=y
- CONFIG_HW_RANDOM=y
- CONFIG_HZ_100=y
- CONFIG_IDLE_PAGE_TRACKING=y
-@@ -99,8 +96,6 @@ CONFIG_MEMCG=y
- CONFIG_MEMORY_HOTPLUG=y
- CONFIG_MEMORY_HOTREMOVE=y
- CONFIG_NAMESPACES=y
--CONFIG_NET_9P_VIRTIO=y
--CONFIG_NET_9P=y
- CONFIG_NET_ACT_BPF=y
- CONFIG_NET_ACT_GACT=y
- CONFIG_NETDEVICES=y
-@@ -140,7 +135,6 @@ CONFIG_SCHED_TRACER=y
- CONFIG_SCSI_CONSTANTS=y
- CONFIG_SCSI_LOGGING=y
- CONFIG_SCSI_SCAN_ASYNC=y
--CONFIG_SCSI_VIRTIO=y
- CONFIG_SCSI=y
- CONFIG_SECURITY_NETWORK=y
- CONFIG_SERIAL_AMBA_PL011_CONSOLE=y
-@@ -167,16 +161,6 @@ CONFIG_UPROBES=y
- CONFIG_USELIB=y
- CONFIG_USER_NS=y
- CONFIG_VETH=y
--CONFIG_VIRTIO_BALLOON=y
--CONFIG_VIRTIO_BLK=y
--CONFIG_VIRTIO_CONSOLE=y
--CONFIG_VIRTIO_FS=y
--CONFIG_VIRTIO_INPUT=y
--CONFIG_VIRTIO_MMIO_CMDLINE_DEVICES=y
--CONFIG_VIRTIO_MMIO=y
--CONFIG_VIRTIO_NET=y
--CONFIG_VIRTIO_PCI=y
--CONFIG_VIRTIO_VSOCKETS_COMMON=y
- CONFIG_VLAN_8021Q=y
- CONFIG_VSOCKETS=y
- CONFIG_VSOCKETS_LOOPBACK=y
-diff --git a/tools/testing/selftests/bpf/config.s390x b/tools/testing/selftests/bpf/config.s390x
-index 2ba92167be35..e93330382849 100644
---- a/tools/testing/selftests/bpf/config.s390x
-+++ b/tools/testing/selftests/bpf/config.s390x
-@@ -1,4 +1,3 @@
--CONFIG_9P_FS=y
- CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
- CONFIG_AUDIT=y
- CONFIG_BLK_CGROUP=y
-@@ -84,8 +83,6 @@ CONFIG_MEMORY_HOTPLUG=y
- CONFIG_MEMORY_HOTREMOVE=y
- CONFIG_NAMESPACES=y
- CONFIG_NET=y
--CONFIG_NET_9P=y
--CONFIG_NET_9P_VIRTIO=y
- CONFIG_NET_ACT_BPF=y
- CONFIG_NET_ACT_GACT=y
- CONFIG_NET_KEY=y
-@@ -114,7 +111,6 @@ CONFIG_SAMPLE_SECCOMP=y
- CONFIG_SAMPLES=y
- CONFIG_SCHED_TRACER=y
- CONFIG_SCSI=y
--CONFIG_SCSI_VIRTIO=y
- CONFIG_SECURITY_NETWORK=y
- CONFIG_STACK_TRACER=y
- CONFIG_STATIC_KEYS_SELFTEST=y
-@@ -136,11 +132,6 @@ CONFIG_UPROBES=y
- CONFIG_USELIB=y
- CONFIG_USER_NS=y
- CONFIG_VETH=y
--CONFIG_VIRTIO_BALLOON=y
--CONFIG_VIRTIO_BLK=y
--CONFIG_VIRTIO_NET=y
--CONFIG_VIRTIO_PCI=y
--CONFIG_VIRTIO_VSOCKETS_COMMON=y
- CONFIG_VLAN_8021Q=y
- CONFIG_VSOCKETS=y
- CONFIG_VSOCKETS_LOOPBACK=y
-diff --git a/tools/testing/selftests/bpf/config.vm b/tools/testing/selftests/bpf/config.vm
-new file mode 100644
-index 000000000000..a9746ca78777
---- /dev/null
-+++ b/tools/testing/selftests/bpf/config.vm
-@@ -0,0 +1,12 @@
-+CONFIG_9P_FS=y
-+CONFIG_9P_FS_POSIX_ACL=y
-+CONFIG_9P_FS_SECURITY=y
-+CONFIG_CRYPTO_DEV_VIRTIO=y
-+CONFIG_NET_9P=y
-+CONFIG_NET_9P_VIRTIO=y
-+CONFIG_VIRTIO_BALLOON=y
-+CONFIG_VIRTIO_BLK=y
-+CONFIG_VIRTIO_CONSOLE=y
-+CONFIG_VIRTIO_NET=y
-+CONFIG_VIRTIO_PCI=y
-+CONFIG_VIRTIO_VSOCKETS_COMMON=y
-diff --git a/tools/testing/selftests/bpf/config.x86_64 b/tools/testing/selftests/bpf/config.x86_64
-index 2e70a6048278..f7bfb2b09c82 100644
---- a/tools/testing/selftests/bpf/config.x86_64
-+++ b/tools/testing/selftests/bpf/config.x86_64
-@@ -1,6 +1,3 @@
--CONFIG_9P_FS=y
--CONFIG_9P_FS_POSIX_ACL=y
--CONFIG_9P_FS_SECURITY=y
- CONFIG_AGP=y
- CONFIG_AGP_AMD64=y
- CONFIG_AGP_INTEL=y
-@@ -45,7 +42,6 @@ CONFIG_CPU_IDLE_GOV_LADDER=y
- CONFIG_CPUSETS=y
- CONFIG_CRC_T10DIF=y
- CONFIG_CRYPTO_BLAKE2B=y
--CONFIG_CRYPTO_DEV_VIRTIO=y
- CONFIG_CRYPTO_SEQIV=y
- CONFIG_CRYPTO_XXHASH=y
- CONFIG_DCB=y
-@@ -145,8 +141,6 @@ CONFIG_MEMORY_FAILURE=y
- CONFIG_MINIX_SUBPARTITION=y
- CONFIG_NAMESPACES=y
- CONFIG_NET=y
--CONFIG_NET_9P=y
--CONFIG_NET_9P_VIRTIO=y
- CONFIG_NET_ACT_BPF=y
- CONFIG_NET_CLS_CGROUP=y
- CONFIG_NET_EMATCH=y
-@@ -228,12 +222,6 @@ CONFIG_USER_NS=y
- CONFIG_VALIDATE_FS_PARSER=y
- CONFIG_VETH=y
- CONFIG_VIRT_DRIVERS=y
--CONFIG_VIRTIO_BALLOON=y
--CONFIG_VIRTIO_BLK=y
--CONFIG_VIRTIO_CONSOLE=y
--CONFIG_VIRTIO_NET=y
--CONFIG_VIRTIO_PCI=y
--CONFIG_VIRTIO_VSOCKETS_COMMON=y
- CONFIG_VLAN_8021Q=y
- CONFIG_VSOCKETS=y
- CONFIG_VSOCKETS_LOOPBACK=y
-diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
-index 685034528018..65d14f3bbe30 100755
---- a/tools/testing/selftests/bpf/vmtest.sh
-+++ b/tools/testing/selftests/bpf/vmtest.sh
-@@ -36,7 +36,9 @@ DEFAULT_COMMAND="./test_progs"
- MOUNT_DIR="mnt"
- ROOTFS_IMAGE="root.img"
- OUTPUT_DIR="$HOME/.bpf_selftests"
--KCONFIG_REL_PATHS=("tools/testing/selftests/bpf/config" "tools/testing/selftests/bpf/config.${ARCH}")
-+KCONFIG_REL_PATHS=("tools/testing/selftests/bpf/config"
-+	"tools/testing/selftests/bpf/config.vm"
-+	"tools/testing/selftests/bpf/config.${ARCH}")
- INDEX_URL="https://raw.githubusercontent.com/libbpf/ci/master/INDEX"
- NUM_COMPILE_JOBS="$(nproc)"
- LOG_FILE_BASE="$(date +"bpf_selftests.%Y-%m-%d_%H-%M-%S")"
--- 
-2.39.3
+v1 -> v2: https://lore.kernel.org/bpf/20231030210638.2415306-1-davemarchevs=
+ky@fb.com/
+  * Update Documentation/bpf/kfuncs.rst to use new macros (Yafang, Andrii)
+  * Update recently-added open-coded {task,cgroup} iters to use new
+    macros (Yafang, Andrii)
+  * Add Andrii ack
+
+ Documentation/bpf/kfuncs.rst     |  6 ++----
+ include/linux/btf.h              |  9 +++++++++
+ kernel/bpf/bpf_iter.c            |  6 ++----
+ kernel/bpf/cgroup_iter.c         |  6 ++----
+ kernel/bpf/cpumask.c             |  6 ++----
+ kernel/bpf/helpers.c             |  6 ++----
+ kernel/bpf/map_iter.c            |  6 ++----
+ kernel/bpf/task_iter.c           | 18 ++++++------------
+ kernel/trace/bpf_trace.c         |  6 ++----
+ net/bpf/test_run.c               |  7 +++----
+ net/core/filter.c                | 13 ++++---------
+ net/core/xdp.c                   |  6 ++----
+ net/ipv4/fou_bpf.c               |  6 ++----
+ net/netfilter/nf_conntrack_bpf.c |  6 ++----
+ net/netfilter/nf_nat_bpf.c       |  6 ++----
+ net/xfrm/xfrm_interface_bpf.c    |  6 ++----
+ 16 files changed, 46 insertions(+), 73 deletions(-)
+
+diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+index 0d2647fb358d..723408e399ab 100644
+--- a/Documentation/bpf/kfuncs.rst
++++ b/Documentation/bpf/kfuncs.rst
+@@ -37,16 +37,14 @@ prototype in a header for the wrapper kfunc.
+ An example is given below::
+=20
+         /* Disables missing prototype warnings */
+-        __diag_push();
+-        __diag_ignore_all("-Wmissing-prototypes",
+-                          "Global kfuncs as their definitions will be in B=
+TF");
++        __bpf_kfunc_start_defs();
+=20
+         __bpf_kfunc struct task_struct *bpf_find_get_task_by_vpid(pid_t nr)
+         {
+                 return find_get_task_by_vpid(nr);
+         }
+=20
+-        __diag_pop();
++        __bpf_kfunc_end_defs();
+=20
+ A wrapper kfunc is often needed when we need to annotate parameters of the
+ kfunc. Otherwise one may directly make the kfunc visible to the BPF progra=
+m by
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index c2231c64d60b..dc5ce962f600 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -84,6 +84,15 @@
+  */
+ #define __bpf_kfunc __used noinline
+=20
++#define __bpf_kfunc_start_defs()					       \
++	__diag_push();							       \
++	__diag_ignore_all("-Wmissing-declarations",			       \
++			  "Global kfuncs as their definitions will be in BTF");\
++	__diag_ignore_all("-Wmissing-prototypes",			       \
++			  "Global kfuncs as their definitions will be in BTF")
++
++#define __bpf_kfunc_end_defs() __diag_pop()
++
+ /*
+  * Return the name of the passed struct, if exists, or halt the build if f=
+or
+  * example the structure gets renamed. In this way, developers have to rev=
+isit
+diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+index 833faa04461b..0fae79164187 100644
+--- a/kernel/bpf/bpf_iter.c
++++ b/kernel/bpf/bpf_iter.c
+@@ -782,9 +782,7 @@ struct bpf_iter_num_kern {
+ 	int end; /* final value, exclusive */
+ } __aligned(8);
+=20
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "Global functions as their definitions will be in vmlinux BTF");
++__bpf_kfunc_start_defs();
+=20
+ __bpf_kfunc int bpf_iter_num_new(struct bpf_iter_num *it, int start, int e=
+nd)
+ {
+@@ -843,4 +841,4 @@ __bpf_kfunc void bpf_iter_num_destroy(struct bpf_iter_n=
+um *it)
+ 	s->cur =3D s->end =3D 0;
+ }
+=20
+-__diag_pop();
++__bpf_kfunc_end_defs();
+diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
+index 209e5135f9fb..d1b5c5618dd7 100644
+--- a/kernel/bpf/cgroup_iter.c
++++ b/kernel/bpf/cgroup_iter.c
+@@ -305,9 +305,7 @@ struct bpf_iter_css_kern {
+ 	unsigned int flags;
+ } __attribute__((aligned(8)));
+=20
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		"Global functions as their definitions will be in vmlinux BTF");
++__bpf_kfunc_start_defs();
+=20
+ __bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
+ 		struct cgroup_subsys_state *start, unsigned int flags)
+@@ -358,4 +356,4 @@ __bpf_kfunc void bpf_iter_css_destroy(struct bpf_iter_c=
+ss *it)
+ {
+ }
+=20
+-__diag_pop();
+\ No newline at end of file
++__bpf_kfunc_end_defs();
+diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
+index 6983af8e093c..e01c741e54e7 100644
+--- a/kernel/bpf/cpumask.c
++++ b/kernel/bpf/cpumask.c
+@@ -34,9 +34,7 @@ static bool cpu_valid(u32 cpu)
+ 	return cpu < nr_cpu_ids;
+ }
+=20
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "Global kfuncs as their definitions will be in BTF");
++__bpf_kfunc_start_defs();
+=20
+ /**
+  * bpf_cpumask_create() - Create a mutable BPF cpumask.
+@@ -407,7 +405,7 @@ __bpf_kfunc u32 bpf_cpumask_any_and_distribute(const st=
+ruct cpumask *src1,
+ 	return cpumask_any_and_distribute(src1, src2);
+ }
+=20
+-__diag_pop();
++__bpf_kfunc_end_defs();
+=20
+ BTF_SET8_START(cpumask_kfunc_btf_ids)
+ BTF_ID_FLAGS(func, bpf_cpumask_create, KF_ACQUIRE | KF_RET_NULL)
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index e46ac288a108..0e4657606eaa 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1886,9 +1886,7 @@ void bpf_rb_root_free(const struct btf_field *field, =
+void *rb_root,
+ 	}
+ }
+=20
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "Global functions as their definitions will be in vmlinux BTF");
++__bpf_kfunc_start_defs();
+=20
+ __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+ {
+@@ -2505,7 +2503,7 @@ __bpf_kfunc void bpf_throw(u64 cookie)
+ 	WARN(1, "A call to BPF exception callback should never return\n");
+ }
+=20
+-__diag_pop();
++__bpf_kfunc_end_defs();
+=20
+ BTF_SET8_START(generic_btf_ids)
+ #ifdef CONFIG_KEXEC_CORE
+diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
+index 6fc9dae9edc8..6abd7c5df4b3 100644
+--- a/kernel/bpf/map_iter.c
++++ b/kernel/bpf/map_iter.c
+@@ -193,9 +193,7 @@ static int __init bpf_map_iter_init(void)
+=20
+ late_initcall(bpf_map_iter_init);
+=20
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "Global functions as their definitions will be in vmlinux BTF");
++__bpf_kfunc_start_defs();
+=20
+ __bpf_kfunc s64 bpf_map_sum_elem_count(const struct bpf_map *map)
+ {
+@@ -213,7 +211,7 @@ __bpf_kfunc s64 bpf_map_sum_elem_count(const struct bpf=
+_map *map)
+ 	return ret;
+ }
+=20
+-__diag_pop();
++__bpf_kfunc_end_defs();
+=20
+ BTF_SET8_START(bpf_map_iter_kfunc_ids)
+ BTF_ID_FLAGS(func, bpf_map_sum_elem_count, KF_TRUSTED_ARGS)
+diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+index 59e747938bdb..6cd8295c9683 100644
+--- a/kernel/bpf/task_iter.c
++++ b/kernel/bpf/task_iter.c
+@@ -824,9 +824,7 @@ struct bpf_iter_task_vma_kern {
+ 	struct bpf_iter_task_vma_kern_data *data;
+ } __attribute__((aligned(8)));
+=20
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "Global functions as their definitions will be in vmlinux BTF");
++__bpf_kfunc_start_defs();
+=20
+ __bpf_kfunc int bpf_iter_task_vma_new(struct bpf_iter_task_vma *it,
+ 				      struct task_struct *task, u64 addr)
+@@ -892,7 +890,7 @@ __bpf_kfunc void bpf_iter_task_vma_destroy(struct bpf_i=
+ter_task_vma *it)
+ 	}
+ }
+=20
+-__diag_pop();
++__bpf_kfunc_end_defs();
+=20
+ struct bpf_iter_css_task {
+ 	__u64 __opaque[1];
+@@ -902,9 +900,7 @@ struct bpf_iter_css_task_kern {
+ 	struct css_task_iter *css_it;
+ } __attribute__((aligned(8)));
+=20
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "Global functions as their definitions will be in vmlinux BTF");
++__bpf_kfunc_start_defs();
+=20
+ __bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
+ 		struct cgroup_subsys_state *css, unsigned int flags)
+@@ -950,7 +946,7 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_i=
+ter_css_task *it)
+ 	bpf_mem_free(&bpf_global_ma, kit->css_it);
+ }
+=20
+-__diag_pop();
++__bpf_kfunc_end_defs();
+=20
+ struct bpf_iter_task {
+ 	__u64 __opaque[3];
+@@ -971,9 +967,7 @@ enum {
+ 	BPF_TASK_ITER_PROC_THREADS
+ };
+=20
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "Global functions as their definitions will be in vmlinux BTF");
++__bpf_kfunc_start_defs();
+=20
+ __bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it,
+ 		struct task_struct *task__nullable, unsigned int flags)
+@@ -1043,7 +1037,7 @@ __bpf_kfunc void bpf_iter_task_destroy(struct bpf_ite=
+r_task *it)
+ {
+ }
+=20
+-__diag_pop();
++__bpf_kfunc_end_defs();
+=20
+ DEFINE_PER_CPU(struct mmap_unlock_irq_work, mmap_unlock_work);
+=20
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index df697c74d519..84e8a0f6e4e0 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1252,9 +1252,7 @@ static const struct bpf_func_proto bpf_get_func_arg_c=
+nt_proto =3D {
+ };
+=20
+ #ifdef CONFIG_KEYS
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "kfuncs which will be used in BPF programs");
++__bpf_kfunc_start_defs();
+=20
+ /**
+  * bpf_lookup_user_key - lookup a key by its serial
+@@ -1404,7 +1402,7 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf=
+_dynptr_kern *data_ptr,
+ }
+ #endif /* CONFIG_SYSTEM_DATA_VERIFICATION */
+=20
+-__diag_pop();
++__bpf_kfunc_end_defs();
+=20
+ BTF_SET8_START(key_sig_kfunc_set)
+ BTF_ID_FLAGS(func, bpf_lookup_user_key, KF_ACQUIRE | KF_RET_NULL | KF_SLEE=
+PABLE)
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 0841f8d82419..c9fdcc5cdce1 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -503,9 +503,8 @@ static int bpf_test_finish(const union bpf_attr *kattr,
+  * architecture dependent calling conventions. 7+ can be supported in the
+  * future.
+  */
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "Global functions as their definitions will be in vmlinux BTF");
++__bpf_kfunc_start_defs();
++
+ __bpf_kfunc int bpf_fentry_test1(int a)
+ {
+ 	return a + 1;
+@@ -605,7 +604,7 @@ __bpf_kfunc void bpf_kfunc_call_memb_release(struct pro=
+g_test_member *p)
+ {
+ }
+=20
+-__diag_pop();
++__bpf_kfunc_end_defs();
+=20
+ BTF_SET8_START(bpf_test_modify_return_ids)
+ BTF_ID_FLAGS(func, bpf_modify_return_test)
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 21d75108c2e9..383f96b0a1c7 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -11767,9 +11767,7 @@ bpf_sk_base_func_proto(enum bpf_func_id func_id)
+ 	return func;
+ }
+=20
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "Global functions as their definitions will be in vmlinux BTF");
++__bpf_kfunc_start_defs();
+ __bpf_kfunc int bpf_dynptr_from_skb(struct sk_buff *skb, u64 flags,
+ 				    struct bpf_dynptr_kern *ptr__uninit)
+ {
+@@ -11816,7 +11814,7 @@ __bpf_kfunc int bpf_sock_addr_set_sun_path(struct b=
+pf_sock_addr_kern *sa_kern,
+=20
+ 	return 0;
+ }
+-__diag_pop();
++__bpf_kfunc_end_defs();
+=20
+ int bpf_dynptr_from_skb_rdonly(struct sk_buff *skb, u64 flags,
+ 			       struct bpf_dynptr_kern *ptr__uninit)
+@@ -11879,10 +11877,7 @@ static int __init bpf_kfunc_init(void)
+ }
+ late_initcall(bpf_kfunc_init);
+=20
+-/* Disables missing prototype warnings */
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "Global functions as their definitions will be in vmlinux BTF");
++__bpf_kfunc_start_defs();
+=20
+ /* bpf_sock_destroy: Destroy the given socket with ECONNABORTED error code.
+  *
+@@ -11916,7 +11911,7 @@ __bpf_kfunc int bpf_sock_destroy(struct sock_common=
+ *sock)
+ 	return sk->sk_prot->diag_destroy(sk, ECONNABORTED);
+ }
+=20
+-__diag_pop()
++__bpf_kfunc_end_defs();
+=20
+ BTF_SET8_START(bpf_sk_iter_kfunc_ids)
+ BTF_ID_FLAGS(func, bpf_sock_destroy, KF_TRUSTED_ARGS)
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index df4789ab512d..b6f1d6dab3f2 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -696,9 +696,7 @@ struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf)
+ 	return nxdpf;
+ }
+=20
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "Global functions as their definitions will be in vmlinux BTF");
++__bpf_kfunc_start_defs();
+=20
+ /**
+  * bpf_xdp_metadata_rx_timestamp - Read XDP frame RX timestamp.
+@@ -738,7 +736,7 @@ __bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct x=
+dp_md *ctx, u32 *hash,
+ 	return -EOPNOTSUPP;
+ }
+=20
+-__diag_pop();
++__bpf_kfunc_end_defs();
+=20
+ BTF_SET8_START(xdp_metadata_kfunc_ids)
+ #define XDP_METADATA_KFUNC(_, __, name, ___) BTF_ID_FLAGS(func, name, KF_T=
+RUSTED_ARGS)
+diff --git a/net/ipv4/fou_bpf.c b/net/ipv4/fou_bpf.c
+index 3760a14b6b57..4da03bf45c9b 100644
+--- a/net/ipv4/fou_bpf.c
++++ b/net/ipv4/fou_bpf.c
+@@ -22,9 +22,7 @@ enum bpf_fou_encap_type {
+ 	FOU_BPF_ENCAP_GUE,
+ };
+=20
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "Global functions as their definitions will be in BTF");
++__bpf_kfunc_start_defs();
+=20
+ /* bpf_skb_set_fou_encap - Set FOU encap parameters
+  *
+@@ -100,7 +98,7 @@ __bpf_kfunc int bpf_skb_get_fou_encap(struct __sk_buff *=
+skb_ctx,
+ 	return 0;
+ }
+=20
+-__diag_pop()
++__bpf_kfunc_end_defs();
+=20
+ BTF_SET8_START(fou_kfunc_set)
+ BTF_ID_FLAGS(func, bpf_skb_set_fou_encap)
+diff --git a/net/netfilter/nf_conntrack_bpf.c b/net/netfilter/nf_conntrack_=
+bpf.c
+index b21799d468d2..475358ec8212 100644
+--- a/net/netfilter/nf_conntrack_bpf.c
++++ b/net/netfilter/nf_conntrack_bpf.c
+@@ -230,9 +230,7 @@ static int _nf_conntrack_btf_struct_access(struct bpf_v=
+erifier_log *log,
+ 	return 0;
+ }
+=20
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "Global functions as their definitions will be in nf_conntrack BTF");
++__bpf_kfunc_start_defs();
+=20
+ /* bpf_xdp_ct_alloc - Allocate a new CT entry
+  *
+@@ -467,7 +465,7 @@ __bpf_kfunc int bpf_ct_change_status(struct nf_conn *nf=
+ct, u32 status)
+ 	return nf_ct_change_status_common(nfct, status);
+ }
+=20
+-__diag_pop()
++__bpf_kfunc_end_defs();
+=20
+ BTF_SET8_START(nf_ct_kfunc_set)
+ BTF_ID_FLAGS(func, bpf_xdp_ct_alloc, KF_ACQUIRE | KF_RET_NULL)
+diff --git a/net/netfilter/nf_nat_bpf.c b/net/netfilter/nf_nat_bpf.c
+index 141ee7783223..6e3b2f58855f 100644
+--- a/net/netfilter/nf_nat_bpf.c
++++ b/net/netfilter/nf_nat_bpf.c
+@@ -12,9 +12,7 @@
+ #include <net/netfilter/nf_conntrack_core.h>
+ #include <net/netfilter/nf_nat.h>
+=20
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "Global functions as their definitions will be in nf_nat BTF");
++__bpf_kfunc_start_defs();
+=20
+ /* bpf_ct_set_nat_info - Set source or destination nat address
+  *
+@@ -54,7 +52,7 @@ __bpf_kfunc int bpf_ct_set_nat_info(struct nf_conn___init=
+ *nfct,
+ 	return nf_nat_setup_info(ct, &range, manip) =3D=3D NF_DROP ? -ENOMEM : 0;
+ }
+=20
+-__diag_pop()
++__bpf_kfunc_end_defs();
+=20
+ BTF_SET8_START(nf_nat_kfunc_set)
+ BTF_ID_FLAGS(func, bpf_ct_set_nat_info, KF_TRUSTED_ARGS)
+diff --git a/net/xfrm/xfrm_interface_bpf.c b/net/xfrm/xfrm_interface_bpf.c
+index d74f3fd20f2b..7d5e920141e9 100644
+--- a/net/xfrm/xfrm_interface_bpf.c
++++ b/net/xfrm/xfrm_interface_bpf.c
+@@ -27,9 +27,7 @@ struct bpf_xfrm_info {
+ 	int link;
+ };
+=20
+-__diag_push();
+-__diag_ignore_all("-Wmissing-prototypes",
+-		  "Global functions as their definitions will be in xfrm_interface BTF");
++__bpf_kfunc_start_defs();
+=20
+ /* bpf_skb_get_xfrm_info - Get XFRM metadata
+  *
+@@ -93,7 +91,7 @@ __bpf_kfunc int bpf_skb_set_xfrm_info(struct __sk_buff *s=
+kb_ctx, const struct bp
+ 	return 0;
+ }
+=20
+-__diag_pop()
++__bpf_kfunc_end_defs();
+=20
+ BTF_SET8_START(xfrm_ifc_kfunc_set)
+ BTF_ID_FLAGS(func, bpf_skb_get_xfrm_info)
+--=20
+2.34.1
 
 
