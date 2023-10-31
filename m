@@ -1,160 +1,120 @@
-Return-Path: <bpf+bounces-13688-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13691-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F303E7DC676
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 07:23:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C79F7DC687
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 07:26:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E2B51F22165
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 06:23:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1AC21C20BE5
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 06:26:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E33B810780;
-	Tue, 31 Oct 2023 06:23:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C7351078A;
+	Tue, 31 Oct 2023 06:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KSpUMRt/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BUkr4v6X"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06E3720E0
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 06:23:18 +0000 (UTC)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70182A2
-	for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 23:23:17 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9be3b66f254so779197966b.3
-        for <bpf@vger.kernel.org>; Mon, 30 Oct 2023 23:23:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6FA9DF6D
+	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 06:26:09 +0000 (UTC)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983FE91;
+	Mon, 30 Oct 2023 23:26:08 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9d0b4dfd60dso533469166b.1;
+        Mon, 30 Oct 2023 23:26:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698733396; x=1699338196; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698733567; x=1699338367; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=h9bA7xD54k0sbvFDUcslapwdbQV9KbbmeYvvXUCJn7U=;
-        b=KSpUMRt/oZ0aTH9o+gz5ujjysgsDim+d3qBF7rCOmIHQHZh++ZTajveqn7VlXzckp4
-         74QY+olI1f+amcIyuuw+iKg9X5UToQxR3FEgJ/lA6j65nS5DJzDzzVMHxO5hxCnp58Eq
-         q+H+KuxRk6z+enDNPFpYYkrJagW1Y9wjJLS9qTYpZN8VoZmHl0/8bsRIPLdRTQcHYBJS
-         0W4rxuUjUXPC423cfwd74stq0tzh1a9B0EhQY5qI0YeDNMMegb2CrVFlkPHL46dbCCQk
-         T/EYS/9Wb1e1VaXFh3jumojrRYFovkfyRNJoUod3U2dYEVC5dedlivJAjEEpUW9AKq6q
-         U5NQ==
+        bh=H890dxrJWN3yT/xHp1vZtLZXjq98ozy2u9aQnWRZfHI=;
+        b=BUkr4v6X8D/3UNbdm2kgS0BbnUAfIG8AouOLgv/RP4j6kyNe3duEmZY5/hgRzxXx51
+         z8FmdPh57/aJr+QyYefUb6ht3KmjNum2fa8MNhfiY2TjquhF9AbMYVAW6Bvf1KaEcDPl
+         Y/EQbqncW4X4ZOkpdljnQRduzQoqYlw1a2cAihnTte0sfXIU8OGl1wmDvE+cTrhb8OHv
+         3Z+UaPtBGL91Sz0OGzyckzQY3COP+s5LhdCY+WAqalo9ZBpvAbLIEIP4rh4Kk4/sz+2D
+         U3VDqmlmT9l65RGvrpZy/V1Ar8lPBhNoQGNQ0/jS4gShNHI+D484MvblEVW9ZMxeB5uP
+         Jg2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698733396; x=1699338196;
+        d=1e100.net; s=20230601; t=1698733567; x=1699338367;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=h9bA7xD54k0sbvFDUcslapwdbQV9KbbmeYvvXUCJn7U=;
-        b=AmlC8qBPDw7srWCjm1IR6TjX+5zJkTqMPVmhR+DOYKmhDWm3v33aI80+hyQG62VPtM
-         FhGfZWJHr1Kxl60wb36qQTsutyXOH3+HjCEf13H2hralNVRHSOI0Cl6L6U1Lgkn4AZ2f
-         CRk73jQFTRNyv9SsMFyqAQpIbkA43c//84hgTBvckYwpSwS7AZO6ywWNawv69z4X/qLw
-         sDRDsoX2oiK492XLFW85wd1vjSxdsv4seL2MOKeVvWjhD3YJZ+x3luHwTActkbTPla7D
-         HBdLbOrG9qUxlecrDp1ljNh+pcsoJX9cXVqVtdNqUEMWR0G4KJM1TSqfjyxVZAnRF4xe
-         oa3Q==
-X-Gm-Message-State: AOJu0YwILZUj45lDWNr5N9ZqnxuuL7kYJUe/nVlrtTU3cjYo7Y6MOolU
-	F/FGKNuc12i13V0Xrn7FhzI6FJeXSrxTXUcI+NJsRmo1xGM=
-X-Google-Smtp-Source: AGHT+IGSKFGBNhgjWYoOQ0Hf7UDdRxt2hHTCoC1N7X01s5YTscQfpVi0b8SP9bteLEbCZtsKqZNq2dO3zeWkGQrHbTA=
-X-Received: by 2002:a17:907:968c:b0:9be:bf31:335f with SMTP id
- hd12-20020a170907968c00b009bebf31335fmr10796087ejc.46.1698733395623; Mon, 30
- Oct 2023 23:23:15 -0700 (PDT)
+        bh=H890dxrJWN3yT/xHp1vZtLZXjq98ozy2u9aQnWRZfHI=;
+        b=TUBJhjQlozXi96pn/MOVQCN6LL62mH+i6aPEOLfuSc5B7yV27gM5carrV/XGt7Y6ZY
+         DjAMpgt1e1HMZfqYzuNELQneIE627RRrbz7TPtypJl2qj4SnkwIQTWFESaO8iPXKIUtt
+         C+kUg39KDTEXZqHysKOEJaqmbBCIA58IcvPs83GPW2VeSo4t1pyFCYH5Damm74JnXUp9
+         zjX4rJ4+A3fyfSAG0tF4P5sI46yrSbFyQE/RFpzoQRrHzYvDd9TeUeSfk9DmCcf8rUU3
+         Zv4aDhUxB+obMLa+ZhzI6VJx23m4AJnctX/f86E25osi9rzMuFN/S12qjEJs7bqQYIl8
+         yfaw==
+X-Gm-Message-State: AOJu0YxedJSAl51F9JwGO/LT6DLHYuaD9WdY6vtRxVfjKDsHLwQaSLeK
+	vSIu0ZiVbaitYYnpU3YI1maCjQWKDF05yCE7l1E=
+X-Google-Smtp-Source: AGHT+IF+gc0G3FlWAx0H5RVu7XzgkaKBL6c1il+hT0y9NF8CYvljdR4Q38DSOqYaHY5fHlhxHbfUfy8QJ1D7/ADlMFY=
+X-Received: by 2002:a17:906:7146:b0:9d3:afe1:b3e5 with SMTP id
+ z6-20020a170906714600b009d3afe1b3e5mr3595874ejj.75.1698733567002; Mon, 30 Oct
+ 2023 23:26:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231030210638.2415306-1-davemarchevsky@fb.com> <CALOAHbAUhae1S1XUHNZAkSuOdvjS-ECSuKNoJRLAwtgp85L+dg@mail.gmail.com>
-In-Reply-To: <CALOAHbAUhae1S1XUHNZAkSuOdvjS-ECSuKNoJRLAwtgp85L+dg@mail.gmail.com>
+References: <cover.1698431765.git.dxu@dxuuu.xyz> <111a64c3e6ccda6b8a2826491715d4e8a645e384.1698431765.git.dxu@dxuuu.xyz>
+ <CAEf4BzbwHZmCJHe8WiV0WeUV1XC+cDB4d4v8YLJh+ZL_k7yB1g@mail.gmail.com> <73xnkgitatvymw2bqwo6elqmdpsvj2atmh6ugrityvqyegguq7@cjos2bsw2ico>
+In-Reply-To: <73xnkgitatvymw2bqwo6elqmdpsvj2atmh6ugrityvqyegguq7@cjos2bsw2ico>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 30 Oct 2023 23:23:04 -0700
-Message-ID: <CAEf4BzYnDy4=tXX0S-G0dh2fPTXpJ+9PPF1uix-fRK49VA1hEg@mail.gmail.com>
-Subject: Re: [PATCH v1 bpf-next] bpf: Add __bpf_kfunc_{start,end}_defs macros
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Kernel Team <kernel-team@fb.com>, Jiri Olsa <olsajiri@gmail.com>
+Date: Mon, 30 Oct 2023 23:25:55 -0700
+Message-ID: <CAEf4BzZWFfJFpp6UvYNj-i5PFU42rUD_U4B0c_Qa7DYV0Rme=A@mail.gmail.com>
+Subject: Re: [RFC bpf-next 5/6] bpf: selftests: test_tunnel: Disable CO-RE relocations
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: ast@kernel.org, andrii@kernel.org, shuah@kernel.org, daniel@iogearbox.net, 
+	steffen.klassert@secunet.com, antony.antony@secunet.com, mykolal@fb.com, 
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	devel@linux-ipsec.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 30, 2023 at 10:56=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com>=
- wrote:
+On Sun, Oct 29, 2023 at 4:22=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
 >
-> On Tue, Oct 31, 2023 at 5:07=E2=80=AFAM Dave Marchevsky <davemarchevsky@f=
-b.com> wrote:
+> On Fri, Oct 27, 2023 at 01:33:09PM -0700, Andrii Nakryiko wrote:
+> > On Fri, Oct 27, 2023 at 11:46=E2=80=AFAM Daniel Xu <dxu@dxuuu.xyz> wrot=
+e:
+> > >
+> > > Switching to vmlinux.h definitions seems to make the verifier very
+> > > unhappy with bitfield accesses. The error is:
+> > >
+> > >     ; md.u.md2.dir =3D direction;
+> > >     33: (69) r1 =3D *(u16 *)(r2 +11)
+> > >     misaligned stack access off (0x0; 0x0)+-64+11 size 2
+> > >
+> > > It looks like disabling CO-RE relocations seem to make the error go
+> > > away.
+> > >
 > >
-> > BPF kfuncs are meant to be called from BPF programs. Accordingly, most
-> > kfuncs are not called from anywhere in the kernel, which the
-> > -Wmissing-prototypes warning is unhappy about. We've peppered
-> > __diag_ignore_all("-Wmissing-prototypes", ... everywhere kfuncs are
-> > defined in the codebase to suppress this warning.
-> >
-> > This patch adds two macros meant to bound one or many kfunc definitions=
-.
-> > All existing kfunc definitions which use these __diag calls to suppress
-> > -Wmissing-prototypes are migrated to use the newly-introduced macros.
-> > A new __diag_ignore_all - for "-Wmissing-declarations" - is added to th=
-e
-> > __bpf_kfunc_start_defs macro based on feedback from Andrii on an earlie=
-r
-> > version of this patch [0] and another recent mailing list thread [1].
-> >
-> > In the future we might need to ignore different warnings or do other
-> > kfunc-specific things. This change will make it easier to make such
-> > modifications for all kfunc defs.
-> >
-> >   [0]: https://lore.kernel.org/bpf/CAEf4BzaE5dRWtK6RPLnjTW-MW9sx9K3Fn6u=
-wqCTChK2Dcb1Xig@mail.gmail.com/
-> >   [1]: https://lore.kernel.org/bpf/ZT+2qCc%2FaXep0%2FLf@krava/
-> >
-> > Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> > Cc: Jiri Olsa <olsajiri@gmail.com>
-> > ---
-> >
-> > This patch was submitted earlier as part of task_vma
-> > iter series: https://lore.kernel.org/bpf/20231013204426.1074286-6-davem=
-archevsky@fb.com/
-> >
-> > This separate submission addresses Andrii's comments from
-> > that thread.
-> >
-> >  include/linux/btf.h              |  9 +++++++++
-> >  kernel/bpf/bpf_iter.c            |  6 ++----
-> >  kernel/bpf/cpumask.c             |  6 ++----
-> >  kernel/bpf/helpers.c             |  6 ++----
-> >  kernel/bpf/map_iter.c            |  6 ++----
-> >  kernel/bpf/task_iter.c           |  6 ++----
-> >  kernel/trace/bpf_trace.c         |  6 ++----
-> >  net/bpf/test_run.c               |  7 +++----
-> >  net/core/filter.c                | 13 ++++---------
-> >  net/core/xdp.c                   |  6 ++----
-> >  net/ipv4/fou_bpf.c               |  6 ++----
-> >  net/netfilter/nf_conntrack_bpf.c |  6 ++----
-> >  net/netfilter/nf_nat_bpf.c       |  6 ++----
-> >  net/xfrm/xfrm_interface_bpf.c    |  6 ++----
-> >  14 files changed, 38 insertions(+), 57 deletions(-)
-> >
+> > for accessing bitfields libbpf provides
+> > BPF_CORE_READ_BITFIELD_PROBED() and BPF_CORE_READ_BITFIELD() macros
 >
-> Thanks for your work.
+> In this case the code in question is:
 >
-> By using a simple grep for "__diag_ignore_all(\"-Wmissing-prototypes",
-> it appears that the files net/socket.c,
-> tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c,
-> kernel/cgroup/rstat.c and Documentation/bpf/kfuncs.rst are missing. It
-> seems that we should also update them.
+>         __u8 direction =3D 0;
+>         md.u.md2.dir =3D direction;
 >
+> IOW the problem is assigning to bitfields, not reading from them.
+>
+> Is that something that libbpf needs to support as well?
 
-rstat.c and net/socket.c don't have kfuncs, so those are not relevant
-here. But we are missing changes also in kernel/bpf/task_iter.c and
-kernel/bpf/cgroup_iter.c
+Ah, I missed that this is a write into a struct. I think we can
+support BPF_CORE_WRITE_BITFIELD() (not the PROBED version, though)
+using all the same CO-RE relocations. It's probably a very niche case,
+but BPF_CORE_READ_BITFIELD() is niche as well (though an absolute
+necessity when the need does come up).
 
-And let's update Documentation/bpf/kfuncs.rst to use your new set of macros=
-?
-
-With the above addressed, please add my ack. Thanks!
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-> --
-> Regards
-> Yafang
+>
+> Thanks,
+> Daniel
 
