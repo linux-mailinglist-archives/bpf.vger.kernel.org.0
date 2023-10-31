@@ -1,174 +1,225 @@
-Return-Path: <bpf+bounces-13701-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13702-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CD527DC9C6
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 10:40:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B6D17DCBB3
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 12:24:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 626F9B20DE7
-	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 09:40:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 401332817C2
+	for <lists+bpf@lfdr.de>; Tue, 31 Oct 2023 11:24:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72F7116416;
-	Tue, 31 Oct 2023 09:40:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BE161A72B;
+	Tue, 31 Oct 2023 11:24:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k7ZKiUgy"
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="as3m0Wv8"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 803F413AF0;
-	Tue, 31 Oct 2023 09:40:00 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6305FD8;
-	Tue, 31 Oct 2023 02:39:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698745199; x=1730281199;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=RQ59IvOFE5BPJE3ugduzBnh5GP5h/fXdWRJ5zm7z95k=;
-  b=k7ZKiUgyqK5OhAwHJZLx1VgVhckmDMMCtitnBd1Vbrg6XaGTiRtHemA1
-   wjYY+qDqb+ljcNk9bjmVYqsZyVFf9q4zIeF1y0II+ESnj51hBR9gzTl0K
-   lojGhXO1z2rNn4L0tzntXH+t8U4kd6XZLQnaiGuZAvR/ZH5PTC9lva9na
-   KU1uXWuIlyKc3zbsX2oScNQ5HcdKiOJOAoMICpGml4JcyDuTnyTPaVhDT
-   xHvAZebSMd68U5Szl+Uz3LcIGMxls+KuixffQGPQLd9CVENq4aNhBOuQu
-   ID3nOa+gcyviz6SZd6DWhM6Dzutu8EuHcnmXIhX1a5rh1soLpI/TysbCJ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="1132081"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="1132081"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2023 02:39:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="760568862"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200"; 
-   d="scan'208";a="760568862"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Oct 2023 02:39:58 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 31 Oct 2023 02:39:57 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 31 Oct 2023 02:39:56 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Tue, 31 Oct 2023 02:39:56 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 31 Oct 2023 02:39:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YIlOcBgyLFvwi6o17VfKd2QYZaZvjLta77K5HyZeIiJsybFW2eY8ACby7pexJWKx77Yz9wP+8BhBzp4/m57XsQ3UbMx8A53Ln0WoHhPL13lOtYPO1LiCXmEYxC7QHNKXcOYdhoLHiE8co3CbH+jZOON/YqLQ8boaUVZeB5eFGzvOIbrDZW2Uyg0fKOlUL6Lcl8S/wp9aLGujMYpVwXYPJK//5UIcP185ZsYwD0R9F3LLO2tnv6lUkWPeMb9YXCSjK1os17RHDt8/FB5c+dPuNf86LTXoEUOfxzePUJP2NLfMpkL29GxxE5bWRsmSWB1Ul9MhwJmWwhET0uZUvOh0ow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YqzMWFIkNXQMxz/AtWbZImCq15avladCxE8DbZRVOrs=;
- b=PUYBiJEIl0cl8KsFezKl6tndiboSJhosYso51Ui5wDsbyx+WrVpS0b8df5B8TYYq+1k2TtHou9qZaAnqfLSTXwZmUTvDSmtuNHm8TtPVowGxCc4USty63a1gVqsxz7sWoy5268HRccx/HVIWG9B4e0QZ/ByYxudUY3JsCuPwwPRuX68vu1WZbiuSqwjfK/jBE2LQ3IvUkT1pScyfzDLlVJVLcT4a1udVTov2L1YKoZZK4DO9nbsBrxCXa7oxY7MYhmPLfS/wXcxd9FqAXeJd6mpqlDIoasFkrQdrNGOH6E1085U9+MWvr4LldgNJEI436Y+u19CPiSAItbz9nyG9MA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
- by LV2PR11MB6023.namprd11.prod.outlook.com (2603:10b6:408:17b::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.24; Tue, 31 Oct
- 2023 09:39:49 +0000
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::f37d:cbd6:9df8:d06d]) by SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::f37d:cbd6:9df8:d06d%6]) with mapi id 15.20.6933.027; Tue, 31 Oct 2023
- 09:39:49 +0000
-Date: Tue, 31 Oct 2023 10:39:43 +0100
-From: Larysa Zaremba <larysa.zaremba@intel.com>
-To: Jakub Kicinski <kuba@kernel.org>
-CC: <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, Alexei Starovoitov
-	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller"
-	<davem@davemloft.net>, Jesper Dangaard Brouer <hawk@kernel.org>, Eric Dumazet
-	<edumazet@google.com>, Magnus Karlsson <magnus.karlsson@gmail.com>, "Willem
- de Bruijn" <willemdebruijn.kernel@gmail.com>, Yunsheng Lin
-	<linyunsheng@huawei.com>, Simon Horman <simon.horman@corigine.com>, "Maciej
- Fijalkowski" <maciej.fijalkowski@intel.com>, John Fastabend
-	<john.fastabend@gmail.com>, Aleksander Lobakin <aleksander.lobakin@intel.com>
-Subject: Re: [PATCH bpf-next] net, xdp: allow metadata > 32
-Message-ID: <ZUDLX6yqcKLsSknL@lzaremba-mobl.ger.corp.intel.com>
-References: <20231026165701.65878-1-larysa.zaremba@intel.com>
- <20231027130930.7d6014df@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231027130930.7d6014df@kernel.org>
-X-ClientProxiedBy: WA1P291CA0019.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:19::23) To SN7PR11MB7540.namprd11.prod.outlook.com
- (2603:10b6:806:340::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1817E1A70F;
+	Tue, 31 Oct 2023 11:24:17 +0000 (UTC)
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D7697;
+	Tue, 31 Oct 2023 04:24:16 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39V7TvKx004769;
+	Tue, 31 Oct 2023 04:23:53 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=jxcYiC94VBU9IMPI8prqBSJJjwC0PAd9u+mtlkrs+Fs=;
+ b=as3m0Wv8gTcoTk/1kNywYxQcXaflIzxeYOGl1cY+uY6ApsXCTNYCWKD/WSFNVSE8/Wsh
+ xHDG4xafLZt9z/ifvqamOaQnc6icyNS1wNi9qUs895wZ3NlsaigJLzXDD+ZmqEo3FsEd
+ Dwi/pyq1qmuM+7YisCuCH7H5QzUf8gE7tesFl4PpWAIPOLcuLsUkhRFb8E3VMHPtHCdM
+ q5GCRPs1Pf73lnX5zkJfKz4/R0R0faDkEFkI7oRB/bHzSyKcEepC6Y9F0lEHPVBy9m3u
+ GZL8La8zZSDL6/gG/mhj2e8xb3T0k6+GmR44tk5ONfQFXqWWSHkmlRHv3zOjvGrLS0HL CQ== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3u11tpa8bj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+	Tue, 31 Oct 2023 04:23:53 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 31 Oct
+ 2023 04:23:51 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Tue, 31 Oct 2023 04:23:51 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+	by maili.marvell.com (Postfix) with ESMTP id DCF723F70C2;
+	Tue, 31 Oct 2023 04:23:46 -0700 (PDT)
+From: Geetha sowjanya <gakula@marvell.com>
+To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+CC: <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
+        <edumazet@google.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <hawk@kernel.org>, <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>
+Subject: [net PATCH] octeontx2-pf: Free pending and dropped SQEs
+Date: Tue, 31 Oct 2023 16:53:45 +0530
+Message-ID: <20231031112345.25291-1-gakula@marvell.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|LV2PR11MB6023:EE_
-X-MS-Office365-Filtering-Correlation-Id: 794daf5c-201e-45f5-fbc3-08dbd9f55370
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OY+XdYMmySADxaaK+OKNQkh9VusfgGx08eihXpkidjIhYW58dJ6OKBWSw3plJnXyIfc1PRTU+POoR85ge8uhwjhBtakm/4Wcm78QY0DDFUrrM3E9JZAFhjNyvlsnHA9Oj4NgI+FKY8nqCxfTa59WBmgkrdumrttc5izZokH6tN/0WDMBY06eScBS6dDDeLzI/WK92fZOYcwxEt8Vm4jNqXWd011NEa1s7gsIRDFlPK3zwkyvgyP7KBOIMtipCUeOx4Ejw4vau2XX4xAgtQIMopldgn5rE4dVe4KIhDVsJOWVN0nxYC07TybNKz60osBnrmZYmPUkJDVKwRC7Uq80BidStf3JqNekzJALrLyEzNDp4Qu4rrI0HTr2VvHcgtujDw9YOzH1VPfmxtbGAX8j1md6LUSKMXGB8NX9eKj8pumQizNMUhAXNDvSdLyuwcbL4G4ct8+n8oJzri56GkW1VQxezyFT4QRsfE4W7UvDWYtkEVCL492WjrKkHts2QuMyyWL9BWqn/PtTPWr8iuFllyQwOTtAa3T0qgIOqqOQVzQ5PVQuD1D42GBCUXIUeuED
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(376002)(396003)(346002)(366004)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(82960400001)(4744005)(86362001)(26005)(478600001)(6506007)(66946007)(316002)(6486002)(6916009)(66556008)(66476007)(5660300002)(54906003)(107886003)(6666004)(8676002)(7416002)(6512007)(4326008)(8936002)(2906002)(41300700001)(44832011)(38100700002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?H7sp5UO4IYF2BeYj5N4/u1jD7XhsPaaaOAZPjX6qU4lA7btSPMGbkmTW/BHL?=
- =?us-ascii?Q?TiuCLGdkbBQs3Om24TtAmLzTpqroKR9VWh8cghAp82SqcDZEWZ2P16DWdcnt?=
- =?us-ascii?Q?NraZCI1gGFnn8QD0IPFBCv5kWxQ8YzhawHaGXWNaUk30mptfB1PGY+cTvB4X?=
- =?us-ascii?Q?GPGQh9z+a9fSaTE2lMRhgWStQSfPy37KXPvbblLSBlLqz3v2OBp+zi/Zx3vE?=
- =?us-ascii?Q?nUwXCn8EB08KSs9sUZttUqthSSh831QJc2jhp4fopayyPJxUAKde1yIuxDIl?=
- =?us-ascii?Q?F3RdfOw/k371nSof6v7o5jke+KekVODJRoD5B4RVZgKVbu8bRqUVbZYy2hb0?=
- =?us-ascii?Q?FAHdoLkCEekT/Q65bmI+k0hWfk6jCVjOQM7NAkFqZ97sUkRwYnjgoi7vtvKv?=
- =?us-ascii?Q?eBtXZFSnypW1jyGT6AV8W7gsQqL91h3qJwtbIqUvz92umcrDP/ZEz2oTSCK+?=
- =?us-ascii?Q?NQfHg1PZc+q2Kp78lblNJjvFgK2IiGI+fehG+v9picCLKPokGM7wRBqXmHhn?=
- =?us-ascii?Q?B11hjMP7qMOnPHjaADUJw8e5dYGwLlxPNeAjuYWX0B+wtU1na6WuQK0b8uq0?=
- =?us-ascii?Q?03dmxeY+J1t8yMjmPDBgnTZxS19lVSKvP9gqKokx9FNRFzn+rybYs5I3UOSc?=
- =?us-ascii?Q?ByMI9rpHM/tft60GSoy3bVPFHBsedPcEXsbf+bQM0WdJcK3Dxqmg36kmM3Eb?=
- =?us-ascii?Q?GB/fATHX34XID8HwT9Lvkci6PC+2LnZ5ATx3GQM8cGDGKIkVXJUJUDMY7q+6?=
- =?us-ascii?Q?3oO3+QDgGe00S7qfqVmxc6Brt+PZRjR7uf02cgtncHDQlVG+WwQh4kGP4+Ve?=
- =?us-ascii?Q?eY89ElARXXmE0bW8DPkL1IM1tNA9cR/kJL+aH6R02Eu9VngbY4ws21s7iKX4?=
- =?us-ascii?Q?fkaSUniy/OZ4t/waGfSvd4JZb1tV+K4PVrNufDZOtnnAPWAZEwd3KGKF9hDg?=
- =?us-ascii?Q?wotnfrd34vpJEk9CB1MG/kwH2lwRPCxmUBlo2rsi3DWs9tbQ1c+s6PDzzn8b?=
- =?us-ascii?Q?tXL8qPkZp5sQyRzTs6Yv9dFKD2IJdngh1wb4sf+ympve7xwubrCdviZxTk9T?=
- =?us-ascii?Q?mmUUsHOCOOw3M7N37U5atE0dIflzlG6VtBiyTs5BdDzOGh0hsvaeu3565iMM?=
- =?us-ascii?Q?ed48OwcNU1p72dn7nTqNTvxVyqgO+GaTVCC8DOeOaOj2SLnzS7pdUTAyKff7?=
- =?us-ascii?Q?TiSsBRFFYW67SBvOrVMwW3//sPiH9CUa1uBqkJgj4noQmW2jitA/lPdRAHtU?=
- =?us-ascii?Q?0lXN2N9QxNSemHnqGXaj125FgP2f8wq2WAaPZq6gVuDNMdklvl4yT3txWgnR?=
- =?us-ascii?Q?9wKVeB/ofBIeXwKgZE1UayzAfri0xaKmNunIsGiQqXVbs3lheuN0RrKE5qeg?=
- =?us-ascii?Q?jeR56SalsmP8mKdoVB/cDQ6rTAeCp+5FIxaqL1esOEDWQ+bmlytgH2xCaPmm?=
- =?us-ascii?Q?K7G5z0ghUBH8nysX+bMJ+o0L/x2VS3zJhvndt8jz4y3PqNdD4uikPCY26hNF?=
- =?us-ascii?Q?jStm+qPRSm1dhfhMgAL0G4WoZMb0DxoLcY8Dqei/5TlBYbi1tJ0yMzsB4B+w?=
- =?us-ascii?Q?ze03UtZi14fUF6bpvIWjrPBOzrGkJibKQs4a13NGxnrik0Iv0r4+sK+4Exnu?=
- =?us-ascii?Q?tQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 794daf5c-201e-45f5-fbc3-08dbd9f55370
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 09:39:49.6338
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2q31CRZVsURo5eLeyMQPSS8Uc0exvt1rsRkUl+kIi8eJw/kFzP+v2DdIzrxszbyelhdxagEn6yipfOeYWmhq1rE9QaMrvp2xkpEiHCxbfqg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR11MB6023
-X-OriginatorOrg: intel.com
+Content-Type: text/plain
+X-Proofpoint-GUID: U1Q4Db0ML9vmH-0MZvETkm2VQxOMh4dZ
+X-Proofpoint-ORIG-GUID: U1Q4Db0ML9vmH-0MZvETkm2VQxOMh4dZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-31_01,2023-10-31_03,2023-05-22_02
 
-On Fri, Oct 27, 2023 at 01:09:30PM -0700, Jakub Kicinski wrote:
-> On Thu, 26 Oct 2023 18:56:59 +0200 Larysa Zaremba wrote:
-> >  static inline bool xdp_metalen_invalid(unsigned long metalen)
-> >  {
-> > -	return (metalen & (sizeof(__u32) - 1)) || (metalen > 32);
-> > +	typeof(metalen) meta_max;
-> 
-> The use of typeof() looks a bit unnecessary..
->
+On interface down, the pending SQEs in the NIX get dropped
+or drained out during SMQ flush. But skb's pointed by these
+SQEs never get free or updated to the stack as respective CQE
+never get added.
+This patch fixes the issue by freeing all valid skb's in SQ SG list.
 
-You are probably right, will send v2 without it. 
+Fixes: b1bc8457e9d0 ("octeontx2-pf: Cleanup all receive buffers in SG descriptor")
+Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+---
+ .../marvell/octeontx2/nic/otx2_common.c       | 15 +++----
+ .../marvell/octeontx2/nic/otx2_common.h       |  1 +
+ .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  1 +
+ .../marvell/octeontx2/nic/otx2_txrx.c         | 42 +++++++++++++++++++
+ 4 files changed, 49 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+index 1a42bfded872..7ca6941ea0b9 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+@@ -818,7 +818,6 @@ void otx2_sqb_flush(struct otx2_nic *pfvf)
+ 	int qidx, sqe_tail, sqe_head;
+ 	struct otx2_snd_queue *sq;
+ 	u64 incr, *ptr, val;
+-	int timeout = 1000;
+ 
+ 	ptr = (u64 *)otx2_get_regaddr(pfvf, NIX_LF_SQ_OP_STATUS);
+ 	for (qidx = 0; qidx < otx2_get_total_tx_queues(pfvf); qidx++) {
+@@ -827,15 +826,11 @@ void otx2_sqb_flush(struct otx2_nic *pfvf)
+ 			continue;
+ 
+ 		incr = (u64)qidx << 32;
+-		while (timeout) {
+-			val = otx2_atomic64_add(incr, ptr);
+-			sqe_head = (val >> 20) & 0x3F;
+-			sqe_tail = (val >> 28) & 0x3F;
+-			if (sqe_head == sqe_tail)
+-				break;
+-			usleep_range(1, 3);
+-			timeout--;
+-		}
++		val = otx2_atomic64_add(incr, ptr);
++		sqe_head = (val >> 20) & 0x3F;
++		sqe_tail = (val >> 28) & 0x3F;
++		if (sqe_head != sqe_tail)
++			usleep_range(50, 60);
+ 	}
+ }
+ 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+index c04a8ee53a82..e7c69b57147e 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+@@ -977,6 +977,7 @@ int otx2_txschq_config(struct otx2_nic *pfvf, int lvl, int prio, bool pfc_en);
+ int otx2_txsch_alloc(struct otx2_nic *pfvf);
+ void otx2_txschq_stop(struct otx2_nic *pfvf);
+ void otx2_txschq_free_one(struct otx2_nic *pfvf, u16 lvl, u16 schq);
++void otx2_free_pending_sqe(struct otx2_nic *pfvf);
+ void otx2_sqb_flush(struct otx2_nic *pfvf);
+ int otx2_alloc_rbuf(struct otx2_nic *pfvf, struct otx2_pool *pool,
+ 		    dma_addr_t *dma);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+index 6daf4d58c25d..8e82db6092af 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+@@ -1589,6 +1589,7 @@ static void otx2_free_hw_resources(struct otx2_nic *pf)
+ 		else
+ 			otx2_cleanup_tx_cqes(pf, cq);
+ 	}
++	otx2_free_pending_sqe(pf);
+ 
+ 	otx2_free_sq_res(pf);
+ 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+index 53b2a4ef5298..6ee15f3c25ed 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+@@ -1247,9 +1247,11 @@ void otx2_cleanup_rx_cqes(struct otx2_nic *pfvf, struct otx2_cq_queue *cq, int q
+ 
+ void otx2_cleanup_tx_cqes(struct otx2_nic *pfvf, struct otx2_cq_queue *cq)
+ {
++	int tx_pkts = 0, tx_bytes = 0;
+ 	struct sk_buff *skb = NULL;
+ 	struct otx2_snd_queue *sq;
+ 	struct nix_cqe_tx_s *cqe;
++	struct netdev_queue *txq;
+ 	int processed_cqe = 0;
+ 	struct sg_list *sg;
+ 	int qidx;
+@@ -1270,12 +1272,20 @@ void otx2_cleanup_tx_cqes(struct otx2_nic *pfvf, struct otx2_cq_queue *cq)
+ 		sg = &sq->sg[cqe->comp.sqe_id];
+ 		skb = (struct sk_buff *)sg->skb;
+ 		if (skb) {
++			tx_bytes += skb->len;
++			tx_pkts++;
+ 			otx2_dma_unmap_skb_frags(pfvf, sg);
+ 			dev_kfree_skb_any(skb);
+ 			sg->skb = (u64)NULL;
+ 		}
+ 	}
+ 
++	if (likely(tx_pkts)) {
++		if (qidx >= pfvf->hw.tx_queues)
++			qidx -= pfvf->hw.xdp_queues;
++		txq = netdev_get_tx_queue(pfvf->netdev, qidx);
++		netdev_tx_completed_queue(txq, tx_pkts, tx_bytes);
++	}
+ 	/* Free CQEs to HW */
+ 	otx2_write64(pfvf, NIX_LF_CQ_OP_DOOR,
+ 		     ((u64)cq->cq_idx << 32) | processed_cqe);
+@@ -1302,6 +1312,38 @@ int otx2_rxtx_enable(struct otx2_nic *pfvf, bool enable)
+ 	return err;
+ }
+ 
++void otx2_free_pending_sqe(struct otx2_nic *pfvf)
++{
++	int tx_pkts = 0, tx_bytes = 0;
++	struct sk_buff *skb = NULL;
++	struct otx2_snd_queue *sq;
++	struct netdev_queue *txq;
++	struct sg_list *sg;
++	int sq_idx, sqe;
++
++	for (sq_idx = 0; sq_idx < pfvf->hw.tx_queues; sq_idx++) {
++		sq = &pfvf->qset.sq[sq_idx];
++		for (sqe = 0; sqe < sq->sqe_cnt; sqe++) {
++			sg = &sq->sg[sqe];
++			skb = (struct sk_buff *)sg->skb;
++			if (skb) {
++				tx_bytes += skb->len;
++				tx_pkts++;
++				otx2_dma_unmap_skb_frags(pfvf, sg);
++				dev_kfree_skb_any(skb);
++				sg->skb = (u64)NULL;
++			}
++		}
++
++		if (!tx_pkts)
++			continue;
++		txq = netdev_get_tx_queue(pfvf->netdev, sq_idx);
++		netdev_tx_completed_queue(txq, tx_pkts, tx_bytes);
++		tx_pkts = 0;
++		tx_bytes = 0;
++	}
++}
++
+ static void otx2_xdp_sqe_add_sg(struct otx2_snd_queue *sq, u64 dma_addr,
+ 				int len, int *offset)
+ {
+-- 
+2.25.1
+
 
