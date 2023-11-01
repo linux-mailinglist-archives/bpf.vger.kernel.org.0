@@ -1,90 +1,192 @@
-Return-Path: <bpf+bounces-13804-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13805-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CA9E7DE242
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 15:18:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EE6E7DE26D
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 15:40:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 671BFB2108E
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 14:18:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3A2A2817A7
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 14:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6D4E134DA;
-	Wed,  1 Nov 2023 14:18:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65402107BC;
+	Wed,  1 Nov 2023 14:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="VDoCuOkp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZpjChWNq"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB7013AC7
-	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 14:18:10 +0000 (UTC)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D958483
-	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 07:18:05 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99de884ad25so1050300066b.3
-        for <bpf@vger.kernel.org>; Wed, 01 Nov 2023 07:18:05 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB1B63D7
+	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 14:40:44 +0000 (UTC)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C59119
+	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 07:40:42 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53e751aeb3cso11254258a12.2
+        for <bpf@vger.kernel.org>; Wed, 01 Nov 2023 07:40:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1698848284; x=1699453084; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZrEHCOP+SrdwuHiekQNSbAtDkv18M+2JYde+YT0pEiA=;
-        b=VDoCuOkpBkq37soRQe5/GvzJ3N/WtymrjJGvey4Jlvty4gZD3jjN6Vk87ezTQrZAKS
-         VTaDPk4KIk0x1fqyr/IqB7eYZkIkmc+MGY1+N0JXZawaNP7srCtQzd1CJ/Mg/auC/Xgi
-         cU6yAvUXxUy8cHoFGHrjxwpBYiBTq81NBNO4f1qWNM+ULPhfiITkUK1oOqWRv5KqWZ8J
-         vRfPMd4r7dlBIGPqRN9MH98oIVJYca7DvBWE/yhOv+J7JxzmS+Tl36YCkG6UXlEnb8FR
-         IXvVmjDmw+ER39AKla/W6TkQpcqc4eQ4fyNPCbXG5rkdTrV9/kXUnxEeHRa1EaTVIFZQ
-         lKLw==
+        d=gmail.com; s=20230601; t=1698849640; x=1699454440; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8CuvmJJxzYp2d4cJnmQI6LdEfuRAU53+pSRlViwIyqM=;
+        b=ZpjChWNqkXimz8dWfCCWihlLYckf3me+LHGomdH+J66/IX2I6Zm0c6m7cTpMWQvcqj
+         4Cn3Bjm+19Ax5cKgKUlerUwW/1EOyWmDGdGhk8VDo5vGoryXcgGLy0Q/bEdSqakyQ1JX
+         TyzpjIY1bRgpqYaEtT1GHhwKhdYQYhdBFJ64mVTvuVxgLde2AzGzL1D7rTXLikuWBGMV
+         y3K093wN8SjJ5MLyptnZoPFsaTF8KVjcqLUqAwdoqrKtSuhHPKIGtn2J9f620ABfPPIg
+         qmDMPJCwuzIzWdMcs5NiwQvR5zdGpNVZJQ9VVZyTxiGV+wRnavM0BAhPI+9M4+quZP1G
+         PMhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698848284; x=1699453084;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZrEHCOP+SrdwuHiekQNSbAtDkv18M+2JYde+YT0pEiA=;
-        b=eB3aVw+QO3kjUS3ba+qpkofWIvtDdSlHyd5wVhoQgADztzKND0xmCdKG72Kc9jfLSl
-         vxkJ4xirLIG7kNvu7fBLXQYutvARFy/02MGj8z8n56d6tr+BlRtsdKm8jNT7cGUmzabB
-         SRK/30pAR4z7TP/MmqgxVB1+YST46ah0F77Q5cM/2Px0K66Haa49EbrINKcdTf7uFqGr
-         KQEEcjEeY+2SuynwYrmsd9CPd2UbTJOMTxF2WG2V5cSk1cwfn+MaHzswz4F3HkfOmLGc
-         pcJ5/lU5NSUW2gL2GaLoNJkMlzIch90IsW35DqGJ6ajG1fzMtGhQPyocFV6jicCua3R2
-         EY8A==
-X-Gm-Message-State: AOJu0YyTFiybUcN85ja2pM90OJo+dHFrBkd4miW0jK5Cv7huppTyXky7
-	0mD5x/Pa0Gw3iArkhT1XGn9lQaOiBKQLD67WgrCQWQ==
-X-Google-Smtp-Source: AGHT+IFiqsiVNj+JAGLQWsiuUwb07AnMvv8qiUz/kFBZphQ2pfTKOZsZRuaw14pshUrkkP4UWHxYoIPRg2JPAi0u9sM=
-X-Received: by 2002:a17:907:36ca:b0:9d2:e2f6:45b2 with SMTP id
- bj10-20020a17090736ca00b009d2e2f645b2mr1829025ejc.71.1698848284380; Wed, 01
- Nov 2023 07:18:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698849640; x=1699454440;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8CuvmJJxzYp2d4cJnmQI6LdEfuRAU53+pSRlViwIyqM=;
+        b=amvJ2Nzcj5A8rOKnx4y6xB6/FcjYIz6mZnTB8bn6MJphoLbTQBuTvCvFzLqtkwQSx/
+         0YMYYxEa9TqM7TVJL759ldUK6Z3F5sHjwWxrhJW63XMn8AfxZ0fNOOvIxKur4VI3LZJ6
+         VJBdAKS/lA+W2DEvsI7EUyHAa0/Oh/7Su3nq6+I6WDhh15az+Pd6JMd4v2hY8JQRAV0x
+         /JYYdQOxztvBKMvfqFGjmHMwGWt0Yu5XOQ1rpPWU6xZ6t2ijoDtE31zG7VGlzCBZa1wj
+         8al67+PYOcabm2RFfsVS5zZhNEYL7HI1l8eV5HG6wk9Zcl5AfTzd+uJI0kGyi5KuSGOM
+         m2Qw==
+X-Gm-Message-State: AOJu0Yw+Wej5WtMXa+i8/0mscpG2I23DrA/SwmQuhwOV4XOWWIi7hEyw
+	ePoTySLF2RwTLH1OTxhHUSA=
+X-Google-Smtp-Source: AGHT+IHIMLz+itjhSU1eMmyv4cXLIQMrTRvqbWhOGS9bRjvUoU/e7aAScxMOH9ifA7KI5fKibf0inA==
+X-Received: by 2002:aa7:de15:0:b0:53d:eca9:742e with SMTP id h21-20020aa7de15000000b0053deca9742emr14759357edv.9.1698849640415;
+        Wed, 01 Nov 2023 07:40:40 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id i2-20020a50d742000000b005333922efb0sm1169871edj.78.2023.11.01.07.40.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 07:40:39 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 1 Nov 2023 15:40:37 +0100
+To: Manu Bretelle <chantr4@gmail.com>
+Cc: bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+	ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
+	yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	mykolal@fb.com, shuah@kernel.org
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: fix test_bpffs
+Message-ID: <ZUJjZR6AHRdNYVHu@krava>
+References: <20231031223606.2927976-1-chantr4@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAN+4W8h3yDjkOLJPiuKVKTpj_08pBz8ke6vN=Lf8gcA=iYBM-g@mail.gmail.com>
- <e9987f16-7328-627d-8c02-c42c130a61a8@meta.com> <CAN+4W8hK9EEb7Qb2How+YwNkkz4wjRyBAK7Y+WcqBzA9ckJ5Qg@mail.gmail.com>
- <CAEf4BzaEPMVFfEYwHxje8sm+26bgeLJ+4hfdGNOMHd5bV8u9rw@mail.gmail.com>
-In-Reply-To: <CAEf4BzaEPMVFfEYwHxje8sm+26bgeLJ+4hfdGNOMHd5bV8u9rw@mail.gmail.com>
-From: Lorenz Bauer <lorenz.bauer@isovalent.com>
-Date: Wed, 1 Nov 2023 14:17:53 +0000
-Message-ID: <CAN+4W8iTm-GS_-Wp=XjY1Txs09G7F4d3vcG_30WDOp-CpDKmCA@mail.gmail.com>
-Subject: Re: bpf_core_type_id_kernel is not consistent with bpf_core_type_id_local
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Yonghong Song <yhs@meta.com>, Lorenz Bauer <lmb@isovalent.com>, bpf <bpf@vger.kernel.org>, 
-	Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231031223606.2927976-1-chantr4@gmail.com>
 
-On Tue, Oct 31, 2023 at 6:24=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> >
-> > Did you get round to fixing this, or did you decide to leave it as is?
->
-> Trying to recall, was there anything to do on the libbpf side, or was
-> it purely a compiler-side change?
+On Tue, Oct 31, 2023 at 03:36:06PM -0700, Manu Bretelle wrote:
 
-I'm not 100% sure TBH. I'd like clang to behave consistently for
-local_id and target_id. I don't know whether that would break libbpf.
+SNIP
 
-Lorenz
+> After this change:
+> 
+>     $ vmtest -k $(make image_name) 'cd tools/testing/selftests/bpf && ./test_progs -vv -a test_bpffs'
+>     => bzImage
+>     ===> Booting
+>     ===> Setting up VM
+>     ===> Running command
+>     [    2.295696] bpf_testmod: loading out-of-tree module taints kernel.
+>     [    2.296468] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
+>     bpf_testmod.ko is already unloaded.
+>     Loading bpf_testmod.ko...
+>     Successfully loaded bpf_testmod.ko.
+>     test_test_bpffs:PASS:clone 0 nsec
+>     fn:PASS:unshare 0 nsec
+>     fn:PASS:mount / 0 nsec
+>     fn:PASS:mount tmpfs 0 nsec
+>     fn:PASS:mkdir /tmp/test_bpffs_testdir/fs1 0 nsec
+>     fn:PASS:mkdir /tmp/test_bpffs_testdir/fs2 0 nsec
+>     fn:PASS:mount bpffs /tmp/test_bpffs_testdir/fs1 0 nsec
+>     fn:PASS:mount bpffs /tmp/test_bpffs_testdir/fs2 0 nsec
+>     fn:PASS:reading /tmp/test_bpffs_testdir/fs1/maps.debug 0 nsec
+>     fn:PASS:reading /tmp/test_bpffs_testdir/fs2/progs.debug 0 nsec
+>     fn:PASS:creating /tmp/test_bpffs_testdir/fs1/a 0 nsec
+>     fn:PASS:creating /tmp/test_bpffs_testdir/fs1/a/1 0 nsec
+>     fn:PASS:creating /tmp/test_bpffs_testdir/fs1/b 0 nsec
+>     fn:PASS:create_map(ARRAY) 0 nsec
+>     fn:PASS:pin map 0 nsec
+>     fn:PASS:stat(/tmp/test_bpffs_testdir/fs1/a) 0 nsec
+>     fn:PASS:renameat2(/fs1/a, /fs1/b, RENAME_EXCHANGE) 0 nsec
+>     fn:PASS:stat(/tmp/test_bpffs_testdir/fs1/b) 0 nsec
+>     fn:PASS:b should have a's inode 0 nsec
+>     fn:PASS:access(/tmp/test_bpffs_testdir/fs1/b/1) 0 nsec
+>     fn:PASS:stat(/tmp/test_bpffs_testdir/fs1/map) 0 nsec
+>     fn:PASS:renameat2(/fs1/c, /fs1/b, RENAME_EXCHANGE) 0 nsec
+>     fn:PASS:stat(/tmp/test_bpffs_testdir/fs1/b) 0 nsec
+>     fn:PASS:b should have c's inode 0 nsec
+>     fn:PASS:access(/tmp/test_bpffs_testdir/fs1/c/1) 0 nsec
+>     fn:PASS:renameat2(RENAME_NOREPLACE) 0 nsec
+>     fn:PASS:access(/tmp/test_bpffs_testdir/fs1/b) 0 nsec
+>     bpf_testmod.ko is already unloaded.
+>     Loading bpf_testmod.ko...
+>     Successfully loaded bpf_testmod.ko.
+>     test_test_bpffs:PASS:clone 0 nsec
+>     test_test_bpffs:PASS:waitpid 0 nsec
+>     test_test_bpffs:PASS:bpffs test  0 nsec
+>     #282     test_bpffs:OK
+>     Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+>     Successfully unloaded bpf_testmod.ko.
+> 
+> [0] https://github.com/danobi/vmtest
+> 
+> This is a follow-up of https://lore.kernel.org/bpf/20231024201852.1512720-1-chantr4@gmail.com/T/
+> 
+> v1 -> v2:
+>   - use a TDIR name that is related to test
+>   - use C-style comments
+
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+jirka
+
+> 
+> Signed-off-by: Manu Bretelle <chantr4@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/test_bpffs.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
+> index 214d9f4a94a5..ea933fd151c3 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
+> @@ -8,7 +8,8 @@
+>  #include <sys/types.h>
+>  #include <test_progs.h>
+>  
+> -#define TDIR "/sys/kernel/debug"
+> +/* TDIR must be in a location we can create a directory in. */
+> +#define TDIR "/tmp/test_bpffs_testdir"
+>  
+>  static int read_iter(char *file)
+>  {
+> @@ -43,8 +44,11 @@ static int fn(void)
+>  	if (!ASSERT_OK(err, "mount /"))
+>  		goto out;
+>  
+> -	err = umount(TDIR);
+> -	if (!ASSERT_OK(err, "umount " TDIR))
+> +	err =  mkdir(TDIR, 0777);
+> +	/* If the directory already exists we can carry on. It may be left over
+> +	 * from a previous run.
+> +	 */
+> +	if ((err && errno != EEXIST) && !ASSERT_OK(err, "mkdir " TDIR))
+>  		goto out;
+>  
+>  	err = mount("none", TDIR, "tmpfs", 0, NULL);
+> @@ -138,6 +142,7 @@ static int fn(void)
+>  	rmdir(TDIR "/fs1");
+>  	rmdir(TDIR "/fs2");
+>  	umount(TDIR);
+> +	rmdir(TDIR);
+>  	exit(err);
+>  }
+>  
+> -- 
+> 2.40.1
+> 
 
