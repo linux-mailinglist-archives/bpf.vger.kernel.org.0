@@ -1,74 +1,70 @@
-Return-Path: <bpf+bounces-13805-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13806-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EE6E7DE26D
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 15:40:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EDA37DE3F6
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 16:45:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3A2A2817A7
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 14:40:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F36AB21165
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 15:45:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65402107BC;
-	Wed,  1 Nov 2023 14:40:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0220614A85;
+	Wed,  1 Nov 2023 15:45:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZpjChWNq"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Dz8JZcPQ"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB1B63D7
-	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 14:40:44 +0000 (UTC)
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C59119
-	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 07:40:42 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53e751aeb3cso11254258a12.2
-        for <bpf@vger.kernel.org>; Wed, 01 Nov 2023 07:40:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698849640; x=1699454440; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8CuvmJJxzYp2d4cJnmQI6LdEfuRAU53+pSRlViwIyqM=;
-        b=ZpjChWNqkXimz8dWfCCWihlLYckf3me+LHGomdH+J66/IX2I6Zm0c6m7cTpMWQvcqj
-         4Cn3Bjm+19Ax5cKgKUlerUwW/1EOyWmDGdGhk8VDo5vGoryXcgGLy0Q/bEdSqakyQ1JX
-         TyzpjIY1bRgpqYaEtT1GHhwKhdYQYhdBFJ64mVTvuVxgLde2AzGzL1D7rTXLikuWBGMV
-         y3K093wN8SjJ5MLyptnZoPFsaTF8KVjcqLUqAwdoqrKtSuhHPKIGtn2J9f620ABfPPIg
-         qmDMPJCwuzIzWdMcs5NiwQvR5zdGpNVZJQ9VVZyTxiGV+wRnavM0BAhPI+9M4+quZP1G
-         PMhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698849640; x=1699454440;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8CuvmJJxzYp2d4cJnmQI6LdEfuRAU53+pSRlViwIyqM=;
-        b=amvJ2Nzcj5A8rOKnx4y6xB6/FcjYIz6mZnTB8bn6MJphoLbTQBuTvCvFzLqtkwQSx/
-         0YMYYxEa9TqM7TVJL759ldUK6Z3F5sHjwWxrhJW63XMn8AfxZ0fNOOvIxKur4VI3LZJ6
-         VJBdAKS/lA+W2DEvsI7EUyHAa0/Oh/7Su3nq6+I6WDhh15az+Pd6JMd4v2hY8JQRAV0x
-         /JYYdQOxztvBKMvfqFGjmHMwGWt0Yu5XOQ1rpPWU6xZ6t2ijoDtE31zG7VGlzCBZa1wj
-         8al67+PYOcabm2RFfsVS5zZhNEYL7HI1l8eV5HG6wk9Zcl5AfTzd+uJI0kGyi5KuSGOM
-         m2Qw==
-X-Gm-Message-State: AOJu0Yw+Wej5WtMXa+i8/0mscpG2I23DrA/SwmQuhwOV4XOWWIi7hEyw
-	ePoTySLF2RwTLH1OTxhHUSA=
-X-Google-Smtp-Source: AGHT+IHIMLz+itjhSU1eMmyv4cXLIQMrTRvqbWhOGS9bRjvUoU/e7aAScxMOH9ifA7KI5fKibf0inA==
-X-Received: by 2002:aa7:de15:0:b0:53d:eca9:742e with SMTP id h21-20020aa7de15000000b0053deca9742emr14759357edv.9.1698849640415;
-        Wed, 01 Nov 2023 07:40:40 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id i2-20020a50d742000000b005333922efb0sm1169871edj.78.2023.11.01.07.40.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 07:40:39 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 1 Nov 2023 15:40:37 +0100
-To: Manu Bretelle <chantr4@gmail.com>
-Cc: bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-	ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-	mykolal@fb.com, shuah@kernel.org
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: fix test_bpffs
-Message-ID: <ZUJjZR6AHRdNYVHu@krava>
-References: <20231031223606.2927976-1-chantr4@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B633A14292;
+	Wed,  1 Nov 2023 15:45:18 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E24D111;
+	Wed,  1 Nov 2023 08:45:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698853513; x=1730389513;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0uD79xch+yhiRL277ZQ02UoFmVoZX8XE900MgWoHMgQ=;
+  b=Dz8JZcPQuTmuxWsjUh3k5rs/5IcUABwxYGlJFbzVMjdQV4Ua2Z6N9uIO
+   R2ex54xgVuOXAXyIzh5FV2eil87jMgzpc4YaiKhfSVLb26Ugv7lHOR7D3
+   0xxGnIEEQut4IJleb//41Cw+w6LOdvfx4UZqG3Ai7v5yCIpI+lvgSiIwA
+   bmafLjzp8ShfI/dmF/iWDn6JSO6KAIVjgzidhozgGkcGVDDxMcz9E4IhN
+   c3/iQsC+JPGm4ugO64gDbr5sXC/vA6QZxaOxFcWU/E1t58cDV5m5Y3EzO
+   kNBjHYX0k4Tu4/AReiX/b6hrtfY6TBqWnq7C9ph9Yr9CDUPqtH24QSZkn
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="385694835"
+X-IronPort-AV: E=Sophos;i="6.03,268,1694761200"; 
+   d="scan'208";a="385694835"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 08:45:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="790136244"
+X-IronPort-AV: E=Sophos;i="6.03,268,1694761200"; 
+   d="scan'208";a="790136244"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 01 Nov 2023 08:45:07 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qyDOz-0000rE-0z;
+	Wed, 01 Nov 2023 15:45:05 +0000
+Date: Wed, 1 Nov 2023 23:44:10 +0800
+From: kernel test robot <lkp@intel.com>
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>, rostedt@goodmis.org,
+	mhiramat@kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeelb@google.com,
+	muchun.song@linux.dev, akpm@linux-foundation.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	kernel@sberdevices.ru, rockosov@gmail.com, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, Dmitry Rokosov <ddrokosov@salutedevices.com>
+Subject: Re: [PATCH v1 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <202311012319.7ULVSdyR-lkp@intel.com>
+References: <20231101102837.25205-3-ddrokosov@salutedevices.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -77,116 +73,197 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231031223606.2927976-1-chantr4@gmail.com>
+In-Reply-To: <20231101102837.25205-3-ddrokosov@salutedevices.com>
 
-On Tue, Oct 31, 2023 at 03:36:06PM -0700, Manu Bretelle wrote:
+Hi Dmitry,
 
-SNIP
+kernel test robot noticed the following build errors:
 
-> After this change:
-> 
->     $ vmtest -k $(make image_name) 'cd tools/testing/selftests/bpf && ./test_progs -vv -a test_bpffs'
->     => bzImage
->     ===> Booting
->     ===> Setting up VM
->     ===> Running command
->     [    2.295696] bpf_testmod: loading out-of-tree module taints kernel.
->     [    2.296468] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
->     bpf_testmod.ko is already unloaded.
->     Loading bpf_testmod.ko...
->     Successfully loaded bpf_testmod.ko.
->     test_test_bpffs:PASS:clone 0 nsec
->     fn:PASS:unshare 0 nsec
->     fn:PASS:mount / 0 nsec
->     fn:PASS:mount tmpfs 0 nsec
->     fn:PASS:mkdir /tmp/test_bpffs_testdir/fs1 0 nsec
->     fn:PASS:mkdir /tmp/test_bpffs_testdir/fs2 0 nsec
->     fn:PASS:mount bpffs /tmp/test_bpffs_testdir/fs1 0 nsec
->     fn:PASS:mount bpffs /tmp/test_bpffs_testdir/fs2 0 nsec
->     fn:PASS:reading /tmp/test_bpffs_testdir/fs1/maps.debug 0 nsec
->     fn:PASS:reading /tmp/test_bpffs_testdir/fs2/progs.debug 0 nsec
->     fn:PASS:creating /tmp/test_bpffs_testdir/fs1/a 0 nsec
->     fn:PASS:creating /tmp/test_bpffs_testdir/fs1/a/1 0 nsec
->     fn:PASS:creating /tmp/test_bpffs_testdir/fs1/b 0 nsec
->     fn:PASS:create_map(ARRAY) 0 nsec
->     fn:PASS:pin map 0 nsec
->     fn:PASS:stat(/tmp/test_bpffs_testdir/fs1/a) 0 nsec
->     fn:PASS:renameat2(/fs1/a, /fs1/b, RENAME_EXCHANGE) 0 nsec
->     fn:PASS:stat(/tmp/test_bpffs_testdir/fs1/b) 0 nsec
->     fn:PASS:b should have a's inode 0 nsec
->     fn:PASS:access(/tmp/test_bpffs_testdir/fs1/b/1) 0 nsec
->     fn:PASS:stat(/tmp/test_bpffs_testdir/fs1/map) 0 nsec
->     fn:PASS:renameat2(/fs1/c, /fs1/b, RENAME_EXCHANGE) 0 nsec
->     fn:PASS:stat(/tmp/test_bpffs_testdir/fs1/b) 0 nsec
->     fn:PASS:b should have c's inode 0 nsec
->     fn:PASS:access(/tmp/test_bpffs_testdir/fs1/c/1) 0 nsec
->     fn:PASS:renameat2(RENAME_NOREPLACE) 0 nsec
->     fn:PASS:access(/tmp/test_bpffs_testdir/fs1/b) 0 nsec
->     bpf_testmod.ko is already unloaded.
->     Loading bpf_testmod.ko...
->     Successfully loaded bpf_testmod.ko.
->     test_test_bpffs:PASS:clone 0 nsec
->     test_test_bpffs:PASS:waitpid 0 nsec
->     test_test_bpffs:PASS:bpffs test  0 nsec
->     #282     test_bpffs:OK
->     Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
->     Successfully unloaded bpf_testmod.ko.
-> 
-> [0] https://github.com/danobi/vmtest
-> 
-> This is a follow-up of https://lore.kernel.org/bpf/20231024201852.1512720-1-chantr4@gmail.com/T/
-> 
-> v1 -> v2:
->   - use a TDIR name that is related to test
->   - use C-style comments
+[auto build test ERROR on akpm-mm/mm-everything]
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+url:    https://github.com/intel-lab-lkp/linux/commits/Dmitry-Rokosov/mm-memcg-print-out-cgroup-name-in-the-memcg-tracepoints/20231101-183040
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20231101102837.25205-3-ddrokosov%40salutedevices.com
+patch subject: [PATCH v1 2/2] mm: memcg: introduce new event to trace shrink_memcg
+config: um-allyesconfig (https://download.01.org/0day-ci/archive/20231101/202311012319.7ULVSdyR-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231101/202311012319.7ULVSdyR-lkp@intel.com/reproduce)
 
-jirka
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311012319.7ULVSdyR-lkp@intel.com/
 
-> 
-> Signed-off-by: Manu Bretelle <chantr4@gmail.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/test_bpffs.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-> index 214d9f4a94a5..ea933fd151c3 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_bpffs.c
-> @@ -8,7 +8,8 @@
->  #include <sys/types.h>
->  #include <test_progs.h>
->  
-> -#define TDIR "/sys/kernel/debug"
-> +/* TDIR must be in a location we can create a directory in. */
-> +#define TDIR "/tmp/test_bpffs_testdir"
->  
->  static int read_iter(char *file)
->  {
-> @@ -43,8 +44,11 @@ static int fn(void)
->  	if (!ASSERT_OK(err, "mount /"))
->  		goto out;
->  
-> -	err = umount(TDIR);
-> -	if (!ASSERT_OK(err, "umount " TDIR))
-> +	err =  mkdir(TDIR, 0777);
-> +	/* If the directory already exists we can carry on. It may be left over
-> +	 * from a previous run.
-> +	 */
-> +	if ((err && errno != EEXIST) && !ASSERT_OK(err, "mkdir " TDIR))
->  		goto out;
->  
->  	err = mount("none", TDIR, "tmpfs", 0, NULL);
-> @@ -138,6 +142,7 @@ static int fn(void)
->  	rmdir(TDIR "/fs1");
->  	rmdir(TDIR "/fs2");
->  	umount(TDIR);
-> +	rmdir(TDIR);
->  	exit(err);
->  }
->  
-> -- 
-> 2.40.1
-> 
+All errors (new ones prefixed by >>):
+
+   In file included from mm/vmscan.c:19:
+   In file included from include/linux/kernel_stat.h:9:
+   In file included from include/linux/interrupt.h:11:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __raw_readb(PCI_IOBASE + addr);
+                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+                                                           ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+                                                     ^
+   In file included from mm/vmscan.c:19:
+   In file included from include/linux/kernel_stat.h:9:
+   In file included from include/linux/interrupt.h:11:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+                                                           ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+                                                     ^
+   In file included from mm/vmscan.c:19:
+   In file included from include/linux/kernel_stat.h:9:
+   In file included from include/linux/interrupt.h:11:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writeb(value, PCI_IOBASE + addr);
+                               ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+                                                         ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+                                                         ~~~~~~~~~~ ^
+   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           readsb(PCI_IOBASE + addr, buffer, count);
+                  ~~~~~~~~~~ ^
+   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           readsw(PCI_IOBASE + addr, buffer, count);
+                  ~~~~~~~~~~ ^
+   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           readsl(PCI_IOBASE + addr, buffer, count);
+                  ~~~~~~~~~~ ^
+   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           writesb(PCI_IOBASE + addr, buffer, count);
+                   ~~~~~~~~~~ ^
+   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           writesw(PCI_IOBASE + addr, buffer, count);
+                   ~~~~~~~~~~ ^
+   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           writesl(PCI_IOBASE + addr, buffer, count);
+                   ~~~~~~~~~~ ^
+>> mm/vmscan.c:5811:3: error: implicit declaration of function 'trace_mm_vmscan_memcg_shrink_begin' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+                   trace_mm_vmscan_memcg_shrink_begin(memcg,
+                   ^
+   mm/vmscan.c:5811:3: note: did you mean 'trace_mm_vmscan_lru_shrink_active'?
+   include/trace/events/vmscan.h:467:1: note: 'trace_mm_vmscan_lru_shrink_active' declared here
+   TRACE_EVENT(mm_vmscan_lru_shrink_active,
+   ^
+   include/linux/tracepoint.h:566:2: note: expanded from macro 'TRACE_EVENT'
+           DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+           ^
+   include/linux/tracepoint.h:432:2: note: expanded from macro 'DECLARE_TRACE'
+           __DECLARE_TRACE(name, PARAMS(proto), PARAMS(args),              \
+           ^
+   include/linux/tracepoint.h:355:21: note: expanded from macro '__DECLARE_TRACE'
+           static inline void trace_##name(proto)                          \
+                              ^
+   <scratch space>:33:1: note: expanded from here
+   trace_mm_vmscan_lru_shrink_active
+   ^
+>> mm/vmscan.c:5845:3: error: implicit declaration of function 'trace_mm_vmscan_memcg_shrink_end' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+                   trace_mm_vmscan_memcg_shrink_end(memcg,
+                   ^
+   mm/vmscan.c:5845:3: note: did you mean 'trace_mm_vmscan_memcg_shrink_begin'?
+   mm/vmscan.c:5811:3: note: 'trace_mm_vmscan_memcg_shrink_begin' declared here
+                   trace_mm_vmscan_memcg_shrink_begin(memcg,
+                   ^
+   12 warnings and 2 errors generated.
+
+
+vim +/trace_mm_vmscan_memcg_shrink_begin +5811 mm/vmscan.c
+
+  5791	
+  5792	static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+  5793	{
+  5794		struct mem_cgroup *target_memcg = sc->target_mem_cgroup;
+  5795		struct mem_cgroup *memcg;
+  5796	
+  5797		memcg = mem_cgroup_iter(target_memcg, NULL, NULL);
+  5798		do {
+  5799			struct lruvec *lruvec = mem_cgroup_lruvec(memcg, pgdat);
+  5800			unsigned long reclaimed;
+  5801			unsigned long scanned;
+  5802	
+  5803			/*
+  5804			 * This loop can become CPU-bound when target memcgs
+  5805			 * aren't eligible for reclaim - either because they
+  5806			 * don't have any reclaimable pages, or because their
+  5807			 * memory is explicitly protected. Avoid soft lockups.
+  5808			 */
+  5809			cond_resched();
+  5810	
+> 5811			trace_mm_vmscan_memcg_shrink_begin(memcg,
+  5812							   sc->order,
+  5813							   sc->gfp_mask);
+  5814	
+  5815			mem_cgroup_calculate_protection(target_memcg, memcg);
+  5816	
+  5817			if (mem_cgroup_below_min(target_memcg, memcg)) {
+  5818				/*
+  5819				 * Hard protection.
+  5820				 * If there is no reclaimable memory, OOM.
+  5821				 */
+  5822				continue;
+  5823			} else if (mem_cgroup_below_low(target_memcg, memcg)) {
+  5824				/*
+  5825				 * Soft protection.
+  5826				 * Respect the protection only as long as
+  5827				 * there is an unprotected supply
+  5828				 * of reclaimable memory from other cgroups.
+  5829				 */
+  5830				if (!sc->memcg_low_reclaim) {
+  5831					sc->memcg_low_skipped = 1;
+  5832					continue;
+  5833				}
+  5834				memcg_memory_event(memcg, MEMCG_LOW);
+  5835			}
+  5836	
+  5837			reclaimed = sc->nr_reclaimed;
+  5838			scanned = sc->nr_scanned;
+  5839	
+  5840			shrink_lruvec(lruvec, sc);
+  5841	
+  5842			shrink_slab(sc->gfp_mask, pgdat->node_id, memcg,
+  5843				    sc->priority);
+  5844	
+> 5845			trace_mm_vmscan_memcg_shrink_end(memcg,
+  5846							 sc->nr_reclaimed - reclaimed);
+  5847	
+  5848			/* Record the group's reclaim efficiency */
+  5849			if (!sc->proactive)
+  5850				vmpressure(sc->gfp_mask, memcg, false,
+  5851					   sc->nr_scanned - scanned,
+  5852					   sc->nr_reclaimed - reclaimed);
+  5853	
+  5854		} while ((memcg = mem_cgroup_iter(target_memcg, memcg, NULL)));
+  5855	}
+  5856	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
