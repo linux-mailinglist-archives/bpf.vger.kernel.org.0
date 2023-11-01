@@ -1,158 +1,162 @@
-Return-Path: <bpf+bounces-13812-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13813-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 076CA7DE520
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 18:13:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 240F27DE562
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 18:32:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FEEFB21095
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 17:13:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47E911C20AB7
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 17:32:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24D915E88;
-	Wed,  1 Nov 2023 17:13:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEFAE18025;
+	Wed,  1 Nov 2023 17:32:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hv0jDrKX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JPsJKuhW"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EFE1107B6
-	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 17:13:43 +0000 (UTC)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16ADDFD
-	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 10:13:39 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9c41e95efcbso2892966b.3
-        for <bpf@vger.kernel.org>; Wed, 01 Nov 2023 10:13:39 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A085618021;
+	Wed,  1 Nov 2023 17:32:25 +0000 (UTC)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F41EE4;
+	Wed,  1 Nov 2023 10:32:24 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9d0b4dfd60dso7798466b.1;
+        Wed, 01 Nov 2023 10:32:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698858817; x=1699463617; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xWhCJWx1kcaWP2f8G3BjSs0mfzm76Xsa4l9LUxcDVY8=;
-        b=Hv0jDrKXqnl3inQTVgy6OahnBKuliYnKgnxuY8UnFDbaDbG3N7DdBV/8a4TnY5NHI0
-         fDd9V8S1GUafH4jXje+zxCCpUjy/cbsxi88O3GrqlhGeT5GNRBU6yQ5J1mbqouU64YOj
-         9SGe5/x/baVBcA1+RvD6M0Kpud6ROu/gga2Vd/1XwRcR1kYaUs44OEFTiqDm/QLQsDde
-         WRkaXzrZIg+CJbkyigMLsL+emwcUCbSBN5LpZNSW7Ms85f0kO2XcyQJnZGdZwwAyibuJ
-         DcF0cFsha4TyytHzFZJJVBtKWSXdSuWRyifYznwJXXlK2NLb+FxwNV1RRCWdFS1YDXDB
-         H40A==
+        d=gmail.com; s=20230601; t=1698859942; x=1699464742; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KyjIjE8oDJiKS+8P2onJcWqcyO/pjdYH5TLyKN7Do2E=;
+        b=JPsJKuhWLuK5e6nqFuOqNkpmjmf97pa220iofzOgK4f6PgfP2w70dbj0Dpq4Bd8r9h
+         xOGmJftf4VK3NXuTRfrye5sDOBJTzo8xqX67zstZreGGJjzrrW1z+B103KTRIVjeAAaU
+         lXS5MOixPHPdr3f7KLUabHzOIj94uGzvWgRfxZBcS6jxisOrrowOAnuoAi4nSU0sIxlI
+         7KD/Yi7ovekQNceN/cmCvDapHny5LeG3Bv9z9UEK0WcnVTLJrmk8xJuzbGG3BlQEbfV1
+         U9zM5aKD+LpV9FHw1ZR/MSxHqjO8Qp+S4XSRPlW3BEHaGnlBgvuZ18Dp+/GNegCIUS8m
+         BO6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698858817; x=1699463617;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xWhCJWx1kcaWP2f8G3BjSs0mfzm76Xsa4l9LUxcDVY8=;
-        b=PlCXi4dUkswenHyD8dh+XAq7AlMXjU7Ue5/LkLJRRTgMfYqP3I07pzZ5tqHa9BaJHw
-         JfX82C167gOFtllSwXCHX2DhwSolfxWoesjcgssDNpwj4haWTgmhlMBwR9xcDJJtpqG8
-         EWja+zkqp8eXF56rCbeJCIdHAGoCqpkpF5PS9lYo4DH25yb7X5oEaRIi5WQkffU+F51m
-         0lU12VJ9CL8E8qVwSgexK2WvK4YJNsACVYFQAdzJ0NrZVzqXiLjHxVtSBxiPKIypYQTk
-         eN/hiGJlxfg2baZoZUAnKXalpRWdNLdXK89OPtX+kQJ+Ot7uYUtN6IwUsZAtskC90thE
-         ObeQ==
-X-Gm-Message-State: AOJu0YwEJf+lbv1Tu7/N+xHKQUpl6I3zRNdFTN4ras4Ywet0uFWyjWEL
-	pSqKQ1rbpZXlxlUsMKJeO2qgC1IAvpzCDztXpmA=
-X-Google-Smtp-Source: AGHT+IH4YI7qoHIKKFFq3NA+F0C/C7UW4EOhcAgpSo6bYqctMluItvR4gKNGPlpqHGmluNb3nWNfozDy7xfj/V8ZQ2g=
-X-Received: by 2002:a17:907:3e1d:b0:9d3:52e:a641 with SMTP id
- hp29-20020a1709073e1d00b009d3052ea641mr2810157ejc.8.1698858817409; Wed, 01
- Nov 2023 10:13:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698859942; x=1699464742;
+        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KyjIjE8oDJiKS+8P2onJcWqcyO/pjdYH5TLyKN7Do2E=;
+        b=r85Kw1Aak9W44YURu9QJwGxhmqHJdMB1rNWpyBgZNHHCjgJbLvizPPwkBS5OubyY/s
+         YJbrBQ3HRTCNdOVNdCztbOpw/veP0uKV9OUJpkA2FE89kFQ1r8G5h+cq1PoTaLNhuQjs
+         wWq91ZakcJFPlnhGLW2LeaP/l1A6eaedN0yzckNuWu4f5yr21tczhSMzPlKqr2efg5+H
+         b9ZxNDyL1NBUupLejLGInfU57B4rxrfuYmGbvQffQUblOVtLaB4zpdS1wITLbKOsTNha
+         y7Hy7mQOZkgeNhy5UlU01oB3gIVKnYOvBVnFFlbKb0O5VrfaylxeKvBHnQMIcn0KHPVV
+         N7pg==
+X-Gm-Message-State: AOJu0YyEwSwoyNQGfodrERlardgQbanFznP9+83AaCZ944Qqx+5TbHfJ
+	DG0hngII1B+F0pyGs8TIJYLKJsOsQBBSlA==
+X-Google-Smtp-Source: AGHT+IGITewd+1U2k4AjBqiBmRhf3DHVYVVUJULjT+LS1cxPGo3XUJlZ4sDASG0woQ4kQInKCIFpdA==
+X-Received: by 2002:a17:907:72d6:b0:9bf:3be2:cc7a with SMTP id du22-20020a17090772d600b009bf3be2cc7amr2962141ejc.60.1698859942324;
+        Wed, 01 Nov 2023 10:32:22 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id c11-20020a170906d18b00b009bf7a4d591csm182540ejz.11.2023.11.01.10.32.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 10:32:21 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 1 Nov 2023 18:32:14 +0100
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [QUESTION] ftrace_test_recursion_trylock behaviour
+Message-ID: <ZUKLnmYyHpthlMEE@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231027181346.4019398-1-andrii@kernel.org> <20231030175513.4zy3ubkpse2f6gqz@MacBook-Pro-49.local>
- <CAEf4BzZyLwO_ZppGObkY=4aXZEGE+k+tTtJug7MP63DffoxrYA@mail.gmail.com> <ZUJGkRGnw+qI15Pv@Mem>
-In-Reply-To: <ZUJGkRGnw+qI15Pv@Mem>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 1 Nov 2023 10:13:26 -0700
-Message-ID: <CAEf4BzavMQ9kqjVWhasdOMweZKuvwfmthzfz8i38kLwp6jd8SA@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 00/23] BPF register bounds logic and testing improvements
-To: Paul Chaignon <paul.chaignon@gmail.com>
-Cc: Harishankar Vishwanathan <harishankar.vishwanathan@rutgers.edu>, 
-	Srinivas Narayana <srinivas.narayana@rutgers.edu>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Paul Chaignon <paul@isovalent.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Wed, Nov 1, 2023 at 5:37=E2=80=AFAM Paul Chaignon <paul.chaignon@gmail.c=
-om> wrote:
->
-> On Mon, Oct 30, 2023 at 10:19:01PM -0700, Andrii Nakryiko wrote:
-> > On Mon, Oct 30, 2023 at 10:55=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Fri, Oct 27, 2023 at 11:13:23AM -0700, Andrii Nakryiko wrote:
-> > > >
-> > > > Note, this is not unique to <range> vs <range> logic. Just recently=
- ([0])
-> > > > a related issue was reported for existing verifier logic. This patc=
-h set does
-> > > > fix that issues as well, as pointed out on the mailing list.
-> > > >
-> > > >   [0] https://lore.kernel.org/bpf/CAEf4Bzbgf-WQSCz8D4Omh3zFdS4oWS6X=
-ELnE7VeoUWgKf3cpig@mail.gmail.com/
-> > >
-> > > Quick comment regarding shift out of bound issue.
-> > > I think this patch set makes Hao Sun's repro not working, but I don't=
- think
-> > > the range vs range improvement fixes the underlying issue.
-> >
-> > Correct, yes, I think adjust_reg_min_max_vals() might still need some f=
-ixing.
-> >
-> > > Currently we do:
-> > > if (umax_val >=3D insn_bitness)
-> > >   mark_reg_unknown
-> > > else
-> > >   here were use src_reg->u32_max_value or src_reg->umax_value
-> > > I suspect the insn_bitness check is buggy and it's still possible to =
-hit UBSAN splat with
-> > > out of bounds shift. Just need to try harder.
-> > > if w8 < 0xffffffff goto +2;
-> > > if r8 !=3D r6 goto +1;
-> > > w0 >>=3D w8;
-> > > won't be enough anymore.
-> >
-> > Agreed, but I felt that fixing adjust_reg_min_max_vals() is out of
-> > scope for this already large patch set. If someone can take a deeper
-> > look into reg bounds for arithmetic operations, it would be great.
-> >
-> > On the other hand, one of those academic papers claimed to verify
-> > soundness of verifier's reg bounds, so I wonder why they missed this?
->
-> AFAICS, it should have been able to detect this bug. Equation (3) from
-> [1, page 10] encodes the soundness condition for conditional jumps and
-> the implementation definitely covers BPF_JEQ/JNE and the logic in
-> check_cond_jmp_op. So either there's a bug in the implementation or I'm
-> missing something about how it works. Let me cc two of the paper's
-> authors :)
->
-> Hari, Srinivas: Hao Sun recently discovered a bug in the range analysis
-> logic of the verifier, when comparing two unknown scalars with
-> non-overlapping ranges. See [2] for Eduard Zingerman's explanation. It
-> seems to have existed for a while. Any idea why Agni didn't uncover it?
->
-> 1 - https://harishankarv.github.io/assets/files/agni-cav23.pdf
-> 2 - https://lore.kernel.org/bpf/8731196c9a847ff35073a2034662d3306cea805f.=
-camel@gmail.com/
->
-> > cc Paul, maybe he can clarify (and also, Paul, please try to run all
-> > that formal verification machinery against this patch set, thanks!)
->
-> I tried it yesterday but am running into what looks like a bug in the
-> LLVM IR to SMT conversion. Probably not something I can fix myself
-> quickly so I'll need help from Hari & co.
->
-> That said, even without your patchset, I'm running into another issue
-> where the formal verification takes several times longer (up to weeks
-> /o\) since v6.4.
->
+hi,
+I'm doing some testing on top of fprobes and noticed that the
+ftrace_test_recursion_trylock allows caller from the same context
+going through twice.
 
-That's unfortunate. If you figure this out, I'd still be interested in
-doing an extra check. Meanwhile I'm working on doing more sanity
-checks in the kernel (and inevitably having to debug and fix issues,
-still working on this).
+The change below adds extra fprobe on stack_trace_print, which is
+called within the sample_entry_handler and I can see it being executed
+with following trace output:
+
+           <...>-457     [003] ...1.    32.352554: sample_entry_handler: Enter <kernel_clone+0x0/0x380> ip = 0xffffffff81177420
+           <...>-457     [003] ...2.    32.352578: sample_entry_handler_extra: Enter <stack_trace_print+0x0/0x60> ip = 0xffffffff8127ae70
+
+IOW nested ftrace_test_recursion_trylock call in the same context succeeded.
+
+It seems the reason is the TRACE_CTX_TRANSITION bit logic.
+
+Just making sure it's intentional.. we have kprobe_multi code on top of
+fprobe with another re-entry logic and that might behave differently based
+on ftrace_test_recursion_trylock logic.
+
+thanks,
+jirka
+
+
+---
+diff --git a/samples/fprobe/fprobe_example.c b/samples/fprobe/fprobe_example.c
+index 64e715e7ed11..531272af0682 100644
+--- a/samples/fprobe/fprobe_example.c
++++ b/samples/fprobe/fprobe_example.c
+@@ -23,6 +23,9 @@
+ static struct fprobe sample_probe;
+ static unsigned long nhit;
+ 
++static struct fprobe sample_probe_extra;
++static char *symbol_extra = "stack_trace_print";
++
+ static char symbol[MAX_SYMBOL_LEN] = "kernel_clone";
+ module_param_string(symbol, symbol, sizeof(symbol), 0644);
+ MODULE_PARM_DESC(symbol, "Probed symbol(s), given by comma separated symbols or a wildcard pattern.");
+@@ -48,6 +51,15 @@ static void show_backtrace(void)
+ 	stack_trace_print(stacks, len, 24);
+ }
+ 
++static int sample_entry_handler_extra(struct fprobe *fp, unsigned long ip,
++				      unsigned long ret_ip,
++				      struct pt_regs *regs, void *data)
++{
++	if (use_trace)
++		trace_printk("Enter <%pS> ip = 0x%p\n", (void *)ip, (void *)ip);
++	return 0;
++}
++
+ static int sample_entry_handler(struct fprobe *fp, unsigned long ip,
+ 				unsigned long ret_ip,
+ 				struct pt_regs *regs, void *data)
+@@ -96,6 +108,8 @@ static int __init fprobe_init(void)
+ 	sample_probe.entry_handler = sample_entry_handler;
+ 	sample_probe.exit_handler = sample_exit_handler;
+ 
++	sample_probe_extra.entry_handler = sample_entry_handler_extra;
++
+ 	if (strchr(symbol, '*')) {
+ 		/* filter based fprobe */
+ 		ret = register_fprobe(&sample_probe, symbol,
+@@ -137,12 +151,19 @@ static int __init fprobe_init(void)
+ 	else
+ 		pr_info("Planted fprobe at %s\n", symbol);
+ 
++	ret = register_fprobe_syms(&sample_probe_extra, (const char **) &symbol_extra, 1);
++	if (ret < 0)
++		pr_err("register_fprobe extra failed, returned %d\n", ret);
++	else
++		pr_info("Planted extra fprobe at %s\n", symbol_extra);
++
+ 	return ret;
+ }
+ 
+ static void __exit fprobe_exit(void)
+ {
+ 	unregister_fprobe(&sample_probe);
++	unregister_fprobe(&sample_probe_extra);
+ 
+ 	pr_info("fprobe at %s unregistered. %ld times hit, %ld times missed\n",
+ 		symbol, nhit, sample_probe.nmissed);
 
