@@ -1,182 +1,186 @@
-Return-Path: <bpf+bounces-13787-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13788-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85B897DDDB8
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 09:25:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BB7227DDDD5
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 09:42:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58BDF1C20D2B
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 08:25:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB8FB1C20D87
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 08:42:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74A356FBA;
-	Wed,  1 Nov 2023 08:25:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 258E05C96;
+	Wed,  1 Nov 2023 08:42:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H+EfT11F"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="aw7VhG37"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07406FAE;
-	Wed,  1 Nov 2023 08:25:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE7FEC433C7;
-	Wed,  1 Nov 2023 08:25:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698827146;
-	bh=yFVtjEK6MAAB7vMXEvUnFtsjPel4TJMN6k8Ko8VXdYs=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=H+EfT11FBVdWRjAfeYkOnUaRHnTJepVNb5nikvZ26s+2qtK3y703T79U7MvmnrmF2
-	 ZlcsraE72qoE3Uy6DpNUBlvnWhtZX21/hweezd934PF0SVpcJlo//becBi2Y03TdSq
-	 JNIHPs3PP1SF/ua9iAUYzitWUPRcslT3VuHs3KX2U8tTxgzfFcu13Jd4sWSX56Afmq
-	 uXsahwZaUXj7YVmpAd5RSS6SPsAuS0opg3CIJQ3D9tvxEgn9MItedOmQskZd7fLoeg
-	 7WaMqGRTfheQriy6+wtkm9I9q28wtTbbBiKNaKR437HxxnejFXD7FXw/bl9vFSXiuU
-	 g0XwNSRHsK/9A==
-Message-ID: <9aad3bb9-daca-405a-93c3-dccea3c0a07a@kernel.org>
-Date: Wed, 1 Nov 2023 09:25:34 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D9C6FAB
+	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 08:42:35 +0000 (UTC)
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2083.outbound.protection.outlook.com [40.107.21.83])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC155DF;
+	Wed,  1 Nov 2023 01:42:30 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MLp2UiolR6FlzHKYe9qfCPZ0rHbI+K3w3FjcfYwlo3iM6aQXB+fira43SRMY0BjpCN041BvKMyfcJm4rmt01DIZ8DgwulA46pG9rliqGzth3CIBI1YynFMAiLwxVPR9IoNzuN+Y6qjzqJCmCZmeQF28N2CCjLo/x+j4eQQEZKegSSwAhPJk5nizrbbENpFXfKYpmRfNnYvcYTR3DgQ68+e03epBzL1gR51Y84ItmS+qT28KPoAluFQbxjNAHZzOywn2Yh92QhbXLCY5zEJMEU44YExb2PD07KVk2/rs4F72tdzrLHNxo1lgSlW7FcgiH+uTud/LhbQR1Gurisy2tPg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Pw/m2iCs82UZYlRaxjVXHafx1TbCDCBzdKiKdoQ0lkg=;
+ b=XftckWqLE8vnbuaxHkNuVfecRuDLOend3qGoCZmLBlD4+/cGBR4pt/tLi5IZIMbw6ZLeX8N0lFyFKUYYd3CZtNyEgOe5Hoi8BGqdDlnQFfoUKvPPYk/1HO08pXWzIljrMUCNGxLXZCrWHa5dvoG0tawHkpTClgeD3JudFmVoVR/QUbFm90u/dU7riwZKOhqzkwXULeuSHqiv++jPuXy36CeZUlAnKv3LULe2eVtS2uqiDFbKUKPeKto/siirqskf21y4ZjMcKv8fRAmfbwi1eCLn+fOxOaQPzJiaUmUQcUE0HjVv2zYj6G2mQpPIWJ9lzJscX9POCLYmsNWj1jUQRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Pw/m2iCs82UZYlRaxjVXHafx1TbCDCBzdKiKdoQ0lkg=;
+ b=aw7VhG37+bASX1uupw7g4sENPpvz7F/plr8m8RoQfdAjGdhLWJklDrpZFwumsaxxHPGGMEcGM2Ur9OAj2zlp8JTfZk616DFmeWd4ZvCJoXrZp0pOWdrUdUJ8t44Hl7AJQ9j6iAxrj3uL3bH5LT5O/+SByb9e4271j1H2m3DPBh5xOw6KR5Ih0+qswO7ZTm7OUKsxKAF1++cv1ZL0zLTD9wiEwb79IqqchEuCy0HyEE2aDBfYSwNuexKkAkywvQGqXIQwWuUN4kmBSs6OHvMckIvAW9RJPapbl+Mnu+9ZZzJOipZYtjE8FNRz3IU6vd4b5cfg6pt23gFmYW71p/Xz5g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB9510.eurprd04.prod.outlook.com (2603:10a6:20b:44a::11)
+ by AM9PR04MB8258.eurprd04.prod.outlook.com (2603:10a6:20b:3e2::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.17; Wed, 1 Nov
+ 2023 08:42:28 +0000
+Received: from AS8PR04MB9510.eurprd04.prod.outlook.com
+ ([fe80::9f3e:3b47:5ccd:c47c]) by AS8PR04MB9510.eurprd04.prod.outlook.com
+ ([fe80::9f3e:3b47:5ccd:c47c%6]) with mapi id 15.20.6954.019; Wed, 1 Nov 2023
+ 08:42:27 +0000
+Date: Wed, 1 Nov 2023 16:42:10 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Hao Sun <sunhao.th@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH bpf v2 1/2] bpf: Fix check_stack_write_fixed_off() to
+ correctly spill imm
+Message-ID: <ZUIPYkuuKe6sEv66@u94a>
+References: <20231101-fix-check-stack-write-v2-0-cb7c17b869b0@gmail.com>
+ <20231101-fix-check-stack-write-v2-1-cb7c17b869b0@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231101-fix-check-stack-write-v2-1-cb7c17b869b0@gmail.com>
+X-ClientProxiedBy: TYAPR03CA0001.apcprd03.prod.outlook.com
+ (2603:1096:404:14::13) To AS8PR04MB9510.eurprd04.prod.outlook.com
+ (2603:10a6:20b:44a::11)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] bpf: fix compilation error without CGROUPS
-Content-Language: en-GB, fr-BE
-To: Jiri Olsa <olsajiri@gmail.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Chuyi Zhou <zhouchuyi@bytedance.com>, Tejun Heo <tj@kernel.org>,
- bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- MPTCP Upstream <mptcp@lists.linux.dev>, kernel test robot <lkp@intel.com>
-References: <20231031-bpf-compil-err-css-v1-1-e2244c637835@kernel.org>
- <ZUEzzc/Sod8OR28B@krava>
- <CAADnVQKCNFxcpE9Y250iwd8E4+t_Pror0AuRaoRYepUkXj56UA@mail.gmail.com>
- <ZUH9cveAsjcUgz9e@krava>
-From: Matthieu Baerts <matttbe@kernel.org>
-Autocrypt: addr=matttbe@kernel.org; keydata=
- xsFNBFXj+ekBEADxVr99p2guPcqHFeI/JcFxls6KibzyZD5TQTyfuYlzEp7C7A9swoK5iCvf
- YBNdx5Xl74NLSgx6y/1NiMQGuKeu+2BmtnkiGxBNanfXcnl4L4Lzz+iXBvvbtCbynnnqDDqU
- c7SPFMpMesgpcu1xFt0F6bcxE+0ojRtSCZ5HDElKlHJNYtD1uwY4UYVGWUGCF/+cY1YLmtfb
- WdNb/SFo+Mp0HItfBC12qtDIXYvbfNUGVnA5jXeWMEyYhSNktLnpDL2gBUCsdbkov5VjiOX7
- CRTkX0UgNWRjyFZwThaZADEvAOo12M5uSBk7h07yJ97gqvBtcx45IsJwfUJE4hy8qZqsA62A
- nTRflBvp647IXAiCcwWsEgE5AXKwA3aL6dcpVR17JXJ6nwHHnslVi8WesiqzUI9sbO/hXeXw
- TDSB+YhErbNOxvHqCzZEnGAAFf6ges26fRVyuU119AzO40sjdLV0l6LE7GshddyazWZf0iac
- nEhX9NKxGnuhMu5SXmo2poIQttJuYAvTVUNwQVEx/0yY5xmiuyqvXa+XT7NKJkOZSiAPlNt6
- VffjgOP62S7M9wDShUghN3F7CPOrrRsOHWO/l6I/qJdUMW+MHSFYPfYiFXoLUZyPvNVCYSgs
- 3oQaFhHapq1f345XBtfG3fOYp1K2wTXd4ThFraTLl8PHxCn4ywARAQABzSRNYXR0aGlldSBC
- YWVydHMgPG1hdHR0YmVAa2VybmVsLm9yZz7CwZEEEwEIADsCGwMFCwkIBwIGFQoJCAsCBBYC
- AwECHgECF4AWIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZUDpDAIZAQAKCRD2t4JPQmmgcz33
- EACjROM3nj9FGclR5AlyPUbAq/txEX7E0EFQCDtdLPrjBcLAoaYJIQUV8IDCcPjZMJy2ADp7
- /zSwYba2rE2C9vRgjXZJNt21mySvKnnkPbNQGkNRl3TZAinO1Ddq3fp2c/GmYaW1NWFSfOmw
- MvB5CJaN0UK5l0/drnaA6Hxsu62V5UnpvxWgexqDuo0wfpEeP1PEqMNzyiVPvJ8bJxgM8qoC
- cpXLp1Rq/jq7pbUycY8GeYw2j+FVZJHlhL0w0Zm9CFHThHxRAm1tsIPc+oTorx7haXP+nN0J
- iqBXVAxLK2KxrHtMygim50xk2QpUotWYfZpRRv8dMygEPIB3f1Vi5JMwP4M47NZNdpqVkHrm
- jvcNuLfDgf/vqUvuXs2eA2/BkIHcOuAAbsvreX1WX1rTHmx5ud3OhsWQQRVL2rt+0p1DpROI
- 3Ob8F78W5rKr4HYvjX2Inpy3WahAm7FzUY184OyfPO/2zadKCqg8n01mWA9PXxs84bFEV2mP
- VzC5j6K8U3RNA6cb9bpE5bzXut6T2gxj6j+7TsgMQFhbyH/tZgpDjWvAiPZHb3sV29t8XaOF
- BwzqiI2AEkiWMySiHwCCMsIH9WUH7r7vpwROko89Tk+InpEbiphPjd7qAkyJ+tNIEWd1+MlX
- ZPtOaFLVHhLQ3PLFLkrU3+Yi3tXqpvLE3gO3LM7BTQRV4/npARAA5+u/Sx1n9anIqcgHpA7l
- 5SUCP1e/qF7n5DK8LiM10gYglgY0XHOBi0S7vHppH8hrtpizx+7t5DBdPJgVtR6SilyK0/mp
- 9nWHDhc9rwU3KmHYgFFsnX58eEmZxz2qsIY8juFor5r7kpcM5dRR9aB+HjlOOJJgyDxcJTwM
- 1ey4L/79P72wuXRhMibN14SX6TZzf+/XIOrM6TsULVJEIv1+NdczQbs6pBTpEK/G2apME7vf
- mjTsZU26Ezn+LDMX16lHTmIJi7Hlh7eifCGGM+g/AlDV6aWKFS+sBbwy+YoS0Zc3Yz8zrdbi
- Kzn3kbKd+99//mysSVsHaekQYyVvO0KD2KPKBs1S/ImrBb6XecqxGy/y/3HWHdngGEY2v2IP
- Qox7mAPznyKyXEfG+0rrVseZSEssKmY01IsgwwbmN9ZcqUKYNhjv67WMX7tNwiVbSrGLZoqf
- Xlgw4aAdnIMQyTW8nE6hH/Iwqay4S2str4HZtWwyWLitk7N+e+vxuK5qto4AxtB7VdimvKUs
- x6kQO5F3YWcC3vCXCgPwyV8133+fIR2L81R1L1q3swaEuh95vWj6iskxeNWSTyFAVKYYVskG
- V+OTtB71P1XCnb6AJCW9cKpC25+zxQqD2Zy0dK3u2RuKErajKBa/YWzuSaKAOkneFxG3LJIv
- Hl7iqPF+JDCjB5sAEQEAAcLBXwQYAQIACQUCVeP56QIbDAAKCRD2t4JPQmmgc5VnD/9YgbCr
- HR1FbMbm7td54UrYvZV/i7m3dIQNXK2e+Cbv5PXf19ce3XluaE+wA8D+vnIW5mbAAiojt3Mb
- 6p0WJS3QzbObzHNgAp3zy/L4lXwc6WW5vnpWAzqXFHP8D9PTpqvBALbXqL06smP47JqbyQxj
- Xf7D2rrPeIqbYmVY9da1KzMOVf3gReazYa89zZSdVkMojfWsbq05zwYU+SCWS3NiyF6QghbW
- voxbFwX1i/0xRwJiX9NNbRj1huVKQuS4W7rbWA87TrVQPXUAdkyd7FRYICNW+0gddysIwPoa
- KrLfx3Ba6Rpx0JznbrVOtXlihjl4KV8mtOPjYDY9u+8x412xXnlGl6AC4HLu2F3ECkamY4G6
- UxejX+E6vW6Xe4n7H+rEX5UFgPRdYkS1TA/X3nMen9bouxNsvIJv7C6adZmMHqu/2azX7S7I
- vrxxySzOw9GxjoVTuzWMKWpDGP8n71IFeOot8JuPZtJ8omz+DZel+WCNZMVdVNLPOd5frqOv
- mpz0VhFAlNTjU1Vy0CnuxX3AM51J8dpdNyG0S8rADh6C8AKCDOfUstpq28/6oTaQv7QZdge0
- JY6dglzGKnCi/zsmp2+1w559frz4+IC7j/igvJGX4KDDKUs0mlld8J2u2sBXv7CGxdzQoHaz
- lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
-In-Reply-To: <ZUH9cveAsjcUgz9e@krava>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB9510:EE_|AM9PR04MB8258:EE_
+X-MS-Office365-Filtering-Correlation-Id: a3b37faa-0e76-44a0-6c74-08dbdab67a86
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	gHMAex3GSbdWmZ0e+BOKVRbR9+pozDlKQhuj8n7+34s0osPXjU1YlFYAre/goaqzI0D+NYXFL9uFAMoLfrs4l0huZqnusjs9WhbRDndyWMOs7KAixSdHgWP0m4KFwGKs2M1U3KXPelsqUZZ1leeFeX44mhS2PMF7OgkHktrvGyt6XYIhpCp2eKza6OOhB5cC/oxUpq95gWisz/B5pWzEouxX92OQf/NzGnhzmdrSNzHAZ6OPnqKJLGEGiRL9lGCMvA1XvmSYvevZlZ9bZK0zi1t+PdFbTRwzhK2BkTmf/tgO3YTeSLPStm9dT8m1gCSn8pgTcrTlY7x7EoieLNbyZvga2x/4p5cCgz5zqgE0h15GZ5H8uvo+z2N+MWXZBIFJ2N2nQnucV4zpD+16Mh4kuBS3Xu6MjwjV8+r64NU4cVRucF06cO/ejK/R/P+ALUYcdHKlvWmoJwfX4DHdUCfi3lYdMOH1zQs2qmCFJdd2A/eKHrQio5JDgf64aflUGs383Ga1zvE/vrfzu+ZmBe1Fos93kgwOoCBTe2cw/zsRnMdiY3P7lGdv1+o2Gvwy3I3z
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB9510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(396003)(136003)(346002)(366004)(376002)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(33716001)(66556008)(8936002)(66476007)(4326008)(83380400001)(8676002)(6916009)(54906003)(316002)(26005)(66946007)(7416002)(5660300002)(2906002)(41300700001)(478600001)(6486002)(6506007)(6666004)(6512007)(9686003)(86362001)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?SU1NQ2F6aTc3bFh5bTltcDRBUnVxZHNkNkhxWUxhOEJlcE0yQ0oybXpNekti?=
+ =?utf-8?B?TUhQeVQvbm8zSDBFOWlaRmZIMjFvbXdRc0tmZ0VQOE5sT1hPbFZFampaaDVH?=
+ =?utf-8?B?MUlNeW1tdDFnWHFVSWNNcklmd3h5eTZrTW5zNHZpb0IzQjRvTE1PQTFWQ1pm?=
+ =?utf-8?B?UGhaNmJ0V0RBRkZKN21penpyKzNTSmJkVmVJNHJqUFpjcE5VMU5PT0FNY3RV?=
+ =?utf-8?B?S2IzZHVSaEJyQ3BhVFd6R3A4QitvNkRPVnFVdXc3SlJPSWdpcVJZczZlTjVX?=
+ =?utf-8?B?VXk5UlFSc2lPS2RkN1N6S2pIZ3owZ0ZjQVo5UmZEd2tBc2ZQZ0p2TmJ6OGJW?=
+ =?utf-8?B?a3dkOWZaSFJ2a091K1hndFVoWDdCVWM5VTVFdEg3L1RFQW8yTWxyZGk2c0R6?=
+ =?utf-8?B?QlI1ZnBNL1VBTndaZlJyOWRNMFZ2NHRXbW5kMGlTY3I1NWh5UXVFQldOd0ZP?=
+ =?utf-8?B?WXVRaHVodWtVOTBYWWhCem40OHhlM252V0xRNTkvc3hPOExQWlRxWk1UQzY5?=
+ =?utf-8?B?cXVDbmlmRnZaZmVmbUt0R0kwUVBsRkloRmNHbXcxSTlscDRBMFpDMk5uNEx4?=
+ =?utf-8?B?amF3TGtFTi82NjYxRmh6WHpTeVZmSzIwYUhsUDRUUmRuM2gvQ1BWU3JVaHFo?=
+ =?utf-8?B?Z0ozdFJLMEg5NDA4UHVwTnhxV3VoWXFkVDNBTVYvVmlKeHE0MG53cDR0UEFx?=
+ =?utf-8?B?aE5qRkgzUER6bVN5MERPSWJ1SjdRLzBvYVNwR25MczR1RWs1NWNvdmJ5U0lM?=
+ =?utf-8?B?WEF6NnBmaTRZWWpDNmFKdjFrRWtnZHN0b0dDUGUrMVRBUVBLLzd5dEk5by9W?=
+ =?utf-8?B?bG43UEpJWVh4ZU9HK0dLYU9kTDNudDVYL0dzaGQ4anEyNlJmbyt1Ui84YUdG?=
+ =?utf-8?B?bjUvMFlyS3J6bldZaVlQSzVlektLeWlUTnlYRzBhYjZ3NTNjMnRJWTkzOUN3?=
+ =?utf-8?B?QU1Rc1o4VlFTOGpsNnVjdWJjLzZ5Q2N0V2V2azlnSmlPZzRNN05RbUsydTZj?=
+ =?utf-8?B?VzdsNWgwSTgrSnhNVnFoMDZPM05sL3RLajluWEM5Vm5jLytiWEYzTUVBdHQ5?=
+ =?utf-8?B?OE5adlBBZzlWZk1iWVZ4R1BoL29GbmRqeVFqUEVXc3dDU09neTEyQ0NaNStO?=
+ =?utf-8?B?ZTM2NnFIZWFBLzBMdFcySXMwY1VFYmsxNXF6SStYRGRoSXJnVVYyQWY4Ti9U?=
+ =?utf-8?B?R294N2wza2xDZGMvK1hEUU1ZODB4MnZJeEJmLzhOdmlScDE4encvbCtrbkdJ?=
+ =?utf-8?B?Vnd5dGNQYlRlZnlFUmd5d0ZBTkkzT3l3TEl0aUY3dkRBQWE0dnZMNXRVemM3?=
+ =?utf-8?B?TUFDaHBNaExqTEtuOWFKNkNpRnR6dy9LcXpLZjU5Q2paMUMxWjZaYmQxYStN?=
+ =?utf-8?B?d25jSFFxY2hpakd4dGNQcm51SDNDOGcyZS9ERTByUWZkejhibjNObHJvT1Va?=
+ =?utf-8?B?cjFWRktSa3l4VGx0VHpUS2pOVFR0VHloaGI1ZnZhTXdnQVpBenlGMVJNUmFG?=
+ =?utf-8?B?MG1zNnlLamtyWHowUXh3QmV4UnFJYUh6UDZvbUwvbHNnSk9vck9nQ096Z2ZJ?=
+ =?utf-8?B?aUlSNmJXZFJGQUNXUTFvdnE5bkxxSzJnVk1uZUtGam5sdTk1c2tyK2hxa2VN?=
+ =?utf-8?B?TmNSRXhVeGJIM3RUWU5jUTZCeE5rRjJrOXVwQUlrRXBzTHBIZ3hCNGRNVHF1?=
+ =?utf-8?B?bTFJTlRncGtHRnhQQyttbnFYM1N3U0hOV2JyOE1sUUFiTllKR1YrMmhkV3Z6?=
+ =?utf-8?B?WDVueHFyRjBPbDlHZnkrWUFWMktSY0F0aG5ESVBYdzY3KytNSjhScTFxbUgx?=
+ =?utf-8?B?YlVOU3hueDN0ZmRPYmsybW0rZkVueTdmMzBBWStWK2o5WXJjb0w4V0RKdkpj?=
+ =?utf-8?B?UFdHQXNTVHc0dnNSSUdUYjhFc3J0WG1UQTQ3Z04velk2eWFqcytiT3MvUlJY?=
+ =?utf-8?B?YnlLU0pEVjJYRENJOXpRUi9jQ2JQemN5aTVuY3BDeXJkMGxsdnFYWVpIZGlS?=
+ =?utf-8?B?SE9kL3JHbWlPRDJJNGpXbG5pMEZYVnlNTkEvNENoWDFEVDhNWjk1UFhBbVY0?=
+ =?utf-8?B?eWllVWQwSlJOYUxNNDBNV2RkZDl5bUkyTTlTN0dIcDRGN1dVZG5FTEtWTDVl?=
+ =?utf-8?B?bGxpYXhrSlJaajAzTXBrTDh6ckJ3NFplVW4rM1hNWTNFdk1RT2lZeUJldHBn?=
+ =?utf-8?B?Nnc9PQ==?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3b37faa-0e76-44a0-6c74-08dbdab67a86
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB9510.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Nov 2023 08:42:27.8555
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jz3a8WpR409+niVHZUFxg9BPOylZgNaRuSqal5SO1bcAfIBsRjzHEhFdV7o6bxPV2ug3g+OjbJfpljABksDz8g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8258
 
-Hi Jirka, Alexei,
-
-On 01/11/2023 08:25, Jiri Olsa wrote:
-> On Tue, Oct 31, 2023 at 08:54:56PM -0700, Alexei Starovoitov wrote:
->> On Tue, Oct 31, 2023 at 10:05 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->>>
->>> On Tue, Oct 31, 2023 at 04:49:34PM +0100, Matthieu Baerts wrote:
->>>> Our MPTCP CI complained [1] -- and KBuild too -- that it was no longer
->>>> possible to build the kernel without CONFIG_CGROUPS:
->>>>
->>>>   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
->>>>   kernel/bpf/task_iter.c:919:14: error: 'CSS_TASK_ITER_PROCS' undeclared (first use in this function)
->>>>     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
->>>>         |              ^~~~~~~~~~~~~~~~~~~
->>>>   kernel/bpf/task_iter.c:919:14: note: each undeclared identifier is reported only once for each function it appears in
->>>>   kernel/bpf/task_iter.c:919:36: error: 'CSS_TASK_ITER_THREADED' undeclared (first use in this function)
->>>>     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
->>>>         |                                    ^~~~~~~~~~~~~~~~~~~~~~
->>>>   kernel/bpf/task_iter.c:927:60: error: invalid application of 'sizeof' to incomplete type 'struct css_task_iter'
->>>>     927 |         kit->css_it = bpf_mem_alloc(&bpf_global_ma, sizeof(struct css_task_iter));
->>>>         |                                                            ^~~~~~
->>>>   kernel/bpf/task_iter.c:930:9: error: implicit declaration of function 'css_task_iter_start'; did you mean 'task_seq_start'? [-Werror=implicit-function-declaration]
->>>>     930 |         css_task_iter_start(css, flags, kit->css_it);
->>>>         |         ^~~~~~~~~~~~~~~~~~~
->>>>         |         task_seq_start
->>>>   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_next':
->>>>   kernel/bpf/task_iter.c:940:16: error: implicit declaration of function 'css_task_iter_next'; did you mean 'class_dev_iter_next'? [-Werror=implicit-function-declaration]
->>>>     940 |         return css_task_iter_next(kit->css_it);
->>>>         |                ^~~~~~~~~~~~~~~~~~
->>>>         |                class_dev_iter_next
->>>>   kernel/bpf/task_iter.c:940:16: error: returning 'int' from a function with return type 'struct task_struct *' makes pointer from integer without a cast [-Werror=int-conversion]
->>>>     940 |         return css_task_iter_next(kit->css_it);
->>>>         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_destroy':
->>>>   kernel/bpf/task_iter.c:949:9: error: implicit declaration of function 'css_task_iter_end' [-Werror=implicit-function-declaration]
->>>>     949 |         css_task_iter_end(kit->css_it);
->>>>         |         ^~~~~~~~~~~~~~~~~
->>>>
->>>> This patch simply surrounds with a #ifdef the new code requiring CGroups
->>>> support. It seems enough for the compiler and this is similar to
->>>> bpf_iter_css_{new,next,destroy}() functions where no other #ifdef have
->>>> been added in kernel/bpf/helpers.c and in the selftests.
->>>>
->>>> Fixes: 9c66dc94b62a ("bpf: Introduce css_task open-coded iterator kfuncs")
->>>> Link: https://github.com/multipath-tcp/mptcp_net-next/actions/runs/6665206927
->>>> Reported-by: kernel test robot <lkp@intel.com>
->>>> Closes: https://lore.kernel.org/oe-kbuild-all/202310260528.aHWgVFqq-lkp@intel.com/
->>>> Signed-off-by: Matthieu Baerts <matttbe@kernel.org>
->>>
->>> Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
->>
->> I believe this patch has the same issue as Arnd's patch:
->> https://lore.kernel.org/all/CAADnVQL-zoFPPOVu3nM981gKxRu7Q3G3LTRsKstJEeahpoR1RQ@mail.gmail.com/
-
-@Alexei: Arf, sorry, I didn't find this patch when searching for
-"9c66dc94b62a" on lore. I don't know why I didn't search for the commit
-title as usual...
-
->> I'd like to merge the fix asap. Please make it a complete fix.
+On Wed, Nov 01, 2023 at 08:33:22AM +0100, Hao Sun wrote:
+> In check_stack_write_fixed_off(), imm value is cast to u32 before being
+> spilled to the stack. Therefore, the sign information is lost, and the
+> range information is incorrect when load from the stack again.
 > 
-> ugh, it won't fail the build, it just warns.. I think we should
-> fail the build in that case, I'll check
+> For the following prog:
+> 0: r2 = r10
+> 1: *(u64*)(r2 -40) = -44
+> 2: r0 = *(u64*)(r2 - 40)
+> 3: if r0 s<= 0xa goto +2
+> 4: r0 = 1
+> 5: exit
+> 6: r0  = 0
+> 7: exit
+> 
+> The verifier gives:
+> func#0 @0
+> 0: R1=ctx(off=0,imm=0) R10=fp0
+> 0: (bf) r2 = r10                      ; R2_w=fp0 R10=fp0
+> 1: (7a) *(u64 *)(r2 -40) = -44        ; R2_w=fp0 fp-40_w=4294967252
+> 2: (79) r0 = *(u64 *)(r2 -40)         ; R0_w=4294967252 R2_w=fp0
+> fp-40_w=4294967252
+> 3: (c5) if r0 s< 0xa goto pc+2
+> mark_precise: frame0: last_idx 3 first_idx 0 subseq_idx -1
+> mark_precise: frame0: regs=r0 stack= before 2: (79) r0 = *(u64 *)(r2 -40)
+> 3: R0_w=4294967252
+> 4: (b7) r0 = 1                        ; R0_w=1
+> 5: (95) exit
+> verification time 7971 usec
+> stack depth 40
+> processed 6 insns (limit 1000000) max_states_per_insn 0 total_states 0
+> peak_states 0 mark_read 0
+> 
+> So remove the incorrect cast, since imm field is declared as s32, and
+> __mark_reg_known() takes u64, so imm would be correctly sign extended
+> by compiler.
+> 
+> Fixes: ecdf985d7615 ("bpf: track immediate values written to stack by BPF_ST instruction")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
 
-@Jirka: Thank you for checking that! Please tell me if you want me to
-send a v2 or if you prefer to do that. I don't mind if you prefer to
-send your own patches, as long as there is a fix for that at the end :)
-
-Note that if a warning is emitted for these new bpf_iter_css_task_*()
-functions, I guess you will have the same issue with bpf_iter_css_*()
-and probably others as mentioned in my commit message.
-
-Cheers,
-Matt
+Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 
