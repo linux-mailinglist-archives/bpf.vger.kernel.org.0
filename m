@@ -1,153 +1,151 @@
-Return-Path: <bpf+bounces-13780-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13781-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C4F87DDB77
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 04:24:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C0A17DDBB5
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 04:55:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65E6D1C20D98
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 03:24:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E15A1C20DB2
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 03:55:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6732315A8;
-	Wed,  1 Nov 2023 03:23:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 109401374;
+	Wed,  1 Nov 2023 03:55:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fZm8vkKK"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D53B01390
-	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 03:23:50 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 180CCC2
-	for <bpf@vger.kernel.org>; Tue, 31 Oct 2023 20:23:49 -0700 (PDT)
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SKsmH1F2gz4f3nZy
-	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 11:23:43 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id AAC6A1A0170
-	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 11:23:46 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgCHHt6+xEFlSpMJEg--.58519S7;
-	Wed, 01 Nov 2023 11:23:46 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	houtao1@huawei.com
-Subject: [PATCH bpf-next 3/3] selftsets/bpf: Retry map update for non-preallocated per-cpu map
-Date: Wed,  1 Nov 2023 11:24:55 +0800
-Message-Id: <20231101032455.3808547-4-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20231101032455.3808547-1-houtao@huaweicloud.com>
-References: <20231101032455.3808547-1-houtao@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4233E1845
+	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 03:55:11 +0000 (UTC)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B30BAC1;
+	Tue, 31 Oct 2023 20:55:09 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-313e742a787so253735f8f.1;
+        Tue, 31 Oct 2023 20:55:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698810908; x=1699415708; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JB0/maXrKhTyio7d/n+oJLiXoE4Nk47OqpdEbHEpM+Q=;
+        b=fZm8vkKKqOSIcofsxbkKBs6gKtm0G3nysJnpwn+UOhJoKHGqj0j+PCQZRxiMR6gkT/
+         xJVoAJbND+xKOLjbbWybqNcq74dHq95jUBogQxHSipU7h7/CKegi01QvjPbXXC5p0ZmJ
+         etoPn/014get5N9KDSG/NV0TVh8ayU2FXN4hfTP+yumVx6vXmL0Lfadw5BFDlrwk8JDg
+         LVt5lu1VHgaia9z9LqL10vpskqJ8cqKXOECXw2wDnrmjGfL9/mR+L7XAI4ZKW1Ipcy5O
+         FDLybJxxT/KmYjvS6jzTlh4a9Lg1LEyfHOypXq3gk64LaTaNvwKVjO85L/u9ZC1DNGzf
+         rwig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698810908; x=1699415708;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JB0/maXrKhTyio7d/n+oJLiXoE4Nk47OqpdEbHEpM+Q=;
+        b=v6E2BrViqzedMnnCZJv4QrvUzuTsIVRZsblundj+4lDsNNOvSA/7OFjz0MKMqH/9/C
+         OieSFTfIiGoNj2iPo/cXw5vcu/qOIwz+XpDMkYA2iDN/CyQ4DgbHElFbxLUZ/44yKaTQ
+         RPLQ6hA20wELqwCY+is8Wnz9j1DDdAif97BpoTXiytQakZz1JBSePpzbDRtF8pMtAKjy
+         kfO7oq6+IZM60Wj1/eBMEsSi1KrViYCXJT7p1GmRsxrOg36zl4F9H1tVKAHs73Ek3+Yu
+         qetIs79f7efqsu7TgEn4vL0eemczDZ55cOFrJxxcnjNO5xSJ2IFYp543B6dpOu14EQBi
+         SwzA==
+X-Gm-Message-State: AOJu0YxGFm+y2w7QzUBLzVTEV3VYrgkZPbfWh+8ms1/XHgVKQx5jt/6c
+	+Vi8M6LLy06eYQomjudcIo9TEj/eS2AK9DnuDu4=
+X-Google-Smtp-Source: AGHT+IEr7KyXAJEpInft+c9ZhQlYvVmFJWyLpzhcsVLEkhcHWsrXKsLbILhZlE1rMBSUuUxgrsGXTN9cMIGNRYTrhyM=
+X-Received: by 2002:a05:6000:154b:b0:32f:811c:dfc4 with SMTP id
+ 11-20020a056000154b00b0032f811cdfc4mr5397720wry.4.1698810907910; Tue, 31 Oct
+ 2023 20:55:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCHHt6+xEFlSpMJEg--.58519S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF4kGr45CrykGF1DuryDWrg_yoW5Jw43pa
-	yfG3WYkrs2qrW3Kw15JayDW34Yvr4kW345Jrn5trWYy3WxWr17tr1xGFyYvF9xuF90qw1a
-	y392yF1fuayxAr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20231031-bpf-compil-err-css-v1-1-e2244c637835@kernel.org> <ZUEzzc/Sod8OR28B@krava>
+In-Reply-To: <ZUEzzc/Sod8OR28B@krava>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 31 Oct 2023 20:54:56 -0700
+Message-ID: <CAADnVQKCNFxcpE9Y250iwd8E4+t_Pror0AuRaoRYepUkXj56UA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: fix compilation error without CGROUPS
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Matthieu Baerts <matttbe@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Chuyi Zhou <zhouchuyi@bytedance.com>, 
+	Tejun Heo <tj@kernel.org>, bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	MPTCP Upstream <mptcp@lists.linux.dev>, kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Hou Tao <houtao1@huawei.com>
+On Tue, Oct 31, 2023 at 10:05=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wro=
+te:
+>
+> On Tue, Oct 31, 2023 at 04:49:34PM +0100, Matthieu Baerts wrote:
+> > Our MPTCP CI complained [1] -- and KBuild too -- that it was no longer
+> > possible to build the kernel without CONFIG_CGROUPS:
+> >
+> >   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
+> >   kernel/bpf/task_iter.c:919:14: error: 'CSS_TASK_ITER_PROCS' undeclare=
+d (first use in this function)
+> >     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
+> >         |              ^~~~~~~~~~~~~~~~~~~
+> >   kernel/bpf/task_iter.c:919:14: note: each undeclared identifier is re=
+ported only once for each function it appears in
+> >   kernel/bpf/task_iter.c:919:36: error: 'CSS_TASK_ITER_THREADED' undecl=
+ared (first use in this function)
+> >     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
+> >         |                                    ^~~~~~~~~~~~~~~~~~~~~~
+> >   kernel/bpf/task_iter.c:927:60: error: invalid application of 'sizeof'=
+ to incomplete type 'struct css_task_iter'
+> >     927 |         kit->css_it =3D bpf_mem_alloc(&bpf_global_ma, sizeof(=
+struct css_task_iter));
+> >         |                                                            ^~=
+~~~~
+> >   kernel/bpf/task_iter.c:930:9: error: implicit declaration of function=
+ 'css_task_iter_start'; did you mean 'task_seq_start'? [-Werror=3Dimplicit-=
+function-declaration]
+> >     930 |         css_task_iter_start(css, flags, kit->css_it);
+> >         |         ^~~~~~~~~~~~~~~~~~~
+> >         |         task_seq_start
+> >   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_next':
+> >   kernel/bpf/task_iter.c:940:16: error: implicit declaration of functio=
+n 'css_task_iter_next'; did you mean 'class_dev_iter_next'? [-Werror=3Dimpl=
+icit-function-declaration]
+> >     940 |         return css_task_iter_next(kit->css_it);
+> >         |                ^~~~~~~~~~~~~~~~~~
+> >         |                class_dev_iter_next
+> >   kernel/bpf/task_iter.c:940:16: error: returning 'int' from a function=
+ with return type 'struct task_struct *' makes pointer from integer without=
+ a cast [-Werror=3Dint-conversion]
+> >     940 |         return css_task_iter_next(kit->css_it);
+> >         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_destroy':
+> >   kernel/bpf/task_iter.c:949:9: error: implicit declaration of function=
+ 'css_task_iter_end' [-Werror=3Dimplicit-function-declaration]
+> >     949 |         css_task_iter_end(kit->css_it);
+> >         |         ^~~~~~~~~~~~~~~~~
+> >
+> > This patch simply surrounds with a #ifdef the new code requiring CGroup=
+s
+> > support. It seems enough for the compiler and this is similar to
+> > bpf_iter_css_{new,next,destroy}() functions where no other #ifdef have
+> > been added in kernel/bpf/helpers.c and in the selftests.
+> >
+> > Fixes: 9c66dc94b62a ("bpf: Introduce css_task open-coded iterator kfunc=
+s")
+> > Link: https://github.com/multipath-tcp/mptcp_net-next/actions/runs/6665=
+206927
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202310260528.aHWgVFqq-lkp=
+@intel.com/
+> > Signed-off-by: Matthieu Baerts <matttbe@kernel.org>
+>
+> Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
 
-BPF CI failed due to map_percpu_stats_percpu_hash from time to time [1].
-It seems that the failure reason is per-cpu bpf memory allocator may not
-be able to allocate per-cpu pointer successfully and it can not refill
-free llist timely, and bpf_map_update_elem() will return -ENOMEM.
+I believe this patch has the same issue as Arnd's patch:
+https://lore.kernel.org/all/CAADnVQL-zoFPPOVu3nM981gKxRu7Q3G3LTRsKstJEeahpo=
+R1RQ@mail.gmail.com/
 
-So mitigate the problem by retrying the update operation for
-non-preallocated per-cpu map.
-
-[1]: https://github.com/kernel-patches/bpf/actions/runs/6713177520/job/18244865326?pr=5909
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../bpf/map_tests/map_percpu_stats.c          | 20 ++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/map_tests/map_percpu_stats.c b/tools/testing/selftests/bpf/map_tests/map_percpu_stats.c
-index 8ad17d051ef8f..e152535e9e3ec 100644
---- a/tools/testing/selftests/bpf/map_tests/map_percpu_stats.c
-+++ b/tools/testing/selftests/bpf/map_tests/map_percpu_stats.c
-@@ -141,6 +141,7 @@ struct upsert_opts {
- 	__u32 map_type;
- 	int map_fd;
- 	__u32 n;
-+	bool retry_for_nomem;
- };
- 
- static int create_small_hash(void)
-@@ -154,6 +155,11 @@ static int create_small_hash(void)
- 	return map_fd;
- }
- 
-+static bool retry_for_nomem_fn(int err)
-+{
-+	return err == ENOMEM;
-+}
-+
- static void *patch_map_thread(void *arg)
- {
- 	/* 8KB is enough for 1024 CPUs. And it is shared between N_THREADS. */
-@@ -175,7 +181,12 @@ static void *patch_map_thread(void *arg)
- 			val_ptr = &val;
- 		}
- 
--		ret = bpf_map_update_elem(opts->map_fd, &i, val_ptr, 0);
-+		/* 2 seconds may be enough ? */
-+		if (opts->retry_for_nomem)
-+			ret = map_update_retriable(opts->map_fd, &i, val_ptr, 0,
-+						   40, retry_for_nomem_fn);
-+		else
-+			ret = bpf_map_update_elem(opts->map_fd, &i, val_ptr, 0);
- 		CHECK(ret < 0, "bpf_map_update_elem", "key=%d error: %s\n", i, strerror(errno));
- 
- 		if (opts->map_type == BPF_MAP_TYPE_HASH_OF_MAPS)
-@@ -296,6 +307,13 @@ static void __test(int map_fd)
- 	else
- 		opts.n /= 2;
- 
-+	/* per-cpu bpf memory allocator may not be able to allocate per-cpu
-+	 * pointer successfully and it can not refill free llist timely, and
-+	 * bpf_map_update_elem() will return -ENOMEM. so just retry to mitigate
-+	 * the problem temporarily.
-+	 */
-+	opts.retry_for_nomem = is_percpu(opts.map_type) && (info.map_flags & BPF_F_NO_PREALLOC);
-+
- 	/*
- 	 * Upsert keys [0, n) under some competition: with random values from
- 	 * N_THREADS threads. Check values, then delete all elements and check
--- 
-2.29.2
-
+I'd like to merge the fix asap. Please make it a complete fix.
 
