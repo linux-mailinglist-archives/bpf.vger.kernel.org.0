@@ -1,115 +1,90 @@
-Return-Path: <bpf+bounces-13803-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13804-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07E1E7DE1CA
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 14:56:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CA9E7DE242
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 15:18:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8EA7281312
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 13:56:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 671BFB2108E
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 14:18:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8780A134CD;
-	Wed,  1 Nov 2023 13:56:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6D4E134DA;
+	Wed,  1 Nov 2023 14:18:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Osfx+K2g"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="VDoCuOkp"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0637489
-	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 13:56:47 +0000 (UTC)
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D2D102;
-	Wed,  1 Nov 2023 06:56:46 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-da2b9234a9fso4494675276.3;
-        Wed, 01 Nov 2023 06:56:46 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB7013AC7
+	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 14:18:10 +0000 (UTC)
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D958483
+	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 07:18:05 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99de884ad25so1050300066b.3
+        for <bpf@vger.kernel.org>; Wed, 01 Nov 2023 07:18:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698847005; x=1699451805; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+yzQj0RPB9P3n6Qwul4am9clWs3GiZYO1kyhQz5cK1w=;
-        b=Osfx+K2gQNayvuHziBP9OY/dhFAHAPXp9P4ErXVCXtLwAIGHBHuRO320+mez+AjYYP
-         g2uBlSdrl/nwR0GyQ1aGOtqle4gBef9gx5p9+wlYuLdUgcVBpkXNEV1pgwgRHqnf1s5K
-         rwCNNn2a7R24JuOLCnR7WnFP03vqhXpw90f4trkm1jtAGQRQyf+8w+wCu8lcADt1bQ7r
-         hgm+xYGZyyl8v5K5qpp06mUE/7GEIacypbW9g8d6aMi/q4EoE6MWdCoMVaMY+DcUaLAU
-         rxzTvODcCGtVFciNBB0U5dEPej5RQiC7xZdEbViWw2GlpfZ9n9jRE+SU+Z0nIjHW1qXV
-         biwA==
+        d=isovalent.com; s=google; t=1698848284; x=1699453084; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZrEHCOP+SrdwuHiekQNSbAtDkv18M+2JYde+YT0pEiA=;
+        b=VDoCuOkpBkq37soRQe5/GvzJ3N/WtymrjJGvey4Jlvty4gZD3jjN6Vk87ezTQrZAKS
+         VTaDPk4KIk0x1fqyr/IqB7eYZkIkmc+MGY1+N0JXZawaNP7srCtQzd1CJ/Mg/auC/Xgi
+         cU6yAvUXxUy8cHoFGHrjxwpBYiBTq81NBNO4f1qWNM+ULPhfiITkUK1oOqWRv5KqWZ8J
+         vRfPMd4r7dlBIGPqRN9MH98oIVJYca7DvBWE/yhOv+J7JxzmS+Tl36YCkG6UXlEnb8FR
+         IXvVmjDmw+ER39AKla/W6TkQpcqc4eQ4fyNPCbXG5rkdTrV9/kXUnxEeHRa1EaTVIFZQ
+         lKLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698847005; x=1699451805;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+yzQj0RPB9P3n6Qwul4am9clWs3GiZYO1kyhQz5cK1w=;
-        b=aFM8PH4JwqbcfDgS+tl9vt3RiYFeWseP8WZhSnglVnyK0KgwF89+wkA6xkqaMGYThW
-         VCiMoWAvBmkk3Dt2j1WaSiN7NNArCdH9sg0GB8CeXOKGHb9zFcKnDGCYogDYtSAN/zh1
-         n3vc2DKs/iA8+cxzCGxyYBh4JHxlIYnvCu/a9kGG3ABsw10RCsE0w/RBznBJoYaQcjl8
-         /M7QGu01OHfm2c8Ubz1X6ncmyRiROccISczOc6g0NVKhJErZGNkzfhCaVsx8m01FfUrC
-         UFKQj91+3tr7yIpRICedZlIVz+IrMfv5uT0q+geCIgi9/7Nc0oOzc4STj+Fq2i4j0VWv
-         jUWQ==
-X-Gm-Message-State: AOJu0YzU5ZMfeF/lPLbhxs6kNvt7FkgbImlqr3ehODf8eWsa72+T7rff
-	5wZ/jnPZk5rQVCTUm6up63vRAgCOHgYfDEUOuQ==
-X-Google-Smtp-Source: AGHT+IG8OT/aPb+YD5fmyru6znQxDBGEj56fps4ehM2NQ/K5TG8vM4JwTwp9jgTGCkJ+xpBoKSyogKS3vN2dlYxjqow=
-X-Received: by 2002:a25:b790:0:b0:da1:5a1a:e79c with SMTP id
- n16-20020a25b790000000b00da15a1ae79cmr10500772ybh.50.1698847005123; Wed, 01
- Nov 2023 06:56:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698848284; x=1699453084;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZrEHCOP+SrdwuHiekQNSbAtDkv18M+2JYde+YT0pEiA=;
+        b=eB3aVw+QO3kjUS3ba+qpkofWIvtDdSlHyd5wVhoQgADztzKND0xmCdKG72Kc9jfLSl
+         vxkJ4xirLIG7kNvu7fBLXQYutvARFy/02MGj8z8n56d6tr+BlRtsdKm8jNT7cGUmzabB
+         SRK/30pAR4z7TP/MmqgxVB1+YST46ah0F77Q5cM/2Px0K66Haa49EbrINKcdTf7uFqGr
+         KQEEcjEeY+2SuynwYrmsd9CPd2UbTJOMTxF2WG2V5cSk1cwfn+MaHzswz4F3HkfOmLGc
+         pcJ5/lU5NSUW2gL2GaLoNJkMlzIch90IsW35DqGJ6ajG1fzMtGhQPyocFV6jicCua3R2
+         EY8A==
+X-Gm-Message-State: AOJu0YyTFiybUcN85ja2pM90OJo+dHFrBkd4miW0jK5Cv7huppTyXky7
+	0mD5x/Pa0Gw3iArkhT1XGn9lQaOiBKQLD67WgrCQWQ==
+X-Google-Smtp-Source: AGHT+IFiqsiVNj+JAGLQWsiuUwb07AnMvv8qiUz/kFBZphQ2pfTKOZsZRuaw14pshUrkkP4UWHxYoIPRg2JPAi0u9sM=
+X-Received: by 2002:a17:907:36ca:b0:9d2:e2f6:45b2 with SMTP id
+ bj10-20020a17090736ca00b009d2e2f645b2mr1829025ejc.71.1698848284380; Wed, 01
+ Nov 2023 07:18:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Hao Sun <sunhao.th@gmail.com>
-Date: Wed, 1 Nov 2023 14:56:34 +0100
-Message-ID: <CACkBjsY3vMLVVO0zHd+CRcQPdykDhXv8-f2oD82+Jk5KJpq_8w@mail.gmail.com>
-Subject: bpf: incorrectly reject program with `back-edge insn from 7 to 8`
-To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <CAN+4W8h3yDjkOLJPiuKVKTpj_08pBz8ke6vN=Lf8gcA=iYBM-g@mail.gmail.com>
+ <e9987f16-7328-627d-8c02-c42c130a61a8@meta.com> <CAN+4W8hK9EEb7Qb2How+YwNkkz4wjRyBAK7Y+WcqBzA9ckJ5Qg@mail.gmail.com>
+ <CAEf4BzaEPMVFfEYwHxje8sm+26bgeLJ+4hfdGNOMHd5bV8u9rw@mail.gmail.com>
+In-Reply-To: <CAEf4BzaEPMVFfEYwHxje8sm+26bgeLJ+4hfdGNOMHd5bV8u9rw@mail.gmail.com>
+From: Lorenz Bauer <lorenz.bauer@isovalent.com>
+Date: Wed, 1 Nov 2023 14:17:53 +0000
+Message-ID: <CAN+4W8iTm-GS_-Wp=XjY1Txs09G7F4d3vcG_30WDOp-CpDKmCA@mail.gmail.com>
+Subject: Re: bpf_core_type_id_kernel is not consistent with bpf_core_type_id_local
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Yonghong Song <yhs@meta.com>, Lorenz Bauer <lmb@isovalent.com>, bpf <bpf@vger.kernel.org>, 
+	Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Tue, Oct 31, 2023 at 6:24=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> >
+> > Did you get round to fixing this, or did you decide to leave it as is?
+>
+> Trying to recall, was there anything to do on the libbpf side, or was
+> it purely a compiler-side change?
 
-The verifier incorrectly rejects the following prog in check_cfg() when
-loading with root with confusing log `back-edge insn from 7 to 8`:
-  /* 0: r9 = 2
-   * 1: r3 = 0x20
-   * 2: r4 = 0x35
-   * 3: r8 = r4
-   * 4: goto+3
-   * 5: r9 -= r3
-   * 6: r9 -= r4
-   * 7: r9 -= r8
-   * 8: r8 += r4
-   * 9: if r8 < 0x64 goto-5
-   * 10: r0 = r9
-   * 11: exit
-   * */
-  BPF_MOV64_IMM(BPF_REG_9, 2),
-  BPF_MOV64_IMM(BPF_REG_3, 0x20),
-  BPF_MOV64_IMM(BPF_REG_4, 0x35),
-  BPF_MOV64_REG(BPF_REG_8, BPF_REG_4),
-  BPF_JMP_IMM(BPF_JA, 0, 0, 3),
-  BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_3),
-  BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_4),
-  BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_8),
-  BPF_ALU64_REG(BPF_ADD, BPF_REG_8, BPF_REG_4),
-  BPF_JMP32_IMM(BPF_JLT, BPF_REG_8, 0x68, -5),
-  BPF_MOV64_REG(BPF_REG_0, BPF_REG_9),
-  BPF_EXIT_INSN()
+I'm not 100% sure TBH. I'd like clang to behave consistently for
+local_id and target_id. I don't know whether that would break libbpf.
 
--------- Verifier Log --------
-func#0 @0
-back-edge from insn 7 to 8
-processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
-peak_states 0 mark_read 0
-
-This is not intentionally rejected, right?
-
-Best
-Hao
+Lorenz
 
