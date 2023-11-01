@@ -1,93 +1,258 @@
-Return-Path: <bpf+bounces-13789-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13790-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A01437DDE61
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 10:27:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5391B7DDEC3
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 10:53:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C17E4B20FD0
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 09:27:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C3A61C20C87
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 09:53:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA6B6747A;
-	Wed,  1 Nov 2023 09:27:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32681D26B;
+	Wed,  1 Nov 2023 09:53:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="hmkCFIGW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZOx3wIMn"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06CE3236
-	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 09:27:49 +0000 (UTC)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A3EB9
-	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 02:27:45 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9c41e95efcbso921778366b.3
-        for <bpf@vger.kernel.org>; Wed, 01 Nov 2023 02:27:45 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2261E79F9
+	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 09:53:05 +0000 (UTC)
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E110DA;
+	Wed,  1 Nov 2023 02:53:04 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-da041ffef81so6087270276.0;
+        Wed, 01 Nov 2023 02:53:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1698830863; x=1699435663; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698832384; x=1699437184; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TL3u7k/jsyVeIJspFjfsc9j+lGzvugv2S7ET52rE7+E=;
-        b=hmkCFIGWW9oZz1RB0i0kmN+9YgwakR8E10gK32h1bkbprhGW/6d8idZdJwWWkQINE4
-         Pi9gmaAxHyKkGjJ0pHbq5Nh/oWZMMMh5LB+Vxc8sAkJB40/rQWsML4QXtkG1wBAzdURh
-         BqyqaAuJW2r9LLmsFg9NAoCtNtw6NjkM/0x1VJHD8mb8S2Pv78B0/m6RZAK4x4GdT1Am
-         rG4nIBoZ8WK1BVreZgXfLnlfvCaePOhC3lb9TqEZv4S/g5zOWkRzGfHWM2nJeCsyqXvl
-         DFwVk3e8rSfiPunvabPq4tN2LOWvPwCX5VewUazGoTB50vUnQZrPTV6BKxI6Z6i/Y+VH
-         /7wA==
+        bh=dOe6QzwqWEiP7j8OHek2K0ibaK5xiVAIwk4DUFp4ZSo=;
+        b=ZOx3wIMnmKJGD/q+xF2KRmQMtZ0sjYp+dKE+tPMiu9ywpFPc7TryyDEiE2HJ1le+1G
+         RcFkTCiNR7+jC5m8AsG3jcxRWpI1eYzT1Ytlkb1lg/tf4+JSe2SIAu489EKxFlgwFhtk
+         0T1r8OfY7LsBZpjEaIgRnCLBa8e5TiZhsxn4gjVNIqjEKHOvqgSIRTUOmyDurAtv9+p4
+         2j9JOhq5Rp7crMIReFrci6thcaTD1eIDoN3YrswUGKusQdsA2UoNDdw41PWSHyrKIgF4
+         1s6HnoF9Xu2adniayW+0QikgkSbhdDdZoeTY5WVlSWkmjlXFot/b3dFVOtFKs2lHdenq
+         lx8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698830863; x=1699435663;
+        d=1e100.net; s=20230601; t=1698832384; x=1699437184;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TL3u7k/jsyVeIJspFjfsc9j+lGzvugv2S7ET52rE7+E=;
-        b=tmwApHlAexfT9cYClv3k6d5vXc+oJV/Y1chozgV2Og+vBdqcHKNBR+QgxYkrXKV1xF
-         9Y6LaxO3a8cvlF55zl7OuuVjazylYwD+fy0Pql8GjJQNHO1VEulUMQpQjncczbD8XFWt
-         tbmoRuRAQEs7mtRY3FkRa9dNTwxXuGHRAMcf/AZCLiVAKTCjxnZyqn9PKzsTtk3F207k
-         NXUNg0tuMwA7AqN/O73RAxcLh2BfCax3JheWxB+6ymQCjGdgTNQNwA9JYCBiq2sHPju3
-         QDqK92RfVTqvK0SRaOTL3dZgFy3n7UJ2lhqbkCSYrhm1U3Uo1evHyOw4vlR+eEbyZmld
-         6ohQ==
-X-Gm-Message-State: AOJu0YwJVaZGVOLOiC/RlmiL9ClZsfa3zQDWKR5kGNW5RJ6iAgAfF5Bu
-	MY5AEJNVCzdixamnb3XznE5D4UtNiXA2rdaTPX/Zyw==
-X-Google-Smtp-Source: AGHT+IH+8RTcB6T2tqJIePJGs+ckN6NwgUHCeSTEpXQs2WkRCMVF+47dft/fWB/aeRNi1J35PqyWhJoN28IQFCPLuWw=
-X-Received: by 2002:a17:906:c08c:b0:9ae:7502:7d30 with SMTP id
- f12-20020a170906c08c00b009ae75027d30mr1088470ejz.57.1698830863580; Wed, 01
- Nov 2023 02:27:43 -0700 (PDT)
+        bh=dOe6QzwqWEiP7j8OHek2K0ibaK5xiVAIwk4DUFp4ZSo=;
+        b=kJmE5rC9ubP0iBD9rtKi76FmqtiAQrk4n+2l3g5lTL9jvsPapu507oxKV6aaJNvPW6
+         CTC1pSHOMCL2FptzEt2oX5U0VUiIzYfb6Ok+n+z9xDuiHl37+SAjcAuX5ajZ1NTlHVI5
+         PyTSuxQX2rWhwB5vvk1AL4gL1j8YdzH7FUvZnnEDWMsumi9poipIOjOAwYGbwsKR0IoW
+         NN/kKxa9eQW/Dbqe5tinqjxeaLh/d1e/2eh+gngEim0UE0bbBSouRSVUed7aLXGyAejM
+         BqAmiucaP3XNIqXzW2uOE+xxakovGVl694XwEfGLCEzp9J2sCyTFwyuaDv+S7Rn2Nset
+         kLfw==
+X-Gm-Message-State: AOJu0Yxyk8V5LzH38wkOE4IKPijar9XxJYqD8YL65x2/8vGi2ExT/ykx
+	ULVgMgkkxuxOfBZRerbuA49zXbscYvF+mALw1g==
+X-Google-Smtp-Source: AGHT+IHw/qYlYOcoC9SUmJnRq364UDocuyZSCzdmVQFPdwmF6JIy89Riv36Fty0e2pC0bCCIMXdvwqVW2iBJgj/fsfk=
+X-Received: by 2002:a25:3492:0:b0:d9c:f9f2:ec45 with SMTP id
+ b140-20020a253492000000b00d9cf9f2ec45mr12045524yba.15.1698832383572; Wed, 01
+ Nov 2023 02:53:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAN+4W8i=7Wv2VwvWZGhX_mc8E7EST10X_Z5XGBmq=WckusG_fw@mail.gmail.com>
- <CAEf4BzZCjTsWhcmQz08QB4mirfgG0ea6bYJX2RgKirwFxAO+3g@mail.gmail.com>
-In-Reply-To: <CAEf4BzZCjTsWhcmQz08QB4mirfgG0ea6bYJX2RgKirwFxAO+3g@mail.gmail.com>
-From: Lorenz Bauer <lorenz.bauer@isovalent.com>
-Date: Wed, 1 Nov 2023 09:27:32 +0000
-Message-ID: <CAN+4W8gKa=wRegmvnr_DTCJjrr5EM6nVws0Mf7Ksto3ZzZroQA@mail.gmail.com>
-Subject: Re: BTF_TYPE_ID_LOCAL off by one?
+References: <CACkBjsY2q1_fUohD7hRmKGqv1MV=eP2f6XK8kjkYNw7BaiF8iQ@mail.gmail.com>
+ <4b354d05b1bb4aa681fff5baca3455d90233951d.camel@gmail.com> <CAEf4Bzbgf-WQSCz8D4Omh3zFdS4oWS6XELnE7VeoUWgKf3cpig@mail.gmail.com>
+In-Reply-To: <CAEf4Bzbgf-WQSCz8D4Omh3zFdS4oWS6XELnE7VeoUWgKf3cpig@mail.gmail.com>
+From: Hao Sun <sunhao.th@gmail.com>
+Date: Wed, 1 Nov 2023 10:52:52 +0100
+Message-ID: <CACkBjsZen6AA1jXqgmA=uoZZJt5bLu+7Hz3nx3BrvLAP=CqGuA@mail.gmail.com>
+Subject: Re: bpf: shift-out-of-bounds in tnum_rshift()
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 31, 2023 at 6:38=E2=80=AFPM Andrii Nakryiko
+On Fri, Oct 27, 2023 at 7:51=E2=80=AFPM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
 >
-> I don't remember if this is intention or not, but the main part is
-> adjusting CO-RE relocation, the actual instruction value is less
-> important. But this is happening after static linking, because BTF is
-> deduplicated (there is a duplication in BTF generated by Clang).
+> On Wed, Oct 25, 2023 at 10:34=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.=
+com> wrote:
+> >
+> > On Tue, 2023-10-24 at 14:40 +0200, Hao Sun wrote:
+> > > Hi,
+> > >
+> > > The following program can trigger a shift-out-of-bounds in
+> > > tnum_rshift(), called by scalar32_min_max_rsh():
+> > >
+> > > 0: (bc) w0 =3D w1
+> > > 1: (bf) r2 =3D r0
+> > > 2: (18) r3 =3D 0xd
+> > > 4: (bc) w4 =3D w0
+> > > 5: (bf) r5 =3D r0
+> > > 6: (bf) r7 =3D r3
+> > > 7: (bf) r8 =3D r4
+> > > 8: (2f) r8 *=3D r5
+> > > 9: (cf) r5 s>>=3D r5
+> > > 10: (a6) if w8 < 0xfffffffb goto pc+10
+> > > 11: (1f) r7 -=3D r5
+> > > 12: (71) r6 =3D *(u8 *)(r1 +17)
+> > > 13: (5f) r3 &=3D r8
+> > > 14: (74) w2 >>=3D 30
+> > > 15: (1f) r7 -=3D r5
+> > > 16: (5d) if r8 !=3D r6 goto pc+4
+> > > 17: (c7) r8 s>>=3D 5
+> > > 18: (cf) r0 s>>=3D r0
+> > > 19: (7f) r0 >>=3D r0
+> > > 20: (7c) w5 >>=3D w8         # shift-out-bounds here
+> > > 21: exit
+> >
+> > Here is a simplified example:
+> >
+> > SEC("?tp")
+> > __success __retval(0)
+> > __naked void large_shifts(void)
+> > {
+> >         asm volatile ("                 \
+> >         call %[bpf_get_prandom_u32];    \n\
+> >         r8 =3D r0;                        \n\
+> >         r6 =3D r0;                        \n\
+> >         r6 &=3D 0xf;                      \n\
+> >         if w8 < 0xffffffff goto +2;     \n\
+> >         if r8 !=3D r6 goto +1;            \n\
+> >         w0 >>=3D w8;       /* shift-out-bounds here */    \n\
+> >         exit;                           \n\
+> > "       :
+> >         : __imm(bpf_get_prandom_u32)
+> >         : __clobber_all);
+> > }
+> >
+>
+> With my changes the verifier does correctly derive that r8 !=3D r6 will
+> always happen, and thus skips w0 >>=3D w8. But the test itself with
 
-Ah I see! And the deduplication is done by libbpf during linking? So
-far, we've been validating that the instruction immediate matches what
-is in ext_infos. Should I just stop doing that?
+A similar issue can be triggered after your patch for JNE/JEQ.
 
-> There are at least two identical prototypes (which is strange and
-> might be worth looking into from Clang side).
+For the following case, the verifier would shift out of bound:
+     //  0: r0 =3D -2
+      BPF_MOV64_IMM(BPF_REG_0, -2),
+      // 1: r0 /=3D 1
+      BPF_ALU64_IMM(BPF_DIV, BPF_REG_0, 1),
+      // 2: r8 =3D r0
+      BPF_MOV64_REG(BPF_REG_8, BPF_REG_0),
+      // 3: if w8 !=3D 0xfffffffe goto+4
+      BPF_JMP32_IMM(BPF_JNE, BPF_REG_8, 0xfffffffe, 4),
+      // 4: if r8 s> 0xd goto+3
+      BPF_JMP_IMM(BPF_JSGT, BPF_REG_8, 0xd, 3),
+      // 5: r4 =3D 0x2
+      BPF_MOV64_IMM(BPF_REG_4, 0x2),
+      // 6: if r8 s<=3D r4 goto+1
+      BPF_JMP_REG(BPF_JSLE, BPF_REG_8, BPF_REG_4, 1),
+      // 7: w8 s>>=3D w0 # shift out of bound here
+      BPF_ALU32_REG(BPF_ARSH, BPF_REG_8, BPF_REG_0),
+      // 8: exit
+      BPF_EXIT_INSN(),
 
-That would be good!
+ -------- Verifier Log --------
+ func#0 @0
+ 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
+ 0: (b7) r0 =3D -2                       ; R0_w=3D-2
+ 1: (37) r0 /=3D 1                       ; R0_w=3Dscalar()
+ 2: (bf) r8 =3D r0                       ; R0_w=3Dscalar(id=3D1) R8_w=3Dsca=
+lar(id=3D1)
+ 3: (56) if w8 !=3D 0xfffffffe goto pc+4         ;
+R8_w=3Dscalar(id=3D1,smin=3D-9223372032559808514,smax=3D9223372036854775806=
+,umin=3Dumin32=3D4294967294,umax=3D18446744073709551614,smin32=3D-2,smax32=
+=3D-2,
+umax32=3D4294967294,var_off=3D(0xfffffffe; 0xffffffff00000000))
+ 4: (65) if r8 s> 0xd goto pc+3        ;
+R8_w=3Dscalar(id=3D1,smin=3D-9223372032559808514,smax=3D13,umin=3Dumin32=3D=
+4294967294,umax=3D18446744073709551614,smin32=3D-2,smax32=3D-2,umax32=3D429=
+4967294,
+var_off=3D(0xfffffffe; 0xffffffff00000000))
+ 5: (b7) r4 =3D 2                        ; R4_w=3D2
+ 6: (dd) if r8 s<=3D r4 goto pc+1        ; R4_w=3D2 R8_w=3D4294967294
+ 7: (cc) w8 s>>=3D w0                    ; R0=3D4294967294 R8=3D4294967295
+ 8: (95) exit
+
+Here, after #6, reg range is incorrect, seems to be an issue in JSLE case
+in is_branch_taken(). Is this issue fixed in your patch series?
+
+> __retval(0) is not a valid test, so it would be good to construct
+> something that will correctly return 0 at runtime (or use some other
+> check). So I won't put this test into my patch set and will live it as
+> a follow up for someone. But here's the log for anyone curious:
+>
+> VERIFIER LOG:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> func#0 @0
+> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
+> ; asm volatile ("                                       \
+> 0: (85) call bpf_get_prandom_u32#7    ; R0_w=3Dscalar()
+> 1: (bf) r8 =3D r0                       ; R0_w=3Dscalar(id=3D1) R8_w=3Dsc=
+alar(id=3D1)
+> 2: (bf) r6 =3D r0                       ; R0_w=3Dscalar(id=3D1) R6_w=3Dsc=
+alar(id=3D1)
+> 3: (57) r6 &=3D 15                      ;
+> R6_w=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D15,var_of=
+f=3D(0x0;
+> 0xf))
+> 4: (a6) if w8 < 0xffffffff goto pc+2          ;
+> R8_w=3Dscalar(id=3D1,smin=3D-9223372032559808513,umin=3Dumin32=3D42949672=
+95,smin32=3D-1,smax32=3D-1,var_off=3D(0xffffffff;
+> 0xffffffff00000000))
+> 5: (5d) if r8 !=3D r6 goto pc+1
+> mark_precise: frame0: last_idx 5 first_idx 0 subseq_idx -1
+> mark_precise: frame0: regs=3Dr0,r8 stack=3D before 4: (a6) if w8 <
+> 0xffffffff goto pc+2
+> mark_precise: frame0: regs=3Dr0,r8 stack=3D before 3: (57) r6 &=3D 15
+> mark_precise: frame0: regs=3Dr0,r8 stack=3D before 2: (bf) r6 =3D r0
+> mark_precise: frame0: regs=3Dr0,r8 stack=3D before 1: (bf) r8 =3D r0
+> mark_precise: frame0: regs=3Dr0 stack=3D before 0: (85) call bpf_get_pran=
+dom_u32#7
+> mark_precise: frame0: last_idx 5 first_idx 0 subseq_idx -1
+> mark_precise: frame0: regs=3Dr6 stack=3D before 4: (a6) if w8 < 0xfffffff=
+f goto pc+2
+> mark_precise: frame0: regs=3Dr6 stack=3D before 3: (57) r6 &=3D 15
+> mark_precise: frame0: regs=3Dr6 stack=3D before 2: (bf) r6 =3D r0
+> mark_precise: frame0: regs=3Dr0 stack=3D before 1: (bf) r8 =3D r0
+> mark_precise: frame0: regs=3Dr0 stack=3D before 0: (85) call bpf_get_pran=
+dom_u32#7
+> 5: R6_w=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D15,var=
+_off=3D(0x0;
+> 0xf)) R8_w=3Dscalar(id=3D1,smin=3D-9223372032559808513,umin=3Dumin32=3D42=
+94967295,smin32=3D-1,smax32=3D-1,var_off=3D(0xffffffff;
+> 0xffffffff00000000))
+> 7: (95) exit
+>
+> from 4 to 7: R0=3Dscalar(id=3D1,smax=3D9223372036854775806,umax=3D1844674=
+4073709551614,umax32=3D4294967294)
+> R6=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D15,var_off=
+=3D(0x0; 0xf))
+> R8=3Dscalar(id=3D1,smax=3D9223372036854775806,umax=3D18446744073709551614=
+,umax32=3D4294967294)
+> R10=3Dfp0
+> 7: R0=3Dscalar(id=3D1,smax=3D9223372036854775806,umax=3D18446744073709551=
+614,umax32=3D4294967294)
+> R6=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D15,var_off=
+=3D(0x0; 0xf))
+> R8=3Dscalar(id=3D1,smax=3D9223372036854775806,umax=3D18446744073709551614=
+,umax32=3D4294967294)
+> R10=3Dfp0
+> 7: (95) exit
+> processed 8 insns (limit 1000000) max_states_per_insn 0 total_states 1
+> peak_states 1 mark_read 1
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> at insn #4, simulating a FALSE condition, verifier knows that r6 is
+> [0, 15], while w8 is exactly 0xffffffff, so at insn #5 it can tell
+> that 0xffffffff can never be equal to a value in [0, 15] range, and
+> thus skips the shift instruction.
+>
 
