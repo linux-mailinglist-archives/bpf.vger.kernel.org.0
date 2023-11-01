@@ -1,306 +1,293 @@
-Return-Path: <bpf+bounces-13815-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13816-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D4987DE5A0
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 18:52:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8BA27DE5A5
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 18:54:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2438A281956
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 17:52:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73E1F281328
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 17:54:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9237018653;
-	Wed,  1 Nov 2023 17:51:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4DA018AFA;
+	Wed,  1 Nov 2023 17:54:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="ju+O9zjV";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="tB2pIg+5"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="DhowvoYC"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A358F15E83;
-	Wed,  1 Nov 2023 17:51:52 +0000 (UTC)
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95210A2;
-	Wed,  1 Nov 2023 10:51:47 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.nyi.internal (Postfix) with ESMTP id 5E7A95C0405;
-	Wed,  1 Nov 2023 13:51:46 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 01 Nov 2023 13:51:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-	1698861106; x=1698947506; bh=eaeRHsOIThQN1udl/ucOzomysNnXo1Okkum
-	+nyz4aiA=; b=ju+O9zjVVtcQ2eEnDL9svFNxQ3gbhZ339N/mkTXLc1Ub5S3/wXe
-	NZmwdZ5X+ywRAE7xuaP77lhadr3tNBSNbj6Aib5OH31uFynwzjF/LLXLHSpzeWZw
-	rtJYHx+jFi/kqWCp9uudgEvYY+c3LaygLS43iRLwC5o2HrDMqIKLDQE6y4OQ5731
-	gHS+k7RvbgNQ2bhYIYmcjXb+LdtN+30WPYLSwQl0MNCPcsyoh/zMV8txbS+kVQW2
-	XndgDDISbuuUHlFgFPc19ijrzCqfgMi1xfUP3DJzFs/IWe+V+MXhneTy6f9TKIw0
-	A7KdQZkIarxMIJ+Op2Sol1hY7J0g088HjEQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1698861106; x=1698947506; bh=eaeRHsOIThQN1udl/ucOzomysNnXo1Okkum
-	+nyz4aiA=; b=tB2pIg+5tQ1Y57S0WTlOe2T9mC+86F0DQ21rw2s83N99oFWNAIH
-	TiFcU9VAht4T+oQCOcqMu8dLcId7lexrFF6FW6uJSQK5+i7OP6Bosf3/Oq+W//EX
-	OQrLVS7KbP2NmFkelm7BvTNm6uwn9PtaZ8Gw0hqsQv3BDjkvf/R39eSkms4PS8tk
-	Eb1/64MwmhJzoov+LsVxSWZu6zmRbBKcPLdolp3nIK5lY+EomoqazWi/L4nsresL
-	qvZ/kB18FRcV9lYPS3RHdLGpVauaPxJwDQsH3/TaRXDkgtqtbhP7v97y/fdDCr9O
-	T1AB04460oqL39yuPOhTSOXBKmAdZLDKE7g==
-X-ME-Sender: <xms:L5BCZarapNLr64U7VnDOqjcXnONKr1N9NSqro-sJgu4QjEYknVq20A>
-    <xme:L5BCZYryUxWZu6pO0SyMHwnHS8FvdLDo-lyiIzVgBFwSjgxUxM4Rsh0tM8XbdkhCz
-    AbbcvvFXy546myD_g>
-X-ME-Received: <xmr:L5BCZfOYPruQ50VHfVygT2zjxnRNxBv6hglhPBpMUwWxwbehHNm6YP0grRk6tpDx0e2K_n5yi2QxjQ1vjCt8H7kw2Hh9001xfg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddtgedguddtgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
-    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
-    eqnecuggftrfgrthhtvghrnhepffffgeegkeejvdejgeehteekudfhgfefgeevkeelhfeg
-    ueeljefhleejtdekveffnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhush
-    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhu
-    rdighiii
-X-ME-Proxy: <xmx:L5BCZZ7d-PWgoO3PLSCv_YYzM3FUom7vpxZYnK8zXbxY7n9UHB2V4Q>
-    <xmx:L5BCZZ4U_t_sl_TmsjKtjjp3C1NYZPI5GNdfW0jevICykYJ3UJwe7Q>
-    <xmx:L5BCZZhXQyyJCIy6BeY1WMF5kFsMi9dG8LuD8YAYLrPu-Vuo8OHVig>
-    <xmx:MpBCZYRo_I-HDkfuEwl8hv06FG6uQwj15r3CooE5JLbjRNb_kU_vnA>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 1 Nov 2023 13:51:42 -0400 (EDT)
-Date: Wed, 1 Nov 2023 11:51:41 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Steffen Klassert <steffen.klassert@secunet.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	"David S. Miller" <davem@davemloft.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Eric Dumazet <edumazet@google.com>, antony.antony@secunet.com, LKML <linux-kernel@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, devel@linux-ipsec.org
-Subject: Re: [RFC bpf-next 1/6] bpf: xfrm: Add bpf_xdp_get_xfrm_state() kfunc
-Message-ID: <fzgysfsfgeqq3tzy2yqrqjibu542qtfi75fcnbxkivsiajaiys@ddd4vftvtwse>
-References: <cover.1698431765.git.dxu@dxuuu.xyz>
- <ee5513e6384696147da9bdccd2e22ea27d690084.1698431765.git.dxu@dxuuu.xyz>
- <CAADnVQ+UUsJvrPp=YhtpwuC6xVWGB=OgwXZwXtHi=2Je6n5a=A@mail.gmail.com>
- <io26znzyhw4t4drmcqkmvgyykyblxzxpizuntgk5fhqasipfyo@r5tpoqo3djkp>
- <CAADnVQJkfAGG9_868tLW9m-9V2husAaRK5afnrLL1HqaxN_3vQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2B0F125B8;
+	Wed,  1 Nov 2023 17:54:06 +0000 (UTC)
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9838BC1;
+	Wed,  1 Nov 2023 10:54:01 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 37A22120003;
+	Wed,  1 Nov 2023 20:54:00 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 37A22120003
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1698861240;
+	bh=N5nlonZuNjgCoLi9q6ufNWD+EONGzw0UYQZjHj7RM9k=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+	b=DhowvoYC4CshzYzuBjplMTqrLoHBsAikvWrJZh4CtL+Tf7f4qS8KZ1AWMJDu8JRgA
+	 SR45M+nCRDcC3OeZA3ldlJH8CpVfTH0JZaEG439lKiE5s8kCH3ch9P0r0dohX3V+SY
+	 itXLv+B7+/paAmQJClID7ujFPEmSqEw+97sgAf9cUsn7kshEbOg+PF7hED3be8w54k
+	 8zsPjcpG2J89IPmXjOg/xQgSx8KSOX0cQYkdQlfg5d8nUacE2wTqNtb89bGtvR2kvE
+	 YON6o9SfFhHswmB+AIfBaLAEciUVQxoaMbNSGHl3I+/3qbAg7lWWguc9rz3JNWdxGL
+	 kd8wOzx8Vb18g==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Wed,  1 Nov 2023 20:53:59 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 1 Nov
+ 2023 20:53:59 +0300
+Date: Wed, 1 Nov 2023 20:53:59 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: kernel test robot <lkp@intel.com>
+CC: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
+	<mhocko@kernel.org>, <roman.gushchin@linux.dev>, <shakeelb@google.com>,
+	<muchun.song@linux.dev>, <akpm@linux-foundation.org>, <llvm@lists.linux.dev>,
+	<oe-kbuild-all@lists.linux.dev>, <kernel@sberdevices.ru>,
+	<rockosov@gmail.com>, <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH v1 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <20231101175359.kxnat357ysqgbbh7@CAB-WSD-L081021>
+References: <20231101102837.25205-3-ddrokosov@salutedevices.com>
+ <202311012319.7ULVSdyR-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJkfAGG9_868tLW9m-9V2husAaRK5afnrLL1HqaxN_3vQ@mail.gmail.com>
+In-Reply-To: <202311012319.7ULVSdyR-lkp@intel.com>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181058 [Nov 01 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;download.01.org:7.1.1;github.com:7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;git.kernel.org:7.1.1;lore.kernel.org:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/11/01 16:22:00
+X-KSMG-LinksScanning: Clean, bases: 2023/11/01 16:22:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/01 15:56:00 #22380151
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Tue, Oct 31, 2023 at 03:38:26PM -0700, Alexei Starovoitov wrote:
-> On Sun, Oct 29, 2023 at 3:55 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> >
-> > Hi Alexei,
-> >
-> > On Sat, Oct 28, 2023 at 04:49:45PM -0700, Alexei Starovoitov wrote:
-> > > On Fri, Oct 27, 2023 at 11:46 AM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > > >
-> > > > This commit adds an unstable kfunc helper to access internal xfrm_state
-> > > > associated with an SA. This is intended to be used for the upcoming
-> > > > IPsec pcpu work to assign special pcpu SAs to a particular CPU. In other
-> > > > words: for custom software RSS.
-> > > >
-> > > > That being said, the function that this kfunc wraps is fairly generic
-> > > > and used for a lot of xfrm tasks. I'm sure people will find uses
-> > > > elsewhere over time.
-> > > >
-> > > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > > > ---
-> > > >  include/net/xfrm.h        |   9 ++++
-> > > >  net/xfrm/Makefile         |   1 +
-> > > >  net/xfrm/xfrm_policy.c    |   2 +
-> > > >  net/xfrm/xfrm_state_bpf.c | 105 ++++++++++++++++++++++++++++++++++++++
-> > > >  4 files changed, 117 insertions(+)
-> > > >  create mode 100644 net/xfrm/xfrm_state_bpf.c
-> > > >
-> > > > diff --git a/include/net/xfrm.h b/include/net/xfrm.h
-> > > > index 98d7aa78adda..ab4cf66480f3 100644
-> > > > --- a/include/net/xfrm.h
-> > > > +++ b/include/net/xfrm.h
-> > > > @@ -2188,4 +2188,13 @@ static inline int register_xfrm_interface_bpf(void)
-> > > >
-> > > >  #endif
-> > > >
-> > > > +#if IS_ENABLED(CONFIG_DEBUG_INFO_BTF)
-> > > > +int register_xfrm_state_bpf(void);
-> > > > +#else
-> > > > +static inline int register_xfrm_state_bpf(void)
-> > > > +{
-> > > > +       return 0;
-> > > > +}
-> > > > +#endif
-> > > > +
-> > > >  #endif /* _NET_XFRM_H */
-> > > > diff --git a/net/xfrm/Makefile b/net/xfrm/Makefile
-> > > > index cd47f88921f5..547cec77ba03 100644
-> > > > --- a/net/xfrm/Makefile
-> > > > +++ b/net/xfrm/Makefile
-> > > > @@ -21,3 +21,4 @@ obj-$(CONFIG_XFRM_USER_COMPAT) += xfrm_compat.o
-> > > >  obj-$(CONFIG_XFRM_IPCOMP) += xfrm_ipcomp.o
-> > > >  obj-$(CONFIG_XFRM_INTERFACE) += xfrm_interface.o
-> > > >  obj-$(CONFIG_XFRM_ESPINTCP) += espintcp.o
-> > > > +obj-$(CONFIG_DEBUG_INFO_BTF) += xfrm_state_bpf.o
-> > > > diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
-> > > > index 5cdd3bca3637..62e64fa7ae5c 100644
-> > > > --- a/net/xfrm/xfrm_policy.c
-> > > > +++ b/net/xfrm/xfrm_policy.c
-> > > > @@ -4267,6 +4267,8 @@ void __init xfrm_init(void)
-> > > >  #ifdef CONFIG_XFRM_ESPINTCP
-> > > >         espintcp_init();
-> > > >  #endif
-> > > > +
-> > > > +       register_xfrm_state_bpf();
-> > > >  }
-> > > >
-> > > >  #ifdef CONFIG_AUDITSYSCALL
-> > > > diff --git a/net/xfrm/xfrm_state_bpf.c b/net/xfrm/xfrm_state_bpf.c
-> > > > new file mode 100644
-> > > > index 000000000000..a73a17a6497b
-> > > > --- /dev/null
-> > > > +++ b/net/xfrm/xfrm_state_bpf.c
-> > > > @@ -0,0 +1,105 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > +/* Unstable XFRM state BPF helpers.
-> > > > + *
-> > > > + * Note that it is allowed to break compatibility for these functions since the
-> > > > + * interface they are exposed through to BPF programs is explicitly unstable.
-> > > > + */
-> > > > +
-> > > > +#include <linux/bpf.h>
-> > > > +#include <linux/btf_ids.h>
-> > > > +#include <net/xdp.h>
-> > > > +#include <net/xfrm.h>
-> > > > +
-> > > > +/* bpf_xfrm_state_opts - Options for XFRM state lookup helpers
-> > > > + *
-> > > > + * Members:
-> > > > + * @error      - Out parameter, set for any errors encountered
-> > > > + *              Values:
-> > > > + *                -EINVAL - netns_id is less than -1
-> > > > + *                -EINVAL - Passed NULL for opts
-> > > > + *                -EINVAL - opts__sz isn't BPF_XFRM_STATE_OPTS_SZ
-> > > > + *                -ENONET - No network namespace found for netns_id
-> > > > + * @netns_id   - Specify the network namespace for lookup
-> > > > + *              Values:
-> > > > + *                BPF_F_CURRENT_NETNS (-1)
-> > > > + *                  Use namespace associated with ctx
-> > > > + *                [0, S32_MAX]
-> > > > + *                  Network Namespace ID
-> > > > + * @mark       - XFRM mark to match on
-> > > > + * @daddr      - Destination address to match on
-> > > > + * @spi                - Security parameter index to match on
-> > > > + * @proto      - L3 protocol to match on
-> > > > + * @family     - L3 protocol family to match on
-> > > > + */
-> > > > +struct bpf_xfrm_state_opts {
-> > > > +       s32 error;
-> > > > +       s32 netns_id;
-> > > > +       u32 mark;
-> > > > +       xfrm_address_t daddr;
-> > > > +       __be32 spi;
-> > > > +       u8 proto;
-> > > > +       u16 family;
-> > > > +};
-> > > > +
-> > > > +enum {
-> > > > +       BPF_XFRM_STATE_OPTS_SZ = sizeof(struct bpf_xfrm_state_opts),
-> > > > +};
-> > > > +
-> > > > +__diag_push();
-> > > > +__diag_ignore_all("-Wmissing-prototypes",
-> > > > +                 "Global functions as their definitions will be in xfrm_state BTF");
-> > > > +
-> > > > +/* bpf_xdp_get_xfrm_state - Get XFRM state
-> > > > + *
-> > > > + * Parameters:
-> > > > + * @ctx        - Pointer to ctx (xdp_md) in XDP program
-> > > > + *                 Cannot be NULL
-> > > > + * @opts       - Options for lookup (documented above)
-> > > > + *                 Cannot be NULL
-> > > > + * @opts__sz   - Length of the bpf_xfrm_state_opts structure
-> > > > + *                 Must be BPF_XFRM_STATE_OPTS_SZ
-> > > > + */
-> > > > +__bpf_kfunc struct xfrm_state *
-> > > > +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts, u32 opts__sz)
-> > > > +{
-> > > > +       struct xdp_buff *xdp = (struct xdp_buff *)ctx;
-> > > > +       struct net *net = dev_net(xdp->rxq->dev);
-> > > > +
-> > > > +       if (!opts || opts__sz != BPF_XFRM_STATE_OPTS_SZ) {
-> > > > +               opts->error = -EINVAL;
-> > > > +               return NULL;
-> > > > +       }
-> > > > +
-> > > > +       if (unlikely(opts->netns_id < BPF_F_CURRENT_NETNS)) {
-> > > > +               opts->error = -EINVAL;
-> > > > +               return NULL;
-> > > > +       }
-> > > > +
-> > > > +       if (opts->netns_id >= 0) {
-> > > > +               net = get_net_ns_by_id(net, opts->netns_id);
-> > > > +               if (unlikely(!net)) {
-> > > > +                       opts->error = -ENONET;
-> > > > +                       return NULL;
-> > > > +               }
-> > > > +       }
-> > > > +
-> > > > +       return xfrm_state_lookup(net, opts->mark, &opts->daddr, opts->spi,
-> > > > +                                opts->proto, opts->family);
-> > > > +}
-> > >
-> > > Patch 6 example does little to explain how this kfunc can be used.
-> > > Cover letter sounds promising, but no code to demonstrate the result.
-> >
-> > Part of the reason for that is this kfunc is intended to be used with a
-> > not-yet-upstreamed xfrm patchset. The other is that the usage is quite
-> > trivial. This is the code the experiments were run with:
-> >
-> > https://github.com/danobi/xdp-tools/blob/e89a1c617aba3b50d990f779357d6ce2863ecb27/xdp-bench/xdp_redirect_cpumap.bpf.c#L385-L406
-> >
-> > We intend to upstream that cpumap mode to xdp-tools as soon as the xfrm
-> > patches are in. (Note the linked code is a little buggy but the
-> > main idea is there).
+Oh, I apologize for that. It seems that I need to wrap the new
+tracepoint calls with CONFIG_MEMCG. I will proceed to prepare the new
+version.
+
+On Wed, Nov 01, 2023 at 11:44:10PM +0800, kernel test robot wrote:
+> Hi Dmitry,
 > 
-> I don't understand how it survives anything, but sanity check.
-> To measure perf gains it needs to be under traffic for some time,
-> but
-> x = bpf_xdp_get_xfrm_state(ctx, &opts, sizeof(opts));
-> will keep refcnt++ that state for every packet.
-> Minimum -> memory leak or refcnt overflow.
+> kernel test robot noticed the following build errors:
+> 
+> [auto build test ERROR on akpm-mm/mm-everything]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Dmitry-Rokosov/mm-memcg-print-out-cgroup-name-in-the-memcg-tracepoints/20231101-183040
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+> patch link:    https://lore.kernel.org/r/20231101102837.25205-3-ddrokosov%40salutedevices.com
+> patch subject: [PATCH v1 2/2] mm: memcg: introduce new event to trace shrink_memcg
+> config: um-allyesconfig (https://download.01.org/0day-ci/archive/20231101/202311012319.7ULVSdyR-lkp@intel.com/config)
+> compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231101/202311012319.7ULVSdyR-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202311012319.7ULVSdyR-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    In file included from mm/vmscan.c:19:
+>    In file included from include/linux/kernel_stat.h:9:
+>    In file included from include/linux/interrupt.h:11:
+>    In file included from include/linux/hardirq.h:11:
+>    In file included from arch/um/include/asm/hardirq.h:5:
+>    In file included from include/asm-generic/hardirq.h:17:
+>    In file included from include/linux/irq.h:20:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/um/include/asm/io.h:24:
+>    include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            val = __raw_readb(PCI_IOBASE + addr);
+>                              ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+>                                                            ~~~~~~~~~~ ^
+>    include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+>    #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+>                                                      ^
+>    In file included from mm/vmscan.c:19:
+>    In file included from include/linux/kernel_stat.h:9:
+>    In file included from include/linux/interrupt.h:11:
+>    In file included from include/linux/hardirq.h:11:
+>    In file included from arch/um/include/asm/hardirq.h:5:
+>    In file included from include/asm-generic/hardirq.h:17:
+>    In file included from include/linux/irq.h:20:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/um/include/asm/io.h:24:
+>    include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+>                                                            ~~~~~~~~~~ ^
+>    include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+>    #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+>                                                      ^
+>    In file included from mm/vmscan.c:19:
+>    In file included from include/linux/kernel_stat.h:9:
+>    In file included from include/linux/interrupt.h:11:
+>    In file included from include/linux/hardirq.h:11:
+>    In file included from arch/um/include/asm/hardirq.h:5:
+>    In file included from include/asm-generic/hardirq.h:17:
+>    In file included from include/linux/irq.h:20:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/um/include/asm/io.h:24:
+>    include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            __raw_writeb(value, PCI_IOBASE + addr);
+>                                ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+>                                                          ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+>                                                          ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            readsb(PCI_IOBASE + addr, buffer, count);
+>                   ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            readsw(PCI_IOBASE + addr, buffer, count);
+>                   ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            readsl(PCI_IOBASE + addr, buffer, count);
+>                   ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            writesb(PCI_IOBASE + addr, buffer, count);
+>                    ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            writesw(PCI_IOBASE + addr, buffer, count);
+>                    ~~~~~~~~~~ ^
+>    include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>            writesl(PCI_IOBASE + addr, buffer, count);
+>                    ~~~~~~~~~~ ^
+> >> mm/vmscan.c:5811:3: error: implicit declaration of function 'trace_mm_vmscan_memcg_shrink_begin' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+>                    trace_mm_vmscan_memcg_shrink_begin(memcg,
+>                    ^
+>    mm/vmscan.c:5811:3: note: did you mean 'trace_mm_vmscan_lru_shrink_active'?
+>    include/trace/events/vmscan.h:467:1: note: 'trace_mm_vmscan_lru_shrink_active' declared here
+>    TRACE_EVENT(mm_vmscan_lru_shrink_active,
+>    ^
+>    include/linux/tracepoint.h:566:2: note: expanded from macro 'TRACE_EVENT'
+>            DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+>            ^
+>    include/linux/tracepoint.h:432:2: note: expanded from macro 'DECLARE_TRACE'
+>            __DECLARE_TRACE(name, PARAMS(proto), PARAMS(args),              \
+>            ^
+>    include/linux/tracepoint.h:355:21: note: expanded from macro '__DECLARE_TRACE'
+>            static inline void trace_##name(proto)                          \
+>                               ^
+>    <scratch space>:33:1: note: expanded from here
+>    trace_mm_vmscan_lru_shrink_active
+>    ^
+> >> mm/vmscan.c:5845:3: error: implicit declaration of function 'trace_mm_vmscan_memcg_shrink_end' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+>                    trace_mm_vmscan_memcg_shrink_end(memcg,
+>                    ^
+>    mm/vmscan.c:5845:3: note: did you mean 'trace_mm_vmscan_memcg_shrink_begin'?
+>    mm/vmscan.c:5811:3: note: 'trace_mm_vmscan_memcg_shrink_begin' declared here
+>                    trace_mm_vmscan_memcg_shrink_begin(memcg,
+>                    ^
+>    12 warnings and 2 errors generated.
+> 
+> 
+> vim +/trace_mm_vmscan_memcg_shrink_begin +5811 mm/vmscan.c
+> 
+>   5791	
+>   5792	static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+>   5793	{
+>   5794		struct mem_cgroup *target_memcg = sc->target_mem_cgroup;
+>   5795		struct mem_cgroup *memcg;
+>   5796	
+>   5797		memcg = mem_cgroup_iter(target_memcg, NULL, NULL);
+>   5798		do {
+>   5799			struct lruvec *lruvec = mem_cgroup_lruvec(memcg, pgdat);
+>   5800			unsigned long reclaimed;
+>   5801			unsigned long scanned;
+>   5802	
+>   5803			/*
+>   5804			 * This loop can become CPU-bound when target memcgs
+>   5805			 * aren't eligible for reclaim - either because they
+>   5806			 * don't have any reclaimable pages, or because their
+>   5807			 * memory is explicitly protected. Avoid soft lockups.
+>   5808			 */
+>   5809			cond_resched();
+>   5810	
+> > 5811			trace_mm_vmscan_memcg_shrink_begin(memcg,
+>   5812							   sc->order,
+>   5813							   sc->gfp_mask);
+>   5814	
+>   5815			mem_cgroup_calculate_protection(target_memcg, memcg);
+>   5816	
+>   5817			if (mem_cgroup_below_min(target_memcg, memcg)) {
+>   5818				/*
+>   5819				 * Hard protection.
+>   5820				 * If there is no reclaimable memory, OOM.
+>   5821				 */
+>   5822				continue;
+>   5823			} else if (mem_cgroup_below_low(target_memcg, memcg)) {
+>   5824				/*
+>   5825				 * Soft protection.
+>   5826				 * Respect the protection only as long as
+>   5827				 * there is an unprotected supply
+>   5828				 * of reclaimable memory from other cgroups.
+>   5829				 */
+>   5830				if (!sc->memcg_low_reclaim) {
+>   5831					sc->memcg_low_skipped = 1;
+>   5832					continue;
+>   5833				}
+>   5834				memcg_memory_event(memcg, MEMCG_LOW);
+>   5835			}
+>   5836	
+>   5837			reclaimed = sc->nr_reclaimed;
+>   5838			scanned = sc->nr_scanned;
+>   5839	
+>   5840			shrink_lruvec(lruvec, sc);
+>   5841	
+>   5842			shrink_slab(sc->gfp_mask, pgdat->node_id, memcg,
+>   5843				    sc->priority);
+>   5844	
+> > 5845			trace_mm_vmscan_memcg_shrink_end(memcg,
+>   5846							 sc->nr_reclaimed - reclaimed);
+>   5847	
+>   5848			/* Record the group's reclaim efficiency */
+>   5849			if (!sc->proactive)
+>   5850				vmpressure(sc->gfp_mask, memcg, false,
+>   5851					   sc->nr_scanned - scanned,
+>   5852					   sc->nr_reclaimed - reclaimed);
+>   5853	
+>   5854		} while ((memcg = mem_cgroup_iter(target_memcg, memcg, NULL)));
+>   5855	}
+>   5856	
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
 
-Yeah, I agree the code in this patchset is not correct. I have the fix
-(a KF_RELEASE wrapper around xfrm_state_put()) ready to send. I think
-Steffen was gonna chat w/ you about this at IETF next week. But I can
-send it now if you'd like.
-
-To answer your question why it doesn't blow up immediately:
-
-* The test system only has ~33 inbound SAs and the test doesn't try to
-  delete any. So leak is not noticed in the test. Oddly enough I recall
-  `ip x s flush` working correctly... Could be misremembering.
-
-* Refcnt overflow will indeed happen, but some rough math shows it'll
-  take about 12 hrs receiving at 100Gbps for that to happen. 100Gbps =
-  12.5 GB/s. 12.5GB / (32 CPUs) / (9000B) = 43k pps for each pcpu SA.
-  INT_MAX = 2 billion. 2B / 4k = 46k. 46k seconds to hours is ~12 hrs.
-  And I was only running traffic for ~1 hour.
-
-At least I think that math is right.
-
-Thanks,
-Daniel
+-- 
+Thank you,
+Dmitry
 
