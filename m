@@ -1,249 +1,243 @@
-Return-Path: <bpf+bounces-13848-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13849-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A115F7DE7EB
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 23:06:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA2327DE807
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 23:22:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD489B2117D
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 22:06:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9EB76B21013
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 22:21:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 759581BDEC;
-	Wed,  1 Nov 2023 22:05:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74DD21B296;
+	Wed,  1 Nov 2023 22:21:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="rvTYON17";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jqyJXlVW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E/XfQ2QW"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E84FC1B274;
-	Wed,  1 Nov 2023 22:05:53 +0000 (UTC)
-X-Greylist: delayed 402 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 01 Nov 2023 15:05:48 PDT
-Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B899B110;
-	Wed,  1 Nov 2023 15:05:48 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailnew.west.internal (Postfix) with ESMTP id 045D92B0024C;
-	Wed,  1 Nov 2023 17:59:03 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 01 Nov 2023 17:59:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to; s=fm2; t=1698875943; x=
-	1698883143; bh=JDI0BTQjsxNjFfs3ZXUNBrkfEpISd91lLxe7rf7aIlc=; b=r
-	vTYON17JSY0S452ml5IiBSCl0tjiF9U/2kCRCRNEBnmImPQ1fPablp9yJWGc1XjC
-	XhuqLtfwa3EBMQgYpdpkSszRti0XUjz5u2TXHCqyvc7H9+wwGvOu9nbr3nUjFe+P
-	P6Ck1bU+nKPPIB/OaRTrAq07aCjOnxVyOetjtYavVzGapluuW2a47KJnBD0bLJeI
-	zknD0qg3KN5HDGjo1pLQWzVyArxyFxrc/VOupMK2FwkHdx91HxKUaEQ9he0TMy2l
-	DFdCktW0xZGEiXhRH4F+G1kSVa1dyEZNXUNdgehOFSKbdc14WrXpkKKN+dX4ntLQ
-	Lr7LPo7nfNicGOr9xfLuA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1698875943; x=
-	1698883143; bh=JDI0BTQjsxNjFfs3ZXUNBrkfEpISd91lLxe7rf7aIlc=; b=j
-	qyJXlVWSQlkH5fL2R5I/hiblO0azHwx7SyII3c/xdkWqooNa5IwI4Ou1fRii+Jn9
-	IgUpRy7/w3PVmFG2NFdJ27LPh20xJskt+NH572lyp5X1484mlJf2rmFhlmwMNWDW
-	FNNS+xZ4XDgy/1HLZiv2HX+VE1Bs1KuHhz4rVk8SWdYFdDz79dV0l6mnKrQ3Iuuh
-	WKb+41wU5Dw8tBIsNjcH96MDC6lq/QyLdtj/yk5XZlSZmx7XY6D8othAviZW4TRS
-	0rQtjUvMsG3UBv/hZ9Q1tW9yeoo1kmbnP3aJsoISNPPaVnN5rxHW4bMAIY3k2z42
-	tIbsi+3dgSXYbOxMu5xkQ==
-X-ME-Sender: <xms:J8pCZZo-mR5tQ3-BnKZ6vTCARCQl0XG8US8QvqmvaAoSpa_efxZ7mg>
-    <xme:J8pCZbofbD-qvHOSEOdOmz9YxLoe_KJp_6wjCtO3gddfZASJikvDP5nDVhyoOHOqn
-    ivTy4fv-TQe4oeJCg>
-X-ME-Received: <xmr:J8pCZWP2Yqg0WY7BBS-71gtO9w9h_T4DhEXU59FiVWfetQZdAc_SRAw_9SE_IWJuc06eXg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddtgedgudehgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdefhedmnecujfgurhephf
-    fvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcu
-    oegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgfefggeejhfduie
-    ekvdeuteffleeifeeuvdfhheejleejjeekgfffgefhtddtteenucevlhhushhtvghrufhi
-    iigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:J8pCZU5Gp9066IKZQxlHsVyKbI3TKWYU_31CurfrYwXofq5AXvzAOw>
-    <xmx:J8pCZY7Hjlnd2IbLtPr6bG51w6V3Il8QLMJmeqy3b3XnuAiYesHeZw>
-    <xmx:J8pCZcgn4wSzGwabhoojyGVmuHXzlYSMRuaNGVoOmDKODzhDq5A1MA>
-    <xmx:J8pCZdSpko-PJ_aSebSMUbykDCE12AGISwu7kOgfK4Ov0XRJVW3afpmpzn4>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 1 Nov 2023 17:59:00 -0400 (EDT)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: shuah@kernel.org,
-	kuba@kernel.org,
-	hawk@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	andrii@kernel.org,
-	john.fastabend@gmail.com,
-	davem@davemloft.net,
-	steffen.klassert@secunet.com,
-	antony.antony@secunet.com
-Cc: martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mykolal@fb.com,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	devel@linux-ipsec.org
-Subject: [RFCv2 bpf-next 7/7] bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
-Date: Wed,  1 Nov 2023 14:57:51 -0700
-Message-ID: <707a94d00b622e73c4b28bc059d4dabe7635b678.1698875025.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1698875025.git.dxu@dxuuu.xyz>
-References: <cover.1698875025.git.dxu@dxuuu.xyz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6498F6130
+	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 22:21:52 +0000 (UTC)
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D936211D
+	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 15:21:49 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53e70b0a218so469043a12.2
+        for <bpf@vger.kernel.org>; Wed, 01 Nov 2023 15:21:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698877308; x=1699482108; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/hKO352Xlc8yqFINjq99IEYr5+Rs7MbLLbX/HF5a4d0=;
+        b=E/XfQ2QW/EB9pzoJit1AX3WiyJywj/dvlPeSVUykDruSulhHWN1+UOWp7BMItkCAQ0
+         RZAtHH063KTAgf0NLUlR8ndfoUKoHK766QTZcA+3M6RXlqI+pLq++Hz3eZ/7OQ21crt5
+         /ZoKb9RK9veV2UVq5peegDslK3ZmcmWgP19kN6DpMjezulX+yLubKbF6zjzKBUo+qh9u
+         tkGyJi4pIQwkX7JiwvrJcI3p9HZsaQs3N5OvLtCZvaQfQMMHAXvNxnOWjKGhVETNkbit
+         VS4A+D0sHGpQES8EqOW8oOR1C8DBL4wjUEhHiUOGv8x0vGUUzANjnSKIjOo8ir+/NAg/
+         7etQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698877308; x=1699482108;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/hKO352Xlc8yqFINjq99IEYr5+Rs7MbLLbX/HF5a4d0=;
+        b=MJbG/Ut2hY6TnruBPTT5N5aY8pqqtkHdCoq6qT8N5nmsp2sGQDUro/s2T/19/bpZqj
+         k1Ktzdka0Q7KpmU/FLW2IUN5A+tYzAXsnKqb9gBPExsg7Zo/QB0csaTRfrRxzNFrPqMG
+         BcZl5UTKQvInlzX2XihH0Pt93M4bhiqMGKE7UcF9Dq50sHLY+4ipreKzAoRaeaPjG72h
+         Jo9dJjp7uQ9flppqyBrm44Mxoq7BTQ/R07v6wVCm13dKFsEJ9f4CXRAp/a5KfSIPfSDX
+         O7FvzOTW8JKssS1WdVWoq+YhVwAmQ4zNBwEgnVAaLVCv1pzamCjivK7uFiYb2m7dlwXs
+         UGTg==
+X-Gm-Message-State: AOJu0YyK6LlR+Xj/uz11hiMpNeZueVTGrsH+Sa3YULEC8JGLhQkR/HBw
+	wS/FMlIdM9gLrpVA7xf/EaRMVx3FBvl/cCTjVIg=
+X-Google-Smtp-Source: AGHT+IGPGd2jEYfjlKuxx0VSx1Su5gd1Y/Ah9mSCqs3dW7osys7k703AnXUvqJ10ry35Xe3paafBtO36gjFsINsajN0=
+X-Received: by 2002:a17:906:fd89:b0:9b9:a1dd:5105 with SMTP id
+ xa9-20020a170906fd8900b009b9a1dd5105mr3463926ejb.50.1698877308113; Wed, 01
+ Nov 2023 15:21:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231025202420.390702-1-jolsa@kernel.org> <20231025202420.390702-4-jolsa@kernel.org>
+In-Reply-To: <20231025202420.390702-4-jolsa@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 1 Nov 2023 15:21:36 -0700
+Message-ID: <CAEf4Bzbi8EgT-CC9jS69sV2whk1Dnr-WV5mRyCs=W3JxOMvtWg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/6] bpf: Add link_info support for uprobe multi link
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Yafang Shao <laoar.shao@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This commit extends test_tunnel selftest to test the new XDP xfrm state
-lookup kfunc.
+On Wed, Oct 25, 2023 at 1:24=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> Adding support to get uprobe_link details through bpf_link_info
+> interface.
+>
+> Adding new struct uprobe_multi to struct bpf_link_info to carry
+> the uprobe_multi link details.
+>
+> The uprobe_multi.count is passed from user space to denote size
+> of array fields (offsets/ref_ctr_offsets/cookies). The actual
+> array size is stored back to uprobe_multi.count (allowing user
+> to find out the actual array size) and array fields are populated
+> up to the user passed size.
+>
+> All the non-array fields (path/count/flags/pid) are always set.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  include/uapi/linux/bpf.h       | 10 +++++
+>  kernel/trace/bpf_trace.c       | 68 ++++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h | 10 +++++
+>  3 files changed, 88 insertions(+)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 0f6cdf52b1da..960cf2914d63 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -6556,6 +6556,16 @@ struct bpf_link_info {
+>                         __u32 flags;
+>                         __u64 missed;
+>                 } kprobe_multi;
+> +               struct {
+> +                       __aligned_u64 path;
+> +                       __aligned_u64 offsets;
+> +                       __aligned_u64 ref_ctr_offsets;
+> +                       __aligned_u64 cookies;
+> +                       __u32 path_max; /* in/out: uprobe_multi path size=
+ */
 
-Co-developed-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- .../selftests/bpf/progs/test_tunnel_kern.c    | 49 +++++++++++++++++++
- tools/testing/selftests/bpf/test_tunnel.sh    | 12 +++--
- 2 files changed, 57 insertions(+), 4 deletions(-)
+people already called out that path_size makes for a better name, I agree
 
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index ec7e04e012ae..17bf9ce28460 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -35,6 +35,10 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
- 			  struct bpf_fou_encap *encap, int type) __ksym;
- int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
- 			  struct bpf_fou_encap *encap) __ksym;
-+struct xfrm_state *
-+bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts,
-+		       u32 opts__sz) __ksym;
-+void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ksym;
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
-@@ -948,4 +952,49 @@ int xfrm_get_state(struct __sk_buff *skb)
- 	return TC_ACT_OK;
- }
- 
-+SEC("xdp")
-+int xfrm_get_state_xdp(struct xdp_md *xdp)
-+{
-+	struct bpf_xfrm_state_opts opts = {};
-+	struct xfrm_state *x = NULL;
-+	struct ip_esp_hdr *esph;
-+	struct bpf_dynptr ptr;
-+	u8 esph_buf[8] = {};
-+	u8 iph_buf[20] = {};
-+	struct iphdr *iph;
-+	u32 off;
-+
-+	if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
-+		goto out;
-+
-+	off = sizeof(struct ethhdr);
-+	iph = bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf));
-+	if (!iph || iph->protocol != IPPROTO_ESP)
-+		goto out;
-+
-+	off += sizeof(struct iphdr);
-+	esph = bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_buf));
-+	if (!esph)
-+		goto out;
-+
-+	opts.netns_id = BPF_F_CURRENT_NETNS,
-+	opts.daddr.a4 = iph->daddr;
-+	opts.spi = esph->spi;
-+	opts.proto = IPPROTO_ESP;
-+	opts.family = AF_INET;
-+
-+	x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-+	if (!x || opts.error)
-+		goto out;
-+
-+	if (!x->replay_esn)
-+		goto out;
-+
-+	bpf_printk("replay-window %d\n", x->replay_esn->replay_window);
-+out:
-+	if (x)
-+		bpf_xdp_xfrm_state_release(x);
-+	return XDP_PASS;
-+}
-+
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_tunnel.sh b/tools/testing/selftests/bpf/test_tunnel.sh
-index dd3c79129e87..17d263681c71 100755
---- a/tools/testing/selftests/bpf/test_tunnel.sh
-+++ b/tools/testing/selftests/bpf/test_tunnel.sh
-@@ -528,7 +528,7 @@ setup_xfrm_tunnel()
- 	# at_ns0 -> root
- 	ip netns exec at_ns0 \
- 		ip xfrm state add src 172.16.1.100 dst 172.16.1.200 proto esp \
--			spi $spi_in_to_out reqid 1 mode tunnel \
-+			spi $spi_in_to_out reqid 1 mode tunnel replay-window 42 \
- 			auth-trunc 'hmac(sha1)' $auth 96 enc 'cbc(aes)' $enc
- 	ip netns exec at_ns0 \
- 		ip xfrm policy add src 10.1.1.100/32 dst 10.1.1.200/32 dir out \
-@@ -537,7 +537,7 @@ setup_xfrm_tunnel()
- 	# root -> at_ns0
- 	ip netns exec at_ns0 \
- 		ip xfrm state add src 172.16.1.200 dst 172.16.1.100 proto esp \
--			spi $spi_out_to_in reqid 2 mode tunnel \
-+			spi $spi_out_to_in reqid 2 mode tunnel replay-window 42 \
- 			auth-trunc 'hmac(sha1)' $auth 96 enc 'cbc(aes)' $enc
- 	ip netns exec at_ns0 \
- 		ip xfrm policy add src 10.1.1.200/32 dst 10.1.1.100/32 dir in \
-@@ -553,14 +553,14 @@ setup_xfrm_tunnel()
- 	# root namespace
- 	# at_ns0 -> root
- 	ip xfrm state add src 172.16.1.100 dst 172.16.1.200 proto esp \
--		spi $spi_in_to_out reqid 1 mode tunnel \
-+		spi $spi_in_to_out reqid 1 mode tunnel replay-window 42 \
- 		auth-trunc 'hmac(sha1)' $auth 96  enc 'cbc(aes)' $enc
- 	ip xfrm policy add src 10.1.1.100/32 dst 10.1.1.200/32 dir in \
- 		tmpl src 172.16.1.100 dst 172.16.1.200 proto esp reqid 1 \
- 		mode tunnel
- 	# root -> at_ns0
- 	ip xfrm state add src 172.16.1.200 dst 172.16.1.100 proto esp \
--		spi $spi_out_to_in reqid 2 mode tunnel \
-+		spi $spi_out_to_in reqid 2 mode tunnel replay-window 42 \
- 		auth-trunc 'hmac(sha1)' $auth 96  enc 'cbc(aes)' $enc
- 	ip xfrm policy add src 10.1.1.200/32 dst 10.1.1.100/32 dir out \
- 		tmpl src 172.16.1.200 dst 172.16.1.100 proto esp reqid 2 \
-@@ -585,6 +585,8 @@ test_xfrm_tunnel()
- 	tc qdisc add dev veth1 clsact
- 	tc filter add dev veth1 proto ip ingress bpf da object-pinned \
- 		${BPF_PIN_TUNNEL_DIR}/xfrm_get_state
-+	ip link set dev veth1 xdpdrv pinned \
-+		${BPF_PIN_TUNNEL_DIR}/xfrm_get_state_xdp
- 	ip netns exec at_ns0 ping $PING_ARG 10.1.1.200
- 	sleep 1
- 	grep "reqid 1" ${TRACE}
-@@ -593,6 +595,8 @@ test_xfrm_tunnel()
- 	check_err $?
- 	grep "remote ip 0xac100164" ${TRACE}
- 	check_err $?
-+	grep "replay-window 42" ${TRACE}
-+	check_err $?
- 	cleanup
- 
- 	if [ $ret -ne 0 ]; then
--- 
-2.42.0
+> +                       __u32 count;    /* in/out: uprobe_multi offsets/r=
+ef_ctr_offsets/cookies count */
 
+otherwise we'd have to call this count_max :)
+
+> +                       __u32 flags;
+> +                       __u32 pid;
+> +               } uprobe_multi;
+>                 struct {
+>                         __u32 type; /* enum bpf_perf_event_type */
+>                         __u32 :32;
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 843b3846d3f8..9f8ad19a1a93 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -3042,6 +3042,7 @@ struct bpf_uprobe_multi_link {
+>         u32 cnt;
+>         struct bpf_uprobe *uprobes;
+>         struct task_struct *task;
+> +       u32 flags;
+>  };
+>
+>  struct bpf_uprobe_multi_run_ctx {
+> @@ -3081,9 +3082,75 @@ static void bpf_uprobe_multi_link_dealloc(struct b=
+pf_link *link)
+>         kfree(umulti_link);
+>  }
+>
+> +static int bpf_uprobe_multi_link_fill_link_info(const struct bpf_link *l=
+ink,
+> +                                               struct bpf_link_info *inf=
+o)
+> +{
+> +       u64 __user *uref_ctr_offsets =3D u64_to_user_ptr(info->uprobe_mul=
+ti.ref_ctr_offsets);
+> +       u64 __user *ucookies =3D u64_to_user_ptr(info->uprobe_multi.cooki=
+es);
+> +       u64 __user *uoffsets =3D u64_to_user_ptr(info->uprobe_multi.offse=
+ts);
+> +       u64 __user *upath =3D u64_to_user_ptr(info->uprobe_multi.path);
+> +       u32 upath_max =3D info->uprobe_multi.path_max;
+> +       struct bpf_uprobe_multi_link *umulti_link;
+> +       u32 ucount =3D info->uprobe_multi.count;
+> +       int err =3D 0, i;
+> +       char *p, *buf;
+> +       long left;
+> +
+> +       if (!upath ^ !upath_max)
+> +               return -EINVAL;
+> +
+> +       if (!uoffsets ^ !ucount)
+> +               return -EINVAL;
+> +
+> +       umulti_link =3D container_of(link, struct bpf_uprobe_multi_link, =
+link);
+> +       info->uprobe_multi.count =3D umulti_link->cnt;
+> +       info->uprobe_multi.flags =3D umulti_link->flags;
+> +       info->uprobe_multi.pid =3D umulti_link->task ?
+> +                                task_pid_nr(umulti_link->task) : (u32) -=
+1;
+
+on attach we do
+
+task =3D get_pid_task(find_vpid(pid), PIDTYPE_PID);
+
+So on attachment we take pid in user's namespace, is that right? It's
+kind of asymmetrical that we return the global PID back? Should we try
+to convert PID to user's namespace instead?
+
+> +
+> +       if (upath) {
+> +               if (upath_max > PATH_MAX)
+> +                       return -E2BIG;
+
+no need to fail here, as pointed out elsewhere
+
+> +               buf =3D kmalloc(upath_max, GFP_KERNEL);
+
+here we can allocate min(PATH_MAX, upath_max)
+
+> +               if (!buf)
+> +                       return -ENOMEM;
+> +               p =3D d_path(&umulti_link->path, buf, upath_max);
+> +               if (IS_ERR(p)) {
+> +                       kfree(buf);
+> +                       return -ENOSPC;
+> +               }
+> +               left =3D copy_to_user(upath, p, buf + upath_max - p);
+> +               kfree(buf);
+> +               if (left)
+> +                       return -EFAULT;
+> +       }
+> +
+> +       if (!uoffsets)
+> +               return 0;
+
+it would be good to still return actual counts for out parameters, no?
+
+> +
+> +       if (ucount < umulti_link->cnt)
+> +               err =3D -ENOSPC;
+> +       else
+> +               ucount =3D umulti_link->cnt;
+> +
+> +       for (i =3D 0; i < ucount; i++) {
+> +               if (put_user(umulti_link->uprobes[i].offset, uoffsets + i=
+))
+> +                       return -EFAULT;
+> +               if (uref_ctr_offsets &&
+> +                   put_user(umulti_link->uprobes[i].ref_ctr_offset, uref=
+_ctr_offsets + i))
+> +                       return -EFAULT;
+> +               if (ucookies &&
+> +                   put_user(umulti_link->uprobes[i].cookie, ucookies + i=
+))
+> +                       return -EFAULT;
+> +       }
+> +
+> +       return err;
+> +}
+> +
+
+[...]
 
