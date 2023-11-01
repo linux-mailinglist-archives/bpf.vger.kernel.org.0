@@ -1,497 +1,178 @@
-Return-Path: <bpf+bounces-13794-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13795-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C8807DDFA8
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 11:43:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7492B7DE012
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 12:05:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E6D9B2116D
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 10:43:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 529CAB210E5
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 11:05:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FC07101D9;
-	Wed,  1 Nov 2023 10:43:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4AF41096C;
+	Wed,  1 Nov 2023 11:05:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="u0/3w0d2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RJgnSiQI"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F5223DC;
-	Wed,  1 Nov 2023 10:43:40 +0000 (UTC)
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0235DA;
-	Wed,  1 Nov 2023 03:43:35 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 5F442120033;
-	Wed,  1 Nov 2023 13:43:34 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 5F442120033
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1698835414;
-	bh=jDo2aDU63Lsaw8yLynOOXkBuzH1PYdjr+U0WO2CO6P8=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-	b=u0/3w0d2vojXRizkYPTz2IcePTK09PyhNzZ+KPErQM1XJfKRoMg8bj6V2WjJ6TNt6
-	 NZFqKY1Zf0M1i6fbd7gJAHIcrjhO7recH+duasL3+slp8Dk+nWWaDibim8tjmkrxzH
-	 KgqUFz0OvXvJstoONNA0OoA4zcllJL9WhUevJiVHltbHTi15fVKZ1R4WlmO8RvIr1H
-	 8Lge0Uh+hoHz40qygepJ/TP3HCJnvTuPSzVUuUpZ1YbNoW68kj8KnVl+Z2+50DtHGJ
-	 l2UP+OJOW+gesFccB/nhwlu4fs3uQJARdhZ6erAf35ql+y1CbMMbTXVFm6b0p0hnV4
-	 XAGKlwkg80CSg==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Wed,  1 Nov 2023 13:43:34 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
- (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 1 Nov
- 2023 13:43:33 +0300
-Date: Wed, 1 Nov 2023 13:43:33 +0300
-From: Dmitry Rokosov <ddrokosov@salutedevices.com>
-To: <hannes@cmpxchg.org>, <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
-	<shakeelb@google.com>, <muchun.song@linux.dev>, <akpm@linux-foundation.org>
-CC: <kernel@sberdevices.ru>, <rockosov@gmail.com>, <cgroups@vger.kernel.org>,
-	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: Re: [PATCH v1] tools/cgroup: introduce cgroup v2 memory.events
- listener
-Message-ID: <20231101104333.s4hvljtneunroeff@CAB-WSD-L081021>
-References: <20231013184107.28734-1-ddrokosov@salutedevices.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEEE611181
+	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 11:05:40 +0000 (UTC)
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C994111;
+	Wed,  1 Nov 2023 04:05:38 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c594196344so97509631fa.3;
+        Wed, 01 Nov 2023 04:05:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698836736; x=1699441536; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3+Z3Do7J3Zw1Jdi4ducS/Fi/mcvigbwggXv1TRTYbns=;
+        b=RJgnSiQICprdLcbtO678GSVkis2V4EpLxB8aPbeYLcFO4EBjy8r9h9VCH8M9q4HbKM
+         L/0WO0CVyGldY8c6MObJyQQOSUljZOz57D715P5Ny4jNkpV+LOkuZu9yyE/WxFEoqFoN
+         JWTpYycqdEKMbB7z12PJs4Gu/Fs88kwZDdTU9i9wIXE1gh/1DkEZ0N/Dv17Nt9uOTo6C
+         GUhlCnCVd61o7+QAFaG/wA0+85axNMP2OzbbgbDCsAPkf7zJoqiizNRcNu6HTZWy/V6s
+         DbUG1BEvCuFeANkmUraPdi2tKooTTRr0iE1tiMwvO1JkZs9NmzyHCAgtAhSkYPSRVPMC
+         FIYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698836736; x=1699441536;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3+Z3Do7J3Zw1Jdi4ducS/Fi/mcvigbwggXv1TRTYbns=;
+        b=CAekvDGlyaJaMK2PIfl1md7RYITqP47SFa6h5QzJjz8kDWIdFxFqfy4NyB7NOISJe0
+         +a4PSBQ6EJoGwt1PgSfumHgnmTUu+WcYKIslgmKoXhOlqAYEbFx70o+uHnb44/fLa1PB
+         6CbZUIBFb6VcxpTlM3pGV/IWijdnBzvkWcxRKqOjwMdeSZbCU/hzKliOk9f1hW6yWFDJ
+         D2QnmbLxnBxeusILCTfetwTMFvDpewWLQFHCBDIsTkxkjPXo/vQNpZmeFEyGAEMqvpQi
+         E7uWAY4lvOSI42tLcjKQXrBtCfb9M0JXzpMbrZ9MfkwhwJe7gtl6RbuNgDkA0Rs9gnIl
+         G9Fg==
+X-Gm-Message-State: AOJu0YxtVOzZ7MEKoACQMWYzBklN47Io194qT13QPz75KMq7/fOwA6hH
+	s+WilK3msnu2BjGfXjp7PnM=
+X-Google-Smtp-Source: AGHT+IGB3Q+cPBWL9THhOrCjrcivf3jw9MrANp+1qm19E2D4+8F1GTRcj//bNpekNgn1CA5TwkIz/g==
+X-Received: by 2002:a05:651c:c9b:b0:2c0:7d6:570a with SMTP id bz27-20020a05651c0c9b00b002c007d6570amr14088608ljb.33.1698836736066;
+        Wed, 01 Nov 2023 04:05:36 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id v20-20020a2e5054000000b002c17dcd8d91sm183576ljd.120.2023.11.01.04.05.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 04:05:35 -0700 (PDT)
+Message-ID: <4ec86365668f6c3b4242232506e896a17aa2af4c.camel@gmail.com>
+Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: Add test for immediate
+ spilled to stack
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+ <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
+ KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,  Shuah Khan
+ <shuah@kernel.org>, Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Date: Wed, 01 Nov 2023 13:05:33 +0200
+In-Reply-To: <20231101-fix-check-stack-write-v2-2-cb7c17b869b0@gmail.com>
+References: <20231101-fix-check-stack-write-v2-0-cb7c17b869b0@gmail.com>
+	 <20231101-fix-check-stack-write-v2-2-cb7c17b869b0@gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231013184107.28734-1-ddrokosov@salutedevices.com>
-User-Agent: NeoMutt/20220415
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181045 [Nov 01 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/01 06:18:00 #22376334
-X-KSMG-AntiVirus-Status: Clean, skipped
 
-Hi all!
-
-Please let me know if there are any specific guidelines or requirements
-you would like me to consider while reviewing the work. I am open to any
-suggestions or comments you may have.
-
-Appreciate any feedback on that.
-
-On Fri, Oct 13, 2023 at 09:41:07PM +0300, Dmitry Rokosov wrote:
-> This is a simple listener for memory events that handles counter
-> changes in runtime. It can be set up for a specific memory cgroup v2.
-> 
-> The output example:
-> =====
-> $ /tmp/cgroup_v2_event_listener test
-> Initialized MEMCG events with counters:
-> MEMCG events:
-> 	low: 0
-> 	high: 0
-> 	max: 0
-> 	oom: 0
-> 	oom_kill: 0
-> 	oom_group_kill: 0
-> Started monitoring memory events from '/sys/fs/cgroup/test/memory.events'...
-> Received event in /sys/fs/cgroup/test/memory.events:
-> *** 1 MEMCG oom_kill event, change counter 0 => 1
-> Received event in /sys/fs/cgroup/test/memory.events:
-> *** 1 MEMCG oom_kill event, change counter 1 => 2
-> Received event in /sys/fs/cgroup/test/memory.events:
-> *** 1 MEMCG oom_kill event, change counter 2 => 3
-> Received event in /sys/fs/cgroup/test/memory.events:
-> *** 1 MEMCG oom_kill event, change counter 3 => 4
-> Received event in /sys/fs/cgroup/test/memory.events:
-> *** 2 MEMCG max events, change counter 0 => 2
-> Received event in /sys/fs/cgroup/test/memory.events:
-> *** 8 MEMCG max events, change counter 2 => 10
-> *** 1 MEMCG oom event, change counter 0 => 1
-> Received event in /sys/fs/cgroup/test/memory.events:
-> *** 1 MEMCG oom_kill event, change counter 4 => 5
-> ^CExiting cgroup v2 event listener...
-> =====
-> 
-> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+On Wed, 2023-11-01 at 08:33 +0100, Hao Sun wrote:
+> Add a test to check if the verifier correctly reason about the sign
+> of an immediate spilled to stack by BPF_ST instruction.
+>=20
+> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
 > ---
->  tools/cgroup/Makefile                   |   4 +-
->  tools/cgroup/cgroup_v2_event_listener.c | 330 ++++++++++++++++++++++++
->  2 files changed, 332 insertions(+), 2 deletions(-)
->  create mode 100644 tools/cgroup/cgroup_v2_event_listener.c
-> 
-> diff --git a/tools/cgroup/Makefile b/tools/cgroup/Makefile
-> index ffca068e4a76..86bd357a8f54 100644
-> --- a/tools/cgroup/Makefile
-> +++ b/tools/cgroup/Makefile
-> @@ -3,9 +3,9 @@
->  
->  CFLAGS = -Wall -Wextra
->  
-> -all: cgroup_event_listener
-> +all: cgroup_event_listener cgroup_v2_event_listener
->  %: %.c
->  	$(CC) $(CFLAGS) -o $@ $^
->  
->  clean:
-> -	$(RM) cgroup_event_listener
-> +	$(RM) cgroup_event_listener cgroup_v2_event_listener
-> diff --git a/tools/cgroup/cgroup_v2_event_listener.c b/tools/cgroup/cgroup_v2_event_listener.c
-> new file mode 100644
-> index 000000000000..987261db5369
-> --- /dev/null
-> +++ b/tools/cgroup/cgroup_v2_event_listener.c
-> @@ -0,0 +1,330 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * cgroup_v2_event_listener.c - Simple listener of cgroup v2 memory.events
-> + *
-> + * Copyright (c) 2023, SaluteDevices. All Rights Reserved.
-> + *
-> + * Author: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> + */
-> +
-> +#include <err.h>
-> +#include <errno.h>
-> +#include <limits.h>
-> +#include <poll.h>
-> +#include <stdbool.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <sys/inotify.h>
-> +#include <unistd.h>
-> +
-> +#define MEMCG_EVENTS "memory.events"
-> +
-> +/* Size of buffer to use when reading inotify events */
-> +#define INOTIFY_BUFFER_SIZE 8192
-> +
-> +#define INOTIFY_EVENT_NEXT(event, length) ({         \
-> +	(length) -= sizeof(*(event)) + (event)->len; \
-> +	(event)++;                                   \
-> +})
-> +
-> +#define INOTIFY_EVENT_OK(event, length) ((length) >= (ssize_t)sizeof(*(event)))
-> +
-> +#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
-> +
-> +struct memcg_counters {
-> +	long low;
-> +	long high;
-> +	long max;
-> +	long oom;
-> +	long oom_kill;
-> +	long oom_group_kill;
-> +};
-> +
-> +struct memcg_events {
-> +	struct memcg_counters counters;
-> +	char path[PATH_MAX];
-> +	int inotify_fd;
-> +	int inotify_wd;
-> +};
-> +
-> +static void print_memcg_counters(const struct memcg_counters *counters)
+>  tools/testing/selftests/bpf/verifier/bpf_st_mem.c | 32 +++++++++++++++++=
+++++++
+>  1 file changed, 32 insertions(+)
+>=20
+> diff --git a/tools/testing/selftests/bpf/verifier/bpf_st_mem.c b/tools/te=
+sting/selftests/bpf/verifier/bpf_st_mem.c
+> index 3af2501082b2..0ba23807c46c 100644
+> --- a/tools/testing/selftests/bpf/verifier/bpf_st_mem.c
+> +++ b/tools/testing/selftests/bpf/verifier/bpf_st_mem.c
+> @@ -65,3 +65,35 @@
+>  	.expected_attach_type =3D BPF_SK_LOOKUP,
+>  	.runs =3D -1,
+>  },
 > +{
-> +	printf("MEMCG events:\n");
-> +	printf("\tlow: %ld\n", counters->low);
-> +	printf("\thigh: %ld\n", counters->high);
-> +	printf("\tmax: %ld\n", counters->max);
-> +	printf("\toom: %ld\n", counters->oom);
-> +	printf("\toom_kill: %ld\n", counters->oom_kill);
-> +	printf("\toom_group_kill: %ld\n", counters->oom_group_kill);
-> +}
-> +
-> +static int get_memcg_counter(char *line, const char *name, long *counter)
-> +{
-> +	size_t len = strlen(name);
-> +	char *endptr;
-> +	long tmp;
-> +
-> +	if (memcmp(line, name, len)) {
-> +		warnx("Counter line %s has wrong name, %s is expected",
-> +		      line, name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* skip the whitespace delimiter */
-> +	len += 1;
-> +
-> +	errno = 0;
-> +	tmp = strtol(&line[len], &endptr, 10);
-> +	if (((tmp == LONG_MAX || tmp == LONG_MIN) && errno == ERANGE) ||
-> +	    (errno && !tmp)) {
-> +		warnx("Failed to parse: %s", &line[len]);
-> +		return -ERANGE;
-> +	}
-> +
-> +	if (endptr == &line[len]) {
-> +		warnx("Not digits were found in line %s", &line[len]);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!(*endptr == '\0' || (*endptr == '\n' && *++endptr == '\0'))) {
-> +		warnx("Further characters after number: %s", endptr);
-> +		return -EINVAL;
-> +	}
-> +
-> +	*counter = tmp;
-> +
-> +	return 0;
-> +}
-> +
-> +static int read_memcg_events(struct memcg_events *events, bool show_diff)
-> +{
-> +	FILE *fp = fopen(events->path, "re");
-> +	size_t i;
-> +	int ret = 0;
-> +	bool any_new_events = false;
-> +	char *line = NULL;
-> +	size_t len = 0;
-> +	struct memcg_counters new_counters;
-> +	struct memcg_counters *counters = &events->counters;
-> +	struct {
-> +		const char *name;
-> +		long *new;
-> +		long *old;
-> +	} map[] = {
-> +		{
-> +			.name = "low",
-> +			.new = &new_counters.low,
-> +			.old = &counters->low,
-> +		},
-> +		{
-> +			.name = "high",
-> +			.new = &new_counters.high,
-> +			.old = &counters->high,
-> +		},
-> +		{
-> +			.name = "max",
-> +			.new = &new_counters.max,
-> +			.old = &counters->max,
-> +		},
-> +		{
-> +			.name = "oom",
-> +			.new = &new_counters.oom,
-> +			.old = &counters->oom,
-> +		},
-> +		{
-> +			.name = "oom_kill",
-> +			.new = &new_counters.oom_kill,
-> +			.old = &counters->oom_kill,
-> +		},
-> +		{
-> +			.name = "oom_group_kill",
-> +			.new = &new_counters.oom_group_kill,
-> +			.old = &counters->oom_group_kill,
-> +		},
-> +	};
-> +
-> +	if (!fp) {
-> +		warn("Failed to open memcg events file %s", events->path);
-> +		return -EBADF;
-> +	}
-> +
-> +	/* Read new values for memcg counters */
-> +	for (i = 0; i < ARRAY_SIZE(map); ++i) {
-> +		ssize_t nread;
-> +
-> +		errno = 0;
-> +		nread = getline(&line, &len, fp);
-> +		if (nread == -1) {
-> +			if (errno) {
-> +				warn("Failed to read line for counter %s",
-> +				     map[i].name);
-> +				ret = -EIO;
-> +				goto exit;
-> +			}
-> +
-> +			break;
-> +		}
-> +
-> +		ret = get_memcg_counter(line, map[i].name, map[i].new);
-> +		if (ret) {
-> +			warnx("Failed to get counter value from line %s", line);
-> +			goto exit;
-> +		}
-> +	}
-> +
-> +	for (i = 0; i < ARRAY_SIZE(map); ++i) {
-> +		long diff;
-> +
-> +		if (*map[i].new > *map[i].old) {
-> +			diff = *map[i].new - *map[i].old;
-> +
-> +			if (show_diff)
-> +				printf("*** %ld MEMCG %s event%s, "
-> +				       "change counter %ld => %ld\n",
-> +				       diff, map[i].name,
-> +				       (diff == 1) ? "" : "s",
-> +				       *map[i].old, *map[i].new);
-> +
-> +			*map[i].old += diff;
-> +			any_new_events = true;
-> +		}
-> +	}
-> +
-> +	if (show_diff && !any_new_events)
-> +		printf("*** No new untracked memcg events available\n");
-> +
-> +exit:
-> +	free(line);
-> +	fclose(fp);
-> +
-> +	return ret;
-> +}
-> +
-> +static void process_memcg_events(struct memcg_events *events,
-> +				 struct inotify_event *event)
-> +{
-> +	int ret;
-> +
-> +	if (events->inotify_wd != event->wd) {
-> +		warnx("Unknown inotify event %d, should be %d", event->wd,
-> +		      events->inotify_wd);
-> +		return;
-> +	}
-> +
-> +	printf("Received event in %s:\n", events->path);
-> +
-> +	if (!(event->mask & IN_MODIFY)) {
-> +		warnx("No IN_MODIFY event, skip it");
-> +		return;
-> +	}
-> +
-> +	ret = read_memcg_events(events, /* show_diff = */true);
-> +	if (ret)
-> +		warnx("Can't read memcg events");
-> +}
-> +
-> +static void monitor_events(struct memcg_events *events)
-> +{
-> +	struct pollfd fds[1];
-> +	int ret;
-> +
-> +	printf("Started monitoring memory events from '%s'...\n", events->path);
-> +
-> +	fds[0].fd = events->inotify_fd;
-> +	fds[0].events = POLLIN;
-> +
-> +	for (;;) {
-> +		ret = poll(fds, ARRAY_SIZE(fds), -1);
-> +		if (ret < 0 && errno != EAGAIN)
-> +			err(EXIT_FAILURE, "Can't poll memcg events (%d)", ret);
-> +
-> +		if (fds[0].revents & POLLERR)
-> +			err(EXIT_FAILURE, "Got POLLERR during monitor events");
-> +
-> +		if (fds[0].revents & POLLIN) {
-> +			struct inotify_event *event;
-> +			char buffer[INOTIFY_BUFFER_SIZE];
-> +			ssize_t length;
-> +
-> +			length = read(fds[0].fd, buffer, INOTIFY_BUFFER_SIZE);
-> +			if (length <= 0)
-> +				continue;
-> +
-> +			event = (struct inotify_event *)buffer;
-> +			while (INOTIFY_EVENT_OK(event, length)) {
-> +				process_memcg_events(events, event);
-> +				event = INOTIFY_EVENT_NEXT(event, length);
-> +			}
-> +		}
-> +	}
-> +}
-> +
-> +static int initialize_memcg_events(struct memcg_events *events,
-> +				   const char *cgroup)
-> +{
-> +	int ret;
-> +
-> +	memset(events, 0, sizeof(struct memcg_events));
-> +
-> +	ret = snprintf(events->path, PATH_MAX,
-> +		       "/sys/fs/cgroup/%s/memory.events", cgroup);
-> +	if (ret >= PATH_MAX) {
-> +		warnx("Path to cgroup memory.events is too long");
-> +		return -EMSGSIZE;
-> +	} else if (ret < 0) {
-> +		warn("Can't generate cgroup event full name");
-> +		return ret;
-> +	}
-> +
-> +	ret = read_memcg_events(events, /* show_diff = */false);
-> +	if (ret) {
-> +		warnx("Failed to read initial memcg events state (%d)", ret);
-> +		return ret;
-> +	}
-> +
-> +	events->inotify_fd = inotify_init();
-> +	if (events->inotify_fd < 0) {
-> +		warn("Failed to setup new inotify device");
-> +		return -EMFILE;
-> +	}
-> +
-> +	events->inotify_wd = inotify_add_watch(events->inotify_fd,
-> +					       events->path, IN_MODIFY);
-> +	if (events->inotify_wd < 0) {
-> +		warn("Couldn't add monitor in dir %s", events->path);
-> +		return -EIO;
-> +	}
-> +
-> +	printf("Initialized MEMCG events with counters:\n");
-> +	print_memcg_counters(&events->counters);
-> +
-> +	return 0;
-> +}
-> +
-> +static void cleanup_memcg_events(struct memcg_events *events)
-> +{
-> +	inotify_rm_watch(events->inotify_fd, events->inotify_wd);
-> +	close(events->inotify_fd);
-> +}
-> +
-> +int main(int argc, const char **argv)
-> +{
-> +	struct memcg_events events;
-> +	ssize_t ret;
-> +
-> +	if (argc != 2)
-> +		errx(EXIT_FAILURE, "Usage: %s <cgroup>", argv[0]);
-> +
-> +	ret = initialize_memcg_events(&events, argv[1]);
-> +	if (ret)
-> +		errx(EXIT_FAILURE, "Can't initialize memcg events (%zd)", ret);
-> +
-> +	monitor_events(&events);
-> +
-> +	cleanup_memcg_events(&events);
-> +
-> +	printf("Exiting cgroup v2 event listener...\n");
-> +
-> +	return EXIT_SUCCESS;
-> +}
-> -- 
-> 2.36.0
-> 
+> +	"BPF_ST_MEM stack imm sign",
+> +	/* Check if verifier correctly reasons about sign of an
+> +	 * immediate spilled to stack by BPF_ST instruction.
+> +	 *
+> +	 *   fp[-8] =3D -44;
+> +	 *   r0 =3D fp[-8];
+> +	 *   if r0 s< 0 goto ret0;
+> +	 *   r0 =3D -1;
+> +	 *   exit;
+> +	 * ret0:
+> +	 *   r0 =3D 0;
+> +	 *   exit;
+> +	 */
+> +	.insns =3D {
+> +	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, -44),
+> +	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_10, -8),
+> +	BPF_JMP_IMM(BPF_JSLT, BPF_REG_0, 0, 2),
+> +	BPF_MOV64_IMM(BPF_REG_0, -1),
+> +	BPF_EXIT_INSN(),
+> +	BPF_MOV64_IMM(BPF_REG_0, 0),
+> +	BPF_EXIT_INSN(),
+> +	},
+> +	/* Use prog type that requires return value in range [0, 1] */
+> +	.prog_type =3D BPF_PROG_TYPE_SK_LOOKUP,
+> +	.expected_attach_type =3D BPF_SK_LOOKUP,
+> +	.result =3D VERBOSE_ACCEPT,
+> +	.runs =3D -1,
+> +	.errstr =3D "0: (7a) *(u64 *)(r10 -8) =3D -44        ; R10=3Dfp0 fp-8_w=
+=3D-44\
+> +	2: (c5) if r0 s< 0x0 goto pc+2\
+> +	2: R0_w=3D-44",
+> +},
+>=20
 
--- 
-Thank you,
-Dmitry
+Please note that this test case fails on CI [0], full log below:
+
+2023-11-01T07:49:51.2841702Z #116/p BPF_ST_MEM stack imm sign FAIL
+2023-11-01T07:49:51.2843456Z Unexpected verifier log!
+2023-11-01T07:49:51.2844968Z EXP: 2: R0_w=3D-44
+2023-11-01T07:49:51.2845583Z RES:
+2023-11-01T07:49:51.2846693Z func#0 @0
+2023-11-01T07:49:51.2848932Z 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
+2023-11-01T07:49:51.2853045Z 0: (7a) *(u64 *)(r10 -8) =3D -44        ; R10=
+=3Dfp0 fp-8_w=3D-44
+2023-11-01T07:49:51.2857391Z 1: (79) r0 =3D *(u64 *)(r10 -8)         ; R0_w=
+=3D-44 R10=3Dfp0 fp-8_w=3D-44
+2023-11-01T07:49:51.2859127Z 2: (c5) if r0 s< 0x0 goto pc+2
+2023-11-01T07:49:51.2862943Z mark_precise: frame0: last_idx 2 first_idx 0 s=
+ubseq_idx -1=20
+2023-11-01T07:49:51.2867511Z mark_precise: frame0: regs=3Dr0 stack=3D befor=
+e 1: (79) r0 =3D *(u64 *)(r10 -8)
+2023-11-01T07:49:51.2872217Z mark_precise: frame0: regs=3D stack=3D-8 befor=
+e 0: (7a) *(u64 *)(r10 -8) =3D -44
+2023-11-01T07:49:51.2872816Z 5: R0_w=3D-44
+2023-11-01T07:49:51.2875653Z 5: (b7) r0 =3D 0                        ; R0_w=
+=3D0
+2023-11-01T07:49:51.2876493Z 6: (95) exit
+
+I suspect that after recent logging fixes instruction number printed
+after jump changed and that's why test case no longer passes.
+
+Note: you can check CI status for submitted patch-sets using link [1].
+
+[0] https://github.com/kernel-patches/bpf/actions/runs/6717053909/job/18254=
+330860
+[1] https://patchwork.kernel.org/project/netdevbpf/list/
 
