@@ -1,151 +1,125 @@
-Return-Path: <bpf+bounces-13782-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13783-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 381857DDD26
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 08:25:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF0867DDD44
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 08:34:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E820A281723
-	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 07:25:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41008B2102F
+	for <lists+bpf@lfdr.de>; Wed,  1 Nov 2023 07:34:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F74D63AA;
-	Wed,  1 Nov 2023 07:25:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDFCF6121;
+	Wed,  1 Nov 2023 07:34:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="itjQTJf0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U+Eo8//I"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B965681
-	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 07:25:44 +0000 (UTC)
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC639107;
-	Wed,  1 Nov 2023 00:25:42 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5437d60fb7aso2219826a12.3;
-        Wed, 01 Nov 2023 00:25:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 212A85680
+	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 07:34:06 +0000 (UTC)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD8CC2;
+	Wed,  1 Nov 2023 00:34:05 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40859c466efso49778055e9.3;
+        Wed, 01 Nov 2023 00:34:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698823541; x=1699428341; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=0B6t64iTbqlkXV8vHqQhKtKlN8kObrIwOhWS9YPxd2c=;
-        b=itjQTJf0hPtSeKP0359/n8uA0SC/CXw5AdojH8UUBlJ8dH4/wKV7IPshyOu3y7Il9C
-         XOQdoy429xJNqsVi/uCaClMB62/p08AOxw1o4A1LYufbmjwWyqMftl9tqtkAnkVpPsn6
-         zPiQ9s+TiUEXFbdBj+Mxypk0iCGihFQhD2jlyhEKjVbu7yt0uyXO8bZX0mw9DSSgAnBl
-         vnO9YMe3Nq06zk0q2rAfPrhY+yKMvbmxtjDa4pxFTrl2NpAtx+yPL+RjYqK5ym3Ag8qR
-         guBJc1uzzcecgPMOap2jOudzdDSiy0TIWHST+Oftj8xEv8G7BCq4cOf3w96GeF/zshcC
-         4rnw==
+        d=gmail.com; s=20230601; t=1698824044; x=1699428844; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eNER9LrxazZc1unOxuOkdAcLGVcUlD990LvgBax6cfQ=;
+        b=U+Eo8//ImwAm/xb63bBv6qIlYM3zMC/rkrDMlqqBeO54o2g5cqmsbdig4klgxWEGQS
+         4zx9FBa20bH3R1JXVldkJLacEoZPtaKfRbVmtEE0CImaDcLqVerOQLDFc1WavANtLvfN
+         jR7N3/Kp/ORZc5NrLnJfpoIg5Xjkm1ObjvBOgmszTf1TlBAPDK0RUHk6pUQO2nw9Sks9
+         BWUdIkuHe7gUHhyO+j0qFyUbmtD8W7POZfyJn9OH8nsGqZ96+zuzC3qJP1yXd8Aggww6
+         whzx1yigwp7ChAlNxg2Md7a+9Pjq8qEQAaBaGJuMOnTpIXxQfRNqBqtZDCVAMVcNcLdo
+         fbGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698823541; x=1699428341;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0B6t64iTbqlkXV8vHqQhKtKlN8kObrIwOhWS9YPxd2c=;
-        b=lgwAfpBXQPznVu4Jn3Iwo7a6z1Vt1xGDZ3iiKEFonm1bE1xzQOhIw47X4S9KVW6YcD
-         aSghrd7ixmZGe766Wx4tACcs3KI96QSgUH0KFR8yJnvNkmThAyzRWA0c5sVwb5eQZSfd
-         rSYJzEf6LsLadI+3liVDV/HBOyXnqMJ6GMwN+sAUaJ1Adko3fG5KOjUfu+9ZLY+sGy0h
-         OqUi9OdhU7cA4BHLg3WZzr2MRcMI8POP1fhV32aDdCfQxwhn6+r5MlrmQUDtkvTa4lgP
-         B3qN5M/V4v0r5fSdqxr12n4+vtluU4rj7i0+aDBJa3cIk8R86DkKEjvf1fmZR1IXhML/
-         7ZYA==
-X-Gm-Message-State: AOJu0YxDBIdEzg9eCCgCWj+Do/cpQQFOLXHB8HM/yLBw0xnsyPCwQW4Z
-	SJcQkw7hUN0eEjMQIVdNHDM=
-X-Google-Smtp-Source: AGHT+IH0nGJpQFa+U2u0tQ+MCqlEtJOEF/OGmjnfNQC0t+iPzP5TdkXUNtOywr7ed1aA/LrThdSvKA==
-X-Received: by 2002:a17:907:d21:b0:9c0:eb3e:b070 with SMTP id gn33-20020a1709070d2100b009c0eb3eb070mr1204779ejc.69.1698823540960;
-        Wed, 01 Nov 2023 00:25:40 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id k12-20020a1709065fcc00b009ce03057c48sm2067069ejv.214.2023.11.01.00.25.39
+        d=1e100.net; s=20230601; t=1698824044; x=1699428844;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eNER9LrxazZc1unOxuOkdAcLGVcUlD990LvgBax6cfQ=;
+        b=hPGy7MCVat8ZiMXQxKMkqd3+IeLeeSdMN5cvGW5Oi5mca8fedGmRx00QVUNY9hhjoV
+         o9vOKUfK82viRLzItA61ysVfOSZYlZcTkzimT3/blAbphCni2/25U+/g5mDChLrPRah7
+         eA9L+g6r/3piUAl8Sj+xYR2foUJz319QnStMsmJc9w66Islw1YXyjeRjHffXhp6vypc/
+         7u7beHF+NrKHyVWqyeL6Upb5cKoxMYnahynJCv9CT1Bs80vpZJL7JAv1i5n9cxfnx1V8
+         wFXcEnVr2M7yRnYa9Jpml6z0tHb2D/p0n65D42WoiHoKd+nQuxKQeDh2X01t9FuUYtJ7
+         WUyQ==
+X-Gm-Message-State: AOJu0YyYkZ4NGbosLI40uT8OVlE69sg4fUcyfiG4kMa+4gjCaPyvVx7a
+	BiIfF0bx+2vIgyNmv4i8qw==
+X-Google-Smtp-Source: AGHT+IE6y1ECsS1CldkeqwBwwBTEcRnocbIRQ9ScNQbDZ/g+HAVE/8uaVRMAhit/TRF95hut2FnPhg==
+X-Received: by 2002:a5d:4dd0:0:b0:31f:bdbc:d762 with SMTP id f16-20020a5d4dd0000000b0031fbdbcd762mr10362561wru.44.1698824043971;
+        Wed, 01 Nov 2023 00:34:03 -0700 (PDT)
+Received: from amdsuplus2.inf.ethz.ch (amdsuplus2.inf.ethz.ch. [129.132.31.88])
+        by smtp.gmail.com with ESMTPSA id i18-20020adff312000000b0032d893d8dc8sm3401810wro.2.2023.11.01.00.34.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 00:25:40 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 1 Nov 2023 08:25:38 +0100
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Matthieu Baerts <matttbe@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Chuyi Zhou <zhouchuyi@bytedance.com>,
-	Tejun Heo <tj@kernel.org>, bpf <bpf@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	MPTCP Upstream <mptcp@lists.linux.dev>,
-	kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH bpf-next] bpf: fix compilation error without CGROUPS
-Message-ID: <ZUH9cveAsjcUgz9e@krava>
-References: <20231031-bpf-compil-err-css-v1-1-e2244c637835@kernel.org>
- <ZUEzzc/Sod8OR28B@krava>
- <CAADnVQKCNFxcpE9Y250iwd8E4+t_Pror0AuRaoRYepUkXj56UA@mail.gmail.com>
+        Wed, 01 Nov 2023 00:34:02 -0700 (PDT)
+From: Hao Sun <sunhao.th@gmail.com>
+Subject: [PATCH bpf v2 0/2] bpf: Fix incorrect immediate spill
+Date: Wed, 01 Nov 2023 08:33:21 +0100
+Message-Id: <20231101-fix-check-stack-write-v2-0-cb7c17b869b0@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQKCNFxcpE9Y250iwd8E4+t_Pror0AuRaoRYepUkXj56UA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEH/QWUC/4VNSw6CMBC9Cpm1Y0rBmrryHoZFKVM6UShpG9QQ7
+ m7DBdy85P03SBSZEtyqDSKtnDjMhchTBdabeSTkoXCQQja1kAodf9B6sk9M2RR8R86EthVaK6X
+ bwRko3SVSCR67D+gXB10RPacc4vf4WuvD+jO71ihQ9Y28kGssXek+ToZfZxsm6PZ9/wGmKn28v
+ wAAAA==
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+ Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, Hao Sun <sunhao.th@gmail.com>, 
+ stable@vger.kernel.org
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1698824042; l=932;
+ i=sunhao.th@gmail.com; s=20231009; h=from:subject:message-id;
+ bh=ThUo/m341SAJSMmR2TyDAT9X66kZjyxv8buNFFdDyPk=;
+ b=jRSllAPO4dRAxroXA8lhNYVdg4dJk1qH6cH/WAifC4BTdStaARj0dl001Z/g8eSOcGNdFZDqd
+ Klvb9C7V63JC+K1JYP/uosvqd+iyfCNQj7Mh9tue4iiL1yr7U0CnhUL
+X-Developer-Key: i=sunhao.th@gmail.com; a=ed25519;
+ pk=AHFxrImGtyqXOuw4f5xTNh4PGReb7hzD86ayyTZCXd4=
 
-On Tue, Oct 31, 2023 at 08:54:56PM -0700, Alexei Starovoitov wrote:
-> On Tue, Oct 31, 2023 at 10:05 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Tue, Oct 31, 2023 at 04:49:34PM +0100, Matthieu Baerts wrote:
-> > > Our MPTCP CI complained [1] -- and KBuild too -- that it was no longer
-> > > possible to build the kernel without CONFIG_CGROUPS:
-> > >
-> > >   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
-> > >   kernel/bpf/task_iter.c:919:14: error: 'CSS_TASK_ITER_PROCS' undeclared (first use in this function)
-> > >     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
-> > >         |              ^~~~~~~~~~~~~~~~~~~
-> > >   kernel/bpf/task_iter.c:919:14: note: each undeclared identifier is reported only once for each function it appears in
-> > >   kernel/bpf/task_iter.c:919:36: error: 'CSS_TASK_ITER_THREADED' undeclared (first use in this function)
-> > >     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
-> > >         |                                    ^~~~~~~~~~~~~~~~~~~~~~
-> > >   kernel/bpf/task_iter.c:927:60: error: invalid application of 'sizeof' to incomplete type 'struct css_task_iter'
-> > >     927 |         kit->css_it = bpf_mem_alloc(&bpf_global_ma, sizeof(struct css_task_iter));
-> > >         |                                                            ^~~~~~
-> > >   kernel/bpf/task_iter.c:930:9: error: implicit declaration of function 'css_task_iter_start'; did you mean 'task_seq_start'? [-Werror=implicit-function-declaration]
-> > >     930 |         css_task_iter_start(css, flags, kit->css_it);
-> > >         |         ^~~~~~~~~~~~~~~~~~~
-> > >         |         task_seq_start
-> > >   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_next':
-> > >   kernel/bpf/task_iter.c:940:16: error: implicit declaration of function 'css_task_iter_next'; did you mean 'class_dev_iter_next'? [-Werror=implicit-function-declaration]
-> > >     940 |         return css_task_iter_next(kit->css_it);
-> > >         |                ^~~~~~~~~~~~~~~~~~
-> > >         |                class_dev_iter_next
-> > >   kernel/bpf/task_iter.c:940:16: error: returning 'int' from a function with return type 'struct task_struct *' makes pointer from integer without a cast [-Werror=int-conversion]
-> > >     940 |         return css_task_iter_next(kit->css_it);
-> > >         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > >   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_destroy':
-> > >   kernel/bpf/task_iter.c:949:9: error: implicit declaration of function 'css_task_iter_end' [-Werror=implicit-function-declaration]
-> > >     949 |         css_task_iter_end(kit->css_it);
-> > >         |         ^~~~~~~~~~~~~~~~~
-> > >
-> > > This patch simply surrounds with a #ifdef the new code requiring CGroups
-> > > support. It seems enough for the compiler and this is similar to
-> > > bpf_iter_css_{new,next,destroy}() functions where no other #ifdef have
-> > > been added in kernel/bpf/helpers.c and in the selftests.
-> > >
-> > > Fixes: 9c66dc94b62a ("bpf: Introduce css_task open-coded iterator kfuncs")
-> > > Link: https://github.com/multipath-tcp/mptcp_net-next/actions/runs/6665206927
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Closes: https://lore.kernel.org/oe-kbuild-all/202310260528.aHWgVFqq-lkp@intel.com/
-> > > Signed-off-by: Matthieu Baerts <matttbe@kernel.org>
-> >
-> > Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
-> 
-> I believe this patch has the same issue as Arnd's patch:
-> https://lore.kernel.org/all/CAADnVQL-zoFPPOVu3nM981gKxRu7Q3G3LTRsKstJEeahpoR1RQ@mail.gmail.com/
-> 
-> I'd like to merge the fix asap. Please make it a complete fix.
+Immediate is incorrectly cast to u32 before being spilled, losing sign
+information. The range information is incorrect after load again. Fix
+immediate spill by remove the cast. The second patch add a test case
+for this.
 
-ugh, it won't fail the build, it just warns.. I think we should
-fail the build in that case, I'll check
+Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+---
+Changes in v2:
+- Add fix and cc tags.
+- Link to v1: https://lore.kernel.org/r/20231026-fix-check-stack-write-v1-0-6b325ef3ce7e@gmail.com
 
-jirka
+---
+Hao Sun (2):
+      bpf: Fix check_stack_write_fixed_off() to correctly spill imm
+      selftests/bpf: Add test for immediate spilled to stack
+
+ kernel/bpf/verifier.c                             |  2 +-
+ tools/testing/selftests/bpf/verifier/bpf_st_mem.c | 32 +++++++++++++++++++++++
+ 2 files changed, 33 insertions(+), 1 deletion(-)
+---
+base-commit: f1c73396133cb3d913e2075298005644ee8dfade
+change-id: 20231026-fix-check-stack-write-c40996694dfa
+
+Best regards,
+-- 
+Hao Sun <sunhao.th@gmail.com>
+
 
