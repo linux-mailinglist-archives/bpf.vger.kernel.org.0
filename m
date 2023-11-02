@@ -1,277 +1,183 @@
-Return-Path: <bpf+bounces-13902-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13904-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E4147DEB81
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 04:38:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EA897DEB94
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 05:03:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31E97281A60
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 03:38:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D23381F223FF
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 04:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ECD11C03;
-	Thu,  2 Nov 2023 03:38:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B34C1865;
+	Thu,  2 Nov 2023 04:03:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IuKr9Zvm"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69A36185B
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 03:38:46 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6BA113
-	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 20:38:44 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A21cU3g030354
-	for <bpf@vger.kernel.org>; Wed, 1 Nov 2023 20:38:44 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3u3vb43rsy-5
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 01 Nov 2023 20:38:44 -0700
-Received: from twshared44805.48.prn1.facebook.com (2620:10d:c0a8:1b::30) by
- mail.thefacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 1 Nov 2023 20:38:43 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 5595F3AC97F8C; Wed,  1 Nov 2023 20:38:36 -0700 (PDT)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>,
-        Eduard Zingerman
-	<eddyz87@gmail.com>
-Subject: [PATCH v6 bpf-next 17/17] bpf: generalize reg_set_min_max() to handle two sets of two registers
-Date: Wed, 1 Nov 2023 20:37:59 -0700
-Message-ID: <20231102033759.2541186-18-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231102033759.2541186-1-andrii@kernel.org>
-References: <20231102033759.2541186-1-andrii@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 158011FA1;
+	Thu,  2 Nov 2023 04:03:26 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7DC127;
+	Wed,  1 Nov 2023 21:03:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698897801; x=1730433801;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZAhTTJPnwNh7IED7EgXf3uaooCsbRednT45HuNxBBu4=;
+  b=IuKr9Zvm/wvAGpp3Hg7eb3B5k8/lD3F/QXJWv/tsS/fFGd6zKSGkPVKg
+   0HYisRJ/qp42XUtKppZ5L9u2+XJUc/gLKfuYt+HnNSWRjrpFIfv1ggQZ/
+   g/4CcPNVYrGK+GoM5WvQv0kASJ8Y9VDJfqH+Mstg7tkxQqOfNH3WP6AIm
+   dnzWxcexRDFZjiFAN8JlaO4IeNFGysLAiMsvuvtvVixxFDGL3rX7++yBl
+   QLFIlf0LH9r3KV5uGBy14LomV/EdfX7GbpiUrn9CrlT1SgzUzM5K8HKb6
+   T9u/qZDk9t9pZm4ttmSioUi82TIa7ai6x8ozGbaT+0s1yLH30qLgL7vPv
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="388448262"
+X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
+   d="scan'208";a="388448262"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2023 21:03:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="851785059"
+X-IronPort-AV: E=Sophos;i="6.03,270,1694761200"; 
+   d="scan'208";a="851785059"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 01 Nov 2023 21:03:17 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qyOvK-000166-2h;
+	Thu, 02 Nov 2023 04:03:14 +0000
+Date: Thu, 2 Nov 2023 12:03:06 +0800
+From: kernel test robot <lkp@intel.com>
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>, rostedt@goodmis.org,
+	mhiramat@kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeelb@google.com,
+	muchun.song@linux.dev, akpm@linux-foundation.org
+Cc: oe-kbuild-all@lists.linux.dev, kernel@sberdevices.ru,
+	rockosov@gmail.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Dmitry Rokosov <ddrokosov@salutedevices.com>
+Subject: Re: [PATCH v1 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <202311021126.DNKIAcbq-lkp@intel.com>
+References: <20231101102837.25205-3-ddrokosov@salutedevices.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: RH5XO0ybBiXVk1EvI9-MIUx5CmzUTDYs
-X-Proofpoint-GUID: RH5XO0ybBiXVk1EvI9-MIUx5CmzUTDYs
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-01_23,2023-11-01_02,2023-05-22_02
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231101102837.25205-3-ddrokosov@salutedevices.com>
 
-Change reg_set_min_max() to take FALSE/TRUE sets of two registers each,
-instead of assuming that we are always comparing to a constant. For now
-we still assume that right-hand side registers are constants (and make
-sure that's the case by swapping src/dst regs, if necessary), but
-subsequent patches will remove this limitation.
+Hi Dmitry,
 
-reg_set_min_max() is now called unconditionally for any register
-comparison, so that might include pointer vs pointer. This makes it
-consistent with is_branch_taken() generality. But we currently only
-support adjustments based on SCALAR vs SCALAR comparisons, so
-reg_set_min_max() has to guard itself againts pointers.
+kernel test robot noticed the following build errors:
 
-Taking two by two registers allows to further unify and simplify
-check_cond_jmp_op() logic. We utilize fake register for BPF_K
-conditional jump case, just like with is_branch_taken() part.
+[auto build test ERROR on akpm-mm/mm-everything]
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- kernel/bpf/verifier.c | 131 ++++++++++++++++++------------------------
- 1 file changed, 56 insertions(+), 75 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Dmitry-Rokosov/mm-memcg-print-out-cgroup-name-in-the-memcg-tracepoints/20231101-183040
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20231101102837.25205-3-ddrokosov%40salutedevices.com
+patch subject: [PATCH v1 2/2] mm: memcg: introduce new event to trace shrink_memcg
+config: sh-allnoconfig (https://download.01.org/0day-ci/archive/20231102/202311021126.DNKIAcbq-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231102/202311021126.DNKIAcbq-lkp@intel.com/reproduce)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 438bf96b1c2d..2197385d91dc 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -14379,32 +14379,50 @@ static int is_branch_taken(struct bpf_reg_state=
- *reg1, struct bpf_reg_state *reg
- 	return is_scalar_branch_taken(reg1, reg2, opcode, is_jmp32);
- }
-=20
--/* Adjusts the register min/max values in the case that the dst_reg is t=
-he
-- * variable register that we are working on, and src_reg is a constant o=
-r we're
-- * simply doing a BPF_K check.
-- * In JEQ/JNE cases we also adjust the var_off values.
-+/* Adjusts the register min/max values in the case that the dst_reg and
-+ * src_reg are both SCALAR_VALUE registers (or we are simply doing a BPF=
-_K
-+ * check, in which case we havea fake SCALAR_VALUE representing insn->im=
-m).
-+ * Technically we can do similar adjustments for pointers to the same ob=
-ject,
-+ * but we don't support that right now.
-  */
- static void reg_set_min_max(struct bpf_reg_state *true_reg1,
-+			    struct bpf_reg_state *true_reg2,
- 			    struct bpf_reg_state *false_reg1,
--			    u64 uval, u32 uval32,
-+			    struct bpf_reg_state *false_reg2,
- 			    u8 opcode, bool is_jmp32)
- {
--	struct tnum false_32off =3D tnum_subreg(false_reg1->var_off);
--	struct tnum false_64off =3D false_reg1->var_off;
--	struct tnum true_32off =3D tnum_subreg(true_reg1->var_off);
--	struct tnum true_64off =3D true_reg1->var_off;
--	s64 sval =3D (s64)uval;
--	s32 sval32 =3D (s32)uval32;
--
--	/* If the dst_reg is a pointer, we can't learn anything about its
--	 * variable offset from the compare (unless src_reg were a pointer into
--	 * the same object, but we don't bother with that.
--	 * Since false_reg1 and true_reg1 have the same type by construction, w=
-e
--	 * only need to check one of them for pointerness.
-+	struct tnum false_32off, false_64off;
-+	struct tnum true_32off, true_64off;
-+	u64 uval;
-+	u32 uval32;
-+	s64 sval;
-+	s32 sval32;
-+
-+	/* If either register is a pointer, we can't learn anything about its
-+	 * variable offset from the compare (unless they were a pointer into
-+	 * the same object, but we don't bother with that).
- 	 */
--	if (__is_pointer_value(false, false_reg1))
-+	if (false_reg1->type !=3D SCALAR_VALUE || false_reg2->type !=3D SCALAR_=
-VALUE)
-+		return;
-+
-+	/* we expect right-hand registers (src ones) to be constants, for now *=
-/
-+	if (!is_reg_const(false_reg2, is_jmp32)) {
-+		opcode =3D flip_opcode(opcode);
-+		swap(true_reg1, true_reg2);
-+		swap(false_reg1, false_reg2);
-+	}
-+	if (!is_reg_const(false_reg2, is_jmp32))
- 		return;
-=20
-+	false_32off =3D tnum_subreg(false_reg1->var_off);
-+	false_64off =3D false_reg1->var_off;
-+	true_32off =3D tnum_subreg(true_reg1->var_off);
-+	true_64off =3D true_reg1->var_off;
-+	uval =3D false_reg2->var_off.value;
-+	uval32 =3D (u32)tnum_subreg(false_reg2->var_off).value;
-+	sval =3D (s64)uval;
-+	sval32 =3D (s32)uval32;
-+
- 	switch (opcode) {
- 	/* JEQ/JNE comparison doesn't change the register equivalence.
- 	 *
-@@ -14541,22 +14559,6 @@ static void reg_set_min_max(struct bpf_reg_state=
- *true_reg1,
- 	}
- }
-=20
--/* Same as above, but for the case that dst_reg holds a constant and src=
-_reg is
-- * the variable reg.
-- */
--static void reg_set_min_max_inv(struct bpf_reg_state *true_reg,
--				struct bpf_reg_state *false_reg,
--				u64 uval, u32 uval32,
--				u8 opcode, bool is_jmp32)
--{
--	opcode =3D flip_opcode(opcode);
--	/* This uses zero as "not present in table"; luckily the zero opcode,
--	 * BPF_JA, can't get here.
--	 */
--	if (opcode)
--		reg_set_min_max(true_reg, false_reg, uval, uval32, opcode, is_jmp32);
--}
--
- /* Regs are known to be equal, so intersect their min/max/var_off */
- static void __reg_combine_min_max(struct bpf_reg_state *src_reg,
- 				  struct bpf_reg_state *dst_reg)
-@@ -14881,53 +14883,32 @@ static int check_cond_jmp_op(struct bpf_verifie=
-r_env *env,
- 		return -EFAULT;
- 	other_branch_regs =3D other_branch->frame[other_branch->curframe]->regs=
-;
-=20
--	/* detect if we are comparing against a constant value so we can adjust
--	 * our min/max values for our dst register.
--	 * this is only legit if both are scalars (or pointers to the same
--	 * object, I suppose, see the PTR_MAYBE_NULL related if block below),
--	 * because otherwise the different base pointers mean the offsets aren'=
-t
--	 * comparable.
--	 */
- 	if (BPF_SRC(insn->code) =3D=3D BPF_X) {
--		struct bpf_reg_state *src_reg =3D &regs[insn->src_reg];
-+		reg_set_min_max(&other_branch_regs[insn->dst_reg],
-+				&other_branch_regs[insn->src_reg],
-+				dst_reg, src_reg, opcode, is_jmp32);
-=20
- 		if (dst_reg->type =3D=3D SCALAR_VALUE &&
--		    src_reg->type =3D=3D SCALAR_VALUE) {
--			if (tnum_is_const(src_reg->var_off) ||
--			    (is_jmp32 &&
--			     tnum_is_const(tnum_subreg(src_reg->var_off))))
--				reg_set_min_max(&other_branch_regs[insn->dst_reg],
--						dst_reg,
--						src_reg->var_off.value,
--						tnum_subreg(src_reg->var_off).value,
--						opcode, is_jmp32);
--			else if (tnum_is_const(dst_reg->var_off) ||
--				 (is_jmp32 &&
--				  tnum_is_const(tnum_subreg(dst_reg->var_off))))
--				reg_set_min_max_inv(&other_branch_regs[insn->src_reg],
--						    src_reg,
--						    dst_reg->var_off.value,
--						    tnum_subreg(dst_reg->var_off).value,
--						    opcode, is_jmp32);
--			else if (!is_jmp32 &&
--				 (opcode =3D=3D BPF_JEQ || opcode =3D=3D BPF_JNE))
--				/* Comparing for equality, we can combine knowledge */
--				reg_combine_min_max(&other_branch_regs[insn->src_reg],
--						    &other_branch_regs[insn->dst_reg],
--						    src_reg, dst_reg, opcode);
--			if (src_reg->id &&
--			    !WARN_ON_ONCE(src_reg->id !=3D other_branch_regs[insn->src_reg].i=
-d)) {
--				find_equal_scalars(this_branch, src_reg);
--				find_equal_scalars(other_branch, &other_branch_regs[insn->src_reg]);
--			}
--
--		}
--	} else if (dst_reg->type =3D=3D SCALAR_VALUE) {
-+		    src_reg->type =3D=3D SCALAR_VALUE &&
-+		    !is_jmp32 && (opcode =3D=3D BPF_JEQ || opcode =3D=3D BPF_JNE)) {
-+			/* Comparing for equality, we can combine knowledge */
-+			reg_combine_min_max(&other_branch_regs[insn->src_reg],
-+					    &other_branch_regs[insn->dst_reg],
-+					    src_reg, dst_reg, opcode);
-+		}
-+	} else /* BPF_SRC(insn->code) =3D=3D BPF_K */ {
- 		reg_set_min_max(&other_branch_regs[insn->dst_reg],
--					dst_reg, insn->imm, (u32)insn->imm,
--					opcode, is_jmp32);
-+				src_reg /* fake one */,
-+				dst_reg, src_reg /* same fake one */,
-+				opcode, is_jmp32);
- 	}
-=20
-+	if (BPF_SRC(insn->code) =3D=3D BPF_X &&
-+	    src_reg->type =3D=3D SCALAR_VALUE && src_reg->id &&
-+	    !WARN_ON_ONCE(src_reg->id !=3D other_branch_regs[insn->src_reg].id)=
-) {
-+		find_equal_scalars(this_branch, src_reg);
-+		find_equal_scalars(other_branch, &other_branch_regs[insn->src_reg]);
-+	}
- 	if (dst_reg->type =3D=3D SCALAR_VALUE && dst_reg->id &&
- 	    !WARN_ON_ONCE(dst_reg->id !=3D other_branch_regs[insn->dst_reg].id)=
-) {
- 		find_equal_scalars(this_branch, dst_reg);
---=20
-2.34.1
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311021126.DNKIAcbq-lkp@intel.com/
 
+All errors (new ones prefixed by >>):
+
+   mm/vmscan.c: In function 'shrink_node_memcgs':
+>> mm/vmscan.c:5811:17: error: implicit declaration of function 'trace_mm_vmscan_memcg_shrink_begin'; did you mean 'trace_mm_vmscan_lru_shrink_active'? [-Werror=implicit-function-declaration]
+    5811 |                 trace_mm_vmscan_memcg_shrink_begin(memcg,
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |                 trace_mm_vmscan_lru_shrink_active
+   mm/vmscan.c:5845:17: error: implicit declaration of function 'trace_mm_vmscan_memcg_shrink_end'; did you mean 'trace_mm_vmscan_lru_shrink_active'? [-Werror=implicit-function-declaration]
+    5845 |                 trace_mm_vmscan_memcg_shrink_end(memcg,
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |                 trace_mm_vmscan_lru_shrink_active
+   cc1: some warnings being treated as errors
+
+
+vim +5811 mm/vmscan.c
+
+  5791	
+  5792	static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+  5793	{
+  5794		struct mem_cgroup *target_memcg = sc->target_mem_cgroup;
+  5795		struct mem_cgroup *memcg;
+  5796	
+  5797		memcg = mem_cgroup_iter(target_memcg, NULL, NULL);
+  5798		do {
+  5799			struct lruvec *lruvec = mem_cgroup_lruvec(memcg, pgdat);
+  5800			unsigned long reclaimed;
+  5801			unsigned long scanned;
+  5802	
+  5803			/*
+  5804			 * This loop can become CPU-bound when target memcgs
+  5805			 * aren't eligible for reclaim - either because they
+  5806			 * don't have any reclaimable pages, or because their
+  5807			 * memory is explicitly protected. Avoid soft lockups.
+  5808			 */
+  5809			cond_resched();
+  5810	
+> 5811			trace_mm_vmscan_memcg_shrink_begin(memcg,
+  5812							   sc->order,
+  5813							   sc->gfp_mask);
+  5814	
+  5815			mem_cgroup_calculate_protection(target_memcg, memcg);
+  5816	
+  5817			if (mem_cgroup_below_min(target_memcg, memcg)) {
+  5818				/*
+  5819				 * Hard protection.
+  5820				 * If there is no reclaimable memory, OOM.
+  5821				 */
+  5822				continue;
+  5823			} else if (mem_cgroup_below_low(target_memcg, memcg)) {
+  5824				/*
+  5825				 * Soft protection.
+  5826				 * Respect the protection only as long as
+  5827				 * there is an unprotected supply
+  5828				 * of reclaimable memory from other cgroups.
+  5829				 */
+  5830				if (!sc->memcg_low_reclaim) {
+  5831					sc->memcg_low_skipped = 1;
+  5832					continue;
+  5833				}
+  5834				memcg_memory_event(memcg, MEMCG_LOW);
+  5835			}
+  5836	
+  5837			reclaimed = sc->nr_reclaimed;
+  5838			scanned = sc->nr_scanned;
+  5839	
+  5840			shrink_lruvec(lruvec, sc);
+  5841	
+  5842			shrink_slab(sc->gfp_mask, pgdat->node_id, memcg,
+  5843				    sc->priority);
+  5844	
+  5845			trace_mm_vmscan_memcg_shrink_end(memcg,
+  5846							 sc->nr_reclaimed - reclaimed);
+  5847	
+  5848			/* Record the group's reclaim efficiency */
+  5849			if (!sc->proactive)
+  5850				vmpressure(sc->gfp_mask, memcg, false,
+  5851					   sc->nr_scanned - scanned,
+  5852					   sc->nr_reclaimed - reclaimed);
+  5853	
+  5854		} while ((memcg = mem_cgroup_iter(target_memcg, memcg, NULL)));
+  5855	}
+  5856	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
