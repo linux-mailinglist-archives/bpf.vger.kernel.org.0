@@ -1,91 +1,128 @@
-Return-Path: <bpf+bounces-13962-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13963-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D93637DF742
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 17:00:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4EC47DF757
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 17:05:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBB191C20F80
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 16:00:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F10401C20E7B
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 16:05:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F1F41D55A;
-	Thu,  2 Nov 2023 16:00:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8E651D6A6;
+	Thu,  2 Nov 2023 16:05:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MjVl3B6M"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 718071D531
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 16:00:01 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3A4E7186;
-	Thu,  2 Nov 2023 09:00:00 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41DEC2F4;
-	Thu,  2 Nov 2023 09:00:42 -0700 (PDT)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.27.166])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 45F3B3F738;
-	Thu,  2 Nov 2023 08:59:58 -0700 (PDT)
-Date: Thu, 2 Nov 2023 15:59:52 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Puranjay Mohan <puranjay12@gmail.com>,
-	Florent Revest <revest@chromium.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v4 0/3] bpf, arm64: use BPF prog pack allocator
- in BPF JIT
-Message-ID: <ZUPHeEe1eJjHkhsg@FVFF77S0Q05N.cambridge.arm.com>
-References: <20230626085811.3192402-1-puranjay12@gmail.com>
- <7e05efe1-0af0-1896-6f6f-dcb02ed8ca27@iogearbox.net>
- <ZKMCFtlfJA1LfGNJ@FVFF77S0Q05N>
- <CANk7y0gTXPBj5U-vFK0cEvVe83tP1FqyD=MuLXT_amWO=EssOA@mail.gmail.com>
- <CANk7y0hRYzpsYoqcU1tHyZThAgg-cx46C4-n2JYZTa7sDwEk-w@mail.gmail.com>
- <CAADnVQJJHiSZPZFpu1n-oQLEsUptacSzF7FdOKfO6OEoKz-jXg@mail.gmail.com>
- <ZMuLvKRbPfOK0IpN@FVFF77S0Q05N>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7DB1D55A
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 16:05:30 +0000 (UTC)
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D973419D;
+	Thu,  2 Nov 2023 09:05:28 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9c3aec5f326so441602966b.1;
+        Thu, 02 Nov 2023 09:05:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698941127; x=1699545927; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nwjuKF0m6b95GH5kA/PrMCqg/Fnygmr6UMeQTw8Px6w=;
+        b=MjVl3B6MJ+HVt12Up3Vj9+PG1PyZRgb55V3SgAbj18vJsrIhwTX7aTYLSI3zq4L93k
+         OBOmajFglC/jlr+Cmf4FGDPg7555Qwl9gdHldWcPCyI0a9xicEGgDYR/F/ic/gv5CRPP
+         Z9TtMuOOZ1O5jHpV6Qs+7XGvR5KV4ActAqYQUX2p1z8Daz7rZSun/Wa4mgM2IhAtMle9
+         1LfbBf+cBCH+tOos7TkhpV9zaumH8ppCsTXmgAJehbEX9HP2K26W+TX2Q9IqUR+8qW/A
+         J1K7GVG7TTvaV2irOnrlIb3WLPd4WTx+BTGXwv4W75MLDVd+3sKAuisKsgqzZiq52+2J
+         ALTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698941127; x=1699545927;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nwjuKF0m6b95GH5kA/PrMCqg/Fnygmr6UMeQTw8Px6w=;
+        b=nlj2K+ek5Ldu2v1lOKD8v54VYSJltJmaOZTO/UwEYjUXW8kIY4Froi4k81aWDLDSBg
+         3p6GKncEkrSI963aKKcAitg1Ui3/BrXc8GLbjMq17UnUpfSDlZ3cXaZAxsfn3JFXPfvL
+         2YbFWyfVrKG9x2edrn2B6YVVjuAx4PaZevUviot0wH4OqmBEjZ6hpLF2mawrN1HJmkgV
+         o1nXbfb16iO1r/AOO+AUa/PeW3e/zrZHthAmSeFpQ4qYO+otWAG8ZURbp/U7Ak7DLp+5
+         1u3X+/mUckfKcIdcfDagRGr1HWuNvBTTbvc0YND58/6Fyan5EhAPiu+2nb3fRJjIto72
+         OqhA==
+X-Gm-Message-State: AOJu0YwB6cS2siTd1yJ2lNRld1z5mojCwJxGiDTGA/ca9xUdQz4z3Txm
+	5WBkYcilk1K0npo9g1UrQrG9glmH4iIhz/GtEEro7evCZKQdfA==
+X-Google-Smtp-Source: AGHT+IEDjRFCQrTuZjKfZnvcTt3wSNXzpypFp3lHL7z9Tib5HnwFSzeTK6Iz8cd6cbDPJ8/qc8dsTUhsAZrRrKaZJyo=
+X-Received: by 2002:a17:906:aac1:b0:9ad:cbc0:9f47 with SMTP id
+ kt1-20020a170906aac100b009adcbc09f47mr231181ejb.12.1698941127037; Thu, 02 Nov
+ 2023 09:05:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMuLvKRbPfOK0IpN@FVFF77S0Q05N>
+References: <ZUNiwMLBsL52X9wa@debian> <79260ece-5819-4292-bfac-dc21a3701813@bytedance.com>
+ <7ade1b4d-71ad-4f32-9b19-9d8eac8e595b@leemhuis.info>
+In-Reply-To: <7ade1b4d-71ad-4f32-9b19-9d8eac8e595b@leemhuis.info>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date: Thu, 2 Nov 2023 16:04:50 +0000
+Message-ID: <CADVatmNkXXH5xwEe25cZeESRT5FscKQuGEoSZ=1tiGTtLO-+pg@mail.gmail.com>
+Subject: Re: mainline build failure due to 9c66dc94b62a ("bpf: Introduce
+ css_task open-coded iterator kfuncs")
+To: Linux regressions mailing list <regressions@lists.linux.dev>
+Cc: Chuyi Zhou <zhouchuyi@bytedance.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 03, 2023 at 12:13:00PM +0100, Mark Rutland wrote:
-[...]
+Hi Thorsten,
 
-> However, in looking at it I think
-> there may me a wider potential isssue w.r.t. the way instruction memory gets
-> reused, because as writtten today the architecture doesn't seem to have a
-> guarantee on when instruction fetches are completed and therefore when it's
-> safe to modify instruction memory. Usually we're saved by TLB maintenance,
-> which this series avoids by design.
+On Thu, 2 Nov 2023 at 09:13, Linux regression tracking (Thorsten
+Leemhuis) <regressions@leemhuis.info> wrote:
+>
+> On 02.11.23 09:53, Chuyi Zhou wrote:
+> > =E5=9C=A8 2023/11/2 16:50, Sudip Mukherjee (Codethink) =E5=86=99=E9=81=
+=93:
+>
+> >> The latest mainline kernel branch fails to build mips
+> >> decstation_64_defconfig,
+> >> decstation_defconfig and decstation_r4k_defconfig with the error:
+> >>
+> >> kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
+> >> kernel/bpf/task_iter.c:917:14: error: 'CSS_TASK_ITER_PROCS' undeclared
+> >> (first use in this function)
+> >>    917 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
+> >>        |              ^~~~~~~~~~~~~~~~~~~
+> > [...]
+> >> git bisect pointed to 9c66dc94b62a ("bpf: Introduce css_task
+> >> open-coded iterator kfuncs")
+> >
+> > Thanks for the report! This issue has been solved by Jiri.[1]
+> >
+> > [1]:https://lore.kernel.org/all/169890482505.9002.10852784674164703819.=
+git-patchwork-notify@kernel.org/
+>
+> Thx, I was just about to reply something similar. :-D
+>
+> Sudip, maybe you know about this already, but in case you don't, here is
+> a quick tip that might be useful for you: in cases like this it's often
+> wise to search for earlier reports on lore using an even more
+> abbreviated commit-id followed by a wildcard (e.g. "9c66dc94*"). That at
+> least was how I found the fix quickly.
 
-Just to confirm on this point specifically, per discussions with our
-architects, the (architectural) execution of an instruction ensures that there
-are no outstanding fetches for prior instructions. IIUC that will be clarified 
-the next release of the ARM ARM.
+Yes, but the failure is still in the mainline. And it has happened in
+the past that the fix has been submitted and taken by the maintainer
+but was not sent to Linus.
+In the last release cycle I had to send a reminder around the time of
+-rc3 and in that case also the fix was submitted when I sent the build
+failure mail.
 
-So as long as we're certain all threads have left the old code (e.g. via a
-flag, RCU tasks rude synchronization, whatever) before we overwrite slots in
-the shared buffer, we should be good.
+But  like you said I will search and will not add Cc to rezbot in
+cases where a fix has been submitted. Also if Linus wants then I will
+not even send mails in these cases.
 
-We will need to be very careful with the maintenance when installing new code
-into the shared buffer (e.g. we will require an IPI to all other CPUs), but
-that should be relatively simple.
-
-I'll go review the latest patches with that in mind.
-
-Thanks,
-Mark.
+--=20
+Regards
+Sudip
 
