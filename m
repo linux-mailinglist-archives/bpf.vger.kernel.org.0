@@ -1,137 +1,91 @@
-Return-Path: <bpf+bounces-13961-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13962-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F05897DF695
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 16:36:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D93637DF742
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 17:00:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A95B728198D
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 15:36:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBB191C20F80
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 16:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AAAA1CFA7;
-	Thu,  2 Nov 2023 15:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ablWAJNk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F1F41D55A;
+	Thu,  2 Nov 2023 16:00:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657B61CF90;
-	Thu,  2 Nov 2023 15:36:22 +0000 (UTC)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2018913D;
-	Thu,  2 Nov 2023 08:36:21 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-32d895584f1so590607f8f.1;
-        Thu, 02 Nov 2023 08:36:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698939379; x=1699544179; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rMOgTTQfwkBYFLdv7N61GXnKXP7EQxg4GSCDuZfxSVE=;
-        b=ablWAJNkQQWGVKn+b9pesKMaI+ip0/gUGr5aSysYd4CdbcP4R04p1DemSukWlf9JSV
-         ifPq+hdkX7stZ1vVxbAmXU4+d25nt3CUcYEZsIbsQSstmtotzQ7aj0K0UVHiuaSyhZcg
-         kF8SrnU1KnURlTOdQZMWNZRJIlIzeJix/KOuO0FIxA8gcSuTLqkMBUcM6HlnyQhfzayr
-         tSs8l/Ddby2STqHO7B/psBqdHihpSSsGqg12uiwcoeOaPp1ZXThgBSjxa7Te39AcA63y
-         Ziv3Jfo1fBL56O57LenZRxgOGwfGq93MA85EV18xS+VOxiocChzN4oSOg60IPoBdJ/5I
-         qLrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698939379; x=1699544179;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rMOgTTQfwkBYFLdv7N61GXnKXP7EQxg4GSCDuZfxSVE=;
-        b=HhPfPO8PoTfKf0VE15X5Yn026HCeE/TVtQ66KZaOytfJZsRNxcK3qug2zzAyZSwBJr
-         wEA7QVR/FrYfKAFv9pecTf6OjKFfpZIM3piNZH2BlsuZo1UQbX2A6h7DsamYckWfY8Pa
-         wS2dKnAl6mehF0kVKdZ66AFTq+oJCH3Re3EE2MMb4kt1V3EHT7wqReFHnS8lFhlVUED1
-         zDUPvi0JK4doFEmAIEGCjId/3skODcz3TqAeRNwIC8rm4FA6nbXAku/vOlgUzqgaTO4l
-         PzSUZCDpiTsRg7aTNdMPGzCdVaSoxLyyZH8Ar93iiZ6QLoHBjCk9ecDEpdvuGMsnAPOW
-         UhUg==
-X-Gm-Message-State: AOJu0YzJL9ZSUTmZGK4EG4NU2UyC640vjlWHPfBUJ3qPKcr0BZKu4aYT
-	/BJsZgTJbUYxX5S4PDHgPuAb1NsdV8oHKdyvDGE=
-X-Google-Smtp-Source: AGHT+IGtErLNE5/niYv6UuFqjxP/VaBMOcBOA3J+nOQd1xQlkmfPqC0fXne7mIfUuUFrUfZQSx+rtAb5Tt2ImrEHILw=
-X-Received: by 2002:adf:d1cb:0:b0:32f:8966:c39c with SMTP id
- b11-20020adfd1cb000000b0032f8966c39cmr9632234wrd.71.1698939379259; Thu, 02
- Nov 2023 08:36:19 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 718071D531
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 16:00:01 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3A4E7186;
+	Thu,  2 Nov 2023 09:00:00 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41DEC2F4;
+	Thu,  2 Nov 2023 09:00:42 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.27.166])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 45F3B3F738;
+	Thu,  2 Nov 2023 08:59:58 -0700 (PDT)
+Date: Thu, 2 Nov 2023 15:59:52 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Puranjay Mohan <puranjay12@gmail.com>,
+	Florent Revest <revest@chromium.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v4 0/3] bpf, arm64: use BPF prog pack allocator
+ in BPF JIT
+Message-ID: <ZUPHeEe1eJjHkhsg@FVFF77S0Q05N.cambridge.arm.com>
+References: <20230626085811.3192402-1-puranjay12@gmail.com>
+ <7e05efe1-0af0-1896-6f6f-dcb02ed8ca27@iogearbox.net>
+ <ZKMCFtlfJA1LfGNJ@FVFF77S0Q05N>
+ <CANk7y0gTXPBj5U-vFK0cEvVe83tP1FqyD=MuLXT_amWO=EssOA@mail.gmail.com>
+ <CANk7y0hRYzpsYoqcU1tHyZThAgg-cx46C4-n2JYZTa7sDwEk-w@mail.gmail.com>
+ <CAADnVQJJHiSZPZFpu1n-oQLEsUptacSzF7FdOKfO6OEoKz-jXg@mail.gmail.com>
+ <ZMuLvKRbPfOK0IpN@FVFF77S0Q05N>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231031134900.1432945-1-vadfed@meta.com> <dac97b74-5ff1-172b-9cd5-4cdcf07386ec@linux.dev>
- <91a6d5a7-7b18-48a2-9a74-7c00509467f8@linux.dev> <6947046d-27e3-90ee-3419-0b480af0abb0@linux.dev>
- <4258aabd-5f7b-4b7f-ab43-408b69bfdc58@linux.dev>
-In-Reply-To: <4258aabd-5f7b-4b7f-ab43-408b69bfdc58@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 2 Nov 2023 08:36:06 -0700
-Message-ID: <CAADnVQ+9pp33zv9DxouEmg24o7w27OKFUcvKChHuby_+d6-bLg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: add skcipher API support to TC/XDP programs
-To: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, 
-	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
-	Vadim Fedorenko <vadfed@meta.com>, "David S. Miller" <davem@davemloft.net>, 
-	Herbert Xu <herbert@gondor.apana.org.au>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMuLvKRbPfOK0IpN@FVFF77S0Q05N>
 
-On Thu, Nov 2, 2023 at 6:44=E2=80=AFAM Vadim Fedorenko
-<vadim.fedorenko@linux.dev> wrote:
->
-> On 01/11/2023 23:41, Martin KaFai Lau wrote:
-> > On 11/1/23 3:50=E2=80=AFPM, Vadim Fedorenko wrote:
-> >>>> +static void *__bpf_dynptr_data_ptr(const struct bpf_dynptr_kern *pt=
-r)
-> >>>> +{
-> >>>> +    enum bpf_dynptr_type type;
-> >>>> +
-> >>>> +    if (!ptr->data)
-> >>>> +        return NULL;
-> >>>> +
-> >>>> +    type =3D bpf_dynptr_get_type(ptr);
-> >>>> +
-> >>>> +    switch (type) {
-> >>>> +    case BPF_DYNPTR_TYPE_LOCAL:
-> >>>> +    case BPF_DYNPTR_TYPE_RINGBUF:
-> >>>> +        return ptr->data + ptr->offset;
-> >>>> +    case BPF_DYNPTR_TYPE_SKB:
-> >>>> +        return skb_pointer_if_linear(ptr->data, ptr->offset,
-> >>>> __bpf_dynptr_size(ptr));
-> >>>> +    case BPF_DYNPTR_TYPE_XDP:
-> >>>> +    {
-> >>>> +        void *xdp_ptr =3D bpf_xdp_pointer(ptr->data, ptr->offset,
-> >>>> __bpf_dynptr_size(ptr));
-> >>>
-> >>> I suspect what it is doing here (for skb and xdp in particular) is
-> >>> very similar to bpf_dynptr_slice. Please check if
-> >>> bpf_dynptr_slice(ptr, 0, NULL, sz) will work.
-> >>>
-> >>
-> >> Well, yes, it's simplified version of bpf_dynptr_slice. The problem is
-> >> that bpf_dynptr_slice bpf_kfunc which cannot be used in another
-> >> bpf_kfunc. Should I refactor the code to use it in both places? Like
-> >
-> > Sorry, scrolled too fast in my earlier reply :(
-> >
-> > I am not aware of this limitation. What error does it have?
-> > The bpf_dynptr_slice_rdwr kfunc() is also calling the bpf_dynptr_slice(=
-)
-> > kfunc.
-> >
-> >> create __bpf_dynptr_slice() which will be internal part of bpf_kfunc?
->
-> Apparently Song has a patch to expose these bpf_dynptr_slice* functions
-> ton in-kernel users.
->
-> https://lore.kernel.org/bpf/20231024235551.2769174-2-song@kernel.org/
->
-> Should I wait for it to be merged before sending next version?
+On Thu, Aug 03, 2023 at 12:13:00PM +0100, Mark Rutland wrote:
+[...]
 
-If you need something from another developer it's best to ask them
-explicitly :)
-In this case Song can respin with just that change that you need.
+> However, in looking at it I think
+> there may me a wider potential isssue w.r.t. the way instruction memory gets
+> reused, because as writtten today the architecture doesn't seem to have a
+> guarantee on when instruction fetches are completed and therefore when it's
+> safe to modify instruction memory. Usually we're saved by TLB maintenance,
+> which this series avoids by design.
+
+Just to confirm on this point specifically, per discussions with our
+architects, the (architectural) execution of an instruction ensures that there
+are no outstanding fetches for prior instructions. IIUC that will be clarified 
+the next release of the ARM ARM.
+
+So as long as we're certain all threads have left the old code (e.g. via a
+flag, RCU tasks rude synchronization, whatever) before we overwrite slots in
+the shared buffer, we should be good.
+
+We will need to be very careful with the maintenance when installing new code
+into the shared buffer (e.g. we will require an IPI to all other CPUs), but
+that should be relatively simple.
+
+I'll go review the latest patches with that in mind.
+
+Thanks,
+Mark.
 
