@@ -1,52 +1,51 @@
-Return-Path: <bpf+bounces-13939-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13940-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 197B07DF014
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 11:33:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D951A7DF039
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 11:35:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEDE31F22666
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 10:33:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 153701C20E97
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 10:35:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C2636FC9;
-	Thu,  2 Nov 2023 10:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC30613A;
+	Thu,  2 Nov 2023 10:35:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZJiNlDs4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hp/SNoSV"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E64B514A92;
-	Thu,  2 Nov 2023 10:32:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22382C433C7;
-	Thu,  2 Nov 2023 10:32:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A06614A9D;
+	Thu,  2 Nov 2023 10:35:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3ABAC433C9;
+	Thu,  2 Nov 2023 10:35:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698921179;
-	bh=vCsEm5kYfVokXfpt6FzUVW6m+28U/AvZkO+g4Ew8jFk=;
+	s=k20201202; t=1698921343;
+	bh=1nnK+BgW97TZtPhAGFwIN2pVL9Lwel3zDlxOeK1GZE0=;
 	h=From:To:Cc:Subject:Date:From;
-	b=ZJiNlDs4f9oSJYvvei6uvYrpqZq37TUCwF2TSXFU0cathgxMjUlb4jnlSBN4uWgXY
-	 h1C9FNJXF8eXE6TTbyrPdzGPap3ZvqTeBycVZLwtI/OBCUOA+yoZaqgqRt9+AtkZYO
-	 1kJ2hdn88SArB44LpXio9JYg3HVTdQLy/72rTKqAFoB3/hWHcAVdzvxYSVIMHY/pmQ
-	 uCnjE2dRoZusENcLrLAjYtjG94rH95ydVkXdor2gNtHsd8Jh5z22QhPIQ3qx+ucgsn
-	 Hnsk6XReZPEAH78MSG8NTPZp2RwwvCPMNAXDwhxHJEM2hylphICX3Wg97UUqFLlfiL
-	 TC+p/kmOFN+ZA==
+	b=hp/SNoSVOXUm2gBmEt7NCjTtCofg8ToWbsBifF9Kd3r4tUtWuioL9hwqtS+CbRTM5
+	 +44EtvxUoltEK16bErmJlLfv13KoegLIHu+lWMDkJ05A1Z6Mplzq2NQR4UT28EmkuJ
+	 3MN01IJD4ycpIjkpqCnSteIwuhTNqZRYX3zkWFu2xIXocS9tou+zuQi6NhDqUBujgM
+	 vebm2NL3NQbQJHibw5K1q8LchYPPPfc7KHfsBd98HyiU2YPYViZozcW3OR0nZilgu7
+	 rXFs7ypd5omEGDhwVRfZkmXb8+llmhTOMLF/3CaanKJUmmk7P9voV0An2U9BjbsVk2
+	 05su5Veo2NFGg==
 From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@redhat.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Tom Rix <trix@redhat.com>,
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
 	bpf@vger.kernel.org,
-	Anders Roxell <anders.roxell@linaro.org>,
-	llvm@lists.linux.dev,
-	Jiri Olsa <olsajiri@gmail.com>
-Subject: [PATCH v2] tools/build: Add clang cross-compilation flags to feature detection
-Date: Thu,  2 Nov 2023 11:32:52 +0100
-Message-Id: <20231102103252.247147-1-bjorn@kernel.org>
+	Daniel Borkmann <daniel@iogearbox.net>,
+	netdev@vger.kernel.org
+Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Larysa Zaremba <larysa.zaremba@intel.com>
+Subject: [PATCH bpf] selftests/bpf: Fix broken build where char is unsigned
+Date: Thu,  2 Nov 2023 11:35:37 +0100
+Message-Id: <20231102103537.247336-1-bjorn@kernel.org>
 X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -59,87 +58,39 @@ Content-Transfer-Encoding: 8bit
 
 From: Björn Töpel <bjorn@rivosinc.com>
 
-When a tool cross-build has LLVM=1 set, the clang cross-compilation
-flags are not passed to the feature detection build system. This
-results in the host's features are detected instead of the targets.
+There are architectures where char is not signed. If so, the following
+error is triggered:
 
-E.g, triggering a cross-build of bpftool:
+  | xdp_hw_metadata.c:435:42: error: result of comparison of constant -1 \
+  |   with expression of type 'char' is always true \
+  |   [-Werror,-Wtautological-constant-out-of-range-compare]
+  |   435 |         while ((opt = getopt(argc, argv, "mh")) != -1) {
+  |       |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~
+  | 1 error generated.
 
-  cd tools/bpf/bpftool
-  make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- LLVM=1
+Correct by changing the char to int.
 
-would report the host's, and not the target's features.
-
-Correct the issue by passing the CLANG_CROSS_FLAGS variable to the
-feature detection makefile.
-
-Fixes: cebdb7374577 ("tools: Help cross-building with clang")
+Fixes: bb6a88885fde ("selftests/bpf: Add options and frags to xdp_hw_metadata")
 Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
 ---
- tools/build/Makefile.feature |  2 +-
- tools/build/feature/Makefile | 12 ++++++------
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-index 934e2777a2db..25b009a6c05f 100644
---- a/tools/build/Makefile.feature
-+++ b/tools/build/Makefile.feature
-@@ -8,7 +8,7 @@ endif
+diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+index 17c0f92ff160..c3ba40d0b9de 100644
+--- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
++++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+@@ -430,7 +430,7 @@ static void print_usage(void)
  
- feature_check = $(eval $(feature_check_code))
- define feature_check_code
--  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC="$(CC)" CXX="$(CXX)" CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
-+  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC="$(CC)" CXX="$(CXX)" CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" CLANG_CROSS_FLAGS="$(CLANG_CROSS_FLAGS)" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
- endef
+ static void read_args(int argc, char *argv[])
+ {
+-	char opt;
++	int opt;
  
- feature_set = $(eval $(feature_set_code))
-diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-index dad79ede4e0a..c4458345e564 100644
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -84,12 +84,12 @@ PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
- 
- all: $(FILES)
- 
--__BUILD = $(CC) $(CFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.c,$(@F)) $(LDFLAGS)
-+__BUILD = $(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.c,$(@F)) $(LDFLAGS)
-   BUILD = $(__BUILD) > $(@:.bin=.make.output) 2>&1
-   BUILD_BFD = $(BUILD) -DPACKAGE='"perf"' -lbfd -ldl
-   BUILD_ALL = $(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
- 
--__BUILDXX = $(CXX) $(CXXFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(@F)) $(LDFLAGS)
-+__BUILDXX = $(CXX) $(CXXFLAGS) $(CLANG_CROSS_FLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(@F)) $(LDFLAGS)
-   BUILDXX = $(__BUILDXX) > $(@:.bin=.make.output) 2>&1
- 
- ###############################
-@@ -259,10 +259,10 @@ $(OUTPUT)test-reallocarray.bin:
- 	$(BUILD)
- 
- $(OUTPUT)test-libbfd-liberty.bin:
--	$(CC) $(CFLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty
-+	$(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty
- 
- $(OUTPUT)test-libbfd-liberty-z.bin:
--	$(CC) $(CFLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty -lz
-+	$(CC) $(CFLAGS) $(CLANG_CROSS_FLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty -lz
- 
- $(OUTPUT)test-cplus-demangle.bin:
- 	$(BUILD) -liberty
-@@ -283,10 +283,10 @@ $(OUTPUT)test-libbabeltrace.bin:
- 	$(BUILD) # -lbabeltrace provided by $(FEATURE_CHECK_LDFLAGS-libbabeltrace)
- 
- $(OUTPUT)test-compile-32.bin:
--	$(CC) -m32 -o $@ test-compile.c
-+	$(CC) $(CLANG_CROSS_FLAGS) -m32 -o $@ test-compile.c
- 
- $(OUTPUT)test-compile-x32.bin:
--	$(CC) -mx32 -o $@ test-compile.c
-+	$(CC) $(CLANG_CROSS_FLAGS) -mx32 -o $@ test-compile.c
- 
- $(OUTPUT)test-zlib.bin:
- 	$(BUILD) -lz
+ 	while ((opt = getopt(argc, argv, "mh")) != -1) {
+ 		switch (opt) {
 
-base-commit: 21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
+base-commit: cb3c6a58be50c65014296aa3455cae0fa1e82eac
 -- 
 2.40.1
 
