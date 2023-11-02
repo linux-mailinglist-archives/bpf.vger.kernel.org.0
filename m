@@ -1,454 +1,221 @@
-Return-Path: <bpf+bounces-13983-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13984-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C5327DF805
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 17:55:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BDB97DF807
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 17:56:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F01B281C46
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 16:55:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5FD0B212B3
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 16:56:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 862911D521;
-	Thu,  2 Nov 2023 16:55:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6DE21DA3B;
+	Thu,  2 Nov 2023 16:56:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YCtELXrw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AKpRa4px"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0E6618E17;
-	Thu,  2 Nov 2023 16:55:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78892C433C7;
-	Thu,  2 Nov 2023 16:55:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698944136;
-	bh=71USteCEiuLSb1j+/UlLRKPzkVHCq+YB1wYIkQ70C1g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YCtELXrwIKJLSAcrGnCcw8FJPITnDLysKfLknwubSAh3p7kLn46pfHRZ/Yy8DNBaD
-	 6pLVo/JYTTP79G9fgnqR1nSzpoTzbM+9yNffq8p/1FJWwR+rrDE0oaScY5MtLcZfpM
-	 QGQHebME2KjPH2vfLeOIAH0gNIjhm00s5kTd/dk+wALmQ9ASPbv6Fl5GkXAxuwsa9/
-	 0pF+MD9P4v/jvneIHXQbi8EQhH8o9L1VHAhG5d1UIVQ9YVe2st59s6CYN4VQNzatae
-	 IzOKKgByFo6hWIezWEDaFiNa0CfwjgpC6vpVuR1hkX8UYQNCLGbfQcGA1hJviLK0sD
-	 auz8gkC0pxf+w==
-From: Song Liu <song@kernel.org>
-To: bpf@vger.kernel.org,
-	fsverity@lists.linux.dev
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@kernel.org,
-	kernel-team@meta.com,
-	ebiggers@kernel.org,
-	tytso@mit.edu,
-	roberto.sassu@huaweicloud.com,
-	kpsingh@kernel.org,
-	Song Liu <song@kernel.org>
-Subject: [PATCH v7 bpf-next 9/9] selftests/bpf: Add test that uses fsverity and xattr to sign a file
-Date: Thu,  2 Nov 2023 09:54:32 -0700
-Message-Id: <20231102165432.1769965-10-song@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231102165432.1769965-1-song@kernel.org>
-References: <20231102165432.1769965-1-song@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABF6D1D54B
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 16:56:18 +0000 (UTC)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6F413A
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 09:56:16 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9d8d3b65a67so173212466b.2
+        for <bpf@vger.kernel.org>; Thu, 02 Nov 2023 09:56:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698944175; x=1699548975; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PAok9UmZEssJYk2T0a1ynw4R8uobF4KBAfxj8PyiTLQ=;
+        b=AKpRa4pxqcvsy/RqDurE3qw9rMVI683L4Yd/kuGNc+hUFdaAIOCg9scGhlra8e5TDr
+         8TnbW8+gfWXzLiRqRAYjN0bXPFBKESLZjhWn9GM6XzOB/LV2NKT6Ia4AaZGx1hwu+xO2
+         dLRsgkskU3v8OVUQiDymyexKaTeE180xAZT5AE8Yq/iGSSBGlkqDUWTlFbAFygURXpvY
+         29kEpj648FrcnjYPDNMlQ7dZbLwgu9FkkKGnuzMPX2IbPGRSwOR9lKaSAitk/pwF8OK0
+         Hsvb5AMkCdoRP6ac5kYMqs/bL6gFa5kwdH/1uEqL3MOSI60N3Xy+acprPc7e84HV66W5
+         C16Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698944175; x=1699548975;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PAok9UmZEssJYk2T0a1ynw4R8uobF4KBAfxj8PyiTLQ=;
+        b=nY/iw1tBx67GmiWZjRD6A0Ie0MKzQk2EdoCylbxCBKv7Z/MxT5zacK0Bx6a9u/xDrQ
+         n+YMDmgIZWKQlyMhTZNttwRcjN+RxBc6Hg4rf7aSTrxFKs7Ha8Ko0xsOPQj4D5fL6vet
+         +C3ARbYn9HLpX8Sw/xx8m87mpagyVFkzSj0AaaLfUjNti4T5wUXe6s0Hx+7OA66DjBP5
+         7bNOSrqhhjSlHoehamQcZaSYA5hClacf8Xf0kc67kZuh1hJsOP1HWprV8bCL9mMvvOTR
+         blPqpkNTLo3CUJHn2Xtzho8AESVj7A0NNJP7vZkyA16aWtWH20hxWyrfJqkjHmGzJBoW
+         p0tg==
+X-Gm-Message-State: AOJu0Yw+/ha9F07QPeqo0W66sCq3pEaF1wEKn8SB5E22gwZRaC2ib3F7
+	LGpc7jtNXSWl9FSKAYNLLg8mAYiH57s288Q6arA=
+X-Google-Smtp-Source: AGHT+IEbcmCXNJTJqudaMXApeY9rOovFyZUpcqYePFhLFW8kyv5DpZFZ/Yy+pCteAmr2fwS9ZXP5t5x5vKyd5pdCTbg=
+X-Received: by 2002:a17:907:a08a:b0:9d2:7f29:2baf with SMTP id
+ hu10-20020a170907a08a00b009d27f292bafmr4047085ejc.75.1698944174286; Thu, 02
+ Nov 2023 09:56:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231024235551.2769174-1-song@kernel.org> <20231024235551.2769174-2-song@kernel.org>
+In-Reply-To: <20231024235551.2769174-2-song@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 2 Nov 2023 09:56:02 -0700
+Message-ID: <CAEf4Bzbr8dgksh2z+4nEkAFdV9gquhR+HROULKdTkWrUpSM9-Q@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 1/9] bpf: Expose bpf_dynptr_slice* kfuncs for
+ in kernel use
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, fsverity@lists.linux.dev, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org, 
+	kernel-team@meta.com, ebiggers@kernel.org, tytso@mit.edu, 
+	roberto.sassu@huaweicloud.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This selftests shows a proof of concept method to use BPF LSM to enforce
-file signature. This test is added to verify_pkcs7_sig, so that some
-existing logic can be reused.
+On Tue, Oct 24, 2023 at 4:56=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+>
+> kfuncs bpf_dynptr_slice and bpf_dynptr_slice_rdwr are used by BPF program=
+s
+> to access the dynptr data. They are also useful for in kernel functions
+> that access dynptr data, for example, bpf_verify_pkcs7_signature.
+>
+> Add bpf_dynptr_slice and bpf_dynptr_slice_rdwr to bpf.h so that kernel
+> functions can use them instead of accessing dynptr->data directly.
+>
+> Update bpf_verify_pkcs7_signature to use bpf_dynptr_slice instead of
+> dynptr->data.
+>
+> Also, update the comments for bpf_dynptr_slice and bpf_dynptr_slice_rdwr
+> that they may return error pointers for BPF_DYNPTR_TYPE_XDP.
+>
+> Signed-off-by: Song Liu <song@kernel.org>
+> ---
+>  include/linux/bpf.h      |  4 ++++
+>  kernel/bpf/helpers.c     | 16 ++++++++--------
+>  kernel/trace/bpf_trace.c | 15 +++++++++++----
+>  3 files changed, 23 insertions(+), 12 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index b4825d3cdb29..3ed3ae37cbdf 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1222,6 +1222,10 @@ enum bpf_dynptr_type {
+>
+>  int bpf_dynptr_check_size(u32 size);
+>  u32 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr);
+> +void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset,
+> +                      void *buffer__opt, u32 buffer__szk);
+> +void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32 offse=
+t,
+> +                           void *buffer__opt, u32 buffer__szk);
+>
+>  #ifdef CONFIG_BPF_JIT
+>  int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_tra=
+mpoline *tr);
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index e46ac288a108..af5059f11e83 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -2270,10 +2270,10 @@ __bpf_kfunc struct task_struct *bpf_task_from_pid=
+(s32 pid)
+>   * bpf_dynptr_slice will not invalidate any ctx->data/data_end pointers =
+in
+>   * the bpf program.
+>   *
+> - * Return: NULL if the call failed (eg invalid dynptr), pointer to a rea=
+d-only
+> - * data slice (can be either direct pointer to the data or a pointer to =
+the user
+> - * provided buffer, with its contents containing the data, if unable to =
+obtain
+> - * direct pointer)
+> + * Return: NULL or error pointer if the call failed (eg invalid dynptr),=
+ pointer
 
-This file signature method uses fsverity, which provides reliable and
-efficient hash (known as digest) of the file. The file digest is signed
-with asymmetic key, and the signature is stored in xattr. At the run time,
-BPF LSM reads file digest and the signature, and then checks them against
-the public key.
+Hold on, nope, this one shouldn't return error pointer because it's
+used from BPF program side and BPF program is checking for NULL only.
+Does it actually return error pointer, though?
 
-Note that this solution does NOT require FS_VERITY_BUILTIN_SIGNATURES.
-fsverity is only used to provide file digest. The signature verification
-and access control is all implemented in BPF LSM.
+I'm generally skeptical of allowing to call kfuncs directly from
+internal kernel code, tbh, and concerns like this are one reason why.
+BPF verifier sets up various conditions that kfuncs have to follow,
+and it seems error-prone to mix this up with internal kernel usage.
 
-Signed-off-by: Song Liu <song@kernel.org>
----
- tools/testing/selftests/bpf/bpf_kfuncs.h      |   7 +
- .../bpf/prog_tests/verify_pkcs7_sig.c         | 163 +++++++++++++++++-
- .../selftests/bpf/progs/test_sig_in_xattr.c   |  82 +++++++++
- .../bpf/progs/test_verify_pkcs7_sig.c         |   8 +-
- .../testing/selftests/bpf/verify_sig_setup.sh |  25 +++
- 5 files changed, 277 insertions(+), 8 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_sig_in_xattr.c
-
-diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/selftests/bpf/bpf_kfuncs.h
-index c2c084a44eae..b4e78c1eb37b 100644
---- a/tools/testing/selftests/bpf/bpf_kfuncs.h
-+++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
-@@ -58,4 +58,11 @@ void *bpf_rdonly_cast(void *obj, __u32 btf_id) __ksym;
- extern int bpf_get_file_xattr(struct file *file, const char *name,
- 			      struct bpf_dynptr *value_ptr) __ksym;
- extern int bpf_get_fsverity_digest(struct file *file, struct bpf_dynptr *digest_ptr) __ksym;
-+
-+extern struct bpf_key *bpf_lookup_user_key(__u32 serial, __u64 flags) __ksym;
-+extern struct bpf_key *bpf_lookup_system_key(__u64 id) __ksym;
-+extern void bpf_key_put(struct bpf_key *key) __ksym;
-+extern int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_ptr,
-+				      struct bpf_dynptr *sig_ptr,
-+				      struct bpf_key *trusted_keyring) __ksym;
- #endif
-diff --git a/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c b/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
-index dd7f2bc70048..682b6af8d0a4 100644
---- a/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
-@@ -16,9 +16,12 @@
- #include <sys/wait.h>
- #include <sys/mman.h>
- #include <linux/keyctl.h>
-+#include <sys/xattr.h>
-+#include <linux/fsverity.h>
- #include <test_progs.h>
- 
- #include "test_verify_pkcs7_sig.skel.h"
-+#include "test_sig_in_xattr.skel.h"
- 
- #define MAX_DATA_SIZE (1024 * 1024)
- #define MAX_SIG_SIZE 1024
-@@ -26,6 +29,10 @@
- #define VERIFY_USE_SECONDARY_KEYRING (1UL)
- #define VERIFY_USE_PLATFORM_KEYRING  (2UL)
- 
-+#ifndef SHA256_DIGEST_SIZE
-+#define SHA256_DIGEST_SIZE      32
-+#endif
-+
- /* In stripped ARM and x86-64 modules, ~ is surprisingly rare. */
- #define MODULE_SIG_STRING "~Module signature appended~\n"
- 
-@@ -254,7 +261,7 @@ static int populate_data_item_mod(struct data *data_item)
- 	return ret;
- }
- 
--void test_verify_pkcs7_sig(void)
-+static void test_verify_pkcs7_sig_from_map(void)
- {
- 	libbpf_print_fn_t old_print_cb;
- 	char tmp_dir_template[] = "/tmp/verify_sigXXXXXX";
-@@ -400,3 +407,157 @@ void test_verify_pkcs7_sig(void)
- 	skel->bss->monitored_pid = 0;
- 	test_verify_pkcs7_sig__destroy(skel);
- }
-+
-+static int get_signature_size(const char *sig_path)
-+{
-+	struct stat st;
-+
-+	if (stat(sig_path, &st) == -1)
-+		return -1;
-+
-+	return st.st_size;
-+}
-+
-+static int add_signature_to_xattr(const char *data_path, const char *sig_path)
-+{
-+	char sig[MAX_SIG_SIZE] = {0};
-+	int fd, size, ret;
-+
-+	if (sig_path) {
-+		fd = open(sig_path, O_RDONLY);
-+		if (fd < 0)
-+			return -1;
-+
-+		size = read(fd, sig, MAX_SIG_SIZE);
-+		close(fd);
-+		if (size <= 0)
-+			return -1;
-+	} else {
-+		/* no sig_path, just write 32 bytes of zeros */
-+		size = 32;
-+	}
-+	ret = setxattr(data_path, "user.sig", sig, size, 0);
-+	if (!ASSERT_OK(ret, "setxattr"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static int test_open_file(struct test_sig_in_xattr *skel, char *data_path,
-+			  pid_t pid, bool should_success, char *name)
-+{
-+	int ret;
-+
-+	skel->bss->monitored_pid = pid;
-+	ret = open(data_path, O_RDONLY);
-+	close(ret);
-+	skel->bss->monitored_pid = 0;
-+
-+	if (should_success) {
-+		if (!ASSERT_GE(ret, 0, name))
-+			return -1;
-+	} else {
-+		if (!ASSERT_LT(ret, 0, name))
-+			return -1;
-+	}
-+	return 0;
-+}
-+
-+static void test_pkcs7_sig_fsverity(void)
-+{
-+	char data_path[PATH_MAX];
-+	char sig_path[PATH_MAX];
-+	char tmp_dir_template[] = "/tmp/verify_sigXXXXXX";
-+	char *tmp_dir;
-+	struct test_sig_in_xattr *skel = NULL;
-+	pid_t pid;
-+	int ret;
-+
-+	tmp_dir = mkdtemp(tmp_dir_template);
-+	if (!ASSERT_OK_PTR(tmp_dir, "mkdtemp"))
-+		return;
-+
-+	snprintf(data_path, PATH_MAX, "%s/data-file", tmp_dir);
-+	snprintf(sig_path, PATH_MAX, "%s/sig-file", tmp_dir);
-+
-+	ret = _run_setup_process(tmp_dir, "setup");
-+	if (!ASSERT_OK(ret, "_run_setup_process"))
-+		goto out;
-+
-+	ret = _run_setup_process(tmp_dir, "fsverity-create-sign");
-+
-+	if (ret) {
-+		printf("%s: SKIP: fsverity [sign|enable] doesn't work.\n", __func__);
-+		test__skip();
-+		goto out;
-+	}
-+
-+	skel = test_sig_in_xattr__open();
-+	if (!ASSERT_OK_PTR(skel, "test_sig_in_xattr__open"))
-+		goto out;
-+	ret = get_signature_size(sig_path);
-+	if (!ASSERT_GT(ret, 0, "get_signaure_size"))
-+		goto out;
-+	skel->bss->sig_size = ret;
-+	skel->bss->user_keyring_serial = syscall(__NR_request_key, "keyring",
-+						 "ebpf_testing_keyring", NULL,
-+						 KEY_SPEC_SESSION_KEYRING);
-+	memcpy(skel->bss->digest, "FSVerity", 8);
-+
-+	ret = test_sig_in_xattr__load(skel);
-+	if (!ASSERT_OK(ret, "test_sig_in_xattr__load"))
-+		goto out;
-+
-+	ret = test_sig_in_xattr__attach(skel);
-+	if (!ASSERT_OK(ret, "test_sig_in_xattr__attach"))
-+		goto out;
-+
-+	pid = getpid();
-+
-+	/* Case 1: fsverity is not enabled, open should succeed */
-+	if (test_open_file(skel, data_path, pid, true, "open_1"))
-+		goto out;
-+
-+	/* Case 2: fsverity is enabled, xattr is missing, open should
-+	 * fail
-+	 */
-+	ret = _run_setup_process(tmp_dir, "fsverity-enable");
-+	if (!ASSERT_OK(ret, "fsverity-enable"))
-+		goto out;
-+	if (test_open_file(skel, data_path, pid, false, "open_2"))
-+		goto out;
-+
-+	/* Case 3: fsverity is enabled, xattr has valid signature, open
-+	 * should succeed
-+	 */
-+	ret = add_signature_to_xattr(data_path, sig_path);
-+	if (!ASSERT_OK(ret, "add_signature_to_xattr_1"))
-+		goto out;
-+
-+	if (test_open_file(skel, data_path, pid, true, "open_3"))
-+		goto out;
-+
-+	/* Case 4: fsverity is enabled, xattr has invalid signature, open
-+	 * should fail
-+	 */
-+	ret = add_signature_to_xattr(data_path, NULL);
-+	if (!ASSERT_OK(ret, "add_signature_to_xattr_2"))
-+		goto out;
-+	test_open_file(skel, data_path, pid, false, "open_4");
-+
-+out:
-+	_run_setup_process(tmp_dir, "cleanup");
-+	if (!skel)
-+		return;
-+
-+	skel->bss->monitored_pid = 0;
-+	test_sig_in_xattr__destroy(skel);
-+}
-+
-+void test_verify_pkcs7_sig(void)
-+{
-+	if (test__start_subtest("pkcs7_sig_from_map"))
-+		test_verify_pkcs7_sig_from_map();
-+	if (test__start_subtest("pkcs7_sig_fsverity"))
-+		test_pkcs7_sig_fsverity();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_sig_in_xattr.c b/tools/testing/selftests/bpf/progs/test_sig_in_xattr.c
-new file mode 100644
-index 000000000000..820b891171d8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_sig_in_xattr.c
-@@ -0,0 +1,82 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <errno.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_kfuncs.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#ifndef SHA256_DIGEST_SIZE
-+#define SHA256_DIGEST_SIZE      32
-+#endif
-+
-+#define MAX_SIG_SIZE 1024
-+
-+/* By default, "fsverity sign" signs a file with fsverity_formatted_digest
-+ * of the file. fsverity_formatted_digest on the kernel side is only used
-+ * with CONFIG_FS_VERITY_BUILTIN_SIGNATURES. However, BPF LSM doesn't not
-+ * require CONFIG_FS_VERITY_BUILTIN_SIGNATURES, so vmlinux.h may not have
-+ * fsverity_formatted_digest. In this test, we intentionally avoid using
-+ * fsverity_formatted_digest.
-+ *
-+ * Luckily, fsverity_formatted_digest is simply 8-byte magic followed by
-+ * fsverity_digest. We use a char array of size fsverity_formatted_digest
-+ * plus SHA256_DIGEST_SIZE. The magic part of it is filled by user space,
-+ * and the rest of it is filled by bpf_get_fsverity_digest.
-+ *
-+ * Note that, generating signatures based on fsverity_formatted_digest is
-+ * the design choice of this selftest (and "fsverity sign"). With BPF
-+ * LSM, we have the flexibility to generate signature based on other data
-+ * sets, for example, fsverity_digest or only the digest[] part of it.
-+ */
-+#define MAGIC_SIZE 8
-+char digest[MAGIC_SIZE + sizeof(struct fsverity_digest) + SHA256_DIGEST_SIZE];
-+
-+__u32 monitored_pid;
-+char sig[MAX_SIG_SIZE];
-+__u32 sig_size;
-+__u32 user_keyring_serial;
-+
-+SEC("lsm.s/file_open")
-+int BPF_PROG(test_file_open, struct file *f)
-+{
-+	struct bpf_dynptr digest_ptr, sig_ptr;
-+	struct bpf_key *trusted_keyring;
-+	__u32 pid;
-+	int ret;
-+
-+	pid = bpf_get_current_pid_tgid() >> 32;
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	/* digest_ptr points to fsverity_digest */
-+	bpf_dynptr_from_mem(digest + MAGIC_SIZE, sizeof(digest) - MAGIC_SIZE, 0, &digest_ptr);
-+
-+	ret = bpf_get_fsverity_digest(f, &digest_ptr);
-+	/* No verity, allow access */
-+	if (ret < 0)
-+		return 0;
-+
-+	/* Move digest_ptr to fsverity_formatted_digest */
-+	bpf_dynptr_from_mem(digest, sizeof(digest), 0, &digest_ptr);
-+
-+	/* Read signature from xattr */
-+	bpf_dynptr_from_mem(sig, sizeof(sig), 0, &sig_ptr);
-+	ret = bpf_get_file_xattr(f, "user.sig", &sig_ptr);
-+	/* No signature, reject access */
-+	if (ret < 0)
-+		return -EPERM;
-+
-+	trusted_keyring = bpf_lookup_user_key(user_keyring_serial, 0);
-+	if (!trusted_keyring)
-+		return -ENOENT;
-+
-+	/* Verify signature */
-+	ret = bpf_verify_pkcs7_signature(&digest_ptr, &sig_ptr, trusted_keyring);
-+
-+	bpf_key_put(trusted_keyring);
-+	return ret;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c b/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-index 7748cc23de8a..f42e9f3831a1 100644
---- a/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-+++ b/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-@@ -10,17 +10,11 @@
- #include <errno.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
-+#include "bpf_kfuncs.h"
- 
- #define MAX_DATA_SIZE (1024 * 1024)
- #define MAX_SIG_SIZE 1024
- 
--extern struct bpf_key *bpf_lookup_user_key(__u32 serial, __u64 flags) __ksym;
--extern struct bpf_key *bpf_lookup_system_key(__u64 id) __ksym;
--extern void bpf_key_put(struct bpf_key *key) __ksym;
--extern int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_ptr,
--				      struct bpf_dynptr *sig_ptr,
--				      struct bpf_key *trusted_keyring) __ksym;
--
- __u32 monitored_pid;
- __u32 user_keyring_serial;
- __u64 system_keyring_id;
-diff --git a/tools/testing/selftests/bpf/verify_sig_setup.sh b/tools/testing/selftests/bpf/verify_sig_setup.sh
-index ba08922b4a27..7e6caa134e1a 100755
---- a/tools/testing/selftests/bpf/verify_sig_setup.sh
-+++ b/tools/testing/selftests/bpf/verify_sig_setup.sh
-@@ -60,6 +60,27 @@ cleanup() {
- 	rm -rf ${tmp_dir}
- }
- 
-+fsverity_create_sign_file() {
-+	local tmp_dir="$1"
-+
-+	data_file=${tmp_dir}/data-file
-+	sig_file=${tmp_dir}/sig-file
-+	dd if=/dev/urandom of=$data_file bs=1 count=12345 2> /dev/null
-+	fsverity sign --key ${tmp_dir}/signing_key.pem $data_file $sig_file
-+
-+	# We do not want to enable fsverity on $data_file yet. Try whether
-+	# the file system support fsverity on a different file.
-+	touch ${tmp_dir}/tmp-file
-+	fsverity enable ${tmp_dir}/tmp-file
-+}
-+
-+fsverity_enable_file() {
-+    local tmp_dir="$1"
-+
-+	data_file=${tmp_dir}/data-file
-+	fsverity enable $data_file
-+}
-+
- catch()
- {
- 	local exit_code="$1"
-@@ -86,6 +107,10 @@ main()
- 		setup "${tmp_dir}"
- 	elif [[ "${action}" == "cleanup" ]]; then
- 		cleanup "${tmp_dir}"
-+	elif [[ "${action}" == "fsverity-create-sign" ]]; then
-+		fsverity_create_sign_file "${tmp_dir}"
-+	elif [[ "${action}" == "fsverity-enable" ]]; then
-+		fsverity_enable_file "${tmp_dir}"
- 	else
- 		echo "Unknown action: ${action}"
- 		exit 1
--- 
-2.34.1
-
+> + * to a read-only data slice (can be either direct pointer to the data o=
+r a
+> + * pointer to the user provided buffer, with its contents containing the=
+ data,
+> + * if unable to obtain direct pointer)
+>   */
+>  __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u3=
+2 offset,
+>                                    void *buffer__opt, u32 buffer__szk)
+> @@ -2354,10 +2354,10 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct b=
+pf_dynptr_kern *ptr, u32 offset
+>   * bpf_dynptr_slice_rdwr will not invalidate any ctx->data/data_end poin=
+ters in
+>   * the bpf program.
+>   *
+> - * Return: NULL if the call failed (eg invalid dynptr), pointer to a
+> - * data slice (can be either direct pointer to the data or a pointer to =
+the user
+> - * provided buffer, with its contents containing the data, if unable to =
+obtain
+> - * direct pointer)
+> + * Return: NULL or error pointer if the call failed (eg invalid dynptr),=
+ pointer
+> + * to a data slice (can be either direct pointer to the data or a pointe=
+r to the
+> + * user provided buffer, with its contents containing the data, if unabl=
+e to
+> + * obtain direct pointer)
+>   */
+>  __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *pt=
+r, u32 offset,
+>                                         void *buffer__opt, u32 buffer__sz=
+k)
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index df697c74d519..2626706b6387 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1378,6 +1378,7 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct b=
+pf_dynptr_kern *data_ptr,
+>                                struct bpf_dynptr_kern *sig_ptr,
+>                                struct bpf_key *trusted_keyring)
+>  {
+> +       void *data, *sig;
+>         int ret;
+>
+>         if (trusted_keyring->has_ref) {
+> @@ -1394,10 +1395,16 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct=
+ bpf_dynptr_kern *data_ptr,
+>                         return ret;
+>         }
+>
+> -       return verify_pkcs7_signature(data_ptr->data,
+> -                                     __bpf_dynptr_size(data_ptr),
+> -                                     sig_ptr->data,
+> -                                     __bpf_dynptr_size(sig_ptr),
+> +       data =3D bpf_dynptr_slice(data_ptr, 0, NULL, 0);
+> +       if (IS_ERR(data))
+> +               return PTR_ERR(data);
+> +
+> +       sig =3D bpf_dynptr_slice(sig_ptr, 0, NULL, 0);
+> +       if (IS_ERR(sig))
+> +               return PTR_ERR(sig);
+> +
+> +       return verify_pkcs7_signature(data, __bpf_dynptr_size(data_ptr),
+> +                                     sig, __bpf_dynptr_size(sig_ptr),
+>                                       trusted_keyring->key,
+>                                       VERIFYING_UNSPECIFIED_SIGNATURE, NU=
+LL,
+>                                       NULL);
+> --
+> 2.34.1
+>
+>
 
