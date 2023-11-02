@@ -1,191 +1,188 @@
-Return-Path: <bpf+bounces-13905-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13906-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5702E7DEBBD
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 05:19:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E63217DEC61
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 06:39:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93BBDB2121C
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 04:19:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FB531C20EE1
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 05:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72DBA1C35;
-	Thu,  2 Nov 2023 04:19:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B8164432;
+	Thu,  2 Nov 2023 05:39:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TKbhKGwM"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HxYYUV+y"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8A541860;
-	Thu,  2 Nov 2023 04:19:46 +0000 (UTC)
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5DD121;
-	Wed,  1 Nov 2023 21:19:40 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5a822f96aedso6310397b3.2;
-        Wed, 01 Nov 2023 21:19:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698898780; x=1699503580; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=M9Gxt1h48lKZ1rLwMQIIGfMgYauSsW3fTROZdY6jY90=;
-        b=TKbhKGwMWFgddKgWpICuQKyr+XidQoDQTKtgBr6qCnUiwS1kJvU1hbFOY0oJCrydB9
-         vVDWYLK7TYkfCNorl4Hp/4kGMSdFYgWm0umSToxJvfGzJZ668l2YrlQhm9clLTdB8GhX
-         9sJQ26kF33IXZBZNZwDBVrYLsCmh9/AOv3i1LOR4s8GjgrTgDDCQ99s07ocUQTbT8gGZ
-         q3MEy28MqGQM96ZlZOV3G0EB901zoiYUczox1xOlJpDRGr8mv9O/chQsL4Ud4jdLwBZF
-         CKvadmgZHG5X6nghpnQkcqF/5bwuOmwV4+2L5yht9bC+tNhcnNZnOyTBHQHu+t8bJvT9
-         slYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698898780; x=1699503580;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M9Gxt1h48lKZ1rLwMQIIGfMgYauSsW3fTROZdY6jY90=;
-        b=tB4lQu0c2F3ellYDe+gNCVaEvj8LYG5SGFOYWRjXzc6qCJChzxBIjWLOPqGEMTH6Jv
-         qIxQj+V3eLVXQOwCAMoLlmMXA5/Y59rzR43ufKUZWjyrdGj+VP0O7RfyoNhhTr9zJF5I
-         +SAbj/Fo7ZIjkFvUPa7VhcmgrkvAOndteZumYSvHaxAbKg04ZJdWzK7Ev6tf97Xki6Tg
-         twmJpALeeM01YFXHjdp+2EtYJCFgXfiPf3avde5zdIrvE6t0T/rMQj3zfHE1HAZQsXAk
-         BLYwpMhRm5SUXAPCWxVYU7jrKuMF2xRAnTE5UDc2kqzTTOPOB0eFREONh9j61xFJoa3C
-         IS5Q==
-X-Gm-Message-State: AOJu0YxZebK8OtI+YeAXnDnDUmiP9mvUPUioG4H9EHtfkBOGQtjPU1fK
-	a2QWiHmXu3rrUpd/ZAkJNzo=
-X-Google-Smtp-Source: AGHT+IE//bkC9M9EKMrJAtjfDXAaSy/O0f9WnvzgG9VfAxdFKlSwT8j0pBYDqHAsS6bewygdZkU5Yw==
-X-Received: by 2002:a81:b10a:0:b0:5a7:a81b:d9af with SMTP id p10-20020a81b10a000000b005a7a81bd9afmr16826848ywh.7.1698898779990;
-        Wed, 01 Nov 2023 21:19:39 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:ba42:cd04:2f52:d854? ([2600:1700:6cf8:1240:ba42:cd04:2f52:d854])
-        by smtp.gmail.com with ESMTPSA id e3-20020a816903000000b0058427045833sm790678ywc.133.2023.11.01.21.19.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Nov 2023 21:19:39 -0700 (PDT)
-Message-ID: <4a7d22ed-e34f-4e75-a796-8d2744b6c62e@gmail.com>
-Date: Wed, 1 Nov 2023 21:19:38 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1DE34C8B
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 05:39:50 +0000 (UTC)
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2082.outbound.protection.outlook.com [40.107.13.82])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C34127
+	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 22:39:43 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hrdyQJ5MrciY4lRwKOwAxP+pYcsUGmevYJ5WKsogiFGZrbQGQsIbitkwjiWRDW7tr+a5vPEHTtGX8zX0OJwrOKbX/C4gNTS8mc9hBZokwg40WXA/ll9SLDq6jzXtpTN4O+WQSv279v0ZB5LfjwguSR8+CkVtR10mSY5SwKn5FUmGn2VROoQHx97zXzaX8la5OgVGvDk6dfn9VjuXBkr1ufXcGiPt4FBqam7fG2tTN/FVF7TuXWkfG1fgosmJ1bs3pacC9XnLNFGhcLTAykaOCEV1bljeoreS0ZpCL2oZ0eNY0xPSNb7vmITKgBbuODdc7gIPe9RMIu7fhBGEfW9q6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vRb7fT1/ix2yCD4SfbZbhdgZZiL/GzZYdmEX3jUyLU8=;
+ b=HruA9eGfyU81/o5bu2Kbsw1dpUatsUaZCDDRjcAZNFDBukA0lR53+9x+xmhXF7sRM0nT/pQf2hhTwcp+OpxVy3suB6O7bv3ifbe8ubWQZo7zUIJ8eFgZYBM/USy9i5UL4kvJLmSILNVicxkHxPvV7ZP0NOZo4P1A4fHXirrhs1pLD7BGhAJGJm5mK1XUgO2kNA71M8wD2SWHELsalO3XJKbhFAOqYJU8FZGb7ThEi7MmxTHALiSOesRNIbyVFi0OqcQGi2q58a3bGTHa3FgDlhHlTU4iuWCwQ41twzk0bqvJ+q8qZGEM4kzoGGC7E9vusVpjEsUzt96Q1chaz1AigA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vRb7fT1/ix2yCD4SfbZbhdgZZiL/GzZYdmEX3jUyLU8=;
+ b=HxYYUV+y6Q/h1njB2aOuf5WlYQ76ovWIohVhIaQdV5OLgWyjsBjRkMLqLoVAYK5wqWO5Tx35w3EO9YvAxxlEHHCFyOo7zhHujYxTz7qaJz3BAubRiHFPTAfA8kbOK0XRTvHHzqsVK1mQg9B+W3nDJfcKjwXjwiozLMxMZQsjqZSNNoMfAkRFbetW/d+D/xzBcy4hy0u5tEMZB7gr7a03oCRtXNU5oXcwa9KLJH200ywXVHunDYvUmYVMqKPOvcxl9C1OvmSTRhtqSFtAEzh8n8yE6vR+lQftSQ+LnTjcAPyCJdllxHwy/HAoXJhudcprwyDtXsUkBQgwBHtxjV4y6A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB9510.eurprd04.prod.outlook.com (2603:10a6:20b:44a::11)
+ by AS8PR04MB7687.eurprd04.prod.outlook.com (2603:10a6:20b:291::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Thu, 2 Nov
+ 2023 05:39:39 +0000
+Received: from AS8PR04MB9510.eurprd04.prod.outlook.com
+ ([fe80::9f3e:3b47:5ccd:c47c]) by AS8PR04MB9510.eurprd04.prod.outlook.com
+ ([fe80::9f3e:3b47:5ccd:c47c%6]) with mapi id 15.20.6954.019; Thu, 2 Nov 2023
+ 05:39:39 +0000
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: bpf@vger.kernel.org
+Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf v1 0/2] bpf: Fix precision tracking for BPF_ALU | BPF_TO_BE | BPF_END
+Date: Thu,  2 Nov 2023 13:39:02 +0800
+Message-ID: <20231102053913.12004-1-shung-hsi.yu@suse.com>
+X-Mailer: git-send-email 2.42.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: TYWPR01CA0051.jpnprd01.prod.outlook.com
+ (2603:1096:400:17f::7) To AS8PR04MB9510.eurprd04.prod.outlook.com
+ (2603:10a6:20b:44a::11)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v8 07/10] bpf, net: switch to dynamic
- registration
-Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: kuifeng@meta.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
- ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
- thinker.li@gmail.com, drosen@google.com
-References: <20231030192810.382942-1-thinker.li@gmail.com>
- <20231030192810.382942-8-thinker.li@gmail.com>
- <183fd964-8910-b7e6-436a-f5f82c2bafb0@linux.dev>
- <10f383a2-c83b-4a40-a1f9-bcf33c76c164@gmail.com>
- <5a8520dd-0dd6-4d51-9e4a-6eebcf7e792d@linux.dev>
- <51be2e5e-8def-45c5-8864-6b0dcc794300@gmail.com>
- <331802b3-07bd-7fec-32a7-b85a8dae1391@linux.dev>
- <c4427a57-aea9-4acc-a6be-e30cfb1dbaad@gmail.com>
- <22051390-2331-ad11-406b-1e5c6dbcd6a2@linux.dev>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <22051390-2331-ad11-406b-1e5c6dbcd6a2@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB9510:EE_|AS8PR04MB7687:EE_
+X-MS-Office365-Filtering-Correlation-Id: e32162b5-b439-4dfd-be71-08dbdb661ac6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	fDTZY1Lq5+ZgZsjDdcpIUGUcXhc4Vah/iqRZNR1MDL3QybCdEz8Zxd9b+5wTB96LIrMpio1U9vvHPY9lOyUHltBAI0n2O7I4zIqYAX5lTbQ8+r0iToY1hWuQBWxQ3e2Sn7hbqD3NrStiZDB03/pTywqfU7EHX6DfPVnpb8m9T3Kc1l/uvNmZw1NkE1joLTxRHCwTpmSnXleTALYuDTv19xLsQ/cLaxc7TPcpgKaXYYe7Cn6+j0x2DFwVAkfjMsCyjidTMwcefLnzC+APZVwNE/jJqABuxlxSZ4hTSCftKfRr5dMGEy/9euAADEOmo+HazYS3nIpnNZODR2SnBBbtRNhC7vTnizcfM2tDCax1LVe+VH+HEqLqgAN6iDLDu6MDizrEFgH/kel2qJfObXT5SDEomy8wsHw+2zi2d1Y7ItPETz3STu84vu2ZQdAQaLqmB8crL2ne5b1VOqVm8gmctfewRjDi2KJK/PjUcoVZvNl3XvKrOQ87XHh9Bn1flVJ6X22nJgP8FSFWJuJmBpdAyBBzDRN5dmRaAoecx5+6a74NL4VXVZdt3SnXJja5nYUXIKqd+Eo4uRhJ0ao/nCHLIA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB9510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(346002)(39860400002)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(7416002)(41300700001)(54906003)(316002)(6916009)(66476007)(66946007)(2906002)(8676002)(6486002)(8936002)(5660300002)(4326008)(478600001)(966005)(38100700002)(6506007)(2616005)(6512007)(36756003)(83380400001)(66556008)(1076003)(6666004)(66574015)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TEtmYndWa2hNTWJiTEF1S3N3eXYvWE55ZEpLcnMzUFNIcmtYdWxBc1liRWw0?=
+ =?utf-8?B?eCttUjhhNUxsUTZvRUhWY2tpSDhKRTh2aW9leFMzT2hmNnpLNEI0dnZlemF1?=
+ =?utf-8?B?dkhJcExOOHgvV20yaVZmSVN0dUErbmdpekxDY1h5MGJJVFErcGdKNFJnUDlW?=
+ =?utf-8?B?SUNYSXhVblQ0d0FEeXRIci8velhPS1RnTER4d0pxSSthaStpSlRPbS9FT0Vx?=
+ =?utf-8?B?SXpvWkQ5ejVaM2tPZG5SaUFPaCtrRnoyU3FqNTZvL0RpUko3Uk5RSm1iOUlh?=
+ =?utf-8?B?TEhEenp4UDhxR0JpVVNwZHlyTk9hMlRtZWgvMlBiWVVnU2VLSmZ0RnU3K2Zx?=
+ =?utf-8?B?Q0FzTXhxTXZTRFMvTEhLNTNta2pVSzdGdGRhcGZsWlk4aXc4cWl1REllZEtJ?=
+ =?utf-8?B?UXJPeUdabko1MVBnamVOZDVTM3Vzcm0yTXl6WURScW51S3RrelA5MEd1eXlq?=
+ =?utf-8?B?NDB3aHA5ZUNuZlFwMDRGdGExRFZnVVJDSjlqc1Z4d2I5dGR3dkkxTDF5Mzl6?=
+ =?utf-8?B?UXYrNzRsRHlSWjRVT2lpaVNyUkw2dmM0b0dHYzdhakt6ZDJhVVlVZ0t5Q1Zq?=
+ =?utf-8?B?NkdEU0RzWitjQ1BpNFREUGJVbXk4ak13K0JJN1lMU3BRdUVVa01LcCszOHVi?=
+ =?utf-8?B?QThsQ3djVG55V09qcHBoVSt2Z0kxaG1EeEtzQXc2Q3pmNVd6TGFCT2hkK0d4?=
+ =?utf-8?B?bDVWTXhhUW9jbG5YVlFSc1IrZzZoRE1Rbzg2b3JZdVZVZGZwbllabGZpcDZL?=
+ =?utf-8?B?aFlGa29lZVo4eWxOMFh2eXl0UHAwU2dERnpJUEsybExISGh5Tm94UE9mTFZw?=
+ =?utf-8?B?TjdiYjFKK1Z3eDJIS01GSUQwL1RXaVRVTVlIZDNRbVJyTDc0TmpCYlJIbGli?=
+ =?utf-8?B?R3hUeG1WVUgyYjFTZm1nV2ZMdms4dkdNeFk3QkhLSlVIb0JOUnB1Z3NMVmtv?=
+ =?utf-8?B?NHlVbWg1cGdQMnFwdmJyallEVXo5cGFwSThNa0cxa0M5YVNzZkRqcDVKc2Vq?=
+ =?utf-8?B?U1NEbTFFSXBMYW9vRVZ5TzY4UDZ0NEg1SS9Obm15d3FBVWVTRDVybnRNdWpj?=
+ =?utf-8?B?Vy9HcGdPdmJMb1ZJMTNVQVppU3FYd2tSdXMrYTczOTBDdkZ6L0hQbmxLYmNH?=
+ =?utf-8?B?UjcrMklvaFk1TGQ4cXJjMGwxVHB5MURhbExaRllMMkdDN2lOR3BIWCtWUHZ0?=
+ =?utf-8?B?cHNXOHM3STdlRE50RHpzVFVhQ0hDUGN3ODFIQys0OXc5eUhTWXo1Zk5XUlNn?=
+ =?utf-8?B?OEdFbmNwUURWWFAyRDJCcm1udlFORkxIYWtDaDJKRjJRK3d4RzVwaWwvYzRv?=
+ =?utf-8?B?T2c1L0dFVk4yWndrc1hqUEFhR1QvdFhqckxOWUFtK3BxWTBURWJiV0VQTzZJ?=
+ =?utf-8?B?VStwektwd0s4SGdEZ1FaZUgzbHgxb0NlclNxREV3anZuUkF6MWJnMWdHWXVD?=
+ =?utf-8?B?MVUwNUR2bENKZFpPQUxRNjk4WWtCZ2FZRVVLOUUzNVQ0VlBEUzNzMmRXL2Jm?=
+ =?utf-8?B?TE43MVlsNmZEMnR1VlljZmNNMjloWWhWbDg0NVh0cHl2SXl3QXJVUW9XbCtD?=
+ =?utf-8?B?OUtEQVNuVWZ2UmVTZnhCU3lUN2tvaTd3clRWUEpSK0g5MXVkUXFSTWExVEdD?=
+ =?utf-8?B?YW5vdzhSQTNxRUR3dGlKMUdLdjdFcmgzUXBsV3FqeVZPbEFZemhUZVl3b253?=
+ =?utf-8?B?MVVuWjkyZVRBRVVjRWE2MEUvMUZvUmNDUkRBYXFFVHFEaVhVMFBDNkg1Wlln?=
+ =?utf-8?B?WGVxS1RvZGpOdHg0UE13bk4ya3g2SlJ5b2ZxQXpTdnFndEhxaVFmS0lzVGZJ?=
+ =?utf-8?B?N0swN0h5TXhDMy9MazVSWEhIdG55aUJlODJ1UURQdDRjVDlIU0RUNERuSmxh?=
+ =?utf-8?B?dmFnbThZck4xZDlNNjlENUJBSkhwTVZ1MkZuTGFiQUFXRE1Ud0ZhbVhKZzIy?=
+ =?utf-8?B?WGFLRTA4d0Rib1VPQkp3Q0FlczlMSTlhcFpsbk9ETG1HUVJqZ2lTMlNIWUpp?=
+ =?utf-8?B?MTBRNXlHTDZqODBqVUFydVRpREE1VHFuQnl4WDNvY0k4cHNkTUx4TFAza1pv?=
+ =?utf-8?B?UXFrcytwK2lwRlhUTmJxU1JmdnErQU0rQ1RPL01TRFhFek55aDZ3SS9OZElJ?=
+ =?utf-8?B?OEpJVXZzcTRhNUlvS2dlS3V2VDFvZHg2Um5HajBZTTh3YzRLeE9iVmFBSVZK?=
+ =?utf-8?B?MDlMOTAwdTdWWXJQUDU0SEpxN2pyQlFRTy9nYlRaTGt1UDFWM2lNbUx6OEtx?=
+ =?utf-8?B?ZmVYcGx5ZkNaVnlvdmlXaVRrRGxBPT0=?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e32162b5-b439-4dfd-be71-08dbdb661ac6
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB9510.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 05:39:38.8756
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +SG4GmuZDRmv6f3G+kc2V1Jjuc8b/R5RuCJ6d72iSVBwb1d3JggChtx6nL8jr0xHH3mW+4uy7O+JwspXJvmwfA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7687
+
+Changes since v1:
+- add test for negation and bswap (Alexei, Eduard)
+- add test for BPF_TO_LE as well to cover all types of BPF_END opcode
+- remove vals map and trigger backtracking with jump instead, based of
+  Eduard's code
+- v1 at https://lore.kernel.org/bpf/20231030132145.20867-1-shung-hsi.yu@suse.com
+
+This patchset fixes and adds selftest for the issue reported by Mohamed
+Mahmoud and Toke Høiland-Jørgensen where the kernel can run into a
+verifier bug during backtracking of BPF_ALU | BPF_TO_BE | BPF_END
+instruction[0]. As seen in the verifier log below, r0 was incorrectly
+marked as precise even tough its value was not being used.
+
+Patch 1 fixes the issue based on Andrii's analysis, and patch 2 adds a
+selftest for such case using inline assembly. Please see individual
+patch for detail.
+
+    ...
+	mark_precise: frame2: regs=r2 stack= before 1891: (77) r2 >>= 56
+	mark_precise: frame2: regs=r2 stack= before 1890: (dc) r2 = be64 r2
+	mark_precise: frame2: regs=r0,r2 stack= before 1889: (73) *(u8 *)(r1 +47) = r3
+	...
+	mark_precise: frame2: regs=r0 stack= before 212: (85) call pc+1617
+	BUG regs 1
+	processed 5112 insns (limit 1000000) max_states_per_insn 4 total_states 92 peak_states 90 mark_read 20
+
+0: https://lore.kernel.org/r/87jzrrwptf.fsf@toke.dk
 
 
+Shung-Hsi Yu (2):
+  bpf: Fix precision tracking for BPF_ALU | BPF_TO_BE | BPF_END
+  selftests/bpf: precision tracking test for BPF_NEG and BPF_END
 
-On 11/1/23 18:32, Martin KaFai Lau wrote:
-> On 11/1/23 5:59 PM, Kui-Feng Lee wrote:
->>
->>
->> On 11/1/23 17:17, Martin KaFai Lau wrote:
->>> On 10/31/23 5:19 PM, Kui-Feng Lee wrote:
->>>>
->>>>
->>>> On 10/31/23 17:02, Martin KaFai Lau wrote:
->>>>> On 10/31/23 4:34 PM, Kui-Feng Lee wrote:
->>>>>>>> diff --git a/include/linux/btf.h b/include/linux/btf.h
->>>>>>>> index a8813605f2f6..954536431e0b 100644
->>>>>>>> --- a/include/linux/btf.h
->>>>>>>> +++ b/include/linux/btf.h
->>>>>>>> @@ -12,6 +12,8 @@
->>>>>>>>   #include <uapi/linux/bpf.h>
->>>>>>>>   #define BTF_TYPE_EMIT(type) ((void)(type *)0)
->>>>>>>> +#define BTF_STRUCT_OPS_TYPE_EMIT(type) {((void)(struct type 
->>>>>>>> *)0);    \
->>>>>>>
->>>>>>> ((void)(struct type *)0); is new. Why is it needed?
->>>>>>
->>>>>> This is a trick of BTF to force compiler generate type info for
->>>>>> the given type. Without trick, compiler may skip these types if these
->>>>>> type are not used at all in the module.  For example, modules usually
->>>>>> don't use value types of struct_ops directly.
->>>>> It is not the value type and value type emit is understood. It is 
->>>>> the struct_ops type itself and it is new addition in this patchset 
->>>>> afaict. The value type emit is in the next line which was cut out 
->>>>> from the context here.
->>>>>
->>>> I mean both of them are required.
->>>> In the case of a dummy implementation, struct_ops type itself 
->>>> properly never being used, only being declared by the module. 
->>>> Without this line,
->>>
->>> Other than bpf_dummy_ops, after reg(), the struct_ops->func() must be 
->>> used somewhere in the kernel or module. Like tcp must be using the 
->>> tcp_congestion_ops after reg(). bpf_dummy_ops is very special and 
->>> probably should be moved out to bpf_testmod somehow but this is for 
->>> later. Even bpf_dummy_ops does not have an issue now. Why it is 
->>> needed after the kmod support change?
->>>
->>> or it is a preemptive addition to be future proof only?
->>>
->>> Addition is fine if it is required to work. I am trying to understand 
->>> why this new addition is needed after the kmod support change. The 
->>> reason why this is needed after the kmod support change is not 
->>> obvious from looking at the code. The commit message didn't mention 
->>> why and what broke after this kmod change. If someone wants to clean 
->>> it up a few months later, we will need to figure out why it was added 
->>> in the first place.
->>
->>
->> It is a future proof.
->> What do you think if I add a comment in the code?
-> 
-> If it is not required to work, I prefer not adding it to avoid confusion 
-> and avoid future cleanup temptation. Even the artificial bpf_dummy_ops 
-> does not need it, so not enough reason to introduce this code redundancy.
-
-Got it!
-
-> 
-> Switch topic.
-> While we are on a new macro topic, I think a new macro will be useful to 
-> emit the value type and register_bpf_struct_ops together. wdyt?
-
-Like this?
-
-#define REGISTER_STRUCT_OPS(st_type, st_ops) { \
-         BTF_STRUCT_OPS_TYPE_EMIT(st_type);  \
-         register_bpf_struct_ops(st_ops); } while(0)
-
-static int bpf_testmod_init(void) {
-     ....
-     REGISTER_STRUCT_OPS(bpf_testmod_ops, &bpf_bpf_testmod_ops);
-     ....
-}
-
-or you like something more aggressive
-
-#define REGISTER_STRUCT_OPS(st_type) { \
-         BTF_STRUCT_OPS_TYPE_EMIT(st_type);  \
-         register_bpf_struct_ops(&bpf_##st_type); } while(0)
+ kernel/bpf/verifier.c                         |  7 +-
+ .../selftests/bpf/prog_tests/verifier.c       |  2 +
+ .../selftests/bpf/progs/verifier_precision.c  | 93 +++++++++++++++++++
+ 3 files changed, 101 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_precision.c
 
 
+base-commit: c17cda15cc86e65e9725641daddcd7a63cc9ad01
+-- 
+2.42.0
 
-
-> 
->>
->>>
->>>
->>>> the module developer will fail to load a struct_ops map of the dummy
->>>> type. This line is added to avoid this awful situation.
->>>>
->>>
-> 
 
