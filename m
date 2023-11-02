@@ -1,316 +1,249 @@
-Return-Path: <bpf+bounces-13946-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13947-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3C607DF39B
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 14:23:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75C457DF40B
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 14:40:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 868C6281B2D
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 13:23:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8146BB212EB
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 13:40:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3391548B;
-	Thu,  2 Nov 2023 13:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eXcQcCo4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02A6218E27;
+	Thu,  2 Nov 2023 13:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9691F12B87;
-	Thu,  2 Nov 2023 13:23:26 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E86BD7;
-	Thu,  2 Nov 2023 06:23:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698931402; x=1730467402;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=YME8mTxgKI0MeNPDdD9F4L3kc3xLR2qJTzzQVP8gcUo=;
-  b=eXcQcCo4u9itwwizgGsgHVh6a4hkncqHFo2VxPvoFJJMQHw3twcMTRpO
-   8vWwrTU1lxpe3QFW/imNIEESA3drP1iQxd96YHFd26rtFeNX1JB0loUg8
-   UA/+h7PS7a/40MqoslKEirrg4CM5jNpMx1LxqwpWniogs+isIqjcijQN4
-   XIFTew0bniMkXTTKvpgLu73ZRtYqvJOZgrQffZH52ZLpR7QLBQStwn2pe
-   sXWiI1bNrh3AXM0dXtgwgG7bnApQN++u+VjFWEnhsny+F3pbotWCMEwgX
-   NJEexv6hwKzF66ZxvEkA0BjwBZtO3sQbR3sp1gH7SS4TlzQrLKGQlp1Lx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="385885030"
-X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="385885030"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 06:23:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="831688703"
-X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
-   d="scan'208";a="831688703"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 02 Nov 2023 06:23:20 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 2 Nov 2023 06:23:20 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 2 Nov 2023 06:23:19 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 2 Nov 2023 06:23:19 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Thu, 2 Nov 2023 06:23:18 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dYZSMnMEFYWN8N8Z08Sp5QMijkoCaGQgB2GFdPQCtKQ7r+T9V0SFtfXnL7JK+be4eDw1QXTFrqhPsRuocgZsm7ISWvUHhczf4OsdIBV8vExSyJPUxtYMZjCMXyao/tdsMcIFm3YDZwG96TuHOuAQakBx+Nd+Ii9nbjATVUzpkQLtZDlqemU4W1sfN4sJ+A5qW2zQC6Y4sspmp3XtstY1CI6BSVqHEsG39VieY0SIB+i5vwa5k83V6xjO8jmrviO/ICeq3G0t29Am/bGP3LqNWUpHK4V/qVw19dxtjzIwZs+okLmjBwCOX8G0FlJpf/+6+utysGA+iDKZ1kvUhgSt8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TObOITG2HMBNZJMMqkp5mIXYB2DlEWX7+r7F1Qvh4gE=;
- b=C30ZajUR1HT3eminilffbUuSaixmwD0I8I4fwlBth61+GxsMw/ZZWqU0q2r8roDNewweLiZbAH0pKPpJMSBr8Igjn91WivRoA4PSUwunUJYQDQegJpUM2BNgofY0FOZjLFsMGPaic3ceV1daWyWJ7HFES1Yg55ook6av3OLBD9mfM7AyBjp4EjlfPFwVZ6kxnAuoBybmR57TleHfsYpx2aRAM6rmt3iMZxaHidLYIemkq0VvXGgpJUYvLa24QbfE2iiQSqrrjtd+vmZ5IS2Qwnw+fK5I/XqWvaBQ8Zye24+SYGTB4pConYhXh3ujB769o8xGTv4XqL3H9BWFp2pDRA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- DM4PR11MB6240.namprd11.prod.outlook.com (2603:10b6:8:a6::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6954.19; Thu, 2 Nov 2023 13:23:16 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::ee54:9452:634e:8c53]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::ee54:9452:634e:8c53%6]) with mapi id 15.20.6954.019; Thu, 2 Nov 2023
- 13:23:15 +0000
-Date: Thu, 2 Nov 2023 14:23:02 +0100
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Larysa Zaremba <larysa.zaremba@intel.com>
-CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-	<haoluo@google.com>, <jolsa@kernel.org>, David Ahern <dsahern@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>, Willem de Bruijn <willemb@google.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>, Anatoly Burakov
-	<anatoly.burakov@intel.com>, Alexander Lobakin <alexandr.lobakin@intel.com>,
-	Magnus Karlsson <magnus.karlsson@gmail.com>, Maryam Tahhan
-	<mtahhan@redhat.com>, <xdp-hints@xdp-project.net>, <netdev@vger.kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Alexei Starovoitov
-	<alexei.starovoitov@gmail.com>, Tariq Toukan <tariqt@mellanox.com>, "Saeed
- Mahameed" <saeedm@mellanox.com>, <toke@kernel.org>
-Subject: Re: [PATCH bpf-next v6 11/18] ice: put XDP meta sources assignment
- under a static key condition
-Message-ID: <ZUOitlGHC0Kgrh5i@boxer>
-References: <20231012170524.21085-1-larysa.zaremba@intel.com>
- <20231012170524.21085-12-larysa.zaremba@intel.com>
- <ZTKrjU0a0Q1vF1UU@boxer>
- <ZTY+chHJEgggHu5J@lzaremba-mobl.ger.corp.intel.com>
- <ZT1nSGYng8sUKQD7@boxer>
- <ZUENpw5GVqcL0GJc@lzaremba-mobl.ger.corp.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZUENpw5GVqcL0GJc@lzaremba-mobl.ger.corp.intel.com>
-X-ClientProxiedBy: DUZPR01CA0032.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:468::11) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3855418E1C
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 13:40:22 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93E2181;
+	Thu,  2 Nov 2023 06:40:17 -0700 (PDT)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SLlP14qxzz4f3khT;
+	Thu,  2 Nov 2023 21:40:05 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id DF3BF1A0171;
+	Thu,  2 Nov 2023 21:40:11 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgDXXc20pkNlVl+OEg--.25377S2;
+	Thu, 02 Nov 2023 21:40:07 +0800 (CST)
+Subject: Re: [linus:master] [bpf] c930472552:
+ WARNING:at_kernel/bpf/memalloc.c:#bpf_mem_alloc_init
+To: Alexei Starovoitov <ast@kernel.org>,
+ kernel test robot <oliver.sang@intel.com>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, "houtao1@huawei.com" <houtao1@huawei.com>
+References: <202310302113.9f8fe705-oliver.sang@intel.com>
+ <7506b682-3be3-fcd0-4bb4-c1db48f609a2@huaweicloud.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <99e9d615-b720-7f33-3df0-9824a92f6644@huaweicloud.com>
+Date: Thu, 2 Nov 2023 21:40:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|DM4PR11MB6240:EE_
-X-MS-Office365-Filtering-Correlation-Id: b972ffce-2f60-46c5-9d18-08dbdba6df03
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MHM5fUE3eX67uGpSvby6hN55YI3We4aHgUHMe5cALwdTMIhhDYCWw+xjUybd9gQFoIYgBdKUZ8rysKJ/CfCYgz0hPOMS5J6W3rCIsS5eb/ubdg7BDBckASBYW179Ao41a0atBzN8n4SssbO8XyBsMvSswowqRMOQtrqoeCkx5qPTALq0JXpW3BER4dKfCuJNRZx7VCG3IJjWpFAmFt9iAFZgjr57n21r+RRbzHVm4ddz6469WwvkDh2GtCTdGZ5RidIUFT0ed7/WOK4jIYatNu9rAqBxjCKCtSuG7fCLipo0Lv/4VsoYnc4xYqSR7nPz2lRTs6ZffzX05mVb3+6HQO3S/77Tj9VY4BxfC2TbynSF9034OEUo8XPVSW2D0OEmgXb0R4dzON1W1BsQDbl7HqzXfsA6+Y6DcB2RF6FHbqyNOXdFzo7BgeafjfNHbcCvgkdOZDJmNTq2JGQkdssRKryb6ta32U7hnuyEQI53kA1g/GGnzn+oaYE0KpO5wPwT6uyJkUNqTY6ShD88F3lN/O8swSyAY54RcMSh8a5CCaUnfrRKgE6G6CpaD05WHaCZ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(346002)(376002)(39860400002)(366004)(136003)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(9686003)(26005)(6512007)(478600001)(44832011)(6666004)(6862004)(8676002)(5660300002)(2906002)(7416002)(41300700001)(33716001)(6506007)(54906003)(4326008)(66556008)(8936002)(66946007)(6486002)(6636002)(316002)(66476007)(38100700002)(83380400001)(86362001)(82960400001)(66899024);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8iWtMStMzF+EL61CgsQ9g3GQMjaNHvayhchC/gD3+Pu2r1ifA4ngnBJUWFhX?=
- =?us-ascii?Q?76kugccDuDib8MSlmVisVLvvypT7HJWzvPuGw8WqQ1Gk8J1roADRtUgBOudc?=
- =?us-ascii?Q?9EYycFVYPJuidvnEcFwX/aMSvnvkimZU218AOwB9cv5/p4e2IouWcMXhiP6X?=
- =?us-ascii?Q?amZLRtaoQHupcZSjskg3TGEybyPC9VuEEXjQy4gfZfu/70lFSMLMJx9vWxMS?=
- =?us-ascii?Q?pFaUWDCibbasWXPIHEK3rlKCHXrTUJRIeywtCw0G14AaRju3lsR4U9K/u/of?=
- =?us-ascii?Q?DlLSQCDuTRTpZt7hfYS/SIv9dM5T0QRCDdRBwXJe/JevsFbZ8pfyGtMJH3Fn?=
- =?us-ascii?Q?y8JI6OokBnK2TNk3+DaUzdrKxZNMcXDSPCc2YaE1A8QO9XqUg8iXC8FcRynP?=
- =?us-ascii?Q?ZgO0wNJOxUtx5hy9kZydRIUOIaSps4uM3dVgDCGABtuHglPL8nfSGcc3oSzL?=
- =?us-ascii?Q?ocCAT4s2lgnvyWIMXGe6ib2ExyT2mH5D3vgItrpL4OpwEQeEOd2E8zT+fK4u?=
- =?us-ascii?Q?YYzO2OciLs4/bybgsGdkI6idGs1V8zLSnIRlrNAavuls7Auv8YHAFr2UcL/T?=
- =?us-ascii?Q?FOBNEHaJsi9VpCsIfUanKAKcE9tQZgy7VFBsvbVvi1DlzTI+pBn6QSEs+xbq?=
- =?us-ascii?Q?SOijFp+s7KNA8mMbIQyZbPKYXBcrr+MUYxNc8AAZ+9vEmLDPriYysgWiL1mz?=
- =?us-ascii?Q?EY/f9TGdjwWQicjbeFFAtMnKLuTFarNfl4+3RsXL1Q15Kv3fhnJCn0EGwJB2?=
- =?us-ascii?Q?JB45SbSWDAzjO0c7Ea3EIB4+rif969MY3yxFjT6Yg6fBMlxRYkrg9kT7shvi?=
- =?us-ascii?Q?HyQjOGsGo02OoRDnSnbv0ZrCoCyGSQdbzc1KBR0pHMjnZVitaEtB0zzEjTp8?=
- =?us-ascii?Q?i7dfEJC5cnhEypQRfJr1tYEdUoXHj4D5gwMP++93tXUDh7XZTZSnAV6zO5v8?=
- =?us-ascii?Q?fsMzjkOX1lWiLDdJabqKAkGDNAw90fYa7G3JahY1bmapkI1dEKduxeeps5+W?=
- =?us-ascii?Q?NeCklIYqj7za3MthiUGDIRb9klr+x3pidmedkGUCyyJQetY3PayDJD2mJbeQ?=
- =?us-ascii?Q?0V3TDMq0ZISNbM3NSV02VNsONmuu1nv7jp2QKyp/1CS5iUFyP9bJClYdEd3K?=
- =?us-ascii?Q?ymLRln5++bofXz3T7MC+uossFJ+7nMbwju38c9rVZ2zLoU1y8+eZonGB077j?=
- =?us-ascii?Q?gJ3S/nV7pZ90RwOMRGCQ57kQo0qbA0kqTBbFtPHoNeILk+AVwNlYnT5+IB8C?=
- =?us-ascii?Q?u5VXZjabFub2kJd4tY00vF0Ip+q6JA78Buv+/zAgm5WZsLHRweP63Oms9vGj?=
- =?us-ascii?Q?ZSHAws+cIn3ZwMEix/BxwRdmZ2Lq1jwPk5XT0t2VXu2x82b6ouqYdm3Tad01?=
- =?us-ascii?Q?a42pfQJbkRgRLDh4r+UlX6T92br8XuQsaik1JrAjBwak8ODwP34V9UIjaAhi?=
- =?us-ascii?Q?O6PYr9L1MC2gVXrspxQdee4ho+YP51Km6NMJfrOEv0hPBwFrX7SH22HixcwP?=
- =?us-ascii?Q?XGiZxoh3RqQ0r7vNCV+TO+hKI14vtoL6LVdTPCkBnGF+sVifES3nPG+6Wty5?=
- =?us-ascii?Q?SwmKw9MZCmTiay4m8ZIue0defF1u2XjiupACgrFB8mO9lxYVQUh14kJBP9z9?=
- =?us-ascii?Q?JQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b972ffce-2f60-46c5-9d18-08dbdba6df03
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 13:23:15.8330
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: c1kS649uVC0gRrXLvy1f/hxJmPGJmZNRD1k0RY5PRFrmE3MfM0WbxNuWaW7GkXe8FLWQrWfXvTm0dKuxOvoUopTkxv0SY2JMIaRfwKjHoWE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6240
-X-OriginatorOrg: intel.com
+In-Reply-To: <7506b682-3be3-fcd0-4bb4-c1db48f609a2@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgDXXc20pkNlVl+OEg--.25377S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3JF1DGw47ur48Gr1UGFWUXFb_yoWftF43pa
+	y3JFWxGrWkZFWUA3W7Wr1Fyrn8Jw1Fy3W7tasFgr18Zw1jkr9rZws7JrySqr9IkrWDCF13
+	tF1qyF10yryUXaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Tue, Oct 31, 2023 at 03:22:31PM +0100, Larysa Zaremba wrote:
-> On Sat, Oct 28, 2023 at 09:55:52PM +0200, Maciej Fijalkowski wrote:
-> > On Mon, Oct 23, 2023 at 11:35:46AM +0200, Larysa Zaremba wrote:
-> > > On Fri, Oct 20, 2023 at 06:32:13PM +0200, Maciej Fijalkowski wrote:
-> > > > On Thu, Oct 12, 2023 at 07:05:17PM +0200, Larysa Zaremba wrote:
-> > > > > Usage of XDP hints requires putting additional information after the
-> > > > > xdp_buff. In basic case, only the descriptor has to be copied on a
-> > > > > per-packet basis, because xdp_buff permanently resides before per-ring
-> > > > > metadata (cached time and VLAN protocol ID).
-> > > > > 
-> > > > > However, in ZC mode, xdp_buffs come from a pool, so memory after such
-> > > > > buffer does not contain any reliable information, so everything has to be
-> > > > > copied, damaging the performance.
-> > > > > 
-> > > > > Introduce a static key to enable meta sources assignment only when attached
-> > > > > XDP program is device-bound.
-> > > > > 
-> > > > > This patch eliminates a 6% performance drop in ZC mode, which was a result
-> > > > > of addition of XDP hints to the driver.
-> > > > > 
-> > > > > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> > > > > ---
-> > > > >  drivers/net/ethernet/intel/ice/ice.h      |  1 +
-> > > > >  drivers/net/ethernet/intel/ice/ice_main.c | 14 ++++++++++++++
-> > > > >  drivers/net/ethernet/intel/ice/ice_txrx.c |  3 ++-
-> > > > >  drivers/net/ethernet/intel/ice/ice_xsk.c  |  3 +++
-> > > > >  4 files changed, 20 insertions(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
-> > > > > index 3d0f15f8b2b8..76d22be878a4 100644
-> > > > > --- a/drivers/net/ethernet/intel/ice/ice.h
-> > > > > +++ b/drivers/net/ethernet/intel/ice/ice.h
-> > > > > @@ -210,6 +210,7 @@ enum ice_feature {
-> > > > >  };
-> > > > >  
-> > > > >  DECLARE_STATIC_KEY_FALSE(ice_xdp_locking_key);
-> > > > > +DECLARE_STATIC_KEY_FALSE(ice_xdp_meta_key);
-> > > > >  
-> > > > >  struct ice_channel {
-> > > > >  	struct list_head list;
-> > > > > diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-> > > > > index 47e8920e1727..ee0df86d34b7 100644
-> > > > > --- a/drivers/net/ethernet/intel/ice/ice_main.c
-> > > > > +++ b/drivers/net/ethernet/intel/ice/ice_main.c
-> > > > > @@ -48,6 +48,9 @@ MODULE_PARM_DESC(debug, "netif level (0=none,...,16=all)");
-> > > > >  DEFINE_STATIC_KEY_FALSE(ice_xdp_locking_key);
-> > > > >  EXPORT_SYMBOL(ice_xdp_locking_key);
-> > > > >  
-> > > > > +DEFINE_STATIC_KEY_FALSE(ice_xdp_meta_key);
-> > > > > +EXPORT_SYMBOL(ice_xdp_meta_key);
-> > > > > +
-> > > > >  /**
-> > > > >   * ice_hw_to_dev - Get device pointer from the hardware structure
-> > > > >   * @hw: pointer to the device HW structure
-> > > > > @@ -2634,6 +2637,11 @@ static int ice_xdp_alloc_setup_rings(struct ice_vsi *vsi)
-> > > > >  	return -ENOMEM;
-> > > > >  }
-> > > > >  
-> > > > > +static bool ice_xdp_prog_has_meta(struct bpf_prog *prog)
-> > > > > +{
-> > > > > +	return prog && prog->aux->dev_bound;
-> > > > > +}
-> > > > > +
-> > > > >  /**
-> > > > >   * ice_vsi_assign_bpf_prog - set or clear bpf prog pointer on VSI
-> > > > >   * @vsi: VSI to set the bpf prog on
-> > > > > @@ -2644,10 +2652,16 @@ static void ice_vsi_assign_bpf_prog(struct ice_vsi *vsi, struct bpf_prog *prog)
-> > > > >  	struct bpf_prog *old_prog;
-> > > > >  	int i;
-> > > > >  
-> > > > > +	if (ice_xdp_prog_has_meta(prog))
-> > > > > +		static_branch_inc(&ice_xdp_meta_key);
-> > > > 
-> > > > i thought boolean key would be enough but inc/dec should serve properly
-> > > > for example prog hotswap cases.
-> > > >
-> > > 
-> > > My thought process on using counting instead of boolean was: there can be 
-> > > several PFs that use the same driver, so therefore we need to keep track of how 
-> > > many od them use hints. 
-> > 
-> > Very good point. This implies that if PF0 has hints-enabled prog loaded,
-> > PF1 with non-hints prog will "suffer" from it.
-> > 
-> > Sorry for such a long delays in responses but I was having a hard time
-> > making up my mind about it. In the end I have come up to some conclusions.
-> > I know the timing for sending this response is not ideal, but I need to
-> > get this off my chest and bring discussion back to life:)
-> > 
-> > IMHO having static keys to eliminate ZC overhead does not scale. I assume
-> > every other driver would have to follow that.
-> > 
-> > XSK pool allows us to avoid initializing various things per each packet.
-> > Instead, taking xdp_rxq_info as an example, each xdp_buff from pool has
-> > xdp_rxq_info assigned at init time. With this in mind, we should have some
-> > mechanism to set hints-specific things in xdp_buff_xsk::cb, at init time
-> > as well. Such mechanism should not require us to expose driver's private
-> > xdp_buff hints containers (such as ice_pkt_ctx) to XSK pool.
-> > 
-> > Right now you moved phctime down to ice_pkt_ctx and to me that's the main
-> > reason we have to copy ice_pkt_ctx to each xdp_buff on ZC. What if we keep
-> > the cached_phctime at original offset in ring but ice_pkt_ctx would get a
-> > pointer to that?
-> > 
-> > This would allow us to init the pointer in each xdp_buff from XSK pool at
-> > init time. I have come up with a way to program that via so called XSK
-> > meta descriptors. Each desc would have data to write onto cb, offset
-> > within cb and amount of bytes to write/copy.
-> > 
-> > I'll share the diff below but note that I didn't measure how much lower
-> > the performance is degraded. My icelake machine where I used to measure
-> > performance-sensitive code got broke. For now we can't escape initing
-> > eop_desc per each xdp_buff, but I moved it to alloc side, as we mangle
-> > descs there anyway.
-> > 
-> > I think mlx5 could benefit from that approach as well with initing the rq
-> > ptr at init time.
-> > 
-> > Diff does mostly these things:
-> > - move cached_phctime to old place in ice_rx_ring and add ptr to that in
-> >   ice_pkt_ctx
-> > - introduce xsk_pool_set_meta()
-> > - use it from ice side.
-> > 
-> 
-> Thank you for the code! I will probably send v7 with such changes. Are you OK, 
-> if patch with core changes would go with you as an author?
+Hi Alexei,
 
-Yes or I can produce a patch and share, up to you.
+On 10/31/2023 4:01 PM, Hou Tao wrote:
+> Hi,
+>
+> On 10/30/2023 10:11 PM, kernel test robot wrote:
+>> hi, Hou Tao,
+>>
+>> we noticed a WARN_ONCE added in this commit was hit in our tests. FYI.
+>>
+>>
+>> Hello,
+>>
+>> kernel test robot noticed "WARNING:at_kernel/bpf/memalloc.c:#bpf_mem_alloc_init" on:
+>>
+>> commit: c930472552022bd09aab3cd946ba3f243070d5c7 ("bpf: Ensure unit_size is matched with slab cache object size")
+>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>>
+>> [test failed on linus/master ffc253263a1375a65fa6c9f62a893e9767fbebfa]
+>> [test failed on linux-next/master c503e3eec382ac708ee7adf874add37b77c5d312]
+>>
+>> in testcase: boot
+>>
+>> compiler: gcc-12
+>> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+>>
+>> (please refer to attached dmesg/kmsg for entire log/backtrace)
+>>
+>>
+>> +-------------------------------------------------------------+------------+------------+
+>> |                                                             | b1d53958b6 | c930472552 |
+>> +-------------------------------------------------------------+------------+------------+
+>> | WARNING:at_kernel/bpf/memalloc.c:#bpf_mem_alloc_init        | 0          | 14         |
+>> | EIP:bpf_mem_alloc_init                                      | 0          | 14         |
+>> +-------------------------------------------------------------+------------+------------+
+>>
+>>
+>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+>> the same patch/commit), kindly add following tags
+>> | Reported-by: kernel test robot <oliver.sang@intel.com>
+>> | Closes: https://lore.kernel.org/oe-lkp/202310302113.9f8fe705-oliver.sang@intel.com
+>>
+>>
+>> [   32.249545][    T1] ------------[ cut here ]------------
+>> [   32.250152][    T1] bpf_mem_cache[0]: unexpected object size 128, expect 96
+>> [ 32.250953][ T1] WARNING: CPU: 1 PID: 1 at kernel/bpf/memalloc.c:500 bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579) 
+>> [   32.252065][    T1] Modules linked in:
+>> [   32.252548][    T1] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-12679-gc93047255202 #1
+>> [ 32.253767][ T1] EIP: bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579) 
+>> [ 32.254439][ T1] Code: 30 e8 7e 22 04 00 8b 56 20 39 d0 74 24 80 3d 18 c0 cc c2 00 75 3b c6 05 18 c0 cc c2 01 52 50 53 68 df 53 57 c2 e8 47 70 ef ff <0f> 0b 83 c4 10 eb 20 43 83 c6 74 83 fb 0b 0f 85 6a ff ff ff 8b 45
+> Thanks for the report. I also could reproduce the warning in v6.6 by
+> following the reproducing steps in the link below.
+>
+> According the reproduce job, it seems that the kernel is built for i386
+> (make HOSTCC=gcc-12 CC=gcc-12 ARCH=i386 olddefconfig prepare
+> modules_prepare bzImage) and in .config CONFIG_SLAB instead of
+> CONFIG_SLUB is enabled, I will check whether or not these two setups
+> make any thing being different.
 
-> 
-> But also, I see a minor problem with that switching VLAN protocol does not 
-> trigger buffer allocation, so we have to point to that too, this probably means 
-> moving cached time back and finding 16 extra bits in CL3. Single pointer to 
-> {cached time, vlan_proto} would be copied to be after xdp_buff.
+I see what has happened. The problem is twofold:
+(1) The object_size of kmalloc-cg-96 is adjust from 96 to 128 due to
+slab merge in __kmem_cache_alias(). For SLAB, SLAB_HWCACHE_ALIGN is
+enabled by default for kmalloc slab, so align is 64 and size is 128 for
+kmalloc-cg-96. So when unit_alloc() does kmalloc_node(96, __GFP_ACCOUNT,
+node), ksize() will return 128 instead of 96 for the returned pointer.
+SLUB has a similar merge logic, but because its align is 8 under x86-64,
+so the warning doesn't happen for i386 + SLUB, but I think the similar
+problem may exist for other architectures.
+(2) kmalloc_size_roundup() returns the object_size of kmalloc-96 instead
+of kmalloc-cg-96, so bpf_mem_cache_adjust_size() doesn't adjust
+size_index accordingly. The reason why the object_size of kmalloc-96 is
+96 instead of 128 is that there is slab merge for kmalloc-96.
 
-It's not that it has to trigger buffer allocation, we could stop the
-interface if pool is present and update vlan proto on pool's xdp_buffs
-(from quick glance i don't see that we're stopping iface for setting vlan
-features) but that sounds like more of a hassle to do...
+About how to fix the problem, I have two ideas:
+The first is to introduce kmalloc_size_roundup_flags(), so
+bpf_mem_cache_adjust_size() could use kmalloc_size_roundup_flags(size,
+__GFP_ACCOUNT) to get the object_size of kmalloc-cg-xxx. It could fix
+the warning for now, but the warning may pop-up occasionally due to SLUB
+merge and unusual slab align. The second is just using the bpf_mem_cache
+pointer to get the unit_size which is saved before the to-be-free
+pointer. Its downside is that it may can not be able to skip the free
+operation for pointer which is not allocated from bpf ma, but I think it
+is acceptable. I prefer the latter solution. What do you think ?
+>
+> Regards,
+> Tao
+>> All code
+>> ========
+>>    0:	30 e8                	xor    %ch,%al
+>>    2:	7e 22                	jle    0x26
+>>    4:	04 00                	add    $0x0,%al
+>>    6:	8b 56 20             	mov    0x20(%rsi),%edx
+>>    9:	39 d0                	cmp    %edx,%eax
+>>    b:	74 24                	je     0x31
+>>    d:	80 3d 18 c0 cc c2 00 	cmpb   $0x0,-0x3d333fe8(%rip)        # 0xffffffffc2ccc02c
+>>   14:	75 3b                	jne    0x51
+>>   16:	c6 05 18 c0 cc c2 01 	movb   $0x1,-0x3d333fe8(%rip)        # 0xffffffffc2ccc035
+>>   1d:	52                   	push   %rdx
+>>   1e:	50                   	push   %rax
+>>   1f:	53                   	push   %rbx
+>>   20:	68 df 53 57 c2       	push   $0xffffffffc25753df
+>>   25:	e8 47 70 ef ff       	call   0xffffffffffef7071
+>>   2a:*	0f 0b                	ud2		<-- trapping instruction
+>>   2c:	83 c4 10             	add    $0x10,%esp
+>>   2f:	eb 20                	jmp    0x51
+>>   31:	43 83 c6 74          	rex.XB add $0x74,%r14d
+>>   35:	83 fb 0b             	cmp    $0xb,%ebx
+>>   38:	0f 85 6a ff ff ff    	jne    0xffffffffffffffa8
+>>   3e:	8b                   	.byte 0x8b
+>>   3f:	45                   	rex.RB
+>>
+>> Code starting with the faulting instruction
+>> ===========================================
+>>    0:	0f 0b                	ud2
+>>    2:	83 c4 10             	add    $0x10,%esp
+>>    5:	eb 20                	jmp    0x27
+>>    7:	43 83 c6 74          	rex.XB add $0x74,%r14d
+>>    b:	83 fb 0b             	cmp    $0xb,%ebx
+>>    e:	0f 85 6a ff ff ff    	jne    0xffffffffffffff7e
+>>   14:	8b                   	.byte 0x8b
+>>   15:	45                   	rex.RB
+>> [   32.256641][    T1] EAX: 00000037 EBX: 00000000 ECX: 00000002 EDX: 80000002
+>> [   32.257402][    T1] ESI: fefbda30 EDI: da953a30 EBP: c3d49ef0 ESP: c3d49ec0
+>> [   32.258176][    T1] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010286
+>> [   32.259000][    T1] CR0: 80050033 CR2: 00000000 CR3: 02dd5000 CR4: 000406d0
+>> [   32.259768][    T1] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
+>> [   32.260526][    T1] DR6: fffe0ff0 DR7: 00000400
+>> [   32.261021][    T1] Call Trace:
+>> [ 32.261376][ T1] ? show_regs (arch/x86/kernel/dumpstack.c:479 arch/x86/kernel/dumpstack.c:465) 
+>> [ 32.261835][ T1] ? bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579) 
+>> [ 32.262395][ T1] ? __warn (kernel/panic.c:673) 
+>> [ 32.262840][ T1] ? report_bug (lib/bug.c:201 lib/bug.c:219) 
+>> [ 32.263327][ T1] ? bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579) 
+>> [ 32.263884][ T1] ? exc_overflow (arch/x86/kernel/traps.c:250) 
+>> [ 32.264368][ T1] ? handle_bug (arch/x86/kernel/traps.c:237) 
+>> [ 32.264833][ T1] ? exc_invalid_op (arch/x86/kernel/traps.c:258 (discriminator 1)) 
+>> [ 32.265333][ T1] ? handle_exception (arch/x86/entry/entry_32.S:1056) 
+>> [ 32.265903][ T1] ? exc_overflow (arch/x86/kernel/traps.c:250) 
+>> [ 32.266392][ T1] ? bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579) 
+>> [ 32.266982][ T1] ? exc_overflow (arch/x86/kernel/traps.c:250) 
+>> [ 32.267476][ T1] ? bpf_mem_alloc_init (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579) 
+>> [ 32.268050][ T1] ? irq_work_init_threads (kernel/bpf/core.c:2919) 
+>> [ 32.268610][ T1] bpf_global_ma_init (kernel/bpf/core.c:2923) 
+>> [ 32.269142][ T1] do_one_initcall (init/main.c:1232) 
+>> [ 32.269657][ T1] ? debug_smp_processor_id (lib/smp_processor_id.c:61) 
+>> [ 32.270243][ T1] ? rcu_is_watching (include/linux/context_tracking.h:122 kernel/rcu/tree.c:699) 
+>> [ 32.270770][ T1] do_initcalls (init/main.c:1293 init/main.c:1310) 
+>> [ 32.271275][ T1] kernel_init_freeable (init/main.c:1549) 
+>> [ 32.271841][ T1] ? rest_init (init/main.c:1429) 
+>> [ 32.272324][ T1] kernel_init (init/main.c:1439) 
+>> [ 32.272785][ T1] ret_from_fork (arch/x86/kernel/process.c:153) 
+>> [ 32.273272][ T1] ? rest_init (init/main.c:1429) 
+>> [ 32.273752][ T1] ret_from_fork_asm (arch/x86/entry/entry_32.S:741) 
+>> [ 32.274272][ T1] entry_INT80_32 (arch/x86/entry/entry_32.S:947) 
+>> [   32.274803][    T1] irq event stamp: 16968005
+>> [ 32.275293][ T1] hardirqs last enabled at (16968013): console_unlock (arch/x86/include/asm/irqflags.h:26 arch/x86/include/asm/irqflags.h:67 arch/x86/include/asm/irqflags.h:127 kernel/printk/printk.c:347 kernel/printk/printk.c:2720 kernel/printk/printk.c:3039) 
+>> [ 32.276277][ T1] hardirqs last disabled at (16968022): console_unlock (kernel/printk/printk.c:345 kernel/printk/printk.c:2720 kernel/printk/printk.c:3039) 
+>> [ 32.277242][ T1] softirqs last enabled at (16967866): __do_softirq (arch/x86/include/asm/preempt.h:27 kernel/softirq.c:400 kernel/softirq.c:582) 
+>> [ 32.278202][ T1] softirqs last disabled at (16967861): do_softirq_own_stack (arch/x86/kernel/irq_32.c:57 arch/x86/kernel/irq_32.c:147) 
+>> [   32.279228][    T1] ---[ end trace 0000000000000000 ]---
+>> [   32.280294][    T1] kmemleak: Kernel memory leak detector initialized (mem pool available: 15783)
+>> [   32.281276][    T1] debug_vm_pgtable: [debug_vm_pgtable         ]: Validating architecture page table helpers
+>> [   32.285847][   T74] kmemleak: Automatic memory scanning thread started
+>> [   32.290289][    T1] UBI error: cannot create "ubi" debugfs directory, error -2
+>> [   32.291558][    T1] UBI error: cannot initialize UBI, error -2
+>>
+>>
+>>
+>> The kernel config and materials to reproduce are available at:
+>> https://download.01.org/0day-ci/archive/20231030/202310302113.9f8fe705-oliver.sang@intel.com
+>>
+>>
+>>
 
-So yeah maybe let's just have a ptr in ice_pkt_ctx as well.
-
-[...]
 
