@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-13907-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13908-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EEA67DEC62
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 06:40:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 444FF7DEC6A
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 06:41:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C26A21C20E89
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 05:40:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F32EC281B2B
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 05:41:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7D28441D;
-	Thu,  2 Nov 2023 05:40:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27486442D;
+	Thu,  2 Nov 2023 05:41:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Eo2c/t6V"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="rE2FGT6r"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E29784C92
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 05:40:04 +0000 (UTC)
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2047.outbound.protection.outlook.com [40.107.8.47])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23425127;
-	Wed,  1 Nov 2023 22:39:59 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89097210F
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 05:40:59 +0000 (UTC)
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2074.outbound.protection.outlook.com [40.107.13.74])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79725130
+	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 22:40:54 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iWoYVNkaWa/HwppkdMZcBVeT5hB/saKhby+rI7l0mRk4TIhPGZHNtt+nAK9Q3rRpyOWobGX3F09Jzyi6Wo7f4rswiVzloKJ/eE7GhQdSlSeReqBTi+IiRsgpSyxG54e7WJDlqKQqeHBgUYFxmXOL4B4AGxNivAKJQ+5ajGhXDvHC7VNNrxPQmWSlRO5iBhVGeuv9/CcXHOR/+viuGewFNRvsCFdy+Mugw30Ml6PXj4QcCNzqwiWNrVHQyySknmZuWpSHf8JGrUmBCL8tQXsRsLMobkDS9qWL8YmoFUpzM+50k0d28SkiU00Z22nwWKfQHFOVZ5yObSlYRt7RmIv9ew==
+ b=DYm1/tOkH62MfYD+LgWbqbXPbuOFP07i3H8HuXZ3SXvjt/4eMEDGmcDYtU4+p+c9h3/6KU1BvKYOoBESd8T4agXxuw7M0EY8tQQgfXevpaFA3KfDY4dAn4bKS/YGl+ywAM6TmC97OjLnhfctS3WvyASh0ECunJbkkxKPTL71OHfEhArLZd53CzHMdNi8/r6A0shKVu+Ezvwd++5Z9fPBJOVg1TlrYX7PnGmaZ3ozvq473FJRxhQsoTBxfwRvSEz6+wGXQf6WIhlV99bef1iS+FKs9hSBkSx4eBBr5yNzOaoA5uC6NpjBTf9VF+YPc8u+Z4Nt6SLLfxp5c6xUwyD52Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CoeMHK1uLtLSRZ3BZi7F8b7wPIodeCsSUeSs0Hy+/G0=;
- b=GF4KL2MfanMmRX7tpjR5eGbbya08p1D05Tx8hk+tFDSJzPgS3Wrh2fgcqIL34irOCjFq65N+pnpfDfnRo4gew8l1FHkeUZNrDmaTLOm+B5lMPbF1gO6Ljz2Rrd3QIviH3kWUyIVkBqj6aOVRj1hEGw6YDFNaPllMa2WpokjWB5FhlW3/TA65UuYdcQyAfKI2M0hcpbNrUSPNYkrJn7YNC9TnYAOEbKx6zIpblyzTZoHBgnv4Eymnwo6fKy1jSB4ToTiDlFMmFNySJQEX+H4rCRjJQiWzP5S9mf+nxxA9j2L1GFol18LDyose+1RjrEBx5qDaTfihkwtO6VbdOh0MIQ==
+ bh=/ZA3MBZ/6HEhHqJ1sL7zr2+713NH/CAOJYbX38mTjKk=;
+ b=Q0LyrW5k6eEKBIAOJZ4BO8cSIoAOYogRaSePCu9OYV0/LolpDC3yPJy+1aTyPViAbzz/VKkfipO6ngZvGbsV5wbPuYf6kcbrMv952ec8nHijNuRdHbqlff5J1jVynrmwv/f6OjUUEiekGDLyeRvOdNxmPYqGq7KgkOi9aeAHVOBzvu/7CApc1kenw7rpm1rRLUsRcKAj01BxLblxYSVpfpYXcisIV9WP1tSw9UuKAVS4mfxzp5GrDPBhcJTxmfg597R7GYufgdsUazOSYvOGuRLjt5yUTkUdhjUHylA7mxhEibn8+E21Mfvd/1A6drzw5tBGYmJEKafLKuMIgRnlHw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CoeMHK1uLtLSRZ3BZi7F8b7wPIodeCsSUeSs0Hy+/G0=;
- b=Eo2c/t6VGTwzh4Bl/b5odNJsLOQla/66ROvZxbAPXnUsGOxB6upyabX1pD/sXfsBQE2vGPmJfpuo1+X7hW8jH3nexYLhlqAt1x0OkCDopyLwZSVwHnQgFtNgmlrPySTIkLRx0pQ50yZBdnf6apZ18X7R5XpG9xX0CZswwMUL554RQQFAni8qOmMECeio5BBemcPHl/H1OJYlkhleAciKUGhultyO6WXLMMpcW+twmWGVMA68Mx7ihGrcwwaUjECEdz0a5/v3mPCy8gDVaxjbO5RaRwRm1wjYxQNa8KZTGoBAQRC+xCva+LbjdbBRgb4UPQ1KgJN9qbh5dLkrn3Zi6g==
+ bh=/ZA3MBZ/6HEhHqJ1sL7zr2+713NH/CAOJYbX38mTjKk=;
+ b=rE2FGT6rnN7lXEX8XaPqAfk5exqsnRJ1fCIZMKqksyOmHE16THfLdBDCky9rD7b/pd1Myec6tahhDM7qzhvXj6nYBwmAZMSuTTiclUfHMoeWCYetSbr3WwlIPaDQdx0N9HC3mGByn9eqQTOnx9geYoHxg1/0POKGx/RcHvasE65bqRpgp0iO6lCqWy0uLYByT0h7L2LOKFKdPGNFTzG2TuyvbsIF+Y0KhJM84/vvcIdiUD+P9X8hzsDBoaOm6eHezU053z4UQzSEhmvTJhsEJrl0SLYPAOt5UgSWPuzCGbQWrFa/Q3mkdfyGQoRUmc03xrjIVbBWjFilL+160Z1JCQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=suse.com;
 Received: from AS8PR04MB9510.eurprd04.prod.outlook.com (2603:10a6:20b:44a::11)
  by AS8PR04MB7687.eurprd04.prod.outlook.com (2603:10a6:20b:291::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Thu, 2 Nov
- 2023 05:39:56 +0000
+ 2023 05:40:49 +0000
 Received: from AS8PR04MB9510.eurprd04.prod.outlook.com
  ([fe80::9f3e:3b47:5ccd:c47c]) by AS8PR04MB9510.eurprd04.prod.outlook.com
  ([fe80::9f3e:3b47:5ccd:c47c%6]) with mapi id 15.20.6954.019; Thu, 2 Nov 2023
- 05:39:56 +0000
+ 05:40:49 +0000
 From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 To: bpf@vger.kernel.org
 Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>,
@@ -64,19 +64,21 @@ Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
-	stable@vger.kernel.org,
-	Mohamed Mahmoud <mmahmoud@redhat.com>,
-	Tao Lyu <tao.lyu@epfl.ch>
-Subject: [PATCH bpf v1 1/2] bpf: Fix precision tracking for BPF_ALU | BPF_TO_BE | BPF_END
-Date: Thu,  2 Nov 2023 13:39:03 +0800
-Message-ID: <20231102053913.12004-2-shung-hsi.yu@suse.com>
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>
+Subject: [PATCH bpf v1 2/2] selftests/bpf: precision tracking test for BPF_NEG and BPF_END
+Date: Thu,  2 Nov 2023 13:39:05 +0800
+Message-ID: <20231102053913.12004-4-shung-hsi.yu@suse.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231102053913.12004-1-shung-hsi.yu@suse.com>
 References: <20231102053913.12004-1-shung-hsi.yu@suse.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: TYWPR01CA0041.jpnprd01.prod.outlook.com
- (2603:1096:400:17f::16) To AS8PR04MB9510.eurprd04.prod.outlook.com
+Content-Type: text/plain
+X-ClientProxiedBy: TYCPR01CA0032.jpnprd01.prod.outlook.com
+ (2603:1096:405:1::20) To AS8PR04MB9510.eurprd04.prod.outlook.com
  (2603:10a6:20b:44a::11)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -86,113 +88,189 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AS8PR04MB9510:EE_|AS8PR04MB7687:EE_
-X-MS-Office365-Filtering-Correlation-Id: 21093481-b571-4f27-be44-08dbdb662583
+X-MS-Office365-Filtering-Correlation-Id: 9a4b0707-c68e-46f0-77a1-08dbdb6644d3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	TlkcW0bz/cnsBBJwUveg5h3ESl1tFfDPIhqdBoNXamUBPSJGY8eEFlscCnGkG8ZpfCFxzfsGLbLW10rbG94kKjyLJ4/UZIxZ5dIuR0nwvB268R+ZCQVNnDAajT07roQuIGX5BL20Oa9xAYbh5QK1YQM0cGGwczQLR5MyWqJie0m4J90XtNilNx1w+qfhem6fz/XP5ceL7CtXPPG0GrmyKfhz8TdW/yJrwMflJ3a0EAgMykWnTswjBE+PyAqTzEgcAdpk+7uIo0fdXyCNUB5DBg8/EXI5W/YssRaRFsDvB1pj9t+AbTxOM4QsQcMAJIIMQQwqdBOexfapdkwYPNqgJKQNI2UGacte/HaU5sg2PgYaZcsYPgwfUmZWwshXEUEBdboo5Q7qqx9oL56L6iBfA/bRXgi1Xxk+OLsqb7iw/cx/cgDSoxbcbZAlOvCiW37nqgUeAynmoAqsi+awOQVHznEwfLQQdZjuv/5t/f35Fn+TE2720QbRSSeMaoMqCMg72vRpmF7i22YxTPLIEx+QOb3OzGCL5zuA2fkLTPUhTVw=
+	H0U8+3yiaHG16Rp4jV35UdesX3KoXSnqk7hyYFZetk+TtbvN+0KrNpej2YSXCIlGE8lNVrrOUz97QSpsobHgnQHTKBYFVLcuv/u2/P+9YAzi18+kZXIneuxpX8xtnnvh8rzPnRqfyXXs4WB2/QZmZINJ1V6vzamIZvhtMcLY2omf+a3GUqBP2wLjtBcGtYsn+qOJWQZDTmHAQ2h0/cvRgDa0ldojYL/9JEu7TlWDZgQz2asMMu+EamIQZyTUfdwnXKG4jwmSghBme4lsYM04XehfkYo2ud1nh1YNn8fTp1JSyAMvp3NNKXNzgLvKLe8G2nugqvyExb0pUlzZyIqWxr4jOych79ud2DAJabbZFk/8vllY3pDNTcAZQx9vrrU/El60N28baDyJLRCPakJsPXCLgwILuvImeQNj1KM0j9DHzx6Ol8n0guj7CZB+udMHSpnQICHENCC1LUPcIswGpTfFc+9fyX0vP/vOc0GCcGsETCVZ4nlPhzt+t0QBA0qhgaFoxFTLOLEUH9luwCPSmhuyukTIspDTiwqLiuFzu523N+V1Jq4vHF8IKcCJxlSF
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB9510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(346002)(39860400002)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(7416002)(41300700001)(54906003)(316002)(6916009)(66476007)(66946007)(2906002)(8676002)(6486002)(8936002)(5660300002)(4326008)(478600001)(966005)(38100700002)(6506007)(2616005)(6512007)(36756003)(83380400001)(66556008)(1076003)(6666004)(66574015)(86362001);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB9510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(346002)(39860400002)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(7416002)(41300700001)(54906003)(316002)(6916009)(66476007)(66946007)(2906002)(8676002)(6486002)(8936002)(5660300002)(4326008)(478600001)(38100700002)(6506007)(2616005)(6512007)(36756003)(83380400001)(66556008)(1076003)(6666004)(86362001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?N3F3dGxuaVk3UGt2ZEdqYjh6MDl3K3diNmkrcUEzdnAyTTMxQXk3QnFZZnlv?=
- =?utf-8?B?ZEllOEp0cXZMWGVVZmcvZXNJT3hMeWdGWVl6Wk92YW9TOHYwOFBkcWpCaWxN?=
- =?utf-8?B?N2JIN1dyQTYwVTZ0b21BZDJJNEI2NjhyZWQ0ZVNZemQ2TUp3RzI0QlV3c1FT?=
- =?utf-8?B?V0VYRlBoYXVENDIwRUpMVXUxdXBucHRnZjFtRGdpeXgvYnlhRzlwdUVoUDZm?=
- =?utf-8?B?dDJsSTFJOGFXU00za0xqTG0rVjQ1U0dmRUZ6TVNGNkJBSTFXd3ZaWUV2UzFz?=
- =?utf-8?B?YUJQd2N3Z2I0ME9oQnY2V1N4WkJiWFFBSk9xS0NCNk5tbWNwQ3dUaS9raisz?=
- =?utf-8?B?NzNEMWt3S1NkbS9ZVmpnL1RGRERzbWZ6V21qWnpmNkxUckZjR0Vuajh1YTRU?=
- =?utf-8?B?L1Rtb1dxeVE2M1h1WURWM2V6U3c5RXR5VnMySUNsVlcyY0paWThiZ2dWSTRJ?=
- =?utf-8?B?aUltK0Y2a2ZhQVlkekxNdEVoYVhVTDA0VFdkQzdkS05lZDFibHVJUS9oN1hN?=
- =?utf-8?B?bWFkdmRjd3BvN3dUNW8vdndMSWRGRXEyV3hVeC9nbGhYcEdsMU1XYUtYblpl?=
- =?utf-8?B?YTFIYzB1N3VxTkJRUjhYUHFYbDk3dWdjVzRLb1BocnVMNUpEZm8rL3pQVnA4?=
- =?utf-8?B?YnZwOE5qY1Bkcm9xOE5zeEo1UFpSVDQ5S1pOMG5BNGVBRGxqYlVLbHlnUDRI?=
- =?utf-8?B?c0JrU2d2VFVoOWNsak1mSGk0Z2IyS0VxWkdSSFpkOGp3dnZ5RWRkRnJiUnQ0?=
- =?utf-8?B?dk5oUFhuNkRJSjQzMUZLTXNOZHV6SVRQQWo5aXdsVFVPTkJpdTVuRDVHaHUz?=
- =?utf-8?B?Nm1FQmRFMkorZnB3M01tSWtLejMvUG1MM1FncEtHWHpGS3p1Qk5aeUE0Y0Y5?=
- =?utf-8?B?T0s2YlQ2VlBmOS9QbHFMcHpuNzlNb3J2QjBtanNHU3gzR2xkQ0J0TXVUZnZp?=
- =?utf-8?B?UW1Ma04wbWg5WlhOanBWMTAyUnJvdlBjUlRJZWNmR0xKeDk0eHF4eUdWeS9L?=
- =?utf-8?B?S1dyZk0ySEh4S2d2SVFmdWhWZWU3Mk8rb05zWS9DTk92cWJwTlpEUzVxQWpT?=
- =?utf-8?B?NUE1UGdKSEE3Q0VXVmFtNVkyTlRsd0dlS0dkWTBMMVJmK1QwUTlaYm5HZi9T?=
- =?utf-8?B?VXA2T1RKVDZhWXVsZ0h6SU5kbGFlVXYxSFZjTUpOWmcxeFFOZHV5S1ZISWlC?=
- =?utf-8?B?T1A2M3U3Uy9uUDNJdEhsSU1ZMTJDQmNLbjZDeEVTZXRKVnlCcjYzV0tLaUdv?=
- =?utf-8?B?Z3RXSTl0L251WUkxbWxsV3V5bnZxYjBMQzl4SjdzUytXSjZCZFB4ams4Zkcx?=
- =?utf-8?B?ZnBjb3VoR1g5UmhmdTNiNHJNQ1NuZzlUNUVEUCtyVys0ODBjQW1EdFN4VTJ0?=
- =?utf-8?B?cy9VSXA1MEF4bk40UG5Fb0ZuNUdjeGJwa1ZibTlkMTNGYThaSVcxL04wbjda?=
- =?utf-8?B?QVFwVTF6Z0dzWUJrd2huRXdQVHY2dFpVakpKcXc1V0JySFd0bDlqV3pBMExL?=
- =?utf-8?B?amk2TE9KcWkyTklRUndNMjY2RHNsUEc5ZjU2dmt3OFVzTGhBZnpjaXVOSHdU?=
- =?utf-8?B?aDJ1QXZ3ZEdrejFWYzZsclJzM2N0QklTbGs1bmtXSWNSckVpclZlOW1pZzRT?=
- =?utf-8?B?b3J6RnBYNGIvQThtYzZWcUZsZ25iMzc4YXlmNm1pdjZzMlYvYnBTd0dRMzhM?=
- =?utf-8?B?NzdzNDVJeHFkTTZJaHBBczFqRDFLc2liOEhpdytiUTFqeHhPNktPaG1VQ1ZC?=
- =?utf-8?B?WXU1UnoxV2hCZUk3TU4ybHNNTlg3K0UvSUpZUVNzcGsvWm9PT1pnYU0xUVZy?=
- =?utf-8?B?bUtMUTB4THUwTWdxMno4ZTNFaEpSeTZrTkk3R3UwWTBDOTgyVlQ3cTlnYXdN?=
- =?utf-8?B?WmJGbHlNUzdHZlhsRlVGcmlIejRFWDJ6Q2JaQkxkZEI1Zms3SHE2QjJsTTM0?=
- =?utf-8?B?aTc1dWpGZGNMRlRaV3BVdlhuQ1VFTlpRRVVVZUNTV0FRMkI0TDdKSVU2R2hV?=
- =?utf-8?B?L2lteGV2UnhZQmdCaGRMY2Q1eHdVVmRkeWRjSjFRRWhXQ2dKUEQ1TFVlOUdH?=
- =?utf-8?B?Y1dEeDhlL2pvSXlRVkRPQkxqT3FmcTlObE1CcEtMeE55am5uTWtyZXYzdDVX?=
- =?utf-8?B?dmFiWlY1bTZrMGlsQTEyeWNSN00rVUdJVlF2UHpXY1F3OHZMOWwvWHBhMWJp?=
- =?utf-8?B?UmozdU0rQTF0VTBXV2NiRy9sT0w4RUF5TnlzWTU5eGxhY0RVeWwvZVhwaTZu?=
- =?utf-8?B?WmFMSzNITzlBUGZEYVFDbFVUcEJBPT0=?=
+	=?us-ascii?Q?IHYquck6Ywnnc4PUD6ywf42IMGbfQZZeUH9xTY8FwDWnDqp0IVaUBJNnrArc?=
+ =?us-ascii?Q?eXVBsFu0vI4pPUecmFXiEftssuHmzVQDYoEL4Kkdqh+WFYcxjYpnbk1QmQzr?=
+ =?us-ascii?Q?Qbjq8SH03l1pV4lObncjBbR8N6pBy3h6TrCwTGaF2ZfvslFusuF9UB7vZ4eV?=
+ =?us-ascii?Q?Epjl3K9S/PgPXS8Ro2qFwf3kN//0+0oHAc54E98Y1hMvUII8VDr9CfsN04kU?=
+ =?us-ascii?Q?lRqcJmSK78dUspdidByh1KMPAlJmsD08EJwHKw8zzjCJLTW089Rb82a985dp?=
+ =?us-ascii?Q?pu2bYtoUSDnRSFigyKtzq96VUDeI49LESWIJ+ixcTTOlfseLFDvoXMQkvjt2?=
+ =?us-ascii?Q?wQq614IzKtXBEk6snNZo0kbVg/dpOeleMu6m0CXD9bRLTfa+bS+h+bHduj0E?=
+ =?us-ascii?Q?dU+BxXmR0X2Kpoq2IELpQmpHKIVrFclwy47+NnzP4Hj4j+cbZucOb4lvEjY0?=
+ =?us-ascii?Q?zCMHwTGZ3lqnAW++RwUmdQB1kDf3/LPWvuYUlKKkDe58Fnam0IyQaAfXXMc+?=
+ =?us-ascii?Q?vTYWUb3lbswuii4TpMAVE5M0X9kxXJ7ghAwVzYDxu08Mk52FFKp552EM+18Z?=
+ =?us-ascii?Q?89HXbBayf+tFxVOl1Vc9M7lH5d8fiwNXFLQeq7QNgnuEiBf+eJkMCzi0XFpL?=
+ =?us-ascii?Q?etWfPOP5OG2yMgzi2ncVe5PAsxmEeczeiY7hI66SiG49KTjhlh0y05KNW0zH?=
+ =?us-ascii?Q?iUpZez2qY73DFTWWyy3IYU+7tnTRw3xVoDAJxk2+upfzDGB8uTFkUFADsxZg?=
+ =?us-ascii?Q?9HI+iWbkkPwSbvzfA/hgkKTKp51KbyxiUQHZ6KdkuZWh1aEDTNtLnSZmAigE?=
+ =?us-ascii?Q?T9qSry8oK3IARvrrkW6gfUyz5ahhBlH3isKsHPC0LyWTn8Fr94SOtta9oUzG?=
+ =?us-ascii?Q?GrF/CB+psYBZSbVK/te0Tk4guvJ5f1Nre9msrSl82DVLbVMqJ2vvOMRSj0xz?=
+ =?us-ascii?Q?7toCGoWPMNZBBvO7DSs2DKSjC5x0q2hzNT/yjtShRMAFFHQyVJpyonD7JbFj?=
+ =?us-ascii?Q?nzE3QIVzQ0gozro5gCH4fGzoLbJ04099ZzrmSW8eY0+RKZa68x9dnv4sjO3a?=
+ =?us-ascii?Q?0f8Z/+7u3adJ8p/MND09Efcy0adBFUfF1cJ5fkH2gzdJSlKmrpplVXE+bXUk?=
+ =?us-ascii?Q?n2dCl3chnZcgckLTy4fWDOP+jtZKb0+Nvs6qo+1SAlVxPT2Bc1Y2igqp4aPY?=
+ =?us-ascii?Q?ip2SeJPfWQQXtOihoZFBSQ9q2O44YaotZfJqosvWADXvRG0tVC6YMybWX3Tp?=
+ =?us-ascii?Q?pxGXiHzSqWVDtlgtZhwJS+Hk1e3FEeEfYq/cT36USiQs01TpkenZ3qU/zSf6?=
+ =?us-ascii?Q?srTinpcVPrRrSk87I+BKD0AUboN+2RbTrdBYf/PaafZYTHKluSd8X+sClThi?=
+ =?us-ascii?Q?f/Snhy7uTGr4BZLUC3kT8IhHZ9yyzZfvDNzX8qS9XL4UwucmdVUYMGzMRfAG?=
+ =?us-ascii?Q?WTaEHQoGeKik4A5f1ToRwky0qmi7BL8CxUJH+aRfPBd7WEuyGy8kjhC7zBE5?=
+ =?us-ascii?Q?uNUgt44O9BB/1AjeAkYvte5HP25cJE291BtDkEQOjFoexVkLVNiqIxyHOhfL?=
+ =?us-ascii?Q?Jyjj7w0zmUWp+eQCUOCgEbotRM03rGe4N4amBOGZl/TywQZu+Czx4hb02snh?=
+ =?us-ascii?Q?djnvZ++FZBg8I1HqLl+jkMf/EkfGr8Eg5F9bnGAatl5ZNDQplwTlIwm0PH8b?=
+ =?us-ascii?Q?z0MGFw=3D=3D?=
 X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 21093481-b571-4f27-be44-08dbdb662583
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a4b0707-c68e-46f0-77a1-08dbdb6644d3
 X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB9510.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 05:39:56.8708
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 05:40:49.4189
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: T+gSebNpj7dKuCAAy3DjecUoUtdWpBKyjStwNuftHm5wsjhutbTedswssDLz/gGMVEfiOarbD0ei6PfjkZTB0A==
+X-MS-Exchange-CrossTenant-UserPrincipalName: etDGcEQnnj+o3F9B6wO/cvzNSw2w/RBHOPzX8Sf1b/My+OLjVRragWj1IVlJiIZO8tq31Xxwa9Hm0RnFptU+qg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7687
 
-BPF_END and BPF_NEG has a different specification for the source bit in
-the opcode compared to other ALU/ALU64 instructions, and is either
-reserved or use to specify the byte swap endianness. In both cases the
-source bit does not encode source operand location, and src_reg is a
-reserved field.
+As seen from previous commit that fix backtracking for BPF_ALU | BPF_TO_BE
+| BPF_END, both BPF_NEG and BPF_END require special handling. Add tests
+written with inline assembly to check that the verifier does not incorrecly
+use the src_reg field of BPF_NEG and BPF_END (including bswap added in v4).
 
-backtrack_insn() currently does not differentiate BPF_END and BPF_NEG
-from other ALU/ALU64 instructions, which leads to r0 being incorrectly
-marked as precise when processing BPF_ALU | BPF_TO_BE | BPF_END
-instructions. This commit teaches backtrack_insn() to correctly mark
-precision for such case.
-
-While precise tracking of BPF_NEG and other BPF_END instructions are
-correct and does not need fixing, this commit opt to process all BPF_NEG
-and BPF_END instructions within the same if-clause to better align with
-current convention used in the verifier (e.g. check_alu_op).
-
-Fixes: b5dc0163d8fd ("bpf: precise scalar_value tracking")
-Cc: stable@vger.kernel.org
-Reported-by: Mohamed Mahmoud <mmahmoud@redhat.com>
-Closes: https://lore.kernel.org/r/87jzrrwptf.fsf@toke.dk
-Tested-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Tested-by: Tao Lyu <tao.lyu@epfl.ch>
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 ---
- kernel/bpf/verifier.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/verifier.c       |  2 +
+ .../selftests/bpf/progs/verifier_precision.c  | 93 +++++++++++++++++++
+ 2 files changed, 95 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_precision.c
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 873ade146f3d..ba9aee3a4269 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3426,7 +3426,12 @@ static int backtrack_insn(struct bpf_verifier_env *env, int idx, int subseq_idx,
- 	if (class == BPF_ALU || class == BPF_ALU64) {
- 		if (!bt_is_reg_set(bt, dreg))
- 			return 0;
--		if (opcode == BPF_MOV) {
-+		if (opcode == BPF_END || opcode == BPF_NEG) {
-+			/* sreg is reserved and unused
-+			 * dreg still need precision before this insn
-+			 */
-+			return 0;
-+		} else if (opcode == BPF_MOV) {
- 			if (BPF_SRC(insn->code) == BPF_X) {
- 				/* dreg = sreg or dreg = (s8, s16, s32)sreg
- 				 * dreg needs precision after this insn
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+index e3e68c97b40c..e5c61aa6604a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -46,6 +46,7 @@
+ #include "verifier_movsx.skel.h"
+ #include "verifier_netfilter_ctx.skel.h"
+ #include "verifier_netfilter_retcode.skel.h"
++#include "verifier_precision.skel.h"
+ #include "verifier_prevent_map_lookup.skel.h"
+ #include "verifier_raw_stack.skel.h"
+ #include "verifier_raw_tp_writable.skel.h"
+@@ -153,6 +154,7 @@ void test_verifier_meta_access(void)          { RUN(verifier_meta_access); }
+ void test_verifier_movsx(void)                 { RUN(verifier_movsx); }
+ void test_verifier_netfilter_ctx(void)        { RUN(verifier_netfilter_ctx); }
+ void test_verifier_netfilter_retcode(void)    { RUN(verifier_netfilter_retcode); }
++void test_verifier_precision(void)            { RUN(verifier_precision); }
+ void test_verifier_prevent_map_lookup(void)   { RUN(verifier_prevent_map_lookup); }
+ void test_verifier_raw_stack(void)            { RUN(verifier_raw_stack); }
+ void test_verifier_raw_tp_writable(void)      { RUN(verifier_raw_tp_writable); }
+diff --git a/tools/testing/selftests/bpf/progs/verifier_precision.c b/tools/testing/selftests/bpf/progs/verifier_precision.c
+new file mode 100644
+index 000000000000..193c0f8272d0
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_precision.c
+@@ -0,0 +1,93 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2023 SUSE LLC */
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++SEC("?raw_tp")
++__success __log_level(2)
++__msg("mark_precise: frame0: regs=r2 stack= before 3: (bf) r1 = r10")
++__msg("mark_precise: frame0: regs=r2 stack= before 2: (55) if r2 != 0xfffffff8 goto pc+2")
++__msg("mark_precise: frame0: regs=r2 stack= before 1: (87) r2 = -r2")
++__msg("mark_precise: frame0: regs=r2 stack= before 0: (b7) r2 = 8")
++__naked int bpf_neg(void)
++{
++	asm volatile (
++		"r2 = 8;"
++		"r2 = -r2;"
++		"if r2 != -8 goto 1f;"
++		"r1 = r10;"
++		"r1 += r2;"
++	"1:"
++		"r0 = 0;"
++		"exit;"
++		::: __clobber_all);
++}
++
++SEC("?raw_tp")
++__success __log_level(2)
++__msg("mark_precise: frame0: regs=r2 stack= before 3: (bf) r1 = r10")
++__msg("mark_precise: frame0: regs=r2 stack= before 2: (55) if r2 != 0x0 goto pc+2")
++__msg("mark_precise: frame0: regs=r2 stack= before 1: (d4) r2 = le16 r2")
++__msg("mark_precise: frame0: regs=r2 stack= before 0: (b7) r2 = 0")
++__naked int bpf_end_to_le(void)
++{
++	asm volatile (
++		"r2 = 0;"
++		"r2 = le16 r2;"
++		"if r2 != 0 goto 1f;"
++		"r1 = r10;"
++		"r1 += r2;"
++	"1:"
++		"r0 = 0;"
++		"exit;"
++		::: __clobber_all);
++}
++
++
++SEC("?raw_tp")
++__success __log_level(2)
++__msg("mark_precise: frame0: regs=r2 stack= before 3: (bf) r1 = r10")
++__msg("mark_precise: frame0: regs=r2 stack= before 2: (55) if r2 != 0x0 goto pc+2")
++__msg("mark_precise: frame0: regs=r2 stack= before 1: (dc) r2 = be16 r2")
++__msg("mark_precise: frame0: regs=r2 stack= before 0: (b7) r2 = 0")
++__naked int bpf_end_to_be(void)
++{
++	asm volatile (
++		"r2 = 0;"
++		"r2 = be16 r2;"
++		"if r2 != 0 goto 1f;"
++		"r1 = r10;"
++		"r1 += r2;"
++	"1:"
++		"r0 = 0;"
++		"exit;"
++		::: __clobber_all);
++}
++
++#if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
++	(defined(__TARGET_ARCH_riscv) && __riscv_xlen == 64) || \
++	defined(__TARGET_ARCH_arm) || defined(__TARGET_ARCH_s390)) && \
++	__clang_major__ >= 18
++
++SEC("?raw_tp")
++__success __log_level(2)
++__msg("mark_precise: frame0: regs=r2 stack= before 3: (bf) r1 = r10")
++__msg("mark_precise: frame0: regs=r2 stack= before 2: (55) if r2 != 0x0 goto pc+2")
++__msg("mark_precise: frame0: regs=r2 stack= before 1: (d7) r2 = bswap16 r2")
++__msg("mark_precise: frame0: regs=r2 stack= before 0: (b7) r2 = 0")
++__naked int bpf_end_bswap(void)
++{
++	asm volatile (
++		"r2 = 0;"
++		"r2 = bswap16 r2;"
++		"if r2 != 0 goto 1f;"
++		"r1 = r10;"
++		"r1 += r2;"
++	"1:"
++		"r0 = 0;"
++		"exit;"
++		::: __clobber_all);
++}
++
++#endif /* v4 instruction */
 -- 
 2.42.0
 
