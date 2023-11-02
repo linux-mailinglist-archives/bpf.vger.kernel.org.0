@@ -1,168 +1,134 @@
-Return-Path: <bpf+bounces-13878-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13879-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7B007DEA01
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 02:27:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B4FD7DEA12
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 02:33:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6178D2819B8
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 01:27:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B7951F21A4D
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 01:33:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 746B415BA;
-	Thu,  2 Nov 2023 01:27:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 879AA1849;
+	Thu,  2 Nov 2023 01:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fp6fqneF"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kjYeu3Ut"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C43A1111F
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 01:27:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D3BDC433CD
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 01:27:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698888471;
-	bh=/MTeM9OXTTKZ4ju4/4YY4chRCXEamfIwXV7Rv7qDHBw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=fp6fqneFN+UhXbcy2dexdHhPjgIFau5BLdQR0N1rfUUCwcEqgX3/+JXbQIa7aMgoA
-	 zC0STOF59U/5UVdA4GKgGkWQ3YDAyCE6i3kEp8lFede+j15vg+7G9CSm2a4WQQiS82
-	 LWhFa+wdWN/C9W3wmefIX350YScYoYGgDvADUSg19ua7qiE8ESPa5Cx7uYUqO0FdZ4
-	 0vVWSXFgBT5qSGgDcsWNBdRqA274bFSK18ea13F95CuWSwhsEaq8aMRCyL9JDwBJHl
-	 LGyKBK/xtlV3zUoqvHAL8o1nYvRHfg2JGsShr1kVTJdc5BkdP5V6XqXP+0tYEBM5ql
-	 3Wvuls/HAKRcA==
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-507a62d4788so468117e87.0
-        for <bpf@vger.kernel.org>; Wed, 01 Nov 2023 18:27:51 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwWsdr8OBCkM4vox9NH/C4TYUn/UCkWciWF1aWz20rGrNPukU7l
-	b/HhLeNeENxx0yw4s8M3VKXjsUqi6/47BscWHeLI/w==
-X-Google-Smtp-Source: AGHT+IGl+owG4HyE+kq6BBVOXDiFxSFk1o2PQKEGPiU38rVzSstMo8Yqq9ZlAR9kvKYw/VN4FezIyMmMoi+YJYTvMAQ=
-X-Received: by 2002:a05:6512:2248:b0:4fe:7e7f:1328 with SMTP id
- i8-20020a056512224800b004fe7e7f1328mr16546233lfu.16.1698888469382; Wed, 01
- Nov 2023 18:27:49 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C42F15D4
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 01:33:14 +0000 (UTC)
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2147410E
+	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 18:33:06 -0700 (PDT)
+Message-ID: <22051390-2331-ad11-406b-1e5c6dbcd6a2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1698888784;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pvRTpdvXz6plItuH2cFGj3EjGZUHzZprLqBZ6jL+IKs=;
+	b=kjYeu3UtJJ6FB4/NDkC3Ht58gBc4ZwlHgv+Rc81GV7VSCVa7alJsv01HDBUHhaJ8TyDil0
+	twE2HtrZ2eKOswb84mRyeGBUeR92CRTgfY2Ezc25IyRq51m8XcjQntkLnvjxzGJAyJsT8e
+	O1u3nEabI6pAI+3wcVu8JSGQx/lqEfE=
+Date: Wed, 1 Nov 2023 18:32:57 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231023061354.941552-1-song@kernel.org> <20231023061354.941552-5-song@kernel.org>
-In-Reply-To: <20231023061354.941552-5-song@kernel.org>
-From: KP Singh <kpsingh@kernel.org>
-Date: Thu, 2 Nov 2023 02:27:38 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ7mz91WuvC=9CWA-ewh6ywCHseiH5-dY0jOA0Piw3jQ-g@mail.gmail.com>
-Message-ID: <CACYkzJ7mz91WuvC=9CWA-ewh6ywCHseiH5-dY0jOA0Piw3jQ-g@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 4/9] bpf: Add kfunc bpf_get_file_xattr
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, fsverity@lists.linux.dev, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org, 
-	kernel-team@meta.com, ebiggers@kernel.org, tytso@mit.edu, 
-	roberto.sassu@huaweicloud.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v8 07/10] bpf, net: switch to dynamic
+ registration
+Content-Language: en-US
+To: Kui-Feng Lee <sinquersw@gmail.com>
+Cc: kuifeng@meta.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+ thinker.li@gmail.com, drosen@google.com
+References: <20231030192810.382942-1-thinker.li@gmail.com>
+ <20231030192810.382942-8-thinker.li@gmail.com>
+ <183fd964-8910-b7e6-436a-f5f82c2bafb0@linux.dev>
+ <10f383a2-c83b-4a40-a1f9-bcf33c76c164@gmail.com>
+ <5a8520dd-0dd6-4d51-9e4a-6eebcf7e792d@linux.dev>
+ <51be2e5e-8def-45c5-8864-6b0dcc794300@gmail.com>
+ <331802b3-07bd-7fec-32a7-b85a8dae1391@linux.dev>
+ <c4427a57-aea9-4acc-a6be-e30cfb1dbaad@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <c4427a57-aea9-4acc-a6be-e30cfb1dbaad@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Oct 23, 2023 at 8:14=E2=80=AFAM Song Liu <song@kernel.org> wrote:
->
-> This kfunc can be used to read xattr of a file. To avoid recursion, only
-> allow calling this kfunc from LSM hooks.
+On 11/1/23 5:59 PM, Kui-Feng Lee wrote:
+> 
+> 
+> On 11/1/23 17:17, Martin KaFai Lau wrote:
+>> On 10/31/23 5:19 PM, Kui-Feng Lee wrote:
+>>>
+>>>
+>>> On 10/31/23 17:02, Martin KaFai Lau wrote:
+>>>> On 10/31/23 4:34 PM, Kui-Feng Lee wrote:
+>>>>>>> diff --git a/include/linux/btf.h b/include/linux/btf.h
+>>>>>>> index a8813605f2f6..954536431e0b 100644
+>>>>>>> --- a/include/linux/btf.h
+>>>>>>> +++ b/include/linux/btf.h
+>>>>>>> @@ -12,6 +12,8 @@
+>>>>>>>   #include <uapi/linux/bpf.h>
+>>>>>>>   #define BTF_TYPE_EMIT(type) ((void)(type *)0)
+>>>>>>> +#define BTF_STRUCT_OPS_TYPE_EMIT(type) {((void)(struct type *)0);    \
+>>>>>>
+>>>>>> ((void)(struct type *)0); is new. Why is it needed?
+>>>>>
+>>>>> This is a trick of BTF to force compiler generate type info for
+>>>>> the given type. Without trick, compiler may skip these types if these
+>>>>> type are not used at all in the module.  For example, modules usually
+>>>>> don't use value types of struct_ops directly.
+>>>> It is not the value type and value type emit is understood. It is the 
+>>>> struct_ops type itself and it is new addition in this patchset afaict. The 
+>>>> value type emit is in the next line which was cut out from the context here.
+>>>>
+>>> I mean both of them are required.
+>>> In the case of a dummy implementation, struct_ops type itself properly never 
+>>> being used, only being declared by the module. Without this line,
+>>
+>> Other than bpf_dummy_ops, after reg(), the struct_ops->func() must be used 
+>> somewhere in the kernel or module. Like tcp must be using the 
+>> tcp_congestion_ops after reg(). bpf_dummy_ops is very special and probably 
+>> should be moved out to bpf_testmod somehow but this is for later. Even 
+>> bpf_dummy_ops does not have an issue now. Why it is needed after the kmod 
+>> support change?
+>>
+>> or it is a preemptive addition to be future proof only?
+>>
+>> Addition is fine if it is required to work. I am trying to understand why this 
+>> new addition is needed after the kmod support change. The reason why this is 
+>> needed after the kmod support change is not obvious from looking at the code. 
+>> The commit message didn't mention why and what broke after this kmod change. 
+>> If someone wants to clean it up a few months later, we will need to figure out 
+>> why it was added in the first place.
+> 
+> 
+> It is a future proof.
+> What do you think if I add a comment in the code?
 
-I think this needs a bit more explanation in the commit message (some
-details on what it could be used for, we can explain the use case
-about persistent LSM policy and LSM signatures with FSVerity). I know
-you add a selftest but some more details in the commit message would
-help.
+If it is not required to work, I prefer not adding it to avoid confusion and 
+avoid future cleanup temptation. Even the artificial bpf_dummy_ops does not need 
+it, so not enough reason to introduce this code redundancy.
 
-What about adding the KF_TRUSTED_ARGS for the kfunc?
+Switch topic.
+While we are on a new macro topic, I think a new macro will be useful to emit 
+the value type and register_bpf_struct_ops together. wdyt?
 
+> 
+>>
+>>
+>>> the module developer will fail to load a struct_ops map of the dummy
+>>> type. This line is added to avoid this awful situation.
+>>>
+>>
 
-
->
-> Signed-off-by: Song Liu <song@kernel.org>
-> ---
->  kernel/trace/bpf_trace.c | 56 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 56 insertions(+)
->
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 43ed45a83ee2..4178d0e339d3 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -24,6 +24,7 @@
->  #include <linux/key.h>
->  #include <linux/verification.h>
->  #include <linux/namei.h>
-> +#include <linux/fileattr.h>
->
->  #include <net/bpf_sk_storage.h>
->
-> @@ -1436,6 +1437,61 @@ static int __init bpf_key_sig_kfuncs_init(void)
->  late_initcall(bpf_key_sig_kfuncs_init);
->  #endif /* CONFIG_KEYS */
->
-> +/* filesystem kfuncs */
-> +__diag_push();
-> +__diag_ignore_all("-Wmissing-prototypes",
-> +                 "kfuncs which will be used in BPF programs");
-> +
-> +/**
-> + * bpf_get_file_xattr - get xattr of a file
-> + * @file: file to get xattr from
-> + * @name__const_str: name of the xattr
-> + * @value_ptr: output buffer of the xattr value
-> + *
-> + * Get xattr *name__const_str* of *file* and store the output in *value_=
-ptr*.
-> + *
-> + * Return: 0 on success, a negative value on error.
-> + */
-> +__bpf_kfunc int bpf_get_file_xattr(struct file *file, const char *name__=
-const_str,
-> +                                  struct bpf_dynptr_kern *value_ptr)
-> +{
-> +       struct dentry *dentry;
-> +       void *value;
-> +
-> +       value =3D bpf_dynptr_slice_rdwr(value_ptr, 0, NULL, 0);
-> +       if (IS_ERR_OR_NULL(value))
-> +               return PTR_ERR(value);
-> +
-> +       dentry =3D file_dentry(file);
-> +       return __vfs_getxattr(dentry, dentry->d_inode, name__const_str,
-> +                             value, __bpf_dynptr_size(value_ptr));
-> +}
-> +
-> +__diag_pop();
-> +
-> +static int bpf_get_file_xattr_filter(const struct bpf_prog *prog, u32 kf=
-unc_id)
-> +{
-> +       /* Only allow to attach from LSM hooks, to avoid recursion */
-> +       return prog->type !=3D BPF_PROG_TYPE_LSM ? -EACCES : 0;
-> +}
-> +
-> +BTF_SET8_START(fs_kfunc_set)
-> +BTF_ID_FLAGS(func, bpf_get_file_xattr, KF_SLEEPABLE)
-> +BTF_SET8_END(fs_kfunc_set)
-> +
-> +const struct btf_kfunc_id_set bpf_fs_kfunc_set =3D {
-> +       .owner =3D THIS_MODULE,
-> +       .set =3D &fs_kfunc_set,
-> +       .filter =3D bpf_get_file_xattr_filter,
-> +};
-> +
-> +static int __init bpf_fs_kfuncs_init(void)
-> +{
-> +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM, &bpf_fs_kfunc=
-_set);
-> +}
-> +
-> +late_initcall(bpf_fs_kfuncs_init);
-> +
->  static const struct bpf_func_proto *
->  bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *=
-prog)
->  {
-> --
-> 2.34.1
->
->
 
