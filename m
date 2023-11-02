@@ -1,164 +1,246 @@
-Return-Path: <bpf+bounces-13950-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13951-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F8007DF4B0
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 15:13:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DEDE7DF4C3
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 15:17:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B24C11F22767
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 14:13:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 305FE1C20F2B
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 14:17:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46B241B282;
-	Thu,  2 Nov 2023 14:13:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 969ED11185;
+	Thu,  2 Nov 2023 14:17:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kaErKdmA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AExWQDyb"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453FC19BC2
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 14:13:08 +0000 (UTC)
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1039D1B3
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 07:12:56 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53e08e439c7so1746354a12.0
-        for <bpf@vger.kernel.org>; Thu, 02 Nov 2023 07:12:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C885E1B28C
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 14:17:27 +0000 (UTC)
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCEE13A;
+	Thu,  2 Nov 2023 07:17:23 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-da30fd994fdso1869151276.1;
+        Thu, 02 Nov 2023 07:17:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698934374; x=1699539174; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=kgxFwcSmWe6FtFY/FLYmlMopsCy1zQj0uhNlXo3LlnI=;
-        b=kaErKdmA8aByPLAZNCyNkhBaSkO0RBu6tv9sVfzrt0QgeoMGGgNixFZ/nvJqPvK1/M
-         bjsr0DJYWLKu2N1/iynpRGpvKJOHD+NMZDY1FLKVrBrieSsRvOXTf4Gm736wmXqSkliu
-         nJcRfBMeFExBONwCwI1WwcC6BzJQRpU63QSwJpxltHY9lmgZYnO+jNr3V5JnOXq7E6q6
-         hAOJlXfnJqCq50w3PxPTyRWIDUFd7s32ZxYcY22UsC5B5QOoHrbnSpzeqPCCkDC8KuXf
-         I/Jkg0u3TMxIJaSBC/bzlTn7fu3h0lWR0t760Ms8McByudLvl76WwslDgQ72MSciDJMo
-         AVjw==
+        d=gmail.com; s=20230601; t=1698934642; x=1699539442; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ozVCHWs6xPfqFL3sFI7yfrmGIHIbII6d/vJuYQgFLiI=;
+        b=AExWQDybeQm99GEEq3yDnGpdtTqbAtthw9/hEFLNmNmvZYEeNWcsYuXBtz3g37cZcn
+         qBpXPCx8AT4HCSb9Ozyaxx8iv8dJwbL9LmMSt90q2djsfWb6i9FTDWDW3ydbE2+ACs7N
+         GSqueaz2zohv0Ct0qNbtsrBfz6ANCUf16lVvmGmrjOXRYfMQx3+DCTGw019PuvHQ4yA3
+         NAgxAiyYIBnNZtIQjktnCvaOIHjXXrlehaoAQ/BsLF3dVeEMaVkuehi6vUlBDedbS9t8
+         4CvaLo5dYcjhGNeoXyN5d2Tl32f5ZVsAOAmHHoEuwQQ0s5dLwUljJxLXBG8kYrd5vKT6
+         e1BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698934374; x=1699539174;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kgxFwcSmWe6FtFY/FLYmlMopsCy1zQj0uhNlXo3LlnI=;
-        b=MNRRJapvscET+2egn6JJphOH3vqlV8ZVQeBA0AdGdxV+7X38/qyHDn4abkHyTVXoTp
-         R8kYZiSggqZMeG8KR0zaBa/Q4eFINlS19bUijtKfXnp476rzC29S+8igxhNH4Sf8Ph/q
-         eMOs+sJJOHmEP9Y40a7Ga8xw/LPddzWZYw1V/ethbpajN0t9uHM7o+3karhQlmPWir5x
-         u1itpBD8AaH/+afR34HFay2qy5pqurg8vMcq7YTJu/CXvlgYr/E5WOeotgQYG1jW8g1j
-         lmoavTdrpx2BHWhw7i0YY0ELWYc09j7RQkL8FvvEO31RWCFK+BuWCWYDcTWeFwHyKwOX
-         eVcA==
-X-Gm-Message-State: AOJu0YzQ6N9SOE38raykeuL01wKPp7oROFEjSDEiYm5LWDciQXsa4CJx
-	cNFU7abUlWZ9lK+KcbRjglM=
-X-Google-Smtp-Source: AGHT+IE6ZstQm/SfxIX5OGV5zGrx4b4GtDjIR30z+Z1BcF8jz0MWfdhtKRH/j3dKdZjjn87ABCLU7g==
-X-Received: by 2002:a17:907:1ca3:b0:9c7:5437:841e with SMTP id nb35-20020a1709071ca300b009c75437841emr4898689ejc.11.1698934374227;
-        Thu, 02 Nov 2023 07:12:54 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id s19-20020a170906c31300b0098f99048053sm1204191ejz.148.2023.11.02.07.12.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 07:12:53 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 2 Nov 2023 15:12:51 +0100
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH bpf-next 4/6] selftests/bpf: Use bpf_link__destroy in
- fill_link_info tests
-Message-ID: <ZUOuY8Wfh7UQgz88@krava>
-References: <20231025202420.390702-1-jolsa@kernel.org>
- <20231025202420.390702-5-jolsa@kernel.org>
- <CAEf4BzbKCtON6qry3qpoO5FdNbwMUWV7F2FHzHi+K34qBv3pjg@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1698934642; x=1699539442;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ozVCHWs6xPfqFL3sFI7yfrmGIHIbII6d/vJuYQgFLiI=;
+        b=qfJVZ09+wSZbw6MpLZlLO4cUKB41mTf3TYBn/ybUhKKZ6i43rmic3qpqTSAlFy/aFe
+         kOX1mSCtl/g9yRBnKyf8Mo35HCQ0dYeHwLu5gkUxMGZmuY7V2+Hrlg0/FzVVKrdOF+dD
+         tyVqGoyoafhVaACH8wTcVWeBapbzk3Maf0Ofqi9/Ln6Vj0ubhfu8ItcRN1cnuxQwjBDV
+         8jQCw4pl+cgWSoleFdHoT0DmHUo1VFFaRyTgAkdZIMy1XMI9Q6YsP9aUisRbhvEmRi7k
+         AbRDBU5ZoTDGFtOeheQZpKu3oDqmd+IdWkLkC++86X+cCJqwlYJhg7J/9Ot04BvboQtL
+         xzJQ==
+X-Gm-Message-State: AOJu0YyGj1HbNm40fEu8vrFgql7V9CxedH21vSC1kFhRcdjgkIN0N02B
+	U2YSa+eW1nnlBkBfd9CGF3RjouajCOIYtKKkHw==
+X-Google-Smtp-Source: AGHT+IERacoiMey2iwNhsLShLPUA+dv2+2NMsVR4WqLZBSHtd4+CnuNZy3L37UIhDtvklAQU92mM44VWIB/g3T1N24I=
+X-Received: by 2002:a25:2fc3:0:b0:da0:8955:34f7 with SMTP id
+ v186-20020a252fc3000000b00da0895534f7mr6351905ybv.23.1698934642161; Thu, 02
+ Nov 2023 07:17:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbKCtON6qry3qpoO5FdNbwMUWV7F2FHzHi+K34qBv3pjg@mail.gmail.com>
+References: <CACkBjsY2q1_fUohD7hRmKGqv1MV=eP2f6XK8kjkYNw7BaiF8iQ@mail.gmail.com>
+ <4b354d05b1bb4aa681fff5baca3455d90233951d.camel@gmail.com>
+ <CAEf4Bzbgf-WQSCz8D4Omh3zFdS4oWS6XELnE7VeoUWgKf3cpig@mail.gmail.com>
+ <CACkBjsZen6AA1jXqgmA=uoZZJt5bLu+7Hz3nx3BrvLAP=CqGuA@mail.gmail.com> <CAEf4BzYxC64doNAEcgtPGFirm2pWS=RUQ7JkGG+UMQ17=JqzcA@mail.gmail.com>
+In-Reply-To: <CAEf4BzYxC64doNAEcgtPGFirm2pWS=RUQ7JkGG+UMQ17=JqzcA@mail.gmail.com>
+From: Hao Sun <sunhao.th@gmail.com>
+Date: Thu, 2 Nov 2023 15:17:11 +0100
+Message-ID: <CACkBjsbvk7rNfV0uS8uvrw497ybB1uLvUFvZWPx_SBzSRn2Raw@mail.gmail.com>
+Subject: Re: bpf: shift-out-of-bounds in tnum_rshift()
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 01, 2023 at 03:24:36PM -0700, Andrii Nakryiko wrote:
-> On Wed, Oct 25, 2023 at 1:25 PM Jiri Olsa <jolsa@kernel.org> wrote:
+On Wed, Nov 1, 2023 at 11:45=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Nov 1, 2023 at 2:53=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wrot=
+e:
 > >
-> > The fill_link_info test keeps skeleton open and just creates
-> > various links. We are wrongly calling bpf_link__detach after
-> > each test to close them, we need to call bpf_link__destroy.
+> > On Fri, Oct 27, 2023 at 7:51=E2=80=AFPM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Wed, Oct 25, 2023 at 10:34=E2=80=AFAM Eduard Zingerman <eddyz87@gm=
+ail.com> wrote:
+> > > >
+> > > > On Tue, 2023-10-24 at 14:40 +0200, Hao Sun wrote:
+> > > > > Hi,
+> > > > >
+> > > > > The following program can trigger a shift-out-of-bounds in
+> > > > > tnum_rshift(), called by scalar32_min_max_rsh():
+> > > > >
+> > > > > 0: (bc) w0 =3D w1
+> > > > > 1: (bf) r2 =3D r0
+> > > > > 2: (18) r3 =3D 0xd
+> > > > > 4: (bc) w4 =3D w0
+> > > > > 5: (bf) r5 =3D r0
+> > > > > 6: (bf) r7 =3D r3
+> > > > > 7: (bf) r8 =3D r4
+> > > > > 8: (2f) r8 *=3D r5
+> > > > > 9: (cf) r5 s>>=3D r5
+> > > > > 10: (a6) if w8 < 0xfffffffb goto pc+10
+> > > > > 11: (1f) r7 -=3D r5
+> > > > > 12: (71) r6 =3D *(u8 *)(r1 +17)
+> > > > > 13: (5f) r3 &=3D r8
+> > > > > 14: (74) w2 >>=3D 30
+> > > > > 15: (1f) r7 -=3D r5
+> > > > > 16: (5d) if r8 !=3D r6 goto pc+4
+> > > > > 17: (c7) r8 s>>=3D 5
+> > > > > 18: (cf) r0 s>>=3D r0
+> > > > > 19: (7f) r0 >>=3D r0
+> > > > > 20: (7c) w5 >>=3D w8         # shift-out-bounds here
+> > > > > 21: exit
+> > > >
+> > > > Here is a simplified example:
+> > > >
+> > > > SEC("?tp")
+> > > > __success __retval(0)
+> > > > __naked void large_shifts(void)
+> > > > {
+> > > >         asm volatile ("                 \
+> > > >         call %[bpf_get_prandom_u32];    \n\
+> > > >         r8 =3D r0;                        \n\
+> > > >         r6 =3D r0;                        \n\
+> > > >         r6 &=3D 0xf;                      \n\
+> > > >         if w8 < 0xffffffff goto +2;     \n\
+> > > >         if r8 !=3D r6 goto +1;            \n\
+> > > >         w0 >>=3D w8;       /* shift-out-bounds here */    \n\
+> > > >         exit;                           \n\
+> > > > "       :
+> > > >         : __imm(bpf_get_prandom_u32)
+> > > >         : __clobber_all);
+> > > > }
+> > > >
+> > >
+> > > With my changes the verifier does correctly derive that r8 !=3D r6 wi=
+ll
+> > > always happen, and thus skips w0 >>=3D w8. But the test itself with
 > >
-> > Also we need to set the link NULL so the skeleton destroy
-> > won't try to destroy them again.
+> > A similar issue can be triggered after your patch for JNE/JEQ.
 > >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  .../selftests/bpf/prog_tests/fill_link_info.c       | 13 +++++++++----
-> >  1 file changed, 9 insertions(+), 4 deletions(-)
+> > For the following case, the verifier would shift out of bound:
+> >      //  0: r0 =3D -2
+> >       BPF_MOV64_IMM(BPF_REG_0, -2),
+> >       // 1: r0 /=3D 1
+> >       BPF_ALU64_IMM(BPF_DIV, BPF_REG_0, 1),
+> >       // 2: r8 =3D r0
+> >       BPF_MOV64_REG(BPF_REG_8, BPF_REG_0),
+> >       // 3: if w8 !=3D 0xfffffffe goto+4
+> >       BPF_JMP32_IMM(BPF_JNE, BPF_REG_8, 0xfffffffe, 4),
+> >       // 4: if r8 s> 0xd goto+3
+> >       BPF_JMP_IMM(BPF_JSGT, BPF_REG_8, 0xd, 3),
+> >       // 5: r4 =3D 0x2
+> >       BPF_MOV64_IMM(BPF_REG_4, 0x2),
+> >       // 6: if r8 s<=3D r4 goto+1
+> >       BPF_JMP_REG(BPF_JSLE, BPF_REG_8, BPF_REG_4, 1),
+> >       // 7: w8 s>>=3D w0 # shift out of bound here
+> >       BPF_ALU32_REG(BPF_ARSH, BPF_REG_8, BPF_REG_0),
+> >       // 8: exit
+> >       BPF_EXIT_INSN(),
 > >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-> > index 97142a4db374..0379872c445a 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-> > @@ -22,6 +22,11 @@ static __u64 kmulti_addrs[KMULTI_CNT];
-> >  #define KPROBE_FUNC "bpf_fentry_test1"
-> >  static __u64 kprobe_addr;
+> >  -------- Verifier Log --------
+> >  func#0 @0
+> >  0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
+> >  0: (b7) r0 =3D -2                       ; R0_w=3D-2
+> >  1: (37) r0 /=3D 1                       ; R0_w=3Dscalar()
+> >  2: (bf) r8 =3D r0                       ; R0_w=3Dscalar(id=3D1) R8_w=
+=3Dscalar(id=3D1)
+> >  3: (56) if w8 !=3D 0xfffffffe goto pc+4         ;
+> > R8_w=3Dscalar(id=3D1,smin=3D-9223372032559808514,smax=3D922337203685477=
+5806,umin=3Dumin32=3D4294967294,umax=3D18446744073709551614,smin32=3D-2,sma=
+x32=3D-2,
+> > umax32=3D4294967294,var_off=3D(0xfffffffe; 0xffffffff00000000))
+> >  4: (65) if r8 s> 0xd goto pc+3        ;
+> > R8_w=3Dscalar(id=3D1,smin=3D-9223372032559808514,smax=3D13,umin=3Dumin3=
+2=3D4294967294,umax=3D18446744073709551614,smin32=3D-2,smax32=3D-2,umax32=
+=3D4294967294,
+> > var_off=3D(0xfffffffe; 0xffffffff00000000))
+> >  5: (b7) r4 =3D 2                        ; R4_w=3D2
+> >  6: (dd) if r8 s<=3D r4 goto pc+1        ; R4_w=3D2 R8_w=3D4294967294
+> >  7: (cc) w8 s>>=3D w0                    ; R0=3D4294967294 R8=3D4294967=
+295
+> >  8: (95) exit
 > >
-> > +#define LINK_DESTROY(__link) ({                \
-> > +       bpf_link__destroy(__link);      \
-> > +       __link = NULL;                  \
-> > +})
-> > +
-> >  #define UPROBE_FILE "/proc/self/exe"
-> >  static ssize_t uprobe_offset;
-> >  /* uprobe attach point */
-> > @@ -157,7 +162,7 @@ static void test_kprobe_fill_link_info(struct test_fill_link_info *skel,
-> >         } else {
-> >                 kprobe_fill_invalid_user_buffer(link_fd);
-> >         }
-> > -       bpf_link__detach(skel->links.kprobe_run);
-> > +       LINK_DESTROY(skel->links.kprobe_run);
-> >  }
-> >
-> >  static void test_tp_fill_link_info(struct test_fill_link_info *skel)
-> > @@ -171,7 +176,7 @@ static void test_tp_fill_link_info(struct test_fill_link_info *skel)
-> >         link_fd = bpf_link__fd(skel->links.tp_run);
-> >         err = verify_perf_link_info(link_fd, BPF_PERF_EVENT_TRACEPOINT, 0, 0, 0);
-> >         ASSERT_OK(err, "verify_perf_link_info");
-> > -       bpf_link__detach(skel->links.tp_run);
-> > +       LINK_DESTROY(skel->links.tp_run);
-> >  }
-> >
-> >  static void test_uprobe_fill_link_info(struct test_fill_link_info *skel,
-> > @@ -189,7 +194,7 @@ static void test_uprobe_fill_link_info(struct test_fill_link_info *skel,
-> >         link_fd = bpf_link__fd(skel->links.uprobe_run);
-> >         err = verify_perf_link_info(link_fd, type, 0, uprobe_offset, 0);
-> >         ASSERT_OK(err, "verify_perf_link_info");
-> > -       bpf_link__detach(skel->links.uprobe_run);
-> > +       LINK_DESTROY(skel->links.uprobe_run);
-> >  }
-> >
-> >  static int verify_kmulti_link_info(int fd, bool retprobe)
-> > @@ -295,7 +300,7 @@ static void test_kprobe_multi_fill_link_info(struct test_fill_link_info *skel,
-> >         } else {
-> >                 verify_kmulti_invalid_user_buffer(link_fd);
-> >         }
-> > -       bpf_link__detach(skel->links.kmulti_run);
-> > +       LINK_DESTROY(skel->links.kmulti_run);
-> 
-> if we don't want skeleton to take care of these links, we shouldn't
-> assign them into skel->links region, IMO
-> 
-> so perhaps the proper fix is to have local bpf_link variable in these tests?
+> > Here, after #6, reg range is incorrect, seems to be an issue in JSLE ca=
+se
+> > in is_branch_taken(). Is this issue fixed in your patch series?
+>
+> I don't know, but you can easily check by applying my patches on top
+> of bpf-next and then trying your change.
+>
 
-ok, that looks cleaner
+After applying your change, the verifier does not shift out of bound,
+but the range
+is still not correct. See this verifier log:
 
-jirka
+-------- Verifier Log --------
+func#0 @0
+0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
+0: (b7) r0 =3D -2                       ; R0_w=3D-2
+1: (37) r0 /=3D 1                       ; R0_w=3Dscalar()
+2: (bf) r8 =3D r0                       ; R0_w=3Dscalar(id=3D1) R8_w=3Dscal=
+ar(id=3D1)
+3: (56) if w8 !=3D 0xfffffffe goto pc+4         ;
+R8_w=3Dscalar(id=3D1,smin=3D-9223372032559808514,smax=3D9223372036854775806=
+,umin=3Dumin32=3D4294967294,umax=3D18446744073709551614,smin32=3D-2,smax32=
+=3D-2,umax32=3D4294967294,var_off=3D(0xfffffffe;
+0xffffffff00000000))
+4: (65) if r8 s> 0xd goto pc+3        ;
+R8_w=3Dscalar(id=3D1,smin=3D-9223372032559808514,smax=3D13,umin=3Dumin32=3D=
+4294967294,umax=3D18446744073709551614,smin32=3D-2,smax32=3D-2,umax32=3D429=
+4967294,var_off=3D(0xfffffffe;
+0xffffffff00000000))
+5: (b7) r4 =3D 2                        ; R4_w=3D2
+6: (dd) if r8 s<=3D r4 goto pc+1        ; R4_w=3D2 R8_w=3D4294967294
+7: (cc) w8 s>>=3D w0                    ; R0=3D4294967294 R8=3Dscalar()
+8: (77) r0 >>=3D 32                     ; R0_w=3D0
+9: (57) r0 &=3D 1                       ; R0_w=3D0
+10: (95) exit
+
+from 6 to 8: safe
+
+from 4 to 8: safe
+
+from 3 to 8: safe
+processed 14 insns (limit 1000000) max_states_per_insn 0 total_states
+1 peak_states 1 mark_read 1
+
+-------- Test Run Log --------
+RetVal: 1
+
+At #9, the verifier thinks the value of R0 is 0, but it's 1, because
+r0 is -2 all the time before
+#8. The test run also shows return value is 1.
+
+This program can reproduce the above: https://pastebin.com/raw/a0WuXaKh
 
