@@ -1,202 +1,221 @@
-Return-Path: <bpf+bounces-14001-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14002-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5374D7DF9A4
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 19:12:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 649D17DF9AE
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 19:13:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE148B211CE
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 18:12:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17482281CA6
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 18:13:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE1882111C;
-	Thu,  2 Nov 2023 18:12:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D27D12111C;
+	Thu,  2 Nov 2023 18:13:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="JLc/Xsgr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OKWlIB3k"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B55C21111
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 18:12:01 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5307218E
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 11:11:45 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-	by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 3A2F3x4E024344
-	for <bpf@vger.kernel.org>; Thu, 2 Nov 2023 11:11:44 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=UrPwGGQRauw7xh/9TbhvgKlEWQbNA5HaFj/WM4BhJow=;
- b=JLc/XsgrTCbonmb0LfZzTCMEO1tNCD09I2Wrnp0s9LAZLjVWRZVnHcEUucLnK/vph3sc
- B3ICXj5QD8HCqbm2T/7dOScldb1yXPa1E1TAPbEl0B982BCSaatR+AnRT+3xnJr1SAH3
- MEsdGkSMEFwWk+WbkQdsK6tAmQVu4w/Kz5rGYw5/FnqasPrek+BDWB1cq2ffHCKreons
- LZ6NZsMFot17LIcj1wNMCV0b3v0muLW/PT5uurl/qzrcEsGsNS25vyM7yxYxFQf/pKPx
- Pwhp3VUhq/Iy3hlEZU3zjxOX244t2l+04C0gmK2QmvunCB64q7t5R7k6CYeU0A+MW6lK Dw== 
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
-	by m0001303.ppops.net (PPS) with ESMTPS id 3u44f84wwm-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 02 Nov 2023 11:11:44 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BBs+nyrHtX0Zxuk3gmUjqSS+akzTR1bsUo0yjHgHWcK28RqL7/YIUqxxaJwHfNr6BtQXTbs44Jug+ptv/pucw6sxAOL1RDoR4s5IL9iy+xMgCdBPZYvNNLxBC7yF4n7t3VvbOFdvKyWO5JjcVtjpt+SxEaf6QZLK8ku+ygeXX+9nrWjVpt+pZ+QhxXlZuQCy+AYLC9/AdonieMF5XzPEtrl/P3+jtTg1laIpqJOjl5V94p6YZ9vIpYAcAcLNje4qXsdqdieeqpcp47TUXKoASaWkEVnyyGSRGjY8G+XHRLyznh+5xZryNz+wS4R3wvEAJ9na3Ms9+h0HN4DDuCcTyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UrPwGGQRauw7xh/9TbhvgKlEWQbNA5HaFj/WM4BhJow=;
- b=DylxFHz9vWfjW3BS9UyhdktQG6Ij8IAP+7QUPpJI24PFYPhPZBuenhiaOkDqlP1UIDtgsJwSY5g5klDvUaDJgEG0sVZ4b2EhcWp2b/xE22i5xq0N921BC1wCJnfBcNGGnr6kLUKrcJ/P+Zacm+c+M1EIOaoQSGUilaCnqS73AidiHBrstgfUe/TM68hru0E9ZRM1+/8BMhFB+PDgZthOJnfntgglsolJXOUNkPgJcCsVF3zXC6CP6Tv0voBBxLZmOwF948Fi2bQ/7xBavCNpZq6dGv1WZKZnA0Uh+UFKshrSJZ3g7T/Z5nVAai9vUf6R0f4kGwzOSimBFDiiQReKAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from PH0PR15MB5117.namprd15.prod.outlook.com (2603:10b6:510:c4::8)
- by MW5PR15MB5241.namprd15.prod.outlook.com (2603:10b6:303:19e::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.15; Thu, 2 Nov
- 2023 18:11:40 +0000
-Received: from PH0PR15MB5117.namprd15.prod.outlook.com
- ([fe80::9255:45ad:aadf:e172]) by PH0PR15MB5117.namprd15.prod.outlook.com
- ([fe80::9255:45ad:aadf:e172%6]) with mapi id 15.20.6954.019; Thu, 2 Nov 2023
- 18:11:40 +0000
-From: Song Liu <songliubraving@meta.com>
-To: =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
-CC: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Andrii Nakryiko
-	<andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net"
-	<daniel@iogearbox.net>,
-        "martin.lau@kernel.org" <martin.lau@kernel.org>,
-        Kernel Team <kernel-team@meta.com>
-Subject: Re: [PATCH bpf] bpf: fix bpf_dynptr_slice() returning ERR_PTR() on
- erro
-Thread-Topic: [PATCH bpf] bpf: fix bpf_dynptr_slice() returning ERR_PTR() on
- erro
-Thread-Index: AQHaDbHBZHqRRzSzpUuqb84Emmc7W7BnUBUAgAABaYCAAAIjAIAAAQYA
-Date: Thu, 2 Nov 2023 18:11:40 +0000
-Message-ID: <980EFFAB-A79F-4B18-BCA7-52277939A5DC@fb.com>
-References: <20231102172640.3790869-1-andrii@kernel.org>
- <877cn011mj.fsf@toke.dk>
- <CAEf4Bzb4VbH56S2D_5Sc3u9V=OXOy20JTr4wsObBOiUA32Md2Q@mail.gmail.com>
- <874ji4111d.fsf@toke.dk>
-In-Reply-To: <874ji4111d.fsf@toke.dk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3774.100.2.1.4)
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR15MB5117:EE_|MW5PR15MB5241:EE_
-x-ms-office365-filtering-correlation-id: 2e767c78-073b-4043-2f30-08dbdbcf29b0
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- jLyp12rWlmP55bNcVBb1EzYmA9mZP3KyG5XOxsgffDDSiwps48urz6+FKWwZWquY2cOBuyhg6aLApycZdpBdtHavIsSl1qsFrekLsMHURzQT1psiUbs4DMcOE+87lQAWyg6uQrIBg1ogcaN4j1ZgKHZ5I1ioPCsHV8nI7nADxVwS9LvF+nmqPjwNQwT1sis0yBe45xTdmnsWbsAphCcuYMsA5+u9TUbSOoHUccpRfGEBeUzKe1VKcTPmX0itf9mfVn3OHOQ5++AjJ7RhnmlfUF/47nlbmdgKaiMoZqhvzNQGQ3k24BdkVQfIT+PcaMw00L3ufMRC7P5y+fJyme+fNFHjOCArQ0runJ1SLQmMovgrtTegdQgBsS4EJecJEnSmIYhL4SzOio5v4gIXHzWlrI8BqCPA66JuEKr43reUgtS9HX2mOsVNUov/QBM4je7p78c0halbTCGMiZYh4NLz5NSGWK5rcNTOvfc6CRIFKyAfsUJP+XANLfNvVqCalQMJOgjxY3wwmffYTXlFcv++5OjZLn/GsuIHHdh90wYn8NKl+V8ELceGbit3dAPoPgv808MhvlM/qxnoSKk0cLic/85+UA0BgiMnq4Jqqc2+EbndaMPWASUdAnHdKUdatCUY
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR15MB5117.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(346002)(39860400002)(136003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(6506007)(76116006)(66446008)(66946007)(107886003)(64756008)(91956017)(6916009)(66556008)(66476007)(316002)(83380400001)(6486002)(38100700002)(122000001)(6512007)(53546011)(71200400001)(478600001)(9686003)(54906003)(66574015)(5660300002)(8936002)(8676002)(2906002)(41300700001)(4326008)(33656002)(36756003)(86362001)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?utf-8?B?KzZuQVFpZE01ZTl4MHJaM0tQVjlqdlhqc3ZQWGs3eC9wUUREYlI4K21RSFM2?=
- =?utf-8?B?MTF3TEVHRjlldzhqNGJONjJ6a2NoODVDYlJ1QUVBYWliQVhCcTg4aHEzZllJ?=
- =?utf-8?B?dlYzbTFxTStOZTNRWWcrUGQvNC9naEQydUpQT0xJQ2drOUVEV0h0dVBVRzl0?=
- =?utf-8?B?THc4a25iQmtpNTFCT0lhTEFRQklSeDVKY1JEY21uZEtHRUU4Vml2enZMOE9a?=
- =?utf-8?B?MzJOUnhHQlFuUW42WjdwNC9vODZIYTJlV3FBR1F1dHZrK1FnZXlrdlRBWU9Q?=
- =?utf-8?B?L3hsNDVpcjhwZVJMRGhsSUpkdEN4ZnZQOXB4bm93dWFldWQ5N0hMSWNTTGdZ?=
- =?utf-8?B?ejFhWEp0OVgvNFJEaFlpSWkzWHZBTmJ2Z3N4TDJmdVpXYmVNVlZEcHk0R3Nw?=
- =?utf-8?B?V0hjRUt2NkZOYUZTUUZmcUQxOEZseFJpc0MrTlNESXZRa3RoTzdVQmtWNnF6?=
- =?utf-8?B?aWQ1UWY1VXgwaUlrN1pFdWtRTmgzaFQxTmtHWDVkUGJLVWM4WVVoTmo0Wjd1?=
- =?utf-8?B?dW4zSXJuOS9BdU5aeEg0aGUxZGRUNDcyNHozck1ZSUNyUlFjVmZnMm5VZXhV?=
- =?utf-8?B?elFPb2dmdVU3WDBvYks1NDZVd0tlTUZiWlNQaGZwV3NHcjA0UCtXbXZienBF?=
- =?utf-8?B?bVo2YlkzNS9QdGN4L2J6TEJpeEkwK1gxUTMwV0tmYjlHQVN4SVg4WGd4Sk9k?=
- =?utf-8?B?cW9vUjRtSEhheUhSL0hXTm1rMmZRM252SHc2ai8wTHhleDhDR2QyU3hsNTQ4?=
- =?utf-8?B?UHd2UVpPOTAxU2VTL1Q1WEhpd1QwQVhNbmtpV29OcXdtOGErZjhlUWJOTzk3?=
- =?utf-8?B?UjhwVkEzcm9JZXhEMDVTNTdLdGZHZmNHZjlxN3E2Z3NNQzRQUk1ib3paNDBF?=
- =?utf-8?B?VlVuU2hod0c2YUtGbjBsK0hTWW5zYUJtcXkyWnFHVU01d0tzNnlmOUh2Z1NV?=
- =?utf-8?B?ZmoyQWs4Ty94S29aRncyK2RRU0xvNW9WM0lXWDdSbHd1TiswbEFKaGFaUFRo?=
- =?utf-8?B?M1ZtU0VYWmV2NFlpa0x4REVHSzM3Z1ZVQnNlOWZPR2dEVmdmV1c3cXkraHRQ?=
- =?utf-8?B?bXJwK2x0eTVzRDVFOUZxbG5VQnl0ajhqTGN4TjMxZEpFaGF3dUt4ZHJtbGZ5?=
- =?utf-8?B?NTVDTU52NUtkUVRralY5VkpHckRpTENiS2xOWEhNQUVYSWtxS3JoRmlnS3Bw?=
- =?utf-8?B?Q1pId3FjNUViOU0zUDNneGVOZTVmRHAvZVZCUzRGaUFzOFNwbUI3eWJHb0ZV?=
- =?utf-8?B?eGcwOE5jczlCOS9NUG1UZTB2MmZ0ZHdRQXNraWZKaWEzWUxkRXRGS0dPank4?=
- =?utf-8?B?MHo2S0R1UlA3N3E3TEJYTnU1Tzd0ejN2QTRYbmdKYVhaam5DS1N6d2VGN3VN?=
- =?utf-8?B?WDlKZHBHaVVsN0x6UWZUM3VFSDVtcG5HVjJJTXVMUmw1TlZQQWcvYmtocms3?=
- =?utf-8?B?TVk1anFySExxK3ByT0luK01SSWc4UG1iTytEMmpjWW4wbEV0Rnl2UVhGak16?=
- =?utf-8?B?OVY0cjRQSWtYU2FLaWRaNkdNUDRwQWVYeEV5d2d0dWkrN1IvZkthTEdPSXJm?=
- =?utf-8?B?ckF1V0ZvSis4VmFsa3l4bm5BdnRScXVacUg1ZDFQeEpnWUJTSXZ2QkhXdEhL?=
- =?utf-8?B?QWVNaEtpZnljZWFXcFNpK3A1QythV2RHZ1FPam5WRVQ5bXg4ODRsVm9HdXFy?=
- =?utf-8?B?VFNSSWZtV2VwQVU2TEo0YUhYL0ZLMGxiRWY2Ui9nVm4rL1JqN2xJTHFiZG54?=
- =?utf-8?B?b0psYkcrdDM1MGRGSUkxN3lpckNxS2hrZTdiS0JHUmZ6MUFuUE5NM3dsVTJZ?=
- =?utf-8?B?SVJjVVU5YVdWVGJoVUNML2c2TytEZktvWlNFOGNLdlZ2REZCZERoYVBVZjJ1?=
- =?utf-8?B?ckdUcTdub0JmQ1Y3YVFPd3RuUjdJZmJ6MEQzVkp6cmpXVS80dUNTelNxWTNk?=
- =?utf-8?B?Q2tsaWtOcU1FY2RkVzRSejlGN0NoYXNiem1ITjUvbU82TURWd2VzM2M4bUt6?=
- =?utf-8?B?aHNMZHRSWEhQMTBjemRTOFBxZmhoUzBjUVVNYWJoSzdYWDNscko0clRzbUlW?=
- =?utf-8?B?aVZWQVhGOXlVN1BmTnNaQ2pxV2l1SEJ6QTBNVDRFSXFySGJOOWlXQ3BtUzNt?=
- =?utf-8?B?YWdHL0ZKSUxieUpKUHlDMFh1MWdJQU5uWGZ3NVhvMS92RlIxdkVpZitsQ2xC?=
- =?utf-8?Q?Wygo/PBvBr6xy82k7fQRksA=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B3D55A34D2AF4C4C9CC04889603419CE@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72C7F21104
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 18:13:08 +0000 (UTC)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B346D66
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 11:12:35 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9d8d3b65a67so184202266b.2
+        for <bpf@vger.kernel.org>; Thu, 02 Nov 2023 11:12:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698948753; x=1699553553; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SkHpsWC2+XtnAC21pG0c8GJ6X3CWEOj0GTt71/LvGlM=;
+        b=OKWlIB3kKDK2u3d64qI5QqQQip7ofuKjvvhFsKzOHnFOWkH39WDmYOquRdKm6KrwzF
+         0IKxrb62RIhnZON/NcxJAm5XXc07ggf62NfxOvHgKGc907ZbAG6j+3smXmRUyrXJAbCO
+         1tWJbZLQGt/3GeeWymP+SVMIUOAdMwNr2r31AoUttJPl2YoiLbYjwWMY1eNqdA/PnP7I
+         OT3ARvBE6UKcnS5mGj7/cpQoh7ILPm44zbkO47UUmzABurxKS7IB0hA5CAozqOH0ihaz
+         pbgHRUZRlc8RyvGGevAwmR74lKuzTSjL3yz8LStWShGKWRQ64kDWI4L9wXFnFxHbbjXj
+         3mmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698948753; x=1699553553;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SkHpsWC2+XtnAC21pG0c8GJ6X3CWEOj0GTt71/LvGlM=;
+        b=BmzFjxETFUlFR/zwTi8GtXQEUdRaduWDd2y1RALP3SYUPTcnrbVYznQzamqahvSPBV
+         sciuPdx7jR33bmPgF1wST/0DUMF4hQeFaNsC49uO8D9QNUK9teuZvvCKl8q1Xu9lw50s
+         WHdrjLkcvD+1NtScjED4b9vDK1VvUxv3/is11Q0qH3Pmy9j3oTslrx7qaKt2k+jPIRV7
+         QoD9Dc3pvwH3FZ0iRBtJjLZlZO2pwJbTMEy33KyhHK/aUTIhEuf2chn3mYgZsshi67bq
+         vTZOIYjTv7vjsEoXrRFZLNzxqZ5YaQt6uWyg9sDh2botB84czvxwO9IAm0Use9gAvflS
+         HE0g==
+X-Gm-Message-State: AOJu0Yzy1TnZdqKdwwM4gdvCKoGCOh6vWRSLkb4wz4qftXV59Y3vS2EU
+	13fN4NRQthOBP9KgCrzTKUHQWgIvpFgL83EkcmY=
+X-Google-Smtp-Source: AGHT+IHBj+EShxFh0IXvAtUv7AvuRcYcM9UDlIyab5lO/9uTgzYveT4mTaAKfClWsxo/dZgRtut5J3JVQMPMB9moFSs=
+X-Received: by 2002:a17:906:fd89:b0:9b9:a1dd:5105 with SMTP id
+ xa9-20020a170906fd8900b009b9a1dd5105mr5786730ejb.50.1698948753082; Thu, 02
+ Nov 2023 11:12:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR15MB5117.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e767c78-073b-4043-2f30-08dbdbcf29b0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2023 18:11:40.6959
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: iTlNU0dY4YoTu52J71djfEgkGFFRQt20AAcj/VvMM65bJ91/pyVHKr4LykFbczFGOzBW11W37/bSB7MSeMwsKA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR15MB5241
-X-Proofpoint-GUID: Qj5lvGoABjlBYoCkXUFP5EVcPvX_W5Fk
-X-Proofpoint-ORIG-GUID: Qj5lvGoABjlBYoCkXUFP5EVcPvX_W5Fk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-02_08,2023-11-02_03,2023-05-22_02
+References: <20231024235551.2769174-1-song@kernel.org> <20231024235551.2769174-2-song@kernel.org>
+ <CAEf4Bzbr8dgksh2z+4nEkAFdV9gquhR+HROULKdTkWrUpSM9-Q@mail.gmail.com>
+ <CAEf4BzbDFDX30Y_Hcmd__hgDp+m6X+htr-wTeBtaoauEnrEdLw@mail.gmail.com>
+ <CAEf4BzaD+FV_PM8_4yWnZVed9pXE-KX6CwpYEmiUDpMRQDNEXQ@mail.gmail.com> <15A85D6B-56E5-4C9F-B7AB-A62F3DA8294C@fb.com>
+In-Reply-To: <15A85D6B-56E5-4C9F-B7AB-A62F3DA8294C@fb.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 2 Nov 2023 11:12:21 -0700
+Message-ID: <CAEf4BzaV4LZUqHcfFZvkY=6J8vF9xhHG_cUNUyVzgQmj4=ke6g@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 1/9] bpf: Expose bpf_dynptr_slice* kfuncs for
+ in kernel use
+To: Song Liu <songliubraving@meta.com>
+Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"fsverity@lists.linux.dev" <fsverity@lists.linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	Eric Biggers <ebiggers@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>, 
+	"roberto.sassu@huaweicloud.com" <roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-DQoNCj4gT24gTm92IDIsIDIwMjMsIGF0IDExOjA34oCvQU0sIFRva2UgSMO4aWxhbmQtSsO4cmdl
-bnNlbiA8dG9rZUBrZXJuZWwub3JnPiB3cm90ZToNCj4gDQo+IEFuZHJpaSBOYWtyeWlrbyA8YW5k
-cmlpLm5ha3J5aWtvQGdtYWlsLmNvbT4gd3JpdGVzOg0KPiANCj4+IE9uIFRodSwgTm92IDIsIDIw
-MjMgYXQgMTA6NTXigK9BTSBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gPHRva2VAa2VybmVsLm9y
-Zz4gd3JvdGU6DQo+Pj4gDQo+Pj4gQW5kcmlpIE5ha3J5aWtvIDxhbmRyaWlAa2VybmVsLm9yZz4g
-d3JpdGVzOg0KPj4+IA0KPj4+PiBMZXQncyBmaXggaXQgZm9yIHJlYWwgdGhpcyB0aW1lLiBJdCBz
-aG91bGRuJ3QganVzdCBkZXRlY3QgRVJSX1BUUigpDQo+Pj4+IHJldHVybiBmcm9tIGJwZl94ZHBf
-cG9pbnRlcigpLCBidXQgYWxzbyB0dXJuIHRoYXQgaW50byBOVUxMIHRvIGZvbGxvdw0KPj4+PiBi
-cGZfZHlucHRyX3NsaWNlKCkgY29udHJhY3QuDQo+Pj4+IA0KPj4+PiBGaXhlczogNTQyNjcwMGU2
-ODQxICgiYnBmOiBmaXggYnBmX2R5bnB0cl9zbGljZSgpIHRvIHN0b3AgcmV0dXJuIGFuIEVSUl9Q
-VFIuIikNCj4+Pj4gRml4ZXM6IDY2ZTNhMTNlN2MyYyAoImJwZjogQWRkIGJwZl9keW5wdHJfc2xp
-Y2UgYW5kIGJwZl9keW5wdHJfc2xpY2VfcmR3ciIpDQo+Pj4+IFNpZ25lZC1vZmYtYnk6IEFuZHJp
-aSBOYWtyeWlrbyA8YW5kcmlpQGtlcm5lbC5vcmc+DQo+Pj4+IC0tLQ0KPj4+PiBrZXJuZWwvYnBm
-L2hlbHBlcnMuYyB8IDIgKy0NCj4+Pj4gMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAx
-IGRlbGV0aW9uKC0pDQo+Pj4+IA0KPj4+PiBkaWZmIC0tZ2l0IGEva2VybmVsL2JwZi9oZWxwZXJz
-LmMgYi9rZXJuZWwvYnBmL2hlbHBlcnMuYw0KPj4+PiBpbmRleCA1NmIwYzFmNjc4ZWUuLjA0MDQ5
-MDk3MTc2YyAxMDA2NDQNCj4+Pj4gLS0tIGEva2VybmVsL2JwZi9oZWxwZXJzLmMNCj4+Pj4gKysr
-IGIva2VybmVsL2JwZi9oZWxwZXJzLmMNCj4+Pj4gQEAgLTIzMDksNyArMjMwOSw3IEBAIF9fYnBm
-X2tmdW5jIHZvaWQgKmJwZl9keW5wdHJfc2xpY2UoY29uc3Qgc3RydWN0IGJwZl9keW5wdHJfa2Vy
-biAqcHRyLCB1MzIgb2Zmc2V0DQo+Pj4+ICAgICAgew0KPj4+PiAgICAgICAgICAgICAgdm9pZCAq
-eGRwX3B0ciA9IGJwZl94ZHBfcG9pbnRlcihwdHItPmRhdGEsIHB0ci0+b2Zmc2V0ICsgb2Zmc2V0
-LCBsZW4pOw0KPj4+PiAgICAgICAgICAgICAgaWYgKCFJU19FUlJfT1JfTlVMTCh4ZHBfcHRyKSkN
-Cj4+Pj4gLSAgICAgICAgICAgICAgICAgICAgIHJldHVybiB4ZHBfcHRyOw0KPj4+PiArICAgICAg
-ICAgICAgICAgICAgICAgcmV0dXJuIE5VTEw7DQo+Pj4gDQo+Pj4gRXJtLCB0aGUgY2hlY2sgaW4g
-dGhlIGlmIGlzIGludmVydGVkIC0gc28gaXNuJ3QgdGhpcyAncmV0dXJuIHhkcF9wdHInDQo+Pj4g
-Y292ZXJpbmcgdGhlIGNhc2Ugd2hlcmUgYnBmX3hkcF9wb2ludGVyKCkgKmRvZXMqIGluIGZhY3Qg
-cmV0dXJuIGEgdmFsaWQNCj4+PiBwb2ludGVyPw0KPj4+IA0KPj4gDQo+PiBBaCwgeW91IGFyZSBy
-aWdodCwgSSBtaXNzZWQgdGhlICEgcGFydC4uLiBPaywgdGhlbiBJIGRvbid0IHRoaW5rIHdlDQo+
-PiBoYXZlIGFuIGlzc3VlLCBncmVhdC4gVGhhbmtzIGZvciBkb3VibGUgY2hlY2tpbmchDQo+PiBQ
-ZXJoYXBzIHdlIHNob3VsZCBhZGQgYSBzaW1wbGUgY29tbWVudCAiLyogd2UgZ290IGEgdmFsaWQg
-ZGlyZWN0DQo+PiBwb2ludGVyLCByZXR1cm4gaXQgKi8iLCBhcyB0aGlzIGxvb2tzIGxpa2UgYW4g
-ZXJyb3ItaGFuZGxpbmcgY2FzZS4NCj4gDQo+IFl1cCwgdG90YWxseSBhZ3JlZSBpdCdzIGNvbmZ1
-c2luZywgSSBoYWQgdG8gbG9vayBhdCB0aGUgY29kZSB0aHJlZSBvcg0KPiBmb3VyIHRpbWVzIGFz
-IHdlbGwganVzdCBub3csIHRvIGJlIHN1cmUgdGhhdCBpdCB3YXNuJ3QgYnVnZ3kuIEFkZGluZyBh
-DQo+IGNvbW1lbnQgd291bGQgY2VydGFpbmx5IGJlIHVzZWZ1bCEgOikNCg0KQWhhLCBJIHdhcyBj
-b25mdXNlZCBieSB0aGlzIGZvciBtb3JlIHRoYW4gYSBtb250aC4gSSBhbSBnbGFkIHRoaXMgaXMg
-DQpub3QgYW4gaXNzdWUuIA0KDQpUaGFua3MsDQpTb25nDQoNCg==
+On Thu, Nov 2, 2023 at 11:09=E2=80=AFAM Song Liu <songliubraving@meta.com> =
+wrote:
+>
+>
+>
+> > On Nov 2, 2023, at 10:16=E2=80=AFAM, Andrii Nakryiko <andrii.nakryiko@g=
+mail.com> wrote:
+> >
+> > On Thu, Nov 2, 2023 at 10:09=E2=80=AFAM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> >>
+> >> On Thu, Nov 2, 2023 at 9:56=E2=80=AFAM Andrii Nakryiko
+> >> <andrii.nakryiko@gmail.com> wrote:
+> >>>
+> >>> On Tue, Oct 24, 2023 at 4:56=E2=80=AFPM Song Liu <song@kernel.org> wr=
+ote:
+> >>>>
+> >>>> kfuncs bpf_dynptr_slice and bpf_dynptr_slice_rdwr are used by BPF pr=
+ograms
+> >>>> to access the dynptr data. They are also useful for in kernel functi=
+ons
+> >>>> that access dynptr data, for example, bpf_verify_pkcs7_signature.
+> >>>>
+> >>>> Add bpf_dynptr_slice and bpf_dynptr_slice_rdwr to bpf.h so that kern=
+el
+> >>>> functions can use them instead of accessing dynptr->data directly.
+> >>>>
+> >>>> Update bpf_verify_pkcs7_signature to use bpf_dynptr_slice instead of
+> >>>> dynptr->data.
+> >>>>
+> >>>> Also, update the comments for bpf_dynptr_slice and bpf_dynptr_slice_=
+rdwr
+> >>>> that they may return error pointers for BPF_DYNPTR_TYPE_XDP.
+> >>>>
+> >>>> Signed-off-by: Song Liu <song@kernel.org>
+> >>>> ---
+> >>>> include/linux/bpf.h      |  4 ++++
+> >>>> kernel/bpf/helpers.c     | 16 ++++++++--------
+> >>>> kernel/trace/bpf_trace.c | 15 +++++++++++----
+> >>>> 3 files changed, 23 insertions(+), 12 deletions(-)
+> >>>>
+> >>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> >>>> index b4825d3cdb29..3ed3ae37cbdf 100644
+> >>>> --- a/include/linux/bpf.h
+> >>>> +++ b/include/linux/bpf.h
+> >>>> @@ -1222,6 +1222,10 @@ enum bpf_dynptr_type {
+> >>>>
+> >>>> int bpf_dynptr_check_size(u32 size);
+> >>>> u32 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr);
+> >>>> +void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offse=
+t,
+> >>>> +                      void *buffer__opt, u32 buffer__szk);
+> >>>> +void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32 =
+offset,
+> >>>> +                           void *buffer__opt, u32 buffer__szk);
+> >>>>
+> >>>> #ifdef CONFIG_BPF_JIT
+> >>>> int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf=
+_trampoline *tr);
+> >>>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> >>>> index e46ac288a108..af5059f11e83 100644
+> >>>> --- a/kernel/bpf/helpers.c
+> >>>> +++ b/kernel/bpf/helpers.c
+> >>>> @@ -2270,10 +2270,10 @@ __bpf_kfunc struct task_struct *bpf_task_fro=
+m_pid(s32 pid)
+> >>>>  * bpf_dynptr_slice will not invalidate any ctx->data/data_end point=
+ers in
+> >>>>  * the bpf program.
+> >>>>  *
+> >>>> - * Return: NULL if the call failed (eg invalid dynptr), pointer to =
+a read-only
+> >>>> - * data slice (can be either direct pointer to the data or a pointe=
+r to the user
+> >>>> - * provided buffer, with its contents containing the data, if unabl=
+e to obtain
+> >>>> - * direct pointer)
+> >>>> + * Return: NULL or error pointer if the call failed (eg invalid dyn=
+ptr), pointer
+> >>>
+> >>> Hold on, nope, this one shouldn't return error pointer because it's
+> >>> used from BPF program side and BPF program is checking for NULL only.
+> >>> Does it actually return error pointer, though?
+>
+> Right. kfunc should not return error pointer.
+
+Turns out it doesn't, see discussion in [0]. Maybe you can sneak in
+that comment in your next revision as a separate lightweight patch :)
+
+  [0] https://lore.kernel.org/bpf/CAEf4Bzb4VbH56S2D_5Sc3u9V=3DOXOy20JTr4wsO=
+bBOiUA32Md2Q@mail.gmail.com/
+
+>
+> >>
+> >> So I just checked the code (should have done it before replying,
+> >> sorry). It is a bug that slipped through when adding bpf_xdp_pointer()
+> >> usage. We should always return NULL from this kfunc on error
+> >> conditions. Let's fix it separately, but please don't change the
+> >> comments.
+> >>
+> >>>
+> >>> I'm generally skeptical of allowing to call kfuncs directly from
+> >>> internal kernel code, tbh, and concerns like this are one reason why.
+> >>> BPF verifier sets up various conditions that kfuncs have to follow,
+> >>> and it seems error-prone to mix this up with internal kernel usage.
+> >>>
+> >>
+> >> Reading bpf_dynptr_slice_rdwr code, it does look exactly like what you
+> >> want, despite the confusingly-looking 0, NULL, 0 arguments. So I guess
+> >> I'm fine exposing it directly, but it still feels like it will bite us
+> >> at some point later.
+> >
+> > Ok, now I'm at patch #5. Think about what you are doing here. You are
+> > asking bpf_dynptr_slice_rdrw() if you can get a directly writable
+> > pointer to a data area of length *zero*. So if it's SKB, for example,
+> > then yeah, you'll be granted a pointer. But then you are proceeding to
+> > write up to sizeof(struct fsverity_digest) bytes, and that can cross
+> > into non-contiguous memory.
+> >
+> > So I'll take it back, let's not expose this kfunc directly to kernel
+> > code. Let's have a separate internal helper that will return either
+> > valid pointer or NULL for a given dynptr, but will require valid
+> > non-zero max size. Something with the signature like below
+> >
+> > void * __bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u32 len)=
+;
+> >
+> > If ptr can provide a direct pointer to memory of length *len*, great.
+> > If not, return NULL. This will be an appropriate internal API for all
+> > the use cases you are adding where we will be writing back into dynptr
+> > from other kernel APIs with the assumption of contiguous memory
+> > region.
+>
+> Sounds good. Fixing this in the next version.
+>
+> Thanks,
+> Song
+>
 
