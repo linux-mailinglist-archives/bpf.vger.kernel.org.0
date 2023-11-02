@@ -1,246 +1,194 @@
-Return-Path: <bpf+bounces-14010-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCCC47DFAAC
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 20:07:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32ECA7DFAB4
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 20:10:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67D321F2204B
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 19:07:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09F131C20DA9
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 19:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5CF621353;
-	Thu,  2 Nov 2023 19:07:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60B2A21356;
+	Thu,  2 Nov 2023 19:10:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eRdqVq7j"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="34gkRfHq"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FDDE1CFB6
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 19:07:06 +0000 (UTC)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15BF136
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 12:07:03 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9bf86b77a2aso199161966b.0
-        for <bpf@vger.kernel.org>; Thu, 02 Nov 2023 12:07:03 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AFA41CFB6
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 19:10:18 +0000 (UTC)
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AD712D
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 12:10:17 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cc252cbde2so9749635ad.0
+        for <bpf@vger.kernel.org>; Thu, 02 Nov 2023 12:10:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698952022; x=1699556822; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dx8cpcmrOZxzhEqxNTxc4dvmHYweBXWx1RB8KilgMfE=;
-        b=eRdqVq7j6jmC1Ctu0ZmZ2cwMXXD6h/Uu0+i7+JF1dcVXr9LoHyPHRwU/g7MRZUUWXT
-         E3gcyghcgrRWMikU3bAY0FvMZ7cjoTM9iYR27bHzFOQLnqjbjsVFNt2lg0cxqcA9HXbN
-         XY7zQoUxuH9uUEgyUoiwFiIYYvyJdcr7N/ZOF28EQexefey7+SXdLiuJcxEb0a2d21M5
-         PoTZ01WHpDFnhyweeLF3h6eDg5Ak8LikmvjomxeBssvEpVXXB7aVDAvYBOIMc+S0LTnJ
-         famvlxFPHSiJdx1tmjXIDFiOALrOAAC+N51hrgsXX6vE9rUZx6rDOUpW02pQ8Si95KfB
-         g+Pg==
+        d=google.com; s=20230601; t=1698952217; x=1699557017; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ZhfmN3A7/MnG8gTsiLp6royauPXjf5TQDGbZNLTiDZE=;
+        b=34gkRfHqbz6G/HXsWvolj4ZCT0Q7otZtRF3cs+MUQLON2kZdHC0B3363ARuHMb6Ve8
+         8SpFh4NlVBGGIWwh/vLQYMZvuGThA9QpM4dycdqauUFWTEGSHLebPwf+exj+64PBsqqq
+         GP5mwJANiR0lU1Zeb1JZK4XZzpCMn2lqBBOgLEhpQC32w4tpsxdA+voIpaVLRFNebzW8
+         HiU8VUjf31AWhCtTB7N5zv3ghNrKJVKohNZPkmvxsbxQoEE/7uRNxfqewEe1aIL1PR4r
+         lxzQEoTbZvJKBaELakYd3V1gvhZZcli1qbeh0yjGCk3xfO3r0DV9SgMj19jXncxihkzx
+         5MVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698952022; x=1699556822;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dx8cpcmrOZxzhEqxNTxc4dvmHYweBXWx1RB8KilgMfE=;
-        b=OFitxehxw8fMhf1i71miul2U9CHOrf4iv9JHjit+H4XvaEhpndwb/WbyN6LIP4Nr7M
-         fXVKHQV9SVtJUKuVIZcmqTdgeSqFub66eU5Dqk1nwnnJlC1OXzV/dsfSOabnuFFDTpgr
-         kYhMWWPpFPvfxX/2ZvTWywRP2mV67+Ffoupk5mfgH59eQSMU1TLsmQ9rG2orMz70U42R
-         b18Hof6IKiYRzx/N5jyX/H/IkncF0lJ60qMkXxzyleT7wZ7XRksmW4/7MrMOe1sbEkmz
-         fThlsTIsp+46h0xYQG5ytoJu8SffJxQXeXLv/1p9F98EzXQ65eoosinKSiJGi49YJjVX
-         tWtg==
-X-Gm-Message-State: AOJu0YwesCegfarag8LhM596Ag4cdZpkYsPPJZ563R+w7vWaK5TVGAap
-	jgCjnVlPVqRXoaVTxaDY9yvChFSiktgAbpzqSzo=
-X-Google-Smtp-Source: AGHT+IElS1HrxuD4m483T6kr3C2TOa9PyL5ja4nYdmkgG6cBBrGv5ayN5G2qNcof/Q5ycn4VImku5ADxwN+WZfCdTpA=
-X-Received: by 2002:a17:906:4705:b0:9a1:abae:8d30 with SMTP id
- y5-20020a170906470500b009a1abae8d30mr3899114ejq.47.1698952021693; Thu, 02 Nov
- 2023 12:07:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698952217; x=1699557017;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZhfmN3A7/MnG8gTsiLp6royauPXjf5TQDGbZNLTiDZE=;
+        b=wBo48kcrOAJHje5G3288VwLP1QOTpoipnzjrnGv2AuDxwnYEbhlq0PCO5IeabBE9JC
+         MWWua9aAUMUlzWnC9ZGUy3g1qlWW+sXiKWkSbk6jUpRS04XVoq9QcCWg3sn1I8O+VX2p
+         ubXIRui5UuJ50cyGDAO/JHj2lrvqK6K/KxyS5di/x2axnv7AErJOvHH/kRWcgkGaiGR6
+         /HjFtbnHRVZfBIiF+wgJM+AKhIGjPPZhajNicKZfJSg2oV/YSMqHZeLPSmCDpUGRO9I4
+         Pc0aAgJApckModoK2Ny8chicHgSfJeSiONeX/hEGxF+EftlXITgFub2BRCAz3w8RmZsX
+         EIAQ==
+X-Gm-Message-State: AOJu0YyW6MpQlu91vMlMZUoW70e60sU2O1uZYa5Vf1grWdhvjRD6cLOj
+	T2ZwMmQPD6SzSMJC/xWn9Z6HPVYHqSt4/4aXZyJA0XfSZLLK/glNLaS4e52JPN6QLY+0mwDTw2K
+	R3oHFZlxzl2PhA+AYgR118F5knEkcz51L12fDCjcqFc+Q45x54Q==
+X-Google-Smtp-Source: AGHT+IGyr09ECHTTqdX/VvjMg3MI7Z330kZgzCDzCX91vHfgfQl6SdMbTwWUJ8T81fA6LnhQGLqXjdg=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:902:6b08:b0:1c7:2bb4:54fb with SMTP id
+ o8-20020a1709026b0800b001c72bb454fbmr346676plk.4.1698952216630; Thu, 02 Nov
+ 2023 12:10:16 -0700 (PDT)
+Date: Thu, 2 Nov 2023 12:10:14 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231024235551.2769174-1-song@kernel.org> <20231024235551.2769174-2-song@kernel.org>
- <CAEf4Bzbr8dgksh2z+4nEkAFdV9gquhR+HROULKdTkWrUpSM9-Q@mail.gmail.com>
- <CAEf4BzbDFDX30Y_Hcmd__hgDp+m6X+htr-wTeBtaoauEnrEdLw@mail.gmail.com>
- <CAEf4BzaD+FV_PM8_4yWnZVed9pXE-KX6CwpYEmiUDpMRQDNEXQ@mail.gmail.com>
- <15A85D6B-56E5-4C9F-B7AB-A62F3DA8294C@fb.com> <B1DDF0D9-5365-4421-83AF-E7F6C0439422@fb.com>
-In-Reply-To: <B1DDF0D9-5365-4421-83AF-E7F6C0439422@fb.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 2 Nov 2023 12:06:50 -0700
-Message-ID: <CAEf4BzY_aW0-Ao9vaYoRJ=A3b2=VYqyAX--4UK6CYv7QGAjzgg@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf-next 1/9] bpf: Expose bpf_dynptr_slice* kfuncs for
- in kernel use
-To: Song Liu <songliubraving@meta.com>
-Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"fsverity@lists.linux.dev" <fsverity@lists.linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Eric Biggers <ebiggers@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>, 
-	"roberto.sassu@huaweicloud.com" <roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Message-ID: <ZUP0FjaZVL4hBhyz@google.com>
+Subject: [ANN] bpf development stats for 6.7
+From: Stanislav Fomichev <sdf@google.com>
+To: bpf@vger.kernel.org
+Cc: kuba@kernel.org
+Content-Type: text/plain; charset="utf-8"
 
-On Thu, Nov 2, 2023 at 11:16=E2=80=AFAM Song Liu <songliubraving@meta.com> =
-wrote:
->
->
->
-> > On Nov 2, 2023, at 11:09=E2=80=AFAM, Song Liu <songliubraving@meta.com>=
- wrote:
-> >
-> >
-> >
-> >> On Nov 2, 2023, at 10:16=E2=80=AFAM, Andrii Nakryiko <andrii.nakryiko@=
-gmail.com> wrote:
-> >>
-> >> On Thu, Nov 2, 2023 at 10:09=E2=80=AFAM Andrii Nakryiko
-> >> <andrii.nakryiko@gmail.com> wrote:
-> >>>
-> >>> On Thu, Nov 2, 2023 at 9:56=E2=80=AFAM Andrii Nakryiko
-> >>> <andrii.nakryiko@gmail.com> wrote:
-> >>>>
-> >>>> On Tue, Oct 24, 2023 at 4:56=E2=80=AFPM Song Liu <song@kernel.org> w=
-rote:
-> >>>>>
-> >>>>> kfuncs bpf_dynptr_slice and bpf_dynptr_slice_rdwr are used by BPF p=
-rograms
-> >>>>> to access the dynptr data. They are also useful for in kernel funct=
-ions
-> >>>>> that access dynptr data, for example, bpf_verify_pkcs7_signature.
-> >>>>>
-> >>>>> Add bpf_dynptr_slice and bpf_dynptr_slice_rdwr to bpf.h so that ker=
-nel
-> >>>>> functions can use them instead of accessing dynptr->data directly.
-> >>>>>
-> >>>>> Update bpf_verify_pkcs7_signature to use bpf_dynptr_slice instead o=
-f
-> >>>>> dynptr->data.
-> >>>>>
-> >>>>> Also, update the comments for bpf_dynptr_slice and bpf_dynptr_slice=
-_rdwr
-> >>>>> that they may return error pointers for BPF_DYNPTR_TYPE_XDP.
-> >>>>>
-> >>>>> Signed-off-by: Song Liu <song@kernel.org>
-> >>>>> ---
-> >>>>> include/linux/bpf.h      |  4 ++++
-> >>>>> kernel/bpf/helpers.c     | 16 ++++++++--------
-> >>>>> kernel/trace/bpf_trace.c | 15 +++++++++++----
-> >>>>> 3 files changed, 23 insertions(+), 12 deletions(-)
-> >>>>>
-> >>>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> >>>>> index b4825d3cdb29..3ed3ae37cbdf 100644
-> >>>>> --- a/include/linux/bpf.h
-> >>>>> +++ b/include/linux/bpf.h
-> >>>>> @@ -1222,6 +1222,10 @@ enum bpf_dynptr_type {
-> >>>>>
-> >>>>> int bpf_dynptr_check_size(u32 size);
-> >>>>> u32 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr);
-> >>>>> +void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offs=
-et,
-> >>>>> +                      void *buffer__opt, u32 buffer__szk);
-> >>>>> +void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32=
- offset,
-> >>>>> +                           void *buffer__opt, u32 buffer__szk);
-> >>>>>
-> >>>>> #ifdef CONFIG_BPF_JIT
-> >>>>> int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bp=
-f_trampoline *tr);
-> >>>>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> >>>>> index e46ac288a108..af5059f11e83 100644
-> >>>>> --- a/kernel/bpf/helpers.c
-> >>>>> +++ b/kernel/bpf/helpers.c
-> >>>>> @@ -2270,10 +2270,10 @@ __bpf_kfunc struct task_struct *bpf_task_fr=
-om_pid(s32 pid)
-> >>>>> * bpf_dynptr_slice will not invalidate any ctx->data/data_end point=
-ers in
-> >>>>> * the bpf program.
-> >>>>> *
-> >>>>> - * Return: NULL if the call failed (eg invalid dynptr), pointer to=
- a read-only
-> >>>>> - * data slice (can be either direct pointer to the data or a point=
-er to the user
-> >>>>> - * provided buffer, with its contents containing the data, if unab=
-le to obtain
-> >>>>> - * direct pointer)
-> >>>>> + * Return: NULL or error pointer if the call failed (eg invalid dy=
-nptr), pointer
-> >>>>
-> >>>> Hold on, nope, this one shouldn't return error pointer because it's
-> >>>> used from BPF program side and BPF program is checking for NULL only=
-.
-> >>>> Does it actually return error pointer, though?
-> >
-> > Right. kfunc should not return error pointer.
-> >
-> >>>
-> >>> So I just checked the code (should have done it before replying,
-> >>> sorry). It is a bug that slipped through when adding bpf_xdp_pointer(=
-)
-> >>> usage. We should always return NULL from this kfunc on error
-> >>> conditions. Let's fix it separately, but please don't change the
-> >>> comments.
-> >>>
-> >>>>
-> >>>> I'm generally skeptical of allowing to call kfuncs directly from
-> >>>> internal kernel code, tbh, and concerns like this are one reason why=
-.
-> >>>> BPF verifier sets up various conditions that kfuncs have to follow,
-> >>>> and it seems error-prone to mix this up with internal kernel usage.
-> >>>>
-> >>>
-> >>> Reading bpf_dynptr_slice_rdwr code, it does look exactly like what yo=
-u
-> >>> want, despite the confusingly-looking 0, NULL, 0 arguments. So I gues=
-s
-> >>> I'm fine exposing it directly, but it still feels like it will bite u=
-s
-> >>> at some point later.
-> >>
-> >> Ok, now I'm at patch #5. Think about what you are doing here. You are
-> >> asking bpf_dynptr_slice_rdrw() if you can get a directly writable
-> >> pointer to a data area of length *zero*. So if it's SKB, for example,
-> >> then yeah, you'll be granted a pointer. But then you are proceeding to
-> >> write up to sizeof(struct fsverity_digest) bytes, and that can cross
-> >> into non-contiguous memory.
->
-> By the way, the syntax and comment of bpf_dynptr_slice() is confusing:
->
->  * @buffer__opt: User-provided buffer to copy contents into.  May be NULL
->  * @buffer__szk: Size (in bytes) of the buffer if present. This is the
->  *               length of the requested slice. This must be a constant.
->
-> It reads (to me) as, "if buffer__opt is NULL, buffer__szk should be 0".
->
-> Is this just my confusion, or is there a real issue?
+See the netdev posting for more info and context:
+https://lore.kernel.org/netdev/20231101162906.59631ffa@kernel.org/
 
-It's a bit confusing, but no, that size needs to be a "how much data
-do I want to read/write", so even if buffer is NULL, size has to be
-specified.
+As last time, I'm presenting raw stats without any evaluation. I'm
+posting a link to the previous cycle below so people can do the
+comparison if needed.
 
-"This is the length of the requested slice." is the most important
-part in that comment.
+Previous cycle:
+28 Jun to 29 Aug: 5240 mailing list messages, 62 days, 85 messages per day
+384 repo commits (6 commits/day)
 
->
-> Thanks,
-> Song
->
->
-> >>
-> >> So I'll take it back, let's not expose this kfunc directly to kernel
-> >> code. Let's have a separate internal helper that will return either
-> >> valid pointer or NULL for a given dynptr, but will require valid
-> >> non-zero max size. Something with the signature like below
-> >>
-> >> void * __bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u32 len=
-);
-> >>
-> >> If ptr can provide a direct pointer to memory of length *len*, great.
-> >> If not, return NULL. This will be an appropriate internal API for all
-> >> the use cases you are adding where we will be writing back into dynptr
-> >> from other kernel APIs with the assumption of contiguous memory
-> >> region.
-> >
->
+Current cycle:
+29 Aug to 31 Oct: 4798 mailing list messages, 63 days, 76 messages per day
+577 repo commits (9 commits/day)
+
+6.6 stats: https://lore.kernel.org/bpf/ZO6O27Z9RvresmiV@google.com/
+
+Rankings
+--------
+
+Top reviewers (thr):                 Top reviewers (msg):                
+   1 ( +7) [6] Andrii Nakryiko          1 ( +3) [13] Andrii Nakryiko     
+   2 ( -1) [6] Alexei Starovoitov       2 ( -1) [ 9] Alexei Starovoitov  
+   3 ( +2) [4] Daniel Borkmann          3 ( +2) [ 8] Martin KaFai Lau    
+   4 ( +3) [4] Jiri Olsa                4 ( +9) [ 7] Jiri Olsa           
+   5 ( +7) [3] Eduard Zingerman         5 ( +5) [ 7] Eduard Zingerman    
+   6 ( -3) [3] Martin KaFai Lau         6 ( +2) [ 5] Daniel Borkmann     
+   7 ( -1) [2] Jakub Kicinski           7 (+31) [ 5] Song Liu            
+   8 (+29) [2] Song Liu                 8 ( -1) [ 4] Jakub Kicinski      
+   9 ( -5) [2] Stanislav Fomichev       9 (***) [ 3] Namhyung Kim        
+  10 ( +4) [1] Simon Horman            10 ( +6) [ 3] Jason Wang          
+  11 (+11) [1] Quentin Monnet          11 (***) [ 3] Kees Cook           
+  12 (+16) [1] Maciej Fijalkowski      12 (+11) [ 3] Maciej Fijalkowski  
+  13 ( -2) [1] John Fastabend          13 (***) [ 3] Shung-Hsi Yu        
+  14 ( -1) [1] Alan Maguire            14 ( +5) [ 2] Willem de Bruijn    
+  15 ( -6) [1] Hou Tao                 15 (-13) [ 2] Yonghong Song       
+
+Top authors (thr):                   Top authors (msg):                  
+   1 (+16) [2] Andrii Nakryiko          1 (+49) [18] Andrii Nakryiko     
+   2 (***) [2] Song Liu                 2 (***) [11] Song Liu            
+   3 ( +1) [2] Daniel Borkmann          3 (+25) [11] Ian Rogers          
+   4 (+38) [2] Ian Rogers               4 (+14) [10] Kui-Feng Lee        
+   5 ( +1) [2] Jiri Olsa                5 (+42) [ 9] Daan De Meyer       
+   6 ( +1) [1] Kui-Feng Lee             6 (+24) [ 7] Chuyi Zhou          
+   7 (***) [1] Hengqi Chen              7 ( +2) [ 6] Daniel Borkmann     
+   8 ( +6) [1] Hou Tao                  8 ( -1) [ 6] Yafang Shao         
+   9 (+31) [1] Chuyi Zhou               9 ( -6) [ 6] Larysa Zaremba      
+  10 (***) [1] Daan De Meyer           10 (+35) [ 5] Puranjay Mohan      
+
+Company rankings
+----------------
+
+Top reviewers (thr):                 Top reviewers (msg):                
+   1 (   ) [16] Meta                    1 (   ) [41] Meta                
+   2 (   ) [ 9] Isovalent               2 ( +2) [15] Isovalent           
+   3 (   ) [ 6] Google                  3 (   ) [12] Google              
+   4 ( +1) [ 6] Intel                   4 ( -2) [11] RedHat              
+   5 ( -1) [ 3] RedHat                  5 (   ) [11] Intel               
+   6 (   ) [ 2] Huawei                  6 ( +5) [ 4] SUSE                
+   7 (   ) [ 2] Oracle                  7 (   ) [ 4] Oracle              
+   8 (+13) [ 1] Amazon                  8 ( -2) [ 3] Huawei              
+   9 ( +3) [ 1] Microsoft               9 ( +4) [ 3] Microsoft           
+  10 ( -2) [ 1] Corigine               10 (+22) [ 2] Amazon              
+
+Top authors (thr):                   Top authors (msg):                  
+   1 (   ) [11] Meta                    1 (   ) [63] Meta                
+   2 ( +3) [ 6] Intel                   2 ( +3) [25] Google              
+   3 ( +1) [ 5] Google                  3 (   ) [16] Intel               
+   4 ( -1) [ 5] Isovalent               4 ( -2) [14] Isovalent           
+   5 ( -3) [ 3] Huawei                  5 ( -1) [13] Huawei              
+   6 (   ) [ 2] RedHat                  6 ( +2) [ 7] Bytedance           
+   7 ( +9) [ 2] Bytedance               7 (***) [ 7] Amazon              
+   8 ( +1) [ 1] Oracle                  8 ( +7) [ 7] IBM                 
+   9 (***) [ 1] Tencent                 9 (   ) [ 6] Juniper Networks    
+  10 (***) [ 1] Amazon                 10 ( +1) [ 5] Alibaba             
+
+Development vs reviewing scores
+-------------------------------
+
+(there were no changes to the ranking script, still not sure how precise
+individual scores are; I see that Jakub didn't include them this time)
+
+Top scores (positive):               Top scores (negative):              
+   1 (   ) [75] Alexei Starovoitov      1 (+38) [37] Daan De Meyer       
+   2 (   ) [44] Martin KaFai Lau        2 (+24) [37] Ian Rogers          
+   3 ( +8) [33] Eduard Zingerman        3 (+19) [27] Chuyi Zhou          
+   4 (***) [33] Jiri Olsa               4 (+27) [27] Kui-Feng Lee        
+   5 (   ) [32] Jakub Kicinski          5 ( -3) [22] Larysa Zaremba      
+   6 ( +4) [28] Daniel Borkmann         6 (+19) [20] Breno Leitao        
+   7 (***) [17] Maciej Fijalkowski      7 ( +4) [19] Xuan Zhuo           
+
+Top scores (positive):               Top scores (negative):              
+   1 (***) [61] Isovalent               1 ( +2) [27] Bytedance           
+   2 (   ) [40] RedHat                  2 (   ) [26] Huawei              
+   3 ( +1) [17] Corigine                3 ( +4) [22] Alibaba             
+   4 (***) [15] SUSE                    4 ( +7) [20] IBM                 
+   5 ( +2) [14] Microsoft               5 (***) [18] Google              
+   6 (***) [12] CloudFlare              6 (***) [17] Tencent             
+   7 (***) [12] Intel                   7 (***) [16] Crowdstrike         
+
+More raw stats
+--------------
+
+Prev: start: Wed, 28 Jun 2023 22:18:25 -0700
+	end: Tue, 29 Aug 2023 15:24:18 -0700
+Prev: messages: 5240 days: 62 (85 msg/day)
+Prev: direct commits: 384 (6 commits/day)
+Prev: people/aliases: 279  {'author': 112, 'commenter': 120, 'both': 47}
+Prev: review pct: 24.22%  x-corp pct: 23.44%
+
+Curr: start: Tue, 29 Aug 2023 20:53:22 +0200
+	end: Tue, 31 Oct 2023 10:50:30 -0700
+Curr: messages: 4798 days: 63 (76 msg/day)
+Curr: direct commits: 577 (9 commits/day)
+Curr: people/aliases: 253  {'author': 82, 'commenter': 113, 'both': 58}
+Curr: review pct: 22.7%  x-corp pct: 20.45%
+
+Diff: -9.9% msg/day
+Diff: +47.9% commits/day
+Diff: -10.8% people/day
+Diff: review pct: -1.5%
+      x-corp pct: -3.0%
 
