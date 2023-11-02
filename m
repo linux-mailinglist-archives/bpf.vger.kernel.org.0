@@ -1,285 +1,246 @@
-Return-Path: <bpf+bounces-14009-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14010-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E8807DFAA2
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 20:04:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCCC47DFAAC
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 20:07:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4801D1C20FD6
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 19:04:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67D321F2204B
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 19:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A99F92134A;
-	Thu,  2 Nov 2023 19:04:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5CF621353;
+	Thu,  2 Nov 2023 19:07:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bftowuw9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eRdqVq7j"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3FA11BDF0
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 19:04:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FDDE1CFB6
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 19:07:06 +0000 (UTC)
 Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CAAE1FE4;
-	Thu,  2 Nov 2023 12:01:58 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9d10f94f70bso190690966b.3;
-        Thu, 02 Nov 2023 12:01:58 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15BF136
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 12:07:03 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9bf86b77a2aso199161966b.0
+        for <bpf@vger.kernel.org>; Thu, 02 Nov 2023 12:07:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698951716; x=1699556516; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698952022; x=1699556822; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ifGnPdp78leEm8TF8GcQ6NdohnpOfA0bs4O5R/OYdS0=;
-        b=bftowuw9fxm5FezwOluOaECx8od2BlSFkYLjj6D5Bc5BsqBJqvZ3N2+QsjcK8J3nm8
-         yS/GF9r7j7MbLxymENSCtqHaxdWsPHZbFfSh+/GJtuzt7Xa9E1dhMsbvah8aL0oOFC4h
-         8uC9ZVdM3ou5uFFu3jGzxOnrn5Na09QJvzw8etDceibYQEFB9bmydjRjEDF1OmSx0BoN
-         +43wTMMdukkRjaKMHJ5BuoM+hxN/tNX1nFv1h/XAGiEQLbBUCfkR1LZe2Um0llay5RgS
-         CUsG8BuWxp3GtN6ngCk07zQettmf4qI242m1ndqWWtt13m/pgUFtECkDR0SD0pB3zGRL
-         i6xg==
+        bh=dx8cpcmrOZxzhEqxNTxc4dvmHYweBXWx1RB8KilgMfE=;
+        b=eRdqVq7j6jmC1Ctu0ZmZ2cwMXXD6h/Uu0+i7+JF1dcVXr9LoHyPHRwU/g7MRZUUWXT
+         E3gcyghcgrRWMikU3bAY0FvMZ7cjoTM9iYR27bHzFOQLnqjbjsVFNt2lg0cxqcA9HXbN
+         XY7zQoUxuH9uUEgyUoiwFiIYYvyJdcr7N/ZOF28EQexefey7+SXdLiuJcxEb0a2d21M5
+         PoTZ01WHpDFnhyweeLF3h6eDg5Ak8LikmvjomxeBssvEpVXXB7aVDAvYBOIMc+S0LTnJ
+         famvlxFPHSiJdx1tmjXIDFiOALrOAAC+N51hrgsXX6vE9rUZx6rDOUpW02pQ8Si95KfB
+         g+Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698951716; x=1699556516;
+        d=1e100.net; s=20230601; t=1698952022; x=1699556822;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ifGnPdp78leEm8TF8GcQ6NdohnpOfA0bs4O5R/OYdS0=;
-        b=ijZID6sLIvN0bzVY4N6o7feghpwVJGROlLbHi87zQwps2HEY3tYh7Jh8hBlSPgLAm0
-         kxyRuLCdJVxekguhqfEZEgTStB0/6v7ymtnhGAHOfyPCPNV+DYT1cS3VN4VIRWRf6HlV
-         3AvweJ5SwBuZOffI2+Nu/cfQMlkN4jk5+C1IjAEqACuCuZZiQMSuvSYwfb/V2tnw1nW0
-         sSWa7wIVIrI6TKmtgny7w5Zn2Cp2VK5nc/wZOB54IuSt7UlABzjVBcTsSXmrJ7PSVvfZ
-         91QhUUh+v7AdOPzusDlFZfpRhzkYNlJ1/0A6EzifaP3Wv8au0FsLHV1czUceJg+KAsPK
-         /c4w==
-X-Gm-Message-State: AOJu0Yy/Q3SoHEeZ6PKUH6m2INgr9dQjhZ1HW1rPrcjbO8f9/eCi8thz
-	nZC0eMDSbKj4fegL+oUYY1M52Dl1zOzXdO5kCeU=
-X-Google-Smtp-Source: AGHT+IHNwR57IhzCX+H5PazBzQK6fP/65bHupUZWqtHI8AIq8RW79acIHA9KfkskZFZ1HjpDlYmLSgZ5ZF6+KYJh6KY=
-X-Received: by 2002:a17:906:ee85:b0:9be:dce3:6e07 with SMTP id
- wt5-20020a170906ee8500b009bedce36e07mr5508068ejb.32.1698951716320; Thu, 02
- Nov 2023 12:01:56 -0700 (PDT)
+        bh=dx8cpcmrOZxzhEqxNTxc4dvmHYweBXWx1RB8KilgMfE=;
+        b=OFitxehxw8fMhf1i71miul2U9CHOrf4iv9JHjit+H4XvaEhpndwb/WbyN6LIP4Nr7M
+         fXVKHQV9SVtJUKuVIZcmqTdgeSqFub66eU5Dqk1nwnnJlC1OXzV/dsfSOabnuFFDTpgr
+         kYhMWWPpFPvfxX/2ZvTWywRP2mV67+Ffoupk5mfgH59eQSMU1TLsmQ9rG2orMz70U42R
+         b18Hof6IKiYRzx/N5jyX/H/IkncF0lJ60qMkXxzyleT7wZ7XRksmW4/7MrMOe1sbEkmz
+         fThlsTIsp+46h0xYQG5ytoJu8SffJxQXeXLv/1p9F98EzXQ65eoosinKSiJGi49YJjVX
+         tWtg==
+X-Gm-Message-State: AOJu0YwesCegfarag8LhM596Ag4cdZpkYsPPJZ563R+w7vWaK5TVGAap
+	jgCjnVlPVqRXoaVTxaDY9yvChFSiktgAbpzqSzo=
+X-Google-Smtp-Source: AGHT+IElS1HrxuD4m483T6kr3C2TOa9PyL5ja4nYdmkgG6cBBrGv5ayN5G2qNcof/Q5ycn4VImku5ADxwN+WZfCdTpA=
+X-Received: by 2002:a17:906:4705:b0:9a1:abae:8d30 with SMTP id
+ y5-20020a170906470500b009a1abae8d30mr3899114ejq.47.1698952021693; Thu, 02 Nov
+ 2023 12:07:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CACkBjsY3vMLVVO0zHd+CRcQPdykDhXv8-f2oD82+Jk5KJpq_8w@mail.gmail.com>
- <CAEf4BzbDK15myKbN4sM+cxFvfWCNjthJuFZf81k6OEBpaC124g@mail.gmail.com> <CACkBjsbpttp2L0=oi7-0+SLNC8wSxkPbG7ZYZuWOmurNxELT-Q@mail.gmail.com>
-In-Reply-To: <CACkBjsbpttp2L0=oi7-0+SLNC8wSxkPbG7ZYZuWOmurNxELT-Q@mail.gmail.com>
+References: <20231024235551.2769174-1-song@kernel.org> <20231024235551.2769174-2-song@kernel.org>
+ <CAEf4Bzbr8dgksh2z+4nEkAFdV9gquhR+HROULKdTkWrUpSM9-Q@mail.gmail.com>
+ <CAEf4BzbDFDX30Y_Hcmd__hgDp+m6X+htr-wTeBtaoauEnrEdLw@mail.gmail.com>
+ <CAEf4BzaD+FV_PM8_4yWnZVed9pXE-KX6CwpYEmiUDpMRQDNEXQ@mail.gmail.com>
+ <15A85D6B-56E5-4C9F-B7AB-A62F3DA8294C@fb.com> <B1DDF0D9-5365-4421-83AF-E7F6C0439422@fb.com>
+In-Reply-To: <B1DDF0D9-5365-4421-83AF-E7F6C0439422@fb.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 2 Nov 2023 12:01:44 -0700
-Message-ID: <CAEf4BzbucupXssMKLhR5Ex4rOHupp8p19CRV6qi1dT+X_5QWJg@mail.gmail.com>
-Subject: Re: bpf: incorrectly reject program with `back-edge insn from 7 to 8`
-To: Hao Sun <sunhao.th@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Date: Thu, 2 Nov 2023 12:06:50 -0700
+Message-ID: <CAEf4BzY_aW0-Ao9vaYoRJ=A3b2=VYqyAX--4UK6CYv7QGAjzgg@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 1/9] bpf: Expose bpf_dynptr_slice* kfuncs for
+ in kernel use
+To: Song Liu <songliubraving@meta.com>
+Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"fsverity@lists.linux.dev" <fsverity@lists.linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	Eric Biggers <ebiggers@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>, 
+	"roberto.sassu@huaweicloud.com" <roberto.sassu@huaweicloud.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 2, 2023 at 3:30=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wrote:
+On Thu, Nov 2, 2023 at 11:16=E2=80=AFAM Song Liu <songliubraving@meta.com> =
+wrote:
 >
-> On Wed, Nov 1, 2023 at 9:57=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Wed, Nov 1, 2023 at 6:56=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wr=
-ote:
-> > >
-> > > Hi,
-> > >
-> > > The verifier incorrectly rejects the following prog in check_cfg() wh=
-en
-> > > loading with root with confusing log `back-edge insn from 7 to 8`:
-> > >   /* 0: r9 =3D 2
-> > >    * 1: r3 =3D 0x20
-> > >    * 2: r4 =3D 0x35
-> > >    * 3: r8 =3D r4
-> > >    * 4: goto+3
-> > >    * 5: r9 -=3D r3
-> > >    * 6: r9 -=3D r4
-> > >    * 7: r9 -=3D r8
-> > >    * 8: r8 +=3D r4
-> > >    * 9: if r8 < 0x64 goto-5
-> > >    * 10: r0 =3D r9
-> > >    * 11: exit
-> > >    * */
-> > >   BPF_MOV64_IMM(BPF_REG_9, 2),
-> > >   BPF_MOV64_IMM(BPF_REG_3, 0x20),
-> > >   BPF_MOV64_IMM(BPF_REG_4, 0x35),
-> > >   BPF_MOV64_REG(BPF_REG_8, BPF_REG_4),
-> > >   BPF_JMP_IMM(BPF_JA, 0, 0, 3),
-> > >   BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_3),
-> > >   BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_4),
-> > >   BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_8),
-> > >   BPF_ALU64_REG(BPF_ADD, BPF_REG_8, BPF_REG_4),
-> > >   BPF_JMP32_IMM(BPF_JLT, BPF_REG_8, 0x68, -5),
-> > >   BPF_MOV64_REG(BPF_REG_0, BPF_REG_9),
-> > >   BPF_EXIT_INSN()
-> > >
-> > > -------- Verifier Log --------
-> > > func#0 @0
-> > > back-edge from insn 7 to 8
-> > > processed 0 insns (limit 1000000) max_states_per_insn 0 total_states =
-0
-> > > peak_states 0 mark_read 0
-> > >
-> > > This is not intentionally rejected, right?
-> >
-> > The way you wrote it, with goto +3, yes, it's intentional. Note that
-> > you'll get different results in privileged and unprivileged modes.
-> > Privileged mode allows "bounded loops" logic, so it doesn't
-> > immediately reject this program, and then later sees that r8 is always
-> > < 0x64, so program is correct.
-> >
 >
-> I load the program with privileged mode, and goto-5 makes the program
-> run from #9 to #5, so r8 is updated and the program is not infinite loop.
 >
-> > But in unprivileged mode the rules are different, and this conditional
-> > back edge is not allowed, which is probably what you are getting.
+> > On Nov 2, 2023, at 11:09=E2=80=AFAM, Song Liu <songliubraving@meta.com>=
+ wrote:
 > >
-> > It's actually confusing and your "back-edge from insn 7 to 8" is out
-> > of date and doesn't correspond to your program, you should see
-> > "back-edge from insn 11 to 7", please double check.
 > >
->
-> Yes it's also confusing to me, but "back-edge from insn 7 to 8" is what
-> I got. The execution path of the program is #4 to #8 (goto+3), so the
-> verifier see the #8 first. Then, the program then goes #9 to #5 (goto-5),
-> the verifier thus sees #7 to #8 and incorrectly concludes back-edge here.
->
-> This can is the verifier log I got from latest bpf-next, this C program c=
-an
-> reproduce this: https://pastebin.com/raw/Yug0NVwx
-
-Your instruction indices in your comments are wrong. Save yourself
-time and confusion, use embedded assembly and llvm-objdump. You also
-have a mismatch between 0x64 and actually specifying 0x68. Anyways, I
-don't know how you got 7 to 8, but there does seem indeed to be a bug
-in check_cfg() falsely detecting this as an infinite loop even in
-privileged mode, which it should. I'll need to look deeper into how to
-fix check_cfg(), it's not the easier to follow code, unfortunately.
-
-But here's my log for your information.
-
-
-$ git show
-commit a343e644b8f3757a83f48b32b56ffc83943a62fa (HEAD -> temp-back-edge-tes=
-t)
-Author: Andrii Nakryiko <andrii@kernel.org>
-Date:   Thu Nov 2 11:55:11 2023 -0700
-
-    selftests/bpf: trickier case of "bounded loop"
-
-    This should be accepted in privileged mode because r8 =3D 2 * r4 =3D 0x=
-6a,
-    and so `if r8 < 0x64 goto -5;` is always false. Currently BPF verifier'=
+> >
+> >> On Nov 2, 2023, at 10:16=E2=80=AFAM, Andrii Nakryiko <andrii.nakryiko@=
+gmail.com> wrote:
+> >>
+> >> On Thu, Nov 2, 2023 at 10:09=E2=80=AFAM Andrii Nakryiko
+> >> <andrii.nakryiko@gmail.com> wrote:
+> >>>
+> >>> On Thu, Nov 2, 2023 at 9:56=E2=80=AFAM Andrii Nakryiko
+> >>> <andrii.nakryiko@gmail.com> wrote:
+> >>>>
+> >>>> On Tue, Oct 24, 2023 at 4:56=E2=80=AFPM Song Liu <song@kernel.org> w=
+rote:
+> >>>>>
+> >>>>> kfuncs bpf_dynptr_slice and bpf_dynptr_slice_rdwr are used by BPF p=
+rograms
+> >>>>> to access the dynptr data. They are also useful for in kernel funct=
+ions
+> >>>>> that access dynptr data, for example, bpf_verify_pkcs7_signature.
+> >>>>>
+> >>>>> Add bpf_dynptr_slice and bpf_dynptr_slice_rdwr to bpf.h so that ker=
+nel
+> >>>>> functions can use them instead of accessing dynptr->data directly.
+> >>>>>
+> >>>>> Update bpf_verify_pkcs7_signature to use bpf_dynptr_slice instead o=
+f
+> >>>>> dynptr->data.
+> >>>>>
+> >>>>> Also, update the comments for bpf_dynptr_slice and bpf_dynptr_slice=
+_rdwr
+> >>>>> that they may return error pointers for BPF_DYNPTR_TYPE_XDP.
+> >>>>>
+> >>>>> Signed-off-by: Song Liu <song@kernel.org>
+> >>>>> ---
+> >>>>> include/linux/bpf.h      |  4 ++++
+> >>>>> kernel/bpf/helpers.c     | 16 ++++++++--------
+> >>>>> kernel/trace/bpf_trace.c | 15 +++++++++++----
+> >>>>> 3 files changed, 23 insertions(+), 12 deletions(-)
+> >>>>>
+> >>>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> >>>>> index b4825d3cdb29..3ed3ae37cbdf 100644
+> >>>>> --- a/include/linux/bpf.h
+> >>>>> +++ b/include/linux/bpf.h
+> >>>>> @@ -1222,6 +1222,10 @@ enum bpf_dynptr_type {
+> >>>>>
+> >>>>> int bpf_dynptr_check_size(u32 size);
+> >>>>> u32 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr);
+> >>>>> +void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offs=
+et,
+> >>>>> +                      void *buffer__opt, u32 buffer__szk);
+> >>>>> +void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32=
+ offset,
+> >>>>> +                           void *buffer__opt, u32 buffer__szk);
+> >>>>>
+> >>>>> #ifdef CONFIG_BPF_JIT
+> >>>>> int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bp=
+f_trampoline *tr);
+> >>>>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> >>>>> index e46ac288a108..af5059f11e83 100644
+> >>>>> --- a/kernel/bpf/helpers.c
+> >>>>> +++ b/kernel/bpf/helpers.c
+> >>>>> @@ -2270,10 +2270,10 @@ __bpf_kfunc struct task_struct *bpf_task_fr=
+om_pid(s32 pid)
+> >>>>> * bpf_dynptr_slice will not invalidate any ctx->data/data_end point=
+ers in
+> >>>>> * the bpf program.
+> >>>>> *
+> >>>>> - * Return: NULL if the call failed (eg invalid dynptr), pointer to=
+ a read-only
+> >>>>> - * data slice (can be either direct pointer to the data or a point=
+er to the user
+> >>>>> - * provided buffer, with its contents containing the data, if unab=
+le to obtain
+> >>>>> - * direct pointer)
+> >>>>> + * Return: NULL or error pointer if the call failed (eg invalid dy=
+nptr), pointer
+> >>>>
+> >>>> Hold on, nope, this one shouldn't return error pointer because it's
+> >>>> used from BPF program side and BPF program is checking for NULL only=
+.
+> >>>> Does it actually return error pointer, though?
+> >
+> > Right. kfunc should not return error pointer.
+> >
+> >>>
+> >>> So I just checked the code (should have done it before replying,
+> >>> sorry). It is a bug that slipped through when adding bpf_xdp_pointer(=
+)
+> >>> usage. We should always return NULL from this kfunc on error
+> >>> conditions. Let's fix it separately, but please don't change the
+> >>> comments.
+> >>>
+> >>>>
+> >>>> I'm generally skeptical of allowing to call kfuncs directly from
+> >>>> internal kernel code, tbh, and concerns like this are one reason why=
+.
+> >>>> BPF verifier sets up various conditions that kfuncs have to follow,
+> >>>> and it seems error-prone to mix this up with internal kernel usage.
+> >>>>
+> >>>
+> >>> Reading bpf_dynptr_slice_rdwr code, it does look exactly like what yo=
+u
+> >>> want, despite the confusingly-looking 0, NULL, 0 arguments. So I gues=
 s
-    check_cfg() doesn't detect this properly.
+> >>> I'm fine exposing it directly, but it still feels like it will bite u=
+s
+> >>> at some point later.
+> >>
+> >> Ok, now I'm at patch #5. Think about what you are doing here. You are
+> >> asking bpf_dynptr_slice_rdrw() if you can get a directly writable
+> >> pointer to a data area of length *zero*. So if it's SKB, for example,
+> >> then yeah, you'll be granted a pointer. But then you are proceeding to
+> >> write up to sizeof(struct fsverity_digest) bytes, and that can cross
+> >> into non-contiguous memory.
+>
+> By the way, the syntax and comment of bpf_dynptr_slice() is confusing:
+>
+>  * @buffer__opt: User-provided buffer to copy contents into.  May be NULL
+>  * @buffer__szk: Size (in bytes) of the buffer if present. This is the
+>  *               length of the requested slice. This must be a constant.
+>
+> It reads (to me) as, "if buffer__opt is NULL, buffer__szk should be 0".
+>
+> Is this just my confusion, or is there a real issue?
 
-    Reported-by: Hao Sun <sunhao.th@gmail.com>
-    Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+It's a bit confusing, but no, that size needs to be a "how much data
+do I want to read/write", so even if buffer is NULL, size has to be
+specified.
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_cfg.c
-b/tools/testing/selftests/bpf/progs/verifier_cfg.c
-index df7697b94007..f89dce7850f6 100644
---- a/tools/testing/selftests/bpf/progs/verifier_cfg.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_cfg.c
-@@ -97,4 +97,26 @@ l0_%=3D:       r2 =3D r0;
-         \
- "      ::: __clobber_all);
- }
-
-+SEC("socket")
-+__description("conditional loop (2)")
-+__success
-+__failure_unpriv __msg_unpriv("back-edge from insn 10 to 11")
-+__naked void conditional_loop2(void)
-+{
-+       asm volatile ("                                 \
-+       r9 =3D 2 ll;                                      \
-+       r3 =3D 0x20 ll;                                   \
-+       r4 =3D 0x35 ll;                                   \
-+       r8 =3D r4;                                        \
-+       goto l1_%=3D;                                     \
-+l0_%=3D: r9 -=3D r3;                                       \
-+       r9 -=3D r4;                                       \
-+       r9 -=3D r8;                                       \
-+l1_%=3D: r8 +=3D r4;                                       \
-+       if r8 < 0x64 goto l0_%=3D;                        \
-+       r0 =3D r9;                                        \
-+       exit;                                           \
-+"      ::: __clobber_all);
-+}
-+
- char _license[] SEC("license") =3D "GPL";
-
-Here's disassembly (though I moved it to separate .bpf.c file to have
-0-based instruction indices, my patch above adds test to other
-existing tests):
-
-$ llvm-objdump -d verifier_cfg1.bpf.o
-
-verifier_cfg1.bpf.o:    file format elf64-bpf
-
-Disassembly of section socket:
-
-0000000000000000 <conditional_loop2>:
-       0:       18 09 00 00 02 00 00 00 00 00 00 00 00 00 00 00 r9 =3D 0x2 =
-ll
-       2:       18 03 00 00 20 00 00 00 00 00 00 00 00 00 00 00 r3 =3D 0x20=
- ll
-       4:       18 04 00 00 35 00 00 00 00 00 00 00 00 00 00 00 r4 =3D 0x35=
- ll
-       6:       bf 48 00 00 00 00 00 00 r8 =3D r4
-       7:       05 00 03 00 00 00 00 00 goto +0x3 <l1_0>
-
-0000000000000040 <l0_0>:
-       8:       1f 39 00 00 00 00 00 00 r9 -=3D r3
-       9:       1f 49 00 00 00 00 00 00 r9 -=3D r4
-      10:       1f 89 00 00 00 00 00 00 r9 -=3D r8
-
-0000000000000058 <l1_0>:
-      11:       0f 48 00 00 00 00 00 00 r8 +=3D r4
-      12:       a5 08 fb ff 64 00 00 00 if r8 < 0x64 goto -0x5 <l0_0>
-      13:       bf 90 00 00 00 00 00 00 r0 =3D r9
-      14:       95 00 00 00 00 00 00 00 exit
-
-Then running test on latest bpf-next:
-
-$ sudo ./test_progs -t verifier_cfg
-...
-run_subtest:PASS:obj_open_mem 0 nsec
-libbpf: prog 'conditional_loop2': BPF program load failed: Invalid argument
-libbpf: prog 'conditional_loop2': failed to load: -22
-libbpf: failed to load object 'verifier_cfg'
-run_subtest:FAIL:unexpected_load_failure unexpected error: -22 (errno 22)
-VERIFIER LOG:
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-10: asm volatile ("                                     \
-back-edge from insn 10 to 11
-processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
-peak_states 0 mark_read 0
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-#329/15  verifier_cfg/conditional loop (2):FAIL
-#329/16  verifier_cfg/conditional loop (2) @unpriv:OK
-#329     verifier_cfg:FAIL
-
-
-I'll keep looking into this after taking care of other stuff I have on
-TODO list, thanks.
-
-
+"This is the length of the requested slice." is the most important
+part in that comment.
 
 >
-> > Anyways, while I was looking into this, I realized that ldimm64 isn't
-> > handled exactly correctly in check_cfg(), so I just sent a fix. It
-> > also adds a nicer detection of jumping into the middle of the ldimm64
-> > instruction, which I believe is something you were advocating for.
+> Thanks,
+> Song
+>
+>
+> >>
+> >> So I'll take it back, let's not expose this kfunc directly to kernel
+> >> code. Let's have a separate internal helper that will return either
+> >> valid pointer or NULL for a given dynptr, but will require valid
+> >> non-zero max size. Something with the signature like below
+> >>
+> >> void * __bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u32 len=
+);
+> >>
+> >> If ptr can provide a direct pointer to memory of length *len*, great.
+> >> If not, return NULL. This will be an appropriate internal API for all
+> >> the use cases you are adding where we will be writing back into dynptr
+> >> from other kernel APIs with the assumption of contiguous memory
+> >> region.
 > >
-> > >
-> > > Best
-> > > Hao
+>
 
