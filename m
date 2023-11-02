@@ -1,353 +1,668 @@
-Return-Path: <bpf+bounces-13867-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13868-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FB477DE9A6
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 01:46:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB7997DE9BE
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 01:55:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50AD5B2103A
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 00:46:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64254B210A4
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 00:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E3F810E7;
-	Thu,  2 Nov 2023 00:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C08E010F9;
+	Thu,  2 Nov 2023 00:54:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LuISDnSn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="c2mKIK//"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE5C6372
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 00:46:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28299C433CB
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 00:46:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698885987;
-	bh=jmZ6JK5yc8r3VLqVSAB2x19ipb6u/KQQFmQVR4i0uEU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=LuISDnSnDphPdkjtvWERV+rlOI6OTcIKzgDCIAybhgdP77I30CJcaDi3vRqkiKKy/
-	 fPBQXD6Z1RvSHOJ/ai4w2bUpFtODgZjn1yueT/N4YUXcurdNj/UwNkTnQKCX9nYeUd
-	 95McsYLX5TBJ8AQpnPryxrcd55Jd25nrC4xQ/UPrxKKlJiuTbyV6N7bVnhMOJxfVVF
-	 ke6bIPLgQ+vZGp+i8Pc9jG/8Mm9Vqxy+pnXPqfgRiwS7+4VcMEo+xuBZypKQR6kb0y
-	 0gZ1DC0HfyFzh10sgYVoyz8Z6NSZJaWh2dvHoLpU5ZRVYlCFDOdVD8lQRvNfu4yPK8
-	 hGOIk+t3sN9Hg==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-507a62d4788so433579e87.0
-        for <bpf@vger.kernel.org>; Wed, 01 Nov 2023 17:46:27 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxuBUgupIuQuFfc+6iu9dKh/H3jCzlT7mSW12FT20iMh9/7MmO6
-	OjJHdBd9S8gGD2JN2CetTCJ/c99sRdeNGFpK9okELw==
-X-Google-Smtp-Source: AGHT+IHz6TnrkYQJRZVzs3muywyfLzw13BeplImjzMKnd96+76aXNDvi5vhVmb+gBkxS231NNt7Su2GXya1gdeeWy+g=
-X-Received: by 2002:a19:ac0a:0:b0:4ff:a04c:8a5b with SMTP id
- g10-20020a19ac0a000000b004ffa04c8a5bmr11878036lfc.47.1698885985273; Wed, 01
- Nov 2023 17:46:25 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F56610E7
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 00:54:54 +0000 (UTC)
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b4])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C1812C
+	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 17:54:48 -0700 (PDT)
+Message-ID: <1b100f73-7625-4c1f-3ae5-50ecf84d3ff0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1698886487;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tu7k6GVhfgFhyMGos5ea7K7iPu9zjOW8Thc9RPv8WD4=;
+	b=c2mKIK//3VxZk2cBDDifUgrTY4YqW1HmdVkOfIZ9hV6kg6RMk/4dr/R6gifq5IqzJVdVC2
+	DL2ppZuAc87sNNDfozwdhMwb4xrkochWXMGRshkuWKc0A5Yi2OH2tqN5y28W9uSkXQjARZ
+	kiU2Gq+at/tCnukZiadM6lWuIRVNUaQ=
+Date: Thu, 2 Nov 2023 00:54:45 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231006204701.549230-1-kpsingh@kernel.org> <20231006204701.549230-5-kpsingh@kernel.org>
- <ZSPRrtkKtf9WyBOy@krava>
-In-Reply-To: <ZSPRrtkKtf9WyBOy@krava>
-From: KP Singh <kpsingh@kernel.org>
-Date: Thu, 2 Nov 2023 01:46:14 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ5PKECadW+B9ybJUidDb6SVb6L4A2xWqwh6ybkhfZ+eag@mail.gmail.com>
-Message-ID: <CACYkzJ5PKECadW+B9ybJUidDb6SVb6L4A2xWqwh6ybkhfZ+eag@mail.gmail.com>
-Subject: Re: [PATCH v6 4/5] bpf: Only enable BPF LSM hooks when an LSM program
- is attached
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
-	paul@paul-moore.com, keescook@chromium.org, casey@schaufler-ca.com, 
-	song@kernel.org, daniel@iogearbox.net, ast@kernel.org, renauld@google.com, 
-	pabeni@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v3 2/2] selftests: bpf: crypto skcipher algo
+ selftests
+Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>, Vadim Fedorenko <vadfed@meta.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+ linux-crypto@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>
+References: <20231031134900.1432945-1-vadfed@meta.com>
+ <20231031134900.1432945-2-vadfed@meta.com>
+ <0568c28a-f631-a12c-97ce-dbc9e5ee62b4@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <0568c28a-f631-a12c-97ce-dbc9e5ee62b4@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Oct 9, 2023 at 12:11=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Fri, Oct 06, 2023 at 10:47:00PM +0200, KP Singh wrote:
-> > BPF LSM hooks have side-effects (even when a default value is returned)=
-,
-> > as some hooks end up behaving differently due to the very presence of
-> > the hook.
-> >
-> > The static keys guarding the BPF LSM hooks are disabled by default and
-> > enabled only when a BPF program is attached implementing the hook
-> > logic. This avoids the issue of the side-effects and also the minor
-> > overhead associated with the empty callback.
-> >
-> > security_file_ioctl:
-> >    0xffffffff818f0e30 <+0>:   endbr64
-> >    0xffffffff818f0e34 <+4>:   nopl   0x0(%rax,%rax,1)
-> >    0xffffffff818f0e39 <+9>:   push   %rbp
-> >    0xffffffff818f0e3a <+10>:  push   %r14
-> >    0xffffffff818f0e3c <+12>:  push   %rbx
-> >    0xffffffff818f0e3d <+13>:  mov    %rdx,%rbx
-> >    0xffffffff818f0e40 <+16>:  mov    %esi,%ebp
-> >    0xffffffff818f0e42 <+18>:  mov    %rdi,%r14
-> >    0xffffffff818f0e45 <+21>:  jmp    0xffffffff818f0e57 <security_file_=
-ioctl+39>
-> >                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-^^^^^^^^^
-> >
-> >    Static key enabled for SELinux
-> >
-> >    0xffffffff818f0e47 <+23>:  xchg   %ax,%ax
-> >                               ^^^^^^^^^^^^^^
-> >
-> >    Static key disabled for BPF. This gets patched when a BPF LSM progra=
-m
-> >    is attached
-> >
-> >    0xffffffff818f0e49 <+25>:  xor    %eax,%eax
-> >    0xffffffff818f0e4b <+27>:  xchg   %ax,%ax
-> >    0xffffffff818f0e4d <+29>:  pop    %rbx
-> >    0xffffffff818f0e4e <+30>:  pop    %r14
-> >    0xffffffff818f0e50 <+32>:  pop    %rbp
-> >    0xffffffff818f0e51 <+33>:  cs jmp 0xffffffff82c00000 <__x86_return_t=
-hunk>
-> >    0xffffffff818f0e57 <+39>:  endbr64
-> >    0xffffffff818f0e5b <+43>:  mov    %r14,%rdi
-> >    0xffffffff818f0e5e <+46>:  mov    %ebp,%esi
-> >    0xffffffff818f0e60 <+48>:  mov    %rbx,%rdx
-> >    0xffffffff818f0e63 <+51>:  call   0xffffffff819033c0 <selinux_file_i=
-octl>
-> >    0xffffffff818f0e68 <+56>:  test   %eax,%eax
-> >    0xffffffff818f0e6a <+58>:  jne    0xffffffff818f0e4d <security_file_=
-ioctl+29>
-> >    0xffffffff818f0e6c <+60>:  jmp    0xffffffff818f0e47 <security_file_=
-ioctl+23>
-> >    0xffffffff818f0e6e <+62>:  endbr64
-> >    0xffffffff818f0e72 <+66>:  mov    %r14,%rdi
-> >    0xffffffff818f0e75 <+69>:  mov    %ebp,%esi
-> >    0xffffffff818f0e77 <+71>:  mov    %rbx,%rdx
-> >    0xffffffff818f0e7a <+74>:  call   0xffffffff8141e3b0 <bpf_lsm_file_i=
-octl>
-> >    0xffffffff818f0e7f <+79>:  test   %eax,%eax
-> >    0xffffffff818f0e81 <+81>:  jne    0xffffffff818f0e4d <security_file_=
-ioctl+29>
-> >    0xffffffff818f0e83 <+83>:  jmp    0xffffffff818f0e49 <security_file_=
-ioctl+25>
-> >    0xffffffff818f0e85 <+85>:  endbr64
-> >    0xffffffff818f0e89 <+89>:  mov    %r14,%rdi
-> >    0xffffffff818f0e8c <+92>:  mov    %ebp,%esi
-> >    0xffffffff818f0e8e <+94>:  mov    %rbx,%rdx
-> >    0xffffffff818f0e91 <+97>:  pop    %rbx
-> >    0xffffffff818f0e92 <+98>:  pop    %r14
-> >    0xffffffff818f0e94 <+100>: pop    %rbp
-> >    0xffffffff818f0e95 <+101>: ret
-> >
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
-> > Acked-by: Song Liu <song@kernel.org>
-> > Signed-off-by: KP Singh <kpsingh@kernel.org>
->
-> small nit, but looks good
->
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
->
-> jirka
->
->
-> > ---
-> >  include/linux/bpf_lsm.h   |  5 +++++
-> >  include/linux/lsm_hooks.h | 13 ++++++++++++-
-> >  kernel/bpf/trampoline.c   | 24 ++++++++++++++++++++++++
-> >  security/bpf/hooks.c      | 25 ++++++++++++++++++++++++-
-> >  security/security.c       |  3 ++-
-> >  5 files changed, 67 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
-> > index 1de7ece5d36d..5bbc31ac948c 100644
-> > --- a/include/linux/bpf_lsm.h
-> > +++ b/include/linux/bpf_lsm.h
-> > @@ -29,6 +29,7 @@ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog=
-,
-> >
-> >  bool bpf_lsm_is_sleepable_hook(u32 btf_id);
-> >  bool bpf_lsm_is_trusted(const struct bpf_prog *prog);
-> > +void bpf_lsm_toggle_hook(void *addr, bool value);
->
-> nit, this could be static, unless there are future plans ;-)
+On 01.11.2023 22:53, Martin KaFai Lau wrote:
+> On 10/31/23 6:49 AM, Vadim Fedorenko wrote:
+>> Add simple tc hook selftests to show the way to work with new crypto
+>> BPF API. Some weird structre and map are added to setup program to make
+>> verifier happy about dynptr initialization from memory. Simple AES-ECB
+>> algo is used to demonstrate encryption and decryption of fixed size
+>> buffers.
+>>
+>> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
+>> ---
+>> v2 -> v3:
+>> - disable tests on s390 and aarch64 because of unknown Fatal exception
+>>    in sg_init_one
+>> v1 -> v2:
+>> - add CONFIG_CRYPTO_AES and CONFIG_CRYPTO_ECB to selftest build config
+>>    suggested by Daniel
+>>
+>>   kernel/bpf/crypto.c                           |   5 +-
+>>   tools/testing/selftests/bpf/DENYLIST.aarch64  |   1 +
+>>   tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
+>>   tools/testing/selftests/bpf/config            |   3 +
+>>   .../selftests/bpf/prog_tests/crypto_sanity.c  | 129 +++++++++++++++
+>>   .../selftests/bpf/progs/crypto_common.h       | 103 ++++++++++++
+>>   .../selftests/bpf/progs/crypto_sanity.c       | 154 ++++++++++++++++++
+>>   7 files changed, 394 insertions(+), 2 deletions(-)
+>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/crypto_sanity.c
+>>   create mode 100644 tools/testing/selftests/bpf/progs/crypto_common.h
+>>   create mode 100644 tools/testing/selftests/bpf/progs/crypto_sanity.c
+>>
+>> diff --git a/kernel/bpf/crypto.c b/kernel/bpf/crypto.c
+>> index c2a0703934fc..4ee6193165ca 100644
+>> --- a/kernel/bpf/crypto.c
+>> +++ b/kernel/bpf/crypto.c
+>> @@ -65,8 +65,9 @@ static void *__bpf_dynptr_data_ptr(const struct 
+>> bpf_dynptr_kern *ptr)
+>>    *
+>>    * bpf_crypto_skcipher_ctx_create() allocates memory using the BPF memory
+>>    * allocator, and will not block. It may return NULL if no memory is available.
+>> - * @algo: bpf_dynptr which holds string representation of algorithm.
+>> - * @key:  bpf_dynptr which holds cipher key to do crypto.
+>> + * @palgo: bpf_dynptr which holds string representation of algorithm.
+>> + * @pkey:  bpf_dynptr which holds cipher key to do crypto.
+>> + * @err:   integer to store error code when NULL is returned
+>>    */
+>>   __bpf_kfunc struct bpf_crypto_skcipher_ctx *
+>>   bpf_crypto_skcipher_ctx_create(const struct bpf_dynptr_kern *palgo,
+>> diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 
+>> b/tools/testing/selftests/bpf/DENYLIST.aarch64
+>> index 5c2cc7e8c5d0..72c7ef3e5872 100644
+>> --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
+>> +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
+>> @@ -1,5 +1,6 @@
+>>   bpf_cookie/multi_kprobe_attach_api               # 
+>> kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
+>>   bpf_cookie/multi_kprobe_link_api                 # 
+>> kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
+>> +crypto_sanity                     # sg_init_one has exception on aarch64
+> 
+> What is the exception? Is arm64 just lacking the support?
 
-Actually, this is called from trampoline.c and cannot be static.
+I have no idea, TBH. Might be because of different aligment requirements, but
+it's just guess.
 
-- KP
+> 
+>>   exceptions                     # JIT does not support calling kfunc 
+>> bpf_throw: -524
+>>   fexit_sleep                                      # The test never returns. 
+>> The remaining tests cannot start.
+>>   kprobe_multi_bench_attach                        # needs CONFIG_FPROBE
+>> diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x 
+>> b/tools/testing/selftests/bpf/DENYLIST.s390x
+>> index 1a63996c0304..8ab7485bedb1 100644
+>> --- a/tools/testing/selftests/bpf/DENYLIST.s390x
+>> +++ b/tools/testing/selftests/bpf/DENYLIST.s390x
+>> @@ -1,5 +1,6 @@
+>>   # TEMPORARY
+>>   # Alphabetical order
+>> +crypto_sanity                 # sg_init_one has exception on 
+>> s390                           (exceptions)
+>>   exceptions                 # JIT does not support calling kfunc 
+>> bpf_throw                       (exceptions)
+>>   get_stack_raw_tp                         # user_stack corrupted user 
+>> stack                                             (no backchain userspace)
+>>   stacktrace_build_id                      # compare_map_keys stackid_hmap vs. 
+>> stackmap err -2 errno 2                   (?)
+>> diff --git a/tools/testing/selftests/bpf/config 
+>> b/tools/testing/selftests/bpf/config
+>> index 02dd4409200e..48b570fd1752 100644
+>> --- a/tools/testing/selftests/bpf/config
+>> +++ b/tools/testing/selftests/bpf/config
+>> @@ -14,6 +14,9 @@ CONFIG_CGROUP_BPF=y
+>>   CONFIG_CRYPTO_HMAC=y
+>>   CONFIG_CRYPTO_SHA256=y
+>>   CONFIG_CRYPTO_USER_API_HASH=y
+>> +CONFIG_CRYPTO_SKCIPHER=y
+>> +CONFIG_CRYPTO_ECB=y
+>> +CONFIG_CRYPTO_AES=y
+>>   CONFIG_DEBUG_INFO=y
+>>   CONFIG_DEBUG_INFO_BTF=y
+>>   CONFIG_DEBUG_INFO_DWARF4=y
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/crypto_sanity.c 
+>> b/tools/testing/selftests/bpf/prog_tests/crypto_sanity.c
+>> new file mode 100644
+>> index 000000000000..a43969da6d15
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/prog_tests/crypto_sanity.c
+>> @@ -0,0 +1,129 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
+> 
+> s/2022/2023/ :)
 
+ah, sure
+
+> 
+>> +
+>> +#include <sys/types.h>
+>> +#include <sys/socket.h>
+>> +#include <net/if.h>
+>> +#include <linux/in6.h>
+>> +
+>> +#include "test_progs.h"
+>> +#include "network_helpers.h"
+>> +#include "crypto_sanity.skel.h"
+>> +
+>> +#define NS_TEST "crypto_sanity_ns"
+>> +#define IPV6_IFACE_ADDR "face::1"
+>> +#define UDP_TEST_PORT 7777
+>> +static const char plain_text[] = "stringtoencrypt0";
+>> +static const char crypted_data[] = 
+>> "\x5B\x59\x39\xEA\xD9\x7A\x2D\xAD\xA7\xE0\x43" \
+>> +                   "\x37\x8A\x77\x17\xB2";
+>> +
+>> +void test_crypto_sanity(void)
+>> +{
+>> +    LIBBPF_OPTS(bpf_tc_hook, qdisc_hook, .attach_point = BPF_TC_EGRESS);
+>> +    LIBBPF_OPTS(bpf_tc_opts, tc_attach_enc);
+>> +    LIBBPF_OPTS(bpf_tc_opts, tc_attach_dec);
+>> +    LIBBPF_OPTS(bpf_test_run_opts, opts,
+>> +            .data_in = crypted_data,
+>> +            .data_size_in = sizeof(crypted_data),
+> 
+> This should not be needed now because the test_run is on a tracing program.
+
+yep, will remove it
+
+> 
+>> +            .repeat = 1,
+>> +    );
+>> +    struct nstoken *nstoken = NULL;
+>> +    struct crypto_sanity *skel;
+>> +    struct sockaddr_in6 addr;
+>> +    int sockfd, err, pfd;
+>> +    socklen_t addrlen;
+>> +
+>> +    skel = crypto_sanity__open();
+>> +    if (!ASSERT_OK_PTR(skel, "skel open"))
+>> +        return;
+>> +
+>> +    bpf_program__set_autoload(skel->progs.skb_crypto_setup, true);
+> 
+> Remove the '?' from SEC("?fentry.s/bpf_fentry_test1") should save this 
+> set_autoload call
+
+ok
+.
+> 
+>> +
+>> +    SYS(fail, "ip netns add %s", NS_TEST);
+>> +    SYS(fail, "ip -net %s -6 addr add %s/128 dev lo nodad", NS_TEST, 
+>> IPV6_IFACE_ADDR);
+>> +    SYS(fail, "ip -net %s link set dev lo up", NS_TEST);
+>> +
+>> +    err = crypto_sanity__load(skel);
+>> +    if (!ASSERT_OK(err, "crypto_sanity__load"))
+>> +        goto fail;
+>> +
+>> +    nstoken = open_netns(NS_TEST);
+>> +    if (!ASSERT_OK_PTR(nstoken, "open_netns"))
+>> +        goto fail;
+>> +
+>> +    qdisc_hook.ifindex = if_nametoindex("lo");
+>> +    if (!ASSERT_GT(qdisc_hook.ifindex, 0, "if_nametoindex lo"))
+>> +        goto fail;
+>> +
+>> +    err = crypto_sanity__attach(skel);
+>> +    if (!ASSERT_OK(err, "crypto_sanity__attach"))
+>> +        goto fail;
+>> +
+>> +    pfd = bpf_program__fd(skel->progs.skb_crypto_setup);
+>> +    if (!ASSERT_GT(pfd, 0, "skb_crypto_setup fd"))
+>> +        goto fail;
+>> +
+>> +    err = bpf_prog_test_run_opts(pfd, &opts);
+>> +    if (!ASSERT_OK(err, "skb_crypto_setup") ||
+>> +        !ASSERT_OK(opts.retval, "skb_crypto_setup retval"))
+>> +        goto fail;
+>> +
+>> +    if (!ASSERT_OK(skel->bss->status, "skb_crypto_setup status"))
+>> +        goto fail;
+>> +
+>> +    err = bpf_tc_hook_create(&qdisc_hook);
+>> +    if (!ASSERT_OK(err, "create qdisc hook"))
+>> +        goto fail;
+>> +
+>> +    addrlen = sizeof(addr);
+>> +    err = make_sockaddr(AF_INET6, IPV6_IFACE_ADDR, UDP_TEST_PORT,
+>> +                (void *)&addr, &addrlen);
+>> +    if (!ASSERT_OK(err, "make_sockaddr"))
+>> +        goto fail;
+>> +
+>> +    tc_attach_dec.prog_fd = bpf_program__fd(skel->progs.decrypt_sanity);
+>> +    err = bpf_tc_attach(&qdisc_hook, &tc_attach_dec);
+>> +    if (!ASSERT_OK(err, "attach decrypt filter"))
+>> +        goto fail;
+>> +
+>> +    sockfd = socket(AF_INET6, SOCK_DGRAM, 0);
+>> +    if (!ASSERT_NEQ(sockfd, -1, "decrypt socket"))
+>> +        goto fail;
+>> +    err = sendto(sockfd, crypted_data, 16, 0, (void *)&addr, addrlen);
+>> +    close(sockfd);
+>> +    if (!ASSERT_EQ(err, 16, "decrypt send"))
+>> +        goto fail;
+>> +
+>> +    bpf_tc_detach(&qdisc_hook, &tc_attach_dec);
+>> +    if (!ASSERT_OK(skel->bss->status, "decrypt status"))
+>> +        goto fail;
+>> +    if (!ASSERT_STRNEQ(skel->bss->dst, plain_text, sizeof(plain_text), 
+>> "decrypt"))
+>> +        goto fail;
+>> +
+>> +    tc_attach_enc.prog_fd = bpf_program__fd(skel->progs.encrypt_sanity);
+>> +    err = bpf_tc_attach(&qdisc_hook, &tc_attach_enc);
+>> +    if (!ASSERT_OK(err, "attach encrypt filter"))
+>> +        goto fail;
+>> +
+>> +    sockfd = socket(AF_INET6, SOCK_DGRAM, 0);
+>> +    if (!ASSERT_NEQ(sockfd, -1, "encrypt socket"))
+>> +        goto fail;
+>> +    err = sendto(sockfd, plain_text, 16, 0, (void *)&addr, addrlen);
+>> +    close(sockfd);
+>> +    if (!ASSERT_EQ(err, 16, "encrypt send"))
+>> +        goto fail;
+>> +
+>> +    bpf_tc_detach(&qdisc_hook, &tc_attach_enc);
+>> +    if (!ASSERT_OK(skel->bss->status, "encrypt status"))
+>> +        goto fail;
+>> +    if (!ASSERT_STRNEQ(skel->bss->dst, crypted_data, sizeof(crypted_data), 
+>> "encrypt"))
+>> +        goto fail;
+>> +
+>> +fail:
+>> +    if (nstoken) {
+>> +        bpf_tc_hook_destroy(&qdisc_hook);
+>> +        close_netns(nstoken);
+>> +    }
+>> +    SYS_NOFAIL("ip netns del " NS_TEST " &> /dev/null");
+>> +    crypto_sanity__destroy(skel);
+>> +}
+>> diff --git a/tools/testing/selftests/bpf/progs/crypto_common.h 
+>> b/tools/testing/selftests/bpf/progs/crypto_common.h
+>> new file mode 100644
+>> index 000000000000..584378bb6df8
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/progs/crypto_common.h
+>> @@ -0,0 +1,103 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
+>> +
+>> +#ifndef _CRYPTO_COMMON_H
+>> +#define _CRYPTO_COMMON_H
+>> +
+>> +#include "errno.h"
+>> +#include <stdbool.h>
+>> +
+>> +#define private(name) SEC(".bss." #name) __hidden __attribute__((aligned(8)))
+>> +private(CTX) static struct bpf_crypto_skcipher_ctx __kptr * global_crypto_ctx;
+> 
+> Add a test to show how it is used?
+
+I'm thinking if we really need this? Looks like we don't.
+
+> 
+>> +
+>> +struct bpf_crypto_skcipher_ctx *bpf_crypto_skcipher_ctx_create(const struct 
+>> bpf_dynptr *algo,
+>> +                                   const struct bpf_dynptr *key,
+>> +                                   int *err) __ksym;
+>> +struct bpf_crypto_skcipher_ctx *bpf_crypto_skcipher_ctx_acquire(struct 
+>> bpf_crypto_skcipher_ctx *ctx) __ksym;
+>> +void bpf_crypto_skcipher_ctx_release(struct bpf_crypto_skcipher_ctx *ctx) 
+>> __ksym;
+> 
+> Same for acquire and release kfunc. Add test cases.
+> 
+> btw, does it have use cases to store the same bpf_crypto_skcipher_ctx in 
+> multiple maps?
+
+Yeah, sure. You can potentially use the same algo with the same configured key
+in parallel. All sensitive data is stored in the request structure.
+
+> 
+>> +int bpf_crypto_skcipher_encrypt(struct bpf_crypto_skcipher_ctx *ctx,
+>> +                const struct bpf_dynptr *src, struct bpf_dynptr *dst,
+>> +                const struct bpf_dynptr *iv) __ksym;
+>> +int bpf_crypto_skcipher_decrypt(struct bpf_crypto_skcipher_ctx *ctx,
+>> +                const struct bpf_dynptr *src, struct bpf_dynptr *dst,
+>> +                const struct bpf_dynptr *iv) __ksym;
+>> +
+>> +struct __crypto_skcipher_ctx_value {
+>> +    struct bpf_crypto_skcipher_ctx __kptr * ctx;
+>> +};
+>> +
+>> +struct crypto_conf_value {
+>> +    __u8 algo[32];
+>> +    __u32 algo_size;
+>> +    __u8 key[32];
+>> +    __u32 key_size;
+>> +    __u8 iv[32];
+>> +    __u32 iv_size;
+>> +    __u8 dst[32];
+>> +    __u32 dst_size;
+>> +};
+>> +
+>> +struct array_conf_map {
+>> +    __uint(type, BPF_MAP_TYPE_ARRAY);
+>> +    __type(key, int);
+>> +    __type(value, struct crypto_conf_value);
+>> +    __uint(max_entries, 1);
+>> +} __crypto_conf_map SEC(".maps");
+>> +
+>> +struct array_map {
+>> +    __uint(type, BPF_MAP_TYPE_ARRAY);
+>> +    __type(key, int);
+>> +    __type(value, struct __crypto_skcipher_ctx_value);
+>> +    __uint(max_entries, 1);
+>> +} __crypto_skcipher_ctx_map SEC(".maps");
+>> +
+>> +static inline struct crypto_conf_value *crypto_conf_lookup(void)
+>> +{
+>> +    struct crypto_conf_value *v, local = {};
+>> +    u32 key = 0;
+>> +
+>> +    v = bpf_map_lookup_elem(&__crypto_conf_map, &key);
+>> +    if (v)
+>> +        return v;
+>> +
+>> +    bpf_map_update_elem(&__crypto_conf_map, &key, &local, 0);
+>> +    return bpf_map_lookup_elem(&__crypto_conf_map, &key);
+> 
+> hmm... local is all 0 which became the map value. Where is it initialized?
+
+ahh.. it's actually initialized in ctx_insert(). but looks like this part is
+left from previous iteration. I'll adjust the code.
+
+> 
+>> +}
+>> +
+>> +static inline struct __crypto_skcipher_ctx_value 
+>> *crypto_skcipher_ctx_value_lookup(void)
+>> +{
+>> +    u32 key = 0;
+>> +
+>> +    return bpf_map_lookup_elem(&__crypto_skcipher_ctx_map, &key);
+>> +}
+>> +
+>> +static inline int crypto_skcipher_ctx_insert(struct bpf_crypto_skcipher_ctx 
+>> *ctx)
+>> +{
+>> +    struct __crypto_skcipher_ctx_value local, *v;
+>> +    long status;
+> 
+> nit. s/status/err/
+
+sure
+
+> 
+>> +    struct bpf_crypto_skcipher_ctx *old;
+>> +    u32 key = 0;
+>> +
+>> +    local.ctx = NULL;
+>> +    status = bpf_map_update_elem(&__crypto_skcipher_ctx_map, &key, &local, 0);
+>> +    if (status) {
+>> +        bpf_crypto_skcipher_ctx_release(ctx);
+>> +        return status;
+>> +    }
+>> +
+>> +    v = bpf_map_lookup_elem(&__crypto_skcipher_ctx_map, &key);
+>> +    if (!v) {
+>> +        bpf_crypto_skcipher_ctx_release(ctx);
+>> +        return -ENOENT;
+>> +    }
+>> +
+>> +    old = bpf_kptr_xchg(&v->ctx, ctx);
+>> +    if (old) {
+>> +        bpf_crypto_skcipher_ctx_release(old);
+>> +        return -EEXIST;
+>> +    }
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +#endif /* _CRYPTO_COMMON_H */
+>> diff --git a/tools/testing/selftests/bpf/progs/crypto_sanity.c 
+>> b/tools/testing/selftests/bpf/progs/crypto_sanity.c
+>> new file mode 100644
+>> index 000000000000..71a172d8d2a2
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/progs/crypto_sanity.c
+>> @@ -0,0 +1,154 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
+>> +
+>> +#include "vmlinux.h"
+>> +#include "bpf_tracing_net.h"
+>> +#include <bpf/bpf_helpers.h>
+>> +#include <bpf/bpf_endian.h>
+>> +#include <bpf/bpf_tracing.h>
+>> +#include "bpf_misc.h"
+>> +#include "bpf_kfuncs.h"
+>> +#include "crypto_common.h"
+>> +
+>> +#define UDP_TEST_PORT 7777
+>> +unsigned char crypto_key[16] = "testtest12345678";
+>> +char crypto_algo[9] = "ecb(aes)";
+>> +char dst[32] = {};
+>> +int status;
+>> +
+>> +static inline int skb_validate_test(const struct __sk_buff *skb)
+>> +{
+>> +    struct ipv6hdr ip6h;
+>> +    struct udphdr udph;
+>> +    u32 offset;
+>> +
+>> +    if (skb->protocol != __bpf_constant_htons(ETH_P_IPV6))
+>> +        return -1;
+>> +
+>> +    if (bpf_skb_load_bytes(skb, ETH_HLEN, &ip6h, sizeof(ip6h)))
+>> +        return -1;
+>> +
+>> +    if (ip6h.nexthdr != IPPROTO_UDP)
+>> +        return -1;
+>> +
+>> +    if (bpf_skb_load_bytes(skb, ETH_HLEN + sizeof(ip6h), &udph, sizeof(udph)))
+>> +        return -1;
+>> +
+>> +    if (udph.dest != __bpf_constant_htons(UDP_TEST_PORT))
+>> +        return -1;
+>> +
+>> +    offset = ETH_HLEN + sizeof(ip6h) + sizeof(udph);
+>> +    if (skb->len < offset + 16)
+>> +        return -1;
+>> +
+>> +    return offset;
+>> +}
+>> +
+>> +SEC("?fentry.s/bpf_fentry_test1")
+> 
+> I wonder if others have better idea how to do this. This is basically setting up 
+> the algo and key which requires to call a kfunc in sleepable context. Otherwise, 
+> the tc's test_run would be a better fit.
+
+The other way can be implement crypto API function to allocate with GFP_ATOMIC.
+Currently all skcipher allocations are hard-coded to GFP_KERNEL.
+
+> 
+>> +int BPF_PROG(skb_crypto_setup)
+>> +{
+>> +    struct crypto_conf_value *c;
+>> +    struct bpf_dynptr algo, key;
+>> +    int err = 0;
+>> +
+>> +    status = 0;
+>> +
+>> +    c = crypto_conf_lookup();
+> 
+> "c" is not used. Why lookup is needed? May be properly setup the 
+> __crypto_conf_map so the example is more complete.
+> 
+
+This is most exciting part. Without this lookup verifier complains on the 
+initialization of dynptr from memory buffer. I don't really understand the
+way it works or changes pointers types.
+
+>> +    if (!c) {
+>> +        status = -EINVAL;
+>> +        return 0;
+>> +    }
+>> +
+>> +    bpf_dynptr_from_mem(crypto_algo, sizeof(crypto_algo), 0, &algo);
+>> +    bpf_dynptr_from_mem(crypto_key, sizeof(crypto_key), 0, &key);
+>> +    struct bpf_crypto_skcipher_ctx *cctx = 
+>> bpf_crypto_skcipher_ctx_create(&algo, &key, &err);
+>> +
+>> +    if (!cctx) {
+>> +        status = err;
+>> +        return 0;
+>> +    }
+>> +
+>> +    err = crypto_skcipher_ctx_insert(cctx);
+>> +    if (err && err != -EEXIST)
+>> +        status = err;
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +SEC("tc")
+>> +int decrypt_sanity(struct __sk_buff *skb)
+>> +{
+>> +    struct __crypto_skcipher_ctx_value *v;
+>> +    struct bpf_crypto_skcipher_ctx *ctx;
+>> +    struct bpf_dynptr psrc, pdst, iv;
+>> +    int err;
+> 
+> nit. s/err/offset/. "err" is actually the offset for the common case.
+> 
+> btw, considering dynptr psrc has to be created from skb anyway, is it easier to 
+> use bpf_dynptr_slice(psrc, 0, NULL, ETH_HLEN + sizeof(ip6h) + sizeof(udph)) in 
+> the above skb_validate_test()?
+
+Yeah, maybe it's better. The only problem is naming then...
+
+> 
+>> +
+>> +    err = skb_validate_test(skb);
+>> +    if (err < 0) {
+>> +        status = err;
+>> +        return TC_ACT_SHOT;
+>> +    }
+>> +
+>> +    v = crypto_skcipher_ctx_value_lookup();
+>> +    if (!v) {
+>> +        status = -ENOENT;
+>> +        return TC_ACT_SHOT;
+>> +    }
+>> +
+>> +    ctx = v->ctx;
+>> +    if (!ctx) {
+>> +        status = -ENOENT;
+>> +        return TC_ACT_SHOT;
+>> +    }
+>> +
+>> +    bpf_dynptr_from_skb(skb, 0, &psrc);
+>> +    bpf_dynptr_adjust(&psrc, err, err + 16);
+>> +    bpf_dynptr_from_mem(dst, sizeof(dst), 0, &pdst);
+>> +    bpf_dynptr_from_mem(dst, 0, 0, &iv);
+>> +
+>> +    bpf_crypto_skcipher_decrypt(ctx, &psrc, &pdst, &iv);
+> 
+> check decrypt return value before setting "status = 0;' below.
+
+Agree, will adjust the code.
+
+>> +
+>> +    status = 0;
+>> +
+>> +    return TC_ACT_SHOT;
+>> +}
+>> +
+>> +SEC("tc")
+>> +int encrypt_sanity(struct __sk_buff *skb)
+>> +{
+>> +    struct __crypto_skcipher_ctx_value *v;
+>> +    struct bpf_crypto_skcipher_ctx *ctx;
+>> +    struct bpf_dynptr psrc, pdst, iv;
+>> +    int err;
+>> +
+>> +    status = 0;
+>> +
+>> +    err = skb_validate_test(skb);
+>> +    if (err < 0) {
+>> +        status = err;
+>> +        return TC_ACT_SHOT;
+>> +    }
+>> +
+>> +    v = crypto_skcipher_ctx_value_lookup();
+>> +    if (!v) {
+>> +        status = -ENOENT;
+>> +        return TC_ACT_SHOT;
+>> +    }
+>> +
+>> +    ctx = v->ctx;
+>> +    if (!ctx) {
+>> +        status = -ENOENT;
+>> +        return TC_ACT_SHOT;
+>> +    }
+>> +
+>> +    bpf_dynptr_from_skb(skb, 0, &psrc);
+>> +    bpf_dynptr_adjust(&psrc, err, err + 16);
+>> +    bpf_dynptr_from_mem(dst, sizeof(dst), 0, &pdst);
+>> +    bpf_dynptr_from_mem(dst, 0, 0, &iv);
+>> +
+>> +    bpf_crypto_skcipher_encrypt(ctx, &psrc, &pdst, &iv);
+> 
+> Same here. check return value.
 >
-> >
-> >  static inline struct bpf_storage_blob *bpf_inode(
-> >       const struct inode *inode)
-> > @@ -78,6 +79,10 @@ static inline void bpf_lsm_find_cgroup_shim(const st=
-ruct bpf_prog *prog,
-> >  {
-> >  }
-> >
-> > +static inline void bpf_lsm_toggle_hook(void *addr, bool value)
-> > +{
-> > +}
-> > +
-> >  #endif /* CONFIG_BPF_LSM */
-> >
-> >  #endif /* _LINUX_BPF_LSM_H */
-> > diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-> > index c77a1859214d..57ffe4eb6d30 100644
-> > --- a/include/linux/lsm_hooks.h
-> > +++ b/include/linux/lsm_hooks.h
-> > @@ -97,11 +97,14 @@ struct lsm_static_calls_table {
-> >   * @scalls: The beginning of the array of static calls assigned to thi=
-s hook.
-> >   * @hook: The callback for the hook.
-> >   * @lsm: The name of the lsm that owns this hook.
-> > + * @default_state: The state of the LSM hook when initialized. If set =
-to false,
-> > + * the static key guarding the hook will be set to disabled.
-> >   */
-> >  struct security_hook_list {
-> >       struct lsm_static_call  *scalls;
-> >       union security_list_options     hook;
-> >       const char                      *lsm;
-> > +     bool                            default_state;
-> >  } __randomize_layout;
-> >
-> >  /*
-> > @@ -151,7 +154,15 @@ static inline struct xattr *lsm_get_xattr_slot(str=
-uct xattr *xattrs,
-> >  #define LSM_HOOK_INIT(NAME, CALLBACK)                        \
-> >       {                                               \
-> >               .scalls =3D static_calls_table.NAME,      \
-> > -             .hook =3D { .NAME =3D CALLBACK }            \
-> > +             .hook =3D { .NAME =3D CALLBACK },           \
-> > +             .default_state =3D true                   \
-> > +     }
-> > +
-> > +#define LSM_HOOK_INIT_DISABLED(NAME, CALLBACK)               \
-> > +     {                                               \
-> > +             .scalls =3D static_calls_table.NAME,      \
-> > +             .hook =3D { .NAME =3D CALLBACK },           \
-> > +             .default_state =3D false                  \
-> >       }
-> >
-> >  extern char *lsm_names;
-> > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> > index e97aeda3a86b..44788e2eaa1b 100644
-> > --- a/kernel/bpf/trampoline.c
-> > +++ b/kernel/bpf/trampoline.c
-> > @@ -13,6 +13,7 @@
-> >  #include <linux/bpf_verifier.h>
-> >  #include <linux/bpf_lsm.h>
-> >  #include <linux/delay.h>
-> > +#include <linux/bpf_lsm.h>
-> >
-> >  /* dummy _ops. The verifier will operate on target program's ops. */
-> >  const struct bpf_verifier_ops bpf_extension_verifier_ops =3D {
-> > @@ -510,6 +511,21 @@ static enum bpf_tramp_prog_type bpf_attach_type_to=
-_tramp(struct bpf_prog *prog)
-> >       }
-> >  }
-> >
-> > +static void bpf_trampoline_toggle_lsm(struct bpf_trampoline *tr,
-> > +                                   enum bpf_tramp_prog_type kind)
-> > +{
-> > +     struct bpf_tramp_link *link;
-> > +     bool found =3D false;
-> > +
-> > +     hlist_for_each_entry(link, &tr->progs_hlist[kind], tramp_hlist) {
-> > +             if (link->link.prog->type =3D=3D BPF_PROG_TYPE_LSM) {
-> > +                     found  =3D true;
-> > +                     break;
-> > +             }
-> > +     }
-> > +     bpf_lsm_toggle_hook(tr->func.addr, found);
-> > +}
-> > +
-> >  static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, str=
-uct bpf_trampoline *tr)
-> >  {
-> >       enum bpf_tramp_prog_type kind;
-> > @@ -549,6 +565,10 @@ static int __bpf_trampoline_link_prog(struct bpf_t=
-ramp_link *link, struct bpf_tr
-> >
-> >       hlist_add_head(&link->tramp_hlist, &tr->progs_hlist[kind]);
-> >       tr->progs_cnt[kind]++;
-> > +
-> > +     if (link->link.prog->type =3D=3D BPF_PROG_TYPE_LSM)
-> > +             bpf_trampoline_toggle_lsm(tr, kind);
-> > +
-> >       err =3D bpf_trampoline_update(tr, true /* lock_direct_mutex */);
-> >       if (err) {
-> >               hlist_del_init(&link->tramp_hlist);
-> > @@ -582,6 +602,10 @@ static int __bpf_trampoline_unlink_prog(struct bpf=
-_tramp_link *link, struct bpf_
-> >       }
-> >       hlist_del_init(&link->tramp_hlist);
-> >       tr->progs_cnt[kind]--;
-> > +
-> > +     if (link->link.prog->type =3D=3D BPF_PROG_TYPE_LSM)
-> > +             bpf_trampoline_toggle_lsm(tr, kind);
-> > +
-> >       return bpf_trampoline_update(tr, true /* lock_direct_mutex */);
-> >  }
-> >
-> > diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
-> > index cfaf1d0e6a5f..47e1a4777ec9 100644
-> > --- a/security/bpf/hooks.c
-> > +++ b/security/bpf/hooks.c
-> > @@ -8,7 +8,7 @@
-> >
-> >  static struct security_hook_list bpf_lsm_hooks[] __ro_after_init =3D {
-> >       #define LSM_HOOK(RET, DEFAULT, NAME, ...) \
-> > -     LSM_HOOK_INIT(NAME, bpf_lsm_##NAME),
-> > +     LSM_HOOK_INIT_DISABLED(NAME, bpf_lsm_##NAME),
-> >       #include <linux/lsm_hook_defs.h>
-> >       #undef LSM_HOOK
-> >       LSM_HOOK_INIT(inode_free_security, bpf_inode_storage_free),
-> > @@ -32,3 +32,26 @@ DEFINE_LSM(bpf) =3D {
-> >       .init =3D bpf_lsm_init,
-> >       .blobs =3D &bpf_lsm_blob_sizes
-> >  };
-> > +
-> > +void bpf_lsm_toggle_hook(void *addr, bool value)
-> > +{
-> > +     struct lsm_static_call *scalls;
-> > +     struct security_hook_list *h;
-> > +     int i, j;
-> > +
-> > +     for (i =3D 0; i < ARRAY_SIZE(bpf_lsm_hooks); i++) {
-> > +             h =3D &bpf_lsm_hooks[i];
-> > +             if (h->hook.lsm_callback !=3D addr)
-> > +                     continue;
-> > +
-> > +             for (j =3D 0; j < MAX_LSM_COUNT; j++) {
-> > +                     scalls =3D &h->scalls[j];
-> > +                     if (scalls->hl !=3D &bpf_lsm_hooks[i])
-> > +                             continue;
-> > +                     if (value)
-> > +                             static_branch_enable(scalls->active);
-> > +                     else
-> > +                             static_branch_disable(scalls->active);
-> > +             }
-> > +     }
-> > +}
-> > diff --git a/security/security.c b/security/security.c
-> > index ce4c0a9107ea..f45e875b6d93 100644
-> > --- a/security/security.c
-> > +++ b/security/security.c
-> > @@ -382,7 +382,8 @@ static void __init lsm_static_call_init(struct secu=
-rity_hook_list *hl)
-> >                       __static_call_update(scall->key, scall->trampolin=
-e,
-> >                                            hl->hook.lsm_callback);
-> >                       scall->hl =3D hl;
-> > -                     static_branch_enable(scall->active);
-> > +                     if (hl->default_state)
-> > +                             static_branch_enable(scall->active);
-> >                       return;
-> >               }
-> >               scall++;
-> > --
-> > 2.42.0.609.gbb76f46606-goog
-> >
-> >
+
+Yep.
+
+>> +
+>> +    return TC_ACT_SHOT;
+>> +}
+>> +
+>> +char __license[] SEC("license") = "GPL";
+> 
+
 
