@@ -1,49 +1,47 @@
-Return-Path: <bpf+bounces-13897-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13900-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 480F07DEB7C
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 04:38:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9CC57DEB80
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 04:38:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0F43281A40
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 03:38:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64CF0281A4F
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 03:38:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7A091C35;
-	Thu,  2 Nov 2023 03:38:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E744F1878;
+	Thu,  2 Nov 2023 03:38:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76E6E185B
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 03:38:35 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E208120
-	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 20:38:34 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-	by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 3A22qdaS009999
-	for <bpf@vger.kernel.org>; Wed, 1 Nov 2023 20:38:33 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0D9F185E
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 03:38:39 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E245CE4
+	for <bpf@vger.kernel.org>; Wed,  1 Nov 2023 20:38:38 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A21abAg018975
+	for <bpf@vger.kernel.org>; Wed, 1 Nov 2023 20:38:38 -0700
 Received: from mail.thefacebook.com ([163.114.132.120])
-	by m0001303.ppops.net (PPS) with ESMTPS id 3u3e3tsag0-11
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3u3sftweu1-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 01 Nov 2023 20:38:32 -0700
-Received: from twshared29647.38.frc1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Wed, 01 Nov 2023 20:38:38 -0700
+Received: from twshared15991.38.frc1.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 1 Nov 2023 20:38:30 -0700
+ 15.1.2507.34; Wed, 1 Nov 2023 20:38:37 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 097F23AC97F4E; Wed,  1 Nov 2023 20:38:25 -0700 (PDT)
+	id 15E0D3AC97F67; Wed,  1 Nov 2023 20:38:28 -0700 (PDT)
 From: Andrii Nakryiko <andrii@kernel.org>
 To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>,
-        Eduard Zingerman
-	<eddyz87@gmail.com>
-Subject: [PATCH v6 bpf-next 12/17] bpf: generalize is_branch_taken() to work with two registers
-Date: Wed, 1 Nov 2023 20:37:54 -0700
-Message-ID: <20231102033759.2541186-13-andrii@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH v6 bpf-next 13/17] bpf: move is_branch_taken() down
+Date: Wed, 1 Nov 2023 20:37:55 -0700
+Message-ID: <20231102033759.2541186-14-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231102033759.2541186-1-andrii@kernel.org>
 References: <20231102033759.2541186-1-andrii@kernel.org>
@@ -56,87 +54,98 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: MFaEuD2DzOL-H0RA6By0dL3veFN28UHz
-X-Proofpoint-ORIG-GUID: MFaEuD2DzOL-H0RA6By0dL3veFN28UHz
+X-Proofpoint-ORIG-GUID: RttJ8hY9vrjVldU4-A0jTE0Lm81x2K1G
+X-Proofpoint-GUID: RttJ8hY9vrjVldU4-A0jTE0Lm81x2K1G
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-01_23,2023-11-01_02,2023-05-22_02
 
-While still assuming that second register is a constant, generalize
-is_branch_taken-related code to accept two registers instead of register
-plus explicit constant value. This also, as a side effect, allows to
-simplify check_cond_jmp_op() by unifying BPF_K case with BPF_X case, for
-which we use a fake register to represent BPF_K's imm constant as
-a register.
+Move is_branch_taken() slightly down. In subsequent patched we'll need
+both flip_opcode() and is_pkt_ptr_branch_taken() for is_branch_taken(),
+but instead of sprinkling forward declarations around, it makes more
+sense to move is_branch_taken() lower below is_pkt_ptr_branch_taken(),
+and also keep it closer to very tightly related reg_set_min_max(), as
+they are two critical parts of the same SCALAR range tracking logic.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/verifier.c | 57 ++++++++++++++++++++++++-------------------
- 1 file changed, 32 insertions(+), 25 deletions(-)
+ kernel/bpf/verifier.c | 84 +++++++++++++++++++++----------------------
+ 1 file changed, 42 insertions(+), 42 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 725f327ce5eb..5e722aaef7ed 100644
+index 5e722aaef7ed..c5d187d43fa1 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -14167,9 +14167,13 @@ static void find_good_pkt_pointers(struct bpf_ve=
-rifier_state *vstate,
- 	}));
- }
-=20
--static int is_branch32_taken(struct bpf_reg_state *reg1, u32 val, u8 opc=
-ode)
-+/*
-+ * <reg1> <op> <reg2>, currently assuming reg2 is a constant
-+ */
-+static int is_branch32_taken(struct bpf_reg_state *reg1, struct bpf_reg_=
-state *reg2, u8 opcode)
- {
- 	struct tnum subreg =3D tnum_subreg(reg1->var_off);
-+	u32 val =3D (u32)tnum_subreg(reg2->var_off).value;
- 	s32 sval =3D (s32)val;
-=20
- 	switch (opcode) {
-@@ -14249,8 +14253,12 @@ static int is_branch32_taken(struct bpf_reg_stat=
-e *reg1, u32 val, u8 opcode)
- }
-=20
-=20
--static int is_branch64_taken(struct bpf_reg_state *reg1, u64 val, u8 opc=
-ode)
-+/*
-+ * <reg1> <op> <reg2>, currently assuming reg2 is a constant
-+ */
-+static int is_branch64_taken(struct bpf_reg_state *reg1, struct bpf_reg_=
-state *reg2, u8 opcode)
- {
-+	u64 val =3D reg2->var_off.value;
- 	s64 sval =3D (s64)val;
-=20
- 	switch (opcode) {
-@@ -14329,16 +14337,23 @@ static int is_branch64_taken(struct bpf_reg_sta=
-te *reg1, u64 val, u8 opcode)
+@@ -14337,48 +14337,6 @@ static int is_branch64_taken(struct bpf_reg_stat=
+e *reg1, struct bpf_reg_state *r
  	return -1;
  }
 =20
--/* compute branch direction of the expression "if (reg opcode val) goto =
-target;"
+-/* compute branch direction of the expression "if (<reg1> opcode <reg2>)=
+ goto target;"
+- * and return:
+- *  1 - branch will be taken and "goto target" will be executed
+- *  0 - branch will not be taken and fall-through to next insn
+- * -1 - unknown. Example: "if (reg1 < 5)" is unknown when register value
+- *      range [0,10]
+- */
+-static int is_branch_taken(struct bpf_reg_state *reg1, struct bpf_reg_st=
+ate *reg2,
+-			   u8 opcode, bool is_jmp32)
+-{
+-	struct tnum reg2_tnum =3D is_jmp32 ? tnum_subreg(reg2->var_off) : reg2-=
+>var_off;
+-	u64 val;
+-
+-	if (!tnum_is_const(reg2_tnum))
+-		return -1;
+-	val =3D reg2_tnum.value;
+-
+-	if (__is_pointer_value(false, reg1)) {
+-		if (!reg_not_null(reg1))
+-			return -1;
+-
+-		/* If pointer is valid tests against zero will fail so we can
+-		 * use this to direct branch taken.
+-		 */
+-		if (val !=3D 0)
+-			return -1;
+-
+-		switch (opcode) {
+-		case BPF_JEQ:
+-			return 0;
+-		case BPF_JNE:
+-			return 1;
+-		default:
+-			return -1;
+-		}
+-	}
+-
+-	if (is_jmp32)
+-		return is_branch32_taken(reg1, reg2, opcode);
+-	return is_branch64_taken(reg1, reg2, opcode);
+-}
+-
+ static int flip_opcode(u32 opcode)
+ {
+ 	/* How can we transform "a <op> b" into "b <op> a"? */
+@@ -14440,6 +14398,48 @@ static int is_pkt_ptr_branch_taken(struct bpf_re=
+g_state *dst_reg,
+ 	return -1;
+ }
+=20
 +/* compute branch direction of the expression "if (<reg1> opcode <reg2>)=
  goto target;"
-  * and return:
-  *  1 - branch will be taken and "goto target" will be executed
-  *  0 - branch will not be taken and fall-through to next insn
-- * -1 - unknown. Example: "if (reg < 5)" is unknown when register value
++ * and return:
++ *  1 - branch will be taken and "goto target" will be executed
++ *  0 - branch will not be taken and fall-through to next insn
 + * -1 - unknown. Example: "if (reg1 < 5)" is unknown when register value
-  *      range [0,10]
-  */
--static int is_branch_taken(struct bpf_reg_state *reg1, u64 val, u8 opcod=
-e,
--			   bool is_jmp32)
++ *      range [0,10]
++ */
 +static int is_branch_taken(struct bpf_reg_state *reg1, struct bpf_reg_st=
 ate *reg2,
 +			   u8 opcode, bool is_jmp32)
- {
++{
 +	struct tnum reg2_tnum =3D is_jmp32 ? tnum_subreg(reg2->var_off) : reg2-=
 >var_off;
 +	u64 val;
@@ -145,79 +154,36 @@ ate *reg2,
 +		return -1;
 +	val =3D reg2_tnum.value;
 +
- 	if (__is_pointer_value(false, reg1)) {
- 		if (!reg_not_null(reg1))
- 			return -1;
-@@ -14360,8 +14375,8 @@ static int is_branch_taken(struct bpf_reg_state *=
-reg1, u64 val, u8 opcode,
- 	}
-=20
- 	if (is_jmp32)
--		return is_branch32_taken(reg1, val, opcode);
--	return is_branch64_taken(reg1, val, opcode);
++	if (__is_pointer_value(false, reg1)) {
++		if (!reg_not_null(reg1))
++			return -1;
++
++		/* If pointer is valid tests against zero will fail so we can
++		 * use this to direct branch taken.
++		 */
++		if (val !=3D 0)
++			return -1;
++
++		switch (opcode) {
++		case BPF_JEQ:
++			return 0;
++		case BPF_JNE:
++			return 1;
++		default:
++			return -1;
++		}
++	}
++
++	if (is_jmp32)
 +		return is_branch32_taken(reg1, reg2, opcode);
 +	return is_branch64_taken(reg1, reg2, opcode);
- }
-=20
- static int flip_opcode(u32 opcode)
-@@ -14832,6 +14847,7 @@ static int check_cond_jmp_op(struct bpf_verifier_=
-env *env,
- 	struct bpf_reg_state *regs =3D this_branch->frame[this_branch->curframe=
-]->regs;
- 	struct bpf_reg_state *dst_reg, *other_branch_regs, *src_reg =3D NULL;
- 	struct bpf_reg_state *eq_branch_regs;
-+	struct bpf_reg_state fake_reg =3D {};
- 	u8 opcode =3D BPF_OP(insn->code);
- 	bool is_jmp32;
- 	int pred =3D -1;
-@@ -14872,36 +14888,27 @@ static int check_cond_jmp_op(struct bpf_verifie=
-r_env *env,
- 			verbose(env, "BPF_JMP/JMP32 uses reserved fields\n");
- 			return -EINVAL;
- 		}
-+		src_reg =3D &fake_reg;
-+		src_reg->type =3D SCALAR_VALUE;
-+		__mark_reg_known(src_reg, insn->imm);
- 	}
-=20
- 	is_jmp32 =3D BPF_CLASS(insn->code) =3D=3D BPF_JMP32;
-=20
- 	if (BPF_SRC(insn->code) =3D=3D BPF_K) {
--		pred =3D is_branch_taken(dst_reg, insn->imm, opcode, is_jmp32);
-+		pred =3D is_branch_taken(dst_reg, src_reg, opcode, is_jmp32);
- 	} else if (src_reg->type =3D=3D SCALAR_VALUE &&
- 		   is_jmp32 && tnum_is_const(tnum_subreg(src_reg->var_off))) {
--		pred =3D is_branch_taken(dst_reg,
--				       tnum_subreg(src_reg->var_off).value,
--				       opcode,
--				       is_jmp32);
-+		pred =3D is_branch_taken(dst_reg, src_reg, opcode, is_jmp32);
- 	} else if (src_reg->type =3D=3D SCALAR_VALUE &&
- 		   !is_jmp32 && tnum_is_const(src_reg->var_off)) {
--		pred =3D is_branch_taken(dst_reg,
--				       src_reg->var_off.value,
--				       opcode,
--				       is_jmp32);
-+		pred =3D is_branch_taken(dst_reg, src_reg, opcode, is_jmp32);
- 	} else if (dst_reg->type =3D=3D SCALAR_VALUE &&
- 		   is_jmp32 && tnum_is_const(tnum_subreg(dst_reg->var_off))) {
--		pred =3D is_branch_taken(src_reg,
--				       tnum_subreg(dst_reg->var_off).value,
--				       flip_opcode(opcode),
--				       is_jmp32);
-+		pred =3D is_branch_taken(src_reg, dst_reg, flip_opcode(opcode), is_jmp=
-32);
- 	} else if (dst_reg->type =3D=3D SCALAR_VALUE &&
- 		   !is_jmp32 && tnum_is_const(dst_reg->var_off)) {
--		pred =3D is_branch_taken(src_reg,
--				       dst_reg->var_off.value,
--				       flip_opcode(opcode),
--				       is_jmp32);
-+		pred =3D is_branch_taken(src_reg, dst_reg, flip_opcode(opcode), is_jmp=
-32);
- 	} else if (reg_is_pkt_pointer_any(dst_reg) &&
- 		   reg_is_pkt_pointer_any(src_reg) &&
- 		   !is_jmp32) {
++}
++
+ /* Adjusts the register min/max values in the case that the dst_reg is t=
+he
+  * variable register that we are working on, and src_reg is a constant o=
+r we're
+  * simply doing a BPF_K check.
 --=20
 2.34.1
 
