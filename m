@@ -1,121 +1,126 @@
-Return-Path: <bpf+bounces-13965-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-13966-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3BD67DF770
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 17:10:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDFC47DF778
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 17:14:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94732B2129A
-	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 16:10:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62FC3B2127C
+	for <lists+bpf@lfdr.de>; Thu,  2 Nov 2023 16:14:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C6E1D6BA;
-	Thu,  2 Nov 2023 16:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B6D41DA21;
+	Thu,  2 Nov 2023 16:14:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iUFcCRzh"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mGgiK8jm"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6021C29A
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 16:10:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id ECC5FC433CA;
-	Thu,  2 Nov 2023 16:10:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698941429;
-	bh=wWCMJgbMnzEU1stKTZMHnsvyGaCp8imYhOOHxqCtR0Y=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=iUFcCRzhKCDo7PWds33aRn9XYnsp80YeumisPnAtY9JGIfEK6y0Slbr7/hGVEVcGP
-	 s/JHTXyxfnslzdDG4mOsmwUvZyP3NJNL94WLl7K+nPND2FkP+QlCtiRJXdSV28JZcV
-	 dOK7LFJGaN7Ia4A8uuC4xAWNm9cFzZ/1breLnlyVikSeq+D1RZilddTwyna1cnzY07
-	 xyJ2ccupl5VZVSeym2nE8my09rMPRg3HLV2WFicnQa7fsIr4hrLJxH9ehCtVIOXi/o
-	 3v/beTp08zJiCbCliZOOEETQeh0izeJEwKykQbH/sYK5UBuXk8aGiNxdOlcRYjNm8U
-	 G17l7jW9nFkCQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C2F2FC395FC;
-	Thu,  2 Nov 2023 16:10:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855741D6B1
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 16:14:48 +0000 (UTC)
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03443DE
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 09:14:43 -0700 (PDT)
+Message-ID: <c4e6296d-f273-4b27-a33a-eee5c8f54aab@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1698941682;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QLXkUz3573Bs0chUeznh7tiBsOqJWsCvPXdK1F+3COs=;
+	b=mGgiK8jms7Oy7IwdwJwhqGhlv6RVqbJb5O0WN0ymNzRbGgpiJMV602zQml7lycgU9QIFuW
+	DoHNumU+0+701di8vccgEV5vlcJ85uuZ9i2itK/pzoe8IPaO7BwE6o7SNZ/DwNE8iB7gQC
+	/3UDtNHFvNfh4tKpW02W+HxnsE5iylI=
+Date: Thu, 2 Nov 2023 16:14:38 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: add skcipher API support to TC/XDP
+ programs
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>,
+ Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Vadim Fedorenko <vadfed@meta.com>, "David S. Miller" <davem@davemloft.net>,
+ Herbert Xu <herbert@gondor.apana.org.au>
+References: <20231031134900.1432945-1-vadfed@meta.com>
+ <dac97b74-5ff1-172b-9cd5-4cdcf07386ec@linux.dev>
+ <91a6d5a7-7b18-48a2-9a74-7c00509467f8@linux.dev>
+ <6947046d-27e3-90ee-3419-0b480af0abb0@linux.dev>
+ <4258aabd-5f7b-4b7f-ab43-408b69bfdc58@linux.dev>
+ <CAADnVQ+9pp33zv9DxouEmg24o7w27OKFUcvKChHuby_+d6-bLg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <CAADnVQ+9pp33zv9DxouEmg24o7w27OKFUcvKChHuby_+d6-bLg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v6 bpf-next 00/17] BPF register bounds logic and testing
- improvements
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <169894142879.27186.8286702726190146232.git-patchwork-notify@kernel.org>
-Date: Thu, 02 Nov 2023 16:10:28 +0000
-References: <20231102033759.2541186-1-andrii@kernel.org>
-In-Reply-To: <20231102033759.2541186-1-andrii@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- martin.lau@kernel.org, kernel-team@meta.com
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Wed, 1 Nov 2023 20:37:42 -0700 you wrote:
-> This patch set adds a big set of manual and auto-generated test cases
-> validating BPF verifier's register bounds tracking and deduction logic. See
-> details in the last patch.
+On 02/11/2023 15:36, Alexei Starovoitov wrote:
+> On Thu, Nov 2, 2023 at 6:44 AM Vadim Fedorenko
+> <vadim.fedorenko@linux.dev> wrote:
+>>
+>> On 01/11/2023 23:41, Martin KaFai Lau wrote:
+>>> On 11/1/23 3:50 PM, Vadim Fedorenko wrote:
+>>>>>> +static void *__bpf_dynptr_data_ptr(const struct bpf_dynptr_kern *ptr)
+>>>>>> +{
+>>>>>> +    enum bpf_dynptr_type type;
+>>>>>> +
+>>>>>> +    if (!ptr->data)
+>>>>>> +        return NULL;
+>>>>>> +
+>>>>>> +    type = bpf_dynptr_get_type(ptr);
+>>>>>> +
+>>>>>> +    switch (type) {
+>>>>>> +    case BPF_DYNPTR_TYPE_LOCAL:
+>>>>>> +    case BPF_DYNPTR_TYPE_RINGBUF:
+>>>>>> +        return ptr->data + ptr->offset;
+>>>>>> +    case BPF_DYNPTR_TYPE_SKB:
+>>>>>> +        return skb_pointer_if_linear(ptr->data, ptr->offset,
+>>>>>> __bpf_dynptr_size(ptr));
+>>>>>> +    case BPF_DYNPTR_TYPE_XDP:
+>>>>>> +    {
+>>>>>> +        void *xdp_ptr = bpf_xdp_pointer(ptr->data, ptr->offset,
+>>>>>> __bpf_dynptr_size(ptr));
+>>>>>
+>>>>> I suspect what it is doing here (for skb and xdp in particular) is
+>>>>> very similar to bpf_dynptr_slice. Please check if
+>>>>> bpf_dynptr_slice(ptr, 0, NULL, sz) will work.
+>>>>>
+>>>>
+>>>> Well, yes, it's simplified version of bpf_dynptr_slice. The problem is
+>>>> that bpf_dynptr_slice bpf_kfunc which cannot be used in another
+>>>> bpf_kfunc. Should I refactor the code to use it in both places? Like
+>>>
+>>> Sorry, scrolled too fast in my earlier reply :(
+>>>
+>>> I am not aware of this limitation. What error does it have?
+>>> The bpf_dynptr_slice_rdwr kfunc() is also calling the bpf_dynptr_slice()
+>>> kfunc.
+>>>
+>>>> create __bpf_dynptr_slice() which will be internal part of bpf_kfunc?
+>>
+>> Apparently Song has a patch to expose these bpf_dynptr_slice* functions
+>> ton in-kernel users.
+>>
+>> https://lore.kernel.org/bpf/20231024235551.2769174-2-song@kernel.org/
+>>
+>> Should I wait for it to be merged before sending next version?
 > 
-> We start with building a tester that validates existing <range> vs <scalar>
-> verifier logic for range bounds. To make all this work, BPF verifier's logic
-> needed a bunch of improvements to handle some cases that previously were not
-> covered. This had no implications as to correctness of verifier logic, but it
-> was incomplete enough to cause significant disagreements with alternative
-> implementation of register bounds logic that tests in this patch set
-> implement. So we need BPF verifier logic improvements to make all the tests
-> pass. This is what we do in patches #3 through #9.
-> 
-> [...]
+> If you need something from another developer it's best to ask them
+> explicitly :)
+> In this case Song can respin with just that change that you need.
 
-Here is the summary with links:
-  - [v6,bpf-next,01/17] selftests/bpf: fix RELEASE=1 build for tc_opts
-    https://git.kernel.org/bpf/bpf-next/c/3cda0779ded1
-  - [v6,bpf-next,02/17] selftests/bpf: satisfy compiler by having explicit return in btf test
-    https://git.kernel.org/bpf/bpf-next/c/7bcc07dcd835
-  - [v6,bpf-next,03/17] bpf: derive smin/smax from umin/max bounds
-    https://git.kernel.org/bpf/bpf-next/c/2e74aef782d3
-  - [v6,bpf-next,04/17] bpf: derive smin32/smax32 from umin32/umax32 bounds
-    https://git.kernel.org/bpf/bpf-next/c/f188765f23a5
-  - [v6,bpf-next,05/17] bpf: derive subreg bounds from full bounds when upper 32 bits are constant
-    https://git.kernel.org/bpf/bpf-next/c/f404ef3b42c8
-  - [v6,bpf-next,06/17] bpf: add special smin32/smax32 derivation from 64-bit bounds
-    https://git.kernel.org/bpf/bpf-next/c/6533e0acff58
-  - [v6,bpf-next,07/17] bpf: improve deduction of 64-bit bounds from 32-bit bounds
-    https://git.kernel.org/bpf/bpf-next/c/3d6940ddd9b5
-  - [v6,bpf-next,08/17] bpf: try harder to deduce register bounds from different numeric domains
-    https://git.kernel.org/bpf/bpf-next/c/558c06e551a3
-  - [v6,bpf-next,09/17] bpf: drop knowledge-losing __reg_combine_{32,64}_into_{64,32} logic
-    https://git.kernel.org/bpf/bpf-next/c/b929d4979b2b
-  - [v6,bpf-next,10/17] selftests/bpf: BPF register range bounds tester
-    (no matching commit)
-  - [v6,bpf-next,11/17] bpf: rename is_branch_taken reg arguments to prepare for the second one
-    https://git.kernel.org/bpf/bpf-next/c/cdeb5dab9238
-  - [v6,bpf-next,12/17] bpf: generalize is_branch_taken() to work with two registers
-    https://git.kernel.org/bpf/bpf-next/c/fc3615dd0ee9
-  - [v6,bpf-next,13/17] bpf: move is_branch_taken() down
-    https://git.kernel.org/bpf/bpf-next/c/dd2a2cc3c1bf
-  - [v6,bpf-next,14/17] bpf: generalize is_branch_taken to handle all conditional jumps in one place
-    https://git.kernel.org/bpf/bpf-next/c/171de12646d2
-  - [v6,bpf-next,15/17] bpf: unify 32-bit and 64-bit is_branch_taken logic
-    https://git.kernel.org/bpf/bpf-next/c/761a9e560d0c
-  - [v6,bpf-next,16/17] bpf: prepare reg_set_min_max for second set of registers
-    https://git.kernel.org/bpf/bpf-next/c/4c617286771e
-  - [v6,bpf-next,17/17] bpf: generalize reg_set_min_max() to handle two sets of two registers
-    https://git.kernel.org/bpf/bpf-next/c/9a14d62a2cdb
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Got it. I actually need 2 different changes from the same patchset, I'll 
+ping Song in the appropriate thread, thanks!
 
 
