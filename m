@@ -1,103 +1,612 @@
-Return-Path: <bpf+bounces-14076-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14077-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72BE47E063A
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 17:17:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 00B2A7E0643
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 17:20:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB420B21462
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 16:17:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0551FB2147D
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 16:20:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B4FC1C6AE;
-	Fri,  3 Nov 2023 16:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C274B1C6B3;
+	Fri,  3 Nov 2023 16:20:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="XcEcBB1q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iAvh2Kg6"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D341C69B
-	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 16:17:14 +0000 (UTC)
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2EF18B
-	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 09:17:10 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c50d1b9f22so30877651fa.0
-        for <bpf@vger.kernel.org>; Fri, 03 Nov 2023 09:17:10 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BA9214002
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 16:20:07 +0000 (UTC)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FEF2CA
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 09:20:05 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9bf86b77a2aso339642566b.0
+        for <bpf@vger.kernel.org>; Fri, 03 Nov 2023 09:20:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1699028228; x=1699633028; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=vvmhYmC/QbC7oGEFnKNnhecSmVQk2QJI2kNmzL6pHrc=;
-        b=XcEcBB1qMCVLeTU1P/QbGU585BqdFMB10sMyximesPBJR5glcQyPm0tzYbDQ4Y4nZR
-         9ssWFi2xxH6f8LqvS285NOc/JW/aj2rSNzRZ8oxg81rxVjRefjYYQRm+HTfE3HypFjDn
-         heST+cASc/aQlYO/yxvz+vrhN7ICT7iVprGhR8Emg5VPxCaXd8nXUC8+vb/b8k13LlLq
-         kocSro5axgKeJNRbPcuQtVk0U9DvmjOKP76zAhnXo7IrTdiLVXek4S2916bFNSL989eR
-         Ij3Uv6DIh3i2xgWfPvraQIzA1eagWZKrfRKVXh3rVNiLiLLoFecLNug94Ct6Jc/0H71q
-         J0lA==
+        d=gmail.com; s=20230601; t=1699028404; x=1699633204; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=NPbDwM3e/V30DMt1fGDkWgUupNMoTBnAwHPtk1Z+dIE=;
+        b=iAvh2Kg69ECNRw4TGdW9AKjUKztCKDrxUON4eKSNRueECM6NRVEQWxEDCqdTvTc2h/
+         Z+uFwPbPKsZVepEbAmvy+cSfF5ELaB2pYgi5NvEfBEgvoIPyUHVDsCzGOswWh/3yUpqX
+         xYQfWSj2g3jv7stJotmfFOFuIB3pr+EJaitEJ7NaNHIBn/GdIQWHHXVzTPhfFMtvxbb4
+         MwG1lZI8lFEQnYfzojyB0625eHHuPb2kMhXO7b/r3OtlQmTw3j7nfxUaCe18UuvuGqLY
+         eqRATS6yal/2659DE+PerWE0L4aqIb9In+sMpp3UFAG6c0KixFPZoA6Mgb1U6IWZHZ2B
+         dCvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699028228; x=1699633028;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vvmhYmC/QbC7oGEFnKNnhecSmVQk2QJI2kNmzL6pHrc=;
-        b=CEep9tuRNe4QsOXmrPQqJCxSVZ2jqmr5S9OG7b1z0eoso/VbavMuGqUWxfuxOCYv9k
-         sxXet/ZueRBwr249JCLRObu+koIHGlvyuZCXpyhV6brg6nnaTXZElH0UWnMreL8yye+/
-         cMYyktr1K4HNdOzKtpNS46Vac9U2TUQ1CxpYTpqDYp99UzrEmV9oY8S2ZM4opuAhbop0
-         oFlcS5gMWSbcoaQtmh72sSkQPQ3QxV8EimxC1xAyrOvWRebEKj8eAlkKZwumtIvXo86C
-         5xxlui2Z3RF+ddUQD+G0mj3C6oY+hUWxP6D5NcYNXbRlAB+X/YVj0F+pTo2fo+F800Nx
-         ZheA==
-X-Gm-Message-State: AOJu0YwawiFWAkOqpRSW4AgfTkM9PO2mEMVEOhCBjsQanLz9H3fXN0bu
-	Tk/+hwbB9JuZR7+UYAHAVbAjWw==
-X-Google-Smtp-Source: AGHT+IEaPofX1b/aGl3GBnYi8tDM/yoFU7InvWgNuWPGwEzpVfu8963R7oC4qeAXhh5fumtEIIFCdw==
-X-Received: by 2002:a2e:8217:0:b0:2c5:1eb6:bd1e with SMTP id w23-20020a2e8217000000b002c51eb6bd1emr16584966ljg.43.1699028228352;
-        Fri, 03 Nov 2023 09:17:08 -0700 (PDT)
-Received: from ?IPv6:::1? ([2a02:8011:e80c:0:bcb3:c564:df72:fc94])
-        by smtp.gmail.com with ESMTPSA id iv12-20020a05600c548c00b0040641a9d49bsm3022293wmb.17.2023.11.03.09.17.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Nov 2023 09:17:07 -0700 (PDT)
-Date: Fri, 03 Nov 2023 16:17:07 +0000
-From: Quentin Monnet <quentin@isovalent.com>
-To: Yonghong Song <yonghong.song@linux.dev>, Artem Savkov <asavkov@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
- netdev@vger.kernel.org
-CC: Jerry Snitselaar <jsnitsel@redhat.com>
-Subject: Re: [PATCH bpf-next] bpftool: fix prog object type in manpage
-User-Agent: K-9 Mail for Android
-In-Reply-To: <a115f76f-f53c-42c0-918a-b88d34c3f54e@linux.dev>
-References: <20231103081126.170034-1-asavkov@redhat.com> <a115f76f-f53c-42c0-918a-b88d34c3f54e@linux.dev>
-Message-ID: <5E56CB57-0162-4402-93E1-917635E68458@isovalent.com>
+        d=1e100.net; s=20230601; t=1699028404; x=1699633204;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NPbDwM3e/V30DMt1fGDkWgUupNMoTBnAwHPtk1Z+dIE=;
+        b=EmT5S39s6db0pSX39e80YnScCOUFW05j1o9MdVK68JR3rLwatQX4SiZKE1T8IeTENs
+         3EK6hMRV7of5cbyrOaNmyekPF7B9N/ddTGjS9k/STpZpVuWZi76yoSWNm9y4SueOuZUo
+         ukTHFKDszhPiy9pCNcK/0SDPEYofmqleTNeUIEpwiG2x715Ue3tIo6TvAcZ2lWH/i1x5
+         q3if129Q7SxdshLH3B4aeAQAYNUsY6jYibJ/DwzoMfllq+b0izSJ40i6D5SZGz9wYGes
+         JzosTvlXTYItq1hDHuHoUi1+D4+qiysjq1JIi8bB9NIU/ChuGeakgM8hHeyvQcjx3uEc
+         UUnA==
+X-Gm-Message-State: AOJu0YwXRCrI8kTvuW5bS5tVXO/dJDwj7BL9QZEHMWgPPO29y2kYnUpP
+	1FS0kAoPZcIH0q4EwLy2S+A=
+X-Google-Smtp-Source: AGHT+IERanYZ/QHUE6lYgyEAZK6Ite5Lcyd2UaSdFUnBYR0pFw4UaL6BRA4kK3Ro2M1QbcXSNa1knA==
+X-Received: by 2002:a17:907:987:b0:9ae:54c3:c627 with SMTP id bf7-20020a170907098700b009ae54c3c627mr7547942ejc.71.1699028403327;
+        Fri, 03 Nov 2023 09:20:03 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id w2-20020a1709067c8200b00993664a9987sm1056274ejo.103.2023.11.03.09.20.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 09:20:02 -0700 (PDT)
+Message-ID: <b99914bb8d6eb723b473a4a9400382dbb7a468a0.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 01/13] bpf: generalize reg_set_min_max() to
+ handle non-const register comparisons
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org
+Cc: kernel-team@meta.com
+Date: Fri, 03 Nov 2023 18:20:01 +0200
+In-Reply-To: <20231103000822.2509815-2-andrii@kernel.org>
+References: <20231103000822.2509815-1-andrii@kernel.org>
+	 <20231103000822.2509815-2-andrii@kernel.org>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=mQGNBGKNNQEBDACwcUNXZOGTzn4rr7Sd18SA5Wv0Wna/ONE0ZwZEx+sIjyGrPOIhR14/DsOr3ZJer9UJ/WAJwbxOBj6E5Y2iF7grehljNbLr/jMjzPJ+hJpfOEAb5xjCB8xIqDoric1WRcCaRB+tDSk7jcsIIiMish0diTK3qTdu4MB6i/sh4aeFs2nifkNi3LdBuk8Xnk+RJHRoKFJ+C+EoSmQPuDQIRaF9N2m4yO0eG36N8jLwvUXnZzGvHkphoQ9ztbRJp58oh6xT7uH62m98OHbsVgzYKvHyBu/IU2ku5kVG9pLrFp25xfD4YdlMMkJH6l+jk+cpY0cvMTS1b6/g+1fyPM+uzD8Wy+9LtZ4PHwLZX+t4ONb/48i5AKq/jSsb5HWdciLuKEwlMyFAihZamZpEj+9n91NLPX4n7XeThXHaEvaeVVl4hfW/1Qsao7l1YjU/NCHuLaDeH4U1P59bagjwo9d1n5/PESeuD4QJFNqW+zkmE4tmyTZ6bPV6T5xdDRHeiITGc00AEQEAAbQkRWR1YXJkIFppbmdlcm1hbiA8ZWRkeXo4N0BnbWFpbC5jb20+iQHUBBMBCgA+FiEEx+6LrjApQyqnXCYELgxleklgRAkFAmKNNQECGwMFCQPCZwAFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQLgxleklgRAlWZAv/cJ5v3zlEyP0/jMKQBqbVCCHTirPEw+nqxbkeSO6r2FUds0NnGA9a6NPOpBH+qW7a6+n6q3sIbvH7jlss4pzLI7LYlDC6z+egTv7KR5X1xFrY1uR5UGs1beAjnzYeV2hK4yqRUfygsT0Wk5e4FiNBv4+DUZ8r0cNDkO6swJxU55DO21mcteC147+4aDoHZ40R0tsAu+brDGSSoOPpb0RWVsEf9XOBJqWWA+T7mluw
+ nYzhLWGcczc6J71q1Dje0l5vIPaSFOgwmWD4DA+WvuxM/shH4rtWeodbv iCTce6yYIygHgUAtJcHozAlgRrL0jz44cggBTcoeXp/atckXK546OugZPnl00J3qmm5uWAznU6T5YDv2vCvAMEbz69ib+kHtnOSBvR0Jb86UZZqSb4ATfwMOWe9htGTjKMb0QQOLK0mTcrk/TtymaG+T4Fsos0kgrxqjgfrxxEhYcVNW8v8HISmFGFbqsJmFbVtgk68BcU0wgF8oFxo7u+XYQDdKbI1uQGNBGKNNQEBDADbQIdo8L3sdSWGQtu+LnFqCZoAbYurZCmUjLV3df1b+sg+GJZvVTmMZnzDP/ADufcbjopBBjGTRAY4L76T2niu2EpjclMMM3mtrOc738Kr3+RvPjUupdkZ1ZEZaWpf4cZm+4wH5GUfyu5pmD5WXX2i1r9XaUjeVtebvbuXWmWI1ZDTfOkiz/6Z0GDSeQeEqx2PXYBcepU7S9UNWttDtiZ0+IH4DZcvyKPUcK3tOj4u8GvO3RnOrglERzNCM/WhVdG1+vgU9fXO83TB/PcfAsvxYSie7u792s/I+yA4XKKh82PSTvTzg2/4vEDGpI9yubkfXRkQN28w+HKF5qoRB8/L1ZW/brlXkNzA6SveJhCnH7aOF0Yezl6TfX27w1CW5Xmvfi7X33V/SPvo0tY1THrO1c+bOjt5F+2/K3tvejmXMS/I6URwa8n1e767y5ErFKyXAYRweE9zarEgpNZTuSIGNNAqK+SiLLXt51G7P30TVavIeB6s2lCt1QKt62ccLqUAEQEAAYkBvAQYAQoAJhYhBMfui64wKUMqp1wmBC4MZXpJYEQJBQJijTUBAhsMBQkDwmcAAAoJEC4MZXpJYEQJkRAMAKNvWVwtXm/WxWoiLnXyF2WGXKoDe5+itTLvBmKcV/b1OKZF1s90V7WfSBz712eFAynEzyeezPbwU8QBiTpZcHXwQni3IYKvsh7s
+ t1iq+gsfnXbPz5AnS598ScZI1oP7OrPSFJkt/z4acEbOQDQs8aUqrd46PV jsdqGvKnXZxzylux29UTNby4jTlz9pNJM+wPrDRmGfchLDUmf6CffaUYCbu4FiId+9+dcTCDvxbABRy1C3OJ8QY7cxfJ+pEZW18fRJ0XCl/fiV/ecAOfB3HsqgTzAn555h0rkFgay0hAvMU/mAW/CFNSIxV397zm749ZNLA0L2dMy1AKuOqH+/B+/ImBfJMDjmdyJQ8WU/OFRuGLdqOd2oZrA1iuPIa+yUYyZkaZfz/emQwpIL1+Q4p1R/OplA4yc301AqruXXUcVDbEB+joHW3hy5FwK5t5OwTKatrSJBkydSF9zdXy98fYzGniRyRA65P0Ix/8J3BYB4edY2/w0Ip/mdYsYQljBY0A==
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+
+On Thu, 2023-11-02 at 17:08 -0700, Andrii Nakryiko wrote:
+> Generalize bounds adjustment logic of reg_set_min_max() to handle not
+> just register vs constant case, but in general any register vs any
+> register cases. For most of the operations it's trivial extension based
+> on range vs range comparison logic, we just need to properly pick
+> min/max of a range to compare against min/max of the other range.
+>=20
+> For BPF_JSET we keep the original capabilities, just make sure JSET is
+> integrated in the common framework. This is manifested in the
+> internal-only BPF_KSET + BPF_X "opcode" to allow for simpler and more
+> uniform rev_opcode() handling. See the code for details. This allows to
+> reuse the same code exactly both for TRUE and FALSE branches without
+> explicitly handling both conditions with custom code.
+>=20
+> Note also that now we don't need a special handling of BPF_JEQ/BPF_JNE
+> case none of the registers are constants. This is now just a normal
+> generic case handled by reg_set_min_max().
+>=20
+> To make tnum handling cleaner, tnum_with_subreg() helper is added, as
+> that's a common operator when dealing with 32-bit subregister bounds.
+> This keeps the overall logic much less noisy when it comes to tnums.
+>=20
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+
+(With one bit of a bikeshedding below).
+
+> ---
+>  include/linux/tnum.h  |   4 +
+>  kernel/bpf/tnum.c     |   7 +-
+>  kernel/bpf/verifier.c | 327 ++++++++++++++++++++----------------------
+>  3 files changed, 165 insertions(+), 173 deletions(-)
+>=20
+> diff --git a/include/linux/tnum.h b/include/linux/tnum.h
+> index 1c3948a1d6ad..3c13240077b8 100644
+> --- a/include/linux/tnum.h
+> +++ b/include/linux/tnum.h
+> @@ -106,6 +106,10 @@ int tnum_sbin(char *str, size_t size, struct tnum a)=
+;
+>  struct tnum tnum_subreg(struct tnum a);
+>  /* Returns the tnum with the lower 32-bit subreg cleared */
+>  struct tnum tnum_clear_subreg(struct tnum a);
+> +/* Returns the tnum with the lower 32-bit subreg in *reg* set to the low=
+er
+> + * 32-bit subreg in *subreg*
+> + */
+> +struct tnum tnum_with_subreg(struct tnum reg, struct tnum subreg);
+>  /* Returns the tnum with the lower 32-bit subreg set to value */
+>  struct tnum tnum_const_subreg(struct tnum a, u32 value);
+>  /* Returns true if 32-bit subreg @a is a known constant*/
+> diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
+> index 3d7127f439a1..f4c91c9b27d7 100644
+> --- a/kernel/bpf/tnum.c
+> +++ b/kernel/bpf/tnum.c
+> @@ -208,7 +208,12 @@ struct tnum tnum_clear_subreg(struct tnum a)
+>  	return tnum_lshift(tnum_rshift(a, 32), 32);
+>  }
+> =20
+> +struct tnum tnum_with_subreg(struct tnum reg, struct tnum subreg)
+> +{
+> +	return tnum_or(tnum_clear_subreg(reg), tnum_subreg(subreg));
+> +}
+> +
+>  struct tnum tnum_const_subreg(struct tnum a, u32 value)
+>  {
+> -	return tnum_or(tnum_clear_subreg(a), tnum_const(value));
+> +	return tnum_with_subreg(a, tnum_const(value));
+>  }
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 2197385d91dc..52934080042c 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -14379,218 +14379,211 @@ static int is_branch_taken(struct bpf_reg_sta=
+te *reg1, struct bpf_reg_state *reg
+>  	return is_scalar_branch_taken(reg1, reg2, opcode, is_jmp32);
+>  }
+> =20
+> -/* Adjusts the register min/max values in the case that the dst_reg and
+> - * src_reg are both SCALAR_VALUE registers (or we are simply doing a BPF=
+_K
+> - * check, in which case we havea fake SCALAR_VALUE representing insn->im=
+m).
+> - * Technically we can do similar adjustments for pointers to the same ob=
+ject,
+> - * but we don't support that right now.
+> +/* Opcode that corresponds to a *false* branch condition.
+> + * E.g., if r1 < r2, then reverse (false) condition is r1 >=3D r2
+>   */
+> -static void reg_set_min_max(struct bpf_reg_state *true_reg1,
+> -			    struct bpf_reg_state *true_reg2,
+> -			    struct bpf_reg_state *false_reg1,
+> -			    struct bpf_reg_state *false_reg2,
+> -			    u8 opcode, bool is_jmp32)
+> +static u8 rev_opcode(u8 opcode)
+>  {
+> -	struct tnum false_32off, false_64off;
+> -	struct tnum true_32off, true_64off;
+> -	u64 uval;
+> -	u32 uval32;
+> -	s64 sval;
+> -	s32 sval32;
+> -
+> -	/* If either register is a pointer, we can't learn anything about its
+> -	 * variable offset from the compare (unless they were a pointer into
+> -	 * the same object, but we don't bother with that).
+> +	switch (opcode) {
+> +	case BPF_JEQ:		return BPF_JNE;
+> +	case BPF_JNE:		return BPF_JEQ;
+> +	/* JSET doesn't have it's reverse opcode in BPF, so add
+> +	 * BPF_X flag to denote the reverse of that operation
+>  	 */
+> -	if (false_reg1->type !=3D SCALAR_VALUE || false_reg2->type !=3D SCALAR_=
+VALUE)
+> -		return;
+> -
+> -	/* we expect right-hand registers (src ones) to be constants, for now *=
+/
+> -	if (!is_reg_const(false_reg2, is_jmp32)) {
+> -		opcode =3D flip_opcode(opcode);
+> -		swap(true_reg1, true_reg2);
+> -		swap(false_reg1, false_reg2);
+> +	case BPF_JSET:		return BPF_JSET | BPF_X;
+> +	case BPF_JSET | BPF_X:	return BPF_JSET;
+> +	case BPF_JGE:		return BPF_JLT;
+> +	case BPF_JGT:		return BPF_JLE;
+> +	case BPF_JLE:		return BPF_JGT;
+> +	case BPF_JLT:		return BPF_JGE;
+> +	case BPF_JSGE:		return BPF_JSLT;
+> +	case BPF_JSGT:		return BPF_JSLE;
+> +	case BPF_JSLE:		return BPF_JSGT;
+> +	case BPF_JSLT:		return BPF_JSGE;
+> +	default:		return 0;
+>  	}
+> -	if (!is_reg_const(false_reg2, is_jmp32))
+> -		return;
+> +}
+> =20
+> -	false_32off =3D tnum_subreg(false_reg1->var_off);
+> -	false_64off =3D false_reg1->var_off;
+> -	true_32off =3D tnum_subreg(true_reg1->var_off);
+> -	true_64off =3D true_reg1->var_off;
+> -	uval =3D false_reg2->var_off.value;
+> -	uval32 =3D (u32)tnum_subreg(false_reg2->var_off).value;
+> -	sval =3D (s64)uval;
+> -	sval32 =3D (s32)uval32;
+> +/* Refine range knowledge for <reg1> <op> <reg>2 conditional operation. =
+*/
+> +static void regs_refine_cond_op(struct bpf_reg_state *reg1, struct bpf_r=
+eg_state *reg2,
+> +				u8 opcode, bool is_jmp32)
+> +{
+> +	struct tnum t;
+> =20
+>  	switch (opcode) {
+> -	/* JEQ/JNE comparison doesn't change the register equivalence.
+> -	 *
+> -	 * r1 =3D r2;
+> -	 * if (r1 =3D=3D 42) goto label;
+> -	 * ...
+> -	 * label: // here both r1 and r2 are known to be 42.
+> -	 *
+> -	 * Hence when marking register as known preserve it's ID.
+> -	 */
+>  	case BPF_JEQ:
+>  		if (is_jmp32) {
+> -			__mark_reg32_known(true_reg1, uval32);
+> -			true_32off =3D tnum_subreg(true_reg1->var_off);
+> +			reg1->u32_min_value =3D max(reg1->u32_min_value, reg2->u32_min_value)=
+;
+> +			reg1->u32_max_value =3D min(reg1->u32_max_value, reg2->u32_max_value)=
+;
+> +			reg1->s32_min_value =3D max(reg1->s32_min_value, reg2->s32_min_value)=
+;
+> +			reg1->s32_max_value =3D min(reg1->s32_max_value, reg2->s32_max_value)=
+;
+> +			reg2->u32_min_value =3D reg1->u32_min_value;
+> +			reg2->u32_max_value =3D reg1->u32_max_value;
+> +			reg2->s32_min_value =3D reg1->s32_min_value;
+> +			reg2->s32_max_value =3D reg1->s32_max_value;
+> +
+> +			t =3D tnum_intersect(tnum_subreg(reg1->var_off), tnum_subreg(reg2->va=
+r_off));
+> +			reg1->var_off =3D tnum_with_subreg(reg1->var_off, t);
+> +			reg2->var_off =3D tnum_with_subreg(reg2->var_off, t);
+>  		} else {
+> -			___mark_reg_known(true_reg1, uval);
+> -			true_64off =3D true_reg1->var_off;
+> +			reg1->umin_value =3D max(reg1->umin_value, reg2->umin_value);
+> +			reg1->umax_value =3D min(reg1->umax_value, reg2->umax_value);
+> +			reg1->smin_value =3D max(reg1->smin_value, reg2->smin_value);
+> +			reg1->smax_value =3D min(reg1->smax_value, reg2->smax_value);
+> +			reg2->umin_value =3D reg1->umin_value;
+> +			reg2->umax_value =3D reg1->umax_value;
+> +			reg2->smin_value =3D reg1->smin_value;
+> +			reg2->smax_value =3D reg1->smax_value;
+> +
+> +			reg1->var_off =3D tnum_intersect(reg1->var_off, reg2->var_off);
+> +			reg2->var_off =3D reg1->var_off;
+>  		}
+>  		break;
+>  	case BPF_JNE:
+> +		/* we don't derive any new information for inequality yet */
+> +		break;
+> +	case BPF_JSET:
+> +	case BPF_JSET | BPF_X: { /* BPF_JSET and its reverse, see rev_opcode() =
+*/
+> +		u64 val;
+> +
+> +		if (!is_reg_const(reg2, is_jmp32))
+> +			swap(reg1, reg2);
+> +		if (!is_reg_const(reg2, is_jmp32))
+> +			break;
+> +
+> +		val =3D reg_const_value(reg2, is_jmp32);
+> +		/* BPF_JSET (i.e., TRUE branch, *not* BPF_JSET | BPF_X)
+> +		 * requires single bit to learn something useful. E.g., if we
+> +		 * know that `r1 & 0x3` is true, then which bits (0, 1, or both)
+> +		 * are actually set? We can learn something definite only if
+> +		 * it's a single-bit value to begin with.
+> +		 *
+> +		 * BPF_JSET | BPF_X (i.e., negation of BPF_JSET) doesn't have
+> +		 * this restriction. I.e., !(r1 & 0x3) means neither bit 0 nor
+> +		 * bit 1 is set, which we can readily use in adjustments.
+> +		 */
+> +		if (!(opcode & BPF_X) && !is_power_of_2(val))
+> +			break;
+> +
+>  		if (is_jmp32) {
+> -			__mark_reg32_known(false_reg1, uval32);
+> -			false_32off =3D tnum_subreg(false_reg1->var_off);
+> +			if (opcode & BPF_X)
+> +				t =3D tnum_and(tnum_subreg(reg1->var_off), tnum_const(~val));
+> +			else
+> +				t =3D tnum_or(tnum_subreg(reg1->var_off), tnum_const(val));
+> +			reg1->var_off =3D tnum_with_subreg(reg1->var_off, t);
+>  		} else {
+> -			___mark_reg_known(false_reg1, uval);
+> -			false_64off =3D false_reg1->var_off;
+> +			if (opcode & BPF_X)
+> +				reg1->var_off =3D tnum_and(reg1->var_off, tnum_const(~val));
+> +			else
+> +				reg1->var_off =3D tnum_or(reg1->var_off, tnum_const(val));
+>  		}
+>  		break;
+> -	case BPF_JSET:
+> +	}
+> +	case BPF_JGE:
+>  		if (is_jmp32) {
+> -			false_32off =3D tnum_and(false_32off, tnum_const(~uval32));
+> -			if (is_power_of_2(uval32))
+> -				true_32off =3D tnum_or(true_32off,
+> -						     tnum_const(uval32));
+> +			reg1->u32_min_value =3D max(reg1->u32_min_value, reg2->u32_min_value)=
+;
+> +			reg2->u32_max_value =3D min(reg1->u32_max_value, reg2->u32_max_value)=
+;
+>  		} else {
+> -			false_64off =3D tnum_and(false_64off, tnum_const(~uval));
+> -			if (is_power_of_2(uval))
+> -				true_64off =3D tnum_or(true_64off,
+> -						     tnum_const(uval));
+> +			reg1->umin_value =3D max(reg1->umin_value, reg2->umin_value);
+> +			reg2->umax_value =3D min(reg1->umax_value, reg2->umax_value);
+>  		}
+>  		break;
+> -	case BPF_JGE:
+>  	case BPF_JGT:
+> -	{
+>  		if (is_jmp32) {
+> -			u32 false_umax =3D opcode =3D=3D BPF_JGT ? uval32  : uval32 - 1;
+> -			u32 true_umin =3D opcode =3D=3D BPF_JGT ? uval32 + 1 : uval32;
+> -
+> -			false_reg1->u32_max_value =3D min(false_reg1->u32_max_value,
+> -						       false_umax);
+> -			true_reg1->u32_min_value =3D max(true_reg1->u32_min_value,
+> -						      true_umin);
+> +			reg1->u32_min_value =3D max(reg1->u32_min_value, reg2->u32_min_value =
++ 1);
+> +			reg2->u32_max_value =3D min(reg1->u32_max_value - 1, reg2->u32_max_va=
+lue);
+>  		} else {
+> -			u64 false_umax =3D opcode =3D=3D BPF_JGT ? uval    : uval - 1;
+> -			u64 true_umin =3D opcode =3D=3D BPF_JGT ? uval + 1 : uval;
+> -
+> -			false_reg1->umax_value =3D min(false_reg1->umax_value, false_umax);
+> -			true_reg1->umin_value =3D max(true_reg1->umin_value, true_umin);
+> +			reg1->umin_value =3D max(reg1->umin_value, reg2->umin_value + 1);
+> +			reg2->umax_value =3D min(reg1->umax_value - 1, reg2->umax_value);
+>  		}
+>  		break;
+> -	}
+>  	case BPF_JSGE:
+> +		if (is_jmp32) {
+> +			reg1->s32_min_value =3D max(reg1->s32_min_value, reg2->s32_min_value)=
+;
+> +			reg2->s32_max_value =3D min(reg1->s32_max_value, reg2->s32_max_value)=
+;
+> +		} else {
+> +			reg1->smin_value =3D max(reg1->smin_value, reg2->smin_value);
+> +			reg2->smax_value =3D min(reg1->smax_value, reg2->smax_value);
+> +		}
+> +		break;
+>  	case BPF_JSGT:
+
+It is possible to spare some code by swapping arguments here:
+
+	case BPF_JLE:
+	case BPF_JLT:
+	case BPF_JSLE:
+	case BPF_JSLT:
+		return regs_refine_cond_op(reg2, reg1, flip_opcode(opcode), is_jmp32);
 
 
-
-On 3 November 2023 15:34:05 GMT, Yonghong Song <yonghong=2Esong@linux=2Ede=
-v> wrote:
->
->On 11/3/23 1:11 AM, Artem Savkov wrote:
->> bpftool's man page lists "program" as one of possible values for OBJECT=
+> -	{
+>  		if (is_jmp32) {
+> -			s32 false_smax =3D opcode =3D=3D BPF_JSGT ? sval32    : sval32 - 1;
+> -			s32 true_smin =3D opcode =3D=3D BPF_JSGT ? sval32 + 1 : sval32;
+> -
+> -			false_reg1->s32_max_value =3D min(false_reg1->s32_max_value, false_sm=
+ax);
+> -			true_reg1->s32_min_value =3D max(true_reg1->s32_min_value, true_smin)=
+;
+> +			reg1->s32_min_value =3D max(reg1->s32_min_value, reg2->s32_min_value =
++ 1);
+> +			reg2->s32_max_value =3D min(reg1->s32_max_value - 1, reg2->s32_max_va=
+lue);
+>  		} else {
+> -			s64 false_smax =3D opcode =3D=3D BPF_JSGT ? sval    : sval - 1;
+> -			s64 true_smin =3D opcode =3D=3D BPF_JSGT ? sval + 1 : sval;
+> -
+> -			false_reg1->smax_value =3D min(false_reg1->smax_value, false_smax);
+> -			true_reg1->smin_value =3D max(true_reg1->smin_value, true_smin);
+> +			reg1->smin_value =3D max(reg1->smin_value, reg2->smin_value + 1);
+> +			reg2->smax_value =3D min(reg1->smax_value - 1, reg2->smax_value);
+>  		}
+>  		break;
+> -	}
+>  	case BPF_JLE:
+> +		if (is_jmp32) {
+> +			reg1->u32_max_value =3D min(reg1->u32_max_value, reg2->u32_max_value)=
+;
+> +			reg2->u32_min_value =3D max(reg1->u32_min_value, reg2->u32_min_value)=
+;
+> +		} else {
+> +			reg1->umax_value =3D min(reg1->umax_value, reg2->umax_value);
+> +			reg2->umin_value =3D max(reg1->umin_value, reg2->umin_value);
+> +		}
+> +		break;
+>  	case BPF_JLT:
+> -	{
+>  		if (is_jmp32) {
+> -			u32 false_umin =3D opcode =3D=3D BPF_JLT ? uval32  : uval32 + 1;
+> -			u32 true_umax =3D opcode =3D=3D BPF_JLT ? uval32 - 1 : uval32;
+> -
+> -			false_reg1->u32_min_value =3D max(false_reg1->u32_min_value,
+> -						       false_umin);
+> -			true_reg1->u32_max_value =3D min(true_reg1->u32_max_value,
+> -						      true_umax);
+> +			reg1->u32_max_value =3D min(reg1->u32_max_value, reg2->u32_max_value =
+- 1);
+> +			reg2->u32_min_value =3D max(reg1->u32_min_value + 1, reg2->u32_min_va=
+lue);
+>  		} else {
+> -			u64 false_umin =3D opcode =3D=3D BPF_JLT ? uval    : uval + 1;
+> -			u64 true_umax =3D opcode =3D=3D BPF_JLT ? uval - 1 : uval;
+> -
+> -			false_reg1->umin_value =3D max(false_reg1->umin_value, false_umin);
+> -			true_reg1->umax_value =3D min(true_reg1->umax_value, true_umax);
+> +			reg1->umax_value =3D min(reg1->umax_value, reg2->umax_value - 1);
+> +			reg2->umin_value =3D max(reg1->umin_value + 1, reg2->umin_value);
+>  		}
+>  		break;
+> -	}
+>  	case BPF_JSLE:
+> +		if (is_jmp32) {
+> +			reg1->s32_max_value =3D min(reg1->s32_max_value, reg2->s32_max_value)=
+;
+> +			reg2->s32_min_value =3D max(reg1->s32_min_value, reg2->s32_min_value)=
+;
+> +		} else {
+> +			reg1->smax_value =3D min(reg1->smax_value, reg2->smax_value);
+> +			reg2->smin_value =3D max(reg1->smin_value, reg2->smin_value);
+> +		}
+> +		break;
+>  	case BPF_JSLT:
+> -	{
+>  		if (is_jmp32) {
+> -			s32 false_smin =3D opcode =3D=3D BPF_JSLT ? sval32    : sval32 + 1;
+> -			s32 true_smax =3D opcode =3D=3D BPF_JSLT ? sval32 - 1 : sval32;
+> -
+> -			false_reg1->s32_min_value =3D max(false_reg1->s32_min_value, false_sm=
+in);
+> -			true_reg1->s32_max_value =3D min(true_reg1->s32_max_value, true_smax)=
+;
+> +			reg1->s32_max_value =3D min(reg1->s32_max_value, reg2->s32_max_value =
+- 1);
+> +			reg2->s32_min_value =3D max(reg1->s32_min_value + 1, reg2->s32_min_va=
+lue);
+>  		} else {
+> -			s64 false_smin =3D opcode =3D=3D BPF_JSLT ? sval    : sval + 1;
+> -			s64 true_smax =3D opcode =3D=3D BPF_JSLT ? sval - 1 : sval;
+> -
+> -			false_reg1->smin_value =3D max(false_reg1->smin_value, false_smin);
+> -			true_reg1->smax_value =3D min(true_reg1->smax_value, true_smax);
+> +			reg1->smax_value =3D min(reg1->smax_value, reg2->smax_value - 1);
+> +			reg2->smin_value =3D max(reg1->smin_value + 1, reg2->smin_value);
+>  		}
+>  		break;
+> -	}
+>  	default:
+>  		return;
+>  	}
+> -
+> -	if (is_jmp32) {
+> -		false_reg1->var_off =3D tnum_or(tnum_clear_subreg(false_64off),
+> -					     tnum_subreg(false_32off));
+> -		true_reg1->var_off =3D tnum_or(tnum_clear_subreg(true_64off),
+> -					    tnum_subreg(true_32off));
+> -		reg_bounds_sync(false_reg1);
+> -		reg_bounds_sync(true_reg1);
+> -	} else {
+> -		false_reg1->var_off =3D false_64off;
+> -		true_reg1->var_off =3D true_64off;
+> -		reg_bounds_sync(false_reg1);
+> -		reg_bounds_sync(true_reg1);
+> -	}
+> -}
+> -
+> -/* Regs are known to be equal, so intersect their min/max/var_off */
+> -static void __reg_combine_min_max(struct bpf_reg_state *src_reg,
+> -				  struct bpf_reg_state *dst_reg)
+> -{
+> -	src_reg->umin_value =3D dst_reg->umin_value =3D max(src_reg->umin_value=
 ,
->> while in fact bpftool accepts "prog" instead=2E
->>=20
->> Reported-by: Jerry Snitselaar <jsnitsel@redhat=2Ecom>
->> Signed-off-by: Artem Savkov <asavkov@redhat=2Ecom>
->
->
->Acked-by: Yonghong Song <yonghong=2Esong@linux=2Edev>
->
+> -							dst_reg->umin_value);
+> -	src_reg->umax_value =3D dst_reg->umax_value =3D min(src_reg->umax_value=
+,
+> -							dst_reg->umax_value);
+> -	src_reg->smin_value =3D dst_reg->smin_value =3D max(src_reg->smin_value=
+,
+> -							dst_reg->smin_value);
+> -	src_reg->smax_value =3D dst_reg->smax_value =3D min(src_reg->smax_value=
+,
+> -							dst_reg->smax_value);
+> -	src_reg->var_off =3D dst_reg->var_off =3D tnum_intersect(src_reg->var_o=
+ff,
+> -							     dst_reg->var_off);
+> -	reg_bounds_sync(src_reg);
+> -	reg_bounds_sync(dst_reg);
+>  }
+> =20
+> -static void reg_combine_min_max(struct bpf_reg_state *true_src,
+> -				struct bpf_reg_state *true_dst,
+> -				struct bpf_reg_state *false_src,
+> -				struct bpf_reg_state *false_dst,
+> -				u8 opcode)
+> +/* Adjusts the register min/max values in the case that the dst_reg and
+> + * src_reg are both SCALAR_VALUE registers (or we are simply doing a BPF=
+_K
+> + * check, in which case we havea fake SCALAR_VALUE representing insn->im=
+m).
+> + * Technically we can do similar adjustments for pointers to the same ob=
+ject,
+> + * but we don't support that right now.
+> + */
+> +static void reg_set_min_max(struct bpf_reg_state *true_reg1,
+> +			    struct bpf_reg_state *true_reg2,
+> +			    struct bpf_reg_state *false_reg1,
+> +			    struct bpf_reg_state *false_reg2,
+> +			    u8 opcode, bool is_jmp32)
+>  {
+> -	switch (opcode) {
+> -	case BPF_JEQ:
+> -		__reg_combine_min_max(true_src, true_dst);
+> -		break;
+> -	case BPF_JNE:
+> -		__reg_combine_min_max(false_src, false_dst);
+> -		break;
+> -	}
+> +	/* If either register is a pointer, we can't learn anything about its
+> +	 * variable offset from the compare (unless they were a pointer into
+> +	 * the same object, but we don't bother with that).
+> +	 */
+> +	if (false_reg1->type !=3D SCALAR_VALUE || false_reg2->type !=3D SCALAR_=
+VALUE)
+> +		return;
+> +
+> +	/* fallthrough (FALSE) branch */
+> +	regs_refine_cond_op(false_reg1, false_reg2, rev_opcode(opcode), is_jmp3=
+2);
+> +	reg_bounds_sync(false_reg1);
+> +	reg_bounds_sync(false_reg2);
+> +
+> +	/* jump (TRUE) branch */
+> +	regs_refine_cond_op(true_reg1, true_reg2, opcode, is_jmp32);
+> +	reg_bounds_sync(true_reg1);
+> +	reg_bounds_sync(true_reg2);
+>  }
+> =20
+>  static void mark_ptr_or_null_reg(struct bpf_func_state *state,
+> @@ -14887,22 +14880,12 @@ static int check_cond_jmp_op(struct bpf_verifie=
+r_env *env,
+>  		reg_set_min_max(&other_branch_regs[insn->dst_reg],
+>  				&other_branch_regs[insn->src_reg],
+>  				dst_reg, src_reg, opcode, is_jmp32);
+> -
+> -		if (dst_reg->type =3D=3D SCALAR_VALUE &&
+> -		    src_reg->type =3D=3D SCALAR_VALUE &&
+> -		    !is_jmp32 && (opcode =3D=3D BPF_JEQ || opcode =3D=3D BPF_JNE)) {
+> -			/* Comparing for equality, we can combine knowledge */
+> -			reg_combine_min_max(&other_branch_regs[insn->src_reg],
+> -					    &other_branch_regs[insn->dst_reg],
+> -					    src_reg, dst_reg, opcode);
+> -		}
+>  	} else /* BPF_SRC(insn->code) =3D=3D BPF_K */ {
+>  		reg_set_min_max(&other_branch_regs[insn->dst_reg],
+>  				src_reg /* fake one */,
+>  				dst_reg, src_reg /* same fake one */,
+>  				opcode, is_jmp32);
+>  	}
+> -
+>  	if (BPF_SRC(insn->code) =3D=3D BPF_X &&
+>  	    src_reg->type =3D=3D SCALAR_VALUE && src_reg->id &&
+>  	    !WARN_ON_ONCE(src_reg->id !=3D other_branch_regs[insn->src_reg].id)=
+) {
 
-Acked-by: Quentin Monnet <quentin@isovalent=2Ecom>
-
-Thanks!
 
