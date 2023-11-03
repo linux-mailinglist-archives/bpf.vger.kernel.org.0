@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-14052-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14050-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 484AB7DFD76
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 01:09:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AD5D7DFD74
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 01:09:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B3CA1C2103F
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 00:09:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6AE96B21360
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 00:09:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7071101;
-	Fri,  3 Nov 2023 00:08:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDB6517D4;
+	Fri,  3 Nov 2023 00:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C08B217ED
-	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 00:08:54 +0000 (UTC)
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB176193
-	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 17:08:51 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A2MZbQb016103
-	for <bpf@vger.kernel.org>; Thu, 2 Nov 2023 17:08:51 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3u4mprrc0e-17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89AED15D1
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 00:08:49 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1948B19A
+	for <bpf@vger.kernel.org>; Thu,  2 Nov 2023 17:08:48 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A2Jsl7x014274
+	for <bpf@vger.kernel.org>; Thu, 2 Nov 2023 17:08:47 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3u4hen9s5g-12
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 02 Nov 2023 17:08:50 -0700
-Received: from twshared32169.15.frc2.facebook.com (2620:10d:c0a8:1c::11) by
- mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Thu, 02 Nov 2023 17:08:47 -0700
+Received: from twshared58712.02.prn6.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 2 Nov 2023 17:08:45 -0700
+ 15.1.2507.34; Thu, 2 Nov 2023 17:08:46 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 15F1A3AD8A868; Thu,  2 Nov 2023 17:08:44 -0700 (PDT)
+	id 266183AD8A882; Thu,  2 Nov 2023 17:08:46 -0700 (PDT)
 From: Andrii Nakryiko <andrii@kernel.org>
 To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>
 CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH bpf-next 10/13] selftests/bpf: add randomized reg_bounds tests
-Date: Thu, 2 Nov 2023 17:08:19 -0700
-Message-ID: <20231103000822.2509815-11-andrii@kernel.org>
+Subject: [PATCH bpf-next 11/13] selftests/bpf: set BPF_F_TEST_SANITY_SCRIPT by default
+Date: Thu, 2 Nov 2023 17:08:20 -0700
+Message-ID: <20231103000822.2509815-12-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231103000822.2509815-1-andrii@kernel.org>
 References: <20231103000822.2509815-1-andrii@kernel.org>
@@ -54,270 +54,215 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: rfw3CVo7LRlaS-i6Sq3C7AL0nZdO2k08
-X-Proofpoint-ORIG-GUID: rfw3CVo7LRlaS-i6Sq3C7AL0nZdO2k08
+X-Proofpoint-GUID: ClHDcsANAxE4EaHeLeW3x48X4wyltbb6
+X-Proofpoint-ORIG-GUID: ClHDcsANAxE4EaHeLeW3x48X4wyltbb6
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-02_10,2023-11-02_03,2023-05-22_02
 
-Add random cases generation to reg_bounds.c and run them without
-SLOW_TESTS=3D1 to increase a chance of BPF CI catching latent issues.
+Make sure to set BPF_F_TEST_SANITY_STRICT program flag by default across
+most verifier tests (and a bunch of others that set custom prog flags).
 
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
+There are currently two tests that do fail validation, if enforced
+strictly: verifier_bounds/crossing_64_bit_signed_boundary_2 and
+verifier_bounds/crossing_32_bit_signed_boundary_2. To accommodate them,
+we teach test_loader a flag negation:
+
+__flag(!<flagname>) will *clear* specified flag, allowing easy opt-out.
+
+We apply __flag(!BPF_F_TEST_SANITY_STRICT) to these to tests.
+
+Also sprinkle BPF_F_TEST_SANITY_STRICT everywhere where we already set
+test-only BPF_F_TEST_RND_HI32 flag, for completeness.
+
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- .../selftests/bpf/prog_tests/reg_bounds.c     | 164 +++++++++++++++++-
- 1 file changed, 158 insertions(+), 6 deletions(-)
+ .../bpf/prog_tests/bpf_verif_scale.c          |  2 +-
+ .../selftests/bpf/progs/verifier_bounds.c     |  2 ++
+ tools/testing/selftests/bpf/test_loader.c     | 35 ++++++++++++++-----
+ tools/testing/selftests/bpf/test_sock_addr.c  |  1 +
+ tools/testing/selftests/bpf/test_verifier.c   |  2 +-
+ tools/testing/selftests/bpf/testing_helpers.c |  4 +--
+ 6 files changed, 33 insertions(+), 13 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/=
-testing/selftests/bpf/prog_tests/reg_bounds.c
-index 16864c940548..fd6401dec0b7 100644
---- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-+++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-@@ -83,6 +83,17 @@ static __always_inline u64 max_t(enum num_t t, u64 x, =
-u64 y)
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c b/t=
+ools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
+index 731c343897d8..3f2d70831873 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
+@@ -35,7 +35,7 @@ static int check_load(const char *file, enum bpf_prog_t=
+ype type)
  	}
+=20
+ 	bpf_program__set_type(prog, type);
+-	bpf_program__set_flags(prog, BPF_F_TEST_RND_HI32);
++	bpf_program__set_flags(prog, BPF_F_TEST_RND_HI32 | BPF_F_TEST_SANITY_ST=
+RICT);
+ 	bpf_program__set_log_level(prog, 4 | extra_prog_load_log_flags);
+=20
+ 	err =3D bpf_object__load(obj);
+diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds.c b/tools/=
+testing/selftests/bpf/progs/verifier_bounds.c
+index c5588a14fe2e..0c1460936373 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_bounds.c
++++ b/tools/testing/selftests/bpf/progs/verifier_bounds.c
+@@ -965,6 +965,7 @@ l0_%=3D:	r0 =3D 0;						\
+ SEC("xdp")
+ __description("bound check with JMP_JSLT for crossing 64-bit signed boun=
+dary")
+ __success __retval(0)
++__flag(!BPF_F_TEST_SANITY_STRICT) /* known sanity violation */
+ __naked void crossing_64_bit_signed_boundary_2(void)
+ {
+ 	asm volatile ("					\
+@@ -1046,6 +1047,7 @@ l0_%=3D:	r0 =3D 0;						\
+ SEC("xdp")
+ __description("bound check with JMP32_JSLT for crossing 32-bit signed bo=
+undary")
+ __success __retval(0)
++__flag(!BPF_F_TEST_SANITY_STRICT) /* known sanity violation */
+ __naked void crossing_32_bit_signed_boundary_2(void)
+ {
+ 	asm volatile ("					\
+diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/se=
+lftests/bpf/test_loader.c
+index 37ffa57f28a1..57e27b1a73a6 100644
+--- a/tools/testing/selftests/bpf/test_loader.c
++++ b/tools/testing/selftests/bpf/test_loader.c
+@@ -153,6 +153,14 @@ static int parse_retval(const char *str, int *val, c=
+onst char *name)
+ 	return parse_int(str, val, name);
  }
 =20
-+static __always_inline u64 cast_t(enum num_t t, u64 x)
++static void update_flags(int *flags, int flag, bool clear)
 +{
-+	switch (t) {
-+	case U64: return (u64)x;
-+	case U32: return (u32)x;
-+	case S64: return (s64)x;
-+	case S32: return (u32)(s32)x;
-+	default: printf("cast_t!\n"); exit(1);
-+	}
++	if (clear)
++		*flags &=3D ~flag;
++	else
++		*flags |=3D flag;
 +}
 +
- static const char *t_str(enum num_t t)
- {
- 	switch (t) {
-@@ -1304,8 +1315,10 @@ struct ctx {
- 	struct range *usubranges, *ssubranges;
- 	int max_failure_cnt, cur_failure_cnt;
- 	int total_case_cnt, case_cnt;
-+	int rand_case_cnt;
-+	unsigned rand_seed;
- 	__u64 start_ns;
--	char progress_ctx[32];
-+	char progress_ctx[64];
- };
+ /* Uses btf_decl_tag attributes to describe the expected test
+  * behavior, see bpf_misc.h for detailed description of each attribute
+  * and attribute combinations.
+@@ -171,6 +179,7 @@ static int parse_test_spec(struct test_loader *tester=
+,
+ 	memset(spec, 0, sizeof(*spec));
 =20
- static void cleanup_ctx(struct ctx *ctx)
-@@ -1636,11 +1649,6 @@ static int parse_env_vars(struct ctx *ctx)
- {
- 	const char *s;
+ 	spec->prog_name =3D bpf_program__name(prog);
++	spec->prog_flags =3D BPF_F_TEST_SANITY_STRICT; /* by default be strict =
+*/
 =20
--	if (!(s =3D getenv("SLOW_TESTS")) || strcmp(s, "1") !=3D 0) {
--		test__skip();
--		return -ENOTSUP;
--	}
--
- 	if ((s =3D getenv("REG_BOUNDS_MAX_FAILURE_CNT"))) {
- 		errno =3D 0;
- 		ctx->max_failure_cnt =3D strtol(s, NULL, 10);
-@@ -1650,13 +1658,37 @@ static int parse_env_vars(struct ctx *ctx)
+ 	btf =3D bpf_object__btf(obj);
+ 	if (!btf) {
+@@ -187,7 +196,8 @@ static int parse_test_spec(struct test_loader *tester=
+,
+ 	for (i =3D 1; i < btf__type_cnt(btf); i++) {
+ 		const char *s, *val, *msg;
+ 		const struct btf_type *t;
+-		int tmp;
++		bool clear;
++		int flags;
+=20
+ 		t =3D btf__type_by_id(btf, i);
+ 		if (!btf_is_decl_tag(t))
+@@ -253,23 +263,30 @@ static int parse_test_spec(struct test_loader *test=
+er,
+ 				goto cleanup;
+ 		} else if (str_has_pfx(s, TEST_TAG_PROG_FLAGS_PFX)) {
+ 			val =3D s + sizeof(TEST_TAG_PROG_FLAGS_PFX) - 1;
++
++			clear =3D val[0] =3D=3D '!';
++			if (clear)
++				val++;
++
+ 			if (strcmp(val, "BPF_F_STRICT_ALIGNMENT") =3D=3D 0) {
+-				spec->prog_flags |=3D BPF_F_STRICT_ALIGNMENT;
++				update_flags(&spec->prog_flags, BPF_F_STRICT_ALIGNMENT, clear);
+ 			} else if (strcmp(val, "BPF_F_ANY_ALIGNMENT") =3D=3D 0) {
+-				spec->prog_flags |=3D BPF_F_ANY_ALIGNMENT;
++				update_flags(&spec->prog_flags, BPF_F_ANY_ALIGNMENT, clear);
+ 			} else if (strcmp(val, "BPF_F_TEST_RND_HI32") =3D=3D 0) {
+-				spec->prog_flags |=3D BPF_F_TEST_RND_HI32;
++				update_flags(&spec->prog_flags, BPF_F_TEST_RND_HI32, clear);
+ 			} else if (strcmp(val, "BPF_F_TEST_STATE_FREQ") =3D=3D 0) {
+-				spec->prog_flags |=3D BPF_F_TEST_STATE_FREQ;
++				update_flags(&spec->prog_flags, BPF_F_TEST_STATE_FREQ, clear);
+ 			} else if (strcmp(val, "BPF_F_SLEEPABLE") =3D=3D 0) {
+-				spec->prog_flags |=3D BPF_F_SLEEPABLE;
++				update_flags(&spec->prog_flags, BPF_F_SLEEPABLE, clear);
+ 			} else if (strcmp(val, "BPF_F_XDP_HAS_FRAGS") =3D=3D 0) {
+-				spec->prog_flags |=3D BPF_F_XDP_HAS_FRAGS;
++				update_flags(&spec->prog_flags, BPF_F_XDP_HAS_FRAGS, clear);
++			} else if (strcmp(val, "BPF_F_TEST_SANITY_STRICT") =3D=3D 0) {
++				update_flags(&spec->prog_flags, BPF_F_TEST_SANITY_STRICT, clear);
+ 			} else /* assume numeric value */ {
+-				err =3D parse_int(val, &tmp, "test prog flags");
++				err =3D parse_int(val, &flags, "test prog flags");
+ 				if (err)
+ 					goto cleanup;
+-				spec->prog_flags |=3D tmp;
++				update_flags(&spec->prog_flags, flags, clear);
+ 			}
  		}
  	}
+diff --git a/tools/testing/selftests/bpf/test_sock_addr.c b/tools/testing=
+/selftests/bpf/test_sock_addr.c
+index 2c89674fc62c..878c077e0fa7 100644
+--- a/tools/testing/selftests/bpf/test_sock_addr.c
++++ b/tools/testing/selftests/bpf/test_sock_addr.c
+@@ -680,6 +680,7 @@ static int load_path(const struct sock_addr_test *tes=
+t, const char *path)
+ 	bpf_program__set_type(prog, BPF_PROG_TYPE_CGROUP_SOCK_ADDR);
+ 	bpf_program__set_expected_attach_type(prog, test->expected_attach_type)=
+;
+ 	bpf_program__set_flags(prog, BPF_F_TEST_RND_HI32);
++	bpf_program__set_flags(prog, BPF_F_TEST_SANITY_STRICT);
 =20
-+	if ((s =3D getenv("REG_BOUNDS_RAND_CASE_CNT"))) {
-+		errno =3D 0;
-+		ctx->rand_case_cnt =3D strtol(s, NULL, 10);
-+		if (errno || ctx->rand_case_cnt < 0) {
-+			ASSERT_OK(-errno, "REG_BOUNDS_RAND_CASE_CNT");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	if ((s =3D getenv("REG_BOUNDS_RAND_SEED"))) {
-+		errno =3D 0;
-+		ctx->rand_seed =3D strtoul(s, NULL, 10);
-+		if (errno) {
-+			ASSERT_OK(-errno, "REG_BOUNDS_RAND_SEED");
-+			return -EINVAL;
-+		}
-+	}
-+
- 	return 0;
- }
+ 	err =3D bpf_object__load(obj);
+ 	if (err) {
+diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/=
+selftests/bpf/test_verifier.c
+index 98107e0452d3..4992022f3137 100644
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -1588,7 +1588,7 @@ static void do_test_single(struct bpf_test *test, b=
+ool unpriv,
+ 	if (fixup_skips !=3D skips)
+ 		return;
 =20
- static int prepare_gen_tests(struct ctx *ctx)
+-	pflags =3D BPF_F_TEST_RND_HI32;
++	pflags =3D BPF_F_TEST_RND_HI32 | BPF_F_TEST_SANITY_STRICT;
+ 	if (test->flags & F_LOAD_WITH_STRICT_ALIGNMENT)
+ 		pflags |=3D BPF_F_STRICT_ALIGNMENT;
+ 	if (test->flags & F_NEEDS_EFFICIENT_UNALIGNED_ACCESS)
+diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testin=
+g/selftests/bpf/testing_helpers.c
+index 8d994884c7b4..9786a94a666c 100644
+--- a/tools/testing/selftests/bpf/testing_helpers.c
++++ b/tools/testing/selftests/bpf/testing_helpers.c
+@@ -276,7 +276,7 @@ int bpf_prog_test_load(const char *file, enum bpf_pro=
+g_type type,
+ 	if (type !=3D BPF_PROG_TYPE_UNSPEC && bpf_program__type(prog) !=3D type=
+)
+ 		bpf_program__set_type(prog, type);
+=20
+-	flags =3D bpf_program__flags(prog) | BPF_F_TEST_RND_HI32;
++	flags =3D bpf_program__flags(prog) | BPF_F_TEST_RND_HI32 | BPF_F_TEST_S=
+ANITY_STRICT;
+ 	bpf_program__set_flags(prog, flags);
+=20
+ 	err =3D bpf_object__load(obj);
+@@ -299,7 +299,7 @@ int bpf_test_load_program(enum bpf_prog_type type, co=
+nst struct bpf_insn *insns,
  {
-+	const char *s;
- 	int err;
-=20
-+	if (!(s =3D getenv("SLOW_TESTS")) || strcmp(s, "1") !=3D 0) {
-+		test__skip();
-+		return -ENOTSUP;
-+	}
-+
- 	err =3D parse_env_vars(ctx);
- 	if (err)
- 		return err;
-@@ -1857,6 +1889,126 @@ void test_reg_bounds_gen_ranges_s32_s64(void) { v=
-alidate_gen_range_vs_range(S32,
- void test_reg_bounds_gen_ranges_s32_u32(void) { validate_gen_range_vs_ra=
-nge(S32, U32); }
- void test_reg_bounds_gen_ranges_s32_s32(void) { validate_gen_range_vs_ra=
-nge(S32, S32); }
-=20
-+#define DEFAULT_RAND_CASE_CNT 25
-+
-+#define RAND_21BIT_MASK ((1 << 22) - 1)
-+
-+static u64 rand_u64()
-+{
-+	/* RAND_MAX is guaranteed to be at least 1<<15, but in practice it
-+	 * seems to be 1<<31, so we need to call it thrice to get full u64;
-+	 * we'll use rougly equal split: 22 + 21 + 21 bits
-+	 */
-+	return ((u64)random() << 42) |
-+	       (((u64)random() & RAND_21BIT_MASK) << 21) |
-+	       (random() & RAND_21BIT_MASK);
-+}
-+
-+static u64 rand_const(enum num_t t)
-+{
-+	return cast_t(t, rand_u64());
-+}
-+
-+static struct range rand_range(enum num_t t)
-+{
-+	u64 x =3D rand_const(t), y =3D rand_const(t);
-+
-+	return range(t, min_t(t, x, y), max_t(t, x, y));
-+}
-+
-+static void validate_rand_ranges(enum num_t init_t, enum num_t cond_t, b=
-ool const_range)
-+{
-+	struct ctx ctx;
-+	struct range range1, range2;
-+	int err, i;
-+	u64 t;
-+
-+	memset(&ctx, 0, sizeof(ctx));
-+
-+	err =3D parse_env_vars(&ctx);
-+	if (err) {
-+		ASSERT_OK(err, "parse_env_vars");
-+		return;
-+	}
-+
-+	if (ctx.rand_case_cnt =3D=3D 0)
-+		ctx.rand_case_cnt =3D DEFAULT_RAND_CASE_CNT;
-+	if (ctx.rand_seed =3D=3D 0)
-+		ctx.rand_seed =3D (unsigned)get_time_ns();
-+
-+	srandom(ctx.rand_seed);
-+
-+	ctx.total_case_cnt =3D (MAX_OP - MIN_OP + 1) * (2 * ctx.rand_case_cnt);
-+	ctx.start_ns =3D get_time_ns();
-+	snprintf(ctx.progress_ctx, sizeof(ctx.progress_ctx),
-+		 "[RANDOM SEED %u] RANGE x %s, %s -> %s",
-+		 ctx.rand_seed, const_range ? "CONST" : "RANGE",
-+		 t_str(init_t), t_str(cond_t));
-+	fprintf(env.stdout, "%s\n", ctx.progress_ctx);
-+
-+	for (i =3D 0; i < ctx.rand_case_cnt; i++) {
-+		range1 =3D rand_range(init_t);
-+		if (const_range) {
-+			t =3D rand_const(init_t);
-+			range2 =3D range(init_t, t, t);
-+		} else {
-+			range2 =3D rand_range(init_t);
-+		}
-+
-+		/* <range1> x <range2> */
-+		if (verify_case(&ctx, init_t, cond_t, range1, range2))
-+			goto cleanup;
-+		/* <range2> x <range1> */
-+		if (verify_case(&ctx, init_t, cond_t, range2, range1))
-+			goto cleanup;
-+	}
-+
-+cleanup:
-+	cleanup_ctx(&ctx);
-+}
-+
-+/* [RANDOM] RANGE x CONST, U64 initial range */
-+void test_reg_bounds_rand_consts_u64_u64(void) { validate_rand_ranges(U6=
-4, U64, true /* const */); }
-+void test_reg_bounds_rand_consts_u64_s64(void) { validate_rand_ranges(U6=
-4, S64, true /* const */); }
-+void test_reg_bounds_rand_consts_u64_u32(void) { validate_rand_ranges(U6=
-4, U32, true /* const */); }
-+void test_reg_bounds_rand_consts_u64_s32(void) { validate_rand_ranges(U6=
-4, S32, true /* const */); }
-+/* [RANDOM] RANGE x CONST, S64 initial range */
-+void test_reg_bounds_rand_consts_s64_u64(void) { validate_rand_ranges(S6=
-4, U64, true /* const */); }
-+void test_reg_bounds_rand_consts_s64_s64(void) { validate_rand_ranges(S6=
-4, S64, true /* const */); }
-+void test_reg_bounds_rand_consts_s64_u32(void) { validate_rand_ranges(S6=
-4, U32, true /* const */); }
-+void test_reg_bounds_rand_consts_s64_s32(void) { validate_rand_ranges(S6=
-4, S32, true /* const */); }
-+/* [RANDOM] RANGE x CONST, U32 initial range */
-+void test_reg_bounds_rand_consts_u32_u64(void) { validate_rand_ranges(U3=
-2, U64, true /* const */); }
-+void test_reg_bounds_rand_consts_u32_s64(void) { validate_rand_ranges(U3=
-2, S64, true /* const */); }
-+void test_reg_bounds_rand_consts_u32_u32(void) { validate_rand_ranges(U3=
-2, U32, true /* const */); }
-+void test_reg_bounds_rand_consts_u32_s32(void) { validate_rand_ranges(U3=
-2, S32, true /* const */); }
-+/* [RANDOM] RANGE x CONST, S32 initial range */
-+void test_reg_bounds_rand_consts_s32_u64(void) { validate_rand_ranges(S3=
-2, U64, true /* const */); }
-+void test_reg_bounds_rand_consts_s32_s64(void) { validate_rand_ranges(S3=
-2, S64, true /* const */); }
-+void test_reg_bounds_rand_consts_s32_u32(void) { validate_rand_ranges(S3=
-2, U32, true /* const */); }
-+void test_reg_bounds_rand_consts_s32_s32(void) { validate_rand_ranges(S3=
-2, S32, true /* const */); }
-+
-+/* [RANDOM] RANGE x RANGE, U64 initial range */
-+void test_reg_bounds_rand_ranges_u64_u64(void) { validate_rand_ranges(U6=
-4, U64, false /* range */); }
-+void test_reg_bounds_rand_ranges_u64_s64(void) { validate_rand_ranges(U6=
-4, S64, false /* range */); }
-+void test_reg_bounds_rand_ranges_u64_u32(void) { validate_rand_ranges(U6=
-4, U32, false /* range */); }
-+void test_reg_bounds_rand_ranges_u64_s32(void) { validate_rand_ranges(U6=
-4, S32, false /* range */); }
-+/* [RANDOM] RANGE x RANGE, S64 initial range */
-+void test_reg_bounds_rand_ranges_s64_u64(void) { validate_rand_ranges(S6=
-4, U64, false /* range */); }
-+void test_reg_bounds_rand_ranges_s64_s64(void) { validate_rand_ranges(S6=
-4, S64, false /* range */); }
-+void test_reg_bounds_rand_ranges_s64_u32(void) { validate_rand_ranges(S6=
-4, U32, false /* range */); }
-+void test_reg_bounds_rand_ranges_s64_s32(void) { validate_rand_ranges(S6=
-4, S32, false /* range */); }
-+/* [RANDOM] RANGE x RANGE, U32 initial range */
-+void test_reg_bounds_rand_ranges_u32_u64(void) { validate_rand_ranges(U3=
-2, U64, false /* range */); }
-+void test_reg_bounds_rand_ranges_u32_s64(void) { validate_rand_ranges(U3=
-2, S64, false /* range */); }
-+void test_reg_bounds_rand_ranges_u32_u32(void) { validate_rand_ranges(U3=
-2, U32, false /* range */); }
-+void test_reg_bounds_rand_ranges_u32_s32(void) { validate_rand_ranges(U3=
-2, S32, false /* range */); }
-+/* [RANDOM] RANGE x RANGE, S32 initial range */
-+void test_reg_bounds_rand_ranges_s32_u64(void) { validate_rand_ranges(S3=
-2, U64, false /* range */); }
-+void test_reg_bounds_rand_ranges_s32_s64(void) { validate_rand_ranges(S3=
-2, S64, false /* range */); }
-+void test_reg_bounds_rand_ranges_s32_u32(void) { validate_rand_ranges(S3=
-2, U32, false /* range */); }
-+void test_reg_bounds_rand_ranges_s32_s32(void) { validate_rand_ranges(S3=
-2, S32, false /* range */); }
-+
- /* A set of hard-coded "interesting" cases to validate as part of normal
-  * test_progs test runs
-  */
+ 	LIBBPF_OPTS(bpf_prog_load_opts, opts,
+ 		.kern_version =3D kern_version,
+-		.prog_flags =3D BPF_F_TEST_RND_HI32,
++		.prog_flags =3D BPF_F_TEST_RND_HI32 | BPF_F_TEST_SANITY_STRICT,
+ 		.log_level =3D extra_prog_load_log_flags,
+ 		.log_buf =3D log_buf,
+ 		.log_size =3D log_buf_sz,
 --=20
 2.34.1
 
