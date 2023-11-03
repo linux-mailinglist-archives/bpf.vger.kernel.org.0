@@ -1,335 +1,435 @@
-Return-Path: <bpf+bounces-14063-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14064-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C69B7DFF41
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 07:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E2397DFF7B
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 08:53:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E95CF1C2100A
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 06:54:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CDC21C21033
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 07:53:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBF401C04;
-	Fri,  3 Nov 2023 06:54:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9198579CD;
+	Fri,  3 Nov 2023 07:52:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="e5TzXrKZ"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CF5317CA
-	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 06:54:26 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60545DC;
-	Thu,  2 Nov 2023 23:54:21 -0700 (PDT)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SMBLD57Snz4f3lgC;
-	Fri,  3 Nov 2023 14:54:12 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 4DD271A0172;
-	Fri,  3 Nov 2023 14:54:16 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgDXX7AMmURlIzzhEQ--.31337S2;
-	Fri, 03 Nov 2023 14:54:08 +0800 (CST)
-Subject: Re: [linus:master] [bpf] c930472552:
- WARNING:at_kernel/bpf/memalloc.c:#bpf_mem_alloc_init
-To: Yonghong Song <yonghong.song@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>,
- kernel test robot <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, "houtao1@huawei.com" <houtao1@huawei.com>
-References: <202310302113.9f8fe705-oliver.sang@intel.com>
- <7506b682-3be3-fcd0-4bb4-c1db48f609a2@huaweicloud.com>
- <99e9d615-b720-7f33-3df0-9824a92f6644@huaweicloud.com>
- <52383a4f-6efd-43ce-bedb-a91e130850f3@linux.dev>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <3629948c-793e-307b-6b6e-00557f3f6212@huaweicloud.com>
-Date: Fri, 3 Nov 2023 14:54:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6570B748C
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 07:52:54 +0000 (UTC)
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2073.outbound.protection.outlook.com [40.107.20.73])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705F71A6
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 00:52:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wy4rbM60BlZMH0IU3fNrENnZwfHcZ2ncifd1IT2hcAut29PSHDfjdyWNsnCRU3NAwYTe79woN6FKz/mzSjMZ4eAiZXFNA8j9s2SxuOJ9V1DSUExjVhUu48ydlJQrkFUiZ3avVfGDSAIaxiZK/Pmfo+G1MZx+CQxa9nI4JOEjj4ZUBuIXOzS6ePGVrmEfnH+QndSW19s4ioK1kpnijcu5bINHPjT7eaJgT3RVOQamVrvxSwD4z0SsEPltuZJFvdjywpk1VLwAAYQJxOecHK8mxFtqsEWxihx3vHuWqQkwEvDdh1g3h/Er5d22F13orsMG6HUrwi/pOu3KR/hG8WZRfw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zoC1FTUF8b+Jdge9zWfy49AWMVzWJgy8W+XTtxSCVLI=;
+ b=dzekW3EMKd9/zsRayNH2Snr4yn+/9mVFlMq5R6OeQZG0CYct6B4Zt8OCCPGa5UbX2urNRqOQFAUh22aTeQtNd35nrkz5noiM0ScAf76/p3v8oPsX+YaDxmcST4w77ML8pts0u27LIZPfwKkRhgKFvKg/Xs+O0QXa57mlYYd35C0gFg5+Y1H6uWdQQaElPe/68aUZrtWKIYfePNl20HI/bMALvZCDFybpBTRxMJgS2C9diYyovdQws54vDim7BJXCpbVVVqTMxSAtcDoacW73xtewZ7aVlAxTJ5gqsMI3mu+ansLPvvvwr4EC78PHs0cQKu63byKt431IBT9py85ELQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zoC1FTUF8b+Jdge9zWfy49AWMVzWJgy8W+XTtxSCVLI=;
+ b=e5TzXrKZMrVSNV4nCpdzLS0UcYfgbc5u+8xHPfUVqN3NOLdzUOzWpgNGbWVuf1lgvLfTem2uIl/U5Kjcfwcopeaj1FXzBx84oDe6Q6ccVMIy4cy5ZAW6L4fE9Uu4xAjuWnovPkdrEBLTafwXS/k+ztlI8QA1Big0voHS+5mtRKApgERbKa2AUKCBy8Xwx3gbedLDVPgdzAZ5XzcNNqkaUqswcGpSSLmQBElaVkQj5t6AnZktWeauwSa66D+YzWxyDKOYZ46ZLRAQqfEgBJKs/C1L65gqKBRvObQx29poGyuMN9XEvro4xr0zcLAHmp2dQ2jkrBm9mLucnmy01a9K/w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB9510.eurprd04.prod.outlook.com (2603:10a6:20b:44a::11)
+ by GVXPR04MB9849.eurprd04.prod.outlook.com (2603:10a6:150:112::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Fri, 3 Nov
+ 2023 07:52:45 +0000
+Received: from AS8PR04MB9510.eurprd04.prod.outlook.com
+ ([fe80::9f3e:3b47:5ccd:c47c]) by AS8PR04MB9510.eurprd04.prod.outlook.com
+ ([fe80::9f3e:3b47:5ccd:c47c%6]) with mapi id 15.20.6954.019; Fri, 3 Nov 2023
+ 07:52:45 +0000
+Date: Fri, 3 Nov 2023 15:52:36 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	martin.lau@kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next 01/13] bpf: generalize reg_set_min_max() to
+ handle non-const register comparisons
+Message-ID: <ZUSmxI9EoWjUyO_t@u94a>
+References: <20231103000822.2509815-1-andrii@kernel.org>
+ <20231103000822.2509815-2-andrii@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231103000822.2509815-2-andrii@kernel.org>
+X-ClientProxiedBy: TYCP286CA0261.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:455::12) To AS8PR04MB9510.eurprd04.prod.outlook.com
+ (2603:10a6:20b:44a::11)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <52383a4f-6efd-43ce-bedb-a91e130850f3@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgDXX7AMmURlIzzhEQ--.31337S2
-X-Coremail-Antispam: 1UD129KBjvAXoW3ZryDCrW3AF4fGF1rWw1UAwb_yoW8GFyfCo
-	W8ur13Cr4rGFyUGr1UJw1UJr15Jw1UJrnrJr15Jw17GFyjy3WUJ348tryUG3y5tr1rGF4U
-	Ar1jqw1UAa45Jr1kn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UjIYCTnIWjp_UUU5R7kC6x804xWl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK
-	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
-	AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF
-	7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7
-	CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
-	rVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
-	IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI
-	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
-	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6x
-	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-	6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB9510:EE_|GVXPR04MB9849:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4bb0325b-8525-49ad-c8d9-08dbdc41dd3f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	FmQSFK+BtAidusRkJxlvERAcVLtXlnS6BJQ/VS+HwRmY3cG/bsy/TT1IQ/b67JWeAepOZTWbDm8xqoyIpx44mEyR4EdhmDzn7XQhPU54ST6wS7/ezHrPEl9adqFHK6JgFvq4qr9GEQbEHoq6B3Hp5Z7k8HrpPgIXjWDkkX1wiqoRdpCQebVuCzx7avb29vY0LT5acnBE9tAyQv4118nw0Z22L6UnmWdVq6PNxHu5Z7ZAp37xh2t1si/+A4409Zm+KZKbt0Qwn8ElbnCYHwXncBctop/XxClsRH1ifbh3Lyj2US7JWyQkmghen8lWSNl3Q9pAIsitlXe7AW5H7iq2I5VlxGAmTZoqk7MSx4lJZzrbdEFHDkauVGWrAXkMmY5E8iO2sEZstkxn1BvyiNz3P761ZN6AV8Y+iKr1QbZ8fbHgU8VJgRBLD19/xNEpPKYci6kOae/wiKRhk/LJiTXVQiKXP2EFL0I767LgH++k9fSR/2IO/5wmZAQOhp0XI0pfVmD2o8NEOPOF6PychAWq77x3tt2tuIycHCt+6GMC79nDKNkLU3Xi0dRtn4z27ebJ
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB9510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(366004)(376002)(136003)(346002)(39860400002)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(316002)(66899024)(66556008)(66946007)(66476007)(26005)(9686003)(6506007)(6512007)(38100700002)(33716001)(83380400001)(6666004)(6916009)(86362001)(478600001)(6486002)(4326008)(5660300002)(8936002)(2906002)(8676002)(41300700001)(30864003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?c21lbmxjNnlvUTVHZjY4dnZnZ1kzZm1CK2Jncko3dE9NbFc3Tkh6UnBUelpM?=
+ =?utf-8?B?NjM1dVB0K1ZOZVlOTHZqZGRmOUY4QTl5UXh4MFpjbkMvK1gxSE1DOVB5bC9N?=
+ =?utf-8?B?Nk5VYnlNNHBrakxIWkd2ODcrM3o3REdxYlpUd09XdzE3WnVEVmt2d1lkcE12?=
+ =?utf-8?B?UDdzck1NR1c3aXFLUWpZT1dVdnB2dkx4OGFNK0lMQU9LcmdQVHdUUlhqbGJ6?=
+ =?utf-8?B?TDhRMkRaUWVLNmg0VWVGRzNSUlNVNTIvVVRaUE1PZG5ZRzRQclNzbHozSFc4?=
+ =?utf-8?B?SW1OZUhmYVlNSGhkNWIvNmM4Y1dJb1hTM04xdjJHd2JHTU50MkZrVkpIY1ZW?=
+ =?utf-8?B?c2NvMU9nY1lGWmI1TTVYSyszVEFobjBsbWlCSDJqOUFnLzcxV0d0a21xS3NE?=
+ =?utf-8?B?bVFjUTM4NC9xNXhma2YwakkzRmRuY0VmV0Q1RW85MUN0T21xeUJURkpZWGo2?=
+ =?utf-8?B?M3JKWG9rZlp0dWluL3BlVU9FVVRGd09XTk5qbUZlaG5Oam9lTCt2LzlVYmlr?=
+ =?utf-8?B?Um01WGdhbG5VSmZhV1BVb3lOT1JaVHFIWlB0aFJtQmQrWFJRbDU2eFBuNXZH?=
+ =?utf-8?B?NnFyM1lqNWJ0S20wQTRvb0xJa3JHU1JxaUl2LzY1SGhNNldqK21XbnVTczhY?=
+ =?utf-8?B?Z01wM3pLeDBJNEFXVDZSUWMyajUvZUZsOGN6U0hqR2RBVVJwOXhZd2ZhT2dz?=
+ =?utf-8?B?UzJyaU5EbzdkWFQrcW83ZmpmQWpGNlNnbFcveTRwVjV2dFNGVkU2c3lJekFn?=
+ =?utf-8?B?RlUvaDhkZzRKZGhDdGVybDVsYmErTit0bGlBemtMdUlMYmtrMmw5SW1vZ3Rq?=
+ =?utf-8?B?UmNIVHpPb28wcm5aSmxMNlAzeWI0SlhzZWk3bjd2RzZtK2NkVHdrNVFSdGts?=
+ =?utf-8?B?T3dLcmx0cHlER21wcVpZQTNOR0hFMm1nV1ptbDFRTFRSRDNNZHAxdjBWcnls?=
+ =?utf-8?B?MmJaSDB3QmdjRTRqbjFMVnNhd290UVBVSlB1UEZJN3U5OGoza0poMGxmOEVT?=
+ =?utf-8?B?cXFGNDY4cWdRN1J4NGtOdE9GTEgwQTJuN2toM0x4YkJPaHhybVpJRWVoWU5l?=
+ =?utf-8?B?UVMzalZMODE2T1J3OEVVQXI0VnRiUnV3RFBTWmlHVnhCbFVnci82V1hVZzk0?=
+ =?utf-8?B?K0ZNWVJibGhYUWZiOTlhVlJLUE1tUTMxcC84YUVIVU5RTjVCcitUKzJ3L3N6?=
+ =?utf-8?B?dko3Z3lvMkNGV0d2S0xhcjFVYnlxcmRJdUZTalQwZDlIRGNtaFdyZlhpN2I0?=
+ =?utf-8?B?RjVEVVBuRWRadVc3RGtzUnNBTzRhc1lXSnJWR0RsZG91RXNvYUU0a3RlUUhQ?=
+ =?utf-8?B?Yi9TVy9XdVdpOHJQWkV6dzlGWUIvNjNPVEdEbEk3eW96OGZOZTY2cWJQUVRw?=
+ =?utf-8?B?ay95aFlYUVBBK1ptazJBRGJSaW9uNXVOSVdlNVU2eU9SaGtEbzgzb0NrL3Jt?=
+ =?utf-8?B?cDBJZ0l5aFExWUkycElzTXh5ZHRmWUtCQTN5cGJ2bEtGVXZYRm1HdFhwOWtk?=
+ =?utf-8?B?SnE2bGpySExwbXBQTERORTUyNklHZ3hqWGZDcDQxMzl6a1dpT3N0UHlLWjJG?=
+ =?utf-8?B?WFBSMzVvL3ZGdDFxWlhHL2x2YjhKa2FFaDhpcHRRM1RFTUR6L2JTUnBhWHNa?=
+ =?utf-8?B?SHNkNnZIMnlxWjJpOFhzdldSTWR5WWhXQXZxVmtIMytXTW9ySUVKekpWSWZn?=
+ =?utf-8?B?YXAvZUpjbmRKS3VBQzN4WVJBQTY2cCtTNWZYZGRMM0tQdWhpTmZadGRIR2lK?=
+ =?utf-8?B?Tk1vbm5ZK0Y4cC91b0lWbnhlVzUxKzE1R2NhY3JVQXEwTit5eWxVNjZWZFlY?=
+ =?utf-8?B?Uk1jdXJYS0pjdkdLV0hMei9DZ1JEYTZQTG4wejdWZjdxNnAySGVZRnU1a0x1?=
+ =?utf-8?B?OEl3S2lteTUwY0xSTUVUb05xTlBSY2R2L2VnS3pSbU1KNHMwSkdWK3Zkakl0?=
+ =?utf-8?B?OGd0Q2o4d0p2bGlvNldtTmhlamczMGRRbEpZVllXSFV5Zk9LUXpiUzBQTXB4?=
+ =?utf-8?B?aXBHVUVpYmhUVGRBY1kzSThrMGxMekhFQTMzVk5tdG1tT1RlL3ducmhZZE02?=
+ =?utf-8?B?MU1PUys0clhsM1crMFVjVHlzTkZZZDkyQktGWlhZTkxuTXE3R0tZZVoxenBH?=
+ =?utf-8?B?ZktzbllUKzh5MTAxSWFNTGJVbjVWVk1wU2lwR2lQNy9LMTNQazA5Z0tXVUF5?=
+ =?utf-8?B?ZEE9PQ==?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4bb0325b-8525-49ad-c8d9-08dbdc41dd3f
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB9510.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2023 07:52:44.9100
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: f7WzrHoIlSrPVeqa/tBL5ePSHHoHLtZ1XgAcgd3dDnq7OFS8H/LMXr+ivEgpWG4jQkCWSMbVs4ChoGr7D2aOmw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR04MB9849
 
-Hi,
+On Thu, Nov 02, 2023 at 05:08:10PM -0700, Andrii Nakryiko wrote:
+> Generalize bounds adjustment logic of reg_set_min_max() to handle not
+> just register vs constant case, but in general any register vs any
+> register cases. For most of the operations it's trivial extension based
+> on range vs range comparison logic, we just need to properly pick
+> min/max of a range to compare against min/max of the other range.
+> 
+> For BPF_JSET we keep the original capabilities, just make sure JSET is
+> integrated in the common framework. This is manifested in the
+> internal-only BPF_KSET + BPF_X "opcode" to allow for simpler and more
+                    ^ typo?
 
-On 11/3/2023 12:08 AM, Yonghong Song wrote:
->
-> On 11/2/23 6:40 AM, Hou Tao wrote:
->> Hi Alexei,
->>
->> On 10/31/2023 4:01 PM, Hou Tao wrote:
->>> Hi,
->>>
->>> On 10/30/2023 10:11 PM, kernel test robot wrote:
->>>> hi, Hou Tao,
->>>>
->>>> we noticed a WARN_ONCE added in this commit was hit in our tests. FYI.
->>>>
->>>>
->>>> Hello,
->>>>
->>>> kernel test robot noticed
->>>> "WARNING:at_kernel/bpf/memalloc.c:#bpf_mem_alloc_init" on:
->>>>
->>>> commit: c930472552022bd09aab3cd946ba3f243070d5c7 ("bpf: Ensure
->>>> unit_size is matched with slab cache object size")
->>>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
->>>>
->>>> [test failed on linus/master ffc253263a1375a65fa6c9f62a893e9767fbebfa]
->>>> [test failed on linux-next/master
->>>> c503e3eec382ac708ee7adf874add37b77c5d312]
->>>>
->>>> in testcase: boot
->>>>
->>>> compiler: gcc-12
->>>> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp
->>>> 2 -m 16G
->>>>
->>>> (please refer to attached dmesg/kmsg for entire log/backtrace)
->>>>
->>>>
->>>> +-------------------------------------------------------------+------------+------------+
->>>>
->>>> |                                                             |
->>>> b1d53958b6 | c930472552 |
->>>> +-------------------------------------------------------------+------------+------------+
->>>>
->>>> | WARNING:at_kernel/bpf/memalloc.c:#bpf_mem_alloc_init        |
->>>> 0          | 14         |
->>>> | EIP:bpf_mem_alloc_init                                      |
->>>> 0          | 14         |
->>>> +-------------------------------------------------------------+------------+------------+
->>>>
->>>>
->>>>
->>>> If you fix the issue in a separate patch/commit (i.e. not just a
->>>> new version of
->>>> the same patch/commit), kindly add following tags
->>>> | Reported-by: kernel test robot <oliver.sang@intel.com>
->>>> | Closes:
->>>> https://lore.kernel.org/oe-lkp/202310302113.9f8fe705-oliver.sang@intel.com
->>>>
->>>>
->>>> [   32.249545][    T1] ------------[ cut here ]------------
->>>> [   32.250152][    T1] bpf_mem_cache[0]: unexpected object size
->>>> 128, expect 96
->>>> [ 32.250953][ T1] WARNING: CPU: 1 PID: 1 at
->>>> kernel/bpf/memalloc.c:500 bpf_mem_alloc_init
->>>> (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579)
->>>> [   32.252065][    T1] Modules linked in:
->>>> [   32.252548][    T1] CPU: 1 PID: 1 Comm: swapper/0 Tainted:
->>>> G        W          6.5.0-12679-gc93047255202 #1
->>>> [ 32.253767][ T1] EIP: bpf_mem_alloc_init
->>>> (kernel/bpf/memalloc.c:500 kernel/bpf/memalloc.c:579)
->>>> [ 32.254439][ T1] Code: 30 e8 7e 22 04 00 8b 56 20 39 d0 74 24 80
->>>> 3d 18 c0 cc c2 00 75 3b c6 05 18 c0 cc c2 01 52 50 53 68 df 53 57
->>>> c2 e8 47 70 ef ff <0f> 0b 83 c4 10 eb 20 43 83 c6 74 83 fb 0b 0f 85
->>>> 6a ff ff ff 8b 45
->>> Thanks for the report. I also could reproduce the warning in v6.6 by
->>> following the reproducing steps in the link below.
->>>
->>> According the reproduce job, it seems that the kernel is built for i386
->>> (make HOSTCC=gcc-12 CC=gcc-12 ARCH=i386 olddefconfig prepare
->>> modules_prepare bzImage) and in .config CONFIG_SLAB instead of
->>> CONFIG_SLUB is enabled, I will check whether or not these two setups
->>> make any thing being different.
->> I see what has happened. The problem is twofold:
->> (1) The object_size of kmalloc-cg-96 is adjust from 96 to 128 due to
->> slab merge in __kmem_cache_alias(). For SLAB, SLAB_HWCACHE_ALIGN is
->> enabled by default for kmalloc slab, so align is 64 and size is 128 for
->> kmalloc-cg-96. So when unit_alloc() does kmalloc_node(96, __GFP_ACCOUNT,
->> node), ksize() will return 128 instead of 96 for the returned pointer.
->> SLUB has a similar merge logic, but because its align is 8 under x86-64,
->> so the warning doesn't happen for i386 + SLUB, but I think the similar
->> problem may exist for other architectures.
->> (2) kmalloc_size_roundup() returns the object_size of kmalloc-96 instead
->> of kmalloc-cg-96, so bpf_mem_cache_adjust_size() doesn't adjust
->> size_index accordingly. The reason why the object_size of kmalloc-96 is
->> 96 instead of 128 is that there is slab merge for kmalloc-96.
->>
->> About how to fix the problem, I have two ideas:
->> The first is to introduce kmalloc_size_roundup_flags(), so
->> bpf_mem_cache_adjust_size() could use kmalloc_size_roundup_flags(size,
->> __GFP_ACCOUNT) to get the object_size of kmalloc-cg-xxx. It could fix
->> the warning for now, but the warning may pop-up occasionally due to SLUB
->> merge and unusual slab align. The second is just using the bpf_mem_cache
->> pointer to get the unit_size which is saved before the to-be-free
->> pointer. Its downside is that it may can not be able to skip the free
->> operation for pointer which is not allocated from bpf ma, but I think it
->> is acceptable. I prefer the latter solution. What do you think ?
->
->
-> Is it possible that in bpf_mem_cache_adjust_size(), we do a series of
-> kmalloc (for supported bucket size) and call ksize() to get the actual
-> allocated object size. So eventually all possible allocated object sizes
-> will be used for size_index[]. This will avoid all kind of special
-> corner cases due to config/macro/arch etc. WDYT?
+Two more comments below
 
-It is basically the same as the first proposed solution and it has the
-same flaw. The problem is that slab merge can happen in any time, so the
-return value of ksize() may change even all passed pointers are
-allocated from the same slab. Considering the following case: during the
-invocation of bpf_mem_cache_adjust_size() or the initialization of
-bpf_global_ma, there is no slab merge and ksize() for a 96-bytes object
-returns 96. But after these invocations, a new slab created by a kernel
-module is merged to kmalloc-cg-96 and the object_size of kmalloc-cg-96
-is adjust from 96 to 128 (which is possible for x86-64 + CONFIG_SLAB,
-because it is alignment requirement is 64 for 96-bytes slab). So soon or
-later, when bpf_global_ma frees a 96-byte-sized pointer which is
-allocated from a bpf_mem_cache in which unit_size is 96, bpf_mem_free()
-will free the pointer through a bpf_mem_cache in which unit_size is 128,
-because the return value of ksize() changes. Maybe we should introduce a
-new API in mm which returns size instead of object_size of underlying
-slab, so the return value will not change due to slab merge.
+> uniform rev_opcode() handling. See the code for details. This allows to
+> reuse the same code exactly both for TRUE and FALSE branches without
+> explicitly handling both conditions with custom code.
+> 
+> Note also that now we don't need a special handling of BPF_JEQ/BPF_JNE
+> case none of the registers are constants. This is now just a normal
+> generic case handled by reg_set_min_max().
+> 
+> To make tnum handling cleaner, tnum_with_subreg() helper is added, as
+> that's a common operator when dealing with 32-bit subregister bounds.
+> This keeps the overall logic much less noisy when it comes to tnums.
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  include/linux/tnum.h  |   4 +
+>  kernel/bpf/tnum.c     |   7 +-
+>  kernel/bpf/verifier.c | 327 ++++++++++++++++++++----------------------
+>  3 files changed, 165 insertions(+), 173 deletions(-)
+> 
+> diff --git a/include/linux/tnum.h b/include/linux/tnum.h
+> index 1c3948a1d6ad..3c13240077b8 100644
+> --- a/include/linux/tnum.h
+> +++ b/include/linux/tnum.h
+> @@ -106,6 +106,10 @@ int tnum_sbin(char *str, size_t size, struct tnum a);
+>  struct tnum tnum_subreg(struct tnum a);
+>  /* Returns the tnum with the lower 32-bit subreg cleared */
+>  struct tnum tnum_clear_subreg(struct tnum a);
+> +/* Returns the tnum with the lower 32-bit subreg in *reg* set to the lower
+> + * 32-bit subreg in *subreg*
+> + */
+> +struct tnum tnum_with_subreg(struct tnum reg, struct tnum subreg);
+>  /* Returns the tnum with the lower 32-bit subreg set to value */
+>  struct tnum tnum_const_subreg(struct tnum a, u32 value);
+>  /* Returns true if 32-bit subreg @a is a known constant*/
+> diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
+> index 3d7127f439a1..f4c91c9b27d7 100644
+> --- a/kernel/bpf/tnum.c
+> +++ b/kernel/bpf/tnum.c
+> @@ -208,7 +208,12 @@ struct tnum tnum_clear_subreg(struct tnum a)
+>  	return tnum_lshift(tnum_rshift(a, 32), 32);
+>  }
+>  
+> +struct tnum tnum_with_subreg(struct tnum reg, struct tnum subreg)
+> +{
+> +	return tnum_or(tnum_clear_subreg(reg), tnum_subreg(subreg));
+> +}
+> +
+>  struct tnum tnum_const_subreg(struct tnum a, u32 value)
+>  {
+> -	return tnum_or(tnum_clear_subreg(a), tnum_const(value));
+> +	return tnum_with_subreg(a, tnum_const(value));
+>  }
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 2197385d91dc..52934080042c 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -14379,218 +14379,211 @@ static int is_branch_taken(struct bpf_reg_state *reg1, struct bpf_reg_state *reg
+>  	return is_scalar_branch_taken(reg1, reg2, opcode, is_jmp32);
+>  }
+>  
+> -/* Adjusts the register min/max values in the case that the dst_reg and
+> - * src_reg are both SCALAR_VALUE registers (or we are simply doing a BPF_K
+> - * check, in which case we havea fake SCALAR_VALUE representing insn->imm).
+> - * Technically we can do similar adjustments for pointers to the same object,
+> - * but we don't support that right now.
+> +/* Opcode that corresponds to a *false* branch condition.
+> + * E.g., if r1 < r2, then reverse (false) condition is r1 >= r2
+>   */
+> -static void reg_set_min_max(struct bpf_reg_state *true_reg1,
+> -			    struct bpf_reg_state *true_reg2,
+> -			    struct bpf_reg_state *false_reg1,
+> -			    struct bpf_reg_state *false_reg2,
+> -			    u8 opcode, bool is_jmp32)
+> +static u8 rev_opcode(u8 opcode)
 
-Regards,
-Tao
->
->
->>> Regards,
->>> Tao
->>>> All code
->>>> ========
->>>>     0:    30 e8                    xor    %ch,%al
->>>>     2:    7e 22                    jle    0x26
->>>>     4:    04 00                    add    $0x0,%al
->>>>     6:    8b 56 20                 mov    0x20(%rsi),%edx
->>>>     9:    39 d0                    cmp    %edx,%eax
->>>>     b:    74 24                    je     0x31
->>>>     d:    80 3d 18 c0 cc c2 00     cmpb  
->>>> $0x0,-0x3d333fe8(%rip)        # 0xffffffffc2ccc02c
->>>>    14:    75 3b                    jne    0x51
->>>>    16:    c6 05 18 c0 cc c2 01     movb  
->>>> $0x1,-0x3d333fe8(%rip)        # 0xffffffffc2ccc035
->>>>    1d:    52                       push   %rdx
->>>>    1e:    50                       push   %rax
->>>>    1f:    53                       push   %rbx
->>>>    20:    68 df 53 57 c2           push   $0xffffffffc25753df
->>>>    25:    e8 47 70 ef ff           call   0xffffffffffef7071
->>>>    2a:*    0f 0b                    ud2        <-- trapping
->>>> instruction
->>>>    2c:    83 c4 10                 add    $0x10,%esp
->>>>    2f:    eb 20                    jmp    0x51
->>>>    31:    43 83 c6 74              rex.XB add $0x74,%r14d
->>>>    35:    83 fb 0b                 cmp    $0xb,%ebx
->>>>    38:    0f 85 6a ff ff ff        jne    0xffffffffffffffa8
->>>>    3e:    8b                       .byte 0x8b
->>>>    3f:    45                       rex.RB
->>>>
->>>> Code starting with the faulting instruction
->>>> ===========================================
->>>>     0:    0f 0b                    ud2
->>>>     2:    83 c4 10                 add    $0x10,%esp
->>>>     5:    eb 20                    jmp    0x27
->>>>     7:    43 83 c6 74              rex.XB add $0x74,%r14d
->>>>     b:    83 fb 0b                 cmp    $0xb,%ebx
->>>>     e:    0f 85 6a ff ff ff        jne    0xffffffffffffff7e
->>>>    14:    8b                       .byte 0x8b
->>>>    15:    45                       rex.RB
->>>> [   32.256641][    T1] EAX: 00000037 EBX: 00000000 ECX: 00000002
->>>> EDX: 80000002
->>>> [   32.257402][    T1] ESI: fefbda30 EDI: da953a30 EBP: c3d49ef0
->>>> ESP: c3d49ec0
->>>> [   32.258176][    T1] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068
->>>> EFLAGS: 00010286
->>>> [   32.259000][    T1] CR0: 80050033 CR2: 00000000 CR3: 02dd5000
->>>> CR4: 000406d0
->>>> [   32.259768][    T1] DR0: 00000000 DR1: 00000000 DR2: 00000000
->>>> DR3: 00000000
->>>> [   32.260526][    T1] DR6: fffe0ff0 DR7: 00000400
->>>> [   32.261021][    T1] Call Trace:
->>>> [ 32.261376][ T1] ? show_regs (arch/x86/kernel/dumpstack.c:479
->>>> arch/x86/kernel/dumpstack.c:465)
->>>> [ 32.261835][ T1] ? bpf_mem_alloc_init (kernel/bpf/memalloc.c:500
->>>> kernel/bpf/memalloc.c:579)
->>>> [ 32.262395][ T1] ? __warn (kernel/panic.c:673)
->>>> [ 32.262840][ T1] ? report_bug (lib/bug.c:201 lib/bug.c:219)
->>>> [ 32.263327][ T1] ? bpf_mem_alloc_init (kernel/bpf/memalloc.c:500
->>>> kernel/bpf/memalloc.c:579)
->>>> [ 32.263884][ T1] ? exc_overflow (arch/x86/kernel/traps.c:250)
->>>> [ 32.264368][ T1] ? handle_bug (arch/x86/kernel/traps.c:237)
->>>> [ 32.264833][ T1] ? exc_invalid_op (arch/x86/kernel/traps.c:258
->>>> (discriminator 1))
->>>> [ 32.265333][ T1] ? handle_exception (arch/x86/entry/entry_32.S:1056)
->>>> [ 32.265903][ T1] ? exc_overflow (arch/x86/kernel/traps.c:250)
->>>> [ 32.266392][ T1] ? bpf_mem_alloc_init (kernel/bpf/memalloc.c:500
->>>> kernel/bpf/memalloc.c:579)
->>>> [ 32.266982][ T1] ? exc_overflow (arch/x86/kernel/traps.c:250)
->>>> [ 32.267476][ T1] ? bpf_mem_alloc_init (kernel/bpf/memalloc.c:500
->>>> kernel/bpf/memalloc.c:579)
->>>> [ 32.268050][ T1] ? irq_work_init_threads (kernel/bpf/core.c:2919)
->>>> [ 32.268610][ T1] bpf_global_ma_init (kernel/bpf/core.c:2923)
->>>> [ 32.269142][ T1] do_one_initcall (init/main.c:1232)
->>>> [ 32.269657][ T1] ? debug_smp_processor_id (lib/smp_processor_id.c:61)
->>>> [ 32.270243][ T1] ? rcu_is_watching
->>>> (include/linux/context_tracking.h:122 kernel/rcu/tree.c:699)
->>>> [ 32.270770][ T1] do_initcalls (init/main.c:1293 init/main.c:1310)
->>>> [ 32.271275][ T1] kernel_init_freeable (init/main.c:1549)
->>>> [ 32.271841][ T1] ? rest_init (init/main.c:1429)
->>>> [ 32.272324][ T1] kernel_init (init/main.c:1439)
->>>> [ 32.272785][ T1] ret_from_fork (arch/x86/kernel/process.c:153)
->>>> [ 32.273272][ T1] ? rest_init (init/main.c:1429)
->>>> [ 32.273752][ T1] ret_from_fork_asm (arch/x86/entry/entry_32.S:741)
->>>> [ 32.274272][ T1] entry_INT80_32 (arch/x86/entry/entry_32.S:947)
->>>> [   32.274803][    T1] irq event stamp: 16968005
->>>> [ 32.275293][ T1] hardirqs last enabled at (16968013):
->>>> console_unlock (arch/x86/include/asm/irqflags.h:26
->>>> arch/x86/include/asm/irqflags.h:67
->>>> arch/x86/include/asm/irqflags.h:127 kernel/printk/printk.c:347
->>>> kernel/printk/printk.c:2720 kernel/printk/printk.c:3039)
->>>> [ 32.276277][ T1] hardirqs last disabled at (16968022):
->>>> console_unlock (kernel/printk/printk.c:345
->>>> kernel/printk/printk.c:2720 kernel/printk/printk.c:3039)
->>>> [ 32.277242][ T1] softirqs last enabled at (16967866): __do_softirq
->>>> (arch/x86/include/asm/preempt.h:27 kernel/softirq.c:400
->>>> kernel/softirq.c:582)
->>>> [ 32.278202][ T1] softirqs last disabled at (16967861):
->>>> do_softirq_own_stack (arch/x86/kernel/irq_32.c:57
->>>> arch/x86/kernel/irq_32.c:147)
->>>> [   32.279228][    T1] ---[ end trace 0000000000000000 ]---
->>>> [   32.280294][    T1] kmemleak: Kernel memory leak detector
->>>> initialized (mem pool available: 15783)
->>>> [   32.281276][    T1] debug_vm_pgtable: [debug_vm_pgtable        
->>>> ]: Validating architecture page table helpers
->>>> [   32.285847][   T74] kmemleak: Automatic memory scanning thread
->>>> started
->>>> [   32.290289][    T1] UBI error: cannot create "ubi" debugfs
->>>> directory, error -2
->>>> [   32.291558][    T1] UBI error: cannot initialize UBI, error -2
->>>>
->>>>
->>>>
->>>> The kernel config and materials to reproduce are available at:
->>>> https://download.01.org/0day-ci/archive/20231030/202310302113.9f8fe705-oliver.sang@intel.com
->>>>
->>>>
->>>>
->>>>
->>
+Nit: rev_opcode and flip_opcode seems like a possible source of confusing
+down the line. Flip and reverse are often interchangable, i.e. "flip the
+order" and "reverse the order" is the same thing.
 
+Maybe "neg_opcode" or "neg_cond_opcode"?
+
+Or do it the otherway around, keep rev_opcode but rename flip_opcode.
+
+One more comment about BPF_JSET below
+
+>  {
+> -	struct tnum false_32off, false_64off;
+> -	struct tnum true_32off, true_64off;
+> -	u64 uval;
+> -	u32 uval32;
+> -	s64 sval;
+> -	s32 sval32;
+> -
+> -	/* If either register is a pointer, we can't learn anything about its
+> -	 * variable offset from the compare (unless they were a pointer into
+> -	 * the same object, but we don't bother with that).
+> +	switch (opcode) {
+> +	case BPF_JEQ:		return BPF_JNE;
+> +	case BPF_JNE:		return BPF_JEQ;
+> +	/* JSET doesn't have it's reverse opcode in BPF, so add
+> +	 * BPF_X flag to denote the reverse of that operation
+>  	 */
+> -	if (false_reg1->type != SCALAR_VALUE || false_reg2->type != SCALAR_VALUE)
+> -		return;
+> -
+> -	/* we expect right-hand registers (src ones) to be constants, for now */
+> -	if (!is_reg_const(false_reg2, is_jmp32)) {
+> -		opcode = flip_opcode(opcode);
+> -		swap(true_reg1, true_reg2);
+> -		swap(false_reg1, false_reg2);
+> +	case BPF_JSET:		return BPF_JSET | BPF_X;
+> +	case BPF_JSET | BPF_X:	return BPF_JSET;
+> +	case BPF_JGE:		return BPF_JLT;
+> +	case BPF_JGT:		return BPF_JLE;
+> +	case BPF_JLE:		return BPF_JGT;
+> +	case BPF_JLT:		return BPF_JGE;
+> +	case BPF_JSGE:		return BPF_JSLT;
+> +	case BPF_JSGT:		return BPF_JSLE;
+> +	case BPF_JSLE:		return BPF_JSGT;
+> +	case BPF_JSLT:		return BPF_JSGE;
+> +	default:		return 0;
+>  	}
+> -	if (!is_reg_const(false_reg2, is_jmp32))
+> -		return;
+> +}
+>  
+> -	false_32off = tnum_subreg(false_reg1->var_off);
+> -	false_64off = false_reg1->var_off;
+> -	true_32off = tnum_subreg(true_reg1->var_off);
+> -	true_64off = true_reg1->var_off;
+> -	uval = false_reg2->var_off.value;
+> -	uval32 = (u32)tnum_subreg(false_reg2->var_off).value;
+> -	sval = (s64)uval;
+> -	sval32 = (s32)uval32;
+> +/* Refine range knowledge for <reg1> <op> <reg>2 conditional operation. */
+> +static void regs_refine_cond_op(struct bpf_reg_state *reg1, struct bpf_reg_state *reg2,
+> +				u8 opcode, bool is_jmp32)
+> +{
+> +	struct tnum t;
+>  
+>  	switch (opcode) {
+> -	/* JEQ/JNE comparison doesn't change the register equivalence.
+> -	 *
+> -	 * r1 = r2;
+> -	 * if (r1 == 42) goto label;
+> -	 * ...
+> -	 * label: // here both r1 and r2 are known to be 42.
+> -	 *
+> -	 * Hence when marking register as known preserve it's ID.
+> -	 */
+>  	case BPF_JEQ:
+>  		if (is_jmp32) {
+> -			__mark_reg32_known(true_reg1, uval32);
+> -			true_32off = tnum_subreg(true_reg1->var_off);
+> +			reg1->u32_min_value = max(reg1->u32_min_value, reg2->u32_min_value);
+> +			reg1->u32_max_value = min(reg1->u32_max_value, reg2->u32_max_value);
+> +			reg1->s32_min_value = max(reg1->s32_min_value, reg2->s32_min_value);
+> +			reg1->s32_max_value = min(reg1->s32_max_value, reg2->s32_max_value);
+> +			reg2->u32_min_value = reg1->u32_min_value;
+> +			reg2->u32_max_value = reg1->u32_max_value;
+> +			reg2->s32_min_value = reg1->s32_min_value;
+> +			reg2->s32_max_value = reg1->s32_max_value;
+> +
+> +			t = tnum_intersect(tnum_subreg(reg1->var_off), tnum_subreg(reg2->var_off));
+> +			reg1->var_off = tnum_with_subreg(reg1->var_off, t);
+> +			reg2->var_off = tnum_with_subreg(reg2->var_off, t);
+>  		} else {
+> -			___mark_reg_known(true_reg1, uval);
+> -			true_64off = true_reg1->var_off;
+> +			reg1->umin_value = max(reg1->umin_value, reg2->umin_value);
+> +			reg1->umax_value = min(reg1->umax_value, reg2->umax_value);
+> +			reg1->smin_value = max(reg1->smin_value, reg2->smin_value);
+> +			reg1->smax_value = min(reg1->smax_value, reg2->smax_value);
+> +			reg2->umin_value = reg1->umin_value;
+> +			reg2->umax_value = reg1->umax_value;
+> +			reg2->smin_value = reg1->smin_value;
+> +			reg2->smax_value = reg1->smax_value;
+> +
+> +			reg1->var_off = tnum_intersect(reg1->var_off, reg2->var_off);
+> +			reg2->var_off = reg1->var_off;
+>  		}
+>  		break;
+>  	case BPF_JNE:
+> +		/* we don't derive any new information for inequality yet */
+> +		break;
+> +	case BPF_JSET:
+> +	case BPF_JSET | BPF_X: { /* BPF_JSET and its reverse, see rev_opcode() */
+> +		u64 val;
+> +
+> +		if (!is_reg_const(reg2, is_jmp32))
+> +			swap(reg1, reg2);
+> +		if (!is_reg_const(reg2, is_jmp32))
+> +			break;
+> +
+> +		val = reg_const_value(reg2, is_jmp32);
+> +		/* BPF_JSET (i.e., TRUE branch, *not* BPF_JSET | BPF_X)
+> +		 * requires single bit to learn something useful. E.g., if we
+> +		 * know that `r1 & 0x3` is true, then which bits (0, 1, or both)
+> +		 * are actually set? We can learn something definite only if
+> +		 * it's a single-bit value to begin with.
+> +		 *
+> +		 * BPF_JSET | BPF_X (i.e., negation of BPF_JSET) doesn't have
+> +		 * this restriction. I.e., !(r1 & 0x3) means neither bit 0 nor
+> +		 * bit 1 is set, which we can readily use in adjustments.
+> +		 */
+> +		if (!(opcode & BPF_X) && !is_power_of_2(val))
+> +			break;
+> +
+>  		if (is_jmp32) {
+> -			__mark_reg32_known(false_reg1, uval32);
+> -			false_32off = tnum_subreg(false_reg1->var_off);
+> +			if (opcode & BPF_X)
+> +				t = tnum_and(tnum_subreg(reg1->var_off), tnum_const(~val));
+> +			else
+> +				t = tnum_or(tnum_subreg(reg1->var_off), tnum_const(val));
+> +			reg1->var_off = tnum_with_subreg(reg1->var_off, t);
+>  		} else {
+> -			___mark_reg_known(false_reg1, uval);
+> -			false_64off = false_reg1->var_off;
+> +			if (opcode & BPF_X)
+> +				reg1->var_off = tnum_and(reg1->var_off, tnum_const(~val));
+> +			else
+> +				reg1->var_off = tnum_or(reg1->var_off, tnum_const(val));
+>  		}
+>  		break;
+
+Since you're already adding a tnum helper, I think we can add one more
+for BPF_JSET here
+
+	struct tnum tnum_neg(struct tnum a)
+	{
+		return TNUM(~a.value, a.mask);
+	}
+
+So instead of getting a value out of tnum then putting the value back
+into tnum again
+
+    u64 val;
+    val = reg_const_value(reg2, is_jmp32);
+    tnum_ops(..., tnum_const(val or ~val);
+
+Keep the value in tnum and process it as-is if possible
+
+    tnum_ops(..., reg2->var_off or tnum_neg(reg2->var_off));
+
+And with that hopefully make this fragment short enough that we don't
+mind duplicate a bit of code to seperate the BPF_JSET case from the
+BPF_JSET | BPF_X case. IMO a conditional is_power_of_2 check followed by
+two level of branching is a bit too much to follow, it is better to have
+them seperated just like how you're doing it for the others already.
+
+I.e. something like the follow
+
+	case BPF_JSET: {
+		if (!is_reg_const(reg2, is_jmp32))
+			swap(reg1, reg2);
+		if (!is_reg_const(reg2, is_jmp32))
+			break;
+		/* comment */
+		if (!is_power_of_2(reg_const_value(reg2, is_jmp32))
+			break;
+
+		if (is_jmp32) {
+			t = tnum_or(tnum_subreg(reg1->var_off), tnum_subreg(reg2->var_off));
+			reg1->var_off = tnum_with_subreg(reg1->var_off, t);
+		} else {
+			reg1->var_off = tnum_or(reg1->var_off, reg2->var_off);
+		}
+		break;
+	}
+	case BPF_JSET | BPF_X: {
+		if (!is_reg_const(reg2, is_jmp32))
+			swap(reg1, reg2);
+		if (!is_reg_const(reg2, is_jmp32))
+			break;
+
+		if (is_jmp32) {
+			/* a slightly long line ... */
+			t = tnum_and(tnum_subreg(reg1->var_off), tnum_neg(tnum_subreg(reg2->var_off)));
+			reg1->var_off = tnum_with_subreg(reg1->var_off, t);
+		} else {
+			reg1->var_off = tnum_and(reg1->var_off, tnum_neg(reg2->var_off));
+		}
+		break;
+	}
+
+> ...
 
