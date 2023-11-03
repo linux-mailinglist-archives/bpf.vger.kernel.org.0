@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-14136-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14137-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E48637E0ACF
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 22:46:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C177C7E0AD0
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 22:46:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20F3C1C21036
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 21:46:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69E96281E52
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 21:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18AA8241E5;
-	Fri,  3 Nov 2023 21:46:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C759241E7;
+	Fri,  3 Nov 2023 21:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VzNSexlV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gw3YXh1Z"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F76B23778;
-	Fri,  3 Nov 2023 21:46:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DAFAC433C8;
-	Fri,  3 Nov 2023 21:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E520E2377F;
+	Fri,  3 Nov 2023 21:46:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B634C433C7;
+	Fri,  3 Nov 2023 21:46:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699047986;
-	bh=4uY6Vhd8DC+Bc1edwpCZo2rDImdlsFglG7lilsvfGZY=;
+	s=k20201202; t=1699047993;
+	bh=Xm4N+IK6cCfxBp62n/HaElU5RuamPewSwlV6BouTrZQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VzNSexlVMrBfPBREmGJ0FzvAGigy9KPiMAGoO07mnmuPel0V3PqVPsrdvYk7uvDpu
-	 tWuuTBikvzqeovLp9+q5wHlM3nPdHlF/dCJDdJryEdE/QIQpkt80gEgDfvrXFtjJqu
-	 menpgoHaW+2xANi1ONEO/A0gS5JCiga5XaEbdMBaUAebFPNNIdioIktutKqH38FIrA
-	 QNF89EuQXsYozDR8ANtWTMuK3qnomy6Sq837F289RTuQzUWTLkE3u6v7l6ysz3v7bQ
-	 6L0Yy3FDrS1YLN++nyz8ApLyPfSf+ypPxrUXqYXofAmWMHCxV6/n3H3e9RlkgDZipF
-	 Qqo+AEY0K9s1Q==
+	b=Gw3YXh1ZJHQ8q6dbVMdaTo3fvcUSTpUsd3OQMLCPzl6QQariB60TrchIZM5YESSly
+	 syu+RE3VbBHo3kowK5rZdOhvAM3nJlysHr8oWiVqWfJfX/jFpkSJwpYoQQ8BDW9r39
+	 Wsm7difoEoMUb7Y8eYChTIiVcd86xb0wR+apdYH5GusMw2OxnJJjQ08Aumc62oL0el
+	 acF80sl2IyhMxyKZ6cHr9yn0C5GR7H6c1GskHCL/5ftHX59qVhIpB6OpegbSROQjZX
+	 e7IrEBfvvCRk+GrrT26J7qYrN+Sj5bBlYeUxDUP97C0uRYl8upb2tT8LIkGa6g/+2Y
+	 CpVGnA/K6IzWQ==
 From: Song Liu <song@kernel.org>
 To: bpf@vger.kernel.org,
 	fsverity@lists.linux.dev
@@ -45,11 +45,10 @@ Cc: ast@kernel.org,
 	roberto.sassu@huaweicloud.com,
 	kpsingh@kernel.org,
 	vadfed@meta.com,
-	Song Liu <song@kernel.org>,
-	Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v10 bpf-next 5/9] bpf, fsverity: Add kfunc bpf_get_fsverity_digest
-Date: Fri,  3 Nov 2023 14:45:31 -0700
-Message-Id: <20231103214535.2674059-6-song@kernel.org>
+	Song Liu <song@kernel.org>
+Subject: [PATCH v10 bpf-next 6/9] Documentation/bpf: Add documentation for filesystem kfuncs
+Date: Fri,  3 Nov 2023 14:45:32 -0700
+Message-Id: <20231103214535.2674059-7-song@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231103214535.2674059-1-song@kernel.org>
 References: <20231103214535.2674059-1-song@kernel.org>
@@ -61,158 +60,60 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-fsverity provides fast and reliable hash of files, namely fsverity_digest.
-The digest can be used by security solutions to verify file contents.
+Add a brief introduction for file system kfuncs:
 
-Add new kfunc bpf_get_fsverity_digest() so that we can access fsverity from
-BPF LSM programs. This kfunc is added to fs/verity/measure.c because some
-data structure used in the function is private to fsverity
-(fs/verity/fsverity_private.h).
+  bpf_get_file_xattr()
+  bpf_get_fsverity_digest()
 
-To avoid recursion, bpf_get_fsverity_digest is only allowed in BPF LSM
-programs.
+The documentation highlights the strategy to avoid recursions of these
+kfuncs.
 
 Signed-off-by: Song Liu <song@kernel.org>
-Acked-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/verity/fsverity_private.h | 10 +++++
- fs/verity/init.c             |  1 +
- fs/verity/measure.c          | 85 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 96 insertions(+)
+ Documentation/bpf/fs_kfuncs.rst | 21 +++++++++++++++++++++
+ Documentation/bpf/index.rst     |  1 +
+ 2 files changed, 22 insertions(+)
+ create mode 100644 Documentation/bpf/fs_kfuncs.rst
 
-diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
-index d071a6e32581..a6a6b2749241 100644
---- a/fs/verity/fsverity_private.h
-+++ b/fs/verity/fsverity_private.h
-@@ -100,6 +100,16 @@ fsverity_msg(const struct inode *inode, const char *level,
- #define fsverity_err(inode, fmt, ...)		\
- 	fsverity_msg((inode), KERN_ERR, fmt, ##__VA_ARGS__)
- 
-+/* measure.c */
+diff --git a/Documentation/bpf/fs_kfuncs.rst b/Documentation/bpf/fs_kfuncs.rst
+new file mode 100644
+index 000000000000..8762c3233a3d
+--- /dev/null
++++ b/Documentation/bpf/fs_kfuncs.rst
+@@ -0,0 +1,21 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+#ifdef CONFIG_BPF_SYSCALL
-+void __init fsverity_init_bpf(void);
-+#else
-+static inline void fsverity_init_bpf(void)
-+{
-+}
-+#endif
++.. _fs_kfuncs-header-label:
 +
- /* open.c */
- 
- int fsverity_init_merkle_tree_params(struct merkle_tree_params *params,
-diff --git a/fs/verity/init.c b/fs/verity/init.c
-index a29f062f6047..1e207c0f71de 100644
---- a/fs/verity/init.c
-+++ b/fs/verity/init.c
-@@ -69,6 +69,7 @@ static int __init fsverity_init(void)
- 	fsverity_init_workqueue();
- 	fsverity_init_sysctl();
- 	fsverity_init_signature();
-+	fsverity_init_bpf();
- 	return 0;
- }
- late_initcall(fsverity_init)
-diff --git a/fs/verity/measure.c b/fs/verity/measure.c
-index eec5956141da..a08177eda96e 100644
---- a/fs/verity/measure.c
-+++ b/fs/verity/measure.c
-@@ -7,6 +7,8 @@
- 
- #include "fsverity_private.h"
- 
-+#include <linux/bpf.h>
-+#include <linux/btf.h>
- #include <linux/uaccess.h>
- 
- /**
-@@ -100,3 +102,86 @@ int fsverity_get_digest(struct inode *inode,
- 	return hash_alg->digest_size;
- }
- EXPORT_SYMBOL_GPL(fsverity_get_digest);
++=====================
++BPF filesystem kfuncs
++=====================
 +
-+#ifdef CONFIG_BPF_SYSCALL
++BPF LSM programs need to access filesystem data from LSM hooks. The following
++BPF kfuncs can be used to get these data.
 +
-+/* bpf kfuncs */
-+__diag_push();
-+__diag_ignore_all("-Wmissing-prototypes",
-+		  "kfuncs which will be used in BPF programs");
++ * ``bpf_get_file_xattr()``
 +
-+/**
-+ * bpf_get_fsverity_digest: read fsverity digest of file
-+ * @file: file to get digest from
-+ * @digest_ptr: (out) dynptr for struct fsverity_digest
-+ *
-+ * Read fsverity_digest of *file* into *digest_ptr*.
-+ *
-+ * Return: 0 on success, a negative value on error.
-+ */
-+__bpf_kfunc int bpf_get_fsverity_digest(struct file *file, struct bpf_dynptr_kern *digest_ptr)
-+{
-+	const struct inode *inode = file_inode(file);
-+	struct fsverity_digest *arg;
-+	const struct fsverity_info *vi;
-+	const struct fsverity_hash_alg *hash_alg;
-+	int out_digest_sz;
++ * ``bpf_get_fsverity_digest()``
 +
-+	arg = __bpf_dynptr_data_rw(digest_ptr, __bpf_dynptr_size(digest_ptr));
-+	if (!arg)
-+		return -EINVAL;
++To avoid recursions, these kfuncs follow the following rules:
 +
-+	if (!IS_ALIGNED((uintptr_t)arg, __alignof__(*arg)))
-+		return -EINVAL;
-+
-+	if (__bpf_dynptr_size(digest_ptr) < sizeof(struct fsverity_digest))
-+		return -EINVAL;
-+
-+	vi = fsverity_get_info(inode);
-+	if (!vi)
-+		return -ENODATA; /* not a verity file */
-+
-+	hash_alg = vi->tree_params.hash_alg;
-+
-+	arg->digest_algorithm = hash_alg - fsverity_hash_algs;
-+	arg->digest_size = hash_alg->digest_size;
-+
-+	out_digest_sz = __bpf_dynptr_size(digest_ptr) - sizeof(struct fsverity_digest);
-+
-+	/* copy digest */
-+	memcpy(arg->digest, vi->file_digest,  min_t(int, hash_alg->digest_size, out_digest_sz));
-+
-+	/* fill the extra buffer with zeros */
-+	if (out_digest_sz > hash_alg->digest_size)
-+		memset(arg->digest + arg->digest_size, 0, out_digest_sz - hash_alg->digest_size);
-+
-+	return 0;
-+}
-+
-+__diag_pop();
-+
-+BTF_SET8_START(fsverity_set_ids)
-+BTF_ID_FLAGS(func, bpf_get_fsverity_digest, KF_TRUSTED_ARGS)
-+BTF_SET8_END(fsverity_set_ids)
-+
-+static int bpf_get_fsverity_digest_filter(const struct bpf_prog *prog, u32 kfunc_id)
-+{
-+	if (!btf_id_set8_contains(&fsverity_set_ids, kfunc_id))
-+		return 0;
-+
-+	/* Only allow to attach from LSM hooks, to avoid recursion */
-+	return prog->type != BPF_PROG_TYPE_LSM ? -EACCES : 0;
-+}
-+
-+static const struct btf_kfunc_id_set bpf_fsverity_set = {
-+	.owner = THIS_MODULE,
-+	.set = &fsverity_set_ids,
-+	.filter = bpf_get_fsverity_digest_filter,
-+};
-+
-+void __init fsverity_init_bpf(void)
-+{
-+	register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM, &bpf_fsverity_set);
-+}
-+
-+#endif /* CONFIG_BPF_SYSCALL */
++1. These kfuncs are only permitted from BPF LSM function.
++2. These kfuncs should not call into other LSM hooks, i.e. security_*(). For
++   example, ``bpf_get_file_xattr()`` does not use ``vfs_getxattr()``, because
++   the latter calls LSM hook ``security_inode_getxattr``.
+diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+index aeaeb35e6d4a..0bb5cb8157f1 100644
+--- a/Documentation/bpf/index.rst
++++ b/Documentation/bpf/index.rst
+@@ -21,6 +21,7 @@ that goes into great technical depth about the BPF Architecture.
+    helpers
+    kfuncs
+    cpumasks
++   fs_kfuncs
+    programs
+    maps
+    bpf_prog_run
 -- 
 2.34.1
 
