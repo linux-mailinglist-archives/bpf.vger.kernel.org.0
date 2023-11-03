@@ -1,255 +1,109 @@
-Return-Path: <bpf+bounces-14146-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14147-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2655C7E0AF8
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 23:13:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 957067E0B02
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 23:17:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D9E81C210F1
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 22:13:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F1D4B210D0
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 22:17:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4524224216;
-	Fri,  3 Nov 2023 22:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4C5F24216;
+	Fri,  3 Nov 2023 22:17:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lx4B4mAk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L9chUkhu"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CCF324208
-	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 22:13:17 +0000 (UTC)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8DAD53
-	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 15:13:15 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9db6cf8309cso354223766b.0
-        for <bpf@vger.kernel.org>; Fri, 03 Nov 2023 15:13:15 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D066A249E0
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 22:17:04 +0000 (UTC)
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB8CD53
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 15:17:03 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-540fb78363bso4290930a12.0
+        for <bpf@vger.kernel.org>; Fri, 03 Nov 2023 15:17:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699049594; x=1699654394; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0smAkhzWi7LQB4O+bnHLFjKF0X/wdZ2cGiNse1b9Nr8=;
-        b=Lx4B4mAkNuKBdWI02J0aSajsfe/Kh1b0hyhwgPY62g5UZUxYm5KikJozdLfdfZxT+7
-         wt58uev58ffv7Y9xl3sDNQIWr2QtRu+yXJO13SlhVt+dmYfLRViQ1LU5aEP4e3EtM9yH
-         DAVaHiCZQn9XC5o7SSo4m6mO7lB5HjB6ThbdHRjXwXyX9plvyv17zava+fmkx5K0wuzY
-         i/0G5IH4/U2anzKqpJgIRMHFVUyltjvmR2jL4P7q5B9+aguCppwimttRiCfuqmIsVdy2
-         JNP3RkYF0ae6bMaIV5QxnoPKhIlRFeOFleK4VcLJ1tQ9DIV59ijkQ++PoE6ZB6OB5JdU
-         UjdA==
+        d=gmail.com; s=20230601; t=1699049821; x=1699654621; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1XWddTdr3xouEtdG2hnx8f6t6yPPulw/IIlx8oeHMeQ=;
+        b=L9chUkhub+/dKTk9CjrD0rCqJY73eeJVQTo0NezgY56IA1WbFhm27Hg4TNSiwykwd0
+         l0YtdLpMscBjD0qU2PIDo5PImYkMuxEGmT5k475C849fU0IDwwhSlyPn1bKd0PnfEtu4
+         Mf/WOuJeVRfp7mES1zwpIlSYBrEeMzovfIamZGMe4x03C4l6kiNPaF4/OJLXNegA7gqz
+         LsAiUSrZDvnds3ZLVgzGcwl6ZvxeKCeWvPVl6Nvl1WIXNpoNnlbQggvttB4xlg2SMywn
+         IYxEzrKrekcQg4RUNVzX2rJ3dt6tfDZ4t8G8ZZ3hci01dl1roHtU+ZB5a89Ox4mstSHH
+         wlKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699049594; x=1699654394;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0smAkhzWi7LQB4O+bnHLFjKF0X/wdZ2cGiNse1b9Nr8=;
-        b=IYMFv09jbQMm5qrjdqmx/d1f+F92S7Kub2E0najzYB5nf3tZUh91oQ/pAd15EMY/j+
-         Hr1LpbTk6qnA5FS8+DFpr+f6mLhBzcRhz010HsMPgc6T8nOCwWLVhThdnMk2gsB5OLi9
-         z5smfMVnXVntkVz+H1VXwbx0W4yQLQGDoZhWmLWVNMAt2ygAYGSSU88zxD6Hra0GK87L
-         m+0EWkPRUbpO/xmvDNMM8eer9uAZf+L5hFnvASBow+nYOoKhO1+sBQRLQWtuvIujfqkU
-         HGjewYLcQECFAWfViv8r+druZJ12syuXmmcqyl8qKz/eAa3n0YemHMHnUEzgmWxvW+c+
-         NiTw==
-X-Gm-Message-State: AOJu0Ywl+R7spoZ7GxxLWDP92eIL6GQuf69hw18pHBS7h0yeqhwfKkLO
-	fcFOBgMw3+sxvBoEAz0X43MFiScCjfEEBaAAc6Y=
-X-Google-Smtp-Source: AGHT+IGxcj9zlsTnn23D7rMoNKSCm46NGjxZY9GtKO3L7ajg44Ok3mmi9fe1bXtWaT4kXlcpGz/Ziu3kTiWu58o0yjk=
-X-Received: by 2002:a17:907:3685:b0:9bd:a7a5:3a5a with SMTP id
- bi5-20020a170907368500b009bda7a53a5amr8464669ejc.36.1699049593900; Fri, 03
- Nov 2023 15:13:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1699049821; x=1699654621;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1XWddTdr3xouEtdG2hnx8f6t6yPPulw/IIlx8oeHMeQ=;
+        b=LZFI9AwSBKf043TTsDkvC5FmnbrPnPE+MSrjPSSzcof4bJG/bp1Qql1s/raELxLmqC
+         yU9+ZRPfNrfdYOlqpNka4VhmwVqgj6uiZs7EA/lxp7pMjhiyZ6ywPq1gQFDMCrz/Fh2F
+         QYH8Z3QwpeOs5L73zHyZpXSSniSLJpWhUE4isjhGYJflAiRqrZXjz+myhGGOVjlxXmwc
+         RCyzm9QjzZIiDvxVfOaI5KqK0MCjYBbyDrtn3po38q4HTqEgYWNTkTkeqVnZ3EAtCAed
+         wg3bU244I7uCYolYY06SnSQ4Qgknau8W3w+8KaM5vDCwnWuDM25p5XxkNOz6+MWzEv9j
+         7E/A==
+X-Gm-Message-State: AOJu0YyTI06Jsfz3I+15ymElb93hIxVlong2VjkLcdxB/Z2RmedOTT55
+	UDdmLhHzK99NMcRHRiODwVM=
+X-Google-Smtp-Source: AGHT+IEDRgknNXFlgdeC5NgDTGg8r+Qot8kM89EYFvtZhJelkQnRJM9/DQ2aL5iVl5tkH5h2TsNXMQ==
+X-Received: by 2002:a17:906:7955:b0:9dc:ee58:6604 with SMTP id l21-20020a170906795500b009dcee586604mr2835333ejo.21.1699049821423;
+        Fri, 03 Nov 2023 15:17:01 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id ss7-20020a170907c00700b009de3641d538sm47308ejc.134.2023.11.03.15.17.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 15:17:00 -0700 (PDT)
+Message-ID: <c06fb5b86ee4ea724d674e23d99b084e9d9385a3.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 05/13] bpf: remove redundant s{32,64} ->
+ u{32,64} deduction logic
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org
+Cc: kernel-team@meta.com
+Date: Sat, 04 Nov 2023 00:16:59 +0200
+In-Reply-To: <20231103000822.2509815-6-andrii@kernel.org>
+References: <20231103000822.2509815-1-andrii@kernel.org>
+	 <20231103000822.2509815-6-andrii@kernel.org>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231103214535.2674059-1-song@kernel.org> <20231103214535.2674059-6-song@kernel.org>
-In-Reply-To: <20231103214535.2674059-6-song@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 3 Nov 2023 15:13:02 -0700
-Message-ID: <CAEf4BzbRrVcHxEdR89UMv6aPpF+478WCpCMx7RFknNMexpUGpw@mail.gmail.com>
-Subject: Re: [PATCH v10 bpf-next 5/9] bpf, fsverity: Add kfunc bpf_get_fsverity_digest
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, fsverity@lists.linux.dev, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org, 
-	kernel-team@meta.com, ebiggers@kernel.org, tytso@mit.edu, 
-	roberto.sassu@huaweicloud.com, kpsingh@kernel.org, vadfed@meta.com, 
-	Eric Biggers <ebiggers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 3, 2023 at 2:46=E2=80=AFPM Song Liu <song@kernel.org> wrote:
->
-> fsverity provides fast and reliable hash of files, namely fsverity_digest=
-.
-> The digest can be used by security solutions to verify file contents.
->
-> Add new kfunc bpf_get_fsverity_digest() so that we can access fsverity fr=
-om
-> BPF LSM programs. This kfunc is added to fs/verity/measure.c because some
-> data structure used in the function is private to fsverity
-> (fs/verity/fsverity_private.h).
->
-> To avoid recursion, bpf_get_fsverity_digest is only allowed in BPF LSM
-> programs.
->
-> Signed-off-by: Song Liu <song@kernel.org>
-> Acked-by: Eric Biggers <ebiggers@google.com>
-> ---
->  fs/verity/fsverity_private.h | 10 +++++
->  fs/verity/init.c             |  1 +
->  fs/verity/measure.c          | 85 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 96 insertions(+)
->
-> diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
-> index d071a6e32581..a6a6b2749241 100644
-> --- a/fs/verity/fsverity_private.h
-> +++ b/fs/verity/fsverity_private.h
-> @@ -100,6 +100,16 @@ fsverity_msg(const struct inode *inode, const char *=
-level,
->  #define fsverity_err(inode, fmt, ...)          \
->         fsverity_msg((inode), KERN_ERR, fmt, ##__VA_ARGS__)
->
-> +/* measure.c */
-> +
-> +#ifdef CONFIG_BPF_SYSCALL
-> +void __init fsverity_init_bpf(void);
-> +#else
-> +static inline void fsverity_init_bpf(void)
-> +{
-> +}
-> +#endif
-> +
->  /* open.c */
->
->  int fsverity_init_merkle_tree_params(struct merkle_tree_params *params,
-> diff --git a/fs/verity/init.c b/fs/verity/init.c
-> index a29f062f6047..1e207c0f71de 100644
-> --- a/fs/verity/init.c
-> +++ b/fs/verity/init.c
-> @@ -69,6 +69,7 @@ static int __init fsverity_init(void)
->         fsverity_init_workqueue();
->         fsverity_init_sysctl();
->         fsverity_init_signature();
-> +       fsverity_init_bpf();
->         return 0;
->  }
->  late_initcall(fsverity_init)
-> diff --git a/fs/verity/measure.c b/fs/verity/measure.c
-> index eec5956141da..a08177eda96e 100644
-> --- a/fs/verity/measure.c
-> +++ b/fs/verity/measure.c
-> @@ -7,6 +7,8 @@
->
->  #include "fsverity_private.h"
->
-> +#include <linux/bpf.h>
-> +#include <linux/btf.h>
->  #include <linux/uaccess.h>
->
->  /**
-> @@ -100,3 +102,86 @@ int fsverity_get_digest(struct inode *inode,
->         return hash_alg->digest_size;
->  }
->  EXPORT_SYMBOL_GPL(fsverity_get_digest);
-> +
-> +#ifdef CONFIG_BPF_SYSCALL
-> +
-> +/* bpf kfuncs */
-> +__diag_push();
-> +__diag_ignore_all("-Wmissing-prototypes",
-> +                 "kfuncs which will be used in BPF programs");
-> +
+On Thu, 2023-11-02 at 17:08 -0700, Andrii Nakryiko wrote:
+> Equivalent checks were recently added in more succinct and, arguably,
+> safer form in:
+>   - f188765f23a5 ("bpf: derive smin32/smax32 from umin32/umax32 bounds");
+>   - 2e74aef782d3 ("bpf: derive smin/smax from umin/max bounds").
+>=20
+> The checks we are removing in this patch set do similar checks to detect
+> if entire u32/u64 range has signed bit set or not set, but does it with
+> two separate checks.
+>=20
+> Further, we forcefully overwrite either smin or smax (and 32-bit equvalen=
+ts)
+> without applying normal min/max intersection logic. It's not clear why
+> that would be correct in all cases and seems to work by accident. This
+> logic is also "gated" by previous signed -> unsigned derivation, which
+> returns early.
+>=20
+> All this is quite confusing and seems error-prone, while we already have
+> at least equivalent checks happening earlier. So remove this duplicate
+> and error-prone logic to simplify things a bit.
+>=20
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-same as in previous patch, we have dedicated macros for this, please use th=
-em
-
-
-> +/**
-> + * bpf_get_fsverity_digest: read fsverity digest of file
-> + * @file: file to get digest from
-> + * @digest_ptr: (out) dynptr for struct fsverity_digest
-> + *
-> + * Read fsverity_digest of *file* into *digest_ptr*.
-> + *
-> + * Return: 0 on success, a negative value on error.
-> + */
-> +__bpf_kfunc int bpf_get_fsverity_digest(struct file *file, struct bpf_dy=
-nptr_kern *digest_ptr)
-> +{
-> +       const struct inode *inode =3D file_inode(file);
-> +       struct fsverity_digest *arg;
-> +       const struct fsverity_info *vi;
-> +       const struct fsverity_hash_alg *hash_alg;
-> +       int out_digest_sz;
-> +
-> +       arg =3D __bpf_dynptr_data_rw(digest_ptr, __bpf_dynptr_size(digest=
-_ptr));
-> +       if (!arg)
-> +               return -EINVAL;
-> +
-> +       if (!IS_ALIGNED((uintptr_t)arg, __alignof__(*arg)))
-> +               return -EINVAL;
-> +
-> +       if (__bpf_dynptr_size(digest_ptr) < sizeof(struct fsverity_digest=
-))
-> +               return -EINVAL;
-> +
-
-similar nit, you call __bpf_dynptr_size(digest_ptr) many times, let's
-use `u32 len =3D __bpf_dynptr_size(digest_ptr);` ?
-
-> +       vi =3D fsverity_get_info(inode);
-> +       if (!vi)
-> +               return -ENODATA; /* not a verity file */
-> +
-> +       hash_alg =3D vi->tree_params.hash_alg;
-> +
-> +       arg->digest_algorithm =3D hash_alg - fsverity_hash_algs;
-> +       arg->digest_size =3D hash_alg->digest_size;
-> +
-> +       out_digest_sz =3D __bpf_dynptr_size(digest_ptr) - sizeof(struct f=
-sverity_digest);
-> +
-> +       /* copy digest */
-> +       memcpy(arg->digest, vi->file_digest,  min_t(int, hash_alg->digest=
-_size, out_digest_sz));
-> +
-> +       /* fill the extra buffer with zeros */
-> +       if (out_digest_sz > hash_alg->digest_size)
-> +               memset(arg->digest + arg->digest_size, 0, out_digest_sz -=
- hash_alg->digest_size);
-> +
-> +       return 0;
-> +}
-> +
-> +__diag_pop();
-> +
-> +BTF_SET8_START(fsverity_set_ids)
-> +BTF_ID_FLAGS(func, bpf_get_fsverity_digest, KF_TRUSTED_ARGS)
-> +BTF_SET8_END(fsverity_set_ids)
-> +
-> +static int bpf_get_fsverity_digest_filter(const struct bpf_prog *prog, u=
-32 kfunc_id)
-> +{
-> +       if (!btf_id_set8_contains(&fsverity_set_ids, kfunc_id))
-> +               return 0;
-> +
-> +       /* Only allow to attach from LSM hooks, to avoid recursion */
-> +       return prog->type !=3D BPF_PROG_TYPE_LSM ? -EACCES : 0;
-> +}
-> +
-> +static const struct btf_kfunc_id_set bpf_fsverity_set =3D {
-> +       .owner =3D THIS_MODULE,
-> +       .set =3D &fsverity_set_ids,
-> +       .filter =3D bpf_get_fsverity_digest_filter,
-> +};
-> +
-> +void __init fsverity_init_bpf(void)
-> +{
-> +       register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM, &bpf_fsverity_set);
-> +}
-> +
-> +#endif /* CONFIG_BPF_SYSCALL */
-> --
-> 2.34.1
->
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
