@@ -1,160 +1,159 @@
-Return-Path: <bpf+bounces-14159-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14160-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8C057E0B50
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 23:54:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B36497E0BB8
+	for <lists+bpf@lfdr.de>; Sat,  4 Nov 2023 00:02:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D62ED281FEC
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 22:54:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0B7A1C210F1
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 23:02:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FF7024A0E;
-	Fri,  3 Nov 2023 22:54:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9788324A15;
+	Fri,  3 Nov 2023 23:02:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RBzViJ1r"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DIXKN66i"
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2965524A03
-	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 22:54:03 +0000 (UTC)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25058D65
-	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 15:54:02 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9dd5879a126so139595166b.3
-        for <bpf@vger.kernel.org>; Fri, 03 Nov 2023 15:54:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699052040; x=1699656840; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PDjO6lIkMKFXpFrGVUwAbyrybMO4fvAZwVAGS0l+WqA=;
-        b=RBzViJ1rHAXmtQGkkggs4gtqBetj6wCqCbff36aqf/niwVFcxhxSMBpBjyNq1BBlLu
-         ZzKt21X6IUciUiV41N0ESUO1BkV5dY/FsfwAIOnAqThhIDZFnZiBu7aqc26mIyBHzBDE
-         vrGPGbLglE3qa2O18bnVn+OLIxkfP4GlsKLDqDopZ07DiyADNIYTDMcrzvczg590iB5y
-         WtjlbZrDYalL2WU7sOQAUi15m28A9k/BOfG5DakQax3ZEHleik6Fz63US5yCwe4kKgGZ
-         hmeHv9E7+jYrCFA1FwZDUJS8vzBKxazllOVee6eYaWuQYZ7ynAwRw8LwZmZTd6mIKA5R
-         aXTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699052040; x=1699656840;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PDjO6lIkMKFXpFrGVUwAbyrybMO4fvAZwVAGS0l+WqA=;
-        b=EucYNrx0ve4KYnRWa+7+t9mLD/Pv02DCrwFh4j0EuNin3sWTKofJk4Se+xmga9nVo/
-         PgM3KOg4YvF0ykO7Uq8yr7yOgBcqzq6oEVZK3CxRTDUt85MHfJ+TlhMWazkQgWtlKr3n
-         3Q4OdFIhND+sK6XclAQvGxG7xqBNbrRZEt0ZTS/ehpzB3B+aaerDr4Rwt6UunXJHgfk1
-         7b80keBF2LQpUrJK2EHtDx/653NN7FldFYE02SuFVZY2O61cwS9oVbCMy9dPXxZwMI85
-         p0OPnD6AW2k6ar8uUAFZyeKWOavXAa9VhukZpIKC2Lze09MKbL6uUXKFQvwHHskBv4Wv
-         Io2Q==
-X-Gm-Message-State: AOJu0YyXWSDEj74RGhv+CZYiaCNcfYvajC4EGHBc7DDIcMxpHq6IYyT6
-	mMQ2U1YC/CTB9BwprhqvuOLYXDPBWRLPm9iLiK4=
-X-Google-Smtp-Source: AGHT+IHDfOPEkBEKXx+ucASoxCb5eKpB87iaOs7N/oNTA0+13giMgN/gRU+ZR+yYWQZ2Y+Ag/alK0b06Mn4HFH385lw=
-X-Received: by 2002:a17:907:7f19:b0:9bd:fe2f:3949 with SMTP id
- qf25-20020a1709077f1900b009bdfe2f3949mr9232237ejc.51.1699052040506; Fri, 03
- Nov 2023 15:54:00 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB97F2374F;
+	Fri,  3 Nov 2023 23:02:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60A5DC433C8;
+	Fri,  3 Nov 2023 23:02:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699052549;
+	bh=f80+FUBCPxnAOybfjhT2RiKRkYYGAt2KfZLQ80xLEf4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=DIXKN66iJXDVzkrHS9cUfd9WC9NiNrfQ+uefXwOMUYboKEbGoNxUH9OvsOLqp2+rB
+	 uQag9HqpvWJnD0UcXTNy1G+Heju9a1FcRjMr1wsQHlA2jjcndnAnnN8L/cUTnJy3q6
+	 zxidUM0FxJW137TOJM4VPLaZamL74ed/trQFFeabJz0g7pnXKEfShb9n0sebYlCYRL
+	 tnOFl2jdO5EPnw/lpHGa6ofJWfBVg604tDWf2XUFdre6KNeGDckLvmbPY3lmFswjwb
+	 Peu3CScZuqhMLpVVWiBjWacFw2GUb0P36TNk2VlRBmiQJ8aCzrktUU8hrTvTUeDFR5
+	 vhEozjXBOgALA==
+From: Song Liu <song@kernel.org>
+To: bpf@vger.kernel.org,
+	fsverity@lists.linux.dev
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@kernel.org,
+	kernel-team@meta.com,
+	ebiggers@kernel.org,
+	tytso@mit.edu,
+	roberto.sassu@huaweicloud.com,
+	kpsingh@kernel.org,
+	vadfed@meta.com,
+	Song Liu <song@kernel.org>
+Subject: [PATCH v11 bpf-next 0/9] bpf: File verification with LSM and fsverity
+Date: Fri,  3 Nov 2023 16:01:55 -0700
+Message-Id: <20231103230204.3137000-1-song@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231103214535.2674059-1-song@kernel.org> <20231103214535.2674059-5-song@kernel.org>
- <CAEf4BzY2V1Q_V=JMV4uYqHCSnV0ZDsAaLNq6cm0CPt2d8E4XGA@mail.gmail.com>
- <CAPhsuW6yG8zL12KcjZQOB5Q9YbUdf5T3cxyzMx_GF3v_uw=LXA@mail.gmail.com> <CAPhsuW5Y4=e5Zhhcc2J+O55AVuuSAF=YfajqOiuE8VZyXbxvkQ@mail.gmail.com>
-In-Reply-To: <CAPhsuW5Y4=e5Zhhcc2J+O55AVuuSAF=YfajqOiuE8VZyXbxvkQ@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 3 Nov 2023 15:53:49 -0700
-Message-ID: <CAEf4Bzbe0mW9ETZbFzn_XH6v=J1_4ZijvGFsTQRodKJ=0skrnA@mail.gmail.com>
-Subject: Re: [PATCH v10 bpf-next 4/9] bpf: Add kfunc bpf_get_file_xattr
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, fsverity@lists.linux.dev, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org, 
-	kernel-team@meta.com, ebiggers@kernel.org, tytso@mit.edu, 
-	roberto.sassu@huaweicloud.com, kpsingh@kernel.org, vadfed@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Nov 3, 2023 at 3:38=E2=80=AFPM Song Liu <song@kernel.org> wrote:
->
-> On Fri, Nov 3, 2023 at 3:30=E2=80=AFPM Song Liu <song@kernel.org> wrote:
-> >
-> > On Fri, Nov 3, 2023 at 3:10=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Fri, Nov 3, 2023 at 2:46=E2=80=AFPM Song Liu <song@kernel.org> wro=
-te:
-> > > >
-> > > > It is common practice for security solutions to store tags/labels i=
-n
-> > > > xattrs. To implement similar functionalities in BPF LSM, add new kf=
-unc
-> > > > bpf_get_file_xattr().
-> > > >
-> > > > The first use case of bpf_get_file_xattr() is to implement file
-> > > > verifications with asymmetric keys. Specificially, security applica=
-tions
-> > > > could use fsverity for file hashes and use xattr to store file sign=
-atures.
-> > > > (kfunc for fsverity hash will be added in a separate commit.)
-> > > >
-> > > > Currently, only xattrs with "user." prefix can be read with kfunc
-> > > > bpf_get_file_xattr(). As use cases evolve, we may add a dedicated p=
-refix
-> > > > for bpf_get_file_xattr().
-> > > >
-> > > > To avoid recursion, bpf_get_file_xattr can be only called from LSM =
-hooks.
-> > > >
-> > > > Signed-off-by: Song Liu <song@kernel.org>
-> > > > ---
-> > > >  kernel/trace/bpf_trace.c | 64 ++++++++++++++++++++++++++++++++++++=
-++++
-> > > >  1 file changed, 64 insertions(+)
-> > > >
-> > > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > > > index bfe6fb83e8d0..82eaa099053b 100644
-> > > > --- a/kernel/trace/bpf_trace.c
-> > > > +++ b/kernel/trace/bpf_trace.c
-> > > > @@ -24,6 +24,7 @@
-> > > >  #include <linux/key.h>
-> > > >  #include <linux/verification.h>
-> > > >  #include <linux/namei.h>
-> > > > +#include <linux/fileattr.h>
-> > > >
-> > > >  #include <net/bpf_sk_storage.h>
-> > > >
-> > > > @@ -1431,6 +1432,69 @@ static int __init bpf_key_sig_kfuncs_init(vo=
-id)
-> > > >  late_initcall(bpf_key_sig_kfuncs_init);
-> > > >  #endif /* CONFIG_KEYS */
-> > > >
-> > > > +/* filesystem kfuncs */
-> > > > +__diag_push();
-> > > > +__diag_ignore_all("-Wmissing-prototypes",
-> > > > +                 "kfuncs which will be used in BPF programs");
-> > > > +
-> > >
-> > > please use __bpf_kfunc_{start,end}_defs macros, from [0]
-> > >
-> > >   [0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/com=
-mit/?id=3D391145ba2acc
-> >
-> > Nice! I was thinking about the same issue (-Wmissing-declarations).
-> >
-> > But this patch is not pulled into bpf-next yet (only in bpf). How about=
- we keep
-> > __diag_ignore_all() etc for now?
->
-> I will add __diag_ignore_all("-Wmissing-declarations",) so it is
-> equivalent to the marcos.
+Changes v10 => v11:
+1. Let __bpf_dynptr_data() return const void *. (Andrii)
+2. Optimize code to reuse output from __bpf_dynptr_size(). (Andrii)
+3. Add __diag_ignore_all("-Wmissing-declarations") for kfunc definition.
+4. Fix an off indentation. (Andrii)
 
-Ah, it's bpf tree, not bpf-next, I see. Ok, we'll have to leave it as
-is for now and then clean up later.
+Changes v9 => v10:
+1. Remove WARN_ON_ONCE() from check_reg_const_str. (Alexei)
 
->
-> Thanks,
-> Song
+Changes v8 => v9:
+1. Fix test_progs kfunc_dynptr_param/dynptr_data_null.
+
+Changes v7 => v8:
+1. Do not use bpf_dynptr_slice* in the kernel. Add __bpf_dynptr_data* and
+   use them in ther kernel. (Andrii)
+
+Changes v6 => v7:
+1. Change "__const_str" annotation to "__str". (Alexei, Andrii)
+2. Add KF_TRUSTED_ARGS flag for both new kfuncs. (KP)
+3. Only allow bpf_get_file_xattr() to read xattr with "user." prefix.
+4. Add Acked-by from Eric Biggers.
+
+Changes v5 => v6:
+1. Let fsverity_init_bpf() return void. (Eric Biggers)
+2. Sort things in alphabetic orders. (Eric Biggers)
+
+Changes v4 => v5:
+1. Revise commit logs. (Alexei)
+
+Changes v3 => v4:
+1. Fix error reported by CI.
+2. Update comments of bpf_dynptr_slice* that they may return error pointer.
+
+Changes v2 => v3:
+1. Rebase and resolve conflicts.
+
+Changes v1 => v2:
+1. Let bpf_get_file_xattr() use const string for arg "name". (Alexei)
+2. Add recursion prevention with allowlist. (Alexei)
+3. Let bpf_get_file_xattr() use __vfs_getxattr() to avoid recursion,
+   as vfs_getxattr() calls into other LSM hooks.
+4. Do not use dynptr->data directly, use helper insteadd. (Andrii)
+5. Fixes with bpf_get_fsverity_digest. (Eric Biggers)
+6. Add documentation. (Eric Biggers)
+7. Fix some compile warnings. (kernel test robot)
+
+This set enables file verification with BPF LSM and fsverity.
+
+In this solution, fsverity is used to provide reliable and efficient hash
+of files; and BPF LSM is used to implement signature verification (against
+asymmetric keys), and to enforce access control.
+
+This solution can be used to implement access control in complicated cases.
+For example: only signed python binary and signed python script and access
+special files/devices/ports.
+
+Thanks,
+Song
+
+Song Liu (9):
+  bpf: Add __bpf_dynptr_data* for in kernel use
+  bpf: Factor out helper check_reg_const_str()
+  bpf: Introduce KF_ARG_PTR_TO_CONST_STR
+  bpf: Add kfunc bpf_get_file_xattr
+  bpf, fsverity: Add kfunc bpf_get_fsverity_digest
+  Documentation/bpf: Add documentation for filesystem kfuncs
+  selftests/bpf: Sort config in alphabetic order
+  selftests/bpf: Add tests for filesystem kfuncs
+  selftests/bpf: Add test that uses fsverity and xattr to sign a file
+
+ Documentation/bpf/fs_kfuncs.rst               |  21 +++
+ Documentation/bpf/index.rst                   |   1 +
+ Documentation/bpf/kfuncs.rst                  |  24 +++
+ fs/verity/fsverity_private.h                  |  10 ++
+ fs/verity/init.c                              |   1 +
+ fs/verity/measure.c                           |  88 ++++++++++
+ include/linux/bpf.h                           |   2 +
+ kernel/bpf/helpers.c                          |  47 +++++
+ kernel/bpf/verifier.c                         | 104 +++++++----
+ kernel/trace/bpf_trace.c                      |  79 ++++++++-
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |  10 ++
+ tools/testing/selftests/bpf/config            |   3 +-
+ .../selftests/bpf/prog_tests/fs_kfuncs.c      | 132 ++++++++++++++
+ .../bpf/prog_tests/verify_pkcs7_sig.c         | 163 +++++++++++++++++-
+ .../selftests/bpf/progs/test_fsverity.c       |  46 +++++
+ .../selftests/bpf/progs/test_get_xattr.c      |  37 ++++
+ .../selftests/bpf/progs/test_sig_in_xattr.c   |  82 +++++++++
+ .../bpf/progs/test_verify_pkcs7_sig.c         |   8 +-
+ .../testing/selftests/bpf/verify_sig_setup.sh |  25 +++
+ 19 files changed, 834 insertions(+), 49 deletions(-)
+ create mode 100644 Documentation/bpf/fs_kfuncs.rst
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_fsverity.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_get_xattr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sig_in_xattr.c
+
+--
+2.34.1
 
