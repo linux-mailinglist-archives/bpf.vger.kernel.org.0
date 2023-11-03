@@ -1,94 +1,230 @@
-Return-Path: <bpf+bounces-14065-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14066-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4EE27DFF9E
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 09:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 810947DFFAE
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 09:20:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A023D281738
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 08:11:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C969281E62
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 08:20:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 406488470;
-	Fri,  3 Nov 2023 08:11:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96BE7847F;
+	Fri,  3 Nov 2023 08:20:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NqwEU254"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kWyU66Zk"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F4D79CF
-	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 08:11:39 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C1AD43
-	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 01:11:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1698999092;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=JBH8NI3gflS6BfDv3RcBeVDFbPLiB4RONxRHKrnGmXk=;
-	b=NqwEU2540oBJCp7b6cYAPxpRAcqPv8KAphKdpAIzea6HVe/ZO5la8kI7Xso5NA9OUodLnT
-	RYdYsEUsKn/q4z0igN7oKINZbkqvZ8rR0n57Oa/zgSTKf15P4Bnoq/I+pURa+r03Noqiqx
-	gGkA6toT4VYhDmvpeC4PwbL/qchbPWk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-411-CGiopjSmP-OscmcE6w5ZwA-1; Fri, 03 Nov 2023 04:11:30 -0400
-X-MC-Unique: CGiopjSmP-OscmcE6w5ZwA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 36D7183B8E4;
-	Fri,  3 Nov 2023 08:11:30 +0000 (UTC)
-Received: from alecto.usersys.redhat.com (unknown [10.45.225.4])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 3D0DEC1290F;
-	Fri,  3 Nov 2023 08:11:28 +0000 (UTC)
-From: Artem Savkov <asavkov@redhat.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: Artem Savkov <asavkov@redhat.com>,
-	Jerry Snitselaar <jsnitsel@redhat.com>
-Subject: [PATCH bpf-next] bpftool: fix prog object type in manpage
-Date: Fri,  3 Nov 2023 09:11:26 +0100
-Message-ID: <20231103081126.170034-1-asavkov@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B258460;
+	Fri,  3 Nov 2023 08:19:55 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6D1123;
+	Fri,  3 Nov 2023 01:19:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698999588; x=1730535588;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=7x+HLMrPHU1vmeH3n+XslylsbnDpCawoU8xBczXjVn0=;
+  b=kWyU66Zk9+EcbYS+0sdQqQaiRtZlFFLCvr1LJsWnO/fMFOubPFjacDxf
+   AZVfztTN5X8LINvYehX4fGmebWnjvQ1Bga4n8HXBp8guCx9K05i5/qzeI
+   4LyHNwMyhgljp7VRzUqYdKXl3AGOxVbGm8YjdABAy4Ykoacmy/0opIIW6
+   hZFwkBiiKZvTgNRcOnAbFFzZgqFl1QCOT/PrE7m3NrUoCZAK9BsYIYvM9
+   Wlhf5YEeC3d2i9TDcwUGgpVK5A57Y/2RxmltDxYQ3PZ2RfmxSOgFVH7uK
+   wcmAG1kiRdA8qPEw8GdU2VnkxgknljyZ+2UxGa9QssYrWHuIcltDKybLy
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="475141063"
+X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
+   d="scan'208";a="475141063"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 01:19:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="827416501"
+X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
+   d="scan'208";a="827416501"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 03 Nov 2023 01:19:43 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qypP2-0002Me-1y;
+	Fri, 03 Nov 2023 08:19:40 +0000
+Date: Fri, 3 Nov 2023 16:18:49 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
+	daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	jolsa@kernel.org, tj@kernel.org, lizefan.x@bytedance.com,
+	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com,
+	sinquersw@gmail.com, longman@redhat.com
+Cc: oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
+	bpf@vger.kernel.org, oliver.sang@intel.com,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH v3 bpf-next 06/11] bpf: Add a new kfunc for cgroup1
+ hierarchy
+Message-ID: <202311031651.A7crZEur-lkp@intel.com>
+References: <20231029061438.4215-7-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231029061438.4215-7-laoar.shao@gmail.com>
 
-bpftool's man page lists "program" as one of possible values for OBJECT,
-while in fact bpftool accepts "prog" instead.
+Hi Yafang,
 
-Reported-by: Jerry Snitselaar <jsnitsel@redhat.com>
-Signed-off-by: Artem Savkov <asavkov@redhat.com>
----
- tools/bpf/bpftool/Documentation/bpftool.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+kernel test robot noticed the following build warnings:
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool.rst b/tools/bpf/bpftool/Documentation/bpftool.rst
-index 6965c94dfdafe..09e4f2ff5658b 100644
---- a/tools/bpf/bpftool/Documentation/bpftool.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool.rst
-@@ -20,7 +20,7 @@ SYNOPSIS
- 
- 	**bpftool** **version**
- 
--	*OBJECT* := { **map** | **program** | **link** | **cgroup** | **perf** | **net** | **feature** |
-+	*OBJECT* := { **map** | **prog** | **link** | **cgroup** | **perf** | **net** | **feature** |
- 	**btf** | **gen** | **struct_ops** | **iter** }
- 
- 	*OPTIONS* := { { **-V** | **--version** } | |COMMON_OPTIONS| }
+[auto build test WARNING on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Yafang-Shao/cgroup-Remove-unnecessary-list_empty/20231029-143457
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20231029061438.4215-7-laoar.shao%40gmail.com
+patch subject: [PATCH v3 bpf-next 06/11] bpf: Add a new kfunc for cgroup1 hierarchy
+config: x86_64-randconfig-004-20231103 (https://download.01.org/0day-ci/archive/20231103/202311031651.A7crZEur-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231103/202311031651.A7crZEur-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311031651.A7crZEur-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   kernel/bpf/helpers.c:1893:19: warning: no previous prototype for 'bpf_obj_new_impl' [-Wmissing-prototypes]
+    __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+                      ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1907:19: warning: no previous prototype for 'bpf_percpu_obj_new_impl' [-Wmissing-prototypes]
+    __bpf_kfunc void *bpf_percpu_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+                      ^~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1941:18: warning: no previous prototype for 'bpf_obj_drop_impl' [-Wmissing-prototypes]
+    __bpf_kfunc void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
+                     ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1949:18: warning: no previous prototype for 'bpf_percpu_obj_drop_impl' [-Wmissing-prototypes]
+    __bpf_kfunc void bpf_percpu_obj_drop_impl(void *p__alloc, void *meta__ign)
+                     ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1955:19: warning: no previous prototype for 'bpf_refcount_acquire_impl' [-Wmissing-prototypes]
+    __bpf_kfunc void *bpf_refcount_acquire_impl(void *p__refcounted_kptr, void *meta__ign)
+                      ^~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2000:17: warning: no previous prototype for 'bpf_list_push_front_impl' [-Wmissing-prototypes]
+    __bpf_kfunc int bpf_list_push_front_impl(struct bpf_list_head *head,
+                    ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2010:17: warning: no previous prototype for 'bpf_list_push_back_impl' [-Wmissing-prototypes]
+    __bpf_kfunc int bpf_list_push_back_impl(struct bpf_list_head *head,
+                    ^~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2043:35: warning: no previous prototype for 'bpf_list_pop_front' [-Wmissing-prototypes]
+    __bpf_kfunc struct bpf_list_node *bpf_list_pop_front(struct bpf_list_head *head)
+                                      ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2048:35: warning: no previous prototype for 'bpf_list_pop_back' [-Wmissing-prototypes]
+    __bpf_kfunc struct bpf_list_node *bpf_list_pop_back(struct bpf_list_head *head)
+                                      ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2053:33: warning: no previous prototype for 'bpf_rbtree_remove' [-Wmissing-prototypes]
+    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_remove(struct bpf_rb_root *root,
+                                    ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2109:17: warning: no previous prototype for 'bpf_rbtree_add_impl' [-Wmissing-prototypes]
+    __bpf_kfunc int bpf_rbtree_add_impl(struct bpf_rb_root *root, struct bpf_rb_node *node,
+                    ^~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2119:33: warning: no previous prototype for 'bpf_rbtree_first' [-Wmissing-prototypes]
+    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *root)
+                                    ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2132:33: warning: no previous prototype for 'bpf_task_acquire' [-Wmissing-prototypes]
+    __bpf_kfunc struct task_struct *bpf_task_acquire(struct task_struct *p)
+                                    ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2143:18: warning: no previous prototype for 'bpf_task_release' [-Wmissing-prototypes]
+    __bpf_kfunc void bpf_task_release(struct task_struct *p)
+                     ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2155:28: warning: no previous prototype for 'bpf_cgroup_acquire' [-Wmissing-prototypes]
+    __bpf_kfunc struct cgroup *bpf_cgroup_acquire(struct cgroup *cgrp)
+                               ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2167:18: warning: no previous prototype for 'bpf_cgroup_release' [-Wmissing-prototypes]
+    __bpf_kfunc void bpf_cgroup_release(struct cgroup *cgrp)
+                     ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2179:28: warning: no previous prototype for 'bpf_cgroup_ancestor' [-Wmissing-prototypes]
+    __bpf_kfunc struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level)
+                               ^~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2199:28: warning: no previous prototype for 'bpf_cgroup_from_id' [-Wmissing-prototypes]
+    __bpf_kfunc struct cgroup *bpf_cgroup_from_id(u64 cgid)
+                               ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2219:18: warning: no previous prototype for 'bpf_task_under_cgroup' [-Wmissing-prototypes]
+    __bpf_kfunc long bpf_task_under_cgroup(struct task_struct *task,
+                     ^~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/helpers.c:2240:1: warning: no previous prototype for 'bpf_task_get_cgroup1' [-Wmissing-prototypes]
+    bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id)
+    ^~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2256:33: warning: no previous prototype for 'bpf_task_from_pid' [-Wmissing-prototypes]
+    __bpf_kfunc struct task_struct *bpf_task_from_pid(s32 pid)
+                                    ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2297:19: warning: no previous prototype for 'bpf_dynptr_slice' [-Wmissing-prototypes]
+    __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset,
+                      ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2381:19: warning: no previous prototype for 'bpf_dynptr_slice_rdwr' [-Wmissing-prototypes]
+    __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32 offset,
+                      ^~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2412:17: warning: no previous prototype for 'bpf_dynptr_adjust' [-Wmissing-prototypes]
+    __bpf_kfunc int bpf_dynptr_adjust(struct bpf_dynptr_kern *ptr, u32 start, u32 end)
+                    ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2430:18: warning: no previous prototype for 'bpf_dynptr_is_null' [-Wmissing-prototypes]
+    __bpf_kfunc bool bpf_dynptr_is_null(struct bpf_dynptr_kern *ptr)
+                     ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2435:18: warning: no previous prototype for 'bpf_dynptr_is_rdonly' [-Wmissing-prototypes]
+    __bpf_kfunc bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
+                     ^~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2443:19: warning: no previous prototype for 'bpf_dynptr_size' [-Wmissing-prototypes]
+    __bpf_kfunc __u32 bpf_dynptr_size(const struct bpf_dynptr_kern *ptr)
+                      ^~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2451:17: warning: no previous prototype for 'bpf_dynptr_clone' [-Wmissing-prototypes]
+    __bpf_kfunc int bpf_dynptr_clone(struct bpf_dynptr_kern *ptr,
+                    ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2464:19: warning: no previous prototype for 'bpf_cast_to_kern_ctx' [-Wmissing-prototypes]
+    __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
+                      ^~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2469:19: warning: no previous prototype for 'bpf_rdonly_cast' [-Wmissing-prototypes]
+    __bpf_kfunc void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__k)
+                      ^~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2474:18: warning: no previous prototype for 'bpf_rcu_read_lock' [-Wmissing-prototypes]
+    __bpf_kfunc void bpf_rcu_read_lock(void)
+                     ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2479:18: warning: no previous prototype for 'bpf_rcu_read_unlock' [-Wmissing-prototypes]
+    __bpf_kfunc void bpf_rcu_read_unlock(void)
+                     ^~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:2508:18: warning: no previous prototype for 'bpf_throw' [-Wmissing-prototypes]
+    __bpf_kfunc void bpf_throw(u64 cookie)
+                     ^~~~~~~~~
+   cc1: warning: unrecognized command line option '-Wno-attribute-alias'
+
+
+vim +/bpf_task_get_cgroup1 +2240 kernel/bpf/helpers.c
+
+  2229	
+  2230	/**
+  2231	 * bpf_task_get_cgroup1 - Acquires the associated cgroup of a task within a
+  2232	 * specific cgroup1 hierarchy. The cgroup1 hierarchy is identified by its
+  2233	 * hierarchy ID.
+  2234	 * @task: The target task
+  2235	 * @hierarchy_id: The ID of a cgroup1 hierarchy
+  2236	 *
+  2237	 * On success, the cgroup is returen. On failure, NULL is returned.
+  2238	 */
+  2239	__bpf_kfunc struct cgroup *
+> 2240	bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id)
+  2241	{
+  2242		struct cgroup *cgrp = task_get_cgroup1(task, hierarchy_id);
+  2243	
+  2244		if (IS_ERR(cgrp))
+  2245			return NULL;
+  2246		return cgrp;
+  2247	}
+  2248	#endif /* CONFIG_CGROUPS */
+  2249	
+
 -- 
-2.41.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
