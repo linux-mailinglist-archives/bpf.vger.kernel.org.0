@@ -1,230 +1,446 @@
-Return-Path: <bpf+bounces-14066-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14067-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 810947DFFAE
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 09:20:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 061AC7DFFC4
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 09:33:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C969281E62
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 08:20:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA39B281E18
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 08:33:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96BE7847F;
-	Fri,  3 Nov 2023 08:20:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD75E6FDA;
+	Fri,  3 Nov 2023 08:33:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kWyU66Zk"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="1Q3NRSAa"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B258460;
-	Fri,  3 Nov 2023 08:19:55 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6D1123;
-	Fri,  3 Nov 2023 01:19:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698999588; x=1730535588;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=7x+HLMrPHU1vmeH3n+XslylsbnDpCawoU8xBczXjVn0=;
-  b=kWyU66Zk9+EcbYS+0sdQqQaiRtZlFFLCvr1LJsWnO/fMFOubPFjacDxf
-   AZVfztTN5X8LINvYehX4fGmebWnjvQ1Bga4n8HXBp8guCx9K05i5/qzeI
-   4LyHNwMyhgljp7VRzUqYdKXl3AGOxVbGm8YjdABAy4Ykoacmy/0opIIW6
-   hZFwkBiiKZvTgNRcOnAbFFzZgqFl1QCOT/PrE7m3NrUoCZAK9BsYIYvM9
-   Wlhf5YEeC3d2i9TDcwUGgpVK5A57Y/2RxmltDxYQ3PZ2RfmxSOgFVH7uK
-   wcmAG1kiRdA8qPEw8GdU2VnkxgknljyZ+2UxGa9QssYrWHuIcltDKybLy
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="475141063"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="475141063"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 01:19:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="827416501"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="827416501"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 03 Nov 2023 01:19:43 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qypP2-0002Me-1y;
-	Fri, 03 Nov 2023 08:19:40 +0000
-Date: Fri, 3 Nov 2023 16:18:49 +0800
-From: kernel test robot <lkp@intel.com>
-To: Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
-	daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
-	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-	jolsa@kernel.org, tj@kernel.org, lizefan.x@bytedance.com,
-	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com,
-	sinquersw@gmail.com, longman@redhat.com
-Cc: oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
-	bpf@vger.kernel.org, oliver.sang@intel.com,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH v3 bpf-next 06/11] bpf: Add a new kfunc for cgroup1
- hierarchy
-Message-ID: <202311031651.A7crZEur-lkp@intel.com>
-References: <20231029061438.4215-7-laoar.shao@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80F6C1549C
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 08:33:26 +0000 (UTC)
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2053.outbound.protection.outlook.com [40.107.104.53])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D5B182
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 01:33:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bnX/umKg4TEL32oJtRyQnPMMdCNJ4MQA+uAjPB6+AXqm31ze/y4tkd4JtqJmYeCmAjyUmGbZ0ND+OOEXhfmq9WoHwzn0vnCnv/FSi2hdb/ctpm01OO87JxT2BxzO2bg+DXmBoyeol4iWc0bKheqldblsCUspCz26dFo4La4zpSmZTpPxbEW6lq5UwzFshRv/vyL8ghN9y8BPMeQw7ihMUQvFLXYL/CqAsgfIpszobHLunnk5BfGof3wQ4QmCZ3dY7bB9AwE3G+0llQwiKkT+U6VbQV3w1f7IYw0w0mT6E/PBJLCge/dTEHlJhxB2dj24QV7k8UdT9cbiVsMUXvXiqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OPwgNZlZlfD9xsWlIZxuYIjYZzCYd0VtQDbJKToaGrw=;
+ b=PaoS0cCvzJ8nn8rQAG71Lui+nQxjJUkqVtmOBe2aoPR93XdZKNJxa9i94m1ZqlfNfI5B3KENIiW1g1HN+DW+2e240Z+f4NFPvxJ917AUAmNtQXmrroWSQFfGjwPXEgK1j+inr/DzvwU3ujmU2ljRwFfeuubDt10xcrwXp9GEMAgYbGFmMkcmjvfHXFEgzSEFToWJLBvBPz5xKnqpKM9GYLGPP43irKPLoPXSFiUOTukzQL5q9124x7EHZ7Jd8BpTTpenGsns3YJ7ZJWnI3EmfhTVOPe4Gyy4/3UVMf6aFZLA8asP0pnoI7ioDiXqhen1SlvnZ6GD7NoTRoDkta6ciQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OPwgNZlZlfD9xsWlIZxuYIjYZzCYd0VtQDbJKToaGrw=;
+ b=1Q3NRSAaPykL9ShRwvjesbe74gQFDW2qjDa7yqscp4Dl8jTLvVdJ09bp+i9R5HcNeQyA5mxQ91lNZNKPxdqMzY+ECN2PLVBEgsE0xnO6YTNOCYfXlGMUgYJGu97NHMVUykHkNupcajDF5UQ+1aAD1gzV+h5cy+cQ/NIjbJqpMTnMn/TXOs1j7+3fPMkngB1wLQkl0phhvT2ZhqA45QhsPoKEkDafZC4i9CUik/MicDTdY5ATsonBwz0reXohxnH5t5gxvI0MuMyPA/+7lwj1/J80CIpw/nyo8mEkx4dfJc18QJyGAbvbDnzJukBZ8SKuZ9L2rQ+XN+QiGQp32W42zw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB9510.eurprd04.prod.outlook.com (2603:10a6:20b:44a::11)
+ by PAXPR04MB8719.eurprd04.prod.outlook.com (2603:10a6:102:21e::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Fri, 3 Nov
+ 2023 08:33:15 +0000
+Received: from AS8PR04MB9510.eurprd04.prod.outlook.com
+ ([fe80::9f3e:3b47:5ccd:c47c]) by AS8PR04MB9510.eurprd04.prod.outlook.com
+ ([fe80::9f3e:3b47:5ccd:c47c%6]) with mapi id 15.20.6954.019; Fri, 3 Nov 2023
+ 08:33:15 +0000
+Date: Fri, 3 Nov 2023 16:33:06 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	martin.lau@kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next 01/13] bpf: generalize reg_set_min_max() to
+ handle non-const register comparisons
+Message-ID: <ZUSwQtfjCsKpbWcL@u94a>
+References: <20231103000822.2509815-1-andrii@kernel.org>
+ <20231103000822.2509815-2-andrii@kernel.org>
+ <ZUSmxI9EoWjUyO_t@u94a>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZUSmxI9EoWjUyO_t@u94a>
+X-ClientProxiedBy: TYCPR01CA0134.jpnprd01.prod.outlook.com
+ (2603:1096:400:26d::13) To AS8PR04MB9510.eurprd04.prod.outlook.com
+ (2603:10a6:20b:44a::11)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231029061438.4215-7-laoar.shao@gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB9510:EE_|PAXPR04MB8719:EE_
+X-MS-Office365-Filtering-Correlation-Id: d0921f2a-1ccb-4d28-4165-08dbdc478622
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	wci9ypwkX/6XmOscFh5/2c29Ga4+fgZItflC8TAmcjanzRSOf8vKI72dvDwf8WSpBe/38FP5PcIu0jgJlHfih7X6MT0VWOatUFv1GK0SfEkohOSDnIH5w/r09bu074Vjac4Gr27bWLVA2Law6Z+Q7Dk2vwPmn3IwLeKkew9saqLIr+1mnBPeZN8URNycvHZ9VklAyWpZO/+R0fV3gkGY46Vp+OASsLvprZnnu9kCOMnX3PXBsCY/UGX8PWrMgkwd+6AIxKXVGOl6uLXd3KoNOEz5Ryq5dmwhYRn/ZqnvRzVxsIhEaSYdj5o4UiQVofTts1WbHLrAHz1UswT8xD7wIav+dfzy6X540ncTAfRIBT9TLiYlYz8KJJE3BxTKQaSEizpy9djAGvkZoH1ztJzi73mGpUptEoBV7k9mVzwZfmVv4eCgttS1q55idsmpJt7B+R/8roUvhHl/8tqY2dULTf8WD4JrnS0p2XMnJMmZ8WfXsKkrwg7jrj7E7EDFMX1Hzu3v2ES9tqGGtSK7Nn7nlAaBgDa04CCA+A9JpwlC+FSS5GTbgBwJEVuA3+0ycg8AcnmNxT3OK3Qbl6TbC52s0YWHNpnx4Jg60BH0kCzMt0L6SqYlCMAGVLRbdonLdhfu
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB9510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(136003)(396003)(39860400002)(346002)(376002)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(66899024)(4326008)(478600001)(9686003)(30864003)(86362001)(2906002)(41300700001)(5660300002)(6506007)(8936002)(83380400001)(6512007)(8676002)(6666004)(6916009)(26005)(316002)(66946007)(66476007)(6486002)(66556008)(38100700002)(33716001)(461764006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?QzBBTGd5cENpU1ZaVCtWaEFmMjFpbXQxeUpjTzA4T0M1ckJjMWhmdW10eFhv?=
+ =?utf-8?B?MTVvcGlWQjQ3b1k5UHNDWHQ5czBqSjNibkQ5YXE2OWx6TDltYzlMdEp3R1Nw?=
+ =?utf-8?B?VGcwMCsvcWxsYkc5Rm5BZ1pMOFlyNUdHaDNadFVsVG9pdWJFQVhoT1BGWFBz?=
+ =?utf-8?B?cS9SQmJCMjRpSHE4VzBQcW9oa3IvZmQvNGlQTGxwak9OcktzaEJjUDdkc3M2?=
+ =?utf-8?B?WWI0WDlFUkhGN2ZrMzBJK1BhaU1VN05MWnJLRmdjVXFWNFZoci95MHh2eURw?=
+ =?utf-8?B?RWEwYTQ0TmlQOXBNUllyd2E0RkVTZEVycnRURnhsbEM3MU56N2VOVEY3TWM4?=
+ =?utf-8?B?M211cTlOaDZlelBSTU9mVThRM2t1Y3d0YTRGcGwwRExkZE9IZGNWcEV0Vjdm?=
+ =?utf-8?B?K3VYanVtL3Z0aVN2YWxGQTNhNVpZd1JuanJKRHdqS2RvRzJud1Vlb1laQVBI?=
+ =?utf-8?B?a1pEdzIwd0E1bGRoVG8xbTd5RHJzYzNHZUd5Tnl0MTIzMFoxR2Ntck5nOG5K?=
+ =?utf-8?B?Zmc1SjUrM2R3bzl0Z2tMbVppOTlYcy9zY0pvZWdXWGp3MGJzL1c5S2dRUWNG?=
+ =?utf-8?B?RVI2QnZSbkd6VlBoaWhPTUMycFJwZUlBcExOdmY0MDB4R21EbEFEUmprdm4y?=
+ =?utf-8?B?NW1qODVzcy83cXBmdUIzdEUyUExLY2EzdmQxekpCdkZRUVcvd012dHg3V2NK?=
+ =?utf-8?B?VUFCY0tjYnhwZkVaMXpPL3FRRmZURi8vZ3ZGY2poYi8ycHlDazB1RElkVjBE?=
+ =?utf-8?B?SWQ2ZkdqUGN2L21qSy9xcmhVdFV1UkV2TUFGUlQ0NGllbHhkVGw0bXVPdXMw?=
+ =?utf-8?B?akpWQ3FubmNtd3VYUk80WlB1WFhkaDFoSkhxeExxQURRaGFndmFlb3NUaTNO?=
+ =?utf-8?B?RW1QZHNFdHVCWnhhaHFWelU3S1ZVK3czcFRJN1ZpTmg2aGo4cjZTRThoVnpP?=
+ =?utf-8?B?cnU0Ym9UbjQzd1M3bDVoWlc1MUJSeGZ3ZFJ2RUdDYTZpb2dFRjdXL3ltS21D?=
+ =?utf-8?B?TUhnRXN0TTVkcWY4SFBnSU5QNGRuemNJQWpzMUlZY3NmQ2QvN3RRRHhJbGpN?=
+ =?utf-8?B?MzZaaU01UHNFWGlvQ3RVMllxSTJEalN0bTdHdG9xVkhmanVJaDlNZnc3aUJz?=
+ =?utf-8?B?aDhXTU8yaklVREpId3pXcFU2L0VheGJJRThQK2pyRWNVaktZZE1JZmU0dVFs?=
+ =?utf-8?B?aXZoV0IxZlp4Z3ZXV2pVRlpRdHZqaVlNTm1BeExpb3lsbDlBOCtQN3FVU0R5?=
+ =?utf-8?B?UEZWR1B1T3NmbWhnaTFQMnUzdkU4YmJiUWdUUEFzSTc0RzhBeUQ0c2lPb3U5?=
+ =?utf-8?B?NFJvNUp1S2VBNUV6dGplbTF5QWlNRnd3ei9kY3JsU3VLSWc2dWhsWFN2Z0hi?=
+ =?utf-8?B?aVhzVFkzZmQzVWdNWW44d25PNmNQVTdTVXNhNkY1OVpSVUlOT3FvYWpLbHMz?=
+ =?utf-8?B?U3FYV0pXK2lQQldsT3RoSjhWUmF1YlRJRWJkMXl1bUNGVjlWZHJnTTBvZlNS?=
+ =?utf-8?B?Mk5mdEE1Z0ZSSDU2cHRNbWtRZ3NqVWxVTEhjbHJVMUIwZlV3NUZPZHZ0V0Iw?=
+ =?utf-8?B?L0gzRU40RzJacmhwNVV0K3FOWXdnM3RGNkZVSW11azdrVjVjOWRlM015aGR6?=
+ =?utf-8?B?NmtDYVBSdzl3R3MzWG04MWN2Z09YczdKMG9xcTlTTzZMZkg3VGN3L3Y5a0Ra?=
+ =?utf-8?B?U0dzakNoWm00R0kyL3BQdGlhekttbTAyN2NKQmFHWTkvMm9neENHTG5DZnV5?=
+ =?utf-8?B?VFRIL2RBWlAxcHZoYWZvREZ3MmticmJJZUZ2d282UExUZTFqU25ka0RnZnc4?=
+ =?utf-8?B?dlN3THU1amhVOXU5bngxTVJZRStwUy9TeUdLSWo5NTUzUHdidE1handsMW9K?=
+ =?utf-8?B?eHFaeE1EOUNmZWoyME1raTQwdmNveXdjcC9XajI0SCtvVnhEMEMvVUhZN0w5?=
+ =?utf-8?B?RzBjTlFjZG1WY0pkZUZCeEx3NFBsNnM3d0VhMXU5ZkNlT3VldXQ1QTFjeFZk?=
+ =?utf-8?B?SVF5VTk1d2VQNHQxUmtzRDYzR1FMUHgyKzUwdVp2NEh1eUR3UHNHeEU5UHly?=
+ =?utf-8?B?Zk9Tbmk3RGxYTVN3UDFXblZDdVJkRVduZEg3VGVRNE4raEFjdHF4SW80T1Zv?=
+ =?utf-8?B?akhCSkQ3R3V4MDZ6TEZocjBNQk1JMGRsa1pRMElrd24rWHFpa2tVTW9ldDEy?=
+ =?utf-8?B?ZHc9PQ==?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d0921f2a-1ccb-4d28-4165-08dbdc478622
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB9510.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2023 08:33:15.6214
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KVZN/XUuKYgkw6wiaMTWFFr1he6/xTKhOAkVxgHGF3k9jAHeSPBf023NY+DvqdzEvHb28xt3gAI3cgZM4m/uNQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8719
 
-Hi Yafang,
+On Fri, Nov 03, 2023 at 03:52:36PM +0800, Shung-Hsi Yu wrote:
+> On Thu, Nov 02, 2023 at 05:08:10PM -0700, Andrii Nakryiko wrote:
+> > Generalize bounds adjustment logic of reg_set_min_max() to handle not
+> > just register vs constant case, but in general any register vs any
+> > register cases. For most of the operations it's trivial extension based
+> > on range vs range comparison logic, we just need to properly pick
+> > min/max of a range to compare against min/max of the other range.
+> > 
+> > For BPF_JSET we keep the original capabilities, just make sure JSET is
+> > integrated in the common framework. This is manifested in the
+> > internal-only BPF_KSET + BPF_X "opcode" to allow for simpler and more
+>                     ^ typo?
+> 
+> Two more comments below
+> 
+> > uniform rev_opcode() handling. See the code for details. This allows to
+> > reuse the same code exactly both for TRUE and FALSE branches without
+> > explicitly handling both conditions with custom code.
+> > 
+> > Note also that now we don't need a special handling of BPF_JEQ/BPF_JNE
+> > case none of the registers are constants. This is now just a normal
+> > generic case handled by reg_set_min_max().
+> > 
+> > To make tnum handling cleaner, tnum_with_subreg() helper is added, as
+> > that's a common operator when dealing with 32-bit subregister bounds.
+> > This keeps the overall logic much less noisy when it comes to tnums.
+> > 
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  include/linux/tnum.h  |   4 +
+> >  kernel/bpf/tnum.c     |   7 +-
+> >  kernel/bpf/verifier.c | 327 ++++++++++++++++++++----------------------
+> >  3 files changed, 165 insertions(+), 173 deletions(-)
+> > 
+> > diff --git a/include/linux/tnum.h b/include/linux/tnum.h
+> > index 1c3948a1d6ad..3c13240077b8 100644
+> > --- a/include/linux/tnum.h
+> > +++ b/include/linux/tnum.h
+> > @@ -106,6 +106,10 @@ int tnum_sbin(char *str, size_t size, struct tnum a);
+> >  struct tnum tnum_subreg(struct tnum a);
+> >  /* Returns the tnum with the lower 32-bit subreg cleared */
+> >  struct tnum tnum_clear_subreg(struct tnum a);
+> > +/* Returns the tnum with the lower 32-bit subreg in *reg* set to the lower
+> > + * 32-bit subreg in *subreg*
+> > + */
+> > +struct tnum tnum_with_subreg(struct tnum reg, struct tnum subreg);
+> >  /* Returns the tnum with the lower 32-bit subreg set to value */
+> >  struct tnum tnum_const_subreg(struct tnum a, u32 value);
+> >  /* Returns true if 32-bit subreg @a is a known constant*/
+> > diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
+> > index 3d7127f439a1..f4c91c9b27d7 100644
+> > --- a/kernel/bpf/tnum.c
+> > +++ b/kernel/bpf/tnum.c
+> > @@ -208,7 +208,12 @@ struct tnum tnum_clear_subreg(struct tnum a)
+> >  	return tnum_lshift(tnum_rshift(a, 32), 32);
+> >  }
+> >  
+> > +struct tnum tnum_with_subreg(struct tnum reg, struct tnum subreg)
+> > +{
+> > +	return tnum_or(tnum_clear_subreg(reg), tnum_subreg(subreg));
+> > +}
+> > +
+> >  struct tnum tnum_const_subreg(struct tnum a, u32 value)
+> >  {
+> > -	return tnum_or(tnum_clear_subreg(a), tnum_const(value));
+> > +	return tnum_with_subreg(a, tnum_const(value));
+> >  }
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 2197385d91dc..52934080042c 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -14379,218 +14379,211 @@ static int is_branch_taken(struct bpf_reg_state *reg1, struct bpf_reg_state *reg
+> >  	return is_scalar_branch_taken(reg1, reg2, opcode, is_jmp32);
+> >  }
+> >  
+> > -/* Adjusts the register min/max values in the case that the dst_reg and
+> > - * src_reg are both SCALAR_VALUE registers (or we are simply doing a BPF_K
+> > - * check, in which case we havea fake SCALAR_VALUE representing insn->imm).
+> > - * Technically we can do similar adjustments for pointers to the same object,
+> > - * but we don't support that right now.
+> > +/* Opcode that corresponds to a *false* branch condition.
+> > + * E.g., if r1 < r2, then reverse (false) condition is r1 >= r2
+> >   */
+> > -static void reg_set_min_max(struct bpf_reg_state *true_reg1,
+> > -			    struct bpf_reg_state *true_reg2,
+> > -			    struct bpf_reg_state *false_reg1,
+> > -			    struct bpf_reg_state *false_reg2,
+> > -			    u8 opcode, bool is_jmp32)
+> > +static u8 rev_opcode(u8 opcode)
+> 
+> Nit: rev_opcode and flip_opcode seems like a possible source of confusing
+> down the line. Flip and reverse are often interchangable, i.e. "flip the
+> order" and "reverse the order" is the same thing.
+> 
+> Maybe "neg_opcode" or "neg_cond_opcode"?
+> 
+> Or do it the otherway around, keep rev_opcode but rename flip_opcode.
+> 
+> One more comment about BPF_JSET below
+> 
+> >  {
+> > -	struct tnum false_32off, false_64off;
+> > -	struct tnum true_32off, true_64off;
+> > -	u64 uval;
+> > -	u32 uval32;
+> > -	s64 sval;
+> > -	s32 sval32;
+> > -
+> > -	/* If either register is a pointer, we can't learn anything about its
+> > -	 * variable offset from the compare (unless they were a pointer into
+> > -	 * the same object, but we don't bother with that).
+> > +	switch (opcode) {
+> > +	case BPF_JEQ:		return BPF_JNE;
+> > +	case BPF_JNE:		return BPF_JEQ;
+> > +	/* JSET doesn't have it's reverse opcode in BPF, so add
+> > +	 * BPF_X flag to denote the reverse of that operation
+> >  	 */
+> > -	if (false_reg1->type != SCALAR_VALUE || false_reg2->type != SCALAR_VALUE)
+> > -		return;
+> > -
+> > -	/* we expect right-hand registers (src ones) to be constants, for now */
+> > -	if (!is_reg_const(false_reg2, is_jmp32)) {
+> > -		opcode = flip_opcode(opcode);
+> > -		swap(true_reg1, true_reg2);
+> > -		swap(false_reg1, false_reg2);
+> > +	case BPF_JSET:		return BPF_JSET | BPF_X;
+> > +	case BPF_JSET | BPF_X:	return BPF_JSET;
+> > +	case BPF_JGE:		return BPF_JLT;
+> > +	case BPF_JGT:		return BPF_JLE;
+> > +	case BPF_JLE:		return BPF_JGT;
+> > +	case BPF_JLT:		return BPF_JGE;
+> > +	case BPF_JSGE:		return BPF_JSLT;
+> > +	case BPF_JSGT:		return BPF_JSLE;
+> > +	case BPF_JSLE:		return BPF_JSGT;
+> > +	case BPF_JSLT:		return BPF_JSGE;
+> > +	default:		return 0;
+> >  	}
+> > -	if (!is_reg_const(false_reg2, is_jmp32))
+> > -		return;
+> > +}
+> >  
+> > -	false_32off = tnum_subreg(false_reg1->var_off);
+> > -	false_64off = false_reg1->var_off;
+> > -	true_32off = tnum_subreg(true_reg1->var_off);
+> > -	true_64off = true_reg1->var_off;
+> > -	uval = false_reg2->var_off.value;
+> > -	uval32 = (u32)tnum_subreg(false_reg2->var_off).value;
+> > -	sval = (s64)uval;
+> > -	sval32 = (s32)uval32;
+> > +/* Refine range knowledge for <reg1> <op> <reg>2 conditional operation. */
+> > +static void regs_refine_cond_op(struct bpf_reg_state *reg1, struct bpf_reg_state *reg2,
+> > +				u8 opcode, bool is_jmp32)
+> > +{
+> > +	struct tnum t;
+> >  
+> >  	switch (opcode) {
+> > -	/* JEQ/JNE comparison doesn't change the register equivalence.
+> > -	 *
+> > -	 * r1 = r2;
+> > -	 * if (r1 == 42) goto label;
+> > -	 * ...
+> > -	 * label: // here both r1 and r2 are known to be 42.
+> > -	 *
+> > -	 * Hence when marking register as known preserve it's ID.
+> > -	 */
+> >  	case BPF_JEQ:
+> >  		if (is_jmp32) {
+> > -			__mark_reg32_known(true_reg1, uval32);
+> > -			true_32off = tnum_subreg(true_reg1->var_off);
+> > +			reg1->u32_min_value = max(reg1->u32_min_value, reg2->u32_min_value);
+> > +			reg1->u32_max_value = min(reg1->u32_max_value, reg2->u32_max_value);
+> > +			reg1->s32_min_value = max(reg1->s32_min_value, reg2->s32_min_value);
+> > +			reg1->s32_max_value = min(reg1->s32_max_value, reg2->s32_max_value);
+> > +			reg2->u32_min_value = reg1->u32_min_value;
+> > +			reg2->u32_max_value = reg1->u32_max_value;
+> > +			reg2->s32_min_value = reg1->s32_min_value;
+> > +			reg2->s32_max_value = reg1->s32_max_value;
+> > +
+> > +			t = tnum_intersect(tnum_subreg(reg1->var_off), tnum_subreg(reg2->var_off));
+> > +			reg1->var_off = tnum_with_subreg(reg1->var_off, t);
+> > +			reg2->var_off = tnum_with_subreg(reg2->var_off, t);
+> >  		} else {
+> > -			___mark_reg_known(true_reg1, uval);
+> > -			true_64off = true_reg1->var_off;
+> > +			reg1->umin_value = max(reg1->umin_value, reg2->umin_value);
+> > +			reg1->umax_value = min(reg1->umax_value, reg2->umax_value);
+> > +			reg1->smin_value = max(reg1->smin_value, reg2->smin_value);
+> > +			reg1->smax_value = min(reg1->smax_value, reg2->smax_value);
+> > +			reg2->umin_value = reg1->umin_value;
+> > +			reg2->umax_value = reg1->umax_value;
+> > +			reg2->smin_value = reg1->smin_value;
+> > +			reg2->smax_value = reg1->smax_value;
+> > +
+> > +			reg1->var_off = tnum_intersect(reg1->var_off, reg2->var_off);
+> > +			reg2->var_off = reg1->var_off;
+> >  		}
+> >  		break;
+> >  	case BPF_JNE:
+> > +		/* we don't derive any new information for inequality yet */
+> > +		break;
+> > +	case BPF_JSET:
+> > +	case BPF_JSET | BPF_X: { /* BPF_JSET and its reverse, see rev_opcode() */
+> > +		u64 val;
+> > +
+> > +		if (!is_reg_const(reg2, is_jmp32))
+> > +			swap(reg1, reg2);
+> > +		if (!is_reg_const(reg2, is_jmp32))
+> > +			break;
+> > +
+> > +		val = reg_const_value(reg2, is_jmp32);
+> > +		/* BPF_JSET (i.e., TRUE branch, *not* BPF_JSET | BPF_X)
+> > +		 * requires single bit to learn something useful. E.g., if we
+> > +		 * know that `r1 & 0x3` is true, then which bits (0, 1, or both)
+> > +		 * are actually set? We can learn something definite only if
+> > +		 * it's a single-bit value to begin with.
+> > +		 *
+> > +		 * BPF_JSET | BPF_X (i.e., negation of BPF_JSET) doesn't have
+> > +		 * this restriction. I.e., !(r1 & 0x3) means neither bit 0 nor
+> > +		 * bit 1 is set, which we can readily use in adjustments.
+> > +		 */
+> > +		if (!(opcode & BPF_X) && !is_power_of_2(val))
+> > +			break;
+> > +
+> >  		if (is_jmp32) {
+> > -			__mark_reg32_known(false_reg1, uval32);
+> > -			false_32off = tnum_subreg(false_reg1->var_off);
+> > +			if (opcode & BPF_X)
+> > +				t = tnum_and(tnum_subreg(reg1->var_off), tnum_const(~val));
+> > +			else
+> > +				t = tnum_or(tnum_subreg(reg1->var_off), tnum_const(val));
+> > +			reg1->var_off = tnum_with_subreg(reg1->var_off, t);
+> >  		} else {
+> > -			___mark_reg_known(false_reg1, uval);
+> > -			false_64off = false_reg1->var_off;
+> > +			if (opcode & BPF_X)
+> > +				reg1->var_off = tnum_and(reg1->var_off, tnum_const(~val));
+> > +			else
+> > +				reg1->var_off = tnum_or(reg1->var_off, tnum_const(val));
+> >  		}
+> >  		break;
+> 
+> Since you're already adding a tnum helper, I think we can add one more
+> for BPF_JSET here
+> 
+> 	struct tnum tnum_neg(struct tnum a)
+> 	{
+> 		return TNUM(~a.value, a.mask);
+> 	}
 
-kernel test robot noticed the following build warnings:
+Didn't think it through well enough, with the above we might end up with a
+invalid tnum because the unknown bits gets negated as well, need to mask the
+unknown bits out.
 
-[auto build test WARNING on bpf-next/master]
+ 	struct tnum tnum_neg(struct tnum a)
+ 	{
+ 		return TNUM(~a.value & ~a.mask, a.mask);
+ 	}
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yafang-Shao/cgroup-Remove-unnecessary-list_empty/20231029-143457
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20231029061438.4215-7-laoar.shao%40gmail.com
-patch subject: [PATCH v3 bpf-next 06/11] bpf: Add a new kfunc for cgroup1 hierarchy
-config: x86_64-randconfig-004-20231103 (https://download.01.org/0day-ci/archive/20231103/202311031651.A7crZEur-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231103/202311031651.A7crZEur-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311031651.A7crZEur-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   kernel/bpf/helpers.c:1893:19: warning: no previous prototype for 'bpf_obj_new_impl' [-Wmissing-prototypes]
-    __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
-                      ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1907:19: warning: no previous prototype for 'bpf_percpu_obj_new_impl' [-Wmissing-prototypes]
-    __bpf_kfunc void *bpf_percpu_obj_new_impl(u64 local_type_id__k, void *meta__ign)
-                      ^~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1941:18: warning: no previous prototype for 'bpf_obj_drop_impl' [-Wmissing-prototypes]
-    __bpf_kfunc void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
-                     ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1949:18: warning: no previous prototype for 'bpf_percpu_obj_drop_impl' [-Wmissing-prototypes]
-    __bpf_kfunc void bpf_percpu_obj_drop_impl(void *p__alloc, void *meta__ign)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1955:19: warning: no previous prototype for 'bpf_refcount_acquire_impl' [-Wmissing-prototypes]
-    __bpf_kfunc void *bpf_refcount_acquire_impl(void *p__refcounted_kptr, void *meta__ign)
-                      ^~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2000:17: warning: no previous prototype for 'bpf_list_push_front_impl' [-Wmissing-prototypes]
-    __bpf_kfunc int bpf_list_push_front_impl(struct bpf_list_head *head,
-                    ^~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2010:17: warning: no previous prototype for 'bpf_list_push_back_impl' [-Wmissing-prototypes]
-    __bpf_kfunc int bpf_list_push_back_impl(struct bpf_list_head *head,
-                    ^~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2043:35: warning: no previous prototype for 'bpf_list_pop_front' [-Wmissing-prototypes]
-    __bpf_kfunc struct bpf_list_node *bpf_list_pop_front(struct bpf_list_head *head)
-                                      ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2048:35: warning: no previous prototype for 'bpf_list_pop_back' [-Wmissing-prototypes]
-    __bpf_kfunc struct bpf_list_node *bpf_list_pop_back(struct bpf_list_head *head)
-                                      ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2053:33: warning: no previous prototype for 'bpf_rbtree_remove' [-Wmissing-prototypes]
-    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_remove(struct bpf_rb_root *root,
-                                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2109:17: warning: no previous prototype for 'bpf_rbtree_add_impl' [-Wmissing-prototypes]
-    __bpf_kfunc int bpf_rbtree_add_impl(struct bpf_rb_root *root, struct bpf_rb_node *node,
-                    ^~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2119:33: warning: no previous prototype for 'bpf_rbtree_first' [-Wmissing-prototypes]
-    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *root)
-                                    ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2132:33: warning: no previous prototype for 'bpf_task_acquire' [-Wmissing-prototypes]
-    __bpf_kfunc struct task_struct *bpf_task_acquire(struct task_struct *p)
-                                    ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2143:18: warning: no previous prototype for 'bpf_task_release' [-Wmissing-prototypes]
-    __bpf_kfunc void bpf_task_release(struct task_struct *p)
-                     ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2155:28: warning: no previous prototype for 'bpf_cgroup_acquire' [-Wmissing-prototypes]
-    __bpf_kfunc struct cgroup *bpf_cgroup_acquire(struct cgroup *cgrp)
-                               ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2167:18: warning: no previous prototype for 'bpf_cgroup_release' [-Wmissing-prototypes]
-    __bpf_kfunc void bpf_cgroup_release(struct cgroup *cgrp)
-                     ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2179:28: warning: no previous prototype for 'bpf_cgroup_ancestor' [-Wmissing-prototypes]
-    __bpf_kfunc struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level)
-                               ^~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2199:28: warning: no previous prototype for 'bpf_cgroup_from_id' [-Wmissing-prototypes]
-    __bpf_kfunc struct cgroup *bpf_cgroup_from_id(u64 cgid)
-                               ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2219:18: warning: no previous prototype for 'bpf_task_under_cgroup' [-Wmissing-prototypes]
-    __bpf_kfunc long bpf_task_under_cgroup(struct task_struct *task,
-                     ^~~~~~~~~~~~~~~~~~~~~
->> kernel/bpf/helpers.c:2240:1: warning: no previous prototype for 'bpf_task_get_cgroup1' [-Wmissing-prototypes]
-    bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id)
-    ^~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2256:33: warning: no previous prototype for 'bpf_task_from_pid' [-Wmissing-prototypes]
-    __bpf_kfunc struct task_struct *bpf_task_from_pid(s32 pid)
-                                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2297:19: warning: no previous prototype for 'bpf_dynptr_slice' [-Wmissing-prototypes]
-    __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset,
-                      ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2381:19: warning: no previous prototype for 'bpf_dynptr_slice_rdwr' [-Wmissing-prototypes]
-    __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32 offset,
-                      ^~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2412:17: warning: no previous prototype for 'bpf_dynptr_adjust' [-Wmissing-prototypes]
-    __bpf_kfunc int bpf_dynptr_adjust(struct bpf_dynptr_kern *ptr, u32 start, u32 end)
-                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2430:18: warning: no previous prototype for 'bpf_dynptr_is_null' [-Wmissing-prototypes]
-    __bpf_kfunc bool bpf_dynptr_is_null(struct bpf_dynptr_kern *ptr)
-                     ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2435:18: warning: no previous prototype for 'bpf_dynptr_is_rdonly' [-Wmissing-prototypes]
-    __bpf_kfunc bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
-                     ^~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2443:19: warning: no previous prototype for 'bpf_dynptr_size' [-Wmissing-prototypes]
-    __bpf_kfunc __u32 bpf_dynptr_size(const struct bpf_dynptr_kern *ptr)
-                      ^~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2451:17: warning: no previous prototype for 'bpf_dynptr_clone' [-Wmissing-prototypes]
-    __bpf_kfunc int bpf_dynptr_clone(struct bpf_dynptr_kern *ptr,
-                    ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2464:19: warning: no previous prototype for 'bpf_cast_to_kern_ctx' [-Wmissing-prototypes]
-    __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
-                      ^~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2469:19: warning: no previous prototype for 'bpf_rdonly_cast' [-Wmissing-prototypes]
-    __bpf_kfunc void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__k)
-                      ^~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2474:18: warning: no previous prototype for 'bpf_rcu_read_lock' [-Wmissing-prototypes]
-    __bpf_kfunc void bpf_rcu_read_lock(void)
-                     ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2479:18: warning: no previous prototype for 'bpf_rcu_read_unlock' [-Wmissing-prototypes]
-    __bpf_kfunc void bpf_rcu_read_unlock(void)
-                     ^~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2508:18: warning: no previous prototype for 'bpf_throw' [-Wmissing-prototypes]
-    __bpf_kfunc void bpf_throw(u64 cookie)
-                     ^~~~~~~~~
-   cc1: warning: unrecognized command line option '-Wno-attribute-alias'
-
-
-vim +/bpf_task_get_cgroup1 +2240 kernel/bpf/helpers.c
-
-  2229	
-  2230	/**
-  2231	 * bpf_task_get_cgroup1 - Acquires the associated cgroup of a task within a
-  2232	 * specific cgroup1 hierarchy. The cgroup1 hierarchy is identified by its
-  2233	 * hierarchy ID.
-  2234	 * @task: The target task
-  2235	 * @hierarchy_id: The ID of a cgroup1 hierarchy
-  2236	 *
-  2237	 * On success, the cgroup is returen. On failure, NULL is returned.
-  2238	 */
-  2239	__bpf_kfunc struct cgroup *
-> 2240	bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id)
-  2241	{
-  2242		struct cgroup *cgrp = task_get_cgroup1(task, hierarchy_id);
-  2243	
-  2244		if (IS_ERR(cgrp))
-  2245			return NULL;
-  2246		return cgrp;
-  2247	}
-  2248	#endif /* CONFIG_CGROUPS */
-  2249	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> So instead of getting a value out of tnum then putting the value back
+> into tnum again
+> 
+>     u64 val;
+>     val = reg_const_value(reg2, is_jmp32);
+>     tnum_ops(..., tnum_const(val or ~val);
+> 
+> Keep the value in tnum and process it as-is if possible
+> 
+>     tnum_ops(..., reg2->var_off or tnum_neg(reg2->var_off));
+> 
+> And with that hopefully make this fragment short enough that we don't
+> mind duplicate a bit of code to seperate the BPF_JSET case from the
+> BPF_JSET | BPF_X case. IMO a conditional is_power_of_2 check followed by
+> two level of branching is a bit too much to follow, it is better to have
+> them seperated just like how you're doing it for the others already.
+> 
+> I.e. something like the follow
+> 
+> 	case BPF_JSET: {
+> 		if (!is_reg_const(reg2, is_jmp32))
+> 			swap(reg1, reg2);
+> 		if (!is_reg_const(reg2, is_jmp32))
+> 			break;
+> 		/* comment */
+> 		if (!is_power_of_2(reg_const_value(reg2, is_jmp32))
+> 			break;
+> 
+> 		if (is_jmp32) {
+> 			t = tnum_or(tnum_subreg(reg1->var_off), tnum_subreg(reg2->var_off));
+> 			reg1->var_off = tnum_with_subreg(reg1->var_off, t);
+> 		} else {
+> 			reg1->var_off = tnum_or(reg1->var_off, reg2->var_off);
+> 		}
+> 		break;
+> 	}
+> 	case BPF_JSET | BPF_X: {
+> 		if (!is_reg_const(reg2, is_jmp32))
+> 			swap(reg1, reg2);
+> 		if (!is_reg_const(reg2, is_jmp32))
+> 			break;
+> 
+> 		if (is_jmp32) {
+> 			/* a slightly long line ... */
+> 			t = tnum_and(tnum_subreg(reg1->var_off), tnum_neg(tnum_subreg(reg2->var_off)));
+> 			reg1->var_off = tnum_with_subreg(reg1->var_off, t);
+> 		} else {
+> 			reg1->var_off = tnum_and(reg1->var_off, tnum_neg(reg2->var_off));
+> 		}
+> 		break;
+> 	}
+> 
+> > ...
 
