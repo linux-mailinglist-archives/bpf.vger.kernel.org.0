@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-14134-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14135-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AADB27E0ACD
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 22:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A28E7E0ACE
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 22:46:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63934281F1B
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 21:46:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FB90280C00
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 21:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021F7241E1;
-	Fri,  3 Nov 2023 21:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DABA2241E2;
+	Fri,  3 Nov 2023 21:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rJFwVYq1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C4MU+0I6"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B10723776;
-	Fri,  3 Nov 2023 21:46:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42F77C433C7;
-	Fri,  3 Nov 2023 21:46:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48B4923776;
+	Fri,  3 Nov 2023 21:46:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7749C433C8;
+	Fri,  3 Nov 2023 21:46:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699047973;
-	bh=uPuVFLeqH596YZLavSimUSAErWLUx9FYbKanNutcxg8=;
+	s=k20201202; t=1699047979;
+	bh=Xl9FvzV2bocdGcSqMI22VzVzpenWKD8WnxOLvum25ns=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rJFwVYq1sceJzH5sCVd18C6rsjkc30jdXLXxYZrXuumSd148s+3AZCoCj/D50WWRW
-	 7el/2+aLn4+V25dbmZnBU6DH6KRvX8oL0+Iw6n/bL8eMcstNrv/sSew60zIENGF/r/
-	 vM3JXZpBb/RrlTAXlSp3OIA1+lTtZICRZFocaZi16Bick3TM7r7l2KMTlbf1TzHAP8
-	 zukGfNX8X/rZVa3AcK5aNWFDklun6Jzai7ZriZv44wA0lfTX4vzFJFKIeVV28AF8RB
-	 jqFlQkrXYUCov6+zUcJBgBefCkoWoAhbsXAx01yhiutv3lB+tYmlyBVNlcDhCkSAS+
-	 H4oEQmfos8E3A==
+	b=C4MU+0I6wEs8CFFVk+0+BBIQofAuqTTBvrd3c97/QlOl2iuO8mhwuYvcxGFrmGoYE
+	 Aggf4Exd3+SL1R/hSJIjoXEFQcxXMTbcmpJvfyekp3zW11DA9Abb8CyY7zMNgIEzSV
+	 irEWKVmqQKU6OXol41xw2M7PcVAvJ8DXm28RJWTvG/yzT3+GvTWGSBg4e0RB9U4zfA
+	 sH+118gTLKh4QzBA1v8RgnMUObl253isiyikvCxDpaxm/rtnGPcsYyJNT5e2aVqgab
+	 Bp49WdWG9eIfIWogzyvCQqkDpI1s+IubFxXpupP9zh1y5mQ/xMta0Oy0NtwsfaaNeJ
+	 hNgqaUbO3soOg==
 From: Song Liu <song@kernel.org>
 To: bpf@vger.kernel.org,
 	fsverity@lists.linux.dev
@@ -46,9 +46,9 @@ Cc: ast@kernel.org,
 	kpsingh@kernel.org,
 	vadfed@meta.com,
 	Song Liu <song@kernel.org>
-Subject: [PATCH v10 bpf-next 3/9] bpf: Introduce KF_ARG_PTR_TO_CONST_STR
-Date: Fri,  3 Nov 2023 14:45:29 -0700
-Message-Id: <20231103214535.2674059-4-song@kernel.org>
+Subject: [PATCH v10 bpf-next 4/9] bpf: Add kfunc bpf_get_file_xattr
+Date: Fri,  3 Nov 2023 14:45:30 -0700
+Message-Id: <20231103214535.2674059-5-song@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231103214535.2674059-1-song@kernel.org>
 References: <20231103214535.2674059-1-song@kernel.org>
@@ -60,112 +60,108 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Similar to ARG_PTR_TO_CONST_STR for BPF helpers, KF_ARG_PTR_TO_CONST_STR
-specifies kfunc args that point to const strings. Annotation "__str" is
-used to specify kfunc arg of type KF_ARG_PTR_TO_CONST_STR. Also, add
-documentation for the "__str" annotation.
+It is common practice for security solutions to store tags/labels in
+xattrs. To implement similar functionalities in BPF LSM, add new kfunc
+bpf_get_file_xattr().
 
-bpf_get_file_xattr() will be the first kfunc that uses this type.
+The first use case of bpf_get_file_xattr() is to implement file
+verifications with asymmetric keys. Specificially, security applications
+could use fsverity for file hashes and use xattr to store file signatures.
+(kfunc for fsverity hash will be added in a separate commit.)
+
+Currently, only xattrs with "user." prefix can be read with kfunc
+bpf_get_file_xattr(). As use cases evolve, we may add a dedicated prefix
+for bpf_get_file_xattr().
+
+To avoid recursion, bpf_get_file_xattr can be only called from LSM hooks.
 
 Signed-off-by: Song Liu <song@kernel.org>
 ---
- Documentation/bpf/kfuncs.rst | 24 ++++++++++++++++++++++++
- kernel/bpf/verifier.c        | 19 +++++++++++++++++++
- 2 files changed, 43 insertions(+)
+ kernel/trace/bpf_trace.c | 64 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
 
-diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
-index 0d2647fb358d..bfe065f7e23c 100644
---- a/Documentation/bpf/kfuncs.rst
-+++ b/Documentation/bpf/kfuncs.rst
-@@ -137,6 +137,30 @@ Either way, the returned buffer is either NULL, or of size buffer_szk. Without t
- annotation, the verifier will reject the program if a null pointer is passed in with
- a nonzero size.
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index bfe6fb83e8d0..82eaa099053b 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -24,6 +24,7 @@
+ #include <linux/key.h>
+ #include <linux/verification.h>
+ #include <linux/namei.h>
++#include <linux/fileattr.h>
  
-+2.2.5 __str Annotation
-+----------------------------
-+This annotation is used to indicate that the argument is a constant string.
-+
-+An example is given below::
-+
-+        __bpf_kfunc bpf_get_file_xattr(..., const char *name__str, ...)
-+        {
-+        ...
-+        }
-+
-+In this case, ``bpf_get_file_xattr()`` can be called as::
-+
-+        bpf_get_file_xattr(..., "xattr_name", ...);
-+
-+Or::
-+
-+        const char name[] = "xattr_name";  /* This need to be global */
-+        int BPF_PROG(...)
-+        {
-+                ...
-+                bpf_get_file_xattr(..., name, ...);
-+                ...
-+        }
+ #include <net/bpf_sk_storage.h>
  
- .. _BPF_kfunc_nodef:
+@@ -1431,6 +1432,69 @@ static int __init bpf_key_sig_kfuncs_init(void)
+ late_initcall(bpf_key_sig_kfuncs_init);
+ #endif /* CONFIG_KEYS */
  
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index fefe3eafccb9..6d382f20674d 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -10803,6 +10803,11 @@ static bool is_kfunc_arg_nullable(const struct btf *btf, const struct btf_param
- 	return __kfunc_param_match_suffix(btf, arg, "__nullable");
- }
- 
-+static bool is_kfunc_arg_const_str(const struct btf *btf, const struct btf_param *arg)
++/* filesystem kfuncs */
++__diag_push();
++__diag_ignore_all("-Wmissing-prototypes",
++		  "kfuncs which will be used in BPF programs");
++
++/**
++ * bpf_get_file_xattr - get xattr of a file
++ * @file: file to get xattr from
++ * @name__str: name of the xattr
++ * @value_ptr: output buffer of the xattr value
++ *
++ * Get xattr *name__str* of *file* and store the output in *value_ptr*.
++ *
++ * For security reasons, only *name__str* with prefix "user." is allowed.
++ *
++ * Return: 0 on success, a negative value on error.
++ */
++__bpf_kfunc int bpf_get_file_xattr(struct file *file, const char *name__str,
++				   struct bpf_dynptr_kern *value_ptr)
 +{
-+	return __kfunc_param_match_suffix(btf, arg, "__str");
++	struct dentry *dentry;
++	void *value;
++
++	if (strncmp(name__str, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN))
++		return -EPERM;
++
++	value = __bpf_dynptr_data_rw(value_ptr, __bpf_dynptr_size(value_ptr));
++	if (!value)
++		return -EINVAL;
++
++	dentry = file_dentry(file);
++	return __vfs_getxattr(dentry, dentry->d_inode, name__str,
++			      value, __bpf_dynptr_size(value_ptr));
 +}
 +
- static bool is_kfunc_arg_scalar_with_name(const struct btf *btf,
- 					  const struct btf_param *arg,
- 					  const char *name)
-@@ -10946,6 +10951,7 @@ enum kfunc_ptr_arg_type {
- 	KF_ARG_PTR_TO_RB_ROOT,
- 	KF_ARG_PTR_TO_RB_NODE,
- 	KF_ARG_PTR_TO_NULL,
-+	KF_ARG_PTR_TO_CONST_STR,
- };
- 
- enum special_kfunc_type {
-@@ -11090,6 +11096,9 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
- 	if (is_kfunc_arg_rbtree_node(meta->btf, &args[argno]))
- 		return KF_ARG_PTR_TO_RB_NODE;
- 
-+	if (is_kfunc_arg_const_str(meta->btf, &args[argno]))
-+		return KF_ARG_PTR_TO_CONST_STR;
++__diag_pop();
 +
- 	if ((base_type(reg->type) == PTR_TO_BTF_ID || reg2btf_ids[base_type(reg->type)])) {
- 		if (!btf_type_is_struct(ref_t)) {
- 			verbose(env, "kernel function %s args#%d pointer type %s %s is not supported\n",
-@@ -11713,6 +11722,7 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 		case KF_ARG_PTR_TO_MEM_SIZE:
- 		case KF_ARG_PTR_TO_CALLBACK:
- 		case KF_ARG_PTR_TO_REFCOUNTED_KPTR:
-+		case KF_ARG_PTR_TO_CONST_STR:
- 			/* Trusted by default */
- 			break;
- 		default:
-@@ -11984,6 +11994,15 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 			meta->arg_btf = reg->btf;
- 			meta->arg_btf_id = reg->btf_id;
- 			break;
-+		case KF_ARG_PTR_TO_CONST_STR:
-+			if (reg->type != PTR_TO_MAP_VALUE) {
-+				verbose(env, "arg#%d doesn't point to a const string\n", i);
-+				return -EINVAL;
-+			}
-+			ret = check_reg_const_str(env, reg, regno);
-+			if (ret)
-+				return ret;
-+			break;
- 		}
- 	}
- 
++BTF_SET8_START(fs_kfunc_set_ids)
++BTF_ID_FLAGS(func, bpf_get_file_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
++BTF_SET8_END(fs_kfunc_set_ids)
++
++static int bpf_get_file_xattr_filter(const struct bpf_prog *prog, u32 kfunc_id)
++{
++	if (!btf_id_set8_contains(&fs_kfunc_set_ids, kfunc_id))
++		return 0;
++
++	/* Only allow to attach from LSM hooks, to avoid recursion */
++	return prog->type != BPF_PROG_TYPE_LSM ? -EACCES : 0;
++}
++
++const struct btf_kfunc_id_set bpf_fs_kfunc_set = {
++	.owner = THIS_MODULE,
++	.set = &fs_kfunc_set_ids,
++	.filter = bpf_get_file_xattr_filter,
++};
++
++static int __init bpf_fs_kfuncs_init(void)
++{
++	return register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM, &bpf_fs_kfunc_set);
++}
++
++late_initcall(bpf_fs_kfuncs_init);
++
+ static const struct bpf_func_proto *
+ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
 -- 
 2.34.1
 
