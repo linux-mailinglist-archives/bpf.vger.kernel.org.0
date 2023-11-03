@@ -1,107 +1,202 @@
-Return-Path: <bpf+bounces-14144-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14145-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46FAB7E0AF5
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 23:09:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 962BB7E0AF6
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 23:10:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72B97281CD9
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 22:09:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F6CCB2147C
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 22:10:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DA3F24211;
-	Fri,  3 Nov 2023 22:09:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53D2124215;
+	Fri,  3 Nov 2023 22:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Kl18rAdF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h5qhgQb1"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F90024201
-	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 22:09:26 +0000 (UTC)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B03CF
-	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 15:09:24 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-507b9408c61so3216901e87.0
-        for <bpf@vger.kernel.org>; Fri, 03 Nov 2023 15:09:24 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DC4F24208
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 22:10:26 +0000 (UTC)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752B9CF
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 15:10:24 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9c603e2354fso503672866b.1
+        for <bpf@vger.kernel.org>; Fri, 03 Nov 2023 15:10:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699049363; x=1699654163; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WBuN7gYl2f9j4m13qRB4taTG381QaiJck5wqiJSvm24=;
-        b=Kl18rAdFdNLsVWkmO4CE+2DJxLKEZO3W9ip3AWB1iI/8o/S9zZetNzjLA8NQFzWeyI
-         5u4MZob6E3jrCN06YvF4CcIX39eI+q/ztbs+goAjfn2SX8NdUc5w1wG5X0XrLqg7uocL
-         TYkVknq3xFszyevjYiGL78ILbUkqxX7DdJdHq4Ki6jR9REa2GGNmUKhaHhcDRieNL2ft
-         M81ytNCiLUKC+It/Rv+dQD8AoFbp4dawsFjgU0spB5qE91x7ajRHAcFR272zxGkoSOOt
-         4TswZhJxyF92Qvso3gWOKwc4zrgWL3FCgtfab0z8azuLB104TYjg3cKjKbAkYNVBdROF
-         7IWg==
+        d=gmail.com; s=20230601; t=1699049423; x=1699654223; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=48eapHSqB9XT8NL/KrM14oWKGu50UEgduwEpKQtsqT8=;
+        b=h5qhgQb1p8aWvrDDN8l06PKDdN2Br4T0J4dc8YRc2TT0/k//n9pyOTsMYVpVQUkT3A
+         DNGjrPSHmIf8u/U/AYvQbBTi8ed33Z50nWPDEEZ0JL1nAO/0WsNn9An5cex8nj4F9IZ5
+         YKqcNH7s6Eo+57aqwE2nzjTSDAXNQKnAS39U3CftUMTHl5zQ+VDYh6HFqUWCxID7lkHz
+         vjdlux8OSyEkPIzCQG6WUL2KqzpY6vJuwCt5bbnDBxhkCphOGb8JgkX2KwDnnvjJQLZ/
+         xoVRDNdqgJwnk3uyXBOAoAHI6+bt2joo00NXV51KzvOTjUWL5minpVbSNO8I6Gc2PPj4
+         sJFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699049363; x=1699654163;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WBuN7gYl2f9j4m13qRB4taTG381QaiJck5wqiJSvm24=;
-        b=jwzHCfa49WF6YwU8EeTjpbxsu1eO7pn5wsfpa1cDX1Z7ba7k1EqTF7YQQPp8R27bxm
-         BY2WhC24WFk3iJpbGbr9lq+6HZb9fkJrwkg/1qNRoiHaW3Ezaj9oxTJrXLiuideDoBkA
-         z7szw/Juuyb/Eg6XC8nyvU7IghRRGnSAJHxErLLJFIdS7OPWDeW6MSi73YgUECAmQpP6
-         uhEBg4n2gWZoEgVgILFw4HAtl1WeWSJimBUaYm56psn5Hr8Yllk0V6exVLSGGU+Uut+K
-         xIJ2u6aZjVA2WOzS7tI/t4iZG6ls4Ie5TUXNCXUOdmSAQCTP+DJFR9YDXexLZyVinzEF
-         JhEw==
-X-Gm-Message-State: AOJu0YxJAO7Zu02ItDwWZoIFvvanQgRCLfjziU2L97n9WTpyJlE8gMMp
-	Q4P8SY8KL9oXfbUBfDijY583pA==
-X-Google-Smtp-Source: AGHT+IEr6GbDZ4s+E8RGXMnC70xlRgNiPkcHdcJp3VSEFy36sZoLWuW438sdEFKZIJ2wEB7kwesPVg==
-X-Received: by 2002:ac2:5925:0:b0:507:9fc1:ca7a with SMTP id v5-20020ac25925000000b005079fc1ca7amr16708313lfi.9.1699049362665;
-        Fri, 03 Nov 2023 15:09:22 -0700 (PDT)
-Received: from localhost (c-9b0ee555.07-21-73746f28.bbcust.telenor.se. [85.229.14.155])
-        by smtp.gmail.com with ESMTPSA id m11-20020ac24acb000000b00507cf5fa20esm327760lfp.97.2023.11.03.15.09.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 15:09:22 -0700 (PDT)
-From: Anders Roxell <anders.roxell@linaro.org>
-To: andrii@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net
-Cc: mykolal@fb.com,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	shuah@kernel.org,
-	Anders Roxell <anders.roxell@linaro.org>
-Subject: [PATCH] selftests: bpf: config.aarch64: disable CONFIG_DEBUG_INFO_REDUCED
-Date: Fri,  3 Nov 2023 23:09:12 +0100
-Message-ID: <20231103220912.333930-1-anders.roxell@linaro.org>
-X-Mailer: git-send-email 2.42.0
+        d=1e100.net; s=20230601; t=1699049423; x=1699654223;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=48eapHSqB9XT8NL/KrM14oWKGu50UEgduwEpKQtsqT8=;
+        b=U6m9O82rMcoMLbsYVk+mpt8w7rV2xd64m6OgBO+bhrHqRAP43LQRXtK0Zee+W4GLIe
+         cppNpYxs1WnwXcgObWe6+Ipl/fyM9LWHCde3s8IepxJ74o3GJ1dK8IzCSRJnLeGW+a8G
+         I/0RmwwIbpvuENsYGt74XjiF7Pbvfex/dNu6xXqReWXiJ74XEF50I7vTcuSXU/FgZ059
+         VrrR/HSEpcvAEUk95f4Fhf06VzXIWWcGupCrVoqKCf0x/c3azS0nhLp1vNnMb+jnYatX
+         k96OsxdXYOlJPqfwvhBALgYXkBn7/YeF+zEIAxfam87FgphwmsK2+d1bHNpMqjV31R19
+         cK1g==
+X-Gm-Message-State: AOJu0Yxr6it8dV6jx5CdyqcLPoGIBmihdNYogh1bK+HYfUmF2h5tXa+w
+	rkjyto1C/ByTCRdrPzo/M8TOCnwkVh0EK4AetfM=
+X-Google-Smtp-Source: AGHT+IFqeA5asuXAa8GEZgAmj23Dr/EkPdEF8Uw4igJcN/p2nkWaBVtK/aY1zJNG4MN+4LxIVna/jGHIIms4+QCCy24=
+X-Received: by 2002:a17:907:3e14:b0:9dd:e124:4b39 with SMTP id
+ hp20-20020a1709073e1400b009dde1244b39mr734692ejc.10.1699049422615; Fri, 03
+ Nov 2023 15:10:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231103214535.2674059-1-song@kernel.org> <20231103214535.2674059-5-song@kernel.org>
+In-Reply-To: <20231103214535.2674059-5-song@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 3 Nov 2023 15:10:11 -0700
+Message-ID: <CAEf4BzY2V1Q_V=JMV4uYqHCSnV0ZDsAaLNq6cm0CPt2d8E4XGA@mail.gmail.com>
+Subject: Re: [PATCH v10 bpf-next 4/9] bpf: Add kfunc bpf_get_file_xattr
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, fsverity@lists.linux.dev, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org, 
+	kernel-team@meta.com, ebiggers@kernel.org, tytso@mit.edu, 
+	roberto.sassu@huaweicloud.com, kpsingh@kernel.org, vadfed@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Building an arm64 kernel and seftests/bpf with defconfig +
-selftests/bpf/config and selftests/bpf/config.aarch64 the fragment
-CONFIG_DEBUG_INFO_REDUCED is enabled in arm64's defconfig, it should be
-disabled in file sefltests/bpf/config.aarch64 since if its not disabled
-CONFIG_DEBUG_INFO_BTF wont be enabled.
+On Fri, Nov 3, 2023 at 2:46=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+>
+> It is common practice for security solutions to store tags/labels in
+> xattrs. To implement similar functionalities in BPF LSM, add new kfunc
+> bpf_get_file_xattr().
+>
+> The first use case of bpf_get_file_xattr() is to implement file
+> verifications with asymmetric keys. Specificially, security applications
+> could use fsverity for file hashes and use xattr to store file signatures=
+.
+> (kfunc for fsverity hash will be added in a separate commit.)
+>
+> Currently, only xattrs with "user." prefix can be read with kfunc
+> bpf_get_file_xattr(). As use cases evolve, we may add a dedicated prefix
+> for bpf_get_file_xattr().
+>
+> To avoid recursion, bpf_get_file_xattr can be only called from LSM hooks.
+>
+> Signed-off-by: Song Liu <song@kernel.org>
+> ---
+>  kernel/trace/bpf_trace.c | 64 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+>
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index bfe6fb83e8d0..82eaa099053b 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -24,6 +24,7 @@
+>  #include <linux/key.h>
+>  #include <linux/verification.h>
+>  #include <linux/namei.h>
+> +#include <linux/fileattr.h>
+>
+>  #include <net/bpf_sk_storage.h>
+>
+> @@ -1431,6 +1432,69 @@ static int __init bpf_key_sig_kfuncs_init(void)
+>  late_initcall(bpf_key_sig_kfuncs_init);
+>  #endif /* CONFIG_KEYS */
+>
+> +/* filesystem kfuncs */
+> +__diag_push();
+> +__diag_ignore_all("-Wmissing-prototypes",
+> +                 "kfuncs which will be used in BPF programs");
+> +
 
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
----
- tools/testing/selftests/bpf/config.aarch64 | 1 +
- 1 file changed, 1 insertion(+)
+please use __bpf_kfunc_{start,end}_defs macros, from [0]
 
-diff --git a/tools/testing/selftests/bpf/config.aarch64 b/tools/testing/selftests/bpf/config.aarch64
-index 253821494884..7b6e1d48c309 100644
---- a/tools/testing/selftests/bpf/config.aarch64
-+++ b/tools/testing/selftests/bpf/config.aarch64
-@@ -37,6 +37,7 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=y
- CONFIG_DEBUG_ATOMIC_SLEEP=y
- CONFIG_DEBUG_INFO_BTF=y
- CONFIG_DEBUG_INFO_DWARF4=y
-+CONFIG_DEBUG_INFO_REDUCED=n
- CONFIG_DEBUG_LIST=y
- CONFIG_DEBUG_LOCKDEP=y
- CONFIG_DEBUG_NOTIFIERS=y
--- 
-2.42.0
+  [0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?i=
+d=3D391145ba2acc
 
+> +/**
+> + * bpf_get_file_xattr - get xattr of a file
+> + * @file: file to get xattr from
+> + * @name__str: name of the xattr
+> + * @value_ptr: output buffer of the xattr value
+> + *
+> + * Get xattr *name__str* of *file* and store the output in *value_ptr*.
+> + *
+> + * For security reasons, only *name__str* with prefix "user." is allowed=
+.
+> + *
+> + * Return: 0 on success, a negative value on error.
+> + */
+> +__bpf_kfunc int bpf_get_file_xattr(struct file *file, const char *name__=
+str,
+> +                                  struct bpf_dynptr_kern *value_ptr)
+> +{
+> +       struct dentry *dentry;
+> +       void *value;
+> +
+> +       if (strncmp(name__str, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN))
+> +               return -EPERM;
+> +
+> +       value =3D __bpf_dynptr_data_rw(value_ptr, __bpf_dynptr_size(value=
+_ptr));
+> +       if (!value)
+> +               return -EINVAL;
+> +
+> +       dentry =3D file_dentry(file);
+> +       return __vfs_getxattr(dentry, dentry->d_inode, name__str,
+> +                             value, __bpf_dynptr_size(value_ptr));
+
+nit: probably cleaner to get size once into local variable and use
+that throughout
+
+> +}
+> +
+> +__diag_pop();
+> +
+> +BTF_SET8_START(fs_kfunc_set_ids)
+> +BTF_ID_FLAGS(func, bpf_get_file_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
+> +BTF_SET8_END(fs_kfunc_set_ids)
+> +
+> +static int bpf_get_file_xattr_filter(const struct bpf_prog *prog, u32 kf=
+unc_id)
+> +{
+> +       if (!btf_id_set8_contains(&fs_kfunc_set_ids, kfunc_id))
+> +               return 0;
+> +
+> +       /* Only allow to attach from LSM hooks, to avoid recursion */
+> +       return prog->type !=3D BPF_PROG_TYPE_LSM ? -EACCES : 0;
+> +}
+> +
+> +const struct btf_kfunc_id_set bpf_fs_kfunc_set =3D {
+> +       .owner =3D THIS_MODULE,
+> +       .set =3D &fs_kfunc_set_ids,
+> +       .filter =3D bpf_get_file_xattr_filter,
+> +};
+> +
+> +static int __init bpf_fs_kfuncs_init(void)
+> +{
+> +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM, &bpf_fs_kfunc=
+_set);
+> +}
+> +
+> +late_initcall(bpf_fs_kfuncs_init);
+> +
+>  static const struct bpf_func_proto *
+>  bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *=
+prog)
+>  {
+> --
+> 2.34.1
+>
 
