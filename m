@@ -1,171 +1,290 @@
-Return-Path: <bpf+bounces-14170-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14171-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52FDB7E0C04
-	for <lists+bpf@lfdr.de>; Sat,  4 Nov 2023 00:11:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 287837E0C1D
+	for <lists+bpf@lfdr.de>; Sat,  4 Nov 2023 00:22:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB7C3281A28
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 23:11:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0972281C3C
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 23:22:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD80D24A0E;
-	Fri,  3 Nov 2023 23:11:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A66C425108;
+	Fri,  3 Nov 2023 23:22:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X0vx/A8Z"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AFC4C8C6
-	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 23:11:29 +0000 (UTC)
-Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAC1D48
-	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 16:11:27 -0700 (PDT)
-Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-3b2f43c4853so3892106b6e.1
-        for <bpf@vger.kernel.org>; Fri, 03 Nov 2023 16:11:27 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 006D9250ED
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 23:22:11 +0000 (UTC)
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE7EAD6E
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 16:22:09 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-5872b8323faso1353848eaf.1
+        for <bpf@vger.kernel.org>; Fri, 03 Nov 2023 16:22:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699053729; x=1699658529; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nOKTdvvgc/zXgARZcOa7/3Fkp03dCD/kFtHYMMZaRR0=;
+        b=X0vx/A8Zb54LYcWfx4xRZLRUwbP9T1m0fn/o5dSHMVQpT/LCM7xJmlSY+8GEmnpsdu
+         3ueNvPPYqjAeY9bUDUSclb/0ZkjA0RuddVSvAWG7cWleZTatOH9Bbr48e6axkcohvIgw
+         oTh44eMK82ej8jYve5xZ8BwRvOVYCgjmZj4B+DE6KvSZTpKzdLQo00drBxixDDmt/NyX
+         EuzC+dgMsFRREMcnElALhAi4V18kzktZ6lcoKrt6pmRr24GDN6XJIsLqBxDcPr91kUML
+         uevFQ1rXhP9dgAwC1Ow0tyRtE3hDnOumDrlejljwxrGfc0zyZVA8CCedbtYsfQALxXFT
+         0fVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699053087; x=1699657887;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CvhMA5vwNRzWu65SJGEeddhJb2JU6sR1loI4Z11L+Zw=;
-        b=Q563qqx5euDZVfsH+5LkcK2Ml4fN1ElG4lHsNp+kpTg+7mGL8VEbDZPce6+KhgpuiQ
-         zR1/jNkMb0DY/9N6AQ9t4ixQFNKLhi5bcBW4rPLZY6gUMXZJ6EhMyGrGJTD8HGpIaLE2
-         lSC4k+xoUH8me7iprhmoJSvZRGVH7nB3QHav5EOxBB7yXBw3YibAnFNctTWkY3BQMTWc
-         5tFo510GsHmfEKCaUaOaK2urM34OoMenENaYnjhOVGvBASx0JU6faJjLvtCs1jN+J7Vn
-         79TCZxT6WC8sAwJHVKZZ8J8W+fDxEVX1Jd1QMutkSV0x9jiem0wJRceNEayWrh+dpX0i
-         ur9g==
-X-Gm-Message-State: AOJu0YykZ/9H1OuB0aG3enO4ar7OrEhGF7LBLemCy6oq/qiyyAmoedMD
-	D6KhzjWAah8nNmefFB77O4B44OY0sBMfWBSflKzoggU6M8jb
-X-Google-Smtp-Source: AGHT+IEbOT7zy+LOW+19lFyQcULJd8dT0Zo0D+pVBfsaG8eEoTVRz58N2hSTZsSI9U71l/7MRC0GYFl414x/Us/Sf3QmEm4NuwZE
+        d=1e100.net; s=20230601; t=1699053729; x=1699658529;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nOKTdvvgc/zXgARZcOa7/3Fkp03dCD/kFtHYMMZaRR0=;
+        b=HjvROcw1DqQXazv/kTsfo+H1xqAhJSl6041BBFhh13NO6/URocbxiHiP1GISIxtrch
+         7Of/PyuHCT2QYpmJTF//IqaoHxuaW0qFamt0cIsxXZwu1IIYeRdfFdy5XVWn7SvV8WId
+         1qZZQGpEXXuC8iPkWemXvx0gs5AwYUIvhdcVWoW6t74PcrR/zGLM6UhiDLt76mSXC7G1
+         ZjgfrGuOFhpRuDqkpUgx/WYP2+QbI7FDdn0QPcs2s//EpOz9pLV+SttT0cJAEyZSXqKj
+         /kbtqUqwDCdFnmiO95zwx8ZM9SS6ZickHYGi7zGWjBVuSXdgqzhVMGxeRRO48SGZdjv1
+         HLSA==
+X-Gm-Message-State: AOJu0YyqphQLAARnePdOlhjeugZ43nI73syMmGik6YzF2iyuSiM+jSnL
+	YbxCbrADEhumLnMZw6Oi0GK+xjfydio=
+X-Google-Smtp-Source: AGHT+IHPmZa0H/Jm75XDo315Ct6Cako3XzpU5rYIN05mc+zcOId0JSN0MLu2H5oTCvzI0P6+HDBYHA==
+X-Received: by 2002:a4a:d48b:0:b0:57b:5a55:2bba with SMTP id o11-20020a4ad48b000000b0057b5a552bbamr21428894oos.2.1699053728743;
+        Fri, 03 Nov 2023 16:22:08 -0700 (PDT)
+Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:287:9d8c:4ad:9459])
+        by smtp.gmail.com with ESMTPSA id 186-20020a4a14c3000000b0057b8baf00bbsm532288ood.22.2023.11.03.16.22.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 16:22:08 -0700 (PDT)
+From: thinker.li@gmail.com
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	kernel-team@meta.com,
+	andrii@kernel.org,
+	drosen@google.com
+Cc: sinquersw@gmail.com,
+	kuifeng@meta.com,
+	Kui-Feng Lee <thinker.li@gmail.com>
+Subject: [PATCH bpf-next v10 00/13] Registrating struct_ops types from modules
+Date: Fri,  3 Nov 2023 16:21:49 -0700
+Message-Id: <20231103232202.3664407-1-thinker.li@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:19a8:b0:3a7:3737:60fd with SMTP id
- bj40-20020a05680819a800b003a7373760fdmr8317522oib.7.1699053087289; Fri, 03
- Nov 2023 16:11:27 -0700 (PDT)
-Date: Fri, 03 Nov 2023 16:11:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b8f8610609479fa3@google.com>
-Subject: [syzbot] [bpf?] [net?] BUG: unable to handle kernel NULL pointer
- dereference in sk_psock_verdict_data_ready
-From: syzbot <syzbot+fd7b34375c1c8ce29c93@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
-	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+From: Kui-Feng Lee <thinker.li@gmail.com>
 
-syzbot found the following issue on:
+Given the current constraints of the current implementation,
+struct_ops cannot be registered dynamically. This presents a
+significant limitation for modules like coming fuse-bpf, which seeks
+to implement a new struct_ops type. To address this issue, a new API
+is introduced that allows the registration of new struct_ops types
+from modules.
 
-HEAD commit:    55c900477f5b net: fill in MODULE_DESCRIPTION()s under driv..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12586b51680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=429fa76d04cf393c
-dashboard link: https://syzkaller.appspot.com/bug?extid=fd7b34375c1c8ce29c93
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=154a6ac7680000
+Previously, struct_ops types were defined in bpf_struct_ops_types.h
+and collected as a static array. The new API lets callers add new
+struct_ops types dynamically. The static array has been removed and
+replaced by the per-btf struct_ops_tab.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/c2f876eca348/disk-55c90047.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/fae06633f86c/vmlinux-55c90047.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9bdbf63cb857/bzImage-55c90047.xz
+The struct_ops subsystem relies on BTF to determine the layout of
+values in a struct_ops map and identify the subsystem that the
+struct_ops map registers to. However, the kernel BTF does not include
+the type information of struct_ops types defined by a module. The
+struct_ops subsystem requires knowledge of the corresponding module
+for a given struct_ops map and the utilization of BTF information from
+that module. We empower libbpf to determine the correct module for
+accessing the BTF information and pass an identity (FD) of the module
+btf to the kernel. The kernel looks up type information and registered
+struct_ops types directly from the given btf.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fd7b34375c1c8ce29c93@syzkaller.appspotmail.com
+If a module exits while one or more struct_ops maps still refer to a
+struct_ops type defined by the module, it can lead to unforeseen
+complications. Therefore, it is crucial to ensure that a module
+remains intact as long as any struct_ops map is still linked to a
+struct_ops type defined by the module. To achieve this, every
+struct_ops map holds a reference to the module while being registered.
 
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0x0010) - not-present page
-PGD 637d5067 P4D 637d5067 PUD 631c2067 PMD 0 
-Oops: 0010 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 6103 Comm: syz-executor.1 Not tainted 6.6.0-rc7-syzkaller-02075-g55c900477f5b #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-RSP: 0018:ffffc9000314f868 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffff888028b0b000 RCX: 0000000000000000
-RDX: 1ffff1100f3c305c RSI: ffffffff8848f069 RDI: ffff888028b0b000
-RBP: 0000000000000004 R08: 0000000000000007 R09: 0000000000000000
-R10: ffff888079e18000 R11: 0000000000000000 R12: ffff888079e18000
-R13: 0000000000000000 R14: ffff888028b0b000 R15: ffff888028b0b000
-FS:  00007fc30c5666c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 0000000025154000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- sk_psock_verdict_data_ready net/core/skmsg.c:1228 [inline]
- sk_psock_verdict_data_ready+0x207/0x3d0 net/core/skmsg.c:1208
- unix_dgram_sendmsg+0x11b3/0x1ca0 net/unix/af_unix.c:2116
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg+0xd5/0x180 net/socket.c:745
- ____sys_sendmsg+0x2ac/0x940 net/socket.c:2558
- ___sys_sendmsg+0x135/0x1d0 net/socket.c:2612
- __sys_sendmmsg+0x1a1/0x450 net/socket.c:2698
- __do_sys_sendmmsg net/socket.c:2727 [inline]
- __se_sys_sendmmsg net/socket.c:2724 [inline]
- __x64_sys_sendmmsg+0x9c/0x100 net/socket.c:2724
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fc30b87cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fc30c5660c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 00007fc30b99bf80 RCX: 00007fc30b87cae9
-RDX: 0000000000000002 RSI: 0000000020001680 RDI: 0000000000000003
-RBP: 00007fc30b8c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fc30b99bf80 R15: 00007ffc0cccf7e8
- </TASK>
-Modules linked in:
-CR2: 0000000000000000
----[ end trace 0000000000000000 ]---
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-RSP: 0018:ffffc9000314f868 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffff888028b0b000 RCX: 0000000000000000
-RDX: 1ffff1100f3c305c RSI: ffffffff8848f069 RDI: ffff888028b0b000
-RBP: 0000000000000004 R08: 0000000000000007 R09: 0000000000000000
-R10: ffff888079e18000 R11: 0000000000000000 R12: ffff888079e18000
-R13: 0000000000000000 R14: ffff888028b0b000 R15: ffff888028b0b000
-FS:  00007fc30c5666c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 0000000025154000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Changes from v9:
 
+ - Remove the call_rcu_tasks_trace() changes from kern_sync_rcu().
+
+ - Trace btf_put() in the test case to ensure the release of kmod's
+   btf, or the consequent tests may fail for using kmod's unloaded old
+   btf instead the new one created after loading again. The kmod's btf
+   may live for awhile after unloading the kmod, for a map being freed
+   asynchronized is still holding the btf.
+
+ - Split "add struct_ops_tab to btf" into tow patches by adding
+   "make struct_ops_map support btfs other than btf_vmlinux".
+
+ - Flip the order of "pass attached BTF to the bpf_struct_ops
+   subsystem" and "hold module for bpf_struct_ops_map" to make it more
+   reasonable.
+
+ - Fix the compile errors of a missing header file.
+
+Changes from v8:
+
+ - Rename bpf_struct_ops_init_one() to bpf_struct_ops_desc_init().
+
+ - Move code that using BTF_ID_LIST to the newly added patch 2.
+
+ - Move code that lookup struct_ops types from a given module to the
+   newly added patch 5.
+
+ - Store the pointers of btf at st_maps.
+
+ - Add test cases for the cases of modules being unload.
+
+ - Call bpf_struct_ops_init() in btf_add_struct_ops() to fix an
+   inconsistent issue.
+
+Changes from v7:
+
+ - Fix check_struct_ops_btf_id() to use attach btf if there is instead
+   of btf_vmlinux.
+
+Changes from v6:
+
+ - Change returned error code to -EINVAL for the case of
+   bpf_try_get_module().
+
+ - Return an error code from bpf_struct_ops_init().
+
+ - Fix the dependency issue of testing_helpers.c and
+   rcu_tasks_trace_gp.skel.h.
+
+Changes from v5:
+
+ - As the 2nd patch, we introduce "bpf_struct_ops_desc". This change
+   involves moving certain members of "bpf_struct_ops" to
+   "bpf_struct_ops_desc", which becomes a part of
+   "btf_struct_ops_tab". This ensures that these members remain
+   accessible even when the owner module of a "bpf_struct_ops" is
+   unloaded.
+
+ - Correct the order of arguments when calling
+    in the 3rd patch.
+
+ - Remove the owner argument from bpf_struct_ops_init_one(). Instead,
+   callers should fill in st_ops->owner.
+
+ - Make sure to hold the owner module when calling
+   bpf_struct_ops_find() and bpf_struct_ops_find_value() in the 6th
+   patch.
+
+ - Merge the functions register_bpf_struct_ops_btf() and
+   register_bpf_struct_ops() into a single function and relocate it to
+   btf.c for better organization and clarity.
+
+ - Undo the name modifications made to find_kernel_btf_id() and
+   find_ksym_btf_id() in the 8th patch.
+
+Changes from v4:
+
+ - Fix the dependency between testing_helpers.o and
+   rcu_tasks_trace_gp.skel.h.
+
+Changes from v3:
+
+ - Fix according to the feedback for v3.
+
+   - Change of the order of arguments to make btf as the first
+     argument.
+
+   - Use btf_try_get_module() instead of try_get_module() since the
+     module pointed by st_ops->owner can gone while some one is still
+     holding its btf.
+
+   - Move variables defined by BPF_STRUCT_OPS_COMMON_VALUE to struct
+     bpf_struct_ops_common_value to validation easier.
+
+   - Register the struct_ops type defined by bpf_testmod in its init
+     function.
+
+   - Rename field name to 'value_type_btf_obj_fd' to make it explicit.
+
+   - Fix leaking of btf objects on error.
+
+   - st_maps hold their modules to keep modules alive and prevent they
+     from unloading.
+
+   - bpf_map of libbpf keeps mod_btf_fd instead of a pointer to module_btf.
+
+   - Do call_rcu_tasks_trace() in kern_sync_rcu() to ensure the
+     bpf_testmod is unloaded properly. It uses rcu_tasks_trace_gp to
+     trigger call_rcu_tasks_trace() in the kernel.
+
+ - Merge and reorder patches in a reasonable order.
+
+
+Changes from v2:
+
+ - Remove struct_ops array, and add a per-btf (module) struct_ops_tab
+   to collect registered struct_ops types.
+
+ - Validate value_type by checking member names and types.
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+v9: https://lore.kernel.org/all/20231101204519.677870-1-thinker.li@gmail.com/
+v8: https://lore.kernel.org/all/20231030192810.382942-1-thinker.li@gmail.com/
+v7: https://lore.kernel.org/all/20231027211702.1374597-1-thinker.li@gmail.com/
+v6: https://lore.kernel.org/all/20231022050335.2579051-11-thinker.li@gmail.com/
+v5: https://lore.kernel.org/all/20231017162306.176586-1-thinker.li@gmail.com/
+v4: https://lore.kernel.org/all/20231013224304.187218-1-thinker.li@gmail.com/
+v3: https://lore.kernel.org/all/20230920155923.151136-1-thinker.li@gmail.com/
+v2: https://lore.kernel.org/all/20230913061449.1918219-1-thinker.li@gmail.com/
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Kui-Feng Lee (13):
+  bpf: refactory struct_ops type initialization to a function.
+  bpf: get type information with BPF_ID_LIST
+  bpf, net: introduce bpf_struct_ops_desc.
+  bpf: add struct_ops_tab to btf.
+  bpf: make struct_ops_map support btfs other than btf_vmlinux.
+  bpf: lookup struct_ops types from a given module BTF.
+  bpf: pass attached BTF to the bpf_struct_ops subsystem
+  bpf: hold module for bpf_struct_ops_map.
+  bpf: validate value_type
+  bpf, net: switch to dynamic registration
+  libbpf: Find correct module BTFs for struct_ops maps and progs.
+  bpf: export btf_ctx_access to modules.
+  selftests/bpf: test case for register_bpf_struct_ops().
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+ include/linux/bpf.h                           |  50 +-
+ include/linux/bpf_verifier.h                  |   1 +
+ include/linux/btf.h                           |   7 +
+ include/uapi/linux/bpf.h                      |   5 +
+ kernel/bpf/bpf_struct_ops.c                   | 437 ++++++++++--------
+ kernel/bpf/bpf_struct_ops_types.h             |  12 -
+ kernel/bpf/btf.c                              | 110 ++++-
+ kernel/bpf/syscall.c                          |   2 +-
+ kernel/bpf/verifier.c                         |  25 +-
+ net/bpf/bpf_dummy_struct_ops.c                |  23 +-
+ net/ipv4/bpf_tcp_ca.c                         |  24 +-
+ tools/include/uapi/linux/bpf.h                |   5 +
+ tools/lib/bpf/bpf.c                           |   4 +-
+ tools/lib/bpf/bpf.h                           |   5 +-
+ tools/lib/bpf/libbpf.c                        |  38 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  59 +++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |   5 +
+ .../bpf/prog_tests/test_struct_ops_module.c   | 144 ++++++
+ .../selftests/bpf/progs/struct_ops_module.c   |  30 ++
+ .../testing/selftests/bpf/progs/testmod_btf.c |  26 ++
+ 20 files changed, 781 insertions(+), 231 deletions(-)
+ delete mode 100644 kernel/bpf/bpf_struct_ops_types.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_module.c
+ create mode 100644 tools/testing/selftests/bpf/progs/testmod_btf.c
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+-- 
+2.34.1
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
