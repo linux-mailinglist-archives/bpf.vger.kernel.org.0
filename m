@@ -1,143 +1,97 @@
-Return-Path: <bpf+bounces-14116-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14117-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15FF37E09B8
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 20:59:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CFEA7E0A4A
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 21:26:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94013B21459
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 19:59:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 648601C210CC
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 20:26:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2043F23745;
-	Fri,  3 Nov 2023 19:59:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E5F623762;
+	Fri,  3 Nov 2023 20:26:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V1jEFdV3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XliUnG2Q"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 883021548F
-	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 19:58:59 +0000 (UTC)
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5365D61
-	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 12:58:55 -0700 (PDT)
-Message-ID: <fa3eaf9d-89d8-4a18-8ff8-64c76a3b52e2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1699041533;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LQn9/YVWnNfIFyfjR+xfd/2XN+/TIOg33moNldqBJuA=;
-	b=V1jEFdV3DSA2DmVV5tNuynKCFmm4wQQIwbMHUjGv4yCjfWO9ZJF03NFKKrfB+eTzaOyulP
-	DvZ2xgXQpZTUCNlV/On6ym1jPHiMQCAju0T5/JjNAAfNuj8iXzMoVj0zJUjgpcaWH+wsAW
-	CPTOl5gYLvB5NRo7fJTYS7M2rs7LXBc=
-Date: Fri, 3 Nov 2023 12:58:45 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE53D2375B
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 20:26:49 +0000 (UTC)
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 152A4D53
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 13:26:48 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c50fbc218bso30824351fa.3
+        for <bpf@vger.kernel.org>; Fri, 03 Nov 2023 13:26:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699043206; x=1699648006; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lIPkfPZvsJFl00A6YMaZROp6c7APaKkERcq3nCq6tRk=;
+        b=XliUnG2Q3qWIU811msTMJQBrAkbKAasGwmpD3QHOvWBQ5mnEYMMV68R5Gg0GBL8jhr
+         ZwYn1MiM/eGaevP2+i3yoODXk4qmvZOPD/6mAk3B6YbegFp3vGMjtBdv87ThYUbq0NDM
+         iZIRc6cmMmTeFzKwYeI2e6L8PBA1i+62mZk7kDiJDh5UryvvuC/+FoRr5MYseGOvWbCR
+         AZe9wpvkKmZDlErXSaxb+S6/oMNsW4Z3M6u2EUDtvA/0n4GwbZSilxtbVu29Z5aN0jMR
+         IHiQXe1VseBKnI1oN/r0VOA+F1F1Gesg4PMEj+y0DalAPiZ2D+rOdE8DWPv2Tk4obWIu
+         enbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699043206; x=1699648006;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lIPkfPZvsJFl00A6YMaZROp6c7APaKkERcq3nCq6tRk=;
+        b=Vv+Xnz6993zoTDEKc6O4vPzia0xWi1tkepgjXiEw9BbExzo3/0S6p87EmdY6NST9Fu
+         P3rgpinspchFT1nqIcBGyZp9SUNp5Td9kZc3j3O2ouh4mq7TbWZVEDjFGjRx+ZUt7A5g
+         dwv2cakaxPU6Qp5mh1PNeiV8b9FJGVJJcy/o+XM30tVNRNQ41t0mYzInlCZQOXfaKj+3
+         CHU2LtGyKQP2lzaTnlXtNNEEPprG/zoRTZuisJOFoepOwvUJP3A/xpnx9+j3MLtYSi6A
+         xejqOpi6qwnpkePKAJ9HZXeTYl7YX0nuK0M8/kc9C8k6bAztKsP/qWgGLddONodctWtH
+         8cZw==
+X-Gm-Message-State: AOJu0Yyu/fPRj7yBiUIETHio7YOlZGA9abk2Et99XZ0nke/QGUgc43AU
+	DfNt8GU5A32uRHCPONbBJT5JT0+dbnmtqaHNOds=
+X-Google-Smtp-Source: AGHT+IHYpRg8cWvsELbq/cDvWCzFmXw8xZgCCK+woCvoFKHU89G7hjvAxcsp33/6p5G3nKV9dLLrgXTv/26EZC8XeZo=
+X-Received: by 2002:a19:f70c:0:b0:503:3278:3221 with SMTP id
+ z12-20020a19f70c000000b0050332783221mr15770642lfe.69.1699043206004; Fri, 03
+ Nov 2023 13:26:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: bpf_core_type_id_kernel is not consistent with
- bpf_core_type_id_local
-Content-Language: en-GB
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Lorenz Bauer <lorenz.bauer@isovalent.com>,
- Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yhs@meta.com>,
- Lorenz Bauer <lmb@isovalent.com>, bpf <bpf@vger.kernel.org>,
- Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>
-References: <CAN+4W8h3yDjkOLJPiuKVKTpj_08pBz8ke6vN=Lf8gcA=iYBM-g@mail.gmail.com>
- <e9987f16-7328-627d-8c02-c42c130a61a8@meta.com>
- <CAN+4W8hK9EEb7Qb2How+YwNkkz4wjRyBAK7Y+WcqBzA9ckJ5Qg@mail.gmail.com>
- <CAEf4BzaEPMVFfEYwHxje8sm+26bgeLJ+4hfdGNOMHd5bV8u9rw@mail.gmail.com>
- <CAN+4W8iTm-GS_-Wp=XjY1Txs09G7F4d3vcG_30WDOp-CpDKmCA@mail.gmail.com>
- <CAEf4BzZQQiD5x0PRwGD32bE7izUxhPvRRQTMpifQZYvu+0mMkA@mail.gmail.com>
- <bf1ab8f0-bb83-43d1-9ce0-cb6828fdc935@linux.dev>
- <CAEf4BzaLuL_MtW25t4sehjD2VzCSu3TqbRyQrJJG2t2hCf4LqQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAEf4BzaLuL_MtW25t4sehjD2VzCSu3TqbRyQrJJG2t2hCf4LqQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20231103190147.1757520-1-song@kernel.org> <20231103190147.1757520-3-song@kernel.org>
+In-Reply-To: <20231103190147.1757520-3-song@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 3 Nov 2023 13:26:35 -0700
+Message-ID: <CAADnVQJgsaH1XddyKphFW0to_0n7xFY_5SFQ2BjMeFACQNH2Zg@mail.gmail.com>
+Subject: Re: [PATCH v9 bpf-next 2/9] bpf: Factor out helper check_reg_const_str()
+To: Song Liu <song@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, fsverity@lists.linux.dev, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kernel Team <kernel-team@meta.com>, Eric Biggers <ebiggers@kernel.org>, 
+	"Theodore Ts'o" <tytso@mit.edu>, Roberto Sassu <roberto.sassu@huaweicloud.com>, 
+	KP Singh <kpsingh@kernel.org>, Vadim Fedorenko <vadfed@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 11/1/23 7:16 PM, Andrii Nakryiko wrote:
-> On Wed, Nov 1, 2023 at 5:34 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->> On 11/1/23 3:42 PM, Andrii Nakryiko wrote:
->>> On Wed, Nov 1, 2023 at 7:18 AM Lorenz Bauer <lorenz.bauer@isovalent.com> wrote:
->>>> On Tue, Oct 31, 2023 at 6:24 PM Andrii Nakryiko
->>>> <andrii.nakryiko@gmail.com> wrote:
->>>>>> Did you get round to fixing this, or did you decide to leave it as is?
->>>>> Trying to recall, was there anything to do on the libbpf side, or was
->>>>> it purely a compiler-side change?
->>>> I'm not 100% sure TBH. I'd like clang to behave consistently for
->>>> local_id and target_id. I don't know whether that would break libbpf.
->>>>
->>> *checks code* libbpf just passes through whatever ID compiler
->>> generated, so there doesn't seem to be any change to libbpf. Seems
->>> like compiler-only change. cc'ing Eduard  as well, if he's curious
->>> enough to check
->> Okay, let us try to have a consistent behavior in local/remote type_id
->> by changing local_id semantics to be the same as target_id.
->>
->> The corresponding llvm change is similar to
->>
->> [yhs@devbig309.ftw3 ~/work/llvm-project (ed)]$ git diff
->> diff --git a/llvm/lib/Target/BPF/BPFPreserveDIType.cpp b/llvm/lib/Target/BPF/BPFPreserveDIType.cpp
->> index 78e1bf90f1bd..1fbe1207dc6e 100644
->> --- a/llvm/lib/Target/BPF/BPFPreserveDIType.cpp
->> +++ b/llvm/lib/Target/BPF/BPFPreserveDIType.cpp
->> @@ -86,15 +86,17 @@ static bool BPFPreserveDITypeImpl(Function &F) {
->>          Reloc = BTF::BTF_TYPE_ID_LOCAL;
->>        } else {
->>          Reloc = BTF::BTF_TYPE_ID_REMOTE;
->> -      DIType *Ty = cast<DIType>(MD);
->> -      while (auto *DTy = dyn_cast<DIDerivedType>(Ty)) {
->> -        unsigned Tag = DTy->getTag();
->> -        if (Tag != dwarf::DW_TAG_const_type &&
->> -            Tag != dwarf::DW_TAG_volatile_type)
->> -          break;
->> -        Ty = DTy->getBaseType();
->> -      }
->> +    }
->> +    DIType *Ty = cast<DIType>(MD);
->> +    while (auto *DTy = dyn_cast<DIDerivedType>(Ty)) {
->> +      unsigned Tag = DTy->getTag();
->> +      if (Tag != dwarf::DW_TAG_const_type &&
->> +          Tag != dwarf::DW_TAG_volatile_type)
->> +        break;
->> +      Ty = DTy->getBaseType();
->> +    }
->>
->> +    if (Reloc == BTF::BTF_TYPE_ID_REMOTE) {
->>          if (Ty->getName().empty()) {
->>            if (isa<DISubroutineType>(Ty))
->>              report_fatal_error(
->> @@ -102,8 +104,8 @@ static bool BPFPreserveDITypeImpl(Function &F) {
->>            else
->>              report_fatal_error("Empty type name for BTF_TYPE_ID_REMOTE reloc");
->>          }
->> -      MD = Ty;
->>        }
->> +    MD = Ty;
->>
->>        BasicBlock *BB = Call->getParent();
->>        IntegerType *VarType = Type::getInt64Ty(BB->getContext());
->>
->> Either Eduard or Myself will submit a llvm patch to fix this in llvm18.
-
-The change is merged into upstream llvm-project trunk ('main' branch):
-
-https://github.com/llvm/llvm-project/commit/32e35b21b5971cc939b1de1194145d9b934fcb54
-
-
-> Sounds good, and thank you!
+On Fri, Nov 3, 2023 at 12:02=E2=80=AFPM Song Liu <song@kernel.org> wrote:
 >
->>>
->>>> Lorenz
+>
+> +static int check_reg_const_str(struct bpf_verifier_env *env,
+> +                              struct bpf_reg_state *reg, u32 regno)
+> +{
+> +       struct bpf_map *map =3D reg->map_ptr;
+> +       int err;
+> +       int map_off;
+> +       u64 map_addr;
+> +       char *str_ptr;
+> +
+> +       if (WARN_ON_ONCE(reg->type !=3D PTR_TO_MAP_VALUE))
+> +               return -EINVAL;
+
+Pls drop WARN. People run kernels with panic_on_warn.
+This is not an error that is worth panicking on.
 
