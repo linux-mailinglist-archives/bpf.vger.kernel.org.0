@@ -1,455 +1,298 @@
-Return-Path: <bpf+bounces-14096-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14103-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82F957E08B3
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 20:02:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A41E47E08D7
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 20:06:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB715B2135A
-	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 19:02:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C637E1C2108B
+	for <lists+bpf@lfdr.de>; Fri,  3 Nov 2023 19:06:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37BD8224E5;
-	Fri,  3 Nov 2023 19:02:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gGyb9SAY"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF7FF2374C;
+	Fri,  3 Nov 2023 19:05:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99A131C695;
-	Fri,  3 Nov 2023 19:02:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70A43C433C7;
-	Fri,  3 Nov 2023 19:02:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699038168;
-	bh=71USteCEiuLSb1j+/UlLRKPzkVHCq+YB1wYIkQ70C1g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gGyb9SAYtOpQEtgzeTscmqpJaeAXSaMnUpa/DkBoQiMQEqUVHivkiW4el9QzclYqn
-	 y4wKU5SKy537M7LtlOvoc/A2jiLdjxEg+9iChF3WuMAXexKRKQFxHSPs7oGdQBHQY0
-	 bODiKq1pfXuFTN0Wo+TvHtxzUjzabsFCI+nkWuhgK5GTG0IM0tIDgqd3Sfjpa9wzV2
-	 i3CuOXhTaCIMxQmb0RSmU81t2rd/RTq4zSfHFs4It915yR5z0jnToWvPkh3euzORSY
-	 pb38b3fSXnBcyyrzRDXzins5zDSNXx9OSqjLT6NyyUH9z2uhHtE5JuMhKsgqvmbXth
-	 DgoHS6hGZIZXw==
-From: Song Liu <song@kernel.org>
-To: bpf@vger.kernel.org,
-	fsverity@lists.linux.dev
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@kernel.org,
-	kernel-team@meta.com,
-	ebiggers@kernel.org,
-	tytso@mit.edu,
-	roberto.sassu@huaweicloud.com,
-	kpsingh@kernel.org,
-	vadfed@meta.com,
-	Song Liu <song@kernel.org>
-Subject: [PATCH v9 bpf-next 9/9] selftests/bpf: Add test that uses fsverity and xattr to sign a file
-Date: Fri,  3 Nov 2023 12:01:47 -0700
-Message-Id: <20231103190147.1757520-10-song@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D2D222EEC
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 19:05:51 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22338D52
+	for <bpf@vger.kernel.org>; Fri,  3 Nov 2023 12:05:46 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3GUmUE013260
+	for <bpf@vger.kernel.org>; Fri, 3 Nov 2023 12:05:46 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3u54en99tb-3
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Fri, 03 Nov 2023 12:05:45 -0700
+Received: from twshared68648.02.prn6.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Fri, 3 Nov 2023 12:05:37 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id 1AD123AE38384; Fri,  3 Nov 2023 12:05:23 -0700 (PDT)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <paul@paul-moore.com>,
+        <brauner@kernel.org>
+CC: <linux-fsdevel@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
+        <keescook@chromium.org>, <kernel-team@meta.com>, <sargun@sargun.me>
+Subject: [PATCH v9 bpf-next 00/17] BPF token and BPF FS-based delegation
+Date: Fri, 3 Nov 2023 12:05:06 -0700
+Message-ID: <20231103190523.6353-1-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231103190147.1757520-1-song@kernel.org>
-References: <20231103190147.1757520-1-song@kernel.org>
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: b9LxiZUAwc0AYnICsOUX9jrco-shHKKq
+X-Proofpoint-GUID: b9LxiZUAwc0AYnICsOUX9jrco-shHKKq
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-03_18,2023-11-02_03,2023-05-22_02
 
-This selftests shows a proof of concept method to use BPF LSM to enforce
-file signature. This test is added to verify_pkcs7_sig, so that some
-existing logic can be reused.
+This patch set introduces an ability to delegate a subset of BPF subsystem
+functionality from privileged system-wide daemon (e.g., systemd or any other
+container manager) through special mount options for userns-bound BPF FS to
+a *trusted* unprivileged application. Trust is the key here. This
+functionality is not about allowing unconditional unprivileged BPF usage.
+Establishing trust, though, is completely up to the discretion of respective
+privileged application that would create and mount a BPF FS instance with
+delegation enabled, as different production setups can and do achieve it
+through a combination of different means (signing, LSM, code reviews, etc),
+and it's undesirable and infeasible for kernel to enforce any particular way
+of validating trustworthiness of particular process.
 
-This file signature method uses fsverity, which provides reliable and
-efficient hash (known as digest) of the file. The file digest is signed
-with asymmetic key, and the signature is stored in xattr. At the run time,
-BPF LSM reads file digest and the signature, and then checks them against
-the public key.
+The main motivation for this work is a desire to enable containerized BPF
+applications to be used together with user namespaces. This is currently
+impossible, as CAP_BPF, required for BPF subsystem usage, cannot be namespa=
+ced
+or sandboxed, as a general rule. E.g., tracing BPF programs, thanks to BPF
+helpers like bpf_probe_read_kernel() and bpf_probe_read_user() can safely r=
+ead
+arbitrary memory, and it's impossible to ensure that they only read memory =
+of
+processes belonging to any given namespace. This means that it's impossible=
+ to
+have a mechanically verifiable namespace-aware CAP_BPF capability, and as s=
+uch
+another mechanism to allow safe usage of BPF functionality is necessary.BPF=
+ FS
+delegation mount options and BPF token derived from such BPF FS instance is
+such a mechanism. Kernel makes no assumption about what "trusted" constitut=
+es
+in any particular case, and it's up to specific privileged applications and
+their surrounding infrastructure to decide that. What kernel provides is a =
+set
+of APIs to setup and mount special BPF FS instanecs and derive BPF tokens f=
+rom
+it. BPF FS and BPF token are both bound to its owning userns and in such a =
+way
+are constrained inside intended container. Users can then pass BPF token FD=
+ to
+privileged bpf() syscall commands, like BPF map creation and BPF program
+loading, to perform such operations without having init userns privileged.
 
-Note that this solution does NOT require FS_VERITY_BUILTIN_SIGNATURES.
-fsverity is only used to provide file digest. The signature verification
-and access control is all implemented in BPF LSM.
+This version incorporates feedback and suggestions ([3]) received on v3 of
+this patch set, and instead of allowing to create BPF tokens directly assum=
+ing
+capable(CAP_SYS_ADMIN), we instead enhance BPF FS to accepts a few new
+delegation mount options. If these options are used and BPF FS itself is
+properly created, set up, and mounted inside the user namespaced container,
+user application is able to derive a BPF token object from BPF FS instance,
+and pass that token to bpf() syscall. As explained in patch #2, BPF token
+itself doesn't grant access to BPF functionality, but instead allows kernel=
+ to
+do namespaced capabilities checks (ns_capable() vs capable()) for CAP_BPF,
+CAP_PERFMON, CAP_NET_ADMIN, and CAP_SYS_ADMIN, as applicable. So it forms o=
+ne
+half of a puzzle and allows container managers and sys admins to have safe =
+and
+flexible configuration options: determining which containers get delegation=
+ of
+BPF functionality through BPF FS, and then which applications within such
+containers are allowed to perform bpf() commands, based on namespaces
+capabilities.
 
-Signed-off-by: Song Liu <song@kernel.org>
----
- tools/testing/selftests/bpf/bpf_kfuncs.h      |   7 +
- .../bpf/prog_tests/verify_pkcs7_sig.c         | 163 +++++++++++++++++-
- .../selftests/bpf/progs/test_sig_in_xattr.c   |  82 +++++++++
- .../bpf/progs/test_verify_pkcs7_sig.c         |   8 +-
- .../testing/selftests/bpf/verify_sig_setup.sh |  25 +++
- 5 files changed, 277 insertions(+), 8 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_sig_in_xattr.c
+Previous attempt at addressing this very same problem ([0]) attempted to
+utilize authoritative LSM approach, but was conclusively rejected by upstre=
+am
+LSM maintainers. BPF token concept is not changing anything about LSM
+approach, but can be combined with LSM hooks for very fine-grained security
+policy. Some ideas about making BPF token more convenient to use with LSM (=
+in
+particular custom BPF LSM programs) was briefly described in recent LSF/MM/=
+BPF
+2023 presentation ([1]). E.g., an ability to specify user-provided data
+(context), which in combination with BPF LSM would allow implementing a very
+dynamic and fine-granular custom security policies on top of BPF token. In =
+the
+interest of minimizing API surface area and discussions this was relegated =
+to
+follow up patches, as it's not essential to the fundamental concept of
+delegatable BPF token.
 
-diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/selftests/bpf/bpf_kfuncs.h
-index c2c084a44eae..b4e78c1eb37b 100644
---- a/tools/testing/selftests/bpf/bpf_kfuncs.h
-+++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
-@@ -58,4 +58,11 @@ void *bpf_rdonly_cast(void *obj, __u32 btf_id) __ksym;
- extern int bpf_get_file_xattr(struct file *file, const char *name,
- 			      struct bpf_dynptr *value_ptr) __ksym;
- extern int bpf_get_fsverity_digest(struct file *file, struct bpf_dynptr *digest_ptr) __ksym;
-+
-+extern struct bpf_key *bpf_lookup_user_key(__u32 serial, __u64 flags) __ksym;
-+extern struct bpf_key *bpf_lookup_system_key(__u64 id) __ksym;
-+extern void bpf_key_put(struct bpf_key *key) __ksym;
-+extern int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_ptr,
-+				      struct bpf_dynptr *sig_ptr,
-+				      struct bpf_key *trusted_keyring) __ksym;
- #endif
-diff --git a/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c b/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
-index dd7f2bc70048..682b6af8d0a4 100644
---- a/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
-@@ -16,9 +16,12 @@
- #include <sys/wait.h>
- #include <sys/mman.h>
- #include <linux/keyctl.h>
-+#include <sys/xattr.h>
-+#include <linux/fsverity.h>
- #include <test_progs.h>
- 
- #include "test_verify_pkcs7_sig.skel.h"
-+#include "test_sig_in_xattr.skel.h"
- 
- #define MAX_DATA_SIZE (1024 * 1024)
- #define MAX_SIG_SIZE 1024
-@@ -26,6 +29,10 @@
- #define VERIFY_USE_SECONDARY_KEYRING (1UL)
- #define VERIFY_USE_PLATFORM_KEYRING  (2UL)
- 
-+#ifndef SHA256_DIGEST_SIZE
-+#define SHA256_DIGEST_SIZE      32
-+#endif
-+
- /* In stripped ARM and x86-64 modules, ~ is surprisingly rare. */
- #define MODULE_SIG_STRING "~Module signature appended~\n"
- 
-@@ -254,7 +261,7 @@ static int populate_data_item_mod(struct data *data_item)
- 	return ret;
- }
- 
--void test_verify_pkcs7_sig(void)
-+static void test_verify_pkcs7_sig_from_map(void)
- {
- 	libbpf_print_fn_t old_print_cb;
- 	char tmp_dir_template[] = "/tmp/verify_sigXXXXXX";
-@@ -400,3 +407,157 @@ void test_verify_pkcs7_sig(void)
- 	skel->bss->monitored_pid = 0;
- 	test_verify_pkcs7_sig__destroy(skel);
- }
-+
-+static int get_signature_size(const char *sig_path)
-+{
-+	struct stat st;
-+
-+	if (stat(sig_path, &st) == -1)
-+		return -1;
-+
-+	return st.st_size;
-+}
-+
-+static int add_signature_to_xattr(const char *data_path, const char *sig_path)
-+{
-+	char sig[MAX_SIG_SIZE] = {0};
-+	int fd, size, ret;
-+
-+	if (sig_path) {
-+		fd = open(sig_path, O_RDONLY);
-+		if (fd < 0)
-+			return -1;
-+
-+		size = read(fd, sig, MAX_SIG_SIZE);
-+		close(fd);
-+		if (size <= 0)
-+			return -1;
-+	} else {
-+		/* no sig_path, just write 32 bytes of zeros */
-+		size = 32;
-+	}
-+	ret = setxattr(data_path, "user.sig", sig, size, 0);
-+	if (!ASSERT_OK(ret, "setxattr"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static int test_open_file(struct test_sig_in_xattr *skel, char *data_path,
-+			  pid_t pid, bool should_success, char *name)
-+{
-+	int ret;
-+
-+	skel->bss->monitored_pid = pid;
-+	ret = open(data_path, O_RDONLY);
-+	close(ret);
-+	skel->bss->monitored_pid = 0;
-+
-+	if (should_success) {
-+		if (!ASSERT_GE(ret, 0, name))
-+			return -1;
-+	} else {
-+		if (!ASSERT_LT(ret, 0, name))
-+			return -1;
-+	}
-+	return 0;
-+}
-+
-+static void test_pkcs7_sig_fsverity(void)
-+{
-+	char data_path[PATH_MAX];
-+	char sig_path[PATH_MAX];
-+	char tmp_dir_template[] = "/tmp/verify_sigXXXXXX";
-+	char *tmp_dir;
-+	struct test_sig_in_xattr *skel = NULL;
-+	pid_t pid;
-+	int ret;
-+
-+	tmp_dir = mkdtemp(tmp_dir_template);
-+	if (!ASSERT_OK_PTR(tmp_dir, "mkdtemp"))
-+		return;
-+
-+	snprintf(data_path, PATH_MAX, "%s/data-file", tmp_dir);
-+	snprintf(sig_path, PATH_MAX, "%s/sig-file", tmp_dir);
-+
-+	ret = _run_setup_process(tmp_dir, "setup");
-+	if (!ASSERT_OK(ret, "_run_setup_process"))
-+		goto out;
-+
-+	ret = _run_setup_process(tmp_dir, "fsverity-create-sign");
-+
-+	if (ret) {
-+		printf("%s: SKIP: fsverity [sign|enable] doesn't work.\n", __func__);
-+		test__skip();
-+		goto out;
-+	}
-+
-+	skel = test_sig_in_xattr__open();
-+	if (!ASSERT_OK_PTR(skel, "test_sig_in_xattr__open"))
-+		goto out;
-+	ret = get_signature_size(sig_path);
-+	if (!ASSERT_GT(ret, 0, "get_signaure_size"))
-+		goto out;
-+	skel->bss->sig_size = ret;
-+	skel->bss->user_keyring_serial = syscall(__NR_request_key, "keyring",
-+						 "ebpf_testing_keyring", NULL,
-+						 KEY_SPEC_SESSION_KEYRING);
-+	memcpy(skel->bss->digest, "FSVerity", 8);
-+
-+	ret = test_sig_in_xattr__load(skel);
-+	if (!ASSERT_OK(ret, "test_sig_in_xattr__load"))
-+		goto out;
-+
-+	ret = test_sig_in_xattr__attach(skel);
-+	if (!ASSERT_OK(ret, "test_sig_in_xattr__attach"))
-+		goto out;
-+
-+	pid = getpid();
-+
-+	/* Case 1: fsverity is not enabled, open should succeed */
-+	if (test_open_file(skel, data_path, pid, true, "open_1"))
-+		goto out;
-+
-+	/* Case 2: fsverity is enabled, xattr is missing, open should
-+	 * fail
-+	 */
-+	ret = _run_setup_process(tmp_dir, "fsverity-enable");
-+	if (!ASSERT_OK(ret, "fsverity-enable"))
-+		goto out;
-+	if (test_open_file(skel, data_path, pid, false, "open_2"))
-+		goto out;
-+
-+	/* Case 3: fsverity is enabled, xattr has valid signature, open
-+	 * should succeed
-+	 */
-+	ret = add_signature_to_xattr(data_path, sig_path);
-+	if (!ASSERT_OK(ret, "add_signature_to_xattr_1"))
-+		goto out;
-+
-+	if (test_open_file(skel, data_path, pid, true, "open_3"))
-+		goto out;
-+
-+	/* Case 4: fsverity is enabled, xattr has invalid signature, open
-+	 * should fail
-+	 */
-+	ret = add_signature_to_xattr(data_path, NULL);
-+	if (!ASSERT_OK(ret, "add_signature_to_xattr_2"))
-+		goto out;
-+	test_open_file(skel, data_path, pid, false, "open_4");
-+
-+out:
-+	_run_setup_process(tmp_dir, "cleanup");
-+	if (!skel)
-+		return;
-+
-+	skel->bss->monitored_pid = 0;
-+	test_sig_in_xattr__destroy(skel);
-+}
-+
-+void test_verify_pkcs7_sig(void)
-+{
-+	if (test__start_subtest("pkcs7_sig_from_map"))
-+		test_verify_pkcs7_sig_from_map();
-+	if (test__start_subtest("pkcs7_sig_fsverity"))
-+		test_pkcs7_sig_fsverity();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_sig_in_xattr.c b/tools/testing/selftests/bpf/progs/test_sig_in_xattr.c
-new file mode 100644
-index 000000000000..820b891171d8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_sig_in_xattr.c
-@@ -0,0 +1,82 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <errno.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_kfuncs.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#ifndef SHA256_DIGEST_SIZE
-+#define SHA256_DIGEST_SIZE      32
-+#endif
-+
-+#define MAX_SIG_SIZE 1024
-+
-+/* By default, "fsverity sign" signs a file with fsverity_formatted_digest
-+ * of the file. fsverity_formatted_digest on the kernel side is only used
-+ * with CONFIG_FS_VERITY_BUILTIN_SIGNATURES. However, BPF LSM doesn't not
-+ * require CONFIG_FS_VERITY_BUILTIN_SIGNATURES, so vmlinux.h may not have
-+ * fsverity_formatted_digest. In this test, we intentionally avoid using
-+ * fsverity_formatted_digest.
-+ *
-+ * Luckily, fsverity_formatted_digest is simply 8-byte magic followed by
-+ * fsverity_digest. We use a char array of size fsverity_formatted_digest
-+ * plus SHA256_DIGEST_SIZE. The magic part of it is filled by user space,
-+ * and the rest of it is filled by bpf_get_fsverity_digest.
-+ *
-+ * Note that, generating signatures based on fsverity_formatted_digest is
-+ * the design choice of this selftest (and "fsverity sign"). With BPF
-+ * LSM, we have the flexibility to generate signature based on other data
-+ * sets, for example, fsverity_digest or only the digest[] part of it.
-+ */
-+#define MAGIC_SIZE 8
-+char digest[MAGIC_SIZE + sizeof(struct fsverity_digest) + SHA256_DIGEST_SIZE];
-+
-+__u32 monitored_pid;
-+char sig[MAX_SIG_SIZE];
-+__u32 sig_size;
-+__u32 user_keyring_serial;
-+
-+SEC("lsm.s/file_open")
-+int BPF_PROG(test_file_open, struct file *f)
-+{
-+	struct bpf_dynptr digest_ptr, sig_ptr;
-+	struct bpf_key *trusted_keyring;
-+	__u32 pid;
-+	int ret;
-+
-+	pid = bpf_get_current_pid_tgid() >> 32;
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	/* digest_ptr points to fsverity_digest */
-+	bpf_dynptr_from_mem(digest + MAGIC_SIZE, sizeof(digest) - MAGIC_SIZE, 0, &digest_ptr);
-+
-+	ret = bpf_get_fsverity_digest(f, &digest_ptr);
-+	/* No verity, allow access */
-+	if (ret < 0)
-+		return 0;
-+
-+	/* Move digest_ptr to fsverity_formatted_digest */
-+	bpf_dynptr_from_mem(digest, sizeof(digest), 0, &digest_ptr);
-+
-+	/* Read signature from xattr */
-+	bpf_dynptr_from_mem(sig, sizeof(sig), 0, &sig_ptr);
-+	ret = bpf_get_file_xattr(f, "user.sig", &sig_ptr);
-+	/* No signature, reject access */
-+	if (ret < 0)
-+		return -EPERM;
-+
-+	trusted_keyring = bpf_lookup_user_key(user_keyring_serial, 0);
-+	if (!trusted_keyring)
-+		return -ENOENT;
-+
-+	/* Verify signature */
-+	ret = bpf_verify_pkcs7_signature(&digest_ptr, &sig_ptr, trusted_keyring);
-+
-+	bpf_key_put(trusted_keyring);
-+	return ret;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c b/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-index 7748cc23de8a..f42e9f3831a1 100644
---- a/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-+++ b/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-@@ -10,17 +10,11 @@
- #include <errno.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
-+#include "bpf_kfuncs.h"
- 
- #define MAX_DATA_SIZE (1024 * 1024)
- #define MAX_SIG_SIZE 1024
- 
--extern struct bpf_key *bpf_lookup_user_key(__u32 serial, __u64 flags) __ksym;
--extern struct bpf_key *bpf_lookup_system_key(__u64 id) __ksym;
--extern void bpf_key_put(struct bpf_key *key) __ksym;
--extern int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_ptr,
--				      struct bpf_dynptr *sig_ptr,
--				      struct bpf_key *trusted_keyring) __ksym;
--
- __u32 monitored_pid;
- __u32 user_keyring_serial;
- __u64 system_keyring_id;
-diff --git a/tools/testing/selftests/bpf/verify_sig_setup.sh b/tools/testing/selftests/bpf/verify_sig_setup.sh
-index ba08922b4a27..7e6caa134e1a 100755
---- a/tools/testing/selftests/bpf/verify_sig_setup.sh
-+++ b/tools/testing/selftests/bpf/verify_sig_setup.sh
-@@ -60,6 +60,27 @@ cleanup() {
- 	rm -rf ${tmp_dir}
- }
- 
-+fsverity_create_sign_file() {
-+	local tmp_dir="$1"
-+
-+	data_file=${tmp_dir}/data-file
-+	sig_file=${tmp_dir}/sig-file
-+	dd if=/dev/urandom of=$data_file bs=1 count=12345 2> /dev/null
-+	fsverity sign --key ${tmp_dir}/signing_key.pem $data_file $sig_file
-+
-+	# We do not want to enable fsverity on $data_file yet. Try whether
-+	# the file system support fsverity on a different file.
-+	touch ${tmp_dir}/tmp-file
-+	fsverity enable ${tmp_dir}/tmp-file
-+}
-+
-+fsverity_enable_file() {
-+    local tmp_dir="$1"
-+
-+	data_file=${tmp_dir}/data-file
-+	fsverity enable $data_file
-+}
-+
- catch()
- {
- 	local exit_code="$1"
-@@ -86,6 +107,10 @@ main()
- 		setup "${tmp_dir}"
- 	elif [[ "${action}" == "cleanup" ]]; then
- 		cleanup "${tmp_dir}"
-+	elif [[ "${action}" == "fsverity-create-sign" ]]; then
-+		fsverity_create_sign_file "${tmp_dir}"
-+	elif [[ "${action}" == "fsverity-enable" ]]; then
-+		fsverity_enable_file "${tmp_dir}"
- 	else
- 		echo "Unknown action: ${action}"
- 		exit 1
--- 
+It should be noted that BPF token is conceptually quite similar to the idea=
+ of
+/dev/bpf device file, proposed by Song a while ago ([2]). The biggest
+difference is the idea of using virtual anon_inode file to hold BPF token a=
+nd
+allowing multiple independent instances of them, each (potentially) with its
+own set of restrictions. And also, crucially, BPF token approach is not usi=
+ng
+any special stateful task-scoped flags. Instead, bpf() syscall accepts
+token_fd parameters explicitly for each relevant BPF command. This addresses
+main concerns brought up during the /dev/bpf discussion, and fits better wi=
+th
+overall BPF subsystem design.
+
+This patch set adds a basic minimum of functionality to make BPF token idea
+useful and to discuss API and functionality. Currently only low-level libbpf
+APIs support creating and passing BPF token around, allowing to test kernel
+functionality, but for the most part is not sufficient for real-world
+applications, which typically use high-level libbpf APIs based on `struct
+bpf_object` type. This was done with the intent to limit the size of patch =
+set
+and concentrate on mostly kernel-side changes. All the necessary plumbing f=
+or
+libbpf will be sent as a separate follow up patch set kernel support makes =
+it
+upstream.
+
+Another part that should happen once kernel-side BPF token is established, =
+is
+a set of conventions between applications (e.g., systemd), tools (e.g.,
+bpftool), and libraries (e.g., libbpf) on exposing delegatable BPF FS
+instance(s) at well-defined locations to allow applications take advantage =
+of
+this in automatic fashion without explicit code changes on BPF application's
+side. But I'd like to postpone this discussion to after BPF token concept
+lands.
+
+  [0] https://lore.kernel.org/bpf/20230412043300.360803-1-andrii@kernel.org/
+  [1] http://vger.kernel.org/bpfconf2023_material/Trusted_unprivileged_BPF_=
+LSFMM2023.pdf
+  [2] https://lore.kernel.org/bpf/20190627201923.2589391-2-songliubraving@f=
+b.com/
+  [3] https://lore.kernel.org/bpf/20230704-hochverdient-lehne-eeb9eeef785e@=
+brauner/
+
+v8->v9:
+  - fix issue in selftests due to sys/mount.h header (Jiri);
+  - fix warning in doc comments in LSM hooks (kernel test robot);
+v7->v8:
+  - add bpf_token_allow_cmd and bpf_token_capable hooks (Paul);
+  - inline bpf_token_alloc() into bpf_token_create() to prevent accidental
+    divergence with security_bpf_token_create() hook (Paul);
+v6->v7:
+  - separate patches to refactor bpf_prog_alloc/bpf_map_alloc LSM hooks, as
+    discussed with Paul, and now they also accept struct bpf_token;
+  - added bpf_token_create/bpf_token_free to allow LSMs (SELinux,
+    specifically) to set up security LSM blob (Paul);
+  - last patch also wires bpf_security_struct setup by SELinux, similar to =
+how
+    it's done for BPF map/prog, though I'm not sure if that's enough, so wo=
+rst
+    case it's easy to drop this patch if more full fledged SELinux
+    implementation will be done separately;
+  - small fixes for issues caught by code reviews (Jiri, Hou);
+  - fix for test_maps test that doesn't use LIBBPF_OPTS() macro (CI);
+v5->v6:
+  - fix possible use of uninitialized variable in selftests (CI);
+  - don't use anon_inode, instead create one from BPF FS instance (Christia=
+n);
+  - don't store bpf_token inside struct bpf_map, instead pass it explicitly=
+ to
+    map_check_btf(). We do store bpf_token inside prog->aux, because it's u=
+sed
+    during verification and even can be checked during attach time for some
+    program types;
+  - LSM hooks are left intact pending the conclusion of discussion with Paul
+    Moore; I'd prefer to do LSM-related changes as a follow up patch set
+    anyways;
+v4->v5:
+  - add pre-patch unifying CAP_NET_ADMIN handling inside kernel/bpf/syscall=
+.c
+    (Paul Moore);
+  - fix build warnings and errors in selftests and kernel, detected by CI a=
+nd
+    kernel test robot;
+v3->v4:
+  - add delegation mount options to BPF FS;
+  - BPF token is derived from the instance of BPF FS and associates itself
+    with BPF FS' owning userns;
+  - BPF token doesn't grant BPF functionality directly, it just turns
+    capable() checks into ns_capable() checks within BPF FS' owning user;
+  - BPF token cannot be pinned;
+v2->v3:
+  - make BPF_TOKEN_CREATE pin created BPF token in BPF FS, and disallow
+    BPF_OBJ_PIN for BPF token;
+v1->v2:
+  - fix build failures on Kconfig with CONFIG_BPF_SYSCALL unset;
+  - drop BPF_F_TOKEN_UNKNOWN_* flags and simplify UAPI (Stanislav).
+
+Andrii Nakryiko (17):
+  bpf: align CAP_NET_ADMIN checks with bpf_capable() approach
+  bpf: add BPF token delegation mount options to BPF FS
+  bpf: introduce BPF token object
+  bpf: add BPF token support to BPF_MAP_CREATE command
+  bpf: add BPF token support to BPF_BTF_LOAD command
+  bpf: add BPF token support to BPF_PROG_LOAD command
+  bpf: take into account BPF token when fetching helper protos
+  bpf: consistently use BPF token throughout BPF verifier logic
+  bpf,lsm: refactor bpf_prog_alloc/bpf_prog_free LSM hooks
+  bpf,lsm: refactor bpf_map_alloc/bpf_map_free LSM hooks
+  bpf,lsm: add BPF token LSM hooks
+  libbpf: add bpf_token_create() API
+  libbpf: add BPF token support to bpf_map_create() API
+  libbpf: add BPF token support to bpf_btf_load() API
+  libbpf: add BPF token support to bpf_prog_load() API
+  selftests/bpf: add BPF token-enabled tests
+  bpf,selinux: allocate bpf_security_struct per BPF token
+
+ drivers/media/rc/bpf-lirc.c                   |   2 +-
+ include/linux/bpf.h                           |  83 ++-
+ include/linux/filter.h                        |   2 +-
+ include/linux/lsm_hook_defs.h                 |  15 +-
+ include/linux/security.h                      |  43 +-
+ include/uapi/linux/bpf.h                      |  44 ++
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/arraymap.c                         |   2 +-
+ kernel/bpf/bpf_lsm.c                          |  15 +-
+ kernel/bpf/cgroup.c                           |   6 +-
+ kernel/bpf/core.c                             |   3 +-
+ kernel/bpf/helpers.c                          |   6 +-
+ kernel/bpf/inode.c                            |  98 ++-
+ kernel/bpf/syscall.c                          | 215 ++++--
+ kernel/bpf/token.c                            | 247 +++++++
+ kernel/bpf/verifier.c                         |  13 +-
+ kernel/trace/bpf_trace.c                      |   2 +-
+ net/core/filter.c                             |  36 +-
+ net/ipv4/bpf_tcp_ca.c                         |   2 +-
+ net/netfilter/nf_bpf_link.c                   |   2 +-
+ security/security.c                           | 101 ++-
+ security/selinux/hooks.c                      |  47 +-
+ tools/include/uapi/linux/bpf.h                |  44 ++
+ tools/lib/bpf/bpf.c                           |  30 +-
+ tools/lib/bpf/bpf.h                           |  39 +-
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../selftests/bpf/prog_tests/libbpf_probes.c  |   4 +
+ .../selftests/bpf/prog_tests/libbpf_str.c     |   6 +
+ .../testing/selftests/bpf/prog_tests/token.c  | 622 ++++++++++++++++++
+ 29 files changed, 1565 insertions(+), 167 deletions(-)
+ create mode 100644 kernel/bpf/token.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/token.c
+
+--=20
 2.34.1
 
 
