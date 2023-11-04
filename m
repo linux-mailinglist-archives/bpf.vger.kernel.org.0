@@ -1,180 +1,109 @@
-Return-Path: <bpf+bounces-14195-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D2007E0CBB
-	for <lists+bpf@lfdr.de>; Sat,  4 Nov 2023 01:38:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1C297E0D54
+	for <lists+bpf@lfdr.de>; Sat,  4 Nov 2023 03:45:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5844F1C209DD
-	for <lists+bpf@lfdr.de>; Sat,  4 Nov 2023 00:38:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FB4E282046
+	for <lists+bpf@lfdr.de>; Sat,  4 Nov 2023 02:45:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BAEA15A0;
-	Sat,  4 Nov 2023 00:38:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4F861C3D;
+	Sat,  4 Nov 2023 02:44:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gWuSeJ+8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VL0+3GQi"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10424622;
-	Sat,  4 Nov 2023 00:38:16 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A3E8D45;
-	Fri,  3 Nov 2023 17:38:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699058295; x=1730594295;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Z97UFq+QehJNlR4W7nQoGDS8MXrq9lbEH00mni21Llo=;
-  b=gWuSeJ+81vAJvv8FQlY753+kp8oyz5nO10D2p4trvCOJ5s5eOZU4LRqB
-   cK8tpoVZPkLOCPRAc7sr1fzj5p/Dd3T0lTZrfNcBL5iXqW+YEEvbmfSNW
-   bl+VASWDAzTaVRoaeRF5vfLT+dHaZjsECfglI7wB+8Qq0nyvN1Lz/OUTC
-   AJ44wea9Wa5nTgv0KR9RZ4awl36J9JyeAr7hh3K+wgQCtoMgcTL0kdBlP
-   IslRmfz+mplrLz4o0t/v1SlJs63BlVrCMvV+4jscf3NFCTV0WucMA8LfR
-   YSwYp6OZ0c0WxdaSwU3jiigL4pDyZ4ybRMyajJ6/GL5lhls+ZGpDrnxgz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="369252331"
-X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="369252331"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 17:38:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="755313880"
-X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="755313880"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 03 Nov 2023 17:38:11 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qz4fx-00038Q-1v;
-	Sat, 04 Nov 2023 00:38:09 +0000
-Date: Sat, 4 Nov 2023 08:36:59 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, paul@paul-moore.com, brauner@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, keescook@chromium.org,
-	kernel-team@meta.com, sargun@sargun.me
-Subject: Re: [PATCH v9 bpf-next 11/17] bpf,lsm: add BPF token LSM hooks
-Message-ID: <202311040829.XrnpSV8z-lkp@intel.com>
-References: <20231103190523.6353-12-andrii@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C953620
+	for <bpf@vger.kernel.org>; Sat,  4 Nov 2023 02:44:55 +0000 (UTC)
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73D2D44;
+	Fri,  3 Nov 2023 19:44:54 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3b2b1af964dso1692614b6e.1;
+        Fri, 03 Nov 2023 19:44:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699065894; x=1699670694; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WKGQz1joPLPha7R6fZ/AtC4HHorloARO2OZK7OLX04w=;
+        b=VL0+3GQixLlL7MRLUACL+gKsfjyuKguKa5QbZfplDOHdswMTSzP/YTZUxy7ffZKNTE
+         GGylS724BFTHYsWpx3mogAZOjwfew/bfJTjXGflawRnIAy+qrkYiggB8DAonbrN6J7ZN
+         zDIdkIMIhDqrI2nAwonYVL7yUZKZkqs7uOOeZmlQXd997s53HOJ5nw3h6LW0onqRARu+
+         nysfAScqQt6Os20TiT8SmeU145ep9TiwgatMhIS3vTA/QuEN9WjjtUc7aVwhO/T5+8jo
+         g4t1UFCvODzRQuB2u90d3eqeTfZeI9x04VZ2OYq6Tx5amsWZA9YQLrFfiS04NYOSgEQh
+         bIXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699065894; x=1699670694;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WKGQz1joPLPha7R6fZ/AtC4HHorloARO2OZK7OLX04w=;
+        b=ZH5vN4KCsG7SM6q770fe70jQUqE468sm0DGBGtbirLpAf9PAToVYctQUtnm6DVotRF
+         AsRTBCTwkvK8wSaCGFKZnzlMGlg7+hhGn6uMn85w3rqw1PuNw4yOQ/m7aGE6cDeAcVnI
+         OHufH2xqCO0PpJZkILfJHqBPfdP+IxjcUpHh8dcjsYYB9zylMb66zvIFz2748YNZOxPa
+         Q9av89ggodUj2zpLOP0TLi1ilqw1YKj5K9IDTxb6fdPPafNOYWiiTZi9aOwlPxkjgxQ9
+         +X+mWASFsGQyNgdI/+MzMY/MzjbKg11xcvldLoH+yuIlNLRyL6tUS6NFWyEGqxV7sjcw
+         mirA==
+X-Gm-Message-State: AOJu0Yz94tCEflEBy0xw/N5ibqL4jtsburo//xRHYZss7kwsfM7aFWHg
+	PH35zSEbX8DknzMpG4o9Kqc=
+X-Google-Smtp-Source: AGHT+IFD3iY1F2nxv95bN4MI4a5W1jNA8PhHNMDLlJAllZ1VhUXhVMAWTwyJ1l3pM8GZtT2Gs1Ql1g==
+X-Received: by 2002:a54:4492:0:b0:3a7:c13:c8d1 with SMTP id v18-20020a544492000000b003a70c13c8d1mr23004058oiv.17.1699065894105;
+        Fri, 03 Nov 2023 19:44:54 -0700 (PDT)
+Received: from localhost ([183.247.1.252])
+        by smtp.gmail.com with ESMTPSA id w19-20020aa78593000000b006b4ac8885b4sm2110862pfn.14.2023.11.03.19.44.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 19:44:53 -0700 (PDT)
+From: Tao Chen <chen.dylane@gmail.com>
+To: song@kernel.org,
+	jolsa@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	yonghong.song@linux.dev,
+	martin.lau@linux.dev,
+	john.fastabend@gmail.com,
+	haoluo@google.com
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	chen.dylane@gmail.com
+Subject: [PATCH] bpf: Use E2BIG instead of ENOENT
+Date: Sat,  4 Nov 2023 10:44:44 +0800
+Message-Id: <20231104024444.385484-1-chen.dylane@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231103190523.6353-12-andrii@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-Hi Andrii,
+Use E2BIG instead of ENOENT when the key size beyond the buckets size,
+it seems more meaningful.
 
-kernel test robot noticed the following build errors:
+Signed-off-by: Tao Chen <chen.dylane@gmail.com>
+---
+ kernel/bpf/stackmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[auto build test ERROR on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/bpf-align-CAP_NET_ADMIN-checks-with-bpf_capable-approach/20231104-031714
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20231103190523.6353-12-andrii%40kernel.org
-patch subject: [PATCH v9 bpf-next 11/17] bpf,lsm: add BPF token LSM hooks
-config: m68k-defconfig (https://download.01.org/0day-ci/archive/20231104/202311040829.XrnpSV8z-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231104/202311040829.XrnpSV8z-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311040829.XrnpSV8z-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from include/net/scm.h:8,
-                    from include/linux/netlink.h:9,
-                    from include/uapi/linux/neighbour.h:6,
-                    from include/linux/netdevice.h:45,
-                    from include/net/sock.h:46,
-                    from include/linux/tcp.h:19,
-                    from include/linux/ipv6.h:95,
-                    from include/net/ipv6.h:12,
-                    from include/linux/sunrpc/addr.h:14,
-                    from fs/nfsd/nfsd.h:22,
-                    from fs/nfsd/state.h:42,
-                    from fs/nfsd/xdr4.h:40,
-                    from fs/nfsd/trace.h:17,
-                    from fs/nfsd/trace.c:4:
->> include/linux/security.h:2084:92: error: parameter 2 ('cmd') has incomplete type
-    2084 | static inline int security_bpf_token_allow_cmd(const struct bpf_token *token, enum bpf_cmd cmd)
-         |                                                                               ~~~~~~~~~~~~~^~~
->> include/linux/security.h:2084:19: error: function declaration isn't a prototype [-Werror=strict-prototypes]
-    2084 | static inline int security_bpf_token_allow_cmd(const struct bpf_token *token, enum bpf_cmd cmd)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
---
-   In file included from include/net/scm.h:8,
-                    from include/linux/netlink.h:9,
-                    from include/uapi/linux/neighbour.h:6,
-                    from include/linux/netdevice.h:45,
-                    from include/net/sock.h:46,
-                    from include/linux/tcp.h:19,
-                    from include/linux/ipv6.h:95,
-                    from include/net/ipv6.h:12,
-                    from include/linux/sunrpc/addr.h:14,
-                    from fs/nfsd/nfsd.h:22,
-                    from fs/nfsd/export.c:21:
->> include/linux/security.h:2084:92: error: parameter 2 ('cmd') has incomplete type
-    2084 | static inline int security_bpf_token_allow_cmd(const struct bpf_token *token, enum bpf_cmd cmd)
-         |                                                                               ~~~~~~~~~~~~~^~~
->> include/linux/security.h:2084:19: error: function declaration isn't a prototype [-Werror=strict-prototypes]
-    2084 | static inline int security_bpf_token_allow_cmd(const struct bpf_token *token, enum bpf_cmd cmd)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   fs/nfsd/export.c: In function 'exp_rootfh':
-   fs/nfsd/export.c:1017:34: warning: variable 'inode' set but not used [-Wunused-but-set-variable]
-    1017 |         struct inode            *inode;
-         |                                  ^~~~~
-   cc1: some warnings being treated as errors
---
-   In file included from include/net/scm.h:8,
-                    from include/linux/netlink.h:9,
-                    from include/uapi/linux/neighbour.h:6,
-                    from include/linux/netdevice.h:45,
-                    from include/net/sock.h:46,
-                    from include/linux/tcp.h:19,
-                    from include/linux/ipv6.h:95,
-                    from include/net/ipv6.h:12,
-                    from include/linux/sunrpc/addr.h:14,
-                    from fs/nfsd/nfsd.h:22,
-                    from fs/nfsd/state.h:42,
-                    from fs/nfsd/xdr4.h:40,
-                    from fs/nfsd/trace.h:17,
-                    from fs/nfsd/trace.c:4:
->> include/linux/security.h:2084:92: error: parameter 2 ('cmd') has incomplete type
-    2084 | static inline int security_bpf_token_allow_cmd(const struct bpf_token *token, enum bpf_cmd cmd)
-         |                                                                               ~~~~~~~~~~~~~^~~
->> include/linux/security.h:2084:19: error: function declaration isn't a prototype [-Werror=strict-prototypes]
-    2084 | static inline int security_bpf_token_allow_cmd(const struct bpf_token *token, enum bpf_cmd cmd)
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   In file included from fs/nfsd/trace.h:1958:
-   include/trace/define_trace.h:95:42: fatal error: ./trace.h: No such file or directory
-      95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
-         |                                          ^
-   cc1: some warnings being treated as errors
-   compilation terminated.
-
-
-vim +2084 include/linux/security.h
-
-  2083	
-> 2084	static inline int security_bpf_token_allow_cmd(const struct bpf_token *token, enum bpf_cmd cmd)
-  2085	{
-  2086		return 0;
-  2087	}
-  2088	
-
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 458bb80b14d5..b78369bdec8d 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -570,7 +570,7 @@ int bpf_stackmap_copy(struct bpf_map *map, void *key, void *value)
+ 	u32 id = *(u32 *)key, trace_len;
+ 
+ 	if (unlikely(id >= smap->n_buckets))
+-		return -ENOENT;
++		return -E2BIG;
+ 
+ 	bucket = xchg(&smap->buckets[id], NULL);
+ 	if (!bucket)
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
